@@ -1,0 +1,89 @@
+﻿<UserControl x:Class="OneColumnEncoder.Views.MainUI"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:views="clr-namespace:OneColumnEncoder.Views"
+             xmlns:viewmodels="clr-namespace:OneColumnEncoder.ViewModels"
+             xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=viewmodels:MainVM}">
+    <StackPanel Margin="10">
+        <!-- 1. Import Tools -->
+        <comps:SectionHeader HeaderText="Import Tools" />
+        <!-- TODO: Import card View and VM -->
+        <comps:DropdownMenu DataContext="{Binding ImportDropdown}"
+                            Margin="0 20 0 0" />
+
+        <!-- 2. Select Upstream Tools -->
+        <comps:SectionHeader HeaderText="Select Upstream Tool"
+                             Margin="0 20 0 0" />
+        <ItemsControl ItemsSource="{Binding UpstreamsZone}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <comps:ItemCard DataContext="{Binding}"
+                                    Margin="0 20 0 0" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- 3. Select Encoders -->
+        <comps:SectionHeader HeaderText="Select Encoder"
+                             Margin="0 20 0 0" />
+        <ItemsControl ItemsSource="{Binding EncodersZone}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <comps:ItemCard DataContext="{Binding}"
+                                    Margin="0 20 0 0" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- 4. Select Analytic Tools -->
+        <comps:SectionHeader HeaderText="Select Analytics &amp; Dependencies"
+                             Margin="0 20 0 0" />
+        <ItemsControl ItemsSource="{Binding AnalyticsZone}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <comps:ItemCard DataContext="{Binding}"
+                                    Margin="0 20 0 0" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- 5. Import Source -->
+        <comps:SectionHeader HeaderText="Import or Create Source File"
+                             Margin="0 20 0 0" />
+        <ItemsControl ItemsSource="{Binding SourceImportZone}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <comps:ItemCard DataContext="{Binding}"
+                                    Margin="0 20 0 0" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- 6. AnalyticResultsZone -->
+        <comps:SectionHeader HeaderText="Analysis Results"
+                             Margin="0 20 0 0" />
+
+        <!-- 7. Encoding Settings -->
+        <comps:SectionHeader HeaderText="Encoding Configurations"
+                             Margin="0 20 0 0" />
+        <ItemsControl ItemsSource="{Binding EncSettingsZone}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <comps:ItemCard DataContext="{Binding}"
+                                    Margin="0 20 0 0" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- 8. Starting Options -->
+        <comps:SectionHeader HeaderText="Start Encoding Options"
+                             Margin="0 20 0 0" />
+        <!-- TODO: Blocking Conditions Card -->
+        <comps:ThreeButtonGroup DataContext="{Binding EncodingStartButtons_VM}"
+                                Margin="0 20 0 0" />
+    </StackPanel>
+</UserControl>

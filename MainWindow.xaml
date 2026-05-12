@@ -1,0 +1,24 @@
+﻿<Window x:Class="OneColumnEncoder.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OneColumnEncoder"
+        xmlns:views="clr-namespace:OneColumnEncoder.Views"
+        mc:Ignorable="d"
+        Title="1cenc" Height="Auto" Width="520">
+    <!--
+        xmlns:vms="clr-namespace:OneColumnEncoder.WPF.ViewModels"
+        -->
+    <!--<Window.Resources>
+        <DataTemplate DataType="{x:Type vms:NewViewModel}">
+            <views:NewView />
+        </DataTemplate>
+    </Window.Resources>-->
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Auto">
+        <Grid>
+            <views:MainUI Margin="10" />
+        </Grid>
+    </ScrollViewer>
+</Window>

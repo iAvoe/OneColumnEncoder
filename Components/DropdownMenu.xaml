@@ -1,0 +1,28 @@
+﻿<UserControl x:Class="OneColumnEncoder.Components.DropdownMenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:viewmodels="clr-namespace:OneColumnEncoder.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=viewmodels:DropdownMenuVM}"
+             d:DesignHeight="40">
+
+    <ComboBox ItemsSource="{Binding Items}"
+              SelectedItem="{Binding SelectedItem}"
+              Style="{StaticResource RoundedDropdownMenu}">
+        <ComboBox.ItemTemplate>
+            <DataTemplate>
+                <Grid>
+                    <TextBlock Text="{Binding Title}"
+                               Visibility="{Binding IsSeparator, Converter={StaticResource BoolToVisibilityInverse}}" />
+                    <Border Height="1.5"
+                            VerticalAlignment="Center"
+                            SnapsToDevicePixels="True"
+                            Background="{StaticResource GlobalSecondary}"
+                            Visibility="{Binding IsSeparator, Converter={StaticResource BoolToVisibility}}" />
+                </Grid>
+            </DataTemplate>
+        </ComboBox.ItemTemplate>
+    </ComboBox>
+</UserControl>

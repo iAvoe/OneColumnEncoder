@@ -1,0 +1,69 @@
+﻿<UserControl x:Class="OneColumnEncoder.Components.ItemCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:OneColumnEncoder.Components"
+             xmlns:viewmodels="clr-namespace:OneColumnEncoder.ViewModels"
+             d:DataContext="{d:DesignInstance Type=viewmodels:EncItemVM}"
+             mc:Ignorable="d"
+             d:DesignHeight="140"
+             d:DesignWidth="450">
+    <!--
+    | Title      | R1 | R2 |
+    | P1: ...              |
+    | P2: ...              |
+    R1, R2: Right side control buttons
+    P1: P2: Properties
+    -->
+    <Border BorderBrush="{StaticResource GlobalPrimary}"
+            BorderThickness="2"
+            CornerRadius="20"
+            Padding="20"
+            Background="{StaticResource Background}">
+        <Grid>
+            <!-- Title, R1, R2 -->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <!-- Title, P1, P2 -->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- First row: title & links -->
+            <TextBlock Grid.Row="0"
+                       Grid.Column="0"
+                       Text="{Binding Name}"
+                       Style="{StaticResource H2}" />
+            <Button Grid.Row="0"
+                    Grid.Column="1"
+                    Content="{Binding R1Text}"
+                    Style="{StaticResource LinkButton}" />
+            <Button Grid.Row="0"
+                    Grid.Column="2"
+                    Content="{Binding R2Text}"
+                    Style="{StaticResource LinkButton}" />
+
+            <!-- Other rows -->
+            <TextBlock Grid.Row="1"
+                       Grid.ColumnSpan="3"
+                       Margin="0 5 0 0"
+                       Style="{StaticResource H4}"
+                       Foreground="{StaticResource GlobalPrimary}">
+                <Run Text="{Binding P1Name, Mode=OneWay}" /><Run Text=": " /><Run Text="{Binding P1Text, Mode=OneWay}" />
+            </TextBlock>
+            <TextBlock Grid.Row="2"
+                       Grid.ColumnSpan="3"
+                       Margin="0 5 0 0"
+                       Style="{StaticResource H4}"
+                       Foreground="{StaticResource GlobalPrimary}">
+                <Run Text="{Binding P2Name, Mode=OneWay}" /><Run Text=": " /><Run Text="{Binding P2Text, Mode=OneWay}" />
+            </TextBlock>
+        </Grid>
+    </Border>
+</UserControl>

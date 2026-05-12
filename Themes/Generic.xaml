@@ -1,0 +1,78 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:OneColumnEncoder.Components">
+    <!-- Status Icon -->
+    <Style TargetType="{x:Type local:StatIconTextblock}">
+        <Setter Property="FontFamily"
+                Value="Segoe UI Symbol" />
+        <Setter Property="FontSize"
+                Value="14" />
+        <Setter Property="Foreground"
+                Value="Black" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:StatIconTextblock}">
+                    <StackPanel Orientation="Horizontal">
+                        <!-- Initialize to questionmark symbol -->
+                        <TextBlock x:Name="IconText"
+                                   Text="?"
+                                   VerticalAlignment="Center"
+                                   FontFamily="{TemplateBinding FontFamily}"
+                                   FontSize="{TemplateBinding FontSize}"
+                                   Foreground="{TemplateBinding Foreground}"
+                                   Margin="0,0,4,0" />
+                        <!-- Textblock -->
+                        <TextBlock Text="{TemplateBinding Text}"
+                                   VerticalAlignment="Center"
+                                   FontSize="{TemplateBinding FontSize}"
+                                   Foreground="{TemplateBinding Foreground}" />
+                    </StackPanel>
+
+                    <ControlTemplate.Triggers>
+                        <!-- Waiting -->
+                        <Trigger Property="local:StatIconTextblock.Status"
+                                 Value="Waiting">
+                            <Setter TargetName="IconText"
+                                    Property="Text"
+                                    Value="?" />
+                            <Setter TargetName="IconText"
+                                    Property="Foreground"
+                                    Value="Gray" />
+                        </Trigger>
+                        <!-- Success -->
+                        <Trigger Property="local:StatIconTextblock.Status"
+                                 Value="Success">
+                            <Setter TargetName="IconText"
+                                    Property="Text"
+                                    Value="?" />
+                            <Setter TargetName="IconText"
+                                    Property="Foreground"
+                                    Value="Green" />
+                        </Trigger>
+                        <!-- Warning -->
+                        <Trigger Property="local:StatIconTextblock.Status"
+                                 Value="Warning">
+                            <Setter TargetName="IconText"
+                                    Property="Text"
+                                    Value="?" />
+                            <Setter TargetName="IconText"
+                                    Property="Foreground"
+                                    Value="Orange" />
+                        </Trigger>
+                        <!-- Error -->
+                        <Trigger Property="local:StatIconTextblock.Status"
+                                 Value="Error">
+                            <Setter TargetName="IconText"
+                                    Property="Text"
+                                    Value="?" />
+                            <Setter TargetName="IconText"
+                                    Property="Foreground"
+                                    Value="Red" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

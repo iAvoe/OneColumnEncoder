@@ -1,0 +1,28 @@
+﻿<UserControl x:Class="OneColumnEncoder.Components.TwoButtonGroup"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:OneColumnEncoder.Components"
+             mc:Ignorable="d"
+             d:DesignHeight="40"
+             d:DesignWidth="450">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Button Grid.Column="0"
+                Content="{Binding B2_1Text}"
+                MinWidth="220"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Left"
+                Style="{StaticResource PrimaryButton}" />
+        <Button Grid.Column="1"
+                Content="{Binding B2_2Text}"
+                MinWidth="220"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Right"
+                Style="{StaticResource NormalButton}" />
+    </Grid>
+</UserControl>
