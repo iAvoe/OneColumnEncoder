@@ -1,5 +1,4 @@
-﻿using OneColumnEncoder.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,17 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace OneColumnEncoder.Views
+namespace OneColumnEncoder.Components
 {
     /// <summary>
-    /// Interaction logic for MainUI.xaml
+    /// Interaction logic for ContainerCard.xaml
     /// </summary>
-    public partial class MainUI : UserControl
+    public partial class ContainerCard : UserControl
     {
-        public MainUI()
+        public ContainerCard()
         {
             InitializeComponent();
-            this.DataContext = new MainVM();
         }
     }
 }
