@@ -1,4 +1,4 @@
-<ResourceDictionary
+﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:OneColumnEncoder.Components">
@@ -88,12 +88,8 @@
     
     <!-- Status Icon -->
     <Style TargetType="{x:Type local:ChecklistItem}">
-        <Setter Property="FontFamily"
-                Value="Segoe UI Symbol" />
-        <Setter Property="FontSize"
-                Value="14" />
         <Setter Property="Foreground"
-                Value="Black" />
+                Value="{StaticResource ButtonPrimary}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:ChecklistItem}">
@@ -103,13 +99,13 @@
                                    Text="?"
                                    VerticalAlignment="Center"
                                    FontFamily="{TemplateBinding FontFamily}"
-                                   FontSize="{TemplateBinding FontSize}"
+                                   FontSize="16"
                                    Foreground="{TemplateBinding Foreground}"
-                                   Margin="0,0,4,0" />
+                                   Margin="0 0 10 0" />
                         <!-- Textblock -->
                         <TextBlock Text="{TemplateBinding Text}"
                                    VerticalAlignment="Center"
-                                   FontSize="{TemplateBinding FontSize}"
+                                   FontSize="14"
                                    Foreground="{TemplateBinding Foreground}" />
                     </StackPanel>
 
@@ -119,7 +115,7 @@
                                  Value="Waiting">
                             <Setter TargetName="IconText"
                                     Property="Text"
-                                    Value="?" />
+                                    Value="⏳" />
                             <Setter TargetName="IconText"
                                     Property="Foreground"
                                     Value="Gray" />
@@ -129,7 +125,7 @@
                                  Value="Success">
                             <Setter TargetName="IconText"
                                     Property="Text"
-                                    Value="?" />
+                                    Value="✓" />
                             <Setter TargetName="IconText"
                                     Property="Foreground"
                                     Value="Green" />
@@ -139,7 +135,7 @@
                                  Value="Warning">
                             <Setter TargetName="IconText"
                                     Property="Text"
-                                    Value="?" />
+                                    Value="⚠" />
                             <Setter TargetName="IconText"
                                     Property="Foreground"
                                     Value="Orange" />
@@ -149,7 +145,7 @@
                                  Value="Error">
                             <Setter TargetName="IconText"
                                     Property="Text"
-                                    Value="?" />
+                                    Value="✖" />
                             <Setter TargetName="IconText"
                                     Property="Foreground"
                                     Value="Red" />
@@ -169,8 +165,8 @@
                             BorderThickness="{TemplateBinding BorderThickness}">
                         <StackPanel>
                             <TextBlock Text="{TemplateBinding Header}"
-                                       Style="{StaticResource H3}"
-                                       Margin="0 0 0 10" />
+                                       Style="{StaticResource H2}"
+                                       Margin="0 5 0 5" />
                             <ItemsControl ItemsSource="{TemplateBinding ItemsSource}"
                                           ItemTemplate="{TemplateBinding ItemTemplate}">
                                 <ItemsControl.ItemsPanel>

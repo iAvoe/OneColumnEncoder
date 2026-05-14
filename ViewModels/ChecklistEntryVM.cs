@@ -12,7 +12,7 @@ namespace OneColumnEncoder.ViewModels
         private string _text = string.Empty;
         public string Text
         {
-            get => Text;
+            get => _text;
             set => SetProperty(ref _text, value);
         }
 

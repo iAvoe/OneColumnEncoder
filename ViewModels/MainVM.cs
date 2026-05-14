@@ -104,72 +104,109 @@ namespace OneColumnEncoder.ViewModels
             EncodingStartButtons_VM = new EncodingStartButtonsVM();
 
             // Fill checklists
-            ToolsChecklist.Add(new ChecklistEntryVM {
-                Text = "Having at least one upsream program available",
-                Status = StatusType.Waiting});
-            ToolsChecklist.Add(new ChecklistEntryVM {
-                Text = "Having at least one downstream program available",
-                Status = StatusType.Waiting});
-            ToolsChecklist.Add(new ChecklistEntryVM {
-                Text = "Having at least one analysis program available",
-                Status = StatusType.Waiting});
-            // SourceChecklist1: Severe Problems (严重问题)
-            SourceChecklist1.Add(new ChecklistEntryVM {
-                Text = "Metadata read successfully",
-                Status = StatusType.Waiting });
-            SourceChecklist1.Add(new ChecklistEntryVM {
-                Text = "Source file size is within limits (SVT-AV1 support)",
-                Status = StatusType.Waiting });
-            SourceChecklist1.Add(new ChecklistEntryVM {
-                Text = "Source file bit-depth is supported (SVT-AV1 12-bit limit)",
-                Status = StatusType.Waiting });
+            ToolsChecklist.Add(new ChecklistEntryVM
+            {
+                Text = "One upsream program available",
+                Status = StatusType.Error
+            });
+            ToolsChecklist.Add(new ChecklistEntryVM
+            {
+                Text = "One downstream program available",
+                Status = StatusType.Error
+            });
+            ToolsChecklist.Add(new ChecklistEntryVM
+            {
+                Text = "One analysis program available",
+                Status = StatusType.Error
+            });
 
-            // SourceChecklist2: General Problems (一般问题)
-            SourceChecklist2.Add(new ChecklistEntryVM {
-                Text = "Constant Frame Rate (CFR) instead of VFR",
-                Status = StatusType.Waiting });
-            SourceChecklist2.Add(new ChecklistEntryVM {
-                Text = "Standard luminance/brightness levels",
-                Status = StatusType.Waiting });
-            SourceChecklist2.Add(new ChecklistEntryVM {
-                Text = "Color format matches", Status = StatusType.Waiting });
-            SourceChecklist2.Add(new ChecklistEntryVM {
-                Text = "Transfer characteristics match",
-                Status = StatusType.Waiting });
-            SourceChecklist2.Add(new ChecklistEntryVM {
-                Text = "Color primaries match",
-                Status = StatusType.Waiting });
-            SourceChecklist2.Add(new ChecklistEntryVM {
-                Text = "Color sampling supported by SVT-AV1",
-                Status = StatusType.Waiting });
+            // SourceChecklist1: Severe
+            SourceChecklist1.Add(new ChecklistEntryVM
+            {
+                Text = "Metadata is readable",
+                Status = StatusType.Waiting
+            });
+            SourceChecklist1.Add(new ChecklistEntryVM
+            {
+                Text = "Progressive video frame / not interlated (SVT-AV1 req.)",
+                Status = StatusType.Waiting
+            });
+            SourceChecklist1.Add(new ChecklistEntryVM
+            {
+                Text = "Bit-depth is less than 12 (SVT-AV1 req.)",
+                Status = StatusType.Waiting
+            });
 
-            // EncodeChecklist1: Hardware Conditions (硬件条件)
-            EncodeChecklist1.Add(new ChecklistEntryVM {
+            // SourceChecklist2: General
+            SourceChecklist2.Add(new ChecklistEntryVM
+            {
+                Text = "Framerate is constant / not variable",
+                Status = StatusType.Waiting
+            });
+            SourceChecklist2.Add(new ChecklistEntryVM
+            {
+                Text = "Square pixel aspect ratio / 1:1 sar",
+                Status = StatusType.Waiting
+            });
+            SourceChecklist2.Add(new ChecklistEntryVM
+            {
+                Text = "Color matrix matadata is normal",
+                Status = StatusType.Waiting
+            });
+            SourceChecklist2.Add(new ChecklistEntryVM
+            {
+                Text = "Transfer characteristics matadata is normal",
+                Status = StatusType.Waiting
+            });
+            SourceChecklist2.Add(new ChecklistEntryVM
+            {
+                Text = "Color primaries metadata is normal",
+                Status = StatusType.Waiting
+            });
+            SourceChecklist2.Add(new ChecklistEntryVM
+            {
+                Text = "←/↖ chroma sample location (SVT-AV1 req.)",
+                Status = StatusType.Waiting
+            });
+
+            // EncodeChecklist1: Hardware Conditions
+            EncodeChecklist1.Add(new ChecklistEntryVM
+            {
                 Text = "Using power adapter or battery level above 30%",
-                Status = StatusType.Waiting });
-            EncodeChecklist1.Add(new ChecklistEntryVM {
+                Status = StatusType.Waiting
+            });
+            EncodeChecklist1.Add(new ChecklistEntryVM
+            {
                 Text = "Sufficient available RAM",
-                Status = StatusType.Waiting });
-            EncodeChecklist1.Add(new ChecklistEntryVM {
+                Status = StatusType.Waiting
+            });
+            EncodeChecklist1.Add(new ChecklistEntryVM
+            {
                 Text = "Sufficient available disk space",
-                Status = StatusType.Waiting });
+                Status = StatusType.Waiting
+            });
 
-            // EncodeChecklist2: Software Conditions (软件条件)
-            EncodeChecklist2.Add(new ChecklistEntryVM {
-                Text = "Filters and scripts are present",
-                Status = StatusType.Waiting });
-            EncodeChecklist2.Add(new ChecklistEntryVM {
-                Text = "Output filename is valid",
-                Status = StatusType.Waiting });
-            EncodeChecklist2.Add(new ChecklistEntryVM {
-                Text = "Upstream and downstream programs are compatible",
-                Status = StatusType.Waiting });
-            EncodeChecklist2.Add(new ChecklistEntryVM {
+            // EncodeChecklist2: Software Conditions
+            EncodeChecklist2.Add(new ChecklistEntryVM
+            {
+                Text = "Output filename is valid for OS",
+                Status = StatusType.Waiting
+            });
+            EncodeChecklist2.Add(new ChecklistEntryVM
+            {
+                Text = "Output filename is valid for FTP (optional)",
+                Status = StatusType.Waiting
+            });
+            EncodeChecklist2.Add(new ChecklistEntryVM
+            {
                 Text = "Output format is compatible with the downstream program",
-                Status = StatusType.Waiting });
-            EncodeChecklist2.Add(new ChecklistEntryVM {
+                Status = StatusType.Waiting
+            });
+            EncodeChecklist2.Add(new ChecklistEntryVM
+            {
                 Text = "Output file does not overwrite existing files",
-                Status = StatusType.Waiting });
+                Status = StatusType.Waiting
+            });
         }
 
         /*

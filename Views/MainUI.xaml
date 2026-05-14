@@ -14,16 +14,52 @@
         <!-- TODO: Import card View and VM -->
         <comps:DropdownMenu DataContext="{Binding ImportDropdown}"
                             Margin="0 20 0 0" />
-        <comps:ChecklistContainer Header=""
-                                  ItemsSource="{Binding ToolsChecklist}" />
+        
+        <comps:ChecklistContainer ItemsSource="{Binding ToolsChecklist}">
+            <comps:ChecklistContainer.ItemTemplate>
+                <DataTemplate>
+                    <comps:ChecklistItem Text="{Binding Text}"
+                                         Status="{Binding Status}" />
+                </DataTemplate>
+            </comps:ChecklistContainer.ItemTemplate>
+        </comps:ChecklistContainer>
+        
         <comps:ChecklistContainer Header="Critical"
-                                  ItemsSource="{Binding SourceChecklist1}" />
+                                  ItemsSource="{Binding SourceChecklist1}">
+            <comps:ChecklistContainer.ItemTemplate>
+                <DataTemplate>
+                    <comps:ChecklistItem Text="{Binding Text}"
+                                         Status="{Binding Status}" />
+                </DataTemplate>
+            </comps:ChecklistContainer.ItemTemplate>
+        </comps:ChecklistContainer>
         <comps:ChecklistContainer Header="General"
-                                  ItemsSource="{Binding SourceChecklist2}" />
+                                  ItemsSource="{Binding SourceChecklist2}">
+            <comps:ChecklistContainer.ItemTemplate>
+                <DataTemplate>
+                    <comps:ChecklistItem Text="{Binding Text}"
+                                         Status="{Binding Status}" />
+                </DataTemplate>
+            </comps:ChecklistContainer.ItemTemplate>
+        </comps:ChecklistContainer>
         <comps:ChecklistContainer Header="Hardware"
-                                  ItemsSource="{Binding EncodeChecklist1}" />
+                                  ItemsSource="{Binding EncodeChecklist1}">
+            <comps:ChecklistContainer.ItemTemplate>
+                <DataTemplate>
+                    <comps:ChecklistItem Text="{Binding Text}"
+                                         Status="{Binding Status}" />
+                </DataTemplate>
+            </comps:ChecklistContainer.ItemTemplate>
+        </comps:ChecklistContainer>
         <comps:ChecklistContainer Header="Software"
-                                  ItemsSource="{Binding EncodeChecklist2}" />
+                                  ItemsSource="{Binding EncodeChecklist2}">
+            <comps:ChecklistContainer.ItemTemplate>
+                <DataTemplate>
+                    <comps:ChecklistItem Text="{Binding Text}"
+                                         Status="{Binding Status}" />
+                </DataTemplate>
+            </comps:ChecklistContainer.ItemTemplate>
+        </comps:ChecklistContainer>
 
         <!-- 2. Select Upstream Tools -->
         <comps:SectionHeader HeaderText="Select Upstream Tool"
