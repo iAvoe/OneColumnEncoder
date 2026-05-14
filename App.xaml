@@ -7,92 +7,15 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
+            <!-- Spacing, fonts, colors -->
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            
+            <!-- Dropdown menu vs separator distiction -->
             <conv:BoolToVisibility x:Key="BoolToVisibility" />
             <conv:BoolToVisibilityInverse x:Key="BoolToVisibilityInverse" />
             
-            <!-- Spacing -->
-            <Style TargetType="{x:Type Control}"
-                   x:Key="BaseControl">
-                <Setter Property="HorizontalAlignment"
-                        Value="Center" />
-                <Setter Property="VerticalAlignment"
-                        Value="Center" />
-                <Setter Property="VerticalContentAlignment"
-                        Value="Center" />
-                <Setter Property="HorizontalContentAlignment"
-                        Value="Center" />
-                <Setter Property="Cursor"
-                        Value="Hand" />
-            </Style>
-
-            <!-- Colors -->
-            <SolidColorBrush Color="#111"
-                             x:Key="GlobalPrimary" />
-            <SolidColorBrush Color="#6C767D"
-                             x:Key="GlobalSecondary" />
-            <SolidColorBrush Color="#EA6B66"
-                             x:Key="BorderRed" />
-            <SolidColorBrush Color="#67AB9F"
-                             x:Key="BorderGreen" />
-            <SolidColorBrush Color="#FAFAFA"
-                             x:Key="Background" />
-            <SolidColorBrush Color="#FEF7F7"
-                             x:Key="BackgroundRed" />
-            <SolidColorBrush Color="#F1FBF9"
-                             x:Key="BackgroundGreen" />
-            <SolidColorBrush Color="#009587"
-                             x:Key="CorrectGreen" />
-            <SolidColorBrush Color="#F68819"
-                             x:Key="WarningOrange" />
-            <SolidColorBrush Color="#95000E"
-                             x:Key="ErrorRed" />
-            <SolidColorBrush Color="#343A40"
-                             x:Key="ButtonPrimary" />
-
-            <!-- Fonts -->
-            <Style TargetType="TextBlock"
-                   x:Key="H2">
-                <Setter Property="FontSize"
-                        Value="15" />
-                <Setter Property="FontWeight"
-                        Value="Bold" />
-            </Style>
-            <Style TargetType="{x:Type Control}"
-                   x:Key="H2C">
-                <Setter Property="FontSize"
-                        Value="15" />
-                <Setter Property="FontWeight"
-                        Value="Bold" />
-            </Style>
-            <Style TargetType="TextBlock"
-                   x:Key="H3">
-                <Setter Property="FontSize"
-                        Value="10" />
-                <Setter Property="FontWeight"
-                        Value="Bold" />
-            </Style>
-            <Style TargetType="{x:Type Control}"
-                   x:Key="H3C">
-                <Setter Property="FontSize"
-                        Value="10" />
-                <Setter Property="FontWeight"
-                        Value="Bold" />
-            </Style>
-            <Style TargetType="TextBlock"
-                   x:Key="H4">
-                <Setter Property="FontSize"
-                        Value="10" />
-                <Setter Property="FontWeight"
-                        Value="Bold" />
-            </Style>
-            <Style TargetType="{x:Type Control}"
-                   x:Key="H4C">
-                <Setter Property="FontSize"
-                        Value="10" />
-                <Setter Property="FontWeight"
-                        Value="Bold" />
-            </Style>
-
             <!-- Buttons -->
             <Style x:Key="LinkButton"
                    TargetType="Button"
