@@ -13,13 +13,29 @@
         <ComboBox.ItemTemplate>
             <DataTemplate>
                 <Grid>
-                    <TextBlock Text="{Binding Title}"
-                               Visibility="{Binding IsSeparator, Converter={StaticResource BoolToVisibilityInverse}}" />
+                    <TextBlock Text="{Binding Title}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSeparator}"
+                                                 Value="True">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <!-- Separator -->
                     <Border Height="1.5"
                             VerticalAlignment="Center"
                             SnapsToDevicePixels="True"
                             Background="{StaticResource GlobalSecondary}"
-                            Visibility="{Binding IsSeparator, Converter={StaticResource BoolToVisibility}}" />
+                            Visibility="{Binding IsSeparator,
+                                                 Converter={StaticResource BoolToVisibility}}" />
                 </Grid>
             </DataTemplate>
         </ComboBox.ItemTemplate>

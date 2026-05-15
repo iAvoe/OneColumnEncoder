@@ -13,8 +13,11 @@ namespace OneColumnEncoder.ViewModels
 {
     public class ContainerCardVM : BaseVM
     {
-        private readonly string _name = string.Empty;
-        public string Name { get => _name; }
+        private string _name = string.Empty;
+        public string Name {
+            get => _name;
+            set => SetProperty(ref _name, value);
+        }
 
         public ObservableCollection<ChecklistEntryVM> ToolsChecklist { get; } = [];
         public ObservableCollection<ChecklistEntryVM> EncodeChecklist1 { get; } = [];
