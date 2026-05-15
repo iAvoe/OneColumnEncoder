@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace OneColumnEncoder.Components
 {
     /// <summary>
-    /// Interaction logic for SourceValidationCard.xaml
+    /// Interaction logic for ToolsImportCard.xaml
     /// </summary>
-    public partial class SourceValidationCard : UserControl
+    public partial class ToolsImportCard : UserControl
     {
-        public SourceValidationCard()
+        public ToolsImportCard()
         {
             InitializeComponent();
         }

@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace OneColumnEncoder.ViewModels
 {
-    public class SourceValidationCardVM : ValidationCardBaseVM
+    public class EncodeTermsCardVM : ValidationCardBaseVM
     {
-        public SourceValidationCardVM()
+        public EncodeTermsCardVM()
         {
-            FillCollection(Checklist1, ChecklistProviderS.GetSourceChecklist1());
-            FillCollection(Checklist2, ChecklistProviderS.GetSourceChecklist2());
+            FillCollection(Checklist1, ChecklistProviderS.GetEncodeChecklist1());
+            FillCollection(Checklist2, ChecklistProviderS.GetEncodeChecklist2());
         }
     }
 }

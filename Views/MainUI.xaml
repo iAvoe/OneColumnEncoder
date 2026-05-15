@@ -12,8 +12,8 @@
         <!-- Import Tools -->
         <comps:SectionHeader HeaderText="Import Tools"
                              Margin="0 0 0 20" />
-        <comps:ImportContainerCard DataContext="{Binding ToolsImportCard}"
-                                   Margin="0 0 0 20" />
+        <comps:ToolsImportCard DataContext="{Binding ToolsImportCard}"
+                               Margin="0 0 0 20" />
 
         <!-- Setting Access -->
         <comps:TwoButtonGroup DataContext="{Binding OpenSettingsButtonsVM}"
@@ -21,7 +21,7 @@
 
         <!-- Select Upstream Tools -->
         <comps:SectionHeader HeaderText="Select Upstream Tool"
-                                   Margin="0 0 0 20" />
+                             Margin="0 0 0 20" />
         <ItemsControl ItemsSource="{Binding UpstreamsZone}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
@@ -70,8 +70,7 @@
         <!-- AnalyticResultsZone -->
         <comps:SectionHeader HeaderText="Analysis Results"
                              Margin="0 0 0 20" />
-
-        <comps:SourceValidationCard DataContext="{Binding SourceValidationCard}"
+        <comps:ValidationCard DataContext="{Binding SourceValidationCard}"
                                     Margin="0 0 0 20" />
 
         <!-- Encoding Settings -->
@@ -87,11 +86,11 @@
         </ItemsControl>
 
         <!-- Starting Options -->
-        <comps:SectionHeader HeaderText="Start Encoding Options"
+        <comps:SectionHeader HeaderText="Start Encoding"
                              Margin="0 0 0 20" />
-        
-        <!-- TODO: Blocking Conditions Card -->
-        
+        <comps:ValidationCard DataContext="{Binding EncodePermissionCard}"
+                                    Margin="0 0 0 20" />
+
         <comps:ThreeButtonGroup DataContext="{Binding EncodingStartButtonsVM}"/>
     </StackPanel>
 </UserControl>

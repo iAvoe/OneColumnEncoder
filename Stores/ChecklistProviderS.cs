@@ -36,16 +36,16 @@ namespace OneColumnEncoder.Stores
         public static List<ChecklistItemDefinitionM> GetEncodeChecklist1() =>
         [
             new("Using power adapter or battery level above 30%"),
-            new("Sufficient available RAM"),
-            new("Sufficient available disk space"),
+            new("Sufficient RAM availability"),
+            new("Sufficient disk space availability"),
         ];
 
         public static List<ChecklistItemDefinitionM> GetEncodeChecklist2() =>
         [
             new("Output filename is valid for OS"),
-            new("Output filename is valid for FTP (optional)"),
-            new("Output format is compatible with the downstream program"),
-            new("Output file does not overwrite existing files"),
+            new("Output filename maybe valid for FTP (Pseudo-UTF-8)"),
+            new("Read-Write permission in output folder"),
+            new("Not overwriting any existing files"),
         ];
     }
 }

@@ -11,7 +11,7 @@ using OneColumnEncoder.Stores;
 
 namespace OneColumnEncoder.ViewModels
 {
-    public class ContainerCardVM : BaseVM
+    public class ToolsImportCardVM : BaseVM
     {
         private string _name = string.Empty;
         public string Name {
@@ -20,12 +20,10 @@ namespace OneColumnEncoder.ViewModels
         }
 
         public ObservableCollection<ChecklistEntryVM> ToolsChecklist { get; } = [];
-        public ObservableCollection<ChecklistEntryVM> EncodeChecklist1 { get; } = [];
-        public ObservableCollection<ChecklistEntryVM> EncodeChecklist2 { get; } = [];
         public DropdownMenuVM ImportDropdown { get; } = new();
         public ICommand ImportCommand { get; }
 
-        public ContainerCardVM()
+        public ToolsImportCardVM()
         {
             ImportCommand = new ImportToolCmd(ImportDropdown, ToolsChecklist);
             ImportDropdown.PropertyChanged += (s, e) =>
@@ -35,8 +33,6 @@ namespace OneColumnEncoder.ViewModels
             };
 
             FillCollection(ToolsChecklist, ChecklistProviderS.GetToolsChecklist());
-            FillCollection(EncodeChecklist1, ChecklistProviderS.GetEncodeChecklist1());
-            FillCollection(EncodeChecklist2, ChecklistProviderS.GetEncodeChecklist2());
         }
     }
 }

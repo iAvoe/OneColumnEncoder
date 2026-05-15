@@ -27,8 +27,9 @@ namespace OneColumnEncoder.ViewModels
         // Centralized view modal that contains all sub-VMs
         // public Central_VM CentralVM { get; }
 
-        public ContainerCardVM ToolsImportCard { get; } = new ContainerCardVM();
+        public ToolsImportCardVM ToolsImportCard { get; } = new ToolsImportCardVM();
         public SourceValidationCardVM SourceValidationCard { get; } = new SourceValidationCardVM();
+        public EncodeTermsCardVM EncodePermissionCard { get; } = new EncodeTermsCardVM();
 
         public MainVM()
         {
@@ -61,10 +62,13 @@ namespace OneColumnEncoder.ViewModels
             // Not sure if this is still needed...
             // ToolsImportCard.ImportDropdown.SelectionChangedCommand = new SelectDropdownCmd();
 
-            // SourceValidationCard, the check list are within model, so we just set the names here
+            // Check lists are within model, no need to set here
             SourceValidationCard.Name = "Source Video Validation";
             SourceValidationCard.P1Name = "Severe (incompatible / corrupted)";
             SourceValidationCard.P3Name = "Moderate (affecting quality)";
+            EncodePermissionCard.Name = "Encoding Prerequisites";
+            EncodePermissionCard.P1Name = "Hardware";
+            EncodePermissionCard.P3Name = "Software";
 
             UpstreamsZone =
             [
