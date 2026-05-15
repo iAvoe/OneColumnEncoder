@@ -9,16 +9,17 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=viewmodels:MainVM}">
     <StackPanel Margin="10">
-        <!-- 1. Import Tools -->
+        <!-- Import Tools -->
         <comps:SectionHeader HeaderText="Import Tools"
                              Margin="0 0 0 20" />
         <comps:ImportContainerCard DataContext="{Binding ToolsImportCard}"
                                    Margin="0 0 0 20" />
 
+        <!-- Setting Access -->
         <comps:TwoButtonGroup DataContext="{Binding OpenSettingsButtonsVM}"
                               Margin="0 0 0 20" />
 
-        <!-- 2. Select Upstream Tools -->
+        <!-- Select Upstream Tools -->
         <comps:SectionHeader HeaderText="Select Upstream Tool"
                                    Margin="0 0 0 20" />
         <ItemsControl ItemsSource="{Binding UpstreamsZone}">
@@ -30,7 +31,7 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <!-- 3. Select Encoders -->
+        <!-- Select Encoders -->
         <comps:SectionHeader HeaderText="Select Encoder"
                                    Margin="0 0 0 20" />
         <ItemsControl ItemsSource="{Binding EncodersZone}">
@@ -42,7 +43,7 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <!-- 4. Select Analytic Tools -->
+        <!-- Select Analytic Tools -->
         <comps:SectionHeader HeaderText="Select Analytics &amp; Dependencies"
                              Margin="0 0 0 20" />
         <ItemsControl ItemsSource="{Binding AnalyticsZone}">
@@ -54,7 +55,7 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <!-- 5. Import Source -->
+        <!-- Import Source -->
         <comps:SectionHeader HeaderText="Import or Create Source File"
                              Margin="0 0 0 20" />
         <ItemsControl ItemsSource="{Binding SourceImportZone}">
@@ -66,11 +67,14 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <!-- 6. AnalyticResultsZone -->
+        <!-- AnalyticResultsZone -->
         <comps:SectionHeader HeaderText="Analysis Results"
                              Margin="0 0 0 20" />
 
-        <!-- 7. Encoding Settings -->
+        <comps:SourceValidationCard DataContext="{Binding SourceValidationCard}"
+                                    Margin="0 0 0 20" />
+
+        <!-- Encoding Settings -->
         <comps:SectionHeader HeaderText="Encoding Configurations"
                              Margin="0 0 0 20" />
         <ItemsControl ItemsSource="{Binding EncSettingsZone}">
@@ -82,7 +86,7 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <!-- 8. Starting Options -->
+        <!-- Starting Options -->
         <comps:SectionHeader HeaderText="Start Encoding Options"
                              Margin="0 0 0 20" />
         

@@ -28,7 +28,7 @@ namespace OneColumnEncoder.ViewModels
         // public Central_VM CentralVM { get; }
 
         public ContainerCardVM ToolsImportCard { get; } = new ContainerCardVM();
-
+        public SourceValidationCardVM SourceValidationCard { get; } = new SourceValidationCardVM();
 
         public MainVM()
         {
@@ -61,6 +61,11 @@ namespace OneColumnEncoder.ViewModels
             // Not sure if this is still needed...
             // ToolsImportCard.ImportDropdown.SelectionChangedCommand = new SelectDropdownCmd();
 
+            // SourceValidationCard, the check list are within model, so we just set the names here
+            SourceValidationCard.Name = "Source Video Validation";
+            SourceValidationCard.P1Name = "Severe (incompatible / corrupted)";
+            SourceValidationCard.P3Name = "Moderate (affecting quality)";
+
             UpstreamsZone =
             [
                 new EncItemVM(new EncItemM("FFMPEG")),
@@ -91,8 +96,8 @@ namespace OneColumnEncoder.ViewModels
             EncSettingsZone =
             [
                 new EncItemVM(new EncItemM("Output Setting")),
-                new EncItemVM(new EncItemM("Threading Setting")),
-                new EncItemVM(new EncItemM("Rate Controls")),
+                new EncItemVM(new EncItemM("Parallelism")),
+                new EncItemVM(new EncItemM("Rate Control Mechanism")),
                 new EncItemVM(new EncItemM("Base Parameters")),
                 new EncItemVM(new EncItemM("Custom Parameters")),
             ];

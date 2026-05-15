@@ -7,15 +7,11 @@
              mc:Ignorable="d" 
              d:DesignWidth="450">
     <!--
-    | Title                |
-    | P1                   |
-    | P2                   |
-    | P3                   |
-    | P4                   |
-    P1: Subtitle for P2
-    P2: ChecklistContainer
-    P3: Subtitle for P4
-    P4: ChecklistContainer
+    | Title                  |
+    | P1: P2 Title           |
+    | P2: ChecklistContainer |
+    | P3: P4 Title           |
+    | P4: ChecklistContainer |
     -->
     <Border BorderBrush="{StaticResource GlobalPrimary}"
             BorderThickness="1.5"
@@ -25,6 +21,7 @@
             Background="{StaticResource Background}">
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -39,8 +36,9 @@
             <TextBlock Grid.Row="1"
                        VerticalAlignment="Center"
                        Text="{Binding P1Name}"
-                       Style="{StaticResource H3}"/>
-            
+                       Style="{StaticResource H3}"
+                       Margin="0 15 0 0" />
+
             <comps:ChecklistContainer Grid.Row="2"
                                       ItemsSource="{Binding SourceChecklist1}">
                 <comps:ChecklistContainer.ItemTemplate>
@@ -55,9 +53,10 @@
             <TextBlock Grid.Row="3"
                        VerticalAlignment="Center"
                        Text="{Binding P3Name}"
-                       Style="{StaticResource H3}" />
-            
-            <comps:ChecklistContainer Grid.Row="3"
+                       Style="{StaticResource H3}"
+                       Margin="0 15 0 0" />
+
+            <comps:ChecklistContainer Grid.Row="4"
                                       ItemsSource="{Binding SourceChecklist2}">
                 <comps:ChecklistContainer.ItemTemplate>
                     <DataTemplate>

@@ -11,14 +11,23 @@ namespace OneColumnEncoder.ViewModels
 {
     public class SourceValidationCardVM : BaseVM
     {
-        private readonly string _name = string.Empty;
-        public string Name { get => _name; }
+        private string _name = string.Empty;
+        public string Name {
+            get => _name;
+            set => SetProperty(ref _name, value);
+        }
 
-        private readonly string _p1Name = string.Empty;
-        public string P1Name { get => _p1Name; }
+        private string _p1Name = string.Empty;
+        public string P1Name {
+            get => _p1Name;
+            set => SetProperty(ref _p1Name, value);
+        }
 
-        private readonly string _p3Name = string.Empty;
-        public string P3Name { get => _p3Name; }
+        private string _p3Name = string.Empty;
+        public string P3Name {
+            get => _p3Name;
+            set => SetProperty(ref _p3Name, value);
+        }
 
         public ObservableCollection<ChecklistEntryVM> SourceChecklist1 { get; } = [];
         public ObservableCollection<ChecklistEntryVM> SourceChecklist2 { get; } = [];

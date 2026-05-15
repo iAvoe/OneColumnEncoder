@@ -64,28 +64,28 @@
     <Style TargetType="TextBlock"
            x:Key="H3">
         <Setter Property="FontSize"
-                Value="10" />
+                Value="13" />
         <Setter Property="FontWeight"
                 Value="Bold" />
     </Style>
     <Style TargetType="{x:Type Control}"
            x:Key="H3C">
         <Setter Property="FontSize"
-                Value="10" />
+                Value="13" />
         <Setter Property="FontWeight"
                 Value="Bold" />
     </Style>
     <Style TargetType="TextBlock"
            x:Key="H4">
         <Setter Property="FontSize"
-                Value="10" />
+                Value="11" />
         <Setter Property="FontWeight"
                 Value="Bold" />
     </Style>
     <Style TargetType="{x:Type Control}"
            x:Key="H4C">
         <Setter Property="FontSize"
-                Value="10" />
+                Value="11" />
         <Setter Property="FontWeight"
                 Value="Bold" />
     </Style>

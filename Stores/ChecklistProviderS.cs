@@ -18,9 +18,9 @@ namespace OneColumnEncoder.Stores
 
         public static List<ChecklistItemDefinitionM> GetSourceChecklist1() =>
         [
-            new("Metadata is readable"),
+            new("Metadata and SEI data are readable"),
             new("Progressive video frame / not interlated (SVT-AV1 req.)"),
-            new("Bit-depth is less than 12 (SVT-AV1 req.)"),
+            new("Bit-depth is less than 12 (8 or 10, SVT-AV1 req.)"),
         ];
 
         public static List<ChecklistItemDefinitionM> GetSourceChecklist2() =>
@@ -30,7 +30,7 @@ namespace OneColumnEncoder.Stores
             new("Color matrix matadata is normal"),
             new("Transfer characteristics matadata is normal"),
             new("Color primaries metadata is normal"),
-            new("←/↖ chroma sample location (SVT-AV1 req.)"),
+            new("No chroma sampling, or located at ←/↖ (SVT-AV1 req.)"),
         ];
 
         public static List<ChecklistItemDefinitionM> GetEncodeChecklist1() =>
