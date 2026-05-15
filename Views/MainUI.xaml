@@ -10,78 +10,79 @@
              d:DataContext="{d:DesignInstance Type=viewmodels:MainVM}">
     <StackPanel Margin="10">
         <!-- 1. Import Tools -->
-        <comps:SectionHeader HeaderText="Import Tools" />
-        <comps:ContainerCard DataContext="{Binding ToolsImportCard}" />
+        <comps:SectionHeader HeaderText="Import Tools"
+                             Margin="0 0 0 20" />
+        <comps:ImportContainerCard DataContext="{Binding ToolsImportCard}"
+                                   Margin="0 0 0 20" />
 
         <!-- 2. Select Upstream Tools -->
         <comps:SectionHeader HeaderText="Select Upstream Tool"
-                             Margin="0 20 0 0" />
+                                   Margin="0 0 0 20" />
         <ItemsControl ItemsSource="{Binding UpstreamsZone}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <comps:ItemCard DataContext="{Binding}"
-                                    Margin="0 20 0 0" />
+                                    Margin="0 0 0 20" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
         <!-- 3. Select Encoders -->
         <comps:SectionHeader HeaderText="Select Encoder"
-                             Margin="0 20 0 0" />
+                                   Margin="0 0 0 20" />
         <ItemsControl ItemsSource="{Binding EncodersZone}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <comps:ItemCard DataContext="{Binding}"
-                                    Margin="0 20 0 0" />
+                                    Margin="0 0 0 20" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
         <!-- 4. Select Analytic Tools -->
         <comps:SectionHeader HeaderText="Select Analytics &amp; Dependencies"
-                             Margin="0 20 0 0" />
+                             Margin="0 0 0 20" />
         <ItemsControl ItemsSource="{Binding AnalyticsZone}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <comps:ItemCard DataContext="{Binding}"
-                                    Margin="0 20 0 0" />
+                                    Margin="0 0 0 20" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
         <!-- 5. Import Source -->
         <comps:SectionHeader HeaderText="Import or Create Source File"
-                             Margin="0 20 0 0" />
+                             Margin="0 0 0 20" />
         <ItemsControl ItemsSource="{Binding SourceImportZone}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <comps:ItemCard DataContext="{Binding}"
-                                    Margin="0 20 0 0" />
+                                    Margin="0 0 0 20" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
         <!-- 6. AnalyticResultsZone -->
         <comps:SectionHeader HeaderText="Analysis Results"
-                             Margin="0 20 0 0" />
+                             Margin="0 0 0 20" />
 
         <!-- 7. Encoding Settings -->
         <comps:SectionHeader HeaderText="Encoding Configurations"
-                             Margin="0 20 0 0" />
+                             Margin="0 0 0 20" />
         <ItemsControl ItemsSource="{Binding EncSettingsZone}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <comps:ItemCard DataContext="{Binding}"
-                                    Margin="0 20 0 0" />
+                                    Margin="0 0 0 20" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
         <!-- 8. Starting Options -->
         <comps:SectionHeader HeaderText="Start Encoding Options"
-                             Margin="0 20 0 0" />
+                             Margin="0 0 0 20" />
         <!-- TODO: Blocking Conditions Card -->
-        <comps:ThreeButtonGroup DataContext="{Binding EncodingStartButtons_VM}"
-                                Margin="0 20 0 0" />
+        <comps:ThreeButtonGroup DataContext="{Binding EncodingStartButtons_VM}"/>
     </StackPanel>
 </UserControl>

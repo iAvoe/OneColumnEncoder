@@ -18,9 +18,9 @@ namespace OneColumnEncoder.Components
     /// <summary>
     /// Interaction logic for ContainerCard.xaml
     /// </summary>
-    public partial class ContainerCard : UserControl
+    public partial class ImportContainerCard : UserControl
     {
-        public ContainerCard()
+        public ImportContainerCard()
         {
             InitializeComponent();
         }

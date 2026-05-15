@@ -17,9 +17,10 @@
     P1: P2: Properties
     -->
     <Border BorderBrush="{StaticResource GlobalPrimary}"
-            BorderThickness="2"
+            BorderThickness="1.5"
+            SnapsToDevicePixels="True"
             CornerRadius="20"
-            Padding="20"
+            Padding="17.5 20"
             Background="{StaticResource Background}">
         <Grid>
             <!-- Title, R1, R2 -->
