@@ -1,5 +1,7 @@
-﻿using System;
+﻿using OneColumnEncoder.Models;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -28,5 +30,17 @@ namespace OneColumnEncoder.ViewModels
             return true;
         }
         protected virtual void Dispose() { }
+        public static void FillCollection(ObservableCollection<ChecklistEntryVM> collection, List<ChecklistItemDefinitionM> definitions)
+        {
+            collection.Clear();
+            foreach (var def in definitions)
+            {
+                collection.Add(new ChecklistEntryVM
+                {
+                    Text = def.Text,
+                    Status = def.InitialStatus
+                });
+            }
+        }
     }
 }

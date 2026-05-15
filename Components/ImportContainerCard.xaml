@@ -54,7 +54,7 @@
                     VerticalAlignment="Center"
                     Style="{StaticResource PrimaryButton}"
                     Command="{Binding ImportCommand}"/>
-            <!-- Requirement -->
+
             <comps:ChecklistContainer Grid.Row="1"
                                       Grid.ColumnSpan="3"
                                       ItemsSource="{Binding ToolsChecklist}">

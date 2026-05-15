@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:OneColumnEncoder.Components">
+    xmlns:comps="clr-namespace:OneColumnEncoder.Components">
 
     <!-- Spacing -->
     <Style TargetType="{x:Type Control}"
@@ -91,12 +91,12 @@
     </Style>
     
     <!-- Status Icon -->
-    <Style TargetType="{x:Type local:ChecklistItem}">
+    <Style TargetType="{x:Type comps:ChecklistItem}">
         <Setter Property="Foreground"
                 Value="{StaticResource ButtonPrimary}" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:ChecklistItem}">
+                <ControlTemplate TargetType="{x:Type comps:ChecklistItem}">
                     <StackPanel Orientation="Horizontal">
                         <!-- Initialize to questionmark symbol -->
                         <TextBlock x:Name="IconText"
@@ -115,7 +115,7 @@
 
                     <ControlTemplate.Triggers>
                         <!-- Waiting -->
-                        <Trigger Property="local:ChecklistItem.Status"
+                        <Trigger Property="comps:ChecklistItem.Status"
                                  Value="Waiting">
                             <Setter TargetName="IconText"
                                     Property="Text"
@@ -125,7 +125,7 @@
                                     Value="Gray" />
                         </Trigger>
                         <!-- Success -->
-                        <Trigger Property="local:ChecklistItem.Status"
+                        <Trigger Property="comps:ChecklistItem.Status"
                                  Value="Success">
                             <Setter TargetName="IconText"
                                     Property="Text"
@@ -135,7 +135,7 @@
                                     Value="Green" />
                         </Trigger>
                         <!-- Warning -->
-                        <Trigger Property="local:ChecklistItem.Status"
+                        <Trigger Property="comps:ChecklistItem.Status"
                                  Value="Warning">
                             <Setter TargetName="IconText"
                                     Property="Text"
@@ -145,7 +145,7 @@
                                     Value="Orange" />
                         </Trigger>
                         <!-- Error -->
-                        <Trigger Property="local:ChecklistItem.Status"
+                        <Trigger Property="comps:ChecklistItem.Status"
                                  Value="Error">
                             <Setter TargetName="IconText"
                                     Property="Text"
@@ -160,10 +160,10 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type local:ChecklistContainer}">
+    <Style TargetType="{x:Type comps:ChecklistContainer}">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type local:ChecklistContainer}">
+                <ControlTemplate TargetType="{x:Type comps:ChecklistContainer}">
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">

@@ -1,0 +1,72 @@
+﻿<UserControl x:Class="OneColumnEncoder.Components.SourceValidationCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+             mc:Ignorable="d" 
+             d:DesignWidth="450">
+    <!--
+    | Title                |
+    | P1                   |
+    | P2                   |
+    | P3                   |
+    | P4                   |
+    P1: Subtitle for P2
+    P2: ChecklistContainer
+    P3: Subtitle for P4
+    P4: ChecklistContainer
+    -->
+    <Border BorderBrush="{StaticResource GlobalPrimary}"
+            BorderThickness="1.5"
+            SnapsToDevicePixels="True"
+            CornerRadius="20"
+            Padding="17.5 20"
+            Background="{StaticResource Background}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0"
+                       VerticalAlignment="Center"
+                       Text="{Binding Name}"
+                       Style="{StaticResource H2}" />
+
+            <TextBlock Grid.Row="1"
+                       VerticalAlignment="Center"
+                       Text="{Binding P1Name}"
+                       Style="{StaticResource H3}"/>
+            
+            <comps:ChecklistContainer Grid.Row="2"
+                                      ItemsSource="{Binding SourceChecklist1}">
+                <comps:ChecklistContainer.ItemTemplate>
+                    <DataTemplate>
+                        <comps:ChecklistItem Text="{Binding Text}"
+                                             Status="{Binding Status}"
+                                             Margin="0 10 0 0" />
+                    </DataTemplate>
+                </comps:ChecklistContainer.ItemTemplate>
+            </comps:ChecklistContainer>
+            
+            <TextBlock Grid.Row="3"
+                       VerticalAlignment="Center"
+                       Text="{Binding P3Name}"
+                       Style="{StaticResource H3}" />
+            
+            <comps:ChecklistContainer Grid.Row="3"
+                                      ItemsSource="{Binding SourceChecklist2}">
+                <comps:ChecklistContainer.ItemTemplate>
+                    <DataTemplate>
+                        <comps:ChecklistItem Text="{Binding Text}"
+                                             Status="{Binding Status}"
+                                             Margin="0 10 0 0" />
+                    </DataTemplate>
+                </comps:ChecklistContainer.ItemTemplate>
+            </comps:ChecklistContainer>
+        </Grid>
+    </Border>
+</UserControl>

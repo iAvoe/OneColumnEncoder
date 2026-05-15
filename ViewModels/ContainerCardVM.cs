@@ -13,16 +13,10 @@ namespace OneColumnEncoder.ViewModels
 {
     public class ContainerCardVM : BaseVM
     {
-        private string _name = string.Empty;
-        public string Name
-        {
-            get => _name;
-            set => SetProperty(ref _name, value);
-        }
+        private readonly string _name = string.Empty;
+        public string Name { get => _name; }
 
         public ObservableCollection<ChecklistEntryVM> ToolsChecklist { get; } = [];
-        public ObservableCollection<ChecklistEntryVM> SourceChecklist1 { get; } = [];
-        public ObservableCollection<ChecklistEntryVM> SourceChecklist2 { get; } = [];
         public ObservableCollection<ChecklistEntryVM> EncodeChecklist1 { get; } = [];
         public ObservableCollection<ChecklistEntryVM> EncodeChecklist2 { get; } = [];
         public DropdownMenuVM ImportDropdown { get; } = new();
@@ -38,24 +32,8 @@ namespace OneColumnEncoder.ViewModels
             };
 
             FillCollection(ToolsChecklist, ChecklistProviderS.GetToolsChecklist());
-            FillCollection(SourceChecklist1, ChecklistProviderS.GetSourceChecklist1());
-            FillCollection(SourceChecklist2, ChecklistProviderS.GetSourceChecklist2());
             FillCollection(EncodeChecklist1, ChecklistProviderS.GetEncodeChecklist1());
             FillCollection(EncodeChecklist2, ChecklistProviderS.GetEncodeChecklist2());
-
-        }
-
-        private static void FillCollection(ObservableCollection<ChecklistEntryVM> collection, List<ChecklistItemDefinitionM> definitions)
-        {
-            collection.Clear();
-            foreach (var def in definitions)
-            {
-                collection.Add(new ChecklistEntryVM
-                {
-                    Text = def.Text,
-                    Status = def.InitialStatus
-                });
-            }
         }
     }
 }

@@ -9,18 +9,18 @@ using System.Windows.Data;
 
 namespace OneColumnEncoder.Converters
 {
-    public class BoolToVisibility : IValueConverter
+    public class BoolToVisibilityInverse : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             bool flag = value is bool b && b;
-            return flag ? Visibility.Visible : Visibility.Collapsed;
+            return flag ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             bool flag = value is bool b && b;
-            return flag ? Visibility.Collapsed : Visibility.Visible;
+            return flag ? Visibility.Visible : Visibility.Collapsed;
         }
     }
 }
