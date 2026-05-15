@@ -40,7 +40,7 @@ namespace OneColumnEncoder.ViewModels
             */
 
             // Initialize import card
-            ToolsImportCard.Name = "Add tools and dependencies:";
+            ToolsImportCard.Name = "Import tools:";
             ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("No Selection"));
             ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("", true)); // Separator line
             ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("ffmpeg.exe"));

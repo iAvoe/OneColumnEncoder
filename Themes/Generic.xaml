@@ -163,10 +163,6 @@
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
-                        <StackPanel>
-                            <TextBlock Text="{TemplateBinding Header}"
-                                       Style="{StaticResource H2}"
-                                       Margin="0 5 0 5" />
                             <ItemsControl ItemsSource="{TemplateBinding ItemsSource}"
                                           ItemTemplate="{TemplateBinding ItemTemplate}">
                                 <ItemsControl.ItemsPanel>
@@ -175,7 +171,6 @@
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                             </ItemsControl>
-                        </StackPanel>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>

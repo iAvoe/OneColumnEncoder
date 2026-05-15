@@ -23,7 +23,7 @@
         <Grid>
             <!-- Title, R1, R2 -->
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
@@ -35,6 +35,7 @@
 
             <TextBlock Grid.Row="0"
                        Grid.Column="0"
+                       VerticalAlignment="Center"
                        Text="{Binding Name}"
                        Style="{StaticResource H2}" />
             <comps:DropdownMenu Grid.Row="0"
@@ -48,10 +49,11 @@
                     VerticalAlignment="Center"
                     Style="{StaticResource PrimaryButton}"
                     Command="{Binding ImportCommand}"/>
-
+            <!-- Requirement -->
             <comps:ChecklistContainer Grid.Row="1"
                                       Grid.ColumnSpan="3"
                                       ItemsSource="{Binding ToolsChecklist}">
+                
                 <comps:ChecklistContainer.ItemTemplate>
                     <DataTemplate>
                         <comps:ChecklistItem Text="{Binding Text}"
@@ -60,7 +62,8 @@
                 </comps:ChecklistContainer.ItemTemplate>
             </comps:ChecklistContainer>
 
-            <!--<comps:ChecklistContainer Header="Critical"
+            <!-- Critical -->
+            <!--<comps:ChecklistContainer
                                       ItemsSource="{Binding SourceChecklist1}">
                 <comps:ChecklistContainer.ItemTemplate>
                     <DataTemplate>
@@ -68,27 +71,27 @@
                                              Status="{Binding Status}" />
                     </DataTemplate>
                 </comps:ChecklistContainer.ItemTemplate>
-            </comps:ChecklistContainer>
-            <comps:ChecklistContainer Header="General"
-                                      ItemsSource="{Binding SourceChecklist2}">
+            </comps:ChecklistContainer>-->
+            <!-- General -->
+            <!--<comps:ChecklistContainer ItemsSource="{Binding SourceChecklist2}">
                 <comps:ChecklistContainer.ItemTemplate>
                     <DataTemplate>
                         <comps:ChecklistItem Text="{Binding Text}"
                                              Status="{Binding Status}" />
                     </DataTemplate>
                 </comps:ChecklistContainer.ItemTemplate>
-            </comps:ChecklistContainer>
-            <comps:ChecklistContainer Header="Hardware"
-                                      ItemsSource="{Binding EncodeChecklist1}">
+            </comps:ChecklistContainer>-->
+            <!-- Hardware -->
+            <!--<comps:ChecklistContainer ItemsSource="{Binding EncodeChecklist1}">
                 <comps:ChecklistContainer.ItemTemplate>
                     <DataTemplate>
                         <comps:ChecklistItem Text="{Binding Text}"
                                              Status="{Binding Status}" />
                     </DataTemplate>
                 </comps:ChecklistContainer.ItemTemplate>
-            </comps:ChecklistContainer>
-            <comps:ChecklistContainer Header="Software"
-                                      ItemsSource="{Binding EncodeChecklist2}">
+            </comps:ChecklistContainer>-->
+            <!-- Software -->
+            <!--<comps:ChecklistContainerItemsSource="{Binding EncodeChecklist2}">
                 <comps:ChecklistContainer.ItemTemplate>
                     <DataTemplate>
                         <comps:ChecklistItem Text="{Binding Text}"
