@@ -21,12 +21,9 @@ namespace OneColumnEncoder.Components
     /// </summary>
     public partial class DropdownMenu : UserControl
     {
-        public DropdownMenuVM VM { get; } = new();
-
         public DropdownMenu()
         {
             InitializeComponent();
-            DataContext = VM;
         }
     }
 }

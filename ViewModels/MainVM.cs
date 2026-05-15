@@ -27,10 +27,7 @@ namespace OneColumnEncoder.ViewModels
         // Centralized view modal that contains all sub-VMs
         // public Central_VM CentralVM { get; }
 
-        // Dropdown
-        public DropdownMenuVM ImportDropdown { get; } = new();
-
-        // Checklists
+        public ContainerCardVM ToolsImportCard { get; } = new ContainerCardVM();
 
 
         public MainVM()
@@ -42,25 +39,27 @@ namespace OneColumnEncoder.ViewModels
             _modelNav_S.CurrentViewModelChanged += ModelNav_S_CurrentViewModelChanged;
             */
 
-            // Initialize dropdown
-            ImportDropdown.Items.Add(new DropdownItemM("No Selection"));
-            ImportDropdown.Items.Add(new DropdownItemM("", true)); // Separator line
-            ImportDropdown.Items.Add(new DropdownItemM("ffmpeg.exe"));
-            ImportDropdown.Items.Add(new DropdownItemM("vspipe.exe"));
-            ImportDropdown.Items.Add(new DropdownItemM("avs2yuv.exe"));
-            ImportDropdown.Items.Add(new DropdownItemM("avs2pipemod.exe"));
-            ImportDropdown.Items.Add(new DropdownItemM("one_line_shot_args.exe"));
-            ImportDropdown.Items.Add(new DropdownItemM("", true)); // Separator line
-            ImportDropdown.Items.Add(new DropdownItemM("x264.exe"));
-            ImportDropdown.Items.Add(new DropdownItemM("x265.exe"));
-            ImportDropdown.Items.Add(new DropdownItemM("SvtAv1EncApp.exe"));
-            ImportDropdown.Items.Add(new DropdownItemM("", true));
-            ImportDropdown.Items.Add(new DropdownItemM("ffprobe.exe"));
-            ImportDropdown.Items.Add(new DropdownItemM("AviSynth.dll"));
-            ImportDropdown.SelectedItem = ImportDropdown.Items[0];
-            ImportDropdown.SelectionChangedCommand = new SelectDropdownCmd();
+            // Initialize import card
+            ToolsImportCard.Name = "Add tools and dependencies:";
+            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("No Selection"));
+            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("", true)); // Separator line
+            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("ffmpeg.exe"));
+            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("vspipe.exe"));
+            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("avs2yuv.exe"));
+            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("avs2pipemod.exe"));
+            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("one_line_shot_args.exe"));
+            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("", true)); // Separator line
+            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("x264.exe"));
+            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("x265.exe"));
+            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("SvtAv1EncApp.exe"));
+            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("", true));
+            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("ffprobe.exe"));
+            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("AviSynth.dll"));
+            ToolsImportCard.ImportDropdown.SelectedItem = ToolsImportCard.ImportDropdown.Items[0];
 
-            // TODO: ToolsImportZone = [];
+            // Not sure if this is still needed...
+            // ToolsImportCard.ImportDropdown.SelectionChangedCommand = new SelectDropdownCmd();
+
             UpstreamsZone =
             [
                 new EncItemVM(new EncItemM("FFMPEG")),

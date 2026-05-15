@@ -1,11 +1,11 @@
 ﻿<UserControl x:Class="OneColumnEncoder.Components.ContainerCard"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewmodels="clr-namespace:OneColumnEncoder.ViewModels"
              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
-             d:DataContext="{d:DesignInstance Type=comps:DropdownMenu}"
+             d:DataContext="{d:DesignInstance Type=viewmodels:ContainerCardVM}"
              mc:Ignorable="d"
              d:DesignWidth="450">
     <!--
@@ -23,7 +23,7 @@
         <Grid>
             <!-- Title, R1, R2 -->
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
@@ -39,12 +39,15 @@
                        Style="{StaticResource H2}" />
             <comps:DropdownMenu Grid.Row="0"
                                 Grid.Column="1"
-                                DataContext="{Binding ImportDropdown}"/>
+                                MinWidth="150"
+                                DataContext="{Binding ImportDropdown}" />
             <Button Grid.Row="0"
-                    Grid.Column="1"
+                    Grid.Column="2"
+                    Content="Import"
+                    MinWidth="90"
                     VerticalAlignment="Center"
-                    HorizontalAlignment="Right"
-                    Style="{StaticResource PrimaryButton}" />
+                    Style="{StaticResource PrimaryButton}"
+                    Command="{Binding ImportCommand}"/>
 
             <comps:ChecklistContainer Grid.Row="1"
                                       Grid.ColumnSpan="3"
@@ -56,6 +59,43 @@
                     </DataTemplate>
                 </comps:ChecklistContainer.ItemTemplate>
             </comps:ChecklistContainer>
+
+            <!--<comps:ChecklistContainer Header="Critical"
+                                      ItemsSource="{Binding SourceChecklist1}">
+                <comps:ChecklistContainer.ItemTemplate>
+                    <DataTemplate>
+                        <comps:ChecklistItem Text="{Binding Text}"
+                                             Status="{Binding Status}" />
+                    </DataTemplate>
+                </comps:ChecklistContainer.ItemTemplate>
+            </comps:ChecklistContainer>
+            <comps:ChecklistContainer Header="General"
+                                      ItemsSource="{Binding SourceChecklist2}">
+                <comps:ChecklistContainer.ItemTemplate>
+                    <DataTemplate>
+                        <comps:ChecklistItem Text="{Binding Text}"
+                                             Status="{Binding Status}" />
+                    </DataTemplate>
+                </comps:ChecklistContainer.ItemTemplate>
+            </comps:ChecklistContainer>
+            <comps:ChecklistContainer Header="Hardware"
+                                      ItemsSource="{Binding EncodeChecklist1}">
+                <comps:ChecklistContainer.ItemTemplate>
+                    <DataTemplate>
+                        <comps:ChecklistItem Text="{Binding Text}"
+                                             Status="{Binding Status}" />
+                    </DataTemplate>
+                </comps:ChecklistContainer.ItemTemplate>
+            </comps:ChecklistContainer>
+            <comps:ChecklistContainer Header="Software"
+                                      ItemsSource="{Binding EncodeChecklist2}">
+                <comps:ChecklistContainer.ItemTemplate>
+                    <DataTemplate>
+                        <comps:ChecklistItem Text="{Binding Text}"
+                                             Status="{Binding Status}" />
+                    </DataTemplate>
+                </comps:ChecklistContainer.ItemTemplate>
+            </comps:ChecklistContainer>-->
         </Grid>
     </Border>
 </UserControl>

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OneColumnEncoder.Commands
 {
-    class ImportToolCmd : AsyncBaseCmd
+    public class ImportToolCmd : AsyncBaseCmd
     {
         private readonly DropdownMenuVM _dropdownVm;
         private readonly ObservableCollection<ChecklistEntryVM> _checklist;
