@@ -213,12 +213,6 @@
                         Value="Left" />
                 <Setter Property="VerticalContentAlignment"
                         Value="Center" />
-                <Setter Property="Width"
-                        Value="Auto" />
-                <Setter Property="MaxWidth"
-                        Value="350" />
-                <Setter Property="MinHeight"
-                        Value="40" />
                 <Setter Property="FontSize"
                         Value="13" />
                 <Setter Property="Padding"

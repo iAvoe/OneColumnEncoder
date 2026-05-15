@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OneColumnEncoder.CommonMethods
+namespace OneColumnEncoder.Models
 {
     public enum StatusType
     {

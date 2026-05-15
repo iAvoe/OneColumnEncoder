@@ -6,8 +6,7 @@
              xmlns:viewmodels="clr-namespace:OneColumnEncoder.ViewModels"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=viewmodels:DropdownMenuVM}"
-             d:DesignHeight="40">
-
+             d:DesignHeight="30">
     <ComboBox ItemsSource="{Binding Items}"
               SelectedItem="{Binding SelectedItem}"
               Style="{StaticResource RoundedDropdownMenu}">

@@ -1,5 +1,4 @@
-﻿using OneColumnEncoder.CommonMethods;
-using OneColumnEncoder.Commands;
+﻿using OneColumnEncoder.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

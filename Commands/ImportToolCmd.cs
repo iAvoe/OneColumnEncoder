@@ -1,4 +1,4 @@
-﻿using OneColumnEncoder.CommonMethods;
+﻿using OneColumnEncoder.Models;
 using OneColumnEncoder.ViewModels;
 using System;
 using System.Collections.Generic;
