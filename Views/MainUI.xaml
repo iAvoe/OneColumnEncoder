@@ -15,6 +15,9 @@
         <comps:ImportContainerCard DataContext="{Binding ToolsImportCard}"
                                    Margin="0 0 0 20" />
 
+        <comps:TwoButtonGroup DataContext="{Binding OpenSettingsButtonsVM}"
+                              Margin="0 0 0 20" />
+
         <!-- 2. Select Upstream Tools -->
         <comps:SectionHeader HeaderText="Select Upstream Tool"
                                    Margin="0 0 0 20" />
@@ -82,7 +85,9 @@
         <!-- 8. Starting Options -->
         <comps:SectionHeader HeaderText="Start Encoding Options"
                              Margin="0 0 0 20" />
+        
         <!-- TODO: Blocking Conditions Card -->
-        <comps:ThreeButtonGroup DataContext="{Binding EncodingStartButtons_VM}"/>
+        
+        <comps:ThreeButtonGroup DataContext="{Binding EncodingStartButtonsVM}"/>
     </StackPanel>
 </UserControl>

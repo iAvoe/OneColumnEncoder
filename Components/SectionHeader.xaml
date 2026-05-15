@@ -24,7 +24,7 @@
                 Height="1"
                 VerticalAlignment="Center"
                 SnapsToDevicePixels="True"
-                Background="{StaticResource GlobalPrimary}"
+                Background="{StaticResource GlobalTertiary}"
                 Margin="0 0 10 0" />
 
         <!-- Text part with letter spacing -->
@@ -45,7 +45,7 @@
                     <TextBlock Text="{Binding}"
                                FontSize="13"
                                FontStretch="ExtraExpanded"
-                               Foreground="{StaticResource GlobalPrimary}"
+                               Foreground="{StaticResource GlobalTertiary}"
                                Margin="1 0 1 0" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
@@ -55,7 +55,7 @@
                 Height="1"
                 VerticalAlignment="Center"
                 SnapsToDevicePixels="True"
-                Background="{StaticResource GlobalPrimary}"
+                Background="{StaticResource GlobalTertiary}"
                 Margin="10 0 0 0" />
     </Grid>
 </UserControl>

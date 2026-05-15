@@ -17,12 +17,12 @@
                 MinWidth="220"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Left"
-                Style="{StaticResource PrimaryButton}" />
+                Style="{StaticResource NormalButton}" />
         <Button Grid.Column="1"
                 Content="{Binding B2_2Text}"
                 MinWidth="220"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Right"
-                Style="{StaticResource NormalButton}" />
+                Style="{StaticResource PrimaryButton}" />
     </Grid>
 </UserControl>

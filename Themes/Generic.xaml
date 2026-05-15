@@ -23,6 +23,9 @@
                      x:Key="GlobalPrimary" />
     <SolidColorBrush Color="#6C767D"
                      x:Key="GlobalSecondary" />
+    <SolidColorBrush Color="#939CA2"
+                     x:Key="GlobalTertiary" />
+
     <SolidColorBrush Color="#EA6B66"
                      x:Key="BorderRed" />
     <SolidColorBrush Color="#67AB9F"
@@ -41,7 +44,8 @@
                      x:Key="ErrorRed" />
     <SolidColorBrush Color="#343A40"
                      x:Key="ButtonPrimary" />
-
+    <SolidColorBrush Color="#7d736c"
+                     x:Key="ButtonTertiary" />
     <!-- Fonts -->
     <Style TargetType="TextBlock"
            x:Key="H2">

@@ -19,7 +19,7 @@
                 MinWidth="143.33"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Left"
-                Style="{StaticResource PrimaryButton}" />
+                Style="{StaticResource NormalButton}" />
         <Button Grid.Column="1"
                 Content="{Binding B3_2Text}"
                 MinWidth="143.33"
@@ -30,6 +30,6 @@
                 MinWidth="143.33"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Right"
-                Style="{StaticResource NormalButton}" />
+                Style="{StaticResource PrimaryButton}" />
     </Grid>
 </UserControl>

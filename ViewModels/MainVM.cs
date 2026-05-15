@@ -21,7 +21,8 @@ namespace OneColumnEncoder.ViewModels
         public ObservableCollection<EncItemVM> SourceImportZone { get; set; }
         public ObservableCollection<EncItemVM> EncSettingsZone { get; set; }
         // ? EncStartingZone
-        public EncodingStartButtonsVM EncodingStartButtons_VM { get; set; }
+        public OpenSettingButtonsVM OpenSettingsButtonsVM { get; set; }
+        public EncodingStartButtonsVM EncodingStartButtonsVM { get; set; }
 
         // Centralized view modal that contains all sub-VMs
         // public Central_VM CentralVM { get; }
@@ -37,6 +38,7 @@ namespace OneColumnEncoder.ViewModels
 
             _modelNav_S.CurrentViewModelChanged += ModelNav_S_CurrentViewModelChanged;
             */
+            OpenSettingsButtonsVM = new OpenSettingButtonsVM();
 
             // Initialize import card
             ToolsImportCard.Name = "Import tools:";
@@ -95,7 +97,7 @@ namespace OneColumnEncoder.ViewModels
                 new EncItemVM(new EncItemM("Custom Parameters")),
             ];
             // TODO: EncStartingZone = [];
-            EncodingStartButtons_VM = new EncodingStartButtonsVM();
+            EncodingStartButtonsVM = new EncodingStartButtonsVM();
 
         }
 
