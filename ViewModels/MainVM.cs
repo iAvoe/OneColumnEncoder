@@ -77,8 +77,8 @@ namespace OneColumnEncoder.ViewModels
             EncodeTermsCard.P3Name = "Software";
 
             BestPracticesCard.Name = "Best Practices";
-            BestPracticesCard.P1Name = "Hardware";
-            BestPracticesCard.P3Name = "Software";
+            BestPracticesCard.P1Name = "Hardware (self check)";
+            BestPracticesCard.P3Name = "Software (self check)";
 
             UpstreamsZone =
             [

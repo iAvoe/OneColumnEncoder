@@ -9,7 +9,7 @@ namespace OneColumnEncoder.ViewModels
     // Using TwoButtonGroup component
     public class OpenSettingButtonsVM : BaseVM
     {
-        private string _b2_1Text = "SMTP / Reserved";
+        private string _b2_1Text = "Usage & Compliance";
         public string B2_1Text
         {
             get => _b2_1Text;

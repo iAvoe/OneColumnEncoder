@@ -45,22 +45,23 @@ namespace OneColumnEncoder.Stores
             new("Output filename is valid for OS"),
             new("Output filename maybe valid for FTP (Pseudo-UTF-8)"),
             new("Write permission in output folder"),
-            new("Output doesn't overwrite existing file (or delete manually)"),
+            new("Output does not overwrite existing file"),
         ];
 
         public static List<ChecklistItemDefinitionM> GetBestPracticeChecklist1() =>
         [
             new("Avoiding slow disk connection (USB2, Bluetooth, etc.)"),
             new("Avoiding disk thrashing (R&W on the same HDD)"),
-            new("Using latest hard drive firmware version"),
-            new("Using latest motherboard BIOS version"),
-            new("SSD & RAM temperature below 75°C / 167°F"),
-            new("HDD temperature below 55°C / 131°F"),
+            new("Using latest BIOS, Chipset driver & hard drive firmware"),
+            new("°C (°F): SSD, RAM below 75 (167), HDD below 55 (131)"),
+            new("Not writing to a SMR HDD"),
         ];
 
         public static List<ChecklistItemDefinitionM> GetBestPracticeChecklist2() =>
         [
             new("Using latest encoder version"),
+            new("Not writing to a FAT32 volume"),
+            new("Output folder disables file system disk compression"),
         ];
     }
 }
