@@ -1,7 +1,14 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:comps="clr-namespace:OneColumnEncoder.Components">
+    xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+    xmlns:viewmodels="clr-namespace:OneColumnEncoder.ViewModels"
+    xmlns:views="clr-namespace:OneColumnEncoder.Views">
+
+    <!-- DataTemplate for AppConfVM -->
+    <DataTemplate DataType="{x:Type viewmodels:AppConfVM}">
+        <views:AppConfUI />
+    </DataTemplate>
 
     <!-- Spacing -->
     <Style TargetType="{x:Type Control}"
