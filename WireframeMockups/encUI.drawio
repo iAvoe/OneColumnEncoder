@@ -877,19 +877,16 @@
         <mxCell id="gMUOYKxlXbccdzStROMD-273" parent="1" style="html=1;shadow=0;dashed=0;shape=mxgraph.bootstrap.rrect;rSize=20;strokeColor=#111111;align=left;spacingLeft=10;fontSize=16;whiteSpace=wrap;rounded=0;strokeWidth=2;fillColor=#FAFAFA;overflow=hidden;fontColor=#111111;" value="" vertex="1">
           <mxGeometry height="160" width="600" x="-520" y="5220" as="geometry" />
         </mxCell>
-        <mxCell id="gMUOYKxlXbccdzStROMD-274" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;fontSize=16;fontStyle=0;fontColor=#111111;" value="将会覆盖体积大于 70MB 的同名文件，请等待倒计时结束..." vertex="1">
-          <mxGeometry height="20" width="470" x="-500" y="5280" as="geometry" />
+        <mxCell id="gMUOYKxlXbccdzStROMD-274" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;fontSize=16;fontStyle=0;fontColor=#111111;" value="自定义警告信息" vertex="1">
+          <mxGeometry height="20" width="450" x="-500" y="5280" as="geometry" />
         </mxCell>
-        <mxCell id="gMUOYKxlXbccdzStROMD-275" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=25;fontStyle=1;fontColor=#111111;" value="大文件覆盖警告" vertex="1">
-          <mxGeometry height="40" width="460" x="-500" y="5240" as="geometry" />
+        <mxCell id="gMUOYKxlXbccdzStROMD-275" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=25;fontStyle=1;fontColor=#111111;" value="自定义警告" vertex="1">
+          <mxGeometry height="40" width="450" x="-500" y="5240" as="geometry" />
         </mxCell>
         <mxCell id="gMUOYKxlXbccdzStROMD-276" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/general/Globe_Warning.svg;" value="" vertex="1">
           <mxGeometry height="66" width="56.00000000000001" x="-10" y="5267" as="geometry" />
         </mxCell>
-        <mxCell id="gMUOYKxlXbccdzStROMD-277" parent="1" style="html=1;shadow=0;dashed=0;shape=mxgraph.bootstrap.rrect;rSize=5;strokeColor=#999999;strokeWidth=1;fillColor=#F8F9FA;fontColor=#999999;whiteSpace=wrap;align=center;verticalAlign=middle;spacingLeft=0;fontStyle=0;fontSize=16;spacing=5;" value="开始压制...9" vertex="1">
-          <mxGeometry height="40" width="220" x="-500" y="5323" as="geometry" />
-        </mxCell>
-        <mxCell id="gMUOYKxlXbccdzStROMD-278" parent="1" style="html=1;shadow=0;dashed=0;shape=mxgraph.bootstrap.rrect;rSize=5;strokeColor=#FAFAFA;strokeWidth=1;fillColor=#343A40;fontColor=#ffffff;whiteSpace=wrap;align=center;verticalAlign=middle;spacingLeft=0;fontStyle=0;fontSize=16;spacing=5;" value="关闭此窗口" vertex="1">
+        <mxCell id="gMUOYKxlXbccdzStROMD-278" parent="1" style="html=1;shadow=0;dashed=0;shape=mxgraph.bootstrap.rrect;rSize=5;strokeColor=#FAFAFA;strokeWidth=1;fillColor=#343A40;fontColor=#ffffff;whiteSpace=wrap;align=center;verticalAlign=middle;spacingLeft=0;fontStyle=0;fontSize=16;spacing=5;" value="确认" vertex="1">
           <mxGeometry height="40" width="220" x="-270" y="5323" as="geometry" />
         </mxCell>
         <mxCell id="gMUOYKxlXbccdzStROMD-279" parent="1" style="dashed=0;labelPosition=right;align=left;shape=mxgraph.gmdl.checkbox;strokeColor=#666666;fillColor=none;strokeWidth=2;aspect=fixed;sketch=0;html=1;" value="" vertex="1">
@@ -898,16 +895,16 @@
         <mxCell id="gMUOYKxlXbccdzStROMD-280" parent="1" style="html=1;shadow=0;dashed=0;shape=mxgraph.bootstrap.rrect;rSize=20;strokeColor=#111111;align=left;spacingLeft=10;fontSize=16;whiteSpace=wrap;rounded=0;strokeWidth=2;fillColor=#FAFAFA;overflow=hidden;fontColor=#111111;" value="" vertex="1">
           <mxGeometry height="160" width="600" x="-520" y="5400" as="geometry" />
         </mxCell>
-        <mxCell id="gMUOYKxlXbccdzStROMD-281" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;fontSize=16;fontStyle=0;fontColor=#111111;" value="将会覆盖体积大于 1GB 的同名文件，请手动删除该文件" vertex="1">
-          <mxGeometry height="20" width="470" x="-500" y="5460" as="geometry" />
+        <mxCell id="gMUOYKxlXbccdzStROMD-281" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=top;rounded=0;fontSize=16;fontStyle=0;fontColor=#111111;" value="自定义错误信息" vertex="1">
+          <mxGeometry height="20" width="450" x="-500" y="5460" as="geometry" />
         </mxCell>
-        <mxCell id="gMUOYKxlXbccdzStROMD-282" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=25;fontStyle=1;fontColor=#111111;" value="大文件覆盖错误" vertex="1">
-          <mxGeometry height="40" width="460" x="-500" y="5420" as="geometry" />
+        <mxCell id="gMUOYKxlXbccdzStROMD-282" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=25;fontStyle=1;fontColor=#111111;" value="自定义错误" vertex="1">
+          <mxGeometry height="40" width="450" x="-500" y="5420" as="geometry" />
         </mxCell>
-        <mxCell id="gMUOYKxlXbccdzStROMD-283" parent="1" style="html=1;shadow=0;dashed=0;shape=mxgraph.bootstrap.rrect;rSize=5;strokeColor=#111111;strokeWidth=1;fillColor=#F8F9FA;fontColor=#111111;whiteSpace=wrap;align=center;verticalAlign=middle;spacingLeft=0;fontStyle=0;fontSize=16;spacing=5;" value="重新检查" vertex="1">
+        <mxCell id="gMUOYKxlXbccdzStROMD-283" parent="1" style="html=1;shadow=0;dashed=0;shape=mxgraph.bootstrap.rrect;rSize=5;strokeColor=#111111;strokeWidth=1;fillColor=#F8F9FA;fontColor=#111111;whiteSpace=wrap;align=center;verticalAlign=middle;spacingLeft=0;fontStyle=0;fontSize=16;spacing=5;" value="取消" vertex="1">
           <mxGeometry height="40" width="220" x="-500" y="5503" as="geometry" />
         </mxCell>
-        <mxCell id="gMUOYKxlXbccdzStROMD-284" parent="1" style="html=1;shadow=0;dashed=0;shape=mxgraph.bootstrap.rrect;rSize=5;strokeColor=#FAFAFA;strokeWidth=1;fillColor=#343A40;fontColor=#ffffff;whiteSpace=wrap;align=center;verticalAlign=middle;spacingLeft=0;fontStyle=0;fontSize=16;spacing=5;" value="关闭此窗口" vertex="1">
+        <mxCell id="gMUOYKxlXbccdzStROMD-284" parent="1" style="html=1;shadow=0;dashed=0;shape=mxgraph.bootstrap.rrect;rSize=5;strokeColor=#FAFAFA;strokeWidth=1;fillColor=#343A40;fontColor=#ffffff;whiteSpace=wrap;align=center;verticalAlign=middle;spacingLeft=0;fontStyle=0;fontSize=16;spacing=5;" value="确认" vertex="1">
           <mxGeometry height="40" width="220" x="-270" y="5503" as="geometry" />
         </mxCell>
         <mxCell id="gMUOYKxlXbccdzStROMD-285" parent="1" style="image;aspect=fixed;html=1;points=[];align=center;fontSize=12;image=img/lib/azure2/general/Globe_Error.svg;" value="" vertex="1">
@@ -985,7 +982,7 @@
         <mxCell id="Wbk1Iqc4iC99UMe-eqTS-15" parent="1" style="html=1;shadow=0;dashed=0;shape=mxgraph.bootstrap.rrect;rSize=5;strokeColor=#FAFAFA;strokeWidth=1;fillColor=#343A40;fontColor=#ffffff;whiteSpace=wrap;align=center;verticalAlign=middle;spacingLeft=0;fontStyle=0;fontSize=16;spacing=5;" value="开始压制" vertex="1">
           <mxGeometry height="40" width="190" x="-950" y="6130" as="geometry" />
         </mxCell>
-        <mxCell id="Wbk1Iqc4iC99UMe-eqTS-16" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=25;fontStyle=1;fontColor=#111111;" value="最好看看" vertex="1">
+        <mxCell id="Wbk1Iqc4iC99UMe-eqTS-16" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=25;fontStyle=1;fontColor=#111111;" value="最好看看（Best Practices）" vertex="1">
           <mxGeometry height="40" width="560" x="-1340" y="5645" as="geometry" />
         </mxCell>
         <mxCell id="Wbk1Iqc4iC99UMe-eqTS-17" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=16;" value="&lt;b&gt;软件工况（自查）&lt;/b&gt;" vertex="1">
@@ -1194,6 +1191,9 @@
         </mxCell>
         <mxCell id="GUzQfQV_6zOaF-Am2k3o-102" parent="1" style="html=1;shadow=0;dashed=0;shape=mxgraph.bootstrap.rrect;rSize=5;strokeColor=#FAFAFA;strokeWidth=1;fillColor=#343A40;fontColor=#ffffff;whiteSpace=wrap;align=center;verticalAlign=middle;spacingLeft=0;fontStyle=0;fontSize=16;spacing=5;" value="保存" vertex="1">
           <mxGeometry height="40" width="200" x="-50" y="4680" as="geometry" />
+        </mxCell>
+        <mxCell id="GUzQfQV_6zOaF-Am2k3o-103" parent="1" style="html=1;shadow=0;dashed=0;shape=mxgraph.bootstrap.rrect;rSize=5;strokeColor=#111111;strokeWidth=1;fillColor=#F8F9FA;fontColor=#111111;whiteSpace=wrap;align=center;verticalAlign=middle;spacingLeft=0;fontStyle=0;fontSize=16;spacing=5;" value="取消" vertex="1">
+          <mxGeometry height="40" width="220" x="-500" y="5323" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
