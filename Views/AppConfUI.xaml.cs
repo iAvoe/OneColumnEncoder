@@ -1,5 +1,4 @@
-﻿using OneColumnEncoder.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,14 +16,13 @@ using System.Windows.Shapes;
 namespace OneColumnEncoder.Views
 {
     /// <summary>
-    /// Interaction logic for MainUI.xaml
+    /// Interaction logic for AppConfUI.xaml
     /// </summary>
-    public partial class MainUI : UserControl
+    public partial class AppConfUI : UserControl
     {
-        public MainUI()
+        public AppConfUI()
         {
             InitializeComponent();
-            // Just inherit DataContext from parent (MainVM), so no need to set it here
         }
     }
 }

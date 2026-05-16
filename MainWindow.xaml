@@ -11,7 +11,7 @@
         Height="1080">
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Auto">
-        <views:MainUI Margin="10"
-                      DataContext="{Binding MainVM}" />
+        <!-- DataContext is inherited from parent (MainVM), so there is no binding needed here -->
+        <views:MainUI Margin="10"/>
     </ScrollViewer>
 </Window>

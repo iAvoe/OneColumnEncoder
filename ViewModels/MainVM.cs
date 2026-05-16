@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -18,6 +19,7 @@ namespace OneColumnEncoder.ViewModels
         // Expose current modal VM and open state for binding
         public BaseVM? CurrentModalVM => _modalNavS.CurrentModalVM;
         public bool IsModalOpen => _modalNavS.IsOpen;
+        public ICommand OpenAppConfCmd { get; }
 
         public ObservableCollection<EncItemVM> UpstreamsZone { get; set; }
         public ObservableCollection<EncItemVM> EncodersZone { get; set; }
@@ -41,6 +43,7 @@ namespace OneColumnEncoder.ViewModels
             _appConfS = appConfS;
             // Subscribe to modal changes
             _modalNavS.CurrentViewModelChanged += ModalNavS_CurrentViewModelChanged;
+            OpenAppConfCmd = new OpenAppConfCmd(_modalNavS);
 
             OpenSettingsButtonsVM = new OpenSettingButtonsVM();
 

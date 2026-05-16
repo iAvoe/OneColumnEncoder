@@ -92,5 +92,10 @@
                                     Margin="0 0 0 20" />
 
         <comps:ThreeButtonGroup DataContext="{Binding EncodingStartButtonsVM}"/>
+        
+        <!-- Navigation -->
+        <ContentControl Content="{Binding CurrentModalVM}"
+                        Visibility="{Binding IsModalOpen,
+                                             Converter={StaticResource BoolToVisibility}}"/>
     </StackPanel>
 </UserControl>
