@@ -38,8 +38,6 @@ namespace OneColumnEncoder.Stores
             new("Using power adapter instead of battery"),
             new("Sufficient RAM availability"),
             new("Sufficient disk space availability"),
-            new("Avoiding slow disk connection (USB2, Bluetooth, etc.)"),
-            new("Avoiding disk thrashing (R&W on the same HDD)"),
         ];
 
         public static List<ChecklistItemDefinitionM> GetEncodeChecklist2() =>
@@ -48,6 +46,21 @@ namespace OneColumnEncoder.Stores
             new("Output filename maybe valid for FTP (Pseudo-UTF-8)"),
             new("Write permission in output folder"),
             new("Output doesn't overwrite existing file (or delete manually)"),
+        ];
+
+        public static List<ChecklistItemDefinitionM> GetBestPracticeChecklist1() =>
+        [
+            new("Avoiding slow disk connection (USB2, Bluetooth, etc.)"),
+            new("Avoiding disk thrashing (R&W on the same HDD)"),
+            new("Using latest hard drive firmware version"),
+            new("Using latest motherboard BIOS version"),
+            new("SSD & RAM temperature below 75°C / 167°F"),
+            new("HDD temperature below 55°C / 131°F"),
+        ];
+
+        public static List<ChecklistItemDefinitionM> GetBestPracticeChecklist2() =>
+        [
+            new("Using latest encoder version"),
         ];
     }
 }

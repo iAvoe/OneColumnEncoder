@@ -35,7 +35,8 @@ namespace OneColumnEncoder.ViewModels
 
         public ToolsImportCardVM ToolsImportCard { get; } = new ToolsImportCardVM();
         public SourceValidationCardVM SourceValidationCard { get; } = new SourceValidationCardVM();
-        public EncodeTermsCardVM EncodePermissionCard { get; } = new EncodeTermsCardVM();
+        public EncodeTermsCardVM EncodeTermsCard { get; } = new EncodeTermsCardVM();
+        public BestPracticesCardVM BestPracticesCard { get; } = new BestPracticesCardVM();
 
         public MainVM(ModalNavS modalNavS, AppConfS appConfS)
         {
@@ -70,9 +71,14 @@ namespace OneColumnEncoder.ViewModels
             SourceValidationCard.Name = "Source Video Validation";
             SourceValidationCard.P1Name = "Severe (incompatible / corrupted)";
             SourceValidationCard.P3Name = "Moderate (affecting quality)";
-            EncodePermissionCard.Name = "Encoding Prerequisites";
-            EncodePermissionCard.P1Name = "Hardware";
-            EncodePermissionCard.P3Name = "Software";
+
+            EncodeTermsCard.Name = "Encoding Prerequisites";
+            EncodeTermsCard.P1Name = "Hardware";
+            EncodeTermsCard.P3Name = "Software";
+
+            BestPracticesCard.Name = "Best Practices";
+            BestPracticesCard.P1Name = "Hardware";
+            BestPracticesCard.P3Name = "Software";
 
             UpstreamsZone =
             [

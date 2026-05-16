@@ -88,8 +88,10 @@
         <!-- Starting Options -->
         <comps:SectionHeader HeaderText="Start Encoding"
                              Margin="0 0 0 20" />
-        <comps:ValidationCard DataContext="{Binding EncodePermissionCard}"
+        <comps:ValidationCard DataContext="{Binding EncodeTermsCard}"
                                     Margin="0 0 0 20" />
+        <comps:ValidationCard DataContext="{Binding BestPracticesCard}"
+                              Margin="0 0 0 20" />
 
         <comps:ThreeButtonGroup DataContext="{Binding EncodingStartButtonsVM}"/>
         
