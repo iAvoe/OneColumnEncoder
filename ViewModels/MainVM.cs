@@ -1,6 +1,7 @@
 ﻿using OneColumnEncoder.Commands;
 using OneColumnEncoder.Components;
 using OneColumnEncoder.Models;
+using OneColumnEncoder.Stores;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,9 +13,12 @@ namespace OneColumnEncoder.ViewModels
 {
     public class MainVM : BaseVM
     {
-        // private readonly ModelNav_S _modelNav_S;
-        // public Base_VM? CurrentModalVM => _modelNav_S.CurrentModalVM;
-        // public bool IsModalOpen => _modelNav_S.IsOpen;
+        private readonly ModalNavS _modalNavS;
+        private readonly AppConfS _appConfS;
+        // Expose current modal VM and open state for binding
+        public BaseVM? CurrentModalVM => _modalNavS.CurrentModalVM;
+        public bool IsModalOpen => _modalNavS.IsOpen;
+
         public ObservableCollection<EncItemVM> UpstreamsZone { get; set; }
         public ObservableCollection<EncItemVM> EncodersZone { get; set; }
         public ObservableCollection<EncItemVM> AnalyticsZone { get; set; }
@@ -31,14 +35,13 @@ namespace OneColumnEncoder.ViewModels
         public SourceValidationCardVM SourceValidationCard { get; } = new SourceValidationCardVM();
         public EncodeTermsCardVM EncodePermissionCard { get; } = new EncodeTermsCardVM();
 
-        public MainVM()
+        public MainVM(ModalNavS modalNavS, AppConfS appConfS)
         {
-            /*
-            _modelNav_S = new ModelNav_S();
-            CentralVM = new Central_VM(_modelNav_S);
+            _modalNavS = modalNavS;
+            _appConfS = appConfS;
+            // Subscribe to modal changes
+            _modalNavS.CurrentViewModelChanged += ModalNavS_CurrentViewModelChanged;
 
-            _modelNav_S.CurrentViewModelChanged += ModelNav_S_CurrentViewModelChanged;
-            */
             OpenSettingsButtonsVM = new OpenSettingButtonsVM();
 
             // Initialize import card
@@ -57,10 +60,8 @@ namespace OneColumnEncoder.ViewModels
             ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("", true));
             ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("ffprobe.exe"));
             ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("AviSynth.dll"));
-            ToolsImportCard.ImportDropdown.SelectedItem = ToolsImportCard.ImportDropdown.Items[0];
-
-            // Not sure if this is still needed...
-            // ToolsImportCard.ImportDropdown.SelectionChangedCommand = new SelectDropdownCmd();
+            ToolsImportCard.ImportDropdown.SelectedItem =
+                ToolsImportCard.ImportDropdown.Items[0];
 
             // Check lists are within model, no need to set here
             SourceValidationCard.Name = "Source Video Validation";
@@ -108,6 +109,19 @@ namespace OneColumnEncoder.ViewModels
             // TODO: EncStartingZone = [];
             EncodingStartButtonsVM = new EncodingStartButtonsVM();
 
+        }
+
+        protected override void Dispose()
+        {
+            _modalNavS.CurrentViewModelChanged -= ModalNavS_CurrentViewModelChanged;
+            base.Dispose();
+        }
+
+        // Update modal-related properties on nav change
+        private void ModalNavS_CurrentViewModelChanged()
+        {
+            OnPropertyChanged(nameof(CurrentModalVM));
+            OnPropertyChanged(nameof(IsModalOpen));
         }
 
         /*

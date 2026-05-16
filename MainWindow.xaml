@@ -6,19 +6,12 @@
         xmlns:local="clr-namespace:OneColumnEncoder"
         xmlns:views="clr-namespace:OneColumnEncoder.Views"
         mc:Ignorable="d"
-        Title="1cenc" Height="Auto" Width="520">
-    <!--
-        xmlns:vms="clr-namespace:OneColumnEncoder.WPF.ViewModels"
-        -->
-    <!--<Window.Resources>
-        <DataTemplate DataType="{x:Type vms:NewViewModel}">
-            <views:NewView />
-        </DataTemplate>
-    </Window.Resources>-->
+        Title="1cenc"
+        Width="520"
+        Height="1080">
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Auto">
-        <Grid>
-            <views:MainUI Margin="10" />
-        </Grid>
+        <views:MainUI Margin="10"
+                      DataContext="{Binding MainVM}" />
     </ScrollViewer>
 </Window>

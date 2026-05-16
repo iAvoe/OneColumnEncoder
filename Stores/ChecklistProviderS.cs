@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OneColumnEncoder.Stores
 {
-    class ChecklistProviderS
+    public class ChecklistProviderS
     {
         public static List<ChecklistItemDefinitionM> GetToolsChecklist() =>
         [
@@ -30,22 +30,24 @@ namespace OneColumnEncoder.Stores
             new("Color matrix matadata is normal"),
             new("Transfer characteristics matadata is normal"),
             new("Color primaries metadata is normal"),
-            new("No chroma sampling, or located at ←/↖ (SVT-AV1 req.)"),
+            new("No chroma subsampling or being ←/↖ (SVT-AV1 req.)"),
         ];
 
         public static List<ChecklistItemDefinitionM> GetEncodeChecklist1() =>
         [
-            new("Using power adapter or battery level above 30%"),
+            new("Using power adapter instead of battery"),
             new("Sufficient RAM availability"),
             new("Sufficient disk space availability"),
+            new("Avoiding slow disk connection (USB2, Bluetooth, etc.)"),
+            new("Avoiding disk thrashing (R&W on the same HDD)"),
         ];
 
         public static List<ChecklistItemDefinitionM> GetEncodeChecklist2() =>
         [
             new("Output filename is valid for OS"),
             new("Output filename maybe valid for FTP (Pseudo-UTF-8)"),
-            new("Read-Write permission in output folder"),
-            new("Not overwriting any existing files"),
+            new("Write permission in output folder"),
+            new("Output doesn't overwrite existing file (or delete manually)"),
         ];
     }
 }
