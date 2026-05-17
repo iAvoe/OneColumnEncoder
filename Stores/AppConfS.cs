@@ -33,7 +33,7 @@ namespace OneColumnEncoder.Stores
             // public bool AllowCtrlClick { get; set; } = true;
             // Hardware prereq
             public bool OffGrid { get; set; } = true;
-            public bool InsufficientRAM { get; set; } = true;
+            public bool InsufficientRAM { get; set; } = false;
             public bool InsufficientDiskSpace { get; set; } = true;
             // Software prereq
             public bool OSFileNameInvalid { get; set; } = true;

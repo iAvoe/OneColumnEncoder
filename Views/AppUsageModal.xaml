@@ -34,8 +34,8 @@
 
         <Border Grid.Row="2"
                 Background="{StaticResource Background}"
-                BorderThickness="0,1,0,0"
-                Padding="20,15">
+                BorderThickness="1"
+                Padding="20 15">
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right">
                 <Button Content="Close"
