@@ -11,6 +11,7 @@ using OneColumnEncoder.Commands;
 using OneColumnEncoder.Components;
 using OneColumnEncoder.Stores;
 using System.Windows.Input;
+using OneColumnEncoder.Models;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -49,41 +50,36 @@ namespace OneColumnEncoder.ViewModels
 
         private void BuildSettingsListing()
         {
-            AppConfContainer general = new() { Header = "General: disable Start Encode when..." };
-            AddCheckboxItem(general, "PC is off-grid / on battery", _appConfStore.General, nameof(AppConfS.GeneralSettings.OffGrid));
-            AddCheckboxItem(general, "Insufficient RAM", _appConfStore.General, nameof(AppConfS.GeneralSettings.InsufficientRAM));
-            AddCheckboxItem(general, "Insufficient disk space", _appConfStore.General, nameof(AppConfS.GeneralSettings.InsufficientDiskSpace));
-            AddCheckboxItem(general, "Invalid file name for OS", _appConfStore.General, nameof(AppConfS.GeneralSettings.OSFileNameInvalid));
-            AddCheckboxItem(general, "Invalid file name for FTP", _appConfStore.General, nameof(AppConfS.GeneralSettings.FTPFileNameInvalid));
-            AddCheckboxItem(general, "Lack of write permission", _appConfStore.General, nameof(AppConfS.GeneralSettings.NoWritePermission));
-            AddCheckboxItem(general, "Overwriting a file", _appConfStore.General, nameof(AppConfS.GeneralSettings.IsOverwriting));
-            SettingsListing.Add(general);
+            Dictionary<string, object> sourceMap = new()
+            {
+                ["General: disable Start Encode when..."] = _appConfStore.General,
+                ["Overwrite Handling"] = _appConfStore.Overwrite,
+                ["SMTP"] = _appConfStore.Smtp,
+                ["Language/语言"] = _appConfStore.Lang
+            };
 
-            AppConfContainer overwrite = new() { Header = "Overwrite Handling" };
-            AddTextboxItem(overwrite, "Long press megabyte divisor", _appConfStore.Overwrite, nameof(AppConfS.OverwriteSettings.LongPressMegabyteDivisor));
-            AddTextboxItem(overwrite, "Min long press MS", _appConfStore.Overwrite, nameof(AppConfS.OverwriteSettings.MinLongPressMs));
-            AddTextboxItem(overwrite, "Max long press MS", _appConfStore.Overwrite, nameof(AppConfS.OverwriteSettings.MaxLongPressMs));
-            SettingsListing.Add(overwrite);
-
-            AppConfContainer smtp = new() { Header = "SMTP" };
-            AddTextboxItem(smtp, "Server URL", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.ServerUrl));
-            AddTextboxItem(smtp, "Port", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.Port));
-            AddCheckboxItem(smtp, "Use SSL", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.UseSSL));
-            AddTextboxItem(smtp, "Username", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.Username));
-            AddPasswordBoxItem(smtp, "Password", () => _appConfStore.Smtp.Password, v => _appConfStore.Smtp.Password = v);
-            AddTextboxItem(smtp, "From Email", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.FromEmail));
-            AddTextboxItem(smtp, "To Email", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.ToEmail));
-            AddCheckboxItem(smtp, "Notify on Success", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.NotifyOnSuccess));
-            AddCheckboxItem(smtp, "Notify on Failure", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.NotifyOnFailure));
-            AddCheckboxItem(smtp, "Notify on No Input", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.NotifyOnNoInput));
-            AddTextboxItem(smtp, "Success Threshold (min)", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.NotifySuccessTaskThresholdMinutes));
-            AddTextboxItem(smtp, "Failure Threshold (min)", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.NotifyFailureTaskThresholdMinutes));
-            AddTextboxItem(smtp, "No Input Threshold (min)", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.NotifyNoInputTaskThresholdMinutes));
-            SettingsListing.Add(smtp);
-
-            AppConfContainer lang = new() { Header = "Language/语言" };
-            AddTextboxItem(lang, "Language Code (e.g. en, zh)", _appConfStore.Lang, nameof(AppConfS.Language.LanguageCode));
-            SettingsListing.Add(lang);
+            foreach (var group in SettinglistProviderS.GetAllSettings().GroupBy(s => s.GroupName))
+            {
+                var container = new AppConfContainer { Header = group.Key };
+                var source = sourceMap[group.Key];
+                foreach (var setting in group)
+                {
+                    switch (setting.ControlType)
+                    {
+                        case SettingControlType.CheckBox:
+                            AddCheckboxItem(container, setting.Label, source, setting.PropertyName);
+                            break;
+                        case SettingControlType.TextBox:
+                            AddTextboxItem(container, setting.Label, source, setting.PropertyName);
+                            break;
+                        case SettingControlType.PasswordBox:
+                            AddPasswordBoxItem(container, setting.Label,
+                                () => _appConfStore.Smtp.Password,
+                                v => _appConfStore.Smtp.Password = v);
+                            break;
+                    }
+                }
+            }
         }
 
         private static void AddCheckboxItem(AppConfContainer container, string text, object source, string propertyPath)
