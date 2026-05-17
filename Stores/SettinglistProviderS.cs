@@ -43,6 +43,13 @@ namespace OneColumnEncoder.Stores
             new SettingItemDefinitionM("SMTP", "Username", SettingControlType.TextBox, nameof(AppConfS.SmtpSettings.Username)),
             new SettingItemDefinitionM("SMTP", "Password", SettingControlType.PasswordBox, nameof(AppConfS.SmtpSettings.Password)),
             new SettingItemDefinitionM("SMTP", "From Email Address", SettingControlType.TextBox, nameof(AppConfS.SmtpSettings.FromEmail)),
+            new SettingItemDefinitionM("SMTP", "To Email Address", SettingControlType.TextBox, nameof(AppConfS.SmtpSettings.ToEmail)),
+            new SettingItemDefinitionM("SMTP", "Notify on Success", SettingControlType.CheckBox, nameof(AppConfS.SmtpSettings.NotifyOnSuccess)),
+            new SettingItemDefinitionM("SMTP", "Notify on Failure", SettingControlType.CheckBox, nameof(AppConfS.SmtpSettings.NotifyOnFailure)),
+            new SettingItemDefinitionM("SMTP", "Notify when AFK", SettingControlType.CheckBox, nameof(AppConfS.SmtpSettings.NotifyOnNoInput)),
+            new SettingItemDefinitionM("SMTP", "Notify on Success Threshold (min)", SettingControlType.TextBox, nameof(AppConfS.SmtpSettings.NotifySuccessThresholdMin)),
+            new SettingItemDefinitionM("SMTP", "Notify on Failure Threshold (min)", SettingControlType.TextBox, nameof(AppConfS.SmtpSettings.NotifyFailureThresholdMin)),
+            new SettingItemDefinitionM("SMTP", "Notify on AFK for (min)", SettingControlType.TextBox, nameof(AppConfS.SmtpSettings.NotifyAfterNoInputThresholdMin)),
         ];
 
         public static List<SettingItemDefinitionM> GetLanguageSettings() =>

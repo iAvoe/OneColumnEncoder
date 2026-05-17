@@ -64,9 +64,9 @@ namespace OneColumnEncoder.Stores
             public bool NotifyOnFailure { get; set; } = true;
             public bool NotifyOnNoInput { get; set; } = true;
             // Thresholds to avoid sending notifications
-            public int NotifySuccessTaskThresholdMinutes { get; set; } = 9;
-            public int NotifyFailureTaskThresholdMinutes { get; set; } = 2;
-            public int NotifyNoInputTaskThresholdMinutes { get; set; } = 2;
+            public int NotifySuccessThresholdMin { get; set; } = 9;
+            public int NotifyFailureThresholdMin { get; set; } = 2;
+            public int NotifyAfterNoInputThresholdMin { get; set; } = 2;
         }
         public class Language
         {

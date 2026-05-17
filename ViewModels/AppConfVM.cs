@@ -77,8 +77,13 @@ namespace OneColumnEncoder.ViewModels
                                 () => _appConfStore.Smtp.Password,
                                 v => _appConfStore.Smtp.Password = v);
                             break;
+                        case SettingControlType.Dropdown:
+                            AddDropdownItem(container, setting.Label, source, setting.PropertyName,
+                                ["en", "zh-cn", "zh-tw"]);
+                            break;
                     }
                 }
+                SettingsListing.Add(container);
             }
         }
 
@@ -106,6 +111,34 @@ namespace OneColumnEncoder.ViewModels
             };
             pb.PasswordChanged += (_, _) => setter(pb.Password);
             container.Items.Add(new AppConfItem { Text = text, Content = pb });
+        }
+
+        private void AddDropdownItem(AppConfContainer container, string text, object source, string propertyPath, string[] options)
+        {
+            var currentValue = source.GetType().GetProperty(propertyPath)?.GetValue(source) as string ?? options[0];
+            var items = options.Select(o => new DropdownItemM(o)).ToList();
+
+            var dropdownVM = new DropdownMenuVM();
+            foreach (var item in items)
+                dropdownVM.Items.Add(item);
+            dropdownVM.SelectedItem = items.FirstOrDefault(i => i.Title == currentValue) ?? items[0];
+
+            dropdownVM.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(DropdownMenuVM.SelectedItem) && dropdownVM.SelectedItem is not null)
+                {
+                    var prop = source.GetType().GetProperty(propertyPath);
+                    prop?.SetValue(source, dropdownVM.SelectedItem.Title);
+                }
+            };
+
+            var dropdown = new DropdownMenu
+            {
+                DataContext = dropdownVM,
+                Width = 200,
+                HorizontalAlignment = HorizontalAlignment.Right
+            };
+            container.Items.Add(new AppConfItem { Text = text, Content = dropdown });
         }
     }
 }
