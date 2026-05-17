@@ -9,11 +9,10 @@
              mc:Ignorable="d"
              d:DesignWidth="450">
     <!--
-    | Title      | R1 | R2 |
-    | P1                   |
+    | Title        | R1 | R2 |
+    | P1: ChecklistContainer |
     R1: Import dropdown
     R2: Import button
-    P1: ChecklistContainer
     -->
     <Border BorderBrush="{StaticResource GlobalPrimary}"
             BorderThickness="1.5"
@@ -58,7 +57,7 @@
             <comps:ChecklistContainer Grid.Row="1"
                                       Grid.ColumnSpan="3"
                                       ItemsSource="{Binding ToolsChecklist}">
-                
+
                 <comps:ChecklistContainer.ItemTemplate>
                     <DataTemplate>
                         <comps:ChecklistItem Text="{Binding Text}"
@@ -67,48 +66,6 @@
                     </DataTemplate>
                 </comps:ChecklistContainer.ItemTemplate>
             </comps:ChecklistContainer>
-
-            <!-- Critical -->
-            <!--<comps:ChecklistContainer
-                                      ItemsSource="{Binding SourceChecklist1}">
-                <comps:ChecklistContainer.ItemTemplate>
-                    <DataTemplate>
-                        <comps:ChecklistItem Text="{Binding Text}"
-                                             Status="{Binding Status}"
-                                             Margin="0 10 0 0" />
-                    </DataTemplate>
-                </comps:ChecklistContainer.ItemTemplate>
-            </comps:ChecklistContainer>-->
-            <!-- General -->
-            <!--<comps:ChecklistContainer ItemsSource="{Binding SourceChecklist2}">
-                <comps:ChecklistContainer.ItemTemplate>
-                    <DataTemplate>
-                        <comps:ChecklistItem Text="{Binding Text}"
-                                             Status="{Binding Status}"
-                                             Margin="0 10 0 0" />
-                    </DataTemplate>
-                </comps:ChecklistContainer.ItemTemplate>
-            </comps:ChecklistContainer>-->
-            <!-- Hardware -->
-            <!--<comps:ChecklistContainer ItemsSource="{Binding EncodeChecklist1}">
-                <comps:ChecklistContainer.ItemTemplate>
-                    <DataTemplate>
-                        <comps:ChecklistItem Text="{Binding Text}"
-                                             Status="{Binding Status}"
-                                             Margin="0 10 0 0" />
-                    </DataTemplate>
-                </comps:ChecklistContainer.ItemTemplate>
-            </comps:ChecklistContainer>-->
-            <!-- Software -->
-            <!--<comps:ChecklistContainerItemsSource="{Binding EncodeChecklist2}">
-                <comps:ChecklistContainer.ItemTemplate>
-                    <DataTemplate>
-                        <comps:ChecklistItem Text="{Binding Text}"
-                                             Status="{Binding Status}"
-                                             Margin="0 10 0 0" />
-                    </DataTemplate>
-                </comps:ChecklistContainer.ItemTemplate>
-            </comps:ChecklistContainer>-->
         </Grid>
     </Border>
 </UserControl>
