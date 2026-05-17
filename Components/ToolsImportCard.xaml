@@ -57,7 +57,6 @@
             <comps:ChecklistContainer Grid.Row="1"
                                       Grid.ColumnSpan="3"
                                       ItemsSource="{Binding ToolsChecklist}">
-
                 <comps:ChecklistContainer.ItemTemplate>
                     <DataTemplate>
                         <comps:ChecklistItem Text="{Binding Text}"

@@ -96,6 +96,12 @@
         <comps:ValidationCard DataContext="{Binding BestPracticesCard}"
                               Margin="0 0 0 20" />
 
-        <comps:ThreeButtonGroup DataContext="{Binding EncodingStartButtons}"/>
+        <comps:ThreeButtonGroup DataContext="{Binding EncodingStartButtons}"
+                                Button1Command="{Binding ReEvaluate}"
+                                Button2Command="{Binding SampleClip}"
+                                Button3Command="{Binding StartEncode}"
+                                Button1IsEnabled="{Binding B3_1IsEnabled}"
+                                Button2IsEnabled="{Binding B3_2IsEnabled}"
+                                Button3IsEnabled="{Binding B3_3IsEnabled}" />
     </StackPanel>
 </UserControl>

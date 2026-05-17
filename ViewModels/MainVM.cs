@@ -4,7 +4,9 @@ using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -85,12 +87,58 @@ namespace OneColumnEncoder.ViewModels
             BestPracticesCard.Name = "Best Practices";
             BestPracticesCard.P1Name = "Hardware (self check)";
             BestPracticesCard.P3Name = "Software (self check)";
+
+            SubscribeToToolsChecklist();
         }
 
         protected override void Dispose()
         {
             ToolsImportCard.ToolImported -= OnToolImported;
+            UnsubscribeFromToolsChecklist();
             base.Dispose();
+        }
+
+        private void SubscribeToToolsChecklist()
+        {
+            foreach (var entry in ToolsImportCard.ToolsChecklist)
+                entry.PropertyChanged += OnChecklistEntryPropertyChanged;
+
+            ToolsImportCard.ToolsChecklist.CollectionChanged += OnToolsChecklistCollectionChanged;
+            UpdateEncodingStartButtonsState();
+        }
+
+        private void UnsubscribeFromToolsChecklist()
+        {
+            foreach (var entry in ToolsImportCard.ToolsChecklist)
+                entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
+
+            ToolsImportCard.ToolsChecklist.CollectionChanged -= OnToolsChecklistCollectionChanged;
+        }
+
+        private void OnToolsChecklistCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+                foreach (ChecklistEntryVM entry in e.NewItems)
+                    entry.PropertyChanged += OnChecklistEntryPropertyChanged;
+
+            if (e.OldItems != null)
+                foreach (ChecklistEntryVM entry in e.OldItems)
+                    entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
+
+            UpdateEncodingStartButtonsState();
+        }
+
+        private void OnChecklistEntryPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ChecklistEntryVM.Status))
+                UpdateEncodingStartButtonsState();
+        }
+
+        private void UpdateEncodingStartButtonsState()
+        {
+            bool allToolsReady = ToolsImportCard.ToolsChecklist.All(entry => entry.Status == StatusType.Success);
+            EncodingStartButtons.B3_2IsEnabled = allToolsReady;
+            EncodingStartButtons.B3_3IsEnabled = allToolsReady;
         }
 
         private void LoadToolsFromAppDataS()

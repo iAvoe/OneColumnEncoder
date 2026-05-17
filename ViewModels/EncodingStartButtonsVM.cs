@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OneColumnEncoder.Commands;
 using System.Windows.Input;
 
 namespace OneColumnEncoder.ViewModels
@@ -31,11 +27,29 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _b3_3Text, value);
         }
 
-        /*
-        TODO:
-        public ICommand ReEvaluate { get; }
-        public ICommand SampleClip { get; }
-        public ICommand StartEncode { get; }
-        */
+        public ICommand ReEvaluate { get; } = new ReEvaluateCmd();
+        public ICommand SampleClip { get; } = new SampleClipCmd();
+        public ICommand StartEncode { get; } = new StartEncodeCmd();
+
+        private bool _b3_1IsEnabled = true;
+        public bool B3_1IsEnabled
+        {
+            get => _b3_1IsEnabled;
+            set => SetProperty(ref _b3_1IsEnabled, value);
+        }
+
+        private bool _b3_2IsEnabled = true;
+        public bool B3_2IsEnabled
+        {
+            get => _b3_2IsEnabled;
+            set => SetProperty(ref _b3_2IsEnabled, value);
+        }
+
+        private bool _b3_3IsEnabled = true;
+        public bool B3_3IsEnabled
+        {
+            get => _b3_3IsEnabled;
+            set => SetProperty(ref _b3_3IsEnabled, value);
+        }
     }
 }

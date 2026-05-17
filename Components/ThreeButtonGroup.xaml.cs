@@ -28,6 +28,16 @@ namespace OneColumnEncoder.Components
 
         public static readonly DependencyProperty Button3CommandProperty =
             DependencyProperty.Register(nameof(Button3Command), typeof(ICommand), typeof(ThreeButtonGroup));
+
+        public static readonly DependencyProperty Button1IsEnabledProperty =
+            DependencyProperty.Register(nameof(Button1IsEnabled), typeof(bool), typeof(ThreeButtonGroup), new PropertyMetadata(true));
+
+        public static readonly DependencyProperty Button2IsEnabledProperty =
+            DependencyProperty.Register(nameof(Button2IsEnabled), typeof(bool), typeof(ThreeButtonGroup), new PropertyMetadata(true));
+
+        public static readonly DependencyProperty Button3IsEnabledProperty =
+            DependencyProperty.Register(nameof(Button3IsEnabled), typeof(bool), typeof(ThreeButtonGroup), new PropertyMetadata(true));
+
         public ICommand Button1Command
         {
             get => (ICommand)GetValue(Button1CommandProperty);
@@ -42,6 +52,24 @@ namespace OneColumnEncoder.Components
         {
             get => (ICommand)GetValue(Button3CommandProperty);
             set => SetValue(Button3CommandProperty, value);
+        }
+
+        public bool Button1IsEnabled
+        {
+            get => (bool)GetValue(Button1IsEnabledProperty);
+            set => SetValue(Button1IsEnabledProperty, value);
+        }
+
+        public bool Button2IsEnabled
+        {
+            get => (bool)GetValue(Button2IsEnabledProperty);
+            set => SetValue(Button2IsEnabledProperty, value);
+        }
+
+        public bool Button3IsEnabled
+        {
+            get => (bool)GetValue(Button3IsEnabledProperty);
+            set => SetValue(Button3IsEnabledProperty, value);
         }
 
         public ThreeButtonGroup()
