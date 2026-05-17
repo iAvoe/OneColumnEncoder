@@ -1,4 +1,4 @@
-﻿using OneColumnEncoder.Stores;
+﻿using OneColumnEncoder.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +9,14 @@ namespace OneColumnEncoder.Commands
 {
     public class LoadAppConfCmd : AsyncBaseCmd
     {
-        private readonly AppConfS _appConfStore;
-        public LoadAppConfCmd(AppConfS appConfS)
+        private readonly AppConfM _appConfStore;
+        public LoadAppConfCmd(AppConfM appConfS)
         {
             _appConfStore = appConfS;
         }
         protected override async Task ExecuteAsync(object? parameter)
         {
-            var loadedConfig = AppConfS.Load();
+            var loadedConfig = AppConfM.Load();
             // Update the store with loaded config
             _appConfStore.General = loadedConfig.General;
             _appConfStore.Overwrite = loadedConfig.Overwrite;

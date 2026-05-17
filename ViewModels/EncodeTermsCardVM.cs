@@ -1,5 +1,4 @@
 ﻿using OneColumnEncoder.Models;
-using OneColumnEncoder.Stores;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,8 +12,8 @@ namespace OneColumnEncoder.ViewModels
     {
         public EncodeTermsCardVM()
         {
-            FillCollection(Checklist1, ChecklistProviderS.GetEncodeChecklist1());
-            FillCollection(Checklist2, ChecklistProviderS.GetEncodeChecklist2());
+            FillCollection(Checklist1, ChecklistProviderM.GetEncodeChecklist1());
+            FillCollection(Checklist2, ChecklistProviderM.GetEncodeChecklist2());
         }
     }
 }

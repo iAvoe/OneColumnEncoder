@@ -1,7 +1,6 @@
 ﻿using OneColumnEncoder.Commands;
 using OneColumnEncoder.Components;
 using OneColumnEncoder.Models;
-using OneColumnEncoder.Stores;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -12,7 +11,7 @@ namespace OneColumnEncoder.ViewModels
 {
     public class MainVM : BaseVM
     {
-        private readonly AppDataS _appDataS;
+        private readonly AppDataM _appDataS;
 
         public OpenAppConfCmd OpenAppConf { get; }
         public OpenUsagesCmd OpenUsages { get; }
@@ -43,7 +42,7 @@ namespace OneColumnEncoder.ViewModels
         public EncodeTermsCardVM EncodeTermsCard { get; } = new EncodeTermsCardVM();
         public BestPracticesCardVM BestPracticesCard { get; } = new BestPracticesCardVM();
 
-        public MainVM(OpenAppConfCmd openAppConf, OpenUsagesCmd openUsages, AppDataS appDataS)
+        public MainVM(OpenAppConfCmd openAppConf, OpenUsagesCmd openUsages, AppDataM appDataS)
         {
             _appDataS = appDataS;
             OpenAppConf = openAppConf;
@@ -52,7 +51,7 @@ namespace OneColumnEncoder.ViewModels
             UpstreamsZone = [];
             EncodersZone = [];
             AnalyticsZone = [];
-            LoadToolsFromAppDataS();
+            LoadToolsFromAppDataM();
 
             OpenAppConfButtons = new OpenAppConfButtonsVM(OpenAppConf, OpenUsages);
 
@@ -141,7 +140,7 @@ namespace OneColumnEncoder.ViewModels
             EncodingStartButtons.B3_3IsEnabled = allToolsReady;
         }
 
-        private void LoadToolsFromAppDataS()
+        private void LoadToolsFromAppDataM()
         {
             var t = _appDataS.Tools;
             AddTool(t.FfmpegPath, t.FfmpegVer, "FFMPEG", UpstreamsZone);
@@ -178,7 +177,7 @@ namespace OneColumnEncoder.ViewModels
 
             var displayName = Path.GetFileNameWithoutExtension(toolName);
 
-            // Save to AppDataS and persist
+            // Save to AppDataM and persist
             SetToolPath(toolName, displayName);
             _appDataS.Save();
 
@@ -194,7 +193,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void SetToolPath(string toolName, string displayName)
         {
-            // Maps tool exe name to AppDataS.Importables properties
+            // Maps tool exe name to AppDataM.Importables properties
             // TODO: Replace placeholder path with actual resolved path when ImportToolAsync is implemented
             var t = _appDataS.Tools;
             switch (toolName.ToLowerInvariant())

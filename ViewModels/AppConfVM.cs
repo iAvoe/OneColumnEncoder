@@ -18,7 +18,7 @@ namespace OneColumnEncoder.ViewModels
     public class AppConfVM : BaseVM
     {
         // SSOT Store for app settings
-        private readonly AppConfS _appConfStore;
+        private readonly AppConfM _appConfStore;
 
         // Commands for UI interactions
         public CloseModalCmd CloseCmd { get; }
@@ -30,14 +30,14 @@ namespace OneColumnEncoder.ViewModels
         public SmtpConfirmCancelButtonsVM SmtpConfirmCancelButtons { get; }
 
         // Settings for binding
-        public AppConfS.GeneralSettings General => _appConfStore.General;
-        public AppConfS.OverwriteSettings Overwrite => _appConfStore.Overwrite;
-        public AppConfS.SmtpSettings Smtp => _appConfStore.Smtp;
+        public AppConfM.GeneralSettings General => _appConfStore.General;
+        public AppConfM.OverwriteSettings Overwrite => _appConfStore.Overwrite;
+        public AppConfM.SmtpSettings Smtp => _appConfStore.Smtp;
 
         // Grouped settings listing for the ListView
         public ObservableCollection<AppConfContainer> SettingsListing { get; } = [];
 
-        public AppConfVM(ModalNavS modalNavS, AppConfS appConfS, Action closeAction)
+        public AppConfVM(ModalNavS modalNavS, AppConfM appConfS, Action closeAction)
         {
             _appConfStore = appConfS;
             CloseCmd = new CloseModalCmd(modalNavS, closeAction);
@@ -58,7 +58,7 @@ namespace OneColumnEncoder.ViewModels
                 ["Language/语言"] = _appConfStore.Lang
             };
 
-            foreach (var group in SettinglistProviderS.GetAllSettings().GroupBy(s => s.GroupName))
+            foreach (var group in SettinglistProviderM.GetAllSettings().GroupBy(s => s.GroupName))
             {
                 var container = new AppConfContainer { Header = group.Key };
                 var source = sourceMap[group.Key];

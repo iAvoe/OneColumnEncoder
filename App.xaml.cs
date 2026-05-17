@@ -1,4 +1,5 @@
 ﻿using OneColumnEncoder.Commands;
+using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using System.Configuration;
@@ -14,13 +15,13 @@ namespace OneColumnEncoder
     {
         // Pass navigation, app settings and tools imported to MainVM
         internal readonly ModalNavS _modalNavS;
-        private readonly AppConfS _appConfS;
-        private readonly AppDataS _appDataS;
+        private readonly AppConfM _appConfS;
+        private readonly AppDataM _appDataS;
         public App()
         {
             _modalNavS = new ModalNavS();
-            _appConfS = AppConfS.Load();
-            _appDataS = AppDataS.Load();
+            _appConfS = AppConfM.Load();
+            _appDataS = AppDataM.Load();
         }
 
         protected override void OnStartup(StartupEventArgs e)

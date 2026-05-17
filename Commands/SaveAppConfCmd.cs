@@ -1,4 +1,5 @@
-﻿using OneColumnEncoder.Stores;
+﻿using OneColumnEncoder.Models;
+using OneColumnEncoder.Stores;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace OneColumnEncoder.Commands
 {
-    public class SaveAppConfCmd(AppConfS appConfS, ModalNavS modalNavS, Action closeAction) : AsyncBaseCmd
+    public class SaveAppConfCmd(AppConfM appConfS, ModalNavS modalNavS, Action closeAction) : AsyncBaseCmd
     {
-        private readonly AppConfS _appConfStore = appConfS;
+        private readonly AppConfM _appConfStore = appConfS;
         private readonly ModalNavS _modalNavS = modalNavS;
 
         protected override async Task ExecuteAsync(object? parameter)

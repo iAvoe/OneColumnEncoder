@@ -1,4 +1,5 @@
-﻿using OneColumnEncoder.Stores;
+﻿using OneColumnEncoder.Models;
+using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.Views;
 using System;
@@ -7,10 +8,10 @@ using System.Windows;
 
 namespace OneColumnEncoder.Commands
 {
-    public class OpenAppConfCmd(ModalNavS modalNavS, AppConfS appConfS) : BaseCmd
+    public class OpenAppConfCmd(ModalNavS modalNavS, AppConfM appConfS) : BaseCmd
     {
         private readonly ModalNavS _modalNavS = modalNavS;
-        private readonly AppConfS _appConfS = appConfS;
+        private readonly AppConfM _appConfS = appConfS;
 
         public override void Execute(object? parameter)
         {

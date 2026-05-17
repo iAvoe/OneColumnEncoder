@@ -1,13 +1,13 @@
-﻿using OneColumnEncoder.Models;
+using OneColumnEncoder.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OneColumnEncoder.Stores
+namespace OneColumnEncoder.Models
 {
-    public class ChecklistProviderS
+    public class ChecklistProviderM
     {
         public static List<ChecklistItemDefinitionM> GetToolsChecklist() =>
         [
@@ -17,7 +17,7 @@ namespace OneColumnEncoder.Stores
         ];
 
         public static List<ChecklistItemDefinitionM> GetSourceChecklist1() =>
-        [
+            [
             new("Metadata and SEI data are readable"),
             new("Progressive video frame / not interlated (SVT-AV1 req.)"),
             new("Bit-depth is less than 12 (8 or 10, SVT-AV1 req.)"),

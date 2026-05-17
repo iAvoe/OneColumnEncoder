@@ -1,5 +1,4 @@
 ﻿using OneColumnEncoder.Models;
-using OneColumnEncoder.Stores;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,8 +12,8 @@ namespace OneColumnEncoder.ViewModels
     {
         public SourceValidationCardVM()
         {
-            FillCollection(Checklist1, ChecklistProviderS.GetSourceChecklist1());
-            FillCollection(Checklist2, ChecklistProviderS.GetSourceChecklist2());
+            FillCollection(Checklist1, ChecklistProviderM.GetSourceChecklist1());
+            FillCollection(Checklist2, ChecklistProviderM.GetSourceChecklist2());
         }
     }
 }

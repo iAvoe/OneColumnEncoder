@@ -1,4 +1,4 @@
-﻿using OneColumnEncoder.Stores;
+﻿using OneColumnEncoder.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +11,8 @@ namespace OneColumnEncoder.ViewModels
     {
         public BestPracticesCardVM()
         {
-            FillCollection(Checklist1, ChecklistProviderS.GetBestPracticeChecklist1());
-            FillCollection(Checklist2, ChecklistProviderS.GetBestPracticeChecklist2());
+            FillCollection(Checklist1, ChecklistProviderM.GetBestPracticeChecklist1());
+            FillCollection(Checklist2, ChecklistProviderM.GetBestPracticeChecklist2());
         }
     }
 }

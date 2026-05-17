@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using OneColumnEncoder.Models;
-using OneColumnEncoder.Stores;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -33,7 +32,7 @@ namespace OneColumnEncoder.ViewModels
                     (ImportCommand as BaseCmd)?.OnCanExecuteChanged();
             };
 
-            FillCollection(ToolsChecklist, ChecklistProviderS.GetToolsChecklist());
+            FillCollection(ToolsChecklist, ChecklistProviderM.GetToolsChecklist());
         }
     }
 }

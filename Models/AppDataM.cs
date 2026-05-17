@@ -1,4 +1,4 @@
-﻿using OneColumnEncoder.Helpers;
+using OneColumnEncoder.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,27 +8,19 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace OneColumnEncoder.Stores
+namespace OneColumnEncoder.Models
 {
-    /// <summary>
-    /// Store imported tools (their paths) and version strings
-    /// </summary>
-    public class AppDataS : SaveLoadBase<AppDataS>
+    public class AppDataM : SaveLoadBase<AppDataM>
     {
-        // Tools file path
         private static readonly string ConfigFilePath =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appdata.json");
         protected override string FilePath => ConfigFilePath;
 
-        // Paths and versions of imported tools
         public Importables Tools { get; set; } = new Importables();
-
-        // Property change is within SaveLoadBaseS, so no need to implement it here
 
         #region ImportedTools data structure
         public class Importables
         {
-            // Every tool has their way of printing versions, so just clip their version string
             public string? FfmpegPath { get; set; }
             public string? FfmpegVer { get; set; }
             public string? VspipePath { get; set; }
@@ -38,7 +30,6 @@ namespace OneColumnEncoder.Stores
             public string? Avs2pipemodPath { get; set; }
             public string? Avs2pipemodVer { get; set; }
             public string? OneLineShotArgsPath { get; set; }
-            // Unused: public string? OneLineShotArgsVer { get; set; }
             public string? X264Path { get; set; }
             public string? X264Ver { get; set; }
             public string? X265Path { get; set; }
@@ -48,7 +39,6 @@ namespace OneColumnEncoder.Stores
             public string? FfprobePath { get; set; }
             public string? FfprobeVer { get; set; }
             public string? AviSynthDllPath { get; set; }
-            // Unused: public string? AviSynthDllVer { get; set; }
         }
         #endregion
     }
