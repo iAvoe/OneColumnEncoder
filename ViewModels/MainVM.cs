@@ -3,31 +3,17 @@ using OneColumnEncoder.Components;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace OneColumnEncoder.ViewModels
 {
     public class MainVM : BaseVM
     {
-        // Modal navigation, app settings, and tools data stores
-        private readonly ModalNavS _modalNavS;
-        private readonly AppConfS _appConfS;
         private readonly AppDataS _appDataS;
-        
-        // Nav Commands
-        public OpenUsagesCmd OpenUsages { get; }
-        public OpenAppConfCmd OpenAppConf { get; }
-        public CloseModalCmd CloseModal { get; }
-        public SaveAppConfCmd SaveAppConf { get; }
 
-        public BaseVM? CurrentModalVM => _modalNavS.CurrentModalVM;
-        public bool IsModalOpen => _modalNavS.IsOpen;
+        public OpenAppConfCmd OpenAppConf { get; }
+        public OpenUsagesCmd OpenUsages { get; }
 
         public ObservableCollection<EncItemVM> UpstreamsZone { get; }
         public ObservableCollection<EncItemVM> EncodersZone { get; }
@@ -48,45 +34,37 @@ namespace OneColumnEncoder.ViewModels
             new EncItemVM(new EncItemM("Custom Parameters")),
         ];
         public OpenAppConfButtonsVM OpenAppConfButtons { get; }
-        public EncodingStartButtonsVM EncodingStartButtons { get; } = new(); // TODO in future
+        public EncodingStartButtonsVM EncodingStartButtons { get; } = new();
 
         public ToolsImportCardVM ToolsImportCard { get; } = new ToolsImportCardVM();
         public SourceValidationCardVM SourceValidationCard { get; } = new SourceValidationCardVM();
         public EncodeTermsCardVM EncodeTermsCard { get; } = new EncodeTermsCardVM();
         public BestPracticesCardVM BestPracticesCard { get; } = new BestPracticesCardVM();
 
-        public MainVM(ModalNavS modalNavS, AppConfS appConfS, AppDataS appDataS)
+        public MainVM(OpenAppConfCmd openAppConf, OpenUsagesCmd openUsages, AppDataS appDataS)
         {
-            // Store initialized in App.xaml.cs and passed down to ensure SSOT
-            _modalNavS = modalNavS;
-            _appConfS = appConfS;
             _appDataS = appDataS;
+            OpenAppConf = openAppConf;
+            OpenUsages = openUsages;
 
-            // Build zone collections from persisted AppDataS
             UpstreamsZone = [];
             EncodersZone = [];
             AnalyticsZone = [];
             LoadToolsFromAppDataS();
 
-            _modalNavS.CurrentViewModelChanged += ModalNavS_CurrentViewModelChanged;
-            OpenAppConf = new OpenAppConfCmd(_modalNavS, _appConfS);
-            OpenUsages = new OpenUsagesCmd(_modalNavS);
             OpenAppConfButtons = new OpenAppConfButtonsVM(OpenAppConf, OpenUsages);
 
-            CloseModal = new CloseModalCmd(_modalNavS);
-            SaveAppConf = new SaveAppConfCmd(_appConfS, _modalNavS);
             ToolsImportCard.ToolImported += OnToolImported;
 
-            // Initialize import card
             ToolsImportCard.Name = "Import tools:";
             ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("No Selection"));
-            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("", true)); // Separator line
+            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("", true));
             ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("ffmpeg.exe"));
             ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("vspipe.exe"));
             ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("avs2yuv.exe"));
             ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("avs2pipemod.exe"));
             ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("one_line_shot_args.exe"));
-            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("", true)); // Separator line
+            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("", true));
             ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("x264.exe"));
             ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("x265.exe"));
             ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("SvtAv1EncApp.exe"));
@@ -96,7 +74,6 @@ namespace OneColumnEncoder.ViewModels
             ToolsImportCard.ImportDropdown.SelectedItem =
                 ToolsImportCard.ImportDropdown.Items[0];
 
-            // Check lists are within model, no need to set here
             SourceValidationCard.Name = "Source Video Validation";
             SourceValidationCard.P1Name = "Severe (incompatible / corrupted)";
             SourceValidationCard.P3Name = "Moderate (affecting quality)";
@@ -112,16 +89,8 @@ namespace OneColumnEncoder.ViewModels
 
         protected override void Dispose()
         {
-            _modalNavS.CurrentViewModelChanged -= ModalNavS_CurrentViewModelChanged;
             ToolsImportCard.ToolImported -= OnToolImported;
             base.Dispose();
-        }
-
-        // Update modal-related properties on nav change
-        private void ModalNavS_CurrentViewModelChanged()
-        {
-            OnPropertyChanged(nameof(CurrentModalVM));
-            OnPropertyChanged(nameof(IsModalOpen));
         }
 
         private void LoadToolsFromAppDataS()

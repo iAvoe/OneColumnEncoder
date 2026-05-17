@@ -1,4 +1,5 @@
-﻿using OneColumnEncoder.Stores;
+﻿using OneColumnEncoder.Commands;
+using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using System.Configuration;
 using System.Data;
@@ -24,9 +25,12 @@ namespace OneColumnEncoder
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            var openAppConf = new OpenAppConfCmd(_modalNavS, _appConfS);
+            var openUsages = new OpenUsagesCmd(_modalNavS);
+
             MainWindow = new MainWindow()
             {
-                DataContext = new MainVM(_modalNavS, _appConfS, _appDataS)
+                DataContext = new MainVM(openAppConf, openUsages, _appDataS)
             };
             MainWindow.Show();
 

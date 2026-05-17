@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OneColumnEncoder.Commands
 {
-    public class SaveAppConfCmd(AppConfS appConfS, ModalNavS modalNavS) : AsyncBaseCmd
+    public class SaveAppConfCmd(AppConfS appConfS, ModalNavS modalNavS, Action closeAction) : AsyncBaseCmd
     {
         private readonly AppConfS _appConfStore = appConfS;
         private readonly ModalNavS _modalNavS = modalNavS;
@@ -16,6 +16,7 @@ namespace OneColumnEncoder.Commands
         {
             _appConfStore.Save();
             await Task.CompletedTask;
+            closeAction();
             _modalNavS.Close();
         }
     }

@@ -40,7 +40,7 @@ namespace OneColumnEncoder.ViewModels
             _appConfStore = appConfS;
 
             CloseCmd = new CloseModalCmd(modalNavS, closeAction);
-            SaveCmd = new SaveAppConfCmd(appConfS, modalNavS);
+            SaveCmd = new SaveAppConfCmd(appConfS, modalNavS, closeAction);
             LoadCmd = new LoadAppConfCmd(appConfS);
 
             ConfirmCancelButtons = new ConfirmCancelButtonsVM(CloseCmd, SaveCmd);
