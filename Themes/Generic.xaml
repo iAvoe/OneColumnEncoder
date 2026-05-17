@@ -216,8 +216,8 @@
                 <ControlTemplate TargetType="{x:Type comps:AppConfContainer}">
 
                     <StackPanel>
-                        <!-- Setting modal header -->
-                        <TextBlock Text="{TemplateBinding HeaderText}"
+                        <!-- Header is from HeaderedItemsControl -->
+                        <TextBlock Text="{TemplateBinding Header}"
                                    Style="{StaticResource H2}"
                                    Margin="0 0 0 20" />
                         <ItemsPresenter />
