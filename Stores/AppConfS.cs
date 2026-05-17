@@ -30,16 +30,16 @@ namespace OneColumnEncoder.Stores
         #region Setting items
         public class GeneralSettings
         {
-            public bool AllowCtrlClick { get; set; } = true;
+            // public bool AllowCtrlClick { get; set; } = true;
             // Hardware prereq
-            public bool OnExternalPower { get; set; } = true;
-            public bool SufficientRAM { get; set; } = true;
-            public bool SufficientDiskSpace { get; set; } = true;
+            public bool OffGrid { get; set; } = true;
+            public bool InsufficientRAM { get; set; } = true;
+            public bool InsufficientDiskSpace { get; set; } = true;
             // Software prereq
-            public bool OSFileNameValid { get; set; } = true;
-            public bool FTPFileNameValid { get; set; } = true;
-            public bool OutputFolderWritable { get; set; } = true;
-            public bool NoOverwrite { get; set; } = true;
+            public bool OSFileNameInvalid { get; set; } = true;
+            public bool FTPFileNameInvalid { get; set; } = false;
+            public bool NoWritePermission { get; set; } = true;
+            public bool IsOverwriting { get; set; } = true;
 
             // Not planned yet
             // public bool AutoCheckForUpdates { get; set; } = true;
@@ -61,7 +61,7 @@ namespace OneColumnEncoder.Stores
             public string ToEmail { get; set; } = "";
             // When to send email notifications (if SMTP is configured)
             public bool NotifyOnSuccess { get; set; } = true;
-            public bool NotifyOnFailure { get; set; } = false;
+            public bool NotifyOnFailure { get; set; } = true;
             public bool NotifyOnNoInput { get; set; } = true;
             // Thresholds to avoid sending notifications
             public int NotifySuccessTaskThresholdMinutes { get; set; } = 9;

@@ -49,21 +49,20 @@ namespace OneColumnEncoder.ViewModels
 
         private void BuildSettingsListing()
         {
-            AppConfContainer general = new() { Header = "General" };
-            AddCheckboxItem(general, "Allow Ctrl+Click", _appConfStore.General, nameof(AppConfS.GeneralSettings.AllowCtrlClick));
-            AddCheckboxItem(general, "On External Power", _appConfStore.General, nameof(AppConfS.GeneralSettings.OnExternalPower));
-            AddCheckboxItem(general, "Sufficient RAM", _appConfStore.General, nameof(AppConfS.GeneralSettings.SufficientRAM));
-            AddCheckboxItem(general, "Sufficient Disk Space", _appConfStore.General, nameof(AppConfS.GeneralSettings.SufficientDiskSpace));
-            AddCheckboxItem(general, "OS File Name Valid", _appConfStore.General, nameof(AppConfS.GeneralSettings.OSFileNameValid));
-            AddCheckboxItem(general, "FTP File Name Valid", _appConfStore.General, nameof(AppConfS.GeneralSettings.FTPFileNameValid));
-            AddCheckboxItem(general, "Output Folder Writable", _appConfStore.General, nameof(AppConfS.GeneralSettings.OutputFolderWritable));
-            AddCheckboxItem(general, "No Overwrite", _appConfStore.General, nameof(AppConfS.GeneralSettings.NoOverwrite));
+            AppConfContainer general = new() { Header = "General: disable Start Encode when..." };
+            AddCheckboxItem(general, "PC is off-grid / on battery", _appConfStore.General, nameof(AppConfS.GeneralSettings.OffGrid));
+            AddCheckboxItem(general, "Insufficient RAM", _appConfStore.General, nameof(AppConfS.GeneralSettings.InsufficientRAM));
+            AddCheckboxItem(general, "Insufficient disk space", _appConfStore.General, nameof(AppConfS.GeneralSettings.InsufficientDiskSpace));
+            AddCheckboxItem(general, "Invalid file name for OS", _appConfStore.General, nameof(AppConfS.GeneralSettings.OSFileNameInvalid));
+            AddCheckboxItem(general, "Invalid file name for FTP", _appConfStore.General, nameof(AppConfS.GeneralSettings.FTPFileNameInvalid));
+            AddCheckboxItem(general, "Lack of write permission", _appConfStore.General, nameof(AppConfS.GeneralSettings.NoWritePermission));
+            AddCheckboxItem(general, "Overwriting a file", _appConfStore.General, nameof(AppConfS.GeneralSettings.IsOverwriting));
             SettingsListing.Add(general);
 
-            AppConfContainer overwrite = new() { Header = "Overwrite" };
-            AddTextboxItem(overwrite, "Long Press Megabyte Divisor", _appConfStore.Overwrite, nameof(AppConfS.OverwriteSettings.LongPressMegabyteDivisor));
-            AddTextboxItem(overwrite, "Min Long Press (ms)", _appConfStore.Overwrite, nameof(AppConfS.OverwriteSettings.MinLongPressMs));
-            AddTextboxItem(overwrite, "Max Long Press (ms)", _appConfStore.Overwrite, nameof(AppConfS.OverwriteSettings.MaxLongPressMs));
+            AppConfContainer overwrite = new() { Header = "Overwrite Handling" };
+            AddTextboxItem(overwrite, "Long press megabyte divisor", _appConfStore.Overwrite, nameof(AppConfS.OverwriteSettings.LongPressMegabyteDivisor));
+            AddTextboxItem(overwrite, "Min long press MS", _appConfStore.Overwrite, nameof(AppConfS.OverwriteSettings.MinLongPressMs));
+            AddTextboxItem(overwrite, "Max long press MS", _appConfStore.Overwrite, nameof(AppConfS.OverwriteSettings.MaxLongPressMs));
             SettingsListing.Add(overwrite);
 
             AppConfContainer smtp = new() { Header = "SMTP" };
@@ -103,8 +102,12 @@ namespace OneColumnEncoder.ViewModels
 
         private static void AddPasswordBoxItem(AppConfContainer container, string text, Func<string> getter, Action<string> setter)
         {
-            var pb = new PasswordBox { Width = 200, HorizontalAlignment = HorizontalAlignment.Right };
-            pb.Password = getter();
+            var pb = new PasswordBox
+            {
+                Width = 200,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                Password = getter()
+            };
             pb.PasswordChanged += (_, _) => setter(pb.Password);
             container.Items.Add(new AppConfItem { Text = text, Content = pb });
         }
