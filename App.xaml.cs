@@ -13,7 +13,7 @@ namespace OneColumnEncoder
     public partial class App : Application
     {
         // Pass navigation, app settings and tools imported to MainVM
-        private readonly ModalNavS _modalNavS;
+        internal readonly ModalNavS _modalNavS;
         private readonly AppConfS _appConfS;
         private readonly AppDataS _appDataS;
         public App()

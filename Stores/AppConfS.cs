@@ -19,10 +19,11 @@ namespace OneColumnEncoder.Stores
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appconfig.json");
         protected override string FilePath => ConfigFilePath;
 
-        // App behaviors, File overwrite behaviors, SMTP settings
+        // App behaviors, File overwrite behaviors, SMTP settings, langyage
         public GeneralSettings General { get; set; } = new GeneralSettings();
         public OverwriteSettings Overwrite { get; set; } = new OverwriteSettings();
         public SmtpSettings Smtp { get; set; } = new SmtpSettings();
+        public Language Lang { get; set; } = new Language();
 
         // Property change is within SaveLoadBaseS, so no need to implement it here
 
@@ -66,6 +67,10 @@ namespace OneColumnEncoder.Stores
             public int NotifySuccessTaskThresholdMinutes { get; set; } = 9;
             public int NotifyFailureTaskThresholdMinutes { get; set; } = 2;
             public int NotifyNoInputTaskThresholdMinutes { get; set; } = 2;
+        }
+        public class Language
+        {
+            public string LanguageCode { get; set; } = "en";
         }
         #endregion
     }

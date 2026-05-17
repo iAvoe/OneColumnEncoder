@@ -7,7 +7,8 @@
              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance Type=vms:MainVM}">
+             d:DataContext="{d:DesignInstance Type=vms:MainVM}"
+             Background="{StaticResource Background}">
     <StackPanel Margin="5">
         <!-- Import Tools -->
         <comps:SectionHeader HeaderText="Import Tools"

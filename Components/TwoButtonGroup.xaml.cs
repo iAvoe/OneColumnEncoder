@@ -11,7 +11,6 @@ namespace OneColumnEncoder.Components
 
         public static readonly DependencyProperty Button2CommandProperty =
             DependencyProperty.Register(nameof(Button2Command), typeof(ICommand), typeof(TwoButtonGroup));
-
         public ICommand Button1Command
         {
             get => (ICommand)GetValue(Button1CommandProperty);

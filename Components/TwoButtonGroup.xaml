@@ -4,9 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:OneColumnEncoder.Components"
+             xmlns:conv="clr-namespace:OneColumnEncoder.Converters"
              mc:Ignorable="d"
              d:DesignHeight="40"
              d:DesignWidth="450">
+    <UserControl.Resources>
+        <conv:ButtonWidthConverter x:Key="ButtonWidthConverter" />
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -15,14 +19,14 @@
         <Button Grid.Column="0"
                 Content="{Binding B2_1Text}"
                 Command="{Binding Button1Command, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                MinWidth="220"
+                Width="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ActualWidth, Converter={StaticResource ButtonWidthConverter}, ConverterParameter='2,5'}"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Left"
                 Style="{StaticResource NormalButton}" />
         <Button Grid.Column="1"
                 Content="{Binding B2_2Text}"
                 Command="{Binding Button2Command, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                MinWidth="220"
+                Width="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ActualWidth, Converter={StaticResource ButtonWidthConverter}, ConverterParameter='2,5'}"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Right"
                 Style="{StaticResource PrimaryButton}" />

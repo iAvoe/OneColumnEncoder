@@ -1,24 +1,30 @@
-﻿using System.Text;
+﻿using System.ComponentModel;
+using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace OneColumnEncoder
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
+            Closing += OnClosing;
+        }
+
+        private void OnClosing(object? sender, CancelEventArgs e)
+        {
+            // Close all child windows before the main window closes
+            foreach (var window in Application.Current.Windows.OfType<Window>().Except([this]).ToArray())
+            {
+                window.Close();
+            }
+
+            // Clear modal navigation state so no stale VM lingers
+            if (Application.Current is App app)
+            {
+                app._modalNavS.Close();
+            }
         }
     }
 }

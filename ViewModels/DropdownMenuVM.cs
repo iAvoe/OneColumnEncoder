@@ -24,7 +24,6 @@ namespace OneColumnEncoder.ViewModels
                 }
             }
         }
-
         public ICommand? SelectionChangedCommand { get; set; }
     }
 }

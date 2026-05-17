@@ -4,9 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:OneColumnEncoder.Components"
+             xmlns:conv="clr-namespace:OneColumnEncoder.Converters"
              mc:Ignorable="d"
              d:DesignHeight="40"
              d:DesignWidth="450">
+    <UserControl.Resources>
+        <conv:ButtonWidthConverter x:Key="ButtonWidthConverter" />
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -16,18 +20,21 @@
 
         <Button Grid.Column="0"
                 Content="{Binding B3_1Text}"
-                MinWidth="143.33"
+                Command="{Binding Button1Command, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                Width="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ActualWidth, Converter={StaticResource ButtonWidthConverter}, ConverterParameter='3,5'}"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Left"
                 Style="{StaticResource NormalButton}" />
         <Button Grid.Column="1"
                 Content="{Binding B3_2Text}"
-                MinWidth="143.33"
+                Command="{Binding Button2Command, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                Width="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ActualWidth, Converter={StaticResource ButtonWidthConverter}, ConverterParameter='3,5'}"
                 VerticalAlignment="Center"
                 Style="{StaticResource SecondaryButton}" />
         <Button Grid.Column="2"
                 Content="{Binding B3_3Text}"
-                MinWidth="143.33"
+                Command="{Binding Button3Command, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                Width="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ActualWidth, Converter={StaticResource ButtonWidthConverter}, ConverterParameter='3,5'}"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Right"
                 Style="{StaticResource PrimaryButton}" />

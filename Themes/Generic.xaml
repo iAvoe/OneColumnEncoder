@@ -58,6 +58,20 @@
                      x:Key="ButtonTertiary" />
     <!-- Fonts -->
     <Style TargetType="TextBlock"
+           x:Key="H1">
+        <Setter Property="FontSize"
+                Value="18" />
+        <Setter Property="FontWeight"
+                Value="Bold" />
+    </Style>
+    <Style TargetType="{x:Type Control}"
+           x:Key="H1C">
+        <Setter Property="FontSize"
+                Value="18" />
+        <Setter Property="FontWeight"
+                Value="Bold" />
+    </Style>
+    <Style TargetType="TextBlock"
            x:Key="H2">
         <Setter Property="FontSize"
                 Value="15" />
@@ -197,7 +211,7 @@
                 <ControlTemplate TargetType="{x:Type comps:AppConfItem}">
                     <Grid Margin="0 5">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="420" />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0"

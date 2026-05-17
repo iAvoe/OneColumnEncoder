@@ -28,7 +28,6 @@ namespace OneColumnEncoder.ViewModels
             get => _b2_2Text;
             set => SetProperty(ref _b2_2Text, value);
         }
-        // Cancel: close modal, Confirm: save settings, close modal
         public CloseModalCmd CancelCmd { get; } = closeModalCmd;
         public SaveAppConfCmd ConfirmCmd { get; } = saveAppConfCmd;
     }

@@ -25,7 +25,8 @@ namespace OneColumnEncoder.ViewModels
         public LoadAppConfCmd LoadCmd { get; }
 
         // Save and Cancel buttons
-        public ConfirmCancelButtonsVM ConfirmCancelButtons { get; }
+        // public ConfirmCancelButtonsVM ConfirmCancelButtons { get; }
+        public SmtpConfirmCancelButtonsVM SmtpConfirmCancelButtons { get; }
 
         // Settings for binding
         public AppConfS.GeneralSettings General => _appConfStore.General;
@@ -38,18 +39,17 @@ namespace OneColumnEncoder.ViewModels
         public AppConfVM(ModalNavS modalNavS, AppConfS appConfS, Action closeAction)
         {
             _appConfStore = appConfS;
-
             CloseCmd = new CloseModalCmd(modalNavS, closeAction);
             SaveCmd = new SaveAppConfCmd(appConfS, modalNavS, closeAction);
             LoadCmd = new LoadAppConfCmd(appConfS);
-
-            ConfirmCancelButtons = new ConfirmCancelButtonsVM(CloseCmd, SaveCmd);
+            // ConfirmCancelButtons = new ConfirmCancelButtonsVM(CloseCmd, SaveCmd);
+            SmtpConfirmCancelButtons = new SmtpConfirmCancelButtonsVM(CloseCmd, SaveCmd); // TODO: Smtp test command
             BuildSettingsListing();
         }
 
         private void BuildSettingsListing()
         {
-            var general = new AppConfContainer { Header = "General" };
+            AppConfContainer general = new() { Header = "General" };
             AddCheckboxItem(general, "Allow Ctrl+Click", _appConfStore.General, nameof(AppConfS.GeneralSettings.AllowCtrlClick));
             AddCheckboxItem(general, "On External Power", _appConfStore.General, nameof(AppConfS.GeneralSettings.OnExternalPower));
             AddCheckboxItem(general, "Sufficient RAM", _appConfStore.General, nameof(AppConfS.GeneralSettings.SufficientRAM));
@@ -60,18 +60,18 @@ namespace OneColumnEncoder.ViewModels
             AddCheckboxItem(general, "No Overwrite", _appConfStore.General, nameof(AppConfS.GeneralSettings.NoOverwrite));
             SettingsListing.Add(general);
 
-            var overwrite = new AppConfContainer { Header = "Overwrite" };
+            AppConfContainer overwrite = new() { Header = "Overwrite" };
             AddTextboxItem(overwrite, "Long Press Megabyte Divisor", _appConfStore.Overwrite, nameof(AppConfS.OverwriteSettings.LongPressMegabyteDivisor));
             AddTextboxItem(overwrite, "Min Long Press (ms)", _appConfStore.Overwrite, nameof(AppConfS.OverwriteSettings.MinLongPressMs));
             AddTextboxItem(overwrite, "Max Long Press (ms)", _appConfStore.Overwrite, nameof(AppConfS.OverwriteSettings.MaxLongPressMs));
             SettingsListing.Add(overwrite);
 
-            var smtp = new AppConfContainer { Header = "SMTP" };
+            AppConfContainer smtp = new() { Header = "SMTP" };
             AddTextboxItem(smtp, "Server URL", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.ServerUrl));
             AddTextboxItem(smtp, "Port", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.Port));
             AddCheckboxItem(smtp, "Use SSL", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.UseSSL));
             AddTextboxItem(smtp, "Username", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.Username));
-            AddTextboxItem(smtp, "Password", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.Password));
+            AddPasswordBoxItem(smtp, "Password", () => _appConfStore.Smtp.Password, v => _appConfStore.Smtp.Password = v);
             AddTextboxItem(smtp, "From Email", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.FromEmail));
             AddTextboxItem(smtp, "To Email", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.ToEmail));
             AddCheckboxItem(smtp, "Notify on Success", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.NotifyOnSuccess));
@@ -81,12 +81,16 @@ namespace OneColumnEncoder.ViewModels
             AddTextboxItem(smtp, "Failure Threshold (min)", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.NotifyFailureTaskThresholdMinutes));
             AddTextboxItem(smtp, "No Input Threshold (min)", _appConfStore.Smtp, nameof(AppConfS.SmtpSettings.NotifyNoInputTaskThresholdMinutes));
             SettingsListing.Add(smtp);
+
+            AppConfContainer lang = new() { Header = "Language/语言" };
+            AddTextboxItem(lang, "Language Code (e.g. en, zh)", _appConfStore.Lang, nameof(AppConfS.Language.LanguageCode));
+            SettingsListing.Add(lang);
         }
 
         private static void AddCheckboxItem(AppConfContainer container, string text, object source, string propertyPath)
         {
             var cb = new CheckBox();
-            cb.SetBinding(CheckBox.IsCheckedProperty, new Binding(propertyPath) { Source = source, Mode = BindingMode.TwoWay });
+            cb.SetBinding(CheckBox.IsCheckedProperty, new Binding(propertyPath) { Source=source, Mode=BindingMode.TwoWay });
             container.Items.Add(new AppConfItem { Text = text, Content = cb });
         }
 
@@ -95,6 +99,14 @@ namespace OneColumnEncoder.ViewModels
             var tb = new TextBox { Width = 200, HorizontalAlignment = HorizontalAlignment.Right };
             tb.SetBinding(TextBox.TextProperty, new Binding(propertyPath) { Source = source, Mode = BindingMode.TwoWay });
             container.Items.Add(new AppConfItem { Text = text, Content = tb });
+        }
+
+        private static void AddPasswordBoxItem(AppConfContainer container, string text, Func<string> getter, Action<string> setter)
+        {
+            var pb = new PasswordBox { Width = 200, HorizontalAlignment = HorizontalAlignment.Right };
+            pb.Password = getter();
+            pb.PasswordChanged += (_, _) => setter(pb.Password);
+            container.Items.Add(new AppConfItem { Text = text, Content = pb });
         }
     }
 }

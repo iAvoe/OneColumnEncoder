@@ -20,6 +20,30 @@ namespace OneColumnEncoder.Components
     /// </summary>
     public partial class ThreeButtonGroup : UserControl
     {
+        public static readonly DependencyProperty Button1CommandProperty =
+            DependencyProperty.Register(nameof(Button1Command), typeof(ICommand), typeof(ThreeButtonGroup));
+
+        public static readonly DependencyProperty Button2CommandProperty =
+            DependencyProperty.Register(nameof(Button2Command), typeof(ICommand), typeof(ThreeButtonGroup));
+
+        public static readonly DependencyProperty Button3CommandProperty =
+            DependencyProperty.Register(nameof(Button3Command), typeof(ICommand), typeof(ThreeButtonGroup));
+        public ICommand Button1Command
+        {
+            get => (ICommand)GetValue(Button1CommandProperty);
+            set => SetValue(Button1CommandProperty, value);
+        }
+        public ICommand Button2Command
+        {
+            get => (ICommand)GetValue(Button2CommandProperty);
+            set => SetValue(Button2CommandProperty, value);
+        }
+        public ICommand Button3Command
+        {
+            get => (ICommand)GetValue(Button3CommandProperty);
+            set => SetValue(Button3CommandProperty, value);
+        }
+
         public ThreeButtonGroup()
         {
             InitializeComponent();
