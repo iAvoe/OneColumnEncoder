@@ -1,4 +1,4 @@
-<Window x:Class="OneColumnEncoder.Views.UsageComplianceWindow"
+<Window x:Class="OneColumnEncoder.Views.AppUsageModal"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,10 +6,7 @@
         xmlns:local="clr-namespace:OneColumnEncoder.Views"
         mc:Ignorable="d"
         Title="1cenc Usage &amp; Compliance"
-        Width="600"
-        Height="450"
         WindowStartupLocation="CenterScreen"
-        ResizeMode="NoResize"
         Background="{StaticResource Background}">
     <Grid>
         <Grid.RowDefinitions>
@@ -36,7 +33,7 @@
         </ScrollViewer>
 
         <Border Grid.Row="2"
-                Background="{StaticResource GlobalPrimary}"
+                Background="{StaticResource Background}"
                 BorderThickness="0,1,0,0"
                 Padding="20,15">
             <StackPanel Orientation="Horizontal"

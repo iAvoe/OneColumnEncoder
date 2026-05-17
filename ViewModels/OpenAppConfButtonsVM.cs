@@ -7,7 +7,12 @@ using System.Threading.Tasks;
 
 namespace OneColumnEncoder.ViewModels
 {
-    // Using TwoButtonGroup component
+    /// <summary>
+    /// Show 2 different modals on click
+    /// Using TwoButtonGroup component
+    /// </summary>
+    /// <param name="openAppConf">Open settings modal</param>
+    /// <param name="openUsages">Open usage & compliance modal</param>
     public class OpenAppConfButtonsVM(OpenAppConfCmd openAppConf, OpenUsagesCmd openUsages) : BaseVM
     {
         private string _b2_1Text = "Usage & Compliance";

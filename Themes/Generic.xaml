@@ -7,7 +7,7 @@
 
     <!-- DataTemplates for modals -->
     <DataTemplate DataType="{x:Type vms:AppConfVM}">
-        <comps:AppConfModal />
+        <comps:AppConfItem />
     </DataTemplate>
     <DataTemplate DataType="{x:Type vms:UsageComplianceVM}">
         <views:UsageComplianceUI />
@@ -200,10 +200,11 @@
                             <ColumnDefinition Width="420" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-
-                        <TextBlock VerticalAlignment="Center"
-                                   Text="{TemplateBinding Text}" />
-
+                        <TextBlock Grid.Column="0"
+                                   Text="{TemplateBinding Text}"
+                                   VerticalAlignment="Center"
+                                   FontSize="14"
+                                   Foreground="{TemplateBinding Foreground}" />
                         <ContentPresenter Grid.Column="1"
                                           VerticalAlignment="Center"
                                           HorizontalAlignment="Right" />
@@ -221,8 +222,8 @@
                     <StackPanel>
                         <!-- Header is from HeaderedItemsControl -->
                         <TextBlock Text="{TemplateBinding Header}"
-                                   Style="{StaticResource H2}"
-                                   Margin="0 0 0 20" />
+                                   Style="{StaticResource H3}"
+                                   Margin="0 10 0 10" />
                         <ItemsPresenter />
                     </StackPanel>
                 </ControlTemplate>

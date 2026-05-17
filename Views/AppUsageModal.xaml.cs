@@ -4,9 +4,9 @@ using System.Windows;
 
 namespace OneColumnEncoder.Views
 {
-    public partial class UsageComplianceWindow : Window
+    public partial class AppUsageModal : Window
     {
-        public UsageComplianceWindow()
+        public AppUsageModal()
         {
             InitializeComponent();
             DataContextChanged += OnDataContextChanged;

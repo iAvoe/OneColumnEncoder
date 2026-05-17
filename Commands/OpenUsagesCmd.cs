@@ -13,7 +13,7 @@ namespace OneColumnEncoder.Commands
         public override void Execute(object? parameter)
         {
             var existingWindow = Application.Current.Windows
-                .OfType<UsageComplianceWindow>()
+                .OfType<AppUsageModal>()
                 .FirstOrDefault();
 
             if (existingWindow != null)
@@ -25,10 +25,11 @@ namespace OneColumnEncoder.Commands
             if (_modelNavS.IsOpen)
                 _modelNavS.Close();
 
-            var window = new UsageComplianceWindow
-            {
-                DataContext = new UsageComplianceVM(_modelNavS)
-            };
+            // First create the window
+            var window = new AppUsageModal();
+
+            // Now window.Close is ready
+            window.DataContext = new UsageComplianceVM(_modelNavS, window.Close);
             window.Show();
         }
     }

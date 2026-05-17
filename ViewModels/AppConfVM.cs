@@ -18,24 +18,32 @@ namespace OneColumnEncoder.ViewModels
     {
         // SSOT Store for app settings
         private readonly AppConfS _appConfStore;
+
         // Commands for UI interactions
-        public ICommand CloseCmd { get; }
-        public ICommand SaveCmd { get; }
-        public ICommand LoadCmd { get; }
-        // Expose settings for binding
+        public CloseModalCmd CloseCmd { get; }
+        public SaveAppConfCmd SaveCmd { get; }
+        public LoadAppConfCmd LoadCmd { get; }
+
+        // Save and Cancel buttons
+        public ConfirmCancelButtonsVM ConfirmCancelButtons { get; }
+
+        // Settings for binding
         public AppConfS.GeneralSettings General => _appConfStore.General;
         public AppConfS.OverwriteSettings Overwrite => _appConfStore.Overwrite;
         public AppConfS.SmtpSettings Smtp => _appConfStore.Smtp;
+
         // Grouped settings listing for the ListView
         public ObservableCollection<AppConfContainer> SettingsListing { get; } = [];
 
-        public AppConfVM(ModalNavS modalNavS, AppConfS appConfS)
+        public AppConfVM(ModalNavS modalNavS, AppConfS appConfS, Action closeAction)
         {
-            CloseCmd = new CloseModalCmd(modalNavS);
-            SaveCmd = new SaveAppConfCmd(appConfS);
-            LoadCmd = new LoadAppConfCmd(appConfS);
             _appConfStore = appConfS;
 
+            CloseCmd = new CloseModalCmd(modalNavS, closeAction);
+            SaveCmd = new SaveAppConfCmd(appConfS, modalNavS);
+            LoadCmd = new LoadAppConfCmd(appConfS);
+
+            ConfirmCancelButtons = new ConfirmCancelButtonsVM(CloseCmd, SaveCmd);
             BuildSettingsListing();
         }
 

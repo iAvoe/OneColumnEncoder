@@ -23,6 +23,8 @@ namespace OneColumnEncoder.ViewModels
         // Nav Commands
         public OpenUsagesCmd OpenUsages { get; }
         public OpenAppConfCmd OpenAppConf { get; }
+        public CloseModalCmd CloseModal { get; }
+        public SaveAppConfCmd SaveAppConf { get; }
 
         public BaseVM? CurrentModalVM => _modalNavS.CurrentModalVM;
         public bool IsModalOpen => _modalNavS.IsOpen;
@@ -46,7 +48,7 @@ namespace OneColumnEncoder.ViewModels
             new EncItemVM(new EncItemM("Custom Parameters")),
         ];
         public OpenAppConfButtonsVM OpenAppConfButtons { get; }
-        public EncodingStartButtonsVM EncodingStartButtons { get; } = new();
+        public EncodingStartButtonsVM EncodingStartButtons { get; } = new(); // TODO in future
 
         public ToolsImportCardVM ToolsImportCard { get; } = new ToolsImportCardVM();
         public SourceValidationCardVM SourceValidationCard { get; } = new SourceValidationCardVM();
@@ -71,6 +73,8 @@ namespace OneColumnEncoder.ViewModels
             OpenUsages = new OpenUsagesCmd(_modalNavS);
             OpenAppConfButtons = new OpenAppConfButtonsVM(OpenAppConf, OpenUsages);
 
+            CloseModal = new CloseModalCmd(_modalNavS);
+            SaveAppConf = new SaveAppConfCmd(_appConfS, _modalNavS);
             ToolsImportCard.ToolImported += OnToolImported;
 
             // Initialize import card

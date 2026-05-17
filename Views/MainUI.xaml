@@ -17,6 +17,8 @@
 
         <!-- Setting Access -->
         <comps:TwoButtonGroup DataContext="{Binding OpenAppConfButtons}"
+                              Button1Command="{Binding OpenUsage}"
+                              Button2Command="{Binding OpenAppConf}"
                               Margin="0 0 0 20" />
 
         <!-- Select Upstream Tools -->

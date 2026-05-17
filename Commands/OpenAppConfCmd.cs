@@ -15,7 +15,7 @@ namespace OneColumnEncoder.Commands
         public override void Execute(object? parameter)
         {
             var existingWindow = Application.Current.Windows
-                .OfType<AppConfWindow>()
+                .OfType<AppConfModal>()
                 .FirstOrDefault();
 
             if (existingWindow != null)
@@ -27,10 +27,11 @@ namespace OneColumnEncoder.Commands
             if (_modalNavS.IsOpen)
                 _modalNavS.Close();
 
-            var window = new AppConfWindow
-            {
-                DataContext = new AppConfVM(_modalNavS, _appConfS)
-            };
+            // First create the window
+            AppConfModal window = new();
+
+            // Now window.Close is ready
+            window.DataContext = new AppConfVM(_modalNavS, _appConfS, window.Close);
             window.Show();
         }
     }

@@ -7,18 +7,16 @@ using System.Threading.Tasks;
 
 namespace OneColumnEncoder.Commands
 {
-    public class SaveAppConfCmd : AsyncBaseCmd
+    public class SaveAppConfCmd(AppConfS appConfS, ModalNavS modalNavS) : AsyncBaseCmd
     {
-        private readonly AppConfS _appConfStore;
-        public SaveAppConfCmd(AppConfS appConfS)
-        {
-            _appConfStore = appConfS;
-        }
+        private readonly AppConfS _appConfStore = appConfS;
+        private readonly ModalNavS _modalNavS = modalNavS;
 
         protected override async Task ExecuteAsync(object? parameter)
         {
             _appConfStore.Save();
             await Task.CompletedTask;
+            _modalNavS.Close();
         }
     }
 }

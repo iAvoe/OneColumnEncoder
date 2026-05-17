@@ -1,25 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace OneColumnEncoder.Components
 {
-    /// <summary>
-    /// Interaction logic for TwoButtonGroup.xaml
-    /// </summary>
     public partial class TwoButtonGroup : UserControl
     {
+        public static readonly DependencyProperty Button1CommandProperty =
+            DependencyProperty.Register(nameof(Button1Command), typeof(ICommand), typeof(TwoButtonGroup));
+
+        public static readonly DependencyProperty Button2CommandProperty =
+            DependencyProperty.Register(nameof(Button2Command), typeof(ICommand), typeof(TwoButtonGroup));
+
+        public ICommand Button1Command
+        {
+            get => (ICommand)GetValue(Button1CommandProperty);
+            set => SetValue(Button1CommandProperty, value);
+        }
+
+        public ICommand Button2Command
+        {
+            get => (ICommand)GetValue(Button2CommandProperty);
+            set => SetValue(Button2CommandProperty, value);
+        }
+
         public TwoButtonGroup()
         {
             InitializeComponent();
