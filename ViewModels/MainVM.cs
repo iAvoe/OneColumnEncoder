@@ -19,10 +19,13 @@ namespace OneColumnEncoder.ViewModels
         private readonly ModalNavS _modalNavS;
         private readonly AppConfS _appConfS;
         private readonly AppDataS _appDataS;
+        
+        // Nav Commands
+        public OpenUsagesCmd OpenUsages { get; }
+        public OpenAppConfCmd OpenAppConf { get; }
 
         public BaseVM? CurrentModalVM => _modalNavS.CurrentModalVM;
         public bool IsModalOpen => _modalNavS.IsOpen;
-        public ICommand OpenAppConfCmd { get; }
 
         public ObservableCollection<EncItemVM> UpstreamsZone { get; }
         public ObservableCollection<EncItemVM> EncodersZone { get; }
@@ -42,8 +45,8 @@ namespace OneColumnEncoder.ViewModels
             new EncItemVM(new EncItemM("Base Parameters")),
             new EncItemVM(new EncItemM("Custom Parameters")),
         ];
-        public OpenSettingButtonsVM OpenSettingsButtonsVM { get; } = new();
-        public EncodingStartButtonsVM EncodingStartButtonsVM { get; } = new();
+        public OpenAppConfButtonsVM OpenAppConfButtons { get; }
+        public EncodingStartButtonsVM EncodingStartButtons { get; } = new();
 
         public ToolsImportCardVM ToolsImportCard { get; } = new ToolsImportCardVM();
         public SourceValidationCardVM SourceValidationCard { get; } = new SourceValidationCardVM();
@@ -64,7 +67,9 @@ namespace OneColumnEncoder.ViewModels
             LoadToolsFromAppDataS();
 
             _modalNavS.CurrentViewModelChanged += ModalNavS_CurrentViewModelChanged;
-            OpenAppConfCmd = new OpenAppConfCmd(_modalNavS, _appConfS);
+            OpenAppConf = new OpenAppConfCmd(_modalNavS, _appConfS);
+            OpenUsages = new OpenUsagesCmd(_modalNavS);
+            OpenAppConfButtons = new OpenAppConfButtonsVM(OpenAppConf, OpenUsages);
 
             ToolsImportCard.ToolImported += OnToolImported;
 

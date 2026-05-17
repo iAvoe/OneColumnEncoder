@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OneColumnEncoder.Commands;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 namespace OneColumnEncoder.ViewModels
 {
     // Using TwoButtonGroup component
-    public class OpenSettingButtonsVM : BaseVM
+    public class OpenAppConfButtonsVM(OpenAppConfCmd openAppConf, OpenUsagesCmd openUsages) : BaseVM
     {
         private string _b2_1Text = "Usage & Compliance";
         public string B2_1Text
@@ -23,10 +24,7 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _b2_2Text, value);
         }
 
-        /*
-        TODO:
-        public ICommand ReservedButton { get; }
-        public ICommand OpenSettings { get; }
-        */
+        public OpenUsagesCmd OpenUsage { get; } = openUsages;
+        public OpenAppConfCmd OpenAppConf { get; } = openAppConf;
     }
 }

@@ -14,21 +14,28 @@
             Padding="17.5 20"
             Background="{StaticResource Background}">
         <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
             <!-- The Mask
                 Keep the background solid so the Alpha is 1.0.
                 IsHitTestVisible="False": so it doesn't interfere with clicks
                 Placed behind the ListView -->
             <Border x:Name="MaskBorder"
+                    Grid.RowSpan="2"
                     Background="Black"
                     BorderBrush="Black"
                     BorderThickness="0"
                     CornerRadius="10"
                     IsHitTestVisible="False" />
-            <TextBlock Text="Application Settings"
+            <TextBlock Grid.Row="0"
+                       Text="Application Settings"
                        Style="{StaticResource H2}"
                        Margin="10" />
             <!-- Setting titles and items -->
-            <ListView BorderThickness="0"
+            <ListView Grid.Row="1"
+                      BorderThickness="0"
                       Background="Transparent"
                       Margin="10"
                       ItemsSource="{Binding SettingsListing}">
@@ -83,13 +90,7 @@
                         </Setter>
                     </Style>
                 </ListView.ItemContainerStyle>
-                <!-- List Items -->
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <!-- We cannot access x:Name behind DataTemplate, so we use a separate XAML for it -->
-
-                    </DataTemplate>
-                </ListView.ItemTemplate>
+                <!-- Items are AppConfContainer controls rendered via their own template -->
             </ListView>
         </Grid>
     </Border>

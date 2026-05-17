@@ -8,14 +8,12 @@ using System.Threading.Tasks;
 
 namespace OneColumnEncoder.Commands
 {
-    public class OpenAppConfCmd(ModalNavS modalNavS, AppConfS appConfS) : BaseCmd
+    public class OpenUsagesCmd(ModalNavS modelNavS) : BaseCmd
     {
-        private readonly ModalNavS _modalNavS = modalNavS;
-        private readonly AppConfS _appConfS = appConfS;
-
+        private readonly ModalNavS _modelNavS = modelNavS;
         public override void Execute(object? parameter)
         {
-            _modalNavS.CurrentModalVM = new AppConfVM(_modalNavS, _appConfS);
+            _modelNavS.CurrentModalVM = new UsageComplianceVM(_modelNavS);
         }
     }
 }
