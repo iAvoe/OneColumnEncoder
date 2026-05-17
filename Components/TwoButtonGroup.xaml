@@ -14,12 +14,14 @@
         </Grid.ColumnDefinitions>
         <Button Grid.Column="0"
                 Content="{Binding B2_1Text}"
+                Command="{Binding OpenUsage}"
                 MinWidth="220"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Left"
                 Style="{StaticResource NormalButton}" />
         <Button Grid.Column="1"
                 Content="{Binding B2_2Text}"
+                Command="{Binding OpenAppConf}"
                 MinWidth="220"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Right"

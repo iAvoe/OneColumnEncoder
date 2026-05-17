@@ -104,13 +104,7 @@
                         <Setter Property="Background"
                                 Value="{StaticResource Background}" />
                     </Trigger>
-                    <Trigger Property="IsFocused"
-                             Value="True">
-                        <Setter Property="Foreground"
-                                Value="{StaticResource BorderGreen}" />
-                        <Setter Property="Background"
-                                Value="{StaticResource BackgroundGreen}" />
-                    </Trigger>
+                    
                     <Trigger Property="IsCancel"
                              Value="True">
                         <Setter Property="Foreground"

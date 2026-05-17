@@ -5,9 +5,12 @@
     xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
     xmlns:views="clr-namespace:OneColumnEncoder.Views">
 
-    <!-- DataTemplate for AppConfVM -->
+    <!-- DataTemplates for modals -->
     <DataTemplate DataType="{x:Type vms:AppConfVM}">
-        <views:AppConfUI />
+        <comps:AppConfModal />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vms:UsageComplianceVM}">
+        <views:UsageComplianceUI />
     </DataTemplate>
 
     <!-- Spacing -->

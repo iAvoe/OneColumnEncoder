@@ -1,19 +1,16 @@
-﻿using OneColumnEncoder.Stores;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OneColumnEncoder.Commands;
+using OneColumnEncoder.Stores;
+using System.Windows.Input;
 
 namespace OneColumnEncoder.ViewModels
 {
     public class UsageComplianceVM : BaseVM
     {
-        private ModalNavS modelNavS;
+        public ICommand CloseCmd { get; }
 
         public UsageComplianceVM(ModalNavS modelNavS)
         {
-            this.modelNavS = modelNavS;
+            CloseCmd = new CloseModalCmd(modelNavS);
         }
     }
 }
