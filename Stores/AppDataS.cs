@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OneColumnEncoder.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -12,7 +13,7 @@ namespace OneColumnEncoder.Stores
     /// <summary>
     /// Store imported tools (their paths) and version strings
     /// </summary>
-    public class AppDataS : SaveLoadBaseS<AppDataS>
+    public class AppDataS : SaveLoadBase<AppDataS>
     {
         // Tools file path
         private static readonly string ConfigFilePath =

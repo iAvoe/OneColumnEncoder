@@ -3,9 +3,9 @@ using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
 
-namespace OneColumnEncoder.Stores
+namespace OneColumnEncoder.Helpers
 {
-    public abstract class SaveLoadBaseS<T> : INotifyPropertyChanged where T : SaveLoadBaseS<T>, new()
+    public abstract class SaveLoadBase<T> : INotifyPropertyChanged where T : SaveLoadBase<T>, new()
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 

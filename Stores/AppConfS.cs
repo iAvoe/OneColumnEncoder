@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using OneColumnEncoder.Helpers;
 
 namespace OneColumnEncoder.Stores
 {
     /// <summary>
     /// Settings for this app
     /// </summary>
-    public class AppConfS : SaveLoadBaseS<AppConfS>
+    public class AppConfS : SaveLoadBase<AppConfS>
     {
         // Settings file path
         private static readonly string ConfigFilePath =
