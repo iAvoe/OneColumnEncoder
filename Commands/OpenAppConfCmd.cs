@@ -11,13 +11,15 @@ namespace OneColumnEncoder.Commands
     public class OpenAppConfCmd : BaseCmd
     {
         private readonly ModalNavS _modalNavS;
-        public OpenAppConfCmd(ModalNavS modalNavS)
+        private readonly AppConfS _appConfS;
+        public OpenAppConfCmd(ModalNavS modalNavS, AppConfS appConfS)
         {
             _modalNavS = modalNavS;
+            _appConfS = appConfS;
         }
         public override void Execute(object? parameter)
         {
-            _modalNavS.CurrentModalVM = new AppConfVM(_modalNavS);
+            _modalNavS.CurrentModalVM = new AppConfVM(_modalNavS, _appConfS);
         }
     }
 }

@@ -9,18 +9,11 @@ using System.Threading.Tasks;
 
 namespace OneColumnEncoder.Commands
 {
-    public class ImportToolCmd : AsyncBaseCmd
+    public class ImportToolCmd(DropdownMenuVM dropdownVM, ObservableCollection<ChecklistEntryVM> checklist, Action<string>? onSuccess = null) : AsyncBaseCmd
     {
-        private readonly DropdownMenuVM _dropdownVm;
-        private readonly ObservableCollection<ChecklistEntryVM> _checklist;
-        private readonly Action<string>? _onSuccess;
-
-        public ImportToolCmd(DropdownMenuVM dropdownVM, ObservableCollection<ChecklistEntryVM> checklist, Action<string>? onSuccess = null)
-        {
-            _dropdownVm = dropdownVM;
-            _checklist = checklist;
-            _onSuccess = onSuccess;
-        }
+        private readonly DropdownMenuVM _dropdownVm = dropdownVM;
+        private readonly ObservableCollection<ChecklistEntryVM> _checklist = checklist;
+        private readonly Action<string>? _onSuccess = onSuccess;
 
         public override bool CanExecute(object? parameter)
         {
@@ -61,7 +54,7 @@ namespace OneColumnEncoder.Commands
         }
 
         // TODO
-        private async Task<bool> ImportToolAsync(string toolName)
+        private static async Task<bool> ImportToolAsync(string toolName)
         {
             await Task.Delay(1000);
             return true;

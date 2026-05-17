@@ -4,10 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:views="clr-namespace:OneColumnEncoder.Views"
-             xmlns:viewmodels="clr-namespace:OneColumnEncoder.ViewModels"
+             xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance Type=viewmodels:MainVM}">
+             d:DataContext="{d:DesignInstance Type=vms:MainVM}">
     <StackPanel Margin="5">
         <!-- Import Tools -->
         <comps:SectionHeader HeaderText="Import Tools"

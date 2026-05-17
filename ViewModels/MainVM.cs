@@ -73,7 +73,7 @@ namespace OneColumnEncoder.ViewModels
             _appDataS = appDataS;
 
             _modalNavS.CurrentViewModelChanged += ModalNavS_CurrentViewModelChanged;
-            OpenAppConfCmd = new OpenAppConfCmd(_modalNavS);
+            OpenAppConfCmd = new OpenAppConfCmd(_modalNavS, _appConfS);
 
             ToolsImportCard.ToolImported += OnToolImported;
 

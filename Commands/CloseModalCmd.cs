@@ -7,13 +7,10 @@ using System.Threading.Tasks;
 
 namespace OneColumnEncoder.Commands
 {
-    public class CloseModalCmd : BaseCmd
+    public class CloseModalCmd(ModalNavS modalNavS) : BaseCmd
     {
-        private readonly ModalNavS _modalNavS;
-        public CloseModalCmd(ModalNavS modalNavS)
-        {
-            _modalNavS = modalNavS;
-        }
+        private readonly ModalNavS _modalNavS = modalNavS;
+
         public override void Execute(object? parameter)
         {
             _modalNavS.Close();

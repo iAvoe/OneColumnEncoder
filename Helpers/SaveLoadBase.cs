@@ -7,6 +7,9 @@ namespace OneColumnEncoder.Helpers
 {
     public abstract class SaveLoadBase<T> : INotifyPropertyChanged where T : SaveLoadBase<T>, new()
     {
+        private static readonly JsonSerializerOptions CachedJsonOptions =
+            new() { WriteIndented = true };
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected abstract string FilePath { get; }
@@ -20,7 +23,8 @@ namespace OneColumnEncoder.Helpers
         {
             try
             {
-                var json = JsonSerializer.Serialize((T)this, new JsonSerializerOptions { WriteIndented = true });
+                var json =
+                    JsonSerializer.Serialize((T)this, CachedJsonOptions);
                 File.WriteAllText(FilePath, json);
             }
             catch (Exception ex)

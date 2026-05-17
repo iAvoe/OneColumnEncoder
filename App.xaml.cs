@@ -11,20 +11,22 @@ namespace OneColumnEncoder
     /// </summary>
     public partial class App : Application
     {
-        // Pass navigation to MainVM
+        // Pass navigation, app settings and tools imported to MainVM
         private readonly ModalNavS _modalNavS;
         private readonly AppConfS _appConfS;
+        private readonly AppDataS _appDataS;
         public App()
         {
             _modalNavS = new ModalNavS();
-            _appConfS = new AppConfS();
+            _appConfS = AppConfS.Load();
+            _appDataS = AppDataS.Load();
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
             MainWindow = new MainWindow()
             {
-                DataContext = new MainVM(_modalNavS, _appConfS)
+                DataContext = new MainVM(_modalNavS, _appConfS, _appDataS)
             };
             MainWindow.Show();
 

@@ -39,7 +39,7 @@
                         <Setter Property="VerticalContentAlignment"
                                 Value="Center" />
                         <Setter Property="Padding"
-                                Value="5 1 5 1" />
+                                Value="10" />
                         <Setter Property="Margin"
                                 Value="0" />
 

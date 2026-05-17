@@ -21,6 +21,7 @@ namespace OneColumnEncoder.ViewModels
         public AppConfS.GeneralSettings General => _appConfStore.General;
         public AppConfS.OverwriteSettings Overwrite => _appConfStore.Overwrite;
         public AppConfS.SmtpSettings Smtp => _appConfStore.Smtp;
+
         public AppConfVM(ModalNavS modalNavS, AppConfS appConfS)
         {
             CloseCmd = new CloseModalCmd(modalNavS);
