@@ -29,7 +29,7 @@ namespace OneColumnEncoder.Commands
                 !_dropdownVm.SelectedItem.IsSeparator;
         }
 
-        public override async Task ExecuteAsync(object? parameter)
+        protected override async Task ExecuteAsync(object? parameter)
         {
             string selectedTool = _dropdownVm.SelectedItem?.Title ?? "";
             if (string.IsNullOrEmpty(selectedTool)) return;

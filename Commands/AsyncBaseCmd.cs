@@ -23,7 +23,7 @@ namespace OneColumnEncoder.Commands
         // Implement a method that is async, so that whenever the button is clicked,
         // run ExecuteAsync instead of Execute,
         // and ExecuteAsync will be implemented in the derived class
-        public abstract Task ExecuteAsync(object? parameter);
+        protected abstract Task ExecuteAsync(object? parameter);
         public override async void Execute(object? parameter)
         {
             if (IsExecuting) return;

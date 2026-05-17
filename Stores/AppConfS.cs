@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace OneColumnEncoder.Stores
 {
     /// <summary>
     /// Settings for this app
     /// </summary>
-    public class AppConfS
+    public class AppConfS : INotifyPropertyChanged
     {
         // App behaviors
         public GeneralSettings General { get; set; } = new GeneralSettings();
@@ -21,6 +22,8 @@ namespace OneColumnEncoder.Stores
         // Settings file path
         private static readonly string ConfigFilePath =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appconfig.json");
+        // Setting change, update UI if needed
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// Read-write settings to file
@@ -45,6 +48,7 @@ namespace OneColumnEncoder.Stores
             try
             {
                 var json = File.ReadAllText(ConfigFilePath);
+                // TODO: Update UI?
                 return JsonSerializer.Deserialize<AppConfS>(json) ?? new AppConfS();
             }
             catch (Exception ex)
