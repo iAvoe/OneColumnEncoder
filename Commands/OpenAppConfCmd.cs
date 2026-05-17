@@ -1,10 +1,9 @@
 ﻿using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
+using OneColumnEncoder.Views;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
 
 namespace OneColumnEncoder.Commands
 {
@@ -15,7 +14,24 @@ namespace OneColumnEncoder.Commands
 
         public override void Execute(object? parameter)
         {
-            _modalNavS.CurrentModalVM = new AppConfVM(_modalNavS, _appConfS);
+            var existingWindow = Application.Current.Windows
+                .OfType<AppConfWindow>()
+                .FirstOrDefault();
+
+            if (existingWindow != null)
+            {
+                existingWindow.Activate();
+                return;
+            }
+
+            if (_modalNavS.IsOpen)
+                _modalNavS.Close();
+
+            var window = new AppConfWindow
+            {
+                DataContext = new AppConfVM(_modalNavS, _appConfS)
+            };
+            window.Show();
         }
     }
 }

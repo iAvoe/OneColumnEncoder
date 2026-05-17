@@ -6,7 +6,7 @@ namespace OneColumnEncoder.ViewModels
 {
     public class UsageComplianceVM : BaseVM
     {
-        public ICommand CloseCmd { get; }
+        public ICommand CloseCmd { get; set; }
 
         public UsageComplianceVM(ModalNavS modelNavS)
         {
