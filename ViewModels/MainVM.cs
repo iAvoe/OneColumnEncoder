@@ -24,25 +24,9 @@ namespace OneColumnEncoder.ViewModels
         public bool IsModalOpen => _modalNavS.IsOpen;
         public ICommand OpenAppConfCmd { get; }
 
-        public ObservableCollection<EncItemVM> UpstreamsZone { get; } =
-        [
-            new EncItemVM(new EncItemM("FFMPEG")),
-            new EncItemVM(new EncItemM("VSPipe")),
-            new EncItemVM(new EncItemM("AVS2YUV")),
-            new EncItemVM(new EncItemM("AVS2PipeMod")),
-            new EncItemVM(new EncItemM("SVFI")),
-        ];
-        public ObservableCollection<EncItemVM> EncodersZone { get; } =
-        [
-            new EncItemVM(new EncItemM("x264")),
-            new EncItemVM(new EncItemM("x265")),
-            new EncItemVM(new EncItemM("SVT-AV1")),
-        ];
-        public ObservableCollection<EncItemVM> AnalyticsZone { get; } =
-        [
-            new EncItemVM(new EncItemM("FFProbe")),
-            new EncItemVM(new EncItemM("AviSynth.dll (for Avs2PipeMod)")),
-        ];
+        public ObservableCollection<EncItemVM> UpstreamsZone { get; }
+        public ObservableCollection<EncItemVM> EncodersZone { get; }
+        public ObservableCollection<EncItemVM> AnalyticsZone { get; }
         public ObservableCollection<EncItemVM> SourceImportZone { get; } =
         [
             new EncItemVM(new EncItemM("Video Source")),
@@ -68,9 +52,16 @@ namespace OneColumnEncoder.ViewModels
 
         public MainVM(ModalNavS modalNavS, AppConfS appConfS, AppDataS appDataS)
         {
+            // Store initialized in App.xaml.cs and passed down to ensure SSOT
             _modalNavS = modalNavS;
             _appConfS = appConfS;
             _appDataS = appDataS;
+
+            // Build zone collections from persisted AppDataS
+            UpstreamsZone = [];
+            EncodersZone = [];
+            AnalyticsZone = [];
+            LoadToolsFromAppDataS();
 
             _modalNavS.CurrentViewModelChanged += ModalNavS_CurrentViewModelChanged;
             OpenAppConfCmd = new OpenAppConfCmd(_modalNavS, _appConfS);
@@ -124,13 +115,74 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(IsModalOpen));
         }
 
+        private void LoadToolsFromAppDataS()
+        {
+            var t = _appDataS.Tools;
+            AddTool(t.FfmpegPath, t.FfmpegVer, "FFMPEG", UpstreamsZone);
+            AddTool(t.VspipePath, t.VspipeVer, "VSPipe", UpstreamsZone);
+            AddTool(t.Avs2yuvPath, t.Avs2yuvVer, "AVS2YUV", UpstreamsZone);
+            AddTool(t.Avs2pipemodPath, t.Avs2pipemodVer, "AVS2PipeMod", UpstreamsZone);
+            AddTool(t.OneLineShotArgsPath, null, "OneLineShotArgs", UpstreamsZone);
+            AddTool(t.X264Path, t.X264Ver, "x264", EncodersZone);
+            AddTool(t.X265Path, t.X265Ver, "x265", EncodersZone);
+            AddTool(t.SvtAv1Path, t.SvtAv1Ver, "SVT-AV1", EncodersZone);
+            AddTool(t.FfprobePath, t.FfprobeVer, "FFProbe", AnalyticsZone);
+            AddTool(t.AviSynthDllPath, null, "AviSynth.dll (for Avs2PipeMod)", AnalyticsZone);
+        }
+
+        private static void AddTool(string? path, string? version, string displayName, ObservableCollection<EncItemVM> zone)
+        {
+            if (string.IsNullOrEmpty(path)) return;
+            var item = new EncItemVM(new EncItemM(displayName))
+            {
+                Path = path,
+                VersionText = version ?? "",
+                P1Name = "Version",
+                P2Name = "Path",
+                R1Text = "Edit",
+                R2Text = "Clear"
+            };
+            zone.Add(item);
+        }
+
         private void OnToolImported(string toolName)
         {
             var zone = ZoneForTool(toolName);
-            if (zone != null)
+            if (zone == null) return;
+
+            var displayName = Path.GetFileNameWithoutExtension(toolName);
+
+            // Save to AppDataS and persist
+            SetToolPath(toolName, displayName);
+            _appDataS.Save();
+
+            var item = new EncItemVM(new EncItemM(displayName))
             {
-                var displayName = System.IO.Path.GetFileNameWithoutExtension(toolName);
-                zone.Add(new EncItemVM(new EncItemM(displayName)));
+                P1Name = "Version",
+                P2Name = "Path",
+                R1Text = "Edit",
+                R2Text = "Clear"
+            };
+            zone.Add(item);
+        }
+
+        private void SetToolPath(string toolName, string displayName)
+        {
+            // Maps tool exe name to AppDataS.Importables properties
+            // TODO: Replace placeholder path with actual resolved path when ImportToolAsync is implemented
+            var t = _appDataS.Tools;
+            switch (toolName.ToLowerInvariant())
+            {
+                case "ffmpeg.exe":              t.FfmpegPath = displayName; break;
+                case "vspipe.exe":              t.VspipePath = displayName; break;
+                case "avs2yuv.exe":             t.Avs2yuvPath = displayName; break;
+                case "avs2pipemod.exe":         t.Avs2pipemodPath = displayName; break;
+                case "one_line_shot_args.exe":  t.OneLineShotArgsPath = displayName; break;
+                case "x264.exe":                t.X264Path = displayName; break;
+                case "x265.exe":                t.X265Path = displayName; break;
+                case "svtav1encapp.exe":        t.SvtAv1Path = displayName; break;
+                case "ffprobe.exe":             t.FfprobePath = displayName; break;
+                case "avisynth.dll":            t.AviSynthDllPath = displayName; break;
             }
         }
 
