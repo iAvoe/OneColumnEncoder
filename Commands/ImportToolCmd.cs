@@ -13,13 +13,13 @@ namespace OneColumnEncoder.Commands
     {
         private readonly DropdownMenuVM _dropdownVm;
         private readonly ObservableCollection<ChecklistEntryVM> _checklist;
+        private readonly Action<string>? _onSuccess;
 
-        // private readonly IToolImportService _importService; // Maybe create this
-
-        public ImportToolCmd(DropdownMenuVM dropdownVM, ObservableCollection<ChecklistEntryVM> checklist)
+        public ImportToolCmd(DropdownMenuVM dropdownVM, ObservableCollection<ChecklistEntryVM> checklist, Action<string>? onSuccess = null)
         {
             _dropdownVm = dropdownVM;
             _checklist = checklist;
+            _onSuccess = onSuccess;
         }
 
         public override bool CanExecute(object? parameter)
@@ -38,7 +38,8 @@ namespace OneColumnEncoder.Commands
 
             if (success)
             {
-                // Re-generate checklist
+                _onSuccess?.Invoke(selectedTool);
+
                 foreach (var l in _checklist)
                 {
                     if (l.Text.Contains(selectedTool, System.StringComparison.OrdinalIgnoreCase))

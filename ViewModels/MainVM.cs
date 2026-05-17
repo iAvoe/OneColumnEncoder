@@ -5,6 +5,7 @@ using OneColumnEncoder.Stores;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -71,13 +72,10 @@ namespace OneColumnEncoder.ViewModels
             _appConfS = appConfS;
             _appDataS = appDataS;
 
-            // Subscribe to modal changes
             _modalNavS.CurrentViewModelChanged += ModalNavS_CurrentViewModelChanged;
             OpenAppConfCmd = new OpenAppConfCmd(_modalNavS);
 
-            // Subscribe to settings changes to update card checks
-
-            // Subscribe to tools data changes to update import cards
+            ToolsImportCard.ToolImported += OnToolImported;
 
             // Initialize import card
             ToolsImportCard.Name = "Import tools:";
@@ -115,6 +113,7 @@ namespace OneColumnEncoder.ViewModels
         protected override void Dispose()
         {
             _modalNavS.CurrentViewModelChanged -= ModalNavS_CurrentViewModelChanged;
+            ToolsImportCard.ToolImported -= OnToolImported;
             base.Dispose();
         }
 
@@ -125,19 +124,27 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(IsModalOpen));
         }
 
-        /*
-        protected override void Dispose()
+        private void OnToolImported(string toolName)
         {
-            _modelNav_S.CurrentViewModelChanged -= ModelNav_S_CurrentViewModelChanged;
-            base.Dispose();
+            var zone = ZoneForTool(toolName);
+            if (zone != null)
+            {
+                var displayName = System.IO.Path.GetFileNameWithoutExtension(toolName);
+                zone.Add(new EncItemVM(new EncItemM(displayName)));
+            }
         }
-        
-        private void ModelNavStore_CurrentViewModelChanged()
+
+        private ObservableCollection<EncItemVM>? ZoneForTool(string toolName)
         {
-            OnPropertyChanged(nameof(CurrentModalVM));
-            OnPropertyChanged(nameof(IsModalOpen));
+            return toolName.ToLowerInvariant() switch
+            {
+                "ffmpeg.exe" or "vspipe.exe" or "avs2yuv.exe" or "avs2pipemod.exe"
+                    or "one_line_shot_args.exe" => UpstreamsZone,
+                "x264.exe" or "x265.exe" or "svtav1encapp.exe" => EncodersZone,
+                "ffprobe.exe" or "avisynth.dll" => AnalyticsZone,
+                _ => null,
+            };
         }
-        */
 
     }
 }
