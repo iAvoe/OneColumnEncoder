@@ -11,53 +11,19 @@ namespace OneColumnEncoder.Stores
     /// <summary>
     /// Settings for this app
     /// </summary>
-    public class AppConfS : INotifyPropertyChanged
+    public class AppConfS : SaveLoadBaseS<AppConfS>
     {
-        // App behaviors
-        public GeneralSettings General { get; set; } = new GeneralSettings();
-        // File overwrite behaviors
-        public OverwriteSettings Overwrite { get; set; } = new OverwriteSettings();
-        // SMTP
-        public SmtpSettings Smtp { get; set; } = new SmtpSettings();
         // Settings file path
         private static readonly string ConfigFilePath =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appconfig.json");
-        // Setting change, update UI if needed
-        public event PropertyChangedEventHandler? PropertyChanged;
+        protected override string FilePath => ConfigFilePath;
 
-        /// <summary>
-        /// Read-write settings to file
-        /// </summary>
-        public void Save()
-        {
-            try
-            {
-                var json =
-                    JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
-                File.WriteAllText(ConfigFilePath, json);
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions (e.g., log error)
-                Console.WriteLine($"Error saving config: {ex.Message}");
-            }
-        }
-        public static AppConfS Load()
-        {
-            if (!File.Exists(ConfigFilePath)) return new AppConfS();
-            try
-            {
-                var json = File.ReadAllText(ConfigFilePath);
-                // TODO: Update UI?
-                return JsonSerializer.Deserialize<AppConfS>(json) ?? new AppConfS();
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions (e.g., log error)
-                Console.WriteLine($"Error loading config: {ex.Message}");
-            }
-            return new AppConfS(); // Return default if file doesn't exist or on error
-        }
+        // App behaviors, File overwrite behaviors, SMTP settings
+        public GeneralSettings General { get; set; } = new GeneralSettings();
+        public OverwriteSettings Overwrite { get; set; } = new OverwriteSettings();
+        public SmtpSettings Smtp { get; set; } = new SmtpSettings();
+
+        // Property change is within SaveLoadBaseS, so no need to implement it here
 
         #region Setting items
         public class GeneralSettings

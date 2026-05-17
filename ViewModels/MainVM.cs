@@ -14,8 +14,11 @@ namespace OneColumnEncoder.ViewModels
 {
     public class MainVM : BaseVM
     {
+        // Modal navigation, app settings, and tools data stores
         private readonly ModalNavS _modalNavS;
         private readonly AppConfS _appConfS;
+        private readonly AppDataS _appDataS;
+
         // Expose current modal VM and open state for binding
         public BaseVM? CurrentModalVM => _modalNavS.CurrentModalVM;
         public bool IsModalOpen => _modalNavS.IsOpen;
@@ -38,10 +41,11 @@ namespace OneColumnEncoder.ViewModels
         public EncodeTermsCardVM EncodeTermsCard { get; } = new EncodeTermsCardVM();
         public BestPracticesCardVM BestPracticesCard { get; } = new BestPracticesCardVM();
 
-        public MainVM(ModalNavS modalNavS, AppConfS appConfS)
+        public MainVM(ModalNavS modalNavS, AppConfS appConfS, AppDataS appDataS)
         {
             _modalNavS = modalNavS;
             _appConfS = appConfS;
+            _appDataS = appDataS;
             // Subscribe to modal changes
             _modalNavS.CurrentViewModelChanged += ModalNavS_CurrentViewModelChanged;
             OpenAppConfCmd = new OpenAppConfCmd(_modalNavS);
