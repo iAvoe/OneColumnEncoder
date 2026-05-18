@@ -61,7 +61,7 @@
         <!-- Import Source -->
         <comps:SectionHeader HeaderText="Import or Create Source File"
                              Margin="0 0 0 20" />
-        <ItemsControl ItemsSource="{Binding SourceImportZone}">
+        <ItemsControl ItemsSource="{Binding SrcImportZone}">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <comps:ItemCard DataContext="{Binding}"
@@ -73,7 +73,7 @@
         <!-- AnalyticResultsZone -->
         <comps:SectionHeader HeaderText="Analysis Results"
                              Margin="0 0 0 20" />
-        <comps:ValidationCard DataContext="{Binding SourceValidationCard}"
+        <comps:ValidationCard DataContext="{Binding SrcValidationCard}"
                                     Margin="0 0 0 20" />
 
         <!-- Encoding Settings -->
@@ -91,12 +91,12 @@
         <!-- Starting Options -->
         <comps:SectionHeader HeaderText="Start Encoding"
                              Margin="0 0 0 20" />
-        <comps:ValidationCard DataContext="{Binding EncodeTermsCard}"
+        <comps:ValidationCard DataContext="{Binding EncTermsCard}"
                                     Margin="0 0 0 20" />
         <comps:ValidationCard DataContext="{Binding BestPracticesCard}"
                               Margin="0 0 0 20" />
 
-        <comps:ThreeButtonGroup DataContext="{Binding EncodingStartButtons}"
+        <comps:ThreeButtonGroup DataContext="{Binding EncStartButtons}"
                                 Button1Command="{Binding Cmd1}"
                                 Button2Command="{Binding Cmd2}"
                                 Button3Command="{Binding Cmd3}"

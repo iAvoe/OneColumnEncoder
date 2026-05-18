@@ -44,11 +44,13 @@
             <Button Grid.Row="0"
                     Grid.Column="1"
                     Content="{Binding R1Text}"
-                    Style="{StaticResource LinkButton}" />
+                    Style="{StaticResource LinkButton}"
+                    HorizontalAlignment="Right"/>
             <Button Grid.Row="0"
                     Grid.Column="2"
                     Content="{Binding R2Text}"
-                    Style="{StaticResource LinkButton}" />
+                    Style="{StaticResource LinkButton}"
+                    HorizontalAlignment="Right"/>
 
             <!-- Other rows -->
             <TextBlock Grid.Row="1"

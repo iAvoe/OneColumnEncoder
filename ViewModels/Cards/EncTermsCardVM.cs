@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace OneColumnEncoder.ViewModels.Cards
 {
-    public class EncodeTermsCardVM : ValidationCardBaseVM
+    public class EncTermsCardVM : ValidationCardBaseVM
     {
-        public EncodeTermsCardVM()
+        public EncTermsCardVM()
         {
             FillCollection(Checklist1, ChecklistProviderM.GetEncodeChecklist1());
             FillCollection(Checklist2, ChecklistProviderM.GetEncodeChecklist2());

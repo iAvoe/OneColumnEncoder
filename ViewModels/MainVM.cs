@@ -22,27 +22,80 @@ namespace OneColumnEncoder.ViewModels
         public ObservableCollection<ToolItemVM> UpstreamsZone { get; }
         public ObservableCollection<ToolItemVM> EncodersZone { get; }
         public ObservableCollection<ToolItemVM> AnalyticsZone { get; }
-        public ObservableCollection<ToolItemVM> SourceImportZone { get; } =
+        public ObservableCollection<ToolItemVM> SrcImportZone { get; } =
         [
-            new ToolItemVM(new EncItemM("Video Source")),
-            new ToolItemVM(new EncItemM("AviSynth .avs Source")),
-            new ToolItemVM(new EncItemM("VapourSynth .vpy Source")),
-            new ToolItemVM(new EncItemM("SVFI .ini Source")),
+            new ToolItemVM(new EncItemM("Video Source"))
+            {
+                R1Text = "Replace",
+                R2Text = "Clear",
+                P1Name = "Name",
+                P2Name = "Path"
+            },
+            new ToolItemVM(new EncItemM("AviSynth .avs Source"))
+            {
+                R1Text = "Replace",
+                R2Text = "Clear",
+                P1Name = "Mode",
+                P2Name = "Path"
+            },
+            new ToolItemVM(new EncItemM("VapourSynth .vpy Source"))
+            {
+                R1Text = "Replace",
+                R2Text = "Clear",
+                P1Name = "Mode",
+                P2Name = "Path"
+            },
+            new ToolItemVM(new EncItemM("SVFI .ini Source"))
+            {
+                R1Text = "Replace",
+                R2Text = "Clear",
+                P1Name = "Mode",
+                P2Name = "Path"
+            },
         ];
         public ObservableCollection<ToolItemVM> EncSettingsZone { get; } =
         [
-            new ToolItemVM(new EncItemM("Output Setting")),
-            new ToolItemVM(new EncItemM("Parallelism")),
-            new ToolItemVM(new EncItemM("Rate Control Mechanism")),
-            new ToolItemVM(new EncItemM("Base Parameters")),
-            new ToolItemVM(new EncItemM("Custom Parameters")),
+            new ToolItemVM(new EncItemM("Output Setting"))
+            {
+                R1Text = "Edit",
+                R2Text = "Clear",
+                P1Name = "File name w/out extension",
+                P2Name = "Path"
+            },
+            new ToolItemVM(new EncItemM("Parallelism"))
+            {
+                R1Text = "Edit",
+                R2Text = "Clear",
+                P1Name = "CPU-RAM Nodes",
+                P2Name = "Threads"
+            },
+            new ToolItemVM(new EncItemM("Rate Control Mechanism"))
+            {
+                R1Text = "Edit",
+                R2Text = "Clear",
+                P1Name = "Mode",
+                P2Name = "Value"
+            },
+            new ToolItemVM(new EncItemM("Base Parameters"))
+            {
+                R1Text = "Edit",
+                R2Text = "Clear",
+                P1Name = "Stratagem",
+            },
+            new ToolItemVM(new EncItemM("Custom Parameters"))
+            {
+                R1Text = "Edit",
+                R2Text = "Clear",
+                P1Name = "Maximum keyframe gap",
+                P2Name = "Other custom params",
+            },
         ];
         public ButtonGroupVM OpenAppConfButtons { get; }
-        public ButtonGroupVM EncodingStartButtons { get; }
+        public ButtonGroupVM EncStartButtons { get; }
 
         public ToolsImportCardVM ToolsImportCard { get; } = new ToolsImportCardVM();
-        public SourceValidationCardVM SourceValidationCard { get; } = new SourceValidationCardVM();
-        public EncodeTermsCardVM EncodeTermsCard { get; } = new EncodeTermsCardVM();
+        public SourceValidationCardVM SrcValidationCard { get; } = new SourceValidationCardVM();
+        public EncTermsCardVM EncTermsCard { get; } = new EncTermsCardVM();
         public BestPracticesCardVM BestPracticesCard { get; } = new BestPracticesCardVM();
 
         public MainVM(OpenAppConfCmd openAppConf, OpenUsagesCmd openUsages, AppDataM appDataM, AppConfM appConfM)
@@ -62,7 +115,7 @@ namespace OneColumnEncoder.ViewModels
                 "⚙️ Settings",
                 OpenUsages,
                 OpenAppConf);
-            EncodingStartButtons = ButtonGroupVM.CreateThreeButton(
+            EncStartButtons = ButtonGroupVM.CreateThreeButton(
                 "Re-Evaluate",
                 "Run a Sample",
                 "Start Encode");
@@ -90,13 +143,13 @@ namespace OneColumnEncoder.ViewModels
             ToolsImportCard.ImportDropdown.SelectedItem =
                 ToolsImportCard.ImportDropdown.Items[0];
 
-            SourceValidationCard.Name = "Source Video Validation";
-            SourceValidationCard.P1Name = "Severe (incompatible / corrupted)";
-            SourceValidationCard.P3Name = "Moderate (affecting quality)";
+            SrcValidationCard.Name = "Source Video Validation";
+            SrcValidationCard.P1Name = "Severe (incompatible / corrupted)";
+            SrcValidationCard.P3Name = "Moderate (affecting quality)";
 
-            EncodeTermsCard.Name = "Encoding Prerequisites";
-            EncodeTermsCard.P1Name = "Hardware";
-            EncodeTermsCard.P3Name = "Software";
+            EncTermsCard.Name = "Encoding Prerequisites";
+            EncTermsCard.P1Name = "Hardware";
+            EncTermsCard.P3Name = "Software";
 
             BestPracticesCard.Name = "Best Practices";
             BestPracticesCard.P1Name = "Hardware (self check)";
@@ -117,12 +170,12 @@ namespace OneColumnEncoder.ViewModels
         {
             AppConfM.GeneralSettings g = _appConfM.General;
 
-            var cl1 = EncodeTermsCard.Checklist1;
+            var cl1 = EncTermsCard.Checklist1;
             if (cl1.Count >= 1) cl1[0].IsEnabled = g.OffGrid;
             if (cl1.Count >= 2) cl1[1].IsEnabled = g.InsufficientRAM;
             if (cl1.Count >= 3) cl1[2].IsEnabled = g.InsufficientDiskSpace;
 
-            var cl2 = EncodeTermsCard.Checklist2;
+            var cl2 = EncTermsCard.Checklist2;
             if (cl2.Count >= 1) cl2[0].IsEnabled = g.OSFileNameInvalid;
             if (cl2.Count >= 2) cl2[1].IsEnabled = g.FTPFileNameInvalid;
             if (cl2.Count >= 3) cl2[2].IsEnabled = g.NoWritePermission;
@@ -134,13 +187,13 @@ namespace OneColumnEncoder.ViewModels
         {
             foreach (var entry in ToolsImportCard.ToolsChecklist)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
-            foreach (var entry in SourceValidationCard.Checklist1)
+            foreach (var entry in SrcValidationCard.Checklist1)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
-            foreach (var entry in SourceValidationCard.Checklist2)
+            foreach (var entry in SrcValidationCard.Checklist2)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
-            foreach (var entry in EncodeTermsCard.Checklist1)
+            foreach (var entry in EncTermsCard.Checklist1)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
-            foreach (var entry in EncodeTermsCard.Checklist2)
+            foreach (var entry in EncTermsCard.Checklist2)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
             UpdateEncodingStartButtonsState();
         }
@@ -148,13 +201,13 @@ namespace OneColumnEncoder.ViewModels
         {
             foreach (var entry in ToolsImportCard.ToolsChecklist)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
-            foreach (var entry in SourceValidationCard.Checklist1)
+            foreach (var entry in SrcValidationCard.Checklist1)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
-            foreach (var entry in SourceValidationCard.Checklist2)
+            foreach (var entry in SrcValidationCard.Checklist2)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
-            foreach (var entry in EncodeTermsCard.Checklist1)
+            foreach (var entry in EncTermsCard.Checklist1)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
-            foreach (var entry in EncodeTermsCard.Checklist2)
+            foreach (var entry in EncTermsCard.Checklist2)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
         }
 
@@ -180,15 +233,15 @@ namespace OneColumnEncoder.ViewModels
                 .Any(entry => entry.Status == StatusType.Success);
 
             bool sourceValidationReady =
-                SourceValidationCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
-                SourceValidationCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
+                SrcValidationCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
+                SrcValidationCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
             bool encodeTermsReady =
-                EncodeTermsCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
-                EncodeTermsCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
+                EncTermsCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
+                EncTermsCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
 
-            EncodingStartButtons.B3_2IsEnabled =
+            EncStartButtons.B3_2IsEnabled =
                 allToolsReady && atLeastOneUpstream && atLeastOneEncoder && atLeastOneAnalytics && sourceValidationReady && encodeTermsReady;
-            EncodingStartButtons.B3_3IsEnabled =
+            EncStartButtons.B3_3IsEnabled =
                 allToolsReady && atLeastOneUpstream && atLeastOneEncoder && atLeastOneAnalytics && sourceValidationReady && encodeTermsReady;
         }
 
@@ -216,8 +269,8 @@ namespace OneColumnEncoder.ViewModels
                 VersionText = version ?? "",
                 P1Name = "Version",
                 P2Name = "Path",
-                R1Text = "Edit",
-                R2Text = "Clear"
+                R1Text = "Replace",
+                R2Text = "Delete"
             };
             zone.Add(item);
         }
