@@ -80,9 +80,9 @@ namespace OneColumnEncoder.ViewModels
         {
             return new ButtonGroupVM
             {
-                B2_1Text = b1Text,
-                B2_2Text = b2Text,
-                B3_1Text = b3Text,
+                B3_1Text = b1Text,
+                B3_2Text = b2Text,
+                B3_3Text = b3Text,
                 Cmd1 = cmd1,
                 Cmd2 = cmd2,
                 Cmd3 = cmd3
