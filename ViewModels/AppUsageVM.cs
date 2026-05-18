@@ -4,10 +4,10 @@ using System.Windows.Input;
 
 namespace OneColumnEncoder.ViewModels
 {
-    public class UsageComplianceVM : BaseVM
+    public class AppUsageVM : BaseVM
     {
         public CloseModalCmd? CloseCmd { get; }
-        public UsageComplianceVM(ModalNavS modelNavS, Action closeAction)
+        public AppUsageVM(ModalNavS modelNavS, Action closeAction)
         {
             CloseCmd = new CloseModalCmd(modelNavS, closeAction);
         }

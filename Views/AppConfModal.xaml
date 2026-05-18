@@ -33,10 +33,10 @@
             </ScrollViewer>
 
             <comps:ThreeButtonGroup Grid.Row="2"
-                                    DataContext="{Binding SmtpConfirmCancelButtons}"
-                                    Button1Command=""
-                                    Button2Command="{Binding CancelCmd}"
-                                    Button3Command="{Binding ConfirmCmd}" />
+                                    DataContext="{Binding FinishSettingButtons}"
+                                    Button1Command="{Binding Cmd1}"
+                                    Button2Command="{Binding Cmd2}"
+                                    Button3Command="{Binding Cmd3}" />
 
         </Grid>
     </Grid>

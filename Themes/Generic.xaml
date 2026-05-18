@@ -9,8 +9,8 @@
     <DataTemplate DataType="{x:Type vms:AppConfVM}">
         <comps:AppConfItem />
     </DataTemplate>
-    <DataTemplate DataType="{x:Type vms:UsageComplianceVM}">
-        <views:UsageComplianceUI />
+    <DataTemplate DataType="{x:Type vms:AppUsageVM}">
+        <views:AppUsageModal />
     </DataTemplate>
 
     <!-- Spacing -->

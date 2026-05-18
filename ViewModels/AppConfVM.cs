@@ -25,7 +25,7 @@ namespace OneColumnEncoder.ViewModels
         public SaveAppConfCmd SaveCmd { get; }
         public LoadAppConfCmd LoadCmd { get; }
 
-        public ButtonGroupVM SmtpConfirmCancelButtons { get; }
+        public ButtonGroupVM FinishSettingButtons { get; }
 
         // Settings for binding
         public AppConfM.GeneralSettings General => _appConfM.General;
@@ -41,7 +41,7 @@ namespace OneColumnEncoder.ViewModels
             CloseCmd = new CloseModalCmd(modalNavS, closeAction);
             SaveCmd = new SaveAppConfCmd(appConfS, modalNavS, closeAction);
             LoadCmd = new LoadAppConfCmd(appConfS);
-            SmtpConfirmCancelButtons = ButtonGroupVM.CreateThreeButton(
+            FinishSettingButtons = ButtonGroupVM.CreateThreeButton(
                 "Test SMTP",
                 "Cancel",
                 "Save",

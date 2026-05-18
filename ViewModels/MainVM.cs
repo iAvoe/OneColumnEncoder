@@ -59,18 +59,17 @@ namespace OneColumnEncoder.ViewModels
 
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
                 "Usage & Compliance",
-                "Settings",
+                "⚙️ Settings",
                 OpenUsages,
                 OpenAppConf);
             EncodingStartButtons = ButtonGroupVM.CreateThreeButton(
                 "Re-Evaluate",
                 "Run a Sample",
-                "Start Encode",
-                null, // TODO: ReEvaluate Cmd
-                null, // TODO: Sample Clip Cmd
-                null  // TODO: Start Encode Cmd
-            );
-
+                "Start Encode");
+            // TODO: ReEvaluate Cmd
+            // TODO: Sample Clip Cmd
+            // TODO: Start Encode Cmd
+            
             ToolsImportCard.ToolImported += OnToolImported;
 
             ToolsImportCard.Name = "Import tools:";

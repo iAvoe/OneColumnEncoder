@@ -76,7 +76,6 @@ namespace OneColumnEncoder.ViewModels
                 Cmd2 = cmd2
             };
         }
-
         public static ButtonGroupVM CreateThreeButton(string b1Text, string b2Text, string b3Text, ICommand? cmd1 = null, ICommand? cmd2 = null, ICommand? cmd3 = null)
         {
             return new ButtonGroupVM

@@ -29,7 +29,7 @@ namespace OneColumnEncoder.Commands.OpenClose
             var window = new AppUsageModal();
 
             // Now window.Close is ready
-            window.DataContext = new UsageComplianceVM(_modelNavS, window.Close);
+            window.DataContext = new AppUsageVM(_modelNavS, window.Close);
             window.Show();
         }
     }
