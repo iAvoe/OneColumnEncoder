@@ -210,7 +210,7 @@ namespace OneColumnEncoder.ViewModels
             zone.Add(item);
         }
 
-        private void OnToolImported(string toolName)
+        private void OnToolImported(string toolName, string filePath)
         {
             var zone = ZoneForTool(toolName);
             if (zone == null) return;
@@ -218,11 +218,12 @@ namespace OneColumnEncoder.ViewModels
             var displayName = Path.GetFileNameWithoutExtension(toolName);
 
             // Save to AppDataM and persist
-            SetToolPath(toolName, displayName);
+            SetToolPath(toolName, filePath);
             _appDataM.Save();
 
             var item = new ToolItemVM(new EncItemM(displayName))
             {
+                Path = filePath,
                 P1Name = "Version",
                 P2Name = "Path",
                 R1Text = "Edit",
@@ -231,23 +232,22 @@ namespace OneColumnEncoder.ViewModels
             zone.Add(item);
         }
 
-        private void SetToolPath(string toolName, string displayName)
+        private void SetToolPath(string toolName, string filePath)
         {
             // Maps tool exe name to AppDataM.Importables properties
-            // TODO: Replace placeholder path with actual resolved path when ImportToolAsync is implemented
             var t = _appDataM.Tools;
             switch (toolName.ToLowerInvariant())
             {
-                case "ffmpeg.exe":              t.FfmpegPath = displayName; break;
-                case "vspipe.exe":              t.VspipePath = displayName; break;
-                case "avs2yuv.exe":             t.Avs2yuvPath = displayName; break;
-                case "avs2pipemod.exe":         t.Avs2pipemodPath = displayName; break;
-                case "one_line_shot_args.exe":  t.OneLineShotArgsPath = displayName; break;
-                case "x264.exe":                t.X264Path = displayName; break;
-                case "x265.exe":                t.X265Path = displayName; break;
-                case "svtav1encapp.exe":        t.SvtAv1Path = displayName; break;
-                case "ffprobe.exe":             t.FfprobePath = displayName; break;
-                case "avisynth.dll":            t.AviSynthDllPath = displayName; break;
+                case "ffmpeg.exe":              t.FfmpegPath = filePath; break;
+                case "vspipe.exe":              t.VspipePath = filePath; break;
+                case "avs2yuv.exe":             t.Avs2yuvPath = filePath; break;
+                case "avs2pipemod.exe":         t.Avs2pipemodPath = filePath; break;
+                case "one_line_shot_args.exe":  t.OneLineShotArgsPath = filePath; break;
+                case "x264.exe":                t.X264Path = filePath; break;
+                case "x265.exe":                t.X265Path = filePath; break;
+                case "svtav1encapp.exe":        t.SvtAv1Path = filePath; break;
+                case "ffprobe.exe":             t.FfprobePath = filePath; break;
+                case "avisynth.dll":            t.AviSynthDllPath = filePath; break;
             }
         }
 

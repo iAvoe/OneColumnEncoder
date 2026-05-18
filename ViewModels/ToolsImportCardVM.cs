@@ -21,11 +21,11 @@ namespace OneColumnEncoder.ViewModels
         public ObservableCollection<ChecklistEntryVM> ToolsChecklist { get; } = [];
         public DropdownMenuVM ImportDropdown { get; } = new();
         public ICommand ImportCommand { get; }
-        public event Action<string>? ToolImported;
+        public event Action<string, string>? ToolImported;
 
         public ToolsImportCardVM()
         {
-            ImportCommand = new ImportToolCmd(ImportDropdown, ToolsChecklist, toolName => ToolImported?.Invoke(toolName));
+            ImportCommand = new ImportToolCmd(ImportDropdown, ToolsChecklist, (toolName, filePath) => ToolImported?.Invoke(toolName, filePath));
             ImportDropdown.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == nameof(ImportDropdown.SelectedItem))

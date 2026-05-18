@@ -1,25 +1,28 @@
 ﻿using OneColumnEncoder.Models;
 using OneColumnEncoder.ViewModels;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OneColumnEncoder.Commands
 {
-    public class ImportToolCmd(DropdownMenuVM dropdownVM, ObservableCollection<ChecklistEntryVM> checklist, Action<string>? onSuccess = null) : AsyncBaseCmd
+    public class ImportToolCmd(DropdownMenuVM dropdownVM, ObservableCollection<ChecklistEntryVM> checklist, Action<string, string>? onSuccess = null) : AsyncBaseCmd
     {
         private readonly DropdownMenuVM _dropdownVm = dropdownVM;
         private readonly ObservableCollection<ChecklistEntryVM> _checklist = checklist;
-        private readonly Action<string>? _onSuccess = onSuccess;
+        private readonly Action<string, string>? _onSuccess = onSuccess;
 
         public override bool CanExecute(object? parameter)
         {
             return !IsExecuting &&
                 _dropdownVm.SelectedItem != null &&
-                !_dropdownVm.SelectedItem.IsSeparator;
+                !_dropdownVm.SelectedItem.IsSeparator &&
+                !_dropdownVm.SelectedItem.Title.Equals("No Selection", StringComparison.OrdinalIgnoreCase);
         }
 
         protected override async Task ExecuteAsync(object? parameter)
@@ -27,11 +30,11 @@ namespace OneColumnEncoder.Commands
             string selectedTool = _dropdownVm.SelectedItem?.Title ?? "";
             if (string.IsNullOrEmpty(selectedTool)) return;
 
-            bool success = await ImportToolAsync(selectedTool);
+            string? filePath = await ImportToolAsync(selectedTool);
 
-            if (success)
+            if (!string.IsNullOrEmpty(filePath))
             {
-                _onSuccess?.Invoke(selectedTool);
+                _onSuccess?.Invoke(selectedTool, filePath);
 
                 foreach (var l in _checklist)
                 {
@@ -53,11 +56,34 @@ namespace OneColumnEncoder.Commands
             OnCanExecuteChanged();
         }
 
-        // TODO
-        private static async Task<bool> ImportToolAsync(string toolName)
+        private static async Task<string?> ImportToolAsync(string toolName)
         {
-            await Task.Delay(1000);
-            return true;
+            // TODO: Implement version detection later
+            // For now, just get the path via file dialog
+
+            // Determine filter based on tool type
+            string filter = "Executable files (*.exe)|*.exe";
+            if (toolName.Equals("AviSynth.dll", StringComparison.OrdinalIgnoreCase))
+            {
+                filter = "DLL files (*.dll)|*.dll";
+            }
+
+            // Use WPF OpenFileDialog
+            OpenFileDialog dialog = new()
+            {
+                Filter = filter,
+                Title = $"Select {toolName}",
+                CheckFileExists = true,
+                CheckPathExists = true
+            };
+
+            bool? result = dialog.ShowDialog();
+            if (result == true)
+            {
+                return dialog.FileName;
+            }
+
+            return null;
         }
     }
 }
