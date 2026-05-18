@@ -103,26 +103,28 @@ namespace OneColumnEncoder.ViewModels
         {
             foreach (var entry in ToolsImportCard.ToolsChecklist)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
-            ToolsImportCard.ToolsChecklist.CollectionChanged += OnToolsChecklistCollectionChanged;
+            foreach (var entry in SourceValidationCard.Checklist1)
+                entry.PropertyChanged += OnChecklistEntryPropertyChanged;
+            foreach (var entry in SourceValidationCard.Checklist2)
+                entry.PropertyChanged += OnChecklistEntryPropertyChanged;
+            foreach (var entry in EncodeTermsCard.Checklist1)
+                entry.PropertyChanged += OnChecklistEntryPropertyChanged;
+            foreach (var entry in EncodeTermsCard.Checklist2)
+                entry.PropertyChanged += OnChecklistEntryPropertyChanged;
             UpdateEncodingStartButtonsState();
         }
         private void UnsubFromToolsChecklist()
         {
             foreach (var entry in ToolsImportCard.ToolsChecklist)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
-            ToolsImportCard.ToolsChecklist.CollectionChanged -= OnToolsChecklistCollectionChanged;
-        }
-
-        // Subscribe/unsubscribe to tools' PropertyChanged events
-        private void OnToolsChecklistCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.NewItems != null)
-                foreach (ChecklistEntryVM entry in e.NewItems)
-                    entry.PropertyChanged += OnChecklistEntryPropertyChanged;
-            if (e.OldItems != null)
-                foreach (ChecklistEntryVM entry in e.OldItems)
-                    entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
-            UpdateEncodingStartButtonsState();
+            foreach (var entry in SourceValidationCard.Checklist1)
+                entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
+            foreach (var entry in SourceValidationCard.Checklist2)
+                entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
+            foreach (var entry in EncodeTermsCard.Checklist1)
+                entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
+            foreach (var entry in EncodeTermsCard.Checklist2)
+                entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
         }
 
         // Enable-disable Encoding Start button, i.e., if PC changed from battery power to plugged in
@@ -145,8 +147,12 @@ namespace OneColumnEncoder.ViewModels
             bool atLeastOneAnalytics = ToolsImportCard.ToolsChecklist
                 .Where(entry => entry.Text == "FFProbe" || entry.Text == "AviSynth.dll (for Avs2PipeMod)")
                 .Any(entry => entry.Status == StatusType.Success);
-            EncodingStartButtons.B3_2IsEnabled = allToolsReady && atLeastOneUpstream && atLeastOneEncoder && atLeastOneAnalytics;
-            EncodingStartButtons.B3_3IsEnabled = allToolsReady && atLeastOneUpstream && atLeastOneEncoder && atLeastOneAnalytics;
+            bool sourceValidationReady = SourceValidationCard.Checklist1.All(e => e.Status == StatusType.Success) &&
+                                         SourceValidationCard.Checklist2.All(e => e.Status == StatusType.Success);
+            bool encodeTermsReady = EncodeTermsCard.Checklist1.All(e => e.Status == StatusType.Success) &&
+                                    EncodeTermsCard.Checklist2.All(e => e.Status == StatusType.Success);
+            EncodingStartButtons.B3_2IsEnabled = allToolsReady && atLeastOneUpstream && atLeastOneEncoder && atLeastOneAnalytics && sourceValidationReady && encodeTermsReady;
+            EncodingStartButtons.B3_3IsEnabled = allToolsReady && atLeastOneUpstream && atLeastOneEncoder && atLeastOneAnalytics && sourceValidationReady && encodeTermsReady;
         }
 
         private void LoadToolsFromAppDataM()
