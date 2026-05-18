@@ -45,27 +45,32 @@
                     Grid.Column="1"
                     Content="{Binding R1Text}"
                     Style="{StaticResource LinkButton}"
-                    HorizontalAlignment="Right"/>
+                    HorizontalAlignment="Right"
+                    Focusable="False"/>
             <Button Grid.Row="0"
                     Grid.Column="2"
                     Content="{Binding R2Text}"
+                    Command="{Binding R2Command}"
                     Style="{StaticResource LinkButton}"
-                    HorizontalAlignment="Right"/>
+                    HorizontalAlignment="Right"
+                    Focusable="False"/>
 
             <!-- Other rows -->
             <TextBlock Grid.Row="1"
                        Grid.ColumnSpan="3"
                        Margin="0 5 0 0"
-                       Style="{StaticResource H4}"
+                       Style="{StaticResource H3}"
                        Foreground="{StaticResource GlobalPrimary}">
-                <Run Text="{Binding P1Name, Mode=OneWay}" /><Run Text=": " /><Run Text="{Binding P1Text, Mode=OneWay}" />
+                <Run Text="{Binding P1Name, Mode=OneWay}" /><Run Text=": " /><Run Text="{Binding P1Text, Mode=OneWay}"
+                                                                                  FontWeight="Normal" />
             </TextBlock>
             <TextBlock Grid.Row="2"
                        Grid.ColumnSpan="3"
                        Margin="0 5 0 0"
-                       Style="{StaticResource H4}"
+                       Style="{StaticResource H3}"
                        Foreground="{StaticResource GlobalPrimary}">
-                <Run Text="{Binding P2Name, Mode=OneWay}" /><Run Text=": " /><Run Text="{Binding P2Text, Mode=OneWay}" />
+                <Run Text="{Binding P2Name, Mode=OneWay}" /><Run Text=": " /><Run Text="{Binding P2Text, Mode=OneWay}"
+                                                                                  FontWeight="Normal" />
             </TextBlock>
         </Grid>
     </Border>

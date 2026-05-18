@@ -1,4 +1,5 @@
-﻿using OneColumnEncoder.Commands.OpenClose;
+﻿using OneColumnEncoder.Commands;
+using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Components;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.ViewModels.Cards;
@@ -109,6 +110,7 @@ namespace OneColumnEncoder.ViewModels
             EncodersZone = [];
             AnalyticsZone = [];
             LoadToolsFromAppDataM();
+            WireUpZoneRemoveCommands();
 
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
                 "Usage & Compliance",
@@ -245,6 +247,17 @@ namespace OneColumnEncoder.ViewModels
                 allToolsReady && atLeastOneUpstream && atLeastOneEncoder && atLeastOneAnalytics && sourceValidationReady && encodeTermsReady;
         }
 
+        private void WireUpZoneRemoveCommands()
+        {
+            foreach (var item in SrcImportZone) WireUpRemoveCommand(item, SrcImportZone);
+            foreach (var item in EncSettingsZone) WireUpRemoveCommand(item, EncSettingsZone);
+        }
+
+        private static void WireUpRemoveCommand(ToolItemVM item, ObservableCollection<ToolItemVM> zone)
+        {
+            item.R2Command = new ActionCmd(_ => zone.Remove(item));
+        }
+
         private void LoadToolsFromAppDataM()
         {
             var t = _appDataM.Tools;
@@ -272,6 +285,7 @@ namespace OneColumnEncoder.ViewModels
                 R1Text = "Replace",
                 R2Text = "Delete"
             };
+            WireUpRemoveCommand(item, zone);
             zone.Add(item);
         }
 
@@ -294,6 +308,7 @@ namespace OneColumnEncoder.ViewModels
                 R1Text = "Edit",
                 R2Text = "Clear"
             };
+            WireUpRemoveCommand(item, zone);
             zone.Add(item);
         }
 

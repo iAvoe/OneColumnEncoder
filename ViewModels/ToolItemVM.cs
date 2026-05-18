@@ -1,10 +1,12 @@
-﻿using OneColumnEncoder.Models;
+﻿using OneColumnEncoder.Commands;
+using OneColumnEncoder.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -12,7 +14,6 @@ namespace OneColumnEncoder.ViewModels
     {
         private readonly EncItemM _baseModel;
         public ToolItemVM(EncItemM baseModel) => _baseModel = baseModel;
-
         public string Name => _baseModel.Name;
         public string Path
         {
@@ -72,10 +73,17 @@ namespace OneColumnEncoder.ViewModels
         }
 
         private string _r2Text = "";
-        public string R2Text // Maybe 'Clear' in some cases
+        public string R2Text
         {
             get => _r2Text;
             set => SetProperty(ref _r2Text, value);
+        }
+
+        private ICommand? _r2Command;
+        public ICommand? R2Command
+        {
+            get => _r2Command;
+            set => SetProperty(ref _r2Command, value);
         }
 
         private void Validate()
@@ -84,9 +92,9 @@ namespace OneColumnEncoder.ViewModels
             VersionText = IsReal ? GetExeVersion(Path) : string.Empty;
         }
 
-        private string GetExeVersion(string path)
+        private static string GetExeVersion(string path)
         {
-            return "Not implemented";
+            return "TODO";
         }
     }
 }
