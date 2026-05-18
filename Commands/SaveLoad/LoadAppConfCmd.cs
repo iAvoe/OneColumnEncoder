@@ -5,15 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OneColumnEncoder.Commands
+namespace OneColumnEncoder.Commands.SaveLoad
 {
-    public class LoadAppConfCmd : AsyncBaseCmd
+    public class LoadAppConfCmd(AppConfM appConfS) : AsyncBaseCmd
     {
-        private readonly AppConfM _appConfStore;
-        public LoadAppConfCmd(AppConfM appConfS)
-        {
-            _appConfStore = appConfS;
-        }
+        private readonly AppConfM _appConfStore = appConfS;
+
         protected override async Task ExecuteAsync(object? parameter)
         {
             var loadedConfig = AppConfM.Load();

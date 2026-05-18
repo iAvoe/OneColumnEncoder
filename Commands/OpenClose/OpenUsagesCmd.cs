@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 using System.Windows;
 
-namespace OneColumnEncoder.Commands
+namespace OneColumnEncoder.Commands.OpenClose
 {
     public class OpenUsagesCmd(ModalNavS modelNavS) : BaseCmd
     {

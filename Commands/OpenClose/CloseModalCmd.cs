@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OneColumnEncoder.Commands
+namespace OneColumnEncoder.Commands.OpenClose
 {
     // Close modal in both navigation store and window (if applicable)
     public class CloseModalCmd(ModalNavS modalNavS, Action closeAction) : BaseCmd

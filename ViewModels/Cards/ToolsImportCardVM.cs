@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using OneColumnEncoder.Models;
 
-namespace OneColumnEncoder.ViewModels
+namespace OneColumnEncoder.ViewModels.Cards
 {
     public class ToolsImportCardVM : BaseVM
     {

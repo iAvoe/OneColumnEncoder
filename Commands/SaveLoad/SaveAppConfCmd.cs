@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OneColumnEncoder.Commands
+namespace OneColumnEncoder.Commands.SaveLoad
 {
     public class SaveAppConfCmd(AppConfM appConfS, ModalNavS modalNavS, Action closeAction) : AsyncBaseCmd
     {

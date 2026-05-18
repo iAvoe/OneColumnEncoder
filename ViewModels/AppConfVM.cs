@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using OneColumnEncoder.Commands;
 using OneColumnEncoder.Components;
 using OneColumnEncoder.Stores;
 using System.Windows.Input;
 using OneColumnEncoder.Models;
+using OneColumnEncoder.Commands.OpenClose;
+using OneColumnEncoder.Commands.SaveLoad;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -24,9 +25,7 @@ namespace OneColumnEncoder.ViewModels
         public SaveAppConfCmd SaveCmd { get; }
         public LoadAppConfCmd LoadCmd { get; }
 
-        // Save and Cancel buttons
-        // public ConfirmCancelButtonsVM ConfirmCancelButtons { get; }
-        public SmtpConfirmCancelButtonsVM SmtpConfirmCancelButtons { get; }
+        public ButtonGroupVM SmtpConfirmCancelButtons { get; }
 
         // Settings for binding
         public AppConfM.GeneralSettings General => _appConfM.General;
@@ -42,8 +41,13 @@ namespace OneColumnEncoder.ViewModels
             CloseCmd = new CloseModalCmd(modalNavS, closeAction);
             SaveCmd = new SaveAppConfCmd(appConfS, modalNavS, closeAction);
             LoadCmd = new LoadAppConfCmd(appConfS);
-            // ConfirmCancelButtons = new ConfirmCancelButtonsVM(CloseCmd, SaveCmd);
-            SmtpConfirmCancelButtons = new SmtpConfirmCancelButtonsVM(CloseCmd, SaveCmd); // TODO: Smtp test command
+            SmtpConfirmCancelButtons = ButtonGroupVM.CreateThreeButton(
+                "Test SMTP",
+                "Cancel",
+                "Save",
+                null, // TODO: Test SMTP command
+                CloseCmd,
+                SaveCmd);
             BuildSettingsListing();
         }
 
@@ -122,7 +126,7 @@ namespace OneColumnEncoder.ViewModels
         private static void AddDropdownItem(AppConfContainer container, string text, object source, string propertyPath, string[] options)
         {
             var currentValue = source.GetType().GetProperty(propertyPath)?.GetValue(source) as string ?? options[0];
-            List<DropdownItemM> items = options.Select(o => new DropdownItemM(o)).ToList();
+            List<DropdownItemM> items = [.. options.Select(o => new DropdownItemM(o))];
 
             DropdownMenuVM dropdownVM = new();
             foreach (var item in items)

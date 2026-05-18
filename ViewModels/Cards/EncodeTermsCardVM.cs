@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OneColumnEncoder.ViewModels
+namespace OneColumnEncoder.ViewModels.Cards
 {
     public class EncodeTermsCardVM : ValidationCardBaseVM
     {

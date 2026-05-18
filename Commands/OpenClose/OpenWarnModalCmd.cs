@@ -5,16 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OneColumnEncoder.Commands
+namespace OneColumnEncoder.Commands.OpenClose
 {
-    class OpenErrModalCmd(ModalNavS modalNavS) : BaseCmd
+    public class OpenWarnModalCmd(ModalNavS modalNavS) : BaseCmd
     {
-        private readonly ModalNavS _modalNavS = modalNavS;  
+        private readonly ModalNavS _modalNavS = modalNavS;
         public override void Execute(object? parameter)
         {
             /*
-            var window = ErrModal();
-            window.DataContext = new ErrVM(_modalNavS, window.Close);
+            var window = WarnModal();
+            window.DataContext = new WarnVM(_modalNavS, window.Close);
             window.ShowDialog();
             */
             throw new NotImplementedException();

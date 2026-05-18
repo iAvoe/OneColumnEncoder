@@ -1,4 +1,4 @@
-﻿using OneColumnEncoder.Commands;
+﻿using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Stores;
 using System.Windows.Input;
 

@@ -1,6 +1,7 @@
-﻿using OneColumnEncoder.Commands;
+﻿using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Components;
 using OneColumnEncoder.Models;
+using OneColumnEncoder.ViewModels.Cards;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -36,8 +37,8 @@ namespace OneColumnEncoder.ViewModels
             new ToolItemVM(new EncItemM("Base Parameters")),
             new ToolItemVM(new EncItemM("Custom Parameters")),
         ];
-        public OpenAppConfButtonsVM OpenAppConfButtons { get; }
-        public EncodeStartButtonsVM EncodingStartButtons { get; } = new();
+        public ButtonGroupVM OpenAppConfButtons { get; }
+        public ButtonGroupVM EncodingStartButtons { get; }
 
         public ToolsImportCardVM ToolsImportCard { get; } = new ToolsImportCardVM();
         public SourceValidationCardVM SourceValidationCard { get; } = new SourceValidationCardVM();
@@ -56,7 +57,19 @@ namespace OneColumnEncoder.ViewModels
             AnalyticsZone = [];
             LoadToolsFromAppDataM();
 
-            OpenAppConfButtons = new OpenAppConfButtonsVM(OpenAppConf, OpenUsages);
+            OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
+                "Usage & Compliance",
+                "Settings",
+                OpenUsages,
+                OpenAppConf);
+            EncodingStartButtons = ButtonGroupVM.CreateThreeButton(
+                "Re-Evaluate",
+                "Run a Sample",
+                "Start Encode",
+                null, // TODO: ReEvaluate Cmd
+                null, // TODO: Sample Clip Cmd
+                null  // TODO: Start Encode Cmd
+            );
 
             ToolsImportCard.ToolImported += OnToolImported;
 

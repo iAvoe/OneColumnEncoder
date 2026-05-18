@@ -6,7 +6,7 @@ using System;
 using System.Linq;
 using System.Windows;
 
-namespace OneColumnEncoder.Commands
+namespace OneColumnEncoder.Commands.OpenClose
 {
     public class OpenAppConfCmd(ModalNavS modalNavS, AppConfM appConfS) : BaseCmd
     {
