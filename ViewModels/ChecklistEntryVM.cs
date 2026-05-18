@@ -22,5 +22,12 @@ namespace OneColumnEncoder.ViewModels
             get => _status;
             set => SetProperty(ref _status, value);
         }
+
+        private bool _isEnabled = true;
+        public bool IsEnabled
+        {
+            get => _isEnabled;
+            set => SetProperty(ref _isEnabled, value);
+        }
     }
 }

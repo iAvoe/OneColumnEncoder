@@ -23,7 +23,7 @@ namespace OneColumnEncoder
             // Clear modal navigation state so no stale VM lingers
             if (Application.Current is App app)
             {
-                app._modalNavS.Close();
+                app._modalNavM.Close();
             }
         }
     }

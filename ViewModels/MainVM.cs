@@ -12,7 +12,8 @@ namespace OneColumnEncoder.ViewModels
 {
     public class MainVM : BaseVM
     {
-        private readonly AppDataM _appDataS;
+        private readonly AppDataM _appDataM;
+        private readonly AppConfM _appConfM; // Load settings to configure ChecklistEntryVM _isEnabled
 
         public OpenAppConfCmd OpenAppConf { get; }
         public OpenUsagesCmd OpenUsages { get; }
@@ -43,9 +44,10 @@ namespace OneColumnEncoder.ViewModels
         public EncodeTermsCardVM EncodeTermsCard { get; } = new EncodeTermsCardVM();
         public BestPracticesCardVM BestPracticesCard { get; } = new BestPracticesCardVM();
 
-        public MainVM(OpenAppConfCmd openAppConf, OpenUsagesCmd openUsages, AppDataM appDataS)
+        public MainVM(OpenAppConfCmd openAppConf, OpenUsagesCmd openUsages, AppDataM appDataM, AppConfM appConfM)
         {
-            _appDataS = appDataS;
+            _appDataM = appDataM;
+            _appConfM = appConfM;
             OpenAppConf = openAppConf;
             OpenUsages = openUsages;
 
@@ -88,6 +90,8 @@ namespace OneColumnEncoder.ViewModels
             BestPracticesCard.P1Name = "Hardware (self check)";
             BestPracticesCard.P3Name = "Software (self check)";
 
+            // 
+            InitializeChecklistEntryStates();
             SubToToolsChecklist();
         }
 
@@ -96,6 +100,35 @@ namespace OneColumnEncoder.ViewModels
             ToolsImportCard.ToolImported -= OnToolImported;
             UnsubFromToolsChecklist();
             base.Dispose();
+        }
+
+        // Initialize ChecklistEntryVM.IsEnabled based on AppConfM.GeneralSettings
+        private void InitializeChecklistEntryStates()
+        {
+            AppConfM.GeneralSettings g = _appConfM.General;
+            // Overwrite settings are managed in the last general setting item
+            // SMTP settings are within AppConfM, and not affect encoding start buttons state
+
+            // SourceValidationCard.Checklist1-2 are always enabled,
+            // and cannot be configured by user, since they are critical checks
+            // and non-critical checks do not disable encoding start buttons
+            // which means AppConfM maintains a separate list (SettingsList) from Checklist
+
+            // EncodeTermsCard.Checklist1-2 can be disabled, these checks involving OS,
+            // which may give unreliable or fluctuating readings
+            SetEntryEnabledByText(EncodeTermsCard.Checklist1, "PC is off-grid / on battery", g.OffGrid);
+            SetEntryEnabledByText(EncodeTermsCard.Checklist1, "Insufficient RAM", g.InsufficientRAM);
+            SetEntryEnabledByText(EncodeTermsCard.Checklist1, "Insufficient Disk Space", g.InsufficientDiskSpace);
+            SetEntryEnabledByText(EncodeTermsCard.Checklist2, "Filename is Invalid for OS", g.OSFileNameInvalid);
+            SetEntryEnabledByText(EncodeTermsCard.Checklist2, "Filename is Invalid for FTP", g.FTPFileNameInvalid);
+            SetEntryEnabledByText(EncodeTermsCard.Checklist2, "Lack of Write Permission", g.NoWritePermission);
+            SetEntryEnabledByText(EncodeTermsCard.Checklist2, "Overwriting a File", g.NoWritePermission);
+        }
+        private static void SetEntryEnabledByText(ObservableCollection<ChecklistEntryVM> checklist, string text, bool enabled)
+        {
+            var entry = checklist.FirstOrDefault(e => e.Text == text);
+            if (entry != null)
+                entry.IsEnabled = enabled;
         }
 
         // Enable-disable Encoding Start buttons listening subscription and unsubscription
@@ -139,25 +172,31 @@ namespace OneColumnEncoder.ViewModels
             bool allToolsReady =
                 ToolsImportCard.ToolsChecklist.All(entry => entry.Status == StatusType.Success);
             bool atLeastOneUpstream = ToolsImportCard.ToolsChecklist
-                .Where(entry => entry.Text == "FFMPEG" || entry.Text == "VSPipe" || entry.Text == "AVS2YUV" || entry.Text == "AVS2PipeMod" || entry.Text == "OneLineShotArgs")
+                .Where(entry => entry.Text is "FFMPEG" or "VSPipe" or "AVS2YUV" or "AVS2PipeMod" or "OneLineShotArgs")
                 .Any(entry => entry.Status == StatusType.Success);
             bool atLeastOneEncoder = ToolsImportCard.ToolsChecklist
-                .Where(entry => entry.Text == "x264" || entry.Text == "x265" || entry.Text == "SVT-AV1")
+                .Where(entry => entry.Text is "x264" or "x265" or "SVT-AV1")
                 .Any(entry => entry.Status == StatusType.Success);
             bool atLeastOneAnalytics = ToolsImportCard.ToolsChecklist
-                .Where(entry => entry.Text == "FFProbe" || entry.Text == "AviSynth.dll (for Avs2PipeMod)")
+                .Where(entry => entry.Text is "FFProbe" or "AviSynth.dll (for Avs2PipeMod)")
                 .Any(entry => entry.Status == StatusType.Success);
-            bool sourceValidationReady = SourceValidationCard.Checklist1.All(e => e.Status == StatusType.Success) &&
-                                         SourceValidationCard.Checklist2.All(e => e.Status == StatusType.Success);
-            bool encodeTermsReady = EncodeTermsCard.Checklist1.All(e => e.Status == StatusType.Success) &&
-                                    EncodeTermsCard.Checklist2.All(e => e.Status == StatusType.Success);
-            EncodingStartButtons.B3_2IsEnabled = allToolsReady && atLeastOneUpstream && atLeastOneEncoder && atLeastOneAnalytics && sourceValidationReady && encodeTermsReady;
-            EncodingStartButtons.B3_3IsEnabled = allToolsReady && atLeastOneUpstream && atLeastOneEncoder && atLeastOneAnalytics && sourceValidationReady && encodeTermsReady;
+
+            bool sourceValidationReady =
+                SourceValidationCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
+                SourceValidationCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
+            bool encodeTermsReady =
+                EncodeTermsCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
+                EncodeTermsCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
+
+            EncodingStartButtons.B3_2IsEnabled =
+                allToolsReady && atLeastOneUpstream && atLeastOneEncoder && atLeastOneAnalytics && sourceValidationReady && encodeTermsReady;
+            EncodingStartButtons.B3_3IsEnabled =
+                allToolsReady && atLeastOneUpstream && atLeastOneEncoder && atLeastOneAnalytics && sourceValidationReady && encodeTermsReady;
         }
 
         private void LoadToolsFromAppDataM()
         {
-            var t = _appDataS.Tools;
+            var t = _appDataM.Tools;
             AddTool(t.FfmpegPath, t.FfmpegVer, "FFMPEG", UpstreamsZone);
             AddTool(t.VspipePath, t.VspipeVer, "VSPipe", UpstreamsZone);
             AddTool(t.Avs2yuvPath, t.Avs2yuvVer, "AVS2YUV", UpstreamsZone);
@@ -194,7 +233,7 @@ namespace OneColumnEncoder.ViewModels
 
             // Save to AppDataM and persist
             SetToolPath(toolName, displayName);
-            _appDataS.Save();
+            _appDataM.Save();
 
             var item = new ToolItemVM(new EncItemM(displayName))
             {
@@ -210,7 +249,7 @@ namespace OneColumnEncoder.ViewModels
         {
             // Maps tool exe name to AppDataM.Importables properties
             // TODO: Replace placeholder path with actual resolved path when ImportToolAsync is implemented
-            var t = _appDataS.Tools;
+            var t = _appDataM.Tools;
             switch (toolName.ToLowerInvariant())
             {
                 case "ffmpeg.exe":              t.FfmpegPath = displayName; break;

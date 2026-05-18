@@ -35,7 +35,7 @@ namespace OneColumnEncoder.Models
 
         public static List<ChecklistItemDefinitionM> GetEncodeChecklist1() =>
         [
-            new("Using power adapter instead of battery"),
+            new("Not off-grid / powering via battery"),
             new("Sufficient RAM availability"),
             new("Sufficient disk space availability"),
         ];

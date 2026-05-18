@@ -18,7 +18,7 @@ namespace OneColumnEncoder.Models
         ];
 
         public static List<SettingItemDefinitionM> GetGeneralSettings() =>
-            [
+        [
             new SettingItemDefinitionM("General: disable Start Encode when...", "PC is off-grid / on battery", SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.OffGrid)),
             new SettingItemDefinitionM("General: disable Start Encode when...", "Insufficient RAM", SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.InsufficientRAM)),
             new SettingItemDefinitionM("General: disable Start Encode when...", "Insufficient Disk Space", SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.InsufficientDiskSpace)),

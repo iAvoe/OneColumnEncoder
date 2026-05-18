@@ -14,27 +14,26 @@ namespace OneColumnEncoder
     public partial class App : Application
     {
         // Pass navigation, app settings and tools imported to MainVM
-        internal readonly ModalNavS _modalNavS;
-        private readonly AppConfM _appConfS;
-        private readonly AppDataM _appDataS;
+        internal readonly ModalNavS _modalNavM;
+        private readonly AppConfM _appConfM;
+        private readonly AppDataM _appDataM;
         public App()
         {
-            _modalNavS = new ModalNavS();
-            _appConfS = AppConfM.Load();
-            _appDataS = AppDataM.Load();
+            _modalNavM = new ModalNavS();
+            _appConfM = AppConfM.Load();
+            _appDataM = AppDataM.Load();
         }
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            var openAppConf = new OpenAppConfCmd(_modalNavS, _appConfS);
-            var openUsages = new OpenUsagesCmd(_modalNavS);
+            OpenAppConfCmd openAppConf = new(_modalNavM, _appConfM);
+            OpenUsagesCmd openUsages = new(_modalNavM);
 
             MainWindow = new MainWindow()
             {
-                DataContext = new MainVM(openAppConf, openUsages, _appDataS)
+                DataContext = new MainVM(openAppConf, openUsages, _appDataM, _appConfM)
             };
             MainWindow.Show();
-
             base.OnStartup(e);
         }
     }

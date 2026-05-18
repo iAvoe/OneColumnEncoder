@@ -35,7 +35,7 @@ namespace OneColumnEncoder.Models
         {
             public int LongPressMegabyteDivisor { get; set; } = 40;
             public int MinLongPressMs { get; set; } = 1250;
-            public int MaxLongPressMs { get; set; } = 125000;
+            public int MaxLongPressMs { get; set; } = 12500;
         }
         public class SmtpSettings
         {
