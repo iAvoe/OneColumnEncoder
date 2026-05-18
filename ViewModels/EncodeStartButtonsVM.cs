@@ -4,7 +4,7 @@ using System.Windows.Input;
 namespace OneColumnEncoder.ViewModels
 {
     // Using ThreeButtonGroup component
-    public class EncodingStartButtonsVM : BaseVM
+    public class EncodeStartButtonsVM : BaseVM
     {
         private string _b3_1Text = "Re-Evaluate";
         public string B3_1Text
@@ -27,9 +27,9 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _b3_3Text, value);
         }
 
-        public ICommand ReEvaluate { get; } = new ReEvaluateCmd();
-        public ICommand SampleClip { get; } = new SampleClipCmd();
-        public ICommand StartEncode { get; } = new StartEncodeCmd();
+        public ReEvaluateCmd ReEvaluate { get; } = new ReEvaluateCmd();
+        public SampleClipCmd SampleClip { get; } = new SampleClipCmd();
+        public StartEncodeCmd StartEncode { get; } = new StartEncodeCmd();
 
         private bool _b3_1IsEnabled = true;
         public bool B3_1IsEnabled

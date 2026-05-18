@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:OneColumnEncoder.Components"
              xmlns:viewmodels="clr-namespace:OneColumnEncoder.ViewModels"
-             d:DataContext="{d:DesignInstance Type=viewmodels:EncItemVM}"
+             d:DataContext="{d:DesignInstance Type=viewmodels:ToolItemVM}"
              mc:Ignorable="d"
              d:DesignHeight="140"
              d:DesignWidth="450">

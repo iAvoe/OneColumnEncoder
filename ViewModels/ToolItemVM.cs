@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace OneColumnEncoder.ViewModels
 {
-    public class EncItemVM : BaseVM
+    public class ToolItemVM : BaseVM
     {
         private readonly EncItemM _baseModel;
-        public EncItemVM(EncItemM baseModel) => _baseModel = baseModel;
+        public ToolItemVM(EncItemM baseModel) => _baseModel = baseModel;
 
         public string Name => _baseModel.Name;
         public string Path

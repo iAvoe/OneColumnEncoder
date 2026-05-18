@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OneColumnEncoder.Commands
 {
-    class SampleClipCmd : BaseCmd
+    public class SampleClipCmd : BaseCmd
     {
         // Needs Store
         public override void Execute(object? parameter)

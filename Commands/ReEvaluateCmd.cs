@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OneColumnEncoder.Commands
 {
-    class ReEvaluateCmd : BaseCmd
+    public class ReEvaluateCmd : BaseCmd
     {
         // Needs Store
         public override void Execute(object? parameter)

@@ -4,6 +4,7 @@ using OneColumnEncoder.Models;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 
@@ -16,26 +17,26 @@ namespace OneColumnEncoder.ViewModels
         public OpenAppConfCmd OpenAppConf { get; }
         public OpenUsagesCmd OpenUsages { get; }
 
-        public ObservableCollection<EncItemVM> UpstreamsZone { get; }
-        public ObservableCollection<EncItemVM> EncodersZone { get; }
-        public ObservableCollection<EncItemVM> AnalyticsZone { get; }
-        public ObservableCollection<EncItemVM> SourceImportZone { get; } =
+        public ObservableCollection<ToolItemVM> UpstreamsZone { get; }
+        public ObservableCollection<ToolItemVM> EncodersZone { get; }
+        public ObservableCollection<ToolItemVM> AnalyticsZone { get; }
+        public ObservableCollection<ToolItemVM> SourceImportZone { get; } =
         [
-            new EncItemVM(new EncItemM("Video Source")),
-            new EncItemVM(new EncItemM("AviSynth .avs Source")),
-            new EncItemVM(new EncItemM("VapourSynth .vpy Source")),
-            new EncItemVM(new EncItemM("SVFI .ini Source")),
+            new ToolItemVM(new EncItemM("Video Source")),
+            new ToolItemVM(new EncItemM("AviSynth .avs Source")),
+            new ToolItemVM(new EncItemM("VapourSynth .vpy Source")),
+            new ToolItemVM(new EncItemM("SVFI .ini Source")),
         ];
-        public ObservableCollection<EncItemVM> EncSettingsZone { get; } =
+        public ObservableCollection<ToolItemVM> EncSettingsZone { get; } =
         [
-            new EncItemVM(new EncItemM("Output Setting")),
-            new EncItemVM(new EncItemM("Parallelism")),
-            new EncItemVM(new EncItemM("Rate Control Mechanism")),
-            new EncItemVM(new EncItemM("Base Parameters")),
-            new EncItemVM(new EncItemM("Custom Parameters")),
+            new ToolItemVM(new EncItemM("Output Setting")),
+            new ToolItemVM(new EncItemM("Parallelism")),
+            new ToolItemVM(new EncItemM("Rate Control Mechanism")),
+            new ToolItemVM(new EncItemM("Base Parameters")),
+            new ToolItemVM(new EncItemM("Custom Parameters")),
         ];
         public OpenAppConfButtonsVM OpenAppConfButtons { get; }
-        public EncodingStartButtonsVM EncodingStartButtons { get; } = new();
+        public EncodeStartButtonsVM EncodingStartButtons { get; } = new();
 
         public ToolsImportCardVM ToolsImportCard { get; } = new ToolsImportCardVM();
         public SourceValidationCardVM SourceValidationCard { get; } = new SourceValidationCardVM();
@@ -87,47 +88,45 @@ namespace OneColumnEncoder.ViewModels
             BestPracticesCard.P1Name = "Hardware (self check)";
             BestPracticesCard.P3Name = "Software (self check)";
 
-            SubscribeToToolsChecklist();
+            SubToToolsChecklist();
         }
 
         protected override void Dispose()
         {
             ToolsImportCard.ToolImported -= OnToolImported;
-            UnsubscribeFromToolsChecklist();
+            UnsubFromToolsChecklist();
             base.Dispose();
         }
 
-        private void SubscribeToToolsChecklist()
+        // Enable-disable Encoding Start buttons listening subscription and unsubscription
+        private void SubToToolsChecklist()
         {
             foreach (var entry in ToolsImportCard.ToolsChecklist)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
-
             ToolsImportCard.ToolsChecklist.CollectionChanged += OnToolsChecklistCollectionChanged;
             UpdateEncodingStartButtonsState();
         }
-
-        private void UnsubscribeFromToolsChecklist()
+        private void UnsubFromToolsChecklist()
         {
             foreach (var entry in ToolsImportCard.ToolsChecklist)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
-
             ToolsImportCard.ToolsChecklist.CollectionChanged -= OnToolsChecklistCollectionChanged;
         }
 
+        // Subscribe/unsubscribe to tools' PropertyChanged events
         private void OnToolsChecklistCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.NewItems != null)
                 foreach (ChecklistEntryVM entry in e.NewItems)
                     entry.PropertyChanged += OnChecklistEntryPropertyChanged;
-
             if (e.OldItems != null)
                 foreach (ChecklistEntryVM entry in e.OldItems)
                     entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
-
             UpdateEncodingStartButtonsState();
         }
 
-        private void OnChecklistEntryPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        // Enable-disable Encoding Start button, i.e., if PC changed from battery power to plugged in
+        private void OnChecklistEntryPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ChecklistEntryVM.Status))
                 UpdateEncodingStartButtonsState();
@@ -135,9 +134,19 @@ namespace OneColumnEncoder.ViewModels
 
         private void UpdateEncodingStartButtonsState()
         {
-            bool allToolsReady = ToolsImportCard.ToolsChecklist.All(entry => entry.Status == StatusType.Success);
-            EncodingStartButtons.B3_2IsEnabled = allToolsReady;
-            EncodingStartButtons.B3_3IsEnabled = allToolsReady;
+            bool allToolsReady =
+                ToolsImportCard.ToolsChecklist.All(entry => entry.Status == StatusType.Success);
+            bool atLeastOneUpstream = ToolsImportCard.ToolsChecklist
+                .Where(entry => entry.Text == "FFMPEG" || entry.Text == "VSPipe" || entry.Text == "AVS2YUV" || entry.Text == "AVS2PipeMod" || entry.Text == "OneLineShotArgs")
+                .Any(entry => entry.Status == StatusType.Success);
+            bool atLeastOneEncoder = ToolsImportCard.ToolsChecklist
+                .Where(entry => entry.Text == "x264" || entry.Text == "x265" || entry.Text == "SVT-AV1")
+                .Any(entry => entry.Status == StatusType.Success);
+            bool atLeastOneAnalytics = ToolsImportCard.ToolsChecklist
+                .Where(entry => entry.Text == "FFProbe" || entry.Text == "AviSynth.dll (for Avs2PipeMod)")
+                .Any(entry => entry.Status == StatusType.Success);
+            EncodingStartButtons.B3_2IsEnabled = allToolsReady && atLeastOneUpstream && atLeastOneEncoder && atLeastOneAnalytics;
+            EncodingStartButtons.B3_3IsEnabled = allToolsReady && atLeastOneUpstream && atLeastOneEncoder && atLeastOneAnalytics;
         }
 
         private void LoadToolsFromAppDataM()
@@ -155,10 +164,10 @@ namespace OneColumnEncoder.ViewModels
             AddTool(t.AviSynthDllPath, null, "AviSynth.dll (for Avs2PipeMod)", AnalyticsZone);
         }
 
-        private static void AddTool(string? path, string? version, string displayName, ObservableCollection<EncItemVM> zone)
+        private static void AddTool(string? path, string? version, string displayName, ObservableCollection<ToolItemVM> zone)
         {
             if (string.IsNullOrEmpty(path)) return;
-            var item = new EncItemVM(new EncItemM(displayName))
+            var item = new ToolItemVM(new EncItemM(displayName))
             {
                 Path = path,
                 VersionText = version ?? "",
@@ -181,7 +190,7 @@ namespace OneColumnEncoder.ViewModels
             SetToolPath(toolName, displayName);
             _appDataS.Save();
 
-            var item = new EncItemVM(new EncItemM(displayName))
+            var item = new ToolItemVM(new EncItemM(displayName))
             {
                 P1Name = "Version",
                 P2Name = "Path",
@@ -211,7 +220,7 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        private ObservableCollection<EncItemVM>? ZoneForTool(string toolName)
+        private ObservableCollection<ToolItemVM>? ZoneForTool(string toolName)
         {
             return toolName.ToLowerInvariant() switch
             {

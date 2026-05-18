@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OneColumnEncoder.Commands
 {
-    class StartEncodeCmd : BaseCmd
+    public class StartEncodeCmd : BaseCmd
     {
         // Needs Store
         public override void Execute(object? parameter)
