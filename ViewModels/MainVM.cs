@@ -90,7 +90,6 @@ namespace OneColumnEncoder.ViewModels
             BestPracticesCard.P1Name = "Hardware (self check)";
             BestPracticesCard.P3Name = "Software (self check)";
 
-            // 
             InitializeChecklistEntryStates();
             SubToToolsChecklist();
         }
@@ -102,33 +101,20 @@ namespace OneColumnEncoder.ViewModels
             base.Dispose();
         }
 
-        // Initialize ChecklistEntryVM.IsEnabled based on AppConfM.GeneralSettings
         private void InitializeChecklistEntryStates()
         {
             AppConfM.GeneralSettings g = _appConfM.General;
-            // Overwrite settings are managed in the last general setting item
-            // SMTP settings are within AppConfM, and not affect encoding start buttons state
 
-            // SourceValidationCard.Checklist1-2 are always enabled,
-            // and cannot be configured by user, since they are critical checks
-            // and non-critical checks do not disable encoding start buttons
-            // which means AppConfM maintains a separate list (SettingsList) from Checklist
+            var cl1 = EncodeTermsCard.Checklist1;
+            if (cl1.Count >= 1) cl1[0].IsEnabled = g.OffGrid;
+            if (cl1.Count >= 2) cl1[1].IsEnabled = g.InsufficientRAM;
+            if (cl1.Count >= 3) cl1[2].IsEnabled = g.InsufficientDiskSpace;
 
-            // EncodeTermsCard.Checklist1-2 can be disabled, these checks involving OS,
-            // which may give unreliable or fluctuating readings
-            SetEntryEnabledByText(EncodeTermsCard.Checklist1, "PC is off-grid / on battery", g.OffGrid);
-            SetEntryEnabledByText(EncodeTermsCard.Checklist1, "Insufficient RAM", g.InsufficientRAM);
-            SetEntryEnabledByText(EncodeTermsCard.Checklist1, "Insufficient Disk Space", g.InsufficientDiskSpace);
-            SetEntryEnabledByText(EncodeTermsCard.Checklist2, "Filename is Invalid for OS", g.OSFileNameInvalid);
-            SetEntryEnabledByText(EncodeTermsCard.Checklist2, "Filename is Invalid for FTP", g.FTPFileNameInvalid);
-            SetEntryEnabledByText(EncodeTermsCard.Checklist2, "Lack of Write Permission", g.NoWritePermission);
-            SetEntryEnabledByText(EncodeTermsCard.Checklist2, "Overwriting a File", g.NoWritePermission);
-        }
-        private static void SetEntryEnabledByText(ObservableCollection<ChecklistEntryVM> checklist, string text, bool enabled)
-        {
-            var entry = checklist.FirstOrDefault(e => e.Text == text);
-            if (entry != null)
-                entry.IsEnabled = enabled;
+            var cl2 = EncodeTermsCard.Checklist2;
+            if (cl2.Count >= 1) cl2[0].IsEnabled = g.OSFileNameInvalid;
+            if (cl2.Count >= 2) cl2[1].IsEnabled = g.FTPFileNameInvalid;
+            if (cl2.Count >= 3) cl2[2].IsEnabled = g.NoWritePermission;
+            if (cl2.Count >= 4) cl2[3].IsEnabled = g.IsOverwriting;
         }
 
         // Enable-disable Encoding Start buttons listening subscription and unsubscription

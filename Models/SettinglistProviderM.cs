@@ -19,13 +19,13 @@ namespace OneColumnEncoder.Models
 
         public static List<SettingItemDefinitionM> GetGeneralSettings() =>
         [
-            new SettingItemDefinitionM("General: disable Start Encode when...", "PC is off-grid / on battery", SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.OffGrid)),
-            new SettingItemDefinitionM("General: disable Start Encode when...", "Insufficient RAM", SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.InsufficientRAM)),
-            new SettingItemDefinitionM("General: disable Start Encode when...", "Insufficient Disk Space", SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.InsufficientDiskSpace)),
-            new SettingItemDefinitionM("General: disable Start Encode when...", "Filename is Invalid for OS", SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.OSFileNameInvalid)),
-            new SettingItemDefinitionM("General: disable Start Encode when...", "Filename is Invalid for FTP", SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.FTPFileNameInvalid)),
-            new SettingItemDefinitionM("General: disable Start Encode when...", "Lack of Write Permission", SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.NoWritePermission)),
-            new SettingItemDefinitionM("General: disable Start Encode when...", "Overwriting a File", SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.IsOverwriting)),
+            new SettingItemDefinitionM("General: disable Start Encode when...", "Not off-grid / powering via battery", SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.OffGrid)),
+            new SettingItemDefinitionM("General: disable Start Encode when...", "Sufficient RAM availability", SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.InsufficientRAM)),
+            new SettingItemDefinitionM("General: disable Start Encode when...", "Sufficient disk space availability", SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.InsufficientDiskSpace)),
+            new SettingItemDefinitionM("General: disable Start Encode when...", "Output filename is valid for OS", SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.OSFileNameInvalid)),
+            new SettingItemDefinitionM("General: disable Start Encode when...", "Output filename maybe valid for FTP (Pseudo-UTF-8)", SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.FTPFileNameInvalid)),
+            new SettingItemDefinitionM("General: disable Start Encode when...", "Write permission in output folder", SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.NoWritePermission)),
+            new SettingItemDefinitionM("General: disable Start Encode when...", "Output does not overwrite existing file", SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.IsOverwriting)),
         ];
 
         public static List<SettingItemDefinitionM> GetOverwriteSettings() =>
