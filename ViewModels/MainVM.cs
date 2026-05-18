@@ -15,7 +15,7 @@ namespace OneColumnEncoder.ViewModels
     public class MainVM : BaseVM
     {
         private readonly AppDataM _appDataM;
-        private readonly AppConfM _appConfM; // Load settings to configure ChecklistEntryVM _isEnabled
+        private readonly AppConfM _appConfM;
 
         public OpenAppConfCmd OpenAppConf { get; }
         public OpenUsagesCmd OpenUsages { get; }
@@ -23,81 +23,15 @@ namespace OneColumnEncoder.ViewModels
         public ObservableCollection<ToolItemVM> UpstreamsZone { get; }
         public ObservableCollection<ToolItemVM> EncodersZone { get; }
         public ObservableCollection<ToolItemVM> AnalyticsZone { get; }
-        public ObservableCollection<ToolItemVM> SrcImportZone { get; } =
-        [
-            new ToolItemVM(new EncItemM("Video Source"))
-            {
-                R1Text = "Replace",
-                R2Text = "Clear",
-                P1Name = "Name",
-                P2Name = "Path"
-            },
-            new ToolItemVM(new EncItemM("AviSynth .avs Source"))
-            {
-                R1Text = "Replace",
-                R2Text = "Clear",
-                P1Name = "Mode",
-                P2Name = "Path"
-            },
-            new ToolItemVM(new EncItemM("VapourSynth .vpy Source"))
-            {
-                R1Text = "Replace",
-                R2Text = "Clear",
-                P1Name = "Mode",
-                P2Name = "Path"
-            },
-            new ToolItemVM(new EncItemM("SVFI .ini Source"))
-            {
-                R1Text = "Replace",
-                R2Text = "Clear",
-                P1Name = "Mode",
-                P2Name = "Path"
-            },
-        ];
-        public ObservableCollection<ToolItemVM> EncSettingsZone { get; } =
-        [
-            new ToolItemVM(new EncItemM("Output Setting"))
-            {
-                R1Text = "Edit",
-                R2Text = "Clear",
-                P1Name = "File name w/out extension",
-                P2Name = "Path"
-            },
-            new ToolItemVM(new EncItemM("Parallelism"))
-            {
-                R1Text = "Edit",
-                R2Text = "Clear",
-                P1Name = "CPU-RAM Nodes",
-                P2Name = "Threads"
-            },
-            new ToolItemVM(new EncItemM("Rate Control Mechanism"))
-            {
-                R1Text = "Edit",
-                R2Text = "Clear",
-                P1Name = "Mode",
-                P2Name = "Value"
-            },
-            new ToolItemVM(new EncItemM("Base Parameters"))
-            {
-                R1Text = "Edit",
-                R2Text = "Clear",
-                P1Name = "Stratagem",
-            },
-            new ToolItemVM(new EncItemM("Custom Parameters"))
-            {
-                R1Text = "Edit",
-                R2Text = "Clear",
-                P1Name = "Maximum keyframe gap",
-                P2Name = "Other custom params",
-            },
-        ];
+        public ObservableCollection<ToolItemVM> SrcImportZone { get; }
+        public ObservableCollection<ToolItemVM> EncSettingsZone { get; }
         public ButtonGroupVM OpenAppConfButtons { get; }
         public ButtonGroupVM EncStartButtons { get; }
 
-        public ToolsImportCardVM ToolsImportCard { get; } = new ToolsImportCardVM();
-        public SourceValidationCardVM SrcValidationCard { get; } = new SourceValidationCardVM();
-        public EncTermsCardVM EncTermsCard { get; } = new EncTermsCardVM();
-        public BestPracticesCardVM BestPracticesCard { get; } = new BestPracticesCardVM();
+        public ToolsImportCardVM ToolsImportCard { get; } = new();
+        public SourceValidationCardVM SrcValidationCard { get; } = new();
+        public EncTermsCardVM EncTermsCard { get; } = new();
+        public BestPracticesCardVM BestPracticesCard { get; } = new();
 
         public MainVM(OpenAppConfCmd openAppConf, OpenUsagesCmd openUsages, AppDataM appDataM, AppConfM appConfM)
         {
@@ -106,6 +40,9 @@ namespace OneColumnEncoder.ViewModels
             OpenAppConf = openAppConf;
             OpenUsages = openUsages;
 
+            SrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetSourceImportDefinitions());
+            EncSettingsZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetEncSettingsDefinitions());
+
             UpstreamsZone = [];
             EncodersZone = [];
             AnalyticsZone = [];
@@ -113,52 +50,55 @@ namespace OneColumnEncoder.ViewModels
             WireUpZoneRemoveCommands();
 
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
-                "Usage & Compliance",
-                "⚙️ Settings",
+                UICaptionProviderM.Buttons.UsageAndCompliance,
+                UICaptionProviderM.Buttons.Settings,
                 OpenUsages,
                 OpenAppConf);
             EncStartButtons = ButtonGroupVM.CreateThreeButton(
-                "Re-Evaluate",
-                "Run a Sample",
-                "Start Encode");
-            // TODO: ReEvaluate Cmd
-            // TODO: Sample Clip Cmd
-            // TODO: Start Encode Cmd
-            
+                UICaptionProviderM.Buttons.ReEvaluate,
+                UICaptionProviderM.Buttons.RunSample,
+                UICaptionProviderM.Buttons.StartEncode);
+
             ToolsImportCard.ToolImported += OnToolImported;
 
-            ToolsImportCard.Name = "Import tools:";
-            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("No Selection"));
-            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("", true));
-            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("ffmpeg.exe"));
-            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("vspipe.exe"));
-            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("avs2yuv.exe"));
-            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("avs2pipemod.exe"));
-            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("one_line_shot_args.exe"));
-            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("", true));
-            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("x264.exe"));
-            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("x265.exe"));
-            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("SvtAv1EncApp.exe"));
-            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("", true));
-            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("ffprobe.exe"));
-            ToolsImportCard.ImportDropdown.Items.Add(new DropdownItemM("AviSynth.dll"));
+            ToolsImportCard.Name = UICaptionProviderM.Cards.ToolsImport;
+            foreach (var item in ToolCatalogProviderM.GetImportDropdownItems())
+                ToolsImportCard.ImportDropdown.Items.Add(item);
             ToolsImportCard.ImportDropdown.SelectedItem =
                 ToolsImportCard.ImportDropdown.Items[0];
 
-            SrcValidationCard.Name = "Source Video Validation";
-            SrcValidationCard.P1Name = "Severe (incompatible / corrupted)";
-            SrcValidationCard.P3Name = "Moderate (affecting quality)";
+            SrcValidationCard.Name = UICaptionProviderM.Cards.SourceValidation;
+            SrcValidationCard.P1Name = UICaptionProviderM.Cards.SourceSevere;
+            SrcValidationCard.P3Name = UICaptionProviderM.Cards.SourceModerate;
 
-            EncTermsCard.Name = "Encoding Prerequisites";
-            EncTermsCard.P1Name = "Hardware";
-            EncTermsCard.P3Name = "Software";
+            EncTermsCard.Name = UICaptionProviderM.Cards.EncPrerequisites;
+            EncTermsCard.P1Name = UICaptionProviderM.Cards.EncHardware;
+            EncTermsCard.P3Name = UICaptionProviderM.Cards.EncSoftware;
 
-            BestPracticesCard.Name = "Best Practices";
-            BestPracticesCard.P1Name = "Hardware (self check)";
-            BestPracticesCard.P3Name = "Software (self check)";
+            BestPracticesCard.Name = UICaptionProviderM.Cards.BestPractices;
+            BestPracticesCard.P1Name = UICaptionProviderM.Cards.BestHardware;
+            BestPracticesCard.P3Name = UICaptionProviderM.Cards.BestSoftware;
 
             InitializeChecklistEntryStates();
             SubToToolsChecklist();
+        }
+
+        private static ObservableCollection<ToolItemVM> LoadZoneFromDefinitions(List<ToolDefinitionM> defs)
+        {
+            var zone = new ObservableCollection<ToolItemVM>();
+            foreach (var def in defs)
+            {
+                var item = new ToolItemVM(new EncItemM(def.DisplayName))
+                {
+                    R1Text = def.R1Text,
+                    R2Text = def.R2Text,
+                    P1Name = def.P1Name,
+                    P2Name = def.P2Name ?? ""
+                };
+                item.R2Command = new ActionCmd(_ => zone.Remove(item));
+                zone.Add(item);
+            }
+            return zone;
         }
 
         protected override void Dispose()
@@ -184,7 +124,6 @@ namespace OneColumnEncoder.ViewModels
             if (cl2.Count >= 4) cl2[3].IsEnabled = g.IsOverwriting;
         }
 
-        // Enable-disable Encoding Start buttons listening subscription and unsubscription
         private void SubToToolsChecklist()
         {
             foreach (var entry in ToolsImportCard.ToolsChecklist)
@@ -213,7 +152,6 @@ namespace OneColumnEncoder.ViewModels
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
         }
 
-        // Enable-disable Encoding Start button, i.e., if PC changed from battery power to plugged in
         private void OnChecklistEntryPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ChecklistEntryVM.Status))
@@ -225,13 +163,13 @@ namespace OneColumnEncoder.ViewModels
             bool allToolsReady =
                 ToolsImportCard.ToolsChecklist.All(entry => entry.Status == StatusType.Success);
             bool atLeastOneUpstream = ToolsImportCard.ToolsChecklist
-                .Where(entry => entry.Text is "FFMPEG" or "VSPipe" or "AVS2YUV" or "AVS2PipeMod" or "OneLineShotArgs")
+                .Where(entry => ToolCatalogProviderM.UpstreamDisplayNames.Contains(entry.Text))
                 .Any(entry => entry.Status == StatusType.Success);
             bool atLeastOneEncoder = ToolsImportCard.ToolsChecklist
-                .Where(entry => entry.Text is "x264" or "x265" or "SVT-AV1")
+                .Where(entry => ToolCatalogProviderM.EncoderDisplayNames.Contains(entry.Text))
                 .Any(entry => entry.Status == StatusType.Success);
             bool atLeastOneAnalytics = ToolsImportCard.ToolsChecklist
-                .Where(entry => entry.Text is "FFProbe" or "AviSynth.dll (for Avs2PipeMod)")
+                .Where(entry => ToolCatalogProviderM.AnalyticsDisplayNames.Contains(entry.Text))
                 .Any(entry => entry.Status == StatusType.Success);
 
             bool sourceValidationReady =
@@ -291,16 +229,22 @@ namespace OneColumnEncoder.ViewModels
 
         private void OnToolImported(string toolName, string filePath)
         {
-            var zone = ZoneForTool(toolName);
+            var resolved = ToolCatalogProviderM.ResolveExe(toolName);
+            if (resolved == null) return;
+
+            var zone = resolved.Value.Zone switch
+            {
+                ToolZone.Upstream  => UpstreamsZone,
+                ToolZone.Encoder   => EncodersZone,
+                ToolZone.Analytics => AnalyticsZone,
+                _ => null,
+            };
             if (zone == null) return;
 
-            var displayName = Path.GetFileNameWithoutExtension(toolName);
-
-            // Save to AppDataM and persist
-            SetToolPath(toolName, filePath);
+            ToolCatalogProviderM.TrySetPath(toolName, _appDataM.Tools, filePath);
             _appDataM.Save();
 
-            var item = new ToolItemVM(new EncItemM(displayName))
+            var item = new ToolItemVM(new EncItemM(resolved.Value.DisplayName))
             {
                 Path = filePath,
                 P1Name = "Version",
@@ -311,37 +255,5 @@ namespace OneColumnEncoder.ViewModels
             WireUpRemoveCommand(item, zone);
             zone.Add(item);
         }
-
-        private void SetToolPath(string toolName, string filePath)
-        {
-            // Maps tool exe name to AppDataM.Importables properties
-            var t = _appDataM.Tools;
-            switch (toolName.ToLowerInvariant())
-            {
-                case "ffmpeg.exe":              t.FfmpegPath = filePath; break;
-                case "vspipe.exe":              t.VspipePath = filePath; break;
-                case "avs2yuv.exe":             t.Avs2yuvPath = filePath; break;
-                case "avs2pipemod.exe":         t.Avs2pipemodPath = filePath; break;
-                case "one_line_shot_args.exe":  t.OneLineShotArgsPath = filePath; break;
-                case "x264.exe":                t.X264Path = filePath; break;
-                case "x265.exe":                t.X265Path = filePath; break;
-                case "svtav1encapp.exe":        t.SvtAv1Path = filePath; break;
-                case "ffprobe.exe":             t.FfprobePath = filePath; break;
-                case "avisynth.dll":            t.AviSynthDllPath = filePath; break;
-            }
-        }
-
-        private ObservableCollection<ToolItemVM>? ZoneForTool(string toolName)
-        {
-            return toolName.ToLowerInvariant() switch
-            {
-                "ffmpeg.exe" or "vspipe.exe" or "avs2yuv.exe" or "avs2pipemod.exe"
-                    or "one_line_shot_args.exe" => UpstreamsZone,
-                "x264.exe" or "x265.exe" or "svtav1encapp.exe" => EncodersZone,
-                "ffprobe.exe" or "avisynth.dll" => AnalyticsZone,
-                _ => null,
-            };
-        }
-
     }
 }
