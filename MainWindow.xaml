@@ -12,6 +12,6 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Auto">
         <!-- DataContext is inherited from parent (MainVM), so there is no binding needed here -->
-        <views:MainUI Margin="10"/>
+        <views:MainUI />
     </ScrollViewer>
 </Window>

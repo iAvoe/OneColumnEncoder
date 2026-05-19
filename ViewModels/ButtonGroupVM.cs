@@ -12,22 +12,29 @@ namespace OneColumnEncoder.ViewModels
     /// </summary>
     public class ButtonGroupVM : BaseVM
     {
+        private string _b1_1Text = "";
+        public string B1_1Text { get => _b1_1Text; set => SetProperty(ref _b1_1Text, value); }
+
         private string _b2_1Text = "";
         public string B2_1Text { get => _b2_1Text; set => SetProperty(ref _b2_1Text, value); }
-
         private string _b2_2Text = "";
         public string B2_2Text { get => _b2_2Text; set => SetProperty(ref _b2_2Text, value); }
 
         private string _b3_1Text = "";
         public string B3_1Text { get => _b3_1Text; set => SetProperty(ref _b3_1Text, value); }
-
         private string _b3_2Text = "";
         public string B3_2Text { get => _b3_2Text; set => SetProperty(ref _b3_2Text, value); }
-
         private string _b3_3Text = "";
         public string B3_3Text { get => _b3_3Text; set => SetProperty(ref _b3_3Text, value); }
 
         // Button states
+        private bool _b1_1IsEnabled = true;
+        public bool B1_1IsEnabled
+        {
+            get => _b1_1IsEnabled;
+            set => SetProperty(ref _b1_1IsEnabled, value);
+        }
+
         private bool _b2_1IsEnabled = true;
         public bool B2_1IsEnabled
         {
@@ -66,6 +73,14 @@ namespace OneColumnEncoder.ViewModels
         public ICommand? Cmd2 { get; set; }
         public ICommand? Cmd3 { get; set; }
 
+        public static ButtonGroupVM CreatePrimaryButton(string text, ICommand cmd = null)
+        {
+            return new ButtonGroupVM
+            {
+                B1_1Text = text,
+                Cmd1 = cmd,
+            };
+        }
         public static ButtonGroupVM CreateTwoButton(string b1Text, string b2Text, ICommand? cmd1 = null, ICommand? cmd2 = null)
         {
             return new ButtonGroupVM

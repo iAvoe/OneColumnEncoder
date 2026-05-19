@@ -10,7 +10,7 @@
              d:DataContext="{d:DesignInstance Type=vms:MainVM}"
              Background="{StaticResource Background}">
     <Grid>
-        <StackPanel Margin="5">
+        <StackPanel Margin="10 2.5 10 7.5">
         <!-- Import Tools -->
         <comps:SectionHeader HeaderText="Import Tools"
                              Margin="0 0 0 20" />

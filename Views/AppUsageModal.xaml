@@ -1,4 +1,4 @@
-<Window x:Class="OneColumnEncoder.Views.AppUsageModal"
+﻿<Window x:Class="OneColumnEncoder.Views.AppUsageModal"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,47 +6,164 @@
         xmlns:local="clr-namespace:OneColumnEncoder.Views"
         mc:Ignorable="d"
         Title="1cenc Usage &amp; Compliance"
+        Width="520"
+        Height="950"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource Background}">
-    <Grid>
+    
+    <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0"
-                Background="{StaticResource GlobalPrimary}"
-                Padding="20,15">
-            <TextBlock Text="Usage &amp; Compliance"
-                       Foreground="{StaticResource Background}"
-                       FontSize="18"
-                       FontWeight="SemiBold"/>
-        </Border>
+        <TextBlock Grid.Row="0"
+                   Text="Usage &amp; Compliance"
+                   Foreground="{StaticResource GlobalPrimary}"
+                   Style="{StaticResource H1}" />
 
         <ScrollViewer Grid.Row="1"
-                      Padding="20"
                       VerticalScrollBarVisibility="Auto">
-            <TextBlock Text="Usage and compliance content will be added here."
-                       Foreground="{StaticResource GlobalSecondary}"
-                       FontStyle="Italic"/>
+            <StackPanel>
+                <TextBlock Text="Language/语言 → ⚙️ Settings"
+                           Margin="0 10 0 0"
+                           FontSize="14"
+                           HorizontalAlignment="Center"
+                           Foreground="{StaticResource GlobalSecondary}" />
+                <TextBlock Text="How to use this program"
+                           Margin="0 10 0 0"
+                           Style="{StaticResource H2}" />
+                <TextBlock Text="This program provides a vertically stacked UI, with confirmation button on the right side, indicating a top→down, left→right operation sequence."
+                           Margin="0 10 0 0"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+                <TextBlock Text="The simplest way to get started is to:"
+                           Margin="0 10 0 0"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+                <TextBlock Text="1. Import an upstream tool (ffmpeg, vspipe, avs2yuv, etc.)"
+                           Margin="15 10 0 0"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+                <TextBlock Text="2. Import an encoder / downstream tool (x264, x265, etc.)"
+                           Margin="15 10 0 0"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+                <TextBlock Text="3. Import source video file"
+                           Margin="15 10 0 0"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+                <TextBlock Text="4. Select encoding settings (that is validated as compatible &amp; healthy)"
+                           Margin="15 10 0 0"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+                <TextBlock Text="5. Clear the checklist and start"
+                           Margin="15 10 0 0"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+
+                <TextBlock Text="Why is my Start Encoding button disabled"
+                           Margin="0 10 0 0"
+                           Style="{StaticResource H2}" />
+                <TextBlock Text="1. Turn hardware-based disablements off in ⚙️ Settings"
+                           Margin="15 10 0 0"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+                <TextBlock Text="2. Garbage in, garbage out (most of them are not disabling though)"
+                           Margin="15 10 0 0"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+                <TextBlock Text="3. Encoding of corrupted video can crash your PC (BSOD) in rare cases"
+                           Margin="15 10 0 0"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+
+                <TextBlock Text="Recommended Lossy Audio Codecs"
+                           Margin="0 10 0 0"
+                           Style="{StaticResource H2}" />
+                <TextBlock Text="1. Opus (.ogg). Smaller files, relaxed compliances"
+                           Margin="15 10 0 0"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+                <TextBlock Text="2. QAAC (.aac). Best quality among AAC-LC encoders, while being universally compatible as an AAC format"
+                           Margin="15 10 0 0"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+                
+                <TextBlock Text="Compliances for Commercial Usage"
+                           Margin="0 10 0 0"
+                           Style="{StaticResource H2}"/>
+                <TextBlock Text="This program uses Apache 2.0 License. For commercial usage, please refer to compliance requirement of the programs imported to this tool."
+                           Margin="0 10 0 0"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+                <TextBlock Text="· FFMPEG/FFProbe License: URL"
+                           Margin="15 10 0 0"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+                <TextBlock Text="· VapourSynth License: URL"
+                           Margin="15 10 0 0"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+                <TextBlock Text="· AVS2YUV/AviSynth License: URL"
+                           Margin="15 10 0 0"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+                <TextBlock Text="· AVS2PiepMod License: URL"
+                           Margin="15 10 0 0"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+                <TextBlock Text="· SVFI License: URL"
+                           Margin="15 10 0 0"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+                <TextBlock Text="· x264 AVC License / L-Pool: URL"
+                           Margin="15 10 0 0"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+                <TextBlock Text="· x265 HEVC License / L-Pool: "
+                           Margin="15 10 0 0"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+                <TextBlock Text="· SVT-AV1 / AV1 License / L-Pool: URL"
+                           Margin="15 10 0 0"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+                <TextBlock Text="...Including the video container formats, audio codecs, and most importantly, the font types involved for commercial usage."
+                           Margin="0 10 0 0"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
+            </StackPanel>
         </ScrollViewer>
 
-        <Border Grid.Row="2"
-                Background="{StaticResource Background}"
-                BorderThickness="1"
-                Padding="20 15">
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Right">
-                <Button Content="Close"
-                        Click="CloseButton_Click"
-                        Width="100"
-                        Height="32"
-                        Background="{StaticResource ButtonPrimary}"
-                        Foreground="{StaticResource Background}"
-                        BorderThickness="0"
-                        Cursor="Hand"/>
-            </StackPanel>
-        </Border>
+        <Button Grid.Row="2"
+                Margin="0 10 0 0"
+                Content="{Binding B1_1Text}"
+                Command="{Binding CloseCmd}"
+                VerticalAlignment="Center"
+                Style="{StaticResource PrimaryButton}"
+                HorizontalAlignment="Stretch" />
     </Grid>
 </Window>
