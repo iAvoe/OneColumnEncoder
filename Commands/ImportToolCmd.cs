@@ -1,5 +1,6 @@
 ﻿using OneColumnEncoder.Models;
 using OneColumnEncoder.ViewModels;
+using OneColumnEncoder.Views;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace OneColumnEncoder.Commands
 {
@@ -29,6 +31,8 @@ namespace OneColumnEncoder.Commands
         {
             string selectedTool = _dropdownVm.SelectedItem?.Title ?? "";
             if (string.IsNullOrEmpty(selectedTool)) return;
+
+            if (!ConfirmImport()) return;
 
             string? filePath = await ImportToolAsync(selectedTool);
 
@@ -56,6 +60,18 @@ namespace OneColumnEncoder.Commands
             OnCanExecuteChanged();
         }
 
+        private static bool ConfirmImport()
+        {
+            var window = new WarnErrModal();
+            window.DataContext = WarnErrModalVM.CreateImportWarning(
+                p1Text: WarnErrProviderM.ImportWarnings.Message,
+                cancelCmd: new ActionCmd(_ => { window.DialogResult = false; window.Close(); }),
+                confirmCmd: new ActionCmd(_ => { window.DialogResult = true; window.Close(); }));
+            window.Owner = Application.Current.MainWindow;
+            return window.ShowDialog() == true;
+        }
+
+        // There is no awaitable file dialog in WPF, so this warning can be ignored for now
         private static async Task<string?> ImportToolAsync(string toolName)
         {
             // TODO: Implement version detection later

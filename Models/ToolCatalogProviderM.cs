@@ -84,11 +84,35 @@ public static class ToolCatalogProviderM
         ["avisynth.dll"] = (t, p) => t.AviSynthDllPath = p,
     };
 
+    private static readonly Dictionary<string, Action<AppDataM.Importables, string>> _versionSetters = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["ffmpeg.exe"] = (t, v) => t.FfmpegVer = v,
+        ["vspipe.exe"] = (t, v) => t.VspipeVer = v,
+        ["avs2yuv.exe"] = (t, v) => t.Avs2yuvVer = v,
+        ["avs2pipemod.exe"] = (t, v) => t.Avs2pipemodVer = v,
+        ["x264.exe"] = (t, v) => t.X264Ver = v,
+        ["x265.exe"] = (t, v) => t.X265Ver = v,
+        ["svtav1encapp.exe"] = (t, v) => t.SvtAv1Ver = v,
+        ["ffprobe.exe"] = (t, v) => t.FfprobeVer = v,
+    };
+
+    // Set the appropriate AppDataM.Importables property based on the exe name
     public static bool TrySetPath(string exeName, AppDataM.Importables tools, string filePath)
     {
         if (_pathSetters.TryGetValue(exeName, out var setter))
         {
             setter(tools, filePath);
+            return true;
+        }
+        return false;
+    }
+
+    // TODO: customize for each tool
+    public static bool TrySetVersion(string exeName, AppDataM.Importables tools, string version)
+    {
+        if (_versionSetters.TryGetValue(exeName, out var setter))
+        {
+            setter(tools, version);
             return true;
         }
         return false;

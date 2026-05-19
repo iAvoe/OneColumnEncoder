@@ -47,7 +47,7 @@ namespace OneColumnEncoder.ViewModels
             EncodersZone = [];
             AnalyticsZone = [];
             LoadToolsFromAppDataM();
-            WireUpZoneRemoveCommands();
+            WireUpZoneDeleteCmds();
 
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProviderM.Buttons.UsageAndCompliance,
@@ -185,15 +185,20 @@ namespace OneColumnEncoder.ViewModels
                 allToolsReady && atLeastOneUpstream && atLeastOneEncoder && atLeastOneAnalytics && sourceValidationReady && encodeTermsReady;
         }
 
-        private void WireUpZoneRemoveCommands()
+        private void WireUpZoneDeleteCmds()
         {
-            foreach (var item in SrcImportZone) WireUpRemoveCommand(item, SrcImportZone);
-            foreach (var item in EncSettingsZone) WireUpRemoveCommand(item, EncSettingsZone);
+            foreach (var item in SrcImportZone)
+                WireUpDeleteCmd(item, SrcImportZone);
+            foreach (var item in EncSettingsZone)
+                WireUpDeleteCmd(item, EncSettingsZone);
+            foreach (var item in AnalyticsZone)
+                WireUpDeleteCmd(item, AnalyticsZone);
         }
 
-        private static void WireUpRemoveCommand(ToolItemVM item, ObservableCollection<ToolItemVM> zone)
+        private void WireUpDeleteCmd(ToolItemVM item, ObservableCollection<ToolItemVM> zone)
         {
-            item.R2Command = new ActionCmd(_ => zone.Remove(item));
+            item.R2Command =
+                new ActionCmd(_ => { zone.Remove(item); OnToolDeleted(item.Name); });
         }
 
         private void LoadToolsFromAppDataM()
@@ -211,7 +216,7 @@ namespace OneColumnEncoder.ViewModels
             AddTool(t.AviSynthDllPath, null, "AviSynth.dll (for Avs2PipeMod)", AnalyticsZone);
         }
 
-        private static void AddTool(string? path, string? version, string displayName, ObservableCollection<ToolItemVM> zone)
+        private void AddTool(string? path, string? version, string displayName, ObservableCollection<ToolItemVM> zone)
         {
             if (string.IsNullOrEmpty(path)) return;
             var item = new ToolItemVM(new EncItemM(displayName))
@@ -223,7 +228,7 @@ namespace OneColumnEncoder.ViewModels
                 R1Text = "Replace",
                 R2Text = "Delete"
             };
-            WireUpRemoveCommand(item, zone);
+            WireUpDeleteCmd(item, zone);
             zone.Add(item);
         }
 
@@ -234,8 +239,8 @@ namespace OneColumnEncoder.ViewModels
 
             var zone = resolved.Value.Zone switch
             {
-                ToolZone.Upstream  => UpstreamsZone,
-                ToolZone.Encoder   => EncodersZone,
+                ToolZone.Upstream => UpstreamsZone,
+                ToolZone.Encoder => EncodersZone,
                 ToolZone.Analytics => AnalyticsZone,
                 _ => null,
             };
@@ -252,8 +257,16 @@ namespace OneColumnEncoder.ViewModels
                 R1Text = "Edit",
                 R2Text = "Clear"
             };
-            WireUpRemoveCommand(item, zone);
+            WireUpDeleteCmd(item, zone);
             zone.Add(item);
+        }
+        private void OnToolDeleted(string toolName)
+        {
+            var resolved = ToolCatalogProviderM.ResolveExe(toolName);
+            if (resolved == null) return;
+            ToolCatalogProviderM.TrySetPath(toolName, _appDataM.Tools, string.Empty);
+            ToolCatalogProviderM.TrySetVersion(toolName, _appDataM.Tools, string.Empty);
+            _appDataM.Save();
         }
     }
 }

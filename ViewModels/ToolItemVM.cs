@@ -94,7 +94,7 @@ namespace OneColumnEncoder.ViewModels
 
         private static string GetExeVersion(string path)
         {
-            return "TODO";
+            return "TODO (" + path + ")";
         }
     }
 }

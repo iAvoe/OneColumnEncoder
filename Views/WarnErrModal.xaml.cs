@@ -18,7 +18,7 @@ namespace OneColumnEncoder.Views
     /// <summary>
     /// Interaction logic for WarnErrModal.xaml
     /// </summary>
-    public partial class WarnErrModal : UserControl
+    public partial class WarnErrModal : Window
     {
         public WarnErrModal()
         {
