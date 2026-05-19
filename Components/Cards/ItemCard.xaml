@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:OneColumnEncoder.Components"
-             xmlns:viewmodels="clr-namespace:OneColumnEncoder.ViewModels"
-             d:DataContext="{d:DesignInstance Type=viewmodels:ToolItemVM}"
+             xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
+             d:DataContext="{d:DesignInstance Type=vms:ToolItemVM}"
              mc:Ignorable="d"
              d:DesignHeight="140"
              d:DesignWidth="450">
@@ -23,13 +23,11 @@
             Padding="17.5 20"
             Background="{StaticResource Background}">
         <Grid>
-            <!-- Title, R1, R2 -->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <!-- Title, P1, P2 -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />

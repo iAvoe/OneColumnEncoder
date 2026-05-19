@@ -6,7 +6,7 @@ namespace OneColumnEncoder.Models;
 
 public static class ToolCatalogProviderM
 {
-    // ── Source Import zone (4 items) ──────────────────────────────
+    // Source Import zone (4 items) 
     public static List<ToolDefinitionM> GetSourceImportDefinitions() =>
     [
         new("Video Source",            "Replace", "Clear", "Name", "Path"),
@@ -15,7 +15,7 @@ public static class ToolCatalogProviderM
         new("SVFI .ini Source",        "Replace", "Clear", "Mode", "Path"),
     ];
 
-    // ── Enc Settings zone (5 items) ────────────────────────────────
+    // Enc Settings zone (5 items) 
     public static List<ToolDefinitionM> GetEncSettingsDefinitions() =>
     [
         new("Output Setting",           "Edit", "Clear", "File name w/out extension", "Path"),
@@ -28,7 +28,7 @@ public static class ToolCatalogProviderM
     public static List<ToolDefinitionM> GetAllStaticDefinitions() =>
         [.. GetSourceImportDefinitions(), .. GetEncSettingsDefinitions()];
 
-    // ── Importable tool registry (exe name → display name + zone) ──
+    // Importable tool registry (exe name → display name + zone) 
     private static readonly Dictionary<string, (string DisplayName, ToolZone Zone)> _tools = new(StringComparer.OrdinalIgnoreCase)
     {
         ["ffmpeg.exe"] = ("FFMPEG", ToolZone.Upstream),
@@ -47,7 +47,7 @@ public static class ToolCatalogProviderM
     // but R1/R2Text depends on context (loaded vs. freshly imported),
     // so those stay in MainVM's AddTool / OnToolImported.
 
-    // ── Lookup helpers ─────────────────────────────────────────────
+    // Lookup helpers 
     public static (string DisplayName, ToolZone Zone)? ResolveExe(string exeName) =>
         _tools.TryGetValue(exeName, out var entry) ? entry : null;
 
@@ -59,7 +59,7 @@ public static class ToolCatalogProviderM
 
     public static IReadOnlyDictionary<string, (string DisplayName, ToolZone Zone)> AllImportableTools => _tools;
 
-    // ── Display-name sets used by UpdateEncodingStartButtonsState ──
+    // Display-name sets used by UpdateEncodingStartButtonsState 
     public static HashSet<string> UpstreamDisplayNames { get; } =
         _tools.Values.Where(v => v.Zone == ToolZone.Upstream).Select(v => v.DisplayName).ToHashSet();
 
@@ -69,7 +69,7 @@ public static class ToolCatalogProviderM
     public static HashSet<string> AnalyticsDisplayNames { get; } =
         _tools.Values.Where(v => v.Zone == ToolZone.Analytics).Select(v => v.DisplayName).ToHashSet();
 
-    // ── AppDataM.Importables property mapping ──────────────────────
+    // AppDataM.Importables property mapping 
     private static readonly Dictionary<string, Action<AppDataM.Importables, string>> _pathSetters = new(StringComparer.OrdinalIgnoreCase)
     {
         ["ffmpeg.exe"] = (t, p) => t.FfmpegPath = p,
@@ -94,7 +94,7 @@ public static class ToolCatalogProviderM
         return false;
     }
 
-    // ── Dropdown items for the import dropdown ─────────────────────
+    // Dropdown items for the import dropdown 
     public static List<DropdownItemM> GetImportDropdownItems() =>
     [
         new("No Selection"),
