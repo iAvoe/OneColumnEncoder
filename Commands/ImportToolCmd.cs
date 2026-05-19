@@ -33,11 +33,11 @@ namespace OneColumnEncoder.Commands
             string selectedTool = _dropdownVm.SelectedItem?.Title ?? "";
             if (string.IsNullOrEmpty(selectedTool)) return;
 
-            // This line is for tools that are executable, but in suspecious sizes, currently its here for debugging
-            if (!DoubleCheckSuspiciousImport(selectedTool)) return;
-
             string? filePath = await ImportToolAsync(selectedTool);
             if (string.IsNullOrEmpty(filePath)) return;
+
+            // For tools in suspecious sizes but passed some checks, currently this line is for example usage
+            // if (!DoubleCheckSuspiciousImport(filePath)) return;
 
             _onSuccess?.Invoke(selectedTool, filePath);
             foreach (var l in _knownTools)
