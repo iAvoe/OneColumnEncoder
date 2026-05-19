@@ -54,7 +54,7 @@ namespace OneColumnEncoder.Models
 
         public static List<SettingItemDefinitionM> GetLanguageSettings() =>
         [
-            new SettingItemDefinitionM("Language/语言", "Language Code (e.g. en, zh)", SettingControlType.Dropdown, nameof(AppConfM.Language.LanguageCode))
+            new SettingItemDefinitionM("Language/语言", "Select Language", SettingControlType.Dropdown, nameof(AppConfM.Language.LanguageCode))
         ];
     }
 }

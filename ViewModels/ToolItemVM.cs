@@ -10,10 +10,10 @@ using System.Windows.Input;
 
 namespace OneColumnEncoder.ViewModels
 {
-    public class ToolItemVM : BaseVM
+    public class ToolItemVM(EncItemM baseModel) : BaseVM
     {
-        private readonly EncItemM _baseModel;
-        public ToolItemVM(EncItemM baseModel) => _baseModel = baseModel;
+        private readonly EncItemM _baseModel = baseModel;
+
         public string Name => _baseModel.Name;
         public string Path
         {

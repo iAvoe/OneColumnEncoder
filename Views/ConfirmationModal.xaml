@@ -1,0 +1,44 @@
+﻿<Window x:Class="OneColumnEncoder.Views.ConfirmationModal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:OneColumnEncoder.Views"
+        xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+        xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
+        d:DataContext="{d:DesignInstance Type=vms:ConfirmationModalVM}"
+        mc:Ignorable="d"
+        Title="{Binding WindowTitle}"
+        Height="150"
+        Width="520"
+        WindowStartupLocation="CenterOwner"
+        Background="{StaticResource Background}">
+    <!--
+    | P1 & TwoButtonGGroup |  I1  |
+    Title: Window title
+    I1: 3-row Icon (warning or error)
+    P1: Message
+    -->
+    <Grid Margin="10 0 10 0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0"
+                    VerticalAlignment="Center">
+            <TextBlock FontSize="14"
+                       Text="{Binding P1Text}"
+                       TextWrapping="WrapWithOverflow" />
+            <comps:TwoButtonGroup Margin="0 10 0 0"
+                                  DataContext="{Binding FinishWarnErrButtons}"
+                                  Button1Command="{Binding Cmd1}"
+                                  Button2Command="{Binding Cmd2}" />
+        </StackPanel>
+        <!-- This might be an image icon instead -->
+        <Image Grid.Column="1"
+               Margin="15 0 0 0"
+               Height="60"
+               Source="{Binding I1Source}" />
+    </Grid>
+</Window>

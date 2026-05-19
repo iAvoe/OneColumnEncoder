@@ -5,14 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OneColumnEncoder.Views"
         xmlns:comps="clr-namespace:OneColumnEncoder.Components"
-        xmlns:vm="clr-namespace:OneColumnEncoder.ViewModels"
+        xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
         mc:Ignorable="d"
         Title="1cenc Settings"
         Width="520"
         Height="1010"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
-
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
