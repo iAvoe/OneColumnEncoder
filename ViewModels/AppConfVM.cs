@@ -44,9 +44,9 @@ namespace OneColumnEncoder.ViewModels
             LoadCmd = new LoadAppConfCmd(appConfS);
             SmtpCmd = null; // TODO
             FinishSettingButtons = ButtonGroupVM.CreateThreeButton(
-                "Test SMTP",
-                "Cancel",
-                "Save",
+                UICaptionProviderM.AppConf.Buttons.TestSmtp,
+                UICaptionProviderM.AppConf.Buttons.Cancel,
+                UICaptionProviderM.AppConf.Buttons.Save,
                 SmtpCmd,
                 CloseCmd,
                 SaveCmd);
@@ -57,10 +57,10 @@ namespace OneColumnEncoder.ViewModels
         {
             Dictionary<string, object> sourceMap = new()
             {
-                ["General: disable Start Encode when..."] = _appConfM.General,
-                ["Overwrite Handling"] = _appConfM.Overwrite,
-                ["SMTP"] = _appConfM.Smtp,
-                ["Language/语言"] = _appConfM.Lang
+                [UICaptionProviderM.AppConf.Groups.General] = _appConfM.General,
+                [UICaptionProviderM.AppConf.Groups.Overwrite] = _appConfM.Overwrite,
+                [UICaptionProviderM.AppConf.Groups.Smtp] = _appConfM.Smtp,
+                [UICaptionProviderM.AppConf.Groups.Language] = _appConfM.Lang
             };
 
             foreach (IGrouping<string, SettingItemDefinitionM> group
@@ -85,7 +85,7 @@ namespace OneColumnEncoder.ViewModels
                             break;
                         case SettingControlType.Dropdown:
                             AddDropdownItem(container, setting.Label, source, setting.PropertyName,
-                                ["en", "zh-cn", "zh-tw"]);
+                                UICaptionProviderM.AppConf.LanguageOptions.Codes);
                             break;
                     }
                 }
@@ -96,12 +96,12 @@ namespace OneColumnEncoder.ViewModels
         #region Setting control elements
         private static void AddCheckboxItem(AppConfContainer container, string text, object source, string propertyPath)
         {
-            CheckBox cb = new()
-            {
-                HorizontalAlignment = HorizontalAlignment.Right
-            };
-            cb.SetBinding(CheckBox.IsCheckedProperty, new Binding(propertyPath) { Source=source, Mode=BindingMode.TwoWay });
-            container.Items.Add(new AppConfItem { Text = text, Content = cb });
+            CheckBox cb = new() { HorizontalAlignment = HorizontalAlignment.Right };
+            cb.SetBinding(
+                CheckBox.IsCheckedProperty,
+                new Binding(propertyPath) { Source = source, Mode = BindingMode.TwoWay });
+            container.Items.Add(
+                new AppConfItem { Text = text, Content = cb });
         }
 
         private static void AddTextboxItem(AppConfContainer container, string text, object source, string propertyPath)

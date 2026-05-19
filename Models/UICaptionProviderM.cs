@@ -24,4 +24,27 @@ public static class UICaptionProviderM
         public const string RunSample = "Run a Sample";
         public const string StartEncode = "Start Encode";
     }
+
+    public static class AppConf
+    {
+        public static class Groups
+        {
+            public const string General = "General: disable Start Encode when...";
+            public const string Overwrite = "Overwrite Handling";
+            public const string Smtp = "SMTP";
+            public const string Language = "Language/语言";
+        }
+
+        public static class Buttons
+        {
+            public const string TestSmtp = "Test SMTP";
+            public const string Cancel = "Cancel";
+            public const string Save = "Save";
+        }
+
+        public static class LanguageOptions
+        {
+            public static readonly string[] Codes = ["en", "zh-cn", "zh-tw"];
+        }
+    }
 }
