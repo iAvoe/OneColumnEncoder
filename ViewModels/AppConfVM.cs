@@ -24,6 +24,7 @@ namespace OneColumnEncoder.ViewModels
         public CloseModalCmd CloseCmd { get; }
         public SaveAppConfCmd SaveCmd { get; }
         public LoadAppConfCmd LoadCmd { get; }
+        public ICommand? SmtpCmd { get; } // TODO
 
         public ButtonGroupVM FinishSettingButtons { get; }
 
@@ -41,11 +42,12 @@ namespace OneColumnEncoder.ViewModels
             CloseCmd = new CloseModalCmd(modalNavS, closeAction);
             SaveCmd = new SaveAppConfCmd(appConfS, modalNavS, closeAction);
             LoadCmd = new LoadAppConfCmd(appConfS);
+            SmtpCmd = null; // TODO
             FinishSettingButtons = ButtonGroupVM.CreateThreeButton(
                 "Test SMTP",
                 "Cancel",
                 "Save",
-                null, // TODO: Test SMTP command
+                SmtpCmd,
                 CloseCmd,
                 SaveCmd);
             BuildSettingsListing();
@@ -61,11 +63,12 @@ namespace OneColumnEncoder.ViewModels
                 ["Language/语言"] = _appConfM.Lang
             };
 
-            foreach (var group in SettinglistProviderM.GetAllSettings().GroupBy(s => s.GroupName))
+            foreach (IGrouping<string, SettingItemDefinitionM> group
+                in SettinglistProviderM.GetAllSettings().GroupBy(s => s.GroupName))
             {
-                var container = new AppConfContainer { Header = group.Key };
-                var source = sourceMap[group.Key];
-                foreach (var setting in group)
+                AppConfContainer container = new() { Header = group.Key };
+                object source = sourceMap[group.Key];
+                foreach (SettingItemDefinitionM setting in group)
                 {
                     switch (setting.ControlType)
                     {
@@ -90,6 +93,7 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
+        #region Setting control elements
         private static void AddCheckboxItem(AppConfContainer container, string text, object source, string propertyPath)
         {
             CheckBox cb = new()
@@ -125,19 +129,20 @@ namespace OneColumnEncoder.ViewModels
 
         private static void AddDropdownItem(AppConfContainer container, string text, object source, string propertyPath, string[] options)
         {
-            var currentValue = source.GetType().GetProperty(propertyPath)?.GetValue(source) as string ?? options[0];
+            string currentValue = source.GetType().GetProperty(propertyPath)?.GetValue(source) as string ?? options[0];
             List<DropdownItemM> items = [.. options.Select(o => new DropdownItemM(o))];
 
             DropdownMenuVM dropdownVM = new();
-            foreach (var item in items)
-                dropdownVM.Items.Add(item);
-            dropdownVM.SelectedItem = items.FirstOrDefault(i => i.Title == currentValue) ?? items[0];
+            foreach (DropdownItemM item in items) dropdownVM.Items.Add(item);
+            dropdownVM.SelectedItem =
+                items.FirstOrDefault(i => i.Title == currentValue) ?? items[0];
 
             dropdownVM.PropertyChanged += (_, e) =>
             {
-                if (e.PropertyName == nameof(DropdownMenuVM.SelectedItem) && dropdownVM.SelectedItem is not null)
+                if (e.PropertyName == nameof(DropdownMenuVM.SelectedItem)
+                    && dropdownVM.SelectedItem is not null)
                 {
-                    var prop = source.GetType().GetProperty(propertyPath);
+                    System.Reflection.PropertyInfo? prop = source.GetType().GetProperty(propertyPath);
                     prop?.SetValue(source, dropdownVM.SelectedItem.Title);
                 }
             };
@@ -150,5 +155,6 @@ namespace OneColumnEncoder.ViewModels
             };
             container.Items.Add(new AppConfItem { Text = text, Content = dropdown });
         }
+        #endregion
     }
 }

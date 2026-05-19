@@ -1,4 +1,5 @@
 ﻿using OneColumnEncoder.Models;
+using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.Views;
 using Microsoft.Win32;
@@ -14,10 +15,11 @@ using static OneColumnEncoder.Models.ConfirmationProviderM;
 
 namespace OneColumnEncoder.Commands
 {
-    public class ImportToolCmd(DropdownMenuVM dropdownVM, ObservableCollection<ChecklistEntryVM> knownTools, Action<string, string>? onSuccess = null) : AsyncBaseCmd
+    public class ImportToolCmd(DropdownMenuVM dropdownVM, ObservableCollection<ChecklistEntryVM> knownTools, ModalNavS modalNavS, Action<string, string>? onSuccess = null) : AsyncBaseCmd
     {
         private readonly DropdownMenuVM _dropdownVm = dropdownVM;
         private readonly ObservableCollection<ChecklistEntryVM> _knownTools = knownTools;
+        private readonly ModalNavS _modalNavS = modalNavS;
         private readonly Action<string, string>? _onSuccess = onSuccess;
 
         public override bool CanExecute(object? parameter)
@@ -36,31 +38,34 @@ namespace OneColumnEncoder.Commands
             string? filePath = await ImportToolAsync(selectedTool);
             if (string.IsNullOrEmpty(filePath)) return;
 
-            // For tools in suspecious sizes but passed some checks, currently this line is for example usage
-            // if (!DoubleCheckSuspiciousImport(filePath)) return;
+            // For tools in suspicious sizes but passed some checks, currently this line is for example usage
+            if (!DoubleCheckSuspiciousImport(filePath)) return;
 
             _onSuccess?.Invoke(selectedTool, filePath);
-            foreach (var l in _knownTools)
+            foreach (ChecklistEntryVM l in _knownTools)
             {
                 if (l.Text.Contains(selectedTool, StringComparison.OrdinalIgnoreCase))
                 {
                     l.Status = StatusType.Success;
                 }
             }
-
             OnCanExecuteChanged();
         }
 
-        private static bool DoubleCheckSuspiciousImport(string toolName)
+        private bool DoubleCheckSuspiciousImport(string toolName)
         {
-            var window = new ConfirmationModal();
-            window.DataContext = ConfirmationModalVM.CreateWarning(
+            ConfirmationModal window = new();
+            ConfirmationModalVM vm = ConfirmationModalVM.CreateWarning(
                 title: ConfirmSuspiciousImport.GetTitle(toolName),
                 p1Text: ConfirmSuspiciousImport.GetMessage(toolName),
                 cancelCmd: new ActionCmd(_ => { window.DialogResult = false; window.Close(); }),
                 confirmCmd: new ActionCmd(_ => { window.DialogResult = true; window.Close(); }));
+            window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
-            return window.ShowDialog() == true;
+            _modalNavS.CurrentModalVM = vm;
+            bool result = window.ShowDialog() == true;
+            _modalNavS.Close();
+            return result;
         }
 
         // There is no awaitable file dialog in WPF, so this warning can be ignored for now

@@ -25,11 +25,12 @@ namespace OneColumnEncoder.Commands.OpenClose
             if (_modelNavS.IsOpen)
                 _modelNavS.Close();
 
-            // First create the window
             var window = new AppUsageModal();
-
-            // Now window.Close is ready
-            window.DataContext = new AppUsageVM(_modelNavS, window.Close);
+            var vm = new AppUsageVM(_modelNavS, window.Close);
+            window.DataContext = vm;
+            window.Owner = Application.Current.MainWindow;
+            window.Closed += (_, _) => _modelNavS.Close();
+            _modelNavS.CurrentModalVM = vm;
             window.Show();
         }
     }

@@ -2,6 +2,7 @@
 using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Components;
 using OneColumnEncoder.Models;
+using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels.Cards;
 using System;
 using System.Collections.ObjectModel;
@@ -16,39 +17,56 @@ namespace OneColumnEncoder.ViewModels
     {
         private readonly AppDataM _appDataM;
         private readonly AppConfM _appConfM;
+        private readonly ModalNavS _modalNavS;
 
-        public OpenAppConfCmd OpenAppConf { get; }
-        public OpenUsagesCmd OpenUsages { get; }
-
+        // Groups of Card or other element UIs
         public ObservableCollection<ToolItemVM> UpstreamsZone { get; }
         public ObservableCollection<ToolItemVM> EncodersZone { get; }
         public ObservableCollection<ToolItemVM> AnalyticsZone { get; }
         public ObservableCollection<ToolItemVM> SrcImportZone { get; }
         public ObservableCollection<ToolItemVM> EncSettingsZone { get; }
+        // Buttons
         public ButtonGroupVM OpenAppConfButtons { get; }
         public ButtonGroupVM EncStartButtons { get; }
-
-        public ToolsImportCardVM ToolsImportCard { get; } = new();
+        // First Two Button Group
+        public OpenAppConfCmd OpenAppConf { get; }
+        public OpenUsagesCmd OpenUsages { get; }
+        // Card UIs
+        public ToolsImportCardVM ToolsImportCard { get; }
         public SourceValidationCardVM SrcValidationCard { get; } = new();
         public EncTermsCardVM EncTermsCard { get; } = new();
         public BestPracticesCardVM BestPracticesCard { get; } = new();
 
-        public MainVM(OpenAppConfCmd openAppConf, OpenUsagesCmd openUsages, AppDataM appDataM, AppConfM appConfM)
+        // Prevent UI responding during settings or confirmation modal is opening
+        private bool _isOverlayVisible;
+        public bool IsOverlayVisible
         {
+            get => _isOverlayVisible;
+            set => SetProperty(ref _isOverlayVisible, value);
+        }
+
+        public MainVM(OpenAppConfCmd openAppConf, OpenUsagesCmd openUsages, AppDataM appDataM, AppConfM appConfM, ModalNavS modalNavS)
+        {
+            // Tools data, Settings data, Modal Navigation, Open Settings Command
             _appDataM = appDataM;
             _appConfM = appConfM;
+            _modalNavS = modalNavS;
             OpenAppConf = openAppConf;
             OpenUsages = openUsages;
 
+            // Within SrcImportZone
+            ToolsImportCard = new ToolsImportCardVM(modalNavS);
+
+            // Initialize main UI zones
             SrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetSourceImportDefinitions());
             EncSettingsZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetEncSettingsDefinitions());
-
             UpstreamsZone = [];
             EncodersZone = [];
             AnalyticsZone = [];
             LoadToolsFromAppDataM();
             WireUpZoneDeleteCmds();
 
+            // Main UI buttons
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProviderM.Buttons.UsageAndCompliance,
                 UICaptionProviderM.Buttons.Settings,
@@ -59,36 +77,39 @@ namespace OneColumnEncoder.ViewModels
                 UICaptionProviderM.Buttons.RunSample,
                 UICaptionProviderM.Buttons.StartEncode);
 
+            // Import dropdown menu and behavior
             ToolsImportCard.ToolImported += OnToolImported;
-
             ToolsImportCard.Name = UICaptionProviderM.Cards.ToolsImport;
-            foreach (var item in ToolCatalogProviderM.GetImportDropdownItems())
+            foreach (DropdownItemM item in ToolCatalogProviderM.GetImportDropdownItems())
                 ToolsImportCard.ImportDropdown.Items.Add(item);
             ToolsImportCard.ImportDropdown.SelectedItem =
                 ToolsImportCard.ImportDropdown.Items[0];
 
+            // Other validations or simply lists for Start Encode button
             SrcValidationCard.Name = UICaptionProviderM.Cards.SourceValidation;
             SrcValidationCard.P1Name = UICaptionProviderM.Cards.SourceSevere;
             SrcValidationCard.P3Name = UICaptionProviderM.Cards.SourceModerate;
-
             EncTermsCard.Name = UICaptionProviderM.Cards.EncPrerequisites;
             EncTermsCard.P1Name = UICaptionProviderM.Cards.EncHardware;
             EncTermsCard.P3Name = UICaptionProviderM.Cards.EncSoftware;
-
             BestPracticesCard.Name = UICaptionProviderM.Cards.BestPractices;
             BestPracticesCard.P1Name = UICaptionProviderM.Cards.BestHardware;
             BestPracticesCard.P3Name = UICaptionProviderM.Cards.BestSoftware;
 
+            // Checklist item settings, checklist subs, nav subs, overlay subs
             InitializeChecklistEntryStates();
             SubToToolsChecklist();
+            _modalNavS.CurrentViewModelChanged += OnModalStateChanged;
+            IsOverlayVisible = _modalNavS.IsOpen;
         }
 
+        // SrcImportZone and EncSettingsZone creation by initialization and import
         private static ObservableCollection<ToolItemVM> LoadZoneFromDefinitions(List<ToolDefinitionM> defs)
         {
-            var zone = new ObservableCollection<ToolItemVM>();
-            foreach (var def in defs)
+            ObservableCollection<ToolItemVM> zone = [];
+            foreach (ToolDefinitionM def in defs)
             {
-                var item = new ToolItemVM(new EncItemM(def.DisplayName))
+                ToolItemVM item = new(new EncItemM(def.DisplayName))
                 {
                     R1Text = def.R1Text,
                     R2Text = def.R2Text,
@@ -101,63 +122,55 @@ namespace OneColumnEncoder.ViewModels
             return zone;
         }
 
-        protected override void Dispose()
-        {
-            ToolsImportCard.ToolImported -= OnToolImported;
-            UnsubFromToolsChecklist();
-            base.Dispose();
-        }
-
+        // Read settings regarding disabling checklist items
         private void InitializeChecklistEntryStates()
         {
             AppConfM.GeneralSettings g = _appConfM.General;
-
-            var cl1 = EncTermsCard.Checklist1;
+            ObservableCollection<ChecklistEntryVM> cl1 = EncTermsCard.Checklist1;
             if (cl1.Count >= 1) cl1[0].IsEnabled = g.OffGrid;
             if (cl1.Count >= 2) cl1[1].IsEnabled = g.InsufficientRAM;
             if (cl1.Count >= 3) cl1[2].IsEnabled = g.InsufficientDiskSpace;
 
-            var cl2 = EncTermsCard.Checklist2;
+            ObservableCollection<ChecklistEntryVM> cl2 = EncTermsCard.Checklist2;
             if (cl2.Count >= 1) cl2[0].IsEnabled = g.OSFileNameInvalid;
             if (cl2.Count >= 2) cl2[1].IsEnabled = g.FTPFileNameInvalid;
             if (cl2.Count >= 3) cl2[2].IsEnabled = g.NoWritePermission;
             if (cl2.Count >= 4) cl2[3].IsEnabled = g.IsOverwriting;
         }
 
+        #region Encoding Start button states
         private void SubToToolsChecklist()
         {
-            foreach (var entry in ToolsImportCard.ToolsChecklist)
+            foreach (ChecklistEntryVM entry in ToolsImportCard.ToolsChecklist)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
-            foreach (var entry in SrcValidationCard.Checklist1)
+            foreach (ChecklistEntryVM entry in SrcValidationCard.Checklist1)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
-            foreach (var entry in SrcValidationCard.Checklist2)
+            foreach (ChecklistEntryVM entry in SrcValidationCard.Checklist2)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
-            foreach (var entry in EncTermsCard.Checklist1)
+            foreach (ChecklistEntryVM entry in EncTermsCard.Checklist1)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
-            foreach (var entry in EncTermsCard.Checklist2)
+            foreach (ChecklistEntryVM entry in EncTermsCard.Checklist2)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
             UpdateEncodingStartButtonsState();
         }
         private void UnsubFromToolsChecklist()
         {
-            foreach (var entry in ToolsImportCard.ToolsChecklist)
+            foreach (ChecklistEntryVM entry in ToolsImportCard.ToolsChecklist)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
-            foreach (var entry in SrcValidationCard.Checklist1)
+            foreach (ChecklistEntryVM entry in SrcValidationCard.Checklist1)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
-            foreach (var entry in SrcValidationCard.Checklist2)
+            foreach (ChecklistEntryVM entry in SrcValidationCard.Checklist2)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
-            foreach (var entry in EncTermsCard.Checklist1)
+            foreach (ChecklistEntryVM entry in EncTermsCard.Checklist1)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
-            foreach (var entry in EncTermsCard.Checklist2)
+            foreach (ChecklistEntryVM entry in EncTermsCard.Checklist2)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
         }
-
         private void OnChecklistEntryPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ChecklistEntryVM.Status))
                 UpdateEncodingStartButtonsState();
         }
-
         private void UpdateEncodingStartButtonsState()
         {
             bool allToolsReady =
@@ -184,23 +197,25 @@ namespace OneColumnEncoder.ViewModels
             EncStartButtons.B3_3IsEnabled =
                 allToolsReady && atLeastOneUpstream && atLeastOneEncoder && atLeastOneAnalytics && sourceValidationReady && encodeTermsReady;
         }
+        #endregion
 
+        // Bind delete tool command to UI
         private void WireUpZoneDeleteCmds()
         {
-            foreach (var item in SrcImportZone)
+            foreach (ToolItemVM item in SrcImportZone)
                 WireUpDeleteCmd(item, SrcImportZone);
-            foreach (var item in EncSettingsZone)
+            foreach (ToolItemVM item in EncSettingsZone)
                 WireUpDeleteCmd(item, EncSettingsZone);
-            foreach (var item in AnalyticsZone)
+            foreach (ToolItemVM item in AnalyticsZone)
                 WireUpDeleteCmd(item, AnalyticsZone);
         }
-
         private void WireUpDeleteCmd(ToolItemVM item, ObservableCollection<ToolItemVM> zone)
         {
             item.R2Command =
                 new ActionCmd(_ => { zone.Remove(item); OnToolDeleted(item.Name); });
         }
 
+        // Check which zone a tool belongs to, and overwrite a tool if duplicate import happens
         private ObservableCollection<ToolItemVM> GetZoneForTool(ToolZone zone) => zone switch
         {
             ToolZone.Upstream => UpstreamsZone,
@@ -208,17 +223,16 @@ namespace OneColumnEncoder.ViewModels
             ToolZone.Analytics => AnalyticsZone,
             _ => throw new ArgumentException("Invalid tool zone")
         };
-
         private void AddOrUpdateTool(string defKey, string? path, string? version)
         {
-            if (!ToolDefinitionProviderM.ToolDefinitions.TryGetValue(defKey, out var def)) return;
+            if (!ToolDefinitionProviderM.ToolDefinitions.TryGetValue(defKey, out ToolDefinitionM? def)) return;
             if (def.Zone == null || string.IsNullOrEmpty(path)) return;
 
-            var zone = GetZoneForTool(def.Zone.Value);
-            var existing = zone.FirstOrDefault(i => i.Name == def.DisplayName);
+            ObservableCollection<ToolItemVM> zone = GetZoneForTool(def.Zone.Value);
+            ToolItemVM? existing = zone.FirstOrDefault(i => i.Name == def.DisplayName);
             if (existing != null) zone.Remove(existing);
 
-            var item = new ToolItemVM(new EncItemM(def.DisplayName))
+            ToolItemVM item = new(new EncItemM(def.DisplayName))
             {
                 Path = path,
                 VersionText = version ?? "",
@@ -231,14 +245,15 @@ namespace OneColumnEncoder.ViewModels
             zone.Add(item);
         }
 
+        // Load tool from app data
         private void LoadToolsFromAppDataM()
         {
             AppDataM.Importables t = _appDataM.Tools;
-            foreach (var (defKey, def) in ToolDefinitionProviderM.ToolDefinitions)
+            foreach ((string defKey, ToolDefinitionM def) in ToolDefinitionProviderM.ToolDefinitions)
             {
                 if (def.Zone == null || def.ExeName == null) continue;
 
-                var (path, version) = def.ExeName switch
+                (string? path, string? version) = def.ExeName switch
                 {
                     "ffmpeg.exe" => (t.FfmpegPath, t.FfmpegVer),
                     "vspipe.exe" => (t.VspipePath, t.VspipeVer),
@@ -258,12 +273,13 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
+        // Import tool: Validate tool, create card UI & app data
         private void OnToolImported(string exeName, string filePath)
         {
             ToolDefinitionM? def = ToolDefinitionProviderM.GetByExeName(exeName);
             if (def == null || def.Zone == null) return;
 
-            var defKey = ToolDefinitionProviderM.ToolDefinitions
+            string defKey = ToolDefinitionProviderM.ToolDefinitions
                 .FirstOrDefault(kvp => kvp.Value == def).Key;
             if (defKey == null) return;
 
@@ -273,6 +289,7 @@ namespace OneColumnEncoder.ViewModels
             AddOrUpdateTool(defKey, filePath, null);
         }
 
+        // Delete tool: delete card UI & app data
         private void OnToolDeleted(string toolName)
         {
             ToolDefinitionM? def = ToolDefinitionProviderM.GetByDisplayName(toolName);
@@ -281,6 +298,21 @@ namespace OneColumnEncoder.ViewModels
             ToolCatalogProviderM.TrySetPath(def.ExeName, _appDataM.Tools, string.Empty);
             ToolCatalogProviderM.TrySetVersion(def.ExeName, _appDataM.Tools, string.Empty);
             _appDataM.Save();
+        }
+
+        // Navigated to other modal windows
+        private void OnModalStateChanged()
+        {
+            IsOverlayVisible = _modalNavS.IsOpen;
+        }
+
+        public override void Dispose()
+        {
+            _modalNavS.CurrentViewModelChanged -= OnModalStateChanged;
+            ToolsImportCard.ToolImported -= OnToolImported;
+            ToolsImportCard.Dispose();
+            UnsubFromToolsChecklist();
+            base.Dispose();
         }
     }
 }

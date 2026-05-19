@@ -9,7 +9,8 @@
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vms:MainVM}"
              Background="{StaticResource Background}">
-    <StackPanel Margin="5">
+    <Grid>
+        <StackPanel Margin="5">
         <!-- Import Tools -->
         <comps:SectionHeader HeaderText="Import Tools"
                              Margin="0 0 0 20" />
@@ -104,4 +105,9 @@
                                 Button2IsEnabled="{Binding B3_2IsEnabled}"
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
     </StackPanel>
+
+        <Border Visibility="{Binding IsOverlayVisible, Converter={StaticResource BoolToVisibility}}"
+                Background="#80000000"
+                IsHitTestVisible="True" />
+    </Grid>
 </UserControl>

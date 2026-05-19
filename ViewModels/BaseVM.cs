@@ -29,7 +29,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(propertyName);
             return true;
         }
-        protected virtual void Dispose() { }
+        public virtual void Dispose() { }
         public static void FillCollection(ObservableCollection<ChecklistEntryVM> collection, List<ChecklistItemDefinitionM> definitions)
         {
             collection.Clear();

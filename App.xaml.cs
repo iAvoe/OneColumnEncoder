@@ -31,7 +31,7 @@ namespace OneColumnEncoder
 
             MainWindow = new MainWindow()
             {
-                DataContext = new MainVM(openAppConf, openUsages, _appDataM, _appConfM)
+                DataContext = new MainVM(openAppConf, openUsages, _appDataM, _appConfM, _modalNavM)
             };
             MainWindow.Show();
             base.OnStartup(e);

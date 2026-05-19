@@ -1,7 +1,9 @@
 ﻿using OneColumnEncoder.Commands;
+using OneColumnEncoder.Stores;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,16 +25,25 @@ namespace OneColumnEncoder.ViewModels.Cards
         public ICommand ImportCommand { get; }
         public event Action<string, string>? ToolImported;
 
-        public ToolsImportCardVM()
+        private readonly PropertyChangedEventHandler _onDropdownPropertyChanged;
+
+        public ToolsImportCardVM(ModalNavS modalNavS)
         {
-            ImportCommand = new ImportToolCmd(ImportDropdown, ToolsChecklist, (toolName, filePath) => ToolImported?.Invoke(toolName, filePath));
-            ImportDropdown.PropertyChanged += (s, e) =>
+            ImportCommand = new ImportToolCmd(ImportDropdown, ToolsChecklist, modalNavS, (toolName, filePath) => ToolImported?.Invoke(toolName, filePath));
+            _onDropdownPropertyChanged = (s, e) =>
             {
                 if (e.PropertyName == nameof(ImportDropdown.SelectedItem))
                     (ImportCommand as BaseCmd)?.OnCanExecuteChanged();
             };
+            ImportDropdown.PropertyChanged += _onDropdownPropertyChanged;
 
             FillCollection(ToolsChecklist, ChecklistProviderM.GetToolsChecklist());
+        }
+
+        public override void Dispose()
+        {
+            ImportDropdown.PropertyChanged -= _onDropdownPropertyChanged;
+            base.Dispose();
         }
     }
 }
