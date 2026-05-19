@@ -10,5 +10,7 @@ public record ToolDefinitionM(
     string R1Text,
     string R2Text,
     string P1Name,
-    string? P2Name = null
+    string? P2Name = null,
+    ToolZone? Zone = null,
+    string? ExeName = null
 );

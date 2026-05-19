@@ -6,7 +6,7 @@ namespace OneColumnEncoder.Models;
 
 public static class ToolCatalogProviderM
 {
-    // Source Import zone (4 items) 
+    // Source Import zone (4 items)
     public static List<ToolDefinitionM> GetSourceImportDefinitions() =>
     [
         new("Video Source",            "Replace", "Clear", "Name", "Path"),
@@ -15,7 +15,7 @@ public static class ToolCatalogProviderM
         new("SVFI .ini Source",        "Replace", "Clear", "Mode", "Path"),
     ];
 
-    // Enc Settings zone (5 items) 
+    // Enc Settings zone (5 items)
     public static List<ToolDefinitionM> GetEncSettingsDefinitions() =>
     [
         new("Output Setting",           "Edit", "Clear", "File name w/out extension", "Path"),
@@ -28,28 +28,26 @@ public static class ToolCatalogProviderM
     public static List<ToolDefinitionM> GetAllStaticDefinitions() =>
         [.. GetSourceImportDefinitions(), .. GetEncSettingsDefinitions()];
 
-    // Importable tool registry (exe name → display name + zone) 
-    private static readonly Dictionary<string, (string DisplayName, ToolZone Zone)> _tools = new(StringComparer.OrdinalIgnoreCase)
+    // Importable tool registry derived from ToolDefinitionProviderM
+    private static Dictionary<string, (string DisplayName, ToolZone Zone)> BuildToolsDict()
     {
-        ["ffmpeg.exe"] = ("FFMPEG", ToolZone.Upstream),
-        ["vspipe.exe"] = ("VSPipe", ToolZone.Upstream),
-        ["avs2yuv.exe"] = ("AVS2YUV", ToolZone.Upstream),
-        ["avs2pipemod.exe"] = ("AVS2PipeMod", ToolZone.Upstream),
-        ["one_line_shot_args.exe"] = ("OneLineShotArgs", ToolZone.Upstream),
-        ["x264.exe"] = ("x264", ToolZone.Encoder),
-        ["x265.exe"] = ("x265", ToolZone.Encoder),
-        ["svtav1encapp.exe"] = ("SVT-AV1", ToolZone.Encoder),
-        ["ffprobe.exe"] = ("FFProbe", ToolZone.Analytics),
-        ["avisynth.dll"] = ("AviSynth.dll (for Avs2PipeMod)", ToolZone.Analytics),
-    };
+        var dict = new Dictionary<string, (string, ToolZone)>(StringComparer.OrdinalIgnoreCase);
+        foreach (var def in ToolDefinitionProviderM.ToolDefinitions.Values)
+        {
+            if (def.ExeName != null && def.Zone != null)
+                dict[def.ExeName] = (def.DisplayName, def.Zone.Value);
+        }
+        return dict;
+    }
 
-    // Importable tools also need a "Version" / "Path" label pattern,
-    // but R1/R2Text depends on context (loaded vs. freshly imported),
-    // so those stay in MainVM's AddTool / OnToolImported.
+    private static readonly Dictionary<string, (string DisplayName, ToolZone Zone)> _tools = BuildToolsDict();
 
-    // Lookup helpers 
+    // Lookup helpers
     public static (string DisplayName, ToolZone Zone)? ResolveExe(string exeName) =>
         _tools.TryGetValue(exeName, out var entry) ? entry : null;
+
+    public static string? ResolveExeFromDisplayName(string displayName) =>
+        _tools.FirstOrDefault(kvp => kvp.Value.DisplayName.Equals(displayName, StringComparison.OrdinalIgnoreCase)).Key;
 
     public static string? GetDisplayName(string exeName) =>
         _tools.TryGetValue(exeName, out var entry) ? entry.DisplayName : null;
@@ -59,7 +57,7 @@ public static class ToolCatalogProviderM
 
     public static IReadOnlyDictionary<string, (string DisplayName, ToolZone Zone)> AllImportableTools => _tools;
 
-    // Display-name sets used by UpdateEncodingStartButtonsState 
+    // Display-name sets used by UpdateEncodingStartButtonsState
     public static HashSet<string> UpstreamDisplayNames { get; } =
         _tools.Values.Where(v => v.Zone == ToolZone.Upstream).Select(v => v.DisplayName).ToHashSet();
 
@@ -69,7 +67,7 @@ public static class ToolCatalogProviderM
     public static HashSet<string> AnalyticsDisplayNames { get; } =
         _tools.Values.Where(v => v.Zone == ToolZone.Analytics).Select(v => v.DisplayName).ToHashSet();
 
-    // AppDataM.Importables property mapping 
+    // AppDataM.Importables property mapping
     private static readonly Dictionary<string, Action<AppDataM.Importables, string>> _pathSetters = new(StringComparer.OrdinalIgnoreCase)
     {
         ["ffmpeg.exe"] = (t, p) => t.FfmpegPath = p,
@@ -96,7 +94,6 @@ public static class ToolCatalogProviderM
         ["ffprobe.exe"] = (t, v) => t.FfprobeVer = v,
     };
 
-    // Set the appropriate AppDataM.Importables property based on the exe name
     public static bool TrySetPath(string exeName, AppDataM.Importables tools, string filePath)
     {
         if (_pathSetters.TryGetValue(exeName, out var setter))
@@ -107,7 +104,6 @@ public static class ToolCatalogProviderM
         return false;
     }
 
-    // TODO: customize for each tool
     public static bool TrySetVersion(string exeName, AppDataM.Importables tools, string version)
     {
         if (_versionSetters.TryGetValue(exeName, out var setter))
@@ -118,22 +114,13 @@ public static class ToolCatalogProviderM
         return false;
     }
 
-    // Dropdown items for the import dropdown 
+    // Dropdown items for the import dropdown
     public static List<DropdownItemM> GetImportDropdownItems() =>
     [
         new("No Selection"),
         new("", true),
-        new("ffmpeg.exe"),
-        new("vspipe.exe"),
-        new("avs2yuv.exe"),
-        new("avs2pipemod.exe"),
-        new("one_line_shot_args.exe"),
-        new("", true),
-        new("x264.exe"),
-        new("x265.exe"),
-        new("SvtAv1EncApp.exe"),
-        new("", true),
-        new("ffprobe.exe"),
-        new("AviSynth.dll"),
+        .. ToolDefinitionProviderM.ToolDefinitions.Values
+            .Where(d => d.ExeName != null)
+            .Select(d => new DropdownItemM(d.ExeName!)),
     ];
 }

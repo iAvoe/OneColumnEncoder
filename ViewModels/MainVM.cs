@@ -201,71 +201,85 @@ namespace OneColumnEncoder.ViewModels
                 new ActionCmd(_ => { zone.Remove(item); OnToolDeleted(item.Name); });
         }
 
-        private void LoadToolsFromAppDataM()
+        private ObservableCollection<ToolItemVM> GetZoneForTool(ToolZone zone) => zone switch
         {
-            var t = _appDataM.Tools;
-            AddTool(t.FfmpegPath, t.FfmpegVer, "FFMPEG", UpstreamsZone);
-            AddTool(t.VspipePath, t.VspipeVer, "VSPipe", UpstreamsZone);
-            AddTool(t.Avs2yuvPath, t.Avs2yuvVer, "AVS2YUV", UpstreamsZone);
-            AddTool(t.Avs2pipemodPath, t.Avs2pipemodVer, "AVS2PipeMod", UpstreamsZone);
-            AddTool(t.OneLineShotArgsPath, null, "OneLineShotArgs", UpstreamsZone);
-            AddTool(t.X264Path, t.X264Ver, "x264", EncodersZone);
-            AddTool(t.X265Path, t.X265Ver, "x265", EncodersZone);
-            AddTool(t.SvtAv1Path, t.SvtAv1Ver, "SVT-AV1", EncodersZone);
-            AddTool(t.FfprobePath, t.FfprobeVer, "FFProbe", AnalyticsZone);
-            AddTool(t.AviSynthDllPath, null, "AviSynth.dll (for Avs2PipeMod)", AnalyticsZone);
-        }
+            ToolZone.Upstream => UpstreamsZone,
+            ToolZone.Encoder => EncodersZone,
+            ToolZone.Analytics => AnalyticsZone,
+            _ => throw new ArgumentException("Invalid tool zone")
+        };
 
-        private void AddTool(string? path, string? version, string displayName, ObservableCollection<ToolItemVM> zone)
+        private void AddOrUpdateTool(string defKey, string? path, string? version)
         {
-            if (string.IsNullOrEmpty(path)) return;
-            var item = new ToolItemVM(new EncItemM(displayName))
+            if (!ToolDefinitionProviderM.ToolDefinitions.TryGetValue(defKey, out var def)) return;
+            if (def.Zone == null || string.IsNullOrEmpty(path)) return;
+
+            var zone = GetZoneForTool(def.Zone.Value);
+            var existing = zone.FirstOrDefault(i => i.Name == def.DisplayName);
+            if (existing != null) zone.Remove(existing);
+
+            var item = new ToolItemVM(new EncItemM(def.DisplayName))
             {
                 Path = path,
                 VersionText = version ?? "",
-                P1Name = "Version",
-                P2Name = "Path",
-                R1Text = "Replace",
-                R2Text = "Delete"
+                P1Name = def.P1Name,
+                P2Name = def.P2Name ?? "",
+                R1Text = def.R1Text,
+                R2Text = def.R2Text
             };
             WireUpDeleteCmd(item, zone);
             zone.Add(item);
         }
 
-        private void OnToolImported(string toolName, string filePath)
+        private void LoadToolsFromAppDataM()
         {
-            var resolved = ToolCatalogProviderM.ResolveExe(toolName);
-            if (resolved == null) return;
-
-            var zone = resolved.Value.Zone switch
+            AppDataM.Importables t = _appDataM.Tools;
+            foreach (var (defKey, def) in ToolDefinitionProviderM.ToolDefinitions)
             {
-                ToolZone.Upstream => UpstreamsZone,
-                ToolZone.Encoder => EncodersZone,
-                ToolZone.Analytics => AnalyticsZone,
-                _ => null,
-            };
-            if (zone == null) return;
+                if (def.Zone == null || def.ExeName == null) continue;
 
-            ToolCatalogProviderM.TrySetPath(toolName, _appDataM.Tools, filePath);
+                var (path, version) = def.ExeName switch
+                {
+                    "ffmpeg.exe" => (t.FfmpegPath, t.FfmpegVer),
+                    "vspipe.exe" => (t.VspipePath, t.VspipeVer),
+                    "avs2yuv.exe" => (t.Avs2yuvPath, t.Avs2yuvVer),
+                    "avs2pipemod.exe" => (t.Avs2pipemodPath, t.Avs2pipemodVer),
+                    "one_line_shot_args.exe" => (t.OneLineShotArgsPath, null),
+                    "x264.exe" => (t.X264Path, t.X264Ver),
+                    "x265.exe" => (t.X265Path, t.X265Ver),
+                    "svtav1encapp.exe" => (t.SvtAv1Path, t.SvtAv1Ver),
+                    "ffprobe.exe" => (t.FfprobePath, t.FfprobeVer),
+                    "avisynth.dll" => (t.AviSynthDllPath, null),
+                    _ => (null, null)
+                };
+
+                if (!string.IsNullOrEmpty(path))
+                    AddOrUpdateTool(defKey, path, version);
+            }
+        }
+
+        private void OnToolImported(string exeName, string filePath)
+        {
+            ToolDefinitionM? def = ToolDefinitionProviderM.GetByExeName(exeName);
+            if (def == null || def.Zone == null) return;
+
+            var defKey = ToolDefinitionProviderM.ToolDefinitions
+                .FirstOrDefault(kvp => kvp.Value == def).Key;
+            if (defKey == null) return;
+
+            ToolCatalogProviderM.TrySetPath(exeName, _appDataM.Tools, filePath);
             _appDataM.Save();
 
-            var item = new ToolItemVM(new EncItemM(resolved.Value.DisplayName))
-            {
-                Path = filePath,
-                P1Name = "Version",
-                P2Name = "Path",
-                R1Text = "Edit",
-                R2Text = "Clear"
-            };
-            WireUpDeleteCmd(item, zone);
-            zone.Add(item);
+            AddOrUpdateTool(defKey, filePath, null);
         }
+
         private void OnToolDeleted(string toolName)
         {
-            var resolved = ToolCatalogProviderM.ResolveExe(toolName);
-            if (resolved == null) return;
-            ToolCatalogProviderM.TrySetPath(toolName, _appDataM.Tools, string.Empty);
-            ToolCatalogProviderM.TrySetVersion(toolName, _appDataM.Tools, string.Empty);
+            ToolDefinitionM? def = ToolDefinitionProviderM.GetByDisplayName(toolName);
+            if (def == null || def.ExeName == null) return;
+
+            ToolCatalogProviderM.TrySetPath(def.ExeName, _appDataM.Tools, string.Empty);
+            ToolCatalogProviderM.TrySetVersion(def.ExeName, _appDataM.Tools, string.Empty);
             _appDataM.Save();
         }
     }
