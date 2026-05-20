@@ -16,12 +16,32 @@
     R1, R2: Right side control buttons
     P1: P2: Properties
     -->
-    <Border BorderBrush="{StaticResource GlobalPrimary}"
-            BorderThickness="1.5"
+    <Border BorderThickness="1.5"
             SnapsToDevicePixels="True"
             CornerRadius="20"
-            Padding="17.5 20"
-            Background="{StaticResource Background}">
+            Padding="17.5 20">
+        <Border.Style>
+            <Style TargetType="Border">
+                <Setter Property="BorderBrush"
+                        Value="{StaticResource GlobalPrimary}" />
+                <Setter Property="Background"
+                        Value="{StaticResource Background}" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                 Value="True">
+                        <Setter Property="BorderBrush"
+                                Value="{StaticResource BorderGreen}" />
+                        <Setter Property="Background"
+                                Value="{StaticResource BackgroundGreen}" />
+                    </DataTrigger>
+                    <Trigger Property="IsMouseOver"
+                             Value="True">
+                        <Setter Property="Opacity"
+                                Value="0.85" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />

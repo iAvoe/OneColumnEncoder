@@ -29,9 +29,10 @@ namespace OneColumnEncoder.ViewModels
         // Buttons
         public ButtonGroupVM OpenAppConfButtons { get; }
         public ButtonGroupVM EncStartButtons { get; }
-        // First Two Button Group
+        // Commands
         public OpenAppConfCmd OpenAppConf { get; }
         public OpenUsagesCmd OpenUsages { get; }
+        public SelectToolCmd SelectTool { get; }
         // Card UIs
         public ToolsImportCardVM ToolsImportCard { get; }
         public SourceValidationCardVM SrcValidationCard { get; } = new();
@@ -54,6 +55,7 @@ namespace OneColumnEncoder.ViewModels
             _modalNavS = modalNavS;
             OpenAppConf = openAppConf;
             OpenUsages = openUsages;
+            SelectTool = new SelectToolCmd(this);
 
             // SrcImportZone Card
             ToolsImportCard = new ToolsImportCardVM(modalNavS);
@@ -322,10 +324,7 @@ namespace OneColumnEncoder.ViewModels
         }
 
         // Navigated to other modal windows
-        private void OnModalStateChanged()
-        {
-            IsOverlayVisible = _modalNavS.IsOpen;
-        }
+        private void OnModalStateChanged() { IsOverlayVisible = _modalNavS.IsOpen; }
 
         public override void Dispose()
         {

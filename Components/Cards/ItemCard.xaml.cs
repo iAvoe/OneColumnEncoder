@@ -24,5 +24,19 @@ namespace OneColumnEncoder.Components
         {
             InitializeComponent();
         }
+
+        // Register IsSelected depending property
+        public static readonly DependencyProperty IsSelectedProperty =
+            DependencyProperty.Register(
+                nameof(IsSelected),
+                typeof(bool),
+                typeof(ItemCard),
+                new PropertyMetadata(false));
+
+        public bool IsSelected
+        {
+            get => (bool)GetValue(IsSelectedProperty);
+            set => SetValue(IsSelectedProperty, value);
+        }
     }
 }

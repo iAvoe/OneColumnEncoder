@@ -79,6 +79,21 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _r2Text, value);
         }
 
+        private bool _isSelected;
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                if (_isSelected != value)
+                {
+                    _isSelected = value;
+                    // Notify to unselect other ItemCards
+                    OnPropertyChanged(nameof(IsSelected));
+                }
+            }
+        }
+
         private ICommand? _r1Command;
         public ICommand? R1Command
         {
