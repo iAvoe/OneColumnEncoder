@@ -28,7 +28,7 @@ namespace OneColumnEncoder
         protected override void OnStartup(StartupEventArgs e)
         {
             OpenAppConfCmd openAppConf = new(_modalNavM, _appConfM);
-            OpenUsagesCmd openUsages = new(_modalNavM);
+            OpenUsagesCmd openUsages = new(_modalNavM, _appConfM);
 
             MainWindow = new MainWindow()
             {

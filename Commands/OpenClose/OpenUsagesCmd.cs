@@ -1,4 +1,5 @@
-﻿using OneColumnEncoder.Stores;
+﻿using OneColumnEncoder.Models;
+using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.Views;
 using System;
@@ -7,9 +8,10 @@ using System.Windows;
 
 namespace OneColumnEncoder.Commands.OpenClose
 {
-    public class OpenUsagesCmd(ModalNavS modelNavS) : BaseCmd
+    public class OpenUsagesCmd(ModalNavS modelNavS, AppConfM appConfM) : BaseCmd
     {
         private readonly ModalNavS _modelNavS = modelNavS;
+        private readonly AppConfM _appConfM = appConfM;
         public override void Execute(object? parameter)
         {
             var existingWindow = Application.Current.Windows
@@ -26,7 +28,7 @@ namespace OneColumnEncoder.Commands.OpenClose
                 _modelNavS.Close();
 
             var window = new AppUsageModal();
-            var vm = new AppUsageVM(_modelNavS, window.Close);
+            var vm = new AppUsageVM(_modelNavS, _appConfM, window.Close);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modelNavS.Close();
