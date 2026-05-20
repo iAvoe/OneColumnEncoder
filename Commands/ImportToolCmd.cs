@@ -32,19 +32,21 @@ namespace OneColumnEncoder.Commands
 
         protected override async Task ExecuteAsync(object? parameter)
         {
-            string selectedTool = _dropdownVm.SelectedItem?.Title ?? "";
-            if (string.IsNullOrEmpty(selectedTool)) return;
+            string toolToImport = _dropdownVm.SelectedItem?.Title ?? "";
+            if (string.IsNullOrEmpty(toolToImport)) return;
 
-            string? filePath = await ImportToolAsync(selectedTool);
+            string? filePath = await ImportToolAsync(toolToImport);
             if (string.IsNullOrEmpty(filePath)) return;
 
-            // For tools in suspicious sizes but passed some checks, currently this line is for example usage
-            if (!DoubleCheckSuspiciousImport(filePath)) return;
+            if (!IsFileNameMatch(toolToImport, filePath))
+            {
+                if (!DoubleCheckSusImport(toolToImport, filePath)) return;
+            }
 
-            _onSuccess?.Invoke(selectedTool, filePath);
+            _onSuccess?.Invoke(toolToImport, filePath);
             foreach (ChecklistEntryVM l in _knownTools)
             {
-                if (l.Text.Contains(selectedTool, StringComparison.OrdinalIgnoreCase))
+                if (l.Text.Contains(toolToImport, StringComparison.OrdinalIgnoreCase))
                 {
                     l.Status = StatusType.Success;
                 }
@@ -52,21 +54,50 @@ namespace OneColumnEncoder.Commands
             OnCanExecuteChanged();
         }
 
-        private bool DoubleCheckSuspiciousImport(string toolName)
+        #region Validations
+        internal static bool IsFileNameMatch(string toolName, string filePath)
+        {
+            try
+            {
+                string? actualFileName = Path.GetFileName(filePath);
+                if (string.IsNullOrEmpty(actualFileName)) return false;
+                if (toolName.Contains('.', StringComparison.Ordinal))
+                {
+                    return actualFileName.Contains(
+                        toolName,
+                        StringComparison.OrdinalIgnoreCase);
+                }
+                // Tool without extension (not really possible, just exe and dll)
+                string actualNameWithoutExt = Path.GetFileNameWithoutExtension(filePath);
+                return actualNameWithoutExt.Equals(
+                    toolName,
+                    StringComparison.OrdinalIgnoreCase);
+
+            }
+            catch { return false; }
+        }
+
+        internal static bool ShowDoubleCheckConfirmation(ModalNavS modalNavS, string toolName, string supposedName)
         {
             ConfirmationModal window = new();
             ConfirmationModalVM vm = ConfirmationModalVM.CreateWarning(
-                title: ConfirmSuspiciousImport.GetTitle(toolName),
-                p1Text: ConfirmSuspiciousImport.GetMessage(toolName),
+                title: ConfirmForceImport.GetSusImportTitle(toolName),
+                p1Text: ConfirmForceImport.GetWrongToolMessage(toolName, supposedName),
                 cancelCmd: new ActionCmd(_ => { window.DialogResult = false; window.Close(); }),
                 confirmCmd: new ActionCmd(_ => { window.DialogResult = true; window.Close(); }));
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
-            _modalNavS.CurrentModalVM = vm;
+            modalNavS.CurrentModalVM = vm;
             bool result = window.ShowDialog() == true;
-            _modalNavS.Close();
+            modalNavS.Close();
             return result;
         }
+
+        private bool DoubleCheckSusImport(string toolName, string supposedName)
+        {
+            return ShowDoubleCheckConfirmation(_modalNavS, toolName, supposedName);
+        }
+        #endregion
 
         // There is no awaitable file dialog in WPF, so this warning can be ignored for now
         private static async Task<string?> ImportToolAsync(string toolName)
@@ -91,12 +122,9 @@ namespace OneColumnEncoder.Commands
             };
 
             bool? result = dialog.ShowDialog();
-            if (result == true)
-            {
-                return dialog.FileName;
-            }
-
+            if (result == true) return dialog.FileName;
             return null;
         }
+
     }
 }

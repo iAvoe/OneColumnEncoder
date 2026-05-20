@@ -2,11 +2,13 @@ namespace OneColumnEncoder.Models;
 
 public static class ConfirmationProviderM
 {
-    public static class ConfirmSuspiciousImport
+    public static class ConfirmForceImport
     {
-        public static string GetTitle(string toolName) =>
+        public static string GetSusImportTitle(string toolName) =>
             $"Suspicious import for {toolName}";
-        public static string GetMessage(string toolName) =>
+        public static string GetPorceedToRunMessage(string toolName) =>
             $"Proceed to run {toolName} to get its version?";
+        public static string GetWrongToolMessage(string toolName, string supposedName) =>
+            $"Importing {toolName} despite the supposed tool is {supposedName}?";
     }
 }
