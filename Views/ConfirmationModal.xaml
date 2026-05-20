@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Height="150"
-        Width="520"
+        Width="500"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <!--
@@ -26,18 +26,22 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column="0"
+                    MaxWidth="400"
                     VerticalAlignment="Center">
             <TextBlock FontSize="14"
+                       Height="Auto"
                        Text="{Binding P1Text}"
-                       TextWrapping="WrapWithOverflow" />
-            <comps:TwoButtonGroup Margin="0 10 0 0"
+                       TextWrapping="WrapWithOverflow"
+                       VerticalAlignment="Top" />
+            <comps:TwoButtonGroup Margin="0 15 0 0"
+                                  ButtonHeight="30"
                                   DataContext="{Binding FinishWarnErrButtons}"
                                   Button1Command="{Binding Cmd1}"
                                   Button2Command="{Binding Cmd2}" />
         </StackPanel>
         <!-- This might be an image icon instead -->
         <Image Grid.Column="1"
-               Margin="15 0 0 0"
+               Margin="10 0 0 0"
                Height="60"
                Source="{Binding I1Source}" />
     </Grid>

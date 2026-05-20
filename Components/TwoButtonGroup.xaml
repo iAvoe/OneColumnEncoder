@@ -20,6 +20,7 @@
                 Content="{Binding B2_1Text}"
                 Command="{Binding Button1Command, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 Width="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ActualWidth, Converter={StaticResource ButtonWidthConverter}, ConverterParameter='2,5'}"
+                Height="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonHeight}"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Left"
                 Style="{StaticResource NormalButton}" />
@@ -27,6 +28,7 @@
                 Content="{Binding B2_2Text}"
                 Command="{Binding Button2Command, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 Width="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ActualWidth, Converter={StaticResource ButtonWidthConverter}, ConverterParameter='2,5'}"
+                Height="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonHeight}"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Right"
                 Style="{StaticResource PrimaryButton}" />

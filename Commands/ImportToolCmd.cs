@@ -40,7 +40,7 @@ namespace OneColumnEncoder.Commands
 
             if (!IsFileNameMatch(toolToImport, filePath))
             {
-                if (!DoubleCheckSusImport(toolToImport, filePath)) return;
+                if (!DoubleCheckFilenameMismatchImport(toolToImport, filePath)) return;
             }
 
             _onSuccess?.Invoke(toolToImport, filePath);
@@ -77,12 +77,12 @@ namespace OneColumnEncoder.Commands
             catch { return false; }
         }
 
-        internal static bool ShowDoubleCheckConfirmation(ModalNavS modalNavS, string toolName, string supposedName)
+        internal static bool ShowDoubleCheckConfirmation(ModalNavS modalNavS, string titleStr, string p1Str, string toolName, string supposedName)
         {
             ConfirmationModal window = new();
             ConfirmationModalVM vm = ConfirmationModalVM.CreateWarning(
-                title: ConfirmForceImport.GetSusImportTitle(toolName),
-                p1Text: ConfirmForceImport.GetWrongToolMessage(toolName, supposedName),
+                title: titleStr,
+                p1Text: p1Str,
                 cancelCmd: new ActionCmd(_ => { window.DialogResult = false; window.Close(); }),
                 confirmCmd: new ActionCmd(_ => { window.DialogResult = true; window.Close(); }));
             window.DataContext = vm;
@@ -93,9 +93,14 @@ namespace OneColumnEncoder.Commands
             return result;
         }
 
-        private bool DoubleCheckSusImport(string toolName, string supposedName)
+        private bool DoubleCheckFilenameMismatchImport(string toolName, string supposedName)
         {
-            return ShowDoubleCheckConfirmation(_modalNavS, toolName, supposedName);
+            return ShowDoubleCheckConfirmation(
+                _modalNavS,
+                ConfirmForceImport.GetSuspiciousImportTitle(toolName),
+                ConfirmForceImport.GetWrongToolMessage(supposedName, toolName),
+                supposedName,
+                toolName);
         }
         #endregion
 

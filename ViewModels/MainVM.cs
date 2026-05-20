@@ -225,7 +225,7 @@ namespace OneColumnEncoder.ViewModels
         }
         private void WireUpToolCmd(ToolItemVM item)
         {
-            item.R1Command = new ReplaceToolCmd(item, _appDataM);
+            item.R1Command = new ReplaceToolCmd(item, _appDataM, _modalNavS);
             item.R2Command = new DeleteToolCmd(item, GetZoneForTool(ResolveToolZone(item.Name)), _appDataM);
         }
         private void WireUpSrcReplaceCmd(ToolItemVM item)
