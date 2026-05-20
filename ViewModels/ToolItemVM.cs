@@ -79,6 +79,13 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _r2Text, value);
         }
 
+        private ICommand? _r1Command;
+        public ICommand? R1Command
+        {
+            get => _r1Command;
+            set => SetProperty(ref _r1Command, value);
+        }
+
         private ICommand? _r2Command;
         public ICommand? R2Command
         {

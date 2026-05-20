@@ -19,6 +19,7 @@ namespace OneColumnEncoder.Helpers
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        // File level save-load
         public void Save()
         {
             try
@@ -32,7 +33,6 @@ namespace OneColumnEncoder.Helpers
                 Console.WriteLine($"Error saving: {ex.Message}");
             }
         }
-
         public static T Load()
         {
             var instance = new T();

@@ -42,6 +42,7 @@
             <Button Grid.Row="0"
                     Grid.Column="1"
                     Content="{Binding R1Text}"
+                    Command="{Binding R1Command}"
                     Style="{StaticResource LinkButton}"
                     HorizontalAlignment="Right"
                     Focusable="False"/>

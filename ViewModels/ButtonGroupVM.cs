@@ -73,7 +73,7 @@ namespace OneColumnEncoder.ViewModels
         public ICommand? Cmd2 { get; set; }
         public ICommand? Cmd3 { get; set; }
 
-        public static ButtonGroupVM CreatePrimaryButton(string text, ICommand cmd = null)
+        public static ButtonGroupVM CreatePrimaryButton(string text, ICommand? cmd = null)
         {
             return new ButtonGroupVM
             {

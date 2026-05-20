@@ -54,7 +54,7 @@ namespace OneColumnEncoder.ViewModels
             OpenAppConf = openAppConf;
             OpenUsages = openUsages;
 
-            // Within SrcImportZone
+            // SrcImportZone Card
             ToolsImportCard = new ToolsImportCardVM(modalNavS);
 
             // Initialize main UI zones
@@ -66,7 +66,7 @@ namespace OneColumnEncoder.ViewModels
             LoadToolsFromAppDataM();
             WireUpZoneDeleteCmds();
 
-            // Main UI buttons
+            // Buttons
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProviderM.Buttons.UsageAndCompliance,
                 UICaptionProviderM.Buttons.Settings,
@@ -199,20 +199,33 @@ namespace OneColumnEncoder.ViewModels
         }
         #endregion
 
-        // Bind delete tool command to UI
+        // Bind delete/replace tool commands to UI
         private void WireUpZoneDeleteCmds()
         {
             foreach (ToolItemVM item in SrcImportZone)
                 WireUpDeleteCmd(item, SrcImportZone);
             foreach (ToolItemVM item in EncSettingsZone)
                 WireUpDeleteCmd(item, EncSettingsZone);
+            foreach (ToolItemVM item in UpstreamsZone)
+                WireUpToolCmd(item);
+            foreach (ToolItemVM item in EncodersZone)
+                WireUpToolCmd(item);
             foreach (ToolItemVM item in AnalyticsZone)
-                WireUpDeleteCmd(item, AnalyticsZone);
+                WireUpToolCmd(item);
         }
         private void WireUpDeleteCmd(ToolItemVM item, ObservableCollection<ToolItemVM> zone)
         {
-            item.R2Command =
-                new ActionCmd(_ => { zone.Remove(item); OnToolDeleted(item.Name); });
+            item.R2Command = new DeleteToolCmd(item, zone, _appDataM);
+        }
+        private void WireUpToolCmd(ToolItemVM item)
+        {
+            item.R1Command = new ReplaceToolCmd(item, _appDataM);
+            item.R2Command = new DeleteToolCmd(item, GetZoneForTool(ResolveToolZone(item.Name)), _appDataM);
+        }
+        private static ToolZone ResolveToolZone(string displayName)
+        {
+            ToolDefinitionM? def = ToolDefinitionProviderM.GetByDisplayName(displayName);
+            return def?.Zone ?? throw new ArgumentException($"Unknown tool: {displayName}");
         }
 
         // Check which zone a tool belongs to, and overwrite a tool if duplicate import happens
@@ -241,7 +254,7 @@ namespace OneColumnEncoder.ViewModels
                 R1Text = def.R1Text,
                 R2Text = def.R2Text
             };
-            WireUpDeleteCmd(item, zone);
+            WireUpToolCmd(item);
             zone.Add(item);
         }
 
@@ -287,17 +300,6 @@ namespace OneColumnEncoder.ViewModels
             _appDataM.Save();
 
             AddOrUpdateTool(defKey, filePath, null);
-        }
-
-        // Delete tool: delete card UI & app data
-        private void OnToolDeleted(string toolName)
-        {
-            ToolDefinitionM? def = ToolDefinitionProviderM.GetByDisplayName(toolName);
-            if (def == null || def.ExeName == null) return;
-
-            ToolCatalogProviderM.TrySetPath(def.ExeName, _appDataM.Tools, string.Empty);
-            ToolCatalogProviderM.TrySetVersion(def.ExeName, _appDataM.Tools, string.Empty);
-            _appDataM.Save();
         }
 
         // Navigated to other modal windows
