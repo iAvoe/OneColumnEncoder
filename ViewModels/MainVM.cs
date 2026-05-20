@@ -5,12 +5,14 @@ using OneColumnEncoder.Components;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels.Cards;
+using OneColumnEncoder.Views;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Windows;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -83,6 +85,7 @@ namespace OneColumnEncoder.ViewModels
             // Import dropdown menu and behavior
             ToolsImportCard.ToolImported += OnToolImported;
             ToolsImportCard.Name = UICaptionProviderM.Cards.ToolsImport;
+
             foreach (DropdownItemM item in ToolCatalogProviderM.GetImportDropdownItems())
                 ToolsImportCard.ImportDropdown.Items.Add(item);
             ToolsImportCard.ImportDropdown.SelectedItem =

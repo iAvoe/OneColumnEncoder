@@ -126,6 +126,12 @@ namespace OneColumnEncoder.Commands
                 CheckPathExists = true
             };
 
+            string? detectedDir = ToolCatalogProviderM.TryFindToolDirectory(toolName);
+            if (detectedDir != null)
+            {
+                dialog.InitialDirectory = detectedDir;
+            }
+
             bool? result = dialog.ShowDialog();
             if (result == true) return dialog.FileName;
             return null;

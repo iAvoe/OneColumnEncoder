@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace OneColumnEncoder.Models;
@@ -94,6 +95,33 @@ public static class ToolCatalogProviderM
         ["ffprobe.exe"] = (t, v) => t.FfprobeVer = v,
     };
 
+    public static readonly Dictionary<string, string[]> ToolExtraSearchPaths = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["vspipe.exe"] = new[]
+        {
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "VapourSynth", "core"),
+        },
+        ["one_line_shot_args.exe"] = DriveInfo.GetDrives()
+            .Select(d => Path.Combine(d.RootDirectory.FullName, "SteamLibrary", "steamapps", "common", "SVFI"))
+            .ToArray(),
+    };
+
+    public static string? TryFindToolDirectory(string exeName)
+    {
+        if (!ToolExtraSearchPaths.TryGetValue(exeName, out var directories))
+            return null;
+        foreach (var dir in directories)
+        {
+            if (Directory.Exists(dir))
+            {
+                string filePath = Path.Combine(dir, exeName);
+                if (File.Exists(filePath))
+                    return dir;
+            }
+        }
+        return null;
+    }
+
     public static bool TrySetPath(string exeName, AppDataM.Importables tools, string filePath)
     {
         if (_pathSetters.TryGetValue(exeName, out var setter))
@@ -114,13 +142,23 @@ public static class ToolCatalogProviderM
         return false;
     }
 
-    // Dropdown items for the import dropdown
-    public static List<DropdownItemM> GetImportDropdownItems() =>
-    [
-        new("No Selection"),
-        new("", true),
-        .. ToolDefinitionProviderM.ToolDefinitions.Values
-            .Where(d => d.ExeName != null)
-            .Select(d => new DropdownItemM(d.ExeName!)),
-    ];
+    // Dropdown items for the import dropdown (grouped by zone)
+    public static List<DropdownItemM> GetImportDropdownItems()
+    {
+        var items = new List<DropdownItemM> { new("No Selection"), new("", true) };
+
+        ToolZone? prevZone = null;
+        foreach (var def in ToolDefinitionProviderM.ToolDefinitions.Values)
+        {
+            if (def.ExeName == null || def.Zone == null) continue;
+
+            if (prevZone != null && def.Zone != prevZone)
+                items.Add(new("", true));
+
+            items.Add(new DropdownItemM(def.ExeName));
+            prevZone = def.Zone;
+        }
+
+        return items;
+    }
 }

@@ -31,6 +31,12 @@ namespace OneColumnEncoder.Commands
                 CheckPathExists = true
             };
 
+            string? detectedDir = ToolCatalogProviderM.TryFindToolDirectory(def.ExeName);
+            if (detectedDir != null)
+            {
+                dialog.InitialDirectory = detectedDir;
+            }
+
             bool? result = dialog.ShowDialog();
             if (result != true) return;
 
