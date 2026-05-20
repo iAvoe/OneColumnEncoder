@@ -1,4 +1,5 @@
-﻿using OneColumnEncoder.Commands;
+﻿using Microsoft.Win32;
+using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Components;
 using OneColumnEncoder.Models;
@@ -203,7 +204,10 @@ namespace OneColumnEncoder.ViewModels
         private void WireUpZoneDeleteCmds()
         {
             foreach (ToolItemVM item in SrcImportZone)
+            {
                 WireUpDeleteCmd(item, SrcImportZone);
+                WireUpSrcReplaceCmd(item);
+            }
             foreach (ToolItemVM item in EncSettingsZone)
                 WireUpDeleteCmd(item, EncSettingsZone);
             foreach (ToolItemVM item in UpstreamsZone)
@@ -221,6 +225,21 @@ namespace OneColumnEncoder.ViewModels
         {
             item.R1Command = new ReplaceToolCmd(item, _appDataM);
             item.R2Command = new DeleteToolCmd(item, GetZoneForTool(ResolveToolZone(item.Name)), _appDataM);
+        }
+        private void WireUpSrcReplaceCmd(ToolItemVM item)
+        {
+            item.R1Command = new ActionCmd(_ =>
+            {
+                OpenFileDialog dialog = new()
+                {
+                    Filter = "All files (*.*)|*.*",
+                    Title = $"Select {item.Name}",
+                    CheckFileExists = true,
+                    CheckPathExists = true
+                };
+                if (dialog.ShowDialog() == true)
+                    item.Path = dialog.FileName;
+            });
         }
         private static ToolZone ResolveToolZone(string displayName)
         {
@@ -248,7 +267,7 @@ namespace OneColumnEncoder.ViewModels
             ToolItemVM item = new(new EncItemM(def.DisplayName))
             {
                 Path = path,
-                VersionText = version ?? "",
+                // VersionText = version ?? "", // version variable functionality is not coded yet, this only overwrites default to ""
                 P1Name = def.P1Name,
                 P2Name = def.P2Name ?? "",
                 R1Text = def.R1Text,

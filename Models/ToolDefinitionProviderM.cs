@@ -9,7 +9,7 @@ namespace OneColumnEncoder.Models
         public static readonly Dictionary<string, ToolDefinitionM> ToolDefinitions = new()
         {
             // Upstream
-            ["Ffmpeg"] = new("FFmpeg", "Replace", "Delete", "Version", "Path", ToolZone.Upstream, "ffmpeg.exe"),
+            ["Ffmpeg"] = new("FFMPEG", "Replace", "Delete", "Version", "Path", ToolZone.Upstream, "ffmpeg.exe"),
             ["Vspipe"] = new("VSPipe", "Replace", "Delete", "Version", "Path", ToolZone.Upstream, "vspipe.exe"),
             ["Avs2yuv"] = new("Avs2yuv", "Replace", "Delete", "Version", "Path", ToolZone.Upstream, "avs2yuv.exe"),
             ["Avs2pipemod"] = new("Avs2pipemod", "Replace", "Delete", "Version", "Path", ToolZone.Upstream, "avs2pipemod.exe"),
@@ -19,7 +19,7 @@ namespace OneColumnEncoder.Models
             ["X265"] = new("x265", "Replace", "Delete", "Version", "Path", ToolZone.Encoder, "x265.exe"),
             ["SvtAv1"] = new("SVT-AV1", "Replace", "Delete", "Version", "Path", ToolZone.Encoder, "svtav1encapp.exe"),
             // Analytics
-            ["Ffprobe"] = new("FFprobe", "Replace", "Delete", "Version", "Path", ToolZone.Analytics, "ffprobe.exe"),
+            ["Ffprobe"] = new("FFProbe", "Replace", "Delete", "Version", "Path", ToolZone.Analytics, "ffprobe.exe"),
             ["AviSynthDll"] = new("AviSynth DLL (for VapourSynth)", "Replace", "Delete", "Version", "Path", ToolZone.Analytics, "avisynth.dll"),
         };
 
