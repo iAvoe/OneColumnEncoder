@@ -46,6 +46,13 @@ namespace OneColumnEncoder.ViewModels.Cards
             FillCollection(ToolsChecklist, ChecklistProviderM.GetToolsChecklist());
         }
 
+        public void RefreshLanguage()
+        {
+            OnPropertyChanged(nameof(ImportButtonText));
+            RefreshChecklistText();
+            RefreshImportDropdownItems();
+        }
+
         public void RefreshToolsChecklist(bool hasUpstreamTool, bool hasEncoderTool, bool hasFfprobe)
         {
             UpdateChecklistStatus(UpstreamChecklistIndex, hasUpstreamTool);
@@ -57,6 +64,34 @@ namespace OneColumnEncoder.ViewModels.Cards
         {
             if (index < 0 || index >= ToolsChecklist.Count) return;
             ToolsChecklist[index].Status = isReady ? StatusType.Success : StatusType.Error;
+        }
+
+        private void RefreshChecklistText()
+        {
+            List<ChecklistItemDefinitionM> definitions = ChecklistProviderM.GetToolsChecklist();
+            for (int i = 0; i < definitions.Count && i < ToolsChecklist.Count; i++)
+            {
+                ToolsChecklist[i].Text = definitions[i].Text;
+            }
+        }
+
+        private void RefreshImportDropdownItems()
+        {
+            string? selectedTitle = ImportDropdown.SelectedItem?.Title;
+            bool selectedPlaceholder = ImportDropdown.SelectedItem?.IsPlaceholder == true;
+
+            ImportDropdown.Items.Clear();
+            foreach (DropdownItemM item in ToolCatalogProviderM.GetImportDropdownItems())
+            {
+                ImportDropdown.Items.Add(item);
+            }
+
+            ImportDropdown.SelectedItem =
+                ImportDropdown.Items.FirstOrDefault(i =>
+                    (selectedPlaceholder && i.IsPlaceholder) ||
+                    (!selectedPlaceholder && i.Title == selectedTitle)) ??
+                ImportDropdown.Items.FirstOrDefault(i => i.IsPlaceholder) ??
+                ImportDropdown.Items.FirstOrDefault();
         }
 
         public override void Dispose()

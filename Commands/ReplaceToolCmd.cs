@@ -20,13 +20,13 @@ namespace OneColumnEncoder.Commands
             if (def?.ExeName == null) return;
 
             string filter = def.ExeName.Equals("avisynth.dll", StringComparison.OrdinalIgnoreCase)
-                ? "DLL files (*.dll)|*.dll"
-                : "Executable files (*.exe)|*.exe";
+                ? UILangProviderM.Current["Dialog.Filter.Dll"]
+                : UILangProviderM.Current["Dialog.Filter.Exe"];
 
             OpenFileDialog dialog = new()
             {
                 Filter = filter,
-                Title = $"Replace {_item.Name}",
+                Title = string.Format(UILangProviderM.Current["Dialog.ReplaceTitle"], _item.Name),
                 CheckFileExists = true,
                 CheckPathExists = true
             };

@@ -3,6 +3,7 @@ namespace OneColumnEncoder.Models;
 public class UILangProviderM
 {
     public static UILangProviderM Current { get; private set; } = null!;
+    public static event Action? CurrentChanged;
 
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -26,6 +27,10 @@ public class UILangProviderM
             ["Buttons.ReEvaluate"] = "Re-Evaluate",
             ["Buttons.RunSample"] = "Run a Sample",
             ["Buttons.StartEncode"] = "Start Encode",
+            ["Buttons.Replace"] = "Replace",
+            ["Buttons.Delete"] = "Delete",
+            ["Buttons.Clear"] = "Clear",
+            ["Buttons.Edit"] = "Edit",
 
             // AppConf group headers
             ["AppConf.General"] = "General: disable Start Encode when...",
@@ -54,9 +59,41 @@ public class UILangProviderM
 
             // Import button on ToolsImportCard
             ["ImportButton"] = "Import",
+            ["Import.NoSelection"] = "No Selection",
 
             // ItemCard separator
             ["ItemCard.Separator"] = ": ",
+
+            // Tool card captions
+            ["ToolField.Version"] = "Version",
+            ["ToolField.Path"] = "Path",
+            ["ToolField.Name"] = "Name",
+            ["ToolField.Mode"] = "Mode",
+            ["ToolField.FileNameWithoutExtension"] = "File name w/out extension",
+            ["ToolField.CpuRamNodes"] = "CPU-RAM Nodes",
+            ["ToolField.Threads"] = "Threads",
+            ["ToolField.Value"] = "Value",
+            ["ToolField.Stratagem"] = "Stratagem",
+            ["ToolField.MaximumKeyframeGap"] = "Maximum keyframe gap",
+            ["ToolField.OtherCustomParams"] = "Other custom params",
+
+            ["Tool.Source.VideoSource"] = "Video Source",
+            ["Tool.Source.AviSynth"] = "AviSynth .avs Source",
+            ["Tool.Source.VapourSynth"] = "VapourSynth .vpy Source",
+            ["Tool.Source.Svfi"] = "SVFI .ini Source",
+
+            ["Tool.Enc.OutputSetting"] = "Output Setting",
+            ["Tool.Enc.Parallelism"] = "Parallelism",
+            ["Tool.Enc.RateControl"] = "Rate Control Mechanism",
+            ["Tool.Enc.BaseParameters"] = "Base Parameters",
+            ["Tool.Enc.CustomParameters"] = "Custom Parameters",
+
+            // Dialogs
+            ["Dialog.SelectTitle"] = "Select {0}",
+            ["Dialog.ReplaceTitle"] = "Replace {0}",
+            ["Dialog.Filter.All"] = "All files (*.*)|*.*",
+            ["Dialog.Filter.Exe"] = "Executable files (*.exe)|*.exe",
+            ["Dialog.Filter.Dll"] = "DLL files (*.dll)|*.dll",
 
             // Confirmation dialog texts
             ["ConfirmDialog.Cancel"] = "Cancel",
@@ -161,6 +198,10 @@ public class UILangProviderM
             ["Buttons.ReEvaluate"] = "重新检查",
             ["Buttons.RunSample"] = "取段打样",
             ["Buttons.StartEncode"] = "开始压制",
+            ["Buttons.Replace"] = "替换",
+            ["Buttons.Delete"] = "删除",
+            ["Buttons.Clear"] = "清空",
+            ["Buttons.Edit"] = "编辑",
 
             ["AppConf.General"] = "通用：禁用「开始压制」按钮的时机",
             ["AppConf.Overwrite"] = "文件覆盖确认行为",
@@ -184,8 +225,37 @@ public class UILangProviderM
             ["AppConfModal.Header"] = "设置",
 
             ["ImportButton"] = "导入",
+            ["Import.NoSelection"] = "未选择",
 
             ["ItemCard.Separator"] = "：",
+            ["ToolField.Version"] = "版本",
+            ["ToolField.Path"] = "路径",
+            ["ToolField.Name"] = "名称",
+            ["ToolField.Mode"] = "模式",
+            ["ToolField.FileNameWithoutExtension"] = "不含扩展名的文件名",
+            ["ToolField.CpuRamNodes"] = "CPU-RAM 节点",
+            ["ToolField.Threads"] = "线程",
+            ["ToolField.Value"] = "数值",
+            ["ToolField.Stratagem"] = "策略",
+            ["ToolField.MaximumKeyframeGap"] = "最大关键帧间隔",
+            ["ToolField.OtherCustomParams"] = "其他自定义参数",
+
+            ["Tool.Source.VideoSource"] = "视频源",
+            ["Tool.Source.AviSynth"] = "AviSynth .avs 源",
+            ["Tool.Source.VapourSynth"] = "VapourSynth .vpy 源",
+            ["Tool.Source.Svfi"] = "SVFI .ini 源",
+
+            ["Tool.Enc.OutputSetting"] = "输出设置",
+            ["Tool.Enc.Parallelism"] = "并行计算机制",
+            ["Tool.Enc.RateControl"] = "码率控制机制",
+            ["Tool.Enc.BaseParameters"] = "基础参数",
+            ["Tool.Enc.CustomParameters"] = "自定义参数",
+
+            ["Dialog.SelectTitle"] = "选择 {0}",
+            ["Dialog.ReplaceTitle"] = "替换 {0}",
+            ["Dialog.Filter.All"] = "所有文件 (*.*)|*.*",
+            ["Dialog.Filter.Exe"] = "可执行文件 (*.exe)|*.exe",
+            ["Dialog.Filter.Dll"] = "DLL 文件 (*.dll)|*.dll",
 
             ["ConfirmDialog.Cancel"] = "取消",
             ["ConfirmDialog.Confirm"] = "确认",
@@ -277,6 +347,10 @@ public class UILangProviderM
             ["Buttons.ReEvaluate"] = "重新檢查",
             ["Buttons.RunSample"] = "取段打樣",
             ["Buttons.StartEncode"] = "開始壓制",
+            ["Buttons.Replace"] = "替換",
+            ["Buttons.Delete"] = "刪除",
+            ["Buttons.Clear"] = "清空",
+            ["Buttons.Edit"] = "編輯",
 
             ["AppConf.General"] = "通用：禁用「開始壓制」按鈕的時機",
             ["AppConf.Overwrite"] = "文件覆蓋確認行為",
@@ -300,8 +374,37 @@ public class UILangProviderM
             ["AppConfModal.Header"] = "設置",
 
             ["ImportButton"] = "導入",
+            ["Import.NoSelection"] = "未選擇",
 
             ["ItemCard.Separator"] = "：",
+            ["ToolField.Version"] = "版本",
+            ["ToolField.Path"] = "路徑",
+            ["ToolField.Name"] = "名稱",
+            ["ToolField.Mode"] = "模式",
+            ["ToolField.FileNameWithoutExtension"] = "不含副檔名的檔名",
+            ["ToolField.CpuRamNodes"] = "CPU-RAM 節點",
+            ["ToolField.Threads"] = "執行緒",
+            ["ToolField.Value"] = "數值",
+            ["ToolField.Stratagem"] = "策略",
+            ["ToolField.MaximumKeyframeGap"] = "最大關鍵影格間隔",
+            ["ToolField.OtherCustomParams"] = "其他自訂參數",
+
+            ["Tool.Source.VideoSource"] = "視訊來源",
+            ["Tool.Source.AviSynth"] = "AviSynth .avs 來源",
+            ["Tool.Source.VapourSynth"] = "VapourSynth .vpy 來源",
+            ["Tool.Source.Svfi"] = "SVFI .ini 來源",
+
+            ["Tool.Enc.OutputSetting"] = "輸出設定",
+            ["Tool.Enc.Parallelism"] = "平行計算機制",
+            ["Tool.Enc.RateControl"] = "位元率控制機制",
+            ["Tool.Enc.BaseParameters"] = "基礎參數",
+            ["Tool.Enc.CustomParameters"] = "自訂參數",
+
+            ["Dialog.SelectTitle"] = "選擇 {0}",
+            ["Dialog.ReplaceTitle"] = "替換 {0}",
+            ["Dialog.Filter.All"] = "所有檔案 (*.*)|*.*",
+            ["Dialog.Filter.Exe"] = "可執行檔 (*.exe)|*.exe",
+            ["Dialog.Filter.Dll"] = "DLL 檔案 (*.dll)|*.dll",
 
             ["ConfirmDialog.Cancel"] = "取消",
             ["ConfirmDialog.Confirm"] = "確認",
@@ -378,12 +481,23 @@ public class UILangProviderM
     };
 
     private readonly Dictionary<string, string> _d;
+    public string LanguageCode { get; }
 
     public string this[string key] => _d.TryGetValue(key, out var v) ? v : key;
 
     public UILangProviderM(string languageCode)
     {
-        _d = Data.TryGetValue(languageCode, out var lang) ? lang : Data["en"];
+        LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
+        _d = Data[LanguageCode];
+
+        bool hasChanged = Current is null ||
+            !string.Equals(Current.LanguageCode, LanguageCode, StringComparison.OrdinalIgnoreCase);
         Current = this;
+        if (hasChanged)
+        {
+            CurrentChanged?.Invoke();
+        }
     }
+
+    public static void SetLanguage(string languageCode) => _ = new UILangProviderM(languageCode);
 }

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OneColumnEncoder.Models;
 
 namespace OneColumnEncoder.ViewModels.Cards
 {
@@ -33,5 +34,13 @@ namespace OneColumnEncoder.ViewModels.Cards
         // P2, P4
         public ObservableCollection<ChecklistEntryVM> Checklist1 { get; } = [];
         public ObservableCollection<ChecklistEntryVM> Checklist2 { get; } = [];
+
+        protected static void RefreshChecklist(ObservableCollection<ChecklistEntryVM> collection, List<ChecklistItemDefinitionM> definitions)
+        {
+            for (int i = 0; i < definitions.Count && i < collection.Count; i++)
+            {
+                collection[i].Text = definitions[i].Text;
+            }
+        }
     }
 }

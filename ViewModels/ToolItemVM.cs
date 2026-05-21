@@ -16,7 +16,18 @@ namespace OneColumnEncoder.ViewModels
 
         private readonly EncItemM _baseModel = baseModel;
 
-        public string Name => _baseModel.Name;
+        public string Name
+        {
+            get => _baseModel.Name;
+            set
+            {
+                if (_baseModel.Name != value)
+                {
+                    _baseModel.Name = value;
+                    OnPropertyChanged(nameof(Name));
+                }
+            }
+        }
         public string Path
         {
             get => _baseModel.Path;
@@ -119,6 +130,20 @@ namespace OneColumnEncoder.ViewModels
         private static string GetExeVersion(string path)
         {
             return "TODO (" + path + ")";
+        }
+
+        public void ApplyDefinition(ToolDefinitionM definition)
+        {
+            Name = definition.DisplayName;
+            R1Text = definition.R1Text;
+            R2Text = definition.R2Text;
+            P1Name = definition.P1Name;
+            P2Name = definition.P2Name ?? string.Empty;
+        }
+
+        public void RefreshLanguage()
+        {
+            OnPropertyChanged(nameof(SeparatorText));
         }
     }
 }

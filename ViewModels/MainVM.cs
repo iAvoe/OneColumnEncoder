@@ -118,6 +118,8 @@ namespace OneColumnEncoder.ViewModels
             SubToToolsChecklist();
             _modalNavS.CurrentViewModelChanged += OnModalStateChanged;
             IsOverlayVisible = _modalNavS.IsOpen;
+            UILangProviderM.CurrentChanged += OnLanguageChanged;
+            RefreshLanguage();
         }
 
         // SrcImportZone and EncSettingsZone creation by initialization and import
@@ -268,8 +270,8 @@ namespace OneColumnEncoder.ViewModels
             {
                 OpenFileDialog dialog = new()
                 {
-                    Filter = "All files (*.*)|*.*",
-                    Title = $"Select {item.Name}",
+                    Filter = UILangProviderM.Current["Dialog.Filter.All"],
+                    Title = string.Format(UILangProviderM.Current["Dialog.SelectTitle"], item.Name),
                     CheckFileExists = true,
                     CheckPathExists = true
                 };
@@ -360,8 +362,95 @@ namespace OneColumnEncoder.ViewModels
         // Navigated to other modal windows
         private void OnModalStateChanged() { IsOverlayVisible = _modalNavS.IsOpen; }
 
+        private void OnLanguageChanged()
+        {
+            RefreshLanguage();
+        }
+
+        private void RefreshLanguage()
+        {
+            RefreshSectionHeaders();
+            RefreshButtonCaptions();
+            RefreshCardsLanguage();
+            RefreshZoneLanguage();
+        }
+
+        private void RefreshSectionHeaders()
+        {
+            OnPropertyChanged(nameof(SectionImportTools));
+            OnPropertyChanged(nameof(SectionSelectUpstream));
+            OnPropertyChanged(nameof(SectionSelectEncoder));
+            OnPropertyChanged(nameof(SectionSelectAnalytics));
+            OnPropertyChanged(nameof(SectionImportSource));
+            OnPropertyChanged(nameof(SectionAnalysisResults));
+            OnPropertyChanged(nameof(SectionEncodingConfigs));
+            OnPropertyChanged(nameof(SectionStartEncoding));
+        }
+
+        private void RefreshButtonCaptions()
+        {
+            OpenAppConfButtons.B2_1Text = UICaptionProviderM.Buttons.UsageAndCompliance;
+            OpenAppConfButtons.B2_2Text = UICaptionProviderM.Buttons.Settings;
+            EncStartButtons.B3_1Text = UICaptionProviderM.Buttons.ReEvaluate;
+            EncStartButtons.B3_2Text = UICaptionProviderM.Buttons.RunSample;
+            EncStartButtons.B3_3Text = UICaptionProviderM.Buttons.StartEncode;
+        }
+
+        private void RefreshCardsLanguage()
+        {
+            ToolsImportCard.Name = UICaptionProviderM.Cards.ToolsImport;
+            ToolsImportCard.RefreshLanguage();
+
+            SrcValidationCard.Name = UICaptionProviderM.Cards.SourceValidation;
+            SrcValidationCard.P1Name = UICaptionProviderM.Cards.SourceSevere;
+            SrcValidationCard.P3Name = UICaptionProviderM.Cards.SourceModerate;
+            SrcValidationCard.RefreshLanguage();
+
+            EncTermsCard.Name = UICaptionProviderM.Cards.EncPrerequisites;
+            EncTermsCard.P1Name = UICaptionProviderM.Cards.EncHardware;
+            EncTermsCard.P3Name = UICaptionProviderM.Cards.EncSoftware;
+            EncTermsCard.RefreshLanguage();
+
+            BestPracticesCard.Name = UICaptionProviderM.Cards.BestPractices;
+            BestPracticesCard.P1Name = UICaptionProviderM.Cards.BestHardware;
+            BestPracticesCard.P3Name = UICaptionProviderM.Cards.BestSoftware;
+            BestPracticesCard.RefreshLanguage();
+        }
+
+        private void RefreshZoneLanguage()
+        {
+            ApplyDefinitionsToZone(SrcImportZone, ToolCatalogProviderM.GetSourceImportDefinitions());
+            ApplyDefinitionsToZone(EncSettingsZone, ToolCatalogProviderM.GetEncSettingsDefinitions());
+            ApplyImportedToolDefinitions(UpstreamsZone);
+            ApplyImportedToolDefinitions(EncodersZone);
+            ApplyImportedToolDefinitions(AnalyticsZone);
+        }
+
+        private static void ApplyDefinitionsToZone(ObservableCollection<ToolItemVM> zone, List<ToolDefinitionM> definitions)
+        {
+            for (int i = 0; i < definitions.Count && i < zone.Count; i++)
+            {
+                zone[i].ApplyDefinition(definitions[i]);
+                zone[i].RefreshLanguage();
+            }
+        }
+
+        private static void ApplyImportedToolDefinitions(ObservableCollection<ToolItemVM> zone)
+        {
+            foreach (ToolItemVM item in zone)
+            {
+                ToolDefinitionM? definition = ToolDefinitionProviderM.GetByDisplayName(item.Name);
+                if (definition != null)
+                {
+                    item.ApplyDefinition(definition);
+                }
+                item.RefreshLanguage();
+            }
+        }
+
         public override void Dispose()
         {
+            UILangProviderM.CurrentChanged -= OnLanguageChanged;
             _modalNavS.CurrentViewModelChanged -= OnModalStateChanged;
             ToolsImportCard.ToolImported -= OnToolImported;
             ToolsImportCard.Dispose();

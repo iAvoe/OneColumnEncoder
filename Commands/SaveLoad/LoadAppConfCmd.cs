@@ -18,6 +18,8 @@ namespace OneColumnEncoder.Commands.SaveLoad
             _appConfStore.General = loadedConfig.General;
             _appConfStore.Overwrite = loadedConfig.Overwrite;
             _appConfStore.Smtp = loadedConfig.Smtp;
+            _appConfStore.Lang = loadedConfig.Lang;
+            UILangProviderM.SetLanguage(_appConfStore.Lang.LanguageCode);
             await Task.CompletedTask;
         }
     }

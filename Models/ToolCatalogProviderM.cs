@@ -10,20 +10,55 @@ public static class ToolCatalogProviderM
     // Source Import zone (4 items)
     public static List<ToolDefinitionM> GetSourceImportDefinitions() =>
     [
-        new("Video Source",            "Replace", "Clear", "Name", "Path"),
-        new("AviSynth .avs Source",    "Replace", "Clear", "Mode", "Path"),
-        new("VapourSynth .vpy Source", "Replace", "Clear", "Mode", "Path"),
-        new("SVFI .ini Source",        "Replace", "Clear", "Mode", "Path"),
+        new(UILangProviderM.Current["Tool.Source.VideoSource"],
+            UILangProviderM.Current["Buttons.Replace"],
+            UILangProviderM.Current["Buttons.Clear"],
+            UILangProviderM.Current["ToolField.Name"],
+            UILangProviderM.Current["ToolField.Path"]),
+        new(UILangProviderM.Current["Tool.Source.AviSynth"],
+            UILangProviderM.Current["Buttons.Replace"],
+            UILangProviderM.Current["Buttons.Clear"],
+            UILangProviderM.Current["ToolField.Mode"],
+            UILangProviderM.Current["ToolField.Path"]),
+        new(UILangProviderM.Current["Tool.Source.VapourSynth"],
+            UILangProviderM.Current["Buttons.Replace"],
+            UILangProviderM.Current["Buttons.Clear"],
+            UILangProviderM.Current["ToolField.Mode"],
+            UILangProviderM.Current["ToolField.Path"]),
+        new(UILangProviderM.Current["Tool.Source.Svfi"],
+            UILangProviderM.Current["Buttons.Replace"],
+            UILangProviderM.Current["Buttons.Clear"],
+            UILangProviderM.Current["ToolField.Mode"],
+            UILangProviderM.Current["ToolField.Path"]),
     ];
 
     // Enc Settings zone (5 items)
     public static List<ToolDefinitionM> GetEncSettingsDefinitions() =>
     [
-        new("Output Setting",           "Edit", "Clear", "File name w/out extension", "Path"),
-        new("Parallelism",              "Edit", "Clear", "CPU-RAM Nodes", "Threads"),
-        new("Rate Control Mechanism",   "Edit", "Clear", "Mode", "Value"),
-        new("Base Parameters",          "Edit", "Clear", "Stratagem"),
-        new("Custom Parameters",        "Edit", "Clear", "Maximum keyframe gap", "Other custom params"),
+        new(UILangProviderM.Current["Tool.Enc.OutputSetting"],
+            UILangProviderM.Current["Buttons.Edit"],
+            UILangProviderM.Current["Buttons.Clear"],
+            UILangProviderM.Current["ToolField.FileNameWithoutExtension"],
+            UILangProviderM.Current["ToolField.Path"]),
+        new(UILangProviderM.Current["Tool.Enc.Parallelism"],
+            UILangProviderM.Current["Buttons.Edit"],
+            UILangProviderM.Current["Buttons.Clear"],
+            UILangProviderM.Current["ToolField.CpuRamNodes"],
+            UILangProviderM.Current["ToolField.Threads"]),
+        new(UILangProviderM.Current["Tool.Enc.RateControl"],
+            UILangProviderM.Current["Buttons.Edit"],
+            UILangProviderM.Current["Buttons.Clear"],
+            UILangProviderM.Current["ToolField.Mode"],
+            UILangProviderM.Current["ToolField.Value"]),
+        new(UILangProviderM.Current["Tool.Enc.BaseParameters"],
+            UILangProviderM.Current["Buttons.Edit"],
+            UILangProviderM.Current["Buttons.Clear"],
+            UILangProviderM.Current["ToolField.Stratagem"]),
+        new(UILangProviderM.Current["Tool.Enc.CustomParameters"],
+            UILangProviderM.Current["Buttons.Edit"],
+            UILangProviderM.Current["Buttons.Clear"],
+            UILangProviderM.Current["ToolField.MaximumKeyframeGap"],
+            UILangProviderM.Current["ToolField.OtherCustomParams"]),
     ];
 
     public static List<ToolDefinitionM> GetAllStaticDefinitions() =>
@@ -145,7 +180,11 @@ public static class ToolCatalogProviderM
     // Dropdown items for the import dropdown (grouped by zone)
     public static List<DropdownItemM> GetImportDropdownItems()
     {
-        var items = new List<DropdownItemM> { new("No Selection"), new("", true) };
+        var items = new List<DropdownItemM>
+        {
+            new(UILangProviderM.Current["Import.NoSelection"], isPlaceholder: true),
+            new("", true)
+        };
 
         ToolZone? prevZone = null;
         foreach (var def in ToolDefinitionProviderM.ToolDefinitions.Values)

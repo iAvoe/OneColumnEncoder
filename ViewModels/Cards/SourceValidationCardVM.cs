@@ -15,5 +15,11 @@ namespace OneColumnEncoder.ViewModels.Cards
             FillCollection(Checklist1, ChecklistProviderM.GetSourceChecklist1());
             FillCollection(Checklist2, ChecklistProviderM.GetSourceChecklist2());
         }
+
+        public void RefreshLanguage()
+        {
+            RefreshChecklist(Checklist1, ChecklistProviderM.GetSourceChecklist1());
+            RefreshChecklist(Checklist2, ChecklistProviderM.GetSourceChecklist2());
+        }
     }
 }

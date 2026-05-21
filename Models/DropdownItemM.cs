@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace OneColumnEncoder.Models
 {
-    public class DropdownItemM(string title, bool isSeparator = false)
+    public class DropdownItemM(string title, bool isSeparator = false, bool isPlaceholder = false)
     {
         public string Title { get; set; } = title;
         public bool IsSeparator { get; set; } = isSeparator;
+        public bool IsPlaceholder { get; set; } = isPlaceholder;
     }
 }

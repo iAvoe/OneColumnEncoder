@@ -54,6 +54,7 @@ namespace OneColumnEncoder.ViewModels
                 CloseCmd,
                 SaveCmd);
             BuildSettingsListing();
+            UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
 
         private void BuildSettingsListing()
@@ -159,5 +160,24 @@ namespace OneColumnEncoder.ViewModels
             container.Items.Add(new AppConfItem { Text = text, Content = dropdown });
         }
         #endregion
+
+        private void OnLanguageChanged()
+        {
+            OnPropertyChanged(nameof(WindowTitle));
+            OnPropertyChanged(nameof(HeaderText));
+
+            FinishSettingButtons.B3_1Text = UICaptionProviderM.AppConf.Buttons.TestSmtp;
+            FinishSettingButtons.B3_2Text = UICaptionProviderM.AppConf.Buttons.Cancel;
+            FinishSettingButtons.B3_3Text = UICaptionProviderM.AppConf.Buttons.Save;
+
+            SettingsListing.Clear();
+            BuildSettingsListing();
+        }
+
+        public override void Dispose()
+        {
+            UILangProviderM.CurrentChanged -= OnLanguageChanged;
+            base.Dispose();
+        }
     }
 }

@@ -27,7 +27,7 @@ namespace OneColumnEncoder.Commands
             return !IsExecuting &&
                 _dropdownVm.SelectedItem != null &&
                 !_dropdownVm.SelectedItem.IsSeparator &&
-                !_dropdownVm.SelectedItem.Title.Equals("No Selection", StringComparison.OrdinalIgnoreCase);
+                !_dropdownVm.SelectedItem.IsPlaceholder;
         }
 
         protected override async Task ExecuteAsync(object? parameter)
@@ -111,17 +111,17 @@ namespace OneColumnEncoder.Commands
             // For now, just get the path via file dialog
 
             // Determine filter based on tool type
-            string filter = "Executable files (*.exe)|*.exe";
+            string filter = UILangProviderM.Current["Dialog.Filter.Exe"];
             if (toolName.Equals("AviSynth.dll", StringComparison.OrdinalIgnoreCase))
             {
-                filter = "DLL files (*.dll)|*.dll";
+                filter = UILangProviderM.Current["Dialog.Filter.Dll"];
             }
 
             // Use WPF OpenFileDialog
             OpenFileDialog dialog = new()
             {
                 Filter = filter,
-                Title = $"Select {toolName}",
+                Title = string.Format(UILangProviderM.Current["Dialog.SelectTitle"], toolName),
                 CheckFileExists = true,
                 CheckPathExists = true
             };
