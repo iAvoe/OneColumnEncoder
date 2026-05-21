@@ -12,6 +12,8 @@ namespace OneColumnEncoder.ViewModels
 {
     public class ToolItemVM(EncItemM baseModel) : BaseVM
     {
+        public string SeparatorText => UILangProviderM.Current["ItemCard.Separator"];
+
         private readonly EncItemM _baseModel = baseModel;
 
         public string Name => _baseModel.Name;

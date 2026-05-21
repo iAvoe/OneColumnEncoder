@@ -20,6 +20,9 @@ namespace OneColumnEncoder.ViewModels
     {
         private readonly AppConfM _appConfM;
 
+        public string WindowTitle => UILangProviderM.Current["AppConfModal.Title"];
+        public string HeaderText => UILangProviderM.Current["AppConfModal.Header"];
+
         // Commands for UI interactions
         public CloseModalCmd CloseCmd { get; }
         public SaveAppConfCmd SaveCmd { get; }

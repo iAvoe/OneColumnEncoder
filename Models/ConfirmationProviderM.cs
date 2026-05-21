@@ -5,10 +5,10 @@ public static class ConfirmationProviderM
     public static class ConfirmForceImport
     {
         public static string GetSuspiciousImportTitle(string toolName) =>
-            $"Suspicious import for {toolName}";
+            string.Format(UILangProviderM.Current["ConfirmProvider.SuspiciousImportTitle"], toolName);
         public static string GetPorceedToRunMessage(string toolName) =>
-            $"Proceed to run {toolName} to get its version?";
+            string.Format(UILangProviderM.Current["ConfirmProvider.ProceedToRun"], toolName);
         public static string GetWrongToolMessage(string toolName, string supposedName) =>
-            $"Importing {toolName} for {supposedName}?";
+            string.Format(UILangProviderM.Current["ConfirmProvider.WrongTool"], toolName, supposedName);
     }
 }

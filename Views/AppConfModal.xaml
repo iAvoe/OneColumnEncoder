@@ -7,7 +7,7 @@
         xmlns:comps="clr-namespace:OneColumnEncoder.Components"
         xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
         mc:Ignorable="d"
-        Title="1cenc Settings"
+        Title="{Binding WindowTitle}"
         Width="520"
         Height="1010"
         WindowStartupLocation="CenterOwner"
@@ -20,7 +20,7 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0"
-                   Text="Settings"
+                   Text="{Binding HeaderText}"
                    Foreground="{StaticResource GlobalPrimary}"
                    Style="{StaticResource H1}" />
         <ScrollViewer Grid.Row="1"

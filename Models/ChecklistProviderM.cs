@@ -1,9 +1,4 @@
 using OneColumnEncoder.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OneColumnEncoder.Models
 {
@@ -11,57 +6,57 @@ namespace OneColumnEncoder.Models
     {
         public static List<ChecklistItemDefinitionM> GetToolsChecklist() =>
         [
-            new("One upsream program available", StatusType.Error),
-            new("One downstream program available", StatusType.Error),
-            new("One analysis program available", StatusType.Error),
+            new(UILangProviderM.Current["Checklist.Tools.Upstream"], StatusType.Error),
+            new(UILangProviderM.Current["Checklist.Tools.Downstream"], StatusType.Error),
+            new(UILangProviderM.Current["Checklist.Tools.Analysis"], StatusType.Error),
         ];
 
         public static List<ChecklistItemDefinitionM> GetSourceChecklist1() =>
-            [
-            new("Metadata and SEI data are readable"),
-            new("Progressive video frame / not interlated (SVT-AV1 req.)"),
-            new("Bit-depth is less than 12 (8 or 10, SVT-AV1 req.)"),
+        [
+            new(UILangProviderM.Current["Checklist.Source1.Metadata"]),
+            new(UILangProviderM.Current["Checklist.Source1.Progressive"]),
+            new(UILangProviderM.Current["Checklist.Source1.BitDepth"]),
         ];
 
         public static List<ChecklistItemDefinitionM> GetSourceChecklist2() =>
         [
-            new("Framerate is constant / not variable"),
-            new("Square pixel aspect ratio / 1:1 sar"),
-            new("Color matrix matadata is normal"),
-            new("Transfer characteristics matadata is normal"),
-            new("Color primaries metadata is normal"),
-            new("No chroma subsampling or being ←/↖ (SVT-AV1 req.)"),
+            new(UILangProviderM.Current["Checklist.Source2.Framerate"]),
+            new(UILangProviderM.Current["Checklist.Source2.AspectRatio"]),
+            new(UILangProviderM.Current["Checklist.Source2.ColorMatrix"]),
+            new(UILangProviderM.Current["Checklist.Source2.TransferChars"]),
+            new(UILangProviderM.Current["Checklist.Source2.ColorPrimaries"]),
+            new(UILangProviderM.Current["Checklist.Source2.ChromaSubsampling"]),
         ];
 
         public static List<ChecklistItemDefinitionM> GetEncodeChecklist1() =>
         [
-            new("Not off-grid / powering via battery"),
-            new("Sufficient RAM availability"),
-            new("Sufficient disk space availability"),
+            new(UILangProviderM.Current["Checklist.Enc1.OffGrid"]),
+            new(UILangProviderM.Current["Checklist.Enc1.RAM"]),
+            new(UILangProviderM.Current["Checklist.Enc1.DiskSpace"]),
         ];
 
         public static List<ChecklistItemDefinitionM> GetEncodeChecklist2() =>
         [
-            new("Output filename is valid for OS"),
-            new("Output filename maybe valid for FTP (Pseudo-UTF-8)"),
-            new("Write permission in output folder"),
-            new("Output does not overwrite existing file"),
+            new(UILangProviderM.Current["Checklist.Enc2.OSFilename"]),
+            new(UILangProviderM.Current["Checklist.Enc2.FTPFilename"]),
+            new(UILangProviderM.Current["Checklist.Enc2.WritePermission"]),
+            new(UILangProviderM.Current["Checklist.Enc2.Overwrite"]),
         ];
 
         public static List<ChecklistItemDefinitionM> GetBestPracticeChecklist1() =>
         [
-            new("Avoiding slow disk connection (USB2, Bluetooth, etc.)"),
-            new("Avoiding disk thrashing (R&W on the same HDD)"),
-            new("Using latest BIOS, Chipset driver & hard drive firmware"),
-            new("°C (°F): SSD, RAM below 75 (167), HDD below 55 (131)"),
-            new("Not writing to a SMR HDD"),
+            new(UILangProviderM.Current["Checklist.Best1.SlowDisk"]),
+            new(UILangProviderM.Current["Checklist.Best1.DiskThrashing"]),
+            new(UILangProviderM.Current["Checklist.Best1.BiosDriver"]),
+            new(UILangProviderM.Current["Checklist.Best1.Temperature"]),
+            new(UILangProviderM.Current["Checklist.Best1.SMR"]),
         ];
 
         public static List<ChecklistItemDefinitionM> GetBestPracticeChecklist2() =>
         [
-            new("Using latest encoder version"),
-            new("Not writing to a FAT32 volume"),
-            new("Output folder disables file system disk compression"),
+            new(UILangProviderM.Current["Checklist.Best2.EncoderVersion"]),
+            new(UILangProviderM.Current["Checklist.Best2.FAT32"]),
+            new(UILangProviderM.Current["Checklist.Best2.DiskCompression"]),
         ];
     }
 }

@@ -4,42 +4,42 @@ public static class UICaptionProviderM
 {
     public static class Cards
     {
-        public const string ToolsImport = "Import tools:";
-        public const string SourceValidation = "Source Video Validation";
-        public const string SourceSevere = "Severe (incompatible / corrupted)";
-        public const string SourceModerate = "Moderate (affecting quality)";
-        public const string EncPrerequisites = "Encoding Prerequisites";
-        public const string EncHardware = "Hardware";
-        public const string EncSoftware = "Software";
-        public const string BestPractices = "Best Practices";
-        public const string BestHardware = "Hardware (self check)";
-        public const string BestSoftware = "Software (self check)";
+        public static string ToolsImport => UILangProviderM.Current["Cards.ToolsImport"];
+        public static string SourceValidation => UILangProviderM.Current["Cards.SourceValidation"];
+        public static string SourceSevere => UILangProviderM.Current["Cards.SourceSevere"];
+        public static string SourceModerate => UILangProviderM.Current["Cards.SourceModerate"];
+        public static string EncPrerequisites => UILangProviderM.Current["Cards.EncPrerequisites"];
+        public static string EncHardware => UILangProviderM.Current["Cards.EncHardware"];
+        public static string EncSoftware => UILangProviderM.Current["Cards.EncSoftware"];
+        public static string BestPractices => UILangProviderM.Current["Cards.BestPractices"];
+        public static string BestHardware => UILangProviderM.Current["Cards.BestHardware"];
+        public static string BestSoftware => UILangProviderM.Current["Cards.BestSoftware"];
     }
 
     public static class Buttons
     {
-        public const string UsageAndCompliance = "Usage & Compliance";
-        public const string Settings = "\u2699\uFE0F Settings";
-        public const string ReEvaluate = "Re-Evaluate";
-        public const string RunSample = "Run a Sample";
-        public const string StartEncode = "Start Encode";
+        public static string UsageAndCompliance => UILangProviderM.Current["Buttons.UsageAndCompliance"];
+        public static string Settings => UILangProviderM.Current["Buttons.Settings"];
+        public static string ReEvaluate => UILangProviderM.Current["Buttons.ReEvaluate"];
+        public static string RunSample => UILangProviderM.Current["Buttons.RunSample"];
+        public static string StartEncode => UILangProviderM.Current["Buttons.StartEncode"];
     }
 
     public static class AppConf
     {
         public static class Groups
         {
-            public const string General = "General: disable Start Encode when...";
-            public const string Overwrite = "Overwrite Handling";
-            public const string Smtp = "SMTP";
-            public const string Language = "Language/语言";
+            public static string General => UILangProviderM.Current["AppConf.General"];
+            public static string Overwrite => UILangProviderM.Current["AppConf.Overwrite"];
+            public static string Smtp => UILangProviderM.Current["AppConf.Smtp"];
+            public static string Language => UILangProviderM.Current["AppConf.Language"];
         }
 
         public static class Buttons
         {
-            public const string TestSmtp = "Test SMTP";
-            public const string Cancel = "Cancel";
-            public const string Save = "Save";
+            public static string TestSmtp => UILangProviderM.Current["AppConf.TestSmtp"];
+            public static string Cancel => UILangProviderM.Current["AppConf.Cancel"];
+            public static string Save => UILangProviderM.Current["AppConf.Save"];
         }
 
         public static class LanguageOptions

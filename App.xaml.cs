@@ -27,6 +27,7 @@ namespace OneColumnEncoder
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            _ = new UILangProviderM(_appConfM.Lang.LanguageCode);
             OpenAppConfCmd openAppConf = new(_modalNavM, _appConfM);
             OpenUsagesCmd openUsages = new(_modalNavM, _appConfM);
 

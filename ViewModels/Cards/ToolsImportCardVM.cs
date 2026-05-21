@@ -14,6 +14,8 @@ namespace OneColumnEncoder.ViewModels.Cards
 {
     public class ToolsImportCardVM : BaseVM
     {
+        public string ImportButtonText => UILangProviderM.Current["ImportButton"];
+
         private string _name = string.Empty;
         public string Name {
             get => _name;

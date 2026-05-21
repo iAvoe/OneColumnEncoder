@@ -12,20 +12,23 @@ public class ConfirmationModalVM(string windowTitle, string message, ImageSource
     public string P1Text { get; } = message;
     public ImageSource I1Source { get; } = image;
     public ButtonGroupVM FinishWarnErrButtons { get; } =
-        ButtonGroupVM.CreateTwoButton("Cancel", "Confirm", cancelCmd, confirmCmd);
+        ButtonGroupVM.CreateTwoButton(
+            UILangProviderM.Current["ConfirmDialog.Cancel"],
+            UILangProviderM.Current["ConfirmDialog.Confirm"],
+            cancelCmd, confirmCmd);
 
     public static ConfirmationModalVM CreateWarning(string title, string p1Text, ICommand cancelCmd, ICommand confirmCmd)
     {
-        return new ConfirmationModalVM("Warning: " + title, p1Text, SvgIconProvider.GlobeWarning, cancelCmd, confirmCmd);
+        return new ConfirmationModalVM(UILangProviderM.Current["ConfirmDialog.WarningPrefix"] + title, p1Text, SvgIconProvider.GlobeWarning, cancelCmd, confirmCmd);
     }
 
     public static ConfirmationModalVM CreateError(string title, string p1Text, ICommand cancelCmd, ICommand confirmCmd)
     {
-        return new ConfirmationModalVM("Error: " + title, p1Text, SvgIconProvider.GlobeError, cancelCmd, confirmCmd);
+        return new ConfirmationModalVM(UILangProviderM.Current["ConfirmDialog.ErrorPrefix"] + title, p1Text, SvgIconProvider.GlobeError, cancelCmd, confirmCmd);
     }
 
     public static ConfirmationModalVM CreateDebug(string title, string p1Text, ICommand cancelCmd, ICommand confirmCmd)
     {
-        return new ConfirmationModalVM("Debug: " + title, p1Text, SvgIconProvider.Troubleshoot, cancelCmd, confirmCmd);
+        return new ConfirmationModalVM(UILangProviderM.Current["ConfirmDialog.DebugPrefix"] + title, p1Text, SvgIconProvider.Troubleshoot, cancelCmd, confirmCmd);
     }
 }

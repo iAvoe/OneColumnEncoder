@@ -16,7 +16,7 @@
     <Grid>
         <StackPanel Margin="10 2.5 10 7.5">
             <!-- Import Tools -->
-            <comps:SectionHeader HeaderText="Import Tools"
+            <comps:SectionHeader HeaderText="{Binding SectionImportTools}"
                                  Margin="0 0 0 20" />
             <comps:ToolsImportCard DataContext="{Binding ToolsImportCard}"
                                    Margin="0 0 0 20" />
@@ -28,7 +28,7 @@
                                   Margin="0 0 0 20" />
 
             <!-- Select Upstream Tools -->
-            <comps:SectionHeader HeaderText="Select Upstream Tool"
+            <comps:SectionHeader HeaderText="{Binding SectionSelectUpstream}"
                                  Margin="0 0 0 20" />
             <ItemsControl ItemsSource="{Binding UpstreamsZone}">
                 <ItemsControl.ItemTemplate>
@@ -52,7 +52,7 @@
             </ItemsControl>
 
             <!-- Select Encoders -->
-            <comps:SectionHeader HeaderText="Select Encoder"
+            <comps:SectionHeader HeaderText="{Binding SectionSelectEncoder}"
                                  Margin="0 0 0 20" />
             <ItemsControl ItemsSource="{Binding EncodersZone}">
                 <ItemsControl.ItemTemplate>
@@ -76,7 +76,7 @@
             </ItemsControl>
 
             <!-- Select Analytic Tools -->
-            <comps:SectionHeader HeaderText="Select Analytics &amp; Dependencies"
+            <comps:SectionHeader HeaderText="{Binding SectionSelectAnalytics}"
                                  Margin="0 0 0 20" />
             <ItemsControl ItemsSource="{Binding AnalyticsZone}">
                 <ItemsControl.ItemTemplate>
@@ -100,7 +100,7 @@
             </ItemsControl>
 
             <!-- Import Source -->
-            <comps:SectionHeader HeaderText="Import or Create Source File"
+            <comps:SectionHeader HeaderText="{Binding SectionImportSource}"
                                  Margin="0 0 0 20" />
             <ItemsControl ItemsSource="{Binding SrcImportZone}">
                 <ItemsControl.ItemTemplate>
@@ -112,13 +112,13 @@
             </ItemsControl>
 
             <!-- AnalyticResultsZone -->
-            <comps:SectionHeader HeaderText="Analysis Results"
+            <comps:SectionHeader HeaderText="{Binding SectionAnalysisResults}"
                                  Margin="0 0 0 20" />
             <comps:ValidationCard DataContext="{Binding SrcValidationCard}"
                                   Margin="0 0 0 20" />
 
             <!-- Encoding Settings -->
-            <comps:SectionHeader HeaderText="Encoding Configurations"
+            <comps:SectionHeader HeaderText="{Binding SectionEncodingConfigs}"
                                  Margin="0 0 0 20" />
             <ItemsControl ItemsSource="{Binding EncSettingsZone}">
                 <ItemsControl.ItemTemplate>
@@ -130,7 +130,7 @@
             </ItemsControl>
 
             <!-- Starting Options -->
-            <comps:SectionHeader HeaderText="Start Encoding"
+            <comps:SectionHeader HeaderText="{Binding SectionStartEncoding}"
                                  Margin="0 0 0 20" />
             <comps:ValidationCard DataContext="{Binding EncTermsCard}"
                                   Margin="0 0 0 20" />

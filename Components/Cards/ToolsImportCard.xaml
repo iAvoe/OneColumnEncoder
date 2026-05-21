@@ -47,7 +47,7 @@
                                 DataContext="{Binding ImportDropdown}" />
             <Button Grid.Row="0"
                     Grid.Column="2"
-                    Content="Import"
+                    Content="{Binding ImportButtonText}"
                     MinWidth="90"
                     Height="30"
                     VerticalAlignment="Center"
