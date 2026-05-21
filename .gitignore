@@ -363,4 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Test binaries
-TextExes/
+TestExes/
