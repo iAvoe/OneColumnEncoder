@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace OneColumnEncoder.Helpers
 {
-    public class ToolVersionDetector
+    public class ToolVersionDetectH
     {
         public static async Task<string?> TryDetectAsync(string exeName, string filePath)
         {

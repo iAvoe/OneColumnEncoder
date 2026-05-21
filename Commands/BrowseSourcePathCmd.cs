@@ -20,7 +20,7 @@ namespace OneColumnEncoder.Commands
                 ? _appDataM.Tools.OneLineShotArgsPath
                 : null;
 
-            string? filePath = SourceFilePicker.GetSource(
+            string? filePath = SourceFilePickerH.GetSource(
                 _fileKind,
                 dialogTitle,
                 foundPath: foundPath,
@@ -30,7 +30,7 @@ namespace OneColumnEncoder.Commands
                 return;
 
             _item.Path = filePath;
-            _item.VersionText = SourceFilePicker.GetPrimaryText(_fileKind, filePath);
+            _item.VersionText = SourceFilePickerH.GetPrimaryText(_fileKind, filePath);
         }
     }
 }

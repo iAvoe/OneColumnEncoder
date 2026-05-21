@@ -1,11 +1,10 @@
-﻿using OneColumnEncoder.Models;
+﻿using OneColumnEncoder.Helpers;
+using OneColumnEncoder.Models;
 using OneColumnEncoder.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OneColumnEncoder.Commands
 {
@@ -60,8 +59,10 @@ namespace OneColumnEncoder.Commands
                 _mainVM.RefreshSelectedSourceStatus();
             }
 
-            _mainVM.RefreshDependencySelectionState();
-            _mainVM.RefreshSourceSelectionState();
+            ToolCompatibilityH.RefreshDependencySelectionState(
+                _mainVM.UpstreamsZone!, _mainVM.DependenciesZone!, _mainVM.UpdateEncodingStartButtonsState);
+            ToolCompatibilityH.RefreshSourceSelectionState(
+                _mainVM.UpstreamsZone!, _mainVM.ScriptSrcImportZone!, _mainVM.RefreshSelectedSourceStatus);
         }
 
         private void ResetSelection(ObservableCollection<ToolItemVM> zone, ToolItemVM targetCard)

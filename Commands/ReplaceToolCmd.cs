@@ -22,13 +22,13 @@ namespace OneColumnEncoder.Commands
                 def.ExeName, "Dialog.ReplaceTitle", _modalNavS);
             if (string.IsNullOrEmpty(filePath)) return;
 
-            string? version = await ToolVersionDetector.TryDetectAsync(def.ExeName, filePath);
+            string? version = await ToolVersionDetectH.TryDetectAsync(def.ExeName, filePath);
             ToolCatalogProviderM.TrySetPath(def.ExeName, _appDataM.Tools, filePath);
             ToolCatalogProviderM.TrySetVersion(def.ExeName, _appDataM.Tools, version ?? string.Empty);
 
             if (def.ExeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase))
             {
-                string? y4mArg = await ToolVersionDetector.DetectVspipeY4mArgAsync(filePath);
+                string? y4mArg = await ToolVersionDetectH.DetectVspipeY4mArgAsync(filePath);
                 _appDataM.Tools.VspipeY4mArg = y4mArg;
             }
 

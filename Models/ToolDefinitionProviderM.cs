@@ -49,5 +49,14 @@ namespace OneColumnEncoder.Models
         public static ToolDefinitionM? GetByDisplayName(string displayName) =>
             ToolDefs.Values.FirstOrDefault(
                 d => d.DisplayName.Equals(displayName, StringComparison.OrdinalIgnoreCase));
+
+        public static ToolZone ResolveToolZone(string displayName)
+        {
+            ToolDefinitionM? def = GetByDisplayName(displayName);
+            return def?.Zone ?? throw new ArgumentException($"Unknown tool: {displayName}");
+        }
+
+        public static bool IsImportedTool(string displayName, string exeName) =>
+            GetByDisplayName(displayName)?.ExeName?.Equals(exeName, StringComparison.OrdinalIgnoreCase) == true;
     }
 }

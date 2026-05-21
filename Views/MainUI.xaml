@@ -52,7 +52,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            
+
             <!-- Select Encoders -->
             <comps:SectionHeader HeaderText="{Binding SectionSelectEncoder}"
                                  Margin="0 0 0 20" />

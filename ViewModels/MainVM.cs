@@ -190,12 +190,12 @@ namespace OneColumnEncoder.ViewModels
         {
             RefreshUpstreamToolState();
             RefreshImportedToolsChecklist();
-            RefreshDependencySelectionState();
-            RefreshSourceSelectionState();
+            ToolCompatibilityH.RefreshDependencySelectionState(UpstreamsZone, DependenciesZone, UpdateEncodingStartButtonsState);
+            ToolCompatibilityH.RefreshSourceSelectionState(UpstreamsZone, ScriptSrcImportZone, RefreshSelectedSourceStatus);
         }
         private void RefreshUpstreamToolState()
         {
-            ToolItemVM? avs2pipemod = UpstreamsZone.FirstOrDefault(t => IsImportedTool(t, "avs2pipemod.exe"));
+            ToolItemVM? avs2pipemod = UpstreamsZone.FirstOrDefault(t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe"));
             if (avs2pipemod == null) return;
 
             if (!HasImportedAviSynthDll())
@@ -218,84 +218,6 @@ namespace OneColumnEncoder.ViewModels
             !string.IsNullOrWhiteSpace(_appDataM.Tools.FfprobePath);
         private bool HasImportedAviSynthDll() =>
             !string.IsNullOrWhiteSpace(_appDataM.Tools.AviSynthDllPath);
-
-        #endregion
-
-        #region Source & Dependency Selection
-
-        public void RefreshDependencySelectionState()
-        {
-            ToolItemVM? avs2pipemod = UpstreamsZone.FirstOrDefault(t => IsImportedTool(t, "avs2pipemod.exe"));
-            ToolItemVM? avisynth = DependenciesZone.FirstOrDefault(t => IsImportedTool(t, "avisynth.dll"));
-
-            bool avsSelected = avs2pipemod?.IsSelected ?? false;
-            bool aviSelected = avisynth?.IsSelected ?? false;
-            bool bothSelectedOrNeither = avsSelected == aviSelected;
-
-            if (avs2pipemod != null)
-                avs2pipemod.IsCancel = avsSelected && !bothSelectedOrNeither;
-
-            if (avisynth != null)
-                avisynth.IsCancel = aviSelected && !bothSelectedOrNeither;
-
-            foreach (ToolItemVM upstream in UpstreamsZone.Where(t => !IsImportedTool(t, "avs2pipemod.exe") && t.IsCancel))
-            {
-                upstream.IsCancel = false;
-            }
-
-            UpdateEncodingStartButtonsState();
-        }
-
-        public void RefreshSourceSelectionState()
-        {
-            ToolItemVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected);
-
-            string? allowedName = null;
-            bool allDisabled = false;
-
-            if (upstream == null)
-            {
-                // No upstream selected → all script sources enabled
-            }
-            else if (IsImportedTool(upstream, "ffmpeg.exe"))
-            {
-                allDisabled = true;
-            }
-            else if (IsImportedTool(upstream, "vspipe.exe"))
-            {
-                allowedName = UILangProviderM.Current["Tool.Source.VapourSynth"];
-            }
-            else if (IsImportedTool(upstream, "avs2yuv.exe") || IsImportedTool(upstream, "avs2pipemod.exe"))
-            {
-                allowedName = UILangProviderM.Current["Tool.Source.AviSynth"];
-            }
-            else if (IsImportedTool(upstream, "one_line_shot_args.exe"))
-            {
-                allowedName = UILangProviderM.Current["Tool.Source.Svfi"];
-            }
-
-            foreach (ToolItemVM item in ScriptSrcImportZone)
-            {
-                bool shouldEnable;
-                if (allDisabled)
-                {
-                    shouldEnable = false;
-                }
-                else if (allowedName == null)
-                {
-                    shouldEnable = true;
-                }
-                else
-                {
-                    shouldEnable = item.Name.Equals(allowedName, StringComparison.OrdinalIgnoreCase);
-                }
-
-                if (!shouldEnable) item.IsSelected = false;
-                item.IsEnabled = shouldEnable;
-            }
-
-            RefreshSelectedSourceStatus();
-        }
 
         #endregion
 
@@ -333,7 +255,7 @@ namespace OneColumnEncoder.ViewModels
             if (e.PropertyName == nameof(ChecklistEntryVM.Status))
                 UpdateEncodingStartButtonsState();
         }
-        private void UpdateEncodingStartButtonsState()
+        public void UpdateEncodingStartButtonsState()
         {
             bool toolsReady =
                 UpstreamsZone.Count > 0 &&
@@ -354,8 +276,8 @@ namespace OneColumnEncoder.ViewModels
             bool encodeTermsReady =
                 EncTermsCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
                 EncTermsCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
-            bool avsSelected = UpstreamsZone.Any(t => t.IsSelected && IsImportedTool(t, "avs2pipemod.exe"));
-            bool aviSelected = DependenciesZone.Any(t => t.IsSelected && IsImportedTool(t, "avisynth.dll"));
+            bool avsSelected = UpstreamsZone.Any(t => t.IsSelected && ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe"));
+            bool aviSelected = DependenciesZone.Any(t => t.IsSelected && ToolDefinitionProviderM.IsImportedTool(t.Name, "avisynth.dll"));
             bool dependencyReady = avsSelected == aviSelected;
 
             bool allReady = toolsReady && toolsPickedReady && sourcePickedReady && sourceValidationReady && encodeTermsReady && dependencyReady;
@@ -379,7 +301,7 @@ namespace OneColumnEncoder.ViewModels
             item.R1Command =
                 new ReplaceToolCmd(item, _appDataM, _modalNavS);
             item.R2Command =
-                new DeleteToolCmd(item, GetZoneForTool(ResolveToolZone(item.Name)), _appDataM);
+                new DeleteToolCmd(item, GetZoneForTool(ToolDefinitionProviderM.ResolveToolZone(item.Name)), _appDataM);
         }
         private void WireUpSourceCmd(ToolItemVM item)
         {
@@ -413,16 +335,6 @@ namespace OneColumnEncoder.ViewModels
         #endregion
 
         #region Zone Helpers
-
-        private static ToolZone ResolveToolZone(string displayName)
-        {
-            ToolDefinitionM? def =
-                ToolDefinitionProviderM.GetByDisplayName(displayName);
-            return def?.Zone ?? throw new ArgumentException($"Unknown tool: {displayName}");
-        }
-
-        private static bool IsImportedTool(ToolItemVM item, string exeName) =>
-            ToolDefinitionProviderM.GetByDisplayName(item.Name)?.ExeName?.Equals(exeName, StringComparison.OrdinalIgnoreCase) == true;
 
         private ObservableCollection<ToolItemVM> GetZoneForTool(ToolZone zone) => zone switch
         {
@@ -508,7 +420,7 @@ namespace OneColumnEncoder.ViewModels
 
             if (exeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase))
             {
-                string? y4mArg = await ToolVersionDetector.DetectVspipeY4mArgAsync(filePath);
+                string? y4mArg = await ToolVersionDetectH.DetectVspipeY4mArgAsync(filePath);
                 _appDataM.Tools.VspipeY4mArg = y4mArg;
             }
 
@@ -589,7 +501,7 @@ namespace OneColumnEncoder.ViewModels
                 if (string.IsNullOrWhiteSpace(item.Path)) continue;
 
                 SourceFileKind fileKind = ResolveSourceFileKind(item.Name);
-                item.VersionText = SourceFilePicker.GetPrimaryText(fileKind, item.Path);
+                item.VersionText = SourceFilePickerH.GetPrimaryText(fileKind, item.Path);
             }
         }
         private static void ApplyDefinitionsToZone(ObservableCollection<ToolItemVM> zone, List<ToolDefinitionM> definitions)

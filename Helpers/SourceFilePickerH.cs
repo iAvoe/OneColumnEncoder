@@ -14,7 +14,7 @@ namespace OneColumnEncoder.Helpers
         SvfiIni
     }
 
-    public static class SourceFilePicker
+    public static class SourceFilePickerH
     {
         public static string? GetSource(
             SourceFileKind fileKind,

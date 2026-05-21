@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace OneColumnEncoder.Models
 {
-    public class AppDataM : SaveLoadBase<AppDataM>
+    public class AppDataM : SaveLoadBaseH<AppDataM>
     {
         private static readonly string ConfigFilePath =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appdata.json");

@@ -19,16 +19,16 @@ public class ConfirmationModalVM(string windowTitle, string message, ImageSource
 
     public static ConfirmationModalVM CreateWarning(string title, string p1Text, ICommand cancelCmd, ICommand confirmCmd)
     {
-        return new ConfirmationModalVM(UILangProviderM.Current["ConfirmDialog.WarningPrefix"] + title, p1Text, SvgIconProvider.GlobeWarning, cancelCmd, confirmCmd);
+        return new ConfirmationModalVM(UILangProviderM.Current["ConfirmDialog.WarningPrefix"] + title, p1Text, SvgIconProviderH.GlobeWarning, cancelCmd, confirmCmd);
     }
 
     public static ConfirmationModalVM CreateError(string title, string p1Text, ICommand cancelCmd, ICommand confirmCmd)
     {
-        return new ConfirmationModalVM(UILangProviderM.Current["ConfirmDialog.ErrorPrefix"] + title, p1Text, SvgIconProvider.GlobeError, cancelCmd, confirmCmd);
+        return new ConfirmationModalVM(UILangProviderM.Current["ConfirmDialog.ErrorPrefix"] + title, p1Text, SvgIconProviderH.GlobeError, cancelCmd, confirmCmd);
     }
 
     public static ConfirmationModalVM CreateDebug(string title, string p1Text, ICommand cancelCmd, ICommand confirmCmd)
     {
-        return new ConfirmationModalVM(UILangProviderM.Current["ConfirmDialog.DebugPrefix"] + title, p1Text, SvgIconProvider.Troubleshoot, cancelCmd, confirmCmd);
+        return new ConfirmationModalVM(UILangProviderM.Current["ConfirmDialog.DebugPrefix"] + title, p1Text, SvgIconProviderH.Troubleshoot, cancelCmd, confirmCmd);
     }
 }

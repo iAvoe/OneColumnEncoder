@@ -3,7 +3,7 @@ using System.Windows.Media;
 
 namespace OneColumnEncoder.Helpers;
 
-internal static class SvgIconProvider
+internal static class SvgIconProviderH
 {
     public static ImageSource GlobeWarning { get; }
     public static ImageSource GlobeError { get; }
@@ -18,7 +18,7 @@ internal static class SvgIconProvider
     private static void Add(DrawingGroup g, Geometry geometry, Brush brush) =>
         g.Children.Add(new GeometryDrawing(brush, null, geometry));
 
-    static SvgIconProvider()
+    static SvgIconProviderH()
     {
         var gray999 = Brush("#999");
         var graya3 = Brush("#a3a3a3");

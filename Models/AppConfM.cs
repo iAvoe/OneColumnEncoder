@@ -9,7 +9,7 @@ using OneColumnEncoder.Helpers;
 
 namespace OneColumnEncoder.Models
 {
-    public class AppConfM : SaveLoadBase<AppConfM>
+    public class AppConfM : SaveLoadBaseH<AppConfM>
     {
         private static readonly string ConfigFilePath =
             Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appconfig.json");

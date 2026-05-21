@@ -41,7 +41,7 @@ namespace OneColumnEncoder.Commands
                 toolToImport, "Dialog.SelectTitle", _modalNavS);
             if (string.IsNullOrEmpty(filePath)) return;
 
-            string? version = await ToolVersionDetector.TryDetectAsync(toolToImport, filePath);
+            string? version = await ToolVersionDetectH.TryDetectAsync(toolToImport, filePath);
             if (_onSuccess != null) await _onSuccess(toolToImport, filePath, version);
             foreach (ChecklistEntryVM t in _knownTools)
             {

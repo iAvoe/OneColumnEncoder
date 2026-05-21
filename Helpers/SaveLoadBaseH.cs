@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace OneColumnEncoder.Helpers
 {
-    public abstract class SaveLoadBase<T> : INotifyPropertyChanged where T : SaveLoadBase<T>, new()
+    public abstract class SaveLoadBaseH<T> : INotifyPropertyChanged where T : SaveLoadBaseH<T>, new()
     {
         private static readonly JsonSerializerOptions CachedJsonOptions =
             new() { WriteIndented = true };

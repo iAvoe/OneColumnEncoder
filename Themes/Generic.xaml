@@ -1,9 +1,8 @@
-<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:comps="clr-namespace:OneColumnEncoder.Components"
-    xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
-    xmlns:views="clr-namespace:OneColumnEncoder.Views">
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+                    xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
+                    xmlns:views="clr-namespace:OneColumnEncoder.Views">
 
     <!-- DataTemplates for modals -->
     <DataTemplate DataType="{x:Type vms:AppConfVM}">
@@ -118,7 +117,7 @@
         <Setter Property="FontWeight"
                 Value="Bold" />
     </Style>
-    
+
     <!-- Status Icon -->
     <Style TargetType="{x:Type comps:ChecklistItem}">
         <Setter Property="Foreground"
@@ -196,14 +195,14 @@
                     <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
-                            <ItemsControl ItemsSource="{TemplateBinding ItemsSource}"
-                                          ItemTemplate="{TemplateBinding ItemTemplate}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
+                        <ItemsControl ItemsSource="{TemplateBinding ItemsSource}"
+                                      ItemTemplate="{TemplateBinding ItemTemplate}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -232,7 +231,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style TargetType="{x:Type comps:AppConfContainer}">
         <Setter Property="Template">
             <Setter.Value>

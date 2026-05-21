@@ -7,7 +7,7 @@ using System.Globalization;
 
 namespace OneColumnEncoder.Helpers
 {
-    public class ValidationHelper
+    public class ValidationH
     {
         public static bool IsModernFtpSafe(string fileName)
         {
