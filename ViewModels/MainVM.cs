@@ -250,17 +250,12 @@ namespace OneColumnEncoder.ViewModels
         {
             foreach (ToolItemVM tool in SrcImportZone)
             {
-                WireUpDeleteCmd(tool, SrcImportZone);
-                WireUpSrcReplaceCmd(tool);
+                WireUpSourceCmd(tool);
             }
-            foreach (ToolItemVM tool in EncSettingsZone) WireUpDeleteCmd(tool, EncSettingsZone);
+            foreach (ToolItemVM tool in EncSettingsZone) WireUpStaticClearCmd(tool);
             foreach (ToolItemVM tool in UpstreamsZone) WireUpToolCmd(tool);
             foreach (ToolItemVM tool in EncodersZone) WireUpToolCmd(tool);
             foreach (ToolItemVM tool in AnalyticsZone) WireUpToolCmd(tool);
-        }
-        private void WireUpDeleteCmd(ToolItemVM item, ObservableCollection<ToolItemVM> zone)
-        {
-            item.R2Command = new DeleteToolCmd(item, zone, _appDataM);
         }
         private void WireUpToolCmd(ToolItemVM item)
         {
@@ -269,9 +264,34 @@ namespace OneColumnEncoder.ViewModels
             item.R2Command =
                 new DeleteToolCmd(item, GetZoneForTool(ResolveToolZone(item.Name)), _appDataM);
         }
-        private void WireUpSrcReplaceCmd(ToolItemVM item)
+        private void WireUpSourceCmd(ToolItemVM item)
         {
-            item.R1Command = new BrowseToolPathCmd(item);
+            item.R1Command =
+                new BrowseSourcePathCmd(item, ResolveSourceFileKind(item.Name), _appDataM);
+            item.R2Command =
+                new ClearToolItemCmd(item, RefreshSelectedSourceStatus);
+        }
+        private void WireUpStaticClearCmd(ToolItemVM item)
+        {
+            item.R2Command = new ClearToolItemCmd(item);
+        }
+        private void RefreshSelectedSourceStatus()
+        {
+            SrcValidationCard.SetSourcePickedStatus(
+                SrcImportZone.Any(t => t.IsSelected));
+        }
+        private static SourceFileKind ResolveSourceFileKind(string displayName)
+        {
+            if (displayName.Equals(UILangProviderM.Current["Tool.Source.VideoSource"], StringComparison.OrdinalIgnoreCase))
+                return SourceFileKind.Video;
+            if (displayName.Equals(UILangProviderM.Current["Tool.Source.AviSynth"], StringComparison.OrdinalIgnoreCase))
+                return SourceFileKind.AviSynthScript;
+            if (displayName.Equals(UILangProviderM.Current["Tool.Source.VapourSynth"], StringComparison.OrdinalIgnoreCase))
+                return SourceFileKind.VapourSynthScript;
+            if (displayName.Equals(UILangProviderM.Current["Tool.Source.Svfi"], StringComparison.OrdinalIgnoreCase))
+                return SourceFileKind.SvfiIni;
+
+            throw new ArgumentException($"Unknown source type: {displayName}");
         }
         #endregion
 
@@ -425,10 +445,21 @@ namespace OneColumnEncoder.ViewModels
         private void RefreshZoneLanguage()
         {
             ApplyDefinitionsToZone(SrcImportZone, ToolCatalogProviderM.GetSrcImportDefinitions());
+            RefreshSourceZonePrimaryText(SrcImportZone);
             ApplyDefinitionsToZone(EncSettingsZone, ToolCatalogProviderM.GetEncSettingsDefinitions());
             ApplyImportedToolDefinitions(UpstreamsZone);
             ApplyImportedToolDefinitions(EncodersZone);
             ApplyImportedToolDefinitions(AnalyticsZone);
+        }
+        private static void RefreshSourceZonePrimaryText(ObservableCollection<ToolItemVM> zone)
+        {
+            foreach (ToolItemVM item in zone)
+            {
+                if (string.IsNullOrWhiteSpace(item.Path)) continue;
+
+                SourceFileKind fileKind = ResolveSourceFileKind(item.Name);
+                item.VersionText = SourceFilePicker.GetPrimaryText(fileKind, item.Path);
+            }
         }
         private static void ApplyDefinitionsToZone(ObservableCollection<ToolItemVM> zone, List<ToolDefinitionM> definitions)
         {
