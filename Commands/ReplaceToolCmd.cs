@@ -1,11 +1,9 @@
-using Microsoft.Win32;
 using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using System;
 using System.Threading.Tasks;
-using static OneColumnEncoder.Models.ConfirmationProviderM;
 
 namespace OneColumnEncoder.Commands
 {
@@ -20,39 +18,19 @@ namespace OneColumnEncoder.Commands
             ToolDefinitionM? def = ToolDefinitionProviderM.GetByDisplayName(_item.Name);
             if (def?.ExeName == null) return;
 
-            string filter = def.ExeName.Equals("avisynth.dll", StringComparison.OrdinalIgnoreCase)
-                ? UILangProviderM.Current["Dialog.Filter.Dll"]
-                : UILangProviderM.Current["Dialog.Filter.Exe"];
-
-            OpenFileDialog dialog = new()
-            {
-                Filter = filter,
-                Title = string.Format(UILangProviderM.Current["Dialog.ReplaceTitle"], _item.Name),
-                CheckFileExists = true,
-                CheckPathExists = true
-            };
-
-            string? detectedDir = ToolCatalogProviderM.TryFindToolDirectory(def.ExeName);
-            if (detectedDir != null)
-            {
-                dialog.InitialDirectory = detectedDir;
-            }
-
-            bool? result = dialog.ShowDialog();
-            if (result != true) return;
-
-            string filePath = dialog.FileName;
-            if (!ImportToolCmd.IsFileNameMatch(def.ExeName, filePath)
-                && !ImportToolCmd.ShowDoubleCheckConfirmation(
-                    _modalNavS,
-                    ConfirmForceImport.GetSuspiciousImportTitle(_item.Name),
-                    ConfirmForceImport.GetWrongToolMessage(filePath, _item.Name),
-                    def.ExeName,
-                    filePath)) return;
+            string? filePath = ImportToolCmd.SelectAndValidateToolPath(
+                def.ExeName, "Dialog.ReplaceTitle", _modalNavS);
+            if (string.IsNullOrEmpty(filePath)) return;
 
             string? version = await ToolVersionDetector.TryDetectAsync(def.ExeName, filePath);
             ToolCatalogProviderM.TrySetPath(def.ExeName, _appDataM.Tools, filePath);
             ToolCatalogProviderM.TrySetVersion(def.ExeName, _appDataM.Tools, version ?? string.Empty);
+
+            if (def.ExeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase))
+            {
+                string? y4mArg = await ToolVersionDetector.DetectVspipeY4mArgAsync(filePath);
+                _appDataM.Tools.VspipeY4mArg = y4mArg;
+            }
 
             _item.Path = filePath;
             _item.VersionText = version ?? string.Empty;

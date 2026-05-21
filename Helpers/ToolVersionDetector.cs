@@ -17,6 +17,9 @@ namespace OneColumnEncoder.Helpers
                 || string.IsNullOrWhiteSpace(filePath)
                 || !File.Exists(filePath)) return null;
 
+            if (exeName.Equals("one_line_shot_args.exe", StringComparison.OrdinalIgnoreCase))
+                return TryReadProductVersion(filePath);
+
             string exeArgs = exeName.ToLowerInvariant() switch
             {
                 "ffmpeg.exe" => "-version",
@@ -34,7 +37,27 @@ namespace OneColumnEncoder.Helpers
             return ParseVersion(exeName, exePrints);
         }
 
-        public static async Task<string> RunAndCaptureAsync(string filePath, string exeArgs)
+        // one_line_shot_args.exe only provides version in exe properties
+        public static string? TryReadProductVersion(string filePath)
+        {
+            if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
+                return null;
+
+            try
+            {
+                FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(filePath);
+
+                if (!string.IsNullOrWhiteSpace(versionInfo.ProductVersion))
+                    return versionInfo.ProductVersion.Trim();
+
+                if (!string.IsNullOrWhiteSpace(versionInfo.FileVersion))
+                    return versionInfo.FileVersion.Trim();
+            }
+            catch {}
+            return null;
+        }
+
+        public static async Task<string> RunAndCaptureAsync(string filePath, string exeArgs, bool useUtf8 = false)
         {
             ProcessStartInfo psi = new()
             {
@@ -46,6 +69,12 @@ namespace OneColumnEncoder.Helpers
                 RedirectStandardError = true,
                 CreateNoWindow = true
             };
+
+            if (useUtf8)
+            {
+                psi.StandardOutputEncoding = System.Text.Encoding.UTF8;
+                psi.StandardErrorEncoding = System.Text.Encoding.UTF8;
+            }
 
             // Execute and fetch printed text
             using Process process = new() { StartInfo = psi };
@@ -109,6 +138,37 @@ namespace OneColumnEncoder.Helpers
                 default:
                     return null;
             }
+        }
+
+        /// <summary>
+        /// Detect which --container y4m argument format vspipe.exe supports.
+        /// VapourSynth API changes have caused the argument to change over time:
+        ///   old: -c y4m  ->  --container y4m  ->  --y4m
+        /// Tries each and returns the first that produces "No script file specified".
+        /// Returns null if no format is recognized.
+        /// </summary>
+        public static async Task<string?> DetectVspipeY4mArgAsync(string filePath)
+        {
+            if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
+                return null;
+
+            string[][] testArgs =
+            [
+                ["-c", "y4m"],
+                ["--container", "y4m"],
+                ["--y4m"]
+            ];
+
+            foreach (var args in testArgs)
+            {
+                string argString = string.Join(" ", args);
+                string output = await RunAndCaptureAsync(filePath, argString, useUtf8: true);
+
+                if (output.Contains("No script file specified", StringComparison.OrdinalIgnoreCase))
+                    return argString;
+            }
+
+            return null;
         }
     }
 }

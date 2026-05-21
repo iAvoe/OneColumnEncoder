@@ -124,6 +124,7 @@ public static class ToolCatalogProviderM
         ["vspipe.exe"] = (t, v) => t.VspipeVer = v,
         ["avs2yuv.exe"] = (t, v) => t.Avs2yuvVer = v,
         ["avs2pipemod.exe"] = (t, v) => t.Avs2pipemodVer = v,
+        ["one_line_shot_args.exe"] = (t, v) => t.OneLineShotArgsVer = v,
         ["x264.exe"] = (t, v) => t.X264Ver = v,
         ["x265.exe"] = (t, v) => t.X265Ver = v,
         ["svtav1encapp.exe"] = (t, v) => t.SvtAv1Ver = v,

@@ -25,11 +25,13 @@ namespace OneColumnEncoder.Models
             public string? FfmpegVer { get; set; }
             public string? VspipePath { get; set; }
             public string? VspipeVer { get; set; }
+            public string? VspipeY4mArg { get; set; }
             public string? Avs2yuvPath { get; set; }
             public string? Avs2yuvVer { get; set; }
             public string? Avs2pipemodPath { get; set; }
             public string? Avs2pipemodVer { get; set; }
             public string? OneLineShotArgsPath { get; set; }
+            public string? OneLineShotArgsVer { get; set; }
             public string? X264Path { get; set; }
             public string? X264Ver { get; set; }
             public string? X265Path { get; set; }

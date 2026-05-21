@@ -30,17 +30,19 @@ namespace OneColumnEncoder.ViewModels.Cards
         public ObservableCollection<ChecklistEntryVM> ToolsChecklist { get; } = [];
         public DropdownMenuVM ImportDropdown { get; } = new();
         public ICommand ImportCommand { get; }
-        public event Action<string, string, string?>? ToolImported;
+        public event Func<string, string, string?, Task>? ToolImported;
 
         private readonly PropertyChangedEventHandler _onDropdownPropertyChanged;
 
         public ToolsImportCardVM(ModalNavS modalNavS)
         {
             ImportCommand = new ImportToolCmd(ImportDropdown,
-                                              ToolsChecklist,
-                                              modalNavS,
-                                              (toolName, filePath, version) =>
-                                                  ToolImported?.Invoke(toolName, filePath, version));
+                                               ToolsChecklist,
+                                               modalNavS,
+                                               async (toolName, filePath, version) => {
+                                                   if (ToolImported != null)
+                                                       await ToolImported(toolName, filePath, version);
+                                               });
             _onDropdownPropertyChanged = (s, e) =>
             {
                 if (e.PropertyName == nameof(ImportDropdown.SelectedItem))

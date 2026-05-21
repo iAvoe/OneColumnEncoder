@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
+using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Components;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
@@ -328,7 +329,7 @@ namespace OneColumnEncoder.ViewModels
                     "vspipe.exe" => (t.VspipePath, t.VspipeVer),
                     "avs2yuv.exe" => (t.Avs2yuvPath, t.Avs2yuvVer),
                     "avs2pipemod.exe" => (t.Avs2pipemodPath, t.Avs2pipemodVer),
-                    "one_line_shot_args.exe" => (t.OneLineShotArgsPath, null),
+                    "one_line_shot_args.exe" => (t.OneLineShotArgsPath, t.OneLineShotArgsVer),
                     "x264.exe" => (t.X264Path, t.X264Ver),
                     "x265.exe" => (t.X265Path, t.X265Ver),
                     "svtav1encapp.exe" => (t.SvtAv1Path, t.SvtAv1Ver),
@@ -342,28 +343,25 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        /// <summary>
-        /// Import tool: Validate tool, get version, create card UI & app data
-        /// </summary>
-        /// <param name="exeName"></param>
-        /// <param name="filePath"></param>
-        /// <param name="version"></param>
-        private void OnToolImported(string exeName, string filePath, string? version)
+        private async Task OnToolImported(string exeName, string filePath, string? version)
         {
-            // Find zone belonging
             ToolDefinitionM? def = ToolDefinitionProviderM.GetByExeName(exeName);
             if (def == null || def.Zone == null) return;
 
-            // Check dictionary record to make sure this tool has a matcing file name
             string defKey = ToolDefinitionProviderM.ToolDefs
                 .FirstOrDefault(kvp => kvp.Value == def).Key;
             if (defKey == null) return;
 
-            // Saving
             ToolCatalogProviderM.TrySetPath(exeName, _appDataM.Tools, filePath);
             ToolCatalogProviderM.TrySetVersion(exeName, _appDataM.Tools, version ?? string.Empty);
-            _appDataM.Save();
 
+            if (exeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase))
+            {
+                string? y4mArg = await ToolVersionDetector.DetectVspipeY4mArgAsync(filePath);
+                _appDataM.Tools.VspipeY4mArg = y4mArg;
+            }
+
+            _appDataM.Save();
             AddOrUpdateTool(defKey, filePath, version);
         }
 
