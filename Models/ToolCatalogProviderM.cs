@@ -68,7 +68,7 @@ public static class ToolCatalogProviderM
     private static Dictionary<string, (string DisplayName, ToolZone Zone)> BuildToolsDict()
     {
         var dict = new Dictionary<string, (string, ToolZone)>(StringComparer.OrdinalIgnoreCase);
-        foreach (var def in ToolDefinitionProviderM.ToolDefinitions.Values)
+        foreach (var def in ToolDefinitionProviderM.ToolDefs.Values)
         {
             if (def.ExeName != null && def.Zone != null)
                 dict[def.ExeName] = (def.DisplayName, def.Zone.Value);
@@ -187,7 +187,7 @@ public static class ToolCatalogProviderM
         };
 
         ToolZone? prevZone = null;
-        foreach (var def in ToolDefinitionProviderM.ToolDefinitions.Values)
+        foreach (var def in ToolDefinitionProviderM.ToolDefs.Values)
         {
             if (def.ExeName == null || def.Zone == null) continue;
 

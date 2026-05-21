@@ -10,7 +10,7 @@ public class UILangProviderM
         ["en"] = new()
         {
             // Cards section headers
-            ["Cards.ToolsImport"] = "Import tools:",
+            ["Cards.ToolsImport"] = "Select tool:",
             ["Cards.SourceValidation"] = "Source Video Validation",
             ["Cards.SourceSevere"] = "Severe (incompatible / corrupted)",
             ["Cards.SourceModerate"] = "Moderate (affecting quality)",
@@ -44,7 +44,7 @@ public class UILangProviderM
             ["AppConf.Save"] = "Save",
 
             // Section headers in MainUI
-            ["Section.ImportTools"] = "Import Tools",
+            ["Section.ImportTools"] = "Import or Replace Tools",
             ["Section.SelectUpstream"] = "Select Upstream Tool",
             ["Section.SelectEncoder"] = "Select Encoder",
             ["Section.SelectAnalytics"] = "Select Analytics & Dependencies",
@@ -58,7 +58,7 @@ public class UILangProviderM
             ["AppConfModal.Header"] = "Settings",
 
             // Import button on ToolsImportCard
-            ["ImportButton"] = "Import",
+            ["ImportButton"] = "Import/\u21C4",
             ["Import.NoSelection"] = "No Selection",
 
             // ItemCard separator
@@ -119,7 +119,7 @@ public class UILangProviderM
 
             // Checklist - Source Validation 2 (Moderate)
             ["Checklist.Source2.Framerate"] = "Framerate is constant / not variable",
-            ["Checklist.Source2.AspectRatio"] = "Square pixel aspect ratio / 1:1 sar",
+            ["Checklist.Source2.AspectRatio"] = "Square pixel aspect ratio / 1:1 SAR",
             ["Checklist.Source2.ColorMatrix"] = "Color matrix metadata is normal",
             ["Checklist.Source2.TransferChars"] = "Transfer characteristics metadata is normal",
             ["Checklist.Source2.ColorPrimaries"] = "Color primaries metadata is normal",
@@ -182,7 +182,7 @@ public class UILangProviderM
         },
         ["zh-cn"] = new()
         {
-            ["Cards.ToolsImport"] = "导入工具：",
+            ["Cards.ToolsImport"] = "选择工具：",
             ["Cards.SourceValidation"] = "视频源检查",
             ["Cards.SourceSevere"] = "严重问题（不兼容/数据损坏）",
             ["Cards.SourceModerate"] = "中等问题（影响质量）",
@@ -212,7 +212,7 @@ public class UILangProviderM
             ["AppConf.Cancel"] = "取消",
             ["AppConf.Save"] = "保存",
 
-            ["Section.ImportTools"] = "导入程序",
+            ["Section.ImportTools"] = "导入或更换程序",
             ["Section.SelectUpstream"] = "选择上游工具",
             ["Section.SelectEncoder"] = "选择下游程序 / 编码器",
             ["Section.SelectAnalytics"] = "视频分析工具与依赖",
@@ -224,7 +224,7 @@ public class UILangProviderM
             ["AppConfModal.Title"] = "1cenc 设置",
             ["AppConfModal.Header"] = "设置",
 
-            ["ImportButton"] = "导入",
+            ["ImportButton"] = "导入或更换",
             ["Import.NoSelection"] = "未选择",
 
             ["ItemCard.Separator"] = "：",
@@ -276,7 +276,7 @@ public class UILangProviderM
             ["Checklist.Source1.BitDepth"] = "位深小于 12bit（8 或 10，SVT-AV1 要求）",
 
             ["Checklist.Source2.Framerate"] = "帧率恒定/非可变帧率（VFR）",
-            ["Checklist.Source2.AspectRatio"] = "方形像素变宽比 / 1:1 sar",
+            ["Checklist.Source2.AspectRatio"] = "方形像素变宽比 / 1:1 SAR",
             ["Checklist.Source2.ColorMatrix"] = "色彩矩阵信息正常",
             ["Checklist.Source2.TransferChars"] = "传输特性信息正常",
             ["Checklist.Source2.ColorPrimaries"] = "原色色系信息正常",
@@ -291,7 +291,7 @@ public class UILangProviderM
             ["Checklist.Enc2.WritePermission"] = "输出文件夹有写入权限",
             ["Checklist.Enc2.Overwrite"] = "输出不覆盖现有文件",
 
-            ["Checklist.Best1.SlowDisk"] = "避免低速磁盘连接（USB2、蓝牙等）",
+            ["Checklist.Best1.SlowDisk"] = "避免低速磁盘连接协议（USB2、蓝牙等）",
             ["Checklist.Best1.DiskThrashing"] = "避免 HDD 磁头寻道冲突（同盘读写或非机械盘）",
             ["Checklist.Best1.BiosDriver"] = "使用最新的 BIOS、芯片组驱动与磁盘固件",
             ["Checklist.Best1.Temperature"] = "温度：SSD、RAM 低于 75\u00B0C，HDD 低于 55\u00B0C",
@@ -331,7 +331,7 @@ public class UILangProviderM
         },
         ["zh-tw"] = new()
         {
-            ["Cards.ToolsImport"] = "導入工具：",
+            ["Cards.ToolsImport"] = "選擇工具：",
             ["Cards.SourceValidation"] = "影片源檢查",
             ["Cards.SourceSevere"] = "嚴重問題（不相容/數據損壞）",
             ["Cards.SourceModerate"] = "中等問題（影響質量）",
@@ -361,7 +361,7 @@ public class UILangProviderM
             ["AppConf.Cancel"] = "取消",
             ["AppConf.Save"] = "保存",
 
-            ["Section.ImportTools"] = "導入程序",
+            ["Section.ImportTools"] = "導入或更換程序",
             ["Section.SelectUpstream"] = "選擇上游工具",
             ["Section.SelectEncoder"] = "選擇下遊程序 / 編碼器",
             ["Section.SelectAnalytics"] = "影片分析工具與依賴",
@@ -373,7 +373,7 @@ public class UILangProviderM
             ["AppConfModal.Title"] = "1cenc 設置",
             ["AppConfModal.Header"] = "設置",
 
-            ["ImportButton"] = "導入",
+            ["ImportButton"] = "導入或更換",
             ["Import.NoSelection"] = "未選擇",
 
             ["ItemCard.Separator"] = "：",
@@ -386,7 +386,7 @@ public class UILangProviderM
             ["ToolField.Threads"] = "執行緒",
             ["ToolField.Value"] = "數值",
             ["ToolField.Stratagem"] = "策略",
-            ["ToolField.MaximumKeyframeGap"] = "最大關鍵影格間隔",
+            ["ToolField.MaximumKeyframeGap"] = "最大關鍵幀間隔",
             ["ToolField.OtherCustomParams"] = "其他自訂參數",
 
             ["Tool.Source.VideoSource"] = "視訊來源",
@@ -425,7 +425,7 @@ public class UILangProviderM
             ["Checklist.Source1.BitDepth"] = "位深小於 12bit（8 或 10，SVT-AV1 要求）",
 
             ["Checklist.Source2.Framerate"] = "幀率恆定/非可變幀率（VFR）",
-            ["Checklist.Source2.AspectRatio"] = "方形象素變寬比 / 1:1 sar",
+            ["Checklist.Source2.AspectRatio"] = "方形像素變寬比 / 1:1 SAR",
             ["Checklist.Source2.ColorMatrix"] = "色彩矩陣資訊正常",
             ["Checklist.Source2.TransferChars"] = "傳輸特性資訊正常",
             ["Checklist.Source2.ColorPrimaries"] = "原色色系資訊正常",
@@ -440,7 +440,7 @@ public class UILangProviderM
             ["Checklist.Enc2.WritePermission"] = "輸出文件夾有寫入權限",
             ["Checklist.Enc2.Overwrite"] = "輸出不覆蓋現有文件",
 
-            ["Checklist.Best1.SlowDisk"] = "避免低速磁碟連接（USB2、藍牙等）",
+            ["Checklist.Best1.SlowDisk"] = "避免低速磁碟連接協議（USB2、藍牙等）",
             ["Checklist.Best1.DiskThrashing"] = "避免 HDD 磁頭尋道衝突（同盤讀寫或非機械盤）",
             ["Checklist.Best1.BiosDriver"] = "使用最新的 BIOS、晶片組驅動與磁碟韌體",
             ["Checklist.Best1.Temperature"] = "溫度：SSD、RAM 低於 75\u00B0C，HDD 低於 55\u00B0C",

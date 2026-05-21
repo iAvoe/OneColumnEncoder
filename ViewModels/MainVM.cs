@@ -135,7 +135,7 @@ namespace OneColumnEncoder.ViewModels
                     P1Name = def.P1Name,
                     P2Name = def.P2Name ?? ""
                 };
-                item.R2Command = new ActionCmd(_ => zone.Remove(item));
+                item.R2Command = new RemoveZoneItemCmd(item, zone);
                 zone.Add(item);
             }
             return zone;
@@ -238,22 +238,18 @@ namespace OneColumnEncoder.ViewModels
         }
         #endregion
 
-        // Bind delete/replace tool commands to UI
+        #region Bind R1-R2 per tool
         private void WireUpZoneDeleteCmds()
         {
-            foreach (ToolItemVM item in SrcImportZone)
+            foreach (ToolItemVM tool in SrcImportZone)
             {
-                WireUpDeleteCmd(item, SrcImportZone);
-                WireUpSrcReplaceCmd(item);
+                WireUpDeleteCmd(tool, SrcImportZone);
+                WireUpSrcReplaceCmd(tool);
             }
-            foreach (ToolItemVM item in EncSettingsZone)
-                WireUpDeleteCmd(item, EncSettingsZone);
-            foreach (ToolItemVM item in UpstreamsZone)
-                WireUpToolCmd(item);
-            foreach (ToolItemVM item in EncodersZone)
-                WireUpToolCmd(item);
-            foreach (ToolItemVM item in AnalyticsZone)
-                WireUpToolCmd(item);
+            foreach (ToolItemVM tool in EncSettingsZone) WireUpDeleteCmd(tool, EncSettingsZone);
+            foreach (ToolItemVM tool in UpstreamsZone) WireUpToolCmd(tool);
+            foreach (ToolItemVM tool in EncodersZone) WireUpToolCmd(tool);
+            foreach (ToolItemVM tool in AnalyticsZone) WireUpToolCmd(tool);
         }
         private void WireUpDeleteCmd(ToolItemVM item, ObservableCollection<ToolItemVM> zone)
         {
@@ -261,27 +257,22 @@ namespace OneColumnEncoder.ViewModels
         }
         private void WireUpToolCmd(ToolItemVM item)
         {
-            item.R1Command = new ReplaceToolCmd(item, _appDataM, _modalNavS);
-            item.R2Command = new DeleteToolCmd(item, GetZoneForTool(ResolveToolZone(item.Name)), _appDataM);
+            item.R1Command =
+                new ReplaceToolCmd(item, _appDataM, _modalNavS);
+            item.R2Command =
+                new DeleteToolCmd(item, GetZoneForTool(ResolveToolZone(item.Name)), _appDataM);
         }
         private void WireUpSrcReplaceCmd(ToolItemVM item)
         {
-            item.R1Command = new ActionCmd(_ =>
-            {
-                OpenFileDialog dialog = new()
-                {
-                    Filter = UILangProviderM.Current["Dialog.Filter.All"],
-                    Title = string.Format(UILangProviderM.Current["Dialog.SelectTitle"], item.Name),
-                    CheckFileExists = true,
-                    CheckPathExists = true
-                };
-                if (dialog.ShowDialog() == true)
-                    item.Path = dialog.FileName;
-            });
+            item.R1Command = new BrowseToolPathCmd(item);
         }
+        #endregion
+
+        // Zone finding helper for a tool
         private static ToolZone ResolveToolZone(string displayName)
         {
-            ToolDefinitionM? def = ToolDefinitionProviderM.GetByDisplayName(displayName);
+            ToolDefinitionM? def =
+                ToolDefinitionProviderM.GetByDisplayName(displayName);
             return def?.Zone ?? throw new ArgumentException($"Unknown tool: {displayName}");
         }
 
@@ -293,9 +284,16 @@ namespace OneColumnEncoder.ViewModels
             ToolZone.Analytics => AnalyticsZone,
             _ => throw new ArgumentException("Invalid tool zone")
         };
+
+        /// <summary>
+        /// Add new tool configuration or update an existing one if duplicated
+        /// </summary>
+        /// <param name="defKey">The unique key identifying the tool definition.</param>
+        /// <param name="path">The executable or deployment path of the tool.</param>
+        /// <param name="version">The version string of the tool (currently a placeholder).</param>
         private void AddOrUpdateTool(string defKey, string? path, string? version)
         {
-            if (!ToolDefinitionProviderM.ToolDefinitions.TryGetValue(defKey, out ToolDefinitionM? def)) return;
+            if (!ToolDefinitionProviderM.ToolDefs.TryGetValue(defKey, out ToolDefinitionM? def)) return;
             if (def.Zone == null || string.IsNullOrEmpty(path)) return;
 
             ObservableCollection<ToolItemVM> zone = GetZoneForTool(def.Zone.Value);
@@ -319,7 +317,7 @@ namespace OneColumnEncoder.ViewModels
         private void LoadToolsFromAppDataM()
         {
             AppDataM.Importables t = _appDataM.Tools;
-            foreach ((string defKey, ToolDefinitionM def) in ToolDefinitionProviderM.ToolDefinitions)
+            foreach ((string defKey, ToolDefinitionM def) in ToolDefinitionProviderM.ToolDefs)
             {
                 if (def.Zone == null || def.ExeName == null) continue;
 
@@ -349,7 +347,7 @@ namespace OneColumnEncoder.ViewModels
             ToolDefinitionM? def = ToolDefinitionProviderM.GetByExeName(exeName);
             if (def == null || def.Zone == null) return;
 
-            string defKey = ToolDefinitionProviderM.ToolDefinitions
+            string defKey = ToolDefinitionProviderM.ToolDefs
                 .FirstOrDefault(kvp => kvp.Value == def).Key;
             if (defKey == null) return;
 
@@ -362,11 +360,8 @@ namespace OneColumnEncoder.ViewModels
         // Navigated to other modal windows
         private void OnModalStateChanged() { IsOverlayVisible = _modalNavS.IsOpen; }
 
-        private void OnLanguageChanged()
-        {
-            RefreshLanguage();
-        }
-
+        #region Language swtich
+        private void OnLanguageChanged() { RefreshLanguage(); }
         private void RefreshLanguage()
         {
             RefreshSectionHeaders();
@@ -374,7 +369,6 @@ namespace OneColumnEncoder.ViewModels
             RefreshCardsLanguage();
             RefreshZoneLanguage();
         }
-
         private void RefreshSectionHeaders()
         {
             OnPropertyChanged(nameof(SectionImportTools));
@@ -386,7 +380,6 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(SectionEncodingConfigs));
             OnPropertyChanged(nameof(SectionStartEncoding));
         }
-
         private void RefreshButtonCaptions()
         {
             OpenAppConfButtons.B2_1Text = UICaptionProviderM.Buttons.UsageAndCompliance;
@@ -395,7 +388,6 @@ namespace OneColumnEncoder.ViewModels
             EncStartButtons.B3_2Text = UICaptionProviderM.Buttons.RunSample;
             EncStartButtons.B3_3Text = UICaptionProviderM.Buttons.StartEncode;
         }
-
         private void RefreshCardsLanguage()
         {
             ToolsImportCard.Name = UICaptionProviderM.Cards.ToolsImport;
@@ -416,7 +408,6 @@ namespace OneColumnEncoder.ViewModels
             BestPracticesCard.P3Name = UICaptionProviderM.Cards.BestSoftware;
             BestPracticesCard.RefreshLanguage();
         }
-
         private void RefreshZoneLanguage()
         {
             ApplyDefinitionsToZone(SrcImportZone, ToolCatalogProviderM.GetSourceImportDefinitions());
@@ -425,28 +416,25 @@ namespace OneColumnEncoder.ViewModels
             ApplyImportedToolDefinitions(EncodersZone);
             ApplyImportedToolDefinitions(AnalyticsZone);
         }
-
         private static void ApplyDefinitionsToZone(ObservableCollection<ToolItemVM> zone, List<ToolDefinitionM> definitions)
         {
-            for (int i = 0; i < definitions.Count && i < zone.Count; i++)
+            for (int i = 0; (i < definitions.Count && i < zone.Count); i++)
             {
                 zone[i].ApplyDefinition(definitions[i]);
                 zone[i].RefreshLanguage();
             }
         }
-
         private static void ApplyImportedToolDefinitions(ObservableCollection<ToolItemVM> zone)
         {
             foreach (ToolItemVM item in zone)
             {
-                ToolDefinitionM? definition = ToolDefinitionProviderM.GetByDisplayName(item.Name);
-                if (definition != null)
-                {
-                    item.ApplyDefinition(definition);
-                }
+                ToolDefinitionM? definition =
+                    ToolDefinitionProviderM.GetByDisplayName(item.Name);
+                if (definition != null) item.ApplyDefinition(definition);
                 item.RefreshLanguage();
             }
         }
+        #endregion
 
         public override void Dispose()
         {

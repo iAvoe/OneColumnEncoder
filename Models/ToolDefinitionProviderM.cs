@@ -6,7 +6,7 @@ namespace OneColumnEncoder.Models
 {
     public static class ToolDefinitionProviderM
     {
-        public static Dictionary<string, ToolDefinitionM> ToolDefinitions => BuildToolDefinitions();
+        public static Dictionary<string, ToolDefinitionM> ToolDefs => BuildToolDefinitions();
 
         private static Dictionary<string, ToolDefinitionM> BuildToolDefinitions()
         {
@@ -34,18 +34,18 @@ namespace OneColumnEncoder.Models
         }
 
         public static IEnumerable<KeyValuePair<string, ToolDefinitionM>> GetUpstreamDefinitions() =>
-            ToolDefinitions.Where(kvp => kvp.Value.Zone == ToolZone.Upstream);
+            ToolDefs.Where(kvp => kvp.Value.Zone == ToolZone.Upstream);
 
         public static IEnumerable<KeyValuePair<string, ToolDefinitionM>> GetEncoderDefinitions() =>
-            ToolDefinitions.Where(kvp => kvp.Value.Zone == ToolZone.Encoder);
+            ToolDefs.Where(kvp => kvp.Value.Zone == ToolZone.Encoder);
 
         public static IEnumerable<KeyValuePair<string, ToolDefinitionM>> GetAnalyticsDefinitions() =>
-            ToolDefinitions.Where(kvp => kvp.Value.Zone == ToolZone.Analytics);
+            ToolDefs.Where(kvp => kvp.Value.Zone == ToolZone.Analytics);
 
         public static ToolDefinitionM? GetByExeName(string exeName) =>
-            ToolDefinitions.Values.FirstOrDefault(d => d.ExeName?.Equals(exeName, StringComparison.OrdinalIgnoreCase) == true);
+            ToolDefs.Values.FirstOrDefault(d => d.ExeName?.Equals(exeName, StringComparison.OrdinalIgnoreCase) == true);
 
         public static ToolDefinitionM? GetByDisplayName(string displayName) =>
-            ToolDefinitions.Values.FirstOrDefault(d => d.DisplayName.Equals(displayName, StringComparison.OrdinalIgnoreCase));
+            ToolDefs.Values.FirstOrDefault(d => d.DisplayName.Equals(displayName, StringComparison.OrdinalIgnoreCase));
     }
 }
