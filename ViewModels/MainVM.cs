@@ -120,6 +120,7 @@ namespace OneColumnEncoder.ViewModels
             // Checklist item settings, checklist subs, nav subs, overlay subs
             InitializeChecklistEntryStates();
             SubToImportedToolZones();
+            RefreshUpstreamToolState(); // initial state after loading
             SubToToolsChecklist();
             _modalNavS.CurrentViewModelChanged += OnModalStateChanged;
             IsOverlayVisible = _modalNavS.IsOpen;
@@ -162,7 +163,6 @@ namespace OneColumnEncoder.ViewModels
             if (cl2.Count >= 4) cl2[3].IsEnabled = g.IsOverwriting;
         }
 
-        #region Encoding Start button states
         private void SubToImportedToolZones()
         {
             UpstreamsZone.CollectionChanged += OnImportedToolZoneCollectionChanged;
@@ -180,10 +180,24 @@ namespace OneColumnEncoder.ViewModels
         }
         private void OnImportedToolZoneCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
+            RefreshUpstreamToolState();
             RefreshImportedToolsChecklist();
             RefreshDependencySelectionState();
             RefreshSourceSelectionState();
         }
+        private void RefreshUpstreamToolState()
+        {
+            ToolItemVM? avs2pipemod = UpstreamsZone.FirstOrDefault(t => IsImportedTool(t, "avs2pipemod.exe"));
+            if (avs2pipemod == null) return;
+
+            if (!HasImportedAviSynthDll())
+            {
+                avs2pipemod.IsSelected = false;
+                avs2pipemod.IsEnabled = false;
+            }
+            else avs2pipemod.IsEnabled = true;
+        }
+
         private void RefreshImportedToolsChecklist()
         {
             ToolsImportCard.RefreshToolsChecklist(
@@ -191,8 +205,11 @@ namespace OneColumnEncoder.ViewModels
                 hasEncoderTool: EncodersZone.Count > 0,
                 hasFfprobe: HasImportedFfprobe());
         }
+
         private bool HasImportedFfprobe() =>
             !string.IsNullOrWhiteSpace(_appDataM.Tools.FfprobePath);
+        private bool HasImportedAviSynthDll() =>
+            !string.IsNullOrWhiteSpace(_appDataM.Tools.AviSynthDllPath);
 
         public void RefreshDependencySelectionState()
         {
@@ -329,7 +346,6 @@ namespace OneColumnEncoder.ViewModels
             EncStartButtons.B3_2IsEnabled = allReady;
             EncStartButtons.B3_3IsEnabled = allReady;
         }
-        #endregion
 
         #region Bind R1-R2 per tool
         private void WireUpZoneDeleteCmds()

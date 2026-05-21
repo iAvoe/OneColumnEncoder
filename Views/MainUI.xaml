@@ -36,22 +36,23 @@
                         <comps:ItemCard DataContext="{Binding}"
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
+                                        IsEnabled="{Binding IsEnabled}"
                                         Margin="0 0 0 20">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
-                                                                RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                                                 RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                               CommandParameter="{Binding}" />
                                 <KeyBinding Key="Enter"
                                             Command="{Binding DataContext.SelectTool,
-                                                              RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                                               RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                             CommandParameter="{Binding}" />
                             </comps:ItemCard.InputBindings>
                         </comps:ItemCard>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-
+            
             <!-- Select Encoders -->
             <comps:SectionHeader HeaderText="{Binding SectionSelectEncoder}"
                                  Margin="0 0 0 20" />
