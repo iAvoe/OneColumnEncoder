@@ -114,6 +114,7 @@ namespace OneColumnEncoder.ViewModels
 
             // Checklist item settings, checklist subs, nav subs, overlay subs
             InitializeChecklistEntryStates();
+            SubToImportedToolZones();
             SubToToolsChecklist();
             _modalNavS.CurrentViewModelChanged += OnModalStateChanged;
             IsOverlayVisible = _modalNavS.IsOpen;
@@ -155,6 +156,33 @@ namespace OneColumnEncoder.ViewModels
         }
 
         #region Encoding Start button states
+        private void SubToImportedToolZones()
+        {
+            UpstreamsZone.CollectionChanged += OnImportedToolZoneCollectionChanged;
+            EncodersZone.CollectionChanged += OnImportedToolZoneCollectionChanged;
+            AnalyticsZone.CollectionChanged += OnImportedToolZoneCollectionChanged;
+            RefreshImportedToolsChecklist();
+        }
+        private void UnsubFromImportedToolZones()
+        {
+            UpstreamsZone.CollectionChanged -= OnImportedToolZoneCollectionChanged;
+            EncodersZone.CollectionChanged -= OnImportedToolZoneCollectionChanged;
+            AnalyticsZone.CollectionChanged -= OnImportedToolZoneCollectionChanged;
+        }
+        private void OnImportedToolZoneCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            RefreshImportedToolsChecklist();
+        }
+        private void RefreshImportedToolsChecklist()
+        {
+            ToolsImportCard.RefreshToolsChecklist(
+                hasUpstreamTool: UpstreamsZone.Count > 0,
+                hasEncoderTool: EncodersZone.Count > 0,
+                hasFfprobe: HasImportedFfprobe());
+        }
+        private bool HasImportedFfprobe() =>
+            !string.IsNullOrWhiteSpace(_appDataM.Tools.FfprobePath);
+
         private void SubToToolsChecklist()
         {
             foreach (ChecklistEntryVM entry in ToolsImportCard.ToolsChecklist)
@@ -189,17 +217,10 @@ namespace OneColumnEncoder.ViewModels
         }
         private void UpdateEncodingStartButtonsState()
         {
-            bool allToolsReady =
-                ToolsImportCard.ToolsChecklist.All(entry => entry.Status == StatusType.Success);
-            bool atLeastOneUpstream = ToolsImportCard.ToolsChecklist
-                .Where(entry => ToolCatalogProviderM.UpstreamDisplayNames.Contains(entry.Text))
-                .Any(entry => entry.Status == StatusType.Success);
-            bool atLeastOneEncoder = ToolsImportCard.ToolsChecklist
-                .Where(entry => ToolCatalogProviderM.EncoderDisplayNames.Contains(entry.Text))
-                .Any(entry => entry.Status == StatusType.Success);
-            bool atLeastOneAnalytics = ToolsImportCard.ToolsChecklist
-                .Where(entry => ToolCatalogProviderM.AnalyticsDisplayNames.Contains(entry.Text))
-                .Any(entry => entry.Status == StatusType.Success);
+            bool toolsReady =
+                UpstreamsZone.Count > 0 &&
+                EncodersZone.Count > 0 &&
+                HasImportedFfprobe();
 
             bool sourceValidationReady =
                 SrcValidationCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
@@ -209,9 +230,9 @@ namespace OneColumnEncoder.ViewModels
                 EncTermsCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
 
             EncStartButtons.B3_2IsEnabled =
-                allToolsReady && atLeastOneUpstream && atLeastOneEncoder && atLeastOneAnalytics && sourceValidationReady && encodeTermsReady;
+                toolsReady && sourceValidationReady && encodeTermsReady;
             EncStartButtons.B3_3IsEnabled =
-                allToolsReady && atLeastOneUpstream && atLeastOneEncoder && atLeastOneAnalytics && sourceValidationReady && encodeTermsReady;
+                toolsReady && sourceValidationReady && encodeTermsReady;
         }
         #endregion
 
@@ -344,6 +365,7 @@ namespace OneColumnEncoder.ViewModels
             _modalNavS.CurrentViewModelChanged -= OnModalStateChanged;
             ToolsImportCard.ToolImported -= OnToolImported;
             ToolsImportCard.Dispose();
+            UnsubFromImportedToolZones();
             UnsubFromToolsChecklist();
             base.Dispose();
         }

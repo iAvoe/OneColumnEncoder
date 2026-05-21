@@ -14,6 +14,10 @@ namespace OneColumnEncoder.ViewModels.Cards
 {
     public class ToolsImportCardVM : BaseVM
     {
+        private const int UpstreamChecklistIndex = 0;
+        private const int EncoderChecklistIndex = 1;
+        private const int AnalyticsChecklistIndex = 2;
+
         public string ImportButtonText => UILangProviderM.Current["ImportButton"];
 
         private string _name = string.Empty;
@@ -40,6 +44,19 @@ namespace OneColumnEncoder.ViewModels.Cards
             ImportDropdown.PropertyChanged += _onDropdownPropertyChanged;
 
             FillCollection(ToolsChecklist, ChecklistProviderM.GetToolsChecklist());
+        }
+
+        public void RefreshToolsChecklist(bool hasUpstreamTool, bool hasEncoderTool, bool hasFfprobe)
+        {
+            UpdateChecklistStatus(UpstreamChecklistIndex, hasUpstreamTool);
+            UpdateChecklistStatus(EncoderChecklistIndex, hasEncoderTool);
+            UpdateChecklistStatus(AnalyticsChecklistIndex, hasFfprobe);
+        }
+
+        private void UpdateChecklistStatus(int index, bool isReady)
+        {
+            if (index < 0 || index >= ToolsChecklist.Count) return;
+            ToolsChecklist[index].Status = isReady ? StatusType.Success : StatusType.Error;
         }
 
         public override void Dispose()
