@@ -49,14 +49,19 @@ namespace OneColumnEncoder.Commands
             {
                 ResetSelection(_mainVM.DependenciesZone, clickedTool);
             }
-            else if (_mainVM.SrcImportZone != null && _mainVM.SrcImportZone.Contains(clickedTool))
+            else if (_mainVM.VideoSrcImportZone != null && _mainVM.VideoSrcImportZone.Contains(clickedTool))
             {
-                ResetSelection(_mainVM.SrcImportZone, clickedTool);
-                bool isSelected = _mainVM.SrcImportZone.Any(t => t.IsSelected);
-                _mainVM.SrcValidationCard.SetSourcePickedStatus(isSelected);
+                ResetSelection(_mainVM.VideoSrcImportZone, clickedTool);
+                _mainVM.RefreshSelectedSourceStatus();
+            }
+            else if (_mainVM.ScriptSrcImportZone != null && _mainVM.ScriptSrcImportZone.Contains(clickedTool))
+            {
+                ResetSelection(_mainVM.ScriptSrcImportZone, clickedTool);
+                _mainVM.RefreshSelectedSourceStatus();
             }
 
             _mainVM.RefreshDependencySelectionState();
+            _mainVM.RefreshSourceSelectionState();
         }
 
         private void ResetSelection(ObservableCollection<ToolItemVM> zone, ToolItemVM targetCard)

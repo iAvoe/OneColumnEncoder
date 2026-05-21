@@ -26,9 +26,10 @@ namespace OneColumnEncoder.ViewModels
         // Groups of Card or other element UIs
         public ObservableCollection<ToolItemVM> UpstreamsZone { get; }
         public ObservableCollection<ToolItemVM> EncodersZone { get; }
-        public ObservableCollection<ToolItemVM> AnalyticsZone { get; }
+        public ObservableCollection<ToolItemVM> AnalyticsZone { get; } // A-D separated for dual single-select
         public ObservableCollection<ToolItemVM> DependenciesZone { get; }
-        public ObservableCollection<ToolItemVM> SrcImportZone { get; }
+        public ObservableCollection<ToolItemVM> VideoSrcImportZone { get; } // V-S separated for dual single-select
+        public ObservableCollection<ToolItemVM> ScriptSrcImportZone { get; }
         public ObservableCollection<ToolItemVM> EncSettingsZone { get; }
         // Buttons
         public ButtonGroupVM OpenAppConfButtons { get; }
@@ -72,8 +73,10 @@ namespace OneColumnEncoder.ViewModels
             SelectTool = new SelectToolCmd(this);
 
             ToolsImportCard = new ToolsImportCardVM(modalNavS);
-            SrcImportZone =
-                LoadZoneFromDefinitions(ToolCatalogProviderM.GetSrcImportDefinitions());
+            VideoSrcImportZone =
+                LoadZoneFromDefinitions(ToolCatalogProviderM.GetVideoSrcImportDefs());
+            ScriptSrcImportZone =
+                LoadZoneFromDefinitions(ToolCatalogProviderM.GetScriptSrcImportDefs());
             EncSettingsZone =
                 LoadZoneFromDefinitions(ToolCatalogProviderM.GetEncSettingsDefinitions());
             UpstreamsZone = [];
@@ -179,6 +182,7 @@ namespace OneColumnEncoder.ViewModels
         {
             RefreshImportedToolsChecklist();
             RefreshDependencySelectionState();
+            RefreshSourceSelectionState();
         }
         private void RefreshImportedToolsChecklist()
         {
@@ -193,12 +197,17 @@ namespace OneColumnEncoder.ViewModels
         public void RefreshDependencySelectionState()
         {
             ToolItemVM? avs2pipemod = UpstreamsZone.FirstOrDefault(t => IsImportedTool(t, "avs2pipemod.exe"));
-            bool dependencySelected = DependenciesZone.Any(t => t.IsSelected && IsImportedTool(t, "avisynth.dll"));
+            ToolItemVM? avisynth = DependenciesZone.FirstOrDefault(t => IsImportedTool(t, "avisynth.dll"));
+
+            bool avsSelected = avs2pipemod?.IsSelected ?? false;
+            bool aviSelected = avisynth?.IsSelected ?? false;
+            bool bothSelectedOrNeither = avsSelected == aviSelected;
 
             if (avs2pipemod != null)
-            {
-                avs2pipemod.IsCancel = avs2pipemod.IsSelected && !dependencySelected;
-            }
+                avs2pipemod.IsCancel = avsSelected && !bothSelectedOrNeither;
+
+            if (avisynth != null)
+                avisynth.IsCancel = aviSelected && !bothSelectedOrNeither;
 
             foreach (ToolItemVM upstream in UpstreamsZone.Where(t => !IsImportedTool(t, "avs2pipemod.exe") && t.IsCancel))
             {
@@ -206,6 +215,57 @@ namespace OneColumnEncoder.ViewModels
             }
 
             UpdateEncodingStartButtonsState();
+        }
+
+        public void RefreshSourceSelectionState()
+        {
+            ToolItemVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected);
+
+            string? allowedName = null;
+            bool allDisabled = false;
+
+            if (upstream == null)
+            {
+                // No upstream selected → all script sources enabled
+            }
+            else if (IsImportedTool(upstream, "ffmpeg.exe"))
+            {
+                allDisabled = true;
+            }
+            else if (IsImportedTool(upstream, "vspipe.exe"))
+            {
+                allowedName = UILangProviderM.Current["Tool.Source.VapourSynth"];
+            }
+            else if (IsImportedTool(upstream, "avs2yuv.exe") || IsImportedTool(upstream, "avs2pipemod.exe"))
+            {
+                allowedName = UILangProviderM.Current["Tool.Source.AviSynth"];
+            }
+            else if (IsImportedTool(upstream, "one_line_shot_args.exe"))
+            {
+                allowedName = UILangProviderM.Current["Tool.Source.Svfi"];
+            }
+
+            foreach (ToolItemVM item in ScriptSrcImportZone)
+            {
+                bool shouldEnable;
+                if (allDisabled)
+                {
+                    shouldEnable = false;
+                }
+                else if (allowedName == null)
+                {
+                    shouldEnable = true;
+                }
+                else
+                {
+                    shouldEnable = item.Name.Equals(allowedName, StringComparison.OrdinalIgnoreCase);
+                }
+
+                if (!shouldEnable) item.IsSelected = false;
+                item.IsEnabled = shouldEnable;
+            }
+
+            RefreshSelectedSourceStatus();
         }
 
         private void SubToToolsChecklist()
@@ -261,9 +321,9 @@ namespace OneColumnEncoder.ViewModels
             bool encodeTermsReady =
                 EncTermsCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
                 EncTermsCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
-            bool dependencyReady =
-                !UpstreamsZone.Any(t => t.IsSelected && IsImportedTool(t, "avs2pipemod.exe")) ||
-                DependenciesZone.Any(t => t.IsSelected && IsImportedTool(t, "avisynth.dll"));
+            bool avsSelected = UpstreamsZone.Any(t => t.IsSelected && IsImportedTool(t, "avs2pipemod.exe"));
+            bool aviSelected = DependenciesZone.Any(t => t.IsSelected && IsImportedTool(t, "avisynth.dll"));
+            bool dependencyReady = avsSelected == aviSelected;
 
             bool allReady = toolsReady && toolsPickedReady && sourcePickedReady && sourceValidationReady && encodeTermsReady && dependencyReady;
             EncStartButtons.B3_2IsEnabled = allReady;
@@ -274,10 +334,8 @@ namespace OneColumnEncoder.ViewModels
         #region Bind R1-R2 per tool
         private void WireUpZoneDeleteCmds()
         {
-            foreach (ToolItemVM tool in SrcImportZone)
-            {
-                WireUpSourceCmd(tool);
-            }
+            foreach (ToolItemVM tool in VideoSrcImportZone) WireUpSourceCmd(tool);
+            foreach (ToolItemVM tool in ScriptSrcImportZone) WireUpSourceCmd(tool);
             foreach (ToolItemVM tool in EncSettingsZone) WireUpStaticClearCmd(tool);
             foreach (ToolItemVM tool in UpstreamsZone) WireUpToolCmd(tool);
             foreach (ToolItemVM tool in EncodersZone) WireUpToolCmd(tool);
@@ -302,10 +360,10 @@ namespace OneColumnEncoder.ViewModels
         {
             item.R2Command = new ClearToolItemCmd(item);
         }
-        private void RefreshSelectedSourceStatus()
+        public void RefreshSelectedSourceStatus()
         {
-            SrcValidationCard.SetSourcePickedStatus(
-                SrcImportZone.Any(t => t.IsSelected));
+            bool anySelected = VideoSrcImportZone.Any(t => t.IsSelected) || ScriptSrcImportZone.Any(t => t.IsSelected);
+            SrcValidationCard.SetSourcePickedStatus(anySelected);
         }
         private static SourceFileKind ResolveSourceFileKind(string displayName)
         {
@@ -475,8 +533,10 @@ namespace OneColumnEncoder.ViewModels
         }
         private void RefreshZoneLanguage()
         {
-            ApplyDefinitionsToZone(SrcImportZone, ToolCatalogProviderM.GetSrcImportDefinitions());
-            RefreshSourceZonePrimaryText(SrcImportZone);
+            ApplyDefinitionsToZone(VideoSrcImportZone, ToolCatalogProviderM.GetVideoSrcImportDefs());
+            RefreshSourceZonePrimaryText(VideoSrcImportZone);
+            ApplyDefinitionsToZone(ScriptSrcImportZone, ToolCatalogProviderM.GetScriptSrcImportDefs());
+            RefreshSourceZonePrimaryText(ScriptSrcImportZone);
             ApplyDefinitionsToZone(EncSettingsZone, ToolCatalogProviderM.GetEncSettingsDefinitions());
             ApplyImportedToolDefs(UpstreamsZone);
             ApplyImportedToolDefs(EncodersZone);

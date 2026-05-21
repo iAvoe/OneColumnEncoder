@@ -12,7 +12,8 @@ namespace OneColumnEncoder.ViewModels
 {
     public class ToolItemVM(EncItemM baseModel) : BaseVM
     {
-        public string SeparatorText => UILangProviderM.Current["ItemCard.Separator"];
+        public static string SeparatorText =>
+            UILangProviderM.Current["ItemCard.Separator"];
 
         private readonly EncItemM _baseModel = baseModel;
 
@@ -112,6 +113,13 @@ namespace OneColumnEncoder.ViewModels
         {
             get => _isCancel;
             set => SetProperty(ref _isCancel, value);
+        }
+
+        private bool _isEnabled = true;
+        public bool IsEnabled
+        {
+            get => _isEnabled;
+            set => SetProperty(ref _isEnabled, value);
         }
 
         private ICommand? _r1Command;

@@ -126,21 +126,44 @@
             <!-- Import Source -->
             <comps:SectionHeader HeaderText="{Binding SectionImportSource}"
                                  Margin="0 0 0 20" />
-            <ItemsControl ItemsSource="{Binding SrcImportZone}">
+            <ItemsControl ItemsSource="{Binding VideoSrcImportZone}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <comps:ItemCard DataContext="{Binding}"
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
+                                        IsEnabled="{Binding IsEnabled}"
                                         Margin="0 0 0 20">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
-                                                                RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                                                 RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                               CommandParameter="{Binding}" />
                                 <KeyBinding Key="Enter"
                                             Command="{Binding DataContext.SelectTool,
-                                                              RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                                               RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                            CommandParameter="{Binding}" />
+                            </comps:ItemCard.InputBindings>
+                        </comps:ItemCard>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <ItemsControl ItemsSource="{Binding ScriptSrcImportZone}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <comps:ItemCard DataContext="{Binding}"
+                                        IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                                        IsCancel="{Binding IsCancel}"
+                                        IsEnabled="{Binding IsEnabled}"
+                                        Margin="0 0 0 20">
+                            <comps:ItemCard.InputBindings>
+                                <MouseBinding MouseAction="LeftClick"
+                                              Command="{Binding DataContext.SelectTool,
+                                                                 RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                              CommandParameter="{Binding}" />
+                                <KeyBinding Key="Enter"
+                                            Command="{Binding DataContext.SelectTool,
+                                                               RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                             CommandParameter="{Binding}" />
                             </comps:ItemCard.InputBindings>
                         </comps:ItemCard>
