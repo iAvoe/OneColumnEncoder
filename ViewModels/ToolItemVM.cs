@@ -123,13 +123,13 @@ namespace OneColumnEncoder.ViewModels
 
         private void Validate()
         {
-            IsReal = File.Exists(Path) && Path.EndsWith(".exe", StringComparison.OrdinalIgnoreCase);
-            VersionText = IsReal ? GetExeVersion(Path) : string.Empty;
-        }
+            bool exists = File.Exists(Path);
+            bool isKnownBinary =
+                Path.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) ||
+                Path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase);
 
-        private static string GetExeVersion(string path)
-        {
-            return "TODO (" + path + ")";
+            IsReal = exists && isKnownBinary;
+            if (!IsReal) VersionText = string.Empty;
         }
 
         public void ApplyDefinition(ToolDefinitionM definition)

@@ -1,4 +1,5 @@
 using Microsoft.Win32;
+using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
@@ -41,19 +42,20 @@ namespace OneColumnEncoder.Commands
             if (result != true) return;
 
             string filePath = dialog.FileName;
-
-            if (!ImportToolCmd.IsFileNameMatch(def.ExeName, filePath))
-            {
-                if (!ImportToolCmd.ShowDoubleCheckConfirmation(
+            if (!ImportToolCmd.IsFileNameMatch(def.ExeName, filePath)
+                && !ImportToolCmd.ShowDoubleCheckConfirmation(
                     _modalNavS,
                     ConfirmForceImport.GetSuspiciousImportTitle(_item.Name),
                     ConfirmForceImport.GetWrongToolMessage(filePath, _item.Name),
                     def.ExeName,
                     filePath)) return;
-            }
 
+            string? version = await ToolVersionDetector.TryDetectAsync(def.ExeName, filePath);
             ToolCatalogProviderM.TrySetPath(def.ExeName, _appDataM.Tools, filePath);
+            ToolCatalogProviderM.TrySetVersion(def.ExeName, _appDataM.Tools, version ?? string.Empty);
+
             _item.Path = filePath;
+            _item.VersionText = version ?? string.Empty;
             _appDataM.Save();
         }
     }

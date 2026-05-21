@@ -18,7 +18,8 @@ namespace OneColumnEncoder.ViewModels.Cards
         private const int EncoderChecklistIndex = 1;
         private const int AnalyticsChecklistIndex = 2;
 
-        public string ImportButtonText => UILangProviderM.Current["ImportButton"];
+        public string ImportButtonText =>
+            UILangProviderM.Current["ImportButton"];
 
         private string _name = string.Empty;
         public string Name {
@@ -29,13 +30,17 @@ namespace OneColumnEncoder.ViewModels.Cards
         public ObservableCollection<ChecklistEntryVM> ToolsChecklist { get; } = [];
         public DropdownMenuVM ImportDropdown { get; } = new();
         public ICommand ImportCommand { get; }
-        public event Action<string, string>? ToolImported;
+        public event Action<string, string, string?>? ToolImported;
 
         private readonly PropertyChangedEventHandler _onDropdownPropertyChanged;
 
         public ToolsImportCardVM(ModalNavS modalNavS)
         {
-            ImportCommand = new ImportToolCmd(ImportDropdown, ToolsChecklist, modalNavS, (toolName, filePath) => ToolImported?.Invoke(toolName, filePath));
+            ImportCommand = new ImportToolCmd(ImportDropdown,
+                                              ToolsChecklist,
+                                              modalNavS,
+                                              (toolName, filePath, version) =>
+                                                  ToolImported?.Invoke(toolName, filePath, version));
             _onDropdownPropertyChanged = (s, e) =>
             {
                 if (e.PropertyName == nameof(ImportDropdown.SelectedItem))

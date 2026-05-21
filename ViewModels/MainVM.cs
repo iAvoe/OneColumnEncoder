@@ -288,24 +288,25 @@ namespace OneColumnEncoder.ViewModels
         /// <summary>
         /// Add new tool configuration or update an existing one if duplicated
         /// </summary>
-        /// <param name="defKey">The unique key identifying the tool definition.</param>
-        /// <param name="path">The executable or deployment path of the tool.</param>
-        /// <param name="version">The version string of the tool (currently a placeholder).</param>
-        private void AddOrUpdateTool(string defKey, string? path, string? version)
+        /// <param name="defKey">Unique key for a tool</param>
+        /// <param name="filePath">Tool filePath</param>
+        /// <param name="version">Tool version string, collected from ToolVersionDetector.cs</param>
+        private void AddOrUpdateTool(string defKey, string? filePath, string? version)
         {
             if (!ToolDefinitionProviderM.ToolDefs.TryGetValue(defKey, out ToolDefinitionM? def)) return;
-            if (def.Zone == null || string.IsNullOrEmpty(path)) return;
+            if (def.Zone == null || string.IsNullOrEmpty(filePath)) return;
 
+            // Find zone belonging, duplication check, duplication handling (replace)
             ObservableCollection<ToolItemVM> zone = GetZoneForTool(def.Zone.Value);
             ToolItemVM? existing = zone.FirstOrDefault(i => i.Name == def.DisplayName);
             if (existing != null) zone.Remove(existing);
 
             ToolItemVM item = new(new EncItemM(def.DisplayName))
             {
-                Path = path,
-                // VersionText = version ?? "", // version variable functionality is not coded yet, this only overwrites default to ""
+                Path = filePath,
+                VersionText = version ?? string.Empty,
                 P1Name = def.P1Name,
-                P2Name = def.P2Name ?? "",
+                P2Name = def.P2Name ?? string.Empty,
                 R1Text = def.R1Text,
                 R2Text = def.R2Text
             };
@@ -341,26 +342,35 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        // Import tool: Validate tool, create card UI & app data
-        private void OnToolImported(string exeName, string filePath)
+        /// <summary>
+        /// Import tool: Validate tool, get version, create card UI & app data
+        /// </summary>
+        /// <param name="exeName"></param>
+        /// <param name="filePath"></param>
+        /// <param name="version"></param>
+        private void OnToolImported(string exeName, string filePath, string? version)
         {
+            // Find zone belonging
             ToolDefinitionM? def = ToolDefinitionProviderM.GetByExeName(exeName);
             if (def == null || def.Zone == null) return;
 
+            // Check dictionary record to make sure this tool has a matcing file name
             string defKey = ToolDefinitionProviderM.ToolDefs
                 .FirstOrDefault(kvp => kvp.Value == def).Key;
             if (defKey == null) return;
 
+            // Saving
             ToolCatalogProviderM.TrySetPath(exeName, _appDataM.Tools, filePath);
+            ToolCatalogProviderM.TrySetVersion(exeName, _appDataM.Tools, version ?? string.Empty);
             _appDataM.Save();
 
-            AddOrUpdateTool(defKey, filePath, null);
+            AddOrUpdateTool(defKey, filePath, version);
         }
 
         // Navigated to other modal windows
         private void OnModalStateChanged() { IsOverlayVisible = _modalNavS.IsOpen; }
 
-        #region Language swtich
+        #region Language swtiching
         private void OnLanguageChanged() { RefreshLanguage(); }
         private void RefreshLanguage()
         {

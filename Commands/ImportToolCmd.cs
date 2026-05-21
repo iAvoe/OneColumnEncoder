@@ -12,15 +12,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using static OneColumnEncoder.Models.ConfirmationProviderM;
+using OneColumnEncoder.Helpers;
 
 namespace OneColumnEncoder.Commands
 {
-    public class ImportToolCmd(DropdownMenuVM dropdownVM, ObservableCollection<ChecklistEntryVM> knownTools, ModalNavS modalNavS, Action<string, string>? onSuccess = null) : AsyncBaseCmd
+    public class ImportToolCmd(DropdownMenuVM dropdownVM,
+                               ObservableCollection<ChecklistEntryVM> knownTools,
+                               ModalNavS modalNavS,
+                               Action<string, string, string?>? onSuccess = null) : AsyncBaseCmd
     {
         private readonly DropdownMenuVM _dropdownVm = dropdownVM;
         private readonly ObservableCollection<ChecklistEntryVM> _knownTools = knownTools;
         private readonly ModalNavS _modalNavS = modalNavS;
-        private readonly Action<string, string>? _onSuccess = onSuccess;
+        private readonly Action<string, string, string?>? _onSuccess = onSuccess;
 
         public override bool CanExecute(object? parameter)
         {
@@ -38,12 +42,12 @@ namespace OneColumnEncoder.Commands
             string? filePath = await ImportToolAsync(toolToImport);
             if (string.IsNullOrEmpty(filePath)) return;
 
-            if (!IsFileNameMatch(toolToImport, filePath))
-            {
-                if (!DoubleCheckFilenameMismatchImport(toolToImport, filePath)) return;
-            }
+            if (!IsFileNameMatch(toolToImport, filePath) &&
+                !DoubleCheckFilenameMismatchImport(toolToImport, filePath)) return;
 
-            _onSuccess?.Invoke(toolToImport, filePath);
+            string? version = await ToolVersionDetector.TryDetectAsync(toolToImport, filePath);
+
+            _onSuccess?.Invoke(toolToImport, filePath, version);
             foreach (ChecklistEntryVM l in _knownTools)
             {
                 if (l.Text.Contains(toolToImport, StringComparison.OrdinalIgnoreCase))
