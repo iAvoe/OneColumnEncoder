@@ -7,14 +7,18 @@ namespace OneColumnEncoder.Models;
 
 public static class ToolCatalogProviderM
 {
-    // Source Import zone (4 items)
-    public static List<ToolDefinitionM> GetSrcImportDefinitions() =>
+    // Video Source Import zone (1 item)
+    public static List<ToolDefinitionM> GetVideoSrcImportDefs() =>
     [
         new(UILangProviderM.Current["Tool.Source.VideoSource"],
             UILangProviderM.Current["Buttons.Replace"],
             UILangProviderM.Current["Buttons.Clear"],
             UILangProviderM.Current["ToolField.Name"],
             UILangProviderM.Current["ToolField.Path"]),
+    ];
+    // Script Source Import zone (3 items)
+    public static List<ToolDefinitionM> GetScriptSrcImportDefs() =>
+    [
         new(UILangProviderM.Current["Tool.Source.AviSynth"],
             UILangProviderM.Current["Buttons.Replace"],
             UILangProviderM.Current["Buttons.Clear"],
@@ -62,7 +66,7 @@ public static class ToolCatalogProviderM
     ];
 
     public static List<ToolDefinitionM> GetAllStaticDefinitions() =>
-        [.. GetSrcImportDefinitions(), .. GetEncSettingsDefinitions()];
+        [.. GetVideoSrcImportDefs(), .. GetScriptSrcImportDefs(), .. GetEncSettingsDefinitions()];
 
     // Importable tool registry derived from ToolDefinitionProviderM
     private static Dictionary<string, (string DisplayName, ToolZone Zone)> BuildToolsDict()
@@ -136,13 +140,15 @@ public static class ToolCatalogProviderM
 
     public static readonly Dictionary<string, string[]> ToolExtraSearchPaths = new(StringComparer.OrdinalIgnoreCase)
     {
-        ["vspipe.exe"] = new[]
-        {
+        ["vspipe.exe"] =
+        [
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "VapourSynth", "core"),
-        },
-        ["one_line_shot_args.exe"] = DriveInfo.GetDrives()
-            .Select(d => Path.Combine(d.RootDirectory.FullName, "SteamLibrary", "steamapps", "common", "SVFI"))
-            .ToArray(),
+        ],
+        ["one_line_shot_args.exe"] =
+        [
+            .. DriveInfo.GetDrives().Select(d =>
+                Path.Combine(d.RootDirectory.FullName, "SteamLibrary", "steamapps", "common", "SVFI"))
+        ],
     };
 
     public static string? TryFindToolDirectory(string exeName)

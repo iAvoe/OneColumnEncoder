@@ -26,6 +26,8 @@
                         Value="{StaticResource GlobalPrimary}" />
                 <Setter Property="Background"
                         Value="{StaticResource Background}" />
+                <Setter Property="TextElement.Foreground"
+                        Value="{StaticResource GlobalPrimary}" />
                 <Style.Triggers>
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
@@ -45,6 +47,13 @@
                                 Value="{StaticResource BorderRed}" />
                         <Setter Property="Background"
                                 Value="{StaticResource BackgroundRed}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                 Value="False">
+                        <Setter Property="BorderBrush"
+                                Value="{StaticResource GlobalSecondary}" />
+                        <Setter Property="TextElement.Foreground"
+                                Value="{StaticResource GlobalSecondary}" />
                     </DataTrigger>
                     <Trigger Property="IsMouseOver"
                              Value="True">
@@ -91,7 +100,6 @@
                        Grid.ColumnSpan="3"
                        Margin="0 5 0 0"
                        Style="{StaticResource H3}"
-                       Foreground="{StaticResource GlobalPrimary}"
                        TextTrimming="CharacterEllipsis"
                        MaxWidth="435">
                 <Run Text="{Binding P1Name, Mode=OneWay}" /><Run Text="{Binding SeparatorText, Mode=OneWay}" /><Run Text="{Binding P1Text, Mode=OneWay}"
@@ -101,7 +109,6 @@
                        Grid.ColumnSpan="3"
                        Margin="0 5 0 0"
                        Style="{StaticResource H3}"
-                       Foreground="{StaticResource GlobalPrimary}"
                        TextTrimming="CharacterEllipsis"
                        MaxWidth="435">
                 <Run Text="{Binding P2Name, Mode=OneWay}" /><Run Text="{Binding SeparatorText, Mode=OneWay}" /><Run Text="{Binding P2Text, Mode=OneWay}"
