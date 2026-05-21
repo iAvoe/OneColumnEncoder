@@ -4,7 +4,6 @@ public class UILangProviderM
 {
     public static UILangProviderM Current { get; private set; } = null!;
     public static event Action? CurrentChanged;
-
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
         ["en"] = new()
@@ -73,7 +72,7 @@ public class UILangProviderM
             ["ToolField.CpuRamNodes"] = "CPU-RAM Nodes",
             ["ToolField.Threads"] = "Threads",
             ["ToolField.Value"] = "Value",
-            ["ToolField.Stratagem"] = "Stratagem",
+            ["ToolField.Stratagem"] = "Stratagy",
             ["ToolField.MaximumKeyframeGap"] = "Maximum keyframe gap",
             ["ToolField.OtherCustomParams"] = "Other custom params",
 
@@ -108,9 +107,12 @@ public class UILangProviderM
             ["ConfirmProvider.WrongTool"] = "Importing {0} for {1}?",
 
             // Checklist - Tools
-            ["Checklist.Tools.Upstream"] = "One upstream program available",
-            ["Checklist.Tools.Downstream"] = "One downstream program available",
-            ["Checklist.Tools.Analysis"] = "One analysis program available",
+            ["Checklist.Tools.Upstream"] = "One upstream program imported",
+            ["Checklist.Tools.Downstream"] = "One downstream program imported",
+            ["Checklist.Tools.Analysis"] = "One analysis program imported",
+            ["Checklist.Tools.UpstreamPicked"] = "Click-select an upstream program",
+            ["Checklist.Tools.DownstreamPicked"] = "Click-select a downstream program",
+            ["Checklist.Tools.AnalysisPicked"] = "Click-select an analysis program",
 
             // Checklist - Source Validation 1 (Severe)
             ["Checklist.Source1.Metadata"] = "Metadata and SEI data are readable",
@@ -267,9 +269,12 @@ public class UILangProviderM
             ["ConfirmProvider.ProceedToRun"] = "继续运行 {0} 以获取其版本？",
             ["ConfirmProvider.WrongTool"] = "将 {0} 导入为 {1}？",
 
-            ["Checklist.Tools.Upstream"] = "至少一个上游程序可用",
-            ["Checklist.Tools.Downstream"] = "至少一个下游程序可用",
-            ["Checklist.Tools.Analysis"] = "至少一个分析程序可用",
+            ["Checklist.Tools.Upstream"] = "至少导入一个上游程序",
+            ["Checklist.Tools.Downstream"] = "至少导入一个下游程序",
+            ["Checklist.Tools.Analysis"] = "至少导入一个分析程序",
+            ["Checklist.Tools.UpstreamPicked"] = "点选上游程序",
+            ["Checklist.Tools.DownstreamPicked"] = "点选下游程序",
+            ["Checklist.Tools.AnalysisPicked"] = "点选分析工具",
 
             ["Checklist.Source1.Metadata"] = "元数据与 SEI 数据可读",
             ["Checklist.Source1.Progressive"] = "逐行扫描视频帧 / 非隔行（SVT-AV1 要求）",
@@ -416,9 +421,12 @@ public class UILangProviderM
             ["ConfirmProvider.ProceedToRun"] = "繼續運行 {0} 以獲取其版本？",
             ["ConfirmProvider.WrongTool"] = "將 {0} 導入為 {1}？",
 
-            ["Checklist.Tools.Upstream"] = "至少一個上遊程序可用",
-            ["Checklist.Tools.Downstream"] = "至少一個下遊程序可用",
-            ["Checklist.Tools.Analysis"] = "至少一個分析程序可用",
+            ["Checklist.Tools.Upstream"] = "至少導入一個上遊程序",
+            ["Checklist.Tools.Downstream"] = "至少導入一個下遊程序",
+            ["Checklist.Tools.Analysis"] = "至少導入一個分析程序",
+            ["Checklist.Tools.UpstreamPicked"] = "點選上遊程序",
+            ["Checklist.Tools.DownstreamPicked"] = "點選下遊程序",
+            ["Checklist.Tools.AnalysisPicked"] = "點選分析工具",
 
             ["Checklist.Source1.Metadata"] = "元數據與 SEI 數據可讀",
             ["Checklist.Source1.Progressive"] = "逐行掃描影片幀 / 非隔行（SVT-AV1 要求）",

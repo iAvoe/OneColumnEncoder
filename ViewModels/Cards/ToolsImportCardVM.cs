@@ -17,6 +17,9 @@ namespace OneColumnEncoder.ViewModels.Cards
         private const int UpstreamChecklistIndex = 0;
         private const int EncoderChecklistIndex = 1;
         private const int AnalyticsChecklistIndex = 2;
+        private const int UpstreamPickedChecklistIndex = 3;
+        private const int DownstreamPickedChecklistIndex = 4;
+        private const int AnalysisPickedChecklistIndex = 5;
 
         public string ImportButtonText =>
             UILangProviderM.Current["ImportButton"];
@@ -36,13 +39,14 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         public ToolsImportCardVM(ModalNavS modalNavS)
         {
-            ImportCommand = new ImportToolCmd(ImportDropdown,
-                                               ToolsChecklist,
-                                               modalNavS,
-                                               async (toolName, filePath, version) => {
-                                                   if (ToolImported != null)
-                                                       await ToolImported(toolName, filePath, version);
-                                               });
+            ImportCommand =
+                new ImportToolCmd(ImportDropdown,
+                                  ToolsChecklist,
+                                  modalNavS,
+                                  async (toolName, filePath, version) => {
+                                      if (ToolImported != null)
+                                          await ToolImported(toolName, filePath, version);
+                                  });
             _onDropdownPropertyChanged = (s, e) =>
             {
                 if (e.PropertyName == nameof(ImportDropdown.SelectedItem))
@@ -65,6 +69,19 @@ namespace OneColumnEncoder.ViewModels.Cards
             UpdateChecklistStatus(UpstreamChecklistIndex, hasUpstreamTool);
             UpdateChecklistStatus(EncoderChecklistIndex, hasEncoderTool);
             UpdateChecklistStatus(AnalyticsChecklistIndex, hasFfprobe);
+        }
+
+        public void SetToolPickedStatus(ToolZone zone, bool isPicked)
+        {
+            int index = zone switch
+            {
+                ToolZone.Upstream => UpstreamPickedChecklistIndex,
+                ToolZone.Encoder => DownstreamPickedChecklistIndex,
+                ToolZone.Analytics => AnalysisPickedChecklistIndex,
+                _ => -1
+            };
+            if (index < 0 || index >= ToolsChecklist.Count) return;
+            ToolsChecklist[index].Status = isPicked ? StatusType.Success : StatusType.Error;
         }
 
         private void UpdateChecklistStatus(int index, bool isReady)

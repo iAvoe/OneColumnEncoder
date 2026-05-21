@@ -225,6 +225,11 @@ namespace OneColumnEncoder.ViewModels
                 EncodersZone.Count > 0 &&
                 HasImportedFfprobe();
 
+            bool toolsPickedReady =
+                ToolsImportCard.ToolsChecklist
+                    .Skip(3)
+                    .All(e => !e.IsEnabled || e.Status == StatusType.Success);
+
             bool sourceValidationReady =
                 SrcValidationCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
                 SrcValidationCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
@@ -232,10 +237,9 @@ namespace OneColumnEncoder.ViewModels
                 EncTermsCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
                 EncTermsCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
 
-            EncStartButtons.B3_2IsEnabled =
-                toolsReady && sourceValidationReady && encodeTermsReady;
-            EncStartButtons.B3_3IsEnabled =
-                toolsReady && sourceValidationReady && encodeTermsReady;
+            bool allReady = toolsReady && toolsPickedReady && sourceValidationReady && encodeTermsReady;
+            EncStartButtons.B3_2IsEnabled = allReady;
+            EncStartButtons.B3_3IsEnabled = allReady;
         }
         #endregion
 

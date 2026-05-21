@@ -1,4 +1,5 @@
-﻿using OneColumnEncoder.ViewModels;
+﻿using OneColumnEncoder.Models;
+using OneColumnEncoder.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -29,16 +30,21 @@ namespace OneColumnEncoder.Commands
             if (_mainVM.UpstreamsZone != null && _mainVM.UpstreamsZone.Contains(clickedTool))
             {
                 ResetSelection(_mainVM.UpstreamsZone, clickedTool);
+                bool isSelected = _mainVM.UpstreamsZone.Any(t => t.IsSelected);
+                _mainVM.ToolsImportCard.SetToolPickedStatus(ToolZone.Upstream, isSelected);
             }
             else if (_mainVM.EncodersZone != null && _mainVM.EncodersZone.Contains(clickedTool))
             {
                 ResetSelection(_mainVM.EncodersZone, clickedTool);
+                bool isSelected = _mainVM.EncodersZone.Any(t => t.IsSelected);
+                _mainVM.ToolsImportCard.SetToolPickedStatus(ToolZone.Encoder, isSelected);
             }
             else if (_mainVM.AnalyticsZone != null && _mainVM.AnalyticsZone.Contains(clickedTool))
             {
                 ResetSelection(_mainVM.AnalyticsZone, clickedTool);
+                bool isSelected = _mainVM.AnalyticsZone.Any(t => t.IsSelected);
+                _mainVM.ToolsImportCard.SetToolPickedStatus(ToolZone.Analytics, isSelected);
             }
-            // add if else for AnalyticsZone, SrcImportZone
         }
 
         private void ResetSelection(ObservableCollection<ToolItemVM> zone, ToolItemVM targetCard)

@@ -9,6 +9,9 @@ namespace OneColumnEncoder.Models
             new(UILangProviderM.Current["Checklist.Tools.Upstream"], StatusType.Error),
             new(UILangProviderM.Current["Checklist.Tools.Downstream"], StatusType.Error),
             new(UILangProviderM.Current["Checklist.Tools.Analysis"], StatusType.Error),
+            new(UILangProviderM.Current["Checklist.Tools.UpstreamPicked"], StatusType.Error),
+            new(UILangProviderM.Current["Checklist.Tools.DownstreamPicked"], StatusType.Error),
+            new(UILangProviderM.Current["Checklist.Tools.AnalysisPicked"], StatusType.Error),
         ];
 
         public static List<ChecklistItemDefinitionM> GetSourceChecklist1() =>
