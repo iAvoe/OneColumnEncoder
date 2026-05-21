@@ -103,6 +103,9 @@ public static class ToolCatalogProviderM
     public static HashSet<string> AnalyticsDisplayNames { get; } =
         _tools.Values.Where(v => v.Zone == ToolZone.Analytics).Select(v => v.DisplayName).ToHashSet();
 
+    public static HashSet<string> DependenciesDisplayNames { get; } =
+        _tools.Values.Where(v => v.Zone == ToolZone.Dependencies).Select(v => v.DisplayName).ToHashSet();
+
     // AppDataM.Importables property mapping
     private static readonly Dictionary<string, Action<AppDataM.Importables, string>> _pathSetters = new(StringComparer.OrdinalIgnoreCase)
     {

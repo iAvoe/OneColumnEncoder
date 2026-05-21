@@ -29,7 +29,7 @@ namespace OneColumnEncoder.Models
                 ["SvtAv1"] = new("SVT-AV1", replace, deleteText, version, path, ToolZone.Encoder, "svtav1encapp.exe"),
                 // Analytics
                 ["Ffprobe"] = new("FFProbe", replace, deleteText, version, path, ToolZone.Analytics, "ffprobe.exe"),
-                ["AviSynthDll"] = new("AviSynth DLL (for VapourSynth)", replace, deleteText, version, path, ToolZone.Analytics, "avisynth.dll"),
+                ["AviSynthDll"] = new("AviSynth.dll", replace, deleteText, version, path, ToolZone.Dependencies, "avisynth.dll"),
             };
         }
 
@@ -43,9 +43,11 @@ namespace OneColumnEncoder.Models
             ToolDefs.Where(kvp => kvp.Value.Zone == ToolZone.Analytics);
 
         public static ToolDefinitionM? GetByExeName(string exeName) =>
-            ToolDefs.Values.FirstOrDefault(d => d.ExeName?.Equals(exeName, StringComparison.OrdinalIgnoreCase) == true);
+            ToolDefs.Values.FirstOrDefault(
+                d => d.ExeName?.Equals(exeName, StringComparison.OrdinalIgnoreCase) == true);
 
         public static ToolDefinitionM? GetByDisplayName(string displayName) =>
-            ToolDefs.Values.FirstOrDefault(d => d.DisplayName.Equals(displayName, StringComparison.OrdinalIgnoreCase));
+            ToolDefs.Values.FirstOrDefault(
+                d => d.DisplayName.Equals(displayName, StringComparison.OrdinalIgnoreCase));
     }
 }

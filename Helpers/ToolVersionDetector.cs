@@ -17,6 +17,9 @@ namespace OneColumnEncoder.Helpers
                 || string.IsNullOrWhiteSpace(filePath)
                 || !File.Exists(filePath)) return null;
 
+            if (exeName.Equals("avisynth.dll", StringComparison.OrdinalIgnoreCase))
+                return null;
+
             if (exeName.Equals("one_line_shot_args.exe", StringComparison.OrdinalIgnoreCase))
                 return TryReadProductVersion(filePath);
 

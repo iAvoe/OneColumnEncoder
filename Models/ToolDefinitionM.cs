@@ -2,7 +2,7 @@
 
 namespace OneColumnEncoder.Models;
 
-public enum ToolZone { Upstream, Encoder, Analytics }
+public enum ToolZone { Upstream, Encoder, Analytics, Dependencies }
 
 // For SrcImportZone / EncSettingsZone items that have unique per-item labels
 public record ToolDefinitionM(

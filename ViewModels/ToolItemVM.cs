@@ -107,6 +107,13 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
+        private bool _isCancel;
+        public bool IsCancel
+        {
+            get => _isCancel;
+            set => SetProperty(ref _isCancel, value);
+        }
+
         private ICommand? _r1Command;
         public ICommand? R1Command
         {

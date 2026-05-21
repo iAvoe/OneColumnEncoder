@@ -27,12 +27,24 @@
                 <Setter Property="Background"
                         Value="{StaticResource Background}" />
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                 Value="True">
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                       Value="True" />
+                            <Condition Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                       Value="False" />
+                        </MultiDataTrigger.Conditions>
                         <Setter Property="BorderBrush"
                                 Value="{StaticResource BorderGreen}" />
                         <Setter Property="Background"
                                 Value="{StaticResource BackgroundGreen}" />
+                    </MultiDataTrigger>
+                    <DataTrigger Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                 Value="True">
+                        <Setter Property="BorderBrush"
+                                Value="{StaticResource BorderRed}" />
+                        <Setter Property="Background"
+                                Value="{StaticResource BackgroundRed}" />
                     </DataTrigger>
                     <Trigger Property="IsMouseOver"
                              Value="True">

@@ -38,5 +38,18 @@ namespace OneColumnEncoder.Components
             get => (bool)GetValue(IsSelectedProperty);
             set => SetValue(IsSelectedProperty, value);
         }
+
+        public static readonly DependencyProperty IsCancelProperty =
+            DependencyProperty.Register(
+                nameof(IsCancel),
+                typeof(bool),
+                typeof(ItemCard),
+                new PropertyMetadata(false));
+
+        public bool IsCancel
+        {
+            get => (bool)GetValue(IsCancelProperty);
+            set => SetValue(IsCancelProperty, value);
+        }
     }
 }

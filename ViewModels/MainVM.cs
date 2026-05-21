@@ -27,6 +27,7 @@ namespace OneColumnEncoder.ViewModels
         public ObservableCollection<ToolItemVM> UpstreamsZone { get; }
         public ObservableCollection<ToolItemVM> EncodersZone { get; }
         public ObservableCollection<ToolItemVM> AnalyticsZone { get; }
+        public ObservableCollection<ToolItemVM> DependenciesZone { get; }
         public ObservableCollection<ToolItemVM> SrcImportZone { get; }
         public ObservableCollection<ToolItemVM> EncSettingsZone { get; }
         // Buttons
@@ -78,6 +79,7 @@ namespace OneColumnEncoder.ViewModels
             UpstreamsZone = [];
             EncodersZone = [];
             AnalyticsZone = [];
+            DependenciesZone = [];
             LoadToolsFromAppDataM();
             WireUpZoneDeleteCmds();
 
@@ -163,6 +165,7 @@ namespace OneColumnEncoder.ViewModels
             UpstreamsZone.CollectionChanged += OnImportedToolZoneCollectionChanged;
             EncodersZone.CollectionChanged += OnImportedToolZoneCollectionChanged;
             AnalyticsZone.CollectionChanged += OnImportedToolZoneCollectionChanged;
+            DependenciesZone.CollectionChanged += OnImportedToolZoneCollectionChanged;
             RefreshImportedToolsChecklist();
         }
         private void UnsubFromImportedToolZones()
@@ -170,10 +173,12 @@ namespace OneColumnEncoder.ViewModels
             UpstreamsZone.CollectionChanged -= OnImportedToolZoneCollectionChanged;
             EncodersZone.CollectionChanged -= OnImportedToolZoneCollectionChanged;
             AnalyticsZone.CollectionChanged -= OnImportedToolZoneCollectionChanged;
+            DependenciesZone.CollectionChanged -= OnImportedToolZoneCollectionChanged;
         }
         private void OnImportedToolZoneCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             RefreshImportedToolsChecklist();
+            RefreshDependencySelectionState();
         }
         private void RefreshImportedToolsChecklist()
         {
@@ -184,6 +189,24 @@ namespace OneColumnEncoder.ViewModels
         }
         private bool HasImportedFfprobe() =>
             !string.IsNullOrWhiteSpace(_appDataM.Tools.FfprobePath);
+
+        public void RefreshDependencySelectionState()
+        {
+            ToolItemVM? avs2pipemod = UpstreamsZone.FirstOrDefault(t => IsImportedTool(t, "avs2pipemod.exe"));
+            bool dependencySelected = DependenciesZone.Any(t => t.IsSelected && IsImportedTool(t, "avisynth.dll"));
+
+            if (avs2pipemod != null)
+            {
+                avs2pipemod.IsCancel = avs2pipemod.IsSelected && !dependencySelected;
+            }
+
+            foreach (ToolItemVM upstream in UpstreamsZone.Where(t => !IsImportedTool(t, "avs2pipemod.exe") && t.IsCancel))
+            {
+                upstream.IsCancel = false;
+            }
+
+            UpdateEncodingStartButtonsState();
+        }
 
         private void SubToToolsChecklist()
         {
@@ -238,8 +261,11 @@ namespace OneColumnEncoder.ViewModels
             bool encodeTermsReady =
                 EncTermsCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
                 EncTermsCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
+            bool dependencyReady =
+                !UpstreamsZone.Any(t => t.IsSelected && IsImportedTool(t, "avs2pipemod.exe")) ||
+                DependenciesZone.Any(t => t.IsSelected && IsImportedTool(t, "avisynth.dll"));
 
-            bool allReady = toolsReady && toolsPickedReady && sourcePickedReady && sourceValidationReady && encodeTermsReady;
+            bool allReady = toolsReady && toolsPickedReady && sourcePickedReady && sourceValidationReady && encodeTermsReady && dependencyReady;
             EncStartButtons.B3_2IsEnabled = allReady;
             EncStartButtons.B3_3IsEnabled = allReady;
         }
@@ -256,6 +282,7 @@ namespace OneColumnEncoder.ViewModels
             foreach (ToolItemVM tool in UpstreamsZone) WireUpToolCmd(tool);
             foreach (ToolItemVM tool in EncodersZone) WireUpToolCmd(tool);
             foreach (ToolItemVM tool in AnalyticsZone) WireUpToolCmd(tool);
+            foreach (ToolItemVM tool in DependenciesZone) WireUpToolCmd(tool);
         }
         private void WireUpToolCmd(ToolItemVM item)
         {
@@ -303,12 +330,16 @@ namespace OneColumnEncoder.ViewModels
             return def?.Zone ?? throw new ArgumentException($"Unknown tool: {displayName}");
         }
 
+        private static bool IsImportedTool(ToolItemVM item, string exeName) =>
+            ToolDefinitionProviderM.GetByDisplayName(item.Name)?.ExeName?.Equals(exeName, StringComparison.OrdinalIgnoreCase) == true;
+
         // Check which zone a tool belongs to, and overwrite a tool if duplicate import happens
         private ObservableCollection<ToolItemVM> GetZoneForTool(ToolZone zone) => zone switch
         {
             ToolZone.Upstream => UpstreamsZone,
             ToolZone.Encoder => EncodersZone,
             ToolZone.Analytics => AnalyticsZone,
+            ToolZone.Dependencies => DependenciesZone, // Currently only AviSynth.dll
             _ => throw new ArgumentException("Invalid tool zone")
         };
 
@@ -447,9 +478,10 @@ namespace OneColumnEncoder.ViewModels
             ApplyDefinitionsToZone(SrcImportZone, ToolCatalogProviderM.GetSrcImportDefinitions());
             RefreshSourceZonePrimaryText(SrcImportZone);
             ApplyDefinitionsToZone(EncSettingsZone, ToolCatalogProviderM.GetEncSettingsDefinitions());
-            ApplyImportedToolDefinitions(UpstreamsZone);
-            ApplyImportedToolDefinitions(EncodersZone);
-            ApplyImportedToolDefinitions(AnalyticsZone);
+            ApplyImportedToolDefs(UpstreamsZone);
+            ApplyImportedToolDefs(EncodersZone);
+            ApplyImportedToolDefs(AnalyticsZone);
+            ApplyImportedToolDefs(DependenciesZone);
         }
         private static void RefreshSourceZonePrimaryText(ObservableCollection<ToolItemVM> zone)
         {
@@ -469,7 +501,7 @@ namespace OneColumnEncoder.ViewModels
                 zone[i].RefreshLanguage();
             }
         }
-        private static void ApplyImportedToolDefinitions(ObservableCollection<ToolItemVM> zone)
+        private static void ApplyImportedToolDefs(ObservableCollection<ToolItemVM> zone)
         {
             foreach (ToolItemVM item in zone)
             {

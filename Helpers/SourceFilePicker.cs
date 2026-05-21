@@ -127,7 +127,7 @@ namespace OneColumnEncoder.Helpers
 
         private static string GetMissingSelectionMessage() => UILangProviderM.Current.LanguageCode switch
         {
-            "zh-cn" => "未选择文件。选择“是”重试，选择“否”取消。",
+            "zh-cn" => "未选择文件。选择「是」重试，选择「否」取消。",
             "zh-tw" => "未選擇檔案。選擇「是」重試，選擇「否」取消。",
             _ => "No file selected. Choose Yes to try again, or No to cancel."
         };

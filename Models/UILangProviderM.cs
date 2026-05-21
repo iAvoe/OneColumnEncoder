@@ -113,6 +113,7 @@ public class UILangProviderM
             ["Checklist.Tools.UpstreamPicked"] = "Click-select an upstream program",
             ["Checklist.Tools.DownstreamPicked"] = "Click-select a downstream program",
             ["Checklist.Tools.AnalysisPicked"] = "Click-select an analysis program",
+            ["Checklist.Tools.DependenciesPicked"] = "Click-select a dependency program",
             ["Clecklist.Tools.SourcePicked"] = "Click-select a type of source to encode",
 
             // Checklist - Source Validation 1 (Severe)
@@ -276,6 +277,7 @@ public class UILangProviderM
             ["Checklist.Tools.UpstreamPicked"] = "点选上游程序",
             ["Checklist.Tools.DownstreamPicked"] = "点选下游程序",
             ["Checklist.Tools.AnalysisPicked"] = "点选分析工具",
+            ["Checklist.Tools.DependenciesPicked"] = "点选依赖程序",
             ["Clecklist.Tools.SourcePicked"] = "点选待压制源文件的种类",
 
             ["Checklist.Source1.Metadata"] = "元数据与 SEI 数据可读",
@@ -429,6 +431,7 @@ public class UILangProviderM
             ["Checklist.Tools.UpstreamPicked"] = "點選上遊程序",
             ["Checklist.Tools.DownstreamPicked"] = "點選下遊程序",
             ["Checklist.Tools.AnalysisPicked"] = "點選分析工具",
+            ["Checklist.Tools.DependenciesPicked"] = "點選依賴程式",
             ["Clecklist.Tools.SourcePicked"] = "點選待壓制原始檔的種類",
 
             ["Checklist.Source1.Metadata"] = "元數據與 SEI 數據可讀",
