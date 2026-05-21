@@ -80,7 +80,7 @@
                        Margin="0 5 0 0"
                        Style="{StaticResource H3}"
                        Foreground="{StaticResource GlobalPrimary}">
-                <Run Text="{Binding P1Name, Mode=OneWay}" /><Run Text="{Binding SeparatorText}" /><Run Text="{Binding P1Text, Mode=OneWay}"
+                <Run Text="{Binding P1Name, Mode=OneWay}" /><Run Text="{Binding SeparatorText, Mode=OneWay}" /><Run Text="{Binding P1Text, Mode=OneWay}"
                                                                                   FontWeight="Normal" />
             </TextBlock>
             <TextBlock Grid.Row="2"
@@ -88,7 +88,7 @@
                        Margin="0 5 0 0"
                        Style="{StaticResource H3}"
                        Foreground="{StaticResource GlobalPrimary}">
-                <Run Text="{Binding P2Name, Mode=OneWay}" /><Run Text="{Binding SeparatorText}" /><Run Text="{Binding P2Text, Mode=OneWay}"
+                <Run Text="{Binding P2Name, Mode=OneWay}" /><Run Text="{Binding SeparatorText, Mode=OneWay}" /><Run Text="{Binding P2Text, Mode=OneWay}"
                                                                                   FontWeight="Normal" />
             </TextBlock>
         </Grid>
