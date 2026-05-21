@@ -20,10 +20,11 @@ namespace OneColumnEncoder.ViewModels
     {
         private readonly AppConfM _appConfM;
 
+        #region Properties & Commands
+
         public string WindowTitle => UILangProviderM.Current["AppConfModal.Title"];
         public string HeaderText => UILangProviderM.Current["AppConfModal.Header"];
 
-        // Commands for UI interactions
         public CloseModalCmd CloseCmd { get; }
         public SaveAppConfCmd SaveCmd { get; }
         public LoadAppConfCmd LoadCmd { get; }
@@ -31,13 +32,15 @@ namespace OneColumnEncoder.ViewModels
 
         public ButtonGroupVM FinishSettingButtons { get; }
 
-        // Settings for binding
         public AppConfM.GeneralSettings General => _appConfM.General;
         public AppConfM.OverwriteSettings Overwrite => _appConfM.Overwrite;
         public AppConfM.SmtpSettings Smtp => _appConfM.Smtp;
 
-        // Grouped settings listing for the ListView
         public ObservableCollection<AppConfContainer> SettingsListing { get; } = [];
+
+        #endregion
+
+        #region Constructor
 
         public AppConfVM(ModalNavS modalNavS, AppConfM appConfS, Action closeAction)
         {
@@ -56,6 +59,8 @@ namespace OneColumnEncoder.ViewModels
             BuildSettingsListing();
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
+
+        #endregion
 
         private void BuildSettingsListing()
         {
@@ -161,6 +166,8 @@ namespace OneColumnEncoder.ViewModels
         }
         #endregion
 
+        #region Language Switching
+
         private void OnLanguageChanged()
         {
             OnPropertyChanged(nameof(WindowTitle));
@@ -174,10 +181,16 @@ namespace OneColumnEncoder.ViewModels
             BuildSettingsListing();
         }
 
+        #endregion
+
+        #region Dispose
+
         public override void Dispose()
         {
             UILangProviderM.CurrentChanged -= OnLanguageChanged;
             base.Dispose();
         }
+
+        #endregion
     }
 }

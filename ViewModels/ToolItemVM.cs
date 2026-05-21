@@ -17,6 +17,8 @@ namespace OneColumnEncoder.ViewModels
 
         private readonly EncItemM _baseModel = baseModel;
 
+        #region Properties
+
         public string Name
         {
             get => _baseModel.Name;
@@ -136,6 +138,10 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _r2Command, value);
         }
 
+        #endregion
+
+        #region Methods
+
         private void Validate()
         {
             bool exists = File.Exists(Path);
@@ -160,5 +166,7 @@ namespace OneColumnEncoder.ViewModels
         {
             OnPropertyChanged(nameof(SeparatorText));
         }
+
+        #endregion
     }
 }
