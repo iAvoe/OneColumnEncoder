@@ -113,6 +113,7 @@ public class UILangProviderM
             ["Checklist.Tools.UpstreamPicked"] = "Click-select an upstream program",
             ["Checklist.Tools.DownstreamPicked"] = "Click-select a downstream program",
             ["Checklist.Tools.AnalysisPicked"] = "Click-select an analysis program",
+            ["Clecklist.Tools.SourcePicked"] = "Click-select a type of source to encode",
 
             // Checklist - Source Validation 1 (Severe)
             ["Checklist.Source1.Metadata"] = "Metadata and SEI data are readable",
@@ -275,6 +276,7 @@ public class UILangProviderM
             ["Checklist.Tools.UpstreamPicked"] = "点选上游程序",
             ["Checklist.Tools.DownstreamPicked"] = "点选下游程序",
             ["Checklist.Tools.AnalysisPicked"] = "点选分析工具",
+            ["Clecklist.Tools.SourcePicked"] = "点选待压制源文件的种类",
 
             ["Checklist.Source1.Metadata"] = "元数据与 SEI 数据可读",
             ["Checklist.Source1.Progressive"] = "逐行扫描视频帧 / 非隔行（SVT-AV1 要求）",
@@ -427,6 +429,7 @@ public class UILangProviderM
             ["Checklist.Tools.UpstreamPicked"] = "點選上遊程序",
             ["Checklist.Tools.DownstreamPicked"] = "點選下遊程序",
             ["Checklist.Tools.AnalysisPicked"] = "點選分析工具",
+            ["Clecklist.Tools.SourcePicked"] = "點選待壓制原始檔的種類",
 
             ["Checklist.Source1.Metadata"] = "元數據與 SEI 數據可讀",
             ["Checklist.Source1.Progressive"] = "逐行掃描影片幀 / 非隔行（SVT-AV1 要求）",

@@ -45,6 +45,12 @@ namespace OneColumnEncoder.Commands
                 bool isSelected = _mainVM.AnalyticsZone.Any(t => t.IsSelected);
                 _mainVM.ToolsImportCard.SetToolPickedStatus(ToolZone.Analytics, isSelected);
             }
+            else if (_mainVM.SrcImportZone != null && _mainVM.SrcImportZone.Contains(clickedTool))
+            {
+                ResetSelection(_mainVM.SrcImportZone, clickedTool);
+                bool isSelected = _mainVM.SrcImportZone.Any(t => t.IsSelected);
+                _mainVM.SrcValidationCard.SetSourcePickedStatus(isSelected);
+            }
         }
 
         private void ResetSelection(ObservableCollection<ToolItemVM> zone, ToolItemVM targetCard)

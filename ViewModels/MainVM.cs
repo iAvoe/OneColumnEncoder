@@ -70,12 +70,11 @@ namespace OneColumnEncoder.ViewModels
             OpenUsages = openUsages;
             SelectTool = new SelectToolCmd(this);
 
-            // SrcImportZone Card
             ToolsImportCard = new ToolsImportCardVM(modalNavS);
-
-            // Initialize main UI zones
-            SrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetSourceImportDefinitions());
-            EncSettingsZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetEncSettingsDefinitions());
+            SrcImportZone =
+                LoadZoneFromDefinitions(ToolCatalogProviderM.GetSrcImportDefinitions());
+            EncSettingsZone =
+                LoadZoneFromDefinitions(ToolCatalogProviderM.GetEncSettingsDefinitions());
             UpstreamsZone = [];
             EncodersZone = [];
             AnalyticsZone = [];
@@ -230,6 +229,9 @@ namespace OneColumnEncoder.ViewModels
                     .Skip(3)
                     .All(e => !e.IsEnabled || e.Status == StatusType.Success);
 
+            bool sourcePickedReady =
+                !SrcValidationCard.Checklist1[0].IsEnabled || SrcValidationCard.Checklist1[0].Status == StatusType.Success;
+
             bool sourceValidationReady =
                 SrcValidationCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
                 SrcValidationCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
@@ -237,7 +239,7 @@ namespace OneColumnEncoder.ViewModels
                 EncTermsCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
                 EncTermsCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
 
-            bool allReady = toolsReady && toolsPickedReady && sourceValidationReady && encodeTermsReady;
+            bool allReady = toolsReady && toolsPickedReady && sourcePickedReady && sourceValidationReady && encodeTermsReady;
             EncStartButtons.B3_2IsEnabled = allReady;
             EncStartButtons.B3_3IsEnabled = allReady;
         }
@@ -422,7 +424,7 @@ namespace OneColumnEncoder.ViewModels
         }
         private void RefreshZoneLanguage()
         {
-            ApplyDefinitionsToZone(SrcImportZone, ToolCatalogProviderM.GetSourceImportDefinitions());
+            ApplyDefinitionsToZone(SrcImportZone, ToolCatalogProviderM.GetSrcImportDefinitions());
             ApplyDefinitionsToZone(EncSettingsZone, ToolCatalogProviderM.GetEncSettingsDefinitions());
             ApplyImportedToolDefinitions(UpstreamsZone);
             ApplyImportedToolDefinitions(EncodersZone);

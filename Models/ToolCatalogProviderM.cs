@@ -8,7 +8,7 @@ namespace OneColumnEncoder.Models;
 public static class ToolCatalogProviderM
 {
     // Source Import zone (4 items)
-    public static List<ToolDefinitionM> GetSourceImportDefinitions() =>
+    public static List<ToolDefinitionM> GetSrcImportDefinitions() =>
     [
         new(UILangProviderM.Current["Tool.Source.VideoSource"],
             UILangProviderM.Current["Buttons.Replace"],
@@ -62,7 +62,7 @@ public static class ToolCatalogProviderM
     ];
 
     public static List<ToolDefinitionM> GetAllStaticDefinitions() =>
-        [.. GetSourceImportDefinitions(), .. GetEncSettingsDefinitions()];
+        [.. GetSrcImportDefinitions(), .. GetEncSettingsDefinitions()];
 
     // Importable tool registry derived from ToolDefinitionProviderM
     private static Dictionary<string, (string DisplayName, ToolZone Zone)> BuildToolsDict()

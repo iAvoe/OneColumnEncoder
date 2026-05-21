@@ -14,12 +14,12 @@ namespace OneColumnEncoder.ViewModels.Cards
 {
     public class ToolsImportCardVM : BaseVM
     {
-        private const int UpstreamChecklistIndex = 0;
-        private const int EncoderChecklistIndex = 1;
-        private const int AnalyticsChecklistIndex = 2;
-        private const int UpstreamPickedChecklistIndex = 3;
-        private const int DownstreamPickedChecklistIndex = 4;
-        private const int AnalysisPickedChecklistIndex = 5;
+        private const int UpstreamChecklistIdx = 0;
+        private const int EncoderChecklistIdx = 1;
+        private const int AnalyticsChecklistIdx = 2;
+        private const int UpstreamPickedChecklistIdx = 3;
+        private const int DownstreamPickedChecklistIdx = 4;
+        private const int AnalysisPickedChecklistIdx = 5;
 
         public string ImportButtonText =>
             UILangProviderM.Current["ImportButton"];
@@ -66,18 +66,18 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         public void RefreshToolsChecklist(bool hasUpstreamTool, bool hasEncoderTool, bool hasFfprobe)
         {
-            UpdateChecklistStatus(UpstreamChecklistIndex, hasUpstreamTool);
-            UpdateChecklistStatus(EncoderChecklistIndex, hasEncoderTool);
-            UpdateChecklistStatus(AnalyticsChecklistIndex, hasFfprobe);
+            UpdateChecklistStatus(UpstreamChecklistIdx, hasUpstreamTool);
+            UpdateChecklistStatus(EncoderChecklistIdx, hasEncoderTool);
+            UpdateChecklistStatus(AnalyticsChecklistIdx, hasFfprobe);
         }
 
         public void SetToolPickedStatus(ToolZone zone, bool isPicked)
         {
             int index = zone switch
             {
-                ToolZone.Upstream => UpstreamPickedChecklistIndex,
-                ToolZone.Encoder => DownstreamPickedChecklistIndex,
-                ToolZone.Analytics => AnalysisPickedChecklistIndex,
+                ToolZone.Upstream => UpstreamPickedChecklistIdx,
+                ToolZone.Encoder => DownstreamPickedChecklistIdx,
+                ToolZone.Analytics => AnalysisPickedChecklistIdx,
                 _ => -1
             };
             if (index < 0 || index >= ToolsChecklist.Count) return;

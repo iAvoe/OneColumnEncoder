@@ -106,7 +106,19 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <comps:ItemCard DataContext="{Binding}"
-                                        Margin="0 0 0 20" />
+                                        IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                                        Margin="0 0 0 20">
+                            <comps:ItemCard.InputBindings>
+                                <MouseBinding MouseAction="LeftClick"
+                                              Command="{Binding DataContext.SelectTool,
+                                                                RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                              CommandParameter="{Binding}" />
+                                <KeyBinding Key="Enter"
+                                            Command="{Binding DataContext.SelectTool,
+                                                              RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                            CommandParameter="{Binding}" />
+                            </comps:ItemCard.InputBindings>
+                        </comps:ItemCard>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

@@ -16,6 +16,7 @@ namespace OneColumnEncoder.Models
 
         public static List<ChecklistItemDefinitionM> GetSourceChecklist1() =>
         [
+            new(UILangProviderM.Current["Clecklist.Tools.SourcePicked"]),
             new(UILangProviderM.Current["Checklist.Source1.Metadata"]),
             new(UILangProviderM.Current["Checklist.Source1.Progressive"]),
             new(UILangProviderM.Current["Checklist.Source1.BitDepth"]),
