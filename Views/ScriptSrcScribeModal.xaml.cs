@@ -1,29 +1,24 @@
-﻿using OneColumnEncoder.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace OneColumnEncoder.Views
 {
-    /// <summary>
-    /// Interaction logic for ScriptSrcScribeModal.xaml
-    /// </summary>
     public partial class ScriptSrcScribeModal : Window
     {
         public ScriptSrcScribeModal()
         {
             InitializeComponent();
+        }
+
+        private void UserInput_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (Keyboard.Modifiers != ModifierKeys.Control) return;
+
+            var box = (TextBox)sender;
+            double newSize = box.FontSize + (e.Delta > 0 ? 1 : -1);
+            box.FontSize = double.Clamp(newSize, 8, 48);
+            e.Handled = true;
         }
     }
 }
