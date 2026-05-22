@@ -45,14 +45,14 @@ namespace OneColumnEncoder.ViewModels
         public BestPracticesCardVM BestPracticesCard { get; } = new();
 
         // Section header texts (for MainUI.xaml binding)
-        public string SectionImportTools => UILangProviderM.Current["Section.ImportTools"];
-        public string SectionSelectUpstream => UILangProviderM.Current["Section.SelectUpstream"];
-        public string SectionSelectEncoder => UILangProviderM.Current["Section.SelectEncoder"];
-        public string SectionSelectAnalytics => UILangProviderM.Current["Section.SelectAnalytics"];
-        public string SectionImportSource => UILangProviderM.Current["Section.ImportSource"];
-        public string SectionAnalysisResults => UILangProviderM.Current["Section.AnalysisResults"];
-        public string SectionEncodingConfigs => UILangProviderM.Current["Section.EncodingConfigs"];
-        public string SectionStartEncoding => UILangProviderM.Current["Section.StartEncoding"];
+        public static string SectionImportTools =>     UILangProviderM.Current["Section.ImportTools"];
+        public static string SectionSelectUpstream =>  UILangProviderM.Current["Section.SelectUpstream"];
+        public static string SectionSelectEncoder =>   UILangProviderM.Current["Section.SelectEncoder"];
+        public static string SectionSelectAnalytics => UILangProviderM.Current["Section.SelectAnalytics"];
+        public static string SectionImportSource =>    UILangProviderM.Current["Section.ImportSource"];
+        public static string SectionAnalysisResults => UILangProviderM.Current["Section.AnalysisResults"];
+        public static string SectionEncodingConfigs => UILangProviderM.Current["Section.EncodingConfigs"];
+        public static string SectionStartEncoding =>   UILangProviderM.Current["Section.StartEncoding"];
 
         // Prevent UI responding during settings or confirmation modal is opening
         private bool _isOverlayVisible;
@@ -66,7 +66,6 @@ namespace OneColumnEncoder.ViewModels
             [UpstreamsZone, EncodersZone, AnalyticsZone, DependenciesZone];
 
         #region Constructor
-
         public MainVM(OpenAppConfCmd openAppConf, OpenUsagesCmd openUsages, AppDataM appDataM, AppConfM appConfM, ModalNavS modalNavS)
         {
             // Tools data, Settings data, Modal Navigation, Open Settings Command
@@ -136,7 +135,6 @@ namespace OneColumnEncoder.ViewModels
         #endregion
 
         #region Zone Initialization
-
         private static ObservableCollection<ToolItemVM> LoadZoneFromDefinitions(List<ToolDefinitionM> defs)
         {
             ObservableCollection<ToolItemVM> zone = [];
@@ -147,7 +145,8 @@ namespace OneColumnEncoder.ViewModels
                     R1Text = def.R1Text,
                     R2Text = def.R2Text,
                     P1Name = def.P1Name,
-                    P2Name = def.P2Name ?? ""
+                    P2Name = def.P2Name ?? "",
+                    UseAutoAddReplaceText = true
                 };
                 item.R2Command = new RemoveZoneItemCmd(item, zone);
                 zone.Add(item);
@@ -174,7 +173,6 @@ namespace OneColumnEncoder.ViewModels
         #endregion
 
         #region Imported Zone Event Handling
-
         private void SubToImportedToolZones()
         {
             foreach (var zone in AllImportedToolZones)

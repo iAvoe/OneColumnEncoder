@@ -87,7 +87,7 @@ namespace OneColumnEncoder.Commands
             catch { return false; }
         }
 
-        internal static bool ShowDoubleCheckConfirmation(ModalNavS modalNavS, string titleStr, string p1Str, string toolName, string supposedName)
+        internal static bool ShowDoubleCheckConfirmation(ModalNavS modalNavS, string titleStr, string p1Str) //, string toolName, string supposedName
         {
             ConfirmationModal window = new();
             ConfirmationModalVM vm = ConfirmationModalVM.CreateWarning(
@@ -131,9 +131,7 @@ namespace OneColumnEncoder.Commands
             return ShowDoubleCheckConfirmation(
                 modalNavS,
                 ConfirmForceImport.GetSuspiciousImportTitle(toolName),
-                ConfirmForceImport.GetWrongToolMessage(filePath, toolName),
-                toolName,
-                filePath) ? filePath : null;
+                ConfirmForceImport.GetWrongToolMessage(filePath, toolName)) ? filePath : null; //, toolName, filePath
         }
         #endregion
     }

@@ -99,19 +99,20 @@ public static class ToolCatalogProviderM
 
     // Display-name sets used by UpdateEncodingStartButtonsState
     public static HashSet<string> UpstreamDisplayNames { get; } =
-        _tools.Values.Where(v => v.Zone == ToolZone.Upstream).Select(v => v.DisplayName).ToHashSet();
+        [.. _tools.Values.Where(v => v.Zone == ToolZone.Upstream).Select(v => v.DisplayName)];
 
     public static HashSet<string> EncoderDisplayNames { get; } =
-        _tools.Values.Where(v => v.Zone == ToolZone.Encoder).Select(v => v.DisplayName).ToHashSet();
+        [.. _tools.Values.Where(v => v.Zone == ToolZone.Encoder).Select(v => v.DisplayName)];
 
     public static HashSet<string> AnalyticsDisplayNames { get; } =
-        _tools.Values.Where(v => v.Zone == ToolZone.Analytics).Select(v => v.DisplayName).ToHashSet();
+        [.. _tools.Values.Where(v => v.Zone == ToolZone.Analytics).Select(v => v.DisplayName)];
 
     public static HashSet<string> DependenciesDisplayNames { get; } =
-        _tools.Values.Where(v => v.Zone == ToolZone.Dependencies).Select(v => v.DisplayName).ToHashSet();
+        [.. _tools.Values.Where(v => v.Zone == ToolZone.Dependencies).Select(v => v.DisplayName)];
 
     // AppDataM.Importables property mapping
-    private static readonly Dictionary<string, Action<AppDataM.Importables, string>> _pathSetters = new(StringComparer.OrdinalIgnoreCase)
+    private static readonly Dictionary<string, Action<AppDataM.Importables, string>> _pathSetters =
+        new(StringComparer.OrdinalIgnoreCase)
     {
         ["ffmpeg.exe"] = (t, p) => t.FfmpegPath = p,
         ["vspipe.exe"] = (t, p) => t.VspipePath = p,

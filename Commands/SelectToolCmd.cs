@@ -65,7 +65,7 @@ namespace OneColumnEncoder.Commands
                 _mainVM.UpstreamsZone!, _mainVM.ScriptSrcImportZone!, _mainVM.RefreshSelectedSourceStatus);
         }
 
-        private void ResetSelection(ObservableCollection<ToolItemVM> zone, ToolItemVM targetCard)
+        private static void ResetSelection(ObservableCollection<ToolItemVM> zone, ToolItemVM targetCard)
         {
             foreach (ToolItemVM card in zone)
             {
