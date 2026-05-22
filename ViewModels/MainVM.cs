@@ -200,12 +200,15 @@ namespace OneColumnEncoder.ViewModels
         {
             RefreshUpstreamToolState();
             RefreshImportedToolsChecklist();
-            ToolCompatibilityH.RefreshDependencySelectionState(UpstreamsZone, DependenciesZone, UpdateEncodingStartButtonsState);
-            ToolCompatibilityH.RefreshSourceSelectionState(UpstreamsZone, ScriptSrcImportZone, RefreshSelectedSourceStatus);
+            ToolCompatibilityH.RefreshDependencySelectionState(
+                UpstreamsZone, DependenciesZone, UpdateEncodingStartButtonsState);
+            ToolCompatibilityH.RefreshSourceSelectionState(
+                UpstreamsZone, ScriptSrcImportZone, RefreshSelectedSourceStatus);
         }
         private void RefreshUpstreamToolState()
         {
-            ToolItemVM? avs2pipemod = UpstreamsZone.FirstOrDefault(t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe"));
+            ToolItemVM? avs2pipemod =
+                UpstreamsZone.FirstOrDefault(t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe"));
             if (avs2pipemod == null) return;
 
             if (!HasImportedAviSynthDll())
@@ -267,7 +270,7 @@ namespace OneColumnEncoder.ViewModels
         }
         public void UpdateScriptScribeButtonsState()
         {
-            ToolItemVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
+            ToolItemVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => !string.IsNullOrWhiteSpace(t.Path));
             bool hasVideo = videoSrc != null;
             OpenScriptScribeButtons.B2_1IsEnabled = hasVideo;
             OpenScriptScribeButtons.B2_2IsEnabled = hasVideo;
@@ -342,7 +345,7 @@ namespace OneColumnEncoder.ViewModels
         private void OnVideoSrcItemPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (sender is not ToolItemVM item) return;
-            if (e.PropertyName == nameof(ToolItemVM.Path) && item.IsSelected)
+            if (e.PropertyName == nameof(ToolItemVM.Path))
                 UpdateScriptScribeButtonsState();
         }
 
@@ -354,7 +357,7 @@ namespace OneColumnEncoder.ViewModels
         }
         private string GetCurrentVideoSourcePath()
         {
-            ToolItemVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
+            ToolItemVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => !string.IsNullOrWhiteSpace(t.Path));
             return videoSrc?.Path ?? string.Empty;
         }
 
