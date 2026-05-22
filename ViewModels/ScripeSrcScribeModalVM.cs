@@ -1,76 +1,91 @@
-﻿using Microsoft.Win32;
-using OneColumnEncoder.Commands;
+﻿using OneColumnEncoder.Commands;
+using OneColumnEncoder.Commands.OpenClose;
+using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
-using OneColumnEncoder.Views;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.Win32;
 
 namespace OneColumnEncoder.ViewModels
 {
-    public class ScripeSrcScribeModalVM : BaseVM
+    public class ScriptSrcScribeModalVM : BaseVM
     {
-        private int _selectedTabIndex; // 0: AVS, 1: VPY
+        private readonly ModalNavS _modalNavS;
+        private int _selectedTabIndex;
         public int SelectedTabIndex
         {
             get => _selectedTabIndex;
             set => SetProperty(ref _selectedTabIndex, value);
         }
 
-        // TODO: Move text data to modal and translate
         #region Script text
-        public string AvsPrefix { get; } = "LWLibavVideoSource(\"视频文件路径\")\r\n# 在下方添加更多滤镜或留空...";
-        private string _avsUserInput = "... 用户输入内容（颜色做出差异） ...";
+        public string AvsPrefix => UILangProviderM.Current["SrcScribe.AvsPrefix"];
+        private string _avsUserInput = "";
         public string AvsUserInput
         {
             get => _avsUserInput;
             set => SetProperty(ref _avsUserInput, value);
         }
-        public string AvsSuffix { get; } = "# ... 编辑结束位置";
+        public string AvsSuffix => UILangProviderM.Current["SrcScribe.AvsSuffix"];
 
-        public string VpyPrefix { get; } = "import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"视频文件路径\")\r\n# 按需在此加入滤镜或留空（沿用 src 变量，或在最后赋值回 src）";
-        private string _vpyUserInput = "... 用户输入内容（颜色做出差异） ...";
+        public string VpyPrefix => UILangProviderM.Current["SrcScribe.VpyPrefix"];
+        private string _vpyUserInput = "";
         public string VpyUserInput
         {
             get => _vpyUserInput;
             set => SetProperty(ref _vpyUserInput, value);
         }
-        public string VpySuffix { get; } = "# ... 编辑结束位置\r\nsrc.set_output()";
+        public static string VpySuffix => UILangProviderM.Current["SrcScribe.VpySuffix"];
         #endregion
 
-        public ScribeLangPack Lang { get; } = new ScribeLangPack();
-        public ButtonGroupVM ScriptExportButtons { get; set; }
-        public ButtonGroupVM FinishScribeButtons { get; set; }
+        #region UILang properties
+        public static string WindowTitle => UILangProviderM.Current["SrcScribe.WindowTitle"];
+        public static string ScribeDescription1 => UILangProviderM.Current["SrcScribe.Description1"];
+        public static string ScribeDescription2 => UILangProviderM.Current["SrcScribe.Description2"];
+        public static string NoteText => UILangProviderM.Current["SrcScribe.NoteText"];
+        public static string TabAvs => UILangProviderM.Current["SrcScribe.TabAvs"];
+        public static string TabVpy => UILangProviderM.Current["SrcScribe.TabVpy"];
+        #endregion
 
-        public ScriptSrcScribeModalVM(Window window)
+        public ICommand CloseCmd { get; }
+        public ButtonGroupVM ScriptExportButtons { get; private set; } = null!;
+        public ButtonGroupVM FinishScribeButtons { get; private set; } = null!;
+
+        public ScriptSrcScribeModalVM(ModalNavS modalNavS, Action closeAction)
         {
-            _window = window;
+            _modalNavS = modalNavS;
+            CloseCmd = new CloseModalCmd(modalNavS, closeAction);
 
-            ScriptExportButtons = ButtonGroupVM.CreateThreeButton (
-                "复制完整脚本", "复制输入输出段", "另存为文件",
-                new ActionCmd(CopyFullScript), new ActionCmd(CopyInOutSection), new ActionCmd(SaveAsFile));
+            BuildButtonGroups();
+            UILangProviderM.CurrentChanged += OnLanguageChanged;
+        }
 
-            // Lock buttons if video source is not ready
-            ScriptExportButtons.B3_1IsEnabled = isVideoLoaded;
-            ScriptExportButtons.B3_2IsEnabled = isVideoLoaded;
-            ScriptExportButtons.B3_3IsEnabled = isVideoLoaded;
+        private void BuildButtonGroups()
+        {
+            ScriptExportButtons = ButtonGroupVM.CreateThreeButton(
+                UILangProviderM.Current["SrcScribe.CopyFull"],
+                UILangProviderM.Current["SrcScribe.CopyInOut"],
+                UILangProviderM.Current["SrcScribe.SaveAsFile"],
+                new ActionCmd(_ => CopyFullScript()),
+                new ActionCmd(_ => CopyInOutSection()),
+                new ActionCmd(_ => SaveAsFile()));
 
             FinishScribeButtons = ButtonGroupVM.CreateTwoButton(
-                "取消（仅关闭）", "确认（保存并导入所有脚本）",
-                new ActionCmd(CloseModal), new ActionCmd(SaveAndImportAll));
+                UILangProviderM.Current["SrcScribe.Cancel"],
+                UILangProviderM.Current["SrcScribe.Confirm"],
+                CloseCmd,
+                new ActionCmd(_ => SaveAndImportAll()));
         }
 
         #region Script operations
         private void CopyFullScript()
         {
             Clipboard.SetText(GetCurrentFullScript());
-            // 提示通常可以通过你项目里的 OpenUsingModal 或是 MessageBox
-            MessageBox.Show("完整脚本已复制到剪贴板！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(UILangProviderM.Current["SrcScribe.CopiedFull"],
+                UILangProviderM.Current["SrcScribe.WindowTitle"],
+                MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void CopyInOutSection()
@@ -80,20 +95,22 @@ namespace OneColumnEncoder.ViewModels
                 : $"{VpyPrefix}\r\n\r\n{VpySuffix}";
 
             Clipboard.SetText(inOutText);
-            MessageBox.Show("基准输入输出段已复制到剪贴板！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(UILangProviderM.Current["SrcScribe.CopiedSection"],
+                UILangProviderM.Current["SrcScribe.WindowTitle"],
+                MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void SaveAsFile()
         {
-            SaveFileDialog sfd = new SaveFileDialog();
+            SaveFileDialog sfd = new();
             if (SelectedTabIndex == 0)
             {
-                sfd.Filter = "AviSynth 脚本 (*.avs)|*.avs";
+                sfd.Filter = UILangProviderM.Current["SrcScribe.FilterAvs"];
                 sfd.FileName = "script.avs";
             }
             else
             {
-                sfd.Filter = "VapourSynth 脚本 (*.vpy)|*.vpy";
+                sfd.Filter = UILangProviderM.Current["SrcScribe.FilterVpy"];
                 sfd.FileName = "script.vpy";
             }
 
@@ -103,14 +120,8 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        private void CloseModal()
-        {
-            _modalNavS.Close(); // 使用你提供的通用状态管理关闭
-        }
-
         private void SaveAndImportAll()
         {
-            // TODO: 将 GetCurrentFullScript() 的内容持久化回你的总线数据中
             _modalNavS.Close();
         }
 
@@ -122,14 +133,30 @@ namespace OneColumnEncoder.ViewModels
         }
         #endregion
 
-        // 独立的多语言本地化字段映射
-        public class ScribeLangPack
+        #region Language switching
+        private void OnLanguageChanged()
         {
-            public string WindowTitle { get; set; } = "生成上游程序脚本";
-            public string Title { get; set; } = "生成上游程序脚本";
-            public string ScribeDescription1 { get; set; } = "自动根据已导入的视频构建「调用解码器生成 Y4M 流并导出」的脚本，可以将需要的滤镜粘贴进来，也可以将解码输出段落复制给其它的待命脚本。";
-            public string ScribeDescription2 { get; set; } = "若按钮锁定，则先回到主界面完成视频文件导入操作。";
-            public string NoteText { get; set; } = "注：默认只使用「确认」按钮生成的脚本";
+            OnPropertyChanged(nameof(WindowTitle));
+            OnPropertyChanged(nameof(ScribeDescription1));
+            OnPropertyChanged(nameof(ScribeDescription2));
+            OnPropertyChanged(nameof(NoteText));
+            OnPropertyChanged(nameof(TabAvs));
+            OnPropertyChanged(nameof(TabVpy));
+            OnPropertyChanged(nameof(AvsPrefix));
+            OnPropertyChanged(nameof(AvsSuffix));
+            OnPropertyChanged(nameof(VpyPrefix));
+            OnPropertyChanged(nameof(VpySuffix));
+
+            BuildButtonGroups();
+            OnPropertyChanged(nameof(ScriptExportButtons));
+            OnPropertyChanged(nameof(FinishScribeButtons));
+        }
+        #endregion
+
+        public override void Dispose()
+        {
+            UILangProviderM.CurrentChanged -= OnLanguageChanged;
+            base.Dispose();
         }
     }
 }

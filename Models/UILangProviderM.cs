@@ -26,6 +26,8 @@ public class UILangProviderM
             ["Buttons.ReEvaluate"] = "Re-Evaluate",
             ["Buttons.RunSample"] = "Run a Sample",
             ["Buttons.StartEncode"] = "Start Encode",
+            ["Buttons.OneClickScriptGen"] = "One-Click Script Gen.",
+            ["Buttons.OpenScribeSrcScribe"] = "SrcScribe Window",
             ["Buttons.Add"] = "Add",
             ["Buttons.Replace"] = "Replace",
             ["Buttons.Delete"] = "Delete",
@@ -185,6 +187,27 @@ public class UILangProviderM
 
             // Settings - Language label
             ["Setting.Language.Select"] = "Select Language",
+
+            // ScriptSrcScribeModal
+            ["SrcScribe.WindowTitle"] = "Generate Upstream Script",
+            ["SrcScribe.Description1"] = "Automatically builds a decoder-to-Y4M pipeline script based on imported video. You can paste additional filters here, or copy the decoder output section to other pending scripts.",
+            ["SrcScribe.Description2"] = "If buttons are locked, return to the main UI and import a video file first.",
+            ["SrcScribe.NoteText"] = "Note: Only the script from the 'Confirm' button will be used by default.",
+            ["SrcScribe.TabAvs"] = "AviSynth (.avs)",
+            ["SrcScribe.TabVpy"] = "VapourSynth (.vpy)",
+            ["SrcScribe.CopyFull"] = "Copy Full Script",
+            ["SrcScribe.CopyInOut"] = "Copy In/Out Section",
+            ["SrcScribe.SaveAsFile"] = "Save as File",
+            ["SrcScribe.Cancel"] = "Cancel (Close only)",
+            ["SrcScribe.Confirm"] = "Confirm (Save && Import All Scripts)",
+            ["SrcScribe.CopiedFull"] = "Full script copied to clipboard!",
+            ["SrcScribe.CopiedSection"] = "Base in/out section copied to clipboard!",
+            ["SrcScribe.FilterAvs"] = "AviSynth Script (*.avs)|*.avs",
+            ["SrcScribe.FilterVpy"] = "VapourSynth Script (*.vpy)|*.vpy",
+            ["SrcScribe.AvsPrefix"] = "LWLibavVideoSource(\"video file path\")\r\n# Add more filters below or leave empty...",
+            ["SrcScribe.AvsSuffix"] = "# ... end of edit section",
+            ["SrcScribe.VpyPrefix"] = "import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"video file path\")\r\n# Add filters here as needed or leave empty (keep src variable, or assign back to src at the end)",
+            ["SrcScribe.VpySuffix"] = "# ... end of edit section\r\nsrc.set_output()",
         },
         ["zh-cn"] = new()
         {
@@ -204,6 +227,8 @@ public class UILangProviderM
             ["Buttons.ReEvaluate"] = "重新检查",
             ["Buttons.RunSample"] = "取段打样",
             ["Buttons.StartEncode"] = "开始压制",
+            ["Buttons.OneClickScriptGen"] = "一键生成脚本",
+            ["Buttons.OpenScribeSrcScribe"] = "脚本编辑窗口",
             ["Buttons.Add"] = "添加",
             ["Buttons.Replace"] = "替换",
             ["Buttons.Delete"] = "删除",
@@ -341,6 +366,26 @@ public class UILangProviderM
             ["Setting.Smtp.AFKThreshold"] = "判断离开阈值（无操作分钟，0=不管）",
 
             ["Setting.Language.Select"] = "选择语言",
+
+            ["SrcScribe.WindowTitle"] = "生成上游脚本",
+            ["SrcScribe.Description1"] = "自动根据已导入的视频构建「调用解码器生成 Y4M 流并导出」的脚本，可以将需要的滤镜粘贴进来，也可以将解码输出段落复制给其它的待命脚本。",
+            ["SrcScribe.Description2"] = "若按钮锁定，则先回到主界面完成视频文件导入操作。",
+            ["SrcScribe.NoteText"] = "注：默认只使用「确认」按钮生成的脚本。",
+            ["SrcScribe.TabAvs"] = "AviSynth (.avs)",
+            ["SrcScribe.TabVpy"] = "VapourSynth (.vpy)",
+            ["SrcScribe.CopyFull"] = "复制完整脚本",
+            ["SrcScribe.CopyInOut"] = "复制输入输出段",
+            ["SrcScribe.SaveAsFile"] = "另存为文件",
+            ["SrcScribe.Cancel"] = "取消（仅关闭）",
+            ["SrcScribe.Confirm"] = "确认（保存并导入所有脚本）",
+            ["SrcScribe.CopiedFull"] = "完整脚本已复制到剪贴板！",
+            ["SrcScribe.CopiedSection"] = "基准输入输出段已复制到剪贴板！",
+            ["SrcScribe.FilterAvs"] = "AviSynth 脚本 (*.avs)|*.avs",
+            ["SrcScribe.FilterVpy"] = "VapourSynth 脚本 (*.vpy)|*.vpy",
+            ["SrcScribe.AvsPrefix"] = "LWLibavVideoSource(\"视频文件路径\")\r\n# 在下方添加更多滤镜或留空...",
+            ["SrcScribe.AvsSuffix"] = "# ... 编辑结束位置",
+            ["SrcScribe.VpyPrefix"] = "import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"视频文件路径\")\r\n# 按需在此加入滤镜或留空（沿用 src 变量，或在最后赋值回 src）",
+            ["SrcScribe.VpySuffix"] = "# ... 编辑结束位置\r\nsrc.set_output()",
         },
         ["zh-tw"] = new()
         {
@@ -360,6 +405,8 @@ public class UILangProviderM
             ["Buttons.ReEvaluate"] = "重新檢查",
             ["Buttons.RunSample"] = "取段打樣",
             ["Buttons.StartEncode"] = "開始壓制",
+            ["Buttons.OneClickScriptGen"] = "一鍵生成腳本",
+            ["Buttons.OpenScribeSrcScribe"] = "腳本編輯視窗",
             ["Buttons.Add"] = "添加",
             ["Buttons.Replace"] = "替換",
             ["Buttons.Delete"] = "刪除",
@@ -497,6 +544,26 @@ public class UILangProviderM
             ["Setting.Smtp.AFKThreshold"] = "判斷離開閾值（無操作分鐘，0=不管）",
 
             ["Setting.Language.Select"] = "選擇語言",
+
+            ["SrcScribe.WindowTitle"] = "生成上游腳本",
+            ["SrcScribe.Description1"] = "自動根據已導入的影片構建「調用解碼器生成 Y4M 流並導出」的腳本，可以將需要的濾鏡粘貼進來，也可以將解碼輸出段落複製給其它的待命腳本。",
+            ["SrcScribe.Description2"] = "若按鈕鎖定，則先回到主界面完成影片文件導入操作。",
+            ["SrcScribe.NoteText"] = "註：預設只使用「確認」按鈕生成的腳本。",
+            ["SrcScribe.TabAvs"] = "AviSynth (.avs)",
+            ["SrcScribe.TabVpy"] = "VapourSynth (.vpy)",
+            ["SrcScribe.CopyFull"] = "複製完整腳本",
+            ["SrcScribe.CopyInOut"] = "複製輸入/輸出段",
+            ["SrcScribe.SaveAsFile"] = "另存為文件",
+            ["SrcScribe.Cancel"] = "取消（僅關閉）",
+            ["SrcScribe.Confirm"] = "確認（保存並導入所有腳本）",
+            ["SrcScribe.CopiedFull"] = "完整腳本已複製到剪貼板！",
+            ["SrcScribe.CopiedSection"] = "基準輸入/輸出段已複製到剪貼板！",
+            ["SrcScribe.FilterAvs"] = "AviSynth 腳本 (*.avs)|*.avs",
+            ["SrcScribe.FilterVpy"] = "VapourSynth 腳本 (*.vpy)|*.vpy",
+            ["SrcScribe.AvsPrefix"] = "LWLibavVideoSource(\"影片檔案路徑\")\r\n# 在下方新增更多濾鏡或留空...",
+            ["SrcScribe.AvsSuffix"] = "# ... 編輯結束位置",
+            ["SrcScribe.VpyPrefix"] = "import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"影片檔案路徑\")\r\n# 按需在此加入濾鏡或留空（沿用 src 變數，或在最後賦值回 src）",
+            ["SrcScribe.VpySuffix"] = "# ... 編輯結束位置\r\nsrc.set_output()",
         }
     };
 

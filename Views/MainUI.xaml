@@ -149,6 +149,12 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+            
+            <comps:TwoButtonGroup DataContext="{Binding OpenScriptScribeButtons}"
+                                  Button1Command="{Binding Cmd1}"
+                                  Button2Command="{Binding Cmd2}"
+                                  Margin="0 0 0 20" />
+            
             <ItemsControl ItemsSource="{Binding ScriptSrcImportZone}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>

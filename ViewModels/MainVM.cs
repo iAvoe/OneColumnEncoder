@@ -33,9 +33,12 @@ namespace OneColumnEncoder.ViewModels
         public ObservableCollection<ToolItemVM> EncSettingsZone { get; }
         // Buttons
         public ButtonGroupVM OpenAppConfButtons { get; }
+        public ButtonGroupVM OpenScriptScribeButtons { get; }
         public ButtonGroupVM EncStartButtons { get; }
         // Commands
         public OpenAppConfCmd OpenAppConf { get; }
+        public OneClickScriptGenCmd OneClickScriptGen { get; }
+        public OpenScriptScribeCmd OpenScriptScribe { get; }
         public OpenUsagesCmd OpenUsages { get; }
         public SelectToolCmd SelectTool { get; }
         // Card UIs
@@ -90,12 +93,21 @@ namespace OneColumnEncoder.ViewModels
             LoadToolsFromAppDataM();
             WireUpZoneDeleteCmds();
 
+            // Commands
+            OneClickScriptGen = new OneClickScriptGenCmd(() => GetCurrentVideoSourcePath());
+            OpenScriptScribe = new OpenScriptScribeCmd(modalNavS);
+
             // Buttons
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProviderM.Buttons.UsageAndCompliance,
                 UICaptionProviderM.Buttons.Settings,
                 OpenUsages,
                 OpenAppConf);
+            OpenScriptScribeButtons = ButtonGroupVM.CreateTwoButton(
+                UICaptionProviderM.Buttons.OneClickScriptGen,
+                UICaptionProviderM.Buttons.OpenScribeSrcScribe,
+                OneClickScriptGen,
+                OpenScriptScribe);
             EncStartButtons = ButtonGroupVM.CreateThreeButton(
                 UICaptionProviderM.Buttons.ReEvaluate,
                 UICaptionProviderM.Buttons.RunSample,
@@ -308,7 +320,7 @@ namespace OneColumnEncoder.ViewModels
             item.R2Command =
                 new ClearToolItemCmd(item, RefreshSelectedSourceStatus);
         }
-        private void WireUpStaticClearCmd(ToolItemVM item)
+        private static void WireUpStaticClearCmd(ToolItemVM item)
         {
             item.R2Command = new ClearToolItemCmd(item);
         }
@@ -317,6 +329,12 @@ namespace OneColumnEncoder.ViewModels
             bool anySelected = VideoSrcImportZone.Any(t => t.IsSelected) || ScriptSrcImportZone.Any(t => t.IsSelected);
             SrcValidationCard.SetSourcePickedStatus(anySelected);
         }
+        private string GetCurrentVideoSourcePath()
+        {
+            ToolItemVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
+            return videoSrc?.Path ?? string.Empty;
+        }
+
         private static SourceFileKind ResolveSourceFileKind(string displayName)
         {
             if (displayName.Equals(UILangProviderM.Current["Tool.Source.VideoSource"], StringComparison.OrdinalIgnoreCase))
@@ -457,6 +475,8 @@ namespace OneColumnEncoder.ViewModels
         {
             OpenAppConfButtons.B2_1Text = UICaptionProviderM.Buttons.UsageAndCompliance;
             OpenAppConfButtons.B2_2Text = UICaptionProviderM.Buttons.Settings;
+            OpenScriptScribeButtons.B2_1Text = UICaptionProviderM.Buttons.OneClickScriptGen;
+            OpenScriptScribeButtons.B2_2Text = UICaptionProviderM.Buttons.OpenScribeSrcScribe;
             EncStartButtons.B3_1Text = UICaptionProviderM.Buttons.ReEvaluate;
             EncStartButtons.B3_2Text = UICaptionProviderM.Buttons.RunSample;
             EncStartButtons.B3_3Text = UICaptionProviderM.Buttons.StartEncode;
