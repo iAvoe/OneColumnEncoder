@@ -41,7 +41,6 @@ namespace OneColumnEncoder.ViewModels
                     _baseModel.Path = value;
                     OnPropertyChanged(nameof(Path));
                     OnPropertyChanged(nameof(P2Text));
-                    OnPropertyChanged(nameof(DisplayR1Text));
                     Validate(); // Changes both versionText and isReal
                 }
             }
@@ -86,36 +85,14 @@ namespace OneColumnEncoder.ViewModels
         public string R1Text // Maybe 'Edit' in some cases
         {
             get => _r1Text;
-            set
-            {
-                if (SetProperty(ref _r1Text, value))
-                    OnPropertyChanged(nameof(DisplayR1Text));
-            }
+            set => SetProperty(ref _r1Text, value);
         }
-
-        public string DisplayR1Text =>
-            UseAutoAddReplaceText
-                ? string.IsNullOrWhiteSpace(Path)
-                    ? UILangProviderM.Current["Buttons.Add"]
-                    : UILangProviderM.Current["Buttons.Replace"]
-                : R1Text;
 
         private string _r2Text = "";
         public string R2Text
         {
             get => _r2Text;
             set => SetProperty(ref _r2Text, value);
-        }
-
-        private bool _useAutoAddReplaceText;
-        public bool UseAutoAddReplaceText
-        {
-            get => _useAutoAddReplaceText;
-            set
-            {
-                if (SetProperty(ref _useAutoAddReplaceText, value))
-                    OnPropertyChanged(nameof(DisplayR1Text));
-            }
         }
 
         private bool _isSelected;
@@ -188,7 +165,6 @@ namespace OneColumnEncoder.ViewModels
         public void RefreshLanguage()
         {
             OnPropertyChanged(nameof(SeparatorText));
-            OnPropertyChanged(nameof(DisplayR1Text));
         }
 
         #endregion

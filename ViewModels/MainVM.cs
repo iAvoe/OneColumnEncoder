@@ -147,8 +147,7 @@ namespace OneColumnEncoder.ViewModels
                     R1Text = def.R1Text,
                     R2Text = def.R2Text,
                     P1Name = def.P1Name,
-                    P2Name = def.P2Name ?? "",
-                    UseAutoAddReplaceText = true
+                    P2Name = def.P2Name ?? ""
                 };
                 item.R2Command = new RemoveZoneItemCmd(item, zone);
                 zone.Add(item);
@@ -311,7 +310,7 @@ namespace OneColumnEncoder.ViewModels
             item.R2Command =
                 new ClearToolItemCmd(item, RefreshSelectedSourceStatus);
         }
-        private static void WireUpStaticClearCmd(ToolItemVM item)
+        private void WireUpStaticClearCmd(ToolItemVM item)
         {
             item.R2Command = new ClearToolItemCmd(item);
         }
