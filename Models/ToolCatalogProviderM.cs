@@ -154,8 +154,7 @@ public static class ToolCatalogProviderM
 
     public static string? TryFindToolDirectory(string exeName)
     {
-        if (!ToolExtraSearchPaths.TryGetValue(exeName, out var directories))
-            return null;
+        if (!ToolExtraSearchPaths.TryGetValue(exeName, out var directories)) return null;
         foreach (var dir in directories)
         {
             if (Directory.Exists(dir))
@@ -202,8 +201,7 @@ public static class ToolCatalogProviderM
         {
             if (def.ExeName == null || def.Zone == null) continue;
 
-            if (prevZone != null && def.Zone != prevZone)
-                items.Add(new("", true));
+            if (prevZone != null && def.Zone != prevZone) items.Add(new("", true));
 
             items.Add(new DropdownItemM(def.ExeName));
             prevZone = def.Zone;

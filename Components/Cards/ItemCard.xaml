@@ -82,7 +82,7 @@
                        Style="{StaticResource H2}" />
             <Button Grid.Row="0"
                     Grid.Column="1"
-                    Content="{Binding R1Text}"
+                    Content="{Binding DisplayR1Text}"
                     Command="{Binding R1Command}"
                     Style="{StaticResource LinkButton}"
                     HorizontalAlignment="Right"

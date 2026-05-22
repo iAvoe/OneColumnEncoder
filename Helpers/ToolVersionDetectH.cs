@@ -30,6 +30,7 @@ namespace OneColumnEncoder.Helpers
                 "svtav1encapp.exe" => "--version",
                 "avs2yuv.exe" => "",
                 "avs2pipemod.exe" => "",
+                "ffprobe.exe" => "-version",
                 _ => "",
                 // No need to check for for ffprobe.exe
             };
@@ -112,9 +113,9 @@ namespace OneColumnEncoder.Helpers
             switch (exeName.ToLowerInvariant())
             {
                 case "ffmpeg.exe":
-                    return firstLine[..Math.Min(25, firstLine.Length)];
+                    return firstLine[..Math.Min(25, firstLine.Length)] + "...";
                 case "ffprobe.exe":
-                    return firstLine;
+                    return firstLine[..Math.Min(26, firstLine.Length)] + "...";
                 case "vspipe.exe":
                     return lines.FirstOrDefault(l =>
                         l.Contains("Core R", StringComparison.OrdinalIgnoreCase));
