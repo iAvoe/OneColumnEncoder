@@ -8,7 +8,7 @@ public static class UICaptionProviderM
         public static string SourceValidation => UILangProviderM.Current["Cards.SourceValidation"];
         public static string SourceSevere => UILangProviderM.Current["Cards.SourceSevere"];
         public static string SourceModerate => UILangProviderM.Current["Cards.SourceModerate"];
-        public static string EncPrerequisites => UILangProviderM.Current["Cards.EncPrereqs"];
+        public static string EncPrerequisites => UILangProviderM.Current["Cards.EncPrerequisites"];
         public static string EncHardware => UILangProviderM.Current["Cards.EncHardware"];
         public static string EncSoftware => UILangProviderM.Current["Cards.EncSoftware"];
         public static string BestPractices => UILangProviderM.Current["Cards.BestPractices"];
@@ -18,7 +18,7 @@ public static class UICaptionProviderM
 
     public static class Buttons
     {
-        public static string UsageAndCompliance => UILangProviderM.Current["Buttons.UsageCompliance"];
+        public static string UsageAndCompliance => UILangProviderM.Current["Buttons.UsageAndCompliance"];
         public static string Settings => UILangProviderM.Current["Buttons.Settings"];
         public static string ReEvaluate => UILangProviderM.Current["Buttons.ReEvaluate"];
         public static string RunSample => UILangProviderM.Current["Buttons.RunSample"];

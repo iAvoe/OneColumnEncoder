@@ -13,7 +13,7 @@ public class UILangProviderM
             ["Cards.SourceValidation"] = "Source Video Validation",
             ["Cards.SourceSevere"] = "Severe (incompatible / corrupted)",
             ["Cards.SourceModerate"] = "Moderate (affecting quality)",
-            ["Cards.EncPrereqs"] = "Encoding Prerequisites",
+            ["Cards.EncPrerequisites"] = "Encoding Prerequisites",
             ["Cards.EncHardware"] = "Hardware",
             ["Cards.EncSoftware"] = "Software",
             ["Cards.BestPractices"] = "Best Practices",
@@ -21,7 +21,7 @@ public class UILangProviderM
             ["Cards.BestSoftware"] = "Software (self check)",
 
             // Main buttons
-            ["Buttons.UsageCompliance"] = "Usage & Compliance",
+            ["Buttons.UsageAndCompliance"] = "Usage & Compliance",
             ["Buttons.Settings"] = "\u2699\uFE0F Settings",
             ["Buttons.ReEvaluate"] = "Re-Evaluate",
             ["Buttons.RunSample"] = "Run a Sample",
@@ -69,11 +69,11 @@ public class UILangProviderM
             ["ToolField.Path"] = "Path",
             ["ToolField.Name"] = "Name",
             ["ToolField.Mode"] = "Mode",
-            ["ToolField.FileNameWithoutExt"] = "File name w/out extension",
+            ["ToolField.FileNameWithoutExtension"] = "File name w/out extension",
             ["ToolField.CpuRamNodes"] = "CPU-RAM Nodes",
             ["ToolField.Threads"] = "Threads",
             ["ToolField.Value"] = "Value",
-            ["ToolField.Ordinance"] = "Stratagy",
+            ["ToolField.Stratagem"] = "Stratagy",
             ["ToolField.MaximumKeyframeGap"] = "Maximum keyframe gap",
             ["ToolField.OtherCustomParams"] = "Other custom params",
 
@@ -85,8 +85,8 @@ public class UILangProviderM
             ["Tool.Enc.OutputSetting"] = "Output Setting",
             ["Tool.Enc.Parallelism"] = "Parallelism",
             ["Tool.Enc.RateControl"] = "Rate Control Mechanism",
-            ["Tool.Enc.BaseParams"] = "Base Parameters",
-            ["Tool.Enc.CustomParams"] = "Custom Parameters",
+            ["Tool.Enc.BaseParameters"] = "Base Parameters",
+            ["Tool.Enc.CustomParameters"] = "Custom Parameters",
 
             // Dialogs
             ["Dialog.SelectTitle"] = "Select {0}",
@@ -103,7 +103,7 @@ public class UILangProviderM
             ["ConfirmDialog.DebugPrefix"] = "Debug: ",
 
             // Confirmation provider messages (with {0} / {1} format placeholders)
-            ["ConfirmProvider.SuspectImportTitle"] = "Import does not match {0}",
+            ["ConfirmProvider.SuspiciousImportTitle"] = "Import does not match {0}",
             ["ConfirmProvider.ProceedToRun"] = "Proceed to run {0} to get its version?",
             ["ConfirmProvider.WrongTool"] = "Importing {0} for {1}?",
 
@@ -128,7 +128,7 @@ public class UILangProviderM
             ["Checklist.Source2.ColorMatrix"] = "Color matrix metadata is normal",
             ["Checklist.Source2.TransferChars"] = "Transfer characteristics metadata is normal",
             ["Checklist.Source2.ColorPrimaries"] = "Color primaries metadata is normal",
-            ["Checklist.Source2.ChromaLoc"] = "No chroma subsampling or being \u2190/\u2196 (SVT-AV1 req.)",
+            ["Checklist.Source2.ChromaSubsampling"] = "No chroma subsampling or being \u2190/\u2196 (SVT-AV1 req.)",
 
             // Checklist - Encoding Prerequisites 1 (Hardware)
             ["Checklist.Enc1.OffGrid"] = "Not off-grid / powering via battery",
@@ -191,14 +191,14 @@ public class UILangProviderM
             ["Cards.SourceValidation"] = "视频源检查",
             ["Cards.SourceSevere"] = "严重问题（不兼容/数据损坏）",
             ["Cards.SourceModerate"] = "中等问题（影响质量）",
-            ["Cards.EncPrereqs"] = "开始压制前提",
+            ["Cards.EncPrerequisites"] = "开始压制前提",
             ["Cards.EncHardware"] = "硬件条件",
             ["Cards.EncSoftware"] = "软件条件",
             ["Cards.BestPractices"] = "最好看看",
             ["Cards.BestHardware"] = "硬件工况（自查）",
             ["Cards.BestSoftware"] = "软件工况（自查）",
 
-            ["Buttons.UsageCompliance"] = "用法与合规指南",
+            ["Buttons.UsageAndCompliance"] = "用法与合规指南",
             ["Buttons.Settings"] = "\u2699\uFE0F 设置",
             ["Buttons.ReEvaluate"] = "重新检查",
             ["Buttons.RunSample"] = "取段打样",
@@ -238,11 +238,11 @@ public class UILangProviderM
             ["ToolField.Path"] = "路径",
             ["ToolField.Name"] = "名称",
             ["ToolField.Mode"] = "模式",
-            ["ToolField.FileNameWithoutExt"] = "不含扩展名的文件名",
+            ["ToolField.FileNameWithoutExtension"] = "不含扩展名的文件名",
             ["ToolField.CpuRamNodes"] = "CPU-RAM 节点",
             ["ToolField.Threads"] = "线程",
             ["ToolField.Value"] = "数值",
-            ["ToolField.Ordinance"] = "策略",
+            ["ToolField.Stratagem"] = "策略",
             ["ToolField.MaximumKeyframeGap"] = "最大关键帧间隔",
             ["ToolField.OtherCustomParams"] = "其他自定义参数",
 
@@ -254,8 +254,8 @@ public class UILangProviderM
             ["Tool.Enc.OutputSetting"] = "输出设置",
             ["Tool.Enc.Parallelism"] = "并行计算机制",
             ["Tool.Enc.RateControl"] = "码率控制机制",
-            ["Tool.Enc.BaseParams"] = "基础参数",
-            ["Tool.Enc.CustomParams"] = "自定义参数",
+            ["Tool.Enc.BaseParameters"] = "基础参数",
+            ["Tool.Enc.CustomParameters"] = "自定义参数",
 
             ["Dialog.SelectTitle"] = "选择 {0}",
             ["Dialog.ReplaceTitle"] = "替换 {0}",
@@ -269,7 +269,7 @@ public class UILangProviderM
             ["ConfirmDialog.ErrorPrefix"] = "错误：",
             ["ConfirmDialog.DebugPrefix"] = "调试：",
 
-            ["ConfirmProvider.SuspectImportTitle"] = "导入内容对不上 {0}",
+            ["ConfirmProvider.SuspiciousImportTitle"] = "导入内容对不上 {0}",
             ["ConfirmProvider.ProceedToRun"] = "继续运行 {0} 以获取其版本？",
             ["ConfirmProvider.WrongTool"] = "将 {0} 导入为 {1}？",
 
@@ -291,7 +291,7 @@ public class UILangProviderM
             ["Checklist.Source2.ColorMatrix"] = "色彩矩阵信息正常",
             ["Checklist.Source2.TransferChars"] = "传输特性信息正常",
             ["Checklist.Source2.ColorPrimaries"] = "原色色系信息正常",
-            ["Checklist.Source2.ChromaLoc"] = "无色度采样压缩或为 \u2190/\u2196（SVT-AV1 要求）",
+            ["Checklist.Source2.ChromaSubsampling"] = "无色度采样压缩或为 \u2190/\u2196（SVT-AV1 要求）",
 
             ["Checklist.Enc1.OffGrid"] = "离网供电 / 电池供电",
             ["Checklist.Enc1.RAM"] = "内存充足",
@@ -346,14 +346,14 @@ public class UILangProviderM
             ["Cards.SourceValidation"] = "影片源檢查",
             ["Cards.SourceSevere"] = "嚴重問題（不相容/數據損壞）",
             ["Cards.SourceModerate"] = "中等問題（影響質量）",
-            ["Cards.EncPrereqs"] = "開始壓制前提",
+            ["Cards.EncPrerequisites"] = "開始壓制前提",
             ["Cards.EncHardware"] = "硬體條件",
             ["Cards.EncSoftware"] = "軟體條件",
             ["Cards.BestPractices"] = "最好看看",
             ["Cards.BestHardware"] = "硬體工況（自查）",
             ["Cards.BestSoftware"] = "軟體工況（自查）",
 
-            ["Buttons.UsageCompliance"] = "用法與合規指南",
+            ["Buttons.UsageAndCompliance"] = "用法與合規指南",
             ["Buttons.Settings"] = "\u2699\uFE0F 設置",
             ["Buttons.ReEvaluate"] = "重新檢查",
             ["Buttons.RunSample"] = "取段打樣",
@@ -393,11 +393,11 @@ public class UILangProviderM
             ["ToolField.Path"] = "路徑",
             ["ToolField.Name"] = "名稱",
             ["ToolField.Mode"] = "模式",
-            ["ToolField.FileNameWithoutExt"] = "不含副檔名的檔名",
+            ["ToolField.FileNameWithoutExtension"] = "不含副檔名的檔名",
             ["ToolField.CpuRamNodes"] = "CPU-RAM 節點",
             ["ToolField.Threads"] = "執行緒",
             ["ToolField.Value"] = "數值",
-            ["ToolField.Ordinance"] = "策略",
+            ["ToolField.Stratagem"] = "策略",
             ["ToolField.MaximumKeyframeGap"] = "最大關鍵幀間隔",
             ["ToolField.OtherCustomParams"] = "其他自訂參數",
 
@@ -409,8 +409,8 @@ public class UILangProviderM
             ["Tool.Enc.OutputSetting"] = "輸出設定",
             ["Tool.Enc.Parallelism"] = "平行計算機制",
             ["Tool.Enc.RateControl"] = "位元率控制機制",
-            ["Tool.Enc.BaseParams"] = "基礎參數",
-            ["Tool.Enc.CustomParams"] = "自訂參數",
+            ["Tool.Enc.BaseParameters"] = "基礎參數",
+            ["Tool.Enc.CustomParameters"] = "自訂參數",
 
             ["Dialog.SelectTitle"] = "選擇 {0}",
             ["Dialog.ReplaceTitle"] = "替換 {0}",
@@ -424,7 +424,7 @@ public class UILangProviderM
             ["ConfirmDialog.ErrorPrefix"] = "錯誤：",
             ["ConfirmDialog.DebugPrefix"] = "除錯：",
 
-            ["ConfirmProvider.SuspectImportTitle"] = "導入內容對不上 {0}",
+            ["ConfirmProvider.SuspiciousImportTitle"] = "導入內容對不上 {0}",
             ["ConfirmProvider.ProceedToRun"] = "繼續運行 {0} 以獲取其版本？",
             ["ConfirmProvider.WrongTool"] = "將 {0} 導入為 {1}？",
 
@@ -446,7 +446,7 @@ public class UILangProviderM
             ["Checklist.Source2.ColorMatrix"] = "色彩矩陣資訊正常",
             ["Checklist.Source2.TransferChars"] = "傳輸特性資訊正常",
             ["Checklist.Source2.ColorPrimaries"] = "原色色系資訊正常",
-            ["Checklist.Source2.ChromaLoc"] = "無色度採樣壓縮或為 \u2190/\u2196（SVT-AV1 要求）",
+            ["Checklist.Source2.ChromaSubsampling"] = "無色度採樣壓縮或為 \u2190/\u2196（SVT-AV1 要求）",
 
             ["Checklist.Enc1.OffGrid"] = "離網供電 / 電池供電",
             ["Checklist.Enc1.RAM"] = "記憶體充足",

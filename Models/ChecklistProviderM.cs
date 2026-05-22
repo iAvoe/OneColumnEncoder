@@ -29,7 +29,7 @@ namespace OneColumnEncoder.Models
             new(UILangProviderM.Current["Checklist.Source2.ColorMatrix"]),
             new(UILangProviderM.Current["Checklist.Source2.TransferChars"]),
             new(UILangProviderM.Current["Checklist.Source2.ColorPrimaries"]),
-            new(UILangProviderM.Current["Checklist.Source2.ChromaLoc"]),
+            new(UILangProviderM.Current["Checklist.Source2.ChromaSubsampling"]),
         ];
 
         public static List<ChecklistItemDefinitionM> GetEncodeChecklist1() =>
