@@ -1196,13 +1196,13 @@
           <mxGeometry height="40" width="650" x="-700" y="4500" as="geometry" />
         </mxCell>
         <mxCell id="KRnqhIzMQnunSiAvvXUo-425" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;" value="" vertex="1">
-          <mxGeometry height="130" width="600" x="-700" y="5115" as="geometry" />
+          <mxGeometry height="130" width="600" x="-695" y="5160" as="geometry" />
         </mxCell>
         <mxCell id="KRnqhIzMQnunSiAvvXUo-426" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=16;fontStyle=0;fontColor=#7D736C;spacing=0;" value="&lt;div&gt;LWLibavVideoSource(视频文件路径)&amp;nbsp;&lt;/div&gt;&lt;div&gt;# 在下方添加更多滤镜或留空...&lt;/div&gt;" vertex="1">
-          <mxGeometry height="40" width="580" x="-690" y="5125" as="geometry" />
+          <mxGeometry height="40" width="580" x="-685" y="5170" as="geometry" />
         </mxCell>
         <mxCell id="KRnqhIzMQnunSiAvvXUo-430" connectable="0" parent="1" style="group" value="" vertex="1">
-          <mxGeometry height="15" width="15" x="-125" y="5218.5" as="geometry" />
+          <mxGeometry height="15" width="15" x="-120" y="5263.5" as="geometry" />
         </mxCell>
         <mxCell id="KRnqhIzMQnunSiAvvXUo-427" edge="1" parent="KRnqhIzMQnunSiAvvXUo-430" style="endArrow=none;html=1;rounded=1;curved=0;strokeColor=#343A40;" value="">
           <mxGeometry height="50" relative="1" width="50" as="geometry">
@@ -1223,7 +1223,7 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="KRnqhIzMQnunSiAvvXUo-433" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=16;fontStyle=0;fontColor=#343A40;spacing=0;" value="... 用户输入内容（颜色做出差异）..." vertex="1">
-          <mxGeometry height="15" width="570" x="-690" y="5170" as="geometry" />
+          <mxGeometry height="15" width="570" x="-685" y="5215" as="geometry" />
         </mxCell>
         <mxCell id="KRnqhIzMQnunSiAvvXUo-435" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=5;" value="" vertex="1">
           <mxGeometry height="228.5" width="600" x="-700" y="4681" as="geometry" />
@@ -1264,7 +1264,7 @@
         <mxCell id="KRnqhIzMQnunSiAvvXUo-444" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=16;fontStyle=0;fontColor=#111111;" value="拖拽控制文本框高" vertex="1">
           <mxGeometry height="17.5" width="130" x="-855" y="4892" as="geometry" />
         </mxCell>
-        <mxCell id="qcURknC-39fMl4yb7R_e-5" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=16;" value="&lt;div&gt;自动根据已导入的视频构建「调用解码器生成 Y4M 流并导出」的脚本，可以将需要的滤镜粘贴进来，也可将解码—输出段落复制到真正要使用的脚本用。&lt;/div&gt;" vertex="1">
+        <mxCell id="qcURknC-39fMl4yb7R_e-5" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=16;" value="&lt;div&gt;自动根据已导入的视频构建「调用解码器生成 Y4M 流并导出」的脚本，可以将需要的滤镜粘贴进来，也可将解码输出段落复制给其它的待命脚本。&lt;/div&gt;" vertex="1">
           <mxGeometry height="40" width="600" x="-700" y="4550" as="geometry" />
         </mxCell>
         <mxCell id="qcURknC-39fMl4yb7R_e-11" parent="1" style="html=1;shadow=0;dashed=0;shape=mxgraph.bootstrap.rrect;rSize=5;strokeColor=default;strokeWidth=1;fillColor=#F8F9FA;fontColor=#000000;whiteSpace=wrap;align=center;verticalAlign=middle;spacingLeft=0;fontStyle=0;fontSize=16;spacing=5;" value="复制完整脚本" vertex="1">
@@ -1295,7 +1295,7 @@
           <mxGeometry height="17.5" width="160" x="-885" y="4640" as="geometry" />
         </mxCell>
         <mxCell id="qcURknC-39fMl4yb7R_e-40" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;fontSize=16;fontStyle=0;fontColor=#111111;" value="AVS 脚本内容：" vertex="1">
-          <mxGeometry height="17.5" width="125" x="-850" y="5125" as="geometry" />
+          <mxGeometry height="17.5" width="125" x="-845" y="5170" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
