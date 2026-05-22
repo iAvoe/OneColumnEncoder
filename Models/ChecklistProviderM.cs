@@ -45,6 +45,7 @@ namespace OneColumnEncoder.Models
             new(UILangProviderM.Current["Checklist.Enc2.FTPFilename"]),
             new(UILangProviderM.Current["Checklist.Enc2.WritePermission"]),
             new(UILangProviderM.Current["Checklist.Enc2.Overwrite"]),
+            new(UILangProviderM.Current["Checklist.Enc2.LsmashForAvs2Yuv"]),
         ];
 
         public static List<ChecklistItemDefinitionM> GetBestPracticeChecklist1() =>

@@ -140,6 +140,7 @@ public class UILangProviderM
             ["Checklist.Enc2.FTPFilename"] = "Output filename maybe valid for FTP (Pseudo-UTF-8)",
             ["Checklist.Enc2.WritePermission"] = "Write permission in output folder",
             ["Checklist.Enc2.Overwrite"] = "Output does not overwrite existing file",
+            ["Checklist.Enc2.LsmashForAvs2Yuv"] = "libvslsmashsource.dll under AviSynth+ path (Avs2Yuv)",
 
             // Checklist - Best Practices 1 (Hardware)
             ["Checklist.Best1.SlowDisk"] = "Avoiding slow disk connection (USB2, Bluetooth, etc.)",
@@ -301,6 +302,7 @@ public class UILangProviderM
             ["Checklist.Enc2.FTPFilename"] = "输出文件名可能兼容 FTP（伪 UTF-8）",
             ["Checklist.Enc2.WritePermission"] = "输出文件夹有写入权限",
             ["Checklist.Enc2.Overwrite"] = "输出不覆盖现有文件",
+            ["Checklist.Enc2.LsmashForAvs2Yuv"] = "AviSynth+ 路径含 libvslsmashsource.dll（Avs2Yuv）",
 
             ["Checklist.Best1.SlowDisk"] = "避免低速磁盘连接协议（USB2、蓝牙等）",
             ["Checklist.Best1.DiskThrashing"] = "避免 HDD 磁头寻道冲突（同盘读写或非机械盘）",
@@ -456,6 +458,7 @@ public class UILangProviderM
             ["Checklist.Enc2.FTPFilename"] = "輸出檔案名可能相容 FTP（偽 UTF-8）",
             ["Checklist.Enc2.WritePermission"] = "輸出文件夾有寫入權限",
             ["Checklist.Enc2.Overwrite"] = "輸出不覆蓋現有文件",
+            ["Checklist.Enc2.LsmashForAvs2Yuv"] = "AviSynth+ 路徑含 libvslsmashsource.dll（Avs2Yuv）",
 
             ["Checklist.Best1.SlowDisk"] = "避免低速磁碟連接協議（USB2、藍牙等）",
             ["Checklist.Best1.DiskThrashing"] = "避免 HDD 磁頭尋道衝突（同盤讀寫或非機械盤）",
