@@ -5,7 +5,7 @@ public static class ConfirmationProviderM
     public static class ConfirmForceImport
     {
         public static string GetSuspiciousImportTitle(string toolName) =>
-            string.Format(UILangProviderM.Current["ConfirmProvider.SuspiciousImportTitle"], toolName);
+            string.Format(UILangProviderM.Current["ConfirmProvider.SuspectImportTitle"], toolName);
         public static string GetPorceedToRunMessage(string toolName) =>
             string.Format(UILangProviderM.Current["ConfirmProvider.ProceedToRun"], toolName);
         public static string GetWrongToolMessage(string toolName, string supposedName) =>

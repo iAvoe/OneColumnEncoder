@@ -93,7 +93,7 @@ namespace OneColumnEncoder.ViewModels
 
             // Buttons
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
-                UICaptionProviderM.Buttons.UsageAndCompliance,
+                UICaptionProviderM.Buttons.UsageCompliance,
                 UICaptionProviderM.Buttons.Settings,
                 OpenUsages,
                 OpenAppConf);
@@ -115,7 +115,7 @@ namespace OneColumnEncoder.ViewModels
             SrcValidationCard.Name = UICaptionProviderM.Cards.SourceValidation;
             SrcValidationCard.P1Name = UICaptionProviderM.Cards.SourceSevere;
             SrcValidationCard.P3Name = UICaptionProviderM.Cards.SourceModerate;
-            EncTermsCard.Name = UICaptionProviderM.Cards.EncPrerequisites;
+            EncTermsCard.Name = UICaptionProviderM.Cards.EncPrereqs;
             EncTermsCard.P1Name = UICaptionProviderM.Cards.EncHardware;
             EncTermsCard.P3Name = UICaptionProviderM.Cards.EncSoftware;
             BestPracticesCard.Name = UICaptionProviderM.Cards.BestPractices;
@@ -458,7 +458,7 @@ namespace OneColumnEncoder.ViewModels
         }
         private void RefreshButtonCaptions()
         {
-            OpenAppConfButtons.B2_1Text = UICaptionProviderM.Buttons.UsageAndCompliance;
+            OpenAppConfButtons.B2_1Text = UICaptionProviderM.Buttons.UsageCompliance;
             OpenAppConfButtons.B2_2Text = UICaptionProviderM.Buttons.Settings;
             EncStartButtons.B3_1Text = UICaptionProviderM.Buttons.ReEvaluate;
             EncStartButtons.B3_2Text = UICaptionProviderM.Buttons.RunSample;
@@ -474,7 +474,7 @@ namespace OneColumnEncoder.ViewModels
             SrcValidationCard.P3Name = UICaptionProviderM.Cards.SourceModerate;
             SrcValidationCard.RefreshLanguage();
 
-            EncTermsCard.Name = UICaptionProviderM.Cards.EncPrerequisites;
+            EncTermsCard.Name = UICaptionProviderM.Cards.EncPrereqs;
             EncTermsCard.P1Name = UICaptionProviderM.Cards.EncHardware;
             EncTermsCard.P3Name = UICaptionProviderM.Cards.EncSoftware;
             EncTermsCard.RefreshLanguage();
