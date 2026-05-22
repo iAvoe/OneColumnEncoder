@@ -21,16 +21,16 @@ namespace OneColumnEncoder.ViewModels
         }
 
         #region Script text
-        public string AvsPrefix => UILangProviderM.Current["SrcScribe.AvsPrefix"];
+        public static string AvsPrefix => UILangProviderM.Current["SrcScribe.AvsPrefix"];
         private string _avsUserInput = "";
         public string AvsUserInput
         {
             get => _avsUserInput;
             set => SetProperty(ref _avsUserInput, value);
         }
-        public string AvsSuffix => UILangProviderM.Current["SrcScribe.AvsSuffix"];
+        public static string AvsSuffix => UILangProviderM.Current["SrcScribe.AvsSuffix"];
 
-        public string VpyPrefix => UILangProviderM.Current["SrcScribe.VpyPrefix"];
+        public static string VpyPrefix => UILangProviderM.Current["SrcScribe.VpyPrefix"];
         private string _vpyUserInput = "";
         public string VpyUserInput
         {
