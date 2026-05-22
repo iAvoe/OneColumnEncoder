@@ -8,14 +8,9 @@ using System.Linq;
 
 namespace OneColumnEncoder.Commands
 {
-    public class SelectToolCmd : BaseCmd
+    public class SelectToolCmd(MainVM mainVM) : BaseCmd
     {
-        private readonly MainVM _mainVM;
-
-        public SelectToolCmd(MainVM mainVM)
-        {
-            _mainVM = mainVM;
-        }
+        private readonly MainVM _mainVM = mainVM;
 
         public override bool CanExecute(object? parameter)
         {
