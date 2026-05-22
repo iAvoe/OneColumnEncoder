@@ -15,6 +15,12 @@ namespace OneColumnEncoder.Components
         public static readonly DependencyProperty ButtonHeightProperty =
             DependencyProperty.Register(nameof(ButtonHeight), typeof(double), typeof(TwoButtonGroup), new PropertyMetadata(40.0));
 
+        public static readonly DependencyProperty Button1IsEnabledProperty =
+            DependencyProperty.Register(nameof(Button1IsEnabled), typeof(bool), typeof(TwoButtonGroup), new PropertyMetadata(true));
+
+        public static readonly DependencyProperty Button2IsEnabledProperty =
+            DependencyProperty.Register(nameof(Button2IsEnabled), typeof(bool), typeof(TwoButtonGroup), new PropertyMetadata(true));
+
         public ICommand Button1Command
         {
             get => (ICommand)GetValue(Button1CommandProperty);
@@ -31,6 +37,18 @@ namespace OneColumnEncoder.Components
         {
             get => (double)GetValue(ButtonHeightProperty);
             set => SetValue(ButtonHeightProperty, value);
+        }
+
+        public bool Button1IsEnabled
+        {
+            get => (bool)GetValue(Button1IsEnabledProperty);
+            set => SetValue(Button1IsEnabledProperty, value);
+        }
+
+        public bool Button2IsEnabled
+        {
+            get => (bool)GetValue(Button2IsEnabledProperty);
+            set => SetValue(Button2IsEnabledProperty, value);
         }
 
         public TwoButtonGroup()

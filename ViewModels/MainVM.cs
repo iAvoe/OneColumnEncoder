@@ -138,12 +138,12 @@ namespace OneColumnEncoder.ViewModels
             SubToImportedToolZones();
             RefreshUpstreamToolState(); // initial state after loading
             SubToToolsChecklist();
+            UpdateScriptScribeButtonsState(); // Initial state of script scribe buttons
             _modalNavS.CurrentViewModelChanged += OnModalStateChanged;
             IsOverlayVisible = _modalNavS.IsOpen;
             UILangProviderM.CurrentChanged += OnLanguageChanged;
             RefreshLanguage();
         }
-
         #endregion
 
         #region Zone Initialization
@@ -265,6 +265,20 @@ namespace OneColumnEncoder.ViewModels
             if (e.PropertyName == nameof(ChecklistEntryVM.Status))
                 UpdateEncodingStartButtonsState();
         }
+        public void UpdateScriptScribeButtonsState()
+        {
+            ToolItemVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
+            bool hasVideo = videoSrc != null;
+            OpenScriptScribeButtons.B2_1IsEnabled = hasVideo;
+            OpenScriptScribeButtons.B2_2IsEnabled = hasVideo;
+
+            if (_modalNavS.CurrentModalVM is ScriptSrcScribeModalVM modal)
+            {
+                modal.ScriptExportButtons.B3_1IsEnabled = hasVideo;
+                modal.ScriptExportButtons.B3_2IsEnabled = hasVideo;
+                modal.ScriptExportButtons.B3_3IsEnabled = hasVideo;
+            }
+        }
         public void UpdateEncodingStartButtonsState()
         {
             bool toolsReady =
@@ -319,15 +333,24 @@ namespace OneColumnEncoder.ViewModels
                 new BrowseSourcePathCmd(item, ResolveSourceFileKind(item.Name), _appDataM);
             item.R2Command =
                 new ClearToolItemCmd(item, RefreshSelectedSourceStatus);
+            item.PropertyChanged += OnVideoSrcItemPropertyChanged;
         }
         private static void WireUpStaticClearCmd(ToolItemVM item)
         {
             item.R2Command = new ClearToolItemCmd(item);
         }
+        private void OnVideoSrcItemPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (sender is not ToolItemVM item) return;
+            if (e.PropertyName == nameof(ToolItemVM.Path) && item.IsSelected)
+                UpdateScriptScribeButtonsState();
+        }
+
         public void RefreshSelectedSourceStatus()
         {
             bool anySelected = VideoSrcImportZone.Any(t => t.IsSelected) || ScriptSrcImportZone.Any(t => t.IsSelected);
             SrcValidationCard.SetSourcePickedStatus(anySelected);
+            UpdateScriptScribeButtonsState();
         }
         private string GetCurrentVideoSourcePath()
         {
