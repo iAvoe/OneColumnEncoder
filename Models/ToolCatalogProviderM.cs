@@ -136,6 +136,7 @@ public static class ToolCatalogProviderM
         ["x265.exe"] = (t, v) => t.X265Ver = v,
         ["svtav1encapp.exe"] = (t, v) => t.SvtAv1Ver = v,
         ["ffprobe.exe"] = (t, v) => t.FfprobeVer = v,
+        ["avisynth.dll"] = (t, v) => t.AviSynthDllVer = v,
     };
 
     public static readonly Dictionary<string, string[]> ToolExtraSearchPaths = new(StringComparer.OrdinalIgnoreCase)

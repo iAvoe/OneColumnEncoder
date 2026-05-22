@@ -41,6 +41,7 @@ namespace OneColumnEncoder.Models
             public string? FfprobePath { get; set; }
             public string? FfprobeVer { get; set; }
             public string? AviSynthDllPath { get; set; }
+            public string? AviSynthDllVer { get; set; }
         }
         #endregion
     }
