@@ -119,6 +119,7 @@ namespace OneColumnEncoder.ViewModels
 
             _ = new SaveFileDialog()
             {
+                Title = UILangProviderM.Current["SrcScribe.SavingWindowTitle"],
                 Filter = SelectedTabIndex == 0
                     ? UILangProviderM.Current["SrcScribe.FilterAvs"]
                     : UILangProviderM.Current["SrcScribe.FilterVpy"],
