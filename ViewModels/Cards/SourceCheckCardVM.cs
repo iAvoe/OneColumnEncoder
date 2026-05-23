@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace OneColumnEncoder.ViewModels.Cards
 {
-    public class SourceValidationCardVM : ValidationCardBaseVM
+    public class SourceCheckCardVM : ValidationCardBaseVM
     {
         private const int SourcePickedChecklistIdx = 0; 
-        public SourceValidationCardVM()
+        public SourceCheckCardVM()
         {
             FillCollection(Checklist1, ChecklistProviderM.GetSourceChecklist1());
             FillCollection(Checklist2, ChecklistProviderM.GetSourceChecklist2());

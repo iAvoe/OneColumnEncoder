@@ -152,7 +152,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             
-            <comps:TwoButtonGroup DataContext="{Binding OpenScriptScribeButtons}"
+            <comps:TwoButtonGroup DataContext="{Binding ScriptScbButtons}"
                                   Button1Command="{Binding Cmd1}"
                                   Button2Command="{Binding Cmd2}"
                                   Button1IsEnabled="{Binding B2_1IsEnabled}"

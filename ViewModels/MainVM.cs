@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using OneColumnEncoder.Commands.SaveLoad;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -31,33 +32,31 @@ namespace OneColumnEncoder.ViewModels
         public ObservableCollection<ToolItemVM> VideoSrcImportZone { get; } // V-S separated for dual single-select
         public ObservableCollection<ToolItemVM> ScriptSrcImportZone { get; }
         public ObservableCollection<ToolItemVM> EncSettingsZone { get; }
-        // Buttons
-        public ButtonGroupVM OpenAppConfButtons { get; }
-        public ButtonGroupVM OpenScriptScribeButtons { get; }
-        public ButtonGroupVM EncStartButtons { get; }
-        // Commands
+        // Cmds and buttons
+        public OpenUsagesCmd OpenUsages { get; }
         public OpenAppConfCmd OpenAppConf { get; }
         public OneClickScriptGenCmd OneClickScriptGen { get; }
         public OpenScriptScribeCmd OpenScriptScribe { get; }
-        public OpenUsagesCmd OpenUsages { get; }
-        public SelectToolCmd SelectTool { get; }
+        public SelectToolCmd SelectTool { get; } // ItemCard select on click
+        public ButtonGroupVM OpenAppConfButtons { get; } // OpenUsages & OpenAppConf
+        public ButtonGroupVM ScriptScbButtons { get; } // OneClickScriptGen & OpenScriptScribe
+        public ButtonGroupVM EncStartButtons { get; }
         // Card UIs
         public ToolsImportCardVM ToolsImportCard { get; }
-        public SourceValidationCardVM SrcValidationCard { get; } = new();
+        public SourceCheckCardVM SrcValidationCard { get; } = new();
         public EncTermsCardVM EncTermsCard { get; } = new();
-        public BestPracticesCardVM BestPracticesCard { get; } = new();
-
-        // Section header texts (for MainUI.xaml binding)
-        public static string SectionImportTools =>     UILangProviderM.Current["Section.ImportTools"];
-        public static string SectionSelectUpstream =>  UILangProviderM.Current["Section.SelectUpstream"];
-        public static string SectionSelectEncoder =>   UILangProviderM.Current["Section.SelectEncoder"];
+        public BestPracsCardVM BestPracticesCard { get; } = new();
+        // Section header texts
+        public static string SectionImportTools => UILangProviderM.Current["Section.ImportTools"];
+        public static string SectionSelectUpstream => UILangProviderM.Current["Section.SelectUpstream"];
+        public static string SectionSelectEncoder => UILangProviderM.Current["Section.SelectEncoder"];
         public static string SectionSelectAnalytics => UILangProviderM.Current["Section.SelectAnalytics"];
-        public static string SectionImportSource =>    UILangProviderM.Current["Section.ImportSource"];
+        public static string SectionImportSource => UILangProviderM.Current["Section.ImportSource"];
         public static string SectionAnalysisResults => UILangProviderM.Current["Section.AnalysisResults"];
         public static string SectionEncodingConfigs => UILangProviderM.Current["Section.EncodingConfigs"];
-        public static string SectionStartEncoding =>   UILangProviderM.Current["Section.StartEncoding"];
+        public static string SectionStartEncoding => UILangProviderM.Current["Section.StartEncoding"];
 
-        // Prevent UI responding during settings or confirmation modal is opening
+        // Disable UI when other modal opens
         private bool _isOverlayVisible;
         public bool IsOverlayVisible
         {
@@ -94,8 +93,14 @@ namespace OneColumnEncoder.ViewModels
             WireUpZoneDeleteCmds();
 
             // Commands
-            OneClickScriptGen = new OneClickScriptGenCmd(() => GetCurrentVideoSourcePath());
-            OpenScriptScribe = new OpenScriptScribeCmd(modalNavS);
+            OneClickScriptGen = new OneClickScriptGenCmd(
+                () => GetCurrentVideoSourcePath(),
+                ScriptSrcImportZone[0],
+                ScriptSrcImportZone[1],
+                modalNavS);
+            OpenScriptScribe = new OpenScriptScribeCmd(
+                modalNavS,
+                () => GetCurrentVideoSourcePath());
 
             // Buttons
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
@@ -103,12 +108,12 @@ namespace OneColumnEncoder.ViewModels
                 UICaptionProviderM.Buttons.Settings,
                 OpenUsages,
                 OpenAppConf);
-            OpenScriptScribeButtons = ButtonGroupVM.CreateTwoButton(
+            ScriptScbButtons = ButtonGroupVM.CreateTwoButton( // UpdateScriptScbButtonsState()
                 UICaptionProviderM.Buttons.OneClickScriptGen,
                 UICaptionProviderM.Buttons.OpenScribeSrcScribe,
                 OneClickScriptGen,
                 OpenScriptScribe);
-            EncStartButtons = ButtonGroupVM.CreateThreeButton(
+            EncStartButtons = ButtonGroupVM.CreateThreeButton( // UpdateEncStartButtonsState()
                 UICaptionProviderM.Buttons.ReEvaluate,
                 UICaptionProviderM.Buttons.RunSample,
                 UICaptionProviderM.Buttons.StartEncode);
@@ -138,7 +143,7 @@ namespace OneColumnEncoder.ViewModels
             SubToImportedToolZones();
             RefreshUpstreamToolState(); // initial state after loading
             SubToToolsChecklist();
-            UpdateScriptScribeButtonsState(); // Initial state of script scribe buttons
+            UpdateScriptScbButtonsState(); // Initial state of script scribe buttons
             _modalNavS.CurrentViewModelChanged += OnModalStateChanged;
             IsOverlayVisible = _modalNavS.IsOpen;
             UILangProviderM.CurrentChanged += OnLanguageChanged;
@@ -181,7 +186,6 @@ namespace OneColumnEncoder.ViewModels
             if (cl2.Count >= 3) cl2[2].IsEnabled = g.NoWritePermission;
             if (cl2.Count >= 4) cl2[3].IsEnabled = g.IsOverwriting;
         }
-
         #endregion
 
         #region Imported Zone Event Handling
@@ -201,7 +205,7 @@ namespace OneColumnEncoder.ViewModels
             RefreshUpstreamToolState();
             RefreshImportedToolsChecklist();
             ToolCompatibilityH.RefreshDependencySelectionState(
-                UpstreamsZone, DependenciesZone, UpdateEncodingStartButtonsState);
+                UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
             ToolCompatibilityH.RefreshSourceSelectionState(
                 UpstreamsZone, ScriptSrcImportZone, RefreshSelectedSourceStatus);
         }
@@ -248,7 +252,7 @@ namespace OneColumnEncoder.ViewModels
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
             foreach (ChecklistEntryVM entry in EncTermsCard.Checklist2)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
-            UpdateEncodingStartButtonsState();
+            UpdateEncStartButtonsState();
         }
         private void UnsubFromToolsChecklist()
         {
@@ -266,23 +270,26 @@ namespace OneColumnEncoder.ViewModels
         private void OnChecklistEntryPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ChecklistEntryVM.Status))
-                UpdateEncodingStartButtonsState();
+                UpdateEncStartButtonsState();
         }
-        public void UpdateScriptScribeButtonsState()
+        #endregion
+
+        #region Button state updates
+        public void UpdateScriptScbButtonsState()
         {
-            ToolItemVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => !string.IsNullOrWhiteSpace(t.Path));
-            bool hasVideo = videoSrc != null;
-            OpenScriptScribeButtons.B2_1IsEnabled = hasVideo;
-            OpenScriptScribeButtons.B2_2IsEnabled = hasVideo;
+            bool hasVideoSrc = VideoSrcImportZone.Any(t => !string.IsNullOrWhiteSpace(t.Path));
+            ScriptScbButtons.B2_2IsEnabled = hasVideoSrc;
 
             if (_modalNavS.CurrentModalVM is ScriptSrcScribeModalVM modal)
             {
-                modal.ScriptExportButtons.B3_1IsEnabled = hasVideo;
-                modal.ScriptExportButtons.B3_2IsEnabled = hasVideo;
-                modal.ScriptExportButtons.B3_3IsEnabled = hasVideo;
+                modal.ScriptExportButtons.B3_1IsEnabled = hasVideoSrc;
+                modal.ScriptExportButtons.B3_2IsEnabled = hasVideoSrc;
+                modal.ScriptExportButtons.B3_3IsEnabled = hasVideoSrc;
             }
+
+            OneClickScriptGen.OnCanExecuteChanged();
         }
-        public void UpdateEncodingStartButtonsState()
+        public void UpdateEncStartButtonsState()
         {
             bool toolsReady =
                 UpstreamsZone.Count > 0 &&
@@ -311,7 +318,6 @@ namespace OneColumnEncoder.ViewModels
             EncStartButtons.B3_2IsEnabled = allReady;
             EncStartButtons.B3_3IsEnabled = allReady;
         }
-
         #endregion
 
         #region Command Wiring (Bind R1-R2)
@@ -346,14 +352,14 @@ namespace OneColumnEncoder.ViewModels
         {
             if (sender is not ToolItemVM item) return;
             if (e.PropertyName == nameof(ToolItemVM.Path))
-                UpdateScriptScribeButtonsState();
+                UpdateScriptScbButtonsState();
         }
 
         public void RefreshSelectedSourceStatus()
         {
             bool anySelected = VideoSrcImportZone.Any(t => t.IsSelected) || ScriptSrcImportZone.Any(t => t.IsSelected);
             SrcValidationCard.SetSourcePickedStatus(anySelected);
-            UpdateScriptScribeButtonsState();
+            UpdateScriptScbButtonsState();
         }
         private string GetCurrentVideoSourcePath()
         {
@@ -501,8 +507,8 @@ namespace OneColumnEncoder.ViewModels
         {
             OpenAppConfButtons.B2_1Text = UICaptionProviderM.Buttons.UsageAndCompliance;
             OpenAppConfButtons.B2_2Text = UICaptionProviderM.Buttons.Settings;
-            OpenScriptScribeButtons.B2_1Text = UICaptionProviderM.Buttons.OneClickScriptGen;
-            OpenScriptScribeButtons.B2_2Text = UICaptionProviderM.Buttons.OpenScribeSrcScribe;
+            ScriptScbButtons.B2_1Text = UICaptionProviderM.Buttons.OneClickScriptGen;
+            ScriptScbButtons.B2_2Text = UICaptionProviderM.Buttons.OpenScribeSrcScribe;
             EncStartButtons.B3_1Text = UICaptionProviderM.Buttons.ReEvaluate;
             EncStartButtons.B3_2Text = UICaptionProviderM.Buttons.RunSample;
             EncStartButtons.B3_3Text = UICaptionProviderM.Buttons.StartEncode;

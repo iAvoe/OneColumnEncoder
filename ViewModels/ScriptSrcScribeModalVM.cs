@@ -7,12 +7,15 @@ using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
+using OneColumnEncoder.Helpers;
 
 namespace OneColumnEncoder.ViewModels
 {
     public class ScriptSrcScribeModalVM : BaseVM
     {
         private readonly ModalNavS _modalNavS;
+        private readonly Func<string> _getSourcePath;
+        // 0: AVS, 1: VPY
         private int _selectedTabIndex;
         public int SelectedTabIndex
         {
@@ -22,6 +25,7 @@ namespace OneColumnEncoder.ViewModels
 
         #region Script text
         public static string AvsPrefix => UILangProviderM.Current["SrcScribe.AvsPrefix"];
+        public static string AvsPrefix2 => UILangProviderM.Current["SrcScribe.AvsPrefix2"];
         private string _avsUserInput = "";
         public string AvsUserInput
         {
@@ -37,6 +41,7 @@ namespace OneColumnEncoder.ViewModels
             get => _vpyUserInput;
             set => SetProperty(ref _vpyUserInput, value);
         }
+        public static string VpyPrefix2 => UILangProviderM.Current["SrcScribe.VpyPrefix2"];
         public static string VpySuffix => UILangProviderM.Current["SrcScribe.VpySuffix"];
         #endregion
 
@@ -53,11 +58,11 @@ namespace OneColumnEncoder.ViewModels
         public ButtonGroupVM ScriptExportButtons { get; private set; } = null!;
         public ButtonGroupVM FinishScribeButtons { get; private set; } = null!;
 
-        public ScriptSrcScribeModalVM(ModalNavS modalNavS, Action closeAction)
+        public ScriptSrcScribeModalVM(ModalNavS modalNavS, Action closeAction, Func<string> getSourcePath)
         {
             _modalNavS = modalNavS;
             CloseCmd = new CloseModalCmd(modalNavS, closeAction);
-
+            _getSourcePath = getSourcePath;
             BuildButtonGroups();
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
@@ -91,8 +96,8 @@ namespace OneColumnEncoder.ViewModels
         private void CopyInOutSection()
         {
             string inOutText = SelectedTabIndex == 0
-                ? $"{AvsPrefix}\r\n\r\n{AvsSuffix}"
-                : $"{VpyPrefix}\r\n\r\n{VpySuffix}";
+                ? $"LWLibavVideoSource(\"{_getSourcePath()}\")\r\n{AvsPrefix2}\r\n\r\n{AvsSuffix}"
+                : $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"{_getSourcePath()}\")\r\n{VpyPrefix2}\r\n\r\n{VpySuffix}";
 
             Clipboard.SetText(inOutText);
             MessageBox.Show(UILangProviderM.Current["SrcScribe.CopiedSection"],
@@ -102,34 +107,28 @@ namespace OneColumnEncoder.ViewModels
 
         private void SaveAsFile()
         {
-            SaveFileDialog sfd = new();
-            if (SelectedTabIndex == 0)
-            {
-                sfd.Filter = UILangProviderM.Current["SrcScribe.FilterAvs"];
-                sfd.FileName = "script.avs";
-            }
-            else
-            {
-                sfd.Filter = UILangProviderM.Current["SrcScribe.FilterVpy"];
-                sfd.FileName = "script.vpy";
-            }
+            _ = SelectedTabIndex == 0
+                ? ScriptTemplateH.BuildAvsExportScript(
+                    _getSourcePath(), AvsPrefix, AvsPrefix2, AvsSuffix, AvsUserInput)
+                : ScriptTemplateH.BuildVpyExportScript(
+                    _getSourcePath(), VpyPrefix, VpyPrefix2, VpySuffix, VpyUserInput);
 
-            if (sfd.ShowDialog() == true)
+            _ = new SaveFileDialog()
             {
-                File.WriteAllText(sfd.FileName, GetCurrentFullScript());
-            }
+                Filter = SelectedTabIndex == 0
+                    ? UILangProviderM.Current["SrcScribe.FilterAvs"]
+                    : UILangProviderM.Current["SrcScribe.FilterVpy"],
+                FileName = SelectedTabIndex == 0 ? "script.avs" : "script.vpy"
+            };
         }
 
-        private void SaveAndImportAll()
-        {
-            _modalNavS.Close();
-        }
+        private void SaveAndImportAll() { _modalNavS.Close(); }
 
         private string GetCurrentFullScript()
         {
             return SelectedTabIndex == 0
-                ? $"{AvsPrefix}\r\n{AvsUserInput}\r\n{AvsSuffix}"
-                : $"{VpyPrefix}\r\n{VpyUserInput}\r\n{VpySuffix}";
+                ? $"LWLibavVideoSource(\"{_getSourcePath()}\")\r\n{AvsPrefix}\r\n{AvsPrefix2}\r\n\r\n{AvsSuffix}"
+                : $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"{_getSourcePath()}\")\r\n{VpyPrefix}\r\n{VpyPrefix2}\r\n\r\n{VpySuffix}";
         }
         #endregion
 

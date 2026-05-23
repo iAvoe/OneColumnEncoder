@@ -55,7 +55,7 @@ namespace OneColumnEncoder.Commands
             }
 
             ToolCompatibilityH.RefreshDependencySelectionState(
-                _mainVM.UpstreamsZone!, _mainVM.DependenciesZone!, _mainVM.UpdateEncodingStartButtonsState);
+                _mainVM.UpstreamsZone!, _mainVM.DependenciesZone!, _mainVM.UpdateEncStartButtonsState);
             ToolCompatibilityH.RefreshSourceSelectionState(
                 _mainVM.UpstreamsZone!, _mainVM.ScriptSrcImportZone!, _mainVM.RefreshSelectedSourceStatus);
         }

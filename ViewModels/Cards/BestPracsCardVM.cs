@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace OneColumnEncoder.ViewModels.Cards
 {
-    public class BestPracticesCardVM : ValidationCardBaseVM
+    public class BestPracsCardVM : ValidationCardBaseVM
     {
-        public BestPracticesCardVM()
+        public BestPracsCardVM()
         {
             FillCollection(Checklist1, ChecklistProviderM.GetBestPracticeChecklist1());
             FillCollection(Checklist2, ChecklistProviderM.GetBestPracticeChecklist2());

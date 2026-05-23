@@ -1,9 +1,13 @@
-﻿using OneColumnEncoder.Stores;
+﻿using OneColumnEncoder.Models;
+using OneColumnEncoder.Stores;
+using OneColumnEncoder.ViewModels;
+using OneColumnEncoder.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace OneColumnEncoder.Commands.OpenClose
 {
@@ -12,12 +16,29 @@ namespace OneColumnEncoder.Commands.OpenClose
         private readonly ModalNavS _modalNavS = modalNavS;  
         public override void Execute(object? parameter)
         {
-            /*
-            var window = ErrModal();
-            window.DataContext = new ErrVM(_modalNavS, window.Close);
+            ConfirmationModal? existingWindow = Application.Current.Windows
+                .OfType<ConfirmationModal>()
+                .FirstOrDefault(w => w.DataContext is ConfirmationModalVM &&
+                                w.Owner == Application.Current.MainWindow);
+
+            if (existingWindow != null)
+            {
+                existingWindow.Activate();
+                return;
+            }
+
+            ConfirmationModal window = new();
+            CloseModalCmd closeCmd = new(_modalNavS, window.Close);
+            ConfirmationModalVM vm = ConfirmationModalVM.CreateWarning(
+                UILangProviderM.Current["SrcScribe.WindowTitle"],
+                UILangProviderM.Current["SrcScribe.Description2"],
+                closeCmd, closeCmd);
+
+            window.DataContext = vm;
+            window.Owner = Application.Current.MainWindow;
+            window.Closed += (_, _) => _modalNavS.Close();
+            _modalNavS.CurrentModalVM = vm;
             window.ShowDialog();
-            */
-            throw new NotImplementedException();
         }
     }
 }
