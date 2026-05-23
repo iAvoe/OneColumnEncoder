@@ -13,6 +13,7 @@ using System.Windows.Input;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Commands.SaveLoad;
+using OneColumnEncoder.Helpers;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -56,6 +57,7 @@ namespace OneColumnEncoder.ViewModels
                 SmtpCmd,
                 CloseCmd,
                 SaveCmd);
+            FinishSettingButtons.B3_3Icon = SvgIconProviderH.GameSave;
             BuildSettingsListing();
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }

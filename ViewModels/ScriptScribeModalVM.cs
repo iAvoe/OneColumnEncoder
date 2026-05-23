@@ -80,6 +80,7 @@ namespace OneColumnEncoder.ViewModels
                 new ActionCmd(_ => CopyFullScript()),
                 new ActionCmd(_ => CopyInOutSection()),
                 new ActionCmd(_ => SaveAsFile()));
+            ScriptExportButtons.B3_3Icon = SvgIconProviderH.GameSave;
 
             FinishScribeButtons = ButtonGroupVM.CreateTwoButton(
                 UILangProviderM.Current["SrcScribe.Cancel"],
