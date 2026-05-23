@@ -47,15 +47,15 @@ namespace OneColumnEncoder.ViewModels
         public EncTermsCardVM EncTermsCard { get; } = new();
         public BestPracsCardVM BestPracticesCard { get; } = new();
         // Section header texts
-        public string SectionImportTools => UILangProviderM.Current["Section.ImportTools"];
-        public string SectionSelectUpstream => UILangProviderM.Current["Section.SelectUpstream"];
-        public string SectionSelectEncoder => UILangProviderM.Current["Section.SelectEncoder"];
-        public string SectionSelectAnalytics => UILangProviderM.Current["Section.SelectAnalytics"];
-        public string SectionSelectDependencies => UILangProviderM.Current["Section.SelectDependencies"];
-        public string SectionImportSource => UILangProviderM.Current["Section.ImportSource"];
-        public string SectionAnalysisResults => UILangProviderM.Current["Section.AnalysisResults"];
-        public string SectionEncodingConfigs => UILangProviderM.Current["Section.EncodingConfigs"];
-        public string SectionStartEncoding => UILangProviderM.Current["Section.StartEncoding"];
+        public static string SectionImportTools => UILangProviderM.Current["Section.ImportTools"];
+        public static string SectionSelectUpstream => UILangProviderM.Current["Section.SelectUpstream"];
+        public static string SectionSelectEncoder => UILangProviderM.Current["Section.SelectEncoder"];
+        public static string SectionSelectAnalytics => UILangProviderM.Current["Section.SelectAnalytics"];
+        public static string SectionSelectDependencies => UILangProviderM.Current["Section.SelectDependencies"];
+        public static string SectionImportSource => UILangProviderM.Current["Section.ImportSource"];
+        public static string SectionAnalysisResults => UILangProviderM.Current["Section.AnalysisResults"];
+        public static string SectionEncodingConfigs => UILangProviderM.Current["Section.EncodingConfigs"];
+        public static string SectionStartEncoding => UILangProviderM.Current["Section.StartEncoding"];
 
         // Disable UI when other modal opens
         private bool _isOverlayVisible;

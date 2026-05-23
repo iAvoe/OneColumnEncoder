@@ -1,6 +1,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+                    xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
                     xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
                     xmlns:views="clr-namespace:OneColumnEncoder.Views">
 
@@ -126,14 +127,17 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type comps:ChecklistItem}">
                     <StackPanel Orientation="Horizontal">
-                        <!-- Initialize to questionmark symbol -->
-                        <TextBlock x:Name="IconText"
-                                   Text="?"
+                        <Rectangle x:Name="IconMask"
+                                   Width="14"
+                                   Height="14"
                                    VerticalAlignment="Center"
-                                   FontFamily="{TemplateBinding FontFamily}"
-                                   FontSize="16"
-                                   Foreground="{TemplateBinding Foreground}"
-                                   Margin="0 0 10 0" />
+                                   Fill="{TemplateBinding Foreground}"
+                                   Margin="0 0 5 0">
+                            <Rectangle.OpacityMask>
+                                <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameWaiting}"
+                                            Stretch="Uniform" />
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
                         <!-- Textblock -->
                         <TextBlock Text="{TemplateBinding Text}"
                                    VerticalAlignment="Center"
@@ -145,42 +149,54 @@
                         <!-- Waiting -->
                         <Trigger Property="comps:ChecklistItem.Status"
                                  Value="Waiting">
-                            <Setter TargetName="IconText"
-                                    Property="Text"
-                                    Value="⏳" />
-                            <Setter TargetName="IconText"
-                                    Property="Foreground"
-                                    Value="Gray" />
+                            <Setter Property="Foreground"
+                                    Value="#6c767d" />
+                            <Setter TargetName="IconMask"
+                                    Property="OpacityMask">
+                                <Setter.Value>
+                                    <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameWaiting}"
+                                                Stretch="Uniform" />
+                                </Setter.Value>
+                            </Setter>
                         </Trigger>
                         <!-- Success -->
                         <Trigger Property="comps:ChecklistItem.Status"
                                  Value="Success">
-                            <Setter TargetName="IconText"
-                                    Property="Text"
-                                    Value="✓" />
-                            <Setter TargetName="IconText"
-                                    Property="Foreground"
-                                    Value="Green" />
+                            <Setter Property="Foreground"
+                                    Value="#009587" />
+                            <Setter TargetName="IconMask"
+                                    Property="OpacityMask">
+                                <Setter.Value>
+                                    <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameCorrectMark}"
+                                                Stretch="Uniform" />
+                                </Setter.Value>
+                            </Setter>
                         </Trigger>
                         <!-- Warning -->
                         <Trigger Property="comps:ChecklistItem.Status"
                                  Value="Warning">
-                            <Setter TargetName="IconText"
-                                    Property="Text"
-                                    Value="⚠" />
-                            <Setter TargetName="IconText"
-                                    Property="Foreground"
-                                    Value="Orange" />
+                            <Setter Property="Foreground"
+                                    Value="#f68819" />
+                            <Setter TargetName="IconMask"
+                                    Property="OpacityMask">
+                                <Setter.Value>
+                                    <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameWarning}"
+                                                Stretch="Uniform" />
+                                </Setter.Value>
+                            </Setter>
                         </Trigger>
                         <!-- Error -->
                         <Trigger Property="comps:ChecklistItem.Status"
                                  Value="Error">
-                            <Setter TargetName="IconText"
-                                    Property="Text"
-                                    Value="✖" />
-                            <Setter TargetName="IconText"
-                                    Property="Foreground"
-                                    Value="Red" />
+                            <Setter Property="Foreground"
+                                    Value="#95000e" />
+                            <Setter TargetName="IconMask"
+                                    Property="OpacityMask">
+                                <Setter.Value>
+                                    <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameXMark}"
+                                                Stretch="Uniform" />
+                                </Setter.Value>
+                            </Setter>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

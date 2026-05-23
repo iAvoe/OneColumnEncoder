@@ -1,10 +1,11 @@
 ﻿<UserControl x:Class="OneColumnEncoder.Components.ToolsImportCard"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:comps="clr-namespace:OneColumnEncoder.Components"
-             xmlns:cardvms="clr-namespace:OneColumnEncoder.ViewModels.Cards"
+              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+              xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
+              xmlns:cardvms="clr-namespace:OneColumnEncoder.ViewModels.Cards"
              d:DataContext="{d:DesignInstance Type=cardvms:ToolsImportCardVM}"
              mc:Ignorable="d"
              d:DesignWidth="450">
@@ -47,12 +48,43 @@
                                 DataContext="{Binding ImportDropdown}" />
             <Button Grid.Row="0"
                     Grid.Column="2"
-                    Content="{Binding ImportButtonText}"
                     MinWidth="90"
                     Height="30"
                     VerticalAlignment="Center"
                     Style="{StaticResource PrimaryButton}"
-                    Command="{Binding ImportCommand}"/>
+                    Command="{Binding ImportCommand}">
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center">
+                    <Rectangle Width="13"
+                               Height="13"
+                               VerticalAlignment="Center"
+                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameImport}"
+                                        Stretch="Uniform"
+                                        AlignmentX="Center"
+                                        AlignmentY="Center" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Text="/"
+                               FontWeight="Black"
+                               VerticalAlignment="Center"
+                               Margin="5 0 0 0"
+                               Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" />
+                    <Rectangle Width="13"
+                               Height="13"
+                               VerticalAlignment="Center"
+                               Margin="5 0 0 0"
+                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameReplace}"
+                                        Stretch="Uniform"
+                                        AlignmentX="Center"
+                                        AlignmentY="Center" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                </StackPanel>
+            </Button>
 
             <comps:ChecklistContainer Grid.Row="1"
                                       Grid.ColumnSpan="3"
