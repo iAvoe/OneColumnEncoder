@@ -28,7 +28,7 @@ namespace OneColumnEncoder.Commands.OpenClose
                 _modelNavS.Close();
 
             var window = new AppUsageModal();
-            var vm = new AppUsageVM(_modelNavS, _appConfM, window.Close);
+            var vm = new AppUsageVM(_appConfM, window.Close);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modelNavS.Close();

@@ -1,17 +1,12 @@
 ﻿using OneColumnEncoder.Models;
-using OneColumnEncoder.Stores;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OneColumnEncoder.Commands.SaveLoad
 {
-    public class SaveAppConfCmd(AppConfM appConfS, ModalNavS modalNavS, Action closeAction) : AsyncBaseCmd
+    public class SaveAppConfCmd(AppConfM appConfS, Action closeAction) : AsyncBaseCmd
     {
         private readonly AppConfM _appConfStore = appConfS;
-        private readonly ModalNavS _modalNavS = modalNavS;
 
         protected override async Task ExecuteAsync(object? parameter)
         {
@@ -19,7 +14,6 @@ namespace OneColumnEncoder.Commands.SaveLoad
             _appConfStore.Save();
             await Task.CompletedTask;
             closeAction();
-            _modalNavS.Close();
         }
     }
 }

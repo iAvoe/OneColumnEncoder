@@ -1,6 +1,5 @@
 ﻿using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Models;
-using OneColumnEncoder.Stores;
 using System.Windows.Input;
 
 namespace OneColumnEncoder.ViewModels
@@ -14,9 +13,9 @@ namespace OneColumnEncoder.ViewModels
             get => _lang;
             private set => SetProperty(ref _lang, value);
         }
-        public AppUsageVM(ModalNavS modelNavS, AppConfM appConfM, Action closeAction)
+        public AppUsageVM(AppConfM appConfM, Action closeAction)
         {
-            CloseCmd = new CloseModalCmd(modelNavS, closeAction);
+            CloseCmd = new CloseModalCmd(closeAction);
             _lang = new AppUsageLangProviderM(appConfM.Lang.LanguageCode);
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }

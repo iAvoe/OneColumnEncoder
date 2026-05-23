@@ -42,11 +42,11 @@ namespace OneColumnEncoder.ViewModels
 
         #region Constructor
 
-        public AppConfVM(ModalNavS modalNavS, AppConfM appConfS, Action closeAction)
+        public AppConfVM(AppConfM appConfS, Action closeAction)
         {
             _appConfM = appConfS;
-            CloseCmd = new CloseModalCmd(modalNavS, closeAction);
-            SaveCmd = new SaveAppConfCmd(appConfS, modalNavS, closeAction);
+            CloseCmd = new CloseModalCmd(closeAction);
+            SaveCmd = new SaveAppConfCmd(appConfS, closeAction);
             LoadCmd = new LoadAppConfCmd(appConfS);
             SmtpCmd = null; // TODO
             FinishSettingButtons = ButtonGroupVM.CreateThreeButton(

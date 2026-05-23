@@ -65,7 +65,7 @@ namespace OneColumnEncoder.ViewModels
         {
             _modalNavS = modalNavS;
             _closeAction = closeAction;
-            CloseCmd = new CloseModalCmd(modalNavS, closeAction);
+            CloseCmd = new CloseModalCmd(closeAction);
             _getSourcePath = getSourcePath;
             BuildButtonGroups();
             UILangProviderM.CurrentChanged += OnLanguageChanged;
@@ -129,7 +129,6 @@ namespace OneColumnEncoder.ViewModels
         private void SaveAndImportAll()
         {
             _closeAction();
-            _modalNavS.Close();
         }
 
         private string GetCurrentFullScript()

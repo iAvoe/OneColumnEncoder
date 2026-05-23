@@ -28,7 +28,7 @@ namespace OneColumnEncoder.Commands.OpenClose
             if (_modalNavS.IsOpen) _modalNavS.Close();
 
             AppConfModal window = new();
-            var vm = new AppConfVM(_modalNavS, _appConfS, window.Close);
+            var vm = new AppConfVM(_appConfS, window.Close);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();

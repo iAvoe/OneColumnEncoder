@@ -31,7 +31,7 @@ namespace OneColumnEncoder.Commands.OpenClose
             }
 
             ConfirmationModal window = new();
-            CloseModalCmd closeCmd = new(_modalNavS, window.Close);
+            CloseModalCmd closeCmd = new(window.Close);
             ConfirmationModalVM vm =
                 ConfirmationModalVM.CreateError(_windowTitle, _description, closeCmd, closeCmd);
 
