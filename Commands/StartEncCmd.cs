@@ -8,7 +8,6 @@ namespace OneColumnEncoder.Commands
 {
     public class StartEncCmd : BaseCmd
     {
-        // Needs Store
         public override void Execute(object? parameter)
         {
             throw new NotImplementedException();

@@ -11,13 +11,15 @@ namespace OneColumnEncoder.Commands
         Func<string> getSourcePath,
         VideoAnalysisM analysis,
         SourceCheckCardVM srcValidationCard,
-        ModalNavS modalNavS) : AsyncBaseCmd
+        ModalNavS modalNavS,
+        Action? onCompleted = null) : AsyncBaseCmd
     {
         private readonly Func<string> _getFfprobePath = getFfprobePath;
         private readonly Func<string> _getSourcePath = getSourcePath;
         private readonly VideoAnalysisM _analysis = analysis;
         private readonly SourceCheckCardVM _srcValidationCard = srcValidationCard;
         private readonly ModalNavS _modalNavS = modalNavS;
+        private readonly Action? _onCompleted = onCompleted;
 
         public override bool CanExecute(object? parameter) =>
             !string.IsNullOrWhiteSpace(_getFfprobePath()) &&
@@ -48,6 +50,10 @@ namespace OneColumnEncoder.Commands
                     _modalNavS,
                     UILangProviderM.Current["SrcAnalysis.WindowTitle"],
                     ex.Message).Execute(null);
+            }
+            finally
+            {
+                _onCompleted?.Invoke();
             }
         }
     }

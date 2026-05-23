@@ -110,8 +110,6 @@ namespace OneColumnEncoder.ViewModels
                 modalNavS,
                 () => GetCurrentVideoSourcePath());
             CopyRawAnalysis = new CopyRawAnalysisCmd(
-                GetSelectedFfprobePath,
-                GetSelectedVideoSourcePath,
                 _srcVideoAnalysis,
                 modalNavS);
             AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(
@@ -119,7 +117,8 @@ namespace OneColumnEncoder.ViewModels
                 GetSelectedVideoSourcePath,
                 _srcVideoAnalysis,
                 SrcValidationCard,
-                modalNavS);
+                modalNavS,
+                UpdateAnalyzeSrcButtonsState);
 
             // Buttons
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
@@ -461,10 +460,9 @@ namespace OneColumnEncoder.ViewModels
 
             bool hasVideoSource = VideoSrcImportZone.Any(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
             bool hasFfprobe = AnalyticsZone.Any(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
-            bool isEnabled = hasVideoSource && hasFfprobe;
 
-            AnalyzeSrcButtons.B2_1IsEnabled = isEnabled;
-            AnalyzeSrcButtons.B2_2IsEnabled = isEnabled;
+            AnalyzeSrcButtons.B2_2IsEnabled = hasVideoSource && hasFfprobe;
+            AnalyzeSrcButtons.B2_1IsEnabled = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
             CopyRawAnalysis.OnCanExecuteChanged();
             AnalyzeSrcVideo.OnCanExecuteChanged();
         }
