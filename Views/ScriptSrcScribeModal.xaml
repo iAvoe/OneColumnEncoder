@@ -154,7 +154,9 @@
 
         <comps:TwoButtonGroup Grid.Row="5"
                               Margin="0 10 0 10"
-                              DataContext="{Binding FinishScribeButtons}" />
+                              DataContext="{Binding FinishScribeButtons}"
+                              Button1Command="{Binding Cmd1}"
+                              Button2Command="{Binding Cmd2}" />
 
     </Grid>
 </Window>

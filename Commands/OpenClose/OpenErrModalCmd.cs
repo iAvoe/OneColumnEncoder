@@ -11,9 +11,12 @@ using System.Windows;
 
 namespace OneColumnEncoder.Commands.OpenClose
 {
-    class OpenErrModalCmd(ModalNavS modalNavS) : BaseCmd
+    public class OpenErrModalCmd(ModalNavS modalNavS, string windowTitle, string description) : BaseCmd
     {
-        private readonly ModalNavS _modalNavS = modalNavS;  
+        private readonly ModalNavS _modalNavS = modalNavS;
+        private readonly string _windowTitle = windowTitle;
+        private readonly string _description = description;
+
         public override void Execute(object? parameter)
         {
             ConfirmationModal? existingWindow = Application.Current.Windows
@@ -29,10 +32,8 @@ namespace OneColumnEncoder.Commands.OpenClose
 
             ConfirmationModal window = new();
             CloseModalCmd closeCmd = new(_modalNavS, window.Close);
-            ConfirmationModalVM vm = ConfirmationModalVM.CreateWarning(
-                UILangProviderM.Current["SrcScribe.WindowTitle"],
-                UILangProviderM.Current["SrcScribe.Description2"],
-                closeCmd, closeCmd);
+            ConfirmationModalVM vm =
+                ConfirmationModalVM.CreateError(_windowTitle, _description, closeCmd, closeCmd);
 
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;

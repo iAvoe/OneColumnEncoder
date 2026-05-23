@@ -15,6 +15,8 @@ namespace OneColumnEncoder.ViewModels
     {
         private readonly ModalNavS _modalNavS;
         private readonly Func<string> _getSourcePath;
+        private readonly Action _closeAction;
+        public CloseModalCmd CloseCmd { get; }
         // 0: AVS, 1: VPY
         private int _selectedTabIndex;
         public int SelectedTabIndex
@@ -54,13 +56,13 @@ namespace OneColumnEncoder.ViewModels
         public static string TabVpy => UILangProviderM.Current["SrcScribe.TabVpy"];
         #endregion
 
-        public ICommand CloseCmd { get; }
         public ButtonGroupVM ScriptExportButtons { get; private set; } = null!;
         public ButtonGroupVM FinishScribeButtons { get; private set; } = null!;
 
         public ScriptSrcScribeModalVM(ModalNavS modalNavS, Action closeAction, Func<string> getSourcePath)
         {
             _modalNavS = modalNavS;
+            _closeAction = closeAction;
             CloseCmd = new CloseModalCmd(modalNavS, closeAction);
             _getSourcePath = getSourcePath;
             BuildButtonGroups();
@@ -88,9 +90,9 @@ namespace OneColumnEncoder.ViewModels
         private void CopyFullScript()
         {
             Clipboard.SetText(GetCurrentFullScript());
-            MessageBox.Show(UILangProviderM.Current["SrcScribe.CopiedFull"],
+            new OpenInfoOrDbgModalCmd(_modalNavS,
                 UILangProviderM.Current["SrcScribe.WindowTitle"],
-                MessageBoxButton.OK, MessageBoxImage.Information);
+                UILangProviderM.Current["SrcScribe.CopiedFull"]).Execute(null);
         }
 
         private void CopyInOutSection()
@@ -100,9 +102,9 @@ namespace OneColumnEncoder.ViewModels
                 : $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"{_getSourcePath()}\")\r\n{VpyPrefix2}\r\n\r\n{VpySuffix}";
 
             Clipboard.SetText(inOutText);
-            MessageBox.Show(UILangProviderM.Current["SrcScribe.CopiedSection"],
+            new OpenInfoOrDbgModalCmd(_modalNavS,
                 UILangProviderM.Current["SrcScribe.WindowTitle"],
-                MessageBoxButton.OK, MessageBoxImage.Information);
+                UILangProviderM.Current["SrcScribe.CopiedSection"]).Execute(null);
         }
 
         private void SaveAsFile()
@@ -122,7 +124,11 @@ namespace OneColumnEncoder.ViewModels
             };
         }
 
-        private void SaveAndImportAll() { _modalNavS.Close(); }
+        private void SaveAndImportAll()
+        {
+            _closeAction();
+            _modalNavS.Close();
+        }
 
         private string GetCurrentFullScript()
         {

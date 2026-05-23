@@ -1,15 +1,17 @@
 using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
+using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using System;
 
 namespace OneColumnEncoder.Commands
 {
-    public class BrowseSourcePathCmd(ToolItemVM item, SourceFileKind fileKind, AppDataM appDataM) : BaseCmd
+    public class BrowseSourcePathCmd(ToolItemVM item, SourceFileKind fileKind, AppDataM appDataM, ModalNavS modalNavS) : BaseCmd
     {
         private readonly ToolItemVM _item = item;
         private readonly SourceFileKind _fileKind = fileKind;
         private readonly AppDataM _appDataM = appDataM;
+        private readonly ModalNavS _modalNavS = modalNavS;
 
         public override void Execute(object? parameter)
         {
@@ -23,6 +25,7 @@ namespace OneColumnEncoder.Commands
             string? filePath = SourceFilePickerH.GetSource(
                 _fileKind,
                 dialogTitle,
+                _modalNavS,
                 foundPath: foundPath,
                 currentPath: _item.Path);
 

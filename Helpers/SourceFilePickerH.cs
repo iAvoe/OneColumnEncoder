@@ -1,5 +1,9 @@
 using Microsoft.Win32;
+using OneColumnEncoder.Commands;
 using OneColumnEncoder.Models;
+using OneColumnEncoder.Stores;
+using OneColumnEncoder.ViewModels;
+using OneColumnEncoder.Views;
 using System;
 using System.IO;
 using System.Windows;
@@ -19,6 +23,7 @@ namespace OneColumnEncoder.Helpers
         public static string? GetSource(
             SourceFileKind fileKind,
             string windowTitle,
+            ModalNavS? modalNavS = null,
             string? foundPath = null,
             string? currentPath = null,
             string? errorMessage = null)
@@ -35,7 +40,7 @@ namespace OneColumnEncoder.Helpers
                 if (!string.IsNullOrWhiteSpace(filePath))
                     return filePath;
 
-                if (!ShouldRetrySelection(retryMessage))
+                if (!ShouldRetrySelection(modalNavS, retryMessage))
                     return null;
             }
         }
@@ -106,15 +111,12 @@ namespace OneColumnEncoder.Helpers
                 "All files (*.*)|*.*"
         };
 
-        private static bool ShouldRetrySelection(string message)
+        private static bool ShouldRetrySelection(ModalNavS? modalNavS, string message)
         {
-            string title = UILangProviderM.Current.LanguageCode switch
-            {
-                "zh-cn" => "未选择文件",
-                "zh-tw" => "未選擇檔案",
-                _ => "No file selected"
-            };
+            if (modalNavS != null)
+                return ShowWarningConfirmation(modalNavS, GetNoFileSelectedTitle(), message);
 
+            string title = GetNoFileSelectedTitle();
             MessageBoxResult result = MessageBox.Show(
                 message,
                 title,
@@ -124,6 +126,31 @@ namespace OneColumnEncoder.Helpers
 
             return result == MessageBoxResult.Yes;
         }
+
+        private static bool ShowWarningConfirmation(ModalNavS modalNavS, string title, string message)
+        {
+            bool result = false;
+
+            ConfirmationModal window = new();
+            ActionCmd cancelCmd = new(_ => { result = false; window.Close(); });
+            ActionCmd confirmCmd = new(_ => { result = true; window.Close(); });
+            ConfirmationModalVM vm = ConfirmationModalVM.CreateWarning(title, message, cancelCmd, confirmCmd);
+
+            window.DataContext = vm;
+            window.Owner = Application.Current.MainWindow;
+            window.Closed += (_, _) => modalNavS.Close();
+            modalNavS.CurrentModalVM = vm;
+            window.ShowDialog();
+
+            return result;
+        }
+
+        private static string GetNoFileSelectedTitle() => UILangProviderM.Current.LanguageCode switch
+        {
+            "zh-cn" => "未选择文件",
+            "zh-tw" => "未選擇檔案",
+            _ => "No file selected"
+        };
 
         private static string GetMissingSelectionMessage() => UILangProviderM.Current.LanguageCode switch
         {

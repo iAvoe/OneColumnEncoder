@@ -2,17 +2,20 @@
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.Views;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace OneColumnEncoder.Commands.OpenClose
 {
-    public class OpenWarnModalCmd(ModalNavS modalNavS, string windowTitle, string description) : BaseCmd
+    public class OpenInfoOrDbgModalCmd(ModalNavS modalNavS, string windowTitle, string description) : BaseCmd
     {
         private readonly ModalNavS _modalNavS = modalNavS;
         private readonly string _windowTitle = windowTitle;
         private readonly string _description = description;
-
         public override void Execute(object? parameter)
         {
             ConfirmationModal? existingWindow = Application.Current.Windows
@@ -29,7 +32,7 @@ namespace OneColumnEncoder.Commands.OpenClose
             ConfirmationModal window = new();
             CloseModalCmd closeCmd = new(_modalNavS, window.Close);
             ConfirmationModalVM vm =
-                ConfirmationModalVM.CreateWarning(_windowTitle, _description, closeCmd, closeCmd);
+                ConfirmationModalVM.CreateDebug(_windowTitle, _description, closeCmd, closeCmd);
 
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;

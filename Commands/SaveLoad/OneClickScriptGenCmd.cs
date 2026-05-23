@@ -6,7 +6,6 @@ using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using System;
 using System.IO;
-using System.Windows;
 
 namespace OneColumnEncoder.Commands.SaveLoad
 {
@@ -25,7 +24,10 @@ namespace OneColumnEncoder.Commands.SaveLoad
             string sourcePath = _getSourcePath();
             if (!CanExecute(null))
             {
-                new OpenWarnModalCmd(_modalNavS).Execute(null);
+                new OpenWarnModalCmd(
+                    _modalNavS,
+                    UILangProviderM.Current["SrcScribe.WindowTitle"],
+                    UILangProviderM.Current["SrcScribe.NoVidSrcWarning"]).Execute(null);
                 return;
             }
 
@@ -62,10 +64,10 @@ namespace OneColumnEncoder.Commands.SaveLoad
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    $"Failed to save scripts: {ex.Message}",
+                new OpenErrModalCmd(
+                    _modalNavS,
                     UILangProviderM.Current["SrcScribe.WindowTitle"],
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                    $"Failed to save scripts: {ex.Message}").Execute(null);
                 return;
             }
 
@@ -75,10 +77,10 @@ namespace OneColumnEncoder.Commands.SaveLoad
             _vpyItem.Path = vpyPath;
             _vpyItem.VersionText = SourceFilePickerH.GetPrimaryText(SourceFileKind.VapourSynthScript, vpyPath);
 
-            MessageBox.Show(
-                $"Scripts saved:\n{avsPath}\n{vpyPath}",
+            new OpenInfoOrDbgModalCmd(
+                _modalNavS,
                 UILangProviderM.Current["SrcScribe.WindowTitle"],
-                MessageBoxButton.OK, MessageBoxImage.Information);
+                $"Scripts saved:\n{avsPath}\n{vpyPath}").Execute(null);
         }
     }
 }

@@ -7,7 +7,12 @@ using System.Threading.Tasks;
 
 namespace OneColumnEncoder.Commands.OpenClose
 {
-    // Close modal in both navigation store and window (if applicable)
+    /// <summary>
+    /// Close modal in both navigation store and window (if applicable)
+    /// Usage¡ªconstructor: CloseCmd = new CloseModalCmd(modalNavS, closeAction);
+    /// </summary>
+    /// <param name="modalNavS"></param>
+    /// <param name="closeAction"></param>
     public class CloseModalCmd(ModalNavS modalNavS, Action closeAction) : BaseCmd
     {
         private readonly ModalNavS _modalNavS = modalNavS;
