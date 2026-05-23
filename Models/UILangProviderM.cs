@@ -22,7 +22,7 @@ public class UILangProviderM
 
             // Main buttons
             ["Buttons.UsageAndCompliance"] = "Usage & Compliance",
-            ["Buttons.Settings"] = "\u2699\uFE0F Settings",
+            ["Buttons.Settings"] = "Settings",
             ["Buttons.ReEvaluate"] = "Re-Evaluate",
             ["Buttons.RunSample"] = "Run a Sample",
             ["Buttons.StartEncode"] = "Start Encode",
@@ -226,7 +226,7 @@ public class UILangProviderM
             ["Cards.BestSoftware"] = "软件工况（自查）",
 
             ["Buttons.UsageAndCompliance"] = "用法与合规指南",
-            ["Buttons.Settings"] = "\u2699\uFE0F 设置",
+            ["Buttons.Settings"] = "设置",
             ["Buttons.ReEvaluate"] = "重新检查",
             ["Buttons.RunSample"] = "取段打样",
             ["Buttons.StartEncode"] = "开始压制",
@@ -408,7 +408,7 @@ public class UILangProviderM
             ["Cards.BestSoftware"] = "軟體工況（自查）",
 
             ["Buttons.UsageAndCompliance"] = "用法與合規指南",
-            ["Buttons.Settings"] = "\u2699\uFE0F 設置",
+            ["Buttons.Settings"] = "設定",
             ["Buttons.ReEvaluate"] = "重新檢查",
             ["Buttons.RunSample"] = "取段打樣",
             ["Buttons.StartEncode"] = "開始壓制",

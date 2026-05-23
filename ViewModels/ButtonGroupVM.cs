@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -19,6 +20,8 @@ namespace OneColumnEncoder.ViewModels
         public string B2_1Text { get => _b2_1Text; set => SetProperty(ref _b2_1Text, value); }
         private string _b2_2Text = "";
         public string B2_2Text { get => _b2_2Text; set => SetProperty(ref _b2_2Text, value); }
+
+        public ImageSource? B2_2Icon { get; set; }
 
         private string _b3_1Text = "";
         public string B3_1Text { get => _b3_1Text; set => SetProperty(ref _b3_1Text, value); }

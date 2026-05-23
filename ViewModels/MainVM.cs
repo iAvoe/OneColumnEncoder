@@ -110,6 +110,7 @@ namespace OneColumnEncoder.ViewModels
                 UICaptionProviderM.Buttons.Settings,
                 OpenUsages,
                 OpenAppConf);
+            OpenAppConfButtons.B2_2Icon = SvgIconProviderH.GameSetting;
             ScriptScbButtons = ButtonGroupVM.CreateTwoButton( // UpdateScriptScbButtonsState()
                 UICaptionProviderM.Buttons.OneClickScriptGen,
                 UICaptionProviderM.Buttons.OpenScribeSrcScribe,
