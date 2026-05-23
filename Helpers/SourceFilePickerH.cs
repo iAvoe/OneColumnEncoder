@@ -100,7 +100,7 @@ namespace OneColumnEncoder.Helpers
         private static string GetFilter(SourceFileKind fileKind) => fileKind switch
         {
             SourceFileKind.Video =>
-                "Video files (*.mkv;*.mp4;*.mov;*.avi;*.m2ts;*.ts;*.webm;*.mxf)|*.mkv;*.mp4;*.mov;*.avi;*.m2ts;*.ts;*.webm;*.mxf|All files (*.*)|*.*",
+                "Video files (*.mkv;*.mp4;*.mov;*.avi;*.m2ts;*.ts;*.webm;*.mxf;*.vob;*.wmv;*.flv;*.f4v;*.asf;*.rm;*.rmvb;*.divx;*.xvid;*.3gp;*.3g2;*.ogv;*.ogg;*.mpg;*.mpeg;*.m1v;*.m2v;*.mp2;*.mpe;*.mpv;*.m4v;*.m4p;*.mp4v;*.dv;*.mts;*.m2t;*.trp;*.tp;*.evo;*.ifo;*.vro;*.bup;*.swf;*.wtv;*.dvr-ms;*.rec;*.yuv;*.y4m;*.hevc;*.h264;*.h265;*.264;*.265;*.vc1;*.avs;*.avs2;*.avs3;*.ivf;*.drc;*.mj2;*.mjpeg;*.mjpg;*.amv;*.nsv;*.svi;*.viv;*.f4p;*.f4a;*.f4b;*.roq;*.mng;*.gifv;*.qt;*.hdmov;*.mod;*.tod;*.moi;*.pva;*.nsr;*.nut;*.fli;*.flc;*.flic;*.dsm;*.dsv;*.dsa;*.dss;*.ask;*.dat)|*.mkv;*.mp4;*.mov;*.avi;*.m2ts;*.ts;*.webm;*.mxf;*.vob;*.wmv;*.flv;*.f4v;*.asf;*.rm;*.rmvb;*.divx;*.xvid;*.3gp;*.3g2;*.ogv;*.ogg;*.mpg;*.mpeg;*.m1v;*.m2v;*.mp2;*.mpe;*.mpv;*.m4v;*.m4p;*.mp4v;*.dv;*.mts;*.m2t;*.trp;*.tp;*.evo;*.ifo;*.vro;*.bup;*.swf;*.wtv;*.dvr-ms;*.rec;*.yuv;*.y4m;*.hevc;*.h264;*.h265;*.264;*.265;*.vc1;*.avs;*.avs2;*.avs3;*.ivf;*.drc;*.mj2;*.mjpeg;*.mjpg;*.amv;*.nsv;*.svi;*.viv;*.f4p;*.f4a;*.f4b;*.roq;*.mng;*.gifv;*.qt;*.hdmov;*.mod;*.tod;*.moi;*.pva;*.nsr;*.nut;*.fli;*.flc;*.flic;*.dsm;*.dsv;*.dsa;*.dss;*.ask;*.dat|All files (*.*)|*.*",
             SourceFileKind.AviSynthScript =>
                 "AviSynth script files (*.avs)|*.avs",
             SourceFileKind.VapourSynthScript =>

@@ -23,6 +23,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly AppDataM _appDataM;
         private readonly AppConfM _appConfM;
         private readonly ModalNavS _modalNavS;
+        private readonly VideoAnalysisM _srcVideoAnalysis = new();
 
         // Groups of Card or other element UIs
         public ObservableCollection<ToolItemVM> UpstreamsZone { get; }
@@ -108,8 +109,17 @@ namespace OneColumnEncoder.ViewModels
             OpenScriptScribe = new OpenScriptScribeCmd(
                 modalNavS,
                 () => GetCurrentVideoSourcePath());
-            CopyRawAnalysis = new CopyRawAnalysisCmd();
-            AnalyzeSrcVideo = new AnalyzeSrcVideoCmd();
+            CopyRawAnalysis = new CopyRawAnalysisCmd(
+                GetSelectedFfprobePath,
+                GetSelectedVideoSourcePath,
+                _srcVideoAnalysis,
+                modalNavS);
+            AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(
+                GetSelectedFfprobePath,
+                GetSelectedVideoSourcePath,
+                _srcVideoAnalysis,
+                SrcValidationCard,
+                modalNavS);
 
             // Buttons
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
@@ -455,11 +465,25 @@ namespace OneColumnEncoder.ViewModels
 
             AnalyzeSrcButtons.B2_1IsEnabled = isEnabled;
             AnalyzeSrcButtons.B2_2IsEnabled = isEnabled;
+            CopyRawAnalysis.OnCanExecuteChanged();
+            AnalyzeSrcVideo.OnCanExecuteChanged();
         }
         private string GetCurrentVideoSourcePath()
         {
             ToolItemVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => !string.IsNullOrWhiteSpace(t.Path));
             return videoSrc?.Path ?? string.Empty;
+        }
+
+        private string GetSelectedVideoSourcePath()
+        {
+            ToolItemVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
+            return videoSrc?.Path ?? string.Empty;
+        }
+
+        private string GetSelectedFfprobePath()
+        {
+            ToolItemVM? ffprobe = AnalyticsZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
+            return ffprobe?.Path ?? string.Empty;
         }
 
         private static SourceFileKind ResolveSourceFileKind(string displayName)

@@ -212,7 +212,11 @@ public class UILangProviderM
             ["SrcScribe.VpyPrefix"] = "import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"video file path\")",
             ["SrcScribe.VpyPrefix2"] = "# Add filters here or leave empty ...",
             ["SrcScribe.VpySuffix"] = "# ... end of edit section (keep src variable or assign back to src in the end)\r\nsrc.set_output()",
-            ["SrcScribe.SavingWindowTitle"] = "Saving all scripts (AVS & VPY)..."
+            ["SrcScribe.SavingWindowTitle"] = "Saving all scripts (AVS & VPY)...",
+
+            ["SrcAnalysis.WindowTitle"] = "Source Analysis",
+            ["SrcAnalysis.Completed"] = "Source analysis completed.",
+            ["SrcAnalysis.Copied"] = "Raw ffprobe JSON copied to clipboard."
         },
         ["zh-cn"] = new()
         {
@@ -396,7 +400,11 @@ public class UILangProviderM
             ["SrcScribe.VpyPrefix"] = "import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"视频文件路径\")",
             ["SrcScribe.VpyPrefix2"] = "# 按需在此加入滤镜或留空...",
             ["SrcScribe.VpySuffix"] = "# ... 编辑结束位置（沿用 src 或在最后赋值回 src）\r\nsrc.set_output()",
-            ["SrcScribe.SavingWindowTitle"] = "保存所有脚本到文件 (AVS & VPY)..."
+            ["SrcScribe.SavingWindowTitle"] = "保存所有脚本到文件 (AVS & VPY)...",
+
+            ["SrcAnalysis.WindowTitle"] = "视频源分析",
+            ["SrcAnalysis.Completed"] = "视频源分析已完成。",
+            ["SrcAnalysis.Copied"] = "ffprobe 原生 JSON 已复制到剪贴板。"
         },
         ["zh-tw"] = new()
         {
@@ -580,7 +588,11 @@ public class UILangProviderM
             ["SrcScribe.VpyPrefix"] = "import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"影片檔案路徑\")",
             ["SrcScribe.VpyPrefix2"] = "# 按需在此加入濾鏡或留空...",
             ["SrcScribe.VpySuffix"] = "# ... 編輯結束位置（沿用 src 或在最後賦值回 src）\r\nsrc.set_output()",
-            ["SrcScribe.SavingWindowTitle"] = "儲存所有腳本到檔案 (AVS & VPY)..."
+            ["SrcScribe.SavingWindowTitle"] = "儲存所有腳本到檔案 (AVS & VPY)...",
+
+            ["SrcAnalysis.WindowTitle"] = "影片源分析",
+            ["SrcAnalysis.Completed"] = "影片源分析已完成。",
+            ["SrcAnalysis.Copied"] = "ffprobe 原生 JSON 已複製到剪貼簿。"
         }
     };
 

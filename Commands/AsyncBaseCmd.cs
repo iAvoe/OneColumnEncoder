@@ -27,6 +27,7 @@ namespace OneColumnEncoder.Commands
         public override async void Execute(object? parameter)
         {
             if (IsExecuting) return;
+            IsExecuting = true;
             // Handle errors inside ExecuteAsync,
             // so that the UI doesn't crash when an exception is thrown
             try
