@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace OneColumnEncoder.Commands
 {
-    public class ReplaceToolCmd(ToolItemVM item, AppDataM appDataM, ModalNavS modalNavS) : AsyncBaseCmd
+    public class ReplaceToolCmd(ToolItemVM item, AppDataM appDataM, ModalNavS modalNavS, Action? afterReplace = null) : AsyncBaseCmd
     {
         private readonly ToolItemVM _item = item;
         private readonly AppDataM _appDataM = appDataM;
         private readonly ModalNavS _modalNavS = modalNavS;
+        private readonly Action? _afterReplace = afterReplace;
 
         protected override async Task ExecuteAsync(object? parameter)
         {
@@ -35,6 +36,7 @@ namespace OneColumnEncoder.Commands
             _item.Path = filePath;
             _item.VersionText = version ?? string.Empty;
             _appDataM.Save();
+            _afterReplace?.Invoke();
         }
     }
 }

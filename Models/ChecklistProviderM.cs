@@ -12,6 +12,8 @@ namespace OneColumnEncoder.Models
             new(UILangProviderM.Current["Checklist.Tools.UpstreamPicked"], StatusType.Error),
             new(UILangProviderM.Current["Checklist.Tools.DownstreamPicked"], StatusType.Error),
             new(UILangProviderM.Current["Checklist.Tools.AnalysisPicked"], StatusType.Error),
+            // Only Avs2PipeMod needs it, so don't add this check
+            // new(UILangProviderM.Current["Checklist.Tools.DependenciesPicked"], StatusType.Error),
         ];
 
         public static List<ChecklistItemDefinitionM> GetSourceChecklist1() =>

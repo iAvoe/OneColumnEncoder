@@ -51,6 +51,7 @@ namespace OneColumnEncoder.ViewModels
         public static string SectionSelectUpstream => UILangProviderM.Current["Section.SelectUpstream"];
         public static string SectionSelectEncoder => UILangProviderM.Current["Section.SelectEncoder"];
         public static string SectionSelectAnalytics => UILangProviderM.Current["Section.SelectAnalytics"];
+        public static string SectionSelectDependencies => UILangProviderM.Current["Section.SelectDependencies"];
         public static string SectionImportSource => UILangProviderM.Current["Section.ImportSource"];
         public static string SectionAnalysisResults => UILangProviderM.Current["Section.AnalysisResults"];
         public static string SectionEncodingConfigs => UILangProviderM.Current["Section.EncodingConfigs"];
@@ -233,6 +234,16 @@ namespace OneColumnEncoder.ViewModels
                 hasFfprobe: HasImportedFfprobe());
         }
 
+        private void RefreshImportedToolStates()
+        {
+            RefreshUpstreamToolState();
+            RefreshImportedToolsChecklist();
+            ToolCompatibilityH.RefreshDependencySelectionState(
+                UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
+            ToolCompatibilityH.RefreshSourceSelectionState(
+                UpstreamsZone, ScriptSrcImportZone, RefreshSelectedSourceStatus);
+        }
+
         private bool HasImportedFfprobe() =>
             !string.IsNullOrWhiteSpace(_appDataM.Tools.FfprobePath);
         private bool HasImportedAviSynthDll() =>
@@ -334,7 +345,7 @@ namespace OneColumnEncoder.ViewModels
         private void WireUpToolCmd(ToolItemVM item)
         {
             item.R1Command =
-                new ReplaceToolCmd(item, _appDataM, _modalNavS);
+                new ReplaceToolCmd(item, _appDataM, _modalNavS, RefreshImportedToolStates);
             item.R2Command =
                 new DeleteToolCmd(item, GetZoneForTool(ToolDefinitionProviderM.ResolveToolZone(item.Name)), _appDataM);
         }
@@ -351,9 +362,9 @@ namespace OneColumnEncoder.ViewModels
         {
             item.R2Command = new ClearToolItemCmd(item);
         }
-        private void OnVideoSrcItemPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void OnVideoSrcItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (sender is not ToolItemVM item) return;
+            if (sender is not ToolItemVM) return;
             if (e.PropertyName == nameof(ToolItemVM.Path))
                 UpdateScriptScbButtonsState();
         }
