@@ -60,8 +60,6 @@ public class UILangProviderM
             ["AppConfModal.Title"] = "1cenc Settings",
             ["AppConfModal.Header"] = "Settings",
 
-            // Import button on ToolsImportCard
-            ["ImportButton"] = "", // SVG covered
             ["Import.NoSelection"] = "No Selection",
 
             // ItemCard separator
@@ -262,7 +260,6 @@ public class UILangProviderM
             ["AppConfModal.Title"] = "1cenc 设置",
             ["AppConfModal.Header"] = "设置",
 
-            ["ImportButton"] = "", // SVG covered
             ["Import.NoSelection"] = "未选择",
 
             ["ItemCard.Separator"] = "：",
@@ -445,7 +442,6 @@ public class UILangProviderM
             ["AppConfModal.Title"] = "1cenc 設置",
             ["AppConfModal.Header"] = "設置",
 
-            ["ImportButton"] = "", // SVG covered
             ["Import.NoSelection"] = "未選擇",
 
             ["ItemCard.Separator"] = "：",

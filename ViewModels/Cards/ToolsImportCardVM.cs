@@ -21,9 +21,6 @@ namespace OneColumnEncoder.ViewModels.Cards
         private const int DownstreamPickedChecklistIdx = 4;
         private const int AnalysisPickedChecklistIdx = 5;
 
-        public string ImportButtonText =>
-            UILangProviderM.Current["ImportButton"];
-
         private string _name = string.Empty;
         public string Name {
             get => _name;
@@ -59,7 +56,6 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         public void RefreshLanguage()
         {
-            OnPropertyChanged(nameof(ImportButtonText));
             RefreshChecklistText();
             RefreshImportDropdownItems();
         }
