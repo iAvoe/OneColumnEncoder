@@ -37,9 +37,12 @@ namespace OneColumnEncoder.ViewModels
         public OpenAppConfCmd OpenAppConf { get; }
         public OneClickScriptGenCmd OneClickScriptGen { get; }
         public OpenScriptScribeCmd OpenScriptScribe { get; }
+        public CopyRawAnalysisCmd CopyRawAnalysis { get; } // Copy (ffprobe JSON) to clipboard
+        public AnalyzeSrcVideoCmd AnalyzeSrcVideo { get; } // Maybe add mediaInfo analysis in future, but ffprobe alone will do
         public SelectToolCmd SelectTool { get; } // ItemCard select on click
         public ButtonGroupVM OpenAppConfButtons { get; } // OpenUsages & OpenAppConf
         public ButtonGroupVM ScriptScbButtons { get; } // OneClickScriptGen & OpenScriptScribe
+        public ButtonGroupVM AnalyzeSrcButtons { get; } // AnalyzeSrcVideo & CopyRawAnalysis
         public ButtonGroupVM EncStartButtons { get; }
         // Card UIs
         public ToolsImportCardVM ToolsImportCard { get; }
@@ -116,6 +119,11 @@ namespace OneColumnEncoder.ViewModels
                 UICaptionProviderM.Buttons.OpenScribeSrcScribe,
                 OneClickScriptGen,
                 OpenScriptScribe);
+            AnalyzeSrcButtons = ButtonGroupVM.CreateTwoButton(
+                UICaptionProviderM.Buttons.CopyRawAnalysis,
+                UICaptionProviderM.Buttons.AnalyzeSrcVideo,
+                CopyRawAnalysis,
+                AnalyzeSrcVideo);
             EncStartButtons = ButtonGroupVM.CreateThreeButton( // UpdateEncStartButtonsState()
                 UICaptionProviderM.Buttons.ReEvaluate,
                 UICaptionProviderM.Buttons.RunSample,

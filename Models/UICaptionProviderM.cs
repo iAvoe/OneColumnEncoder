@@ -20,11 +20,14 @@ public static class UICaptionProviderM
     {
         public static string UsageAndCompliance => UILangProviderM.Current["Buttons.UsageAndCompliance"];
         public static string Settings => UILangProviderM.Current["Buttons.Settings"];
+        public static string OneClickScriptGen => UILangProviderM.Current["Buttons.OneClickScriptGen"];
+        public static string OpenScribeSrcScribe => UILangProviderM.Current["Buttons.OpenScribeSrcScribe"];
+        public static string CopyRawAnalysis => UILangProviderM.Current["Buttons.CopyRawAnalysis"];
+        public static string AnalyzeSrcVideo => UILangProviderM.Current["Buttons.AnalyzeSrcVideo"];
         public static string ReEvaluate => UILangProviderM.Current["Buttons.ReEvaluate"];
         public static string RunSample => UILangProviderM.Current["Buttons.RunSample"];
         public static string StartEncode => UILangProviderM.Current["Buttons.StartEncode"];
-        public static string OneClickScriptGen => UILangProviderM.Current["Buttons.OneClickScriptGen"];
-        public static string OpenScribeSrcScribe => UILangProviderM.Current["Buttons.OpenScribeSrcScribe"];
+
     }
 
     public static class AppConf

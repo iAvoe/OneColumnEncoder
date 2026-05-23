@@ -150,7 +150,7 @@
                         <Trigger Property="comps:ChecklistItem.Status"
                                  Value="Waiting">
                             <Setter Property="Foreground"
-                                    Value="#6c767d" />
+                                    Value="{StaticResource ButtonPrimary}" />
                             <Setter TargetName="IconMask"
                                     Property="OpacityMask">
                                 <Setter.Value>
@@ -163,7 +163,7 @@
                         <Trigger Property="comps:ChecklistItem.Status"
                                  Value="Success">
                             <Setter Property="Foreground"
-                                    Value="#009587" />
+                                    Value="{StaticResource CorrectGreen}" />
                             <Setter TargetName="IconMask"
                                     Property="OpacityMask">
                                 <Setter.Value>
@@ -176,7 +176,7 @@
                         <Trigger Property="comps:ChecklistItem.Status"
                                  Value="Warning">
                             <Setter Property="Foreground"
-                                    Value="#f68819" />
+                                    Value="{StaticResource WarningOrange}" />
                             <Setter TargetName="IconMask"
                                     Property="OpacityMask">
                                 <Setter.Value>
@@ -189,7 +189,7 @@
                         <Trigger Property="comps:ChecklistItem.Status"
                                  Value="Error">
                             <Setter Property="Foreground"
-                                    Value="#95000e" />
+                                    Value="{StaticResource ErrorRed}" />
                             <Setter TargetName="IconMask"
                                     Property="OpacityMask">
                                 <Setter.Value>

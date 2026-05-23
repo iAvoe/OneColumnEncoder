@@ -23,8 +23,8 @@ namespace OneColumnEncoder.ViewModels
 
         #region Properties & Commands
 
-        public string WindowTitle => UILangProviderM.Current["AppConfModal.Title"];
-        public string HeaderText => UILangProviderM.Current["AppConfModal.Header"];
+        public static string WindowTitle => UILangProviderM.Current["AppConfModal.Title"];
+        public static string HeaderText => UILangProviderM.Current["AppConfModal.Header"];
 
         public CloseModalCmd CloseCmd { get; }
         public SaveAppConfCmd SaveCmd { get; }
