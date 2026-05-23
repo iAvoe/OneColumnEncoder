@@ -11,7 +11,7 @@ using OneColumnEncoder.Helpers;
 
 namespace OneColumnEncoder.ViewModels
 {
-    public class ScriptSrcScribeModalVM : BaseVM
+    public class ScriptScribeModalVM : BaseVM
     {
         private readonly ModalNavS _modalNavS;
         private readonly Func<string> _getSourcePath;
@@ -25,6 +25,8 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _selectedTabIndex, value);
         }
 
+        // Avs/VpyPrefix is a placeholder (import directory w/out video source path), so its unusable for output
+        // Avs/VpyPrefix2 is a guidance comment to keep
         #region Script text
         public static string AvsPrefix => UILangProviderM.Current["SrcScribe.AvsPrefix"];
         public static string AvsPrefix2 => UILangProviderM.Current["SrcScribe.AvsPrefix2"];
@@ -59,7 +61,7 @@ namespace OneColumnEncoder.ViewModels
         public ButtonGroupVM ScriptExportButtons { get; private set; } = null!;
         public ButtonGroupVM FinishScribeButtons { get; private set; } = null!;
 
-        public ScriptSrcScribeModalVM(ModalNavS modalNavS, Action closeAction, Func<string> getSourcePath)
+        public ScriptScribeModalVM(ModalNavS modalNavS, Action closeAction, Func<string> getSourcePath)
         {
             _modalNavS = modalNavS;
             _closeAction = closeAction;
@@ -86,15 +88,15 @@ namespace OneColumnEncoder.ViewModels
                 new ActionCmd(_ => SaveAndImportAll()));
         }
 
-        #region Script operations
+        #region ThreeButtonGroup: copy full, copy in-out, save as file
         private void CopyFullScript()
         {
             Clipboard.SetText(GetCurrentFullScript());
-            new OpenInfoOrDbgModalCmd(_modalNavS,
+            new OpenInfoOrDbgModalCmd(
+                _modalNavS,
                 UILangProviderM.Current["SrcScribe.WindowTitle"],
                 UILangProviderM.Current["SrcScribe.CopiedFull"]).Execute(null);
         }
-
         private void CopyInOutSection()
         {
             string inOutText = SelectedTabIndex == 0
@@ -102,11 +104,11 @@ namespace OneColumnEncoder.ViewModels
                 : $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"{_getSourcePath()}\")\r\n{VpyPrefix2}\r\n\r\n{VpySuffix}";
 
             Clipboard.SetText(inOutText);
-            new OpenInfoOrDbgModalCmd(_modalNavS,
+            new OpenInfoOrDbgModalCmd(
+                _modalNavS,
                 UILangProviderM.Current["SrcScribe.WindowTitle"],
                 UILangProviderM.Current["SrcScribe.CopiedSection"]).Execute(null);
         }
-
         private void SaveAsFile()
         {
             _ = SelectedTabIndex == 0
@@ -133,8 +135,8 @@ namespace OneColumnEncoder.ViewModels
         private string GetCurrentFullScript()
         {
             return SelectedTabIndex == 0
-                ? $"LWLibavVideoSource(\"{_getSourcePath()}\")\r\n{AvsPrefix}\r\n{AvsPrefix2}\r\n\r\n{AvsSuffix}"
-                : $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"{_getSourcePath()}\")\r\n{VpyPrefix}\r\n{VpyPrefix2}\r\n\r\n{VpySuffix}";
+                ? $"LWLibavVideoSource(\"{_getSourcePath()}\")\r\n{AvsPrefix2}\r\n{AvsUserInput}"
+                : $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"{_getSourcePath()}\")\r\n{VpyPrefix2}\r\n{VpyUserInput}\r\n{VpySuffix}";
         }
         #endregion
 

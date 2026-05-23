@@ -26,7 +26,7 @@ namespace OneColumnEncoder.Commands.OpenClose
                 _modalNavS.Close();
 
             ScriptSrcScribeModal window = new();
-            ScriptSrcScribeModalVM vm = new(_modalNavS, window.Close, getSourcePath);
+            ScriptScribeModalVM vm = new(_modalNavS, window.Close, getSourcePath);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();

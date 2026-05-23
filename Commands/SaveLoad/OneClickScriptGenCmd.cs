@@ -30,23 +30,20 @@ namespace OneColumnEncoder.Commands.SaveLoad
                     UILangProviderM.Current["SrcScribe.NoVidSrcWarning"]).Execute(null);
                 return;
             }
-
             string avsScript = ScriptTemplateH.BuildAvsExportScript(
                 sourcePath,
-                ScriptSrcScribeModalVM.AvsPrefix,
-                ScriptSrcScribeModalVM.AvsPrefix2,
-                ScriptSrcScribeModalVM.AvsSuffix,
-                ""); // No user input (extra filter lines) in one click gen
+                ScriptScribeModalVM.AvsPrefix,
+                ScriptScribeModalVM.AvsPrefix2,
+                ScriptScribeModalVM.AvsSuffix); // No user input (extra filter lines) in one click gen
             string vpyScript = ScriptTemplateH.BuildVpyExportScript(
                 sourcePath,
-                ScriptSrcScribeModalVM.VpyPrefix,
-                ScriptSrcScribeModalVM.VpyPrefix2,
-                ScriptSrcScribeModalVM.VpySuffix,
-                "");
+                ScriptScribeModalVM.VpyPrefix,
+                ScriptScribeModalVM.VpyPrefix2,
+                ScriptScribeModalVM.VpySuffix);
 
             SaveFileDialog dialog = new()
             {
-                Title = "Saving all scripts...",
+                Title = UILangProviderM.Current["SrcScribe.SavingWindowTitle"],
                 Filter = "AviSynth Script (*.avs)|*.avs", // Script files (*.avs, *.vpy)|*.avs;*.vpy
                 FileName = "script.avs"
             };

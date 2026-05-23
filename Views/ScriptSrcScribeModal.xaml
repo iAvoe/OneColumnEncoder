@@ -142,6 +142,9 @@
         <comps:ThreeButtonGroup Grid.Row="3"
                                 Margin="0 10 0 0"
                                 DataContext="{Binding ScriptExportButtons}"
+                                Button1Command="{Binding Cmd1}"
+                                Button2Command="{Binding Cmd2}"
+                                Button3Command="{Binding Cmd3}"
                                 Button1IsEnabled="{Binding B3_1IsEnabled}"
                                 Button2IsEnabled="{Binding B3_2IsEnabled}"
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
@@ -157,6 +160,5 @@
                               DataContext="{Binding FinishScribeButtons}"
                               Button1Command="{Binding Cmd1}"
                               Button2Command="{Binding Cmd2}" />
-
     </Grid>
 </Window>

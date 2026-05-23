@@ -280,7 +280,7 @@ namespace OneColumnEncoder.ViewModels
             bool hasVideoSrc = VideoSrcImportZone.Any(t => !string.IsNullOrWhiteSpace(t.Path));
             ScriptScbButtons.B2_2IsEnabled = hasVideoSrc;
 
-            if (_modalNavS.CurrentModalVM is ScriptSrcScribeModalVM modal)
+            if (_modalNavS.CurrentModalVM is ScriptScribeModalVM modal)
             {
                 modal.ScriptExportButtons.B3_1IsEnabled = hasVideoSrc;
                 modal.ScriptExportButtons.B3_2IsEnabled = hasVideoSrc;

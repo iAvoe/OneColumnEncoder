@@ -205,12 +205,13 @@ public class UILangProviderM
             ["SrcScribe.CopiedSection"] = "Base in/out section copied to clipboard!",
             ["SrcScribe.FilterAvs"] = "AviSynth Script (*.avs)|*.avs",
             ["SrcScribe.FilterVpy"] = "VapourSynth Script (*.vpy)|*.vpy",
-            ["SrcScribe.AvsPrefix"] = "LWLibavVideoSource(\"video file path\")\r\n# Add more filters below or leave empty...",
+            ["SrcScribe.AvsPrefix"] = "LWLibavVideoSource(\"video file path\")",
             ["SrcScribe.AvsPrefix2"] = "# Add more filters below or leave empty...",
             ["SrcScribe.AvsSuffix"] = "# ... end of edit section",
             ["SrcScribe.VpyPrefix"] = "import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"video file path\")",
-            ["SrcScribe.VpyPrefix2"] = "# Add filters here or leave empty (keep src variable, or assign back to src at the end) ...",
-            ["SrcScribe.VpySuffix"] = "# ... end of edit section\r\nsrc.set_output()"
+            ["SrcScribe.VpyPrefix2"] = "# Add filters here or leave empty ...",
+            ["SrcScribe.VpySuffix"] = "# ... end of edit section (keep src variable or assign back to src in the end)\r\nsrc.set_output()",
+            ["SrcScribe.SavingWindowTitle"] = "Saving all scripts (AVS & VPY)..."
         },
         ["zh-cn"] = new()
         {
@@ -390,8 +391,9 @@ public class UILangProviderM
             ["SrcScribe.AvsPrefix2"] = "# 在下方添加更多滤镜或留空...",
             ["SrcScribe.AvsSuffix"] = "# ... 编辑结束位置",
             ["SrcScribe.VpyPrefix"] = "import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"视频文件路径\")",
-            ["SrcScribe.VpyPrefix2"] = "# 按需在此加入滤镜或留空（沿用 src 变量，或在最后赋值回 src）...",
-            ["SrcScribe.VpySuffix"] = "# ... 编辑结束位置\r\nsrc.set_output()",
+            ["SrcScribe.VpyPrefix2"] = "# 按需在此加入滤镜或留空...",
+            ["SrcScribe.VpySuffix"] = "# ... 编辑结束位置（沿用 src 或在最后赋值回 src）\r\nsrc.set_output()",
+            ["SrcScribe.SavingWindowTitle"] = "保存所有脚本到文件 (AVS & VPY)..."
         },
         ["zh-tw"] = new()
         {
@@ -571,8 +573,9 @@ public class UILangProviderM
             ["SrcScribe.AvsPrefix2"] = "# 在下方新增更多濾鏡或留空...",
             ["SrcScribe.AvsSuffix"] = "# ... 編輯結束位置",
             ["SrcScribe.VpyPrefix"] = "import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"影片檔案路徑\")",
-            ["SrcScribe.VpyPrefix2"] = "# 按需在此加入濾鏡或留空（沿用 src 變數，或在最後賦值回 src）...",
-            ["SrcScribe.VpySuffix"] = "# ... 編輯結束位置\r\nsrc.set_output()",
+            ["SrcScribe.VpyPrefix2"] = "# 按需在此加入濾鏡或留空...",
+            ["SrcScribe.VpySuffix"] = "# ... 編輯結束位置（沿用 src 或在最後賦值回 src）\r\nsrc.set_output()",
+            ["SrcScribe.SavingWindowTitle"] = "儲存所有腳本到檔案 (AVS & VPY)..."
         }
     };
 
