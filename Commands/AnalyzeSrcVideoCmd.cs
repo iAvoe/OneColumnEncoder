@@ -10,7 +10,7 @@ namespace OneColumnEncoder.Commands
     {
         protected override Task ExecuteAsync(object? parameter)
         {
-            throw new NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 }

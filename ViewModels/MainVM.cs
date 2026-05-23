@@ -68,6 +68,8 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _isOverlayVisible, value);
         }
 
+        private bool _isAnalyzeSrcButtonsReady;
+
         private ObservableCollection<ToolItemVM>[] AllImportedToolZones =>
             [UpstreamsZone, EncodersZone, AnalyticsZone, DependenciesZone];
 
@@ -106,6 +108,8 @@ namespace OneColumnEncoder.ViewModels
             OpenScriptScribe = new OpenScriptScribeCmd(
                 modalNavS,
                 () => GetCurrentVideoSourcePath());
+            CopyRawAnalysis = new CopyRawAnalysisCmd();
+            AnalyzeSrcVideo = new AnalyzeSrcVideoCmd();
 
             // Buttons
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
@@ -124,6 +128,7 @@ namespace OneColumnEncoder.ViewModels
                 UICaptionProviderM.Buttons.AnalyzeSrcVideo,
                 CopyRawAnalysis,
                 AnalyzeSrcVideo);
+            _isAnalyzeSrcButtonsReady = true;
             EncStartButtons = ButtonGroupVM.CreateThreeButton( // UpdateEncStartButtonsState()
                 UICaptionProviderM.Buttons.ReEvaluate,
                 UICaptionProviderM.Buttons.RunSample,
@@ -152,10 +157,12 @@ namespace OneColumnEncoder.ViewModels
             // Checklist item settings, checklist subs, nav subs, overlay subs
             InitializeChecklistEntryStates();
             SubToImportedToolZones();
+            AnalyticsZone.CollectionChanged += OnAnalyticsZoneCollectionChanged;
             RefreshUpstreamToolState(); // initial state after loading
             SubToToolsChecklist();
             UpdateScriptScbButtonsState(); // Initial state of script scribe buttons
             RefreshSelectedSourceStatus();
+            UpdateAnalyzeSrcButtonsState();
             _modalNavS.CurrentViewModelChanged += OnModalStateChanged;
             IsOverlayVisible = _modalNavS.IsOpen;
             UILangProviderM.CurrentChanged += OnLanguageChanged;
@@ -211,6 +218,10 @@ namespace OneColumnEncoder.ViewModels
         {
             foreach (var zone in AllImportedToolZones)
                 zone.CollectionChanged -= OnImportedToolZoneCollectionChanged;
+        }
+        private void OnAnalyticsZoneCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            UpdateAnalyzeSrcButtonsState();
         }
         private void OnImportedToolZoneCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
@@ -357,6 +368,9 @@ namespace OneColumnEncoder.ViewModels
                 new ReplaceToolCmd(item, _appDataM, _modalNavS, RefreshImportedToolStates);
             item.R2Command =
                 new DeleteToolCmd(item, GetZoneForTool(ToolDefinitionProviderM.ResolveToolZone(item.Name)), _appDataM);
+
+            if (GetZoneForTool(ToolDefinitionProviderM.ResolveToolZone(item.Name)) == AnalyticsZone)
+                item.PropertyChanged += OnAnalyticsItemPropertyChanged;
         }
         private void WireUpSourceCmd(ToolItemVM item)
         {
@@ -376,6 +390,14 @@ namespace OneColumnEncoder.ViewModels
             if (sender is not ToolItemVM) return;
             if (e.PropertyName == nameof(ToolItemVM.Path))
                 UpdateScriptScbButtonsState();
+            if (e.PropertyName is nameof(ToolItemVM.Path) or nameof(ToolItemVM.IsSelected))
+                UpdateAnalyzeSrcButtonsState();
+        }
+        private void OnAnalyticsItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (sender is not ToolItemVM) return;
+            if (e.PropertyName is nameof(ToolItemVM.Path) or nameof(ToolItemVM.IsSelected))
+                UpdateAnalyzeSrcButtonsState();
         }
         private void OnSourceImported(ToolItemVM item, SourceFileKind kind, string filePath)
         {
@@ -420,6 +442,19 @@ namespace OneColumnEncoder.ViewModels
             bool anySelected = VideoSrcImportZone.Any(t => t.IsSelected) || ScriptSrcImportZone.Any(t => t.IsSelected);
             SrcValidationCard.SetSourcePickedStatus(anySelected);
             UpdateScriptScbButtonsState();
+            UpdateAnalyzeSrcButtonsState();
+        }
+        public void UpdateAnalyzeSrcButtonsState()
+        {
+            if (!_isAnalyzeSrcButtonsReady)
+                return;
+
+            bool hasVideoSource = VideoSrcImportZone.Any(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
+            bool hasFfprobe = AnalyticsZone.Any(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
+            bool isEnabled = hasVideoSource && hasFfprobe;
+
+            AnalyzeSrcButtons.B2_1IsEnabled = isEnabled;
+            AnalyzeSrcButtons.B2_2IsEnabled = isEnabled;
         }
         private string GetCurrentVideoSourcePath()
         {
@@ -668,6 +703,7 @@ namespace OneColumnEncoder.ViewModels
             UILangProviderM.CurrentChanged -= OnLanguageChanged;
             _modalNavS.CurrentViewModelChanged -= OnModalStateChanged;
             ToolsImportCard.ToolImported -= OnToolImported;
+            AnalyticsZone.CollectionChanged -= OnAnalyticsZoneCollectionChanged;
             ToolsImportCard.Dispose();
             UnsubFromImportedToolZones();
             UnsubFromToolsChecklist();
