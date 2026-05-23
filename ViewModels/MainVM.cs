@@ -514,18 +514,25 @@ namespace OneColumnEncoder.ViewModels
 
         private void LoadSourcesFromAppDataM()
         {
-            LoadSourceItem(VideoSrcImportZone[0], SourceFileKind.Video, _appDataM.Tools.VideoSourcePath);
-            VideoSrcImportZone[0].IsSelected = !string.IsNullOrWhiteSpace(VideoSrcImportZone[0].Path);
+            bool hasVideoSource = LoadSourceItem(VideoSrcImportZone[0], SourceFileKind.Video, _appDataM.Tools.VideoSourcePath);
+            VideoSrcImportZone[0].IsSelected = hasVideoSource;
+            if (!hasVideoSource && !string.IsNullOrWhiteSpace(_appDataM.Tools.VideoSourcePath))
+            {
+                _appDataM.Tools.VideoSourcePath = string.Empty;
+                _appDataM.Save();
+            }
+
             LoadSourceItem(ScriptSrcImportZone[0], SourceFileKind.AviSynthScript, _appDataM.Tools.AvsSourcePath);
             LoadSourceItem(ScriptSrcImportZone[1], SourceFileKind.VapourSynthScript, _appDataM.Tools.VpySourcePath);
             LoadSourceItem(ScriptSrcImportZone[2], SourceFileKind.SvfiIni, _appDataM.Tools.SvfiSourcePath);
         }
-        private static void LoadSourceItem(ToolItemVM item, SourceFileKind kind, string? path)
+        private static bool LoadSourceItem(ToolItemVM item, SourceFileKind kind, string? path)
         {
-            if (string.IsNullOrWhiteSpace(path)) return;
+            if (string.IsNullOrWhiteSpace(path) || !File.Exists(path)) return false;
 
             item.Path = path;
             item.VersionText = SourceFilePickerH.GetPrimaryText(kind, path);
+            return true;
         }
 
 
