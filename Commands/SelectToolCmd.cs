@@ -45,11 +45,15 @@ namespace OneColumnEncoder.Commands
             }
             else if (_mainVM.VideoSrcImportZone != null && _mainVM.VideoSrcImportZone.Contains(clickedTool))
             {
-                ResetSelection(_mainVM.VideoSrcImportZone, clickedTool);
+                if (string.IsNullOrEmpty(clickedTool.Path)) return;
+
+                SelectOnly(_mainVM.VideoSrcImportZone, clickedTool);
                 _mainVM.RefreshSelectedSourceStatus();
             }
             else if (_mainVM.ScriptSrcImportZone != null && _mainVM.ScriptSrcImportZone.Contains(clickedTool))
             {
+                if (string.IsNullOrEmpty(clickedTool.Path)) return;
+
                 ResetSelection(_mainVM.ScriptSrcImportZone, clickedTool);
                 _mainVM.RefreshSelectedSourceStatus();
             }
@@ -67,6 +71,12 @@ namespace OneColumnEncoder.Commands
                 if (card != targetCard) card.IsSelected = false;
             }
             targetCard.IsSelected = !targetCard.IsSelected;
+        }
+
+        private static void SelectOnly(ObservableCollection<ToolItemVM> zone, ToolItemVM targetCard)
+        {
+            foreach (ToolItemVM card in zone)
+                card.IsSelected = card == targetCard;
         }
 
         // CanExecuteChanged defined in BaseCmd

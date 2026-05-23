@@ -42,6 +42,11 @@ namespace OneColumnEncoder.Models
             public string? FfprobeVer { get; set; }
             public string? AviSynthDllPath { get; set; }
             public string? AviSynthDllVer { get; set; }
+            // VideoSrcImportZone, ScriptSrcImportZone
+            public string? VideoSourcePath { get; set; }
+            public string? AvsSourcePath { get; set; }
+            public string? VpySourcePath { get; set; }
+            public string? SvfiSourcePath { get; set; }
         }
         #endregion
     }

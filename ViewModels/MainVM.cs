@@ -90,6 +90,7 @@ namespace OneColumnEncoder.ViewModels
             AnalyticsZone = [];
             DependenciesZone = [];
             LoadToolsFromAppDataM();
+            LoadSourcesFromAppDataM();
             WireUpZoneDeleteCmds();
 
             // Commands
@@ -144,6 +145,7 @@ namespace OneColumnEncoder.ViewModels
             RefreshUpstreamToolState(); // initial state after loading
             SubToToolsChecklist();
             UpdateScriptScbButtonsState(); // Initial state of script scribe buttons
+            RefreshSelectedSourceStatus();
             _modalNavS.CurrentViewModelChanged += OnModalStateChanged;
             IsOverlayVisible = _modalNavS.IsOpen;
             UILangProviderM.CurrentChanged += OnLanguageChanged;
@@ -338,10 +340,11 @@ namespace OneColumnEncoder.ViewModels
         }
         private void WireUpSourceCmd(ToolItemVM item)
         {
+            SourceFileKind kind = ResolveSourceFileKind(item.Name);
             item.R1Command =
-                new BrowseSourcePathCmd(item, ResolveSourceFileKind(item.Name), _appDataM, _modalNavS);
+                new BrowseSourcePathCmd(item, kind, _appDataM, _modalNavS, OnSourceImported);
             item.R2Command =
-                new ClearToolItemCmd(item, RefreshSelectedSourceStatus);
+                new ClearToolItemCmd(item, () => OnSourceCleared(kind));
             item.PropertyChanged += OnVideoSrcItemPropertyChanged;
         }
         private static void WireUpStaticClearCmd(ToolItemVM item)
@@ -354,7 +357,44 @@ namespace OneColumnEncoder.ViewModels
             if (e.PropertyName == nameof(ToolItemVM.Path))
                 UpdateScriptScbButtonsState();
         }
+        private void OnSourceImported(ToolItemVM item, SourceFileKind kind, string filePath)
+        {
+            SaveSourcePath(kind, filePath);
 
+            foreach (ToolItemVM source in VideoSrcImportZone)
+                source.IsSelected = false;
+            foreach (ToolItemVM source in ScriptSrcImportZone)
+                source.IsSelected = false;
+
+            item.IsSelected = true;
+            _appDataM.Save();
+            RefreshSelectedSourceStatus();
+        }
+        private void OnSourceCleared(SourceFileKind kind)
+        {
+            SaveSourcePath(kind, string.Empty);
+            _appDataM.Save();
+            RefreshSelectedSourceStatus();
+        }
+
+        private void SaveSourcePath(SourceFileKind kind, string filePath)
+        {
+            switch (kind)
+            {
+                case SourceFileKind.Video:
+                    _appDataM.Tools.VideoSourcePath = filePath;
+                    break;
+                case SourceFileKind.AviSynthScript:
+                    _appDataM.Tools.AvsSourcePath = filePath;
+                    break;
+                case SourceFileKind.VapourSynthScript:
+                    _appDataM.Tools.VpySourcePath = filePath;
+                    break;
+                case SourceFileKind.SvfiIni:
+                    _appDataM.Tools.SvfiSourcePath = filePath;
+                    break;
+            }
+        }
         public void RefreshSelectedSourceStatus()
         {
             bool anySelected = VideoSrcImportZone.Any(t => t.IsSelected) || ScriptSrcImportZone.Any(t => t.IsSelected);
@@ -395,7 +435,7 @@ namespace OneColumnEncoder.ViewModels
 
         #endregion
 
-        #region Tool CRUD & Import
+        #region Loading or adding other persistent data
 
         /// <summary>
         /// Add new tool configuration or update an existing one if duplicated
@@ -425,8 +465,6 @@ namespace OneColumnEncoder.ViewModels
             WireUpToolCmd(item);
             zone.Add(item);
         }
-
-        // Load tool from app data
         private void LoadToolsFromAppDataM()
         {
             AppDataM.Importables t = _appDataM.Tools;
@@ -452,7 +490,6 @@ namespace OneColumnEncoder.ViewModels
                 if (!string.IsNullOrEmpty(path)) AddOrUpdateTool(defKey, path, version);
             }
         }
-
         private async Task OnToolImported(string exeName, string filePath, string? version)
         {
             ToolDefinitionM? def = ToolDefinitionProviderM.GetByExeName(exeName);
@@ -474,6 +511,23 @@ namespace OneColumnEncoder.ViewModels
             _appDataM.Save();
             AddOrUpdateTool(defKey, filePath, version);
         }
+
+        private void LoadSourcesFromAppDataM()
+        {
+            LoadSourceItem(VideoSrcImportZone[0], SourceFileKind.Video, _appDataM.Tools.VideoSourcePath);
+            VideoSrcImportZone[0].IsSelected = !string.IsNullOrWhiteSpace(VideoSrcImportZone[0].Path);
+            LoadSourceItem(ScriptSrcImportZone[0], SourceFileKind.AviSynthScript, _appDataM.Tools.AvsSourcePath);
+            LoadSourceItem(ScriptSrcImportZone[1], SourceFileKind.VapourSynthScript, _appDataM.Tools.VpySourcePath);
+            LoadSourceItem(ScriptSrcImportZone[2], SourceFileKind.SvfiIni, _appDataM.Tools.SvfiSourcePath);
+        }
+        private static void LoadSourceItem(ToolItemVM item, SourceFileKind kind, string? path)
+        {
+            if (string.IsNullOrWhiteSpace(path)) return;
+
+            item.Path = path;
+            item.VersionText = SourceFilePickerH.GetPrimaryText(kind, path);
+        }
+
 
         #endregion
 

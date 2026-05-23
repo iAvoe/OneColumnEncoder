@@ -6,12 +6,17 @@ using System;
 
 namespace OneColumnEncoder.Commands
 {
-    public class BrowseSourcePathCmd(ToolItemVM item, SourceFileKind fileKind, AppDataM appDataM, ModalNavS modalNavS) : BaseCmd
+    public class BrowseSourcePathCmd(ToolItemVM item,
+                                     SourceFileKind fileKind,
+                                     AppDataM appDataM,
+                                     ModalNavS modalNavS,
+                                     Action<ToolItemVM, SourceFileKind, string>? afterImport = null) : BaseCmd
     {
         private readonly ToolItemVM _item = item;
         private readonly SourceFileKind _fileKind = fileKind;
         private readonly AppDataM _appDataM = appDataM;
         private readonly ModalNavS _modalNavS = modalNavS;
+        private readonly Action<ToolItemVM, SourceFileKind, string>? _afterImport = afterImport;
 
         public override void Execute(object? parameter)
         {
@@ -34,6 +39,7 @@ namespace OneColumnEncoder.Commands
 
             _item.Path = filePath;
             _item.VersionText = SourceFilePickerH.GetPrimaryText(_fileKind, filePath);
+            _afterImport?.Invoke(_item, _fileKind, filePath);
         }
     }
 }
