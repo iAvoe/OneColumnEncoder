@@ -21,6 +21,12 @@ namespace OneColumnEncoder.Commands
             ToolCatalogProviderM.TrySetPath(def.ExeName, _appDataM.Tools, string.Empty);
             ToolCatalogProviderM.TrySetVersion(def.ExeName, _appDataM.Tools, string.Empty);
 
+            if (def.Zone == ToolZone.Analytics)
+            {
+                _item.IsSelected = false;
+                _item.IsCancel = false;
+            }
+
             // File level overwrite
             _appDataM.Save();
         }

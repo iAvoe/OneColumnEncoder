@@ -35,9 +35,8 @@ namespace OneColumnEncoder.Commands
             }
             else if (_mainVM.AnalyticsZone != null && _mainVM.AnalyticsZone.Contains(clickedTool))
             {
-                ResetSelection(_mainVM.AnalyticsZone, clickedTool);
-                bool isSelected = _mainVM.AnalyticsZone.Any(t => t.IsSelected);
-                _mainVM.ToolsImportCard.SetToolPickedStatus(ToolZone.Analytics, isSelected);
+                SelectOnly(_mainVM.AnalyticsZone, clickedTool);
+                _mainVM.ToolsImportCard.SetToolPickedStatus(ToolZone.Analytics, true);
             }
             else if (_mainVM.DependenciesZone != null && _mainVM.DependenciesZone.Contains(clickedTool))
             {
