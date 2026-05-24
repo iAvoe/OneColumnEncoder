@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:OneColumnEncoder.Views"
         xmlns:comps="clr-namespace:OneColumnEncoder.Components"
         xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
+        d:DataContext="{d:DesignInstance Type=vms:ScriptScribeModalVM}"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="520"
@@ -41,7 +42,8 @@
                     Margin="0 20 0 0">
 
             <TabItem Header="{Binding TabAvs}"
-                     Padding="15 7.5">
+                     Padding="15 7.5"
+                     FontWeight="Bold">
                 <Grid Margin="0 5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -57,7 +59,8 @@
                              IsReadOnly="True"
                              Foreground="{StaticResource ButtonTertiary}"
                              TextWrapping="Wrap"
-                             AcceptsReturn="True" />
+                             AcceptsReturn="True"
+                             FontWeight="Normal" />
                     <TextBox Grid.Row="1"
                              Text="{Binding AvsPrefix2, Mode=OneWay}"
                              VerticalAlignment="Stretch"
@@ -65,7 +68,8 @@
                              IsReadOnly="True"
                              Foreground="{StaticResource ButtonTertiary}"
                              TextWrapping="Wrap"
-                             AcceptsReturn="True" />
+                             AcceptsReturn="True"
+                             FontWeight="Normal" />
                     <TextBox Grid.Row="2"
                              Text="{Binding AvsUserInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              BorderThickness="0"
@@ -78,7 +82,8 @@
                              HorizontalScrollBarVisibility="Auto"
                              VerticalScrollBarVisibility="Auto"
                              PreviewMouseWheel="UserInput_PreviewMouseWheel"
-                             Margin="0 10 0 0" />
+                             Margin="0 10 0 0"
+                             FontWeight="Normal" />
                     <TextBox Grid.Row="3"
                              Text="{Binding AvsSuffix, Mode=OneWay}"
                              IsReadOnly="True"
@@ -87,12 +92,14 @@
                              Foreground="{StaticResource ButtonTertiary}"
                              TextWrapping="Wrap"
                              AcceptsReturn="True"
-                             Margin="0 10 0 0" />
+                             Margin="0 10 0 0"
+                             FontWeight="Normal" />
                 </Grid>
             </TabItem>
 
             <TabItem Header="{Binding TabVpy}"
-                     Padding="15 7.5">
+                     Padding="15 7.5"
+                     FontWeight="Bold">
                 <Grid Margin="0 5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -107,14 +114,16 @@
                              IsReadOnly="True"
                              Foreground="{StaticResource ButtonTertiary}"
                              TextWrapping="Wrap"
-                             AcceptsReturn="True" />
+                             AcceptsReturn="True"
+                             FontWeight="Normal" />
                     <TextBox Grid.Row="1"
                              Text="{Binding VpyPrefix2, Mode=OneWay}"
                              BorderThickness="0"
                              IsReadOnly="True"
                              Foreground="{StaticResource ButtonTertiary}"
                              TextWrapping="Wrap"
-                             AcceptsReturn="True" />
+                             AcceptsReturn="True"
+                             FontWeight="Normal" />
                     <TextBox Grid.Row="2"
                              Text="{Binding VpyUserInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              BorderThickness="0"
@@ -125,7 +134,8 @@
                              Padding="5"
                              FontSize="13"
                              PreviewMouseWheel="UserInput_PreviewMouseWheel"
-                             Margin="0 10 0 0" />
+                             Margin="0 10 0 0"
+                             FontWeight="Normal" />
                     <TextBox Grid.Row="3"
                              Text="{Binding VpySuffix, Mode=OneWay}"
                              IsReadOnly="True"
@@ -134,7 +144,8 @@
                              Foreground="{StaticResource ButtonTertiary}"
                              TextWrapping="Wrap"
                              AcceptsReturn="True"
-                             Margin="0 10 0 0" />
+                             Margin="0 10 0 0"
+                             FontWeight="Normal" />
                 </Grid>
             </TabItem>
         </TabControl>
