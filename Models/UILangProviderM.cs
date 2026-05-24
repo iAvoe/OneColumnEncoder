@@ -224,7 +224,16 @@ public class UILangProviderM
             ["SrcInspect.InfoTitle"] = "Source Check",
             ["SrcInspect.InfoMsg"] = "No obvious source problems were found.",
             ["SrcInspect.ErrorTitle"] = "Source Severe Issues",
-            ["SrcInspect.WarnTitle"] = "Source Moderate Issues"
+            ["SrcInspect.WarnTitle"] = "Source Moderate Issues",
+            ["SrcInspect.MetadataP1Text"] = "The source metadata cannot be read. The file may be corrupted or not a video file, and encoding cannot continue because this tool relies on metadata to choose safe encoding parameters.",
+            ["SrcInspect.ProgressiveP1Text"] = "This tool cannot inspect frame-to-frame patterns, detect native interlacing or pulldown, or choose IVTC filters automatically. See https://iavoe.github.io/deint-ivtc-web-tutorial/HTML for guidance.",
+            ["SrcInspect.BitDepthP1Text"] = "SVT-AV1 does not support 12-bit video. If SVT-AV1 is not selected, this issue is treated as a warning instead of an error and this error dialog will not appear.",
+            ["SrcInspect.FramerateP1Text"] = "This tool cannot align variable-frame-rate sources safely. Encoding VFR directly may cause audio/video desync over time. To fix it, transcode to FFV1 with ffmpeg and specify the real frame rate using `-r <real-frame-rate>`.",
+            ["SrcInspect.AspectRatioP1Text"] = "This tool cannot compensate for non-square pixels. Continuing may produce unexpected output dimensions. To fix the source, transcode to FFV1 with ffmpeg and preserve the current SAR using `-aspect <current-SAR>`.",
+            ["SrcInspect.ColorMatrixP1Text"] = "Players often fall back to BT.709 when color matrix metadata is missing, but many other matrices exist and only one is correct for the source.",
+            ["SrcInspect.TransferCharsP1Text"] = "Players often fall back to BT.709 when transfer characteristics metadata is missing, but many transfer curves exist and only one is correct for the source.",
+            ["SrcInspect.ColorPrimariesP1Text"] = "Players often fall back to BT.709 when color primaries metadata is missing, but many primary sets exist and only one is correct for the source.",
+            ["SrcInspect.ChromaSubsamplingP1Text"] = "Incorrect chroma sample location can blur colored edges or shift them away from object borders. Unlike AVC and HEVC, AV1 supports only a limited set of chroma sample locations."
         },
         ["zh-cn"] = new()
         {
@@ -333,12 +342,12 @@ public class UILangProviderM
             ["Checklist.Source1.Progressive"] = "逐行扫描视频帧 / 非隔行（SVT-AV1 要求）",
             ["Checklist.Source1.BitDepth"] = "位深小于 12bit（8 或 10，SVT-AV1 要求）",
 
-            ["Checklist.Source2.Framerate"] = "帧率恒定/非可变帧率（VFR）",
-            ["Checklist.Source2.AspectRatio"] = "方形像素变宽比 / 1:1 SAR",
-            ["Checklist.Source2.ColorMatrix"] = "色彩矩阵信息正常",
-            ["Checklist.Source2.TransferChars"] = "传输特性信息正常",
-            ["Checklist.Source2.ColorPrimaries"] = "原色色系信息正常",
-            ["Checklist.Source2.ChromaSubsampling"] = "无色度采样压缩或为 \u2190/\u2196（SVT-AV1 要求）",
+            ["Checklist.Source2.Framerate"] = "帧率是否恒定/非可变帧率（VFR）",
+            ["Checklist.Source2.AspectRatio"] = "是否为方形像素变宽比 / 1:1 SAR",
+            ["Checklist.Source2.ColorMatrix"] = "色彩矩阵信息是否正常",
+            ["Checklist.Source2.TransferChars"] = "传输特性信息是否正常",
+            ["Checklist.Source2.ColorPrimaries"] = "原色色系信息是否正常",
+            ["Checklist.Source2.ChromaSubsampling"] = "是否关闭色度采样压缩或朝向 \u2190/\u2196（SVT-AV1 要求）",
 
             ["Checklist.Enc1.OffGrid"] = "使用电池供电 / 离网",
             ["Checklist.Enc1.RAM"] = "内存充足",
@@ -420,7 +429,16 @@ public class UILangProviderM
             ["SrcInspect.InfoTitle"] = "视频源检查",
             ["SrcInspect.InfoMsg"] = "未发现明显的源文件问题。",
             ["SrcInspect.ErrorTitle"] = "视频源严重问题",
-            ["SrcInspect.WarnTitle"] = "视频源中等问题"
+            ["SrcInspect.WarnTitle"] = "视频源中等问题",
+            ["SrcInspect.MetadataP1Text"] = "无法读取视频源元数据。文件可能已经损坏，或本身不是视频文件；本工具依赖元数据选择安全的压制参数，因此无法继续处理。",
+            ["SrcInspect.ProgressiveP1Text"] = "本工具不能检查帧间模式、识别原生隔行或 pulldown，也不能自动选择 IVTC 滤镜。可参考 https://iavoe.github.io/deint-ivtc-web-tutorial/HTML。",
+            ["SrcInspect.BitDepthP1Text"] = "SVT-AV1 不支持 12-bit 视频。如果当前没有选择 SVT-AV1，此项会作为警告而不是错误处理，也不会弹出错误窗口。",
+            ["SrcInspect.FramerateP1Text"] = "本工具不能安全处理可变帧率（VFR）的时间轴对齐。直接压制 VFR 可能随着播放时间推进导致音画不同步。若要修复，可用 ffmpeg 转码为 FFV1，并用 `-r <真实帧率>` 指定真实帧率。",
+            ["SrcInspect.AspectRatioP1Text"] = "本工具不能补偿非方形像素。继续处理可能得到不符合预期的输出宽高。若要修复，可用 ffmpeg 转码为 FFV1，并用 `-aspect <当前-SAR>` 保留当前 SAR。",
+            ["SrcInspect.ColorMatrixP1Text"] = "播放器常在缺少色彩矩阵信息时回退到 BT.709，但实际存在许多色彩矩阵，且只有一种与源文件匹配。",
+            ["SrcInspect.TransferCharsP1Text"] = "播放器常在缺少传输特性信息时回退到 BT.709，但实际存在许多传输曲线，且只有一种与源文件匹配。",
+            ["SrcInspect.ColorPrimariesP1Text"] = "播放器常在缺少原色色系信息时回退到 BT.709，但实际存在许多原色定义，且只有一种与源文件匹配。",
+            ["SrcInspect.ChromaSubsamplingP1Text"] = "色度采样位置错误可能让彩色边缘变糊，或偏离物体边界。不同于 AVC 与 HEVC，AV1 只支持有限的色度采样位置。"
         },
         ["zh-tw"] = new()
         {
@@ -529,12 +547,12 @@ public class UILangProviderM
             ["Checklist.Source1.Progressive"] = "逐行掃描影片幀 / 非隔行（SVT-AV1 要求）",
             ["Checklist.Source1.BitDepth"] = "位深小於 12bit（8 或 10，SVT-AV1 要求）",
 
-            ["Checklist.Source2.Framerate"] = "幀率恆定/非可變幀率（VFR）",
-            ["Checklist.Source2.AspectRatio"] = "方形像素變寬比 / 1:1 SAR",
-            ["Checklist.Source2.ColorMatrix"] = "色彩矩陣資訊正常",
-            ["Checklist.Source2.TransferChars"] = "傳輸特性資訊正常",
-            ["Checklist.Source2.ColorPrimaries"] = "原色色系資訊正常",
-            ["Checklist.Source2.ChromaSubsampling"] = "無色度採樣壓縮或為 \u2190/\u2196（SVT-AV1 要求）",
+            ["Checklist.Source2.Framerate"] = "幀率是否恆定/非可變幀率（VFR）",
+            ["Checklist.Source2.AspectRatio"] = "是否為方形象素變寬比 / 1:1 SAR",
+            ["Checklist.Source2.ColorMatrix"] = "色彩矩陣資訊是否正常",
+            ["Checklist.Source2.TransferChars"] = "傳輸特性資訊是否正常",
+            ["Checklist.Source2.ColorPrimaries"] = "原色色系資訊是否正常",
+            ["Checklist.Source2.ChromaSubsampling"] = "是否關閉色度採樣壓縮或朝向 \u2190/\u2196（SVT-AV1 要求）",
 
             ["Checklist.Enc1.OffGrid"] = "使用電池供電 / 離網",
             ["Checklist.Enc1.RAM"] = "記憶體充足",
@@ -616,7 +634,16 @@ public class UILangProviderM
             ["SrcInspect.InfoTitle"] = "影片源檢查",
             ["SrcInspect.InfoMsg"] = "未發現明顯的源文件問題。",
             ["SrcInspect.ErrorTitle"] = "影片源嚴重問題",
-            ["SrcInspect.WarnTitle"] = "影片源中等問題"
+            ["SrcInspect.WarnTitle"] = "影片源中等問題",
+            ["SrcInspect.MetadataP1Text"] = "無法讀取影片源元數據。文件可能已經損壞，或本身不是影片文件；本工具依賴元數據選擇安全的壓制參數，因此無法繼續處理。",
+            ["SrcInspect.ProgressiveP1Text"] = "本工具不能檢查幀間模式、識別原生隔行或 pulldown，也不能自動選擇 IVTC 濾鏡。可參考 https://iavoe.github.io/deint-ivtc-web-tutorial/HTML。",
+            ["SrcInspect.BitDepthP1Text"] = "SVT-AV1 不支援 12-bit 影片。如果目前沒有選擇 SVT-AV1，此項會作為警告而不是錯誤處理，也不會彈出錯誤視窗。",
+            ["SrcInspect.FramerateP1Text"] = "本工具不能安全處理可變幀率（VFR）的時間軸對齊。直接壓制 VFR 可能隨著播放時間推進導致音畫不同步。若要修復，可用 ffmpeg 轉碼為 FFV1，並用 `-r <真實幀率>` 指定真實幀率。",
+            ["SrcInspect.AspectRatioP1Text"] = "本工具不能補償非方形象素。繼續處理可能得到不符合預期的輸出寬高。若要修復，可用 ffmpeg 轉碼為 FFV1，並用 `-aspect <目前-SAR>` 保留目前 SAR。",
+            ["SrcInspect.ColorMatrixP1Text"] = "播放器常在缺少色彩矩陣資訊時回退到 BT.709，但實際存在許多色彩矩陣，且只有一種與源文件匹配。",
+            ["SrcInspect.TransferCharsP1Text"] = "播放器常在缺少傳輸特性資訊時回退到 BT.709，但實際存在許多傳輸曲線，且只有一種與源文件匹配。",
+            ["SrcInspect.ColorPrimariesP1Text"] = "播放器常在缺少原色色系資訊時回退到 BT.709，但實際存在許多原色定義，且只有一種與源文件匹配。",
+            ["SrcInspect.ChromaSubsamplingP1Text"] = "色度採樣位置錯誤可能讓彩色邊緣變糊，或偏離物體邊界。不同於 AVC 與 HEVC，AV1 只支援有限的色度採樣位置。"
         }
     };
 

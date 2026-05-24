@@ -370,14 +370,10 @@ namespace OneColumnEncoder.ViewModels
             if (!_isEncStartButtonsReady) return;
 
             bool toolsReady =
-                UpstreamsZone.Count > 0 &&
-                EncodersZone.Count > 0 &&
-                HasImportedFfprobe();
+                UpstreamsZone.Count > 0 && EncodersZone.Count > 0 && HasImportedFfprobe();
 
             bool toolsPickedReady =
-                ToolsImportCard.ToolsChecklist
-                    .Skip(3)
-                    .All(e => !e.IsEnabled || e.Status == StatusType.Success);
+                ToolsImportCard.ToolsChecklist.Skip(3).All(e => !e.IsEnabled || e.Status == StatusType.Success);
 
             bool hasRawJson = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
 
@@ -388,9 +384,13 @@ namespace OneColumnEncoder.ViewModels
             bool encodeTermsReady =
                 EncTermsCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
                 EncTermsCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
-            bool avsSelected = UpstreamsZone.Any(t => t.IsSelected && ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe"));
-            bool aviSelected = DependenciesZone.Any(t => t.IsSelected && ToolDefinitionProviderM.IsImportedTool(t.Name, "avisynth.dll"));
+            bool avsSelected = UpstreamsZone.Any(
+                t => t.IsSelected && ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe"));
+            bool aviSelected = DependenciesZone.Any(
+                t => t.IsSelected && ToolDefinitionProviderM.IsImportedTool(t.Name, "avisynth.dll"));
             bool dependencyReady = avsSelected == aviSelected;
+            
+            // TODO: SVT-AV1 does not suport 12bit source
 
             bool allReady = toolsReady && toolsPickedReady && sourceValidationReady && encodeTermsReady && dependencyReady;
             EncStartButtons.B3_2IsEnabled = allReady;
@@ -491,11 +491,14 @@ namespace OneColumnEncoder.ViewModels
                     break;
             }
         }
-        public void RefreshSelectedSourceStatus() => RefreshSelectedSourceStatus(resetAnalysis: false);
+        public void RefreshSelectedSourceStatus() =>
+            RefreshSelectedSourceStatus(resetAnalysis: false);
 
         public void RefreshSelectedSourceStatus(bool resetAnalysis)
         {
-            bool anySelected = VideoSrcImportZone.Any(t => t.IsSelected) || ScriptSrcImportZone.Any(t => t.IsSelected);
+            bool anySelected =
+                VideoSrcImportZone.Any(t => t.IsSelected) ||
+                ScriptSrcImportZone.Any(t => t.IsSelected);
             if (resetAnalysis)
             {
                 _srcVideoAnalysis.Clear();

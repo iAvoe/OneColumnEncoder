@@ -9,7 +9,9 @@
         d:DataContext="{d:DesignInstance Type=vms:ConfirmationModalVM}"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
-        Height="150"
+        MinHeight="150"
+        MaxHeight="650"
+        SizeToContent="Height"
         Width="500"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
@@ -28,11 +30,14 @@
         <StackPanel Grid.Column="0"
                     MaxWidth="400"
                     VerticalAlignment="Center">
-            <TextBlock FontSize="14"
-                       Height="Auto"
-                       Text="{Binding P1Text}"
-                       TextWrapping="WrapWithOverflow"
-                       VerticalAlignment="Top" />
+            <ScrollViewer MaxHeight="500"
+                          VerticalScrollBarVisibility="Auto">
+                <TextBlock FontSize="14"
+                           Height="Auto"
+                           Text="{Binding P1Text}"
+                           TextWrapping="WrapWithOverflow"
+                           VerticalAlignment="Top" />
+            </ScrollViewer>
             <comps:TwoButtonGroup Margin="0 15 0 0"
                                   ButtonHeight="30"
                                   DataContext="{Binding FinishWarnErrButtons}"

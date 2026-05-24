@@ -26,16 +26,16 @@ namespace OneColumnEncoder.Commands
             {
                 new OpenInfoOrDbgModalCmd(
                     _modalNavS,
-                    UILangProviderM.Current["SrcInspect.InfoTitle"],
-                    UILangProviderM.Current["SrcInspect.InfoMsg"]).Execute(null);
+                    UICaptionProviderM.SourceInspect.InfoTitle,
+                    UICaptionProviderM.SourceInspect.InfoMsg).Execute(null);
                 return;
             }
 
             if (severeText.Length > 0)
-                new OpenErrModalCmd(_modalNavS, UILangProviderM.Current["SrcInspect.ErrorTitle"], severeText).Execute(null);
+                new OpenErrModalCmd(_modalNavS, UICaptionProviderM.SourceInspect.ErrorTitle, severeText).Execute(null);
 
             if (moderateText.Length > 0)
-                new OpenWarnModalCmd(_modalNavS, UILangProviderM.Current["SrcInspect.WarnTitle"], moderateText).Execute(null);
+                new OpenWarnModalCmd(_modalNavS, UICaptionProviderM.SourceInspect.WarnTitle, moderateText).Execute(null);
         }
     }
 }

@@ -23,6 +23,7 @@ namespace OneColumnEncoder.ViewModels.Cards
             FillCollection(Checklist2, ChecklistProviderM.GetSourceChecklist2());
         }
 
+        #region TwoButtonGroup commands
         public void SetSourcePickedStatus(bool isPicked)
         {
             if (SourcePickedChecklistIdx >= 0 && SourcePickedChecklistIdx < Checklist1.Count)
@@ -30,13 +31,11 @@ namespace OneColumnEncoder.ViewModels.Cards
                     ? StatusType.Success
                     : StatusType.Error;
         }
-
         public void SetBypassed(bool isBypassed)
         {
             IsBypassed = isBypassed;
             CardOpacity = isBypassed ? 0.45 : 1.0;
         }
-
         public void ResetAnalysisStatus(bool isSourcePicked)
         {
             SetBypassed(false);
@@ -48,6 +47,9 @@ namespace OneColumnEncoder.ViewModels.Cards
             for (int i = 0; i < Checklist2.Count; i++)
                 SetChecklist2(i, StatusType.Waiting);
         }
+        #endregion
+
+        #region FFprobe Analysis
 
         public void ApplyFfprobeAnalysisJson(string rawJson)
         {
@@ -90,21 +92,63 @@ namespace OneColumnEncoder.ViewModels.Cards
             for (int i = 0; i < Checklist2.Count; i++) SetChecklist2(i, StatusType.Waiting);
         }
 
+        #endregion
+
         public void RefreshLanguage()
         {
             RefreshChecklist(Checklist1, ChecklistProviderM.GetSourceChecklist1());
             RefreshChecklist(Checklist2, ChecklistProviderM.GetSourceChecklist2());
         }
 
-        public string SevereIssuesFormatted => string.Join(Environment.NewLine,
-            Checklist1.Concat(Checklist2)
-                .Where(e => e.IsEnabled && e.Status == StatusType.Error)
-                .Select(e => $"- {e.Text}"));
+        #region Issue Formatting (for ConfirmationModal)
 
-        public string ModerateIssuesFormatted => string.Join(Environment.NewLine,
-            Checklist1.Concat(Checklist2)
-                .Where(e => e.IsEnabled && e.Status == StatusType.Warning)
-                .Select(e => $"- {e.Text}"));
+        public string SevereIssuesFormatted => FormatIssues(StatusType.Error);
+        public string ModerateIssuesFormatted => FormatIssues(StatusType.Warning);
+
+        private string FormatIssues(StatusType status)
+        {
+            var checklist1Issues = Checklist1
+                .Select((entry, index) => (entry, description: GetChecklist1IssueDescription(index)))
+                .Where(e => e.entry.IsEnabled && e.entry.Status == status)
+                .Select(e => FormatIssue(e.entry.Text, e.description));
+
+            var checklist2Issues = Checklist2
+                .Select((entry, index) => (entry, description: GetChecklist2IssueDescription(index)))
+                .Where(e => e.entry.IsEnabled && e.entry.Status == status)
+                .Select(e => FormatIssue(e.entry.Text, e.description));
+
+            return string.Join(Environment.NewLine + Environment.NewLine, checklist1Issues.Concat(checklist2Issues));
+        }
+
+        private static string FormatIssue(string text, string? description)
+        {
+            if (string.IsNullOrWhiteSpace(description)) return $"- {text}";
+
+            return $"- {text}{Environment.NewLine}  {description}";
+        }
+
+        private static string? GetChecklist1IssueDescription(int index) => index switch
+        {
+            MetadataChecklistIdx => UICaptionProviderM.SourceInspect.MetadataP1Text,
+            ProgressiveChecklistIdx => UICaptionProviderM.SourceInspect.ProgressiveP1Text,
+            BitDepthChecklistIdx => UICaptionProviderM.SourceInspect.BitDepthP1Text,
+            _ => null,
+        };
+
+        private static string? GetChecklist2IssueDescription(int index) => index switch
+        {
+            0 => UICaptionProviderM.SourceInspect.FramerateP1Text,
+            1 => UICaptionProviderM.SourceInspect.AspectRatioP1Text,
+            2 => UICaptionProviderM.SourceInspect.ColorMatrixP1Text,
+            3 => UICaptionProviderM.SourceInspect.TransferCharsP1Text,
+            4 => UICaptionProviderM.SourceInspect.ColorPrimariesP1Text,
+            5 => UICaptionProviderM.SourceInspect.ChromaSubsamplingP1Text,
+            _ => null,
+        };
+
+        #endregion
+
+        #region Private Checklist Setters
 
         private void SetChecklist1(int index, StatusType status)
         {
@@ -117,6 +161,10 @@ namespace OneColumnEncoder.ViewModels.Cards
             if (index >= 0 && index < Checklist2.Count)
                 Checklist2[index].Status = status;
         }
+
+        #endregion
+
+        #region Static Analysis Helpers
 
         private static bool IsProgressive(JsonElement stream)
         {
@@ -200,5 +248,7 @@ namespace OneColumnEncoder.ViewModels.Cards
             return property.ValueKind == JsonValueKind.String
                 && int.TryParse(property.GetString(), out value);
         }
+
+        #endregion
     }
 }
