@@ -72,7 +72,9 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _isOverlayVisible, value);
         }
 
+        // Guard: Button object is null before constructor completes
         private readonly bool _isAnalyzeSrcButtonsReady;
+        private readonly bool _isInspBypsChkButtonsReady;
 
         private ObservableCollection<ToolItemVM>[] AllImportedToolZones =>
             [UpstreamsZone, EncodersZone, AnalyticsZone, DependenciesZone];
@@ -162,7 +164,7 @@ namespace OneColumnEncoder.ViewModels
                 UICaptionProviderM.Buttons.BypassSrcChecklist,
                 InspectSrcProblems,
                 BypassSrcChecklist);
-            _isAnalyzeSrcButtonsReady = true;
+            _isInspBypsChkButtonsReady = true;
 
             // Import dropdown menu and behavior
             ToolsImportCard.ToolImported += OnToolImported;
@@ -497,6 +499,8 @@ namespace OneColumnEncoder.ViewModels
         }
         public void UpdateInspBypsChkButtonsState()
         {
+            if (!_isInspBypsChkButtonsReady) return;
+
             bool hasRawJson = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
             if (!hasRawJson && SrcValidationCard.IsBypassed)
                 SrcValidationCard.SetBypassed(false);
