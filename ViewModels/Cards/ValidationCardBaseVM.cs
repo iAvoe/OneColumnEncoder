@@ -31,6 +31,13 @@ namespace OneColumnEncoder.ViewModels.Cards
             set => SetProperty(ref _p3Name, value);
         }
 
+        private double _cardOpacity = 1.0;
+        public double CardOpacity
+        {
+            get => _cardOpacity;
+            set => SetProperty(ref _cardOpacity, value);
+        }
+
         // P2, P4
         public ObservableCollection<ChecklistEntryVM> Checklist1 { get; } = [];
         public ObservableCollection<ChecklistEntryVM> Checklist2 { get; } = [];

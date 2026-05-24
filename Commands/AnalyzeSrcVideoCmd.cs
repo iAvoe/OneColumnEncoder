@@ -27,6 +27,9 @@ namespace OneColumnEncoder.Commands
 
         protected override async Task ExecuteAsync(object? parameter)
         {
+            _analysis.RawJson = string.Empty;
+            _onCompleted?.Invoke();
+
             try
             {
                 string ffprobePath = _getFfprobePath();

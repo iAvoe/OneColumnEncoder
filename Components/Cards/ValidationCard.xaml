@@ -16,11 +16,12 @@
     therefore a baseVM is needed
     -->
     <Border BorderBrush="{StaticResource GlobalPrimary}"
-            BorderThickness="1.5"
-            SnapsToDevicePixels="True"
-            CornerRadius="20"
-            Padding="17.5 20"
-            Background="{StaticResource Background}">
+             BorderThickness="1.5"
+             SnapsToDevicePixels="True"
+             CornerRadius="20"
+             Padding="17.5 20"
+             Background="{StaticResource Background}"
+             Opacity="{Binding CardOpacity}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />

@@ -5,6 +5,13 @@ namespace OneColumnEncoder.ViewModels.Cards
 {
     public class SourceCheckCardVM : ValidationCardBaseVM
     {
+        private bool _isBypassed;
+        public bool IsBypassed
+        {
+            get => _isBypassed;
+            private set => SetProperty(ref _isBypassed, value);
+        }
+
         private const int SourcePickedChecklistIdx = 0; 
         private const int MetadataChecklistIdx = 1;
         private const int ProgressiveChecklistIdx = 2;
@@ -20,6 +27,12 @@ namespace OneColumnEncoder.ViewModels.Cards
         {
             if (SourcePickedChecklistIdx >= 0 && SourcePickedChecklistIdx < Checklist1.Count)
                 Checklist1[SourcePickedChecklistIdx].Status = isPicked ? StatusType.Success : StatusType.Error;
+        }
+
+        public void SetBypassed(bool isBypassed)
+        {
+            IsBypassed = isBypassed;
+            CardOpacity = isBypassed ? 0.45 : 1.0;
         }
 
         public void ApplyFfprobeAnalysisJson(string rawJson)

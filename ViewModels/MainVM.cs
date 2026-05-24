@@ -40,7 +40,7 @@ namespace OneColumnEncoder.ViewModels
         public OpenScriptScribeCmd OpenScriptScribe { get; }
         public CopyRawAnalysisCmd CopyRawAnalysis { get; } // Copy (ffprobe JSON) to clipboard
         public AnalyzeSrcVideoCmd AnalyzeSrcVideo { get; } // Maybe add mediaInfo analysis in future, but ffprobe alone will do
-        public InspSrcProblemsCmd InspectSrcProblems { get; }
+        public InspectSrcProbelmsCmd InspectSrcProblems { get; }
         public BypsSrcChecklistCmd BypassSrcChecklist { get; }
         public SelectToolCmd SelectTool { get; } // ItemCard select on click
         public ButtonGroupVM OpenAppConfButtons { get; } // OpenUsages & OpenAppConf
@@ -121,7 +121,19 @@ namespace OneColumnEncoder.ViewModels
                 _srcVideoAnalysis,
                 SrcValidationCard,
                 modalNavS,
-                UpdateAnalyzeSrcButtonsState);
+                () =>
+                {
+                    UpdateAnalyzeSrcButtonsState();
+                    UpdateEncStartButtonsState();
+                });
+            InspectSrcProblems = new InspectSrcProbelmsCmd(
+                _srcVideoAnalysis,
+                SrcValidationCard,
+                modalNavS);
+            BypassSrcChecklist = new BypsSrcChecklistCmd(
+                SrcValidationCard,
+                () => !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson),
+                UpdateEncStartButtonsState);
 
             // Buttons
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
@@ -354,12 +366,12 @@ namespace OneColumnEncoder.ViewModels
                     .Skip(3)
                     .All(e => !e.IsEnabled || e.Status == StatusType.Success);
 
-            bool sourcePickedReady =
-                !SrcValidationCard.Checklist1[0].IsEnabled || SrcValidationCard.Checklist1[0].Status == StatusType.Success;
+            bool hasRawJson = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
 
-            bool sourceValidationReady =
+            bool sourceValidationReady = SrcValidationCard.IsBypassed ||
+                (hasRawJson &&
                 SrcValidationCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
-                SrcValidationCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
+                SrcValidationCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success));
             bool encodeTermsReady =
                 EncTermsCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
                 EncTermsCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
@@ -367,7 +379,7 @@ namespace OneColumnEncoder.ViewModels
             bool aviSelected = DependenciesZone.Any(t => t.IsSelected && ToolDefinitionProviderM.IsImportedTool(t.Name, "avisynth.dll"));
             bool dependencyReady = avsSelected == aviSelected;
 
-            bool allReady = toolsReady && toolsPickedReady && sourcePickedReady && sourceValidationReady && encodeTermsReady && dependencyReady;
+            bool allReady = toolsReady && toolsPickedReady && sourceValidationReady && encodeTermsReady && dependencyReady;
             EncStartButtons.B3_2IsEnabled = allReady;
             EncStartButtons.B3_3IsEnabled = allReady;
         }
@@ -481,14 +493,18 @@ namespace OneColumnEncoder.ViewModels
             AnalyzeSrcButtons.B2_1IsEnabled = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
             CopyRawAnalysis.OnCanExecuteChanged();
             AnalyzeSrcVideo.OnCanExecuteChanged();
+            UpdateInspBypsChkButtonsState();
         }
         public void UpdateInspBypsChkButtonsState()
         {
             bool hasRawJson = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
-            if (!hasRawJson) return;
+            if (!hasRawJson && SrcValidationCard.IsBypassed)
+                SrcValidationCard.SetBypassed(false);
+
             InspBypsChkButtons.B2_1IsEnabled = hasRawJson;
             InspBypsChkButtons.B2_2IsEnabled = hasRawJson;
-
+            InspectSrcProblems.OnCanExecuteChanged();
+            BypassSrcChecklist.OnCanExecuteChanged();
         }
         private string GetCurrentVideoSourcePath()
         {
