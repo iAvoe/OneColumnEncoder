@@ -218,7 +218,13 @@ public class UILangProviderM
 
             ["SrcAnalysis.WindowTitle"] = "Source Analysis",
             ["SrcAnalysis.Completed"] = "Source analysis completed.",
-            ["SrcAnalysis.Copied"] = "Raw ffprobe JSON copied to clipboard."
+            ["SrcAnalysis.Copied"] = "Raw ffprobe JSON copied to clipboard.",
+
+            // InspectSrcProblems modal texts
+            ["SrcInspect.InfoTitle"] = "Source Check",
+            ["SrcInspect.InfoMsg"] = "No obvious source problems were found.",
+            ["SrcInspect.ErrorTitle"] = "Source Severe Issues",
+            ["SrcInspect.WarnTitle"] = "Source Moderate Issues"
         },
         ["zh-cn"] = new()
         {
@@ -408,7 +414,13 @@ public class UILangProviderM
 
             ["SrcAnalysis.WindowTitle"] = "视频源分析",
             ["SrcAnalysis.Completed"] = "视频源分析已完成。",
-            ["SrcAnalysis.Copied"] = "ffprobe 原生 JSON 已复制到剪贴板。"
+            ["SrcAnalysis.Copied"] = "ffprobe 原生 JSON 已复制到剪贴板。",
+
+            // InspectSrcProblems modal texts
+            ["SrcInspect.InfoTitle"] = "视频源检查",
+            ["SrcInspect.InfoMsg"] = "未发现明显的源文件问题。",
+            ["SrcInspect.ErrorTitle"] = "视频源严重问题",
+            ["SrcInspect.WarnTitle"] = "视频源中等问题"
         },
         ["zh-tw"] = new()
         {
@@ -598,7 +610,13 @@ public class UILangProviderM
 
             ["SrcAnalysis.WindowTitle"] = "影片源分析",
             ["SrcAnalysis.Completed"] = "影片源分析已完成。",
-            ["SrcAnalysis.Copied"] = "ffprobe 原生 JSON 已複製到剪貼簿。"
+            ["SrcAnalysis.Copied"] = "ffprobe 原生 JSON 已複製到剪貼簿。",
+
+            // InspectSrcProblems modal texts
+            ["SrcInspect.InfoTitle"] = "影片源檢查",
+            ["SrcInspect.InfoMsg"] = "未發現明顯的源文件問題。",
+            ["SrcInspect.ErrorTitle"] = "影片源嚴重問題",
+            ["SrcInspect.WarnTitle"] = "影片源中等問題"
         }
     };
 
@@ -615,10 +633,7 @@ public class UILangProviderM
         bool hasChanged = Current is null ||
             !string.Equals(Current.LanguageCode, LanguageCode, StringComparison.OrdinalIgnoreCase);
         Current = this;
-        if (hasChanged)
-        {
-            CurrentChanged?.Invoke();
-        }
+        if (hasChanged) CurrentChanged?.Invoke();
     }
 
     public static void SetLanguage(string languageCode) => _ = new UILangProviderM(languageCode);

@@ -19,7 +19,7 @@
     I1: 3-row Icon (warning or error)
     P1: Message
     -->
-    <Grid Margin="10 0 10 0">
+    <Grid Margin="15 0 15 0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
@@ -41,7 +41,7 @@
         </StackPanel>
         <!-- This might be an image icon instead -->
         <Image Grid.Column="1"
-               Margin="10 0 0 0"
+               Margin="15 0 0 0"
                Height="60"
                Source="{Binding I1Source}" />
     </Grid>

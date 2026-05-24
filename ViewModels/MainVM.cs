@@ -40,7 +40,7 @@ namespace OneColumnEncoder.ViewModels
         public OpenScriptScribeCmd OpenScriptScribe { get; }
         public CopyRawAnalysisCmd CopyRawAnalysis { get; } // Copy (ffprobe JSON) to clipboard
         public AnalyzeSrcVideoCmd AnalyzeSrcVideo { get; } // Maybe add mediaInfo analysis in future, but ffprobe alone will do
-        public InspectSrcProbelmsCmd InspectSrcProblems { get; }
+        public InspectSrcProblemsCmd InspectSrcProblems { get; }
         public BypsSrcChecklistCmd BypassSrcChecklist { get; }
         public SelectToolCmd SelectTool { get; } // ItemCard select on click
         public ButtonGroupVM OpenAppConfButtons { get; } // OpenUsages & OpenAppConf
@@ -128,7 +128,7 @@ namespace OneColumnEncoder.ViewModels
                     UpdateAnalyzeSrcButtonsState();
                     UpdateEncStartButtonsState();
                 });
-            InspectSrcProblems = new InspectSrcProbelmsCmd(
+            InspectSrcProblems = new InspectSrcProblemsCmd(
                 _srcVideoAnalysis,
                 SrcValidationCard,
                 modalNavS);

@@ -26,7 +26,9 @@ namespace OneColumnEncoder.ViewModels.Cards
         public void SetSourcePickedStatus(bool isPicked)
         {
             if (SourcePickedChecklistIdx >= 0 && SourcePickedChecklistIdx < Checklist1.Count)
-                Checklist1[SourcePickedChecklistIdx].Status = isPicked ? StatusType.Success : StatusType.Error;
+                Checklist1[SourcePickedChecklistIdx].Status = isPicked
+                    ? StatusType.Success
+                    : StatusType.Error;
         }
 
         public void SetBypassed(bool isBypassed)
@@ -55,15 +57,22 @@ namespace OneColumnEncoder.ViewModels.Cards
                 JsonElement stream = document.RootElement.GetProperty("streams")[0];
 
                 SetChecklist1(MetadataChecklistIdx, StatusType.Success);
-                SetChecklist1(ProgressiveChecklistIdx, IsProgressive(stream) ? StatusType.Success : StatusType.Error);
-                SetChecklist1(BitDepthChecklistIdx, IsSupportedBitDepth(stream) ? StatusType.Success : StatusType.Error);
-
-                SetChecklist2(0, HasConstantFrameRate(stream) ? StatusType.Success : StatusType.Warning);
-                SetChecklist2(1, HasSquarePixels(stream) ? StatusType.Success : StatusType.Warning);
-                SetChecklist2(2, HasKnownMetadata(stream, "color_space") ? StatusType.Success : StatusType.Warning);
-                SetChecklist2(3, HasKnownMetadata(stream, "color_transfer") ? StatusType.Success : StatusType.Warning);
-                SetChecklist2(4, HasKnownMetadata(stream, "color_primaries") ? StatusType.Success : StatusType.Warning);
-                SetChecklist2(5, HasSupportedChroma(stream) ? StatusType.Success : StatusType.Warning);
+                SetChecklist1(ProgressiveChecklistIdx, IsProgressive(stream)
+                    ? StatusType.Success : StatusType.Error);
+                SetChecklist1(BitDepthChecklistIdx, IsSupportedBitDepth(stream)
+                    ? StatusType.Success : StatusType.Error);
+                SetChecklist2(0, HasConstantFrameRate(stream)
+                    ? StatusType.Success : StatusType.Warning);
+                SetChecklist2(1, HasSquarePixels(stream)
+                    ? StatusType.Success : StatusType.Warning);
+                SetChecklist2(2, HasKnownMetadata(stream, "color_space")
+                    ? StatusType.Success : StatusType.Warning);
+                SetChecklist2(3, HasKnownMetadata(stream, "color_transfer")
+                    ? StatusType.Success : StatusType.Warning);
+                SetChecklist2(4, HasKnownMetadata(stream, "color_primaries")
+                    ? StatusType.Success : StatusType.Warning);
+                SetChecklist2(5, HasSupportedChroma(stream)
+                    ? StatusType.Success : StatusType.Warning);
             }
             catch
             {
@@ -78,8 +87,7 @@ namespace OneColumnEncoder.ViewModels.Cards
             SetChecklist1(ProgressiveChecklistIdx, StatusType.Waiting);
             SetChecklist1(BitDepthChecklistIdx, StatusType.Waiting);
 
-            for (int i = 0; i < Checklist2.Count; i++)
-                SetChecklist2(i, StatusType.Waiting);
+            for (int i = 0; i < Checklist2.Count; i++) SetChecklist2(i, StatusType.Waiting);
         }
 
         public void RefreshLanguage()
@@ -87,6 +95,16 @@ namespace OneColumnEncoder.ViewModels.Cards
             RefreshChecklist(Checklist1, ChecklistProviderM.GetSourceChecklist1());
             RefreshChecklist(Checklist2, ChecklistProviderM.GetSourceChecklist2());
         }
+
+        public string SevereIssuesFormatted => string.Join(Environment.NewLine,
+            Checklist1.Concat(Checklist2)
+                .Where(e => e.IsEnabled && e.Status == StatusType.Error)
+                .Select(e => $"- {e.Text}"));
+
+        public string ModerateIssuesFormatted => string.Join(Environment.NewLine,
+            Checklist1.Concat(Checklist2)
+                .Where(e => e.IsEnabled && e.Status == StatusType.Warning)
+                .Select(e => $"- {e.Text}"));
 
         private void SetChecklist1(int index, StatusType status)
         {
