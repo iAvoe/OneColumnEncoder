@@ -197,6 +197,14 @@
                                   Margin="0 0 0 20" />
             <comps:ValidationCard DataContext="{Binding SrcValidationCard}"
                                   Margin="0 0 0 20" />
+            
+            <!-- Inspect and bypass blocking checks -->
+            <comps:TwoButtonGroup DataContext="{Binding InspBypsChkButtons}"
+                                  Button1Command="{Binding Cmd1}"
+                                  Button2Command="{Binding Cmd2}"
+                                  Button1IsEnabled="{Binding B2_1IsEnabled}"
+                                  Button2IsEnabled="{Binding B2_2IsEnabled}"
+                                  Margin="0 0 0 20" />
 
             <!-- Encoding Settings -->
             <comps:SectionHeader HeaderText="{Binding SectionEncodingConfigs}"

@@ -40,10 +40,13 @@ namespace OneColumnEncoder.ViewModels
         public OpenScriptScribeCmd OpenScriptScribe { get; }
         public CopyRawAnalysisCmd CopyRawAnalysis { get; } // Copy (ffprobe JSON) to clipboard
         public AnalyzeSrcVideoCmd AnalyzeSrcVideo { get; } // Maybe add mediaInfo analysis in future, but ffprobe alone will do
+        public InspSrcProblemsCmd InspectSrcProblems { get; }
+        public BypsSrcChecklistCmd BypassSrcChecklist { get; }
         public SelectToolCmd SelectTool { get; } // ItemCard select on click
         public ButtonGroupVM OpenAppConfButtons { get; } // OpenUsages & OpenAppConf
         public ButtonGroupVM ScriptScbButtons { get; } // OneClickScriptGen & OpenScriptScribe
         public ButtonGroupVM AnalyzeSrcButtons { get; } // AnalyzeSrcVideo & CopyRawAnalysis
+        public ButtonGroupVM InspBypsChkButtons { get; } // InspectSrcProbelms & BypsSrcChecklist
         public ButtonGroupVM EncStartButtons { get; }
         // Card UIs
         public ToolsImportCardVM ToolsImportCard { get; }
@@ -69,7 +72,7 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _isOverlayVisible, value);
         }
 
-        private bool _isAnalyzeSrcButtonsReady;
+        private readonly bool _isAnalyzeSrcButtonsReady;
 
         private ObservableCollection<ToolItemVM>[] AllImportedToolZones =>
             [UpstreamsZone, EncodersZone, AnalyticsZone, DependenciesZone];
@@ -142,6 +145,12 @@ namespace OneColumnEncoder.ViewModels
                 UICaptionProviderM.Buttons.ReEvaluate,
                 UICaptionProviderM.Buttons.RunSample,
                 UICaptionProviderM.Buttons.StartEncode);
+            InspBypsChkButtons = ButtonGroupVM.CreateTwoButton(
+                UICaptionProviderM.Buttons.InspectSrcProbelms,
+                UICaptionProviderM.Buttons.BypassSrcChecklist,
+                InspectSrcProblems,
+                BypassSrcChecklist);
+            _isAnalyzeSrcButtonsReady = true;
 
             // Import dropdown menu and behavior
             ToolsImportCard.ToolImported += OnToolImported;
@@ -172,6 +181,7 @@ namespace OneColumnEncoder.ViewModels
             UpdateScriptScbButtonsState(); // Initial state of script scribe buttons
             RefreshSelectedSourceStatus();
             UpdateAnalyzeSrcButtonsState();
+            UpdateInspBypsChkButtonsState();
             _modalNavS.CurrentViewModelChanged += OnModalStateChanged;
             IsOverlayVisible = _modalNavS.IsOpen;
             UILangProviderM.CurrentChanged += OnLanguageChanged;
@@ -231,6 +241,7 @@ namespace OneColumnEncoder.ViewModels
         private void OnAnalyticsZoneCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             UpdateAnalyzeSrcButtonsState();
+            UpdateInspBypsChkButtonsState();
         }
         private void OnImportedToolZoneCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
@@ -400,13 +411,19 @@ namespace OneColumnEncoder.ViewModels
             if (e.PropertyName == nameof(ToolItemVM.Path))
                 UpdateScriptScbButtonsState();
             if (e.PropertyName is nameof(ToolItemVM.Path) or nameof(ToolItemVM.IsSelected))
+            {
                 UpdateAnalyzeSrcButtonsState();
+                UpdateInspBypsChkButtonsState();
+            }
         }
         private void OnAnalyticsItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (sender is not ToolItemVM) return;
             if (e.PropertyName is nameof(ToolItemVM.Path) or nameof(ToolItemVM.IsSelected))
+            {
                 UpdateAnalyzeSrcButtonsState();
+                UpdateInspBypsChkButtonsState();
+            }
         }
         private void OnSourceImported(ToolItemVM item, SourceFileKind kind, string filePath)
         {
@@ -455,8 +472,7 @@ namespace OneColumnEncoder.ViewModels
         }
         public void UpdateAnalyzeSrcButtonsState()
         {
-            if (!_isAnalyzeSrcButtonsReady)
-                return;
+            if (!_isAnalyzeSrcButtonsReady) return;
 
             bool hasVideoSource = VideoSrcImportZone.Any(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
             bool hasFfprobe = AnalyticsZone.Any(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
@@ -465,6 +481,14 @@ namespace OneColumnEncoder.ViewModels
             AnalyzeSrcButtons.B2_1IsEnabled = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
             CopyRawAnalysis.OnCanExecuteChanged();
             AnalyzeSrcVideo.OnCanExecuteChanged();
+        }
+        public void UpdateInspBypsChkButtonsState()
+        {
+            bool hasRawJson = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
+            if (!hasRawJson) return;
+            InspBypsChkButtons.B2_1IsEnabled = hasRawJson;
+            InspBypsChkButtons.B2_2IsEnabled = hasRawJson;
+
         }
         private string GetCurrentVideoSourcePath()
         {

@@ -24,6 +24,8 @@ public static class UICaptionProviderM
         public static string OpenScribeSrcScribe => UILangProviderM.Current["Buttons.OpenScribeSrcScribe"];
         public static string CopyRawAnalysis => UILangProviderM.Current["Buttons.CopyRawAnalysis"];
         public static string AnalyzeSrcVideo => UILangProviderM.Current["Buttons.AnalyzeSrcVideo"];
+        public static string InspectSrcProbelms => UILangProviderM.Current["Buttons.InspectSrcProbelms"];
+        public static string BypassSrcChecklist => UILangProviderM.Current["Buttons.BypassSrcChecklist"];
         public static string ReEvaluate => UILangProviderM.Current["Buttons.ReEvaluate"];
         public static string RunSample => UILangProviderM.Current["Buttons.RunSample"];
         public static string StartEncode => UILangProviderM.Current["Buttons.StartEncode"];
