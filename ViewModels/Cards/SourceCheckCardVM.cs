@@ -35,6 +35,18 @@ namespace OneColumnEncoder.ViewModels.Cards
             CardOpacity = isBypassed ? 0.45 : 1.0;
         }
 
+        public void ResetAnalysisStatus(bool isSourcePicked)
+        {
+            SetBypassed(false);
+            SetSourcePickedStatus(isSourcePicked);
+
+            for (int i = 1; i < Checklist1.Count; i++)
+                SetChecklist1(i, StatusType.Waiting);
+
+            for (int i = 0; i < Checklist2.Count; i++)
+                SetChecklist2(i, StatusType.Waiting);
+        }
+
         public void ApplyFfprobeAnalysisJson(string rawJson)
         {
             try

@@ -47,14 +47,16 @@ namespace OneColumnEncoder.Commands
                 if (string.IsNullOrEmpty(clickedTool.Path)) return;
 
                 SelectOnly(_mainVM.VideoSrcImportZone, clickedTool);
-                _mainVM.RefreshSelectedSourceStatus();
+                UnselectAll(_mainVM.ScriptSrcImportZone);
+                _mainVM.RefreshSelectedSourceStatusAfterSourceSelection();
             }
             else if (_mainVM.ScriptSrcImportZone != null && _mainVM.ScriptSrcImportZone.Contains(clickedTool))
             {
                 if (string.IsNullOrEmpty(clickedTool.Path)) return;
 
                 ResetSelection(_mainVM.ScriptSrcImportZone, clickedTool);
-                _mainVM.RefreshSelectedSourceStatus();
+                UnselectAll(_mainVM.VideoSrcImportZone!);
+                _mainVM.RefreshSelectedSourceStatusAfterSourceSelection();
             }
 
             ToolCompatibilityH.RefreshDependencySelectionState(
@@ -76,6 +78,12 @@ namespace OneColumnEncoder.Commands
         {
             foreach (ToolItemVM card in zone)
                 card.IsSelected = card == targetCard;
+        }
+
+        private static void UnselectAll(ObservableCollection<ToolItemVM> zone)
+        {
+            foreach (ToolItemVM card in zone)
+                card.IsSelected = false;
         }
 
         // CanExecuteChanged defined in BaseCmd

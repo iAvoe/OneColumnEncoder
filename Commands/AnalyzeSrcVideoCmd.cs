@@ -27,7 +27,7 @@ namespace OneColumnEncoder.Commands
 
         protected override async Task ExecuteAsync(object? parameter)
         {
-            _analysis.RawJson = string.Empty;
+            _analysis.Clear();
             _onCompleted?.Invoke();
 
             try
@@ -54,10 +54,7 @@ namespace OneColumnEncoder.Commands
                     UILangProviderM.Current["SrcAnalysis.WindowTitle"],
                     ex.Message).Execute(null);
             }
-            finally
-            {
-                _onCompleted?.Invoke();
-            }
+            finally { _onCompleted?.Invoke(); }
         }
     }
 }

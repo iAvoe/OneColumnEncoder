@@ -213,7 +213,9 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <comps:ItemCard DataContext="{Binding}"
+                                        IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
+                                        IsEnabled="{Binding IsEnabled}"
                                         Margin="0 0 0 20" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

@@ -48,6 +48,10 @@ namespace OneColumnEncoder.ViewModels
         public ButtonGroupVM AnalyzeSrcButtons { get; } // AnalyzeSrcVideo & CopyRawAnalysis
         public ButtonGroupVM InspBypsChkButtons { get; } // InspectSrcProbelms & BypsSrcChecklist
         public ButtonGroupVM EncStartButtons { get; }
+        // Button guards
+        private readonly bool _isAnalyzeSrcButtonsReady;
+        private readonly bool _isInspBypsChkButtonsReady;
+        private readonly bool _isEncStartButtonsReady;
         // Card UIs
         public ToolsImportCardVM ToolsImportCard { get; }
         public SourceCheckCardVM SrcValidationCard { get; } = new();
@@ -71,10 +75,6 @@ namespace OneColumnEncoder.ViewModels
             get => _isOverlayVisible;
             set => SetProperty(ref _isOverlayVisible, value);
         }
-
-        // Guard: Button object is null before constructor completes
-        private readonly bool _isAnalyzeSrcButtonsReady;
-        private readonly bool _isInspBypsChkButtonsReady;
 
         private ObservableCollection<ToolItemVM>[] AllImportedToolZones =>
             [UpstreamsZone, EncodersZone, AnalyticsZone, DependenciesZone];
@@ -124,7 +124,7 @@ namespace OneColumnEncoder.ViewModels
                 SrcValidationCard,
                 modalNavS,
                 () =>
-                {
+                { // On source analysis complete
                     UpdateAnalyzeSrcButtonsState();
                     UpdateEncStartButtonsState();
                 });
@@ -159,6 +159,7 @@ namespace OneColumnEncoder.ViewModels
                 UICaptionProviderM.Buttons.ReEvaluate,
                 UICaptionProviderM.Buttons.RunSample,
                 UICaptionProviderM.Buttons.StartEncode);
+            _isEncStartButtonsReady = true;
             InspBypsChkButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProviderM.Buttons.InspectSrcProbelms,
                 UICaptionProviderM.Buttons.BypassSrcChecklist,
@@ -299,6 +300,13 @@ namespace OneColumnEncoder.ViewModels
                 UpstreamsZone, ScriptSrcImportZone, RefreshSelectedSourceStatus);
         }
 
+        private void RefreshEncSettingsState()
+        {
+            bool hasVideoSource = CanRunSourceAnalysis();
+            foreach (ToolItemVM item in EncSettingsZone)
+                item.IsEnabled = hasVideoSource;
+        }
+
         private bool HasImportedFfprobe() =>
             !string.IsNullOrWhiteSpace(_appDataM.Tools.FfprobePath);
         private bool HasImportedAviSynthDll() =>
@@ -359,6 +367,8 @@ namespace OneColumnEncoder.ViewModels
         }
         public void UpdateEncStartButtonsState()
         {
+            if (!_isEncStartButtonsReady) return;
+
             bool toolsReady =
                 UpstreamsZone.Count > 0 &&
                 EncodersZone.Count > 0 &&
@@ -436,8 +446,10 @@ namespace OneColumnEncoder.ViewModels
             if (sender is not ToolItemVM) return;
             if (e.PropertyName is nameof(ToolItemVM.Path) or nameof(ToolItemVM.IsSelected))
             {
+                ResetAnalysisIfStale();
                 UpdateAnalyzeSrcButtonsState();
                 UpdateInspBypsChkButtonsState();
+                UpdateEncStartButtonsState();
             }
         }
         private void OnSourceImported(ToolItemVM item, SourceFileKind kind, string filePath)
@@ -451,13 +463,14 @@ namespace OneColumnEncoder.ViewModels
 
             item.IsSelected = true;
             _appDataM.Save();
-            RefreshSelectedSourceStatus();
+            RefreshSelectedSourceStatus(resetAnalysis: true);
         }
         private void OnSourceCleared(SourceFileKind kind)
         {
             SaveSourcePath(kind, string.Empty);
             _appDataM.Save();
-            RefreshSelectedSourceStatus();
+            RefreshSelectedSourceStatus(
+                resetAnalysis: kind == SourceFileKind.Video || !VideoSrcImportZone.Any(t => t.IsSelected));
         }
 
         private void SaveSourcePath(SourceFileKind kind, string filePath)
@@ -478,21 +491,39 @@ namespace OneColumnEncoder.ViewModels
                     break;
             }
         }
-        public void RefreshSelectedSourceStatus()
+        public void RefreshSelectedSourceStatus() => RefreshSelectedSourceStatus(resetAnalysis: false);
+
+        public void RefreshSelectedSourceStatus(bool resetAnalysis)
         {
             bool anySelected = VideoSrcImportZone.Any(t => t.IsSelected) || ScriptSrcImportZone.Any(t => t.IsSelected);
-            SrcValidationCard.SetSourcePickedStatus(anySelected);
+            if (resetAnalysis)
+            {
+                _srcVideoAnalysis.Clear();
+                SrcValidationCard.ResetAnalysisStatus(anySelected);
+            }
+            else
+            {
+                SrcValidationCard.SetSourcePickedStatus(anySelected);
+            }
+
             UpdateScriptScbButtonsState();
             UpdateAnalyzeSrcButtonsState();
+            UpdateEncStartButtonsState();
+        }
+
+        public void RefreshSelectedSourceStatusAfterSourceSelection()
+        {
+            ResetAnalysisIfStale();
+            RefreshSelectedSourceStatus();
         }
         public void UpdateAnalyzeSrcButtonsState()
         {
             if (!_isAnalyzeSrcButtonsReady) return;
 
-            bool hasVideoSource = VideoSrcImportZone.Any(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
-            bool hasFfprobe = AnalyticsZone.Any(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
+            bool hasVideoSource = CanRunSourceAnalysis();
 
-            AnalyzeSrcButtons.B2_2IsEnabled = hasVideoSource && hasFfprobe;
+            RefreshEncSettingsState();
+            AnalyzeSrcButtons.B2_2IsEnabled = hasVideoSource;
             AnalyzeSrcButtons.B2_1IsEnabled = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
             CopyRawAnalysis.OnCanExecuteChanged();
             AnalyzeSrcVideo.OnCanExecuteChanged();
@@ -515,6 +546,24 @@ namespace OneColumnEncoder.ViewModels
         {
             ToolItemVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => !string.IsNullOrWhiteSpace(t.Path));
             return videoSrc?.Path ?? string.Empty;
+        }
+
+        private bool CanRunSourceAnalysis() =>
+            VideoSrcImportZone.Any(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path)) &&
+            AnalyticsZone.Any(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
+
+        private bool IsCurrentAnalysisFor(string sourcePath, string ffprobePath) =>
+            !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson) &&
+            string.Equals(_srcVideoAnalysis.SourcePath, sourcePath, StringComparison.OrdinalIgnoreCase) &&
+            string.Equals(_srcVideoAnalysis.FfprobePath, ffprobePath, StringComparison.OrdinalIgnoreCase);
+
+        private void ResetAnalysisIfStale()
+        {
+            if (IsCurrentAnalysisFor(GetSelectedVideoSourcePath(), GetSelectedFfprobePath())) return;
+
+            bool anySelected = VideoSrcImportZone.Any(t => t.IsSelected) || ScriptSrcImportZone.Any(t => t.IsSelected);
+            _srcVideoAnalysis.Clear();
+            SrcValidationCard.ResetAnalysisStatus(anySelected);
         }
 
         private string GetSelectedVideoSourcePath()
@@ -653,6 +702,8 @@ namespace OneColumnEncoder.ViewModels
             LoadSourceItem(ScriptSrcImportZone[0], SourceFileKind.AviSynthScript, _appDataM.Tools.AvsSourcePath);
             LoadSourceItem(ScriptSrcImportZone[1], SourceFileKind.VapourSynthScript, _appDataM.Tools.VpySourcePath);
             LoadSourceItem(ScriptSrcImportZone[2], SourceFileKind.SvfiIni, _appDataM.Tools.SvfiSourcePath);
+
+            RefreshEncSettingsState();
         }
         private static bool LoadSourceItem(ToolItemVM item, SourceFileKind kind, string? path)
         {
