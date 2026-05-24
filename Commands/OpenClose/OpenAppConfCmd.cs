@@ -13,6 +13,8 @@ namespace OneColumnEncoder.Commands.OpenClose
         private readonly ModalNavS _modalNavS = modalNavS;
         private readonly AppConfM _appConfS = appConfS;
 
+        public Action? OnAfterClose { get; set; }
+
         public override void Execute(object? parameter)
         {
             var existingWindow = Application.Current.Windows
@@ -31,7 +33,11 @@ namespace OneColumnEncoder.Commands.OpenClose
             var vm = new AppConfVM(_appConfS, window.Close);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
-            window.Closed += (_, _) => _modalNavS.Close();
+            window.Closed += (_, _) =>
+            {
+                _modalNavS.Close();
+                OnAfterClose?.Invoke();
+            };
             _modalNavS.CurrentModalVM = vm;
             window.Show();
         }

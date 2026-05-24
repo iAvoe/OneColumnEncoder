@@ -188,6 +188,7 @@ namespace OneColumnEncoder.ViewModels
 
             // Checklist item settings, checklist subs, nav subs, overlay subs
             InitializeChecklistEntryStates();
+            OpenAppConf.OnAfterClose += InitializeChecklistEntryStates;
             SubToImportedToolZones();
             AnalyticsZone.CollectionChanged += OnAnalyticsZoneCollectionChanged;
             RefreshUpstreamToolState(); // initial state after loading
