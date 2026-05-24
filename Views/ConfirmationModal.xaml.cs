@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using OneColumnEncoder.ViewModels;
 
 namespace OneColumnEncoder.Views
 {
@@ -23,6 +24,18 @@ namespace OneColumnEncoder.Views
         public ConfirmationModal()
         {
             InitializeComponent();
+        }
+
+        private void CopyMessage_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = DataContext is ConfirmationModalVM vm
+                && !string.IsNullOrWhiteSpace(vm.P1Text);
+        }
+
+        private void CopyMessage_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (DataContext is ConfirmationModalVM vm)
+                Clipboard.SetText(vm.P1Text);
         }
     }
 }

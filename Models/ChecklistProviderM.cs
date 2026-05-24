@@ -22,6 +22,7 @@ namespace OneColumnEncoder.Models
             new(UILangProviderM.Current["Checklist.Source1.Metadata"]),
             new(UILangProviderM.Current["Checklist.Source1.Progressive"]),
             new(UILangProviderM.Current["Checklist.Source1.BitDepth"]),
+            new(UILangProviderM.Current["Checklist.Source1.BitDepth2"]),
         ];
 
         public static List<ChecklistItemDefinitionM> GetSourceChecklist2() =>

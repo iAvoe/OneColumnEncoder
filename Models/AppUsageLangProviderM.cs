@@ -10,6 +10,7 @@ public class AppUsageLangProviderM
             ["Title"] = "Usage & Compliance",
             ["HowToUse"] = "How to use this program",
             ["Description"] = "This program stictly follows a top\u2192down, left\u2192right operation sequence——all 'next' buttons are on the right side.",
+            ["CopyHint"] = "Copying: This window supports text selection; both this & mini pop-up window supports right-click / Ctrl+C to copy all texts",
             ["GettingStarted"] = "The simplest way to get started is to:",
             ["Step1"] = "1. Import & select an upstream tool (ffmpeg, vspipe, avs2yuv, etc.)",
             ["Step2"] = "2. Import & select an encoder / downstream tool (x264, x265, etc.)",
@@ -41,6 +42,7 @@ public class AppUsageLangProviderM
             ["Title"] = "使用与合规",
             ["HowToUse"] = "如何使用本程序",
             ["Description"] = "本程序严格遵循自上而下、从左到右的操作顺序——确认按钮皆位于右侧。",
+            ["CopyHint"] = "复制文本：本窗口支持拖拽选择；本窗口与提示小窗口同时支持右键或 Ctrl+C 复制全文",
             ["GettingStarted"] = "开始使用的最简单方法是：",
             ["Step1"] = "1. 导入并点选上游工具（ffmpeg、vspipe、avs2yuv 等）",
             ["Step2"] = "2. 导入并点选编码器/下游工具（x264、x265 等）",
@@ -72,6 +74,7 @@ public class AppUsageLangProviderM
             ["Title"] = "使用與合規",
             ["HowToUse"] = "如何使用本程式",
             ["Description"] = "本程式嚴格遵循自上而下、由左至右的操作順序—確認按鈕皆位於右側。",
+            ["CopyHint"] = "複製文本：本窗口支持拖拽選擇；本窗口與提示小窗口同時支持右鍵或 Ctrl+C 複製全文",
             ["GettingStarted"] = "開始使用的最簡單方法是：",
             ["Step1"] = "1. 匯入並點選上游工具（ffmpeg、vspipe、avs2yuv 等）",
             ["Step2"] = "2. 匯入並點選編碼器/下游工具（x264、x265 等）",
@@ -103,6 +106,7 @@ public class AppUsageLangProviderM
     public string Title { get; }
     public string HowToUse { get; }
     public string Description { get; }
+    public string CopyHint { get; }
     public string GettingStarted { get; }
     public string Step1 { get; }
     public string Step2 { get; }
@@ -136,6 +140,7 @@ public class AppUsageLangProviderM
         Title = d["Title"];
         HowToUse = d["HowToUse"];
         Description = d["Description"];
+        CopyHint = d["CopyHint"];
         GettingStarted = d["GettingStarted"];
         Step1 = d["Step1"];
         Step2 = d["Step2"];

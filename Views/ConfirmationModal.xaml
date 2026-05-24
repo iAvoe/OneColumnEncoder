@@ -15,13 +15,25 @@
         Width="500"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Copy"
+                        CanExecute="CopyMessage_CanExecute"
+                        Executed="CopyMessage_Executed" />
+    </Window.CommandBindings>
+
+    <Window.InputBindings>
+        <KeyBinding Key="C"
+                    Modifiers="Control"
+                    Command="ApplicationCommands.Copy" />
+    </Window.InputBindings>
+
     <!--
     | P1 & TwoButtonGGroup |  I1  |
     Title: Window title
     I1: 3-row Icon (warning or error)
     P1: Message
     -->
-    <Grid Margin="15 0 15 0">
+    <Grid Margin="15">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
@@ -33,10 +45,19 @@
             <ScrollViewer MaxHeight="500"
                           VerticalScrollBarVisibility="Auto">
                 <TextBlock FontSize="14"
+                           Focusable="True"
                            Height="Auto"
                            Text="{Binding P1Text}"
                            TextWrapping="WrapWithOverflow"
-                           VerticalAlignment="Top" />
+                           VerticalAlignment="Top">
+                    <TextBlock.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="{Binding PlacementTarget.DataContext.CopyText, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                      Command="ApplicationCommands.Copy"
+                                      CommandTarget="{Binding PlacementTarget, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                        </ContextMenu>
+                    </TextBlock.ContextMenu>
+                </TextBlock>
             </ScrollViewer>
             <comps:TwoButtonGroup Margin="0 15 0 0"
                                   ButtonHeight="30"

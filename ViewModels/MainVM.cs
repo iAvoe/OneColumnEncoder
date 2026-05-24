@@ -91,12 +91,9 @@ namespace OneColumnEncoder.ViewModels
             SelectTool = new SelectToolCmd(this);
 
             ToolsImportCard = new ToolsImportCardVM(modalNavS);
-            VideoSrcImportZone =
-                LoadZoneFromDefinitions(ToolCatalogProviderM.GetVideoSrcImportDefs());
-            ScriptSrcImportZone =
-                LoadZoneFromDefinitions(ToolCatalogProviderM.GetScriptSrcImportDefs());
-            EncSettingsZone =
-                LoadZoneFromDefinitions(ToolCatalogProviderM.GetEncSettingsDefinitions());
+            VideoSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetVideoSrcImportDefs());
+            ScriptSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetScriptSrcImportDefs());
+            EncSettingsZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetEncSettingsDefinitions());
             UpstreamsZone = [];
             EncodersZone = [];
             AnalyticsZone = [];
@@ -107,64 +104,37 @@ namespace OneColumnEncoder.ViewModels
 
             // Commands
             OneClickScriptGen = new OneClickScriptGenCmd(
-                () => GetCurrentVideoSourcePath(),
-                ScriptSrcImportZone[0],
-                ScriptSrcImportZone[1],
-                modalNavS);
+                () => GetCurrentVideoSourcePath(), ScriptSrcImportZone[0], ScriptSrcImportZone[1], modalNavS);
             OpenScriptScribe = new OpenScriptScribeCmd(
-                modalNavS,
-                () => GetCurrentVideoSourcePath());
+                modalNavS, () => GetCurrentVideoSourcePath());
             CopyRawAnalysis = new CopyRawAnalysisCmd(
-                _srcVideoAnalysis,
-                modalNavS);
+                _srcVideoAnalysis, modalNavS);
             AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(
-                GetSelectedFfprobePath,
-                GetSelectedVideoSourcePath,
-                _srcVideoAnalysis,
-                SrcValidationCard,
-                modalNavS,
+                GetSelectedFfprobePath, GetSelectedVideoSourcePath, _srcVideoAnalysis, SrcValidationCard, modalNavS,
                 () =>
                 { // On source analysis complete
                     UpdateAnalyzeSrcButtonsState();
                     UpdateEncStartButtonsState();
                 });
             InspectSrcProblems = new InspectSrcProblemsCmd(
-                _srcVideoAnalysis,
-                SrcValidationCard,
-                modalNavS);
+                _srcVideoAnalysis, SrcValidationCard, modalNavS);
             BypassSrcChecklist = new BypsSrcChecklistCmd(
-                SrcValidationCard,
-                () => !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson),
-                UpdateEncStartButtonsState);
+                SrcValidationCard, () => !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson), UpdateEncStartButtonsState);
 
             // Buttons
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
-                UICaptionProviderM.Buttons.UsageAndCompliance,
-                UICaptionProviderM.Buttons.Settings,
-                OpenUsages,
-                OpenAppConf);
+                UICaptionProviderM.Buttons.UsageAndCompliance, UICaptionProviderM.Buttons.Settings, OpenUsages, OpenAppConf);
             OpenAppConfButtons.B2_2Icon = SvgIconProviderH.GameSetting;
             ScriptScbButtons = ButtonGroupVM.CreateTwoButton( // UpdateScriptScbButtonsState()
-                UICaptionProviderM.Buttons.OneClickScriptGen,
-                UICaptionProviderM.Buttons.OpenScribeSrcScribe,
-                OneClickScriptGen,
-                OpenScriptScribe);
+                UICaptionProviderM.Buttons.OneClickScriptGen, UICaptionProviderM.Buttons.OpenScribeSrcScribe, OneClickScriptGen, OpenScriptScribe);
             AnalyzeSrcButtons = ButtonGroupVM.CreateTwoButton(
-                UICaptionProviderM.Buttons.CopyRawAnalysis,
-                UICaptionProviderM.Buttons.AnalyzeSrcVideo,
-                CopyRawAnalysis,
-                AnalyzeSrcVideo);
+                UICaptionProviderM.Buttons.CopyRawAnalysis, UICaptionProviderM.Buttons.AnalyzeSrcVideo, CopyRawAnalysis, AnalyzeSrcVideo);
             _isAnalyzeSrcButtonsReady = true;
             EncStartButtons = ButtonGroupVM.CreateThreeButton( // UpdateEncStartButtonsState()
-                UICaptionProviderM.Buttons.ReEvaluate,
-                UICaptionProviderM.Buttons.RunSample,
-                UICaptionProviderM.Buttons.StartEncode);
+                UICaptionProviderM.Buttons.ReEvaluate, UICaptionProviderM.Buttons.RunSample, UICaptionProviderM.Buttons.StartEncode);
             _isEncStartButtonsReady = true;
             InspBypsChkButtons = ButtonGroupVM.CreateTwoButton(
-                UICaptionProviderM.Buttons.InspectSrcProbelms,
-                UICaptionProviderM.Buttons.BypassSrcChecklist,
-                InspectSrcProblems,
-                BypassSrcChecklist);
+                UICaptionProviderM.Buttons.InspectSrcProbelms, UICaptionProviderM.Buttons.BypassSrcChecklist, InspectSrcProblems, BypassSrcChecklist);
             _isInspBypsChkButtonsReady = true;
 
             // Import dropdown menu and behavior
@@ -173,19 +143,22 @@ namespace OneColumnEncoder.ViewModels
 
             foreach (DropdownItemM item in ToolCatalogProviderM.GetImportDropdownItems())
                 ToolsImportCard.ImportDropdown.Items.Add(item);
-            ToolsImportCard.ImportDropdown.SelectedItem =
-                ToolsImportCard.ImportDropdown.Items[0];
+            ToolsImportCard.ImportDropdown.SelectedItem = ToolsImportCard.ImportDropdown.Items[0];
 
             // Other validations or simply lists for Start Encode button
             SrcValidationCard.Name = UICaptionProviderM.Cards.SourceValidation;
-            SrcValidationCard.P1Name = UICaptionProviderM.Cards.SourceSevere;
-            SrcValidationCard.P3Name = UICaptionProviderM.Cards.SourceModerate;
+            SrcValidationCard.P1Name = UICaptionProviderM.Cards.SourceIncompatOrCorrupted;
+            SrcValidationCard.P3Name = UICaptionProviderM.Cards.SrcQualityIssues;
             EncTermsCard.Name = UICaptionProviderM.Cards.EncPrerequisites;
             EncTermsCard.P1Name = UICaptionProviderM.Cards.EncHardware;
             EncTermsCard.P3Name = UICaptionProviderM.Cards.EncSoftware;
             BestPracticesCard.Name = UICaptionProviderM.Cards.BestPractices;
             BestPracticesCard.P1Name = UICaptionProviderM.Cards.BestHardware;
             BestPracticesCard.P3Name = UICaptionProviderM.Cards.BestSoftware;
+
+            SrcValidationCard.IsSvtav1SelectedFunc = () =>
+                EncodersZone.Any(t => t.IsSelected
+                    && ToolDefinitionProviderM.IsImportedTool(t.Name, "svtav1encapp.exe"));
 
             // Checklist item settings, checklist subs, nav subs, overlay subs
             InitializeChecklistEntryStates();
@@ -261,6 +234,9 @@ namespace OneColumnEncoder.ViewModels
         }
         private void OnImportedToolZoneCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
+            if (sender == EncodersZone)
+                SrcValidationCard.RefreshSvtav1BitDepthStatus();
+
             RefreshUpstreamToolState();
             RefreshImportedToolsChecklist();
             ToolCompatibilityH.RefreshDependencySelectionState(
@@ -414,7 +390,10 @@ namespace OneColumnEncoder.ViewModels
             item.R2Command =
                 new DeleteToolCmd(item, GetZoneForTool(ToolDefinitionProviderM.ResolveToolZone(item.Name)), _appDataM);
 
-            if (GetZoneForTool(ToolDefinitionProviderM.ResolveToolZone(item.Name)) == AnalyticsZone)
+            ToolZone zone = ToolDefinitionProviderM.ResolveToolZone(item.Name);
+            if (zone == ToolZone.Encoder)
+                item.PropertyChanged += OnEncoderItemPropertyChanged;
+            if (zone == ToolZone.Analytics)
                 item.PropertyChanged += OnAnalyticsItemPropertyChanged;
         }
         private void WireUpSourceCmd(ToolItemVM item)
@@ -441,6 +420,16 @@ namespace OneColumnEncoder.ViewModels
                 UpdateInspBypsChkButtonsState();
             }
         }
+        private void OnEncoderItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (sender is not ToolItemVM) return;
+            if (e.PropertyName == nameof(ToolItemVM.IsSelected))
+            {
+                SrcValidationCard.RefreshSvtav1BitDepthStatus();
+                UpdateEncStartButtonsState();
+            }
+        }
+
         private void OnAnalyticsItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (sender is not ToolItemVM) return;
@@ -763,8 +752,8 @@ namespace OneColumnEncoder.ViewModels
             ToolsImportCard.RefreshLanguage();
 
             SrcValidationCard.Name = UICaptionProviderM.Cards.SourceValidation;
-            SrcValidationCard.P1Name = UICaptionProviderM.Cards.SourceSevere;
-            SrcValidationCard.P3Name = UICaptionProviderM.Cards.SourceModerate;
+            SrcValidationCard.P1Name = UICaptionProviderM.Cards.SourceIncompatOrCorrupted;
+            SrcValidationCard.P3Name = UICaptionProviderM.Cards.SrcQualityIssues;
             SrcValidationCard.RefreshLanguage();
 
             EncTermsCard.Name = UICaptionProviderM.Cards.EncPrerequisites;

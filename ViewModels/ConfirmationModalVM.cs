@@ -10,6 +10,7 @@ public class ConfirmationModalVM(string windowTitle, string message, ImageSource
 {
     public string WindowTitle { get; set; } = windowTitle;
     public string P1Text { get; } = message;
+    public string CopyText => UILangProviderM.Current["ConfirmDialog.CopyText"];
     public ImageSource I1Source { get; } = image;
     public ButtonGroupVM FinishWarnErrButtons { get; } =
         ButtonGroupVM.CreateTwoButton(

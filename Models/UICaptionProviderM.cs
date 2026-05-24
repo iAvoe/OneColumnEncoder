@@ -6,8 +6,8 @@ public static class UICaptionProviderM
     {
         public static string ToolsImport => UILangProviderM.Current["Cards.ToolsImport"];
         public static string SourceValidation => UILangProviderM.Current["Cards.SourceValidation"];
-        public static string SourceSevere => UILangProviderM.Current["Cards.SourceSevere"];
-        public static string SourceModerate => UILangProviderM.Current["Cards.SourceModerate"];
+        public static string SourceIncompatOrCorrupted => UILangProviderM.Current["Cards.SrcIncompatOrCorrupted"];
+        public static string SrcQualityIssues => UILangProviderM.Current["Cards.SrcQualityIssues"];
         public static string EncPrerequisites => UILangProviderM.Current["Cards.EncPrerequisites"];
         public static string EncHardware => UILangProviderM.Current["Cards.EncHardware"];
         public static string EncSoftware => UILangProviderM.Current["Cards.EncSoftware"];

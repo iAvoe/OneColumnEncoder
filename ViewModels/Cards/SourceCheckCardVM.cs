@@ -12,10 +12,15 @@ namespace OneColumnEncoder.ViewModels.Cards
             private set => SetProperty(ref _isBypassed, value);
         }
 
+        public Func<bool>? IsSvtav1SelectedFunc { get; set; }
+
+        private string? _lastAnalysisJson;
+
         private const int SourcePickedChecklistIdx = 0; 
         private const int MetadataChecklistIdx = 1;
         private const int ProgressiveChecklistIdx = 2;
-        private const int BitDepthChecklistIdx = 3;
+        private const int Svtav1BitDepthChecklistIdx = 3;
+        private const int MaxBitDepthChecklistIdx = 4;
 
         public SourceCheckCardVM()
         {
@@ -53,6 +58,7 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         public void ApplyFfprobeAnalysisJson(string rawJson)
         {
+            _lastAnalysisJson = rawJson;
             try
             {
                 using JsonDocument document = JsonDocument.Parse(rawJson);
@@ -61,7 +67,12 @@ namespace OneColumnEncoder.ViewModels.Cards
                 SetChecklist1(MetadataChecklistIdx, StatusType.Success);
                 SetChecklist1(ProgressiveChecklistIdx, IsProgressive(stream)
                     ? StatusType.Success : StatusType.Error);
-                SetChecklist1(BitDepthChecklistIdx, IsSupportedBitDepth(stream)
+                SetChecklist1(Svtav1BitDepthChecklistIdx, IsSupportedBitDepth(stream, 10)
+                    ? StatusType.Success
+                    : IsSelectingSvtav1()
+                        ? StatusType.Error
+                        : StatusType.Warning);
+                SetChecklist1(MaxBitDepthChecklistIdx, IsSupportedBitDepth(stream, 12)
                     ? StatusType.Success : StatusType.Error);
                 SetChecklist2(0, HasConstantFrameRate(stream)
                     ? StatusType.Success : StatusType.Warning);
@@ -83,11 +94,37 @@ namespace OneColumnEncoder.ViewModels.Cards
             }
         }
 
+        private bool IsSelectingSvtav1()
+        {
+            return IsSvtav1SelectedFunc?.Invoke() ?? false;
+        }
+
+        public void RefreshSvtav1BitDepthStatus()
+        {
+            if (_lastAnalysisJson == null) return;
+
+            try
+            {
+                using JsonDocument document = JsonDocument.Parse(_lastAnalysisJson);
+                JsonElement stream = document.RootElement.GetProperty("streams")[0];
+
+                SetChecklist1(Svtav1BitDepthChecklistIdx, IsSupportedBitDepth(stream, 10)
+                    ? StatusType.Success
+                    : IsSelectingSvtav1()
+                        ? StatusType.Error
+                        : StatusType.Warning);
+            }
+            catch
+            {
+                // Leave current status as-is
+            }
+        }
+
         public void SetAnalysisFailedStatus()
         {
             SetChecklist1(MetadataChecklistIdx, StatusType.Error);
             SetChecklist1(ProgressiveChecklistIdx, StatusType.Waiting);
-            SetChecklist1(BitDepthChecklistIdx, StatusType.Waiting);
+            SetChecklist1(Svtav1BitDepthChecklistIdx, StatusType.Waiting);
 
             for (int i = 0; i < Checklist2.Count; i++) SetChecklist2(i, StatusType.Waiting);
         }
@@ -117,21 +154,21 @@ namespace OneColumnEncoder.ViewModels.Cards
                 .Where(e => e.entry.IsEnabled && e.entry.Status == status)
                 .Select(e => FormatIssue(e.entry.Text, e.description));
 
-            return string.Join(Environment.NewLine + Environment.NewLine, checklist1Issues.Concat(checklist2Issues));
+            return string.Join(
+                Environment.NewLine + Environment.NewLine, checklist1Issues.Concat(checklist2Issues));
         }
 
-        private static string FormatIssue(string text, string? description)
+        private static string FormatIssue(string fallbackText, string? description)
         {
-            if (string.IsNullOrWhiteSpace(description)) return $"- {text}";
-
-            return $"- {text}{Environment.NewLine}  {description}";
+            if (string.IsNullOrWhiteSpace(description)) return fallbackText;
+            return description;
         }
 
         private static string? GetChecklist1IssueDescription(int index) => index switch
         {
             MetadataChecklistIdx => UICaptionProviderM.SourceInspect.MetadataP1Text,
             ProgressiveChecklistIdx => UICaptionProviderM.SourceInspect.ProgressiveP1Text,
-            BitDepthChecklistIdx => UICaptionProviderM.SourceInspect.BitDepthP1Text,
+            Svtav1BitDepthChecklistIdx => UICaptionProviderM.SourceInspect.BitDepthP1Text,
             _ => null,
         };
 
@@ -174,10 +211,10 @@ namespace OneColumnEncoder.ViewModels.Cards
                 || fieldOrder.Equals("unknown", StringComparison.OrdinalIgnoreCase);
         }
 
-        private static bool IsSupportedBitDepth(JsonElement stream)
+        private static bool IsSupportedBitDepth(JsonElement stream, int max = 12)
         {
             int bitDepth = GetBitDepth(stream);
-            return bitDepth is 8 or 9 or 10;
+            return bitDepth == 8 || bitDepth == 10 || bitDepth == max;
         }
 
         private static int GetBitDepth(JsonElement stream)
