@@ -5,13 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OneColumnEncoder.Views"
         mc:Ignorable="d"
-        Title="{Binding Lang.WindowTitle}"
+        Title="{Binding Lang.WindowTitle, Mode=OneWay}"
         Width="520"
-        Height="950"
+        Height="1060"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource Background}">
     
-    <Grid Margin="20">
+    <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -19,148 +19,162 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0"
-                   Text="{Binding Lang.Title}"
+                   Text="{Binding Lang.Title, Mode=OneWay}"
                    Foreground="{StaticResource GlobalPrimary}"
                    Style="{StaticResource H1}" />
 
-        <ScrollViewer Grid.Row="1"
-                      VerticalScrollBarVisibility="Auto">
-            <StackPanel>
-                <TextBlock Text="{Binding Lang.LangHint}"
-                           Margin="0 10 0 0"
-                           FontSize="14"
-                           HorizontalAlignment="Center"
-                           Foreground="{StaticResource GlobalSecondary}" />
-                <TextBlock Text="{Binding Lang.HowToUse}"
-                           Margin="0 10 0 0"
-                           Style="{StaticResource H2}" />
-                <TextBlock Text="{Binding Lang.Description}"
-                           Margin="0 10 0 0"
+        <FlowDocumentScrollViewer Grid.Row="1"
+                                  VerticalScrollBarVisibility="Hidden"
+                                  Margin="0 10 0 0"
+                                  Padding="0">
+            <FlowDocument FontFamily="Segoe UI"
+                          PagePadding="0"
+                          TextAlignment="Left">
+                <Paragraph Margin="0 10 0 0"
+                           FontSize="15"
+                           FontWeight="Bold">
+                    <Run Text="{Binding Lang.HowToUse, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="0 10 0 0"
                            FontSize="13"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
-                <TextBlock Text="{Binding Lang.GettingStarted}"
-                           Margin="0 10 0 0"
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.Description, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="0 10 0 0"
                            FontSize="13"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
-                <TextBlock Text="{Binding Lang.Step1}"
-                           Margin="15 10 0 0"
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.GettingStarted, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
                            FontSize="13"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
-                <TextBlock Text="{Binding Lang.Step2}"
-                           Margin="15 10 0 0"
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.Step1, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
                            FontSize="13"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
-                <TextBlock Text="{Binding Lang.Step3}"
-                           Margin="15 10 0 0"
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.Step2, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
                            FontSize="13"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
-                <TextBlock Text="{Binding Lang.Step4}"
-                           Margin="15 10 0 0"
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.Step3, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
                            FontSize="13"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
-                <TextBlock Text="{Binding Lang.Step5}"
-                           Margin="15 10 0 0"
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.Step4, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
                            FontSize="13"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.Step5, Mode=OneWay}" />
+                </Paragraph>
 
-                <TextBlock Text="{Binding Lang.WhyDisabledTitle}"
-                           Margin="0 10 0 0"
-                           Style="{StaticResource H2}" />
-                <TextBlock Text="{Binding Lang.WhyDisabled1}"
-                           Margin="15 10 0 0"
+                <Paragraph Margin="0 10 0 0"
+                           FontSize="15"
+                           FontWeight="Bold">
+                    <Run Text="{Binding Lang.WhyDisabledTitle, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
                            FontSize="13"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
-                <TextBlock Text="{Binding Lang.WhyDisabled2}"
-                           Margin="15 10 0 0"
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.WhyDisabled1, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
                            FontSize="13"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
-                <TextBlock Text="{Binding Lang.WhyDisabled3}"
-                           Margin="15 10 0 0"
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.WhyDisabled2, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
                            FontSize="13"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.WhyDisabled3, Mode=OneWay}" />
+                </Paragraph>
 
-                <TextBlock Text="{Binding Lang.AudioCodecsTitle}"
-                           Margin="0 10 0 0"
-                           Style="{StaticResource H2}" />
-                <TextBlock Text="{Binding Lang.AudioCodec1}"
-                           Margin="15 10 0 0"
+                <Paragraph Margin="0 10 0 0"
+                           FontSize="15"
+                           FontWeight="Bold">
+                    <Run Text="{Binding Lang.AudioCodecsTitle, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
                            FontSize="13"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
-                <TextBlock Text="{Binding Lang.AudioCodec2}"
-                           Margin="15 10 0 0"
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.AudioCodec1, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
                            FontSize="13"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.AudioCodec2, Mode=OneWay}" />
+                </Paragraph>
                 
-                <TextBlock Text="{Binding Lang.ComplianceTitle}"
-                           Margin="0 10 0 0"
-                           Style="{StaticResource H2}"/>
-                <TextBlock Text="{Binding Lang.ComplianceDesc}"
-                           Margin="0 10 0 0"
+                <Paragraph Margin="0 10 0 0"
+                           FontSize="15"
+                           FontWeight="Bold">
+                    <Run Text="{Binding Lang.ComplianceTitle, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="0 10 0 0"
                            FontSize="13"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
-                <TextBlock Text="{Binding Lang.LicenseFfmpeg}"
-                           Margin="15 10 0 0"
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.ComplianceDesc, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
                            FontSize="13"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
-                <TextBlock Text="{Binding Lang.LicenseVapourSynth}"
-                           Margin="15 10 0 0"
+                           Foreground="{StaticResource ButtonTertiary}">
+                    <Run Text="{Binding Lang.LicenseFfmpeg, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
                            FontSize="13"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
-                <TextBlock Text="{Binding Lang.LicenseAvs2yuv}"
-                           Margin="15 10 0 0"
+                           Foreground="{StaticResource ButtonTertiary}">
+                    <Run Text="{Binding Lang.LicenseVapourSynth, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
                            FontSize="13"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
-                <TextBlock Text="{Binding Lang.LicenseAvs2pipemod}"
-                           Margin="15 10 0 0"
+                           Foreground="{StaticResource ButtonTertiary}">
+                    <Run Text="{Binding Lang.LicenseAvs2yuv, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
                            FontSize="13"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
-                <TextBlock Text="{Binding Lang.LicenseSvfi}"
-                           Margin="15 10 0 0"
+                           Foreground="{StaticResource ButtonTertiary}">
+                    <Run Text="{Binding Lang.LicenseAvs2pipemod, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
                            FontSize="13"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
-                <TextBlock Text="{Binding Lang.LicenseX264}"
-                           Margin="15 10 0 0"
+                           Foreground="{StaticResource ButtonTertiary}">
+                    <Run Text="{Binding Lang.LicenseSvfi, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
                            FontSize="13"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
-                <TextBlock Text="{Binding Lang.LicenseX265}"
-                           Margin="15 10 0 0"
+                           Foreground="{StaticResource ButtonTertiary}">
+                    <Run Text="{Binding Lang.LicenseX264, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
                            FontSize="13"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
-                <TextBlock Text="{Binding Lang.LicenseSvtAv1}"
-                           Margin="15 10 0 0"
+                           Foreground="{StaticResource ButtonTertiary}">
+                    <Run Text="{Binding Lang.LicenseX265, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
                            FontSize="13"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
-                <TextBlock Text="{Binding Lang.ComplianceFooter}"
-                           Margin="0 10 0 0"
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource GlobalPrimary}" />
-            </StackPanel>
-        </ScrollViewer>
+                           Foreground="{StaticResource ButtonTertiary}">
+                    <Run Text="{Binding Lang.LicenseSvtAv1, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="0 10 0 0"
+                           FontSize="13"
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.ComplianceFooter, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="0 10 0 0"
+                           FontSize="13"
+                           Foreground="{StaticResource GlobalPrimary}"
+                           FontWeight="Bold">
+                    <Run Text="{Binding Lang.ComplianceDisclaimer, Mode=OneWay}" />
+                </Paragraph>
+            </FlowDocument>
+        </FlowDocumentScrollViewer>
 
         <Button Grid.Row="2"
                 Margin="0 10 0 0"
-                Content="{Binding Lang.CloseButtonText}"
+                Content="{Binding Lang.CloseButtonText, Mode=OneWay}"
                 Command="{Binding CloseCmd}"
                 VerticalAlignment="Center"
                 Style="{StaticResource PrimaryButton}"

@@ -8,7 +8,6 @@ public class AppUsageLangProviderM
         {
             ["WindowTitle"] = "1cenc Usage & Compliance",
             ["Title"] = "Usage & Compliance",
-            ["LangHint"] = "Language/语言 \u2192 \u2699\uFE0F Settings/设置",
             ["HowToUse"] = "How to use this program",
             ["Description"] = "This program provides a vertically stacked UI, with confirmation button on the right side, indicating a top\u2192down, left\u2192right operation sequence.",
             ["GettingStarted"] = "The simplest way to get started is to:",
@@ -24,24 +23,24 @@ public class AppUsageLangProviderM
             ["AudioCodecsTitle"] = "Recommended Lossy Audio Codecs",
             ["AudioCodec1"] = "1. Opus (.ogg). Smaller files, relaxed compliances",
             ["AudioCodec2"] = "2. QAAC (.aac). Best quality among AAC-LC encoders, while being universally compatible as an AAC format",
-            ["ComplianceTitle"] = "Compliances for Commercial Usage",
-            ["ComplianceDesc"] = "This program uses Apache 2.0 License. For commercial usage, please refer to compliance requirement of the programs imported to this tool.",
-            ["LicenseFfmpeg"] = "\u00B7 FFMPEG/FFProbe License: URL",
-            ["LicenseVapourSynth"] = "\u00B7 VapourSynth License: URL",
-            ["LicenseAvs2yuv"] = "\u00B7 AVS2YUV/AviSynth License: URL",
-            ["LicenseAvs2pipemod"] = "\u00B7 AVS2PiepMod License: URL",
-            ["LicenseSvfi"] = "\u00B7 SVFI License: URL",
-            ["LicenseX264"] = "\u00B7 x264 AVC License / L-Pool: URL",
-            ["LicenseX265"] = "\u00B7 x265 HEVC License / L-Pool: ",
-            ["LicenseSvtAv1"] = "\u00B7 SVT-AV1 / AV1 License / L-Pool: URL",
+            ["ComplianceTitle"] = "Commercial Usage Compliance",
+            ["ComplianceDesc"] = "This program is licensed under the Apache License 2.0. For commercial usage, please refer to compliance requirement of the programs imported to this tool.",
+            ["LicenseFfmpeg"] = "\u00B7 FFmpeg / FFprobe Legal & License: https://ffmpeg.org/legal.html",
+            ["LicenseVapourSynth"] = "\u00B7 VapourSynth License: https://github.com/vapoursynth/vapoursynth/blob/master/COPYING",
+            ["LicenseAvs2yuv"] = "\u00B7 Avs2YUV License: https://github.com/FFMS/ffms2/blob/master/COPYING.GPLv3",
+            ["LicenseAvs2pipemod"] = "\u00B7 Avs2Pipemod License: https://github.com/pinterf/AvsPmod",
+            ["LicenseSvfi"] = "\u00B7 SVFI License: https://github.com/Justin62628/Squirrel-RIFE/blob/master/LICENSE",
+            ["LicenseX264"] = "\u00B7 x264 License & AVC Patent Info: https://x264.org/licensing/",
+            ["LicenseX265"] = "\u00B7 x265 License & HEVC Patent Info: https://www.videolan.org/developers/x265.html",
+            ["LicenseSvtAv1"] = "\u00B7 SVT-AV1 / AV1 License Info: https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/LICENSE.md",
             ["ComplianceFooter"] = "...Including the video container formats, audio codecs, and most importantly, the font types involved for commercial usage.",
+            ["ComplianceDisclaimer"] = "Users are responsible for ensuring compliance with software licenses, codec patents, media formats, and font licenses in their region.",
             ["CloseButtonText"] = "Close"
         },
         ["zh-cn"] = new()
         {
             ["WindowTitle"] = "1cenc 使用与合规",
             ["Title"] = "使用与合规",
-            ["LangHint"] = "Language/语言 \u2192 \u2699\uFE0F Settings/设置",
             ["HowToUse"] = "如何使用本程序",
             ["Description"] = "本程序提供垂直堆叠的用户界面，确认按钮位于右侧，表示自上而下、从左到右的操作顺序。",
             ["GettingStarted"] = "开始使用的最简单方法是：",
@@ -59,22 +58,22 @@ public class AppUsageLangProviderM
             ["AudioCodec2"] = "2. QAAC (.aac)。AAC-LC 编码器中质量最佳，同时作为 AAC 格式具有普遍兼容性",
             ["ComplianceTitle"] = "商业使用合规要求",
             ["ComplianceDesc"] = "本程序使用 Apache 2.0 许可证。对于商业用途，请参考导入本工具的程序的相关合规要求。",
-            ["LicenseFfmpeg"] = "\u00B7 FFMPEG/FFProbe 许可证：URL",
-            ["LicenseVapourSynth"] = "\u00B7 VapourSynth 许可证：URL",
-            ["LicenseAvs2yuv"] = "\u00B7 AVS2YUV/AviSynth 许可证：URL",
-            ["LicenseAvs2pipemod"] = "\u00B7 AVS2PiepMod 许可证：URL",
-            ["LicenseSvfi"] = "\u00B7 SVFI 许可证：URL",
-            ["LicenseX264"] = "\u00B7 x264 AVC 许可证/L-Pool：URL",
-            ["LicenseX265"] = "\u00B7 x265 HEVC 许可证/L-Pool：",
-            ["LicenseSvtAv1"] = "\u00B7 SVT-AV1/AV1 许可证/L-Pool：URL",
+            ["LicenseFfmpeg"] = "\u00B7 FFmpeg / FFprobe 法律与许可证：https://ffmpeg.org/legal.html",
+            ["LicenseVapourSynth"] = "\u00B7 VapourSynth 许可证：https://github.com/vapoursynth/vapoursynth/blob/master/COPYING",
+            ["LicenseAvs2yuv"] = "\u00B7 Avs2YUV 许可证：https://github.com/FFMS/ffms2/blob/master/COPYING.GPLv3",
+            ["LicenseAvs2pipemod"] = "\u00B7 Avs2Pipemod 许可证：https://github.com/pinterf/AvsPmod",
+            ["LicenseSvfi"] = "\u00B7 SVFI 许可证：https://github.com/Justin62628/Squirrel-RIFE/blob/master/LICENSE",
+            ["LicenseX264"] = "\u00B7 x264 许可证与 AVC 专利信息：https://x264.org/licensing/",
+            ["LicenseX265"] = "\u00B7 x265 许可证与 HEVC 专利信息：https://www.videolan.org/developers/x265.html",
+            ["LicenseSvtAv1"] = "\u00B7 SVT-AV1 / AV1 许可证信息：https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/LICENSE.md",
             ["ComplianceFooter"] = "……包括视频容器格式、音频编码器，以及商业用途中涉及的字体的合规要求。",
+            ["ComplianceDisclaimer"] = "用户有责任确保其所在地区的软件许可证、编解码器专利、媒体格式和字体许可证的合规性。",
             ["CloseButtonText"] = "关闭"
         },
         ["zh-tw"] = new()
         {
             ["WindowTitle"] = "1cenc 使用與合規",
             ["Title"] = "使用與合規",
-            ["LangHint"] = "Language/語言 \u2192 \u2699\uFE0F Settings/設定",
             ["HowToUse"] = "如何使用本程式",
             ["Description"] = "本程式提供垂直堆疊的使用者介面，確認按鈕位於右側，表示自上而下、從左到右的操作順序。",
             ["GettingStarted"] = "開始使用的最簡單方法是：",
@@ -92,22 +91,22 @@ public class AppUsageLangProviderM
             ["AudioCodec2"] = "2. QAAC (.aac)。AAC-LC 編碼器中品質最佳，同時作為 AAC 格式具有普遍相容性",
             ["ComplianceTitle"] = "商業使用合規要求",
             ["ComplianceDesc"] = "本程式使用 Apache 2.0 授權。對於商業用途，請參考導入本程式的程式的相關合規要求。",
-            ["LicenseFfmpeg"] = "\u00B7 FFMPEG/FFProbe 授權：URL",
-            ["LicenseVapourSynth"] = "\u00B7 VapourSynth 授權：URL",
-            ["LicenseAvs2yuv"] = "\u00B7 AVS2YUV/AviSynth 授權：URL",
-            ["LicenseAvs2pipemod"] = "\u00B7 AVS2PiepMod 授權：URL",
-            ["LicenseSvfi"] = "\u00B7 SVFI 授權：URL",
-            ["LicenseX264"] = "\u00B7 x264 AVC 授權/L-Pool：URL",
-            ["LicenseX265"] = "\u00B7 x265 HEVC 授權/L-Pool：",
-            ["LicenseSvtAv1"] = "\u00B7 SVT-AV1/AV1 授權/L-Pool：URL",
+            ["LicenseFfmpeg"] = "\u00B7 FFmpeg / FFprobe 法律與授權：https://ffmpeg.org/legal.html",
+            ["LicenseVapourSynth"] = "\u00B7 VapourSynth 授權：https://github.com/vapoursynth/vapoursynth/blob/master/COPYING",
+            ["LicenseAvs2yuv"] = "\u00B7 Avs2YUV 授權：https://github.com/FFMS/ffms2/blob/master/COPYING.GPLv3",
+            ["LicenseAvs2pipemod"] = "\u00B7 Avs2Pipemod 授權：https://github.com/pinterf/AvsPmod",
+            ["LicenseSvfi"] = "\u00B7 SVFI 授權：https://github.com/Justin62628/Squirrel-RIFE/blob/master/LICENSE",
+            ["LicenseX264"] = "\u00B7 x264 授權與 AVC 專利資訊：https://x264.org/licensing/",
+            ["LicenseX265"] = "\u00B7 x265 授權與 HEVC 專利資訊：https://www.videolan.org/developers/x265.html",
+            ["LicenseSvtAv1"] = "\u00B7 SVT-AV1 / AV1 授權資訊：https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/LICENSE.md",
             ["ComplianceFooter"] = "……包括影片容器格式、音訊編碼器，以及商業用途中涉及的字型的合規要求。",
+            ["ComplianceDisclaimer"] = "使用者有責任確保其所在地區的軟體授權、編解碼器專利、媒體格式和字型授權的合規性。",
             ["CloseButtonText"] = "關閉"
         }
     };
 
     public string WindowTitle { get; }
     public string Title { get; }
-    public string LangHint { get; }
     public string HowToUse { get; }
     public string Description { get; }
     public string GettingStarted { get; }
@@ -134,6 +133,7 @@ public class AppUsageLangProviderM
     public string LicenseX265 { get; }
     public string LicenseSvtAv1 { get; }
     public string ComplianceFooter { get; }
+    public string ComplianceDisclaimer { get; }
     public string CloseButtonText { get; }
 
     public AppUsageLangProviderM(string languageCode)
@@ -141,7 +141,6 @@ public class AppUsageLangProviderM
         var d = Data.TryGetValue(languageCode, out var lang) ? lang : Data["en"];
         WindowTitle = d["WindowTitle"];
         Title = d["Title"];
-        LangHint = d["LangHint"];
         HowToUse = d["HowToUse"];
         Description = d["Description"];
         GettingStarted = d["GettingStarted"];
@@ -168,6 +167,7 @@ public class AppUsageLangProviderM
         LicenseX265 = d["LicenseX265"];
         LicenseSvtAv1 = d["LicenseSvtAv1"];
         ComplianceFooter = d["ComplianceFooter"];
+        ComplianceDisclaimer = d["ComplianceDisclaimer"];
         CloseButtonText = d["CloseButtonText"];
     }
 }
