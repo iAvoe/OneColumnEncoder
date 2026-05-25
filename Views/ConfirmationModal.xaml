@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:OneColumnEncoder.Views"
         xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+        xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
         xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
         d:DataContext="{d:DesignInstance Type=vms:ConfirmationModalVM}"
         mc:Ignorable="d"
@@ -64,12 +65,26 @@
                                   Button1Command="{Binding Cmd1}"
                                   Button2Command="{Binding Cmd2}"
                                   Margin="0 15 0 0" />
-            <TextBlock Margin="5 0 5 0"
-                       FontSize="8.5"
-                       Focusable="False"
-                       Text="{Binding CopyHint}"
-                       HorizontalAlignment="Left"
-                       Foreground="{StaticResource GlobalTertiary}" />
+            <StackPanel Margin="5 1.25 5 0"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center">
+                <Rectangle Width="10"
+                           Height="10"
+                           VerticalAlignment="Center"
+                           Fill="{StaticResource GlobalTertiary}">
+                    <Rectangle.OpacityMask>
+                        <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
+                                    Stretch="Uniform" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+                <TextBlock FontSize="9"
+                           Focusable="False"
+                           Margin="3.5 0 0 0"
+                           Text="{Binding CopyHint}"
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource GlobalTertiary}" />
+            </StackPanel>
         </StackPanel>
         <!-- This might be an image icon instead -->
         <Image Grid.Column="1"

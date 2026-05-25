@@ -218,6 +218,7 @@ internal static class SvgIconProviderH
         GameInfo = new DrawingImage(gameInfo);
 
     }
+
     private static void SetBounds(DrawingGroup g, double size = 10.0) =>
         g.ClipGeometry = new RectangleGeometry(new Rect(0, 0, size, size));
 }

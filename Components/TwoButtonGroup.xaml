@@ -35,13 +35,17 @@
                 Style="{StaticResource PrimaryButton}">
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Center">
-                <Image Source="{Binding B2_2Icon}"
-                       Width="14"
-                       Height="14"
-                       Margin="0 0 4 0"
-                       VerticalAlignment="Center">
-                    <Image.Style>
-                        <Style TargetType="Image">
+                <Rectangle Width="14"
+                           Height="14"
+                           Margin="0 0 4 0"
+                           VerticalAlignment="Center"
+                           Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                    <Rectangle.OpacityMask>
+                        <ImageBrush ImageSource="{Binding B2_2Icon}"
+                                    Stretch="Uniform" />
+                    </Rectangle.OpacityMask>
+                    <Rectangle.Style>
+                        <Style TargetType="Rectangle">
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding B2_2Icon}"
                                              Value="{x:Null}">
@@ -50,8 +54,8 @@
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </Image.Style>
-                </Image>
+                    </Rectangle.Style>
+                </Rectangle>
                 <TextBlock Text="{Binding B2_2Text}"
                            VerticalAlignment="Center" />
             </StackPanel>
