@@ -221,12 +221,11 @@ public class UILangProviderM
 
             // FilenameScribeModal
             ["FilenameScribe.WindowTitle"] = "Export Filename Setup",
-            ["FilenameScribe.Header"] = "Filename Setup",
-            ["FilenameScribe.Placeholder"] = "Video filename",
-            ["FilenameScribe.CheckLength"] = "30-50 characters",
+            ["FilenameScribe.Placeholder"] = "Type or paste output file name here",
+            ["FilenameScribe.CheckLength"] = "Under 50 characters",
             ["FilenameScribe.CheckReserved"] = "Not CON, PRN, or another system reserved name",
             ["FilenameScribe.CheckInvalidChars"] = "No control characters such as \" < > | * ? / : &",
-            ["FilenameScribe.CheckExtendedChars"] = "No CJK text, Emoji, or other extended characters",
+            ["FilenameScribe.CheckExtendedChars"] = "No CJK text, Emoji or other extended characters",
             ["FilenameScribe.CheckSpaces"] = "No spaces (use _ or - instead)",
             ["FilenameScribe.AutoRuleDate"] = "Automatic: use yyyy-mm-dd date format consistently",
             ["FilenameScribe.AutoRuleSeason"] = "Automatic: put sequence and season information in front",
@@ -234,7 +233,7 @@ public class UILangProviderM
             ["FilenameScribe.PasteFromClipboard"] = "Paste from Clipboard",
             ["FilenameScribe.Cancel"] = "Cancel",
             ["FilenameScribe.Confirm"] = "Confirm",
-            ["FilenameScribe.FooterHint"] = "Hint: The suffix is decided by the selected encoder and cannot be edited here.",
+            ["FilenameScribe.FooterHint"] = "File extension is set by selected encoder and cannot be edited here",
 
             ["SrcAnalysis.WindowTitle"] = "Source Analysis",
             ["SrcAnalysis.Completed"] = "Source analysis completed.",
@@ -446,9 +445,8 @@ public class UILangProviderM
 
             // FilenameScribeModal
             ["FilenameScribe.WindowTitle"] = "导出文件名配置",
-            ["FilenameScribe.Header"] = "文件名设置",
-            ["FilenameScribe.Placeholder"] = "视频文件名",
-            ["FilenameScribe.CheckLength"] = "30-50 字内",
+            ["FilenameScribe.Placeholder"] = "在此写入或粘贴导出文件名",
+            ["FilenameScribe.CheckLength"] = "短于 50 字",
             ["FilenameScribe.CheckReserved"] = "非 CON、PRN 等系统保留名",
             ["FilenameScribe.CheckInvalidChars"] = "不含 \" < > | * ? / : & 等控制符",
             ["FilenameScribe.CheckExtendedChars"] = "不含颜文字、Emoji 等扩展字符",
@@ -671,9 +669,8 @@ public class UILangProviderM
 
             // FilenameScribeModal
             ["FilenameScribe.WindowTitle"] = "導出檔案名設定",
-            ["FilenameScribe.Header"] = "檔案名設定",
-            ["FilenameScribe.Placeholder"] = "影片檔案名",
-            ["FilenameScribe.CheckLength"] = "30-50 字內",
+            ["FilenameScribe.Placeholder"] = "在此寫入或貼上匯出檔案名稱",
+            ["FilenameScribe.CheckLength"] = "短於 50 字",
             ["FilenameScribe.CheckReserved"] = "非 CON、PRN 等系統保留名",
             ["FilenameScribe.CheckInvalidChars"] = "不含 \" < > | * ? / : & 等控制符",
             ["FilenameScribe.CheckExtendedChars"] = "不含顏文字、Emoji 等擴展字符",

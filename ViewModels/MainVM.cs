@@ -208,10 +208,8 @@ namespace OneColumnEncoder.ViewModels
             if (cl1.Count >= 3) cl1[2].IsEnabled = g.InsufficientDiskSpace;
 
             ObservableCollection<ChecklistEntryVM> cl2 = EncTermsCard.Checklist2;
-            if (cl2.Count >= 1) cl2[0].IsEnabled = g.OSFileNameInvalid;
-            if (cl2.Count >= 2) cl2[1].IsEnabled = g.FTPFileNameInvalid;
-            if (cl2.Count >= 3) cl2[2].IsEnabled = g.NoWritePermission;
-            if (cl2.Count >= 4) cl2[3].IsEnabled = g.IsOverwriting;
+            if (cl2.Count >= 1) cl2[0].IsEnabled = g.NoWritePermission;
+            if (cl2.Count >= 2) cl2[1].IsEnabled = g.IsOverwriting;
         }
         #endregion
 
@@ -392,6 +390,7 @@ namespace OneColumnEncoder.ViewModels
             foreach (ToolItemVM tool in VideoSrcImportZone) WireUpSourceCmd(tool);
             foreach (ToolItemVM tool in ScriptSrcImportZone) WireUpSourceCmd(tool);
             foreach (ToolItemVM tool in EncSettingsZone) WireUpStaticClearCmd(tool);
+            WireUpEncSettingsCmds();
             foreach (var zone in AllImportedToolZones)
                 foreach (ToolItemVM tool in zone) WireUpToolCmd(tool);
         }
@@ -418,6 +417,14 @@ namespace OneColumnEncoder.ViewModels
         private static void WireUpStaticClearCmd(ToolItemVM item)
         {
             item.R2Command = new ClearToolItemCmd(item);
+        }
+        private void WireUpEncSettingsCmds()
+        {
+            ToolItemVM? outputSetting = EncSettingsZone.FirstOrDefault(t =>
+                t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+
+            if (outputSetting != null)
+                outputSetting.R1Command = new OpenFilenameScribeCmd(_modalNavS, _appConfM, outputSetting);
         }
         private void OnVideoSrcItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -805,6 +812,7 @@ namespace OneColumnEncoder.ViewModels
             ApplyDefinitionsToZone(ScriptSrcImportZone, ToolCatalogProviderM.GetScriptSrcImportDefs());
             RefreshSourceZonePrimaryText(ScriptSrcImportZone);
             ApplyDefinitionsToZone(EncSettingsZone, ToolCatalogProviderM.GetEncSettingsDefinitions());
+            WireUpEncSettingsCmds();
             foreach (var zone in AllImportedToolZones)
                 ApplyImportedToolDefs(zone);
         }
@@ -826,7 +834,7 @@ namespace OneColumnEncoder.ViewModels
                 zone[i].RefreshLanguage();
             }
         }
-        private static void ApplyImportedToolDefs(ObservableCollection<ToolItemVM> zone)
+        private void ApplyImportedToolDefs(ObservableCollection<ToolItemVM> zone)
         {
             foreach (ToolItemVM item in zone)
             {

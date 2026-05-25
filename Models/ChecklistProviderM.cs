@@ -44,8 +44,6 @@ namespace OneColumnEncoder.Models
 
         public static List<ChecklistItemDefinitionM> GetEncodeChecklist2() =>
         [
-            new(UILangProviderM.Current["Checklist.Enc2.OSFilename"]),
-            new(UILangProviderM.Current["Checklist.Enc2.FTPFilename"]),
             new(UILangProviderM.Current["Checklist.Enc2.WritePermission"]),
             new(UILangProviderM.Current["Checklist.Enc2.Overwrite"]),
             new(UILangProviderM.Current["Checklist.Enc2.LsmashForAvs2Yuv"]),

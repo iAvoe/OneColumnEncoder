@@ -1,3 +1,4 @@
+using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.Views;
@@ -6,9 +7,11 @@ using System.Windows;
 
 namespace OneColumnEncoder.Commands.OpenClose
 {
-    public class OpenFilenameScribeCmd(ModalNavS modalNavS) : BaseCmd
+    public class OpenFilenameScribeCmd(ModalNavS modalNavS, AppConfM appConfM, ToolItemVM outputSettingItem) : BaseCmd
     {
         private readonly ModalNavS _modalNavS = modalNavS;
+        private readonly AppConfM _appConfM = appConfM;
+        private readonly ToolItemVM _outputSettingItem = outputSettingItem;
 
         public override void Execute(object? parameter)
         {
@@ -26,7 +29,7 @@ namespace OneColumnEncoder.Commands.OpenClose
                 _modalNavS.Close();
 
             FilenameScribeModal window = new();
-            FilenameScribeModalVM vm = new(window.Close);
+            FilenameScribeModalVM vm = new(window.Close, _appConfM, _outputSettingItem);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();

@@ -4,17 +4,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+        xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
         xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
         d:DataContext="{d:DesignInstance Type=vms:FilenameScribeModalVM}"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="560"
-        Height="560"
+        Height="450"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
-    <Grid Margin="20">
+    <Grid Margin="15">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -22,12 +22,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0"
-                   Text="{Binding HeaderText}"
-                   Foreground="{StaticResource GlobalPrimary}"
-                   Style="{StaticResource H1}" />
-
-        <Grid Grid.Row="1"
+        <Grid Grid.Row="0"
               Margin="0 10 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -83,19 +78,20 @@
                        Foreground="{StaticResource GlobalSecondary}" />
         </Grid>
 
-        <comps:ChecklistContainer Grid.Row="2"
+        <comps:ChecklistContainer Grid.Row="1"
                                   Margin="0 15 0 0"
                                   ItemsSource="{Binding FilenameChecklist}">
             <comps:ChecklistContainer.ItemTemplate>
                 <DataTemplate>
                     <comps:ChecklistItem Text="{Binding Text}"
-                                         Status="{Binding Status}"
-                                         Margin="0 5" />
+                                          Status="{Binding Status}"
+                                          IsEnabled="{Binding IsEnabled}"
+                                          Margin="0 5" />
                 </DataTemplate>
             </comps:ChecklistContainer.ItemTemplate>
         </comps:ChecklistContainer>
 
-        <StackPanel Grid.Row="3"
+        <StackPanel Grid.Row="2"
                     Margin="0 10 0 0">
             <TextBlock Text="{Binding AutoRuleDate}"
                        Margin="0 5"
@@ -111,7 +107,7 @@
                        Foreground="{StaticResource GlobalPrimary}" />
         </StackPanel>
 
-        <comps:ThreeButtonGroup Grid.Row="4"
+        <comps:ThreeButtonGroup Grid.Row="3"
                                 Margin="0 20 0 0"
                                 DataContext="{Binding FilenameButtons}"
                                 Button1Command="{Binding Cmd1}"
@@ -121,10 +117,26 @@
                                 Button2IsEnabled="{Binding B3_2IsEnabled}"
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
 
-        <TextBlock Grid.Row="5"
-                   Text="{Binding FooterHint}"
-                   Margin="0 10 0 0"
-                   FontSize="11"
-                   Foreground="{StaticResource GlobalTertiary}" />
+        <StackPanel Grid.Row="4"
+                    Margin="5 1.25 5 0"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center">
+            <Rectangle Width="10"
+                       Height="10"
+                       VerticalAlignment="Center"
+                       Fill="{StaticResource GlobalTertiary}">
+                <Rectangle.OpacityMask>
+                    <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
+                                Stretch="Uniform" />
+                </Rectangle.OpacityMask>
+            </Rectangle>
+            <TextBlock FontSize="9"
+                       Focusable="False"
+                       Margin="3.5 0 0 0"
+                       Text="{Binding FooterHint}"
+                       VerticalAlignment="Center"
+                       Foreground="{StaticResource GlobalTertiary}" />
+        </StackPanel>
     </Grid>
 </Window>

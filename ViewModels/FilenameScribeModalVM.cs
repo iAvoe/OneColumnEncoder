@@ -1,20 +1,24 @@
 using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Models;
+using Microsoft.Win32;
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 
 namespace OneColumnEncoder.ViewModels
 {
-    public class FilenameScribeModalVM : BaseVM
+    public partial class FilenameScribeModalVM : BaseVM
     {
-        private const string VideoExtension = ".hevc";
-        private static readonly Regex ReservedNameRegex = new(@"^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(\..*)?$", RegexOptions.IgnoreCase);
+        private const string PossibleExtensions = ".mp4|.hevc|.ivf";
+        private static readonly Regex ReservedNameRegex = ReservedFilenames();
 
         private readonly Action _closeAction;
+        private readonly AppConfM _appConfM;
+        private readonly ToolItemVM _outputSettingItem;
         public CloseModalCmd CloseCmd { get; }
         public ButtonGroupVM FilenameButtons { get; private set; } = null!;
         public ObservableCollection<ChecklistEntryVM> FilenameChecklist { get; } = [];
@@ -25,23 +29,24 @@ namespace OneColumnEncoder.ViewModels
             get => _videoFilename;
             set
             {
-                if (SetProperty(ref _videoFilename, value))
-                    ValidateFilename();
+                if (SetProperty(ref _videoFilename, value)) ValidateFilename();
             }
         }
 
         public static string WindowTitle => UILangProviderM.Current["FilenameScribe.WindowTitle"];
-        public static string HeaderText => UILangProviderM.Current["FilenameScribe.Header"];
-        public static string PlaceholderText => UILangProviderM.Current["FilenameScribe.Placeholder"];
-        public static string ExtensionText => VideoExtension;
+        public static string PlaceholderText => UILangProviderM.Current["FilenameScribe.PlaceholderText"];
+        public static string ExtensionText => PossibleExtensions;
         public static string AutoRuleDate => UILangProviderM.Current["FilenameScribe.AutoRuleDate"];
         public static string AutoRuleSeason => UILangProviderM.Current["FilenameScribe.AutoRuleSeason"];
         public static string AutoRuleVersion => UILangProviderM.Current["FilenameScribe.AutoRuleVersion"];
         public static string FooterHint => UILangProviderM.Current["FilenameScribe.FooterHint"];
 
-        public FilenameScribeModalVM(Action closeAction)
+        public FilenameScribeModalVM(Action closeAction, AppConfM appConfM, ToolItemVM outputSettingItem)
         {
             _closeAction = closeAction;
+            _appConfM = appConfM;
+            _outputSettingItem = outputSettingItem;
+            _videoFilename = GetInitialFilename(outputSettingItem);
             CloseCmd = new CloseModalCmd(closeAction);
             BuildChecklist();
             BuildButtonGroup();
@@ -52,11 +57,16 @@ namespace OneColumnEncoder.ViewModels
         private void BuildChecklist()
         {
             FilenameChecklist.Clear();
-            FilenameChecklist.Add(new ChecklistEntryVM { Text = UILangProviderM.Current["FilenameScribe.CheckLength"] });
-            FilenameChecklist.Add(new ChecklistEntryVM { Text = UILangProviderM.Current["FilenameScribe.CheckReserved"] });
-            FilenameChecklist.Add(new ChecklistEntryVM { Text = UILangProviderM.Current["FilenameScribe.CheckInvalidChars"] });
-            FilenameChecklist.Add(new ChecklistEntryVM { Text = UILangProviderM.Current["FilenameScribe.CheckExtendedChars"] });
-            FilenameChecklist.Add(new ChecklistEntryVM { Text = UILangProviderM.Current["FilenameScribe.CheckSpaces"] });
+            FilenameChecklist.Add(new ChecklistEntryVM {
+                Text = UILangProviderM.Current["FilenameScribe.CheckLength"] });
+            FilenameChecklist.Add(new ChecklistEntryVM {
+                Text = UILangProviderM.Current["FilenameScribe.CheckReserved"],IsEnabled = _appConfM.General.OSFileNameInvalid });
+            FilenameChecklist.Add(new ChecklistEntryVM {
+                Text = UILangProviderM.Current["FilenameScribe.CheckInvalidChars"], IsEnabled = _appConfM.General.OSFileNameInvalid });
+            FilenameChecklist.Add(new ChecklistEntryVM {
+                Text = UILangProviderM.Current["FilenameScribe.CheckExtendedChars"], IsEnabled = _appConfM.General.FTPFileNameInvalid });
+            FilenameChecklist.Add(new ChecklistEntryVM {
+                Text = UILangProviderM.Current["FilenameScribe.CheckSpaces"], IsEnabled = _appConfM.General.FTPFileNameInvalid });
         }
 
         private void BuildButtonGroup()
@@ -72,27 +82,54 @@ namespace OneColumnEncoder.ViewModels
 
         private void PasteFromClipboard()
         {
-            if (Clipboard.ContainsText())
-                VideoFilename = Clipboard.GetText().Trim();
+            if (Clipboard.ContainsText()) VideoFilename = Clipboard.GetText().Trim();
         }
 
         private void Confirm()
         {
+            if (!CanConfirm()) return;
+
+            string filename = VideoFilename.Trim();
+            if (string.IsNullOrWhiteSpace(filename)) return;
+
+            OpenFolderDialog dialog = new()
+            {
+                Title = WindowTitle,
+                InitialDirectory = GetInitialDirectory()
+            };
+
+            if (dialog.ShowDialog() != true) return;
+
+            string ext = PossibleExtensions.Split('|')[0];
+            _outputSettingItem.Path = Path.Combine(dialog.FolderName, filename + ext);
+            _outputSettingItem.VersionText = filename;
             _closeAction();
         }
+
+        private bool CanConfirm() => FilenameButtons.B3_3IsEnabled;
 
         private void ValidateFilename()
         {
             if (FilenameChecklist.Count < 5 || FilenameButtons is null) return;
 
             string filename = VideoFilename.Trim();
-            FilenameChecklist[0].Status = filename.Length is >= 30 and <= 50 ? StatusType.Success : StatusType.Error;
-            FilenameChecklist[1].Status = !ReservedNameRegex.IsMatch(filename) ? StatusType.Success : StatusType.Error;
-            FilenameChecklist[2].Status = !ContainsInvalidFileNameChar(filename) ? StatusType.Success : StatusType.Error;
-            FilenameChecklist[3].Status = !filename.Any(char.IsSurrogate) && filename.All(c => c <= 0x7f) ? StatusType.Success : StatusType.Error;
-            FilenameChecklist[4].Status = !filename.Contains(' ') ? StatusType.Success : StatusType.Error;
+            SetChecklistStatus(0, filename.Length <= 50);
+            SetChecklistStatus(1, !ReservedNameRegex.IsMatch(filename));
+            SetChecklistStatus(2, !ContainsInvalidFileNameChar(filename));
+            SetChecklistStatus(3, !filename.Any(char.IsSurrogate) && filename.All(c => c <= 0x7f));
+            SetChecklistStatus(4, !filename.Contains(' '));
 
-            FilenameButtons.B3_3IsEnabled = FilenameChecklist.All(e => e.Status == StatusType.Success);
+            FilenameButtons.B3_3IsEnabled = FilenameChecklist
+                .Where(e => e.IsEnabled)
+                .All(e => e.Status == StatusType.Success);
+            (FilenameButtons.Cmd3 as BaseCmd)?.OnCanExecuteChanged();
+        }
+
+        private void SetChecklistStatus(int index, bool isValid)
+        {
+            FilenameChecklist[index].Status = FilenameChecklist[index].IsEnabled
+                ? isValid ? StatusType.Success : StatusType.Error
+                : StatusType.Waiting;
         }
 
         private static bool ContainsInvalidFileNameChar(string filename)
@@ -104,10 +141,29 @@ namespace OneColumnEncoder.ViewModels
                 || filename.EndsWith(' ');
         }
 
+        private static string GetInitialFilename(ToolItemVM outputSettingItem)
+        {
+            if (!string.IsNullOrWhiteSpace(outputSettingItem.VersionText))
+                return outputSettingItem.VersionText;
+
+            if (!string.IsNullOrWhiteSpace(outputSettingItem.Path))
+                return Path.GetFileNameWithoutExtension(outputSettingItem.Path);
+
+            return string.Empty;
+        }
+
+        private string GetInitialDirectory()
+        {
+            if (string.IsNullOrWhiteSpace(_outputSettingItem.Path))
+                return Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+
+            string? directory = Path.GetDirectoryName(_outputSettingItem.Path);
+            return Directory.Exists(directory) ? directory : Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+        }
+
         private void OnLanguageChanged()
         {
             OnPropertyChanged(nameof(WindowTitle));
-            OnPropertyChanged(nameof(HeaderText));
             OnPropertyChanged(nameof(PlaceholderText));
             OnPropertyChanged(nameof(AutoRuleDate));
             OnPropertyChanged(nameof(AutoRuleSeason));
@@ -125,5 +181,9 @@ namespace OneColumnEncoder.ViewModels
             UILangProviderM.CurrentChanged -= OnLanguageChanged;
             base.Dispose();
         }
+
+        // Window reserved filenames
+        [GeneratedRegex(@"^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(\..*)?$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+        private static partial Regex ReservedFilenames();
     }
 }
