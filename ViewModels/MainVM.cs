@@ -234,6 +234,9 @@ namespace OneColumnEncoder.ViewModels
         }
         private void OnImportedToolZoneCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
+            if (sender is ObservableCollection<ToolItemVM> zone)
+                ApplyDefaultImportedToolSelection(zone);
+
             if (sender == EncodersZone)
                 SrcValidationCard.RefreshSvtav1BitDepthStatus();
 
@@ -244,6 +247,14 @@ namespace OneColumnEncoder.ViewModels
             ToolCompatibilityH.RefreshSourceSelectionState(
                 UpstreamsZone, ScriptSrcImportZone, RefreshSelectedSourceStatus);
         }
+
+        private void ApplyDefaultImportedToolSelection(ObservableCollection<ToolItemVM> zone)
+        {
+            if (zone.Count == 1) zone[0].IsSelected = true;
+            else if (zone.Count > 1) UnselectAll(zone);
+            RefreshImportedToolPickedStatus(zone);
+        }
+
         private void RefreshUpstreamToolState()
         {
             ToolItemVM? avs2pipemod =
@@ -256,6 +267,8 @@ namespace OneColumnEncoder.ViewModels
                 avs2pipemod.IsEnabled = false;
             }
             else avs2pipemod.IsEnabled = true;
+
+            RefreshToolPickedStatus(ToolZone.Upstream, UpstreamsZone);
         }
 
         private void RefreshImportedToolsChecklist()
@@ -385,10 +398,10 @@ namespace OneColumnEncoder.ViewModels
         }
         private void WireUpToolCmd(ToolItemVM item)
         {
-            item.R1Command =
-                new ReplaceToolCmd(item, _appDataM, _modalNavS, RefreshImportedToolStates);
-            item.R2Command =
-                new DeleteToolCmd(item, GetZoneForTool(ToolDefinitionProviderM.ResolveToolZone(item.Name)), _appDataM);
+            item.R1Command = new ReplaceToolCmd(
+                item, _appDataM, _modalNavS, RefreshImportedToolStates);
+            item.R2Command = new DeleteToolCmd(
+                item, GetZoneForTool(ToolDefinitionProviderM.ResolveToolZone(item.Name)), _appDataM);
 
             ToolZone zone = ToolDefinitionProviderM.ResolveToolZone(item.Name);
             if (zone == ToolZone.Encoder)
@@ -399,10 +412,8 @@ namespace OneColumnEncoder.ViewModels
         private void WireUpSourceCmd(ToolItemVM item)
         {
             SourceFileKind kind = ResolveSourceFileKind(item.Name);
-            item.R1Command =
-                new BrowseSourcePathCmd(item, kind, _appDataM, _modalNavS, OnSourceImported);
-            item.R2Command =
-                new ClearToolItemCmd(item, () => OnSourceCleared(kind));
+            item.R1Command = new BrowseSourcePathCmd(item, kind, _appDataM, _modalNavS, OnSourceImported);
+            item.R2Command = new ClearToolItemCmd(item, () => OnSourceCleared(kind));
             item.PropertyChanged += OnVideoSrcItemPropertyChanged;
         }
         private static void WireUpStaticClearCmd(ToolItemVM item)
@@ -441,6 +452,92 @@ namespace OneColumnEncoder.ViewModels
                 UpdateEncStartButtonsState();
             }
         }
+
+        /// <summary>
+        /// Centralized ItemCard Component selection method
+        /// See Commands/SelectToolCmd for behaviors
+        /// </summary>
+        /// <param name="clickedTool"></param>
+        public void SelectItemCard(ToolItemVM clickedTool)
+        {
+            if (UpstreamsZone.Contains(clickedTool))
+            {
+                ToggleOnly(UpstreamsZone, clickedTool);
+                RefreshToolPickedStatus(ToolZone.Upstream, UpstreamsZone);
+            }
+            else if (EncodersZone.Contains(clickedTool))
+            {
+                ToggleOnly(EncodersZone, clickedTool);
+                RefreshToolPickedStatus(ToolZone.Encoder, EncodersZone);
+            }
+            else if (AnalyticsZone.Contains(clickedTool))
+            {
+                SelectOnly(AnalyticsZone, clickedTool);
+                RefreshToolPickedStatus(ToolZone.Analytics, AnalyticsZone);
+            }
+            else if (DependenciesZone.Contains(clickedTool))
+            {
+                ToggleOnly(DependenciesZone, clickedTool);
+            }
+            else if (VideoSrcImportZone.Contains(clickedTool))
+            {
+                if (string.IsNullOrEmpty(clickedTool.Path)) return;
+
+                SelectOnly(VideoSrcImportZone, clickedTool);
+                UnselectAll(ScriptSrcImportZone);
+                RefreshSelectedSourceStatusAfterSourceSelection();
+            }
+            else if (ScriptSrcImportZone.Contains(clickedTool))
+            {
+                if (string.IsNullOrEmpty(clickedTool.Path)) return;
+
+                ToggleOnly(ScriptSrcImportZone, clickedTool);
+                UnselectAll(VideoSrcImportZone);
+                RefreshSelectedSourceStatusAfterSourceSelection();
+            }
+
+            ToolCompatibilityH.RefreshDependencySelectionState(
+                UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
+            ToolCompatibilityH.RefreshSourceSelectionState(
+                UpstreamsZone, ScriptSrcImportZone, RefreshSelectedSourceStatus);
+        }
+
+        private void RefreshToolPickedStatus(ToolZone toolZone, ObservableCollection<ToolItemVM> itemZone)
+        {
+            ToolsImportCard.SetToolPickedStatus(toolZone, itemZone.Any(t => t.IsSelected));
+        }
+
+        private void RefreshImportedToolPickedStatus(ObservableCollection<ToolItemVM> itemZone)
+        {
+            if (itemZone == UpstreamsZone)
+                RefreshToolPickedStatus(ToolZone.Upstream, itemZone);
+            else if (itemZone == EncodersZone)
+                RefreshToolPickedStatus(ToolZone.Encoder, itemZone);
+            else if (itemZone == AnalyticsZone)
+                RefreshToolPickedStatus(ToolZone.Analytics, itemZone);
+        }
+
+        private static void ToggleOnly(ObservableCollection<ToolItemVM> zone, ToolItemVM targetCard)
+        {
+            foreach (ToolItemVM card in zone)
+            {
+                if (card != targetCard) card.IsSelected = false;
+            }
+            targetCard.IsSelected = !targetCard.IsSelected;
+        }
+
+        private static void SelectOnly(ObservableCollection<ToolItemVM> zone, ToolItemVM targetCard)
+        {
+            foreach (ToolItemVM card in zone)
+                card.IsSelected = card == targetCard;
+        }
+
+        private static void UnselectAll(ObservableCollection<ToolItemVM> zone)
+        {
+            foreach (ToolItemVM card in zone)
+                card.IsSelected = false;
+        }
+
         private void OnSourceImported(ToolItemVM item, SourceFileKind kind, string filePath)
         {
             SaveSourcePath(kind, filePath);
@@ -628,11 +725,7 @@ namespace OneColumnEncoder.ViewModels
             WireUpToolCmd(item);
             zone.Add(item);
 
-            if (def.Zone == ToolZone.Analytics)
-            {
-                item.IsSelected = true;
-                ToolsImportCard.SetToolPickedStatus(ToolZone.Analytics, true);
-            }
+            ApplyDefaultImportedToolSelection(zone);
         }
         private void LoadToolsFromAppDataM()
         {
