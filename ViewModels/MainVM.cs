@@ -91,8 +91,8 @@ namespace OneColumnEncoder.ViewModels
             SelectTool = new SelectToolCmd(this);
 
             ToolsImportCard = new ToolsImportCardVM(modalNavS);
-            VideoSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetVideoSrcImportDefs());
-            ScriptSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetScriptSrcImportDefs());
+            VideoSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetVideoSrcImportDefs(), true);
+            ScriptSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetScriptSrcImportDefs(), true);
             EncSettingsZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetEncSettingsDefinitions());
             UpstreamsZone = [];
             EncodersZone = [];
@@ -179,7 +179,7 @@ namespace OneColumnEncoder.ViewModels
         #endregion
 
         #region Zone Initialization
-        private static ObservableCollection<ToolItemVM> LoadZoneFromDefinitions(List<ToolDefinitionM> defs)
+        private static ObservableCollection<ToolItemVM> LoadZoneFromDefinitions(List<ToolDefinitionM> defs, bool useAutoAddReplaceText = false)
         {
             ObservableCollection<ToolItemVM> zone = [];
             foreach (ToolDefinitionM def in defs)
@@ -190,7 +190,7 @@ namespace OneColumnEncoder.ViewModels
                     R2Text = def.R2Text,
                     P1Name = def.P1Name,
                     P2Name = def.P2Name ?? "",
-                    UseAutoAddReplaceText = true
+                    UseAutoAddReplaceText = useAutoAddReplaceText
                 };
                 item.R2Command = new RemoveZoneItemCmd(item, zone);
                 zone.Add(item);
@@ -741,11 +741,7 @@ namespace OneColumnEncoder.ViewModels
 
         #endregion
 
-        #region Modal Navigation
-
         private void OnModalStateChanged() { IsOverlayVisible = _modalNavS.IsOpen; }
-
-        #endregion
 
         #region Language Switching
         private void OnLanguageChanged() { RefreshLanguage(); }
@@ -842,8 +838,6 @@ namespace OneColumnEncoder.ViewModels
         }
         #endregion
 
-        #region Dispose
-
         public override void Dispose()
         {
             UILangProviderM.CurrentChanged -= OnLanguageChanged;
@@ -855,7 +849,5 @@ namespace OneColumnEncoder.ViewModels
             UnsubFromToolsChecklist();
             base.Dispose();
         }
-
-        #endregion
     }
 }
