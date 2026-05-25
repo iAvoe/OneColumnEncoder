@@ -34,11 +34,12 @@ namespace OneColumnEncoder.ViewModels
         }
 
         public static string WindowTitle => UILangProviderM.Current["FilenameScribe.WindowTitle"];
-        public static string PlaceholderText => UILangProviderM.Current["FilenameScribe.PlaceholderText"];
+        public static string MiniHeader => UILangProviderM.Current["FilenameScribe.MiniHeader"];
+        public static string PlaceholderText => UILangProviderM.Current["FilenameScribe.Placeholder"];
         public static string ExtensionText => PossibleExtensions;
-        public static string AutoRuleDate => UILangProviderM.Current["FilenameScribe.AutoRuleDate"];
-        public static string AutoRuleSeason => UILangProviderM.Current["FilenameScribe.AutoRuleSeason"];
-        public static string AutoRuleVersion => UILangProviderM.Current["FilenameScribe.AutoRuleVersion"];
+        public static string SelfCheckDate => UILangProviderM.Current["FilenameScribe.SelfCheckDate"];
+        public static string SelfCheckSeason => UILangProviderM.Current["FilenameScribe.SelfCheckSeason"];
+        public static string SelfCheckVersion => UILangProviderM.Current["FilenameScribe.SelfCheckVersion"];
         public static string FooterHint => UILangProviderM.Current["FilenameScribe.FooterHint"];
 
         public FilenameScribeModalVM(Action closeAction, AppConfM appConfM, ToolItemVM outputSettingItem)
@@ -165,9 +166,9 @@ namespace OneColumnEncoder.ViewModels
         {
             OnPropertyChanged(nameof(WindowTitle));
             OnPropertyChanged(nameof(PlaceholderText));
-            OnPropertyChanged(nameof(AutoRuleDate));
-            OnPropertyChanged(nameof(AutoRuleSeason));
-            OnPropertyChanged(nameof(AutoRuleVersion));
+            OnPropertyChanged(nameof(SelfCheckDate));
+            OnPropertyChanged(nameof(SelfCheckSeason));
+            OnPropertyChanged(nameof(SelfCheckVersion));
             OnPropertyChanged(nameof(FooterHint));
 
             BuildChecklist();

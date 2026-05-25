@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="560"
-        Height="450"
+        Height="400"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid Margin="15">
@@ -20,10 +20,15 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0"
-              Margin="0 10 0 0">
+        <TextBlock Grid.Row="0"
+                   Margin="0 5 0 0"
+                   Text="{Binding MiniHeader}"
+                   Style="{StaticResource H4}" />
+
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -32,7 +37,7 @@
             <TextBox Grid.Column="0"
                      Text="{Binding VideoFilename, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      FontSize="14"
-                     Padding="5 3"
+                     Padding="0 2.5"
                      VerticalContentAlignment="Center">
                 <TextBox.Style>
                     <Style TargetType="TextBox">
@@ -51,7 +56,7 @@
 
             <TextBlock Grid.Column="0"
                        Text="{Binding PlaceholderText}"
-                       Margin="7 0 0 0"
+                       Margin="10 0 0 0"
                        VerticalAlignment="Center"
                        Foreground="{StaticResource GlobalTertiary}"
                        IsHitTestVisible="False">
@@ -72,43 +77,42 @@
 
             <TextBlock Grid.Column="1"
                        Text="{Binding ExtensionText}"
-                       Margin="8 0 0 0"
+                       Margin="5 0 0 0"
                        VerticalAlignment="Center"
-                       FontSize="14"
+                       FontSize="13"
                        Foreground="{StaticResource GlobalSecondary}" />
         </Grid>
 
-        <comps:ChecklistContainer Grid.Row="1"
-                                  Margin="0 15 0 0"
+        <comps:ChecklistContainer Grid.Row="2"
+                                  Margin="0 10 0 0"
                                   ItemsSource="{Binding FilenameChecklist}">
             <comps:ChecklistContainer.ItemTemplate>
                 <DataTemplate>
                     <comps:ChecklistItem Text="{Binding Text}"
-                                          Status="{Binding Status}"
-                                          IsEnabled="{Binding IsEnabled}"
-                                          Margin="0 5" />
+                                         Status="{Binding Status}"
+                                         IsEnabled="{Binding IsEnabled}"
+                                         Margin="0 5" />
                 </DataTemplate>
             </comps:ChecklistContainer.ItemTemplate>
         </comps:ChecklistContainer>
 
-        <StackPanel Grid.Row="2"
-                    Margin="0 10 0 0">
-            <TextBlock Text="{Binding AutoRuleDate}"
+        <StackPanel Grid.Row="3">
+            <TextBlock Text="{Binding SelfCheckDate}"
                        Margin="0 5"
-                       FontSize="14"
+                       FontSize="13"
                        Foreground="{StaticResource GlobalPrimary}" />
-            <TextBlock Text="{Binding AutoRuleSeason}"
+            <TextBlock Text="{Binding SelfCheckSeason}"
                        Margin="0 5"
-                       FontSize="14"
+                       FontSize="13"
                        Foreground="{StaticResource GlobalPrimary}" />
-            <TextBlock Text="{Binding AutoRuleVersion}"
+            <TextBlock Text="{Binding SelfCheckVersion}"
                        Margin="0 5"
-                       FontSize="14"
+                       FontSize="13"
                        Foreground="{StaticResource GlobalPrimary}" />
         </StackPanel>
 
-        <comps:ThreeButtonGroup Grid.Row="3"
-                                Margin="0 20 0 0"
+        <comps:ThreeButtonGroup Grid.Row="4"
+                                Margin="0 10 0 0"
                                 DataContext="{Binding FilenameButtons}"
                                 Button1Command="{Binding Cmd1}"
                                 Button2Command="{Binding Cmd2}"
@@ -117,7 +121,7 @@
                                 Button2IsEnabled="{Binding B3_2IsEnabled}"
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
 
-        <StackPanel Grid.Row="4"
+        <StackPanel Grid.Row="5"
                     Margin="5 1.25 5 0"
                     Orientation="Horizontal"
                     HorizontalAlignment="Left"
