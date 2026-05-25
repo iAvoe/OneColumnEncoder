@@ -250,8 +250,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void ApplyDefaultImportedToolSelection(ObservableCollection<ToolItemVM> zone)
         {
-            if (zone.Count == 1) zone[0].IsSelected = true;
-            else if (zone.Count > 1) UnselectAll(zone);
+            ItemCardSelectionH.ApplyDefaultSelection(zone);
             RefreshImportedToolPickedStatus(zone);
         }
 
@@ -453,59 +452,20 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        /// <summary>
-        /// Centralized ItemCard Component selection method
-        /// See Commands/SelectToolCmd for behaviors
-        /// </summary>
-        /// <param name="clickedTool"></param>
         public void SelectItemCard(ToolItemVM clickedTool)
         {
-            if (UpstreamsZone.Contains(clickedTool))
-            {
-                ToggleOnly(UpstreamsZone, clickedTool);
-                RefreshToolPickedStatus(ToolZone.Upstream, UpstreamsZone);
-            }
-            else if (EncodersZone.Contains(clickedTool))
-            {
-                ToggleOnly(EncodersZone, clickedTool);
-                RefreshToolPickedStatus(ToolZone.Encoder, EncodersZone);
-            }
-            else if (AnalyticsZone.Contains(clickedTool))
-            {
-                SelectOnly(AnalyticsZone, clickedTool);
-                RefreshToolPickedStatus(ToolZone.Analytics, AnalyticsZone);
-            }
-            else if (DependenciesZone.Contains(clickedTool))
-            {
-                ToggleOnly(DependenciesZone, clickedTool);
-            }
-            else if (VideoSrcImportZone.Contains(clickedTool))
-            {
-                if (string.IsNullOrEmpty(clickedTool.Path)) return;
-
-                SelectOnly(VideoSrcImportZone, clickedTool);
-                UnselectAll(ScriptSrcImportZone);
-                RefreshSelectedSourceStatusAfterSourceSelection();
-            }
-            else if (ScriptSrcImportZone.Contains(clickedTool))
-            {
-                if (string.IsNullOrEmpty(clickedTool.Path)) return;
-
-                ToggleOnly(ScriptSrcImportZone, clickedTool);
-                UnselectAll(VideoSrcImportZone);
-                RefreshSelectedSourceStatusAfterSourceSelection();
-            }
-
-            ToolCompatibilityH.RefreshDependencySelectionState(
-                UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
-            ToolCompatibilityH.RefreshSourceSelectionState(
-                UpstreamsZone, ScriptSrcImportZone, RefreshSelectedSourceStatus);
+            ItemCardSelectionH.HandleItemCardClick(
+                clickedTool,
+                UpstreamsZone, EncodersZone, AnalyticsZone, DependenciesZone,
+                VideoSrcImportZone, ScriptSrcImportZone,
+                ToolsImportCard,
+                RefreshSelectedSourceStatusAfterSourceSelection,
+                UpdateEncStartButtonsState,
+                RefreshSelectedSourceStatus);
         }
 
-        private void RefreshToolPickedStatus(ToolZone toolZone, ObservableCollection<ToolItemVM> itemZone)
-        {
-            ToolsImportCard.SetToolPickedStatus(toolZone, itemZone.Any(t => t.IsSelected));
-        }
+        private void RefreshToolPickedStatus(ToolZone toolZone, ObservableCollection<ToolItemVM> itemZone) =>
+            ItemCardSelectionH.RefreshToolPickedStatus(ToolsImportCard, toolZone, itemZone);
 
         private void RefreshImportedToolPickedStatus(ObservableCollection<ToolItemVM> itemZone)
         {
@@ -515,27 +475,6 @@ namespace OneColumnEncoder.ViewModels
                 RefreshToolPickedStatus(ToolZone.Encoder, itemZone);
             else if (itemZone == AnalyticsZone)
                 RefreshToolPickedStatus(ToolZone.Analytics, itemZone);
-        }
-
-        private static void ToggleOnly(ObservableCollection<ToolItemVM> zone, ToolItemVM targetCard)
-        {
-            foreach (ToolItemVM card in zone)
-            {
-                if (card != targetCard) card.IsSelected = false;
-            }
-            targetCard.IsSelected = !targetCard.IsSelected;
-        }
-
-        private static void SelectOnly(ObservableCollection<ToolItemVM> zone, ToolItemVM targetCard)
-        {
-            foreach (ToolItemVM card in zone)
-                card.IsSelected = card == targetCard;
-        }
-
-        private static void UnselectAll(ObservableCollection<ToolItemVM> zone)
-        {
-            foreach (ToolItemVM card in zone)
-                card.IsSelected = false;
         }
 
         private void OnSourceImported(ToolItemVM item, SourceFileKind kind, string filePath)
