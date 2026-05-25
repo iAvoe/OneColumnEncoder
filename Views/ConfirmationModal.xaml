@@ -59,11 +59,17 @@
                     </TextBlock.ContextMenu>
                 </TextBlock>
             </ScrollViewer>
-            <comps:TwoButtonGroup Margin="0 15 0 0"
-                                  ButtonHeight="30"
+            <comps:TwoButtonGroup ButtonHeight="30"
                                   DataContext="{Binding FinishWarnErrButtons}"
                                   Button1Command="{Binding Cmd1}"
-                                  Button2Command="{Binding Cmd2}" />
+                                  Button2Command="{Binding Cmd2}"
+                                  Margin="0 15 0 0" />
+            <TextBlock Margin="5 0 5 0"
+                       FontSize="8.5"
+                       Focusable="False"
+                       Text="{Binding CopyHint}"
+                       HorizontalAlignment="Left"
+                       Foreground="{StaticResource GlobalTertiary}" />
         </StackPanel>
         <!-- This might be an image icon instead -->
         <Image Grid.Column="1"
