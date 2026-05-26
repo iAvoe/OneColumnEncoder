@@ -40,7 +40,7 @@ namespace OneColumnEncoder.ViewModels
         public static string SelfCheckVersion => UILangProviderM.Current["FilenameScribe.SelfCheckVersion"];
         public static string FooterHint => UILangProviderM.Current["FilenameScribe.FooterHint"];
 
-        public FilenameScribeModalVM(Action closeAction, AppConfM appConfM, ToolItemVM outputSettingItem)
+        public FilenameScribeModalVM(Action closeAction, ToolItemVM outputSettingItem)
         {
             _closeAction = closeAction;
             _outputSettingItem = outputSettingItem;

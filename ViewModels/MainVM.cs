@@ -106,15 +106,12 @@ namespace OneColumnEncoder.ViewModels
             ToolItemVM? outputSetting = EncSettingsZone.FirstOrDefault(t =>
                 t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
 
+            // Set P2Text to desktop, then P1Text to file name
             if (outputSetting != null)
             {
-                // Set default path (P2Text) to desktop if not already set
-                // Must be set first because Path setter calls Validate() which clears VersionText
+                // Must be set first because Path setter has Validate() call which clears VersionText
                 if (string.IsNullOrWhiteSpace(outputSetting.Path))
                     outputSetting.Path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
-                // Set default filename (P1Text) if not already set
-                // P1Text is bound to VersionText, so we set VersionText instead
                 if (string.IsNullOrWhiteSpace(outputSetting.PrimaryValueText))
                     outputSetting.PrimaryValueText = "1cenc output";
             }
@@ -136,7 +133,9 @@ namespace OneColumnEncoder.ViewModels
             InspectSrcProblems = new InspectSrcProblemsCmd(
                 _srcVideoAnalysis, SrcValidationCard, modalNavS);
             BypassSrcChecklist = new BypsSrcChecklistCmd(
-                SrcValidationCard, () => !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson), UpdateEncStartButtonsState);
+                SrcValidationCard,
+                () => !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson),
+                UpdateEncStartButtonsState);
 
             // Buttons
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
@@ -441,7 +440,7 @@ namespace OneColumnEncoder.ViewModels
                 t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
 
             if (outputSetting != null)
-                outputSetting.R1Command = new OpenFilenameScribeCmd(_modalNavS, _appConfM, outputSetting);
+                outputSetting.R1Command = new OpenFilenameScribeCmd(_modalNavS, outputSetting);
         }
         private void OnVideoSrcItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -851,7 +850,7 @@ namespace OneColumnEncoder.ViewModels
                 zone[i].RefreshLanguage();
             }
         }
-        private void ApplyImportedToolDefs(ObservableCollection<ToolItemVM> zone)
+        private static void ApplyImportedToolDefs(ObservableCollection<ToolItemVM> zone)
         {
             foreach (ToolItemVM item in zone)
             {
