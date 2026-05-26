@@ -33,9 +33,7 @@ namespace OneColumnEncoder.Helpers
         public static bool HasNoExtendedChars(string filename)
         {
             foreach (Rune r in filename.EnumerateRunes())
-            {
                 if (r.Value > 0xFFFF) return false;
-            }
             return true;
         }
 

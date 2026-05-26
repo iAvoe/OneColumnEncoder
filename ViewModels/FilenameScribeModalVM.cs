@@ -118,8 +118,8 @@ namespace OneColumnEncoder.ViewModels
             SetChecklistStatus(2, FilenameValidationH.HasNoInvalidChars(filename));
             // SetChecklistStatus(3, FilenameValidationH.HasNoExtendedChars(filename));
             FilenameChecklist[3].Status = FilenameValidationH.HasNoExtendedChars(filename)
-                ? StatusType.Warning
-                : StatusType.Success;
+                ? StatusType.Success
+                : StatusType.Warning;
             FilenameChecklist[4].Status = FilenameValidationH.HasSpaces(VideoFilename)
                 ? StatusType.Warning
                 : StatusType.Success;

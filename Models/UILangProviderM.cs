@@ -75,7 +75,7 @@ public class UILangProviderM
             ["ToolField.Name"] = "Name",
             ["ToolField.Mode"] = "Mode",
             ["ToolField.FileName"] = "Filename",
-            ["ToolField.NumaNodes"] = "NUMA Nodes",
+            ["ToolField.NumaNodes"] = "Up/Downstream Nodes",
             ["ToolField.Threads"] = "Threads",
             ["ToolField.Value"] = "Value",
             ["ToolField.Stratagem"] = "Stratagy",
@@ -88,7 +88,7 @@ public class UILangProviderM
             ["Tool.Source.Svfi"] = "SVFI .ini Source",
 
             ["Tool.Enc.OutputSetting"] = "Output Setting",
-            ["Tool.Enc.Parallelism"] = "Parallelism",
+            ["Tool.Enc.Parallelism"] = "Parallelism Control",
             ["Tool.Enc.RateControl"] = "Rate Control Mechanism",
             ["Tool.Enc.BaseParameters"] = "Base Parameters",
             ["Tool.Enc.CustomParameters"] = "Custom Parameters",
@@ -316,7 +316,7 @@ public class UILangProviderM
             ["ToolField.Name"] = "名称",
             ["ToolField.Mode"] = "模式",
             ["ToolField.FileName"] = "文件名",
-            ["ToolField.NumaNodes"] = "NUMA 节点",
+            ["ToolField.NumaNodes"] = "上下游 NUMA 节点",
             ["ToolField.Threads"] = "线程",
             ["ToolField.Value"] = "数值",
             ["ToolField.Stratagem"] = "策略",
@@ -329,8 +329,8 @@ public class UILangProviderM
             ["Tool.Source.Svfi"] = "SVFI .ini 源",
 
             ["Tool.Enc.OutputSetting"] = "输出设置",
-            ["Tool.Enc.Parallelism"] = "并行计算机制",
-            ["Tool.Enc.RateControl"] = "码率控制机制",
+            ["Tool.Enc.Parallelism"] = "并行计算调度",
+            ["Tool.Enc.RateControl"] = "率控制设置",
             ["Tool.Enc.BaseParameters"] = "基础参数",
             ["Tool.Enc.CustomParameters"] = "自定义参数",
 
@@ -542,7 +542,7 @@ public class UILangProviderM
             ["ToolField.Name"] = "名稱",
             ["ToolField.Mode"] = "模式",
             ["ToolField.FileName"] = "檔名",
-            ["ToolField.NumaNodes"] = "NUMA 節點",
+            ["ToolField.NumaNodes"] = "上下游 NUMA 節點",
             ["ToolField.Threads"] = "執行緒",
             ["ToolField.Value"] = "數值",
             ["ToolField.Stratagem"] = "策略",
@@ -555,8 +555,8 @@ public class UILangProviderM
             ["Tool.Source.Svfi"] = "SVFI .ini 來源",
 
             ["Tool.Enc.OutputSetting"] = "輸出設定",
-            ["Tool.Enc.Parallelism"] = "平行計算機制",
-            ["Tool.Enc.RateControl"] = "位元率控制機制",
+            ["Tool.Enc.Parallelism"] = "平行計算調度",
+            ["Tool.Enc.RateControl"] = "率控制設定",
             ["Tool.Enc.BaseParameters"] = "基礎參數",
             ["Tool.Enc.CustomParameters"] = "自訂參數",
 
