@@ -38,7 +38,7 @@ namespace OneColumnEncoder.Commands
                 return;
 
             _item.Path = filePath;
-            _item.VersionText = SourceFilePickerH.GetPrimaryText(_fileKind, filePath);
+            _item.PrimaryValueText = SourceFilePickerH.GetPrimaryText(_fileKind, filePath);
             _afterImport?.Invoke(_item, _fileKind, filePath);
         }
     }

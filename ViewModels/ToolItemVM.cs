@@ -47,13 +47,13 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        private string _versionText = ""; // Non-nullable
-        public string VersionText
+        private string _primaryValueText = string.Empty; // Non-nullable
+        public string PrimaryValueText
         {
-            get => _versionText;
+            get => _primaryValueText;
             set
             {
-                SetProperty(ref _versionText, value);
+                SetProperty(ref _primaryValueText, value);
                 OnPropertyChanged(nameof(P1Text));
             }
         }
@@ -72,7 +72,7 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _p1Name, value);
         }
 
-        public string P1Text => VersionText;
+        public string P1Text => PrimaryValueText;
 
         private string _p2Name = "";
         public string P2Name
@@ -173,7 +173,7 @@ namespace OneColumnEncoder.ViewModels
                 Path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase);
 
             IsReal = exists && isKnownBinary;
-            if (!IsReal) VersionText = string.Empty;
+            if (!IsReal) PrimaryValueText = string.Empty;
         }
 
         public void ApplyDefinition(ToolDefinitionM definition)

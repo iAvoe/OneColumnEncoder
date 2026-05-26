@@ -102,6 +102,23 @@ namespace OneColumnEncoder.ViewModels
             LoadSourcesFromAppDataM();
             WireUpZoneDeleteCmds();
 
+            // Set default values for output setting in EncSettingsZone
+            ToolItemVM? outputSetting = EncSettingsZone.FirstOrDefault(t =>
+                t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+
+            if (outputSetting != null)
+            {
+                // Set default path (P2Text) to desktop if not already set
+                // Must be set first because Path setter calls Validate() which clears VersionText
+                if (string.IsNullOrWhiteSpace(outputSetting.Path))
+                    outputSetting.Path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+                // Set default filename (P1Text) if not already set
+                // P1Text is bound to VersionText, so we set VersionText instead
+                if (string.IsNullOrWhiteSpace(outputSetting.PrimaryValueText))
+                    outputSetting.PrimaryValueText = "1cenc output";
+            }
+
             // Commands
             OneClickScriptGen = new OneClickScriptGenCmd(
                 () => GetCurrentVideoSourcePath(), ScriptSrcImportZone[0], ScriptSrcImportZone[1], modalNavS);
@@ -662,7 +679,7 @@ namespace OneColumnEncoder.ViewModels
             ToolItemVM item = new(new EncItemM(def.DisplayName))
             {
                 Path = filePath,
-                VersionText = version ?? string.Empty,
+                PrimaryValueText = version ?? string.Empty,
                 P1Name = def.P1Name,
                 P2Name = def.P2Name ?? string.Empty,
                 R1Text = def.R1Text,
@@ -741,7 +758,7 @@ namespace OneColumnEncoder.ViewModels
             if (string.IsNullOrWhiteSpace(path) || !File.Exists(path)) return false;
 
             item.Path = path;
-            item.VersionText = SourceFilePickerH.GetPrimaryText(kind, path);
+            item.PrimaryValueText = SourceFilePickerH.GetPrimaryText(kind, path);
             return true;
         }
 
@@ -823,7 +840,7 @@ namespace OneColumnEncoder.ViewModels
                 if (string.IsNullOrWhiteSpace(item.Path)) continue;
 
                 SourceFileKind fileKind = ResolveSourceFileKind(item.Name);
-                item.VersionText = SourceFilePickerH.GetPrimaryText(fileKind, item.Path);
+                item.PrimaryValueText = SourceFilePickerH.GetPrimaryText(fileKind, item.Path);
             }
         }
         private static void ApplyDefinitionsToZone(ObservableCollection<ToolItemVM> zone, List<ToolDefinitionM> definitions)

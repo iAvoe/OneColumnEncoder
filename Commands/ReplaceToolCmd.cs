@@ -34,7 +34,7 @@ namespace OneColumnEncoder.Commands
             }
 
             _item.Path = filePath;
-            _item.VersionText = version ?? string.Empty;
+            _item.PrimaryValueText = version ?? string.Empty;
             _appDataM.Save();
             _afterReplace?.Invoke();
         }

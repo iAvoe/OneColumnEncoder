@@ -69,10 +69,10 @@ namespace OneColumnEncoder.Commands.SaveLoad
             }
 
             _avsItem.Path = avsPath;
-            _avsItem.VersionText = SourceFilePickerH.GetPrimaryText(SourceFileKind.AviSynthScript, avsPath);
+            _avsItem.PrimaryValueText = SourceFilePickerH.GetPrimaryText(SourceFileKind.AviSynthScript, avsPath);
 
             _vpyItem.Path = vpyPath;
-            _vpyItem.VersionText = SourceFilePickerH.GetPrimaryText(SourceFileKind.VapourSynthScript, vpyPath);
+            _vpyItem.PrimaryValueText = SourceFilePickerH.GetPrimaryText(SourceFileKind.VapourSynthScript, vpyPath);
 
             new OpenInfoOrDbgModalCmd(
                 _modalNavS,

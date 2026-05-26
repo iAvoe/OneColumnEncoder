@@ -11,7 +11,7 @@ namespace OneColumnEncoder.Commands
         public override void Execute(object? parameter)
         {
             _item.Path = string.Empty;
-            _item.VersionText = string.Empty;
+            _item.PrimaryValueText = string.Empty;
             _item.IsSelected = false;
             _afterClear?.Invoke();
         }

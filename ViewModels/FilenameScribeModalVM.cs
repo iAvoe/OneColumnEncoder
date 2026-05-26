@@ -44,7 +44,7 @@ namespace OneColumnEncoder.ViewModels
         {
             _closeAction = closeAction;
             _outputSettingItem = outputSettingItem;
-            _videoFilename = OutputPathH.GetInitialFilename(outputSettingItem.VersionText, outputSettingItem.Path);
+            _videoFilename = OutputPathH.GetInitialFilename(outputSettingItem.PrimaryValueText, outputSettingItem.Path);
             CloseCmd = new CloseModalCmd(closeAction);
             BuildChecklist();
             BuildButtonGroup();
@@ -85,6 +85,7 @@ namespace OneColumnEncoder.ViewModels
             if (Clipboard.ContainsText()) VideoFilename = Clipboard.GetText().Trim();
         }
 
+        // Filename is good, proceed to select path
         private void Confirm()
         {
             if (!CanConfirm()) return;
@@ -100,9 +101,8 @@ namespace OneColumnEncoder.ViewModels
 
             if (dialog.ShowDialog() != true) return;
 
-            string ext = PossibleExtensions.Split('|')[0];
-            _outputSettingItem.Path = Path.Combine(dialog.FolderName, filename + ext);
-            _outputSettingItem.VersionText = filename;
+            _outputSettingItem.Path = Path.Combine(dialog.FolderName, filename);
+            _outputSettingItem.PrimaryValueText = filename;
             _closeAction();
         }
 
@@ -116,8 +116,10 @@ namespace OneColumnEncoder.ViewModels
             SetChecklistStatus(0, FilenameValidationH.IsValidLength(filename));
             SetChecklistStatus(1, FilenameValidationH.IsNotReservedName(filename));
             SetChecklistStatus(2, FilenameValidationH.HasNoInvalidChars(filename));
-            SetChecklistStatus(3, FilenameValidationH.HasNoExtendedChars(filename));
-
+            // SetChecklistStatus(3, FilenameValidationH.HasNoExtendedChars(filename));
+            FilenameChecklist[3].Status = FilenameValidationH.HasNoExtendedChars(filename)
+                ? StatusType.Warning
+                : StatusType.Success;
             FilenameChecklist[4].Status = FilenameValidationH.HasSpaces(VideoFilename)
                 ? StatusType.Warning
                 : StatusType.Success;
