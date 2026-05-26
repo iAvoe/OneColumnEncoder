@@ -26,13 +26,13 @@ namespace OneColumnEncoder.ViewModels
         private readonly VideoAnalysisM _srcVideoAnalysis = new();
 
         // Groups of Card or other element UIs
-        public ObservableCollection<ToolItemVM> UpstreamsZone { get; }
-        public ObservableCollection<ToolItemVM> EncodersZone { get; }
-        public ObservableCollection<ToolItemVM> AnalyticsZone { get; } // A-D separated for dual single-select
-        public ObservableCollection<ToolItemVM> DependenciesZone { get; }
-        public ObservableCollection<ToolItemVM> VideoSrcImportZone { get; } // V-S separated for dual single-select
-        public ObservableCollection<ToolItemVM> ScriptSrcImportZone { get; }
-        public ObservableCollection<ToolItemVM> EncSettingsZone { get; }
+        public ObservableCollection<ToolItemCardVM> UpstreamsZone { get; }
+        public ObservableCollection<ToolItemCardVM> EncodersZone { get; }
+        public ObservableCollection<ToolItemCardVM> AnalyticsZone { get; } // A-D separated for dual single-select
+        public ObservableCollection<ToolItemCardVM> DependenciesZone { get; }
+        public ObservableCollection<ToolItemCardVM> VideoSrcImportZone { get; } // V-S separated for dual single-select
+        public ObservableCollection<ToolItemCardVM> ScriptSrcImportZone { get; }
+        public ObservableCollection<ToolItemCardVM> EncSettingsZone { get; }
         // Cmds and buttons
         public OpenUsagesCmd OpenUsages { get; }
         public OpenAppConfCmd OpenAppConf { get; }
@@ -76,7 +76,7 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _isOverlayVisible, value);
         }
 
-        private ObservableCollection<ToolItemVM>[] AllImportedToolZones =>
+        private ObservableCollection<ToolItemCardVM>[] AllImportedToolZones =>
             [UpstreamsZone, EncodersZone, AnalyticsZone, DependenciesZone];
 
         #region Constructor
@@ -103,7 +103,7 @@ namespace OneColumnEncoder.ViewModels
             WireUpZoneDeleteCmds();
 
             // Set default values for output setting in EncSettingsZone
-            ToolItemVM? outputSetting = EncSettingsZone.FirstOrDefault(t =>
+            ToolItemCardVM? outputSetting = EncSettingsZone.FirstOrDefault(t =>
                 t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
 
             // Set P2Text to desktop, then P1Text to file name
@@ -195,12 +195,12 @@ namespace OneColumnEncoder.ViewModels
         #endregion
 
         #region Zone Initialization
-        private static ObservableCollection<ToolItemVM> LoadZoneFromDefinitions(List<ToolDefinitionM> defs, bool useAutoAddReplaceText = false)
+        private static ObservableCollection<ToolItemCardVM> LoadZoneFromDefinitions(List<ToolDefinitionM> defs, bool useAutoAddReplaceText = false)
         {
-            ObservableCollection<ToolItemVM> zone = [];
+            ObservableCollection<ToolItemCardVM> zone = [];
             foreach (ToolDefinitionM def in defs)
             {
-                ToolItemVM item = new(new EncItemM(def.DisplayName))
+                ToolItemCardVM item = new(new EncItemM(def.DisplayName))
                 {
                     R1Text = def.R1Text,
                     R2Text = def.R2Text,
@@ -248,7 +248,7 @@ namespace OneColumnEncoder.ViewModels
         }
         private void OnImportedToolZoneCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
-            if (sender is ObservableCollection<ToolItemVM> zone)
+            if (sender is ObservableCollection<ToolItemCardVM> zone)
                 ApplyDefaultImportedToolSelection(zone);
 
             if (sender == EncodersZone)
@@ -262,7 +262,7 @@ namespace OneColumnEncoder.ViewModels
                 UpstreamsZone, ScriptSrcImportZone, RefreshSelectedSourceStatus);
         }
 
-        private void ApplyDefaultImportedToolSelection(ObservableCollection<ToolItemVM> zone)
+        private void ApplyDefaultImportedToolSelection(ObservableCollection<ToolItemCardVM> zone)
         {
             ItemCardSelectionH.ApplyDefaultSelection(zone);
             RefreshImportedToolPickedStatus(zone);
@@ -270,7 +270,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void RefreshUpstreamToolState()
         {
-            ToolItemVM? avs2pipemod =
+            ToolItemCardVM? avs2pipemod =
                 UpstreamsZone.FirstOrDefault(t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe"));
             if (avs2pipemod == null) return;
 
@@ -305,7 +305,7 @@ namespace OneColumnEncoder.ViewModels
         private void RefreshEncSettingsState()
         {
             bool hasVideoSource = CanRunSourceAnalysis();
-            foreach (ToolItemVM item in EncSettingsZone)
+            foreach (ToolItemCardVM item in EncSettingsZone)
                 item.IsEnabled = hasVideoSource;
         }
 
@@ -403,14 +403,14 @@ namespace OneColumnEncoder.ViewModels
         #region Command Wiring (Bind R1-R2)
         private void WireUpZoneDeleteCmds()
         {
-            foreach (ToolItemVM tool in VideoSrcImportZone) WireUpSourceCmd(tool);
-            foreach (ToolItemVM tool in ScriptSrcImportZone) WireUpSourceCmd(tool);
-            foreach (ToolItemVM tool in EncSettingsZone) WireUpStaticClearCmd(tool);
+            foreach (ToolItemCardVM tool in VideoSrcImportZone) WireUpSourceCmd(tool);
+            foreach (ToolItemCardVM tool in ScriptSrcImportZone) WireUpSourceCmd(tool);
+            foreach (ToolItemCardVM tool in EncSettingsZone) WireUpStaticClearCmd(tool);
             WireUpEncSettingsCmds();
             foreach (var zone in AllImportedToolZones)
-                foreach (ToolItemVM tool in zone) WireUpToolCmd(tool);
+                foreach (ToolItemCardVM tool in zone) WireUpToolCmd(tool);
         }
-        private void WireUpToolCmd(ToolItemVM item)
+        private void WireUpToolCmd(ToolItemCardVM item)
         {
             item.R1Command = new ReplaceToolCmd(
                 item, _appDataM, _modalNavS, RefreshImportedToolStates);
@@ -423,20 +423,20 @@ namespace OneColumnEncoder.ViewModels
             if (zone == ToolZone.Analytics)
                 item.PropertyChanged += OnAnalyticsItemPropertyChanged;
         }
-        private void WireUpSourceCmd(ToolItemVM item)
+        private void WireUpSourceCmd(ToolItemCardVM item)
         {
             SourceFileKind kind = ResolveSourceFileKind(item.Name);
             item.R1Command = new BrowseSourcePathCmd(item, kind, _appDataM, _modalNavS, OnSourceImported);
             item.R2Command = new ClearToolItemCmd(item, () => OnSourceCleared(kind));
             item.PropertyChanged += OnVideoSrcItemPropertyChanged;
         }
-        private static void WireUpStaticClearCmd(ToolItemVM item)
+        private static void WireUpStaticClearCmd(ToolItemCardVM item)
         {
             item.R2Command = new ClearToolItemCmd(item);
         }
         private void WireUpEncSettingsCmds()
         {
-            ToolItemVM? outputSetting = EncSettingsZone.FirstOrDefault(t =>
+            ToolItemCardVM? outputSetting = EncSettingsZone.FirstOrDefault(t =>
                 t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
 
             if (outputSetting != null)
@@ -444,10 +444,10 @@ namespace OneColumnEncoder.ViewModels
         }
         private void OnVideoSrcItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (sender is not ToolItemVM) return;
-            if (e.PropertyName == nameof(ToolItemVM.Path))
+            if (sender is not ToolItemCardVM) return;
+            if (e.PropertyName == nameof(ToolItemCardVM.Path))
                 UpdateScriptScbButtonsState();
-            if (e.PropertyName is nameof(ToolItemVM.Path) or nameof(ToolItemVM.IsSelected))
+            if (e.PropertyName is nameof(ToolItemCardVM.Path) or nameof(ToolItemCardVM.IsSelected))
             {
                 UpdateAnalyzeSrcButtonsState();
                 UpdateInspBypsChkButtonsState();
@@ -455,8 +455,8 @@ namespace OneColumnEncoder.ViewModels
         }
         private void OnEncoderItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (sender is not ToolItemVM) return;
-            if (e.PropertyName == nameof(ToolItemVM.IsSelected))
+            if (sender is not ToolItemCardVM) return;
+            if (e.PropertyName == nameof(ToolItemCardVM.IsSelected))
             {
                 SrcValidationCard.RefreshSvtav1BitDepthStatus();
                 UpdateEncStartButtonsState();
@@ -465,8 +465,8 @@ namespace OneColumnEncoder.ViewModels
 
         private void OnAnalyticsItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (sender is not ToolItemVM) return;
-            if (e.PropertyName is nameof(ToolItemVM.Path) or nameof(ToolItemVM.IsSelected))
+            if (sender is not ToolItemCardVM) return;
+            if (e.PropertyName is nameof(ToolItemCardVM.Path) or nameof(ToolItemCardVM.IsSelected))
             {
                 ResetAnalysisIfStale();
                 UpdateAnalyzeSrcButtonsState();
@@ -475,7 +475,7 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        public void SelectItemCard(ToolItemVM clickedTool)
+        public void SelectItemCard(ToolItemCardVM clickedTool)
         {
             ItemCardSelectionH.HandleItemCardClick(
                 clickedTool,
@@ -487,10 +487,10 @@ namespace OneColumnEncoder.ViewModels
                 RefreshSelectedSourceStatus);
         }
 
-        private void RefreshToolPickedStatus(ToolZone toolZone, ObservableCollection<ToolItemVM> itemZone) =>
+        private void RefreshToolPickedStatus(ToolZone toolZone, ObservableCollection<ToolItemCardVM> itemZone) =>
             ItemCardSelectionH.RefreshToolPickedStatus(ToolsImportCard, toolZone, itemZone);
 
-        private void RefreshImportedToolPickedStatus(ObservableCollection<ToolItemVM> itemZone)
+        private void RefreshImportedToolPickedStatus(ObservableCollection<ToolItemCardVM> itemZone)
         {
             if (itemZone == UpstreamsZone)
                 RefreshToolPickedStatus(ToolZone.Upstream, itemZone);
@@ -500,13 +500,13 @@ namespace OneColumnEncoder.ViewModels
                 RefreshToolPickedStatus(ToolZone.Analytics, itemZone);
         }
 
-        private void OnSourceImported(ToolItemVM item, SourceFileKind kind, string filePath)
+        private void OnSourceImported(ToolItemCardVM item, SourceFileKind kind, string filePath)
         {
             SaveSourcePath(kind, filePath);
 
-            foreach (ToolItemVM source in VideoSrcImportZone)
+            foreach (ToolItemCardVM source in VideoSrcImportZone)
                 source.IsSelected = false;
-            foreach (ToolItemVM source in ScriptSrcImportZone)
+            foreach (ToolItemCardVM source in ScriptSrcImportZone)
                 source.IsSelected = false;
 
             item.IsSelected = true;
@@ -595,7 +595,7 @@ namespace OneColumnEncoder.ViewModels
         }
         private string GetCurrentVideoSourcePath()
         {
-            ToolItemVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => !string.IsNullOrWhiteSpace(t.Path));
+            ToolItemCardVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => !string.IsNullOrWhiteSpace(t.Path));
             return videoSrc?.Path ?? string.Empty;
         }
 
@@ -619,13 +619,13 @@ namespace OneColumnEncoder.ViewModels
 
         private string GetSelectedVideoSourcePath()
         {
-            ToolItemVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
+            ToolItemCardVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
             return videoSrc?.Path ?? string.Empty;
         }
 
         private string GetSelectedFfprobePath()
         {
-            ToolItemVM? ffprobe = AnalyticsZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
+            ToolItemCardVM? ffprobe = AnalyticsZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
             return ffprobe?.Path ?? string.Empty;
         }
 
@@ -646,7 +646,7 @@ namespace OneColumnEncoder.ViewModels
 
         #region Zone Helpers
 
-        private ObservableCollection<ToolItemVM> GetZoneForTool(ToolZone zone) => zone switch
+        private ObservableCollection<ToolItemCardVM> GetZoneForTool(ToolZone zone) => zone switch
         {
             ToolZone.Upstream => UpstreamsZone,
             ToolZone.Encoder => EncodersZone,
@@ -671,11 +671,11 @@ namespace OneColumnEncoder.ViewModels
             if (def.Zone == null || string.IsNullOrEmpty(filePath)) return;
 
             // Find zone belonging, duplication check, duplication handling (replace)
-            ObservableCollection<ToolItemVM> zone = GetZoneForTool(def.Zone.Value);
-            ToolItemVM? existing = zone.FirstOrDefault(i => i.Name == def.DisplayName);
+            ObservableCollection<ToolItemCardVM> zone = GetZoneForTool(def.Zone.Value);
+            ToolItemCardVM? existing = zone.FirstOrDefault(i => i.Name == def.DisplayName);
             if (existing != null) zone.Remove(existing);
 
-            ToolItemVM item = new(new EncItemM(def.DisplayName))
+            ToolItemCardVM item = new(new EncItemM(def.DisplayName))
             {
                 Path = filePath,
                 PrimaryValueText = version ?? string.Empty,
@@ -752,7 +752,7 @@ namespace OneColumnEncoder.ViewModels
 
             RefreshEncSettingsState();
         }
-        private static bool LoadSourceItem(ToolItemVM item, SourceFileKind kind, string? path)
+        private static bool LoadSourceItem(ToolItemCardVM item, SourceFileKind kind, string? path)
         {
             if (string.IsNullOrWhiteSpace(path) || !File.Exists(path)) return false;
 
@@ -832,9 +832,9 @@ namespace OneColumnEncoder.ViewModels
             foreach (var zone in AllImportedToolZones)
                 ApplyImportedToolDefs(zone);
         }
-        private static void RefreshSourceZonePrimaryText(ObservableCollection<ToolItemVM> zone)
+        private static void RefreshSourceZonePrimaryText(ObservableCollection<ToolItemCardVM> zone)
         {
-            foreach (ToolItemVM item in zone)
+            foreach (ToolItemCardVM item in zone)
             {
                 if (string.IsNullOrWhiteSpace(item.Path)) continue;
 
@@ -842,7 +842,7 @@ namespace OneColumnEncoder.ViewModels
                 item.PrimaryValueText = SourceFilePickerH.GetPrimaryText(fileKind, item.Path);
             }
         }
-        private static void ApplyDefinitionsToZone(ObservableCollection<ToolItemVM> zone, List<ToolDefinitionM> definitions)
+        private static void ApplyDefinitionsToZone(ObservableCollection<ToolItemCardVM> zone, List<ToolDefinitionM> definitions)
         {
             for (int i = 0; (i < definitions.Count && i < zone.Count); i++)
             {
@@ -850,9 +850,9 @@ namespace OneColumnEncoder.ViewModels
                 zone[i].RefreshLanguage();
             }
         }
-        private static void ApplyImportedToolDefs(ObservableCollection<ToolItemVM> zone)
+        private static void ApplyImportedToolDefs(ObservableCollection<ToolItemCardVM> zone)
         {
-            foreach (ToolItemVM item in zone)
+            foreach (ToolItemCardVM item in zone)
             {
                 ToolDefinitionM? definition =
                     ToolDefinitionProviderM.GetByDisplayName(item.Name);

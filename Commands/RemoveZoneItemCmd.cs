@@ -1,12 +1,12 @@
-using OneColumnEncoder.ViewModels;
+using OneColumnEncoder.ViewModels.Cards;
 using System.Collections.ObjectModel;
 
 namespace OneColumnEncoder.Commands
 {
-    public class RemoveZoneItemCmd(ToolItemVM item, ObservableCollection<ToolItemVM> zone) : BaseCmd
+    public class RemoveZoneItemCmd(ToolItemCardVM item, ObservableCollection<ToolItemCardVM> zone) : BaseCmd
     {
-        private readonly ToolItemVM _item = item;
-        private readonly ObservableCollection<ToolItemVM> _zone = zone;
+        private readonly ToolItemCardVM _item = item;
+        private readonly ObservableCollection<ToolItemCardVM> _zone = zone;
 
         public override void Execute(object? parameter)
         {

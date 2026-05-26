@@ -1,15 +1,15 @@
 using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
-using OneColumnEncoder.ViewModels;
+using OneColumnEncoder.ViewModels.Cards;
 using System;
 using System.Threading.Tasks;
 
 namespace OneColumnEncoder.Commands
 {
-    public class ReplaceToolCmd(ToolItemVM item, AppDataM appDataM, ModalNavS modalNavS, Action? afterReplace = null) : AsyncBaseCmd
+    public class ReplaceToolCmd(ToolItemCardVM item, AppDataM appDataM, ModalNavS modalNavS, Action? afterReplace = null) : AsyncBaseCmd
     {
-        private readonly ToolItemVM _item = item;
+        private readonly ToolItemCardVM _item = item;
         private readonly AppDataM _appDataM = appDataM;
         private readonly ModalNavS _modalNavS = modalNavS;
         private readonly Action? _afterReplace = afterReplace;

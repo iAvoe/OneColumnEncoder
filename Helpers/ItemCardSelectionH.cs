@@ -1,5 +1,4 @@
 using OneColumnEncoder.Models;
-using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.ViewModels.Cards;
 using System;
 using System.Collections.ObjectModel;
@@ -9,35 +8,35 @@ namespace OneColumnEncoder.Helpers
 {
     public static class ItemCardSelectionH
     {
-        public static void ToggleOnly(ObservableCollection<ToolItemVM> zone, ToolItemVM targetCard)
+        public static void ToggleOnly(ObservableCollection<ToolItemCardVM> zone, ToolItemCardVM targetCard)
         {
-            foreach (ToolItemVM card in zone)
+            foreach (ToolItemCardVM card in zone)
             {
                 if (card != targetCard) card.IsSelected = false;
             }
             targetCard.IsSelected = !targetCard.IsSelected;
         }
 
-        public static void SelectOnly(ObservableCollection<ToolItemVM> zone, ToolItemVM targetCard)
+        public static void SelectOnly(ObservableCollection<ToolItemCardVM> zone, ToolItemCardVM targetCard)
         {
-            foreach (ToolItemVM card in zone)
+            foreach (ToolItemCardVM card in zone)
                 card.IsSelected = card == targetCard;
         }
 
-        public static void UnselectAll(ObservableCollection<ToolItemVM> zone)
+        public static void UnselectAll(ObservableCollection<ToolItemCardVM> zone)
         {
-            foreach (ToolItemVM card in zone)
+            foreach (ToolItemCardVM card in zone)
                 card.IsSelected = false;
         }
 
         public static void HandleItemCardClick(
-            ToolItemVM clickedTool,
-            ObservableCollection<ToolItemVM> upstreamsZone,
-            ObservableCollection<ToolItemVM> encodersZone,
-            ObservableCollection<ToolItemVM> analyticsZone,
-            ObservableCollection<ToolItemVM> dependenciesZone,
-            ObservableCollection<ToolItemVM> videoSrcImportZone,
-            ObservableCollection<ToolItemVM> scriptSrcImportZone,
+            ToolItemCardVM clickedTool,
+            ObservableCollection<ToolItemCardVM> upstreamsZone,
+            ObservableCollection<ToolItemCardVM> encodersZone,
+            ObservableCollection<ToolItemCardVM> analyticsZone,
+            ObservableCollection<ToolItemCardVM> dependenciesZone,
+            ObservableCollection<ToolItemCardVM> videoSrcImportZone,
+            ObservableCollection<ToolItemCardVM> scriptSrcImportZone,
             ToolsImportCardVM toolsImportCard,
             Action refreshSelectedSourceStatusAfterSourceSelection,
             Action updateEncStartButtonsState,
@@ -85,7 +84,7 @@ namespace OneColumnEncoder.Helpers
                 upstreamsZone, scriptSrcImportZone, refreshSelectedSourceStatus);
         }
 
-        public static void ApplyDefaultSelection(ObservableCollection<ToolItemVM> zone)
+        public static void ApplyDefaultSelection(ObservableCollection<ToolItemCardVM> zone)
         {
             if (zone.Count == 1)
                 zone[0].IsSelected = true;
@@ -96,7 +95,7 @@ namespace OneColumnEncoder.Helpers
         public static void RefreshToolPickedStatus(
             ToolsImportCardVM toolsImportCard,
             ToolZone toolZone,
-            ObservableCollection<ToolItemVM> zone)
+            ObservableCollection<ToolItemCardVM> zone)
         {
             toolsImportCard.SetToolPickedStatus(toolZone, zone.Any(t => t.IsSelected));
         }

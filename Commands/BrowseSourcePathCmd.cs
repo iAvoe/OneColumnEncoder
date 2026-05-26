@@ -1,22 +1,22 @@
 using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
-using OneColumnEncoder.ViewModels;
+using OneColumnEncoder.ViewModels.Cards;
 using System;
 
 namespace OneColumnEncoder.Commands
 {
-    public class BrowseSourcePathCmd(ToolItemVM item,
+    public class BrowseSourcePathCmd(ToolItemCardVM item,
                                      SourceFileKind fileKind,
                                      AppDataM appDataM,
                                      ModalNavS modalNavS,
-                                     Action<ToolItemVM, SourceFileKind, string>? afterImport = null) : BaseCmd
+                                     Action<ToolItemCardVM, SourceFileKind, string>? afterImport = null) : BaseCmd
     {
-        private readonly ToolItemVM _item = item;
+        private readonly ToolItemCardVM _item = item;
         private readonly SourceFileKind _fileKind = fileKind;
         private readonly AppDataM _appDataM = appDataM;
         private readonly ModalNavS _modalNavS = modalNavS;
-        private readonly Action<ToolItemVM, SourceFileKind, string>? _afterImport = afterImport;
+        private readonly Action<ToolItemCardVM, SourceFileKind, string>? _afterImport = afterImport;
 
         public override void Execute(object? parameter)
         {

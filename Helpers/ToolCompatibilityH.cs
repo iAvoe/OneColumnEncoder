@@ -1,5 +1,5 @@
 using OneColumnEncoder.Models;
-using OneColumnEncoder.ViewModels;
+using OneColumnEncoder.ViewModels.Cards;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,12 +10,12 @@ namespace OneColumnEncoder.Helpers
     public static class ToolCompatibilityH
     {
         public static void RefreshDependencySelectionState(
-            IEnumerable<ToolItemVM> upstreamsZone,
-            IEnumerable<ToolItemVM> dependenciesZone,
+            IEnumerable<ToolItemCardVM> upstreamsZone,
+            IEnumerable<ToolItemCardVM> dependenciesZone,
             Action updateEncodingStartButtons)
         {
-            ToolItemVM? avs2pipemod = upstreamsZone.FirstOrDefault(t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe"));
-            ToolItemVM? avisynth = dependenciesZone.FirstOrDefault(t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avisynth.dll"));
+            ToolItemCardVM? avs2pipemod = upstreamsZone.FirstOrDefault(t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe"));
+            ToolItemCardVM? avisynth = dependenciesZone.FirstOrDefault(t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avisynth.dll"));
 
             bool avsSelected = avs2pipemod?.IsSelected ?? false;
             bool aviSelected = avisynth?.IsSelected ?? false;
@@ -27,7 +27,7 @@ namespace OneColumnEncoder.Helpers
             if (avisynth != null)
                 avisynth.IsCancel = aviSelected && !bothSelectedOrNeither;
 
-            foreach (ToolItemVM upstream in upstreamsZone.Where(t => !ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe") && t.IsCancel))
+            foreach (ToolItemCardVM upstream in upstreamsZone.Where(t => !ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe") && t.IsCancel))
             {
                 upstream.IsCancel = false;
             }
@@ -36,11 +36,11 @@ namespace OneColumnEncoder.Helpers
         }
 
         public static void RefreshSourceSelectionState(
-            IEnumerable<ToolItemVM> upstreamsZone,
-            ObservableCollection<ToolItemVM> scriptSrcImportZone,
+            IEnumerable<ToolItemCardVM> upstreamsZone,
+            ObservableCollection<ToolItemCardVM> scriptSrcImportZone,
             Action refreshSelectedSourceStatus)
         {
-            ToolItemVM? upstream = upstreamsZone.FirstOrDefault(t => t.IsSelected);
+            ToolItemCardVM? upstream = upstreamsZone.FirstOrDefault(t => t.IsSelected);
 
             string? allowedName = null;
             bool allDisabled = false;
@@ -64,7 +64,7 @@ namespace OneColumnEncoder.Helpers
                     break;
             }
 
-            foreach (ToolItemVM item in scriptSrcImportZone)
+            foreach (ToolItemCardVM item in scriptSrcImportZone)
             {
                 bool shouldEnable = allDisabled switch
                 {

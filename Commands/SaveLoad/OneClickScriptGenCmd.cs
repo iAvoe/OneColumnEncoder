@@ -4,16 +4,17 @@ using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
+using OneColumnEncoder.ViewModels.Cards;
 using System;
 using System.IO;
 
 namespace OneColumnEncoder.Commands.SaveLoad
 {
-    public class OneClickScriptGenCmd(Func<string> getSourcePath, ToolItemVM avsItem, ToolItemVM vpyItem, ModalNavS modalNavS) : BaseCmd
+    public class OneClickScriptGenCmd(Func<string> getSourcePath, ToolItemCardVM avsItem, ToolItemCardVM vpyItem, ModalNavS modalNavS) : BaseCmd
     {
         private readonly Func<string> _getSourcePath = getSourcePath;
-        private readonly ToolItemVM _avsItem = avsItem;
-        private readonly ToolItemVM _vpyItem = vpyItem;
+        private readonly ToolItemCardVM _avsItem = avsItem;
+        private readonly ToolItemCardVM _vpyItem = vpyItem;
         private readonly ModalNavS _modalNavS = modalNavS;
 
         public override bool CanExecute(object? parameter) =>

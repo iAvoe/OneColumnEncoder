@@ -1,14 +1,14 @@
 using OneColumnEncoder.Models;
-using OneColumnEncoder.ViewModels;
+using OneColumnEncoder.ViewModels.Cards;
 using System;
 using System.Collections.ObjectModel;
 
 namespace OneColumnEncoder.Commands
 {
-    public class DeleteToolCmd(ToolItemVM item, ObservableCollection<ToolItemVM> zone, AppDataM appDataM) : BaseCmd
+    public class DeleteToolCmd(ToolItemCardVM item, ObservableCollection<ToolItemCardVM> zone, AppDataM appDataM) : BaseCmd
     {
-        private readonly ToolItemVM _item = item;
-        private readonly ObservableCollection<ToolItemVM> _zone = zone;
+        private readonly ToolItemCardVM _item = item;
+        private readonly ObservableCollection<ToolItemCardVM> _zone = zone;
         private readonly AppDataM _appDataM = appDataM;
 
         public override void Execute(object? parameter)

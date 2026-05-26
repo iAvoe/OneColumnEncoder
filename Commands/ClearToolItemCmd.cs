@@ -1,11 +1,11 @@
-using OneColumnEncoder.ViewModels;
+using OneColumnEncoder.ViewModels.Cards;
 using System;
 
 namespace OneColumnEncoder.Commands
 {
-    public class ClearToolItemCmd(ToolItemVM item, Action? afterClear = null) : BaseCmd
+    public class ClearToolItemCmd(ToolItemCardVM item, Action? afterClear = null) : BaseCmd
     {
-        private readonly ToolItemVM _item = item;
+        private readonly ToolItemCardVM _item = item;
         private readonly Action? _afterClear = afterClear;
 
         public override void Execute(object? parameter)

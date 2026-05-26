@@ -1,4 +1,5 @@
 ﻿using OneColumnEncoder.ViewModels;
+using OneColumnEncoder.ViewModels.Cards;
 
 namespace OneColumnEncoder.Commands
 {
@@ -8,12 +9,12 @@ namespace OneColumnEncoder.Commands
 
         public override bool CanExecute(object? parameter)
         {
-            return parameter is ToolItemVM;
+            return parameter is ToolItemCardVM;
         }
 
         public override void Execute(object? parameter)
         {
-            if (parameter is not ToolItemVM clickedTool) return;
+            if (parameter is not ToolItemCardVM clickedTool) return;
             _mainVM.SelectItemCard(clickedTool);
         }
 

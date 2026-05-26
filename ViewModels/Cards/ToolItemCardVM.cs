@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace OneColumnEncoder.ViewModels
+namespace OneColumnEncoder.ViewModels.Cards
 {
-    public class ToolItemVM(EncItemM baseModel) : BaseVM
+    public class ToolItemCardVM(EncItemM baseModel) : BaseVM
     {
         public static string SeparatorText =>
             UILangProviderM.Current["ItemCard.Separator"];
@@ -18,7 +18,6 @@ namespace OneColumnEncoder.ViewModels
         private readonly EncItemM _baseModel = baseModel;
 
         #region Properties
-
         public string Name
         {
             get => _baseModel.Name;

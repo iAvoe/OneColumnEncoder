@@ -1,15 +1,16 @@
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
+using OneColumnEncoder.ViewModels.Cards;
 using OneColumnEncoder.Views;
 using System.Linq;
 using System.Windows;
 
 namespace OneColumnEncoder.Commands.OpenClose
 {
-    public class OpenFilenameScribeCmd(ModalNavS modalNavS, ToolItemVM outputSettingItem) : BaseCmd
+    public class OpenFilenameScribeCmd(ModalNavS modalNavS, ToolItemCardVM outputSettingItem) : BaseCmd
     {
         private readonly ModalNavS _modalNavS = modalNavS;
-        private readonly ToolItemVM _outputSettingItem = outputSettingItem;
+        private readonly ToolItemCardVM _outputSettingItem = outputSettingItem;
 
         public override void Execute(object? parameter)
         {

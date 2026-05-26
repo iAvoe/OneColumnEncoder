@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using OneColumnEncoder.Helpers;
+using OneColumnEncoder.ViewModels.Cards;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -16,7 +17,7 @@ namespace OneColumnEncoder.ViewModels
         private const string PossibleExtensions = ".mp4|.hevc|.ivf";
 
         private readonly Action _closeAction;
-        private readonly ToolItemVM _outputSettingItem;
+        private readonly ToolItemCardVM _outputSettingItem;
         public CloseModalCmd CloseCmd { get; }
         public ButtonGroupVM FilenameButtons { get; private set; } = null!;
         public ObservableCollection<ChecklistEntryVM> FilenameChecklist { get; } = [];
@@ -40,7 +41,7 @@ namespace OneColumnEncoder.ViewModels
         public static string SelfCheckVersion => UILangProviderM.Current["FilenameScribe.SelfCheckVersion"];
         public static string FooterHint => UILangProviderM.Current["FilenameScribe.FooterHint"];
 
-        public FilenameScribeModalVM(Action closeAction, ToolItemVM outputSettingItem)
+        public FilenameScribeModalVM(Action closeAction, ToolItemCardVM outputSettingItem)
         {
             _closeAction = closeAction;
             _outputSettingItem = outputSettingItem;
