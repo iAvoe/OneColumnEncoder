@@ -6,15 +6,14 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
+using OneColumnEncoder.Helpers;
 
 namespace OneColumnEncoder.ViewModels
 {
     public partial class FilenameScribeModalVM : BaseVM
     {
         private const string PossibleExtensions = ".mp4|.hevc|.ivf";
-        private static readonly Regex ReservedNameRegex = ReservedFilenames();
 
         private readonly Action _closeAction;
         private readonly AppConfM _appConfM;
@@ -61,13 +60,15 @@ namespace OneColumnEncoder.ViewModels
             FilenameChecklist.Add(new ChecklistEntryVM {
                 Text = UILangProviderM.Current["FilenameScribe.CheckLength"] });
             FilenameChecklist.Add(new ChecklistEntryVM {
-                Text = UILangProviderM.Current["FilenameScribe.CheckReserved"],IsEnabled = _appConfM.General.OSFileNameInvalid });
+                Text = UILangProviderM.Current["FilenameScribe.CheckReserved"] });
             FilenameChecklist.Add(new ChecklistEntryVM {
-                Text = UILangProviderM.Current["FilenameScribe.CheckInvalidChars"], IsEnabled = _appConfM.General.OSFileNameInvalid });
+                Text = UILangProviderM.Current["FilenameScribe.CheckInvalidChars"] });
             FilenameChecklist.Add(new ChecklistEntryVM {
-                Text = UILangProviderM.Current["FilenameScribe.CheckExtendedChars"], IsEnabled = _appConfM.General.FTPFileNameInvalid });
+                Text = UILangProviderM.Current["FilenameScribe.CheckExtendedChars"] });
             FilenameChecklist.Add(new ChecklistEntryVM {
-                Text = UILangProviderM.Current["FilenameScribe.CheckSpaces"], IsEnabled = _appConfM.General.FTPFileNameInvalid });
+                Text = UILangProviderM.Current["FilenameScribe.CheckSpaces"] });
+            FilenameChecklist.Add(new ChecklistEntryVM {
+                Text = UILangProviderM.Current["FilenameScribe.CheckFtpSafe"] });
         }
 
         private void BuildButtonGroup()
@@ -111,17 +112,22 @@ namespace OneColumnEncoder.ViewModels
 
         private void ValidateFilename()
         {
-            if (FilenameChecklist.Count < 5 || FilenameButtons is null) return;
+            if (FilenameChecklist.Count < 6 || FilenameButtons is null) return;
 
             string filename = VideoFilename.Trim();
-            SetChecklistStatus(0, filename.Length <= 50);
-            SetChecklistStatus(1, !ReservedNameRegex.IsMatch(filename));
-            SetChecklistStatus(2, !ContainsInvalidFileNameChar(filename));
-            SetChecklistStatus(3, !filename.Any(char.IsSurrogate) && filename.All(c => c <= 0x7f));
-            SetChecklistStatus(4, !filename.Contains(' '));
+            SetChecklistStatus(0, ValidationH.IsValidLength(filename));
+            SetChecklistStatus(1, ValidationH.IsNotReservedName(filename));
+            SetChecklistStatus(2, ValidationH.HasNoInvalidChars(filename));
+            SetChecklistStatus(3, ValidationH.HasNoExtendedChars(filename));
+
+            FilenameChecklist[4].Status = ValidationH.HasSpaces(VideoFilename)
+                ? StatusType.Warning
+                : StatusType.Success;
+
+            SetChecklistStatus(5, ValidationH.IsModernFtpSafe(filename));
 
             FilenameButtons.B3_3IsEnabled = FilenameChecklist
-                .Where(e => e.IsEnabled)
+                .Where((e, i) => e.IsEnabled && i != 4)
                 .All(e => e.Status == StatusType.Success);
             (FilenameButtons.Cmd3 as BaseCmd)?.OnCanExecuteChanged();
         }
@@ -131,15 +137,6 @@ namespace OneColumnEncoder.ViewModels
             FilenameChecklist[index].Status = FilenameChecklist[index].IsEnabled
                 ? isValid ? StatusType.Success : StatusType.Error
                 : StatusType.Waiting;
-        }
-
-        private static bool ContainsInvalidFileNameChar(string filename)
-        {
-            return filename.Length == 0
-                || filename.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) >= 0
-                || filename.Contains('&')
-                || filename.EndsWith('.')
-                || filename.EndsWith(' ');
         }
 
         private static string GetInitialFilename(ToolItemVM outputSettingItem)
@@ -183,8 +180,5 @@ namespace OneColumnEncoder.ViewModels
             base.Dispose();
         }
 
-        // Window reserved filenames
-        [GeneratedRegex(@"^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(\..*)?$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
-        private static partial Regex ReservedFilenames();
     }
 }
