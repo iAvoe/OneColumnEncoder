@@ -68,7 +68,7 @@ namespace OneColumnEncoder.ViewModels
             FilenameChecklist.Add(new ChecklistEntryVM {
                 Text = UILangProviderM.Current["FilenameScribe.CheckSpaces"] });
             FilenameChecklist.Add(new ChecklistEntryVM {
-                Text = UILangProviderM.Current["FilenameScribe.CheckFtpSafe"] });
+                Text = UILangProviderM.Current["FilenameScribe.CheckCombiningMarks"] });
         }
 
         private void BuildButtonGroup()
@@ -124,7 +124,7 @@ namespace OneColumnEncoder.ViewModels
                 ? StatusType.Warning
                 : StatusType.Success;
 
-            SetChecklistStatus(5, ValidationH.IsModernFtpSafe(filename));
+            SetChecklistStatus(5, ValidationH.HasUnicodeCombiningMarks(filename));
 
             FilenameButtons.B3_3IsEnabled = FilenameChecklist
                 .Where((e, i) => e.IsEnabled && i != 4)
