@@ -16,7 +16,6 @@ namespace OneColumnEncoder.ViewModels
         private const string PossibleExtensions = ".mp4|.hevc|.ivf";
 
         private readonly Action _closeAction;
-        private readonly AppConfM _appConfM;
         private readonly ToolItemVM _outputSettingItem;
         public CloseModalCmd CloseCmd { get; }
         public ButtonGroupVM FilenameButtons { get; private set; } = null!;
@@ -44,9 +43,8 @@ namespace OneColumnEncoder.ViewModels
         public FilenameScribeModalVM(Action closeAction, AppConfM appConfM, ToolItemVM outputSettingItem)
         {
             _closeAction = closeAction;
-            _appConfM = appConfM;
             _outputSettingItem = outputSettingItem;
-            _videoFilename = GetInitialFilename(outputSettingItem);
+            _videoFilename = OutputPathH.GetInitialFilename(outputSettingItem.VersionText, outputSettingItem.Path);
             CloseCmd = new CloseModalCmd(closeAction);
             BuildChecklist();
             BuildButtonGroup();
@@ -97,7 +95,7 @@ namespace OneColumnEncoder.ViewModels
             OpenFolderDialog dialog = new()
             {
                 Title = WindowTitle,
-                InitialDirectory = GetInitialDirectory()
+                InitialDirectory = OutputPathH.GetInitialDirectory(_outputSettingItem.Path)
             };
 
             if (dialog.ShowDialog() != true) return;
@@ -115,16 +113,16 @@ namespace OneColumnEncoder.ViewModels
             if (FilenameChecklist.Count < 6 || FilenameButtons is null) return;
 
             string filename = VideoFilename.Trim();
-            SetChecklistStatus(0, ValidationH.IsValidLength(filename));
-            SetChecklistStatus(1, ValidationH.IsNotReservedName(filename));
-            SetChecklistStatus(2, ValidationH.HasNoInvalidChars(filename));
-            SetChecklistStatus(3, ValidationH.HasNoExtendedChars(filename));
+            SetChecklistStatus(0, FilenameValidationH.IsValidLength(filename));
+            SetChecklistStatus(1, FilenameValidationH.IsNotReservedName(filename));
+            SetChecklistStatus(2, FilenameValidationH.HasNoInvalidChars(filename));
+            SetChecklistStatus(3, FilenameValidationH.HasNoExtendedChars(filename));
 
-            FilenameChecklist[4].Status = ValidationH.HasSpaces(VideoFilename)
+            FilenameChecklist[4].Status = FilenameValidationH.HasSpaces(VideoFilename)
                 ? StatusType.Warning
                 : StatusType.Success;
 
-            SetChecklistStatus(5, ValidationH.HasUnicodeCombiningMarks(filename));
+            SetChecklistStatus(5, FilenameValidationH.HasUnicodeCombiningMarks(filename));
 
             FilenameButtons.B3_3IsEnabled = FilenameChecklist
                 .Where((e, i) => e.IsEnabled && i != 4)
@@ -137,26 +135,6 @@ namespace OneColumnEncoder.ViewModels
             FilenameChecklist[index].Status = FilenameChecklist[index].IsEnabled
                 ? isValid ? StatusType.Success : StatusType.Error
                 : StatusType.Waiting;
-        }
-
-        private static string GetInitialFilename(ToolItemVM outputSettingItem)
-        {
-            if (!string.IsNullOrWhiteSpace(outputSettingItem.VersionText))
-                return outputSettingItem.VersionText;
-
-            if (!string.IsNullOrWhiteSpace(outputSettingItem.Path))
-                return Path.GetFileNameWithoutExtension(outputSettingItem.Path);
-
-            return string.Empty;
-        }
-
-        private string GetInitialDirectory()
-        {
-            if (string.IsNullOrWhiteSpace(_outputSettingItem.Path))
-                return Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-
-            string? directory = Path.GetDirectoryName(_outputSettingItem.Path);
-            return Directory.Exists(directory) ? directory : Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         }
 
         private void OnLanguageChanged()

@@ -8,7 +8,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace OneColumnEncoder.Helpers
 {
-    public partial class ValidationH
+    public partial class FilenameValidationH
     {
         private static readonly char[] InvalidFileNameChars = Path.GetInvalidFileNameChars();
 

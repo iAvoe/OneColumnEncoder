@@ -100,9 +100,10 @@ namespace OneColumnEncoder.ViewModels
         }
         private void CopyInOutSection()
         {
+            string sourcePath = _getSourcePath();
             string inOutText = SelectedTabIndex == 0
-                ? $"LWLibavVideoSource(\"{_getSourcePath()}\")\r\n{AvsPrefix2}\r\n\r\n{AvsSuffix}"
-                : $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"{_getSourcePath()}\")\r\n{VpyPrefix2}\r\n\r\n{VpySuffix}";
+                ? ScriptTemplateH.BuildAvsInOutSection(sourcePath, AvsPrefix2, AvsSuffix)
+                : ScriptTemplateH.BuildVpyInOutSection(sourcePath, VpyPrefix2, VpySuffix);
 
             Clipboard.SetText(inOutText);
             new OpenInfoOrDbgModalCmd(
@@ -135,9 +136,10 @@ namespace OneColumnEncoder.ViewModels
 
         private string GetCurrentFullScript()
         {
+            string sourcePath = _getSourcePath();
             return SelectedTabIndex == 0
-                ? $"LWLibavVideoSource(\"{_getSourcePath()}\")\r\n{AvsPrefix2}\r\n{AvsUserInput}"
-                : $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"{_getSourcePath()}\")\r\n{VpyPrefix2}\r\n{VpyUserInput}\r\n{VpySuffix}";
+                ? ScriptTemplateH.BuildAvsEditorScript(sourcePath, AvsPrefix2, AvsUserInput)
+                : ScriptTemplateH.BuildVpyEditorScript(sourcePath, VpyPrefix2, VpySuffix, VpyUserInput);
         }
         #endregion
 
