@@ -6,65 +6,52 @@
              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels.Cards"
              d:DataContext="{d:DesignInstance Type=vms:CPUNodeCardVM}"
              mc:Ignorable="d"
-             d:DesignHeight="100"
-             d:DesignWidth="150">
-    <Border BorderThickness="2"
+             d:DesignHeight="55"
+             d:DesignWidth="180">
+    <StackPanel>
+        <Border BorderThickness="1.5"
             SnapsToDevicePixels="True"
             CornerRadius="8"
-            Padding="8">
-        <Border.Style>
-            <Style TargetType="Border">
-                <Setter Property="BorderBrush"
-                        Value="{StaticResource GlobalPrimary}" />
-                <Setter Property="Background"
-                        Value="{StaticResource Background}" />
-                <Setter Property="TextElement.Foreground"
-                        Value="{StaticResource GlobalPrimary}" />
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            Padding="12 8"
+            MinHeight="36">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="BorderBrush"
+                            Value="{StaticResource GlobalPrimary}" />
+                    <Setter Property="Background"
+                            Value="{StaticResource Background}" />
+                    <Setter Property="TextElement.Foreground"
+                            Value="{StaticResource GlobalPrimary}" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="True">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource BorderGreen}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource BackgroundGreen}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="False">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource GlobalSecondary}" />
+                            <Setter Property="TextElement.Foreground"
+                                    Value="{StaticResource GlobalSecondary}" />
+                        </DataTrigger>
+                        <Trigger Property="IsMouseOver"
                                  Value="True">
-                        <Setter Property="BorderBrush"
-                                Value="{StaticResource BorderGreen}" />
-                        <Setter Property="Background"
-                                Value="{StaticResource BackgroundGreen}" />
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                 Value="False">
-                        <Setter Property="BorderBrush"
-                                Value="{StaticResource GlobalSecondary}" />
-                        <Setter Property="TextElement.Foreground"
-                                Value="{StaticResource GlobalSecondary}" />
-                    </DataTrigger>
-                    <Trigger Property="IsMouseOver"
-                             Value="True">
-                        <Setter Property="Opacity"
-                                Value="0.7" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-        </Border.Style>
-        <StackPanel>
-            <!-- Section 1: NodeId and GroupId -->
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 4">
-                <TextBlock Text="Node " FontWeight="Bold" />
-                <TextBlock Text="{Binding NodeId}" FontWeight="Bold" Margin="0 0 4 0" />
-                <TextBlock Text=" (Group " FontWeight="Bold" />
-                <TextBlock Text="{Binding GroupId}" FontWeight="Bold" />
-                <TextBlock Text=")" FontWeight="Bold" />
-            </StackPanel>
-            <!-- Divider -->
-            <Rectangle Height="1" Fill="{StaticResource GlobalTertiary}" Margin="0 4" />
-            <!-- Section 2: small gray text under the card -->
-            <TextBlock TextWrapping="Wrap" TextAlignment="Center" FontSize="11" Foreground="{StaticResource GlobalSecondary}">
-                <Run Text="Threads: " />
-                <Run Text="{Binding MinThreadNum}" />
-                <Run Text="-" />
-                <Run Text="{Binding MaxThreadNum}" />
-                <Run Text=", " />
-                <Run Text="Memory: " />
-                <Run Text="{Binding HasMemGB}" />
-                <Run Text=" GB" />
-            </TextBlock>
-        </StackPanel>
-    </Border>
+                            <Setter Property="Opacity"
+                                    Value="0.7" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <TextBlock Text="{Binding NodeLabel}"
+                       FontSize="13"
+                       TextAlignment="Center" />
+        </Border>
+        <TextBlock Text="{Binding ResourceLabel}"
+                   FontSize="11"
+                   Foreground="{StaticResource GlobalSecondary}"
+                   Margin="8 0 0 0" />
+    </StackPanel>
 </UserControl>

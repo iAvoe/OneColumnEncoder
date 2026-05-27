@@ -12,6 +12,9 @@
     <DataTemplate DataType="{x:Type vms:AppUsageVM}">
         <views:AppUsageModal />
     </DataTemplate>
+    <DataTemplate DataType="{x:Type vms:ParallelismConfVM}">
+        <views:ParallelismConfModal />
+    </DataTemplate>
 
     <!-- Spacing -->
     <Style TargetType="{x:Type Control}"

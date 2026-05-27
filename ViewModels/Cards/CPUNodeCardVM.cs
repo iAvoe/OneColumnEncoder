@@ -13,37 +13,61 @@ namespace OneColumnEncoder.ViewModels.Cards
         public int NodeId
         {
             get => _nodeId;
-            set => SetProperty(ref _nodeId, value);
+            set
+            {
+                if (!SetProperty(ref _nodeId, value)) return;
+                OnPropertyChanged(nameof(NodeLabel));
+            }
         }
 
         private int _groupId;
         public int GroupId
         {
             get => _groupId;
-            set => SetProperty(ref _groupId, value);
+            set
+            {
+                if (!SetProperty(ref _groupId, value)) return;
+                OnPropertyChanged(nameof(NodeLabel));
+            }
         }
+
+        public string NodeLabel => IsEnabled ? $"Node {NodeId} · Group {GroupId}" : $"Node {NodeId} · N/A";
 
         // Section 2: small gray text under the card
         private int _minThreadNum;
         public int MinThreadNum
         {
             get => _minThreadNum;
-            set => SetProperty(ref _minThreadNum, value);
+            set
+            {
+                if (!SetProperty(ref _minThreadNum, value)) return;
+                OnPropertyChanged(nameof(ResourceLabel));
+            }
         }
         private int _maxThreadNum;
         public int MaxThreadNum
         {
             get => _maxThreadNum;
-            set => SetProperty(ref _maxThreadNum, value);
+            set
+            {
+                if (!SetProperty(ref _maxThreadNum, value)) return;
+                OnPropertyChanged(nameof(ResourceLabel));
+            }
         }
         private int _hasMemGB;
         public int HasMemGB
         {
             get => _hasMemGB;
-            set => SetProperty(ref _hasMemGB, value);
+            set
+            {
+                if (!SetProperty(ref _hasMemGB, value)) return;
+                OnPropertyChanged(nameof(ResourceLabel));
+            }
         }
 
-        // Card selection or diabling (no NUMA node on this range)
+        public string ResourceLabel => IsEnabled ? $"T{MinThreadNum}-{MaxThreadNum} · {HasMemGB}GB" : "N/A";
+
+        // Card selection or disabling (no NUMA node on this range)
         private bool _isSelected = false;
         public bool IsSelected
         {
@@ -54,7 +78,12 @@ namespace OneColumnEncoder.ViewModels.Cards
         public bool IsEnabled
         {
             get => _isEnabled;
-            set => SetProperty(ref _isEnabled, value);
+            set
+            {
+                if (!SetProperty(ref _isEnabled, value)) return;
+                OnPropertyChanged(nameof(NodeLabel));
+                OnPropertyChanged(nameof(ResourceLabel));
+            }
         }
 
         // TODO: add NUMA detection here or in Helers
