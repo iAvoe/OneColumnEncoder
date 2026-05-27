@@ -10,10 +10,10 @@
              d:DesignWidth="180">
     <StackPanel>
         <Border BorderThickness="1.5"
-            SnapsToDevicePixels="True"
-            CornerRadius="8"
-            Padding="12 8"
-            MinHeight="36">
+                SnapsToDevicePixels="True"
+                CornerRadius="8"
+                Padding="12 8"
+                MinHeight="36">
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="BorderBrush"

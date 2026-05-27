@@ -4,6 +4,7 @@ using OneColumnEncoder.Models;
 using OneColumnEncoder.ViewModels.Cards;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 
 namespace OneColumnEncoder.ViewModels
@@ -16,6 +17,8 @@ namespace OneColumnEncoder.ViewModels
             get => _lang;
             private set => SetProperty(ref _lang, value);
         }
+
+        private readonly ToolItemCardVM _targetItem;
 
         public ObservableCollection<CPUNodeCardVM> UpstreamNodes { get; } = [];
         public ObservableCollection<CPUNodeCardVM> DownstreamNodes { get; } = [];
@@ -63,11 +66,16 @@ namespace OneColumnEncoder.ViewModels
         public string CancelButtonText => Lang.CancelButtonText;
         public string ConfirmButtonText => Lang.ConfirmButtonText;
 
-        public ParallelismConfVM(Action closeAction)
+        public ParallelismConfVM(Action closeAction, ToolItemCardVM targetItem)
         {
+            _targetItem = targetItem;
             Lang = new ParallelismConfLangProviderM(UILangProviderM.Current.LanguageCode);
             CloseCmd = new CloseModalCmd(closeAction);
-            ConfirmCmd = new ActionCmd(_ => closeAction());
+            ConfirmCmd = new ActionCmd(_ =>
+            {
+                ApplySettingsToTarget();
+                closeAction();
+            });
             SelectUpstreamNodeCmd = new ActionCmd(p => SelectNode(UpstreamNodes, p as CPUNodeCardVM));
             SelectDownstreamNodeCmd = new ActionCmd(p => SelectNode(DownstreamNodes, p as CPUNodeCardVM));
             FinishButtons = ButtonGroupVM.CreateTwoButton(CancelButtonText, ConfirmButtonText, CloseCmd, ConfirmCmd);
@@ -115,6 +123,26 @@ namespace OneColumnEncoder.ViewModels
             if (targetNode is not { IsEnabled: true }) return;
             foreach (CPUNodeCardVM node in zone)
                 node.IsSelected = node == targetNode;
+        }
+
+        private void ApplySettingsToTarget()
+        {
+            _targetItem.PrimaryValueText = BuildPrimarySummary();
+            _targetItem.Path = BuildSecondarySummary();
+        }
+
+        private string BuildPrimarySummary()
+        {
+            CPUNodeCardVM upstream = UpstreamNodes.First(n => n.IsSelected);
+            CPUNodeCardVM downstream = DownstreamNodes.First(n => n.IsSelected);
+            return $"Upstream: {upstream.NodeLabel} | Downstream: {downstream.NodeLabel}";
+        }
+
+        private string BuildSecondarySummary()
+        {
+            CPUNodeCardVM upstream = UpstreamNodes.First(n => n.IsSelected);
+            CPUNodeCardVM downstream = DownstreamNodes.First(n => n.IsSelected);
+            return $"Upstream: {upstream.ResourceLabel} | Downstream: {downstream.ResourceLabel}";
         }
 
         private void OnLanguageChanged()

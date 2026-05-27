@@ -103,8 +103,9 @@ namespace OneColumnEncoder.ViewModels
             WireUpZoneDeleteCmds();
 
             // Set default values for output setting in EncSettingsZone
-            ToolItemCardVM? outputSetting = EncSettingsZone.FirstOrDefault(t =>
-                t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+            ToolItemCardVM? outputSetting = EncSettingsZone.FirstOrDefault(t => t.Name.Equals(
+                UILangProviderM.Current["Tool.Enc.OutputSetting"],
+                StringComparison.OrdinalIgnoreCase));
 
             // Set P2Text to desktop, then P1Text to file name
             if (outputSetting != null)
@@ -436,6 +437,9 @@ namespace OneColumnEncoder.ViewModels
         }
         private void WireUpEncSettingsCmds()
         {
+            if (EncSettingsZone.Count > 1)
+                EncSettingsZone[1].R1Command = new OpenParallelismConfCmd(_modalNavS, EncSettingsZone[1]);
+
             ToolItemCardVM? outputSetting = EncSettingsZone.FirstOrDefault(t =>
                 t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
 
@@ -860,6 +864,7 @@ namespace OneColumnEncoder.ViewModels
                 item.RefreshLanguage();
             }
         }
+
         #endregion
 
         public override void Dispose()
