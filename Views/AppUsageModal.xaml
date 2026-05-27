@@ -8,8 +8,8 @@
         d:DataContext="{d:DesignInstance Type=viewmodels:AppUsageVM}"
         mc:Ignorable="d"
         Title="{Binding Lang.WindowTitle, Mode=OneWay}"
-        Width="520"
-        Height="1060"
+        Width="600"
+        Height="1080"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource Background}">
     
@@ -26,7 +26,7 @@
                    Style="{StaticResource H1}" />
 
         <FlowDocumentScrollViewer Grid.Row="1"
-                                  VerticalScrollBarVisibility="Hidden"
+                                  VerticalScrollBarVisibility="Auto"
                                   Margin="0 10 0 0"
                                   Padding="0">
             <FlowDocument FontFamily="Segoe UI"
@@ -171,6 +171,76 @@
                            Foreground="{StaticResource GlobalPrimary}"
                            FontWeight="Bold">
                     <Run Text="{Binding Lang.ComplianceDisclaimer, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="0 10 0 0"
+                           FontSize="15"
+                           FontWeight="Bold">
+                    <Run Text="{Binding Lang.ParamConfigTitle, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="0 10 0 0"
+                           FontSize="13"
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.ParamConfigIntro, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="0 10 0 0"
+                           FontSize="15"
+                           FontWeight="Bold">
+                    <Run Text="{Binding Lang.AutoParamTitle, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
+                           FontSize="13"
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.AutoParamBase, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
+                           FontSize="13"
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.AutoParamEncode, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
+                           FontSize="13"
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.AutoParamFooter, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="0 10 0 0"
+                           FontSize="15"
+                           FontWeight="Bold">
+                    <Run Text="{Binding Lang.ManualBaseTitle, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
+                           FontSize="13"
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.ManualBaseList, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
+                           FontSize="13"
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.ManualBaseFooter, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="0 10 0 0"
+                           FontSize="15"
+                           FontWeight="Bold">
+                    <Run Text="{Binding Lang.ManualCrfTitle, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
+                           FontSize="13"
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.ManualCrfList, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="0 10 0 0"
+                           FontSize="15"
+                           FontWeight="Bold">
+                    <Run Text="{Binding Lang.ManualExtTitle, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="0 10 0 0"
+                           FontSize="13"
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.ManualExtIntro, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="15 10 0 0"
+                           FontSize="13"
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.ManualExtList, Mode=OneWay}" />
                 </Paragraph>
             </FlowDocument>
         </FlowDocumentScrollViewer>
