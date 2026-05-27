@@ -18,6 +18,7 @@ namespace OneColumnEncoder.ViewModels
             private set => SetProperty(ref _lang, value);
         }
 
+        private readonly ParallelismConfM _model;
         private readonly ToolItemCardVM _targetItem;
 
         public ObservableCollection<CPUNodeCardVM> UpstreamNodes { get; } = [];
@@ -68,12 +69,14 @@ namespace OneColumnEncoder.ViewModels
 
         public ParallelismConfVM(Action closeAction, ToolItemCardVM targetItem)
         {
+            _model = ParallelismConfM.Load();
             _targetItem = targetItem;
             Lang = new ParallelismConfLangProviderM(UILangProviderM.Current.LanguageCode);
             CloseCmd = new CloseModalCmd(closeAction);
             ConfirmCmd = new ActionCmd(_ =>
             {
                 ApplySettingsToTarget();
+                SaveModel();
                 closeAction();
             });
             SelectUpstreamNodeCmd = new ActionCmd(p => SelectNode(UpstreamNodes, p as CPUNodeCardVM));
@@ -82,6 +85,7 @@ namespace OneColumnEncoder.ViewModels
 
             BuildDefaultNodes(UpstreamNodes);
             BuildDefaultNodes(DownstreamNodes);
+            LoadModelToUi();
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
 
@@ -129,6 +133,36 @@ namespace OneColumnEncoder.ViewModels
         {
             _targetItem.PrimaryValueText = BuildPrimarySummary();
             _targetItem.Path = BuildSecondarySummary();
+        }
+
+        private void SaveModel()
+        {
+            CPUNodeCardVM upstream = UpstreamNodes.First(n => n.IsSelected);
+            CPUNodeCardVM downstream = DownstreamNodes.First(n => n.IsSelected);
+            _model.UpstreamNodeId = upstream.NodeId;
+            _model.DownstreamNodeId = downstream.NodeId;
+            _model.PreferPhysicalCores = PreferPhysicalCores;
+            _model.PreferPerformanceCores = PreferPerformanceCores;
+            _model.UseLargePages = UseLargePages;
+            _model.Save();
+        }
+
+        private void LoadModelToUi()
+        {
+            PreferPhysicalCores = _model.PreferPhysicalCores;
+            PreferPerformanceCores = _model.PreferPerformanceCores;
+            UseLargePages = _model.UseLargePages;
+
+            SelectById(UpstreamNodes, _model.UpstreamNodeId);
+            SelectById(DownstreamNodes, _model.DownstreamNodeId);
+        }
+
+        private static void SelectById(ObservableCollection<CPUNodeCardVM> zone, int nodeId)
+        {
+            CPUNodeCardVM? target = zone.FirstOrDefault(n => n.NodeId == nodeId && n.IsEnabled);
+            if (target is null) return;
+            foreach (CPUNodeCardVM node in zone)
+                node.IsSelected = node == target;
         }
 
         private string BuildPrimarySummary()
