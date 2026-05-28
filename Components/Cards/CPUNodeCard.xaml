@@ -6,14 +6,13 @@
              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels.Cards"
              d:DataContext="{d:DesignInstance Type=vms:CPUNodeCardVM}"
              mc:Ignorable="d"
-             d:DesignHeight="55"
-             d:DesignWidth="180">
+             d:DesignHeight="50"
+             d:DesignWidth="100">
     <StackPanel>
         <Border BorderThickness="1.5"
                 SnapsToDevicePixels="True"
                 CornerRadius="8"
-                Padding="12 8"
-                MinHeight="36">
+                MinHeight="40">
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="BorderBrush"
@@ -46,12 +45,14 @@
                 </Style>
             </Border.Style>
             <TextBlock Text="{Binding NodeLabel}"
-                       FontSize="13"
-                       TextAlignment="Center" />
+                       FontSize="12"
+                       TextAlignment="Center"
+                       VerticalAlignment="Center"
+                       Margin="2.5"/>
         </Border>
         <TextBlock Text="{Binding ResourceLabel}"
-                   FontSize="11"
+                   FontSize="10"
                    Foreground="{StaticResource GlobalSecondary}"
-                   Margin="8 0 0 0" />
+                   Margin="5 0 0 0" />
     </StackPanel>
 </UserControl>
