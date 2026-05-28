@@ -259,9 +259,8 @@
                     <StackPanel>
                         <!-- Header is from HeaderedItemsControl -->
                         <TextBlock Text="{TemplateBinding Header}"
-                                   Style="{StaticResource H3}"
-                                   Margin="0 10 0 10" />
-                        <ItemsPresenter />
+                                   Style="{StaticResource H3}" />
+                        <ItemsPresenter Margin="0 10 0 0"/>
                     </StackPanel>
                 </ControlTemplate>
             </Setter.Value>
