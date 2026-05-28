@@ -1,0 +1,99 @@
+<UserControl x:Class="OneColumnEncoder.Components.IntegerSlider"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conv="clr-namespace:OneColumnEncoder.Converters"
+             mc:Ignorable="d"
+             d:DesignHeight="64"
+             d:DesignWidth="520">
+    <UserControl.Resources>
+        <conv:SliderTrackPositionConverter x:Key="SliderTrackPositionConverter" />
+    </UserControl.Resources>
+    <Grid VerticalAlignment="Center">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="12" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Column="0"
+                   VerticalAlignment="Center"
+                   Text="{Binding Label, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                   FontSize="18"
+                   FontWeight="SemiBold" />
+
+        <Grid Grid.Column="2"
+              VerticalAlignment="Center"
+              Height="54">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="22" />
+                <RowDefinition Height="14" />
+                <RowDefinition Height="18" />
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0"
+                    HorizontalAlignment="Center"
+                    Padding="6,1"
+                    CornerRadius="2"
+                    BorderThickness="1"
+                    BorderBrush="{StaticResource GlobalSecondary}">
+                <TextBlock Text="{Binding Value, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                           FontSize="12"
+                           HorizontalAlignment="Center" />
+            </Border>
+
+            <Grid Grid.Row="1"
+                  x:Name="TrackHost"
+                  VerticalAlignment="Center">
+                <Border Height="3"
+                        Background="{StaticResource GlobalSecondary}"
+                        CornerRadius="2"
+                        VerticalAlignment="Center" />
+                <Canvas Height="14"
+                        VerticalAlignment="Center">
+                    <Thumb Width="16"
+                           Height="16"
+                           Background="Transparent"
+                           DragDelta="Thumb_DragDelta"
+                           DragCompleted="Thumb_DragCompleted"
+                           Cursor="Hand">
+                        <Thumb.Template>
+                            <ControlTemplate TargetType="Thumb">
+                                <Grid>
+                                    <Ellipse Width="14" Height="14" Fill="White" Stroke="{StaticResource GlobalSecondary}" StrokeThickness="2" />
+                                </Grid>
+                            </ControlTemplate>
+                        </Thumb.Template>
+                        <Thumb.RenderTransform>
+                            <TranslateTransform>
+                                <TranslateTransform.X>
+                                    <MultiBinding Converter="{StaticResource SliderTrackPositionConverter}">
+                                        <Binding ElementName="TrackHost" Path="ActualWidth" />
+                                        <Binding RelativeSource="{RelativeSource AncestorType=UserControl}" Path="Minimum" />
+                                        <Binding RelativeSource="{RelativeSource AncestorType=UserControl}" Path="Maximum" />
+                                        <Binding RelativeSource="{RelativeSource AncestorType=UserControl}" Path="Value" />
+                                    </MultiBinding>
+                                </TranslateTransform.X>
+                            </TranslateTransform>
+                        </Thumb.RenderTransform>
+                    </Thumb>
+                </Canvas>
+            </Grid>
+
+            <ItemsControl Grid.Row="2"
+                          ItemsSource="{Binding TickLabels, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Rows="1" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" FontSize="11" Foreground="{StaticResource GlobalSecondary}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </Grid>
+</UserControl>
