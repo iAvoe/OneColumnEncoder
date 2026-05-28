@@ -1,5 +1,6 @@
 using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
+using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.ViewModels.Cards;
 using System;
@@ -83,41 +84,39 @@ namespace OneColumnEncoder.ViewModels
             SelectDownstreamNodeCmd = new ActionCmd(p => SelectNode(DownstreamNodes, p as CPUNodeCardVM));
             FinishButtons = ButtonGroupVM.CreateTwoButton(CancelButtonText, ConfirmButtonText, CloseCmd, ConfirmCmd);
 
-            BuildDefaultNodes(UpstreamNodes);
-            BuildDefaultNodes(DownstreamNodes);
+            BuildNodesFromTopology(UpstreamNodes);
+            BuildNodesFromTopology(DownstreamNodes);
             LoadModelToUi();
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
 
-        private static void BuildDefaultNodes(ObservableCollection<CPUNodeCardVM> nodes)
+        private static void BuildNodesFromTopology(ObservableCollection<CPUNodeCardVM> nodes)
         {
             nodes.Clear();
-            nodes.Add(new CPUNodeCardVM
-            {
-                NodeId = 0,
-                GroupId = 0,
-                MinThreadNum = 0,
-                MaxThreadNum = 127,
-                HasMemGB = 64,
-                IsEnabled = true,
-                IsSelected = true
-            });
-            nodes.Add(new CPUNodeCardVM
-            {
-                NodeId = 1,
-                GroupId = 1,
-                MinThreadNum = 128,
-                MaxThreadNum = 255,
-                HasMemGB = 64,
-                IsEnabled = true
-            });
+            var numaNodes = NumaTopologyH.GetNumaNodes();
 
-            for (int i = 2; i < 8; i++)
+            bool isFirst = true;
+            foreach (var numaNode in numaNodes)
             {
                 nodes.Add(new CPUNodeCardVM
                 {
-                    NodeId = i,
-                    IsEnabled = false
+                    NodeId = numaNode.NodeId,
+                    GroupId = numaNode.Group,
+                    MinThreadNum = numaNode.MinThreadNum,
+                    MaxThreadNum = numaNode.MaxThreadNum,
+                    HasMemGB = numaNode.HasMemGB,
+                    IsEnabled = true,
+                    IsSelected = isFirst
+                });
+                isFirst = false;
+            }
+
+            while (nodes.Count < 4)
+            {
+                nodes.Add(new CPUNodeCardVM
+                {
+                    IsEnabled = false,
+                    IsSelected = false
                 });
             }
         }

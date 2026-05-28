@@ -86,6 +86,5 @@ namespace OneColumnEncoder.ViewModels.Cards
             }
         }
 
-        // TODO: add NUMA detection here or in Helers
     }
 }
