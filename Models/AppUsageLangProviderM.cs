@@ -41,13 +41,13 @@ public class AppUsageLangProviderM
             ["AutoParamEncode"] = "· Encoding parameters: lookahead distance, motion estimation radius, subpixel motion estimation strength",
             ["AutoParamFooter"] = "...excluding encoders that can auto-configure the above parameters",
             ["ManualBaseTitle"] = "Manually Specified - Basic Parameters",
-            ["ManualBaseList"] = "· x264: general-purpose, stock footage\n· x265: general-purpose, film, stock footage, anime, exhausive\n· SVT-AV1: ultra HQ, high compression, fast",
+            ["ManualBaseList"] = "· x264: general-purpose, stock footage\n· x265: general-purpose, film, stock footage, anime, stress test\n· SVT-AV1: ultra HQ, high compression, fast",
             ["ManualBaseFooter"] = "...determined by current CPU perf. & settings exposed to commandline (dev's intent), affecting the precision of bit allocation (% of bits to be losslessly compressed)",
             ["ManualCrfTitle"] = "Manually Specified - Rate Control Modes",
             ["ManualCrfList"] = "· Only the Constant Rate Factor (CRF) mode is supported. Range=UHQ|HQ|Streaming|Lossless|Default\n· x264: 13~16 | 18~20 | 21~24 | 0 | 23\n· x265: 17~20 | 21~25 | 26~30 | 0 | 28\n· SVT-AV1: 28~32 | 33~36 | 37~40 | 1 | 35",
             ["ManualExtTitle"] = "Manually Specified - 3rd-party Extended Parameters",
             ["ManualExtIntro"] = "Modded video encoders may provide extended features, and the settings supported by this program include:",
-            ["ManualExtList"] = "· x264: Film Grain Based Rate Distorsion Optimization (FGO)\n· x265: Adaptive Quantization with Hysteresis\n· SVT-AV1: Percise Deblocking Filter (DLF 2), Auto Tile size",
+            ["ManualExtList"] = "· x264: Film Grain Based Rate Distorsion Optimization (FGO)\n· x265 jspdr Mod: Adaptive Quantization with Hysteresis\n· SVT-AV1-Essential: Percise Deblocking Filter (DLF 2), Auto Tile size",
             ["CloseButtonText"] = "Close"
         },
         ["zh-cn"] = new()
@@ -87,13 +87,13 @@ public class AppUsageLangProviderM
             ["AutoParamEncode"] = "· 编码参数：前瞻帧数、动态搜索直径、子像素对齐搜索强度",
             ["AutoParamFooter"] = "...除能够自主配置上述参数的编码器外",
             ["ManualBaseTitle"] = "手动指定—基础参数",
-            ["ManualBaseList"] = "· x264：通用、剪辑素材\n· x265：通用、录像、剪辑素材、动漫、穷举法\n· SVT-AV1：极致画质、压缩优先、速度优先",
+            ["ManualBaseList"] = "· x264：通用、剪辑素材\n· x265：通用、录像、剪辑素材、动漫、压力测试\n· SVT-AV1：极致画质、压缩优先、速度优先",
             ["ManualBaseFooter"] = "「手动指定」参数由当下的处理器性能与下放到命令行的参数（即开发者意图）而定，这些参数会影响码率分配的精度，即无损压缩机制的压缩率。",
             ["ManualCrfTitle"] = "手动指定—率控制模式",
             ["ManualCrfList"] = "· 仅支持码率调谐常量（CRF）模式，范围-超高清|高清|流媒体|无损|默认\n· x264：13~16 | 18~20 | 21~24 | 0 | 23\n· x265：17~20 | 21~25 | 26~30 | 0 | 28\n· SVT-AV1：28~32 | 33~36 | 37~40 | 1 | 35",
             ["ManualExtTitle"] = "手动指定—第三方扩展参数",
             ["ManualExtIntro"] = "非官方版的视频编码器提供了扩展功能，本程序支持的设置包括：",
-            ["ManualExtList"] = "· x264：基于高频信息量的率失真优化（Film Grain Optimization）\n· x265：延迟自适应量化（AQ Hysteresis）\n· SVT-AV1：高精度去块滤镜（DLF 2）、自动计算瓦片大小（Auto Tile）",
+            ["ManualExtList"] = "· x264：基于高频信息量的率失真优化（Film Grain Optimization）\n· x265 jpsdr Mod：自适应量化迟滞（AQ Hysteresis）\n· SVT-AV1-Essential：高精度去块滤镜（DLF 2）、自动计算瓦片大小（Auto Tile）",
             ["CloseButtonText"] = "关闭"
         },
         ["zh-tw"] = new()
@@ -133,13 +133,13 @@ public class AppUsageLangProviderM
             ["AutoParamEncode"] = "· 編碼參數：前瞻幀數、動態搜尋直徑、子像素對齊搜尋強度",
             ["AutoParamFooter"] = "...除能夠自主配置上述參數的編碼器外",
             ["ManualBaseTitle"] = "手動指定—基礎參數",
-            ["ManualBaseList"] = "· x264：通用、剪輯素材\n· x265：通用、錄像、剪輯素材、動漫、窮舉法\n· SVT-AV1：極致畫質、壓縮優先、速度優先",
+            ["ManualBaseList"] = "· x264：通用、剪輯素材\n· x265：通用、錄像、剪輯素材、動漫、壓力測試\n· SVT-AV1：極致畫質、壓縮優先、速度優先",
             ["ManualBaseFooter"] = "「手動指定」參數當下的處理器效能與下放到命令列的參數（即開發者意圖）而定，這些參數會影響碼率分配的精度，即無損壓縮機制的壓縮率。",
             ["ManualCrfTitle"] = "手動指定—率控制模式",
             ["ManualCrfList"] = "· 僅支援碼率調諧常量（CRF）模式，範圍-超高清|高清|串流媒體|無損|預設\n· x264：13~16 | 18~20 | 21~24 | 0 | 23\n· x265：17~20 | 21~25 | 26~30 | 0 | 28\n· SVT-AV1：28~32 | 33~36 | 37~40 | 1 | 35",
             ["ManualExtTitle"] = "手動指定—第三方擴展參數",
             ["ManualExtIntro"] = "非官方版的視訊編碼器提供了擴展功能，本程式支援的設定包括：",
-            ["ManualExtList"] = "· x264：基於高頻資訊量的率失真最佳化（Film Grain Optimization）\n· x265：延遲自適應量化（AQ Hysteresis）\n· SVT-AV1：高精度去塊濾鏡（DLF 2）、自動計算瓦片大小（Auto Tile）",
+            ["ManualExtList"] = "· x264：基於高頻資訊量的率失真最佳化（Film Grain Optimization）\n· x265 jpsdr Mod：自適應量化遲滯（AQ Hysteresis）\n· SVT-AV1-Essential：高精度去塊濾鏡（DLF 2）、自動計算瓦片大小（Auto Tile）",
             ["CloseButtonText"] = "關閉"
         }
     };
