@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 
 namespace OneColumnEncoder.Helpers
 {
-    public class CpuTopologyH
+    public partial class CpuTopologyH
     {
         // ----- Win32 P/Invoke 声明 -----
         private enum LOGICAL_PROCESSOR_RELATIONSHIP : int
@@ -56,8 +56,9 @@ namespace OneColumnEncoder.Helpers
             public uint Size;
         }
 
-        [DllImport("kernel32.dll", SetLastError = true)]
-        private static extern bool GetLogicalProcessorInformationEx(
+        [LibraryImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool GetLogicalProcessorInformationEx(
             LOGICAL_PROCESSOR_RELATIONSHIP relationshipType,
             IntPtr buffer,
             ref uint returnedLength);
