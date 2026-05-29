@@ -445,6 +445,32 @@ namespace OneColumnEncoder.ViewModels
 
             if (outputSetting != null)
                 outputSetting.R1Command = new OpenFilenameScribeCmd(_modalNavS, outputSetting);
+
+            // Wire up Rate Control, Base Parameters, Custom Parameters
+            if (EncSettingsZone.Count > 2)
+            {
+                ToolItemCardVM? rateControl = EncSettingsZone.FirstOrDefault(t =>
+                    t.Name.Equals(UILangProviderM.Current["Tool.Enc.RateControl"], StringComparison.OrdinalIgnoreCase));
+                ToolItemCardVM? baseParams = EncSettingsZone.FirstOrDefault(t =>
+                    t.Name.Equals(UILangProviderM.Current["Tool.Enc.BaseParameters"], StringComparison.OrdinalIgnoreCase));
+                ToolItemCardVM? customParams = EncSettingsZone.FirstOrDefault(t =>
+                    t.Name.Equals(UILangProviderM.Current["Tool.Enc.CustomParameters"], StringComparison.OrdinalIgnoreCase));
+
+                if (rateControl != null)
+                    rateControl.R1Command = new OpenEncoderConfCmd(_modalNavS,
+                        rateControlItem: rateControl, baseParamsItem: baseParams, customParamsItem: customParams,
+                        initialTab: 0);
+
+                if (baseParams != null)
+                    baseParams.R1Command = new OpenEncoderConfCmd(_modalNavS,
+                        rateControlItem: rateControl, baseParamsItem: baseParams, customParamsItem: customParams,
+                        initialTab: 1);
+
+                if (customParams != null)
+                    customParams.R1Command = new OpenEncoderConfCmd(_modalNavS,
+                        rateControlItem: rateControl, baseParamsItem: baseParams, customParamsItem: customParams,
+                        initialTab: 1);
+            }
         }
         private void OnVideoSrcItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
