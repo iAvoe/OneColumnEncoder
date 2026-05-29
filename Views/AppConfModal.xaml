@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:OneColumnEncoder.Views"
         xmlns:comps="clr-namespace:OneColumnEncoder.Components"
         xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
+        d:DataContext="{d:DesignInstance Type=vms:AppConfVM}"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="520"

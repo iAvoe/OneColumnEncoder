@@ -8,7 +8,7 @@
              d:DataContext="{d:DesignInstance Type=viewmodels:DropdownMenuVM}"
              d:DesignHeight="30">
     <ComboBox ItemsSource="{Binding Items}"
-              SelectedItem="{Binding SelectedItem}"
+              SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
               Style="{StaticResource RoundedDropdownMenu}">
         <ComboBox.ItemTemplate>
             <DataTemplate>

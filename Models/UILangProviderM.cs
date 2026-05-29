@@ -80,7 +80,7 @@ public class UILangProviderM
             ["ToolField.EncThreadClampOn"] = "(enc-th# clamp ON)",
             ["ToolField.EncThreadClampOff"] = "(enc-th# clamp OFF)",
             ["ToolField.Value"] = "Value",
-            ["ToolField.Stratagem"] = "Stratagy",
+            ["ToolField.Strategy"] = "Stratagy",
             ["ToolField.MaximumKeyframeGap"] = "Maximum keyframe gap",
             ["ToolField.OtherCustomParams"] = "Other custom params",
 
@@ -321,7 +321,7 @@ public class UILangProviderM
             ["ToolField.EncThreadClampOn"] = "（启用编码线程数限制）",
             ["ToolField.EncThreadClampOff"] = "（禁用编码线程数限制）",
             ["ToolField.Value"] = "数值",
-            ["ToolField.Stratagem"] = "策略",
+            ["ToolField.Strategy"] = "策略",
             ["ToolField.MaximumKeyframeGap"] = "最大关键帧间隔",
             ["ToolField.OtherCustomParams"] = "其他自定义参数",
 
@@ -547,7 +547,7 @@ public class UILangProviderM
             ["ToolField.EncThreadClampOn"] = "（啟用編碼執行緒數限制）",
             ["ToolField.EncThreadClampOff"] = "（禁用編碼執行緒數限制）",
             ["ToolField.Value"] = "數值",
-            ["ToolField.Stratagem"] = "策略",
+            ["ToolField.Strategy"] = "策略",
             ["ToolField.MaximumKeyframeGap"] = "最大關鍵幀間隔",
             ["ToolField.OtherCustomParams"] = "其他自訂參數",
 

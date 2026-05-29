@@ -3,6 +3,7 @@ using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
+using System;
 using System.Configuration;
 using System.Data;
 using System.Windows;
@@ -27,16 +28,30 @@ namespace OneColumnEncoder
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            _ = new UILangProviderM(_appConfM.Lang.LanguageCode);
-            OpenAppConfCmd openAppConf = new(_modalNavM, _appConfM);
-            OpenUsagesCmd openUsages = new(_modalNavM, _appConfM);
-
-            MainWindow = new MainWindow()
+            try
             {
-                DataContext = new MainVM(openAppConf, openUsages, _appDataM, _appConfM, _modalNavM)
-            };
-            MainWindow.Show();
-            base.OnStartup(e);
+                DispatcherUnhandledException += (_, ex) =>
+                {
+                    MessageBox.Show(ex.Exception.ToString(), "Unhandled UI Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                    ex.Handled = true;
+                };
+
+                _ = new UILangProviderM(_appConfM.Lang.LanguageCode);
+                OpenAppConfCmd openAppConf = new(_modalNavM, _appConfM);
+                OpenUsagesCmd openUsages = new(_modalNavM, _appConfM);
+
+                MainWindow = new MainWindow()
+                {
+                    DataContext = new MainVM(openAppConf, openUsages, _appDataM, _appConfM, _modalNavM)
+                };
+                MainWindow.Show();
+                base.OnStartup(e);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Startup Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                Shutdown(-1);
+            }
         }
     }
 }
