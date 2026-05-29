@@ -56,7 +56,7 @@ namespace OneColumnEncoder.ViewModels
         public string IntroText => Lang.IntroText;
         public string PriorityText => Lang.PriorityText;
         public string CacheGroupTitle => Lang.CacheGroupTitle;
-        public string CacheGroupHint => Lang.CacheGroupHint;
+        public static string CacheGroupHint => BuildCacheGroupHint();
         public string UpstreamNumaTitle => Lang.UpstreamNumaTitle;
         public string DownstreamNumaTitle => Lang.DownstreamNumaTitle;
         public string NumaGuidanceText => Lang.NumaGuidanceText;
@@ -176,6 +176,29 @@ namespace OneColumnEncoder.ViewModels
             CPUNodeCardVM upstream = UpstreamNodes.First(n => n.IsSelected);
             CPUNodeCardVM downstream = DownstreamNodes.First(n => n.IsSelected);
             return $"Upstream: {upstream.ResourceLabel} | Downstream: {downstream.ResourceLabel}";
+        }
+
+        private static string BuildCacheGroupHint()
+        {
+            var lang = ParallelismConfLangProviderM.Current;
+            var cacheTopology = CpuTopologyH.GetCacheTopology();
+            if (cacheTopology == null)
+            {
+                var nodes = NumaTopologyH.GetNumaNodes();
+                if (nodes.Count == 0) return string.Empty;
+
+                int coresPerGroup = nodes.Count == 1
+                    ? nodes[0].ProcessorCount
+                    : nodes.Average(n => n.ProcessorCount) >= 8
+                        ? 8
+                        : Math.Max(1, nodes.Min(n => n.ProcessorCount));
+
+                long cacheMbPerGroup = 32;
+
+                return $"{lang["CorePerGroup"]}{coresPerGroup}{lang["CorePerGroup1"]}{cacheMbPerGroup}{lang["CorePerGroup2"]}";
+            }
+
+            return $"{lang["CorePerGroup"]}{cacheTopology.CoresPerGroup}{lang["CorePerGroup1alt"]}{cacheTopology.ThreadsPerGroup}{lang["CorePerGroup1alt1"]}{cacheTopology.CacheMbPerGroup}{lang["CorePerGroup2"]}";
         }
 
         private void OnLanguageChanged()

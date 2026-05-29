@@ -20,10 +20,8 @@ namespace OneColumnEncoder.ViewModels
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
 
-        private void OnLanguageChanged()
-        {
+        private void OnLanguageChanged() =>
             Lang = new AppUsageLangProviderM(UILangProviderM.Current.LanguageCode);
-        }
 
         public override void Dispose()
         {

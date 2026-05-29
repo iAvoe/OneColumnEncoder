@@ -13,16 +13,19 @@ public class NumaNodeInfo
     public int HasMemGB => (int)(TotalMemoryBytes / (1024L * 1024 * 1024));
 }
 
-public static class NumaTopologyH
+public static partial class NumaTopologyH
 {
-    [DllImport("kernel32.dll")]
-    private static extern bool GetNumaHighestNodeNumber(out uint highestNodeNumber);
+    [LibraryImport("kernel32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool GetNumaHighestNodeNumber(out uint highestNodeNumber);
 
-    [DllImport("kernel32.dll")]
-    private static extern bool GetNumaNodeProcessorMaskEx(ushort nodeNumber, out GROUP_AFFINITY groupMask);
+    [LibraryImport("kernel32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool GetNumaNodeProcessorMaskEx(ushort nodeNumber, out GROUP_AFFINITY groupMask);
 
-    [DllImport("kernel32.dll")]
-    private static extern bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
+    [LibraryImport("kernel32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
 
     [StructLayout(LayoutKind.Sequential)]
     private struct GROUP_AFFINITY
