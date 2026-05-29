@@ -26,6 +26,7 @@ public class ParallelismConfLangProviderM
             ["CorePerGroup1alt"] = " cores (",
             ["CorePerGroup1alt1"] = " threads) is/are directly connected to a ",
             ["CorePerGroup2"] = " MB L3 cache",
+            ["EncoderThreadCountText"] = "Encoder Thread Count",
         },
         ["zh-cn"] = new()
         {
@@ -48,6 +49,7 @@ public class ParallelismConfLangProviderM
             ["CorePerGroup1alt"] = " 核心（",
             ["CorePerGroup1alt1"] = " 线程）直连 ",
             ["CorePerGroup2"] = " MB 的 L3",
+            ["EncoderThreadCountText"] = "编码器线程数",
         },
         ["zh-tw"] = new()
         {
@@ -70,6 +72,7 @@ public class ParallelismConfLangProviderM
             ["CorePerGroup1alt"] = " 核心（",
             ["CorePerGroup1alt1"] = " 執行緒）直連 ",
             ["CorePerGroup2"] = " MB 的 L3 快取",
+            ["EncoderThreadCountText"] = "編碼器執行緒數",
         }
     };
 
@@ -87,6 +90,7 @@ public class ParallelismConfLangProviderM
     public string UseLargePagesText { get; }
     public string CancelButtonText { get; }
     public string ConfirmButtonText { get; }
+    public string EncoderThreadCountText { get; }
     public string LanguageCode { get; }
     private readonly Dictionary<string, string> _d;
 
@@ -110,6 +114,7 @@ public class ParallelismConfLangProviderM
         UseLargePagesText = _d["UseLargePagesText"];
         CancelButtonText = _d["CancelButtonText"];
         ConfirmButtonText = _d["ConfirmButtonText"];
+        EncoderThreadCountText = _d["EncoderThreadCountText"];
         Current = this;
     }
 }

@@ -28,6 +28,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0"
@@ -139,7 +140,16 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <StackPanel Grid.Row="8"
+            <comps:IntegerSlider Grid.Row="8"
+                                Margin="5 10 5 0"
+                                Label="{Binding EncoderThreadCountText}"
+                                Minimum="1"
+                                Maximum="{Binding MaxThreadCount}"
+                                Value="{Binding EncoderThreadCount, Mode=TwoWay}"
+                                TickLabels="{Binding EncoderThreadTickLabels}"
+                                TickCount="8" />
+
+            <StackPanel Grid.Row="9"
                         Margin="5 5 5 0"
                         Orientation="Horizontal"
                         HorizontalAlignment="Left"
@@ -161,7 +171,7 @@
                            Foreground="{StaticResource GlobalTertiary}" />
             </StackPanel>
 
-            <StackPanel Grid.Row="9"
+            <StackPanel Grid.Row="10"
                         Margin="0 10 0 0">
                 <comps:AppConfContainer Header="{Binding Lang.ThreadStrategyTitle}">
                     <comps:AppConfItem Text="{Binding Lang.PreferPhysicalCoresText}">

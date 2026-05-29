@@ -20,18 +20,18 @@
         <TextBlock Grid.Column="0"
                    VerticalAlignment="Center"
                    Text="{Binding Label, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                   FontSize="18"
-                   FontWeight="SemiBold" />
+                   FontSize="13" />
 
         <Grid Grid.Column="2"
               VerticalAlignment="Center"
-              Height="54">
+              Height="50">
             <Grid.RowDefinitions>
-                <RowDefinition Height="22" />
+                <RowDefinition Height="18" />
                 <RowDefinition Height="14" />
                 <RowDefinition Height="18" />
             </Grid.RowDefinitions>
 
+            <!-- TODO: This should be a on-drag feedback, not a static element -->
             <Border Grid.Row="0"
                     HorizontalAlignment="Center"
                     Padding="6,1"
@@ -39,10 +39,11 @@
                     BorderThickness="1"
                     BorderBrush="{StaticResource GlobalSecondary}">
                 <TextBlock Text="{Binding Value, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                           FontSize="12"
+                           FontSize="10"
                            HorizontalAlignment="Center" />
             </Border>
 
+            <!-- TODO: This could not be dragged somehow -->
             <Grid Grid.Row="1"
                   x:Name="TrackHost"
                   VerticalAlignment="Center">
@@ -52,8 +53,8 @@
                         VerticalAlignment="Center" />
                 <Canvas Height="14"
                         VerticalAlignment="Center">
-                    <Thumb Width="16"
-                           Height="16"
+                    <Thumb Width="14"
+                           Height="14"
                            Background="Transparent"
                            DragDelta="Thumb_DragDelta"
                            DragCompleted="Thumb_DragCompleted"
@@ -61,7 +62,7 @@
                         <Thumb.Template>
                             <ControlTemplate TargetType="Thumb">
                                 <Grid>
-                                    <Ellipse Width="14" Height="14" Fill="White" Stroke="{StaticResource GlobalSecondary}" StrokeThickness="2" />
+                                    <Ellipse Width="13" Height="13" Fill="White" Stroke="{StaticResource GlobalSecondary}" StrokeThickness="2" />
                                 </Grid>
                             </ControlTemplate>
                         </Thumb.Template>
@@ -81,6 +82,7 @@
                 </Canvas>
             </Grid>
 
+            <!-- TODO: last label is not positioned at edge, but closer to center-->
             <ItemsControl Grid.Row="2"
                           ItemsSource="{Binding TickLabels, RelativeSource={RelativeSource AncestorType=UserControl}}">
                 <ItemsControl.ItemsPanel>
@@ -90,7 +92,9 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding}" FontSize="11" Foreground="{StaticResource GlobalSecondary}" />
+                        <TextBlock Text="{Binding}"
+                                   FontSize="10"
+                                   Foreground="{StaticResource GlobalSecondary}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

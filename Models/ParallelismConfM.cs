@@ -16,5 +16,6 @@ namespace OneColumnEncoder.Models
         public bool PreferPhysicalCores { get; set; } = true;
         public bool PreferPerformanceCores { get; set; } = true;
         public bool UseLargePages { get; set; } = true;
+        public int EncoderThreadCount { get; set; } = Environment.ProcessorCount;
     }
 }

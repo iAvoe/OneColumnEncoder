@@ -4,6 +4,7 @@ using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.ViewModels.Cards;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -52,6 +53,15 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _useLargePages, value);
         }
 
+        private int _encoderThreadCount = Environment.ProcessorCount;
+        public int EncoderThreadCount
+        {
+            get => _encoderThreadCount;
+            set => SetProperty(ref _encoderThreadCount, value);
+        }
+
+        public int MaxThreadCount { get; private set; } = Environment.ProcessorCount;
+
         public string WindowTitle => Lang.WindowTitle;
         public string IntroText => Lang.IntroText;
         public string PriorityText => Lang.PriorityText;
@@ -65,6 +75,8 @@ namespace OneColumnEncoder.ViewModels
         public string PreferPerformanceCoresText => Lang.PreferPerformanceCoresText;
         public string MemoryStrategyTitle => Lang.MemoryStrategyTitle;
         public string UseLargePagesText => Lang.UseLargePagesText;
+        public string EncoderThreadCountText => Lang.EncoderThreadCountText;
+        public IEnumerable<string> EncoderThreadTickLabels => BuildThreadTickLabels();
         public string CancelButtonText => Lang.CancelButtonText;
         public string ConfirmButtonText => Lang.ConfirmButtonText;
 
@@ -143,6 +155,7 @@ namespace OneColumnEncoder.ViewModels
             _model.PreferPhysicalCores = PreferPhysicalCores;
             _model.PreferPerformanceCores = PreferPerformanceCores;
             _model.UseLargePages = UseLargePages;
+            _model.EncoderThreadCount = EncoderThreadCount;
             _model.Save();
         }
 
@@ -151,6 +164,10 @@ namespace OneColumnEncoder.ViewModels
             PreferPhysicalCores = _model.PreferPhysicalCores;
             PreferPerformanceCores = _model.PreferPerformanceCores;
             UseLargePages = _model.UseLargePages;
+
+            var numaNodes = NumaTopologyH.GetNumaNodes();
+            MaxThreadCount = numaNodes.Count > 0 ? numaNodes.Sum(n => n.ProcessorCount) : Environment.ProcessorCount;
+            EncoderThreadCount = Math.Max(1, Math.Min(MaxThreadCount, _model.EncoderThreadCount));
 
             SelectById(UpstreamNodes, _model.UpstreamNodeId);
             SelectById(DownstreamNodes, _model.DownstreamNodeId);
@@ -176,6 +193,19 @@ namespace OneColumnEncoder.ViewModels
             CPUNodeCardVM upstream = UpstreamNodes.First(n => n.IsSelected);
             CPUNodeCardVM downstream = DownstreamNodes.First(n => n.IsSelected);
             return $"Upstream: {upstream.ResourceLabel} | Downstream: {downstream.ResourceLabel}";
+        }
+
+        private IEnumerable<string> BuildThreadTickLabels()
+        {
+            int max = MaxThreadCount;
+            int tickCount = 8;
+            var labels = new List<string>();
+            for (int i = 0; i < tickCount; i++)
+            {
+                int val = 1 + i * (max - 1) / (tickCount - 1);
+                labels.Add(val.ToString());
+            }
+            return labels;
         }
 
         private static string BuildCacheGroupHint()
@@ -217,6 +247,8 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(PreferPerformanceCoresText));
             OnPropertyChanged(nameof(MemoryStrategyTitle));
             OnPropertyChanged(nameof(UseLargePagesText));
+            OnPropertyChanged(nameof(EncoderThreadCountText));
+            OnPropertyChanged(nameof(EncoderThreadTickLabels));
             OnPropertyChanged(nameof(CancelButtonText));
             OnPropertyChanged(nameof(ConfirmButtonText));
 
