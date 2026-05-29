@@ -240,7 +240,7 @@
                         <TextBlock Grid.Column="0"
                                    Text="{TemplateBinding Text}"
                                    VerticalAlignment="Center"
-                                   FontSize="14"
+                                   FontSize="13"
                                    Foreground="{TemplateBinding Foreground}" />
                         <ContentPresenter Grid.Column="1"
                                           VerticalAlignment="Center"

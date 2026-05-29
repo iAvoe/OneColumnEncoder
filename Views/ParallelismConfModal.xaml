@@ -10,8 +10,8 @@
         d:DataContext="{d:DesignInstance Type=vms:ParallelismConfVM}"
         mc:Ignorable="d"
         Title="{Binding Lang.WindowTitle}"
-        Width="560"
-        Height="620"
+        Width="530"
+        Height="590"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <ScrollViewer VerticalScrollBarVisibility="Auto"
@@ -140,7 +140,7 @@
             </ItemsControl>
 
             <StackPanel Grid.Row="8"
-                        Margin="5 2.5 5 0"
+                        Margin="5 5 5 0"
                         Orientation="Horizontal"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center">
@@ -162,7 +162,7 @@
             </StackPanel>
 
             <StackPanel Grid.Row="9"
-                        Margin="0 15 0 0">
+                        Margin="0 10 0 0">
                 <comps:AppConfContainer Header="{Binding Lang.ThreadStrategyTitle}">
                     <comps:AppConfItem Text="{Binding Lang.PreferPhysicalCoresText}">
                         <CheckBox IsChecked="{Binding PreferPhysicalCores, Mode=TwoWay}" />
@@ -172,7 +172,8 @@
                     </comps:AppConfItem>
                 </comps:AppConfContainer>
 
-                <comps:AppConfContainer Header="{Binding Lang.MemoryStrategyTitle}">
+                <comps:AppConfContainer Header="{Binding Lang.MemoryStrategyTitle}"
+                                        Margin="0 5 0 0">
                     <comps:AppConfItem Text="{Binding Lang.UseLargePagesText}">
                         <CheckBox IsChecked="{Binding UseLargePages, Mode=TwoWay}" />
                     </comps:AppConfItem>
