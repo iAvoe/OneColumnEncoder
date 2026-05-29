@@ -69,11 +69,11 @@ namespace OneColumnEncoder.Commands.SaveLoad
                 return;
             }
 
-            _avsItem.Path = avsPath;
-            _avsItem.PrimaryValueText = SourceFilePickerH.GetPrimaryText(SourceFileKind.AviSynthScript, avsPath);
+            _avsItem.P2TextData = avsPath;
+            _avsItem.P1TextData = SourceFilePickerH.GetPrimaryText(SourceFileKind.AviSynthScript, avsPath);
 
-            _vpyItem.Path = vpyPath;
-            _vpyItem.PrimaryValueText = SourceFilePickerH.GetPrimaryText(SourceFileKind.VapourSynthScript, vpyPath);
+            _vpyItem.P2TextData = vpyPath;
+            _vpyItem.P1TextData = SourceFilePickerH.GetPrimaryText(SourceFileKind.VapourSynthScript, vpyPath);
 
             new OpenInfoOrDbgModalCmd(
                 _modalNavS,

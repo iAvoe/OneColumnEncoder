@@ -177,20 +177,20 @@ namespace OneColumnEncoder.ViewModels
         {
             if (_rateControlItem != null)
             {
-                _rateControlItem.PrimaryValueText = RateControlModeDropdown.SelectedItem?.Title ?? Lang.ModeCrf;
-                _rateControlItem.Path = IsCrfMode ? $"CRF: {CrfValue}" : $"{TargetBitrate} kbps";
+                _rateControlItem.P1TextData = RateControlModeDropdown.SelectedItem?.Title ?? Lang.ModeCrf;
+                _rateControlItem.P2TextData = IsCrfMode ? $"CRF: {CrfValue}" : $"{TargetBitrate} kbps";
             }
             if (_baseParamsItem != null)
             {
                 string preset = PresetDropdown.SelectedItem?.Title ?? Lang.PresetMedium;
                 string tune = TuneDropdown.SelectedItem?.Title ?? Lang.TuneNone;
-                _baseParamsItem.PrimaryValueText = $"{preset}, {tune}";
-                _baseParamsItem.Path = $"Keyframes: {KeyframeInterval}";
+                _baseParamsItem.P1TextData = $"{preset}, {tune}";
+                _baseParamsItem.P2TextData = $"Keyframes: {KeyframeInterval}";
             }
             if (_customParamsItem != null)
             {
-                _customParamsItem.PrimaryValueText = ProfileDropdown.SelectedItem?.Title ?? Lang.ProfileAuto;
-                _customParamsItem.Path = string.IsNullOrWhiteSpace(CustomParams) ? "-" : CustomParams;
+                _customParamsItem.P1TextData = ProfileDropdown.SelectedItem?.Title ?? Lang.ProfileAuto;
+                _customParamsItem.P2TextData = string.IsNullOrWhiteSpace(CustomParams) ? "-" : CustomParams;
             }
         }
 

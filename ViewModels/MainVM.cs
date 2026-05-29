@@ -111,11 +111,18 @@ namespace OneColumnEncoder.ViewModels
             if (outputSetting != null)
             {
                 // Must be set first because Path setter has Validate() call which clears VersionText
-                if (string.IsNullOrWhiteSpace(outputSetting.Path))
-                    outputSetting.Path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                if (string.IsNullOrWhiteSpace(outputSetting.PrimaryValueText))
-                    outputSetting.PrimaryValueText = "1cenc output";
+                if (string.IsNullOrWhiteSpace(outputSetting.P2TextData))
+                    outputSetting.P2TextData = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                if (string.IsNullOrWhiteSpace(outputSetting.P1TextData))
+                    outputSetting.P1TextData = "1cenc output";
             }
+
+            // Load saved parallelism settings onto the card
+            ToolItemCardVM? parallelismCard = EncSettingsZone.FirstOrDefault(t => t.Name.Equals(
+                UILangProviderM.Current["Tool.Enc.Parallelism"],
+                StringComparison.OrdinalIgnoreCase));
+            if (parallelismCard != null)
+                ParallelismConfVM.ApplySavedSettingsToCard(parallelismCard);
 
             // Commands
             OneClickScriptGen = new OneClickScriptGenCmd(
@@ -356,7 +363,7 @@ namespace OneColumnEncoder.ViewModels
         #region Button state updates
         public void UpdateScriptScbButtonsState()
         {
-            bool hasVideoSrc = VideoSrcImportZone.Any(t => !string.IsNullOrWhiteSpace(t.Path));
+            bool hasVideoSrc = VideoSrcImportZone.Any(t => !string.IsNullOrWhiteSpace(t.P2TextData));
             ScriptScbButtons.B2_2IsEnabled = hasVideoSrc;
 
             if (_modalNavS.CurrentModalVM is ScriptScribeModalVM modal)
@@ -475,9 +482,9 @@ namespace OneColumnEncoder.ViewModels
         private void OnVideoSrcItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (sender is not ToolItemCardVM) return;
-            if (e.PropertyName == nameof(ToolItemCardVM.Path))
+            if (e.PropertyName == nameof(ToolItemCardVM.P2TextData))
                 UpdateScriptScbButtonsState();
-            if (e.PropertyName is nameof(ToolItemCardVM.Path) or nameof(ToolItemCardVM.IsSelected))
+            if (e.PropertyName is nameof(ToolItemCardVM.P2TextData) or nameof(ToolItemCardVM.IsSelected))
             {
                 UpdateAnalyzeSrcButtonsState();
                 UpdateInspBypsChkButtonsState();
@@ -496,7 +503,7 @@ namespace OneColumnEncoder.ViewModels
         private void OnAnalyticsItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (sender is not ToolItemCardVM) return;
-            if (e.PropertyName is nameof(ToolItemCardVM.Path) or nameof(ToolItemCardVM.IsSelected))
+            if (e.PropertyName is nameof(ToolItemCardVM.P2TextData) or nameof(ToolItemCardVM.IsSelected))
             {
                 ResetAnalysisIfStale();
                 UpdateAnalyzeSrcButtonsState();
@@ -625,13 +632,13 @@ namespace OneColumnEncoder.ViewModels
         }
         private string GetCurrentVideoSourcePath()
         {
-            ToolItemCardVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => !string.IsNullOrWhiteSpace(t.Path));
-            return videoSrc?.Path ?? string.Empty;
+            ToolItemCardVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => !string.IsNullOrWhiteSpace(t.P2TextData));
+            return videoSrc?.P2TextData ?? string.Empty;
         }
 
         private bool CanRunSourceAnalysis() =>
-            VideoSrcImportZone.Any(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path)) &&
-            AnalyticsZone.Any(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
+            VideoSrcImportZone.Any(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData)) &&
+            AnalyticsZone.Any(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
 
         private bool IsCurrentAnalysisFor(string sourcePath, string ffprobePath) =>
             !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson) &&
@@ -649,14 +656,14 @@ namespace OneColumnEncoder.ViewModels
 
         private string GetSelectedVideoSourcePath()
         {
-            ToolItemCardVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
-            return videoSrc?.Path ?? string.Empty;
+            ToolItemCardVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
+            return videoSrc?.P2TextData ?? string.Empty;
         }
 
         private string GetSelectedFfprobePath()
         {
-            ToolItemCardVM? ffprobe = AnalyticsZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.Path));
-            return ffprobe?.Path ?? string.Empty;
+            ToolItemCardVM? ffprobe = AnalyticsZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
+            return ffprobe?.P2TextData ?? string.Empty;
         }
 
         private static SourceFileKind ResolveSourceFileKind(string displayName)
@@ -707,8 +714,8 @@ namespace OneColumnEncoder.ViewModels
 
             ToolItemCardVM item = new(new EncItemM(def.DisplayName))
             {
-                Path = filePath,
-                PrimaryValueText = version ?? string.Empty,
+                P2TextData = filePath,
+                P1TextData = version ?? string.Empty,
                 P1Name = def.P1Name,
                 P2Name = def.P2Name ?? string.Empty,
                 R1Text = def.R1Text,
@@ -786,8 +793,8 @@ namespace OneColumnEncoder.ViewModels
         {
             if (string.IsNullOrWhiteSpace(path) || !File.Exists(path)) return false;
 
-            item.Path = path;
-            item.PrimaryValueText = SourceFilePickerH.GetPrimaryText(kind, path);
+            item.P2TextData = path;
+            item.P1TextData = SourceFilePickerH.GetPrimaryText(kind, path);
             return true;
         }
 
@@ -866,10 +873,10 @@ namespace OneColumnEncoder.ViewModels
         {
             foreach (ToolItemCardVM item in zone)
             {
-                if (string.IsNullOrWhiteSpace(item.Path)) continue;
+                if (string.IsNullOrWhiteSpace(item.P2TextData)) continue;
 
                 SourceFileKind fileKind = ResolveSourceFileKind(item.Name);
-                item.PrimaryValueText = SourceFilePickerH.GetPrimaryText(fileKind, item.Path);
+                item.P1TextData = SourceFilePickerH.GetPrimaryText(fileKind, item.P2TextData);
             }
         }
         private static void ApplyDefinitionsToZone(ObservableCollection<ToolItemCardVM> zone, List<ToolDefinitionM> definitions)

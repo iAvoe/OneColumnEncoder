@@ -15,7 +15,7 @@ public class ParallelismConfLangProviderM
             ["DownstreamNumaTitle"] = "NUMA Soft Binding: Pipe Downstream (encoder)",
             ["NumaGuidanceText"] = "If upstream tool has slow filters, assign encoder to other nodes might be faster—compute bottleneck\notherwise, sharing might be faster—latency bottleneck",
             ["ThreadStrategyTitle"] = "Hyper-threading & P-E Core Scheduling",
-            ["EncoderThreadCountText"] = "Encoder threads count",
+            ["EncoderThreadCountText"] = "Encoder threads",
             ["PreferPhysicalCoresText"] = "Map encoder thread # to phys. cores (clamps slider maximum)",
             ["PreferPerformanceCoresText"] = "Prefer performance cores (P-Core)",
             ["MemoryStrategyTitle"] = "Advanced Memory Allocation (memory locking permission required)",

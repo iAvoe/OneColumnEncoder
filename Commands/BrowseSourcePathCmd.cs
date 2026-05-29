@@ -32,13 +32,13 @@ namespace OneColumnEncoder.Commands
                 dialogTitle,
                 _modalNavS,
                 foundPath: foundPath,
-                currentPath: _item.Path);
+                currentPath: _item.P2TextData);
 
             if (string.IsNullOrWhiteSpace(filePath))
                 return;
 
-            _item.Path = filePath;
-            _item.PrimaryValueText = SourceFilePickerH.GetPrimaryText(_fileKind, filePath);
+            _item.P2TextData = filePath;
+            _item.P1TextData = SourceFilePickerH.GetPrimaryText(_fileKind, filePath);
             _afterImport?.Invoke(_item, _fileKind, filePath);
         }
     }

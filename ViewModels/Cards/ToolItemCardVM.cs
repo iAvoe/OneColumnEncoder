@@ -30,7 +30,7 @@ namespace OneColumnEncoder.ViewModels.Cards
                 }
             }
         }
-        public string Path
+        public string P2TextData
         {
             get => _baseModel.Path;
             set
@@ -38,7 +38,7 @@ namespace OneColumnEncoder.ViewModels.Cards
                 if (_baseModel.Path != value)
                 {
                     _baseModel.Path = value;
-                    OnPropertyChanged(nameof(Path));
+                    OnPropertyChanged(nameof(P2TextData));
                     OnPropertyChanged(nameof(P2Text));
                     OnPropertyChanged(nameof(DisplayR1Text));
                     Validate(); // Changes both versionText and isReal
@@ -46,13 +46,13 @@ namespace OneColumnEncoder.ViewModels.Cards
             }
         }
 
-        private string _primaryValueText = string.Empty; // Non-nullable
-        public string PrimaryValueText
+        private string _p1TextData = string.Empty; // Non-nullable
+        public string P1TextData
         {
-            get => _primaryValueText;
+            get => _p1TextData;
             set
             {
-                SetProperty(ref _primaryValueText, value);
+                SetProperty(ref _p1TextData, value);
                 OnPropertyChanged(nameof(P1Text));
             }
         }
@@ -71,7 +71,7 @@ namespace OneColumnEncoder.ViewModels.Cards
             set => SetProperty(ref _p1Name, value);
         }
 
-        public string P1Text => PrimaryValueText;
+        public string P1Text => P1TextData;
 
         private string _p2Name = "";
         public string P2Name
@@ -79,7 +79,7 @@ namespace OneColumnEncoder.ViewModels.Cards
             get => _p2Name;
             set => SetProperty(ref _p2Name, value);
         }
-        public string P2Text => Path;
+        public string P2Text => P2TextData;
 
         private string _r1Text = "";
         public string R1Text // Maybe 'Edit' in some cases
@@ -94,7 +94,7 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         public string DisplayR1Text =>
             UseAutoAddReplaceText
-                ? string.IsNullOrWhiteSpace(Path)
+                ? string.IsNullOrWhiteSpace(P2TextData)
                     ? UILangProviderM.Current["Buttons.Add"]
                     : UILangProviderM.Current["Buttons.Replace"]
                 : R1Text;
@@ -166,13 +166,13 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         private void Validate()
         {
-            bool exists = File.Exists(Path);
+            bool exists = File.Exists(P2TextData);
             bool isKnownBinary =
-                Path.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) ||
-                Path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase);
+                P2TextData.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) ||
+                P2TextData.EndsWith(".dll", StringComparison.OrdinalIgnoreCase);
 
             IsReal = exists && isKnownBinary;
-            if (!IsReal) PrimaryValueText = string.Empty;
+            if (!IsReal) P1TextData = string.Empty;
         }
 
         public void ApplyDefinition(ToolDefinitionM definition)

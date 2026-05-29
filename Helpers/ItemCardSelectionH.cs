@@ -63,7 +63,7 @@ namespace OneColumnEncoder.Helpers
             }
             else if (videoSrcImportZone.Contains(clickedTool))
             {
-                if (string.IsNullOrEmpty(clickedTool.Path)) return;
+                if (string.IsNullOrEmpty(clickedTool.P2TextData)) return;
 
                 SelectOnly(videoSrcImportZone, clickedTool);
                 UnselectAll(scriptSrcImportZone);
@@ -71,7 +71,7 @@ namespace OneColumnEncoder.Helpers
             }
             else if (scriptSrcImportZone.Contains(clickedTool))
             {
-                if (string.IsNullOrEmpty(clickedTool.Path)) return;
+                if (string.IsNullOrEmpty(clickedTool.P2TextData)) return;
 
                 ToggleOnly(scriptSrcImportZone, clickedTool);
                 UnselectAll(videoSrcImportZone);

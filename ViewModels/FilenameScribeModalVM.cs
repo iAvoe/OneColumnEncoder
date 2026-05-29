@@ -45,7 +45,7 @@ namespace OneColumnEncoder.ViewModels
         {
             _closeAction = closeAction;
             _outputSettingItem = outputSettingItem;
-            _videoFilename = OutputPathH.GetInitialFilename(outputSettingItem.PrimaryValueText, outputSettingItem.Path);
+            _videoFilename = OutputPathH.GetInitialFilename(outputSettingItem.P1TextData, outputSettingItem.P2TextData);
             CloseCmd = new CloseModalCmd(closeAction);
             BuildChecklist();
             BuildButtonGroup();
@@ -97,13 +97,13 @@ namespace OneColumnEncoder.ViewModels
             OpenFolderDialog dialog = new()
             {
                 Title = WindowTitle,
-                InitialDirectory = OutputPathH.GetInitialDirectory(_outputSettingItem.Path)
+                InitialDirectory = OutputPathH.GetInitialDirectory(_outputSettingItem.P2TextData)
             };
 
             if (dialog.ShowDialog() != true) return;
 
-            _outputSettingItem.Path = Path.Combine(dialog.FolderName, filename);
-            _outputSettingItem.PrimaryValueText = filename;
+            _outputSettingItem.P2TextData = Path.Combine(dialog.FolderName, filename);
+            _outputSettingItem.P1TextData = filename;
             _closeAction();
         }
 

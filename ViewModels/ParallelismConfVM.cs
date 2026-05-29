@@ -122,7 +122,7 @@ namespace OneColumnEncoder.ViewModels
                 });
                 isFirst = false;
             }
-
+            // UI designed for 4 node cards, lacking is ugly
             while (nodes.Count < 4)
             {
                 nodes.Add(new CPUNodeCardVM
@@ -142,8 +142,8 @@ namespace OneColumnEncoder.ViewModels
 
         private void ApplySettingsToTarget()
         {
-            _targetItem.PrimaryValueText = BuildPrimarySummary();
-            _targetItem.Path = BuildSecondarySummary();
+            _targetItem.P2TextData = BuildSecondarySummary();
+            _targetItem.P1TextData = BuildPrimarySummary();
         }
 
         private void SaveModel()
@@ -185,14 +185,15 @@ namespace OneColumnEncoder.ViewModels
         {
             CPUNodeCardVM upstream = UpstreamNodes.First(n => n.IsSelected);
             CPUNodeCardVM downstream = DownstreamNodes.First(n => n.IsSelected);
-            return $"Upstream: {upstream.NodeLabel} | Downstream: {downstream.NodeLabel}";
+            return $"{upstream.NodeId},{upstream.GroupId} → {downstream.NodeId},{downstream.GroupId}";
         }
 
         private string BuildSecondarySummary()
         {
-            CPUNodeCardVM upstream = UpstreamNodes.First(n => n.IsSelected);
-            CPUNodeCardVM downstream = DownstreamNodes.First(n => n.IsSelected);
-            return $"Upstream: {upstream.ResourceLabel} | Downstream: {downstream.ResourceLabel}";
+            string clampIndicator = PreferPhysicalCores
+                ? UILangProviderM.Current["ToolField.EncThreadClampOn"]
+                : UILangProviderM.Current["ToolField.EncThreadClampOff"];
+            return $"{EncoderThreadCount} {clampIndicator}";
         }
 
         private IEnumerable<string> BuildThreadTickLabels()
@@ -254,6 +255,31 @@ namespace OneColumnEncoder.ViewModels
 
             FinishButtons.B2_1Text = CancelButtonText;
             FinishButtons.B2_2Text = ConfirmButtonText;
+        }
+
+        public static void ApplySavedSettingsToCard(ToolItemCardVM targetItem)
+        {
+            var model = ParallelismConfM.Load();
+            var numaNodes = NumaTopologyH.GetNumaNodes();
+
+            int maxThreadCount = numaNodes.Count > 0
+                ? numaNodes.Sum(n => n.ProcessorCount)
+                : Environment.ProcessorCount;
+            int encoderThreadCount = Math.Max(1, Math.Min(maxThreadCount, model.EncoderThreadCount));
+
+            var upstream = numaNodes.FirstOrDefault(n => n.NodeId == model.UpstreamNodeId) ?? numaNodes[0];
+            var downstream = numaNodes.FirstOrDefault(n => n.NodeId == model.DownstreamNodeId)
+                ?? (numaNodes.Count > 1 ? numaNodes[1] : numaNodes[0]);
+
+            string primary = $"{upstream.NodeId},{upstream.Group} → {downstream.NodeId},{downstream.Group}";
+
+            string clampIndicator = model.PreferPhysicalCores
+                ? UILangProviderM.Current["ToolField.EncThreadClampOn"]
+                : UILangProviderM.Current["ToolField.EncThreadClampOff"];
+            string secondary = $"{encoderThreadCount} {clampIndicator}";
+
+            targetItem.P2TextData = secondary;
+            targetItem.P1TextData = primary;
         }
 
         public override void Dispose()

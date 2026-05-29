@@ -33,8 +33,8 @@ namespace OneColumnEncoder.Commands
                 _appDataM.Tools.VspipeY4mArg = y4mArg;
             }
 
-            _item.Path = filePath;
-            _item.PrimaryValueText = version ?? string.Empty;
+            _item.P2TextData = filePath;
+            _item.P1TextData = version ?? string.Empty;
             _appDataM.Save();
             _afterReplace?.Invoke();
         }
