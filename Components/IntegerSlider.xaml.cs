@@ -43,6 +43,12 @@ namespace OneColumnEncoder.Components
         public static readonly DependencyProperty SnapToTicksProperty = DependencyProperty.Register(
             nameof(SnapToTicks), typeof(bool), typeof(IntegerSlider), new PropertyMetadata(true));
 
+        public static readonly DependencyProperty SliderMaxWidthProperty = DependencyProperty.Register(
+            nameof(SliderMaxWidth), typeof(double), typeof(IntegerSlider), new PropertyMetadata(double.PositiveInfinity));
+
+        public static readonly DependencyProperty LabelWidthProperty = DependencyProperty.Register(
+            nameof(LabelWidth), typeof(double), typeof(IntegerSlider), new PropertyMetadata(double.NaN));
+
         public string Label { get => (string)GetValue(LabelProperty); set => SetValue(LabelProperty, value); }
         public int Minimum { get => (int)GetValue(MinimumProperty); set => SetValue(MinimumProperty, value); }
         public int Maximum { get => (int)GetValue(MaximumProperty); set => SetValue(MaximumProperty, value); }
@@ -51,6 +57,10 @@ namespace OneColumnEncoder.Components
         public IEnumerable<string> TickLabels { get => (IEnumerable<string>)GetValue(TickLabelsProperty); set => SetValue(TickLabelsProperty, value); }
         public int TickCount { get => (int)GetValue(TickCountProperty); set => SetValue(TickCountProperty, value); }
         public bool SnapToTicks { get => (bool)GetValue(SnapToTicksProperty); set => SetValue(SnapToTicksProperty, value); }
+        public double SliderMaxWidth { get => (double)GetValue(SliderMaxWidthProperty); set => SetValue(SliderMaxWidthProperty, value); }
+        public double LabelWidth { get => (double)GetValue(LabelWidthProperty); set => SetValue(LabelWidthProperty, value); }
+
+        internal double MeasuredLabelWidth => LabelTextBlock.ActualWidth;
 
         private void Thumb_DragStarted(object sender, DragStartedEventArgs e)
         {

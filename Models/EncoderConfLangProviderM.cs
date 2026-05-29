@@ -7,31 +7,32 @@ public class EncoderConfLangProviderM
     {
         ["en"] = new()
         {
-            ["WindowTitle"] = "编码器参数自定义",
-            ["RateControlTitle"] = "码率控制策略",
-            ["CustomParamsTitle"] = "自定义参数",
-            ["CrfModeText"] = "码率调谐常量（CRF）模式",
-            ["AbrModeText"] = "平均码率（ABR）模式",
+            ["WindowTitle"] = "Encoding Configuration",
+            ["RateControlTitle"] = "Rate Control Mechanism",
+            ["CustomParamsTitle"] = "Custom Parameters",
+            ["CrfModeText"] = "Constant Rate Factor (CRF) Mode",
+            ["AbrModeText"] = "Average Bitrate (ABR) Mode",
             ["X264Text"] = "x264",
             ["X265Text"] = "x265",
             ["SvtAv1Text"] = "SVT-AV1",
-            ["X264DefaultText"] = "（默认 23）",
-            ["X265DefaultText"] = "（默认 28）",
-            ["SvtAv1DefaultText"] = "（默认 35）",
+            ["X264DefaultText"] = "(default 23)",
+            ["X265DefaultText"] = "(default 29)",
+            ["SvtAv1DefaultText"] = "(default 35)",
             ["X264AbrValueText"] = "209",
             ["X265AbrValueText"] = "200",
             ["SvtAv1AbrValueText"] = "200",
-            ["BasicParamsText"] = "基础参数",
-            ["KeyframeSecondsText"] = "关键帧距离秒数",
-            ["ThirdPartyParamsText"] = "第三方扩展参数（不支持或不确定则关）",
-            ["X264ModText"] = "x264 Mod： 基于高频信息的率失真优化（FGO-RD）",
-            ["X265JpsdrAqText"] = "x265 jpsdr Mod： 自适应量化迟滞（AQ Hysteresis）",
-            ["X265JpsdrDarkText"] = "x265 jpsdr Mod： 对暗场提高自适应量化强度",
-            ["X265JpsdrTextureText"] = "x265 jpsdr Mod： 对纹理提高自适应量化强度",
-            ["SvtAv1EssentialDl2Text"] = "SVT-AV1-Essential： 高精度去块滤镜（DLF2）",
-            ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential： 自动计算瓦片大小（Auto Tile）",
-            ["CrfHintText"] = "CRF 取值范围—无损 | 超清 | 高清 | 流媒体",
-            ["AbrHintText"] = "ABR 取值范围—近无损 | 近无损→高清 | 超清→流媒体 | 高清→流媒体（以 2560x1440@60 为准）",
+            ["BasicParamsText"] = "Basic Parameters",
+            ["KeyframeSecondsText"] = "Keyframe Interval Frame #",
+            ["ThirdPartyParamsText"] = "3rd Party Extended Parameters",
+            ["X264ModText"] = "x264 Mod：Film Grain Rate Distortion Optimization（FGO-RD）",
+            ["X265JpsdrAqText"] = "x265 jpsdr Mod: Adaptive Quantization (AQ) Hysteresis",
+            ["X265JpsdrDarkText"] = "x265 jpsdr Mod: ↑AQ Strength for Dark Scenes",
+            ["X265JpsdrTextureText"] = "x265 jpsdr Mod: ↑AQ Strength for Edges",
+            ["SvtAv1EssentialDl2Text"] = "SVT-AV1-Essential: Precise Deblocking Filter (DLF2)",
+            ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential: Auto Tile Size",
+            ["CrfHintText"] = "CRF Slider Ticks—Lossless | UHQ | HQ | Streaming",
+            ["AbrHintText"] = "ABR Slider Ticks—Near Lossless | Near Lossless→HQ | UHQ→Streaming | HQ→Streaming (in 2560x1440@60 cond.)",
+            ["KeyintHintText"] = "Keyint Slider Ticks (Decoding Difficulty)—Energy Saving/Multi-track Edit | Mid. | Hard & Mid. Compression | Extreme & High Comp.",
             ["KeyframeHintText1"] = "「解码与索引难度」指播放器与拖动进度条的费力需求，决定了卡顿的频次",
             ["KeyframeHintText2"] = "片源分辨率高则解码/索引难度上升；背景不动时下降，此时可调整关键帧距离以降低难度或增加压缩",
             ["ThirdPartyHintText1"] = "「高频基准率失真优化」偏向保留锐利细节，但不利于压缩",
@@ -95,14 +96,15 @@ public class EncoderConfLangProviderM
             ["BasicParamsText"] = "基础参数",
             ["KeyframeSecondsText"] = "关键帧距离秒数",
             ["ThirdPartyParamsText"] = "第三方扩展参数（不支持或不确定则关）",
-            ["X264ModText"] = "x264 Mod： 基于高频信息的率失真优化（FGO-RD）",
-            ["X265JpsdrAqText"] = "x265 jpsdr Mod： 自适应量化迟滞（AQ Hysteresis）",
-            ["X265JpsdrDarkText"] = "x265 jpsdr Mod： 对暗场提高自适应量化强度",
-            ["X265JpsdrTextureText"] = "x265 jpsdr Mod： 对纹理提高自适应量化强度",
-            ["SvtAv1EssentialDl2Text"] = "SVT-AV1-Essential： 高精度去块滤镜（DLF2）",
-            ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential： 自动计算瓦片大小（Auto Tile）",
+            ["X264ModText"] = "x264 Mod：基于高频信息的率失真优化（FGO-RD）",
+            ["X265JpsdrAqText"] = "x265 jpsdr Mod：自适应量化迟滞（AQ Hysteresis）",
+            ["X265JpsdrDarkText"] = "x265 jpsdr Mod：对暗场提高自适应量化强度",
+            ["X265JpsdrTextureText"] = "x265 jpsdr Mod：对纹理提高自适应量化强度",
+            ["SvtAv1EssentialDl2Text"] = "SVT-AV1-Essential：高精度去块滤镜（DLF2）",
+            ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential：自动计算瓦片大小（Auto Tile）",
             ["CrfHintText"] = "CRF 取值范围—无损 | 超清 | 高清 | 流媒体",
             ["AbrHintText"] = "ABR 取值范围—近无损 | 近无损→高清 | 超清→流媒体 | 高清→流媒体（以 2560x1440@60 为准）",
+            ["KeyintHintText"] = "Keyint 取值范围—低功耗观影/多轨剪辑 | 中等解码与进度条索引难度 | 较难解码与索引/中压缩 | 很难解码/高压缩",
             ["KeyframeHintText1"] = "「解码与索引难度」指播放器与拖动进度条的费力需求，决定了卡顿的频次",
             ["KeyframeHintText2"] = "片源分辨率高则解码/索引难度上升；背景不动时下降，此时可调整关键帧距离以降低难度或增加压缩",
             ["ThirdPartyHintText1"] = "「高频基准率失真优化」偏向保留锐利细节，但不利于压缩",
@@ -166,14 +168,15 @@ public class EncoderConfLangProviderM
             ["BasicParamsText"] = "基礎參數",
             ["KeyframeSecondsText"] = "關鍵幀距離秒數",
             ["ThirdPartyParamsText"] = "第三方擴展參數（不支持或不確定則關）",
-            ["X264ModText"] = "x264 Mod： 基於高頻信息的率失真優化（FGO-RD）",
-            ["X265JpsdrAqText"] = "x265 jpsdr Mod： 自適應量化遲滯（AQ Hysteresis）",
-            ["X265JpsdrDarkText"] = "x265 jpsdr Mod： 對暗場提高自適應量化強度",
-            ["X265JpsdrTextureText"] = "x265 jpsdr Mod： 對紋理提高自適應量化強度",
-            ["SvtAv1EssentialDl2Text"] = "SVT-AV1-Essential： 高精度去塊濾鏡（DLF2）",
-            ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential： 自動計算瓦片大小（Auto Tile）",
+            ["X264ModText"] = "x264 Mod：基於高頻信息的率失真優化（FGO-RD）",
+            ["X265JpsdrAqText"] = "x265 jpsdr Mod：自適應量化遲滯（AQ Hysteresis）",
+            ["X265JpsdrDarkText"] = "x265 jpsdr Mod：對暗場提高自適應量化強度",
+            ["X265JpsdrTextureText"] = "x265 jpsdr Mod：對紋理提高自適應量化強度",
+            ["SvtAv1EssentialDl2Text"] = "SVT-AV1-Essential：高精度去塊濾鏡（DLF2）",
+            ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential：自動計算瓦片大小（Auto Tile）",
             ["CrfHintText"] = "CRF 取值範圍—無損 | 超清 | 高清 | 流媒體",
             ["AbrHintText"] = "ABR 取值範圍—近無損 | 近無損→高清 | 超清→流媒體 | 高清→流媒體（以 2560x1440@60 為準）",
+            ["KeyintHintText"] = "Keyint 取值範圍—低功耗觀影/多軌剪輯 | 中等解碼與進度條索引難度 | 較難解碼與索引/中壓縮 | 很難解碼/高壓縮",
             ["KeyframeHintText1"] = "「解碼與索引難度」指播放器與拖動進度條的費力需求，決定了卡頓的頻次",
             ["KeyframeHintText2"] = "片源分辨率高則解碼/索引難度上升；背景不動時下降，此時可調整關鍵幀距離以降低難度或增加壓縮",
             ["ThirdPartyHintText1"] = "「高頻基準率失真優化」偏向保留銳利細節，但不利於壓縮",
@@ -245,6 +248,7 @@ public class EncoderConfLangProviderM
     public string SvtAv1EssentialAutoTileText { get; }
     public string CrfHintText { get; }
     public string AbrHintText { get; }
+    public string KeyintHintText { get; }
     public string KeyframeHintText1 { get; }
     public string KeyframeHintText2 { get; }
     public string ThirdPartyHintText1 { get; }
@@ -323,6 +327,7 @@ public class EncoderConfLangProviderM
         SvtAv1EssentialAutoTileText = _d["SvtAv1EssentialAutoTileText"];
         CrfHintText = _d["CrfHintText"];
         AbrHintText = _d["AbrHintText"];
+        KeyintHintText = _d["KeyintHintText"];
         KeyframeHintText1 = _d["KeyframeHintText1"];
         KeyframeHintText2 = _d["KeyframeHintText2"];
         ThirdPartyHintText1 = _d["ThirdPartyHintText1"];

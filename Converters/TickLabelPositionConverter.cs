@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 
 namespace OneColumnEncoder.Converters
@@ -37,14 +38,26 @@ namespace OneColumnEncoder.Converters
 
         private static bool TryToDouble(object value, out double result)
         {
-            if (value == null)
+            if (value == null || value == DependencyProperty.UnsetValue)
             {
                 result = 0d;
                 return false;
             }
 
-            return double.TryParse(value.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out result) ||
-                   double.TryParse(value.ToString(), NumberStyles.Float, CultureInfo.CurrentCulture, out result);
+            string text = value.ToString() ?? string.Empty;
+            int length = 0;
+            while (length < text.Length && (char.IsDigit(text[length]) || text[length] == '.' || text[length] == '-' || text[length] == '+'))
+            {
+                length++;
+            }
+
+            if (length > 0)
+            {
+                text = text[..length];
+            }
+
+            return double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out result) ||
+                   double.TryParse(text, NumberStyles.Float, CultureInfo.CurrentCulture, out result);
         }
     }
 }

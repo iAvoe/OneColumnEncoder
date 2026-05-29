@@ -19,13 +19,17 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Column="0"
+        <TextBlock x:Name="LabelTextBlock"
+                   Grid.Column="0"
                    VerticalAlignment="Center"
+                   Width="{Binding LabelWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
                    Text="{Binding Label, RelativeSource={RelativeSource AncestorType=UserControl}}"
                    FontSize="13" />
 
         <Grid Grid.Column="2"
               VerticalAlignment="Center"
+              HorizontalAlignment="Stretch"
+              MaxWidth="{Binding SliderMaxWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
               Height="45">
             <Grid.RowDefinitions>
                 <RowDefinition Height="18" />
@@ -93,11 +97,13 @@
             </Grid>
 
             <ItemsControl Grid.Row="2"
+                          Width="{Binding ActualWidth, ElementName=TrackHost}"
+                          HorizontalAlignment="Left"
                           ItemsSource="{Binding TickLabels, RelativeSource={RelativeSource AncestorType=UserControl}}"
                           AlternationCount="1000">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <Canvas />
+                        <Canvas Width="{Binding ActualWidth, ElementName=TrackHost}" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemContainerStyle>
