@@ -91,9 +91,7 @@ public class UILangProviderM
 
             ["Tool.Enc.OutputSetting"] = "Output Setting",
             ["Tool.Enc.Parallelism"] = "Parallelism Control",
-            ["Tool.Enc.RateControl"] = "Rate Control Mechanism",
-            ["Tool.Enc.BaseParameters"] = "Base Parameters",
-            ["Tool.Enc.CustomParameters"] = "Custom Parameters",
+            ["Tool.Enc.CompressionParams"] = "Compression Parameters",
 
             // Dialogs
             ["Dialog.SelectTitle"] = "Select {0}",
@@ -334,9 +332,7 @@ public class UILangProviderM
 
             ["Tool.Enc.OutputSetting"] = "输出设置",
             ["Tool.Enc.Parallelism"] = "并行计算调度",
-            ["Tool.Enc.RateControl"] = "率控制设置",
-            ["Tool.Enc.BaseParameters"] = "基础参数",
-            ["Tool.Enc.CustomParameters"] = "自定义参数",
+            ["Tool.Enc.CompressionParams"] = "压缩参数配置",
 
             ["Dialog.SelectTitle"] = "选择 {0}",
             ["Dialog.ReplaceTitle"] = "替换 {0}",
@@ -562,9 +558,7 @@ public class UILangProviderM
 
             ["Tool.Enc.OutputSetting"] = "輸出設定",
             ["Tool.Enc.Parallelism"] = "平行計算調度",
-            ["Tool.Enc.RateControl"] = "率控制設定",
-            ["Tool.Enc.BaseParameters"] = "基礎參數",
-            ["Tool.Enc.CustomParameters"] = "自訂參數",
+            ["Tool.Enc.CompressionParams"] = "壓縮參數配置",
 
             ["Dialog.SelectTitle"] = "選擇 {0}",
             ["Dialog.ReplaceTitle"] = "替換 {0}",

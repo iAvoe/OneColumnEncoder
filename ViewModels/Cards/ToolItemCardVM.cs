@@ -190,6 +190,12 @@ namespace OneColumnEncoder.ViewModels.Cards
             OnPropertyChanged(nameof(DisplayR1Text));
         }
 
+        public void SetEncodingSummary(string line1, string line2)
+        {
+            P1TextData = line1;
+            P2TextData = line2;
+        }
+
         #endregion
     }
 }

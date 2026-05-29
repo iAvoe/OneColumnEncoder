@@ -10,22 +10,10 @@ namespace OneColumnEncoder.Commands.OpenClose
     public class OpenEncoderConfCmd : BaseCmd
     {
         private readonly ModalNavS _modalNavS;
-        private readonly ToolItemCardVM? _rateControlItem;
-        private readonly ToolItemCardVM? _baseParamsItem;
-        private readonly ToolItemCardVM? _customParamsItem;
-        private readonly int _initialTab;
-
         public OpenEncoderConfCmd(ModalNavS modalNavS,
-            ToolItemCardVM? rateControlItem = null,
-            ToolItemCardVM? baseParamsItem = null,
-            ToolItemCardVM? customParamsItem = null,
-            int initialTab = 0)
+            ToolItemCardVM? compressionParamsItem = null)
         {
             _modalNavS = modalNavS;
-            _rateControlItem = rateControlItem;
-            _baseParamsItem = baseParamsItem;
-            _customParamsItem = customParamsItem;
-            _initialTab = initialTab;
         }
 
         public override void Execute(object? parameter)
@@ -44,7 +32,7 @@ namespace OneColumnEncoder.Commands.OpenClose
                 _modalNavS.Close();
 
             EncoderConfModal window = new();
-            EncoderConfVM vm = new(window.Close, _rateControlItem, _baseParamsItem, _customParamsItem, _initialTab);
+            EncoderConfVM vm = new(window.Close);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();

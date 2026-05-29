@@ -453,30 +453,13 @@ namespace OneColumnEncoder.ViewModels
             if (outputSetting != null)
                 outputSetting.R1Command = new OpenFilenameScribeCmd(_modalNavS, outputSetting);
 
-            // Wire up Rate Control, Base Parameters, Custom Parameters
-            if (EncSettingsZone.Count > 2)
+            ToolItemCardVM? compressionParams = EncSettingsZone.FirstOrDefault(t =>
+                t.Name.Equals(UILangProviderM.Current["Tool.Enc.CompressionParams"], StringComparison.OrdinalIgnoreCase));
+
+            if (compressionParams != null)
             {
-                ToolItemCardVM? rateControl = EncSettingsZone.FirstOrDefault(t =>
-                    t.Name.Equals(UILangProviderM.Current["Tool.Enc.RateControl"], StringComparison.OrdinalIgnoreCase));
-                ToolItemCardVM? baseParams = EncSettingsZone.FirstOrDefault(t =>
-                    t.Name.Equals(UILangProviderM.Current["Tool.Enc.BaseParameters"], StringComparison.OrdinalIgnoreCase));
-                ToolItemCardVM? customParams = EncSettingsZone.FirstOrDefault(t =>
-                    t.Name.Equals(UILangProviderM.Current["Tool.Enc.CustomParameters"], StringComparison.OrdinalIgnoreCase));
-
-                if (rateControl != null)
-                    rateControl.R1Command = new OpenEncoderConfCmd(_modalNavS,
-                        rateControlItem: rateControl, baseParamsItem: baseParams, customParamsItem: customParams,
-                        initialTab: 0);
-
-                if (baseParams != null)
-                    baseParams.R1Command = new OpenEncoderConfCmd(_modalNavS,
-                        rateControlItem: rateControl, baseParamsItem: baseParams, customParamsItem: customParams,
-                        initialTab: 1);
-
-                if (customParams != null)
-                    customParams.R1Command = new OpenEncoderConfCmd(_modalNavS,
-                        rateControlItem: rateControl, baseParamsItem: baseParams, customParamsItem: customParams,
-                        initialTab: 1);
+                compressionParams.R1Command = new OpenEncoderConfCmd(_modalNavS, compressionParams);
+                compressionParams.SetEncodingSummary("策略基础参数: CRF18-22-33 | 通用-通用-极致画质", "最大关键帧间距: 11-9-11 秒");
             }
         }
         private void OnVideoSrcItemPropertyChanged(object? sender, PropertyChangedEventArgs e)

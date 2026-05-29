@@ -36,7 +36,7 @@ public static class ToolCatalogProviderM
             UILangProviderM.Current["ToolField.Path"]),
     ];
 
-    // Enc Settings zone (5 items)
+    // Enc Settings zone (3 items)
     public static List<ToolDefinitionM> GetEncSettingsDefinitions() =>
     [
         new(UILangProviderM.Current["Tool.Enc.OutputSetting"],
@@ -49,20 +49,11 @@ public static class ToolCatalogProviderM
             UILangProviderM.Current["Buttons.Clear"],
             UILangProviderM.Current["ToolField.NumaNodes"],
             UILangProviderM.Current["ToolField.Threads"]),
-        new(UILangProviderM.Current["Tool.Enc.RateControl"],
+        new(UILangProviderM.Current["Tool.Enc.CompressionParams"],
             UILangProviderM.Current["Buttons.Edit"],
             UILangProviderM.Current["Buttons.Clear"],
-            UILangProviderM.Current["ToolField.Mode"],
-            UILangProviderM.Current["ToolField.Value"]),
-        new(UILangProviderM.Current["Tool.Enc.BaseParameters"],
-            UILangProviderM.Current["Buttons.Edit"],
-            UILangProviderM.Current["Buttons.Clear"],
-            UILangProviderM.Current["ToolField.Stratagem"]),
-        new(UILangProviderM.Current["Tool.Enc.CustomParameters"],
-            UILangProviderM.Current["Buttons.Edit"],
-            UILangProviderM.Current["Buttons.Clear"],
-            UILangProviderM.Current["ToolField.MaximumKeyframeGap"],
-            UILangProviderM.Current["ToolField.OtherCustomParams"]),
+            UILangProviderM.Current["ToolField.Stratagem"],
+            UILangProviderM.Current["ToolField.MaximumKeyframeGap"]),
     ];
 
     public static List<ToolDefinitionM> GetAllStaticDefinitions() =>

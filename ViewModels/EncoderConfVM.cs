@@ -2,369 +2,207 @@ using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
-using OneColumnEncoder.ViewModels.Cards;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Input;
 
 namespace OneColumnEncoder.ViewModels
 {
     public class EncoderConfVM : BaseVM
     {
         private EncoderConfLangProviderM _lang = new(UILangProviderM.Current.LanguageCode);
-        public EncoderConfLangProviderM Lang
-        {
-            get => _lang;
-            private set => SetProperty(ref _lang, value);
-        }
-
+        public EncoderConfLangProviderM Lang { get => _lang; private set => SetProperty(ref _lang, value); }
         private readonly EncoderConfM _model;
-        private readonly ToolItemCardVM? _rateControlItem;
-        private readonly ToolItemCardVM? _baseParamsItem;
-        private readonly ToolItemCardVM? _customParamsItem;
-
         public CloseModalCmd CloseCmd { get; }
-        public ICommand ConfirmCmd { get; }
+        public ActionCmd ConfirmCmd { get; }
         public ButtonGroupVM FinishButtons { get; }
 
-        public DropdownMenuVM RateControlModeDropdown { get; } = new();
-        public DropdownMenuVM PresetDropdown { get; } = new();
-        public DropdownMenuVM TuneDropdown { get; } = new();
-        public DropdownMenuVM ProfileDropdown { get; } = new();
-
         private int _selectedTabIndex;
-        public int SelectedTabIndex
-        {
-            get => _selectedTabIndex;
-            set => SetProperty(ref _selectedTabIndex, value);
-        }
+        public int SelectedTabIndex { get => _selectedTabIndex; set => SetProperty(ref _selectedTabIndex, value); }
 
-        private int _crfValue = 23;
-        public int CrfValue
-        {
-            get => _crfValue;
-            set => SetProperty(ref _crfValue, value);
-        }
-
-        private int _targetBitrate = 2000;
-        public int TargetBitrate
-        {
-            get => _targetBitrate;
-            set => SetProperty(ref _targetBitrate, value);
-        }
-
-        private int _keyframeInterval = 250;
-        public int KeyframeInterval
-        {
-            get => _keyframeInterval;
-            set => SetProperty(ref _keyframeInterval, value);
-        }
-
-        private bool _fastDecode;
-        public bool FastDecode
-        {
-            get => _fastDecode;
-            set => SetProperty(ref _fastDecode, value);
-        }
-
-        private bool _zeroLatency;
-        public bool ZeroLatency
-        {
-            get => _zeroLatency;
-            set => SetProperty(ref _zeroLatency, value);
-        }
-
-        private string _customParams = "";
-        public string CustomParams
-        {
-            get => _customParams;
-            set => SetProperty(ref _customParams, value);
-        }
+        private string _selectedRateControlMode = "CRF";
+        public string SelectedRateControlMode { get => _selectedRateControlMode; set { if (SetProperty(ref _selectedRateControlMode, value)) OnPropertyChanged(nameof(IsCrfMode)); } }
 
         public string WindowTitle => Lang.WindowTitle;
-        public string TabRateControl => Lang.TabRateControl;
-        public string TabAdvanced => Lang.TabAdvanced;
-        public string RateControlModeText => Lang.RateControlModeText;
-        public string CrfSliderLabel => Lang.CrfSliderLabel;
-        public string TargetBitrateText => Lang.TargetBitrateText;
-        public string PresetText => Lang.PresetText;
-        public string TuneText => Lang.TuneText;
-        public string ProfileText => Lang.ProfileText;
-        public string KeyframeIntervalText => Lang.KeyframeIntervalText;
-        public string FastDecodeText => Lang.FastDecodeText;
-        public string ZeroLatencyText => Lang.ZeroLatencyText;
-        public string CustomParamsText => Lang.CustomParamsText;
-        public string CustomParamsHint => Lang.CustomParamsHint;
+        public string TitleText => Lang.WindowTitle;
+        public string RateControlTitle => Lang.RateControlTitle;
+        public string CustomParamsTitle => Lang.CustomParamsTitle;
+        public string CrfModeText => Lang.CrfModeText;
+        public string AbrModeText => Lang.AbrModeText;
+        public string X264Text => Lang.X264Text;
+        public string X265Text => Lang.X265Text;
+        public string SvtAv1Text => Lang.SvtAv1Text;
+        public string X264DefaultText => Lang.X264DefaultText;
+        public string X265DefaultText => Lang.X265DefaultText;
+        public string SvtAv1DefaultText => Lang.SvtAv1DefaultText;
+        public string X264AbrValueText => Lang.X264AbrValueText;
+        public string X265AbrValueText => Lang.X265AbrValueText;
+        public string SvtAv1AbrValueText => Lang.SvtAv1AbrValueText;
+        public string BasicParamsText => Lang.BasicParamsText;
+        public string KeyframeSecondsText => Lang.KeyframeSecondsText;
+        public string ThirdPartyParamsText => Lang.ThirdPartyParamsText;
+        public string X264ModText => Lang.X264ModText;
+        public string X265JpsdrAqText => Lang.X265JpsdrAqText;
+        public string X265JpsdrDarkText => Lang.X265JpsdrDarkText;
+        public string X265JpsdrTextureText => Lang.X265JpsdrTextureText;
+        public string SvtAv1EssentialDl2Text => Lang.SvtAv1EssentialDl2Text;
+        public string SvtAv1EssentialAutoTileText => Lang.SvtAv1EssentialAutoTileText;
         public string CancelButtonText => Lang.CancelButtonText;
         public string ConfirmButtonText => Lang.ConfirmButtonText;
-        public IEnumerable<string> CrfTickLabels => BuildCrfTickLabels();
-        public IEnumerable<string> KeyframeTickLabels => BuildKeyframeTickLabels();
+        public string CrfHintText => Lang.CrfHintText;
+        public string AbrHintText => Lang.AbrHintText;
+        public string KeyframeHintText1 => Lang.KeyframeHintText1;
+        public string KeyframeHintText2 => Lang.KeyframeHintText2;
+        public string ThirdPartyHintText1 => Lang.ThirdPartyHintText1;
+        public string ThirdPartyHintText2 => Lang.ThirdPartyHintText2;
+        public string ThirdPartyHintText3 => Lang.ThirdPartyHintText3;
+        public string ThirdPartyHintText4 => Lang.ThirdPartyHintText4;
 
-        public EncoderConfVM(Action closeAction, ToolItemCardVM? rateControlItem = null,
-            ToolItemCardVM? baseParamsItem = null, ToolItemCardVM? customParamsItem = null,
-            int initialTab = 0)
+        public bool IsCrfMode => SelectedRateControlMode == Lang.CrfModeText;
+
+        public DropdownMenuVM X264ModeDropdown { get; } = new();
+        public DropdownMenuVM X265ModeDropdown { get; } = new();
+        public DropdownMenuVM SvtAv1ModeDropdown { get; } = new();
+
+        private int _x264Crf = 23;
+        public int X264Crf { get => _x264Crf; set => SetProperty(ref _x264Crf, value); }
+        private int _x265Crf = 28;
+        public int X265Crf { get => _x265Crf; set => SetProperty(ref _x265Crf, value); }
+        private int _svtAv1Crf = 35;
+        public int SvtAv1Crf { get => _svtAv1Crf; set => SetProperty(ref _svtAv1Crf, value); }
+
+        private int _x264Abr = 209;
+        public int X264Abr { get => _x264Abr; set => SetProperty(ref _x264Abr, value); }
+        private int _x265Abr = 70;
+        public int X265Abr { get => _x265Abr; set => SetProperty(ref _x265Abr, value); }
+        private int _svtAv1Abr = 10;
+        public int SvtAv1Abr { get => _svtAv1Abr; set => SetProperty(ref _svtAv1Abr, value); }
+
+        private int _x264Keyframe = 9;
+        public int X264Keyframe { get => _x264Keyframe; set => SetProperty(ref _x264Keyframe, value); }
+        private int _x265Keyframe = 7;
+        public int X265Keyframe { get => _x265Keyframe; set => SetProperty(ref _x265Keyframe, value); }
+        private int _svtAv1Keyframe = 9;
+        public int SvtAv1Keyframe { get => _svtAv1Keyframe; set => SetProperty(ref _svtAv1Keyframe, value); }
+
+        private bool _x264Mod;
+        public bool X264Mod { get => _x264Mod; set => SetProperty(ref _x264Mod, value); }
+        private bool _x265Aq;
+        public bool X265Aq { get => _x265Aq; set => SetProperty(ref _x265Aq, value); }
+        private bool _x265Dark;
+        public bool X265Dark { get => _x265Dark; set => SetProperty(ref _x265Dark, value); }
+        private bool _x265Texture;
+        public bool X265Texture { get => _x265Texture; set => SetProperty(ref _x265Texture, value); }
+        private bool _svtAv1Dl2;
+        public bool SvtAv1Dl2 { get => _svtAv1Dl2; set => SetProperty(ref _svtAv1Dl2, value); }
+        private bool _svtAv1AutoTile;
+        public bool SvtAv1AutoTile { get => _svtAv1AutoTile; set => SetProperty(ref _svtAv1AutoTile, value); }
+
+        public IEnumerable<string> X264CrfLabels => new[] { "0 无损", "13 超清", "17 高清", "21 流媒体", "25" };
+        public IEnumerable<string> X265CrfLabels => new[] { "0 无损", "17 超清", "21 高清", "25 流媒体", "30" };
+        public IEnumerable<string> SvtAv1CrfLabels => new[] { "0 无损", "28 超清", "33 高清", "38 流媒体", "43" };
+        public IEnumerable<string> X264AbrLabels => new[] { "500 Mbps", "200 Mbps", "70 Mbps", "10 Mbps", "1" };
+        public IEnumerable<string> X265AbrLabels => new[] { "500 Mbps", "200 Mbps", "70 Mbps", "10 Mbps", "1" };
+        public IEnumerable<string> SvtAv1AbrLabels => new[] { "500 Mbps", "200 Mbps", "70 Mbps", "10 Mbps", "1" };
+        public IEnumerable<string> X264KeyframeLabels => new[] { "6 低功耗观影/多轨剪辑", "9 中等解码与索引难度", "12 较难解码与索引/中压缩", "15" };
+        public IEnumerable<string> X265KeyframeLabels => new[] { "4 低功耗观影/多轨剪辑", "7 中等解码与索引难度", "10 较难解码与索引/中压缩", "13" };
+        public IEnumerable<string> SvtAv1KeyframeLabels => new[] { "6 低功耗观影/多轨剪辑", "9 中等解码与索引难度", "12 较难解码与索引/中压缩", "15" };
+
+        public EncoderConfVM(Action closeAction)
         {
             _model = EncoderConfM.Load();
-            _rateControlItem = rateControlItem;
-            _baseParamsItem = baseParamsItem;
-            _customParamsItem = customParamsItem;
-            Lang = new EncoderConfLangProviderM(UILangProviderM.Current.LanguageCode);
             CloseCmd = new CloseModalCmd(closeAction);
-            ConfirmCmd = new ActionCmd(_ =>
-            {
-                ApplySettingsToTargets();
-                SaveModel();
-                closeAction();
-            });
+            ConfirmCmd = new ActionCmd(_ => { SaveModel(); closeAction(); });
             FinishButtons = ButtonGroupVM.CreateTwoButton(CancelButtonText, ConfirmButtonText, CloseCmd, ConfirmCmd);
-
             PopulateDropdowns();
             LoadModelToUi();
-
-            if (initialTab is 0 or 1) SelectedTabIndex = initialTab;
-
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
 
         private void PopulateDropdowns()
         {
-            PopulateRateControlModes();
-            PopulatePresets();
-            PopulateTunes();
-            PopulateProfiles();
-        }
-
-        private void PopulateRateControlModes()
-        {
-            RateControlModeDropdown.Items.Add(new DropdownItemM(Lang.ModeCrf));
-            RateControlModeDropdown.Items.Add(new DropdownItemM(Lang.ModeCbr));
-            RateControlModeDropdown.Items.Add(new DropdownItemM(Lang.ModeVbr));
-            RateControlModeDropdown.SelectedItem = RateControlModeDropdown.Items[0];
-            RateControlModeDropdown.SelectionChangedCommand = new ActionCmd(_ =>
-                OnPropertyChanged(nameof(IsCrfMode)));
-        }
-
-        private void PopulatePresets()
-        {
-            string[] presetKeys =
-                ["placebo", "veryslow", "slower", "slow", "medium", "fast", "faster", "veryfast", "superfast", "ultrafast"];
-            foreach (string key in presetKeys)
-                PresetDropdown.Items.Add(new DropdownItemM(Lang[$"Preset{Capitalize(key)}"]));
-            PresetDropdown.SelectedItem = PresetDropdown.Items.First(i => i.Title == Lang.PresetMedium);
-        }
-
-        private void PopulateTunes()
-        {
-            string[] tuneKeys = ["none", "film", "animation", "grain", "stillimage", "psnr", "ssim", "fastdecode", "zerolatency"];
-            foreach (string key in tuneKeys)
-                TuneDropdown.Items.Add(new DropdownItemM(Lang[$"Tune{Capitalize(key)}"]));
-            TuneDropdown.SelectedItem = TuneDropdown.Items[0];
-        }
-
-        private void PopulateProfiles()
-        {
-            string[] profileKeys = ["auto", "main", "high", "high10", "high444"];
-            foreach (string key in profileKeys)
-                ProfileDropdown.Items.Add(new DropdownItemM(Lang[$"Profile{Capitalize(key)}"]));
-            ProfileDropdown.SelectedItem = ProfileDropdown.Items[0];
-        }
-
-        public bool IsCrfMode => RateControlModeDropdown.SelectedItem?.Title == Lang.ModeCrf;
-
-        private void ApplySettingsToTargets()
-        {
-            if (_rateControlItem != null)
-            {
-                _rateControlItem.P1TextData = RateControlModeDropdown.SelectedItem?.Title ?? Lang.ModeCrf;
-                _rateControlItem.P2TextData = IsCrfMode ? $"CRF: {CrfValue}" : $"{TargetBitrate} kbps";
-            }
-            if (_baseParamsItem != null)
-            {
-                string preset = PresetDropdown.SelectedItem?.Title ?? Lang.PresetMedium;
-                string tune = TuneDropdown.SelectedItem?.Title ?? Lang.TuneNone;
-                _baseParamsItem.P1TextData = $"{preset}, {tune}";
-                _baseParamsItem.P2TextData = $"Keyframes: {KeyframeInterval}";
-            }
-            if (_customParamsItem != null)
-            {
-                _customParamsItem.P1TextData = ProfileDropdown.SelectedItem?.Title ?? Lang.ProfileAuto;
-                _customParamsItem.P2TextData = string.IsNullOrWhiteSpace(CustomParams) ? "-" : CustomParams;
-            }
-        }
-
-        private void SaveModel()
-        {
-            _model.RateControlMode = RateControlModeDropdown.SelectedItem?.Title ?? Lang.ModeCrf;
-            _model.CrfValue = CrfValue;
-            _model.TargetBitrate = TargetBitrate;
-            _model.Preset = PresetDropdown.SelectedItem?.Title ?? Lang.PresetMedium;
-            _model.Tune = TuneDropdown.SelectedItem?.Title ?? Lang.TuneNone;
-            _model.Profile = ProfileDropdown.SelectedItem?.Title ?? Lang.ProfileAuto;
-            _model.KeyframeInterval = KeyframeInterval;
-            _model.FastDecode = FastDecode;
-            _model.ZeroLatency = ZeroLatency;
-            _model.CustomParams = CustomParams;
-            _model.Save();
+            foreach (string s in new[] { Lang.GeneralPurposeText, Lang.StockFootageText }) X264ModeDropdown.Items.Add(new DropdownItemM(s));
+            foreach (string s in new[] { Lang.GeneralPurposeText, Lang.FilmIRLText, Lang.StockFootageText, Lang.AnimeText, Lang.StressTestText }) X265ModeDropdown.Items.Add(new DropdownItemM(s));
+            foreach (string s in new[] { Lang.PeakQualityText, Lang.CompressionOptText, Lang.SpeedOptimizedText }) SvtAv1ModeDropdown.Items.Add(new DropdownItemM(s));
+            X264ModeDropdown.SelectedItem = X264ModeDropdown.Items.FirstOrDefault();
+            X265ModeDropdown.SelectedItem = X265ModeDropdown.Items.FirstOrDefault();
+            SvtAv1ModeDropdown.SelectedItem = SvtAv1ModeDropdown.Items.FirstOrDefault();
         }
 
         private void LoadModelToUi()
         {
-            CrfValue = _model.CrfValue;
-            TargetBitrate = _model.TargetBitrate;
-            KeyframeInterval = _model.KeyframeInterval;
-            FastDecode = _model.FastDecode;
-            ZeroLatency = _model.ZeroLatency;
-            CustomParams = _model.CustomParams;
-
-            DropdownItemM? modeItem = RateControlModeDropdown.Items.FirstOrDefault(i =>
-                i.Title == LookupModeDisplay(_model.RateControlMode));
-            if (modeItem != null) RateControlModeDropdown.SelectedItem = modeItem;
-
-            DropdownItemM? presetItem = PresetDropdown.Items.FirstOrDefault(i =>
-                i.Title == LookupPresetDisplay(_model.Preset));
-            if (presetItem != null) PresetDropdown.SelectedItem = presetItem;
-
-            DropdownItemM? tuneItem = TuneDropdown.Items.FirstOrDefault(i =>
-                i.Title == LookupTuneDisplay(_model.Tune));
-            if (tuneItem != null) TuneDropdown.SelectedItem = tuneItem;
-
-            DropdownItemM? profileItem = ProfileDropdown.Items.FirstOrDefault(i =>
-                i.Title == LookupProfileDisplay(_model.Profile));
-            if (profileItem != null) ProfileDropdown.SelectedItem = profileItem;
+            SelectedTabIndex = Math.Max(0, Math.Min(1, _model.EncoderModeTabIndex));
+            SelectedRateControlMode = _model.RateControlMode == "ABR" ? Lang.AbrModeText : Lang.CrfModeText;
+            X264Crf = _model.CrfValue;
+            X265Crf = _model.CrfValue;
+            SvtAv1Crf = _model.CrfValue;
+            X264Abr = _model.TargetBitrate;
+            X265Abr = _model.TargetBitrate;
+            SvtAv1Abr = _model.TargetBitrate;
+            X264Keyframe = _model.KeyframeInterval;
+            X265Keyframe = _model.KeyframeInterval;
+            SvtAv1Keyframe = _model.KeyframeInterval;
+            X264Mod = _model.FastDecode;
+            X265Aq = _model.ZeroLatency;
+            X265Dark = false;
+            X265Texture = false;
+            SvtAv1Dl2 = false;
+            SvtAv1AutoTile = false;
         }
 
-        private string LookupModeDisplay(string key) => key switch
+        private void SaveModel()
         {
-            "CRF" => Lang.ModeCrf,
-            "CBR" => Lang.ModeCbr,
-            "VBR" => Lang.ModeVbr,
-            _ => Lang.ModeCrf
-        };
-
-        private string LookupPresetDisplay(string key) => key switch
-        {
-            "placebo" => Lang.PresetPlacebo,
-            "veryslow" => Lang.PresetVerySlow,
-            "slower" => Lang.PresetSlower,
-            "slow" => Lang.PresetSlow,
-            "medium" => Lang.PresetMedium,
-            "fast" => Lang.PresetFast,
-            "faster" => Lang.PresetFaster,
-            "veryfast" => Lang.PresetVeryFast,
-            "superfast" => Lang.PresetSuperFast,
-            "ultrafast" => Lang.PresetUltraFast,
-            _ => Lang.PresetMedium
-        };
-
-        private string LookupTuneDisplay(string key) => key switch
-        {
-            "none" => Lang.TuneNone,
-            "film" => Lang.TuneFilm,
-            "animation" => Lang.TuneAnimation,
-            "grain" => Lang.TuneGrain,
-            "stillimage" => Lang.TuneStillImage,
-            "psnr" => Lang.TunePsnr,
-            "ssim" => Lang.TuneSsim,
-            "fastdecode" => Lang.TuneFastDecode,
-            "zerolatency" => Lang.TuneZeroLatency,
-            _ => Lang.TuneNone
-        };
-
-        private string LookupProfileDisplay(string key) => key switch
-        {
-            "auto" => Lang.ProfileAuto,
-            "main" => Lang.ProfileMain,
-            "high" => Lang.ProfileHigh,
-            "high10" => Lang.ProfileHigh10,
-            "high444" => Lang.ProfileHigh444,
-            _ => Lang.ProfileAuto
-        };
-
-        private static IEnumerable<string> BuildCrfTickLabels()
-        {
-            return Enumerable.Range(0, 10).Select(i =>
-            {
-                int val = i switch
-                {
-                    0 => 0,
-                    9 => 51,
-                    _ => (int)Math.Round(Math.Pow(51.0, i / 9.0))
-                };
-                return val.ToString();
-            });
+            _model.EncoderModeTabIndex = SelectedTabIndex;
+            _model.RateControlMode = IsCrfMode ? "CRF" : "ABR";
+            _model.CrfValue = X264Crf;
+            _model.TargetBitrate = X264Abr;
+            _model.KeyframeInterval = X264Keyframe;
+            _model.FastDecode = X264Mod;
+            _model.ZeroLatency = X265Aq;
+            _model.CustomParams = BuildCustomParams();
+            _model.Save();
         }
 
-        private static IEnumerable<string> BuildKeyframeTickLabels()
-        {
-            return Enumerable.Range(0, 8).Select(i =>
-            {
-                int val = (int)(10 + i * (1000.0 - 10) / 7);
-                return val >= 1000 ? "1000+" : val.ToString();
-            });
-        }
-
-        private static string Capitalize(string s) =>
-            string.IsNullOrEmpty(s) ? s : char.ToUpper(s[0]) + s[1..];
+        private string BuildCustomParams() => string.Join(" ", new[] { X264Mod ? "--x264-mod" : null, X265Aq ? "--aq-hysteresis" : null, X265Dark ? "--dark-aq" : null, X265Texture ? "--texture-aq" : null, SvtAv1Dl2 ? "--dlf2" : null, SvtAv1AutoTile ? "--auto-tile" : null }.Where(s => !string.IsNullOrWhiteSpace(s)));
 
         private void OnLanguageChanged()
         {
             Lang = new EncoderConfLangProviderM(UILangProviderM.Current.LanguageCode);
             OnPropertyChanged(nameof(WindowTitle));
-            OnPropertyChanged(nameof(TabRateControl));
-            OnPropertyChanged(nameof(TabAdvanced));
-            OnPropertyChanged(nameof(RateControlModeText));
-            OnPropertyChanged(nameof(CrfSliderLabel));
-            OnPropertyChanged(nameof(TargetBitrateText));
-            OnPropertyChanged(nameof(PresetText));
-            OnPropertyChanged(nameof(TuneText));
-            OnPropertyChanged(nameof(ProfileText));
-            OnPropertyChanged(nameof(KeyframeIntervalText));
-            OnPropertyChanged(nameof(FastDecodeText));
-            OnPropertyChanged(nameof(ZeroLatencyText));
-            OnPropertyChanged(nameof(CustomParamsText));
-            OnPropertyChanged(nameof(CustomParamsHint));
+            OnPropertyChanged(nameof(TitleText));
+            OnPropertyChanged(nameof(RateControlTitle));
+            OnPropertyChanged(nameof(CustomParamsTitle));
+            OnPropertyChanged(nameof(CrfModeText));
+            OnPropertyChanged(nameof(AbrModeText));
+            OnPropertyChanged(nameof(X264Text));
+            OnPropertyChanged(nameof(X265Text));
+            OnPropertyChanged(nameof(SvtAv1Text));
+            OnPropertyChanged(nameof(X264DefaultText));
+            OnPropertyChanged(nameof(X265DefaultText));
+            OnPropertyChanged(nameof(SvtAv1DefaultText));
+            OnPropertyChanged(nameof(BasicParamsText));
+            OnPropertyChanged(nameof(KeyframeSecondsText));
+            OnPropertyChanged(nameof(ThirdPartyParamsText));
+            OnPropertyChanged(nameof(X264ModText));
+            OnPropertyChanged(nameof(X265JpsdrAqText));
+            OnPropertyChanged(nameof(X265JpsdrDarkText));
+            OnPropertyChanged(nameof(X265JpsdrTextureText));
+            OnPropertyChanged(nameof(SvtAv1EssentialDl2Text));
+            OnPropertyChanged(nameof(SvtAv1EssentialAutoTileText));
             OnPropertyChanged(nameof(CancelButtonText));
             OnPropertyChanged(nameof(ConfirmButtonText));
-            OnPropertyChanged(nameof(CrfTickLabels));
-            OnPropertyChanged(nameof(KeyframeTickLabels));
-            OnPropertyChanged(nameof(IsCrfMode));
-
+            OnPropertyChanged(nameof(CrfHintText));
+            OnPropertyChanged(nameof(AbrHintText));
+            OnPropertyChanged(nameof(KeyframeHintText1));
+            OnPropertyChanged(nameof(KeyframeHintText2));
+            OnPropertyChanged(nameof(ThirdPartyHintText1));
+            OnPropertyChanged(nameof(ThirdPartyHintText2));
+            OnPropertyChanged(nameof(ThirdPartyHintText3));
+            OnPropertyChanged(nameof(ThirdPartyHintText4));
             FinishButtons.B2_1Text = CancelButtonText;
             FinishButtons.B2_2Text = ConfirmButtonText;
-
-            RebuildDropdownDisplay();
         }
 
-        private void RebuildDropdownDisplay()
-        {
-            string currentMode = RateControlModeDropdown.SelectedItem?.Title ?? "";
-            string currentPreset = PresetDropdown.SelectedItem?.Title ?? "";
-            string currentTune = TuneDropdown.SelectedItem?.Title ?? "";
-            string currentProfile = ProfileDropdown.SelectedItem?.Title ?? "";
-
-            RateControlModeDropdown.Items.Clear();
-            PresetDropdown.Items.Clear();
-            TuneDropdown.Items.Clear();
-            ProfileDropdown.Items.Clear();
-
-            PopulateDropdowns();
-
-            RateControlModeDropdown.SelectedItem = RateControlModeDropdown.Items.FirstOrDefault(i => i.Title == currentMode)
-                ?? RateControlModeDropdown.Items[0];
-            PresetDropdown.SelectedItem = PresetDropdown.Items.FirstOrDefault(i => i.Title == currentPreset)
-                ?? PresetDropdown.Items[0];
-            TuneDropdown.SelectedItem = TuneDropdown.Items.FirstOrDefault(i => i.Title == currentTune)
-                ?? TuneDropdown.Items[0];
-            ProfileDropdown.SelectedItem = ProfileDropdown.Items.FirstOrDefault(i => i.Title == currentProfile)
-                ?? ProfileDropdown.Items[0];
-        }
-
-        public override void Dispose()
-        {
-            UILangProviderM.CurrentChanged -= OnLanguageChanged;
-            base.Dispose();
-        }
+        public override void Dispose() { UILangProviderM.CurrentChanged -= OnLanguageChanged; base.Dispose(); }
     }
 }

@@ -11,6 +11,8 @@ namespace OneColumnEncoder.Models
 
         protected override string FilePath => ConfigFilePath;
 
+        public int EncoderModeTabIndex { get; set; } = 0;
+        public string EncoderType { get; set; } = "H.264";
         public string RateControlMode { get; set; } = "CRF";
         public int CrfValue { get; set; } = 23;
         public int TargetBitrate { get; set; } = 2000;
