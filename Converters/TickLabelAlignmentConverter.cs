@@ -1,0 +1,29 @@
+using System;
+using System.Globalization;
+using System.Windows;
+using System.Windows.Data;
+
+namespace OneColumnEncoder.Converters
+{
+    public class TickLabelAlignmentConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values.Length < 2 || values[0] is not int index || values[1] is not int tickCount)
+            {
+                return HorizontalAlignment.Center;
+            }
+
+            if (index == 0)
+                return HorizontalAlignment.Left;
+            if (index == tickCount - 1)
+                return HorizontalAlignment.Right;
+            return HorizontalAlignment.Center;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

@@ -19,12 +19,10 @@ namespace OneColumnEncoder.Converters
                 return 0d;
             }
 
-            if (values[1] is not double minimum || values[2] is not double maximum || maximum <= minimum)
-            {
-                return 0d;
-            }
-
-            if (values[3] is not double value)
+            if (!TryToDouble(values[1], out double minimum) ||
+                !TryToDouble(values[2], out double maximum) ||
+                !TryToDouble(values[3], out double value) ||
+                maximum <= minimum)
             {
                 return 0d;
             }
@@ -36,6 +34,26 @@ namespace OneColumnEncoder.Converters
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+
+        private static bool TryToDouble(object value, out double result)
+        {
+            if (value == null || value == DependencyProperty.UnsetValue)
+            {
+                result = 0d;
+                return false;
+            }
+
+            try
+            {
+                result = System.Convert.ToDouble(value, CultureInfo.InvariantCulture);
+                return true;
+            }
+            catch (Exception)
+            {
+                result = 0d;
+                return false;
+            }
         }
     }
 }

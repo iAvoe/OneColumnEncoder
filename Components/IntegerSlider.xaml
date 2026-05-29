@@ -9,6 +9,7 @@
              d:DesignWidth="520">
     <UserControl.Resources>
         <conv:SliderTrackPositionConverter x:Key="SliderTrackPositionConverter" />
+        <conv:TickLabelPositionConverter x:Key="TickLabelPositionConverter" />
     </UserControl.Resources>
     <Grid VerticalAlignment="Center">
         <Grid.ColumnDefinitions>
@@ -31,19 +32,6 @@
                 <RowDefinition Height="18" />
             </Grid.RowDefinitions>
 
-            <!-- TODO: This should be a on-drag feedback, not a static element -->
-            <Border Grid.Row="0"
-                    HorizontalAlignment="Center"
-                    Padding="6,1"
-                    CornerRadius="2"
-                    BorderThickness="1"
-                    BorderBrush="{StaticResource GlobalSecondary}">
-                <TextBlock Text="{Binding Value, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                           FontSize="10"
-                           HorizontalAlignment="Center" />
-            </Border>
-
-            <!-- TODO: This could not be dragged somehow -->
             <Grid Grid.Row="1"
                   x:Name="TrackHost"
                   VerticalAlignment="Center">
@@ -56,6 +44,7 @@
                     <Thumb Width="14"
                            Height="14"
                            Background="Transparent"
+                           DragStarted="Thumb_DragStarted"
                            DragDelta="Thumb_DragDelta"
                            DragCompleted="Thumb_DragCompleted"
                            Cursor="Hand">
@@ -79,17 +68,48 @@
                             </TranslateTransform>
                         </Thumb.RenderTransform>
                     </Thumb>
+                    <Border Padding="6,1"
+                            CornerRadius="2"
+                            BorderThickness="1"
+                            BorderBrush="{StaticResource GlobalSecondary}"
+                            Canvas.Top="-20">
+                        <Canvas.Left>
+                            <MultiBinding Converter="{StaticResource SliderTrackPositionConverter}">
+                                <Binding ElementName="TrackHost" Path="ActualWidth" />
+                                <Binding RelativeSource="{RelativeSource AncestorType=UserControl}" Path="Minimum" />
+                                <Binding RelativeSource="{RelativeSource AncestorType=UserControl}" Path="Maximum" />
+                                <Binding RelativeSource="{RelativeSource AncestorType=UserControl}" Path="Value" />
+                            </MultiBinding>
+                        </Canvas.Left>
+                        <TextBlock Text="{Binding Value, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                   FontSize="10"
+                                   HorizontalAlignment="Center" />
+                    </Border>
                 </Canvas>
             </Grid>
 
-            <!-- TODO: last label is not positioned at edge, but closer to center-->
             <ItemsControl Grid.Row="2"
-                          ItemsSource="{Binding TickLabels, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                          ItemsSource="{Binding TickLabels, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                          AlternationCount="1000">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <UniformGrid Rows="1" />
+                        <Canvas />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="ContentPresenter">
+                        <Setter Property="Canvas.Left">
+                            <Setter.Value>
+                                <MultiBinding Converter="{StaticResource TickLabelPositionConverter}">
+                                    <Binding ElementName="TrackHost" Path="ActualWidth" />
+                                    <Binding RelativeSource="{RelativeSource Self}" Path="ActualWidth" />
+                                    <Binding RelativeSource="{RelativeSource Self}" Path="(ItemsControl.AlternationIndex)" />
+                                    <Binding RelativeSource="{RelativeSource AncestorType=UserControl}" Path="TickCount" />
+                                </MultiBinding>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding}"

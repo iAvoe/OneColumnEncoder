@@ -10,6 +10,8 @@ namespace OneColumnEncoder.Components
 {
     public partial class IntegerSlider : UserControl
     {
+        private double _dragRatio;
+
         public IntegerSlider()
         {
             InitializeComponent();
@@ -48,6 +50,11 @@ namespace OneColumnEncoder.Components
         public int TickCount { get => (int)GetValue(TickCountProperty); set => SetValue(TickCountProperty, value); }
         public bool SnapToTicks { get => (bool)GetValue(SnapToTicksProperty); set => SetValue(SnapToTicksProperty, value); }
 
+        private void Thumb_DragStarted(object sender, DragStartedEventArgs e)
+        {
+            _dragRatio = GetCurrentRatio();
+        }
+
         private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
             UpdateValueFromPosition(e.HorizontalChange);
@@ -68,11 +75,21 @@ namespace OneColumnEncoder.Components
                 return;
             }
 
-            var ratio = Math.Max(0d, Math.Min(1d, (double)(Value - Minimum) / (Maximum - Minimum)));
-            ratio = Math.Max(0d, Math.Min(1d, ratio + deltaX / TrackHost.ActualWidth));
+            _dragRatio = Math.Max(0d, Math.Min(1d, _dragRatio + deltaX / TrackHost.ActualWidth));
 
-            var next = IsLogarithmic ? FromLogRatio(ratio) : Minimum + ratio * (Maximum - Minimum);
-            Value = SnapToTicks ? SnapValue((int)Math.Round(next)) : (int)next;
+            var next = IsLogarithmic ? FromLogRatio(_dragRatio) : Minimum + _dragRatio * (Maximum - Minimum);
+            var nextValue = SnapToTicks ? (int)Math.Round(next) : (int)next;
+            Value = Math.Max(Minimum, Math.Min(Maximum, nextValue));
+        }
+
+        private double GetCurrentRatio()
+        {
+            if (Maximum <= Minimum)
+            {
+                return 0d;
+            }
+
+            return Math.Max(0d, Math.Min(1d, (Value - Minimum) / (double)(Maximum - Minimum)));
         }
 
         private int SnapValue(int value)
