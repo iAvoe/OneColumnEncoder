@@ -1,16 +1,18 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 
 namespace OneColumnEncoder.Components
 {
     public partial class IntegerSlider : UserControl
     {
         private double _dragRatio;
+        private int _dragValue;
+        private double _dragPointerOffset;
+        internal const double ThumbWidth = 14d;
 
         public IntegerSlider()
         {
@@ -53,11 +55,15 @@ namespace OneColumnEncoder.Components
         private void Thumb_DragStarted(object sender, DragStartedEventArgs e)
         {
             _dragRatio = GetCurrentRatio();
+            _dragValue = Value;
+            double travelWidth = GetTravelWidth();
+            double thumbCenter = _dragRatio * travelWidth + ThumbWidth / 2d;
+            _dragPointerOffset = Mouse.GetPosition(TrackHost).X - thumbCenter;
         }
 
         private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            UpdateValueFromPosition(e.HorizontalChange);
+            UpdateValueFromPointer();
         }
 
         private void Thumb_DragCompleted(object sender, DragCompletedEventArgs e)
@@ -68,18 +74,24 @@ namespace OneColumnEncoder.Components
             }
         }
 
-        private void UpdateValueFromPosition(double deltaX)
+        private void UpdateValueFromPointer()
         {
             if (TrackHost.ActualWidth <= 0 || Maximum <= Minimum)
             {
                 return;
             }
 
-            _dragRatio = Math.Max(0d, Math.Min(1d, _dragRatio + deltaX / TrackHost.ActualWidth));
+            double travelWidth = GetTravelWidth();
+            double pointerX = Mouse.GetPosition(TrackHost).X - _dragPointerOffset;
+            double thumbLeft = pointerX - ThumbWidth / 2d;
+            _dragRatio = Math.Max(0d, Math.Min(1d, thumbLeft / travelWidth));
 
-            var next = IsLogarithmic ? FromLogRatio(_dragRatio) : Minimum + _dragRatio * (Maximum - Minimum);
-            var nextValue = SnapToTicks ? (int)Math.Round(next) : (int)next;
-            Value = Math.Max(Minimum, Math.Min(Maximum, nextValue));
+            int nextValue = RatioToValue(_dragRatio);
+            if (nextValue != _dragValue)
+            {
+                _dragValue = nextValue;
+                Value = nextValue;
+            }
         }
 
         private double GetCurrentRatio()
@@ -92,16 +104,16 @@ namespace OneColumnEncoder.Components
             return Math.Max(0d, Math.Min(1d, (Value - Minimum) / (double)(Maximum - Minimum)));
         }
 
-        private int SnapValue(int value)
+        private double GetTravelWidth()
         {
-            if (TickCount <= 1)
-            {
-                return Math.Max(Minimum, Math.Min(Maximum, value));
-            }
+            return Math.Max(1d, TrackHost.ActualWidth - ThumbWidth);
+        }
 
-            var step = (Maximum - Minimum) / (double)(TickCount - 1);
-            var index = Math.Round((value - Minimum) / step);
-            return Math.Max(Minimum, Math.Min(Maximum, (int)Math.Round(Minimum + index * step)));
+        private int RatioToValue(double ratio)
+        {
+            double next = IsLogarithmic ? FromLogRatio(ratio) : Minimum + ratio * (Maximum - Minimum);
+            int nextValue = SnapToTicks ? (int)Math.Round(next) : (int)next;
+            return Math.Max(Minimum, Math.Min(Maximum, nextValue));
         }
 
         private double FromLogRatio(double ratio)

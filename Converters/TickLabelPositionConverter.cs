@@ -8,36 +8,43 @@ namespace OneColumnEncoder.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values.Length < 4 ||
+            if (values.Length < 5 ||
                 values[0] is not double actualWidth ||
                 values[1] is not double labelWidth ||
-                values[2] is not int index ||
-                values[3] is not int tickCount ||
-                actualWidth <= 0 ||
-                tickCount <= 1)
+                actualWidth <= 0)
             {
                 return 0d;
             }
 
-            double normalized = Math.Max(0d, Math.Min(1d, index / (double)(tickCount - 1)));
-            double position = normalized * actualWidth;
-
-            if (index == 0)
+            if (!TryToDouble(values[2], out double value) ||
+                !TryToDouble(values[3], out double minimum) ||
+                !TryToDouble(values[4], out double maximum) ||
+                maximum <= minimum)
             {
-                return position;
+                return 0d;
             }
 
-            if (index == tickCount - 1)
-            {
-                return position - labelWidth;
-            }
-
-            return position - labelWidth / 2d;
+            double travelWidth = Math.Max(0d, actualWidth - OneColumnEncoder.Components.IntegerSlider.ThumbWidth);
+            double normalized = Math.Max(0d, Math.Min(1d, (value - minimum) / (maximum - minimum)));
+            double center = normalized * travelWidth + OneColumnEncoder.Components.IntegerSlider.ThumbWidth / 2d;
+            return center - labelWidth / 2d;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+
+        private static bool TryToDouble(object value, out double result)
+        {
+            if (value == null)
+            {
+                result = 0d;
+                return false;
+            }
+
+            return double.TryParse(value.ToString(), NumberStyles.Float, CultureInfo.InvariantCulture, out result) ||
+                   double.TryParse(value.ToString(), NumberStyles.Float, CultureInfo.CurrentCulture, out result);
         }
     }
 }

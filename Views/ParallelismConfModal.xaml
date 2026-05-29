@@ -11,7 +11,7 @@
         mc:Ignorable="d"
         Title="{Binding Lang.WindowTitle}"
         Width="530"
-        Height="630"
+        Height="650"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <ScrollViewer VerticalScrollBarVisibility="Auto"

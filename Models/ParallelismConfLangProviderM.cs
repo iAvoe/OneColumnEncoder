@@ -8,14 +8,15 @@ public class ParallelismConfLangProviderM
         ["en"] = new()
         {
             ["WindowTitle"] = "Parallelism Configuration",
-            ["IntroText"] = "This program ignores the various parallelism impls among tools & tends w/:\n· CPU Sets to suggest thread affinity (Allowing temp. thread-node disloc.)\n· Try allocate RAM to encoding thread ranged on the their NUMA node",
+            ["IntroText"] = "This program ignores the various parallel-impls among tools, and uses:\n· CPU Sets to suggest thread affinity (Allowing temp. thread-node disloc.)\n· Try allocate RAM to encoding thread ranged on the their NUMA node",
             ["PriorityText"] = "This program avoids increase of task priority, nor declare encoding tasks to be latency-sensitive,\nthereby preventing unresponsive tasks hanging the OS indefinitely",
-            ["CacheGroupTitle"] = "Detected core cache groups (more cross-grouping lowers cache hit rate)",
+            ["CacheGroupTitle"] = "Detected L3 cache groups (↑crossings, ↓cache hits)",
             ["UpstreamNumaTitle"] = "NUMA Soft Binding: Pipe Upstream",
             ["DownstreamNumaTitle"] = "NUMA Soft Binding: Pipe Downstream (encoder)",
             ["NumaGuidanceText"] = "If upstream tool has slow filters, assign encoder to other nodes might be faster—compute bottleneck\notherwise, sharing might be faster—latency bottleneck",
             ["ThreadStrategyTitle"] = "Hyper-threading & P-E Core Scheduling",
-            ["PreferPhysicalCoresText"] = "Try assigning encoder threads to physical cores one by one",
+            ["EncoderThreadCountText"] = "Encoder threads count",
+            ["PreferPhysicalCoresText"] = "Map encoder thread # to phys. cores (clamps slider maximum)",
             ["PreferPerformanceCoresText"] = "Prefer performance cores (P-Core)",
             ["MemoryStrategyTitle"] = "Advanced Memory Allocation (memory locking permission required)",
             ["UseLargePagesText"] = "Enable Large Pages for source videos with resolution above 2K",
@@ -25,8 +26,7 @@ public class ParallelismConfLangProviderM
             ["CorePerGroup1"] = " cores is/are directly connected to a ",
             ["CorePerGroup1alt"] = " cores (",
             ["CorePerGroup1alt1"] = " threads) is/are directly connected to a ",
-            ["CorePerGroup2"] = " MB L3 cache",
-            ["EncoderThreadCountText"] = "Encoder Thread Count",
+            ["CorePerGroup2"] = "MB L3",
         },
         ["zh-cn"] = new()
         {
@@ -38,7 +38,8 @@ public class ParallelismConfLangProviderM
             ["DownstreamNumaTitle"] = "NUMA 软绑定：管道下游程序（编码器）",
             ["NumaGuidanceText"] = "若上游程序使用了高占用滤镜且视频源内容复杂，则上下游各占一节点的速度大概更快（算力瓶颈），\n否则共用节点的速度大概更快（通信瓶颈）",
             ["ThreadStrategyTitle"] = "超线程与 P-E 架构处理器调度",
-            ["PreferPhysicalCoresText"] = "尝试逐物理核心分配编码器线程",
+            ["EncoderThreadCountText"] = "编码器线程数",
+            ["PreferPhysicalCoresText"] = "尝试逐物理核心分配编码器线程（限制滑条最大值）",
             ["PreferPerformanceCoresText"] = "优先使用性能核心（P-Core）",
             ["MemoryStrategyTitle"] = "高级内存分配策略（需锁定内存页权限）",
             ["UseLargePagesText"] = "超过 2K 分辨率时启用大页内存分区（Large Pages）",
@@ -49,7 +50,6 @@ public class ParallelismConfLangProviderM
             ["CorePerGroup1alt"] = " 核心（",
             ["CorePerGroup1alt1"] = " 线程）直连 ",
             ["CorePerGroup2"] = " MB 的 L3",
-            ["EncoderThreadCountText"] = "编码器线程数",
         },
         ["zh-tw"] = new()
         {
@@ -61,7 +61,8 @@ public class ParallelismConfLangProviderM
             ["DownstreamNumaTitle"] = "NUMA 軟綁定：管道下游程式（編碼器）",
             ["NumaGuidanceText"] = "若上遊程序使用了高占用濾鏡且影片源內容複雜，則上下游各占一節點的速度大概更快（算力瓶頸），\n否則共用節點的速度大概更快（通信瓶頸）",
             ["ThreadStrategyTitle"] = "超執行緒與 P-E 架構處理器調度",
-            ["PreferPhysicalCoresText"] = "嘗試逐物理核心分配編碼器執行緒",
+            ["EncoderThreadCountText"] = "編碼器執行緒數",
+            ["PreferPhysicalCoresText"] = "嘗試逐物理核心分配編碼器執行緒（限制滑條最大值）",
             ["PreferPerformanceCoresText"] = "優先使用性能核心（P-Core）",
             ["MemoryStrategyTitle"] = "高級記憶體分配策略（需鎖定記憶體頁權限）",
             ["UseLargePagesText"] = "超過 2K 解析度時啟用大頁記憶體分區（Large Pages）",
@@ -71,8 +72,7 @@ public class ParallelismConfLangProviderM
             ["CorePerGroup1"] = " 核心直連 ",
             ["CorePerGroup1alt"] = " 核心（",
             ["CorePerGroup1alt1"] = " 執行緒）直連 ",
-            ["CorePerGroup2"] = " MB 的 L3 快取",
-            ["EncoderThreadCountText"] = "編碼器執行緒數",
+            ["CorePerGroup2"] = " MB 的 L3",
         }
     };
 
