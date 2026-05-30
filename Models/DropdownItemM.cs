@@ -12,5 +12,6 @@ namespace OneColumnEncoder.Models
         public string Title { get; set; } = title;
         public bool IsSeparator { get; set; } = isSeparator;
         public bool IsPlaceholder { get; set; } = isPlaceholder;
+        public object? Tag { get; set; }
     }
 }

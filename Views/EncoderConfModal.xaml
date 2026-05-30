@@ -159,7 +159,7 @@
                                FontSize="13"
                                VerticalAlignment="Center" />
                     <comps:DropdownMenu Grid.Column="1"
-                                        MinWidth="120"
+                                        MinWidth="150"
                                         Height="25"
                                         DataContext="{Binding X264ModeDropdown}" />
                 </Grid>
@@ -173,7 +173,7 @@
                                FontSize="13"
                                VerticalAlignment="Center" />
                     <comps:DropdownMenu Grid.Column="1"
-                                        MinWidth="120"
+                                        MinWidth="150"
                                         Height="25"
                                         DataContext="{Binding X265ModeDropdown}" />
                 </Grid>
@@ -186,7 +186,7 @@
                                FontSize="13"
                                VerticalAlignment="Center" />
                     <comps:DropdownMenu Grid.Column="1"
-                                        MinWidth="120"
+                                        MinWidth="150"
                                         Height="25"
                                         DataContext="{Binding SvtAv1ModeDropdown}" />
                 </Grid>
@@ -307,25 +307,29 @@
                                FontSize="13"
                                TextWrapping="Wrap"
                                VerticalAlignment="Center"
-                               Margin="0 15 0 0" />
+                               Margin="0 15 0 0"
+                               IsEnabled="{Binding IsX265DarkEnabled}" />
                     <CheckBox Grid.Row="2"
                               Grid.Column="1"
                               IsChecked="{Binding X265Dark, Mode=TwoWay}"
                               HorizontalAlignment="Right"
                               VerticalAlignment="Center"
-                              Margin="0 15 0 0" />
+                              Margin="0 15 0 0"
+                              IsEnabled="{Binding IsX265DarkEnabled}" />
                     <TextBlock Grid.Row="3"
                                Text="{Binding X265JpsdrTextureText, Mode=OneWay}"
                                FontSize="13"
                                TextWrapping="Wrap"
                                VerticalAlignment="Center"
-                               Margin="0 15 0 0" />
+                               Margin="0 15 0 0"
+                               IsEnabled="{Binding IsX265TextureEnabled}" />
                     <CheckBox Grid.Row="3"
                               Grid.Column="1"
                               IsChecked="{Binding X265Texture, Mode=TwoWay}"
                               HorizontalAlignment="Right"
                               VerticalAlignment="Center"
-                              Margin="0 15 0 0" />
+                              Margin="0 15 0 0"
+                              IsEnabled="{Binding IsX265TextureEnabled}" />
                     <TextBlock Grid.Row="4"
                                Text="{Binding SvtAv1EssentialDl2Text, Mode=OneWay}"
                                FontSize="13"

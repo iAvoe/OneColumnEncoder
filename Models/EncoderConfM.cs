@@ -7,21 +7,37 @@ namespace OneColumnEncoder.Models
     public class EncoderConfM : SaveLoadBaseH<EncoderConfM>
     {
         private static readonly string ConfigFilePath =
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "encoderconfig.json");
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "1cenc-encconf.json");
 
         protected override string FilePath => ConfigFilePath;
 
         public int EncoderModeTabIndex { get; set; } = 0;
-        public string EncoderType { get; set; } = "H.264";
         public string RateControlMode { get; set; } = "CRF";
-        public int CrfValue { get; set; } = 23;
-        public int TargetBitrate { get; set; } = 2000;
-        public string Preset { get; set; } = "medium";
-        public string Tune { get; set; } = "none";
-        public string Profile { get; set; } = "auto";
-        public int KeyframeInterval { get; set; } = 250;
-        public bool FastDecode { get; set; } = false;
-        public bool ZeroLatency { get; set; } = false;
+
+        // x264
+        public int X264Crf { get; set; } = 23;
+        public int X264Abr { get; set; } = 209;
+        public int X264Keyframe { get; set; } = 9;
+        public string X264Mode { get; set; } = "a";
+        public bool X264Mod { get; set; } = false;
+
+        // x265
+        public int X265Crf { get; set; } = 28;
+        public int X265Abr { get; set; } = 70;
+        public int X265Keyframe { get; set; } = 7;
+        public string X265Mode { get; set; } = "a";
+        public bool X265Aq { get; set; } = false;
+        public bool X265Dark { get; set; } = false;
+        public bool X265Texture { get; set; } = false;
+
+        // SVT-AV1
+        public int SvtAv1Crf { get; set; } = 35;
+        public int SvtAv1Abr { get; set; } = 10;
+        public int SvtAv1Keyframe { get; set; } = 9;
+        public string SvtAv1Mode { get; set; } = "a";
+        public bool SvtAv1Dl2 { get; set; } = false;
+        public bool SvtAv1AutoTile { get; set; } = false;
+
         public string CustomParams { get; set; } = "";
     }
 }

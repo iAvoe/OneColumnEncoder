@@ -49,11 +49,11 @@ public static class ToolCatalogProviderM
             UILangProviderM.Current["Buttons.Clear"],
             UILangProviderM.Current["ToolField.NumaNodes"],
             UILangProviderM.Current["ToolField.Threads"]),
-        new(UILangProviderM.Current["Tool.Enc.CompressionParams"],
+        new(UILangProviderM.Current["Tool.Enc.EncParams"],
             UILangProviderM.Current["Buttons.Edit"],
             UILangProviderM.Current["Buttons.Clear"],
             UILangProviderM.Current["ToolField.Strategy"],
-            UILangProviderM.Current["ToolField.MaximumKeyframeGap"]),
+            UILangProviderM.Current["ToolField.MaxKeyframeGap"]),
     ];
 
     public static List<ToolDefinitionM> GetAllStaticDefinitions() =>

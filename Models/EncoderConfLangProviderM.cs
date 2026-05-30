@@ -44,37 +44,10 @@ public class EncoderConfLangProviderM
             ["AnimeText"] = "Anime",
             ["StressTestText"] = "Stress Test",
             ["PeakQualityText"] = "Peak Quality",
-            ["CompressionOptText"] = "Compression First",
+            ["CompressionOptText"] = "High Compression",
             ["SpeedOptimizedText"] = "Fast",
             ["CancelButtonText"] = "Cancel",
             ["ConfirmButtonText"] = "Confirm",
-            ["ModeCrf"] = "CRF (Constant Rate Factor)",
-            ["ModeCbr"] = "CBR (Constant Bitrate)",
-            ["ModeVbr"] = "VBR (Variable Bitrate)",
-            ["PresetPlacebo"] = "placebo",
-            ["PresetVerySlow"] = "veryslow",
-            ["PresetSlower"] = "slower",
-            ["PresetSlow"] = "slow",
-            ["PresetMedium"] = "medium",
-            ["PresetFast"] = "fast",
-            ["PresetFaster"] = "faster",
-            ["PresetVeryFast"] = "veryfast",
-            ["PresetSuperFast"] = "superfast",
-            ["PresetUltraFast"] = "ultrafast",
-            ["TuneNone"] = "none",
-            ["TuneFilm"] = "film",
-            ["TuneAnimation"] = "animation",
-            ["TuneGrain"] = "grain",
-            ["TuneStillImage"] = "stillimage",
-            ["TunePsnr"] = "psnr",
-            ["TuneSsim"] = "ssim",
-            ["TuneFastDecode"] = "fastdecode",
-            ["TuneZeroLatency"] = "zerolatency",
-            ["ProfileAuto"] = "auto",
-            ["ProfileMain"] = "main",
-            ["ProfileHigh"] = "high",
-            ["ProfileHigh10"] = "high10",
-            ["ProfileHigh444"] = "high444",
         },
         ["zh-cn"] = new()
         {
@@ -115,37 +88,10 @@ public class EncoderConfLangProviderM
             ["AnimeText"] = "动画",
             ["StressTestText"] = "压力测试",
             ["PeakQualityText"] = "极致画质",
-            ["CompressionOptText"] = "压缩优化",
-            ["SpeedOptimizedText"] = "速度优先",
+            ["CompressionOptText"] = "优化压缩",
+            ["SpeedOptimizedText"] = "优化速度",
             ["CancelButtonText"] = "取消",
             ["ConfirmButtonText"] = "确认",
-            ["ModeCrf"] = "CRF（固定质量因子）",
-            ["ModeCbr"] = "CBR（固定码率）",
-            ["ModeVbr"] = "VBR（可变码率）",
-            ["PresetPlacebo"] = "placebo",
-            ["PresetVerySlow"] = "veryslow",
-            ["PresetSlower"] = "slower",
-            ["PresetSlow"] = "slow",
-            ["PresetMedium"] = "medium",
-            ["PresetFast"] = "fast",
-            ["PresetFaster"] = "faster",
-            ["PresetVeryFast"] = "veryfast",
-            ["PresetSuperFast"] = "superfast",
-            ["PresetUltraFast"] = "ultrafast",
-            ["TuneNone"] = "none",
-            ["TuneFilm"] = "film",
-            ["TuneAnimation"] = "animation",
-            ["TuneGrain"] = "grain",
-            ["TuneStillImage"] = "stillimage",
-            ["TunePsnr"] = "psnr",
-            ["TuneSsim"] = "ssim",
-            ["TuneFastDecode"] = "fastdecode",
-            ["TuneZeroLatency"] = "zerolatency",
-            ["ProfileAuto"] = "auto",
-            ["ProfileMain"] = "main",
-            ["ProfileHigh"] = "high",
-            ["ProfileHigh10"] = "high10",
-            ["ProfileHigh444"] = "high444",
         },
         ["zh-tw"] = new()
         {
@@ -186,37 +132,10 @@ public class EncoderConfLangProviderM
             ["AnimeText"] = "動畫",
             ["StressTestText"] = "壓力測試",
             ["PeakQualityText"] = "極致畫質",
-            ["CompressionOptText"] = "壓縮優化",
-            ["SpeedOptimizedText"] = "速度優先",
+            ["CompressionOptText"] = "優化壓縮",
+            ["SpeedOptimizedText"] = "優化速度",
             ["CancelButtonText"] = "取消",
             ["ConfirmButtonText"] = "確認",
-            ["ModeCrf"] = "CRF（固定品質因子）",
-            ["ModeCbr"] = "CBR（固定碼率）",
-            ["ModeVbr"] = "VBR（可變碼率）",
-            ["PresetPlacebo"] = "placebo",
-            ["PresetVerySlow"] = "veryslow",
-            ["PresetSlower"] = "slower",
-            ["PresetSlow"] = "slow",
-            ["PresetMedium"] = "medium",
-            ["PresetFast"] = "fast",
-            ["PresetFaster"] = "faster",
-            ["PresetVeryFast"] = "veryfast",
-            ["PresetSuperFast"] = "superfast",
-            ["PresetUltraFast"] = "ultrafast",
-            ["TuneNone"] = "none",
-            ["TuneFilm"] = "film",
-            ["TuneAnimation"] = "animation",
-            ["TuneGrain"] = "grain",
-            ["TuneStillImage"] = "stillimage",
-            ["TunePsnr"] = "psnr",
-            ["TuneSsim"] = "ssim",
-            ["TuneFastDecode"] = "fastdecode",
-            ["TuneZeroLatency"] = "zerolatency",
-            ["ProfileAuto"] = "auto",
-            ["ProfileMain"] = "main",
-            ["ProfileHigh"] = "high",
-            ["ProfileHigh10"] = "high10",
-            ["ProfileHigh444"] = "high444",
         }
     };
 
@@ -261,33 +180,6 @@ public class EncoderConfLangProviderM
     public string SpeedOptimizedText { get; }
     public string CancelButtonText { get; }
     public string ConfirmButtonText { get; }
-    public string ModeCrf { get; }
-    public string ModeCbr { get; }
-    public string ModeVbr { get; }
-    public string PresetPlacebo { get; }
-    public string PresetVerySlow { get; }
-    public string PresetSlower { get; }
-    public string PresetSlow { get; }
-    public string PresetMedium { get; }
-    public string PresetFast { get; }
-    public string PresetFaster { get; }
-    public string PresetVeryFast { get; }
-    public string PresetSuperFast { get; }
-    public string PresetUltraFast { get; }
-    public string TuneNone { get; }
-    public string TuneFilm { get; }
-    public string TuneAnimation { get; }
-    public string TuneGrain { get; }
-    public string TuneStillImage { get; }
-    public string TunePsnr { get; }
-    public string TuneSsim { get; }
-    public string TuneFastDecode { get; }
-    public string TuneZeroLatency { get; }
-    public string ProfileAuto { get; }
-    public string ProfileMain { get; }
-    public string ProfileHigh { get; }
-    public string ProfileHigh10 { get; }
-    public string ProfileHigh444 { get; }
 
     public string LanguageCode { get; }
     private readonly Dictionary<string, string> _d;
@@ -339,33 +231,6 @@ public class EncoderConfLangProviderM
         SpeedOptimizedText = _d["SpeedOptimizedText"];
         CancelButtonText = _d["CancelButtonText"];
         ConfirmButtonText = _d["ConfirmButtonText"];
-        ModeCrf = _d["ModeCrf"];
-        ModeCbr = _d["ModeCbr"];
-        ModeVbr = _d["ModeVbr"];
-        PresetPlacebo = _d["PresetPlacebo"];
-        PresetVerySlow = _d["PresetVerySlow"];
-        PresetSlower = _d["PresetSlower"];
-        PresetSlow = _d["PresetSlow"];
-        PresetMedium = _d["PresetMedium"];
-        PresetFast = _d["PresetFast"];
-        PresetFaster = _d["PresetFaster"];
-        PresetVeryFast = _d["PresetVeryFast"];
-        PresetSuperFast = _d["PresetSuperFast"];
-        PresetUltraFast = _d["PresetUltraFast"];
-        TuneNone = _d["TuneNone"];
-        TuneFilm = _d["TuneFilm"];
-        TuneAnimation = _d["TuneAnimation"];
-        TuneGrain = _d["TuneGrain"];
-        TuneStillImage = _d["TuneStillImage"];
-        TunePsnr = _d["TunePsnr"];
-        TuneSsim = _d["TuneSsim"];
-        TuneFastDecode = _d["TuneFastDecode"];
-        TuneZeroLatency = _d["TuneZeroLatency"];
-        ProfileAuto = _d["ProfileAuto"];
-        ProfileMain = _d["ProfileMain"];
-        ProfileHigh = _d["ProfileHigh"];
-        ProfileHigh10 = _d["ProfileHigh10"];
-        ProfileHigh444 = _d["ProfileHigh444"];
         Current = this;
     }
 }

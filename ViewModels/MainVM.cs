@@ -454,12 +454,12 @@ namespace OneColumnEncoder.ViewModels
                 outputSetting.R1Command = new OpenFilenameScribeCmd(_modalNavS, outputSetting);
 
             ToolItemCardVM? compressionParams = EncSettingsZone.FirstOrDefault(t =>
-                t.Name.Equals(UILangProviderM.Current["Tool.Enc.CompressionParams"], StringComparison.OrdinalIgnoreCase));
+                t.Name.Equals(UILangProviderM.Current["Tool.Enc.EncParams"], StringComparison.OrdinalIgnoreCase));
 
             if (compressionParams != null)
             {
                 compressionParams.R1Command = new OpenEncoderConfCmd(_modalNavS, compressionParams);
-                compressionParams.SetEncodingSummary("策略基础参数: CRF18-22-33 | 通用-通用-极致画质", "最大关键帧间距: 11-9-11 秒");
+                EncoderConfVM.ApplySavedSettingsToCard(compressionParams);
             }
         }
         private void OnVideoSrcItemPropertyChanged(object? sender, PropertyChangedEventArgs e)

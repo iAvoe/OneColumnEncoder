@@ -80,8 +80,8 @@ public class UILangProviderM
             ["ToolField.EncThreadClampOn"] = "(enc-th# clamp ON)",
             ["ToolField.EncThreadClampOff"] = "(enc-th# clamp OFF)",
             ["ToolField.Value"] = "Value",
-            ["ToolField.Strategy"] = "Stratagy",
-            ["ToolField.MaximumKeyframeGap"] = "Maximum keyframe gap",
+            ["ToolField.Strategy"] = "Strategy",
+            ["ToolField.MaxKeyframeGap"] = "Max keyframe gap",
             ["ToolField.OtherCustomParams"] = "Other custom params",
 
             ["Tool.Source.VideoSource"] = "Video Source",
@@ -91,7 +91,7 @@ public class UILangProviderM
 
             ["Tool.Enc.OutputSetting"] = "Output Setting",
             ["Tool.Enc.Parallelism"] = "Parallelism Control",
-            ["Tool.Enc.CompressionParams"] = "Compression Parameters",
+            ["Tool.Enc.EncParams"] = "Encoding Parameters",
 
             // Dialogs
             ["Dialog.SelectTitle"] = "Select {0}",
@@ -322,7 +322,7 @@ public class UILangProviderM
             ["ToolField.EncThreadClampOff"] = "（禁用编码线程数限制）",
             ["ToolField.Value"] = "数值",
             ["ToolField.Strategy"] = "策略",
-            ["ToolField.MaximumKeyframeGap"] = "最大关键帧间隔",
+            ["ToolField.MaxKeyframeGap"] = "最大关键帧间隔",
             ["ToolField.OtherCustomParams"] = "其他自定义参数",
 
             ["Tool.Source.VideoSource"] = "视频源",
@@ -332,7 +332,7 @@ public class UILangProviderM
 
             ["Tool.Enc.OutputSetting"] = "输出设置",
             ["Tool.Enc.Parallelism"] = "并行计算调度",
-            ["Tool.Enc.CompressionParams"] = "压缩参数配置",
+            ["Tool.Enc.EncParams"] = "压缩参数配置",
 
             ["Dialog.SelectTitle"] = "选择 {0}",
             ["Dialog.ReplaceTitle"] = "替换 {0}",
@@ -548,7 +548,7 @@ public class UILangProviderM
             ["ToolField.EncThreadClampOff"] = "（禁用編碼執行緒數限制）",
             ["ToolField.Value"] = "數值",
             ["ToolField.Strategy"] = "策略",
-            ["ToolField.MaximumKeyframeGap"] = "最大關鍵幀間隔",
+            ["ToolField.MaxKeyframeGap"] = "最大關鍵幀間隔",
             ["ToolField.OtherCustomParams"] = "其他自訂參數",
 
             ["Tool.Source.VideoSource"] = "視訊來源",
@@ -558,7 +558,7 @@ public class UILangProviderM
 
             ["Tool.Enc.OutputSetting"] = "輸出設定",
             ["Tool.Enc.Parallelism"] = "平行計算調度",
-            ["Tool.Enc.CompressionParams"] = "壓縮參數配置",
+            ["Tool.Enc.EncParams"] = "壓縮參數配置",
 
             ["Dialog.SelectTitle"] = "選擇 {0}",
             ["Dialog.ReplaceTitle"] = "替換 {0}",

@@ -2,6 +2,7 @@ using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
+using OneColumnEncoder.ViewModels.Cards;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace OneColumnEncoder.ViewModels
             private set => SetProperty(ref _lang, value);
         }
         private readonly EncoderConfM _model;
+        private readonly ToolItemCardVM? _targetItem;
         public CloseModalCmd CloseCmd { get; }
         public ActionCmd ConfirmCmd { get; }
         public ButtonGroupVM FinishButtons { get; }
@@ -76,6 +78,7 @@ namespace OneColumnEncoder.ViewModels
         public string ThirdPartyHintText4 => Lang.ThirdPartyHintText4;
 
         public bool IsCrfMode => SelectedRateControlMode == Lang.CrfModeText;
+        private bool IsAbrTabSelected => SelectedTabIndex == 1;
 
         public DropdownMenuVM X264ModeDropdown { get; } = new();
         public DropdownMenuVM X265ModeDropdown { get; } = new();
@@ -105,7 +108,23 @@ namespace OneColumnEncoder.ViewModels
         private bool _x264Mod;
         public bool X264Mod { get => _x264Mod; set => SetProperty(ref _x264Mod, value); }
         private bool _x265Aq;
-        public bool X265Aq { get => _x265Aq; set => SetProperty(ref _x265Aq, value); }
+        public bool X265Aq
+        {
+            get => _x265Aq;
+            set
+            {
+                if (SetProperty(ref _x265Aq, value))
+                {
+                    OnPropertyChanged(nameof(IsX265DarkEnabled));
+                    OnPropertyChanged(nameof(IsX265TextureEnabled));
+                    if (!value)
+                    {
+                        X265Dark = false;
+                        X265Texture = false;
+                    }
+                }
+            }
+        }
         private bool _x265Dark;
         public bool X265Dark { get => _x265Dark; set => SetProperty(ref _x265Dark, value); }
         private bool _x265Texture;
@@ -114,6 +133,9 @@ namespace OneColumnEncoder.ViewModels
         public bool SvtAv1Dl2 { get => _svtAv1Dl2; set => SetProperty(ref _svtAv1Dl2, value); }
         private bool _svtAv1AutoTile;
         public bool SvtAv1AutoTile { get => _svtAv1AutoTile; set => SetProperty(ref _svtAv1AutoTile, value); }
+
+        public bool IsX265DarkEnabled => X265Aq;
+        public bool IsX265TextureEnabled => X265Aq;
 
         public static IEnumerable<string> X264CrfLabels => ["0", "13", "17", "21", "25"];
         public static IEnumerable<string> X265CrfLabels => ["0", "17", "21", "25", "30"];
@@ -125,11 +147,17 @@ namespace OneColumnEncoder.ViewModels
         public static IEnumerable<string> X265KeyframeLabels => ["4", "7", "10", "13"];
         public static IEnumerable<string> SvtAv1KeyframeLabels => ["6", "9", "12", "15"];
 
-        public EncoderConfVM(Action closeAction)
+        public EncoderConfVM(Action closeAction, ToolItemCardVM? targetItem)
         {
             _model = EncoderConfM.Load();
+            _targetItem = targetItem;
             CloseCmd = new CloseModalCmd(closeAction);
-            ConfirmCmd = new ActionCmd(_ => { SaveModel(); closeAction(); });
+            ConfirmCmd = new ActionCmd(_ =>
+            {
+                ApplySettingsToTarget();
+                SaveModel();
+                closeAction();
+            });
             FinishButtons = ButtonGroupVM.CreateTwoButton(CancelButtonText, ConfirmButtonText, CloseCmd, ConfirmCmd);
             PopulateDropdowns();
             LoadModelToUi();
@@ -138,18 +166,22 @@ namespace OneColumnEncoder.ViewModels
 
         private void PopulateDropdowns()
         {
-            foreach (string s in new[] {
-                Lang.GeneralPurposeText, Lang.StockFootageText })
-                X264ModeDropdown.Items.Add(new DropdownItemM(s));
-            foreach (string s in new[] {
-                Lang.GeneralPurposeText, Lang.FilmIRLText, Lang.StockFootageText, Lang.AnimeText, Lang.StressTestText})
-                X265ModeDropdown.Items.Add(new DropdownItemM(s));
-            foreach (string s in new[] {
-                Lang.PeakQualityText, Lang.CompressionOptText, Lang.SpeedOptimizedText })
-                SvtAv1ModeDropdown.Items.Add(new DropdownItemM(s));
-            X264ModeDropdown.SelectedItem = X264ModeDropdown.Items.FirstOrDefault();
-            X265ModeDropdown.SelectedItem = X265ModeDropdown.Items.FirstOrDefault();
-            SvtAv1ModeDropdown.SelectedItem = SvtAv1ModeDropdown.Items.FirstOrDefault();
+            foreach (var preset in EncoderPresetsM.X264Presets)
+                X264ModeDropdown.Items.Add(new DropdownItemM(Lang[preset.NameKey]) { Tag = preset.Key });
+            foreach (var preset in EncoderPresetsM.X265Presets)
+                X265ModeDropdown.Items.Add(new DropdownItemM(Lang[preset.NameKey]) { Tag = preset.Key });
+            foreach (var preset in EncoderPresetsM.SvtAv1Presets)
+                SvtAv1ModeDropdown.Items.Add(new DropdownItemM(Lang[preset.NameKey]) { Tag = preset.Key });
+            SelectDropdownByKey(X264ModeDropdown, _model.X264Mode);
+            SelectDropdownByKey(X265ModeDropdown, _model.X265Mode);
+            SelectDropdownByKey(SvtAv1ModeDropdown, _model.SvtAv1Mode);
+        }
+
+        private static void SelectDropdownByKey(DropdownMenuVM dropdown, string key)
+        {
+            var item = dropdown.Items.FirstOrDefault(i => i.Tag as string == key);
+            if (item != null)
+                dropdown.SelectedItem = item;
         }
 
         private void LoadModelToUi()
@@ -157,41 +189,100 @@ namespace OneColumnEncoder.ViewModels
             SelectedTabIndex = Math.Max(0, Math.Min(1, _model.EncoderModeTabIndex));
             SelectedRateControlMode =
                 _model.RateControlMode == "ABR" ? Lang.AbrModeText : Lang.CrfModeText;
-            X264Crf = _model.CrfValue;
-            X265Crf = _model.CrfValue;
-            SvtAv1Crf = _model.CrfValue;
-            X264Abr = _model.TargetBitrate;
-            X265Abr = _model.TargetBitrate;
-            SvtAv1Abr = _model.TargetBitrate;
-            X264Keyframe = _model.KeyframeInterval;
-            X265Keyframe = _model.KeyframeInterval;
-            SvtAv1Keyframe = _model.KeyframeInterval;
-            X264Mod = _model.FastDecode;
-            X265Aq = _model.ZeroLatency;
-            X265Dark = false;
-            X265Texture = false;
-            SvtAv1Dl2 = false;
-            SvtAv1AutoTile = false;
+            X264Crf = _model.X264Crf;
+            X265Crf = _model.X265Crf;
+            SvtAv1Crf = _model.SvtAv1Crf;
+            X264Abr = _model.X264Abr;
+            X265Abr = _model.X265Abr;
+            SvtAv1Abr = _model.SvtAv1Abr;
+            X264Keyframe = _model.X264Keyframe;
+            X265Keyframe = _model.X265Keyframe;
+            SvtAv1Keyframe = _model.SvtAv1Keyframe;
+            X264Mod = _model.X264Mod;
+            X265Aq = _model.X265Aq;
+            X265Dark = _model.X265Dark;
+            X265Texture = _model.X265Texture;
+            SvtAv1Dl2 = _model.SvtAv1Dl2;
+            SvtAv1AutoTile = _model.SvtAv1AutoTile;
         }
 
         private void SaveModel()
         {
             _model.EncoderModeTabIndex = SelectedTabIndex;
-            _model.RateControlMode = IsCrfMode ? "CRF" : "ABR";
-            _model.CrfValue = X264Crf;
-            _model.TargetBitrate = X264Abr;
-            _model.KeyframeInterval = X264Keyframe;
-            _model.FastDecode = X264Mod;
-            _model.ZeroLatency = X265Aq;
+            _model.RateControlMode = IsAbrTabSelected ? "ABR" : "CRF";
+            _model.X264Crf = X264Crf;
+            _model.X265Crf = X265Crf;
+            _model.SvtAv1Crf = SvtAv1Crf;
+            _model.X264Abr = X264Abr;
+            _model.X265Abr = X265Abr;
+            _model.SvtAv1Abr = SvtAv1Abr;
+            _model.X264Keyframe = X264Keyframe;
+            _model.X265Keyframe = X265Keyframe;
+            _model.SvtAv1Keyframe = SvtAv1Keyframe;
+            _model.X264Mod = X264Mod;
+            _model.X265Aq = X265Aq;
+            _model.X265Dark = X265Dark;
+            _model.X265Texture = X265Texture;
+            _model.SvtAv1Dl2 = SvtAv1Dl2;
+            _model.SvtAv1AutoTile = SvtAv1AutoTile;
+            _model.X264Mode = (X264ModeDropdown.SelectedItem?.Tag as string) ?? "a";
+            _model.X265Mode = (X265ModeDropdown.SelectedItem?.Tag as string) ?? "a";
+            _model.SvtAv1Mode = (SvtAv1ModeDropdown.SelectedItem?.Tag as string) ?? "a";
             _model.CustomParams = BuildCustomParams();
             _model.Save();
         }
 
-        private string BuildCustomParams() => string.Join(" ", new[] { X264Mod ? "--x264-mod" : null, X265Aq ? "--aq-hysteresis" : null, X265Dark ? "--dark-aq" : null, X265Texture ? "--texture-aq" : null, SvtAv1Dl2 ? "--dlf2" : null, SvtAv1AutoTile ? "--auto-tile" : null }.Where(s => !string.IsNullOrWhiteSpace(s)));
+        private string BuildCustomParams()
+        {
+            var parts = new List<string>();
+            foreach (var def in EncoderPresetsM.ThirdPartyParams)
+            {
+                var prop = GetType().GetProperty(def.PropertyName);
+                if (prop != null && prop.GetValue(this) is true)
+                    parts.Add(def.ParamOn);
+                else if (prop != null && !string.IsNullOrEmpty(def.ParamOff))
+                    parts.Add(def.ParamOff);
+            }
+            return string.Join(" ", parts.Where(s => !string.IsNullOrWhiteSpace(s)));
+        }
+
+        private void ApplySettingsToTarget()
+        {
+            if (_targetItem is null) return;
+            _targetItem.P1TextData = BuildPrimarySummary();
+            _targetItem.P2TextData = BuildSecondarySummary();
+        }
+
+        private string BuildPrimarySummary()
+        {
+            if (!IsAbrTabSelected)
+                return $"CRF {X264Crf}-{X265Crf}-{SvtAv1Crf}";
+            else
+                return $"ABR {X264Abr}-{X265Abr}-{SvtAv1Abr}";
+        }
+
+        private string BuildSecondarySummary()
+        {
+            return $"{X264Keyframe}-{X265Keyframe}-{SvtAv1Keyframe} s";
+        }
+
+        public static void ApplySavedSettingsToCard(ToolItemCardVM targetItem)
+        {
+            var model = EncoderConfM.Load();
+            string primary;
+            if (model.RateControlMode == "CRF")
+                primary = $"CRF {model.X264Crf},{model.X265Crf},{model.SvtAv1Crf}";
+            else
+                primary = $"ABR {model.X264Abr},{model.X265Abr},{model.SvtAv1Abr}";
+            string secondary = $"{model.X264Keyframe},{model.X265Keyframe},{model.SvtAv1Keyframe}s";
+            targetItem.P1TextData = primary;
+            targetItem.P2TextData = secondary;
+        }
 
         private void OnLanguageChanged()
         {
             Lang = new EncoderConfLangProviderM(UILangProviderM.Current.LanguageCode);
+            RefreshDropdownTitles();
             OnPropertyChanged(nameof(WindowTitle));
             OnPropertyChanged(nameof(TitleText));
             OnPropertyChanged(nameof(RateControlTitle));
@@ -225,6 +316,18 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(ThirdPartyHintText4));
             FinishButtons.B2_1Text = CancelButtonText;
             FinishButtons.B2_2Text = ConfirmButtonText;
+        }
+
+        private void RefreshDropdownTitles()
+        {
+            void SyncTitles(IReadOnlyList<EncoderPresetItem> presets, DropdownMenuVM dropdown)
+            {
+                for (int i = 0; i < presets.Count && i < dropdown.Items.Count; i++)
+                    dropdown.Items[i].Title = Lang[presets[i].NameKey];
+            }
+            SyncTitles(EncoderPresetsM.X264Presets, X264ModeDropdown);
+            SyncTitles(EncoderPresetsM.X265Presets, X265ModeDropdown);
+            SyncTitles(EncoderPresetsM.SvtAv1Presets, SvtAv1ModeDropdown);
         }
 
         public override void Dispose() { UILangProviderM.CurrentChanged -= OnLanguageChanged; base.Dispose(); }
