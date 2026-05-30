@@ -31,8 +31,8 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _selectedTabIndex, value);
         }
 
-        public string WindowTitle => "1cenc Encoding Settings";
-        public string TitleText => WindowTitle;
+        public static string WindowTitle => "1cenc Encoding Settings";
+        public static string TitleText => WindowTitle;
         public string RateControlTitle => Lang.RateControlTitle;
         public string CustomParamsTitle => Lang.CustomParamsTitle;
         public string CrfModeText => Lang.CrfModeText;

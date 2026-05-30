@@ -185,7 +185,8 @@
                 <comps:AppConfContainer Header="{Binding Lang.MemoryStrategyTitle}"
                                         Margin="0 5 0 0">
                     <comps:AppConfItem Text="{Binding Lang.UseLargePagesText}">
-                        <CheckBox IsChecked="{Binding UseLargePages, Mode=TwoWay}" />
+                        <CheckBox IsChecked="{Binding UseLargePages, Mode=TwoWay}"
+                                  IsEnabled="{Binding CanUseLargePages}" />
                     </comps:AppConfItem>
                 </comps:AppConfContainer>
 

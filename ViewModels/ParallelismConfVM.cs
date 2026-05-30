@@ -53,6 +53,8 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _useLargePages, value);
         }
 
+        public bool CanUseLargePages { get; }
+
         private int _encoderThreadCount = Environment.ProcessorCount;
         public int EncoderThreadCount
         {
@@ -110,6 +112,8 @@ namespace OneColumnEncoder.ViewModels
             SelectUpstreamNodeCmd = new ActionCmd(p => SelectNode(UpstreamNodes, p as CPUNodeCardVM));
             SelectDownstreamNodeCmd = new ActionCmd(p => SelectNode(DownstreamNodes, p as CPUNodeCardVM));
             FinishButtons = ButtonGroupVM.CreateTwoButton(CancelButtonText, ConfirmButtonText, CloseCmd, ConfirmCmd);
+
+            CanUseLargePages = PrivilegeCheckH.HasLockMemoryPrivilege();
 
             BuildNodesFromTopology(UpstreamNodes);
             BuildNodesFromTopology(DownstreamNodes);
@@ -178,7 +182,7 @@ namespace OneColumnEncoder.ViewModels
         {
             PreferPhysicalCores = _model.PreferPhysicalCores;
             PreferPerformanceCores = _model.PreferPerformanceCores;
-            UseLargePages = _model.UseLargePages;
+            UseLargePages = _model.UseLargePages && CanUseLargePages;
 
             var numaNodes = NumaTopologyH.GetNumaNodes();
             MaxThreadCount = GetMaxThreadCount(numaNodes);
@@ -210,9 +214,7 @@ namespace OneColumnEncoder.ViewModels
 
         private static string BuildSecondarySummary(bool preferPhysicalCores, int encoderThreadCount)
         {
-            string clampIndicator = preferPhysicalCores
-                ? UILangProviderM.Current["ToolField.EncThreadClampOn"]
-                : UILangProviderM.Current["ToolField.EncThreadClampOff"];
+            string clampIndicator = preferPhysicalCores ? " (Clamp ON)" : " (Clamp OFF)";
             return $"{encoderThreadCount} {clampIndicator}";
         }
 
