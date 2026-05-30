@@ -47,6 +47,8 @@ public class EncoderConfLangProviderM
             ["SpeedOptimizedText"] = "Fast",
             ["CancelButtonText"] = "Cancel",
             ["ConfirmButtonText"] = "Confirm",
+            ["RecheckButtonText"] = "Re-check",
+            ["UseLargePagesText"] = "Use Large Pages (Advanced Memory Allocation)",
         },
         ["zh-cn"] = new()
         {
@@ -90,6 +92,8 @@ public class EncoderConfLangProviderM
             ["SpeedOptimizedText"] = "优化速度",
             ["CancelButtonText"] = "取消",
             ["ConfirmButtonText"] = "确认",
+            ["RecheckButtonText"] = "重新检查",
+            ["UseLargePagesText"] = "使用大页面（高级内存分配）",
         },
         ["zh-tw"] = new()
         {
@@ -133,6 +137,8 @@ public class EncoderConfLangProviderM
             ["SpeedOptimizedText"] = "優化速度",
             ["CancelButtonText"] = "取消",
             ["ConfirmButtonText"] = "確認",
+            ["RecheckButtonText"] = "重新檢查",
+            ["UseLargePagesText"] = "使用大頁面（高級記憶體分配）",
         }
     };
 
@@ -176,6 +182,8 @@ public class EncoderConfLangProviderM
     public string SpeedOptimizedText { get; }
     public string CancelButtonText { get; }
     public string ConfirmButtonText { get; }
+    public string RecheckButtonText { get; }
+    public string UseLargePagesText { get; }
 
     public string LanguageCode { get; }
     private readonly Dictionary<string, string> _d;
@@ -226,6 +234,8 @@ public class EncoderConfLangProviderM
         SpeedOptimizedText = _d["SpeedOptimizedText"];
         CancelButtonText = _d["CancelButtonText"];
         ConfirmButtonText = _d["ConfirmButtonText"];
+        RecheckButtonText = _d["RecheckButtonText"];
+        UseLargePagesText = _d["UseLargePagesText"];
         Current = this;
     }
 }

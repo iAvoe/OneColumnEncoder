@@ -36,7 +36,7 @@ namespace OneColumnEncoder.Commands.OpenClose
             _modalNavS.CurrentModalVM = vm;
             window.Show();
 
-            if (!vm.CanUseLargePages)
+            if (!vm.CanUseLargePages && PrivilegeCheckH.ShowDebugModal)
                 ShowLargePagePrivilegeDebug();
         }
 

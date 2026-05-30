@@ -3,9 +3,11 @@ using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.ViewModels.Cards;
+using OneColumnEncoder.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 
 namespace OneColumnEncoder.ViewModels
 {

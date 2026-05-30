@@ -9,6 +9,7 @@ namespace OneColumnEncoder.Helpers;
 /// </summary>
 public static partial class PrivilegeCheckH
 {
+    public static bool ShowDebugModal { get; set; } = true;
     public static string LastLockMemoryPrivilegeCheckMessage { get; private set; } = string.Empty;
 
     private enum TOKEN_INFORMATION_CLASS
