@@ -32,8 +32,7 @@ public class EncoderConfLangProviderM
             ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential: Auto Tile Size",
             ["CrfHintText"] = "CRF Slider Ticks—Lossless | UHQ | HQ | Streaming",
             ["AbrHintText"] = "ABR Slider Ticks—Near Lossless | Near Lossless→HQ | UHQ→Streaming | HQ→Streaming (in 2560x1440@60 cond.)",
-            ["KeyintHintText"] = "Keyint Slider Ticks (Decoding Difficulty)—Energy Saving/Multi-track Edit | Mid. | Hard & Mid. Compression | Extreme & High Comp.",
-            ["KeyframeHintText1"] = "「解码与索引难度」指播放器与拖动进度条的费力需求，决定了卡顿的频次",
+            ["KeyframeHintText1"] = "Keyint Slider Ticks (Decoding Difficulty):\nEnergy Saving/Multi-track Edit | Mid. | Hard & Mid. Compression | Extreme & High Comp.",
             ["KeyframeHintText2"] = "片源分辨率高则解码/索引难度上升；背景不动时下降，此时可调整关键帧距离以降低难度或增加压缩",
             ["ThirdPartyHintText1"] = "「高频基准率失真优化」偏向保留锐利细节，但不利于压缩",
             ["ThirdPartyHintText2"] = "「自适应量化迟滞」避免让频繁切换块或短暂闪过的画面影响到当前 AQ 策略",
@@ -104,8 +103,7 @@ public class EncoderConfLangProviderM
             ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential：自动计算瓦片大小（Auto Tile）",
             ["CrfHintText"] = "CRF 取值范围—无损 | 超清 | 高清 | 流媒体",
             ["AbrHintText"] = "ABR 取值范围—近无损 | 近无损→高清 | 超清→流媒体 | 高清→流媒体（以 2560x1440@60 为准）",
-            ["KeyintHintText"] = "Keyint 取值范围—低功耗观影/多轨剪辑 | 中等解码与进度条索引难度 | 较难解码与索引/中压缩 | 很难解码/高压缩",
-            ["KeyframeHintText1"] = "「解码与索引难度」指播放器与拖动进度条的费力需求，决定了卡顿的频次",
+            ["KeyframeHintText1"] = "关键帧间隔取值范围：\n低功耗观影/多轨剪辑 | 中等解码与进度条索引难度 | 较难解码与索引/中压缩 | 很难解码/高压缩",
             ["KeyframeHintText2"] = "片源分辨率高则解码/索引难度上升；背景不动时下降，此时可调整关键帧距离以降低难度或增加压缩",
             ["ThirdPartyHintText1"] = "「高频基准率失真优化」偏向保留锐利细节，但不利于压缩",
             ["ThirdPartyHintText2"] = "「自适应量化迟滞」避免让频繁切换块或短暂闪过的画面影响到当前 AQ 策略",
@@ -176,8 +174,7 @@ public class EncoderConfLangProviderM
             ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential：自動計算瓦片大小（Auto Tile）",
             ["CrfHintText"] = "CRF 取值範圍—無損 | 超清 | 高清 | 流媒體",
             ["AbrHintText"] = "ABR 取值範圍—近無損 | 近無損→高清 | 超清→流媒體 | 高清→流媒體（以 2560x1440@60 為準）",
-            ["KeyintHintText"] = "Keyint 取值範圍—低功耗觀影/多軌剪輯 | 中等解碼與進度條索引難度 | 較難解碼與索引/中壓縮 | 很難解碼/高壓縮",
-            ["KeyframeHintText1"] = "「解碼與索引難度」指播放器與拖動進度條的費力需求，決定了卡頓的頻次",
+            ["KeyframeHintText1"] = "關鍵幀間隔取值範圍：\n低功耗觀影/多軌剪輯 | 中等解碼與進度條索引難度 | 較難解碼與索引/中壓縮 | 很難解碼/高壓縮",
             ["KeyframeHintText2"] = "片源分辨率高則解碼/索引難度上升；背景不動時下降，此時可調整關鍵幀距離以降低難度或增加壓縮",
             ["ThirdPartyHintText1"] = "「高頻基準率失真優化」偏向保留銳利細節，但不利於壓縮",
             ["ThirdPartyHintText2"] = "「自適應量化遲滯」避免讓頻繁切換塊或短暫閃過的畫面影響到當前 AQ 策略",
@@ -248,7 +245,6 @@ public class EncoderConfLangProviderM
     public string SvtAv1EssentialAutoTileText { get; }
     public string CrfHintText { get; }
     public string AbrHintText { get; }
-    public string KeyintHintText { get; }
     public string KeyframeHintText1 { get; }
     public string KeyframeHintText2 { get; }
     public string ThirdPartyHintText1 { get; }
@@ -327,7 +323,6 @@ public class EncoderConfLangProviderM
         SvtAv1EssentialAutoTileText = _d["SvtAv1EssentialAutoTileText"];
         CrfHintText = _d["CrfHintText"];
         AbrHintText = _d["AbrHintText"];
-        KeyintHintText = _d["KeyintHintText"];
         KeyframeHintText1 = _d["KeyframeHintText1"];
         KeyframeHintText2 = _d["KeyframeHintText2"];
         ThirdPartyHintText1 = _d["ThirdPartyHintText1"];

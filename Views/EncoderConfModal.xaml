@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="520"
-        Height="1100"
+        Height="1030"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <ScrollViewer VerticalScrollBarVisibility="Auto"
@@ -24,11 +24,13 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
+            <!-- Rate Control Title -->
             <TextBlock Grid.Row="0"
                        Text="{Binding RateControlTitle}"
                        Style="{StaticResource H1}"
                        Margin="0 5 0 0" />
 
+            <!-- CRF / ABR Tabs -->
             <TabControl Grid.Row="1"
                         SelectedIndex="{Binding SelectedTabIndex}"
                         Margin="0 15 0 0">
@@ -90,6 +92,7 @@
                 </TabItem>
             </TabControl>
 
+            <!-- CRF Hint -->
             <StackPanel Grid.Row="2"
                         Margin="5 10 5 0"
                         Orientation="Horizontal"
@@ -112,10 +115,12 @@
                            Foreground="{StaticResource GlobalTertiary}" />
             </StackPanel>
 
+            <!-- Custom Params: Basic / Keyframe / Third-party -->
             <StackPanel Grid.Row="3"
                         Margin="0 10 0 0">
                 <TextBlock Text="{Binding CustomParamsTitle}"
                            Style="{StaticResource H1}" />
+                <!-- Basic Params: Mode Dropdowns -->
                 <TextBlock Text="{Binding BasicParamsText}"
                            Style="{StaticResource H2}"
                            Margin="0 10 0 0" />
@@ -161,6 +166,7 @@
                                         DataContext="{Binding SvtAv1ModeDropdown}" />
                 </Grid>
 
+                <!-- Keyframe Interval Sliders -->
                 <TextBlock Text="{Binding KeyframeSecondsText, Mode=OneWay}"
                            Style="{StaticResource H2}"
                            Margin="0 10 0 0" />
@@ -206,22 +212,32 @@
                     <TextBlock FontSize="9"
                                Focusable="False"
                                Margin="3.5 0 0 0"
-                               Text="{Binding KeyintHintText, Mode=OneWay}"
+                               Text="{Binding KeyframeHintText1, Mode=OneWay}"
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource GlobalTertiary}" />
+                </StackPanel>
+                <StackPanel Margin="5 10 5 0"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
+                    <Rectangle Width="10"
+                               Height="10"
+                               VerticalAlignment="Center"
+                               Fill="{StaticResource GlobalTertiary}">
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
+                                        Stretch="Uniform" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock FontSize="9"
+                               Focusable="False"
+                               Margin="3.5 0 0 0"
+                               Text="{Binding KeyframeHintText2, Mode=OneWay}"
                                VerticalAlignment="Center"
                                Foreground="{StaticResource GlobalTertiary}" />
                 </StackPanel>
 
-                <TextBlock FontSize="10"
-                           Foreground="{StaticResource GlobalTertiary}"
-                           Margin="0 5 0 0">
-                    <Run Text="&#x24d8; " /><Run Text="{Binding KeyframeHintText1, Mode=OneWay}" />
-                </TextBlock>
-                <TextBlock FontSize="10"
-                           Foreground="{StaticResource GlobalTertiary}"
-                           Margin="0 5 0 0">
-                    <Run Text="&#x24d8; " /><Run Text="{Binding KeyframeHintText2, Mode=OneWay}" />
-                </TextBlock>
-
+                <!-- Third-party Params Checkboxes -->
                 <TextBlock Text="{Binding ThirdPartyParamsText, Mode=OneWay}"
                            Style="{StaticResource H2}"
                            Margin="0 10 0 0" />
@@ -310,28 +326,89 @@
                               Margin="0 10 0 0" />
                 </Grid>
 
-                <TextBlock FontSize="10"
-                           Foreground="{StaticResource GlobalTertiary}"
-                           Margin="0 6 0 0">
-                    <Run Text="&#x24d8; " /><Run Text="{Binding ThirdPartyHintText1, Mode=OneWay}" />
-                </TextBlock>
-                <TextBlock FontSize="10"
-                           Foreground="{StaticResource GlobalTertiary}"
-                           Margin="0 4 0 0">
-                    <Run Text="&#x24d8; " /><Run Text="{Binding ThirdPartyHintText2, Mode=OneWay}" />
-                </TextBlock>
-                <TextBlock FontSize="10"
-                           Foreground="{StaticResource GlobalTertiary}"
-                           Margin="0 4 0 0">
-                    <Run Text="&#x24d8; " /><Run Text="{Binding ThirdPartyHintText3, Mode=OneWay}" />
-                </TextBlock>
-                <TextBlock FontSize="10"
-                           Foreground="{StaticResource GlobalTertiary}"
-                           Margin="0 4 0 0">
-                    <Run Text="&#x24d8; " /><Run Text="{Binding ThirdPartyHintText4, Mode=OneWay}" />
-                </TextBlock>
+                <StackPanel Margin="5 10 5 0"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
+                    <Rectangle Width="10"
+                               Height="10"
+                               VerticalAlignment="Center"
+                               Fill="{StaticResource GlobalTertiary}">
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
+                                        Stretch="Uniform" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock FontSize="9"
+                               Focusable="False"
+                               Margin="3.5 0 0 0"
+                               Text="{Binding ThirdPartyHintText1, Mode=OneWay}"
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource GlobalTertiary}" />
+                </StackPanel>
+                <StackPanel Margin="5 10 5 0"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
+                    <Rectangle Width="10"
+                               Height="10"
+                               VerticalAlignment="Center"
+                               Fill="{StaticResource GlobalTertiary}">
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
+                                        Stretch="Uniform" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock FontSize="9"
+                               Focusable="False"
+                               Margin="3.5 0 0 0"
+                               Text="{Binding ThirdPartyHintText2, Mode=OneWay}"
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource GlobalTertiary}" />
+                </StackPanel>
+                <StackPanel Margin="5 10 5 0"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
+                    <Rectangle Width="10"
+                               Height="10"
+                               VerticalAlignment="Center"
+                               Fill="{StaticResource GlobalTertiary}">
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
+                                        Stretch="Uniform" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock FontSize="9"
+                               Focusable="False"
+                               Margin="3.5 0 0 0"
+                               Text="{Binding ThirdPartyHintText3, Mode=OneWay}"
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource GlobalTertiary}" />
+                </StackPanel>
+                <StackPanel Margin="5 10 5 0"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center">
+                    <Rectangle Width="10"
+                               Height="10"
+                               VerticalAlignment="Center"
+                               Fill="{StaticResource GlobalTertiary}">
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
+                                        Stretch="Uniform" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock FontSize="9"
+                               Focusable="False"
+                               Margin="3.5 0 0 0"
+                               Text="{Binding ThirdPartyHintText4, Mode=OneWay}"
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource GlobalTertiary}" />
+                </StackPanel>
             </StackPanel>
 
+            <!-- Confirm / Cancel Buttons -->
             <comps:TwoButtonGroup Grid.Row="4"
                                   Margin="0 18 0 0"
                                   DataContext="{Binding FinishButtons}"

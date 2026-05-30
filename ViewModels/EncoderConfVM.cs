@@ -53,7 +53,6 @@ namespace OneColumnEncoder.ViewModels
         public string AbrHintText => Lang.AbrHintText;
         public string KeyframeHintText1 => Lang.KeyframeHintText1;
         public string KeyframeHintText2 => Lang.KeyframeHintText2;
-        public string KeyintHintText => Lang.KeyintHintText;
         public string ThirdPartyHintText1 => Lang.ThirdPartyHintText1;
         public string ThirdPartyHintText2 => Lang.ThirdPartyHintText2;
         public string ThirdPartyHintText3 => Lang.ThirdPartyHintText3;
@@ -99,15 +98,15 @@ namespace OneColumnEncoder.ViewModels
         private bool _svtAv1AutoTile;
         public bool SvtAv1AutoTile { get => _svtAv1AutoTile; set => SetProperty(ref _svtAv1AutoTile, value); }
 
-        public IEnumerable<string> X264CrfLabels => new[] { "0", "13", "17", "21", "25" };
-        public IEnumerable<string> X265CrfLabels => new[] { "0", "17", "21", "25", "30" };
-        public IEnumerable<string> SvtAv1CrfLabels => new[] { "0", "28", "33", "38", "43" };
-        public IEnumerable<string> X264AbrLabels => new[] { "500 Mbps", "200 Mbps", "70 Mbps", "10 Mbps", "1" };
-        public IEnumerable<string> X265AbrLabels => new[] { "500 Mbps", "200 Mbps", "70 Mbps", "10 Mbps", "1" };
-        public IEnumerable<string> SvtAv1AbrLabels => new[] { "500 Mbps", "200 Mbps", "70 Mbps", "10 Mbps", "1" };
-        public IEnumerable<string> X264KeyframeLabels => new[] { "6", "9 ", "12", "15" };
-        public IEnumerable<string> X265KeyframeLabels => new[] { "4", "7", "10", "13" };
-        public IEnumerable<string> SvtAv1KeyframeLabels => new[] { "6", "9", "12", "15" };
+        public static IEnumerable<string> X264CrfLabels => ["0", "13", "17", "21", "25"];
+        public static IEnumerable<string> X265CrfLabels => ["0", "17", "21", "25", "30"];
+        public static IEnumerable<string> SvtAv1CrfLabels => ["0", "28", "33", "38", "43"];
+        public static IEnumerable<string> X264AbrLabels => ["500 Mbps", "200 Mbps", "70 Mbps", "10 Mbps", "1"];
+        public static IEnumerable<string> X265AbrLabels => ["500 Mbps", "200 Mbps", "70 Mbps", "10 Mbps", "1"];
+        public static IEnumerable<string> SvtAv1AbrLabels => ["500 Mbps", "200 Mbps", "70 Mbps", "10 Mbps", "1"];
+        public static IEnumerable<string> X264KeyframeLabels => ["6", "9 ", "12", "15"];
+        public static IEnumerable<string> X265KeyframeLabels => ["4", "7", "10", "13"];
+        public static IEnumerable<string> SvtAv1KeyframeLabels => ["6", "9", "12", "15"];
 
         public EncoderConfVM(Action closeAction)
         {
