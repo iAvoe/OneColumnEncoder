@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace OneColumnEncoder.Components
 {
@@ -10,8 +11,8 @@ namespace OneColumnEncoder.Components
         public IntegerSliderGroup()
         {
             Orientation = Orientation.Vertical;
-            Loaded += (_, _) => UpdateSliderLabelWidths();
-            LayoutUpdated += (_, _) => UpdateSliderLabelWidths();
+            Loaded += (_, _) => Dispatcher.BeginInvoke(new Action(UpdateSliderLabelWidths), DispatcherPriority.Loaded);
+            SizeChanged += (_, _) => UpdateSliderLabelWidths();
         }
 
         private void UpdateSliderLabelWidths()
