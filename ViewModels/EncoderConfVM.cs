@@ -288,15 +288,13 @@ namespace OneColumnEncoder.ViewModels
         private void ApplySettingsToTarget()
         {
             if (_targetItem is null) return;
-            _targetItem.P1TextData = BuildPrimarySummary(_model);
-            _targetItem.P2TextData = BuildSecondarySummary(_model);
+            _targetItem.SetEncodingSummary(BuildPrimarySummary(_model), BuildSecondarySummary(_model));
         }
 
         public static void ApplySavedSettingsToCard(ToolItemCardVM targetItem)
         {
             var model = EncoderConfM.Load();
-            targetItem.P1TextData = BuildPrimarySummary(model);
-            targetItem.P2TextData = BuildSecondarySummary(model);
+            targetItem.SetEncodingSummary(BuildPrimarySummary(model), BuildSecondarySummary(model));
         }
 
         private static string BuildPrimarySummary(EncoderConfM model)
