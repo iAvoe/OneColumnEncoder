@@ -31,17 +31,6 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _selectedTabIndex, value);
         }
 
-        private string _selectedRateControlMode = "CRF";
-        public string SelectedRateControlMode
-        {
-            get => _selectedRateControlMode;
-            set
-            {
-                if (SetProperty(ref _selectedRateControlMode, value))
-                    OnPropertyChanged(nameof(IsCrfMode));
-            }
-        }
-
         public string WindowTitle => Lang.WindowTitle;
         public string TitleText => Lang.WindowTitle;
         public string RateControlTitle => Lang.RateControlTitle;
@@ -77,7 +66,6 @@ namespace OneColumnEncoder.ViewModels
         public string ThirdPartyHintText3 => Lang.ThirdPartyHintText3;
         public string ThirdPartyHintText4 => Lang.ThirdPartyHintText4;
 
-        public bool IsCrfMode => SelectedRateControlMode == Lang.CrfModeText;
         private bool IsAbrTabSelected => SelectedTabIndex == 1;
 
         public DropdownMenuVM X264ModeDropdown { get; } = new();
@@ -154,8 +142,8 @@ namespace OneColumnEncoder.ViewModels
             CloseCmd = new CloseModalCmd(closeAction);
             ConfirmCmd = new ActionCmd(_ =>
             {
-                ApplySettingsToTarget();
                 SaveModel();
+                ApplySettingsToTarget();
                 closeAction();
             });
             FinishButtons = ButtonGroupVM.CreateTwoButton(CancelButtonText, ConfirmButtonText, CloseCmd, ConfirmCmd);
@@ -186,9 +174,9 @@ namespace OneColumnEncoder.ViewModels
 
         private void LoadModelToUi()
         {
-            SelectedTabIndex = Math.Max(0, Math.Min(1, _model.EncoderModeTabIndex));
-            SelectedRateControlMode =
-                _model.RateControlMode == "ABR" ? Lang.AbrModeText : Lang.CrfModeText;
+            SelectedTabIndex = _model.RateControlMode == "ABR"
+                ? 1
+                : Math.Max(0, Math.Min(1, _model.EncoderModeTabIndex));
             X264Crf = _model.X264Crf;
             X265Crf = _model.X265Crf;
             SvtAv1Crf = _model.SvtAv1Crf;
@@ -249,21 +237,28 @@ namespace OneColumnEncoder.ViewModels
         private void ApplySettingsToTarget()
         {
             if (_targetItem is null) return;
-            ApplySavedSettingsToCard(_targetItem);
+            _targetItem.P1TextData = BuildPrimarySummary(_model);
+            _targetItem.P2TextData = BuildSecondarySummary(_model);
         }
 
         public static void ApplySavedSettingsToCard(ToolItemCardVM targetItem)
         {
             var model = EncoderConfM.Load();
-            targetItem.P1TextData = string.Empty;
-            string primary;
-            if (model.RateControlMode == "CRF")
-                primary = $"CRF {model.X264Crf},{model.X265Crf},{model.SvtAv1Crf}";
-            else
-                primary = $"ABR {model.X264Abr},{model.X265Abr},{model.SvtAv1Abr}Mbps";
-            string secondary = $"{model.X264Keyframe},{model.X265Keyframe},{model.SvtAv1Keyframe}s";
-            targetItem.P1TextData = primary;
-            targetItem.P2TextData = secondary;
+            targetItem.P1TextData = BuildPrimarySummary(model);
+            targetItem.P2TextData = BuildSecondarySummary(model);
+        }
+
+        private static string BuildPrimarySummary(EncoderConfM model)
+        {
+            if (model.RateControlMode == "ABR")
+                return $"ABR {model.X264Abr},{model.X265Abr},{model.SvtAv1Abr}Mbps";
+
+            return $"CRF {model.X264Crf},{model.X265Crf},{model.SvtAv1Crf}";
+        }
+
+        private static string BuildSecondarySummary(EncoderConfM model)
+        {
+            return $"{model.X264Keyframe},{model.X265Keyframe},{model.SvtAv1Keyframe}s";
         }
 
         private void OnLanguageChanged()
