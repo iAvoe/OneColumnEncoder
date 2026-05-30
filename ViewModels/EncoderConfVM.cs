@@ -249,31 +249,18 @@ namespace OneColumnEncoder.ViewModels
         private void ApplySettingsToTarget()
         {
             if (_targetItem is null) return;
-            _targetItem.P1TextData = BuildPrimarySummary();
-            _targetItem.P2TextData = BuildSecondarySummary();
-        }
-
-        private string BuildPrimarySummary()
-        {
-            if (!IsAbrTabSelected)
-                return $"CRF {X264Crf}-{X265Crf}-{SvtAv1Crf}";
-            else
-                return $"ABR {X264Abr}-{X265Abr}-{SvtAv1Abr}";
-        }
-
-        private string BuildSecondarySummary()
-        {
-            return $"{X264Keyframe}-{X265Keyframe}-{SvtAv1Keyframe} s";
+            ApplySavedSettingsToCard(_targetItem);
         }
 
         public static void ApplySavedSettingsToCard(ToolItemCardVM targetItem)
         {
             var model = EncoderConfM.Load();
+            targetItem.P1TextData = string.Empty;
             string primary;
             if (model.RateControlMode == "CRF")
                 primary = $"CRF {model.X264Crf},{model.X265Crf},{model.SvtAv1Crf}";
             else
-                primary = $"ABR {model.X264Abr},{model.X265Abr},{model.SvtAv1Abr}";
+                primary = $"ABR {model.X264Abr},{model.X265Abr},{model.SvtAv1Abr}Mbps";
             string secondary = $"{model.X264Keyframe},{model.X265Keyframe},{model.SvtAv1Keyframe}s";
             targetItem.P1TextData = primary;
             targetItem.P2TextData = secondary;

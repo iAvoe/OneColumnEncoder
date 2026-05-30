@@ -37,7 +37,12 @@ namespace OneColumnEncoder.Commands.OpenClose
             EncoderConfVM vm = new(window.Close, _compressionParamsItem);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
-            window.Closed += (_, _) => _modalNavS.Close();
+            window.Closed += (_, _) =>
+            {
+                _modalNavS.Close();
+                if (_compressionParamsItem != null)
+                    EncoderConfVM.ApplySavedSettingsToCard(_compressionParamsItem);
+            };
             _modalNavS.CurrentModalVM = vm;
             window.Show();
         }
