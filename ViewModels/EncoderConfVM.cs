@@ -218,9 +218,9 @@ namespace OneColumnEncoder.ViewModels
             SelectDropdownByKey(SvtAv1ModeDropdown, _model.SvtAv1Mode);
         }
 
-        private static void SelectDropdownByKey(DropdownMenuVM dropdown, string key)
+        private static void SelectDropdownByKey(DropdownMenuVM dropdown, int key)
         {
-            DropdownItemM? item = dropdown.Items.FirstOrDefault(i => i.Tag as string == key);
+            DropdownItemM? item = dropdown.Items.FirstOrDefault(i => i.Tag is int tag && tag == key);
             if (item != null)
                 dropdown.SelectedItem = item;
         }
@@ -266,9 +266,9 @@ namespace OneColumnEncoder.ViewModels
             _model.X265Texture = X265Texture;
             _model.SvtAv1Dl2 = SvtAv1Dl2;
             _model.SvtAv1AutoTile = SvtAv1AutoTile;
-            _model.X264Mode = (X264ModeDropdown.SelectedItem?.Tag as string) ?? "a";
-            _model.X265Mode = (X265ModeDropdown.SelectedItem?.Tag as string) ?? "a";
-            _model.SvtAv1Mode = (SvtAv1ModeDropdown.SelectedItem?.Tag as string) ?? "a";
+            _model.X264Mode = X264ModeDropdown.SelectedItem?.Tag is int x264Mode ? x264Mode : 0;
+            _model.X265Mode = X265ModeDropdown.SelectedItem?.Tag is int x265Mode ? x265Mode : 0;
+            _model.SvtAv1Mode = SvtAv1ModeDropdown.SelectedItem?.Tag is int svtAv1Mode ? svtAv1Mode : 0;
             _model.CustomParams = BuildCustomParams();
             _model.Save();
         }
