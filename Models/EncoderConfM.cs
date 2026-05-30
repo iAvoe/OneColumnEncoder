@@ -7,7 +7,7 @@ namespace OneColumnEncoder.Models
     public class EncoderConfM : SaveLoadBaseH<EncoderConfM>
     {
         private static readonly string ConfigFilePath =
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "1cenc-encconf.json");
+            Path.Combine(GetConfigDirectory(), "1cenc-encconf.json");
 
         protected override string FilePath => ConfigFilePath;
 

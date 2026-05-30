@@ -19,11 +19,23 @@ namespace OneColumnEncoder.Helpers
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        public static string ConfigSubFolder { get; set; } = "1cenc";
+
+        public static string GetConfigDirectory()
+        {
+            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigSubFolder);
+        }
+
         // File level save-load
         public void Save()
         {
             try
             {
+                var directory = Path.GetDirectoryName(FilePath);
+                if (!string.IsNullOrEmpty(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
                 var json =
                     JsonSerializer.Serialize((T)this, CachedJsonOptions);
                 File.WriteAllText(FilePath, json);

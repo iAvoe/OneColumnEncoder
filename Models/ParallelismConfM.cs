@@ -7,7 +7,7 @@ namespace OneColumnEncoder.Models
     public class ParallelismConfM : SaveLoadBaseH<ParallelismConfM>
     {
         private static readonly string ConfigFilePath =
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "parallelismconfig.json");
+            Path.Combine(GetConfigDirectory(), "parallelismconfig.json");
 
         protected override string FilePath => ConfigFilePath;
 

@@ -12,7 +12,7 @@ namespace OneColumnEncoder.Models
     public class AppConfM : SaveLoadBaseH<AppConfM>
     {
         private static readonly string ConfigFilePath =
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appconfig.json");
+            Path.Combine(GetConfigDirectory(), "appconfig.json");
         protected override string FilePath => ConfigFilePath;
 
         public GeneralSettings General { get; set; } = new GeneralSettings();

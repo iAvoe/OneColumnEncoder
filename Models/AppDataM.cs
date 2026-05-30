@@ -13,7 +13,7 @@ namespace OneColumnEncoder.Models
     public class AppDataM : SaveLoadBaseH<AppDataM>
     {
         private static readonly string ConfigFilePath =
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "appdata.json");
+            Path.Combine(GetConfigDirectory(), "appdata.json");
         protected override string FilePath => ConfigFilePath;
 
         public Importables Tools { get; set; } = new Importables();
