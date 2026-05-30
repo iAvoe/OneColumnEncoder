@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="560"
-        Height="425"
+        Height="420"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid Margin="15">
@@ -24,7 +24,6 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0"
-                   Margin="0 5 0 0"
                    Text="{Binding MiniHeader}"
                    Style="{StaticResource H4}" />
 
@@ -113,6 +112,7 @@
 
         <comps:ThreeButtonGroup Grid.Row="4"
                                 Margin="0 10 0 0"
+                                ButtonHeight="30"
                                 DataContext="{Binding FilenameButtons}"
                                 Button1Command="{Binding Cmd1}"
                                 Button2Command="{Binding Cmd2}"
