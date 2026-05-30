@@ -3,11 +3,13 @@ using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.ViewModels.Cards;
+using OneColumnEncoder.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using System.Windows;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -53,7 +55,10 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _useLargePages, value);
         }
 
-        public bool CanUseLargePages { get; }
+        private bool _canUseLargePages;
+        public bool CanUseLargePages => _canUseLargePages;
+
+        public ActionCmd RecheckCmd { get; }
 
         private int _encoderThreadCount = Environment.ProcessorCount;
         public int EncoderThreadCount
@@ -92,6 +97,7 @@ namespace OneColumnEncoder.ViewModels
         public string PreferPerformanceCoresText => Lang.PreferPerformanceCoresText;
         public string MemoryStrategyTitle => Lang.MemoryStrategyTitle;
         public string UseLargePagesText => Lang.UseLargePagesText;
+        public string RecheckButtonText => Lang.RecheckButtonText;
         public string EncoderThreadCountText => Lang.EncoderThreadCountText;
         public List<string> EncoderThreadTickLabels => BuildThreadTickLabels();
         public string CancelButtonText => Lang.CancelButtonText;
@@ -109,11 +115,12 @@ namespace OneColumnEncoder.ViewModels
                 SaveModel();
                 closeAction();
             });
+            RecheckCmd = new ActionCmd(_ => RecheckLargePagesPrivilege());
             SelectUpstreamNodeCmd = new ActionCmd(p => SelectNode(UpstreamNodes, p as CPUNodeCardVM));
             SelectDownstreamNodeCmd = new ActionCmd(p => SelectNode(DownstreamNodes, p as CPUNodeCardVM));
-            FinishButtons = ButtonGroupVM.CreateTwoButton(CancelButtonText, ConfirmButtonText, CloseCmd, ConfirmCmd);
+            FinishButtons = ButtonGroupVM.CreateThreeButton(RecheckButtonText, CancelButtonText, ConfirmButtonText, RecheckCmd, CloseCmd, ConfirmCmd);
 
-            CanUseLargePages = PrivilegeCheckH.HasLockMemoryPrivilege();
+            _canUseLargePages = PrivilegeCheckH.HasLockMemoryPrivilege();
 
             BuildNodesFromTopology(UpstreamNodes);
             BuildNodesFromTopology(DownstreamNodes);
@@ -289,13 +296,36 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(PreferPerformanceCoresText));
             OnPropertyChanged(nameof(MemoryStrategyTitle));
             OnPropertyChanged(nameof(UseLargePagesText));
+            OnPropertyChanged(nameof(RecheckButtonText));
             OnPropertyChanged(nameof(EncoderThreadCountText));
             OnPropertyChanged(nameof(EncoderThreadTickLabels));
             OnPropertyChanged(nameof(CancelButtonText));
             OnPropertyChanged(nameof(ConfirmButtonText));
 
-            FinishButtons.B2_1Text = CancelButtonText;
-            FinishButtons.B2_2Text = ConfirmButtonText;
+            FinishButtons.B3_1Text = RecheckButtonText;
+            FinishButtons.B3_2Text = CancelButtonText;
+            FinishButtons.B3_3Text = ConfirmButtonText;
+        }
+
+        private void RecheckLargePagesPrivilege()
+        {
+            _canUseLargePages = PrivilegeCheckH.HasLockMemoryPrivilege();
+            UseLargePages = _canUseLargePages && UseLargePages;
+            OnPropertyChanged(nameof(CanUseLargePages));
+
+            ConfirmationModal window = new();
+            CloseModalCmd closeCmd = new(window.Close);
+            string message = string.IsNullOrWhiteSpace(PrivilegeCheckH.LastLockMemoryPrivilegeCheckMessage)
+                ? "PrivilegeCheckH.HasLockMemoryPrivilege returned without a diagnostic message."
+                : PrivilegeCheckH.LastLockMemoryPrivilegeCheckMessage;
+
+            window.DataContext = ConfirmationModalVM.CreateDebug(
+                "Large Page Privilege Check",
+                message,
+                closeCmd,
+                closeCmd);
+            window.Owner = Application.Current.MainWindow;
+            window.ShowDialog();
         }
 
         public static void ApplySavedSettingsToCard(ToolItemCardVM targetItem)

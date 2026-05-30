@@ -18,6 +18,7 @@ public class ParallelismConfLangProviderM
             ["PreferPerformanceCoresText"] = "Prefer performance cores (P-Core)",
             ["MemoryStrategyTitle"] = "Advanced RAM Allocation (Mem. locking priviledge needed, reboot too)",
             ["UseLargePagesText"] = "Enable Large Pages for source videos above 2K resolution",
+            ["RecheckButtonText"] = "Re-check",
             ["CancelButtonText"] = "Cancel",
             ["ConfirmButtonText"] = "Confirm",
             ["CorePerGroup"] = "· Every ",
@@ -40,6 +41,7 @@ public class ParallelismConfLangProviderM
             ["PreferPerformanceCoresText"] = "优先使用性能核心（P-Core）",
             ["MemoryStrategyTitle"] = "高级内存分配策略（需锁定内存页权限，设置后重启）",
             ["UseLargePagesText"] = "超过 2K 分辨率时启用大内存页（Large Pages）",
+            ["RecheckButtonText"] = "重新检查",
             ["CancelButtonText"] = "取消",
             ["ConfirmButtonText"] = "确认",
             ["CorePerGroup"] = "· 每 ",
@@ -62,6 +64,7 @@ public class ParallelismConfLangProviderM
             ["PreferPerformanceCoresText"] = "優先使用性能核心（P-Core）",
             ["MemoryStrategyTitle"] = "高級記憶體分配策略（需鎖定記憶體頁權限，設置後重啟）",
             ["UseLargePagesText"] = "超過 2K 解析度時啟用大記憶體頁（Large Pages）",
+            ["RecheckButtonText"] = "重新檢查",
             ["CancelButtonText"] = "取消",
             ["ConfirmButtonText"] = "確認",
             ["CorePerGroup"] = "· 每 ",
@@ -83,6 +86,7 @@ public class ParallelismConfLangProviderM
     public string PreferPerformanceCoresText { get; }
     public string MemoryStrategyTitle { get; }
     public string UseLargePagesText { get; }
+    public string RecheckButtonText { get; }
     public string CancelButtonText { get; }
     public string ConfirmButtonText { get; }
     public string EncoderThreadCountText { get; }
@@ -106,6 +110,7 @@ public class ParallelismConfLangProviderM
         PreferPerformanceCoresText = _d["PreferPerformanceCoresText"];
         MemoryStrategyTitle = _d["MemoryStrategyTitle"];
         UseLargePagesText = _d["UseLargePagesText"];
+        RecheckButtonText = _d["RecheckButtonText"];
         CancelButtonText = _d["CancelButtonText"];
         ConfirmButtonText = _d["ConfirmButtonText"];
         EncoderThreadCountText = _d["EncoderThreadCountText"];
