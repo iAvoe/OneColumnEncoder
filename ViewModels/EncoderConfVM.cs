@@ -101,15 +101,13 @@ namespace OneColumnEncoder.ViewModels
             get => _x265Aq;
             set
             {
-                if (SetProperty(ref _x265Aq, value))
+                if (!SetProperty(ref _x265Aq, value)) return;
+                OnPropertyChanged(nameof(IsX265DarkEnabled));
+                OnPropertyChanged(nameof(IsX265TextureEnabled));
+                if (!value)
                 {
-                    OnPropertyChanged(nameof(IsX265DarkEnabled));
-                    OnPropertyChanged(nameof(IsX265TextureEnabled));
-                    if (!value)
-                    {
-                        X265Dark = false;
-                        X265Texture = false;
-                    }
+                    X265Dark = false;
+                    X265Texture = false;
                 }
             }
         }

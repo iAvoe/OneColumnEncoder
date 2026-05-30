@@ -3,32 +3,18 @@ using System.Linq;
 
 namespace OneColumnEncoder.Models
 {
-    public class EncoderPresetItem
+    public class EncoderPresetItem(string key, string nameKey, string param)
     {
-        public string Key { get; }
-        public string NameKey { get; }
-        public string Params { get; }
-
-        public EncoderPresetItem(string key, string nameKey, string param)
-        {
-            Key = key;
-            NameKey = nameKey;
-            Params = param;
-        }
+        public string Key { get; } = key;
+        public string NameKey { get; } = nameKey;
+        public string Params { get; } = param;
     }
 
-    public class ThirdPartyParamDef
+    public class ThirdPartyParamDef(string propertyName, string paramOn, string paramOff)
     {
-        public string PropertyName { get; }
-        public string ParamOn { get; }
-        public string ParamOff { get; }
-
-        public ThirdPartyParamDef(string propertyName, string paramOn, string paramOff)
-        {
-            PropertyName = propertyName;
-            ParamOn = paramOn;
-            ParamOff = paramOff;
-        }
+        public string PropertyName { get; } = propertyName;
+        public string ParamOn { get; } = paramOn;
+        public string ParamOff { get; } = paramOff;
     }
 
     public static class EncoderPresetsM

@@ -57,10 +57,20 @@ namespace OneColumnEncoder.ViewModels
         public int EncoderThreadCount
         {
             get => _encoderThreadCount;
-            set => SetProperty(ref _encoderThreadCount, value);
+            set => SetProperty(ref _encoderThreadCount, ClampThreadCount(value, MaxThreadCount));
         }
 
-        public int MaxThreadCount { get; private set; } = Environment.ProcessorCount;
+        private int _maxThreadCount = Environment.ProcessorCount;
+        public int MaxThreadCount
+        {
+            get => _maxThreadCount;
+            private set
+            {
+                if (!SetProperty(ref _maxThreadCount, Math.Max(1, value))) return;
+                EncoderThreadCount = EncoderThreadCount;
+                OnPropertyChanged(nameof(EncoderThreadTickLabels));
+            }
+        }
 
         public string WindowTitle => Lang.WindowTitle;
         public string IntroText => Lang.IntroText;
@@ -148,8 +158,8 @@ namespace OneColumnEncoder.ViewModels
 
         private void SaveModel()
         {
-            CPUNodeCardVM upstream = UpstreamNodes.First(n => n.IsSelected);
-            CPUNodeCardVM downstream = DownstreamNodes.First(n => n.IsSelected);
+            CPUNodeCardVM upstream = GetSelectedEnabledNode(UpstreamNodes);
+            CPUNodeCardVM downstream = GetSelectedEnabledNode(DownstreamNodes);
             _model.UpstreamNodeId = upstream.NodeId;
             _model.DownstreamNodeId = downstream.NodeId;
             _model.PreferPhysicalCores = PreferPhysicalCores;
@@ -166,8 +176,8 @@ namespace OneColumnEncoder.ViewModels
             UseLargePages = _model.UseLargePages;
 
             var numaNodes = NumaTopologyH.GetNumaNodes();
-            MaxThreadCount = numaNodes.Count > 0 ? numaNodes.Sum(n => n.ProcessorCount) : Environment.ProcessorCount;
-            EncoderThreadCount = Math.Max(1, Math.Min(MaxThreadCount, _model.EncoderThreadCount));
+            MaxThreadCount = GetMaxThreadCount(numaNodes);
+            EncoderThreadCount = _model.EncoderThreadCount;
 
             SelectById(UpstreamNodes, _model.UpstreamNodeId);
             SelectById(DownstreamNodes, _model.DownstreamNodeId);
@@ -183,23 +193,28 @@ namespace OneColumnEncoder.ViewModels
 
         private string BuildPrimarySummary()
         {
-            CPUNodeCardVM upstream = UpstreamNodes.First(n => n.IsSelected);
-            CPUNodeCardVM downstream = DownstreamNodes.First(n => n.IsSelected);
+            CPUNodeCardVM upstream = GetSelectedEnabledNode(UpstreamNodes);
+            CPUNodeCardVM downstream = GetSelectedEnabledNode(DownstreamNodes);
             return $"{upstream.NodeId},{upstream.GroupId} → {downstream.NodeId},{downstream.GroupId}";
         }
 
         private string BuildSecondarySummary()
         {
-            string clampIndicator = PreferPhysicalCores
+            return BuildSecondarySummary(PreferPhysicalCores, EncoderThreadCount);
+        }
+
+        private static string BuildSecondarySummary(bool preferPhysicalCores, int encoderThreadCount)
+        {
+            string clampIndicator = preferPhysicalCores
                 ? UILangProviderM.Current["ToolField.EncThreadClampOn"]
                 : UILangProviderM.Current["ToolField.EncThreadClampOff"];
-            return $"{EncoderThreadCount} {clampIndicator}";
+            return $"{encoderThreadCount} {clampIndicator}";
         }
 
         private IEnumerable<string> BuildThreadTickLabels()
         {
             int max = MaxThreadCount;
-            int tickCount = 8;
+            const int tickCount = 8;
             var labels = new List<string>();
             for (int i = 0; i < tickCount; i++)
             {
@@ -211,7 +226,7 @@ namespace OneColumnEncoder.ViewModels
 
         private static string BuildCacheGroupHint()
         {
-            var lang = ParallelismConfLangProviderM.Current;
+            var lang = new ParallelismConfLangProviderM(UILangProviderM.Current.LanguageCode);
             var cacheTopology = CpuTopologyH.GetCacheTopology();
             if (cacheTopology == null)
             {
@@ -230,6 +245,25 @@ namespace OneColumnEncoder.ViewModels
             }
 
             return $"{lang["CorePerGroup"]}{cacheTopology.CoresPerGroup}{lang["CorePerGroup1alt"]}{cacheTopology.ThreadsPerGroup}{lang["CorePerGroup1alt1"]}{cacheTopology.CacheMbPerGroup}{lang["CorePerGroup2"]}";
+        }
+
+        private static int GetMaxThreadCount(IReadOnlyCollection<NumaNodeInfo> numaNodes)
+        {
+            int count = numaNodes.Count > 0
+                ? numaNodes.Sum(n => n.ProcessorCount)
+                : Environment.ProcessorCount;
+            return Math.Max(1, count);
+        }
+
+        private static int ClampThreadCount(int threadCount, int maxThreadCount)
+        {
+            return Math.Max(1, Math.Min(Math.Max(1, maxThreadCount), threadCount));
+        }
+
+        private static CPUNodeCardVM GetSelectedEnabledNode(ObservableCollection<CPUNodeCardVM> zone)
+        {
+            return zone.FirstOrDefault(n => n.IsSelected && n.IsEnabled)
+                ?? zone.First(n => n.IsEnabled);
         }
 
         private void OnLanguageChanged()
@@ -262,21 +296,24 @@ namespace OneColumnEncoder.ViewModels
             var model = ParallelismConfM.Load();
             var numaNodes = NumaTopologyH.GetNumaNodes();
 
-            int maxThreadCount = numaNodes.Count > 0
-                ? numaNodes.Sum(n => n.ProcessorCount)
-                : Environment.ProcessorCount;
-            int encoderThreadCount = Math.Max(1, Math.Min(maxThreadCount, model.EncoderThreadCount));
+            int maxThreadCount = GetMaxThreadCount(numaNodes);
+            int encoderThreadCount = ClampThreadCount(model.EncoderThreadCount, maxThreadCount);
 
-            var upstream = numaNodes.FirstOrDefault(n => n.NodeId == model.UpstreamNodeId) ?? numaNodes[0];
+            var upstream = numaNodes.FirstOrDefault(n => n.NodeId == model.UpstreamNodeId)
+                ?? numaNodes.FirstOrDefault();
             var downstream = numaNodes.FirstOrDefault(n => n.NodeId == model.DownstreamNodeId)
-                ?? (numaNodes.Count > 1 ? numaNodes[1] : numaNodes[0]);
+                ?? (numaNodes.Count > 1 ? numaNodes[1] : upstream);
+
+            if (upstream is null || downstream is null)
+            {
+                targetItem.P2TextData = BuildSecondarySummary(model.PreferPhysicalCores, encoderThreadCount);
+                targetItem.P1TextData = "0,0 → 0,0";
+                return;
+            }
 
             string primary = $"{upstream.NodeId},{upstream.Group} → {downstream.NodeId},{downstream.Group}";
 
-            string clampIndicator = model.PreferPhysicalCores
-                ? UILangProviderM.Current["ToolField.EncThreadClampOn"]
-                : UILangProviderM.Current["ToolField.EncThreadClampOff"];
-            string secondary = $"{encoderThreadCount} {clampIndicator}";
+            string secondary = BuildSecondarySummary(model.PreferPhysicalCores, encoderThreadCount);
 
             targetItem.P2TextData = secondary;
             targetItem.P1TextData = primary;

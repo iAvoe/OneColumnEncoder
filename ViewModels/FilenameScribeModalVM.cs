@@ -28,7 +28,8 @@ namespace OneColumnEncoder.ViewModels
             get => _videoFilename;
             set
             {
-                if (SetProperty(ref _videoFilename, value)) ValidateFilename();
+                if (!SetProperty(ref _videoFilename, value)) return;
+                ValidateFilename();
             }
         }
 

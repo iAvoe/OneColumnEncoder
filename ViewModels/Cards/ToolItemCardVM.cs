@@ -87,8 +87,8 @@ namespace OneColumnEncoder.ViewModels.Cards
             get => _r1Text;
             set
             {
-                if (SetProperty(ref _r1Text, value))
-                    OnPropertyChanged(nameof(DisplayR1Text));
+                if (!SetProperty(ref _r1Text, value)) return;
+                OnPropertyChanged(nameof(DisplayR1Text));
             }
         }
 
@@ -112,8 +112,8 @@ namespace OneColumnEncoder.ViewModels.Cards
             get => _useAutoAddReplaceText;
             set
             {
-                if (SetProperty(ref _useAutoAddReplaceText, value))
-                    OnPropertyChanged(nameof(DisplayR1Text));
+                if (!SetProperty(ref _useAutoAddReplaceText, value)) return;
+                OnPropertyChanged(nameof(DisplayR1Text));
             }
         }
 

@@ -18,10 +18,8 @@ namespace OneColumnEncoder.ViewModels
             get => _selectedItem;
             set
             {
-                if (SetProperty(ref _selectedItem, value))
-                {
-                    SelectionChangedCommand?.Execute(value);
-                }
+                if (!SetProperty(ref _selectedItem, value)) return;
+                SelectionChangedCommand?.Execute(value);
             }
         }
         public ICommand? SelectionChangedCommand { get; set; }
