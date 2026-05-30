@@ -13,7 +13,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
 
         protected override async Task ExecuteAsync(object? parameter)
         {
-            var loadedConfig = AppConfM.Load();
+            AppConfM loadedConfig = AppConfM.Load();
             // Update the store with loaded config
             _appConfStore.General = loadedConfig.General;
             _appConfStore.Overwrite = loadedConfig.Overwrite;

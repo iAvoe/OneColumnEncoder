@@ -64,18 +64,16 @@ public static partial class NumaTopologyH
         if (!GetNumaHighestNodeNumber(out uint highestNodeNumber))
             return CreateFallbackNode();
 
-        var nodes = new List<NumaNodeInfo>();
+        List<NumaNodeInfo> nodes = [];
 
         for (ushort nodeId = 0; nodeId <= highestNodeNumber; nodeId++)
         {
-            if (!GetNumaNodeProcessorMaskEx(nodeId, out var groupMask))
+            if (!GetNumaNodeProcessorMaskEx(nodeId, out GROUP_AFFINITY groupMask))
                 continue;
-            if (groupMask.Mask == 0)
-                continue;
+            if (groupMask.Mask == 0) continue;
 
             int procCount = CountBits(groupMask.Mask);
-            if (procCount == 0)
-                continue;
+            if (procCount == 0) continue;
 
             int minBit = LowBitIndex(groupMask.Mask);
             int maxBit = HighBitIndex(groupMask.Mask);
@@ -122,7 +120,7 @@ public static partial class NumaTopologyH
 
     private static long GetTotalPhysicalMemory()
     {
-        var memStatus = new MEMORYSTATUSEX
+        MEMORYSTATUSEX memStatus = new()
         {
             dwLength = (uint)Marshal.SizeOf<MEMORYSTATUSEX>()
         };

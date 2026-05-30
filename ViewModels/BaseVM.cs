@@ -33,12 +33,12 @@ namespace OneColumnEncoder.ViewModels
         public static void FillCollection(ObservableCollection<ChecklistEntryVM> collection, List<ChecklistItemDefinitionM> definitions)
         {
             collection.Clear();
-            foreach (var def in definitions)
+            foreach (ChecklistItemDefinitionM d in definitions)
             {
                 collection.Add(new ChecklistEntryVM
                 {
-                    Text = def.Text,
-                    Status = def.InitialStatus
+                    Text = d.Text,
+                    Status = d.InitialStatus
                 });
             }
         }

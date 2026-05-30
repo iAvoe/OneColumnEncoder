@@ -10,7 +10,7 @@ namespace OneColumnEncoder.Converters
         {
             if (value is double parentWidth && parameter is string param)
             {
-                var parts = param.Split(',');
+                string[] parts = param.Split(',');
                 if (int.TryParse(parts[0], out int count) && count > 0)
                 {
                     double perGapSpacing = parts.Length > 1 && double.TryParse(parts[1], out double s) ? s : 0;

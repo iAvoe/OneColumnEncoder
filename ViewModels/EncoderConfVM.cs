@@ -204,11 +204,11 @@ namespace OneColumnEncoder.ViewModels
 
         private void PopulateDropdowns()
         {
-            foreach (var preset in EncoderPresetsM.X264Presets)
+            foreach (EncoderPresetItem preset in EncoderPresetsM.X264Presets)
                 X264ModeDropdown.Items.Add(new DropdownItemM(Lang[preset.NameKey]) { Tag = preset.Key });
-            foreach (var preset in EncoderPresetsM.X265Presets)
+            foreach (EncoderPresetItem preset in EncoderPresetsM.X265Presets)
                 X265ModeDropdown.Items.Add(new DropdownItemM(Lang[preset.NameKey]) { Tag = preset.Key });
-            foreach (var preset in EncoderPresetsM.SvtAv1Presets)
+            foreach (EncoderPresetItem preset in EncoderPresetsM.SvtAv1Presets)
                 SvtAv1ModeDropdown.Items.Add(new DropdownItemM(Lang[preset.NameKey]) { Tag = preset.Key });
 
             SelectDropdownByKey(X264ModeDropdown, _model.X264Mode);
@@ -218,7 +218,7 @@ namespace OneColumnEncoder.ViewModels
 
         private static void SelectDropdownByKey(DropdownMenuVM dropdown, string key)
         {
-            var item = dropdown.Items.FirstOrDefault(i => i.Tag as string == key);
+            DropdownItemM? item = dropdown.Items.FirstOrDefault(i => i.Tag as string == key);
             if (item != null)
                 dropdown.SelectedItem = item;
         }
@@ -273,10 +273,10 @@ namespace OneColumnEncoder.ViewModels
 
         private string BuildCustomParams()
         {
-            var parts = new List<string>();
-            foreach (var def in EncoderPresetsM.ThirdPartyParams)
+            List<string> parts = [];
+            foreach (ThirdPartyParamDef def in EncoderPresetsM.ThirdPartyParams)
             {
-                var prop = GetType().GetProperty(def.PropertyName);
+                System.Reflection.PropertyInfo? prop = GetType().GetProperty(def.PropertyName);
                 if (prop != null && prop.GetValue(this) is true)
                     parts.Add(def.ParamOn);
                 else if (prop != null && !string.IsNullOrEmpty(def.ParamOff))
@@ -293,7 +293,7 @@ namespace OneColumnEncoder.ViewModels
 
         public static void ApplySavedSettingsToCard(ToolItemCardVM targetItem)
         {
-            var model = EncoderConfM.Load();
+            EncoderConfM model = EncoderConfM.Load();
             targetItem.SetEncodingSummary(BuildPrimarySummary(model), BuildSecondarySummary(model));
         }
 

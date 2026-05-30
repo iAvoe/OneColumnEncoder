@@ -110,18 +110,12 @@ namespace OneColumnEncoder.Components
 
         private double GetCurrentRatio()
         {
-            if (Maximum <= Minimum)
-            {
-                return 0d;
-            }
-
+            if (Maximum <= Minimum) return 0d;
             return Math.Max(0d, Math.Min(1d, (Value - Minimum) / (double)(Maximum - Minimum)));
         }
 
-        private double GetTravelWidth()
-        {
-            return Math.Max(1d, TrackHost.ActualWidth - ThumbWidth);
-        }
+        private double GetTravelWidth() =>
+            Math.Max(1d, TrackHost.ActualWidth - ThumbWidth);
 
         private int RatioToValue(double ratio)
         {
@@ -138,14 +132,14 @@ namespace OneColumnEncoder.Components
 
         private double FromLogRatio(double ratio)
         {
-            var min = Math.Max(1, Minimum);
-            var max = Math.Max(min + 1, Maximum);
+            int min = Math.Max(1, Minimum);
+            int max = Math.Max(min + 1, Maximum);
             return min * Math.Pow(max / (double)min, ratio);
         }
 
         private static void OnRangeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            var control = (IntegerSlider)d;
+            IntegerSlider control = (IntegerSlider)d;
             if (control.Value < control.Minimum) control.Value = control.Minimum;
             if (control.Value > control.Maximum) control.Value = control.Maximum;
         }

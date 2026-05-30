@@ -98,7 +98,8 @@ namespace OneColumnEncoder.Helpers
                 while (offset < returnLength)
                 {
                     IntPtr currentPtr = buffer + offset;
-                    var baseInfo = Marshal.PtrToStructure<SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX>(currentPtr);
+                    SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX baseInfo =
+                        Marshal.PtrToStructure<SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX>(currentPtr);
 
                     if (baseInfo.Size == 0) break;
 
@@ -111,7 +112,8 @@ namespace OneColumnEncoder.Helpers
                         case LOGICAL_PROCESSOR_RELATIONSHIP.RelationCache:
 
                             IntPtr cachePtr = currentPtr + 8;
-                            var cacheDesc = Marshal.PtrToStructure<CACHE_RELATIONSHIP>(cachePtr);
+                            CACHE_RELATIONSHIP cacheDesc =
+                                Marshal.PtrToStructure<CACHE_RELATIONSHIP>(cachePtr);
 
                             if (cacheDesc.Level == 3)
                             {
@@ -144,10 +146,7 @@ namespace OneColumnEncoder.Helpers
                     TotalL3Mb = cacheMb * l3GroupCount
                 };
             }
-            finally
-            {
-                Marshal.FreeHGlobal(buffer);
-            }
+            finally { Marshal.FreeHGlobal(buffer); }
         }
 
         private static int CountBits(ulong value)

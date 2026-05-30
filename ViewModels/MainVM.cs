@@ -240,13 +240,13 @@ namespace OneColumnEncoder.ViewModels
         #region Imported Zone Event Handling
         private void SubToImportedToolZones()
         {
-            foreach (var zone in AllImportedToolZones)
+            foreach (ObservableCollection<ToolItemCardVM> zone in AllImportedToolZones)
                 zone.CollectionChanged += OnImportedToolZoneCollectionChanged;
             RefreshImportedToolsChecklist();
         }
         private void UnsubFromImportedToolZones()
         {
-            foreach (var zone in AllImportedToolZones)
+            foreach (ObservableCollection<ToolItemCardVM> zone in AllImportedToolZones)
                 zone.CollectionChanged -= OnImportedToolZoneCollectionChanged;
         }
         private void OnAnalyticsZoneCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -415,7 +415,7 @@ namespace OneColumnEncoder.ViewModels
             foreach (ToolItemCardVM tool in ScriptSrcImportZone) WireUpSourceCmd(tool);
             foreach (ToolItemCardVM tool in EncSettingsZone) WireUpStaticClearCmd(tool);
             WireUpEncSettingsCmds();
-            foreach (var zone in AllImportedToolZones)
+            foreach (ObservableCollection<ToolItemCardVM> zone in AllImportedToolZones)
                 foreach (ToolItemCardVM tool in zone) WireUpToolCmd(tool);
         }
         private void WireUpToolCmd(ToolItemCardVM item)
@@ -849,7 +849,7 @@ namespace OneColumnEncoder.ViewModels
             RefreshSourceZonePrimaryText(ScriptSrcImportZone);
             ApplyDefinitionsToZone(EncSettingsZone, ToolCatalogProviderM.GetEncSettingsDefinitions());
             WireUpEncSettingsCmds();
-            foreach (var zone in AllImportedToolZones)
+            foreach (ObservableCollection<ToolItemCardVM> zone in AllImportedToolZones)
                 ApplyImportedToolDefs(zone);
         }
         private static void RefreshSourceZonePrimaryText(ObservableCollection<ToolItemCardVM> zone)

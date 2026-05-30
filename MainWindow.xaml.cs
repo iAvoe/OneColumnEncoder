@@ -15,7 +15,7 @@ namespace OneColumnEncoder
         private void OnClosing(object? sender, CancelEventArgs e)
         {
             // Close all child windows before the main window closes
-            foreach (var window in Application.Current.Windows.OfType<Window>().Except([this]).ToArray())
+            foreach (Window? window in Application.Current.Windows.OfType<Window>().Except([this]).ToArray())
             {
                 window.Close();
             }

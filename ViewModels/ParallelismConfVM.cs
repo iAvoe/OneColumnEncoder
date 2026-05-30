@@ -124,18 +124,18 @@ namespace OneColumnEncoder.ViewModels
         private static void BuildNodesFromTopology(ObservableCollection<CPUNodeCardVM> nodes)
         {
             nodes.Clear();
-            var numaNodes = NumaTopologyH.GetNumaNodes();
+            List<NumaNodeInfo> numaNodes = NumaTopologyH.GetNumaNodes();
 
             bool isFirst = true;
-            foreach (var numaNode in numaNodes)
+            foreach (NumaNodeInfo n in numaNodes)
             {
                 nodes.Add(new CPUNodeCardVM
                 {
-                    NodeId = numaNode.NodeId,
-                    GroupId = numaNode.Group,
-                    MinThreadNum = numaNode.MinThreadNum,
-                    MaxThreadNum = numaNode.MaxThreadNum,
-                    HasMemGB = numaNode.HasMemGB,
+                    NodeId = n.NodeId,
+                    GroupId = n.Group,
+                    MinThreadNum = n.MinThreadNum,
+                    MaxThreadNum = n.MaxThreadNum,
+                    HasMemGB = n.HasMemGB,
                     IsEnabled = true,
                     IsSelected = isFirst
                 });
@@ -184,7 +184,7 @@ namespace OneColumnEncoder.ViewModels
             PreferPerformanceCores = _model.PreferPerformanceCores;
             UseLargePages = _model.UseLargePages && CanUseLargePages;
 
-            var numaNodes = NumaTopologyH.GetNumaNodes();
+            List<NumaNodeInfo> numaNodes = NumaTopologyH.GetNumaNodes();
             MaxThreadCount = GetMaxThreadCount(numaNodes);
             EncoderThreadCount = _model.EncoderThreadCount;
 
@@ -222,7 +222,7 @@ namespace OneColumnEncoder.ViewModels
         {
             int max = MaxThreadCount;
             const int tickCount = 8;
-            var labels = new List<string>();
+            List<string> labels = [];
             for (int i = 0; i < tickCount; i++)
             {
                 int val = 1 + i * (max - 1) / (tickCount - 1);
@@ -233,11 +233,11 @@ namespace OneColumnEncoder.ViewModels
 
         private static string BuildCacheGroupHint()
         {
-            var lang = new ParallelismConfLangProviderM(UILangProviderM.Current.LanguageCode);
-            var cacheTopology = CpuTopologyH.GetCacheTopology();
+            ParallelismConfLangProviderM lang = new(UILangProviderM.Current.LanguageCode);
+            CpuTopologyH.CacheGroupInfo? cacheTopology = CpuTopologyH.GetCacheTopology();
             if (cacheTopology == null)
             {
-                var nodes = NumaTopologyH.GetNumaNodes();
+                List<NumaNodeInfo> nodes = NumaTopologyH.GetNumaNodes();
                 if (nodes.Count == 0) return string.Empty;
 
                 int coresPerGroup = nodes.Count == 1
@@ -300,15 +300,17 @@ namespace OneColumnEncoder.ViewModels
 
         public static void ApplySavedSettingsToCard(ToolItemCardVM targetItem)
         {
-            var model = ParallelismConfM.Load();
-            var numaNodes = NumaTopologyH.GetNumaNodes();
+            ParallelismConfM model = ParallelismConfM.Load();
+            List<NumaNodeInfo> numaNodes = NumaTopologyH.GetNumaNodes();
 
             int maxThreadCount = GetMaxThreadCount(numaNodes);
             int encoderThreadCount = ClampThreadCount(model.EncoderThreadCount, maxThreadCount);
 
-            var upstream = numaNodes.FirstOrDefault(n => n.NodeId == model.UpstreamNodeId)
+            NumaNodeInfo? upstream =
+                numaNodes.FirstOrDefault(n => n.NodeId == model.UpstreamNodeId)
                 ?? numaNodes.FirstOrDefault();
-            var downstream = numaNodes.FirstOrDefault(n => n.NodeId == model.DownstreamNodeId)
+            NumaNodeInfo? downstream =
+                numaNodes.FirstOrDefault(n => n.NodeId == model.DownstreamNodeId)
                 ?? (numaNodes.Count > 1 ? numaNodes[1] : upstream);
 
             if (upstream is null || downstream is null)
