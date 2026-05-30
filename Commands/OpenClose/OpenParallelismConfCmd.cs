@@ -1,3 +1,4 @@
+using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.ViewModels.Cards;
@@ -34,6 +35,26 @@ namespace OneColumnEncoder.Commands.OpenClose
             window.Closed += (_, _) => _modalNavS.Close();
             _modalNavS.CurrentModalVM = vm;
             window.Show();
+
+            if (!vm.CanUseLargePages)
+                ShowLargePagePrivilegeDebug();
+        }
+
+        private static void ShowLargePagePrivilegeDebug()
+        {
+            ConfirmationModal window = new();
+            CloseModalCmd closeCmd = new(window.Close);
+            string message = string.IsNullOrWhiteSpace(PrivilegeCheckH.LastLockMemoryPrivilegeCheckMessage)
+                ? "PrivilegeCheckH.HasLockMemoryPrivilege returned false without a diagnostic message."
+                : PrivilegeCheckH.LastLockMemoryPrivilegeCheckMessage;
+
+            window.DataContext = ConfirmationModalVM.CreateDebug(
+                "Large Page Privilege Check",
+                message,
+                closeCmd,
+                closeCmd);
+            window.Owner = Application.Current.MainWindow;
+            window.ShowDialog();
         }
     }
 }

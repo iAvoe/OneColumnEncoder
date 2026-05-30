@@ -90,12 +90,9 @@ public static partial class NumaTopologyH
             });
         }
 
-        if (nodes.Count == 0)
-            return CreateFallbackNode();
-
+        if (nodes.Count == 0) return CreateFallbackNode();
         long totalMemory = GetTotalPhysicalMemory();
-        if (totalMemory > 0)
-            DistributeMemoryByProcessorCount(nodes, totalMemory);
+        if (totalMemory > 0) DistributeMemoryByProcessorCount(nodes, totalMemory);
 
         return nodes;
     }
