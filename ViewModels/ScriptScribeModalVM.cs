@@ -50,7 +50,7 @@ namespace OneColumnEncoder.ViewModels
         #endregion
 
         #region UILang properties
-        public static string WindowTitle => UILangProviderM.Current["SrcScribe.WindowTitle"];
+        public string WindowTitle => "1cenc Script Generator";
         public static string ScribeDescription1 => UILangProviderM.Current["SrcScribe.Description1"];
         public static string ScribeDescription2 => UILangProviderM.Current["SrcScribe.Description2"];
         public static string NoteText => UILangProviderM.Current["SrcScribe.NoteText"];

@@ -67,12 +67,17 @@ namespace OneColumnEncoder.ViewModels
             private set
             {
                 if (!SetProperty(ref _maxThreadCount, Math.Max(1, value))) return;
-                EncoderThreadCount = EncoderThreadCount;
+                ClampEncoderThreadCount();
                 OnPropertyChanged(nameof(EncoderThreadTickLabels));
             }
         }
 
-        public string WindowTitle => Lang.WindowTitle;
+        private void ClampEncoderThreadCount()
+        {
+            EncoderThreadCount = ClampThreadCount(EncoderThreadCount, MaxThreadCount);
+        }
+
+        public static string WindowTitle => "1cenc Parallelism Settings";
         public string IntroText => Lang.IntroText;
         public string PriorityText => Lang.PriorityText;
         public string CacheGroupTitle => Lang.CacheGroupTitle;
@@ -86,7 +91,7 @@ namespace OneColumnEncoder.ViewModels
         public string MemoryStrategyTitle => Lang.MemoryStrategyTitle;
         public string UseLargePagesText => Lang.UseLargePagesText;
         public string EncoderThreadCountText => Lang.EncoderThreadCountText;
-        public IEnumerable<string> EncoderThreadTickLabels => BuildThreadTickLabels();
+        public List<string> EncoderThreadTickLabels => BuildThreadTickLabels();
         public string CancelButtonText => Lang.CancelButtonText;
         public string ConfirmButtonText => Lang.ConfirmButtonText;
 
@@ -211,7 +216,7 @@ namespace OneColumnEncoder.ViewModels
             return $"{encoderThreadCount} {clampIndicator}";
         }
 
-        private IEnumerable<string> BuildThreadTickLabels()
+        private List<string> BuildThreadTickLabels()
         {
             int max = MaxThreadCount;
             const int tickCount = 8;
@@ -247,7 +252,7 @@ namespace OneColumnEncoder.ViewModels
             return $"{lang["CorePerGroup"]}{cacheTopology.CoresPerGroup}{lang["CorePerGroup1alt"]}{cacheTopology.ThreadsPerGroup}{lang["CorePerGroup1alt1"]}{cacheTopology.CacheMbPerGroup}{lang["CorePerGroup2"]}";
         }
 
-        private static int GetMaxThreadCount(IReadOnlyCollection<NumaNodeInfo> numaNodes)
+        private static int GetMaxThreadCount(List<NumaNodeInfo> numaNodes)
         {
             int count = numaNodes.Count > 0
                 ? numaNodes.Sum(n => n.ProcessorCount)

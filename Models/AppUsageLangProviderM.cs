@@ -6,7 +6,6 @@ public class AppUsageLangProviderM
     {
         ["en"] = new()
         {
-            ["WindowTitle"] = "1cenc Usage & Compliance",
             ["Title"] = "Usage & Compliance",
             ["HowToUse"] = "How to use this program",
             ["Description"] = "This program stictly follows a top\u2192down, left\u2192right operation sequence——all 'next' buttons are on the right side.",
@@ -52,7 +51,6 @@ public class AppUsageLangProviderM
         },
         ["zh-cn"] = new()
         {
-            ["WindowTitle"] = "1cenc 使用与合规",
             ["Title"] = "使用与合规",
             ["HowToUse"] = "如何使用本程序",
             ["Description"] = "本程序严格遵循自上而下、从左到右的操作顺序——确认按钮皆位于右侧。",
@@ -98,7 +96,6 @@ public class AppUsageLangProviderM
         },
         ["zh-tw"] = new()
         {
-            ["WindowTitle"] = "1cenc 使用與合規",
             ["Title"] = "使用與合規",
             ["HowToUse"] = "如何使用本程式",
             ["Description"] = "本程式嚴格遵循自上而下、由左至右的操作順序—確認按鈕皆位於右側。",
@@ -144,7 +141,6 @@ public class AppUsageLangProviderM
         }
     };
 
-    public string WindowTitle { get; }
     public string Title { get; }
     public string HowToUse { get; }
     public string Description { get; }
@@ -192,7 +188,6 @@ public class AppUsageLangProviderM
     public AppUsageLangProviderM(string languageCode)
     {
         var d = Data.TryGetValue(languageCode, out var lang) ? lang : Data["en"];
-        WindowTitle = d["WindowTitle"];
         Title = d["Title"];
         HowToUse = d["HowToUse"];
         Description = d["Description"];

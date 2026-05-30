@@ -7,7 +7,7 @@
         xmlns:viewmodels="clr-namespace:OneColumnEncoder.ViewModels"
         d:DataContext="{d:DesignInstance Type=viewmodels:AppUsageVM}"
         mc:Ignorable="d"
-        Title="{Binding Lang.WindowTitle, Mode=OneWay}"
+        Title="{Binding WindowTitle}"
         Width="600"
         Height="1080"
         WindowStartupLocation="CenterScreen"

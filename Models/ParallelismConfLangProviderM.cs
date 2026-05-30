@@ -6,13 +6,12 @@ public class ParallelismConfLangProviderM
     {
         ["en"] = new()
         {
-            ["WindowTitle"] = "Parallelism Configuration",
             ["IntroText"] = "This program ignores the various parallel-impls among tools, and uses:\n· CPU Sets to suggest thread affinity (Allowing temp. thread-node disloc.)\n· Try allocate RAM to encoding thread ranged on the their NUMA node",
             ["PriorityText"] = "This program avoids raising task priority, nor declare encoding tasks as latency-sens.,\nthereby preventing unresponsive tasks hanging the OS indefinitely",
             ["CacheGroupTitle"] = "Detected L3 cache groups (↑crossings, ↓cache hits)",
             ["UpstreamNumaTitle"] = "NUMA Soft Binding: Pipe Upstream",
             ["DownstreamNumaTitle"] = "NUMA Soft Binding: Pipe Downstream (encoder)",
-            ["NumaGuidanceText"] = "If upstream tool has slow filters, assign encoder to other nodes might be faster—compute bottleneck\notherwise, sharing might be faster—latency bottleneck",
+            ["NumaGuidanceText"] = "Assign encoder to other nodes might be faster when upstream tool has slow filters\notherwise, sharing same node might be faster—compute vs. latency bottleneck",
             ["ThreadStrategyTitle"] = "Hyper-threading & P-E Core Scheduling",
             ["EncoderThreadCountText"] = "Encoder threads",
             ["PreferPhysicalCoresText"] = "Map encoder threads to phys. cores (clamps max slider range)",
@@ -29,7 +28,6 @@ public class ParallelismConfLangProviderM
         },
         ["zh-cn"] = new()
         {
-            ["WindowTitle"] = "并行计算配置",
             ["IntroText"] = "本程序会忽略不同工具中各异的并行实现，并使用以下控制策略：\n· CPU Sets—引荐线程活动范围（允许系统临时外迁线程）\n· 尝试优先在指定 NUMA 节点分配部分内存",
             ["PriorityText"] = "本程序不调整进程优先级，或设置声明编码任务为延时敏感类型，以避免系统无限等待无响应编码器的问题",
             ["CacheGroupTitle"] = "检测到的核心缓存分组（跨组越多，缓存命中率越低）",
@@ -52,7 +50,6 @@ public class ParallelismConfLangProviderM
         },
         ["zh-tw"] = new()
         {
-            ["WindowTitle"] = "平行計算配置",
             ["IntroText"] = "本程式會忽略不同工具中各異的平行實現，並使用以下控制策略：\n· CPU Sets—引薦執行緒活動範圍（允許系統臨時外遷執行緒）\n· 嘗試優先在指定 NUMA 節點分配部分記憶體",
             ["PriorityText"] = "本程式不調整進程優先度，或設置聲明編碼任務為延時敏感類型，以避免系統無限等待無響應編碼器的問題",
             ["CacheGroupTitle"] = "檢測到的核心快取分組（跨組越多，快取命中率越低）",
@@ -75,7 +72,6 @@ public class ParallelismConfLangProviderM
         }
     };
 
-    public string WindowTitle { get; }
     public string IntroText { get; }
     public string PriorityText { get; }
     public string CacheGroupTitle { get; }
@@ -99,7 +95,6 @@ public class ParallelismConfLangProviderM
     {
         LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
         _d = Data[LanguageCode];
-        WindowTitle = _d["WindowTitle"];
         IntroText = _d["IntroText"];
         PriorityText = _d["PriorityText"];
         CacheGroupTitle = _d["CacheGroupTitle"];

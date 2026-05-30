@@ -33,7 +33,7 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        public static string WindowTitle => UILangProviderM.Current["FilenameScribe.WindowTitle"];
+        public string WindowTitle => "1cenc Filename";
         public static string MiniHeader => UILangProviderM.Current["FilenameScribe.MiniHeader"];
         public static string PlaceholderText => UILangProviderM.Current["FilenameScribe.Placeholder"];
         public static string ExtensionText => PossibleExtensions;

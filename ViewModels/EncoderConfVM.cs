@@ -31,8 +31,8 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _selectedTabIndex, value);
         }
 
-        public string WindowTitle => Lang.WindowTitle;
-        public string TitleText => Lang.WindowTitle;
+        public string WindowTitle => "1cenc Encoding Settings";
+        public string TitleText => WindowTitle;
         public string RateControlTitle => Lang.RateControlTitle;
         public string CustomParamsTitle => Lang.CustomParamsTitle;
         public string CrfModeText => Lang.CrfModeText;
@@ -73,28 +73,64 @@ namespace OneColumnEncoder.ViewModels
         public DropdownMenuVM SvtAv1ModeDropdown { get; } = new();
 
         private int _x264Crf = 23;
-        public int X264Crf { get => _x264Crf; set => SetProperty(ref _x264Crf, value); }
+        public int X264Crf
+        {
+            get => _x264Crf;
+            set => SetProperty(ref _x264Crf, value);
+        }
         private int _x265Crf = 28;
-        public int X265Crf { get => _x265Crf; set => SetProperty(ref _x265Crf, value); }
+        public int X265Crf
+        {
+            get => _x265Crf;
+            set => SetProperty(ref _x265Crf, value);
+        }
         private int _svtAv1Crf = 35;
-        public int SvtAv1Crf { get => _svtAv1Crf; set => SetProperty(ref _svtAv1Crf, value); }
+        public int SvtAv1Crf {
+            get => _svtAv1Crf;
+            set => SetProperty(ref _svtAv1Crf, value);
+        }
 
         private int _x264Abr = 209;
-        public int X264Abr { get => _x264Abr; set => SetProperty(ref _x264Abr, value); }
+        public int X264Abr
+        {
+            get => _x264Abr; set => SetProperty(ref _x264Abr, value);
+        }
         private int _x265Abr = 70;
-        public int X265Abr { get => _x265Abr; set => SetProperty(ref _x265Abr, value); }
+        public int X265Abr
+        {
+            get => _x265Abr; set => SetProperty(ref _x265Abr, value);
+        }
         private int _svtAv1Abr = 10;
-        public int SvtAv1Abr { get => _svtAv1Abr; set => SetProperty(ref _svtAv1Abr, value); }
+        public int SvtAv1Abr
+        {
+            get => _svtAv1Abr; set => SetProperty(ref _svtAv1Abr, value);
+        }
 
         private int _x264Keyframe = 9;
-        public int X264Keyframe { get => _x264Keyframe; set => SetProperty(ref _x264Keyframe, value); }
+        public int X264Keyframe
+        {
+            get => _x264Keyframe;
+            set => SetProperty(ref _x264Keyframe, value);
+        }
         private int _x265Keyframe = 7;
-        public int X265Keyframe { get => _x265Keyframe; set => SetProperty(ref _x265Keyframe, value); }
+        public int X265Keyframe
+        {
+            get => _x265Keyframe;
+            set => SetProperty(ref _x265Keyframe, value);
+        }
         private int _svtAv1Keyframe = 9;
-        public int SvtAv1Keyframe { get => _svtAv1Keyframe; set => SetProperty(ref _svtAv1Keyframe, value); }
+        public int SvtAv1Keyframe
+        {
+            get => _svtAv1Keyframe;
+            set => SetProperty(ref _svtAv1Keyframe, value);
+        }
 
         private bool _x264Mod;
-        public bool X264Mod { get => _x264Mod; set => SetProperty(ref _x264Mod, value); }
+        public bool X264Mod
+        {
+            get => _x264Mod;
+            set => SetProperty(ref _x264Mod, value);
+        }
         private bool _x265Aq;
         public bool X265Aq
         {
@@ -112,13 +148,28 @@ namespace OneColumnEncoder.ViewModels
             }
         }
         private bool _x265Dark;
-        public bool X265Dark { get => _x265Dark; set => SetProperty(ref _x265Dark, value); }
+        public bool X265Dark {
+            get => _x265Dark;
+            set => SetProperty(ref _x265Dark, value);
+        }
         private bool _x265Texture;
-        public bool X265Texture { get => _x265Texture; set => SetProperty(ref _x265Texture, value); }
+        public bool X265Texture
+        {
+            get => _x265Texture;
+            set => SetProperty(ref _x265Texture, value);
+        }
         private bool _svtAv1Dl2;
-        public bool SvtAv1Dl2 { get => _svtAv1Dl2; set => SetProperty(ref _svtAv1Dl2, value); }
+        public bool SvtAv1Dl2
+        {
+            get => _svtAv1Dl2;
+            set => SetProperty(ref _svtAv1Dl2, value);
+        }
         private bool _svtAv1AutoTile;
-        public bool SvtAv1AutoTile { get => _svtAv1AutoTile; set => SetProperty(ref _svtAv1AutoTile, value); }
+        public bool SvtAv1AutoTile
+        {
+            get => _svtAv1AutoTile;
+            set => SetProperty(ref _svtAv1AutoTile, value);
+        }
 
         public bool IsX265DarkEnabled => X265Aq;
         public bool IsX265TextureEnabled => X265Aq;
@@ -144,7 +195,8 @@ namespace OneColumnEncoder.ViewModels
                 ApplySettingsToTarget();
                 closeAction();
             });
-            FinishButtons = ButtonGroupVM.CreateTwoButton(CancelButtonText, ConfirmButtonText, CloseCmd, ConfirmCmd);
+            FinishButtons = ButtonGroupVM.CreateTwoButton(
+                CancelButtonText, ConfirmButtonText, CloseCmd, ConfirmCmd);
             PopulateDropdowns();
             LoadModelToUi();
             UILangProviderM.CurrentChanged += OnLanguageChanged;
@@ -158,6 +210,7 @@ namespace OneColumnEncoder.ViewModels
                 X265ModeDropdown.Items.Add(new DropdownItemM(Lang[preset.NameKey]) { Tag = preset.Key });
             foreach (var preset in EncoderPresetsM.SvtAv1Presets)
                 SvtAv1ModeDropdown.Items.Add(new DropdownItemM(Lang[preset.NameKey]) { Tag = preset.Key });
+
             SelectDropdownByKey(X264ModeDropdown, _model.X264Mode);
             SelectDropdownByKey(X265ModeDropdown, _model.X265Mode);
             SelectDropdownByKey(SvtAv1ModeDropdown, _model.SvtAv1Mode);
@@ -254,10 +307,8 @@ namespace OneColumnEncoder.ViewModels
             return $"CRF {model.X264Crf},{model.X265Crf},{model.SvtAv1Crf}";
         }
 
-        private static string BuildSecondarySummary(EncoderConfM model)
-        {
-            return $"{model.X264Keyframe},{model.X265Keyframe},{model.SvtAv1Keyframe}s";
-        }
+        private static string BuildSecondarySummary(EncoderConfM model) =>
+            $"{model.X264Keyframe},{model.X265Keyframe},{model.SvtAv1Keyframe}s";
 
         private void OnLanguageChanged()
         {
@@ -310,6 +361,10 @@ namespace OneColumnEncoder.ViewModels
             SyncTitles(EncoderPresetsM.SvtAv1Presets, SvtAv1ModeDropdown);
         }
 
-        public override void Dispose() { UILangProviderM.CurrentChanged -= OnLanguageChanged; base.Dispose(); }
+        public override void Dispose()
+        {
+            UILangProviderM.CurrentChanged -= OnLanguageChanged;
+            base.Dispose();
+        }
     }
 }

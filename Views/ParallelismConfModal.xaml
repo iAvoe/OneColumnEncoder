@@ -9,9 +9,9 @@
         xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
         d:DataContext="{d:DesignInstance Type=vms:ParallelismConfVM}"
         mc:Ignorable="d"
-        Title="{Binding Lang.WindowTitle}"
+        Title="{Binding WindowTitle}"
         Width="530"
-        Height="650"
+        Height="640"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <ScrollViewer VerticalScrollBarVisibility="Auto"

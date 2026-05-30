@@ -91,7 +91,7 @@ public class UILangProviderM
 
             ["Tool.Enc.OutputSetting"] = "Output Setting",
             ["Tool.Enc.Parallelism"] = "Parallelism Control",
-            ["Tool.Enc.EncParams"] = "Encoding Parameters",
+            ["Tool.Enc.EncParams"] = "Encode Settings",
 
             // Dialogs
             ["Dialog.SelectTitle"] = "Select {0}",
@@ -195,7 +195,7 @@ public class UILangProviderM
             ["Setting.Language.Select"] = "Select Language",
 
             // ScriptSrcScribeModal
-            ["SrcScribe.WindowTitle"] = "Generate Upstream Script",
+            ["SrcScribe.WindowTitle"] = "1cenc Script Generator",
             ["SrcScribe.Description1"] = "Automatically builds a decoder-to-Y4M pipe script based on imported video path. You may paste additional filters here, or copy the In/Out section to your desired script.",
             ["SrcScribe.Description2"] = "If buttons are locked, return to the main UI and import a video file first.",
             ["SrcScribe.NoVidSrcWarning"] = "Please return to the main UI and import a video file first",
@@ -220,7 +220,7 @@ public class UILangProviderM
             ["SrcScribe.SavingWindowTitle"] = "Saving all scripts (AVS & VPY)...",
 
             // FilenameScribeModal
-            ["FilenameScribe.WindowTitle"] = "Specify Output Filename",
+            ["FilenameScribe.WindowTitle"] = "1cenc Filename",
             ["FilenameScribe.MiniHeader"] = "File Name",
             ["FilenameScribe.Placeholder"] = "Type or paste output file name here",
             ["FilenameScribe.CheckLength"] = "1~50 characters",
@@ -237,7 +237,7 @@ public class UILangProviderM
             ["FilenameScribe.Confirm"] = "Done (→ output path)",
             ["FilenameScribe.FooterHint"] = "File extension is set by selected encoder and cannot be edited here",
 
-            ["SrcAnalysis.WindowTitle"] = "Source Analysis",
+            ["SrcAnalysis.WindowTitle"] = "1cenc Source Analysis",
             ["SrcAnalysis.Completed"] = "Source analysis completed.",
             ["SrcAnalysis.Copied"] = "Raw ffprobe JSON copied to clipboard.",
 
@@ -421,7 +421,7 @@ public class UILangProviderM
 
             ["Setting.Language.Select"] = "选择语言",
 
-            ["SrcScribe.WindowTitle"] = "生成上游脚本",
+            ["SrcScribe.WindowTitle"] = "1cenc Script Generator",
             ["SrcScribe.Description1"] = "自动根据已导入的视频构建「调用解码器生成 Y4M 流并导出」的脚本，可以将需要的滤镜粘贴进来，也可以将解码输出段落复制给其它的待命脚本。",
             ["SrcScribe.Description2"] = "若按钮锁定，则先回到主界面完成视频文件导入操作。",
             ["SrcScribe.NoVidSrcWarning"] = "请先回到主界面，完成视频文件导入操作",
@@ -446,7 +446,7 @@ public class UILangProviderM
             ["SrcScribe.SavingWindowTitle"] = "保存所有脚本到文件 (AVS & VPY)...",
 
             // FilenameScribeModal
-            ["FilenameScribe.WindowTitle"] = "导出文件名配置",
+            ["FilenameScribe.WindowTitle"] = "1cenc Filename",
             ["FilenameScribe.MiniHeader"] = "文件名",
             ["FilenameScribe.Placeholder"] = "在此写入或粘贴导出文件名",
             ["FilenameScribe.CheckLength"] = "1~50 字",
@@ -463,7 +463,7 @@ public class UILangProviderM
             ["FilenameScribe.Confirm"] = "确认并定位输出路径",
             ["FilenameScribe.FooterHint"] = "后缀名由选择的编码器程序决定，无法编辑",
 
-            ["SrcAnalysis.WindowTitle"] = "视频源分析",
+            ["SrcAnalysis.WindowTitle"] = "1cenc Source Analysis",
             ["SrcAnalysis.Completed"] = "视频源分析已完成。",
             ["SrcAnalysis.Copied"] = "ffprobe 原生 JSON 已复制到剪贴板。",
 
@@ -647,7 +647,7 @@ public class UILangProviderM
 
             ["Setting.Language.Select"] = "選擇語言",
 
-            ["SrcScribe.WindowTitle"] = "生成上游腳本",
+            ["SrcScribe.WindowTitle"] = "1cenc Script Generator",
             ["SrcScribe.Description1"] = "自動根據已導入的影片構建「調用解碼器生成 Y4M 流並導出」的腳本，可以將需要的濾鏡粘貼進來，也可以將解碼輸出段落複製給其它的待命腳本。",
             ["SrcScribe.Description2"] = "若按鈕鎖定，則先回到主界面完成影片文件導入操作。",
             ["SrcScribe.NoVidSrcWarning"] = "請先回到主界面，完成影片文件導入操作",
@@ -672,7 +672,7 @@ public class UILangProviderM
             ["SrcScribe.SavingWindowTitle"] = "儲存所有腳本到檔案 (AVS & VPY)...",
 
             // FilenameScribeModal
-            ["FilenameScribe.WindowTitle"] = "導出檔案名設定",
+            ["FilenameScribe.WindowTitle"] = "1cenc Filename",
             ["FilenameScribe.MiniHeader"] = "檔案名",
             ["FilenameScribe.Placeholder"] = "在此寫入或貼上匯出檔案名稱",
             ["FilenameScribe.CheckLength"] = "1~50 字",
@@ -689,7 +689,7 @@ public class UILangProviderM
             ["FilenameScribe.Confirm"] = "確認並定位輸出路徑",
             ["FilenameScribe.FooterHint"] = "副檔名由選擇的編碼器程式決定，無法編輯",
 
-            ["SrcAnalysis.WindowTitle"] = "影片源分析",
+            ["SrcAnalysis.WindowTitle"] = "1cenc Source Analysis",
             ["SrcAnalysis.Completed"] = "影片源分析已完成。",
             ["SrcAnalysis.Copied"] = "ffprobe 原生 JSON 已複製到剪貼簿。",
 

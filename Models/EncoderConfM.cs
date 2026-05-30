@@ -18,7 +18,7 @@ namespace OneColumnEncoder.Models
         public int X264Crf { get; set; } = 23;
         public int X264Abr { get; set; } = 209;
         public int X264Keyframe { get; set; } = 9;
-        public string X264Mode { get; set; } = "a";
+        public string X264Mode { get; set; } = "a"; // See EncoderPresetsM
         public bool X264Mod { get; set; } = false;
 
         // x265

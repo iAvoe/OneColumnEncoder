@@ -7,7 +7,6 @@ public class EncoderConfLangProviderM
     {
         ["en"] = new()
         {
-            ["WindowTitle"] = "Encoding Configuration",
             ["RateControlTitle"] = "Rate Control Mechanism",
             ["CustomParamsTitle"] = "Custom Parameters",
             ["CrfModeText"] = "Constant Rate Factor (CRF) Mode",
@@ -51,7 +50,6 @@ public class EncoderConfLangProviderM
         },
         ["zh-cn"] = new()
         {
-            ["WindowTitle"] = "编码器参数自定义",
             ["RateControlTitle"] = "码率控制策略",
             ["CustomParamsTitle"] = "自定义参数",
             ["CrfModeText"] = "码率调谐常量（CRF）模式",
@@ -95,7 +93,6 @@ public class EncoderConfLangProviderM
         },
         ["zh-tw"] = new()
         {
-            ["WindowTitle"] = "編碼器參數自定義",
             ["RateControlTitle"] = "碼率控制策略",
             ["CustomParamsTitle"] = "自定義參數",
             ["CrfModeText"] = "碼率調諧常量（CRF）模式",
@@ -139,7 +136,6 @@ public class EncoderConfLangProviderM
         }
     };
 
-    public string WindowTitle { get; }
     public string RateControlTitle { get; }
     public string CustomParamsTitle { get; }
     public string CrfModeText { get; }
@@ -190,7 +186,6 @@ public class EncoderConfLangProviderM
     {
         LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
         _d = Data[LanguageCode];
-        WindowTitle = _d["WindowTitle"];
         RateControlTitle = _d["RateControlTitle"];
         CustomParamsTitle = _d["CustomParamsTitle"];
         CrfModeText = _d["CrfModeText"];
