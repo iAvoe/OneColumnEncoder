@@ -52,7 +52,7 @@ public static class ToolCatalogProviderM
         new(UILangProviderM.Current["Tool.Enc.CompressionParams"],
             UILangProviderM.Current["Buttons.Edit"],
             UILangProviderM.Current["Buttons.Clear"],
-            UILangProviderM.Current["ToolField.Stratagem"],
+            UILangProviderM.Current["ToolField.Strategy"],
             UILangProviderM.Current["ToolField.MaximumKeyframeGap"]),
     ];
 

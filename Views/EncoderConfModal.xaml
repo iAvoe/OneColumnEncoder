@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="520"
-        Height="1040"
+        Height="1060"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <ScrollViewer VerticalScrollBarVisibility="Auto"
@@ -22,18 +22,19 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <!-- Rate Control Title -->
             <TextBlock Grid.Row="0"
                        Text="{Binding RateControlTitle}"
-                       Style="{StaticResource H1}"
+                       Style="{StaticResource H2}"
                        Margin="0 5 0 0" />
 
             <!-- CRF / ABR Tabs -->
             <TabControl Grid.Row="1"
                         SelectedIndex="{Binding SelectedTabIndex}"
-                        Margin="0 15 0 0">
+                        Margin="0 10 0 0">
 
                 <TabItem Header="{Binding CrfModeText}"
                          Padding="15 7.5"
@@ -66,33 +67,36 @@
                 <TabItem Header="{Binding AbrModeText}"
                          Padding="15 7.5"
                          FontWeight="Bold">
-                    <comps:IntegerSliderGroup Margin="0 10 0 0">
+                    <comps:IntegerSliderGroup Margin="10 5 0 7.5">
                         <comps:IntegerSlider Label="x264"
-                                             Minimum="1"
+                                             Minimum="10"
                                              Maximum="500"
                                              Value="{Binding X264Abr, Mode=TwoWay}"
                                              TickLabels="{Binding X264AbrLabels}"
-                                             TickCount="5"
+                                             TickCount="4"
+                                             Step="10"
                                              SliderMaxWidth="340" />
                         <comps:IntegerSlider Label="x265"
-                                             Minimum="1"
+                                             Minimum="10"
                                              Maximum="500"
                                              Value="{Binding X265Abr, Mode=TwoWay}"
                                              TickLabels="{Binding X265AbrLabels}"
-                                             TickCount="5"
+                                             TickCount="4"
+                                             Step="10"
                                              SliderMaxWidth="340"/>
                         <comps:IntegerSlider Label="SVT-AV1"
-                                             Minimum="1"
+                                             Minimum="10"
                                              Maximum="500"
                                              Value="{Binding SvtAv1Abr, Mode=TwoWay}"
                                              TickLabels="{Binding SvtAv1AbrLabels}"
-                                             TickCount="5"
+                                             TickCount="4"
+                                             Step="10"
                                              SliderMaxWidth="340"/>
                     </comps:IntegerSliderGroup>
                 </TabItem>
             </TabControl>
 
-            <!-- CRF Hint -->
+            <!-- CRF, ABR Hint -->
             <StackPanel Grid.Row="2"
                         Margin="5 10 5 0"
                         Orientation="Horizontal"
@@ -114,15 +118,36 @@
                            VerticalAlignment="Center"
                            Foreground="{StaticResource GlobalTertiary}" />
             </StackPanel>
-
-            <!-- Custom Params: Basic / Keyframe / Third-party -->
             <StackPanel Grid.Row="3"
-                        Margin="0 10 0 0">
+                        Margin="5 10 5 0"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center">
+                <Rectangle Width="10"
+                           Height="10"
+                           VerticalAlignment="Center"
+                           Fill="{StaticResource GlobalTertiary}">
+                    <Rectangle.OpacityMask>
+                        <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
+                                    Stretch="Uniform" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+                <TextBlock FontSize="9"
+                           Focusable="False"
+                           Margin="3.5 0 0 0"
+                           Text="{Binding AbrHintText, Mode=OneWay}"
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource GlobalTertiary}" />
+            </StackPanel>
+            
+            <!-- Custom Params: Basic / Keyframe / Third-party -->
+            <StackPanel Grid.Row="4">
                 <TextBlock Text="{Binding CustomParamsTitle}"
-                           Style="{StaticResource H1}" />
+                           Style="{StaticResource H2}"
+                           Margin="0 15 0 0" />
                 <!-- Basic Params: Mode Dropdowns -->
                 <TextBlock Text="{Binding BasicParamsText}"
-                           Style="{StaticResource H2}"
+                           Style="{StaticResource H3}"
                            Margin="0 10 0 0" />
 
                 <Grid Margin="0 10 0 0">
@@ -168,8 +193,8 @@
 
                 <!-- Keyframe Interval Sliders -->
                 <TextBlock Text="{Binding KeyframeSecondsText, Mode=OneWay}"
-                           Style="{StaticResource H2}"
-                           Margin="0 10 0 0" />
+                           Style="{StaticResource H3}"
+                           Margin="0 15 0 0" />
                 <comps:IntegerSliderGroup>
                     <comps:IntegerSlider Label="{Binding X264Text}"
                                          Minimum="6"
@@ -239,8 +264,8 @@
 
                 <!-- Third-party Params Checkboxes -->
                 <TextBlock Text="{Binding ThirdPartyParamsText, Mode=OneWay}"
-                           Style="{StaticResource H2}"
-                           Margin="0 10 0 0" />
+                           Style="{StaticResource H3}"
+                           Margin="0 15 0 0" />
                 <Grid Margin="0 10 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -258,7 +283,8 @@
                                Text="{Binding X264ModText, Mode=OneWay}"
                                FontSize="13"
                                TextWrapping="Wrap"
-                               VerticalAlignment="Center" />
+                               VerticalAlignment="Center"
+                               Margin="0 5 0 0" />
                     <CheckBox Grid.Row="0"
                               Grid.Column="1"
                               IsChecked="{Binding X264Mod, Mode=TwoWay}"
@@ -269,55 +295,55 @@
                                FontSize="13"
                                TextWrapping="Wrap"
                                VerticalAlignment="Center"
-                               Margin="0 10 0 0" />
+                               Margin="0 15 0 0" />
                     <CheckBox Grid.Row="1"
                               Grid.Column="1"
                               IsChecked="{Binding X265Aq, Mode=TwoWay}"
                               HorizontalAlignment="Right"
                               VerticalAlignment="Center"
-                              Margin="0 10 0 0" />
+                              Margin="0 15 0 0" />
                     <TextBlock Grid.Row="2"
                                Text="{Binding X265JpsdrDarkText, Mode=OneWay}"
                                FontSize="13"
                                TextWrapping="Wrap"
                                VerticalAlignment="Center"
-                               Margin="0 10 0 0" />
+                               Margin="0 15 0 0" />
                     <CheckBox Grid.Row="2"
                               Grid.Column="1"
                               IsChecked="{Binding X265Dark, Mode=TwoWay}"
                               HorizontalAlignment="Right"
                               VerticalAlignment="Center"
-                              Margin="0 10 0 0" />
+                              Margin="0 15 0 0" />
                     <TextBlock Grid.Row="3"
                                Text="{Binding X265JpsdrTextureText, Mode=OneWay}"
                                FontSize="13"
                                TextWrapping="Wrap"
                                VerticalAlignment="Center"
-                               Margin="0 10 0 0" />
+                               Margin="0 15 0 0" />
                     <CheckBox Grid.Row="3"
                               Grid.Column="1"
                               IsChecked="{Binding X265Texture, Mode=TwoWay}"
                               HorizontalAlignment="Right"
                               VerticalAlignment="Center"
-                              Margin="0 10 0 0" />
+                              Margin="0 15 0 0" />
                     <TextBlock Grid.Row="4"
                                Text="{Binding SvtAv1EssentialDl2Text, Mode=OneWay}"
                                FontSize="13"
                                TextWrapping="Wrap"
                                VerticalAlignment="Center"
-                               Margin="0 10 0 0" />
+                               Margin="0 15 0 0" />
                     <CheckBox Grid.Row="4"
                               Grid.Column="1"
                               IsChecked="{Binding SvtAv1Dl2, Mode=TwoWay}"
                               HorizontalAlignment="Right"
                               VerticalAlignment="Center"
-                              Margin="0 10 0 0" />
+                              Margin="0 15 0 0" />
                     <TextBlock Grid.Row="5"
                                Text="{Binding SvtAv1EssentialAutoTileText, Mode=OneWay}"
                                FontSize="13"
                                TextWrapping="Wrap"
                                VerticalAlignment="Center"
-                               Margin="0 10 0 0" />
+                               Margin="0 15 0 0" />
                     <CheckBox Grid.Row="5"
                               Grid.Column="1"
                               IsChecked="{Binding SvtAv1AutoTile, Mode=TwoWay}"
@@ -409,7 +435,7 @@
             </StackPanel>
 
             <!-- Confirm / Cancel Buttons -->
-            <comps:TwoButtonGroup Grid.Row="4"
+            <comps:TwoButtonGroup Grid.Row="5"
                                   Margin="0 18 0 0"
                                   DataContext="{Binding FinishButtons}"
                                   Button1Command="{Binding Cmd1}"

@@ -43,6 +43,9 @@ namespace OneColumnEncoder.Components
         public static readonly DependencyProperty SnapToTicksProperty = DependencyProperty.Register(
             nameof(SnapToTicks), typeof(bool), typeof(IntegerSlider), new PropertyMetadata(true));
 
+        public static readonly DependencyProperty StepProperty = DependencyProperty.Register(
+            nameof(Step), typeof(int), typeof(IntegerSlider), new PropertyMetadata(1));
+
         public static readonly DependencyProperty SliderMaxWidthProperty = DependencyProperty.Register(
             nameof(SliderMaxWidth), typeof(double), typeof(IntegerSlider), new PropertyMetadata(double.PositiveInfinity));
 
@@ -57,6 +60,7 @@ namespace OneColumnEncoder.Components
         public IEnumerable<string> TickLabels { get => (IEnumerable<string>)GetValue(TickLabelsProperty); set => SetValue(TickLabelsProperty, value); }
         public int TickCount { get => (int)GetValue(TickCountProperty); set => SetValue(TickCountProperty, value); }
         public bool SnapToTicks { get => (bool)GetValue(SnapToTicksProperty); set => SetValue(SnapToTicksProperty, value); }
+        public int Step { get => (int)GetValue(StepProperty); set => SetValue(StepProperty, value); }
         public double SliderMaxWidth { get => (double)GetValue(SliderMaxWidthProperty); set => SetValue(SliderMaxWidthProperty, value); }
         public double LabelWidth { get => (double)GetValue(LabelWidthProperty); set => SetValue(LabelWidthProperty, value); }
 
@@ -122,8 +126,14 @@ namespace OneColumnEncoder.Components
         private int RatioToValue(double ratio)
         {
             double next = IsLogarithmic ? FromLogRatio(ratio) : Minimum + ratio * (Maximum - Minimum);
-            int nextValue = SnapToTicks ? (int)Math.Round(next) : (int)next;
-            return Math.Max(Minimum, Math.Min(Maximum, nextValue));
+            int step = Math.Max(1, Step);
+            if (step > 1)
+            {
+                int offset = (int)Math.Round((next - Minimum) / (double)step) * step + Minimum;
+                return Math.Max(Minimum, Math.Min(Maximum, offset));
+            }
+            int snapped = SnapToTicks ? (int)Math.Round(next) : (int)next;
+            return Math.Max(Minimum, Math.Min(Maximum, snapped));
         }
 
         private double FromLogRatio(double ratio)

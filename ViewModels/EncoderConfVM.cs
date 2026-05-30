@@ -10,18 +10,35 @@ namespace OneColumnEncoder.ViewModels
 {
     public class EncoderConfVM : BaseVM
     {
-        private EncoderConfLangProviderM _lang = new(UILangProviderM.Current.LanguageCode);
-        public EncoderConfLangProviderM Lang { get => _lang; private set => SetProperty(ref _lang, value); }
+        private EncoderConfLangProviderM _lang =
+            new(UILangProviderM.Current.LanguageCode);
+        public EncoderConfLangProviderM Lang
+        {
+            get => _lang;
+            private set => SetProperty(ref _lang, value);
+        }
         private readonly EncoderConfM _model;
         public CloseModalCmd CloseCmd { get; }
         public ActionCmd ConfirmCmd { get; }
         public ButtonGroupVM FinishButtons { get; }
 
         private int _selectedTabIndex;
-        public int SelectedTabIndex { get => _selectedTabIndex; set => SetProperty(ref _selectedTabIndex, value); }
+        public int SelectedTabIndex
+        {
+            get => _selectedTabIndex;
+            set => SetProperty(ref _selectedTabIndex, value);
+        }
 
         private string _selectedRateControlMode = "CRF";
-        public string SelectedRateControlMode { get => _selectedRateControlMode; set { if (SetProperty(ref _selectedRateControlMode, value)) OnPropertyChanged(nameof(IsCrfMode)); } }
+        public string SelectedRateControlMode
+        {
+            get => _selectedRateControlMode;
+            set
+            {
+                if (SetProperty(ref _selectedRateControlMode, value))
+                    OnPropertyChanged(nameof(IsCrfMode));
+            }
+        }
 
         public string WindowTitle => Lang.WindowTitle;
         public string TitleText => Lang.WindowTitle;
@@ -101,9 +118,9 @@ namespace OneColumnEncoder.ViewModels
         public static IEnumerable<string> X264CrfLabels => ["0", "13", "17", "21", "25"];
         public static IEnumerable<string> X265CrfLabels => ["0", "17", "21", "25", "30"];
         public static IEnumerable<string> SvtAv1CrfLabels => ["0", "28", "33", "38", "43"];
-        public static IEnumerable<string> X264AbrLabels => ["500 Mbps", "200 Mbps", "70 Mbps", "10 Mbps", "1"];
-        public static IEnumerable<string> X265AbrLabels => ["500 Mbps", "200 Mbps", "70 Mbps", "10 Mbps", "1"];
-        public static IEnumerable<string> SvtAv1AbrLabels => ["500 Mbps", "200 Mbps", "70 Mbps", "10 Mbps", "1"];
+        public static IEnumerable<string> X264AbrLabels => ["500", "200 Mbps", "70 Mbps", "10"];
+        public static IEnumerable<string> X265AbrLabels => ["500", "200 Mbps", "70 Mbps", "10"];
+        public static IEnumerable<string> SvtAv1AbrLabels => ["500", "200 Mbps", "70 Mbps", "10"];
         public static IEnumerable<string> X264KeyframeLabels => ["6", "9 ", "12", "15"];
         public static IEnumerable<string> X265KeyframeLabels => ["4", "7", "10", "13"];
         public static IEnumerable<string> SvtAv1KeyframeLabels => ["6", "9", "12", "15"];
@@ -121,9 +138,15 @@ namespace OneColumnEncoder.ViewModels
 
         private void PopulateDropdowns()
         {
-            foreach (string s in new[] { Lang.GeneralPurposeText, Lang.StockFootageText }) X264ModeDropdown.Items.Add(new DropdownItemM(s));
-            foreach (string s in new[] { Lang.GeneralPurposeText, Lang.FilmIRLText, Lang.StockFootageText, Lang.AnimeText, Lang.StressTestText }) X265ModeDropdown.Items.Add(new DropdownItemM(s));
-            foreach (string s in new[] { Lang.PeakQualityText, Lang.CompressionOptText, Lang.SpeedOptimizedText }) SvtAv1ModeDropdown.Items.Add(new DropdownItemM(s));
+            foreach (string s in new[] {
+                Lang.GeneralPurposeText, Lang.StockFootageText })
+                X264ModeDropdown.Items.Add(new DropdownItemM(s));
+            foreach (string s in new[] {
+                Lang.GeneralPurposeText, Lang.FilmIRLText, Lang.StockFootageText, Lang.AnimeText, Lang.StressTestText})
+                X265ModeDropdown.Items.Add(new DropdownItemM(s));
+            foreach (string s in new[] {
+                Lang.PeakQualityText, Lang.CompressionOptText, Lang.SpeedOptimizedText })
+                SvtAv1ModeDropdown.Items.Add(new DropdownItemM(s));
             X264ModeDropdown.SelectedItem = X264ModeDropdown.Items.FirstOrDefault();
             X265ModeDropdown.SelectedItem = X265ModeDropdown.Items.FirstOrDefault();
             SvtAv1ModeDropdown.SelectedItem = SvtAv1ModeDropdown.Items.FirstOrDefault();
@@ -132,7 +155,8 @@ namespace OneColumnEncoder.ViewModels
         private void LoadModelToUi()
         {
             SelectedTabIndex = Math.Max(0, Math.Min(1, _model.EncoderModeTabIndex));
-            SelectedRateControlMode = _model.RateControlMode == "ABR" ? Lang.AbrModeText : Lang.CrfModeText;
+            SelectedRateControlMode =
+                _model.RateControlMode == "ABR" ? Lang.AbrModeText : Lang.CrfModeText;
             X264Crf = _model.CrfValue;
             X265Crf = _model.CrfValue;
             SvtAv1Crf = _model.CrfValue;
