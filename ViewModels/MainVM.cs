@@ -666,6 +666,18 @@ namespace OneColumnEncoder.ViewModels
 
         #region Zone Helpers
 
+        private static int GetToolOrderIndex(string displayName)
+        {
+            int i = 0;
+            foreach (var kvp in ToolDefinitionProviderM.ToolDefs)
+            {
+                if (kvp.Value.DisplayName.Equals(displayName, StringComparison.OrdinalIgnoreCase))
+                    return i;
+                i++;
+            }
+            return int.MaxValue;
+        }
+
         private ObservableCollection<ToolItemCardVM> GetZoneForTool(ToolZone zone) => zone switch
         {
             ToolZone.Upstream => UpstreamsZone,
@@ -699,7 +711,18 @@ namespace OneColumnEncoder.ViewModels
             };
             item.SetStoredFingerprint(fileSize);
             WireUpToolCmd(item);
-            zone.Add(item);
+
+            int insertIndex = zone.Count;
+            int newOrder = GetToolOrderIndex(item.Name);
+            for (int i = 0; i < zone.Count; i++)
+            {
+                if (newOrder < GetToolOrderIndex(zone[i].Name))
+                {
+                    insertIndex = i;
+                    break;
+                }
+            }
+            zone.Insert(insertIndex, item);
 
             ApplyDefaultImportedToolSelection(zone);
         }
