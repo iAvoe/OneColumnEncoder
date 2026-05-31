@@ -57,7 +57,7 @@ namespace OneColumnEncoder.ViewModels.Cards
             }
         }
 
-        private bool _isReal;
+        private bool _isReal = true;
         public bool IsReal
         {
             get => _isReal;
@@ -117,7 +117,16 @@ namespace OneColumnEncoder.ViewModels.Cards
             }
         }
 
-        public bool EnableRealCheck { get; set; } = true;
+        private bool _enableRealCheck = true;
+        public bool EnableRealCheck
+        {
+            get => _enableRealCheck;
+            set
+            {
+                if (!SetProperty(ref _enableRealCheck, value)) return;
+                if (!_enableRealCheck) IsReal = true;
+            }
+        }
 
         private bool _isSelected;
         public bool IsSelected

@@ -224,6 +224,7 @@
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
                                         IsReal="{Binding IsReal}"
+                                        EnableRealCheck="False"
                                         IsEnabled="{Binding IsEnabled}"
                                         Margin="0 0 0 20" />
                     </DataTemplate>
