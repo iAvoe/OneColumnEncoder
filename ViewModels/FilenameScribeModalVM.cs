@@ -57,9 +57,9 @@ namespace OneColumnEncoder.ViewModels
         public static string SevereIssueHeader => UILangProviderM.Current["FilenameScribe.SevereIssueHeader"];
         public static string GeneralIssueHeader => UILangProviderM.Current["FilenameScribe.GeneralIssueHeader"];
         public static string SelfCheckHeader => UILangProviderM.Current["FilenameScribe.SelfCheckHeader"];
-        public static string SelfCheckDate => UILangProviderM.Current["FilenameScribe.SelfCheckDate"];
-        public static string SelfCheckSeason => UILangProviderM.Current["FilenameScribe.SelfCheckSeason"];
-        public static string SelfCheckVersion => UILangProviderM.Current["FilenameScribe.SelfCheckVersion"];
+        public static string SelfCheckDate => UILangProviderM.Current["FilenameScribe.SelfCheck1"];
+        public static string SelfCheckSeason => UILangProviderM.Current["FilenameScribe.SelfCheck2"];
+        public static string SelfCheckVersion => UILangProviderM.Current["FilenameScribe.SelfCheck3"];
         public static string FooterHint => UILangProviderM.Current["FilenameScribe.FooterHint"];
 
         public FilenameScribeModalVM(Action closeAction, ToolItemCardVM outputSettingItem)
