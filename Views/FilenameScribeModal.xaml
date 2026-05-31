@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="560"
-        Height="820"
+        Height="840"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid Margin="15">
@@ -126,28 +126,40 @@
             <TextBlock Text="{Binding Preview30Label}"
                        Margin="0 10 0 0"
                        Style="{StaticResource H3}" />
-            <TextBlock Text="{Binding Preview30Text}"
+            <TextBlock Text="{Binding VideoFilename}"
+                       Width="420"
+                       HorizontalAlignment="Left"
+                       TextTrimming="CharacterEllipsis"
                        FontSize="14"
                        Foreground="{StaticResource GlobalPrimary}" />
 
             <TextBlock Text="{Binding Preview25Label}"
                        Margin="0 10 0 0"
                        Style="{StaticResource H3}" />
-            <TextBlock Text="{Binding Preview25Text}"
+            <TextBlock Text="{Binding VideoFilename}"
+                       Width="350"
+                       HorizontalAlignment="Left"
+                       TextTrimming="CharacterEllipsis"
                        FontSize="14"
                        Foreground="{StaticResource GlobalPrimary}" />
 
             <TextBlock Text="{Binding Preview20Label}"
                        Margin="0 10 0 0"
                        Style="{StaticResource H3}" />
-            <TextBlock Text="{Binding Preview20Text}"
+            <TextBlock Text="{Binding VideoFilename}"
+                       Width="280"
+                       HorizontalAlignment="Left"
+                       TextTrimming="CharacterEllipsis"
                        FontSize="14"
                        Foreground="{StaticResource GlobalPrimary}" />
 
             <TextBlock Text="{Binding Preview15Label}"
                        Margin="0 10 0 0"
                        Style="{StaticResource H3}" />
-            <TextBlock Text="{Binding Preview15Text}"
+            <TextBlock Text="{Binding VideoFilename}"
+                       Width="210"
+                       HorizontalAlignment="Left"
+                       TextTrimming="CharacterEllipsis"
                        FontSize="14"
                        Foreground="{StaticResource GlobalPrimary}" />
         </StackPanel>

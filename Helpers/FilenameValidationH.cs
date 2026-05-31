@@ -40,6 +40,9 @@ namespace OneColumnEncoder.Helpers
         public static bool HasSpaces(string filename)
             => filename.Contains(' ');
 
+        public static bool HasNoSpecialSpaceVariants(string filename)
+            => !filename.Any(c => char.IsWhiteSpace(c) && c != ' ');
+
         public static bool HasUnicodeCombiningMarks(string fileName)
             => !fileName.Any(IsUnicodeCombiningMark);
 

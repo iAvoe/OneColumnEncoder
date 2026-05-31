@@ -34,10 +34,6 @@ namespace OneColumnEncoder.ViewModels
             set
             {
                 if (!SetProperty(ref _videoFilename, value)) return;
-                OnPropertyChanged(nameof(Preview30Text));
-                OnPropertyChanged(nameof(Preview25Text));
-                OnPropertyChanged(nameof(Preview20Text));
-                OnPropertyChanged(nameof(Preview15Text));
                 ValidateFilename();
             }
         }
@@ -57,10 +53,6 @@ namespace OneColumnEncoder.ViewModels
         public static string Preview25Label => UILangProviderM.Current["FilenameScribe.Preview25Label"];
         public static string Preview20Label => UILangProviderM.Current["FilenameScribe.Preview20Label"];
         public static string Preview15Label => UILangProviderM.Current["FilenameScribe.Preview15Label"];
-        public string Preview30Text => BuildPreview(30);
-        public string Preview25Text => BuildPreview(25);
-        public string Preview20Text => BuildPreview(20);
-        public string Preview15Text => BuildPreview(15);
         public static string FormatCheckHeader => UILangProviderM.Current["FilenameScribe.FormatCheckHeader"];
         public static string SevereIssueHeader => UILangProviderM.Current["FilenameScribe.SevereIssueHeader"];
         public static string GeneralIssueHeader => UILangProviderM.Current["FilenameScribe.GeneralIssueHeader"];
@@ -92,6 +84,8 @@ namespace OneColumnEncoder.ViewModels
                 Text = UILangProviderM.Current["FilenameScribe.CheckInvalidChars"] });
             SevereIssueChecklist.Add(new ChecklistEntryVM {
                 Text = UILangProviderM.Current["FilenameScribe.CheckCombiningMarks"] });
+            SevereIssueChecklist.Add(new ChecklistEntryVM {
+                Text = UILangProviderM.Current["FilenameScribe.CheckSpecialSpaceVariants"] });
             SevereIssueChecklist.Add(new ChecklistEntryVM {
                 Text = UILangProviderM.Current["FilenameScribe.CheckReserved"] });
 
@@ -155,13 +149,14 @@ namespace OneColumnEncoder.ViewModels
 
         private void ValidateFilename()
         {
-            if (SevereIssueChecklist.Count < 4 || GeneralIssueChecklist.Count < 3 || FilenameFinishButtons is null) return;
+            if (SevereIssueChecklist.Count < 5 || GeneralIssueChecklist.Count < 3 || FilenameFinishButtons is null) return;
 
             string filename = VideoFilename.Trim();
             SetChecklistStatus(SevereIssueChecklist, 0, !string.IsNullOrWhiteSpace(VideoFilename));
             SetChecklistStatus(SevereIssueChecklist, 1, FilenameValidationH.HasNoInvalidChars(filename));
             SetChecklistStatus(SevereIssueChecklist, 2, FilenameValidationH.HasUnicodeCombiningMarks(filename));
-            SetChecklistStatus(SevereIssueChecklist, 3, FilenameValidationH.IsNotReservedName(filename));
+            SetChecklistStatus(SevereIssueChecklist, 3, FilenameValidationH.HasNoSpecialSpaceVariants(VideoFilename));
+            SetChecklistStatus(SevereIssueChecklist, 4, FilenameValidationH.IsNotReservedName(filename));
             SetChecklistStatus(GeneralIssueChecklist, 0, FilenameValidationH.IsValidLength(filename), useWarning: true);
             GeneralIssueChecklist[1].Status = FilenameValidationH.HasSpaces(VideoFilename)
                 ? StatusType.Warning
@@ -181,13 +176,6 @@ namespace OneColumnEncoder.ViewModels
             checklist[index].Status = checklist[index].IsEnabled
                 ? isValid ? StatusType.Success : (useWarning ? StatusType.Warning : StatusType.Error)
                 : StatusType.Waiting;
-        }
-
-        private string BuildPreview(int maxCharacters)
-        {
-            string filename = VideoFilename.Trim();
-            if (filename.Length <= maxCharacters) return filename;
-            return filename[..maxCharacters] + "...";
         }
 
         private void OnLanguageChanged()
