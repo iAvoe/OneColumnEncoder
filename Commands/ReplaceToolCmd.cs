@@ -24,8 +24,10 @@ namespace OneColumnEncoder.Commands
             if (string.IsNullOrEmpty(filePath)) return;
 
             string? version = await ToolVersionDetectH.TryDetectAsync(def.ExeName, filePath);
+            long? fileSize = ToolCatalogProviderM.GetFileSize(filePath);
             ToolCatalogProviderM.TrySetPath(def.ExeName, _appDataM.Tools, filePath);
             ToolCatalogProviderM.TrySetVersion(def.ExeName, _appDataM.Tools, version ?? string.Empty);
+            ToolCatalogProviderM.TrySetSize(def.ExeName, _appDataM.Tools, fileSize);
 
             if (def.ExeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase))
             {
@@ -35,6 +37,7 @@ namespace OneColumnEncoder.Commands
 
             _item.P2TextData = filePath;
             _item.P1TextData = version ?? string.Empty;
+            _item.SetStoredFingerprint(fileSize);
             _appDataM.Save();
             _afterReplace?.Invoke();
         }

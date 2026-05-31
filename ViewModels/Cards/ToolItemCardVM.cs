@@ -164,6 +164,13 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         #region Methods
 
+        private long? _expectedFileSize;
+
+        public void SetStoredFingerprint(long? fileSize)
+        {
+            _expectedFileSize = fileSize;
+        }
+
         private void Validate()
         {
             bool exists = File.Exists(P2TextData);
@@ -171,7 +178,10 @@ namespace OneColumnEncoder.ViewModels.Cards
                 P2TextData.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) ||
                 P2TextData.EndsWith(".dll", StringComparison.OrdinalIgnoreCase);
 
-            IsReal = exists && isKnownBinary;
+            bool sizeMatches = !_expectedFileSize.HasValue ||
+                (exists && new FileInfo(P2TextData).Length == _expectedFileSize.Value);
+
+            IsReal = exists && isKnownBinary && sizeMatches;
             if (!IsReal) P1TextData = string.Empty;
         }
 

@@ -20,6 +20,7 @@ namespace OneColumnEncoder.Commands
             if (def?.ExeName == null) return;
             ToolCatalogProviderM.TrySetPath(def.ExeName, _appDataM.Tools, string.Empty);
             ToolCatalogProviderM.TrySetVersion(def.ExeName, _appDataM.Tools, string.Empty);
+            ToolCatalogProviderM.TrySetSize(def.ExeName, _appDataM.Tools, null);
 
             if (def.Zone == ToolZone.Analytics)
             {

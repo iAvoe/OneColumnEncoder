@@ -679,18 +679,11 @@ namespace OneColumnEncoder.ViewModels
 
         #region Loading or adding other persistent data
 
-        /// <summary>
-        /// Add new tool configuration or update an existing one if duplicated
-        /// </summary>
-        /// <param name="defKey">Unique key for a tool</param>
-        /// <param name="filePath">Tool filePath</param>
-        /// <param name="version">Tool version string, collected from ToolVersionDetector.cs</param>
-        private void AddOrUpdateTool(string defKey, string? filePath, string? version)
+        private void AddOrUpdateTool(string defKey, string? filePath, string? version, long? fileSize = null)
         {
             if (!ToolDefinitionProviderM.ToolDefs.TryGetValue(defKey, out ToolDefinitionM? def)) return;
             if (def.Zone == null || string.IsNullOrEmpty(filePath)) return;
 
-            // Find zone belonging, duplication check, duplication handling (replace)
             ObservableCollection<ToolItemCardVM> zone = GetZoneForTool(def.Zone.Value);
             ToolItemCardVM? existing = zone.FirstOrDefault(i => i.Name == def.DisplayName);
             if (existing != null) zone.Remove(existing);
@@ -704,6 +697,7 @@ namespace OneColumnEncoder.ViewModels
                 R1Text = def.R1Text,
                 R2Text = def.R2Text
             };
+            item.SetStoredFingerprint(fileSize);
             WireUpToolCmd(item);
             zone.Add(item);
 
@@ -716,22 +710,22 @@ namespace OneColumnEncoder.ViewModels
             {
                 if (def.Zone == null || def.ExeName == null) continue;
 
-                (string? path, string? version) = def.ExeName switch
+                (string? path, string? version, long? size) = def.ExeName switch
                 {
-                    "ffmpeg.exe" => (t.FfmpegPath, t.FfmpegVer),
-                    "vspipe.exe" => (t.VspipePath, t.VspipeVer),
-                    "avs2yuv.exe" => (t.Avs2yuvPath, t.Avs2yuvVer),
-                    "avs2pipemod.exe" => (t.Avs2pipemodPath, t.Avs2pipemodVer),
-                    "one_line_shot_args.exe" => (t.OneLineShotArgsPath, t.OneLineShotArgsVer),
-                    "x264.exe" => (t.X264Path, t.X264Ver),
-                    "x265.exe" => (t.X265Path, t.X265Ver),
-                    "svtav1encapp.exe" => (t.SvtAv1Path, t.SvtAv1Ver),
-                    "ffprobe.exe" => (t.FfprobePath, t.FfprobeVer),
-                    "avisynth.dll" => (t.AviSynthDllPath, t.AviSynthDllVer),
-                    _ => (null, null)
+                    "ffmpeg.exe" => (t.FfmpegPath, t.FfmpegVer, t.FfmpegSize),
+                    "vspipe.exe" => (t.VspipePath, t.VspipeVer, t.VspipeSize),
+                    "avs2yuv.exe" => (t.Avs2yuvPath, t.Avs2yuvVer, t.Avs2yuvSize),
+                    "avs2pipemod.exe" => (t.Avs2pipemodPath, t.Avs2pipemodVer, t.Avs2pipemodSize),
+                    "one_line_shot_args.exe" => (t.OneLineShotArgsPath, t.OneLineShotArgsVer, t.OneLineShotArgsSize),
+                    "x264.exe" => (t.X264Path, t.X264Ver, t.X264Size),
+                    "x265.exe" => (t.X265Path, t.X265Ver, t.X265Size),
+                    "svtav1encapp.exe" => (t.SvtAv1Path, t.SvtAv1Ver, t.SvtAv1Size),
+                    "ffprobe.exe" => (t.FfprobePath, t.FfprobeVer, t.FfprobeSize),
+                    "avisynth.dll" => (t.AviSynthDllPath, t.AviSynthDllVer, t.AviSynthDllSize),
+                    _ => (null, null, null)
                 };
 
-                if (!string.IsNullOrEmpty(path)) AddOrUpdateTool(defKey, path, version);
+                if (!string.IsNullOrEmpty(path)) AddOrUpdateTool(defKey, path, version, size);
             }
         }
         private async Task OnToolImported(string exeName, string filePath, string? version)
@@ -743,8 +737,10 @@ namespace OneColumnEncoder.ViewModels
                 .FirstOrDefault(kvp => kvp.Value == def).Key;
             if (defKey == null) return;
 
+            long? fileSize = ToolCatalogProviderM.GetFileSize(filePath);
             ToolCatalogProviderM.TrySetPath(exeName, _appDataM.Tools, filePath);
             ToolCatalogProviderM.TrySetVersion(exeName, _appDataM.Tools, version ?? string.Empty);
+            ToolCatalogProviderM.TrySetSize(exeName, _appDataM.Tools, fileSize);
 
             if (exeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase))
             {
@@ -753,7 +749,7 @@ namespace OneColumnEncoder.ViewModels
             }
 
             _appDataM.Save();
-            AddOrUpdateTool(defKey, filePath, version);
+            AddOrUpdateTool(defKey, filePath, version, fileSize);
         }
 
         private void LoadSourcesFromAppDataM()

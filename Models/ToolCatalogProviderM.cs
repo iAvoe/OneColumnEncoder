@@ -117,6 +117,21 @@ public static class ToolCatalogProviderM
         ["avisynth.dll"] = (t, p) => t.AviSynthDllPath = p,
     };
 
+    private static readonly Dictionary<string, Action<AppDataM.Importables, long?>> _sizeSetters =
+        new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["ffmpeg.exe"] = (t, s) => t.FfmpegSize = s,
+        ["vspipe.exe"] = (t, s) => t.VspipeSize = s,
+        ["avs2yuv.exe"] = (t, s) => t.Avs2yuvSize = s,
+        ["avs2pipemod.exe"] = (t, s) => t.Avs2pipemodSize = s,
+        ["one_line_shot_args.exe"] = (t, s) => t.OneLineShotArgsSize = s,
+        ["x264.exe"] = (t, s) => t.X264Size = s,
+        ["x265.exe"] = (t, s) => t.X265Size = s,
+        ["svtav1encapp.exe"] = (t, s) => t.SvtAv1Size = s,
+        ["ffprobe.exe"] = (t, s) => t.FfprobeSize = s,
+        ["avisynth.dll"] = (t, s) => t.AviSynthDllSize = s,
+    };
+
     private static readonly Dictionary<string, Action<AppDataM.Importables, string>> _versionSetters = new(StringComparer.OrdinalIgnoreCase)
     {
         ["ffmpeg.exe"] = (t, v) => t.FfmpegVer = v,
@@ -178,6 +193,26 @@ public static class ToolCatalogProviderM
             return true;
         }
         return false;
+    }
+
+    public static bool TrySetSize(string exeName, AppDataM.Importables tools, long? fileSize)
+    {
+        if (_sizeSetters.TryGetValue(exeName, out var setter))
+        {
+            setter(tools, fileSize);
+            return true;
+        }
+        return false;
+    }
+
+    public static long? GetFileSize(string filePath)
+    {
+        try
+        {
+            if (File.Exists(filePath)) return new FileInfo(filePath).Length;
+        }
+        catch { }
+        return null;
     }
 
     // Dropdown items for the import dropdown (grouped by zone)
