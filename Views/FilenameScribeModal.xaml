@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="560"
-        Height="420"
+        Height="820"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid Margin="15">
@@ -21,12 +21,16 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
+        <!-- Filename textbox header mini title -->
         <TextBlock Grid.Row="0"
                    Text="{Binding MiniHeader}"
                    Style="{StaticResource H4}" />
 
+        <!-- Filename textbox + extension group -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -35,9 +39,9 @@
 
             <TextBox Grid.Column="0"
                      Text="{Binding VideoFilename, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     FontSize="14"
-                     Padding="0 2.5"
-                     VerticalContentAlignment="Center">
+                      FontSize="{Binding VideoFilenameFontSize}"
+                      Padding="0 2.5"
+                      VerticalContentAlignment="Center">
                 <TextBox.Style>
                     <Style TargetType="TextBox">
                         <Setter Property="Foreground"
@@ -55,7 +59,7 @@
 
             <TextBlock Grid.Column="0"
                        Text="{Binding PlaceholderText}"
-                       Margin="10 0 0 0"
+                       Margin="5 0 0 5"
                        VerticalAlignment="Center"
                        Foreground="{StaticResource GlobalTertiary}"
                        IsHitTestVisible="False">
@@ -82,47 +86,9 @@
                        Foreground="{StaticResource GlobalSecondary}" />
         </Grid>
 
-        <comps:ChecklistContainer Grid.Row="2"
-                                  Margin="0 10 0 0"
-                                  ItemsSource="{Binding FilenameChecklist}">
-            <comps:ChecklistContainer.ItemTemplate>
-                <DataTemplate>
-                    <comps:ChecklistItem Text="{Binding Text}"
-                                         Status="{Binding Status}"
-                                         IsEnabled="{Binding IsEnabled}"
-                                         Margin="0 5" />
-                </DataTemplate>
-            </comps:ChecklistContainer.ItemTemplate>
-        </comps:ChecklistContainer>
-
-        <StackPanel Grid.Row="3">
-            <TextBlock Text="{Binding SelfCheckDate}"
-                       Margin="0 5"
-                       FontSize="13"
-                       Foreground="{StaticResource GlobalPrimary}" />
-            <TextBlock Text="{Binding SelfCheckSeason}"
-                       Margin="0 5"
-                       FontSize="13"
-                       Foreground="{StaticResource GlobalPrimary}" />
-            <TextBlock Text="{Binding SelfCheckVersion}"
-                       Margin="0 5"
-                       FontSize="13"
-                       Foreground="{StaticResource GlobalPrimary}" />
-        </StackPanel>
-
-        <comps:ThreeButtonGroup Grid.Row="4"
-                                Margin="0 10 0 0"
-                                ButtonHeight="30"
-                                DataContext="{Binding FilenameButtons}"
-                                Button1Command="{Binding Cmd1}"
-                                Button2Command="{Binding Cmd2}"
-                                Button3Command="{Binding Cmd3}"
-                                Button1IsEnabled="{Binding B3_1IsEnabled}"
-                                Button2IsEnabled="{Binding B3_2IsEnabled}"
-                                Button3IsEnabled="{Binding B3_3IsEnabled}" />
-
-        <StackPanel Grid.Row="5"
-                    Margin="5 1.25 5 0"
+        <!-- Hint: extension is fixed -->
+        <StackPanel Grid.Row="2"
+                    Margin="0.5 1.25 0 0"
                     Orientation="Horizontal"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center">
@@ -142,5 +108,114 @@
                        VerticalAlignment="Center"
                        Foreground="{StaticResource GlobalTertiary}" />
         </StackPanel>
+
+        <!-- Copy from clipboard, rotate textbox font size -->
+        <comps:TwoButtonGroup Grid.Row="3"
+                              Margin="0 10 0 0"
+                              ButtonHeight="30"
+                              DataContext="{Binding FilenameActionButtons}"
+                              Button1Command="{Binding Cmd1}"
+                              Button2Command="{Binding Cmd2}" />
+
+        <!-- Preview on text pruning effects -->
+        <StackPanel Grid.Row="4"
+                    Margin="0 15 0 0">
+            <TextBlock Text="{Binding PreviewHeader}"
+                       Style="{StaticResource H2}" />
+
+            <TextBlock Text="{Binding Preview30Label}"
+                       Margin="0 10 0 0"
+                       Style="{StaticResource H3}" />
+            <TextBlock Text="{Binding Preview30Text}"
+                       FontSize="14"
+                       Foreground="{StaticResource GlobalPrimary}" />
+
+            <TextBlock Text="{Binding Preview25Label}"
+                       Margin="0 10 0 0"
+                       Style="{StaticResource H3}" />
+            <TextBlock Text="{Binding Preview25Text}"
+                       FontSize="14"
+                       Foreground="{StaticResource GlobalPrimary}" />
+
+            <TextBlock Text="{Binding Preview20Label}"
+                       Margin="0 10 0 0"
+                       Style="{StaticResource H3}" />
+            <TextBlock Text="{Binding Preview20Text}"
+                       FontSize="14"
+                       Foreground="{StaticResource GlobalPrimary}" />
+
+            <TextBlock Text="{Binding Preview15Label}"
+                       Margin="0 10 0 0"
+                       Style="{StaticResource H3}" />
+            <TextBlock Text="{Binding Preview15Text}"
+                       FontSize="14"
+                       Foreground="{StaticResource GlobalPrimary}" />
+        </StackPanel>
+
+        <!-- Row 5: 格式检查（严重问题 + 一般问题） -->
+        <StackPanel Grid.Row="5"
+                    Margin="0 15 0 0">
+            <TextBlock Text="{Binding FormatCheckHeader}"
+                       Style="{StaticResource H2}" />
+
+            <TextBlock Text="{Binding SevereIssueHeader}"
+                       Margin="0 10 0 0"
+                       Style="{StaticResource H3}" />
+            <comps:ChecklistContainer Margin="0 5 0 0"
+                                      ItemsSource="{Binding SevereIssueChecklist}">
+                <comps:ChecklistContainer.ItemTemplate>
+                    <DataTemplate>
+                        <comps:ChecklistItem Text="{Binding Text}"
+                                             Status="{Binding Status}"
+                                             IsEnabled="{Binding IsEnabled}"
+                                             Margin="0 5" />
+                    </DataTemplate>
+                </comps:ChecklistContainer.ItemTemplate>
+            </comps:ChecklistContainer>
+
+            <TextBlock Text="{Binding GeneralIssueHeader}"
+                       Margin="0 10 0 0"
+                       Style="{StaticResource H3}" />
+            <comps:ChecklistContainer Margin="0 5 0 0"
+                                      ItemsSource="{Binding GeneralIssueChecklist}">
+                <comps:ChecklistContainer.ItemTemplate>
+                    <DataTemplate>
+                        <comps:ChecklistItem Text="{Binding Text}"
+                                             Status="{Binding Status}"
+                                             IsEnabled="{Binding IsEnabled}"
+                                             Margin="0 5" />
+                    </DataTemplate>
+                </comps:ChecklistContainer.ItemTemplate>
+            </comps:ChecklistContainer>
+        </StackPanel>
+
+        <!-- Row 6: 媒体刮削兼容性自查 -->
+        <StackPanel Grid.Row="6"
+                    Margin="0 10 0 0">
+            <TextBlock Text="{Binding SelfCheckHeader}"
+                       Style="{StaticResource H3}" />
+            
+            <TextBlock Text="{Binding SelfCheckDate}"
+                       Margin="0 10 0 0"
+                       FontSize="13"
+                       Foreground="{StaticResource GlobalPrimary}" />
+            <TextBlock Text="{Binding SelfCheckSeason}"
+                       Margin="0 10 0 0"
+                       FontSize="13"
+                       Foreground="{StaticResource GlobalPrimary}" />
+            <TextBlock Text="{Binding SelfCheckVersion}"
+                       Margin="0 10 0 0"
+                       FontSize="13"
+                       Foreground="{StaticResource GlobalPrimary}" />
+        </StackPanel>
+
+        <!-- Row 7: 取消 + 确认→定位输出路径 -->
+        <comps:TwoButtonGroup Grid.Row="7"
+                              Margin="0 22 0 0"
+                              ButtonHeight="30"
+                              DataContext="{Binding FilenameFinishButtons}"
+                              Button1Command="{Binding Cmd1}"
+                              Button2Command="{Binding Cmd2}"
+                              Button2IsEnabled="{Binding B2_2IsEnabled}" />
     </Grid>
 </Window>

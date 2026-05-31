@@ -15,28 +15,56 @@ namespace OneColumnEncoder.ViewModels
     public partial class FilenameScribeModalVM : BaseVM
     {
         private const string PossibleExtensions = ".mp4|.hevc|.ivf";
+        private static readonly double[] RotatingFontSizes = [10, 13, 14, 16];
 
         private readonly Action _closeAction;
         private readonly ToolItemCardVM _outputSettingItem;
         public CloseModalCmd CloseCmd { get; }
-        public ButtonGroupVM FilenameButtons { get; private set; } = null!;
-        public ObservableCollection<ChecklistEntryVM> FilenameChecklist { get; } = [];
+        public ActionCmd RotateFontSizeCmd { get; }
+        public ButtonGroupVM FilenameActionButtons { get; private set; } = null!;
+        public ButtonGroupVM FilenameFinishButtons { get; private set; } = null!;
+        public ObservableCollection<ChecklistEntryVM> SevereIssueChecklist { get; } = [];
+        public ObservableCollection<ChecklistEntryVM> GeneralIssueChecklist { get; } = [];
 
         private string _videoFilename = string.Empty;
+        private double _videoFilenameFontSize = 14;
         public string VideoFilename
         {
             get => _videoFilename;
             set
             {
                 if (!SetProperty(ref _videoFilename, value)) return;
+                OnPropertyChanged(nameof(Preview30Text));
+                OnPropertyChanged(nameof(Preview25Text));
+                OnPropertyChanged(nameof(Preview20Text));
+                OnPropertyChanged(nameof(Preview15Text));
                 ValidateFilename();
             }
         }
 
-        public string WindowTitle => "1cenc Filename";
+        public double VideoFilenameFontSize
+        {
+            get => _videoFilenameFontSize;
+            private set => SetProperty(ref _videoFilenameFontSize, value);
+        }
+
+        public string WindowTitle => UILangProviderM.Current["FilenameScribe.WindowTitle"];
         public static string MiniHeader => UILangProviderM.Current["FilenameScribe.MiniHeader"];
         public static string PlaceholderText => UILangProviderM.Current["FilenameScribe.Placeholder"];
         public static string ExtensionText => PossibleExtensions;
+        public static string PreviewHeader => UILangProviderM.Current["FilenameScribe.PreviewHeader"];
+        public static string Preview30Label => UILangProviderM.Current["FilenameScribe.Preview30Label"];
+        public static string Preview25Label => UILangProviderM.Current["FilenameScribe.Preview25Label"];
+        public static string Preview20Label => UILangProviderM.Current["FilenameScribe.Preview20Label"];
+        public static string Preview15Label => UILangProviderM.Current["FilenameScribe.Preview15Label"];
+        public string Preview30Text => BuildPreview(30);
+        public string Preview25Text => BuildPreview(25);
+        public string Preview20Text => BuildPreview(20);
+        public string Preview15Text => BuildPreview(15);
+        public static string FormatCheckHeader => UILangProviderM.Current["FilenameScribe.FormatCheckHeader"];
+        public static string SevereIssueHeader => UILangProviderM.Current["FilenameScribe.SevereIssueHeader"];
+        public static string GeneralIssueHeader => UILangProviderM.Current["FilenameScribe.GeneralIssueHeader"];
+        public static string SelfCheckHeader => UILangProviderM.Current["FilenameScribe.SelfCheckHeader"];
         public static string SelfCheckDate => UILangProviderM.Current["FilenameScribe.SelfCheckDate"];
         public static string SelfCheckSeason => UILangProviderM.Current["FilenameScribe.SelfCheckSeason"];
         public static string SelfCheckVersion => UILangProviderM.Current["FilenameScribe.SelfCheckVersion"];
@@ -48,6 +76,7 @@ namespace OneColumnEncoder.ViewModels
             _outputSettingItem = outputSettingItem;
             _videoFilename = OutputPathH.GetInitialFilename(outputSettingItem.P1TextData, outputSettingItem.P2TextData);
             CloseCmd = new CloseModalCmd(closeAction);
+            RotateFontSizeCmd = new ActionCmd(_ => RotateFontSize());
             BuildChecklist();
             BuildButtonGroup();
             ValidateFilename();
@@ -56,35 +85,49 @@ namespace OneColumnEncoder.ViewModels
 
         private void BuildChecklist()
         {
-            FilenameChecklist.Clear();
-            FilenameChecklist.Add(new ChecklistEntryVM {
-                Text = UILangProviderM.Current["FilenameScribe.CheckLength"] });
-            FilenameChecklist.Add(new ChecklistEntryVM {
-                Text = UILangProviderM.Current["FilenameScribe.CheckReserved"] });
-            FilenameChecklist.Add(new ChecklistEntryVM {
+            SevereIssueChecklist.Clear();
+            SevereIssueChecklist.Add(new ChecklistEntryVM {
+                Text = UILangProviderM.Current["FilenameScribe.CheckEmpty"] });
+            SevereIssueChecklist.Add(new ChecklistEntryVM {
                 Text = UILangProviderM.Current["FilenameScribe.CheckInvalidChars"] });
-            FilenameChecklist.Add(new ChecklistEntryVM {
-                Text = UILangProviderM.Current["FilenameScribe.CheckExtendedChars"] });
-            FilenameChecklist.Add(new ChecklistEntryVM {
-                Text = UILangProviderM.Current["FilenameScribe.CheckSpaces"] });
-            FilenameChecklist.Add(new ChecklistEntryVM {
+            SevereIssueChecklist.Add(new ChecklistEntryVM {
                 Text = UILangProviderM.Current["FilenameScribe.CheckCombiningMarks"] });
+            SevereIssueChecklist.Add(new ChecklistEntryVM {
+                Text = UILangProviderM.Current["FilenameScribe.CheckReserved"] });
+
+            GeneralIssueChecklist.Clear();
+            GeneralIssueChecklist.Add(new ChecklistEntryVM {
+                Text = UILangProviderM.Current["FilenameScribe.CheckLength"] });
+            GeneralIssueChecklist.Add(new ChecklistEntryVM {
+                Text = UILangProviderM.Current["FilenameScribe.CheckSpaces"] });
+            GeneralIssueChecklist.Add(new ChecklistEntryVM {
+                Text = UILangProviderM.Current["FilenameScribe.CheckExtendedChars"] });
         }
 
         private void BuildButtonGroup()
         {
-            FilenameButtons = ButtonGroupVM.CreateThreeButton(
+            FilenameActionButtons = ButtonGroupVM.CreateTwoButton(
                 UILangProviderM.Current["FilenameScribe.PasteFromClipboard"],
+                UILangProviderM.Current["FilenameScribe.RotateFontSize"],
+                new ActionCmd(_ => PasteFromClipboard()),
+                RotateFontSizeCmd);
+
+            FilenameFinishButtons = ButtonGroupVM.CreateTwoButton(
                 UILangProviderM.Current["FilenameScribe.Cancel"],
                 UILangProviderM.Current["FilenameScribe.Confirm"],
-                new ActionCmd(_ => PasteFromClipboard()),
                 CloseCmd,
-                new ActionCmd(_ => Confirm(), _ => FilenameButtons.B3_3IsEnabled));
+                new ActionCmd(_ => Confirm(), _ => FilenameFinishButtons.B2_2IsEnabled));
         }
 
         private void PasteFromClipboard()
         {
             if (Clipboard.ContainsText()) VideoFilename = Clipboard.GetText().Trim();
+        }
+
+        private void RotateFontSize()
+        {
+            int index = Array.IndexOf(RotatingFontSizes, VideoFilenameFontSize);
+            VideoFilenameFontSize = RotatingFontSizes[(index + 1) % RotatingFontSizes.Length];
         }
 
         // Filename is good, proceed to select path
@@ -108,43 +151,58 @@ namespace OneColumnEncoder.ViewModels
             _closeAction();
         }
 
-        private bool CanConfirm() => FilenameButtons.B3_3IsEnabled;
+        private bool CanConfirm() => FilenameFinishButtons.B2_2IsEnabled;
 
         private void ValidateFilename()
         {
-            if (FilenameChecklist.Count < 6 || FilenameButtons is null) return;
+            if (SevereIssueChecklist.Count < 4 || GeneralIssueChecklist.Count < 3 || FilenameFinishButtons is null) return;
 
             string filename = VideoFilename.Trim();
-            SetChecklistStatus(0, FilenameValidationH.IsValidLength(filename));
-            SetChecklistStatus(1, FilenameValidationH.IsNotReservedName(filename));
-            SetChecklistStatus(2, FilenameValidationH.HasNoInvalidChars(filename));
-            // SetChecklistStatus(3, FilenameValidationH.HasNoExtendedChars(filename));
-            FilenameChecklist[3].Status = FilenameValidationH.HasNoExtendedChars(filename)
-                ? StatusType.Success
-                : StatusType.Warning;
-            FilenameChecklist[4].Status = FilenameValidationH.HasSpaces(VideoFilename)
+            SetChecklistStatus(SevereIssueChecklist, 0, !string.IsNullOrWhiteSpace(VideoFilename));
+            SetChecklistStatus(SevereIssueChecklist, 1, FilenameValidationH.HasNoInvalidChars(filename));
+            SetChecklistStatus(SevereIssueChecklist, 2, FilenameValidationH.HasUnicodeCombiningMarks(filename));
+            SetChecklistStatus(SevereIssueChecklist, 3, FilenameValidationH.IsNotReservedName(filename));
+            SetChecklistStatus(GeneralIssueChecklist, 0, FilenameValidationH.IsValidLength(filename), useWarning: true);
+            GeneralIssueChecklist[1].Status = FilenameValidationH.HasSpaces(VideoFilename)
                 ? StatusType.Warning
                 : StatusType.Success;
+            GeneralIssueChecklist[2].Status = FilenameValidationH.HasNoExtendedChars(filename)
+                ? StatusType.Success
+                : StatusType.Warning;
 
-            SetChecklistStatus(5, FilenameValidationH.HasUnicodeCombiningMarks(filename));
-
-            FilenameButtons.B3_3IsEnabled = FilenameChecklist
-                .Where((e, i) => e.IsEnabled && i != 4)
+            FilenameFinishButtons.B2_2IsEnabled = SevereIssueChecklist
+                .Where(e => e.IsEnabled)
                 .All(e => e.Status == StatusType.Success);
-            (FilenameButtons.Cmd3 as BaseCmd)?.OnCanExecuteChanged();
+            (FilenameFinishButtons.Cmd2 as BaseCmd)?.OnCanExecuteChanged();
         }
 
-        private void SetChecklistStatus(int index, bool isValid)
+        private void SetChecklistStatus(ObservableCollection<ChecklistEntryVM> checklist, int index, bool isValid, bool useWarning = false)
         {
-            FilenameChecklist[index].Status = FilenameChecklist[index].IsEnabled
-                ? isValid ? StatusType.Success : StatusType.Error
+            checklist[index].Status = checklist[index].IsEnabled
+                ? isValid ? StatusType.Success : (useWarning ? StatusType.Warning : StatusType.Error)
                 : StatusType.Waiting;
+        }
+
+        private string BuildPreview(int maxCharacters)
+        {
+            string filename = VideoFilename.Trim();
+            if (filename.Length <= maxCharacters) return filename;
+            return filename[..maxCharacters] + "...";
         }
 
         private void OnLanguageChanged()
         {
             OnPropertyChanged(nameof(WindowTitle));
             OnPropertyChanged(nameof(PlaceholderText));
+            OnPropertyChanged(nameof(PreviewHeader));
+            OnPropertyChanged(nameof(Preview30Label));
+            OnPropertyChanged(nameof(Preview25Label));
+            OnPropertyChanged(nameof(Preview20Label));
+            OnPropertyChanged(nameof(Preview15Label));
+            OnPropertyChanged(nameof(FormatCheckHeader));
+            OnPropertyChanged(nameof(SevereIssueHeader));
+            OnPropertyChanged(nameof(GeneralIssueHeader));
+            OnPropertyChanged(nameof(SelfCheckHeader));
             OnPropertyChanged(nameof(SelfCheckDate));
             OnPropertyChanged(nameof(SelfCheckSeason));
             OnPropertyChanged(nameof(SelfCheckVersion));
@@ -152,7 +210,8 @@ namespace OneColumnEncoder.ViewModels
 
             BuildChecklist();
             BuildButtonGroup();
-            OnPropertyChanged(nameof(FilenameButtons));
+            OnPropertyChanged(nameof(FilenameActionButtons));
+            OnPropertyChanged(nameof(FilenameFinishButtons));
             ValidateFilename();
         }
 
