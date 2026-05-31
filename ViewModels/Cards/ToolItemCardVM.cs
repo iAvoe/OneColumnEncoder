@@ -117,6 +117,8 @@ namespace OneColumnEncoder.ViewModels.Cards
             }
         }
 
+        public bool EnableRealCheck { get; set; } = true;
+
         private bool _isSelected;
         public bool IsSelected
         {
@@ -173,6 +175,12 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         private void Validate()
         {
+            if (!EnableRealCheck)
+            {
+                IsReal = true;
+                return;
+            }
+
             bool exists = File.Exists(P2TextData);
             bool isKnownBinary =
                 P2TextData.EndsWith(".exe", StringComparison.OrdinalIgnoreCase) ||

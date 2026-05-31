@@ -51,5 +51,31 @@ namespace OneColumnEncoder.Components
             get => (bool)GetValue(IsCancelProperty);
             set => SetValue(IsCancelProperty, value);
         }
+
+        public static readonly DependencyProperty IsRealProperty =
+            DependencyProperty.Register(
+                nameof(IsReal),
+                typeof(bool),
+                typeof(ItemCard),
+                new PropertyMetadata(true));
+
+        public bool IsReal
+        {
+            get => (bool)GetValue(IsRealProperty);
+            set => SetValue(IsRealProperty, value);
+        }
+
+        public static readonly DependencyProperty EnableRealCheckProperty =
+            DependencyProperty.Register(
+                nameof(EnableRealCheck),
+                typeof(bool),
+                typeof(ItemCard),
+                new PropertyMetadata(true));
+
+        public bool EnableRealCheck
+        {
+            get => (bool)GetValue(EnableRealCheckProperty);
+            set => SetValue(EnableRealCheckProperty, value);
+        }
     }
 }

@@ -91,8 +91,8 @@ namespace OneColumnEncoder.ViewModels
             SelectTool = new SelectToolCmd(this);
 
             ToolsImportCard = new ToolsImportCardVM(modalNavS);
-            VideoSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetVideoSrcImportDefs(), true);
-            ScriptSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetScriptSrcImportDefs(), true);
+            VideoSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetVideoSrcImportDefs(), true, false);
+            ScriptSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetScriptSrcImportDefs(), true, false);
             EncSettingsZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetEncSettingsDefinitions());
             UpstreamsZone = [];
             EncodersZone = [];
@@ -203,7 +203,10 @@ namespace OneColumnEncoder.ViewModels
         #endregion
 
         #region Zone Initialization
-        private static ObservableCollection<ToolItemCardVM> LoadZoneFromDefinitions(List<ToolDefinitionM> defs, bool useAutoAddReplaceText = false)
+        private static ObservableCollection<ToolItemCardVM> LoadZoneFromDefinitions(
+            List<ToolDefinitionM> defs,
+            bool useAutoAddReplaceText = false,
+            bool enableRealCheck = true)
         {
             ObservableCollection<ToolItemCardVM> zone = [];
             foreach (ToolDefinitionM def in defs)
@@ -214,7 +217,8 @@ namespace OneColumnEncoder.ViewModels
                     R2Text = def.R2Text,
                     P1Name = def.P1Name,
                     P2Name = def.P2Name ?? "",
-                    UseAutoAddReplaceText = useAutoAddReplaceText
+                    UseAutoAddReplaceText = useAutoAddReplaceText,
+                    EnableRealCheck = enableRealCheck
                 };
                 item.R2Command = new RemoveZoneItemCmd(item, zone);
                 zone.Add(item);

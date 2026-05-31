@@ -38,6 +38,7 @@
                         <comps:ItemCard DataContext="{Binding}"
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
+                                        IsReal="{Binding IsReal}"
                                         IsEnabled="{Binding IsEnabled}"
                                         Margin="0 0 0 20">
                             <comps:ItemCard.InputBindings>
@@ -64,6 +65,7 @@
                         <comps:ItemCard DataContext="{Binding}"
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
+                                        IsReal="{Binding IsReal}"
                                         Margin="0 0 0 20">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
@@ -89,6 +91,7 @@
                         <comps:ItemCard DataContext="{Binding}"
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
+                                        IsReal="{Binding IsReal}"
                                         Margin="0 0 0 20">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
@@ -114,6 +117,7 @@
                         <comps:ItemCard DataContext="{Binding}"
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
+                                        IsReal="{Binding IsReal}"
                                         Margin="0 0 0 20">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
@@ -139,6 +143,8 @@
                         <comps:ItemCard DataContext="{Binding}"
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
+                                        IsReal="{Binding IsReal}"
+                                        EnableRealCheck="False"
                                         IsEnabled="{Binding IsEnabled}"
                                         Margin="0 0 0 20">
                             <comps:ItemCard.InputBindings>
@@ -169,6 +175,8 @@
                         <comps:ItemCard DataContext="{Binding}"
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
+                                        IsReal="{Binding IsReal}"
+                                        EnableRealCheck="False"
                                         IsEnabled="{Binding IsEnabled}"
                                         Margin="0 0 0 20">
                             <comps:ItemCard.InputBindings>
@@ -215,6 +223,7 @@
                         <comps:ItemCard DataContext="{Binding}"
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
+                                        IsReal="{Binding IsReal}"
                                         IsEnabled="{Binding IsEnabled}"
                                         Margin="0 0 0 20" />
                     </DataTemplate>

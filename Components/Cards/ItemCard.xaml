@@ -48,13 +48,18 @@
                         <Setter Property="Background"
                                 Value="{StaticResource BackgroundRed}" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding IsReal, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                 Value="False">
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding EnableRealCheck, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                       Value="True" />
+                            <Condition Binding="{Binding IsReal, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                       Value="False" />
+                        </MultiDataTrigger.Conditions>
                         <Setter Property="BorderBrush"
                                 Value="{StaticResource BorderRed}" />
                         <Setter Property="Background"
                                 Value="{StaticResource BackgroundRed}" />
-                    </DataTrigger>
+                    </MultiDataTrigger>
                     <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                  Value="False">
                         <Setter Property="BorderBrush"
