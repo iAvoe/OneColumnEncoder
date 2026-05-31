@@ -35,9 +35,9 @@ namespace OneColumnEncoder.Commands
                 _appDataM.Tools.VspipeY4mArg = y4mArg;
             }
 
+            _item.SetStoredFingerprint(fileSize);
             _item.P2TextData = filePath;
             _item.P1TextData = version ?? string.Empty;
-            _item.SetStoredFingerprint(fileSize);
             _appDataM.Save();
             _afterReplace?.Invoke();
         }

@@ -48,6 +48,13 @@
                         <Setter Property="Background"
                                 Value="{StaticResource BackgroundRed}" />
                     </DataTrigger>
+                    <DataTrigger Binding="{Binding IsReal, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                 Value="False">
+                        <Setter Property="BorderBrush"
+                                Value="{StaticResource BorderRed}" />
+                        <Setter Property="Background"
+                                Value="{StaticResource BackgroundRed}" />
+                    </DataTrigger>
                     <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                  Value="False">
                         <Setter Property="BorderBrush"

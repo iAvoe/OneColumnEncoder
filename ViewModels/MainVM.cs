@@ -702,14 +702,14 @@ namespace OneColumnEncoder.ViewModels
 
             ToolItemCardVM item = new(new EncItemM(def.DisplayName))
             {
-                P2TextData = filePath,
-                P1TextData = version ?? string.Empty,
                 P1Name = def.P1Name,
                 P2Name = def.P2Name ?? string.Empty,
                 R1Text = def.R1Text,
                 R2Text = def.R2Text
             };
             item.SetStoredFingerprint(fileSize);
+            item.P2TextData = filePath;
+            item.P1TextData = version ?? string.Empty;
             WireUpToolCmd(item);
 
             int insertIndex = zone.Count;
