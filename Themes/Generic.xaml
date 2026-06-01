@@ -317,6 +317,20 @@
         </Setter>
     </Style>
 
+    <!-- Heatmap Grid -->
+    <Style TargetType="{x:Type comps:HeatmapGrid}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type comps:HeatmapGrid}">
+                    <Image x:Name="PART_Image"
+                           Stretch="None"
+                           SnapsToDevicePixels="True"
+                           RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="{x:Type comps:AppConfContainer}">
         <Setter Property="Template">
             <Setter.Value>

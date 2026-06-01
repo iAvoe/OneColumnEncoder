@@ -3,6 +3,11 @@ using System.Windows.Controls;
 
 namespace OneColumnEncoder.Components
 {
+    /// <summary>
+    /// Show heatmap example from cold to hot
+    /// Usage:
+    /// <comps:HeatmapLegend ColdText="{Binding ColdLabel}" HotText="{Binding HotLabel}" />
+    /// </summary>
     public class HeatmapLegend : Control
     {
         static HeatmapLegend()
