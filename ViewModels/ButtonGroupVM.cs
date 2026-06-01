@@ -21,6 +21,7 @@ namespace OneColumnEncoder.ViewModels
         private string _b2_2Text = "";
         public string B2_2Text { get => _b2_2Text; set => SetProperty(ref _b2_2Text, value); }
 
+        public ImageSource? B2_1Icon { get; set; }
         public ImageSource? B2_2Icon { get; set; }
         public ImageSource? B3_3Icon { get; set; }
 

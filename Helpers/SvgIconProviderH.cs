@@ -21,6 +21,7 @@ internal static class SvgIconProviderH
     public static ImageSource GameReplace { get; }
     public static ImageSource GameDelete { get; }
     public static ImageSource GameInfo { get; }
+    public static ImageSource GamePaste { get; }
 
     private static Brush Brush(string hex) =>
         new SolidColorBrush((Color)ColorConverter.ConvertFromString(hex)!);
@@ -33,6 +34,9 @@ internal static class SvgIconProviderH
 
     private static void Add(DrawingGroup g, Geometry geometry, Brush brush) =>
         g.Children.Add(new GeometryDrawing(brush, null, geometry));
+
+    private static void Add(DrawingGroup g, Geometry geometry, Pen pen) =>
+        g.Children.Add(new GeometryDrawing(null, pen, geometry));
 
     private static Geometry Polygon(string points)
     {
@@ -216,6 +220,22 @@ internal static class SvgIconProviderH
         Add(gameInfo, infoCombined, white);
         SetBounds(gameInfo);
         GameInfo = new DrawingImage(gameInfo);
+
+        Pen pasteStroke = new(white, 0.8)
+        {
+            StartLineCap = PenLineCap.Round,
+            EndLineCap = PenLineCap.Round,
+            LineJoin = PenLineJoin.Round
+        };
+        pasteStroke.Freeze();
+
+        DrawingGroup gamePaste = new();
+        Add(gamePaste, new RectangleGeometry(new Rect(3.8, 1.2, 2.4, 1.4), 0.4, 0.4), pasteStroke);
+        Add(gamePaste, Geometry.Parse("M3.8,1.9 H2.6 C2.15,1.9 1.8,2.25 1.8,2.7 V8.2 C1.8,8.65 2.15,9 2.6,9 H7.4 C7.85,9 8.2,8.65 8.2,8.2 V2.7 C8.2,2.25 7.85,1.9 7.4,1.9 H6.2"), pasteStroke);
+        Add(gamePaste, Geometry.Parse("M3.5,4.5 H6.5"), pasteStroke);
+        Add(gamePaste, Geometry.Parse("M3.5,6.5 H5.2"), pasteStroke);
+        SetBounds(gamePaste);
+        GamePaste = new DrawingImage(gamePaste);
 
     }
 

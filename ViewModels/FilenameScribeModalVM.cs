@@ -105,6 +105,7 @@ namespace OneColumnEncoder.ViewModels
                 UILangProviderM.Current["FilenameScribe.RotateFontSize"],
                 new ActionCmd(_ => PasteFromClipboard()),
                 RotateFontSizeCmd);
+            FilenameActionButtons.B2_1Icon = SvgIconProviderH.GamePaste;
 
             FilenameFinishButtons = ButtonGroupVM.CreateTwoButton(
                 UILangProviderM.Current["FilenameScribe.Cancel"],
