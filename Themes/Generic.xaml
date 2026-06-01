@@ -273,6 +273,50 @@
         </Setter>
     </Style>
 
+    <!-- Heatmap Legend -->
+    <Style TargetType="{x:Type comps:HeatmapLegend}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type comps:HeatmapLegend}">
+                    <Grid VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="{TemplateBinding ColdText}"
+                                   VerticalAlignment="Center"
+                                   FontSize="11"
+                                   Margin="0 0 4 0" />
+                        <Rectangle Grid.Column="1" Width="16" Height="16" Fill="{StaticResource Heatmap00}" />
+                        <Rectangle Grid.Column="2" Width="16" Height="16" Fill="{StaticResource Heatmap01}" />
+                        <Rectangle Grid.Column="3" Width="16" Height="16" Fill="{StaticResource Heatmap02}" />
+                        <Rectangle Grid.Column="4" Width="16" Height="16" Fill="{StaticResource Heatmap03}" />
+                        <Rectangle Grid.Column="5" Width="16" Height="16" Fill="{StaticResource Heatmap04}" />
+                        <Rectangle Grid.Column="6" Width="16" Height="16" Fill="{StaticResource Heatmap05}" />
+                        <Rectangle Grid.Column="7" Width="16" Height="16" Fill="{StaticResource Heatmap06}" />
+                        <Rectangle Grid.Column="8" Width="16" Height="16" Fill="{StaticResource Heatmap07}" />
+                        <Rectangle Grid.Column="9" Width="16" Height="16" Fill="{StaticResource Heatmap08}" />
+                        <TextBlock Grid.Column="10"
+                                   Text="{TemplateBinding HotText}"
+                                   VerticalAlignment="Center"
+                                   FontSize="11"
+                                   Margin="4 0 0 0" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style TargetType="{x:Type comps:AppConfContainer}">
         <Setter Property="Template">
             <Setter.Value>

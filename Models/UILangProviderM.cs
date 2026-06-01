@@ -247,6 +247,10 @@ public class UILangProviderM
             ["FilenameScribe.Confirm"] = "Done → Set Export Path",
             ["FilenameScribe.FooterHint"] = "File extension is set by selected encoder and cannot be edited here",
 
+            // Heatmap
+            ["Heatmap.Cold"] = "Cold",
+            ["Heatmap.Hot"] = "Hot",
+
             ["SrcAnalysis.WindowTitle"] = "1cenc Source Analysis",
             ["SrcAnalysis.Completed"] = "Source analysis completed.",
             ["SrcAnalysis.Copied"] = "Raw ffprobe JSON copied to clipboard.",
@@ -483,6 +487,10 @@ public class UILangProviderM
             ["FilenameScribe.Confirm"] = "确认并定位输出路径",
             ["FilenameScribe.FooterHint"] = "后缀名由选择的编码器程序决定，无法编辑",
 
+            // Heatmap
+            ["Heatmap.Cold"] = "冷",
+            ["Heatmap.Hot"] = "热",
+
             ["SrcAnalysis.WindowTitle"] = "1cenc Source Analysis",
             ["SrcAnalysis.Completed"] = "视频源分析已完成。",
             ["SrcAnalysis.Copied"] = "ffprobe 原生 JSON 已复制到剪贴板。",
@@ -718,6 +726,10 @@ public class UILangProviderM
             ["FilenameScribe.Cancel"] = "取消",
             ["FilenameScribe.Confirm"] = "確認並定位輸出路徑",
             ["FilenameScribe.FooterHint"] = "副檔名由選擇的編碼器程式決定，無法編輯",
+
+            // Heatmap
+            ["Heatmap.Cold"] = "冷",
+            ["Heatmap.Hot"] = "熱",
 
             ["SrcAnalysis.WindowTitle"] = "1cenc Source Analysis",
             ["SrcAnalysis.Completed"] = "影片源分析已完成。",
