@@ -24,6 +24,8 @@ namespace OneColumnEncoder.ViewModels
         public ImageSource? B2_1Icon { get; set; }
         public ImageSource? B2_2Icon { get; set; }
         public ImageSource? B3_3Icon { get; set; }
+        public ImageSource? B5_1Icon { get; set; }
+        public ImageSource? B5_5Icon { get; set; }
 
         private string _b3_1Text = "";
         public string B3_1Text { get => _b3_1Text; set => SetProperty(ref _b3_1Text, value); }
@@ -31,6 +33,17 @@ namespace OneColumnEncoder.ViewModels
         public string B3_2Text { get => _b3_2Text; set => SetProperty(ref _b3_2Text, value); }
         private string _b3_3Text = "";
         public string B3_3Text { get => _b3_3Text; set => SetProperty(ref _b3_3Text, value); }
+
+        private string _b5_1Text = "";
+        public string B5_1Text { get => _b5_1Text; set => SetProperty(ref _b5_1Text, value); }
+        private string _b5_2Text = "";
+        public string B5_2Text { get => _b5_2Text; set => SetProperty(ref _b5_2Text, value); }
+        private string _b5_3Text = "";
+        public string B5_3Text { get => _b5_3Text; set => SetProperty(ref _b5_3Text, value); }
+        private string _b5_4Text = "";
+        public string B5_4Text { get => _b5_4Text; set => SetProperty(ref _b5_4Text, value); }
+        private string _b5_5Text = "";
+        public string B5_5Text { get => _b5_5Text; set => SetProperty(ref _b5_5Text, value); }
 
         // Button states
         private bool _b1_1IsEnabled = true;
@@ -73,10 +86,43 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _b3_3IsEnabled, value);
         }
 
+        private bool _b5_1IsEnabled = true;
+        public bool B5_1IsEnabled
+        {
+            get => _b5_1IsEnabled;
+            set => SetProperty(ref _b5_1IsEnabled, value);
+        }
+        private bool _b5_2IsEnabled = true;
+        public bool B5_2IsEnabled
+        {
+            get => _b5_2IsEnabled;
+            set => SetProperty(ref _b5_2IsEnabled, value);
+        }
+        private bool _b5_3IsEnabled = true;
+        public bool B5_3IsEnabled
+        {
+            get => _b5_3IsEnabled;
+            set => SetProperty(ref _b5_3IsEnabled, value);
+        }
+        private bool _b5_4IsEnabled = true;
+        public bool B5_4IsEnabled
+        {
+            get => _b5_4IsEnabled;
+            set => SetProperty(ref _b5_4IsEnabled, value);
+        }
+        private bool _b5_5IsEnabled = true;
+        public bool B5_5IsEnabled
+        {
+            get => _b5_5IsEnabled;
+            set => SetProperty(ref _b5_5IsEnabled, value);
+        }
+
         // Button commands
         public ICommand? Cmd1 { get; set; }
         public ICommand? Cmd2 { get; set; }
         public ICommand? Cmd3 { get; set; }
+        public ICommand? Cmd4 { get; set; }
+        public ICommand? Cmd5 { get; set; }
 
         public static ButtonGroupVM CreatePrimaryButton(string text, ICommand? cmd = null)
         {
@@ -106,6 +152,22 @@ namespace OneColumnEncoder.ViewModels
                 Cmd1 = cmd1,
                 Cmd2 = cmd2,
                 Cmd3 = cmd3
+            };
+        }
+        public static ButtonGroupVM CreateFiveButton(string b1Text, string b2Text, string b3Text, string b4Text, string b5Text, ICommand? cmd1 = null, ICommand? cmd2 = null, ICommand? cmd3 = null, ICommand? cmd4 = null, ICommand? cmd5 = null)
+        {
+            return new ButtonGroupVM
+            {
+                B5_1Text = b1Text,
+                B5_2Text = b2Text,
+                B5_3Text = b3Text,
+                B5_4Text = b4Text,
+                B5_5Text = b5Text,
+                Cmd1 = cmd1,
+                Cmd2 = cmd2,
+                Cmd3 = cmd3,
+                Cmd4 = cmd4,
+                Cmd5 = cmd5
             };
         }
     }
