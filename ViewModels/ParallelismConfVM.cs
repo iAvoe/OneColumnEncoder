@@ -48,6 +48,13 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _preferPerformanceCores, value);
         }
 
+        private bool _preferECoreCores = true;
+        public bool PreferECoreCores
+        {
+            get => _preferECoreCores;
+            set => SetProperty(ref _preferECoreCores, value);
+        }
+
         private bool _useLargePages = true;
         public bool UseLargePages
         {
@@ -94,7 +101,7 @@ namespace OneColumnEncoder.ViewModels
         public string NumaGuidanceText => Lang.NumaGuidanceText;
         public string ThreadStrategyTitle => Lang.ThreadStrategyTitle;
         public string PreferPhysicalCoresText => Lang.PreferPhysicalCoresText;
-        public string PreferPerformanceCoresText => Lang.PreferPerformanceCoresText;
+        public string PreferPCoreComputeText => Lang.PreferPCoreComputeText;
         public string MemoryStrategyTitle => Lang.MemoryStrategyTitle;
         public string UseLargePagesText => Lang.UseLargePagesText;
         public string RecheckButtonText => Lang.RecheckButtonText;
@@ -180,6 +187,7 @@ namespace OneColumnEncoder.ViewModels
             _model.DownstreamNodeId = downstream.NodeId;
             _model.PreferPhysicalCores = PreferPhysicalCores;
             _model.PreferPerformanceCores = PreferPerformanceCores;
+            _model.PreferECoreCores = PreferECoreCores;
             _model.UseLargePages = UseLargePages;
             _model.EncoderThreadCount = EncoderThreadCount;
             _model.Save();
@@ -189,6 +197,7 @@ namespace OneColumnEncoder.ViewModels
         {
             PreferPhysicalCores = _model.PreferPhysicalCores;
             PreferPerformanceCores = _model.PreferPerformanceCores;
+            PreferECoreCores = _model.PreferECoreCores;
             UseLargePages = _model.UseLargePages && CanUseLargePages;
 
             List<NumaNodeInfo> numaNodes = NumaTopologyH.GetNumaNodes();
@@ -293,7 +302,8 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(NumaGuidanceText));
             OnPropertyChanged(nameof(ThreadStrategyTitle));
             OnPropertyChanged(nameof(PreferPhysicalCoresText));
-            OnPropertyChanged(nameof(PreferPerformanceCoresText));
+            OnPropertyChanged(nameof(PreferPCoreComputeText));
+            OnPropertyChanged(nameof(PreferECoreLookaheadText));
             OnPropertyChanged(nameof(MemoryStrategyTitle));
             OnPropertyChanged(nameof(UseLargePagesText));
             OnPropertyChanged(nameof(RecheckButtonText));

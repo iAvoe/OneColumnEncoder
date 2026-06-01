@@ -36,7 +36,7 @@ public static class EncodingPipelineH
         string input = Quote(request.UpstreamInputPath);
         return request.UpstreamExeName.ToLowerInvariant() switch
         {
-            "ffmpeg.exe" => $"-i {input} -f yuv4mpegpipe -an -strict unofficial -",
+            "ffmpeg.exe" => $"-i {input} -f yuv4mpegpipe -an -strict unofficial -", // unofficial allows 10bit pipe
             "vspipe.exe" => $"{input} {NormalizeRequired(request.VspipeY4mArg, "vspipe Y4M argument")} -",
             "avs2yuv.exe" => $"{input} -",
             "avs2pipemod.exe" => $"{input} -y4mp",

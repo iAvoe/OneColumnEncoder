@@ -15,7 +15,8 @@ public class ParallelismConfLangProviderM
             ["ThreadStrategyTitle"] = "Hyper-threading & P-E Core Scheduling",
             ["EncoderThreadCountText"] = "Encoder threads",
             ["PreferPhysicalCoresText"] = "Map encoder threads to phys. cores (clamps max slider range)",
-            ["PreferPerformanceCoresText"] = "Prefer performance cores (P-Core)",
+            ["PreferPCoreComputeText"] = "Prefer P-Cores for encoder's compute threads",
+            ["PreferECoreLookaheadText"] = "Prefer E-Cores for encoder's lookahead threads",
             ["MemoryStrategyTitle"] = "Advanced RAM Allocation (Mem. locking priviledge needed, reboot too)",
             ["UseLargePagesText"] = "Enable Large Pages for source videos above 2K resolution",
             ["RecheckButtonText"] = "Re-check",
@@ -38,7 +39,8 @@ public class ParallelismConfLangProviderM
             ["ThreadStrategyTitle"] = "超线程与 P-E 架构处理器调度",
             ["EncoderThreadCountText"] = "编码器线程数",
             ["PreferPhysicalCoresText"] = "逐物理核心分配编码器线程（会缩限线程数滑块范围）",
-            ["PreferPerformanceCoresText"] = "优先使用性能核心（P-Core）",
+            ["PreferPCoreComputeText"] = "尝试分配编码任务到性能核心（P-Core）",
+            ["PreferECoreLookaheadText"] = "尝试分配前瞻进程任务到能效核心（E-Core）",
             ["MemoryStrategyTitle"] = "高级内存分配策略（需锁定内存页权限，设置后重启）",
             ["UseLargePagesText"] = "超过 2K 分辨率时启用大内存页（Large Pages）",
             ["RecheckButtonText"] = "重新检查",
@@ -61,7 +63,8 @@ public class ParallelismConfLangProviderM
             ["ThreadStrategyTitle"] = "超執行緒與 P-E 架構處理器調度",
             ["EncoderThreadCountText"] = "編碼器執行緒數",
             ["PreferPhysicalCoresText"] = "逐物理核心分配編碼器執行緒（會縮限執行緒數滑塊範圍）",
-            ["PreferPerformanceCoresText"] = "優先使用性能核心（P-Core）",
+            ["PreferPCoreComputeText"] = "嘗試分配編碼任務到性能核心（P-Core）",
+            ["PreferECoreLookaheadText"] = "嘗試分配前瞻進程任務到能效核心（E-Core）",
             ["MemoryStrategyTitle"] = "高級記憶體分配策略（需鎖定記憶體頁權限，設置後重啟）",
             ["UseLargePagesText"] = "超過 2K 解析度時啟用大記憶體頁（Large Pages）",
             ["RecheckButtonText"] = "重新檢查",
@@ -83,7 +86,8 @@ public class ParallelismConfLangProviderM
     public string NumaGuidanceText { get; }
     public string ThreadStrategyTitle { get; }
     public string PreferPhysicalCoresText { get; }
-    public string PreferPerformanceCoresText { get; }
+    public string PreferPCoreComputeText { get; }
+    public string PreferECoreLookaheadText { get; }
     public string MemoryStrategyTitle { get; }
     public string UseLargePagesText { get; }
     public string RecheckButtonText { get; }
@@ -107,7 +111,8 @@ public class ParallelismConfLangProviderM
         NumaGuidanceText = _d["NumaGuidanceText"];
         ThreadStrategyTitle = _d["ThreadStrategyTitle"];
         PreferPhysicalCoresText = _d["PreferPhysicalCoresText"];
-        PreferPerformanceCoresText = _d["PreferPerformanceCoresText"];
+        PreferPCoreComputeText = _d["PreferPCoreComputeText"];
+        PreferECoreLookaheadText = _d["PreferECoreLookaheadText"];
         MemoryStrategyTitle = _d["MemoryStrategyTitle"];
         UseLargePagesText = _d["UseLargePagesText"];
         RecheckButtonText = _d["RecheckButtonText"];

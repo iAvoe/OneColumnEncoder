@@ -11,7 +11,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="530"
-        Height="640"
+        Height="660"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <ScrollViewer VerticalScrollBarVisibility="Auto"
@@ -177,8 +177,11 @@
                     <comps:AppConfItem Text="{Binding Lang.PreferPhysicalCoresText}">
                         <CheckBox IsChecked="{Binding PreferPhysicalCores, Mode=TwoWay}" />
                     </comps:AppConfItem>
-                    <comps:AppConfItem Text="{Binding Lang.PreferPerformanceCoresText}">
+                    <comps:AppConfItem Text="{Binding Lang.PreferPCoreComputeText}">
                         <CheckBox IsChecked="{Binding PreferPerformanceCores, Mode=TwoWay}" />
+                    </comps:AppConfItem>
+                    <comps:AppConfItem Text="{Binding Lang.PreferECoreLookaheadText}">
+                        <CheckBox IsChecked="{Binding PreferECoreCores, Mode=TwoWay}" />
                     </comps:AppConfItem>
                 </comps:AppConfContainer>
 
@@ -190,7 +193,9 @@
                     </comps:AppConfItem>
                 </comps:AppConfContainer>
 
+
                 <comps:ThreeButtonGroup DataContext="{Binding FinishButtons}"
+                                        ButtonHeight="30"
                                         Button1Command="{Binding Cmd1}"
                                         Button2Command="{Binding Cmd2}"
                                         Button3Command="{Binding Cmd3}"
