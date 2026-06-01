@@ -62,6 +62,25 @@
                      x:Key="ButtonPrimary" />
     <SolidColorBrush Color="#7d736c"
                      x:Key="ButtonTertiary" />
+    <!-- Viridis 9-color Heatmap -->
+    <SolidColorBrush Color="#440154"
+                     x:Key="Heatmap0" />
+    <SolidColorBrush Color="#482878"
+                     x:Key="Heatmap1" />
+    <SolidColorBrush Color="#3E4A89"
+                     x:Key="Heatmap2" />
+    <SolidColorBrush Color="#31688E"
+                     x:Key="Heatmap3" />
+    <SolidColorBrush Color="#218F8B"
+                     x:Key="Heatmap4" />
+    <SolidColorBrush Color="#35B779"
+                     x:Key="Heatmap5" />
+    <SolidColorBrush Color="#8FD744"
+                     x:Key="Heatmap6" />
+    <SolidColorBrush Color="#DCE319"
+                     x:Key="Heatmap7" />
+    <SolidColorBrush Color="#FDE725"
+                     x:Key="Heatmap8" />
     <!-- Fonts -->
     <Style TargetType="TextBlock"
            x:Key="H1">
