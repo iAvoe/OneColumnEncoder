@@ -171,5 +171,20 @@ namespace OneColumnEncoder.Helpers
 
             return null;
         }
+
+        public static bool HasValidVspipeY4mArg(string? vspipePath, string? vspipeY4mArg)
+        {
+            return !string.IsNullOrWhiteSpace(vspipePath) &&
+                   !string.IsNullOrWhiteSpace(vspipeY4mArg);
+        }
+
+        public static async Task DetectAndStoreVspipeY4mArgAsync(
+            string exeName,
+            string filePath,
+            Action<string?> store)
+        {
+            if (!exeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase)) return;
+            store(await DetectVspipeY4mArgAsync(filePath));
+        }
     }
 }

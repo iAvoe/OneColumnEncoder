@@ -42,6 +42,8 @@ namespace OneColumnEncoder.ViewModels
         public AnalyzeSrcVideoCmd AnalyzeSrcVideo { get; } // Maybe add mediaInfo analysis in future, but ffprobe alone will do
         public InspectSrcProblemsCmd InspectSrcProblems { get; }
         public BypsSrcChecklistCmd BypassSrcChecklist { get; }
+        public SampleClipCmd SampleClip { get; }
+        public StartEncCmd StartEncode { get; }
         public SelectToolCmd SelectTool { get; } // ItemCard select on click
         public ButtonGroupVM OpenAppConfButtons { get; } // OpenUsages & OpenAppConf
         public ButtonGroupVM ScriptScbButtons { get; } // OneClickScriptGen & OpenScriptScribe
@@ -144,6 +146,8 @@ namespace OneColumnEncoder.ViewModels
                 SrcValidationCard,
                 () => !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson),
                 UpdateEncStartButtonsState);
+            SampleClip = new SampleClipCmd(BuildEncodingPipelineRequest, modalNavS);
+            StartEncode = new StartEncCmd(BuildEncodingPipelineRequest, modalNavS);
 
             // Buttons
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
@@ -155,7 +159,8 @@ namespace OneColumnEncoder.ViewModels
                 UICaptionProviderM.Buttons.CopyRawAnalysis, UICaptionProviderM.Buttons.AnalyzeSrcVideo, CopyRawAnalysis, AnalyzeSrcVideo);
             _isAnalyzeSrcButtonsReady = true;
             EncStartButtons = ButtonGroupVM.CreateThreeButton( // UpdateEncStartButtonsState()
-                UICaptionProviderM.Buttons.ReEvaluate, UICaptionProviderM.Buttons.RunSample, UICaptionProviderM.Buttons.StartEncode);
+                UICaptionProviderM.Buttons.ReEvaluate, UICaptionProviderM.Buttons.RunSample, UICaptionProviderM.Buttons.StartEncode,
+                null, SampleClip, StartEncode);
             _isEncStartButtonsReady = true;
             InspBypsChkButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProviderM.Buttons.InspectSrcProbelms, UICaptionProviderM.Buttons.BypassSrcChecklist, InspectSrcProblems, BypassSrcChecklist);
@@ -383,8 +388,11 @@ namespace OneColumnEncoder.ViewModels
         {
             if (!_isEncStartButtonsReady) return;
 
+            bool vspipeReady = UpstreamsZone.All(t =>
+                !ToolDefinitionProviderM.IsImportedTool(t.Name, "vspipe.exe") || t.IsEnabled);
+
             bool toolsReady =
-                UpstreamsZone.Count > 0 && EncodersZone.Count > 0 && HasImportedFfprobe();
+                UpstreamsZone.Count > 0 && EncodersZone.Count > 0 && HasImportedFfprobe() && vspipeReady;
 
             bool toolsPickedReady =
                 ToolsImportCard.ToolsChecklist.Skip(3).All(e => !e.IsEnabled || e.Status == StatusType.Success);
@@ -653,6 +661,48 @@ namespace OneColumnEncoder.ViewModels
             return ffprobe?.P2TextData ?? string.Empty;
         }
 
+        private EncodingPipelineRequest? BuildEncodingPipelineRequest()
+        {
+            ToolItemCardVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected && t.IsEnabled && !string.IsNullOrWhiteSpace(t.P2TextData));
+            ToolItemCardVM? encoder = EncodersZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
+            ToolItemCardVM? outputSetting = EncSettingsZone.FirstOrDefault(t =>
+                t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+
+            if (upstream == null || encoder == null || outputSetting == null) return null;
+
+            string? upstreamExeName = ToolCatalogProviderM.ResolveExeFromDisplayName(upstream.Name);
+            string? encoderExeName = ToolCatalogProviderM.ResolveExeFromDisplayName(encoder.Name);
+            if (string.IsNullOrWhiteSpace(upstreamExeName) || string.IsNullOrWhiteSpace(encoderExeName)) return null;
+
+            string upstreamInputPath = GetUpstreamInputPath(upstreamExeName);
+            if (string.IsNullOrWhiteSpace(upstreamInputPath) || string.IsNullOrWhiteSpace(outputSetting.P2TextData)) return null;
+
+            return new EncodingPipelineRequest(
+                upstreamExeName,
+                upstream.P2TextData,
+                upstreamInputPath,
+                encoderExeName,
+                encoder.P2TextData,
+                outputSetting.P2TextData,
+                EncoderConfM.Load(),
+                _appDataM.Tools.VspipeY4mArg);
+        }
+
+        private string GetUpstreamInputPath(string upstreamExeName)
+        {
+            if (upstreamExeName.Equals("ffmpeg.exe", StringComparison.OrdinalIgnoreCase) ||
+                upstreamExeName.Equals("one_line_shot_args.exe", StringComparison.OrdinalIgnoreCase))
+                return GetSelectedVideoSourcePath();
+
+            SourceFileKind kind = upstreamExeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase)
+                ? SourceFileKind.VapourSynthScript
+                : SourceFileKind.AviSynthScript;
+
+            ToolItemCardVM? source = ScriptSrcImportZone.FirstOrDefault(t =>
+                ResolveSourceFileKind(t.Name) == kind && !string.IsNullOrWhiteSpace(t.P2TextData));
+            return source?.P2TextData ?? string.Empty;
+        }
+
         private static SourceFileKind ResolveSourceFileKind(string displayName)
         {
             if (displayName.Equals(UILangProviderM.Current["Tool.Source.VideoSource"], StringComparison.OrdinalIgnoreCase))
@@ -771,8 +821,10 @@ namespace OneColumnEncoder.ViewModels
 
             if (exeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase))
             {
-                string? y4mArg = await ToolVersionDetectH.DetectVspipeY4mArgAsync(filePath);
-                _appDataM.Tools.VspipeY4mArg = y4mArg;
+                await ToolVersionDetectH.DetectAndStoreVspipeY4mArgAsync(
+                    exeName,
+                    filePath,
+                    y4mArg => _appDataM.Tools.VspipeY4mArg = y4mArg);
             }
 
             _appDataM.Save();
@@ -874,6 +926,18 @@ namespace OneColumnEncoder.ViewModels
             WireUpEncSettingsCmds();
             foreach (ObservableCollection<ToolItemCardVM> zone in AllImportedToolZones)
                 ApplyImportedToolDefs(zone);
+            RefreshVspipeAvailability();
+        }
+
+        private void RefreshVspipeAvailability()
+        {
+            ToolItemCardVM? vspipe = UpstreamsZone.FirstOrDefault(t =>
+                ToolDefinitionProviderM.IsImportedTool(t.Name, "vspipe.exe"));
+            if (vspipe == null) return;
+
+            vspipe.IsEnabled = ToolVersionDetectH.HasValidVspipeY4mArg(
+                _appDataM.Tools.VspipePath,
+                _appDataM.Tools.VspipeY4mArg);
         }
         private static void RefreshSourceZonePrimaryText(ObservableCollection<ToolItemCardVM> zone)
         {

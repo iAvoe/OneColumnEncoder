@@ -1,17 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OneColumnEncoder.Commands.OpenClose;
+using OneColumnEncoder.Helpers;
+using OneColumnEncoder.Stores;
+using System;
 
 namespace OneColumnEncoder.Commands
 {
-    public class SampleClipCmd : BaseCmd
+    public class SampleClipCmd(Func<EncodingPipelineRequest?> buildRequest, ModalNavS modalNavS) : BaseCmd
     {
-        // Needs Store
+        private readonly Func<EncodingPipelineRequest?> _buildRequest = buildRequest;
+        private readonly ModalNavS _modalNavS = modalNavS;
+
         public override void Execute(object? parameter)
         {
-            throw new NotImplementedException();
+            EncodingPipelineRequest? request = _buildRequest();
+            if (request == null) return;
+
+            EncodingPipelineCommand command = EncodingPipelineH.BuildY4mCommand(request);
+            new OpenInfoOrDbgModalCmd(
+                _modalNavS,
+                "Sample Encoding Command",
+                command.CommandLine).Execute(null);
         }
     }
 }

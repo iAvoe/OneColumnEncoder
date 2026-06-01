@@ -8,6 +8,21 @@ namespace OneColumnEncoder.Components
 {
     /// <summary>
     /// Dynamic heatmap component. Currently designed for mempry usage details
+    /// 
+    /// View model usage:
+    /// // Create or fetch from XAML
+    /// var grid = new HeatmapGrid();
+    /// 
+    /// // Update 1 cell
+    /// grid.UpdateCell(col: 5, row: 3, value: 0.75);
+    /// 
+    /// // Updatge all cells
+    /// double[,] data = new double[16, 32];
+    ///     data[0, 0] = 0.1; data[0, 31] = 0.9;
+    /// grid.UpdateAll(data);
+    /// 
+    /// // Clear
+    /// grid.Clear();
     /// </summary>
     public class HeatmapGrid : Control
     {
