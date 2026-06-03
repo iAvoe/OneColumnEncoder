@@ -1,0 +1,91 @@
+<UserControl x:Class="OneColumnEncoder.Components.ClipRangeSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="72"
+             d:DesignWidth="560"
+             Background="Transparent"
+             ClipToBounds="True">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="TrackHost"
+              Grid.Row="0"
+              Height="42"
+              Margin="0"
+              VerticalAlignment="Center">
+            <Border x:Name="TrackBackground"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    Background="#D9CAE4"
+                    BorderBrush="{StaticResource GlobalSecondary}"
+                    BorderThickness="1"
+                    CornerRadius="999" />
+
+            <Border x:Name="SelectionRange"
+                    VerticalAlignment="Center"
+                    Background="#F5E6A4"
+                    BorderBrush="#D2B45A"
+                    BorderThickness="1"
+                    CornerRadius="999"
+                    IsHitTestVisible="True" />
+
+            <Thumb x:Name="LeftThumb"
+                   DragDelta="LeftThumb_DragDelta"
+                   DragStarted="Thumb_DragStarted"
+                   DragCompleted="Thumb_DragCompleted"
+                   Cursor="SizeWE"
+                   VerticalAlignment="Center">
+                <Thumb.Template>
+                    <ControlTemplate TargetType="Thumb">
+                        <Border Background="#F7EBC0"
+                                BorderBrush="#D2B45A"
+                                BorderThickness="1"
+                                CornerRadius="6" />
+                    </ControlTemplate>
+                </Thumb.Template>
+            </Thumb>
+
+            <Thumb x:Name="RightThumb"
+                   DragDelta="RightThumb_DragDelta"
+                   DragStarted="Thumb_DragStarted"
+                   DragCompleted="Thumb_DragCompleted"
+                   Cursor="SizeWE"
+                   VerticalAlignment="Center">
+                <Thumb.Template>
+                    <ControlTemplate TargetType="Thumb">
+                        <Border Background="#F7EBC0"
+                                BorderBrush="#D2B45A"
+                                BorderThickness="1"
+                                CornerRadius="6" />
+                    </ControlTemplate>
+                </Thumb.Template>
+            </Thumb>
+        </Grid>
+
+        <ItemsControl x:Name="AxisLabelsHost"
+                      Grid.Row="1"
+                      Margin="0 8 0 0"
+                      ItemsSource="{Binding AxisLabels, RelativeSource={RelativeSource AncestorType=UserControl}}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="{Binding AxisColumnCount, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}"
+                               FontSize="10"
+                               Foreground="{StaticResource GlobalSecondary}"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Grid>
+</UserControl>
