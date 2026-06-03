@@ -14,8 +14,6 @@ namespace OneColumnEncoder.Models
         [
             new(UICaptionProviderM.AppConf.Groups.General, UILangProviderM.Current["Setting.General.NotOffGrid"], SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.OffGrid)),
             new(UICaptionProviderM.AppConf.Groups.General, UILangProviderM.Current["Setting.General.SufficientDisk"], SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.InsufficientDiskSpace)),
-            new(UICaptionProviderM.AppConf.Groups.General, UILangProviderM.Current["Setting.General.OSFilename"], SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.OSFileNameInvalid)),
-            new(UICaptionProviderM.AppConf.Groups.General, UILangProviderM.Current["Setting.General.FTPFilename"], SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.FTPFileNameInvalid)),
             new(UICaptionProviderM.AppConf.Groups.General, UILangProviderM.Current["Setting.General.WritePermission"], SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.NoWritePermission)),
             new(UICaptionProviderM.AppConf.Groups.General, UILangProviderM.Current["Setting.General.NotOverwrite"], SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.IsOverwriting)),
         ];

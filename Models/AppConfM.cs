@@ -25,8 +25,6 @@ namespace OneColumnEncoder.Models
         {
             public bool OffGrid { get; set; } = true;
             public bool InsufficientDiskSpace { get; set; } = true;
-            public bool OSFileNameInvalid { get; set; } = true;
-            public bool FTPFileNameInvalid { get; set; } = false;
             public bool NoWritePermission { get; set; } = true;
             public bool IsOverwriting { get; set; } = true;
         }

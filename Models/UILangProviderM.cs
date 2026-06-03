@@ -163,8 +163,6 @@ public class UILangProviderM
             // Settings - General labels
             ["Setting.General.NotOffGrid"] = "Not off-grid / powering via battery",
             ["Setting.General.SufficientDisk"] = "Sufficient disk space availability",
-            ["Setting.General.OSFilename"] = "Output filename is valid for OS",
-            ["Setting.General.FTPFilename"] = "Output filename maybe valid for FTP (Pseudo-UTF-8)",
             ["Setting.General.WritePermission"] = "Write permission in output folder",
             ["Setting.General.NotOverwrite"] = "Output does not overwrite existing file",
 
@@ -410,8 +408,6 @@ public class UILangProviderM
 
             ["Setting.General.NotOffGrid"] = "未使用电池供电/离网",
             ["Setting.General.SufficientDisk"] = "磁盘空间不足",
-            ["Setting.General.OSFilename"] = "输出文件名不兼容操作系统",
-            ["Setting.General.FTPFilename"] = "输出文件名不兼容 FTP（伪 UTF-8）",
             ["Setting.General.WritePermission"] = "无输出文件夹写入权限",
             ["Setting.General.NotOverwrite"] = "输出会覆盖现有文件",
 
@@ -653,8 +649,6 @@ public class UILangProviderM
 
             ["Setting.General.NotOffGrid"] = "未使用電池供電/離網",
             ["Setting.General.SufficientDisk"] = "磁碟空間不足",
-            ["Setting.General.OSFilename"] = "輸出檔案名不相容操作系統",
-            ["Setting.General.FTPFilename"] = "輸出檔案名不相容 FTP（偽 UTF-8）",
             ["Setting.General.WritePermission"] = "無輸出文件夾寫入權限",
             ["Setting.General.NotOverwrite"] = "輸出會覆蓋現有文件",
 
