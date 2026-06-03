@@ -185,19 +185,23 @@ namespace OneColumnEncoder.ViewModels
                 _ => Lang.SummaryUnknown,
             };
 
+            
             SummaryColumns.Clear();
+            // Total duration seconds
             SummaryColumns.Add(new ColumnTextItemM
             {
                 TopText = Lang.SummaryDurationLabel,
-                MainText = $"{Math.Round(_totalSeconds, 1).ToString("0.#", CultureInfo.InvariantCulture)} {Lang.SummarySecondsUnit}",
+                MainText = $"{Math.Round(_totalSeconds, 1).ToString("0.#", CultureInfo.InvariantCulture)}",
                 BottomText = Lang.SummarySecondsUnit
             });
+            // Total frames
             SummaryColumns.Add(new ColumnTextItemM
             {
                 TopText = Lang.SummaryTotalFramesLabel,
                 MainText = $"{_totalFrames} f",
                 BottomText = frameBottomText
             });
+            // Frame rate
             SummaryColumns.Add(new ColumnTextItemM
             {
                 TopText = Lang.SummaryFrameRateLabel,
@@ -249,25 +253,36 @@ namespace OneColumnEncoder.ViewModels
             _isSyncing = true;
             double start = Math.Max(0d, Math.Min(1d, SelectionStart));
             double end = Math.Max(0d, Math.Min(1d, SelectionEnd));
-            if (end < start) (start, end) = (end, start);
+            if (end < start) (start, end) = (end, start); // Fix overlap
 
             double startSeconds = start * _totalSeconds;
             double endSeconds = end * _totalSeconds;
             double durationSeconds = Math.Max(0d, endSeconds - startSeconds);
 
-            StartTimeText = EncodingPipelineH.FormatTimestamp(TimeSpan.FromSeconds(startSeconds));
-            ClipDurationText = EncodingPipelineH.FormatTimestamp(TimeSpan.FromSeconds(durationSeconds));
-            EndTimeText = EncodingPipelineH.FormatTimestamp(TimeSpan.FromSeconds(endSeconds));
+            StartTimeText =
+                EncodingPipelineH.FormatTimestamp(TimeSpan.FromSeconds(startSeconds));
+            ClipDurationText =
+                EncodingPipelineH.FormatTimestamp(TimeSpan.FromSeconds(durationSeconds));
+            EndTimeText =
+                EncodingPipelineH.FormatTimestamp(TimeSpan.FromSeconds(endSeconds));
 
-            long startFrame = Math.Min(_totalFrames - 1L, SecondsToFirstFrame(startSeconds));
-            long endFrame = Math.Min(_totalFrames - 1L, Math.Max(startFrame, SecondsToLastFrame(endSeconds)));
-            StartFrameText = startFrame.ToString(CultureInfo.InvariantCulture);
-            ClipFrameCountText = Math.Max(1, endFrame - startFrame + 1).ToString(CultureInfo.InvariantCulture);
-            EndFrameText = endFrame.ToString(CultureInfo.InvariantCulture);
+            long startFrame =
+                Math.Min(_totalFrames - 1L, SecondsToFirstFrame(startSeconds));
+            long endFrame =
+                Math.Min(_totalFrames - 1L, Math.Max(startFrame, SecondsToLastFrame(endSeconds)));
+            StartFrameText =
+                startFrame.ToString(CultureInfo.InvariantCulture);
+            ClipFrameCountText =
+                Math.Max(1, endFrame - startFrame + 1).ToString(CultureInfo.InvariantCulture);
+            EndFrameText =
+                endFrame.ToString(CultureInfo.InvariantCulture);
 
             if (updateClipLength)
             {
-                int seconds = Math.Max(MinClipLengthSeconds, Math.Min(MaxClipLengthSeconds, (int)Math.Round(durationSeconds)));
+                int seconds = Math.Max(
+                    MinClipLengthSeconds,
+                    Math.Min(MaxClipLengthSeconds,
+                    (int)Math.Round(durationSeconds)));
                 SetProperty(ref _clipLengthSeconds, seconds, nameof(ClipLengthSeconds));
             }
 
