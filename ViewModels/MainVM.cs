@@ -69,6 +69,8 @@ namespace OneColumnEncoder.ViewModels
         public static string SectionAnalysisResults => UILangProviderM.Current["Section.AnalysisResults"];
         public static string SectionEncodingConfigs => UILangProviderM.Current["Section.EncodingConfigs"];
         public static string SectionStartEncoding => UILangProviderM.Current["Section.StartEncoding"];
+        public static string SVFIClipDisabledHintText => UILangProviderM.Current["Hint.SVFIClipDisabled"];
+        public static string AnalyzeNeedsSourceText => UILangProviderM.Current["Hint.AnalyzeNeedsSource"];
 
         // Disable UI when other modal opens
         private bool _isOverlayVisible;
@@ -76,6 +78,13 @@ namespace OneColumnEncoder.ViewModels
         {
             get => _isOverlayVisible;
             set => SetProperty(ref _isOverlayVisible, value);
+        }
+
+        private bool _svfiClipDisabledHintVisible;
+        public bool SVFIClipDisabledHintVisible
+        {
+            get => _svfiClipDisabledHintVisible;
+            set => SetProperty(ref _svfiClipDisabledHintVisible, value);
         }
 
         private ObservableCollection<ToolItemCardVM>[] AllImportedToolZones =>
@@ -399,10 +408,14 @@ namespace OneColumnEncoder.ViewModels
 
             bool hasRawJson = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
 
+            // Checklist:
+            // 1. Selected 
+            // SVT-AV1 may eventually have 12bit support, but for now keep encoding start button disabled
             bool sourceValidationReady = SrcValidationCard.IsBypassed ||
                 (hasRawJson &&
                 SrcValidationCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
                 SrcValidationCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success));
+
             bool encodeTermsReady =
                 EncTermsCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
                 EncTermsCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
@@ -411,12 +424,17 @@ namespace OneColumnEncoder.ViewModels
             bool aviSelected = DependenciesZone.Any(
                 t => t.IsSelected && ToolDefinitionProviderM.IsImportedTool(t.Name, "avisynth.dll"));
             bool dependencyReady = avsSelected == aviSelected;
-            
-            // TODO: SVT-AV1 does not suport 12bit source
+
+            // SVFI currently doesn't support clipping, and its not really built with basic editing in design principle,
+            // disable clip sampling if SVFI is selected as upstream to avoid confusion
+            bool oneLineShotSelected = UpstreamsZone.Any(
+                t => t.IsSelected &&
+                ToolDefinitionProviderM.IsImportedTool(t.Name, "one_line_shot_args.exe"));
 
             bool allReady = toolsReady && toolsPickedReady && sourceValidationReady && encodeTermsReady && dependencyReady;
-            EncStartButtons.B3_2IsEnabled = allReady;
+            EncStartButtons.B3_2IsEnabled = allReady && !oneLineShotSelected;
             EncStartButtons.B3_3IsEnabled = allReady;
+            SVFIClipDisabledHintVisible = oneLineShotSelected;
         }
         #endregion
 
@@ -881,6 +899,8 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(SectionAnalysisResults));
             OnPropertyChanged(nameof(SectionEncodingConfigs));
             OnPropertyChanged(nameof(SectionStartEncoding));
+            OnPropertyChanged(nameof(SVFIClipDisabledHintText));
+            OnPropertyChanged(nameof(AnalyzeNeedsSourceText));
         }
         private void RefreshButtonCaptions()
         {

@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:views="clr-namespace:OneColumnEncoder.Views"
              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
+             xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vms:MainVM}"
@@ -107,6 +108,35 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+
+            <comps:TwoButtonGroup DataContext="{Binding AnalyzeSrcButtons}"
+                                  Button1Command="{Binding Cmd1}"
+                                  Button2Command="{Binding Cmd2}"
+                                  Button1IsEnabled="{Binding B2_1IsEnabled}"
+                                  Button2IsEnabled="{Binding B2_2IsEnabled}"/>
+            
+            <!-- Hint: OneLineShotArgs upstream does not support clipping -->
+            <StackPanel Margin="5 5 5 10"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center">
+                <Rectangle Width="10"
+                           Height="10"
+                           VerticalAlignment="Center"
+                           Fill="{StaticResource GlobalTertiary}">
+                    <Rectangle.OpacityMask>
+                        <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
+                                    Stretch="Uniform" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+                <TextBlock FontSize="9"
+                           Focusable="False"
+                           Margin="3.5 0 0 0"
+                           Text="{Binding AnalyzeNeedsSourceText}"
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource GlobalTertiary}" />
+            </StackPanel>
+            
             
             <!-- Select Tool Dependencies -->
             <comps:SectionHeader HeaderText="{Binding SectionSelectDependencies}"
@@ -161,13 +191,7 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            
-            <comps:TwoButtonGroup DataContext="{Binding ScriptScbButtons}"
-                                  Button1Command="{Binding Cmd1}"
-                                  Button2Command="{Binding Cmd2}"
-                                  Button1IsEnabled="{Binding B2_1IsEnabled}"
-                                  Button2IsEnabled="{Binding B2_2IsEnabled}"
-                                  Margin="0 0 0 20" />
+
             
             <ItemsControl ItemsSource="{Binding ScriptSrcImportZone}">
                 <ItemsControl.ItemTemplate>
@@ -194,15 +218,17 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <!-- AnalyticResultsZone -->
-            <comps:SectionHeader HeaderText="{Binding SectionAnalysisResults}"
-                                 Margin="0 0 0 20" />
-            <comps:TwoButtonGroup DataContext="{Binding AnalyzeSrcButtons}"
+            <comps:TwoButtonGroup DataContext="{Binding ScriptScbButtons}"
                                   Button1Command="{Binding Cmd1}"
                                   Button2Command="{Binding Cmd2}"
                                   Button1IsEnabled="{Binding B2_1IsEnabled}"
                                   Button2IsEnabled="{Binding B2_2IsEnabled}"
                                   Margin="0 0 0 20" />
+
+            <!-- AnalyticResultsZone -->
+            <comps:SectionHeader HeaderText="{Binding SectionAnalysisResults}"
+                                 Margin="0 0 0 20" />
+
             <comps:ValidationCard DataContext="{Binding SrcValidationCard}"
                                   Margin="0 0 0 20" />
             
@@ -246,6 +272,29 @@
                                     Button1IsEnabled="{Binding B3_1IsEnabled}"
                                     Button2IsEnabled="{Binding B3_2IsEnabled}"
                                     Button3IsEnabled="{Binding B3_3IsEnabled}" />
+        </StackPanel>
+
+        <!-- Hint: OneLineShotArgs upstream does not support clipping -->
+        <StackPanel Visibility="{Binding SVFIClipDisabledHintVisible, Converter={StaticResource BoolToVisibility}}"
+                    Margin="5 5 5 0"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center">
+            <Rectangle Width="10"
+                       Height="10"
+                       VerticalAlignment="Center"
+                       Fill="{StaticResource GlobalTertiary}">
+                <Rectangle.OpacityMask>
+                    <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
+                                Stretch="Uniform" />
+                </Rectangle.OpacityMask>
+            </Rectangle>
+            <TextBlock FontSize="9"
+                       Focusable="False"
+                       Margin="3.5 0 0 0"
+                       Text="{Binding SVFIClipDisabledHintText}"
+                       VerticalAlignment="Center"
+                       Foreground="{StaticResource GlobalTertiary}" />
         </StackPanel>
 
         <Border Visibility="{Binding IsOverlayVisible, Converter={StaticResource BoolToVisibility}}"

@@ -120,7 +120,7 @@ public class UILangProviderM
             ["Checklist.Tools.DownstreamPicked"] = "Click-select a downstream program",
             ["Checklist.Tools.AnalysisPicked"] = "Click-select an analysis program",
             ["Checklist.Tools.DependenciesPicked"] = "Click-select a dependency program",
-            ["Checklist.Tools.SourcePicked"] = "Click-select a type of source to encode",
+            ["Checklist.Tools.SourcePicked"] = "Source video is imported and selected",
 
             // Checklist - Source Validation 1 (Severe)
             ["Checklist.Source1.Metadata"] = "Metadata and SEI data are readable",
@@ -247,6 +247,10 @@ public class UILangProviderM
             ["FilenameScribe.Confirm"] = "Done → Set Export Path",
             ["FilenameScribe.FooterHint"] = "File extension is set by selected encoder and cannot be edited here",
 
+            // Hints
+            ["Hint.SVFIClipDisabled"] = "OneLineShotArgs does not support sample clipping, disabling Run Sample.",
+            ["Hint.AnalyzeNeedsSource"] = "Analysis requires a source video file imported",
+
             // Heatmap
             ["Heatmap.Cold"] = "Cold",
             ["Heatmap.Hot"] = "Hot",
@@ -371,7 +375,7 @@ public class UILangProviderM
             ["Checklist.Tools.DownstreamPicked"] = "点选下游程序",
             ["Checklist.Tools.AnalysisPicked"] = "点选分析工具",
             ["Checklist.Tools.DependenciesPicked"] = "点选依赖程序",
-            ["Checklist.Tools.SourcePicked"] = "点选待压制源文件的种类",
+            ["Checklist.Tools.SourcePicked"] = "待压制的源文件存在且已被选择",
 
             ["Checklist.Source1.Metadata"] = "元数据与 SEI 数据可读",
             ["Checklist.Source1.Progressive"] = "逐行扫描视频帧 / 非隔行（SVT-AV1 要求）",
@@ -486,6 +490,10 @@ public class UILangProviderM
             ["FilenameScribe.Cancel"] = "取消",
             ["FilenameScribe.Confirm"] = "确认并定位输出路径",
             ["FilenameScribe.FooterHint"] = "后缀名由选择的编码器程序决定，无法编辑",
+
+            // Hints
+            ["Hint.SVFIClipDisabled"] = "OneLineShotArgs 上游不支持取段打样，已禁用取段打样按钮。",
+            ["Hint.AnalyzeNeedsSource"] = "分析需要导入视频源文件",
 
             // Heatmap
             ["Heatmap.Cold"] = "冷",
@@ -611,7 +619,7 @@ public class UILangProviderM
             ["Checklist.Tools.DownstreamPicked"] = "點選下遊程序",
             ["Checklist.Tools.AnalysisPicked"] = "點選分析工具",
             ["Checklist.Tools.DependenciesPicked"] = "點選依賴程式",
-            ["Checklist.Tools.SourcePicked"] = "點選待壓制原始檔的種類",
+            ["Checklist.Tools.SourcePicked"] = "待壓制的源文件存在且已被選擇",
 
             ["Checklist.Source1.Metadata"] = "元數據與 SEI 數據可讀",
             ["Checklist.Source1.Progressive"] = "逐行掃描影片幀 / 非隔行（SVT-AV1 要求）",
@@ -726,6 +734,10 @@ public class UILangProviderM
             ["FilenameScribe.Cancel"] = "取消",
             ["FilenameScribe.Confirm"] = "確認並定位輸出路徑",
             ["FilenameScribe.FooterHint"] = "副檔名由選擇的編碼器程式決定，無法編輯",
+
+            // Hints
+            ["Hint.SVFIClipDisabled"] = "OneLineShotArgs 上游不支援取段打樣，已禁用取段打樣按鈕。",
+            ["Hint.AnalyzeNeedsSource"] = "分析需要導入影片源文件",
 
             // Heatmap
             ["Heatmap.Cold"] = "冷",

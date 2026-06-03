@@ -41,18 +41,18 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _preferPhysicalCores, value);
         }
 
-        private bool _preferPerformanceCores = true;
-        public bool PreferPerformanceCores
+        private bool _preferPCoreCompute = true;
+        public bool PreferPCoreCompute
         {
-            get => _preferPerformanceCores;
-            set => SetProperty(ref _preferPerformanceCores, value);
+            get => _preferPCoreCompute;
+            set => SetProperty(ref _preferPCoreCompute, value);
         }
 
-        private bool _preferECoreCores = true;
-        public bool PreferECoreCores
+        private bool _preferECoreLookahead = true;
+        public bool PreferECoreLookahead
         {
-            get => _preferECoreCores;
-            set => SetProperty(ref _preferECoreCores, value);
+            get => _preferECoreLookahead;
+            set => SetProperty(ref _preferECoreLookahead, value);
         }
 
         private bool _useLargePages = true;
@@ -102,6 +102,7 @@ namespace OneColumnEncoder.ViewModels
         public string ThreadStrategyTitle => Lang.ThreadStrategyTitle;
         public string PreferPhysicalCoresText => Lang.PreferPhysicalCoresText;
         public string PreferPCoreComputeText => Lang.PreferPCoreComputeText;
+        public string PreferECoreLookaheadText => Lang.PreferECoreLookaheadText;
         public string MemoryStrategyTitle => Lang.MemoryStrategyTitle;
         public string UseLargePagesText => Lang.UseLargePagesText;
         public string RecheckButtonText => Lang.RecheckButtonText;
@@ -186,8 +187,9 @@ namespace OneColumnEncoder.ViewModels
             _model.UpstreamNodeId = upstream.NodeId;
             _model.DownstreamNodeId = downstream.NodeId;
             _model.PreferPhysicalCores = PreferPhysicalCores;
-            _model.PreferPerformanceCores = PreferPerformanceCores;
-            _model.PreferECoreCores = PreferECoreCores;
+            _model.PreferPCoreCompute = PreferPCoreCompute;
+            _model.PreferECoreLookahead = PreferECoreLookahead;
+            _model.PreferECoreCores = PreferECoreLookahead;
             _model.UseLargePages = UseLargePages;
             _model.EncoderThreadCount = EncoderThreadCount;
             _model.Save();
@@ -196,8 +198,8 @@ namespace OneColumnEncoder.ViewModels
         private void LoadModelToUi()
         {
             PreferPhysicalCores = _model.PreferPhysicalCores;
-            PreferPerformanceCores = _model.PreferPerformanceCores;
-            PreferECoreCores = _model.PreferECoreCores;
+            PreferPCoreCompute = _model.PreferPCoreCompute;
+            PreferECoreLookahead = _model.PreferECoreCores;
             UseLargePages = _model.UseLargePages && CanUseLargePages;
 
             List<NumaNodeInfo> numaNodes = NumaTopologyH.GetNumaNodes();
