@@ -42,7 +42,7 @@ namespace OneColumnEncoder.ViewModels
         public AnalyzeSrcVideoCmd AnalyzeSrcVideo { get; } // Maybe add mediaInfo analysis in future, but ffprobe alone will do
         public InspectSrcProblemsCmd InspectSrcProblems { get; }
         public BypsSrcChecklistCmd BypassSrcChecklist { get; }
-        public SampleClipCmd SampleClip { get; }
+        public OpenSampleClipCmd SampleClip { get; }
         public StartEncCmd StartEncode { get; }
         public SelectToolCmd SelectTool { get; } // ItemCard select on click
         public ButtonGroupVM OpenAppConfButtons { get; } // OpenUsages & OpenAppConf
@@ -155,7 +155,7 @@ namespace OneColumnEncoder.ViewModels
                 SrcValidationCard,
                 () => !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson),
                 UpdateEncStartButtonsState);
-            SampleClip = new SampleClipCmd(BuildEncodingPipelineRequest, modalNavS);
+            SampleClip = new OpenSampleClipCmd(modalNavS, BuildEncodingPipelineRequest, _srcVideoAnalysis);
             StartEncode = new StartEncCmd(BuildEncodingPipelineRequest, modalNavS);
 
             // Buttons

@@ -249,7 +249,7 @@ public class UILangProviderM
 
             // Hints
             ["Hint.SVFIClipDisabled"] = "OneLineShotArgs does not support sample clipping, disabling Run Sample.",
-            ["Hint.AnalyzeNeedsSource"] = "Analysis requires a source video file imported",
+            ["Hint.AnalyzeNeedsSource"] = "Import a source video to run analysis",
 
             // Heatmap
             ["Heatmap.Cold"] = "Cold",

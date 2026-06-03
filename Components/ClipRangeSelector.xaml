@@ -27,45 +27,45 @@
                     BorderThickness="1"
                     CornerRadius="999" />
 
-            <Border x:Name="SelectionRange"
-                    VerticalAlignment="Center"
-                    Background="#F5E6A4"
-                    BorderBrush="#D2B45A"
-                    BorderThickness="1"
-                    CornerRadius="999"
-                    IsHitTestVisible="True" />
+            <Canvas x:Name="TrackCanvas"
+                    ClipToBounds="True">
+                <Border x:Name="SelectionRange"
+                        Background="#F5E6A4"
+                        BorderBrush="#D2B45A"
+                        BorderThickness="1"
+                        CornerRadius="999"
+                        IsHitTestVisible="True" />
 
-            <Thumb x:Name="LeftThumb"
-                   DragDelta="LeftThumb_DragDelta"
-                   DragStarted="Thumb_DragStarted"
-                   DragCompleted="Thumb_DragCompleted"
-                   Cursor="SizeWE"
-                   VerticalAlignment="Center">
-                <Thumb.Template>
-                    <ControlTemplate TargetType="Thumb">
-                        <Border Background="#F7EBC0"
-                                BorderBrush="#D2B45A"
-                                BorderThickness="1"
-                                CornerRadius="6" />
-                    </ControlTemplate>
-                </Thumb.Template>
-            </Thumb>
+                <Thumb x:Name="LeftThumb"
+                       DragDelta="LeftThumb_DragDelta"
+                       DragStarted="Thumb_DragStarted"
+                       DragCompleted="Thumb_DragCompleted"
+                       Cursor="SizeWE">
+                    <Thumb.Template>
+                        <ControlTemplate TargetType="Thumb">
+                            <Border Background="#F7EBC0"
+                                    BorderBrush="#D2B45A"
+                                    BorderThickness="1"
+                                    CornerRadius="6" />
+                        </ControlTemplate>
+                    </Thumb.Template>
+                </Thumb>
 
-            <Thumb x:Name="RightThumb"
-                   DragDelta="RightThumb_DragDelta"
-                   DragStarted="Thumb_DragStarted"
-                   DragCompleted="Thumb_DragCompleted"
-                   Cursor="SizeWE"
-                   VerticalAlignment="Center">
-                <Thumb.Template>
-                    <ControlTemplate TargetType="Thumb">
-                        <Border Background="#F7EBC0"
-                                BorderBrush="#D2B45A"
-                                BorderThickness="1"
-                                CornerRadius="6" />
-                    </ControlTemplate>
-                </Thumb.Template>
-            </Thumb>
+                <Thumb x:Name="RightThumb"
+                       DragDelta="RightThumb_DragDelta"
+                       DragStarted="Thumb_DragStarted"
+                       DragCompleted="Thumb_DragCompleted"
+                       Cursor="SizeWE">
+                    <Thumb.Template>
+                        <ControlTemplate TargetType="Thumb">
+                            <Border Background="#F7EBC0"
+                                    BorderBrush="#D2B45A"
+                                    BorderThickness="1"
+                                    CornerRadius="6" />
+                        </ControlTemplate>
+                    </Thumb.Template>
+                </Thumb>
+            </Canvas>
         </Grid>
 
         <ItemsControl x:Name="AxisLabelsHost"
