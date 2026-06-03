@@ -4,8 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="72"
-             d:DesignWidth="560"
              Background="Transparent"
              ClipToBounds="True">
     <Grid>
@@ -16,20 +14,20 @@
 
         <Grid x:Name="TrackHost"
               Grid.Row="0"
-              Height="42"
-              Margin="0"
               VerticalAlignment="Center">
             <Border x:Name="TrackBackground"
                     HorizontalAlignment="Stretch"
+                    Height="50"
                     VerticalAlignment="Center"
                     Background="#D9CAE4"
-                    BorderBrush="{StaticResource GlobalSecondary}"
+                    BorderBrush="#9673A6"
                     BorderThickness="1"
-                    CornerRadius="2" />
+                    CornerRadius="2"/>
 
             <Canvas x:Name="TrackCanvas"
                     ClipToBounds="True">
                 <Thumb x:Name="SelectionThumb"
+                       Height="28"
                        DragDelta="SelectionThumb_DragDelta"
                        DragStarted="Thumb_DragStarted"
                        DragCompleted="Thumb_DragCompleted"
@@ -48,7 +46,6 @@
 
         <ItemsControl x:Name="AxisLabelsHost"
                       Grid.Row="1"
-                      Margin="0 8 0 0"
                       ItemsSource="{Binding AxisLabels, RelativeSource={RelativeSource AncestorType=UserControl}}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>

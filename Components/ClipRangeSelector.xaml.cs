@@ -176,20 +176,15 @@ namespace OneColumnEncoder.Components
                 return;
             }
 
-            double nextTrackHeight = Clamp(width * 0.05d, 24d, 30d);
             double nextThumbWidth = Clamp(width * 0.05d, 16d, 30d);
-            double nextThumbHeight = Clamp(nextTrackHeight - 4d, 20d, 26d);
             double nextLabelMargin = Clamp(width * 0.012d, 4d, 12d);
 
-            TrackHeight = nextTrackHeight;
+            TrackHeight = 80d;
             ThumbWidth = nextThumbWidth;
-            ThumbHeight = nextThumbHeight;
+            ThumbHeight = 28d;
             LabelMarginTop = nextLabelMargin;
 
-            TrackHost.Height = nextThumbHeight;
-            TrackBackground.Height = nextTrackHeight;
             SelectionThumb.Width = nextThumbWidth;
-            SelectionThumb.Height = nextThumbHeight;
             AxisLabelsHost.Margin = new Thickness(0, nextLabelMargin, 0, 0);
 
             UpdateSelectionVisuals();

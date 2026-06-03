@@ -17,11 +17,31 @@ namespace OneColumnEncoder.ViewModels
         private readonly Func<EncodingPipelineRequest?> _buildRequest;
         private readonly double _totalSeconds;
         private readonly double _frameRate;
+        private ClipRangeSelectorLangProviderM _lang = null!;
         private bool _isDraggingSelection;
 
         private bool _isSyncing;
 
-        public static string WindowTitle => "1cenc Sample Clip";
+        public ClipRangeSelectorLangProviderM Lang
+        {
+            get => _lang;
+            private set => SetProperty(ref _lang, value);
+        }
+        public string WindowTitle => Lang.WindowTitle;
+        public string TimelineSectionTitle => Lang.TimelineSectionTitle;
+        public string SelectionHintText => Lang.SelectionHintText;
+        public string DurationSectionTitle => Lang.DurationSectionTitle;
+        public string ClipLengthLabel => Lang.ClipLengthLabel;
+        public string StartTimeLabel => Lang.StartTimeLabel;
+        public string ClipDurationLabel => Lang.ClipDurationLabel;
+        public string EndTimeLabel => Lang.EndTimeLabel;
+        public string TimeFormatText => Lang.TimeFormatText;
+        public string StartFrameLabel => Lang.StartFrameLabel;
+        public string ClipFrameCountLabel => Lang.ClipFrameCountLabel;
+        public string EndFrameLabel => Lang.EndFrameLabel;
+        public string FrameFormatText => Lang.FrameFormatText;
+        public string Note1Text => Lang.Note1Text;
+        public string Note2Text => Lang.Note2Text;
         public ObservableCollection<ColumnTextItemM> SummaryColumns { get; } = [];
         public ObservableCollection<string> AxisLabels { get; } = [];
         public ButtonGroupVM FinishButtons { get; }
@@ -118,12 +138,14 @@ namespace OneColumnEncoder.ViewModels
 
             CloseCmd = new CloseModalCmd(closeAction);
             RunSampleCmd = new ActionCmd(_ => RunSample());
-            FinishButtons = ButtonGroupVM.CreateTwoButton("取消", "开始打样", CloseCmd, RunSampleCmd);
+            Lang = new ClipRangeSelectorLangProviderM(UILangProviderM.Current.LanguageCode);
+            FinishButtons = ButtonGroupVM.CreateTwoButton(Lang.CancelButtonText, Lang.ConfirmButtonText, CloseCmd, RunSampleCmd);
 
             int initialLength = (int)Math.Round(Math.Min(30d, Math.Max(10d, _totalSeconds * 0.04d)));
             _clipLengthSeconds = initialLength;
             ApplyClipLengthToSelection();
             SyncFromSelection(updateClipLength: false);
+            UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
 
         private void BuildSummary(long totalFrames, bool progressive, bool constantFrameRate)
@@ -300,6 +322,29 @@ namespace OneColumnEncoder.ViewModels
         {
             TimeSpan t = TimeSpan.FromSeconds(Math.Max(0d, seconds));
             return $"{(long)t.TotalHours:00}:{t.Minutes:00}:{t.Seconds:00}";
+        }
+
+        private void OnLanguageChanged()
+        {
+            Lang = new ClipRangeSelectorLangProviderM(UILangProviderM.Current.LanguageCode);
+            FinishButtons.B2_1Text = Lang.CancelButtonText;
+            FinishButtons.B2_2Text = Lang.ConfirmButtonText;
+            OnPropertyChanged(nameof(WindowTitle));
+            OnPropertyChanged(nameof(TimelineSectionTitle));
+            OnPropertyChanged(nameof(SelectionHintText));
+            OnPropertyChanged(nameof(DurationSectionTitle));
+            OnPropertyChanged(nameof(ClipLengthLabel));
+            OnPropertyChanged(nameof(StartTimeLabel));
+            OnPropertyChanged(nameof(ClipDurationLabel));
+            OnPropertyChanged(nameof(EndTimeLabel));
+            OnPropertyChanged(nameof(TimeFormatText));
+            OnPropertyChanged(nameof(StartFrameLabel));
+            OnPropertyChanged(nameof(ClipFrameCountLabel));
+            OnPropertyChanged(nameof(EndFrameLabel));
+            OnPropertyChanged(nameof(FrameFormatText));
+            OnPropertyChanged(nameof(Note1Text));
+            OnPropertyChanged(nameof(Note2Text));
+            OnPropertyChanged(nameof(ClipLengthTickLabels));
         }
 
         private static string? TryGetString(JsonElement element, string propertyName) =>
