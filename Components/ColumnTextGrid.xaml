@@ -1,0 +1,76 @@
+<UserControl x:Class="OneColumnEncoder.Components.ColumnTextGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conv="clr-namespace:OneColumnEncoder.Converters"
+             mc:Ignorable="d"
+             d:DesignHeight="80"
+             d:DesignWidth="600">
+    <UserControl.Resources>
+        <conv:IndexToVisibilityConverter x:Key="IndexToVisibilityConverter" />
+        <conv:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+    </UserControl.Resources>
+
+    <ItemsControl ItemsSource="{Binding Items, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                  AlternationCount="1000">
+        <ItemsControl.ItemContainerStyle>
+            <Style TargetType="ContentPresenter">
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="VerticalAlignment" Value="Stretch" />
+            </Style>
+        </ItemsControl.ItemContainerStyle>
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <UniformGrid Columns="{Binding ColumnCount, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <Grid Margin="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Margin="0 0 0 0">
+                        <TextBlock Text="{Binding TopText}"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   FontSize="10"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   Visibility="{Binding TopText, Converter={StaticResource StringToVisibilityConverter}}" />
+                        <TextBlock Text="{Binding MainText}"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   FontSize="13"
+                                   Foreground="{StaticResource GlobalPrimary}" />
+                        <TextBlock Text="{Binding BottomText}"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   FontSize="10"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   Visibility="{Binding BottomText, Converter={StaticResource StringToVisibilityConverter}}" />
+                    </StackPanel>
+
+                    <Border Grid.Column="1"
+                            Width="1"
+                            Background="{StaticResource GlobalPrimary}"
+                            Margin="8 0"
+                            VerticalAlignment="Stretch">
+                        <Border.Visibility>
+                            <MultiBinding Converter="{StaticResource IndexToVisibilityConverter}">
+                                <Binding RelativeSource="{RelativeSource AncestorType=ContentPresenter}"
+                                         Path="(ItemsControl.AlternationIndex)" />
+                                <Binding RelativeSource="{RelativeSource AncestorType=ItemsControl}"
+                                         Path="Items.Count" />
+                            </MultiBinding>
+                        </Border.Visibility>
+                    </Border>
+                </Grid>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+</UserControl>
