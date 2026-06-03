@@ -9,8 +9,8 @@
         d:DataContext="{d:DesignInstance Type=vms:SampleClipModalVM}"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
-        Width="540"
-        Height="520"
+        Width="600"
+        Height="510"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid Margin="15">
@@ -80,7 +80,8 @@
                              TickCount="6"
                              Step="10"/>
 
-        <Grid Grid.Row="6">
+        <Grid Grid.Row="6"
+              Margin="0 10 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -111,31 +112,31 @@
                      Grid.Column="0"
                      Text="{Binding StartTimeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      FontSize="13"
-                     Padding="4"
-                     Margin="0 4 0 0" />
+                     Padding="5"
+                     Margin="0 5 0 0" />
             <TextBox Grid.Row="1"
                      Grid.Column="1"
                      Text="{Binding ClipDurationText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      FontSize="13"
-                     Padding="4"
-                     Margin="10 4 0 0" />
+                     Padding="5"
+                     Margin="10 5 0 0" />
             <TextBox Grid.Row="1"
                      Grid.Column="2"
                      Text="{Binding EndTimeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      FontSize="13"
-                     Padding="4"
-                     Margin="10 4 0 0" />
+                     Padding="5"
+                     Margin="10 5 0 0" />
             <TextBlock Grid.Row="1"
                        Grid.Column="3"
                        Text="{Binding TimeFormatText}"
                        FontSize="13"
                        Foreground="{StaticResource GlobalSecondary}"
                        VerticalAlignment="Center"
-                       Margin="18 4 0 0" />
+                       Margin="10 5 0 0" />
         </Grid>
 
         <Grid Grid.Row="7"
-              Margin="0 16 0 0">
+              Margin="0 15 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -167,26 +168,26 @@
                      Text="{Binding StartFrameText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      FontSize="13"
                      Padding="4"
-                     Margin="0 4 0 0" />
+                     Margin="0 5 0 0" />
             <TextBox Grid.Row="1"
                      Grid.Column="1"
                      Text="{Binding ClipFrameCountText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      FontSize="13"
                      Padding="4"
-                     Margin="10 4 0 0" />
+                     Margin="10 5 0 0" />
             <TextBox Grid.Row="1"
                      Grid.Column="2"
                      Text="{Binding EndFrameText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      FontSize="13"
                      Padding="4"
-                     Margin="10 4 0 0" />
+                     Margin="10 5 0 0" />
             <TextBlock Grid.Row="1"
                        Grid.Column="3"
                        Text="{Binding FrameFormatText}"
                        FontSize="13"
                        Foreground="{StaticResource GlobalSecondary}"
                        VerticalAlignment="Center"
-                       Margin="18 4 0 0" />
+                       Margin="10 5 0 0" />
         </Grid>
 
         <StackPanel Grid.Row="8"

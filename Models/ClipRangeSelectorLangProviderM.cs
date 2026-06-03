@@ -10,7 +10,7 @@ public class ClipRangeSelectorLangProviderM
             ["TimelineSectionTitle"] = "Time Axis Segment",
             ["SelectionHintText"] = "Drag the handle to choose the segment position",
             ["DurationSectionTitle"] = "Duration Settings",
-            ["ClipLengthLabel"] = "Clip Length (s)",
+            ["ClipLengthLabel"] = "Duration (s)",
             ["StartTimeLabel"] = "Start Time",
             ["ClipDurationLabel"] = "Segment Duration",
             ["EndTimeLabel"] = "End Time",
