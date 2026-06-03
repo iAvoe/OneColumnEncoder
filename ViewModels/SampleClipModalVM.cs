@@ -12,6 +12,9 @@ namespace OneColumnEncoder.ViewModels
 {
     public class SampleClipModalVM : BaseVM
     {
+        private const int MinClipLengthSeconds = 10;
+        private const int MaxClipLengthSeconds = 600;
+
         private readonly ModalNavS _modalNavS;
         private readonly Action _closeAction;
         private readonly Func<EncodingPipelineRequest?> _buildRequest;
@@ -79,7 +82,7 @@ namespace OneColumnEncoder.ViewModels
             get => _clipLengthSeconds;
             set
             {
-                int next = Math.Max(10, Math.Min(600, value));
+                int next = Math.Max(MinClipLengthSeconds, Math.Min(MaxClipLengthSeconds, value));
                 if (!SetProperty(ref _clipLengthSeconds, next)) return;
                 ApplyClipLengthToSelection();
             }
@@ -245,7 +248,7 @@ namespace OneColumnEncoder.ViewModels
 
             if (updateClipLength)
             {
-                int seconds = Math.Max(10, Math.Min(600, (int)Math.Round(durationSeconds)));
+                int seconds = Math.Max(MinClipLengthSeconds, Math.Min(MaxClipLengthSeconds, (int)Math.Round(durationSeconds)));
                 SetProperty(ref _clipLengthSeconds, seconds, nameof(ClipLengthSeconds));
             }
 
@@ -260,11 +263,8 @@ namespace OneColumnEncoder.ViewModels
                 return;
             }
 
-            double endSeconds = SelectionEnd * _totalSeconds;
-            if (endSeconds <= startSeconds)
-                endSeconds = _totalSeconds;
-
-            ApplySelectionSeconds(startSeconds, endSeconds);
+            double durationSeconds = GetCurrentClipDurationSeconds();
+            ApplySelectionSeconds(startSeconds, startSeconds + durationSeconds, anchorEnd: false);
         }
 
         private void CommitEndTimeText()
@@ -275,11 +275,8 @@ namespace OneColumnEncoder.ViewModels
                 return;
             }
 
-            double startSeconds = SelectionStart * _totalSeconds;
-            if (startSeconds >= endSeconds)
-                startSeconds = 0d;
-
-            ApplySelectionSeconds(startSeconds, endSeconds);
+            double durationSeconds = GetCurrentClipDurationSeconds();
+            ApplySelectionSeconds(endSeconds - durationSeconds, endSeconds, anchorEnd: true);
         }
 
         private void CommitStartFrameText()
@@ -290,11 +287,9 @@ namespace OneColumnEncoder.ViewModels
                 return;
             }
 
-            long currentEndFrame = SecondsToLastFrame(SelectionEnd * _totalSeconds);
-            if (currentEndFrame < startFrame)
-                currentEndFrame = _totalFrames - 1;
-
-            ApplySelectionFrames(startFrame, currentEndFrame);
+            double startSeconds = startFrame / _frameRate;
+            double durationSeconds = GetCurrentClipDurationSeconds();
+            ApplySelectionSeconds(startSeconds, startSeconds + durationSeconds, anchorEnd: false);
         }
 
         private void CommitEndFrameText()
@@ -305,29 +300,55 @@ namespace OneColumnEncoder.ViewModels
                 return;
             }
 
-            long currentStartFrame = SecondsToFirstFrame(SelectionStart * _totalSeconds);
-            if (currentStartFrame > endFrame)
-                currentStartFrame = 0L;
-
-            ApplySelectionFrames(currentStartFrame, endFrame);
-        }
-
-        private void ApplySelectionFrames(long startFrame, long endFrame)
-        {
-            if (endFrame < startFrame)
-                (startFrame, endFrame) = (endFrame, startFrame);
-
-            double startSeconds = startFrame / _frameRate;
             double endSeconds = Math.Min(_totalSeconds, (endFrame + 1d) / _frameRate);
-            ApplySelectionSeconds(startSeconds, endSeconds);
+            double durationSeconds = GetCurrentClipDurationSeconds();
+            ApplySelectionSeconds(endSeconds - durationSeconds, endSeconds, anchorEnd: true);
         }
 
-        private void ApplySelectionSeconds(double startSeconds, double endSeconds)
+        private double GetCurrentClipDurationSeconds()
         {
-            if (_totalSeconds <= 0d || endSeconds <= startSeconds)
+            double durationSeconds = Math.Abs(SelectionEnd - SelectionStart) * _totalSeconds;
+            if (durationSeconds <= 0d)
+                durationSeconds = ClipLengthSeconds;
+
+            double maxDurationSeconds = Math.Min(MaxClipLengthSeconds, _totalSeconds);
+            double minDurationSeconds = Math.Min(MinClipLengthSeconds, maxDurationSeconds);
+            return Clamp(durationSeconds, minDurationSeconds, maxDurationSeconds);
+        }
+
+        private void ApplySelectionSeconds(double startSeconds, double endSeconds, bool anchorEnd)
+        {
+            if (_totalSeconds <= 0d || double.IsNaN(startSeconds) || double.IsNaN(endSeconds) || double.IsInfinity(startSeconds) || double.IsInfinity(endSeconds))
             {
                 SyncFromSelection(updateClipLength: false);
                 return;
+            }
+
+            double maxDurationSeconds = Math.Min(MaxClipLengthSeconds, _totalSeconds);
+            double minDurationSeconds = Math.Min(MinClipLengthSeconds, maxDurationSeconds);
+            double durationSeconds = Clamp(endSeconds - startSeconds, minDurationSeconds, maxDurationSeconds);
+
+            if (anchorEnd)
+            {
+                endSeconds = Clamp(endSeconds, 0d, _totalSeconds);
+                startSeconds = endSeconds - durationSeconds;
+            }
+            else
+            {
+                startSeconds = Clamp(startSeconds, 0d, _totalSeconds);
+                endSeconds = startSeconds + durationSeconds;
+            }
+
+            if (startSeconds < 0d)
+            {
+                startSeconds = 0d;
+                endSeconds = Math.Min(_totalSeconds, durationSeconds);
+            }
+
+            if (endSeconds > _totalSeconds)
+            {
+                endSeconds = _totalSeconds;
+                startSeconds = Math.Max(0d, endSeconds - durationSeconds);
             }
 
             double start = Clamp(startSeconds / _totalSeconds, 0d, 1d);
