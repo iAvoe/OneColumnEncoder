@@ -27,7 +27,7 @@
             <Canvas x:Name="TrackCanvas"
                     ClipToBounds="True">
                 <Thumb x:Name="SelectionThumb"
-                       Height="28"
+                       Height="45"
                        DragDelta="SelectionThumb_DragDelta"
                        DragStarted="Thumb_DragStarted"
                        DragCompleted="Thumb_DragCompleted"
