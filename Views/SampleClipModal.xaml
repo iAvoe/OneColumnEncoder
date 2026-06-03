@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="600"
-        Height="510"
+        Height="520"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid Margin="15">
@@ -26,21 +26,25 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
+        <!-- Total duration, total frames, frame rate -->
         <comps:ColumnTextGrid Grid.Row="0"
                               Items="{Binding SummaryColumns}"
                               ColumnCount="3" />
 
+        <!-- Time range selector header -->
         <TextBlock Grid.Row="1"
                    Text="{Binding TimelineSectionTitle}"
                    Style="{StaticResource H3}"
                    Foreground="{StaticResource GlobalPrimary}"
                    Margin="0 10 0 0" />
 
+        <!-- Time range selector -->
         <comps:ClipRangeSelector Grid.Row="2"
-                                 AxisLabels="{Binding AxisLabels}"
-                                 SelectionStart="{Binding SelectionStart, Mode=TwoWay}"
-                                 SelectionEnd="{Binding SelectionEnd, Mode=TwoWay}" />
+                                  AxisLabels="{Binding AxisLabels}"
+                                  SelectionStart="{Binding SelectionStart, Mode=TwoWay}"
+                                  SelectionEnd="{Binding SelectionEnd, Mode=TwoWay}" />
 
+        <!-- Drag time range selector handle hint -->
         <StackPanel Grid.Row="3"
                     Margin="0 5 0 0"
                     Orientation="Horizontal"
@@ -63,23 +67,26 @@
                        Foreground="{StaticResource GlobalSecondary}" />
         </StackPanel>
 
+        <!-- Clip duration settings title -->
         <TextBlock Grid.Row="4"
                    Text="{Binding DurationSectionTitle}"
                    Style="{StaticResource H3}"
                    Foreground="{StaticResource GlobalPrimary}"
                    Margin="0 10 0 0"/>
 
+        <!-- Clip duration slider -->
         <comps:IntegerSlider Grid.Row="5"
-                             Margin="0 10 0 0"
-                             Label="{Binding ClipLengthLabel}"
-                             LabelWidth="78"
-                             Minimum="10"
-                             Maximum="600"
-                             Value="{Binding ClipLengthSeconds, Mode=TwoWay}"
-                             TickLabels="{Binding ClipLengthTickLabels}"
-                             TickCount="6"
-                             Step="10"/>
+                              Margin="0 10 0 0"
+                              Label="{Binding ClipLengthLabel}"
+                              LabelWidth="73"
+                              Minimum="10"
+                              Maximum="600"
+                              Value="{Binding ClipLengthSeconds, Mode=TwoWay}"
+                              TickLabels="{Binding ClipLengthTickLabels}"
+                              TickCount="6"
+                              Step="10"/>
 
+        <!-- Specific time range text fields -->
         <Grid Grid.Row="6"
               Margin="0 10 0 0">
             <Grid.ColumnDefinitions>
@@ -136,6 +143,7 @@
                        Margin="10 5 0 0" />
         </Grid>
 
+        <!-- Specific frame or field text fields -->
         <Grid Grid.Row="7"
               Margin="0 15 0 0">
             <Grid.ColumnDefinitions>
@@ -192,6 +200,7 @@
                        Margin="10 5 0 0" />
         </Grid>
 
+        <!-- Action buttons and hints -->
         <StackPanel Grid.Row="8"
                     Margin="0 20 0 0">
             <comps:TwoButtonGroup DataContext="{Binding FinishButtons}"

@@ -3,6 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:cards="clr-namespace:OneColumnEncoder.ViewModels.Cards"
+             d:DataContext="{d:DesignInstance Type=cards:ToolsImportCardVM}"
              mc:Ignorable="d"
              Background="Transparent"
              ClipToBounds="True">
@@ -45,23 +47,10 @@
             </Canvas>
         </Grid>
 
-        <ItemsControl x:Name="AxisLabelsHost"
-                      Grid.Row="1"
-                      ItemsSource="{Binding AxisLabels, RelativeSource={RelativeSource AncestorType=UserControl}}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid Columns="{Binding AxisColumnCount, RelativeSource={RelativeSource AncestorType=UserControl}}" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding}"
-                               FontSize="10"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               HorizontalAlignment="Center"
-                               TextAlignment="Center" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <Canvas x:Name="AxisLabelsHost"
+                Grid.Row="1"
+                Height="16"
+                Margin="0 8 0 0"
+                ClipToBounds="False" />
     </Grid>
 </UserControl>

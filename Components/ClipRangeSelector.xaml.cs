@@ -30,12 +30,6 @@ namespace OneColumnEncoder.Components
             typeof(ClipRangeSelector),
             new PropertyMetadata(Array.Empty<string>(), OnAxisLabelsChanged));
 
-        public static readonly DependencyProperty AxisColumnCountProperty = DependencyProperty.Register(
-            nameof(AxisColumnCount),
-            typeof(int),
-            typeof(ClipRangeSelector),
-            new PropertyMetadata(0));
-
         public static readonly DependencyProperty SelectionStartProperty = DependencyProperty.Register(
             nameof(SelectionStart),
             typeof(double),
@@ -76,12 +70,6 @@ namespace OneColumnEncoder.Components
         {
             get => (IEnumerable<string>)GetValue(AxisLabelsProperty);
             set => SetValue(AxisLabelsProperty, value);
-        }
-
-        public int AxisColumnCount
-        {
-            get => (int)GetValue(AxisColumnCountProperty);
-            private set => SetValue(AxisColumnCountProperty, value);
         }
 
         public double SelectionStart
@@ -162,10 +150,46 @@ namespace OneColumnEncoder.Components
 
         private void RefreshAxisLabels()
         {
-            int count = AxisLabels?.Count() ?? 0;
-            AxisColumnCount = count;
+            AxisLabelsHost.Children.Clear();
+            IEnumerable<string>? labels = AxisLabels;
+            int count = labels?.Count() ?? 0;
             AxisLabelsHost.Visibility = count > 0 ? Visibility.Visible : Visibility.Collapsed;
+            if (count <= 0) return;
+
+            foreach (string label in labels!)
+            {
+                AxisLabelsHost.Children.Add(new TextBlock
+                {
+                    Text = label,
+                    FontSize = 10,
+                    Foreground = FindResource("GlobalSecondary") as System.Windows.Media.Brush ?? System.Windows.Media.Brushes.Gray,
+                });
+            }
+
+            LayoutAxisLabels();
         }
+
+        private void LayoutAxisLabels()
+        {
+            double width = Math.Max(0d, TrackHost.ActualWidth);
+            int count = AxisLabelsHost.Children.Count;
+            if (count <= 1 || width <= 0d) return;
+
+            for (int i = 0; i < count; i++)
+            {
+                if (AxisLabelsHost.Children[i] is not TextBlock tb) continue;
+                tb.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                double x = (double)i / (count - 1) * width;
+                double halfW = tb.DesiredSize.Width / 2d;
+                if (i == 0) halfW = 0d;
+                else if (i == count - 1) halfW = tb.DesiredSize.Width;
+                Canvas.SetLeft(tb, Math.Max(0d, Math.Min(width - tb.DesiredSize.Width, x - halfW)));
+                Canvas.SetTop(tb, 0d);
+            }
+        }
+
+        private static double Clamp(double value, double min, double max) =>
+            Math.Max(min, Math.Min(max, value));
 
         private void UpdateLayoutMetrics()
         {
@@ -188,6 +212,7 @@ namespace OneColumnEncoder.Components
             AxisLabelsHost.Margin = new Thickness(0, nextLabelMargin, 0, 0);
 
             UpdateSelectionVisuals();
+            LayoutAxisLabels();
         }
 
         private void UpdateSelectionVisuals()
@@ -196,7 +221,6 @@ namespace OneColumnEncoder.Components
             if (width <= 0d)
                 return;
 
-            double travelWidth = Math.Max(1d, width - ThumbWidth);
             double start = Clamp(SelectionStart, 0d, 1d);
             double end = Clamp(SelectionEnd, 0d, 1d);
             if (end < start)
@@ -207,12 +231,11 @@ namespace OneColumnEncoder.Components
             start = Clamp(start, 0d, maxStart);
             end = start + actualWidth;
 
-            double center = (start + end) / 2d;
-            double thumbLeft = center * travelWidth;
-            double selectionWidth = Math.Max(0d, actualWidth * travelWidth);
+            double selectionWidth = Math.Max(8d, actualWidth * width);
+            double left = start * width;
 
-            SelectionThumb.Width = Math.Max(8d, selectionWidth);
-            Canvas.SetLeft(SelectionThumb, Math.Max(0d, Math.Min(width - SelectionThumb.Width, thumbLeft + ThumbWidth / 2d - SelectionThumb.Width / 2d)));
+            SelectionThumb.Width = selectionWidth;
+            Canvas.SetLeft(SelectionThumb, Math.Max(0d, Math.Min(width - selectionWidth, left)));
             Canvas.SetTop(SelectionThumb, (TrackBackground.ActualHeight - SelectionThumb.ActualHeight) / 2d);
         }
 
@@ -256,8 +279,7 @@ namespace OneColumnEncoder.Components
             if (width <= 0d)
                 return;
 
-            double travelWidth = Math.Max(1d, width - ThumbWidth);
-            double delta = e.HorizontalChange / travelWidth;
+            double delta = e.HorizontalChange / width;
 
             double start = Clamp(SelectionStart, 0d, 1d);
             double end = Clamp(SelectionEnd, 0d, 1d);
@@ -274,9 +296,6 @@ namespace OneColumnEncoder.Components
             _ignoreSelectionUpdate = false;
             UpdateSelectionVisuals();
         }
-
-        private static double Clamp(double value, double min, double max) =>
-            Math.Max(min, Math.Min(max, value));
 
         private static bool AreClose(double a, double b) => Math.Abs(a - b) < 0.0001d;
     }

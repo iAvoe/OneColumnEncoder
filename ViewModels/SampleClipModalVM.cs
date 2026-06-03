@@ -21,6 +21,8 @@ namespace OneColumnEncoder.ViewModels
         private readonly double _totalSeconds;
         private readonly double _frameRate;
         private readonly long _totalFrames;
+        private readonly string _fieldOrderKind = "unknown";
+        private readonly bool _constantFrameRate;
         private ClipRangeSelectorLangProviderM _lang = null!;
         private bool _isDraggingSelection;
 
@@ -151,10 +153,12 @@ namespace OneColumnEncoder.ViewModels
             _modalNavS = modalNavS;
             _closeAction = closeAction;
             _buildRequest = buildRequest;
-            (_totalSeconds, _frameRate, long totalFrames, bool progressive, bool constantFrameRate) = ReadSourceStats(srcVideoAnalysis.RawJson);
+            (_totalSeconds, _frameRate, long totalFrames, _fieldOrderKind, _constantFrameRate) = ReadSourceStats(srcVideoAnalysis.RawJson);
             _totalFrames = Math.Max(1L, totalFrames);
 
-            BuildSummary(totalFrames, progressive, constantFrameRate);
+            Lang = new ClipRangeSelectorLangProviderM(UILangProviderM.Current.LanguageCode);
+
+            BuildSummary();
             BuildAxisLabels();
 
             CloseCmd = new CloseModalCmd(closeAction);
@@ -169,26 +173,33 @@ namespace OneColumnEncoder.ViewModels
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
 
-        private void BuildSummary(long totalFrames, bool progressive, bool constantFrameRate)
+        private void BuildSummary()
         {
+            string frameBottomText = _fieldOrderKind switch
+            {
+                "progressive" => Lang.SummaryProgressive,
+                "interlaced" => Lang.SummaryInterlaced,
+                _ => Lang.SummaryUnknown,
+            };
+
             SummaryColumns.Clear();
             SummaryColumns.Add(new ColumnTextItemM
             {
-                TopText = "总时长",
-                MainText = $"{Math.Round(_totalSeconds, 1).ToString("0.#", CultureInfo.InvariantCulture)} s",
-                BottomText = "秒"
+                TopText = Lang.SummaryDurationLabel,
+                MainText = $"{Math.Round(_totalSeconds, 1).ToString("0.#", CultureInfo.InvariantCulture)} {Lang.SummarySecondsUnit}",
+                BottomText = Lang.SummarySecondsUnit
             });
             SummaryColumns.Add(new ColumnTextItemM
             {
-                TopText = "总帧数",
-                MainText = $"{totalFrames} f",
-                BottomText = progressive ? "逐行扫描" : "隔行/未知"
+                TopText = Lang.SummaryTotalFramesLabel,
+                MainText = $"{_totalFrames} f",
+                BottomText = frameBottomText
             });
             SummaryColumns.Add(new ColumnTextItemM
             {
-                TopText = "帧率",
+                TopText = Lang.SummaryFrameRateLabel,
                 MainText = $"{_frameRate.ToString("0.###", CultureInfo.InvariantCulture)} fps",
-                BottomText = constantFrameRate ? "恒定帧率" : "可变/未知帧率"
+                BottomText = _constantFrameRate ? Lang.SummaryConstantFrameRate : Lang.SummaryVariableFrameRate
             });
         }
 
@@ -429,13 +440,13 @@ namespace OneColumnEncoder.ViewModels
             return Math.Max(0, value);
         }
 
-        private static (double DurationSeconds, double FrameRate, long TotalFrames, bool Progressive, bool ConstantFrameRate) ReadSourceStats(string rawJson)
+        private static (double DurationSeconds, double FrameRate, long TotalFrames, string FieldOrderKind, bool ConstantFrameRate) ReadSourceStats(string rawJson)
         {
             const double fallbackDuration = 600d;
             const double fallbackFrameRate = 30d;
 
             if (string.IsNullOrWhiteSpace(rawJson))
-                return (fallbackDuration, fallbackFrameRate, (long)(fallbackDuration * fallbackFrameRate), true, true);
+                return (fallbackDuration, fallbackFrameRate, (long)(fallbackDuration * fallbackFrameRate), "unknown", true);
 
             try
             {
@@ -455,9 +466,11 @@ namespace OneColumnEncoder.ViewModels
                     ?? Math.Max(0L, (long)Math.Round(duration * frameRate));
 
                 string? fieldOrder = TryGetString(stream, "field_order");
-                bool progressive = string.IsNullOrWhiteSpace(fieldOrder)
-                    || fieldOrder.Equals("progressive", StringComparison.OrdinalIgnoreCase)
-                    || fieldOrder.Equals("unknown", StringComparison.OrdinalIgnoreCase);
+                string fieldOrderKind = string.IsNullOrWhiteSpace(fieldOrder) || fieldOrder.Equals("unknown", StringComparison.OrdinalIgnoreCase)
+                    ? "unknown"
+                    : fieldOrder.Equals("progressive", StringComparison.OrdinalIgnoreCase)
+                        ? "progressive"
+                        : "interlaced";
 
                 string? avg = TryGetString(stream, "avg_frame_rate");
                 string? r = TryGetString(stream, "r_frame_rate");
@@ -465,11 +478,11 @@ namespace OneColumnEncoder.ViewModels
                     && !avg.Equals("0/0", StringComparison.OrdinalIgnoreCase)
                     && string.Equals(avg, r, StringComparison.OrdinalIgnoreCase);
 
-                return (duration, frameRate, totalFrames, progressive, constantFrameRate);
+                return (duration, frameRate, totalFrames, fieldOrderKind, constantFrameRate);
             }
             catch
             {
-                return (fallbackDuration, fallbackFrameRate, (long)(fallbackDuration * fallbackFrameRate), true, true);
+                return (fallbackDuration, fallbackFrameRate, (long)(fallbackDuration * fallbackFrameRate), "unknown", true);
             }
         }
 
@@ -500,6 +513,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(Note1Text));
             OnPropertyChanged(nameof(Note2Text));
             OnPropertyChanged(nameof(ClipLengthTickLabels));
+            BuildSummary();
         }
 
         private static string? TryGetString(JsonElement element, string propertyName) =>
