@@ -13,7 +13,6 @@ namespace OneColumnEncoder.Models
         public static List<SettingItemDefinitionM> GetGeneralSettings() =>
         [
             new(UICaptionProviderM.AppConf.Groups.General, UILangProviderM.Current["Setting.General.NotOffGrid"], SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.OffGrid)),
-            new(UICaptionProviderM.AppConf.Groups.General, UILangProviderM.Current["Setting.General.SufficientRAM"], SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.InsufficientRAM)),
             new(UICaptionProviderM.AppConf.Groups.General, UILangProviderM.Current["Setting.General.SufficientDisk"], SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.InsufficientDiskSpace)),
             new(UICaptionProviderM.AppConf.Groups.General, UILangProviderM.Current["Setting.General.OSFilename"], SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.OSFileNameInvalid)),
             new(UICaptionProviderM.AppConf.Groups.General, UILangProviderM.Current["Setting.General.FTPFilename"], SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.FTPFileNameInvalid)),

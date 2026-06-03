@@ -169,7 +169,7 @@ namespace OneColumnEncoder.ViewModels
             _isAnalyzeSrcButtonsReady = true;
             EncStartButtons = ButtonGroupVM.CreateThreeButton( // UpdateEncStartButtonsState()
                 UICaptionProviderM.Buttons.ReEvaluate, UICaptionProviderM.Buttons.RunSample, UICaptionProviderM.Buttons.StartEncode,
-                null, SampleClip, StartEncode);
+                new ActionCmd(_ => ReEvaluateAllChecks()), SampleClip, StartEncode);
             _isEncStartButtonsReady = true;
             InspBypsChkButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProviderM.Buttons.InspectSrcProbelms, UICaptionProviderM.Buttons.BypassSrcChecklist, InspectSrcProblems, BypassSrcChecklist);
@@ -198,8 +198,35 @@ namespace OneColumnEncoder.ViewModels
                 EncodersZone.Any(t => t.IsSelected
                     && ToolDefinitionProviderM.IsImportedTool(t.Name, "svtav1encapp.exe"));
 
+            EncTermsCard.GetOutputDirectoryFunc = () =>
+            {
+                ToolItemCardVM? output = EncSettingsZone.FirstOrDefault(t =>
+                    t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+                return !string.IsNullOrWhiteSpace(output?.P2TextData)
+                    ? Path.GetDirectoryName(output.P2TextData) ?? string.Empty
+                    : string.Empty;
+            };
+            EncTermsCard.GetOutputFilePathFunc = () =>
+            {
+                ToolItemCardVM? output = EncSettingsZone.FirstOrDefault(t =>
+                    t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+                return output?.P2TextData ?? string.Empty;
+            };
+            EncTermsCard.IsAvs2yuvSelectedFunc = () =>
+                UpstreamsZone.Any(t => t.IsSelected
+                    && ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2yuv.exe"));
+            EncTermsCard.GetAviSynthDllPathFunc = () =>
+                _appDataM.Tools.AviSynthDllPath ?? string.Empty;
+            EncTermsCard.GetSourceVideoFilePathFunc = () =>
+            {
+                ToolItemCardVM? videoSrc = VideoSrcImportZone.FirstOrDefault(
+                    t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
+                return videoSrc?.P2TextData ?? string.Empty;
+            };
+
             // Checklist item settings, checklist subs, nav subs, overlay subs
             InitializeChecklistEntryStates();
+            EncTermsCard.RunAllChecks();
             OpenAppConf.OnAfterClose += InitializeChecklistEntryStates;
             SubToImportedToolZones();
             AnalyticsZone.CollectionChanged += OnAnalyticsZoneCollectionChanged;
@@ -246,8 +273,7 @@ namespace OneColumnEncoder.ViewModels
             AppConfM.GeneralSettings g = _appConfM.General;
             ObservableCollection<ChecklistEntryVM> cl1 = EncTermsCard.Checklist1;
             if (cl1.Count >= 1) cl1[0].IsEnabled = g.OffGrid;
-            if (cl1.Count >= 2) cl1[1].IsEnabled = g.InsufficientRAM;
-            if (cl1.Count >= 3) cl1[2].IsEnabled = g.InsufficientDiskSpace;
+            if (cl1.Count >= 2) cl1[1].IsEnabled = g.InsufficientDiskSpace;
 
             ObservableCollection<ChecklistEntryVM> cl2 = EncTermsCard.Checklist2;
             if (cl2.Count >= 1) cl2[0].IsEnabled = g.NoWritePermission;
@@ -435,6 +461,12 @@ namespace OneColumnEncoder.ViewModels
             EncStartButtons.B3_2IsEnabled = allReady && !oneLineShotSelected;
             EncStartButtons.B3_3IsEnabled = allReady;
             SVFIClipDisabledHintVisible = oneLineShotSelected;
+        }
+
+        private void ReEvaluateAllChecks()
+        {
+            EncTermsCard.RunAllChecks();
+            UpdateEncStartButtonsState();
         }
         #endregion
 

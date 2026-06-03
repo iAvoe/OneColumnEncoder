@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using OneColumnEncoder.ViewModels;
 
 namespace OneColumnEncoder.Components
 {
@@ -13,6 +14,7 @@ namespace OneColumnEncoder.Components
         private const double MinRange = 0.01;
 
         private bool _ignoreSelectionUpdate;
+        private bool _isDraggingSelection;
         private INotifyCollectionChanged? _axisLabelsNotify;
 
         public ClipRangeSelector()
@@ -118,6 +120,8 @@ namespace OneColumnEncoder.Components
             private set => SetValue(LabelMarginTopProperty, value);
         }
 
+        public bool IsDraggingSelection => _isDraggingSelection;
+
         private static void OnAxisLabelsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             ClipRangeSelector control = (ClipRangeSelector)d;
@@ -172,9 +176,9 @@ namespace OneColumnEncoder.Components
                 return;
             }
 
-            double nextTrackHeight = Clamp(width * 0.05d, 18d, 28d);
-            double nextThumbWidth = Clamp(width * 0.028d, 14d, 26d);
-            double nextThumbHeight = Clamp(nextTrackHeight * 1.9d, 24d, 48d);
+            double nextTrackHeight = Clamp(width * 0.05d, 24d, 30d);
+            double nextThumbWidth = Clamp(width * 0.05d, 16d, 30d);
+            double nextThumbHeight = Clamp(nextTrackHeight - 4d, 20d, 26d);
             double nextLabelMargin = Clamp(width * 0.012d, 4d, 12d);
 
             TrackHeight = nextTrackHeight;
@@ -184,11 +188,8 @@ namespace OneColumnEncoder.Components
 
             TrackHost.Height = nextThumbHeight;
             TrackBackground.Height = nextTrackHeight;
-            SelectionRange.Height = nextTrackHeight;
-            LeftThumb.Width = nextThumbWidth;
-            LeftThumb.Height = nextThumbHeight;
-            RightThumb.Width = nextThumbWidth;
-            RightThumb.Height = nextThumbHeight;
+            SelectionThumb.Width = nextThumbWidth;
+            SelectionThumb.Height = nextThumbHeight;
             AxisLabelsHost.Margin = new Thickness(0, nextLabelMargin, 0, 0);
 
             UpdateSelectionVisuals();
@@ -206,20 +207,18 @@ namespace OneColumnEncoder.Components
             if (end < start)
                 (start, end) = (end, start);
 
-            double startLeft = start * travelWidth;
-            double endLeft = end * travelWidth;
-            double selectionLeft = startLeft + ThumbWidth / 2d;
-            double selectionWidth = Math.Max(0d, endLeft - startLeft);
+            double actualWidth = Math.Max(MinRange, end - start);
+            double maxStart = Math.Max(0d, 1d - actualWidth);
+            start = Clamp(start, 0d, maxStart);
+            end = start + actualWidth;
 
-            Canvas.SetLeft(SelectionRange, selectionLeft);
-            Canvas.SetLeft(LeftThumb, startLeft);
-            Canvas.SetLeft(RightThumb, endLeft);
+            double center = (start + end) / 2d;
+            double thumbLeft = center * travelWidth;
+            double selectionWidth = Math.Max(0d, actualWidth * travelWidth);
 
-            Canvas.SetTop(SelectionRange, (TrackHost.ActualHeight - TrackHeight) / 2d);
-            Canvas.SetTop(LeftThumb, (TrackHost.ActualHeight - ThumbHeight) / 2d);
-            Canvas.SetTop(RightThumb, (TrackHost.ActualHeight - ThumbHeight) / 2d);
-
-            SelectionRange.Width = Math.Max(0d, selectionWidth);
+            SelectionThumb.Width = Math.Max(8d, selectionWidth);
+            Canvas.SetLeft(SelectionThumb, Math.Max(0d, Math.Min(width - SelectionThumb.Width, thumbLeft + ThumbWidth / 2d - SelectionThumb.Width / 2d)));
+            Canvas.SetTop(SelectionThumb, (TrackHost.ActualHeight - ThumbHeight) / 2d);
         }
 
         private void NormalizeSelection()
@@ -244,54 +243,39 @@ namespace OneColumnEncoder.Components
 
         private void Thumb_DragStarted(object sender, DragStartedEventArgs e)
         {
+            _isDraggingSelection = true;
+            (DataContext as SampleClipModalVM)?.SetDraggingSelection(true);
             UpdateLayoutMetrics();
         }
 
         private void Thumb_DragCompleted(object sender, DragCompletedEventArgs e)
         {
+            _isDraggingSelection = false;
+            (DataContext as SampleClipModalVM)?.SetDraggingSelection(false);
             UpdateSelectionVisuals();
         }
 
-        private void LeftThumb_DragDelta(object sender, DragDeltaEventArgs e)
-        {
-            MoveSelection(startDelta: e.HorizontalChange, endDelta: 0d, dragLeft: true);
-        }
-
-        private void RightThumb_DragDelta(object sender, DragDeltaEventArgs e)
-        {
-            MoveSelection(startDelta: 0d, endDelta: e.HorizontalChange, dragLeft: false);
-        }
-
-        private void MoveSelection(double startDelta, double endDelta, bool dragLeft)
+        private void SelectionThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
             double width = Math.Max(0d, TrackHost.ActualWidth);
             if (width <= 0d)
                 return;
 
             double travelWidth = Math.Max(1d, width - ThumbWidth);
-            double delta = (dragLeft ? startDelta : endDelta) / travelWidth;
+            double delta = e.HorizontalChange / travelWidth;
 
             double start = Clamp(SelectionStart, 0d, 1d);
             double end = Clamp(SelectionEnd, 0d, 1d);
             if (end < start)
                 (start, end) = (end, start);
 
-            if (dragLeft)
-            {
-                start = Clamp(start + delta, 0d, Math.Max(0d, end - MinRange));
-                if (end - start < MinRange)
-                    start = Math.Max(0d, end - MinRange);
-            }
-            else
-            {
-                end = Clamp(end + delta, Math.Min(1d, start + MinRange), 1d);
-                if (end - start < MinRange)
-                    end = Math.Min(1d, start + MinRange);
-            }
+            double span = Math.Max(MinRange, end - start);
+            double nextStart = Clamp(start + delta, 0d, Math.Max(0d, 1d - span));
+            double nextEnd = nextStart + span;
 
             _ignoreSelectionUpdate = true;
-            SelectionStart = start;
-            SelectionEnd = end;
+            SelectionStart = nextStart;
+            SelectionEnd = nextEnd;
             _ignoreSelectionUpdate = false;
             UpdateSelectionVisuals();
         }

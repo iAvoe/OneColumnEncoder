@@ -17,6 +17,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly Func<EncodingPipelineRequest?> _buildRequest;
         private readonly double _totalSeconds;
         private readonly double _frameRate;
+        private bool _isDraggingSelection;
 
         private bool _isSyncing;
 
@@ -171,9 +172,17 @@ namespace OneColumnEncoder.ViewModels
             SyncFromSelection(updateClipLength: false);
         }
 
+        internal void SetDraggingSelection(bool isDraggingSelection)
+        {
+            _isDraggingSelection = isDraggingSelection;
+        }
+
         private void SyncFromSelection(bool updateClipLength)
         {
             if (_isSyncing || _totalSeconds <= 0) return;
+
+            if (updateClipLength && _isDraggingSelection)
+                updateClipLength = false;
 
             _isSyncing = true;
             double start = Math.Max(0d, Math.Min(1d, SelectionStart));

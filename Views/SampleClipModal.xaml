@@ -11,154 +11,222 @@
         Title="{Binding WindowTitle}"
         Width="540"
         Height="540"
-        MinWidth="460"
-        MinHeight="500"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
-    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                  HorizontalScrollBarVisibility="Disabled">
-        <Grid Margin="20 18">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <comps:ColumnTextGrid Grid.Row="0"
+                              Items="{Binding SummaryColumns}"
+                              ColumnCount="3" />
+
+        <TextBlock Grid.Row="1"
+                   Text="时间轴取段"
+                   Style="{StaticResource H3}"
+                   Foreground="{StaticResource GlobalPrimary}"
+                   Margin="0 10 0 0" />
+
+        <comps:ClipRangeSelector Grid.Row="2"
+                                 AxisLabels="{Binding AxisLabels}"
+                                 SelectionStart="{Binding SelectionStart, Mode=TwoWay}"
+                                 SelectionEnd="{Binding SelectionEnd, Mode=TwoWay}" />
+
+        <StackPanel Grid.Row="3"
+                    Margin="0 5 0 0"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center">
+            <Rectangle Width="10"
+                       Height="10"
+                       VerticalAlignment="Center"
+                       Fill="{StaticResource GlobalSecondary}">
+                <Rectangle.OpacityMask>
+                    <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
+                                Stretch="Uniform" />
+                </Rectangle.OpacityMask>
+            </Rectangle>
+            <TextBlock FontSize="10"
+                       Focusable="False"
+                       Margin="3.5 0 0 0"
+                       Text="拖拽滑块以选择取段位置"
+                       VerticalAlignment="Center"
+                       Foreground="{StaticResource GlobalSecondary}" />
+        </StackPanel>
+
+        <TextBlock Grid.Row="4"
+                   Text="时长设定"
+                   Style="{StaticResource H3}"
+                   Foreground="{StaticResource GlobalPrimary}"
+                   Margin="0 10 0 0"/>
+
+        <comps:IntegerSlider Grid.Row="5"
+                             Margin="0 10 0 0"
+                             Label="片长（秒）"
+                             LabelWidth="78"
+                             Minimum="10"
+                             Maximum="600"
+                             Value="{Binding ClipLengthSeconds, Mode=TwoWay}"
+                             TickLabels="{Binding ClipLengthTickLabels}"
+                             TickCount="6"
+                             Step="10"/>
+
+        <Grid Grid.Row="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <comps:ColumnTextGrid Grid.Row="0"
-                                  Height="62"
-                                  Items="{Binding SummaryColumns}"
-                                  ColumnCount="3"
-                                  Margin="35 0" />
-
-            <TextBlock Grid.Row="1"
-                       Text="时间轴取段"
+            <TextBlock Grid.Row="0"
+                       Grid.Column="0"
+                       Text="起始时间"
+                       Style="{StaticResource H3}" />
+            <TextBlock Grid.Row="0"
+                       Grid.Column="1"
+                       Text="片段时长"
                        Style="{StaticResource H3}"
-                       Foreground="{StaticResource GlobalPrimary}"
-                       Margin="0 14 0 4" />
+                       Margin="10 0 0 0" />
+            <TextBlock Grid.Row="0"
+                       Grid.Column="2"
+                       Text="结束时间"
+                       Style="{StaticResource H3}"
+                       Margin="10 0 0 0" />
 
-            <comps:ClipRangeSelector Grid.Row="2"
-                                     Height="86"
-                                     AxisLabels="{Binding AxisLabels}"
-                                     SelectionStart="{Binding SelectionStart, Mode=TwoWay}"
-                                     SelectionEnd="{Binding SelectionEnd, Mode=TwoWay}" />
+            <TextBox Grid.Row="1"
+                     Grid.Column="0"
+                     Text="{Binding StartTimeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     FontSize="13"
+                     Padding="4"
+                     Margin="0 4 0 0" />
+            <TextBox Grid.Row="1"
+                     Grid.Column="1"
+                     Text="{Binding ClipDurationText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     FontSize="13"
+                     Padding="4"
+                     Margin="10 4 0 0" />
+            <TextBox Grid.Row="1"
+                     Grid.Column="2"
+                     Text="{Binding EndTimeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     FontSize="13"
+                     Padding="4"
+                     Margin="10 4 0 0" />
+            <TextBlock Grid.Row="1"
+                       Grid.Column="3"
+                       Text="hh:mm:ss.sss"
+                       FontSize="13"
+                       Foreground="{StaticResource GlobalSecondary}"
+                       VerticalAlignment="Center"
+                       Margin="18 4 0 0" />
+        </Grid>
 
-            <StackPanel Grid.Row="3"
-                        Margin="0 4 0 14"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center">
+        <Grid Grid.Row="7"
+              Margin="0 16 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0"
+                       Grid.Column="0"
+                       Text="起始帧数/场数"
+                       Style="{StaticResource H3}" />
+            <TextBlock Grid.Row="0"
+                       Grid.Column="1"
+                       Text="帧数/场数时长"
+                       Style="{StaticResource H3}"
+                       Margin="10 0 0 0" />
+            <TextBlock Grid.Row="0"
+                       Grid.Column="2"
+                       Text="结束帧数/场数"
+                       Style="{StaticResource H3}"
+                       Margin="10 0 0 0" />
+
+            <TextBox Grid.Row="1"
+                     Grid.Column="0"
+                     Text="{Binding StartFrameText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     FontSize="13"
+                     Padding="4"
+                     Margin="0 4 0 0" />
+            <TextBox Grid.Row="1"
+                     Grid.Column="1"
+                     Text="{Binding ClipFrameCountText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     FontSize="13"
+                     Padding="4"
+                     Margin="10 4 0 0" />
+            <TextBox Grid.Row="1"
+                     Grid.Column="2"
+                     Text="{Binding EndFrameText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     FontSize="13"
+                     Padding="4"
+                     Margin="10 4 0 0" />
+            <TextBlock Grid.Row="1"
+                       Grid.Column="3"
+                       Text="frames|fields"
+                       FontSize="13"
+                       Foreground="{StaticResource GlobalSecondary}"
+                       VerticalAlignment="Center"
+                       Margin="18 4 0 0" />
+        </Grid>
+
+        <StackPanel Grid.Row="8"
+                    Margin="0 20 0 0">
+            <comps:TwoButtonGroup DataContext="{Binding FinishButtons}"
+                                  ButtonHeight="34"
+                                  Button1Command="{Binding Cmd1}"
+                                  Button2Command="{Binding Cmd2}" />
+            <StackPanel Margin="0 8 0 0"
+                        Orientation="Horizontal">
                 <Rectangle Width="10"
                            Height="10"
-                           VerticalAlignment="Center"
-                           Fill="{StaticResource GlobalSecondary}">
+                           Fill="{StaticResource GlobalSecondary}"
+                           VerticalAlignment="Center">
                     <Rectangle.OpacityMask>
                         <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
                                     Stretch="Uniform" />
                     </Rectangle.OpacityMask>
                 </Rectangle>
-                <TextBlock FontSize="10"
-                           Focusable="False"
-                           Margin="3.5 0 0 0"
-                           Text="拖拽滑块以选择取段位置"
-                           VerticalAlignment="Center"
-                           Foreground="{StaticResource GlobalSecondary}" />
+                <TextBlock Text="原行扫描的总帧数和帧率其实是“总场数”和“场率”（一帧两场）"
+                           FontSize="10"
+                           Foreground="{StaticResource GlobalSecondary}"
+                           Margin="3.5 0 0 0" />
             </StackPanel>
-
-            <TextBlock Grid.Row="4"
-                       Text="时长设定"
-                       Style="{StaticResource H3}"
-                       Foreground="{StaticResource GlobalPrimary}" />
-
-            <comps:IntegerSlider Grid.Row="5"
-                                 Margin="0 4 0 14"
-                                 Label="片长（秒）"
-                                 LabelWidth="78"
-                                 Minimum="10"
-                                 Maximum="600"
-                                 Value="{Binding ClipLengthSeconds, Mode=TwoWay}"
-                                 TickLabels="{Binding ClipLengthTickLabels}"
-                                 TickCount="6"
-                                 Step="10"
-                                 SliderMaxWidth="420" />
-
-            <Grid Grid.Row="6">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="起始时间" Style="{StaticResource H3}" />
-                <TextBlock Grid.Row="0" Grid.Column="1" Text="片段时长" Style="{StaticResource H3}" Margin="10 0 0 0" />
-                <TextBlock Grid.Row="0" Grid.Column="2" Text="结束时间" Style="{StaticResource H3}" Margin="10 0 0 0" />
-
-                <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding StartTimeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="13" Padding="4" Margin="0 4 0 0" />
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding ClipDurationText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="13" Padding="4" Margin="10 4 0 0" />
-                <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding EndTimeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="13" Padding="4" Margin="10 4 0 0" />
-                <TextBlock Grid.Row="1" Grid.Column="3" Text="hh:mm:ss.sss" FontSize="13" Foreground="{StaticResource GlobalSecondary}" VerticalAlignment="Center" Margin="18 4 0 0" />
-            </Grid>
-
-            <Grid Grid.Row="7" Margin="0 16 0 0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="起始帧数/场数" Style="{StaticResource H3}" />
-                <TextBlock Grid.Row="0" Grid.Column="1" Text="帧数/场数时长" Style="{StaticResource H3}" Margin="10 0 0 0" />
-                <TextBlock Grid.Row="0" Grid.Column="2" Text="结束帧数/场数" Style="{StaticResource H3}" Margin="10 0 0 0" />
-
-                <TextBox Grid.Row="1" Grid.Column="0" Text="{Binding StartFrameText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="13" Padding="4" Margin="0 4 0 0" />
-                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding ClipFrameCountText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="13" Padding="4" Margin="10 4 0 0" />
-                <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding EndFrameText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="13" Padding="4" Margin="10 4 0 0" />
-                <TextBlock Grid.Row="1" Grid.Column="3" Text="frames|fields" FontSize="13" Foreground="{StaticResource GlobalSecondary}" VerticalAlignment="Center" Margin="18 4 0 0" />
-            </Grid>
-
-            <StackPanel Grid.Row="8" Margin="0 20 0 0">
-                <comps:TwoButtonGroup DataContext="{Binding FinishButtons}"
-                                      ButtonHeight="34"
-                                      Button1Command="{Binding Cmd1}"
-                                      Button2Command="{Binding Cmd2}" />
-                <StackPanel Margin="0 8 0 0" Orientation="Horizontal">
-                    <Rectangle Width="10" Height="10" Fill="{StaticResource GlobalSecondary}" VerticalAlignment="Center">
-                        <Rectangle.OpacityMask>
-                            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}" Stretch="Uniform" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                    <TextBlock Text="原行扫描的总帧数和帧率其实是“总场数”和“场率”（一帧两场）"
-                               FontSize="10"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               Margin="3.5 0 0 0" />
-                </StackPanel>
-                <StackPanel Margin="0 4 0 0" Orientation="Horizontal">
-                    <Rectangle Width="10" Height="10" Fill="{StaticResource GlobalSecondary}" VerticalAlignment="Center">
-                        <Rectangle.OpacityMask>
-                            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}" Stretch="Uniform" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                    <TextBlock Text="由于取段时长与源视频不同，且难以对齐，因此不适合进行画质跑分"
-                               FontSize="10"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               Margin="3.5 0 0 0" />
-                </StackPanel>
+            <StackPanel Margin="0 4 0 0"
+                        Orientation="Horizontal">
+                <Rectangle Width="10"
+                           Height="10"
+                           Fill="{StaticResource GlobalSecondary}"
+                           VerticalAlignment="Center">
+                    <Rectangle.OpacityMask>
+                        <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
+                                    Stretch="Uniform" />
+                    </Rectangle.OpacityMask>
+                </Rectangle>
+                <TextBlock Text="由于取段时长与源视频不同，且难以对齐，因此不适合进行画质跑分"
+                           FontSize="10"
+                           Foreground="{StaticResource GlobalSecondary}"
+                           Margin="3.5 0 0 0" />
             </StackPanel>
-        </Grid>
-    </ScrollViewer>
+        </StackPanel>
+    </Grid>
 </Window>

@@ -45,9 +45,7 @@ namespace OneColumnEncoder.ViewModels.Cards
         protected static void RefreshChecklist(ObservableCollection<ChecklistEntryVM> collection, List<ChecklistItemDefinitionM> definitions)
         {
             for (int i = 0; i < definitions.Count && i < collection.Count; i++)
-            {
                 collection[i].Text = definitions[i].Text;
-            }
         }
     }
 }

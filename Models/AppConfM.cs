@@ -24,7 +24,6 @@ namespace OneColumnEncoder.Models
         public class GeneralSettings
         {
             public bool OffGrid { get; set; } = true;
-            public bool InsufficientRAM { get; set; } = false;
             public bool InsufficientDiskSpace { get; set; } = true;
             public bool OSFileNameInvalid { get; set; } = true;
             public bool FTPFileNameInvalid { get; set; } = false;

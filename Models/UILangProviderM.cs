@@ -138,7 +138,6 @@ public class UILangProviderM
 
             // Checklist - Encoding Prerequisites 1 (Hardware)
             ["Checklist.Enc1.OffGrid"] = "Not off-grid / powering via battery",
-            ["Checklist.Enc1.RAM"] = "Sufficient RAM availability",
             ["Checklist.Enc1.DiskSpace"] = "Sufficient disk space availability",
 
             // Checklist - Encoding Prerequisites 2 (Software)
@@ -162,7 +161,6 @@ public class UILangProviderM
 
             // Settings - General labels
             ["Setting.General.NotOffGrid"] = "Not off-grid / powering via battery",
-            ["Setting.General.SufficientRAM"] = "Sufficient RAM availability",
             ["Setting.General.SufficientDisk"] = "Sufficient disk space availability",
             ["Setting.General.OSFilename"] = "Output filename is valid for OS",
             ["Setting.General.FTPFilename"] = "Output filename maybe valid for FTP (Pseudo-UTF-8)",
@@ -390,7 +388,6 @@ public class UILangProviderM
             ["Checklist.Source2.ChromaSubsampling"] = "是否关闭色度采样压缩或朝向 \u2190/\u2196（SVT-AV1 要求）",
 
             ["Checklist.Enc1.OffGrid"] = "使用电池供电 / 离网",
-            ["Checklist.Enc1.RAM"] = "内存充足",
             ["Checklist.Enc1.DiskSpace"] = "磁盘空间充足",
 
             ["Checklist.Enc2.OSFilename"] = "输出文件名兼容操作系统",
@@ -410,7 +407,6 @@ public class UILangProviderM
             ["Checklist.Best2.DiskCompression"] = "输出文件夹禁用文件系统磁盘压缩",
 
             ["Setting.General.NotOffGrid"] = "未使用电池供电/离网",
-            ["Setting.General.SufficientRAM"] = "内存不足",
             ["Setting.General.SufficientDisk"] = "磁盘空间不足",
             ["Setting.General.OSFilename"] = "输出文件名不兼容操作系统",
             ["Setting.General.FTPFilename"] = "输出文件名不兼容 FTP（伪 UTF-8）",
@@ -634,7 +630,6 @@ public class UILangProviderM
             ["Checklist.Source2.ChromaSubsampling"] = "是否關閉色度採樣壓縮或朝向 \u2190/\u2196（SVT-AV1 要求）",
 
             ["Checklist.Enc1.OffGrid"] = "使用電池供電 / 離網",
-            ["Checklist.Enc1.RAM"] = "記憶體充足",
             ["Checklist.Enc1.DiskSpace"] = "磁碟空間充足",
 
             ["Checklist.Enc2.OSFilename"] = "輸出檔案名相容操作系統",
@@ -654,7 +649,6 @@ public class UILangProviderM
             ["Checklist.Best2.DiskCompression"] = "輸出文件夾禁用文件系統磁碟壓縮",
 
             ["Setting.General.NotOffGrid"] = "未使用電池供電/離網",
-            ["Setting.General.SufficientRAM"] = "記憶體不足",
             ["Setting.General.SufficientDisk"] = "磁碟空間不足",
             ["Setting.General.OSFilename"] = "輸出檔案名不相容操作系統",
             ["Setting.General.FTPFilename"] = "輸出檔案名不相容 FTP（偽 UTF-8）",

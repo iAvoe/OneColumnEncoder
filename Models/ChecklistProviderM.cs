@@ -38,7 +38,6 @@ namespace OneColumnEncoder.Models
         public static List<ChecklistItemDefinitionM> GetEncodeChecklist1() =>
         [
             new(UILangProviderM.Current["Checklist.Enc1.OffGrid"]),
-            new(UILangProviderM.Current["Checklist.Enc1.RAM"]),
             new(UILangProviderM.Current["Checklist.Enc1.DiskSpace"]),
         ];
 
