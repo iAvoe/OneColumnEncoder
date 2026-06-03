@@ -36,7 +36,7 @@ namespace OneColumnEncoder.ViewModels
             get => _lang;
             private set => SetProperty(ref _lang, value);
         }
-        public string WindowTitle => Lang.WindowTitle;
+        public string WindowTitle => "1cenc Sample Clip";
         public string TimelineSectionTitle => Lang.TimelineSectionTitle;
         public string SelectionHintText => Lang.SelectionHintText;
         public string DurationSectionTitle => Lang.DurationSectionTitle;

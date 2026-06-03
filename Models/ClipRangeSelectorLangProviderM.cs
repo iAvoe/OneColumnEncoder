@@ -6,7 +6,6 @@ public class ClipRangeSelectorLangProviderM
     {
         ["en"] = new()
         {
-            ["WindowTitle"] = "1cenc Sample Clip",
             ["TimelineSectionTitle"] = "Time Axis Segment",
             ["SelectionHintText"] = "Drag the handle to choose the segment position",
             ["DurationSectionTitle"] = "Duration Settings",
@@ -36,7 +35,6 @@ public class ClipRangeSelectorLangProviderM
         },
         ["zh-cn"] = new()
         {
-            ["WindowTitle"] = "1cenc 取段打样",
             ["TimelineSectionTitle"] = "时间轴取段",
             ["SelectionHintText"] = "拖拽滑块以选择取段位置",
             ["DurationSectionTitle"] = "时长设定",
@@ -66,7 +64,6 @@ public class ClipRangeSelectorLangProviderM
         },
         ["zh-tw"] = new()
         {
-            ["WindowTitle"] = "1cenc 取段打樣",
             ["TimelineSectionTitle"] = "時間軸取段",
             ["SelectionHintText"] = "拖曳滑塊以選擇取段位置",
             ["DurationSectionTitle"] = "時長設定",
@@ -101,7 +98,6 @@ public class ClipRangeSelectorLangProviderM
 
     public string this[string key] => _d.TryGetValue(key, out var v) ? v : key;
 
-    public string WindowTitle { get; }
     public string TimelineSectionTitle { get; }
     public string SelectionHintText { get; }
     public string DurationSectionTitle { get; }
@@ -134,7 +130,6 @@ public class ClipRangeSelectorLangProviderM
         LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
         _d = Data[LanguageCode];
 
-        WindowTitle = _d["WindowTitle"];
         TimelineSectionTitle = _d["TimelineSectionTitle"];
         SelectionHintText = _d["SelectionHintText"];
         DurationSectionTitle = _d["DurationSectionTitle"];

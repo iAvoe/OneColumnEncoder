@@ -23,7 +23,7 @@ namespace OneColumnEncoder.ViewModels
 
         #region Properties & Commands
 
-        public string WindowTitle => "1cenc Settings";
+        public static string WindowTitle => "1cenc Settings";
         public static string HeaderText => UILangProviderM.Current["AppConfModal.Header"];
 
         public CloseModalCmd CloseCmd { get; }
