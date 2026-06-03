@@ -78,7 +78,6 @@ public static class EncodingPipelineH
         };
     }
 
-    #region Sample clip range args
     private static string BuildFfmpegClipArgs(ClipRange? clip) =>
         clip == null
             ? string.Empty
@@ -117,6 +116,7 @@ public static class EncodingPipelineH
         return $"-trim={firstFrame},{clip.LastFrame}";
     }
 
+    #region Sample clip modal stuffs
     private static ClipRange? BuildClipRange(EncodingClipRequest? clip, bool needsTimes, bool needsFrames)
     {
         if (clip == null) return null;
@@ -157,6 +157,7 @@ public static class EncodingPipelineH
 
         return new(startTime, endTime, firstFrame, lastFrame);
     }
+
 
     public static long TimestampToFirstFrame(string timestamp, double frameRate)
     {
@@ -230,15 +231,9 @@ public static class EncodingPipelineH
 
     private static long? ValidateFrame(long? frame, string name)
     {
-        if (frame is < 0)
-            throw new InvalidOperationException($"Clip {name} must be non-negative.");
-        return frame;
-    }
-
-    private static void ValidateFrame(long frame, string name)
-    {
         if (frame < 0)
             throw new InvalidOperationException($"Clip {name} must be non-negative.");
+        return frame;
     }
 
     private static void ValidateFrameRate(double frameRate)

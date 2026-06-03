@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -37,6 +38,8 @@ namespace OneColumnEncoder.Components
         public static readonly DependencyProperty TickLabelsProperty = DependencyProperty.Register(
             nameof(TickLabels), typeof(IEnumerable<string>), typeof(IntegerSlider), new PropertyMetadata(null));
 
+        // Declares the number of tick labels this slider should have to maintain consistency with the ViewModel;
+        // actual rendering is driven by the TickLabels collection, and the Value will be re-clamped when it changes.
         public static readonly DependencyProperty TickCountProperty = DependencyProperty.Register(
             nameof(TickCount), typeof(int), typeof(IntegerSlider), new PropertyMetadata(8, OnRangeChanged));
 
