@@ -17,6 +17,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly Func<EncodingPipelineRequest?> _buildRequest;
         private readonly double _totalSeconds;
         private readonly double _frameRate;
+        private readonly long _totalFrames;
         private ClipRangeSelectorLangProviderM _lang = null!;
         private bool _isDraggingSelection;
 
@@ -88,7 +89,11 @@ namespace OneColumnEncoder.ViewModels
         public string StartTimeText
         {
             get => _startTimeText;
-            set => SetProperty(ref _startTimeText, value);
+            set
+            {
+                if (!SetProperty(ref _startTimeText, value)) return;
+                if (!_isSyncing) CommitStartTimeText();
+            }
         }
 
         private string _clipDurationText = "00:00:30.000";
@@ -102,14 +107,22 @@ namespace OneColumnEncoder.ViewModels
         public string EndTimeText
         {
             get => _endTimeText;
-            set => SetProperty(ref _endTimeText, value);
+            set
+            {
+                if (!SetProperty(ref _endTimeText, value)) return;
+                if (!_isSyncing) CommitEndTimeText();
+            }
         }
 
         private string _startFrameText = "0";
         public string StartFrameText
         {
             get => _startFrameText;
-            set => SetProperty(ref _startFrameText, value);
+            set
+            {
+                if (!SetProperty(ref _startFrameText, value)) return;
+                if (!_isSyncing) CommitStartFrameText();
+            }
         }
 
         private string _clipFrameCountText = "0";
@@ -123,7 +136,11 @@ namespace OneColumnEncoder.ViewModels
         public string EndFrameText
         {
             get => _endFrameText;
-            set => SetProperty(ref _endFrameText, value);
+            set
+            {
+                if (!SetProperty(ref _endFrameText, value)) return;
+                if (!_isSyncing) CommitEndFrameText();
+            }
         }
 
         public SampleClipModalVM(ModalNavS modalNavS, Action closeAction, Func<EncodingPipelineRequest?> buildRequest, VideoAnalysisM srcVideoAnalysis)
@@ -132,6 +149,7 @@ namespace OneColumnEncoder.ViewModels
             _closeAction = closeAction;
             _buildRequest = buildRequest;
             (_totalSeconds, _frameRate, long totalFrames, bool progressive, bool constantFrameRate) = ReadSourceStats(srcVideoAnalysis.RawJson);
+            _totalFrames = Math.Max(1L, totalFrames);
 
             BuildSummary(totalFrames, progressive, constantFrameRate);
             BuildAxisLabels();
@@ -219,8 +237,8 @@ namespace OneColumnEncoder.ViewModels
             ClipDurationText = EncodingPipelineH.FormatTimestamp(TimeSpan.FromSeconds(durationSeconds));
             EndTimeText = EncodingPipelineH.FormatTimestamp(TimeSpan.FromSeconds(endSeconds));
 
-            long startFrame = SecondsToFirstFrame(startSeconds);
-            long endFrame = Math.Max(startFrame, SecondsToLastFrame(endSeconds));
+            long startFrame = Math.Min(_totalFrames - 1L, SecondsToFirstFrame(startSeconds));
+            long endFrame = Math.Min(_totalFrames - 1L, Math.Max(startFrame, SecondsToLastFrame(endSeconds)));
             StartFrameText = startFrame.ToString(CultureInfo.InvariantCulture);
             ClipFrameCountText = Math.Max(1, endFrame - startFrame + 1).ToString(CultureInfo.InvariantCulture);
             EndFrameText = endFrame.ToString(CultureInfo.InvariantCulture);
@@ -233,6 +251,122 @@ namespace OneColumnEncoder.ViewModels
 
             _isSyncing = false;
         }
+
+        private void CommitStartTimeText()
+        {
+            if (!TryParseSourceSeconds(StartTimeText, allowSourceEnd: false, out double startSeconds))
+            {
+                SyncFromSelection(updateClipLength: false);
+                return;
+            }
+
+            double endSeconds = SelectionEnd * _totalSeconds;
+            if (endSeconds <= startSeconds)
+                endSeconds = _totalSeconds;
+
+            ApplySelectionSeconds(startSeconds, endSeconds);
+        }
+
+        private void CommitEndTimeText()
+        {
+            if (!TryParseSourceSeconds(EndTimeText, allowSourceEnd: true, out double endSeconds) || endSeconds <= 0d)
+            {
+                SyncFromSelection(updateClipLength: false);
+                return;
+            }
+
+            double startSeconds = SelectionStart * _totalSeconds;
+            if (startSeconds >= endSeconds)
+                startSeconds = 0d;
+
+            ApplySelectionSeconds(startSeconds, endSeconds);
+        }
+
+        private void CommitStartFrameText()
+        {
+            if (!TryParseSourceFrame(StartFrameText, out long startFrame))
+            {
+                SyncFromSelection(updateClipLength: false);
+                return;
+            }
+
+            long currentEndFrame = SecondsToLastFrame(SelectionEnd * _totalSeconds);
+            if (currentEndFrame < startFrame)
+                currentEndFrame = _totalFrames - 1;
+
+            ApplySelectionFrames(startFrame, currentEndFrame);
+        }
+
+        private void CommitEndFrameText()
+        {
+            if (!TryParseSourceFrame(EndFrameText, out long endFrame))
+            {
+                SyncFromSelection(updateClipLength: false);
+                return;
+            }
+
+            long currentStartFrame = SecondsToFirstFrame(SelectionStart * _totalSeconds);
+            if (currentStartFrame > endFrame)
+                currentStartFrame = 0L;
+
+            ApplySelectionFrames(currentStartFrame, endFrame);
+        }
+
+        private void ApplySelectionFrames(long startFrame, long endFrame)
+        {
+            if (endFrame < startFrame)
+                (startFrame, endFrame) = (endFrame, startFrame);
+
+            double startSeconds = startFrame / _frameRate;
+            double endSeconds = Math.Min(_totalSeconds, (endFrame + 1d) / _frameRate);
+            ApplySelectionSeconds(startSeconds, endSeconds);
+        }
+
+        private void ApplySelectionSeconds(double startSeconds, double endSeconds)
+        {
+            if (_totalSeconds <= 0d || endSeconds <= startSeconds)
+            {
+                SyncFromSelection(updateClipLength: false);
+                return;
+            }
+
+            double start = Clamp(startSeconds / _totalSeconds, 0d, 1d);
+            double end = Clamp(endSeconds / _totalSeconds, 0d, 1d);
+            if (end <= start)
+            {
+                SyncFromSelection(updateClipLength: false);
+                return;
+            }
+
+            _isSyncing = true;
+            SelectionStart = start;
+            SelectionEnd = end;
+            _isSyncing = false;
+            SyncFromSelection(updateClipLength: true);
+        }
+
+        private bool TryParseSourceSeconds(string text, bool allowSourceEnd, out double seconds)
+        {
+            try
+            {
+                seconds = EncodingPipelineH.ParseTimestamp(text).TotalSeconds;
+                return seconds >= 0d && (allowSourceEnd ? seconds <= _totalSeconds : seconds < _totalSeconds);
+            }
+            catch
+            {
+                seconds = 0d;
+                return false;
+            }
+        }
+
+        private bool TryParseSourceFrame(string text, out long frame)
+        {
+            frame = TryParseNonNegativeLong(text) ?? -1L;
+            return frame >= 0L && frame < _totalFrames;
+        }
+
+        private static double Clamp(double value, double min, double max) =>
+            Math.Max(min, Math.Min(max, value));
 
         private void RunSample()
         {

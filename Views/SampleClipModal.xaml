@@ -109,23 +109,24 @@
                        Margin="10 0 0 0" />
 
             <TextBox Grid.Row="1"
-                     Grid.Column="0"
-                     Text="{Binding StartTimeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     FontSize="13"
-                     Padding="5"
-                     Margin="0 5 0 0" />
+                      Grid.Column="0"
+                      Text="{Binding StartTimeText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                      FontSize="13"
+                      Padding="5"
+                      Margin="0 5 0 0" />
+            <TextBlock Grid.Row="1"
+                       Grid.Column="1"
+                       Text="{Binding ClipDurationText}"
+                       FontSize="13"
+                       Padding="5"
+                       Margin="10 5 0 0"
+                       VerticalAlignment="Center" />
             <TextBox Grid.Row="1"
-                     Grid.Column="1"
-                     Text="{Binding ClipDurationText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     FontSize="13"
-                     Padding="5"
-                     Margin="10 5 0 0" />
-            <TextBox Grid.Row="1"
-                     Grid.Column="2"
-                     Text="{Binding EndTimeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     FontSize="13"
-                     Padding="5"
-                     Margin="10 5 0 0" />
+                      Grid.Column="2"
+                      Text="{Binding EndTimeText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                      FontSize="13"
+                      Padding="5"
+                      Margin="10 5 0 0" />
             <TextBlock Grid.Row="1"
                        Grid.Column="3"
                        Text="{Binding TimeFormatText}"
@@ -164,23 +165,24 @@
                        Margin="10 0 0 0" />
 
             <TextBox Grid.Row="1"
-                     Grid.Column="0"
-                     Text="{Binding StartFrameText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     FontSize="13"
-                     Padding="4"
-                     Margin="0 5 0 0" />
+                      Grid.Column="0"
+                      Text="{Binding StartFrameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                      FontSize="13"
+                      Padding="4"
+                      Margin="0 5 0 0" />
+            <TextBlock Grid.Row="1"
+                       Grid.Column="1"
+                       Text="{Binding ClipFrameCountText}"
+                       FontSize="13"
+                       Padding="4"
+                       Margin="10 5 0 0"
+                       VerticalAlignment="Center" />
             <TextBox Grid.Row="1"
-                     Grid.Column="1"
-                     Text="{Binding ClipFrameCountText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     FontSize="13"
-                     Padding="4"
-                     Margin="10 5 0 0" />
-            <TextBox Grid.Row="1"
-                     Grid.Column="2"
-                     Text="{Binding EndFrameText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     FontSize="13"
-                     Padding="4"
-                     Margin="10 5 0 0" />
+                      Grid.Column="2"
+                      Text="{Binding EndFrameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                      FontSize="13"
+                      Padding="4"
+                      Margin="10 5 0 0" />
             <TextBlock Grid.Row="1"
                        Grid.Column="3"
                        Text="{Binding FrameFormatText}"
