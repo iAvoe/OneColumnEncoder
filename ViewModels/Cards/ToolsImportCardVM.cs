@@ -14,12 +14,13 @@ namespace OneColumnEncoder.ViewModels.Cards
 {
     public class ToolsImportCardVM : BaseVM
     {
-        private const int UpstreamChecklistIdx = 0;
-        private const int EncoderChecklistIdx = 1;
-        private const int AnalyticsChecklistIdx = 2;
-        private const int UpstreamPickedChecklistIdx = 3;
-        private const int DownstreamPickedChecklistIdx = 4;
-        private const int AnalysisPickedChecklistIdx = 5;
+        public const int UpstreamChecklistIdx = 0;
+        public const int EncoderChecklistIdx = 1;
+        public const int AnalyticsChecklistIdx = 2;
+        public const int UpstreamPickedChecklistIdx = 3;
+        public const int DownstreamPickedChecklistIdx = 4;
+        public const int AnalysisPickedChecklistIdx = 5;
+        public const int CompleteSourceAnalysisChecklistIdx = 6;
 
         private string _name = string.Empty;
         public string Name {
@@ -65,6 +66,7 @@ namespace OneColumnEncoder.ViewModels.Cards
             UpdateChecklistStatus(UpstreamChecklistIdx, hasUpstreamTool);
             UpdateChecklistStatus(EncoderChecklistIdx, hasEncoderTool);
             UpdateChecklistStatus(AnalyticsChecklistIdx, hasFfprobe);
+            // Complete Source Analysis will be updated separately when AnalyzeSrcVideoCmd succeeds
         }
 
         public void SetToolPickedStatus(ToolZone zone, bool isPicked)
@@ -80,6 +82,11 @@ namespace OneColumnEncoder.ViewModels.Cards
             ToolsChecklist[index].Status = isPicked ? StatusType.Success : StatusType.Error;
         }
 
+        public void SetCompleteSourceAnalysisStatus(bool isSuccess)
+        {
+            UpdateChecklistStatus(CompleteSourceAnalysisChecklistIdx, isSuccess);
+        }
+
         private void UpdateChecklistStatus(int index, bool isReady)
         {
             if (index < 0 || index >= ToolsChecklist.Count) return;
@@ -90,9 +97,7 @@ namespace OneColumnEncoder.ViewModels.Cards
         {
             List<ChecklistItemDefinitionM> definitions = ChecklistProviderM.GetToolsChecklist();
             for (int i = 0; i < definitions.Count && i < ToolsChecklist.Count; i++)
-            {
                 ToolsChecklist[i].Text = definitions[i].Text;
-            }
         }
 
         private void RefreshImportDropdownItems()

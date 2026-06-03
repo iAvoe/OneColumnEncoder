@@ -2,6 +2,7 @@
 using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
+using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.ViewModels.Cards;
 
 namespace OneColumnEncoder.Commands
@@ -12,6 +13,7 @@ namespace OneColumnEncoder.Commands
         VideoAnalysisM analysis,
         SourceCheckCardVM srcValidationCard,
         ModalNavS modalNavS,
+        Action<bool>? onAnalysisCompleted = null,
         Action? onCompleted = null) : AsyncBaseCmd
     {
         private readonly Func<string> _getFfprobePath = getFfprobePath;
@@ -19,6 +21,7 @@ namespace OneColumnEncoder.Commands
         private readonly VideoAnalysisM _analysis = analysis;
         private readonly SourceCheckCardVM _srcValidationCard = srcValidationCard;
         private readonly ModalNavS _modalNavS = modalNavS;
+        private readonly Action<bool>? _onAnalysisCompleted = onAnalysisCompleted;
         private readonly Action? _onCompleted = onCompleted;
 
         public override bool CanExecute(object? parameter) =>
@@ -54,7 +57,11 @@ namespace OneColumnEncoder.Commands
                     UILangProviderM.Current["SrcAnalysis.WindowTitle"],
                     ex.Message).Execute(null);
             }
-            finally { _onCompleted?.Invoke(); }
+            finally
+            {
+                _onAnalysisCompleted?.Invoke(!string.IsNullOrWhiteSpace(_analysis.RawJson));
+                _onCompleted?.Invoke();
+            }
         }
     }
 }

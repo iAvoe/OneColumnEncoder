@@ -19,10 +19,10 @@ public class ClipRangeSelectorLangProviderM
             ["ClipFrameCountLabel"] = "Frame/Field Duration",
             ["EndFrameLabel"] = "End Frame/Field",
             ["FrameFormatText"] = "frames|fields",
-            ["Note1Text"] = "The total frames and frame rate of progressive sources are actually field count and field rate (2 fields per frame)",
-            ["Note2Text"] = "Because the segment duration is different from the source video and is hard to align, it is not suitable for quality benchmarking",
+            ["Note1Text"] = "Total frames & frame rate of interlaced sources are really field count & field rates (2 fields/frame)",
+            ["Note2Text"] = "Mismatched clip durations, time-bases prevents alignment, thus can't do quality metric benchmarks",
             ["CancelButtonText"] = "Cancel",
-            ["ConfirmButtonText"] = "Start Sample"
+            ["ConfirmButtonText"] = "Encode Sample"
         },
         ["zh-cn"] = new()
         {
@@ -39,7 +39,7 @@ public class ClipRangeSelectorLangProviderM
             ["ClipFrameCountLabel"] = "帧数/场数时长",
             ["EndFrameLabel"] = "结束帧数/场数",
             ["FrameFormatText"] = "frames|fields",
-            ["Note1Text"] = "原行扫描的总帧数和帧率其实是“总场数”和“场率”（一帧两场）",
+            ["Note1Text"] = "隔行扫描的总帧数和帧率其实是“总场数”和“场率”（一帧两场）",
             ["Note2Text"] = "由于取段时长与源视频不同，且难以对齐，因此不适合进行画质跑分",
             ["CancelButtonText"] = "取消",
             ["ConfirmButtonText"] = "开始打样"

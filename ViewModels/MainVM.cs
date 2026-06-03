@@ -144,6 +144,7 @@ namespace OneColumnEncoder.ViewModels
                 _srcVideoAnalysis, modalNavS);
             AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(
                 GetSelectedFfprobePath, GetSelectedVideoSourcePath, _srcVideoAnalysis, SrcValidationCard, modalNavS,
+                isSuccess => ToolsImportCard.SetCompleteSourceAnalysisStatus(isSuccess),
                 () =>
                 { // On source analysis complete
                     UpdateAnalyzeSrcButtonsState();
@@ -365,11 +366,9 @@ namespace OneColumnEncoder.ViewModels
             !string.IsNullOrWhiteSpace(_appDataM.Tools.FfprobePath);
         private bool HasImportedAviSynthDll() =>
             !string.IsNullOrWhiteSpace(_appDataM.Tools.AviSynthDllPath);
-
         #endregion
 
         #region Validation Checklists
-
         private void SubToToolsChecklist()
         {
             foreach (ChecklistEntryVM entry in ToolsImportCard.ToolsChecklist)

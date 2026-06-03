@@ -119,6 +119,7 @@ public class UILangProviderM
             ["Checklist.Tools.UpstreamPicked"] = "Click-select an upstream program",
             ["Checklist.Tools.DownstreamPicked"] = "Click-select a downstream program",
             ["Checklist.Tools.AnalysisPicked"] = "Click-select an analysis program",
+            ["Checklist.Tools.CompleteSourceAnalysis"] = "Complete source analysis",
             ["Checklist.Tools.DependenciesPicked"] = "Click-select a dependency program",
             ["Checklist.Tools.SourcePicked"] = "Source video is imported and selected",
 
@@ -372,6 +373,7 @@ public class UILangProviderM
             ["Checklist.Tools.UpstreamPicked"] = "点选上游程序",
             ["Checklist.Tools.DownstreamPicked"] = "点选下游程序",
             ["Checklist.Tools.AnalysisPicked"] = "点选分析工具",
+            ["Checklist.Tools.CompleteSourceAnalysis"] = "完成源分析成功",
             ["Checklist.Tools.DependenciesPicked"] = "点选依赖程序",
             ["Checklist.Tools.SourcePicked"] = "待压制的源文件存在且已被选择",
 
@@ -614,6 +616,7 @@ public class UILangProviderM
             ["Checklist.Tools.UpstreamPicked"] = "點選上遊程序",
             ["Checklist.Tools.DownstreamPicked"] = "點選下遊程序",
             ["Checklist.Tools.AnalysisPicked"] = "點選分析工具",
+            ["Checklist.Tools.CompleteSourceAnalysis"] = "完成來源分析成功",
             ["Checklist.Tools.DependenciesPicked"] = "點選依賴程式",
             ["Checklist.Tools.SourcePicked"] = "待壓制的源文件存在且已被選擇",
 
