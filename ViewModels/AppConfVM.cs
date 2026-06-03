@@ -122,7 +122,9 @@ namespace OneColumnEncoder.ViewModels
                 Width = 200,
                 HorizontalAlignment = HorizontalAlignment.Right
             };
-            tb.SetBinding(TextBox.TextProperty, new Binding(propertyPath) { Source = source, Mode = BindingMode.TwoWay });
+            tb.SetBinding(
+                TextBox.TextProperty,
+                new Binding(propertyPath) { Source = source, Mode = BindingMode.TwoWay });
             container.Items.Add(new AppConfItem { Text = text, Content = tb });
         }
 

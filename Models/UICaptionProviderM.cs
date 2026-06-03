@@ -26,6 +26,8 @@ public static class UICaptionProviderM
         public static string AnalyzeSrcVideo => UILangProviderM.Current["Buttons.AnalyzeSrcVideo"];
         public static string InspectSrcProbelms => UILangProviderM.Current["Buttons.InspectSrcProbelms"];
         public static string BypassSrcChecklist => UILangProviderM.Current["Buttons.BypassSrcChecklist"];
+        public static string InspectEncPreProblems => UILangProviderM.Current["Buttons.InspectEncPreProblems"];
+        public static string BypassEncChecklist => UILangProviderM.Current["Buttons.BypassEncChecklist"];
         public static string ReEvaluate => UILangProviderM.Current["Buttons.ReEvaluate"];
         public static string RunSample => UILangProviderM.Current["Buttons.RunSample"];
         public static string StartEncode => UILangProviderM.Current["Buttons.StartEncode"];
@@ -47,6 +49,22 @@ public static class UICaptionProviderM
         public static string TransferCharsP1Text => UILangProviderM.Current["SrcInspect.TransferCharsP1Text"];
         public static string ColorPrimariesP1Text => UILangProviderM.Current["SrcInspect.ColorPrimariesP1Text"];
         public static string ChromaSubsamplingP1Text => UILangProviderM.Current["SrcInspect.ChromaSubsamplingP1Text"];
+    }
+
+    public static class EncInspect
+    {
+        public static string InfoTitle => UILangProviderM.Current["EncInspect.InfoTitle"];
+        public static string InfoMsg => UILangProviderM.Current["EncInspect.InfoMsg"];
+        public static string P1Text => UILangProviderM.Current["EncInspect.P1Text"];
+        public static string P1Title => UILangProviderM.Current["EncInspect.P1Title"];
+        public static string P2Text => UILangProviderM.Current["EncInspect.P2Text"];
+        public static string P2Title => UILangProviderM.Current["EncInspect.P2Title"];
+        public static string P3Text => UILangProviderM.Current["EncInspect.P3Text"];
+        public static string P3Title => UILangProviderM.Current["EncInspect.P3Title"];
+        public static string P4Text => UILangProviderM.Current["EncInspect.P4Text"];
+        public static string P4Title => UILangProviderM.Current["EncInspect.P4Title"];
+        public static string P5Text => UILangProviderM.Current["EncInspect.P5Text"];
+        public static string P5Title => UILangProviderM.Current["EncInspect.P5Title"];
     }
 
     public static class AppConf

@@ -23,10 +23,6 @@ namespace OneColumnEncoder.Models
         #region Setting items
         public class GeneralSettings
         {
-            public bool OffGrid { get; set; } = true;
-            public bool InsufficientDiskSpace { get; set; } = true;
-            public bool NoWritePermission { get; set; } = true;
-            public bool IsOverwriting { get; set; } = true;
         }
         public class OverwriteSettings
         {

@@ -42,6 +42,8 @@ namespace OneColumnEncoder.ViewModels
         public AnalyzeSrcVideoCmd AnalyzeSrcVideo { get; } // Maybe add mediaInfo analysis in future, but ffprobe alone will do
         public InspectSrcProblemsCmd InspectSrcProblems { get; }
         public BypsSrcChecklistCmd BypassSrcChecklist { get; }
+        public InspectEncProblemsCmd InspectEncProblems { get; }
+        public BypassEncChecklistCmd BypassEncChecklist { get; }
         public OpenSampleClipCmd SampleClip { get; }
         public StartEncCmd StartEncode { get; }
         public SelectToolCmd SelectTool { get; } // ItemCard select on click
@@ -49,10 +51,12 @@ namespace OneColumnEncoder.ViewModels
         public ButtonGroupVM ScriptScbButtons { get; } // OneClickScriptGen & OpenScriptScribe
         public ButtonGroupVM AnalyzeSrcButtons { get; } // AnalyzeSrcVideo & CopyRawAnalysis
         public ButtonGroupVM InspBypsChkButtons { get; } // InspectSrcProbelms & BypsSrcChecklist
+        public ButtonGroupVM InspBypsEncChkButtons { get; } // InspectEncPreProblems & BypassEncChecklist
         public ButtonGroupVM EncStartButtons { get; }
         // Button guards
         private readonly bool _isAnalyzeSrcButtonsReady;
         private readonly bool _isInspBypsChkButtonsReady;
+        private readonly bool _isInspBypsEncChkButtonsReady;
         private readonly bool _isEncStartButtonsReady;
         // Card UIs
         public ToolsImportCardVM ToolsImportCard { get; }
@@ -176,6 +180,12 @@ namespace OneColumnEncoder.ViewModels
                 UICaptionProviderM.Buttons.InspectSrcProbelms, UICaptionProviderM.Buttons.BypassSrcChecklist, InspectSrcProblems, BypassSrcChecklist);
             _isInspBypsChkButtonsReady = true;
 
+            InspectEncProblems = new InspectEncProblemsCmd(EncTermsCard, modalNavS);
+            BypassEncChecklist = new BypassEncChecklistCmd(EncTermsCard, UpdateEncStartButtonsState);
+            InspBypsEncChkButtons = ButtonGroupVM.CreateTwoButton(
+                UICaptionProviderM.Buttons.InspectEncPreProblems, UICaptionProviderM.Buttons.BypassEncChecklist, InspectEncProblems, BypassEncChecklist);
+            _isInspBypsEncChkButtonsReady = true;
+
             // Import dropdown menu and behavior
             ToolsImportCard.ToolImported += OnToolImported;
             ToolsImportCard.Name = UICaptionProviderM.Cards.ToolsImport;
@@ -225,10 +235,8 @@ namespace OneColumnEncoder.ViewModels
                 return videoSrc?.P2TextData ?? string.Empty;
             };
 
-            // Checklist item settings, checklist subs, nav subs, overlay subs
-            InitializeChecklistEntryStates();
+            // Checklist subs, nav subs, overlay subs
             EncTermsCard.RunAllChecks();
-            OpenAppConf.OnAfterClose += InitializeChecklistEntryStates;
             SubToImportedToolZones();
             AnalyticsZone.CollectionChanged += OnAnalyticsZoneCollectionChanged;
             RefreshUpstreamToolState(); // initial state after loading
@@ -237,6 +245,7 @@ namespace OneColumnEncoder.ViewModels
             RefreshSelectedSourceStatus();
             UpdateAnalyzeSrcButtonsState();
             UpdateInspBypsChkButtonsState();
+            UpdateInspBypsEncChkButtonsState();
             _modalNavS.CurrentViewModelChanged += OnModalStateChanged;
             IsOverlayVisible = _modalNavS.IsOpen;
             UILangProviderM.CurrentChanged += OnLanguageChanged;
@@ -268,18 +277,6 @@ namespace OneColumnEncoder.ViewModels
             return zone;
         }
 
-        // Read settings regarding disabling checklist items
-        private void InitializeChecklistEntryStates()
-        {
-            AppConfM.GeneralSettings g = _appConfM.General;
-            ObservableCollection<ChecklistEntryVM> cl1 = EncTermsCard.Checklist1;
-            if (cl1.Count >= 1) cl1[0].IsEnabled = g.OffGrid;
-            if (cl1.Count >= 2) cl1[1].IsEnabled = g.InsufficientDiskSpace;
-
-            ObservableCollection<ChecklistEntryVM> cl2 = EncTermsCard.Checklist2;
-            if (cl2.Count >= 1) cl2[0].IsEnabled = g.NoWritePermission;
-            if (cl2.Count >= 2) cl2[1].IsEnabled = g.IsOverwriting;
-        }
         #endregion
 
         #region Imported Zone Event Handling
@@ -441,7 +438,7 @@ namespace OneColumnEncoder.ViewModels
                 SrcValidationCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
                 SrcValidationCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success));
 
-            bool encodeTermsReady =
+            bool encodeTermsReady = EncTermsCard.IsBypassed ||
                 EncTermsCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
                 EncTermsCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
             bool avsSelected = UpstreamsZone.Any(
@@ -674,6 +671,15 @@ namespace OneColumnEncoder.ViewModels
             InspBypsChkButtons.B2_2IsEnabled = hasRawJson;
             InspectSrcProblems.OnCanExecuteChanged();
             BypassSrcChecklist.OnCanExecuteChanged();
+        }
+        public void UpdateInspBypsEncChkButtonsState()
+        {
+            if (!_isInspBypsEncChkButtonsReady) return;
+
+            InspBypsEncChkButtons.B2_1IsEnabled = true;
+            InspBypsEncChkButtons.B2_2IsEnabled = true;
+            InspectEncProblems.OnCanExecuteChanged();
+            BypassEncChecklist.OnCanExecuteChanged();
         }
         private string GetCurrentVideoSourcePath()
         {
@@ -948,6 +954,8 @@ namespace OneColumnEncoder.ViewModels
             AnalyzeSrcButtons.B2_2Text = UICaptionProviderM.Buttons.AnalyzeSrcVideo;
             InspBypsChkButtons.B2_1Text = UICaptionProviderM.Buttons.InspectSrcProbelms;
             InspBypsChkButtons.B2_2Text = UICaptionProviderM.Buttons.BypassSrcChecklist;
+            InspBypsEncChkButtons.B2_1Text = UICaptionProviderM.Buttons.InspectEncPreProblems;
+            InspBypsEncChkButtons.B2_2Text = UICaptionProviderM.Buttons.BypassEncChecklist;
         }
         private void RefreshCardsLanguage()
         {

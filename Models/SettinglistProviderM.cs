@@ -12,10 +12,6 @@ namespace OneColumnEncoder.Models
 
         public static List<SettingItemDefinitionM> GetGeneralSettings() =>
         [
-            new(UICaptionProviderM.AppConf.Groups.General, UILangProviderM.Current["Setting.General.NotOffGrid"], SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.OffGrid)),
-            new(UICaptionProviderM.AppConf.Groups.General, UILangProviderM.Current["Setting.General.SufficientDisk"], SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.InsufficientDiskSpace)),
-            new(UICaptionProviderM.AppConf.Groups.General, UILangProviderM.Current["Setting.General.WritePermission"], SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.NoWritePermission)),
-            new(UICaptionProviderM.AppConf.Groups.General, UILangProviderM.Current["Setting.General.NotOverwrite"], SettingControlType.CheckBox, nameof(AppConfM.GeneralSettings.IsOverwriting)),
         ];
 
         public static List<SettingItemDefinitionM> GetOverwriteSettings() =>
