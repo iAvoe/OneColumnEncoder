@@ -3,10 +3,13 @@ using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
+using OneColumnEncoder.Views;
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Linq;
 using System.Text.Json;
+using System.Windows;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -22,7 +25,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly double _frameRate;
         private readonly long _totalFrames;
         private readonly string _fieldOrderKind = "unknown";
-        private readonly bool _constantFrameRate;
+        private readonly string _frameRateKind = "unknown";
         private ClipRangeSelectorLangProviderM _lang = null!;
         private bool _isDraggingSelection;
 
@@ -153,7 +156,7 @@ namespace OneColumnEncoder.ViewModels
             _modalNavS = modalNavS;
             _closeAction = closeAction;
             _buildRequest = buildRequest;
-            (_totalSeconds, _frameRate, long totalFrames, _fieldOrderKind, _constantFrameRate) = ReadSourceStats(srcVideoAnalysis.RawJson);
+            (_totalSeconds, _frameRate, long totalFrames, _fieldOrderKind, _frameRateKind) = ReadSourceStats(srcVideoAnalysis.RawJson);
             _totalFrames = Math.Max(1L, totalFrames);
 
             Lang = new ClipRangeSelectorLangProviderM(UILangProviderM.Current.LanguageCode);
@@ -199,7 +202,12 @@ namespace OneColumnEncoder.ViewModels
             {
                 TopText = Lang.SummaryFrameRateLabel,
                 MainText = $"{_frameRate.ToString("0.###", CultureInfo.InvariantCulture)} fps",
-                BottomText = _constantFrameRate ? Lang.SummaryConstantFrameRate : Lang.SummaryVariableFrameRate
+                BottomText = _frameRateKind switch
+                {
+                    "constant" => Lang.SummaryConstantFrameRate,
+                    "variable" => Lang.SummaryVariableFrameRate,
+                    _ => Lang.SummaryFrameRateUnknown,
+                }
             });
         }
 
@@ -409,7 +417,29 @@ namespace OneColumnEncoder.ViewModels
 
                 EncodingClipRequest clip = BuildClipRequest();
                 EncodingPipelineCommand command = EncodingPipelineH.BuildY4mCommand(request with { Clip = clip });
-                new OpenInfoOrDbgModalCmd(_modalNavS, "Sample Encoding Command", command.CommandLine).Execute(null);
+
+                ConfirmationModal? existing = Application.Current.Windows
+                    .OfType<ConfirmationModal>()
+                    .FirstOrDefault(w => w.DataContext is ConfirmationModalVM &&
+                                    w.Owner == Application.Current.MainWindow);
+                if (existing != null)
+                {
+                    existing.Activate();
+                    return;
+                }
+
+                ConfirmationModal window = new();
+                CloseModalCmd closeCmd = new(window.Close);
+                ConfirmationModalVM vm = ConfirmationModalVM.CreateDebug(
+                    "Sample Encoding Command", command.CommandLine,
+                    closeCmd,
+                    new ActionCmd(_ => { window.DialogResult = true; window.Close(); }));
+
+                window.DataContext = vm;
+                window.Owner = Application.Current.MainWindow;
+                window.Closed += (_, _) => _modalNavS.Close();
+                _modalNavS.CurrentModalVM = vm;
+                window.ShowDialog();
             }
             catch (Exception ex)
             {
@@ -440,13 +470,13 @@ namespace OneColumnEncoder.ViewModels
             return Math.Max(0, value);
         }
 
-        private static (double DurationSeconds, double FrameRate, long TotalFrames, string FieldOrderKind, bool ConstantFrameRate) ReadSourceStats(string rawJson)
+        private static (double DurationSeconds, double FrameRate, long TotalFrames, string FieldOrderKind, string FrameRateKind) ReadSourceStats(string rawJson)
         {
             const double fallbackDuration = 600d;
             const double fallbackFrameRate = 30d;
 
             if (string.IsNullOrWhiteSpace(rawJson))
-                return (fallbackDuration, fallbackFrameRate, (long)(fallbackDuration * fallbackFrameRate), "unknown", true);
+                return (fallbackDuration, fallbackFrameRate, (long)(fallbackDuration * fallbackFrameRate), "unknown", "unknown");
 
             try
             {
@@ -474,15 +504,15 @@ namespace OneColumnEncoder.ViewModels
 
                 string? avg = TryGetString(stream, "avg_frame_rate");
                 string? r = TryGetString(stream, "r_frame_rate");
-                bool constantFrameRate = !string.IsNullOrWhiteSpace(avg)
-                    && !avg.Equals("0/0", StringComparison.OrdinalIgnoreCase)
-                    && string.Equals(avg, r, StringComparison.OrdinalIgnoreCase);
+                string frameRateKind = !string.IsNullOrWhiteSpace(avg) && !avg.Equals("0/0", StringComparison.OrdinalIgnoreCase)
+                    ? string.Equals(avg, r, StringComparison.OrdinalIgnoreCase) ? "constant" : "variable"
+                    : "unknown";
 
-                return (duration, frameRate, totalFrames, fieldOrderKind, constantFrameRate);
+                return (duration, frameRate, totalFrames, fieldOrderKind, frameRateKind);
             }
             catch
             {
-                return (fallbackDuration, fallbackFrameRate, (long)(fallbackDuration * fallbackFrameRate), "unknown", true);
+                return (fallbackDuration, fallbackFrameRate, (long)(fallbackDuration * fallbackFrameRate), "unknown", "unknown");
             }
         }
 

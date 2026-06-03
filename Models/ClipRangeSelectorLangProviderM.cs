@@ -31,7 +31,8 @@ public class ClipRangeSelectorLangProviderM
             ["SummaryInterlaced"] = "Interlaced",
             ["SummaryUnknown"] = "Unknown",
             ["SummaryConstantFrameRate"] = "Constant",
-            ["SummaryVariableFrameRate"] = "Variable / Unknown"
+            ["SummaryVariableFrameRate"] = "Variable",
+            ["SummaryFrameRateUnknown"] = "Unknown"
         },
         ["zh-cn"] = new()
         {
@@ -60,7 +61,8 @@ public class ClipRangeSelectorLangProviderM
             ["SummaryInterlaced"] = "隔行扫描",
             ["SummaryUnknown"] = "未知",
             ["SummaryConstantFrameRate"] = "恒定帧率",
-            ["SummaryVariableFrameRate"] = "可变/未知帧率"
+            ["SummaryVariableFrameRate"] = "可变帧率",
+            ["SummaryFrameRateUnknown"] = "未知"
         },
         ["zh-tw"] = new()
         {
@@ -89,7 +91,8 @@ public class ClipRangeSelectorLangProviderM
             ["SummaryInterlaced"] = "隔行掃描",
             ["SummaryUnknown"] = "未知",
             ["SummaryConstantFrameRate"] = "恆定幀率",
-            ["SummaryVariableFrameRate"] = "可變/未知幀率"
+            ["SummaryVariableFrameRate"] = "可變幀率",
+            ["SummaryFrameRateUnknown"] = "未知"
         }
     };
 
@@ -124,6 +127,7 @@ public class ClipRangeSelectorLangProviderM
     public string SummaryUnknown { get; }
     public string SummaryConstantFrameRate { get; }
     public string SummaryVariableFrameRate { get; }
+    public string SummaryFrameRateUnknown { get; }
 
     public ClipRangeSelectorLangProviderM(string languageCode)
     {
@@ -156,5 +160,6 @@ public class ClipRangeSelectorLangProviderM
         SummaryUnknown = _d["SummaryUnknown"];
         SummaryConstantFrameRate = _d["SummaryConstantFrameRate"];
         SummaryVariableFrameRate = _d["SummaryVariableFrameRate"];
+        SummaryFrameRateUnknown = _d["SummaryFrameRateUnknown"];
     }
 }

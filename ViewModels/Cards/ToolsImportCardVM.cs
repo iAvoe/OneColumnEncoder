@@ -87,6 +87,12 @@ namespace OneColumnEncoder.ViewModels.Cards
             UpdateChecklistStatus(CompleteSourceAnalysisChecklistIdx, isSuccess);
         }
 
+        public void ResetCompleteSourceAnalysisStatus()
+        {
+            if (CompleteSourceAnalysisChecklistIdx >= 0 && CompleteSourceAnalysisChecklistIdx < ToolsChecklist.Count)
+                ToolsChecklist[CompleteSourceAnalysisChecklistIdx].Status = StatusType.Waiting;
+        }
+
         private void UpdateChecklistStatus(int index, bool isReady)
         {
             if (index < 0 || index >= ToolsChecklist.Count) return;

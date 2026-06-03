@@ -632,6 +632,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 _srcVideoAnalysis.Clear();
                 SrcValidationCard.ResetAnalysisStatus(anySelected);
+                ToolsImportCard.ResetCompleteSourceAnalysisStatus();
             }
             else
             {
@@ -696,6 +697,7 @@ namespace OneColumnEncoder.ViewModels
             bool anySelected = VideoSrcImportZone.Any(t => t.IsSelected) || ScriptSrcImportZone.Any(t => t.IsSelected);
             _srcVideoAnalysis.Clear();
             SrcValidationCard.ResetAnalysisStatus(anySelected);
+            ToolsImportCard.ResetCompleteSourceAnalysisStatus();
         }
 
         private string GetSelectedVideoSourcePath()
