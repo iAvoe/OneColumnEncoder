@@ -179,9 +179,9 @@ namespace OneColumnEncoder.Components
             double nextThumbWidth = Clamp(width * 0.05d, 16d, 30d);
             double nextLabelMargin = Clamp(width * 0.012d, 4d, 12d);
 
-            TrackHeight = 80d;
+            TrackHeight = 50d;
             ThumbWidth = nextThumbWidth;
-            ThumbHeight = 28d;
+            ThumbHeight = 48d;
             LabelMarginTop = nextLabelMargin;
 
             SelectionThumb.Width = nextThumbWidth;
@@ -213,7 +213,7 @@ namespace OneColumnEncoder.Components
 
             SelectionThumb.Width = Math.Max(8d, selectionWidth);
             Canvas.SetLeft(SelectionThumb, Math.Max(0d, Math.Min(width - SelectionThumb.Width, thumbLeft + ThumbWidth / 2d - SelectionThumb.Width / 2d)));
-            Canvas.SetTop(SelectionThumb, (TrackHost.ActualHeight - ThumbHeight) / 2d);
+            Canvas.SetTop(SelectionThumb, (TrackBackground.ActualHeight - SelectionThumb.ActualHeight) / 2d);
         }
 
         private void NormalizeSelection()
