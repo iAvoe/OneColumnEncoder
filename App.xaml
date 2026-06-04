@@ -24,11 +24,11 @@
                 <Setter Property="BorderThickness"
                         Value="0" />
                 <Setter Property="VerticalAlignment"
-                        Value="Top" />
+                        Value="Center" />
                 <Setter Property="HorizontalContentAlignment"
-                        Value="Right" />
+                        Value="Left" />
                 <Setter Property="Margin"
-                        Value="7.5 0 0 2.5" />
+                        Value="0 2.5 5 0" />
                 <Setter Property="Cursor"
                         Value="Hand" />
                 <!-- Modify border defaults -->

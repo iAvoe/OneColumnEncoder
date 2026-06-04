@@ -10,16 +10,17 @@
              d:DesignHeight="140"
              d:DesignWidth="450">
     <!--
-    | Title      | R1 | R2 |
-    | P1: ...              |
-    | P2: ...              |
+    | Title          |
+    | P1: ...        |
+    | P2: ...        |
+    | R1 | R2        |
     R1, R2: Right side control buttons
     P1: P2: Properties
     -->
     <Border BorderThickness="1.5"
             SnapsToDevicePixels="True"
-            CornerRadius="20"
-            Padding="17.5 20">
+            CornerRadius="18"
+            Padding="18">
         <Border.Style>
             <Style TargetType="Border">
                 <Setter Property="BorderBrush"
@@ -76,40 +77,18 @@
             </Style>
         </Border.Style>
         <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!-- First row: title & links -->
             <TextBlock Grid.Row="0"
-                       Grid.Column="0"
                        Text="{Binding Name}"
                        Style="{StaticResource H2}" />
-            <Button Grid.Row="0"
-                    Grid.Column="1"
-                    Content="{Binding DisplayR1Text}"
-                    Command="{Binding R1Command}"
-                    Style="{StaticResource LinkButton}"
-                    HorizontalAlignment="Right"
-                    Focusable="False"/>
-            <Button Grid.Row="0"
-                    Grid.Column="2"
-                    Content="{Binding R2Text}"
-                    Command="{Binding R2Command}"
-                    Style="{StaticResource LinkButton}"
-                    HorizontalAlignment="Right"
-                    Focusable="False"/>
 
-            <!-- Other rows -->
             <TextBlock Grid.Row="1"
-                       Grid.ColumnSpan="3"
                        Margin="0 5 0 0"
                        HorizontalAlignment="Left"
                        FontSize="11"
@@ -121,8 +100,8 @@
                      FontWeight="Bold" /><Run Text="{Binding P1Text, Mode=OneWay}"
                      FontWeight="Normal" />
             </TextBlock>
+
             <TextBlock Grid.Row="2"
-                       Grid.ColumnSpan="3"
                        Margin="0 5 0 0"
                        HorizontalAlignment="Left"
                        FontSize="11"
@@ -134,6 +113,18 @@
                      FontWeight="Bold" /><Run Text="{Binding P2Text, Mode=OneWay}"
                      FontWeight="Normal" />
             </TextBlock>
+
+            <StackPanel Grid.Row="3"
+                        Orientation="Horizontal" >
+                <Button Content="{Binding DisplayR1Text}"
+                        Command="{Binding R1Command}"
+                        Style="{StaticResource LinkButton}"
+                        Focusable="False" />
+                <Button Content="{Binding R2Text}"
+                        Command="{Binding R2Command}"
+                        Style="{StaticResource LinkButton}"
+                        Focusable="False" />
+            </StackPanel>
         </Grid>
     </Border>
 </UserControl>

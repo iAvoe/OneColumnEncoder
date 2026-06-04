@@ -127,18 +127,18 @@ namespace OneColumnEncoder.Helpers
                 case "avs2yuv.exe":
                     return firstLine;
                 case "avs2pipemod.exe":
-                    {
-                        Match m = Avs2pipemodVersion().Match(firstLine);
-                        return m.Success ? m.Value : firstLine;
-                    }
+                {
+                    Match m = Avs2pipemodVersion().Match(firstLine);
+                    return m.Success ? m.Value : firstLine;
+                }
 
                 case "x264.exe":
                     return firstLine;
                 case "x265.exe":
-                    {
-                        Match m = X265Version().Match(text);
-                        return m.Success ? m.Groups[1].Value : firstLine;
-                    }
+                {
+                    Match m = X265Version().Match(text);
+                    return m.Success ? m.Groups[1].Value : firstLine;
+                }
                 case "svtav1encapp.exe":
                     return firstLine;
 
