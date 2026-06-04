@@ -661,7 +661,7 @@ namespace OneColumnEncoder.ViewModels
                 if (int.TryParse(match.Groups[1].Value, out int value))
                     found = Math.Max(found, Math.Clamp(value, 0, 100));
             }
-            return found == current && current < 98 ? current + 1 : found;
+            return found;
         }
 
         private double TryGetOutputSizeGb()
