@@ -7,12 +7,14 @@
              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
              xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+             xmlns:conv="clr-namespace:OneColumnEncoder.Converters"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vms:MainVM}"
              Background="WhiteSmoke">
     <UserControl.Resources>
         <FrameworkElement x:Key="BindingProxy"
                           DataContext="{Binding}" />
+        <conv:WidthToColumnCountConverter x:Key="WidthToColumnCount" />
     </UserControl.Resources>
     <Grid>
         <StackPanel Margin="10 2.5 10 15">
@@ -24,6 +26,7 @@
 
             <!-- Setting Access -->
             <comps:TwoButtonGroup DataContext="{Binding OpenAppConfButtons}"
+                                  ButtonHeight="30"
                                   Button1Command="{Binding Cmd1}"
                                   Button2Command="{Binding Cmd2}"
                                   Button1IsEnabled="{Binding B2_1IsEnabled}"
@@ -34,6 +37,11 @@
             <comps:SectionHeader HeaderText="{Binding SectionSelectUpstream}"
                                  Margin="0 0 0 20" />
             <ItemsControl ItemsSource="{Binding UpstreamsZone}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <comps:ItemCard DataContext="{Binding}"
@@ -41,7 +49,7 @@
                                         IsCancel="{Binding IsCancel}"
                                         IsReal="{Binding IsReal}"
                                         IsEnabled="{Binding IsEnabled}"
-                                        Margin="0 0 0 20">
+                                        Margin="5 0 5 10">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -61,13 +69,18 @@
             <comps:SectionHeader HeaderText="{Binding SectionSelectEncoder}"
                                  Margin="0 0 0 20" />
             <ItemsControl ItemsSource="{Binding EncodersZone}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <comps:ItemCard DataContext="{Binding}"
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
                                         IsReal="{Binding IsReal}"
-                                        Margin="0 0 0 20">
+                                        Margin="5 0 5 10">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -87,13 +100,18 @@
             <comps:SectionHeader HeaderText="{Binding SectionSelectAnalytics}"
                                  Margin="0 0 0 20" />
             <ItemsControl ItemsSource="{Binding AnalyticsZone}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <comps:ItemCard DataContext="{Binding}"
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
                                         IsReal="{Binding IsReal}"
-                                        Margin="0 0 0 20">
+                                        Margin="5 0 5 10">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -110,6 +128,7 @@
             </ItemsControl>
 
             <comps:TwoButtonGroup DataContext="{Binding AnalyzeSrcButtons}"
+                                  ButtonHeight="30"
                                   Button1Command="{Binding Cmd1}"
                                   Button2Command="{Binding Cmd2}"
                                   Button1IsEnabled="{Binding B2_1IsEnabled}"
@@ -142,13 +161,18 @@
             <comps:SectionHeader HeaderText="{Binding SectionSelectDependencies}"
                                  Margin="0 0 0 20" />
             <ItemsControl ItemsSource="{Binding DependenciesZone}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <comps:ItemCard DataContext="{Binding}"
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
                                         IsReal="{Binding IsReal}"
-                                        Margin="0 0 0 20">
+                                        Margin="5 0 5 10">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -168,6 +192,11 @@
             <comps:SectionHeader HeaderText="{Binding SectionImportSource}"
                                  Margin="0 0 0 20" />
             <ItemsControl ItemsSource="{Binding VideoSrcImportZone}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <comps:ItemCard DataContext="{Binding}"
@@ -176,7 +205,7 @@
                                         IsReal="{Binding IsReal}"
                                         EnableRealCheck="False"
                                         IsEnabled="{Binding IsEnabled}"
-                                        Margin="0 0 0 20">
+                                        Margin="5 0 5 10">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -194,6 +223,11 @@
 
             
             <ItemsControl ItemsSource="{Binding ScriptSrcImportZone}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <comps:ItemCard DataContext="{Binding}"
@@ -202,7 +236,7 @@
                                         IsReal="{Binding IsReal}"
                                         EnableRealCheck="False"
                                         IsEnabled="{Binding IsEnabled}"
-                                        Margin="0 0 0 20">
+                                        Margin="5 0 5 10">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -219,6 +253,7 @@
             </ItemsControl>
 
             <comps:TwoButtonGroup DataContext="{Binding ScriptScbButtons}"
+                                  ButtonHeight="30"
                                   Button1Command="{Binding Cmd1}"
                                   Button2Command="{Binding Cmd2}"
                                   Button1IsEnabled="{Binding B2_1IsEnabled}"
@@ -234,6 +269,7 @@
             
             <!-- Inspect and bypass blocking checks -->
             <comps:TwoButtonGroup DataContext="{Binding InspBypsChkButtons}"
+                                  ButtonHeight="30"
                                   Button1Command="{Binding Cmd1}"
                                   Button2Command="{Binding Cmd2}"
                                   Button1IsEnabled="{Binding B2_1IsEnabled}"
@@ -244,6 +280,11 @@
             <comps:SectionHeader HeaderText="{Binding SectionEncodingConfigs}"
                                  Margin="0 0 0 20" />
             <ItemsControl ItemsSource="{Binding EncSettingsZone}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <comps:ItemCard DataContext="{Binding}"
@@ -252,7 +293,7 @@
                                         IsReal="{Binding IsReal}"
                                         EnableRealCheck="False"
                                         IsEnabled="{Binding IsEnabled}"
-                                        Margin="0 0 0 20" />
+                                        Margin="5 0 5 10" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -265,6 +306,7 @@
 
             <!-- Inspect and bypass encoder pre-check blocking checks -->
             <comps:TwoButtonGroup DataContext="{Binding InspBypsEncChkButtons}"
+                                  ButtonHeight="30"
                                   Button1Command="{Binding Cmd1}"
                                   Button2Command="{Binding Cmd2}"
                                   Button1IsEnabled="{Binding B2_1IsEnabled}"
@@ -275,6 +317,7 @@
                                   Margin="0 0 0 20" />
 
             <comps:ThreeButtonGroup DataContext="{Binding EncStartButtons}"
+                                    ButtonHeight="30"
                                     Button1Command="{Binding Cmd1}"
                                     Button2Command="{Binding Cmd2}"
                                     Button3Command="{Binding Cmd3}"

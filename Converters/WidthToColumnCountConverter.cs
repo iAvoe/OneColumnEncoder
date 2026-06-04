@@ -10,7 +10,7 @@ namespace OneColumnEncoder.Converters
         {
             if (value is double width)
             {
-                return width > 560 ? 2 : 1;
+                return width > 500 ? 2 : 1;
             }
             return 1;
         }

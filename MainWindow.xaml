@@ -6,9 +6,9 @@
         xmlns:local="clr-namespace:OneColumnEncoder"
         xmlns:views="clr-namespace:OneColumnEncoder.Views"
         mc:Ignorable="d"
-        Title="1cenc"
-        Width="460"
-        Height="1080">
+        Title="1cenc (Now is actually 2c)"
+        Width="800"
+        Height="1100">
     <ScrollViewer VerticalScrollBarVisibility="Hidden"
                   HorizontalScrollBarVisibility="Hidden">
         <!-- DataContext is inherited from parent (MainVM), so there is no binding needed here -->
