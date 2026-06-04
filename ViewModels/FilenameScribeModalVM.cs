@@ -125,7 +125,7 @@ namespace OneColumnEncoder.ViewModels
             VideoFilenameFontSize = RotatingFontSizes[(index + 1) % RotatingFontSizes.Length];
         }
 
-        // Filename is good, proceed to select path
+        // Filename is good, proceed to select path & write back to MainUI outputSetting ItemCard
         private void Confirm()
         {
             if (!CanConfirm()) return;
@@ -141,7 +141,7 @@ namespace OneColumnEncoder.ViewModels
 
             if (dialog.ShowDialog() != true) return;
 
-            _outputSettingItem.P2TextData = Path.Combine(dialog.FolderName, filename);
+            _outputSettingItem.P2TextData = dialog.FolderName;
             _outputSettingItem.P1TextData = filename;
             _closeAction();
         }

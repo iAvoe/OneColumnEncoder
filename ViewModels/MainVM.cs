@@ -525,10 +525,8 @@ namespace OneColumnEncoder.ViewModels
             item.R2Command = new ClearToolItemCmd(item, () => OnSourceCleared(kind));
             item.PropertyChanged += OnVideoSrcItemPropertyChanged;
         }
-        private static void WireUpStaticClearCmd(ToolItemCardVM item)
-        {
+        private static void WireUpStaticClearCmd(ToolItemCardVM item) =>
             item.R2Command = new ClearToolItemCmd(item);
-        }
         private void WireUpEncSettingsCmds()
         {
             if (EncSettingsZone.Count > 1)
@@ -769,7 +767,7 @@ namespace OneColumnEncoder.ViewModels
                 upstreamInputPath,
                 encoderExeName,
                 encoder.P2TextData,
-                outputSetting.P2TextData,
+                Path.Combine(outputSetting.P2TextData, outputSetting.P1TextData ?? string.Empty),
                 EncoderConfM.Load(),
                 _appDataM.Tools.VspipeY4mArg,
                 SourceFfprobeJson: _srcVideoAnalysis.RawJson);

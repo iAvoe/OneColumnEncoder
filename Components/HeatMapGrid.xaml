@@ -11,26 +11,21 @@
         <conv:HeatLevelToBrushConverter x:Key="HeatLevelToBrush" />
     </UserControl.Resources>
 
-    <Border BorderBrush="{StaticResource GlobalPrimary}"
-            BorderThickness="1"
-            Background="Transparent">
-        <ItemsControl ItemsSource="{Binding Items, RelativeSource={RelativeSource AncestorType=UserControl}}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid Columns="{Binding Columns, RelativeSource={RelativeSource AncestorType=UserControl}}" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Border Width="{Binding CellSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                            Height="{Binding CellSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                            Margin="0.5"
-                            BorderBrush="{StaticResource GlobalPrimary}"
-                            BorderThickness="0.5"
-                            Background="{Binding Level, Converter={StaticResource HeatLevelToBrush}}"
-                            ToolTip="{Binding Tooltip}" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-    </Border>
+    <ItemsControl ItemsSource="{Binding Items, RelativeSource={RelativeSource AncestorType=UserControl}}">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <UniformGrid Columns="{Binding Columns, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <Border Width="{Binding CellSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Height="{Binding CellSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Margin="0.5"
+                        CornerRadius="2"
+                        Background="{Binding Level, Converter={StaticResource HeatLevelToBrush}}"
+                        ToolTip="{Binding Tooltip}" />
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
 </UserControl>

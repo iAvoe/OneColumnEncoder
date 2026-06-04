@@ -19,6 +19,12 @@ using System.Windows.Threading;
 
 namespace OneColumnEncoder.ViewModels
 {
+    /// <summary>
+    /// XAML:
+    /// Progress Bar → RAM Heatmap → RAM Distribution → Heatmap block indicators
+    /// → RAM Sampling Interval → RAM Sampling Freeze/Reset → Standard Out Log (Two Columns)
+    /// → Standard Error (Two Columns) → Bottom Status → FiveButtonGroups
+    /// </summary>
     public partial class EncodingMonitorModalVM : BaseVM
     {
         private const int HeatMapRows = 16;
@@ -375,9 +381,9 @@ namespace OneColumnEncoder.ViewModels
                         Stream upstreamStdout = upstream.StandardOutput.BaseStream;
                         Stream encoderStdin = encoder.StandardInput.BaseStream;
                         int bytesRead;
-                        while ((bytesRead = await upstreamStdout.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) > 0)
+                        while ((bytesRead = await upstreamStdout.ReadAsync(buffer, cancellationToken)) > 0)
                         {
-                            await encoderStdin.WriteAsync(buffer, 0, bytesRead, cancellationToken);
+                            await encoderStdin.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
                             await encoderStdin.FlushAsync(cancellationToken);
                         }
                         encoder.StandardInput.Close();

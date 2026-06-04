@@ -221,7 +221,7 @@
                             <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}" Stretch="Uniform" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
-                    <TextBlock Text="{Binding DragReportHint}"
+                    <TextBlock Text="{Binding DragLogReportHint}"
                                FontSize="9"
                                Foreground="{StaticResource GlobalSecondary}"
                                Margin="3.5 0 0 0" />
