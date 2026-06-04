@@ -29,6 +29,12 @@ namespace OneColumnEncoder.ViewModels
     {
         private const int HeatMapRows = 16;
         private const int HeatMapColumns = 32;
+        private EncodingMonitorModalLangProviderM _lang = new(UILangProviderM.Current.LanguageCode);
+        public EncodingMonitorModalLangProviderM Lang
+        {
+            get => _lang;
+            private set => SetProperty(ref _lang, value);
+        }
         private readonly ModalNavS _modalNavS;
         private readonly Action _closeAction;
         private readonly EncodingPipelineRequest _request;
@@ -53,30 +59,38 @@ namespace OneColumnEncoder.ViewModels
         private int? _exitCode;
         private bool _success;
 
-        public string WindowTitle => _isSample ? "1cenc Sample Encoding Monitor" : "1cenc Encoding Monitor";
-        public static string ProgressTitle => "进度";
-        public static string MemoryTitle => "物理页监视器（32x16）";
-        public static string DistributionTitle => "区段分布";
-        public static string BlockDetailsTitle => "单块详情（光标悬停时显示）";
-        public static string LogTitle => "上下游程序 stdout";
-        public static string DragLogReportHint => "拖拽窗口以调整日志显示面积；拖拽日志分界线以调整宽度";
-        public static string CurrentSizeLabel => "当前大小/GB";
-        public static string EstimatedSizeLabel => "预计总大小/GB";
-        public static string WrittenFramesLabel => "已写入帧数";
-        public static string SampleIntervalLabel => "采样间隔";
-        public static string StartedAtLabel => "开始时间 hh:mm:ss";
-        public static string ElapsedLabel => "已用时 hh:mm:ss";
-        public static string RemainingLabel => "预计剩余 hh:mm:ss";
-        public static string CompleteAtLabel => "预计完成 hh:mm:ss";
-        public static string EncoderFileLabel => "编码器文件名";
-        public static string RateControlLabel => "ABR Mbps 或 CRF 值";
-        public static string ArgsLabel => "其他参数预设名";
-        public static string SmallNoteText => "本软件不支持数量压制进度，中断将丢弃任务进度";
+        public string WindowTitle => _isSample ? Lang.WindowTitleSampleMode : Lang.WindowTitle;
+        public string ProgressTitle => Lang.ProgressTitle;
+        public string MemoryTitle => Lang.MemoryTitle;
+        public string DistributionTitle => Lang.DistributionTitle;
+        public string BlockDetailsTitle => Lang.BlockDetailsTitle;
+        public string LogTitle => Lang.LogTitle;
+        public string DragLogReportHint => Lang.DragLogReportHint;
+        public string CurrentSizeLabel => Lang.CurrentSizeLabel;
+        public string EstimatedSizeLabel => Lang.EstimatedSizeLabel;
+        public string WrittenFramesLabel => Lang.WrittenFramesLabel;
+        public string SampleIntervalLabel => Lang.SampleIntervalLabel;
+        public string StartedAtLabel => Lang.StartedAtLabel;
+        public string ElapsedLabel => Lang.ElapsedLabel;
+        public string RemainingLabel => Lang.RemainingLabel;
+        public string CompleteAtLabel => Lang.CompleteAtLabel;
+        public string EncoderFileLabel => Lang.EncoderFileLabel;
+        public string RateControlLabel => Lang.RateControlLabel;
+        public string ArgsLabel => Lang.ArgsLabel;
+        public string SmallNoteText => Lang.SmallNoteText;
+        public string DistributionUpstreamLabel => Lang.DistributionUpstreamLabel;
+        public string DistributionDownstreamLabel => Lang.DistributionDownstreamLabel;
+        public string DistributionOtherLabel => Lang.DistributionOtherLabel;
+        public string DistributionCacheLabel => Lang.DistributionCacheLabel;
+        public string BlockDetailPosLabel => Lang.BlockDetailPosLabel;
+        public string BlockDetailSegmentLabel => Lang.BlockDetailSegmentLabel;
+        public string BlockDetailHeatLabel => Lang.BlockDetailHeatLabel;
+        public string StderrTitle => Lang.StderrTitle;
 
         public ObservableCollection<ColumnTextItemM> MetricColumns { get; } = [];
         public ObservableCollection<ColumnTextItemM> FooterColumns { get; } = [];
         public ObservableCollection<HeatMapCellM> HeatMapA { get; } = [];
-        public ObservableCollection<string> SampleIntervalTickLabels { get; } = ["0 (RT)", "60S", "120S", "180S", "240S"];
+        public ObservableCollection<string> SampleIntervalTickLabels { get; } = [];
         public ButtonGroupVM MonitorButtons { get; }
         public ButtonGroupVM LogButtons { get; }
         public ButtonGroupVM ReportButtons { get; }
@@ -112,19 +126,19 @@ namespace OneColumnEncoder.ViewModels
             set
             {
                 if (!SetProperty(ref _isFrozen, value)) return;
-                FreezeOrContinueText = _isFrozen ? "继续监测" : "冻结 / 继续监测";
+                FreezeOrContinueText = _isFrozen ? Lang.ContinueMonitoringText : Lang.FreezeContinueText;
                 MonitorButtons.B2_1Text = FreezeOrContinueText;
             }
         }
 
-        private string _freezeOrContinueText = "冻结 / 继续监测";
+        private string _freezeOrContinueText = string.Empty;
         public string FreezeOrContinueText
         {
             get => _freezeOrContinueText;
             private set => SetProperty(ref _freezeOrContinueText, value);
         }
 
-        private string _statusText = "准备启动";
+        private string _statusText = string.Empty;
         public string StatusText
         {
             get => _statusText;
@@ -223,6 +237,8 @@ namespace OneColumnEncoder.ViewModels
             _appConfM = appConfM;
             _isSample = isSample;
 
+            RefreshLanguageState();
+
             FreezeOrContinueCmd = new ActionCmd(_ => IsFrozen = !IsFrozen);
             ResetStatsCmd = new ActionCmd(_ => ResetStats());
             CloseCmd = new CloseModalCmd(() =>
@@ -231,10 +247,10 @@ namespace OneColumnEncoder.ViewModels
                 _closeAction();
             });
 
-            MonitorButtons = ButtonGroupVM.CreateTwoButton(FreezeOrContinueText, "重置占用值", FreezeOrContinueCmd, ResetStatsCmd);
+            MonitorButtons = ButtonGroupVM.CreateTwoButton(FreezeOrContinueText, Lang.ResetUsageText, FreezeOrContinueCmd, ResetStatsCmd);
 
             LogButtons = ButtonGroupVM.CreateFiveButton(
-                "保存上游 stdout", "保存下游 stdout", "复制上游 stdout", "复制下游 stdout", "轮换日志字号",
+                Lang.SaveUpstreamStdoutText, Lang.SaveDownstreamStdoutText, Lang.CopyUpstreamStdoutText, Lang.CopyDownstreamStdoutText, Lang.RotateLogFontSizeText,
                 new ActionCmd(_ => SaveText(UpstreamLogText, "upstream-stdout.txt")),
                 new ActionCmd(_ => SaveText(DownstreamLogText, "downstream-stdout.txt")),
                 new ActionCmd(_ => CopyText(UpstreamLogText)),
@@ -242,7 +258,7 @@ namespace OneColumnEncoder.ViewModels
                 new ActionCmd(_ => RotateLogFontSize()));
 
             ReportButtons = ButtonGroupVM.CreateFiveButton(
-                "保存上游 stderr", "保存下游 stderr", "复制上游 stderr", "复制下游 stderr", "轮换日志字号",
+                Lang.SaveUpstreamStderrText, Lang.SaveDownstreamStderrText, Lang.CopyUpstreamStderrText, Lang.CopyDownstreamStderrText, Lang.RotateLogFontSizeText,
                 new ActionCmd(_ => SaveText(UpstreamReportText, "upstream-stderr.txt")),
                 new ActionCmd(_ => SaveText(DownstreamReportText, "downstream-stderr.txt")),
                 new ActionCmd(_ => CopyText(UpstreamReportText)),
@@ -250,9 +266,9 @@ namespace OneColumnEncoder.ViewModels
                 new ActionCmd(_ => RotateLogFontSize()));
 
             FinishButtons = ButtonGroupVM.CreateFiveButton(
-                "打开输出目录", "查看编码参数", "中断（保留结果）", "强制退出", "关闭窗口（完成后启用）",
+                Lang.OpenOutputDirectoryText, Lang.ViewEncodingCommandText, Lang.InterruptKeepResultText, Lang.ForceQuitText, Lang.CloseAfterDoneText,
                 new ActionCmd(_ => OpenOutputDirectory()),
-                new ActionCmd(_ => new OpenInfoOrDbgModalCmd(_modalNavS, "Encoding Command", _command.CommandLine).Execute(null)),
+                new ActionCmd(_ => new OpenInfoOrDbgModalCmd(_modalNavS, Lang.EncodingCommandTitle, _command.CommandLine).Execute(null)),
                 new ActionCmd(_ => TryInterrupt()),
                 new ActionCmd(_ => TryKill()),
                 CloseCmd);
@@ -263,6 +279,7 @@ namespace OneColumnEncoder.ViewModels
             BuildHeatMaps();
             AppendInitialLogs();
             _timer.Tick += OnTimerTick;
+            UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
 
         private double _logFontSize = 11;
@@ -285,13 +302,13 @@ namespace OneColumnEncoder.ViewModels
         private void BuildMetrics()
         {
             MetricColumns.Clear();
-            MetricColumns.Add(new ColumnTextItemM { TopText = "物理内存", MainText = "XX.X GB", BottomText = "共 XX GB" });
-            MetricColumns.Add(new ColumnTextItemM { TopText = "已提交", MainText = "XX.X GB", BottomText = "限额 XX GB" });
-            MetricColumns.Add(new ColumnTextItemM { TopText = "工作集峰值", MainText = "XX.X GB", BottomText = "当前 XX GB" });
-            MetricColumns.Add(new ColumnTextItemM { TopText = "页文件", MainText = "XX.X GB", BottomText = "总计 XX GB" });
-            MetricColumns.Add(new ColumnTextItemM { TopText = "页错误", MainText = "XX,XXX", BottomText = "硬错误 XX" });
-            MetricColumns.Add(new ColumnTextItemM { TopText = "带宽峰值", MainText = "XX.X GBps", BottomText = "当前 XX.X GBps" });
-            MetricColumns.Add(new ColumnTextItemM { TopText = "内存压力", MainText = "中", BottomText = "XXX%" });
+            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.PhysicalMemoryTopText, MainText = Lang.PhysicalMemoryMainText, BottomText = Lang.PhysicalMemoryBottomText });
+            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.CommittedMemoryTopText, MainText = Lang.CommittedMemoryMainText, BottomText = Lang.CommittedMemoryBottomText });
+            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.WorkingSetPeakTopText, MainText = Lang.WorkingSetPeakMainText, BottomText = Lang.WorkingSetPeakBottomText });
+            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.PageFileTopText, MainText = Lang.PageFileMainText, BottomText = Lang.PageFileBottomText });
+            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.PageFaultTopText, MainText = Lang.PageFaultMainText, BottomText = Lang.PageFaultBottomText });
+            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.BandwidthPeakTopText, MainText = Lang.BandwidthPeakMainText, BottomText = Lang.BandwidthPeakBottomText });
+            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.MemoryPressureTopText, MainText = Lang.MemoryPressureMediumText, BottomText = Lang.MemoryPressureBottomText });
         }
 
         private void BuildFooter()
@@ -311,22 +328,22 @@ namespace OneColumnEncoder.ViewModels
             HeatMapA.Clear();
             for (int i = 0; i < HeatMapRows * HeatMapColumns; i++)
             {
-                HeatMapA.Add(new HeatMapCellM { Level = 0, Tooltip = $"Block {i}" });
+                HeatMapA.Add(new HeatMapCellM { Level = 0, Tooltip = string.Format(Lang.BlockTooltipFormat, i) });
             }
         }
 
         private void AppendInitialLogs()
         {
-            AppendLine(_upstreamStdoutBuilder, $"[upstream stdout :: {_request.UpstreamExeName} pipe → {_request.EncoderExeName}]");
-            AppendLine(_downstreamStdoutBuilder, $"[downstream stdout :: {_request.EncoderExeName}]");
-            AppendLine(_upstreamStderrBuilder, $"Upstream: {_request.UpstreamExeName}");
-            AppendLine(_upstreamStderrBuilder, $"Executable: {_request.UpstreamPath}");
-            AppendLine(_upstreamStderrBuilder, $"Input: {_request.UpstreamInputPath}");
-            AppendLine(_upstreamStderrBuilder, $"Arguments: {_command.UpstreamArgs}");
-            AppendLine(_downstreamStderrBuilder, $"Encoder: {_request.EncoderExeName}");
-            AppendLine(_downstreamStderrBuilder, $"Executable: {_request.EncoderPath}");
-            AppendLine(_downstreamStderrBuilder, $"Output: {_request.OutputPath}");
-            AppendLine(_downstreamStderrBuilder, $"Arguments: {_command.EncoderArgs}");
+            AppendLine(_upstreamStdoutBuilder, string.Format(Lang.UpstreamStdoutHeaderFormat, _request.UpstreamExeName, _request.EncoderExeName));
+            AppendLine(_downstreamStdoutBuilder, string.Format(Lang.DownstreamStdoutHeaderFormat, _request.EncoderExeName));
+            AppendLine(_upstreamStderrBuilder, $"{Lang.UpstreamLabel}: {_request.UpstreamExeName}");
+            AppendLine(_upstreamStderrBuilder, $"{Lang.ExecutableLabel}: {_request.UpstreamPath}");
+            AppendLine(_upstreamStderrBuilder, $"{Lang.InputLabel}: {_request.UpstreamInputPath}");
+            AppendLine(_upstreamStderrBuilder, $"{Lang.ArgumentsLabel}: {_command.UpstreamArgs}");
+            AppendLine(_downstreamStderrBuilder, $"{Lang.EncoderLabel}: {_request.EncoderExeName}");
+            AppendLine(_downstreamStderrBuilder, $"{Lang.ExecutableLabel}: {_request.EncoderPath}");
+            AppendLine(_downstreamStderrBuilder, $"{Lang.OutputLabel}: {_request.OutputPath}");
+            AppendLine(_downstreamStderrBuilder, $"{Lang.ArgumentsLabel}: {_command.EncoderArgs}");
             FlushLogsToProperties();
         }
 
@@ -337,7 +354,7 @@ namespace OneColumnEncoder.ViewModels
 
             try
             {
-                StatusText = "正在压制";
+                StatusText = Lang.EncodingText;
                 using Process upstream = new()
                 {
                     StartInfo = new ProcessStartInfo
@@ -391,7 +408,7 @@ namespace OneColumnEncoder.ViewModels
                     catch (OperationCanceledException) { }
                     catch (Exception ex)
                     {
-                        EnqueueProcessLine(ProcessLogKind.UpstreamStderr, $"Pipe error: {ex.Message}");
+                        EnqueueProcessLine(ProcessLogKind.UpstreamStderr, Lang.PipeErrorPrefix + ex.Message);
                     }
                 }, cancellationToken);
 
@@ -413,13 +430,13 @@ namespace OneColumnEncoder.ViewModels
             }
             catch (OperationCanceledException)
             {
-                StatusText = "已中断";
+                StatusText = Lang.InterruptedText;
                 processOutput = GetCombinedOutput();
             }
             catch (Exception ex)
             {
                 EnqueueProcessLine(ProcessLogKind.DownstreamStderr, ex.ToString());
-                StatusText = "压制失败";
+                StatusText = Lang.FailedText;
                 processOutput = GetCombinedOutput();
             }
             finally
@@ -427,7 +444,7 @@ namespace OneColumnEncoder.ViewModels
                 _stopwatch.Stop();
                 _timer.Stop();
                 ProgressValue = _success ? 100 : ProgressValue;
-                StatusText = _success ? "压制完成" : StatusText == "正在压制" ? "压制失败" : StatusText;
+                StatusText = _success ? Lang.CompletedText : StatusText == Lang.EncodingText ? Lang.FailedText : StatusText;
                 FlushLogsToProperties();
                 UpdateFooterTimes(final: true);
                 EnableCloseButton();
@@ -595,7 +612,7 @@ namespace OneColumnEncoder.ViewModels
             MetricColumns[3].MainText = $"{Math.Max(0.1, outputGb / 4d + 0.1):0.0} GB";
             MetricColumns[4].MainText = $"{Math.Min(99999, (int)(seconds * 3)):N0}";
             MetricColumns[5].MainText = $"{Math.Max(0.1, outputGb / seconds):0.0} GBps";
-            MetricColumns[6].MainText = ProgressValue < 75 ? "中" : "高";
+            MetricColumns[6].MainText = ProgressValue < 75 ? Lang.MemoryPressureMediumText : Lang.MemoryPressureHighText;
             MetricColumns[6].BottomText = $"{Math.Min(100, 35 + ProgressValue / 2)}%";
             DistributionDownstream = $"{outputGb * 1024:0} MB";
         }
@@ -665,7 +682,7 @@ namespace OneColumnEncoder.ViewModels
             foreach (ColumnTextItemM item in MetricColumns)
                 item.BottomText = item.BottomText;
             ProgressValue = 0;
-            StatusText = "已重置占用值";
+            StatusText = Lang.ResetUsageStatusText;
         }
 
         private void TryInterrupt()
@@ -675,7 +692,7 @@ namespace OneColumnEncoder.ViewModels
                 _cts?.Cancel();
                 _encoderProcess?.CloseMainWindow();
                 _upstreamProcess?.CloseMainWindow();
-                StatusText = "正在中断";
+                StatusText = Lang.InterruptingText;
             }
             catch (Exception ex)
             {
@@ -690,7 +707,7 @@ namespace OneColumnEncoder.ViewModels
                 _cts?.Cancel();
                 _encoderProcess?.Kill(entireProcessTree: true);
                 _upstreamProcess?.Kill(entireProcessTree: true);
-                StatusText = "已强制退出";
+                StatusText = Lang.ForcedExitStatusText;
             }
             catch (Exception ex)
             {
@@ -765,12 +782,12 @@ namespace OneColumnEncoder.ViewModels
         private string GetRateControlText()
         {
             EncoderConfM conf = _request.EncoderConf;
-            bool abr = conf.RateControlMode.Equals("ABR", StringComparison.OrdinalIgnoreCase);
+            bool abr = conf.RateControlMode.Equals(Lang.ABRText, StringComparison.OrdinalIgnoreCase);
             return _request.EncoderExeName.ToLowerInvariant() switch
             {
-                "x264.exe" => abr ? $"ABR {conf.X264Abr} Mbps" : $"CRF {conf.X264Crf}",
-                "x265.exe" => abr ? $"ABR {conf.X265Abr} Mbps" : $"CRF {conf.X265Crf}",
-                "svtav1encapp.exe" => abr ? $"ABR {conf.SvtAv1Abr} Mbps" : $"CRF {conf.SvtAv1Crf}",
+                "x264.exe" => abr ? $"{Lang.ABRText} {conf.X264Abr} Mbps" : $"{Lang.CRFText} {conf.X264Crf}",
+                "x265.exe" => abr ? $"{Lang.ABRText} {conf.X265Abr} Mbps" : $"{Lang.CRFText} {conf.X265Crf}",
+                "svtav1encapp.exe" => abr ? $"{Lang.ABRText} {conf.SvtAv1Abr} Mbps" : $"{Lang.CRFText} {conf.SvtAv1Crf}",
                 _ => conf.RateControlMode
             };
         }
@@ -780,19 +797,87 @@ namespace OneColumnEncoder.ViewModels
             EncoderConfM conf = _request.EncoderConf;
             return _request.EncoderExeName.ToLowerInvariant() switch
             {
-                "x264.exe" => $"x264 mode {conf.X264Mode}",
-                "x265.exe" => $"x265 mode {conf.X265Mode}",
-                "svtav1encapp.exe" => $"SVT-AV1 mode {conf.SvtAv1Mode}",
-                _ => "N/A"
+                "x264.exe" => $"x264 {Lang.ModeText} {conf.X264Mode}",
+                "x265.exe" => $"x265 {Lang.ModeText} {conf.X265Mode}",
+                "svtav1encapp.exe" => $"SVT-AV1 {Lang.ModeText} {conf.SvtAv1Mode}",
+                _ => Lang.NotAvailableText
             };
+        }
+
+        private void RefreshLanguageState()
+        {
+            Lang = new EncodingMonitorModalLangProviderM(UILangProviderM.Current.LanguageCode);
+            SampleIntervalTickLabels.Clear();
+            foreach (string label in Lang.SampleIntervalTickLabels)
+                SampleIntervalTickLabels.Add(label);
+            FreezeOrContinueText = _isFrozen ? Lang.ContinueMonitoringText : Lang.FreezeContinueText;
+            StatusText = Lang.ReadyToStartText;
+        }
+
+        private void RefreshLanguageBindings()
+        {
+            Lang = new EncodingMonitorModalLangProviderM(UILangProviderM.Current.LanguageCode);
+            FreezeOrContinueText = _isFrozen ? Lang.ContinueMonitoringText : Lang.FreezeContinueText;
+            MonitorButtons.B2_1Text = FreezeOrContinueText;
+            MonitorButtons.B2_2Text = Lang.ResetUsageText;
+            LogButtons.B5_1Text = Lang.SaveUpstreamStdoutText;
+            LogButtons.B5_2Text = Lang.SaveDownstreamStdoutText;
+            LogButtons.B5_3Text = Lang.CopyUpstreamStdoutText;
+            LogButtons.B5_4Text = Lang.CopyDownstreamStdoutText;
+            LogButtons.B5_5Text = Lang.RotateLogFontSizeText;
+            ReportButtons.B5_1Text = Lang.SaveUpstreamStderrText;
+            ReportButtons.B5_2Text = Lang.SaveDownstreamStderrText;
+            ReportButtons.B5_3Text = Lang.CopyUpstreamStderrText;
+            ReportButtons.B5_4Text = Lang.CopyDownstreamStderrText;
+            ReportButtons.B5_5Text = Lang.RotateLogFontSizeText;
+            FinishButtons.B5_1Text = Lang.OpenOutputDirectoryText;
+            FinishButtons.B5_2Text = Lang.ViewEncodingCommandText;
+            FinishButtons.B5_3Text = Lang.InterruptKeepResultText;
+            FinishButtons.B5_4Text = Lang.ForceQuitText;
+            FinishButtons.B5_5Text = Lang.CloseAfterDoneText;
+
+            OnPropertyChanged(nameof(WindowTitle));
+            OnPropertyChanged(nameof(ProgressTitle));
+            OnPropertyChanged(nameof(MemoryTitle));
+            OnPropertyChanged(nameof(DistributionTitle));
+            OnPropertyChanged(nameof(BlockDetailsTitle));
+            OnPropertyChanged(nameof(LogTitle));
+            OnPropertyChanged(nameof(DragLogReportHint));
+            OnPropertyChanged(nameof(CurrentSizeLabel));
+            OnPropertyChanged(nameof(EstimatedSizeLabel));
+            OnPropertyChanged(nameof(WrittenFramesLabel));
+            OnPropertyChanged(nameof(SampleIntervalLabel));
+            OnPropertyChanged(nameof(StartedAtLabel));
+            OnPropertyChanged(nameof(ElapsedLabel));
+            OnPropertyChanged(nameof(RemainingLabel));
+            OnPropertyChanged(nameof(CompleteAtLabel));
+            OnPropertyChanged(nameof(EncoderFileLabel));
+            OnPropertyChanged(nameof(RateControlLabel));
+            OnPropertyChanged(nameof(ArgsLabel));
+            OnPropertyChanged(nameof(SmallNoteText));
+            OnPropertyChanged(nameof(DistributionUpstreamLabel));
+            OnPropertyChanged(nameof(DistributionDownstreamLabel));
+            OnPropertyChanged(nameof(DistributionOtherLabel));
+            OnPropertyChanged(nameof(DistributionCacheLabel));
+            OnPropertyChanged(nameof(BlockDetailPosLabel));
+            OnPropertyChanged(nameof(BlockDetailSegmentLabel));
+            OnPropertyChanged(nameof(BlockDetailHeatLabel));
+            OnPropertyChanged(nameof(StderrTitle));
+            OnPropertyChanged(nameof(SampleIntervalTickLabels));
         }
 
         public override void Dispose()
         {
             _timer.Stop();
             _timer.Tick -= OnTimerTick;
+            UILangProviderM.CurrentChanged -= OnLanguageChanged;
             _cts?.Dispose();
             base.Dispose();
+        }
+
+        private void OnLanguageChanged()
+        {
+            RefreshLanguageBindings();
         }
 
         private enum ProcessLogKind

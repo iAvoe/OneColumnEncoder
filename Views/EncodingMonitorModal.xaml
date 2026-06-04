@@ -113,13 +113,13 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Text="上游程序" FontSize="13" />
+                        <TextBlock Grid.Row="0" Text="{Binding DistributionUpstreamLabel}" FontSize="13" />
                         <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding DistributionUpstream}" FontSize="13" />
-                        <TextBlock Grid.Row="1" Text="下游程序（编码器）" FontSize="13" Margin="0 14 0 0" />
+                        <TextBlock Grid.Row="1" Text="{Binding DistributionDownstreamLabel}" FontSize="13" Margin="0 14 0 0" />
                         <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding DistributionDownstream}" FontSize="13" Margin="0 14 0 0" />
-                        <TextBlock Grid.Row="2" Text="其它程序" FontSize="13" Margin="0 14 0 0" />
+                        <TextBlock Grid.Row="2" Text="{Binding DistributionOtherLabel}" FontSize="13" Margin="0 14 0 0" />
                         <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding DistributionOther}" FontSize="13" Margin="0 14 0 0" />
-                        <TextBlock Grid.Row="3" Text="系统缓存" FontSize="13" Margin="0 14 0 0" />
+                        <TextBlock Grid.Row="3" Text="{Binding DistributionCacheLabel}" FontSize="13" Margin="0 14 0 0" />
                         <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding DistributionCache}" FontSize="13" Margin="0 14 0 0" />
                     </Grid>
 
@@ -136,11 +136,11 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Text="号，行，列，大小" FontSize="13" Foreground="{StaticResource GlobalSecondary}" />
+                        <TextBlock Grid.Row="0" Text="{Binding BlockDetailPosLabel}" FontSize="13" Foreground="{StaticResource GlobalSecondary}" />
                         <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding BlockNo}" FontSize="13" />
-                        <TextBlock Grid.Row="1" Text="隶属区段" FontSize="13" Foreground="{StaticResource GlobalSecondary}" Margin="0 12 0 0" />
+                        <TextBlock Grid.Row="1" Text="{Binding BlockDetailSegmentLabel}" FontSize="13" Foreground="{StaticResource GlobalSecondary}" Margin="0 12 0 0" />
                         <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding BlockSegment}" FontSize="13" Margin="0 12 0 0" />
-                        <TextBlock Grid.Row="2" Text="热度" FontSize="13" Foreground="{StaticResource GlobalSecondary}" Margin="0 12 0 0" />
+                        <TextBlock Grid.Row="2" Text="{Binding BlockDetailHeatLabel}" FontSize="13" Foreground="{StaticResource GlobalSecondary}" Margin="0 12 0 0" />
                         <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding BlockHeat}" FontSize="13" Margin="0 12 0 0" />
                     </Grid>
                 </StackPanel>
@@ -196,7 +196,7 @@
                         Margin="0 3 0 0">
 
                 <cards:SplitTextCard Margin="0 14 0 0"
-                                     Title="上游 stderr | 下游 stderr"
+                                     Title="{Binding StderrTitle}"
                                      LeftText="{Binding UpstreamReportText, Mode=TwoWay}"
                                      RightText="{Binding DownstreamReportText, Mode=TwoWay}"
                                      TextBoxMinHeight="90"
