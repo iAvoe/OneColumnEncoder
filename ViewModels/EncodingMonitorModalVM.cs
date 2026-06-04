@@ -400,10 +400,10 @@ namespace OneColumnEncoder.ViewModels
                 // Encoder stderr reader
                 Task encoderStderrTask = ReadStreamAsync(encoder.StandardError, ProcessLogKind.DownstreamStderr, cancellationToken);
 
-                await Task.WhenAll(pipeTask, upstreamStderrTask, encoderStderrTask);
+                await Task.WhenAll(pipeTask, upstreamStderrTask, encoderStderrTask).ConfigureAwait(false);
 
-                upstream.WaitForExit();
-                encoder.WaitForExit();
+                await upstream.WaitForExitAsync(cancellationToken);
+                await encoder.WaitForExitAsync(cancellationToken);
 
                 _exitCode = encoder.ExitCode;
                 _success = _exitCode == 0;
