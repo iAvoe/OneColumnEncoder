@@ -430,7 +430,11 @@ namespace OneColumnEncoder.ViewModels
             try
             {
                 EncodingPipelineRequest? request = _buildRequest();
-                if (request == null) return;
+                if (request == null)
+                {
+                    new OpenInfoOrDbgModalCmd(_modalNavS, "Sample Clip Error", "Missing upstream input path. Make sure a video source or script source is selected for the chosen upstream tool.").Execute(null);
+                    return;
+                }
 
                 EncodingClipRequest clip = BuildClipRequest();
                 EncodingPipelineCommand command = EncodingPipelineH.BuildY4mCommand(request with { Clip = clip });

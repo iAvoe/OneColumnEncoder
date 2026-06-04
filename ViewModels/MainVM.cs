@@ -312,6 +312,7 @@ namespace OneColumnEncoder.ViewModels
                 SrcValidationCard.RefreshSvtav1BitDepthStatus();
 
             RefreshUpstreamToolState();
+            RefreshVspipeAvailability();
             RefreshImportedToolsChecklist();
             // Only mark IsCancel for auto-selected items, user manual selection won't be reverted
             ToolCompatibilityH.RefreshDependencySelectionState(
@@ -374,6 +375,7 @@ namespace OneColumnEncoder.ViewModels
         private void RefreshImportedToolStates()
         {
             RefreshUpstreamToolState();
+            RefreshVspipeAvailability();
             RefreshImportedToolsChecklist();
             ToolCompatibilityH.RefreshDependencySelectionState(
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);

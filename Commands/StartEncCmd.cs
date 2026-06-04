@@ -19,7 +19,14 @@ namespace OneColumnEncoder.Commands
         public override void Execute(object? parameter)
         {
             EncodingPipelineRequest? request = _buildRequest();
-            if (request == null) return;
+            if (request == null)
+            {
+                new OpenWarnModalCmd(
+                    _modalNavS,
+                    "Encoding",
+                    "Missing upstream input path. Make sure a video source or script source is selected for the chosen upstream tool.").Execute(null);
+                return;
+            }
 
             EncodingPipelineCommand command = EncodingPipelineH.BuildY4mCommand(request);
 
