@@ -158,7 +158,7 @@
                                   Value="{Binding SampleIntervalSeconds, Mode=TwoWay}"
                                   TickLabels="{Binding SampleIntervalTickLabels}"
                                   TickCount="5"
-                                  Step="30" />
+                                  Step="1" />
 
             <comps:TwoButtonGroup Grid.Row="5"
                                   Margin="0 10 0 0"

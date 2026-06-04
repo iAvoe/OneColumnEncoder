@@ -22,7 +22,7 @@
                 <Border Width="{Binding CellSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
                         Height="{Binding CellSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
                         Margin="1"
-                        CornerRadius="2"
+                        CornerRadius="2.5"
                         Background="{Binding Level, Converter={StaticResource HeatLevelToBrush}}"
                         ToolTip="{Binding Tooltip}" />
             </DataTemplate>

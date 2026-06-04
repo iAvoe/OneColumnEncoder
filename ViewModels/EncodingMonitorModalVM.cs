@@ -33,6 +33,10 @@ namespace OneColumnEncoder.ViewModels
         private const int HeatMapMaxLevel = 8;
         private const long BytesPerMb = 1024L * 1024L;
         private const long BytesPerGb = 1024L * 1024L * 1024L;
+        private const string PlaceholderGb = "XX.X GB";
+        private const string PlaceholderGbPerSecond = "XX.X GBps";
+        private const string PlaceholderCount = "XX,XXX";
+        private const string PlaceholderPercent = "XXX%";
         private EncodingMonitorModalLangProviderM _lang = new(UILangProviderM.Current.LanguageCode);
         public EncodingMonitorModalLangProviderM Lang
         {
@@ -292,13 +296,13 @@ namespace OneColumnEncoder.ViewModels
         private void BuildMetrics()
         {
             MetricColumns.Clear();
-            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.PhysicalMemoryTopText, MainText = Lang.PhysicalMemoryMainText, BottomText = Lang.PhysicalMemoryBottomText });
-            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.CommittedMemoryTopText, MainText = Lang.CommittedMemoryMainText, BottomText = Lang.CommittedMemoryBottomText });
-            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.WorkingSetPeakTopText, MainText = Lang.WorkingSetPeakMainText, BottomText = Lang.WorkingSetPeakBottomText });
-            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.PageFileTopText, MainText = Lang.PageFileMainText, BottomText = Lang.PageFileBottomText });
-            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.PageFaultTopText, MainText = Lang.PageFaultMainText, BottomText = Lang.PageFaultBottomText });
-            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.BandwidthPeakTopText, MainText = Lang.BandwidthPeakMainText, BottomText = Lang.BandwidthPeakBottomText });
-            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.MemoryPressureTopText, MainText = Lang.MemoryPressureMediumText, BottomText = Lang.MemoryPressureBottomText });
+            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.PhysicalMemoryTopText, MainText = PlaceholderGb, BottomText = Lang.PhysicalMemoryBottomText });
+            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.CommittedMemoryTopText, MainText = PlaceholderGb, BottomText = Lang.CommittedMemoryBottomText });
+            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.WorkingSetPeakTopText, MainText = PlaceholderGb, BottomText = Lang.WorkingSetPeakBottomText });
+            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.PageFileTopText, MainText = PlaceholderGb, BottomText = Lang.PageFileBottomText });
+            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.PageFaultTopText, MainText = PlaceholderCount, BottomText = Lang.PageFaultBottomText });
+            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.BandwidthPeakTopText, MainText = PlaceholderGbPerSecond, BottomText = Lang.BandwidthPeakBottomText });
+            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.MemoryPressureTopText, MainText = Lang.MemoryPressureMediumText, BottomText = PlaceholderPercent });
         }
 
         private void BuildFooter()
@@ -324,14 +328,14 @@ namespace OneColumnEncoder.ViewModels
 
         private void AppendInitialLogs()
         {
-            AppendLine(_upstreamStderrBuilder, $"{Lang.UpstreamLabel}: {_request.UpstreamExeName}");
-            AppendLine(_upstreamStderrBuilder, $"{Lang.ExecutableLabel}: {_request.UpstreamPath}");
-            AppendLine(_upstreamStderrBuilder, $"{Lang.InputLabel}: {_request.UpstreamInputPath}");
-            AppendLine(_upstreamStderrBuilder, $"{Lang.ArgumentsLabel}: {_command.UpstreamArgs}");
-            AppendLine(_downstreamStderrBuilder, $"{Lang.EncoderLabel}: {_request.EncoderExeName}");
-            AppendLine(_downstreamStderrBuilder, $"{Lang.ExecutableLabel}: {_request.EncoderPath}");
-            AppendLine(_downstreamStderrBuilder, $"{Lang.OutputLabel}: {_request.OutputPath}");
-            AppendLine(_downstreamStderrBuilder, $"{Lang.ArgumentsLabel}: {_command.EncoderArgs}");
+            AppendFoldedLine(_upstreamStderrBuilder, _upstreamStderrFoldState, $"{Lang.UpstreamLabel}: {_request.UpstreamExeName}");
+            AppendFoldedLine(_upstreamStderrBuilder, _upstreamStderrFoldState, $"{Lang.ExecutableLabel}: {_request.UpstreamPath}");
+            AppendFoldedLine(_upstreamStderrBuilder, _upstreamStderrFoldState, $"{Lang.InputLabel}: {_request.UpstreamInputPath}");
+            AppendFoldedLine(_upstreamStderrBuilder, _upstreamStderrFoldState, $"{Lang.ArgumentsLabel}: {_command.UpstreamArgs}");
+            AppendFoldedLine(_downstreamStderrBuilder, _downstreamStderrFoldState, $"{Lang.EncoderLabel}: {_request.EncoderExeName}");
+            AppendFoldedLine(_downstreamStderrBuilder, _downstreamStderrFoldState, $"{Lang.ExecutableLabel}: {_request.EncoderPath}");
+            AppendFoldedLine(_downstreamStderrBuilder, _downstreamStderrFoldState, $"{Lang.OutputLabel}: {_request.OutputPath}");
+            AppendFoldedLine(_downstreamStderrBuilder, _downstreamStderrFoldState, $"{Lang.ArgumentsLabel}: {_command.EncoderArgs}");
             FlushLogsToProperties();
         }
 
@@ -376,7 +380,7 @@ namespace OneColumnEncoder.ViewModels
                 upstream.Start();
                 encoder.Start();
 
-                // Pipe upstream stdout → encoder stdin while capturing binary as text
+                // Pipe upstream stderr → encoder stdin while capturing binary as text
                 Task pipeTask = Task.Run(async () =>
                 {
                     try
@@ -456,11 +460,6 @@ namespace OneColumnEncoder.ViewModels
             _logQueue.Enqueue(new ProcessLogEntry(kind, line));
         }
 
-        private static void AppendLine(StringBuilder builder, string value)
-        {
-            builder.AppendLine(value);
-        }
-
         private void FlushLogsToProperties()
         {
             ProcessQueuedLogs();
@@ -534,8 +533,7 @@ namespace OneColumnEncoder.ViewModels
                     string latest = carriageParts[^1].TrimEnd();
                     if (isStderr && TryHandleProgressLine(latest)) continue;
 
-                    TrimLastLine(target);
-                    foldState.Reset();
+                    TrimLastLine(target, foldState);
                     if (!string.IsNullOrWhiteSpace(latest))
                         AppendFoldedLine(target, foldState, latest);
                     continue;
@@ -550,18 +548,24 @@ namespace OneColumnEncoder.ViewModels
 
         private static void AppendFoldedLine(StringBuilder target, LogFoldState foldState, string line)
         {
-            if (foldState.LineStartIndex >= 0 && string.Equals(foldState.Line, line, StringComparison.Ordinal))
+            if (foldState.LineIndexByText.TryGetValue(line, out int index))
             {
-                foldState.RepeatCount++;
-                target.Length = foldState.LineStartIndex;
-                target.AppendLine(FormatFoldedLine(line, foldState.RepeatCount));
+                LogFoldEntry entry = foldState.Entries[index];
+                foldState.Entries[index] = entry with { RepeatCount = entry.RepeatCount + 1 };
+                RebuildFoldedLog(target, foldState);
                 return;
             }
 
-            foldState.Line = line;
-            foldState.RepeatCount = 1;
-            foldState.LineStartIndex = target.Length;
+            foldState.LineIndexByText[line] = foldState.Entries.Count;
+            foldState.Entries.Add(new LogFoldEntry(line, 1));
             target.AppendLine(line);
+        }
+
+        private static void RebuildFoldedLog(StringBuilder target, LogFoldState foldState)
+        {
+            target.Clear();
+            foreach (LogFoldEntry entry in foldState.Entries)
+                target.AppendLine(FormatFoldedLine(entry.Line, entry.RepeatCount));
         }
 
         private static string FormatFoldedLine(string line, int repeatCount)
@@ -593,8 +597,9 @@ namespace OneColumnEncoder.ViewModels
                 || ProgressLineRegex().IsMatch(line);
         }
 
-        private static void TrimLastLine(StringBuilder builder)
+        private static void TrimLastLine(StringBuilder builder, LogFoldState foldState)
         {
+            foldState.RemoveLastEntry();
             if (builder.Length == 0) return;
             string text = builder.ToString();
             int searchStart = text.Length - 1;
@@ -1158,17 +1163,19 @@ namespace OneColumnEncoder.ViewModels
 
         private readonly record struct ProcessLogEntry(ProcessLogKind Kind, string Line);
 
+        private readonly record struct LogFoldEntry(string Line, int RepeatCount);
+
         private sealed class LogFoldState
         {
-            public string? Line { get; set; }
-            public int RepeatCount { get; set; }
-            public int LineStartIndex { get; set; } = -1;
+            public List<LogFoldEntry> Entries { get; } = [];
+            public Dictionary<string, int> LineIndexByText { get; } = new(StringComparer.Ordinal);
 
-            public void Reset()
+            public void RemoveLastEntry()
             {
-                Line = null;
-                RepeatCount = 0;
-                LineStartIndex = -1;
+                if (Entries.Count == 0) return;
+                LogFoldEntry lastEntry = Entries[^1];
+                LineIndexByText.Remove(lastEntry.Line);
+                Entries.RemoveAt(Entries.Count - 1);
             }
         }
 
