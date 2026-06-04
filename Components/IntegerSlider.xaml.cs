@@ -15,10 +15,7 @@ namespace OneColumnEncoder.Components
         private double _dragPointerOffset;
         internal const double ThumbWidth = 14d;
 
-        public IntegerSlider()
-        {
-            InitializeComponent();
-        }
+        public IntegerSlider() => InitializeComponent();
 
         public static readonly DependencyProperty LabelProperty = DependencyProperty.Register(
             nameof(Label), typeof(string), typeof(IntegerSlider), new PropertyMetadata(string.Empty));
