@@ -742,7 +742,8 @@ namespace OneColumnEncoder.ViewModels
                 encoder.P2TextData,
                 outputSetting.P2TextData,
                 EncoderConfM.Load(),
-                _appDataM.Tools.VspipeY4mArg);
+                _appDataM.Tools.VspipeY4mArg,
+                SourceFfprobeJson: _srcVideoAnalysis.RawJson);
         }
 
         private string GetUpstreamInputPath(string upstreamExeName)
