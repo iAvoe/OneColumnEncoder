@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -29,6 +30,9 @@ namespace OneColumnEncoder.ViewModels
     {
         private const int HeatMapRows = 16;
         private const int HeatMapColumns = 32;
+        private const int HeatMapMaxLevel = 8;
+        private const long BytesPerMb = 1024L * 1024L;
+        private const long BytesPerGb = 1024L * 1024L * 1024L;
         private EncodingMonitorModalLangProviderM _lang = new(UILangProviderM.Current.LanguageCode);
         public EncodingMonitorModalLangProviderM Lang
         {
@@ -47,7 +51,6 @@ namespace OneColumnEncoder.ViewModels
         private readonly StringBuilder _downstreamStderrBuilder = new();
         private readonly ConcurrentQueue<ProcessLogEntry> _logQueue = new();
         private readonly Lock _logLock = new();
-        private readonly Random _random = new();
         private DateTime _lastStatsUpdate = DateTime.MinValue;
         private CancellationTokenSource? _cts;
         private Process? _upstreamProcess;
@@ -56,6 +59,12 @@ namespace OneColumnEncoder.ViewModels
         private bool _finishEnabledAfterClose;
         private int? _exitCode;
         private bool _success;
+        private MemoryStatusSnapshot _lastMemoryStatus;
+        private long _lastUpstreamWorkingSetBytes;
+        private long _lastEncoderWorkingSetBytes;
+        private long _lastOutputSizeBytes;
+        private DateTime _lastOutputSizeTime = DateTime.MinValue;
+        private double _peakOutputBandwidthBytesPerSecond;
 
         public string WindowTitle => _isSample ? Lang.WindowTitleSampleMode : Lang.WindowTitle;
         public string ProgressTitle => Lang.ProgressTitle;
@@ -563,34 +572,77 @@ namespace OneColumnEncoder.ViewModels
         private void UpdateMetrics()
         {
             double seconds = Math.Max(1d, _stopwatch.Elapsed.TotalSeconds);
-            double outputGb = TryGetOutputSizeGb();
+            long outputBytes = TryGetOutputSizeBytes();
+            MemoryStatusSnapshot memoryStatus = GetMemoryStatusSnapshot();
+            _lastMemoryStatus = memoryStatus;
+            _lastUpstreamWorkingSetBytes = GetWorkingSetBytes(_upstreamProcess);
+            _lastEncoderWorkingSetBytes = GetWorkingSetBytes(_encoderProcess);
+            long combinedWorkingSetBytes = _lastUpstreamWorkingSetBytes + _lastEncoderWorkingSetBytes;
+            UpdateOutputBandwidth(outputBytes);
+
             ProgressValue = InferProgress(ProgressValue, _downstreamStderrBuilder.ToString() + _upstreamStderrBuilder.ToString());
-            MetricColumns[0].MainText = $"{Math.Max(0.1, outputGb / 2d + 1d):0.0} GB";
-            MetricColumns[1].MainText = $"{Math.Max(0.1, outputGb + 0.5):0.0} GB";
-            MetricColumns[2].MainText = $"{Math.Max(0.1, outputGb / 3d + 0.2):0.0} GB";
-            MetricColumns[3].MainText = $"{Math.Max(0.1, outputGb / 4d + 0.1):0.0} GB";
-            MetricColumns[4].MainText = $"{Math.Min(99999, (int)(seconds * 3)):N0}";
-            MetricColumns[5].MainText = $"{Math.Max(0.1, outputGb / seconds):0.0} GBps";
-            MetricColumns[6].MainText = ProgressValue < 75 ? Lang.MemoryPressureMediumText : Lang.MemoryPressureHighText;
-            MetricColumns[6].BottomText = $"{Math.Min(100, 35 + ProgressValue / 2)}%";
-            DistributionDownstream = $"{outputGb * 1024:0} MB";
+            MetricColumns[0].MainText = FormatGb(memoryStatus.UsedPhysicalBytes);
+            MetricColumns[0].BottomText = ReplaceMetricValue(Lang.PhysicalMemoryBottomText, FormatGb(memoryStatus.TotalPhysicalBytes));
+            MetricColumns[1].MainText = FormatGb(memoryStatus.CommittedBytes);
+            MetricColumns[1].BottomText = ReplaceMetricValue(Lang.CommittedMemoryBottomText, FormatGb(memoryStatus.CommitLimitBytes));
+            MetricColumns[2].MainText = FormatGb(combinedWorkingSetBytes);
+            MetricColumns[2].BottomText = ReplaceMetricValue(Lang.WorkingSetPeakBottomText, FormatGb(combinedWorkingSetBytes));
+            MetricColumns[3].MainText = FormatGb(memoryStatus.TotalPageFileBytes - memoryStatus.AvailablePageFileBytes);
+            MetricColumns[3].BottomText = ReplaceMetricValue(Lang.PageFileBottomText, FormatGb(memoryStatus.TotalPageFileBytes));
+            MetricColumns[4].MainText = GetTotalPageFaults().ToString("N0", CultureInfo.InvariantCulture);
+            MetricColumns[4].BottomText = Lang.PageFaultBottomText;
+            MetricColumns[5].MainText = FormatGbPerSecond(_peakOutputBandwidthBytesPerSecond);
+            MetricColumns[5].BottomText = ReplaceMetricValue(Lang.BandwidthPeakBottomText, FormatGbPerSecond(seconds > 0 ? outputBytes / seconds : 0d));
+            MetricColumns[6].MainText = memoryStatus.MemoryLoadPercent < 75 ? Lang.MemoryPressureMediumText : Lang.MemoryPressureHighText;
+            MetricColumns[6].BottomText = $"{memoryStatus.MemoryLoadPercent}%";
+
+            DistributionUpstream = FormatMb(_lastUpstreamWorkingSetBytes);
+            DistributionDownstream = FormatMb(_lastEncoderWorkingSetBytes);
+            DistributionOther = FormatMb(Math.Max(0, memoryStatus.UsedPhysicalBytes - combinedWorkingSetBytes));
+            DistributionCache = FormatMb(memoryStatus.AvailablePhysicalBytes);
         }
 
         private void UpdateHeatMaps()
         {
-            UpdateHeatMap(HeatMapA);
-            int index = _random.Next(HeatMapA.Count);
-            BlockNo = $"#{index},0,0,{_random.Next(64, 2048)}MB";
-            BlockHeat = $"{_random.Next(5, 100)}%";
+            UpdateHeatMap(HeatMapA, _lastMemoryStatus);
         }
 
-        private void UpdateHeatMap(ObservableCollection<HeatMapCellM> cells)
+        private void UpdateHeatMap(ObservableCollection<HeatMapCellM> cells, MemoryStatusSnapshot memoryStatus)
         {
+            if (cells.Count == 0) return;
+
+            long totalBytes = memoryStatus.TotalPhysicalBytes;
+            long usedBytes = memoryStatus.UsedPhysicalBytes;
+            if (totalBytes <= 0)
+            {
+                foreach (HeatMapCellM cell in cells)
+                    cell.Level = 0;
+                return;
+            }
+
+            int selectedIndex = Math.Clamp((int)Math.Ceiling(usedBytes / (double)totalBytes * cells.Count) - 1, 0, cells.Count - 1);
+            int selectedHeatPercent = 0;
+
             for (int i = 0; i < cells.Count; i++)
             {
-                int drift = _random.Next(-1, 3);
-                cells[i].Level = Math.Clamp(cells[i].Level + drift, 0, 8);
+                (long cellStart, long cellEnd) = GetCellMemoryRange(totalBytes, cells.Count, i);
+                long cellBytes = Math.Max(1, cellEnd - cellStart);
+                long usedInCell = Math.Clamp(usedBytes - cellStart, 0, cellBytes);
+                int heatPercent = (int)Math.Round(usedInCell * 100d / cellBytes);
+                int level = heatPercent <= 0 ? 0 : Math.Clamp((int)Math.Ceiling(heatPercent / 100d * HeatMapMaxLevel), 1, HeatMapMaxLevel);
+
+                cells[i].Level = level;
+                cells[i].Tooltip = $"{string.Format(Lang.BlockTooltipFormat, i)} | {FormatMb(cellStart)}-{FormatMb(cellEnd)} | {heatPercent}%";
+                if (i == selectedIndex)
+                    selectedHeatPercent = heatPercent;
             }
+
+            (long selectedStart, long selectedEnd) = GetCellMemoryRange(totalBytes, cells.Count, selectedIndex);
+            int row = selectedIndex / HeatMapColumns;
+            int column = selectedIndex % HeatMapColumns;
+            BlockNo = $"#{selectedIndex},{row},{column},{FormatMb(selectedEnd - selectedStart)}";
+            BlockSegment = GetMemorySegmentName(selectedStart, usedBytes, _lastUpstreamWorkingSetBytes, _lastEncoderWorkingSetBytes);
+            BlockHeat = $"{selectedHeatPercent}%";
         }
 
         private void UpdateFooterTimes(bool final)
@@ -623,17 +675,186 @@ namespace OneColumnEncoder.ViewModels
             return found;
         }
 
-        private double TryGetOutputSizeGb()
+        private long TryGetOutputSizeBytes()
         {
             try
             {
-                if (!File.Exists(_request.OutputPath)) return 0d;
-                return new FileInfo(_request.OutputPath).Length / 1024d / 1024d / 1024d;
+                if (!File.Exists(_request.OutputPath)) return 0L;
+                return new FileInfo(_request.OutputPath).Length;
             }
             catch
             {
-                return 0d;
+                return 0L;
             }
+        }
+
+        private void UpdateOutputBandwidth(long outputBytes)
+        {
+            DateTime now = DateTime.Now;
+            if (_lastOutputSizeTime != DateTime.MinValue)
+            {
+                double elapsedSeconds = Math.Max(0.001d, (now - _lastOutputSizeTime).TotalSeconds);
+                long deltaBytes = Math.Max(0, outputBytes - _lastOutputSizeBytes);
+                _peakOutputBandwidthBytesPerSecond = Math.Max(_peakOutputBandwidthBytesPerSecond, deltaBytes / elapsedSeconds);
+            }
+
+            _lastOutputSizeBytes = outputBytes;
+            _lastOutputSizeTime = now;
+        }
+
+        private static (long Start, long End) GetCellMemoryRange(long totalBytes, int cellCount, int index)
+        {
+            long start = (long)Math.Round(totalBytes * (index / (double)cellCount));
+            long end = index == cellCount - 1
+                ? totalBytes
+                : (long)Math.Round(totalBytes * ((index + 1) / (double)cellCount));
+            return (start, Math.Max(start, end));
+        }
+
+        private string GetMemorySegmentName(long cellStart, long usedBytes, long upstreamBytes, long encoderBytes)
+        {
+            if (cellStart >= usedBytes) return Lang.NotAvailableText;
+            if (cellStart < upstreamBytes) return Lang.DistributionUpstreamLabel;
+            if (cellStart < upstreamBytes + encoderBytes) return Lang.DistributionDownstreamLabel;
+            return Lang.DistributionOtherLabel;
+        }
+
+        private static long GetWorkingSetBytes(Process? process)
+        {
+            try
+            {
+                if (process == null || process.HasExited) return 0L;
+                process.Refresh();
+                return Math.Max(0L, process.WorkingSet64);
+            }
+            catch
+            {
+                return 0L;
+            }
+        }
+
+        private long GetTotalPageFaults()
+        {
+            return GetPageFaults(_upstreamProcess) + GetPageFaults(_encoderProcess);
+        }
+
+        private static long GetPageFaults(Process? process)
+        {
+            try
+            {
+                if (process == null || process.HasExited) return 0L;
+                process.Refresh();
+                PROCESS_MEMORY_COUNTERS counters = new()
+                {
+                    cb = (uint)Marshal.SizeOf<PROCESS_MEMORY_COUNTERS>()
+                };
+
+                return GetProcessMemoryInfo(process.Handle, ref counters, counters.cb)
+                    ? counters.PageFaultCount
+                    : 0L;
+            }
+            catch
+            {
+                return 0L;
+            }
+        }
+
+        private static string FormatGb(long bytes)
+        {
+            return $"{Math.Max(0d, bytes / (double)BytesPerGb):0.0} GB";
+        }
+
+        private static string FormatMb(long bytes)
+        {
+            return $"{Math.Max(0d, bytes / (double)BytesPerMb):N0} MB";
+        }
+
+        private static string FormatGbPerSecond(double bytesPerSecond)
+        {
+            return $"{Math.Max(0d, bytesPerSecond / BytesPerGb):0.0} GBps";
+        }
+
+        private static string ReplaceMetricValue(string template, string value)
+        {
+            return Regex.Replace(template, @"X+(?:\.X+)?\s*(?:GBps|GB|MB|%)?", value, RegexOptions.CultureInvariant);
+        }
+
+        private static MemoryStatusSnapshot GetMemoryStatusSnapshot()
+        {
+            if (!OperatingSystem.IsWindows()) return default;
+
+            MEMORYSTATUSEX memoryStatus = new()
+            {
+                dwLength = (uint)Marshal.SizeOf<MEMORYSTATUSEX>()
+            };
+
+            if (!GlobalMemoryStatusEx(ref memoryStatus)) return default;
+
+            long totalPhysicalBytes = ToNonNegativeLong(memoryStatus.ullTotalPhys);
+            long availablePhysicalBytes = Math.Min(totalPhysicalBytes, ToNonNegativeLong(memoryStatus.ullAvailPhys));
+            long totalPageFileBytes = ToNonNegativeLong(memoryStatus.ullTotalPageFile);
+            long availablePageFileBytes = Math.Min(totalPageFileBytes, ToNonNegativeLong(memoryStatus.ullAvailPageFile));
+
+            return new MemoryStatusSnapshot(
+                totalPhysicalBytes,
+                availablePhysicalBytes,
+                totalPageFileBytes,
+                availablePageFileBytes,
+                Math.Clamp((int)memoryStatus.dwMemoryLoad, 0, 100));
+        }
+
+        private static long ToNonNegativeLong(ulong value)
+        {
+            return value > long.MaxValue ? long.MaxValue : (long)value;
+        }
+
+        [LibraryImport("kernel32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
+
+        [LibraryImport("psapi.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool GetProcessMemoryInfo(IntPtr Process, ref PROCESS_MEMORY_COUNTERS ppsmemCounters, uint cb);
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MEMORYSTATUSEX
+        {
+            public uint dwLength;
+            public uint dwMemoryLoad;
+            public ulong ullTotalPhys;
+            public ulong ullAvailPhys;
+            public ulong ullTotalPageFile;
+            public ulong ullAvailPageFile;
+            public ulong ullTotalVirtual;
+            public ulong ullAvailVirtual;
+            public ulong ullAvailExtendedVirtual;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct PROCESS_MEMORY_COUNTERS
+        {
+            public uint cb;
+            public uint PageFaultCount;
+            public nuint PeakWorkingSetSize;
+            public nuint WorkingSetSize;
+            public nuint QuotaPeakPagedPoolUsage;
+            public nuint QuotaPagedPoolUsage;
+            public nuint QuotaPeakNonPagedPoolUsage;
+            public nuint QuotaNonPagedPoolUsage;
+            public nuint PagefileUsage;
+            public nuint PeakPagefileUsage;
+        }
+
+        private readonly record struct MemoryStatusSnapshot(
+            long TotalPhysicalBytes,
+            long AvailablePhysicalBytes,
+            long TotalPageFileBytes,
+            long AvailablePageFileBytes,
+            int MemoryLoadPercent)
+        {
+            public long UsedPhysicalBytes => Math.Max(0, TotalPhysicalBytes - AvailablePhysicalBytes);
+            public long CommitLimitBytes => TotalPageFileBytes;
+            public long CommittedBytes => Math.Max(0, TotalPageFileBytes - AvailablePageFileBytes);
         }
 
         private void ResetStats()
