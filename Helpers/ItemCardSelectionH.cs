@@ -66,16 +66,14 @@ namespace OneColumnEncoder.Helpers
                 if (string.IsNullOrEmpty(clickedTool.P2TextData)) return;
 
                 SelectOnly(videoSrcImportZone, clickedTool);
-                UnselectAll(scriptSrcImportZone);
                 refreshSelectedSourceStatusAfterSourceSelection();
             }
             else if (scriptSrcImportZone.Contains(clickedTool))
             {
                 if (string.IsNullOrEmpty(clickedTool.P2TextData)) return;
 
-                ToggleOnly(scriptSrcImportZone, clickedTool);
-                UnselectAll(videoSrcImportZone);
-                refreshSelectedSourceStatusAfterSourceSelection();
+                SelectOnly(scriptSrcImportZone, clickedTool);
+                refreshSelectedSourceStatus();
             }
 
             ToolCompatibilityH.RefreshDependencySelectionState(

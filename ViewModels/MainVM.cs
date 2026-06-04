@@ -484,7 +484,27 @@ namespace OneColumnEncoder.ViewModels
                 t => t.IsSelected &&
                 ToolDefinitionProviderM.IsImportedTool(t.Name, "one_line_shot_args.exe"));
 
-            bool allReady = toolsReady && toolsPickedReady && sourceValidationReady && encodeTermsReady && dependencyReady;
+            bool scriptSourceReady = true;
+            ToolItemCardVM? selUpstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected);
+            if (selUpstream != null)
+            {
+                string? exe = ToolCatalogProviderM.ResolveExeFromDisplayName(selUpstream.Name);
+                if (exe is "vspipe.exe" or "avs2yuv.exe" or "avs2pipemod.exe" or "one_line_shot_args.exe")
+                {
+                    SourceFileKind expectedKind = exe switch
+                    {
+                        "vspipe.exe" => SourceFileKind.VapourSynthScript,
+                        "avs2yuv.exe" or "avs2pipemod.exe" => SourceFileKind.AviSynthScript,
+                        "one_line_shot_args.exe" => SourceFileKind.SvfiIni,
+                        _ => SourceFileKind.Video
+                    };
+                    scriptSourceReady = ScriptSrcImportZone.Any(t =>
+                        t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData) &&
+                        ResolveSourceFileKind(t.Name) == expectedKind);
+                }
+            }
+
+            bool allReady = toolsReady && toolsPickedReady && sourceValidationReady && encodeTermsReady && dependencyReady && scriptSourceReady;
             EncStartButtons.B3_2IsEnabled = allReady && !oneLineShotSelected;
             EncStartButtons.B3_3IsEnabled = allReady;
             SVFIClipDisabledHintVisible = oneLineShotSelected;
@@ -611,14 +631,20 @@ namespace OneColumnEncoder.ViewModels
         {
             SaveSourcePath(kind, filePath);
 
-            foreach (ToolItemCardVM source in VideoSrcImportZone)
-                source.IsSelected = false;
-            foreach (ToolItemCardVM source in ScriptSrcImportZone)
-                source.IsSelected = false;
+            if (kind == SourceFileKind.Video)
+            {
+                foreach (ToolItemCardVM source in VideoSrcImportZone)
+                    source.IsSelected = false;
+            }
+            else
+            {
+                foreach (ToolItemCardVM source in ScriptSrcImportZone)
+                    source.IsSelected = false;
+            }
 
             item.IsSelected = true;
             _appDataM.Save();
-            RefreshSelectedSourceStatus(resetAnalysis: true);
+            RefreshSelectedSourceStatus(resetAnalysis: kind == SourceFileKind.Video);
         }
         private void OnSourceCleared(SourceFileKind kind)
         {
@@ -935,6 +961,30 @@ namespace OneColumnEncoder.ViewModels
             LoadSourceItem(ScriptSrcImportZone[0], SourceFileKind.AviSynthScript, _appDataM.Tools.AvsSourcePath);
             LoadSourceItem(ScriptSrcImportZone[1], SourceFileKind.VapourSynthScript, _appDataM.Tools.VpySourcePath);
             LoadSourceItem(ScriptSrcImportZone[2], SourceFileKind.SvfiIni, _appDataM.Tools.SvfiSourcePath);
+
+            ToolItemCardVM? selectedUpstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected);
+            if (selectedUpstream != null)
+            {
+                string? upstreamExe = ToolCatalogProviderM.ResolveExeFromDisplayName(selectedUpstream.Name);
+                if (upstreamExe != null)
+                {
+                    foreach (ToolItemCardVM src in ScriptSrcImportZone)
+                    {
+                        if (string.IsNullOrWhiteSpace(src.P2TextData)) continue;
+
+                        bool isMatch = (upstreamExe, ResolveSourceFileKind(src.Name)) switch
+                        {
+                            ("vspipe.exe", SourceFileKind.VapourSynthScript) => true,
+                            ("avs2yuv.exe", SourceFileKind.AviSynthScript) => true,
+                            ("avs2pipemod.exe", SourceFileKind.AviSynthScript) => true,
+                            ("one_line_shot_args.exe", SourceFileKind.SvfiIni) => true,
+                            _ => false
+                        };
+
+                        if (isMatch) src.IsSelected = true;
+                    }
+                }
+            }
 
             RefreshEncSettingsState();
         }

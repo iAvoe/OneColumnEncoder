@@ -11,14 +11,14 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="1000"
-        Height="1170"
+        Height="1050"
         MinWidth="860"
         MinHeight="760"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Disabled">
-        <Grid Margin="20">
+        <Grid Margin="15">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -42,13 +42,13 @@
                            VerticalAlignment="Center" />
                 <ProgressBar Grid.Column="1"
                              Height="29"
-                             Margin="20 0 14 0"
+                             Margin="20 0 15 0"
                              Minimum="0"
                              Maximum="100"
                              Value="{Binding ProgressValue}"
                              Foreground="#2FA34F"
                              Background="#E9EEF2"
-                             BorderThickness="0" />
+                             BorderThickness="0"/>
                 <TextBlock Grid.Column="2"
                            Text="{Binding ProgressText}"
                            FontSize="13"
@@ -56,8 +56,9 @@
                            VerticalAlignment="Center" />
             </Grid>
 
+            <!-- Below progress bar text -->
             <Grid Grid.Row="1"
-                  Margin="0 4 0 0">
+                  Margin="0 5 0 0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
@@ -79,8 +80,9 @@
                            HorizontalAlignment="Center" />
             </Grid>
 
+            <!-- RAM monitor (with title) -->
             <Grid Grid.Row="2"
-                  Margin="0 14 0 0">
+                  Margin="0 15 0 0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*" />
                     <ColumnDefinition Width="20" />
@@ -88,19 +90,18 @@
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0">
                     <TextBlock Text="{Binding MemoryTitle}"
-                               Style="{StaticResource H3}"
-                               Margin="0 0 0 8" />
+                               Style="{StaticResource H3}" />
                     <comps:HeatMapGrid Items="{Binding HeatMapA}"
+                                       Margin="0 5 0 0"
                                        Columns="32"
-                                       CellSize="17.5"
+                                       CellSize="14"
                                        HorizontalAlignment="Left" />
                 </StackPanel>
 
-                <StackPanel Grid.Column="2"
-                            Margin="0 32 0 0">
+                <StackPanel Grid.Column="2">
                     <TextBlock Text="{Binding DistributionTitle}"
                                Style="{StaticResource H3}" />
-                    <Grid Margin="0 12 0 0">
+                    <Grid Margin="0 5 0 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
@@ -111,35 +112,57 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Text="{Binding DistributionUpstreamLabel}" FontSize="13" />
-                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding DistributionUpstream}" FontSize="13" />
-                        <TextBlock Grid.Row="1" Text="{Binding DistributionDownstreamLabel}" FontSize="13" Margin="0 14 0 0" />
-                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding DistributionDownstream}" FontSize="13" Margin="0 14 0 0" />
-                        <TextBlock Grid.Row="2" Text="{Binding DistributionOtherLabel}" FontSize="13" Margin="0 14 0 0" />
-                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding DistributionOther}" FontSize="13" Margin="0 14 0 0" />
-                        <TextBlock Grid.Row="3" Text="{Binding DistributionCacheLabel}" FontSize="13" Margin="0 14 0 0" />
-                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding DistributionCache}" FontSize="13" Margin="0 14 0 0" />
+                        <TextBlock Grid.Row="0"
+                                   Text="{Binding DistributionUpstreamLabel}"
+                                   FontSize="13"
+                                   Foreground="{StaticResource GlobalSecondary}" />
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="1"
+                                   Text="{Binding DistributionUpstream}"
+                                   FontSize="13"
+                                   Foreground="{StaticResource GlobalSecondary}" />
+                        <TextBlock Grid.Row="1"
+                                   Text="{Binding DistributionDownstreamLabel}"
+                                   FontSize="13"
+                                   Margin="0 10 0 0"
+                                   Foreground="{StaticResource GlobalSecondary}" />
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="1"
+                                   Text="{Binding DistributionDownstream}"
+                                   FontSize="13"
+                                   Margin="0 10 0 0"
+                                   Foreground="{StaticResource GlobalSecondary}" />
+                        <TextBlock Grid.Row="2"
+                                   Text="{Binding DistributionOtherLabel}"
+                                   FontSize="13"
+                                   Margin="0 10 0 0"
+                                   Foreground="{StaticResource GlobalSecondary}" />
+                        <TextBlock Grid.Row="2"
+                                   Grid.Column="1"
+                                   Text="{Binding DistributionOther}"
+                                   FontSize="13"
+                                   Margin="0 10 0 0"
+                                   Foreground="{StaticResource GlobalSecondary}" />
+                        <TextBlock Grid.Row="3"
+                                   Text="{Binding DistributionCacheLabel}"
+                                   FontSize="13"
+                                   Margin="0 10 0 0"
+                                   Foreground="{StaticResource GlobalSecondary}" />
+                        <TextBlock Grid.Row="3"
+                                   Grid.Column="1"
+                                   Text="{Binding DistributionCache}"
+                                   FontSize="13"
+                                   Margin="0 10 0 0"
+                                   Foreground="{StaticResource GlobalSecondary}" />
                     </Grid>
 
-                    <TextBlock Text="{Binding BlockDetailsTitle}"
-                               Style="{StaticResource H3}"
-                               Margin="0 22 0 0" />
                     <Grid Margin="0 12 0 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Text="{Binding BlockDetailPosLabel}" FontSize="13" Foreground="{StaticResource GlobalSecondary}" />
-                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding BlockNo}" FontSize="13" />
-                        <TextBlock Grid.Row="1" Text="{Binding BlockDetailSegmentLabel}" FontSize="13" Foreground="{StaticResource GlobalSecondary}" Margin="0 12 0 0" />
-                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding BlockSegment}" FontSize="13" Margin="0 12 0 0" />
-                        <TextBlock Grid.Row="2" Text="{Binding BlockDetailHeatLabel}" FontSize="13" Foreground="{StaticResource GlobalSecondary}" Margin="0 12 0 0" />
-                        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding BlockHeat}" FontSize="13" Margin="0 12 0 0" />
+                        <TextBlock Grid.Row="0" Text="{Binding BlockDetailHeatLabel}" FontSize="13" Foreground="{StaticResource GlobalSecondary}" />
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding BlockHeat}" FontSize="13" />
                     </Grid>
                 </StackPanel>
             </Grid>

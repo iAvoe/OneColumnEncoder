@@ -77,7 +77,7 @@ namespace OneColumnEncoder.ViewModels
         public string ProgressTitle => Lang.ProgressTitle;
         public string MemoryTitle => Lang.MemoryTitle;
         public string DistributionTitle => Lang.DistributionTitle;
-        public string BlockDetailsTitle => Lang.BlockDetailsTitle;
+
         public string DragLogReportHint => Lang.DragLogReportHint;
         public string CurrentSizeLabel => Lang.CurrentSizeLabel;
         public string EstimatedSizeLabel => Lang.EstimatedSizeLabel;
@@ -95,8 +95,7 @@ namespace OneColumnEncoder.ViewModels
         public string DistributionDownstreamLabel => Lang.DistributionDownstreamLabel;
         public string DistributionOtherLabel => Lang.DistributionOtherLabel;
         public string DistributionCacheLabel => Lang.DistributionCacheLabel;
-        public string BlockDetailPosLabel => Lang.BlockDetailPosLabel;
-        public string BlockDetailSegmentLabel => Lang.BlockDetailSegmentLabel;
+
         public string BlockDetailHeatLabel => Lang.BlockDetailHeatLabel;
         public string StderrTitle => Lang.StderrTitle;
 
@@ -208,13 +207,6 @@ namespace OneColumnEncoder.ViewModels
         {
             get => _blockNo;
             set => SetProperty(ref _blockNo, value);
-        }
-
-        private string _blockSegment = "帧缓冲";
-        public string BlockSegment
-        {
-            get => _blockSegment;
-            set => SetProperty(ref _blockSegment, value);
         }
 
         private string _blockHeat = "XXX%";
@@ -698,7 +690,7 @@ namespace OneColumnEncoder.ViewModels
             int row = selectedIndex / HeatMapColumns;
             int column = selectedIndex % HeatMapColumns;
             BlockNo = $"#{selectedIndex},{row},{column},{FormatMb(selectedEnd - selectedStart)}";
-            BlockSegment = GetMemorySegmentName(selectedStart, usedBytes, _lastUpstreamWorkingSetBytes, _lastEncoderWorkingSetBytes);
+
             BlockHeat = $"{selectedHeatPercent}%";
         }
 
@@ -766,14 +758,6 @@ namespace OneColumnEncoder.ViewModels
                 ? totalBytes
                 : (long)Math.Round(totalBytes * ((index + 1) / (double)cellCount));
             return (start, Math.Max(start, end));
-        }
-
-        private string GetMemorySegmentName(long cellStart, long usedBytes, long upstreamBytes, long encoderBytes)
-        {
-            if (cellStart >= usedBytes) return Lang.NotAvailableText;
-            if (cellStart < upstreamBytes) return Lang.DistributionUpstreamLabel;
-            if (cellStart < upstreamBytes + encoderBytes) return Lang.DistributionDownstreamLabel;
-            return Lang.DistributionOtherLabel;
         }
 
         private static long GetWorkingSetBytes(Process? process)
@@ -1116,7 +1100,6 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(ProgressTitle));
             OnPropertyChanged(nameof(MemoryTitle));
             OnPropertyChanged(nameof(DistributionTitle));
-            OnPropertyChanged(nameof(BlockDetailsTitle));
             OnPropertyChanged(nameof(DragLogReportHint));
             OnPropertyChanged(nameof(CurrentSizeLabel));
             OnPropertyChanged(nameof(EstimatedSizeLabel));
@@ -1134,8 +1117,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(DistributionDownstreamLabel));
             OnPropertyChanged(nameof(DistributionOtherLabel));
             OnPropertyChanged(nameof(DistributionCacheLabel));
-            OnPropertyChanged(nameof(BlockDetailPosLabel));
-            OnPropertyChanged(nameof(BlockDetailSegmentLabel));
+
             OnPropertyChanged(nameof(BlockDetailHeatLabel));
             OnPropertyChanged(nameof(StderrTitle));
             OnPropertyChanged(nameof(SampleIntervalTickLabels));

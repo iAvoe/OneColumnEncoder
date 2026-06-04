@@ -11,7 +11,7 @@ public class EncodingMonitorModalLangProviderM
             ["ProgressTitle"] = "Progress",
             ["MemoryTitle"] = "Physical page monitor (32x16)",
             ["DistributionTitle"] = "Distribution",
-            ["BlockDetailsTitle"] = "Block details (hover to inspect)",
+
             ["StderrTitle"] = "Process log",
             ["DragLogReportHint"] = "Drag the window to resize the log area; drag the log divider to adjust width",
             ["CurrentSizeLabel"] = "Current size / GB",
@@ -30,8 +30,6 @@ public class EncodingMonitorModalLangProviderM
             ["DistributionDownstreamLabel"] = "Downstream program (encoder)",
             ["DistributionOtherLabel"] = "Other programs",
             ["DistributionCacheLabel"] = "System cache",
-            ["BlockDetailPosLabel"] = "Index, row, col, size",
-            ["BlockDetailSegmentLabel"] = "Segment",
             ["BlockDetailHeatLabel"] = "Heat",
             ["SampleIntervalTickLabels"] = "0 (RT)|60S|120S|180S|240S",
             ["ContinueMonitoringText"] = "Continue monitoring",
@@ -91,7 +89,7 @@ public class EncodingMonitorModalLangProviderM
             ["ProgressTitle"] = "进度",
             ["MemoryTitle"] = "物理页监视器（32x16）",
             ["DistributionTitle"] = "区段分布",
-            ["BlockDetailsTitle"] = "单块详情（光标悬停时显示）",
+
             ["StderrTitle"] = "进程日志",
             ["DragLogReportHint"] = "拖拽窗口以调整日志显示面积；拖拽日志分界线以调整宽度",
             ["CurrentSizeLabel"] = "当前大小/GB",
@@ -110,8 +108,6 @@ public class EncodingMonitorModalLangProviderM
             ["DistributionDownstreamLabel"] = "下游程序（编码器）",
             ["DistributionOtherLabel"] = "其它程序",
             ["DistributionCacheLabel"] = "系统缓存",
-            ["BlockDetailPosLabel"] = "号，行，列，大小",
-            ["BlockDetailSegmentLabel"] = "隶属区段",
             ["BlockDetailHeatLabel"] = "热度",
             ["SampleIntervalTickLabels"] = "0（实时）|60秒|120秒|180秒|240秒",
             ["ContinueMonitoringText"] = "继续监测",
@@ -171,7 +167,7 @@ public class EncodingMonitorModalLangProviderM
             ["ProgressTitle"] = "進度",
             ["MemoryTitle"] = "實體頁監視器（32x16）",
             ["DistributionTitle"] = "區段分佈",
-            ["BlockDetailsTitle"] = "單塊詳情（游標停留時顯示）",
+
             ["StderrTitle"] = "進程日誌",
             ["DragLogReportHint"] = "拖曳視窗以調整日誌顯示面積；拖曳日誌分界線以調整寬度",
             ["CurrentSizeLabel"] = "目前大小/GB",
@@ -190,8 +186,6 @@ public class EncodingMonitorModalLangProviderM
             ["DistributionDownstreamLabel"] = "下游程式（編碼器）",
             ["DistributionOtherLabel"] = "其他程式",
             ["DistributionCacheLabel"] = "系統快取",
-            ["BlockDetailPosLabel"] = "號、行、列、大小",
-            ["BlockDetailSegmentLabel"] = "隸屬區段",
             ["BlockDetailHeatLabel"] = "熱度",
             ["SampleIntervalTickLabels"] = "0（即時）|60秒|120秒|180秒|240秒",
             ["ContinueMonitoringText"] = "繼續監測",
@@ -251,7 +245,6 @@ public class EncodingMonitorModalLangProviderM
     public string ProgressTitle { get; }
     public string MemoryTitle { get; }
     public string DistributionTitle { get; }
-    public string BlockDetailsTitle { get; }
     public string StderrTitle { get; }
     public string DragLogReportHint { get; }
     public string CurrentSizeLabel { get; }
@@ -270,8 +263,6 @@ public class EncodingMonitorModalLangProviderM
     public string DistributionDownstreamLabel { get; }
     public string DistributionOtherLabel { get; }
     public string DistributionCacheLabel { get; }
-    public string BlockDetailPosLabel { get; }
-    public string BlockDetailSegmentLabel { get; }
     public string BlockDetailHeatLabel { get; }
     public string[] SampleIntervalTickLabels { get; }
     public string ContinueMonitoringText { get; }
@@ -338,7 +329,6 @@ public class EncodingMonitorModalLangProviderM
         ProgressTitle = _d["ProgressTitle"];
         MemoryTitle = _d["MemoryTitle"];
         DistributionTitle = _d["DistributionTitle"];
-        BlockDetailsTitle = _d["BlockDetailsTitle"];
         StderrTitle = _d["StderrTitle"];
         DragLogReportHint = _d["DragLogReportHint"];
         CurrentSizeLabel = _d["CurrentSizeLabel"];
@@ -357,8 +347,6 @@ public class EncodingMonitorModalLangProviderM
         DistributionDownstreamLabel = _d["DistributionDownstreamLabel"];
         DistributionOtherLabel = _d["DistributionOtherLabel"];
         DistributionCacheLabel = _d["DistributionCacheLabel"];
-        BlockDetailPosLabel = _d["BlockDetailPosLabel"];
-        BlockDetailSegmentLabel = _d["BlockDetailSegmentLabel"];
         BlockDetailHeatLabel = _d["BlockDetailHeatLabel"];
         SampleIntervalTickLabels = _d["SampleIntervalTickLabels"].Split('|');
         ContinueMonitoringText = _d["ContinueMonitoringText"];

@@ -82,7 +82,7 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        private int _clipLengthSeconds = 30;
+        private int _clipLengthSeconds = 5;
         public int ClipLengthSeconds
         {
             get => _clipLengthSeconds;

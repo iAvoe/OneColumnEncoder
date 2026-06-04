@@ -259,10 +259,10 @@
                                   Margin="10 15" />
 
             <!-- AnalyticResultsZone -->
-            <comps:SectionHeader HeaderText="{Binding SectionAnalysisResults}" />
+            <comps:SectionHeader HeaderText="{Binding SectionAnalysisResults}"/>
 
             <comps:ValidationCard DataContext="{Binding SrcValidationCard}"
-                                  Margin="5 0" />
+                                  Margin="5 15 5 0" />
 
             <!-- Inspect and bypass blocking checks -->
             <comps:TwoButtonGroup DataContext="{Binding InspBypsChkButtons}"
