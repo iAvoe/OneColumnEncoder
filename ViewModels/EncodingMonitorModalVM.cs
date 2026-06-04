@@ -52,6 +52,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly ConcurrentQueue<ProcessLogEntry> _logQueue = new();
         private readonly Lock _logLock = new();
         private DateTime _lastStatsUpdate = DateTime.MinValue;
+        private DateTime _lastMemoryStatsUpdate = DateTime.MinValue;
         private CancellationTokenSource? _cts;
         private Process? _upstreamProcess;
         private Process? _encoderProcess;
@@ -121,7 +122,11 @@ namespace OneColumnEncoder.ViewModels
         public int SampleIntervalSeconds
         {
             get => _sampleIntervalSeconds;
-            set => SetProperty(ref _sampleIntervalSeconds, value);
+            set
+            {
+                if (!SetProperty(ref _sampleIntervalSeconds, Math.Max(0, value))) return;
+                _lastMemoryStatsUpdate = DateTime.MinValue;
+            }
         }
 
         private bool _isFrozen;
@@ -471,12 +476,19 @@ namespace OneColumnEncoder.ViewModels
             if (!IsFrozen)
             {
                 FlushLogsToProperties();
-                if ((DateTime.Now - _lastStatsUpdate).TotalSeconds >= 1d)
+                DateTime now = DateTime.Now;
+                if ((now - _lastStatsUpdate).TotalSeconds >= 1d)
                 {
-                    _lastStatsUpdate = DateTime.Now;
+                    _lastStatsUpdate = now;
+                    UpdateProgressFromLogs();
+                    UpdateFooterTimes(final: false);
+                }
+
+                if (IsMemorySampleDue(now))
+                {
+                    _lastMemoryStatsUpdate = now;
                     UpdateMetrics();
                     UpdateHeatMaps();
-                    UpdateFooterTimes(final: false);
                 }
             }
         }
@@ -580,15 +592,14 @@ namespace OneColumnEncoder.ViewModels
             long combinedWorkingSetBytes = _lastUpstreamWorkingSetBytes + _lastEncoderWorkingSetBytes;
             UpdateOutputBandwidth(outputBytes);
 
-            ProgressValue = InferProgress(ProgressValue, _downstreamStderrBuilder.ToString() + _upstreamStderrBuilder.ToString());
             MetricColumns[0].MainText = FormatGb(memoryStatus.UsedPhysicalBytes);
             MetricColumns[0].BottomText = ReplaceMetricValue(Lang.PhysicalMemoryBottomText, FormatGb(memoryStatus.TotalPhysicalBytes));
             MetricColumns[1].MainText = FormatGb(memoryStatus.CommittedBytes);
             MetricColumns[1].BottomText = ReplaceMetricValue(Lang.CommittedMemoryBottomText, FormatGb(memoryStatus.CommitLimitBytes));
             MetricColumns[2].MainText = FormatGb(combinedWorkingSetBytes);
             MetricColumns[2].BottomText = ReplaceMetricValue(Lang.WorkingSetPeakBottomText, FormatGb(combinedWorkingSetBytes));
-            MetricColumns[3].MainText = FormatGb(memoryStatus.TotalPageFileBytes - memoryStatus.AvailablePageFileBytes);
-            MetricColumns[3].BottomText = ReplaceMetricValue(Lang.PageFileBottomText, FormatGb(memoryStatus.TotalPageFileBytes));
+            MetricColumns[3].MainText = FormatGb(memoryStatus.CommittedBytes);
+            MetricColumns[3].BottomText = ReplaceMetricValue(Lang.PageFileBottomText, FormatGb(memoryStatus.CommitLimitBytes));
             MetricColumns[4].MainText = GetTotalPageFaults().ToString("N0", CultureInfo.InvariantCulture);
             MetricColumns[4].BottomText = Lang.PageFaultBottomText;
             MetricColumns[5].MainText = FormatGbPerSecond(_peakOutputBandwidthBytesPerSecond);
@@ -598,8 +609,20 @@ namespace OneColumnEncoder.ViewModels
 
             DistributionUpstream = FormatMb(_lastUpstreamWorkingSetBytes);
             DistributionDownstream = FormatMb(_lastEncoderWorkingSetBytes);
-            DistributionOther = FormatMb(Math.Max(0, memoryStatus.UsedPhysicalBytes - combinedWorkingSetBytes));
-            DistributionCache = FormatMb(memoryStatus.AvailablePhysicalBytes);
+            DistributionOther = FormatMb(Math.Max(0, memoryStatus.UsedPhysicalBytes - combinedWorkingSetBytes - memoryStatus.SystemCacheBytes));
+            DistributionCache = FormatMb(memoryStatus.SystemCacheBytes);
+        }
+
+        private bool IsMemorySampleDue(DateTime now)
+        {
+            int intervalSeconds = SampleIntervalSeconds;
+            if (intervalSeconds <= 0) return true;
+            return (now - _lastMemoryStatsUpdate).TotalSeconds >= intervalSeconds;
+        }
+
+        private void UpdateProgressFromLogs()
+        {
+            ProgressValue = InferProgress(ProgressValue, _downstreamStderrBuilder.ToString() + _upstreamStderrBuilder.ToString());
         }
 
         private void UpdateHeatMaps()
@@ -776,7 +799,7 @@ namespace OneColumnEncoder.ViewModels
 
         private static string ReplaceMetricValue(string template, string value)
         {
-            return Regex.Replace(template, @"X+(?:\.X+)?\s*(?:GBps|GB|MB|%)?", value, RegexOptions.CultureInvariant);
+            return FileSizeMetricRegex().Replace(template, value);
         }
 
         private static MemoryStatusSnapshot GetMemoryStatusSnapshot()
@@ -792,14 +815,32 @@ namespace OneColumnEncoder.ViewModels
 
             long totalPhysicalBytes = ToNonNegativeLong(memoryStatus.ullTotalPhys);
             long availablePhysicalBytes = Math.Min(totalPhysicalBytes, ToNonNegativeLong(memoryStatus.ullAvailPhys));
-            long totalPageFileBytes = ToNonNegativeLong(memoryStatus.ullTotalPageFile);
-            long availablePageFileBytes = Math.Min(totalPageFileBytes, ToNonNegativeLong(memoryStatus.ullAvailPageFile));
+            long commitLimitBytes = ToNonNegativeLong(memoryStatus.ullTotalPageFile);
+            long commitAvailableBytes = Math.Min(commitLimitBytes, ToNonNegativeLong(memoryStatus.ullAvailPageFile));
+            long committedBytes = Math.Max(0, commitLimitBytes - commitAvailableBytes);
+            long systemCacheBytes = 0;
+
+            PERFORMANCE_INFORMATION performanceInfo = new()
+            {
+                cb = (uint)Marshal.SizeOf<PERFORMANCE_INFORMATION>()
+            };
+
+            if (GetPerformanceInfo(ref performanceInfo, performanceInfo.cb) && performanceInfo.PageSize != 0)
+            {
+                ulong pageSize = performanceInfo.PageSize;
+                totalPhysicalBytes = ToNonNegativeLong(performanceInfo.PhysicalTotal * pageSize);
+                availablePhysicalBytes = Math.Min(totalPhysicalBytes, ToNonNegativeLong(performanceInfo.PhysicalAvailable * pageSize));
+                commitLimitBytes = ToNonNegativeLong(performanceInfo.CommitLimit * pageSize);
+                committedBytes = Math.Min(commitLimitBytes, ToNonNegativeLong(performanceInfo.CommitTotal * pageSize));
+                systemCacheBytes = Math.Min(totalPhysicalBytes, ToNonNegativeLong(performanceInfo.SystemCache * pageSize));
+            }
 
             return new MemoryStatusSnapshot(
                 totalPhysicalBytes,
                 availablePhysicalBytes,
-                totalPageFileBytes,
-                availablePageFileBytes,
+                commitLimitBytes,
+                committedBytes,
+                systemCacheBytes,
                 Math.Clamp((int)memoryStatus.dwMemoryLoad, 0, 100));
         }
 
@@ -815,6 +856,10 @@ namespace OneColumnEncoder.ViewModels
         [LibraryImport("psapi.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static partial bool GetProcessMemoryInfo(IntPtr Process, ref PROCESS_MEMORY_COUNTERS ppsmemCounters, uint cb);
+
+        [LibraryImport("psapi.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static partial bool GetPerformanceInfo(ref PERFORMANCE_INFORMATION pPerformanceInformation, uint cb);
 
         [StructLayout(LayoutKind.Sequential)]
         private struct MEMORYSTATUSEX
@@ -845,22 +890,44 @@ namespace OneColumnEncoder.ViewModels
             public nuint PeakPagefileUsage;
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        private struct PERFORMANCE_INFORMATION
+        {
+            public uint cb;
+            public nuint CommitTotal;
+            public nuint CommitLimit;
+            public nuint CommitPeak;
+            public nuint PhysicalTotal;
+            public nuint PhysicalAvailable;
+            public nuint SystemCache;
+            public nuint KernelTotal;
+            public nuint KernelPaged;
+            public nuint KernelNonpaged;
+            public nuint PageSize;
+            public uint HandleCount;
+            public uint ProcessCount;
+            public uint ThreadCount;
+        }
+
         private readonly record struct MemoryStatusSnapshot(
             long TotalPhysicalBytes,
             long AvailablePhysicalBytes,
-            long TotalPageFileBytes,
-            long AvailablePageFileBytes,
+            long CommitLimitBytes,
+            long CommittedBytes,
+            long SystemCacheBytes,
             int MemoryLoadPercent)
         {
             public long UsedPhysicalBytes => Math.Max(0, TotalPhysicalBytes - AvailablePhysicalBytes);
-            public long CommitLimitBytes => TotalPageFileBytes;
-            public long CommittedBytes => Math.Max(0, TotalPageFileBytes - AvailablePageFileBytes);
         }
 
         private void ResetStats()
         {
             foreach (ColumnTextItemM item in MetricColumns)
                 item.BottomText = item.BottomText;
+            _lastMemoryStatsUpdate = DateTime.MinValue;
+            _lastOutputSizeBytes = 0;
+            _lastOutputSizeTime = DateTime.MinValue;
+            _peakOutputBandwidthBytesPerSecond = 0d;
             ProgressValue = 0;
             StatusText = Lang.ResetUsageStatusText;
         }
@@ -1061,5 +1128,8 @@ namespace OneColumnEncoder.ViewModels
         }
 
         private readonly record struct ProcessLogEntry(ProcessLogKind Kind, string Line);
+
+        [GeneratedRegex(@"X+(?:\.X+)?\s*(?:GBps|GB|MB|%)?", RegexOptions.CultureInvariant)]
+        private static partial Regex FileSizeMetricRegex();
     }
 }
