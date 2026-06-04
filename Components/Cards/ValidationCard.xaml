@@ -4,17 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+             xmlns:conv="clr-namespace:OneColumnEncoder.Converters"
+             xmlns:cards="clr-namespace:OneColumnEncoder.ViewModels.Cards"
+             d:DataContext="{d:DesignInstance Type=cards:ValidationCardBaseVM}"
              mc:Ignorable="d" 
              d:DesignWidth="450">
-    <!--
-    | Title                  |
-    | P1: P2 Title           |
-    | P2: ChecklistContainer |
-    | P3: P4 Title           |
-    | P4: ChecklistContainer |
-    WPF binding is based on property name, and the checklists needs to be reusable,
-    therefore a baseVM is needed
-    -->
+    <UserControl.Resources>
+        <conv:WidthToColumnCountConverter x:Key="WidthToColumnCount" />
+    </UserControl.Resources>
     <Border BorderBrush="{StaticResource GlobalPrimary}"
              BorderThickness="1.5"
              SnapsToDevicePixels="True"
@@ -26,9 +23,6 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0"
@@ -36,39 +30,43 @@
                        Text="{Binding Name}"
                        Style="{StaticResource H2}" />
 
-            <TextBlock Grid.Row="1"
-                       VerticalAlignment="Center"
-                       Text="{Binding P1Name}"
-                       Style="{StaticResource H3}"
-                       Margin="0 15 0 0" />
+            <UniformGrid Grid.Row="1"
+                         Columns="{Binding ActualWidth,
+                                    RelativeSource={RelativeSource FindAncestor,
+                                                                   AncestorType={x:Type ScrollViewer}},
+                                    Converter={StaticResource WidthToColumnCount}}">
+                <StackPanel>
+                    <TextBlock VerticalAlignment="Center"
+                               Text="{Binding P1Name}"
+                               Style="{StaticResource H3}"
+                               Margin="0 10 0 0" />
+                    <comps:ChecklistContainer ItemsSource="{Binding Checklist1}">
+                        <comps:ChecklistContainer.ItemTemplate>
+                            <DataTemplate>
+                                <comps:ChecklistItem Text="{Binding Text}"
+                                                     Status="{Binding Status}"
+                                                     Margin="0 10 0 0" />
+                            </DataTemplate>
+                        </comps:ChecklistContainer.ItemTemplate>
+                    </comps:ChecklistContainer>
+                </StackPanel>
 
-            <comps:ChecklistContainer Grid.Row="2"
-                                      ItemsSource="{Binding Checklist1}">
-                <comps:ChecklistContainer.ItemTemplate>
-                    <DataTemplate>
-                        <comps:ChecklistItem Text="{Binding Text}"
-                                             Status="{Binding Status}"
-                                             Margin="0 10 0 0" />
-                    </DataTemplate>
-                </comps:ChecklistContainer.ItemTemplate>
-            </comps:ChecklistContainer>
-            
-            <TextBlock Grid.Row="3"
-                       VerticalAlignment="Center"
-                       Text="{Binding P3Name}"
-                       Style="{StaticResource H3}"
-                       Margin="0 15 0 0" />
-
-            <comps:ChecklistContainer Grid.Row="4"
-                                      ItemsSource="{Binding Checklist2}">
-                <comps:ChecklistContainer.ItemTemplate>
-                    <DataTemplate>
-                        <comps:ChecklistItem Text="{Binding Text}"
-                                             Status="{Binding Status}"
-                                             Margin="0 10 0 0" />
-                    </DataTemplate>
-                </comps:ChecklistContainer.ItemTemplate>
-            </comps:ChecklistContainer>
+                <StackPanel>
+                    <TextBlock VerticalAlignment="Center"
+                               Text="{Binding P3Name}"
+                               Style="{StaticResource H3}"
+                               Margin="0 10 0 0"/>
+                    <comps:ChecklistContainer ItemsSource="{Binding Checklist2}" >
+                        <comps:ChecklistContainer.ItemTemplate>
+                            <DataTemplate>
+                                <comps:ChecklistItem Text="{Binding Text}"
+                                                     Status="{Binding Status}"
+                                                     Margin="0 10 0 0" />
+                            </DataTemplate>
+                        </comps:ChecklistContainer.ItemTemplate>
+                    </comps:ChecklistContainer>
+                </StackPanel>
+            </UniformGrid>
         </Grid>
     </Border>
 </UserControl>
