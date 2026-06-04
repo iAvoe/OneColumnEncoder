@@ -43,8 +43,6 @@ namespace OneColumnEncoder.ViewModels
         private readonly bool _isSample;
         private readonly Stopwatch _stopwatch = new();
         private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(200) };
-        private readonly StringBuilder _upstreamStdoutBuilder = new();
-        private readonly StringBuilder _downstreamStdoutBuilder = new();
         private readonly StringBuilder _upstreamStderrBuilder = new();
         private readonly StringBuilder _downstreamStderrBuilder = new();
         private readonly ConcurrentQueue<ProcessLogEntry> _logQueue = new();
@@ -64,7 +62,6 @@ namespace OneColumnEncoder.ViewModels
         public string MemoryTitle => Lang.MemoryTitle;
         public string DistributionTitle => Lang.DistributionTitle;
         public string BlockDetailsTitle => Lang.BlockDetailsTitle;
-        public string LogTitle => Lang.LogTitle;
         public string DragLogReportHint => Lang.DragLogReportHint;
         public string CurrentSizeLabel => Lang.CurrentSizeLabel;
         public string EstimatedSizeLabel => Lang.EstimatedSizeLabel;
@@ -92,7 +89,6 @@ namespace OneColumnEncoder.ViewModels
         public ObservableCollection<HeatMapCellM> HeatMapA { get; } = [];
         public ObservableCollection<string> SampleIntervalTickLabels { get; } = [];
         public ButtonGroupVM MonitorButtons { get; }
-        public ButtonGroupVM LogButtons { get; }
         public ButtonGroupVM ReportButtons { get; }
         public ButtonGroupVM FinishButtons { get; }
         public ActionCmd FreezeOrContinueCmd { get; }
@@ -143,20 +139,6 @@ namespace OneColumnEncoder.ViewModels
         {
             get => _statusText;
             set => SetProperty(ref _statusText, value);
-        }
-
-        private string _upstreamLogText = string.Empty;
-        public string UpstreamLogText
-        {
-            get => _upstreamLogText;
-            set => SetProperty(ref _upstreamLogText, value);
-        }
-
-        private string _downstreamLogText = string.Empty;
-        public string DownstreamLogText
-        {
-            get => _downstreamLogText;
-            set => SetProperty(ref _downstreamLogText, value);
         }
 
         private string _upstreamReportText = string.Empty;
@@ -249,14 +231,6 @@ namespace OneColumnEncoder.ViewModels
 
             MonitorButtons = ButtonGroupVM.CreateTwoButton(FreezeOrContinueText, Lang.ResetUsageText, FreezeOrContinueCmd, ResetStatsCmd);
 
-            LogButtons = ButtonGroupVM.CreateFiveButton(
-                Lang.SaveUpstreamStdoutText, Lang.SaveDownstreamStdoutText, Lang.CopyUpstreamStdoutText, Lang.CopyDownstreamStdoutText, Lang.RotateLogFontSizeText,
-                new ActionCmd(_ => SaveText(UpstreamLogText, "upstream-stdout.txt")),
-                new ActionCmd(_ => SaveText(DownstreamLogText, "downstream-stdout.txt")),
-                new ActionCmd(_ => CopyText(UpstreamLogText)),
-                new ActionCmd(_ => CopyText(DownstreamLogText)),
-                new ActionCmd(_ => RotateLogFontSize()));
-
             ReportButtons = ButtonGroupVM.CreateFiveButton(
                 Lang.SaveUpstreamStderrText, Lang.SaveDownstreamStderrText, Lang.CopyUpstreamStderrText, Lang.CopyDownstreamStderrText, Lang.RotateLogFontSizeText,
                 new ActionCmd(_ => SaveText(UpstreamReportText, "upstream-stderr.txt")),
@@ -334,8 +308,6 @@ namespace OneColumnEncoder.ViewModels
 
         private void AppendInitialLogs()
         {
-            AppendLine(_upstreamStdoutBuilder, string.Format(Lang.UpstreamStdoutHeaderFormat, _request.UpstreamExeName, _request.EncoderExeName));
-            AppendLine(_downstreamStdoutBuilder, string.Format(Lang.DownstreamStdoutHeaderFormat, _request.EncoderExeName));
             AppendLine(_upstreamStderrBuilder, $"{Lang.UpstreamLabel}: {_request.UpstreamExeName}");
             AppendLine(_upstreamStderrBuilder, $"{Lang.ExecutableLabel}: {_request.UpstreamPath}");
             AppendLine(_upstreamStderrBuilder, $"{Lang.InputLabel}: {_request.UpstreamInputPath}");
@@ -377,7 +349,6 @@ namespace OneColumnEncoder.ViewModels
                         UseShellExecute = false,
                         CreateNoWindow = true,
                         RedirectStandardInput = true,
-                        RedirectStandardOutput = true,
                         RedirectStandardError = true
                     },
                     EnableRaisingEvents = true
@@ -414,12 +385,10 @@ namespace OneColumnEncoder.ViewModels
 
                 // Upstream stderr reader
                 Task upstreamStderrTask = ReadStreamAsync(upstream.StandardError, ProcessLogKind.UpstreamStderr, cancellationToken);
-                // Encoder stdout reader
-                Task encoderStdoutTask = ReadStreamAsync(encoder.StandardOutput, ProcessLogKind.DownstreamStdout, cancellationToken);
                 // Encoder stderr reader
                 Task encoderStderrTask = ReadStreamAsync(encoder.StandardError, ProcessLogKind.DownstreamStderr, cancellationToken);
 
-                await Task.WhenAll(pipeTask, upstreamStderrTask, encoderStdoutTask, encoderStderrTask);
+                await Task.WhenAll(pipeTask, upstreamStderrTask, encoderStderrTask);
 
                 upstream.WaitForExit();
                 encoder.WaitForExit();
@@ -480,13 +449,11 @@ namespace OneColumnEncoder.ViewModels
         {
             ProcessQueuedLogs();
             if (IsFrozen) return;
-            lock (_logLock)
-            {
-                UpstreamLogText = _upstreamStdoutBuilder.ToString();
-                DownstreamLogText = _downstreamStdoutBuilder.ToString();
-                UpstreamReportText = _upstreamStderrBuilder.ToString();
-                DownstreamReportText = _downstreamStderrBuilder.ToString();
-            }
+                lock (_logLock)
+                {
+                    UpstreamReportText = _upstreamStderrBuilder.ToString();
+                    DownstreamReportText = _downstreamStderrBuilder.ToString();
+                }
         }
 
         private void OnTimerTick(object? sender, EventArgs e)
@@ -513,12 +480,6 @@ namespace OneColumnEncoder.ViewModels
                 changed = true;
                 switch (entry.Kind)
                 {
-                    case ProcessLogKind.UpstreamStdout:
-                        AppendLogWithOverwrite(_upstreamStdoutBuilder, entry.Line, false);
-                        break;
-                    case ProcessLogKind.DownstreamStdout:
-                        AppendLogWithOverwrite(_downstreamStdoutBuilder, entry.Line, false);
-                        break;
                     case ProcessLogKind.UpstreamStderr:
                         AppendLogWithOverwrite(_upstreamStderrBuilder, entry.Line, true);
                         break;
@@ -532,8 +493,6 @@ namespace OneColumnEncoder.ViewModels
             {
                 lock (_logLock)
                 {
-                    UpstreamLogText = _upstreamStdoutBuilder.ToString();
-                    DownstreamLogText = _downstreamStdoutBuilder.ToString();
                     UpstreamReportText = _upstreamStderrBuilder.ToString();
                     DownstreamReportText = _downstreamStderrBuilder.ToString();
                 }
@@ -756,7 +715,7 @@ namespace OneColumnEncoder.ViewModels
         {
             lock (_logLock)
             {
-                return string.Join(Environment.NewLine, _upstreamStdoutBuilder, _downstreamStdoutBuilder, _upstreamStderrBuilder, _downstreamStderrBuilder);
+                return string.Join(Environment.NewLine, _upstreamStderrBuilder, _downstreamStderrBuilder);
             }
         }
 
@@ -820,11 +779,6 @@ namespace OneColumnEncoder.ViewModels
             FreezeOrContinueText = _isFrozen ? Lang.ContinueMonitoringText : Lang.FreezeContinueText;
             MonitorButtons.B2_1Text = FreezeOrContinueText;
             MonitorButtons.B2_2Text = Lang.ResetUsageText;
-            LogButtons.B5_1Text = Lang.SaveUpstreamStdoutText;
-            LogButtons.B5_2Text = Lang.SaveDownstreamStdoutText;
-            LogButtons.B5_3Text = Lang.CopyUpstreamStdoutText;
-            LogButtons.B5_4Text = Lang.CopyDownstreamStdoutText;
-            LogButtons.B5_5Text = Lang.RotateLogFontSizeText;
             ReportButtons.B5_1Text = Lang.SaveUpstreamStderrText;
             ReportButtons.B5_2Text = Lang.SaveDownstreamStderrText;
             ReportButtons.B5_3Text = Lang.CopyUpstreamStderrText;
@@ -841,7 +795,6 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(MemoryTitle));
             OnPropertyChanged(nameof(DistributionTitle));
             OnPropertyChanged(nameof(BlockDetailsTitle));
-            OnPropertyChanged(nameof(LogTitle));
             OnPropertyChanged(nameof(DragLogReportHint));
             OnPropertyChanged(nameof(CurrentSizeLabel));
             OnPropertyChanged(nameof(EstimatedSizeLabel));
@@ -882,8 +835,6 @@ namespace OneColumnEncoder.ViewModels
 
         private enum ProcessLogKind
         {
-            UpstreamStdout,
-            DownstreamStdout,
             UpstreamStderr,
             DownstreamStderr
         }
