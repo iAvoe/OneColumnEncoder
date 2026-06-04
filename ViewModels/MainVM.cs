@@ -162,7 +162,7 @@ namespace OneColumnEncoder.ViewModels
                 () => !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson),
                 UpdateEncStartButtonsState);
             SampleClip = new OpenSampleClipCmd(modalNavS, BuildEncodingPipelineRequest, _srcVideoAnalysis);
-            StartEncode = new StartEncCmd(BuildEncodingPipelineRequest, modalNavS);
+            StartEncode = new StartEncCmd(BuildEncodingPipelineRequest, modalNavS, appConfM);
 
             // Buttons
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(

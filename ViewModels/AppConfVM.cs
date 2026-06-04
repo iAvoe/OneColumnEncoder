@@ -11,6 +11,7 @@ using OneColumnEncoder.Components;
 using OneColumnEncoder.Stores;
 using System.Windows.Input;
 using OneColumnEncoder.Models;
+using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Commands.SaveLoad;
 using OneColumnEncoder.Helpers;
@@ -29,7 +30,7 @@ namespace OneColumnEncoder.ViewModels
         public CloseModalCmd CloseCmd { get; }
         public SaveAppConfCmd SaveCmd { get; }
         public LoadAppConfCmd LoadCmd { get; }
-        public ICommand? SmtpCmd { get; } // TODO
+        public ICommand SmtpCmd { get; }
 
         public ButtonGroupVM FinishSettingButtons { get; }
 
@@ -49,7 +50,7 @@ namespace OneColumnEncoder.ViewModels
             CloseCmd = new CloseModalCmd(closeAction);
             SaveCmd = new SaveAppConfCmd(appConfS, closeAction);
             LoadCmd = new LoadAppConfCmd(appConfS);
-            SmtpCmd = null; // TODO
+            SmtpCmd = new TestSmtpCmd(appConfS);
             FinishSettingButtons = ButtonGroupVM.CreateThreeButton(
                 UICaptionProviderM.AppConf.Buttons.TestSmtp,
                 UICaptionProviderM.AppConf.Buttons.Cancel,
