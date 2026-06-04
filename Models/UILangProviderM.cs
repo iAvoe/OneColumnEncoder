@@ -408,7 +408,7 @@ public class UILangProviderM
             ["Checklist.Source2.ColorMatrix"] = "色彩矩阵信息是否正常",
             ["Checklist.Source2.TransferChars"] = "传输特性信息是否正常",
             ["Checklist.Source2.ColorPrimaries"] = "原色色系信息是否正常",
-            ["Checklist.Source2.ChromaSubsampling"] = "是否关闭色度采样压缩或朝向 \u2190/\u2196（SVT-AV1 要求）",
+            ["Checklist.Source2.ChromaSubsampling"] = "已关闭色度采样压缩或朝向 \u2190/\u2196（SVT-AV1 要求）",
 
             ["Checklist.Enc1.OffGrid"] = "使用电池供电 / 离网",
             ["Checklist.Enc1.DiskSpace"] = "磁盘空间充足",
@@ -658,7 +658,7 @@ public class UILangProviderM
             ["Checklist.Source2.ColorMatrix"] = "色彩矩陣資訊是否正常",
             ["Checklist.Source2.TransferChars"] = "傳輸特性資訊是否正常",
             ["Checklist.Source2.ColorPrimaries"] = "原色色系資訊是否正常",
-            ["Checklist.Source2.ChromaSubsampling"] = "是否關閉色度採樣壓縮或朝向 \u2190/\u2196（SVT-AV1 要求）",
+            ["Checklist.Source2.ChromaSubsampling"] = "已關閉色度採樣壓縮或朝向 \u2190/\u2196（SVT-AV1 要求）",
 
             ["Checklist.Enc1.OffGrid"] = "使用電池供電 / 離網",
             ["Checklist.Enc1.DiskSpace"] = "磁碟空間充足",

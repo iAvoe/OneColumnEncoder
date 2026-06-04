@@ -13,7 +13,6 @@
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderThickness" Value="0" />
             <Setter Property="FontFamily" Value="Consolas" />
-            <Setter Property="FontSize" Value="12" />
             <Setter Property="Foreground" Value="{StaticResource GlobalPrimary}" />
             <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
             <Setter Property="Padding" Value="10" />
@@ -61,6 +60,7 @@
                 <TextBox Grid.Column="0"
                          Text="{Binding LeftText, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                         FontSize="{Binding TextFontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
                          Style="{StaticResource SplitTextBox}" />
 
                 <GridSplitter Grid.Column="1"
@@ -78,6 +78,7 @@
                 <TextBox Grid.Column="2"
                          Text="{Binding RightText, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                         FontSize="{Binding TextFontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
                          Style="{StaticResource SplitTextBox}" />
             </Grid>
         </Border>

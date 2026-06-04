@@ -161,7 +161,7 @@ namespace OneColumnEncoder.ViewModels
                 SrcValidationCard,
                 () => !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson),
                 UpdateEncStartButtonsState);
-            SampleClip = new OpenSampleClipCmd(modalNavS, BuildEncodingPipelineRequest, _srcVideoAnalysis);
+            SampleClip = new OpenSampleClipCmd(modalNavS, BuildEncodingPipelineRequest, _srcVideoAnalysis, appConfM);
             StartEncode = new StartEncCmd(BuildEncodingPipelineRequest, modalNavS, appConfM);
 
             // Buttons

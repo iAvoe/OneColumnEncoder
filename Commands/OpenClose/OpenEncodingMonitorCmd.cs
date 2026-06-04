@@ -3,23 +3,28 @@ using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.Views;
-using System;
 using System.Linq;
 using System.Windows;
 
 namespace OneColumnEncoder.Commands.OpenClose
 {
-    public class OpenSampleClipCmd(ModalNavS modalNavS, Func<EncodingPipelineRequest?> buildRequest, VideoAnalysisM srcVideoAnalysis, AppConfM appConfM) : BaseCmd
+    public class OpenEncodingMonitorCmd(
+        ModalNavS modalNavS,
+        EncodingPipelineRequest request,
+        EncodingPipelineCommand command,
+        AppConfM appConfM,
+        bool isSample = false) : BaseCmd
     {
         private readonly ModalNavS _modalNavS = modalNavS;
-        private readonly Func<EncodingPipelineRequest?> _buildRequest = buildRequest;
-        private readonly VideoAnalysisM _srcVideoAnalysis = srcVideoAnalysis;
+        private readonly EncodingPipelineRequest _request = request;
+        private readonly EncodingPipelineCommand _command = command;
         private readonly AppConfM _appConfM = appConfM;
+        private readonly bool _isSample = isSample;
 
         public override void Execute(object? parameter)
         {
-            SampleClipModal? existingWindow = Application.Current.Windows
-                .OfType<SampleClipModal>()
+            EncodingMonitorModal? existingWindow = Application.Current.Windows
+                .OfType<EncodingMonitorModal>()
                 .FirstOrDefault();
 
             if (existingWindow != null)
@@ -31,8 +36,8 @@ namespace OneColumnEncoder.Commands.OpenClose
             if (_modalNavS.IsOpen)
                 _modalNavS.Close();
 
-            SampleClipModal window = new();
-            SampleClipModalVM vm = new(_modalNavS, window.Close, _buildRequest, _srcVideoAnalysis, _appConfM);
+            EncodingMonitorModal window = new();
+            EncodingMonitorModalVM vm = new(_modalNavS, window.Close, _request, _command, _appConfM, _isSample);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();

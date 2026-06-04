@@ -21,6 +21,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly ModalNavS _modalNavS;
         private readonly Action _closeAction;
         private readonly Func<EncodingPipelineRequest?> _buildRequest;
+        private readonly AppConfM _appConfM;
         private readonly double _totalSeconds;
         private readonly double _frameRate;
         private readonly long _totalFrames;
@@ -151,11 +152,12 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        public SampleClipModalVM(ModalNavS modalNavS, Action closeAction, Func<EncodingPipelineRequest?> buildRequest, VideoAnalysisM srcVideoAnalysis)
+        public SampleClipModalVM(ModalNavS modalNavS, Action closeAction, Func<EncodingPipelineRequest?> buildRequest, VideoAnalysisM srcVideoAnalysis, AppConfM appConfM)
         {
             _modalNavS = modalNavS;
             _closeAction = closeAction;
             _buildRequest = buildRequest;
+            _appConfM = appConfM;
             (_totalSeconds, _frameRate, long totalFrames, _fieldOrderKind, _frameRateKind) = ReadSourceStats(srcVideoAnalysis.RawJson);
             _totalFrames = Math.Max(1L, totalFrames);
 
@@ -448,7 +450,13 @@ namespace OneColumnEncoder.ViewModels
                 ConfirmationModalVM vm = ConfirmationModalVM.CreateDebug(
                     "Sample Encoding Command", command.CommandLine,
                     closeCmd,
-                    new ActionCmd(_ => { window.DialogResult = true; window.Close(); }));
+                    new ActionCmd(_ =>
+                    {
+                        window.DialogResult = true;
+                        window.Close();
+                        _closeAction();
+                        new OpenEncodingMonitorCmd(_modalNavS, request with { Clip = clip }, command, _appConfM, isSample: true).Execute(null);
+                    }));
 
                 window.DataContext = vm;
                 window.Owner = Application.Current.MainWindow;

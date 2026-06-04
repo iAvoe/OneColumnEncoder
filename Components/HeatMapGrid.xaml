@@ -1,0 +1,36 @@
+<UserControl x:Class="OneColumnEncoder.Components.HeatMapGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conv="clr-namespace:OneColumnEncoder.Converters"
+             mc:Ignorable="d"
+             d:DesignHeight="180"
+             d:DesignWidth="360">
+    <UserControl.Resources>
+        <conv:HeatLevelToBrushConverter x:Key="HeatLevelToBrush" />
+    </UserControl.Resources>
+
+    <Border BorderBrush="{StaticResource GlobalPrimary}"
+            BorderThickness="1"
+            Background="Transparent">
+        <ItemsControl ItemsSource="{Binding Items, RelativeSource={RelativeSource AncestorType=UserControl}}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Columns="{Binding Columns, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border Width="{Binding CellSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            Height="{Binding CellSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            Margin="0.5"
+                            BorderBrush="{StaticResource GlobalPrimary}"
+                            BorderThickness="0.5"
+                            Background="{Binding Level, Converter={StaticResource HeatLevelToBrush}}"
+                            ToolTip="{Binding Tooltip}" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </Border>
+</UserControl>
