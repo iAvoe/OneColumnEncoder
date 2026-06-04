@@ -9,8 +9,14 @@ using System.Text.RegularExpressions;
 
 namespace OneColumnEncoder.Helpers
 {
-    public class ToolVersionDetectH
+    public partial class ToolVersionDetectH
     {
+        [GeneratedRegex(@"\bver\s+\S+", RegexOptions.IgnoreCase)]
+        private static partial Regex Avs2pipemodVersion();
+
+        [GeneratedRegex(@"version\s+(\d+(?:\.\d+)?)", RegexOptions.IgnoreCase)]
+        private static partial Regex X265Version();
+
         public static async Task<string?> TryDetectAsync(string exeName, string filePath)
         {
             if (string.IsNullOrWhiteSpace(exeName)
@@ -122,7 +128,7 @@ namespace OneColumnEncoder.Helpers
                     return firstLine;
                 case "avs2pipemod.exe":
                     {
-                        Match m = Regex.Match(firstLine, @"\bver\s+\S+", RegexOptions.IgnoreCase);
+                        Match m = Avs2pipemodVersion().Match(firstLine);
                         return m.Success ? m.Value : firstLine;
                     }
 
@@ -130,7 +136,7 @@ namespace OneColumnEncoder.Helpers
                     return firstLine;
                 case "x265.exe":
                     {
-                        Match m = Regex.Match(text, @"version\s+(\d+(?:\.\d+)?)", RegexOptions.IgnoreCase);
+                        Match m = X265Version().Match(text);
                         return m.Success ? m.Groups[1].Value : firstLine;
                     }
                 case "svtav1encapp.exe":
