@@ -28,7 +28,7 @@
                 <Setter Property="HorizontalContentAlignment"
                         Value="Left" />
                 <Setter Property="Margin"
-                        Value="0 2.5 5 0" />
+                        Value="0 4.5 8 0" />
                 <Setter Property="Cursor"
                         Value="Hand" />
                 <!-- Modify border defaults -->

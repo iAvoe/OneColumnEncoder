@@ -25,7 +25,7 @@
                 VerticalAlignment="Center"
                 SnapsToDevicePixels="True"
                 Background="{StaticResource GlobalTertiary}"
-                Margin="0 0 10 0" />
+                Margin="10" />
 
         <!-- Text part with letter spacing -->
         <ItemsControl Grid.Column="1"
@@ -56,6 +56,6 @@
                 VerticalAlignment="Center"
                 SnapsToDevicePixels="True"
                 Background="{StaticResource GlobalTertiary}"
-                Margin="10 0 0 0" />
+                Margin="10" />
     </Grid>
 </UserControl>

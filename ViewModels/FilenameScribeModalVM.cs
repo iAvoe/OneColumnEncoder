@@ -44,7 +44,7 @@ namespace OneColumnEncoder.ViewModels
             private set => SetProperty(ref _videoFilenameFontSize, value);
         }
 
-        public string WindowTitle => UILangProviderM.Current["FilenameScribe.WindowTitle"];
+        public static string WindowTitle => UILangProviderM.Current["FilenameScribe.WindowTitle"];
         public static string MiniHeader => UILangProviderM.Current["FilenameScribe.MiniHeader"];
         public static string PlaceholderText => UILangProviderM.Current["FilenameScribe.Placeholder"];
         public static string ExtensionText => PossibleExtensions;
@@ -172,7 +172,7 @@ namespace OneColumnEncoder.ViewModels
             (FilenameFinishButtons.Cmd2 as BaseCmd)?.OnCanExecuteChanged();
         }
 
-        private void SetChecklistStatus(ObservableCollection<ChecklistEntryVM> checklist, int index, bool isValid, bool useWarning = false)
+        private static void SetChecklistStatus(ObservableCollection<ChecklistEntryVM> checklist, int index, bool isValid, bool useWarning = false)
         {
             checklist[index].Status = checklist[index].IsEnabled
                 ? isValid ? StatusType.Success : (useWarning ? StatusType.Warning : StatusType.Error)

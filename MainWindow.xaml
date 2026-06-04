@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="1cenc (Now is actually 2c)"
         Width="800"
-        Height="1100">
+        Height="1200">
     <ScrollViewer VerticalScrollBarVisibility="Hidden"
                   HorizontalScrollBarVisibility="Hidden">
         <!-- DataContext is inherited from parent (MainVM), so there is no binding needed here -->
