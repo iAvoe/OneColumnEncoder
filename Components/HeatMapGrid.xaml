@@ -21,7 +21,7 @@
             <DataTemplate>
                 <Border Width="{Binding CellSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
                         Height="{Binding CellSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                        Margin="0.5"
+                        Margin="1"
                         CornerRadius="2"
                         Background="{Binding Level, Converter={StaticResource HeatLevelToBrush}}"
                         ToolTip="{Binding Tooltip}" />

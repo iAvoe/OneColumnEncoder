@@ -49,6 +49,8 @@ namespace OneColumnEncoder.ViewModels
         private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(200) };
         private readonly StringBuilder _upstreamStderrBuilder = new();
         private readonly StringBuilder _downstreamStderrBuilder = new();
+        private readonly LogFoldState _upstreamStderrFoldState = new();
+        private readonly LogFoldState _downstreamStderrFoldState = new();
         private readonly ConcurrentQueue<ProcessLogEntry> _logQueue = new();
         private readonly Lock _logLock = new();
         private DateTime _lastStatsUpdate = DateTime.MinValue;
@@ -502,10 +504,10 @@ namespace OneColumnEncoder.ViewModels
                 switch (entry.Kind)
                 {
                     case ProcessLogKind.UpstreamStderr:
-                        AppendLogWithOverwrite(_upstreamStderrBuilder, entry.Line, true);
+                        AppendLogWithOverwrite(_upstreamStderrBuilder, _upstreamStderrFoldState, entry.Line, true);
                         break;
                     case ProcessLogKind.DownstreamStderr:
-                        AppendLogWithOverwrite(_downstreamStderrBuilder, entry.Line, true);
+                        AppendLogWithOverwrite(_downstreamStderrBuilder, _downstreamStderrFoldState, entry.Line, true);
                         break;
                 }
             }
@@ -520,7 +522,7 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        private void AppendLogWithOverwrite(StringBuilder target, string text, bool isStderr)
+        private void AppendLogWithOverwrite(StringBuilder target, LogFoldState foldState, string text, bool isStderr)
         {
             string normalized = text.Replace("\0", string.Empty, StringComparison.Ordinal);
             string[] newlineParts = normalized.Split('\n');
@@ -533,16 +535,38 @@ namespace OneColumnEncoder.ViewModels
                     if (isStderr && TryHandleProgressLine(latest)) continue;
 
                     TrimLastLine(target);
+                    foldState.Reset();
                     if (!string.IsNullOrWhiteSpace(latest))
-                        target.AppendLine(latest);
+                        AppendFoldedLine(target, foldState, latest);
                     continue;
                 }
 
                 string line = newlinePart.TrimEnd();
                 if (isStderr && TryHandleProgressLine(line)) continue;
                 if (!string.IsNullOrWhiteSpace(line))
-                    target.AppendLine(line);
+                    AppendFoldedLine(target, foldState, line);
             }
+        }
+
+        private static void AppendFoldedLine(StringBuilder target, LogFoldState foldState, string line)
+        {
+            if (foldState.LineStartIndex >= 0 && string.Equals(foldState.Line, line, StringComparison.Ordinal))
+            {
+                foldState.RepeatCount++;
+                target.Length = foldState.LineStartIndex;
+                target.AppendLine(FormatFoldedLine(line, foldState.RepeatCount));
+                return;
+            }
+
+            foldState.Line = line;
+            foldState.RepeatCount = 1;
+            foldState.LineStartIndex = target.Length;
+            target.AppendLine(line);
+        }
+
+        private static string FormatFoldedLine(string line, int repeatCount)
+        {
+            return repeatCount > 1 ? $"{line} (x{repeatCount:N0})" : line;
         }
 
         private bool TryHandleProgressLine(string line)
@@ -572,7 +596,12 @@ namespace OneColumnEncoder.ViewModels
         private static void TrimLastLine(StringBuilder builder)
         {
             if (builder.Length == 0) return;
-            int index = builder.ToString().LastIndexOf('\n');
+            string text = builder.ToString();
+            int searchStart = text.Length - 1;
+            while (searchStart >= 0 && (text[searchStart] == '\r' || text[searchStart] == '\n'))
+                searchStart--;
+
+            int index = text.LastIndexOf('\n', Math.Max(0, searchStart));
             if (index < 0)
             {
                 builder.Clear();
@@ -1128,6 +1157,20 @@ namespace OneColumnEncoder.ViewModels
         }
 
         private readonly record struct ProcessLogEntry(ProcessLogKind Kind, string Line);
+
+        private sealed class LogFoldState
+        {
+            public string? Line { get; set; }
+            public int RepeatCount { get; set; }
+            public int LineStartIndex { get; set; } = -1;
+
+            public void Reset()
+            {
+                Line = null;
+                RepeatCount = 0;
+                LineStartIndex = -1;
+            }
+        }
 
         [GeneratedRegex(@"X+(?:\.X+)?\s*(?:GBps|GB|MB|%)?", RegexOptions.CultureInvariant)]
         private static partial Regex FileSizeMetricRegex();
