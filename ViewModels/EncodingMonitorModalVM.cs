@@ -19,7 +19,7 @@ using System.Windows.Threading;
 
 namespace OneColumnEncoder.ViewModels
 {
-    public class EncodingMonitorModalVM : BaseVM
+    public partial class EncodingMonitorModalVM : BaseVM
     {
         private const int HeatMapRows = 16;
         private const int HeatMapColumns = 32;
@@ -31,26 +31,28 @@ namespace OneColumnEncoder.ViewModels
         private readonly bool _isSample;
         private readonly Stopwatch _stopwatch = new();
         private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(200) };
-        private readonly StringBuilder _upstreamLogBuilder = new();
-        private readonly StringBuilder _downstreamLogBuilder = new();
-        private readonly StringBuilder _upstreamReportBuilder = new();
-        private readonly StringBuilder _downstreamReportBuilder = new();
+        private readonly StringBuilder _upstreamStdoutBuilder = new();
+        private readonly StringBuilder _downstreamStdoutBuilder = new();
+        private readonly StringBuilder _upstreamStderrBuilder = new();
+        private readonly StringBuilder _downstreamStderrBuilder = new();
         private readonly ConcurrentQueue<ProcessLogEntry> _logQueue = new();
-        private readonly object _logLock = new();
+        private readonly Lock _logLock = new();
         private readonly Random _random = new();
         private DateTime _lastStatsUpdate = DateTime.MinValue;
         private CancellationTokenSource? _cts;
-        private Process? _process;
+        private Process? _upstreamProcess;
+        private Process? _encoderProcess;
         private bool _hasStarted;
         private bool _finishEnabledAfterClose;
         private int? _exitCode;
+        private bool _success;
 
         public string WindowTitle => _isSample ? "1cenc Sample Encoding Monitor" : "1cenc Encoding Monitor";
         public static string ProgressTitle => "进度";
         public static string MemoryTitle => "物理页监视器（32x16）";
         public static string DistributionTitle => "区段分布";
         public static string BlockDetailsTitle => "单块详情（光标悬停时显示）";
-        public static string LogTitle => "上下游程序信息与报错日志 (stdout & stderr)";
+        public static string LogTitle => "上下游程序 stdout";
         public static string DragLogReportHint => "拖拽窗口以调整日志显示面积；拖拽日志分界线以调整宽度";
         public static string CurrentSizeLabel => "当前大小/GB";
         public static string EstimatedSizeLabel => "预计总大小/GB";
@@ -226,17 +228,17 @@ namespace OneColumnEncoder.ViewModels
             MonitorButtons = ButtonGroupVM.CreateTwoButton(FreezeOrContinueText, "重置占用值", FreezeOrContinueCmd, ResetStatsCmd);
 
             LogButtons = ButtonGroupVM.CreateFiveButton(
-                "保存 stdout", "保存 stderr", "复制 stdout", "复制 stderr", "轮换日志字号",
-                new ActionCmd(_ => SaveText(UpstreamLogText, "stdout.txt")),
-                new ActionCmd(_ => SaveText(DownstreamLogText, "stderr.txt")),
+                "保存上游 stdout", "保存下游 stdout", "复制上游 stdout", "复制下游 stdout", "轮换日志字号",
+                new ActionCmd(_ => SaveText(UpstreamLogText, "upstream-stdout.txt")),
+                new ActionCmd(_ => SaveText(DownstreamLogText, "downstream-stdout.txt")),
                 new ActionCmd(_ => CopyText(UpstreamLogText)),
                 new ActionCmd(_ => CopyText(DownstreamLogText)),
                 new ActionCmd(_ => RotateLogFontSize()));
 
             ReportButtons = ButtonGroupVM.CreateFiveButton(
-                "保存命令摘要", "保存错误报告", "复制命令摘要", "复制错误报告", "轮换日志字号",
-                new ActionCmd(_ => SaveText(UpstreamReportText, "command-summary.txt")),
-                new ActionCmd(_ => SaveText(DownstreamReportText, "error-report.txt")),
+                "保存上游 stderr", "保存下游 stderr", "复制上游 stderr", "复制下游 stderr", "轮换日志字号",
+                new ActionCmd(_ => SaveText(UpstreamReportText, "upstream-stderr.txt")),
+                new ActionCmd(_ => SaveText(DownstreamReportText, "downstream-stderr.txt")),
                 new ActionCmd(_ => CopyText(UpstreamReportText)),
                 new ActionCmd(_ => CopyText(DownstreamReportText)),
                 new ActionCmd(_ => RotateLogFontSize()));
@@ -309,52 +311,98 @@ namespace OneColumnEncoder.ViewModels
 
         private void AppendInitialLogs()
         {
-            AppendLog(_upstreamLogBuilder, "stdout", "Standard output from cmd.exe / encoder pipeline");
-            AppendLog(_downstreamLogBuilder, "stderr", "Standard error from cmd.exe / encoder pipeline");
-            AppendLog(_upstreamReportBuilder, "Upstream", _request.UpstreamExeName);
-            AppendLog(_upstreamReportBuilder, "Executable", _request.UpstreamPath);
-            AppendLog(_upstreamReportBuilder, "Input", _request.UpstreamInputPath);
-            AppendLog(_upstreamReportBuilder, "Arguments", _command.UpstreamArgs);
-            AppendLog(_upstreamReportBuilder, "Encoder", _request.EncoderExeName);
-            AppendLog(_upstreamReportBuilder, "Executable", _request.EncoderPath);
-            AppendLog(_upstreamReportBuilder, "Output", _request.OutputPath);
-            AppendLog(_upstreamReportBuilder, "Arguments", _command.EncoderArgs);
+            AppendLine(_upstreamStdoutBuilder, $"[upstream stdout :: {_request.UpstreamExeName} pipe → {_request.EncoderExeName}]");
+            AppendLine(_downstreamStdoutBuilder, $"[downstream stdout :: {_request.EncoderExeName}]");
+            AppendLine(_upstreamStderrBuilder, $"Upstream: {_request.UpstreamExeName}");
+            AppendLine(_upstreamStderrBuilder, $"Executable: {_request.UpstreamPath}");
+            AppendLine(_upstreamStderrBuilder, $"Input: {_request.UpstreamInputPath}");
+            AppendLine(_upstreamStderrBuilder, $"Arguments: {_command.UpstreamArgs}");
+            AppendLine(_downstreamStderrBuilder, $"Encoder: {_request.EncoderExeName}");
+            AppendLine(_downstreamStderrBuilder, $"Executable: {_request.EncoderPath}");
+            AppendLine(_downstreamStderrBuilder, $"Output: {_request.OutputPath}");
+            AppendLine(_downstreamStderrBuilder, $"Arguments: {_command.EncoderArgs}");
             FlushLogsToProperties();
         }
 
         private async Task RunEncodingAsync(CancellationToken cancellationToken)
         {
-            bool success = false;
             string processOutput = string.Empty;
+            _success = false;
 
             try
             {
                 StatusText = "正在压制";
-                using Process process = new()
+                using Process upstream = new()
                 {
                     StartInfo = new ProcessStartInfo
                     {
-                        FileName = "cmd.exe",
-                        Arguments = "/c " + _command.CommandLine,
+                        FileName = _request.UpstreamPath,
+                        Arguments = _command.UpstreamArgs,
                         UseShellExecute = false,
                         CreateNoWindow = true,
-                        RedirectStandardError = true,
-                        RedirectStandardOutput = true
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true
+                    },
+                    EnableRaisingEvents = true
+                };
+                using Process encoder = new()
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = _request.EncoderPath,
+                        Arguments = _command.EncoderArgs,
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        RedirectStandardInput = true,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true
                     },
                     EnableRaisingEvents = true
                 };
 
-                _process = process;
-                process.OutputDataReceived += (_, e) => EnqueueProcessLine(ProcessLogKind.Stdout, e.Data);
-                process.ErrorDataReceived += (_, e) => EnqueueProcessLine(ProcessLogKind.Stderr, e.Data);
+                _upstreamProcess = upstream;
+                _encoderProcess = encoder;
 
-                process.Start();
-                process.BeginOutputReadLine();
-                process.BeginErrorReadLine();
-                await process.WaitForExitAsync(cancellationToken);
+                upstream.Start();
+                encoder.Start();
 
-                _exitCode = process.ExitCode;
-                success = _exitCode == 0;
+                // Pipe upstream stdout → encoder stdin while capturing binary as text
+                Task pipeTask = Task.Run(async () =>
+                {
+                    try
+                    {
+                        byte[] buffer = new byte[81920];
+                        Stream upstreamStdout = upstream.StandardOutput.BaseStream;
+                        Stream encoderStdin = encoder.StandardInput.BaseStream;
+                        int bytesRead;
+                        while ((bytesRead = await upstreamStdout.ReadAsync(buffer, 0, buffer.Length, cancellationToken)) > 0)
+                        {
+                            await encoderStdin.WriteAsync(buffer, 0, bytesRead, cancellationToken);
+                            await encoderStdin.FlushAsync(cancellationToken);
+                        }
+                        encoder.StandardInput.Close();
+                    }
+                    catch (OperationCanceledException) { }
+                    catch (Exception ex)
+                    {
+                        EnqueueProcessLine(ProcessLogKind.UpstreamStderr, $"Pipe error: {ex.Message}");
+                    }
+                }, cancellationToken);
+
+                // Upstream stderr reader
+                Task upstreamStderrTask = ReadStreamAsync(upstream.StandardError, ProcessLogKind.UpstreamStderr, cancellationToken);
+                // Encoder stdout reader
+                Task encoderStdoutTask = ReadStreamAsync(encoder.StandardOutput, ProcessLogKind.DownstreamStdout, cancellationToken);
+                // Encoder stderr reader
+                Task encoderStderrTask = ReadStreamAsync(encoder.StandardError, ProcessLogKind.DownstreamStderr, cancellationToken);
+
+                await Task.WhenAll(pipeTask, upstreamStderrTask, encoderStdoutTask, encoderStderrTask);
+
+                upstream.WaitForExit();
+                encoder.WaitForExit();
+
+                _exitCode = encoder.ExitCode;
+                _success = _exitCode == 0;
                 processOutput = GetCombinedOutput();
             }
             catch (OperationCanceledException)
@@ -364,7 +412,7 @@ namespace OneColumnEncoder.ViewModels
             }
             catch (Exception ex)
             {
-                EnqueueProcessLine(ProcessLogKind.Stderr, ex.ToString());
+                EnqueueProcessLine(ProcessLogKind.DownstreamStderr, ex.ToString());
                 StatusText = "压制失败";
                 processOutput = GetCombinedOutput();
             }
@@ -372,15 +420,26 @@ namespace OneColumnEncoder.ViewModels
             {
                 _stopwatch.Stop();
                 _timer.Stop();
-                ProgressValue = success ? 100 : ProgressValue;
-                StatusText = success ? "压制完成" : StatusText == "正在压制" ? "压制失败" : StatusText;
+                ProgressValue = _success ? 100 : ProgressValue;
+                StatusText = _success ? "压制完成" : StatusText == "正在压制" ? "压制失败" : StatusText;
                 FlushLogsToProperties();
                 UpdateFooterTimes(final: true);
                 EnableCloseButton();
             }
 
             if (!_isSample)
-                await TrySendNotificationAsync(success, processOutput);
+                await TrySendNotificationAsync(_success, processOutput);
+        }
+
+        private async Task ReadStreamAsync(StreamReader reader, ProcessLogKind kind, CancellationToken ct)
+        {
+            try
+            {
+                string? line;
+                while ((line = await reader.ReadLineAsync(ct)) != null)
+                    EnqueueProcessLine(kind, line);
+            }
+            catch (OperationCanceledException) { }
         }
 
         private void EnqueueProcessLine(ProcessLogKind kind, string? line)
@@ -389,9 +448,9 @@ namespace OneColumnEncoder.ViewModels
             _logQueue.Enqueue(new ProcessLogEntry(kind, line));
         }
 
-        private static void AppendLog(StringBuilder builder, string key, string value)
+        private static void AppendLine(StringBuilder builder, string value)
         {
-            builder.AppendLine($"{key}: {value}");
+            builder.AppendLine(value);
         }
 
         private void FlushLogsToProperties()
@@ -400,10 +459,10 @@ namespace OneColumnEncoder.ViewModels
             if (IsFrozen) return;
             lock (_logLock)
             {
-                UpstreamLogText = _upstreamLogBuilder.ToString();
-                DownstreamLogText = _downstreamLogBuilder.ToString();
-                UpstreamReportText = _upstreamReportBuilder.ToString();
-                DownstreamReportText = _downstreamReportBuilder.ToString();
+                UpstreamLogText = _upstreamStdoutBuilder.ToString();
+                DownstreamLogText = _downstreamStdoutBuilder.ToString();
+                UpstreamReportText = _upstreamStderrBuilder.ToString();
+                DownstreamReportText = _downstreamStderrBuilder.ToString();
             }
         }
 
@@ -429,25 +488,36 @@ namespace OneColumnEncoder.ViewModels
             while (_logQueue.TryDequeue(out ProcessLogEntry entry))
             {
                 changed = true;
-                StringBuilder target = entry.Kind == ProcessLogKind.Stdout
-                    ? _upstreamLogBuilder
-                    : _downstreamLogBuilder;
-                AppendLogWithOverwrite(target, entry.Line, entry.Kind == ProcessLogKind.Stderr);
+                switch (entry.Kind)
+                {
+                    case ProcessLogKind.UpstreamStdout:
+                        AppendLogWithOverwrite(_upstreamStdoutBuilder, entry.Line, false);
+                        break;
+                    case ProcessLogKind.DownstreamStdout:
+                        AppendLogWithOverwrite(_downstreamStdoutBuilder, entry.Line, false);
+                        break;
+                    case ProcessLogKind.UpstreamStderr:
+                        AppendLogWithOverwrite(_upstreamStderrBuilder, entry.Line, true);
+                        break;
+                    case ProcessLogKind.DownstreamStderr:
+                        AppendLogWithOverwrite(_downstreamStderrBuilder, entry.Line, true);
+                        break;
+                }
             }
 
             if (changed && !IsFrozen)
             {
                 lock (_logLock)
                 {
-                    UpstreamLogText = _upstreamLogBuilder.ToString();
-                    DownstreamLogText = _downstreamLogBuilder.ToString();
-                    UpstreamReportText = _upstreamReportBuilder.ToString();
-                    DownstreamReportText = _downstreamReportBuilder.ToString();
+                    UpstreamLogText = _upstreamStdoutBuilder.ToString();
+                    DownstreamLogText = _downstreamStdoutBuilder.ToString();
+                    UpstreamReportText = _upstreamStderrBuilder.ToString();
+                    DownstreamReportText = _downstreamStderrBuilder.ToString();
                 }
             }
         }
 
-        private void AppendLogWithOverwrite(StringBuilder target, string text, bool mirrorNonProgressToErrorReport)
+        private void AppendLogWithOverwrite(StringBuilder target, string text, bool isStderr)
         {
             string normalized = text.Replace("\0", string.Empty, StringComparison.Ordinal);
             string[] newlineParts = normalized.Split('\n');
@@ -457,25 +527,19 @@ namespace OneColumnEncoder.ViewModels
                 if (carriageParts.Length > 1)
                 {
                     string latest = carriageParts[^1].TrimEnd();
-                    if (TryHandleProgressLine(latest)) continue;
+                    if (isStderr && TryHandleProgressLine(latest)) continue;
 
                     TrimLastLine(target);
-                    AppendNonProgressLine(target, latest, mirrorNonProgressToErrorReport);
+                    if (!string.IsNullOrWhiteSpace(latest))
+                        target.AppendLine(latest);
                     continue;
                 }
 
                 string line = newlinePart.TrimEnd();
-                if (TryHandleProgressLine(line)) continue;
-                AppendNonProgressLine(target, line, mirrorNonProgressToErrorReport);
+                if (isStderr && TryHandleProgressLine(line)) continue;
+                if (!string.IsNullOrWhiteSpace(line))
+                    target.AppendLine(line);
             }
-        }
-
-        private void AppendNonProgressLine(StringBuilder target, string line, bool mirrorNonProgressToErrorReport)
-        {
-            if (string.IsNullOrWhiteSpace(line)) return;
-            target.AppendLine(line);
-            if (mirrorNonProgressToErrorReport)
-                _downstreamReportBuilder.AppendLine(line);
         }
 
         private bool TryHandleProgressLine(string line)
@@ -486,14 +550,20 @@ namespace OneColumnEncoder.ViewModels
             return true;
         }
 
+        [GeneratedRegex(@"(?<!\d)\d{1,3}\s*%")]
+        private static partial Regex ProgressLineRegex();
+
+        [GeneratedRegex(@"(?<!\d)(\d{1,3})\s*%")]
+        private static partial Regex ProgressPercentRegex();
+
         private static bool IsProgressLine(string line)
         {
             string lower = line.ToLowerInvariant();
             return lower.Contains("fps", StringComparison.Ordinal)
                 || lower.Contains("frame=", StringComparison.Ordinal)
                 || lower.Contains("frames", StringComparison.Ordinal) && lower.Contains("kb/s", StringComparison.Ordinal)
-                || lower.Contains("eta", StringComparison.Ordinal) && lower.Contains("%", StringComparison.Ordinal)
-                || Regex.IsMatch(line, @"(?<!\d)\d{1,3}\s*%", RegexOptions.Compiled);
+                || lower.Contains("eta", StringComparison.Ordinal) && lower.Contains('%', StringComparison.Ordinal)
+                || ProgressLineRegex().IsMatch(line);
         }
 
         private static void TrimLastLine(StringBuilder builder)
@@ -505,7 +575,6 @@ namespace OneColumnEncoder.ViewModels
                 builder.Clear();
                 return;
             }
-
             builder.Length = index + 1;
         }
 
@@ -513,7 +582,7 @@ namespace OneColumnEncoder.ViewModels
         {
             double seconds = Math.Max(1d, _stopwatch.Elapsed.TotalSeconds);
             double outputGb = TryGetOutputSizeGb();
-            ProgressValue = InferProgress(ProgressValue, DownstreamLogText);
+            ProgressValue = InferProgress(ProgressValue, _downstreamStderrBuilder.ToString() + _upstreamStderrBuilder.ToString());
             MetricColumns[0].MainText = $"{Math.Max(0.1, outputGb / 2d + 1d):0.0} GB";
             MetricColumns[1].MainText = $"{Math.Max(0.1, outputGb + 0.5):0.0} GB";
             MetricColumns[2].MainText = $"{Math.Max(0.1, outputGb / 3d + 0.2):0.0} GB";
@@ -562,14 +631,13 @@ namespace OneColumnEncoder.ViewModels
 
         private static int InferProgress(int current, string log)
         {
-            MatchCollection matches = Regex.Matches(log, @"(?<!\d)(\d{1,3})\s*%", RegexOptions.Compiled);
+            MatchCollection matches = ProgressPercentRegex().Matches(log);
             int found = current;
             foreach (Match match in matches)
             {
                 if (int.TryParse(match.Groups[1].Value, out int value))
                     found = Math.Max(found, Math.Clamp(value, 0, 100));
             }
-
             return found == current && current < 98 ? current + 1 : found;
         }
 
@@ -599,13 +667,13 @@ namespace OneColumnEncoder.ViewModels
             try
             {
                 _cts?.Cancel();
-                if (_process is { HasExited: false })
-                    _process.CloseMainWindow();
+                _encoderProcess?.CloseMainWindow();
+                _upstreamProcess?.CloseMainWindow();
                 StatusText = "正在中断";
             }
             catch (Exception ex)
             {
-                EnqueueProcessLine(ProcessLogKind.Stderr, ex.Message);
+                EnqueueProcessLine(ProcessLogKind.DownstreamStderr, ex.Message);
             }
         }
 
@@ -614,13 +682,13 @@ namespace OneColumnEncoder.ViewModels
             try
             {
                 _cts?.Cancel();
-                if (_process is { HasExited: false })
-                    _process.Kill(entireProcessTree: true);
+                _encoderProcess?.Kill(entireProcessTree: true);
+                _upstreamProcess?.Kill(entireProcessTree: true);
                 StatusText = "已强制退出";
             }
             catch (Exception ex)
             {
-                EnqueueProcessLine(ProcessLogKind.Stderr, ex.Message);
+                EnqueueProcessLine(ProcessLogKind.DownstreamStderr, ex.Message);
             }
         }
 
@@ -665,7 +733,7 @@ namespace OneColumnEncoder.ViewModels
         {
             lock (_logLock)
             {
-                return string.Join(Environment.NewLine, _upstreamLogBuilder, _downstreamLogBuilder, _upstreamReportBuilder, _downstreamReportBuilder);
+                return string.Join(Environment.NewLine, _upstreamStdoutBuilder, _downstreamStdoutBuilder, _upstreamStderrBuilder, _downstreamStderrBuilder);
             }
         }
 
@@ -683,7 +751,7 @@ namespace OneColumnEncoder.ViewModels
             }
             catch (Exception ex)
             {
-                EnqueueProcessLine(ProcessLogKind.Stderr, "SMTP Notification Failed: " + ex.Message);
+                EnqueueProcessLine(ProcessLogKind.DownstreamStderr, "SMTP Notification Failed: " + ex.Message);
                 FlushLogsToProperties();
             }
         }
@@ -723,8 +791,10 @@ namespace OneColumnEncoder.ViewModels
 
         private enum ProcessLogKind
         {
-            Stdout,
-            Stderr
+            UpstreamStdout,
+            DownstreamStdout,
+            UpstreamStderr,
+            DownstreamStderr
         }
 
         private readonly record struct ProcessLogEntry(ProcessLogKind Kind, string Line);

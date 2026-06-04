@@ -196,6 +196,7 @@
                         Margin="0 3 0 0">
 
                 <cards:SplitTextCard Margin="0 14 0 0"
+                                     Title="上游 stderr | 下游 stderr"
                                      LeftText="{Binding UpstreamReportText, Mode=TwoWay}"
                                      RightText="{Binding DownstreamReportText, Mode=TwoWay}"
                                      TextBoxMinHeight="90"
