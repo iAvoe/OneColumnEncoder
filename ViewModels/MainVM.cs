@@ -58,6 +58,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly bool _isInspBypsChkButtonsReady;
         private readonly bool _isInspBypsEncChkButtonsReady;
         private readonly bool _isEncStartButtonsReady;
+        private bool _importedToolZonesSubscribed;
         // Card UIs
         public ToolsImportCardVM ToolsImportCard { get; }
         public SourceCheckCardVM SrcValidationCard { get; } = new();
@@ -239,7 +240,9 @@ namespace OneColumnEncoder.ViewModels
             EncTermsCard.RunAllChecks();
             SubToImportedToolZones();
             AnalyticsZone.CollectionChanged += OnAnalyticsZoneCollectionChanged;
-            RefreshUpstreamToolState(); // initial state after loading
+            RefreshImportedToolStates(); // initial state after loading
+            RevertCancelledAutoSelection(UpstreamsZone);
+            RevertCancelledAutoSelection(DependenciesZone);
             SubToToolsChecklist();
             UpdateScriptScbButtonsState(); // Initial state of script scribe buttons
             RefreshSelectedSourceStatus();
@@ -253,7 +256,7 @@ namespace OneColumnEncoder.ViewModels
         }
         #endregion
 
-        #region Zone Initialization
+        // Zone Initialization
         private static ObservableCollection<ToolItemCardVM> LoadZoneFromDefinitions(
             List<ToolDefinitionM> defs,
             bool useAutoAddReplaceText = false,
@@ -277,59 +280,85 @@ namespace OneColumnEncoder.ViewModels
             return zone;
         }
 
-        #endregion
-
         #region Imported Zone Event Handling
         private void SubToImportedToolZones()
         {
             foreach (ObservableCollection<ToolItemCardVM> zone in AllImportedToolZones)
                 zone.CollectionChanged += OnImportedToolZoneCollectionChanged;
+            _importedToolZonesSubscribed = true;
             RefreshImportedToolsChecklist();
         }
         private void UnsubFromImportedToolZones()
         {
             foreach (ObservableCollection<ToolItemCardVM> zone in AllImportedToolZones)
                 zone.CollectionChanged -= OnImportedToolZoneCollectionChanged;
+            _importedToolZonesSubscribed = false;
         }
         private void OnAnalyticsZoneCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             UpdateAnalyzeSrcButtonsState();
             UpdateInspBypsChkButtonsState();
         }
+
+        // When tools are added or removed in imported zones, re-apply default selection logic,
+        // also refresh states of related buttons and checklists
         private void OnImportedToolZoneCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
+            bool autoSelected = false;
             if (sender is ObservableCollection<ToolItemCardVM> zone)
-                ApplyDefaultImportedToolSelection(zone);
+                autoSelected = ApplyDefaultImportedToolSelection(zone);
 
             if (sender == EncodersZone)
                 SrcValidationCard.RefreshSvtav1BitDepthStatus();
 
             RefreshUpstreamToolState();
             RefreshImportedToolsChecklist();
+            // Only mark IsCancel for auto-selected items, user manual selection won't be reverted
+            ToolCompatibilityH.RefreshDependencySelectionState(
+                UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
+            ToolCompatibilityH.RefreshSourceSelectionState(
+                UpstreamsZone, ScriptSrcImportZone, RefreshSelectedSourceStatus);
+
+            // Revert the selection only for IsCancel caused by "Auto Selection"
+            if (autoSelected && sender is ObservableCollection<ToolItemCardVM> changedZone)
+                RevertCancelledAutoSelection(changedZone);
+        }
+
+        private bool ApplyDefaultImportedToolSelection(ObservableCollection<ToolItemCardVM> zone)
+        {
+            bool autoSelected = ItemCardSelectionH.ApplyDefaultSelection(zone);
+            RefreshImportedToolPickedStatus(zone);
+            return autoSelected;
+        }
+
+        private void RevertCancelledAutoSelection(ObservableCollection<ToolItemCardVM> zone)
+        {
+            bool reverted = false;
+            foreach (ToolItemCardVM item in zone.Where(t => t.IsCancel))
+            {
+                item.IsSelected = false;
+                item.IsCancel = false;
+                reverted = true;
+            }
+
+            if (!reverted) return;
+
+            RefreshImportedToolPickedStatus(zone);
             ToolCompatibilityH.RefreshDependencySelectionState(
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
             ToolCompatibilityH.RefreshSourceSelectionState(
                 UpstreamsZone, ScriptSrcImportZone, RefreshSelectedSourceStatus);
         }
 
-        private void ApplyDefaultImportedToolSelection(ObservableCollection<ToolItemCardVM> zone)
-        {
-            ItemCardSelectionH.ApplyDefaultSelection(zone);
-            RefreshImportedToolPickedStatus(zone);
-        }
-
         private void RefreshUpstreamToolState()
         {
-            ToolItemCardVM? avs2pipemod =
-                UpstreamsZone.FirstOrDefault(t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe"));
+            ToolItemCardVM? avs2pipemod = UpstreamsZone.FirstOrDefault(
+                t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe"));
             if (avs2pipemod == null) return;
 
-            if (!HasImportedAviSynthDll())
-            {
-                avs2pipemod.IsSelected = false;
-                avs2pipemod.IsEnabled = false;
-            }
-            else avs2pipemod.IsEnabled = true;
+            if (!HasImportedAviSynthDll()) avs2pipemod.IsSelected = false;
+            // avs2pipemod.IsEnabled = false; // This prevents delete button to work, not feasible
+            // else avs2pipemod.IsEnabled = true;
 
             RefreshToolPickedStatus(ToolZone.Upstream, UpstreamsZone);
         }
@@ -802,7 +831,6 @@ namespace OneColumnEncoder.ViewModels
         #endregion
 
         #region Loading or adding other persistent data
-
         private void AddOrUpdateTool(string defKey, string? filePath, string? version, long? fileSize = null)
         {
             if (!ToolDefinitionProviderM.ToolDefs.TryGetValue(defKey, out ToolDefinitionM? def)) return;
@@ -834,9 +862,14 @@ namespace OneColumnEncoder.ViewModels
                     break;
                 }
             }
+            // This will trigger CollectionChanged, at which point the default selection,
+            // dependency refresh, and IsCancel check will be executed.
             zone.Insert(insertIndex, item);
 
-            ApplyDefaultImportedToolSelection(zone);
+            // Try to auto-select when there is only 1 item,
+            // but if IsCancel triggers, revert selection
+            if (!_importedToolZonesSubscribed)
+                ApplyDefaultImportedToolSelection(zone);
         }
         private void LoadToolsFromAppDataM()
         {
@@ -1029,7 +1062,6 @@ namespace OneColumnEncoder.ViewModels
                 item.RefreshLanguage();
             }
         }
-
         #endregion
 
         public override void Dispose()

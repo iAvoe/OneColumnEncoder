@@ -94,7 +94,7 @@
                        FontSize="11"
                        Foreground="{StaticResource GlobalPrimary}"
                        TextTrimming="CharacterEllipsis"
-                       MaxWidth="370">
+                       MaxWidth="330">
                 <Run Text="{Binding P1Name, Mode=OneWay}"
                      FontWeight="Bold" /><Run Text="{Binding SeparatorText, Mode=OneWay}"
                      FontWeight="Bold" /><Run Text="{Binding P1Text, Mode=OneWay}"
@@ -107,7 +107,7 @@
                        FontSize="11"
                        Foreground="{StaticResource GlobalPrimary}"
                        TextTrimming="CharacterEllipsis"
-                       MaxWidth="370">
+                       MaxWidth="330">
                 <Run Text="{Binding P2Name, Mode=OneWay}"
                      FontWeight="Bold" /><Run Text="{Binding SeparatorText, Mode=OneWay}"
                      FontWeight="Bold" /><Run Text="{Binding P2Text, Mode=OneWay}"

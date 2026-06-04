@@ -9,6 +9,13 @@ namespace OneColumnEncoder.Helpers
 {
     public static class ToolCompatibilityH
     {
+        /// <summary>
+        /// Refreshes the selection state of dependencies based on the selection state of upstream tools.
+        /// Only mark IsCancel for auto-selected items, user manual selection won't be reverted
+        /// </summary>
+        /// <param name="upstreamsZone">The collection of upstream tool item cards.</param>
+        /// <param name="dependenciesZone">The collection of dependency tool item cards.</param>
+        /// <param name="updateEncodingStartButtons">Action to update the encoding start buttons.</param>
         public static void RefreshDependencySelectionState(
             IEnumerable<ToolItemCardVM> upstreamsZone,
             IEnumerable<ToolItemCardVM> dependenciesZone,

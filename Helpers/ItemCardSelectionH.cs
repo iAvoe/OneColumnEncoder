@@ -84,12 +84,17 @@ namespace OneColumnEncoder.Helpers
                 upstreamsZone, scriptSrcImportZone, refreshSelectedSourceStatus);
         }
 
-        public static void ApplyDefaultSelection(ObservableCollection<ToolItemCardVM> zone)
+        public static bool ApplyDefaultSelection(ObservableCollection<ToolItemCardVM> zone)
         {
             if (zone.Count == 1)
+            {
                 zone[0].IsSelected = true;
+                return true;
+            }
             else if (zone.Count > 1)
                 UnselectAll(zone);
+
+            return false;
         }
 
         public static void RefreshToolPickedStatus(
