@@ -24,6 +24,7 @@ namespace OneColumnEncoder.Helpers
             string exeArgs = exeName.ToLowerInvariant() switch
             {
                 "ffmpeg.exe" => "-version",
+                "ffprobe.exe" => "-version",
                 "vspipe.exe" => "-v",
                 "x264.exe" => "-V",
                 "x265.exe" => "-V",
@@ -31,7 +32,6 @@ namespace OneColumnEncoder.Helpers
                 "avs2yuv.exe" => "",
                 "avs2pipemod.exe" => "",
                 _ => "",
-                // No need to check for for ffprobe.exe
             };
 
             string exePrints = await RunAndCaptureAsync(filePath, exeArgs);
@@ -114,7 +114,7 @@ namespace OneColumnEncoder.Helpers
                 case "ffmpeg.exe":
                     return firstLine[..Math.Min(25, firstLine.Length)];
                 case "ffprobe.exe":
-                    return firstLine;
+                    return firstLine[..Math.Min(26, firstLine.Length)];
                 case "vspipe.exe":
                     return lines.FirstOrDefault(l =>
                         l.Contains("Core R", StringComparison.OrdinalIgnoreCase));

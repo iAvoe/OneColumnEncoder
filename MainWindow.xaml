@@ -7,7 +7,7 @@
         xmlns:views="clr-namespace:OneColumnEncoder.Views"
         mc:Ignorable="d"
         Title="1cenc"
-        Width="520"
+        Width="460"
         Height="1080">
     <ScrollViewer VerticalScrollBarVisibility="Hidden"
                   HorizontalScrollBarVisibility="Hidden">
