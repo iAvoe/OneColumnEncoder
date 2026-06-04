@@ -11,7 +11,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="1000"
-        Height="1050"
+        Height="990"
         MinWidth="860"
         MinHeight="760"
         WindowStartupLocation="CenterOwner"
@@ -48,7 +48,7 @@
                              Value="{Binding ProgressValue}"
                              Foreground="#2FA34F"
                              Background="#E9EEF2"
-                             BorderThickness="0"/>
+                             BorderThickness="0" />
                 <TextBlock Grid.Column="2"
                            Text="{Binding ProgressText}"
                            FontSize="13"
@@ -101,7 +101,7 @@
                 <StackPanel Grid.Column="2">
                     <TextBlock Text="{Binding DistributionTitle}"
                                Style="{StaticResource H3}" />
-                    <Grid Margin="0 5 0 0">
+                    <Grid Margin="0 5 5 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
@@ -156,14 +156,7 @@
                                    Foreground="{StaticResource GlobalSecondary}" />
                     </Grid>
 
-                    <Grid Margin="0 12 0 0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Row="0" Text="{Binding BlockDetailHeatLabel}" FontSize="13" Foreground="{StaticResource GlobalSecondary}" />
-                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding BlockHeat}" FontSize="13" />
-                    </Grid>
+
                 </StackPanel>
             </Grid>
 
@@ -173,15 +166,15 @@
                                   ColumnCount="7" />
 
             <comps:IntegerSlider Grid.Row="4"
-                                  Margin="0 14 0 0"
-                                  Label="{Binding SampleIntervalLabel}"
-                                  LabelWidth="80"
-                                  Minimum="0"
-                                  Maximum="240"
-                                  Value="{Binding SampleIntervalSeconds, Mode=TwoWay}"
-                                  TickLabels="{Binding SampleIntervalTickLabels}"
-                                  TickCount="5"
-                                  Step="1" />
+                                 Margin="0 14 0 0"
+                                 Label="{Binding SampleIntervalLabel}"
+                                 LabelWidth="80"
+                                 Minimum="0"
+                                 Maximum="240"
+                                 Value="{Binding SampleIntervalSeconds, Mode=TwoWay}"
+                                 TickLabels="{Binding SampleIntervalTickLabels}"
+                                 TickCount="5"
+                                 Step="1" />
 
             <comps:TwoButtonGroup Grid.Row="5"
                                   Margin="0 10 0 0"
@@ -212,10 +205,15 @@
                                        Button3IsEnabled="{Binding B5_3IsEnabled}"
                                        Button4IsEnabled="{Binding B5_4IsEnabled}"
                                        Button5IsEnabled="{Binding B5_5IsEnabled}" />
-                <StackPanel Orientation="Horizontal" Margin="0 3 0 0">
-                    <Rectangle Width="10" Height="10" Fill="{StaticResource GlobalSecondary}" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal"
+                            Margin="0 3 0 0">
+                    <Rectangle Width="10"
+                               Height="10"
+                               Fill="{StaticResource GlobalSecondary}"
+                               VerticalAlignment="Center">
                         <Rectangle.OpacityMask>
-                            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}" Stretch="Uniform" />
+                            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
+                                        Stretch="Uniform" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
                     <TextBlock Text="{Binding DragLogReportHint}"
@@ -237,13 +235,34 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="{Binding StartedAtLabel}" Style="{StaticResource H3}" TextAlignment="Center" />
-                    <TextBlock Grid.Column="1" Text="{Binding ElapsedLabel}" Style="{StaticResource H3}" TextAlignment="Center" />
-                    <TextBlock Grid.Column="2" Text="{Binding RemainingLabel}" Style="{StaticResource H3}" TextAlignment="Center" />
-                    <TextBlock Grid.Column="3" Text="{Binding CompleteAtLabel}" Style="{StaticResource H3}" TextAlignment="Center" />
-                    <TextBlock Grid.Column="4" Text="{Binding EncoderFileLabel}" Style="{StaticResource H3}" TextAlignment="Center" />
-                    <TextBlock Grid.Column="5" Text="{Binding RateControlLabel}" Style="{StaticResource H3}" TextAlignment="Center" />
-                    <TextBlock Grid.Column="6" Text="{Binding ArgsLabel}" Style="{StaticResource H3}" TextAlignment="Center" />
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding StartedAtLabel}"
+                               Style="{StaticResource H3}"
+                               TextAlignment="Center" />
+                    <TextBlock Grid.Column="1"
+                               Text="{Binding ElapsedLabel}"
+                               Style="{StaticResource H3}"
+                               TextAlignment="Center" />
+                    <TextBlock Grid.Column="2"
+                               Text="{Binding RemainingLabel}"
+                               Style="{StaticResource H3}"
+                               TextAlignment="Center" />
+                    <TextBlock Grid.Column="3"
+                               Text="{Binding CompleteAtLabel}"
+                               Style="{StaticResource H3}"
+                               TextAlignment="Center" />
+                    <TextBlock Grid.Column="4"
+                               Text="{Binding EncoderFileLabel}"
+                               Style="{StaticResource H3}"
+                               TextAlignment="Center" />
+                    <TextBlock Grid.Column="5"
+                               Text="{Binding RateControlLabel}"
+                               Style="{StaticResource H3}"
+                               TextAlignment="Center" />
+                    <TextBlock Grid.Column="6"
+                               Text="{Binding ArgsLabel}"
+                               Style="{StaticResource H3}"
+                               TextAlignment="Center" />
                 </Grid>
                 <comps:ColumnTextGrid Margin="0 4 0 0"
                                       Items="{Binding FooterColumns}"
@@ -261,10 +280,15 @@
                                        Button3IsEnabled="{Binding B5_3IsEnabled}"
                                        Button4IsEnabled="{Binding B5_4IsEnabled}"
                                        Button5IsEnabled="{Binding B5_5IsEnabled}" />
-                <StackPanel Orientation="Horizontal" Margin="0 3 0 0">
-                    <Rectangle Width="10" Height="10" Fill="{StaticResource GlobalSecondary}" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal"
+                            Margin="0 3 0 0">
+                    <Rectangle Width="10"
+                               Height="10"
+                               Fill="{StaticResource GlobalSecondary}"
+                               VerticalAlignment="Center">
                         <Rectangle.OpacityMask>
-                            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}" Stretch="Uniform" />
+                            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
+                                        Stretch="Uniform" />
                         </Rectangle.OpacityMask>
                     </Rectangle>
                     <TextBlock Text="{Binding SmallNoteText}"

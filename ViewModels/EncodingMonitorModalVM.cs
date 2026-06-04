@@ -96,7 +96,7 @@ namespace OneColumnEncoder.ViewModels
         public string DistributionOtherLabel => Lang.DistributionOtherLabel;
         public string DistributionCacheLabel => Lang.DistributionCacheLabel;
 
-        public string BlockDetailHeatLabel => Lang.BlockDetailHeatLabel;
+
         public string StderrTitle => Lang.StderrTitle;
 
         public ObservableCollection<ColumnTextItemM> MetricColumns { get; } = [];
@@ -381,7 +381,7 @@ namespace OneColumnEncoder.ViewModels
                         Stream upstreamStdout = upstream.StandardOutput.BaseStream;
                         Stream encoderStdin = encoder.StandardInput.BaseStream;
                         int bytesRead;
-                        while ((bytesRead = await upstreamStdout.ReadAsync(buffer, cancellationToken)) > 0)
+                        while (!cancellationToken.IsCancellationRequested && (bytesRead = await upstreamStdout.ReadAsync(buffer, cancellationToken)) > 0)
                         {
                             await encoderStdin.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
                             await encoderStdin.FlushAsync(cancellationToken);
@@ -400,7 +400,7 @@ namespace OneColumnEncoder.ViewModels
                 // Encoder stderr reader
                 Task encoderStderrTask = ReadStreamAsync(encoder.StandardError, ProcessLogKind.DownstreamStderr, cancellationToken);
 
-                await Task.WhenAll(pipeTask, upstreamStderrTask, encoderStderrTask).ConfigureAwait(false);
+                await Task.WhenAll(pipeTask, upstreamStderrTask, encoderStderrTask);
 
                 await upstream.WaitForExitAsync(cancellationToken);
                 await encoder.WaitForExitAsync(cancellationToken);
@@ -440,10 +440,11 @@ namespace OneColumnEncoder.ViewModels
             try
             {
                 string? line;
-                while ((line = await reader.ReadLineAsync(ct)) != null)
+                while (!ct.IsCancellationRequested && (line = await reader.ReadLineAsync(ct)) != null)
                     EnqueueProcessLine(kind, line);
             }
             catch (OperationCanceledException) { }
+            catch (IOException) { }
         }
 
         private void EnqueueProcessLine(ProcessLogKind kind, string? line)
@@ -1118,7 +1119,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(DistributionOtherLabel));
             OnPropertyChanged(nameof(DistributionCacheLabel));
 
-            OnPropertyChanged(nameof(BlockDetailHeatLabel));
+
             OnPropertyChanged(nameof(StderrTitle));
             OnPropertyChanged(nameof(SampleIntervalTickLabels));
         }

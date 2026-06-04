@@ -30,7 +30,6 @@ public class EncodingMonitorModalLangProviderM
             ["DistributionDownstreamLabel"] = "Downstream program (encoder)",
             ["DistributionOtherLabel"] = "Other programs",
             ["DistributionCacheLabel"] = "System cache",
-            ["BlockDetailHeatLabel"] = "Heat",
             ["SampleIntervalTickLabels"] = "0 (RT)|60S|120S|180S|240S",
             ["ContinueMonitoringText"] = "Continue monitoring",
             ["FreezeContinueText"] = "Freeze / Continue",
@@ -108,7 +107,6 @@ public class EncodingMonitorModalLangProviderM
             ["DistributionDownstreamLabel"] = "下游程序（编码器）",
             ["DistributionOtherLabel"] = "其它程序",
             ["DistributionCacheLabel"] = "系统缓存",
-            ["BlockDetailHeatLabel"] = "热度",
             ["SampleIntervalTickLabels"] = "0（实时）|60秒|120秒|180秒|240秒",
             ["ContinueMonitoringText"] = "继续监测",
             ["FreezeContinueText"] = "冻结 / 继续监测",
@@ -186,7 +184,6 @@ public class EncodingMonitorModalLangProviderM
             ["DistributionDownstreamLabel"] = "下游程式（編碼器）",
             ["DistributionOtherLabel"] = "其他程式",
             ["DistributionCacheLabel"] = "系統快取",
-            ["BlockDetailHeatLabel"] = "熱度",
             ["SampleIntervalTickLabels"] = "0（即時）|60秒|120秒|180秒|240秒",
             ["ContinueMonitoringText"] = "繼續監測",
             ["FreezeContinueText"] = "凍結 / 繼續監測",
@@ -263,7 +260,6 @@ public class EncodingMonitorModalLangProviderM
     public string DistributionDownstreamLabel { get; }
     public string DistributionOtherLabel { get; }
     public string DistributionCacheLabel { get; }
-    public string BlockDetailHeatLabel { get; }
     public string[] SampleIntervalTickLabels { get; }
     public string ContinueMonitoringText { get; }
     public string FreezeContinueText { get; }
@@ -347,7 +343,6 @@ public class EncodingMonitorModalLangProviderM
         DistributionDownstreamLabel = _d["DistributionDownstreamLabel"];
         DistributionOtherLabel = _d["DistributionOtherLabel"];
         DistributionCacheLabel = _d["DistributionCacheLabel"];
-        BlockDetailHeatLabel = _d["BlockDetailHeatLabel"];
         SampleIntervalTickLabels = _d["SampleIntervalTickLabels"].Split('|');
         ContinueMonitoringText = _d["ContinueMonitoringText"];
         FreezeContinueText = _d["FreezeContinueText"];
