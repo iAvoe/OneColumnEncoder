@@ -189,7 +189,6 @@ namespace OneColumnEncoder.ViewModels
             _model.PreferPhysicalCores = PreferPhysicalCores;
             _model.PreferPCoreCompute = PreferPCoreCompute;
             _model.PreferECoreLookahead = PreferECoreLookahead;
-            _model.PreferECoreCores = PreferECoreLookahead;
             _model.UseLargePages = UseLargePages;
             _model.EncoderThreadCount = EncoderThreadCount;
             _model.Save();
@@ -199,7 +198,7 @@ namespace OneColumnEncoder.ViewModels
         {
             PreferPhysicalCores = _model.PreferPhysicalCores;
             PreferPCoreCompute = _model.PreferPCoreCompute;
-            PreferECoreLookahead = _model.PreferECoreCores;
+            PreferECoreLookahead = _model.PreferECoreLookahead;
             UseLargePages = _model.UseLargePages && CanUseLargePages;
 
             List<NumaNodeInfo> numaNodes = NumaTopologyH.GetNumaNodes();

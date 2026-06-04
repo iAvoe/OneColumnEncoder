@@ -17,7 +17,7 @@
         <conv:WidthToColumnCountConverter x:Key="WidthToColumnCount" />
     </UserControl.Resources>
     <Grid>
-        <StackPanel Margin="12.25 2 12.25 15">
+        <StackPanel Margin="10 2 10 15">
             <!-- Import Tools -->
             <comps:SectionHeader HeaderText="{Binding SectionImportTools}" />
             <comps:ToolsImportCard DataContext="{Binding ToolsImportCard}"

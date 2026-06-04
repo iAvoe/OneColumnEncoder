@@ -178,10 +178,12 @@
                         <CheckBox IsChecked="{Binding PreferPhysicalCores, Mode=TwoWay}" />
                     </comps:AppConfItem>
                     <comps:AppConfItem Text="{Binding Lang.PreferPCoreComputeText}">
-                        <CheckBox IsChecked="{Binding PreferPerformanceCores, Mode=TwoWay}" />
+                        <CheckBox IsChecked="{Binding PreferPCoreCompute, Mode=TwoWay}"
+                                  IsEnabled="False"/>
                     </comps:AppConfItem>
                     <comps:AppConfItem Text="{Binding Lang.PreferECoreLookaheadText}">
-                        <CheckBox IsChecked="{Binding PreferECoreCores, Mode=TwoWay}" />
+                        <CheckBox IsChecked="{Binding PreferECoreLookahead, Mode=TwoWay}"
+                                  IsEnabled="False" />
                     </comps:AppConfItem>
                 </comps:AppConfContainer>
 
