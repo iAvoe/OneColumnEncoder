@@ -76,7 +76,7 @@
                               ShowsPreview="False" />
 
                 <TextBox Grid.Column="2"
-                         Text="{Binding RightText, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         Text="{Binding RightText, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=OneWay}"
                          IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}}"
                          FontSize="{Binding TextFontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
                          Style="{StaticResource SplitTextBox}" />

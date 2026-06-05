@@ -20,7 +20,7 @@ namespace OneColumnEncoder.Components.Cards
                 nameof(RightText),
                 typeof(string),
                 typeof(SplitTextCard),
-                new FrameworkPropertyMetadata(string.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+                new PropertyMetadata(string.Empty));
 
         public static readonly DependencyProperty IsReadOnlyProperty =
             DependencyProperty.Register(nameof(IsReadOnly), typeof(bool), typeof(SplitTextCard), new PropertyMetadata(true));
