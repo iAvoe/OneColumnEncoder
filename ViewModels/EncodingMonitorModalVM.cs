@@ -55,12 +55,8 @@ namespace OneColumnEncoder.ViewModels
         private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(200) };
         private readonly StringBuilder _upstreamStderrBuilder = new();
         private readonly StringBuilder _downstreamStderrBuilder = new();
-        private readonly StringBuilder _upstreamProgressReportBuilder = new();
-        private readonly StringBuilder _downstreamProgressReportBuilder = new();
         private readonly LogFoldState _upstreamStderrFoldState = new();
         private readonly LogFoldState _downstreamStderrFoldState = new();
-        private readonly LogFoldState _upstreamProgressReportFoldState = new();
-        private readonly LogFoldState _downstreamProgressReportFoldState = new();
         private readonly ConcurrentQueue<ProcessLogEntry> _logQueue = new();
         private readonly long? _totalFrames;
         private readonly Lock _logLock = new();
@@ -86,7 +82,6 @@ namespace OneColumnEncoder.ViewModels
 
         public string WindowTitle => _isSample ? Lang.WindowTitleSampleMode : Lang.WindowTitle;
         public string ProgressTitle => Lang.ProgressTitle;
-        public string ProgressReportTitle => Lang.ProgressReportTitle;
         public string MemoryTitle => Lang.MemoryTitle;
         public string DistributionTitle => Lang.DistributionTitle;
 
@@ -136,20 +131,6 @@ namespace OneColumnEncoder.ViewModels
         }
 
         public string ProgressText => $"{ProgressValue}%";
-
-        private string _progressReportText = string.Empty;
-        public string ProgressReportText
-        {
-            get => _progressReportText;
-            set => SetProperty(ref _progressReportText, value);
-        }
-
-        private string _downstreamProgressReportText = string.Empty;
-        public string DownstreamProgressReportText
-        {
-            get => _downstreamProgressReportText;
-            set => SetProperty(ref _downstreamProgressReportText, value);
-        }
 
         private int _sampleIntervalSeconds = 10;
         public int SampleIntervalSeconds
@@ -465,6 +446,7 @@ namespace OneColumnEncoder.ViewModels
                 char[] buffer = new char[4096];
                 StringBuilder lineBuilder = new();
                 string? pendingCarriageReturnLine = null;
+                bool previousWasCarriageReturnUpdate = false;
 
                 while (!ct.IsCancellationRequested)
                 {
@@ -480,11 +462,13 @@ namespace OneColumnEncoder.ViewModels
                             {
                                 EnqueueProcessLine(kind, pendingCarriageReturnLine, overwritesPreviousLine: false);
                                 pendingCarriageReturnLine = null;
+                                previousWasCarriageReturnUpdate = false;
                                 continue;
                             }
 
-                            EnqueueProcessLine(kind, pendingCarriageReturnLine, overwritesPreviousLine: true);
+                            EnqueueProcessLine(kind, pendingCarriageReturnLine, previousWasCarriageReturnUpdate);
                             pendingCarriageReturnLine = null;
+                            previousWasCarriageReturnUpdate = true;
                         }
 
                         if (ch == '\r')
@@ -498,6 +482,7 @@ namespace OneColumnEncoder.ViewModels
                         {
                             EnqueueProcessLine(kind, lineBuilder.ToString(), overwritesPreviousLine: false);
                             lineBuilder.Clear();
+                            previousWasCarriageReturnUpdate = false;
                             continue;
                         }
 
@@ -506,7 +491,7 @@ namespace OneColumnEncoder.ViewModels
                 }
 
                 if (pendingCarriageReturnLine != null)
-                    EnqueueProcessLine(kind, pendingCarriageReturnLine, overwritesPreviousLine: true);
+                    EnqueueProcessLine(kind, pendingCarriageReturnLine, previousWasCarriageReturnUpdate);
                 if (lineBuilder.Length > 0)
                     EnqueueProcessLine(kind, lineBuilder.ToString(), overwritesPreviousLine: false);
             }
@@ -524,11 +509,11 @@ namespace OneColumnEncoder.ViewModels
         {
             ProcessQueuedLogs();
             if (IsFrozen) return;
-                lock (_logLock)
-                {
-                    UpstreamReportText = _upstreamStderrBuilder.ToString();
-                    DownstreamReportText = _downstreamStderrBuilder.ToString();
-                }
+            lock (_logLock)
+            {
+                UpstreamReportText = _upstreamStderrBuilder.ToString();
+                DownstreamReportText = _downstreamStderrBuilder.ToString();
+            }
         }
 
         private void OnTimerTick(object? sender, EventArgs e)
@@ -686,6 +671,9 @@ namespace OneColumnEncoder.ViewModels
         [GeneratedRegex(@"(?<!\d)(\d+)\s*/\s*\d+\s+frames?", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
         private static partial Regex SlashFrameRegex();
 
+        [GeneratedRegex(@"\bencoding\s+frame\s+(\d+)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+        private static partial Regex EncodingFrameRegex();
+
         [GeneratedRegex(@"(?:^|\D)encoded\s+(\d+)\s+frames?", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
         private static partial Regex EncodedFrameRegex();
 
@@ -699,6 +687,7 @@ namespace OneColumnEncoder.ViewModels
             if (TryParseFirstRegexGroup(FfmpegFrameRegex().Match(line), out int value)) return value;
             if (TryParseFirstRegexGroup(X264FrameRegex().Match(line), out value)) return value;
             if (TryParseFirstRegexGroup(SlashFrameRegex().Match(line), out value)) return value;
+            if (TryParseFirstRegexGroup(EncodingFrameRegex().Match(line), out value)) return value;
             if (TryParseFirstRegexGroup(EncodedFrameRegex().Match(line), out value)) return value;
             if (TryParseFirstRegexGroup(FramesEncodedRegex().Match(line), out value)) return value;
             return null;
@@ -1342,14 +1331,6 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(WrittenFramesLabel));
             OnPropertyChanged(nameof(EstimatedSizeLabel));
             ProgressValue = 0;
-            _upstreamProgressReportBuilder.Clear();
-            _upstreamProgressReportFoldState.Entries.Clear();
-            _upstreamProgressReportFoldState.LineIndexByText.Clear();
-            _downstreamProgressReportBuilder.Clear();
-            _downstreamProgressReportFoldState.Entries.Clear();
-            _downstreamProgressReportFoldState.LineIndexByText.Clear();
-            ProgressReportText = string.Empty;
-            DownstreamProgressReportText = string.Empty;
             StatusText = Lang.ResetUsageStatusText;
         }
 
@@ -1512,7 +1493,6 @@ namespace OneColumnEncoder.ViewModels
 
             OnPropertyChanged(nameof(WindowTitle));
             OnPropertyChanged(nameof(ProgressTitle));
-            OnPropertyChanged(nameof(ProgressReportTitle));
             OnPropertyChanged(nameof(MemoryTitle));
             OnPropertyChanged(nameof(DistributionTitle));
             OnPropertyChanged(nameof(DragLogReportHint));
@@ -1559,7 +1539,7 @@ namespace OneColumnEncoder.ViewModels
             DownstreamStderr
         }
 
-        private readonly record struct ProcessLogEntry(ProcessLogKind Kind, string Line);
+        private readonly record struct ProcessLogEntry(ProcessLogKind Kind, string Line, bool OverwritesPreviousLine);
 
         private readonly record struct LogFoldEntry(string Line, int RepeatCount);
 
