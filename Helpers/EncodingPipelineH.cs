@@ -276,6 +276,37 @@ public static class EncodingPipelineH
         };
     }
 
+    public static long? GetSourceTotalFrames(string? sourceFfprobeJson)
+    {
+        if (string.IsNullOrWhiteSpace(sourceFfprobeJson)) return null;
+
+        try
+        {
+            using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
+            if (!TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return null;
+
+            long? frameCount = TryGetLong(stream, "nb_frames")
+                ?? TryGetLong(stream, "NUMBER_OF_FRAMES", "tags");
+
+            if (frameCount is > 0) return frameCount;
+
+            double? duration = TryGetDouble(stream, "duration")
+                ?? (document.RootElement.TryGetProperty("format", out JsonElement format) ? TryGetDouble(format, "duration") : null);
+            string? fpsString = TryGetFrameRateString(stream);
+            if (duration is > 0 && TryParseFrameRate(fpsString, out double fps))
+            {
+                long estimated = (long)Math.Round(duration.Value * fps);
+                return estimated > 0 ? estimated : null;
+            }
+
+            return null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     private static string BuildX264Params(EncoderConfM model, bool useAbr)
     {
         string preset = EncoderPresetsM.GetX264Preset(model.X264Mode)?.Params ?? string.Empty;
@@ -631,6 +662,15 @@ public static class EncodingPipelineH
 
         return double.TryParse(fps, NumberStyles.Float, CultureInfo.InvariantCulture, out frameRate)
             && frameRate > 0d;
+    }
+
+    private static double? TryGetDouble(JsonElement element, string propertyName)
+    {
+        if (!element.TryGetProperty(propertyName, out JsonElement property)) return null;
+        if (property.ValueKind == JsonValueKind.Number && property.TryGetDouble(out double value)) return value;
+        return double.TryParse(property.GetString(), NumberStyles.Float, CultureInfo.InvariantCulture, out value)
+            ? value
+            : null;
     }
 
     private static int? TryGetIntegerArg(string args, string name)

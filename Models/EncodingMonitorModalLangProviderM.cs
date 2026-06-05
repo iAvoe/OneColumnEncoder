@@ -9,6 +9,7 @@ public class EncodingMonitorModalLangProviderM
             ["WindowTitle"] = "1cenc Encoding Monitor",
             ["WindowTitleSampleMode"] = "1cenc Encoding Monitor (Sample mode)",
             ["ProgressTitle"] = "Progress",
+            ["ProgressReportTitle"] = "Progress stream",
             ["MemoryTitle"] = "Physical page monitor (32x16)",
             ["DistributionTitle"] = "Distribution",
 
@@ -93,6 +94,7 @@ public class EncodingMonitorModalLangProviderM
             ["WindowTitle"] = "1cenc 编码监视器",
             ["WindowTitleSampleMode"] = "1cenc 编码监视器（取样模式）",
             ["ProgressTitle"] = "进度",
+            ["ProgressReportTitle"] = "进度流",
             ["MemoryTitle"] = "物理页监视器（32x16）",
             ["DistributionTitle"] = "区段分布",
 
@@ -177,6 +179,7 @@ public class EncodingMonitorModalLangProviderM
             ["WindowTitle"] = "1cenc 編碼監視器",
             ["WindowTitleSampleMode"] = "1cenc 編碼監視器（取樣模式）",
             ["ProgressTitle"] = "進度",
+            ["ProgressReportTitle"] = "進度流",
             ["MemoryTitle"] = "實體頁監視器（32x16）",
             ["DistributionTitle"] = "區段分佈",
 
@@ -261,6 +264,7 @@ public class EncodingMonitorModalLangProviderM
     public string WindowTitle { get; }
     public string WindowTitleSampleMode { get; }
     public string ProgressTitle { get; }
+    public string ProgressReportTitle { get; }
     public string MemoryTitle { get; }
     public string DistributionTitle { get; }
     public string StderrTitle { get; }
@@ -351,6 +355,7 @@ public class EncodingMonitorModalLangProviderM
         WindowTitle = _d["WindowTitle"];
         WindowTitleSampleMode = _d["WindowTitleSampleMode"];
         ProgressTitle = _d["ProgressTitle"];
+        ProgressReportTitle = _d["ProgressReportTitle"];
         MemoryTitle = _d["MemoryTitle"];
         DistributionTitle = _d["DistributionTitle"];
         StderrTitle = _d["StderrTitle"];

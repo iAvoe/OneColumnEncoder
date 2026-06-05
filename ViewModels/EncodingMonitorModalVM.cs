@@ -53,9 +53,12 @@ namespace OneColumnEncoder.ViewModels
         private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(200) };
         private readonly StringBuilder _upstreamStderrBuilder = new();
         private readonly StringBuilder _downstreamStderrBuilder = new();
+        private readonly StringBuilder _progressReportBuilder = new();
         private readonly LogFoldState _upstreamStderrFoldState = new();
         private readonly LogFoldState _downstreamStderrFoldState = new();
+        private readonly LogFoldState _progressReportFoldState = new();
         private readonly ConcurrentQueue<ProcessLogEntry> _logQueue = new();
+        private readonly long? _totalFrames;
         private readonly Lock _logLock = new();
         private DateTime _lastStatsUpdate = DateTime.MinValue;
         private DateTime _lastMemoryStatsUpdate = DateTime.MinValue;
@@ -75,6 +78,7 @@ namespace OneColumnEncoder.ViewModels
 
         public string WindowTitle => _isSample ? Lang.WindowTitleSampleMode : Lang.WindowTitle;
         public string ProgressTitle => Lang.ProgressTitle;
+        public string ProgressReportTitle => Lang.ProgressReportTitle;
         public string MemoryTitle => Lang.MemoryTitle;
         public string DistributionTitle => Lang.DistributionTitle;
 
@@ -129,6 +133,13 @@ namespace OneColumnEncoder.ViewModels
         }
 
         public string ProgressText => $"{ProgressValue}%";
+
+        private string _progressReportText = string.Empty;
+        public string ProgressReportText
+        {
+            get => _progressReportText;
+            set => SetProperty(ref _progressReportText, value);
+        }
 
         private int _sampleIntervalSeconds = 30;
         public int SampleIntervalSeconds
@@ -244,6 +255,7 @@ namespace OneColumnEncoder.ViewModels
             _command = command;
             _appConfM = appConfM;
             _isSample = isSample;
+            _totalFrames = EncodingPipelineH.GetSourceTotalFrames(_request.SourceFfprobeJson);
 
             RefreshLanguageState();
 
@@ -524,6 +536,7 @@ namespace OneColumnEncoder.ViewModels
                 {
                     UpstreamReportText = _upstreamStderrBuilder.ToString();
                     DownstreamReportText = _downstreamStderrBuilder.ToString();
+                    ProgressReportText = _progressReportBuilder.ToString();
                 }
             }
         }
@@ -539,6 +552,7 @@ namespace OneColumnEncoder.ViewModels
                 {
                     string latest = carriageParts[^1].TrimEnd();
                     if (isStderr && TryHandleProgressLine(latest)) continue;
+                    if (isStderr && TryHandleEncoderFrameLine(latest)) continue;
 
                     TrimLastLine(target, foldState);
                     if (!string.IsNullOrWhiteSpace(latest))
@@ -548,6 +562,7 @@ namespace OneColumnEncoder.ViewModels
 
                 string line = newlinePart.TrimEnd();
                 if (isStderr && TryHandleProgressLine(line)) continue;
+                if (isStderr && TryHandleEncoderFrameLine(line)) continue;
                 if (!string.IsNullOrWhiteSpace(line))
                     AppendFoldedLine(target, foldState, line);
             }
@@ -588,6 +603,20 @@ namespace OneColumnEncoder.ViewModels
             return true;
         }
 
+        private bool TryHandleEncoderFrameLine(string line)
+        {
+            int? frame = TryParseEncoderFrame(line);
+            if (frame is null) return false;
+
+            AppendFoldedLine(_progressReportBuilder, _progressReportFoldState, line);
+            ProgressReportText = _progressReportBuilder.ToString();
+            if (_totalFrames is > 0)
+            {
+                ProgressValue = Math.Max(ProgressValue, (int)Math.Min(100d, Math.Round(frame.Value * 100d / _totalFrames.Value)));
+            }
+            return true;
+        }
+
         [GeneratedRegex(@"(?<!\d)\d{1,3}\s*%")]
         private static partial Regex ProgressLineRegex();
 
@@ -602,6 +631,26 @@ namespace OneColumnEncoder.ViewModels
                 || lower.Contains("frames", StringComparison.Ordinal) && lower.Contains("kb/s", StringComparison.Ordinal)
                 || lower.Contains("eta", StringComparison.Ordinal) && lower.Contains('%', StringComparison.Ordinal)
                 || ProgressLineRegex().IsMatch(line);
+        }
+
+        [GeneratedRegex(@"(?:^|\D)(?:frame|encoded\s+frames|frames?\s+encoded|frames?\s*:)\s*=?\s*(\d+)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+        private static partial Regex EncoderFrameRegex();
+
+        [GeneratedRegex(@"(?:^|\D)(?:frame|encoded\s+frames|frames?\s+encoded|frames?\s*:)\s*=?\s*(\d+)\s*")]
+        private static partial Regex EncoderFrameRegexLoose();
+
+        private static int? TryParseEncoderFrame(string line)
+        {
+            if (string.IsNullOrWhiteSpace(line)) return null;
+
+            Match match = EncoderFrameRegex().Match(line);
+            if (!match.Success)
+                match = EncoderFrameRegexLoose().Match(line);
+
+            if (!match.Success) return null;
+            return int.TryParse(match.Groups[1].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int value)
+                ? value
+                : null;
         }
 
         private static void TrimLastLine(StringBuilder builder, LogFoldState foldState)
@@ -1030,6 +1079,10 @@ namespace OneColumnEncoder.ViewModels
             _lastOutputSizeTime = DateTime.MinValue;
             _peakOutputBandwidthBytesPerSecond = 0d;
             ProgressValue = 0;
+            _progressReportBuilder.Clear();
+            _progressReportFoldState.Entries.Clear();
+            _progressReportFoldState.LineIndexByText.Clear();
+            ProgressReportText = string.Empty;
             StatusText = Lang.ResetUsageStatusText;
         }
 
@@ -1181,6 +1234,7 @@ namespace OneColumnEncoder.ViewModels
 
             OnPropertyChanged(nameof(WindowTitle));
             OnPropertyChanged(nameof(ProgressTitle));
+            OnPropertyChanged(nameof(ProgressReportTitle));
             OnPropertyChanged(nameof(MemoryTitle));
             OnPropertyChanged(nameof(DistributionTitle));
             OnPropertyChanged(nameof(DragLogReportHint));
