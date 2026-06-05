@@ -1170,13 +1170,13 @@ namespace OneColumnEncoder.ViewModels
         [LibraryImport("kernel32.dll", SetLastError = true)]
         private static partial IntPtr CreateToolhelp32Snapshot(uint dwFlags, uint th32ProcessID);
 
-        [DllImport("kernel32.dll", SetLastError = true)]
+        [LibraryImport("kernel32.dll", EntryPoint = "Process32FirstW", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool Process32First(IntPtr hSnapshot, ref PROCESSENTRY32 lppe);
+        private static partial bool Process32First(IntPtr hSnapshot, ref PROCESSENTRY32 lppe);
 
-        [DllImport("kernel32.dll", SetLastError = true)]
+        [LibraryImport("kernel32.dll", EntryPoint = "Process32NextW", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool Process32Next(IntPtr hSnapshot, ref PROCESSENTRY32 lppe);
+        private static partial bool Process32Next(IntPtr hSnapshot, ref PROCESSENTRY32 lppe);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -1231,7 +1231,7 @@ namespace OneColumnEncoder.ViewModels
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-        private struct PROCESSENTRY32
+        private unsafe struct PROCESSENTRY32
         {
             public uint dwSize;
             public uint cntUsage;
@@ -1242,9 +1242,7 @@ namespace OneColumnEncoder.ViewModels
             public uint th32ParentProcessID;
             public int pcPriClassBase;
             public uint dwFlags;
-
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-            public string szExeFile;
+            public fixed char szExeFile[260];
         }
 
         private readonly record struct MemoryStatusSnapshot(

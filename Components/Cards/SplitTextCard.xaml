@@ -51,6 +51,7 @@
                 CornerRadius="8"
                 SnapsToDevicePixels="True">
             <Grid>
+                <!-- Title, Left column, right column textboxes-->
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" MinWidth="35" />
                     <ColumnDefinition Width="5" />

@@ -23,8 +23,14 @@
                         Height="{Binding CellSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
                         Margin="1"
                         CornerRadius="2.5"
-                        Background="{Binding Converter={StaticResource HeatCategoryLevelToBrush}}"
-                        ToolTip="{Binding Tooltip}" />
+                        ToolTip="{Binding Tooltip}">
+                    <Border.Background>
+                        <MultiBinding Converter="{StaticResource HeatCategoryLevelToBrush}">
+                            <Binding Path="Category" />
+                            <Binding Path="Level" />
+                        </MultiBinding>
+                    </Border.Background>
+                </Border>
             </DataTemplate>
         </ItemsControl.ItemTemplate>
     </ItemsControl>
