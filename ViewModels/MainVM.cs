@@ -798,7 +798,8 @@ namespace OneColumnEncoder.ViewModels
                 Path.Combine(outputSetting.P2TextData, outputSetting.P1TextData ?? string.Empty),
                 EncoderConfM.Load(),
                 _appDataM.Tools.VspipeY4mArg,
-                SourceFfprobeJson: _srcVideoAnalysis.RawJson);
+                SourceFfprobeJson: _srcVideoAnalysis.RawJson,
+                ParallelismConf: ParallelismConfM.LoadEffective());
         }
 
         private string GetUpstreamInputPath(string upstreamExeName)

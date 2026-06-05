@@ -38,7 +38,11 @@ namespace OneColumnEncoder.ViewModels
         public bool PreferPhysicalCores
         {
             get => _preferPhysicalCores;
-            set => SetProperty(ref _preferPhysicalCores, value);
+            set
+            {
+                if (!SetProperty(ref _preferPhysicalCores, value)) return;
+                UpdateMaxThreadCount();
+            }
         }
 
         private bool _preferPCoreCompute = true;
@@ -113,7 +117,7 @@ namespace OneColumnEncoder.ViewModels
 
         public ParallelismConfVM(Action closeAction, ToolItemCardVM targetItem)
         {
-            _model = ParallelismConfM.Load();
+            _model = ParallelismConfM.LoadEffective();
             _targetItem = targetItem;
             Lang = new ParallelismConfLangProviderM(UILangProviderM.Current.LanguageCode);
             CloseCmd = new CloseModalCmd(closeAction);
@@ -125,7 +129,11 @@ namespace OneColumnEncoder.ViewModels
             });
             RecheckCmd = new ActionCmd(_ => RecheckLargePagesPrivilege());
             SelectUpstreamNodeCmd = new ActionCmd(p => SelectNode(UpstreamNodes, p as CPUNodeCardVM));
-            SelectDownstreamNodeCmd = new ActionCmd(p => SelectNode(DownstreamNodes, p as CPUNodeCardVM));
+            SelectDownstreamNodeCmd = new ActionCmd(p =>
+            {
+                if (SelectNode(DownstreamNodes, p as CPUNodeCardVM))
+                    UpdateMaxThreadCount();
+            });
             FinishButtons = ButtonGroupVM.CreateThreeButton(RecheckButtonText, CancelButtonText, ConfirmButtonText, RecheckCmd, CloseCmd, ConfirmCmd);
 
             _canUseLargePages = PrivilegeCheckH.HasLockMemoryPrivilege();
@@ -167,11 +175,12 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        private static void SelectNode(ObservableCollection<CPUNodeCardVM> zone, CPUNodeCardVM? targetNode)
+        private static bool SelectNode(ObservableCollection<CPUNodeCardVM> zone, CPUNodeCardVM? targetNode)
         {
-            if (targetNode is not { IsEnabled: true }) return;
+            if (targetNode is not { IsEnabled: true }) return false;
             foreach (CPUNodeCardVM node in zone)
                 node.IsSelected = node == targetNode;
+            return true;
         }
 
         private void ApplySettingsToTarget()
@@ -201,12 +210,20 @@ namespace OneColumnEncoder.ViewModels
             PreferECoreLookahead = _model.PreferECoreLookahead;
             UseLargePages = _model.UseLargePages && CanUseLargePages;
 
-            List<NumaNodeInfo> numaNodes = NumaTopologyH.GetNumaNodes();
-            MaxThreadCount = GetMaxThreadCount(numaNodes);
-            EncoderThreadCount = _model.EncoderThreadCount;
-
             SelectById(UpstreamNodes, _model.UpstreamNodeId);
             SelectById(DownstreamNodes, _model.DownstreamNodeId);
+            UpdateMaxThreadCount();
+            EncoderThreadCount = _model.EncoderThreadCount;
+        }
+
+        private void UpdateMaxThreadCount()
+        {
+            CPUNodeCardVM? downstream = DownstreamNodes.FirstOrDefault(n => n.IsSelected && n.IsEnabled)
+                ?? DownstreamNodes.FirstOrDefault(n => n.IsEnabled);
+
+            MaxThreadCount = downstream == null
+                ? Math.Max(1, Environment.ProcessorCount)
+                : CpuSetsH.GetNodeProcessorCapacity(downstream.NodeId, PreferPhysicalCores);
         }
 
         private static void SelectById(ObservableCollection<CPUNodeCardVM> zone, int nodeId)
@@ -271,14 +288,6 @@ namespace OneColumnEncoder.ViewModels
             return $"{lang["CorePerGroup"]}{cacheTopology.CoresPerGroup}{lang["CorePerGroup1alt"]}{cacheTopology.ThreadsPerGroup}{lang["CorePerGroup1alt1"]}{cacheTopology.CacheMbPerGroup}{lang["CorePerGroup2"]}";
         }
 
-        private static int GetMaxThreadCount(List<NumaNodeInfo> numaNodes)
-        {
-            int count = numaNodes.Count > 0
-                ? numaNodes.Sum(n => n.ProcessorCount)
-                : Environment.ProcessorCount;
-            return Math.Max(1, count);
-        }
-
         private static int ClampThreadCount(int threadCount, int maxThreadCount)
         {
             return Math.Max(1, Math.Min(Math.Max(1, maxThreadCount), threadCount));
@@ -341,11 +350,12 @@ namespace OneColumnEncoder.ViewModels
 
         public static void ApplySavedSettingsToCard(ToolItemCardVM targetItem)
         {
-            ParallelismConfM model = ParallelismConfM.Load();
+            ParallelismConfM model = ParallelismConfM.LoadEffective();
             List<NumaNodeInfo> numaNodes = NumaTopologyH.GetNumaNodes();
-
-            int maxThreadCount = GetMaxThreadCount(numaNodes);
-            int encoderThreadCount = ClampThreadCount(model.EncoderThreadCount, maxThreadCount);
+            int encoderThreadCount = CpuSetsH.ClampThreadCountForNode(
+                model.DownstreamNodeId,
+                model.PreferPhysicalCores,
+                model.EncoderThreadCount);
 
             NumaNodeInfo? upstream =
                 numaNodes.FirstOrDefault(n => n.NodeId == model.UpstreamNodeId)

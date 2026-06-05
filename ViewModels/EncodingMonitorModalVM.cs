@@ -359,7 +359,9 @@ namespace OneColumnEncoder.ViewModels
                 _encoderProcess = encoder;
 
                 upstream.Start();
+                ApplyParallelismSettings(upstream, isEncoder: false);
                 encoder.Start();
+                ApplyParallelismSettings(encoder, isEncoder: true);
 
                 // Pipe upstream stdout to encoder stdin. Closing encoder stdin lets the encoder flush on EOF.
                 Task pipeTask = Task.Run(async () =>
@@ -431,6 +433,25 @@ namespace OneColumnEncoder.ViewModels
 
             if (!_isSample)
                 await TrySendNotificationAsync(_success, processOutput);
+        }
+
+        private void ApplyParallelismSettings(Process process, bool isEncoder)
+        {
+            ParallelismConfM? parallelismConf = _request.ParallelismConf;
+            if (parallelismConf == null) return;
+
+            int nodeId = isEncoder ? parallelismConf.DownstreamNodeId : parallelismConf.UpstreamNodeId;
+            bool physicalOnly = isEncoder && parallelismConf.PreferPhysicalCores;
+            int? maxCpuSets = isEncoder ? parallelismConf.EncoderThreadCount : null;
+            ProcessLogKind logKind = isEncoder ? ProcessLogKind.DownstreamStderr : ProcessLogKind.UpstreamStderr;
+
+            bool success = CpuSetsH.TryApplyProcessDefaultCpuSets(
+                process,
+                nodeId,
+                physicalOnly,
+                maxCpuSets,
+                out string message);
+            EnqueueProcessLine(logKind, $"Parallelism: {(success ? message : "Skipped CPU Sets binding. " + message)}");
         }
 
         private async Task ReadStreamAsync(StreamReader reader, ProcessLogKind kind, CancellationToken ct)
