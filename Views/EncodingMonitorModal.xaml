@@ -11,7 +11,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="1000"
-        Height="1240"
+        Height="1070"
         MinWidth="860"
         MinHeight="760"
         WindowStartupLocation="CenterOwner"
@@ -42,8 +42,8 @@
                            Style="{StaticResource H3}"
                            VerticalAlignment="Center" />
                 <ProgressBar Grid.Column="1"
-                             Height="29"
-                             Margin="20 0 15 0"
+                             Height="20"
+                             Margin="10 0 10 0"
                              Minimum="0"
                              Maximum="100"
                              Value="{Binding ProgressValue}"
@@ -84,104 +84,120 @@
             <!-- RAM occupancy range and title -->
             <Grid Grid.Row="2"
                   Margin="0 15 0 0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0">
-                    <TextBlock Text="{Binding MemoryTitle}"
-                               Style="{StaticResource H3}" />
-                    <Grid Margin="0 5 0 0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <ScrollViewer Grid.Column="0"
-                                      HorizontalScrollBarVisibility="Auto"
-                                      VerticalScrollBarVisibility="Disabled">
-                            <comps:MemoryRangeBar Items="{Binding MemoryRangeBlocks}"
-                                                  HorizontalAlignment="Left" />
-                        </ScrollViewer>
-                        <TextBlock Grid.Column="1"
-                                   Text="{Binding RangeSummary}"
-                                   FontSize="13"
-                                   Foreground="{StaticResource GlobalSecondary}"
-                                   Margin="8 0 0 0"
-                                   VerticalAlignment="Center" />
-                    </Grid>
-                </StackPanel>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding MemoryTitle}"
+                               Style="{StaticResource H3}"
+                               VerticalAlignment="Center" />
+                    <ScrollViewer Grid.Column="1"
+                                  Margin="5 0 5 0"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Disabled">
+                        <comps:MemoryRangeBar Items="{Binding MemoryRangeBlocks}"
+                                              HorizontalAlignment="Left"
+                                              VerticalAlignment="Center" />
+                    </ScrollViewer>
+                    <TextBlock Grid.Column="2"
+                               Text="{Binding RangeSummary}"
+                               FontSize="13"
+                               Foreground="{StaticResource GlobalSecondary}"
+                               VerticalAlignment="Center" />
+                </Grid>
 
                 <!-- RAM distribution labels and legend -->
-                <StackPanel Grid.Column="1">
-                    <TextBlock Text="{Binding DistributionTitle}"
-                               Style="{StaticResource H3}" />
-                    <Grid Margin="0 10 5 0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0"
-                                   Text="{Binding DistributionUpstreamLabel}"
-                                   FontSize="13"
-                                   Foreground="{StaticResource GlobalSecondary}" />
-                        <TextBlock Grid.Row="0"
-                                   Grid.Column="1"
-                                   Text="{Binding DistributionUpstream}"
-                                   FontSize="13"
-                                   Foreground="{StaticResource GlobalSecondary}"
-                                   TextAlignment="Right" />
-                        <TextBlock Grid.Row="1"
-                                   Text="{Binding DistributionDownstreamLabel}"
-                                   FontSize="13"
-                                   Margin="0 10 0 0"
-                                   Foreground="{StaticResource GlobalSecondary}" />
-                        <TextBlock Grid.Row="1"
-                                   Grid.Column="1"
-                                   Text="{Binding DistributionDownstream}"
-                                   FontSize="13"
-                                   Margin="0 10 0 0"
-                                   Foreground="{StaticResource GlobalSecondary}"
-                                   TextAlignment="Right" />
-                        <TextBlock Grid.Row="2"
-                                   Text="{Binding DistributionCacheLabel}"
-                                   FontSize="13"
-                                   Margin="0 10 0 0"
-                                   Foreground="{StaticResource GlobalSecondary}" />
-                        <TextBlock Grid.Row="2"
-                                   Grid.Column="1"
-                                   Text="{Binding DistributionCache}"
-                                   FontSize="13"
-                                   Margin="0 10 0 0"
-                                   Foreground="{StaticResource GlobalSecondary}"
-                                   TextAlignment="Right" />
-                        <TextBlock Grid.Row="3"
-                                   Text="{Binding DistributionAvailableLabel}"
-                                   FontSize="13"
-                                   Margin="0 10 0 0"
-                                   Foreground="{StaticResource GlobalSecondary}" />
-                        <TextBlock Grid.Row="3"
-                                   Grid.Column="1"
-                                   Text="{Binding DistributionAvailable}"
-                                   FontSize="13"
-                                   Margin="0 10 0 0"
-                                   Foreground="{StaticResource GlobalSecondary}"
-                                   TextAlignment="Right" />
-                    </Grid>
-                     <comps:MemoryRangeLegend Margin="0 10 5 0"
-                                              Title="{Binding MemoryRangeLegendTitle}"
-                                              UpstreamLabel="{Binding DistributionUpstreamLabel}"
-                                              DownstreamLabel="{Binding DistributionDownstreamLabel}"
-                                              CacheLabel="{Binding DistributionCacheLabel}"
-                                              AvailableLabel="{Binding DistributionAvailableLabel}"
-                                              HorizontalAlignment="Stretch" />
-                </StackPanel>
+                <Grid Grid.Row="1"
+                      Margin="0 6 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="1"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Right">
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0 0 10 0"
+                                    VerticalAlignment="Center">
+                            <Rectangle Width="8"
+                                       Height="8"
+                                       Margin="0 0 5 0"
+                                       RadiusX="1"
+                                       RadiusY="1"
+                                       Fill="{StaticResource MemoryRangeUpstream8}"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding DistributionUpstreamLabel}"
+                                       FontSize="10"
+                                       Foreground="{StaticResource GlobalSecondary}" />
+                            <TextBlock Text="{Binding DistributionUpstream}"
+                                       FontSize="10"
+                                       Foreground="{StaticResource GlobalSecondary}"
+                                       Margin="4 0 0 0" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0 0 10 0"
+                                    VerticalAlignment="Center">
+                            <Rectangle Width="8"
+                                       Height="8"
+                                       Margin="0 0 5 0"
+                                       RadiusX="1"
+                                       RadiusY="1"
+                                       Fill="{StaticResource MemoryRangeDownstream8}"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding DistributionDownstreamLabel}"
+                                       FontSize="10"
+                                       Foreground="{StaticResource GlobalSecondary}" />
+                            <TextBlock Text="{Binding DistributionDownstream}"
+                                       FontSize="10"
+                                       Foreground="{StaticResource GlobalSecondary}"
+                                       Margin="4 0 0 0" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0 0 10 0"
+                                    VerticalAlignment="Center">
+                            <Rectangle Width="8"
+                                       Height="8"
+                                       Margin="0 0 5 0"
+                                       RadiusX="1"
+                                       RadiusY="1"
+                                       Fill="{StaticResource MemoryRangeCache8}"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding DistributionCacheLabel}"
+                                       FontSize="10"
+                                       Foreground="{StaticResource GlobalSecondary}" />
+                            <TextBlock Text="{Binding DistributionCache}"
+                                       FontSize="10"
+                                       Foreground="{StaticResource GlobalSecondary}"
+                                       Margin="4 0 0 0" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center">
+                            <Rectangle Width="8"
+                                       Height="8"
+                                       Margin="0 0 5 0"
+                                       RadiusX="1"
+                                       RadiusY="1"
+                                       Fill="{StaticResource MemoryRangeEmpty}"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding DistributionAvailableLabel}"
+                                       FontSize="10"
+                                       Foreground="{StaticResource GlobalSecondary}" />
+                            <TextBlock Text="{Binding DistributionAvailable}"
+                                       FontSize="10"
+                                       Foreground="{StaticResource GlobalSecondary}"
+                                       Margin="4 0 0 0" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
             </Grid>
 
             <!-- RAM multi column display -->

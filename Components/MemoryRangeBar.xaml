@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:conv="clr-namespace:OneColumnEncoder.Converters"
              mc:Ignorable="d"
-             d:DesignHeight="30"
+             d:DesignHeight="20"
              d:DesignWidth="260">
     <UserControl.Resources>
         <conv:MemoryRangeBlockToBrushConverter x:Key="MemoryRangeBlockToBrush" />
@@ -20,9 +20,9 @@
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
             <DataTemplate>
-                <Border Width="5"
+                <Border Width="5.25"
                         Height="20"
-                        Margin="1 0"
+                        Margin="0.7 0"
                         CornerRadius="1"
                         ToolTip="{Binding Tooltip}">
                     <Border.Background>

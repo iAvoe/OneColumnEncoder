@@ -10,7 +10,7 @@ public class EncodingMonitorModalLangProviderM
             ["WindowTitleSampleMode"] = "1cenc Encoding Monitor (Sample mode)",
             ["ProgressTitle"] = "Progress",
             ["ProgressReportTitle"] = "Progress stream",
-            ["MemoryTitle"] = "Memory usage",
+            ["MemoryTitle"] = "RAM use",
             ["DistributionTitle"] = "Occupancy details",
 
             ["StderrTitle"] = "Process log",
