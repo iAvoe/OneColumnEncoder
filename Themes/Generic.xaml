@@ -66,7 +66,7 @@
                      x:Key="ButtonTertiary" />
     <!-- Memory range palette: empty block -->
     <SolidColorBrush Color="#E9EEF2"
-                      x:Key="MemoryRangeEmpty" />
+                     x:Key="MemoryRangeEmpty" />
 
     <!-- Scrollbars -->
     <Style x:Key="ScrollBarPageButton"
@@ -93,7 +93,7 @@
     <Style x:Key="RoundedScrollBarThumb"
            TargetType="Thumb">
         <Setter Property="Background"
-                Value="{StaticResource GlobalTertiary}" />
+                Value="{StaticResource MemoryRangeEmpty}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Thumb">

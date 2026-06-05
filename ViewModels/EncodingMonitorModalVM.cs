@@ -433,7 +433,7 @@ namespace OneColumnEncoder.ViewModels
             if (parallelismConf == null) return;
 
             int nodeId = isEncoder ? parallelismConf.DownstreamNodeId : parallelismConf.UpstreamNodeId;
-            bool physicalOnly = isEncoder && parallelismConf.PreferPhysicalCores;
+            bool physicalOnly = isEncoder ? parallelismConf.PreferPhysicalCores : parallelismConf.PreferUpstreamPhysicalCores;
             int? maxCpuSets = isEncoder ? parallelismConf.EncoderThreadCount : null;
             ProcessLogKind logKind = isEncoder ? ProcessLogKind.DownstreamStderr : ProcessLogKind.UpstreamStderr;
 

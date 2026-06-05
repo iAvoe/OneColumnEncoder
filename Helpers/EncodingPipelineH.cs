@@ -56,7 +56,7 @@ public static class EncodingPipelineH
         string clipArgs = BuildUpstreamClipArgs(request.UpstreamExeName, request.Clip);
         return request.UpstreamExeName.ToLowerInvariant() switch
         {
-            "ffmpeg.exe" => JoinArgs(clipArgs, $"-i {input}", "-f yuv4mpegpipe -an -strict unofficial -"), // unofficial allows 10bit pipe
+            "ffmpeg.exe" => JoinArgs($"-hide_banner", clipArgs, $"-i {input}", "-f yuv4mpegpipe -an -strict unofficial -"), // unofficial allows 10bit pipe
             "vspipe.exe" => JoinArgs(input, clipArgs, NormalizeRequired(request.VspipeY4mArg, "vspipe Y4M argument"), "-"),
             "avs2yuv.exe" => JoinArgs(input, clipArgs, "-"),
             "avs2pipemod.exe" => JoinArgs(input, clipArgs, "-y4mp"),
@@ -292,7 +292,6 @@ public static class EncodingPipelineH
         {
             "x264.exe" => $"--threads {threads}",
             "x265.exe" => $"--pools {threads}",
-            "svtav1encapp.exe" => $"--lp {threads}",
             _ => string.Empty
         };
     }

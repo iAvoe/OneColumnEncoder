@@ -11,9 +11,9 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="1000"
-        MaxHeight="1070"
+        MaxHeight="1060"
         MinWidth="860"
-        Height="900"
+        Height="890"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <ScrollViewer VerticalScrollBarVisibility="Auto"
@@ -178,9 +178,9 @@
 
             <!-- RAM multi column display -->
             <comps:ColumnTextGrid Grid.Row="3"
-                                   Margin="0 15 0 0"
-                                   Items="{Binding MetricColumns}"
-                                   ColumnCount="7" />
+                                  Margin="0 15 0 0"
+                                  Items="{Binding MetricColumns}"
+                                  ColumnCount="7" />
 
             <!-- RAM telemetry frequency slider -->
             <comps:IntegerSlider Grid.Row="4"

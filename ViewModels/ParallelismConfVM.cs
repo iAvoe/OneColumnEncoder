@@ -34,6 +34,13 @@ namespace OneColumnEncoder.ViewModels
         public ICommand SelectDownstreamNodeCmd { get; }
         public ButtonGroupVM FinishButtons { get; }
 
+        private bool _preferUpstreamPhysicalCores;
+        public bool PreferUpstreamPhysicalCores
+        {
+            get => _preferUpstreamPhysicalCores;
+            set => SetProperty(ref _preferUpstreamPhysicalCores, value);
+        }
+
         private bool _preferPhysicalCores = true;
         public bool PreferPhysicalCores
         {
@@ -104,6 +111,7 @@ namespace OneColumnEncoder.ViewModels
         public string DownstreamNumaTitle => Lang.DownstreamNumaTitle;
         public string NumaGuidanceText => Lang.NumaGuidanceText;
         public string ThreadStrategyTitle => Lang.ThreadStrategyTitle;
+        public string PreferUpstreamPhysicalCoresText => Lang.PreferUpstreamPhysicalCoresText;
         public string PreferPhysicalCoresText => Lang.PreferPhysicalCoresText;
         public string PreferPCoreComputeText => Lang.PreferPCoreComputeText;
         public string PreferECoreLookaheadText => Lang.PreferECoreLookaheadText;
@@ -195,6 +203,7 @@ namespace OneColumnEncoder.ViewModels
             CPUNodeCardVM downstream = GetSelectedEnabledNode(DownstreamNodes);
             _model.UpstreamNodeId = upstream.NodeId;
             _model.DownstreamNodeId = downstream.NodeId;
+            _model.PreferUpstreamPhysicalCores = PreferUpstreamPhysicalCores;
             _model.PreferPhysicalCores = PreferPhysicalCores;
             _model.PreferPCoreCompute = PreferPCoreCompute;
             _model.PreferECoreLookahead = PreferECoreLookahead;
@@ -205,6 +214,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void LoadModelToUi()
         {
+            PreferUpstreamPhysicalCores = _model.PreferUpstreamPhysicalCores;
             PreferPhysicalCores = _model.PreferPhysicalCores;
             PreferPCoreCompute = _model.PreferPCoreCompute;
             PreferECoreLookahead = _model.PreferECoreLookahead;
@@ -243,13 +253,14 @@ namespace OneColumnEncoder.ViewModels
 
         private string BuildSecondarySummary()
         {
-            return BuildSecondarySummary(PreferPhysicalCores, EncoderThreadCount);
+            return BuildSecondarySummary(PreferUpstreamPhysicalCores, PreferPhysicalCores, EncoderThreadCount);
         }
 
-        private static string BuildSecondarySummary(bool preferPhysicalCores, int encoderThreadCount)
+        private static string BuildSecondarySummary(bool preferUpstreamPhysicalCores, bool preferPhysicalCores, int encoderThreadCount)
         {
-            string clampIndicator = preferPhysicalCores ? " (Clamp ON)" : " (Clamp OFF)";
-            return $"{encoderThreadCount} {clampIndicator}";
+            string upstreamIndicator = preferUpstreamPhysicalCores ? "U-Phys ON" : "U-Phys OFF";
+            string encoderIndicator = preferPhysicalCores ? "E-Phys ON" : "E-Phys OFF";
+            return $"{encoderThreadCount} ({upstreamIndicator}, {encoderIndicator})";
         }
 
         private List<string> BuildThreadTickLabels()
@@ -311,6 +322,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(DownstreamNumaTitle));
             OnPropertyChanged(nameof(NumaGuidanceText));
             OnPropertyChanged(nameof(ThreadStrategyTitle));
+            OnPropertyChanged(nameof(PreferUpstreamPhysicalCoresText));
             OnPropertyChanged(nameof(PreferPhysicalCoresText));
             OnPropertyChanged(nameof(PreferPCoreComputeText));
             OnPropertyChanged(nameof(PreferECoreLookaheadText));
@@ -366,14 +378,14 @@ namespace OneColumnEncoder.ViewModels
 
             if (upstream is null || downstream is null)
             {
-                targetItem.P2TextData = BuildSecondarySummary(model.PreferPhysicalCores, encoderThreadCount);
+                targetItem.P2TextData = BuildSecondarySummary(model.PreferUpstreamPhysicalCores, model.PreferPhysicalCores, encoderThreadCount);
                 targetItem.P1TextData = "0,0 → 0,0";
                 return;
             }
 
             string primary = $"{upstream.NodeId},{upstream.Group} → {downstream.NodeId},{downstream.Group}";
 
-            string secondary = BuildSecondarySummary(model.PreferPhysicalCores, encoderThreadCount);
+            string secondary = BuildSecondarySummary(model.PreferUpstreamPhysicalCores, model.PreferPhysicalCores, encoderThreadCount);
 
             targetItem.P2TextData = secondary;
             targetItem.P1TextData = primary;

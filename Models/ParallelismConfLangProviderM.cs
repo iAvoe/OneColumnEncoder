@@ -14,6 +14,7 @@ public class ParallelismConfLangProviderM
             ["NumaGuidanceText"] = "Assign encoder to other nodes might be faster when upstream tool has slow filters\notherwise, sharing same node might be faster—compute vs. latency bottleneck",
             ["ThreadStrategyTitle"] = "Hyper-threading & P-E Core Scheduling",
             ["EncoderThreadCountText"] = "Encoder threads",
+            ["PreferUpstreamPhysicalCoresText"] = "Map upstream tool to phys. cores",
             ["PreferPhysicalCoresText"] = "Map encoder threads to phys. cores (clamps max slider range)",
             ["PreferPCoreComputeText"] = "TODO: Prefer P-Cores for encoder's compute threads",
             ["PreferECoreLookaheadText"] = "TODO: Prefer E-Cores for encoder's lookahead threads",
@@ -38,6 +39,7 @@ public class ParallelismConfLangProviderM
             ["NumaGuidanceText"] = "若上游程序使用了高占用滤镜且视频源内容复杂，则上下游各占一节点的速度大概更快（算力瓶颈），\n否则共用节点的速度大概更快（通信瓶颈）",
             ["ThreadStrategyTitle"] = "超线程与 P-E 架构处理器调度",
             ["EncoderThreadCountText"] = "编码器线程数",
+            ["PreferUpstreamPhysicalCoresText"] = "限制上游程序到物理核心数",
             ["PreferPhysicalCoresText"] = "逐物理核心分配编码器线程（会缩限线程数滑块范围）",
             ["PreferPCoreComputeText"] = "TODO：尝试分配编码任务到性能核心（P-Core）",
             ["PreferECoreLookaheadText"] = "TODO：尝试分配前瞻进程任务到能效核心（E-Core）",
@@ -62,6 +64,7 @@ public class ParallelismConfLangProviderM
             ["NumaGuidanceText"] = "若上遊程序使用了高占用濾鏡且影片源內容複雜，則上下游各占一節點的速度大概更快（算力瓶頸），\n否則共用節點的速度大概更快（通信瓶頸）",
             ["ThreadStrategyTitle"] = "超執行緒與 P-E 架構處理器調度",
             ["EncoderThreadCountText"] = "編碼器執行緒數",
+            ["PreferUpstreamPhysicalCoresText"] = "限制上游程式到物理核心數",
             ["PreferPhysicalCoresText"] = "逐物理核心分配編碼器執行緒（會縮限執行緒數滑塊範圍）",
             ["PreferPCoreComputeText"] = "TODO：嘗試分配編碼任務到性能核心（P-Core）",
             ["PreferECoreLookaheadText"] = "TODO：嘗試分配前瞻進程任務到能效核心（E-Core）",
@@ -85,6 +88,7 @@ public class ParallelismConfLangProviderM
     public string DownstreamNumaTitle { get; }
     public string NumaGuidanceText { get; }
     public string ThreadStrategyTitle { get; }
+    public string PreferUpstreamPhysicalCoresText { get; }
     public string PreferPhysicalCoresText { get; }
     public string PreferPCoreComputeText { get; }
     public string PreferECoreLookaheadText { get; }
@@ -110,6 +114,7 @@ public class ParallelismConfLangProviderM
         DownstreamNumaTitle = _d["DownstreamNumaTitle"];
         NumaGuidanceText = _d["NumaGuidanceText"];
         ThreadStrategyTitle = _d["ThreadStrategyTitle"];
+        PreferUpstreamPhysicalCoresText = _d["PreferUpstreamPhysicalCoresText"];
         PreferPhysicalCoresText = _d["PreferPhysicalCoresText"];
         PreferPCoreComputeText = _d["PreferPCoreComputeText"];
         PreferECoreLookaheadText = _d["PreferECoreLookaheadText"];
