@@ -37,8 +37,7 @@ public class EncodingMonitorModalLangProviderM
             ["RotateLogFontSizeText"] = "Rotate log font size",
             ["SaveUpstreamStderrText"] = "Save upstream log",
             ["SaveDownstreamStderrText"] = "Save downstream log",
-            ["CopyUpstreamStderrText"] = "Copy upstream log",
-            ["CopyDownstreamStderrText"] = "Copy downstream log",
+
             ["OpenOutputDirectoryText"] = "Open output folder",
             ["ViewEncodingCommandText"] = "View encoding command",
             ["InterruptUpstreamText"] = "Interrupt upstream",
@@ -108,8 +107,7 @@ public class EncodingMonitorModalLangProviderM
             ["RotateLogFontSizeText"] = "轮换日志字号",
             ["SaveUpstreamStderrText"] = "保存上游日志",
             ["SaveDownstreamStderrText"] = "保存下游日志",
-            ["CopyUpstreamStderrText"] = "复制上游日志",
-            ["CopyDownstreamStderrText"] = "复制下游日志",
+
             ["OpenOutputDirectoryText"] = "打开输出目录",
             ["ViewEncodingCommandText"] = "查看编码参数",
             ["InterruptUpstreamText"] = "中断上游程序",
@@ -179,8 +177,7 @@ public class EncodingMonitorModalLangProviderM
             ["RotateLogFontSizeText"] = "輪換日誌字型大小",
             ["SaveUpstreamStderrText"] = "保存上游日誌",
             ["SaveDownstreamStderrText"] = "保存下游日誌",
-            ["CopyUpstreamStderrText"] = "複製上游日誌",
-            ["CopyDownstreamStderrText"] = "複製下游日誌",
+
             ["OpenOutputDirectoryText"] = "開啟輸出資料夾",
             ["ViewEncodingCommandText"] = "檢視編碼參數",
             ["InterruptUpstreamText"] = "中斷上游程式",
@@ -249,8 +246,6 @@ public class EncodingMonitorModalLangProviderM
     public string RotateLogFontSizeText { get; }
     public string SaveUpstreamStderrText { get; }
     public string SaveDownstreamStderrText { get; }
-    public string CopyUpstreamStderrText { get; }
-    public string CopyDownstreamStderrText { get; }
     public string OpenOutputDirectoryText { get; }
     public string ViewEncodingCommandText { get; }
     public string InterruptUpstreamText { get; }
@@ -326,8 +321,6 @@ public class EncodingMonitorModalLangProviderM
         RotateLogFontSizeText = _d["RotateLogFontSizeText"];
         SaveUpstreamStderrText = _d["SaveUpstreamStderrText"];
         SaveDownstreamStderrText = _d["SaveDownstreamStderrText"];
-        CopyUpstreamStderrText = _d["CopyUpstreamStderrText"];
-        CopyDownstreamStderrText = _d["CopyDownstreamStderrText"];
         OpenOutputDirectoryText = _d["OpenOutputDirectoryText"];
         ViewEncodingCommandText = _d["ViewEncodingCommandText"];
         InterruptUpstreamText = _d["InterruptUpstreamText"];

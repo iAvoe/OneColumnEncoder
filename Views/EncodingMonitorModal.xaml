@@ -234,19 +234,15 @@
                                       RightText="{Binding DownstreamReportText, Mode=TwoWay}"
                                      TextFontSize="{Binding LogFontSize}" />
 
-                <comps:FiveButtonGroup Margin="0 10 0 0"
-                                       DataContext="{Binding ReportButtons}"
-                                       ButtonHeight="30"
-                                       Button1Command="{Binding Cmd1}"
-                                       Button2Command="{Binding Cmd2}"
-                                       Button3Command="{Binding Cmd3}"
-                                       Button4Command="{Binding Cmd4}"
-                                       Button5Command="{Binding Cmd5}"
-                                       Button1IsEnabled="{Binding B5_1IsEnabled}"
-                                       Button2IsEnabled="{Binding B5_2IsEnabled}"
-                                       Button3IsEnabled="{Binding B5_3IsEnabled}"
-                                       Button4IsEnabled="{Binding B5_4IsEnabled}"
-                                       Button5IsEnabled="{Binding B5_5IsEnabled}" />
+                <comps:ThreeButtonGroup Margin="0 10 0 0"
+                                        DataContext="{Binding ReportButtons}"
+                                        ButtonHeight="30"
+                                        Button1Command="{Binding Cmd1}"
+                                        Button2Command="{Binding Cmd2}"
+                                        Button3Command="{Binding Cmd3}"
+                                        Button1IsEnabled="{Binding B3_1IsEnabled}"
+                                        Button2IsEnabled="{Binding B3_2IsEnabled}"
+                                        Button3IsEnabled="{Binding B3_3IsEnabled}" />
                 <StackPanel Orientation="Horizontal"
                              Margin="0 3 0 0">
                     <Rectangle Width="10"

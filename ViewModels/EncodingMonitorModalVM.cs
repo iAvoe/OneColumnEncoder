@@ -240,12 +240,10 @@ namespace OneColumnEncoder.ViewModels
 
             MonitorButtons = ButtonGroupVM.CreateTwoButton(FreezeOrContinueText, Lang.ResetUsageText, FreezeOrContinueCmd, ResetStatsCmd);
 
-            ReportButtons = ButtonGroupVM.CreateFiveButton(
-                Lang.SaveUpstreamStderrText, Lang.SaveDownstreamStderrText, Lang.CopyUpstreamStderrText, Lang.CopyDownstreamStderrText, Lang.RotateLogFontSizeText,
+            ReportButtons = ButtonGroupVM.CreateThreeButton(
+                Lang.SaveUpstreamStderrText, Lang.SaveDownstreamStderrText, Lang.RotateLogFontSizeText,
                 new ActionCmd(_ => SaveText(UpstreamReportText, "upstream-stderr.txt")),
                 new ActionCmd(_ => SaveText(DownstreamReportText, "downstream-stderr.txt")),
-                new ActionCmd(_ => CopyText(UpstreamReportText)),
-                new ActionCmd(_ => CopyText(DownstreamReportText)),
                 new ActionCmd(_ => RotateLogFontSize()));
 
             FinishButtons = ButtonGroupVM.CreateFiveButton(
@@ -1393,11 +1391,6 @@ namespace OneColumnEncoder.ViewModels
             Process.Start(new ProcessStartInfo { FileName = directory, UseShellExecute = true });
         }
 
-        private static void CopyText(string text)
-        {
-            if (!string.IsNullOrEmpty(text)) Clipboard.SetText(text);
-        }
-
         private void SaveText(string text, string fileName)
         {
             if (string.IsNullOrEmpty(text)) return;
@@ -1485,11 +1478,9 @@ namespace OneColumnEncoder.ViewModels
             FreezeOrContinueText = _isFrozen ? Lang.ContinueMonitoringText : Lang.FreezeContinueText;
             MonitorButtons.B2_1Text = FreezeOrContinueText;
             MonitorButtons.B2_2Text = Lang.ResetUsageText;
-            ReportButtons.B5_1Text = Lang.SaveUpstreamStderrText;
-            ReportButtons.B5_2Text = Lang.SaveDownstreamStderrText;
-            ReportButtons.B5_3Text = Lang.CopyUpstreamStderrText;
-            ReportButtons.B5_4Text = Lang.CopyDownstreamStderrText;
-            ReportButtons.B5_5Text = Lang.RotateLogFontSizeText;
+            ReportButtons.B3_1Text = Lang.SaveUpstreamStderrText;
+            ReportButtons.B3_2Text = Lang.SaveDownstreamStderrText;
+            ReportButtons.B3_3Text = Lang.RotateLogFontSizeText;
             FinishButtons.B5_1Text = Lang.OpenOutputDirectoryText;
             FinishButtons.B5_2Text = Lang.ViewEncodingCommandText;
             FinishButtons.B5_3Text = Lang.InterruptUpstreamText;
