@@ -31,11 +31,7 @@ public class EncodingMonitorModalLangProviderM
             ["DistributionOtherLabel"] = "Other programs",
             ["DistributionCacheLabel"] = "System cache",
             ["DistributionAvailableLabel"] = "Available",
-            ["HeatLegendColdToHotText"] = "Cold \u2198 Hot",
-            ["HeatLegendUpstreamLabel"] = "Upstream",
-            ["HeatLegendDownstreamLabel"] = "Downstream",
-            ["HeatLegendOtherLabel"] = "Other",
-            ["HeatLegendCacheLabel"] = "Cache",
+            ["HeatLegendColdToHotText"] = "Cold \u2194 Hot",
             ["SampleIntervalTickLabels"] = "0 (RT)|60S|120S|180S|240S",
             ["ContinueMonitoringText"] = "Continue monitoring",
             ["FreezeContinueText"] = "Freeze / Continue",
@@ -108,11 +104,7 @@ public class EncodingMonitorModalLangProviderM
             ["DistributionOtherLabel"] = "其它程序",
             ["DistributionCacheLabel"] = "系统缓存",
             ["DistributionAvailableLabel"] = "可用",
-            ["HeatLegendColdToHotText"] = "冷 \u2198 热",
-            ["HeatLegendUpstreamLabel"] = "上游",
-            ["HeatLegendDownstreamLabel"] = "下游",
-            ["HeatLegendOtherLabel"] = "其它",
-            ["HeatLegendCacheLabel"] = "缓存",
+            ["HeatLegendColdToHotText"] = "冷 \u2194 热",
             ["SampleIntervalTickLabels"] = "0（实时）|60秒|120秒|180秒|240秒",
             ["ContinueMonitoringText"] = "继续监测",
             ["FreezeContinueText"] = "冻结 / 继续监测",
@@ -185,11 +177,7 @@ public class EncodingMonitorModalLangProviderM
             ["DistributionOtherLabel"] = "其他程式",
             ["DistributionCacheLabel"] = "系統快取",
             ["DistributionAvailableLabel"] = "可用",
-            ["HeatLegendColdToHotText"] = "冷 \u2198 熱",
-            ["HeatLegendUpstreamLabel"] = "上游",
-            ["HeatLegendDownstreamLabel"] = "下游",
-            ["HeatLegendOtherLabel"] = "其他",
-            ["HeatLegendCacheLabel"] = "快取",
+            ["HeatLegendColdToHotText"] = "冷 \u2194 熱",
             ["SampleIntervalTickLabels"] = "0（即時）|60秒|120秒|180秒|240秒",
             ["ContinueMonitoringText"] = "繼續監測",
             ["FreezeContinueText"] = "凍結 / 繼續監測",
@@ -262,10 +250,10 @@ public class EncodingMonitorModalLangProviderM
     public string DistributionCacheLabel { get; }
     public string DistributionAvailableLabel { get; }
     public string HeatLegendColdToHotText { get; }
-    public string HeatLegendUpstreamLabel { get; }
-    public string HeatLegendDownstreamLabel { get; }
-    public string HeatLegendOtherLabel { get; }
-    public string HeatLegendCacheLabel { get; }
+    public string HeatLegendUpstreamLabel => DistributionUpstreamLabel;
+    public string HeatLegendDownstreamLabel => DistributionDownstreamLabel;
+    public string HeatLegendOtherLabel => DistributionOtherLabel;
+    public string HeatLegendCacheLabel => DistributionCacheLabel;
     public string[] SampleIntervalTickLabels { get; }
     public string ContinueMonitoringText { get; }
     public string FreezeContinueText { get; }
@@ -345,10 +333,6 @@ public class EncodingMonitorModalLangProviderM
         DistributionCacheLabel = _d["DistributionCacheLabel"];
         DistributionAvailableLabel = _d["DistributionAvailableLabel"];
         HeatLegendColdToHotText = _d["HeatLegendColdToHotText"];
-        HeatLegendUpstreamLabel = _d["HeatLegendUpstreamLabel"];
-        HeatLegendDownstreamLabel = _d["HeatLegendDownstreamLabel"];
-        HeatLegendOtherLabel = _d["HeatLegendOtherLabel"];
-        HeatLegendCacheLabel = _d["HeatLegendCacheLabel"];
         SampleIntervalTickLabels = _d["SampleIntervalTickLabels"].Split('|');
         ContinueMonitoringText = _d["ContinueMonitoringText"];
         FreezeContinueText = _d["FreezeContinueText"];

@@ -106,10 +106,6 @@ namespace OneColumnEncoder.ViewModels
         public string DistributionOtherLabel => Lang.DistributionOtherLabel;
         public string DistributionCacheLabel => Lang.DistributionCacheLabel;
         public string DistributionAvailableLabel => Lang.DistributionAvailableLabel;
-        public string HeatLegendUpstreamLabel => Lang.HeatLegendUpstreamLabel;
-        public string HeatLegendDownstreamLabel => Lang.HeatLegendDownstreamLabel;
-        public string HeatLegendOtherLabel => Lang.HeatLegendOtherLabel;
-        public string HeatLegendCacheLabel => Lang.HeatLegendCacheLabel;
         public string HeatLegendColdToHotText => Lang.HeatLegendColdToHotText;
 
         public string StderrTitle => Lang.StderrTitle;
@@ -835,10 +831,10 @@ namespace OneColumnEncoder.ViewModels
 
             string[] categoryNames =
             [
-                Lang.HeatLegendUpstreamLabel,
-                Lang.HeatLegendDownstreamLabel,
-                Lang.HeatLegendOtherLabel,
-                Lang.HeatLegendCacheLabel
+                Lang.DistributionUpstreamLabel,
+                Lang.DistributionDownstreamLabel,
+                Lang.DistributionOtherLabel,
+                Lang.DistributionCacheLabel
             ];
             MemoryCategory[] categoryOrder =
             [
@@ -1478,10 +1474,6 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(DistributionOtherLabel));
             OnPropertyChanged(nameof(DistributionCacheLabel));
             OnPropertyChanged(nameof(DistributionAvailableLabel));
-            OnPropertyChanged(nameof(HeatLegendUpstreamLabel));
-            OnPropertyChanged(nameof(HeatLegendDownstreamLabel));
-            OnPropertyChanged(nameof(HeatLegendOtherLabel));
-            OnPropertyChanged(nameof(HeatLegendCacheLabel));
             OnPropertyChanged(nameof(HeatLegendColdToHotText));
 
 
