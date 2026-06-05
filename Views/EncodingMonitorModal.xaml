@@ -176,17 +176,23 @@
                 </Grid>
             </Grid>
 
+            <!-- RAM multi column display -->
+            <comps:ColumnTextGrid Grid.Row="2"
+                                  Margin="0 15 0 0"
+                                  Items="{Binding MetricColumns}"
+                                  ColumnCount="6" />
+
             <!-- RAM telemetry frequency slider -->
             <comps:IntegerSlider Grid.Row="3"
                                   Margin="0 15 0 0"
                                   Label="{Binding SampleIntervalLabel}"
                                   LabelWidth="80"
                                   Minimum="0"
-                                 Maximum="240"
-                                 Value="{Binding SampleIntervalSeconds, Mode=TwoWay}"
-                                 TickLabels="{Binding SampleIntervalTickLabels}"
-                                 TickCount="5"
-                                 Step="1" />
+                                  Maximum="240"
+                                  Value="{Binding SampleIntervalSeconds, Mode=TwoWay}"
+                                  TickLabels="{Binding SampleIntervalTickLabels}"
+                                  TickCount="5"
+                                  Step="1" />
 
             <!-- RAM telemetry pause & continue -->
             <comps:TwoButtonGroup Grid.Row="4"

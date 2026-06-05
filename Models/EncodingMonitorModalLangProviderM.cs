@@ -54,8 +54,6 @@ public class EncodingMonitorModalLangProviderM
             ["PageFileBottomText"] = "Total XX GB",
             ["PageFaultTopText"] = "Page faults",
             ["PageFaultBottomText"] = "Hard faults XX",
-            ["BandwidthPeakTopText"] = "Bandwidth peak",
-            ["BandwidthPeakBottomText"] = "Current XX.X GBps",
             ["MemoryPressureTopText"] = "Memory pressure",
             ["MemoryPressureMediumText"] = "Mid",
             ["MemoryPressureHighText"] = "High",
@@ -124,8 +122,6 @@ public class EncodingMonitorModalLangProviderM
             ["PageFileBottomText"] = "总计 XX GB",
             ["PageFaultTopText"] = "页错误",
             ["PageFaultBottomText"] = "硬错误 XX",
-            ["BandwidthPeakTopText"] = "带宽峰值",
-            ["BandwidthPeakBottomText"] = "当前 XX.X GBps",
             ["MemoryPressureTopText"] = "内存压力",
             ["MemoryPressureMediumText"] = "中",
             ["MemoryPressureHighText"] = "高",
@@ -194,8 +190,6 @@ public class EncodingMonitorModalLangProviderM
             ["PageFileBottomText"] = "總計 XX GB",
             ["PageFaultTopText"] = "分頁錯誤",
             ["PageFaultBottomText"] = "硬錯誤 XX",
-            ["BandwidthPeakTopText"] = "頻寬峰值",
-            ["BandwidthPeakBottomText"] = "目前 XX.X GBps",
             ["MemoryPressureTopText"] = "記憶體壓力",
             ["MemoryPressureMediumText"] = "中",
             ["MemoryPressureHighText"] = "高",
@@ -262,8 +256,6 @@ public class EncodingMonitorModalLangProviderM
     public string PageFileBottomText { get; }
     public string PageFaultTopText { get; }
     public string PageFaultBottomText { get; }
-    public string BandwidthPeakTopText { get; }
-    public string BandwidthPeakBottomText { get; }
     public string MemoryPressureTopText { get; }
     public string MemoryPressureMediumText { get; }
     public string MemoryPressureHighText { get; }
@@ -337,8 +329,6 @@ public class EncodingMonitorModalLangProviderM
         PageFileBottomText = _d["PageFileBottomText"];
         PageFaultTopText = _d["PageFaultTopText"];
         PageFaultBottomText = _d["PageFaultBottomText"];
-        BandwidthPeakTopText = _d["BandwidthPeakTopText"];
-        BandwidthPeakBottomText = _d["BandwidthPeakBottomText"];
         MemoryPressureTopText = _d["MemoryPressureTopText"];
         MemoryPressureMediumText = _d["MemoryPressureMediumText"];
         MemoryPressureHighText = _d["MemoryPressureHighText"];

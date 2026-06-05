@@ -29,7 +29,6 @@ namespace OneColumnEncoder.ViewModels
         private const uint TH32CS_SNAPPROCESS = 0x00000002;
         private static readonly IntPtr InvalidHandleValue = new(-1);
         private const string PlaceholderGb = "XX.X GB";
-        private const string PlaceholderGbPerSecond = "XX.X GBps";
         private const string PlaceholderCount = "XX,XXX";
         private const string PlaceholderPercent = "XXX%";
         private EncodingMonitorModalLangProviderM _lang = new(UILangProviderM.Current.LanguageCode);
@@ -67,9 +66,6 @@ namespace OneColumnEncoder.ViewModels
         private long _lastEncoderWorkingSetBytes;
         private long _upstreamWorkingSetPeakBytes;
         private long _encoderWorkingSetPeakBytes;
-        private long _lastOutputSizeBytes;
-        private DateTime _lastOutputSizeTime = DateTime.MinValue;
-        private double _peakOutputBandwidthBytesPerSecond;
         private long _currentOutputSizeBytes;
         private int _writtenFrames;
         private bool _userInterruptRequested;
@@ -287,7 +283,6 @@ namespace OneColumnEncoder.ViewModels
             MetricColumns.Add(new ColumnTextItemM { TopText = Lang.WorkingSetPeakTopText, MainText = PlaceholderGb, BottomText = Lang.WorkingSetPeakBottomText });
             MetricColumns.Add(new ColumnTextItemM { TopText = Lang.PageFileTopText, MainText = PlaceholderGb, BottomText = Lang.PageFileBottomText });
             MetricColumns.Add(new ColumnTextItemM { TopText = Lang.PageFaultTopText, MainText = PlaceholderCount, BottomText = Lang.PageFaultBottomText });
-            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.BandwidthPeakTopText, MainText = PlaceholderGbPerSecond, BottomText = Lang.BandwidthPeakBottomText });
             MetricColumns.Add(new ColumnTextItemM { TopText = Lang.MemoryPressureTopText, MainText = Lang.MemoryPressureMediumText, BottomText = PlaceholderPercent });
         }
 
@@ -736,8 +731,6 @@ namespace OneColumnEncoder.ViewModels
 
         private void UpdateMetrics()
         {
-            double seconds = Math.Max(1d, _stopwatch.Elapsed.TotalSeconds);
-            long outputBytes = TryGetOutputSizeBytes();
             MemoryStatusSnapshot memoryStatus = GetMemoryStatusSnapshot();
             _lastMemoryStatus = memoryStatus;
             _lastUpstreamWorkingSetBytes = GetWorkingSetBytes(_upstreamProcess);
@@ -747,7 +740,6 @@ namespace OneColumnEncoder.ViewModels
             _encoderWorkingSetPeakBytes = Math.Max(_encoderWorkingSetPeakBytes, _lastEncoderWorkingSetBytes);
             long combinedWorkingSetPeakBytes = _upstreamWorkingSetPeakBytes + _encoderWorkingSetPeakBytes;
             long effectiveSystemCacheBytes = GetEffectiveSystemCacheBytes(memoryStatus, combinedWorkingSetBytes);
-            UpdateOutputBandwidth(outputBytes);
 
             MetricColumns[0].MainText = FormatGb(memoryStatus.UsedPhysicalBytes);
             MetricColumns[0].BottomText = ReplaceMetricValue(Lang.PhysicalMemoryBottomText, FormatGb(memoryStatus.TotalPhysicalBytes));
@@ -759,10 +751,8 @@ namespace OneColumnEncoder.ViewModels
             MetricColumns[3].BottomText = ReplaceMetricValue(Lang.PageFileBottomText, FormatGb(memoryStatus.CommitLimitBytes));
             MetricColumns[4].MainText = GetTotalPageFaults().ToString("N0", CultureInfo.InvariantCulture);
             MetricColumns[4].BottomText = Lang.PageFaultBottomText;
-            MetricColumns[5].MainText = FormatGbPerSecond(_peakOutputBandwidthBytesPerSecond);
-            MetricColumns[5].BottomText = ReplaceMetricValue(Lang.BandwidthPeakBottomText, FormatGbPerSecond(seconds > 0 ? outputBytes / seconds : 0d));
-            MetricColumns[6].MainText = memoryStatus.MemoryLoadPercent < 75 ? Lang.MemoryPressureMediumText : Lang.MemoryPressureHighText;
-            MetricColumns[6].BottomText = $"{memoryStatus.MemoryLoadPercent}%";
+            MetricColumns[5].MainText = memoryStatus.MemoryLoadPercent < 75 ? Lang.MemoryPressureMediumText : Lang.MemoryPressureHighText;
+            MetricColumns[5].BottomText = $"{memoryStatus.MemoryLoadPercent}%";
 
             DistributionUpstream = FormatMb(_lastUpstreamWorkingSetBytes);
             DistributionDownstream = FormatMb(_lastEncoderWorkingSetBytes);
@@ -979,20 +969,6 @@ namespace OneColumnEncoder.ViewModels
             return _writtenFrames > 0 ? _writtenFrames.ToString("N0", CultureInfo.InvariantCulture) : Lang.NotAvailableText;
         }
 
-        private void UpdateOutputBandwidth(long outputBytes)
-        {
-            DateTime now = DateTime.Now;
-            if (_lastOutputSizeTime != DateTime.MinValue)
-            {
-                double elapsedSeconds = Math.Max(0.001d, (now - _lastOutputSizeTime).TotalSeconds);
-                long deltaBytes = Math.Max(0, outputBytes - _lastOutputSizeBytes);
-                _peakOutputBandwidthBytesPerSecond = Math.Max(_peakOutputBandwidthBytesPerSecond, deltaBytes / elapsedSeconds);
-            }
-
-            _lastOutputSizeBytes = outputBytes;
-            _lastOutputSizeTime = now;
-        }
-
         private static long GetWorkingSetBytes(Process? process)
         {
             return SumProcessTreeValue(process, GetSingleProcessWorkingSetBytes);
@@ -1143,11 +1119,6 @@ namespace OneColumnEncoder.ViewModels
         private static string FormatMb(long bytes)
         {
             return $"{Math.Max(0d, bytes / (double)BytesPerMb):N0} MB";
-        }
-
-        private static string FormatGbPerSecond(double bytesPerSecond)
-        {
-            return $"{Math.Max(0d, bytesPerSecond / BytesPerGb):0.0} GBps";
         }
 
         private static string ReplaceMetricValue(string template, string value)
@@ -1310,9 +1281,6 @@ namespace OneColumnEncoder.ViewModels
             _lastMemoryStatsUpdate = DateTime.MinValue;
             _upstreamWorkingSetPeakBytes = 0;
             _encoderWorkingSetPeakBytes = 0;
-            _lastOutputSizeBytes = 0;
-            _lastOutputSizeTime = DateTime.MinValue;
-            _peakOutputBandwidthBytesPerSecond = 0d;
             SetCurrentOutputSizeBytes(TryGetOutputSizeBytes());
             _writtenFrames = 0;
             OnPropertyChanged(nameof(WrittenFramesLabel));
