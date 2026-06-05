@@ -108,8 +108,7 @@ namespace OneColumnEncoder.ViewModels
         public string HeatLegendDownstreamLabel => Lang.HeatLegendDownstreamLabel;
         public string HeatLegendOtherLabel => Lang.HeatLegendOtherLabel;
         public string HeatLegendCacheLabel => Lang.HeatLegendCacheLabel;
-        public string HeatLegendColdText => Lang.HeatLegendColdText;
-        public string HeatLegendHotText => Lang.HeatLegendHotText;
+        public string HeatLegendColdToHotText => Lang.HeatLegendColdToHotText;
 
         public string StderrTitle => Lang.StderrTitle;
 
@@ -1442,8 +1441,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(HeatLegendDownstreamLabel));
             OnPropertyChanged(nameof(HeatLegendOtherLabel));
             OnPropertyChanged(nameof(HeatLegendCacheLabel));
-            OnPropertyChanged(nameof(HeatLegendColdText));
-            OnPropertyChanged(nameof(HeatLegendHotText));
+            OnPropertyChanged(nameof(HeatLegendColdToHotText));
 
 
             OnPropertyChanged(nameof(StderrTitle));

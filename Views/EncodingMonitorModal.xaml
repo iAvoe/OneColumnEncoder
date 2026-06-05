@@ -177,13 +177,12 @@
                                    Foreground="{StaticResource GlobalSecondary}" />
                     </Grid>
                     <comps:HeatmapLegend Margin="0 10 5 0"
-                                         ColdText="{Binding HeatLegendColdText}"
-                                         HotText="{Binding HeatLegendHotText}"
-                                         UpstreamLabel="{Binding HeatLegendUpstreamLabel}"
-                                         DownstreamLabel="{Binding HeatLegendDownstreamLabel}"
-                                         OtherLabel="{Binding HeatLegendOtherLabel}"
-                                         CacheLabel="{Binding HeatLegendCacheLabel}" 
-                                         HorizontalAlignment="Stretch"/>
+                                          ColdToHotText="{Binding HeatLegendColdToHotText}"
+                                          UpstreamLabel="{Binding HeatLegendUpstreamLabel}"
+                                          DownstreamLabel="{Binding HeatLegendDownstreamLabel}"
+                                          OtherLabel="{Binding HeatLegendOtherLabel}"
+                                          CacheLabel="{Binding HeatLegendCacheLabel}" 
+                                          HorizontalAlignment="Stretch"/>
                 </StackPanel>
             </Grid>
 
