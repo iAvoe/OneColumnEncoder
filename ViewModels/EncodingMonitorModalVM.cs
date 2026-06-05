@@ -1290,32 +1290,44 @@ namespace OneColumnEncoder.ViewModels
 
         private void TryInterrupt()
         {
-            try
+            FinishButtons.B5_3IsEnabled = false;
+            FinishButtons.B5_4IsEnabled = false;
+            StatusText = Lang.InterruptingText;
+
+            Task.Run(() =>
             {
-                _cts?.Cancel();
-                _encoderProcess?.CloseMainWindow();
-                _upstreamProcess?.CloseMainWindow();
-                StatusText = Lang.InterruptingText;
-            }
-            catch (Exception ex)
-            {
-                EnqueueProcessLine(ProcessLogKind.DownstreamStderr, ex.Message);
-            }
+                try
+                {
+                    _cts?.Cancel();
+                    _encoderProcess?.CloseMainWindow();
+                    _upstreamProcess?.CloseMainWindow();
+                }
+                catch (Exception ex)
+                {
+                    EnqueueProcessLine(ProcessLogKind.DownstreamStderr, ex.Message);
+                }
+            });
         }
 
         private void TryKill()
         {
-            try
+            FinishButtons.B5_3IsEnabled = false;
+            FinishButtons.B5_4IsEnabled = false;
+            StatusText = Lang.ForcedExitStatusText;
+
+            Task.Run(() =>
             {
-                _cts?.Cancel();
-                _encoderProcess?.Kill(entireProcessTree: true);
-                _upstreamProcess?.Kill(entireProcessTree: true);
-                StatusText = Lang.ForcedExitStatusText;
-            }
-            catch (Exception ex)
-            {
-                EnqueueProcessLine(ProcessLogKind.DownstreamStderr, ex.Message);
-            }
+                try
+                {
+                    _cts?.Cancel();
+                    _encoderProcess?.Kill(entireProcessTree: true);
+                    _upstreamProcess?.Kill(entireProcessTree: true);
+                }
+                catch (Exception ex)
+                {
+                    EnqueueProcessLine(ProcessLogKind.DownstreamStderr, ex.Message);
+                }
+            });
         }
 
         private void EnableCloseButton()
