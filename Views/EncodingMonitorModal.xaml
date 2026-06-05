@@ -28,7 +28,6 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <!-- Encoding progress bar -->
@@ -82,16 +81,8 @@
                            HorizontalAlignment="Center" />
             </Grid>
 
-            <!-- Progress stderr: upstream | encoder -->
-            <cards:SplitTextCard Grid.Row="2"
-                                 Margin="0 15 0 0"
-                                 Title="{Binding ProgressReportTitle}"
-                                 LeftText="{Binding ProgressReportText, Mode=TwoWay}"
-                                 RightText="{Binding DownstreamProgressReportText, Mode=OneWay}"
-                                 TextFontSize="{Binding LogFontSize}" />
-
             <!-- RAM monitor & title (CellSize = Legend FontSize) -->
-            <Grid Grid.Row="3"
+            <Grid Grid.Row="2"
                   Margin="0 15 0 0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" />
@@ -193,13 +184,13 @@
             </Grid>
 
             <!-- RAM multi column display -->
-            <comps:ColumnTextGrid Grid.Row="4"
-                                  Margin="0 15 0 0"
-                                  Items="{Binding MetricColumns}"
-                                  ColumnCount="7" />
+            <comps:ColumnTextGrid Grid.Row="3"
+                                   Margin="0 15 0 0"
+                                   Items="{Binding MetricColumns}"
+                                   ColumnCount="7" />
 
             <!-- RAM telemetry frequency slider -->
-            <comps:IntegerSlider Grid.Row="5"
+            <comps:IntegerSlider Grid.Row="4"
                                  Margin="0 15 0 0"
                                  Label="{Binding SampleIntervalLabel}"
                                  LabelWidth="80"
@@ -211,19 +202,19 @@
                                  Step="1" />
 
             <!-- RAM telemetry pause & continue -->
-            <comps:TwoButtonGroup Grid.Row="6"
-                                  Margin="0 10 0 0"
+            <comps:TwoButtonGroup Grid.Row="5"
+                                   Margin="0 10 0 0"
                                   DataContext="{Binding MonitorButtons}"
                                   ButtonHeight="30"
                                   Button1Command="{Binding Cmd1}"
                                   Button2Command="{Binding Cmd2}" />
 
-            <StackPanel Grid.Row="7"
+            <StackPanel Grid.Row="6"
                         Margin="0 18 0 0">
-                <!-- General stderr: upstream | encoder -->
+                <!-- Process stderr: upstream | encoder -->
                 <cards:SplitTextCard Title="{Binding StderrTitle}"
-                                     LeftText="{Binding UpstreamReportText, Mode=TwoWay}"
-                                     RightText="{Binding DownstreamReportText, Mode=TwoWay}"
+                                      LeftText="{Binding UpstreamReportText, Mode=TwoWay}"
+                                      RightText="{Binding DownstreamReportText, Mode=TwoWay}"
                                      TextFontSize="{Binding LogFontSize}" />
 
                 <comps:FiveButtonGroup Margin="0 10 0 0"
@@ -258,49 +249,9 @@
             </StackPanel>
 
             <!-- Encoding timings -->
-            <StackPanel Grid.Row="8"
+            <StackPanel Grid.Row="7"
                         Margin="0 15 0 0">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding StartedAtLabel}"
-                               Style="{StaticResource H3}"
-                               TextAlignment="Center" />
-                    <TextBlock Grid.Column="1"
-                               Text="{Binding ElapsedLabel}"
-                               Style="{StaticResource H3}"
-                               TextAlignment="Center" />
-                    <TextBlock Grid.Column="2"
-                               Text="{Binding RemainingLabel}"
-                               Style="{StaticResource H3}"
-                               TextAlignment="Center" />
-                    <TextBlock Grid.Column="3"
-                               Text="{Binding CompleteAtLabel}"
-                               Style="{StaticResource H3}"
-                               TextAlignment="Center" />
-                    <TextBlock Grid.Column="4"
-                               Text="{Binding EncoderFileLabel}"
-                               Style="{StaticResource H3}"
-                               TextAlignment="Center" />
-                    <TextBlock Grid.Column="5"
-                               Text="{Binding RateControlLabel}"
-                               Style="{StaticResource H3}"
-                               TextAlignment="Center" />
-                    <TextBlock Grid.Column="6"
-                               Text="{Binding ArgsLabel}"
-                               Style="{StaticResource H3}"
-                               TextAlignment="Center" />
-                </Grid>
-                <comps:ColumnTextGrid Margin="0 5 0 0"
-                                      Items="{Binding FooterColumns}"
+                <comps:ColumnTextGrid Items="{Binding FooterColumns}"
                                       ColumnCount="7" />
                 <comps:FiveButtonGroup Margin="0 15 0 0"
                                        DataContext="{Binding FinishButtons}"

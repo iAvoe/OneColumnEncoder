@@ -151,7 +151,7 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _downstreamProgressReportText, value);
         }
 
-        private int _sampleIntervalSeconds = 30;
+        private int _sampleIntervalSeconds = 10;
         public int SampleIntervalSeconds
         {
             get => _sampleIntervalSeconds;
@@ -335,13 +335,13 @@ namespace OneColumnEncoder.ViewModels
         private void BuildFooter()
         {
             FooterColumns.Clear();
-            FooterColumns.Add(new ColumnTextItemM { MainText = DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture) });
-            FooterColumns.Add(new ColumnTextItemM { MainText = "00:00:00" });
-            FooterColumns.Add(new ColumnTextItemM { MainText = "--:--:--" });
-            FooterColumns.Add(new ColumnTextItemM { MainText = "--:--:--" });
-            FooterColumns.Add(new ColumnTextItemM { MainText = _request.EncoderExeName });
-            FooterColumns.Add(new ColumnTextItemM { MainText = GetRateControlText() });
-            FooterColumns.Add(new ColumnTextItemM { MainText = GetPresetText() });
+            FooterColumns.Add(new ColumnTextItemM { TopText = StartedAtLabel, MainText = DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture) });
+            FooterColumns.Add(new ColumnTextItemM { TopText = ElapsedLabel, MainText = "00:00:00" });
+            FooterColumns.Add(new ColumnTextItemM { TopText = RemainingLabel, MainText = "--:--:--" });
+            FooterColumns.Add(new ColumnTextItemM { TopText = CompleteAtLabel, MainText = "--:--:--" });
+            FooterColumns.Add(new ColumnTextItemM { TopText = EncoderFileLabel, MainText = _request.EncoderExeName });
+            FooterColumns.Add(new ColumnTextItemM { TopText = RateControlLabel, MainText = GetRateControlText() });
+            FooterColumns.Add(new ColumnTextItemM { TopText = ArgsLabel, MainText = GetPresetText() });
         }
 
         private void BuildHeatMaps()
@@ -464,7 +464,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 char[] buffer = new char[4096];
                 StringBuilder lineBuilder = new();
-                bool lastWasCarriageReturn = false;
+                string? pendingCarriageReturnLine = null;
 
                 while (!ct.IsCancellationRequested)
                 {
@@ -474,36 +474,50 @@ namespace OneColumnEncoder.ViewModels
                     for (int i = 0; i < charsRead; i++)
                     {
                         char ch = buffer[i];
-                        if (ch is '\r' or '\n')
+                        if (pendingCarriageReturnLine != null)
                         {
-                            if (ch == '\n' && lastWasCarriageReturn)
+                            if (ch == '\n')
                             {
-                                lastWasCarriageReturn = false;
+                                EnqueueProcessLine(kind, pendingCarriageReturnLine, overwritesPreviousLine: false);
+                                pendingCarriageReturnLine = null;
                                 continue;
                             }
 
-                            EnqueueProcessLine(kind, lineBuilder.ToString());
+                            EnqueueProcessLine(kind, pendingCarriageReturnLine, overwritesPreviousLine: true);
+                            pendingCarriageReturnLine = null;
+                        }
+
+                        if (ch == '\r')
+                        {
+                            pendingCarriageReturnLine = lineBuilder.ToString();
                             lineBuilder.Clear();
-                            lastWasCarriageReturn = ch == '\r';
                             continue;
                         }
 
-                        lastWasCarriageReturn = false;
+                        if (ch == '\n')
+                        {
+                            EnqueueProcessLine(kind, lineBuilder.ToString(), overwritesPreviousLine: false);
+                            lineBuilder.Clear();
+                            continue;
+                        }
+
                         lineBuilder.Append(ch);
                     }
                 }
 
+                if (pendingCarriageReturnLine != null)
+                    EnqueueProcessLine(kind, pendingCarriageReturnLine, overwritesPreviousLine: true);
                 if (lineBuilder.Length > 0)
-                    EnqueueProcessLine(kind, lineBuilder.ToString());
+                    EnqueueProcessLine(kind, lineBuilder.ToString(), overwritesPreviousLine: false);
             }
             catch (OperationCanceledException) { }
             catch (IOException) { }
         }
 
-        private void EnqueueProcessLine(ProcessLogKind kind, string? line)
+        private void EnqueueProcessLine(ProcessLogKind kind, string? line, bool overwritesPreviousLine = false)
         {
             if (line == null) return;
-            _logQueue.Enqueue(new ProcessLogEntry(kind, line));
+            _logQueue.Enqueue(new ProcessLogEntry(kind, line, overwritesPreviousLine));
         }
 
         private void FlushLogsToProperties()
@@ -514,8 +528,6 @@ namespace OneColumnEncoder.ViewModels
                 {
                     UpstreamReportText = _upstreamStderrBuilder.ToString();
                     DownstreamReportText = _downstreamStderrBuilder.ToString();
-                    ProgressReportText = _upstreamProgressReportBuilder.ToString();
-                    DownstreamProgressReportText = _downstreamProgressReportBuilder.ToString();
                 }
         }
 
@@ -555,20 +567,16 @@ namespace OneColumnEncoder.ViewModels
                         AppendLogWithOverwrite(
                             _upstreamStderrBuilder,
                             _upstreamStderrFoldState,
-                            _upstreamProgressReportBuilder,
-                            _upstreamProgressReportFoldState,
                             entry.Line,
-                            true,
+                            entry.OverwritesPreviousLine,
                             updateMainProgress: false);
                         break;
                     case ProcessLogKind.DownstreamStderr:
                         AppendLogWithOverwrite(
                             _downstreamStderrBuilder,
                             _downstreamStderrFoldState,
-                            _downstreamProgressReportBuilder,
-                            _downstreamProgressReportFoldState,
                             entry.Line,
-                            true,
+                            entry.OverwritesPreviousLine,
                             updateMainProgress: true);
                         break;
                 }
@@ -580,8 +588,6 @@ namespace OneColumnEncoder.ViewModels
                 {
                     UpstreamReportText = _upstreamStderrBuilder.ToString();
                     DownstreamReportText = _downstreamStderrBuilder.ToString();
-                    ProgressReportText = _upstreamProgressReportBuilder.ToString();
-                    DownstreamProgressReportText = _downstreamProgressReportBuilder.ToString();
                 }
             }
         }
@@ -589,35 +595,17 @@ namespace OneColumnEncoder.ViewModels
         private void AppendLogWithOverwrite(
             StringBuilder target,
             LogFoldState foldState,
-            StringBuilder progressTarget,
-            LogFoldState progressFoldState,
             string text,
-            bool isStderr,
+            bool overwritesPreviousLine,
             bool updateMainProgress)
         {
-            string normalized = text.Replace("\0", string.Empty, StringComparison.Ordinal);
-            string[] newlineParts = normalized.Split('\n');
-            foreach (string newlinePart in newlineParts)
-            {
-                string[] carriageParts = newlinePart.Split('\r');
-                if (carriageParts.Length > 1)
-                {
-                    string latest = carriageParts[^1].TrimEnd();
-                    if (isStderr && TryHandleProgressLine(latest, progressTarget, progressFoldState, updateMainProgress)) continue;
-                    if (isStderr && TryHandleEncoderFrameLine(latest, progressTarget, progressFoldState, updateMainProgress)) continue;
+            string line = text.Replace("\0", string.Empty, StringComparison.Ordinal).TrimEnd();
+            if (string.IsNullOrWhiteSpace(line)) return;
 
-                    TrimLastLine(target, foldState);
-                    if (!string.IsNullOrWhiteSpace(latest))
-                        AppendFoldedLine(target, foldState, latest);
-                    continue;
-                }
-
-                string line = newlinePart.TrimEnd();
-                if (isStderr && TryHandleProgressLine(line, progressTarget, progressFoldState, updateMainProgress)) continue;
-                if (isStderr && TryHandleEncoderFrameLine(line, progressTarget, progressFoldState, updateMainProgress)) continue;
-                if (!string.IsNullOrWhiteSpace(line))
-                    AppendFoldedLine(target, foldState, line);
-            }
+            UpdateProgressFromLogLine(line, updateMainProgress);
+            if (overwritesPreviousLine)
+                TrimLastLine(target, foldState);
+            AppendFoldedLine(target, foldState, line);
         }
 
         private static void AppendFoldedLine(StringBuilder target, LogFoldState foldState, string line)
@@ -647,12 +635,13 @@ namespace OneColumnEncoder.ViewModels
             return repeatCount > 1 ? $"{line} (x{repeatCount:N0})" : line;
         }
 
-        private bool TryHandleProgressLine(string line, StringBuilder progressTarget, LogFoldState progressFoldState, bool updateMainProgress)
+        private void UpdateProgressFromLogLine(string line, bool updateMainProgress)
         {
-            if (string.IsNullOrWhiteSpace(line) || IsIndexProgressLine(line) || !IsProgressLine(line)) return false;
             string trimmed = line.Trim();
-            AppendFoldedLine(progressTarget, progressFoldState, trimmed);
-            if (updateMainProgress)
+            if (string.IsNullOrWhiteSpace(trimmed) || IsIndexProgressLine(trimmed)) return;
+
+            bool isProgressLine = IsProgressLine(trimmed);
+            if (isProgressLine && updateMainProgress)
                 ProgressValue = InferProgress(ProgressValue, trimmed);
             if (TryParseEncoderFrame(trimmed) is int frame)
             {
@@ -663,29 +652,14 @@ namespace OneColumnEncoder.ViewModels
                     ProgressValue = Math.Max(ProgressValue, frameProgress);
                 }
             }
-            if (updateMainProgress)
+            if (isProgressLine && updateMainProgress)
                 StatusText = trimmed;
-            return true;
         }
 
-        private bool TryHandleEncoderFrameLine(string line, StringBuilder progressTarget, LogFoldState progressFoldState, bool updateMainProgress)
-        {
-            int? frame = TryParseEncoderFrame(line);
-            if (frame is null) return false;
-
-            AppendFoldedLine(progressTarget, progressFoldState, line);
-            UpdateWrittenFrames(frame.Value);
-            if (updateMainProgress && _totalFrames is > 0)
-            {
-                ProgressValue = Math.Max(ProgressValue, (int)Math.Min(100d, Math.Round(frame.Value * 100d / _totalFrames.Value)));
-            }
-            return true;
-        }
-
-        [GeneratedRegex(@"(?<!\d)\d{1,3}\s*%")]
+        [GeneratedRegex(@"(?<![\d.])\d{1,3}(?:\.\d+)?\s*%")]
         private static partial Regex ProgressLineRegex();
 
-        [GeneratedRegex(@"(?<!\d)(\d{1,3})\s*%")]
+        [GeneratedRegex(@"(?<![\d.])(\d{1,3})(?:\.\d+)?\s*%")]
         private static partial Regex ProgressPercentRegex();
 
         private static bool IsProgressLine(string line)
@@ -709,6 +683,9 @@ namespace OneColumnEncoder.ViewModels
         [GeneratedRegex(@"(?<!\d)(\d+)\s+frames?\s*:", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
         private static partial Regex X264FrameRegex();
 
+        [GeneratedRegex(@"(?<!\d)(\d+)\s*/\s*\d+\s+frames?", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+        private static partial Regex SlashFrameRegex();
+
         [GeneratedRegex(@"(?:^|\D)encoded\s+(\d+)\s+frames?", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
         private static partial Regex EncodedFrameRegex();
 
@@ -721,6 +698,7 @@ namespace OneColumnEncoder.ViewModels
 
             if (TryParseFirstRegexGroup(FfmpegFrameRegex().Match(line), out int value)) return value;
             if (TryParseFirstRegexGroup(X264FrameRegex().Match(line), out value)) return value;
+            if (TryParseFirstRegexGroup(SlashFrameRegex().Match(line), out value)) return value;
             if (TryParseFirstRegexGroup(EncodedFrameRegex().Match(line), out value)) return value;
             if (TryParseFirstRegexGroup(FramesEncodedRegex().Match(line), out value)) return value;
             return null;
@@ -912,7 +890,7 @@ namespace OneColumnEncoder.ViewModels
                     cell.Tooltip = string.Format(
                         Lang.BlockTooltipFormat,
                         cellIndex)
-                        + $" | {categoryName} | {globalRow}x{localCol}@{FormatMb(bytes)} | {fillFraction * 100:F1}%";
+                        + $" | {categoryName} | R{globalRow}C{localCol} | {FormatMb(bytes)} | {fillFraction * 100:F1}%";
                 }
             }
 
@@ -1520,6 +1498,17 @@ namespace OneColumnEncoder.ViewModels
             FinishButtons.B5_3Text = Lang.InterruptKeepResultText;
             FinishButtons.B5_4Text = Lang.ForceQuitText;
             FinishButtons.B5_5Text = Lang.CloseAfterDoneText;
+
+            if (FooterColumns.Count == 7)
+            {
+                FooterColumns[0].TopText = StartedAtLabel;
+                FooterColumns[1].TopText = ElapsedLabel;
+                FooterColumns[2].TopText = RemainingLabel;
+                FooterColumns[3].TopText = CompleteAtLabel;
+                FooterColumns[4].TopText = EncoderFileLabel;
+                FooterColumns[5].TopText = RateControlLabel;
+                FooterColumns[6].TopText = ArgsLabel;
+            }
 
             OnPropertyChanged(nameof(WindowTitle));
             OnPropertyChanged(nameof(ProgressTitle));
