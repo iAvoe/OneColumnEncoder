@@ -8,7 +8,7 @@
              d:DesignHeight="180"
              d:DesignWidth="360">
     <UserControl.Resources>
-        <conv:HeatLevelToBrushConverter x:Key="HeatLevelToBrush" />
+        <conv:HeatCategoryLevelToBrushConverter x:Key="HeatCategoryLevelToBrush" />
     </UserControl.Resources>
 
     <ItemsControl ItemsSource="{Binding Items, RelativeSource={RelativeSource AncestorType=UserControl}}">
@@ -23,7 +23,7 @@
                         Height="{Binding CellSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
                         Margin="1"
                         CornerRadius="2.5"
-                        Background="{Binding Level, Converter={StaticResource HeatLevelToBrush}}"
+                        Background="{Binding Converter={StaticResource HeatCategoryLevelToBrush}}"
                         ToolTip="{Binding Tooltip}" />
             </DataTemplate>
         </ItemsControl.ItemTemplate>

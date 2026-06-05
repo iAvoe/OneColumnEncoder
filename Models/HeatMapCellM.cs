@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel;
 
 namespace OneColumnEncoder.Models
@@ -14,6 +15,18 @@ namespace OneColumnEncoder.Models
                 if (_level == next) return;
                 _level = next;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Level)));
+            }
+        }
+
+        private MemoryCategory _category = MemoryCategory.Empty;
+        public MemoryCategory Category
+        {
+            get => _category;
+            set
+            {
+                if (_category == value) return;
+                _category = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Category)));
             }
         }
 

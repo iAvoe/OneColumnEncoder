@@ -62,25 +62,81 @@
                      x:Key="ButtonPrimary" />
     <SolidColorBrush Color="#7d736c"
                      x:Key="ButtonTertiary" />
-    <!-- Viridis 9-color Heatmap -->
-    <SolidColorBrush Color="#440154"
-                     x:Key="Heatmap0" />
-    <SolidColorBrush Color="#482878"
-                     x:Key="Heatmap1" />
-    <SolidColorBrush Color="#3E4A89"
-                     x:Key="Heatmap2" />
-    <SolidColorBrush Color="#31688E"
-                     x:Key="Heatmap3" />
-    <SolidColorBrush Color="#218F8B"
-                     x:Key="Heatmap4" />
-    <SolidColorBrush Color="#35B779"
-                     x:Key="Heatmap5" />
-    <SolidColorBrush Color="#8FD744"
-                     x:Key="Heatmap6" />
-    <SolidColorBrush Color="#DCE319"
-                     x:Key="Heatmap7" />
-    <SolidColorBrush Color="#FDE725"
-                     x:Key="Heatmap8" />
+    <!-- Memory Heatmap palette: cold/empty cell -->
+    <SolidColorBrush Color="#F2F2F2"
+                     x:Key="HeatmapEmpty" />
+
+    <!-- Upstream program (yellow → orange hot family) -->
+    <SolidColorBrush Color="#FFF8E1"
+                     x:Key="HeatmapUpstream1" />
+    <SolidColorBrush Color="#FFECB3"
+                     x:Key="HeatmapUpstream2" />
+    <SolidColorBrush Color="#FFE082"
+                     x:Key="HeatmapUpstream3" />
+    <SolidColorBrush Color="#FFD54F"
+                     x:Key="HeatmapUpstream4" />
+    <SolidColorBrush Color="#FFCA28"
+                     x:Key="HeatmapUpstream5" />
+    <SolidColorBrush Color="#FFB300"
+                     x:Key="HeatmapUpstream6" />
+    <SolidColorBrush Color="#FF8F00"
+                     x:Key="HeatmapUpstream7" />
+    <SolidColorBrush Color="#E65100"
+                     x:Key="HeatmapUpstream8" />
+
+    <!-- Downstream program / encoder (pink → crimson → maroon hot family) -->
+    <SolidColorBrush Color="#FCE4EC"
+                     x:Key="HeatmapDownstream1" />
+    <SolidColorBrush Color="#F8BBD0"
+                     x:Key="HeatmapDownstream2" />
+    <SolidColorBrush Color="#F48FB1"
+                     x:Key="HeatmapDownstream3" />
+    <SolidColorBrush Color="#F06292"
+                     x:Key="HeatmapDownstream4" />
+    <SolidColorBrush Color="#E91E63"
+                     x:Key="HeatmapDownstream5" />
+    <SolidColorBrush Color="#C2185B"
+                     x:Key="HeatmapDownstream6" />
+    <SolidColorBrush Color="#AD1457"
+                     x:Key="HeatmapDownstream7" />
+    <SolidColorBrush Color="#880E4F"
+                     x:Key="HeatmapDownstream8" />
+
+    <!-- Other programs (light blue → navy hot family) -->
+    <SolidColorBrush Color="#E3F2FD"
+                     x:Key="HeatmapOther1" />
+    <SolidColorBrush Color="#BBDEFB"
+                     x:Key="HeatmapOther2" />
+    <SolidColorBrush Color="#90CAF9"
+                     x:Key="HeatmapOther3" />
+    <SolidColorBrush Color="#64B5F6"
+                     x:Key="HeatmapOther4" />
+    <SolidColorBrush Color="#42A5F5"
+                     x:Key="HeatmapOther5" />
+    <SolidColorBrush Color="#1E88E5"
+                     x:Key="HeatmapOther6" />
+    <SolidColorBrush Color="#1565C0"
+                     x:Key="HeatmapOther7" />
+    <SolidColorBrush Color="#0D47A1"
+                     x:Key="HeatmapOther8" />
+
+    <!-- System cache (pale green → deep green hot family) -->
+    <SolidColorBrush Color="#E8F5E9"
+                     x:Key="HeatmapCache1" />
+    <SolidColorBrush Color="#C8E6C9"
+                     x:Key="HeatmapCache2" />
+    <SolidColorBrush Color="#A5D6A7"
+                     x:Key="HeatmapCache3" />
+    <SolidColorBrush Color="#81C784"
+                     x:Key="HeatmapCache4" />
+    <SolidColorBrush Color="#66BB6A"
+                     x:Key="HeatmapCache5" />
+    <SolidColorBrush Color="#4CAF50"
+                     x:Key="HeatmapCache6" />
+    <SolidColorBrush Color="#2E7D32"
+                     x:Key="HeatmapCache7" />
+    <SolidColorBrush Color="#1B5E20"
+                     x:Key="HeatmapCache8" />
     <!-- Fonts -->
     <Style TargetType="TextBlock"
            x:Key="H1">
@@ -286,31 +342,80 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0"
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="0"
                                    Text="{TemplateBinding ColdText}"
                                    VerticalAlignment="Center"
-                                   FontSize="11"
-                                   Margin="0 0 4 0" />
-                        <Rectangle Grid.Column="1" Width="16" Height="16" Fill="{StaticResource Heatmap00}" />
-                        <Rectangle Grid.Column="2" Width="16" Height="16" Fill="{StaticResource Heatmap01}" />
-                        <Rectangle Grid.Column="3" Width="16" Height="16" Fill="{StaticResource Heatmap02}" />
-                        <Rectangle Grid.Column="4" Width="16" Height="16" Fill="{StaticResource Heatmap03}" />
-                        <Rectangle Grid.Column="5" Width="16" Height="16" Fill="{StaticResource Heatmap04}" />
-                        <Rectangle Grid.Column="6" Width="16" Height="16" Fill="{StaticResource Heatmap05}" />
-                        <Rectangle Grid.Column="7" Width="16" Height="16" Fill="{StaticResource Heatmap06}" />
-                        <Rectangle Grid.Column="8" Width="16" Height="16" Fill="{StaticResource Heatmap07}" />
-                        <Rectangle Grid.Column="9" Width="16" Height="16" Fill="{StaticResource Heatmap08}" />
-                        <TextBlock Grid.Column="10"
+                                   FontSize="10"
+                                   Margin="0 0 6 2"
+                                   Foreground="{StaticResource GlobalSecondary}" />
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="1"
                                    Text="{TemplateBinding HotText}"
                                    VerticalAlignment="Center"
-                                   FontSize="11"
-                                   Margin="4 0 0 0" />
+                                   FontSize="10"
+                                   Margin="0 0 0 2"
+                                   Foreground="{StaticResource GlobalSecondary}" />
+                        <!-- Upstream row -->
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="0"
+                                   Text="{TemplateBinding UpstreamLabel}"
+                                   VerticalAlignment="Center"
+                                   FontSize="10"
+                                   Margin="0 2 6 0"
+                                   Foreground="{StaticResource GlobalSecondary}" />
+                        <Rectangle Grid.Row="1" Grid.Column="1" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapEmpty}" />
+                        <Rectangle Grid.Row="1" Grid.Column="2" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapUpstream2}" />
+                        <Rectangle Grid.Row="1" Grid.Column="3" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapUpstream4}" />
+                        <Rectangle Grid.Row="1" Grid.Column="4" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapUpstream6}" />
+                        <Rectangle Grid.Row="1" Grid.Column="5" Width="12" Height="12" Margin="0 2 0 0" Fill="{StaticResource HeatmapUpstream8}" />
+                        <!-- Downstream row -->
+                        <TextBlock Grid.Row="2"
+                                   Grid.Column="0"
+                                   Text="{TemplateBinding DownstreamLabel}"
+                                   VerticalAlignment="Center"
+                                   FontSize="10"
+                                   Margin="0 2 6 0"
+                                   Foreground="{StaticResource GlobalSecondary}" />
+                        <Rectangle Grid.Row="2" Grid.Column="1" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapEmpty}" />
+                        <Rectangle Grid.Row="2" Grid.Column="2" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapDownstream2}" />
+                        <Rectangle Grid.Row="2" Grid.Column="3" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapDownstream4}" />
+                        <Rectangle Grid.Row="2" Grid.Column="4" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapDownstream6}" />
+                        <Rectangle Grid.Row="2" Grid.Column="5" Width="12" Height="12" Margin="0 2 0 0" Fill="{StaticResource HeatmapDownstream8}" />
+                        <!-- Other row -->
+                        <TextBlock Grid.Row="3"
+                                   Grid.Column="0"
+                                   Text="{TemplateBinding OtherLabel}"
+                                   VerticalAlignment="Center"
+                                   FontSize="10"
+                                   Margin="0 2 6 0"
+                                   Foreground="{StaticResource GlobalSecondary}" />
+                        <Rectangle Grid.Row="3" Grid.Column="1" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapEmpty}" />
+                        <Rectangle Grid.Row="3" Grid.Column="2" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapOther2}" />
+                        <Rectangle Grid.Row="3" Grid.Column="3" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapOther4}" />
+                        <Rectangle Grid.Row="3" Grid.Column="4" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapOther6}" />
+                        <Rectangle Grid.Row="3" Grid.Column="5" Width="12" Height="12" Margin="0 2 0 0" Fill="{StaticResource HeatmapOther8}" />
+                        <!-- Cache row -->
+                        <TextBlock Grid.Row="4"
+                                   Grid.Column="0"
+                                   Text="{TemplateBinding CacheLabel}"
+                                   VerticalAlignment="Center"
+                                   FontSize="10"
+                                   Margin="0 2 6 0"
+                                   Foreground="{StaticResource GlobalSecondary}" />
+                        <Rectangle Grid.Row="4" Grid.Column="1" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapEmpty}" />
+                        <Rectangle Grid.Row="4" Grid.Column="2" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapCache2}" />
+                        <Rectangle Grid.Row="4" Grid.Column="3" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapCache4}" />
+                        <Rectangle Grid.Row="4" Grid.Column="4" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapCache6}" />
+                        <Rectangle Grid.Row="4" Grid.Column="5" Width="12" Height="12" Margin="0 2 0 0" Fill="{StaticResource HeatmapCache8}" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
