@@ -81,12 +81,12 @@
                            HorizontalAlignment="Center" />
             </Grid>
 
-            <!-- Progress stderr texts (not working) -->
+            <!-- Progress stderr: upstream | encoder -->
                 <cards:SplitTextCard Grid.Row="2"
                                       Margin="0 15 0 0"
                                       Title="{Binding ProgressReportTitle}"
                                       LeftText="{Binding ProgressReportText, Mode=TwoWay}"
-                                      RightText="{Binding ProgressText, Mode=OneWay}"
+                                      RightText="{Binding DownstreamProgressReportText, Mode=OneWay}"
                                       TextFontSize="{Binding LogFontSize}" />
 
             <!-- RAM monitor & title -->
@@ -212,6 +212,7 @@
             <StackPanel Grid.Row="7"
                         Margin="0 18 0 0">
 
+                <!-- General stderr: upstream | encoder -->
                 <cards:SplitTextCard Title="{Binding StderrTitle}"
                                       LeftText="{Binding UpstreamReportText, Mode=TwoWay}"
                                       RightText="{Binding DownstreamReportText, Mode=TwoWay}"

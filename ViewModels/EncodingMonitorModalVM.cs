@@ -55,10 +55,12 @@ namespace OneColumnEncoder.ViewModels
         private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(200) };
         private readonly StringBuilder _upstreamStderrBuilder = new();
         private readonly StringBuilder _downstreamStderrBuilder = new();
-        private readonly StringBuilder _progressReportBuilder = new();
+        private readonly StringBuilder _upstreamProgressReportBuilder = new();
+        private readonly StringBuilder _downstreamProgressReportBuilder = new();
         private readonly LogFoldState _upstreamStderrFoldState = new();
         private readonly LogFoldState _downstreamStderrFoldState = new();
-        private readonly LogFoldState _progressReportFoldState = new();
+        private readonly LogFoldState _upstreamProgressReportFoldState = new();
+        private readonly LogFoldState _downstreamProgressReportFoldState = new();
         private readonly ConcurrentQueue<ProcessLogEntry> _logQueue = new();
         private readonly long? _totalFrames;
         private readonly Lock _logLock = new();
@@ -141,6 +143,13 @@ namespace OneColumnEncoder.ViewModels
         {
             get => _progressReportText;
             set => SetProperty(ref _progressReportText, value);
+        }
+
+        private string _downstreamProgressReportText = string.Empty;
+        public string DownstreamProgressReportText
+        {
+            get => _downstreamProgressReportText;
+            set => SetProperty(ref _downstreamProgressReportText, value);
         }
 
         private int _sampleIntervalSeconds = 30;
@@ -505,6 +514,8 @@ namespace OneColumnEncoder.ViewModels
                 {
                     UpstreamReportText = _upstreamStderrBuilder.ToString();
                     DownstreamReportText = _downstreamStderrBuilder.ToString();
+                    ProgressReportText = _upstreamProgressReportBuilder.ToString();
+                    DownstreamProgressReportText = _downstreamProgressReportBuilder.ToString();
                 }
         }
 
@@ -540,10 +551,24 @@ namespace OneColumnEncoder.ViewModels
                 switch (entry.Kind)
                 {
                     case ProcessLogKind.UpstreamStderr:
-                        AppendLogWithOverwrite(_upstreamStderrBuilder, _upstreamStderrFoldState, entry.Line, true);
+                        AppendLogWithOverwrite(
+                            _upstreamStderrBuilder,
+                            _upstreamStderrFoldState,
+                            _upstreamProgressReportBuilder,
+                            _upstreamProgressReportFoldState,
+                            entry.Line,
+                            true,
+                            updateMainProgress: false);
                         break;
                     case ProcessLogKind.DownstreamStderr:
-                        AppendLogWithOverwrite(_downstreamStderrBuilder, _downstreamStderrFoldState, entry.Line, true);
+                        AppendLogWithOverwrite(
+                            _downstreamStderrBuilder,
+                            _downstreamStderrFoldState,
+                            _downstreamProgressReportBuilder,
+                            _downstreamProgressReportFoldState,
+                            entry.Line,
+                            true,
+                            updateMainProgress: true);
                         break;
                 }
             }
@@ -554,12 +579,20 @@ namespace OneColumnEncoder.ViewModels
                 {
                     UpstreamReportText = _upstreamStderrBuilder.ToString();
                     DownstreamReportText = _downstreamStderrBuilder.ToString();
-                    ProgressReportText = _progressReportBuilder.ToString();
+                    ProgressReportText = _upstreamProgressReportBuilder.ToString();
+                    DownstreamProgressReportText = _downstreamProgressReportBuilder.ToString();
                 }
             }
         }
 
-        private void AppendLogWithOverwrite(StringBuilder target, LogFoldState foldState, string text, bool isStderr)
+        private void AppendLogWithOverwrite(
+            StringBuilder target,
+            LogFoldState foldState,
+            StringBuilder progressTarget,
+            LogFoldState progressFoldState,
+            string text,
+            bool isStderr,
+            bool updateMainProgress)
         {
             string normalized = text.Replace("\0", string.Empty, StringComparison.Ordinal);
             string[] newlineParts = normalized.Split('\n');
@@ -569,8 +602,8 @@ namespace OneColumnEncoder.ViewModels
                 if (carriageParts.Length > 1)
                 {
                     string latest = carriageParts[^1].TrimEnd();
-                    if (isStderr && TryHandleProgressLine(latest)) continue;
-                    if (isStderr && TryHandleEncoderFrameLine(latest)) continue;
+                    if (isStderr && TryHandleProgressLine(latest, progressTarget, progressFoldState, updateMainProgress)) continue;
+                    if (isStderr && TryHandleEncoderFrameLine(latest, progressTarget, progressFoldState, updateMainProgress)) continue;
 
                     TrimLastLine(target, foldState);
                     if (!string.IsNullOrWhiteSpace(latest))
@@ -579,8 +612,8 @@ namespace OneColumnEncoder.ViewModels
                 }
 
                 string line = newlinePart.TrimEnd();
-                if (isStderr && TryHandleProgressLine(line)) continue;
-                if (isStderr && TryHandleEncoderFrameLine(line)) continue;
+                if (isStderr && TryHandleProgressLine(line, progressTarget, progressFoldState, updateMainProgress)) continue;
+                if (isStderr && TryHandleEncoderFrameLine(line, progressTarget, progressFoldState, updateMainProgress)) continue;
                 if (!string.IsNullOrWhiteSpace(line))
                     AppendFoldedLine(target, foldState, line);
             }
@@ -613,27 +646,31 @@ namespace OneColumnEncoder.ViewModels
             return repeatCount > 1 ? $"{line} (x{repeatCount:N0})" : line;
         }
 
-        private bool TryHandleProgressLine(string line)
+        private bool TryHandleProgressLine(string line, StringBuilder progressTarget, LogFoldState progressFoldState, bool updateMainProgress)
         {
             if (string.IsNullOrWhiteSpace(line) || IsIndexProgressLine(line) || !IsProgressLine(line)) return false;
             string trimmed = line.Trim();
-            AppendFoldedLine(_progressReportBuilder, _progressReportFoldState, trimmed);
-            ProgressReportText = _progressReportBuilder.ToString();
-            ProgressValue = InferProgress(ProgressValue, trimmed);
+            AppendFoldedLine(progressTarget, progressFoldState, trimmed);
+            if (updateMainProgress)
+                ProgressValue = InferProgress(ProgressValue, trimmed);
             if (TryParseEncoderFrame(trimmed) is int frame && _totalFrames is > 0)
-                ProgressValue = Math.Max(ProgressValue, (int)Math.Min(100d, Math.Round(frame * 100d / _totalFrames.Value)));
-            StatusText = trimmed;
+            {
+                int frameProgress = (int)Math.Min(100d, Math.Round(frame * 100d / _totalFrames.Value));
+                if (updateMainProgress)
+                    ProgressValue = Math.Max(ProgressValue, frameProgress);
+            }
+            if (updateMainProgress)
+                StatusText = trimmed;
             return true;
         }
 
-        private bool TryHandleEncoderFrameLine(string line)
+        private bool TryHandleEncoderFrameLine(string line, StringBuilder progressTarget, LogFoldState progressFoldState, bool updateMainProgress)
         {
             int? frame = TryParseEncoderFrame(line);
             if (frame is null) return false;
 
-            AppendFoldedLine(_progressReportBuilder, _progressReportFoldState, line);
-            ProgressReportText = _progressReportBuilder.ToString();
-            if (_totalFrames is > 0)
+            AppendFoldedLine(progressTarget, progressFoldState, line);
+            if (updateMainProgress && _totalFrames is > 0)
             {
                 ProgressValue = Math.Max(ProgressValue, (int)Math.Min(100d, Math.Round(frame.Value * 100d / _totalFrames.Value)));
             }
@@ -761,7 +798,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void UpdateProgressFromLogs()
         {
-            ProgressValue = InferProgress(ProgressValue, _downstreamStderrBuilder.ToString() + _upstreamStderrBuilder.ToString());
+            ProgressValue = InferProgress(ProgressValue, _downstreamStderrBuilder.ToString());
         }
 
         private void UpdateHeatMaps()
@@ -1262,10 +1299,14 @@ namespace OneColumnEncoder.ViewModels
             _lastOutputSizeTime = DateTime.MinValue;
             _peakOutputBandwidthBytesPerSecond = 0d;
             ProgressValue = 0;
-            _progressReportBuilder.Clear();
-            _progressReportFoldState.Entries.Clear();
-            _progressReportFoldState.LineIndexByText.Clear();
+            _upstreamProgressReportBuilder.Clear();
+            _upstreamProgressReportFoldState.Entries.Clear();
+            _upstreamProgressReportFoldState.LineIndexByText.Clear();
+            _downstreamProgressReportBuilder.Clear();
+            _downstreamProgressReportFoldState.Entries.Clear();
+            _downstreamProgressReportFoldState.LineIndexByText.Clear();
             ProgressReportText = string.Empty;
+            DownstreamProgressReportText = string.Empty;
             StatusText = Lang.ResetUsageStatusText;
         }
 
