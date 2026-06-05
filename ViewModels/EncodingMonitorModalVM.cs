@@ -78,6 +78,9 @@ namespace OneColumnEncoder.ViewModels
         private double _peakOutputBandwidthBytesPerSecond;
         private long _currentOutputSizeBytes;
         private int _writtenFrames;
+        private bool _userInterruptRequested;
+        private Stream? _upstreamStdoutStream;
+        private Stream? _encoderStdinStream;
 
         public string WindowTitle => _isSample ? Lang.WindowTitleSampleMode : Lang.WindowTitle;
         public string ProgressTitle => Lang.ProgressTitle;
@@ -252,11 +255,11 @@ namespace OneColumnEncoder.ViewModels
                 new ActionCmd(_ => RotateLogFontSize()));
 
             FinishButtons = ButtonGroupVM.CreateFiveButton(
-                Lang.OpenOutputDirectoryText, Lang.ViewEncodingCommandText, Lang.InterruptKeepResultText, Lang.ForceQuitText, Lang.CloseAfterDoneText,
+                Lang.OpenOutputDirectoryText, Lang.ViewEncodingCommandText, Lang.InterruptUpstreamText, Lang.InterruptEncoderText, Lang.CloseAfterDoneText,
                 new ActionCmd(_ => OpenOutputDirectory()),
                 new ActionCmd(_ => new OpenInfoOrDbgModalCmd(_modalNavS, Lang.EncodingCommandTitle, _command.CommandLine).Execute(null)),
-                new ActionCmd(_ => TryInterrupt()),
-                new ActionCmd(_ => TryKill()),
+                new ActionCmd(_ => TryInterruptUpstream()),
+                new ActionCmd(_ => TryInterruptEncoder()),
                 CloseCmd);
             FinishButtons.B5_5IsEnabled = false;
 
@@ -358,26 +361,32 @@ namespace OneColumnEncoder.ViewModels
                 upstream.Start();
                 encoder.Start();
 
-                // Pipe upstream stderr → encoder stdin while capturing binary as text
+                // Pipe upstream stdout to encoder stdin. Closing encoder stdin lets the encoder flush on EOF.
                 Task pipeTask = Task.Run(async () =>
                 {
+                    Stream? encoderStdin = null;
                     try
                     {
                         byte[] buffer = new byte[81920];
                         Stream upstreamStdout = upstream.StandardOutput.BaseStream;
-                        Stream encoderStdin = encoder.StandardInput.BaseStream;
+                        encoderStdin = encoder.StandardInput.BaseStream;
+                        _upstreamStdoutStream = upstreamStdout;
+                        _encoderStdinStream = encoderStdin;
                         int bytesRead;
                         while (!cancellationToken.IsCancellationRequested && (bytesRead = await upstreamStdout.ReadAsync(buffer, cancellationToken)) > 0)
                         {
                             await encoderStdin.WriteAsync(buffer.AsMemory(0, bytesRead), cancellationToken);
                             await encoderStdin.FlushAsync(cancellationToken);
                         }
-                        encoder.StandardInput.Close();
                     }
                     catch (OperationCanceledException) { }
                     catch (Exception ex)
                     {
                         EnqueueProcessLine(ProcessLogKind.UpstreamStderr, Lang.PipeErrorPrefix + ex.Message);
+                    }
+                    finally
+                    {
+                        TryCloseStream(encoderStdin);
                     }
                 }, cancellationToken);
 
@@ -412,10 +421,12 @@ namespace OneColumnEncoder.ViewModels
                 _timer.Stop();
                 ProgressValue = _success ? 100 : ProgressValue;
                 UpdateProgressDetails();
-                StatusText = _success ? Lang.CompletedText : StatusText == Lang.EncodingText ? Lang.FailedText : StatusText;
+                StatusText = _success ? Lang.CompletedText : _userInterruptRequested ? Lang.InterruptedText : StatusText == Lang.EncodingText ? Lang.FailedText : StatusText;
                 FlushLogsToProperties();
                 UpdateFooterTimes(final: true);
                 EnableCloseButton();
+                _upstreamStdoutStream = null;
+                _encoderStdinStream = null;
             }
 
             if (!_isSample)
@@ -1288,19 +1299,41 @@ namespace OneColumnEncoder.ViewModels
             StatusText = Lang.ResetUsageStatusText;
         }
 
-        private void TryInterrupt()
+        private void TryInterruptUpstream()
         {
+            _userInterruptRequested = true;
             FinishButtons.B5_3IsEnabled = false;
-            FinishButtons.B5_4IsEnabled = false;
-            StatusText = Lang.InterruptingText;
+            StatusText = Lang.InterruptingUpstreamText;
 
             Task.Run(() =>
             {
                 try
                 {
-                    _cts?.Cancel();
-                    _encoderProcess?.CloseMainWindow();
-                    _upstreamProcess?.CloseMainWindow();
+                    TryCloseMainWindow(_upstreamProcess);
+                    TryCloseStream(_upstreamStdoutStream);
+                }
+                catch (Exception ex)
+                {
+                    EnqueueProcessLine(ProcessLogKind.UpstreamStderr, ex.Message);
+                }
+            });
+        }
+
+        private void TryInterruptEncoder()
+        {
+            _userInterruptRequested = true;
+            FinishButtons.B5_3IsEnabled = false;
+            FinishButtons.B5_4IsEnabled = false;
+            StatusText = Lang.InterruptingEncoderText;
+
+            Task.Run(() =>
+            {
+                try
+                {
+                    TryCloseStream(_encoderStdinStream);
+                    TryCloseMainWindow(_encoderProcess);
+                    TryCloseStream(_upstreamStdoutStream);
+                    TryCloseMainWindow(_upstreamProcess);
                 }
                 catch (Exception ex)
                 {
@@ -1309,25 +1342,27 @@ namespace OneColumnEncoder.ViewModels
             });
         }
 
-        private void TryKill()
+        private static void TryCloseMainWindow(Process? process)
         {
-            FinishButtons.B5_3IsEnabled = false;
-            FinishButtons.B5_4IsEnabled = false;
-            StatusText = Lang.ForcedExitStatusText;
-
-            Task.Run(() =>
+            try
             {
-                try
-                {
-                    _cts?.Cancel();
-                    _encoderProcess?.Kill(entireProcessTree: true);
-                    _upstreamProcess?.Kill(entireProcessTree: true);
-                }
-                catch (Exception ex)
-                {
-                    EnqueueProcessLine(ProcessLogKind.DownstreamStderr, ex.Message);
-                }
-            });
+                if (process is { HasExited: false })
+                    process.CloseMainWindow();
+            }
+            catch
+            {
+            }
+        }
+
+        private static void TryCloseStream(Stream? stream)
+        {
+            try
+            {
+                stream?.Close();
+            }
+            catch
+            {
+            }
         }
 
         private void EnableCloseButton()
@@ -1442,8 +1477,8 @@ namespace OneColumnEncoder.ViewModels
             ReportButtons.B5_5Text = Lang.RotateLogFontSizeText;
             FinishButtons.B5_1Text = Lang.OpenOutputDirectoryText;
             FinishButtons.B5_2Text = Lang.ViewEncodingCommandText;
-            FinishButtons.B5_3Text = Lang.InterruptKeepResultText;
-            FinishButtons.B5_4Text = Lang.ForceQuitText;
+            FinishButtons.B5_3Text = Lang.InterruptUpstreamText;
+            FinishButtons.B5_4Text = Lang.InterruptEncoderText;
             FinishButtons.B5_5Text = Lang.CloseAfterDoneText;
 
             if (FooterColumns.Count == 7)

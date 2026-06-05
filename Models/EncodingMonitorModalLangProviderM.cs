@@ -41,8 +41,8 @@ public class EncodingMonitorModalLangProviderM
             ["CopyDownstreamStderrText"] = "Copy encoder",
             ["OpenOutputDirectoryText"] = "Open output folder",
             ["ViewEncodingCommandText"] = "View encoding command",
-            ["InterruptKeepResultText"] = "Interrupt (keep result)",
-            ["ForceQuitText"] = "Force quit",
+            ["InterruptUpstreamText"] = "Interrupt upstream",
+            ["InterruptEncoderText"] = "Interrupt encoder",
             ["CloseAfterDoneText"] = "Close window (enabled after completion)",
             ["EncodingCommandTitle"] = "Encoding Command",
             ["PhysicalMemoryTopText"] = "Physical memory",
@@ -68,8 +68,8 @@ public class EncodingMonitorModalLangProviderM
             ["FailedText"] = "Encoding failed",
             ["CompletedText"] = "Encoding completed",
             ["ResetUsageStatusText"] = "Usage values reset",
-            ["InterruptingText"] = "Interrupting",
-            ["ForcedExitText"] = "Force quit",
+            ["InterruptingUpstreamText"] = "Interrupting upstream",
+            ["InterruptingEncoderText"] = "Interrupting encoder",
             ["ModeText"] = "mode",
             ["NotAvailableText"] = "N/A",
             ["ABRText"] = "ABR",
@@ -112,8 +112,8 @@ public class EncodingMonitorModalLangProviderM
             ["CopyDownstreamStderrText"] = "复制编码器",
             ["OpenOutputDirectoryText"] = "打开输出目录",
             ["ViewEncodingCommandText"] = "查看编码参数",
-            ["InterruptKeepResultText"] = "中断（保留结果）",
-            ["ForceQuitText"] = "强制退出",
+            ["InterruptUpstreamText"] = "中断上游程序",
+            ["InterruptEncoderText"] = "中断编码器",
             ["CloseAfterDoneText"] = "关闭窗口（完成后启用）",
             ["EncodingCommandTitle"] = "编码命令",
             ["PhysicalMemoryTopText"] = "物理内存",
@@ -139,8 +139,8 @@ public class EncodingMonitorModalLangProviderM
             ["FailedText"] = "压制失败",
             ["CompletedText"] = "压制完成",
             ["ResetUsageStatusText"] = "已重置占用值",
-            ["InterruptingText"] = "正在中断",
-            ["ForcedExitText"] = "已强制退出",
+            ["InterruptingUpstreamText"] = "正在中断上游程序",
+            ["InterruptingEncoderText"] = "正在中断编码器",
             ["ModeText"] = "模式",
             ["NotAvailableText"] = "N/A",
             ["ABRText"] = "ABR",
@@ -183,8 +183,8 @@ public class EncodingMonitorModalLangProviderM
             ["CopyDownstreamStderrText"] = "複製下游 stderr",
             ["OpenOutputDirectoryText"] = "開啟輸出資料夾",
             ["ViewEncodingCommandText"] = "檢視編碼參數",
-            ["InterruptKeepResultText"] = "中斷（保留結果）",
-            ["ForceQuitText"] = "強制退出",
+            ["InterruptUpstreamText"] = "中斷上游程式",
+            ["InterruptEncoderText"] = "中斷編碼器",
             ["CloseAfterDoneText"] = "關閉視窗（完成後啟用）",
             ["EncodingCommandTitle"] = "編碼命令",
             ["PhysicalMemoryTopText"] = "實體記憶體",
@@ -210,8 +210,8 @@ public class EncodingMonitorModalLangProviderM
             ["FailedText"] = "壓制失敗",
             ["CompletedText"] = "壓制完成",
             ["ResetUsageStatusText"] = "已重置占用值",
-            ["InterruptingText"] = "正在中斷",
-            ["ForcedExitText"] = "已強制退出",
+            ["InterruptingUpstreamText"] = "正在中斷上游程式",
+            ["InterruptingEncoderText"] = "正在中斷編碼器",
             ["ModeText"] = "模式",
             ["NotAvailableText"] = "N/A",
             ["ABRText"] = "ABR",
@@ -253,8 +253,8 @@ public class EncodingMonitorModalLangProviderM
     public string CopyDownstreamStderrText { get; }
     public string OpenOutputDirectoryText { get; }
     public string ViewEncodingCommandText { get; }
-    public string InterruptKeepResultText { get; }
-    public string ForceQuitText { get; }
+    public string InterruptUpstreamText { get; }
+    public string InterruptEncoderText { get; }
     public string CloseAfterDoneText { get; }
     public string EncodingCommandTitle { get; }
     public string PhysicalMemoryTopText { get; }
@@ -280,8 +280,8 @@ public class EncodingMonitorModalLangProviderM
     public string FailedText { get; }
     public string CompletedText { get; }
     public string ResetUsageStatusText { get; }
-    public string InterruptingText { get; }
-    public string ForcedExitStatusText { get; }
+    public string InterruptingUpstreamText { get; }
+    public string InterruptingEncoderText { get; }
     public string ModeText { get; }
     public string NotAvailableText { get; }
     public string ABRText { get; }
@@ -330,8 +330,8 @@ public class EncodingMonitorModalLangProviderM
         CopyDownstreamStderrText = _d["CopyDownstreamStderrText"];
         OpenOutputDirectoryText = _d["OpenOutputDirectoryText"];
         ViewEncodingCommandText = _d["ViewEncodingCommandText"];
-        InterruptKeepResultText = _d["InterruptKeepResultText"];
-        ForceQuitText = _d["ForceQuitText"];
+        InterruptUpstreamText = _d["InterruptUpstreamText"];
+        InterruptEncoderText = _d["InterruptEncoderText"];
         CloseAfterDoneText = _d["CloseAfterDoneText"];
         EncodingCommandTitle = _d["EncodingCommandTitle"];
         PhysicalMemoryTopText = _d["PhysicalMemoryTopText"];
@@ -357,8 +357,8 @@ public class EncodingMonitorModalLangProviderM
         FailedText = _d["FailedText"];
         CompletedText = _d["CompletedText"];
         ResetUsageStatusText = _d["ResetUsageStatusText"];
-        InterruptingText = _d["InterruptingText"];
-        ForcedExitStatusText = _d["ForcedExitText"];
+        InterruptingUpstreamText = _d["InterruptingUpstreamText"];
+        InterruptingEncoderText = _d["InterruptingEncoderText"];
         ModeText = _d["ModeText"];
         NotAvailableText = _d["NotAvailableText"];
         ABRText = _d["ABRText"];
