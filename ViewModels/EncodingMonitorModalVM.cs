@@ -654,11 +654,20 @@ namespace OneColumnEncoder.ViewModels
         [GeneratedRegex(@"(?<![\d.])(\d{1,3})(?:\.\d+)?\s*%")]
         private static partial Regex ProgressPercentRegex();
 
+        [GeneratedRegex(@"(?:^|\s)(?:frame|fps|size|time|bitrate|speed|dup|drop|progress)\s*=\s*[^\s]+", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+        private static partial Regex FfmpegProgressFieldRegex();
+
+        [GeneratedRegex(@"(?:^|\s)(?:frame|fps|size|time|bitrate|speed|dup|drop)\s*[=:]", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+        private static partial Regex FfmpegProgressKeyRegex();
+
         private static bool IsProgressLine(string line)
         {
             string lower = line.ToLowerInvariant();
-            return lower.Contains("fps", StringComparison.Ordinal)
-                || lower.Contains("frame=", StringComparison.Ordinal)
+            return FfmpegProgressFieldRegex().IsMatch(line)
+                || FfmpegProgressKeyRegex().IsMatch(line)
+                || lower.Contains("progress=continue", StringComparison.Ordinal)
+                || lower.Contains("progress=end", StringComparison.Ordinal)
+                || lower.Contains("fps", StringComparison.Ordinal) && lower.Contains("size=", StringComparison.Ordinal)
                 || lower.Contains("frames", StringComparison.Ordinal) && lower.Contains("kb/s", StringComparison.Ordinal)
                 || lower.Contains("eta", StringComparison.Ordinal) && lower.Contains('%', StringComparison.Ordinal)
                 || ProgressLineRegex().IsMatch(line);
