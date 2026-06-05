@@ -4,33 +4,27 @@ using System.Windows.Controls;
 namespace OneColumnEncoder.Components
 {
     /// <summary>
-    /// Show heatmap example from cold to hot, with per-category swatches.
-    /// Usage:
-    /// <comps:HeatmapLegend
-    ///     ColdToHotText="{Binding ColdToHotLabel}"
-    ///     UpstreamLabel="{Binding UpstreamLabel}"
-    ///     DownstreamLabel="{Binding DownstreamLabel}"
-    ///     CacheLabel="{Binding CacheLabel}" />
+    /// Shows memory range categories used by the proportional memory occupancy bar.
     /// </summary>
-    public class HeatmapLegend : Control
+    public class MemoryRangeLegend : Control
     {
-        static HeatmapLegend()
+        static MemoryRangeLegend()
         {
             DefaultStyleKeyProperty.OverrideMetadata(
-                typeof(HeatmapLegend),
-                new FrameworkPropertyMetadata(typeof(HeatmapLegend)));
+                typeof(MemoryRangeLegend),
+                new FrameworkPropertyMetadata(typeof(MemoryRangeLegend)));
         }
 
-        public string ColdToHotText
+        public string Title
         {
-            get => (string)GetValue(ColdToHotTextProperty);
-            set => SetValue(ColdToHotTextProperty, value);
+            get => (string)GetValue(TitleProperty);
+            set => SetValue(TitleProperty, value);
         }
-        public static readonly DependencyProperty ColdToHotTextProperty =
+        public static readonly DependencyProperty TitleProperty =
             DependencyProperty.Register(
-                nameof(ColdToHotText),
+                nameof(Title),
                 typeof(string),
-                typeof(HeatmapLegend),
+                typeof(MemoryRangeLegend),
                 new PropertyMetadata(string.Empty));
 
         public string UpstreamLabel
@@ -42,7 +36,7 @@ namespace OneColumnEncoder.Components
             DependencyProperty.Register(
                 nameof(UpstreamLabel),
                 typeof(string),
-                typeof(HeatmapLegend),
+                typeof(MemoryRangeLegend),
                 new PropertyMetadata(string.Empty));
 
         public string DownstreamLabel
@@ -54,7 +48,7 @@ namespace OneColumnEncoder.Components
             DependencyProperty.Register(
                 nameof(DownstreamLabel),
                 typeof(string),
-                typeof(HeatmapLegend),
+                typeof(MemoryRangeLegend),
                 new PropertyMetadata(string.Empty));
 
         public string CacheLabel
@@ -66,7 +60,19 @@ namespace OneColumnEncoder.Components
             DependencyProperty.Register(
                 nameof(CacheLabel),
                 typeof(string),
-                typeof(HeatmapLegend),
+                typeof(MemoryRangeLegend),
+                new PropertyMetadata(string.Empty));
+
+        public string AvailableLabel
+        {
+            get => (string)GetValue(AvailableLabelProperty);
+            set => SetValue(AvailableLabelProperty, value);
+        }
+        public static readonly DependencyProperty AvailableLabelProperty =
+            DependencyProperty.Register(
+                nameof(AvailableLabel),
+                typeof(string),
+                typeof(MemoryRangeLegend),
                 new PropertyMetadata(string.Empty));
     }
 }

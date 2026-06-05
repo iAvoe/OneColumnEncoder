@@ -10,8 +10,8 @@ public class EncodingMonitorModalLangProviderM
             ["WindowTitleSampleMode"] = "1cenc Encoding Monitor (Sample mode)",
             ["ProgressTitle"] = "Progress",
             ["ProgressReportTitle"] = "Progress stream",
-            ["MemoryTitle"] = "Physical page monitor (32x16)",
-            ["DistributionTitle"] = "Distribution",
+            ["MemoryTitle"] = "Memory usage",
+            ["DistributionTitle"] = "Occupancy details",
 
             ["StderrTitle"] = "Process log",
             ["DragLogReportHint"] = "Drag the window to resize the log area; drag the log divider to adjust width",
@@ -30,8 +30,8 @@ public class EncodingMonitorModalLangProviderM
             ["DistributionDownstreamLabel"] = "Downstream program (encoder)",
             ["DistributionCacheLabel"] = "System cache",
             ["DistributionAvailableLabel"] = "Available Space",
-            ["HeatLegendColdToHotText"] = "Cold \u2194 Hot",
-            ["IgnoreOtherProgramsMemoryNoteText"] = "To save resources, other programs' memory usage state is not collected.",
+            ["MemoryRangeLegendTitle"] = "Range legend",
+            ["IgnoreOtherProgramsMemoryNoteText"] = "Windows does not expose physical page positions here; the bar only shows approximate memory occupancy range size.",
             ["SampleIntervalTickLabels"] = "0 (RT)|60S|120S|180S|240S",
             ["ContinueMonitoringText"] = "Continue monitoring",
             ["FreezeContinueText"] = "Freeze / Continue",
@@ -62,7 +62,7 @@ public class EncodingMonitorModalLangProviderM
             ["MemoryPressureTopText"] = "Memory pressure",
             ["MemoryPressureMediumText"] = "Mid",
             ["MemoryPressureHighText"] = "High",
-            ["BlockTooltipFormat"] = "Block {0}",
+            ["BlockTooltipFormat"] = "Range block {0}",
             ["PipeErrorPrefix"] = "Pipe error: ",
             ["ReadyToStartText"] = "Ready to start",
             ["EncodingText"] = "Encoding",
@@ -83,8 +83,8 @@ public class EncodingMonitorModalLangProviderM
             ["WindowTitleSampleMode"] = "1cenc 编码监视器（取样模式）",
             ["ProgressTitle"] = "进度",
             ["ProgressReportTitle"] = "进度流",
-            ["MemoryTitle"] = "物理页监视器（32x16）",
-            ["DistributionTitle"] = "区段分布",
+            ["MemoryTitle"] = "内存占用",
+            ["DistributionTitle"] = "占用明细",
 
             ["StderrTitle"] = "进程日志",
             ["DragLogReportHint"] = "拖拽窗口以调整日志显示面积；拖拽日志分界线以调整宽度",
@@ -103,8 +103,8 @@ public class EncodingMonitorModalLangProviderM
             ["DistributionDownstreamLabel"] = "下游程序（编码器）",
             ["DistributionCacheLabel"] = "系统缓存",
             ["DistributionAvailableLabel"] = "可用空间",
-            ["HeatLegendColdToHotText"] = "冷 \u2194 热",
-            ["IgnoreOtherProgramsMemoryNoteText"] = "为节省资源，忽略采集其他程序内存占用状态",
+            ["MemoryRangeLegendTitle"] = "范围图例",
+            ["IgnoreOtherProgramsMemoryNoteText"] = "Windows API 无法提供物理页位置；范围条仅显示近似内存占用范围大小。",
             ["SampleIntervalTickLabels"] = "0（实时）|60秒|120秒|180秒|240秒",
             ["ContinueMonitoringText"] = "继续监测",
             ["FreezeContinueText"] = "冻结 / 继续监测",
@@ -135,7 +135,7 @@ public class EncodingMonitorModalLangProviderM
             ["MemoryPressureTopText"] = "内存压力",
             ["MemoryPressureMediumText"] = "中",
             ["MemoryPressureHighText"] = "高",
-            ["BlockTooltipFormat"] = "区块 {0}",
+            ["BlockTooltipFormat"] = "范围块 {0}",
             ["PipeErrorPrefix"] = "管道错误：",
             ["ReadyToStartText"] = "准备启动",
             ["EncodingText"] = "正在压制",
@@ -156,8 +156,8 @@ public class EncodingMonitorModalLangProviderM
             ["WindowTitleSampleMode"] = "1cenc 編碼監視器（取樣模式）",
             ["ProgressTitle"] = "進度",
             ["ProgressReportTitle"] = "進度流",
-            ["MemoryTitle"] = "實體頁監視器（32x16）",
-            ["DistributionTitle"] = "區段分佈",
+            ["MemoryTitle"] = "記憶占用",
+            ["DistributionTitle"] = "占用明細",
 
             ["StderrTitle"] = "進程日誌",
             ["DragLogReportHint"] = "拖曳視窗以調整日誌顯示面積；拖曳日誌分界線以調整寬度",
@@ -176,8 +176,8 @@ public class EncodingMonitorModalLangProviderM
             ["DistributionDownstreamLabel"] = "下游程式（編碼器）",
             ["DistributionCacheLabel"] = "系統快取",
             ["DistributionAvailableLabel"] = "可用空間",
-            ["HeatLegendColdToHotText"] = "冷 \u2194 熱",
-            ["IgnoreOtherProgramsMemoryNoteText"] = "為節省資源，忽略採集其他程式記憶體占用狀態",
+            ["MemoryRangeLegendTitle"] = "範圍圖例",
+            ["IgnoreOtherProgramsMemoryNoteText"] = "Windows API 無法提供實體頁位置；範圍條僅顯示近似記憶體占用範圍大小。",
             ["SampleIntervalTickLabels"] = "0（即時）|60秒|120秒|180秒|240秒",
             ["ContinueMonitoringText"] = "繼續監測",
             ["FreezeContinueText"] = "凍結 / 繼續監測",
@@ -208,7 +208,7 @@ public class EncodingMonitorModalLangProviderM
             ["MemoryPressureTopText"] = "記憶體壓力",
             ["MemoryPressureMediumText"] = "中",
             ["MemoryPressureHighText"] = "高",
-            ["BlockTooltipFormat"] = "區塊 {0}",
+            ["BlockTooltipFormat"] = "範圍塊 {0}",
             ["PipeErrorPrefix"] = "管道錯誤：",
             ["ReadyToStartText"] = "準備啟動",
             ["EncodingText"] = "正在壓制",
@@ -248,10 +248,7 @@ public class EncodingMonitorModalLangProviderM
     public string DistributionDownstreamLabel { get; }
     public string DistributionCacheLabel { get; }
     public string DistributionAvailableLabel { get; }
-    public string HeatLegendColdToHotText { get; }
-    public string HeatLegendUpstreamLabel => DistributionUpstreamLabel;
-    public string HeatLegendDownstreamLabel => DistributionDownstreamLabel;
-    public string HeatLegendCacheLabel => DistributionCacheLabel;
+    public string MemoryRangeLegendTitle { get; }
     public string IgnoreOtherProgramsMemoryNoteText { get; }
     public string[] SampleIntervalTickLabels { get; }
     public string ContinueMonitoringText { get; }
@@ -330,7 +327,7 @@ public class EncodingMonitorModalLangProviderM
         DistributionDownstreamLabel = _d["DistributionDownstreamLabel"];
         DistributionCacheLabel = _d["DistributionCacheLabel"];
         DistributionAvailableLabel = _d["DistributionAvailableLabel"];
-        HeatLegendColdToHotText = _d["HeatLegendColdToHotText"];
+        MemoryRangeLegendTitle = _d["MemoryRangeLegendTitle"];
         IgnoreOtherProgramsMemoryNoteText = _d["IgnoreOtherProgramsMemoryNoteText"];
         SampleIntervalTickLabels = _d["SampleIntervalTickLabels"].Split('|');
         ContinueMonitoringText = _d["ContinueMonitoringText"];

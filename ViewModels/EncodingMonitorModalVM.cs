@@ -22,15 +22,14 @@ namespace OneColumnEncoder.ViewModels
 {
     /// <summary>
     /// XAML:
-    /// Progress Bar → RAM Heatmap → RAM Distribution → Heatmap block indicators
+    /// Progress Bar → RAM Occupancy Range → RAM Distribution → Range block indicators
     /// → RAM Sampling Interval → RAM Sampling Freeze/Reset → Standard Out Log (Two Columns)
     /// → Standard Error (Two Columns) → Bottom Status → FiveButtonGroups
     /// </summary>
     public partial class EncodingMonitorModalVM : BaseVM
     {
-        private const int HeatMapRows = 16;
-        private const int HeatMapColumns = 32;
-        private const int HeatMapMaxLevel = 8;
+        private const int MemoryRangeBlockCount = 128;
+        private const int MemoryRangeMaxFillLevel = 8;
         private const long BytesPerMb = 1024L * 1024L;
         private const long BytesPerGb = 1024L * 1024L * 1024L;
         private const uint TH32CS_SNAPPROCESS = 0x00000002;
@@ -102,14 +101,14 @@ namespace OneColumnEncoder.ViewModels
         public string DistributionDownstreamLabel => Lang.DistributionDownstreamLabel;
         public string DistributionCacheLabel => Lang.DistributionCacheLabel;
         public string DistributionAvailableLabel => Lang.DistributionAvailableLabel;
-        public string HeatLegendColdToHotText => Lang.HeatLegendColdToHotText;
+        public string MemoryRangeLegendTitle => Lang.MemoryRangeLegendTitle;
         public string IgnoreOtherProgramsMemoryNoteText => Lang.IgnoreOtherProgramsMemoryNoteText;
 
         public string StderrTitle => Lang.StderrTitle;
 
         public ObservableCollection<ColumnTextItemM> MetricColumns { get; } = [];
         public ObservableCollection<ColumnTextItemM> FooterColumns { get; } = [];
-        public ObservableCollection<HeatMapCellM> HeatMapA { get; } = [];
+        public ObservableCollection<MemoryRangeBlockM> MemoryRangeBlocks { get; } = [];
         public ObservableCollection<string> SampleIntervalTickLabels { get; } = [];
         public ButtonGroupVM MonitorButtons { get; }
         public ButtonGroupVM ReportButtons { get; }
@@ -211,18 +210,11 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _distributionAvailable, value);
         }
 
-        private string _blockNo = "#X,X,X,XXXMB";
-        public string BlockNo
+        private string _rangeSummary = "XX.X%";
+        public string RangeSummary
         {
-            get => _blockNo;
-            set => SetProperty(ref _blockNo, value);
-        }
-
-        private string _blockHeat = "XXX%";
-        public string BlockHeat
-        {
-            get => _blockHeat;
-            set => SetProperty(ref _blockHeat, value);
+            get => _rangeSummary;
+            set => SetProperty(ref _rangeSummary, value);
         }
 
         public EncodingMonitorModalVM(
@@ -272,7 +264,7 @@ namespace OneColumnEncoder.ViewModels
 
             BuildMetrics();
             BuildFooter();
-            BuildHeatMaps();
+            BuildMemoryRangeBlocks();
             _timer.Tick += OnTimerTick;
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
@@ -318,12 +310,12 @@ namespace OneColumnEncoder.ViewModels
             FooterColumns.Add(new ColumnTextItemM { TopText = ArgsLabel, MainText = GetPresetText() });
         }
 
-        private void BuildHeatMaps()
+        private void BuildMemoryRangeBlocks()
         {
-            HeatMapA.Clear();
-            for (int i = 0; i < HeatMapRows * HeatMapColumns; i++)
+            MemoryRangeBlocks.Clear();
+            for (int i = 0; i < MemoryRangeBlockCount; i++)
             {
-                HeatMapA.Add(new HeatMapCellM { Level = 0, Tooltip = string.Format(Lang.BlockTooltipFormat, i) });
+                MemoryRangeBlocks.Add(new MemoryRangeBlockM { FillLevel = 0, Tooltip = string.Format(Lang.BlockTooltipFormat, i) });
             }
         }
 
@@ -528,7 +520,7 @@ namespace OneColumnEncoder.ViewModels
                 {
                     _lastMemoryStatsUpdate = now;
                     UpdateMetrics();
-                    UpdateHeatMaps();
+                    UpdateMemoryRangeBlocks();
                 }
             }
         }
@@ -770,33 +762,31 @@ namespace OneColumnEncoder.ViewModels
             SetCurrentOutputSizeBytes(TryGetOutputSizeBytes());
         }
 
-        private void UpdateHeatMaps()
+        private void UpdateMemoryRangeBlocks()
         {
-            UpdateHeatMap(HeatMapA, _lastMemoryStatus);
+            UpdateMemoryRangeBlocks(MemoryRangeBlocks, _lastMemoryStatus);
         }
 
-        private void UpdateHeatMap(ObservableCollection<HeatMapCellM> cells, MemoryStatusSnapshot memoryStatus)
+        private void UpdateMemoryRangeBlocks(ObservableCollection<MemoryRangeBlockM> blocks, MemoryStatusSnapshot memoryStatus)
         {
-            if (cells.Count == 0) return;
+            if (blocks.Count == 0) return;
 
             long totalBytes = memoryStatus.TotalPhysicalBytes;
             long usedBytes = memoryStatus.UsedPhysicalBytes;
             if (totalBytes <= 0)
             {
-                foreach (HeatMapCellM cell in cells)
+                foreach (MemoryRangeBlockM block in blocks)
                 {
-                    cell.Level = 0;
-                    cell.Category = MemoryCategory.Empty;
+                    block.FillLevel = 0;
+                    block.Category = MemoryCategory.Empty;
                 }
-                BlockNo = "#-,-,-,-";
-                BlockHeat = "0%";
+                RangeSummary = "0%";
                 return;
             }
 
             long upstreamBytes = _lastUpstreamWorkingSetBytes;
             long downstreamBytes = _lastEncoderWorkingSetBytes;
-
-            long heatmapCacheBytes = Math.Max(0, usedBytes - upstreamBytes - downstreamBytes);
+            long otherUsedBytes = Math.Max(0, usedBytes - upstreamBytes - downstreamBytes);
 
             string[] categoryNames =
             [
@@ -810,16 +800,11 @@ namespace OneColumnEncoder.ViewModels
                 MemoryCategory.Downstream,
                 MemoryCategory.Cache
             ];
-            long[] categoryBytes = [upstreamBytes, downstreamBytes, heatmapCacheBytes];
+            long[] categoryBytes = [upstreamBytes, downstreamBytes, otherUsedBytes];
+            double occupancyFraction = Math.Clamp(usedBytes / (double)totalBytes, 0d, 1d);
 
-            int hottestCellIndex = 0;
-            int hottestLevel = 0;
-            double hottestUsedFraction = Math.Clamp(usedBytes / (double)totalBytes, 0d, 1d);
-            MemoryCategory hottestCategory = MemoryCategory.Upstream;
-            bool anyHottest = false;
-
-            int totalCells = cells.Count;
-            double bytesPerCell = totalBytes / (double)totalCells;
+            int totalBlocks = blocks.Count;
+            double bytesPerBlock = totalBytes / (double)totalBlocks;
             long[] categoryEnds = new long[categoryBytes.Length];
             long cumulativeBytes = 0;
             for (int i = 0; i < categoryBytes.Length; i++)
@@ -828,58 +813,44 @@ namespace OneColumnEncoder.ViewModels
                 categoryEnds[i] = cumulativeBytes;
             }
 
-            for (int cellIndex = 0; cellIndex < totalCells; cellIndex++)
+            for (int blockIndex = 0; blockIndex < totalBlocks; blockIndex++)
             {
-                double cellStart = cellIndex * bytesPerCell;
-                double cellEnd = cellStart + bytesPerCell;
-                double usedOverlap = Math.Max(0d, Math.Min(cellEnd, usedBytes) - cellStart);
-                double fillFraction = bytesPerCell > 0 ? usedOverlap / bytesPerCell : 0d;
-                HeatMapCellM cell = cells[cellIndex];
+                double blockStart = blockIndex * bytesPerBlock;
+                double blockEnd = blockStart + bytesPerBlock;
+                double usedOverlap = Math.Max(0d, Math.Min(blockEnd, usedBytes) - blockStart);
+                double fillFraction = bytesPerBlock > 0 ? usedOverlap / bytesPerBlock : 0d;
+                MemoryRangeBlockM block = blocks[blockIndex];
 
                 if (fillFraction <= 0d)
                 {
-                    cell.Level = 0;
-                    cell.Category = MemoryCategory.Empty;
-                    cell.Tooltip = string.Format(Lang.BlockTooltipFormat, cellIndex)
-                        + $" | {Lang.DistributionAvailableLabel} | R{cellIndex / HeatMapColumns}C{cellIndex % HeatMapColumns} | {FormatMb((long)Math.Round(bytesPerCell))} | 0.0%";
+                    block.FillLevel = 0;
+                    block.Category = MemoryCategory.Empty;
+                    block.Tooltip = string.Format(Lang.BlockTooltipFormat, blockIndex)
+                        + $" | {Lang.DistributionAvailableLabel} | {FormatRange(blockStart, blockEnd)} | {FormatMb((long)Math.Round(bytesPerBlock))} | 0.0%";
                     continue;
                 }
 
                 int categoryIndex = 0;
-                double cellMiddle = cellStart + usedOverlap / 2d;
-                while (categoryIndex < categoryEnds.Length - 1 && cellMiddle >= categoryEnds[categoryIndex])
+                double blockMiddle = blockStart + usedOverlap / 2d;
+                while (categoryIndex < categoryEnds.Length - 1 && blockMiddle >= categoryEnds[categoryIndex])
                     categoryIndex++;
 
                 MemoryCategory category = categoryOrder[categoryIndex];
                 string categoryName = categoryNames[categoryIndex];
-                int level = Math.Clamp((int)Math.Ceiling(fillFraction * HeatMapMaxLevel), 1, HeatMapMaxLevel);
-                cell.Level = level;
-                cell.Category = category;
+                int fillLevel = Math.Clamp((int)Math.Ceiling(fillFraction * MemoryRangeMaxFillLevel), 1, MemoryRangeMaxFillLevel);
+                block.FillLevel = fillLevel;
+                block.Category = category;
 
-                if (level >= hottestLevel)
-                {
-                    hottestLevel = level;
-                    hottestCellIndex = cellIndex;
-                    hottestCategory = category;
-                    anyHottest = true;
-                }
-
-                cell.Tooltip = string.Format(Lang.BlockTooltipFormat, cellIndex)
-                    + $" | {categoryName} | R{cellIndex / HeatMapColumns}C{cellIndex % HeatMapColumns} | {FormatMb((long)Math.Round(usedOverlap))} | {hottestUsedFraction * 100:F1}%";
+                block.Tooltip = string.Format(Lang.BlockTooltipFormat, blockIndex)
+                    + $" | {categoryName} | {FormatRange(blockStart, blockEnd)} | {FormatMb((long)Math.Round(usedOverlap))} | {occupancyFraction * 100:F1}%";
             }
 
-            if (anyHottest)
-            {
-                int row = hottestCellIndex / HeatMapColumns;
-                int column = hottestCellIndex % HeatMapColumns;
-                BlockNo = $"#{hottestCellIndex},{row},{column},{hottestCategory}";
-                BlockHeat = $"{hottestUsedFraction * 100:F1}%";
-            }
-            else
-            {
-                BlockNo = "#-,-,-,-";
-                BlockHeat = "0%";
-            }
+            RangeSummary = $"{occupancyFraction * 100:F1}%";
+        }
+
+        private static string FormatRange(double startBytes, double endBytes)
+        {
+            return $"{FormatMb((long)Math.Round(startBytes))}-{FormatMb((long)Math.Round(endBytes))}";
         }
 
         private void UpdateFooterTimes(bool final)
@@ -1496,7 +1467,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(DistributionDownstreamLabel));
             OnPropertyChanged(nameof(DistributionCacheLabel));
             OnPropertyChanged(nameof(DistributionAvailableLabel));
-            OnPropertyChanged(nameof(HeatLegendColdToHotText));
+            OnPropertyChanged(nameof(MemoryRangeLegendTitle));
             OnPropertyChanged(nameof(IgnoreOtherProgramsMemoryNoteText));
 
 

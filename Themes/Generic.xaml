@@ -62,81 +62,81 @@
                      x:Key="ButtonPrimary" />
     <SolidColorBrush Color="#7d736c"
                      x:Key="ButtonTertiary" />
-    <!-- Memory Heatmap palette: cold/empty cell -->
+    <!-- Memory range palette: empty block -->
     <SolidColorBrush Color="#F2F2F2"
-                     x:Key="HeatmapEmpty" />
+                     x:Key="MemoryRangeEmpty" />
 
-    <!-- Upstream program (yellow → orange hot family) -->
+    <!-- Upstream program (yellow to orange occupancy family) -->
     <SolidColorBrush Color="#FFF8E1"
-                     x:Key="HeatmapUpstream1" />
+                     x:Key="MemoryRangeUpstream1" />
     <SolidColorBrush Color="#FFECB3"
-                     x:Key="HeatmapUpstream2" />
+                     x:Key="MemoryRangeUpstream2" />
     <SolidColorBrush Color="#FFE082"
-                     x:Key="HeatmapUpstream3" />
+                     x:Key="MemoryRangeUpstream3" />
     <SolidColorBrush Color="#FFD54F"
-                     x:Key="HeatmapUpstream4" />
+                     x:Key="MemoryRangeUpstream4" />
     <SolidColorBrush Color="#FFCA28"
-                     x:Key="HeatmapUpstream5" />
+                     x:Key="MemoryRangeUpstream5" />
     <SolidColorBrush Color="#FFB300"
-                     x:Key="HeatmapUpstream6" />
+                     x:Key="MemoryRangeUpstream6" />
     <SolidColorBrush Color="#FF8F00"
-                     x:Key="HeatmapUpstream7" />
+                     x:Key="MemoryRangeUpstream7" />
     <SolidColorBrush Color="#E65100"
-                     x:Key="HeatmapUpstream8" />
+                     x:Key="MemoryRangeUpstream8" />
 
-    <!-- Downstream program / encoder (pink → crimson → maroon hot family) -->
+    <!-- Downstream program / encoder (pink to maroon occupancy family) -->
     <SolidColorBrush Color="#FCE4EC"
-                     x:Key="HeatmapDownstream1" />
+                     x:Key="MemoryRangeDownstream1" />
     <SolidColorBrush Color="#F8BBD0"
-                     x:Key="HeatmapDownstream2" />
+                     x:Key="MemoryRangeDownstream2" />
     <SolidColorBrush Color="#F48FB1"
-                     x:Key="HeatmapDownstream3" />
+                     x:Key="MemoryRangeDownstream3" />
     <SolidColorBrush Color="#F06292"
-                     x:Key="HeatmapDownstream4" />
+                     x:Key="MemoryRangeDownstream4" />
     <SolidColorBrush Color="#E91E63"
-                     x:Key="HeatmapDownstream5" />
+                     x:Key="MemoryRangeDownstream5" />
     <SolidColorBrush Color="#C2185B"
-                     x:Key="HeatmapDownstream6" />
+                     x:Key="MemoryRangeDownstream6" />
     <SolidColorBrush Color="#AD1457"
-                     x:Key="HeatmapDownstream7" />
+                     x:Key="MemoryRangeDownstream7" />
     <SolidColorBrush Color="#880E4F"
-                     x:Key="HeatmapDownstream8" />
+                     x:Key="MemoryRangeDownstream8" />
 
-    <!-- Other programs (light blue → navy hot family) -->
+    <!-- Other programs (light blue to navy occupancy family) -->
     <SolidColorBrush Color="#E3F2FD"
-                     x:Key="HeatmapOther1" />
+                     x:Key="MemoryRangeOther1" />
     <SolidColorBrush Color="#BBDEFB"
-                     x:Key="HeatmapOther2" />
+                     x:Key="MemoryRangeOther2" />
     <SolidColorBrush Color="#90CAF9"
-                     x:Key="HeatmapOther3" />
+                     x:Key="MemoryRangeOther3" />
     <SolidColorBrush Color="#64B5F6"
-                     x:Key="HeatmapOther4" />
+                     x:Key="MemoryRangeOther4" />
     <SolidColorBrush Color="#42A5F5"
-                     x:Key="HeatmapOther5" />
+                     x:Key="MemoryRangeOther5" />
     <SolidColorBrush Color="#1E88E5"
-                     x:Key="HeatmapOther6" />
+                     x:Key="MemoryRangeOther6" />
     <SolidColorBrush Color="#1565C0"
-                     x:Key="HeatmapOther7" />
+                     x:Key="MemoryRangeOther7" />
     <SolidColorBrush Color="#0D47A1"
-                     x:Key="HeatmapOther8" />
+                     x:Key="MemoryRangeOther8" />
 
-    <!-- System cache (pale green → deep green hot family) -->
+    <!-- System cache (pale green to deep green occupancy family) -->
     <SolidColorBrush Color="#E8F5E9"
-                     x:Key="HeatmapCache1" />
+                     x:Key="MemoryRangeCache1" />
     <SolidColorBrush Color="#C8E6C9"
-                     x:Key="HeatmapCache2" />
+                     x:Key="MemoryRangeCache2" />
     <SolidColorBrush Color="#A5D6A7"
-                     x:Key="HeatmapCache3" />
+                     x:Key="MemoryRangeCache3" />
     <SolidColorBrush Color="#81C784"
-                     x:Key="HeatmapCache4" />
+                     x:Key="MemoryRangeCache4" />
     <SolidColorBrush Color="#66BB6A"
-                     x:Key="HeatmapCache5" />
+                     x:Key="MemoryRangeCache5" />
     <SolidColorBrush Color="#4CAF50"
-                     x:Key="HeatmapCache6" />
+                     x:Key="MemoryRangeCache6" />
     <SolidColorBrush Color="#2E7D32"
-                     x:Key="HeatmapCache7" />
+                     x:Key="MemoryRangeCache7" />
     <SolidColorBrush Color="#1B5E20"
-                     x:Key="HeatmapCache8" />
+                     x:Key="MemoryRangeCache8" />
     <!-- Fonts -->
     <Style TargetType="TextBlock"
            x:Key="H1">
@@ -329,193 +329,60 @@
         </Setter>
     </Style>
 
-    <!-- Heatmap Legend -->
-    <Style TargetType="{x:Type comps:HeatmapLegend}">
+    <!-- Memory Range Legend -->
+    <Style TargetType="{x:Type comps:MemoryRangeLegend}">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type comps:HeatmapLegend}">
-                    <Grid VerticalAlignment="Center">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <!-- Cold to hot text -->
-                        <TextBlock Grid.Row="0"
-                                   Grid.Column="0"
-                                   Grid.ColumnSpan="2"
-                                   Text="{TemplateBinding ColdToHotText}"
-                                   Style="{StaticResource H3}"
-                                   VerticalAlignment="Center" />
-                        <!-- Upstream row -->
-                        <TextBlock Grid.Row="1"
-                                   Grid.Column="0"
-                                   Text="{TemplateBinding UpstreamLabel}"
-                                   VerticalAlignment="Center"
-                                   FontSize="13"
-                                   Margin="0 0 10 0"
-                                   Foreground="{StaticResource GlobalSecondary}" />
-                        <Rectangle Grid.Row="1"
-                                   Grid.Column="1"
-                                   Width="15"
-                                   Height="15"
-                                   Margin="0 5 5 0"
-                                   RadiusX="2.5"
-                                   RadiusY="2.5"
-                                   Fill="{StaticResource HeatmapEmpty}" />
-                        <Rectangle Grid.Row="1"
-                                   Grid.Column="2"
-                                   Width="15"
-                                   Height="15"
-                                   Margin="0 5 5 0"
-                                   RadiusX="2.5"
-                                   RadiusY="2.5"
-                                   Fill="{StaticResource HeatmapUpstream2}" />
-                        <Rectangle Grid.Row="1"
-                                   Grid.Column="3"
-                                   Width="15"
-                                   Height="15"
-                                   Margin="0 5 5 0"
-                                   RadiusX="2.5"
-                                   RadiusY="2.5"
-                                   Fill="{StaticResource HeatmapUpstream4}" />
-                        <Rectangle Grid.Row="1"
-                                   Grid.Column="4"
-                                   Width="15"
-                                   Height="15"
-                                   Margin="0 5 5 0"
-                                   RadiusX="2.5"
-                                   RadiusY="2.5"
-                                   Fill="{StaticResource HeatmapUpstream6}" />
-                        <Rectangle Grid.Row="1"
-                                   Grid.Column="5"
-                                   Width="15"
-                                   Height="15"
-                                   Margin="0 5 0 0"
-                                   RadiusX="2.5"
-                                   RadiusY="2.5"
-                                   Fill="{StaticResource HeatmapUpstream8}" />
-                        <!-- Downstream row -->
-                        <TextBlock Grid.Row="2"
-                                   Grid.Column="0"
-                                   Text="{TemplateBinding DownstreamLabel}"
-                                   VerticalAlignment="Center"
-                                   FontSize="13"
-                                   Margin="0 5 10 0"
-                                   Foreground="{StaticResource GlobalSecondary}" />
-                        <Rectangle Grid.Row="2"
-                                   Grid.Column="1"
-                                   Width="15"
-                                   Height="15"
-                                   Margin="0 5 5 0"
-                                   RadiusX="2.5"
-                                   RadiusY="2.5"
-                                   Fill="{StaticResource HeatmapEmpty}" />
-                        <Rectangle Grid.Row="2"
-                                   Grid.Column="2"
-                                   Width="15"
-                                   Height="15"
-                                   Margin="0 5 5 0"
-                                   RadiusX="2.5"
-                                   RadiusY="2.5"
-                                   Fill="{StaticResource HeatmapDownstream2}" />
-                        <Rectangle Grid.Row="2"
-                                   Grid.Column="3"
-                                   Width="15"
-                                   Height="15"
-                                   Margin="0 5 5 0"
-                                   RadiusX="2.5"
-                                   RadiusY="2.5"
-                                   Fill="{StaticResource HeatmapDownstream4}" />
-                        <Rectangle Grid.Row="2"
-                                   Grid.Column="4"
-                                   Width="15"
-                                   Height="15"
-                                   Margin="0 5 5 0"
-                                   RadiusX="2.5"
-                                   RadiusY="2.5"
-                                   Fill="{StaticResource HeatmapDownstream6}" />
-                        <Rectangle Grid.Row="2"
-                                   Grid.Column="5"
-                                   Width="15"
-                                   Height="15"
-                                   Margin="0 5 0 0"
-                                   RadiusX="2.5"
-                                   RadiusY="2.5"
-                                   Fill="{StaticResource HeatmapDownstream8}" />
-                        <!-- Cache row -->
-                        <TextBlock Grid.Row="3"
-                                   Grid.Column="0"
-                                   Text="{TemplateBinding CacheLabel}"
-                                   VerticalAlignment="Center"
-                                   FontSize="13"
-                                   Margin="0 5 10 0"
-                                   Foreground="{StaticResource GlobalSecondary}" />
-                        <Rectangle Grid.Row="3"
-                                   Grid.Column="1"
-                                   Width="15"
-                                   Height="15"
-                                   Margin="0 5 5 0"
-                                   RadiusX="2.5"
-                                   RadiusY="2.5"
-                                   Fill="{StaticResource HeatmapEmpty}" />
-                        <Rectangle Grid.Row="3"
-                                   Grid.Column="2"
-                                   Width="15"
-                                   Height="15"
-                                   Margin="0 5 5 0"
-                                   RadiusX="2.5"
-                                   RadiusY="2.5"
-                                   Fill="{StaticResource HeatmapCache2}" />
-                        <Rectangle Grid.Row="3"
-                                   Grid.Column="3"
-                                   Width="15"
-                                   Height="15"
-                                   Margin="0 5 5 0"
-                                   RadiusX="2.5"
-                                   RadiusY="2.5"
-                                   Fill="{StaticResource HeatmapCache4}" />
-                        <Rectangle Grid.Row="3"
-                                   Grid.Column="4"
-                                   Width="15"
-                                   Height="15"
-                                   Margin="0 5 5 0"
-                                   RadiusX="2.5"
-                                   RadiusY="2.5"
-                                   Fill="{StaticResource HeatmapCache6}" />
-                        <Rectangle Grid.Row="3"
-                                   Grid.Column="5"
-                                   Width="15"
-                                   Height="15"
-                                   Margin="0 5 0 0"
-                                   RadiusX="2.5"
-                                   RadiusY="2.5"
-                                   Fill="{StaticResource HeatmapCache8}" />
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <!-- Heatmap Grid -->
-    <Style TargetType="{x:Type comps:HeatmapGrid}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type comps:HeatmapGrid}">
-                    <Image x:Name="PART_Image"
-                           Stretch="None"
-                           SnapsToDevicePixels="True"
-                           RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                <ControlTemplate TargetType="{x:Type comps:MemoryRangeLegend}">
+                    <StackPanel>
+                        <TextBlock Text="{TemplateBinding Title}"
+                                   Style="{StaticResource H3}" />
+                        <Grid Margin="0 5 0 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <!-- Upstream -->
+                            <Rectangle Grid.Row="0" Grid.Column="0"
+                                       Width="12" Height="12" Margin="0 2 6 2"
+                                       RadiusX="2" RadiusY="2"
+                                       Fill="{StaticResource MemoryRangeUpstream8}" />
+                            <TextBlock Grid.Row="0" Grid.Column="1"
+                                       Text="{TemplateBinding UpstreamLabel}"
+                                       FontSize="12" Foreground="{StaticResource GlobalSecondary}" />
+                            <!-- Downstream -->
+                            <Rectangle Grid.Row="1" Grid.Column="0"
+                                       Width="12" Height="12" Margin="0 2 6 2"
+                                       RadiusX="2" RadiusY="2"
+                                       Fill="{StaticResource MemoryRangeDownstream8}" />
+                            <TextBlock Grid.Row="1" Grid.Column="1"
+                                       Text="{TemplateBinding DownstreamLabel}"
+                                       FontSize="12" Foreground="{StaticResource GlobalSecondary}" />
+                            <!-- Cache -->
+                            <Rectangle Grid.Row="2" Grid.Column="0"
+                                       Width="12" Height="12" Margin="0 2 6 2"
+                                       RadiusX="2" RadiusY="2"
+                                       Fill="{StaticResource MemoryRangeCache8}" />
+                            <TextBlock Grid.Row="2" Grid.Column="1"
+                                       Text="{TemplateBinding CacheLabel}"
+                                       FontSize="12" Foreground="{StaticResource GlobalSecondary}" />
+                            <!-- Available -->
+                            <Rectangle Grid.Row="3" Grid.Column="0"
+                                       Width="12" Height="12" Margin="0 2 6 2"
+                                       RadiusX="2" RadiusY="2"
+                                       Fill="{StaticResource MemoryRangeEmpty}" />
+                            <TextBlock Grid.Row="3" Grid.Column="1"
+                                       Text="{TemplateBinding AvailableLabel}"
+                                       FontSize="12" Foreground="{StaticResource GlobalSecondary}" />
+                        </Grid>
+                    </StackPanel>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

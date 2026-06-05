@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              d:DesignHeight="250"
              d:DesignWidth="900"
-             MaxHeight="250">
+             MaxHeight="560">
     <UserControl.Resources>
         <Style x:Key="SplitTextBox" TargetType="TextBox">
             <Setter Property="AcceptsReturn" Value="True" />

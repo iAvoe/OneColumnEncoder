@@ -3,18 +3,18 @@ using System.ComponentModel;
 
 namespace OneColumnEncoder.Models
 {
-    public class HeatMapCellM : INotifyPropertyChanged
+    public class MemoryRangeBlockM : INotifyPropertyChanged
     {
-        private int _level;
-        public int Level
+        private int _fillLevel;
+        public int FillLevel
         {
-            get => _level;
+            get => _fillLevel;
             set
             {
                 int next = Math.Clamp(value, 0, 8);
-                if (_level == next) return;
-                _level = next;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Level)));
+                if (_fillLevel == next) return;
+                _fillLevel = next;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(FillLevel)));
             }
         }
 

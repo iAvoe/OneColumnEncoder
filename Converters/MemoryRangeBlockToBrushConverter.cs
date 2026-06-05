@@ -7,25 +7,25 @@ using OneColumnEncoder.Models;
 
 namespace OneColumnEncoder.Converters
 {
-    public class HeatCategoryLevelToBrushConverter : IValueConverter, IMultiValueConverter
+    public class MemoryRangeBlockToBrushConverter : IValueConverter, IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             MemoryCategory category = values.Length > 0 && values[0] is MemoryCategory c ? c : MemoryCategory.Empty;
-            int level = values.Length > 1 ? ParseLevel(values[1]) : 0;
-            return HeatmapBrush(category, level);
+            int fillLevel = values.Length > 1 ? ParseFillLevel(values[1]) : 0;
+            return GetBrush(category, fillLevel);
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is HeatMapCellM cell)
+            if (value is MemoryRangeBlockM block)
             {
-                if (cell.Level <= 0) return HeatmapBrush(MemoryCategory.Empty, 0);
-                return HeatmapBrush(cell.Category, cell.Level);
+                if (block.FillLevel <= 0) return GetBrush(MemoryCategory.Empty, 0);
+                return GetBrush(block.Category, block.FillLevel);
             }
 
-            int legacyLevel = ParseLevel(value);
-            return HeatmapBrush(MemoryCategory.Upstream, legacyLevel);
+            int fillLevel = ParseFillLevel(value);
+            return GetBrush(MemoryCategory.Upstream, fillLevel);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
@@ -34,22 +34,22 @@ namespace OneColumnEncoder.Converters
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) =>
             throw new NotSupportedException();
 
-        private static int ParseLevel(object value)
+        private static int ParseFillLevel(object value)
         {
-            int level = 0;
+            int fillLevel = 0;
             if (value is int i)
-                level = i;
+                fillLevel = i;
             else if (value != null)
-                int.TryParse(value.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out level);
+                int.TryParse(value.ToString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out fillLevel);
 
-            return Math.Clamp(level, 0, 8);
+            return Math.Clamp(fillLevel, 0, 8);
         }
 
-        private static Brush HeatmapBrush(MemoryCategory category, int level)
+        private static Brush GetBrush(MemoryCategory category, int fillLevel)
         {
-            string key = level <= 0
-                ? "HeatmapEmpty"
-                : $"Heatmap{category}{level}";
+            string key = fillLevel <= 0
+                ? "MemoryRangeEmpty"
+                : $"MemoryRange{category}{fillLevel}";
             return Application.Current.TryFindResource(key) as Brush ?? Brushes.Transparent;
         }
     }

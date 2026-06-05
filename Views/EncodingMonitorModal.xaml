@@ -11,7 +11,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="1000"
-        Height="1260"
+        Height="1240"
         MinWidth="860"
         MinHeight="760"
         WindowStartupLocation="CenterOwner"
@@ -81,7 +81,7 @@
                            HorizontalAlignment="Center" />
             </Grid>
 
-            <!-- RAM monitor & title (CellSize = Legend FontSize) -->
+            <!-- RAM occupancy range and title -->
             <Grid Grid.Row="2"
                   Margin="0 15 0 0">
                 <Grid.ColumnDefinitions>
@@ -91,11 +91,24 @@
                 <StackPanel Grid.Column="0">
                     <TextBlock Text="{Binding MemoryTitle}"
                                Style="{StaticResource H3}" />
-                    <comps:HeatMapGrid Items="{Binding HeatMapA}"
-                                       Margin="0 5 0 0"
-                                       Columns="32"
-                                       CellSize="13"
-                                       HorizontalAlignment="Left" />
+                    <Grid Margin="0 5 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ScrollViewer Grid.Column="0"
+                                      HorizontalScrollBarVisibility="Auto"
+                                      VerticalScrollBarVisibility="Disabled">
+                            <comps:MemoryRangeBar Items="{Binding MemoryRangeBlocks}"
+                                                  HorizontalAlignment="Left" />
+                        </ScrollViewer>
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding RangeSummary}"
+                                   FontSize="13"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   Margin="8 0 0 0"
+                                   VerticalAlignment="Center" />
+                    </Grid>
                 </StackPanel>
 
                 <!-- RAM distribution labels and legend -->
@@ -161,12 +174,13 @@
                                    Foreground="{StaticResource GlobalSecondary}"
                                    TextAlignment="Right" />
                     </Grid>
-                     <comps:HeatmapLegend Margin="0 10 5 0"
-                                          ColdToHotText="{Binding HeatLegendColdToHotText}"
-                                          UpstreamLabel="{Binding DistributionUpstreamLabel}"
-                                          DownstreamLabel="{Binding DistributionDownstreamLabel}"
-                                          CacheLabel="{Binding DistributionCacheLabel}"
-                                          HorizontalAlignment="Stretch" />
+                     <comps:MemoryRangeLegend Margin="0 10 5 0"
+                                              Title="{Binding MemoryRangeLegendTitle}"
+                                              UpstreamLabel="{Binding DistributionUpstreamLabel}"
+                                              DownstreamLabel="{Binding DistributionDownstreamLabel}"
+                                              CacheLabel="{Binding DistributionCacheLabel}"
+                                              AvailableLabel="{Binding DistributionAvailableLabel}"
+                                              HorizontalAlignment="Stretch" />
                 </StackPanel>
             </Grid>
 
