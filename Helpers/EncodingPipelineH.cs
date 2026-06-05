@@ -260,7 +260,7 @@ public static class EncodingPipelineH
         {
             "x264.exe" => "--demuxer y4m -",
             "x265.exe" => "--y4m -",
-            "svtav1encapp.exe" => "-i stdin",
+            "svtav1encapp.exe" => "-i -",
             _ => throw new InvalidOperationException($"Unsupported encoder: {encoderExeName}")
         };
 

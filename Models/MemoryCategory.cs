@@ -5,7 +5,6 @@ namespace OneColumnEncoder.Models
         Empty = 0,
         Upstream = 1,
         Downstream = 2,
-        Other = 3,
-        Cache = 4
+        Cache = 3
     }
 }

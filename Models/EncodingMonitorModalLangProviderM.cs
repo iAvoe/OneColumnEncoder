@@ -28,10 +28,10 @@ public class EncodingMonitorModalLangProviderM
             ["SmallNoteText"] = "This program does not support progress quantization; interrupting will discard task progress.",
             ["DistributionUpstreamLabel"] = "Upstream program",
             ["DistributionDownstreamLabel"] = "Downstream program (encoder)",
-            ["DistributionOtherLabel"] = "Other programs",
             ["DistributionCacheLabel"] = "System cache",
             ["DistributionAvailableLabel"] = "Available Space",
             ["HeatLegendColdToHotText"] = "Cold \u2194 Hot",
+            ["IgnoreOtherProgramsMemoryNoteText"] = "To save resources, other programs' memory usage state is not collected.",
             ["SampleIntervalTickLabels"] = "0 (RT)|60S|120S|180S|240S",
             ["ContinueMonitoringText"] = "Continue monitoring",
             ["FreezeContinueText"] = "Freeze / Continue",
@@ -101,10 +101,10 @@ public class EncodingMonitorModalLangProviderM
             ["SmallNoteText"] = "本程序不支持进度量化；中断将丢弃任务进度。",
             ["DistributionUpstreamLabel"] = "上游程序",
             ["DistributionDownstreamLabel"] = "下游程序（编码器）",
-            ["DistributionOtherLabel"] = "其它程序",
             ["DistributionCacheLabel"] = "系统缓存",
             ["DistributionAvailableLabel"] = "可用空间",
             ["HeatLegendColdToHotText"] = "冷 \u2194 热",
+            ["IgnoreOtherProgramsMemoryNoteText"] = "为节省资源，忽略采集其他程序内存占用状态",
             ["SampleIntervalTickLabels"] = "0（实时）|60秒|120秒|180秒|240秒",
             ["ContinueMonitoringText"] = "继续监测",
             ["FreezeContinueText"] = "冻结 / 继续监测",
@@ -174,10 +174,10 @@ public class EncodingMonitorModalLangProviderM
             ["SmallNoteText"] = "本程式不支援進度量化；中斷將丟棄任務進度。",
             ["DistributionUpstreamLabel"] = "上游程式",
             ["DistributionDownstreamLabel"] = "下游程式（編碼器）",
-            ["DistributionOtherLabel"] = "其他程式",
             ["DistributionCacheLabel"] = "系統快取",
             ["DistributionAvailableLabel"] = "可用空間",
             ["HeatLegendColdToHotText"] = "冷 \u2194 熱",
+            ["IgnoreOtherProgramsMemoryNoteText"] = "為節省資源，忽略採集其他程式記憶體占用狀態",
             ["SampleIntervalTickLabels"] = "0（即時）|60秒|120秒|180秒|240秒",
             ["ContinueMonitoringText"] = "繼續監測",
             ["FreezeContinueText"] = "凍結 / 繼續監測",
@@ -246,14 +246,13 @@ public class EncodingMonitorModalLangProviderM
     public string SmallNoteText { get; }
     public string DistributionUpstreamLabel { get; }
     public string DistributionDownstreamLabel { get; }
-    public string DistributionOtherLabel { get; }
     public string DistributionCacheLabel { get; }
     public string DistributionAvailableLabel { get; }
     public string HeatLegendColdToHotText { get; }
     public string HeatLegendUpstreamLabel => DistributionUpstreamLabel;
     public string HeatLegendDownstreamLabel => DistributionDownstreamLabel;
-    public string HeatLegendOtherLabel => DistributionOtherLabel;
     public string HeatLegendCacheLabel => DistributionCacheLabel;
+    public string IgnoreOtherProgramsMemoryNoteText { get; }
     public string[] SampleIntervalTickLabels { get; }
     public string ContinueMonitoringText { get; }
     public string FreezeContinueText { get; }
@@ -329,10 +328,10 @@ public class EncodingMonitorModalLangProviderM
         SmallNoteText = _d["SmallNoteText"];
         DistributionUpstreamLabel = _d["DistributionUpstreamLabel"];
         DistributionDownstreamLabel = _d["DistributionDownstreamLabel"];
-        DistributionOtherLabel = _d["DistributionOtherLabel"];
         DistributionCacheLabel = _d["DistributionCacheLabel"];
         DistributionAvailableLabel = _d["DistributionAvailableLabel"];
         HeatLegendColdToHotText = _d["HeatLegendColdToHotText"];
+        IgnoreOtherProgramsMemoryNoteText = _d["IgnoreOtherProgramsMemoryNoteText"];
         SampleIntervalTickLabels = _d["SampleIntervalTickLabels"].Split('|');
         ContinueMonitoringText = _d["ContinueMonitoringText"];
         FreezeContinueText = _d["FreezeContinueText"];

@@ -10,7 +10,6 @@ namespace OneColumnEncoder.Components
     ///     ColdToHotText="{Binding ColdToHotLabel}"
     ///     UpstreamLabel="{Binding UpstreamLabel}"
     ///     DownstreamLabel="{Binding DownstreamLabel}"
-    ///     OtherLabel="{Binding OtherLabel}"
     ///     CacheLabel="{Binding CacheLabel}" />
     /// </summary>
     public class HeatmapLegend : Control
@@ -54,18 +53,6 @@ namespace OneColumnEncoder.Components
         public static readonly DependencyProperty DownstreamLabelProperty =
             DependencyProperty.Register(
                 nameof(DownstreamLabel),
-                typeof(string),
-                typeof(HeatmapLegend),
-                new PropertyMetadata(string.Empty));
-
-        public string OtherLabel
-        {
-            get => (string)GetValue(OtherLabelProperty);
-            set => SetValue(OtherLabelProperty, value);
-        }
-        public static readonly DependencyProperty OtherLabelProperty =
-            DependencyProperty.Register(
-                nameof(OtherLabel),
                 typeof(string),
                 typeof(HeatmapLegend),
                 new PropertyMetadata(string.Empty));
