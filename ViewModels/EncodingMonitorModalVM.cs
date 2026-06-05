@@ -20,12 +20,6 @@ using System.Windows.Threading;
 
 namespace OneColumnEncoder.ViewModels
 {
-    /// <summary>
-    /// XAML:
-    /// Progress Bar → RAM Occupancy Range → RAM Distribution → Range block indicators
-    /// → RAM Sampling Interval → RAM Sampling Freeze/Reset → Standard Out Log (Two Columns)
-    /// → Standard Error (Two Columns) → Bottom Status → FiveButtonGroups
-    /// </summary>
     public partial class EncodingMonitorModalVM : BaseVM
     {
         private const int MemoryRangeBlockCount = 128;

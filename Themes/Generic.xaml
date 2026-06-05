@@ -41,6 +41,8 @@
                      x:Key="GlobalSecondary" />
     <SolidColorBrush Color="#939CA2"
                      x:Key="GlobalTertiary" />
+    <SolidColorBrush Color="#4A5458"
+                     x:Key="GlobalQuaternary" />
 
     <SolidColorBrush Color="#EA6B66"
                      x:Key="BorderRed" />

@@ -62,7 +62,7 @@
                 Width="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ActualWidth, Converter={StaticResource ButtonWidthConverter}, ConverterParameter='5,5'}"
                 Height="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonHeight}"
                 VerticalAlignment="Center"
-                Style="{StaticResource SecondaryButton}" />
+                Style="{StaticResource TertiaryButton}" />
         <Button Grid.Column="2"
                 Content="{Binding B5_3Text}"
                 Command="{Binding Button3Command, RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -78,7 +78,7 @@
                 Width="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ActualWidth, Converter={StaticResource ButtonWidthConverter}, ConverterParameter='5,5'}"
                 Height="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonHeight}"
                 VerticalAlignment="Center"
-                Style="{StaticResource SecondaryButton}" />
+                Style="{StaticResource QuaternaryButton}" />
         <Button Grid.Column="4"
                 Command="{Binding Button5Command, RelativeSource={RelativeSource AncestorType=UserControl}}"
                 IsEnabled="{Binding Button5IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"

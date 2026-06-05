@@ -173,6 +173,56 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            <Style x:Key="TertiaryButton"
+                   TargetType="Button"
+                   BasedOn="{StaticResource BaseButton}">
+                <Setter Property="Background"
+                        Value="{StaticResource GlobalTertiary}" />
+                <Setter Property="Foreground"
+                        Value="{StaticResource Background}" />
+                <Setter Property="BorderBrush"
+                        Value="{StaticResource GlobalTertiary}" />
+                <Setter Property="BorderThickness"
+                        Value="0" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver"
+                             Value="True">
+                        <Setter Property="Background"
+                                Value="{StaticResource Background}" />
+                        <Setter Property="Foreground"
+                                Value="{StaticResource GlobalTertiary}" />
+                        <Setter Property="BorderBrush"
+                                Value="{StaticResource GlobalTertiary}" />
+                        <Setter Property="BorderThickness"
+                                Value="1.5" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="QuaternaryButton"
+                   TargetType="Button"
+                   BasedOn="{StaticResource BaseButton}">
+                <Setter Property="Background"
+                        Value="{StaticResource GlobalQuaternary}" />
+                <Setter Property="Foreground"
+                        Value="{StaticResource Background}" />
+                <Setter Property="BorderBrush"
+                        Value="{StaticResource GlobalQuaternary}" />
+                <Setter Property="BorderThickness"
+                        Value="0" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver"
+                             Value="True">
+                        <Setter Property="Background"
+                                Value="{StaticResource Background}" />
+                        <Setter Property="Foreground"
+                                Value="{StaticResource GlobalQuaternary}" />
+                        <Setter Property="BorderBrush"
+                                Value="{StaticResource GlobalQuaternary}" />
+                        <Setter Property="BorderThickness"
+                                Value="1.5" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
             <Style x:Key="NormalButton"
                    TargetType="Button"
                    BasedOn="{StaticResource BaseButton}">
