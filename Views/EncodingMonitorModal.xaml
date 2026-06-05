@@ -58,7 +58,7 @@
             </Grid>
 
             <!-- RAM occupancy range and title -->
-            <Grid Grid.Row="2"
+            <Grid Grid.Row="1"
                   Margin="0 15 0 0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -176,18 +176,12 @@
                 </Grid>
             </Grid>
 
-            <!-- RAM multi column display -->
-            <comps:ColumnTextGrid Grid.Row="3"
-                                  Margin="0 15 0 0"
-                                  Items="{Binding MetricColumns}"
-                                  ColumnCount="7" />
-
             <!-- RAM telemetry frequency slider -->
-            <comps:IntegerSlider Grid.Row="4"
-                                 Margin="0 15 0 0"
-                                 Label="{Binding SampleIntervalLabel}"
-                                 LabelWidth="80"
-                                 Minimum="0"
+            <comps:IntegerSlider Grid.Row="3"
+                                  Margin="0 15 0 0"
+                                  Label="{Binding SampleIntervalLabel}"
+                                  LabelWidth="80"
+                                  Minimum="0"
                                  Maximum="240"
                                  Value="{Binding SampleIntervalSeconds, Mode=TwoWay}"
                                  TickLabels="{Binding SampleIntervalTickLabels}"
@@ -195,14 +189,14 @@
                                  Step="1" />
 
             <!-- RAM telemetry pause & continue -->
-            <comps:TwoButtonGroup Grid.Row="5"
-                                   Margin="0 10 0 0"
-                                  DataContext="{Binding MonitorButtons}"
-                                  ButtonHeight="30"
-                                  Button1Command="{Binding Cmd1}"
-                                  Button2Command="{Binding Cmd2}" />
+            <comps:TwoButtonGroup Grid.Row="4"
+                                    Margin="0 10 0 0"
+                                   DataContext="{Binding MonitorButtons}"
+                                   ButtonHeight="30"
+                                   Button1Command="{Binding Cmd1}"
+                                   Button2Command="{Binding Cmd2}" />
 
-            <StackPanel Grid.Row="6"
+            <StackPanel Grid.Row="5"
                         Margin="0 15 0 0">
                 <!-- Process stderr: upstream | encoder -->
                 <cards:SplitTextCard Title="{Binding StderrTitle}"
@@ -238,7 +232,7 @@
             </StackPanel>
 
             <!-- Encoding timings -->
-            <StackPanel Grid.Row="7"
+            <StackPanel Grid.Row="6"
                         Margin="0 15 0 0">
                 <comps:ColumnTextGrid Items="{Binding FooterColumns}"
                                       ColumnCount="7" />
