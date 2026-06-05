@@ -11,7 +11,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="1000"
-        Height="990"
+        Height="1200"
         MinWidth="860"
         MinHeight="760"
         WindowStartupLocation="CenterOwner"
@@ -81,21 +81,20 @@
                            HorizontalAlignment="Center" />
             </Grid>
 
-            <!-- RAM monitor (with title) -->
-            <cards:SplitTextCard Grid.Row="2"
-                                  Margin="0 12 0 0"
-                                  Title="{Binding ProgressReportTitle}"
-                                  LeftText="{Binding ProgressReportText, Mode=TwoWay}"
-                                  RightText="{Binding ProgressText, Mode=OneWay}"
-                                  TextBoxMinHeight="120"
-                                  TextFontSize="{Binding LogFontSize}" />
+            <!-- Progress stderr texts (not working) -->
+                <cards:SplitTextCard Grid.Row="2"
+                                      Margin="0 15 0 0"
+                                      Title="{Binding ProgressReportTitle}"
+                                      LeftText="{Binding ProgressReportText, Mode=TwoWay}"
+                                      RightText="{Binding ProgressText, Mode=OneWay}"
+                                      TextFontSize="{Binding LogFontSize}" />
 
+            <!-- RAM monitor (with title) -->
             <Grid Grid.Row="3"
                   Margin="0 15 0 0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="20" />
                     <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0">
                     <TextBlock Text="{Binding MemoryTitle}"
@@ -107,17 +106,18 @@
                                          HorizontalAlignment="Left" />
                 </StackPanel>
 
-                <StackPanel Grid.Column="2">
+                <!-- RAM distribution labels and legends -->
+                <StackPanel Grid.Column="1">
                     <TextBlock Text="{Binding DistributionTitle}"
                                Style="{StaticResource H3}" />
-                    <comps:HeatmapLegend Margin="0 8 0 0"
+                    <comps:HeatmapLegend Margin="0 10 0 0"
                                          ColdText="{Binding HeatLegendColdText}"
                                          HotText="{Binding HeatLegendHotText}"
                                          UpstreamLabel="{Binding HeatLegendUpstreamLabel}"
                                          DownstreamLabel="{Binding HeatLegendDownstreamLabel}"
                                          OtherLabel="{Binding HeatLegendOtherLabel}"
                                          CacheLabel="{Binding HeatLegendCacheLabel}" />
-                    <Grid Margin="0 5 5 0">
+                    <Grid Margin="0 10 5 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
@@ -183,18 +183,16 @@
                                    Margin="0 10 0 0"
                                    Foreground="{StaticResource GlobalSecondary}" />
                     </Grid>
-
-
                 </StackPanel>
             </Grid>
 
             <comps:ColumnTextGrid Grid.Row="4"
-                                  Margin="0 14 0 0"
+                                  Margin="0 15 0 0"
                                   Items="{Binding MetricColumns}"
                                   ColumnCount="7" />
 
             <comps:IntegerSlider Grid.Row="5"
-                                 Margin="0 14 0 0"
+                                 Margin="0 15 0 0"
                                  Label="{Binding SampleIntervalLabel}"
                                  LabelWidth="80"
                                  Minimum="0"
@@ -215,10 +213,9 @@
                         Margin="0 18 0 0">
 
                 <cards:SplitTextCard Title="{Binding StderrTitle}"
-                                     LeftText="{Binding UpstreamReportText, Mode=TwoWay}"
-                                     RightText="{Binding DownstreamReportText, Mode=TwoWay}"
-                                     TextBoxMinHeight="210"
-                                     TextFontSize="{Binding LogFontSize}" />
+                                      LeftText="{Binding UpstreamReportText, Mode=TwoWay}"
+                                      RightText="{Binding DownstreamReportText, Mode=TwoWay}"
+                                      TextFontSize="{Binding LogFontSize}" />
 
                 <comps:FiveButtonGroup Margin="0 10 0 0"
                                        DataContext="{Binding ReportButtons}"

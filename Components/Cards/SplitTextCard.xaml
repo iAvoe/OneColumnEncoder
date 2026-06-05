@@ -4,8 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="260"
-             d:DesignWidth="900">
+             d:DesignHeight="250"
+             d:DesignWidth="900"
+             MaxHeight="250">
     <UserControl.Resources>
         <Style x:Key="SplitTextBox" TargetType="TextBox">
             <Setter Property="AcceptsReturn" Value="True" />
@@ -28,10 +29,9 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0"
-                   Margin="0 0 0 8"
                    Text="{Binding Title, RelativeSource={RelativeSource AncestorType=UserControl}}">
             <TextBlock.Style>
-                <Style TargetType="TextBlock" BasedOn="{StaticResource H2}">
+                <Style TargetType="TextBlock" BasedOn="{StaticResource H3}">
                     <Style.Triggers>
                         <Trigger Property="Text" Value="">
                             <Setter Property="Visibility" Value="Collapsed" />
@@ -43,7 +43,7 @@
         </TextBlock>
 
         <Border Grid.Row="1"
-                MinHeight="{Binding TextBoxMinHeight, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                Margin="0 5 0 0"
                 BorderBrush="{StaticResource GlobalPrimary}"
                 BorderThickness="1.5"
                 Background="{StaticResource Background}"
@@ -52,9 +52,9 @@
                 SnapsToDevicePixels="True">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" MinWidth="80" />
+                    <ColumnDefinition Width="*" MinWidth="35" />
                     <ColumnDefinition Width="5" />
-                    <ColumnDefinition Width="*" MinWidth="80" />
+                    <ColumnDefinition Width="*" MinWidth="35" />
                 </Grid.ColumnDefinitions>
 
                 <TextBox Grid.Column="0"

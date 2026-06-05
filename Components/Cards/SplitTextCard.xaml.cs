@@ -25,9 +25,6 @@ namespace OneColumnEncoder.Components.Cards
         public static readonly DependencyProperty IsReadOnlyProperty =
             DependencyProperty.Register(nameof(IsReadOnly), typeof(bool), typeof(SplitTextCard), new PropertyMetadata(true));
 
-        public static readonly DependencyProperty TextBoxMinHeightProperty =
-            DependencyProperty.Register(nameof(TextBoxMinHeight), typeof(double), typeof(SplitTextCard), new PropertyMetadata(120.0));
-
         public static readonly DependencyProperty TextFontSizeProperty =
             DependencyProperty.Register(nameof(TextFontSize), typeof(double), typeof(SplitTextCard), new PropertyMetadata(12.0));
 
@@ -53,12 +50,6 @@ namespace OneColumnEncoder.Components.Cards
         {
             get => (bool)GetValue(IsReadOnlyProperty);
             set => SetValue(IsReadOnlyProperty, value);
-        }
-
-        public double TextBoxMinHeight
-        {
-            get => (double)GetValue(TextBoxMinHeightProperty);
-            set => SetValue(TextBoxMinHeightProperty, value);
         }
 
         public double TextFontSize

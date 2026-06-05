@@ -33,6 +33,8 @@ namespace OneColumnEncoder.ViewModels
         private const int HeatMapMaxLevel = 8;
         private const long BytesPerMb = 1024L * 1024L;
         private const long BytesPerGb = 1024L * 1024L * 1024L;
+        private const uint TH32CS_SNAPPROCESS = 0x00000002;
+        private static readonly IntPtr InvalidHandleValue = new(-1);
         private const string PlaceholderGb = "XX.X GB";
         private const string PlaceholderGbPerSecond = "XX.X GBps";
         private const string PlaceholderCount = "XX,XXX";
@@ -72,6 +74,8 @@ namespace OneColumnEncoder.ViewModels
         private MemoryStatusSnapshot _lastMemoryStatus;
         private long _lastUpstreamWorkingSetBytes;
         private long _lastEncoderWorkingSetBytes;
+        private long _upstreamWorkingSetPeakBytes;
+        private long _encoderWorkingSetPeakBytes;
         private long _lastOutputSizeBytes;
         private DateTime _lastOutputSizeTime = DateTime.MinValue;
         private double _peakOutputBandwidthBytesPerSecond;
@@ -465,9 +469,39 @@ namespace OneColumnEncoder.ViewModels
         {
             try
             {
-                string? line;
-                while (!ct.IsCancellationRequested && (line = await reader.ReadLineAsync(ct)) != null)
-                    EnqueueProcessLine(kind, line);
+                char[] buffer = new char[4096];
+                StringBuilder lineBuilder = new();
+                bool lastWasCarriageReturn = false;
+
+                while (!ct.IsCancellationRequested)
+                {
+                    int charsRead = await reader.ReadAsync(buffer.AsMemory(0, buffer.Length), ct);
+                    if (charsRead == 0) break;
+
+                    for (int i = 0; i < charsRead; i++)
+                    {
+                        char ch = buffer[i];
+                        if (ch is '\r' or '\n')
+                        {
+                            if (ch == '\n' && lastWasCarriageReturn)
+                            {
+                                lastWasCarriageReturn = false;
+                                continue;
+                            }
+
+                            EnqueueProcessLine(kind, lineBuilder.ToString());
+                            lineBuilder.Clear();
+                            lastWasCarriageReturn = ch == '\r';
+                            continue;
+                        }
+
+                        lastWasCarriageReturn = false;
+                        lineBuilder.Append(ch);
+                    }
+                }
+
+                if (lineBuilder.Length > 0)
+                    EnqueueProcessLine(kind, lineBuilder.ToString());
             }
             catch (OperationCanceledException) { }
             catch (IOException) { }
@@ -598,8 +632,13 @@ namespace OneColumnEncoder.ViewModels
         private bool TryHandleProgressLine(string line)
         {
             if (string.IsNullOrWhiteSpace(line) || !IsProgressLine(line)) return false;
-            ProgressValue = InferProgress(ProgressValue, line);
-            StatusText = line.Trim();
+            string trimmed = line.Trim();
+            AppendFoldedLine(_progressReportBuilder, _progressReportFoldState, trimmed);
+            ProgressReportText = _progressReportBuilder.ToString();
+            ProgressValue = InferProgress(ProgressValue, trimmed);
+            if (TryParseEncoderFrame(trimmed) is int frame && _totalFrames is > 0)
+                ProgressValue = Math.Max(ProgressValue, (int)Math.Min(100d, Math.Round(frame * 100d / _totalFrames.Value)));
+            StatusText = trimmed;
             return true;
         }
 
@@ -633,24 +672,34 @@ namespace OneColumnEncoder.ViewModels
                 || ProgressLineRegex().IsMatch(line);
         }
 
-        [GeneratedRegex(@"(?:^|\D)(?:frame|encoded\s+frames|frames?\s+encoded|frames?\s*:)\s*=?\s*(\d+)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
-        private static partial Regex EncoderFrameRegex();
+        [GeneratedRegex(@"(?:^|\D)frame\s*=\s*(\d+)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+        private static partial Regex FfmpegFrameRegex();
 
-        [GeneratedRegex(@"(?:^|\D)(?:frame|encoded\s+frames|frames?\s+encoded|frames?\s*:)\s*=?\s*(\d+)\s*")]
-        private static partial Regex EncoderFrameRegexLoose();
+        [GeneratedRegex(@"(?<!\d)(\d+)\s+frames?\s*:", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+        private static partial Regex X264FrameRegex();
+
+        [GeneratedRegex(@"(?:^|\D)encoded\s+(\d+)\s+frames?", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+        private static partial Regex EncodedFrameRegex();
+
+        [GeneratedRegex(@"(?<!\d)(\d+)\s+frames?\s+encoded", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+        private static partial Regex FramesEncodedRegex();
 
         private static int? TryParseEncoderFrame(string line)
         {
             if (string.IsNullOrWhiteSpace(line)) return null;
 
-            Match match = EncoderFrameRegex().Match(line);
-            if (!match.Success)
-                match = EncoderFrameRegexLoose().Match(line);
+            if (TryParseFirstRegexGroup(FfmpegFrameRegex().Match(line), out int value)) return value;
+            if (TryParseFirstRegexGroup(X264FrameRegex().Match(line), out value)) return value;
+            if (TryParseFirstRegexGroup(EncodedFrameRegex().Match(line), out value)) return value;
+            if (TryParseFirstRegexGroup(FramesEncodedRegex().Match(line), out value)) return value;
+            return null;
+        }
 
-            if (!match.Success) return null;
-            return int.TryParse(match.Groups[1].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int value)
-                ? value
-                : null;
+        private static bool TryParseFirstRegexGroup(Match match, out int value)
+        {
+            value = 0;
+            return match.Success
+                && int.TryParse(match.Groups[1].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out value);
         }
 
         private static void TrimLastLine(StringBuilder builder, LogFoldState foldState)
@@ -680,13 +729,17 @@ namespace OneColumnEncoder.ViewModels
             _lastUpstreamWorkingSetBytes = GetWorkingSetBytes(_upstreamProcess);
             _lastEncoderWorkingSetBytes = GetWorkingSetBytes(_encoderProcess);
             long combinedWorkingSetBytes = _lastUpstreamWorkingSetBytes + _lastEncoderWorkingSetBytes;
+            _upstreamWorkingSetPeakBytes = Math.Max(_upstreamWorkingSetPeakBytes, _lastUpstreamWorkingSetBytes);
+            _encoderWorkingSetPeakBytes = Math.Max(_encoderWorkingSetPeakBytes, _lastEncoderWorkingSetBytes);
+            long combinedWorkingSetPeakBytes = _upstreamWorkingSetPeakBytes + _encoderWorkingSetPeakBytes;
+            long effectiveSystemCacheBytes = GetEffectiveSystemCacheBytes(memoryStatus, combinedWorkingSetBytes);
             UpdateOutputBandwidth(outputBytes);
 
             MetricColumns[0].MainText = FormatGb(memoryStatus.UsedPhysicalBytes);
             MetricColumns[0].BottomText = ReplaceMetricValue(Lang.PhysicalMemoryBottomText, FormatGb(memoryStatus.TotalPhysicalBytes));
             MetricColumns[1].MainText = FormatGb(memoryStatus.CommittedBytes);
             MetricColumns[1].BottomText = ReplaceMetricValue(Lang.CommittedMemoryBottomText, FormatGb(memoryStatus.CommitLimitBytes));
-            MetricColumns[2].MainText = FormatGb(combinedWorkingSetBytes);
+            MetricColumns[2].MainText = FormatGb(combinedWorkingSetPeakBytes);
             MetricColumns[2].BottomText = ReplaceMetricValue(Lang.WorkingSetPeakBottomText, FormatGb(combinedWorkingSetBytes));
             MetricColumns[3].MainText = FormatGb(memoryStatus.CommittedBytes);
             MetricColumns[3].BottomText = ReplaceMetricValue(Lang.PageFileBottomText, FormatGb(memoryStatus.CommitLimitBytes));
@@ -699,9 +752,15 @@ namespace OneColumnEncoder.ViewModels
 
             DistributionUpstream = FormatMb(_lastUpstreamWorkingSetBytes);
             DistributionDownstream = FormatMb(_lastEncoderWorkingSetBytes);
-            DistributionOther = FormatMb(Math.Max(0, memoryStatus.UsedPhysicalBytes - combinedWorkingSetBytes - memoryStatus.SystemCacheBytes));
-            DistributionCache = FormatMb(memoryStatus.SystemCacheBytes);
+            DistributionOther = FormatMb(Math.Max(0, memoryStatus.UsedPhysicalBytes - combinedWorkingSetBytes - effectiveSystemCacheBytes));
+            DistributionCache = FormatMb(effectiveSystemCacheBytes);
             DistributionAvailable = FormatMb(memoryStatus.AvailablePhysicalBytes);
+        }
+
+        private static long GetEffectiveSystemCacheBytes(MemoryStatusSnapshot memoryStatus, long processWorkingSetBytes)
+        {
+            long nonProcessUsedBytes = Math.Max(0, memoryStatus.UsedPhysicalBytes - processWorkingSetBytes);
+            return Math.Min(memoryStatus.SystemCacheBytes, nonProcessUsedBytes);
         }
 
         private bool IsMemorySampleDue(DateTime now)
@@ -741,7 +800,7 @@ namespace OneColumnEncoder.ViewModels
 
             long upstreamBytes = _lastUpstreamWorkingSetBytes;
             long downstreamBytes = _lastEncoderWorkingSetBytes;
-            long cacheBytes = memoryStatus.SystemCacheBytes;
+            long cacheBytes = GetEffectiveSystemCacheBytes(memoryStatus, upstreamBytes + downstreamBytes);
             long otherBytes = Math.Max(0, usedBytes - upstreamBytes - downstreamBytes - cacheBytes);
 
             const int BandCount = 4;
@@ -749,20 +808,20 @@ namespace OneColumnEncoder.ViewModels
             const int CellsPerBand = BandRowCount * HeatMapColumns;
 
             string[] categoryNames =
-            {
+            [
                 Lang.HeatLegendUpstreamLabel,
                 Lang.HeatLegendDownstreamLabel,
                 Lang.HeatLegendOtherLabel,
                 Lang.HeatLegendCacheLabel
-            };
+            ];
             MemoryCategory[] categoryOrder =
-            {
+            [
                 MemoryCategory.Upstream,
                 MemoryCategory.Downstream,
                 MemoryCategory.Other,
                 MemoryCategory.Cache
-            };
-            long[] categoryBytes = { upstreamBytes, downstreamBytes, otherBytes, cacheBytes };
+            ];
+            long[] categoryBytes = [upstreamBytes, downstreamBytes, otherBytes, cacheBytes];
 
             int hottestCellIndex = 0;
             int hottestLevel = 0;
@@ -894,9 +953,14 @@ namespace OneColumnEncoder.ViewModels
 
         private static long GetWorkingSetBytes(Process? process)
         {
+            return SumProcessTreeValue(process, GetSingleProcessWorkingSetBytes);
+        }
+
+        private static long GetSingleProcessWorkingSetBytes(Process process)
+        {
             try
             {
-                if (process == null || process.HasExited) return 0L;
+                if (process.HasExited) return 0L;
                 process.Refresh();
                 return Math.Max(0L, process.WorkingSet64);
             }
@@ -908,14 +972,14 @@ namespace OneColumnEncoder.ViewModels
 
         private long GetTotalPageFaults()
         {
-            return GetPageFaults(_upstreamProcess) + GetPageFaults(_encoderProcess);
+            return SumProcessTreeValue(_upstreamProcess, GetSingleProcessPageFaults) + SumProcessTreeValue(_encoderProcess, GetSingleProcessPageFaults);
         }
 
-        private static long GetPageFaults(Process? process)
+        private static long GetSingleProcessPageFaults(Process process)
         {
             try
             {
-                if (process == null || process.HasExited) return 0L;
+                if (process.HasExited) return 0L;
                 process.Refresh();
                 PROCESS_MEMORY_COUNTERS counters = new()
                 {
@@ -929,6 +993,98 @@ namespace OneColumnEncoder.ViewModels
             catch
             {
                 return 0L;
+            }
+        }
+
+        private static long SumProcessTreeValue(Process? rootProcess, Func<Process, long> selector)
+        {
+            if (rootProcess == null) return 0L;
+
+            try
+            {
+                if (rootProcess.HasExited) return 0L;
+                int rootProcessId = rootProcess.Id;
+                HashSet<int> processIds = GetProcessTreeIds(rootProcessId);
+                processIds.Add(rootProcessId);
+
+                long total = 0L;
+                foreach (int processId in processIds)
+                {
+                    try
+                    {
+                        using Process process = Process.GetProcessById(processId);
+                        total += Math.Max(0L, selector(process));
+                    }
+                    catch
+                    {
+                    }
+                }
+
+                return total;
+            }
+            catch
+            {
+                return 0L;
+            }
+        }
+
+        private static HashSet<int> GetProcessTreeIds(int rootProcessId)
+        {
+            Dictionary<int, List<int>> childIdsByParentId = GetChildProcessMap();
+            HashSet<int> processIds = [];
+            Queue<int> pending = new();
+            pending.Enqueue(rootProcessId);
+
+            while (pending.Count > 0)
+            {
+                int processId = pending.Dequeue();
+                if (!processIds.Add(processId)) continue;
+                if (!childIdsByParentId.TryGetValue(processId, out List<int>? childIds)) continue;
+
+                foreach (int childId in childIds)
+                    pending.Enqueue(childId);
+            }
+
+            return processIds;
+        }
+
+        private static Dictionary<int, List<int>> GetChildProcessMap()
+        {
+            Dictionary<int, List<int>> childIdsByParentId = [];
+            if (!OperatingSystem.IsWindows()) return childIdsByParentId;
+
+            IntPtr snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+            if (snapshot == InvalidHandleValue) return childIdsByParentId;
+
+            try
+            {
+                PROCESSENTRY32 entry = new()
+                {
+                    dwSize = (uint)Marshal.SizeOf<PROCESSENTRY32>()
+                };
+
+                if (!Process32First(snapshot, ref entry)) return childIdsByParentId;
+
+                do
+                {
+                    int parentProcessId = unchecked((int)entry.th32ParentProcessID);
+                    int processId = unchecked((int)entry.th32ProcessID);
+                    if (!childIdsByParentId.TryGetValue(parentProcessId, out List<int>? childIds))
+                    {
+                        childIds = [];
+                        childIdsByParentId[parentProcessId] = childIds;
+                    }
+
+                    childIds.Add(processId);
+                    entry.dwSize = (uint)Marshal.SizeOf<PROCESSENTRY32>();
+                }
+                while (Process32Next(snapshot, ref entry));
+
+                return childIdsByParentId;
+            }
+            finally
+            {
+                CloseHandle(snapshot);
             }
         }
 
@@ -1011,6 +1167,21 @@ namespace OneColumnEncoder.ViewModels
         [return: MarshalAs(UnmanagedType.Bool)]
         private static partial bool GetPerformanceInfo(ref PERFORMANCE_INFORMATION pPerformanceInformation, uint cb);
 
+        [LibraryImport("kernel32.dll", SetLastError = true)]
+        private static partial IntPtr CreateToolhelp32Snapshot(uint dwFlags, uint th32ProcessID);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool Process32First(IntPtr hSnapshot, ref PROCESSENTRY32 lppe);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool Process32Next(IntPtr hSnapshot, ref PROCESSENTRY32 lppe);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool CloseHandle(IntPtr hObject);
+
         [StructLayout(LayoutKind.Sequential)]
         private struct MEMORYSTATUSEX
         {
@@ -1059,6 +1230,23 @@ namespace OneColumnEncoder.ViewModels
             public uint ThreadCount;
         }
 
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        private struct PROCESSENTRY32
+        {
+            public uint dwSize;
+            public uint cntUsage;
+            public uint th32ProcessID;
+            public IntPtr th32DefaultHeapID;
+            public uint th32ModuleID;
+            public uint cntThreads;
+            public uint th32ParentProcessID;
+            public int pcPriClassBase;
+            public uint dwFlags;
+
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+            public string szExeFile;
+        }
+
         private readonly record struct MemoryStatusSnapshot(
             long TotalPhysicalBytes,
             long AvailablePhysicalBytes,
@@ -1075,6 +1263,8 @@ namespace OneColumnEncoder.ViewModels
             foreach (ColumnTextItemM item in MetricColumns)
                 item.BottomText = item.BottomText;
             _lastMemoryStatsUpdate = DateTime.MinValue;
+            _upstreamWorkingSetPeakBytes = 0;
+            _encoderWorkingSetPeakBytes = 0;
             _lastOutputSizeBytes = 0;
             _lastOutputSizeTime = DateTime.MinValue;
             _peakOutputBandwidthBytesPerSecond = 0d;
