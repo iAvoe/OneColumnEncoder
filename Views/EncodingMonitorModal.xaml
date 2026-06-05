@@ -57,30 +57,6 @@
                            VerticalAlignment="Center" />
             </Grid>
 
-            <!-- Below progress bar text -->
-            <Grid Grid.Row="1"
-                  Margin="0 5 0 0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0"
-                           Text="{Binding CurrentSizeLabel}"
-                           FontSize="10"
-                           Foreground="{StaticResource GlobalSecondary}" />
-                <TextBlock Grid.Column="1"
-                           Text="{Binding EstimatedSizeLabel}"
-                           FontSize="10"
-                           Foreground="{StaticResource GlobalSecondary}"
-                           HorizontalAlignment="Center" />
-                <TextBlock Grid.Column="2"
-                           Text="{Binding WrittenFramesLabel}"
-                           FontSize="10"
-                           Foreground="{StaticResource GlobalSecondary}"
-                           HorizontalAlignment="Center" />
-            </Grid>
-
             <!-- RAM occupancy range and title -->
             <Grid Grid.Row="2"
                   Margin="0 15 0 0">
