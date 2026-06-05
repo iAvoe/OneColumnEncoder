@@ -81,6 +81,8 @@ namespace OneColumnEncoder.ViewModels
         private long _lastOutputSizeBytes;
         private DateTime _lastOutputSizeTime = DateTime.MinValue;
         private double _peakOutputBandwidthBytesPerSecond;
+        private long _currentOutputSizeBytes;
+        private int _writtenFrames;
 
         public string WindowTitle => _isSample ? Lang.WindowTitleSampleMode : Lang.WindowTitle;
         public string ProgressTitle => Lang.ProgressTitle;
@@ -89,9 +91,9 @@ namespace OneColumnEncoder.ViewModels
         public string DistributionTitle => Lang.DistributionTitle;
 
         public string DragLogReportHint => Lang.DragLogReportHint;
-        public string CurrentSizeLabel => Lang.CurrentSizeLabel;
-        public string EstimatedSizeLabel => Lang.EstimatedSizeLabel;
-        public string WrittenFramesLabel => Lang.WrittenFramesLabel;
+        public string CurrentSizeLabel => $"{Lang.CurrentSizeLabel}: {FormatGbValue(_currentOutputSizeBytes)}";
+        public string EstimatedSizeLabel => $"{Lang.EstimatedSizeLabel}: {GetEstimatedOutputSizeText()}";
+        public string WrittenFramesLabel => $"{Lang.WrittenFramesLabel}: {GetWrittenFramesText()}";
         public string SampleIntervalLabel => Lang.SampleIntervalLabel;
         public string StartedAtLabel => Lang.StartedAtLabel;
         public string ElapsedLabel => Lang.ElapsedLabel;
@@ -129,6 +131,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 if (!SetProperty(ref _progressValue, Math.Clamp(value, 0, 100))) return;
                 OnPropertyChanged(nameof(ProgressText));
+                OnPropertyChanged(nameof(EstimatedSizeLabel));
             }
         }
 
@@ -444,6 +447,7 @@ namespace OneColumnEncoder.ViewModels
                 _stopwatch.Stop();
                 _timer.Stop();
                 ProgressValue = _success ? 100 : ProgressValue;
+                UpdateProgressDetails();
                 StatusText = _success ? Lang.CompletedText : StatusText == Lang.EncodingText ? Lang.FailedText : StatusText;
                 FlushLogsToProperties();
                 UpdateFooterTimes(final: true);
@@ -526,6 +530,7 @@ namespace OneColumnEncoder.ViewModels
                 {
                     _lastStatsUpdate = now;
                     UpdateProgressFromLogs();
+                    UpdateProgressDetails();
                     UpdateFooterTimes(final: false);
                 }
 
@@ -649,11 +654,14 @@ namespace OneColumnEncoder.ViewModels
             AppendFoldedLine(progressTarget, progressFoldState, trimmed);
             if (updateMainProgress)
                 ProgressValue = InferProgress(ProgressValue, trimmed);
-            if (TryParseEncoderFrame(trimmed) is int frame && _totalFrames is > 0)
+            if (TryParseEncoderFrame(trimmed) is int frame)
             {
-                int frameProgress = (int)Math.Min(100d, Math.Round(frame * 100d / _totalFrames.Value));
-                if (updateMainProgress)
+                UpdateWrittenFrames(frame);
+                if (updateMainProgress && _totalFrames is > 0)
+                {
+                    int frameProgress = (int)Math.Min(100d, Math.Round(frame * 100d / _totalFrames.Value));
                     ProgressValue = Math.Max(ProgressValue, frameProgress);
+                }
             }
             if (updateMainProgress)
                 StatusText = trimmed;
@@ -666,6 +674,7 @@ namespace OneColumnEncoder.ViewModels
             if (frame is null) return false;
 
             AppendFoldedLine(progressTarget, progressFoldState, line);
+            UpdateWrittenFrames(frame.Value);
             if (updateMainProgress && _totalFrames is > 0)
             {
                 ProgressValue = Math.Max(ProgressValue, (int)Math.Min(100d, Math.Round(frame.Value * 100d / _totalFrames.Value)));
@@ -795,6 +804,11 @@ namespace OneColumnEncoder.ViewModels
         private void UpdateProgressFromLogs()
         {
             ProgressValue = InferProgress(ProgressValue, _downstreamStderrBuilder.ToString());
+        }
+
+        private void UpdateProgressDetails()
+        {
+            SetCurrentOutputSizeBytes(TryGetOutputSizeBytes());
         }
 
         private void UpdateHeatMaps()
@@ -965,6 +979,52 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
+        private void SetCurrentOutputSizeBytes(long outputSizeBytes)
+        {
+            long next = Math.Max(0L, outputSizeBytes);
+            if (_currentOutputSizeBytes == next) return;
+
+            _currentOutputSizeBytes = next;
+            OnPropertyChanged(nameof(CurrentSizeLabel));
+            OnPropertyChanged(nameof(EstimatedSizeLabel));
+        }
+
+        private void UpdateWrittenFrames(int frame)
+        {
+            int next = Math.Max(_writtenFrames, frame);
+            if (_writtenFrames == next) return;
+
+            _writtenFrames = next;
+            OnPropertyChanged(nameof(WrittenFramesLabel));
+            OnPropertyChanged(nameof(EstimatedSizeLabel));
+        }
+
+        private string GetEstimatedOutputSizeText()
+        {
+            double progressRatio = GetProgressRatio();
+            if (_currentOutputSizeBytes <= 0 || progressRatio <= 0d) return Lang.NotAvailableText;
+
+            double estimatedBytes = _currentOutputSizeBytes / progressRatio;
+            if (double.IsNaN(estimatedBytes) || double.IsInfinity(estimatedBytes)) return Lang.NotAvailableText;
+            return FormatGbValue((long)Math.Round(Math.Max(0d, estimatedBytes)));
+        }
+
+        private double GetProgressRatio()
+        {
+            if (_totalFrames is > 0 && _writtenFrames > 0)
+                return Math.Clamp(_writtenFrames / (double)_totalFrames.Value, 0d, 1d);
+
+            return ProgressValue > 0 ? Math.Clamp(ProgressValue / 100d, 0d, 1d) : 0d;
+        }
+
+        private string GetWrittenFramesText()
+        {
+            if (_totalFrames is > 0)
+                return $"{_writtenFrames.ToString("N0", CultureInfo.InvariantCulture)} / {_totalFrames.Value.ToString("N0", CultureInfo.InvariantCulture)}";
+
+            return _writtenFrames > 0 ? _writtenFrames.ToString("N0", CultureInfo.InvariantCulture) : Lang.NotAvailableText;
+        }
+
         private void UpdateOutputBandwidth(long outputBytes)
         {
             DateTime now = DateTime.Now;
@@ -1119,6 +1179,11 @@ namespace OneColumnEncoder.ViewModels
         private static string FormatGb(long bytes)
         {
             return $"{Math.Max(0d, bytes / (double)BytesPerGb):0.0} GB";
+        }
+
+        private static string FormatGbValue(long bytes)
+        {
+            return Math.Max(0d, bytes / (double)BytesPerGb).ToString("0.0", CultureInfo.InvariantCulture);
         }
 
         private static string FormatMb(long bytes)
@@ -1294,6 +1359,10 @@ namespace OneColumnEncoder.ViewModels
             _lastOutputSizeBytes = 0;
             _lastOutputSizeTime = DateTime.MinValue;
             _peakOutputBandwidthBytesPerSecond = 0d;
+            SetCurrentOutputSizeBytes(TryGetOutputSizeBytes());
+            _writtenFrames = 0;
+            OnPropertyChanged(nameof(WrittenFramesLabel));
+            OnPropertyChanged(nameof(EstimatedSizeLabel));
             ProgressValue = 0;
             _upstreamProgressReportBuilder.Clear();
             _upstreamProgressReportFoldState.Entries.Clear();
