@@ -4,21 +4,32 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="250"
+             d:DesignHeight="400"
              d:DesignWidth="900"
-             MaxHeight="560">
+             Height="400">
     <UserControl.Resources>
-        <Style x:Key="SplitTextBox" TargetType="TextBox">
-            <Setter Property="AcceptsReturn" Value="True" />
-            <Setter Property="AcceptsTab" Value="True" />
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="FontFamily" Value="Consolas" />
-            <Setter Property="Foreground" Value="{StaticResource GlobalPrimary}" />
-            <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
-            <Setter Property="Padding" Value="10" />
-            <Setter Property="TextWrapping" Value="NoWrap" />
-            <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+        <Style x:Key="SplitTextBox"
+               TargetType="TextBox">
+            <Setter Property="AcceptsReturn"
+                    Value="True" />
+            <Setter Property="AcceptsTab"
+                    Value="True" />
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="FontFamily"
+                    Value="Consolas" />
+            <Setter Property="Foreground"
+                    Value="{StaticResource GlobalPrimary}" />
+            <Setter Property="HorizontalScrollBarVisibility"
+                    Value="Auto" />
+            <Setter Property="Padding"
+                    Value="10" />
+            <Setter Property="TextWrapping"
+                    Value="NoWrap" />
+            <Setter Property="VerticalScrollBarVisibility"
+                    Value="Auto" />
         </Style>
     </UserControl.Resources>
 
@@ -31,11 +42,15 @@
         <TextBlock Grid.Row="0"
                    Text="{Binding Title, RelativeSource={RelativeSource AncestorType=UserControl}}">
             <TextBlock.Style>
-                <Style TargetType="TextBlock" BasedOn="{StaticResource H3}">
+                <Style TargetType="TextBlock"
+                       BasedOn="{StaticResource H3}">
                     <Style.Triggers>
-                        <Trigger Property="Text" Value="">
-                            <Setter Property="Visibility" Value="Collapsed" />
-                            <Setter Property="Margin" Value="0" />
+                        <Trigger Property="Text"
+                                 Value="">
+                            <Setter Property="Visibility"
+                                    Value="Collapsed" />
+                            <Setter Property="Margin"
+                                    Value="0" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>
@@ -53,19 +68,22 @@
             <Grid>
                 <!-- Title, Left column, right column textboxes-->
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" MinWidth="35" />
-                    <ColumnDefinition Width="5" />
-                    <ColumnDefinition Width="*" MinWidth="35" />
+                    <ColumnDefinition Width="*"
+                                      MinWidth="35" />
+                    <ColumnDefinition Width="2" />
+                    <ColumnDefinition Width="*"
+                                      MinWidth="35" />
                 </Grid.ColumnDefinitions>
 
                 <TextBox Grid.Column="0"
                          Text="{Binding LeftText, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}}"
                          FontSize="{Binding TextFontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                         Style="{StaticResource SplitTextBox}" />
+                         Style="{StaticResource SplitTextBox}"
+                         Padding="5 10" />
 
                 <GridSplitter Grid.Column="1"
-                              Width="5"
+                              Width="2"
                               HorizontalAlignment="Stretch"
                               VerticalAlignment="Stretch"
                               Background="Transparent"
@@ -80,7 +98,8 @@
                          Text="{Binding RightText, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=OneWay}"
                          IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}}"
                          FontSize="{Binding TextFontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                         Style="{StaticResource SplitTextBox}" />
+                         Style="{StaticResource SplitTextBox}"
+                         Padding="5 10" />
             </Grid>
         </Border>
     </Grid>
