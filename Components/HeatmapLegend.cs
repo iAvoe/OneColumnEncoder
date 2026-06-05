@@ -7,8 +7,7 @@ namespace OneColumnEncoder.Components
     /// Show heatmap example from cold to hot, with per-category swatches.
     /// Usage:
     /// <comps:HeatmapLegend
-    ///     ColdText="{Binding ColdLabel}"
-    ///     HotText="{Binding HotLabel}"
+    ///     ColdToHotText="{Binding ColdToHotLabel}"
     ///     UpstreamLabel="{Binding UpstreamLabel}"
     ///     DownstreamLabel="{Binding DownstreamLabel}"
     ///     OtherLabel="{Binding OtherLabel}"
@@ -23,26 +22,14 @@ namespace OneColumnEncoder.Components
                 new FrameworkPropertyMetadata(typeof(HeatmapLegend)));
         }
 
-        public string ColdText
+        public string ColdToHotText
         {
-            get => (string)GetValue(ColdTextProperty);
-            set => SetValue(ColdTextProperty, value);
+            get => (string)GetValue(ColdToHotTextProperty);
+            set => SetValue(ColdToHotTextProperty, value);
         }
-        public static readonly DependencyProperty ColdTextProperty =
+        public static readonly DependencyProperty ColdToHotTextProperty =
             DependencyProperty.Register(
-                nameof(ColdText),
-                typeof(string),
-                typeof(HeatmapLegend),
-                new PropertyMetadata(string.Empty));
-
-        public string HotText
-        {
-            get => (string)GetValue(HotTextProperty);
-            set => SetValue(HotTextProperty, value);
-        }
-        public static readonly DependencyProperty HotTextProperty =
-            DependencyProperty.Register(
-                nameof(HotText),
+                nameof(ColdToHotText),
                 typeof(string),
                 typeof(HeatmapLegend),
                 new PropertyMetadata(string.Empty));

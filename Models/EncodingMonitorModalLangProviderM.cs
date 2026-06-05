@@ -19,12 +19,11 @@ public class EncodingMonitorModalLangProviderM
             ["EstimatedSizeLabel"] = "Estimated total / GB",
             ["WrittenFramesLabel"] = "Frames written",
             ["SampleIntervalLabel"] = "Sampling interval",
-            ["StartedAtLabel"] = "Started at hh:mm:ss",
-            ["ElapsedLabel"] = "Elapsed hh:mm:ss",
-            ["RemainingLabel"] = "Remaining hh:mm:ss",
-            ["CompleteAtLabel"] = "Complete at hh:mm:ss",
-            ["EncoderFileLabel"] = "Encoder file name",
-            ["RateControlLabel"] = "ABR Mbps or CRF value",
+            ["StartedAtLabel"] = "Started At",
+            ["ElapsedLabel"] = "Elapsed",
+            ["RemainingLabel"] = "Remaining",
+            ["CompleteAtLabel"] = "ETA",
+            ["EncoderFileLabel"] = "Encoder filename",
             ["ArgsLabel"] = "Other preset name",
             ["SmallNoteText"] = "This program does not support progress quantization; interrupting will discard task progress.",
             ["DistributionUpstreamLabel"] = "Upstream program",
@@ -32,8 +31,7 @@ public class EncodingMonitorModalLangProviderM
             ["DistributionOtherLabel"] = "Other programs",
             ["DistributionCacheLabel"] = "System cache",
             ["DistributionAvailableLabel"] = "Available",
-            ["HeatLegendColdText"] = "Cold",
-            ["HeatLegendHotText"] = "Hot",
+            ["HeatLegendColdToHotText"] = "Cold / Hot",
             ["HeatLegendUpstreamLabel"] = "Upstream",
             ["HeatLegendDownstreamLabel"] = "Downstream",
             ["HeatLegendOtherLabel"] = "Other",
@@ -69,12 +67,6 @@ public class EncodingMonitorModalLangProviderM
             ["MemoryPressureMediumText"] = "Mid",
             ["MemoryPressureHighText"] = "High",
             ["BlockTooltipFormat"] = "Block {0}",
-            ["UpstreamLabel"] = "Upstream",
-            ["ExecutableLabel"] = "Executable",
-            ["InputLabel"] = "Input",
-            ["ArgumentsLabel"] = "Arguments",
-            ["EncoderLabel"] = "Encoder",
-            ["OutputLabel"] = "Output",
             ["PipeErrorPrefix"] = "Pipe error: ",
             ["ReadyToStartText"] = "Ready to start",
             ["EncodingText"] = "Encoding",
@@ -104,12 +96,11 @@ public class EncodingMonitorModalLangProviderM
             ["EstimatedSizeLabel"] = "预计总大小/GB",
             ["WrittenFramesLabel"] = "已写入帧数",
             ["SampleIntervalLabel"] = "采样间隔",
-            ["StartedAtLabel"] = "开始时间 hh:mm:ss",
-            ["ElapsedLabel"] = "已用时 hh:mm:ss",
-            ["RemainingLabel"] = "预计剩余 hh:mm:ss",
-            ["CompleteAtLabel"] = "预计完成 hh:mm:ss",
+            ["StartedAtLabel"] = "开始时间（24h）",
+            ["ElapsedLabel"] = "已用时",
+            ["RemainingLabel"] = "预计剩余",
+            ["CompleteAtLabel"] = "预计完成（24h）",
             ["EncoderFileLabel"] = "编码器文件名",
-            ["RateControlLabel"] = "ABR Mbps 或 CRF 值",
             ["ArgsLabel"] = "其他参数预设名",
             ["SmallNoteText"] = "本程序不支持进度量化；中断将丢弃任务进度。",
             ["DistributionUpstreamLabel"] = "上游程序",
@@ -117,8 +108,7 @@ public class EncodingMonitorModalLangProviderM
             ["DistributionOtherLabel"] = "其它程序",
             ["DistributionCacheLabel"] = "系统缓存",
             ["DistributionAvailableLabel"] = "可用",
-            ["HeatLegendColdText"] = "冷",
-            ["HeatLegendHotText"] = "热",
+            ["HeatLegendColdToHotText"] = "冷 / 热",
             ["HeatLegendUpstreamLabel"] = "上游",
             ["HeatLegendDownstreamLabel"] = "下游",
             ["HeatLegendOtherLabel"] = "其它",
@@ -154,12 +144,6 @@ public class EncodingMonitorModalLangProviderM
             ["MemoryPressureMediumText"] = "中",
             ["MemoryPressureHighText"] = "高",
             ["BlockTooltipFormat"] = "区块 {0}",
-            ["UpstreamLabel"] = "上游",
-            ["ExecutableLabel"] = "可执行文件",
-            ["InputLabel"] = "输入",
-            ["ArgumentsLabel"] = "参数",
-            ["EncoderLabel"] = "编码器",
-            ["OutputLabel"] = "输出",
             ["PipeErrorPrefix"] = "管道错误：",
             ["ReadyToStartText"] = "准备启动",
             ["EncodingText"] = "正在压制",
@@ -189,12 +173,11 @@ public class EncodingMonitorModalLangProviderM
             ["EstimatedSizeLabel"] = "預計總大小/GB",
             ["WrittenFramesLabel"] = "已寫入幀數",
             ["SampleIntervalLabel"] = "取樣間隔",
-            ["StartedAtLabel"] = "開始時間 hh:mm:ss",
-            ["ElapsedLabel"] = "已用時 hh:mm:ss",
-            ["RemainingLabel"] = "預計剩餘 hh:mm:ss",
-            ["CompleteAtLabel"] = "預計完成 hh:mm:ss",
+            ["StartedAtLabel"] = "開始時間（24h）",
+            ["ElapsedLabel"] = "已用時",
+            ["RemainingLabel"] = "預計剩餘",
+            ["CompleteAtLabel"] = "預計完成（24h）",
             ["EncoderFileLabel"] = "編碼器檔名",
-            ["RateControlLabel"] = "ABR Mbps 或 CRF 值",
             ["ArgsLabel"] = "其他參數預設名",
             ["SmallNoteText"] = "本程式不支援進度量化；中斷將丟棄任務進度。",
             ["DistributionUpstreamLabel"] = "上游程式",
@@ -202,8 +185,7 @@ public class EncodingMonitorModalLangProviderM
             ["DistributionOtherLabel"] = "其他程式",
             ["DistributionCacheLabel"] = "系統快取",
             ["DistributionAvailableLabel"] = "可用",
-            ["HeatLegendColdText"] = "冷",
-            ["HeatLegendHotText"] = "熱",
+            ["HeatLegendColdToHotText"] = "冷 / 熱",
             ["HeatLegendUpstreamLabel"] = "上游",
             ["HeatLegendDownstreamLabel"] = "下游",
             ["HeatLegendOtherLabel"] = "其他",
@@ -239,12 +221,6 @@ public class EncodingMonitorModalLangProviderM
             ["MemoryPressureMediumText"] = "中",
             ["MemoryPressureHighText"] = "高",
             ["BlockTooltipFormat"] = "區塊 {0}",
-            ["UpstreamLabel"] = "上游",
-            ["ExecutableLabel"] = "可執行檔",
-            ["InputLabel"] = "輸入",
-            ["ArgumentsLabel"] = "參數",
-            ["EncoderLabel"] = "編碼器",
-            ["OutputLabel"] = "輸出",
             ["PipeErrorPrefix"] = "管道錯誤：",
             ["ReadyToStartText"] = "準備啟動",
             ["EncodingText"] = "正在壓制",
@@ -278,7 +254,6 @@ public class EncodingMonitorModalLangProviderM
     public string RemainingLabel { get; }
     public string CompleteAtLabel { get; }
     public string EncoderFileLabel { get; }
-    public string RateControlLabel { get; }
     public string ArgsLabel { get; }
     public string SmallNoteText { get; }
     public string DistributionUpstreamLabel { get; }
@@ -286,8 +261,7 @@ public class EncodingMonitorModalLangProviderM
     public string DistributionOtherLabel { get; }
     public string DistributionCacheLabel { get; }
     public string DistributionAvailableLabel { get; }
-    public string HeatLegendColdText { get; }
-    public string HeatLegendHotText { get; }
+    public string HeatLegendColdToHotText { get; }
     public string HeatLegendUpstreamLabel { get; }
     public string HeatLegendDownstreamLabel { get; }
     public string HeatLegendOtherLabel { get; }
@@ -323,12 +297,6 @@ public class EncodingMonitorModalLangProviderM
     public string MemoryPressureMediumText { get; }
     public string MemoryPressureHighText { get; }
     public string BlockTooltipFormat { get; }
-    public string UpstreamLabel { get; }
-    public string ExecutableLabel { get; }
-    public string InputLabel { get; }
-    public string ArgumentsLabel { get; }
-    public string EncoderLabel { get; }
-    public string OutputLabel { get; }
     public string PipeErrorPrefix { get; }
     public string ReadyToStartText { get; }
     public string EncodingText { get; }
@@ -369,7 +337,6 @@ public class EncodingMonitorModalLangProviderM
         RemainingLabel = _d["RemainingLabel"];
         CompleteAtLabel = _d["CompleteAtLabel"];
         EncoderFileLabel = _d["EncoderFileLabel"];
-        RateControlLabel = _d["RateControlLabel"];
         ArgsLabel = _d["ArgsLabel"];
         SmallNoteText = _d["SmallNoteText"];
         DistributionUpstreamLabel = _d["DistributionUpstreamLabel"];
@@ -377,8 +344,7 @@ public class EncodingMonitorModalLangProviderM
         DistributionOtherLabel = _d["DistributionOtherLabel"];
         DistributionCacheLabel = _d["DistributionCacheLabel"];
         DistributionAvailableLabel = _d["DistributionAvailableLabel"];
-        HeatLegendColdText = _d["HeatLegendColdText"];
-        HeatLegendHotText = _d["HeatLegendHotText"];
+        HeatLegendColdToHotText = _d["HeatLegendColdToHotText"];
         HeatLegendUpstreamLabel = _d["HeatLegendUpstreamLabel"];
         HeatLegendDownstreamLabel = _d["HeatLegendDownstreamLabel"];
         HeatLegendOtherLabel = _d["HeatLegendOtherLabel"];
@@ -414,12 +380,6 @@ public class EncodingMonitorModalLangProviderM
         MemoryPressureMediumText = _d["MemoryPressureMediumText"];
         MemoryPressureHighText = _d["MemoryPressureHighText"];
         BlockTooltipFormat = _d["BlockTooltipFormat"];
-        UpstreamLabel = _d["UpstreamLabel"];
-        ExecutableLabel = _d["ExecutableLabel"];
-        InputLabel = _d["InputLabel"];
-        ArgumentsLabel = _d["ArgumentsLabel"];
-        EncoderLabel = _d["EncoderLabel"];
-        OutputLabel = _d["OutputLabel"];
         PipeErrorPrefix = _d["PipeErrorPrefix"];
         ReadyToStartText = _d["ReadyToStartText"];
         EncodingText = _d["EncodingText"];

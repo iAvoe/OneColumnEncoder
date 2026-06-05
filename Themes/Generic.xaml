@@ -341,7 +341,6 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -350,19 +349,13 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
+                        <!-- Cold to hot text -->
                         <TextBlock Grid.Row="0"
                                    Grid.Column="0"
-                                   Text="{TemplateBinding ColdText}"
+                                   Grid.ColumnSpan="2"
+                                   Text="{TemplateBinding ColdToHotText}"
+                                   Style="{StaticResource H3}"
                                    VerticalAlignment="Center"
-                                   FontSize="10"
-                                   Margin="0 0 6 2"
-                                   Foreground="{StaticResource GlobalSecondary}" />
-                        <TextBlock Grid.Row="0"
-                                   Grid.Column="1"
-                                   Text="{TemplateBinding HotText}"
-                                   VerticalAlignment="Center"
-                                   FontSize="10"
-                                   Margin="0 0 0 2"
                                    Foreground="{StaticResource GlobalSecondary}" />
                         <!-- Upstream row -->
                         <TextBlock Grid.Row="1"
@@ -370,52 +363,192 @@
                                    Text="{TemplateBinding UpstreamLabel}"
                                    VerticalAlignment="Center"
                                    FontSize="10"
-                                   Margin="0 2 6 0"
+                                   Margin="0 0 10 0"
                                    Foreground="{StaticResource GlobalSecondary}" />
-                        <Rectangle Grid.Row="1" Grid.Column="1" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapEmpty}" />
-                        <Rectangle Grid.Row="1" Grid.Column="2" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapUpstream2}" />
-                        <Rectangle Grid.Row="1" Grid.Column="3" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapUpstream4}" />
-                        <Rectangle Grid.Row="1" Grid.Column="4" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapUpstream6}" />
-                        <Rectangle Grid.Row="1" Grid.Column="5" Width="12" Height="12" Margin="0 2 0 0" Fill="{StaticResource HeatmapUpstream8}" />
+                         <Rectangle Grid.Row="1"
+                                    Grid.Column="1"
+                                    Width="15"
+                                    Height="15"
+                                    Margin="0 5 5 0"
+                                    RadiusX="2.5"
+                                    RadiusY="2.5"
+                                    Fill="{StaticResource HeatmapEmpty}" />
+                         <Rectangle Grid.Row="1"
+                                    Grid.Column="2"
+                                    Width="15"
+                                    Height="15"
+                                    Margin="0 5 5 0"
+                                    RadiusX="2.5"
+                                    RadiusY="2.5"
+                                    Fill="{StaticResource HeatmapUpstream2}" />
+                         <Rectangle Grid.Row="1"
+                                    Grid.Column="3"
+                                    Width="15"
+                                    Height="15"
+                                    Margin="0 5 5 0"
+                                    RadiusX="2.5"
+                                    RadiusY="2.5"
+                                    Fill="{StaticResource HeatmapUpstream4}" />
+                         <Rectangle Grid.Row="1"
+                                    Grid.Column="4"
+                                    Width="15"
+                                    Height="15"
+                                    Margin="0 5 5 0"
+                                    RadiusX="2.5"
+                                    RadiusY="2.5"
+                                    Fill="{StaticResource HeatmapUpstream6}" />
+                         <Rectangle Grid.Row="1"
+                                    Grid.Column="5"
+                                    Width="15"
+                                    Height="15"
+                                    Margin="0 5 0 0"
+                                    RadiusX="2.5"
+                                    RadiusY="2.5"
+                                    Fill="{StaticResource HeatmapUpstream8}" />
                         <!-- Downstream row -->
                         <TextBlock Grid.Row="2"
                                    Grid.Column="0"
                                    Text="{TemplateBinding DownstreamLabel}"
                                    VerticalAlignment="Center"
                                    FontSize="10"
-                                   Margin="0 2 6 0"
+                                   Margin="0 5 10 0"
                                    Foreground="{StaticResource GlobalSecondary}" />
-                        <Rectangle Grid.Row="2" Grid.Column="1" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapEmpty}" />
-                        <Rectangle Grid.Row="2" Grid.Column="2" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapDownstream2}" />
-                        <Rectangle Grid.Row="2" Grid.Column="3" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapDownstream4}" />
-                        <Rectangle Grid.Row="2" Grid.Column="4" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapDownstream6}" />
-                        <Rectangle Grid.Row="2" Grid.Column="5" Width="12" Height="12" Margin="0 2 0 0" Fill="{StaticResource HeatmapDownstream8}" />
+                         <Rectangle Grid.Row="2"
+                                    Grid.Column="1"
+                                    Width="15"
+                                    Height="15"
+                                    Margin="0 5 5 0"
+                                    RadiusX="2.5"
+                                    RadiusY="2.5"
+                                    Fill="{StaticResource HeatmapEmpty}" />
+                         <Rectangle Grid.Row="2"
+                                    Grid.Column="2"
+                                    Width="15"
+                                    Height="15"
+                                    Margin="0 5 5 0"
+                                    RadiusX="2.5"
+                                    RadiusY="2.5"
+                                    Fill="{StaticResource HeatmapDownstream2}" />
+                         <Rectangle Grid.Row="2"
+                                    Grid.Column="3"
+                                    Width="15"
+                                    Height="15"
+                                    Margin="0 5 5 0"
+                                    RadiusX="2.5"
+                                    RadiusY="2.5"
+                                    Fill="{StaticResource HeatmapDownstream4}" />
+                         <Rectangle Grid.Row="2"
+                                    Grid.Column="4"
+                                    Width="15"
+                                    Height="15"
+                                    Margin="0 5 5 0"
+                                    RadiusX="2.5"
+                                    RadiusY="2.5"
+                                    Fill="{StaticResource HeatmapDownstream6}" />
+                         <Rectangle Grid.Row="2"
+                                    Grid.Column="5"
+                                    Width="15"
+                                    Height="15"
+                                    Margin="0 5 0 0"
+                                    RadiusX="2.5"
+                                    RadiusY="2.5"
+                                    Fill="{StaticResource HeatmapDownstream8}" />
                         <!-- Other row -->
                         <TextBlock Grid.Row="3"
                                    Grid.Column="0"
                                    Text="{TemplateBinding OtherLabel}"
                                    VerticalAlignment="Center"
                                    FontSize="10"
-                                   Margin="0 2 6 0"
+                                   Margin="0 5 10 0"
                                    Foreground="{StaticResource GlobalSecondary}" />
-                        <Rectangle Grid.Row="3" Grid.Column="1" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapEmpty}" />
-                        <Rectangle Grid.Row="3" Grid.Column="2" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapOther2}" />
-                        <Rectangle Grid.Row="3" Grid.Column="3" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapOther4}" />
-                        <Rectangle Grid.Row="3" Grid.Column="4" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapOther6}" />
-                        <Rectangle Grid.Row="3" Grid.Column="5" Width="12" Height="12" Margin="0 2 0 0" Fill="{StaticResource HeatmapOther8}" />
+                         <Rectangle Grid.Row="3"
+                                    Grid.Column="1"
+                                    Width="15"
+                                    Height="15"
+                                    Margin="0 5 5 0"
+                                    RadiusX="2.5"
+                                    RadiusY="2.5"
+                                    Fill="{StaticResource HeatmapEmpty}" />
+                         <Rectangle Grid.Row="3"
+                                    Grid.Column="2"
+                                    Width="15"
+                                    Height="15"
+                                    Margin="0 5 5 0"
+                                    RadiusX="2.5"
+                                    RadiusY="2.5"
+                                    Fill="{StaticResource HeatmapOther2}" />
+                         <Rectangle Grid.Row="3"
+                                    Grid.Column="3"
+                                    Width="15"
+                                    Height="15"
+                                    Margin="0 5 5 0"
+                                    RadiusX="2.5"
+                                    RadiusY="2.5"
+                                    Fill="{StaticResource HeatmapOther4}" />
+                         <Rectangle Grid.Row="3"
+                                    Grid.Column="4"
+                                    Width="15"
+                                    Height="15"
+                                    Margin="0 5 5 0"
+                                    RadiusX="2.5"
+                                    RadiusY="2.5"
+                                    Fill="{StaticResource HeatmapOther6}" />
+                         <Rectangle Grid.Row="3"
+                                    Grid.Column="5"
+                                    Width="15"
+                                    Height="15"
+                                    Margin="0 5 0 0"
+                                    RadiusX="2.5"
+                                    RadiusY="2.5"
+                                    Fill="{StaticResource HeatmapOther8}" />
                         <!-- Cache row -->
                         <TextBlock Grid.Row="4"
                                    Grid.Column="0"
                                    Text="{TemplateBinding CacheLabel}"
                                    VerticalAlignment="Center"
                                    FontSize="10"
-                                   Margin="0 2 6 0"
+                                   Margin="0 5 10 0"
                                    Foreground="{StaticResource GlobalSecondary}" />
-                        <Rectangle Grid.Row="4" Grid.Column="1" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapEmpty}" />
-                        <Rectangle Grid.Row="4" Grid.Column="2" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapCache2}" />
-                        <Rectangle Grid.Row="4" Grid.Column="3" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapCache4}" />
-                        <Rectangle Grid.Row="4" Grid.Column="4" Width="12" Height="12" Margin="0 2 2 0" Fill="{StaticResource HeatmapCache6}" />
-                        <Rectangle Grid.Row="4" Grid.Column="5" Width="12" Height="12" Margin="0 2 0 0" Fill="{StaticResource HeatmapCache8}" />
+                         <Rectangle Grid.Row="4"
+                                    Grid.Column="1"
+                                    Width="15"
+                                    Height="15"
+                                    Margin="0 5 5 0"
+                                    RadiusX="2.5"
+                                    RadiusY="2.5"
+                                    Fill="{StaticResource HeatmapEmpty}" />
+                         <Rectangle Grid.Row="4"
+                                    Grid.Column="2"
+                                    Width="15"
+                                    Height="15"
+                                    Margin="0 5 5 0"
+                                    RadiusX="2.5"
+                                    RadiusY="2.5"
+                                    Fill="{StaticResource HeatmapCache2}" />
+                         <Rectangle Grid.Row="4"
+                                    Grid.Column="3"
+                                    Width="15"
+                                    Height="15"
+                                    Margin="0 5 5 0"
+                                    RadiusX="2.5"
+                                    RadiusY="2.5"
+                                    Fill="{StaticResource HeatmapCache4}" />
+                         <Rectangle Grid.Row="4"
+                                    Grid.Column="4"
+                                    Width="15"
+                                    Height="15"
+                                    Margin="0 5 5 0"
+                                    RadiusX="2.5"
+                                    RadiusY="2.5"
+                                    Fill="{StaticResource HeatmapCache6}" />
+                         <Rectangle Grid.Row="4"
+                                    Grid.Column="5"
+                                    Width="15"
+                                    Height="15"
+                                    Margin="0 5 0 0"
+                                    RadiusX="2.5"
+                                    RadiusY="2.5"
+                                    Fill="{StaticResource HeatmapCache8}" />
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

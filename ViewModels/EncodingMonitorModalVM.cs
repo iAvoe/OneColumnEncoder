@@ -96,7 +96,7 @@ namespace OneColumnEncoder.ViewModels
         public string RemainingLabel => Lang.RemainingLabel;
         public string CompleteAtLabel => Lang.CompleteAtLabel;
         public string EncoderFileLabel => Lang.EncoderFileLabel;
-        public string RateControlLabel => Lang.RateControlLabel;
+        public static string RateControlLabel => "ABR / CRF";
         public string ArgsLabel => Lang.ArgsLabel;
         public string SmallNoteText => Lang.SmallNoteText;
         public string DistributionUpstreamLabel => Lang.DistributionUpstreamLabel;
@@ -110,7 +110,6 @@ namespace OneColumnEncoder.ViewModels
         public string HeatLegendCacheLabel => Lang.HeatLegendCacheLabel;
         public string HeatLegendColdText => Lang.HeatLegendColdText;
         public string HeatLegendHotText => Lang.HeatLegendHotText;
-
 
         public string StderrTitle => Lang.StderrTitle;
 
@@ -293,7 +292,6 @@ namespace OneColumnEncoder.ViewModels
             BuildMetrics();
             BuildFooter();
             BuildHeatMaps();
-            AppendInitialLogs();
             _timer.Tick += OnTimerTick;
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
@@ -346,19 +344,6 @@ namespace OneColumnEncoder.ViewModels
             {
                 HeatMapA.Add(new HeatMapCellM { Level = 0, Tooltip = string.Format(Lang.BlockTooltipFormat, i) });
             }
-        }
-
-        private void AppendInitialLogs()
-        {
-            AppendFoldedLine(_upstreamStderrBuilder, _upstreamStderrFoldState, $"{Lang.UpstreamLabel}: {_request.UpstreamExeName}");
-            AppendFoldedLine(_upstreamStderrBuilder, _upstreamStderrFoldState, $"{Lang.ExecutableLabel}: {_request.UpstreamPath}");
-            AppendFoldedLine(_upstreamStderrBuilder, _upstreamStderrFoldState, $"{Lang.InputLabel}: {_request.UpstreamInputPath}");
-            AppendFoldedLine(_upstreamStderrBuilder, _upstreamStderrFoldState, $"{Lang.ArgumentsLabel}: {_command.UpstreamArgs}");
-            AppendFoldedLine(_downstreamStderrBuilder, _downstreamStderrFoldState, $"{Lang.EncoderLabel}: {_request.EncoderExeName}");
-            AppendFoldedLine(_downstreamStderrBuilder, _downstreamStderrFoldState, $"{Lang.ExecutableLabel}: {_request.EncoderPath}");
-            AppendFoldedLine(_downstreamStderrBuilder, _downstreamStderrFoldState, $"{Lang.OutputLabel}: {_request.OutputPath}");
-            AppendFoldedLine(_downstreamStderrBuilder, _downstreamStderrFoldState, $"{Lang.ArgumentsLabel}: {_command.EncoderArgs}");
-            FlushLogsToProperties();
         }
 
         private async Task RunEncodingAsync(CancellationToken cancellationToken)
@@ -631,7 +616,7 @@ namespace OneColumnEncoder.ViewModels
 
         private bool TryHandleProgressLine(string line)
         {
-            if (string.IsNullOrWhiteSpace(line) || !IsProgressLine(line)) return false;
+            if (string.IsNullOrWhiteSpace(line) || IsIndexProgressLine(line) || !IsProgressLine(line)) return false;
             string trimmed = line.Trim();
             AppendFoldedLine(_progressReportBuilder, _progressReportFoldState, trimmed);
             ProgressReportText = _progressReportBuilder.ToString();
@@ -670,6 +655,11 @@ namespace OneColumnEncoder.ViewModels
                 || lower.Contains("frames", StringComparison.Ordinal) && lower.Contains("kb/s", StringComparison.Ordinal)
                 || lower.Contains("eta", StringComparison.Ordinal) && lower.Contains('%', StringComparison.Ordinal)
                 || ProgressLineRegex().IsMatch(line);
+        }
+
+        private static bool IsIndexProgressLine(string line)
+        {
+            return line.Contains("Creating lwi index file", StringComparison.OrdinalIgnoreCase);
         }
 
         [GeneratedRegex(@"(?:^|\D)frame\s*=\s*(\d+)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
@@ -876,7 +866,7 @@ namespace OneColumnEncoder.ViewModels
                     cell.Tooltip = string.Format(
                         Lang.BlockTooltipFormat,
                         cellIndex)
-                        + $" | {categoryName} | R{globalRow}C{localCol} | {FormatMb(bytes)} | {fillFraction * 100:F1}%";
+                        + $" | {categoryName} | {globalRow}x{localCol}@{FormatMb(bytes)} | {fillFraction * 100:F1}%";
                 }
             }
 
@@ -914,12 +904,18 @@ namespace OneColumnEncoder.ViewModels
 
         private static int InferProgress(int current, string log)
         {
-            MatchCollection matches = ProgressPercentRegex().Matches(log);
             int found = current;
-            foreach (Match match in matches)
+            foreach (string line in log.Split('\n'))
             {
-                if (int.TryParse(match.Groups[1].Value, out int value))
-                    found = Math.Max(found, Math.Clamp(value, 0, 100));
+                string trimmed = line.Trim();
+                if (string.IsNullOrWhiteSpace(trimmed) || IsIndexProgressLine(trimmed)) continue;
+
+                MatchCollection matches = ProgressPercentRegex().Matches(trimmed);
+                foreach (Match match in matches)
+                {
+                    if (int.TryParse(match.Groups[1].Value, out int value))
+                        found = Math.Max(found, Math.Clamp(value, 0, 100));
+                }
             }
             return found;
         }
@@ -1178,9 +1174,9 @@ namespace OneColumnEncoder.ViewModels
         [return: MarshalAs(UnmanagedType.Bool)]
         private static partial bool Process32Next(IntPtr hSnapshot, ref PROCESSENTRY32 lppe);
 
-        [DllImport("kernel32.dll", SetLastError = true)]
+        [LibraryImport("kernel32.dll", EntryPoint = "CloseHandle", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool CloseHandle(IntPtr hObject);
+        private static partial bool CloseHandle(IntPtr hObject);
 
         [StructLayout(LayoutKind.Sequential)]
         private struct MEMORYSTATUSEX
@@ -1435,7 +1431,6 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(RemainingLabel));
             OnPropertyChanged(nameof(CompleteAtLabel));
             OnPropertyChanged(nameof(EncoderFileLabel));
-            OnPropertyChanged(nameof(RateControlLabel));
             OnPropertyChanged(nameof(ArgsLabel));
             OnPropertyChanged(nameof(SmallNoteText));
             OnPropertyChanged(nameof(DistributionUpstreamLabel));
