@@ -192,11 +192,13 @@
                 </StackPanel>
             </Grid>
 
+            <!-- RAM multi column display -->
             <comps:ColumnTextGrid Grid.Row="4"
                                   Margin="0 15 0 0"
                                   Items="{Binding MetricColumns}"
                                   ColumnCount="7" />
 
+            <!-- RAM telemetry frequency slider -->
             <comps:IntegerSlider Grid.Row="5"
                                  Margin="0 15 0 0"
                                  Label="{Binding SampleIntervalLabel}"
@@ -208,6 +210,7 @@
                                  TickCount="5"
                                  Step="1" />
 
+            <!-- RAM telemetry pause & continue -->
             <comps:TwoButtonGroup Grid.Row="6"
                                   Margin="0 10 0 0"
                                   DataContext="{Binding MonitorButtons}"
@@ -217,7 +220,6 @@
 
             <StackPanel Grid.Row="7"
                         Margin="0 18 0 0">
-
                 <!-- General stderr: upstream | encoder -->
                 <cards:SplitTextCard Title="{Binding StderrTitle}"
                                      LeftText="{Binding UpstreamReportText, Mode=TwoWay}"
@@ -255,8 +257,9 @@
                 </StackPanel>
             </StackPanel>
 
+            <!-- Encoding timings -->
             <StackPanel Grid.Row="8"
-                        Margin="0 18 0 0">
+                        Margin="0 15 0 0">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -312,6 +315,7 @@
                                        Button3IsEnabled="{Binding B5_3IsEnabled}"
                                        Button4IsEnabled="{Binding B5_4IsEnabled}"
                                        Button5IsEnabled="{Binding B5_5IsEnabled}" />
+                <!-- Hint: abort will discard task progress -->
                 <StackPanel Orientation="Horizontal"
                             Margin="0 3 0 0">
                     <Rectangle Width="10"
