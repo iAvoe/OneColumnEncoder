@@ -11,7 +11,6 @@ public class EncodingMonitorModalLangProviderM
             ["ProgressTitle"] = "Progress",
             ["ProgressReportTitle"] = "Progress stream",
             ["MemoryTitle"] = "RAM use",
-            ["DistributionTitle"] = "Occupancy details",
 
             ["StderrTitle"] = "Process log",
             ["DragLogReportHint"] = "Drag the window to resize the log area; drag the log divider to adjust width",
@@ -27,11 +26,10 @@ public class EncodingMonitorModalLangProviderM
             ["ArgsLabel"] = "Other preset name",
             ["SmallNoteText"] = "This program does not support progress quantization; interrupting will discard task progress.",
             ["DistributionUpstreamLabel"] = "Upstream program",
-            ["DistributionDownstreamLabel"] = "Downstream program (encoder)",
+            ["DistributionDownstreamLabel"] = "Downstream program",
             ["DistributionCacheLabel"] = "System cache",
             ["DistributionAvailableLabel"] = "Available Space",
             ["MemoryRangeLegendTitle"] = "Range legend",
-            ["IgnoreOtherProgramsMemoryNoteText"] = "Windows does not expose physical page positions here; the bar only shows approximate memory occupancy range size.",
             ["SampleIntervalTickLabels"] = "0 (RT)|60S|120S|180S|240S",
             ["ContinueMonitoringText"] = "Continue monitoring",
             ["FreezeContinueText"] = "Freeze / Continue",
@@ -84,7 +82,6 @@ public class EncodingMonitorModalLangProviderM
             ["ProgressTitle"] = "进度",
             ["ProgressReportTitle"] = "进度流",
             ["MemoryTitle"] = "内存占用",
-            ["DistributionTitle"] = "占用明细",
 
             ["StderrTitle"] = "进程日志",
             ["DragLogReportHint"] = "拖拽窗口以调整日志显示面积；拖拽日志分界线以调整宽度",
@@ -100,11 +97,10 @@ public class EncodingMonitorModalLangProviderM
             ["ArgsLabel"] = "其他参数预设名",
             ["SmallNoteText"] = "本程序不支持进度量化；中断将丢弃任务进度。",
             ["DistributionUpstreamLabel"] = "上游程序",
-            ["DistributionDownstreamLabel"] = "下游程序（编码器）",
+            ["DistributionDownstreamLabel"] = "下游程序",
             ["DistributionCacheLabel"] = "系统缓存",
             ["DistributionAvailableLabel"] = "可用空间",
             ["MemoryRangeLegendTitle"] = "范围图例",
-            ["IgnoreOtherProgramsMemoryNoteText"] = "Windows API 无法提供物理页位置；范围条仅显示近似内存占用范围大小。",
             ["SampleIntervalTickLabels"] = "0（实时）|60秒|120秒|180秒|240秒",
             ["ContinueMonitoringText"] = "继续监测",
             ["FreezeContinueText"] = "冻结 / 继续监测",
@@ -157,7 +153,6 @@ public class EncodingMonitorModalLangProviderM
             ["ProgressTitle"] = "進度",
             ["ProgressReportTitle"] = "進度流",
             ["MemoryTitle"] = "記憶占用",
-            ["DistributionTitle"] = "占用明細",
 
             ["StderrTitle"] = "進程日誌",
             ["DragLogReportHint"] = "拖曳視窗以調整日誌顯示面積；拖曳日誌分界線以調整寬度",
@@ -173,11 +168,10 @@ public class EncodingMonitorModalLangProviderM
             ["ArgsLabel"] = "其他參數預設名",
             ["SmallNoteText"] = "本程式不支援進度量化；中斷將丟棄任務進度。",
             ["DistributionUpstreamLabel"] = "上游程式",
-            ["DistributionDownstreamLabel"] = "下游程式（編碼器）",
+            ["DistributionDownstreamLabel"] = "下游程式",
             ["DistributionCacheLabel"] = "系統快取",
             ["DistributionAvailableLabel"] = "可用空間",
             ["MemoryRangeLegendTitle"] = "範圍圖例",
-            ["IgnoreOtherProgramsMemoryNoteText"] = "Windows API 無法提供實體頁位置；範圍條僅顯示近似記憶體占用範圍大小。",
             ["SampleIntervalTickLabels"] = "0（即時）|60秒|120秒|180秒|240秒",
             ["ContinueMonitoringText"] = "繼續監測",
             ["FreezeContinueText"] = "凍結 / 繼續監測",
@@ -230,7 +224,6 @@ public class EncodingMonitorModalLangProviderM
     public string ProgressTitle { get; }
     public string ProgressReportTitle { get; }
     public string MemoryTitle { get; }
-    public string DistributionTitle { get; }
     public string StderrTitle { get; }
     public string DragLogReportHint { get; }
     public string CurrentSizeLabel { get; }
@@ -249,7 +242,6 @@ public class EncodingMonitorModalLangProviderM
     public string DistributionCacheLabel { get; }
     public string DistributionAvailableLabel { get; }
     public string MemoryRangeLegendTitle { get; }
-    public string IgnoreOtherProgramsMemoryNoteText { get; }
     public string[] SampleIntervalTickLabels { get; }
     public string ContinueMonitoringText { get; }
     public string FreezeContinueText { get; }
@@ -309,7 +301,6 @@ public class EncodingMonitorModalLangProviderM
         ProgressTitle = _d["ProgressTitle"];
         ProgressReportTitle = _d["ProgressReportTitle"];
         MemoryTitle = _d["MemoryTitle"];
-        DistributionTitle = _d["DistributionTitle"];
         StderrTitle = _d["StderrTitle"];
         DragLogReportHint = _d["DragLogReportHint"];
         CurrentSizeLabel = _d["CurrentSizeLabel"];
@@ -328,7 +319,6 @@ public class EncodingMonitorModalLangProviderM
         DistributionCacheLabel = _d["DistributionCacheLabel"];
         DistributionAvailableLabel = _d["DistributionAvailableLabel"];
         MemoryRangeLegendTitle = _d["MemoryRangeLegendTitle"];
-        IgnoreOtherProgramsMemoryNoteText = _d["IgnoreOtherProgramsMemoryNoteText"];
         SampleIntervalTickLabels = _d["SampleIntervalTickLabels"].Split('|');
         ContinueMonitoringText = _d["ContinueMonitoringText"];
         FreezeContinueText = _d["FreezeContinueText"];

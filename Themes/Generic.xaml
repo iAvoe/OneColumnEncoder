@@ -63,7 +63,7 @@
     <SolidColorBrush Color="#7d736c"
                      x:Key="ButtonTertiary" />
     <!-- Memory range palette: empty block -->
-    <SolidColorBrush Color="#F2F2F2"
+    <SolidColorBrush Color="#E9EEF2"
                      x:Key="MemoryRangeEmpty" />
 
     <!-- Upstream program (yellow to orange occupancy family) -->

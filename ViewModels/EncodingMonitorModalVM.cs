@@ -82,7 +82,6 @@ namespace OneColumnEncoder.ViewModels
         public string WindowTitle => _isSample ? Lang.WindowTitleSampleMode : Lang.WindowTitle;
         public string ProgressTitle => Lang.ProgressTitle;
         public string MemoryTitle => Lang.MemoryTitle;
-        public string DistributionTitle => Lang.DistributionTitle;
 
         public string DragLogReportHint => Lang.DragLogReportHint;
         public string CurrentSizeLabel => $"{Lang.CurrentSizeLabel}: {FormatGbValue(_currentOutputSizeBytes)}";
@@ -102,7 +101,6 @@ namespace OneColumnEncoder.ViewModels
         public string DistributionCacheLabel => Lang.DistributionCacheLabel;
         public string DistributionAvailableLabel => Lang.DistributionAvailableLabel;
         public string MemoryRangeLegendTitle => Lang.MemoryRangeLegendTitle;
-        public string IgnoreOtherProgramsMemoryNoteText => Lang.IgnoreOtherProgramsMemoryNoteText;
 
         public string StderrTitle => Lang.StderrTitle;
 
@@ -1450,7 +1448,6 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(WindowTitle));
             OnPropertyChanged(nameof(ProgressTitle));
             OnPropertyChanged(nameof(MemoryTitle));
-            OnPropertyChanged(nameof(DistributionTitle));
             OnPropertyChanged(nameof(DragLogReportHint));
             OnPropertyChanged(nameof(CurrentSizeLabel));
             OnPropertyChanged(nameof(EstimatedSizeLabel));
@@ -1468,8 +1465,6 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(DistributionCacheLabel));
             OnPropertyChanged(nameof(DistributionAvailableLabel));
             OnPropertyChanged(nameof(MemoryRangeLegendTitle));
-            OnPropertyChanged(nameof(IgnoreOtherProgramsMemoryNoteText));
-
 
             OnPropertyChanged(nameof(StderrTitle));
             OnPropertyChanged(nameof(SampleIntervalTickLabels));
