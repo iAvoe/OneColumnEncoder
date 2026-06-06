@@ -45,7 +45,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly AppConfM _appConfM;
         private readonly bool _isSample;
         private readonly Stopwatch _stopwatch = new();
-        private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(200) };
+        private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(500) };
         private readonly StringBuilder _upstreamStderrBuilder = new();
         private readonly StringBuilder _downstreamStderrBuilder = new();
         private readonly LogFoldState _upstreamStderrFoldState = new();
@@ -530,7 +530,6 @@ namespace OneColumnEncoder.ViewModels
                 if ((now - _lastStatsUpdate).TotalSeconds >= 1d)
                 {
                     _lastStatsUpdate = now;
-                    UpdateProgressFromLogs();
                     UpdateProgressDetails();
                     UpdateFooterTimes(final: false);
                 }
@@ -735,8 +734,11 @@ namespace OneColumnEncoder.ViewModels
         {
             MemoryStatusSnapshot memoryStatus = GetMemoryStatusSnapshot();
             _lastMemoryStatus = memoryStatus;
-            _lastUpstreamWorkingSetBytes = GetWorkingSetBytes(_upstreamProcess);
-            _lastEncoderWorkingSetBytes = GetWorkingSetBytes(_encoderProcess);
+
+            Dictionary<int, List<int>>? childMap = GetChildProcessMap();
+
+            _lastUpstreamWorkingSetBytes = GetWorkingSetBytes(_upstreamProcess, childMap);
+            _lastEncoderWorkingSetBytes = GetWorkingSetBytes(_encoderProcess, childMap);
             long combinedWorkingSetBytes = _lastUpstreamWorkingSetBytes + _lastEncoderWorkingSetBytes;
             _upstreamWorkingSetPeakBytes = Math.Max(_upstreamWorkingSetPeakBytes, _lastUpstreamWorkingSetBytes);
             _encoderWorkingSetPeakBytes = Math.Max(_encoderWorkingSetPeakBytes, _lastEncoderWorkingSetBytes);
@@ -751,7 +753,7 @@ namespace OneColumnEncoder.ViewModels
             MetricColumns[2].BottomText = ReplaceMetricValue(Lang.WorkingSetPeakBottomText, FormatGb(combinedWorkingSetBytes));
             MetricColumns[3].MainText = FormatGb(memoryStatus.CommittedBytes);
             MetricColumns[3].BottomText = ReplaceMetricValue(Lang.PageFileBottomText, FormatGb(memoryStatus.CommitLimitBytes));
-            MetricColumns[4].MainText = GetTotalPageFaults().ToString("N0", CultureInfo.InvariantCulture);
+            MetricColumns[4].MainText = GetTotalPageFaults(childMap).ToString("N0", CultureInfo.InvariantCulture);
             MetricColumns[4].BottomText = Lang.PageFaultBottomText;
             MetricColumns[5].MainText = memoryStatus.MemoryLoadPercent < 75 ? Lang.MemoryPressureMediumText : Lang.MemoryPressureHighText;
             MetricColumns[5].BottomText = $"{memoryStatus.MemoryLoadPercent}%";
@@ -971,9 +973,9 @@ namespace OneColumnEncoder.ViewModels
             return _writtenFrames > 0 ? _writtenFrames.ToString("N0", CultureInfo.InvariantCulture) : Lang.NotAvailableText;
         }
 
-        private static long GetWorkingSetBytes(Process? process)
+        private static long GetWorkingSetBytes(Process? process, Dictionary<int, List<int>>? childMap = null)
         {
-            return SumProcessTreeValue(process, GetSingleProcessWorkingSetBytes);
+            return SumProcessTreeValue(process, GetSingleProcessWorkingSetBytes, childMap);
         }
 
         private static long GetSingleProcessWorkingSetBytes(Process process)
@@ -990,9 +992,9 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        private long GetTotalPageFaults()
+        private long GetTotalPageFaults(Dictionary<int, List<int>>? childMap = null)
         {
-            return SumProcessTreeValue(_upstreamProcess, GetSingleProcessPageFaults) + SumProcessTreeValue(_encoderProcess, GetSingleProcessPageFaults);
+            return SumProcessTreeValue(_upstreamProcess, GetSingleProcessPageFaults, childMap) + SumProcessTreeValue(_encoderProcess, GetSingleProcessPageFaults, childMap);
         }
 
         private static long GetSingleProcessPageFaults(Process process)
@@ -1016,7 +1018,7 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        private static long SumProcessTreeValue(Process? rootProcess, Func<Process, long> selector)
+        private static long SumProcessTreeValue(Process? rootProcess, Func<Process, long> selector, Dictionary<int, List<int>>? childMap = null)
         {
             if (rootProcess == null) return 0L;
 
@@ -1024,7 +1026,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 if (rootProcess.HasExited) return 0L;
                 int rootProcessId = rootProcess.Id;
-                HashSet<int> processIds = GetProcessTreeIds(rootProcessId);
+                HashSet<int> processIds = GetProcessTreeIds(rootProcessId, childMap);
                 processIds.Add(rootProcessId);
 
                 long total = 0L;
@@ -1048,9 +1050,9 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        private static HashSet<int> GetProcessTreeIds(int rootProcessId)
+        private static HashSet<int> GetProcessTreeIds(int rootProcessId, Dictionary<int, List<int>>? childMap = null)
         {
-            Dictionary<int, List<int>> childIdsByParentId = GetChildProcessMap();
+            Dictionary<int, List<int>> childIdsByParentId = childMap ?? GetChildProcessMap();
             HashSet<int> processIds = [];
             Queue<int> pending = new();
             pending.Enqueue(rootProcessId);
