@@ -51,6 +51,7 @@ namespace OneColumnEncoder.ViewModels
         public string BasicParamsText => Lang.BasicParamsText;
         public string KeyframeSecondsText => Lang.KeyframeSecondsText;
         public string ThirdPartyParamsText => Lang.ThirdPartyParamsText;
+        public string FreeTextParamsText => Lang.FreeTextParamsText;
         public string X264ModText => Lang.X264ModText;
         public string X265JpsdrAqText => Lang.X265JpsdrAqText;
         public string X265JpsdrDarkText => Lang.X265JpsdrDarkText;
@@ -125,6 +126,13 @@ namespace OneColumnEncoder.ViewModels
         {
             get => _svtAv1Keyframe;
             set => SetProperty(ref _svtAv1Keyframe, value);
+        }
+
+        private string _freeTextParams = "";
+        public string FreeTextParams
+        {
+            get => _freeTextParams;
+            set => SetProperty(ref _freeTextParams, value);
         }
 
         private bool _x264Mod;
@@ -245,6 +253,7 @@ namespace OneColumnEncoder.ViewModels
             X265Texture = _model.X265Texture;
             SvtAv1Dl2 = _model.SvtAv1Dl2;
             SvtAv1AutoTile = _model.SvtAv1AutoTile;
+            FreeTextParams = _model.CustomParams;
         }
 
         private void SaveModel()
@@ -269,22 +278,8 @@ namespace OneColumnEncoder.ViewModels
             _model.X264Mode = X264ModeDropdown.SelectedItem?.Tag is int x264Mode ? x264Mode : 0;
             _model.X265Mode = X265ModeDropdown.SelectedItem?.Tag is int x265Mode ? x265Mode : 0;
             _model.SvtAv1Mode = SvtAv1ModeDropdown.SelectedItem?.Tag is int svtAv1Mode ? svtAv1Mode : 0;
-            _model.CustomParams = BuildCustomParams();
+            _model.CustomParams = FreeTextParams;
             _model.Save();
-        }
-
-        private string BuildCustomParams()
-        {
-            List<string> parts = [];
-            foreach (ThirdPartyParamDef def in EncoderPresetsM.ThirdPartyParams)
-            {
-                System.Reflection.PropertyInfo? prop = GetType().GetProperty(def.PropertyName);
-                if (prop != null && prop.GetValue(this) is true)
-                    parts.Add(def.ParamOn);
-                else if (prop != null && !string.IsNullOrEmpty(def.ParamOff))
-                    parts.Add(def.ParamOff);
-            }
-            return string.Join(" ", parts.Where(s => !string.IsNullOrWhiteSpace(s)));
         }
 
         private void ApplySettingsToTarget()
@@ -329,6 +324,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(BasicParamsText));
             OnPropertyChanged(nameof(KeyframeSecondsText));
             OnPropertyChanged(nameof(ThirdPartyParamsText));
+            OnPropertyChanged(nameof(FreeTextParamsText));
             OnPropertyChanged(nameof(X264ModText));
             OnPropertyChanged(nameof(X265JpsdrAqText));
             OnPropertyChanged(nameof(X265JpsdrDarkText));

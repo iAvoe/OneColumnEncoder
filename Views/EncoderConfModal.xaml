@@ -314,6 +314,21 @@
                                  Margin="5 10 5 0"
                                  HorizontalAlignment="Left"
                                  VerticalAlignment="Center" />
+
+                <!-- Free-text Custom Params -->
+                <TextBlock Text="{Binding FreeTextParamsText, Mode=OneWay}"
+                           Style="{StaticResource H3}"
+                           Margin="0 15 0 0" />
+                <TextBox Text="{Binding FreeTextParams, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         MinHeight="60"
+                         MaxHeight="120"
+                         Margin="0 8 0 0"
+                         Padding="6"
+                         FontFamily="Consolas"
+                         FontSize="12"
+                         TextWrapping="Wrap"
+                         AcceptsReturn="True"
+                         VerticalScrollBarVisibility="Auto" />
             </StackPanel>
 
             </Grid>

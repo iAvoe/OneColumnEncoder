@@ -23,6 +23,7 @@ public class EncoderConfLangProviderM
             ["BasicParamsText"] = "Basic Parameters",
             ["KeyframeSecondsText"] = "Keyframe Interval Frame #",
             ["ThirdPartyParamsText"] = "3rd Party Extended Parameters",
+            ["FreeTextParamsText"] = "Additional Encoder Arguments",
             ["X264ModText"] = "x264 Mod：Film Grain Rate Distortion Optimization（FGO-RD）",
             ["X265JpsdrAqText"] = "x265 jpsdr Mod: Adaptive Quantization (AQ) Hysteresis",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod: ↑AQ Strength for Dark Scenes",
@@ -68,6 +69,7 @@ public class EncoderConfLangProviderM
             ["BasicParamsText"] = "基础参数",
             ["KeyframeSecondsText"] = "关键帧距离秒数",
             ["ThirdPartyParamsText"] = "第三方扩展参数（不支持或不确定则关）",
+            ["FreeTextParamsText"] = "附加编码器参数",
             ["X264ModText"] = "x264 Mod：基于高频信息的率失真优化（FGO-RD）",
             ["X265JpsdrAqText"] = "x265 jpsdr Mod：自适应量化迟滞（AQ Hysteresis）",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod：对暗场提高自适应量化强度",
@@ -113,6 +115,7 @@ public class EncoderConfLangProviderM
             ["BasicParamsText"] = "基礎參數",
             ["KeyframeSecondsText"] = "關鍵幀距離秒數",
             ["ThirdPartyParamsText"] = "第三方擴展參數（不支持或不確定則關）",
+            ["FreeTextParamsText"] = "附加編碼器參數",
             ["X264ModText"] = "x264 Mod：基於高頻信息的率失真優化（FGO-RD）",
             ["X265JpsdrAqText"] = "x265 jpsdr Mod：自適應量化遲滯（AQ Hysteresis）",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod：對暗場提高自適應量化強度",
@@ -158,6 +161,7 @@ public class EncoderConfLangProviderM
     public string BasicParamsText { get; }
     public string KeyframeSecondsText { get; }
     public string ThirdPartyParamsText { get; }
+    public string FreeTextParamsText { get; }
     public string X264ModText { get; }
     public string X265JpsdrAqText { get; }
     public string X265JpsdrDarkText { get; }
@@ -210,6 +214,7 @@ public class EncoderConfLangProviderM
         BasicParamsText = _d["BasicParamsText"];
         KeyframeSecondsText = _d["KeyframeSecondsText"];
         ThirdPartyParamsText = _d["ThirdPartyParamsText"];
+        FreeTextParamsText = _d["FreeTextParamsText"];
         X264ModText = _d["X264ModText"];
         X265JpsdrAqText = _d["X265JpsdrAqText"];
         X265JpsdrDarkText = _d["X265JpsdrDarkText"];
