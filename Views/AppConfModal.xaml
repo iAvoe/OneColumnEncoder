@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="580"
-        Height="690"
+        Height="680"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid Margin="15">
@@ -26,7 +26,7 @@
         </ScrollViewer>
 
         <comps:ThreeButtonGroup Grid.Row="1"
-                                Margin="0 10 0 0"
+                                Margin="0 0 0 5"
                                 ButtonHeight="30"
                                 DataContext="{Binding FinishSettingButtons}"
                                 Button1Command="{Binding Cmd1}"

@@ -23,6 +23,8 @@ namespace OneColumnEncoder.ViewModels
 
         public ImageSource? B2_1Icon { get; set; }
         public ImageSource? B2_2Icon { get; set; }
+        public ImageSource? B3_1Icon { get; set; }
+        public ImageSource? B3_2Icon { get; set; }
         public ImageSource? B3_3Icon { get; set; }
         public ImageSource? B5_1Icon { get; set; }
         public ImageSource? B5_5Icon { get; set; }

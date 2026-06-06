@@ -167,6 +167,7 @@ namespace OneColumnEncoder.ViewModels
             // Buttons
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProviderM.Buttons.UsageAndCompliance, UICaptionProviderM.Buttons.Settings, OpenUsages, OpenAppConf);
+            OpenAppConfButtons.B2_1Icon = SvgIconProviderH.gamePhone;
             OpenAppConfButtons.B2_2Icon = SvgIconProviderH.GameSetting;
             ScriptScbButtons = ButtonGroupVM.CreateTwoButton( // UpdateScriptScbButtonsState()
                 UICaptionProviderM.Buttons.OneClickScriptGen, UICaptionProviderM.Buttons.OpenScribeSrcScribe, OneClickScriptGen, OpenScriptScribe);
@@ -176,6 +177,8 @@ namespace OneColumnEncoder.ViewModels
             EncStartButtons = ButtonGroupVM.CreateThreeButton( // UpdateEncStartButtonsState()
                 UICaptionProviderM.Buttons.ReEvaluate, UICaptionProviderM.Buttons.RunSample, UICaptionProviderM.Buttons.StartEncode,
                 new ActionCmd(_ => ReEvaluateAllChecks()), SampleClip, StartEncode);
+            EncStartButtons.B3_2Icon = SvgIconProviderH.gameLocation;
+            EncStartButtons.B3_3Icon = SvgIconProviderH.gamePlay;
             _isEncStartButtonsReady = true;
             InspBypsChkButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProviderM.Buttons.InspectSrcProbelms, UICaptionProviderM.Buttons.BypassSrcChecklist, InspectSrcProblems, BypassSrcChecklist);
