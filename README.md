@@ -11,6 +11,12 @@ OneColumnEncoder 是一个基于 .NET 9 / WPF 的视频编码辅助工具。当�
 - 未完成：已有 UI、模型或部分逻辑，但行为不完整，或部分配置尚未被实际消费。
 - 完全没做：仅有占位、清单、字段或旧代码，当前没有实际功能或未接入主流程。
 
+## 运行要求
+
+- Windows 10/11 x64
+- .NET 9 Desktop Runtime
+  - 下载地址：[微软官网](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
+
 ---
 
 ## 已完成

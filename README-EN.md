@@ -11,6 +11,12 @@ This document organizes the implementation status based on the current code stru
 - Incomplete: UI, models, or some logic exist, but the behavior is incomplete, or some configurations have not yet been consumed.
 - Not Started: Only placeholders, manifests, fields, or old code exist; currently, there is no actual functionality or it is not integrated into the main workflow.
 
+## System Requirements
+
+- Windows 10/11 x64
+- .NET 9 Desktop Runtime
+  - Download Link: [Microsoft Official Website](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
+
 ---
 
 ## Completed
