@@ -1,5 +1,7 @@
+using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
+using OneColumnEncoder.ViewModels.Cards;
 using OneColumnEncoder.Views;
 using System;
 using System.Linq;
@@ -7,7 +9,12 @@ using System.Windows;
 
 namespace OneColumnEncoder.Commands.OpenClose
 {
-    public class OpenScriptScribeCmd(ModalNavS modalNavS, Func<string> getSourcePath) : BaseCmd
+    public class OpenScriptScribeCmd(
+        ModalNavS modalNavS,
+        Func<string> getSourcePath,
+        ToolItemCardVM avsItem,
+        ToolItemCardVM vpyItem,
+        Action<ToolItemCardVM, SourceFileKind, string> afterImport) : BaseCmd
     {
         private readonly ModalNavS _modalNavS = modalNavS;
         public override void Execute(object? parameter)
@@ -26,7 +33,7 @@ namespace OneColumnEncoder.Commands.OpenClose
                 _modalNavS.Close();
 
             ScriptScribeModal window = new();
-            ScriptScribeModalVM vm = new(_modalNavS, window.Close, getSourcePath);
+            ScriptScribeModalVM vm = new(_modalNavS, window.Close, getSourcePath, avsItem, vpyItem, afterImport);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();

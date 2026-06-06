@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
 using OneColumnEncoder.Helpers;
+using OneColumnEncoder.ViewModels.Cards;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -16,6 +17,9 @@ namespace OneColumnEncoder.ViewModels
         private readonly ModalNavS _modalNavS;
         private readonly Func<string> _getSourcePath;
         private readonly Action _closeAction;
+        private readonly ToolItemCardVM _avsItem;
+        private readonly ToolItemCardVM _vpyItem;
+        private readonly Action<ToolItemCardVM, SourceFileKind, string> _afterImport;
         public CloseModalCmd CloseCmd { get; }
         // 0: AVS, 1: VPY
         private int _selectedTabIndex;
@@ -61,12 +65,21 @@ namespace OneColumnEncoder.ViewModels
         public ButtonGroupVM ScriptExportButtons { get; private set; } = null!;
         public ButtonGroupVM FinishScribeButtons { get; private set; } = null!;
 
-        public ScriptScribeModalVM(ModalNavS modalNavS, Action closeAction, Func<string> getSourcePath)
+        public ScriptScribeModalVM(
+            ModalNavS modalNavS,
+            Action closeAction,
+            Func<string> getSourcePath,
+            ToolItemCardVM avsItem,
+            ToolItemCardVM vpyItem,
+            Action<ToolItemCardVM, SourceFileKind, string> afterImport)
         {
             _modalNavS = modalNavS;
             _closeAction = closeAction;
             CloseCmd = new CloseModalCmd(closeAction);
             _getSourcePath = getSourcePath;
+            _avsItem = avsItem;
+            _vpyItem = vpyItem;
+            _afterImport = afterImport;
             BuildButtonGroups();
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
@@ -113,13 +126,13 @@ namespace OneColumnEncoder.ViewModels
         }
         private void SaveAsFile()
         {
-            _ = SelectedTabIndex == 0
+            string script = SelectedTabIndex == 0
                 ? ScriptTemplateH.BuildAvsExportScript(
                     _getSourcePath(), AvsPrefix, AvsPrefix2, AvsSuffix, AvsUserInput)
                 : ScriptTemplateH.BuildVpyExportScript(
                     _getSourcePath(), VpyPrefix, VpyPrefix2, VpySuffix, VpyUserInput);
 
-            _ = new SaveFileDialog()
+            SaveFileDialog dialog = new()
             {
                 Title = UILangProviderM.Current["SrcScribe.SavingWindowTitle"],
                 Filter = SelectedTabIndex == 0
@@ -127,11 +140,91 @@ namespace OneColumnEncoder.ViewModels
                     : UILangProviderM.Current["SrcScribe.FilterVpy"],
                 FileName = SelectedTabIndex == 0 ? "script.avs" : "script.vpy"
             };
+
+            if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
+
+            if (TryWriteScript(dialog.FileName, script))
+                ShowSavedMessage(dialog.FileName);
         }
 
         private void SaveAndImportAll()
         {
+            string sourcePath = _getSourcePath();
+            string avsScript = ScriptTemplateH.BuildAvsExportScript(
+                sourcePath, AvsPrefix, AvsPrefix2, AvsSuffix, AvsUserInput);
+            string vpyScript = ScriptTemplateH.BuildVpyExportScript(
+                sourcePath, VpyPrefix, VpyPrefix2, VpySuffix, VpyUserInput);
+
+            SaveFileDialog dialog = new()
+            {
+                Title = UILangProviderM.Current["SrcScribe.SavingWindowTitle"],
+                Filter = UILangProviderM.Current["SrcScribe.FilterAvs"],
+                FileName = "script.avs"
+            };
+
+            if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
+
+            string avsPath = dialog.FileName;
+            string directory = Path.GetDirectoryName(avsPath) ?? ".";
+            string vpyPath = Path.Combine(directory, Path.GetFileNameWithoutExtension(avsPath) + ".vpy");
+
+            if (!TryWriteScripts(avsPath, avsScript, vpyPath, vpyScript)) return;
+
+            ImportScript(_avsItem, SourceFileKind.AviSynthScript, avsPath);
+            ImportScript(_vpyItem, SourceFileKind.VapourSynthScript, vpyPath);
             _closeAction();
+        }
+
+        private bool TryWriteScript(string path, string script)
+        {
+            try
+            {
+                File.WriteAllText(path, script);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                ShowSaveError(ex);
+                return false;
+            }
+        }
+
+        private bool TryWriteScripts(string avsPath, string avsScript, string vpyPath, string vpyScript)
+        {
+            try
+            {
+                File.WriteAllText(avsPath, avsScript);
+                File.WriteAllText(vpyPath, vpyScript);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                ShowSaveError(ex);
+                return false;
+            }
+        }
+
+        private void ImportScript(ToolItemCardVM item, SourceFileKind kind, string path)
+        {
+            item.P2TextData = path;
+            item.P1TextData = SourceFilePickerH.GetPrimaryText(kind, path);
+            _afterImport(item, kind, path);
+        }
+
+        private void ShowSaveError(Exception ex)
+        {
+            new OpenErrModalCmd(
+                _modalNavS,
+                UILangProviderM.Current["SrcScribe.WindowTitle"],
+                $"Failed to save scripts: {ex.Message}").Execute(null);
+        }
+
+        private void ShowSavedMessage(string path)
+        {
+            new OpenInfoOrDbgModalCmd(
+                _modalNavS,
+                UILangProviderM.Current["SrcScribe.WindowTitle"],
+                $"Script saved:\n{path}").Execute(null);
         }
 
         private string GetCurrentFullScript()

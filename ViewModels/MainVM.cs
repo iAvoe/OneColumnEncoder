@@ -144,7 +144,7 @@ namespace OneColumnEncoder.ViewModels
             OneClickScriptGen = new OneClickScriptGenCmd(
                 () => GetCurrentVideoSourcePath(), ScriptSrcImportZone[0], ScriptSrcImportZone[1], modalNavS);
             OpenScriptScribe = new OpenScriptScribeCmd(
-                modalNavS, () => GetCurrentVideoSourcePath());
+                modalNavS, () => GetCurrentVideoSourcePath(), ScriptSrcImportZone[0], ScriptSrcImportZone[1], OnSourceImported);
             CopyRawAnalysis = new CopyRawAnalysisCmd(
                 _srcVideoAnalysis, modalNavS);
             AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(
