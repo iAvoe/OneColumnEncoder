@@ -8,8 +8,13 @@
              mc:Ignorable="d"
              d:DesignHeight="20"
              d:DesignWidth="400">
-    <StackPanel Orientation="Horizontal">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <Rectangle Width="10"
+                   Grid.Column="0"
                    Height="10"
                    VerticalAlignment="Center"
                    Fill="{Binding HintBrush, ElementName=uc}">
@@ -18,11 +23,13 @@
                             Stretch="Uniform" />
             </Rectangle.OpacityMask>
         </Rectangle>
-        <TextBlock Text="{Binding Text, ElementName=uc}"
+        <TextBlock Grid.Column="1"
+                   Text="{Binding Text, ElementName=uc}"
                    FontSize="{Binding FontSize, ElementName=uc}"
                    Foreground="{Binding HintBrush, ElementName=uc}"
                    Margin="3.5 0 0 0"
                    VerticalAlignment="Center"
-                   Focusable="False" />
-    </StackPanel>
+                   Focusable="False"
+                   TextWrapping="Wrap" />
+    </Grid>
 </UserControl>

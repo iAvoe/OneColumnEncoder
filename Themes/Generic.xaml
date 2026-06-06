@@ -334,8 +334,13 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type comps:ChecklistItem}">
-                    <StackPanel Orientation="Horizontal">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
                         <Rectangle x:Name="IconMask"
+                                   Grid.Column="0"
                                    Width="13"
                                    Height="13"
                                    VerticalAlignment="Center"
@@ -347,11 +352,13 @@
                             </Rectangle.OpacityMask>
                         </Rectangle>
                         <!-- Textblock -->
-                        <TextBlock Text="{TemplateBinding Text}"
+                        <TextBlock Grid.Column="1"
+                                   Text="{TemplateBinding Text}"
                                    VerticalAlignment="Center"
                                    FontSize="13"
-                                   Foreground="{TemplateBinding Foreground}" />
-                    </StackPanel>
+                                   Foreground="{TemplateBinding Foreground}"
+                                   TextWrapping="Wrap" />
+                    </Grid>
 
                     <ControlTemplate.Triggers>
                         <!-- Waiting -->

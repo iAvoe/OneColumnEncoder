@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:OneColumnEncoder.Components"
              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
-             d:DataContext="{d:DesignInstance Type=vms:ToolItemCardVM}"
+             xmlns:cards="clr-namespace:OneColumnEncoder.ViewModels.Cards"
+             d:DataContext="{d:DesignInstance Type=cards:ToolItemCardVM}"
              mc:Ignorable="d"
              d:DesignHeight="140"
              d:DesignWidth="450">
@@ -16,11 +17,31 @@
     | R1 | R2        |
     R1, R2: Right side control buttons
     P1: P2: Properties
+    Card width: WidthToColumnCount
     -->
     <Border BorderThickness="1.5"
             SnapsToDevicePixels="True"
-            CornerRadius="18"
-            Padding="18">
+            CornerRadius="17"
+            Padding="17">
+        <Border.ToolTip>
+            <ToolTip MaxWidth="700">
+                <StackPanel>
+                    <TextBlock FontSize="11"
+                               TextWrapping="Wrap"
+                               Margin="0 0 0 4">
+                        <Run Text="{Binding P1Name, Mode=OneWay}"
+                             FontWeight="Bold" /><Run Text="{Binding SeparatorText, Mode=OneWay}"
+                             FontWeight="Bold" /><Run Text="{Binding P1Text, Mode=OneWay}" />
+                    </TextBlock>
+                    <TextBlock FontSize="11"
+                               TextWrapping="Wrap">
+                        <Run Text="{Binding P2Name, Mode=OneWay}"
+                             FontWeight="Bold" /><Run Text="{Binding SeparatorText, Mode=OneWay}"
+                             FontWeight="Bold" /><Run Text="{Binding P2Text, Mode=OneWay}" />
+                    </TextBlock>
+                </StackPanel>
+            </ToolTip>
+        </Border.ToolTip>
         <Border.Style>
             <Style TargetType="Border">
                 <Setter Property="BorderBrush"
@@ -71,7 +92,7 @@
                     <Trigger Property="IsMouseOver"
                              Value="True">
                         <Setter Property="Opacity"
-                                Value="0.7" />
+                                Value="0.65" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
@@ -86,14 +107,16 @@
 
             <TextBlock Grid.Row="0"
                        Text="{Binding Name}"
-                       Style="{StaticResource H2}" />
+                       Style="{StaticResource H2}"
+                       HorizontalAlignment="Left"
+                       TextTrimming="CharacterEllipsis" />
 
             <TextBlock Grid.Row="1"
-                       Margin="0 5.5 0 0"
+                       Margin="0 5 0 0"
                        HorizontalAlignment="Left"
-                       FontSize="11"
+                       FontSize="12"
                        TextTrimming="CharacterEllipsis"
-                       MaxWidth="330">
+                       MaxWidth="200">
                 <Run Text="{Binding P1Name, Mode=OneWay}"
                      FontWeight="Bold" /><Run Text="{Binding SeparatorText, Mode=OneWay}"
                      FontWeight="Bold" /><Run Text="{Binding P1Text, Mode=OneWay}"
@@ -101,11 +124,11 @@
             </TextBlock>
 
             <TextBlock Grid.Row="2"
-                       Margin="0 5.5 0 0"
+                       Margin="0 5 0 0"
                        HorizontalAlignment="Left"
-                       FontSize="11"
+                       FontSize="12"
                        TextTrimming="CharacterEllipsis"
-                       MaxWidth="330">
+                       MaxWidth="200">
                 <Run Text="{Binding P2Name, Mode=OneWay}"
                      FontWeight="Bold" /><Run Text="{Binding SeparatorText, Mode=OneWay}"
                      FontWeight="Bold" /><Run Text="{Binding P2Text, Mode=OneWay}"

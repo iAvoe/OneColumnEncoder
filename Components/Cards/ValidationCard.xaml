@@ -15,8 +15,8 @@
     <Border BorderBrush="{StaticResource GlobalPrimary}"
              BorderThickness="1.5"
              SnapsToDevicePixels="True"
-             CornerRadius="20"
-             Padding="17.5 20"
+             CornerRadius="18"
+             Padding="17 20"
              Background="{StaticResource Background}"
              Opacity="{Binding CardOpacity}">
         <Grid>

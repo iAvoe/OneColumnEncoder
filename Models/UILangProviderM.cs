@@ -150,7 +150,7 @@ public class UILangProviderM
             ["Checklist.Source2.ColorMatrix"] = "Color matrix metadata is normal",
             ["Checklist.Source2.TransferChars"] = "Transfer characteristics metadata is normal",
             ["Checklist.Source2.ColorPrimaries"] = "Color primaries metadata is normal",
-            ["Checklist.Source2.ChromaSubsampling"] = "No chroma subsampling or being \u2190/\u2196 (SVT-AV1 req.)",
+            ["Checklist.Source2.ChromaSubsampling"] = "No chroma subsampling or towards \u2190/\u2196 (SVT-AV1 req.)",
 
             // Checklist - Encoding Prerequisites 1 (Hardware)
             ["Checklist.Enc1.OffGrid"] = "Not off-grid / powering via battery",
@@ -408,7 +408,7 @@ public class UILangProviderM
             ["Checklist.Source2.ColorMatrix"] = "色彩矩阵信息是否正常",
             ["Checklist.Source2.TransferChars"] = "传输特性信息是否正常",
             ["Checklist.Source2.ColorPrimaries"] = "原色色系信息是否正常",
-            ["Checklist.Source2.ChromaSubsampling"] = "已关闭色度采样压缩或朝向 \u2190/\u2196（SVT-AV1 要求）",
+            ["Checklist.Source2.ChromaSubsampling"] = "无色度采样或朝向 \u2190/\u2196 点位（SVT-AV1 要求）",
 
             ["Checklist.Enc1.OffGrid"] = "使用电池供电 / 离网",
             ["Checklist.Enc1.DiskSpace"] = "磁盘空间充足",
@@ -658,7 +658,7 @@ public class UILangProviderM
             ["Checklist.Source2.ColorMatrix"] = "色彩矩陣資訊是否正常",
             ["Checklist.Source2.TransferChars"] = "傳輸特性資訊是否正常",
             ["Checklist.Source2.ColorPrimaries"] = "原色色系資訊是否正常",
-            ["Checklist.Source2.ChromaSubsampling"] = "已關閉色度採樣壓縮或朝向 \u2190/\u2196（SVT-AV1 要求）",
+            ["Checklist.Source2.ChromaSubsampling"] = "無色度採樣或朝向 \u2190/\u2196 點位（SVT-AV1 要求）",
 
             ["Checklist.Enc1.OffGrid"] = "使用電池供電 / 離網",
             ["Checklist.Enc1.DiskSpace"] = "磁碟空間充足",

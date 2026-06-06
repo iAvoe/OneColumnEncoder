@@ -10,7 +10,10 @@ namespace OneColumnEncoder.Converters
         {
             if (value is double width)
             {
-                return width > 500 ? 2 : 1;
+                if (parameter is not string text || !int.TryParse(text, out int maxColumns)) return width > 500 ? 2 : 1;
+
+                int columns = Math.Max(1, (int)(width / 300));
+                return Math.Min(columns, maxColumns);
             }
             return 1;
         }

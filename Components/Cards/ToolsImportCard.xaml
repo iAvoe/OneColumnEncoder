@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
              xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
-             xmlns:cardvms="clr-namespace:OneColumnEncoder.ViewModels.Cards"
-             d:DataContext="{d:DesignInstance Type=cardvms:ToolsImportCardVM}"
+             xmlns:cards="clr-namespace:OneColumnEncoder.ViewModels.Cards"
+             d:DataContext="{d:DesignInstance Type=cards:ToolsImportCardVM}"
              mc:Ignorable="d"
              d:DesignWidth="450">
     <!--
@@ -36,20 +36,23 @@
 
             <TextBlock Grid.Row="0"
                        Grid.Column="0"
-                       VerticalAlignment="Center"
+                       VerticalAlignment="Top"
                        Text="{Binding Name}"
-                       Style="{StaticResource H2}"
-                       Margin="0 0 10 0"/>
+                       Style="{StaticResource H2}" />
+            
+            <!-- Import dropdown -->
             <comps:DropdownMenu Grid.Row="0"
                                 Grid.Column="1"
                                 MinWidth="180"
-                                Height="30"
+                                Height="25"
                                 Margin="0 0 5 0"
                                 DataContext="{Binding ImportDropdown}" />
+            
+            <!-- Import button -->
             <Button Grid.Row="0"
                     Grid.Column="2"
                     MinWidth="90"
-                    Height="30"
+                    Height="25"
                     VerticalAlignment="Center"
                     Style="{StaticResource PrimaryButton}"
                     Command="{Binding ImportCommand}">
