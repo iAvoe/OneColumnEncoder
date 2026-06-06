@@ -13,7 +13,7 @@
         Width="1000"
         MaxHeight="1060"
         MinWidth="860"
-        Height="890"
+        Height="870"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid Margin="15">
@@ -233,8 +233,7 @@
         </ScrollViewer>
 
         <!-- Encoding timings -->
-        <StackPanel Grid.Row="1"
-                    Margin="0 15 0 0">
+        <StackPanel Grid.Row="1">
             <comps:ColumnTextGrid Items="{Binding FooterColumns}"
                                   ColumnCount="7" />
             <comps:FiveButtonGroup Margin="0 15 0 0"

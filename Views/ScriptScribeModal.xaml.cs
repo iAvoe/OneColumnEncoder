@@ -4,9 +4,9 @@ using System.Windows.Input;
 
 namespace OneColumnEncoder.Views
 {
-    public partial class ScriptSrcScribeModal : Window
+    public partial class ScriptScribeModal : Window
     {
-        public ScriptSrcScribeModal()
+        public ScriptScribeModal()
         {
             InitializeComponent();
         }

@@ -13,7 +13,7 @@ namespace OneColumnEncoder.Commands.OpenClose
         public override void Execute(object? parameter)
         {
             var existingWindow = Application.Current.Windows
-                .OfType<ScriptSrcScribeModal>()
+                .OfType<ScriptScribeModal>()
                 .FirstOrDefault();
 
             if (existingWindow != null)
@@ -25,7 +25,7 @@ namespace OneColumnEncoder.Commands.OpenClose
             if (_modalNavS.IsOpen)
                 _modalNavS.Close();
 
-            ScriptSrcScribeModal window = new();
+            ScriptScribeModal window = new();
             ScriptScribeModalVM vm = new(_modalNavS, window.Close, getSourcePath);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
