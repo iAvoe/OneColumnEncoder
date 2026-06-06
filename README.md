@@ -1,6 +1,6 @@
 # OneColumnEncoder
 
-[English Version](.\README-EN.md)
+[English Version](README-EN.md)
 
 OneColumnEncoder 是一个基于 .NET 9 / WPF 的视频编码辅助工具。当前项目已经可以运行，主流程围绕“导入上游工具和编码器、导入视频或脚本源、分析源视频、生成编码命令、启动并监控编码进程”展开。
 

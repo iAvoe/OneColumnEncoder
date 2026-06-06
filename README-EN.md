@@ -1,6 +1,6 @@
 # OneColumnEncoder
 
-[中文版](.\README.md)
+[中文版](README.md)
 
 OneColumnEncoder is a next-gen video encoding auxiliary tool based on .NET 9/WPF. The current project works but lacks testing, and the main workflow revolves around "importing upstream tools and encoders, importing video or script sources, analyzing source video, generating encoding commands, and starting and monitoring the encoding process."
 
