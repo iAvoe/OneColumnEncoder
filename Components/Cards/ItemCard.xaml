@@ -92,7 +92,6 @@
                        Margin="0 5.5 0 0"
                        HorizontalAlignment="Left"
                        FontSize="11"
-                       Foreground="{StaticResource GlobalPrimary}"
                        TextTrimming="CharacterEllipsis"
                        MaxWidth="330">
                 <Run Text="{Binding P1Name, Mode=OneWay}"
@@ -105,7 +104,6 @@
                        Margin="0 5.5 0 0"
                        HorizontalAlignment="Left"
                        FontSize="11"
-                       Foreground="{StaticResource GlobalPrimary}"
                        TextTrimming="CharacterEllipsis"
                        MaxWidth="330">
                 <Run Text="{Binding P2Name, Mode=OneWay}"
