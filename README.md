@@ -8,7 +8,8 @@ OneColumnEncoder 是一个基于 .NET 9 / WPF 的视频编码辅助工具。当�
 - 未完成：已有 UI、模型或部分逻辑，但行为不完整，或部分配置尚未被实际消费。
 - 完全没做：仅有占位、清单、字段或旧代码，当前没有实际功能或未接入主流程。
 
------
+
+---
 
 ## 已完成
 
@@ -142,6 +143,10 @@ OneColumnEncoder 是一个基于 .NET 9 / WPF 的视频编码辅助工具。当�
 - 多个 WPF converter 的 `ConvertBack` 抛出 `NotImplementedException`。
 - 这些 converter 当前主要用于单向绑定，因此不影响现有 UI，但如果未来改成双向绑定需要补齐。
 
+### 编码参数配置细节
+
+- `EncoderConfM.CustomParams` 会被保存，且已经被 `EncodingPipelineH` 拼入最终编码命令。
+- “自定义参数”区域不再是第三方开关汇总，而是直接读写一个自由文本参数实现
 
 ---
 
@@ -175,18 +180,18 @@ OneColumnEncoder 是一个基于 .NET 9 / WPF 的视频编码辅助工具。当�
 
 ## 主要源码位置
 
-- `Commands/`：用户操作命令、模态窗打开关闭、保存加载和编码启动入口。
-- `Helpers/`：编码管线、ffprobe 分析、工具检测、脚本模板、文件名校验、CPU / NUMA / 权限 / SMTP 等辅助逻辑。
-- `Models/`：配置模型、工具定义、语言资源、检查清单和数据 DTO。
-- `ViewModels/`：主界面、模态窗和卡片状态管理。
-- `Views/`：WPF 窗口和界面 XAML。
-- `Components/`：复用 UI 控件。
-- `Converters/`：WPF 绑定转换器。
+- `Commands/`：用户操作命令、模态窗打开关闭、保存加载和编码启动入口
+- `Helpers/`：编码管线、ffprobe 分析、工具检测、脚本模板、文件名校验、CPU / NUMA / 权限 / SMTP 等辅助逻辑
+- `Models/`：配置模型、工具定义、语言资源、检查清单和数据 DTO
+- `ViewModels/`：主界面、模态窗和卡片状态管理
+- `Views/`：WPF 窗口和界面 XAML
+- `Components/`：复用 UI 控件
+- `Converters/`：WPF 绑定转换器
 
 ### 测试与工程化
 
 - 当前没有看到单元测试、集成测试或自动化 UI 测试项目。
-- README 中尚未包含构建、运行、依赖工具准备和典型工作流说明（不过已在用法说明窗口，即 AppUsageModal 中提供）
+- README 中尚未包含构建、运行、依赖工具准备和典型工作流说明（不过已在用法说明窗口 / AppUsageModal 中提供）
 
 ---
 
