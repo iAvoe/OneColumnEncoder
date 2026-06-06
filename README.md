@@ -6,9 +6,14 @@
 
 ## 软件截图
 
-本软件支持多语言，但为减少图片数量，此处统一用了英语文本截图。
+本软件支持多语言，但为减少图片数量而在此统一用了英语文本截图。
 
-<p align="center"><img src="WireframeMockups/1-Main-Page.png" alt="Main Window"><br><img src="WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window"><br><img src="WireframeMockups/3-Encoder-Setting.png" alt="Encoder Setting Window"><br><img src="WireframeMockups/4-Parallelism-Setting.png" alt="Parallelism Setting Window"><br><img src="WireframeMockups/5-Clip-Sampler.png" alt="Clip Sampler Window"><br><img src="WireframeMockups/6-Encoding-Monitor.png" alt="Encoding Monitor Window"><br></p>
+<p align="center"><img src="WireframeMockups/1-Main-Page.png" alt="Main Window" width="600"><br>
+<img src="WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window" width="400"><br>
+<img src="WireframeMockups/3-Encoder-Setting.png" alt="Encoder Setting Window" width="400"><br>
+<img src="WireframeMockups/4-Parallelism-Setting.png" alt="Parallelism Setting Window" width="400"><br>
+<img src="WireframeMockups/5-Clip-Sampler.png" alt="Clip Sampler Window" width="400"><br>
+<img src="WireframeMockups/6-Encoding-Monitor.png" alt="Encoding Monitor Window" width="600"><br></p>
 
 ## 运行要求
 
