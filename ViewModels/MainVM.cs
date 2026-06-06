@@ -232,7 +232,12 @@ namespace OneColumnEncoder.ViewModels
                 UpstreamsZone.Any(t => t.IsSelected
                     && ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2yuv.exe"));
             EncTermsCard.GetAviSynthDllPathFunc = () =>
-                _appDataM.Tools.AviSynthDllPath ?? string.Empty;
+            {
+                string programFilesX86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+                return string.IsNullOrWhiteSpace(programFilesX86)
+                    ? string.Empty
+                    : Path.Combine(programFilesX86, "AviSynth+", "plugins64+");
+            };
             EncTermsCard.GetSourceVideoFilePathFunc = () =>
             {
                 ToolItemCardVM? videoSrc = VideoSrcImportZone.FirstOrDefault(
@@ -315,6 +320,9 @@ namespace OneColumnEncoder.ViewModels
             if (sender == EncodersZone)
                 SrcValidationCard.RefreshSvtav1BitDepthStatus();
 
+            if (sender == UpstreamsZone)
+                RefreshEncTermsState();
+
             RefreshUpstreamToolState();
             RefreshVspipeAvailability();
             RefreshImportedToolsChecklist();
@@ -381,10 +389,20 @@ namespace OneColumnEncoder.ViewModels
             RefreshUpstreamToolState();
             RefreshVspipeAvailability();
             RefreshImportedToolsChecklist();
+            RefreshEncTermsState();
             ToolCompatibilityH.RefreshDependencySelectionState(
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
             ToolCompatibilityH.RefreshSourceSelectionState(
                 UpstreamsZone, ScriptSrcImportZone, RefreshSelectedSourceStatus);
+        }
+
+        private void RefreshEncTermsState()
+        {
+            bool isAvs2yuvSelected = UpstreamsZone.Any(t => t.IsSelected
+                && ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2yuv.exe"));
+
+            EncTermsCard.SetLsmashCheckEnabled(isAvs2yuvSelected);
+            EncTermsCard.RunAllChecks();
         }
 
         private void RefreshEncSettingsState()
@@ -539,6 +557,8 @@ namespace OneColumnEncoder.ViewModels
                 item, GetZoneForTool(ToolDefinitionProviderM.ResolveToolZone(item.Name)), _appDataM);
 
             ToolZone zone = ToolDefinitionProviderM.ResolveToolZone(item.Name);
+            if (zone == ToolZone.Upstream)
+                item.PropertyChanged += OnUpstreamItemPropertyChanged;
             if (zone == ToolZone.Encoder)
                 item.PropertyChanged += OnEncoderItemPropertyChanged;
             if (zone == ToolZone.Analytics)
@@ -592,6 +612,13 @@ namespace OneColumnEncoder.ViewModels
                 SrcValidationCard.RefreshSvtav1BitDepthStatus();
                 UpdateEncStartButtonsState();
             }
+        }
+
+        private void OnUpstreamItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (sender is not ToolItemCardVM) return;
+            if (e.PropertyName == nameof(ToolItemCardVM.IsSelected))
+                RefreshEncTermsState();
         }
 
         private void OnAnalyticsItemPropertyChanged(object? sender, PropertyChangedEventArgs e)

@@ -47,6 +47,15 @@ namespace OneColumnEncoder.ViewModels.Cards
             RunChecklist2Checks();
         }
 
+        public void SetLsmashCheckEnabled(bool isEnabled)
+        {
+            if (Checklist2.Count <= LsmashChecklistIdx) return;
+
+            Checklist2[LsmashChecklistIdx].IsEnabled = isEnabled;
+            if (!isEnabled)
+                Checklist2[LsmashChecklistIdx].Status = StatusType.Waiting;
+        }
+
         #region Checklist1: Hardware checks
 
         private void RunChecklist1Checks()

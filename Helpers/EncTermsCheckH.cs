@@ -118,7 +118,7 @@ public static partial class EncTermsCheckH
 
     #region Lsmash plugin detection
     /// <summary>
-    /// Returns true if libvslsmashsource.dll can be found in known AviSynth+ plugin locations.
+    /// Returns true if LSMASHSource.dll can be found in known AviSynth+ plugin locations.
     /// </summary>
     public static bool HasLsmashPlugin(string? avisynthDllPath)
     {
@@ -126,14 +126,18 @@ public static partial class EncTermsCheckH
 
         try
         {
-            string? installDir = Path.GetDirectoryName(avisynthDllPath);
+            string installDir = Directory.Exists(avisynthDllPath)
+                ? avisynthDllPath
+                : Path.GetDirectoryName(avisynthDllPath) ?? string.Empty;
             if (string.IsNullOrWhiteSpace(installDir)) return false;
 
             if (CheckLsmashInDir(installDir)
                 || CheckLsmashInDir(Path.Combine(installDir, "plugins"))
                 || CheckLsmashInDir(Path.Combine(installDir, "plugins64"))
+                || CheckLsmashInDir(Path.Combine(installDir, "plugins64+"))
                 || CheckLsmashInDir(Path.Combine(installDir, "..", "plugins"))
-                || CheckLsmashInDir(Path.Combine(installDir, "..", "plugins64")))
+                || CheckLsmashInDir(Path.Combine(installDir, "..", "plugins64"))
+                || CheckLsmashInDir(Path.Combine(installDir, "..", "plugins64+")))
                 return true;
 
             string? programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
@@ -141,8 +145,10 @@ public static partial class EncTermsCheckH
 
             return CheckLsmashInDir(Path.Combine(programFiles, "AviSynth+", "plugins"))
                 || CheckLsmashInDir(Path.Combine(programFiles, "AviSynth+", "plugins64"))
+                || CheckLsmashInDir(Path.Combine(programFiles, "AviSynth+", "plugins64+"))
                 || CheckLsmashInDir(Path.Combine(programFilesX86, "AviSynth+", "plugins"))
-                || CheckLsmashInDir(Path.Combine(programFilesX86, "AviSynth+", "plugins64"));
+                || CheckLsmashInDir(Path.Combine(programFilesX86, "AviSynth+", "plugins64"))
+                || CheckLsmashInDir(Path.Combine(programFilesX86, "AviSynth+", "plugins64+"));
         }
         catch
         {
@@ -155,7 +161,7 @@ public static partial class EncTermsCheckH
         if (string.IsNullOrWhiteSpace(directory) || !Directory.Exists(directory))
             return false;
 
-        return File.Exists(Path.Combine(directory, "libvslsmashsource.dll"));
+        return File.Exists(Path.Combine(directory, "LSMASHSource.dll"));
     }
     #endregion
 }

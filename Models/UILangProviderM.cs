@@ -46,7 +46,7 @@ public class UILangProviderM
             ["EncInspect.P4Title"] = "Overwrite Check",
             ["EncInspect.P4Text"] = "Checks if the output file already exists, and dynamically make initiation of overwriting harder to prevent accidental data loss.",
             ["EncInspect.P5Title"] = "L-SMASH Plugin Check (Avs2Yuv)",
-            ["EncInspect.P5Text"] = "Check if libvslsmashsource.dll exists under AviSynth+ plugin path to read source video frames",
+            ["EncInspect.P5Text"] = "Check if LSMASHSource.dll exists under C:\\Program Files (x86)\\AviSynth+\\plugins64+\\ (not libvslsmashsource.dll) to read source video frames",
 
             ["Buttons.Add"] = "Add",
             ["Buttons.Replace"] = "Replace",
@@ -161,7 +161,7 @@ public class UILangProviderM
             ["Checklist.Enc2.FTPFilename"] = "Output filename maybe valid for FTP (Pseudo-UTF-8)",
             ["Checklist.Enc2.WritePermission"] = "Write permission in output folder",
             ["Checklist.Enc2.Overwrite"] = "Output does not overwrite existing file",
-            ["Checklist.Enc2.LsmashForAvs2Yuv"] = "libvslsmashsource.dll under AviSynth+ path (Avs2Yuv)",
+            ["Checklist.Enc2.LsmashForAvs2Yuv"] = "LSMASHSource.dll under AviSynth+ path (Avs2Yuv)",
 
             // Checklist - Best Practices 1 (Hardware)
             ["Checklist.Best1.SlowDisk"] = "Avoiding slow disk connection (USB2, Bluetooth, etc.)",
@@ -327,7 +327,7 @@ public class UILangProviderM
             ["EncInspect.P4Title"] = "覆盖检查",
             ["EncInspect.P4Text"] = "检查输出文件是否已存在，并动态根据被覆盖文件大小提高操作难度，避免意外数据丢失。",
             ["EncInspect.P5Title"] = "L-SMASH 插件检查（Avs2Yuv）",
-            ["EncInspect.P5Text"] = "当选择 Avs2Yuv 上游时，验证 libvslsmashsource.dll 是否存在于 AviSynth+ 插件路径下。不存在则无法解码，无法进行压制。",
+            ["EncInspect.P5Text"] = "当选择 Avs2Yuv 上游时，验证 LSMASHSource.dll 是否存在于 C:\\Program Files (x86)\\AviSynth+\\plugins64+\\（不是 libvslsmashsource.dll）。不存在则无法解码，无法进行压制。",
             ["Buttons.Add"] = "添加",
             ["Buttons.Replace"] = "替换",
             ["Buttons.Delete"] = "删除",
@@ -426,7 +426,7 @@ public class UILangProviderM
             ["Checklist.Enc2.FTPFilename"] = "输出文件名可能兼容 FTP（伪 UTF-8）",
             ["Checklist.Enc2.WritePermission"] = "输出文件夹有写入权限",
             ["Checklist.Enc2.Overwrite"] = "输出不覆盖现有文件",
-            ["Checklist.Enc2.LsmashForAvs2Yuv"] = "AviSynth+ 路径含 libvslsmashsource.dll（Avs2Yuv）",
+            ["Checklist.Enc2.LsmashForAvs2Yuv"] = "AviSynth+ 路径含 LSMASHSource.dll（Avs2Yuv）",
 
             ["Checklist.Best1.SlowDisk"] = "避免低速磁盘连接协议（USB2、蓝牙等）",
             ["Checklist.Best1.DiskThrashing"] = "避免 HDD 磁头寻道冲突（同盘读写或非机械盘）",
@@ -586,7 +586,7 @@ public class UILangProviderM
             ["EncInspect.P4Title"] = "覆蓋檢查",
             ["EncInspect.P4Text"] = "檢查輸出文件是否已存在，並動態根據被覆蓋檔案大小提高操作難度，避免意外數據遺失。",
             ["EncInspect.P5Title"] = "L-SMASH 插件檢查（Avs2Yuv）",
-            ["EncInspect.P5Text"] = "當選擇 Avs2Yuv 上游時，驗證 libvslsmashsource.dll 是否存在於 AviSynth+ 插件路徑下。不存在則無法解碼，無法進行壓制。",
+            ["EncInspect.P5Text"] = "當選擇 Avs2Yuv 上游時，驗證 LSMASHSource.dll 是否存在於 C:\\Program Files (x86)\\AviSynth+\\plugins64+\\（不是 libvslsmashsource.dll）。不存在則無法解碼，無法進行壓制。",
             ["Buttons.Add"] = "添加",
             ["Buttons.Replace"] = "替換",
             ["Buttons.Delete"] = "刪除",
@@ -685,7 +685,7 @@ public class UILangProviderM
             ["Checklist.Enc2.FTPFilename"] = "輸出檔案名可能相容 FTP（偽 UTF-8）",
             ["Checklist.Enc2.WritePermission"] = "輸出文件夾有寫入權限",
             ["Checklist.Enc2.Overwrite"] = "輸出不覆蓋現有文件",
-            ["Checklist.Enc2.LsmashForAvs2Yuv"] = "AviSynth+ 路徑含 libvslsmashsource.dll（Avs2Yuv）",
+            ["Checklist.Enc2.LsmashForAvs2Yuv"] = "AviSynth+ 路徑含 LSMASHSource.dll（Avs2Yuv）",
 
             ["Checklist.Best1.SlowDisk"] = "避免低速磁碟連接協議（USB2、藍牙等）",
             ["Checklist.Best1.DiskThrashing"] = "避免 HDD 磁頭尋道衝突（同盤讀寫或非機械盤）",
