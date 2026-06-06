@@ -177,6 +177,7 @@ namespace OneColumnEncoder.ViewModels
             EncStartButtons = ButtonGroupVM.CreateThreeButton( // UpdateEncStartButtonsState()
                 UICaptionProviderM.Buttons.ReEvaluate, UICaptionProviderM.Buttons.RunSample, UICaptionProviderM.Buttons.StartEncode,
                 new ActionCmd(_ => ReEvaluateAllChecks()), SampleClip, StartEncode);
+            EncStartButtons.B3_1Icon = SvgIconProviderH.GameRefresh;
             EncStartButtons.B3_2Icon = SvgIconProviderH.GameLocation;
             EncStartButtons.B3_3Icon = SvgIconProviderH.GamePlay;
             _isEncStartButtonsReady = true;
