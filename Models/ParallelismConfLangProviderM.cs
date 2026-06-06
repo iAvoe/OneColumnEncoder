@@ -18,9 +18,8 @@ public class ParallelismConfLangProviderM
             ["PreferDownstreamPhysCoresText"] = "Map encoder threads to phys. cores",
             ["PreferPCoreComputeText"] = "TODO: Prefer P-Cores for encoder's compute threads",
             ["PreferECoreLookaheadText"] = "TODO: Prefer E-Cores for encoder's lookahead threads",
-            ["MemoryStrategyTitle"] = "Advanced RAM Allocation (Mem. locking priviledge needed, reboot too)",
-            ["UseLargePagesText"] = "Enable Large Pages for source videos above 2K resolution",
-            ["RecheckButtonText"] = "Re-check",
+            ["MemoryStrategyTitle"] = "Advanced RAM Allocation",
+            ["LargePagesUnavailableHintText"] = "No tools are exposing large-page RAM allocation settings, cannot boost high-res. encoding performance.",
             ["CancelButtonText"] = "Cancel",
             ["ConfirmButtonText"] = "Confirm",
             ["CorePerGroup"] = "· Every ",
@@ -43,9 +42,8 @@ public class ParallelismConfLangProviderM
             ["PreferDownstreamPhysCoresText"] = "限制下游程序线程到物理核心数",
             ["PreferPCoreComputeText"] = "TODO：尝试分配编码任务到性能核心（P-Core）",
             ["PreferECoreLookaheadText"] = "TODO：尝试分配前瞻进程任务到能效核心（E-Core）",
-            ["MemoryStrategyTitle"] = "高级内存分配策略（需锁定内存页权限，设置后重启）",
-            ["UseLargePagesText"] = "超过 2K 分辨率时启用大内存页（Large Pages）",
-            ["RecheckButtonText"] = "重新检查",
+            ["MemoryStrategyTitle"] = "高级内存分配策略",
+            ["LargePagesUnavailableHintText"] = "所有编码工具都没有暴露大内存页分配设置，因此无法提高高分辨率视频编码性能。",
             ["CancelButtonText"] = "取消",
             ["ConfirmButtonText"] = "确认",
             ["CorePerGroup"] = "· 每 ",
@@ -68,9 +66,8 @@ public class ParallelismConfLangProviderM
             ["PreferDownstreamPhysCoresText"] = "限制下遊程序執行緒到物理核心數",
             ["PreferPCoreComputeText"] = "TODO：嘗試分配編碼任務到性能核心（P-Core）",
             ["PreferECoreLookaheadText"] = "TODO：嘗試分配前瞻進程任務到能效核心（E-Core）",
-            ["MemoryStrategyTitle"] = "高級記憶體分配策略（需鎖定記憶體頁權限，設置後重啟）",
-            ["UseLargePagesText"] = "超過 2K 解析度時啟用大記憶體頁（Large Pages）",
-            ["RecheckButtonText"] = "重新檢查",
+            ["MemoryStrategyTitle"] = "高級記憶體分配策略",
+            ["LargePagesUnavailableHintText"] = "所有編碼工具都沒有暴露大記憶體頁分配設定，因此無法改善高解析度影片編碼效能。",
             ["CancelButtonText"] = "取消",
             ["ConfirmButtonText"] = "確認",
             ["CorePerGroup"] = "· 每 ",
@@ -93,8 +90,7 @@ public class ParallelismConfLangProviderM
     public string PreferPCoreComputeText { get; }
     public string PreferECoreLookaheadText { get; }
     public string MemoryStrategyTitle { get; }
-    public string UseLargePagesText { get; }
-    public string RecheckButtonText { get; }
+    public string LargePagesUnavailableHintText { get; }
     public string CancelButtonText { get; }
     public string ConfirmButtonText { get; }
     public string EncoderThreadCountText { get; }
@@ -119,8 +115,7 @@ public class ParallelismConfLangProviderM
         PreferPCoreComputeText = _d["PreferPCoreComputeText"];
         PreferECoreLookaheadText = _d["PreferECoreLookaheadText"];
         MemoryStrategyTitle = _d["MemoryStrategyTitle"];
-        UseLargePagesText = _d["UseLargePagesText"];
-        RecheckButtonText = _d["RecheckButtonText"];
+        LargePagesUnavailableHintText = _d["LargePagesUnavailableHintText"];
         CancelButtonText = _d["CancelButtonText"];
         ConfirmButtonText = _d["ConfirmButtonText"];
         EncoderThreadCountText = _d["EncoderThreadCountText"];

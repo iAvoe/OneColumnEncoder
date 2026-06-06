@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
+using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using OneColumnEncoder.Components;
 using OneColumnEncoder.Stores;
-using System.Windows.Input;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
@@ -86,7 +86,12 @@ namespace OneColumnEncoder.ViewModels
                             AddCheckboxItem(container, setting.Label, source, setting.PropertyName);
                             break;
                         case SettingControlType.TextBox:
-                            AddTextboxItem(container, setting.Label, source, setting.PropertyName);
+                            AddTextboxItem(container,
+                                setting.Label,
+                                source,
+                                setting.PropertyName,
+                                setting.MinValue,
+                                setting.MaxValue);
                             break;
                         case SettingControlType.PasswordBox:
                             AddPasswordBoxItem(container, setting.Label,
@@ -114,17 +119,120 @@ namespace OneColumnEncoder.ViewModels
                 new AppConfItem { Text = text, Content = cb });
         }
 
-        private static void AddTextboxItem(AppConfContainer container, string text, object source, string propertyPath)
+        private static void AddTextboxItem(AppConfContainer container, string text, object source, string propertyPath,
+            int? minValue = null, int? maxValue = null)
         {
             TextBox tb = new()
             {
                 Width = 200,
                 HorizontalAlignment = HorizontalAlignment.Right
             };
+
+            Type propertyType = source.GetType().GetProperty(propertyPath)?.PropertyType ?? typeof(string);
+
+            if (propertyType == typeof(int))
+            {
+                tb.PreviewTextInput += OnNumericTextBoxPreviewTextInput;
+                DataObject.AddPastingHandler(tb, OnNumericTextBoxPasting);
+            }
+
             tb.SetBinding(
                 TextBox.TextProperty,
-                new Binding(propertyPath) { Source = source, Mode = BindingMode.TwoWay });
+                BuildTextBinding(propertyPath, source, propertyType, text, minValue, maxValue));
             container.Items.Add(new AppConfItem { Text = text, Content = tb });
+        }
+
+        private static Binding BuildTextBinding(string propertyPath, object source, Type propertyType,
+            string propertyLabel, int? minValue, int? maxValue)
+        {
+            Binding binding = new()
+            {
+                Path = new PropertyPath(propertyPath),
+                Source = source,
+                Mode = BindingMode.TwoWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.LostFocus,
+                NotifyOnValidationError = true
+            };
+
+            if (propertyType == typeof(int)
+                && (minValue is not null || maxValue is not null))
+            {
+                binding.ValidationRules.Add(new IntTextBindingRule
+                {
+                    MinValue = minValue,
+                    MaxValue = maxValue,
+                    FieldName = propertyLabel
+                });
+            }
+
+            return binding;
+        }
+
+        private static void OnNumericTextBoxPreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !ContainsOnlyDigits(e.Text);
+        }
+
+        private static void OnNumericTextBoxPasting(object sender, DataObjectPastingEventArgs e)
+        {
+            if (sender is not TextBox textBox) return;
+
+            string? pastedText = e.DataObject.GetData(DataFormats.Text) as string;
+            if (!string.IsNullOrEmpty(pastedText) && !ContainsOnlyDigits(pastedText))
+            {
+                e.CancelCommand();
+                textBox.Dispatcher.InvokeAsync(() =>
+                    System.Windows.MessageBox.Show(
+                        UILangProviderM.Current["AppConf.Validation.InvalidNumericInput"],
+                        UILangProviderM.Current["AppConf.Validation.InvalidNumericInputTitle"],
+                    MessageBoxButton.OK, MessageBoxImage.Warning));
+            }
+        }
+
+        private static bool ContainsOnlyDigits(string value) =>
+            value.All(char.IsDigit);
+
+        private sealed class IntTextBindingRule : ValidationRule
+        {
+            public int? MinValue { get; set; }
+            public int? MaxValue { get; set; }
+            public string FieldName { get; set; } = "Value";
+
+            public override ValidationResult Validate(object? value, CultureInfo cultureInfo)
+            {
+                string text = value?.ToString() ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(text))
+                {
+                    return new ValidationResult(false, string.Format(
+                        UILangProviderM.Current["AppConf.Validation.Required"],
+                        FieldName));
+                }
+
+                if (!int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsed))
+                {
+                    return new ValidationResult(false, string.Format(
+                        UILangProviderM.Current["AppConf.Validation.IntegerOnly"],
+                        FieldName));
+                }
+
+                if (MinValue.HasValue && parsed < MinValue.Value)
+                {
+                    return new ValidationResult(false, string.Format(
+                        UILangProviderM.Current["AppConf.Validation.Min"],
+                        FieldName,
+                        MinValue.Value));
+                }
+
+                if (MaxValue.HasValue && parsed > MaxValue.Value)
+                {
+                    return new ValidationResult(false, string.Format(
+                        UILangProviderM.Current["AppConf.Validation.Max"],
+                        FieldName,
+                        MaxValue.Value));
+                }
+
+                return ValidationResult.ValidResult;
+            }
         }
 
         private static void AddPasswordBoxItem(AppConfContainer container, string text, Func<string> getter, Action<string> setter)

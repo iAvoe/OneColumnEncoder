@@ -17,5 +17,7 @@ namespace OneColumnEncoder.Models
         string GroupName,
         string Label,
         SettingControlType ControlType,
-        string PropertyName);
+        string PropertyName,
+        int? MinValue = null,
+        int? MaxValue = null);
 }

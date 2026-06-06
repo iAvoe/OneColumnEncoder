@@ -11,7 +11,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="530"
-        Height="680"
+        Height="700"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid Margin="15">
@@ -163,24 +163,20 @@
 
                 <comps:AppConfContainer Header="{Binding Lang.MemoryStrategyTitle}"
                                         Margin="0 5 0 0">
-                    <comps:AppConfItem Text="{Binding Lang.UseLargePagesText}">
-                        <CheckBox IsChecked="{Binding UseLargePages, Mode=TwoWay}"
-                                  IsEnabled="{Binding CanUseLargePages}" />
-                    </comps:AppConfItem>
+                    <comps:HintPanel Text="{Binding LargePagesUnavailableHintText}"
+                                     Margin="5 8 5 8" />
                 </comps:AppConfContainer>
             </StackPanel>
             </Grid>
         </ScrollViewer>
 
-        <comps:ThreeButtonGroup Grid.Row="1"
-                                DataContext="{Binding FinishButtons}"
-                                ButtonHeight="30"
-                                Button1Command="{Binding Cmd1}"
-                                Button2Command="{Binding Cmd2}"
-                                Button3Command="{Binding Cmd3}"
-                                Button1IsEnabled="{Binding B3_1IsEnabled}"
-                                Button2IsEnabled="{Binding B3_2IsEnabled}"
-                                Button3IsEnabled="{Binding B3_3IsEnabled}"
-                                Margin="0 15 0 0" />
+        <comps:TwoButtonGroup Grid.Row="1"
+                              DataContext="{Binding FinishButtons}"
+                              ButtonHeight="30"
+                              Button1Command="{Binding Cmd1}"
+                              Button2Command="{Binding Cmd2}"
+                              Button1IsEnabled="{Binding B2_1IsEnabled}"
+                              Button2IsEnabled="{Binding B2_2IsEnabled}"
+                              Margin="0 15 0 0" />
     </Grid>
 </Window>

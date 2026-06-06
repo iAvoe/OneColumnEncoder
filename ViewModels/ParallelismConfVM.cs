@@ -3,13 +3,11 @@ using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.ViewModels.Cards;
-using OneColumnEncoder.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
-using System.Windows;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -66,18 +64,6 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _preferECoreLookahead, value);
         }
 
-        private bool _useLargePages = true;
-        public bool UseLargePages
-        {
-            get => _useLargePages;
-            set => SetProperty(ref _useLargePages, value);
-        }
-
-        private bool _canUseLargePages;
-        public bool CanUseLargePages => _canUseLargePages;
-
-        public ActionCmd RecheckCmd { get; }
-
         private int _encoderThreadCount = Environment.ProcessorCount;
         public int EncoderThreadCount
         {
@@ -116,8 +102,7 @@ namespace OneColumnEncoder.ViewModels
         public string PreferPCoreComputeText => Lang.PreferPCoreComputeText;
         public string PreferECoreLookaheadText => Lang.PreferECoreLookaheadText;
         public string MemoryStrategyTitle => Lang.MemoryStrategyTitle;
-        public string UseLargePagesText => Lang.UseLargePagesText;
-        public string RecheckButtonText => Lang.RecheckButtonText;
+        public string LargePagesUnavailableHintText => Lang.LargePagesUnavailableHintText;
         public string EncoderThreadCountText => Lang.EncoderThreadCountText;
         public List<string> EncoderThreadTickLabels => BuildThreadTickLabels();
         public string CancelButtonText => Lang.CancelButtonText;
@@ -135,16 +120,13 @@ namespace OneColumnEncoder.ViewModels
                 SaveModel();
                 closeAction();
             });
-            RecheckCmd = new ActionCmd(_ => RecheckLargePagesPrivilege());
             SelectUpstreamNodeCmd = new ActionCmd(p => SelectNode(UpstreamNodes, p as CPUNodeCardVM));
             SelectDownstreamNodeCmd = new ActionCmd(p =>
             {
                 if (SelectNode(DownstreamNodes, p as CPUNodeCardVM))
                     UpdateMaxThreadCount();
             });
-            FinishButtons = ButtonGroupVM.CreateThreeButton(RecheckButtonText, CancelButtonText, ConfirmButtonText, RecheckCmd, CloseCmd, ConfirmCmd);
-
-            _canUseLargePages = PrivilegeCheckH.HasLockMemoryPrivilege();
+            FinishButtons = ButtonGroupVM.CreateTwoButton(CancelButtonText, ConfirmButtonText, CloseCmd, ConfirmCmd);
 
             BuildNodesFromTopology(UpstreamNodes);
             BuildNodesFromTopology(DownstreamNodes);
@@ -207,7 +189,6 @@ namespace OneColumnEncoder.ViewModels
             _model.PreferPhysicalCores = PreferPhysicalCores;
             _model.PreferPCoreCompute = PreferPCoreCompute;
             _model.PreferECoreLookahead = PreferECoreLookahead;
-            _model.UseLargePages = UseLargePages;
             _model.EncoderThreadCount = EncoderThreadCount;
             _model.Save();
         }
@@ -218,7 +199,6 @@ namespace OneColumnEncoder.ViewModels
             PreferPhysicalCores = _model.PreferPhysicalCores;
             PreferPCoreCompute = _model.PreferPCoreCompute;
             PreferECoreLookahead = _model.PreferECoreLookahead;
-            UseLargePages = _model.UseLargePages && CanUseLargePages;
 
             SelectById(UpstreamNodes, _model.UpstreamNodeId);
             SelectById(DownstreamNodes, _model.DownstreamNodeId);
@@ -327,37 +307,14 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(PreferPCoreComputeText));
             OnPropertyChanged(nameof(PreferECoreLookaheadText));
             OnPropertyChanged(nameof(MemoryStrategyTitle));
-            OnPropertyChanged(nameof(UseLargePagesText));
-            OnPropertyChanged(nameof(RecheckButtonText));
+            OnPropertyChanged(nameof(LargePagesUnavailableHintText));
             OnPropertyChanged(nameof(EncoderThreadCountText));
             OnPropertyChanged(nameof(EncoderThreadTickLabels));
             OnPropertyChanged(nameof(CancelButtonText));
             OnPropertyChanged(nameof(ConfirmButtonText));
 
-            FinishButtons.B3_1Text = RecheckButtonText;
-            FinishButtons.B3_2Text = CancelButtonText;
-            FinishButtons.B3_3Text = ConfirmButtonText;
-        }
-
-        private void RecheckLargePagesPrivilege()
-        {
-            _canUseLargePages = PrivilegeCheckH.HasLockMemoryPrivilege();
-            UseLargePages = _canUseLargePages && UseLargePages;
-            OnPropertyChanged(nameof(CanUseLargePages));
-
-            ConfirmationModal window = new();
-            CloseModalCmd closeCmd = new(window.Close);
-            string message = string.IsNullOrWhiteSpace(PrivilegeCheckH.LastLockMemoryPrivilegeCheckMessage)
-                ? "PrivilegeCheckH.HasLockMemoryPrivilege returned without a diagnostic message."
-                : PrivilegeCheckH.LastLockMemoryPrivilegeCheckMessage;
-
-            window.DataContext = ConfirmationModalVM.CreateDebug(
-                "Large Page Privilege Check",
-                message,
-                closeCmd,
-                closeCmd);
-            window.Owner = Application.Current.MainWindow;
-            window.ShowDialog();
+            FinishButtons.B2_1Text = CancelButtonText;
+            FinishButtons.B2_2Text = ConfirmButtonText;
         }
 
         public static void ApplySavedSettingsToCard(ToolItemCardVM targetItem)

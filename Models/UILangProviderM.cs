@@ -198,6 +198,14 @@ public class UILangProviderM
             // Settings - Language label
             ["Setting.Language.Select"] = "Select Language",
 
+            // AppConf validation messages
+            ["AppConf.Validation.Required"] = "{0} is required.",
+            ["AppConf.Validation.IntegerOnly"] = "{0} must be an integer.",
+            ["AppConf.Validation.Min"] = "{0} must be >= {1}.",
+            ["AppConf.Validation.Max"] = "{0} must be <= {1}.",
+            ["AppConf.Validation.InvalidNumericInput"] = "Only numeric values are allowed.",
+            ["AppConf.Validation.InvalidNumericInputTitle"] = "Invalid Input",
+
             // ScriptScribeModal
             ["SrcScribe.WindowTitle"] = "1cenc Script Generator",
             ["SrcScribe.Description1"] = "Automatically builds a decoder-to-Y4M pipe script based on imported video path. You may paste additional filters here, or copy the In/Out section to your desired script.",
@@ -447,6 +455,14 @@ public class UILangProviderM
             ["Setting.Smtp.SuccessThreshold"] = "成功通知阈值（分钟，0=不管）",
             ["Setting.Smtp.FailureThreshold"] = "失败通知阈值（分钟，0=不管）",
             ["Setting.Smtp.AFKThreshold"] = "判断离开阈值（无操作分钟，0=不管）",
+
+            // AppConf validation messages
+            ["AppConf.Validation.Required"] = "{0} 不能为空。",
+            ["AppConf.Validation.IntegerOnly"] = "{0} 必须是整数。",
+            ["AppConf.Validation.Min"] = "{0} 必须大于或等于 {1}。",
+            ["AppConf.Validation.Max"] = "{0} 必须小于或等于 {1}。",
+            ["AppConf.Validation.InvalidNumericInput"] = "只允许输入数字。",
+            ["AppConf.Validation.InvalidNumericInputTitle"] = "输入无效",
 
             ["Setting.Language.Select"] = "选择语言",
 
@@ -698,6 +714,14 @@ public class UILangProviderM
             ["Setting.Smtp.SuccessThreshold"] = "成功通知閾值（分鐘，0=不管）",
             ["Setting.Smtp.FailureThreshold"] = "失敗通知閾值（分鐘，0=不管）",
             ["Setting.Smtp.AFKThreshold"] = "判斷離開閾值（無操作分鐘，0=不管）",
+
+            // AppConf validation messages
+            ["AppConf.Validation.Required"] = "{0} 為必填欄位。",
+            ["AppConf.Validation.IntegerOnly"] = "{0} 必須是整數。",
+            ["AppConf.Validation.Min"] = "{0} 必須大於或等於 {1}。",
+            ["AppConf.Validation.Max"] = "{0} 必須小於或等於 {1}。",
+            ["AppConf.Validation.InvalidNumericInput"] = "只允許輸入數字。",
+            ["AppConf.Validation.InvalidNumericInputTitle"] = "輸入無效",
 
             ["Setting.Language.Select"] = "選擇語言",
 

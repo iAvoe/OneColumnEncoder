@@ -17,7 +17,6 @@ namespace OneColumnEncoder.Models
         public bool PreferPhysicalCores { get; set; } = true;
         public bool PreferPCoreCompute { get; set; } = false; // May be too hard for normal users since source code mod needed
         public bool PreferECoreLookahead { get; set; } = false;
-        public bool UseLargePages { get; set; } = true;
         public int EncoderThreadCount { get; set; } = Environment.ProcessorCount;
 
         public static ParallelismConfM LoadEffective()
@@ -39,7 +38,6 @@ namespace OneColumnEncoder.Models
                 PreferPhysicalCores = model.PreferPhysicalCores,
                 PreferPCoreCompute = model.PreferPCoreCompute,
                 PreferECoreLookahead = model.PreferECoreLookahead,
-                UseLargePages = model.UseLargePages,
                 EncoderThreadCount = CpuSetsH.ClampThreadCountForNode(
                     downstreamNodeId,
                     model.PreferPhysicalCores,
