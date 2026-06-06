@@ -19,7 +19,7 @@ namespace OneColumnEncoder.Converters
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
-            => throw new NotSupportedException();
+            => CreateDoNothingResults(targetTypes);
 
         private static bool TryGetInt(object value, out int result)
         {
@@ -37,6 +37,15 @@ namespace OneColumnEncoder.Converters
 
             result = 0;
             return false;
+        }
+
+        private static object[] CreateDoNothingResults(Type[] targetTypes)
+        {
+            object[] results = new object[targetTypes.Length];
+            for (int index = 0; index < results.Length; index++)
+                results[index] = Binding.DoNothing;
+
+            return results;
         }
     }
 }

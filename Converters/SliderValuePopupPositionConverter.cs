@@ -32,7 +32,11 @@ namespace OneColumnEncoder.Converters
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            object[] results = new object[targetTypes.Length];
+            for (int index = 0; index < results.Length; index++)
+                results[index] = Binding.DoNothing;
+
+            return results;
         }
 
         private static bool TryToDouble(object value, out double result)

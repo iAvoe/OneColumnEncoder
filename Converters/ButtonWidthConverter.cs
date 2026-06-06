@@ -23,7 +23,51 @@ namespace OneColumnEncoder.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            if (!TryParseParameters(parameter, culture, out int count, out double spacing) || count <= 0)
+                return Binding.DoNothing;
+
+            if (!TryGetDouble(value, culture, out double buttonWidth))
+                return Binding.DoNothing;
+
+            return buttonWidth * count + spacing * (count - 1);
+        }
+
+        private static bool TryParseParameters(object parameter, CultureInfo culture, out int count, out double spacing)
+        {
+            count = 0;
+            spacing = 0d;
+
+            if (parameter is not string text)
+                return false;
+
+            string[] parts = text.Split(',');
+            if (!int.TryParse(parts[0], out count))
+                return false;
+
+            if (parts.Length > 1 && !double.TryParse(parts[1], NumberStyles.Float, culture, out spacing))
+                return false;
+
+            return true;
+        }
+
+        private static bool TryGetDouble(object value, CultureInfo culture, out double result)
+        {
+            if (value is double doubleValue)
+            {
+                result = doubleValue;
+                return true;
+            }
+
+            try
+            {
+                result = System.Convert.ToDouble(value, culture);
+                return true;
+            }
+            catch (Exception)
+            {
+                result = 0d;
+                return false;
+            }
         }
     }
 }

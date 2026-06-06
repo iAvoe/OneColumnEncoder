@@ -20,7 +20,34 @@ namespace OneColumnEncoder.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            if (!TryGetDouble(value, culture, out double columns))
+                return Binding.DoNothing;
+
+            return Math.Max(0d, columns) * 300d;
+        }
+
+        private static bool TryGetDouble(object value, CultureInfo culture, out double result)
+        {
+            if (value is double doubleValue)
+            {
+                result = doubleValue;
+                return true;
+            }
+
+            if (value is IConvertible)
+            {
+                try
+                {
+                    result = System.Convert.ToDouble(value, culture);
+                    return true;
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            result = 0d;
+            return false;
         }
     }
 }

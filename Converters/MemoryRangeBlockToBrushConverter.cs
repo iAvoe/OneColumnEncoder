@@ -29,10 +29,10 @@ namespace OneColumnEncoder.Converters
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) =>
-            throw new NotSupportedException();
+            Binding.DoNothing;
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) =>
-            throw new NotSupportedException();
+            CreateDoNothingResults(targetTypes);
 
         private static int ParseFillLevel(object value)
         {
@@ -51,6 +51,15 @@ namespace OneColumnEncoder.Converters
                 ? "MemoryRangeEmpty"
                 : $"MemoryRange{category}{fillLevel}";
             return Application.Current.TryFindResource(key) as Brush ?? Brushes.Transparent;
+        }
+
+        private static object[] CreateDoNothingResults(Type[] targetTypes)
+        {
+            object[] results = new object[targetTypes.Length];
+            for (int index = 0; index < results.Length; index++)
+                results[index] = Binding.DoNothing;
+
+            return results;
         }
     }
 }
