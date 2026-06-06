@@ -42,7 +42,7 @@ public class EncodingMonitorModalLangProviderM
             ["ViewEncodingCommandText"] = "View encoding command",
             ["InterruptUpstreamText"] = "Interrupt upstream",
             ["InterruptEncoderText"] = "Interrupt encoder",
-            ["CloseAfterDoneText"] = "Close window (enabled after completion)",
+            ["CloseAfterDoneText"] = "Close (enabled on complete)",
             ["EncodingCommandTitle"] = "Encoding Command",
             ["PhysicalMemoryTopText"] = "Physical memory",
             ["PhysicalMemoryBottomText"] = "Total XX GB",

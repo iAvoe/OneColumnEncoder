@@ -20,7 +20,7 @@
         </Grid.RowDefinitions>
 
         <ScrollViewer Grid.Row="0"
-                      Padding="15 15 15 0"
+                      Padding="15 10 15 0"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled">
             <Grid>
@@ -35,8 +35,7 @@
                 <!-- Rate Control Title -->
                 <TextBlock Grid.Row="0"
                            Text="{Binding RateControlTitle}"
-                           Style="{StaticResource H2}"
-                           Margin="0 5 0 0" />
+                           Style="{StaticResource H2}" />
 
                 <!-- CRF / ABR Tabs -->
                 <TabControl Grid.Row="1"
