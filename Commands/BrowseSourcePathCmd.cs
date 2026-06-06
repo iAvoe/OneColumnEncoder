@@ -3,6 +3,7 @@ using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels.Cards;
 using System;
+using System.IO;
 
 namespace OneColumnEncoder.Commands
 {
@@ -24,8 +25,8 @@ namespace OneColumnEncoder.Commands
             string dialogTitle =
                 string.Format(UILangProviderM.Current["Dialog.SelectTitle"], _item.Name);
 
-            string? foundPath = _fileKind == SourceFileKind.SvfiIni
-                ? _appDataM.Tools.OneLineShotArgsPath
+            string? foundPath = _fileKind == SourceFileKind.SvfiIni && !string.IsNullOrWhiteSpace(_appDataM.Tools.OneLineShotArgsPath)
+                ? Path.Combine(Path.GetDirectoryName(_appDataM.Tools.OneLineShotArgsPath) ?? "", "Configs")
                 : null;
 
             string? filePath = SourceFilePickerH.GetSource(

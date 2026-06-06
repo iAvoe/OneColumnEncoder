@@ -852,6 +852,21 @@ namespace OneColumnEncoder.ViewModels
             if (string.IsNullOrWhiteSpace(upstreamExeName) || string.IsNullOrWhiteSpace(encoderExeName)) return null;
 
             string upstreamInputPath = GetUpstreamInputPath(upstreamExeName);
+            string? svfiIniPath = null;
+            string? svfiTaskId = null;
+
+            if (upstreamExeName.Equals("one_line_shot_args.exe", StringComparison.OrdinalIgnoreCase))
+            {
+                svfiIniPath = GetSelectedSvfiIniPath();
+                if (!string.IsNullOrWhiteSpace(svfiIniPath))
+                {
+                    var (iniInputPath, iniTaskId) = EncodingPipelineH.ParseSvfiIni(svfiIniPath);
+                    if (!string.IsNullOrWhiteSpace(iniInputPath))
+                        upstreamInputPath = iniInputPath;
+                    svfiTaskId = iniTaskId;
+                }
+            }
+
             if (string.IsNullOrWhiteSpace(upstreamInputPath) || string.IsNullOrWhiteSpace(outputSetting.P2TextData)) return null;
 
             return new EncodingPipelineRequest(
@@ -864,7 +879,17 @@ namespace OneColumnEncoder.ViewModels
                 EncoderConfM.Load(),
                 _appDataM.Tools.VspipeY4mArg,
                 SourceFfprobeJson: _srcVideoAnalysis.RawJson,
-                ParallelismConf: ParallelismConfM.LoadEffective());
+                ParallelismConf: ParallelismConfM.LoadEffective(),
+                SvfiIniPath: svfiIniPath,
+                SvfiTaskId: svfiTaskId);
+        }
+
+        private string GetSelectedSvfiIniPath()
+        {
+            ToolItemCardVM? svfiIni = ScriptSrcImportZone.FirstOrDefault(t =>
+                t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData) &&
+                ResolveSourceFileKind(t.Name) == SourceFileKind.SvfiIni);
+            return svfiIni?.P2TextData ?? string.Empty;
         }
 
         private string GetUpstreamInputPath(string upstreamExeName)

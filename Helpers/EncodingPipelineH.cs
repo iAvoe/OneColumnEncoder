@@ -20,7 +20,9 @@ public record EncodingPipelineRequest(
     string? VspipeY4mArg,
     EncodingClipRequest? Clip = null,
     string? SourceFfprobeJson = null,
-    ParallelismConfM? ParallelismConf = null);
+    ParallelismConfM? ParallelismConf = null,
+    string? SvfiIniPath = null,
+    string? SvfiTaskId = null);
 
 public record EncodingClipRequest(
     string? StartTime = null,
@@ -60,7 +62,11 @@ public static class EncodingPipelineH
             "vspipe.exe" => JoinArgs(input, clipArgs, NormalizeRequired(request.VspipeY4mArg, "vspipe Y4M argument"), "-"),
             "avs2yuv.exe" => JoinArgs(input, clipArgs, "-"),
             "avs2pipemod.exe" => JoinArgs(input, clipArgs, "-y4mp"),
-            "one_line_shot_args.exe" => $"{input} --pipe-out",
+            "one_line_shot_args.exe" => JoinArgs(
+                $"--input {input}",
+                request.SvfiIniPath != null ? $"--config {Quote(request.SvfiIniPath)}" : null,
+                request.SvfiTaskId != null ? $"--task-id {request.SvfiTaskId}" : null,
+                "--pipe-out"),
             _ => throw new InvalidOperationException($"Unsupported upstream tool: {request.UpstreamExeName}")
         };
     }
@@ -803,6 +809,31 @@ public static class EncodingPipelineH
         if (string.IsNullOrWhiteSpace(value))
             throw new InvalidOperationException($"Missing {name}.");
         return value.Trim();
+    }
+
+    public static (string inputPath, string taskId) ParseSvfiIni(string iniPath)
+    {
+        if (string.IsNullOrWhiteSpace(iniPath) || !File.Exists(iniPath))
+            return (string.Empty, string.Empty);
+
+        string iniContent = File.ReadAllText(iniPath);
+        Match match = Regex.Match(iniContent, @"gui_inputs\s*=\s*""((?:[^""\\]|\\.)*)""");
+        if (!match.Success)
+            return (string.Empty, string.Empty);
+
+        string jsonString = match.Groups[1].Value;
+        jsonString = jsonString.Replace("\\\"", "\"");
+        jsonString = jsonString.Replace("\\\\", "\\");
+
+        using JsonDocument doc = JsonDocument.Parse(jsonString);
+        JsonElement inputs = doc.RootElement.GetProperty("inputs");
+        if (inputs.GetArrayLength() == 0)
+            return (string.Empty, string.Empty);
+
+        JsonElement firstInput = inputs[0];
+        string inputPath = firstInput.GetProperty("input_path").GetString() ?? string.Empty;
+        string taskId = firstInput.GetProperty("task_id").GetString() ?? string.Empty;
+        return (inputPath, taskId);
     }
 
     private static string JoinArgs(params string?[] parts) =>
