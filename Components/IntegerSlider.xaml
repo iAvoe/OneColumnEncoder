@@ -15,7 +15,6 @@
     <Grid VerticalAlignment="Center">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="12" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
@@ -26,7 +25,7 @@
                    Text="{Binding Label, RelativeSource={RelativeSource AncestorType=UserControl}}"
                    FontSize="13" />
 
-        <Grid Grid.Column="2"
+        <Grid Grid.Column="1"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
               MaxWidth="{Binding SliderMaxWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"

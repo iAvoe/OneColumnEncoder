@@ -75,11 +75,13 @@
                                       MinWidth="35" />
                 </Grid.ColumnDefinitions>
 
-                <TextBox Grid.Column="0"
+                <TextBox x:Name="LeftTextBox"
+                         Grid.Column="0"
                          Text="{Binding LeftText, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}}"
                          FontSize="{Binding TextFontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
                          Style="{StaticResource SplitTextBox}"
+                         TextChanged="OnTextChanged"
                          Padding="5 10" />
 
                 <GridSplitter Grid.Column="1"
@@ -94,11 +96,13 @@
                               ResizeDirection="Columns"
                               ShowsPreview="False" />
 
-                <TextBox Grid.Column="2"
+                <TextBox x:Name="RightTextBox"
+                         Grid.Column="2"
                          Text="{Binding RightText, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=OneWay}"
                          IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}}"
                          FontSize="{Binding TextFontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
                          Style="{StaticResource SplitTextBox}"
+                         TextChanged="OnTextChanged"
                          Padding="5 10" />
             </Grid>
         </Border>

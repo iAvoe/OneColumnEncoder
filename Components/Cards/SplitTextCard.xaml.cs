@@ -1,5 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System;
 
 namespace OneColumnEncoder.Components.Cards
 {
@@ -58,9 +60,43 @@ namespace OneColumnEncoder.Components.Cards
             set => SetValue(TextFontSizeProperty, value);
         }
 
+        private ScrollViewer? _leftScrollViewer;
+        private ScrollViewer? _rightScrollViewer;
+
         public SplitTextCard()
         {
             InitializeComponent();
+            Loaded += OnLoaded;
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            _leftScrollViewer = FindScrollViewer(LeftTextBox);
+            _rightScrollViewer = FindScrollViewer(RightTextBox);
+        }
+
+        private static ScrollViewer? FindScrollViewer(DependencyObject visual)
+        {
+            if (visual is ScrollViewer sv) return sv;
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(visual); i++)
+            {
+                ScrollViewer? child = FindScrollViewer(VisualTreeHelper.GetChild(visual, i));
+                if (child != null) return child;
+            }
+            return null;
+        }
+
+        private void OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            ScrollViewer? sv = textBox == LeftTextBox ? _leftScrollViewer : _rightScrollViewer;
+            if (sv == null) return;
+
+            bool isAtBottom = Math.Abs(sv.VerticalOffset + sv.ViewportHeight - sv.ExtentHeight) < 1d;
+            if (isAtBottom)
+            {
+                Dispatcher.BeginInvoke(sv.ScrollToEnd, System.Windows.Threading.DispatcherPriority.Background);
+            }
         }
     }
 }
