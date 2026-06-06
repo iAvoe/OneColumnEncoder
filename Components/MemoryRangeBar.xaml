@@ -22,7 +22,7 @@
             <DataTemplate>
                 <Border Width="5.25"
                         Height="20"
-                        Margin="0.7 0"
+                        Margin="0.68 0"
                         CornerRadius="1"
                         ToolTip="{Binding Tooltip}">
                     <Border.Background>
