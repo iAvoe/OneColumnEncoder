@@ -71,7 +71,6 @@ public static class UICaptionProviderM
     {
         public static class Groups
         {
-            public static string General => UILangProviderM.Current["AppConf.General"];
             public static string Overwrite => UILangProviderM.Current["AppConf.Overwrite"];
             public static string Smtp => UILangProviderM.Current["AppConf.Smtp"];
             public static string Language => UILangProviderM.Current["AppConf.Language"];

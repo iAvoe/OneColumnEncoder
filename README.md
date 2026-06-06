@@ -166,11 +166,6 @@ OneColumnEncoder 是一个基于 .NET 9 / WPF 的视频编码辅助工具。当�
 - 目前只检查 `SeLockMemoryPrivilege` 并保存开关。
 - 没有对编码器、上游进程或内存分配方式做实际修改。
 
-### General 设置
-
-- `AppConfM.GeneralSettings` 为空。
-- `SettinglistProviderM.GetGeneralSettings()` 返回空列表。
-
 ---
 
 ## 主要源码位置

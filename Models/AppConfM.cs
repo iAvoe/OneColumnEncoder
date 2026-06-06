@@ -14,16 +14,11 @@ namespace OneColumnEncoder.Models
         private static readonly string ConfigFilePath =
             Path.Combine(GetConfigDirectory(), "appconfig.json");
         protected override string FilePath => ConfigFilePath;
-
-        public GeneralSettings General { get; set; } = new GeneralSettings();
         public OverwriteSettings Overwrite { get; set; } = new OverwriteSettings();
         public SmtpSettings Smtp { get; set; } = new SmtpSettings();
         public Language Lang { get; set; } = new Language();
 
         #region Setting items
-        public class GeneralSettings
-        {
-        }
         public class OverwriteSettings
         {
             public int LongPressMegabyteDivisor { get; set; } = 40;

@@ -54,7 +54,6 @@ public class UILangProviderM
             ["Buttons.Edit"] = "Edit",
 
             // AppConf group headers
-            ["AppConf.General"] = "General: disable Start Encode upon...",
             ["AppConf.Overwrite"] = "Overwrite Handling",
             ["AppConf.Smtp"] = "SMTP Setting",
             ["AppConf.Language"] = "Language/\u8BED\u8A00",
@@ -324,7 +323,6 @@ public class UILangProviderM
             ["Buttons.Clear"] = "清空",
             ["Buttons.Edit"] = "编辑",
 
-            ["AppConf.General"] = "通用：禁用「开始压制」按钮的时机",
             ["AppConf.Overwrite"] = "文件覆盖确认行为",
             ["AppConf.Smtp"] = "SMTP 消息设置",
             ["AppConf.Language"] = "语言/Language",
@@ -574,7 +572,6 @@ public class UILangProviderM
             ["Buttons.Clear"] = "清空",
             ["Buttons.Edit"] = "編輯",
 
-            ["AppConf.General"] = "通用：禁用「開始壓制」按鈕的時機",
             ["AppConf.Overwrite"] = "文件覆蓋確認行為",
             ["AppConf.Smtp"] = "SMTP 消息設定",
             ["AppConf.Language"] = "語言/Language",

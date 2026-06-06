@@ -34,7 +34,6 @@ namespace OneColumnEncoder.ViewModels
 
         public ButtonGroupVM FinishSettingButtons { get; }
 
-        public AppConfM.GeneralSettings General => _appConfM.General;
         public AppConfM.OverwriteSettings Overwrite => _appConfM.Overwrite;
         public AppConfM.SmtpSettings Smtp => _appConfM.Smtp;
 
@@ -69,7 +68,6 @@ namespace OneColumnEncoder.ViewModels
         {
             Dictionary<string, object> sourceMap = new()
             {
-                [UICaptionProviderM.AppConf.Groups.General] = _appConfM.General,
                 [UICaptionProviderM.AppConf.Groups.Overwrite] = _appConfM.Overwrite,
                 [UICaptionProviderM.AppConf.Groups.Smtp] = _appConfM.Smtp,
                 [UICaptionProviderM.AppConf.Groups.Language] = _appConfM.Lang

@@ -4,14 +4,9 @@ namespace OneColumnEncoder.Models
     {
         public static List<SettingItemDefinitionM> GetAllSettings() =>
         [
-            .. GetGeneralSettings(),
             .. GetOverwriteSettings(),
             .. GetSmtpSettings(),
             .. GetLanguageSettings()
-        ];
-
-        public static List<SettingItemDefinitionM> GetGeneralSettings() =>
-        [
         ];
 
         public static List<SettingItemDefinitionM> GetOverwriteSettings() =>

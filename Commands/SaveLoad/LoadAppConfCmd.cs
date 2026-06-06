@@ -14,8 +14,6 @@ namespace OneColumnEncoder.Commands.SaveLoad
         protected override async Task ExecuteAsync(object? parameter)
         {
             AppConfM loadedConfig = AppConfM.Load();
-            // Update the store with loaded config
-            _appConfStore.General = loadedConfig.General;
             _appConfStore.Overwrite = loadedConfig.Overwrite;
             _appConfStore.Smtp = loadedConfig.Smtp;
             _appConfStore.Lang = loadedConfig.Lang;
