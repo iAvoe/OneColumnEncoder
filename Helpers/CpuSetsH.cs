@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
+using OneColumnEncoder.Models;
 
 namespace OneColumnEncoder.Helpers;
 
@@ -42,39 +43,40 @@ public static partial class CpuSetsH
         int nodeId,
         bool physicalOnly,
         int? maxCpuSets,
+        CpuSetsLangProviderM lang,
         out string message)
     {
         message = string.Empty;
         if (!OperatingSystem.IsWindows())
         {
-            message = "CPU Sets are only available on Windows.";
+            message = lang.UnavailableOnNonWindows;
             return false;
         }
 
         try
         {
-            uint[] cpuSetIds = GetCpuSetsForNode(nodeId, physicalOnly, maxCpuSets)
-                .Select(c => c.Id)
-                .ToArray();
+            uint[] cpuSetIds =
+                [.. GetCpuSetsForNode(nodeId, physicalOnly, maxCpuSets).Select(c => c.Id)];
+
             if (cpuSetIds.Length == 0)
             {
-                message = $"No CPU Sets found for NUMA node {nodeId}.";
+                message = string.Format(lang.NoCpuSetsFound, nodeId);
                 return false;
             }
 
             if (!SetProcessDefaultCpuSets(process.Handle, cpuSetIds, (uint)cpuSetIds.Length))
             {
-                message = $"SetProcessDefaultCpuSets failed: {Marshal.GetLastWin32Error()}.";
+                message = string.Format(lang.SetProcessDefaultCpuSetsFailed, Marshal.GetLastWin32Error());
                 return false;
             }
 
             int updatedThreadCount = ApplyCurrentThreadCpuSets(process, cpuSetIds);
-            message = $"Bound process {process.Id} to NUMA node {nodeId} with {cpuSetIds.Length} CPU Set(s); updated {updatedThreadCount} existing thread(s).";
+            message = string.Format(lang.BoundSuccess, process.Id, nodeId, cpuSetIds.Length, updatedThreadCount);
             return true;
         }
         catch (Exception ex) when (ex is EntryPointNotFoundException or DllNotFoundException or InvalidOperationException or System.ComponentModel.Win32Exception)
         {
-            message = $"CPU Sets binding failed: {ex.Message}";
+            message = string.Format(lang.BindingFailed, ex.Message);
             return false;
         }
     }
@@ -84,9 +86,7 @@ public static partial class CpuSetsH
         List<CpuSetInfo> allCpuSets = GetSystemCpuSets();
         if (allCpuSets.Count == 0) return [];
 
-        List<CpuSetInfo> nodeCpuSets = allCpuSets
-            .Where(c => c.NumaNodeIndex == nodeId)
-            .ToList();
+        List<CpuSetInfo> nodeCpuSets = [.. allCpuSets.Where(c => c.NumaNodeIndex == nodeId)];
 
         if (nodeCpuSets.Count == 0)
         {
@@ -159,8 +159,7 @@ public static partial class CpuSetsH
     {
         if (!OperatingSystem.IsWindows()) return [];
 
-        uint returnedLength;
-        GetSystemCpuSetInformation(IntPtr.Zero, 0, out returnedLength, IntPtr.Zero, 0);
+        GetSystemCpuSetInformation(IntPtr.Zero, 0, out uint returnedLength, IntPtr.Zero, 0);
         if (returnedLength == 0) return [];
 
         IntPtr buffer = Marshal.AllocHGlobal((int)returnedLength);
@@ -256,7 +255,7 @@ public static partial class CpuSetsH
         byte EfficiencyClass,
         byte AllFlags)
     {
-        public int GlobalLogicalProcessorIndex => Group * 64 + LogicalProcessorIndex;
+        public int GlobalLogicalProcessorIndex => Group*64 + LogicalProcessorIndex;
         public bool IsAllocated => (AllFlags & CpuSetAllocatedFlag) != 0;
     }
 }

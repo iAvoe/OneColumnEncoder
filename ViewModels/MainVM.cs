@@ -546,7 +546,7 @@ namespace OneColumnEncoder.ViewModels
         private void WireUpSourceCmd(ToolItemCardVM item)
         {
             SourceFileKind kind = ResolveSourceFileKind(item.Name);
-            item.R1Command = new BrowseSourcePathCmd(item, kind, _appDataM, _modalNavS, OnSourceImported);
+            item.R1Command = new BrowseSourcePathCmd(item, kind, _appDataM, _modalNavS, OnVideoSourceImported);
             item.R2Command = new ClearToolItemCmd(item, () => OnSourceCleared(kind));
             item.PropertyChanged += OnVideoSrcItemPropertyChanged;
         }
@@ -648,6 +648,39 @@ namespace OneColumnEncoder.ViewModels
             item.IsSelected = true;
             _appDataM.Save();
             RefreshSelectedSourceStatus(resetAnalysis: kind == SourceFileKind.Video);
+        }
+
+        private void OnVideoSourceImported(ToolItemCardVM item, SourceFileKind kind, string filePath, bool wasReplaced)
+        {
+            OnSourceImported(item, kind, filePath);
+
+            if (kind == SourceFileKind.Video && wasReplaced)
+                PromptRunSourceAnalysisAfterReplace();
+        }
+
+        private void PromptRunSourceAnalysisAfterReplace()
+        {
+            if (!AnalyzeSrcVideo.CanExecute(null)) return;
+
+            ConfirmationModal window = new();
+            CloseModalCmd cancelCmd = new(window.Close);
+            ConfirmationModalVM vm = ConfirmationModalVM.CreateWarning(
+                UILangProviderM.Current["SrcAnalysis.WindowTitle"],
+                UILangProviderM.Current["SrcAnalysis.RunAfterReplace"],
+                cancelCmd,
+                new ActionCmd(_ =>
+                {
+                    window.DialogResult = true;
+                    window.Close();
+                    if (AnalyzeSrcVideo.CanExecute(null))
+                        AnalyzeSrcVideo.Execute(null);
+                }));
+
+            window.DataContext = vm;
+            window.Owner = Application.Current.MainWindow;
+            window.Closed += (_, _) => _modalNavS.Close();
+            _modalNavS.CurrentModalVM = vm;
+            window.ShowDialog();
         }
         private void OnSourceCleared(SourceFileKind kind)
         {

@@ -37,6 +37,7 @@ namespace OneColumnEncoder.ViewModels
             get => _lang;
             private set => SetProperty(ref _lang, value);
         }
+        private CpuSetsLangProviderM _cpuSetsLang = new(UILangProviderM.Current.LanguageCode);
         private readonly ModalNavS _modalNavS;
         private readonly Action _closeAction;
         private readonly EncodingPipelineRequest _request;
@@ -437,8 +438,9 @@ namespace OneColumnEncoder.ViewModels
                 nodeId,
                 physicalOnly,
                 maxCpuSets,
+                _cpuSetsLang,
                 out string message);
-            EnqueueProcessLine(logKind, $"Parallelism: {(success ? message : "Skipped CPU Sets binding. " + message)}");
+            EnqueueProcessLine(logKind, $"Parallelism: {(success ? message : _cpuSetsLang.SkippedPrefix + message)}");
         }
 
         private async Task ReadStreamAsync(StreamReader reader, ProcessLogKind kind, CancellationToken ct)
@@ -1442,6 +1444,7 @@ namespace OneColumnEncoder.ViewModels
         private void RefreshLanguageState()
         {
             Lang = new EncodingMonitorModalLangProviderM(UILangProviderM.Current.LanguageCode);
+            _cpuSetsLang = new CpuSetsLangProviderM(UILangProviderM.Current.LanguageCode);
             SampleIntervalTickLabels.Clear();
             foreach (string label in Lang.SampleIntervalTickLabels)
                 SampleIntervalTickLabels.Add(label);
@@ -1452,6 +1455,7 @@ namespace OneColumnEncoder.ViewModels
         private void RefreshLanguageBindings()
         {
             Lang = new EncodingMonitorModalLangProviderM(UILangProviderM.Current.LanguageCode);
+            _cpuSetsLang = new CpuSetsLangProviderM(UILangProviderM.Current.LanguageCode);
             FreezeOrContinueText = _isFrozen ? Lang.ContinueMonitoringText : Lang.FreezeContinueText;
             MonitorButtons.B2_1Text = FreezeOrContinueText;
             MonitorButtons.B2_2Text = Lang.ResetUsageText;

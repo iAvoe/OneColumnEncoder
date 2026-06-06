@@ -10,16 +10,17 @@ namespace OneColumnEncoder.Commands
                                      SourceFileKind fileKind,
                                      AppDataM appDataM,
                                      ModalNavS modalNavS,
-                                     Action<ToolItemCardVM, SourceFileKind, string>? afterImport = null) : BaseCmd
+                                     Action<ToolItemCardVM, SourceFileKind, string, bool>? afterImport = null) : BaseCmd
     {
         private readonly ToolItemCardVM _item = item;
         private readonly SourceFileKind _fileKind = fileKind;
         private readonly AppDataM _appDataM = appDataM;
         private readonly ModalNavS _modalNavS = modalNavS;
-        private readonly Action<ToolItemCardVM, SourceFileKind, string>? _afterImport = afterImport;
+        private readonly Action<ToolItemCardVM, SourceFileKind, string, bool>? _afterImport = afterImport;
 
         public override void Execute(object? parameter)
         {
+            bool wasReplaced = !string.IsNullOrWhiteSpace(_item.P2TextData);
             string dialogTitle =
                 string.Format(UILangProviderM.Current["Dialog.SelectTitle"], _item.Name);
 
@@ -39,7 +40,7 @@ namespace OneColumnEncoder.Commands
 
             _item.P2TextData = filePath;
             _item.P1TextData = SourceFilePickerH.GetPrimaryText(_fileKind, filePath);
-            _afterImport?.Invoke(_item, _fileKind, filePath);
+            _afterImport?.Invoke(_item, _fileKind, filePath, wasReplaced);
         }
     }
 }

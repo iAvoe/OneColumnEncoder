@@ -262,6 +262,7 @@ public class UILangProviderM
 
             ["SrcAnalysis.WindowTitle"] = "1cenc Source Analysis",
             ["SrcAnalysis.Completed"] = "Source analysis completed.",
+            ["SrcAnalysis.RunAfterReplace"] = "Run source analysis now?",
             ["SrcAnalysis.Copied"] = "Raw ffprobe JSON copied to clipboard.",
 
             // InspectSrcProblems modal texts
@@ -511,6 +512,7 @@ public class UILangProviderM
 
             ["SrcAnalysis.WindowTitle"] = "1cenc Source Analysis",
             ["SrcAnalysis.Completed"] = "视频源分析已完成。",
+            ["SrcAnalysis.RunAfterReplace"] = "是否立即运行视频源检查？",
             ["SrcAnalysis.Copied"] = "ffprobe 原生 JSON 已复制到剪贴板。",
 
             // InspectSrcProblems modal texts
@@ -760,6 +762,7 @@ public class UILangProviderM
 
             ["SrcAnalysis.WindowTitle"] = "1cenc Source Analysis",
             ["SrcAnalysis.Completed"] = "影片源分析已完成。",
+            ["SrcAnalysis.RunAfterReplace"] = "是否立即運行影片源檢查？",
             ["SrcAnalysis.Copied"] = "ffprobe 原生 JSON 已複製到剪貼簿。",
 
             // InspectSrcProblems modal texts
