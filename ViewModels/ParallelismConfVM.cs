@@ -111,8 +111,8 @@ namespace OneColumnEncoder.ViewModels
         public string DownstreamNumaTitle => Lang.DownstreamNumaTitle;
         public string NumaGuidanceText => Lang.NumaGuidanceText;
         public string ThreadStrategyTitle => Lang.ThreadStrategyTitle;
-        public string PreferUpstreamPhysicalCoresText => Lang.PreferUpstreamPhysicalCoresText;
-        public string PreferPhysicalCoresText => Lang.PreferPhysicalCoresText;
+        public string PreferUpstreamPhysCoresText => Lang.PreferUpstreamPhysCoresText;
+        public string PreferDownstreamPhysCoresText => Lang.PreferDownstreamPhysCoresText;
         public string PreferPCoreComputeText => Lang.PreferPCoreComputeText;
         public string PreferECoreLookaheadText => Lang.PreferECoreLookaheadText;
         public string MemoryStrategyTitle => Lang.MemoryStrategyTitle;
@@ -322,8 +322,8 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(DownstreamNumaTitle));
             OnPropertyChanged(nameof(NumaGuidanceText));
             OnPropertyChanged(nameof(ThreadStrategyTitle));
-            OnPropertyChanged(nameof(PreferUpstreamPhysicalCoresText));
-            OnPropertyChanged(nameof(PreferPhysicalCoresText));
+            OnPropertyChanged(nameof(PreferUpstreamPhysCoresText));
+            OnPropertyChanged(nameof(PreferDownstreamPhysCoresText));
             OnPropertyChanged(nameof(PreferPCoreComputeText));
             OnPropertyChanged(nameof(PreferECoreLookaheadText));
             OnPropertyChanged(nameof(MemoryStrategyTitle));

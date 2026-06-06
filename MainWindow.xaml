@@ -9,7 +9,7 @@
         Title="1cenc (Now is actually 2c)"
         Width="800"
         Height="1200">
-    <ScrollViewer VerticalScrollBarVisibility="Hidden"
+    <ScrollViewer VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Hidden">
         <!-- DataContext is inherited from parent (MainVM), so there is no binding needed here -->
         <views:MainUI />
