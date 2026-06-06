@@ -1,15 +1,10 @@
-﻿using OneColumnEncoder.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using OneColumnEncoder.Models;
 
 namespace OneColumnEncoder.ViewModels.Cards
 {
-    public class BestPracsCardVM : ValidationCardBaseVM
+    public class BestPracsSelfCheckCardVM : ValidationCardBaseVM
     {
-        public BestPracsCardVM()
+        public BestPracsSelfCheckCardVM()
         {
             FillCollection(Checklist1, ChecklistProviderM.GetBestPracticeChecklist1());
             FillCollection(Checklist2, ChecklistProviderM.GetBestPracticeChecklist2());

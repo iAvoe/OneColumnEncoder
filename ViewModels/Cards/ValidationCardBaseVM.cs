@@ -31,6 +31,13 @@ namespace OneColumnEncoder.ViewModels.Cards
             set => SetProperty(ref _p3Name, value);
         }
 
+        private string _subtitle = string.Empty;
+        public string Subtitle
+        {
+            get => _subtitle;
+            set => SetProperty(ref _subtitle, value);
+        }
+
         private double _cardOpacity = 1.0;
         public double CardOpacity
         {

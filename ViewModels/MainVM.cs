@@ -63,7 +63,7 @@ namespace OneColumnEncoder.ViewModels
         public ToolsImportCardVM ToolsImportCard { get; }
         public SourceCheckCardVM SrcValidationCard { get; } = new();
         public EncTermsCardVM EncTermsCard { get; } = new();
-        public BestPracsCardVM BestPracticesCard { get; } = new();
+        public BestPracsSelfCheckCardVM BestPracticesCard { get; } = new();
         // Section header texts
         public static string SectionImportTools => UILangProviderM.Current["Section.ImportTools"];
         public static string SectionSelectUpstream => UILangProviderM.Current["Section.SelectUpstream"];
@@ -208,6 +208,7 @@ namespace OneColumnEncoder.ViewModels
             BestPracticesCard.Name = UICaptionProviderM.Cards.BestPractices;
             BestPracticesCard.P1Name = UICaptionProviderM.Cards.BestHardware;
             BestPracticesCard.P3Name = UICaptionProviderM.Cards.BestSoftware;
+            BestPracticesCard.Subtitle = UICaptionProviderM.Cards.BestPracticesSubtitle;
 
             SrcValidationCard.IsSvtav1SelectedFunc = () =>
                 EncodersZone.Any(t => t.IsSelected
@@ -1096,6 +1097,7 @@ namespace OneColumnEncoder.ViewModels
             BestPracticesCard.Name = UICaptionProviderM.Cards.BestPractices;
             BestPracticesCard.P1Name = UICaptionProviderM.Cards.BestHardware;
             BestPracticesCard.P3Name = UICaptionProviderM.Cards.BestSoftware;
+            BestPracticesCard.Subtitle = UICaptionProviderM.Cards.BestPracticesSubtitle;
             BestPracticesCard.RefreshLanguage();
         }
         private void RefreshZoneLanguage()

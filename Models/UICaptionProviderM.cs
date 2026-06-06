@@ -14,6 +14,7 @@ public static class UICaptionProviderM
         public static string BestPractices => UILangProviderM.Current["Cards.BestPractices"];
         public static string BestHardware => UILangProviderM.Current["Cards.BestHardware"];
         public static string BestSoftware => UILangProviderM.Current["Cards.BestSoftware"];
+        public static string BestPracticesSubtitle => UILangProviderM.Current["Cards.BestPracticesSubtitle"];
     }
 
     public static class Buttons

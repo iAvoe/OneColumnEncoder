@@ -19,6 +19,7 @@ public class UILangProviderM
             ["Cards.BestPractices"] = "Best Practices",
             ["Cards.BestHardware"] = "Hardware (self check)",
             ["Cards.BestSoftware"] = "Software (self check)",
+            ["Cards.BestPracticesSubtitle"] = "Advisory — not blocking",
 
             // Main buttons
             ["Buttons.UsageAndCompliance"] = "Usage & Compliance",
@@ -292,6 +293,7 @@ public class UILangProviderM
             ["Cards.BestPractices"] = "最好看看",
             ["Cards.BestHardware"] = "自查：硬件工况",
             ["Cards.BestSoftware"] = "自查：软件工况",
+            ["Cards.BestPracticesSubtitle"] = "仅供参考，不阻塞流程",
 
             ["Buttons.UsageAndCompliance"] = "用法与合规指南",
             ["Buttons.Settings"] = "设置",
@@ -542,6 +544,7 @@ public class UILangProviderM
             ["Cards.BestPractices"] = "最好看看",
             ["Cards.BestHardware"] = "自查：硬體工況",
             ["Cards.BestSoftware"] = "自查：軟體工況",
+            ["Cards.BestPracticesSubtitle"] = "僅供參考，不阻塞流程",
 
             ["Buttons.UsageAndCompliance"] = "用法與合規指南",
             ["Buttons.Settings"] = "設定",

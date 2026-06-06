@@ -11,6 +11,7 @@
              d:DesignWidth="450">
     <UserControl.Resources>
         <conv:WidthToColumnCountConverter x:Key="WidthToColumnCount" />
+        <conv:StringToVisibilityConverter x:Key="StringToVisibility" />
     </UserControl.Resources>
     <Border BorderBrush="{StaticResource GlobalPrimary}"
              BorderThickness="1.5"
@@ -23,6 +24,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0"
@@ -30,7 +32,14 @@
                        Text="{Binding Name}"
                        Style="{StaticResource H2}" />
 
-            <UniformGrid Grid.Row="1"
+            <TextBlock Grid.Row="1"
+                       Text="{Binding Subtitle}"
+                       Visibility="{Binding Subtitle, Converter={StaticResource StringToVisibility}}"
+                       Foreground="{StaticResource GlobalPrimary}"
+                       FontSize="11"
+                       Margin="0 5 0 0" />
+
+            <UniformGrid Grid.Row="2"
                          Columns="{Binding ActualWidth,
                                     RelativeSource={RelativeSource FindAncestor,
                                                                    AncestorType={x:Type ScrollViewer}},
