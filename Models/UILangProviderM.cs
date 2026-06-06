@@ -256,7 +256,7 @@ public class UILangProviderM
             ["FilenameScribe.SelfCheck2"] = "Ordering: Pad 0s to double & higher digit consecutive #s",
             ["FilenameScribe.SelfCheck3"] = "If the filename is a translated show name, ensure this alias is on TMDB",
             ["FilenameScribe.PasteFromClipboard"] = "Paste from Clipboard",
-            ["FilenameScribe.RotateFontSize"] = "Rotate font size",
+            ["FilenameScribe.RotateFontSize"] = "Rotate fontsize",
             ["FilenameScribe.Cancel"] = "Cancel",
             ["FilenameScribe.Confirm"] = "Done → Set Export Path",
             ["FilenameScribe.FooterHint"] = "File extension is set by selected encoder and cannot be edited here",

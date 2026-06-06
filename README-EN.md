@@ -41,6 +41,15 @@ This software supports multiple languages, but for reducing amount of images, on
 
 ---
 
+## Localization Status
+
+- **Supported:** English, Simplified Chinese, Traditional Chinese
+- To provide a translation, please fork this repository, add a new language entrie in `Models/XxxLangProviderM`, and submit a pull request
+  - Translation of the README is not required, but it would be great if you can do that
+- The language provider model is straightforward, and you can refer to the existing implementations
+
+---
+
 ## Project Status
 
 The content below organizes the implementation status based on the current project status, marking the completion status of major and sub-modules, classified as:
@@ -108,7 +117,7 @@ The content below organizes the implementation status based on the current proje
 #### Encoding Monitoring and Process Execution
 
 - Supports starting upstream and encoder processes and passing upstream stdout pipes to encoder stdin
-- Supports reading upstream/downstream stderr, log folding, saving logs, viewing encoding commands, and adjusting log font size
+- Supports reading upstream/downstream stderr, log folding, saving logs, viewing encoding commands, and adjusting log fontsize
 - Supports encoding progress, number of written frames, current/estimated output size, time elapsed, remaining time, and completion time estimation
 - Supports memory usage, working set peak, Page Fault, memory pressure, and memory range statistics
 - Supports interrupting upstream or encoder processes; the window can only be closed after encoding is complete

@@ -101,7 +101,7 @@
                          HorizontalAlignment="Left"
                          VerticalAlignment="Center" />
 
-        <!-- Copy from clipboard, rotate textbox font size -->
+        <!-- Copy from clipboard, rotate textbox fontsize -->
         <comps:TwoButtonGroup Grid.Row="3"
                               Margin="0 10 0 0"
                               ButtonHeight="30"

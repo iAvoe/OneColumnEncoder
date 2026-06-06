@@ -284,7 +284,7 @@ namespace OneColumnEncoder.ViewModels
             MetricColumns.Add(new ColumnTextItemM { TopText = Lang.WorkingSetPeakTopText, MainText = PlaceholderGb, BottomText = Lang.WorkingSetPeakBottomText });
             MetricColumns.Add(new ColumnTextItemM { TopText = Lang.PageFileTopText, MainText = PlaceholderGb, BottomText = Lang.PageFileBottomText });
             MetricColumns.Add(new ColumnTextItemM { TopText = Lang.PageFaultTopText, MainText = PlaceholderCount, BottomText = Lang.PageFaultBottomText });
-            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.MemoryPressureTopText, MainText = Lang.MemoryPressureMediumText, BottomText = PlaceholderPercent });
+            MetricColumns.Add(new ColumnTextItemM { TopText = Lang.RAMStressTopText, MainText = Lang.RAMStressMediumText, BottomText = PlaceholderPercent });
         }
 
         private void BuildFooter()
@@ -755,7 +755,7 @@ namespace OneColumnEncoder.ViewModels
             MetricColumns[3].BottomText = ReplaceMetricValue(Lang.PageFileBottomText, FormatGb(memoryStatus.CommitLimitBytes));
             MetricColumns[4].MainText = GetTotalPageFaults(childMap).ToString("N0", CultureInfo.InvariantCulture);
             MetricColumns[4].BottomText = Lang.PageFaultBottomText;
-            MetricColumns[5].MainText = memoryStatus.MemoryLoadPercent < 75 ? Lang.MemoryPressureMediumText : Lang.MemoryPressureHighText;
+            MetricColumns[5].MainText = memoryStatus.MemoryLoadPercent < 75 ? Lang.RAMStressMediumText : Lang.RAMStressHighText;
             MetricColumns[5].BottomText = $"{memoryStatus.MemoryLoadPercent}%";
 
             DistributionUpstream = FormatMb(_lastUpstreamWorkingSetBytes);

@@ -34,7 +34,7 @@ public class EncodingMonitorModalLangProviderM
             ["ContinueMonitoringText"] = "Continue monitoring",
             ["FreezeContinueText"] = "Freeze / Continue",
             ["ResetUsageText"] = "Reset usage values",
-            ["RotateLogFontSizeText"] = "Rotate log font size",
+            ["RotateLogFontSizeText"] = "Rotate log fontsize",
             ["SaveUpstreamStderrText"] = "Save upstream log",
             ["SaveDownstreamStderrText"] = "Save downstream log",
 
@@ -54,9 +54,9 @@ public class EncodingMonitorModalLangProviderM
             ["PageFileBottomText"] = "Total XX GB",
             ["PageFaultTopText"] = "Page faults",
             ["PageFaultBottomText"] = "Hard faults XX",
-            ["MemoryPressureTopText"] = "Memory pressure",
-            ["MemoryPressureMediumText"] = "Mid",
-            ["MemoryPressureHighText"] = "High",
+            ["RAMStressTopText"] = "RAM stress",
+            ["RAMStressMediumText"] = "Mid",
+            ["RAMStressHighText"] = "High",
             ["BlockTooltipFormat"] = "Range block {0}",
             ["PipeErrorPrefix"] = "Pipe error: ",
             ["ReadyToStartText"] = "Ready to start",
@@ -122,9 +122,9 @@ public class EncodingMonitorModalLangProviderM
             ["PageFileBottomText"] = "总计 XX GB",
             ["PageFaultTopText"] = "页错误",
             ["PageFaultBottomText"] = "硬错误 XX",
-            ["MemoryPressureTopText"] = "内存压力",
-            ["MemoryPressureMediumText"] = "中",
-            ["MemoryPressureHighText"] = "高",
+            ["RAMStressTopText"] = "内存压力",
+            ["RAMStressMediumText"] = "中",
+            ["RAMStressHighText"] = "高",
             ["BlockTooltipFormat"] = "范围块 {0}",
             ["PipeErrorPrefix"] = "管道错误：",
             ["ReadyToStartText"] = "准备启动",
@@ -190,9 +190,9 @@ public class EncodingMonitorModalLangProviderM
             ["PageFileBottomText"] = "總計 XX GB",
             ["PageFaultTopText"] = "分頁錯誤",
             ["PageFaultBottomText"] = "硬錯誤 XX",
-            ["MemoryPressureTopText"] = "記憶體壓力",
-            ["MemoryPressureMediumText"] = "中",
-            ["MemoryPressureHighText"] = "高",
+            ["RAMStressTopText"] = "記憶體壓力",
+            ["RAMStressMediumText"] = "中",
+            ["RAMStressHighText"] = "高",
             ["BlockTooltipFormat"] = "範圍塊 {0}",
             ["PipeErrorPrefix"] = "管道錯誤：",
             ["ReadyToStartText"] = "準備啟動",
@@ -256,9 +256,9 @@ public class EncodingMonitorModalLangProviderM
     public string PageFileBottomText { get; }
     public string PageFaultTopText { get; }
     public string PageFaultBottomText { get; }
-    public string MemoryPressureTopText { get; }
-    public string MemoryPressureMediumText { get; }
-    public string MemoryPressureHighText { get; }
+    public string RAMStressTopText { get; }
+    public string RAMStressMediumText { get; }
+    public string RAMStressHighText { get; }
     public string BlockTooltipFormat { get; }
     public string PipeErrorPrefix { get; }
     public string ReadyToStartText { get; }
@@ -329,9 +329,9 @@ public class EncodingMonitorModalLangProviderM
         PageFileBottomText = _d["PageFileBottomText"];
         PageFaultTopText = _d["PageFaultTopText"];
         PageFaultBottomText = _d["PageFaultBottomText"];
-        MemoryPressureTopText = _d["MemoryPressureTopText"];
-        MemoryPressureMediumText = _d["MemoryPressureMediumText"];
-        MemoryPressureHighText = _d["MemoryPressureHighText"];
+        RAMStressTopText = _d["RAMStressTopText"];
+        RAMStressMediumText = _d["RAMStressMediumText"];
+        RAMStressHighText = _d["RAMStressHighText"];
         BlockTooltipFormat = _d["BlockTooltipFormat"];
         PipeErrorPrefix = _d["PipeErrorPrefix"];
         ReadyToStartText = _d["ReadyToStartText"];
