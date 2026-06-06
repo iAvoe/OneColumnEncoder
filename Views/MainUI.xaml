@@ -306,15 +306,15 @@
                                     Button1IsEnabled="{Binding B3_1IsEnabled}"
                                     Button2IsEnabled="{Binding B3_2IsEnabled}"
                                     Button3IsEnabled="{Binding B3_3IsEnabled}"
-                                    Margin="10" />
+                                    Margin="10 10 10 0" />
+            
+            <!-- Hint: OneLineShotArgs upstream does not support clipping -->
+            <comps:HintPanel Visibility="{Binding SVFIClipDisabledHintVisible, Converter={StaticResource BoolToVisibility}}"
+                             Text="{Binding SVFIClipDisabledHintText}"
+                             Margin="5 5 5 0"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center" />
         </StackPanel>
-
-        <!-- Hint: OneLineShotArgs upstream does not support clipping -->
-        <comps:HintPanel Visibility="{Binding SVFIClipDisabledHintVisible, Converter={StaticResource BoolToVisibility}}"
-                         Text="{Binding SVFIClipDisabledHintText}"
-                         Margin="5 5 5 0"
-                         HorizontalAlignment="Left"
-                         VerticalAlignment="Center" />
 
         <Border Visibility="{Binding IsOverlayVisible, Converter={StaticResource BoolToVisibility}}"
                 Background="White"
