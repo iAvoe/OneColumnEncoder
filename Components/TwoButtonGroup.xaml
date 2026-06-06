@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:OneColumnEncoder.Components"
              xmlns:conv="clr-namespace:OneColumnEncoder.Converters"
+             xmlns:viewmodels="clr-namespace:OneColumnEncoder.ViewModels"
+             d:DataContext="{d:DesignInstance Type=viewmodels:ButtonGroupVM}"
              mc:Ignorable="d"
              d:DesignHeight="40"
              d:DesignWidth="450">

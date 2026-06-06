@@ -229,16 +229,16 @@
                 <Setter Property="Background"
                         Value="{StaticResource Background}" />
                 <Setter Property="Foreground"
-                        Value="{StaticResource GlobalPrimary}" />
+                        Value="{StaticResource ButtonPrimary}" />
                 <Setter Property="BorderBrush"
-                        Value="{StaticResource GlobalPrimary}" />
+                        Value="{StaticResource ButtonPrimary}" />
                 <Setter Property="BorderThickness"
                         Value="1.5" />
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver"
                              Value="True">
                         <Setter Property="Background"
-                                Value="{StaticResource GlobalPrimary}" />
+                                Value="{StaticResource ButtonPrimary}" />
                         <Setter Property="Foreground"
                                 Value="{StaticResource Background}" />
                         <Setter Property="BorderBrush"

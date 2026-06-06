@@ -13,11 +13,17 @@
         Height="1060"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
-    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                  HorizontalScrollBarVisibility="Disabled">
-        <Grid Margin="15">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ScrollViewer Grid.Row="0"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -310,13 +316,15 @@
                                  VerticalAlignment="Center" />
             </StackPanel>
 
-            <!-- Confirm / Cancel Buttons -->
-            <comps:TwoButtonGroup Grid.Row="5"
-                                  Margin="0 18 0 0"
-                                  DataContext="{Binding FinishButtons}"
-                                  Button1Command="{Binding Cmd1}"
-                                  Button2Command="{Binding Cmd2}"
-                                  ButtonHeight="32" />
-        </Grid>
-    </ScrollViewer>
+            </Grid>
+        </ScrollViewer>
+
+        <!-- Confirm / Cancel Buttons -->
+        <comps:TwoButtonGroup Grid.Row="1"
+                              Margin="0 18 0 0"
+                              DataContext="{Binding FinishButtons}"
+                              Button1Command="{Binding Cmd1}"
+                              Button2Command="{Binding Cmd2}"
+                              ButtonHeight="32" />
+    </Grid>
 </Window>

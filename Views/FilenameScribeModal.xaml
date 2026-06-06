@@ -15,15 +15,23 @@
         Background="{StaticResource Background}">
     <Grid Margin="15">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+
+        <ScrollViewer Grid.Row="0"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
         <!-- Filename textbox header mini title -->
         <TextBlock Grid.Row="0"
@@ -205,8 +213,11 @@
                        Foreground="{StaticResource GlobalPrimary}" />
         </StackPanel>
 
-        <!-- Row 7: 取消 + 确认→定位输出路径 -->
-        <comps:TwoButtonGroup Grid.Row="7"
+            </Grid>
+        </ScrollViewer>
+
+        <!-- 取消 + 确认→定位输出路径 -->
+        <comps:TwoButtonGroup Grid.Row="1"
                               Margin="0 22 0 0"
                               ButtonHeight="30"
                               DataContext="{Binding FilenameFinishButtons}"

@@ -16,12 +16,17 @@
         Height="890"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
-    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                  HorizontalScrollBarVisibility="Disabled">
-        <Grid Margin="15">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ScrollViewer Grid.Row="0"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -224,29 +229,31 @@
                                  Margin="0 3 0 0" />
             </StackPanel>
 
-            <!-- Encoding timings -->
-            <StackPanel Grid.Row="6"
-                        Margin="0 15 0 0">
-                <comps:ColumnTextGrid Items="{Binding FooterColumns}"
-                                      ColumnCount="7" />
-                <comps:FiveButtonGroup Margin="0 15 0 0"
-                                       DataContext="{Binding FinishButtons}"
-                                       ButtonHeight="30"
-                                       Button1Command="{Binding Cmd1}"
-                                       Button2Command="{Binding Cmd2}"
-                                       Button3Command="{Binding Cmd3}"
-                                       Button4Command="{Binding Cmd4}"
-                                       Button5Command="{Binding Cmd5}"
-                                       Button1IsEnabled="{Binding B5_1IsEnabled}"
-                                       Button2IsEnabled="{Binding B5_2IsEnabled}"
-                                       Button3IsEnabled="{Binding B5_3IsEnabled}"
-                                       Button4IsEnabled="{Binding B5_4IsEnabled}"
-                                       Button5IsEnabled="{Binding B5_5IsEnabled}" />
-                <!-- Hint: abort will discard task progress -->
-                <comps:HintPanel Text="{Binding SmallNoteText}"
-                                 HintBrush="{StaticResource GlobalSecondary}"
-                                 Margin="0 3 0 0" />
-            </StackPanel>
-        </Grid>
-    </ScrollViewer>
+            </Grid>
+        </ScrollViewer>
+
+        <!-- Encoding timings -->
+        <StackPanel Grid.Row="1"
+                    Margin="0 15 0 0">
+            <comps:ColumnTextGrid Items="{Binding FooterColumns}"
+                                  ColumnCount="7" />
+            <comps:FiveButtonGroup Margin="0 15 0 0"
+                                   DataContext="{Binding FinishButtons}"
+                                   ButtonHeight="30"
+                                   Button1Command="{Binding Cmd1}"
+                                   Button2Command="{Binding Cmd2}"
+                                   Button3Command="{Binding Cmd3}"
+                                   Button4Command="{Binding Cmd4}"
+                                   Button5Command="{Binding Cmd5}"
+                                   Button1IsEnabled="{Binding B5_1IsEnabled}"
+                                   Button2IsEnabled="{Binding B5_2IsEnabled}"
+                                   Button3IsEnabled="{Binding B5_3IsEnabled}"
+                                   Button4IsEnabled="{Binding B5_4IsEnabled}"
+                                   Button5IsEnabled="{Binding B5_5IsEnabled}" />
+            <!-- Hint: abort will discard task progress -->
+            <comps:HintPanel Text="{Binding SmallNoteText}"
+                             HintBrush="{StaticResource GlobalSecondary}"
+                             Margin="0 3 0 0" />
+        </StackPanel>
+    </Grid>
 </Window>
