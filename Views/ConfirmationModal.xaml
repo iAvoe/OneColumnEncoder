@@ -65,26 +65,10 @@
                                   Button1Command="{Binding Cmd1}"
                                   Button2Command="{Binding Cmd2}"
                                   Margin="0 15 0 0" />
-            <StackPanel Margin="5 1.25 5 0"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center">
-                <Rectangle Width="10"
-                           Height="10"
-                           VerticalAlignment="Center"
-                           Fill="{StaticResource GlobalTertiary}">
-                    <Rectangle.OpacityMask>
-                        <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
-                                    Stretch="Uniform" />
-                    </Rectangle.OpacityMask>
-                </Rectangle>
-                <TextBlock FontSize="9"
-                           Focusable="False"
-                           Margin="3.5 0 0 0"
-                           Text="{Binding CopyHint}"
-                           VerticalAlignment="Center"
-                           Foreground="{StaticResource GlobalTertiary}" />
-            </StackPanel>
+            <comps:HintPanel Text="{Binding CopyHint}"
+                             Margin="5 1.25 5 0"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center" />
         </StackPanel>
         <!-- This might be an image icon instead -->
         <Image Grid.Column="1"

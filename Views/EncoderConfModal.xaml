@@ -97,48 +97,16 @@
             </TabControl>
 
             <!-- CRF, ABR Hint -->
-            <StackPanel Grid.Row="2"
-                        Margin="5 10 5 0"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center">
-                <Rectangle Width="10"
-                           Height="10"
-                           VerticalAlignment="Center"
-                           Fill="{StaticResource GlobalTertiary}">
-                    <Rectangle.OpacityMask>
-                        <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
-                                    Stretch="Uniform" />
-                    </Rectangle.OpacityMask>
-                </Rectangle>
-                <TextBlock FontSize="9"
-                           Focusable="False"
-                           Margin="3.5 0 0 0"
-                           Text="{Binding CrfHintText, Mode=OneWay}"
-                           VerticalAlignment="Center"
-                           Foreground="{StaticResource GlobalTertiary}" />
-            </StackPanel>
-            <StackPanel Grid.Row="3"
-                        Margin="5 10 5 0"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center">
-                <Rectangle Width="10"
-                           Height="10"
-                           VerticalAlignment="Center"
-                           Fill="{StaticResource GlobalTertiary}">
-                    <Rectangle.OpacityMask>
-                        <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
-                                    Stretch="Uniform" />
-                    </Rectangle.OpacityMask>
-                </Rectangle>
-                <TextBlock FontSize="9"
-                           Focusable="False"
-                           Margin="3.5 0 0 0"
-                           Text="{Binding AbrHintText, Mode=OneWay}"
-                           VerticalAlignment="Center"
-                           Foreground="{StaticResource GlobalTertiary}" />
-            </StackPanel>
+            <comps:HintPanel Grid.Row="2"
+                             Text="{Binding CrfHintText, Mode=OneWay}"
+                             Margin="5 10 5 0"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center" />
+            <comps:HintPanel Grid.Row="3"
+                             Text="{Binding AbrHintText, Mode=OneWay}"
+                             Margin="5 10 5 0"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center" />
             
             <!-- Custom Params: Basic / Keyframe / Third-party -->
             <StackPanel Grid.Row="4">
@@ -221,46 +189,14 @@
                                          Margin="0 6 0 0" />
                 </comps:IntegerSliderGroup>
 
-                <StackPanel Margin="5 10 5 0"
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center">
-                    <Rectangle Width="10"
-                               Height="10"
-                               VerticalAlignment="Center"
-                               Fill="{StaticResource GlobalTertiary}">
-                        <Rectangle.OpacityMask>
-                            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
-                                        Stretch="Uniform" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                    <TextBlock FontSize="9"
-                               Focusable="False"
-                               Margin="3.5 0 0 0"
-                               Text="{Binding KeyframeHintText1, Mode=OneWay}"
-                               VerticalAlignment="Center"
-                               Foreground="{StaticResource GlobalTertiary}" />
-                </StackPanel>
-                <StackPanel Margin="5 10 5 0"
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center">
-                    <Rectangle Width="10"
-                               Height="10"
-                               VerticalAlignment="Center"
-                               Fill="{StaticResource GlobalTertiary}">
-                        <Rectangle.OpacityMask>
-                            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
-                                        Stretch="Uniform" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                    <TextBlock FontSize="9"
-                               Focusable="False"
-                               Margin="3.5 0 0 0"
-                               Text="{Binding KeyframeHintText2, Mode=OneWay}"
-                               VerticalAlignment="Center"
-                               Foreground="{StaticResource GlobalTertiary}" />
-                </StackPanel>
+                <comps:HintPanel Text="{Binding KeyframeHintText1, Mode=OneWay}"
+                                 Margin="5 10 5 0"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center" />
+                <comps:HintPanel Text="{Binding KeyframeHintText2, Mode=OneWay}"
+                                 Margin="5 10 5 0"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center" />
 
                 <!-- Third-party Params Checkboxes -->
                 <TextBlock Text="{Binding ThirdPartyParamsText, Mode=OneWay}"
@@ -356,86 +292,22 @@
                               Margin="0 10 0 0" />
                 </Grid>
 
-                <StackPanel Margin="5 10 5 0"
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center">
-                    <Rectangle Width="10"
-                               Height="10"
-                               VerticalAlignment="Center"
-                               Fill="{StaticResource GlobalTertiary}">
-                        <Rectangle.OpacityMask>
-                            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
-                                        Stretch="Uniform" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                    <TextBlock FontSize="9"
-                               Focusable="False"
-                               Margin="3.5 0 0 0"
-                               Text="{Binding ThirdPartyHintText1, Mode=OneWay}"
-                               VerticalAlignment="Center"
-                               Foreground="{StaticResource GlobalTertiary}" />
-                </StackPanel>
-                <StackPanel Margin="5 10 5 0"
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center">
-                    <Rectangle Width="10"
-                               Height="10"
-                               VerticalAlignment="Center"
-                               Fill="{StaticResource GlobalTertiary}">
-                        <Rectangle.OpacityMask>
-                            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
-                                        Stretch="Uniform" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                    <TextBlock FontSize="9"
-                               Focusable="False"
-                               Margin="3.5 0 0 0"
-                               Text="{Binding ThirdPartyHintText2, Mode=OneWay}"
-                               VerticalAlignment="Center"
-                               Foreground="{StaticResource GlobalTertiary}" />
-                </StackPanel>
-                <StackPanel Margin="5 10 5 0"
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center">
-                    <Rectangle Width="10"
-                               Height="10"
-                               VerticalAlignment="Center"
-                               Fill="{StaticResource GlobalTertiary}">
-                        <Rectangle.OpacityMask>
-                            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
-                                        Stretch="Uniform" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                    <TextBlock FontSize="9"
-                               Focusable="False"
-                               Margin="3.5 0 0 0"
-                               Text="{Binding ThirdPartyHintText3, Mode=OneWay}"
-                               VerticalAlignment="Center"
-                               Foreground="{StaticResource GlobalTertiary}" />
-                </StackPanel>
-                <StackPanel Margin="5 10 5 0"
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center">
-                    <Rectangle Width="10"
-                               Height="10"
-                               VerticalAlignment="Center"
-                               Fill="{StaticResource GlobalTertiary}">
-                        <Rectangle.OpacityMask>
-                            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
-                                        Stretch="Uniform" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                    <TextBlock FontSize="9"
-                               Focusable="False"
-                               Margin="3.5 0 0 0"
-                               Text="{Binding ThirdPartyHintText4, Mode=OneWay}"
-                               VerticalAlignment="Center"
-                               Foreground="{StaticResource GlobalTertiary}" />
-                </StackPanel>
+                <comps:HintPanel Text="{Binding ThirdPartyHintText1, Mode=OneWay}"
+                                 Margin="5 10 5 0"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center" />
+                <comps:HintPanel Text="{Binding ThirdPartyHintText2, Mode=OneWay}"
+                                 Margin="5 10 5 0"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center" />
+                <comps:HintPanel Text="{Binding ThirdPartyHintText3, Mode=OneWay}"
+                                 Margin="5 10 5 0"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center" />
+                <comps:HintPanel Text="{Binding ThirdPartyHintText4, Mode=OneWay}"
+                                 Margin="5 10 5 0"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center" />
             </StackPanel>
 
             <!-- Confirm / Cancel Buttons -->

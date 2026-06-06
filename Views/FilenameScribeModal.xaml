@@ -87,27 +87,11 @@
         </Grid>
 
         <!-- Hint: extension is fixed -->
-        <StackPanel Grid.Row="2"
-                    Margin="0.5 1.25 0 0"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center">
-            <Rectangle Width="10"
-                       Height="10"
-                       VerticalAlignment="Center"
-                       Fill="{StaticResource GlobalTertiary}">
-                <Rectangle.OpacityMask>
-                    <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
-                                Stretch="Uniform" />
-                </Rectangle.OpacityMask>
-            </Rectangle>
-            <TextBlock FontSize="9"
-                       Focusable="False"
-                       Margin="3.5 0 0 0"
-                       Text="{Binding FooterHint}"
-                       VerticalAlignment="Center"
-                       Foreground="{StaticResource GlobalTertiary}" />
-        </StackPanel>
+        <comps:HintPanel Grid.Row="2"
+                         Text="{Binding FooterHint}"
+                         Margin="0.5 1.25 0 0"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Center" />
 
         <!-- Copy from clipboard, rotate textbox font size -->
         <comps:TwoButtonGroup Grid.Row="3"

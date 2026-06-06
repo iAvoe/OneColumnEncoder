@@ -45,27 +45,13 @@
                                   SelectionEnd="{Binding SelectionEnd, Mode=TwoWay}" />
 
         <!-- Drag time range selector handle hint -->
-        <StackPanel Grid.Row="3"
-                    Margin="0 5 0 0"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center">
-            <Rectangle Width="10"
-                       Height="10"
-                       VerticalAlignment="Center"
-                       Fill="{StaticResource GlobalSecondary}">
-                <Rectangle.OpacityMask>
-                    <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
-                                Stretch="Uniform" />
-                </Rectangle.OpacityMask>
-            </Rectangle>
-            <TextBlock FontSize="10"
-                       Focusable="False"
-                       Margin="3.5 0 0 0"
-                       Text="{Binding SelectionHintText}"
-                       VerticalAlignment="Center"
-                       Foreground="{StaticResource GlobalSecondary}" />
-        </StackPanel>
+        <comps:HintPanel Grid.Row="3"
+                         Text="{Binding SelectionHintText}"
+                         HintBrush="{StaticResource GlobalSecondary}"
+                         FontSize="10"
+                         Margin="0 5 0 0"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Center" />
 
         <!-- Clip duration settings title -->
         <TextBlock Grid.Row="4"
@@ -207,38 +193,14 @@
                                   ButtonHeight="34"
                                   Button1Command="{Binding Cmd1}"
                                   Button2Command="{Binding Cmd2}" />
-            <StackPanel Margin="0 8 0 0"
-                        Orientation="Horizontal">
-                <Rectangle Width="10"
-                           Height="10"
-                           Fill="{StaticResource GlobalSecondary}"
-                           VerticalAlignment="Center">
-                    <Rectangle.OpacityMask>
-                        <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
-                                    Stretch="Uniform" />
-                    </Rectangle.OpacityMask>
-                </Rectangle>
-                <TextBlock Text="{Binding Note1Text}"
-                           FontSize="10"
-                           Foreground="{StaticResource GlobalSecondary}"
-                           Margin="3.5 0 0 0" />
-            </StackPanel>
-            <StackPanel Margin="0 4 0 0"
-                        Orientation="Horizontal">
-                <Rectangle Width="10"
-                           Height="10"
-                           Fill="{StaticResource GlobalSecondary}"
-                           VerticalAlignment="Center">
-                    <Rectangle.OpacityMask>
-                        <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
-                                    Stretch="Uniform" />
-                    </Rectangle.OpacityMask>
-                </Rectangle>
-                <TextBlock Text="{Binding Note2Text}"
-                           FontSize="10"
-                           Foreground="{StaticResource GlobalSecondary}"
-                           Margin="3.5 0 0 0" />
-            </StackPanel>
+            <comps:HintPanel Text="{Binding Note1Text}"
+                             HintBrush="{StaticResource GlobalSecondary}"
+                             FontSize="10"
+                             Margin="0 8 0 0" />
+            <comps:HintPanel Text="{Binding Note2Text}"
+                             HintBrush="{StaticResource GlobalSecondary}"
+                             FontSize="10"
+                             Margin="0 4 0 0" />
         </StackPanel>
     </Grid>
 </Window>
