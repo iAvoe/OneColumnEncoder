@@ -10,336 +10,361 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="520"
-        Height="1060"
+        Height="1180"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
-    <Grid Margin="15">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <ScrollViewer Grid.Row="0"
+                      Padding="15 15 15 0"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled">
             <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-            <!-- Rate Control Title -->
-            <TextBlock Grid.Row="0"
-                       Text="{Binding RateControlTitle}"
-                       Style="{StaticResource H2}"
-                       Margin="0 5 0 0" />
-
-            <!-- CRF / ABR Tabs -->
-            <TabControl Grid.Row="1"
-                        SelectedIndex="{Binding SelectedTabIndex}"
-                        Margin="0 10 0 0">
-
-                <TabItem Header="{Binding CrfModeText}"
-                         Padding="15 7.5"
-                         FontWeight="Bold">
-                    <comps:IntegerSliderGroup Margin="10 5 0 7.5">
-                        <comps:IntegerSlider Label="x264"
-                                             Minimum="0"
-                                             Maximum="25"
-                                             Value="{Binding X264Crf, Mode=TwoWay}"
-                                             TickLabels="{Binding X264CrfLabels}"
-                                             TickCount="5"
-                                             SliderMaxWidth="340" />
-                        <comps:IntegerSlider Label="x265"
-                                             Minimum="0"
-                                             Maximum="30"
-                                             Value="{Binding X265Crf, Mode=TwoWay}"
-                                             TickLabels="{Binding X265CrfLabels}"
-                                             TickCount="5"
-                                             SliderMaxWidth="340"/>
-                        <comps:IntegerSlider Label="SVT-AV1"
-                                             Minimum="0"
-                                             Maximum="43"
-                                             Value="{Binding SvtAv1Crf, Mode=TwoWay}"
-                                             TickLabels="{Binding SvtAv1CrfLabels}"
-                                             TickCount="5"
-                                             SliderMaxWidth="340"/>
-                    </comps:IntegerSliderGroup>
-                </TabItem>
-
-                <TabItem Header="{Binding AbrModeText}"
-                         Padding="15 7.5"
-                         FontWeight="Bold">
-                    <comps:IntegerSliderGroup Margin="10 5 0 7.5">
-                        <comps:IntegerSlider Label="x264"
-                                             Minimum="10"
-                                             Maximum="500"
-                                             Value="{Binding X264Abr, Mode=TwoWay}"
-                                             TickLabels="{Binding X264AbrLabels}"
-                                             TickCount="4"
-                                             Step="10"
-                                             SliderMaxWidth="340" />
-                        <comps:IntegerSlider Label="x265"
-                                             Minimum="10"
-                                             Maximum="500"
-                                             Value="{Binding X265Abr, Mode=TwoWay}"
-                                             TickLabels="{Binding X265AbrLabels}"
-                                             TickCount="4"
-                                             Step="10"
-                                             SliderMaxWidth="340"/>
-                        <comps:IntegerSlider Label="SVT-AV1"
-                                             Minimum="10"
-                                             Maximum="500"
-                                             Value="{Binding SvtAv1Abr, Mode=TwoWay}"
-                                             TickLabels="{Binding SvtAv1AbrLabels}"
-                                             TickCount="4"
-                                             Step="10"
-                                             SliderMaxWidth="340"/>
-                    </comps:IntegerSliderGroup>
-                </TabItem>
-            </TabControl>
-
-            <!-- CRF, ABR Hint -->
-            <comps:HintPanel Grid.Row="2"
-                             Text="{Binding CrfHintText, Mode=OneWay}"
-                             Margin="5 10 5 0"
-                             HorizontalAlignment="Left"
-                             VerticalAlignment="Center" />
-            <comps:HintPanel Grid.Row="3"
-                             Text="{Binding AbrHintText, Mode=OneWay}"
-                             Margin="5 10 5 0"
-                             HorizontalAlignment="Left"
-                             VerticalAlignment="Center" />
-            
-            <!-- Custom Params: Basic / Keyframe / Third-party -->
-            <StackPanel Grid.Row="4">
-                <TextBlock Text="{Binding CustomParamsTitle}"
+                <!-- Rate Control Title -->
+                <TextBlock Grid.Row="0"
+                           Text="{Binding RateControlTitle}"
                            Style="{StaticResource H2}"
-                           Margin="0 15 0 0" />
-                <!-- Basic Params: Mode Dropdowns -->
-                <TextBlock Text="{Binding BasicParamsText}"
-                           Style="{StaticResource H3}"
-                           Margin="0 10 0 0" />
+                           Margin="0 5 0 0" />
 
-                <Grid Margin="0 10 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="x264"
-                               FontSize="13"
-                               VerticalAlignment="Center" />
-                    <comps:DropdownMenu Grid.Column="1"
-                                        MinWidth="150"
-                                        Height="25"
-                                        DataContext="{Binding X264ModeDropdown}" />
-                </Grid>
+                <!-- CRF / ABR Tabs -->
+                <TabControl Grid.Row="1"
+                            SelectedIndex="{Binding SelectedTabIndex}"
+                            Margin="0 10 0 0">
 
-                <Grid Margin="0 10 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="x265"
-                               FontSize="13"
-                               VerticalAlignment="Center" />
-                    <comps:DropdownMenu Grid.Column="1"
-                                        MinWidth="150"
-                                        Height="25"
-                                        DataContext="{Binding X265ModeDropdown}" />
-                </Grid>
-                <Grid Margin="0 10 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="SVT-AV1"
-                               FontSize="13"
-                               VerticalAlignment="Center" />
-                    <comps:DropdownMenu Grid.Column="1"
-                                        MinWidth="150"
-                                        Height="25"
-                                        DataContext="{Binding SvtAv1ModeDropdown}" />
-                </Grid>
+                    <TabItem Header="{Binding CrfModeText}"
+                             Padding="15 7.5"
+                             FontWeight="Bold">
+                        <comps:IntegerSliderGroup Margin="10 5 0 7.5">
+                            <comps:IntegerSlider Label="x264"
+                                                 Minimum="0"
+                                                 Maximum="25"
+                                                 Value="{Binding X264Crf, Mode=TwoWay}"
+                                                 TickLabels="{Binding X264CrfLabels}"
+                                                 TickCount="5"
+                                                 SliderMaxWidth="340" />
+                            <comps:IntegerSlider Label="x265"
+                                                 Minimum="0"
+                                                 Maximum="30"
+                                                 Value="{Binding X265Crf, Mode=TwoWay}"
+                                                 TickLabels="{Binding X265CrfLabels}"
+                                                 TickCount="5"
+                                                 SliderMaxWidth="340" />
+                            <comps:IntegerSlider Label="SVT-AV1"
+                                                 Minimum="0"
+                                                 Maximum="43"
+                                                 Value="{Binding SvtAv1Crf, Mode=TwoWay}"
+                                                 TickLabels="{Binding SvtAv1CrfLabels}"
+                                                 TickCount="5"
+                                                 SliderMaxWidth="340" />
+                        </comps:IntegerSliderGroup>
+                    </TabItem>
 
-                <!-- Keyframe Interval Sliders -->
-                <TextBlock Text="{Binding KeyframeSecondsText, Mode=OneWay}"
-                           Style="{StaticResource H3}"
-                           Margin="0 15 0 0" />
-                <comps:IntegerSliderGroup>
-                    <comps:IntegerSlider Label="{Binding X264Text}"
-                                         Minimum="6"
-                                         Maximum="15"
-                                         Value="{Binding X264Keyframe, Mode=TwoWay}"
-                                         TickLabels="{Binding X264KeyframeLabels}"
-                                         TickCount="4"
-                                         SliderMaxWidth="430" />
-                    <comps:IntegerSlider Label="{Binding X265Text}"
-                                         Minimum="4"
-                                         Maximum="13"
-                                         Value="{Binding X265Keyframe, Mode=TwoWay}"
-                                         TickLabels="{Binding X265KeyframeLabels}"
-                                         TickCount="4"
-                                         SliderMaxWidth="430"
-                                         Margin="0 6 0 0" />
-                    <comps:IntegerSlider Label="{Binding SvtAv1Text}"
-                                         Minimum="6"
-                                         Maximum="15"
-                                         Value="{Binding SvtAv1Keyframe, Mode=TwoWay}"
-                                         TickLabels="{Binding SvtAv1KeyframeLabels}"
-                                         TickCount="4"
-                                         SliderMaxWidth="430"
-                                         Margin="0 6 0 0" />
-                </comps:IntegerSliderGroup>
+                    <TabItem Header="{Binding AbrModeText}"
+                             Padding="15 7.5"
+                             FontWeight="Bold">
+                        <comps:IntegerSliderGroup Margin="10 5 0 7.5">
+                            <comps:IntegerSlider Label="x264"
+                                                 Minimum="10"
+                                                 Maximum="500"
+                                                 Value="{Binding X264Abr, Mode=TwoWay}"
+                                                 TickLabels="{Binding X264AbrLabels}"
+                                                 TickCount="4"
+                                                 Step="10"
+                                                 SliderMaxWidth="340" />
+                            <comps:IntegerSlider Label="x265"
+                                                 Minimum="10"
+                                                 Maximum="500"
+                                                 Value="{Binding X265Abr, Mode=TwoWay}"
+                                                 TickLabels="{Binding X265AbrLabels}"
+                                                 TickCount="4"
+                                                 Step="10"
+                                                 SliderMaxWidth="340" />
+                            <comps:IntegerSlider Label="SVT-AV1"
+                                                 Minimum="10"
+                                                 Maximum="500"
+                                                 Value="{Binding SvtAv1Abr, Mode=TwoWay}"
+                                                 TickLabels="{Binding SvtAv1AbrLabels}"
+                                                 TickCount="4"
+                                                 Step="10"
+                                                 SliderMaxWidth="340" />
+                        </comps:IntegerSliderGroup>
+                    </TabItem>
+                </TabControl>
 
-                <comps:HintPanel Text="{Binding KeyframeHintText1, Mode=OneWay}"
+                <!-- CRF, ABR Hint -->
+                <comps:HintPanel Grid.Row="2"
+                                 Text="{Binding CrfHintText, Mode=OneWay}"
                                  Margin="5 10 5 0"
                                  HorizontalAlignment="Left"
                                  VerticalAlignment="Center" />
-                <comps:HintPanel Text="{Binding KeyframeHintText2, Mode=OneWay}"
+                <comps:HintPanel Grid.Row="3"
+                                 Text="{Binding AbrHintText, Mode=OneWay}"
                                  Margin="5 10 5 0"
                                  HorizontalAlignment="Left"
                                  VerticalAlignment="Center" />
 
-                <!-- Third-party Params Checkboxes -->
-                <TextBlock Text="{Binding ThirdPartyParamsText, Mode=OneWay}"
-                           Style="{StaticResource H3}"
-                           Margin="0 15 0 0" />
-                <Grid Margin="0 10 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0"
-                               Text="{Binding X264ModText, Mode=OneWay}"
-                               FontSize="13"
-                               TextWrapping="Wrap"
-                               VerticalAlignment="Center"
-                               Margin="0 5 0 0" />
-                    <CheckBox Grid.Row="0"
-                              Grid.Column="1"
-                              IsChecked="{Binding X264Mod, Mode=TwoWay}"
-                              HorizontalAlignment="Right"
-                              VerticalAlignment="Center" />
-                    <TextBlock Grid.Row="1"
-                               Text="{Binding X265JpsdrAqText, Mode=OneWay}"
-                               FontSize="13"
-                               TextWrapping="Wrap"
-                               VerticalAlignment="Center"
+                <!-- Custom Params: Basic / Keyframe / Third-party -->
+                <StackPanel Grid.Row="4">
+                    <TextBlock Text="{Binding CustomParamsTitle}"
+                               Style="{StaticResource H2}"
                                Margin="0 15 0 0" />
-                    <CheckBox Grid.Row="1"
-                              Grid.Column="1"
-                              IsChecked="{Binding X265Aq, Mode=TwoWay}"
-                              HorizontalAlignment="Right"
-                              VerticalAlignment="Center"
-                              Margin="0 15 0 0" />
-                    <TextBlock Grid.Row="2"
-                               Text="{Binding X265JpsdrDarkText, Mode=OneWay}"
-                               FontSize="13"
-                               TextWrapping="Wrap"
-                               VerticalAlignment="Center"
-                               Margin="0 15 0 0"
-                               IsEnabled="{Binding IsX265DarkEnabled}" />
-                    <CheckBox Grid.Row="2"
-                              Grid.Column="1"
-                              IsChecked="{Binding X265Dark, Mode=TwoWay}"
-                              HorizontalAlignment="Right"
-                              VerticalAlignment="Center"
-                              Margin="0 15 0 0"
-                              IsEnabled="{Binding IsX265DarkEnabled}" />
-                    <TextBlock Grid.Row="3"
-                               Text="{Binding X265JpsdrTextureText, Mode=OneWay}"
-                               FontSize="13"
-                               TextWrapping="Wrap"
-                               VerticalAlignment="Center"
-                               Margin="0 15 0 0"
-                               IsEnabled="{Binding IsX265TextureEnabled}" />
-                    <CheckBox Grid.Row="3"
-                              Grid.Column="1"
-                              IsChecked="{Binding X265Texture, Mode=TwoWay}"
-                              HorizontalAlignment="Right"
-                              VerticalAlignment="Center"
-                              Margin="0 15 0 0"
-                              IsEnabled="{Binding IsX265TextureEnabled}" />
-                    <TextBlock Grid.Row="4"
-                               Text="{Binding SvtAv1EssentialDl2Text, Mode=OneWay}"
-                               FontSize="13"
-                               TextWrapping="Wrap"
-                               VerticalAlignment="Center"
+                    <!-- Basic Params: Mode Dropdowns -->
+                    <TextBlock Text="{Binding BasicParamsText}"
+                               Style="{StaticResource H3}"
+                               Margin="0 10 0 0" />
+
+                    <Grid Margin="0 10 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="x264"
+                                   FontSize="13"
+                                   VerticalAlignment="Center" />
+                        <comps:DropdownMenu Grid.Column="1"
+                                            MinWidth="150"
+                                            Height="25"
+                                            DataContext="{Binding X264ModeDropdown}" />
+                    </Grid>
+
+                    <Grid Margin="0 10 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="x265"
+                                   FontSize="13"
+                                   VerticalAlignment="Center" />
+                        <comps:DropdownMenu Grid.Column="1"
+                                            MinWidth="150"
+                                            Height="25"
+                                            DataContext="{Binding X265ModeDropdown}" />
+                    </Grid>
+                    <Grid Margin="0 10 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="SVT-AV1"
+                                   FontSize="13"
+                                   VerticalAlignment="Center" />
+                        <comps:DropdownMenu Grid.Column="1"
+                                            MinWidth="150"
+                                            Height="25"
+                                            DataContext="{Binding SvtAv1ModeDropdown}" />
+                    </Grid>
+
+                    <!-- Keyframe Interval Sliders -->
+                    <TextBlock Text="{Binding KeyframeSecondsText, Mode=OneWay}"
+                               Style="{StaticResource H3}"
                                Margin="0 15 0 0" />
-                    <CheckBox Grid.Row="4"
-                              Grid.Column="1"
-                              IsChecked="{Binding SvtAv1Dl2, Mode=TwoWay}"
-                              HorizontalAlignment="Right"
-                              VerticalAlignment="Center"
-                              Margin="0 15 0 0" />
-                    <TextBlock Grid.Row="5"
-                               Text="{Binding SvtAv1EssentialAutoTileText, Mode=OneWay}"
-                               FontSize="13"
-                               TextWrapping="Wrap"
-                               VerticalAlignment="Center"
+                    <comps:IntegerSliderGroup>
+                        <comps:IntegerSlider Label="{Binding X264Text}"
+                                             Minimum="6"
+                                             Maximum="15"
+                                             Value="{Binding X264Keyframe, Mode=TwoWay}"
+                                             TickLabels="{Binding X264KeyframeLabels}"
+                                             TickCount="4"
+                                             SliderMaxWidth="430" />
+                        <comps:IntegerSlider Label="{Binding X265Text}"
+                                             Minimum="4"
+                                             Maximum="13"
+                                             Value="{Binding X265Keyframe, Mode=TwoWay}"
+                                             TickLabels="{Binding X265KeyframeLabels}"
+                                             TickCount="4"
+                                             SliderMaxWidth="430"
+                                             Margin="0 6 0 0" />
+                        <comps:IntegerSlider Label="{Binding SvtAv1Text}"
+                                             Minimum="6"
+                                             Maximum="15"
+                                             Value="{Binding SvtAv1Keyframe, Mode=TwoWay}"
+                                             TickLabels="{Binding SvtAv1KeyframeLabels}"
+                                             TickCount="4"
+                                             SliderMaxWidth="430"
+                                             Margin="0 6 0 0" />
+                    </comps:IntegerSliderGroup>
+
+                    <comps:HintPanel Text="{Binding KeyframeHintText1, Mode=OneWay}"
+                                     Margin="5 10 5 0"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Center" />
+                    <comps:HintPanel Text="{Binding KeyframeHintText2, Mode=OneWay}"
+                                     Margin="5 10 5 0"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Center" />
+
+                    <!-- Third-party Params Checkboxes -->
+                    <TextBlock Text="{Binding ThirdPartyParamsText, Mode=OneWay}"
+                               Style="{StaticResource H3}"
                                Margin="0 15 0 0" />
-                    <CheckBox Grid.Row="5"
-                              Grid.Column="1"
-                              IsChecked="{Binding SvtAv1AutoTile, Mode=TwoWay}"
-                              HorizontalAlignment="Right"
-                              VerticalAlignment="Center"
-                              Margin="0 10 0 0" />
-                </Grid>
+                    <Grid Margin="0 10 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0"
+                                   Text="{Binding X264ModText, Mode=OneWay}"
+                                   FontSize="13"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center"
+                                   Margin="0 5 0 0" />
+                        <CheckBox Grid.Row="0"
+                                  Grid.Column="1"
+                                  IsChecked="{Binding X264Mod, Mode=TwoWay}"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Center" />
+                        <TextBlock Grid.Row="1"
+                                   Text="{Binding X265JpsdrAqText, Mode=OneWay}"
+                                   FontSize="13"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center"
+                                   Margin="0 15 0 0" />
+                        <CheckBox Grid.Row="1"
+                                  Grid.Column="1"
+                                  IsChecked="{Binding X265Aq, Mode=TwoWay}"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Center"
+                                  Margin="0 15 0 0" />
+                        <TextBlock Grid.Row="2"
+                                   Text="{Binding X265JpsdrDarkText, Mode=OneWay}"
+                                   FontSize="13"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center"
+                                   Margin="0 15 0 0"
+                                   IsEnabled="{Binding IsX265DarkEnabled}" />
+                        <CheckBox Grid.Row="2"
+                                  Grid.Column="1"
+                                  IsChecked="{Binding X265Dark, Mode=TwoWay}"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Center"
+                                  Margin="0 15 0 0"
+                                  IsEnabled="{Binding IsX265DarkEnabled}" />
+                        <TextBlock Grid.Row="3"
+                                   Text="{Binding X265JpsdrTextureText, Mode=OneWay}"
+                                   FontSize="13"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center"
+                                   Margin="0 15 0 0"
+                                   IsEnabled="{Binding IsX265TextureEnabled}" />
+                        <CheckBox Grid.Row="3"
+                                  Grid.Column="1"
+                                  IsChecked="{Binding X265Texture, Mode=TwoWay}"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Center"
+                                  Margin="0 15 0 0"
+                                  IsEnabled="{Binding IsX265TextureEnabled}" />
+                        <TextBlock Grid.Row="4"
+                                   Text="{Binding SvtAv1EssentialDl2Text, Mode=OneWay}"
+                                   FontSize="13"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center"
+                                   Margin="0 15 0 0" />
+                        <CheckBox Grid.Row="4"
+                                  Grid.Column="1"
+                                  IsChecked="{Binding SvtAv1Dl2, Mode=TwoWay}"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Center"
+                                  Margin="0 15 0 0" />
+                        <TextBlock Grid.Row="5"
+                                   Text="{Binding SvtAv1EssentialAutoTileText, Mode=OneWay}"
+                                   FontSize="13"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center"
+                                   Margin="0 15 0 0" />
+                        <CheckBox Grid.Row="5"
+                                  Grid.Column="1"
+                                  IsChecked="{Binding SvtAv1AutoTile, Mode=TwoWay}"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Center"
+                                  Margin="0 10 0 0" />
+                    </Grid>
 
-                <comps:HintPanel Text="{Binding ThirdPartyHintText1, Mode=OneWay}"
-                                 Margin="5 10 5 0"
-                                 HorizontalAlignment="Left"
-                                 VerticalAlignment="Center" />
-                <comps:HintPanel Text="{Binding ThirdPartyHintText2, Mode=OneWay}"
-                                 Margin="5 10 5 0"
-                                 HorizontalAlignment="Left"
-                                 VerticalAlignment="Center" />
-                <comps:HintPanel Text="{Binding ThirdPartyHintText3, Mode=OneWay}"
-                                 Margin="5 10 5 0"
-                                 HorizontalAlignment="Left"
-                                 VerticalAlignment="Center" />
-                <comps:HintPanel Text="{Binding ThirdPartyHintText4, Mode=OneWay}"
-                                 Margin="5 10 5 0"
-                                 HorizontalAlignment="Left"
-                                 VerticalAlignment="Center" />
+                    <comps:HintPanel Text="{Binding ThirdPartyHintText1, Mode=OneWay}"
+                                     Margin="5 10 5 0"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Center" />
+                    <comps:HintPanel Text="{Binding ThirdPartyHintText2, Mode=OneWay}"
+                                     Margin="5 10 5 0"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Center" />
+                    <comps:HintPanel Text="{Binding ThirdPartyHintText3, Mode=OneWay}"
+                                     Margin="5 10 5 0"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Center" />
+                    <comps:HintPanel Text="{Binding ThirdPartyHintText4, Mode=OneWay}"
+                                     Margin="5 10 5 0"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Center" />
 
-                <!-- Free-text Custom Params -->
-                <TextBlock Text="{Binding FreeTextParamsText, Mode=OneWay}"
-                           Style="{StaticResource H3}"
-                           Margin="0 15 0 0" />
-                <TextBox Text="{Binding FreeTextParams, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         MinHeight="60"
-                         MaxHeight="120"
-                         Margin="0 8 0 0"
-                         Padding="6"
-                         FontFamily="Consolas"
-                         FontSize="12"
-                         TextWrapping="Wrap"
-                         AcceptsReturn="True"
-                         VerticalScrollBarVisibility="Auto" />
-            </StackPanel>
-
+                    <!-- Free-text custom params title & tab control -->
+                    <TextBlock Text="{Binding FreeTextControlTitle}"
+                               Style="{StaticResource H3}"
+                               Margin="0 15 0 0" />
+                    <TabControl Margin="0 10 0 0">
+                        <TabItem Header="{Binding X264Text}"
+                                 Padding="15 7.5"
+                                 FontWeight="Bold">
+                            <TextBox Text="{Binding FreeTextParamsX264, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     Height="40"
+                                     FontFamily="Consolas"
+                                     FontSize="11"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True"
+                                     VerticalScrollBarVisibility="Auto" />
+                        </TabItem>
+                        <TabItem Header="{Binding X265Text}"
+                                 Padding="15 7.5"
+                                 FontWeight="Bold">
+                            <TextBox Text="{Binding FreeTextParamsX265, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     Height="40"
+                                     FontFamily="Consolas"
+                                     FontSize="11"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True"
+                                     VerticalScrollBarVisibility="Auto" />
+                        </TabItem>
+                        <TabItem Header="{Binding SvtAv1Text}"
+                                 Padding="15 7.5"
+                                 FontWeight="Bold">
+                            <TextBox Text="{Binding FreeTextParamsSvtAv1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     Height="40"
+                                     FontFamily="Consolas"
+                                     FontSize="11"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True"
+                                     VerticalScrollBarVisibility="Auto" />
+                        </TabItem>
+                    </TabControl>
+                </StackPanel>
             </Grid>
         </ScrollViewer>
 
         <!-- Confirm / Cancel Buttons -->
         <comps:TwoButtonGroup Grid.Row="1"
-                              Margin="0 18 0 0"
+                              ButtonHeight="30"
+                              Margin="15"
                               DataContext="{Binding FinishButtons}"
                               Button1Command="{Binding Cmd1}"
-                              Button2Command="{Binding Cmd2}"
-                              ButtonHeight="32" />
+                              Button2Command="{Binding Cmd2}" />
     </Grid>
 </Window>

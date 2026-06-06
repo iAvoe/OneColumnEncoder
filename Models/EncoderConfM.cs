@@ -43,7 +43,9 @@ namespace OneColumnEncoder.Models
         public bool SvtAv1Dl2 { get; set; } = false;
         public bool SvtAv1AutoTile { get; set; } = false;
 
-        public string CustomParams { get; set; } = "";
+        public string CustomParamsX264 { get; set; } = "";
+        public string CustomParamsX265 { get; set; } = "";
+        public string CustomParamsSvtAv1 { get; set; } = "";
 
         private sealed class LegacyPresetKeyIntConverter : JsonConverter<int>
         {
