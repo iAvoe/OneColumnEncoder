@@ -42,7 +42,7 @@ public record EncodingPipelineCommand(
     string UpstreamArgs,
     string EncoderArgs);
 
-public static class EncodingPipelineH
+public static partial class EncodingPipelineH
 {
     public static EncodingPipelineCommand BuildY4mCommand(EncodingPipelineRequest request)
     {
@@ -819,13 +819,16 @@ public static class EncodingPipelineH
         return value.Trim();
     }
 
+    [GeneratedRegex(@"gui_inputs\s*=\s*""((?:[^""\\]|\\.)*)""")]
+    private static partial Regex SvfiIniRegex();
+
     public static (string inputPath, string taskId) ParseSvfiIni(string iniPath)
     {
         if (string.IsNullOrWhiteSpace(iniPath) || !File.Exists(iniPath))
             return (string.Empty, string.Empty);
 
         string iniContent = File.ReadAllText(iniPath);
-        Match match = Regex.Match(iniContent, @"gui_inputs\s*=\s*""((?:[^""\\]|\\.)*)""");
+        Match match = SvfiIniRegex().Match(iniContent);
         if (!match.Success)
             return (string.Empty, string.Empty);
 
