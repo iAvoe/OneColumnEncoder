@@ -139,11 +139,16 @@ namespace OneColumnEncoder.ViewModels
                 InitialDirectory = OutputPathH.GetInitialDirectory(_outputSettingItem.P2TextData)
             };
 
-            if (dialog.ShowDialog() != true) return;
+            Window? owner = Application.Current.MainWindow;
+            bool? result = owner is null
+                ? dialog.ShowDialog()
+                : dialog.ShowDialog(owner);
+            if (result != true) return;
 
             _outputSettingItem.P2TextData = dialog.FolderName;
             _outputSettingItem.P1TextData = filename;
             _closeAction();
+            Application.Current.MainWindow?.Activate();
         }
 
         private bool CanConfirm() => FilenameFinishButtons.B2_2IsEnabled;
