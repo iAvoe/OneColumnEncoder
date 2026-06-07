@@ -86,7 +86,6 @@ namespace OneColumnEncoder.ViewModels
         public string ElapsedLabel => Lang.ElapsedLabel;
         public string RemainingLabel => Lang.RemainingLabel;
         public string CompleteAtLabel => Lang.CompleteAtLabel;
-        public string EncoderFileLabel => Lang.EncoderFileLabel;
         public static string RateControlLabel => "ABR / CRF";
         public string ArgsLabel => Lang.ArgsLabel;
         public string SmallNoteText => Lang.SmallNoteText;
@@ -294,7 +293,6 @@ namespace OneColumnEncoder.ViewModels
             FooterColumns.Add(new ColumnTextItemM { TopText = ElapsedLabel, MainText = "00:00:00" });
             FooterColumns.Add(new ColumnTextItemM { TopText = RemainingLabel, MainText = "--:--:--" });
             FooterColumns.Add(new ColumnTextItemM { TopText = CompleteAtLabel, MainText = "--:--:--" });
-            FooterColumns.Add(new ColumnTextItemM { TopText = EncoderFileLabel, MainText = _request.EncoderExeName });
             FooterColumns.Add(new ColumnTextItemM { TopText = RateControlLabel, MainText = GetRateControlText() });
             FooterColumns.Add(new ColumnTextItemM { TopText = ArgsLabel, MainText = GetPresetText() });
         }
@@ -1471,15 +1469,14 @@ namespace OneColumnEncoder.ViewModels
             FinishButtons.B5_4Text = Lang.InterruptEncoderText;
             FinishButtons.B5_5Text = Lang.CloseAfterDoneText;
 
-            if (FooterColumns.Count == 7)
+            if (FooterColumns.Count == 6)
             {
                 FooterColumns[0].TopText = StartedAtLabel;
                 FooterColumns[1].TopText = ElapsedLabel;
                 FooterColumns[2].TopText = RemainingLabel;
                 FooterColumns[3].TopText = CompleteAtLabel;
-                FooterColumns[4].TopText = EncoderFileLabel;
-                FooterColumns[5].TopText = RateControlLabel;
-                FooterColumns[6].TopText = ArgsLabel;
+                FooterColumns[4].TopText = RateControlLabel;
+                FooterColumns[5].TopText = ArgsLabel;
             }
 
             OnPropertyChanged(nameof(WindowTitle));
@@ -1494,7 +1491,6 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(ElapsedLabel));
             OnPropertyChanged(nameof(RemainingLabel));
             OnPropertyChanged(nameof(CompleteAtLabel));
-            OnPropertyChanged(nameof(EncoderFileLabel));
             OnPropertyChanged(nameof(ArgsLabel));
             OnPropertyChanged(nameof(SmallNoteText));
             OnPropertyChanged(nameof(DistributionUpstreamLabel));

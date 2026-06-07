@@ -235,7 +235,7 @@
         <!-- Encoding timings -->
         <StackPanel Grid.Row="1">
             <comps:ColumnTextGrid Items="{Binding FooterColumns}"
-                                  ColumnCount="7" />
+                                   ColumnCount="6" />
             <comps:FiveButtonGroup Margin="0 15 0 0"
                                    DataContext="{Binding FinishButtons}"
                                    ButtonHeight="30"

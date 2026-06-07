@@ -22,7 +22,6 @@ public class EncodingMonitorModalLangProviderM
             ["ElapsedLabel"] = "Elapsed",
             ["RemainingLabel"] = "Remaining",
             ["CompleteAtLabel"] = "ETA",
-            ["EncoderFileLabel"] = "Encoder filename",
             ["ArgsLabel"] = "Other preset name",
             ["SmallNoteText"] = "This program does not support progress quantization; interrupting will discard task progress.",
             ["DistributionUpstreamLabel"] = "Upstream program",
@@ -90,7 +89,6 @@ public class EncodingMonitorModalLangProviderM
             ["ElapsedLabel"] = "已用时",
             ["RemainingLabel"] = "预计剩余",
             ["CompleteAtLabel"] = "预计完成（24h）",
-            ["EncoderFileLabel"] = "编码器文件名",
             ["ArgsLabel"] = "其他参数预设名",
             ["SmallNoteText"] = "本程序不支持进度量化；中断将丢弃任务进度。",
             ["DistributionUpstreamLabel"] = "上游程序",
@@ -158,7 +156,6 @@ public class EncodingMonitorModalLangProviderM
             ["ElapsedLabel"] = "已用時",
             ["RemainingLabel"] = "預計剩餘",
             ["CompleteAtLabel"] = "預計完成（24h）",
-            ["EncoderFileLabel"] = "編碼器檔名",
             ["ArgsLabel"] = "其他參數預設名",
             ["SmallNoteText"] = "本程式不支援進度量化；中斷將丟棄任務進度。",
             ["DistributionUpstreamLabel"] = "上游程式",
@@ -225,7 +222,6 @@ public class EncodingMonitorModalLangProviderM
     public string ElapsedLabel { get; }
     public string RemainingLabel { get; }
     public string CompleteAtLabel { get; }
-    public string EncoderFileLabel { get; }
     public string ArgsLabel { get; }
     public string SmallNoteText { get; }
     public string DistributionUpstreamLabel { get; }
@@ -298,7 +294,6 @@ public class EncodingMonitorModalLangProviderM
         ElapsedLabel = _d["ElapsedLabel"];
         RemainingLabel = _d["RemainingLabel"];
         CompleteAtLabel = _d["CompleteAtLabel"];
-        EncoderFileLabel = _d["EncoderFileLabel"];
         ArgsLabel = _d["ArgsLabel"];
         SmallNoteText = _d["SmallNoteText"];
         DistributionUpstreamLabel = _d["DistributionUpstreamLabel"];
