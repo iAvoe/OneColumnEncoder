@@ -80,6 +80,7 @@ namespace OneColumnEncoder.ViewModels
                 if (!SetProperty(ref _maxThreadCount, Math.Max(1, value))) return;
                 ClampEncoderThreadCount();
                 OnPropertyChanged(nameof(EncoderThreadTickLabels));
+                OnPropertyChanged(nameof(EncoderThreadTickCount));
             }
         }
 
@@ -105,6 +106,7 @@ namespace OneColumnEncoder.ViewModels
         public string LargePagesUnavailableHintText => Lang.LargePagesUnavailableHintText;
         public string EncoderThreadCountText => Lang.EncoderThreadCountText;
         public List<string> EncoderThreadTickLabels => BuildThreadTickLabels();
+        public int EncoderThreadTickCount => EncoderThreadTickLabels.Count;
         public string CancelButtonText => Lang.CancelButtonText;
         public string ConfirmButtonText => Lang.ConfirmButtonText;
 
@@ -245,15 +247,29 @@ namespace OneColumnEncoder.ViewModels
 
         private List<string> BuildThreadTickLabels()
         {
-            int max = MaxThreadCount;
-            const int tickCount = 8;
-            List<string> labels = [];
-            for (int i = 0; i < tickCount; i++)
+            int max = Math.Max(1, MaxThreadCount);
+            if (max <= 8)
+                return Enumerable.Range(1, max).Select(v => v.ToString()).ToList();
+
+            int step = GetThreadTickStep(max);
+            List<int> values = [1];
+            for (int value = step; value < max; value += step)
+                values.Add(value);
+
+            if (values[^1] != max) values.Add(max);
+            return values.Select(v => v.ToString()).ToList();
+        }
+
+        private static int GetThreadTickStep(int maxThreadCount)
+        {
+            return maxThreadCount switch
             {
-                int val = 1 + i * (max - 1) / (tickCount - 1);
-                labels.Add(val.ToString());
-            }
-            return labels;
+                <= 16 => 2,
+                <= 32 => 4,
+                <= 64 => 8,
+                <= 128 => 16,
+                _ => 32
+            };
         }
 
         private static string BuildCacheGroupHint()
@@ -310,6 +326,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(LargePagesUnavailableHintText));
             OnPropertyChanged(nameof(EncoderThreadCountText));
             OnPropertyChanged(nameof(EncoderThreadTickLabels));
+            OnPropertyChanged(nameof(EncoderThreadTickCount));
             OnPropertyChanged(nameof(CancelButtonText));
             OnPropertyChanged(nameof(ConfirmButtonText));
 

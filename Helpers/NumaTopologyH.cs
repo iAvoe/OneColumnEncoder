@@ -91,10 +91,32 @@ public static partial class NumaTopologyH
         }
 
         if (nodes.Count == 0) return CreateFallbackNode();
+        nodes = NormalizeSinglePackageNodes(nodes);
+
         long totalMemory = GetTotalPhysicalMemory();
         if (totalMemory > 0) DistributeMemoryByProcessorCount(nodes, totalMemory);
 
         return nodes;
+    }
+
+    private static List<NumaNodeInfo> NormalizeSinglePackageNodes(List<NumaNodeInfo> nodes)
+    {
+        if (nodes.Count <= 1) return nodes;
+        if (nodes.Select(n => n.Group).Distinct().Count() != 1) return nodes;
+        if (CpuTopologyH.GetProcessorPackageCount() != 1) return nodes;
+
+        return
+        [
+            new NumaNodeInfo
+            {
+                NodeId = nodes.Min(n => n.NodeId),
+                Group = nodes[0].Group,
+                ProcessorCount = nodes.Sum(n => n.ProcessorCount),
+                MinThreadNum = nodes.Min(n => n.MinThreadNum),
+                MaxThreadNum = nodes.Max(n => n.MaxThreadNum),
+                TotalMemoryBytes = nodes.Sum(n => n.TotalMemoryBytes)
+            }
+        ];
     }
 
     private static List<NumaNodeInfo> CreateFallbackNode()

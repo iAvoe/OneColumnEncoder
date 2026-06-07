@@ -87,10 +87,22 @@ public static partial class CpuSetsH
         if (allCpuSets.Count == 0) return [];
 
         List<CpuSetInfo> nodeCpuSets = [.. allCpuSets.Where(c => c.NumaNodeIndex == nodeId)];
+        NumaNodeInfo? node = NumaTopologyH.GetNumaNodes().FirstOrDefault(n => n.NodeId == nodeId);
+
+        if (node != null)
+        {
+            List<CpuSetInfo> rangedCpuSets = allCpuSets
+                .Where(c => c.Group == node.Group
+                    && node.MinThreadNum <= c.GlobalLogicalProcessorIndex
+                    && c.GlobalLogicalProcessorIndex <= node.MaxThreadNum)
+                .ToList();
+
+            if (rangedCpuSets.Count > nodeCpuSets.Count)
+                nodeCpuSets = rangedCpuSets;
+        }
 
         if (nodeCpuSets.Count == 0)
         {
-            NumaNodeInfo? node = NumaTopologyH.GetNumaNodes().FirstOrDefault(n => n.NodeId == nodeId);
             if (node != null)
             {
                 nodeCpuSets = allCpuSets

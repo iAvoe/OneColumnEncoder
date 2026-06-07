@@ -149,6 +149,40 @@ namespace OneColumnEncoder.Helpers
             finally { Marshal.FreeHGlobal(buffer); }
         }
 
+        public static int GetProcessorPackageCount()
+        {
+            uint returnLength = 0;
+            GetLogicalProcessorInformationEx(LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorPackage, IntPtr.Zero, ref returnLength);
+
+            int err = Marshal.GetLastWin32Error();
+            if (err != 122) return 0;// ERROR_INSUFFICIENT_BUFFER
+
+            IntPtr buffer = Marshal.AllocHGlobal((int)returnLength);
+            try
+            {
+                if (!GetLogicalProcessorInformationEx(LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorPackage, buffer, ref returnLength))
+                    return 0;
+
+                int packageCount = 0;
+                int offset = 0;
+                while (offset < returnLength)
+                {
+                    IntPtr currentPtr = buffer + offset;
+                    SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX baseInfo =
+                        Marshal.PtrToStructure<SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX>(currentPtr);
+
+                    if (baseInfo.Size == 0) break;
+                    if (baseInfo.Relationship == LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorPackage)
+                        packageCount++;
+
+                    offset += (int)baseInfo.Size;
+                }
+
+                return packageCount;
+            }
+            finally { Marshal.FreeHGlobal(buffer); }
+        }
+
         private static int CountBits(ulong value)
         {
             int count = 0;
