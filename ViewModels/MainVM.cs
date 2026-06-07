@@ -59,6 +59,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly bool _isInspBypsEncChkButtonsReady;
         private readonly bool _isEncStartButtonsReady;
         private bool _importedToolZonesSubscribed;
+        private bool _promptScriptGenAfterAnalysis;
         // Card UIs
         public ToolsImportCardVM ToolsImportCard { get; }
         public SourceCheckCardVM SrcValidationCard { get; } = new();
@@ -149,7 +150,7 @@ namespace OneColumnEncoder.ViewModels
                 _srcVideoAnalysis, modalNavS);
             AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(
                 GetSelectedFfprobePath, GetSelectedVideoSourcePath, _srcVideoAnalysis, SrcValidationCard, modalNavS,
-                isSuccess => ToolsImportCard.SetCompleteSourceAnalysisStatus(isSuccess),
+                OnSourceAnalysisCompleted,
                 () =>
                 { // On source analysis complete
                     UpdateAnalyzeSrcButtonsState();
@@ -696,7 +697,6 @@ namespace OneColumnEncoder.ViewModels
             if (kind == SourceFileKind.Video && wasReplaced)
             {
                 PromptRunSourceAnalysisAfterReplace();
-                PromptScriptGenerationAfterReplace();
             }
         }
 
@@ -734,6 +734,23 @@ namespace OneColumnEncoder.ViewModels
             window.ShowDialog();
         }
 
+        private void OnSourceAnalysisCompleted(bool isSuccess)
+        {
+            ToolsImportCard.SetCompleteSourceAnalysisStatus(isSuccess);
+
+            if (!isSuccess)
+            {
+                _promptScriptGenAfterAnalysis = false;
+                return;
+            }
+
+            if (_promptScriptGenAfterAnalysis)
+            {
+                _promptScriptGenAfterAnalysis = false;
+                PromptScriptGenerationAfterReplace();
+            }
+        }
+
         private void PromptRunSourceAnalysisAfterReplace()
         {
             if (!AnalyzeSrcVideo.CanExecute(null)) return;
@@ -748,6 +765,7 @@ namespace OneColumnEncoder.ViewModels
                 {
                     window.DialogResult = true;
                     window.Close();
+                    _promptScriptGenAfterAnalysis = true;
                     if (AnalyzeSrcVideo.CanExecute(null))
                         AnalyzeSrcVideo.Execute(null);
                 }));
