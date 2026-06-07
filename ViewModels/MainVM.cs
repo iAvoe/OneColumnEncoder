@@ -667,6 +667,16 @@ namespace OneColumnEncoder.ViewModels
             {
                 foreach (ToolItemCardVM source in VideoSrcImportZone)
                     source.IsSelected = false;
+
+                foreach (ToolItemCardVM script in ScriptSrcImportZone)
+                {
+                    script.P2TextData = string.Empty;
+                    script.P1TextData = string.Empty;
+                    script.IsSelected = false;
+                }
+                SaveSourcePath(SourceFileKind.AviSynthScript, string.Empty);
+                SaveSourcePath(SourceFileKind.VapourSynthScript, string.Empty);
+                SaveSourcePath(SourceFileKind.SvfiIni, string.Empty);
             }
             else
             {
