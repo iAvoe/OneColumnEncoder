@@ -36,6 +36,7 @@ namespace OneColumnEncoder.Commands
             _item.SetStoredFingerprint(fileSize);
             _item.P2TextData = filePath;
             _item.P1TextData = version ?? string.Empty;
+            _item.IsCancel = false;
             _appDataM.Save();
             _afterReplace?.Invoke();
         }
