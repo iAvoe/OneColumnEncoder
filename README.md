@@ -32,6 +32,8 @@
 - .NET 9 Desktop Runtime
   - 下载地址：[微软官网](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
 
+<p align="center"><img src="WireframeMockups/Actual-Binary-Link-Position.png" alt="Actual link is on the right side" width="600"></p>
+
 **支持的管道上游程序（解码与滤镜工具）**：
 - ffmpeg
 - vspipe（支持 API 3.0、4.0 自动识别）

@@ -32,12 +32,7 @@ This software supports multiple languages, but English text screenshots are used
 - .NET 9 Desktop Runtime
   - Download: [Microsoft Official Website](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
 
-**Supported upstream pipeline programs (decoding and filtering tools)**:
-- ffmpeg
-- vspipe (supports API 3.0 and 4.0 auto-detection)
-- avs2yuv
-- avs2pipemod
-- SVFI
+<p align="center"><img src="WireframeMockups/Actual-Binary-Link-Position.png" alt="Actual link is on the right side" width="600"></p>
 
 **Supported downstream pipeline programs (encoders)**:
 - x264
