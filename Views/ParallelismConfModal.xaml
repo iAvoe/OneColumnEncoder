@@ -131,10 +131,10 @@
                                 Margin="5 10 5 0"
                                 Label="{Binding EncoderThreadCountText}"
                                 Minimum="1"
-                                 Maximum="{Binding MaxThreadCount}"
-                                 Value="{Binding EncoderThreadCount, Mode=TwoWay}"
-                                 TickLabels="{Binding EncoderThreadTickLabels}"
-                                 TickCount="{Binding EncoderThreadTickCount}" />
+                                Maximum="{Binding MaxThreadCount}"
+                                Value="{Binding EncoderThreadCount, Mode=TwoWay}"
+                                TickLabels="{Binding EncoderThreadTickLabels}"
+                                TickCount="{Binding EncoderThreadTickCount}" />
 
             <comps:HintPanel Grid.Row="9"
                              Text="{Binding Lang.NumaGuidanceText}"
