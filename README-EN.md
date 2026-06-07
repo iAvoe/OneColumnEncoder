@@ -187,6 +187,11 @@ The Overwrite setting will append an overwrite confirmation pop-up if the output
 
 SMTP Configuration, test emails, encoding completion/failure notifications, and user idle detection logic have all been implemented, but an SMTP server has not yet been set up for actual testing
 
+### Intel 12~14th Gen & Ultra 200~300 Series CPU Utilization Verification
+
+No CPU available for testing, but it should not fail catastrophically
+- This software uses CPU Sets to bind encoding processes to physical cores, which means it should be compatible and not fail catastrophically
+
 ---
 
 ## Not Started
