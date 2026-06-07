@@ -305,9 +305,18 @@ public static partial class EncodingPipelineH
         return request.EncoderExeName.ToLowerInvariant() switch
         {
             "x264.exe" => $"--threads {threads}",
-            "x265.exe" => $"--pools {threads}",
+            "x265.exe" => BuildX265PoolsParam(parallelismConf.DownstreamNodeId, threads),
             _ => string.Empty
         };
+    }
+
+    private static string BuildX265PoolsParam(int nodeId, int threads)
+    {
+        if (nodeId <= 0) return $"--pools {threads}";
+
+        IEnumerable<string> pools = Enumerable.Repeat("-", nodeId)
+            .Append(threads.ToString(CultureInfo.InvariantCulture));
+        return $"--pools {string.Join(",", pools)}";
     }
 
     private static string FilterCustomParamsForEncoder(string customParams, string encoderExeName)
