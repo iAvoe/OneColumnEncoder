@@ -274,6 +274,9 @@ public class UILangProviderM
             ["SrcAnalysis.RunAfterReplace"] = "Run source analysis now?",
             ["SrcAnalysis.Copied"] = "Raw ffprobe JSON copied to clipboard.",
 
+            ["ScriptGen.WindowTitle"] = "1cenc Script Generation",
+            ["ScriptGen.RunAfterReplace"] = "Generate AVS and VPY scripts now?",
+
             // InspectSrcProblems modal texts
             ["SrcInspect.InfoTitle"] = "Source Check",
             ["SrcInspect.InfoMsg"] = "No obvious source problems were found.",
@@ -533,6 +536,9 @@ public class UILangProviderM
             ["SrcAnalysis.RunAfterReplace"] = "是否立即运行视频源检查？",
             ["SrcAnalysis.Copied"] = "ffprobe 原生 JSON 已复制到剪贴板。",
 
+            ["ScriptGen.WindowTitle"] = "1cenc 脚本生成",
+            ["ScriptGen.RunAfterReplace"] = "是否生成 AVS 与 VPY 脚本？",
+
             // InspectSrcProblems modal texts
             ["SrcInspect.InfoTitle"] = "视频源检查",
             ["SrcInspect.InfoMsg"] = "未发现明显的源文件问题。",
@@ -791,6 +797,9 @@ public class UILangProviderM
             ["SrcAnalysis.Completed"] = "影片源分析已完成。",
             ["SrcAnalysis.RunAfterReplace"] = "是否立即運行影片源檢查？",
             ["SrcAnalysis.Copied"] = "ffprobe 原生 JSON 已複製到剪貼簿。",
+
+            ["ScriptGen.WindowTitle"] = "1cenc 腳本生成",
+            ["ScriptGen.RunAfterReplace"] = "是否生成 AVS 與 VPY 腳本？",
 
             // InspectSrcProblems modal texts
             ["SrcInspect.InfoTitle"] = "影片源檢查",

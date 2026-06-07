@@ -694,7 +694,44 @@ namespace OneColumnEncoder.ViewModels
             OnSourceImported(item, kind, filePath);
 
             if (kind == SourceFileKind.Video && wasReplaced)
+            {
                 PromptRunSourceAnalysisAfterReplace();
+                PromptScriptGenerationAfterReplace();
+            }
+        }
+
+        private bool HasGeneratableScriptUpstream() =>
+            UpstreamsZone.Any(t => t.IsSelected &&
+                !string.IsNullOrWhiteSpace(t.P2TextData) &&
+                (ToolDefinitionProviderM.IsImportedTool(t.Name, "vspipe.exe") ||
+                 ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2yuv.exe") ||
+                 ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe")));
+
+        private void PromptScriptGenerationAfterReplace()
+        {
+            if (!HasGeneratableScriptUpstream()) return;
+            if (!OneClickScriptGen.CanExecute(null)) return;
+
+            ConfirmationModal window = new();
+            CloseModalCmd cancelCmd = new(window.Close);
+            ConfirmationModalVM vm = ConfirmationModalVM.CreateWarning(
+                UILangProviderM.Current["ScriptGen.WindowTitle"],
+                UILangProviderM.Current["ScriptGen.RunAfterReplace"],
+                cancelCmd,
+                new ActionCmd(_ =>
+                {
+                    window.DialogResult = true;
+                    window.Close();
+                    if (OneClickScriptGen.CanExecute(null))
+                        OneClickScriptGen.Execute(null);
+                    _appDataM.Save();
+                }));
+
+            window.DataContext = vm;
+            window.Owner = Application.Current.MainWindow;
+            window.Closed += (_, _) => _modalNavS.Close();
+            _modalNavS.CurrentModalVM = vm;
+            window.ShowDialog();
         }
 
         private void PromptRunSourceAnalysisAfterReplace()
