@@ -214,3 +214,14 @@ SMTP 配置、测试邮件、编码完成/失败通知和用户空闲检测逻�
 - 当前没有单元测试、集成测试或自动化 UI 测试项目
   - 许多方案还未完全支持 .Net 9.0 的项目
 - README 中尚未包含构建、运行、依赖工具准备和典型工作流说明（不过已在用法说明窗口 / AppUsageModal 中提供）
+
+---
+
+## ConfirmationModal 出现位置
+
+- 启动编码前的命令确认，以及输出文件覆盖确认：`Commands/StartEncCmd.cs`
+- 采样片段启动前的命令确认：`ViewModels/SampleClipModalVM.cs`
+- 编码监控里的“查看编码命令”：`ViewModels/EncodingMonitorModalVM.cs`
+- 脚本生成后的复制/保存结果提示：`ViewModels/ScriptScribeModalVM.cs`、`Commands/SaveLoad/OneClickScriptGenCmd.cs`
+- 源分析和检查结果提示：`Commands/AnalyzeSrcVideoCmd.cs`、`Commands/CopyRawAnalysisCmd.cs`、`Commands/InspectEncProblemsCmd.cs`、`Commands/InspectSrcProblemsCmd.cs`
+- 工具导入/文件选择时的二次确认：`Commands/ImportToolCmd.cs`、`Helpers/SourceFilePickerH.cs`

@@ -24,7 +24,7 @@ namespace OneColumnEncoder.Commands
 
             if (severeText.Length == 0 && moderateText.Length == 0)
             {
-                new OpenInfoOrDbgModalCmd(
+                new OpenInfoModalCmd(
                     _modalNavS,
                     UICaptionProviderM.SourceInspect.InfoTitle,
                     UICaptionProviderM.SourceInspect.InfoMsg).Execute(null);

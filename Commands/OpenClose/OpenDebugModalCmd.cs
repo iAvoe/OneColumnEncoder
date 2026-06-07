@@ -1,21 +1,18 @@
-﻿using OneColumnEncoder.Models;
+using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.Views;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace OneColumnEncoder.Commands.OpenClose
 {
-    public class OpenInfoOrDbgModalCmd(ModalNavS modalNavS, string windowTitle, string description) : BaseCmd
+    public class OpenDebugModalCmd(ModalNavS modalNavS, string windowTitle, string description) : BaseCmd
     {
         private readonly ModalNavS _modalNavS = modalNavS;
         private readonly string _windowTitle = windowTitle;
         private readonly string _description = description;
+
         public override void Execute(object? parameter)
         {
             ConfirmationModal? existingWindow = Application.Current.Windows

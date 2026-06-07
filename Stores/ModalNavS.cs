@@ -31,8 +31,8 @@ namespace OneColumnEncoder.Stores
     ///         public CloseModalCmd CloseCmd { get; } = new(closeAction); // ④ No constructor passing for modalNavS
     ///         private void YyyAction()
     ///         {
-    ///             // ⑤ In case of opening new modal within (i.e., OpenInfoOrDbgModalCmd), pass in modalNavS
-    ///             new OpenInfoOrDbgModalCmd(modalNavS, title, msg).Execute(null);
+    ///             // ⑤ In case of opening new modal within (i.e., OpenInfoModalCmd / OpenDebugModalCmd), pass in modalNavS
+    ///             new OpenInfoModalCmd(modalNavS, title, msg).Execute(null);
     ///         }
     ///         private void SaveAndClose() => closeAction(); // ⑥ Run combined close method
     ///     }

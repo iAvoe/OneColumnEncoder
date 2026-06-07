@@ -246,7 +246,7 @@ namespace OneColumnEncoder.ViewModels
             FinishButtons = ButtonGroupVM.CreateFiveButton(
                 Lang.OpenOutputDirectoryText, Lang.ViewEncodingCommandText, Lang.InterruptUpstreamText, Lang.InterruptEncoderText, Lang.CloseAfterDoneText,
                 new ActionCmd(_ => OpenOutputDirectory()),
-                new ActionCmd(_ => new OpenInfoOrDbgModalCmd(_modalNavS, Lang.EncodingCommandTitle, _command.CommandLine).Execute(null)),
+                new ActionCmd(_ => new OpenDebugModalCmd(_modalNavS, Lang.EncodingCommandTitle, _command.CommandLine).Execute(null)),
                 new ActionCmd(_ => TryInterruptUpstream()),
                 new ActionCmd(_ => TryInterruptEncoder()),
                 CloseCmd);

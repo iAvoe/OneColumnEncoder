@@ -17,14 +17,14 @@ namespace OneColumnEncoder.Commands
 
             if (string.IsNullOrWhiteSpace(inspectText))
             {
-                new OpenInfoOrDbgModalCmd(
+                new OpenInfoModalCmd(
                     _modalNavS,
                     UICaptionProviderM.EncInspect.InfoTitle,
                     UICaptionProviderM.EncInspect.InfoMsg).Execute(null);
                 return;
             }
 
-            new OpenInfoOrDbgModalCmd(
+            new OpenInfoModalCmd(
                 _modalNavS,
                 UICaptionProviderM.EncInspect.InfoTitle,
                 inspectText).Execute(null);

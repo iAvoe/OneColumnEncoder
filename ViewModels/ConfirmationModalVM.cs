@@ -19,18 +19,15 @@ public class ConfirmationModalVM(string windowTitle, string message, ImageSource
             UILangProviderM.Current["ConfirmDialog.Confirm"],
             cancelCmd, confirmCmd);
 
-    public static ConfirmationModalVM CreateWarning(string title, string p1Text, ICommand cancelCmd, ICommand confirmCmd)
-    {
-        return new ConfirmationModalVM(UILangProviderM.Current["ConfirmDialog.WarningPrefix"] + title, p1Text, SvgIconProviderH.GlobeWarning, cancelCmd, confirmCmd);
-    }
+    public static ConfirmationModalVM CreateWarning(string title, string p1Text, ICommand cancelCmd, ICommand confirmCmd) =>
+        new(UILangProviderM.Current["ConfirmDialog.WarningPrefix"] + title, p1Text, SvgIconProviderH.GlobeWarning, cancelCmd, confirmCmd);
 
-    public static ConfirmationModalVM CreateError(string title, string p1Text, ICommand cancelCmd, ICommand confirmCmd)
-    {
-        return new ConfirmationModalVM(UILangProviderM.Current["ConfirmDialog.ErrorPrefix"] + title, p1Text, SvgIconProviderH.GlobeError, cancelCmd, confirmCmd);
-    }
+    public static ConfirmationModalVM CreateError(string title, string p1Text, ICommand cancelCmd, ICommand confirmCmd) =>
+        new(UILangProviderM.Current["ConfirmDialog.ErrorPrefix"] + title, p1Text, SvgIconProviderH.GlobeError, cancelCmd, confirmCmd);
 
-    public static ConfirmationModalVM CreateDebug(string title, string p1Text, ICommand cancelCmd, ICommand confirmCmd)
-    {
-        return new ConfirmationModalVM(UILangProviderM.Current["ConfirmDialog.DebugPrefix"] + title, p1Text, SvgIconProviderH.Troubleshoot, cancelCmd, confirmCmd);
-    }
+    public static ConfirmationModalVM CreateDebug(string title, string p1Text, ICommand cancelCmd, ICommand confirmCmd) =>
+        new(UILangProviderM.Current["ConfirmDialog.DebugPrefix"] + title, p1Text, SvgIconProviderH.Troubleshoot, cancelCmd, confirmCmd);
+
+    public static ConfirmationModalVM CreateInfo(string title, string p1Text, ICommand cancelCmd, ICommand confirmCmd) =>
+        new(UILangProviderM.Current["ConfirmDialog.InfoPrefix"] + title, p1Text, SvgIconProviderH.AzureConsortium, cancelCmd, confirmCmd);
 }

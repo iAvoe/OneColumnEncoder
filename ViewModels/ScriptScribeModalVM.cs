@@ -106,7 +106,7 @@ namespace OneColumnEncoder.ViewModels
         private void CopyFullScript()
         {
             Clipboard.SetText(GetCurrentFullScript());
-            new OpenInfoOrDbgModalCmd(
+            new OpenInfoModalCmd(
                 _modalNavS,
                 UILangProviderM.Current["SrcScribe.WindowTitle"],
                 UILangProviderM.Current["SrcScribe.CopiedFull"]).Execute(null);
@@ -119,7 +119,7 @@ namespace OneColumnEncoder.ViewModels
                 : ScriptTemplateH.BuildVpyInOutSection(sourcePath, VpyPrefix2, VpySuffix);
 
             Clipboard.SetText(inOutText);
-            new OpenInfoOrDbgModalCmd(
+            new OpenInfoModalCmd(
                 _modalNavS,
                 UILangProviderM.Current["SrcScribe.WindowTitle"],
                 UILangProviderM.Current["SrcScribe.CopiedSection"]).Execute(null);
@@ -221,7 +221,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void ShowSavedMessage(string path)
         {
-            new OpenInfoOrDbgModalCmd(
+            new OpenInfoModalCmd(
                 _modalNavS,
                 UILangProviderM.Current["SrcScribe.WindowTitle"],
                 $"Script saved:\n{path}").Execute(null);

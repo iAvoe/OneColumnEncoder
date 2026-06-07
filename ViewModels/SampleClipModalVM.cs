@@ -432,7 +432,7 @@ namespace OneColumnEncoder.ViewModels
                 EncodingPipelineRequest? request = _buildRequest();
                 if (request == null)
                 {
-                    new OpenInfoOrDbgModalCmd(_modalNavS, "Sample Clip Error", "Missing upstream input path. Make sure a video source or script source is selected for the chosen upstream tool.").Execute(null);
+                    new OpenDebugModalCmd(_modalNavS, "Sample Clip Error", "Missing upstream input path. Make sure a video source or script source is selected for the chosen upstream tool.").Execute(null);
                     return;
                 }
 
@@ -470,7 +470,7 @@ namespace OneColumnEncoder.ViewModels
             }
             catch (Exception ex)
             {
-                new OpenInfoOrDbgModalCmd(_modalNavS, "Sample Clip Error", ex.Message).Execute(null);
+                new OpenDebugModalCmd(_modalNavS, "Sample Clip Error", ex.Message).Execute(null);
             }
         }
 

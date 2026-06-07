@@ -75,7 +75,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
             _vpyItem.P2TextData = vpyPath;
             _vpyItem.P1TextData = SourceFilePickerH.GetPrimaryText(SourceFileKind.VapourSynthScript, vpyPath);
 
-            new OpenInfoOrDbgModalCmd(
+            new OpenInfoModalCmd(
                 _modalNavS,
                 UILangProviderM.Current["SrcScribe.WindowTitle"],
                 $"Scripts saved:\n{avsPath}\n{vpyPath}").Execute(null);

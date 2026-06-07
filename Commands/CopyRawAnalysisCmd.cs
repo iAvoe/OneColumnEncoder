@@ -22,7 +22,7 @@ namespace OneColumnEncoder.Commands
             try
             {
                 Clipboard.SetText(_analysis.RawJson);
-                new OpenInfoOrDbgModalCmd(
+                new OpenInfoModalCmd(
                     _modalNavS,
                     UILangProviderM.Current["SrcAnalysis.WindowTitle"],
                     UILangProviderM.Current["SrcAnalysis.Copied"]).Execute(null);

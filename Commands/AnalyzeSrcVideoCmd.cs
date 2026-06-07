@@ -44,7 +44,7 @@ namespace OneColumnEncoder.Commands
                 _analysis.RawJson = rawJson;
                 _srcValidationCard.ApplyFfprobeAnalysisJson(rawJson);
 
-                new OpenInfoOrDbgModalCmd(
+                new OpenInfoModalCmd(
                     _modalNavS,
                     UILangProviderM.Current["SrcAnalysis.WindowTitle"],
                     UILangProviderM.Current["SrcAnalysis.Completed"]).Execute(null);
