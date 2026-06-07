@@ -442,7 +442,6 @@ public static class EncodingPipelineH
                 GetRateControlLookahead(fpsString, TryGetIntegerArg(baseEncoderParams, "--bframes") ?? 0),
                 GetX265MeRange(stream),
                 GetX265SubmotionEstimation(fpsString),
-                GetX265Pme(),
                 GetColorSpaceSei(stream, isX264: false, isX265: true, isSvtAv1: false),
                 GetRangeChromaLocation(stream, isX264: false, isX265: true, isSvtAv1: false)),
             "svtav1encapp.exe" => JoinArgs(
@@ -483,9 +482,6 @@ public static class EncodingPipelineH
         int subme = fps < 25 ? 3 : fps < 49 ? 4 : fps < 61 ? 5 : 6;
         return $"--subme {subme}";
     }
-
-    private static string GetX265Pme() =>
-        Environment.ProcessorCount > 36 ? "--pme" : string.Empty;
 
     private static string GetFrameCount(JsonElement stream, EncodingClipRequest? clip, bool isSvtAv1)
     {
