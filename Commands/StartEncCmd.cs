@@ -64,20 +64,22 @@ namespace OneColumnEncoder.Commands
 
         private void OpenOverwriteConfirmationOrStart(EncodingPipelineRequest request, EncodingPipelineCommand command)
         {
-            if (!File.Exists(request.OutputPath))
+            string resolvedOutputPath = EncodingPipelineH.ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath);
+
+            if (!File.Exists(resolvedOutputPath))
             {
                 StartEncoding(request, command);
                 return;
             }
 
-            long outputLengthBytes = GetFileLengthBytes(request.OutputPath);
+            long outputLengthBytes = GetFileLengthBytes(resolvedOutputPath);
             int confirmDelayMs = CalculateOverwriteConfirmDelayMs(outputLengthBytes);
 
             ConfirmationModal window = new();
             CloseModalCmd closeCmd = new(window.Close);
             ConfirmationModalVM vm = ConfirmationModalVM.CreateWarning(
                 "Overwrite Output",
-                BuildOverwriteWarningMessage(request.OutputPath, outputLengthBytes, confirmDelayMs),
+                BuildOverwriteWarningMessage(resolvedOutputPath, outputLengthBytes, confirmDelayMs),
                 closeCmd,
                 new ActionCmd(_ =>
                 {

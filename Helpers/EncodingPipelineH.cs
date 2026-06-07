@@ -790,12 +790,24 @@ public static class EncodingPipelineH
         string.IsNullOrWhiteSpace(value) ? null : value.Trim().ToLowerInvariant();
     #endregion
 
+    public static string ResolveOutputPathWithExtension(string encoderExeName, string outputPath)
+    {
+        string ext = encoderExeName.ToLowerInvariant() switch
+        {
+            "x264.exe" => ".mp4",
+            "x265.exe" => ".hevc",
+            "svtav1encapp.exe" => ".ivf",
+            _ => string.Empty
+        };
+        return EnsureExtension(outputPath, ext);
+    }
+
     private static string BuildEncoderOutputArgs(string encoderExeName, string outputPath) =>
         encoderExeName.ToLowerInvariant() switch
         {
-            "x264.exe" => $"-o {Quote(EnsureExtension(outputPath, ".mp4"))}",
-            "x265.exe" => $"-o {Quote(EnsureExtension(outputPath, ".hevc"))}",
-            "svtav1encapp.exe" => $"-b {Quote(EnsureExtension(outputPath, ".ivf"))}",
+            "x264.exe" => $"-o {Quote(ResolveOutputPathWithExtension(encoderExeName, outputPath))}",
+            "x265.exe" => $"-o {Quote(ResolveOutputPathWithExtension(encoderExeName, outputPath))}",
+            "svtav1encapp.exe" => $"-b {Quote(ResolveOutputPathWithExtension(encoderExeName, outputPath))}",
             _ => throw new InvalidOperationException($"Unsupported encoder: {encoderExeName}")
         };
 

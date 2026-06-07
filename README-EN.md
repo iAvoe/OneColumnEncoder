@@ -6,17 +6,29 @@ A next-gen video encoding auxiliary tool based on .NET 9/WPF, and revolves aroun
 
 ## Gallery
 
-This software supports multiple languages, but for reducing amount of images, only English text screenshots are used here.
+This software supports multiple languages, but English text screenshots are used here to reduce the number of images. Some UI elements or text in the images may be outdated, but the overall layout and functional area divisions remain applicable. Please refer to the actual version you are using.
+
+1. Main Interface: Tools area, Source Import area, Analysis area, Checklist, Encoding Settings area, and Startup area
+2. Script Editor: AVS/VPY editing area, copy and save functions
+3. Encoding Settings: CRF/ABR parameters, custom presets, and other configurations
+4. Parallelism Settings: NUMA nodes, CPU Sets, and advanced thread limit
+5. Clip Sampler: Time/Frame Number selection, conversion, and basic preview
+6. Encoding Monitoring: Logs, progress, resource usage, and control
+7. Warning Modal and File Overwrite Protection Function
+
 <p align="center"><img src="WireframeMockups/1-Main-Page.png" alt="Main Window" width="600"><br>
 <img src="WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window" width="400"><br>
 <img src="WireframeMockups/3-Encoder-Setting.png" alt="Encoder Setting Window" width="400"><br>
 <img src="WireframeMockups/4-Parallelism-Setting.png" alt="Parallelism Setting Window" width="400"><br>
 <img src="WireframeMockups/5-Clip-Sampler.png" alt="Clip Sampler Window" width="400"><br>
-<img src="WireframeMockups/6-Encoding-Monitor.png" alt="Encoding Monitor Window" width="600"><br></p>
+<img src="WireframeMockups/6-Encoding-Monitor.png" alt="Encoding Monitor Window" width="600"><br>
+<img src="WireframeMockups/7-Warning-Modal-OW-Guard.png" alt="Warning Modal & Overwrite Protection" width="400"><br></p>
 
 ## System Requirements
 
 - Windows 10/11 x64
+  - Recommended version: 1809/21H2 (LTSC) or higher; minimum: 1607
+  - All tests are currently conducted on Windows 10 22H2
 - .NET 9 Desktop Runtime
   - Download: [Microsoft Official Website](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
 

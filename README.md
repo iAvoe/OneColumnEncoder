@@ -6,18 +6,29 @@
 
 ## 软件截图
 
-本软件支持多语言，但为减少图片数量而在此统一用了英语文本截图。
+本软件支持多语言，但为减少图片数量而在此统一用了英语文本截图。图片中可能会有一些过时的 UI 元素或文本，但整体布局和功能区域划分仍然适用。请以实际使用版本为准。
+
+1. 主界面：工具区、源导入区、分析区、检查卡、编码设置区和启动区
+2. 脚本编辑器：AVS / VPY 编辑区、复制和保存功能
+3. 编码设置：CRF / ABR 参数、自定义预设等配置
+4. 并行设置：NUMA 节点、CPU Sets 和高级线程数限制
+5. 采样片段：时间/帧号选择、转换和基本预览
+6. 编码监控：日志、进度、资源占用和控制
+7. 警告模态窗和文件覆盖保护功能
 
 <p align="center"><img src="WireframeMockups/1-Main-Page.png" alt="Main Window" width="600"><br>
 <img src="WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window" width="400"><br>
 <img src="WireframeMockups/3-Encoder-Setting.png" alt="Encoder Setting Window" width="400"><br>
 <img src="WireframeMockups/4-Parallelism-Setting.png" alt="Parallelism Setting Window" width="400"><br>
 <img src="WireframeMockups/5-Clip-Sampler.png" alt="Clip Sampler Window" width="400"><br>
-<img src="WireframeMockups/6-Encoding-Monitor.png" alt="Encoding Monitor Window" width="600"><br></p>
+<img src="WireframeMockups/6-Encoding-Monitor.png" alt="Encoding Monitor Window" width="600"><br>
+<img src="WireframeMockups/7-Warning-Modal-OW-Guard.png" alt="Warning Modal & Overwrite Protection" width="400"><br></p>
 
 ## 运行要求
 
 - Windows 10/11 x64
+  - 推荐 1809 / 21H2（LTSC）或更高版本，最低 1607
+  - 所有测试目前均在 Windows 10 22H2 上进行
 - .NET 9 Desktop Runtime
   - 下载地址：[微软官网](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
 

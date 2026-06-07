@@ -918,8 +918,9 @@ namespace OneColumnEncoder.ViewModels
         {
             try
             {
-                if (!File.Exists(_request.OutputPath)) return 0L;
-                return new FileInfo(_request.OutputPath).Length;
+                string resolvedPath = EncodingPipelineH.ResolveOutputPathWithExtension(_request.EncoderExeName, _request.OutputPath);
+                if (!File.Exists(resolvedPath)) return 0L;
+                return new FileInfo(resolvedPath).Length;
             }
             catch
             {
