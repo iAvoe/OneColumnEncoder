@@ -21,6 +21,8 @@ public static class OutputPathH
         string desktopDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         if (string.IsNullOrWhiteSpace(filePath)) return desktopDirectory;
 
+        if (Directory.Exists(filePath)) return filePath;
+
         string? directory = Path.GetDirectoryName(filePath);
         return Directory.Exists(directory) ? directory : desktopDirectory;
     }
