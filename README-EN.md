@@ -28,7 +28,7 @@ This software supports multiple languages, but English text screenshots are used
 
 - Windows 10/11 x64
   - Recommended version: 1809/21H2 (LTSC) or higher; minimum: 1607
-  - All tests are currently conducted on Windows 10 22H2
+  - All tests are currently validated on Windows 10 22H2, Ryzen 9 9900X (2CCD 12C24T), and EPYC 7R13 (6CCD 48C96T), lacking Intel asymetric core architecture CPUs
 - .NET 9 Desktop Runtime
   - Download: [Microsoft Official Website](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
 
