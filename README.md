@@ -28,7 +28,6 @@
 
 - Windows 10/11 x64
   - 推荐 1809 / 21H2（LTSC）或更高版本，最低 1607
-  - 所有测试目前均在 Windows 10 22H2，Ryzen 9 9900X（2CCD 12C24T）、EPYC 7R13（6CCD 48C96T）上验证，缺少英特尔第 12~14 代及 Ultra 200~300 系列的异构 CPU 验证
 - .NET 9 Desktop Runtime
   - 下载地址：[微软官网](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
 
@@ -54,6 +53,18 @@
 - 单色小图标 by NiewBie: [GitHub/Niewbie](https://github.com/Nieobie/Game-Icon-Pack)
 
 ---
+
+## 验证状态
+
+**系统**：
+- 所有测试目前均在 Windows 10 22H2 上验证
+- 尚未在 Windows 11 上验证，但应该不会有严重问题...
+
+**硬件**：
+- Core i5 7600X（4C4T）
+- Ryzen 9 9900X（2CCD 12C24T）
+- EPYC 7R13（6CCD 48C96T）
+- 缺少英特尔第 12\~14 代及 Ultra 200\~300 系列的异构 CPU 验证
 
 ## 本地化状态
 

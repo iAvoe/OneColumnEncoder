@@ -28,7 +28,6 @@ This software supports multiple languages, but English text screenshots are used
 
 - Windows 10/11 x64
   - Recommended version: 1809/21H2 (LTSC) or higher; minimum: 1607
-  - All tests are currently validated on Windows 10 22H2, Ryzen 9 9900X (2CCD 12C24T), and EPYC 7R13 (6CCD 48C96T), lacking Intel asymetric core architecture CPUs
 - .NET 9 Desktop Runtime
   - Download: [Microsoft Official Website](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
 
@@ -47,6 +46,18 @@ This software supports multiple languages, but English text screenshots are used
 - Game icon pack by NiewBie: [GitHub/Niewbie](https://github.com/Nieobie/Game-Icon-Pack)
 
 ---
+
+## Validation Status
+
+**OS**：
+- All tests are currently validated on Windows 10 22H2
+- Lacking validation for Windows 11, but it should work fine...
+
+**Hardware**：
+- Core i5 7600X (4C4T)
+- Ryzen 9 9900X (2CCD 12C24T)
+- EPYC 7R13 (6CCD 48C96T)
+- Lacking validation for Intel 12th\~14th generation and Ultra 200\~300 series heterogeneous CPUs
 
 ## Localization Status
 
