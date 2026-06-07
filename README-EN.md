@@ -2,7 +2,9 @@
 
 [中文版](README.md)
 
-A next-gen video encoding auxiliary tool based on .NET 9/WPF, and revolves around "importing upstream tools and encoders, importing video or script sources, analyzing source video, generating encoding commands, and starting and monitoring the encoding process." The current code works but lacks testing, which is releasing as beta.
+A next-gen smart video encoding auxiliary tool based on .NET 9/WPF, revolves around "importing tools and encoders, importing video or script sources, analyzing source video, tailoring encoding commands, managing parallelism, modern encode monitoring and interrupt systems."
+
+The current code works but lacks testing, which is releasing as beta.
 
 ## Gallery
 
