@@ -217,7 +217,7 @@ SMTP 配置、测试邮件、编码完成/失败通知和用户空闲检测逻�
 
 ---
 
-## ConfirmationModal 出现位置
+## 确认窗口（ConfirmationModal）出现位置
 
 - 启动编码前的命令确认，以及输出文件覆盖确认：`Commands/StartEncCmd.cs`
 - 采样片段启动前的命令确认：`ViewModels/SampleClipModalVM.cs`
