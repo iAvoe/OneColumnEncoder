@@ -666,6 +666,11 @@ namespace OneColumnEncoder.ViewModels
 
             if (kind == SourceFileKind.Video)
             {
+                ToolItemCardVM? outputSetting = EncSettingsZone.FirstOrDefault(t =>
+                    t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+                if (outputSetting != null)
+                    outputSetting.P1TextData = Path.GetFileNameWithoutExtension(filePath);
+
                 foreach (ToolItemCardVM source in VideoSrcImportZone)
                     source.IsSelected = false;
 
