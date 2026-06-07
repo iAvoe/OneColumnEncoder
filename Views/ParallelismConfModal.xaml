@@ -11,7 +11,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="530"
-        Height="700"
+        Height="720"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid Margin="15">
@@ -25,6 +25,7 @@
                       HorizontalScrollBarVisibility="Disabled">
             <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -59,13 +60,19 @@
                        Margin="0 5 0 0"
                        Foreground="{StaticResource GlobalPrimary}" />
 
-            <TextBlock Grid.Row="4"
+            <comps:HintPanel Grid.Row="4"
+                             Text="{Binding Lang.NumaTopologyHintText}"
+                             Margin="5 8 5 0"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center" />
+
+            <TextBlock Grid.Row="5"
                        Text="{Binding Lang.UpstreamNumaTitle}"
                        Style="{StaticResource H3}"
                        Margin="0 10 0 0"
                        Foreground="{StaticResource GlobalPrimary}" />
 
-            <ItemsControl Grid.Row="5"
+            <ItemsControl Grid.Row="6"
                           ItemsSource="{Binding UpstreamNodes}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -93,13 +100,13 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <TextBlock Grid.Row="6"
+            <TextBlock Grid.Row="7"
                        Text="{Binding Lang.DownstreamNumaTitle}"
                        Style="{StaticResource H3}"
                        Margin="0 10 0 0"
                        Foreground="{StaticResource GlobalPrimary}" />
 
-            <ItemsControl Grid.Row="7"
+            <ItemsControl Grid.Row="8"
                           ItemsSource="{Binding DownstreamNodes}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -127,22 +134,22 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <comps:IntegerSlider Grid.Row="8"
-                                Margin="5 10 5 0"
-                                Label="{Binding EncoderThreadCountText}"
+            <comps:IntegerSlider Grid.Row="9"
+                                 Margin="5 10 5 0"
+                                 Label="{Binding EncoderThreadCountText}"
                                 Minimum="1"
                                 Maximum="{Binding MaxThreadCount}"
                                 Value="{Binding EncoderThreadCount, Mode=TwoWay}"
                                 TickLabels="{Binding EncoderThreadTickLabels}"
                                 TickCount="{Binding EncoderThreadTickCount}" />
 
-            <comps:HintPanel Grid.Row="9"
+            <comps:HintPanel Grid.Row="10"
                              Text="{Binding Lang.NumaGuidanceText}"
                              Margin="5 5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
 
-            <StackPanel Grid.Row="10"
+            <StackPanel Grid.Row="11"
                         Margin="0 10 0 0">
                 <comps:AppConfContainer Header="{Binding Lang.ThreadStrategyTitle}">
                     <comps:AppConfItem Text="{Binding Lang.PreferUpstreamPhysCoresText}">
@@ -176,7 +183,6 @@
                               Button1Command="{Binding Cmd1}"
                               Button2Command="{Binding Cmd2}"
                               Button1IsEnabled="{Binding B2_1IsEnabled}"
-                              Button2IsEnabled="{Binding B2_2IsEnabled}"
-                              Margin="0 15 0 0" />
+                              Button2IsEnabled="{Binding B2_2IsEnabled}" />
     </Grid>
 </helpers:AdaptiveWindow>

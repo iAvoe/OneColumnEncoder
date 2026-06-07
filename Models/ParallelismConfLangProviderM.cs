@@ -9,6 +9,7 @@ public class ParallelismConfLangProviderM
             ["IntroText"] = "This program ignores the various parallel-impls among tools, and uses:\n· CPU Sets to suggest thread affinity (Allowing temp. thread-node disloc.)\n· Try allocate RAM to encoding thread ranged on the their NUMA node",
             ["PriorityText"] = "This program avoids raising task priority, nor declare encoding tasks as latency-sens.,\nthereby preventing unresponsive tasks hanging the OS indefinitely",
             ["CacheGroupTitle"] = "Detected L3 cache groups (↑crossings, ↓cache hits)",
+            ["NumaTopologyHintText"] = "When a CPU contains multiple NUMA nodes, the encoder will only occupy 1 → only a portion of CPU resources can be allocated",
             ["UpstreamNumaTitle"] = "NUMA Soft Binding: Pipe Upstream",
             ["DownstreamNumaTitle"] = "NUMA Soft Binding: Pipe Downstream (encoder)",
             ["NumaGuidanceText"] = "Assign encoder to other nodes might be faster when upstream tool has slow filters\notherwise, sharing same node might be faster—compute vs. latency bottleneck",
@@ -33,6 +34,7 @@ public class ParallelismConfLangProviderM
             ["IntroText"] = "本程序会忽略不同工具中各异的并行实现，并使用以下控制策略：\n· CPU Sets—引荐线程活动范围（允许系统临时外迁线程）\n· 尝试优先在指定 NUMA 节点分配部分内存",
             ["PriorityText"] = "本程序不调整进程优先级，或设置声明编码任务为延时敏感类型，以避免系统无限等待无响应编码器的问题",
             ["CacheGroupTitle"] = "检测到的核心缓存分组（跨组越多，缓存命中率越低）",
+            ["NumaTopologyHintText"] = "单 CPU 内含多个 NUMA 节点时，编码器只会占用一个，此时只能分配部分 CPU 资源运行压制",
             ["UpstreamNumaTitle"] = "NUMA 软绑定：管道上游程序",
             ["DownstreamNumaTitle"] = "NUMA 软绑定：管道下游程序（编码器）",
             ["NumaGuidanceText"] = "若上游程序使用了高占用滤镜且视频源内容复杂，则上下游各占一节点的速度大概更快（算力瓶颈），\n否则共用节点的速度大概更快（通信瓶颈）",
@@ -57,6 +59,7 @@ public class ParallelismConfLangProviderM
             ["IntroText"] = "本程式會忽略不同工具中各異的平行實現，並使用以下控制策略：\n· CPU Sets—引薦執行緒活動範圍（允許系統臨時外遷執行緒）\n· 嘗試優先在指定 NUMA 節點分配部分記憶體",
             ["PriorityText"] = "本程式不調整進程優先度，或設置聲明編碼任務為延時敏感類型，以避免系統無限等待無響應編碼器的問題",
             ["CacheGroupTitle"] = "檢測到的核心快取分組（跨組越多，快取命中率越低）",
+            ["NumaTopologyHintText"] = "單 CPU 內含多個 NUMA 節點時，編碼器只會占用一個，此時只能分配部分 CPU 資源運行壓制",
             ["UpstreamNumaTitle"] = "NUMA 軟綁定：管道上游程式",
             ["DownstreamNumaTitle"] = "NUMA 軟綁定：管道下游程式（編碼器）",
             ["NumaGuidanceText"] = "若上遊程序使用了高占用濾鏡且影片源內容複雜，則上下游各占一節點的速度大概更快（算力瓶頸），\n否則共用節點的速度大概更快（通信瓶頸）",
@@ -81,6 +84,7 @@ public class ParallelismConfLangProviderM
     public string IntroText { get; }
     public string PriorityText { get; }
     public string CacheGroupTitle { get; }
+    public string NumaTopologyHintText { get; }
     public string UpstreamNumaTitle { get; }
     public string DownstreamNumaTitle { get; }
     public string NumaGuidanceText { get; }
@@ -106,6 +110,7 @@ public class ParallelismConfLangProviderM
         IntroText = _d["IntroText"];
         PriorityText = _d["PriorityText"];
         CacheGroupTitle = _d["CacheGroupTitle"];
+        NumaTopologyHintText = _d["NumaTopologyHintText"];
         UpstreamNumaTitle = _d["UpstreamNumaTitle"];
         DownstreamNumaTitle = _d["DownstreamNumaTitle"];
         NumaGuidanceText = _d["NumaGuidanceText"];
