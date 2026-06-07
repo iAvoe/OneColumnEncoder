@@ -17,7 +17,7 @@ namespace OneColumnEncoder.Commands.OpenClose
         {
             ConfirmationModal? existingWindow = Application.Current.Windows
                 .OfType<ConfirmationModal>()
-                .FirstOrDefault(w => w.DataContext is ConfirmationModalVM &&
+                .FirstOrDefault(w => w.DataContext is ConfirmationVM &&
                                 w.Owner == Application.Current.MainWindow);
 
             if (existingWindow != null)
@@ -28,8 +28,8 @@ namespace OneColumnEncoder.Commands.OpenClose
 
             ConfirmationModal window = new();
             CloseModalCmd closeCmd = new(window.Close);
-            ConfirmationModalVM vm =
-                ConfirmationModalVM.CreateDebug(_windowTitle, _description, closeCmd, closeCmd);
+            ConfirmationVM vm =
+                ConfirmationVM.CreateDebug(_windowTitle, _description, closeCmd, closeCmd);
 
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;

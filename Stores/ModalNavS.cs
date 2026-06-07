@@ -17,7 +17,7 @@ namespace OneColumnEncoder.Stores
     /// 
     ///     if (_modalNavS.IsOpen) _modalNavS.Close(); // ① Close other modals on the same stack height level
     ///     var window = new XxxModalWindow();
-    ///     var vm = new XxxModalVM(modalNavS, window.Close, ...);
+    ///     var vm = new XxxVM(modalNavS, window.Close, ...);
     ///     window.DataContext = vm;
     ///     window.Owner = Application.Current.MainWindow;
     ///     window.Closed += (_, _) => _modalNavS.Close(); // ② Combine Pop to Window Closed
@@ -26,7 +26,7 @@ namespace OneColumnEncoder.Stores
     /// 
     /// ### ViewModals/XxxModal.cs
     /// 
-    ///     public class XxxModalVM(ModalNavS modalNavS, Action closeAction) : BaseVM
+    ///     public class XxxVM(ModalNavS modalNavS, Action closeAction) : BaseVM
     ///     {
     ///         public CloseModalCmd CloseCmd { get; } = new(closeAction); // ④ No constructor passing for modalNavS
     ///         private void YyyAction()

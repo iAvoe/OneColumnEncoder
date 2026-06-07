@@ -29,13 +29,13 @@ namespace OneColumnEncoder.Views
 
         private void CopyMessage_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = DataContext is ConfirmationModalVM vm
+            e.CanExecute = DataContext is ConfirmationVM vm
                 && !string.IsNullOrWhiteSpace(vm.P1Text);
         }
 
         private void CopyMessage_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            if (DataContext is ConfirmationModalVM vm)
+            if (DataContext is ConfirmationVM vm)
                 Clipboard.SetText(vm.P1Text);
         }
     }

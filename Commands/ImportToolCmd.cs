@@ -90,7 +90,7 @@ namespace OneColumnEncoder.Commands
         internal static bool ShowDoubleCheckConfirmation(ModalNavS modalNavS, string titleStr, string p1Str) //, string toolName, string supposedName
         {
             ConfirmationModal window = new();
-            ConfirmationModalVM vm = ConfirmationModalVM.CreateWarning(
+            ConfirmationVM vm = ConfirmationVM.CreateWarning(
                 title: titleStr,
                 p1Text: p1Str,
                 cancelCmd: new ActionCmd(_ => { window.DialogResult = false; window.Close(); }),

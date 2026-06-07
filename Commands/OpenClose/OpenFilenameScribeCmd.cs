@@ -28,7 +28,7 @@ namespace OneColumnEncoder.Commands.OpenClose
                 _modalNavS.Close();
 
             FilenameScribeModal window = new();
-            FilenameScribeModalVM vm = new(window.Close, _outputSettingItem);
+            FilenameScribeVM vm = new(window.Close, _outputSettingItem);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();

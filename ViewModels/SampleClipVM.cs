@@ -13,7 +13,7 @@ using System.Windows;
 
 namespace OneColumnEncoder.ViewModels
 {
-    public class SampleClipModalVM : BaseVM
+    public class SampleClipVM : BaseVM
     {
         private const int MinClipLengthSeconds = 10;
         private const int MaxClipLengthSeconds = 600;
@@ -152,7 +152,7 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        public SampleClipModalVM(ModalNavS modalNavS, Action closeAction, Func<EncodingPipelineRequest?> buildRequest, VideoAnalysisM srcVideoAnalysis, AppConfM appConfM)
+        public SampleClipVM(ModalNavS modalNavS, Action closeAction, Func<EncodingPipelineRequest?> buildRequest, VideoAnalysisM srcVideoAnalysis, AppConfM appConfM)
         {
             _modalNavS = modalNavS;
             _closeAction = closeAction;
@@ -441,7 +441,7 @@ namespace OneColumnEncoder.ViewModels
 
                 ConfirmationModal? existing = Application.Current.Windows
                     .OfType<ConfirmationModal>()
-                    .FirstOrDefault(w => w.DataContext is ConfirmationModalVM &&
+                    .FirstOrDefault(w => w.DataContext is ConfirmationVM &&
                                     w.Owner == Application.Current.MainWindow);
                 if (existing != null)
                 {
@@ -451,7 +451,7 @@ namespace OneColumnEncoder.ViewModels
 
                 ConfirmationModal window = new();
                 CloseModalCmd closeCmd = new(window.Close);
-                ConfirmationModalVM vm = ConfirmationModalVM.CreateDebug(
+                ConfirmationVM vm = ConfirmationVM.CreateDebug(
                     "Sample Encoding Command", command.CommandLine,
                     closeCmd,
                     new ActionCmd(_ =>

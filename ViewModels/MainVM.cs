@@ -461,7 +461,7 @@ namespace OneColumnEncoder.ViewModels
             bool hasVideoSrc = VideoSrcImportZone.Any(t => !string.IsNullOrWhiteSpace(t.P2TextData));
             ScriptScbButtons.B2_2IsEnabled = hasVideoSrc;
 
-            if (_modalNavS.CurrentModalVM is ScriptScribeModalVM modal)
+            if (_modalNavS.CurrentModalVM is ScriptScribeVM modal)
             {
                 modal.ScriptExportButtons.B3_1IsEnabled = hasVideoSrc;
                 modal.ScriptExportButtons.B3_2IsEnabled = hasVideoSrc;
@@ -719,7 +719,7 @@ namespace OneColumnEncoder.ViewModels
 
             ConfirmationModal window = new();
             CloseModalCmd cancelCmd = new(window.Close);
-            ConfirmationModalVM vm = ConfirmationModalVM.CreateWarning(
+            ConfirmationVM vm = ConfirmationVM.CreateWarning(
                 UILangProviderM.Current["ScriptGen.WindowTitle"],
                 UILangProviderM.Current["ScriptGen.RunAfterReplace"],
                 cancelCmd,
@@ -762,7 +762,7 @@ namespace OneColumnEncoder.ViewModels
 
             ConfirmationModal window = new();
             CloseModalCmd cancelCmd = new(window.Close);
-            ConfirmationModalVM vm = ConfirmationModalVM.CreateWarning(
+            ConfirmationVM vm = ConfirmationVM.CreateWarning(
                 UILangProviderM.Current["SrcAnalysis.WindowTitle"],
                 UILangProviderM.Current["SrcAnalysis.RunAfterReplace"],
                 cancelCmd,

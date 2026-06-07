@@ -20,7 +20,7 @@ using System.Windows.Threading;
 
 namespace OneColumnEncoder.ViewModels
 {
-    public partial class EncodingMonitorModalVM : BaseVM
+    public partial class EncodingMonitorVM : BaseVM
     {
         private const int MemoryRangeBlockCount = 128;
         private const int MemoryRangeMaxFillLevel = 8;
@@ -208,7 +208,7 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _rangeSummary, value);
         }
 
-        public EncodingMonitorModalVM(
+        public EncodingMonitorVM(
             ModalNavS modalNavS,
             Action closeAction,
             EncodingPipelineRequest request,

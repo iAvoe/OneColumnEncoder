@@ -251,8 +251,8 @@ SMTP 配置、测试邮件、编码完成/失败通知和用户空闲检测逻�
 ## 确认窗口（ConfirmationModal）出现位置
 
 - 启动编码前的命令确认，以及输出文件覆盖确认：`Commands/StartEncCmd.cs`
-- 采样片段启动前的命令确认：`ViewModels/SampleClipModalVM.cs`
-- 编码监控里的“查看编码命令”：`ViewModels/EncodingMonitorModalVM.cs`
-- 脚本生成后的复制/保存结果提示：`ViewModels/ScriptScribeModalVM.cs`、`Commands/SaveLoad/OneClickScriptGenCmd.cs`
+- 采样片段启动前的命令确认：`ViewModels/SampleClipVM.cs`
+- 编码监控里的“查看编码命令”：`ViewModels/EncodingMonitorVM.cs`
+- 脚本生成后的复制/保存结果提示：`ViewModels/ScriptScribeVM.cs`、`Commands/SaveLoad/OneClickScriptGenCmd.cs`
 - 源分析和检查结果提示：`Commands/AnalyzeSrcVideoCmd.cs`、`Commands/CopyRawAnalysisCmd.cs`、`Commands/InspectEncProblemsCmd.cs`、`Commands/InspectSrcProblemsCmd.cs`
 - 工具导入/文件选择时的二次确认：`Commands/ImportToolCmd.cs`、`Helpers/SourceFilePickerH.cs`

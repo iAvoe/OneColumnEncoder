@@ -134,7 +134,7 @@ namespace OneColumnEncoder.Helpers
             ConfirmationModal window = new();
             ActionCmd cancelCmd = new(_ => { result = false; window.Close(); });
             ActionCmd confirmCmd = new(_ => { result = true; window.Close(); });
-            ConfirmationModalVM vm = ConfirmationModalVM.CreateWarning(title, message, cancelCmd, confirmCmd);
+            ConfirmationVM vm = ConfirmationVM.CreateWarning(title, message, cancelCmd, confirmCmd);
 
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;

@@ -12,7 +12,7 @@ using OneColumnEncoder.ViewModels.Cards;
 
 namespace OneColumnEncoder.ViewModels
 {
-    public partial class FilenameScribeModalVM : BaseVM
+    public partial class FilenameScribeVM : BaseVM
     {
         private const string PossibleExtensions = ".mp4|.hevc|.ivf";
         private static readonly double[] RotatingFontSizes = [10, 13, 14, 16];
@@ -62,7 +62,7 @@ namespace OneColumnEncoder.ViewModels
         public static string SelfCheckVersion => UILangProviderM.Current["FilenameScribe.SelfCheck3"];
         public static string FooterHint => UILangProviderM.Current["FilenameScribe.FooterHint"];
 
-        public FilenameScribeModalVM(Action closeAction, ToolItemCardVM outputSettingItem)
+        public FilenameScribeVM(Action closeAction, ToolItemCardVM outputSettingItem)
         {
             _closeAction = closeAction;
             _outputSettingItem = outputSettingItem;

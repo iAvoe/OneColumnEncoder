@@ -32,7 +32,7 @@ namespace OneColumnEncoder.Commands.OpenClose
                 _modalNavS.Close();
 
             SampleClipModal window = new();
-            SampleClipModalVM vm = new(_modalNavS, window.Close, _buildRequest, _srcVideoAnalysis, _appConfM);
+            SampleClipVM vm = new(_modalNavS, window.Close, _buildRequest, _srcVideoAnalysis, _appConfM);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();

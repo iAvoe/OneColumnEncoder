@@ -14,7 +14,7 @@ namespace OneColumnEncoder.Views
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            if (DataContext is EncodingMonitorModalVM vm)
+            if (DataContext is EncodingMonitorVM vm)
                 vm.Start();
         }
     }

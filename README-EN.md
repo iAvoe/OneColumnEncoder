@@ -243,8 +243,8 @@ This feature cannot be implemented due to the need to modify the upstream progra
 ## Confirm action window (ConfirmationModal) Popup locations
 
 - Confirm encoding commands before starting encode, and file overwriting：`Commands/StartEncCmd.cs`
-- Sample clip confirmation before starting encode：`ViewModels/SampleClipModalVM.cs`
-- View encoding commands in the encoding monitor：`ViewModels/EncodingMonitorModalVM.cs`
-- Copy/save results after script generation：`ViewModels/ScriptScribeModalVM.cs`、`Commands/SaveLoad/OneClickScriptGenCmd.cs`
+- Sample clip confirmation before starting encode：`ViewModels/SampleClipVM.cs`
+- View encoding commands in the encoding monitor：`ViewModels/EncodingMonitorVM.cs`
+- Copy/save results after script generation：`ViewModels/ScriptScribeVM.cs`、`Commands/SaveLoad/OneClickScriptGenCmd.cs`
 - Source analysis and check results：`Commands/AnalyzeSrcVideoCmd.cs`、`Commands/CopyRawAnalysisCmd.cs`、`Commands/InspectEncProblemsCmd.cs`、`Commands/InspectSrcProblemsCmd.cs`
 - Secondary confirmation when importing tools/selecting files：`Commands/ImportToolCmd.cs`、`Helpers/SourceFilePickerH.cs`

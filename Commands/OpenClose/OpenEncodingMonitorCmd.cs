@@ -37,7 +37,7 @@ namespace OneColumnEncoder.Commands.OpenClose
                 _modalNavS.Close();
 
             EncodingMonitorModal window = new();
-            EncodingMonitorModalVM vm = new(_modalNavS, window.Close, _request, _command, _appConfM, _isSample);
+            EncodingMonitorVM vm = new(_modalNavS, window.Close, _request, _command, _appConfM, _isSample);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();

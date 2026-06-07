@@ -7,7 +7,7 @@
         xmlns:comps="clr-namespace:OneColumnEncoder.Components"
         xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
         xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
-        d:DataContext="{d:DesignInstance Type=vms:ScriptScribeModalVM}"
+        d:DataContext="{d:DesignInstance Type=vms:ScriptScribeVM}"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="520"

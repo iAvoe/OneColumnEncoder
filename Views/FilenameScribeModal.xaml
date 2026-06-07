@@ -6,7 +6,7 @@
         xmlns:comps="clr-namespace:OneColumnEncoder.Components"
         xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
         xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
-        d:DataContext="{d:DesignInstance Type=vms:FilenameScribeModalVM}"
+        d:DataContext="{d:DesignInstance Type=vms:FilenameScribeVM}"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="560"

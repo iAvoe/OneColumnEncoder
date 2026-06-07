@@ -33,7 +33,7 @@ namespace OneColumnEncoder.Commands.OpenClose
                 _modalNavS.Close();
 
             ScriptScribeModal window = new();
-            ScriptScribeModalVM vm = new(_modalNavS, window.Close, getSourcePath, avsItem, vpyItem, afterImport);
+            ScriptScribeVM vm = new(_modalNavS, window.Close, getSourcePath, avsItem, vpyItem, afterImport);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();

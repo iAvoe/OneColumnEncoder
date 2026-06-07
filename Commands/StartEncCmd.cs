@@ -35,7 +35,7 @@ namespace OneColumnEncoder.Commands
 
             ConfirmationModal? existing = Application.Current.Windows
                 .OfType<ConfirmationModal>()
-                .FirstOrDefault(w => w.DataContext is ConfirmationModalVM &&
+                .FirstOrDefault(w => w.DataContext is ConfirmationVM &&
                                 w.Owner == Application.Current.MainWindow);
             if (existing != null)
             {
@@ -45,7 +45,7 @@ namespace OneColumnEncoder.Commands
 
             ConfirmationModal window = new();
             CloseModalCmd closeCmd = new(window.Close);
-            ConfirmationModalVM vm = ConfirmationModalVM.CreateDebug(
+            ConfirmationVM vm = ConfirmationVM.CreateDebug(
                 "Encoding Command", command.CommandLine,
                 closeCmd,
                 new ActionCmd(_ =>
@@ -77,7 +77,7 @@ namespace OneColumnEncoder.Commands
 
             ConfirmationModal window = new();
             CloseModalCmd closeCmd = new(window.Close);
-            ConfirmationModalVM vm = ConfirmationModalVM.CreateWarning(
+            ConfirmationVM vm = ConfirmationVM.CreateWarning(
                 "Overwrite Output",
                 BuildOverwriteWarningMessage(resolvedOutputPath, outputLengthBytes, confirmDelayMs),
                 closeCmd,
