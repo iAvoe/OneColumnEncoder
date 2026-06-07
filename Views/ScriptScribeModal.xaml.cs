@@ -1,10 +1,11 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using OneColumnEncoder.Helpers;
 
 namespace OneColumnEncoder.Views
 {
-    public partial class ScriptScribeModal : Window
+    public partial class ScriptScribeModal : AdaptiveWindow
     {
         public ScriptScribeModal()
         {

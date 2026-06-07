@@ -1,9 +1,10 @@
 using OneColumnEncoder.ViewModels;
 using System.Windows;
+using OneColumnEncoder.Helpers;
 
 namespace OneColumnEncoder.Views
 {
-    public partial class EncodingMonitorModal : Window
+    public partial class EncodingMonitorModal : AdaptiveWindow
     {
         public EncodingMonitorModal()
         {

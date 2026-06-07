@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using OneColumnEncoder.Helpers;
 
 namespace OneColumnEncoder
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : AdaptiveWindow
     {
         public MainWindow()
         {

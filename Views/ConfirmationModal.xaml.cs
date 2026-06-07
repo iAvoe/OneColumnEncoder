@@ -13,13 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using OneColumnEncoder.ViewModels;
+using OneColumnEncoder.Helpers;
 
 namespace OneColumnEncoder.Views
 {
     /// <summary>
     /// Interaction logic for WarnErrModal.xaml
     /// </summary>
-    public partial class ConfirmationModal : Window
+    public partial class ConfirmationModal : AdaptiveWindow
     {
         public ConfirmationModal()
         {

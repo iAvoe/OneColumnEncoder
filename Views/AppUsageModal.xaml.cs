@@ -1,8 +1,9 @@
 using System.Windows;
+using OneColumnEncoder.Helpers;
 
 namespace OneColumnEncoder.Views
 {
-    public partial class AppUsageModal : Window
+    public partial class AppUsageModal : AdaptiveWindow
     {
         public AppUsageModal()
         {
