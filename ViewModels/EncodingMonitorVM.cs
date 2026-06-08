@@ -317,6 +317,10 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
+        /// <summary>
+        /// Orchestrates the full encoding pipeline: upstream decode -> encode -> optional mux.
+        /// Spawns processes, pipes data between them, collects logs, and handles cancellation/errors.
+        /// </summary>
         private async Task RunEncodingAsync(CancellationToken cancellationToken)
         {
             string processOutput = string.Empty;
@@ -325,6 +329,7 @@ namespace OneColumnEncoder.ViewModels
             try
             {
                 StatusText = Lang.EncodingText;
+                // Create the upstream decoder process (e.g. ffmpeg source)
                 using Process upstream = new()
                 {
                     StartInfo = new ProcessStartInfo
@@ -360,7 +365,8 @@ namespace OneColumnEncoder.ViewModels
                 encoder.Start();
                 ApplyParallelismSettings(encoder, isEncoder: true);
 
-                // Pipe upstream stdout to encoder stdin. Closing encoder stdin lets the encoder flush on EOF.
+                // Pipe upstream stdout -> encoder stdin (raw byte transfer, 80 KB buffer).
+                // Closing encoder stdin signals EOF so the encoder can flush and finish.
                 Task pipeTask = Task.Run(async () =>
                 {
                     Stream? encoderStdin = null;
@@ -383,16 +389,14 @@ namespace OneColumnEncoder.ViewModels
                     {
                         EnqueueProcessLine(ProcessLogKind.UpstreamStderr, Lang.PipeErrorPrefix + ex.Message);
                     }
-                    finally
-                    {
-                        TryCloseStream(encoderStdin);
-                    }
+                    finally { TryCloseStream(encoderStdin); }
                 }, cancellationToken);
 
-                // Upstream stderr reader
-                Task upstreamStderrTask = ReadStreamAsync(upstream.StandardError, ProcessLogKind.UpstreamStderr, cancellationToken);
-                // Encoder stderr reader
-                Task encoderStderrTask = ReadStreamAsync(encoder.StandardError, ProcessLogKind.DownstreamStderr, cancellationToken);
+                // Concurrently read stderr from both processes for log/progress parsing
+                Task upstreamStderrTask = ReadStreamAsync(
+                    upstream.StandardError, ProcessLogKind.UpstreamStderr, cancellationToken);
+                Task encoderStderrTask = ReadStreamAsync(
+                    encoder.StandardError, ProcessLogKind.DownstreamStderr, cancellationToken);
 
                 await Task.WhenAll(pipeTask, upstreamStderrTask, encoderStderrTask);
 
@@ -445,12 +449,16 @@ namespace OneColumnEncoder.ViewModels
 
             if (!File.Exists(muxCommand.EncodedVideoPath))
             {
-                EnqueueProcessLine(ProcessLogKind.DownstreamStderr, "Mux failed: encoded video stream does not exist: " + muxCommand.EncodedVideoPath);
+                EnqueueProcessLine(
+                    ProcessLogKind.UpstreamStderr,
+                    "Mux failed: encoded video stream does not exist: " + muxCommand.EncodedVideoPath);
                 return false;
             }
 
             StatusText = Lang.MuxingText;
-            EnqueueProcessLine(ProcessLogKind.DownstreamStderr, "Mux command: " + muxCommand.CommandLine);
+            EnqueueProcessLine(
+                ProcessLogKind.UpstreamStderr,
+                "Mux command: " + muxCommand.CommandLine);
 
             using Process mux = new()
             {
@@ -467,14 +475,15 @@ namespace OneColumnEncoder.ViewModels
 
             _muxProcess = mux;
             mux.Start();
-            Task muxStderrTask = ReadStreamAsync(mux.StandardError, ProcessLogKind.DownstreamStderr, cancellationToken);
+            // Show mux stderr in upstream log since its more intuitive
+            Task muxStderrTask = ReadStreamAsync(mux.StandardError, ProcessLogKind.UpstreamStderr, cancellationToken);
             await mux.WaitForExitAsync(cancellationToken);
             await muxStderrTask;
             _exitCode = mux.ExitCode;
             _muxProcess = null;
 
             if (mux.ExitCode == 0) return true;
-            EnqueueProcessLine(ProcessLogKind.DownstreamStderr, $"Mux failed with exit code {mux.ExitCode}.");
+            EnqueueProcessLine(ProcessLogKind.UpstreamStderr, $"Mux failed with exit code {mux.ExitCode}.");
             return false;
         }
 

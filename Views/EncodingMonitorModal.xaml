@@ -211,8 +211,8 @@
                             Margin="0 15 0 0">
                     <!-- Process stderr: upstream | encoder -->
                      <cards:SplitTextCard Title="{Binding StderrTitle}"
-                                          LeftText="{Binding DownstreamReportText, Mode=TwoWay}"
-                                          RightText="{Binding UpstreamReportText, Mode=TwoWay}"
+                                         LeftText="{Binding UpstreamReportText, Mode=TwoWay}"
+                                         RightText="{Binding DownstreamReportText, Mode=TwoWay}"
                                           TextFontSize="{Binding LogFontSize}" />
 
                     <comps:ThreeButtonGroup Margin="0 15 0 0"
