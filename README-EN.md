@@ -78,6 +78,12 @@ This software supports multiple languages, but English text screenshots are used
 
 ---
 
+## Support me
+
+Its not esay to develop these tools. If this software helped, please consider sponsoring or promoting it.
+
+<p align="center"><img src="WireframeMockups/bmc_qr.png" alt="Support me -_-"><br><img src="WireframeMockups/pp_tip_qr.png" alt="Pls support =_="></p>
+
 ## Project Status
 
 The content below organizes the implementation status based on the current project status, marking the completion status of major and sub-modules, classified as:

@@ -78,6 +78,12 @@
 
 ---
 
+## 打赏信息
+
+开发这些工具并不容易。如果这套工具提高了你的效率，那么不妨赞助或推广一下。
+
+<p align="center"><img src="WireframeMockups/bmc_qr.png" alt="支持一下 -_-"><br><img src="WireframeMockups/pp_tip_qr.png" alt="支持一下 =_="></p>
+
 ## 项目状态
 
 以下内容基于当前代码结构整理实现状态，用于标记主要模块和细分模块的完成度。分类含义如下：
