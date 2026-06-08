@@ -238,7 +238,7 @@ namespace OneColumnEncoder.ViewModels
             _appConfM = appConfM;
             _isSample = isSample;
             _totalFrames = EncodingPipelineH.GetSourceTotalFrames(_request.SourceFfprobeJson);
-            _enableMux = CanMux;
+            _enableMux = CanMux && !string.Equals(_request.EncoderExeName, "x264.exe", StringComparison.OrdinalIgnoreCase);
 
             RefreshLanguageState();
 
