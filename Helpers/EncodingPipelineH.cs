@@ -74,15 +74,49 @@ public static partial class EncodingPipelineH
         string encodedVideoPath = ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath);
         string outputPath = ResolveMuxOutputPath(request.OutputPath);
         string frameRateArgs = GetMuxFrameRateInputArgs(request.SourceFfprobeJson);
+        string streamMapArgs = BuildStreamMapArgs(request.SourceFfprobeJson);
         string args = JoinArgs(
             "-hide_banner -y",
             frameRateArgs,
             $"-i {Quote(encodedVideoPath)}",
             $"-i {Quote(request.SourceVideoPath)}",
-            "-map 0:v:0 -map 1:a? -map 1:s? -map 1:t? -map_metadata 1 -map_chapters 1 -c copy",
+            $"-map 0:v:0 {streamMapArgs} -map_metadata 1 -map_chapters 1 -c copy",
             Quote(outputPath));
 
         return new($"{Quote(request.FfmpegPath)} {args}", args, encodedVideoPath, outputPath);
+    }
+
+    private static string BuildStreamMapArgs(string? sourceFfprobeJson)
+    {
+        if (string.IsNullOrWhiteSpace(sourceFfprobeJson))
+            return "-map 1:a? -map 1:s? -map 1:t?";
+
+        try
+        {
+            using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
+            if (!document.RootElement.TryGetProperty("streams", out JsonElement streams) || streams.ValueKind != JsonValueKind.Array)
+                return "-map 1:a? -map 1:s? -map 1:t?";
+
+            var nonVideoStreams = new List<string>();
+            foreach (JsonElement stream in streams.EnumerateArray())
+            {
+                string? codecType = TryGetString(stream, "codec_type");
+                if (string.IsNullOrWhiteSpace(codecType)) continue;
+                if (codecType.Equals("video", StringComparison.OrdinalIgnoreCase)) continue;
+
+                if (!TryGetInt(stream, "index", out int streamIndex)) continue;
+                nonVideoStreams.Add($"-map 1:{streamIndex}");
+            }
+
+            if (nonVideoStreams.Count > 0)
+                return string.Join(" ", nonVideoStreams);
+
+            return "-map 1:a? -map 1:s? -map 1:t?";
+        }
+        catch
+        {
+            return "-map 1:a? -map 1:s? -map 1:t?";
+        }
     }
 
     private static string BuildUpstreamArgs(EncodingPipelineRequest request)

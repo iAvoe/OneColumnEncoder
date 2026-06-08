@@ -11,9 +11,9 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="1000"
-        MaxHeight="1140"
+        MaxHeight="1060"
         MinWidth="860"
-        Height="870"
+        Height="900"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid Margin="15">
@@ -210,10 +210,10 @@
                 <StackPanel Grid.Row="5"
                             Margin="0 15 0 0">
                     <!-- Process stderr: upstream | encoder -->
-                    <cards:SplitTextCard Title="{Binding StderrTitle}"
-                                         LeftText="{Binding UpstreamReportText, Mode=TwoWay}"
-                                         RightText="{Binding DownstreamReportText, Mode=TwoWay}"
-                                         TextFontSize="{Binding LogFontSize}" />
+                     <cards:SplitTextCard Title="{Binding StderrTitle}"
+                                          LeftText="{Binding DownstreamReportText, Mode=TwoWay}"
+                                          RightText="{Binding UpstreamReportText, Mode=TwoWay}"
+                                          TextFontSize="{Binding LogFontSize}" />
 
                     <comps:ThreeButtonGroup Margin="0 15 0 0"
                                             DataContext="{Binding ReportButtons}"
