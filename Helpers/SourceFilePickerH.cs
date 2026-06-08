@@ -74,7 +74,7 @@ namespace OneColumnEncoder.Helpers
             if (!string.IsNullOrWhiteSpace(currentPath))
                 return currentPath;
 
-            if (fileKind == SourceFileKind.SvfiIni && !string.IsNullOrWhiteSpace(foundPath))
+            if (!string.IsNullOrWhiteSpace(foundPath))
                 return foundPath;
 
             return string.Empty;
