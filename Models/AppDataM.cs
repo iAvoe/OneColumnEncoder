@@ -17,6 +17,7 @@ namespace OneColumnEncoder.Models
         protected override string FilePath => ConfigFilePath;
 
         public Importables Tools { get; set; } = new Importables();
+        public EncodingSettings Encoding { get; set; } = new EncodingSettings();
 
         // File sizes are used for detecting tool replacements
         #region ImportedTools data structure
@@ -58,6 +59,11 @@ namespace OneColumnEncoder.Models
             public string? AvsSourcePath { get; set; }
             public string? VpySourcePath { get; set; }
             public string? SvfiSourcePath { get; set; }
+        }
+
+        public class EncodingSettings
+        {
+            public string OutputDirectory { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
         }
         #endregion
     }

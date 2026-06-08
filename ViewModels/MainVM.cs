@@ -127,9 +127,11 @@ namespace OneColumnEncoder.ViewModels
             // Set P2Text to desktop, then P1Text to file name
             if (outputSetting != null)
             {
+                string cachedOutputDirectory = NormalizeOutputDirectory(_appDataM.Encoding.OutputDirectory);
+                outputSetting.PropertyChanged += OnOutputSettingPropertyChanged;
                 // Must be set first because Path setter has Validate() call which clears VersionText
                 if (string.IsNullOrWhiteSpace(outputSetting.P2TextData))
-                    outputSetting.P2TextData = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                    outputSetting.P2TextData = cachedOutputDirectory;
                 if (string.IsNullOrWhiteSpace(outputSetting.P1TextData))
                     outputSetting.P1TextData = "1cenc output";
             }
@@ -220,15 +222,16 @@ namespace OneColumnEncoder.ViewModels
             {
                 ToolItemCardVM? output = EncSettingsZone.FirstOrDefault(t =>
                     t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
-                return !string.IsNullOrWhiteSpace(output?.P2TextData)
-                    ? Path.GetDirectoryName(output.P2TextData) ?? string.Empty
-                    : string.Empty;
+                return output?.P2TextData ?? string.Empty;
             };
             EncTermsCard.GetOutputFilePathFunc = () =>
             {
                 ToolItemCardVM? output = EncSettingsZone.FirstOrDefault(t =>
                     t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
-                return output?.P2TextData ?? string.Empty;
+                if (output is null || string.IsNullOrWhiteSpace(output.P2TextData) || string.IsNullOrWhiteSpace(output.P1TextData))
+                    return string.Empty;
+
+                return Path.Combine(output.P2TextData, output.P1TextData);
             };
             EncTermsCard.IsAvs2yuvSelectedFunc = () =>
                 UpstreamsZone.Any(t => t.IsSelected
@@ -605,6 +608,17 @@ namespace OneColumnEncoder.ViewModels
                 UpdateAnalyzeSrcButtonsState();
                 UpdateInspBypsChkButtonsState();
             }
+        }
+
+        private void OnOutputSettingPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (sender is not ToolItemCardVM outputSetting) return;
+            if (e.PropertyName != nameof(ToolItemCardVM.P2TextData)) return;
+
+            _appDataM.Encoding.OutputDirectory = NormalizeOutputDirectory(outputSetting.P2TextData);
+            _appDataM.Save();
+            EncTermsCard.RunAllChecks();
+            UpdateEncStartButtonsState();
         }
         private void OnEncoderItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
@@ -1151,6 +1165,19 @@ namespace OneColumnEncoder.ViewModels
             }
 
             RefreshEncSettingsState();
+        }
+
+        private static string NormalizeOutputDirectory(string? path)
+        {
+            string fallbackDirectory = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+
+            if (string.IsNullOrWhiteSpace(path)) return fallbackDirectory;
+            if (Directory.Exists(path)) return path;
+
+            string? directory = Path.GetDirectoryName(path);
+            return !string.IsNullOrWhiteSpace(directory) && Directory.Exists(directory)
+                ? directory
+                : fallbackDirectory;
         }
         private static bool LoadSourceItem(ToolItemCardVM item, SourceFileKind kind, string? path)
         {
