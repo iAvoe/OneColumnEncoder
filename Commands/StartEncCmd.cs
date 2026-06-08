@@ -18,6 +18,7 @@ namespace OneColumnEncoder.Commands
         private readonly Func<EncodingPipelineRequest?> _buildRequest = buildRequest;
         private readonly ModalNavS _modalNavS = modalNavS;
         private readonly AppConfM _appConfM = appConfM;
+        private readonly StartEncCmdLangProviderM _lang = new(UILangProviderM.Current.LanguageCode);
 
         public override void Execute(object? parameter)
         {
@@ -26,8 +27,8 @@ namespace OneColumnEncoder.Commands
             {
                 new OpenWarnModalCmd(
                     _modalNavS,
-                    "Encoding",
-                    "Missing upstream input path. Make sure a video source or script source is selected for the chosen upstream tool.").Execute(null);
+                    _lang.WarnTitle,
+                    _lang.MissingUpstreamMsg).Execute(null);
                 return;
             }
 
@@ -46,7 +47,7 @@ namespace OneColumnEncoder.Commands
             ConfirmationModal window = new();
             CloseModalCmd closeCmd = new(window.Close);
             ConfirmationVM vm = ConfirmationVM.CreateDebug(
-                "Encoding Command", command.DisplayCommandLine,
+                _lang.ConfirmTitle, command.DisplayCommandLine,
                 closeCmd,
                 new ActionCmd(_ =>
                 {
@@ -79,7 +80,7 @@ namespace OneColumnEncoder.Commands
             ConfirmationModal window = new();
             CloseModalCmd closeCmd = new(window.Close);
             ConfirmationVM vm = ConfirmationVM.CreateWarning(
-                "Overwrite Output",
+                _lang.OverwriteTitle,
                 BuildOverwriteWarningMessage(resolvedOutputPath, outputLengthBytes, confirmDelayMs),
                 closeCmd,
                 new ActionCmd(_ =>
@@ -135,24 +136,24 @@ namespace OneColumnEncoder.Commands
             catch { return 0L; }
         }
 
-        private static string BuildOverwriteWarningMessage(string outputPath, long fileLengthBytes, int confirmDelayMs)
+        private string BuildOverwriteWarningMessage(string outputPath, long fileLengthBytes, int confirmDelayMs)
         {
             double seconds = confirmDelayMs / 1000d;
             return string.Join(Environment.NewLine,
-                "The output file already exists and will be overwritten.",
-                $"Output: {outputPath}",
-                $"Existing size: {FormatFileSize(fileLengthBytes)}",
-                $"Confirm button unlocks after {seconds.ToString("0.0", CultureInfo.InvariantCulture)} seconds.");
+                _lang.OverwriteMsg,
+                string.Format(_lang.OutputLabel, outputPath),
+                string.Format(_lang.ExistingSizeLabel, FormatFileSize(fileLengthBytes)),
+                string.Format(_lang.ConfirmDelayLabel, seconds.ToString("0.0", CultureInfo.InvariantCulture)));
         }
 
-        private static string FormatFileSize(long bytes)
+        private string FormatFileSize(long bytes)
         {
             const long bytesPerMb = 1024L * 1024L;
             const long bytesPerGb = 1024L * 1024L * 1024L;
 
             if (bytes >= bytesPerGb)
-                return $"{bytes / (double)bytesPerGb:0.0} GB";
-            return $"{bytes / (double)bytesPerMb:0.0} MB";
+                return $"{bytes / (double)bytesPerGb:0.0}{_lang.GbSuffix}";
+            return $"{bytes / (double)bytesPerMb:0.0}{_lang.MbSuffix}";
         }
     }
 }
