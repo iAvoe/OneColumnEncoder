@@ -2,7 +2,7 @@
 
 [中文版](README.md)
 
-A next-gen smart video encoding auxiliary tool based on .NET 9/WPF, revolves around "importing tools and encoders, importing video or script sources, analyzing source video, tailoring encoding commands, managing parallelism, modern encode monitoring and interrupt systems."
+A next-gen smart video encoding auxiliary tool based on .NET 9/WPF, revolves around "tool & encoder orchestrating, source analyzing, encode customizing, parallelism tailoring, modern GUI monitoring, encode interrupting, and auto-multiplexing."
 
 The current code works but lacks testing, which is releasing as beta.
 
@@ -12,10 +12,10 @@ This software supports multiple languages, but English text screenshots are used
 
 1. Main Interface: Tools area, Source Import area, Analysis area, Checklist, Encoding Settings area, and Startup area
 2. Script Editor: AVS/VPY editing area, copy and save functions
-3. Encoding Settings: CRF/ABR parameters, custom presets, and other configurations
+3. Encoding Settings: CRF/ABR parameters, custom presets, and 3rd party encoder arguments
 4. Parallelism Settings: NUMA nodes, CPU Sets, and advanced thread limit
 5. Clip Sampler: Time/Frame Number selection, conversion, and basic preview
-6. Encoding Monitoring: Logs, progress, resource usage, and control
+6. Encoding Monitoring: Logs, progress, resource usage, interrupt control, as well as auto-multiplexing
 7. Warning Modal and File Overwrite Protection Function
 
 <p align="center"><img src="WireframeMockups/1-Main-Page.png" alt="Main Window" width="600"><br>
