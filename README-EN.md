@@ -2,7 +2,7 @@
 
 [中文版](README.md)
 
-A next-gen smart video encoding auxiliary tool based on .NET 9/WPF, revolves around "tool & encoder orchestrating, source analyzing, encode customizing, parallelism tailoring, modern GUI monitoring, encode interrupting, and auto-multiplexing."
+A next-gen smart video encoding utility based on .NET 9/WPF, revolves around "tool & encoder orchestrating, source analyzing, encode customizing, parallelism tailoring, modern GUI monitoring, encode interrupting, and auto-multiplexing."
 
 The current code works but lacks testing, which is releasing as beta.
 
@@ -18,7 +18,7 @@ This software supports multiple languages, but English text screenshots are used
 4. Parallelism Settings: NUMA nodes, CPU Sets, and advanced thread limit
 5. Clip Sampler: Time/Frame Number selection, conversion, and basic preview
 6. Encoding Monitoring: Logs, progress, resource usage, interrupt control, as well as auto-multiplexing
-7. Warning Modal and File Overwrite Protection Function
+7. Warning Modal and File Overwrite Protection
 
 <p align="center"><img src="WireframeMockups/1-Main-Page.png" alt="Main Window" width="600"><br>
 <img src="WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window" width="400"><br>
@@ -92,7 +92,7 @@ The content below organizes the implementation status based on the current proje
 #### Application Framework and Main Interface
 
 - App startup, main window, and main interface layout have been implemented, with entry points in `App.xaml.cs`, `MainWindow.xaml`, and `Views/MainUI.xaml`
-- `MainVM` is responsible for the main interface module orchestration, including the tool area, source import area, analysis area, checklist, coding settings area, and startup area
+- `MainVM` is responsible for main interface module orchestration, including the tool area, source import area, analysis area, checklist, coding settings area, and startup area
 - Modal window navigation, masking states, close commands, and basic command models have been implemented
 - Multi-language switching mechanism has been integrated into the main interface, cards, buttons, and modal window text
 
