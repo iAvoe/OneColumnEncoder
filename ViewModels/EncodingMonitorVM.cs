@@ -947,11 +947,6 @@ namespace OneColumnEncoder.ViewModels
             return (now - _lastMemoryStatsUpdate).TotalSeconds >= intervalSeconds;
         }
 
-        private void UpdateProgressFromLogs()
-        {
-            ProgressValue = InferProgress(ProgressValue, _downstreamStderrBuilder.ToString());
-        }
-
         private void UpdateProgressDetails()
         {
             SetCurrentOutputSizeBytes(TryGetOutputSizeBytes());
