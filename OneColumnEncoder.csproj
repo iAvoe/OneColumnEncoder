@@ -11,4 +11,8 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Resource Include="favicon.ico" />
+  </ItemGroup>
+
 </Project>
