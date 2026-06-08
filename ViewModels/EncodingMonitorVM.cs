@@ -58,6 +58,7 @@ namespace OneColumnEncoder.ViewModels
         private CancellationTokenSource? _cts;
         private Process? _upstreamProcess;
         private Process? _encoderProcess;
+        private Process? _muxProcess;
         private bool _hasStarted;
         private bool _finishEnabledAfterClose;
         private int? _exitCode;
@@ -89,6 +90,8 @@ namespace OneColumnEncoder.ViewModels
         public static string RateControlLabel => "ABR / CRF";
         public string ArgsLabel => Lang.ArgsLabel;
         public string SmallNoteText => Lang.SmallNoteText;
+        public string EnableMuxText => Lang.EnableMuxText;
+        public bool CanMux => !_isSample && _command.MuxCommand != null;
         public string DistributionUpstreamLabel => Lang.DistributionUpstreamLabel;
         public string DistributionDownstreamLabel => Lang.DistributionDownstreamLabel;
         public string DistributionCacheLabel => Lang.DistributionCacheLabel;
@@ -143,6 +146,13 @@ namespace OneColumnEncoder.ViewModels
                 FreezeOrContinueText = _isFrozen ? Lang.ContinueMonitoringText : Lang.FreezeContinueText;
                 MonitorButtons.B2_1Text = FreezeOrContinueText;
             }
+        }
+
+        private bool _enableMux;
+        public bool EnableMux
+        {
+            get => _enableMux;
+            set => SetProperty(ref _enableMux, value && CanMux);
         }
 
         private string _freezeOrContinueText = string.Empty;
@@ -223,6 +233,7 @@ namespace OneColumnEncoder.ViewModels
             _appConfM = appConfM;
             _isSample = isSample;
             _totalFrames = EncodingPipelineH.GetSourceTotalFrames(_request.SourceFfprobeJson);
+            _enableMux = CanMux;
 
             RefreshLanguageState();
 
@@ -245,7 +256,7 @@ namespace OneColumnEncoder.ViewModels
             FinishButtons = ButtonGroupVM.CreateFiveButton(
                 Lang.OpenOutputDirectoryText, Lang.ViewEncodingCommandText, Lang.InterruptUpstreamText, Lang.InterruptEncoderText, Lang.CloseAfterDoneText,
                 new ActionCmd(_ => OpenOutputDirectory()),
-                new ActionCmd(_ => new OpenDebugModalCmd(_modalNavS, Lang.EncodingCommandTitle, _command.CommandLine).Execute(null)),
+                new ActionCmd(_ => new OpenDebugModalCmd(_modalNavS, Lang.EncodingCommandTitle, _command.DisplayCommandLine).Execute(null)),
                 new ActionCmd(_ => TryInterruptUpstream()),
                 new ActionCmd(_ => TryInterruptEncoder()),
                 CloseCmd);
@@ -390,6 +401,8 @@ namespace OneColumnEncoder.ViewModels
 
                 _exitCode = encoder.ExitCode;
                 _success = _exitCode == 0;
+                if (_success)
+                    _success = await RunMuxAsync(cancellationToken);
                 processOutput = GetCombinedOutput();
             }
             catch (OperationCanceledException)
@@ -409,7 +422,11 @@ namespace OneColumnEncoder.ViewModels
                 _timer.Stop();
                 ProgressValue = _success ? 100 : ProgressValue;
                 UpdateProgressDetails();
-                StatusText = _success ? Lang.CompletedText : _userInterruptRequested ? Lang.InterruptedText : StatusText == Lang.EncodingText ? Lang.FailedText : StatusText;
+                StatusText = _success
+                    ? Lang.CompletedText
+                    : _userInterruptRequested
+                        ? Lang.InterruptedText
+                        : StatusText == Lang.EncodingText || StatusText == Lang.MuxingText ? Lang.FailedText : StatusText;
                 FlushLogsToProperties();
                 UpdateFooterTimes(final: true);
                 EnableCloseButton();
@@ -419,6 +436,46 @@ namespace OneColumnEncoder.ViewModels
 
             if (!_isSample)
                 await TrySendNotificationAsync(_success, processOutput);
+        }
+
+        private async Task<bool> RunMuxAsync(CancellationToken cancellationToken)
+        {
+            EncodingMuxCommand? muxCommand = _command.MuxCommand;
+            if (!EnableMux || muxCommand == null) return true;
+
+            if (!File.Exists(muxCommand.EncodedVideoPath))
+            {
+                EnqueueProcessLine(ProcessLogKind.DownstreamStderr, "Mux failed: encoded video stream does not exist: " + muxCommand.EncodedVideoPath);
+                return false;
+            }
+
+            StatusText = Lang.MuxingText;
+            EnqueueProcessLine(ProcessLogKind.DownstreamStderr, "Mux command: " + muxCommand.CommandLine);
+
+            using Process mux = new()
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = _request.FfmpegPath,
+                    Arguments = muxCommand.Arguments,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardError = true
+                },
+                EnableRaisingEvents = true
+            };
+
+            _muxProcess = mux;
+            mux.Start();
+            Task muxStderrTask = ReadStreamAsync(mux.StandardError, ProcessLogKind.DownstreamStderr, cancellationToken);
+            await mux.WaitForExitAsync(cancellationToken);
+            await muxStderrTask;
+            _exitCode = mux.ExitCode;
+            _muxProcess = null;
+
+            if (mux.ExitCode == 0) return true;
+            EnqueueProcessLine(ProcessLogKind.DownstreamStderr, $"Mux failed with exit code {mux.ExitCode}.");
+            return false;
         }
 
         private void ApplyParallelismSettings(Process process, bool isEncoder)
@@ -916,7 +973,9 @@ namespace OneColumnEncoder.ViewModels
         {
             try
             {
-                string resolvedPath = EncodingPipelineH.ResolveOutputPathWithExtension(_request.EncoderExeName, _request.OutputPath);
+                string resolvedPath = _success && _command.MuxCommand != null
+                    ? _command.MuxCommand.OutputPath
+                    : EncodingPipelineH.ResolveOutputPathWithExtension(_request.EncoderExeName, _request.OutputPath);
                 if (!File.Exists(resolvedPath)) return 0L;
                 return new FileInfo(resolvedPath).Length;
             }
@@ -1324,6 +1383,7 @@ namespace OneColumnEncoder.ViewModels
                 try
                 {
                     TryCloseStream(_encoderStdinStream);
+                    TryCloseMainWindow(_muxProcess);
                     TryCloseMainWindow(_encoderProcess);
                     TryCloseStream(_upstreamStdoutStream);
                     TryCloseMainWindow(_upstreamProcess);
@@ -1493,6 +1553,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(CompleteAtLabel));
             OnPropertyChanged(nameof(ArgsLabel));
             OnPropertyChanged(nameof(SmallNoteText));
+            OnPropertyChanged(nameof(EnableMuxText));
             OnPropertyChanged(nameof(DistributionUpstreamLabel));
             OnPropertyChanged(nameof(DistributionDownstreamLabel));
             OnPropertyChanged(nameof(DistributionCacheLabel));

@@ -922,6 +922,7 @@ namespace OneColumnEncoder.ViewModels
             if (string.IsNullOrWhiteSpace(upstreamExeName) || string.IsNullOrWhiteSpace(encoderExeName)) return null;
 
             string upstreamInputPath = GetUpstreamInputPath(upstreamExeName);
+            string sourceVideoPath = GetSelectedVideoSourcePath();
             string? svfiIniPath = null;
             string? svfiTaskId = null;
 
@@ -945,6 +946,8 @@ namespace OneColumnEncoder.ViewModels
                 upstreamInputPath,
                 encoderExeName,
                 encoder.P2TextData,
+                _appDataM.Tools.FfmpegPath,
+                sourceVideoPath,
                 Path.Combine(outputSetting.P2TextData, outputSetting.P1TextData ?? string.Empty),
                 EncoderConfM.Load(),
                 _appDataM.Tools.VspipeY4mArg,

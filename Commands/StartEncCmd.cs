@@ -46,7 +46,7 @@ namespace OneColumnEncoder.Commands
             ConfirmationModal window = new();
             CloseModalCmd closeCmd = new(window.Close);
             ConfirmationVM vm = ConfirmationVM.CreateDebug(
-                "Encoding Command", command.CommandLine,
+                "Encoding Command", command.DisplayCommandLine,
                 closeCmd,
                 new ActionCmd(_ =>
                 {
@@ -64,7 +64,8 @@ namespace OneColumnEncoder.Commands
 
         private void OpenOverwriteConfirmationOrStart(EncodingPipelineRequest request, EncodingPipelineCommand command)
         {
-            string resolvedOutputPath = EncodingPipelineH.ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath);
+            string resolvedOutputPath = command.MuxCommand?.OutputPath
+                ?? EncodingPipelineH.ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath);
 
             if (!File.Exists(resolvedOutputPath))
             {

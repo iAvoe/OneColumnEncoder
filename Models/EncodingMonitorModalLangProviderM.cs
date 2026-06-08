@@ -24,6 +24,7 @@ public class EncodingMonitorModalLangProviderM
             ["CompleteAtLabel"] = "ETA",
             ["ArgsLabel"] = "Other preset name",
             ["SmallNoteText"] = "This program does not support progress quantization; interrupting will discard task progress.",
+            ["EnableMuxText"] = "Mux encoded stream after encoding",
             ["DistributionUpstreamLabel"] = "Upstream program",
             ["DistributionDownstreamLabel"] = "Downstream program",
             ["DistributionCacheLabel"] = "System cache",
@@ -60,6 +61,7 @@ public class EncodingMonitorModalLangProviderM
             ["PipeErrorPrefix"] = "Pipe error: ",
             ["ReadyToStartText"] = "Ready to start",
             ["EncodingText"] = "Encoding",
+            ["MuxingText"] = "Muxing",
             ["InterruptedText"] = "Interrupted",
             ["FailedText"] = "Encoding failed",
             ["CompletedText"] = "Encoding completed",
@@ -91,6 +93,7 @@ public class EncodingMonitorModalLangProviderM
             ["CompleteAtLabel"] = "预计完成（24h）",
             ["ArgsLabel"] = "其他参数预设名",
             ["SmallNoteText"] = "本程序不支持进度量化；中断将丢弃任务进度。",
+            ["EnableMuxText"] = "压制完成后封装视频流",
             ["DistributionUpstreamLabel"] = "上游程序",
             ["DistributionDownstreamLabel"] = "下游程序",
             ["DistributionCacheLabel"] = "系统缓存",
@@ -127,6 +130,7 @@ public class EncodingMonitorModalLangProviderM
             ["PipeErrorPrefix"] = "管道错误：",
             ["ReadyToStartText"] = "准备启动",
             ["EncodingText"] = "正在压制",
+            ["MuxingText"] = "正在封装",
             ["InterruptedText"] = "已中断",
             ["FailedText"] = "压制失败",
             ["CompletedText"] = "压制完成",
@@ -158,6 +162,7 @@ public class EncodingMonitorModalLangProviderM
             ["CompleteAtLabel"] = "預計完成（24h）",
             ["ArgsLabel"] = "其他參數預設名",
             ["SmallNoteText"] = "本程式不支援進度量化；中斷將丟棄任務進度。",
+            ["EnableMuxText"] = "壓制完成後封裝視訊流",
             ["DistributionUpstreamLabel"] = "上游程式",
             ["DistributionDownstreamLabel"] = "下游程式",
             ["DistributionCacheLabel"] = "系統快取",
@@ -194,6 +199,7 @@ public class EncodingMonitorModalLangProviderM
             ["PipeErrorPrefix"] = "管道錯誤：",
             ["ReadyToStartText"] = "準備啟動",
             ["EncodingText"] = "正在壓制",
+            ["MuxingText"] = "正在封裝",
             ["InterruptedText"] = "已中斷",
             ["FailedText"] = "壓制失敗",
             ["CompletedText"] = "壓制完成",
@@ -224,6 +230,7 @@ public class EncodingMonitorModalLangProviderM
     public string CompleteAtLabel { get; }
     public string ArgsLabel { get; }
     public string SmallNoteText { get; }
+    public string EnableMuxText { get; }
     public string DistributionUpstreamLabel { get; }
     public string DistributionDownstreamLabel { get; }
     public string DistributionCacheLabel { get; }
@@ -259,6 +266,7 @@ public class EncodingMonitorModalLangProviderM
     public string PipeErrorPrefix { get; }
     public string ReadyToStartText { get; }
     public string EncodingText { get; }
+    public string MuxingText { get; }
     public string InterruptedText { get; }
     public string FailedText { get; }
     public string CompletedText { get; }
@@ -296,6 +304,7 @@ public class EncodingMonitorModalLangProviderM
         CompleteAtLabel = _d["CompleteAtLabel"];
         ArgsLabel = _d["ArgsLabel"];
         SmallNoteText = _d["SmallNoteText"];
+        EnableMuxText = _d["EnableMuxText"];
         DistributionUpstreamLabel = _d["DistributionUpstreamLabel"];
         DistributionDownstreamLabel = _d["DistributionDownstreamLabel"];
         DistributionCacheLabel = _d["DistributionCacheLabel"];
@@ -331,6 +340,7 @@ public class EncodingMonitorModalLangProviderM
         PipeErrorPrefix = _d["PipeErrorPrefix"];
         ReadyToStartText = _d["ReadyToStartText"];
         EncodingText = _d["EncodingText"];
+        MuxingText = _d["MuxingText"];
         InterruptedText = _d["InterruptedText"];
         FailedText = _d["FailedText"];
         CompletedText = _d["CompletedText"];

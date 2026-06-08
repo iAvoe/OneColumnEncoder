@@ -15,6 +15,8 @@ public record EncodingPipelineRequest(
     string UpstreamInputPath,
     string EncoderExeName,
     string EncoderPath,
+    string? FfmpegPath,
+    string? SourceVideoPath,
     string OutputPath,
     EncoderConfM EncoderConf,
     string? VspipeY4mArg,
@@ -40,7 +42,19 @@ internal record ClipRange(
 public record EncodingPipelineCommand(
     string CommandLine,
     string UpstreamArgs,
-    string EncoderArgs);
+    string EncoderArgs,
+    EncodingMuxCommand? MuxCommand = null)
+{
+    public string DisplayCommandLine => MuxCommand == null
+        ? CommandLine
+        : $"{CommandLine}{Environment.NewLine}{Environment.NewLine}{MuxCommand.CommandLine}";
+}
+
+public record EncodingMuxCommand(
+    string CommandLine,
+    string Arguments,
+    string EncodedVideoPath,
+    string OutputPath);
 
 public static partial class EncodingPipelineH
 {
@@ -49,7 +63,26 @@ public static partial class EncodingPipelineH
         string upstreamArgs = BuildUpstreamArgs(request);
         string encoderArgs = BuildEncoderArgs(request);
         string commandLine = $"{Quote(request.UpstreamPath)} {upstreamArgs} | {Quote(request.EncoderPath)} {encoderArgs}";
-        return new(commandLine, upstreamArgs, encoderArgs);
+        return new(commandLine, upstreamArgs, encoderArgs, BuildMuxCommand(request));
+    }
+
+    private static EncodingMuxCommand? BuildMuxCommand(EncodingPipelineRequest request)
+    {
+        if (request.Clip != null) return null;
+        if (string.IsNullOrWhiteSpace(request.FfmpegPath) || string.IsNullOrWhiteSpace(request.SourceVideoPath)) return null;
+
+        string encodedVideoPath = ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath);
+        string outputPath = ResolveMuxOutputPath(request.OutputPath);
+        string frameRateArgs = GetMuxFrameRateInputArgs(request.SourceFfprobeJson);
+        string args = JoinArgs(
+            "-hide_banner -y",
+            frameRateArgs,
+            $"-i {Quote(encodedVideoPath)}",
+            $"-i {Quote(request.SourceVideoPath)}",
+            "-map 0:v:0 -map 1:a? -map 1:s? -map 1:t? -map_metadata 1 -map_chapters 1 -c copy",
+            Quote(outputPath));
+
+        return new($"{Quote(request.FfmpegPath)} {args}", args, encodedVideoPath, outputPath);
     }
 
     private static string BuildUpstreamArgs(EncodingPipelineRequest request)
@@ -805,6 +838,56 @@ public static partial class EncodingPipelineH
             _ => string.Empty
         };
         return EnsureExtension(outputPath, ext);
+    }
+
+    public static string ResolveMuxOutputPath(string outputPath) =>
+        Path.ChangeExtension(RemoveRawVideoExtension(outputPath), ".mkv");
+
+    private static string RemoveRawVideoExtension(string outputPath)
+    {
+        string ext = Path.GetExtension(outputPath);
+        return ext.Equals(".hevc", StringComparison.OrdinalIgnoreCase) ||
+               ext.Equals(".h265", StringComparison.OrdinalIgnoreCase) ||
+               ext.Equals(".h264", StringComparison.OrdinalIgnoreCase) ||
+               ext.Equals(".264", StringComparison.OrdinalIgnoreCase) ||
+               ext.Equals(".265", StringComparison.OrdinalIgnoreCase) ||
+               ext.Equals(".ivf", StringComparison.OrdinalIgnoreCase)
+            ? Path.Combine(Path.GetDirectoryName(outputPath) ?? string.Empty, Path.GetFileNameWithoutExtension(outputPath))
+            : outputPath;
+    }
+
+    private static string GetMuxFrameRateInputArgs(string? sourceFfprobeJson)
+    {
+        if (string.IsNullOrWhiteSpace(sourceFfprobeJson)) return string.Empty;
+
+        try
+        {
+            using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
+            if (!TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return string.Empty;
+            string? frameRate = TryGetFrameRateString(stream);
+            return TestFrameRateValid(frameRate) ? $"-r {frameRate}" : string.Empty;
+        }
+        catch
+        {
+            return string.Empty;
+        }
+    }
+
+    private static bool TestFrameRateValid(string? frameRate)
+    {
+        if (string.IsNullOrWhiteSpace(frameRate)) return false;
+        string value = frameRate.Trim();
+        if (value.Equals("0", StringComparison.OrdinalIgnoreCase) || value.Equals("0/0", StringComparison.OrdinalIgnoreCase)) return false;
+        if (value.Contains('/', StringComparison.Ordinal))
+        {
+            string[] parts = value.Split('/');
+            return parts.Length == 2 &&
+                   long.TryParse(parts[0], NumberStyles.None, CultureInfo.InvariantCulture, out long numerator) &&
+                   long.TryParse(parts[1], NumberStyles.None, CultureInfo.InvariantCulture, out long denominator) &&
+                   numerator > 0 && denominator > 0;
+        }
+
+        return double.TryParse(value, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double parsed) && parsed > 0;
     }
 
     private static string BuildEncoderOutputArgs(string encoderExeName, string outputPath) =>

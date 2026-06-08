@@ -452,7 +452,7 @@ namespace OneColumnEncoder.ViewModels
                 ConfirmationModal window = new();
                 CloseModalCmd closeCmd = new(window.Close);
                 ConfirmationVM vm = ConfirmationVM.CreateDebug(
-                    "Sample Encoding Command", command.CommandLine,
+                    "Sample Encoding Command", command.DisplayCommandLine,
                     closeCmd,
                     new ActionCmd(_ =>
                     {

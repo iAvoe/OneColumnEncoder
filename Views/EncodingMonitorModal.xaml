@@ -11,7 +11,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="1000"
-        MaxHeight="1060"
+        MaxHeight="1140"
         MinWidth="860"
         Height="870"
         WindowStartupLocation="CenterOwner"
@@ -236,8 +236,14 @@
         <StackPanel Grid.Row="1">
             <comps:ColumnTextGrid Items="{Binding FooterColumns}"
                                    ColumnCount="6" />
+            <CheckBox Content="{Binding EnableMuxText}"
+                      IsChecked="{Binding EnableMux, Mode=TwoWay}"
+                      IsEnabled="{Binding CanMux}"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Center"
+                      Margin="0 10 0 0" />
             <comps:FiveButtonGroup Margin="0 15 0 0"
-                                   DataContext="{Binding FinishButtons}"
+                                    DataContext="{Binding FinishButtons}"
                                    ButtonHeight="30"
                                    Button1Command="{Binding Cmd1}"
                                    Button2Command="{Binding Cmd2}"
