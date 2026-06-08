@@ -572,7 +572,9 @@ namespace OneColumnEncoder.ViewModels
         private void WireUpSourceCmd(ToolItemCardVM item)
         {
             SourceFileKind kind = ResolveSourceFileKind(item.Name);
-            item.R1Command = new BrowseSourcePathCmd(item, kind, _appDataM, _modalNavS, OnVideoSourceImported);
+            item.R1Command = kind == SourceFileKind.Video
+                ? new BrowseSourcePathCmd(item, kind, _appDataM, _modalNavS, OnVideoSourceImported)
+                : new BrowseSourcePathCmd(item, kind, _appDataM, _modalNavS, OnVideoSourceImported, GetCurrentVideoSourcePath);
             item.R2Command = new ClearToolItemCmd(item, () => OnSourceCleared(kind));
             item.PropertyChanged += OnVideoSrcItemPropertyChanged;
         }

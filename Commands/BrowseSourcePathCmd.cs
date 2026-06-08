@@ -11,13 +11,15 @@ namespace OneColumnEncoder.Commands
                                      SourceFileKind fileKind,
                                      AppDataM appDataM,
                                      ModalNavS modalNavS,
-                                     Action<ToolItemCardVM, SourceFileKind, string, bool>? afterImport = null) : BaseCmd
+                                     Action<ToolItemCardVM, SourceFileKind, string, bool>? afterImport = null,
+                                     Func<string>? getFoundPath = null) : BaseCmd
     {
         private readonly ToolItemCardVM _item = item;
         private readonly SourceFileKind _fileKind = fileKind;
         private readonly AppDataM _appDataM = appDataM;
         private readonly ModalNavS _modalNavS = modalNavS;
         private readonly Action<ToolItemCardVM, SourceFileKind, string, bool>? _afterImport = afterImport;
+        private readonly Func<string>? _getFoundPath = getFoundPath;
 
         public override void Execute(object? parameter)
         {
@@ -27,14 +29,17 @@ namespace OneColumnEncoder.Commands
 
             string? foundPath = _fileKind == SourceFileKind.SvfiIni && !string.IsNullOrWhiteSpace(_appDataM.Tools.OneLineShotArgsPath)
                 ? Path.Combine(Path.GetDirectoryName(_appDataM.Tools.OneLineShotArgsPath) ?? "", "Configs")
-                : null;
+                : _getFoundPath?.Invoke();
+
+            if (_fileKind == SourceFileKind.Video)
+                foundPath = null;
 
             string? filePath = SourceFilePickerH.GetSource(
                 _fileKind,
                 dialogTitle,
                 _modalNavS,
                 foundPath: foundPath,
-                currentPath: _item.P2TextData);
+                currentPath: _fileKind == SourceFileKind.Video ? _item.P2TextData : null);
 
             if (string.IsNullOrWhiteSpace(filePath))
                 return;
