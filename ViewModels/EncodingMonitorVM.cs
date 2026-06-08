@@ -218,6 +218,11 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _rangeSummary, value);
         }
 
+        /// <summary>
+        /// Constructs the encoding monitor view model.
+        /// Sets up commands, button groups, UI collections, and subscribes to language change events.
+        /// Does NOT start encoding — call <see cref="Start"/> to begin.
+        /// </summary>
         public EncodingMonitorVM(
             ModalNavS modalNavS,
             Action closeAction,
@@ -276,6 +281,10 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _logFontSize, value);
         }
 
+        /// <summary>
+        /// Starts the encoding pipeline. Can only be called once.
+        /// Launches the async encoding task (fire-and-forget) and starts the UI timer.
+        /// </summary>
         public void Start()
         {
             if (_hasStarted) return;
@@ -286,6 +295,10 @@ namespace OneColumnEncoder.ViewModels
             _ = RunEncodingAsync(_cts.Token);
         }
 
+        /// <summary>
+        /// Initializes the 6-column metrics display with placeholder values.
+        /// Columns: Physical Memory, Committed Memory, Working Set Peak, Page File, Page Faults, RAM Stress.
+        /// </summary>
         private void BuildMetrics()
         {
             MetricColumns.Clear();
@@ -297,6 +310,9 @@ namespace OneColumnEncoder.ViewModels
             MetricColumns.Add(new ColumnTextItemM { TopText = Lang.RAMStressTopText, MainText = Lang.RAMStressMediumText, BottomText = PlaceholderPercent });
         }
 
+        /// <summary>
+        /// Initializes the 6-column footer with start time, elapsed, remaining, completion, rate control, and preset.
+        /// </summary>
         private void BuildFooter()
         {
             FooterColumns.Clear();
@@ -308,6 +324,10 @@ namespace OneColumnEncoder.ViewModels
             FooterColumns.Add(new ColumnTextItemM { TopText = ArgsLabel, MainText = GetPresetText() });
         }
 
+        /// <summary>
+        /// Creates 128 memory range blocks, each representing a slice of physical memory.
+        /// Initially empty; filled by UpdateMemoryRangeBlocks during timer ticks.
+        /// </summary>
         private void BuildMemoryRangeBlocks()
         {
             MemoryRangeBlocks.Clear();
@@ -372,7 +392,7 @@ namespace OneColumnEncoder.ViewModels
                     Stream? encoderStdin = null;
                     try
                     {
-                        byte[] buffer = new byte[81920];
+                        byte[] buffer = new byte[81920]; // ReadAsync reads in blocks, so this size is sufficient
                         Stream upstreamStdout = upstream.StandardOutput.BaseStream;
                         encoderStdin = encoder.StandardInput.BaseStream;
                         _upstreamStdoutStream = upstreamStdout;
@@ -442,6 +462,10 @@ namespace OneColumnEncoder.ViewModels
                 await TrySendNotificationAsync(_success, processOutput);
         }
 
+        /// <summary>
+        /// Runs the optional mux step (e.g. ffmpeg muxing encoded video + audio).
+        /// Returns true on success or if muxing is skipped; false on mux failure.
+        /// </summary>
         private async Task<bool> RunMuxAsync(CancellationToken cancellationToken)
         {
             EncodingMuxCommand? muxCommand = _command.MuxCommand;
@@ -487,6 +511,11 @@ namespace OneColumnEncoder.ViewModels
             return false;
         }
 
+        /// <summary>
+        /// Applies CPU affinity and thread count settings to a process based on parallelism config.
+        /// Uses NUMA node, physical-core preference, and optional thread count limit.
+        /// Logs the result (success/skip) to the appropriate stderr stream.
+        /// </summary>
         private void ApplyParallelismSettings(Process process, bool isEncoder)
         {
             ParallelismConfM? parallelismConf = _request.ParallelismConf;
@@ -507,6 +536,14 @@ namespace OneColumnEncoder.ViewModels
             EnqueueProcessLine(logKind, $"Parallelism: {(success ? message : _cpuSetsLang.SkippedPrefix + message)}");
         }
 
+        /// <summary>
+        /// Reads a process stream character-by-character, splitting on \r and \n.
+        /// Handles three cases:
+        ///   1. "\r\n" → newline ends the previous line; pending CR is discarded.
+        ///   2. "\r" alone → the line is an overwrite (e.g. ffmpeg progress); marks overwritesPreviousLine.
+        ///   3. "\n" alone → standard newline, enqueued as a normal line.
+        /// This lets us display both regular log output and in-place status updates correctly.
+        /// </summary>
         private async Task ReadStreamAsync(StreamReader reader, ProcessLogKind kind, CancellationToken ct)
         {
             try
@@ -526,6 +563,7 @@ namespace OneColumnEncoder.ViewModels
                         char ch = buffer[i];
                         if (pendingCarriageReturnLine != null)
                         {
+                            // \r\n sequence: the CR ended the previous line, \n is the real newline
                             if (ch == '\n')
                             {
                                 EnqueueProcessLine(kind, pendingCarriageReturnLine, overwritesPreviousLine: false);
@@ -534,6 +572,7 @@ namespace OneColumnEncoder.ViewModels
                                 continue;
                             }
 
+                            // Standalone \r: the pending line was an in-place update, emit it as overwrite
                             EnqueueProcessLine(kind, pendingCarriageReturnLine, previousWasCarriageReturnUpdate);
                             pendingCarriageReturnLine = null;
                             previousWasCarriageReturnUpdate = true;
@@ -584,6 +623,11 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
+        /// <summary>
+        /// Timer callback (fires every 500ms). Drains log queue, updates progress/footer
+        /// every 1 second, and samples memory at the configured interval.
+        /// Skips all UI updates when frozen to reduce CPU usage.
+        /// </summary>
         private void OnTimerTick(object? sender, EventArgs e)
         {
             ProcessQueuedLogs();
@@ -591,6 +635,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 FlushLogsToProperties();
                 DateTime now = DateTime.Now;
+                // Update progress and footer times once per second
                 if ((now - _lastStatsUpdate).TotalSeconds >= 1d)
                 {
                     _lastStatsUpdate = now;
@@ -598,6 +643,7 @@ namespace OneColumnEncoder.ViewModels
                     UpdateFooterTimes(final: false);
                 }
 
+                // Sample memory usage at user-configured intervals
                 if (IsMemorySampleDue(now))
                 {
                     _lastMemoryStatsUpdate = now;
@@ -607,6 +653,11 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
+        /// <summary>
+        /// Drains the concurrent log queue into the upstream/downstream StringBuilder buffers.
+        /// Duplicate lines are folded with a (xN) repeat count to keep logs compact.
+        /// Only flushes to bound properties if not frozen (UI update optimization).
+        /// </summary>
         private void ProcessQueuedLogs()
         {
             bool changed = false;
@@ -616,6 +667,7 @@ namespace OneColumnEncoder.ViewModels
                 switch (entry.Kind)
                 {
                     case ProcessLogKind.UpstreamStderr:
+                        // Upstream log: progress parsing disabled (downstream drives main progress)
                         AppendLogWithOverwrite(
                             _upstreamStderrBuilder,
                             _upstreamStderrFoldState,
@@ -624,6 +676,7 @@ namespace OneColumnEncoder.ViewModels
                             updateMainProgress: false);
                         break;
                     case ProcessLogKind.DownstreamStderr:
+                        // Downstream log: progress parsing enabled (encoder drives main progress)
                         AppendLogWithOverwrite(
                             _downstreamStderrBuilder,
                             _downstreamStderrFoldState,
@@ -644,6 +697,12 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
+        /// <summary>
+        /// Appends a single log line to the target StringBuilder.
+        /// Strips nulls and trailing whitespace. If overwritesPreviousLine is true,
+        /// the last line is removed first (for \r-based progress updates).
+        /// Duplicate lines are folded into a (xN) repeat count.
+        /// </summary>
         private void AppendLogWithOverwrite(
             StringBuilder target,
             LogFoldState foldState,
@@ -660,16 +719,22 @@ namespace OneColumnEncoder.ViewModels
             AppendFoldedLine(target, foldState, line);
         }
 
+        /// <summary>
+        /// Adds a line to the folded log. If the line already exists, increments its repeat count
+        /// and rebuilds the full log text. Otherwise appends it as a new unique line.
+        /// </summary>
         private static void AppendFoldedLine(StringBuilder target, LogFoldState foldState, string line)
         {
             if (foldState.LineIndexByText.TryGetValue(line, out int index))
             {
+                // Existing line: increment count and rebuild the display text
                 LogFoldEntry entry = foldState.Entries[index];
                 foldState.Entries[index] = entry with { RepeatCount = entry.RepeatCount + 1 };
                 RebuildFoldedLog(target, foldState);
                 return;
             }
 
+            // New unique line: add to index and append directly
             foldState.LineIndexByText[line] = foldState.Entries.Count;
             foldState.Entries.Add(new LogFoldEntry(line, 1));
             target.AppendLine(line);
@@ -687,14 +752,21 @@ namespace OneColumnEncoder.ViewModels
             return repeatCount > 1 ? $"{line} (x{repeatCount:N0})" : line;
         }
 
+        /// <summary>
+        /// Extracts progress info from a single log line.
+        /// For downstream lines: parses percentage progress and frame counts to update ProgressValue.
+        /// Also extracts written frame count for estimated size calculations.
+        /// </summary>
         private void UpdateProgressFromLogLine(string line, bool updateMainProgress)
         {
             string trimmed = line.Trim();
             if (string.IsNullOrWhiteSpace(trimmed) || IsIndexProgressLine(trimmed)) return;
 
             bool isProgressLine = IsProgressLine(trimmed);
+            // Parse percentage-based progress (e.g. "56.3%") from log text
             if (isProgressLine && updateMainProgress)
                 ProgressValue = InferProgress(ProgressValue, trimmed);
+            // Try to extract frame count for frame-based progress and output size estimation
             if (TryParseEncoderFrame(trimmed) is int frame)
             {
                 UpdateWrittenFrames(frame);
@@ -756,6 +828,11 @@ namespace OneColumnEncoder.ViewModels
         [GeneratedRegex(@"(?<!\d)(\d+)\s+frames?\s+encoded", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
         private static partial Regex FramesEncodedRegex();
 
+        /// <summary>
+        /// Attempts to extract a frame number from a log line using multiple regex patterns.
+        /// Supports ffmpeg "frame= 1234", x264 "1234 frames:", "1234/5000 frames",
+        /// "encoding frame 1234", "encoded 1234 frames", and "1234 frames encoded".
+        /// </summary>
         private static int? TryParseEncoderFrame(string line)
         {
             if (string.IsNullOrWhiteSpace(line)) return null;
@@ -776,6 +853,10 @@ namespace OneColumnEncoder.ViewModels
                 && int.TryParse(match.Groups[1].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out value);
         }
 
+        /// <summary>
+        /// Removes the last line from the StringBuilder and its associated fold state entry.
+        /// Used when a \r-overwrite line needs to replace the previous in-place status line.
+        /// </summary>
         private static void TrimLastLine(StringBuilder builder, LogFoldState foldState)
         {
             foldState.RemoveLastEntry();
@@ -794,11 +875,18 @@ namespace OneColumnEncoder.ViewModels
             builder.Length = index + 1;
         }
 
+        /// <summary>
+        /// Collects system and process memory statistics and updates the UI metrics.
+        /// Gathers: physical/committed memory, working set peaks, page faults, RAM stress,
+        /// and the memory distribution (upstream vs downstream vs cache vs available).
+        /// Uses a child process map to sum working sets across process trees.
+        /// </summary>
         private void UpdateMetrics()
         {
             MemoryStatusSnapshot memoryStatus = GetMemoryStatusSnapshot();
             _lastMemoryStatus = memoryStatus;
 
+            // Build parent→child map once, then use it for all process tree queries
             Dictionary<int, List<int>>? childMap = GetChildProcessMap();
 
             _lastUpstreamWorkingSetBytes = GetWorkingSetBytes(_upstreamProcess, childMap);
@@ -809,31 +897,46 @@ namespace OneColumnEncoder.ViewModels
             long combinedWorkingSetPeakBytes = _upstreamWorkingSetPeakBytes + _encoderWorkingSetPeakBytes;
             long effectiveSystemCacheBytes = GetEffectiveSystemCacheBytes(memoryStatus, combinedWorkingSetBytes);
 
+            // Row 0: Physical memory usage
             MetricColumns[0].MainText = FormatGb(memoryStatus.UsedPhysicalBytes);
             MetricColumns[0].BottomText = ReplaceMetricValue(Lang.PhysicalMemoryBottomText, FormatGb(memoryStatus.TotalPhysicalBytes));
+            // Row 1: Committed memory
             MetricColumns[1].MainText = FormatGb(memoryStatus.CommittedBytes);
             MetricColumns[1].BottomText = ReplaceMetricValue(Lang.CommittedMemoryBottomText, FormatGb(memoryStatus.CommitLimitBytes));
+            // Row 2: Working set peak (combined upstream + encoder)
             MetricColumns[2].MainText = FormatGb(combinedWorkingSetPeakBytes);
             MetricColumns[2].BottomText = ReplaceMetricValue(Lang.WorkingSetPeakBottomText, FormatGb(combinedWorkingSetBytes));
+            // Row 3: Page file usage
             MetricColumns[3].MainText = FormatGb(memoryStatus.CommittedBytes);
             MetricColumns[3].BottomText = ReplaceMetricValue(Lang.PageFileBottomText, FormatGb(memoryStatus.CommitLimitBytes));
+            // Row 4: Page faults (sum across upstream + encoder process trees)
             MetricColumns[4].MainText = GetTotalPageFaults(childMap).ToString("N0", CultureInfo.InvariantCulture);
             MetricColumns[4].BottomText = Lang.PageFaultBottomText;
+            // Row 5: RAM stress indicator
             MetricColumns[5].MainText = memoryStatus.MemoryLoadPercent < 75 ? Lang.RAMStressMediumText : Lang.RAMStressHighText;
             MetricColumns[5].BottomText = $"{memoryStatus.MemoryLoadPercent}%";
 
+            // Memory distribution values for the range visualization
             DistributionUpstream = FormatMb(_lastUpstreamWorkingSetBytes);
             DistributionDownstream = FormatMb(_lastEncoderWorkingSetBytes);
             DistributionCache = FormatMb(effectiveSystemCacheBytes);
             DistributionAvailable = FormatMb(memoryStatus.AvailablePhysicalBytes);
         }
 
+        /// <summary>
+        /// Calculates the portion of system cache that is not part of the encoding processes'
+        /// working set. This avoids double-counting cache that belongs to our processes.
+        /// </summary>
         private static long GetEffectiveSystemCacheBytes(MemoryStatusSnapshot memoryStatus, long processWorkingSetBytes)
         {
             long nonProcessUsedBytes = Math.Max(0, memoryStatus.UsedPhysicalBytes - processWorkingSetBytes);
             return Math.Min(memoryStatus.SystemCacheBytes, nonProcessUsedBytes);
         }
 
+        /// <summary>
+        /// Returns true if enough time has elapsed since the last memory sample
+        /// based on the user-configured sample interval.
+        /// </summary>
         private bool IsMemorySampleDue(DateTime now)
         {
             int intervalSeconds = SampleIntervalSeconds;
@@ -856,6 +959,13 @@ namespace OneColumnEncoder.ViewModels
             UpdateMemoryRangeBlocks(MemoryRangeBlocks, _lastMemoryStatus);
         }
 
+        /// <summary>
+        /// Maps physical memory into a grid of visual blocks (MemoryRangeBlockCount = 128).
+        /// Each block represents a byte range of total physical memory. The block's fill level
+        /// and color category are determined by which process (upstream/downstream/cache) owns
+        /// the memory at that byte offset. The byte range is divided into contiguous categories:
+        /// [upstream bytes | downstream bytes | other-used bytes | free].
+        /// </summary>
         private void UpdateMemoryRangeBlocks(ObservableCollection<MemoryRangeBlockM> blocks, MemoryStatusSnapshot memoryStatus)
         {
             if (blocks.Count == 0) return;
@@ -873,6 +983,7 @@ namespace OneColumnEncoder.ViewModels
                 return;
             }
 
+            // Calculate how much memory each process owns (may overlap, so we clamp)
             long upstreamBytes = _lastUpstreamWorkingSetBytes;
             long downstreamBytes = _lastEncoderWorkingSetBytes;
             long otherUsedBytes = Math.Max(0, usedBytes - upstreamBytes - downstreamBytes);
@@ -892,6 +1003,7 @@ namespace OneColumnEncoder.ViewModels
             long[] categoryBytes = [upstreamBytes, downstreamBytes, otherUsedBytes];
             double occupancyFraction = Math.Clamp(usedBytes / (double)totalBytes, 0d, 1d);
 
+            // Compute cumulative byte offsets for each category boundary
             int totalBlocks = blocks.Count;
             double bytesPerBlock = totalBytes / (double)totalBlocks;
             long[] categoryEnds = new long[categoryBytes.Length];
@@ -902,6 +1014,7 @@ namespace OneColumnEncoder.ViewModels
                 categoryEnds[i] = cumulativeBytes;
             }
 
+            // For each block, compute its byte range and determine which category covers its midpoint
             for (int blockIndex = 0; blockIndex < totalBlocks; blockIndex++)
             {
                 double blockStart = blockIndex * bytesPerBlock;
@@ -912,6 +1025,7 @@ namespace OneColumnEncoder.ViewModels
 
                 if (fillFraction <= 0d)
                 {
+                    // Block is in free memory region
                     block.FillLevel = 0;
                     block.Category = MemoryCategory.Empty;
                     block.Tooltip = string.Format(Lang.BlockTooltipFormat, blockIndex)
@@ -919,6 +1033,7 @@ namespace OneColumnEncoder.ViewModels
                     continue;
                 }
 
+                // Find which category covers the block's midpoint
                 int categoryIndex = 0;
                 double blockMiddle = blockStart + usedOverlap / 2d;
                 while (categoryIndex < categoryEnds.Length - 1 && blockMiddle >= categoryEnds[categoryIndex])
@@ -926,6 +1041,7 @@ namespace OneColumnEncoder.ViewModels
 
                 MemoryCategory category = categoryOrder[categoryIndex];
                 string categoryName = categoryNames[categoryIndex];
+                // Map fill fraction to discrete fill level (1–8)
                 int fillLevel = Math.Clamp((int)Math.Ceiling(fillFraction * MemoryRangeMaxFillLevel), 1, MemoryRangeMaxFillLevel);
                 block.FillLevel = fillLevel;
                 block.Category = category;
@@ -942,12 +1058,17 @@ namespace OneColumnEncoder.ViewModels
             return $"{FormatMb((long)Math.Round(startBytes))}-{FormatMb((long)Math.Round(endBytes))}";
         }
 
+        /// <summary>
+        /// Updates the footer elapsed/remaining/completion time display.
+        /// Estimates remaining time by linear extrapolation from progress percentage.
+        /// </summary>
         private void UpdateFooterTimes(bool final)
         {
             TimeSpan elapsed = _stopwatch.Elapsed;
             FooterColumns[1].MainText = elapsed.ToString("hh\\:mm\\:ss", CultureInfo.InvariantCulture);
             if (ProgressValue > 0 && !final)
             {
+                // Linear extrapolation: total = elapsed / (progress/100)
                 double totalSeconds = elapsed.TotalSeconds / ProgressValue * 100d;
                 TimeSpan remaining = TimeSpan.FromSeconds(Math.Max(0d, totalSeconds - elapsed.TotalSeconds));
                 FooterColumns[2].MainText = remaining.ToString("hh\\:mm\\:ss", CultureInfo.InvariantCulture);
@@ -960,6 +1081,10 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
+        /// <summary>
+        /// Scans log text for percentage values (e.g. "56.3%") and returns the highest found.
+        /// Only returns values >= current (monotonic progress).
+        /// </summary>
         private static int InferProgress(int current, string log)
         {
             int found = current;
@@ -1014,6 +1139,10 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(EstimatedSizeLabel));
         }
 
+        /// <summary>
+        /// Estimates final output size by linearly extrapolating current output size
+        /// based on progress ratio (frame-based if available, otherwise percentage-based).
+        /// </summary>
         private string GetEstimatedOutputSizeText()
         {
             double progressRatio = GetProgressRatio();
@@ -1024,6 +1153,10 @@ namespace OneColumnEncoder.ViewModels
             return FormatGbValue((long)Math.Round(Math.Max(0d, estimatedBytes)));
         }
 
+        /// <summary>
+        /// Returns the progress ratio (0.0–1.0). Prefers frame-based ratio when total frames
+        /// are known; falls back to percentage-based progress value.
+        /// </summary>
         private double GetProgressRatio()
         {
             if (_totalFrames is > 0 && _writtenFrames > 0)
@@ -1085,6 +1218,11 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
+        /// <summary>
+        /// Sums a value across an entire process tree (root + all descendants).
+        /// Uses the selector function to extract the metric (e.g. working set, page faults)
+        /// from each process. Silently returns 0 if any process has exited or is inaccessible.
+        /// </summary>
         private static long SumProcessTreeValue(Process? rootProcess, Func<Process, long> selector, Dictionary<int, List<int>>? childMap = null)
         {
             if (rootProcess == null) return 0L;
@@ -1117,6 +1255,11 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
+        /// <summary>
+        /// BFS traversal to collect all descendant process IDs from a root process.
+        /// Uses the pre-built child map to avoid repeated Win32 calls.
+        /// Returns the root ID plus all descendants.
+        /// </summary>
         private static HashSet<int> GetProcessTreeIds(int rootProcessId, Dictionary<int, List<int>>? childMap = null)
         {
             Dictionary<int, List<int>> childIdsByParentId = childMap ?? GetChildProcessMap();
@@ -1137,6 +1280,11 @@ namespace OneColumnEncoder.ViewModels
             return processIds;
         }
 
+        /// <summary>
+        /// Builds a parent→children process map by enumerating all running processes
+        /// via Win32 CreateToolhelp32Snapshot. Used to calculate working set and page faults
+        /// across the entire process tree (e.g. when an encoder spawns helper processes).
+        /// </summary>
         private static Dictionary<int, List<int>> GetChildProcessMap()
         {
             Dictionary<int, List<int>> childIdsByParentId = [];
@@ -1197,6 +1345,11 @@ namespace OneColumnEncoder.ViewModels
             return FileSizeMetricRegex().Replace(template, value);
         }
 
+        /// <summary>
+        /// Reads system-wide memory statistics from Win32 APIs.
+        /// First tries GlobalMemoryStatusEx, then refines with GetPerformanceInfo
+        /// (which provides system cache and more accurate page-aligned values).
+        /// </summary>
         private static MemoryStatusSnapshot GetMemoryStatusSnapshot()
         {
             if (!OperatingSystem.IsWindows()) return default;
@@ -1211,10 +1364,11 @@ namespace OneColumnEncoder.ViewModels
             long totalPhysicalBytes = ToNonNegativeLong(memoryStatus.ullTotalPhys);
             long availablePhysicalBytes = Math.Min(totalPhysicalBytes, ToNonNegativeLong(memoryStatus.ullAvailPhys));
             long commitLimitBytes = ToNonNegativeLong(memoryStatus.ullTotalPageFile);
-            long commitAvailableBytes = Math.Min(commitLimitBytes, ToNonNegativeLong(memoryStatus.ullAvailPageFile));
+            long commitAvailableBytes = ToNonNegativeLong(memoryStatus.ullAvailPageFile);
             long committedBytes = Math.Max(0, commitLimitBytes - commitAvailableBytes);
             long systemCacheBytes = 0;
 
+            // Try to get more detailed info from psapi (includes system cache)
             PERFORMANCE_INFORMATION performanceInfo = new()
             {
                 cb = (uint)Marshal.SizeOf<PERFORMANCE_INFORMATION>()
@@ -1345,8 +1499,13 @@ namespace OneColumnEncoder.ViewModels
             public long UsedPhysicalBytes => Math.Max(0, TotalPhysicalBytes - AvailablePhysicalBytes);
         }
 
+        /// <summary>
+        /// Resets all runtime statistics (peaks, progress, written frames) back to zero.
+        /// Triggers UI refresh for affected labels.
+        /// </summary>
         private void ResetStats()
         {
+            // Touch BottomText to trigger binding refresh even if value hasn't changed
             foreach (ColumnTextItemM item in MetricColumns)
                 item.BottomText = item.BottomText;
             _lastMemoryStatsUpdate = DateTime.MinValue;
@@ -1360,6 +1519,10 @@ namespace OneColumnEncoder.ViewModels
             StatusText = Lang.ResetUsageStatusText;
         }
 
+        /// <summary>
+        /// Gracefully interrupts the upstream decoder by closing its main window and stdout stream.
+        /// Runs on a background thread to avoid blocking the UI.
+        /// </summary>
         private void TryInterruptUpstream()
         {
             _userInterruptRequested = true;
@@ -1380,6 +1543,11 @@ namespace OneColumnEncoder.ViewModels
             });
         }
 
+        /// <summary>
+        /// Interrupts the entire pipeline: encoder stdin (signals EOF to encoder),
+        /// then closes mux, encoder, upstream stdout, and upstream processes in order.
+        /// Runs on a background thread to avoid blocking the UI.
+        /// </summary>
         private void TryInterruptEncoder()
         {
             _userInterruptRequested = true;
@@ -1433,6 +1601,9 @@ namespace OneColumnEncoder.ViewModels
             FinishButtons.B5_5IsEnabled = true;
         }
 
+        /// <summary>
+        /// Opens the output directory in Windows Explorer.
+        /// </summary>
         private void OpenOutputDirectory()
         {
             string? directory = Path.GetDirectoryName(_request.OutputPath);
@@ -1440,6 +1611,9 @@ namespace OneColumnEncoder.ViewModels
             Process.Start(new ProcessStartInfo { FileName = directory, UseShellExecute = true });
         }
 
+        /// <summary>
+        /// Saves log text to a file in the output directory.
+        /// </summary>
         private void SaveText(string text, string fileName)
         {
             if (string.IsNullOrEmpty(text)) return;
@@ -1449,6 +1623,9 @@ namespace OneColumnEncoder.ViewModels
             File.WriteAllText(path, text, Encoding.UTF8);
         }
 
+        /// <summary>
+        /// Cycles log font size between 10, 12, and 14pt.
+        /// </summary>
         private void RotateLogFontSize()
         {
             LogFontSize = LogFontSize switch
@@ -1459,6 +1636,10 @@ namespace OneColumnEncoder.ViewModels
             };
         }
 
+        /// <summary>
+        /// Combines upstream and downstream stderr logs into a single string.
+        /// Used for sending as SMTP notification body.
+        /// </summary>
         private string GetCombinedOutput()
         {
             lock (_logLock)
@@ -1467,6 +1648,10 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
+        /// <summary>
+        /// Sends an SMTP email notification with the encoding result (success/failure, duration, logs).
+        /// Silently catches exceptions and logs them to the downstream stderr report.
+        /// </summary>
         private async Task TrySendNotificationAsync(bool success, string processOutput)
         {
             try
@@ -1486,6 +1671,10 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
+        /// <summary>
+        /// Formats the rate control display text (e.g. "CRF 18" or "ABR 8 Mbps")
+        /// based on the encoder type and configuration.
+        /// </summary>
         private string GetRateControlText()
         {
             EncoderConfM conf = _request.EncoderConf;
@@ -1499,6 +1688,9 @@ namespace OneColumnEncoder.ViewModels
             };
         }
 
+        /// <summary>
+        /// Formats the encoder preset/mode display text (e.g. "x264 Mode medium").
+        /// </summary>
         private string GetPresetText()
         {
             EncoderConfM conf = _request.EncoderConf;
@@ -1522,6 +1714,11 @@ namespace OneColumnEncoder.ViewModels
             StatusText = Lang.ReadyToStartText;
         }
 
+        /// <summary>
+        /// Refreshes all localised strings when the UI language changes.
+        /// Updates button labels, footer columns, and fires PropertyChanged
+        /// for all bindable string properties so the UI re-renders.
+        /// </summary>
         private void RefreshLanguageBindings()
         {
             Lang = new EncodingMonitorModalLangProviderM(UILangProviderM.Current.LanguageCode);
@@ -1573,6 +1770,9 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(SampleIntervalTickLabels));
         }
 
+        /// <summary>
+        /// Cleans up timer, event subscriptions, and cancellation token on disposal.
+        /// </summary>
         public override void Dispose()
         {
             _timer.Stop();
@@ -1597,6 +1797,11 @@ namespace OneColumnEncoder.ViewModels
 
         private readonly record struct LogFoldEntry(string Line, int RepeatCount);
 
+        /// <summary>
+        /// Tracks unique log lines and their repeat counts for log folding.
+        /// When a line repeats, its count is incremented instead of adding a new line,
+        /// keeping the log compact (e.g. "frame= 100 (x5,432)").
+        /// </summary>
         private sealed class LogFoldState
         {
             public List<LogFoldEntry> Entries { get; } = [];
