@@ -947,15 +947,11 @@ namespace OneColumnEncoder.ViewModels
             return (now - _lastMemoryStatsUpdate).TotalSeconds >= intervalSeconds;
         }
 
-        private void UpdateProgressDetails()
-        {
+        private void UpdateProgressDetails() =>
             SetCurrentOutputSizeBytes(TryGetOutputSizeBytes());
-        }
 
-        private void UpdateMemoryRangeBlocks()
-        {
+        private void UpdateMemoryRangeBlocks() =>
             UpdateMemoryRangeBlocks(MemoryRangeBlocks, _lastMemoryStatus);
-        }
 
         /// <summary>
         /// Maps physical memory into a grid of visual blocks (MemoryRangeBlockCount = 128).

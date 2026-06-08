@@ -74,13 +74,14 @@ public static partial class EncodingPipelineH
         string encodedVideoPath = ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath);
         string outputPath = ResolveMuxOutputPath(request.OutputPath);
         string framerateValue = GetMuxFramerateValue(request.SourceFfprobeJson);
+        string videoTimescaleArgs = GetMuxVideoTrackTimescaleArgs(request.SourceFfprobeJson);
         string streamMapArgs = BuildStreamMapArgs(request.SourceFfprobeJson);
         string args = JoinArgs(
             "-hide_banner -y",
             string.IsNullOrWhiteSpace(framerateValue) ? null : $"-f hevc -framerate {framerateValue}",
             $"-i {Quote(encodedVideoPath)}",
             $"-i {Quote(request.SourceVideoPath)}",
-            $"-map 0:v:0 {streamMapArgs} -map_metadata 1 -map_chapters 1 -c:v copy -bsf:v setts=pts=N*DURATION -c:a copy -c:s copy",
+            $"-map 0:v:0 {streamMapArgs} -map_metadata 1 -map_chapters 1 -c:v copy -bsf:v setts=pts=N*DURATION -c:a copy -c:s copy {videoTimescaleArgs}",
             Quote(outputPath));
 
         return new($"{Quote(request.FfmpegPath)} {args}", args, encodedVideoPath, outputPath);
@@ -904,6 +905,32 @@ public static partial class EncodingPipelineH
             return TestFrameRateValid(frameRate) ? frameRate! : string.Empty;
         }
         catch { return string.Empty; }
+    }
+
+    private static string GetMuxVideoTrackTimescaleArgs(string? sourceFfprobeJson) =>
+        $"-video_track_timescale {GetSourceVideoTimescale(sourceFfprobeJson)}";
+
+    private static long GetSourceVideoTimescale(string? sourceFfprobeJson)
+    {
+        const long fallbackTimescale = 90000;
+        if (string.IsNullOrWhiteSpace(sourceFfprobeJson)) return fallbackTimescale;
+
+        try
+        {
+            using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
+            if (!TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return fallbackTimescale;
+
+            string? timeBase = TryGetString(stream, "time_base");
+            if (string.IsNullOrWhiteSpace(timeBase)) return fallbackTimescale;
+
+            string[] parts = timeBase.Trim().Split('/');
+            return parts.Length == 2 &&
+                   long.TryParse(parts[1], NumberStyles.None, CultureInfo.InvariantCulture, out long denominator) &&
+                   denominator > 0
+                ? denominator
+                : fallbackTimescale;
+        }
+        catch { return fallbackTimescale; }
     }
 
     private static bool TestFrameRateValid(string? frameRate)
