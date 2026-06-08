@@ -66,7 +66,6 @@ This software supports multiple languages, but English text screenshots are used
 - **Supported:** English, Simplified Chinese, Traditional Chinese
 - To provide a translation, please fork this repository, add a new language entrie in `Models/XxxLangProviderM`, and submit a pull request
   - Translation of the README is not required, but it would be great if you can do that
-- The language provider model is straightforward, and you can refer to the existing implementations
 
 ---
 

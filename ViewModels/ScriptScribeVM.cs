@@ -126,11 +126,12 @@ namespace OneColumnEncoder.ViewModels
         }
         private void SaveAsFile()
         {
+            string sourcePath = _getSourcePath();
             string script = SelectedTabIndex == 0
                 ? ScriptTemplateH.BuildAvsExportScript(
-                    _getSourcePath(), AvsPrefix, AvsPrefix2, AvsSuffix, AvsUserInput)
+                    sourcePath, AvsPrefix, AvsPrefix2, AvsSuffix, AvsUserInput)
                 : ScriptTemplateH.BuildVpyExportScript(
-                    _getSourcePath(), VpyPrefix, VpyPrefix2, VpySuffix, VpyUserInput);
+                    sourcePath, VpyPrefix, VpyPrefix2, VpySuffix, VpyUserInput);
 
             SaveFileDialog dialog = new()
             {
@@ -138,7 +139,7 @@ namespace OneColumnEncoder.ViewModels
                 Filter = SelectedTabIndex == 0
                     ? UILangProviderM.Current["SrcScribe.FilterAvs"]
                     : UILangProviderM.Current["SrcScribe.FilterVpy"],
-                FileName = SelectedTabIndex == 0 ? "script.avs" : "script.vpy"
+                FileName = GetScriptFileName(sourcePath, SelectedTabIndex == 0 ? ".avs" : ".vpy")
             };
 
             if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
@@ -159,7 +160,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 Title = UILangProviderM.Current["SrcScribe.SavingWindowTitle"],
                 Filter = UILangProviderM.Current["SrcScribe.FilterAvs"],
-                FileName = "script.avs"
+                FileName = GetScriptFileName(sourcePath, ".avs")
             };
 
             if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
@@ -188,6 +189,9 @@ namespace OneColumnEncoder.ViewModels
                 return false;
             }
         }
+
+        private static string GetScriptFileName(string sourcePath, string extension) =>
+            Path.GetFileNameWithoutExtension(sourcePath) + extension;
 
         private bool TryWriteScripts(string avsPath, string avsScript, string vpyPath, string vpyScript)
         {

@@ -46,7 +46,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
             {
                 Title = UILangProviderM.Current["SrcScribe.SavingWindowTitle"],
                 Filter = "AviSynth Script (*.avs)|*.avs", // Script files (*.avs, *.vpy)|*.avs;*.vpy
-                FileName = "script.avs"
+                FileName = Path.GetFileNameWithoutExtension(sourcePath) + ".avs"
             };
 
             if (dialog.ShowDialog() != true) return;
