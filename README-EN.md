@@ -37,7 +37,14 @@ This software supports multiple languages, but English text screenshots are used
 
 <p align="center"><img src="WireframeMockups/Actual-Binary-Link-Position.png" alt="Actual link is on the right side" width="600"></p>
 
-**Supported downstream pipeline programs (encoders)**:
+**Supported pipe upstream programs (decoding and filtering tools)**:
+- ffmpeg
+- vspipe (supports API 3.0 and 4.0 automatic recognition)
+- avs2yuv
+- avs2pipemod
+- SVFI
+
+**Supported pipe downstream programs (encoders)**:
 - x264
 - x265
 - SVT-AV1
