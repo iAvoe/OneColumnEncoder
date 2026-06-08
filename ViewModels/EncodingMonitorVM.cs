@@ -492,7 +492,8 @@ namespace OneColumnEncoder.ViewModels
                     Arguments = muxCommand.Arguments,
                     UseShellExecute = false,
                     CreateNoWindow = true,
-                    RedirectStandardError = true
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true
                 },
                 EnableRaisingEvents = true
             };
@@ -501,13 +502,14 @@ namespace OneColumnEncoder.ViewModels
             mux.Start();
             // Show mux stderr in upstream log since its more intuitive
             Task muxStderrTask = ReadStreamAsync(mux.StandardError, ProcessLogKind.UpstreamStderr, cancellationToken);
+            Task muxStdoutTask = ReadStreamAsync(mux.StandardOutput, ProcessLogKind.UpstreamStderr, cancellationToken);
             await mux.WaitForExitAsync(cancellationToken);
-            await muxStderrTask;
+            await Task.WhenAll(muxStderrTask, muxStdoutTask);
             _exitCode = mux.ExitCode;
             _muxProcess = null;
 
             if (mux.ExitCode == 0) return true;
-            EnqueueProcessLine(ProcessLogKind.UpstreamStderr, $"Mux failed with exit code {mux.ExitCode}.");
+            EnqueueProcessLine(ProcessLogKind.UpstreamStderr, $"Mux failed with exit code {mux.ExitCode}. See ffmpeg output above for details.");
             return false;
         }
 

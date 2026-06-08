@@ -80,7 +80,7 @@ public static partial class EncodingPipelineH
             frameRateArgs,
             $"-i {Quote(encodedVideoPath)}",
             $"-i {Quote(request.SourceVideoPath)}",
-            $"-map 0:v:0 {streamMapArgs} -map_metadata 1 -map_chapters 1 -c copy",
+            $"-map 0:v:0 {streamMapArgs} -map_metadata 1 -map_chapters 1 -c:v copy -c:a copy -c:s copy -c:t copy -c:d copy",
             Quote(outputPath));
 
         return new($"{Quote(request.FfmpegPath)} {args}", args, encodedVideoPath, outputPath);
@@ -89,13 +89,13 @@ public static partial class EncodingPipelineH
     private static string BuildStreamMapArgs(string? sourceFfprobeJson)
     {
         if (string.IsNullOrWhiteSpace(sourceFfprobeJson))
-            return "-map 1:a? -map 1:s? -map 1:t?";
+            return "-map 1:a? -map 1:s? -map 1:t? -map 1:d?";
 
         try
         {
             using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
             if (!document.RootElement.TryGetProperty("streams", out JsonElement streams) || streams.ValueKind != JsonValueKind.Array)
-                return "-map 1:a? -map 1:s? -map 1:t?";
+                return "-map 1:a? -map 1:s? -map 1:t? -map 1:d?";
 
             var nonVideoStreams = new List<string>();
             foreach (JsonElement stream in streams.EnumerateArray())
@@ -111,11 +111,11 @@ public static partial class EncodingPipelineH
             if (nonVideoStreams.Count > 0)
                 return string.Join(" ", nonVideoStreams);
 
-            return "-map 1:a? -map 1:s? -map 1:t?";
+            return "-map 1:a? -map 1:s? -map 1:t? -map 1:d?";
         }
         catch
         {
-            return "-map 1:a? -map 1:s? -map 1:t?";
+            return "-map 1:a? -map 1:s? -map 1:t? -map 1:d?";
         }
     }
 
