@@ -77,11 +77,11 @@ public static partial class EncodingPipelineH
         string videoTimescaleArgs = GetMuxVideoTrackTimescaleArgs(request.SourceFfprobeJson);
         string streamMapArgs = BuildStreamMapArgs(request.SourceFfprobeJson);
         string args = JoinArgs(
-            "-hide_banner -y -fflags +genpts",
+            "-hide_banner -y",
             frameRateArgs,
             $"-i {Quote(encodedVideoPath)}",
             $"-i {Quote(request.SourceVideoPath)}",
-            $"-map 0:v:0 {streamMapArgs} -map_metadata 1 -map_chapters 1 -c:v copy -c:a copy -c:s copy {videoTimescaleArgs}",
+            $"-map 0:v:0 {streamMapArgs} -map_metadata 1 -map_chapters 1 -c:v copy -c:a copy -c:s copy {videoTimescaleArgs} {frameRateArgs}",
             Quote(outputPath));
 
         return new($"{Quote(request.FfmpegPath)} {args}", args, encodedVideoPath, outputPath);
@@ -904,10 +904,7 @@ public static partial class EncodingPipelineH
             string? frameRate = TryGetFrameRateString(stream);
             return TestFrameRateValid(frameRate) ? $"-r {frameRate}" : string.Empty;
         }
-        catch
-        {
-            return string.Empty;
-        }
+        catch { return string.Empty; }
     }
 
     private static string GetMuxVideoTrackTimescaleArgs(string? sourceFfprobeJson) =>
