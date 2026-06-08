@@ -25,6 +25,7 @@ public class EncodingMonitorModalLangProviderM
             ["ArgsLabel"] = "Other preset name",
             ["SmallNoteText"] = "This program does not support progress quantization; interrupting will discard task progress.",
             ["EnableMuxText"] = "Multiplex after encoding (the 2nd part of commandline, ffmpeg required)",
+            ["MuxTimebaseHint"] = "Muxed output uses the same video timebase as the source so quality metrics can align frames correctly.",
             ["DistributionUpstreamLabel"] = "Upstream program",
             ["DistributionDownstreamLabel"] = "Downstream program",
             ["DistributionCacheLabel"] = "System cache",
@@ -94,6 +95,7 @@ public class EncodingMonitorModalLangProviderM
             ["ArgsLabel"] = "其他参数预设名",
             ["SmallNoteText"] = "本程序不支持进度量化；中断将丢弃任务进度。",
             ["EnableMuxText"] = "压制完成后封装视频流（先前命令行的第二部分，需导入 ffmpeg）",
+            ["MuxTimebaseHint"] = "封装结果会使用与源视频相同的时间基，以便画质指标跑分时正确对齐帧。",
             ["DistributionUpstreamLabel"] = "上游程序",
             ["DistributionDownstreamLabel"] = "下游程序",
             ["DistributionCacheLabel"] = "系统缓存",
@@ -163,6 +165,7 @@ public class EncodingMonitorModalLangProviderM
             ["ArgsLabel"] = "其他參數預設名",
             ["SmallNoteText"] = "本程式不支援進度量化；中斷將丟棄任務進度。",
             ["EnableMuxText"] = "壓製完成後封裝影片串流（先前命令行的第二部分，需導入 ffmpeg）",
+            ["MuxTimebaseHint"] = "封裝結果會使用與來源影片相同的時間基，以便畫質指標跑分時正確對齊幀。",
             ["DistributionUpstreamLabel"] = "上游程式",
             ["DistributionDownstreamLabel"] = "下游程式",
             ["DistributionCacheLabel"] = "系統快取",
@@ -231,6 +234,7 @@ public class EncodingMonitorModalLangProviderM
     public string ArgsLabel { get; }
     public string SmallNoteText { get; }
     public string EnableMuxText { get; }
+    public string MuxTimebaseHint { get; }
     public string DistributionUpstreamLabel { get; }
     public string DistributionDownstreamLabel { get; }
     public string DistributionCacheLabel { get; }
@@ -305,6 +309,7 @@ public class EncodingMonitorModalLangProviderM
         ArgsLabel = _d["ArgsLabel"];
         SmallNoteText = _d["SmallNoteText"];
         EnableMuxText = _d["EnableMuxText"];
+        MuxTimebaseHint = _d["MuxTimebaseHint"];
         DistributionUpstreamLabel = _d["DistributionUpstreamLabel"];
         DistributionDownstreamLabel = _d["DistributionDownstreamLabel"];
         DistributionCacheLabel = _d["DistributionCacheLabel"];

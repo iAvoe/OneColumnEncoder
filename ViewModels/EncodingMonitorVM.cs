@@ -91,6 +91,7 @@ namespace OneColumnEncoder.ViewModels
         public string ArgsLabel => Lang.ArgsLabel;
         public string SmallNoteText => Lang.SmallNoteText;
         public string EnableMuxText => Lang.EnableMuxText;
+        public string MuxTimebaseHint => Lang.MuxTimebaseHint;
         public bool CanMux => !_isSample && _command.MuxCommand != null;
         public string DistributionUpstreamLabel => Lang.DistributionUpstreamLabel;
         public string DistributionDownstreamLabel => Lang.DistributionDownstreamLabel;
@@ -1762,6 +1763,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(ArgsLabel));
             OnPropertyChanged(nameof(SmallNoteText));
             OnPropertyChanged(nameof(EnableMuxText));
+            OnPropertyChanged(nameof(MuxTimebaseHint));
             OnPropertyChanged(nameof(DistributionUpstreamLabel));
             OnPropertyChanged(nameof(DistributionDownstreamLabel));
             OnPropertyChanged(nameof(DistributionCacheLabel));

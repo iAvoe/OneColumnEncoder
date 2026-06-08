@@ -242,6 +242,9 @@
                       HorizontalAlignment="Left"
                       VerticalAlignment="Center"
                       Margin="0 10 0 0" />
+            <comps:HintPanel Text="{Binding MuxTimebaseHint}"
+                             HintBrush="{StaticResource GlobalSecondary}"
+                             Margin="0 3 0 0" />
             <comps:FiveButtonGroup Margin="0 15 0 0"
                                     DataContext="{Binding FinishButtons}"
                                    ButtonHeight="30"
