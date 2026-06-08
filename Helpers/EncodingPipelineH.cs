@@ -66,6 +66,25 @@ public static partial class EncodingPipelineH
         return new(commandLine, upstreamArgs, encoderArgs, BuildMuxCommand(request));
     }
 
+    private static string? GetMuxInputFormatArgs(string encoderExeName, string? framerateValue)
+    {
+        string? fmt = encoderExeName.ToLowerInvariant() switch
+        {
+            "x265.exe" => "hevc",
+            "svtav1encapp.exe" => "ivf",
+            _ => null
+        };
+
+        if (!string.IsNullOrWhiteSpace(framerateValue))
+        {
+            if (fmt == "hevc") return $"-f hevc -framerate {framerateValue}";
+            if (fmt != null) return $"-f {fmt}";
+            return $"-framerate {framerateValue}";
+        }
+
+        return fmt != null ? $"-f {fmt}" : null;
+    }
+
     private static EncodingMuxCommand? BuildMuxCommand(EncodingPipelineRequest request)
     {
         if (request.Clip != null) return null;
@@ -76,9 +95,10 @@ public static partial class EncodingPipelineH
         string framerateValue = GetMuxFramerateValue(request.SourceFfprobeJson);
         string videoTimescaleArgs = GetMuxVideoTrackTimescaleArgs(request.SourceFfprobeJson);
         string streamMapArgs = BuildStreamMapArgs(request.SourceFfprobeJson);
+        string? inputFormatArgs = GetMuxInputFormatArgs(request.EncoderExeName, framerateValue);
         string args = JoinArgs(
             "-hide_banner -y",
-            string.IsNullOrWhiteSpace(framerateValue) ? null : $"-f hevc -framerate {framerateValue}",
+            inputFormatArgs,
             $"-i {Quote(encodedVideoPath)}",
             $"-i {Quote(request.SourceVideoPath)}",
             $"-map 0:v:0 {streamMapArgs} -map_metadata 1 -map_chapters 1 -c:v copy -bsf:v setts=pts=N*DURATION -c:a copy -c:s copy {videoTimescaleArgs}",
