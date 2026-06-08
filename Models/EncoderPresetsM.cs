@@ -44,11 +44,11 @@ namespace OneColumnEncoder.Models
         public static IReadOnlyList<EncoderPresetItem> SvtAv1Presets { get; } =
         [
             new(0, "PeakQualityText",
-                "--preset 2 --scd 1 --enable-tf 2 --tf-strength 2 $crfParam --enable-qm 1 --enable-variance-boost 1 --variance-boost-curve 2 --variance-boost-strength 2 --variance-octile 2 --sharpness 6 --progress 1 $deblock"),
+                "--preset 2 --scd 1 --enable-tf 2 --tf-strength 2 $crfParam --enable-qm 1 --enable-variance-boost 1 --variance-boost-curve 2 --variance-boost-strength 2 --variance-octile 2 --sharpness 6 --progress 2 $deblock"),
             new(1, "CompressionOptText",
-                "--preset 2 --scd 1 --enable-tf 2 --tf-strength 2 $crfParam --sharpness 4 --progress 1 $deblock"),
+                "--preset 2 --scd 1 --enable-tf 2 --tf-strength 2 $crfParam --sharpness 4 --progress 2 $deblock"),
             new(2, "SpeedOptimizedText",
-                "--preset 2 --scd 1 --scm 0 --enable-tf 2 --tf-strength 2 $crfParam --tune 0 --enable-variance-boost 1 --variance-boost-curve 2 --variance-boost-strength 2 --variance-octile 2 --sharpness 4 --progress 1"),
+                "--preset 2 --scd 1 --scm 0 --enable-tf 2 --tf-strength 2 $crfParam --tune 0 --enable-variance-boost 1 --variance-boost-curve 2 --variance-boost-strength 2 --variance-octile 2 --sharpness 4 --progress 2"),
         ];
 
         public static IReadOnlyList<ThirdPartyParamDef> ThirdPartyParams { get; } =
