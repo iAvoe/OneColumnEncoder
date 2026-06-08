@@ -6,6 +6,8 @@ A next-gen smart video encoding auxiliary tool based on .NET 9/WPF, revolves aro
 
 The current code works but lacks testing, which is releasing as beta.
 
+<p align="center"><img src="WireframeMockups/logo.png" alt="Logo" width="200"></p>
+
 ## Gallery
 
 This software supports multiple languages, but English text screenshots are used here to reduce the number of images. Some UI elements or text in the images may be outdated, but the overall layout and functional area divisions remain applicable. Please refer to the actual version you are using.

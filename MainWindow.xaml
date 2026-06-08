@@ -10,7 +10,8 @@
         Title="1cenc"
         Width="920"
         Height="1220"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Icon="favicon.ico">
     <!-- Horizontal scrollbar visibility prevents over stretching on ItemCards implicitly -->
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Disabled">
