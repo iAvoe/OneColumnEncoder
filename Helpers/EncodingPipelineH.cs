@@ -80,7 +80,7 @@ public static partial class EncodingPipelineH
             frameRateArgs,
             $"-i {Quote(encodedVideoPath)}",
             $"-i {Quote(request.SourceVideoPath)}",
-            $"-map 0:v:0 {streamMapArgs} -map_metadata 1 -map_chapters 1 -c:v copy -c:a copy -c:s copy -c:t copy -c:d copy",
+            $"-map 0:v:0 {streamMapArgs} -map_metadata 1 -map_chapters 1 -c:v copy -c:a copy -c:s copy",
             Quote(outputPath));
 
         return new($"{Quote(request.FfmpegPath)} {args}", args, encodedVideoPath, outputPath);
@@ -89,13 +89,13 @@ public static partial class EncodingPipelineH
     private static string BuildStreamMapArgs(string? sourceFfprobeJson)
     {
         if (string.IsNullOrWhiteSpace(sourceFfprobeJson))
-            return "-map 1:a? -map 1:s? -map 1:t? -map 1:d?";
+            return "-map 1:a? -map 1:s?";
 
         try
         {
             using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
             if (!document.RootElement.TryGetProperty("streams", out JsonElement streams) || streams.ValueKind != JsonValueKind.Array)
-                return "-map 1:a? -map 1:s? -map 1:t? -map 1:d?";
+                return "-map 1:a? -map 1:s?";
 
             var nonVideoStreams = new List<string>();
             foreach (JsonElement stream in streams.EnumerateArray())
@@ -103,6 +103,8 @@ public static partial class EncodingPipelineH
                 string? codecType = TryGetString(stream, "codec_type");
                 if (string.IsNullOrWhiteSpace(codecType)) continue;
                 if (codecType.Equals("video", StringComparison.OrdinalIgnoreCase)) continue;
+                if (codecType.Equals("attachment", StringComparison.OrdinalIgnoreCase)) continue;
+                if (codecType.Equals("data", StringComparison.OrdinalIgnoreCase)) continue;
 
                 if (!TryGetInt(stream, "index", out int streamIndex)) continue;
                 nonVideoStreams.Add($"-map 1:{streamIndex}");
@@ -111,11 +113,11 @@ public static partial class EncodingPipelineH
             if (nonVideoStreams.Count > 0)
                 return string.Join(" ", nonVideoStreams);
 
-            return "-map 1:a? -map 1:s? -map 1:t? -map 1:d?";
+            return "-map 1:a? -map 1:s?";
         }
         catch
         {
-            return "-map 1:a? -map 1:s? -map 1:t? -map 1:d?";
+            return "-map 1:a? -map 1:s?";
         }
     }
 
