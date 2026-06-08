@@ -66,6 +66,8 @@ public static class UICaptionProviderM
         public static string P4Title => UILangProviderM.Current["EncInspect.P4Title"];
         public static string P5Text => UILangProviderM.Current["EncInspect.P5Text"];
         public static string P5Title => UILangProviderM.Current["EncInspect.P5Title"];
+        public static string P6Text => UILangProviderM.Current["EncInspect.P6Text"];
+        public static string P6Title => UILangProviderM.Current["EncInspect.P6Title"];
     }
 
     public static class AppConf

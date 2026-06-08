@@ -40,6 +40,7 @@ namespace OneColumnEncoder.Models
         [
             new(UILangProviderM.Current["Checklist.Enc1.OffGrid"]),
             new(UILangProviderM.Current["Checklist.Enc1.DiskSpace"]),
+            new(UILangProviderM.Current["Checklist.Enc1.NumaCpuLoad"]),
         ];
 
         public static List<ChecklistItemDefinitionM> GetEncodeChecklist2() =>

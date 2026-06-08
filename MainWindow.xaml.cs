@@ -1,16 +1,44 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using OneColumnEncoder.Helpers;
 
 namespace OneColumnEncoder
 {
     public partial class MainWindow : AdaptiveWindow
     {
+        private DateTime _lastNumaCpuTrigger = DateTime.MinValue;
+        private static readonly TimeSpan NumaCpuTriggerInterval = TimeSpan.FromMilliseconds(500);
+
         public MainWindow()
         {
             InitializeComponent();
             Closing += OnClosing;
+            PreviewMouseDown += OnPreviewMouseDown;
+            PreviewKeyDown += OnPreviewKeyDown;
+        }
+
+        private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                TriggerNumaCpuCheck();
+        }
+
+        private void OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            TriggerNumaCpuCheck();
+        }
+
+        private void TriggerNumaCpuCheck()
+        {
+            if (DateTime.UtcNow - _lastNumaCpuTrigger < NumaCpuTriggerInterval)
+                return;
+            _lastNumaCpuTrigger = DateTime.UtcNow;
+
+            if (DataContext is ViewModels.MainVM vm)
+                vm.RefreshNumaCpuCheck();
         }
 
         private void OnClosing(object? sender, CancelEventArgs e)

@@ -8,6 +8,7 @@ namespace OneColumnEncoder.ViewModels.Cards
     {
         private const int OffGridChecklistIdx = 0;
         private const int DiskSpaceChecklistIdx = 1;
+        private const int NumaCpuLoadChecklistIdx = 2;
 
         private const int WritePermissionChecklistIdx = 0;
         private const int OverwriteChecklistIdx = 1;
@@ -68,6 +69,8 @@ namespace OneColumnEncoder.ViewModels.Cards
             string? outputDir = GetOutputDirectoryFunc?.Invoke();
             string? sourcePath = GetSourceVideoFilePathFunc?.Invoke();
             SetChecklist1(DiskSpaceChecklistIdx, EvaluateDiskSpace(outputDir, sourcePath));
+
+            SetChecklist1(NumaCpuLoadChecklistIdx, EncTermsCheckH.EvaluateNumaNodeCpuUsage());
         }
 
         private static StatusType EvaluateDiskSpace(string? outputDir, string? sourcePath)
@@ -124,6 +127,7 @@ namespace OneColumnEncoder.ViewModels.Cards
         {
             OffGridChecklistIdx => UICaptionProviderM.EncInspect.P1Text,
             DiskSpaceChecklistIdx => UICaptionProviderM.EncInspect.P2Text,
+            NumaCpuLoadChecklistIdx => UICaptionProviderM.EncInspect.P6Text,
             _ => UICaptionProviderM.EncInspect.InfoMsg,
         };
 
@@ -131,6 +135,7 @@ namespace OneColumnEncoder.ViewModels.Cards
         {
             OffGridChecklistIdx => UICaptionProviderM.EncInspect.P1Title,
             DiskSpaceChecklistIdx => UICaptionProviderM.EncInspect.P2Title,
+            NumaCpuLoadChecklistIdx => UICaptionProviderM.EncInspect.P6Title,
             _ => "",
         };
 
@@ -155,7 +160,7 @@ namespace OneColumnEncoder.ViewModels.Cards
             get
             {
                 var lines = new System.Collections.Generic.List<string>();
-                for (int i = 0; i < Checklist1.Count && i < 2; i++)
+                for (int i = 0; i < Checklist1.Count && i < 3; i++)
                 {
                     string title = GetChecklist1Title(i);
                     string text = GetChecklist1Description(i);

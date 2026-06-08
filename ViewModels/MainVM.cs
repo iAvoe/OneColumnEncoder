@@ -77,6 +77,7 @@ namespace OneColumnEncoder.ViewModels
         public static string SectionStartEncoding => UILangProviderM.Current["Section.StartEncoding"];
         public static string SVFIClipDisabledHintText => UILangProviderM.Current["Hint.SVFIClipDisabled"];
         public static string AnalyzeNeedsSourceText => UILangProviderM.Current["Hint.AnalyzeNeedsSource"];
+        public static string NumaCpuCheckHintText => UILangProviderM.Current["Hint.NumaCpuCheckTrigger"];
 
         // Disable UI when other modal opens
         private bool _isOverlayVisible;
@@ -538,6 +539,12 @@ namespace OneColumnEncoder.ViewModels
         }
 
         private void ReEvaluateAllChecks()
+        {
+            EncTermsCard.RunAllChecks();
+            UpdateEncStartButtonsState();
+        }
+
+        public void RefreshNumaCpuCheck()
         {
             EncTermsCard.RunAllChecks();
             UpdateEncStartButtonsState();

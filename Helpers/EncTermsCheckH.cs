@@ -1,15 +1,27 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using OneColumnEncoder.Models;
 
 namespace OneColumnEncoder.Helpers;
 
 public static partial class EncTermsCheckH
 {
+    private const double NumaCpuUsageHighThreshold = 0.5;
+    private static DateTime _lastNumaCpuCheck = DateTime.MinValue;
+    private static StatusType _lastNumaCpuStatus = StatusType.Waiting;
+    private static ulong _lastIdleTicks;
+    private static ulong _lastKernelTicks;
+    private static ulong _lastUserTicks;
+
     #region Win32 P/Invoke
     [LibraryImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool GetSystemPowerStatus(out SYSTEM_POWER_STATUS lpSystemPowerStatus);
+
+    [LibraryImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool GetSystemTimes(out ulong lpIdleTime, out ulong lpKernelTime, out ulong lpUserTime);
 
     [StructLayout(LayoutKind.Sequential)]
     private struct SYSTEM_POWER_STATUS
@@ -26,6 +38,47 @@ public static partial class EncTermsCheckH
     private const byte AC_LINE_UNKNOWN = 255;
     private const byte BATTERY_FLAG_NO_BATTERY = 128;
     private const byte BATTERY_FLAG_CHARGING = 8;
+    #endregion
+
+    #region NUMA node CPU usage check (on interaction trigger)
+
+    public static StatusType EvaluateNumaNodeCpuUsage()
+    {
+        if (!OperatingSystem.IsWindows())
+            return StatusType.Success;
+
+        if (!GetSystemTimes(out ulong idle, out ulong kernel, out ulong user))
+            return StatusType.Success;
+
+        if (_lastNumaCpuCheck == DateTime.MinValue)
+        {
+            _lastIdleTicks = idle;
+            _lastKernelTicks = kernel;
+            _lastUserTicks = user;
+            _lastNumaCpuCheck = DateTime.UtcNow;
+            return StatusType.Waiting;
+        }
+
+        ulong totalDelta = (kernel - _lastKernelTicks) + (user - _lastUserTicks);
+        ulong idleDelta = idle - _lastIdleTicks;
+
+        _lastIdleTicks = idle;
+        _lastKernelTicks = kernel;
+        _lastUserTicks = user;
+        _lastNumaCpuCheck = DateTime.UtcNow;
+
+        if (totalDelta == 0)
+            return _lastNumaCpuStatus;
+
+        double usage = (double)(totalDelta - idleDelta) / totalDelta;
+        usage = Math.Clamp(usage, 0, 1);
+
+        _lastNumaCpuStatus = usage > NumaCpuUsageHighThreshold
+            ? StatusType.Warning
+            : StatusType.Success;
+        return _lastNumaCpuStatus;
+    }
+
     #endregion
 
     #region Battery check with caching

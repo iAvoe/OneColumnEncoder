@@ -47,6 +47,8 @@ public class UILangProviderM
             ["EncInspect.P4Text"] = "Checks if the output file already exists, and dynamically make initiation of overwriting harder to prevent accidental data loss.",
             ["EncInspect.P5Title"] = "L-SMASH Plugin Check (Avs2Yuv)",
             ["EncInspect.P5Text"] = "Check if LSMASHSource.dll exists under C:\\Program Files (x86)\\AviSynth+\\plugins64+\\ (not libvslsmashsource.dll) to read source video frames",
+            ["EncInspect.P6Title"] = "NUMA Node CPU Load Check",
+            ["EncInspect.P6Text"] = "Checks whether the currently selected encoder NUMA node has low recent CPU load. High load is advisory only and does not block encoding.",
 
             ["Buttons.Add"] = "Add",
             ["Buttons.Replace"] = "Replace",
@@ -155,6 +157,7 @@ public class UILangProviderM
             // Checklist - Encoding Prerequisites 1 (Hardware)
             ["Checklist.Enc1.OffGrid"] = "Not off-grid / powering via battery",
             ["Checklist.Enc1.DiskSpace"] = "Sufficient disk space availability",
+            ["Checklist.Enc1.NumaCpuLoad"] = "Selected NUMA node CPU load is low",
 
             // Checklist - Encoding Prerequisites 2 (Software)
             ["Checklist.Enc2.OSFilename"] = "Output filename is valid for OS",
@@ -264,6 +267,7 @@ public class UILangProviderM
             // Hints
             ["Hint.SVFIClipDisabled"] = "OneLineShotArgs does not support sample clipping, disabling Run Sample.",
             ["Hint.AnalyzeNeedsSource"] = "Import a source video to run analysis",
+            ["Hint.NumaCpuCheckTrigger"] = "NUMA node CPU usage updates on mouse click or keyboard input event",
 
             // Heatmap
             ["Heatmap.Cold"] = "Cold",
@@ -331,6 +335,8 @@ public class UILangProviderM
             ["EncInspect.P4Text"] = "检查输出文件是否已存在，并动态根据被覆盖文件大小提高操作难度，避免意外数据丢失。",
             ["EncInspect.P5Title"] = "L-SMASH 插件检查（Avs2Yuv）",
             ["EncInspect.P5Text"] = "当选择 Avs2Yuv 上游时，验证 LSMASHSource.dll 是否存在于 C:\\Program Files (x86)\\AviSynth+\\plugins64+\\（不是 libvslsmashsource.dll）。不存在则无法解码，无法进行压制。",
+            ["EncInspect.P6Title"] = "NUMA 节点 CPU 占用检查",
+            ["EncInspect.P6Text"] = "检查当前选择给编码器使用的 NUMA 节点近期 CPU 占用是否较低。占用较高时仅作为提醒，不会阻塞开始压制。",
             ["Buttons.Add"] = "添加",
             ["Buttons.Replace"] = "替换",
             ["Buttons.Delete"] = "删除",
@@ -424,6 +430,7 @@ public class UILangProviderM
 
             ["Checklist.Enc1.OffGrid"] = "使用电池供电 / 离网",
             ["Checklist.Enc1.DiskSpace"] = "磁盘空间充足",
+            ["Checklist.Enc1.NumaCpuLoad"] = "当前 NUMA 节点的 CPU 占用低",
 
             ["Checklist.Enc2.OSFilename"] = "输出文件名兼容操作系统",
             ["Checklist.Enc2.FTPFilename"] = "输出文件名可能兼容 FTP（伪 UTF-8）",
@@ -526,6 +533,7 @@ public class UILangProviderM
             // Hints
             ["Hint.SVFIClipDisabled"] = "OneLineShotArgs 上游不支持取段打样，已禁用取段打样按钮。",
             ["Hint.AnalyzeNeedsSource"] = "分析需要导入视频源文件",
+            ["Hint.NumaCpuCheckTrigger"] = "NUMA 节点 CPU 占用检测会在鼠标点击或键盘输入事件时更新。",
 
             // Heatmap
             ["Heatmap.Cold"] = "冷",
@@ -593,6 +601,8 @@ public class UILangProviderM
             ["EncInspect.P4Text"] = "檢查輸出文件是否已存在，並動態根據被覆蓋檔案大小提高操作難度，避免意外數據遺失。",
             ["EncInspect.P5Title"] = "L-SMASH 插件檢查（Avs2Yuv）",
             ["EncInspect.P5Text"] = "當選擇 Avs2Yuv 上游時，驗證 LSMASHSource.dll 是否存在於 C:\\Program Files (x86)\\AviSynth+\\plugins64+\\（不是 libvslsmashsource.dll）。不存在則無法解碼，無法進行壓制。",
+            ["EncInspect.P6Title"] = "NUMA 節點 CPU 占用檢查",
+            ["EncInspect.P6Text"] = "檢查目前選擇給編碼器使用的 NUMA 節點近期 CPU 占用是否較低。占用較高時僅作為提醒，不會阻塞開始壓制。",
             ["Buttons.Add"] = "添加",
             ["Buttons.Replace"] = "替換",
             ["Buttons.Delete"] = "刪除",
@@ -686,6 +696,7 @@ public class UILangProviderM
 
             ["Checklist.Enc1.OffGrid"] = "使用電池供電 / 離網",
             ["Checklist.Enc1.DiskSpace"] = "磁碟空間充足",
+            ["Checklist.Enc1.NumaCpuLoad"] = "目前 NUMA 節點的 CPU 占用低",
 
             ["Checklist.Enc2.OSFilename"] = "輸出檔案名相容操作系統",
             ["Checklist.Enc2.FTPFilename"] = "輸出檔案名可能相容 FTP（偽 UTF-8）",
@@ -788,6 +799,7 @@ public class UILangProviderM
             // Hints
             ["Hint.SVFIClipDisabled"] = "OneLineShotArgs 上游不支援取段打樣，已禁用取段打樣按鈕。",
             ["Hint.AnalyzeNeedsSource"] = "分析需要導入影片源文件",
+            ["Hint.NumaCpuCheckTrigger"] = "NUMA 節點 CPU 占用檢測會在滑鼠點擊或鍵盤輸入事件時更新。",
 
             // Heatmap
             ["Heatmap.Cold"] = "冷",
