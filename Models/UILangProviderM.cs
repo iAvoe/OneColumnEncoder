@@ -203,7 +203,7 @@ public class UILangProviderM
             ["SrcScribe.CopyFull"] = "Copy Full Script",
             ["SrcScribe.CopyInOut"] = "Copy In/Out Section",
             ["SrcScribe.SaveAsFile"] = "Save as File",
-            ["SrcScribe.Cancel"] = "Cancel (Close Window Only)",
+            ["SrcScribe.Cancel"] = "Cancel (Discard)",
             ["SrcScribe.ApplyFfmpegOnly"] = "Confirm (ffmpeg Only)",
             ["SrcScribe.Confirm"] = "Confirm (Save & Imp. All)",
             ["SrcScribe.CopiedFull"] = "Full script copied to clipboard!",

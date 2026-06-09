@@ -139,7 +139,7 @@ namespace OneColumnEncoder.ViewModels
 
         public string VapourSynthResizeFilter =>
             IsScaleApplicable && (TargetWidth != SourceWidth || TargetHeight != SourceHeight)
-                ? $"src = resize.Bicubic(src, {TargetWidth}, {TargetHeight})"
+                ? $"src = core.resize.Bicubic(src, {TargetWidth}, {TargetHeight})"
                 : "N/A";
 
         public string AviSynthResizeFilter =>
