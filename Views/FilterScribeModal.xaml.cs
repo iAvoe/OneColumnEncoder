@@ -5,9 +5,9 @@ using OneColumnEncoder.Helpers;
 
 namespace OneColumnEncoder.Views
 {
-    public partial class ScriptScribeModal : AdaptiveWindow
+    public partial class FilterScribeModal : AdaptiveWindow
     {
-        public ScriptScribeModal()
+        public FilterScribeModal()
         {
             InitializeComponent();
         }

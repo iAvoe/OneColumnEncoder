@@ -235,7 +235,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <comps:TwoButtonGroup DataContext="{Binding ScriptScbButtons}"
+            <comps:TwoButtonGroup DataContext="{Binding FilterScbButtons}"
                                   ButtonHeight="30"
                                   Button1Command="{Binding Cmd1}"
                                   Button2Command="{Binding Cmd2}"

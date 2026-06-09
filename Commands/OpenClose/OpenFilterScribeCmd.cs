@@ -9,7 +9,7 @@ using System.Windows;
 
 namespace OneColumnEncoder.Commands.OpenClose
 {
-    public class OpenScriptScribeCmd(
+    public class OpenFilterScribeCmd(
         ModalNavS modalNavS,
         Func<string> getSourcePath,
         ToolItemCardVM avsItem,
@@ -22,7 +22,7 @@ namespace OneColumnEncoder.Commands.OpenClose
         public override void Execute(object? parameter)
         {
             var existingWindow = Application.Current.Windows
-                .OfType<ScriptScribeModal>()
+                .OfType<FilterScribeModal>()
                 .FirstOrDefault();
 
             if (existingWindow != null)
@@ -34,8 +34,8 @@ namespace OneColumnEncoder.Commands.OpenClose
             if (_modalNavS.IsOpen)
                 _modalNavS.Close();
 
-            ScriptScribeModal window = new();
-            ScriptScribeVM vm = new(_modalNavS, window.Close, getSourcePath, avsItem, vpyItem, afterImport, applyFfmpegFilterArgs, getSourceFfprobeJson());
+            FilterScribeModal window = new();
+            FilterScribeVM vm = new(_modalNavS, window.Close, getSourcePath, avsItem, vpyItem, afterImport, applyFfmpegFilterArgs, getSourceFfprobeJson());
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();

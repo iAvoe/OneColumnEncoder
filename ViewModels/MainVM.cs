@@ -38,7 +38,7 @@ namespace OneColumnEncoder.ViewModels
         public OpenUsagesCmd OpenUsages { get; }
         public OpenAppConfCmd OpenAppConf { get; }
         public OneClickScriptGenCmd OneClickScriptGen { get; }
-        public OpenScriptScribeCmd OpenScriptScribe { get; }
+        public OpenFilterScribeCmd OpenFilterScribe { get; }
         public CopyRawAnalysisCmd CopyRawAnalysis { get; } // Copy (ffprobe JSON) to clipboard
         public AnalyzeSrcVideoCmd AnalyzeSrcVideo { get; } // Maybe add mediaInfo analysis in future, but ffprobe alone will do
         public InspectSrcProblemsCmd InspectSrcProblems { get; }
@@ -49,7 +49,7 @@ namespace OneColumnEncoder.ViewModels
         public StartEncCmd StartEncode { get; }
         public SelectToolCmd SelectTool { get; } // ItemCard select on click
         public ButtonGroupVM OpenAppConfButtons { get; } // OpenUsages & OpenAppConf
-        public ButtonGroupVM ScriptScbButtons { get; } // OneClickScriptGen & OpenScriptScribe
+        public ButtonGroupVM FilterScbButtons { get; } // OneClickScriptGen & OpenFilterScribe
         public ButtonGroupVM AnalyzeSrcButtons { get; } // AnalyzeSrcVideo & CopyRawAnalysis
         public ButtonGroupVM InspBypsChkButtons { get; } // InspectSrcProbelms & BypsSrcChecklist
         public ButtonGroupVM InspBypsEncChkButtons { get; } // InspectEncPreProblems & BypassEncChecklist
@@ -148,7 +148,7 @@ namespace OneColumnEncoder.ViewModels
             // Commands
             OneClickScriptGen = new OneClickScriptGenCmd(
                 () => GetCurrentVideoSourcePath(), ScriptSrcImportZone[0], ScriptSrcImportZone[1], modalNavS);
-            OpenScriptScribe = new OpenScriptScribeCmd(
+            OpenFilterScribe = new OpenFilterScribeCmd(
                 modalNavS,
                 () => GetCurrentVideoSourcePath(),
                 ScriptSrcImportZone[0],
@@ -180,8 +180,8 @@ namespace OneColumnEncoder.ViewModels
                 UICaptionProviderM.Buttons.UsageAndCompliance, UICaptionProviderM.Buttons.Settings, OpenUsages, OpenAppConf);
             OpenAppConfButtons.B2_1Icon = SvgIconProviderH.GamePhone;
             OpenAppConfButtons.B2_2Icon = SvgIconProviderH.GameSetting;
-            ScriptScbButtons = ButtonGroupVM.CreateTwoButton( // UpdateScriptScbButtonsState()
-                UICaptionProviderM.Buttons.OneClickScriptGen, UICaptionProviderM.Buttons.OpenScribeSrcScribe, OneClickScriptGen, OpenScriptScribe);
+            FilterScbButtons = ButtonGroupVM.CreateTwoButton( // UpdateFilterScbButtonsState()
+                UICaptionProviderM.Buttons.OneClickScriptGen, UICaptionProviderM.Buttons.OpenScribeSrcScribe, OneClickScriptGen, OpenFilterScribe);
             AnalyzeSrcButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProviderM.Buttons.CopyRawAnalysis, UICaptionProviderM.Buttons.AnalyzeSrcVideo, CopyRawAnalysis, AnalyzeSrcVideo);
             _isAnalyzeSrcButtonsReady = true;
@@ -266,7 +266,7 @@ namespace OneColumnEncoder.ViewModels
             RevertCancelledAutoSelection(UpstreamsZone);
             RevertCancelledAutoSelection(DependenciesZone);
             SubToToolsChecklist();
-            UpdateScriptScbButtonsState(); // Initial state of script scribe buttons
+            UpdateFilterScbButtonsState(); // Initial state of script scribe buttons
             RefreshSelectedSourceStatus();
             UpdateAnalyzeSrcButtonsState();
             UpdateInspBypsChkButtonsState();
@@ -467,12 +467,12 @@ namespace OneColumnEncoder.ViewModels
         #endregion
 
         #region Button state updates
-        public void UpdateScriptScbButtonsState()
+        public void UpdateFilterScbButtonsState()
         {
             bool hasVideoSrc = VideoSrcImportZone.Any(t => !string.IsNullOrWhiteSpace(t.P2TextData));
-            ScriptScbButtons.B2_2IsEnabled = hasVideoSrc;
+            FilterScbButtons.B2_2IsEnabled = hasVideoSrc;
 
-            if (_modalNavS.CurrentModalVM is ScriptScribeVM modal)
+            if (_modalNavS.CurrentModalVM is FilterScribeVM modal)
             {
                 modal.ScriptExportButtons.B3_1IsEnabled = hasVideoSrc;
                 modal.ScriptExportButtons.B3_2IsEnabled = hasVideoSrc;
@@ -618,7 +618,7 @@ namespace OneColumnEncoder.ViewModels
         {
             if (sender is not ToolItemCardVM) return;
             if (e.PropertyName == nameof(ToolItemCardVM.P2TextData))
-                UpdateScriptScbButtonsState();
+                UpdateFilterScbButtonsState();
             if (e.PropertyName is nameof(ToolItemCardVM.P2TextData) or nameof(ToolItemCardVM.IsSelected))
             {
                 UpdateAnalyzeSrcButtonsState();
@@ -856,7 +856,7 @@ namespace OneColumnEncoder.ViewModels
                 SrcValidationCard.SetSourcePickedStatus(anySelected);
             }
 
-            UpdateScriptScbButtonsState();
+            UpdateFilterScbButtonsState();
             UpdateAnalyzeSrcButtonsState();
             UpdateEncStartButtonsState();
         }
@@ -1237,8 +1237,8 @@ namespace OneColumnEncoder.ViewModels
         {
             OpenAppConfButtons.B2_1Text = UICaptionProviderM.Buttons.UsageAndCompliance;
             OpenAppConfButtons.B2_2Text = UICaptionProviderM.Buttons.Settings;
-            ScriptScbButtons.B2_1Text = UICaptionProviderM.Buttons.OneClickScriptGen;
-            ScriptScbButtons.B2_2Text = UICaptionProviderM.Buttons.OpenScribeSrcScribe;
+            FilterScbButtons.B2_1Text = UICaptionProviderM.Buttons.OneClickScriptGen;
+            FilterScbButtons.B2_2Text = UICaptionProviderM.Buttons.OpenScribeSrcScribe;
             EncStartButtons.B3_1Text = UICaptionProviderM.Buttons.ReEvaluate;
             EncStartButtons.B3_2Text = UICaptionProviderM.Buttons.RunSample;
             EncStartButtons.B3_3Text = UICaptionProviderM.Buttons.StartEncode;

@@ -25,7 +25,7 @@ public class UILangProviderM
             ["Buttons.UsageAndCompliance"] = "Usage & Compliance",
             ["Buttons.Settings"] = "Settings",
             ["Buttons.OneClickScriptGen"] = "One-Click Script Gen.",
-            ["Buttons.OpenScribeSrcScribe"] = "Open Script Scribe",
+            ["Buttons.OpenScribeSrcScribe"] = "Open Filter Scribe",
             ["Buttons.CopyRawAnalysis"] = "Copy Raw JSON",
             ["Buttons.AnalyzeSrcVideo"] = "Run Source Analysis",
             ["Buttons.ReEvaluate"] = "Re-Evaluate",
@@ -192,7 +192,7 @@ public class UILangProviderM
             ["AppConf.Validation.InvalidNumericInput"] = "Only numeric values are allowed.",
             ["AppConf.Validation.InvalidNumericInputTitle"] = "Invalid Input",
 
-            // ScriptScribeModal
+            // FilterScribeModal
             ["SrcScribe.WindowTitle"] = "1cenc Script Generator",
             ["SrcScribe.Description1"] = "Automatically builds a decoder-to-Y4M pipe script based on imported video path. You may paste additional filters here, or copy the In/Out section to your desired script.",
             ["SrcScribe.Description2"] = "If buttons are locked, return to the main UI and import a video file first.",
@@ -302,7 +302,7 @@ public class UILangProviderM
             ["Buttons.UsageAndCompliance"] = "用法与合规指南",
             ["Buttons.Settings"] = "设置",
             ["Buttons.OneClickScriptGen"] = "一键生成脚本",
-            ["Buttons.OpenScribeSrcScribe"] = "脚本编辑窗口",
+            ["Buttons.OpenScribeSrcScribe"] = "滤镜编辑窗口",
             ["Buttons.CopyRawAnalysis"] = "复制原生 JSON",
             ["Buttons.AnalyzeSrcVideo"] = "运行视频源分析",
             ["Buttons.ReEvaluate"] = "重新检查",
@@ -558,7 +558,7 @@ public class UILangProviderM
             ["Buttons.UsageAndCompliance"] = "用法與合規指南",
             ["Buttons.Settings"] = "設定",
             ["Buttons.OneClickScriptGen"] = "一鍵生成腳本",
-            ["Buttons.OpenScribeSrcScribe"] = "腳本編輯視窗",
+            ["Buttons.OpenScribeSrcScribe"] = "濾鏡編輯視窗",
             ["Buttons.CopyRawAnalysis"] = "複製原生 JSON",
             ["Buttons.AnalyzeSrcVideo"] = "運行影片源分析",
             ["Buttons.ReEvaluate"] = "重新檢查",

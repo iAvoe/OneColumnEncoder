@@ -33,12 +33,12 @@ namespace OneColumnEncoder.Commands.SaveLoad
             }
             string avsScript = ScriptTemplateH.BuildAvsExportScript(
                 sourcePath,
-                ScriptScribeVM.AvsPrefix2,
-                ScriptScribeVM.AvsSuffix); // No user input (extra filter lines) in one click gen
+                FilterScribeVM.AvsPrefix2,
+                FilterScribeVM.AvsSuffix); // No user input (extra filter lines) in one click gen
             string vpyScript = ScriptTemplateH.BuildVpyExportScript(
                 sourcePath,
-                ScriptScribeVM.VpyPrefix2,
-                ScriptScribeVM.VpySuffix);
+                FilterScribeVM.VpyPrefix2,
+                FilterScribeVM.VpySuffix);
 
             SaveFileDialog dialog = new()
             {

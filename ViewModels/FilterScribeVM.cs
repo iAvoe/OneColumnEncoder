@@ -15,7 +15,7 @@ using OneColumnEncoder.ViewModels.Cards;
 
 namespace OneColumnEncoder.ViewModels
 {
-    public class ScriptScribeVM : BaseVM
+    public class FilterScribeVM : BaseVM
     {
         private readonly ModalNavS _modalNavS;
         private readonly Func<string> _getSourcePath;
@@ -196,7 +196,7 @@ namespace OneColumnEncoder.ViewModels
         public ButtonGroupVM ScriptExportButtons { get; private set; } = null!;
         public ButtonGroupVM FinishScribeButtons { get; private set; } = null!;
 
-        public ScriptScribeVM(
+        public FilterScribeVM(
             ModalNavS modalNavS,
             Action closeAction,
             Func<string> getSourcePath,
