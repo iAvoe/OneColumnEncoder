@@ -33,12 +33,10 @@ namespace OneColumnEncoder.Commands.SaveLoad
             }
             string avsScript = ScriptTemplateH.BuildAvsExportScript(
                 sourcePath,
-                ScriptScribeVM.AvsPrefix,
                 ScriptScribeVM.AvsPrefix2,
                 ScriptScribeVM.AvsSuffix); // No user input (extra filter lines) in one click gen
             string vpyScript = ScriptTemplateH.BuildVpyExportScript(
                 sourcePath,
-                ScriptScribeVM.VpyPrefix,
                 ScriptScribeVM.VpyPrefix2,
                 ScriptScribeVM.VpySuffix);
 

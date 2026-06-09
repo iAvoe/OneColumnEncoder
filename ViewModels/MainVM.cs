@@ -24,6 +24,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly AppConfM _appConfM;
         private readonly ModalNavS _modalNavS;
         private readonly VideoAnalysisM _srcVideoAnalysis = new();
+        private string _scriptScribeFfmpegFilterArgs = string.Empty;
 
         // Groups of Card or other element UIs
         public ObservableCollection<ToolItemCardVM> UpstreamsZone { get; }
@@ -148,7 +149,13 @@ namespace OneColumnEncoder.ViewModels
             OneClickScriptGen = new OneClickScriptGenCmd(
                 () => GetCurrentVideoSourcePath(), ScriptSrcImportZone[0], ScriptSrcImportZone[1], modalNavS);
             OpenScriptScribe = new OpenScriptScribeCmd(
-                modalNavS, () => GetCurrentVideoSourcePath(), ScriptSrcImportZone[0], ScriptSrcImportZone[1], OnSourceImported, () => _srcVideoAnalysis.RawJson);
+                modalNavS,
+                () => GetCurrentVideoSourcePath(),
+                ScriptSrcImportZone[0],
+                ScriptSrcImportZone[1],
+                OnSourceImported,
+                args => _scriptScribeFfmpegFilterArgs = args ?? string.Empty,
+                () => _srcVideoAnalysis.RawJson);
             CopyRawAnalysis = new CopyRawAnalysisCmd(
                 _srcVideoAnalysis, modalNavS);
             AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(
@@ -977,7 +984,8 @@ namespace OneColumnEncoder.ViewModels
                 SourceFfprobeJson: _srcVideoAnalysis.RawJson,
                 ParallelismConf: ParallelismConfM.LoadEffective(),
                 SvfiIniPath: svfiIniPath,
-                SvfiTaskId: svfiTaskId);
+                SvfiTaskId: svfiTaskId,
+                FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs);
         }
 
         private string GetSelectedSvfiIniPath()

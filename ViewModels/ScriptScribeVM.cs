@@ -23,6 +23,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly ToolItemCardVM _avsItem;
         private readonly ToolItemCardVM _vpyItem;
         private readonly Action<ToolItemCardVM, SourceFileKind, string> _afterImport;
+        private readonly Action<string?> _applyFfmpegFilterArgs;
         public CloseModalCmd CloseCmd { get; }
         // 0: AVS, 1: VPY, 2: ffmpeg
         private int _selectedTabIndex;
@@ -110,7 +111,8 @@ namespace OneColumnEncoder.ViewModels
         public void CommitScale()
         {
             if (!IsScaleApplicable) return;
-            var (w, h) = ResolutionScaleH.ComputeTargetDimensions(SourceWidth, SourceHeight, ScalePercent);
+            // var w, h are discard values for now
+            var (_, _) = ResolutionScaleH.ComputeTargetDimensions(SourceWidth, SourceHeight, ScalePercent);
             OnPropertyChanged(nameof(TargetDisplay));
             OnPropertyChanged(nameof(FfmpegResizeFilter));
             OnPropertyChanged(nameof(VapourSynthResizeFilter));
@@ -129,6 +131,11 @@ namespace OneColumnEncoder.ViewModels
             IsScaleApplicable && (TargetWidth != SourceWidth || TargetHeight != SourceHeight)
                 ? $"-vf scale={TargetWidth}:{TargetHeight} -sws_flags bicubic+full_chroma_int+full_chroma_inp+accurate_rnd"
                 : "N/A";
+
+        private string GeneratedFfmpegFilterArgs =>
+            IsScaleApplicable && (TargetWidth != SourceWidth || TargetHeight != SourceHeight)
+                ? $"-vf scale={TargetWidth}:{TargetHeight} -sws_flags bicubic+full_chroma_int+full_chroma_inp+accurate_rnd"
+                : string.Empty;
 
         public string VapourSynthResizeFilter =>
             IsScaleApplicable && (TargetWidth != SourceWidth || TargetHeight != SourceHeight)
@@ -171,7 +178,7 @@ namespace OneColumnEncoder.ViewModels
         #endregion
 
         #region UILang properties
-        public string WindowTitle => "1cenc Script Generator";
+        public static string WindowTitle => "1cenc Script Generator";
         public static string ScribeDescription1 => UILangProviderM.Current["SrcScribe.Description1"];
         public static string ScribeDescription2 => UILangProviderM.Current["SrcScribe.Description2"];
         public static string NoteText => UILangProviderM.Current["SrcScribe.NoteText"];
@@ -196,6 +203,7 @@ namespace OneColumnEncoder.ViewModels
             ToolItemCardVM avsItem,
             ToolItemCardVM vpyItem,
             Action<ToolItemCardVM, SourceFileKind, string> afterImport,
+            Action<string?> applyFfmpegFilterArgs,
             string? sourceFfprobeJson = null)
         {
             _modalNavS = modalNavS;
@@ -205,6 +213,7 @@ namespace OneColumnEncoder.ViewModels
             _avsItem = avsItem;
             _vpyItem = vpyItem;
             _afterImport = afterImport;
+            _applyFfmpegFilterArgs = applyFfmpegFilterArgs;
             ParseSourceResolution(sourceFfprobeJson);
             BuildButtonGroups();
             UILangProviderM.CurrentChanged += OnLanguageChanged;
@@ -256,10 +265,12 @@ namespace OneColumnEncoder.ViewModels
                 new ActionCmd(_ => SaveAsFile()));
             ScriptExportButtons.B3_3Icon = SvgIconProviderH.GameSave;
 
-            FinishScribeButtons = ButtonGroupVM.CreateTwoButton(
+            FinishScribeButtons = ButtonGroupVM.CreateThreeButton(
                 UILangProviderM.Current["SrcScribe.Cancel"],
+                UILangProviderM.Current["SrcScribe.ApplyFfmpegOnly"],
                 UILangProviderM.Current["SrcScribe.Confirm"],
                 CloseCmd,
+                new ActionCmd(_ => ApplyFfmpegFilterArgsOnly()),
                 new ActionCmd(_ => SaveAndImportAll()));
         }
 
@@ -291,9 +302,9 @@ namespace OneColumnEncoder.ViewModels
             string script = SelectedTabIndex switch
             {
                 0 => ScriptTemplateH.BuildAvsExportScript(
-                    sourcePath, AvsPrefix, AvsPrefix2, AvsSuffix, AvsUserInput),
+                    sourcePath, AvsPrefix2, AvsSuffix, AvsUserInput),
                 1 => ScriptTemplateH.BuildVpyExportScript(
-                    sourcePath, VpyPrefix, VpyPrefix2, VpySuffix, VpyUserInput),
+                    sourcePath, VpyPrefix2, VpySuffix, VpyUserInput),
                 _ => FfmpegFreeText
             };
 
@@ -326,11 +337,13 @@ namespace OneColumnEncoder.ViewModels
 
         private void SaveAndImportAll()
         {
+            ApplyFfmpegFilterArgs();
+
             string sourcePath = _getSourcePath();
             string avsScript = ScriptTemplateH.BuildAvsExportScript(
-                sourcePath, AvsPrefix, AvsPrefix2, AvsSuffix, AvsUserInput);
+                sourcePath, AvsPrefix2, AvsSuffix, AvsUserInput);
             string vpyScript = ScriptTemplateH.BuildVpyExportScript(
-                sourcePath, VpyPrefix, VpyPrefix2, VpySuffix, VpyUserInput);
+                sourcePath, VpyPrefix2, VpySuffix, VpyUserInput);
 
             SaveFileDialog dialog = new()
             {
@@ -350,6 +363,20 @@ namespace OneColumnEncoder.ViewModels
             ImportScript(_avsItem, SourceFileKind.AviSynthScript, avsPath);
             ImportScript(_vpyItem, SourceFileKind.VapourSynthScript, vpyPath);
             _closeAction();
+        }
+
+        private void ApplyFfmpegFilterArgsOnly()
+        {
+            ApplyFfmpegFilterArgs();
+            _closeAction();
+        }
+
+        private void ApplyFfmpegFilterArgs()
+        {
+            string generated = GeneratedFfmpegFilterArgs;
+            string freeText = FfmpegFreeText.Trim();
+            string args = string.Join(" ", new[] { generated, freeText }.Where(s => !string.IsNullOrWhiteSpace(s)));
+            _applyFfmpegFilterArgs(args);
         }
 
         private bool TryWriteScript(string path, string script)

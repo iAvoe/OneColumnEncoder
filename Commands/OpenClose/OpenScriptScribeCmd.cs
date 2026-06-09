@@ -15,6 +15,7 @@ namespace OneColumnEncoder.Commands.OpenClose
         ToolItemCardVM avsItem,
         ToolItemCardVM vpyItem,
         Action<ToolItemCardVM, SourceFileKind, string> afterImport,
+        Action<string?> applyFfmpegFilterArgs,
         Func<string?> getSourceFfprobeJson) : BaseCmd
     {
         private readonly ModalNavS _modalNavS = modalNavS;
@@ -34,7 +35,7 @@ namespace OneColumnEncoder.Commands.OpenClose
                 _modalNavS.Close();
 
             ScriptScribeModal window = new();
-            ScriptScribeVM vm = new(_modalNavS, window.Close, getSourcePath, avsItem, vpyItem, afterImport, getSourceFfprobeJson());
+            ScriptScribeVM vm = new(_modalNavS, window.Close, getSourcePath, avsItem, vpyItem, afterImport, applyFfmpegFilterArgs, getSourceFfprobeJson());
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();
