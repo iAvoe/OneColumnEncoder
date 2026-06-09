@@ -362,6 +362,10 @@ namespace OneColumnEncoder.ViewModels
 
             ImportScript(_avsItem, SourceFileKind.AviSynthScript, avsPath);
             ImportScript(_vpyItem, SourceFileKind.VapourSynthScript, vpyPath);
+            new OpenInfoModalCmd(
+                _modalNavS,
+                UILangProviderM.Current["SrcScribe.WindowTitle"],
+                $"Scripts saved:\n{avsPath}\n{vpyPath}").Execute(null);
             _closeAction();
         }
 
