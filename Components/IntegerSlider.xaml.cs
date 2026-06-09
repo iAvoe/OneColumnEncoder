@@ -83,17 +83,12 @@ namespace OneColumnEncoder.Components
         private void Thumb_DragCompleted(object sender, DragCompletedEventArgs e)
         {
             if (SnapToTicks)
-            {
                 Value = Math.Max(Minimum, Math.Min(Maximum, Value));
-            }
         }
 
         private void UpdateValueFromPointer()
         {
-            if (TrackHost.ActualWidth <= 0 || Maximum <= Minimum)
-            {
-                return;
-            }
+            if (TrackHost.ActualWidth <= 0 || Maximum <= Minimum) return;
 
             double travelWidth = GetTravelWidth();
             double pointerX = Mouse.GetPosition(TrackHost).X - _dragPointerOffset;

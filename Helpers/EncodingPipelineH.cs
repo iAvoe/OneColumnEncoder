@@ -24,7 +24,8 @@ public record EncodingPipelineRequest(
     string? SourceFfprobeJson = null,
     ParallelismConfM? ParallelismConf = null,
     string? SvfiIniPath = null,
-    string? SvfiTaskId = null);
+    string? SvfiTaskId = null,
+    string? FfmpegFilterArgs = null);
 
 public record EncodingClipRequest(
     string? StartTime = null,
@@ -148,7 +149,7 @@ public static partial class EncodingPipelineH
         string clipArgs = BuildUpstreamClipArgs(request.UpstreamExeName, request.Clip);
         return request.UpstreamExeName.ToLowerInvariant() switch
         {
-            "ffmpeg.exe" => JoinArgs($"-hide_banner", clipArgs, $"-i {input}", "-f yuv4mpegpipe -an -strict unofficial -"), // unofficial allows 10bit pipe
+            "ffmpeg.exe" => JoinArgs($"-hide_banner", clipArgs, $"-i {input}", request.FfmpegFilterArgs, "-f yuv4mpegpipe -an -strict unofficial -"), // unofficial allows 10bit pipe
             "vspipe.exe" => JoinArgs(input, clipArgs, NormalizeRequired(request.VspipeY4mArg, "vspipe Y4M argument"), "-"),
             "avs2yuv.exe" => JoinArgs(input, clipArgs, "-"),
             "avs2pipemod.exe" => JoinArgs(input, clipArgs, "-y4mp"),

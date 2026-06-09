@@ -29,7 +29,8 @@
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
               MaxWidth="{Binding SliderMaxWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
-              Height="40">
+              Height="40"
+              Margin="5 0 0 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="15" />
                 <RowDefinition Height="10" />

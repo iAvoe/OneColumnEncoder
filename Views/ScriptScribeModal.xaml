@@ -10,8 +10,8 @@
         d:DataContext="{d:DesignInstance Type=vms:ScriptScribeVM}"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
-        Width="520"
-        Height="580"
+        Width="560"
+        Height="640"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid Margin="10">
@@ -19,6 +19,9 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -37,10 +40,10 @@
                    TextWrapping="Wrap"
                    Foreground="{StaticResource GlobalPrimary}" />
 
-        <!-- Select tab: AviSynth, VapourSynth script -->
+        <!-- TabControl: AviSynth, VapourSynth, ffmpeg -->
         <TabControl Grid.Row="2"
                     SelectedIndex="{Binding SelectedTabIndex}"
-                    Margin="0 20 0 0">
+                    Margin="0 15 0 0">
 
             <TabItem Header="{Binding TabAvs}"
                      Padding="15 7.5"
@@ -149,6 +152,38 @@
                              FontWeight="Normal" />
                 </Grid>
             </TabItem>
+
+            <TabItem Header="{Binding TabFfmpeg}"
+                     Padding="15 7.5"
+                     FontWeight="Bold">
+                <Grid Margin="0 5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0"
+                               Text="{Binding FfmpegFreeTextHint}"
+                               FontSize="12"
+                               Foreground="{StaticResource GlobalSecondary}"
+                               TextWrapping="Wrap"
+                               Margin="5 0 0 10"
+                               FontWeight="Normal"/>
+                    <TextBox Grid.Row="1"
+                             Text="{Binding FfmpegFreeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             BorderThickness="0"
+                             Background="#FBF0FD"
+                             Foreground="#5C1665"
+                             TextWrapping="Wrap"
+                             AcceptsReturn="True"
+                             Padding="5"
+                             FontSize="13"
+                             FontFamily="Consolas"
+                             HorizontalScrollBarVisibility="Auto"
+                             VerticalScrollBarVisibility="Auto"
+                             PreviewMouseWheel="UserInput_PreviewMouseWheel"
+                             FontWeight="Normal" />
+                </Grid>
+            </TabItem>
         </TabControl>
 
         <comps:ThreeButtonGroup Grid.Row="3"
@@ -161,14 +196,170 @@
                                 Button1IsEnabled="{Binding B3_1IsEnabled}"
                                 Button2IsEnabled="{Binding B3_2IsEnabled}"
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
-
+        
+        <!-- Resolution Scaling Section -->
         <TextBlock Grid.Row="4"
+                   Text="{Binding ResolutionScaleTitle}"
+                   Style="{StaticResource H3}"
+                   Margin="0 15 0 0" />
+
+        <Grid Grid.Row="5"
+              Margin="0 5 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto"
+                                  MinWidth="60" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Scaling slider (visible when applicable) -->
+            <comps:IntegerSlider Grid.Column="0"
+                                 Label="{Binding ScalePercentLabel}"
+                                 Minimum="10"
+                                 Maximum="100"
+                                 Value="{Binding ScalePercent}"
+                                 TickLabels="{Binding ScaleTickLabels}"
+                                 TickCount="5"
+                                 Step="1" >
+                <comps:IntegerSlider.Style>
+                    <Style TargetType="comps:IntegerSlider">
+                        <Setter Property="Visibility"
+                                Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsScaleApplicable}"
+                                         Value="False">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </comps:IntegerSlider.Style>
+            </comps:IntegerSlider>
+
+            <!-- Warning when scaling not applicable -->
+            <TextBlock Grid.Column="0"
+                       Text="{Binding ScaleNotApplicableText}"
+                       FontSize="12"
+                       Margin="0 0 0 5"
+                       Foreground="{StaticResource ButtonTertiary}"
+                       VerticalAlignment="Center"
+                       TextWrapping="Wrap">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsScaleApplicable}"
+                                         Value="False">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+
+            <!-- Target resolution display -->
+            <Border Grid.Column="1"
+                    VerticalAlignment="Center"
+                    BorderThickness="0"
+                    Margin="5 0 0 0">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility"
+                                Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsScaleApplicable}"
+                                         Value="False">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <TextBlock Text="{Binding TargetDisplay}"
+                           Foreground="{StaticResource GlobalSecondary}"
+                           FontSize="11"
+                           HorizontalAlignment="Center" />
+            </Border>
+        </Grid>
+        
+        <!-- Auto-generated Filters Section -->
+        <StackPanel Grid.Row="6">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="45" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           Text="{Binding FfmpegAutoFilter}"
+                           FontSize="11"
+                           Foreground="{StaticResource GlobalSecondary}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right" />
+                <TextBox Grid.Column="1"
+                         Margin="5 0 0 0"
+                         Text="{Binding FfmpegResizeFilter, Mode=OneWay}"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         Background="{StaticResource Background}"
+                         Foreground="{StaticResource GlobalTertiary}"
+                         FontSize="11"
+                         FontFamily="Segoe UI"
+                         VerticalScrollBarVisibility="Disabled" />
+            </Grid>
+            <Grid Margin="0 5 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="45" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           Text="{Binding VapourSynthAutoFilter}"
+                           FontSize="11"
+                           Foreground="{StaticResource GlobalSecondary}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right" />
+                <TextBox Grid.Column="1"
+                         Margin="5 0 0 0"
+                         Text="{Binding VapourSynthResizeFilter, Mode=OneWay}"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         Background="{StaticResource Background}"
+                         Foreground="{StaticResource GlobalTertiary}"
+                         FontSize="11"
+                         FontFamily="Segoe UI"
+                         VerticalScrollBarVisibility="Disabled" />
+            </Grid>
+            <Grid Margin="0 5 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="45" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           Text="{Binding AviSynthAutoFilter}"
+                           FontSize="11"
+                           Foreground="{StaticResource GlobalSecondary}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right" />
+                <TextBox Grid.Column="1"
+                         Margin="5 0 0 0"
+                         Text="{Binding AviSynthResizeFilter, Mode=OneWay}"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         Background="{StaticResource Background}"
+                         Foreground="{StaticResource GlobalTertiary}"
+                         FontSize="11"
+                         FontFamily="Segoe UI"
+                         VerticalScrollBarVisibility="Disabled" />
+            </Grid>
+        </StackPanel>
+
+        <TextBlock Grid.Row="7"
                    Text="{Binding NoteText}"
                    Margin="0 10 0 0"
                    FontSize="13"
                    Foreground="{StaticResource GlobalPrimary}" />
 
-        <comps:TwoButtonGroup Grid.Row="5"
+        <comps:TwoButtonGroup Grid.Row="8"
                               Margin="0 10 0 10"
                               ButtonHeight="30"
                               DataContext="{Binding FinishScribeButtons}"

@@ -14,7 +14,8 @@ namespace OneColumnEncoder.Commands.OpenClose
         Func<string> getSourcePath,
         ToolItemCardVM avsItem,
         ToolItemCardVM vpyItem,
-        Action<ToolItemCardVM, SourceFileKind, string> afterImport) : BaseCmd
+        Action<ToolItemCardVM, SourceFileKind, string> afterImport,
+        Func<string?> getSourceFfprobeJson) : BaseCmd
     {
         private readonly ModalNavS _modalNavS = modalNavS;
         public override void Execute(object? parameter)
@@ -33,7 +34,7 @@ namespace OneColumnEncoder.Commands.OpenClose
                 _modalNavS.Close();
 
             ScriptScribeModal window = new();
-            ScriptScribeVM vm = new(_modalNavS, window.Close, getSourcePath, avsItem, vpyItem, afterImport);
+            ScriptScribeVM vm = new(_modalNavS, window.Close, getSourcePath, avsItem, vpyItem, afterImport, getSourceFfprobeJson());
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();
