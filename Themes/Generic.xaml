@@ -440,6 +440,7 @@
         </Setter>
     </Style>
 
+    <!-- Settings item -->
     <Style TargetType="{x:Type comps:AppConfItem}">
         <Setter Property="Template">
             <Setter.Value>

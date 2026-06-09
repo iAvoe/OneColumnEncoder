@@ -177,7 +177,7 @@ public class UILangProviderM
             ["Checklist.Best2.DiskCompression"] = "Output folder disables file system disk compression",
 
             // Settings - Overwrite labels
-            ["Setting.Overwrite.LongPressDivisor"] = "Long Press Megabyte Div. (SizeToOw/?MB = mm:ss)",
+            ["Setting.Overwrite.LongPressDivisor"] = "Long Press Dur. MB Divisor (MBtoOW÷Div=mm:ss)",
             ["Setting.Overwrite.MinLongPress"] = "Minimum Long Press Duration (ms)",
             ["Setting.Overwrite.MaxLongPress"] = "Maximum Long Press Duration (ms)",
 
@@ -205,7 +205,7 @@ public class UILangProviderM
             ["SrcScribe.SaveAsFile"] = "Save as File",
             ["SrcScribe.Cancel"] = "Cancel (Close Window Only)",
             ["SrcScribe.ApplyFfmpegOnly"] = "Confirm (ffmpeg Only)",
-            ["SrcScribe.Confirm"] = "Confirm (Save & Import All)",
+            ["SrcScribe.Confirm"] = "Confirm (Save & Imp. All)",
             ["SrcScribe.CopiedFull"] = "Full script copied to clipboard!",
             ["SrcScribe.CopiedSection"] = "Base in/out section copied to clipboard!",
             ["SrcScribe.FilterAvs"] = "AviSynth Script (*.avs)|*.avs",
