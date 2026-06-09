@@ -25,7 +25,10 @@ namespace OneColumnEncoder.ViewModels
         #region Properties & Commands
 
         public static string WindowTitle => "1cenc Settings";
-        public static string HeaderText => UILangProviderM.Current["AppConfModal.Header"];
+        public static string HeaderText =>
+            UILangProviderM.Current["AppConfModal.Header"];
+        public static string NotificationPolicyHint =>
+            UILangProviderM.Current["Hint.AppConfNotificationPolicy"];
 
         public CloseModalCmd CloseCmd { get; }
         public SaveAppConfCmd SaveCmd { get; }
@@ -260,6 +263,7 @@ namespace OneColumnEncoder.ViewModels
         {
             OnPropertyChanged(nameof(WindowTitle));
             OnPropertyChanged(nameof(HeaderText));
+            OnPropertyChanged(nameof(NotificationPolicyHint));
 
             FinishSettingButtons.B2_1Text = UICaptionProviderM.AppConf.Buttons.Cancel;
             FinishSettingButtons.B2_2Text = UICaptionProviderM.AppConf.Buttons.Save;

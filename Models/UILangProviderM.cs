@@ -251,6 +251,7 @@ public class UILangProviderM
             ["Hint.SVFIClipDisabled"] = "OneLineShotArgs does not support sample clipping, disabling Run Sample.",
             ["Hint.AnalyzeNeedsSource"] = "Import a source video to run analysis",
             ["Hint.NumaCpuCheckTrigger"] = "NUMA node CPU usage updates on mouse click or keyboard input event",
+            ["Hint.AppConfNotificationPolicy"] = "Notification features are intentionally not provided——Research evidence suggested that phone notification may reduce neural activity that correlates cognitive control: Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725\r\n",
 
             // Heatmap
             ["Heatmap.Cold"] = "Cold",
@@ -501,6 +502,7 @@ public class UILangProviderM
             ["Hint.SVFIClipDisabled"] = "OneLineShotArgs 上游不支持取段打样，已禁用取段打样按钮。",
             ["Hint.AnalyzeNeedsSource"] = "分析需要导入视频源文件",
             ["Hint.NumaCpuCheckTrigger"] = "NUMA 节点 CPU 占用检测会在鼠标点击或键盘输入事件时更新。",
+            ["Hint.AppConfNotificationPolicy"] = "本应用有意不提供通知功能——研究结果表明，智能手机通知可能会降低与认知控制功能相关的脑神经活动：Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725",
 
             // Heatmap
             ["Heatmap.Cold"] = "冷",
@@ -751,6 +753,7 @@ public class UILangProviderM
             ["Hint.SVFIClipDisabled"] = "OneLineShotArgs 上游不支援取段打樣，已禁用取段打樣按鈕。",
             ["Hint.AnalyzeNeedsSource"] = "分析需要導入影片源文件",
             ["Hint.NumaCpuCheckTrigger"] = "NUMA 節點 CPU 占用檢測會在滑鼠點擊或鍵盤輸入事件時更新。",
+            ["Hint.AppConfNotificationPolicy"] = "本應用有意不提供通知功能——研究結果表明，智慧型手機通知可能會降低與認知控制功能相關的腦神經活動：Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725",
 
             // Heatmap
             ["Heatmap.Cold"] = "冷",

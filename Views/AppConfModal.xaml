@@ -11,18 +11,20 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="580"
-        Height="680"
+        Height="350"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
+
         <ScrollViewer Grid.Row="0"
-                      VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Auto">
+                       VerticalScrollBarVisibility="Auto"
+                       HorizontalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding SettingsListing}"/>
         </ScrollViewer>
 
@@ -32,5 +34,10 @@
                               DataContext="{Binding FinishSettingButtons}"
                               Button1Command="{Binding Cmd1}"
                               Button2Command="{Binding Cmd2}" />
+
+        <comps:HintPanel Grid.Row="2"
+                         Margin="0 5 0 0"
+                         Text="{Binding NotificationPolicyHint}"
+                         HintBrush="{StaticResource GlobalSecondary}" />
     </Grid>
 </helpers:AdaptiveWindow>
