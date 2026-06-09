@@ -50,9 +50,6 @@ namespace OneColumnEncoder.Components
         // String setting value, hide if not needed
         public string Text2
         ...
-        // For SMTP password (<PasswordBox />), hide if not needed
-        public SecureString PasswordHash
-        ...
         */
     }
 }

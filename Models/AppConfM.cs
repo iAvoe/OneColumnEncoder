@@ -15,7 +15,6 @@ namespace OneColumnEncoder.Models
             Path.Combine(GetConfigDirectory(), "appconfig.json");
         protected override string FilePath => ConfigFilePath;
         public OverwriteSettings Overwrite { get; set; } = new OverwriteSettings();
-        public SmtpSettings Smtp { get; set; } = new SmtpSettings();
         public Language Lang { get; set; } = new Language();
 
         #region Setting items
@@ -24,22 +23,6 @@ namespace OneColumnEncoder.Models
             public int LongPressMegabyteDivisor { get; set; } = 40;
             public int MinLongPressMs { get; set; } = 1250;
             public int MaxLongPressMs { get; set; } = 12500;
-        }
-        public class SmtpSettings
-        {
-            public string ServerUrl { get; set; } = "";
-            public int Port { get; set; } = 587;
-            public bool UseSSL { get; set; } = true;
-            public string Username { get; set; } = "";
-            public string Password { get; set; } = "";
-            public string FromEmail { get; set; } = "";
-            public string ToEmail { get; set; } = "";
-            public bool NotifyOnSuccess { get; set; } = true;
-            public bool NotifyOnFailure { get; set; } = true;
-            public bool NotifyOnNoInput { get; set; } = true;
-            public int NotifySuccessThresholdMin { get; set; } = 9;
-            public int NotifyFailureThresholdMin { get; set; } = 2;
-            public int NotifyAfterNoInputThresholdMin { get; set; } = 2;
         }
         public class Language
         {

@@ -58,11 +58,9 @@ public class UILangProviderM
 
             // AppConf group headers
             ["AppConf.Overwrite"] = "Overwrite Handling",
-            ["AppConf.Smtp"] = "SMTP Setting",
             ["AppConf.Language"] = "Language/\u8BED\u8A00",
 
             // AppConf buttons
-            ["AppConf.TestSmtp"] = "Test SMTP",
             ["AppConf.Cancel"] = "Cancel",
             ["AppConf.Save"] = "Save",
 
@@ -182,21 +180,6 @@ public class UILangProviderM
             ["Setting.Overwrite.LongPressDivisor"] = "Long Press Megabyte Div. (SizeToOw/?MB = mm:ss)",
             ["Setting.Overwrite.MinLongPress"] = "Minimum Long Press Duration (ms)",
             ["Setting.Overwrite.MaxLongPress"] = "Maximum Long Press Duration (ms)",
-
-            // Settings - SMTP labels
-            ["Setting.Smtp.ServerUrl"] = "Server URL",
-            ["Setting.Smtp.Port"] = "Port",
-            ["Setting.Smtp.UseSSL"] = "Use SSL",
-            ["Setting.Smtp.Username"] = "Username",
-            ["Setting.Smtp.Password"] = "Password",
-            ["Setting.Smtp.FromEmail"] = "From Email Address",
-            ["Setting.Smtp.ToEmail"] = "To Email Address",
-            ["Setting.Smtp.NotifySuccess"] = "Notify on Success",
-            ["Setting.Smtp.NotifyFailure"] = "Notify on Failure",
-            ["Setting.Smtp.NotifyAFK"] = "Notify when AFK",
-            ["Setting.Smtp.SuccessThreshold"] = "Notify on Success Threshold (min)",
-            ["Setting.Smtp.FailureThreshold"] = "Notify on Failure Threshold (min)",
-            ["Setting.Smtp.AFKThreshold"] = "Notify on AFK for (min)",
 
             // Settings - Language label
             ["Setting.Language.Select"] = "Select Language",
@@ -344,10 +327,8 @@ public class UILangProviderM
             ["Buttons.Edit"] = "编辑",
 
             ["AppConf.Overwrite"] = "文件覆盖确认行为",
-            ["AppConf.Smtp"] = "SMTP 消息设置",
             ["AppConf.Language"] = "语言/Language",
 
-            ["AppConf.TestSmtp"] = "发送测试 SMTP",
             ["AppConf.Cancel"] = "取消",
             ["AppConf.Save"] = "保存",
 
@@ -451,20 +432,6 @@ public class UILangProviderM
             ["Setting.Overwrite.LongPressDivisor"] = "长按兆字节除数（被覆盖文件大小/?MB = 时长）",
             ["Setting.Overwrite.MinLongPress"] = "最小长按持续时间（毫秒）",
             ["Setting.Overwrite.MaxLongPress"] = "最大长按持续时间（毫秒）",
-
-            ["Setting.Smtp.ServerUrl"] = "SMTP 服务器网址",
-            ["Setting.Smtp.Port"] = "端口号",
-            ["Setting.Smtp.UseSSL"] = "使用 SSL",
-            ["Setting.Smtp.Username"] = "用户名",
-            ["Setting.Smtp.Password"] = "密码（将记住密码）",
-            ["Setting.Smtp.FromEmail"] = "发件人邮箱地址",
-            ["Setting.Smtp.ToEmail"] = "收件人邮箱地址",
-            ["Setting.Smtp.NotifySuccess"] = "成功时通知",
-            ["Setting.Smtp.NotifyFailure"] = "失败时通知",
-            ["Setting.Smtp.NotifyAFK"] = "仅离开时通知",
-            ["Setting.Smtp.SuccessThreshold"] = "成功通知阈值（分钟，0=不管）",
-            ["Setting.Smtp.FailureThreshold"] = "失败通知阈值（分钟，0=不管）",
-            ["Setting.Smtp.AFKThreshold"] = "判断离开阈值（无操作分钟，0=不管）",
 
             // AppConf validation messages
             ["AppConf.Validation.Required"] = "{0} 不能为空。",
@@ -610,10 +577,8 @@ public class UILangProviderM
             ["Buttons.Edit"] = "編輯",
 
             ["AppConf.Overwrite"] = "文件覆蓋確認行為",
-            ["AppConf.Smtp"] = "SMTP 消息設定",
             ["AppConf.Language"] = "語言/Language",
 
-            ["AppConf.TestSmtp"] = "發送測試 SMTP",
             ["AppConf.Cancel"] = "取消",
             ["AppConf.Save"] = "保存",
 
@@ -717,20 +682,6 @@ public class UILangProviderM
             ["Setting.Overwrite.LongPressDivisor"] = "長按百萬位元組除數（被覆蓋檔案大小/?MB = 時長）",
             ["Setting.Overwrite.MinLongPress"] = "最小長按持續時間（毫秒）",
             ["Setting.Overwrite.MaxLongPress"] = "最大長按持續時間（毫秒）",
-
-            ["Setting.Smtp.ServerUrl"] = "SMTP 伺服器網址",
-            ["Setting.Smtp.Port"] = "埠號",
-            ["Setting.Smtp.UseSSL"] = "使用 SSL",
-            ["Setting.Smtp.Username"] = "使用者名稱",
-            ["Setting.Smtp.Password"] = "密碼（將記住密碼）",
-            ["Setting.Smtp.FromEmail"] = "發件人信箱地址",
-            ["Setting.Smtp.ToEmail"] = "收件人信箱地址",
-            ["Setting.Smtp.NotifySuccess"] = "成功時通知",
-            ["Setting.Smtp.NotifyFailure"] = "失敗時通知",
-            ["Setting.Smtp.NotifyAFK"] = "僅離開時通知",
-            ["Setting.Smtp.SuccessThreshold"] = "成功通知閾值（分鐘，0=不管）",
-            ["Setting.Smtp.FailureThreshold"] = "失敗通知閾值（分鐘，0=不管）",
-            ["Setting.Smtp.AFKThreshold"] = "判斷離開閾值（無操作分鐘，0=不管）",
 
             // AppConf validation messages
             ["AppConf.Validation.Required"] = "{0} 為必填欄位。",

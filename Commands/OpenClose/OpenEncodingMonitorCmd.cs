@@ -12,13 +12,11 @@ namespace OneColumnEncoder.Commands.OpenClose
         ModalNavS modalNavS,
         EncodingPipelineRequest request,
         EncodingPipelineCommand command,
-        AppConfM appConfM,
         bool isSample = false) : BaseCmd
     {
         private readonly ModalNavS _modalNavS = modalNavS;
         private readonly EncodingPipelineRequest _request = request;
         private readonly EncodingPipelineCommand _command = command;
-        private readonly AppConfM _appConfM = appConfM;
         private readonly bool _isSample = isSample;
 
         public override void Execute(object? parameter)
@@ -37,7 +35,7 @@ namespace OneColumnEncoder.Commands.OpenClose
                 _modalNavS.Close();
 
             EncodingMonitorModal window = new();
-            EncodingMonitorVM vm = new(_modalNavS, window.Close, _request, _command, _appConfM, _isSample);
+            EncodingMonitorVM vm = new(_modalNavS, window.Close, _request, _command, _isSample);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();

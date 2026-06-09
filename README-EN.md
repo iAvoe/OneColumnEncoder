@@ -165,7 +165,6 @@ The content below organizes the implementation status based on the current proje
 #### Application Configuration and Persistence
 
 - The basic logic for saving/loading JSON for application configuration, tool path, source path, encoding parameters, and parallel parameters has been implemented
-- SMTP configuration, test emails, encoding completion/failure notifications, and user idle time thresholds have been implemented
 - Language configuration has been integrated for saving and loading
 
 #### Output Filename Tool
@@ -205,10 +204,6 @@ The Overwrite setting will append an overwrite confirmation pop-up if the output
 
 ## Unverified
 
-### SMTP Settings
-
-SMTP Configuration, test emails, encoding completion/failure notifications, and user idle detection logic have all been implemented, but an SMTP server has not yet been set up for actual testing
-
 ### Intel 12~14th Gen & Ultra 200~300 Series CPU Utilization Verification
 
 No CPU available for testing, but it should not fail catastrophically
@@ -239,7 +234,7 @@ This feature cannot be implemented due to the need to modify the upstream progra
 ## Main Source Code Locations
 
 - `Commands/`: User operation commands, modal window opening and closing, save loading, and encoding startup entry point
-- `Helpers/`: Encoding pipeline, ffprobe analysis, tool detection, script templates, filename validation, CPU/NUMA/permissions/SMTP, and other auxiliary logic
+- `Helpers/`: Encoding pipeline, ffprobe analysis, tool detection, script templates, filename validation, CPU/NUMA/permissions, and other auxiliary logic
 - `Models/`: Configuration models, tool definitions, language resources, checklists, and data DTOs
 - `ViewModels/`: Main interface, modal window, and card state management
 - `Views/`: WPF windows and interface XAML

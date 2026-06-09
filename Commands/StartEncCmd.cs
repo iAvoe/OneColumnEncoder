@@ -116,7 +116,7 @@ namespace OneColumnEncoder.Commands
 
         private void StartEncoding(EncodingPipelineRequest request, EncodingPipelineCommand command)
         {
-            new OpenEncodingMonitorCmd(_modalNavS, request, command, _appConfM).Execute(null);
+            new OpenEncodingMonitorCmd(_modalNavS, request, command).Execute(null);
         }
 
         private int CalculateOverwriteConfirmDelayMs(long fileLengthBytes)

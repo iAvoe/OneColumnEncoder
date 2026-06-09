@@ -10,7 +10,6 @@ namespace OneColumnEncoder.Models
     {
         TextBox,
         CheckBox,
-        PasswordBox, // For SMTP password
         Dropdown, // Language selection
     }
     public record SettingItemDefinitionM(

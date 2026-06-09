@@ -9,12 +9,11 @@ using System.Windows;
 
 namespace OneColumnEncoder.Commands.OpenClose
 {
-    public class OpenSampleClipCmd(ModalNavS modalNavS, Func<EncodingPipelineRequest?> buildRequest, VideoAnalysisM srcVideoAnalysis, AppConfM appConfM) : BaseCmd
+    public class OpenSampleClipCmd(ModalNavS modalNavS, Func<EncodingPipelineRequest?> buildRequest, VideoAnalysisM srcVideoAnalysis) : BaseCmd
     {
         private readonly ModalNavS _modalNavS = modalNavS;
         private readonly Func<EncodingPipelineRequest?> _buildRequest = buildRequest;
         private readonly VideoAnalysisM _srcVideoAnalysis = srcVideoAnalysis;
-        private readonly AppConfM _appConfM = appConfM;
 
         public override void Execute(object? parameter)
         {
@@ -32,7 +31,7 @@ namespace OneColumnEncoder.Commands.OpenClose
                 _modalNavS.Close();
 
             SampleClipModal window = new();
-            SampleClipVM vm = new(_modalNavS, window.Close, _buildRequest, _srcVideoAnalysis, _appConfM);
+            SampleClipVM vm = new(_modalNavS, window.Close, _buildRequest, _srcVideoAnalysis);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();

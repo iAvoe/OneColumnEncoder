@@ -75,13 +75,11 @@ public static class UICaptionProviderM
         public static class Groups
         {
             public static string Overwrite => UILangProviderM.Current["AppConf.Overwrite"];
-            public static string Smtp => UILangProviderM.Current["AppConf.Smtp"];
             public static string Language => UILangProviderM.Current["AppConf.Language"];
         }
 
         public static class Buttons
         {
-            public static string TestSmtp => UILangProviderM.Current["AppConf.TestSmtp"];
             public static string Cancel => UILangProviderM.Current["AppConf.Cancel"];
             public static string Save => UILangProviderM.Current["AppConf.Save"];
         }

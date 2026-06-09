@@ -42,7 +42,6 @@ namespace OneColumnEncoder.ViewModels
         private readonly Action _closeAction;
         private readonly EncodingPipelineRequest _request;
         private readonly EncodingPipelineCommand _command;
-        private readonly AppConfM _appConfM;
         private readonly bool _isSample;
         private readonly Stopwatch _stopwatch = new();
         private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(500) };
@@ -229,14 +228,12 @@ namespace OneColumnEncoder.ViewModels
             Action closeAction,
             EncodingPipelineRequest request,
             EncodingPipelineCommand command,
-            AppConfM appConfM,
             bool isSample)
         {
             _modalNavS = modalNavS;
             _closeAction = closeAction;
             _request = request;
             _command = command;
-            _appConfM = appConfM;
             _isSample = isSample;
             _totalFrames = EncodingPipelineH.GetSourceTotalFrames(_request.SourceFfprobeJson);
             _enableMux = CanMux && !string.Equals(_request.EncoderExeName, "x264.exe", StringComparison.OrdinalIgnoreCase);
@@ -344,7 +341,6 @@ namespace OneColumnEncoder.ViewModels
         /// </summary>
         private async Task RunEncodingAsync(CancellationToken cancellationToken)
         {
-            string processOutput = string.Empty;
             _success = false;
 
             try
@@ -428,18 +424,15 @@ namespace OneColumnEncoder.ViewModels
                 _success = _exitCode == 0;
                 if (_success)
                     _success = await RunMuxAsync(cancellationToken);
-                processOutput = GetCombinedOutput();
             }
             catch (OperationCanceledException)
             {
                 StatusText = Lang.InterruptedText;
-                processOutput = GetCombinedOutput();
             }
             catch (Exception ex)
             {
                 EnqueueProcessLine(ProcessLogKind.DownstreamStderr, ex.ToString());
                 StatusText = Lang.FailedText;
-                processOutput = GetCombinedOutput();
             }
             finally
             {
@@ -458,9 +451,6 @@ namespace OneColumnEncoder.ViewModels
                 _upstreamStdoutStream = null;
                 _encoderStdinStream = null;
             }
-
-            if (!_isSample)
-                await TrySendNotificationAsync(_success, processOutput);
         }
 
         /// <summary>
@@ -1628,41 +1618,6 @@ namespace OneColumnEncoder.ViewModels
                 < 14 => 14,
                 _ => 10
             };
-        }
-
-        /// <summary>
-        /// Combines upstream and downstream stderr logs into a single string.
-        /// Used for sending as SMTP notification body.
-        /// </summary>
-        private string GetCombinedOutput()
-        {
-            lock (_logLock)
-            {
-                return string.Join(Environment.NewLine, _upstreamStderrBuilder, _downstreamStderrBuilder);
-            }
-        }
-
-        /// <summary>
-        /// Sends an SMTP email notification with the encoding result (success/failure, duration, logs).
-        /// Silently catches exceptions and logs them to the downstream stderr report.
-        /// </summary>
-        private async Task TrySendNotificationAsync(bool success, string processOutput)
-        {
-            try
-            {
-                await SmtpNotificationH.SendEncodingResultAsync(
-                    _appConfM.Smtp,
-                    _request,
-                    success,
-                    _stopwatch.Elapsed,
-                    _exitCode,
-                    processOutput);
-            }
-            catch (Exception ex)
-            {
-                EnqueueProcessLine(ProcessLogKind.DownstreamStderr, "SMTP Notification Failed: " + ex.Message);
-                FlushLogsToProperties();
-            }
         }
 
         /// <summary>

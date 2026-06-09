@@ -30,12 +30,10 @@ namespace OneColumnEncoder.ViewModels
         public CloseModalCmd CloseCmd { get; }
         public SaveAppConfCmd SaveCmd { get; }
         public LoadAppConfCmd LoadCmd { get; }
-        public ICommand SmtpCmd { get; }
 
         public ButtonGroupVM FinishSettingButtons { get; }
 
         public AppConfM.OverwriteSettings Overwrite => _appConfM.Overwrite;
-        public AppConfM.SmtpSettings Smtp => _appConfM.Smtp;
 
         public ObservableCollection<AppConfContainer> SettingsListing { get; } = [];
 
@@ -49,15 +47,12 @@ namespace OneColumnEncoder.ViewModels
             CloseCmd = new CloseModalCmd(closeAction);
             SaveCmd = new SaveAppConfCmd(appConfS, closeAction);
             LoadCmd = new LoadAppConfCmd(appConfS);
-            SmtpCmd = new TestSmtpCmd(appConfS);
-            FinishSettingButtons = ButtonGroupVM.CreateThreeButton(
-                UICaptionProviderM.AppConf.Buttons.TestSmtp,
+            FinishSettingButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProviderM.AppConf.Buttons.Cancel,
                 UICaptionProviderM.AppConf.Buttons.Save,
-                SmtpCmd,
                 CloseCmd,
                 SaveCmd);
-            FinishSettingButtons.B3_3Icon = SvgIconProviderH.GameSave;
+            FinishSettingButtons.B2_2Icon = SvgIconProviderH.GameSave;
             BuildSettingsListing();
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
@@ -69,7 +64,6 @@ namespace OneColumnEncoder.ViewModels
             Dictionary<string, object> sourceMap = new()
             {
                 [UICaptionProviderM.AppConf.Groups.Overwrite] = _appConfM.Overwrite,
-                [UICaptionProviderM.AppConf.Groups.Smtp] = _appConfM.Smtp,
                 [UICaptionProviderM.AppConf.Groups.Language] = _appConfM.Lang
             };
 
@@ -92,11 +86,6 @@ namespace OneColumnEncoder.ViewModels
                                 setting.PropertyName,
                                 setting.MinValue,
                                 setting.MaxValue);
-                            break;
-                        case SettingControlType.PasswordBox:
-                            AddPasswordBoxItem(container, setting.Label,
-                                () => _appConfM.Smtp.Password,
-                                v => _appConfM.Smtp.Password = v);
                             break;
                         case SettingControlType.Dropdown:
                             AddDropdownItem(container, setting.Label, source, setting.PropertyName,
@@ -235,18 +224,6 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        private static void AddPasswordBoxItem(AppConfContainer container, string text, Func<string> getter, Action<string> setter)
-        {
-            PasswordBox pb = new()
-            {
-                Width = 200,
-                HorizontalAlignment = HorizontalAlignment.Right,
-                Password = getter()
-            };
-            pb.PasswordChanged += (_, _) => setter(pb.Password);
-            container.Items.Add(new AppConfItem { Text = text, Content = pb });
-        }
-
         private static void AddDropdownItem(AppConfContainer container, string text, object source, string propertyPath, string[] options)
         {
             string currentValue = source.GetType().GetProperty(propertyPath)?.GetValue(source) as string ?? options[0];
@@ -284,9 +261,8 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(WindowTitle));
             OnPropertyChanged(nameof(HeaderText));
 
-            FinishSettingButtons.B3_1Text = UICaptionProviderM.AppConf.Buttons.TestSmtp;
-            FinishSettingButtons.B3_2Text = UICaptionProviderM.AppConf.Buttons.Cancel;
-            FinishSettingButtons.B3_3Text = UICaptionProviderM.AppConf.Buttons.Save;
+            FinishSettingButtons.B2_1Text = UICaptionProviderM.AppConf.Buttons.Cancel;
+            FinishSettingButtons.B2_2Text = UICaptionProviderM.AppConf.Buttons.Save;
 
             SettingsListing.Clear();
             BuildSettingsListing();
