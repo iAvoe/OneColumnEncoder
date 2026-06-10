@@ -10,8 +10,8 @@
         d:DataContext="{d:DesignInstance Type=vms:FilterScribeVM}"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
-        Width="560"
-        Height="640"
+        Width="640"
+        Height="800"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid Margin="10">
@@ -19,6 +19,9 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -54,6 +57,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*"
                                        MinHeight="80" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <TextBox Grid.Row="0"
@@ -98,6 +102,13 @@
                              AcceptsReturn="True"
                              Margin="0 10 0 0"
                              FontWeight="Normal" />
+                    <CheckBox Grid.Row="4"
+                              Content="{Binding AvsEnableFpsParamsLabel}"
+                              IsChecked="{Binding AvsEnableFpsParams}"
+                              IsEnabled="{Binding IsFrameRateApplicable}"
+                              Margin="0 5 0 0"
+                              FontWeight="Normal"
+                              Foreground="{StaticResource GlobalSecondary}" />
                 </Grid>
             </TabItem>
 
@@ -110,6 +121,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*"
                                        MinHeight="80" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <TextBox Grid.Row="0"
@@ -150,6 +162,13 @@
                              AcceptsReturn="True"
                              Margin="0 10 0 0"
                              FontWeight="Normal" />
+                    <CheckBox Grid.Row="4"
+                              Content="{Binding VpyEnableFpsParamsLabel}"
+                              IsChecked="{Binding VpyEnableFpsParams}"
+                              IsEnabled="{Binding IsFrameRateApplicable}"
+                              Margin="0 5 0 0"
+                              FontWeight="Normal"
+                              Foreground="{StaticResource GlobalSecondary}" />
                 </Grid>
             </TabItem>
 
@@ -287,7 +306,7 @@
         <StackPanel Grid.Row="6">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="45" />
+                    <ColumnDefinition Width="50" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0"
@@ -309,7 +328,7 @@
             </Grid>
             <Grid Margin="0 5 0 0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="45" />
+                    <ColumnDefinition Width="50" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0"
@@ -331,7 +350,7 @@
             </Grid>
             <Grid Margin="0 5 0 0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="45" />
+                    <ColumnDefinition Width="50" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0"
@@ -353,13 +372,128 @@
             </Grid>
         </StackPanel>
 
+        <!-- VFR -> CFR Framerate Conversion Section -->
         <TextBlock Grid.Row="7"
+                   Text="{Binding FrameRateConvertTitle}"
+                   Style="{StaticResource H3}"
+                   Margin="0 15 0 0" />
+
+        <StackPanel Grid.Row="8"
+                    Margin="0 5 0 0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           Text="{Binding FrameRateStatusText}"
+                           FontSize="12"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource GlobalPrimary}"
+                           VerticalAlignment="Center" />
+                <comps:HintPanel Grid.Column="1"
+                                 Margin="8 0 0 0"
+                                 Text="{Binding FrameRateVfrHintText}" />
+            </Grid>
+
+            <!-- Auto-generated CFR filters -->
+            <Grid Margin="0 8 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           Text="{Binding FfmpegAutoFilterLabel}"
+                           FontSize="11"
+                           Foreground="{StaticResource GlobalSecondary}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right" />
+                <TextBox Grid.Column="1"
+                         Margin="5 0 0 0"
+                         Text="{Binding FfmpegFpsFilter, Mode=OneWay}"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         Background="{StaticResource Background}"
+                         Foreground="{StaticResource GlobalTertiary}"
+                         FontSize="11"
+                         FontFamily="Segoe UI"
+                         VerticalScrollBarVisibility="Disabled" />
+            </Grid>
+            <Grid Margin="0 3 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           Text="{Binding FfmpegCombinedLabel}"
+                           FontSize="11"
+                           Foreground="{StaticResource GlobalSecondary}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right" />
+                <TextBox Grid.Column="1"
+                         Margin="5 0 0 0"
+                         Text="{Binding FfmpegCombinedFilter, Mode=OneWay}"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         Background="{StaticResource Background}"
+                         Foreground="{StaticResource GlobalTertiary}"
+                         FontSize="11"
+                         FontFamily="Segoe UI"
+                         VerticalScrollBarVisibility="Disabled" />
+            </Grid>
+            <Grid Margin="0 3 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           Text="{Binding VapourSynthAutoFilter}"
+                           FontSize="11"
+                           Foreground="{StaticResource GlobalSecondary}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right" />
+                <TextBox Grid.Column="1"
+                         Margin="5 0 0 0"
+                         Text="{Binding VapourSynthFpsFilter, Mode=OneWay}"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         Background="{StaticResource Background}"
+                         Foreground="{StaticResource GlobalTertiary}"
+                         FontSize="11"
+                         FontFamily="Segoe UI"
+                         VerticalScrollBarVisibility="Disabled" />
+            </Grid>
+            <Grid Margin="0 3 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           Text="{Binding AviSynthAutoFilter}"
+                           FontSize="11"
+                           Foreground="{StaticResource GlobalSecondary}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right" />
+                <TextBox Grid.Column="1"
+                         Margin="5 0 0 0"
+                         Text="{Binding AviSynthFpsFilter, Mode=OneWay}"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         Background="{StaticResource Background}"
+                         Foreground="{StaticResource GlobalTertiary}"
+                         FontSize="11"
+                         FontFamily="Segoe UI"
+                         VerticalScrollBarVisibility="Disabled" />
+            </Grid>
+        </StackPanel>
+
+        <TextBlock Grid.Row="10"
                    Text="{Binding NoteText}"
                    Margin="0 10 0 0"
                    FontSize="13"
                    Foreground="{StaticResource GlobalPrimary}" />
 
-        <comps:ThreeButtonGroup Grid.Row="8"
+        <comps:ThreeButtonGroup Grid.Row="11"
                                 Margin="0 10 0 10"
                                 ButtonHeight="30"
                                 DataContext="{Binding FinishScribeButtons}"

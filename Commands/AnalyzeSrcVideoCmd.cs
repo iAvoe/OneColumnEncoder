@@ -37,7 +37,8 @@ namespace OneColumnEncoder.Commands
             {
                 string ffprobePath = _getFfprobePath();
                 string sourcePath = _getSourcePath();
-                string rawJson = await FfprobeVideoAnalysisH.AnalyzeAsync(ffprobePath, sourcePath);
+                string rawJson =
+                    await FfprobeVideoAnalysisH.AnalyzeAsync(ffprobePath, sourcePath);
 
                 _analysis.FfprobePath = ffprobePath;
                 _analysis.SourcePath = sourcePath;
