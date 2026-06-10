@@ -187,7 +187,7 @@
                                       Items="{Binding MetricColumns}"
                                       ColumnCount="6" />
 
-                <!-- RAM telemetry frequency slider -->
+                <!-- RAM monitoring frequency slider -->
                 <comps:IntegerSlider Grid.Row="3"
                                      Margin="0 15 0 0"
                                      Label="{Binding SampleIntervalLabel}"
@@ -198,9 +198,9 @@
                                      TickLabels="{Binding SampleIntervalTickLabels}"
                                      TickCount="5"
                                      Step="1"
-                                     IsEnabled="{Binding IsTelemetryEnabled}" />
+                                     IsEnabled="{Binding IsMonitoringEnabled}" />
 
-                <!-- RAM telemetry pause & continue -->
+                <!-- RAM monitoring pause & continue -->
                 <comps:TwoButtonGroup Grid.Row="4"
                                       Margin="0 10 0 0"
                                       DataContext="{Binding MonitorButtons}"

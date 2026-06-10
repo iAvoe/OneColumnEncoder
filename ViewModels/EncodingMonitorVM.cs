@@ -150,13 +150,13 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _enableMux, value && CanMux);
         }
 
-        private bool _isTelemetryEnabled = true;
-        public bool IsTelemetryEnabled
+        private bool _isMonitoringEnabled = true;
+        public bool IsMonitoringEnabled
         {
-            get => _isTelemetryEnabled;
+            get => _isMonitoringEnabled;
             set
             {
-                if (!SetProperty(ref _isTelemetryEnabled, value)) return;
+                if (!SetProperty(ref _isMonitoringEnabled, value)) return;
                 MonitorButtons.B2_1IsEnabled = value;
                 MonitorButtons.B2_2IsEnabled = value;
             }
@@ -455,7 +455,7 @@ namespace OneColumnEncoder.ViewModels
                 FlushLogsToProperties();
                 UpdateFooterTimes(final: true);
                 EnableCloseButton();
-                IsTelemetryEnabled = false;
+                IsMonitoringEnabled = false;
                 _upstreamStdoutStream = null;
                 _encoderStdinStream = null;
             }
