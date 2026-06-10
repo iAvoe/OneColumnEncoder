@@ -378,9 +378,32 @@
                    Style="{StaticResource H3}"
                    Margin="0 15 0 0" />
 
-        <comps:HintPanel Grid.Row="8"
-                         Margin="0 5 0 0"
-                         Text="{Binding FrameRateVfrHintText}" />
+        <StackPanel Grid.Row="8"
+                    Margin="0 5 0 0">
+            <comps:HintPanel Text="{Binding FrameRateVfrHintText}" />
+            <Grid Margin="0 8 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="45" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           Text="{Binding FfmpegAutoFilter}"
+                           FontSize="11"
+                           Foreground="{StaticResource GlobalSecondary}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right" />
+                <TextBox Grid.Column="1"
+                         Margin="5 0 0 0"
+                         Text="{Binding FfmpegFpsFilter, Mode=OneWay}"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         Background="{StaticResource Background}"
+                         Foreground="{StaticResource GlobalTertiary}"
+                         FontSize="11"
+                         FontFamily="Segoe UI"
+                         VerticalScrollBarVisibility="Disabled" />
+            </Grid>
+        </StackPanel>
 
         <TextBlock Grid.Row="10"
                    Text="{Binding NoteText}"

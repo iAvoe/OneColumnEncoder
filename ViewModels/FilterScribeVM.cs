@@ -150,6 +150,11 @@ namespace OneColumnEncoder.ViewModels
                 ? $"-filter:v scale={TargetWidth}:{TargetHeight} -sws_flags bicubic+full_chroma_int+full_chroma_inp+accurate_rnd"
                 : "N/A";
 
+        public string FfmpegFpsFilter =>
+            IsFrameRateApplicable
+                ? $"-filter:v fps={_frameRateNum}/{_frameRateDen}"
+                : "N/A";
+
         private string GeneratedFfmpegFilterArgs
         {
             get
@@ -361,6 +366,7 @@ namespace OneColumnEncoder.ViewModels
                 OnPropertyChanged(nameof(IsFrameRateApplicable));
                 OnPropertyChanged(nameof(FrameRateNum));
                 OnPropertyChanged(nameof(FrameRateDen));
+                OnPropertyChanged(nameof(FfmpegFpsFilter));
             }
             catch
             {
