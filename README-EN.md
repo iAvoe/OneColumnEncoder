@@ -1,10 +1,8 @@
 # OneColumnEncoder
 
-[中文版](README.md)
+A next-gen smart video encoding utility based on .NET 9/WPF, revolves around “tool & encoder orchestrating, source analyzing, encode customizing, parallelism tailoring, modern GUI monitoring, encode interrupting, and auto-multiplexing”.
 
-A next-gen smart video encoding utility based on .NET 9/WPF, revolves around "tool & encoder orchestrating, source analyzing, encode customizing, parallelism tailoring, modern GUI monitoring, encode interrupting, and auto-multiplexing."
-
-The current code works but lacks testing, which is releasing as beta.
+This software works and are validated on multiple CPUs, but there could still be issues——which is releasing as beta.
 
 <p align="center"><img src="WireframeMockups/logo.png" alt="Logo" width="200"></p>
 
@@ -37,6 +35,10 @@ This software supports multiple languages, but English text screenshots are used
 
 <p align="center"><img src="WireframeMockups/Actual-Binary-Link-Position.png" alt="Actual link is on the right side" width="600"></p>
 
+### Download Encoding Tools
+
+[Encoding Tools Download Tutorial](https://github.com/iAvoe/encoding-tools-download-tutorial)
+
 **Supported pipe upstream programs (decoding and filtering tools)**:
 - ffmpeg
 - vspipe (supports API 3.0 and 4.0 automatic recognition)
@@ -48,6 +50,7 @@ This software supports multiple languages, but English text screenshots are used
 - x264
 - x265
 - SVT-AV1
+
 
 > Minimum requirement is one upstream program + one downstream program.
 
