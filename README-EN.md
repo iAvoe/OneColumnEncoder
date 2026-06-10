@@ -13,7 +13,7 @@ The current code works but lacks testing, which is releasing as beta.
 This software supports multiple languages, but English text screenshots are used here to reduce the number of images. Some UI elements or text in the images may be outdated, but the overall layout and functional area divisions remain applicable. Please refer to the actual version you are using.
 
 1. Main Interface: Tools area, Source Import area, Analysis area, Checklist, Encoding Settings area, and Startup area
-2. Script Editor: AVS/VPY editing area, copy and save functions
+2. Script Editor: AVS/VPY editing area, video scaling and VFR to CFR command generation
 3. Encoding Settings: CRF/ABR parameters, custom presets, and 3rd party encoder arguments
 4. Parallelism Settings: NUMA nodes, CPU Sets, and advanced thread limit
 5. Clip Sampler: Time/Frame Number selection, conversion, and basic preview
