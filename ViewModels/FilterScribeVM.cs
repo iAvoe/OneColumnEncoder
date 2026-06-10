@@ -61,7 +61,7 @@ namespace OneColumnEncoder.ViewModels
             get
             {
                 if (_isFrameRateVariable && _vpyEnableFpsParams && _frameRateNum > 0 && _frameRateDen > 0)
-                    return $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavVideoSource(source=r\"video file path\", fpsnum={_frameRateNum}, fpsden={_frameRateDen})";
+                    return $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"video file path\", fpsnum={_frameRateNum}, fpsden={_frameRateDen})";
                 return _baseVpyPrefix;
             }
         }
@@ -249,7 +249,7 @@ namespace OneColumnEncoder.ViewModels
         }
 
         public static string AvsEnableFpsParamsLabel => "LWLibavVideoSource VFR\u2192CFR";
-        public static string VpyEnableFpsParamsLabel => "LWLibavVideoSource VFR\u2192CFR";
+        public static string VpyEnableFpsParamsLabel => "LWLibavSource VFR\u2192CFR";
 
 
 
@@ -279,7 +279,6 @@ namespace OneColumnEncoder.ViewModels
         public static string VapourSynthAutoFilter => "VS";
         public static string AviSynthAutoFilter => "AVS(+)";
         public static string FrameRateConvertTitle => UILangProviderM.Current["SrcScribe.FrameRateConvertTitle"];
-        public static string FrameRateVfrHintText => UILangProviderM.Current["SrcScribe.FrameRateVfrHint"];
         #endregion
 
         public ButtonGroupVM ScriptExportButtons { get; private set; } = null!;
@@ -619,7 +618,6 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(VapourSynthAutoFilter));
             OnPropertyChanged(nameof(AviSynthAutoFilter));
             OnPropertyChanged(nameof(FrameRateConvertTitle));
-            OnPropertyChanged(nameof(FrameRateVfrHintText));
             OnPropertyChanged(nameof(AvsEnableFpsParamsLabel));
             OnPropertyChanged(nameof(VpyEnableFpsParamsLabel));
 

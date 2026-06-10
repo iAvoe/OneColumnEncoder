@@ -11,10 +11,10 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="640"
-        Height="800"
+        Height="710"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
-    <Grid Margin="10">
+    <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -32,7 +32,6 @@
 
         <TextBlock Grid.Row="0"
                    Text="{Binding ScribeDescription1}"
-                   Margin="0 10 0 0"
                    FontSize="13"
                    TextWrapping="Wrap"
                    Foreground="{StaticResource GlobalPrimary}" />
@@ -90,7 +89,7 @@
                              HorizontalScrollBarVisibility="Auto"
                              VerticalScrollBarVisibility="Auto"
                              PreviewMouseWheel="UserInput_PreviewMouseWheel"
-                             Margin="0 10 0 0"
+                             Margin="0 5 0 0"
                              FontWeight="Normal" />
                     <TextBox Grid.Row="3"
                              Text="{Binding AvsSuffix, Mode=OneWay}"
@@ -100,7 +99,7 @@
                              Foreground="{StaticResource ButtonTertiary}"
                              TextWrapping="Wrap"
                              AcceptsReturn="True"
-                             Margin="0 10 0 0"
+                             Margin="0 5 0 0"
                              FontWeight="Normal" />
                     <CheckBox Grid.Row="4"
                               Content="{Binding AvsEnableFpsParamsLabel}"
@@ -150,7 +149,7 @@
                              Padding="5"
                              FontSize="13"
                              PreviewMouseWheel="UserInput_PreviewMouseWheel"
-                             Margin="0 10 0 0"
+                             Margin="0 5 0 0"
                              FontWeight="Normal" />
                     <TextBox Grid.Row="3"
                              Text="{Binding VpySuffix, Mode=OneWay}"
@@ -160,7 +159,7 @@
                              Foreground="{StaticResource ButtonTertiary}"
                              TextWrapping="Wrap"
                              AcceptsReturn="True"
-                             Margin="0 10 0 0"
+                             Margin="0 5 0 0"
                              FontWeight="Normal" />
                     <CheckBox Grid.Row="4"
                               Content="{Binding VpyEnableFpsParamsLabel}"
@@ -223,7 +222,7 @@
                    Margin="0 15 0 0" />
 
         <Grid Grid.Row="5"
-              Margin="0 5 0 0">
+              Margin="0 2.5 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto"
@@ -306,15 +305,14 @@
         <StackPanel Grid.Row="6">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="49" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0"
                            Text="{Binding FfmpegAutoFilter}"
                            FontSize="11"
                            Foreground="{StaticResource GlobalSecondary}"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Right" />
+                           VerticalAlignment="Center" />
                 <TextBox Grid.Column="1"
                          Margin="5 0 0 0"
                          Text="{Binding FfmpegResizeFilter, Mode=OneWay}"
@@ -328,15 +326,14 @@
             </Grid>
             <Grid Margin="0 5 0 0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="49" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0"
                            Text="{Binding VapourSynthAutoFilter}"
                            FontSize="11"
                            Foreground="{StaticResource GlobalSecondary}"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Right" />
+                           VerticalAlignment="Center" />
                 <TextBox Grid.Column="1"
                          Margin="5 0 0 0"
                          Text="{Binding VapourSynthResizeFilter, Mode=OneWay}"
@@ -350,15 +347,14 @@
             </Grid>
             <Grid Margin="0 5 0 0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="49" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0"
                            Text="{Binding AviSynthAutoFilter}"
                            FontSize="11"
                            Foreground="{StaticResource GlobalSecondary}"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Right" />
+                           VerticalAlignment="Center" />
                 <TextBox Grid.Column="1"
                          Margin="5 0 0 0"
                          Text="{Binding AviSynthResizeFilter, Mode=OneWay}"
@@ -380,18 +376,16 @@
 
         <StackPanel Grid.Row="8"
                     Margin="0 5 0 0">
-            <comps:HintPanel Text="{Binding FrameRateVfrHintText}" />
-            <Grid Margin="0 8 0 0">
+            <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="45" />
+                    <ColumnDefinition Width="49" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0"
                            Text="{Binding FfmpegAutoFilter}"
                            FontSize="11"
                            Foreground="{StaticResource GlobalSecondary}"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Right" />
+                           VerticalAlignment="Center" />
                 <TextBox Grid.Column="1"
                          Margin="5 0 0 0"
                          Text="{Binding FfmpegFpsFilter, Mode=OneWay}"
@@ -405,15 +399,14 @@
             </Grid>
             <Grid Margin="0 3 0 0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="45" />
+                    <ColumnDefinition Width="49" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0"
-                           Text="ffmpeg:all"
+                           Text="ffmpeg::"
                            FontSize="11"
                            Foreground="{StaticResource GlobalSecondary}"
-                           VerticalAlignment="Center"
-                           HorizontalAlignment="Right" />
+                           VerticalAlignment="Center" />
                 <TextBox Grid.Column="1"
                          Margin="5 0 0 0"
                          Text="{Binding FfmpegCombinedFilter, Mode=OneWay}"
@@ -427,14 +420,8 @@
             </Grid>
         </StackPanel>
 
-        <TextBlock Grid.Row="10"
-                   Text="{Binding NoteText}"
-                   Margin="0 10 0 0"
-                   FontSize="13"
-                   Foreground="{StaticResource GlobalPrimary}" />
-
-        <comps:ThreeButtonGroup Grid.Row="11"
-                                Margin="0 10 0 10"
+        <comps:ThreeButtonGroup Grid.Row="10"
+                                Margin="0 10 0 0"
                                 ButtonHeight="30"
                                 DataContext="{Binding FinishScribeButtons}"
                                 Button1Command="{Binding Cmd1}"
@@ -443,5 +430,9 @@
                                 Button1IsEnabled="{Binding B3_1IsEnabled}"
                                 Button2IsEnabled="{Binding B3_2IsEnabled}"
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
+        
+        <comps:HintPanel Grid.Row="11"
+                         Margin="0 5 0 5"
+                         Text="{Binding NoteText}" />
     </Grid>
 </helpers:AdaptiveWindow>

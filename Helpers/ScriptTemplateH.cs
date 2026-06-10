@@ -12,9 +12,9 @@
 
         public static string BuildVpySourceHeader(string sourcePath, int fpsnum = 0, int fpsden = 0)
         {
-            string header = $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavVideoSource(source=r\"{sourcePath}\")";
+            string header = $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"{sourcePath}\")";
             if (fpsnum > 0 && fpsden > 0)
-                header = $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavVideoSource(source=r\"{sourcePath}\", fpsnum={fpsnum}, fpsden={fpsden})";
+                header = $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"{sourcePath}\", fpsnum={fpsnum}, fpsden={fpsden})";
             return header;
         }
 
