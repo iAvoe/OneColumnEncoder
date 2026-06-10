@@ -291,7 +291,7 @@ The developer shall not be liable for any direct, indirect, incidental, special,
 
 Video compression is a long-duration, sustained, high-load CPU computing task. Under these conditions, the following factors, among others, may cause hardware damage:
 
-- Impropert heatsink installation, unstable overclocking, or excessively high voltage settings may lead to accelerated processor aging, electrical short circuits, or other hardware failures.
+- Improper heatsink installation, unstable overclocking, or excessively high voltage settings may lead to accelerated processor aging, electrical short circuits, or other hardware failures.
 - Extreme computational loads may cause system unresponsiveness, blue-screen crashes, resulting in data corruption or loss.
 
 ### Protective Measures Provided by This Software
