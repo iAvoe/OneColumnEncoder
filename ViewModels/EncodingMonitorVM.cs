@@ -1484,6 +1484,16 @@ namespace OneColumnEncoder.ViewModels
             public fixed char szExeFile[260];
         }
 
+        /// <summary>
+        /// Represents a snapshot of the system's memory status at a point in time.
+        /// Contains information about physical RAM and virtual memory usage.
+        /// </summary>
+        /// <param name="TotalPhysicalBytes">Total amount of physical RAM in bytes.</param>
+        /// <param name="AvailablePhysicalBytes">Amount of available (free) physical RAM in bytes.</param>
+        /// <param name="CommitLimitBytes">Maximum amount of virtual memory that can be committed in bytes.</param>
+        /// <param name="CommittedBytes">Amount of currently committed virtual memory in bytes.</param>
+        /// <param name="SystemCacheBytes">Amount of physical RAM used by the system cache in bytes.</param>
+        /// <param name="MemoryLoadPercent">Percentage of physical memory currently in use (0-100).</param>
         private readonly record struct MemoryStatusSnapshot(
             long TotalPhysicalBytes,
             long AvailablePhysicalBytes,
@@ -1492,7 +1502,12 @@ namespace OneColumnEncoder.ViewModels
             long SystemCacheBytes,
             int MemoryLoadPercent)
         {
-            public long UsedPhysicalBytes => Math.Max(0, TotalPhysicalBytes - AvailablePhysicalBytes);
+            /// <summary>
+            /// Gets the amount of used physical RAM in bytes, calculated as the difference
+            /// between total and available physical memory.
+            /// </summary>
+            public long UsedPhysicalBytes =>
+                Math.Max(0, TotalPhysicalBytes - AvailablePhysicalBytes);
         }
 
         /// <summary>
@@ -1648,7 +1663,7 @@ namespace OneColumnEncoder.ViewModels
         }
 
         /// <summary>
-        /// Formats the encoder preset/mode display text (e.g. "x264 Mode medium").
+        /// Formats the encoder preset/mode display text
         /// </summary>
         private string GetPresetText()
         {
