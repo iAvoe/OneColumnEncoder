@@ -197,7 +197,8 @@
                                      Value="{Binding SampleIntervalSeconds, Mode=TwoWay}"
                                      TickLabels="{Binding SampleIntervalTickLabels}"
                                      TickCount="5"
-                                     Step="1" />
+                                     Step="1"
+                                     IsEnabled="{Binding IsTelemetryEnabled}" />
 
                 <!-- RAM telemetry pause & continue -->
                 <comps:TwoButtonGroup Grid.Row="4"
@@ -205,7 +206,9 @@
                                       DataContext="{Binding MonitorButtons}"
                                       ButtonHeight="30"
                                       Button1Command="{Binding Cmd1}"
-                                      Button2Command="{Binding Cmd2}" />
+                                      Button2Command="{Binding Cmd2}"
+                                      Button1IsEnabled="{Binding B2_1IsEnabled}"
+                                      Button2IsEnabled="{Binding B2_2IsEnabled}" />
 
                 <StackPanel Grid.Row="5"
                             Margin="0 15 0 0">
