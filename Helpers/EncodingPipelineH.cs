@@ -69,6 +69,7 @@ public static partial class EncodingPipelineH
 
     private static string? GetMuxInputFormatArgs(string encoderExeName, string? framerateValue)
     {
+        // x264 produces mp4, which does not need auto-muxing assist
         string? fmt = encoderExeName.ToLowerInvariant() switch
         {
             "x265.exe" => "hevc",
@@ -213,7 +214,7 @@ public static partial class EncodingPipelineH
     {
         if (clip == null || clip.FirstFrame == null && clip.LastFrame == null) return string.Empty;
         long firstFrame = clip.FirstFrame ?? 0;
-        if (clip.LastFrame == null) return string.Empty;
+        if (clip.LastFrame == null) return $"-trim={firstFrame}";
         return $"-trim={firstFrame},{clip.LastFrame}";
     }
 
