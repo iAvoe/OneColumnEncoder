@@ -123,13 +123,13 @@ public static partial class EncodingPipelineH
             var nonVideoStreams = new List<string>();
             foreach (JsonElement stream in streams.EnumerateArray())
             {
-                string? codecType = TryGetString(stream, "codec_type");
+                string? codecType = JsonElementHelper.TryGetString(stream, "codec_type");
                 if (string.IsNullOrWhiteSpace(codecType)) continue;
                 if (codecType.Equals("video", StringComparison.OrdinalIgnoreCase)) continue;
                 if (codecType.Equals("attachment", StringComparison.OrdinalIgnoreCase)) continue;
                 if (codecType.Equals("data", StringComparison.OrdinalIgnoreCase)) continue;
 
-                if (!TryGetInt(stream, "index", out int streamIndex)) continue;
+                if (!JsonElementHelper.TryGetInt(stream, "index", out int streamIndex)) continue;
                 nonVideoStreams.Add($"-map 1:{streamIndex}");
             }
 
@@ -452,13 +452,13 @@ public static partial class EncodingPipelineH
             using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
             if (!TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return null;
 
-            long? frameCount = TryGetLong(stream, "nb_frames")
-                ?? TryGetLong(stream, "NUMBER_OF_FRAMES", "tags");
+            long? frameCount = JsonElementHelper.TryGetLong(stream, "nb_frames")
+                ?? JsonElementHelper.TryGetLong(stream, "NUMBER_OF_FRAMES", "tags");
 
             if (frameCount is > 0) return frameCount;
 
-            double? duration = TryGetDouble(stream, "duration")
-                ?? (document.RootElement.TryGetProperty("format", out JsonElement format) ? TryGetDouble(format, "duration") : null);
+            double? duration = JsonElementHelper.TryGetDouble(stream, "duration")
+                ?? (document.RootElement.TryGetProperty("format", out JsonElement format) ? JsonElementHelper.TryGetDouble(format, "duration") : null);
             string? fpsString = TryGetFrameRateString(stream);
             if (duration is > 0 && TryParseFrameRate(fpsString, out double fps))
             {
@@ -522,9 +522,9 @@ public static partial class EncodingPipelineH
         if (!isX264 && !isX265 && !isSvtAv1) return string.Empty;
 
         string? fpsString = TryGetFrameRateString(stream);
-        string? pixelFormat = TryGetString(stream, "pix_fmt");
-        string? width = TryGetString(stream, "width");
-        string? height = TryGetString(stream, "height");
+        string? pixelFormat = JsonElementHelper.TryGetString(stream, "pix_fmt");
+        string? width = JsonElementHelper.TryGetString(stream, "width");
+        string? height = JsonElementHelper.TryGetString(stream, "height");
 
         // Y4M pipeline skips upstream-only or Y4M-header-provided parameters:
         // Get-ffmpegCSP (-pix_fmt), Get-InputResolution, Get-FPSParam,
@@ -562,7 +562,7 @@ public static partial class EncodingPipelineH
 
     private static string GetX265MeRange(JsonElement stream)
     {
-        if (!TryGetInt(stream, "width", out int width) || !TryGetInt(stream, "height", out int height))
+        if (!JsonElementHelper.TryGetInt(stream, "width", out int width) || !JsonElementHelper.TryGetInt(stream, "height", out int height))
             return string.Empty;
 
         long pixels = (long)width * height;
@@ -587,8 +587,8 @@ public static partial class EncodingPipelineH
     private static string GetFrameCount(JsonElement stream, EncodingClipRequest? clip, bool isSvtAv1)
     {
         long? frameCount = GetClipFrameCount(clip)
-            ?? TryGetLong(stream, "nb_frames")
-            ?? TryGetLong(stream, "NUMBER_OF_FRAMES", "tags");
+            ?? JsonElementHelper.TryGetLong(stream, "nb_frames")
+            ?? JsonElementHelper.TryGetLong(stream, "NUMBER_OF_FRAMES", "tags");
 
         return frameCount is > 0
             ? isSvtAv1 ? $"-n {frameCount}" : $"--frames {frameCount}"
@@ -614,9 +614,9 @@ public static partial class EncodingPipelineH
 
     private static string GetColorSpaceSei(JsonElement stream, bool isX264, bool isX265, bool isSvtAv1)
     {
-        string? colorMatrix = NormalizeMetadata(TryGetString(stream, "color_space"));
-        string? transfer = NormalizeMetadata(TryGetString(stream, "color_transfer"));
-        string? primaries = NormalizeMetadata(TryGetString(stream, "color_primaries"));
+        string? colorMatrix = NormalizeMetadata(JsonElementHelper.TryGetString(stream, "color_space"));
+        string? transfer = NormalizeMetadata(JsonElementHelper.TryGetString(stream, "color_transfer"));
+        string? primaries = NormalizeMetadata(JsonElementHelper.TryGetString(stream, "color_primaries"));
         if (colorMatrix == null || transfer == null || primaries == null) return string.Empty;
 
         if (isX264)
@@ -653,9 +653,9 @@ public static partial class EncodingPipelineH
 
     private static string GetRangeChromaLocation(JsonElement stream, bool isX264, bool isX265, bool isSvtAv1)
     {
-        string pixelFormat = NormalizeMetadata(TryGetString(stream, "pix_fmt")) ?? string.Empty;
-        string range = NormalizeMetadata(TryGetString(stream, "color_range")) ?? string.Empty;
-        string chromaLocation = NormalizeMetadata(TryGetString(stream, "chroma_location")) ?? string.Empty;
+        string pixelFormat = NormalizeMetadata(JsonElementHelper.TryGetString(stream, "pix_fmt")) ?? string.Empty;
+        string range = NormalizeMetadata(JsonElementHelper.TryGetString(stream, "color_range")) ?? string.Empty;
+        string chromaLocation = NormalizeMetadata(JsonElementHelper.TryGetString(stream, "chroma_location")) ?? string.Empty;
 
         List<string> result = [];
         if (range is "tv" or "pc")
@@ -781,7 +781,7 @@ public static partial class EncodingPipelineH
 
         foreach (JsonElement item in streams.EnumerateArray())
         {
-            if (TryGetString(item, "codec_type") is null or "video")
+            if (JsonElementHelper.TryGetString(item, "codec_type") is null or "video")
             {
                 stream = item;
                 return true;
@@ -793,10 +793,10 @@ public static partial class EncodingPipelineH
 
     private static string? TryGetFrameRateString(JsonElement stream)
     {
-        string? fps = TryGetString(stream, "avg_frame_rate");
+        string? fps = JsonElementHelper.TryGetString(stream, "avg_frame_rate");
         if (IsUsableFrameRate(fps)) return fps;
 
-        fps = TryGetString(stream, "r_frame_rate");
+        fps = JsonElementHelper.TryGetString(stream, "r_frame_rate");
         return IsUsableFrameRate(fps) ? fps : null;
     }
 
@@ -827,15 +827,6 @@ public static partial class EncodingPipelineH
             && frameRate > 0d;
     }
 
-    private static double? TryGetDouble(JsonElement element, string propertyName)
-    {
-        if (!element.TryGetProperty(propertyName, out JsonElement property)) return null;
-        if (property.ValueKind == JsonValueKind.Number && property.TryGetDouble(out double value)) return value;
-        return double.TryParse(property.GetString(), NumberStyles.Float, CultureInfo.InvariantCulture, out value)
-            ? value
-            : null;
-    }
-
     private static int? TryGetIntegerArg(string args, string name)
     {
         Match match = Regex.Match(args, $@"(?:^|\s){Regex.Escape(name)}\s+(-?\d+)(?=\s|$)");
@@ -844,44 +835,11 @@ public static partial class EncodingPipelineH
             : null;
     }
 
-    private static string? TryGetString(JsonElement element, string propertyName)
-    {
-        if (!element.TryGetProperty(propertyName, out JsonElement property)) return null;
-        return property.ValueKind switch
-        {
-            JsonValueKind.String => property.GetString(),
-            JsonValueKind.Number => property.GetRawText(),
-            _ => null
-        };
-    }
 
-    private static bool TryGetInt(JsonElement element, string propertyName, out int value)
-    {
-        value = 0;
-        if (!element.TryGetProperty(propertyName, out JsonElement property)) return false;
-        if (property.ValueKind == JsonValueKind.Number) return property.TryGetInt32(out value);
-        return property.ValueKind == JsonValueKind.String
-            && int.TryParse(property.GetString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out value);
-    }
 
-    private static long? TryGetLong(JsonElement element, string propertyName, string? parentPropertyName = null)
-    {
-        JsonElement container = element;
-        if (parentPropertyName != null
-            && (!element.TryGetProperty(parentPropertyName, out container) || container.ValueKind != JsonValueKind.Object))
-            return null;
 
-        if (!container.TryGetProperty(propertyName, out JsonElement property)) return null;
-        if (property.ValueKind == JsonValueKind.Number && property.TryGetInt64(out long number)) return number;
-        if (property.ValueKind != JsonValueKind.String) return null;
 
-        string? text = property.GetString();
-        return !string.IsNullOrWhiteSpace(text)
-            && !text.Equals("N/A", StringComparison.OrdinalIgnoreCase)
-            && long.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out long parsed)
-                ? parsed
-                : null;
-    }
+
 
     private static string? NormalizeMetadata(string? value) =>
         string.IsNullOrWhiteSpace(value) ? null : value.Trim().ToLowerInvariant();
@@ -942,7 +900,7 @@ public static partial class EncodingPipelineH
             using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
             if (!TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return fallbackTimescale;
 
-            string? timeBase = TryGetString(stream, "time_base");
+            string? timeBase = JsonElementHelper.TryGetString(stream, "time_base");
             if (string.IsNullOrWhiteSpace(timeBase)) return fallbackTimescale;
 
             string[] parts = timeBase.Trim().Split('/');

@@ -509,26 +509,26 @@ namespace OneColumnEncoder.ViewModels
                 JsonElement root = document.RootElement;
                 JsonElement stream = root.GetProperty("streams")[0];
 
-                double duration = TryGetDouble(stream, "duration")
-                    ?? (root.TryGetProperty("format", out JsonElement format) ? TryGetDouble(format, "duration") : null)
+                double duration = JsonElementHelper.TryGetDouble(stream, "duration")
+                    ?? (root.TryGetProperty("format", out JsonElement format) ? JsonElementHelper.TryGetDouble(format, "duration") : null)
                     ?? fallbackDuration;
 
-                double frameRate = ParseFrameRate(TryGetString(stream, "avg_frame_rate"))
-                    ?? ParseFrameRate(TryGetString(stream, "r_frame_rate"))
+                double frameRate = ParseFrameRate(JsonElementHelper.TryGetString(stream, "avg_frame_rate"))
+                    ?? ParseFrameRate(JsonElementHelper.TryGetString(stream, "r_frame_rate"))
                     ?? fallbackFrameRate;
 
-                long totalFrames = TryGetLong(stream, "nb_frames")
+                long totalFrames = JsonElementHelper.TryGetLong(stream, "nb_frames")
                     ?? Math.Max(0L, (long)Math.Round(duration * frameRate));
 
-                string? fieldOrder = TryGetString(stream, "field_order");
+                string? fieldOrder = JsonElementHelper.TryGetString(stream, "field_order");
                 string fieldOrderKind = string.IsNullOrWhiteSpace(fieldOrder) || fieldOrder.Equals("unknown", StringComparison.OrdinalIgnoreCase)
                     ? "unknown"
                     : fieldOrder.Equals("progressive", StringComparison.OrdinalIgnoreCase)
                         ? "progressive"
                         : "interlaced";
 
-                string? avg = TryGetString(stream, "avg_frame_rate");
-                string? r = TryGetString(stream, "r_frame_rate");
+                string? avg = JsonElementHelper.TryGetString(stream, "avg_frame_rate");
+                string? r = JsonElementHelper.TryGetString(stream, "r_frame_rate");
                 string frameRateKind = !string.IsNullOrWhiteSpace(avg) && !avg.Equals("0/0", StringComparison.OrdinalIgnoreCase)
                     ? string.Equals(avg, r, StringComparison.OrdinalIgnoreCase) ? "constant" : "variable"
                     : "unknown";
@@ -569,29 +569,6 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(Note2Text));
             OnPropertyChanged(nameof(ClipLengthTickLabels));
             BuildSummary();
-        }
-
-        private static string? TryGetString(JsonElement element, string propertyName) =>
-            element.TryGetProperty(propertyName, out JsonElement property)
-                ? property.GetString()
-                : null;
-
-        private static double? TryGetDouble(JsonElement element, string propertyName)
-        {
-            if (!element.TryGetProperty(propertyName, out JsonElement property)) return null;
-            if (property.ValueKind == JsonValueKind.Number && property.TryGetDouble(out double value)) return value;
-            return double.TryParse(property.GetString(), NumberStyles.Float, CultureInfo.InvariantCulture, out value)
-                ? value
-                : null;
-        }
-
-        private static long? TryGetLong(JsonElement element, string propertyName)
-        {
-            if (!element.TryGetProperty(propertyName, out JsonElement property)) return null;
-            if (property.ValueKind == JsonValueKind.Number && property.TryGetInt64(out long value)) return value;
-            return long.TryParse(property.GetString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out value)
-                ? value
-                : null;
         }
 
         private static double? ParseFrameRate(string? text)

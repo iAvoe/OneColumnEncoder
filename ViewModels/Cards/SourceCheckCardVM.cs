@@ -1,4 +1,5 @@
-﻿using OneColumnEncoder.Models;
+﻿using OneColumnEncoder.Helpers;
+using OneColumnEncoder.Models;
 using System.Text.Json;
 
 namespace OneColumnEncoder.ViewModels.Cards
@@ -205,7 +206,7 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         private static bool IsProgressive(JsonElement stream)
         {
-            string? fieldOrder = TryGetString(stream, "field_order");
+            string? fieldOrder = JsonElementHelper.TryGetString(stream, "field_order");
             return string.IsNullOrWhiteSpace(fieldOrder)
                 || fieldOrder.Equals("progressive", StringComparison.OrdinalIgnoreCase)
                 || fieldOrder.Equals("unknown", StringComparison.OrdinalIgnoreCase);
@@ -219,10 +220,10 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         private static int GetBitDepth(JsonElement stream)
         {
-            if (TryGetInt(stream, "bits_per_raw_sample", out int rawBits)) return rawBits;
-            if (TryGetInt(stream, "bits_per_sample", out int sampleBits)) return sampleBits;
+            if (JsonElementHelper.TryGetInt(stream, "bits_per_raw_sample", out int rawBits)) return rawBits;
+            if (JsonElementHelper.TryGetInt(stream, "bits_per_sample", out int sampleBits)) return sampleBits;
 
-            string pixFmt = TryGetString(stream, "pix_fmt") ?? string.Empty;
+            string pixFmt = JsonElementHelper.TryGetString(stream, "pix_fmt") ?? string.Empty;
             if (pixFmt.Contains("10", StringComparison.OrdinalIgnoreCase)) return 10;
             if (pixFmt.Contains("12", StringComparison.OrdinalIgnoreCase)) return 12;
             if (pixFmt.Contains("14", StringComparison.OrdinalIgnoreCase)) return 14;
@@ -232,8 +233,8 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         private static bool HasConstantFrameRate(JsonElement stream)
         {
-            string? avg = TryGetString(stream, "avg_frame_rate");
-            string? r = TryGetString(stream, "r_frame_rate");
+            string? avg = JsonElementHelper.TryGetString(stream, "avg_frame_rate");
+            string? r = JsonElementHelper.TryGetString(stream, "r_frame_rate");
             return !string.IsNullOrWhiteSpace(avg)
                 && !avg.Equals("0/0", StringComparison.OrdinalIgnoreCase)
                 && string.Equals(avg, r, StringComparison.OrdinalIgnoreCase);
@@ -241,13 +242,13 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         private static bool HasSquarePixels(JsonElement stream)
         {
-            string? sar = TryGetString(stream, "sample_aspect_ratio");
+            string? sar = JsonElementHelper.TryGetString(stream, "sample_aspect_ratio");
             return string.Equals(sar, "1:1", StringComparison.OrdinalIgnoreCase);
         }
 
         private static bool HasKnownMetadata(JsonElement stream, string propertyName)
         {
-            string? value = TryGetString(stream, propertyName);
+            string? value = JsonElementHelper.TryGetString(stream, propertyName);
             return !string.IsNullOrWhiteSpace(value)
                 && !value.Equals("unknown", StringComparison.OrdinalIgnoreCase)
                 && !value.Equals("unspecified", StringComparison.OrdinalIgnoreCase)
@@ -256,7 +257,7 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         private static bool HasSupportedChroma(JsonElement stream)
         {
-            string pixFmt = TryGetString(stream, "pix_fmt") ?? string.Empty;
+            string pixFmt = JsonElementHelper.TryGetString(stream, "pix_fmt") ?? string.Empty;
             if (string.IsNullOrWhiteSpace(pixFmt)) return false;
             if (pixFmt.Contains("444", StringComparison.OrdinalIgnoreCase)
                 || pixFmt.Contains("rgb", StringComparison.OrdinalIgnoreCase)
@@ -264,27 +265,13 @@ namespace OneColumnEncoder.ViewModels.Cards
                 || pixFmt.Contains("gray", StringComparison.OrdinalIgnoreCase))
                 return true;
 
-            string? chromaLocation = TryGetString(stream, "chroma_location");
+            string? chromaLocation = JsonElementHelper.TryGetString(stream, "chroma_location");
             return pixFmt.Contains("yuv", StringComparison.OrdinalIgnoreCase)
                 && (chromaLocation?.Equals("left", StringComparison.OrdinalIgnoreCase) == true
                     || chromaLocation?.Equals("topleft", StringComparison.OrdinalIgnoreCase) == true);
         }
 
-        private static string? TryGetString(JsonElement element, string propertyName)
-        {
-            return element.TryGetProperty(propertyName, out JsonElement property)
-                ? property.GetString()
-                : null;
-        }
 
-        private static bool TryGetInt(JsonElement element, string propertyName, out int value)
-        {
-            value = 0;
-            if (!element.TryGetProperty(propertyName, out JsonElement property)) return false;
-            if (property.ValueKind == JsonValueKind.Number) return property.TryGetInt32(out value);
-            return property.ValueKind == JsonValueKind.String
-                && int.TryParse(property.GetString(), out value);
-        }
 
         #endregion
     }
