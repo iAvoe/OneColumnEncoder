@@ -65,23 +65,22 @@ namespace OneColumnEncoder.Commands
 
         private void OpenOverwriteConfirmationOrStart(EncodingPipelineRequest request, EncodingPipelineCommand command)
         {
-            string resolvedOutputPath = command.MuxCommand?.OutputPath
-                ?? EncodingPipelineH.ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath);
+            OverwriteTarget[] overwriteTargets = GetExistingOverwriteTargets(request, command);
 
-            if (!File.Exists(resolvedOutputPath))
+            if (overwriteTargets.Length == 0)
             {
                 StartEncoding(request, command);
                 return;
             }
 
-            long outputLengthBytes = GetFileLengthBytes(resolvedOutputPath);
-            int confirmDelayMs = CalculateOverwriteConfirmDelayMs(outputLengthBytes);
+            long maxOutputLengthBytes = overwriteTargets.Max(t => t.LengthBytes);
+            int confirmDelayMs = CalculateOverwriteConfirmDelayMs(maxOutputLengthBytes);
 
             ConfirmationModal window = new();
             CloseModalCmd closeCmd = new(window.Close);
             ConfirmationVM vm = ConfirmationVM.CreateWarning(
                 _lang.OverwriteTitle,
-                BuildOverwriteWarningMessage(resolvedOutputPath, outputLengthBytes, confirmDelayMs),
+                BuildOverwriteWarningMessage(overwriteTargets, maxOutputLengthBytes, confirmDelayMs),
                 closeCmd,
                 new ActionCmd(_ =>
                 {
@@ -114,6 +113,28 @@ namespace OneColumnEncoder.Commands
             window.ShowDialog();
         }
 
+        private OverwriteTarget[] GetExistingOverwriteTargets(EncodingPipelineRequest request, EncodingPipelineCommand command)
+        {
+            var candidates = command.MuxCommand == null
+                ? new[]
+                {
+                    new OverwriteTarget(
+                        _lang.EncodedOutputLabel,
+                        EncodingPipelineH.ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath),
+                        0L)
+                }
+                : new[]
+                {
+                    new OverwriteTarget(_lang.EncodedOutputLabel, command.MuxCommand.EncodedVideoPath, 0L),
+                    new OverwriteTarget(_lang.MuxOutputLabel, command.MuxCommand.OutputPath, 0L)
+                };
+
+            return candidates
+                .Where(t => File.Exists(t.Path))
+                .Select(t => t with { LengthBytes = GetFileLengthBytes(t.Path) })
+                .ToArray();
+        }
+
         private void StartEncoding(EncodingPipelineRequest request, EncodingPipelineCommand command)
         {
             new OpenEncodingMonitorCmd(_modalNavS, request, command).Execute(null);
@@ -136,13 +157,17 @@ namespace OneColumnEncoder.Commands
             catch { return 0L; }
         }
 
-        private string BuildOverwriteWarningMessage(string outputPath, long fileLengthBytes, int confirmDelayMs)
+        private string BuildOverwriteWarningMessage(OverwriteTarget[] targets, long maxFileLengthBytes, int confirmDelayMs)
         {
             double seconds = confirmDelayMs / 1000d;
+            string[] targetLines = targets
+                .Select(t => string.Format(_lang.OverwriteTargetLabel, t.Label, t.Path, FormatFileSize(t.LengthBytes)))
+                .ToArray();
+
             return string.Join(Environment.NewLine,
                 _lang.OverwriteMsg,
-                string.Format(_lang.OutputLabel, outputPath),
-                string.Format(_lang.ExistingSizeLabel, FormatFileSize(fileLengthBytes)),
+                string.Join(Environment.NewLine, targetLines),
+                string.Format(_lang.LargestExistingSizeLabel, FormatFileSize(maxFileLengthBytes)),
                 string.Format(_lang.ConfirmDelayLabel, seconds.ToString("0.0", CultureInfo.InvariantCulture)));
         }
 
@@ -155,5 +180,7 @@ namespace OneColumnEncoder.Commands
                 return $"{bytes / (double)bytesPerGb:0.0}{_lang.GbSuffix}";
             return $"{bytes / (double)bytesPerMb:0.0}{_lang.MbSuffix}";
         }
+
+        private readonly record struct OverwriteTarget(string Label, string Path, long LengthBytes);
     }
 }
