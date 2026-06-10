@@ -255,7 +255,11 @@ namespace OneColumnEncoder.ViewModels
                 _closeAction();
             });
 
-            MonitorButtons = ButtonGroupVM.CreateTwoButton(FreezeOrContinueText, Lang.ResetUsageText, FreezeOrContinueCmd, ResetStatsCmd);
+            MonitorButtons = ButtonGroupVM.CreateTwoButton(
+                FreezeOrContinueText,
+                Lang.ResetUsageText,
+                FreezeOrContinueCmd,
+                ResetStatsCmd);
 
             ReportButtons = ButtonGroupVM.CreateThreeButton(
                 Lang.SaveUpstreamStderrText, Lang.SaveDownstreamStderrText, Lang.RotateLogFontSizeText,
@@ -1492,23 +1496,21 @@ namespace OneColumnEncoder.ViewModels
         }
 
         /// <summary>
-        /// Resets all runtime statistics (peaks, progress, written frames) back to zero.
-        /// Triggers UI refresh for affected labels.
+        /// Resets accumulated memory usage peaks and written-frame counters.
+        /// Does NOT reset encoding progress.
         /// </summary>
         private void ResetStats()
         {
-            // Touch BottomText to trigger binding refresh even if value hasn't changed
-            foreach (ColumnTextItemM item in MetricColumns)
-                item.BottomText = item.BottomText;
-            _lastMemoryStatsUpdate = DateTime.MinValue;
+            _lastMemoryStatsUpdate = DateTime.Now;
             _upstreamWorkingSetPeakBytes = 0;
             _encoderWorkingSetPeakBytes = 0;
             SetCurrentOutputSizeBytes(TryGetOutputSizeBytes());
             _writtenFrames = 0;
             OnPropertyChanged(nameof(WrittenFramesLabel));
             OnPropertyChanged(nameof(EstimatedSizeLabel));
-            ProgressValue = 0;
             StatusText = Lang.ResetUsageStatusText;
+            UpdateMetrics();
+            UpdateMemoryRangeBlocks();
         }
 
         /// <summary>
@@ -1680,7 +1682,9 @@ namespace OneColumnEncoder.ViewModels
         {
             Lang = new EncodingMonitorModalLangProviderM(UILangProviderM.Current.LanguageCode);
             _cpuSetsLang = new CpuSetsLangProviderM(UILangProviderM.Current.LanguageCode);
-            FreezeOrContinueText = _isFrozen ? Lang.ContinueMonitoringText : Lang.FreezeContinueText;
+            FreezeOrContinueText = _isFrozen
+                ? Lang.ContinueMonitoringText
+                : Lang.FreezeContinueText;
             MonitorButtons.B2_1Text = FreezeOrContinueText;
             MonitorButtons.B2_2Text = Lang.ResetUsageText;
             ReportButtons.B3_1Text = Lang.SaveUpstreamStderrText;
