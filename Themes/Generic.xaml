@@ -55,7 +55,7 @@
     <SolidColorBrush Color="#F1FBF9"
                      x:Key="BackgroundGreen" />
     <SolidColorBrush Color="#009587"
-                     x:Key="CorrectGreen" />
+                     x:Key="CorrectTeal" />
     <SolidColorBrush Color="#F68819"
                      x:Key="WarningOrange" />
     <SolidColorBrush Color="#95000E"
@@ -400,7 +400,7 @@
                         <Trigger Property="comps:ChecklistItem.Status"
                                  Value="Success">
                             <Setter Property="Foreground"
-                                    Value="{StaticResource CorrectGreen}" />
+                                    Value="{StaticResource CorrectTeal}" />
                             <Setter TargetName="IconMask"
                                     Property="OpacityMask">
                                 <Setter.Value>
