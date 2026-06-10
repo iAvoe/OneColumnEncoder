@@ -52,8 +52,8 @@
                                  Minimum="0"
                                  Maximum="100"
                                  Value="{Binding ProgressValue}"
-                                 Foreground="#2FA34F"
-                                 Background="#E9EEF2"
+                                 Foreground="{StaticResource ProgressGreen}"
+                                 Background="{StaticResource MemoryRangeEmpty}"
                                  BorderThickness="0" />
                     <TextBlock Grid.Column="2"
                                Text="{Binding ProgressText}"

@@ -22,8 +22,8 @@
                     HorizontalAlignment="Stretch"
                     Height="50"
                     VerticalAlignment="Center"
-                    Background="#D9CAE4"
-                    BorderBrush="#9673A6"
+                    Background="{StaticResource TimelineTrackBackground}"
+                    BorderBrush="{StaticResource TimelineTrackBorder}"
                     BorderThickness="1"
                     CornerRadius="5"/>
 
@@ -37,8 +37,8 @@
                        Cursor="SizeAll">
                     <Thumb.Template>
                         <ControlTemplate TargetType="Thumb">
-                            <Border Background="#F5E6A4"
-                                    BorderBrush="#D2B45A"
+                            <Border Background="{StaticResource TimelineThumbBackground}"
+                                    BorderBrush="{StaticResource TimelineThumbBorder}"
                                     BorderThickness="1"
                                     CornerRadius="2.5" />
                         </ControlTemplate>
