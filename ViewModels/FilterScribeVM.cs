@@ -15,6 +15,11 @@ using OneColumnEncoder.ViewModels.Cards;
 
 namespace OneColumnEncoder.ViewModels
 {
+    /// <summary>
+    /// Note:
+    /// File save & ItemCard write back logic created by MainVM as OnSourceImported,
+    /// passed in via OpenFilterScribeCmd constructor as Action<>
+    /// </summary>
     public class FilterScribeVM : BaseVM
     {
         private readonly ModalNavS _modalNavS;
@@ -375,10 +380,7 @@ namespace OneColumnEncoder.ViewModels
                 OnPropertyChanged(nameof(FfmpegFpsFilter));
                 OnPropertyChanged(nameof(FfmpegCombinedFilter));
             }
-            catch
-            {
-                // ignore parse errors
-            }
+            catch { } // ignore parse errors
         }
 
         private void BuildButtonGroups()

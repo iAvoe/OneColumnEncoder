@@ -319,7 +319,7 @@
                          IsReadOnly="True"
                          BorderThickness="0"
                          Background="{StaticResource Background}"
-                         Foreground="{StaticResource GlobalTertiary}"
+                         Foreground="{StaticResource ButtonTertiary}"
                          FontSize="11"
                          FontFamily="Segoe UI"
                          VerticalScrollBarVisibility="Disabled" />
@@ -340,7 +340,7 @@
                          IsReadOnly="True"
                          BorderThickness="0"
                          Background="{StaticResource Background}"
-                         Foreground="{StaticResource GlobalTertiary}"
+                         Foreground="{StaticResource ButtonTertiary}"
                          FontSize="11"
                          FontFamily="Segoe UI"
                          VerticalScrollBarVisibility="Disabled" />
@@ -361,7 +361,7 @@
                          IsReadOnly="True"
                          BorderThickness="0"
                          Background="{StaticResource Background}"
-                         Foreground="{StaticResource GlobalTertiary}"
+                         Foreground="{StaticResource ButtonTertiary}"
                          FontSize="11"
                          FontFamily="Segoe UI"
                          VerticalScrollBarVisibility="Disabled" />
@@ -392,7 +392,7 @@
                          IsReadOnly="True"
                          BorderThickness="0"
                          Background="{StaticResource Background}"
-                         Foreground="{StaticResource GlobalTertiary}"
+                         Foreground="{StaticResource ButtonTertiary}"
                          FontSize="11"
                          FontFamily="Segoe UI"
                          VerticalScrollBarVisibility="Disabled" />
@@ -413,7 +413,7 @@
                          IsReadOnly="True"
                          BorderThickness="0"
                          Background="{StaticResource Background}"
-                         Foreground="{StaticResource GlobalTertiary}"
+                         Foreground="{StaticResource ButtonTertiary}"
                          FontSize="11"
                          FontFamily="Segoe UI"
                          VerticalScrollBarVisibility="Disabled" />

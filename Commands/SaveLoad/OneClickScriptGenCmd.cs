@@ -6,15 +6,23 @@ using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.ViewModels.Cards;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 
 namespace OneColumnEncoder.Commands.SaveLoad
 {
-    public class OneClickScriptGenCmd(Func<string> getSourcePath, ToolItemCardVM avsItem, ToolItemCardVM vpyItem, ModalNavS modalNavS) : BaseCmd
+    public class OneClickScriptGenCmd(
+        Func<string> getSourcePath,
+        ToolItemCardVM avsItem,
+        ToolItemCardVM vpyItem,
+        IEnumerable<ToolItemCardVM> upstreamsZone,
+        ModalNavS modalNavS) : BaseCmd
     {
         private readonly Func<string> _getSourcePath = getSourcePath;
         private readonly ToolItemCardVM _avsItem = avsItem;
         private readonly ToolItemCardVM _vpyItem = vpyItem;
+        private readonly IEnumerable<ToolItemCardVM> _upstreamsZone = upstreamsZone; // For making auto selection
         private readonly ModalNavS _modalNavS = modalNavS;
 
         public override bool CanExecute(object? parameter) =>
@@ -72,6 +80,23 @@ namespace OneColumnEncoder.Commands.SaveLoad
 
             _vpyItem.P2TextData = vpyPath;
             _vpyItem.P1TextData = SourceFilePickerH.GetPrimaryText(SourceFileKind.VapourSynthScript, vpyPath);
+
+            // Auto ScriptSrcImportZone selection: try select script import when upstream program relates
+            ToolItemCardVM? selectedUpstream = _upstreamsZone.FirstOrDefault(t => t.IsSelected);
+            if (selectedUpstream != null)
+            {
+                if (ToolDefinitionProviderM.IsImportedTool(selectedUpstream.Name, "vspipe.exe"))
+                {
+                    _avsItem.IsSelected = false;
+                    if (_vpyItem.IsEnabled) _vpyItem.IsSelected = true;
+                }
+                else if (ToolDefinitionProviderM.IsImportedTool(selectedUpstream.Name, "avs2yuv.exe") ||
+                         ToolDefinitionProviderM.IsImportedTool(selectedUpstream.Name, "avs2pipemod.exe"))
+                {
+                    _vpyItem.IsSelected = false;
+                    if (_avsItem.IsEnabled) _avsItem.IsSelected = true;
+                }
+            }
 
             new OpenInfoModalCmd(
                 _modalNavS,

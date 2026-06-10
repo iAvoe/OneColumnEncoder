@@ -147,7 +147,7 @@ namespace OneColumnEncoder.ViewModels
 
             // Commands
             OneClickScriptGen = new OneClickScriptGenCmd(
-                () => GetCurrentVideoSourcePath(), ScriptSrcImportZone[0], ScriptSrcImportZone[1], modalNavS);
+                () => GetCurrentVideoSourcePath(), ScriptSrcImportZone[0], ScriptSrcImportZone[1], UpstreamsZone, modalNavS);
             OpenFilterScribe = new OpenFilterScribeCmd(
                 modalNavS,
                 () => GetCurrentVideoSourcePath(),
@@ -690,6 +690,7 @@ namespace OneColumnEncoder.ViewModels
                 RefreshToolPickedStatus(ToolZone.Analytics, itemZone);
         }
 
+        // File save & ItemCard write back logic after FilterScribeModal completes
         private void OnSourceImported(ToolItemCardVM item, SourceFileKind kind, string filePath)
         {
             SaveSourcePath(kind, filePath);
@@ -720,7 +721,8 @@ namespace OneColumnEncoder.ViewModels
                     source.IsSelected = false;
             }
 
-            item.IsSelected = true;
+            // Prevent UX bug: enabled ItemCard becomes selected immediately
+            if (item.IsEnabled) item.IsSelected = true;
             _appDataM.Save();
             RefreshSelectedSourceStatus(resetAnalysis: kind == SourceFileKind.Video);
         }

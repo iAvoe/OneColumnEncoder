@@ -14,7 +14,7 @@ namespace OneColumnEncoder.Commands.OpenClose
         Func<string> getSourcePath,
         ToolItemCardVM avsItem,
         ToolItemCardVM vpyItem,
-        Action<ToolItemCardVM, SourceFileKind, string> afterImport,
+        Action<ToolItemCardVM, SourceFileKind, string> afterImport, // File save & ItemCard write back
         Action<string?> applyFfmpegFilterArgs,
         Func<string?> getSourceFfprobeJson) : BaseCmd
     {
@@ -31,11 +31,17 @@ namespace OneColumnEncoder.Commands.OpenClose
                 return;
             }
 
-            if (_modalNavS.IsOpen)
-                _modalNavS.Close();
+            if (_modalNavS.IsOpen) _modalNavS.Close();
 
             FilterScribeModal window = new();
-            FilterScribeVM vm = new(_modalNavS, window.Close, getSourcePath, avsItem, vpyItem, afterImport, applyFfmpegFilterArgs, getSourceFfprobeJson());
+            FilterScribeVM vm = new(
+                _modalNavS,
+                window.Close,
+                getSourcePath,
+                avsItem, vpyItem,
+                afterImport,
+                applyFfmpegFilterArgs,
+                getSourceFfprobeJson());
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();
