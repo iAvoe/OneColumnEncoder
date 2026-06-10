@@ -261,3 +261,20 @@
 - 脚本生成后的复制/保存结果提示：`ViewModels/ScriptScribeVM.cs`、`Commands/SaveLoad/OneClickScriptGenCmd.cs`
 - 源分析和检查结果提示：`Commands/AnalyzeSrcVideoCmd.cs`、`Commands/CopyRawAnalysisCmd.cs`、`Commands/InspectEncProblemsCmd.cs`、`Commands/InspectSrcProblemsCmd.cs`
 - 工具导入/文件选择时的二次确认：`Commands/ImportToolCmd.cs`、`Helpers/SourceFilePickerH.cs`
+
+## 设置数据存储位置
+
+所有持久化配置数据以 **JSON 文件** 形式存储在 `{应用程序基目录}\1cenc\` 下：
+
+| 文件 | 内容 |
+|------|------|
+| `appconfig.json` | 应用设置（覆盖保护配置、语言选择） |
+| `appdata.json` | 工具路径/版本/大小、源视频路径、输出目录 |
+| `encodingconf.json` | 编码器参数（CRF/ABR、关键帧、预设、x264/x265/SVT-AV1 自定义参数） |
+| `parallelismconfig.json` | 并行设置（NUMA 节点 ID、CPU 偏好、线程数） |
+
+**持久化基类：**`Helpers\SaveLoadBaseH.cs` 的配置模型继承自 `SaveLoadBaseH<T>`，通过 `Save()` / `Load()` 提供 JSON 序列化/反序列化。
+
+**其他持久化数据（用户选择路径，不在 `\1cenc\` 中）：**
+- 生成的脚本文件（`.avs` / `.vpy` / `.txt`）经由 `ViewModels\FilterScribeVM.cs` 和 `Commands\SaveLoad\OneClickScriptGenCmd.cs`
+- stderr 日志文件（`upstream-stderr.txt`、`downstream-stderr.txt`）保存到输出目录，经由 `ViewModels\EncodingMonitorVM.cs`

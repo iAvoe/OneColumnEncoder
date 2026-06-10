@@ -260,3 +260,20 @@ This feature cannot be implemented due to the need to modify the upstream progra
 - Copy/save results after script generation：`ViewModels/ScriptScribeVM.cs`、`Commands/SaveLoad/OneClickScriptGenCmd.cs`
 - Source analysis and check results：`Commands/AnalyzeSrcVideoCmd.cs`、`Commands/CopyRawAnalysisCmd.cs`、`Commands/InspectEncProblemsCmd.cs`、`Commands/InspectSrcProblemsCmd.cs`
 - Secondary confirmation when importing tools/selecting files：`Commands/ImportToolCmd.cs`、`Helpers/SourceFilePickerH.cs`
+
+## Settings Storage Location
+
+All persistent configuration data is stored as **JSON files** under `{Application Base Directory}\1cenc\`:
+
+| File | Contents |
+|------|----------|
+| `appconfig.json` | App settings (overwrite config, language selection) |
+| `appdata.json` | Tool paths/versions/sizes, source video paths, output directory |
+| `encodingconf.json` | Encoder parameters (CRF/ABR, keyframe, presets, custom params for x264/x265/SVT-AV1) |
+| `parallelismconfig.json` | Parallelism settings (NUMA node IDs, CPU preferences, thread count) |
+
+**Persistence base class:** `Helpers\SaveLoadBaseH.cs` — all configuration models inherit from `SaveLoadBaseH<T>` which provides JSON serialization/deserialization via `Save()` / `Load()`.
+
+**Other persisted data (user-selected paths, not in `\1cenc\`):**
+- Generated script files (`.avs` / `.vpy` / `.txt`) via `ViewModels\FilterScribeVM.cs` and `Commands\SaveLoad\OneClickScriptGenCmd.cs`
+- Stderr log files (`upstream-stderr.txt`, `downstream-stderr.txt`) to the output directory via `ViewModels\EncodingMonitorVM.cs`
