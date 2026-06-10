@@ -223,8 +223,7 @@ public class UILangProviderM
             ["SrcScribe.TabFfmpeg"] = "ffmpeg Filter",
             ["SrcScribe.FfmpegFreeTextHint"] = "Enter custom ffmpeg filter params (session only)",
             ["SrcScribe.FrameRateConvertTitle"] = "VFR\u2192CFR Framerate Conversion",
-            ["SrcScribe.FrameRateVfrHint"] = "This filter converts VFR to CFR. Not needed for CFR sources.",
-            ["SrcScribe.FrameRateNotApplicable"] = "Not applicable (source is CFR or unknown)",
+            ["SrcScribe.FrameRateVfrHint"] = "For VFR only; AviSynth/VapourSynth implementation is by the LWLibavVideoSource checkbox",
             // FilenameScribeModal
             ["FilenameScribe.WindowTitle"] = "1cenc Filename",
             ["FilenameScribe.MiniHeader"] = "File Name",
@@ -482,8 +481,7 @@ public class UILangProviderM
             ["SrcScribe.TabFfmpeg"] = "ffmpeg Filter",
             ["SrcScribe.FfmpegFreeTextHint"] = "输入自定义 ffmpeg 滤镜参数（仅本次会话有效）",
             ["SrcScribe.FrameRateConvertTitle"] = "可变帧率\u2192恒定帧率 转换",
-            ["SrcScribe.FrameRateVfrHint"] = "该滤镜仅用于转换可变帧率到恒定帧率，恒定帧率视频无需使用。",
-            ["SrcScribe.FrameRateNotApplicable"] = "不可用（源为恒定帧率或未知）",
+            ["SrcScribe.FrameRateVfrHint"] = "仅适用于可变帧率源；AviSynth/VapourSynth 的实现由 LWLibavVideoSource 勾选框设置",
             // FilenameScribeModal
             ["FilenameScribe.WindowTitle"] = "1cenc Filename",
             ["FilenameScribe.MiniHeader"] = "文件名",
@@ -741,8 +739,7 @@ public class UILangProviderM
             ["SrcScribe.TabFfmpeg"] = "ffmpeg Filter",
             ["SrcScribe.FfmpegFreeTextHint"] = "輸入自訂 ffmpeg 濾鏡參數（僅本次會話有效）",
             ["SrcScribe.FrameRateConvertTitle"] = "可變幀率\u2192恆定幀率 轉換",
-            ["SrcScribe.FrameRateVfrHint"] = "該濾鏡僅用於轉換可變幀率到恆定幀率，恆定幀率影片無需使用。",
-            ["SrcScribe.FrameRateNotApplicable"] = "不可用（源為恆定幀率或未知）",
+            ["SrcScribe.FrameRateVfrHint"] = "僅適用於可變幀率源；AviSynth/VapourSynth 的實現由 LWLibavVideoSource 勾選框設置。",
             // FilenameScribeModal
             ["FilenameScribe.WindowTitle"] = "1cenc Filename",
             ["FilenameScribe.MiniHeader"] = "檔案名",

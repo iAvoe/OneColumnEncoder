@@ -135,7 +135,6 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(FfmpegResizeFilter));
             OnPropertyChanged(nameof(VapourSynthResizeFilter));
             OnPropertyChanged(nameof(AviSynthResizeFilter));
-            OnPropertyChanged(nameof(FfmpegCombinedFilter));
         }
 
         private int _targetWidth;
@@ -196,7 +195,6 @@ namespace OneColumnEncoder.ViewModels
                 OnPropertyChanged(nameof(FfmpegResizeFilter));
                 OnPropertyChanged(nameof(VapourSynthResizeFilter));
                 OnPropertyChanged(nameof(AviSynthResizeFilter));
-                OnPropertyChanged(nameof(FfmpegCombinedFilter));
             }
         }
         #endregion
@@ -214,16 +212,6 @@ namespace OneColumnEncoder.ViewModels
         public int FrameRateNum => _frameRateNum;
         public int FrameRateDen => _frameRateDen;
 
-        public string FrameRateStatusText
-        {
-            get
-            {
-                if (!HasSource) return UILangProviderM.Current["SrcScribe.NoVidSrcWarning"];
-                if (_isFrameRateVariable) return "VFR";
-                return "CFR";
-            }
-        }
-
         public bool AvsEnableFpsParams
         {
             get => _avsEnableFpsParams;
@@ -232,7 +220,6 @@ namespace OneColumnEncoder.ViewModels
                 if (SetProperty(ref _avsEnableFpsParams, value))
                 {
                     OnPropertyChanged(nameof(AvsPrefix));
-                    OnPropertyChanged(nameof(FrameRateNotApplicableText));
                 }
             }
         }
@@ -245,7 +232,6 @@ namespace OneColumnEncoder.ViewModels
                 if (SetProperty(ref _vpyEnableFpsParams, value))
                 {
                     OnPropertyChanged(nameof(VpyPrefix));
-                    OnPropertyChanged(nameof(FrameRateNotApplicableText));
                 }
             }
         }
@@ -253,43 +239,8 @@ namespace OneColumnEncoder.ViewModels
         public static string AvsEnableFpsParamsLabel => "LWLibavVideoSource VFR\u2192CFR";
         public static string VpyEnableFpsParamsLabel => "LWLibavVideoSource VFR\u2192CFR";
 
-        public string FrameRateNotApplicableText =>
-            !HasSource
-                ? UILangProviderM.Current["SrcScribe.NoVidSrcWarning"]
-                : UILangProviderM.Current["SrcScribe.FrameRateNotApplicable"];
 
-        public string FfmpegFpsFilter =>
-            IsFrameRateApplicable
-                ? $"-filter:v fps={_frameRateNum}/{_frameRateDen}"
-                : "N/A";
 
-        public string FfmpegCombinedFilter
-        {
-            get
-            {
-                bool hasFps = IsFrameRateApplicable;
-                bool hasScale = IsScaleApplicable && (TargetWidth != SourceWidth || TargetHeight != SourceHeight);
-                if (!hasFps && !hasScale) return "N/A";
-                var parts = new List<string>();
-                if (hasFps) parts.Add($"fps={_frameRateNum}/{_frameRateDen}");
-                if (hasScale) parts.Add($"scale={TargetWidth}:{TargetHeight}");
-                string filterChain = string.Join(",", parts);
-                string sws = hasScale
-                    ? " -sws_flags bicubic+full_chroma_int+full_chroma_inp+accurate_rnd"
-                    : string.Empty;
-                return $"-filter:v \"{filterChain}\"{sws}";
-            }
-        }
-
-        public string VapourSynthFpsFilter =>
-            IsFrameRateApplicable
-                ? $"# core.lsmas.LWLibavVideoSource(fpsnum={_frameRateNum}, fpsden={_frameRateDen})"
-                : "N/A";
-
-        public string AviSynthFpsFilter =>
-            IsFrameRateApplicable
-                ? $"# LWLibavVideoSource(fpsnum={_frameRateNum}, fpsden={_frameRateDen})"
-                : "N/A";
         #endregion
 
         #region ffmpeg FreeText (session only)
@@ -317,8 +268,6 @@ namespace OneColumnEncoder.ViewModels
         public static string AviSynthAutoFilter => "AVS(+)";
         public static string FrameRateConvertTitle => UILangProviderM.Current["SrcScribe.FrameRateConvertTitle"];
         public static string FrameRateVfrHintText => UILangProviderM.Current["SrcScribe.FrameRateVfrHint"];
-        public static string FfmpegAutoFilterLabel => "ffmpeg";
-        public static string FfmpegCombinedLabel => "ffmpeg**";
         #endregion
 
         public ButtonGroupVM ScriptExportButtons { get; private set; } = null!;
@@ -412,12 +361,6 @@ namespace OneColumnEncoder.ViewModels
                 OnPropertyChanged(nameof(IsFrameRateApplicable));
                 OnPropertyChanged(nameof(FrameRateNum));
                 OnPropertyChanged(nameof(FrameRateDen));
-                OnPropertyChanged(nameof(FrameRateStatusText));
-                OnPropertyChanged(nameof(FrameRateNotApplicableText));
-                OnPropertyChanged(nameof(FfmpegFpsFilter));
-                OnPropertyChanged(nameof(FfmpegCombinedFilter));
-                OnPropertyChanged(nameof(VapourSynthFpsFilter));
-                OnPropertyChanged(nameof(AviSynthFpsFilter));
             }
             catch
             {
@@ -662,13 +605,8 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(AviSynthAutoFilter));
             OnPropertyChanged(nameof(FrameRateConvertTitle));
             OnPropertyChanged(nameof(FrameRateVfrHintText));
-            OnPropertyChanged(nameof(FrameRateStatusText));
-            OnPropertyChanged(nameof(FrameRateNotApplicableText));
-            
-            OnPropertyChanged(nameof(FfmpegFpsFilter));
-            OnPropertyChanged(nameof(FfmpegCombinedFilter));
-            OnPropertyChanged(nameof(VapourSynthFpsFilter));
-            OnPropertyChanged(nameof(AviSynthFpsFilter));
+            OnPropertyChanged(nameof(AvsEnableFpsParamsLabel));
+            OnPropertyChanged(nameof(VpyEnableFpsParamsLabel));
 
             BuildButtonGroups();
             OnPropertyChanged(nameof(ScriptExportButtons));
