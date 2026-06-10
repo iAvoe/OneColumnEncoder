@@ -257,7 +257,7 @@ namespace OneColumnEncoder.ViewModels
 
             MonitorButtons = ButtonGroupVM.CreateTwoButton(
                 FreezeOrContinueText,
-                Lang.ResetUsageText,
+                Lang.UpdateUsageText,
                 FreezeOrContinueCmd,
                 ResetStatsCmd);
 
@@ -1701,7 +1701,7 @@ namespace OneColumnEncoder.ViewModels
                 ? Lang.ContinueMonitoringText
                 : Lang.FreezeContinueText;
             MonitorButtons.B2_1Text = FreezeOrContinueText;
-            MonitorButtons.B2_2Text = Lang.ResetUsageText;
+            MonitorButtons.B2_2Text = Lang.UpdateUsageText;
             ReportButtons.B3_1Text = Lang.SaveUpstreamStderrText;
             ReportButtons.B3_2Text = Lang.SaveDownstreamStderrText;
             ReportButtons.B3_3Text = Lang.RotateLogFontSizeText;

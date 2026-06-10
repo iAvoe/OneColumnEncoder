@@ -34,7 +34,7 @@ public class EncodingMonitorModalLangProviderM
             ["SampleIntervalTickLabels"] = "0 (Real Time)|60S|120S|180S|240",
             ["ContinueMonitoringText"] = "Continue monitoring",
             ["FreezeContinueText"] = "Freeze / Continue",
-            ["ResetUsageText"] = "Reset usage values",
+            ["UpdateUsageText"] = "Update now",
             ["RotateLogFontSizeText"] = "Rotate log fontsize",
             ["SaveUpstreamStderrText"] = "Save upstream log",
             ["SaveDownstreamStderrText"] = "Save downstream log",
@@ -104,7 +104,7 @@ public class EncodingMonitorModalLangProviderM
             ["SampleIntervalTickLabels"] = "0（实时）|60秒|120秒|180秒|240秒",
             ["ContinueMonitoringText"] = "继续监测",
             ["FreezeContinueText"] = "冻结 / 继续监测",
-            ["ResetUsageText"] = "重置占用值",
+            ["UpdateUsageText"] = "立即检查",
             ["RotateLogFontSizeText"] = "轮换日志字号",
             ["SaveUpstreamStderrText"] = "保存上游日志",
             ["SaveDownstreamStderrText"] = "保存下游日志",
@@ -174,7 +174,7 @@ public class EncodingMonitorModalLangProviderM
             ["SampleIntervalTickLabels"] = "0（即時）|60秒|120秒|180秒|240秒",
             ["ContinueMonitoringText"] = "繼續監測",
             ["FreezeContinueText"] = "凍結 / 繼續監測",
-            ["ResetUsageText"] = "重置占用值",
+            ["UpdateUsageText"] = "立即檢查",
             ["RotateLogFontSizeText"] = "輪換日誌字型大小",
             ["SaveUpstreamStderrText"] = "保存上游日誌",
             ["SaveDownstreamStderrText"] = "保存下游日誌",
@@ -243,7 +243,7 @@ public class EncodingMonitorModalLangProviderM
     public string[] SampleIntervalTickLabels { get; }
     public string ContinueMonitoringText { get; }
     public string FreezeContinueText { get; }
-    public string ResetUsageText { get; }
+    public string UpdateUsageText { get; }
     public string RotateLogFontSizeText { get; }
     public string SaveUpstreamStderrText { get; }
     public string SaveDownstreamStderrText { get; }
@@ -318,7 +318,7 @@ public class EncodingMonitorModalLangProviderM
         SampleIntervalTickLabels = _d["SampleIntervalTickLabels"].Split('|');
         ContinueMonitoringText = _d["ContinueMonitoringText"];
         FreezeContinueText = _d["FreezeContinueText"];
-        ResetUsageText = _d["ResetUsageText"];
+        UpdateUsageText = _d["UpdateUsageText"];
         RotateLogFontSizeText = _d["RotateLogFontSizeText"];
         SaveUpstreamStderrText = _d["SaveUpstreamStderrText"];
         SaveDownstreamStderrText = _d["SaveDownstreamStderrText"];
