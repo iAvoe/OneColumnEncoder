@@ -207,7 +207,7 @@ The Overwrite setting will append an overwrite confirmation pop-up if the output
 
 ## Unverified
 
-### Intel 12~14th Gen & Ultra 200~300 Series CPU Utilization Verification
+### Intel 12\~14th Gen & Ultra 200\~300 Series CPU Utilization Verification
 
 No CPU available for testing, but it should not fail catastrophically
 - This software uses CPU Sets to bind encoding processes to physical cores, which means it should be compatible and not fail catastrophically
