@@ -403,6 +403,28 @@
                          FontFamily="Segoe UI"
                          VerticalScrollBarVisibility="Disabled" />
             </Grid>
+            <Grid Margin="0 3 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="45" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           Text="ffmpeg:all"
+                           FontSize="11"
+                           Foreground="{StaticResource GlobalSecondary}"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right" />
+                <TextBox Grid.Column="1"
+                         Margin="5 0 0 0"
+                         Text="{Binding FfmpegCombinedFilter, Mode=OneWay}"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         Background="{StaticResource Background}"
+                         Foreground="{StaticResource GlobalTertiary}"
+                         FontSize="11"
+                         FontFamily="Segoe UI"
+                         VerticalScrollBarVisibility="Disabled" />
+            </Grid>
         </StackPanel>
 
         <TextBlock Grid.Row="10"

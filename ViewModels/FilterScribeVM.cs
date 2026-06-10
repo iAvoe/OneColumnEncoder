@@ -133,6 +133,7 @@ namespace OneColumnEncoder.ViewModels
             var (_, _) = ResolutionScaleH.ComputeTargetDimensions(SourceWidth, SourceHeight, ScalePercent);
             OnPropertyChanged(nameof(TargetDisplay));
             OnPropertyChanged(nameof(FfmpegResizeFilter));
+            OnPropertyChanged(nameof(FfmpegCombinedFilter));
             OnPropertyChanged(nameof(VapourSynthResizeFilter));
             OnPropertyChanged(nameof(AviSynthResizeFilter));
         }
@@ -153,6 +154,11 @@ namespace OneColumnEncoder.ViewModels
         public string FfmpegFpsFilter =>
             IsFrameRateApplicable
                 ? $"-filter:v fps={_frameRateNum}/{_frameRateDen}"
+                : "N/A";
+
+        public string FfmpegCombinedFilter =>
+            IsFrameRateApplicable && IsScaleApplicable && (TargetWidth != SourceWidth || TargetHeight != SourceHeight)
+                ? $"-filter:v \"fps={_frameRateNum}/{_frameRateDen},scale={TargetWidth}:{TargetHeight}\" -sws_flags bicubic+full_chroma_int+full_chroma_inp+accurate_rnd"
                 : "N/A";
 
         private string GeneratedFfmpegFilterArgs
@@ -198,6 +204,7 @@ namespace OneColumnEncoder.ViewModels
                 OnPropertyChanged(nameof(TargetHeight));
                 OnPropertyChanged(nameof(TargetDisplay));
                 OnPropertyChanged(nameof(FfmpegResizeFilter));
+                OnPropertyChanged(nameof(FfmpegCombinedFilter));
                 OnPropertyChanged(nameof(VapourSynthResizeFilter));
                 OnPropertyChanged(nameof(AviSynthResizeFilter));
             }
@@ -367,6 +374,7 @@ namespace OneColumnEncoder.ViewModels
                 OnPropertyChanged(nameof(FrameRateNum));
                 OnPropertyChanged(nameof(FrameRateDen));
                 OnPropertyChanged(nameof(FfmpegFpsFilter));
+                OnPropertyChanged(nameof(FfmpegCombinedFilter));
             }
             catch
             {
@@ -607,6 +615,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(TargetDisplay));
             OnPropertyChanged(nameof(FfmpegFreeTextHint));
             OnPropertyChanged(nameof(FfmpegAutoFilter));
+            OnPropertyChanged(nameof(FfmpegCombinedFilter));
             OnPropertyChanged(nameof(VapourSynthAutoFilter));
             OnPropertyChanged(nameof(AviSynthAutoFilter));
             OnPropertyChanged(nameof(FrameRateConvertTitle));
