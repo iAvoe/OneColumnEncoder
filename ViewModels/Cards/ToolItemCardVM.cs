@@ -1,11 +1,5 @@
-﻿using OneColumnEncoder.Commands;
-using OneColumnEncoder.Models;
-using System;
-using System.Collections.Generic;
+﻿using OneColumnEncoder.Models;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace OneColumnEncoder.ViewModels.Cards

@@ -2,7 +2,6 @@ using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels.Cards;
-using System;
 using System.IO;
 
 namespace OneColumnEncoder.Commands

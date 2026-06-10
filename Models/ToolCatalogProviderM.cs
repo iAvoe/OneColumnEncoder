@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 
 namespace OneColumnEncoder.Models;
 
@@ -104,33 +101,33 @@ public static class ToolCatalogProviderM
     // AppDataM.Importables property mapping
     private static readonly Dictionary<string, Action<AppDataM.Importables, string>> _pathSetters =
         new(StringComparer.OrdinalIgnoreCase)
-    {
-        ["ffmpeg.exe"] = (t, p) => t.FfmpegPath = p,
-        ["vspipe.exe"] = (t, p) => t.VspipePath = p,
-        ["avs2yuv.exe"] = (t, p) => t.Avs2yuvPath = p,
-        ["avs2pipemod.exe"] = (t, p) => t.Avs2pipemodPath = p,
-        ["one_line_shot_args.exe"] = (t, p) => t.OneLineShotArgsPath = p,
-        ["x264.exe"] = (t, p) => t.X264Path = p,
-        ["x265.exe"] = (t, p) => t.X265Path = p,
-        ["svtav1encapp.exe"] = (t, p) => t.SvtAv1Path = p,
-        ["ffprobe.exe"] = (t, p) => t.FfprobePath = p,
-        ["avisynth.dll"] = (t, p) => t.AviSynthDllPath = p,
-    };
+        {
+            ["ffmpeg.exe"] = (t, p) => t.FfmpegPath = p,
+            ["vspipe.exe"] = (t, p) => t.VspipePath = p,
+            ["avs2yuv.exe"] = (t, p) => t.Avs2yuvPath = p,
+            ["avs2pipemod.exe"] = (t, p) => t.Avs2pipemodPath = p,
+            ["one_line_shot_args.exe"] = (t, p) => t.OneLineShotArgsPath = p,
+            ["x264.exe"] = (t, p) => t.X264Path = p,
+            ["x265.exe"] = (t, p) => t.X265Path = p,
+            ["svtav1encapp.exe"] = (t, p) => t.SvtAv1Path = p,
+            ["ffprobe.exe"] = (t, p) => t.FfprobePath = p,
+            ["avisynth.dll"] = (t, p) => t.AviSynthDllPath = p,
+        };
 
     private static readonly Dictionary<string, Action<AppDataM.Importables, long?>> _sizeSetters =
         new(StringComparer.OrdinalIgnoreCase)
-    {
-        ["ffmpeg.exe"] = (t, s) => t.FfmpegSize = s,
-        ["vspipe.exe"] = (t, s) => t.VspipeSize = s,
-        ["avs2yuv.exe"] = (t, s) => t.Avs2yuvSize = s,
-        ["avs2pipemod.exe"] = (t, s) => t.Avs2pipemodSize = s,
-        ["one_line_shot_args.exe"] = (t, s) => t.OneLineShotArgsSize = s,
-        ["x264.exe"] = (t, s) => t.X264Size = s,
-        ["x265.exe"] = (t, s) => t.X265Size = s,
-        ["svtav1encapp.exe"] = (t, s) => t.SvtAv1Size = s,
-        ["ffprobe.exe"] = (t, s) => t.FfprobeSize = s,
-        ["avisynth.dll"] = (t, s) => t.AviSynthDllSize = s,
-    };
+        {
+            ["ffmpeg.exe"] = (t, s) => t.FfmpegSize = s,
+            ["vspipe.exe"] = (t, s) => t.VspipeSize = s,
+            ["avs2yuv.exe"] = (t, s) => t.Avs2yuvSize = s,
+            ["avs2pipemod.exe"] = (t, s) => t.Avs2pipemodSize = s,
+            ["one_line_shot_args.exe"] = (t, s) => t.OneLineShotArgsSize = s,
+            ["x264.exe"] = (t, s) => t.X264Size = s,
+            ["x265.exe"] = (t, s) => t.X265Size = s,
+            ["svtav1encapp.exe"] = (t, s) => t.SvtAv1Size = s,
+            ["ffprobe.exe"] = (t, s) => t.FfprobeSize = s,
+            ["avisynth.dll"] = (t, s) => t.AviSynthDllSize = s,
+        };
 
     private static readonly Dictionary<string, Action<AppDataM.Importables, string>> _versionSetters = new(StringComparer.OrdinalIgnoreCase)
     {

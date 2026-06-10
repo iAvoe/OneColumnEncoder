@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
 using OneColumnEncoder.Models;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace OneColumnEncoder.Helpers;
 
@@ -267,7 +264,7 @@ public static partial class CpuSetsH
         byte EfficiencyClass,
         byte AllFlags)
     {
-        public int GlobalLogicalProcessorIndex => Group*64 + LogicalProcessorIndex;
+        public int GlobalLogicalProcessorIndex => Group * 64 + LogicalProcessorIndex;
         public bool IsAllocated => (AllFlags & CpuSetAllocatedFlag) != 0;
     }
 }

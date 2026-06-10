@@ -1,5 +1,4 @@
-﻿using OneColumnEncoder.Commands;
-using OneColumnEncoder.Helpers;
+﻿using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using System.Windows.Input;
 using System.Windows.Media;

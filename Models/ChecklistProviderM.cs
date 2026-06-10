@@ -1,5 +1,3 @@
-using OneColumnEncoder.Models;
-
 namespace OneColumnEncoder.Models
 {
     public class ChecklistProviderM

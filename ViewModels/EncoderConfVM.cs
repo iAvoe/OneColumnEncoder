@@ -1,13 +1,7 @@
 using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.ViewModels.Cards;
-using OneColumnEncoder.Views;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -88,7 +82,8 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _x265Crf, value);
         }
         private int _svtAv1Crf = 35;
-        public int SvtAv1Crf {
+        public int SvtAv1Crf
+        {
             get => _svtAv1Crf;
             set => SetProperty(ref _svtAv1Crf, value);
         }
@@ -150,7 +145,8 @@ namespace OneColumnEncoder.ViewModels
             }
         }
         private bool _x265Dark;
-        public bool X265Dark {
+        public bool X265Dark
+        {
             get => _x265Dark;
             set => SetProperty(ref _x265Dark, value);
         }

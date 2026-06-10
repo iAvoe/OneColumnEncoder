@@ -1,6 +1,4 @@
 ﻿using OneColumnEncoder.Models;
-using System;
-using System.Threading.Tasks;
 
 namespace OneColumnEncoder.Commands.SaveLoad
 {

@@ -1,17 +1,13 @@
-﻿using OneColumnEncoder.Commands;
+﻿using Microsoft.Win32;
+using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
+using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
-using System;
-using System.Collections.Generic;
+using OneColumnEncoder.ViewModels.Cards;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
 using System.Windows;
-using System.Windows.Input;
-using Microsoft.Win32;
-using OneColumnEncoder.Helpers;
-using OneColumnEncoder.ViewModels.Cards;
 
 namespace OneColumnEncoder.ViewModels
 {

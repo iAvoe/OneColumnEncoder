@@ -1,5 +1,3 @@
-using System;
-
 namespace OneColumnEncoder.Commands
 {
     public class ActionCmd(Action<object?> execute, Func<object?, bool>? canExecute = null) : BaseCmd

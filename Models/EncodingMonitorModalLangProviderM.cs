@@ -31,7 +31,7 @@ public class EncodingMonitorModalLangProviderM
             ["DistributionCacheLabel"] = "System cache",
             ["DistributionAvailableLabel"] = "Available Space",
             ["MemoryRangeLegendTitle"] = "Range legend",
-            ["SampleIntervalTickLabels"] = "0 (RT)|60S|120S|180S|240S",
+            ["SampleIntervalTickLabels"] = "0 (Real Time)|60S|120S|180S|240",
             ["ContinueMonitoringText"] = "Continue monitoring",
             ["FreezeContinueText"] = "Freeze / Continue",
             ["ResetUsageText"] = "Reset usage values",

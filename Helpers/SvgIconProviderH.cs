@@ -1,6 +1,6 @@
+using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
-using System.Globalization;
 
 namespace OneColumnEncoder.Helpers;
 

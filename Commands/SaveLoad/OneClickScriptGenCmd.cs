@@ -5,9 +5,6 @@ using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.ViewModels.Cards;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.IO;
 
 namespace OneColumnEncoder.Commands.SaveLoad

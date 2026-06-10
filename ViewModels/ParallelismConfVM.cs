@@ -3,10 +3,7 @@ using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.ViewModels.Cards;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows.Input;
 
 namespace OneColumnEncoder.ViewModels

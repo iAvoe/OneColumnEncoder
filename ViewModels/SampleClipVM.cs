@@ -4,10 +4,8 @@ using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.Views;
-using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
 using System.Text.Json;
 using System.Windows;
 
@@ -185,7 +183,7 @@ namespace OneColumnEncoder.ViewModels
                 _ => Lang.SummaryUnknown,
             };
 
-            
+
             SummaryColumns.Clear();
             // Total duration seconds
             SummaryColumns.Add(new ColumnTextItemM

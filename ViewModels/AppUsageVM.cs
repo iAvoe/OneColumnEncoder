@@ -1,6 +1,5 @@
 ﻿using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Models;
-using System.Windows.Input;
 
 namespace OneColumnEncoder.ViewModels
 {

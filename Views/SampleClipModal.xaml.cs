@@ -1,4 +1,3 @@
-using System.Windows;
 using OneColumnEncoder.Helpers;
 
 namespace OneColumnEncoder.Views

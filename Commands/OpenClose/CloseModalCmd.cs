@@ -1,5 +1,3 @@
-using System;
-
 namespace OneColumnEncoder.Commands.OpenClose
 {
     public class CloseModalCmd(Action closeAction) : BaseCmd

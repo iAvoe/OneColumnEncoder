@@ -1,14 +1,9 @@
 ﻿using OneColumnEncoder.Commands;
+using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using OneColumnEncoder.Models;
 
 namespace OneColumnEncoder.ViewModels.Cards
 {
@@ -23,7 +18,8 @@ namespace OneColumnEncoder.ViewModels.Cards
         public const int CompleteSourceAnalysisChecklistIdx = 6;
 
         private string _name = string.Empty;
-        public string Name {
+        public string Name
+        {
             get => _name;
             set => SetProperty(ref _name, value);
         }
@@ -41,7 +37,8 @@ namespace OneColumnEncoder.ViewModels.Cards
                 new ImportToolCmd(ImportDropdown,
                                   ToolsChecklist,
                                   modalNavS,
-                                  async (toolName, filePath, version) => {
+                                  async (toolName, filePath, version) =>
+                                  {
                                       if (ToolImported != null)
                                           await ToolImported(toolName, filePath, version);
                                   });

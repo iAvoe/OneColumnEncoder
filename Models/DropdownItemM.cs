@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OneColumnEncoder.Models
+﻿namespace OneColumnEncoder.Models
 {
     public class DropdownItemM(string title, bool isSeparator = false, bool isPlaceholder = false)
     {

@@ -1,11 +1,5 @@
-using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
-using System.ComponentModel;
 using OneColumnEncoder.Helpers;
+using System.IO;
 
 namespace OneColumnEncoder.Models
 {

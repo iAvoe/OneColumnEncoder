@@ -1,11 +1,7 @@
-﻿using OneColumnEncoder.Commands;
-using OneColumnEncoder.Commands.OpenClose;
+﻿using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
-using System;
-using System.Configuration;
-using System.Data;
 using System.Windows;
 
 namespace OneColumnEncoder

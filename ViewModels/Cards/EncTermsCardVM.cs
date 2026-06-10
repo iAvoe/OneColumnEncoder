@@ -1,6 +1,5 @@
 ﻿using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
-using System;
 
 namespace OneColumnEncoder.ViewModels.Cards
 {

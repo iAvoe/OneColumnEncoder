@@ -1,5 +1,5 @@
-using System.Windows;
 using OneColumnEncoder.Helpers;
+using System.Windows;
 
 namespace OneColumnEncoder.Views
 {

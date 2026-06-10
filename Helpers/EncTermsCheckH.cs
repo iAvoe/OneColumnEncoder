@@ -1,7 +1,6 @@
-using System;
+using OneColumnEncoder.Models;
 using System.IO;
 using System.Runtime.InteropServices;
-using OneColumnEncoder.Models;
 
 namespace OneColumnEncoder.Helpers;
 

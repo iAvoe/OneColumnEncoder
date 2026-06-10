@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace OneColumnEncoder.Models
+﻿namespace OneColumnEncoder.Models
 {
     public static class ToolDefinitionProviderM
     {

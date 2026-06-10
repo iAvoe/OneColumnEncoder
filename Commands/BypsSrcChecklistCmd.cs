@@ -1,5 +1,4 @@
 using OneColumnEncoder.ViewModels.Cards;
-using System;
 
 namespace OneColumnEncoder.Commands
 {

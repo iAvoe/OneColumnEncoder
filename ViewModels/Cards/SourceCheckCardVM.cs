@@ -17,7 +17,7 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         private string? _lastAnalysisJson;
 
-        private const int SourcePickedChecklistIdx = 0; 
+        private const int SourcePickedChecklistIdx = 0;
         private const int MetadataChecklistIdx = 1;
         private const int ProgressiveChecklistIdx = 2;
         private const int Svtav1BitDepthChecklistIdx = 3;

@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
+using OneColumnEncoder.ViewModels;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using OneColumnEncoder.ViewModels;
 
 namespace OneColumnEncoder.Components
 {

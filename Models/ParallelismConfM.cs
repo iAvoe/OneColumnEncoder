@@ -1,6 +1,5 @@
-using System;
-using System.IO;
 using OneColumnEncoder.Helpers;
+using System.IO;
 
 namespace OneColumnEncoder.Models
 {

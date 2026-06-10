@@ -1,6 +1,6 @@
+using OneColumnEncoder.Helpers;
 using OneColumnEncoder.ViewModels;
 using System.Windows;
-using OneColumnEncoder.Helpers;
 
 namespace OneColumnEncoder.Views
 {

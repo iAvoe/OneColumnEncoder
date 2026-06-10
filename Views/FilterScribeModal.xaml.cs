@@ -1,7 +1,6 @@
-﻿using System.Windows;
+﻿using OneColumnEncoder.Helpers;
 using System.Windows.Controls;
 using System.Windows.Input;
-using OneColumnEncoder.Helpers;
 
 namespace OneColumnEncoder.Views
 {

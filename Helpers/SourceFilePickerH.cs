@@ -4,7 +4,6 @@ using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.Views;
-using System;
 using System.IO;
 using System.Windows;
 

@@ -2,7 +2,6 @@ using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels.Cards;
-using System;
 
 namespace OneColumnEncoder.Commands
 {

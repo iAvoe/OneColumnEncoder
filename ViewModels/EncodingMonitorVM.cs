@@ -3,19 +3,14 @@ using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
-using System;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Threading;
 
 namespace OneColumnEncoder.ViewModels
@@ -466,14 +461,14 @@ namespace OneColumnEncoder.ViewModels
             {
                 EnqueueProcessLine(
                     ProcessLogKind.UpstreamStderr,
-                    "Mux failed: encoded video stream does not exist: " + muxCommand.EncodedVideoPath);
+                    "\nMux failed: encoded video stream does not exist: " + muxCommand.EncodedVideoPath);
                 return false;
             }
 
             StatusText = Lang.MuxingText;
             EnqueueProcessLine(
                 ProcessLogKind.UpstreamStderr,
-                "Mux command: " + muxCommand.CommandLine);
+                "\nMux command: " + muxCommand.CommandLine);
 
             using Process mux = new()
             {

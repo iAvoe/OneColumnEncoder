@@ -1,9 +1,7 @@
-﻿using System;
+﻿using OneColumnEncoder.Helpers;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using OneColumnEncoder.Helpers;
 
 namespace OneColumnEncoder
 {

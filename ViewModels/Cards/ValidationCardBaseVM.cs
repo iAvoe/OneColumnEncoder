@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using OneColumnEncoder.Models;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OneColumnEncoder.Models;
 
 namespace OneColumnEncoder.ViewModels.Cards
 {

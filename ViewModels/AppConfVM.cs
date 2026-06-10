@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using OneColumnEncoder.Commands.OpenClose;
+using OneColumnEncoder.Commands.SaveLoad;
+using OneColumnEncoder.Components;
+using OneColumnEncoder.Helpers;
+using OneColumnEncoder.Models;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Globalization;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using OneColumnEncoder.Components;
-using OneColumnEncoder.Stores;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Commands;
-using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Commands.SaveLoad;
-using OneColumnEncoder.Helpers;
 
 namespace OneColumnEncoder.ViewModels
 {

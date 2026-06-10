@@ -1,16 +1,13 @@
-﻿using OneColumnEncoder.Models;
+﻿using Microsoft.Win32;
+using OneColumnEncoder.Helpers;
+using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.Views;
-using Microsoft.Win32;
-using System;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using static OneColumnEncoder.Models.ConfirmationProviderM;
-using OneColumnEncoder.Helpers;
 
 namespace OneColumnEncoder.Commands
 {

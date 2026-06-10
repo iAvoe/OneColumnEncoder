@@ -1,14 +1,11 @@
+using Microsoft.Win32;
 using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Models;
-using Microsoft.Win32;
-using System;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Windows;
 using OneColumnEncoder.Helpers;
+using OneColumnEncoder.Models;
 using OneColumnEncoder.ViewModels.Cards;
+using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -78,24 +75,40 @@ namespace OneColumnEncoder.ViewModels
         private void BuildChecklist()
         {
             SevereIssueChecklist.Clear();
-            SevereIssueChecklist.Add(new ChecklistEntryVM {
-                Text = UILangProviderM.Current["FilenameScribe.CheckEmpty"] });
-            SevereIssueChecklist.Add(new ChecklistEntryVM {
-                Text = UILangProviderM.Current["FilenameScribe.CheckInvalidChars"] });
-            SevereIssueChecklist.Add(new ChecklistEntryVM {
-                Text = UILangProviderM.Current["FilenameScribe.CheckCombiningMarks"] });
-            SevereIssueChecklist.Add(new ChecklistEntryVM {
-                Text = UILangProviderM.Current["FilenameScribe.CheckSpecialSpaceVariants"] });
-            SevereIssueChecklist.Add(new ChecklistEntryVM {
-                Text = UILangProviderM.Current["FilenameScribe.CheckReserved"] });
+            SevereIssueChecklist.Add(new ChecklistEntryVM
+            {
+                Text = UILangProviderM.Current["FilenameScribe.CheckEmpty"]
+            });
+            SevereIssueChecklist.Add(new ChecklistEntryVM
+            {
+                Text = UILangProviderM.Current["FilenameScribe.CheckInvalidChars"]
+            });
+            SevereIssueChecklist.Add(new ChecklistEntryVM
+            {
+                Text = UILangProviderM.Current["FilenameScribe.CheckCombiningMarks"]
+            });
+            SevereIssueChecklist.Add(new ChecklistEntryVM
+            {
+                Text = UILangProviderM.Current["FilenameScribe.CheckSpecialSpaceVariants"]
+            });
+            SevereIssueChecklist.Add(new ChecklistEntryVM
+            {
+                Text = UILangProviderM.Current["FilenameScribe.CheckReserved"]
+            });
 
             GeneralIssueChecklist.Clear();
-            GeneralIssueChecklist.Add(new ChecklistEntryVM {
-                Text = UILangProviderM.Current["FilenameScribe.CheckLength"] });
-            GeneralIssueChecklist.Add(new ChecklistEntryVM {
-                Text = UILangProviderM.Current["FilenameScribe.CheckSpaces"] });
-            GeneralIssueChecklist.Add(new ChecklistEntryVM {
-                Text = UILangProviderM.Current["FilenameScribe.CheckExtendedChars"] });
+            GeneralIssueChecklist.Add(new ChecklistEntryVM
+            {
+                Text = UILangProviderM.Current["FilenameScribe.CheckLength"]
+            });
+            GeneralIssueChecklist.Add(new ChecklistEntryVM
+            {
+                Text = UILangProviderM.Current["FilenameScribe.CheckSpaces"]
+            });
+            GeneralIssueChecklist.Add(new ChecklistEntryVM
+            {
+                Text = UILangProviderM.Current["FilenameScribe.CheckExtendedChars"]
+            });
         }
 
         private void BuildButtonGroup()

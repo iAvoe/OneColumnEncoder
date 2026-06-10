@@ -2,8 +2,6 @@
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.Views;
-using System;
-using System.Linq;
 using System.Windows;
 
 namespace OneColumnEncoder.Commands.OpenClose

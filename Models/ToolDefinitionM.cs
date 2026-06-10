@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace OneColumnEncoder.Models;
+﻿namespace OneColumnEncoder.Models;
 
 public enum ToolZone { Upstream, Encoder, Analytics, Dependencies }
 

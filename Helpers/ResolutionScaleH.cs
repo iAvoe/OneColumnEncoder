@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace OneColumnEncoder.Helpers;
 
 public static class ResolutionScaleH

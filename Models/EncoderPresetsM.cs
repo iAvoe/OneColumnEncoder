@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-
 namespace OneColumnEncoder.Models
 {
     public class EncoderPresetItem(int key, string nameKey, string param)
