@@ -277,3 +277,33 @@ All persistent configuration data is stored as **JSON files** under `{Applicatio
 **Other persisted data (user-selected paths, not in `\1cenc\`):**
 - Generated script files (`.avs` / `.vpy` / `.txt`) via `ViewModels\FilterScribeVM.cs` and `Commands\SaveLoad\OneClickScriptGenCmd.cs`
 - Stderr log files (`upstream-stderr.txt`, `downstream-stderr.txt`) to the output directory via `ViewModels\EncodingMonitorVM.cs`
+
+---
+
+
+## Disclaimer
+
+## Limition of Liability
+
+The developer shall not be liable for any direct, indirect, incidental, special, or consequential damages (including, but not limited to, loss of business profits, business interruption, computer system damage, data loss, and damage to goodwill) arising from the use or inability to use this software, even if advised of the possibility of such damages. Users assume all risks associated with the use of this software.
+
+### Risks of Hardware Damage
+
+Video compression is a long-duration, sustained, high-load CPU computing task. Under these conditions, the following factors, among others, may cause hardware damage:
+
+- Impropert heatsink installation, unstable overclocking, or excessively high voltage settings may lead to accelerated processor aging, electrical short circuits, or other hardware failures.
+- Extreme computational loads may cause system unresponsiveness, blue-screen crashes, resulting in data corruption or loss.
+
+### Protective Measures Provided by This Software
+
+1. **x265 Stress Test Preset**: The software includes an x265 stress test preset for verifying system stability. However, the actual load of this test depends on the content complexity of the input video. Use a test video consistent with the target compression task as the source file for accurate validation.
+  - *Warning*: This test can be more demanding than traditional stress-testing tools like Prime95, running it carries inherent risks. Run this test only while actively monitoring system temperature and status, and save all files before starting the test.
+2. **No Process Priority Escalation**: This software does not artificially increase the process priority of encoding tasks. This ensures the operating system and other programs remain responsive even under extreme encoder loads.
+3. **File Overwrite Protection**: If an output file already exists before encoding begins, a confirmation window will appear. To prevent accidental data loss, the confirmation button's activation is delayed proportionally to the size of the file being overwritten.
+
+### Recommended Protective Measures for Users
+
+1. **Use Reliable Cooling Equipment**: Standard cooling fans may degrade rapidly under the wear and tear of prolonged, full-speed operation. Ensure the use of quality & heavy-duty cooling.
+2. **Configure Stable Overclocking Strategies**: CPU & memory overclocking should be tuned for stable, long-term, high-load operation rather than short-term peak performance.
+3. **Use an Uninterruptible Power Supply (UPS)**: Sudden power outages during high-load operations pose severe risks to hardware. A UPS provides critical buffer time to save data and shut down the system.
+4. **Monitor Ambient Humidity**: High humidity can lead to electrical short circuits, especially under high-load, long-duration operation. Ensure the computer is in a dry environment.
