@@ -13,69 +13,108 @@
         <conv:WidthToColumnCountConverter x:Key="WidthToColumnCount" />
         <conv:StringToVisibilityConverter x:Key="StringToVisibility" />
     </UserControl.Resources>
-    <Border BorderBrush="{StaticResource GlobalPrimary}"
-             BorderThickness="1.5"
-             SnapsToDevicePixels="True"
-             CornerRadius="18"
-             Padding="17 20"
-             Background="{StaticResource Background}"
-             Opacity="{Binding CardOpacity}">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+    <Grid>
+        <!-- Shadow stays on a separate layer so text and buttons remain sharp. -->
+        <Border BorderBrush="{StaticResource GlobalPrimary}"
+                BorderThickness="1.5"
+                CornerRadius="18"
+                IsHitTestVisible="False"
+                SnapsToDevicePixels="True"
+                Background="Transparent">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Background"
+                            Value="{StaticResource Background}" />
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect BlurRadius="10"
+                                              ShadowDepth="2"
+                                              Opacity="0.18"
+                                              Color="#000000" />
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="True">
+                            <Setter Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect BlurRadius="14"
+                                                      ShadowDepth="3"
+                                                      Opacity="0.26"
+                                                      Color="#000000" />
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
 
-            <TextBlock Grid.Row="0"
-                       VerticalAlignment="Center"
-                       Text="{Binding Name}"
-                       Style="{StaticResource H2}" />
+        <!-- Content layer keeps the original card layout and state styling. -->
+        <Border BorderBrush="{StaticResource GlobalPrimary}"
+                BorderThickness="1.5"
+                SnapsToDevicePixels="True"
+                CornerRadius="18"
+                Padding="17 20"
+                Background="{StaticResource Background}"
+                Opacity="{Binding CardOpacity}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="1"
-                       Text="{Binding Subtitle}"
-                       Visibility="{Binding Subtitle, Converter={StaticResource StringToVisibility}}"
-                       Foreground="{StaticResource GlobalPrimary}"
-                       FontSize="11"
-                       Margin="0 5 0 0" />
+                <TextBlock Grid.Row="0"
+                           VerticalAlignment="Center"
+                           Text="{Binding Name}"
+                           Style="{StaticResource H2}" />
 
-            <UniformGrid Grid.Row="2"
-                         Columns="{Binding ActualWidth,
-                                    RelativeSource={RelativeSource FindAncestor,
-                                                                   AncestorType={x:Type ScrollViewer}},
-                                    Converter={StaticResource WidthToColumnCount}}">
-                <StackPanel>
-                    <TextBlock VerticalAlignment="Center"
-                               Text="{Binding P1Name}"
-                               Style="{StaticResource H3}"
-                               Margin="0 10 0 0" />
-                    <comps:ChecklistContainer ItemsSource="{Binding Checklist1}">
-                        <comps:ChecklistContainer.ItemTemplate>
-                            <DataTemplate>
-                                <comps:ChecklistItem Text="{Binding Text}"
-                                                     Status="{Binding Status}"
-                                                     Margin="0 10 0 0" />
-                            </DataTemplate>
-                        </comps:ChecklistContainer.ItemTemplate>
-                    </comps:ChecklistContainer>
-                </StackPanel>
+                <TextBlock Grid.Row="1"
+                           Text="{Binding Subtitle}"
+                           Visibility="{Binding Subtitle, Converter={StaticResource StringToVisibility}}"
+                           Foreground="{StaticResource GlobalPrimary}"
+                           FontSize="11"
+                           Margin="0 5 0 0" />
 
-                <StackPanel>
-                    <TextBlock VerticalAlignment="Center"
-                               Text="{Binding P3Name}"
-                               Style="{StaticResource H3}"
-                               Margin="0 10 0 0"/>
-                    <comps:ChecklistContainer ItemsSource="{Binding Checklist2}" >
-                        <comps:ChecklistContainer.ItemTemplate>
-                            <DataTemplate>
-                                <comps:ChecklistItem Text="{Binding Text}"
-                                                     Status="{Binding Status}"
-                                                     Margin="0 10 0 0" />
-                            </DataTemplate>
-                        </comps:ChecklistContainer.ItemTemplate>
-                    </comps:ChecklistContainer>
-                </StackPanel>
-            </UniformGrid>
-        </Grid>
-    </Border>
+                <UniformGrid Grid.Row="2"
+                             Columns="{Binding ActualWidth,
+                                        RelativeSource={RelativeSource FindAncestor,
+                                                                       AncestorType={x:Type ScrollViewer}},
+                                        Converter={StaticResource WidthToColumnCount}}">
+                    <StackPanel>
+                        <TextBlock VerticalAlignment="Center"
+                                   Text="{Binding P1Name}"
+                                   Style="{StaticResource H3}"
+                                   Margin="0 10 0 0" />
+                        <comps:ChecklistContainer ItemsSource="{Binding Checklist1}">
+                            <comps:ChecklistContainer.ItemTemplate>
+                                <DataTemplate>
+                                    <comps:ChecklistItem Text="{Binding Text}"
+                                                         Status="{Binding Status}"
+                                                         Margin="0 10 0 0" />
+                                </DataTemplate>
+                            </comps:ChecklistContainer.ItemTemplate>
+                        </comps:ChecklistContainer>
+                    </StackPanel>
+
+                    <StackPanel>
+                        <TextBlock VerticalAlignment="Center"
+                                   Text="{Binding P3Name}"
+                                   Style="{StaticResource H3}"
+                                   Margin="0 10 0 0"/>
+                        <comps:ChecklistContainer ItemsSource="{Binding Checklist2}" >
+                            <comps:ChecklistContainer.ItemTemplate>
+                                <DataTemplate>
+                                    <comps:ChecklistItem Text="{Binding Text}"
+                                                         Status="{Binding Status}"
+                                                         Margin="0 10 0 0" />
+                                </DataTemplate>
+                            </comps:ChecklistContainer.ItemTemplate>
+                        </comps:ChecklistContainer>
+                    </StackPanel>
+                </UniformGrid>
+            </Grid>
+        </Border>
+    </Grid>
 </UserControl>

@@ -19,133 +19,210 @@
     P1: P2: Properties
     Card width: WidthToColumnCount
     -->
-    <Border BorderThickness="1.5"
-            SnapsToDevicePixels="True"
-            CornerRadius="17"
-            Padding="17">
-        <Border.ToolTip>
-            <ToolTip MaxWidth="700">
-                <StackPanel>
-                    <TextBlock FontSize="11"
-                               TextWrapping="Wrap"
-                               Margin="0 0 0 4">
-                        <Run Text="{Binding P1Name, Mode=OneWay}"
-                             FontWeight="Bold" /><Run Text="{Binding SeparatorText, Mode=OneWay}"
-                             FontWeight="Bold" /><Run Text="{Binding P1Text, Mode=OneWay}" />
-                    </TextBlock>
-                    <TextBlock FontSize="11"
-                               TextWrapping="Wrap">
-                        <Run Text="{Binding P2Name, Mode=OneWay}"
-                             FontWeight="Bold" /><Run Text="{Binding SeparatorText, Mode=OneWay}"
-                             FontWeight="Bold" /><Run Text="{Binding P2Text, Mode=OneWay}" />
-                    </TextBlock>
-                </StackPanel>
-            </ToolTip>
-        </Border.ToolTip>
-        <Border.Style>
-            <Style TargetType="Border">
-                <Setter Property="BorderBrush"
-                        Value="{StaticResource GlobalPrimary}" />
-                <Setter Property="Background"
-                        Value="{StaticResource Background}" />
-                <Setter Property="TextElement.Foreground"
-                        Value="{StaticResource GlobalPrimary}" />
-                <Style.Triggers>
-                    <MultiDataTrigger>
-                        <MultiDataTrigger.Conditions>
-                            <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                       Value="True" />
-                            <Condition Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                       Value="False" />
-                        </MultiDataTrigger.Conditions>
-                        <Setter Property="BorderBrush"
-                                Value="{StaticResource BorderGreen}" />
-                        <Setter Property="Background"
-                                Value="{StaticResource BackgroundGreen}" />
-                    </MultiDataTrigger>
-                    <DataTrigger Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}"
+    <Grid>
+        <!-- Shadow stays on a separate layer so text and buttons remain sharp. -->
+        <Border BorderThickness="1.5"
+                CornerRadius="17"
+                IsHitTestVisible="False"
+                Margin="0"
+                SnapsToDevicePixels="True"
+                Background="Transparent">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="BorderBrush"
+                            Value="{StaticResource GlobalPrimary}" />
+                    <Setter Property="Background"
+                            Value="{StaticResource Background}" />
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect BlurRadius="10"
+                                              ShadowDepth="2"
+                                              Opacity="0.18"
+                                              Color="#000000" />
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="True" />
+                                <Condition Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource BorderGreen}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource BackgroundGreen}" />
+                        </MultiDataTrigger>
+                        <DataTrigger Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="True">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource BorderRed}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource BackgroundRed}" />
+                        </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding EnableRealCheck, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="True" />
+                                <Condition Binding="{Binding IsReal, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource BorderRed}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource BackgroundRed}" />
+                        </MultiDataTrigger>
+                        <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="False">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource GlobalSecondary}" />
+                        </DataTrigger>
+                        <Trigger Property="IsMouseOver"
                                  Value="True">
-                        <Setter Property="BorderBrush"
-                                Value="{StaticResource BorderRed}" />
-                        <Setter Property="Background"
-                                Value="{StaticResource BackgroundRed}" />
-                    </DataTrigger>
-                    <MultiDataTrigger>
-                        <MultiDataTrigger.Conditions>
-                            <Condition Binding="{Binding EnableRealCheck, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                       Value="True" />
-                            <Condition Binding="{Binding IsReal, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                       Value="False" />
-                        </MultiDataTrigger.Conditions>
-                        <Setter Property="BorderBrush"
-                                Value="{StaticResource BorderRed}" />
-                        <Setter Property="Background"
-                                Value="{StaticResource BackgroundRed}" />
-                    </MultiDataTrigger>
-                    <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                 Value="False">
-                        <Setter Property="BorderBrush"
-                                Value="{StaticResource GlobalSecondary}" />
-                        <Setter Property="TextElement.Foreground"
-                                Value="{StaticResource GlobalSecondary}" />
-                    </DataTrigger>
-                    <Trigger Property="IsMouseOver"
-                             Value="True">
-                        <Setter Property="Opacity"
-                                Value="0.65" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-        </Border.Style>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+                            <Setter Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect BlurRadius="14"
+                                                      ShadowDepth="3"
+                                                      Opacity="0.26"
+                                                      Color="#000000" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
 
-            <TextBlock Grid.Row="0"
-                       Text="{Binding Name}"
-                       Style="{StaticResource H2}"
-                       HorizontalAlignment="Left"
-                       TextTrimming="CharacterEllipsis" />
+        <!-- Content layer keeps the original card layout and state styling. -->
+        <Border BorderThickness="1.5"
+                CornerRadius="17"
+                Padding="17"
+                SnapsToDevicePixels="True">
+            <Border.ToolTip>
+                <ToolTip MaxWidth="700">
+                    <StackPanel>
+                        <TextBlock FontSize="11"
+                                   TextWrapping="Wrap"
+                                   Margin="0 0 0 4">
+                            <Run Text="{Binding P1Name, Mode=OneWay}"
+                                 FontWeight="Bold" /><Run Text="{Binding SeparatorText, Mode=OneWay}"
+                                 FontWeight="Bold" /><Run Text="{Binding P1Text, Mode=OneWay}" />
+                        </TextBlock>
+                        <TextBlock FontSize="11"
+                                   TextWrapping="Wrap">
+                            <Run Text="{Binding P2Name, Mode=OneWay}"
+                                 FontWeight="Bold" /><Run Text="{Binding SeparatorText, Mode=OneWay}"
+                                 FontWeight="Bold" /><Run Text="{Binding P2Text, Mode=OneWay}" />
+                        </TextBlock>
+                    </StackPanel>
+                </ToolTip>
+            </Border.ToolTip>
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="BorderBrush"
+                            Value="{StaticResource GlobalPrimary}" />
+                    <Setter Property="Background"
+                            Value="{StaticResource Background}" />
+                    <Setter Property="TextElement.Foreground"
+                            Value="{StaticResource GlobalPrimary}" />
+                    <Style.Triggers>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="True" />
+                                <Condition Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource BorderGreen}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource BackgroundGreen}" />
+                        </MultiDataTrigger>
+                        <DataTrigger Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="True">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource BorderRed}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource BackgroundRed}" />
+                        </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding EnableRealCheck, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="True" />
+                                <Condition Binding="{Binding IsReal, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource BorderRed}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource BackgroundRed}" />
+                        </MultiDataTrigger>
+                        <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="False">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource GlobalSecondary}" />
+                            <Setter Property="TextElement.Foreground"
+                                    Value="{StaticResource GlobalSecondary}" />
+                        </DataTrigger>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter Property="Opacity"
+                                    Value="0.65" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="1"
-                       Margin="0 5 0 0"
-                       HorizontalAlignment="Left"
-                       FontSize="12"
-                       TextTrimming="CharacterEllipsis"
-                       MaxWidth="200">
-                <Run Text="{Binding P1Name, Mode=OneWay}"
-                     FontWeight="Bold" /><Run Text="{Binding SeparatorText, Mode=OneWay}"
-                     FontWeight="Bold" /><Run Text="{Binding P1Text, Mode=OneWay}"
-                     FontWeight="Normal" />
-            </TextBlock>
+                <TextBlock Grid.Row="0"
+                           Text="{Binding Name}"
+                           Style="{StaticResource H2}"
+                           HorizontalAlignment="Left"
+                           TextTrimming="CharacterEllipsis" />
 
-            <TextBlock Grid.Row="2"
-                       Margin="0 5 0 0"
-                       HorizontalAlignment="Left"
-                       FontSize="12"
-                       TextTrimming="CharacterEllipsis"
-                       MaxWidth="200">
-                <Run Text="{Binding P2Name, Mode=OneWay}"
-                     FontWeight="Bold" /><Run Text="{Binding SeparatorText, Mode=OneWay}"
-                     FontWeight="Bold" /><Run Text="{Binding P2Text, Mode=OneWay}"
-                     FontWeight="Normal" />
-            </TextBlock>
+                <TextBlock Grid.Row="1"
+                           Margin="0 5 0 0"
+                           HorizontalAlignment="Left"
+                           FontSize="12"
+                           TextTrimming="CharacterEllipsis"
+                           MaxWidth="200">
+                    <Run Text="{Binding P1Name, Mode=OneWay}"
+                         FontWeight="Bold" /><Run Text="{Binding SeparatorText, Mode=OneWay}"
+                         FontWeight="Bold" /><Run Text="{Binding P1Text, Mode=OneWay}"
+                         FontWeight="Normal" />
+                </TextBlock>
 
-            <StackPanel Grid.Row="3"
-                        Orientation="Horizontal" >
-                <Button Content="{Binding DisplayR1Text}"
-                        Command="{Binding R1Command}"
-                        Style="{StaticResource LinkButton}"
-                        Focusable="False" />
-                <Button Content="{Binding R2Text}"
-                        Command="{Binding R2Command}"
-                        Style="{StaticResource LinkButton}"
-                        Focusable="False" />
-            </StackPanel>
-        </Grid>
-    </Border>
+                <TextBlock Grid.Row="2"
+                           Margin="0 5 0 0"
+                           HorizontalAlignment="Left"
+                           FontSize="12"
+                           TextTrimming="CharacterEllipsis"
+                           MaxWidth="200">
+                    <Run Text="{Binding P2Name, Mode=OneWay}"
+                         FontWeight="Bold" /><Run Text="{Binding SeparatorText, Mode=OneWay}"
+                         FontWeight="Bold" /><Run Text="{Binding P2Text, Mode=OneWay}"
+                         FontWeight="Normal" />
+                </TextBlock>
+
+                <StackPanel Grid.Row="3"
+                            Orientation="Horizontal" >
+                    <Button Content="{Binding DisplayR1Text}"
+                            Command="{Binding R1Command}"
+                            Style="{StaticResource LinkButton}"
+                            Focusable="False" />
+                    <Button Content="{Binding R2Text}"
+                            Command="{Binding R2Command}"
+                            Style="{StaticResource LinkButton}"
+                            Focusable="False" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
 </UserControl>
