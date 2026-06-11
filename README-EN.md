@@ -322,6 +322,7 @@ This software relies heavily on proprietary Windows APIs, which form the foundat
    - **Power State**: Checks whether the system is running on AC power before starting encoding.
    - **Memory Information**: Retrieves total physical memory and estimates allocation based on NUMA node proportions.
 3. **`psapi.dll`**: Provides working set and memory pressure statistics for the encoding monitoring feature.
+
 These APIs cover critical areas such as parallel scheduling, hardware detection, process monitoring, and pre-encoding checks—functionalities that cannot be replaced by cross-platform UI frameworks.
 
 Since the backend is already locked to Windows APIs, choosing WPF became the natural decision. It provides native Windows desktop integration (including features to prevent window overflow), a mature MVVM data-binding ecosystem, and requires no browser kernels or third-party dependencies. While cross-platform frameworks solve UI portability, they cannot resolve underlying API incompatibilities; instead, they would only add an extra layer of abstraction cost and testing overhead.
