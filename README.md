@@ -1,6 +1,8 @@
 # OneColumnEncoder
 
-A next-gen smart video encoding utility based on .NET 9/WPF, revolves around “tool & encoder orchestrating, source analyzing, encode customizing, parallelism tailoring, modern GUI monitoring, encode interrupting, and auto-multiplexing”.
+The problem with video encoding software really comes down to a talent mismatch: people who know how to build software often don't understand the nuances of video encoding, and the encoding experts typically lacks software development skills. That's what marks OneColumnEncoder the next-era utility for video encoding.
+
+It is designed to be simple, powerful, flexible, conform to standards, and allow video encoders to show you what they're really capable of.
 
 <p align="center"><img src="WireframeMockups/logo.png" alt="Logo" width="250"></p>
 
