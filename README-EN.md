@@ -307,3 +307,23 @@ Video compression is a long-duration, sustained, high-load CPU computing task. U
 2. **Configure Stable Overclocking Strategies**: CPU & memory overclocking should be tuned for stable, long-term, high-load operation rather than short-term peak performance.
 3. **Use an Uninterruptible Power Supply (UPS)**: Sudden power outages during high-load operations pose severe risks to hardware. A UPS provides critical buffer time to save data and shut down the system.
 4. **Monitor Ambient Humidity**: High humidity can lead to electrical short circuits, especially under high-load, long-duration operation. Ensure the computer is in a dry environment.
+
+---
+
+### Why no Linux support / Why use WPF?
+
+This software relies heavily on proprietary Windows APIs, which form the foundation of its core functionality; therefore, it is natively bound to the Windows platform:
+
+1. **WPF Presentation Layer**: WPF has no official Linux support.
+2. **Windows Kernel APIs (P/Invoke calls to `kernel32.dll`)**:
+   - **CPU Sets**: Binds encoding processes to specific physical cores, avoiding hyper-threaded virtual cores.
+   - **NUMA Topology**: Enumerates and specifies the NUMA nodes used by the encoder, ensuring that the visualization presented to the user is consistent with what the encoder sees.
+   - **Process Enumeration**: Used for tracking sub-processes during encoding monitoring.
+   - **Power State**: Checks whether the system is running on AC power before starting encoding.
+   - **Memory Information**: Retrieves total physical memory and estimates allocation based on NUMA node proportions.
+3. **`psapi.dll`**: Provides working set and memory pressure statistics for the encoding monitoring feature.
+These APIs cover critical areas such as parallel scheduling, hardware detection, process monitoring, and pre-encoding checks—functionalities that cannot be replaced by cross-platform UI frameworks.
+
+Since the backend is already locked to Windows APIs, choosing WPF became the natural decision. It provides native Windows desktop integration (including features to prevent window overflow), a mature MVVM data-binding ecosystem, and requires no browser kernels or third-party dependencies. While cross-platform frameworks solve UI portability, they cannot resolve underlying API incompatibilities; instead, they would only add an extra layer of abstraction cost and testing overhead.
+
+In summary, the best approach for other platforms is to reimplement the project's logic using the corresponding native technology stack of that platform. Because the full source code is available and Agent-assisted programming tools exist—and this project has adopted the Apache 2.0 license to lower the barrier to entry—the difficulty of redevelopment has been significantly reduced.
