@@ -298,7 +298,7 @@ Video compression is a long-duration, sustained, high-load CPU computing task. U
 ### Protective Measures Provided by This Software
 
 1. **x265 Stress Test Preset**: The software includes an x265 stress test preset for verifying system stability. However, the actual load of this test depends on the content complexity of the input video. Use a test video consistent with the target compression task as the source file for accurate validation.
-  - *Warning*: This test can be more demanding than traditional stress-testing tools like Prime95, running it carries inherent risks. Run this test only while actively monitoring system temperature and status, and save all files before starting the test.
+    - This test can be more demanding than traditional stress-testing tools like Prime95, running it carries inherent risks. Run this test only while actively monitoring system temperature and status, and save all files before starting the test.
 2. **No Process Priority Escalation**: This software does not raise the process priority of encoding tasks. This ensures the operating system and other programs remain responsive even under extreme encoder loads.
 3. **File Overwrite Protection**: If an output file already exists before encoding begins, a confirmation window will appear. To prevent accidental data loss, the confirmation button's activation is delayed proportionally to the size of the file being overwritten.
 
