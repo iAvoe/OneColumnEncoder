@@ -39,6 +39,8 @@ This software supports multiple languages, but English text screenshots are used
 
 [Encoding Tools Download Tutorial](https://github.com/iAvoe/encoding-tools-download-tutorial)
 
+> Minimum requirement is one upstream program + one downstream program
+
 **Supported pipe upstream programs (decoding and filtering tools)**:
 - ffmpeg
 - vspipe (supports API 3.0 and 4.0 automatic recognition)
@@ -47,12 +49,11 @@ This software supports multiple languages, but English text screenshots are used
 - SVFI
 
 **Supported pipe downstream programs (encoders)**:
-- x264
-- x265
-- SVT-AV1
+- x264 core 165 or newer
+- x265 v4.2 or newer
+- SVT-AV1 v4.1 or newer
 
-
-> Minimum requirement is one upstream program + one downstream program.
+> Choose only the latest version of encoders to get the best performance (speed, quality, compression)
 
 ## Icon usage
 
@@ -199,30 +200,30 @@ The content below organizes the implementation status based on the current proje
 - No `RunAllChecks()`, no `IsBypassed`, no Inspect/Bypass buttons
 - Marked as "Advisory — not blocking" on the UI
 
-### Application Settings → File Overwrite
+#### Application Settings → File Overwrite
 
 The Overwrite setting will append an overwrite confirmation pop-up if the output file already exists after displaying and confirming the compression command, and delay enabling the confirmation button according to the size of the overwritten file
 
 ---
 
-## Unverified
+### Unverified
 
-### Intel 12\~14th Gen & Ultra 200\~300 Series CPU Utilization Verification
+#### Intel 12\~14th Gen & Ultra 200\~300 Series CPU Utilization Verification
 
 No CPU available for testing, but it should not fail catastrophically
 - This software uses CPU Sets to bind encoding processes to physical cores, which means it should be compatible and not fail catastrophically
 
 ---
 
-## Not Started
+### Not Started
 
-None currently
+##### None currently
 
 ---
 
-## Dead Ends
+### Dead Ends
 
-### P-Core / E-Core Optimization
+#### P-Core / E-Core Optimization
 
 This feature cannot be implemented due to the need to modify the upstream program and encoder source code
 - P-Core / E-Core related checkboxes in the UI are disabled
