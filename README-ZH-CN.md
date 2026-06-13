@@ -42,6 +42,7 @@
 
 或者着急要用的话，也可以无视上述教程并使用这个压缩包的工具（不推荐但可以）
 - [Google Drive / ffmepg-ffprobe-x264-x265-SVTAV1 Pkg.](https://drive.google.com/file/d/1DNrVBoJtmYka0LiorjuWDgeGxfnq62PM/view?usp=sharing)
+- [Baidu Netdisk / ffmpeg-ffprobe-x264-x265-SVTAV1 Pkg.](https://pan.baidu.com/s/1I-WsIBdr2syvHmkhdLGdHA?pwd=ya32) 提取码: ya32
 
 > 最少只需一个上游程序 + 一个下游程序
 
