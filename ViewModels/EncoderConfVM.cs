@@ -223,6 +223,7 @@ namespace OneColumnEncoder.ViewModels
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
 
+        #region Dropdown initialization
         private void PopulateDropdowns()
         {
             AddBlankPresetItem(X264ModeDropdown);
@@ -250,7 +251,9 @@ namespace OneColumnEncoder.ViewModels
             if (item != null)
                 dropdown.SelectedItem = item;
         }
+        #endregion
 
+        #region Model-UI synchronization
         private void LoadModelToUi()
         {
             SelectedTabIndex = _model.RateControlMode == "ABR"
@@ -303,7 +306,9 @@ namespace OneColumnEncoder.ViewModels
             _model.SvtAv1Mode = SvtAv1ModeDropdown.SelectedItem?.Tag is int svtAv1Mode ? svtAv1Mode : -1;
             _model.Save();
         }
+        #endregion
 
+        #region Apply settings to card
         private void ApplySettingsToTarget()
         {
             if (_targetItem is null) return;
@@ -326,7 +331,9 @@ namespace OneColumnEncoder.ViewModels
 
         private static string BuildSecondarySummary(EncoderConfM model) =>
             $"{model.X264Keyframe},{model.X265Keyframe},{model.SvtAv1Keyframe}s";
+        #endregion
 
+        #region Language/Localization
         private void OnLanguageChanged()
         {
             Lang = new EncoderConfLangProviderM(UILangProviderM.Current.LanguageCode);
@@ -392,6 +399,7 @@ namespace OneColumnEncoder.ViewModels
             SyncTitles(EncoderPresetsM.X265Presets, X265ModeDropdown);
             SyncTitles(EncoderPresetsM.SvtAv1Presets, SvtAv1ModeDropdown);
         }
+        #endregion
 
         public override void Dispose()
         {
