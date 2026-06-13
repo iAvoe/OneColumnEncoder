@@ -46,6 +46,8 @@ public class EncoderConfLangProviderM
             ["PeakQualityText"] = "Peak Quality",
             ["CompressionOptText"] = "High Compression",
             ["SpeedOptimizedText"] = "Fast",
+            ["BlankPresetText"] = "None",
+            ["BlankPresetHint"] = "None: use encoder default / fully customize via additional parameter textbox",
             ["CancelButtonText"] = "Cancel",
             ["ConfirmButtonText"] = "Confirm",
         },
@@ -90,6 +92,8 @@ public class EncoderConfLangProviderM
             ["PeakQualityText"] = "极致画质",
             ["CompressionOptText"] = "优化压缩",
             ["SpeedOptimizedText"] = "优化速度",
+            ["BlankPresetText"] = "留空",
+            ["BlankPresetHint"] = "留空：使用编码器默认或底部附加编码器参数文本框写入",
             ["CancelButtonText"] = "取消",
             ["ConfirmButtonText"] = "确认",
         },
@@ -134,6 +138,8 @@ public class EncoderConfLangProviderM
             ["PeakQualityText"] = "極致畫質",
             ["CompressionOptText"] = "優化壓縮",
             ["SpeedOptimizedText"] = "優化速度",
+            ["BlankPresetText"] = "留空",
+            ["BlankPresetHint"] = "留空：使用編碼器默認或底部附加編碼器參數文本框寫入",
             ["CancelButtonText"] = "取消",
             ["ConfirmButtonText"] = "確認",
         }
@@ -178,6 +184,8 @@ public class EncoderConfLangProviderM
     public string PeakQualityText { get; }
     public string CompressionOptText { get; }
     public string SpeedOptimizedText { get; }
+    public string BlankPresetText { get; }
+    public string BlankPresetHint { get; }
     public string CancelButtonText { get; }
     public string ConfirmButtonText { get; }
 
@@ -229,6 +237,8 @@ public class EncoderConfLangProviderM
         PeakQualityText = _d["PeakQualityText"];
         CompressionOptText = _d["CompressionOptText"];
         SpeedOptimizedText = _d["SpeedOptimizedText"];
+        BlankPresetText = _d["BlankPresetText"];
+        BlankPresetHint = _d["BlankPresetHint"];
         CancelButtonText = _d["CancelButtonText"];
         ConfirmButtonText = _d["ConfirmButtonText"];
         Current = this;

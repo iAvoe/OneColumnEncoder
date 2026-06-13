@@ -16,6 +16,8 @@ namespace OneColumnEncoder.Models
 
     public static class EncoderPresetsM
     {
+        // Key -1 is reserved for the UI-only blank preset. It intentionally has no
+        // EncoderPresetItem, so encoder parameter builders fall back to empty text.
         public static IReadOnlyList<EncoderPresetItem> X264Presets { get; } =
         [
             new(0, "GeneralPurposeText",

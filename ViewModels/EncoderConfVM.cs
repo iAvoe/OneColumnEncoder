@@ -62,6 +62,29 @@ namespace OneColumnEncoder.ViewModels
         public string ThirdPartyHintText2 => Lang.ThirdPartyHintText2;
         public string ThirdPartyHintText3 => Lang.ThirdPartyHintText3;
         public string ThirdPartyHintText4 => Lang.ThirdPartyHintText4;
+        public string BlankPresetText => Lang.BlankPresetText;
+        public string BlankPresetHint => Lang.BlankPresetHint;
+
+        private string _freeTextParamsX264 = string.Empty;
+        public string FreeTextParamsX264
+        {
+            get => _freeTextParamsX264;
+            set => SetProperty(ref _freeTextParamsX264, value);
+        }
+
+        private string _freeTextParamsX265 = string.Empty;
+        public string FreeTextParamsX265
+        {
+            get => _freeTextParamsX265;
+            set => SetProperty(ref _freeTextParamsX265, value);
+        }
+
+        private string _freeTextParamsSvtAv1 = string.Empty;
+        public string FreeTextParamsSvtAv1
+        {
+            get => _freeTextParamsSvtAv1;
+            set => SetProperty(ref _freeTextParamsSvtAv1, value);
+        }
 
         private bool IsAbrTabSelected => SelectedTabIndex == 1;
 
@@ -202,6 +225,10 @@ namespace OneColumnEncoder.ViewModels
 
         private void PopulateDropdowns()
         {
+            AddBlankPresetItem(X264ModeDropdown);
+            AddBlankPresetItem(X265ModeDropdown);
+            AddBlankPresetItem(SvtAv1ModeDropdown);
+
             foreach (EncoderPresetItem preset in EncoderPresetsM.X264Presets)
                 X264ModeDropdown.Items.Add(new DropdownItemM(Lang[preset.NameKey]) { Tag = preset.Key });
             foreach (EncoderPresetItem preset in EncoderPresetsM.X265Presets)
@@ -213,6 +240,9 @@ namespace OneColumnEncoder.ViewModels
             SelectDropdownByKey(X265ModeDropdown, _model.X265Mode);
             SelectDropdownByKey(SvtAv1ModeDropdown, _model.SvtAv1Mode);
         }
+
+        private void AddBlankPresetItem(DropdownMenuVM dropdown) =>
+            dropdown.Items.Add(new DropdownItemM(BlankPresetText) { Tag = -1 });
 
         private static void SelectDropdownByKey(DropdownMenuVM dropdown, int key)
         {
@@ -241,6 +271,9 @@ namespace OneColumnEncoder.ViewModels
             X265Texture = _model.X265Texture;
             SvtAv1Dl2 = _model.SvtAv1Dl2;
             SvtAv1AutoTile = _model.SvtAv1AutoTile;
+            FreeTextParamsX264 = _model.CustomParamsX264;
+            FreeTextParamsX265 = _model.CustomParamsX265;
+            FreeTextParamsSvtAv1 = _model.CustomParamsSvtAv1;
         }
 
         private void SaveModel()
@@ -262,9 +295,12 @@ namespace OneColumnEncoder.ViewModels
             _model.X265Texture = X265Texture;
             _model.SvtAv1Dl2 = SvtAv1Dl2;
             _model.SvtAv1AutoTile = SvtAv1AutoTile;
-            _model.X264Mode = X264ModeDropdown.SelectedItem?.Tag is int x264Mode ? x264Mode : 0;
-            _model.X265Mode = X265ModeDropdown.SelectedItem?.Tag is int x265Mode ? x265Mode : 0;
-            _model.SvtAv1Mode = SvtAv1ModeDropdown.SelectedItem?.Tag is int svtAv1Mode ? svtAv1Mode : 0;
+            _model.CustomParamsX264 = FreeTextParamsX264;
+            _model.CustomParamsX265 = FreeTextParamsX265;
+            _model.CustomParamsSvtAv1 = FreeTextParamsSvtAv1;
+            _model.X264Mode = X264ModeDropdown.SelectedItem?.Tag is int x264Mode ? x264Mode : -1;
+            _model.X265Mode = X265ModeDropdown.SelectedItem?.Tag is int x265Mode ? x265Mode : -1;
+            _model.SvtAv1Mode = SvtAv1ModeDropdown.SelectedItem?.Tag is int svtAv1Mode ? svtAv1Mode : -1;
             _model.Save();
         }
 
@@ -327,6 +363,8 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(ThirdPartyHintText2));
             OnPropertyChanged(nameof(ThirdPartyHintText3));
             OnPropertyChanged(nameof(ThirdPartyHintText4));
+            OnPropertyChanged(nameof(BlankPresetText));
+            OnPropertyChanged(nameof(BlankPresetHint));
             FinishButtons.B2_1Text = CancelButtonText;
             FinishButtons.B2_2Text = ConfirmButtonText;
         }
@@ -335,8 +373,20 @@ namespace OneColumnEncoder.ViewModels
         {
             void SyncTitles(IReadOnlyList<EncoderPresetItem> presets, DropdownMenuVM dropdown)
             {
-                for (int i = 0; i < presets.Count && i < dropdown.Items.Count; i++)
-                    dropdown.Items[i].Title = Lang[presets[i].NameKey];
+                foreach (DropdownItemM item in dropdown.Items)
+                {
+                    if (item.Tag is not int key) continue;
+
+                    if (key == -1)
+                    {
+                        item.Title = BlankPresetText;
+                        continue;
+                    }
+
+                    EncoderPresetItem? preset = presets.FirstOrDefault(p => p.Key == key);
+                    if (preset != null)
+                        item.Title = Lang[preset.NameKey];
+                }
             }
             SyncTitles(EncoderPresetsM.X264Presets, X264ModeDropdown);
             SyncTitles(EncoderPresetsM.X265Presets, X265ModeDropdown);

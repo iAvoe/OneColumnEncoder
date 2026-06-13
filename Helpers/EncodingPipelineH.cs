@@ -404,6 +404,7 @@ public static partial class EncodingPipelineH
     {
         if (string.IsNullOrWhiteSpace(customParams)) return string.Empty;
 
+        // Strip the 3rd party parameters that are unfit to an encoder
         HashSet<string> stripPrefixes = encoderExeName.ToLowerInvariant() switch
         {
             "x264.exe" => ["--aq-auto", "--aq-bias-strength", "--aq-strength-edge", "--enable-dlf", "--auto-tiling"],

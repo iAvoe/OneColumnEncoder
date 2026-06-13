@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="520"
-        Height="1180"
+        Height="1190"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid>
@@ -163,8 +163,13 @@
                                             MinWidth="150"
                                             Height="25"
                                             DataContext="{Binding SvtAv1ModeDropdown}" />
-                    </Grid>
 
+                    </Grid>
+                    <comps:HintPanel Text="{Binding BlankPresetHint, Mode=OneWay}"
+                                     Margin="5 5 5 0"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Center" />
+                    
                     <!-- Keyframe Interval Sliders -->
                     <TextBlock Text="{Binding KeyframeSecondsText, Mode=OneWay}"
                                Style="{StaticResource H3}"
