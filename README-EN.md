@@ -11,12 +11,12 @@ This software works and are validated on multiple CPUs, but there could still be
 This software supports multiple languages, but English text screenshots are used here to reduce the number of images. Some UI elements or text in the images may be outdated, but the overall layout and functional area divisions remain applicable. Please refer to the actual version you are using.
 
 1. Main Interface: Tools area, Source Import area, Analysis area, Checklist, Encoding Settings area, and Startup area
-2. Script Editor: AVS/VPY editing area, video scaling and VFR to CFR command generation
+2. Script Editor: AVS/VPY editing & script generator, video scaling and VFR to CFR command generation
 3. Encoding Settings: CRF/ABR parameters, custom presets, and 3rd party encoder arguments
 4. Parallelism Settings: NUMA nodes, CPU Sets, and advanced thread limit
-5. Clip Sampler: Time/Frame Number selection, conversion, and basic preview
+5. Clip Sampler: Time/Frame Number selection, conversion, basic preview and FFMPEG/vspipe/Avs2Yuv/AVS2PipeMod commandline generation
 6. Encoding Monitoring: Logs, progress, resource usage, interrupt control, as well as auto-multiplexing
-7. Warning Modal and File Overwrite Protection
+7. Warning Modal & File Overwrite Protection
 
 <p align="center"><img src="WireframeMockups/1-Main-Page.png" alt="Main Window" width="600"><br>
 <img src="WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window" width="500"><br>
@@ -53,7 +53,7 @@ This software supports multiple languages, but English text screenshots are used
 - x265 v4.2 or newer
 - SVT-AV1 v4.1 or newer
 
-> Choose only the latest version of encoders to get the best performance (speed, quality, compression)
+> Choose only the latest version of encoders to get the best performance (speed, quality, compression), plus less likely to trigger memory leaks
 
 ## Icon usage
 
@@ -69,7 +69,7 @@ This software supports multiple languages, but English text screenshots are used
 - Lacking validation for Windows 11, but it should work fine...
 
 **Hardware**：
-- Core i5 7600X (4C4T)
+- Core i5 7600k (4C4T)
 - Ryzen 9 9900X (2CCD 12C24T)
 - EPYC 7R13 (6CCD 48C96T)
 - Lacking validation for Intel 12th\~14th generation and Ultra 200\~300 series heterogeneous CPUs
@@ -208,7 +208,7 @@ The Overwrite setting will append an overwrite confirmation pop-up if the output
 
 ### Unverified
 
-#### Intel 12\~14th Gen & Ultra 200\~300 Series CPU Utilization Verification
+#### Intel 12\~14th Gen & Ultra 200\~300 Series CPU Utilization
 
 No CPU available for testing, but it should not fail catastrophically
 - This software uses CPU Sets to bind encoding processes to physical cores, which means it should be compatible and not fail catastrophically
@@ -280,7 +280,6 @@ All persistent configuration data is stored as **JSON files** under `{Applicatio
 - Stderr log files (`upstream-stderr.txt`, `downstream-stderr.txt`) to the output directory via `ViewModels\EncodingMonitorVM.cs`
 
 ---
-
 
 ## Disclaimer
 
