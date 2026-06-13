@@ -37,7 +37,11 @@
 
 ### 下载编码相关工具
 
-[Encoding Tools Download Tutorial](https://github.com/iAvoe/encoding-tools-download-tutorial)
+你可以根据此教程来寻得合适的工具：
+- [Encoding Tools Download Tutorial](https://github.com/iAvoe/encoding-tools-download-tutorial)
+
+或者着急要用的话，也可以无视上述教程并使用这个压缩包的工具（不推荐但可以）
+- [Google Drive / ffmepg-ffprobe-x264-x265-SVTAV1 Pkg.](https://drive.google.com/file/d/1DNrVBoJtmYka0LiorjuWDgeGxfnq62PM/view?usp=sharing)
 
 > 最少只需一个上游程序 + 一个下游程序
 

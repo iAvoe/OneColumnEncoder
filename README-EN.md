@@ -37,7 +37,11 @@ This software supports multiple languages, but English text screenshots are used
 
 ### Download Encoding Tools
 
-[Encoding Tools Download Tutorial](https://github.com/iAvoe/encoding-tools-download-tutorial)
+Follow this tutorial to get tool tailored for your use case:
+- [Encoding Tools Download Tutorial](https://github.com/iAvoe/encoding-tools-download-tutorial)
+
+Or, TLDR; and use tools provided in this package (not recommended but its an option)
+- [Google Drive / ffmepg-ffprobe-x264-x265-SVTAV1 Pkg.](https://drive.google.com/file/d/1DNrVBoJtmYka0LiorjuWDgeGxfnq62PM/view?usp=sharing)
 
 > Minimum requirement is one upstream program + one downstream program
 
