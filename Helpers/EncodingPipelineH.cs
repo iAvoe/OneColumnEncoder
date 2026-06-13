@@ -24,18 +24,13 @@ public record EncodingPipelineRequest(
     string? SvfiTaskId = null,
     string? FfmpegFilterArgs = null);
 
+// For clip sampler
 public record EncodingClipRequest(
     string? StartTime = null,
     string? EndTime = null,
     long? FirstFrame = null,
     long? LastFrame = null,
     double? FrameRate = null);
-
-internal record ClipRange(
-    string? StartTime,
-    string? EndTime,
-    long? FirstFrame,
-    long? LastFrame);
 
 public record EncodingPipelineCommand(
     string CommandLine,
@@ -135,10 +130,7 @@ public static partial class EncodingPipelineH
 
             return "-map 1:a? -map 1:s?";
         }
-        catch
-        {
-            return "-map 1:a? -map 1:s?";
-        }
+        catch { return "-map 1:a? -map 1:s?"; }
     }
 
     private static string BuildUpstreamArgs(EncodingPipelineRequest request)
@@ -177,14 +169,14 @@ public static partial class EncodingPipelineH
         };
     }
 
-    private static string BuildFfmpegClipArgs(ClipRange? clip) =>
+    private static string BuildFfmpegClipArgs(EncodingClipRequest? clip) =>
         clip == null
             ? string.Empty
             : JoinArgs(
                 clip.StartTime == null ? null : $"-ss {clip.StartTime}",
                 clip.EndTime == null ? null : $"-to {clip.EndTime}");
 
-    private static string BuildVspipeClipArgs(ClipRange? clip)
+    private static string BuildVspipeClipArgs(EncodingClipRequest? clip)
     {
         if (clip == null) return string.Empty;
         long? firstFrame = clip.FirstFrame ?? (clip.LastFrame.HasValue ? 0 : null);
@@ -193,7 +185,7 @@ public static partial class EncodingPipelineH
             clip.LastFrame == null ? null : $"-e {clip.LastFrame}");
     }
 
-    private static string BuildAvs2yuvClipArgs(ClipRange? clip)
+    private static string BuildAvs2yuvClipArgs(EncodingClipRequest? clip)
     {
         if (clip == null) return string.Empty;
         long? firstFrame = clip.FirstFrame;
@@ -207,7 +199,7 @@ public static partial class EncodingPipelineH
             frameCount == null ? null : $"-frames {frameCount}");
     }
 
-    private static string BuildAvs2pipemodClipArgs(ClipRange? clip)
+    private static string BuildAvs2pipemodClipArgs(EncodingClipRequest? clip)
     {
         if (clip == null || clip.FirstFrame == null && clip.LastFrame == null) return string.Empty;
         long firstFrame = clip.FirstFrame ?? 0;
@@ -216,7 +208,7 @@ public static partial class EncodingPipelineH
     }
 
     #region Sample clip modal stuffs
-    private static ClipRange? BuildClipRange(EncodingClipRequest? clip, bool needsTimes, bool needsFrames)
+    private static EncodingClipRequest? BuildClipRange(EncodingClipRequest? clip, bool needsTimes, bool needsFrames)
     {
         if (clip == null) return null;
         if (clip.StartTime == null && clip.EndTime == null && clip.FirstFrame == null && clip.LastFrame == null)

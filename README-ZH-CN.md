@@ -42,7 +42,7 @@
 
 或者着急要用的话，也可以无视上述教程并使用这个压缩包的工具（不推荐但可以）
 - [Google Drive / ffmepg-ffprobe-x264-x265-SVTAV1 Pkg.](https://drive.google.com/file/d/1DNrVBoJtmYka0LiorjuWDgeGxfnq62PM/view?usp=sharing)
-- [Baidu Netdisk / ffmpeg-ffprobe-x264-x265-SVTAV1 Pkg.](https://pan.baidu.com/s/1I-WsIBdr2syvHmkhdLGdHA?pwd=ya32) 提取码: ya32
+- [Baidu Netdisk / ffmpeg-ffprobe-x264-x265-SVTAV1 Pkg.](https://pan.baidu.com/s/1I-WsIBdr2syvHmkhdLGdHA?pwd=ya32)，提取码：ya322
 
 > 最少只需一个上游程序 + 一个下游程序
 
@@ -162,7 +162,7 @@
 #### 编码监控与进程执行
 
 - 支持启动上游进程和编码器进程，并将上游 stdout 管道传给编码器 stdin
-- 支持读取 upstream / downstream stderr、日志折叠、保存日志、查看编码命令和调整日志字号
+- 支持读取上游程序与下游程序（编码器）stderr、日志折叠、保存日志、查看编码命令和调整日志字号
 - 支持编码进度、已写帧数、当前/预计输出大小、耗时、剩余时间和完成时间估算
 - 支持内存占用、工作集峰值、Page Fault、内存压力和内存范围条统计
 - 支持中断上游或编码器进程，编码完成后才能关闭窗口
@@ -170,7 +170,7 @@
 #### 并行基础能力
 
 - NUMA 节点枚举、CPU 拓扑读取、CPU Sets 分配和编码器线程数限制已有实现
-- 并行设置可以保存并应用到编码监控启动的 upstream / encoder 进程
+- 并行设置可以保存并应用到编码监控启动的上游程序与下游程序（编码器）进程
 - 编码器线程数会传给 x264 / x265 参数，SVT-AV1 当前没有线程参数生成
 
 #### 应用配置与持久化
