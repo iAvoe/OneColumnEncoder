@@ -246,7 +246,7 @@ namespace OneColumnEncoder.ViewModels
         {
             int max = Math.Max(1, MaxThreadCount);
             if (max <= 8)
-                return Enumerable.Range(1, max).Select(v => v.ToString()).ToList();
+                return [.. Enumerable.Range(1, max).Select(v => v.ToString())];
 
             int step = GetThreadTickStep(max);
             List<int> values = [1];
@@ -254,7 +254,7 @@ namespace OneColumnEncoder.ViewModels
                 values.Add(value);
 
             if (values[^1] != max) values.Add(max);
-            return values.Select(v => v.ToString()).ToList();
+            return [.. values.Select(v => v.ToString())];
         }
 
         private static int GetThreadTickStep(int maxThreadCount)
