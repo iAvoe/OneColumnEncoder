@@ -51,6 +51,62 @@ public class StartEncCmdLangProviderM
         }
     };
 
+    static StartEncCmdLangProviderM()
+    {
+        Data["fr"] = new(Data["en"])
+        {
+            ["WarnTitle"] = "Encodage",
+            ["MissingUpstreamMsg"] = "Chemin d'entrée amont manquant. Vérifiez qu'une source vidéo ou script est sélectionnée pour l'outil amont choisi.",
+            ["ConfirmTitle"] = "Commande d'encodage",
+            ["OverwriteTitle"] = "Écraser la sortie",
+            ["OverwriteMsg"] = "Les fichiers de sortie suivants existent déjà et seront écrasés.",
+            ["EncodedOutputLabel"] = "Sortie encodeur",
+            ["MuxOutputLabel"] = "Sortie mux",
+            ["OverwriteTargetLabel"] = "{0} : {1} ({2})",
+            ["LargestExistingSizeLabel"] = "Plus grande taille existante : {0}",
+            ["ConfirmDelayLabel"] = "Le bouton de confirmation se déverrouille dans {0} s."
+        };
+        Data["es"] = new(Data["en"])
+        {
+            ["WarnTitle"] = "Codificación",
+            ["MissingUpstreamMsg"] = "Falta la ruta de entrada ascendente. Asegure una fuente de vídeo o script para la herramienta elegida.",
+            ["ConfirmTitle"] = "Comando de codificación",
+            ["OverwriteTitle"] = "Sobrescribir salida",
+            ["OverwriteMsg"] = "Los siguientes archivos de salida ya existen y se sobrescribirán.",
+            ["EncodedOutputLabel"] = "Salida del codificador",
+            ["MuxOutputLabel"] = "Salida mux",
+            ["OverwriteTargetLabel"] = "{0}: {1} ({2})",
+            ["LargestExistingSizeLabel"] = "Mayor tamaño existente: {0}",
+            ["ConfirmDelayLabel"] = "El botón se desbloquea en {0} s."
+        };
+        Data["ja"] = new(Data["en"])
+        {
+            ["WarnTitle"] = "エンコード",
+            ["MissingUpstreamMsg"] = "上流入力パスがありません。選択した上流ツールに動画ソースまたはスクリプトを指定してください。",
+            ["ConfirmTitle"] = "エンコードコマンド",
+            ["OverwriteTitle"] = "出力を上書き",
+            ["OverwriteMsg"] = "次の出力ファイルは既に存在し、上書きされます。",
+            ["EncodedOutputLabel"] = "エンコーダ出力",
+            ["MuxOutputLabel"] = "Mux 出力",
+            ["OverwriteTargetLabel"] = "{0}: {1} ({2})",
+            ["LargestExistingSizeLabel"] = "既存最大サイズ: {0}",
+            ["ConfirmDelayLabel"] = "確認ボタンは {0} 秒後に有効になります。"
+        };
+        Data["ru"] = new(Data["en"])
+        {
+            ["WarnTitle"] = "Кодирование",
+            ["MissingUpstreamMsg"] = "Нет входного пути upstream. Выберите видеоисточник или скрипт для выбранного upstream-инструмента.",
+            ["ConfirmTitle"] = "Команда кодирования",
+            ["OverwriteTitle"] = "Перезапись вывода",
+            ["OverwriteMsg"] = "Следующие выходные файлы уже есть и будут перезаписаны.",
+            ["EncodedOutputLabel"] = "Вывод кодера",
+            ["MuxOutputLabel"] = "Вывод mux",
+            ["OverwriteTargetLabel"] = "{0}: {1} ({2})",
+            ["LargestExistingSizeLabel"] = "Наибольший существующий размер: {0}",
+            ["ConfirmDelayLabel"] = "Кнопка подтверждения откроется через {0} с."
+        };
+    }
+
     public string WarnTitle { get; }
     public string MissingUpstreamMsg { get; }
     public string ConfirmTitle { get; }

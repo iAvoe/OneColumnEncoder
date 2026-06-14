@@ -63,17 +63,17 @@ namespace OneColumnEncoder.ViewModels
         public EncTermsCardVM EncTermsCard { get; } = new();
         public BestPracsSelfCheckCardVM BestPracticesCard { get; } = new();
         // Section header texts
-        public static string SectionSelectUpstream => UILangProviderM.Current["Section.SelectUpstream"];
-        public static string SectionSelectEncoder => UILangProviderM.Current["Section.SelectEncoder"];
-        public static string SectionSelectAnalytics => UILangProviderM.Current["Section.SelectAnalytics"];
-        public static string SectionSelectDependencies => UILangProviderM.Current["Section.SelectDependencies"];
-        public static string SectionImportSource => UILangProviderM.Current["Section.ImportSource"];
-        public static string SectionAnalysisResults => UILangProviderM.Current["Section.AnalysisResults"];
-        public static string SectionEncodingConfigs => UILangProviderM.Current["Section.EncodingConfigs"];
-        public static string SectionStartEncoding => UILangProviderM.Current["Section.StartEncoding"];
-        public static string SVFIClipDisabledHintText => UILangProviderM.Current["Hint.SVFIClipDisabled"];
-        public static string AnalyzeNeedsSourceText => UILangProviderM.Current["Hint.AnalyzeNeedsSource"];
-        public static string NumaCpuCheckHintText => UILangProviderM.Current["Hint.NumaCpuCheckTrigger"];
+        public string SectionSelectUpstream => UICaptionProviderM.Sections.SelectUpstream;
+        public string SectionSelectEncoder => UICaptionProviderM.Sections.SelectEncoder;
+        public string SectionSelectAnalytics => UICaptionProviderM.Sections.SelectAnalytics;
+        public string SectionSelectDependencies => UICaptionProviderM.Sections.SelectDependencies;
+        public string SectionImportSource => UICaptionProviderM.Sections.ImportSource;
+        public string SectionAnalysisResults => UICaptionProviderM.Sections.AnalysisResults;
+        public string SectionEncodingConfigs => UICaptionProviderM.Sections.EncodingConfigs;
+        public string SectionStartEncoding => UICaptionProviderM.Sections.StartEncoding;
+        public string SVFIClipDisabledHintText => UICaptionProviderM.Hints.SVFIClipDisabled;
+        public string AnalyzeNeedsSourceText => UICaptionProviderM.Hints.AnalyzeNeedsSource;
+        public string NumaCpuCheckHintText => UICaptionProviderM.Hints.NumaCpuCheckTrigger;
 
         // Disable UI when other modal opens
         private bool _isOverlayVisible;
@@ -747,7 +747,7 @@ namespace OneColumnEncoder.ViewModels
             ConfirmationModal window = new();
             CloseModalCmd cancelCmd = new(window.Close);
             ConfirmationVM vm = ConfirmationVM.CreateWarning(
-                UILangProviderM.Current["ScriptGen.WindowTitle"],
+                UILangProviderM.ScriptGenWindowTitle,
                 UILangProviderM.Current["ScriptGen.RunAfterReplace"],
                 cancelCmd,
                 new ActionCmd(_ =>
@@ -790,7 +790,7 @@ namespace OneColumnEncoder.ViewModels
             ConfirmationModal window = new();
             CloseModalCmd cancelCmd = new(window.Close);
             ConfirmationVM vm = ConfirmationVM.CreateWarning(
-                UILangProviderM.Current["SrcAnalysis.WindowTitle"],
+                UILangProviderM.SrcAnalysisWindowTitle,
                 UILangProviderM.Current["SrcAnalysis.RunAfterReplace"],
                 cancelCmd,
                 new ActionCmd(_ =>
@@ -1228,6 +1228,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(SectionStartEncoding));
             OnPropertyChanged(nameof(SVFIClipDisabledHintText));
             OnPropertyChanged(nameof(AnalyzeNeedsSourceText));
+            OnPropertyChanged(nameof(NumaCpuCheckHintText));
         }
         private void RefreshButtonCaptions()
         {

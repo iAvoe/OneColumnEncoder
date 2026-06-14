@@ -46,7 +46,7 @@ namespace OneColumnEncoder.Commands
 
                 new OpenInfoModalCmd(
                     _modalNavS,
-                    UILangProviderM.Current["SrcAnalysis.WindowTitle"],
+                    UILangProviderM.SrcAnalysisWindowTitle,
                     UILangProviderM.Current["SrcAnalysis.Completed"]).Execute(null);
             }
             catch (Exception ex)
@@ -54,7 +54,7 @@ namespace OneColumnEncoder.Commands
                 _srcValidationCard.SetAnalysisFailedStatus();
                 new OpenErrModalCmd(
                     _modalNavS,
-                    UILangProviderM.Current["SrcAnalysis.WindowTitle"],
+                    UILangProviderM.SrcAnalysisWindowTitle,
                     ex.Message).Execute(null);
             }
             finally

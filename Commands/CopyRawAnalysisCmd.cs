@@ -24,14 +24,14 @@ namespace OneColumnEncoder.Commands
                 Clipboard.SetText(_analysis.RawJson);
                 new OpenInfoModalCmd(
                     _modalNavS,
-                    UILangProviderM.Current["SrcAnalysis.WindowTitle"],
+                    UILangProviderM.SrcAnalysisWindowTitle,
                     UILangProviderM.Current["SrcAnalysis.Copied"]).Execute(null);
             }
             catch (Exception ex)
             {
                 new OpenErrModalCmd(
                     _modalNavS,
-                    UILangProviderM.Current["SrcAnalysis.WindowTitle"],
+                    UILangProviderM.SrcAnalysisWindowTitle,
                     ex.Message).Execute(null);
             }
         }

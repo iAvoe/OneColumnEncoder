@@ -70,6 +70,26 @@ public static class UICaptionProviderM
         public static string P6Title => UILangProviderM.Current["EncInspect.P6Title"];
     }
 
+    public static class Sections
+    {
+        public static string SelectUpstream => UILangProviderM.Current["Section.SelectUpstream"];
+        public static string SelectEncoder => UILangProviderM.Current["Section.SelectEncoder"];
+        public static string SelectAnalytics => UILangProviderM.Current["Section.SelectAnalytics"];
+        public static string SelectDependencies => UILangProviderM.Current["Section.SelectDependencies"];
+        public static string ImportSource => UILangProviderM.Current["Section.ImportSource"];
+        public static string AnalysisResults => UILangProviderM.Current["Section.AnalysisResults"];
+        public static string EncodingConfigs => UILangProviderM.Current["Section.EncodingConfigs"];
+        public static string StartEncoding => UILangProviderM.Current["Section.StartEncoding"];
+    }
+
+    public static class Hints
+    {
+        public static string SVFIClipDisabled => UILangProviderM.Current["Hint.SVFIClipDisabled"];
+        public static string AnalyzeNeedsSource => UILangProviderM.Current["Hint.AnalyzeNeedsSource"];
+        public static string NumaCpuCheckTrigger => UILangProviderM.Current["Hint.NumaCpuCheckTrigger"];
+        public static string AppConfNotificationPolicy => UILangProviderM.Current["Hint.AppConfNotificationPolicy"];
+    }
+
     public static class AppConf
     {
         public static class Groups
@@ -86,7 +106,16 @@ public static class UICaptionProviderM
 
         public static class LanguageOptions
         {
-            public static readonly string[] Codes = ["en", "zh-cn", "zh-tw"];
+            public static readonly string[] Codes = ["en", "zh-cn", "zh-tw", "fr", "es", "ja", "ru"];
+
+            public static string GetDisplayName(string code) => code switch
+            {
+                "fr" => "fr (MTL Only)",
+                "es" => "es (MTL Only)",
+                "ja" => "ja (MTL Only)",
+                "ru" => "ru (MTL Only)",
+                _ => code
+            };
         }
     }
 }

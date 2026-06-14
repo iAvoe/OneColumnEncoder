@@ -18,11 +18,11 @@ namespace OneColumnEncoder.ViewModels
 
         #region Properties & Commands
 
-        public static string WindowTitle => "1cenc Settings";
-        public static string HeaderText =>
+        public string WindowTitle => "1cenc Settings";
+        public string HeaderText =>
             UILangProviderM.Current["AppConfModal.Header"];
-        public static string NotificationPolicyHint =>
-            UILangProviderM.Current["Hint.AppConfNotificationPolicy"];
+        public string NotificationPolicyHint =>
+            UICaptionProviderM.Hints.AppConfNotificationPolicy;
 
         public CloseModalCmd CloseCmd { get; }
         public SaveAppConfCmd SaveCmd { get; }
@@ -224,12 +224,13 @@ namespace OneColumnEncoder.ViewModels
         private static void AddDropdownItem(AppConfContainer container, string text, object source, string propertyPath, string[] options)
         {
             string currentValue = source.GetType().GetProperty(propertyPath)?.GetValue(source) as string ?? options[0];
-            List<DropdownItemM> items = [.. options.Select(o => new DropdownItemM(o))];
+            List<DropdownItemM> items = [.. options.Select(o => new DropdownItemM(
+                UICaptionProviderM.AppConf.LanguageOptions.GetDisplayName(o)) { Tag = o })];
 
             DropdownMenuVM dropdownVM = new();
             foreach (DropdownItemM item in items) dropdownVM.Items.Add(item);
             dropdownVM.SelectedItem =
-                items.FirstOrDefault(i => i.Title == currentValue) ?? items[0];
+                items.FirstOrDefault(i => string.Equals(i.Tag as string, currentValue, StringComparison.OrdinalIgnoreCase)) ?? items[0];
 
             dropdownVM.PropertyChanged += (_, e) =>
             {
@@ -237,7 +238,7 @@ namespace OneColumnEncoder.ViewModels
                     && dropdownVM.SelectedItem is not null)
                 {
                     System.Reflection.PropertyInfo? prop = source.GetType().GetProperty(propertyPath);
-                    prop?.SetValue(source, dropdownVM.SelectedItem.Title);
+                    prop?.SetValue(source, dropdownVM.SelectedItem.Tag as string ?? dropdownVM.SelectedItem.Title);
                 }
             };
 

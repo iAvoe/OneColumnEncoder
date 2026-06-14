@@ -32,7 +32,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
             {
                 new OpenWarnModalCmd(
                     _modalNavS,
-                    UILangProviderM.Current["SrcScribe.WindowTitle"],
+                    UILangProviderM.SrcScribeWindowTitle,
                     UILangProviderM.Current["SrcScribe.NoVidSrcWarning"]).Execute(null);
                 return;
             }
@@ -67,7 +67,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
             {
                 new OpenErrModalCmd(
                     _modalNavS,
-                    UILangProviderM.Current["SrcScribe.WindowTitle"],
+                    UILangProviderM.SrcScribeWindowTitle,
                     $"Failed to save scripts: {ex.Message}").Execute(null);
                 return;
             }
@@ -97,7 +97,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
 
             new OpenInfoModalCmd(
                 _modalNavS,
-                UILangProviderM.Current["SrcScribe.WindowTitle"],
+                UILangProviderM.SrcScribeWindowTitle,
                 $"Scripts saved:\n{avsPath}\n{vpyPath}").Execute(null);
         }
     }

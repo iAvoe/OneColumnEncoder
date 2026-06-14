@@ -41,6 +41,54 @@ public class SourceFilePickerLangProviderM
         }
     };
 
+    static SourceFilePickerLangProviderM()
+    {
+        Data["fr"] = new(Data["en"])
+        {
+            ["Filter.Video"] = $"Fichiers vidéo ({VideoExtensions})|{VideoExtensions}|Tous les fichiers (*.*)|*.*",
+            ["Filter.AviSynthScript"] = "Scripts AviSynth (*.avs)|*.avs",
+            ["Filter.VapourSynthScript"] = "Scripts VapourSynth (*.vpy)|*.vpy",
+            ["Filter.SvfiIni"] = "Fichiers de configuration SVFI (*.ini)|*.ini",
+            ["Filter.AllFiles"] = "Tous les fichiers (*.*)|*.*",
+            ["NoFileSelectedTitle"] = "Aucun fichier sélectionné",
+            ["MissingSelectionMessage"] = "Aucun fichier sélectionné. Oui pour réessayer, Non pour annuler.",
+            ["CustomScriptModeText"] = "Importer un script perso"
+        };
+        Data["es"] = new(Data["en"])
+        {
+            ["Filter.Video"] = $"Archivos de vídeo ({VideoExtensions})|{VideoExtensions}|Todos los archivos (*.*)|*.*",
+            ["Filter.AviSynthScript"] = "Scripts AviSynth (*.avs)|*.avs",
+            ["Filter.VapourSynthScript"] = "Scripts VapourSynth (*.vpy)|*.vpy",
+            ["Filter.SvfiIni"] = "Configuración SVFI (*.ini)|*.ini",
+            ["Filter.AllFiles"] = "Todos los archivos (*.*)|*.*",
+            ["NoFileSelectedTitle"] = "No se seleccionó archivo",
+            ["MissingSelectionMessage"] = "No se seleccionó archivo. Sí para reintentar; No para cancelar.",
+            ["CustomScriptModeText"] = "Importar script propio"
+        };
+        Data["ja"] = new(Data["en"])
+        {
+            ["Filter.Video"] = $"動画ファイル ({VideoExtensions})|{VideoExtensions}|すべてのファイル (*.*)|*.*",
+            ["Filter.AviSynthScript"] = "AviSynth スクリプト (*.avs)|*.avs",
+            ["Filter.VapourSynthScript"] = "VapourSynth スクリプト (*.vpy)|*.vpy",
+            ["Filter.SvfiIni"] = "SVFI 設定ファイル (*.ini)|*.ini",
+            ["Filter.AllFiles"] = "すべてのファイル (*.*)|*.*",
+            ["NoFileSelectedTitle"] = "ファイル未選択",
+            ["MissingSelectionMessage"] = "ファイルが選択されていません。「はい」で再試行、「いいえ」で取消。",
+            ["CustomScriptModeText"] = "カスタムスクリプトを取込"
+        };
+        Data["ru"] = new(Data["en"])
+        {
+            ["Filter.Video"] = $"Видео ({VideoExtensions})|{VideoExtensions}|Все файлы (*.*)|*.*",
+            ["Filter.AviSynthScript"] = "Скрипты AviSynth (*.avs)|*.avs",
+            ["Filter.VapourSynthScript"] = "Скрипты VapourSynth (*.vpy)|*.vpy",
+            ["Filter.SvfiIni"] = "Конфигурации SVFI (*.ini)|*.ini",
+            ["Filter.AllFiles"] = "Все файлы (*.*)|*.*",
+            ["NoFileSelectedTitle"] = "Файл не выбран",
+            ["MissingSelectionMessage"] = "Файл не выбран. Да — повторить, Нет — отменить.",
+            ["CustomScriptModeText"] = "Импорт своего скрипта"
+        };
+    }
+
     private readonly Dictionary<string, string> _d;
 
     public string LanguageCode { get; }

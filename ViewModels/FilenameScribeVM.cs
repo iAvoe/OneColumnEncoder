@@ -41,7 +41,7 @@ namespace OneColumnEncoder.ViewModels
             private set => SetProperty(ref _videoFilenameFontSize, value);
         }
 
-        public static string WindowTitle => UILangProviderM.Current["FilenameScribe.WindowTitle"];
+        public static string WindowTitle => UILangProviderM.FilenameScribeWindowTitle;
         public static string MiniHeader => UILangProviderM.Current["FilenameScribe.MiniHeader"];
         public static string PlaceholderText => UILangProviderM.Current["FilenameScribe.Placeholder"];
         public static string ExtensionText => PossibleExtensions;

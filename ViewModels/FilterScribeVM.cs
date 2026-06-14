@@ -405,7 +405,7 @@ namespace OneColumnEncoder.ViewModels
             Clipboard.SetText(GetCurrentFullScript());
             new OpenInfoModalCmd(
                 _modalNavS,
-                UILangProviderM.Current["SrcScribe.WindowTitle"],
+                UILangProviderM.SrcScribeWindowTitle,
                 UILangProviderM.Current["SrcScribe.CopiedFull"]).Execute(null);
         }
         private void CopyInOutSection()
@@ -423,7 +423,7 @@ namespace OneColumnEncoder.ViewModels
             Clipboard.SetText(inOutText);
             new OpenInfoModalCmd(
                 _modalNavS,
-                UILangProviderM.Current["SrcScribe.WindowTitle"],
+                UILangProviderM.SrcScribeWindowTitle,
                 UILangProviderM.Current["SrcScribe.CopiedSection"]).Execute(null);
         }
         private void SaveAsFile()
@@ -483,7 +483,7 @@ namespace OneColumnEncoder.ViewModels
 
             SaveFileDialog dialog = new()
             {
-                Title = UILangProviderM.Current["SrcScribe.SavingWindowTitle"],
+                Title = UILangProviderM.SavingScriptWindowTitle,
                 Filter = UILangProviderM.Current["SrcScribe.FilterAvs"],
                 FileName = GetScriptFileName(sourcePath, ".avs")
             };
@@ -500,7 +500,7 @@ namespace OneColumnEncoder.ViewModels
             ImportScript(_vpyItem, SourceFileKind.VapourSynthScript, vpyPath);
             new OpenInfoModalCmd(
                 _modalNavS,
-                UILangProviderM.Current["SrcScribe.WindowTitle"],
+                UILangProviderM.SrcScribeWindowTitle,
                 $"Scripts saved:\n{avsPath}\n{vpyPath}").Execute(null);
             _closeAction();
         }
@@ -562,7 +562,7 @@ namespace OneColumnEncoder.ViewModels
         {
             new OpenErrModalCmd(
                 _modalNavS,
-                UILangProviderM.Current["SrcScribe.WindowTitle"],
+                UILangProviderM.SrcScribeWindowTitle,
                 $"Failed to save scripts: {ex.Message}").Execute(null);
         }
 
@@ -570,7 +570,7 @@ namespace OneColumnEncoder.ViewModels
         {
             new OpenInfoModalCmd(
                 _modalNavS,
-                UILangProviderM.Current["SrcScribe.WindowTitle"],
+                UILangProviderM.SrcScribeWindowTitle,
                 $"Script saved:\n{path}").Execute(null);
         }
 

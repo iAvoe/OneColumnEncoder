@@ -34,6 +34,46 @@ public class CpuSetsLangProviderM
         }
     };
 
+    static CpuSetsLangProviderM()
+    {
+        Data["fr"] = new(Data["en"])
+        {
+            ["UnavailableOnNonWindows"] = "CPU Sets n'est disponible que sous Windows.",
+            ["NoCpuSetsFound"] = "Aucun CPU Set trouvé pour le noeud NUMA {0}.",
+            ["SetProcessDefaultCpuSetsFailed"] = "Échec de SetProcessDefaultCpuSets : {0}.",
+            ["BoundSuccess"] = "PID {0} lié au noeud NUMA {1} avec {2} CPU Set(s);\n{3} thread(s) existant(s) mis à jour.",
+            ["BindingFailed"] = "Échec de liaison CPU Sets : {0}",
+            ["SkippedPrefix"] = "Liaison CPU Sets ignorée. "
+        };
+        Data["es"] = new(Data["en"])
+        {
+            ["UnavailableOnNonWindows"] = "CPU Sets solo está disponible en Windows.",
+            ["NoCpuSetsFound"] = "No se hallaron CPU Sets para el nodo NUMA {0}.",
+            ["SetProcessDefaultCpuSetsFailed"] = "SetProcessDefaultCpuSets falló: {0}.",
+            ["BoundSuccess"] = "PID {0} vinculado al nodo NUMA {1} con {2} CPU Set(s);\n{3} hilo(s) existentes actualizados.",
+            ["BindingFailed"] = "Falló la vinculación de CPU Sets: {0}",
+            ["SkippedPrefix"] = "Vinculación de CPU Sets omitida. "
+        };
+        Data["ja"] = new(Data["en"])
+        {
+            ["UnavailableOnNonWindows"] = "CPU Sets は Windows でのみ利用できます。",
+            ["NoCpuSetsFound"] = "NUMA ノード {0} の CPU Sets が見つかりません。",
+            ["SetProcessDefaultCpuSetsFailed"] = "SetProcessDefaultCpuSets に失敗: {0}。",
+            ["BoundSuccess"] = "PID {0} を NUMA ノード {1} へ {2} CPU Set でバインド;\n既存スレッド {3} 件を更新しました。",
+            ["BindingFailed"] = "CPU Sets バインド失敗: {0}",
+            ["SkippedPrefix"] = "CPU Sets バインドをスキップしました。"
+        };
+        Data["ru"] = new(Data["en"])
+        {
+            ["UnavailableOnNonWindows"] = "CPU Sets доступны только в Windows.",
+            ["NoCpuSetsFound"] = "CPU Sets для NUMA-узла {0} не найдены.",
+            ["SetProcessDefaultCpuSetsFailed"] = "Сбой SetProcessDefaultCpuSets: {0}.",
+            ["BoundSuccess"] = "PID {0} привязан к NUMA-узлу {1} с {2} CPU Set(s);\nобновлено потоков: {3}.",
+            ["BindingFailed"] = "Сбой привязки CPU Sets: {0}",
+            ["SkippedPrefix"] = "Привязка CPU Sets пропущена. "
+        };
+    }
+
     public string UnavailableOnNonWindows { get; }
     public string NoCpuSetsFound { get; }
     public string SetProcessDefaultCpuSetsFailed { get; }

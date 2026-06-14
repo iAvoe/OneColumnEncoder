@@ -93,6 +93,118 @@ public class ClipRangeSelectorLangProviderM
         }
     };
 
+    static ClipRangeSelectorLangProviderM()
+    {
+        Data["fr"] = new(Data["en"])
+        {
+            ["TimelineSectionTitle"] = "Segment temporel",
+            ["SelectionHintText"] = "Glissez la poignée pour choisir la position",
+            ["DurationSectionTitle"] = "Durée",
+            ["ClipLengthLabel"] = "Durée (s)",
+            ["StartTimeLabel"] = "Début",
+            ["ClipDurationLabel"] = "Durée du segment",
+            ["EndTimeLabel"] = "Fin",
+            ["StartFrameLabel"] = "Image/champ début",
+            ["ClipFrameCountLabel"] = "Durée images/champs",
+            ["EndFrameLabel"] = "Image/champ fin",
+            ["Note1Text"] = "Pour une source entrelacée, le total et la cadence sont des champs (2 champs/image).",
+            ["Note2Text"] = "Durées ou bases temps divergentes empêchent l'alignement; métriques qualité non fiables.",
+            ["CancelButtonText"] = "Annuler",
+            ["ConfirmButtonText"] = "Encoder l'échantillon",
+            ["SummaryDurationLabel"] = "Durée",
+            ["SummaryTotalFramesLabel"] = "Images totales",
+            ["SummaryFrameRateLabel"] = "Cadence",
+            ["SummarySecondsUnit"] = "s",
+            ["SummaryProgressive"] = "Progressif",
+            ["SummaryInterlaced"] = "Entrelacé",
+            ["SummaryUnknown"] = "Inconnu",
+            ["SummaryConstantFrameRate"] = "Constante",
+            ["SummaryVariableFrameRate"] = "Variable",
+            ["SummaryFrameRateUnknown"] = "Inconnue"
+        };
+        Data["es"] = new(Data["en"])
+        {
+            ["TimelineSectionTitle"] = "Segmento temporal",
+            ["SelectionHintText"] = "Arrastre el control para elegir la posición",
+            ["DurationSectionTitle"] = "Duración",
+            ["ClipLengthLabel"] = "Duración (s)",
+            ["StartTimeLabel"] = "Inicio",
+            ["ClipDurationLabel"] = "Duración del segmento",
+            ["EndTimeLabel"] = "Fin",
+            ["StartFrameLabel"] = "Fotograma/campo inicial",
+            ["ClipFrameCountLabel"] = "Duración en fotogramas/campos",
+            ["EndFrameLabel"] = "Fotograma/campo final",
+            ["Note1Text"] = "En fuentes entrelazadas, totales y FPS son campos y cadencia de campo (2 campos/fotograma).",
+            ["Note2Text"] = "Duraciones o bases de tiempo distintas impiden alinear; no sirven para métricas de calidad.",
+            ["CancelButtonText"] = "Cancelar",
+            ["ConfirmButtonText"] = "Codificar muestra",
+            ["SummaryDurationLabel"] = "Duración",
+            ["SummaryTotalFramesLabel"] = "Fotogramas",
+            ["SummaryFrameRateLabel"] = "FPS",
+            ["SummarySecondsUnit"] = "s",
+            ["SummaryProgressive"] = "Progresivo",
+            ["SummaryInterlaced"] = "Entrelazado",
+            ["SummaryUnknown"] = "Desconocido",
+            ["SummaryConstantFrameRate"] = "Constante",
+            ["SummaryVariableFrameRate"] = "Variable",
+            ["SummaryFrameRateUnknown"] = "Desconocida"
+        };
+        Data["ja"] = new(Data["en"])
+        {
+            ["TimelineSectionTitle"] = "時間軸セグメント",
+            ["SelectionHintText"] = "ハンドルをドラッグして位置を選択",
+            ["DurationSectionTitle"] = "長さ設定",
+            ["ClipLengthLabel"] = "長さ (秒)",
+            ["StartTimeLabel"] = "開始時刻",
+            ["ClipDurationLabel"] = "区間長",
+            ["EndTimeLabel"] = "終了時刻",
+            ["StartFrameLabel"] = "開始フレーム/フィールド",
+            ["ClipFrameCountLabel"] = "フレーム/フィールド数",
+            ["EndFrameLabel"] = "終了フレーム/フィールド",
+            ["Note1Text"] = "インターレースでは総フレーム数とFPSは実質フィールド数/フィールドレートです。",
+            ["Note2Text"] = "区間長や時間基準が一致しないため、品質指標の比較には不向きです。",
+            ["CancelButtonText"] = "取消",
+            ["ConfirmButtonText"] = "サンプルをエンコード",
+            ["SummaryDurationLabel"] = "長さ",
+            ["SummaryTotalFramesLabel"] = "総フレーム",
+            ["SummaryFrameRateLabel"] = "フレームレート",
+            ["SummarySecondsUnit"] = "秒",
+            ["SummaryProgressive"] = "プログレッシブ",
+            ["SummaryInterlaced"] = "インターレース",
+            ["SummaryUnknown"] = "不明",
+            ["SummaryConstantFrameRate"] = "固定",
+            ["SummaryVariableFrameRate"] = "可変",
+            ["SummaryFrameRateUnknown"] = "不明"
+        };
+        Data["ru"] = new(Data["en"])
+        {
+            ["TimelineSectionTitle"] = "Отрезок шкалы времени",
+            ["SelectionHintText"] = "Перетащите маркер, чтобы выбрать позицию",
+            ["DurationSectionTitle"] = "Длительность",
+            ["ClipLengthLabel"] = "Длительность (с)",
+            ["StartTimeLabel"] = "Начало",
+            ["ClipDurationLabel"] = "Длина отрезка",
+            ["EndTimeLabel"] = "Конец",
+            ["StartFrameLabel"] = "Начальный кадр/поле",
+            ["ClipFrameCountLabel"] = "Кадры/поля",
+            ["EndFrameLabel"] = "Конечный кадр/поле",
+            ["Note1Text"] = "Для чересстрочных источников total/FPS фактически означают поля и частоту полей.",
+            ["Note2Text"] = "Разные длительности или time-base мешают выравниванию; метрики качества неприменимы.",
+            ["CancelButtonText"] = "Отмена",
+            ["ConfirmButtonText"] = "Кодировать пример",
+            ["SummaryDurationLabel"] = "Длительность",
+            ["SummaryTotalFramesLabel"] = "Кадры всего",
+            ["SummaryFrameRateLabel"] = "Частота кадров",
+            ["SummarySecondsUnit"] = "с",
+            ["SummaryProgressive"] = "Прогрессивное",
+            ["SummaryInterlaced"] = "Чересстрочное",
+            ["SummaryUnknown"] = "Неизвестно",
+            ["SummaryConstantFrameRate"] = "Постоянная",
+            ["SummaryVariableFrameRate"] = "Переменная",
+            ["SummaryFrameRateUnknown"] = "Неизвестна"
+        };
+    }
+
     public string LanguageCode { get; }
     private readonly Dictionary<string, string> _d;
 
