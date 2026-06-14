@@ -136,8 +136,8 @@ namespace OneColumnEncoder.ViewModels
             var (_, _) = ResolutionScaleH.ComputeTargetDimensions(SourceWidth, SourceHeight, ScalePercent);
             OnPropertyChanged(nameof(TargetDisplay));
             OnPropertyChanged(nameof(FfmpegResizeFilter));
-            OnPropertyChanged(nameof(FfmpegCombinedFilter));
-            OnPropertyChanged(nameof(FfmpegFinalFilter));
+            OnPropertyChanged(nameof(Ffmpeg2xFilter));
+            OnPropertyChanged(nameof(Ffmpeg3xFilter));
             OnPropertyChanged(nameof(VapourSynthResizeFilter));
             OnPropertyChanged(nameof(AviSynthResizeFilter));
         }
@@ -158,11 +158,6 @@ namespace OneColumnEncoder.ViewModels
             !_hasSourceValidationError()
             && _colorSpaceAnalysis.IsApplicable
             && !RequiresManualColorSpacePeakNits
-            && !string.IsNullOrWhiteSpace(_colorSpaceAnalysis.FfmpegColorFilter);
-
-        private bool CanShowColorSpaceFilter =>
-            !_hasSourceValidationError()
-            && _colorSpaceAnalysis.IsApplicable
             && !string.IsNullOrWhiteSpace(_colorSpaceAnalysis.FfmpegColorFilter);
 
         private bool RequiresManualColorSpacePeakNits =>
@@ -189,7 +184,8 @@ namespace OneColumnEncoder.ViewModels
                 ? BuildFfmpegFilterArgs(includeSwsFlags: false, FpsFilterChain)
                 : "N/A";
 
-        public string FfmpegCombinedFilter =>
+        // Rule of filtering: follow a fixing→customizing order; therefore order of filter is not to be noted in variable name
+        public string Ffmpeg2xFilter =>
             HasFpsFilter && HasScaleFilter
                 ? BuildFfmpegFilterArgs(includeSwsFlags: true, FpsFilterChain, ScaleFilterChain)
                 : "N/A";
@@ -202,7 +198,8 @@ namespace OneColumnEncoder.ViewModels
 
         public string FfmpegHighHdrToLowSdrColorFilter => GetColorSpaceStrategyFilter(ColorSpaceStrategy.HighHdrToSdr);
 
-        public string FfmpegFinalFilter
+        // Rule of filtering: follow a fixing→customizing order; therefore order of filter is not to be noted in variable name
+        public string Ffmpeg3xFilter
         {
             get
             {
@@ -271,8 +268,8 @@ namespace OneColumnEncoder.ViewModels
                 OnPropertyChanged(nameof(TargetHeight));
                 OnPropertyChanged(nameof(TargetDisplay));
                 OnPropertyChanged(nameof(FfmpegResizeFilter));
-                OnPropertyChanged(nameof(FfmpegCombinedFilter));
-                OnPropertyChanged(nameof(FfmpegFinalFilter));
+                OnPropertyChanged(nameof(Ffmpeg2xFilter));
+                OnPropertyChanged(nameof(Ffmpeg3xFilter));
                 OnPropertyChanged(nameof(VapourSynthResizeFilter));
                 OnPropertyChanged(nameof(AviSynthResizeFilter));
             }
@@ -347,12 +344,12 @@ namespace OneColumnEncoder.ViewModels
         public static string VapourSynthAutoFilter => "VS";
         public static string AviSynthAutoFilter => "AVS(+)";
         public static string FrameRateConvertTitle => UILangProviderM.Current["SrcScribe.FrameRateConvertTitle"];
-        public static string ColorSpaceConvertTitle => "Convert colorspace to Bt.709";
-        public static string LowToHighColorFilterLabel => "窄域→709";
-        public static string HighToLowColorFilterLabel => "WCG→709";
-        public static string HdrToSdrColorFilterLabel => "HDR→SDR";
-        public static string HighHdrToLowSdrColorFilterLabel => "WCG HDR→SDR";
-        public static string ColorSpacePeakNitsHint => "Tonemap peak <nits> 需手填；看文件名/元数据";
+        public static string ColorSpaceConvertTitle => UILangProviderM.Current["SrcScribe.ColorSpaceConvertTitle"];
+        public static string LowToHighColorFilterLabel => "窄域";
+        public static string HighToLowColorFilterLabel => "WCG";
+        public static string HdrToSdrColorFilterLabel => "HDR";
+        public static string HighHdrToLowSdrColorFilterLabel => "WCG HDR";
+        public static string ColorSpacePeakNitsHint => UILangProviderM.Current["SrcScribe.ColorSpacePeakNitsHint"];
         #endregion
 
         public ButtonGroupVM ScriptExportButtons { get; private set; } = null!;
@@ -394,7 +391,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(FfmpegHighToLowColorFilter));
             OnPropertyChanged(nameof(FfmpegHdrToSdrColorFilter));
             OnPropertyChanged(nameof(FfmpegHighHdrToLowSdrColorFilter));
-            OnPropertyChanged(nameof(FfmpegFinalFilter));
+            OnPropertyChanged(nameof(Ffmpeg3xFilter));
         }
 
         private void ParseSourceResolution(string? sourceFfprobeJson)
@@ -460,8 +457,8 @@ namespace OneColumnEncoder.ViewModels
                 OnPropertyChanged(nameof(FrameRateNum));
                 OnPropertyChanged(nameof(FrameRateDen));
                 OnPropertyChanged(nameof(FfmpegFpsFilter));
-                OnPropertyChanged(nameof(FfmpegCombinedFilter));
-                OnPropertyChanged(nameof(FfmpegFinalFilter));
+                OnPropertyChanged(nameof(Ffmpeg2xFilter));
+                OnPropertyChanged(nameof(Ffmpeg3xFilter));
             }
             catch { } // ignore parse errors
         }
@@ -699,8 +696,8 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(TargetDisplay));
             OnPropertyChanged(nameof(FfmpegFreeTextHint));
             OnPropertyChanged(nameof(FfmpegAutoFilter));
-            OnPropertyChanged(nameof(FfmpegCombinedFilter));
-            OnPropertyChanged(nameof(FfmpegFinalFilter));
+            OnPropertyChanged(nameof(Ffmpeg2xFilter));
+            OnPropertyChanged(nameof(Ffmpeg3xFilter));
             OnPropertyChanged(nameof(VapourSynthAutoFilter));
             OnPropertyChanged(nameof(AviSynthAutoFilter));
             OnPropertyChanged(nameof(FrameRateConvertTitle));

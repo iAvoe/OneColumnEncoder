@@ -225,6 +225,10 @@ public class UILangProviderM
             ["SrcScribe.TabFfmpeg"] = "ffmpeg Filter",
             ["SrcScribe.FfmpegFreeTextHint"] = "Enter custom ffmpeg filter params (session only)",
             ["SrcScribe.FrameRateConvertTitle"] = "FFMPEG VFR\u2192CFR Parameter Generator",
+
+            ["SrcScribe.ColorSpaceConvertTitle"] = "Convert colorspace to Bt.709",
+            ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> requires manual input; please check filename/metadata for it",
+
             // FilenameScribeModal
             ["FilenameScribe.MiniHeader"] = "File Name",
             ["FilenameScribe.Placeholder"] = "Type or paste output file name here",
@@ -478,6 +482,10 @@ public class UILangProviderM
             ["SrcScribe.TabFfmpeg"] = "ffmpeg Filter",
             ["SrcScribe.FfmpegFreeTextHint"] = "输入自定义 ffmpeg 滤镜参数（仅本次会话有效）",
             ["SrcScribe.FrameRateConvertTitle"] = "FFMPEG 可变帧率\u2192恒定帧率参数生成器",
+
+            ["SrcScribe.ColorSpaceConvertTitle"] = "转换色彩空间到 Bt.709",
+            ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> 需手动填写；请检查文件名/元数据",
+
             // FilenameScribeModal
             ["FilenameScribe.MiniHeader"] = "文件名",
             ["FilenameScribe.Placeholder"] = "在此写入或粘贴导出文件名",
@@ -730,6 +738,10 @@ public class UILangProviderM
             ["SrcScribe.TabFfmpeg"] = "ffmpeg Filter",
             ["SrcScribe.FfmpegFreeTextHint"] = "輸入自訂 ffmpeg 濾鏡參數（僅本次會話有效）",
             ["SrcScribe.FrameRateConvertTitle"] = "FFMPEG 可變幀率\u2192恆定幀率參數產生器",
+
+            ["SrcScribe.ColorSpaceConvertTitle"] = "轉換色彩空間到 Bt.709",
+            ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> 需手動填寫；請檢查檔案名/元數據",
+
             // FilenameScribeModal
             ["FilenameScribe.MiniHeader"] = "檔案名",
             ["FilenameScribe.Placeholder"] = "在此寫入或貼上匯出檔案名稱",
@@ -1016,7 +1028,9 @@ public class UILangProviderM
         ["SrcScribe.VpyPrefix"] = "import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"chemin du fichier vidéo\")",
         ["SrcScribe.VpyPrefix2"] = "# Ajoutez des filtres ici ou laissez vide...",
         ["SrcScribe.VpySuffix"] = "# ...fin de la section d'édition (gardez src ou réassignez-le à la fin)\r\nsrc.set_output()",
-        ["SrcScribe.TabFfmpeg"] = "Filtre ffmpeg"
+        ["SrcScribe.TabFfmpeg"] = "Filtre ffmpeg",
+        ["SrcScribe.ColorSpaceConvertTitle"] = "Convertir espace colorimétrique en Bt.709",
+        ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> nécessite une saisie manuelle; vérifiez le nom du fichier/les métadonnées"
     };
 
     private static void AddSpanish() => Data["es"] = new(Data["en"])
@@ -1054,10 +1068,10 @@ public class UILangProviderM
         ["AppConf.Language"] = "Idioma/Language",
         ["AppConf.Cancel"] = "Cancelar",
         ["AppConf.Save"] = "Guardar",
-["Section.SelectUpstream"] = "Elegir herramienta aguas arriba",
-            ["Section.SelectEncoder"] = "Elegir codificador",
-            ["Section.SelectAnalytics"] = "Elegir analizador",
-            ["Section.SelectDependencies"] = "(Si aguas arriba está rojo) Elegir dependencias",
+        ["Section.SelectUpstream"] = "Elegir herramienta aguas arriba",
+        ["Section.SelectEncoder"] = "Elegir codificador",
+        ["Section.SelectAnalytics"] = "Elegir analizador",
+        ["Section.SelectDependencies"] = "(Si aguas arriba está rojo) Elegir dependencias",
         ["Section.ImportSource"] = "Importar/crear fuente",
         ["Section.AnalysisResults"] = "Resultados de análisis",
         ["Section.EncodingConfigs"] = "Configuración de codificación",
@@ -1101,12 +1115,12 @@ public class UILangProviderM
         ["ConfirmProvider.SuspiciousImportTitle"] = "Importación no coincide con {0}",
         ["ConfirmProvider.ProceedToRun"] = "¿Ejecutar {0} para obtener versión?",
         ["ConfirmProvider.WrongTool"] = "¿Importar {0} como {1}?",
-["Checklist.Tools.Upstream"] = "Un programa aguas arriba importado",
-            ["Checklist.Tools.Downstream"] = "Un programa aguas abajo importado",
-            ["Checklist.Tools.Analysis"] = "Un analizador importado",
-            ["Checklist.Tools.UpstreamPicked"] = "Seleccionar aguas arriba",
-            ["Checklist.Tools.DownstreamPicked"] = "Seleccionar aguas abajo",
-            ["Checklist.Tools.AnalysisPicked"] = "Seleccionar analizador",
+        ["Checklist.Tools.Upstream"] = "Un programa aguas arriba importado",
+        ["Checklist.Tools.Downstream"] = "Un programa aguas abajo importado",
+        ["Checklist.Tools.Analysis"] = "Un analizador importado",
+        ["Checklist.Tools.UpstreamPicked"] = "Seleccionar aguas arriba",
+        ["Checklist.Tools.DownstreamPicked"] = "Seleccionar aguas abajo",
+        ["Checklist.Tools.AnalysisPicked"] = "Seleccionar analizador",
         ["Checklist.Tools.CompleteSourceAnalysis"] = "Análisis de fuente completo",
         ["Checklist.Tools.DependenciesPicked"] = "Seleccionar dependencia",
         ["Checklist.Tools.SourcePicked"] = "Vídeo fuente importado y elegido",
@@ -1235,7 +1249,9 @@ public class UILangProviderM
         ["SrcScribe.TabFfmpeg"] = "Filtro ffmpeg",
         ["SrcScribe.FfmpegFreeTextHint"] = "Introduzca parámetros personalizados de filtro ffmpeg (solo sesión)",
         ["SrcScribe.FrameRateConvertTitle"] = "Generador FFMPEG VFR→CFR",
-        ["ScriptGen.RunAfterReplace"] = "¿Generar scripts AVS y VPY ahora?"
+        ["ScriptGen.RunAfterReplace"] = "¿Generar scripts AVS y VPY ahora?",
+        ["SrcScribe.ColorSpaceConvertTitle"] = "Convertir espacio de color a Bt.709",
+        ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> requiere entrada manual; compruebe el nombre del archivo/los metadatos"
     };
 
     private static void AddJapanese() => Data["ja"] = new(Data["en"])
@@ -1454,7 +1470,9 @@ public class UILangProviderM
         ["SrcScribe.TabFfmpeg"] = "ffmpeg フィルタ",
         ["SrcScribe.FfmpegFreeTextHint"] = "カスタム ffmpeg フィルタパラメータを入力（セッションのみ）",
         ["SrcScribe.FrameRateConvertTitle"] = "FFMPEG VFR→CFR パラメータ生成",
-        ["ScriptGen.RunAfterReplace"] = "AVS と VPY スクリプトを今すぐ生成しますか？"
+        ["ScriptGen.RunAfterReplace"] = "AVS と VPY スクリプトを今すぐ生成しますか？",
+        ["SrcScribe.ColorSpaceConvertTitle"] = "色空間を Bt.709 に変換",
+        ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> は手動入力が必要です。ファイル名/メタデータを確認してください"
     };
 
     private static void AddRussian() => Data["ru"] = new(Data["en"])
@@ -1492,10 +1510,10 @@ public class UILangProviderM
         ["AppConf.Language"] = "Язык/Language",
         ["AppConf.Cancel"] = "Отмена",
         ["AppConf.Save"] = "Сохранить",
-["Section.SelectUpstream"] = "Выбор апстрима",
-            ["Section.SelectEncoder"] = "Выбор кодера",
-            ["Section.SelectAnalytics"] = "Выбор анализатора",
-            ["Section.SelectDependencies"] = "(Если апстрим красный) Выбор зависимостей",
+        ["Section.SelectUpstream"] = "Выбор апстрима",
+        ["Section.SelectEncoder"] = "Выбор кодера",
+        ["Section.SelectAnalytics"] = "Выбор анализатора",
+        ["Section.SelectDependencies"] = "(Если апстрим красный) Выбор зависимостей",
         ["Section.ImportSource"] = "Импорт/создание источника",
         ["Section.AnalysisResults"] = "Результаты анализа",
         ["Section.EncodingConfigs"] = "Настройки кодирования",
@@ -1528,13 +1546,13 @@ public class UILangProviderM
         ["ConfirmDialog.CopyText"] = "Копировать сообщение",
         ["ConfirmDialog.WarningPrefix"] = "Предупреждение: ",
         ["ConfirmDialog.ErrorPrefix"] = "Ошибка: ",
-["Checklist.Tools.Upstream"] = "Один апстрим импортирован",
-            ["Checklist.Tools.Downstream"] = "Один даунстрим импортирован",
-            ["Checklist.Tools.Analysis"] = "Один анализатор импортирован",
-            ["Checklist.Tools.SourcePicked"] = "Видеоисточник импортирован и выбран",
-            ["Checklist.Tools.UpstreamPicked"] = "Выбрать программу-апстрим",
-            ["Checklist.Tools.DownstreamPicked"] = "Выбрать программу-даунстрим",
-            ["Checklist.Tools.AnalysisPicked"] = "Выбрать анализатор",
+        ["Checklist.Tools.Upstream"] = "Один апстрим импортирован",
+        ["Checklist.Tools.Downstream"] = "Один даунстрим импортирован",
+        ["Checklist.Tools.Analysis"] = "Один анализатор импортирован",
+        ["Checklist.Tools.SourcePicked"] = "Видеоисточник импортирован и выбран",
+        ["Checklist.Tools.UpstreamPicked"] = "Выбрать программу-апстрим",
+        ["Checklist.Tools.DownstreamPicked"] = "Выбрать программу-даунстрим",
+        ["Checklist.Tools.AnalysisPicked"] = "Выбрать анализатор",
         ["Checklist.Tools.CompleteSourceAnalysis"] = "Завершить анализ источника",
         ["Checklist.Tools.DependenciesPicked"] = "Выбрать зависимость",
         ["Checklist.Source1.Metadata"] = "Метаданные и SEI читаются",
@@ -1673,7 +1691,9 @@ public class UILangProviderM
         ["SrcScribe.TabFfmpeg"] = "Фильтр ffmpeg",
         ["SrcScribe.FfmpegFreeTextHint"] = "Введите пользовательские параметры фильтра ffmpeg (только сеанс)",
         ["SrcScribe.FrameRateConvertTitle"] = "Генератор параметров FFMPEG VFR→CFR",
-        ["ScriptGen.RunAfterReplace"] = "Сгенерировать скрипты AVS и VPY сейчас?"
+        ["ScriptGen.RunAfterReplace"] = "Сгенерировать скрипты AVS и VPY сейчас?",
+        ["SrcScribe.ColorSpaceConvertTitle"] = "Преобразование цветового пространства в Bt.709",
+        ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> требует ручного ввода; проверьте имя файла/метаданные"
     };
 
     private readonly Dictionary<string, string> _d;
