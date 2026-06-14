@@ -5,7 +5,7 @@ namespace OneColumnEncoder.ViewModels
 {
     public class AppUsageVM : BaseVM
     {
-        public string WindowTitle => "1cenc Usage & Compliance";
+        public string WindowTitle => AppUsageLangProviderM.WindowTitle;
         public CloseModalCmd? CloseCmd { get; }
         private AppUsageLangProviderM _lang;
         public AppUsageLangProviderM Lang

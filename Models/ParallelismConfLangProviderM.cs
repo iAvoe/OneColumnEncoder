@@ -181,6 +181,7 @@ public class ParallelismConfLangProviderM
         }
     };
 
+    public const string WindowTitle = "1cenc Parallelism Settings";
     public string IntroText { get; }
     public string PriorityText { get; }
     public string CacheGroupTitle { get; }

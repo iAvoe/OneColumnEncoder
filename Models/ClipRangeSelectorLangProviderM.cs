@@ -210,6 +210,7 @@ public class ClipRangeSelectorLangProviderM
 
     public string this[string key] => _d.TryGetValue(key, out var v) ? v : key;
 
+    public const string WindowTitle = "1cenc Sample Clip";
     public string TimelineSectionTitle { get; }
     public string SelectionHintText { get; }
     public string DurationSectionTitle { get; }

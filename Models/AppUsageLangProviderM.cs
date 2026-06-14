@@ -311,6 +311,7 @@ public class AppUsageLangProviderM
         };
     }
 
+    public const string WindowTitle = "1cenc Usage & Compliance";
     public string HowToUse { get; }
     public string Description { get; }
     public string CopyHint { get; }

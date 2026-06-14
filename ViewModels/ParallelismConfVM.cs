@@ -86,7 +86,7 @@ namespace OneColumnEncoder.ViewModels
             EncoderThreadCount = ClampThreadCount(EncoderThreadCount, MaxThreadCount);
         }
 
-        public static string WindowTitle => "1cenc Parallelism Settings";
+        public static string WindowTitle => ParallelismConfLangProviderM.WindowTitle;
         public string IntroText => Lang.IntroText;
         public string PriorityText => Lang.PriorityText;
         public string CacheGroupTitle => Lang.CacheGroupTitle;

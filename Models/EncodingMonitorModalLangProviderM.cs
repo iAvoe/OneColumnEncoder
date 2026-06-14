@@ -470,8 +470,8 @@ public class EncodingMonitorModalLangProviderM
         };
     }
 
-    public string WindowTitle { get; }
-    public string WindowTitleSampleMode { get; }
+    public const string WindowTitle = "1cenc Encoding Monitor";
+    public const string WindowTitleSampleMode = "1cenc Encoding Monitor (Sample mode)";
     public string ProgressTitle { get; }
     public string ProgressReportTitle { get; }
     public string MemoryTitle { get; }
@@ -544,9 +544,6 @@ public class EncodingMonitorModalLangProviderM
     {
         LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
         _d = Data[LanguageCode];
-
-        WindowTitle = "1cenc Encoding Monitor";
-        WindowTitleSampleMode = "1cenc Encoding Monitor (Sample mode)";
 
         ProgressTitle = _d["ProgressTitle"];
         ProgressReportTitle = _d["ProgressReportTitle"];

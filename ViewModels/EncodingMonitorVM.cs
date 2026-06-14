@@ -68,7 +68,7 @@ namespace OneColumnEncoder.ViewModels
         private Stream? _upstreamStdoutStream;
         private Stream? _encoderStdinStream;
 
-        public string WindowTitle => _isSample ? Lang.WindowTitleSampleMode : Lang.WindowTitle;
+        public string WindowTitle => _isSample ? EncodingMonitorModalLangProviderM.WindowTitleSampleMode : EncodingMonitorModalLangProviderM.WindowTitle;
         public string ProgressTitle => Lang.ProgressTitle;
         public string MemoryTitle => Lang.MemoryTitle;
 

@@ -297,6 +297,8 @@ public class EncoderConfLangProviderM
         };
     }
 
+    public const string WindowTitle = "1cenc Encoding Settings";
+    public const string TitleText = WindowTitle;
     public string RateControlTitle { get; }
     public string CustomParamsTitle { get; }
     public string CrfModeText { get; }
