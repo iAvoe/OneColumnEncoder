@@ -61,14 +61,14 @@ public class CpuSetsLangProviderM
             ["SetProcessDefaultCpuSetsFailed"] = "SetProcessDefaultCpuSets に失敗: {0}。",
             ["BoundSuccess"] = "PID {0} を NUMA ノード {1} へ {2} CPU Set でバインド;\n既存スレッド {3} 件を更新しました。",
             ["BindingFailed"] = "CPU Sets バインド失敗: {0}",
-            ["SkippedPrefix"] = "CPU Sets バインドをスキップしました。"
+            ["SkippedPrefix"] = "CPU Sets バインドをスキップしました。 "
         };
         Data["ru"] = new(Data["en"])
         {
             ["UnavailableOnNonWindows"] = "CPU Sets доступны только в Windows.",
             ["NoCpuSetsFound"] = "CPU Sets для NUMA-узла {0} не найдены.",
             ["SetProcessDefaultCpuSetsFailed"] = "Сбой SetProcessDefaultCpuSets: {0}.",
-            ["BoundSuccess"] = "PID {0} привязан к NUMA-узлу {1} с {2} CPU Set(s);\nобновлено потоков: {3}.",
+            ["BoundSuccess"] = "PID {0} привязан к NUMA-узлу {1} с {2} CPU Set(s);\nобновлено существующих потоков: {3}.",
             ["BindingFailed"] = "Сбой привязки CPU Sets: {0}",
             ["SkippedPrefix"] = "Привязка CPU Sets пропущена. "
         };

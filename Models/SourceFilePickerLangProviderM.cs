@@ -73,7 +73,7 @@ public class SourceFilePickerLangProviderM
             ["Filter.SvfiIni"] = "SVFI 設定ファイル (*.ini)|*.ini",
             ["Filter.AllFiles"] = "すべてのファイル (*.*)|*.*",
             ["NoFileSelectedTitle"] = "ファイル未選択",
-            ["MissingSelectionMessage"] = "ファイルが選択されていません。「はい」で再試行、「いいえ」で取消。",
+            ["MissingSelectionMessage"] = "ファイルが選択されていません。「はい」で再試行、「いいえ」でキャンセル。",
             ["CustomScriptModeText"] = "カスタムスクリプトを取込"
         };
         Data["ru"] = new(Data["en"])
