@@ -142,7 +142,11 @@ namespace OneColumnEncoder.ViewModels
 
             // Commands
             OneClickScriptGen = new OneClickScriptGenCmd(
-                () => GetCurrentVideoSourcePath(), ScriptSrcImportZone[0], ScriptSrcImportZone[1], UpstreamsZone, modalNavS);
+                () => GetCurrentVideoSourcePath(),
+                ScriptSrcImportZone[0],
+                ScriptSrcImportZone[1],
+                UpstreamsZone,
+                modalNavS);
             OpenFilterScribe = new OpenFilterScribeCmd(
                 modalNavS,
                 () => GetCurrentVideoSourcePath(),
@@ -154,7 +158,11 @@ namespace OneColumnEncoder.ViewModels
             CopyRawAnalysis = new CopyRawAnalysisCmd(
                 _srcVideoAnalysis, modalNavS);
             AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(
-                GetSelectedFfprobePath, GetSelectedVideoSourcePath, _srcVideoAnalysis, SrcValidationCard, modalNavS,
+                GetSelectedFfprobePath,
+                GetSelectedVideoSourcePath,
+                _srcVideoAnalysis,
+                SrcValidationCard,
+                modalNavS,
                 OnSourceAnalysisCompleted,
                 () =>
                 { // On source analysis complete
@@ -167,8 +175,14 @@ namespace OneColumnEncoder.ViewModels
                 SrcValidationCard,
                 () => !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson),
                 UpdateEncStartButtonsState);
-            SampleClip = new OpenSampleClipCmd(modalNavS, BuildEncodingPipelineRequest, _srcVideoAnalysis);
-            StartEncode = new StartEncCmd(BuildEncodingPipelineRequest, modalNavS, appConfM);
+            SampleClip = new OpenSampleClipCmd(
+                modalNavS,
+                BuildEncodingPipelineRequest,
+                _srcVideoAnalysis);
+            StartEncode = new StartEncCmd(
+                BuildEncodingPipelineRequest,
+                modalNavS,
+                appConfM);
 
             // Buttons
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
