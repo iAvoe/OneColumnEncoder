@@ -2,8 +2,6 @@
 
 A next-gen smart video encoding utility based on .NET 9/WPF, revolves around “tool & encoder orchestrating, source analyzing, encode customizing, parallelism tailoring, modern GUI monitoring, encode interrupting, and auto-multiplexing”.
 
-This software works and are validated on multiple CPUs, but there could still be issues——which is releasing as beta.
-
 <p align="center"><img src="WireframeMockups/logo.png" alt="Logo" width="200"></p>
 
 ## Gallery
@@ -76,12 +74,13 @@ Or, TLDR; and use tools provided in this package (not recommended but its an opt
 - Core i5 7600k (4C4T)
 - Ryzen 9 9900X (2CCD 12C24T)
 - EPYC 7R13 (6CCD 48C96T)
-- Lacking validation for Intel 12th\~14th generation and Ultra 200\~300 series heterogeneous CPUs
+- Intel i7 14700K (thanks to Whithost)
 
 ## Localization Status
 
 - **Supported:** English, Simplified Chinese, Traditional Chinese
-- To provide a translation, please fork this repository, add a new language entrie in `Models/XxxLangProviderM`, and submit a pull request
+- **MTL Only:** French, Spanish, Japanese, Russian
+- To provide a translation, please fork this repository, add a new language entry in `Models/XxxLangProviderM`, and submit a pull request
   - Translation of the README is not required, but it would be great if you can do that
 
 ---
@@ -212,10 +211,7 @@ The Overwrite setting will append an overwrite confirmation pop-up if the output
 
 ### Unverified
 
-#### Intel 12\~14th Gen & Ultra 200\~300 Series CPU Utilization
-
-No CPU available for testing, but it should not fail catastrophically
-- This software uses CPU Sets to bind encoding processes to physical cores, which means it should be compatible and not fail catastrophically
+#### None currently
 
 ---
 

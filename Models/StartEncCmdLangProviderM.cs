@@ -69,7 +69,7 @@ public class StartEncCmdLangProviderM
         Data["es"] = new(Data["en"])
         {
             ["WarnTitle"] = "Codificación",
-            ["MissingUpstreamMsg"] = "Falta la ruta de entrada ascendente. Asegure una fuente de vídeo o script para la herramienta elegida.",
+            ["MissingUpstreamMsg"] = "Falta la ruta de entrada aguas arriba. Asegure una fuente de vídeo o script para la herramienta elegida.",
             ["ConfirmTitle"] = "Comando de codificación",
             ["OverwriteTitle"] = "Sobrescribir salida",
             ["OverwriteMsg"] = "Los siguientes archivos de salida ya existen y se sobrescribirán.",
@@ -95,7 +95,7 @@ public class StartEncCmdLangProviderM
         Data["ru"] = new(Data["en"])
         {
             ["WarnTitle"] = "Кодирование",
-            ["MissingUpstreamMsg"] = "Нет входного пути upstream. Выберите видеоисточник или скрипт для выбранного upstream-инструмента.",
+            ["MissingUpstreamMsg"] = "Нет входного пути апстрима. Выберите видеоисточник или скрипт для выбранного апстрим-инструмента.",
             ["ConfirmTitle"] = "Команда кодирования",
             ["OverwriteTitle"] = "Перезапись вывода",
             ["OverwriteMsg"] = "Следующие выходные файлы уже есть и будут перезаписаны.",
