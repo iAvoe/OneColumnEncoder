@@ -154,6 +154,7 @@ namespace OneColumnEncoder.ViewModels
                 ScriptSrcImportZone[1],
                 OnSourceImported,
                 args => _scriptScribeFfmpegFilterArgs = args ?? string.Empty,
+                () => SrcValidationCard.Checklist1.Any(e => e.IsEnabled && e.Status == StatusType.Error),
                 () => _srcVideoAnalysis.RawJson);
             CopyRawAnalysis = new CopyRawAnalysisCmd(
                 _srcVideoAnalysis, modalNavS);

@@ -74,41 +74,27 @@ namespace OneColumnEncoder.ViewModels
 
         private void BuildChecklist()
         {
-            SevereIssueChecklist.Clear();
-            SevereIssueChecklist.Add(new ChecklistEntryVM
-            {
-                Text = UILangProviderM.Current["FilenameScribe.CheckEmpty"]
-            });
-            SevereIssueChecklist.Add(new ChecklistEntryVM
-            {
-                Text = UILangProviderM.Current["FilenameScribe.CheckInvalidChars"]
-            });
-            SevereIssueChecklist.Add(new ChecklistEntryVM
-            {
-                Text = UILangProviderM.Current["FilenameScribe.CheckCombiningMarks"]
-            });
-            SevereIssueChecklist.Add(new ChecklistEntryVM
-            {
-                Text = UILangProviderM.Current["FilenameScribe.CheckSpecialSpaceVariants"]
-            });
-            SevereIssueChecklist.Add(new ChecklistEntryVM
-            {
-                Text = UILangProviderM.Current["FilenameScribe.CheckReserved"]
-            });
+            UpdateChecklist(SevereIssueChecklist,
+            [
+                "FilenameScribe.CheckEmpty",
+                "FilenameScribe.CheckInvalidChars",
+                "FilenameScribe.CheckCombiningMarks",
+                "FilenameScribe.CheckSpecialSpaceVariants",
+                "FilenameScribe.CheckReserved"
+            ]);
+            UpdateChecklist(GeneralIssueChecklist,
+            [
+                "FilenameScribe.CheckLength",
+                "FilenameScribe.CheckSpaces",
+                "FilenameScribe.CheckExtendedChars"
+            ]);
+        }
 
-            GeneralIssueChecklist.Clear();
-            GeneralIssueChecklist.Add(new ChecklistEntryVM
-            {
-                Text = UILangProviderM.Current["FilenameScribe.CheckLength"]
-            });
-            GeneralIssueChecklist.Add(new ChecklistEntryVM
-            {
-                Text = UILangProviderM.Current["FilenameScribe.CheckSpaces"]
-            });
-            GeneralIssueChecklist.Add(new ChecklistEntryVM
-            {
-                Text = UILangProviderM.Current["FilenameScribe.CheckExtendedChars"]
-            });
+        private static void UpdateChecklist(ObservableCollection<ChecklistEntryVM> checklist, IEnumerable<string> keys)
+        {
+            checklist.Clear();
+            foreach (var key in keys)
+                checklist.Add(new ChecklistEntryVM { Text = UILangProviderM.Current[key] });
         }
 
         private void BuildButtonGroup()

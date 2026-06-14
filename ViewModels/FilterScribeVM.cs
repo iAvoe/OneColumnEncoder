@@ -25,6 +25,8 @@ namespace OneColumnEncoder.ViewModels
         private readonly ToolItemCardVM _vpyItem;
         private readonly Action<ToolItemCardVM, SourceFileKind, string> _afterImport;
         private readonly Action<string?> _applyFfmpegFilterArgs;
+        private readonly Func<bool> _hasSourceValidationError;
+        private ColorSpaceAnalysisM _colorSpaceAnalysis = ColorSpaceConverterH.Analyze(null);
         public CloseModalCmd CloseCmd { get; }
         // 0: AVS, 1: VPY, 2: ffmpeg
         private int _selectedTabIndex;
@@ -135,6 +137,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(TargetDisplay));
             OnPropertyChanged(nameof(FfmpegResizeFilter));
             OnPropertyChanged(nameof(FfmpegCombinedFilter));
+            OnPropertyChanged(nameof(FfmpegFinalFilter));
             OnPropertyChanged(nameof(VapourSynthResizeFilter));
             OnPropertyChanged(nameof(AviSynthResizeFilter));
         }
@@ -147,37 +150,100 @@ namespace OneColumnEncoder.ViewModels
 
         public string TargetDisplay => !HasSource ? "--" : $"{TargetWidth}x{TargetHeight}";
 
+        private bool HasScaleFilter => IsScaleApplicable && (TargetWidth != SourceWidth || TargetHeight != SourceHeight);
+
+        private bool HasFpsFilter => IsFrameRateApplicable;
+
+        private bool HasColorSpaceFilter =>
+            !_hasSourceValidationError()
+            && _colorSpaceAnalysis.IsApplicable
+            && !RequiresManualColorSpacePeakNits
+            && !string.IsNullOrWhiteSpace(_colorSpaceAnalysis.FfmpegColorFilter);
+
+        private bool CanShowColorSpaceFilter =>
+            !_hasSourceValidationError()
+            && _colorSpaceAnalysis.IsApplicable
+            && !string.IsNullOrWhiteSpace(_colorSpaceAnalysis.FfmpegColorFilter);
+
+        private bool RequiresManualColorSpacePeakNits =>
+            _colorSpaceAnalysis.Strategy is ColorSpaceStrategy.HdrToSdr or ColorSpaceStrategy.HighHdrToSdr;
+
+        private string? ScaleFilterChain => HasScaleFilter ? $"scale={TargetWidth}:{TargetHeight}" : null;
+
+        private string? FpsFilterChain => HasFpsFilter ? $"fps={_frameRateNum}/{_frameRateDen}" : null;
+
+        private string? ColorSpaceFilterChain => HasColorSpaceFilter ? _colorSpaceAnalysis.FfmpegColorFilter : null;
+
+        private bool IsColorSpaceStrategyShown(ColorSpaceStrategy strategy) =>
+            !_hasSourceValidationError()
+            && ColorSpaceConverterH.IsStrategyApplicable(strategy, _colorSpaceAnalysis.ColorPrimaries, _colorSpaceAnalysis.ColorTransfer)
+            && !string.IsNullOrWhiteSpace(ColorSpaceConverterH.BuildFfmpegFilter(strategy));
+
         public string FfmpegResizeFilter =>
-            IsScaleApplicable && (TargetWidth != SourceWidth || TargetHeight != SourceHeight)
-                ? $"-filter:v scale={TargetWidth}:{TargetHeight} -sws_flags bicubic+full_chroma_int+full_chroma_inp+accurate_rnd"
+            HasScaleFilter
+                ? BuildFfmpegFilterArgs(includeSwsFlags: true, ScaleFilterChain)
                 : "N/A";
 
         public string FfmpegFpsFilter =>
-            IsFrameRateApplicable
-                ? $"-filter:v fps={_frameRateNum}/{_frameRateDen}"
+            HasFpsFilter
+                ? BuildFfmpegFilterArgs(includeSwsFlags: false, FpsFilterChain)
                 : "N/A";
 
         public string FfmpegCombinedFilter =>
-            IsFrameRateApplicable && IsScaleApplicable && (TargetWidth != SourceWidth || TargetHeight != SourceHeight)
-                ? $"-filter:v \"fps={_frameRateNum}/{_frameRateDen},scale={TargetWidth}:{TargetHeight}\" -sws_flags bicubic+full_chroma_int+full_chroma_inp+accurate_rnd"
+            HasFpsFilter && HasScaleFilter
+                ? BuildFfmpegFilterArgs(includeSwsFlags: true, FpsFilterChain, ScaleFilterChain)
                 : "N/A";
+
+        public string FfmpegLowToHighColorFilter => GetColorSpaceStrategyFilter(ColorSpaceStrategy.LowToHigh);
+
+        public string FfmpegHighToLowColorFilter => GetColorSpaceStrategyFilter(ColorSpaceStrategy.HighToLow);
+
+        public string FfmpegHdrToSdrColorFilter => GetColorSpaceStrategyFilter(ColorSpaceStrategy.HdrToSdr);
+
+        public string FfmpegHighHdrToLowSdrColorFilter => GetColorSpaceStrategyFilter(ColorSpaceStrategy.HighHdrToSdr);
+
+        public string FfmpegFinalFilter
+        {
+            get
+            {
+                string? color = ColorSpaceFilterChain;
+                string? fps = FpsFilterChain;
+                string? scale = ScaleFilterChain;
+                bool hasAny = color != null || fps != null || scale != null;
+                if (!hasAny) return "N/A";
+                return BuildFfmpegFilterArgs(scale != null, color, fps, scale);
+            }
+        }
 
         private string GeneratedFfmpegFilterArgs
         {
             get
             {
-                bool hasFps = IsFrameRateApplicable;
-                bool hasScale = IsScaleApplicable && (TargetWidth != SourceWidth || TargetHeight != SourceHeight);
-                if (!hasFps && !hasScale) return string.Empty;
-                if (hasFps && hasScale)
-                {
-                    string filterChain = $"fps={_frameRateNum}/{_frameRateDen},scale={TargetWidth}:{TargetHeight}";
-                    return $"-filter:v \"{filterChain}\" -sws_flags bicubic+full_chroma_int+full_chroma_inp+accurate_rnd";
-                }
-                if (hasFps)
-                    return $"-filter:v fps={_frameRateNum}/{_frameRateDen}";
-                return $"-filter:v scale={TargetWidth}:{TargetHeight} -sws_flags bicubic+full_chroma_int+full_chroma_inp+accurate_rnd";
+                bool hasColor = HasColorSpaceFilter;
+                bool hasFps = HasFpsFilter;
+                bool hasScale = HasScaleFilter;
+                if (!hasColor && !hasFps && !hasScale) return string.Empty;
+                return BuildFfmpegFilterArgs(hasScale, ColorSpaceFilterChain, FpsFilterChain, ScaleFilterChain);
             }
+        }
+
+        private string GetColorSpaceStrategyFilter(ColorSpaceStrategy strategy) =>
+            IsColorSpaceStrategyShown(strategy)
+                ? BuildFfmpegFilterArgs(includeSwsFlags: false, _colorSpaceAnalysis.FfmpegColorFilter)
+                : "N/A";
+
+        private static string BuildFfmpegFilterArgs(bool includeSwsFlags, params string?[] filters)
+        {
+            string filterChain = string.Join(",", filters.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s!.Trim()));
+            if (string.IsNullOrWhiteSpace(filterChain)) return string.Empty;
+
+            string filterArgs = filterChain.Contains(',', StringComparison.Ordinal)
+                ? $"-filter:v \"{filterChain}\""
+                : $"-filter:v {filterChain}";
+
+            return includeSwsFlags
+                ? $"{filterArgs} -sws_flags bicubic+full_chroma_int+full_chroma_inp+accurate_rnd"
+                : filterArgs;
         }
 
         public string VapourSynthResizeFilter =>
@@ -206,6 +272,7 @@ namespace OneColumnEncoder.ViewModels
                 OnPropertyChanged(nameof(TargetDisplay));
                 OnPropertyChanged(nameof(FfmpegResizeFilter));
                 OnPropertyChanged(nameof(FfmpegCombinedFilter));
+                OnPropertyChanged(nameof(FfmpegFinalFilter));
                 OnPropertyChanged(nameof(VapourSynthResizeFilter));
                 OnPropertyChanged(nameof(AviSynthResizeFilter));
             }
@@ -280,6 +347,12 @@ namespace OneColumnEncoder.ViewModels
         public static string VapourSynthAutoFilter => "VS";
         public static string AviSynthAutoFilter => "AVS(+)";
         public static string FrameRateConvertTitle => UILangProviderM.Current["SrcScribe.FrameRateConvertTitle"];
+        public static string ColorSpaceConvertTitle => "Convert colorspace to Bt.709";
+        public static string LowToHighColorFilterLabel => "窄域→709";
+        public static string HighToLowColorFilterLabel => "WCG→709";
+        public static string HdrToSdrColorFilterLabel => "HDR→SDR";
+        public static string HighHdrToLowSdrColorFilterLabel => "WCG HDR→SDR";
+        public static string ColorSpacePeakNitsHint => "Tonemap peak <nits> 需手填；看文件名/元数据";
         #endregion
 
         public ButtonGroupVM ScriptExportButtons { get; private set; } = null!;
@@ -293,6 +366,7 @@ namespace OneColumnEncoder.ViewModels
             ToolItemCardVM vpyItem,
             Action<ToolItemCardVM, SourceFileKind, string> afterImport,
             Action<string?> applyFfmpegFilterArgs,
+            Func<bool> hasSourceValidationError,
             string? sourceFfprobeJson = null)
         {
             _modalNavS = modalNavS;
@@ -303,12 +377,24 @@ namespace OneColumnEncoder.ViewModels
             _vpyItem = vpyItem;
             _afterImport = afterImport;
             _applyFfmpegFilterArgs = applyFfmpegFilterArgs;
+            _hasSourceValidationError = hasSourceValidationError;
             _baseAvsPrefix = UILangProviderM.Current["SrcScribe.AvsPrefix"];
             _baseVpyPrefix = UILangProviderM.Current["SrcScribe.VpyPrefix"];
+            ParseColorSpaceInfo(sourceFfprobeJson);
             ParseSourceResolution(sourceFfprobeJson);
             ParseFrameRateInfo(sourceFfprobeJson);
             BuildButtonGroups();
             UILangProviderM.CurrentChanged += OnLanguageChanged;
+        }
+
+        private void ParseColorSpaceInfo(string? sourceFfprobeJson)
+        {
+            _colorSpaceAnalysis = ColorSpaceConverterH.Analyze(sourceFfprobeJson);
+            OnPropertyChanged(nameof(FfmpegLowToHighColorFilter));
+            OnPropertyChanged(nameof(FfmpegHighToLowColorFilter));
+            OnPropertyChanged(nameof(FfmpegHdrToSdrColorFilter));
+            OnPropertyChanged(nameof(FfmpegHighHdrToLowSdrColorFilter));
+            OnPropertyChanged(nameof(FfmpegFinalFilter));
         }
 
         private void ParseSourceResolution(string? sourceFfprobeJson)
@@ -375,6 +461,7 @@ namespace OneColumnEncoder.ViewModels
                 OnPropertyChanged(nameof(FrameRateDen));
                 OnPropertyChanged(nameof(FfmpegFpsFilter));
                 OnPropertyChanged(nameof(FfmpegCombinedFilter));
+                OnPropertyChanged(nameof(FfmpegFinalFilter));
             }
             catch { } // ignore parse errors
         }
@@ -613,9 +700,20 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(FfmpegFreeTextHint));
             OnPropertyChanged(nameof(FfmpegAutoFilter));
             OnPropertyChanged(nameof(FfmpegCombinedFilter));
+            OnPropertyChanged(nameof(FfmpegFinalFilter));
             OnPropertyChanged(nameof(VapourSynthAutoFilter));
             OnPropertyChanged(nameof(AviSynthAutoFilter));
             OnPropertyChanged(nameof(FrameRateConvertTitle));
+            OnPropertyChanged(nameof(ColorSpaceConvertTitle));
+            OnPropertyChanged(nameof(LowToHighColorFilterLabel));
+            OnPropertyChanged(nameof(HighToLowColorFilterLabel));
+            OnPropertyChanged(nameof(HdrToSdrColorFilterLabel));
+            OnPropertyChanged(nameof(HighHdrToLowSdrColorFilterLabel));
+            OnPropertyChanged(nameof(ColorSpacePeakNitsHint));
+            OnPropertyChanged(nameof(FfmpegLowToHighColorFilter));
+            OnPropertyChanged(nameof(FfmpegHighToLowColorFilter));
+            OnPropertyChanged(nameof(FfmpegHdrToSdrColorFilter));
+            OnPropertyChanged(nameof(FfmpegHighHdrToLowSdrColorFilter));
             OnPropertyChanged(nameof(AvsEnableFpsParamsLabel));
             OnPropertyChanged(nameof(VpyEnableFpsParamsLabel));
 

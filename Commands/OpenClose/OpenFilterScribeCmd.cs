@@ -14,6 +14,7 @@ namespace OneColumnEncoder.Commands.OpenClose
         ToolItemCardVM vpyItem,
         Action<ToolItemCardVM, SourceFileKind, string> afterImport, // File save & ItemCard write back
         Action<string?> applyFfmpegFilterArgs,
+        Func<bool> hasSourceValidationError,
         Func<string?> getSourceFfprobeJson) : BaseCmd
     {
         private readonly ModalNavS _modalNavS = modalNavS;
@@ -39,6 +40,7 @@ namespace OneColumnEncoder.Commands.OpenClose
                 avsItem, vpyItem,
                 afterImport,
                 applyFfmpegFilterArgs,
+                hasSourceValidationError,
                 getSourceFfprobeJson());
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
