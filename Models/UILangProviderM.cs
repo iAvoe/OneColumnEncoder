@@ -476,7 +476,7 @@ public class UILangProviderM
             ["SrcScribe.ScaleNotApplicable"] = "分辨率过低，无法缩放（源 ≤ {0}x{0}）",
             ["SrcScribe.TabFfmpeg"] = "ffmpeg Filter",
             ["SrcScribe.FfmpegFreeTextHint"] = "输入自定义 ffmpeg 滤镜参数（仅本次会话有效）",
-            ["SrcScribe.FrameRateConvertTitle"] = "FFMEPG 可变帧率\u2192恒定帧率参数生成器",
+            ["SrcScribe.FrameRateConvertTitle"] = "FFMPEG 可变帧率\u2192恒定帧率参数生成器",
             // FilenameScribeModal
             ["FilenameScribe.WindowTitle"] = "1cenc Filename",
             ["FilenameScribe.MiniHeader"] = "文件名",

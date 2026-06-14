@@ -121,7 +121,7 @@ namespace OneColumnEncoder.Helpers
 
             switch (exeName.ToLowerInvariant())
             {
-                case "ffmpeg.exe":
+                case "ffmpeg.exe": // "ffmpeg version yyyy-mm-dd" to "version yyyy-mm-dd"
                     return RemoveToolNamePrefix(firstLine[..Math.Min(25, firstLine.Length)], "ffmpeg");
                 case "ffprobe.exe":
                     return RemoveToolNamePrefix(firstLine[..Math.Min(26, firstLine.Length)], "ffprobe");

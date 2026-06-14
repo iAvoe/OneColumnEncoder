@@ -19,6 +19,9 @@ namespace OneColumnEncoder.Helpers
 
     public static class SourceFilePickerH
     {
+        private static SourceFilePickerLangProviderM Lang =>
+            new(UILangProviderM.Current.LanguageCode);
+
         public static string? GetSource(
             SourceFileKind fileKind,
             string windowTitle,
@@ -96,19 +99,19 @@ namespace OneColumnEncoder.Helpers
             return Directory.Exists(initialDirectory) ? initialDirectory : fallbackDirectory;
         }
 
-        private static string GetFilter(SourceFileKind fileKind) => fileKind switch
+        private static string GetFilter(SourceFileKind fileKind)
         {
-            SourceFileKind.Video =>
-                "Video files (*.mkv;*.mp4;*.mov;*.avi;*.m2ts;*.ts;*.webm;*.mxf;*.vob;*.wmv;*.flv;*.f4v;*.asf;*.rm;*.rmvb;*.divx;*.xvid;*.3gp;*.3g2;*.ogv;*.ogg;*.mpg;*.mpeg;*.m1v;*.m2v;*.mp2;*.mpe;*.mpv;*.m4v;*.m4p;*.mp4v;*.dv;*.mts;*.m2t;*.trp;*.tp;*.evo;*.ifo;*.vro;*.bup;*.swf;*.wtv;*.dvr-ms;*.rec;*.yuv;*.y4m;*.hevc;*.h264;*.h265;*.264;*.265;*.vc1;*.avs2;*.avs3;*.ivf;*.drc;*.mj2;*.mjpeg;*.mjpg;*.amv;*.nsv;*.svi;*.viv;*.f4p;*.f4a;*.f4b;*.roq;*.mng;*.gifv;*.qt;*.hdmov;*.mod;*.tod;*.moi;*.pva;*.nsr;*.nut;*.fli;*.flc;*.flic;*.dsm;*.dsv;*.dsa;*.dss;*.ask;*.dat)|*.mkv;*.mp4;*.mov;*.avi;*.m2ts;*.ts;*.webm;*.mxf;*.vob;*.wmv;*.flv;*.f4v;*.asf;*.rm;*.rmvb;*.divx;*.xvid;*.3gp;*.3g2;*.ogv;*.ogg;*.mpg;*.mpeg;*.m1v;*.m2v;*.mp2;*.mpe;*.mpv;*.m4v;*.m4p;*.mp4v;*.dv;*.mts;*.m2t;*.trp;*.tp;*.evo;*.ifo;*.vro;*.bup;*.swf;*.wtv;*.dvr-ms;*.rec;*.yuv;*.y4m;*.hevc;*.h264;*.h265;*.264;*.265;*.vc1;*.avs2;*.avs3;*.ivf;*.drc;*.mj2;*.mjpeg;*.mjpg;*.amv;*.nsv;*.svi;*.viv;*.f4p;*.f4a;*.f4b;*.roq;*.mng;*.gifv;*.qt;*.hdmov;*.mod;*.tod;*.moi;*.pva;*.nsr;*.nut;*.fli;*.flc;*.flic;*.dsm;*.dsv;*.dsa;*.dss;*.ask;*.dat|All files (*.*)|*.*",
-            SourceFileKind.AviSynthScript =>
-                "AviSynth script files (*.avs)|*.avs",
-            SourceFileKind.VapourSynthScript =>
-                "VapourSynth script files (*.vpy)|*.vpy",
-            SourceFileKind.SvfiIni =>
-                "SVFI configuration files (*.ini)|*.ini",
-            _ =>
-                "All files (*.*)|*.*"
-        };
+            SourceFilePickerLangProviderM lang = Lang;
+
+            return fileKind switch
+            {
+                SourceFileKind.Video => lang.VideoFilter,
+                SourceFileKind.AviSynthScript => lang.AviSynthScriptFilter,
+                SourceFileKind.VapourSynthScript => lang.VapourSynthScriptFilter,
+                SourceFileKind.SvfiIni => lang.SvfiIniFilter,
+                _ => lang.AllFilesFilter
+            };
+        }
 
         private static bool ShouldRetrySelection(ModalNavS? modalNavS, string message)
         {
@@ -144,25 +147,10 @@ namespace OneColumnEncoder.Helpers
             return result;
         }
 
-        private static string GetNoFileSelectedTitle() => UILangProviderM.Current.LanguageCode switch
-        {
-            "zh-cn" => "未选择文件",
-            "zh-tw" => "未選擇檔案",
-            _ => "No file selected"
-        };
+        private static string GetNoFileSelectedTitle() => Lang.NoFileSelectedTitle;
 
-        private static string GetMissingSelectionMessage() => UILangProviderM.Current.LanguageCode switch
-        {
-            "zh-cn" => "未选择文件。选择「是」重试，选择「否」取消。",
-            "zh-tw" => "未選擇檔案。選擇「是」重試，選擇「否」取消。",
-            _ => "No file selected. Choose Yes to try again, or No to cancel."
-        };
+        private static string GetMissingSelectionMessage() => Lang.MissingSelectionMessage;
 
-        private static string GetCustomScriptModeText() => UILangProviderM.Current.LanguageCode switch
-        {
-            "zh-cn" => "导入自定义脚本",
-            "zh-tw" => "導入自定義腳本",
-            _ => "Import custom script"
-        };
+        private static string GetCustomScriptModeText() => Lang.CustomScriptModeText;
     }
 }
