@@ -18,10 +18,8 @@
     </UserControl.Resources>
     <Grid>
         <StackPanel Margin="10 2 10 15">
-            <!-- Import Tools -->
-            <comps:SectionHeader HeaderText="{Binding SectionImportTools}" />
             <comps:ToolsImportCard DataContext="{Binding ToolsImportCard}"
-                                   Margin="5" />
+                                    Margin="5" />
 
             <!-- Setting Access -->
             <comps:TwoButtonGroup DataContext="{Binding OpenAppConfButtons}"

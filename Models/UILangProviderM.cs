@@ -9,7 +9,7 @@ public class UILangProviderM
         ["en"] = new()
         {
             // Cards section headers
-            ["Cards.ToolsImport"] = "Select tool:",
+            ["Cards.ToolsImport"] = "Import or Replace Tools",
             ["Cards.SourceValidation"] = "Source Video Validation",
             ["Cards.SrcIncompatOrCorrupted"] = "Incompatibility / Corrupted (red)",
             ["Cards.SrcQualityIssues"] = "Quality Issues (yellow-orange)",
@@ -64,8 +64,6 @@ public class UILangProviderM
             ["AppConf.Cancel"] = "Cancel",
             ["AppConf.Save"] = "Save",
 
-            // Section headers in MainUI
-            ["Section.ImportTools"] = "Import or Replace Tools",
             ["Section.SelectUpstream"] = "Select Upstream Tool",
             ["Section.SelectEncoder"] = "Select Encoder",
             ["Section.SelectAnalytics"] = "Select Video Analyzer",
@@ -257,7 +255,7 @@ public class UILangProviderM
             ["Hint.SVFIClipDisabled"] = "OneLineShotArgs does not support sample clipping, disabling Run Sample.",
             ["Hint.AnalyzeNeedsSource"] = "Import a source video to run analysis",
             ["Hint.NumaCpuCheckTrigger"] = "NUMA node CPU usage updates on mouse click or keyboard input event",
-            ["Hint.AppConfNotificationPolicy"] = "Notification features are intentionally not provided——Research evidence suggested that phone notification may reduce neural activity that correlates cognitive control: Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725\r\n",
+            ["Hint.AppConfNotificationPolicy"] = "Notification features are intentionally unprovided—Evidences suggested phone notif. may lower neural activity that correlates cognitive control: Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725\r\n",
 
             // Heatmap
             ["Heatmap.Cold"] = "Cold",
@@ -288,7 +286,7 @@ public class UILangProviderM
         },
         ["zh-cn"] = new()
         {
-            ["Cards.ToolsImport"] = "选择工具：",
+            ["Cards.ToolsImport"] = "导入或更换程序",
             ["Cards.SourceValidation"] = "视频源检查",
             ["Cards.SrcIncompatOrCorrupted"] = "兼容问题 / 数据损坏（红色）",
             ["Cards.SrcQualityIssues"] = "质量问题（橙黄色）",
@@ -339,7 +337,6 @@ public class UILangProviderM
             ["AppConf.Cancel"] = "取消",
             ["AppConf.Save"] = "保存",
 
-            ["Section.ImportTools"] = "导入或更换程序",
             ["Section.SelectUpstream"] = "选择上游工具",
             ["Section.SelectEncoder"] = "选择下游程序 / 编码器",
             ["Section.SelectAnalytics"] = "选择视频分析工具",
@@ -545,7 +542,7 @@ public class UILangProviderM
         },
         ["zh-tw"] = new()
         {
-            ["Cards.ToolsImport"] = "選擇工具：",
+            ["Cards.ToolsImport"] = "導入或更換程序",
             ["Cards.SourceValidation"] = "影片源檢查",
             ["Cards.SrcIncompatOrCorrupted"] = "相容問題 / 數據損壞（紅色）",
             ["Cards.SrcQualityIssues"] = "品質問題（橙黃色）",
@@ -596,7 +593,6 @@ public class UILangProviderM
             ["AppConf.Cancel"] = "取消",
             ["AppConf.Save"] = "保存",
 
-            ["Section.ImportTools"] = "導入或更換程序",
             ["Section.SelectUpstream"] = "選擇上游工具",
             ["Section.SelectEncoder"] = "選擇下遊程序 / 編碼器",
             ["Section.SelectAnalytics"] = "選擇影片分析工具",

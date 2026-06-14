@@ -63,7 +63,6 @@ namespace OneColumnEncoder.ViewModels
         public EncTermsCardVM EncTermsCard { get; } = new();
         public BestPracsSelfCheckCardVM BestPracticesCard { get; } = new();
         // Section header texts
-        public static string SectionImportTools => UILangProviderM.Current["Section.ImportTools"];
         public static string SectionSelectUpstream => UILangProviderM.Current["Section.SelectUpstream"];
         public static string SectionSelectEncoder => UILangProviderM.Current["Section.SelectEncoder"];
         public static string SectionSelectAnalytics => UILangProviderM.Current["Section.SelectAnalytics"];
@@ -1219,7 +1218,6 @@ namespace OneColumnEncoder.ViewModels
         }
         private void RefreshSectionHeaders()
         {
-            OnPropertyChanged(nameof(SectionImportTools));
             OnPropertyChanged(nameof(SectionSelectUpstream));
             OnPropertyChanged(nameof(SectionSelectEncoder));
             OnPropertyChanged(nameof(SectionSelectAnalytics));

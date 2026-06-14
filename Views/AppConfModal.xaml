@@ -32,7 +32,7 @@
                               Button2Command="{Binding Cmd2}" />
 
         <comps:HintPanel Grid.Row="2"
-                         Margin="0 5 0 5"
+                         Margin="0 5 0 10"
                          Text="{Binding NotificationPolicyHint}"
                          HintBrush="{StaticResource GlobalSecondary}" />
     </Grid>
