@@ -12,6 +12,14 @@ namespace OneColumnEncoder.Helpers
         [GeneratedRegex(@"version\s+(\d+(?:\.\d+)?)", RegexOptions.IgnoreCase)]
         private static partial Regex X265Version();
 
+        private static string RemoveToolNamePrefix(string version, string toolName)
+        {
+            string prefix = toolName + " ";
+            return version.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
+                ? version[prefix.Length..]
+                : version;
+        }
+
         public static async Task<string?> TryDetectAsync(string exeName, string filePath)
         {
             if (string.IsNullOrWhiteSpace(exeName)
@@ -114,9 +122,9 @@ namespace OneColumnEncoder.Helpers
             switch (exeName.ToLowerInvariant())
             {
                 case "ffmpeg.exe":
-                    return firstLine[..Math.Min(25, firstLine.Length)];
+                    return RemoveToolNamePrefix(firstLine[..Math.Min(25, firstLine.Length)], "ffmpeg");
                 case "ffprobe.exe":
-                    return firstLine[..Math.Min(26, firstLine.Length)];
+                    return RemoveToolNamePrefix(firstLine[..Math.Min(26, firstLine.Length)], "ffprobe");
                 case "vspipe.exe":
                     return lines.FirstOrDefault(l =>
                         l.Contains("Core R", StringComparison.OrdinalIgnoreCase));

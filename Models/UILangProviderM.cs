@@ -274,7 +274,7 @@ public class UILangProviderM
             ["SrcInspect.InfoMsg"] = "No obvious source problems were found.",
             ["SrcInspect.ErrorTitle"] = "Source Severe Issues",
             ["SrcInspect.WarnTitle"] = "Source Moderate Issues",
-            ["SrcInspect.MetadataP1Text"] = "The source metadata cannot be read. The file may be corrupted or not a video file, and encoding cannot continue because this tool relies on metadata to choose safe encoding parameters.",
+            ["SrcInspect.MetadataP1Text"] = "The source metadata cannot be read. The file may be corrupted or not a video file, encoding cannot continue because this tool relies on metadata to choose safe encoding parameters.",
             ["SrcInspect.ProgressiveP1Text"] = "This tool cannot inspect inter-frame patterns to configure IVTC filters. See https://iavoe.github.io/deint-ivtc-web-tutorial/HTML for guidance.",
             ["SrcInspect.BitDepthP1Text"] = "SVT-AV1 does not support 12-bit video. If SVT-AV1 is not selected, this issue is treated as a warning instead, and not disabling Start Encode button.",
             ["SrcInspect.FramerateP1Text"] = "Use Filter Scribe editor to add VFR\u2192CFR conversion filter. Encoding VFR directly may cause audio/video desync over time.",
