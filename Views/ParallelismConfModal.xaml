@@ -168,10 +168,9 @@
                     </comps:AppConfItem>
                 </comps:AppConfContainer>
 
-                <comps:AppConfContainer Header="{Binding Lang.MemoryStrategyTitle}"
-                                        Margin="0 5 0 0">
+                <comps:AppConfContainer Header="{Binding Lang.MemoryStrategyTitle}">
                     <comps:HintPanel Text="{Binding LargePagesUnavailableHintText}"
-                                     Margin="5 8 5 8" />
+                                     Margin="5 0" />
                 </comps:AppConfContainer>
             </StackPanel>
             </Grid>

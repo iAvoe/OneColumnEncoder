@@ -63,17 +63,17 @@ namespace OneColumnEncoder.ViewModels
         public EncTermsCardVM EncTermsCard { get; } = new();
         public BestPracsSelfCheckCardVM BestPracticesCard { get; } = new();
         // Section header texts
-        public string SectionSelectUpstream => UICaptionProviderM.Sections.SelectUpstream;
-        public string SectionSelectEncoder => UICaptionProviderM.Sections.SelectEncoder;
-        public string SectionSelectAnalytics => UICaptionProviderM.Sections.SelectAnalytics;
-        public string SectionSelectDependencies => UICaptionProviderM.Sections.SelectDependencies;
-        public string SectionImportSource => UICaptionProviderM.Sections.ImportSource;
-        public string SectionAnalysisResults => UICaptionProviderM.Sections.AnalysisResults;
-        public string SectionEncodingConfigs => UICaptionProviderM.Sections.EncodingConfigs;
-        public string SectionStartEncoding => UICaptionProviderM.Sections.StartEncoding;
-        public string SVFIClipDisabledHintText => UICaptionProviderM.Hints.SVFIClipDisabled;
-        public string AnalyzeNeedsSourceText => UICaptionProviderM.Hints.AnalyzeNeedsSource;
-        public string NumaCpuCheckHintText => UICaptionProviderM.Hints.NumaCpuCheckTrigger;
+        public static string SectionSelectUpstream => UICaptionProviderM.Sections.SelectUpstream;
+        public static string SectionSelectEncoder => UICaptionProviderM.Sections.SelectEncoder;
+        public static string SectionSelectAnalytics => UICaptionProviderM.Sections.SelectAnalytics;
+        public static string SectionSelectDependencies => UICaptionProviderM.Sections.SelectDependencies;
+        public static string SectionImportSource => UICaptionProviderM.Sections.ImportSource;
+        public static string SectionAnalysisResults => UICaptionProviderM.Sections.AnalysisResults;
+        public static string SectionEncodingConfigs => UICaptionProviderM.Sections.EncodingConfigs;
+        public static string SectionStartEncoding => UICaptionProviderM.Sections.StartEncoding;
+        public static string SVFIClipDisabledHintText => UICaptionProviderM.Hints.SVFIClipDisabled;
+        public static string AnalyzeNeedsSourceText => UICaptionProviderM.Hints.AnalyzeNeedsSource;
+        public static string NumaCpuCheckHintText => UICaptionProviderM.Hints.NumaCpuCheckTrigger;
 
         // Disable UI when other modal opens
         private bool _isOverlayVisible;
