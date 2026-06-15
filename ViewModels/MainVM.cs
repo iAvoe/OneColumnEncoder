@@ -273,6 +273,7 @@ namespace OneColumnEncoder.ViewModels
 
             // Checklist subs, nav subs, overlay subs
             EncTermsCard.RunAllChecks();
+            SyncOutputFilenameWithVideoSource();
             SubToImportedToolZones();
             AnalyticsZone.CollectionChanged += OnAnalyticsZoneCollectionChanged;
             RefreshImportedToolStates(); // initial state after loading
@@ -436,6 +437,21 @@ namespace OneColumnEncoder.ViewModels
             bool hasVideoSource = CanRunSourceAnalysis();
             foreach (ToolItemCardVM item in EncSettingsZone)
                 item.IsEnabled = hasVideoSource;
+        }
+
+        private void SyncOutputFilenameWithVideoSource(string? filePath = null)
+        {
+            ToolItemCardVM? outputSetting = EncSettingsZone.FirstOrDefault(t =>
+                t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+            if (outputSetting == null) return;
+
+            string? sourcePath = filePath;
+            if (string.IsNullOrWhiteSpace(sourcePath))
+                sourcePath = GetSelectedVideoSourcePath();
+
+            if (string.IsNullOrWhiteSpace(sourcePath)) return;
+
+            outputSetting.P1TextData = Path.GetFileNameWithoutExtension(sourcePath);
         }
 
         private bool HasImportedFfprobe() =>
@@ -714,10 +730,7 @@ namespace OneColumnEncoder.ViewModels
 
             if (kind == SourceFileKind.Video)
             {
-                ToolItemCardVM? outputSetting = EncSettingsZone.FirstOrDefault(t =>
-                    t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
-                if (outputSetting != null)
-                    outputSetting.P1TextData = Path.GetFileNameWithoutExtension(filePath);
+                SyncOutputFilenameWithVideoSource(filePath);
 
                 foreach (ToolItemCardVM source in VideoSrcImportZone)
                     source.IsSelected = false;
