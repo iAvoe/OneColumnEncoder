@@ -154,7 +154,10 @@ namespace OneColumnEncoder.ViewModels
                 ScriptSrcImportZone[1],
                 OnSourceImported,
                 args => _scriptScribeFfmpegFilterArgs = args ?? string.Empty,
-                () => SrcValidationCard.Checklist1.Any(e => e.IsEnabled && e.Status == StatusType.Error),
+                () => SrcValidationCard.Checklist1.Any(
+                    e => e.IsEnabled && e.Status == StatusType.Error),
+                () => SrcValidationCard.Checklist2.Count > 1
+                    && SrcValidationCard.Checklist2[1].Status == StatusType.Warning,
                 () => _srcVideoAnalysis.RawJson);
             CopyRawAnalysis = new CopyRawAnalysisCmd(
                 _srcVideoAnalysis, modalNavS);
@@ -472,7 +475,11 @@ namespace OneColumnEncoder.ViewModels
         private void OnChecklistEntryPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ChecklistEntryVM.Status))
+            {
                 UpdateEncStartButtonsState();
+                if (_modalNavS.CurrentModalVM is FilterScribeVM modal)
+                    modal.RefreshGeneratedFfmpegFilters();
+            }
         }
         #endregion
 

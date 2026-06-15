@@ -11,7 +11,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="740"
-        Height="820"
+        Height="910"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid Margin="15">
@@ -19,6 +19,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -221,13 +222,40 @@
                                 Button2IsEnabled="{Binding B3_2IsEnabled}"
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
         
+        <!-- SAR Repair Section -->
+        <StackPanel Grid.Row="4">
+            <TextBlock Text="{Binding SarRepairTitle}"
+                       Style="{StaticResource H3}"
+                       Margin="0 15 0 0" />
+            <Grid Margin="0 5 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="49" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           Text="{Binding FfmpegAutoFilter}"
+                           FontSize="11"
+                           Foreground="{StaticResource GlobalSecondary}"
+                           VerticalAlignment="Center" />
+                <TextBox Grid.Column="1"
+                         Text="{Binding FfmpegSarRepairFilter, Mode=OneWay}"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         Background="{StaticResource Background}"
+                         Foreground="{StaticResource ButtonTertiary}"
+                         FontSize="11"
+                         FontFamily="Segoe UI"
+                         VerticalScrollBarVisibility="Disabled" />
+            </Grid>
+        </StackPanel>
+
         <!-- Resolution Scaling Section -->
-        <TextBlock Grid.Row="4"
+        <TextBlock Grid.Row="5"
                    Text="{Binding ResolutionScaleTitle}"
                    Style="{StaticResource H3}"
                    Margin="0 15 0 0" />
 
-        <Grid Grid.Row="5"
+        <Grid Grid.Row="6"
               Margin="0 2.5 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -308,7 +336,7 @@
         </Grid>
         
         <!-- Auto-generated Filters Section -->
-        <StackPanel Grid.Row="6">
+        <StackPanel Grid.Row="7">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="49" />
@@ -372,12 +400,12 @@
         </StackPanel>
 
         <!-- Color Space Conversion Section -->
-        <TextBlock Grid.Row="7"
+        <TextBlock Grid.Row="8"
                    Text="{Binding ColorSpaceConvertTitle}"
                    Style="{StaticResource H3}"
                    Margin="0 15 0 0" />
 
-        <StackPanel Grid.Row="8"
+        <StackPanel Grid.Row="9"
                     Margin="0 5 0 0">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -462,17 +490,17 @@
         </StackPanel>
 
         <!-- Hint: Color space <nits> requires manual input -->
-        <comps:HintPanel Grid.Row="9"
+        <comps:HintPanel Grid.Row="10"
                          Margin="0 5 0 0"
                          Text="{Binding ColorSpacePeakNitsHint}" />
 
         <!-- VFR -> CFR Framerate Conversion Section -->
-        <TextBlock Grid.Row="10"
+        <TextBlock Grid.Row="11"
                    Text="{Binding FrameRateConvertTitle}"
                    Style="{StaticResource H3}"
                    Margin="0 15 0 0" />
 
-        <StackPanel Grid.Row="11"
+        <StackPanel Grid.Row="12"
                     Margin="0 5 0 0">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -526,17 +554,37 @@
                            VerticalAlignment="Center" />
                 <TextBox Grid.Column="1"
                           Text="{Binding Ffmpeg3xFilter, Mode=OneWay}"
-                         IsReadOnly="True"
-                         BorderThickness="0"
-                         Background="{StaticResource Background}"
-                         Foreground="{StaticResource ButtonTertiary}"
-                         FontSize="11"
-                         FontFamily="Segoe UI"
-                         VerticalScrollBarVisibility="Disabled" />
+                          IsReadOnly="True"
+                          BorderThickness="0"
+                          Background="{StaticResource Background}"
+                          Foreground="{StaticResource ButtonTertiary}"
+                          FontSize="11"
+                          FontFamily="Segoe UI"
+                          VerticalScrollBarVisibility="Disabled" />
+            </Grid>
+            <Grid Margin="0 3 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="49" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                           Text="ffmpeg::::"
+                           FontSize="11"
+                           Foreground="{StaticResource GlobalSecondary}"
+                           VerticalAlignment="Center" />
+                <TextBox Grid.Column="1"
+                          Text="{Binding Ffmpeg4xFilter, Mode=OneWay}"
+                          IsReadOnly="True"
+                          BorderThickness="0"
+                          Background="{StaticResource Background}"
+                          Foreground="{StaticResource ButtonTertiary}"
+                          FontSize="11"
+                          FontFamily="Segoe UI"
+                          VerticalScrollBarVisibility="Disabled" />
             </Grid>
         </StackPanel>
 
-        <comps:ThreeButtonGroup Grid.Row="12"
+        <comps:ThreeButtonGroup Grid.Row="13"
                                 Margin="0 10 0 0"
                                 ButtonHeight="30"
                                 DataContext="{Binding FinishScribeButtons}"
@@ -547,7 +595,7 @@
                                 Button2IsEnabled="{Binding B3_2IsEnabled}"
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
         
-        <comps:HintPanel Grid.Row="13"
+        <comps:HintPanel Grid.Row="14"
                          Margin="0 5 0 5"
                          Text="{Binding NoteText}" />
     </Grid>

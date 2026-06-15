@@ -26,6 +26,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly Action<ToolItemCardVM, SourceFileKind, string> _afterImport;
         private readonly Action<string?> _applyFfmpegFilterArgs;
         private readonly Func<bool> _hasSourceValidationError;
+        private readonly Func<bool> _hasSarRepairWarning;
         private ColorSpaceAnalysisM _colorSpaceAnalysis = ColorSpaceConverterH.Analyze(null);
         public CloseModalCmd CloseCmd { get; }
         // 0: AVS, 1: VPY, 2: ffmpeg
@@ -138,6 +139,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(FfmpegResizeFilter));
             OnPropertyChanged(nameof(Ffmpeg2xFilter));
             OnPropertyChanged(nameof(Ffmpeg3xFilter));
+            OnPropertyChanged(nameof(Ffmpeg4xFilter));
             OnPropertyChanged(nameof(VapourSynthResizeFilter));
             OnPropertyChanged(nameof(AviSynthResizeFilter));
         }
@@ -154,6 +156,8 @@ namespace OneColumnEncoder.ViewModels
 
         private bool HasFpsFilter => IsFrameRateApplicable;
 
+        private bool HasSarRepairFilter => _hasSarRepairWarning();
+
         private bool HasColorSpaceFilter =>
             !_hasSourceValidationError()
             && _colorSpaceAnalysis.IsApplicable
@@ -167,6 +171,8 @@ namespace OneColumnEncoder.ViewModels
 
         private string? FpsFilterChain => HasFpsFilter ? $"fps={_frameRateNum}/{_frameRateDen}" : null;
 
+        private string? SarRepairFilterChain => HasSarRepairFilter ? "libplacebo=reset_sar" : null;
+
         private string? ColorSpaceFilterChain => HasColorSpaceFilter ? _colorSpaceAnalysis.FfmpegColorFilter : null;
 
         private bool IsColorSpaceStrategyShown(ColorSpaceStrategy strategy) =>
@@ -176,18 +182,23 @@ namespace OneColumnEncoder.ViewModels
 
         public string FfmpegResizeFilter =>
             HasScaleFilter
-                ? BuildFfmpegFilterArgs(includeSwsFlags: true, ScaleFilterChain)
+                ? BuildFfmpegFilterArgs(includeSwsFlags: true, includeCsp709Flags: false, ScaleFilterChain)
                 : "N/A";
 
         public string FfmpegFpsFilter =>
             HasFpsFilter
-                ? BuildFfmpegFilterArgs(includeSwsFlags: false, FpsFilterChain)
+                ? BuildFfmpegFilterArgs(includeSwsFlags: false, includeCsp709Flags: false, FpsFilterChain)
+                : "N/A";
+
+        public string FfmpegSarRepairFilter =>
+            HasSarRepairFilter
+                ? "-filter:v \"libplacebo=reset_sar\""
                 : "N/A";
 
         // Rule of filtering: follow a fixing→customizing order; therefore order of filter is not to be noted in variable name
         public string Ffmpeg2xFilter =>
             HasFpsFilter && HasScaleFilter
-                ? BuildFfmpegFilterArgs(includeSwsFlags: true, FpsFilterChain, ScaleFilterChain)
+                ? BuildFfmpegFilterArgs(includeSwsFlags: true, includeCsp709Flags: false, SarRepairFilterChain, FpsFilterChain, ScaleFilterChain)
                 : "N/A";
 
         public string FfmpegLowToHighColorFilter => GetColorSpaceStrategyFilter(ColorSpaceStrategy.LowToHigh);
@@ -208,7 +219,21 @@ namespace OneColumnEncoder.ViewModels
                 string? scale = ScaleFilterChain;
                 bool hasAny = color != null || fps != null || scale != null;
                 if (!hasAny) return "N/A";
-                return BuildFfmpegFilterArgs(scale != null, color, fps, scale);
+                return BuildFfmpegFilterArgs(includeSwsFlags: scale != null, includeCsp709Flags: color != null, SarRepairFilterChain, color, fps, scale);
+            }
+        }
+
+        // Rule of filtering: follow a fixing→customizing order; therefore order of filter is not to be noted in variable name
+        public string Ffmpeg4xFilter
+        {
+            get
+            {
+                string? sar = SarRepairFilterChain;
+                string? color = ColorSpaceFilterChain;
+                string? fps = FpsFilterChain;
+                string? scale = ScaleFilterChain;
+                if (sar == null || color == null || fps == null || scale == null) return "N/A";
+                return BuildFfmpegFilterArgs(includeSwsFlags: scale != null, includeCsp709Flags: color != null, sar, color, fps, scale);
             }
         }
 
@@ -216,17 +241,19 @@ namespace OneColumnEncoder.ViewModels
         {
             get
             {
+                bool hasSar = HasSarRepairFilter;
                 bool hasColor = HasColorSpaceFilter;
                 bool hasFps = HasFpsFilter;
                 bool hasScale = HasScaleFilter;
-                if (!hasColor && !hasFps && !hasScale) return string.Empty;
-                return BuildFfmpegFilterArgs(hasScale, ColorSpaceFilterChain, FpsFilterChain, ScaleFilterChain);
+                if (!hasSar && !hasColor && !hasFps && !hasScale) return string.Empty;
+                if (hasSar && !hasColor && !hasFps && !hasScale) return FfmpegSarRepairFilter;
+                return BuildFfmpegFilterArgs(hasScale, hasColor, SarRepairFilterChain, ColorSpaceFilterChain, FpsFilterChain, ScaleFilterChain);
             }
         }
 
         private string GetColorSpaceStrategyFilter(ColorSpaceStrategy strategy) =>
             IsColorSpaceStrategyShown(strategy)
-                ? BuildFfmpegFilterArgs(includeSwsFlags: false, BuildColorSpaceStrategyFilterChain(strategy))
+                ? BuildFfmpegFilterArgs(includeSwsFlags: false, includeCsp709Flags: true, BuildColorSpaceStrategyFilterChain(strategy))
                 : "N/A";
 
         private string? BuildColorSpaceStrategyFilterChain(ColorSpaceStrategy strategy) =>
@@ -237,18 +264,24 @@ namespace OneColumnEncoder.ViewModels
                 _colorSpaceAnalysis.ColorPrimaries,
                 _colorSpaceAnalysis.PixelFormat);
 
-        private static string BuildFfmpegFilterArgs(bool includeSwsFlags, params string?[] filters)
+        private static string BuildFfmpegFilterArgs(bool includeSwsFlags, bool includeCsp709Flags, params string?[] filters)
         {
             string filterChain = string.Join(",", filters.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s!.Trim()));
             if (string.IsNullOrWhiteSpace(filterChain)) return string.Empty;
 
             string filterArgs = filterChain.Contains(',', StringComparison.Ordinal)
-                ? $"-filter:v \"{filterChain}\" -color_primaries bt709 -color_trc bt709 -colorspace bt709"
-                : $"-filter:v {filterChain} -color_primaries bt709 -color_trc bt709 -colorspace bt709";
+                ? $"-filter:v \"{filterChain}\""
+                : $"-filter:v {filterChain}";
 
-            return includeSwsFlags
-                ? $"{filterArgs} -sws_flags bicubic+full_chroma_int+full_chroma_inp+accurate_rnd"
-                : filterArgs;
+            string csp709Flags = includeCsp709Flags
+                ? " -color_primaries bt709 -color_trc bt709 -colorspace bt709"
+                : string.Empty;
+
+            string swsFlags = includeSwsFlags
+                ? " -sws_flags bicubic+full_chroma_int+full_chroma_inp+accurate_rnd"
+                : string.Empty;
+
+            return $"{filterArgs}{csp709Flags}{swsFlags}";
         }
 
         public string VapourSynthResizeFilter =>
@@ -278,6 +311,7 @@ namespace OneColumnEncoder.ViewModels
                 OnPropertyChanged(nameof(FfmpegResizeFilter));
                 OnPropertyChanged(nameof(Ffmpeg2xFilter));
                 OnPropertyChanged(nameof(Ffmpeg3xFilter));
+                OnPropertyChanged(nameof(Ffmpeg4xFilter));
                 OnPropertyChanged(nameof(VapourSynthResizeFilter));
                 OnPropertyChanged(nameof(AviSynthResizeFilter));
             }
@@ -349,6 +383,7 @@ namespace OneColumnEncoder.ViewModels
         public static string ScalePercentLabel => UILangProviderM.Current["SrcScribe.ScalePercentLabel"];
         public static string FfmpegFreeTextHint => UILangProviderM.Current["SrcScribe.FfmpegFreeTextHint"];
         public static string FfmpegAutoFilter => "ffmpeg";
+        public static string SarRepairTitle => UILangProviderM.Current["SrcScribe.SarRepairTitle"];
         public static string VapourSynthAutoFilter => "VS";
         public static string AviSynthAutoFilter => "AVS(+)";
         public static string FrameRateConvertTitle => UILangProviderM.Current["SrcScribe.FrameRateConvertTitle"];
@@ -372,6 +407,7 @@ namespace OneColumnEncoder.ViewModels
             Action<ToolItemCardVM, SourceFileKind, string> afterImport,
             Action<string?> applyFfmpegFilterArgs,
             Func<bool> hasSourceValidationError,
+            Func<bool> hasSarRepairWarning,
             string? sourceFfprobeJson = null)
         {
             _modalNavS = modalNavS;
@@ -383,6 +419,7 @@ namespace OneColumnEncoder.ViewModels
             _afterImport = afterImport;
             _applyFfmpegFilterArgs = applyFfmpegFilterArgs;
             _hasSourceValidationError = hasSourceValidationError;
+            _hasSarRepairWarning = hasSarRepairWarning;
             _baseAvsPrefix = UILangProviderM.Current["SrcScribe.AvsPrefix"];
             _baseVpyPrefix = UILangProviderM.Current["SrcScribe.VpyPrefix"];
             ParseColorSpaceInfo(sourceFfprobeJson);
@@ -400,6 +437,15 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(FfmpegHdrToSdrColorFilter));
             OnPropertyChanged(nameof(FfmpegHighHdrToLowSdrColorFilter));
             OnPropertyChanged(nameof(Ffmpeg3xFilter));
+            OnPropertyChanged(nameof(Ffmpeg4xFilter));
+        }
+
+        public void RefreshGeneratedFfmpegFilters()
+        {
+            OnPropertyChanged(nameof(FfmpegSarRepairFilter));
+            OnPropertyChanged(nameof(Ffmpeg2xFilter));
+            OnPropertyChanged(nameof(Ffmpeg3xFilter));
+            OnPropertyChanged(nameof(Ffmpeg4xFilter));
         }
 
         private void ParseSourceResolution(string? sourceFfprobeJson)
@@ -467,6 +513,7 @@ namespace OneColumnEncoder.ViewModels
                 OnPropertyChanged(nameof(FfmpegFpsFilter));
                 OnPropertyChanged(nameof(Ffmpeg2xFilter));
                 OnPropertyChanged(nameof(Ffmpeg3xFilter));
+                OnPropertyChanged(nameof(Ffmpeg4xFilter));
             }
             catch { } // ignore parse errors
         }
@@ -704,8 +751,11 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(TargetDisplay));
             OnPropertyChanged(nameof(FfmpegFreeTextHint));
             OnPropertyChanged(nameof(FfmpegAutoFilter));
+            OnPropertyChanged(nameof(SarRepairTitle));
+            OnPropertyChanged(nameof(FfmpegSarRepairFilter));
             OnPropertyChanged(nameof(Ffmpeg2xFilter));
             OnPropertyChanged(nameof(Ffmpeg3xFilter));
+            OnPropertyChanged(nameof(Ffmpeg4xFilter));
             OnPropertyChanged(nameof(VapourSynthAutoFilter));
             OnPropertyChanged(nameof(AviSynthAutoFilter));
             OnPropertyChanged(nameof(FrameRateConvertTitle));

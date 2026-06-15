@@ -15,6 +15,7 @@ namespace OneColumnEncoder.Commands.OpenClose
         Action<ToolItemCardVM, SourceFileKind, string> afterImport, // File save & ItemCard write back
         Action<string?> applyFfmpegFilterArgs,
         Func<bool> hasSourceValidationError,
+        Func<bool> hasSarRepairWarning,
         Func<string?> getSourceFfprobeJson) : BaseCmd
     {
         private readonly ModalNavS _modalNavS = modalNavS;
@@ -41,6 +42,7 @@ namespace OneColumnEncoder.Commands.OpenClose
                 afterImport,
                 applyFfmpegFilterArgs,
                 hasSourceValidationError,
+                hasSarRepairWarning,
                 getSourceFfprobeJson());
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
