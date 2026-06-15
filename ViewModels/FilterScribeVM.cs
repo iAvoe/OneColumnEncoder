@@ -13,6 +13,8 @@ namespace OneColumnEncoder.ViewModels
 {
     /// <summary>
     /// Note:
+    /// Users must manually copy/enter the desired filters into the free text box in the ffmpeg tab to be accepted.
+    /// 
     /// File save & ItemCard write back logic created by MainVM as OnSourceImported,
     /// passed in via OpenFilterScribeCmd constructor as Action<>
     /// </summary>
@@ -112,7 +114,8 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        public bool IsScaleApplicable => HasSource && ResolutionScaleH.IsScaleApplicable(SourceWidth, SourceHeight);
+        public bool IsScaleApplicable =>
+            HasSource && ResolutionScaleH.IsScaleApplicable(SourceWidth, SourceHeight);
 
         public string ScaleNotApplicableText =>
             !HasSource
@@ -125,8 +128,7 @@ namespace OneColumnEncoder.ViewModels
             get => _scalePercent;
             set
             {
-                if (SetProperty(ref _scalePercent, value))
-                    RecomputeTarget();
+                if (SetProperty(ref _scalePercent, value)) RecomputeTarget();
             }
         }
 
@@ -264,7 +266,7 @@ namespace OneColumnEncoder.ViewModels
                 _colorSpaceAnalysis.ColorPrimaries,
                 _colorSpaceAnalysis.PixelFormat);
 
-        private static string BuildFfmpegFilterArgs(bool includeSwsFlags, bool includeCsp709Flags, params string?[] filters)
+        private string BuildFfmpegFilterArgs(bool includeSwsFlags, bool includeCsp709Flags, params string?[] filters)
         {
             string filterChain = string.Join(",", filters.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s!.Trim()));
             if (string.IsNullOrWhiteSpace(filterChain)) return string.Empty;
@@ -277,11 +279,15 @@ namespace OneColumnEncoder.ViewModels
                 ? " -color_primaries bt709 -color_trc bt709 -colorspace bt709"
                 : string.Empty;
 
+            string pixelFormatFlag = includeCsp709Flags && !string.IsNullOrWhiteSpace(_colorSpaceAnalysis.PixelFormat)
+                ? $" -pix_fmt {_colorSpaceAnalysis.PixelFormat}"
+                : string.Empty;
+
             string swsFlags = includeSwsFlags
                 ? " -sws_flags bicubic+full_chroma_int+full_chroma_inp+accurate_rnd"
                 : string.Empty;
 
-            return $"{filterArgs}{csp709Flags}{swsFlags}";
+            return $"{filterArgs}{csp709Flags}{pixelFormatFlag}{swsFlags}";
         }
 
         public string VapourSynthResizeFilter =>

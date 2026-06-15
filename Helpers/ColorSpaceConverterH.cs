@@ -197,10 +197,10 @@ public static class ColorSpaceConverterH
         if (HasNoChromaSubsampling(pixelFormat))
             return string.IsNullOrWhiteSpace(primaries)
                 ? null
-                : $"zscale=tin=min={matrix}:pin={primaries}";
+                : $"zscale=min={matrix}:pin={primaries}";
 
         if (string.IsNullOrWhiteSpace(chromaLocation)) return null;
-        return $"zscale=tin=min={matrix}:c={chromaLocation}:pin=bt2020";
+        return $"zscale=min={matrix}:c={chromaLocation}:pin=bt2020";
     }
 
     private static string JoinFilters(params string?[] filters) =>
