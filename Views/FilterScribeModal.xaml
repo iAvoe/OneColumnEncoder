@@ -11,7 +11,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="700"
-        Height="820"
+        Height="840"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid Margin="15">
@@ -54,11 +54,11 @@
                      FontWeight="Bold">
                 <Grid Margin="0 5">
                     <Grid.RowDefinitions>
-                        <!-- Note: if modifying VS tab height, go below -->
+                        <!-- Note: if modifying VS or ffmpeg tab height, go below -->
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*"
-                                       MinHeight="60" />
+                                       MinHeight="140" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
@@ -122,7 +122,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*"
-                                       MinHeight="80" />
+                                       MinHeight="90" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
@@ -180,7 +180,8 @@
                 <Grid Margin="0 5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*"
+                                       MinHeight="180"/>
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0"
                                Text="{Binding FfmpegFreeTextHint}"
@@ -189,20 +190,22 @@
                                TextWrapping="Wrap"
                                Margin="5 0 0 10"
                                FontWeight="Normal"/>
-                    <TextBox Grid.Row="1"
-                             Text="{Binding FfmpegFreeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             BorderThickness="0"
-                             Background="{StaticResource ScriptAccentFfmpegBackground}"
-                             Foreground="{StaticResource ScriptAccentFfmpegForeground}"
-                             TextWrapping="Wrap"
-                             AcceptsReturn="True"
-                             Padding="5"
-                             FontSize="13"
-                             FontFamily="Consolas"
-                             HorizontalScrollBarVisibility="Auto"
-                             VerticalScrollBarVisibility="Auto"
-                             PreviewMouseWheel="UserInput_PreviewMouseWheel"
-                             FontWeight="Normal" />
+                     <TextBox Grid.Row="1"
+                              Text="{Binding FfmpegFreeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              BorderThickness="0"
+                              Background="{StaticResource ScriptAccentFfmpegBackground}"
+                              Foreground="{StaticResource ScriptAccentFfmpegForeground}"
+                              TextWrapping="Wrap"
+                              AcceptsReturn="False"
+                              Padding="5"
+                              FontSize="13"
+                              FontFamily="Consolas"
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Disabled"
+                              PreviewKeyDown="FfmpegFreeText_PreviewKeyDown"
+                              DataObject.Pasting="FfmpegFreeText_Pasting"
+                              PreviewMouseWheel="UserInput_PreviewMouseWheel"
+                              FontWeight="Normal" />
                 </Grid>
             </TabItem>
         </TabControl>
@@ -317,7 +320,6 @@
                            Foreground="{StaticResource GlobalSecondary}"
                            VerticalAlignment="Center" />
                 <TextBox Grid.Column="1"
-                         Margin="5 0 0 0"
                          Text="{Binding FfmpegResizeFilter, Mode=OneWay}"
                          IsReadOnly="True"
                          BorderThickness="0"
@@ -338,7 +340,6 @@
                            Foreground="{StaticResource GlobalSecondary}"
                            VerticalAlignment="Center" />
                 <TextBox Grid.Column="1"
-                         Margin="5 0 0 0"
                          Text="{Binding VapourSynthResizeFilter, Mode=OneWay}"
                          IsReadOnly="True"
                          BorderThickness="0"
@@ -359,7 +360,6 @@
                            Foreground="{StaticResource GlobalSecondary}"
                            VerticalAlignment="Center" />
                 <TextBox Grid.Column="1"
-                         Margin="5 0 0 0"
                          Text="{Binding AviSynthResizeFilter, Mode=OneWay}"
                          IsReadOnly="True"
                          BorderThickness="0"
@@ -390,7 +390,6 @@
                            Foreground="{StaticResource GlobalSecondary}"
                            VerticalAlignment="Center" />
                 <TextBox Grid.Column="1"
-                         Margin="5 0 0 0"
                          Text="{Binding FfmpegLowToHighColorFilter, Mode=OneWay}"
                          IsReadOnly="True"
                          BorderThickness="0"
@@ -411,7 +410,6 @@
                            Foreground="{StaticResource GlobalSecondary}"
                            VerticalAlignment="Center" />
                 <TextBox Grid.Column="1"
-                         Margin="5 0 0 0"
                          Text="{Binding FfmpegHighToLowColorFilter, Mode=OneWay}"
                          IsReadOnly="True"
                          BorderThickness="0"
@@ -432,7 +430,6 @@
                            Foreground="{StaticResource GlobalSecondary}"
                            VerticalAlignment="Center" />
                 <TextBox Grid.Column="1"
-                         Margin="5 0 0 0"
                          Text="{Binding FfmpegHdrToSdrColorFilter, Mode=OneWay}"
                          IsReadOnly="True"
                          BorderThickness="0"
@@ -453,7 +450,6 @@
                            Foreground="{StaticResource GlobalSecondary}"
                            VerticalAlignment="Center" />
                 <TextBox Grid.Column="1"
-                         Margin="5 0 0 0"
                          Text="{Binding FfmpegHighHdrToLowSdrColorFilter, Mode=OneWay}"
                          IsReadOnly="True"
                          BorderThickness="0"
@@ -489,7 +485,6 @@
                            Foreground="{StaticResource GlobalSecondary}"
                            VerticalAlignment="Center" />
                 <TextBox Grid.Column="1"
-                         Margin="5 0 0 0"
                          Text="{Binding FfmpegFpsFilter, Mode=OneWay}"
                          IsReadOnly="True"
                          BorderThickness="0"
@@ -510,7 +505,6 @@
                            Foreground="{StaticResource GlobalSecondary}"
                            VerticalAlignment="Center" />
                  <TextBox Grid.Column="1"
-                          Margin="5 0 0 0"
                           Text="{Binding Ffmpeg2xFilter, Mode=OneWay}"
                           IsReadOnly="True"
                           BorderThickness="0"
@@ -531,7 +525,6 @@
                            Foreground="{StaticResource GlobalSecondary}"
                            VerticalAlignment="Center" />
                 <TextBox Grid.Column="1"
-                         Margin="5 0 0 0"
                           Text="{Binding Ffmpeg3xFilter, Mode=OneWay}"
                          IsReadOnly="True"
                          BorderThickness="0"
