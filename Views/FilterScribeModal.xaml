@@ -10,8 +10,8 @@
         d:DataContext="{d:DesignInstance Type=vms:FilterScribeVM}"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
-        Width="700"
-        Height="840"
+        Width="740"
+        Height="820"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid Margin="15">

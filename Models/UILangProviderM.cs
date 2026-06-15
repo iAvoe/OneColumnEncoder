@@ -1693,7 +1693,7 @@ public class UILangProviderM
         ["SrcScribe.CopyInOut"] = "Копировать In/Out",
         ["SrcScribe.SaveAsFile"] = "Сохранить файл",
         ["SrcScribe.Cancel"] = "Отмена",
-        ["SrcScribe.Confirm"] = "Подтвердить (сохранить и импорт.)",
+        ["SrcScribe.Confirm"] = "Сохранить и импортировать всё",
         ["FilenameScribe.MiniHeader"] = "Имя файла",
         ["FilenameScribe.Placeholder"] = "Введите или вставьте имя вывода",
         ["FilenameScribe.PreviewHeader"] = "Предпросмотр",
