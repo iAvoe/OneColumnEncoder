@@ -10,15 +10,15 @@
         d:DataContext="{d:DesignInstance Type=vms:FilterScribeVM}"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
-        Width="660"
-        Height="800"
+        Width="700"
+        Height="820"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -54,10 +54,11 @@
                      FontWeight="Bold">
                 <Grid Margin="0 5">
                     <Grid.RowDefinitions>
+                        <!-- Note: if modifying VS tab height, go below -->
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*"
-                                       MinHeight="80" />
+                                       MinHeight="60" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>

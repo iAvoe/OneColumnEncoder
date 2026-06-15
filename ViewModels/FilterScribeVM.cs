@@ -132,7 +132,7 @@ namespace OneColumnEncoder.ViewModels
         public void CommitScale()
         {
             if (!IsScaleApplicable) return;
-            // var w, h are discard values for now
+            // var w, h are discard values now
             var (_, _) = ResolutionScaleH.ComputeTargetDimensions(SourceWidth, SourceHeight, ScalePercent);
             OnPropertyChanged(nameof(TargetDisplay));
             OnPropertyChanged(nameof(FfmpegResizeFilter));
