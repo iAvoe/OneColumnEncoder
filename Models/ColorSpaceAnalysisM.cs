@@ -15,6 +15,8 @@ public class ColorSpaceAnalysisM
     public string? ColorPrimaries { get; init; }
     public string? ColorTransfer { get; init; }
     public string? ColorMatrix { get; init; }
+    public string? ColorChromaLocation { get; init; }
+    public string? PixelFormat { get; init; }
 
     public int? H273Primaries { get; init; }
     public int? H273Transfer { get; init; }

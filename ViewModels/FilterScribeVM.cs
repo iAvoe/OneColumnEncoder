@@ -172,7 +172,7 @@ namespace OneColumnEncoder.ViewModels
         private bool IsColorSpaceStrategyShown(ColorSpaceStrategy strategy) =>
             !_hasSourceValidationError()
             && ColorSpaceConverterH.IsStrategyApplicable(strategy, _colorSpaceAnalysis.ColorPrimaries, _colorSpaceAnalysis.ColorTransfer)
-            && !string.IsNullOrWhiteSpace(ColorSpaceConverterH.BuildFfmpegFilter(strategy));
+            && !string.IsNullOrWhiteSpace(BuildColorSpaceStrategyFilterChain(strategy));
 
         public string FfmpegResizeFilter =>
             HasScaleFilter
@@ -226,8 +226,16 @@ namespace OneColumnEncoder.ViewModels
 
         private string GetColorSpaceStrategyFilter(ColorSpaceStrategy strategy) =>
             IsColorSpaceStrategyShown(strategy)
-                ? BuildFfmpegFilterArgs(includeSwsFlags: false, _colorSpaceAnalysis.FfmpegColorFilter)
+                ? BuildFfmpegFilterArgs(includeSwsFlags: false, BuildColorSpaceStrategyFilterChain(strategy))
                 : "N/A";
+
+        private string? BuildColorSpaceStrategyFilterChain(ColorSpaceStrategy strategy) =>
+            ColorSpaceConverterH.BuildFfmpegFilter(
+                strategy,
+                _colorSpaceAnalysis.ColorMatrix,
+                _colorSpaceAnalysis.ColorChromaLocation,
+                _colorSpaceAnalysis.ColorPrimaries,
+                _colorSpaceAnalysis.PixelFormat);
 
         private static string BuildFfmpegFilterArgs(bool includeSwsFlags, params string?[] filters)
         {
@@ -345,10 +353,10 @@ namespace OneColumnEncoder.ViewModels
         public static string AviSynthAutoFilter => "AVS(+)";
         public static string FrameRateConvertTitle => UILangProviderM.Current["SrcScribe.FrameRateConvertTitle"];
         public static string ColorSpaceConvertTitle => UILangProviderM.Current["SrcScribe.ColorSpaceConvertTitle"];
-        public static string LowToHighColorFilterLabel => "窄域";
+        public static string LowToHighColorFilterLabel => "NCG";
         public static string HighToLowColorFilterLabel => "WCG";
-        public static string HdrToSdrColorFilterLabel => "HDR";
-        public static string HighHdrToLowSdrColorFilterLabel => "WCG HDR";
+        public static string HdrToSdrColorFilterLabel => "HDR→SDR";
+        public static string HighHdrToLowSdrColorFilterLabel => "H&W→SDR";
         public static string ColorSpacePeakNitsHint => UILangProviderM.Current["SrcScribe.ColorSpacePeakNitsHint"];
         #endregion
 

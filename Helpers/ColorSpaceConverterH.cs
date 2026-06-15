@@ -75,19 +75,19 @@ public static class ColorSpaceConverterH
     public static ColorSpaceAnalysisM Analyze(string? ffprobeJson)
     {
         if (string.IsNullOrWhiteSpace(ffprobeJson))
-            return CreateResult(null, null, null, ColorSpaceStrategy.Unknown);
+            return CreateResult(null, null, null, null, null, ColorSpaceStrategy.Unknown);
 
         try
         {
             using JsonDocument doc = JsonDocument.Parse(ffprobeJson);
             if (!FrameRateH.TryGetFirstVideoStream(doc.RootElement, out JsonElement stream))
-                return CreateResult(null, null, null, ColorSpaceStrategy.Unknown, "No video stream found.");
+                return CreateResult(null, null, null, null, null, ColorSpaceStrategy.Unknown, "No video stream found.");
 
             return Analyze(stream);
         }
         catch
         {
-            return CreateResult(null, null, null, ColorSpaceStrategy.Unknown, "Failed to parse ffprobe JSON.");
+            return CreateResult(null, null, null, null, null, ColorSpaceStrategy.Unknown, "Failed to parse ffprobe JSON.");
         }
     }
 
@@ -96,10 +96,12 @@ public static class ColorSpaceConverterH
         string? primaries = Normalize(JsonElementHelper.TryGetString(stream, "color_primaries"));
         string? transfer = Normalize(JsonElementHelper.TryGetString(stream, "color_transfer"));
         string? matrix = Normalize(JsonElementHelper.TryGetString(stream, "color_space"));
+        string? chromaLocation = Normalize(JsonElementHelper.TryGetString(stream, "chroma_location"));
+        string? pixelFormat = Normalize(JsonElementHelper.TryGetString(stream, "pix_fmt"));
 
         ColorSpaceStrategy strategy = Classify(primaries, transfer);
 
-        return CreateResult(primaries, transfer, matrix, strategy);
+        return CreateResult(primaries, transfer, matrix, chromaLocation, pixelFormat, strategy);
     }
 
     public static ColorSpaceStrategy Classify(string? primaries, string? transfer)
@@ -144,14 +146,22 @@ public static class ColorSpaceConverterH
 
     #region Filter chain generation
 
-    public static string? BuildFfmpegFilter(ColorSpaceStrategy strategy)
+    public static string? BuildFfmpegFilter(
+        ColorSpaceStrategy strategy,
+        string? matrix = null,
+        string? chromaLocation = null,
+        string? primaries = null,
+        string? pixelFormat = null)
     {
+        const string hdrToSdr = "zscale=transfer=linear,tonemap=hable:desat=3:peak=<nits>";
+        const string toBt709 = "zscale=matrix=bt709:primaries=bt709:transfer=bt709";
+
         return strategy switch
         {
-            ColorSpaceStrategy.HdrToSdr or ColorSpaceStrategy.HighHdrToSdr
-                => "zscale=transfer=linear,tonemap=hable:desat=3:peak=<nits>,zscale=transfer=bt709:matrix=bt709:primaries=bt709",
-            ColorSpaceStrategy.LowToHigh or ColorSpaceStrategy.HighToLow
-                => "zscale=matrix=bt709:primaries=bt709:transfer=bt709",
+            ColorSpaceStrategy.LowToHigh => toBt709,
+            ColorSpaceStrategy.HdrToSdr => JoinFilters(BuildInputCorrection(matrix, chromaLocation, primaries, pixelFormat), hdrToSdr),
+            ColorSpaceStrategy.HighToLow => JoinFilters(BuildInputCorrection(matrix, chromaLocation, primaries, pixelFormat), toBt709),
+            ColorSpaceStrategy.HighHdrToSdr => JoinFilters(BuildInputCorrection(matrix, chromaLocation, primaries, pixelFormat), hdrToSdr, toBt709),
             _ => null
         };
     }
@@ -161,7 +171,7 @@ public static class ColorSpaceConverterH
     #region Private helpers
 
     private static ColorSpaceAnalysisM CreateResult(
-        string? primaries, string? transfer, string? matrix,
+        string? primaries, string? transfer, string? matrix, string? chromaLocation, string? pixelFormat,
         ColorSpaceStrategy strategy, string? descriptionOverride = null)
     {
         return new ColorSpaceAnalysisM
@@ -169,15 +179,32 @@ public static class ColorSpaceConverterH
             ColorPrimaries = primaries,
             ColorTransfer = transfer,
             ColorMatrix = matrix,
+            ColorChromaLocation = chromaLocation,
+            PixelFormat = pixelFormat,
             H273Primaries = primaries != null && H273Primaries.TryGetValue(primaries, out int pv) ? pv : null,
             H273Transfer = transfer != null && H273Transfer.TryGetValue(transfer, out int tv) ? tv : null,
             H273Matrix = matrix != null && H273Matrix.TryGetValue(matrix, out int mv) ? mv : null,
             Strategy = strategy,
-            FfmpegColorFilter = BuildFfmpegFilter(strategy),
+            FfmpegColorFilter = BuildFfmpegFilter(strategy, matrix, chromaLocation, primaries, pixelFormat),
             StrategyDisplayName = GetDisplayName(strategy),
-            Description = descriptionOverride ?? BuildDescription(strategy, primaries, transfer, matrix)
+            Description = descriptionOverride ?? BuildDescription(strategy, primaries, transfer, matrix, chromaLocation, pixelFormat)
         };
     }
+
+    private static string? BuildInputCorrection(string? matrix, string? chromaLocation, string? primaries, string? pixelFormat)
+    {
+        if (string.IsNullOrWhiteSpace(matrix)) return null;
+        if (HasNoChromaSubsampling(pixelFormat))
+            return string.IsNullOrWhiteSpace(primaries)
+                ? null
+                : $"zscale=tin=min={matrix}:pin={primaries}";
+
+        if (string.IsNullOrWhiteSpace(chromaLocation)) return null;
+        return $"zscale=tin=min={matrix}:c={chromaLocation}:pin=bt2020";
+    }
+
+    private static string JoinFilters(params string?[] filters) =>
+        string.Join(",", filters.Where(filter => !string.IsNullOrWhiteSpace(filter)));
 
     private static string? Normalize(string? value) =>
         string.IsNullOrWhiteSpace(value) ? null : value.Trim().ToLowerInvariant();
@@ -202,6 +229,13 @@ public static class ColorSpaceConverterH
     private static bool IsWideGamut(string? primaries) =>
         primaries is "bt2020" or "smpte431" or "smpte432" or "smpte428";
 
+    private static bool HasNoChromaSubsampling(string? pixelFormat) =>
+        pixelFormat != null
+        && (pixelFormat.Contains("444", StringComparison.OrdinalIgnoreCase)
+            || pixelFormat.Contains("rgb", StringComparison.OrdinalIgnoreCase)
+            || pixelFormat.Contains("gbr", StringComparison.OrdinalIgnoreCase)
+            || pixelFormat.Contains("gray", StringComparison.OrdinalIgnoreCase));
+
     private static string GetDisplayName(ColorSpaceStrategy strategy) => strategy switch
     {
         ColorSpaceStrategy.NativeBt709 => "N/A - 已是 bt709",
@@ -214,19 +248,21 @@ public static class ColorSpaceConverterH
 
     private static string BuildDescription(
         ColorSpaceStrategy strategy,
-        string? primaries, string? transfer, string? matrix)
+        string? primaries, string? transfer, string? matrix, string? chromaLocation, string? pixelFormat)
     {
         string pStr = primaries ?? "未指定";
         string tStr = transfer ?? "未指定";
         string mStr = matrix ?? "未指定";
+        string cStr = chromaLocation ?? "未指定";
+        string pfStr = pixelFormat ?? "未指定";
 
         string classification = strategy switch
         {
             ColorSpaceStrategy.NativeBt709 => "源已是 bt709，无需色彩转换。",
-            ColorSpaceStrategy.LowToHigh => $"源 {DescribeColorMeta(pStr, tStr, mStr)} 色域小于 bt709，执行低转高。",
-            ColorSpaceStrategy.HighToLow => $"源 {DescribeColorMeta(pStr, tStr, mStr)} 色域大于 bt709，执行高转低。",
-            ColorSpaceStrategy.HdrToSdr => $"源 {DescribeColorMeta(pStr, tStr, mStr)} 为 HDR 内容，执行 HDR→SDR 色调映射。",
-            ColorSpaceStrategy.HighHdrToSdr => $"源 {DescribeColorMeta(pStr, tStr, mStr)} 为宽色域 HDR 内容，执行高 HDR→低 SDR 色调映射。",
+            ColorSpaceStrategy.LowToHigh => $"源 {DescribeColorMeta(pStr, tStr, mStr, cStr, pfStr)} 色域小于 bt709，执行低转高。",
+            ColorSpaceStrategy.HighToLow => $"源 {DescribeColorMeta(pStr, tStr, mStr, cStr, pfStr)} 色域大于 bt709，执行高转低。",
+            ColorSpaceStrategy.HdrToSdr => $"源 {DescribeColorMeta(pStr, tStr, mStr, cStr, pfStr)} 为 HDR 内容，执行 HDR→SDR 色调映射。",
+            ColorSpaceStrategy.HighHdrToSdr => $"源 {DescribeColorMeta(pStr, tStr, mStr, cStr, pfStr)} 为宽色域 HDR 内容，执行高 HDR→低 SDR 色调映射。",
             _ => "无法识别的色彩空间。"
         };
 
@@ -234,7 +270,7 @@ public static class ColorSpaceConverterH
         {
             ColorSpaceStrategy.NativeBt709 => string.Empty,
             ColorSpaceStrategy.Unknown => "请手动检查源文件色彩元数据。",
-            _ => BuildFfmpegFilter(strategy)
+            _ => BuildFfmpegFilter(strategy, matrix, chromaLocation, primaries, pixelFormat)
         };
 
         if (string.IsNullOrEmpty(filter))
@@ -246,8 +282,8 @@ public static class ColorSpaceConverterH
         return $"{classification}\n滤镜: {filter}";
     }
 
-    private static string DescribeColorMeta(string primaries, string transfer, string matrix) =>
-        $"原色={primaries} 传输={transfer} 矩阵={matrix}";
+    private static string DescribeColorMeta(string primaries, string transfer, string matrix, string chromaLocation, string pixelFormat) =>
+        $"原色={primaries} 传输={transfer} 矩阵={matrix} 色度位置={chromaLocation} 像素格式={pixelFormat}";
 
     #endregion
 }
