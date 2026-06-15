@@ -226,7 +226,7 @@ public class UILangProviderM
             ["SrcScribe.FfmpegFreeTextHint"] = "Enter custom ffmpeg filter params (session only)",
             ["SrcScribe.FrameRateConvertTitle"] = "FFMPEG VFR\u2192CFR Parameter Generator",
 
-            ["SrcScribe.ColorSpaceConvertTitle"] = "Convert colorspace to Bt.709",
+            ["SrcScribe.ColorSpaceConvertTitle"] = "Convert colorspace to Bt.709 (Experimental, FFMPEG only)",
             ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> requires manual input; please check filename/metadata for it",
 
             // FilenameScribeModal
@@ -483,7 +483,7 @@ public class UILangProviderM
             ["SrcScribe.FfmpegFreeTextHint"] = "输入自定义 ffmpeg 滤镜参数（仅本次会话有效）",
             ["SrcScribe.FrameRateConvertTitle"] = "FFMPEG 可变帧率\u2192恒定帧率参数生成器",
 
-            ["SrcScribe.ColorSpaceConvertTitle"] = "转换色彩空间到 Bt.709",
+            ["SrcScribe.ColorSpaceConvertTitle"] = "转换色彩空间到 Bt.709（实验性，仅 FFMPEG）",
             ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> 需手动填写；请检查文件名/元数据",
 
             // FilenameScribeModal
@@ -739,7 +739,7 @@ public class UILangProviderM
             ["SrcScribe.FfmpegFreeTextHint"] = "輸入自訂 ffmpeg 濾鏡參數（僅本次會話有效）",
             ["SrcScribe.FrameRateConvertTitle"] = "FFMPEG 可變幀率\u2192恆定幀率參數產生器",
 
-            ["SrcScribe.ColorSpaceConvertTitle"] = "轉換色彩空間到 Bt.709",
+            ["SrcScribe.ColorSpaceConvertTitle"] = "轉換色彩空間到 Bt.709（實驗性，僅 FFMPEG）",
             ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> 需手動填寫；請檢查檔案名/元數據",
 
             // FilenameScribeModal
@@ -1029,7 +1029,7 @@ public class UILangProviderM
         ["SrcScribe.VpyPrefix2"] = "# Ajoutez des filtres ici ou laissez vide...",
         ["SrcScribe.VpySuffix"] = "# ...fin de la section d'édition (gardez src ou réassignez-le à la fin)\r\nsrc.set_output()",
         ["SrcScribe.TabFfmpeg"] = "Filtre ffmpeg",
-        ["SrcScribe.ColorSpaceConvertTitle"] = "Convertir espace colorimétrique en Bt.709",
+        ["SrcScribe.ColorSpaceConvertTitle"] = "Convertir l'espace colorimétrique en Bt.709 (expérimental, FFMPEG uniquement)",
         ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> nécessite une saisie manuelle; vérifiez le nom du fichier/les métadonnées"
     };
 
@@ -1250,7 +1250,7 @@ public class UILangProviderM
         ["SrcScribe.FfmpegFreeTextHint"] = "Introduzca parámetros personalizados de filtro ffmpeg (solo sesión)",
         ["SrcScribe.FrameRateConvertTitle"] = "Generador FFMPEG VFR→CFR",
         ["ScriptGen.RunAfterReplace"] = "¿Generar scripts AVS y VPY ahora?",
-        ["SrcScribe.ColorSpaceConvertTitle"] = "Convertir espacio de color a Bt.709",
+        ["SrcScribe.ColorSpaceConvertTitle"] = "Convertir espacio de color a Bt.709 (experimental, solo FFMPEG)",
         ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> requiere entrada manual; compruebe el nombre del archivo/los metadatos"
     };
 
@@ -1471,7 +1471,7 @@ public class UILangProviderM
         ["SrcScribe.FfmpegFreeTextHint"] = "カスタム ffmpeg フィルタパラメータを入力（セッションのみ）",
         ["SrcScribe.FrameRateConvertTitle"] = "FFMPEG VFR→CFR パラメータ生成",
         ["ScriptGen.RunAfterReplace"] = "AVS と VPY スクリプトを今すぐ生成しますか？",
-        ["SrcScribe.ColorSpaceConvertTitle"] = "色空間を Bt.709 に変換",
+        ["SrcScribe.ColorSpaceConvertTitle"] = "色空間を Bt.709 に変換（実験的、FFMPEG のみ）",
         ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> は手動入力が必要です。ファイル名/メタデータを確認してください"
     };
 
@@ -1692,7 +1692,7 @@ public class UILangProviderM
         ["SrcScribe.FfmpegFreeTextHint"] = "Введите пользовательские параметры фильтра ffmpeg (только сеанс)",
         ["SrcScribe.FrameRateConvertTitle"] = "Генератор параметров FFMPEG VFR→CFR",
         ["ScriptGen.RunAfterReplace"] = "Сгенерировать скрипты AVS и VPY сейчас?",
-        ["SrcScribe.ColorSpaceConvertTitle"] = "Преобразование цветового пространства в Bt.709",
+        ["SrcScribe.ColorSpaceConvertTitle"] = "Преобразование цветового пространства в Bt.709 (экспериментально, только FFMPEG)",
         ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> требует ручного ввода; проверьте имя файла/метаданные"
     };
 
