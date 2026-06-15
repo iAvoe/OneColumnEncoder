@@ -510,7 +510,7 @@
                            VerticalAlignment="Center" />
                  <TextBox Grid.Column="1"
                           Margin="5 0 0 0"
-                          Text="{Binding FfmpegCombinedFilter, Mode=OneWay}"
+                          Text="{Binding Ffmpeg2xFilter, Mode=OneWay}"
                           IsReadOnly="True"
                           BorderThickness="0"
                           Background="{StaticResource Background}"
@@ -531,7 +531,7 @@
                            VerticalAlignment="Center" />
                 <TextBox Grid.Column="1"
                          Margin="5 0 0 0"
-                         Text="{Binding FfmpegFinalFilter, Mode=OneWay}"
+                          Text="{Binding Ffmpeg3xFilter, Mode=OneWay}"
                          IsReadOnly="True"
                          BorderThickness="0"
                          Background="{StaticResource Background}"

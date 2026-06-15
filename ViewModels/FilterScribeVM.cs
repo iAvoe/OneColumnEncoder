@@ -243,8 +243,8 @@ namespace OneColumnEncoder.ViewModels
             if (string.IsNullOrWhiteSpace(filterChain)) return string.Empty;
 
             string filterArgs = filterChain.Contains(',', StringComparison.Ordinal)
-                ? $"-filter:v \"{filterChain}\""
-                : $"-filter:v {filterChain}";
+                ? $"-filter:v \"{filterChain}\" -color_primaries bt709 -color_trc bt709 -colorspace bt709"
+                : $"-filter:v {filterChain} -color_primaries bt709 -color_trc bt709 -colorspace bt709";
 
             return includeSwsFlags
                 ? $"{filterArgs} -sws_flags bicubic+full_chroma_int+full_chroma_inp+accurate_rnd"

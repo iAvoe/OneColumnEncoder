@@ -81,13 +81,13 @@ public static class ColorSpaceConverterH
         {
             using JsonDocument doc = JsonDocument.Parse(ffprobeJson);
             if (!FrameRateH.TryGetFirstVideoStream(doc.RootElement, out JsonElement stream))
-                return CreateResult(null, null, null, null, null, ColorSpaceStrategy.Unknown, "No video stream found.");
+                return CreateResult(null, null, null, null, null, ColorSpaceStrategy.Unknown, UILangProviderM.Current["SrcScribe.ColorSpace.NoVideoStream"]);
 
             return Analyze(stream);
         }
         catch
         {
-            return CreateResult(null, null, null, null, null, ColorSpaceStrategy.Unknown, "Failed to parse ffprobe JSON.");
+            return CreateResult(null, null, null, null, null, ColorSpaceStrategy.Unknown, UILangProviderM.Current["SrcScribe.ColorSpace.FailedToParse"]);
         }
     }
 
@@ -238,52 +238,60 @@ public static class ColorSpaceConverterH
 
     private static string GetDisplayName(ColorSpaceStrategy strategy) => strategy switch
     {
-        ColorSpaceStrategy.NativeBt709 => "N/A - 已是 bt709",
-        ColorSpaceStrategy.LowToHigh => "低转高（SDR 窄色域 → bt709）",
-        ColorSpaceStrategy.HighToLow => "高转低（WCG → bt709）",
-        ColorSpaceStrategy.HdrToSdr => "HDR 转 SDR",
-        ColorSpaceStrategy.HighHdrToSdr => "高 HDR 转低 SDR",
-        _ => "UNKNOWN"
+        ColorSpaceStrategy.NativeBt709 => UILangProviderM.Current["SrcScribe.ColorSpace.DisplayNativeBt709"],
+        ColorSpaceStrategy.LowToHigh => UILangProviderM.Current["SrcScribe.ColorSpace.DisplayLowToHigh"],
+        ColorSpaceStrategy.HighToLow => UILangProviderM.Current["SrcScribe.ColorSpace.DisplayHighToLow"],
+        ColorSpaceStrategy.HdrToSdr => UILangProviderM.Current["SrcScribe.ColorSpace.DisplayHdrToSdr"],
+        ColorSpaceStrategy.HighHdrToSdr => UILangProviderM.Current["SrcScribe.ColorSpace.DisplayHighHdrToSdr"],
+        _ => UILangProviderM.Current["SrcScribe.ColorSpace.DisplayUnknown"]
     };
 
     private static string BuildDescription(
         ColorSpaceStrategy strategy,
         string? primaries, string? transfer, string? matrix, string? chromaLocation, string? pixelFormat)
     {
-        string pStr = primaries ?? "未指定";
-        string tStr = transfer ?? "未指定";
-        string mStr = matrix ?? "未指定";
-        string cStr = chromaLocation ?? "未指定";
-        string pfStr = pixelFormat ?? "未指定";
+        string def = UILangProviderM.Current["SrcScribe.ColorSpace.DefaultNullValue"];
+        string pStr = primaries ?? def;
+        string tStr = transfer ?? def;
+        string mStr = matrix ?? def;
+        string cStr = chromaLocation ?? def;
+        string pfStr = pixelFormat ?? def;
+
+        string colorMeta = DescribeColorMeta(pStr, tStr, mStr, cStr, pfStr);
 
         string classification = strategy switch
         {
-            ColorSpaceStrategy.NativeBt709 => "源已是 bt709，无需色彩转换。",
-            ColorSpaceStrategy.LowToHigh => $"源 {DescribeColorMeta(pStr, tStr, mStr, cStr, pfStr)} 色域小于 bt709，执行低转高。",
-            ColorSpaceStrategy.HighToLow => $"源 {DescribeColorMeta(pStr, tStr, mStr, cStr, pfStr)} 色域大于 bt709，执行高转低。",
-            ColorSpaceStrategy.HdrToSdr => $"源 {DescribeColorMeta(pStr, tStr, mStr, cStr, pfStr)} 为 HDR 内容，执行 HDR→SDR 色调映射。",
-            ColorSpaceStrategy.HighHdrToSdr => $"源 {DescribeColorMeta(pStr, tStr, mStr, cStr, pfStr)} 为宽色域 HDR 内容，执行高 HDR→低 SDR 色调映射。",
-            _ => "无法识别的色彩空间。"
+            ColorSpaceStrategy.NativeBt709 => UILangProviderM.Current["SrcScribe.ColorSpace.DescNativeBt709"],
+            ColorSpaceStrategy.LowToHigh => string.Format(UILangProviderM.Current["SrcScribe.ColorSpace.DescLowToHigh"], colorMeta),
+            ColorSpaceStrategy.HighToLow => string.Format(UILangProviderM.Current["SrcScribe.ColorSpace.DescHighToLow"], colorMeta),
+            ColorSpaceStrategy.HdrToSdr => string.Format(UILangProviderM.Current["SrcScribe.ColorSpace.DescHdrToSdr"], colorMeta),
+            ColorSpaceStrategy.HighHdrToSdr => string.Format(UILangProviderM.Current["SrcScribe.ColorSpace.DescHighHdrToSdr"], colorMeta),
+            _ => UILangProviderM.Current["SrcScribe.ColorSpace.DescUnknown"]
         };
 
         string? filter = strategy switch
         {
             ColorSpaceStrategy.NativeBt709 => string.Empty,
-            ColorSpaceStrategy.Unknown => "请手动检查源文件色彩元数据。",
+            ColorSpaceStrategy.Unknown => UILangProviderM.Current["SrcScribe.ColorSpace.UnknownFilterHint"],
             _ => BuildFfmpegFilter(strategy, matrix, chromaLocation, primaries, pixelFormat)
         };
 
         if (string.IsNullOrEmpty(filter))
             return classification;
 
-        if (strategy is ColorSpaceStrategy.HdrToSdr or ColorSpaceStrategy.HighHdrToSdr)
-            return $"{classification}\n请检查视频文件名或可靠元数据中的真实峰值亮度 nits，并替换 peak=<nits>。\n滤镜: {filter}";
+        string filterLine = string.Format(UILangProviderM.Current["SrcScribe.ColorSpace.FilterLine"], filter);
 
-        return $"{classification}\n滤镜: {filter}";
+        if (strategy is ColorSpaceStrategy.HdrToSdr or ColorSpaceStrategy.HighHdrToSdr)
+        {
+            string hdrHint = UILangProviderM.Current["SrcScribe.ColorSpace.HdrHint"];
+            return $"{classification}\n{hdrHint}{filterLine}";
+        }
+
+        return $"{classification}{filterLine}";
     }
 
     private static string DescribeColorMeta(string primaries, string transfer, string matrix, string chromaLocation, string pixelFormat) =>
-        $"原色={primaries} 传输={transfer} 矩阵={matrix} 色度位置={chromaLocation} 像素格式={pixelFormat}";
+        string.Format(UILangProviderM.Current["SrcScribe.ColorSpace.DescribeColorMeta"], primaries, transfer, matrix, chromaLocation, pixelFormat);
 
     #endregion
 }
