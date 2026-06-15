@@ -171,7 +171,7 @@ namespace OneColumnEncoder.ViewModels
 
         private string? FpsFilterChain => HasFpsFilter ? $"fps={_frameRateNum}/{_frameRateDen}" : null;
 
-        private string? SarRepairFilterChain => HasSarRepairFilter ? "libplacebo=reset_sar" : null;
+        private string? SarRepairFilterChain => HasSarRepairFilter ? "libplacebo=reset_sar=1" : null;
 
         private string? ColorSpaceFilterChain => HasColorSpaceFilter ? _colorSpaceAnalysis.FfmpegColorFilter : null;
 
@@ -192,7 +192,7 @@ namespace OneColumnEncoder.ViewModels
 
         public string FfmpegSarRepairFilter =>
             HasSarRepairFilter
-                ? "-filter:v \"libplacebo=reset_sar\""
+                ? "-filter:v \"libplacebo=reset_sar=1\""
                 : "N/A";
 
         // Rule of filtering: follow a fixing→customizing order; therefore order of filter is not to be noted in variable name
@@ -246,7 +246,7 @@ namespace OneColumnEncoder.ViewModels
                 bool hasFps = HasFpsFilter;
                 bool hasScale = HasScaleFilter;
                 if (!hasSar && !hasColor && !hasFps && !hasScale) return string.Empty;
-                if (hasSar && !hasColor && !hasFps && !hasScale) return FfmpegSarRepairFilter;
+                if (hasSar && !hasColor && !hasFps && !hasScale) return BuildFfmpegFilterArgs(includeSwsFlags: false, includeCsp709Flags: false, SarRepairFilterChain);
                 return BuildFfmpegFilterArgs(hasScale, hasColor, SarRepairFilterChain, ColorSpaceFilterChain, FpsFilterChain, ScaleFilterChain);
             }
         }
@@ -652,10 +652,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void ApplyFfmpegFilterArgs()
         {
-            string generated = GeneratedFfmpegFilterArgs;
-            string freeText = FfmpegFreeText.Trim();
-            string args = string.Join(" ", new[] { generated, freeText }.Where(s => !string.IsNullOrWhiteSpace(s)));
-            _applyFfmpegFilterArgs(args);
+            _applyFfmpegFilterArgs(FfmpegFreeText.Trim());
         }
 
         private bool TryWriteScript(string path, string script)
