@@ -3162,7 +3162,7 @@
         <mxCell id="E_9Vxl2Gjiiu8lQGBKJA-1028" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=default;fillColor=#343A40;align=left;verticalAlign=middle;rounded=0;fontSize=16;fontStyle=0;fontColor=#FAFAFA;labelBackgroundColor=none;labelBorderColor=none;spacing=5;" value="1cenc 转场检测" vertex="1">
           <mxGeometry height="30" width="680" x="900" y="2050" as="geometry" />
         </mxCell>
-        <mxCell id="dt_qfvNsCGFVcYPjbklj-1" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=16;" value="本功能用于视频编码之前，CPU 相对空闲时完成更高精度的转场检测，但因缺乏测试而无法保证质量，故仅作为允许编码器无视建议的可选检测步骤。在确认可行或仅测试时，在压制参数配置文本框中输入 --no-scenecut 即可切换模式" vertex="1">
+        <mxCell id="dt_qfvNsCGFVcYPjbklj-1" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=14;" value="用于压制之前、CPU 相对空闲时完成更精确的转场检测。但因缺乏测试而无法保证质量，故仅作为允许编码器无视建议的可选检测步骤。在确认可行/仅测试时，在编码器参数配置文本框中加 --no-scenecut 即可关闭编码器的自带检测" vertex="1">
           <mxGeometry height="60" width="640" x="920" y="2100" as="geometry" />
         </mxCell>
         <mxCell id="dt_qfvNsCGFVcYPjbklj-3" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=10;fontStyle=0;fontColor=#6C767D;spacing=5;" value="关键帧最大距离同样会插入关键帧，因此只要本检测准于编码器内置检测，就会提升码率均衡性（↑画质 ↑压缩）" vertex="1">
@@ -3213,7 +3213,7 @@
         <mxCell id="dt_qfvNsCGFVcYPjbklj-22" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=14;" value="&lt;b&gt;4. qpfile 生成&lt;/b&gt;" vertex="1">
           <mxGeometry height="20" width="640" x="920" y="2480" as="geometry" />
         </mxCell>
-        <mxCell id="dt_qfvNsCGFVcYPjbklj-23" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=10;fontStyle=0;fontColor=#6C767D;spacing=5;" value="qpfile 将会输出到与视频源所同的路径" vertex="1">
+        <mxCell id="dt_qfvNsCGFVcYPjbklj-23" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;rounded=0;fontSize=10;fontStyle=0;fontColor=#6C767D;spacing=5;" value="qpfile 将会输出到与视频源所同的路径；qpfile 生成过程前~生成中会锁定“编辑”和“关闭并导入”按钮" vertex="1">
           <mxGeometry height="10" width="630" x="930" y="2625" as="geometry" />
         </mxCell>
         <mxCell id="dt_qfvNsCGFVcYPjbklj-24" parent="1" style="shape=image;html=1;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=light-dark(#6C767D,#6C767D);imageAspect=0;aspect=fixed;image=https://icons.diagrams.net/icon-cache1/Evericons_24px_Vol_2-2248/info-610.svg;fontColor=none;noLabel=1;imageBackground=default;" value="" vertex="1">
