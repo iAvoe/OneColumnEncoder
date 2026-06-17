@@ -289,7 +289,79 @@ namespace OneColumnEncoder.ViewModels
             IsOverlayVisible = _modalNavS.IsOpen;
             UILangProviderM.CurrentChanged += OnLanguageChanged;
             RefreshLanguage();
+            _ = Application.Current.Dispatcher.InvokeAsync(async () => await TryAutoImportToolsOnStartupAsync());
         }
+        #endregion
+
+        #region Startup Auto Tool Import
+
+        private async Task TryAutoImportToolsOnStartupAsync()
+        {
+            if (!_appConfM.IsFirstLaunch) return;
+
+            try
+            {
+                IReadOnlyList<AutoToolImportH.Candidate> candidates =
+                    await AutoToolImportH.FindImportableToolsAsync(_appDataM.Tools);
+
+                if (candidates.Count == 0)
+                {
+                    ShowAutoImportInfo(
+                        UILangProviderM.Current["AutoImport.Title"],
+                        UILangProviderM.Current["AutoImport.NotFoundMessage"]);
+                    return;
+                }
+
+                if (!ShowAutoImportConfirmation(candidates)) return;
+
+                foreach (AutoToolImportH.Candidate candidate in candidates)
+                {
+                    await OnToolImported(candidate.ExeName, candidate.FilePath, candidate.Version);
+                }
+            }
+            finally
+            {
+                _appConfM.IsFirstLaunch = false;
+                _appConfM.Save();
+            }
+        }
+
+        private bool ShowAutoImportConfirmation(IReadOnlyList<AutoToolImportH.Candidate> candidates)
+        {
+            string itemText = string.Join(Environment.NewLine, candidates.Select(candidate => string.Format(
+                UILangProviderM.Current["AutoImport.ItemFormat"],
+                candidate.ExeName,
+                candidate.Version,
+                candidate.FilePath)));
+            string message = string.Format(UILangProviderM.Current["AutoImport.FoundMessage"], itemText);
+
+            ConfirmationModal window = new();
+            ConfirmationVM vm = ConfirmationVM.CreateInfo(
+                UILangProviderM.Current["AutoImport.Title"],
+                message,
+                new ActionCmd(_ => { window.DialogResult = false; window.Close(); }),
+                new ActionCmd(_ => { window.DialogResult = true; window.Close(); }));
+
+            window.DataContext = vm;
+            window.Owner = Application.Current.MainWindow;
+            window.Closed += (_, _) => _modalNavS.Close();
+            _modalNavS.CurrentModalVM = vm;
+            return window.ShowDialog() == true;
+        }
+
+        private void ShowAutoImportInfo(string title, string message)
+        {
+            ConfirmationModal window = new();
+            CloseModalCmd closeCmd = new(window.Close);
+            ConfirmationVM vm = ConfirmationVM.CreateInfo(title, message, closeCmd, closeCmd);
+
+            window.DataContext = vm;
+            window.Owner = Application.Current.MainWindow;
+            window.Closed += (_, _) => _modalNavS.Close();
+            _modalNavS.CurrentModalVM = vm;
+            window.ShowDialog();
+        }
+
         #endregion
 
         // Zone Initialization

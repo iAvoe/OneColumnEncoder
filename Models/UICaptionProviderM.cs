@@ -96,6 +96,7 @@ public static class UICaptionProviderM
         {
             public static string Overwrite => UILangProviderM.Current["AppConf.Overwrite"];
             public static string Language => UILangProviderM.Current["AppConf.Language"];
+            public static string InitMode => UILangProviderM.Current["AppConf.InitMode"];
         }
 
         public static class Buttons

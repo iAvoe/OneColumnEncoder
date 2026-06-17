@@ -5,7 +5,8 @@ namespace OneColumnEncoder.Models
         public static List<SettingItemDefinitionM> GetAllSettings() =>
         [
             .. GetOverwriteSettings(),
-            .. GetLanguageSettings()
+            .. GetLanguageSettings(),
+            .. GetInitModeSettings()
         ];
 
         public static List<SettingItemDefinitionM> GetOverwriteSettings() =>
@@ -33,6 +34,14 @@ namespace OneColumnEncoder.Models
                 UILangProviderM.Current["Setting.Language.Select"],
                 SettingControlType.Dropdown,
                 nameof(AppConfM.Language.LanguageCode))
+        ];
+
+        public static List<SettingItemDefinitionM> GetInitModeSettings() =>
+        [
+            new(UICaptionProviderM.AppConf.Groups.InitMode,
+                UILangProviderM.Current["Setting.InitMode.IsFirstLaunch"],
+                SettingControlType.CheckBox,
+                nameof(AppConfM.IsFirstLaunch))
         ];
     }
 }

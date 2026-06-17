@@ -8,6 +8,7 @@ namespace OneColumnEncoder.Models
         private static readonly string ConfigFilePath =
             Path.Combine(GetConfigDirectory(), "appconfig.json");
         protected override string FilePath => ConfigFilePath;
+        public bool IsFirstLaunch { get; set; } = true;
         public OverwriteSettings Overwrite { get; set; } = new OverwriteSettings();
         public Language Lang { get; set; } = new Language();
 

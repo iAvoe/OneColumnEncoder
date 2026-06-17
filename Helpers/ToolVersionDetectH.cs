@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace OneColumnEncoder.Helpers
@@ -43,7 +44,11 @@ namespace OneColumnEncoder.Helpers
                 _ => "",
             };
 
-            string exePrints = await RunAndCaptureAsync(filePath, exeArgs);
+            string exePrints = await RunAndCaptureAsync(filePath, exeArgs, outputEncoding: GetSystemTextEncoding());
+            string? version = ParseVersion(exeName, exePrints);
+            if (version != null) return version;
+
+            exePrints = await RunAndCaptureAsync(filePath, exeArgs, useUtf8: true);
             return ParseVersion(exeName, exePrints);
         }
 
@@ -67,7 +72,7 @@ namespace OneColumnEncoder.Helpers
             return null;
         }
 
-        public static async Task<string> RunAndCaptureAsync(string filePath, string exeArgs, bool useUtf8 = false)
+        public static async Task<string> RunAndCaptureAsync(string filePath, string exeArgs, bool useUtf8 = false, Encoding? outputEncoding = null)
         {
             ProcessStartInfo psi = new()
             {
@@ -80,7 +85,12 @@ namespace OneColumnEncoder.Helpers
                 CreateNoWindow = true
             };
 
-            if (useUtf8)
+            if (outputEncoding != null)
+            {
+                psi.StandardOutputEncoding = outputEncoding;
+                psi.StandardErrorEncoding = outputEncoding;
+            }
+            else if (useUtf8)
             {
                 psi.StandardOutputEncoding = System.Text.Encoding.UTF8;
                 psi.StandardErrorEncoding = System.Text.Encoding.UTF8;
@@ -109,6 +119,12 @@ namespace OneColumnEncoder.Helpers
                 new[] { stdout, stderr }.Where(s => !string.IsNullOrWhiteSpace(s)));
         }
 
+        private static Encoding? GetSystemTextEncoding()
+        {
+            try { return Console.OutputEncoding; }
+            catch { return null; }
+        }
+
         public static string? ParseVersion(string exeName, string text)
         {
             if (string.IsNullOrWhiteSpace(text)) return null;
@@ -122,29 +138,35 @@ namespace OneColumnEncoder.Helpers
             switch (exeName.ToLowerInvariant())
             {
                 case "ffmpeg.exe": // "ffmpeg version yyyy-mm-dd" to "version yyyy-mm-dd"
-                    return RemoveToolNamePrefix(firstLine[..Math.Min(25, firstLine.Length)], "ffmpeg");
+                    return firstLine.StartsWith("ffmpeg version", StringComparison.OrdinalIgnoreCase)
+                        ? RemoveToolNamePrefix(firstLine[..Math.Min(25, firstLine.Length)], "ffmpeg")
+                        : null;
                 case "ffprobe.exe":
-                    return RemoveToolNamePrefix(firstLine[..Math.Min(26, firstLine.Length)], "ffprobe");
+                    return firstLine.StartsWith("ffprobe version", StringComparison.OrdinalIgnoreCase)
+                        ? RemoveToolNamePrefix(firstLine[..Math.Min(26, firstLine.Length)], "ffprobe")
+                        : null;
                 case "vspipe.exe":
                     return lines.FirstOrDefault(l =>
                         l.Contains("Core R", StringComparison.OrdinalIgnoreCase));
                 case "avs2yuv.exe":
-                    return firstLine;
+                    return text.Contains("avs2yuv", StringComparison.OrdinalIgnoreCase) ? firstLine : null;
                 case "avs2pipemod.exe":
                     {
+                        if (!text.Contains("avs2pipemod", StringComparison.OrdinalIgnoreCase)) return null;
                         Match m = Avs2pipemodVersion().Match(firstLine);
                         return m.Success ? m.Value : firstLine;
                     }
 
                 case "x264.exe":
-                    return firstLine;
+                    return text.Contains("x264", StringComparison.OrdinalIgnoreCase) ? firstLine : null;
                 case "x265.exe":
                     {
+                        if (!text.Contains("x265", StringComparison.OrdinalIgnoreCase)) return null;
                         Match m = X265Version().Match(text);
                         return m.Success ? m.Groups[1].Value : firstLine;
                     }
                 case "svtav1encapp.exe":
-                    return firstLine;
+                    return text.Contains("svt", StringComparison.OrdinalIgnoreCase) ? firstLine : null;
 
                 default:
                     return null;

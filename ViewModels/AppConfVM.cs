@@ -61,7 +61,8 @@ namespace OneColumnEncoder.ViewModels
             Dictionary<string, object> sourceMap = new()
             {
                 [UICaptionProviderM.AppConf.Groups.Overwrite] = _appConfM.Overwrite,
-                [UICaptionProviderM.AppConf.Groups.Language] = _appConfM.Lang
+                [UICaptionProviderM.AppConf.Groups.Language] = _appConfM.Lang,
+                [UICaptionProviderM.AppConf.Groups.InitMode] = _appConfM
             };
 
             foreach (IGrouping<string, SettingItemDefinitionM> group
