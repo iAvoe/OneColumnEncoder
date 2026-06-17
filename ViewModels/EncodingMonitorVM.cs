@@ -367,7 +367,9 @@ namespace OneColumnEncoder.ViewModels
                         UseShellExecute = false,
                         CreateNoWindow = true,
                         RedirectStandardOutput = true,
-                        RedirectStandardError = true
+                        RedirectStandardError = true,
+                        StandardOutputEncoding = System.Text.Encoding.UTF8,
+                        StandardErrorEncoding = System.Text.Encoding.UTF8
                     },
                     EnableRaisingEvents = true
                 };
@@ -380,7 +382,8 @@ namespace OneColumnEncoder.ViewModels
                         UseShellExecute = false,
                         CreateNoWindow = true,
                         RedirectStandardInput = true,
-                        RedirectStandardError = true
+                        RedirectStandardError = true,
+                        StandardErrorEncoding = System.Text.Encoding.UTF8
                     },
                     EnableRaisingEvents = true
                 };
@@ -489,15 +492,17 @@ namespace OneColumnEncoder.ViewModels
 
             using Process mux = new()
             {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = _request.FfmpegPath,
-                    Arguments = muxCommand.Arguments,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true
-                },
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = _request.FfmpegPath,
+                        Arguments = muxCommand.Arguments,
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        RedirectStandardError = true,
+                        RedirectStandardOutput = true,
+                        StandardOutputEncoding = System.Text.Encoding.UTF8,
+                        StandardErrorEncoding = System.Text.Encoding.UTF8
+                    },
                 EnableRaisingEvents = true
             };
 
