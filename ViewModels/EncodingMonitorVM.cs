@@ -829,6 +829,9 @@ namespace OneColumnEncoder.ViewModels
         [GeneratedRegex(@"(?<!\d)(\d+)\s*/\s*\d+\s+frames?", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
         private static partial Regex SlashFrameRegex();
 
+        [GeneratedRegex(@"(?<!\d)(\d+)\s+frames?\s+@", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+        private static partial Regex FramesAtRegex();
+
         [GeneratedRegex(@"\bencoding\s+frame\s+(\d+)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
         private static partial Regex EncodingFrameRegex();
 
@@ -841,7 +844,8 @@ namespace OneColumnEncoder.ViewModels
         /// <summary>
         /// Attempts to extract a frame number from a log line using multiple regex patterns.
         /// Supports ffmpeg "frame= 1234", x264 "1234 frames:", "1234/5000 frames",
-        /// "encoding frame 1234", "encoded 1234 frames", and "1234 frames encoded".
+        /// "encoding frame 1234", "encoded 1234 frames", "1234 frames encoded",
+        /// and "1813 Frames @" (SVT-AV1 variants without total frame count).
         /// </summary>
         private static int? TryParseEncoderFrame(string line)
         {
@@ -850,6 +854,7 @@ namespace OneColumnEncoder.ViewModels
             if (TryParseFirstRegexGroup(FfmpegFrameRegex().Match(line), out int value)) return value;
             if (TryParseFirstRegexGroup(X264FrameRegex().Match(line), out value)) return value;
             if (TryParseFirstRegexGroup(SlashFrameRegex().Match(line), out value)) return value;
+            if (TryParseFirstRegexGroup(FramesAtRegex().Match(line), out value)) return value;
             if (TryParseFirstRegexGroup(EncodingFrameRegex().Match(line), out value)) return value;
             if (TryParseFirstRegexGroup(EncodedFrameRegex().Match(line), out value)) return value;
             if (TryParseFirstRegexGroup(FramesEncodedRegex().Match(line), out value)) return value;

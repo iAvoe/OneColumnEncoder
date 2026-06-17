@@ -131,7 +131,7 @@ public class UILangProviderM
             // Auto tool import
             ["AutoImport.Title"] = "Auto Tool Import",
             ["AutoImport.FoundMessage"] = "Found the following verified executable files. Import them now?\n\n{0}",
-            ["AutoImport.NotFoundMessage"] = "No importable tools were detected in this app's directory. To recheck later, enable Settings \u2192 Init Mode \u2192 Auto-import tools on next launch.",
+            ["AutoImport.NotFoundMessage"] = "No importable tools were detected in this app's directory. To recheck later, enable Settings → Init Mode → Auto-import tools on next launch.",
             ["AutoImport.ItemFormat"] = "- {0}: {1}\n  {2}",
 
             // Confirmation provider messages (with {0} / {1} format placeholders)
@@ -236,7 +236,7 @@ public class UILangProviderM
             ["SrcScribe.TabFfmpeg"] = "ffmpeg Filter",
             ["SrcScribe.FfmpegFreeTextHint"] = "Enter custom ffmpeg filter params (available in this session only, no line breaks)",
             ["SrcScribe.SarRepairTitle"] = "SAR Repair Filter Generator (Experimental, FFMPEG only)",
-            ["SrcScribe.FrameRateConvertTitle"] = "FFMPEG VFR\u2192CFR Parameter Generator & multi-filter assembly",
+            ["SrcScribe.FrameRateConvertTitle"] = "FFMPEG VFR→CFR Parameter Generator & multi-filter assembly",
 
             ["SrcScribe.ColorSpaceConvertTitle"] = "Convert colorspace to Bt.709 (Experimental, FFMPEG only)",
             ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> requires manual input; please check filename/metadata for it",
@@ -315,7 +315,7 @@ public class UILangProviderM
             ["SrcInspect.MetadataP1Text"] = "The source metadata cannot be read. The file may be corrupted or not a video file, encoding cannot continue because this tool relies on metadata to choose safe encoding parameters.",
             ["SrcInspect.ProgressiveP1Text"] = "This tool cannot inspect inter-frame patterns to configure IVTC filters. See https://iavoe.github.io/deint-ivtc-web-tutorial/HTML for guidance.",
             ["SrcInspect.BitDepthP1Text"] = "SVT-AV1 does not support 12-bit video. If SVT-AV1 is not selected, this issue is treated as a warning instead, and not disabling Start Encode button.",
-            ["SrcInspect.FramerateP1Text"] = "Use Filter Scribe editor to add VFR\u2192CFR conversion filter. Encoding VFR directly may cause audio/video desync over time.",
+            ["SrcInspect.FramerateP1Text"] = "Use Filter Scribe editor to add VFR→CFR conversion filter. Encoding VFR directly may cause audio/video desync over time.",
             ["SrcInspect.AspectRatioP1Text"] = "This tool cannot compensate for non-square pixels. Continuing may produce unexpected video dimensions. To fix the source, transcode to FFV1 with ffmpeg via -aspect <current-SAR>.",
             ["SrcInspect.ColorMatrixP1Text"] = "Players often fall back to BT.709 when color matrix metadata is missing, but many other matrices exist and only one is correct for the source.",
             ["SrcInspect.TransferCharsP1Text"] = "Players often fall back to BT.709 when transfer characteristics metadata is missing, but many transfer curves exist and only one is correct for the source.",
@@ -430,7 +430,7 @@ public class UILangProviderM
 
             ["AutoImport.Title"] = "自动导入工具",
             ["AutoImport.FoundMessage"] = "发现以下已验证的可执行文件，是否现在导入？\n\n{0}",
-            ["AutoImport.NotFoundMessage"] = "未检测到位于本软件所在目录下有可导入的工具。在设置中勾选“初始化模式 \u2192 下次打开尝试自动导入工具”即可复查。",
+            ["AutoImport.NotFoundMessage"] = "未检测到位于本软件所在目录下有可导入的工具。在设置中勾选“初始化模式 → 下次打开尝试自动导入工具”即可复查。",
             ["AutoImport.ItemFormat"] = "- {0}：{1}\n  {2}",
 
             ["ConfirmProvider.SuspiciousImportTitle"] = "导入内容对不上 {0}",
@@ -524,7 +524,7 @@ public class UILangProviderM
             ["SrcScribe.TabFfmpeg"] = "ffmpeg Filter",
             ["SrcScribe.FfmpegFreeTextHint"] = "输入自定义 ffmpeg 滤镜参数（仅本次会话有效，不可换行）",
             ["SrcScribe.SarRepairTitle"] = "SAR 修复滤镜生成器（实验性，仅 FFMPEG）",
-            ["SrcScribe.FrameRateConvertTitle"] = "FFMPEG 可变帧率\u2192恒定帧率参数生成器与多滤镜组装器",
+            ["SrcScribe.FrameRateConvertTitle"] = "FFMPEG 可变帧率→恒定帧率（VFR→CFR）参数生成器与多滤镜组装器",
 
             ["SrcScribe.ColorSpaceConvertTitle"] = "转换色彩空间到 Bt.709（实验性，仅 FFMPEG）",
             ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> 需手动填写；请检查文件名/元数据",
@@ -602,7 +602,7 @@ public class UILangProviderM
             ["SrcInspect.MetadataP1Text"] = "无法读取视频源元数据。文件可能已经损坏，或本身不是视频文件；本工具依赖元数据选择安全的压制参数，因此无法继续处理。",
             ["SrcInspect.ProgressiveP1Text"] = "本工具无法识别原生隔行或 pulldown，也不能自动选择 IVTC 滤镜。可参考 https://iavoe.github.io/deint-ivtc-web-tutorial/HTML。",
             ["SrcInspect.BitDepthP1Text"] = "SVT-AV1 不支持 12-bit 视频。若当前没有选择 SVT-AV1，此项会作为警告而不是错误处理，也不会禁用开始压制按钮。",
-            ["SrcInspect.FramerateP1Text"] = "使用滤镜编辑器添加 VFR\u2192CFR 转换滤镜。直接压制 VFR 可能随着播放时间推进导致音画不同步。",
+            ["SrcInspect.FramerateP1Text"] = "使用滤镜编辑器添加 VFR→CFR 转换滤镜。直接压制 VFR 可能随着播放时间推进导致音画不同步。",
             ["SrcInspect.AspectRatioP1Text"] = "本工具无法补偿非方形像素。继续处理可能得到不符合预期的输出宽高。若要修复，可用 ffmpeg 转码为 FFV1，并用 -aspect <当前 SAR> 保留当前 SAR。",
             ["SrcInspect.ColorMatrixP1Text"] = "播放器常在缺少色彩矩阵信息时回退到 BT.709，但实际存在许多色彩矩阵，且只有一种与源文件匹配。",
             ["SrcInspect.TransferCharsP1Text"] = "播放器常在缺少传输特性信息时回退到 BT.709，但实际存在许多传输曲线，且只有一种与源文件匹配。",
@@ -717,7 +717,7 @@ public class UILangProviderM
 
             ["AutoImport.Title"] = "自動導入工具",
             ["AutoImport.FoundMessage"] = "發現以下已驗證的可執行文件，是否現在導入？\n\n{0}",
-            ["AutoImport.NotFoundMessage"] = "未檢測到位於本軟件所在目錄下有可導入的工具。在設定中勾選「初始化模式 \u2192 下次打開嘗試自動導入工具」即可複查。",
+            ["AutoImport.NotFoundMessage"] = "未檢測到位於本軟件所在目錄下有可導入的工具。在設定中勾選「初始化模式 → 下次打開嘗試自動導入工具」即可複查。",
             ["AutoImport.ItemFormat"] = "- {0}：{1}\n  {2}",
 
             ["ConfirmProvider.SuspiciousImportTitle"] = "導入內容對不上 {0}",
@@ -811,7 +811,7 @@ public class UILangProviderM
             ["SrcScribe.TabFfmpeg"] = "ffmpeg Filter",
             ["SrcScribe.FfmpegFreeTextHint"] = "輸入自訂 ffmpeg 濾鏡參數（僅本次會話有效，不可換行）",
             ["SrcScribe.SarRepairTitle"] = "SAR 修復濾鏡生成器（實驗性，僅 FFMPEG）",
-            ["SrcScribe.FrameRateConvertTitle"] = "FFMPEG 可變幀率\u2192恆定幀率參數生成器與多濾鏡組裝器",
+            ["SrcScribe.FrameRateConvertTitle"] = "FFMPEG 可變幀率→恆定幀率參數生成器與多濾鏡組裝器",
 
             ["SrcScribe.ColorSpaceConvertTitle"] = "轉換色彩空間到 Bt.709（實驗性，僅 FFMPEG）",
             ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> 需手動填寫；請檢查檔案名/元數據",
@@ -889,7 +889,7 @@ public class UILangProviderM
             ["SrcInspect.MetadataP1Text"] = "無法讀取影片源元數據。文件可能已經損壞，或本身不是影片文件；本工具依賴元數據選擇安全的壓制參數，因此無法繼續處理。",
             ["SrcInspect.ProgressiveP1Text"] = "本工具無法檢查幀間模式、識別原生隔行或 pulldown，也不能自動選擇 IVTC 濾鏡。可參考 https://iavoe.github.io/deint-ivtc-web-tutorial/HTML。",
             ["SrcInspect.BitDepthP1Text"] = "SVT-AV1 不支援 12-bit 影片。若目前沒有選擇 SVT-AV1，此項會作為警告而不是錯誤處理，也不會禁用開始壓制按鈕。",
-            ["SrcInspect.FramerateP1Text"] = "使用濾鏡編輯器添加 VFR\u2192CFR 轉換濾鏡。直接壓制 VFR 可能隨著播放時間推進導致音畫不同步。",
+            ["SrcInspect.FramerateP1Text"] = "使用濾鏡編輯器添加 VFR→CFR 轉換濾鏡。直接壓制 VFR 可能隨著播放時間推進導致音畫不同步。",
             ["SrcInspect.AspectRatioP1Text"] = "無法補償非方形象素。繼續處理可能得到不符合預期的輸出寬高。若要修復，可用 ffmpeg 轉碼為 FFV1，並用 -aspect <目前 SAR> 保留目前 SAR。",
             ["SrcInspect.ColorMatrixP1Text"] = "播放器常在缺少色彩矩陣資訊時回退到 BT.709，但實際存在許多色彩矩陣，且只有一種與源文件匹配。",
             ["SrcInspect.TransferCharsP1Text"] = "播放器常在缺少傳輸特性資訊時回退到 BT.709，但實際存在許多傳輸曲線，且只有一種與源文件匹配。",
@@ -991,7 +991,7 @@ public class UILangProviderM
         ["ConfirmDialog.InfoPrefix"] = "Info : ",
         ["AutoImport.Title"] = "Import automatique d'outils",
         ["AutoImport.FoundMessage"] = "Fichiers exécutables vérifiés trouvés. Les importer maintenant ?\n\n{0}",
-        ["AutoImport.NotFoundMessage"] = "Aucun outil importable n'a été détecté dans le dossier de l'application. Pour revérifier plus tard, activez Réglages \u2192 Mode initial \u2192 Importer outils au prochain démarrage.",
+        ["AutoImport.NotFoundMessage"] = "Aucun outil importable n'a été détecté dans le dossier de l'application. Pour revérifier plus tard, activez Réglages → Mode initial → Importer outils au prochain démarrage.",
         ["AutoImport.ItemFormat"] = "- {0} : {1}\n  {2}",
         ["ConfirmProvider.SuspiciousImportTitle"] = "Import ne correspond pas à {0}",
         ["ConfirmProvider.ProceedToRun"] = "Exécuter {0} pour obtenir sa version ?",
@@ -1240,7 +1240,7 @@ public class UILangProviderM
         ["ConfirmDialog.InfoPrefix"] = "Info: ",
         ["AutoImport.Title"] = "Importación automática",
         ["AutoImport.FoundMessage"] = "Se encontraron estos ejecutables verificados. ¿Importarlos ahora?\n\n{0}",
-        ["AutoImport.NotFoundMessage"] = "No se detectaron herramientas importables en la carpeta de la aplicación. Para revisar de nuevo, active Ajustes \u2192 Modo inicial \u2192 Auto-importar herramientas al inicio.",
+        ["AutoImport.NotFoundMessage"] = "No se detectaron herramientas importables en la carpeta de la aplicación. Para revisar de nuevo, active Ajustes → Modo inicial → Auto-importar herramientas al inicio.",
         ["AutoImport.ItemFormat"] = "- {0}: {1}\n  {2}",
         ["ConfirmProvider.SuspiciousImportTitle"] = "Importación no coincide con {0}",
         ["ConfirmProvider.ProceedToRun"] = "¿Ejecutar {0} para obtener versión?",
@@ -1482,7 +1482,7 @@ public class UILangProviderM
         ["ConfirmDialog.InfoPrefix"] = "情報: ",
         ["AutoImport.Title"] = "ツール自動取込",
         ["AutoImport.FoundMessage"] = "検証済みの実行ファイルが見つかりました。今すぐ取り込みますか？\n\n{0}",
-        ["AutoImport.NotFoundMessage"] = "このアプリのフォルダに取込可能なツールは見つかりませんでした。再確認するには、設定 \u2192 初期化モード \u2192 次回起動時にツールを自動取込 を有効にしてください。",
+        ["AutoImport.NotFoundMessage"] = "このアプリのフォルダに取込可能なツールは見つかりませんでした。再確認するには、設定 → 初期化モード → 次回起動時にツールを自動取込 を有効にしてください。",
         ["AutoImport.ItemFormat"] = "- {0}: {1}\n  {2}",
         ["Checklist.Tools.Upstream"] = "上流プログラム取込済み",
         ["Checklist.Tools.Downstream"] = "下流プログラム取込済み",
@@ -1732,7 +1732,7 @@ public class UILangProviderM
         ["ConfirmDialog.InfoPrefix"] = "Инфо: ",
         ["AutoImport.Title"] = "Автоимпорт инструментов",
         ["AutoImport.FoundMessage"] = "Найдены проверенные исполняемые файлы. Импортировать сейчас?\n\n{0}",
-        ["AutoImport.NotFoundMessage"] = "В папке приложения не найдены инструменты для импорта. Чтобы проверить снова, включите Настр. \u2192 Режим инициализации \u2192 Автоимпорт инструментов при запуске.",
+        ["AutoImport.NotFoundMessage"] = "В папке приложения не найдены инструменты для импорта. Чтобы проверить снова, включите Настр. → Режим инициализации → Автоимпорт инструментов при запуске.",
         ["AutoImport.ItemFormat"] = "- {0}: {1}\n  {2}",
         ["Checklist.Tools.Upstream"] = "Один апстрим импортирован",
         ["Checklist.Tools.Downstream"] = "Один даунстрим импортирован",
