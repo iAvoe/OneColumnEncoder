@@ -61,9 +61,9 @@ public static partial class EncodingPipelineH
 
     private static string? GetMuxInputFormatArgs(string encoderExeName, string? framerateValue)
     {
-        // x264 produces mp4, which does not need auto-muxing assist
         string? fmt = encoderExeName.ToLowerInvariant() switch
         {
+            "x264.exe" => null,
             "x265.exe" => "hevc",
             "svtav1encapp.exe" => "ivf",
             _ => null
@@ -73,7 +73,7 @@ public static partial class EncodingPipelineH
         {
             if (fmt == "hevc") return $"-f hevc -framerate {framerateValue}";
             if (fmt != null) return $"-f {fmt}";
-            return $"-framerate {framerateValue}";
+            return null;
         }
 
         return fmt != null ? $"-f {fmt}" : null;
