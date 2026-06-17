@@ -2,6 +2,7 @@
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
+using System.Globalization;
 using System.Windows;
 
 namespace OneColumnEncoder
@@ -32,6 +33,7 @@ namespace OneColumnEncoder
                     ex.Handled = true;
                 };
 
+                ApplyStartupLanguageOnce();
                 _ = new UILangProviderM(_appConfM.Lang.LanguageCode);
                 OpenAppConfCmd openAppConf = new(_modalNavM, _appConfM);
                 OpenUsagesCmd openUsages = new(_modalNavM, _appConfM);
@@ -48,6 +50,27 @@ namespace OneColumnEncoder
                 MessageBox.Show(ex.ToString(), "Startup Exception", MessageBoxButton.OK, MessageBoxImage.Error);
                 Shutdown(-1);
             }
+        }
+
+        private void ApplyStartupLanguageOnce()
+        {
+            if (!_appConfM.IsFirstLaunch) return;
+
+            _appConfM.Lang.LanguageCode = ResolveSupportedLanguageCode(CultureInfo.CurrentUICulture);
+        }
+
+        private static string ResolveSupportedLanguageCode(CultureInfo culture)
+        {
+            string name = culture.Name.ToLowerInvariant();
+            string twoLetterName = culture.TwoLetterISOLanguageName.ToLowerInvariant();
+
+            return name switch
+            {
+                "zh-cn" or "zh-sg" or "zh-hans" => "zh-cn",
+                "zh-tw" or "zh-hk" or "zh-mo" or "zh-hant" => "zh-tw",
+                _ when UICaptionProviderM.AppConf.LanguageOptions.Codes.Contains(twoLetterName) => twoLetterName,
+                _ => "en"
+            };
         }
     }
 }
