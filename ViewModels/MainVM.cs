@@ -431,9 +431,15 @@ namespace OneColumnEncoder.ViewModels
             ToolCompatibilityH.RefreshSourceSelectionState(
                 UpstreamsZone, ScriptSrcImportZone, RefreshSelectedSourceStatus);
 
-            // Revert the selection only for IsCancel caused by "Auto Selection"
-            if (autoSelected && sender is ObservableCollection<ToolItemCardVM> changedZone)
-                RevertCancelledAutoSelection(changedZone);
+            // Revert the selection for IsCancel caused by "Auto Selection".
+            // Must revert both zones because RefreshDependencySelectionState can set
+            // IsCancel on items in either UpstreamsZone or DependenciesZone regardless
+            // of which zone triggered the change.
+            if (autoSelected)
+            {
+                RevertCancelledAutoSelection(UpstreamsZone);
+                RevertCancelledAutoSelection(DependenciesZone);
+            }
         }
 
         private bool ApplyDefaultImportedToolSelection(ObservableCollection<ToolItemCardVM> zone)
@@ -686,7 +692,14 @@ namespace OneColumnEncoder.ViewModels
         private void WireUpToolCmd(ToolItemCardVM item)
         {
             item.R1Command = new ReplaceToolCmd(
-                item, _appDataM, _modalNavS, RefreshImportedToolStates);
+                item, _appDataM, _modalNavS, () =>
+                {
+                    RefreshImportedToolStates();
+                    // After replace, the consistency check may have re-set IsCancel.
+                    // Revert both zones so the user sees a clean state.
+                    RevertCancelledAutoSelection(UpstreamsZone);
+                    RevertCancelledAutoSelection(DependenciesZone);
+                });
             item.R2Command = new DeleteToolCmd(
                 item, GetZoneForTool(ToolDefinitionProviderM.ResolveToolZone(item.Name)), _appDataM);
 
