@@ -463,7 +463,9 @@ namespace OneColumnEncoder.ViewModels
         #region Validation Checklists
         private void SubToToolsChecklist()
         {
-            foreach (ChecklistEntryVM entry in ToolsImportCard.ToolsChecklist)
+            foreach (ChecklistEntryVM entry in ToolsImportCard.Checklist1)
+                entry.PropertyChanged += OnChecklistEntryPropertyChanged;
+            foreach (ChecklistEntryVM entry in ToolsImportCard.Checklist2)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
             foreach (ChecklistEntryVM entry in SrcValidationCard.Checklist1)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
@@ -477,7 +479,9 @@ namespace OneColumnEncoder.ViewModels
         }
         private void UnsubFromToolsChecklist()
         {
-            foreach (ChecklistEntryVM entry in ToolsImportCard.ToolsChecklist)
+            foreach (ChecklistEntryVM entry in ToolsImportCard.Checklist1)
+                entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
+            foreach (ChecklistEntryVM entry in ToolsImportCard.Checklist2)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
             foreach (ChecklistEntryVM entry in SrcValidationCard.Checklist1)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
@@ -524,8 +528,9 @@ namespace OneColumnEncoder.ViewModels
             bool toolsReady =
                 UpstreamsZone.Count > 0 && EncodersZone.Count > 0 && HasImportedFfprobe() && vspipeReady;
 
-            bool toolsPickedReady =
-                ToolsImportCard.ToolsChecklist.Skip(3).All(e => !e.IsEnabled || e.Status == StatusType.Success);
+            bool toolsChecklistReady =
+                ToolsImportCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
+                ToolsImportCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
 
             bool hasRawJson = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
 
@@ -552,30 +557,35 @@ namespace OneColumnEncoder.ViewModels
                 t => t.IsSelected &&
                 ToolDefinitionProviderM.IsImportedTool(t.Name, "one_line_shot_args.exe"));
 
-            bool scriptSourceReady = true;
-            ToolItemCardVM? selUpstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected);
-            if (selUpstream != null)
-            {
-                string? exe = ToolCatalogProviderM.ResolveExeFromDisplayName(selUpstream.Name);
-                if (exe is "vspipe.exe" or "avs2yuv.exe" or "avs2pipemod.exe" or "one_line_shot_args.exe")
-                {
-                    SourceFileKind expectedKind = exe switch
-                    {
-                        "vspipe.exe" => SourceFileKind.VapourSynthScript,
-                        "avs2yuv.exe" or "avs2pipemod.exe" => SourceFileKind.AviSynthScript,
-                        "one_line_shot_args.exe" => SourceFileKind.SvfiIni,
-                        _ => SourceFileKind.Video
-                    };
-                    scriptSourceReady = ScriptSrcImportZone.Any(t =>
-                        t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData) &&
-                        ResolveSourceFileKind(t.Name) == expectedKind);
-                }
-            }
-
-            bool allReady = toolsReady && toolsPickedReady && sourceValidationReady && encodeTermsReady && dependencyReady && scriptSourceReady;
+            bool allReady = toolsReady && toolsChecklistReady && sourceValidationReady && encodeTermsReady && dependencyReady;
             EncStartButtons.B3_2IsEnabled = allReady && !oneLineShotSelected;
             EncStartButtons.B3_3IsEnabled = allReady;
             SVFIClipDisabledHintVisible = oneLineShotSelected;
+        }
+
+        private void RefreshToolSourceChecklistStatus()
+        {
+            bool hasVideoSource = VideoSrcImportZone.Any(t =>
+                t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
+            ToolsImportCard.SetVideoSourcePickedStatus(hasVideoSource);
+
+            ToolItemCardVM? selectedUpstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected);
+            string? exe = selectedUpstream == null
+                ? null
+                : ToolCatalogProviderM.ResolveExeFromDisplayName(selectedUpstream.Name);
+
+            SourceFileKind? expectedKind = exe switch
+            {
+                "vspipe.exe" => SourceFileKind.VapourSynthScript,
+                "avs2yuv.exe" or "avs2pipemod.exe" => SourceFileKind.AviSynthScript,
+                "one_line_shot_args.exe" => SourceFileKind.SvfiIni,
+                _ => null
+            };
+
+            bool scriptSourcePicked = expectedKind == null || ScriptSrcImportZone.Any(t =>
+                t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData) &&
+                ResolveSourceFileKind(t.Name) == expectedKind.Value);
+            ToolsImportCard.SetScriptSourcePickedStatus(expectedKind != null, scriptSourcePicked);
         }
 
         private void ReEvaluateAllChecks()
@@ -650,13 +660,8 @@ namespace OneColumnEncoder.ViewModels
         private void OnVideoSrcItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (sender is not ToolItemCardVM) return;
-            if (e.PropertyName == nameof(ToolItemCardVM.P2TextData))
-                UpdateFilterScbButtonsState();
             if (e.PropertyName is nameof(ToolItemCardVM.P2TextData) or nameof(ToolItemCardVM.IsSelected))
-            {
-                UpdateAnalyzeSrcButtonsState();
-                UpdateInspBypsChkButtonsState();
-            }
+                RefreshSelectedSourceStatus(resetAnalysis: false);
         }
 
         private void OnOutputSettingPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -683,7 +688,10 @@ namespace OneColumnEncoder.ViewModels
         {
             if (sender is not ToolItemCardVM) return;
             if (e.PropertyName == nameof(ToolItemCardVM.IsSelected))
+            {
+                RefreshToolSourceChecklistStatus();
                 RefreshEncTermsState();
+            }
         }
 
         private void OnAnalyticsItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -888,6 +896,7 @@ namespace OneColumnEncoder.ViewModels
                 SrcValidationCard.SetSourcePickedStatus(anySelected);
             }
 
+            RefreshToolSourceChecklistStatus();
             UpdateFilterScbButtonsState();
             UpdateAnalyzeSrcButtonsState();
             UpdateEncStartButtonsState();

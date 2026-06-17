@@ -19,7 +19,7 @@
     <Grid>
         <StackPanel Margin="10 2 10 15">
             <comps:ToolsImportCard DataContext="{Binding ToolsImportCard}"
-                                    Margin="5" />
+                                   Margin="5" />
 
             <!-- Setting Access -->
             <comps:TwoButtonGroup DataContext="{Binding OpenAppConfButtons}"
@@ -242,7 +242,7 @@
                                   Margin="10 15" />
 
             <!-- AnalyticResultsZone -->
-            <comps:SectionHeader HeaderText="{Binding SectionAnalysisResults}"/>
+            <comps:SectionHeader HeaderText="{Binding SectionAnalysisResults}" />
 
             <comps:ValidationCard DataContext="{Binding SrcValidationCard}"
                                   Margin="5 15 5 0" />
@@ -280,9 +280,9 @@
 
             <!-- Starting Options -->
             <comps:SectionHeader HeaderText="{Binding SectionStartEncoding}"
-                                 Margin="0 0 0 10"/>
+                                 Margin="0 0 0 10" />
             <comps:ValidationCard DataContext="{Binding EncTermsCard}"
-                                   Margin="5" />
+                                  Margin="5" />
 
             <!-- Hint: NUMA CPU check trigger -->
             <comps:HintPanel Text="{Binding NumaCpuCheckHintText}"
@@ -311,7 +311,7 @@
                                     Button2IsEnabled="{Binding B3_2IsEnabled}"
                                     Button3IsEnabled="{Binding B3_3IsEnabled}"
                                     Margin="10 10 10 0" />
-            
+
             <!-- Hint: OneLineShotArgs upstream does not support clipping -->
             <comps:HintPanel Visibility="{Binding SVFIClipDisabledHintVisible, Converter={StaticResource BoolToVisibility}}"
                              Text="{Binding SVFIClipDisabledHintText}"

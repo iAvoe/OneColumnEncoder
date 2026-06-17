@@ -15,7 +15,9 @@ namespace OneColumnEncoder.ViewModels.Cards
         public const int UpstreamPickedChecklistIdx = 3;
         public const int DownstreamPickedChecklistIdx = 4;
         public const int AnalysisPickedChecklistIdx = 5;
-        public const int CompleteSourceAnalysisChecklistIdx = 6;
+        public const int VideoSourcePickedChecklistIdx = 0;
+        public const int ScriptSourcePickedChecklistIdx = 1;
+        public const int CompleteSourceAnalysisChecklistIdx = 2;
 
         private string _name = string.Empty;
         public string Name
@@ -24,7 +26,8 @@ namespace OneColumnEncoder.ViewModels.Cards
             set => SetProperty(ref _name, value);
         }
 
-        public ObservableCollection<ChecklistEntryVM> ToolsChecklist { get; } = [];
+        public ObservableCollection<ChecklistEntryVM> Checklist1 { get; } = [];
+        public ObservableCollection<ChecklistEntryVM> Checklist2 { get; } = [];
         public DropdownMenuVM ImportDropdown { get; } = new();
         public ICommand ImportCommand { get; }
         public event Func<string, string, string?, Task>? ToolImported;
@@ -35,7 +38,7 @@ namespace OneColumnEncoder.ViewModels.Cards
         {
             ImportCommand =
                 new ImportToolCmd(ImportDropdown,
-                                  ToolsChecklist,
+                                  Checklist1,
                                   modalNavS,
                                   async (toolName, filePath, version) =>
                                   {
@@ -49,7 +52,9 @@ namespace OneColumnEncoder.ViewModels.Cards
             };
             ImportDropdown.PropertyChanged += _onDropdownPropertyChanged;
 
-            FillCollection(ToolsChecklist, ChecklistProviderM.GetToolsChecklist());
+            FillCollection(Checklist1, ChecklistProviderM.GetToolsChecklist1());
+            FillCollection(Checklist2, ChecklistProviderM.GetToolsChecklist2());
+            SetScriptSourcePickedStatus(isRequired: false, isPicked: false);
         }
 
         public void RefreshLanguage()
@@ -75,32 +80,62 @@ namespace OneColumnEncoder.ViewModels.Cards
                 ToolZone.Analytics => AnalysisPickedChecklistIdx,
                 _ => -1
             };
-            if (index < 0 || index >= ToolsChecklist.Count) return;
-            ToolsChecklist[index].Status = isPicked ? StatusType.Success : StatusType.Error;
+            if (index < 0 || index >= Checklist1.Count) return;
+            Checklist1[index].Status = isPicked ? StatusType.Success : StatusType.Error;
+        }
+
+        public void SetVideoSourcePickedStatus(bool isPicked)
+        {
+            UpdateChecklistStatus(Checklist2, VideoSourcePickedChecklistIdx, isPicked);
+        }
+
+        public void SetScriptSourcePickedStatus(bool isRequired, bool isPicked)
+        {
+            if (ScriptSourcePickedChecklistIdx < 0 || ScriptSourcePickedChecklistIdx >= Checklist2.Count) return;
+
+            ChecklistEntryVM entry = Checklist2[ScriptSourcePickedChecklistIdx];
+            entry.IsEnabled = isRequired;
+            entry.Status = !isRequired
+                ? StatusType.Waiting
+                : isPicked
+                    ? StatusType.Success
+                    : StatusType.Error;
         }
 
         public void SetCompleteSourceAnalysisStatus(bool isSuccess)
         {
-            UpdateChecklistStatus(CompleteSourceAnalysisChecklistIdx, isSuccess);
+            UpdateChecklistStatus(Checklist2, CompleteSourceAnalysisChecklistIdx, isSuccess);
         }
 
         public void ResetCompleteSourceAnalysisStatus()
         {
-            if (CompleteSourceAnalysisChecklistIdx >= 0 && CompleteSourceAnalysisChecklistIdx < ToolsChecklist.Count)
-                ToolsChecklist[CompleteSourceAnalysisChecklistIdx].Status = StatusType.Waiting;
+            if (CompleteSourceAnalysisChecklistIdx >= 0 && CompleteSourceAnalysisChecklistIdx < Checklist2.Count)
+                Checklist2[CompleteSourceAnalysisChecklistIdx].Status = StatusType.Waiting;
         }
 
         private void UpdateChecklistStatus(int index, bool isReady)
         {
-            if (index < 0 || index >= ToolsChecklist.Count) return;
-            ToolsChecklist[index].Status = isReady ? StatusType.Success : StatusType.Error;
+            UpdateChecklistStatus(Checklist1, index, isReady);
+        }
+
+        private static void UpdateChecklistStatus(ObservableCollection<ChecklistEntryVM> collection, int index, bool isReady)
+        {
+            if (index < 0 || index >= collection.Count) return;
+            collection[index].Status = isReady ? StatusType.Success : StatusType.Error;
         }
 
         private void RefreshChecklistText()
         {
-            List<ChecklistItemDefinitionM> definitions = ChecklistProviderM.GetToolsChecklist();
-            for (int i = 0; i < definitions.Count && i < ToolsChecklist.Count; i++)
-                ToolsChecklist[i].Text = definitions[i].Text;
+            RefreshChecklistText(Checklist1, ChecklistProviderM.GetToolsChecklist1());
+            RefreshChecklistText(Checklist2, ChecklistProviderM.GetToolsChecklist2());
+        }
+
+        private static void RefreshChecklistText(
+            ObservableCollection<ChecklistEntryVM> collection,
+            List<ChecklistItemDefinitionM> definitions)
+        {
+            for (int i = 0; i < definitions.Count && i < collection.Count; i++)
+                collection[i].Text = definitions[i].Text;
         }
 
         private void RefreshImportDropdownItems()

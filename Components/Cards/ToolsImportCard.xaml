@@ -4,11 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+             xmlns:conv="clr-namespace:OneColumnEncoder.Converters"
              xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
              xmlns:cards="clr-namespace:OneColumnEncoder.ViewModels.Cards"
              d:DataContext="{d:DesignInstance Type=cards:ToolsImportCardVM}"
              mc:Ignorable="d"
              d:DesignWidth="450">
+    <UserControl.Resources>
+        <conv:WidthToColumnCountConverter x:Key="WidthToColumnCount" />
+    </UserControl.Resources>
     <!--
     | Title        | R1 | R2 |
     | P1: ChecklistContainer |
@@ -127,17 +131,34 @@
                     </StackPanel>
                 </Button>
 
-                <comps:ChecklistContainer Grid.Row="1"
-                                          Grid.ColumnSpan="3"
-                                          ItemsSource="{Binding ToolsChecklist}">
-                    <comps:ChecklistContainer.ItemTemplate>
-                        <DataTemplate>
-                            <comps:ChecklistItem Text="{Binding Text}"
-                                                 Status="{Binding Status}"
-                                                 Margin="0 10 0 0" />
-                        </DataTemplate>
-                    </comps:ChecklistContainer.ItemTemplate>
-                </comps:ChecklistContainer>
+                <UniformGrid Grid.Row="1"
+                             Grid.ColumnSpan="3"
+                             Columns="{Binding ActualWidth,
+                                        RelativeSource={RelativeSource FindAncestor,
+                                                                       AncestorType={x:Type ScrollViewer}},
+                                        Converter={StaticResource WidthToColumnCount}}">
+                    <comps:ChecklistContainer ItemsSource="{Binding Checklist1}">
+                        <comps:ChecklistContainer.ItemTemplate>
+                            <DataTemplate>
+                                <comps:ChecklistItem Text="{Binding Text}"
+                                                     Status="{Binding Status}"
+                                                     IsEnabled="{Binding IsEnabled}"
+                                                     Margin="0 10 0 0" />
+                            </DataTemplate>
+                        </comps:ChecklistContainer.ItemTemplate>
+                    </comps:ChecklistContainer>
+
+                    <comps:ChecklistContainer ItemsSource="{Binding Checklist2}">
+                        <comps:ChecklistContainer.ItemTemplate>
+                            <DataTemplate>
+                                <comps:ChecklistItem Text="{Binding Text}"
+                                                     Status="{Binding Status}"
+                                                     IsEnabled="{Binding IsEnabled}"
+                                                     Margin="0 10 0 0" />
+                            </DataTemplate>
+                        </comps:ChecklistContainer.ItemTemplate>
+                    </comps:ChecklistContainer>
+                </UniformGrid>
             </Grid>
         </Border>
     </Grid>
