@@ -67,8 +67,8 @@ Or, TLDR; and use tools provided in this package (not recommended but its an opt
 ## Validation Status
 
 **OS**：
-- All tests are currently validated on Windows 10 22H2
-- Lacking validation for Windows 11, but it should work fine...
+- Windows 10 22H2
+- Windows 11 Unknown version (thanks to Luft)
 
 **Hardware**：
 - Core i5 7600k (4C4T)
