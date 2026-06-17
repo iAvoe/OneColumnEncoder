@@ -8,7 +8,7 @@ namespace OneColumnEncoder.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values.Length < 5 ||
+            if (values.Length < 6 ||
                 values[0] is not double actualWidth ||
                 values[1] is not double labelWidth ||
                 actualWidth <= 0)
@@ -24,8 +24,12 @@ namespace OneColumnEncoder.Converters
                 return 0d;
             }
 
+            bool isLog = values[5] is true;
+
             double travelWidth = Math.Max(0d, actualWidth - OneColumnEncoder.Components.IntegerSlider.ThumbWidth);
-            double normalized = Math.Max(0d, Math.Min(1d, (value - minimum) / (maximum - minimum)));
+            double normalized = isLog
+                ? NormalizeLog(value, minimum, maximum)
+                : Math.Max(0d, Math.Min(1d, (value - minimum) / (maximum - minimum)));
             double center = normalized * travelWidth + OneColumnEncoder.Components.IntegerSlider.ThumbWidth / 2d;
             return center - labelWidth / 2d;
         }
@@ -37,6 +41,14 @@ namespace OneColumnEncoder.Converters
                 results[index] = Binding.DoNothing;
 
             return results;
+        }
+
+        private static double NormalizeLog(double value, double minimum, double maximum)
+        {
+            double logMin = Math.Max(1, minimum);
+            double logMax = Math.Max(logMin + 1, maximum);
+            double clamped = Math.Max(logMin, Math.Min(logMax, value));
+            return Math.Max(0d, Math.Min(1d, Math.Log(clamped / logMin) / Math.Log(logMax / logMin)));
         }
 
         private static bool TryToDouble(object value, out double result)

@@ -76,6 +76,8 @@
                                                  Path="Maximum" />
                                         <Binding RelativeSource="{RelativeSource AncestorType=UserControl}"
                                                  Path="Value" />
+                                        <Binding RelativeSource="{RelativeSource AncestorType=UserControl}"
+                                                 Path="IsLogarithmic" />
                                     </MultiBinding>
                                 </TranslateTransform.X>
                             </TranslateTransform>
@@ -99,6 +101,8 @@
                                          Path="Maximum" />
                                 <Binding RelativeSource="{RelativeSource AncestorType=UserControl}"
                                          Path="Value" />
+                                <Binding RelativeSource="{RelativeSource AncestorType=UserControl}"
+                                         Path="IsLogarithmic" />
                             </MultiBinding>
                         </Canvas.Left>
                         <TextBlock Text="{Binding Value, RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -133,6 +137,8 @@
                                              Path="Minimum" />
                                     <Binding RelativeSource="{RelativeSource AncestorType=UserControl}"
                                              Path="Maximum" />
+                                    <Binding RelativeSource="{RelativeSource AncestorType=UserControl}"
+                                             Path="IsLogarithmic" />
                                 </MultiBinding>
                             </Setter.Value>
                         </Setter>
