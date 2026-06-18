@@ -20,6 +20,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly AppConfM _appConfM;
         private readonly ModalNavS _modalNavS;
         private readonly VideoAnalysisM _srcVideoAnalysis = new();
+        private readonly ToolItemCardVM? _outputSettingCard;
         private string _scriptScribeFfmpegFilterArgs = string.Empty;
 
         // Groups of Card or other element UIs
@@ -57,7 +58,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly bool _isEncStartButtonsReady;
         private bool _importedToolZonesSubscribed;
         private bool _promptScriptGenAfterAnalysis;
-        // Card UIs
+        // Checklist Card UIs
         public ToolsImportCardVM ToolsImportCard { get; }
         public SourceCheckCardVM SrcValidationCard { get; } = new();
         public EncTermsCardVM EncTermsCard { get; } = new();
@@ -82,7 +83,7 @@ namespace OneColumnEncoder.ViewModels
             get => _isOverlayVisible;
             set => SetProperty(ref _isOverlayVisible, value);
         }
-
+        // Hide SVFI hint when unselected
         private bool _svfiClipDisabledHintVisible;
         public bool SVFIClipDisabledHintVisible
         {
@@ -120,6 +121,7 @@ namespace OneColumnEncoder.ViewModels
             ToolItemCardVM? outputSetting = EncSettingsZone.FirstOrDefault(t => t.Name.Equals(
                 UILangProviderM.Current["Tool.Enc.OutputSetting"],
                 StringComparison.OrdinalIgnoreCase));
+            _outputSettingCard = outputSetting;
 
             // Set P2Text to desktop, then P1Text to file name
             if (outputSetting != null)
@@ -1447,14 +1449,46 @@ namespace OneColumnEncoder.ViewModels
                 item.RefreshLanguage();
             }
         }
+
+        private void UnwireUpZoneDeleteCmds()
+        {
+            foreach (ToolItemCardVM tool in VideoSrcImportZone) UnwireSourceCmd(tool);
+            foreach (ToolItemCardVM tool in ScriptSrcImportZone) UnwireSourceCmd(tool);
+            foreach (ToolItemCardVM tool in EncSettingsZone) UnwireStaticClearCmd(tool);
+            foreach (ObservableCollection<ToolItemCardVM> zone in AllImportedToolZones)
+                foreach (ToolItemCardVM tool in zone) UnwireToolCmd(tool);
+        }
+
+        private void UnwireToolCmd(ToolItemCardVM item)
+        {
+            item.PropertyChanged -= OnUpstreamItemPropertyChanged;
+            item.PropertyChanged -= OnEncoderItemPropertyChanged;
+            item.PropertyChanged -= OnAnalyticsItemPropertyChanged;
+            item.R1Command = null;
+            item.R2Command = null;
+        }
+
+        private void UnwireSourceCmd(ToolItemCardVM item)
+        {
+            item.PropertyChanged -= OnVideoSrcItemPropertyChanged;
+            item.R1Command = null;
+            item.R2Command = null;
+        }
+
+        private static void UnwireStaticClearCmd(ToolItemCardVM item) =>
+            item.R2Command = null;
         #endregion
 
         public override void Dispose()
         {
+            // Release retained event handlers and command references so the VM can be collected.
             UILangProviderM.CurrentChanged -= OnLanguageChanged;
             _modalNavS.CurrentViewModelChanged -= OnModalStateChanged;
             ToolsImportCard.ToolImported -= OnToolImported;
             AnalyticsZone.CollectionChanged -= OnAnalyticsZoneCollectionChanged;
+            if (_outputSettingCard != null)
+                _outputSettingCard.PropertyChanged -= OnOutputSettingPropertyChanged;
+            UnwireUpZoneDeleteCmds();
             ToolsImportCard.Dispose();
             UnsubFromImportedToolZones();
             UnsubFromToolsChecklist();

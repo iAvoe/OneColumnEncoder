@@ -569,6 +569,13 @@ namespace OneColumnEncoder.ViewModels
             BuildSummary();
         }
 
+        public override void Dispose()
+        {
+            // Unsubscribe from the global language change event to avoid keeping this modal alive.
+            UILangProviderM.CurrentChanged -= OnLanguageChanged;
+            base.Dispose();
+        }
+
         private static double? ParseFrameRate(string? text)
         {
             if (string.IsNullOrWhiteSpace(text) || text.Equals("0/0", StringComparison.OrdinalIgnoreCase))
