@@ -1,8 +1,66 @@
 using OneColumnEncoder.Models;
-using OneColumnEncoder.ViewModels;
+using OneColumnEncoder.ViewModels.Cards;
+using OneColumnEncoder.Commands;
+using System.Collections.Generic;
 
 namespace OneColumnEncoder.Helpers
 {
+    public sealed class VideoSourceQueueState
+    {
+        private readonly ToolItemCardVM? _videoSourceQueueCard;
+        private readonly Dictionary<ToolItemCardVM, string[]> _sourceQueueFilePaths = [];
+
+        public VideoSourceQueueState(IEnumerable<ToolItemCardVM> videoSrcImportZone)
+        {
+            _videoSourceQueueCard = videoSrcImportZone.FirstOrDefault(item =>
+                item.Name.Equals(UILangProviderM.Current["Tool.Source.VideoSrcQueue"], StringComparison.OrdinalIgnoreCase));
+            if (_videoSourceQueueCard != null)
+                _videoSourceQueueCard.UseAutoAddReplaceText = false;
+        }
+
+        public bool IsActive => VideoSourceQueueH.IsQueueRouteActive(_videoSourceQueueCard);
+
+        public string[] CurrentFilePaths => VideoSourceQueueH.GetCurrentQueueFilePaths(
+            _videoSourceQueueCard,
+            _sourceQueueFilePaths);
+
+        public bool IsQueueItem(ToolItemCardVM item) =>
+            VideoSourceQueueH.IsVideoSourceQueueItem(item, _videoSourceQueueCard);
+
+        public void ApplyImportedFiles(ToolItemCardVM item, string[] filePaths)
+        {
+            _sourceQueueFilePaths[item] = filePaths;
+            VideoSourceQueueH.RefreshSourceQueueTitle(item, filePaths.Length);
+        }
+
+        public void Clear(ToolItemCardVM item)
+        {
+            _sourceQueueFilePaths.Remove(item);
+            VideoSourceQueueH.RefreshSourceQueueTitle(item, 0);
+        }
+
+        public void ApplyAcceptedFiles(string[] acceptedFilePaths)
+        {
+            if (_videoSourceQueueCard == null) return;
+
+            _sourceQueueFilePaths[_videoSourceQueueCard] = acceptedFilePaths;
+            _videoSourceQueueCard.P1TextData = VideoSourceQueueH.GetQueueP1Text(acceptedFilePaths);
+            VideoSourceQueueH.RefreshSourceQueueTitle(_videoSourceQueueCard, acceptedFilePaths.Length);
+        }
+
+        public void RefreshLanguage()
+        {
+            if (_videoSourceQueueCard == null) return;
+
+            _videoSourceQueueCard.UseAutoAddReplaceText = false;
+            if (!_sourceQueueFilePaths.TryGetValue(_videoSourceQueueCard, out string[]? filePaths)) return;
+
+            VideoSourceQueueH.RefreshSourceQueueTitle(_videoSourceQueueCard, filePaths.Length);
+            if (filePaths.Length > 0)
+                _videoSourceQueueCard.P1TextData = VideoSourceQueueH.GetQueueP1Text(filePaths);
+        }
+    }
+
     public static class VideoSourceQueueH
     {
         private static VideoSourceQueueLangProviderM Lang =>
@@ -24,30 +82,22 @@ namespace OneColumnEncoder.Helpers
         public static bool IsVideoSourceQueueItem(
             ToolItemCardVM item,
             ToolItemCardVM? videoSourceQueueCard) =>
-            ReferenceEquals(item, videoSourceQueueCard);
+            item != null && ReferenceEquals(item, videoSourceQueueCard);
 
         public static void RefreshSourceQueueTitle(
             ToolItemCardVM item,
             int queueCount)
         {
-            item.Name = queueCount > 0
-                ? string.Format(Lang.Tool.Source.VideoSrcQueueWithCount, queueCount)
-                : Lang.Tool.Source.VideoSrcQueue;
-        }
+            if (item == null) return;
 
-        public static void ApplyQueueScriptSourceCardStyle(
-            ObservableCollection<ToolItemCardVM> queueScriptSrcImportZone)
-        {
-            foreach (ToolItemCardVM item in queueScriptSrcImportZone)
-            {
-                item.UseAutoAddReplaceText = false;
-                item.R1Text = Lang.Buttons.Import;
-                item.P1Name = Lang.SourceQueue.Sequence;
-                item.P2Name = Lang.ToolField.Path;
-            }
+            item.Name = queueCount > 0
+                ? string.Format(Lang.ToolSourceVideoSrcQueueWithCount, queueCount)
+                : Lang.ToolSourceVideoSrcQueue;
         }
 
         public static string GetQueueP1Text(string[] fileNames) =>
-            BrowseSourceQueueCmd.FormatQueueP1Text(fileNames);
+            fileNames == null
+                ? string.Empty
+                : BrowseSourceQueueCmd.FormatQueueP1Text(fileNames);
     }
 }

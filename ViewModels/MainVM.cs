@@ -21,9 +21,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly ModalNavS _modalNavS;
         private readonly VideoAnalysisM _srcVideoAnalysis = new();
         private readonly ToolItemCardVM? _outputSettingCard;
-        private readonly ToolItemCardVM? _videoSourceQueueCard;
-        private readonly Dictionary<ToolItemCardVM, string[]> _sourceQueueFileNames = [];
-        private readonly Dictionary<ToolItemCardVM, string[]> _sourceQueueFilePaths = [];
+        private readonly VideoSourceQueueState _videoSourceQueue;
         private string _scriptScribeFfmpegFilterArgs = string.Empty;
 
         // Groups of Card or other element UIs
@@ -92,8 +90,6 @@ namespace OneColumnEncoder.ViewModels
         public static string SVFIClipDisabledHintText => UICaptionProviderM.Hints.SVFIClipDisabled;
         public static string AnalyzeNeedsSourceText => UICaptionProviderM.Hints.AnalyzeNeedsSource;
         public static string NumaCpuCheckHintText => UICaptionProviderM.Hints.NumaCpuCheckTrigger;
-
-        // Disable UI when other modal opens
         private bool _isOverlayVisible;
         public bool IsOverlayVisible
         {
@@ -125,14 +121,9 @@ namespace OneColumnEncoder.ViewModels
 
             ToolsImportCard = new ToolsImportCardVM(modalNavS);
             VideoSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetVideoSrcImportDefs(), true, false);
-            _videoSourceQueueCard = VideoSrcImportZone.Count > 1
-                ? VideoSrcImportZone[1]
-                : null;
-            if (_videoSourceQueueCard != null)
-                _videoSourceQueueCard.UseAutoAddReplaceText = false;
+            _videoSourceQueue = new(VideoSrcImportZone);
             ScriptSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetScriptSrcImportDefs(), true, false);
             QueueScriptSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetScriptSrcImportQueueDefs(), false, false);
-            ApplyQueueScriptSourceCardStyle();
             ActiveScriptSrcImportZone = ScriptSrcImportZone;
             EncSettingsZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetEncSettingsDefinitions(), enableRealCheck: false);
             UpstreamsZone = [];
@@ -463,7 +454,7 @@ namespace OneColumnEncoder.ViewModels
             ToolCompatibilityH.RefreshDependencySelectionState(
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
             ToolCompatibilityH.RefreshSourceSelectionState(
-                UpstreamsZone, ActiveScriptSrcImportZone, RefreshSelectedSourceStatus);
+                UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
 
             // Revert the selection for IsCancel caused by "Auto Selection".
             // Must revert both zones because RefreshDependencySelectionState can set
@@ -499,7 +490,7 @@ namespace OneColumnEncoder.ViewModels
             ToolCompatibilityH.RefreshDependencySelectionState(
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
             ToolCompatibilityH.RefreshSourceSelectionState(
-                UpstreamsZone, ActiveScriptSrcImportZone, RefreshSelectedSourceStatus);
+                UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
         }
 
         private void RefreshUpstreamToolState()
@@ -532,7 +523,7 @@ namespace OneColumnEncoder.ViewModels
             ToolCompatibilityH.RefreshDependencySelectionState(
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
             ToolCompatibilityH.RefreshSourceSelectionState(
-                UpstreamsZone, ActiveScriptSrcImportZone, RefreshSelectedSourceStatus);
+                UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
         }
 
         private void RefreshEncTermsState()
@@ -862,7 +853,7 @@ namespace OneColumnEncoder.ViewModels
                 ToolsImportCard,
                 RefreshSelectedSourceStatusAfterSourceSelection,
                 UpdateEncStartButtonsState,
-                RefreshSelectedSourceStatus);
+                () => RefreshSelectedSourceStatus());
         }
 
         private void RefreshToolPickedStatus(ToolZone toolZone, ObservableCollection<ToolItemCardVM> itemZone) =>
@@ -1004,9 +995,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void OnSourceQueueImported(ToolItemCardVM item, string folderPath, string[] filePaths)
         {
-            _sourceQueueFileNames[item] = [.. filePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!)];
-            _sourceQueueFilePaths[item] = filePaths;
-            RefreshSourceQueueTitle(item, filePaths.Length);
+            _videoSourceQueue.ApplyImportedFiles(item, filePaths);
 
             foreach (ToolItemCardVM source in VideoSrcImportZone)
                 source.IsSelected = false;
@@ -1027,9 +1016,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void OnSourceQueueCleared(ToolItemCardVM item)
         {
-            _sourceQueueFileNames.Remove(item);
-            _sourceQueueFilePaths.Remove(item);
-            item.Name = UILangProviderM.Current["Tool.Source.VideoSrcQueue"];
+            _videoSourceQueue.Clear(item);
             RefreshSelectedSourceStatus(resetAnalysis: !VideoSrcImportZone.Any(t => t.IsSelected));
         }
 
@@ -1062,13 +1049,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void OnSourceQueueAccepted(string[] acceptedFilePaths, string queueJsonPath)
         {
-            if (_videoSourceQueueCard == null) return;
-
-            _sourceQueueFilePaths[_videoSourceQueueCard] = acceptedFilePaths;
-            _sourceQueueFileNames[_videoSourceQueueCard] =
-                [.. acceptedFilePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!)];
-            _videoSourceQueueCard.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(_sourceQueueFileNames[_videoSourceQueueCard]);
-            RefreshSourceQueueTitle(_videoSourceQueueCard, acceptedFilePaths.Length);
+            _videoSourceQueue.ApplyAcceptedFiles(acceptedFilePaths);
         }
 
         private void SaveSourcePath(SourceFileKind kind, string filePath)
@@ -1089,10 +1070,7 @@ namespace OneColumnEncoder.ViewModels
                     break;
             }
         }
-        public void RefreshSelectedSourceStatus() =>
-            RefreshSelectedSourceStatus(resetAnalysis: false);
-
-        public void RefreshSelectedSourceStatus(bool resetAnalysis)
+        public void RefreshSelectedSourceStatus(bool resetAnalysis = false)
         {
             RefreshActiveSourceRoute();
             bool anySelected =
@@ -1191,16 +1169,14 @@ namespace OneColumnEncoder.ViewModels
         }
 
         private bool IsQueueRouteActive() =>
-            _videoSourceQueueCard != null && _videoSourceQueueCard.IsSelected;
+            _videoSourceQueue.IsActive;
 
         private string[] GetCurrentQueueFilePaths() =>
-            _videoSourceQueueCard != null && _sourceQueueFilePaths.TryGetValue(_videoSourceQueueCard, out string[]? filePaths)
-                ? filePaths
-                : [];
+            _videoSourceQueue.CurrentFilePaths;
 
         private string GetSelectedVideoSourcePath()
         {
-            ToolItemCardVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => !IsVideoSourceQueueItem(t) && t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
+            ToolItemCardVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => !_videoSourceQueue.IsQueueItem(t) && t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
             return videoSrc?.P2TextData ?? string.Empty;
         }
 
@@ -1285,27 +1261,25 @@ namespace OneColumnEncoder.ViewModels
 
         private static SourceFileKind ResolveSourceFileKind(string displayName)
         {
-            if (displayName.Equals(UILangProviderM.Current["Tool.Source.VideoSource"], StringComparison.OrdinalIgnoreCase))
+            if (displayName.Equals(UILangProviderM.Current["Tool.Source.VideoSource"], StringComparison.OrdinalIgnoreCase) ||
+                displayName.Equals(UILangProviderM.Current["Tool.Source.VideoSrcQueue"], StringComparison.OrdinalIgnoreCase))
                 return SourceFileKind.Video;
-            if (displayName.Equals(UILangProviderM.Current["Tool.Source.AviSynth"], StringComparison.OrdinalIgnoreCase))
+            if (displayName.Equals(UILangProviderM.Current["Tool.Source.AviSynth"], StringComparison.OrdinalIgnoreCase) ||
+                displayName.Equals(UILangProviderM.Current["Tool.Source.AviSynthQueue"], StringComparison.OrdinalIgnoreCase))
                 return SourceFileKind.AviSynthScript;
-            if (displayName.Equals(UILangProviderM.Current["Tool.Source.VapourSynth"], StringComparison.OrdinalIgnoreCase))
+            if (displayName.Equals(UILangProviderM.Current["Tool.Source.VapourSynth"], StringComparison.OrdinalIgnoreCase) ||
+                displayName.Equals(UILangProviderM.Current["Tool.Source.VapourSynthQueue"], StringComparison.OrdinalIgnoreCase))
                 return SourceFileKind.VapourSynthScript;
-            if (displayName.Equals(UILangProviderM.Current["Tool.Source.Svfi"], StringComparison.OrdinalIgnoreCase))
+            if (displayName.Equals(UILangProviderM.Current["Tool.Source.Svfi"], StringComparison.OrdinalIgnoreCase) ||
+                displayName.Equals(UILangProviderM.Current["Tool.Source.SvfiQueue"], StringComparison.OrdinalIgnoreCase))
                 return SourceFileKind.SvfiIni;
 
             throw new ArgumentException($"Unknown source type: {displayName}");
         }
 
         private bool IsVideoSourceQueueItem(ToolItemCardVM item) =>
-            ReferenceEquals(item, _videoSourceQueueCard);
+            _videoSourceQueue.IsQueueItem(item);
 
-        private static void RefreshSourceQueueTitle(ToolItemCardVM item, int queueCount)
-        {
-            item.Name = queueCount > 0
-                ? string.Format(UILangProviderM.Current["Tool.Source.VideoSrcQueueWithCount"], queueCount)
-                : UILangProviderM.Current["Tool.Source.VideoSrcQueue"];
-        }
         #endregion
 
         #region Zone Helpers
@@ -1581,19 +1555,16 @@ namespace OneColumnEncoder.ViewModels
         }
         private void RefreshSourceQueueLanguage()
         {
-            if (_videoSourceQueueCard == null) return;
-            _videoSourceQueueCard.UseAutoAddReplaceText = false;
-            _sourceQueueFileNames.TryGetValue(_videoSourceQueueCard, out string[]? fileNames);
-            int queueCount = fileNames?.Length ?? 0;
-            RefreshSourceQueueTitle(_videoSourceQueueCard, queueCount);
-            if (queueCount > 0)
-                _videoSourceQueueCard.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(fileNames!);
+            _videoSourceQueue.RefreshLanguage();
         }
 
         private void RefreshSourceZonePrimaryText(ObservableCollection<ToolItemCardVM> zone)
         {
+            if (zone == null) return;
+
             foreach (ToolItemCardVM item in zone)
             {
+                if (item == null) continue;
                 if (string.IsNullOrWhiteSpace(item.P2TextData)) continue;
 
                 if (IsVideoSourceQueueItem(item)) continue;
@@ -1605,26 +1576,19 @@ namespace OneColumnEncoder.ViewModels
 
         private void RefreshScriptQueuePrimaryText()
         {
+            if (QueueScriptSrcImportZone == null) return;
+
             foreach (ToolItemCardVM item in QueueScriptSrcImportZone)
             {
+                if (item == null) continue;
                 if (string.IsNullOrWhiteSpace(item.P2TextData)) continue;
                 SourceFileKind fileKind = ResolveSourceFileKind(item.Name);
                 string[] filePaths = SourceFilePickerH.GetSourceFilesInFolder(item.P2TextData, fileKind);
-                item.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(
-                    filePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!));
+                item.P1TextData = VideoSourceQueueH.GetQueueP1Text(
+                    filePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!).ToArray());
             }
         }
 
-        private void ApplyQueueScriptSourceCardStyle()
-        {
-            foreach (ToolItemCardVM item in QueueScriptSrcImportZone)
-            {
-                item.UseAutoAddReplaceText = false;
-                item.R1Text = UILangProviderM.Current["Buttons.Import"];
-                item.P1Name = UILangProviderM.Current["SourceQueue.Sequence"];
-                item.P2Name = UILangProviderM.Current["ToolField.Path"];
-            }
-        }
         private static void ApplyDefinitionsToZone(ObservableCollection<ToolItemCardVM> zone, List<ToolDefinitionM> definitions)
         {
             for (int i = 0; (i < definitions.Count && i < zone.Count); i++)

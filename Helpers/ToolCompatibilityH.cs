@@ -1,6 +1,5 @@
 using OneColumnEncoder.Models;
 using OneColumnEncoder.ViewModels.Cards;
-using System.Collections.ObjectModel;
 
 namespace OneColumnEncoder.Helpers
 {
@@ -41,7 +40,7 @@ namespace OneColumnEncoder.Helpers
 
         public static void RefreshSourceSelectionState(
             IEnumerable<ToolItemCardVM> upstreamsZone,
-            ObservableCollection<ToolItemCardVM> scriptSrcImportZone,
+            IEnumerable<ToolItemCardVM> scriptSrcImportZone,
             Action refreshSelectedSourceStatus)
         {
             ToolItemCardVM? upstream = upstreamsZone.FirstOrDefault(t => t.IsSelected);
@@ -57,14 +56,14 @@ namespace OneColumnEncoder.Helpers
                     allDisabled = true;
                     break;
                 case var u when ToolDefinitionProviderM.IsImportedTool(u.Name, "vspipe.exe"):
-                    allowedName = UILangProviderM.Current["Tool.Source.VapourSynth"];
+                    allowedName = ResolveScriptSourceName(scriptSrcImportZone, "Tool.Source.VapourSynth", "Tool.Source.VapourSynthQueue");
                     break;
                 case var u when ToolDefinitionProviderM.IsImportedTool(u.Name, "avs2yuv.exe")
                            || ToolDefinitionProviderM.IsImportedTool(u.Name, "avs2pipemod.exe"):
-                    allowedName = UILangProviderM.Current["Tool.Source.AviSynth"];
+                    allowedName = ResolveScriptSourceName(scriptSrcImportZone, "Tool.Source.AviSynth", "Tool.Source.AviSynthQueue");
                     break;
                 case var u when ToolDefinitionProviderM.IsImportedTool(u.Name, "one_line_shot_args.exe"):
-                    allowedName = UILangProviderM.Current["Tool.Source.Svfi"];
+                    allowedName = ResolveScriptSourceName(scriptSrcImportZone, "Tool.Source.Svfi", "Tool.Source.SvfiQueue");
                     break;
             }
 
@@ -82,6 +81,24 @@ namespace OneColumnEncoder.Helpers
             }
 
             refreshSelectedSourceStatus();
+        }
+
+        private static string? ResolveScriptSourceName(
+            IEnumerable<ToolItemCardVM> scriptSrcImportZone,
+            string primaryKey,
+            string queueKey)
+        {
+            bool hasPrimary = scriptSrcImportZone.Any(t => t.Name.Equals(
+                UILangProviderM.Current[primaryKey], StringComparison.OrdinalIgnoreCase));
+            if (hasPrimary)
+                return UILangProviderM.Current[primaryKey];
+
+            bool hasQueue = scriptSrcImportZone.Any(t => t.Name.Equals(
+                UILangProviderM.Current[queueKey], StringComparison.OrdinalIgnoreCase));
+            if (hasQueue)
+                return UILangProviderM.Current[queueKey];
+
+            return null;
         }
     }
 }
