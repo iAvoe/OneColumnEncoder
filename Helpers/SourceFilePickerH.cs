@@ -70,6 +70,29 @@ namespace OneColumnEncoder.Helpers
                 .OrderBy(filePath => filePath, NaturalFilePathComparer.Instance)];
         }
 
+        public static string[] GetSourceFilesInFolder(string folderPath, SourceFileKind fileKind)
+        {
+            if (fileKind == SourceFileKind.Video)
+                return GetVideoFilesInFolder(folderPath);
+
+            if (string.IsNullOrWhiteSpace(folderPath) || !Directory.Exists(folderPath))
+                return [];
+
+            string extension = fileKind switch
+            {
+                SourceFileKind.AviSynthScript => ".avs",
+                SourceFileKind.VapourSynthScript => ".vpy",
+                SourceFileKind.SvfiIni => ".ini",
+                _ => string.Empty
+            };
+
+            if (string.IsNullOrWhiteSpace(extension)) return [];
+
+            return [.. Directory.EnumerateFiles(folderPath)
+                .Where(filePath => Path.GetExtension(filePath).Equals(extension, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(filePath => filePath, NaturalFilePathComparer.Instance)];
+        }
+
         private sealed class NaturalFilePathComparer : IComparer<string>
         {
             public static NaturalFilePathComparer Instance { get; } = new();

@@ -37,6 +37,25 @@ public static class ToolCatalogProviderM
             UILangProviderM.Current["ToolField.Mode"],
             UILangProviderM.Current["ToolField.Path"]),
     ];
+    // Script Source Import Queue zone (3 items, distinct labels)
+    public static List<ToolDefinitionM> GetScriptSrcImportQueueDefs() =>
+    [
+        new(UILangProviderM.Current["Tool.Source.AviSynthQueue"],
+            UILangProviderM.Current["Buttons.Import"],
+            UILangProviderM.Current["Buttons.Clear"],
+            UILangProviderM.Current["SourceQueue.Sequence"],
+            UILangProviderM.Current["ToolField.Path"]),
+        new(UILangProviderM.Current["Tool.Source.VapourSynthQueue"],
+            UILangProviderM.Current["Buttons.Import"],
+            UILangProviderM.Current["Buttons.Clear"],
+            UILangProviderM.Current["SourceQueue.Sequence"],
+            UILangProviderM.Current["ToolField.Path"]),
+        new(UILangProviderM.Current["Tool.Source.SvfiQueue"],
+            UILangProviderM.Current["Buttons.Import"],
+            UILangProviderM.Current["Buttons.Clear"],
+            UILangProviderM.Current["SourceQueue.Sequence"],
+            UILangProviderM.Current["ToolField.Path"]),
+    ];
 
     // Enc Settings zone (3 items)
     public static List<ToolDefinitionM> GetEncSettingsDefinitions() =>

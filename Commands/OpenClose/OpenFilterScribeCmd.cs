@@ -10,8 +10,8 @@ namespace OneColumnEncoder.Commands.OpenClose
     public class OpenFilterScribeCmd(
         ModalNavS modalNavS,
         Func<string> getSourcePath,
-        ToolItemCardVM avsItem,
-        ToolItemCardVM vpyItem,
+        Func<ToolItemCardVM> getAvsItem,
+        Func<ToolItemCardVM> getVpyItem,
         Action<ToolItemCardVM, SourceFileKind, string> afterImport, // File save & ItemCard write back
         Action<string?> applyFfmpegFilterArgs,
         Func<bool> hasSourceValidationError,
@@ -38,7 +38,7 @@ namespace OneColumnEncoder.Commands.OpenClose
                 _modalNavS,
                 window.Close,
                 getSourcePath,
-                avsItem, vpyItem,
+                getAvsItem(), getVpyItem(),
                 afterImport,
                 applyFfmpegFilterArgs,
                 hasSourceValidationError,

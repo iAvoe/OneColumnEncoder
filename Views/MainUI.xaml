@@ -203,7 +203,7 @@
             </ItemsControl>
 
             <!-- Import Source 2 -->
-            <ItemsControl ItemsSource="{Binding ScriptSrcImportZone}">
+            <ItemsControl ItemsSource="{Binding ActiveScriptSrcImportZone}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=3}" />

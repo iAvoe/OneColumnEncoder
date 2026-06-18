@@ -33,7 +33,14 @@ namespace OneColumnEncoder.ViewModels
         public ObservableCollection<ToolItemCardVM> DependenciesZone { get; }
         public ObservableCollection<ToolItemCardVM> VideoSrcImportZone { get; } // V-S separated for dual single-select
         public ObservableCollection<ToolItemCardVM> ScriptSrcImportZone { get; }
+        public ObservableCollection<ToolItemCardVM> QueueScriptSrcImportZone { get; }
         public ObservableCollection<ToolItemCardVM> EncSettingsZone { get; }
+        private ObservableCollection<ToolItemCardVM> _activeScriptSrcImportZone = null!;
+        public ObservableCollection<ToolItemCardVM> ActiveScriptSrcImportZone
+        {
+            get => _activeScriptSrcImportZone;
+            private set => SetProperty(ref _activeScriptSrcImportZone, value);
+        }
         // Cmds and buttons
         public OpenUsagesCmd OpenUsages { get; }
         public OpenAppConfCmd OpenAppConf { get; }
@@ -118,10 +125,15 @@ namespace OneColumnEncoder.ViewModels
 
             ToolsImportCard = new ToolsImportCardVM(modalNavS);
             VideoSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetVideoSrcImportDefs(), true, false);
-            _videoSourceQueueCard = VideoSrcImportZone.Count > 1 ? VideoSrcImportZone[1] : null;
+            _videoSourceQueueCard = VideoSrcImportZone.Count > 1
+                ? VideoSrcImportZone[1]
+                : null;
             if (_videoSourceQueueCard != null)
                 _videoSourceQueueCard.UseAutoAddReplaceText = false;
             ScriptSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetScriptSrcImportDefs(), true, false);
+            QueueScriptSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetScriptSrcImportQueueDefs(), false, false);
+            ApplyQueueScriptSourceCardStyle();
+            ActiveScriptSrcImportZone = ScriptSrcImportZone;
             EncSettingsZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetEncSettingsDefinitions(), enableRealCheck: false);
             UpstreamsZone = [];
             EncodersZone = [];
@@ -159,15 +171,15 @@ namespace OneColumnEncoder.ViewModels
             // Commands
             OneClickScriptGen = new OneClickScriptGenCmd(
                 () => GetCurrentVideoSourcePath(),
-                ScriptSrcImportZone[0],
-                ScriptSrcImportZone[1],
+                () => ActiveScriptSrcImportZone[0],
+                () => ActiveScriptSrcImportZone[1],
                 UpstreamsZone,
                 modalNavS);
             OpenFilterScribe = new OpenFilterScribeCmd(
                 modalNavS,
                 () => GetCurrentVideoSourcePath(),
-                ScriptSrcImportZone[0],
-                ScriptSrcImportZone[1],
+                () => ActiveScriptSrcImportZone[0],
+                () => ActiveScriptSrcImportZone[1],
                 OnSourceImported,
                 args => _scriptScribeFfmpegFilterArgs = args ?? string.Empty,
                 () => SrcValidationCard.Checklist1.Any(
@@ -451,7 +463,7 @@ namespace OneColumnEncoder.ViewModels
             ToolCompatibilityH.RefreshDependencySelectionState(
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
             ToolCompatibilityH.RefreshSourceSelectionState(
-                UpstreamsZone, ScriptSrcImportZone, RefreshSelectedSourceStatus);
+                UpstreamsZone, ActiveScriptSrcImportZone, RefreshSelectedSourceStatus);
 
             // Revert the selection for IsCancel caused by "Auto Selection".
             // Must revert both zones because RefreshDependencySelectionState can set
@@ -487,7 +499,7 @@ namespace OneColumnEncoder.ViewModels
             ToolCompatibilityH.RefreshDependencySelectionState(
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
             ToolCompatibilityH.RefreshSourceSelectionState(
-                UpstreamsZone, ScriptSrcImportZone, RefreshSelectedSourceStatus);
+                UpstreamsZone, ActiveScriptSrcImportZone, RefreshSelectedSourceStatus);
         }
 
         private void RefreshUpstreamToolState()
@@ -520,7 +532,7 @@ namespace OneColumnEncoder.ViewModels
             ToolCompatibilityH.RefreshDependencySelectionState(
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
             ToolCompatibilityH.RefreshSourceSelectionState(
-                UpstreamsZone, ScriptSrcImportZone, RefreshSelectedSourceStatus);
+                UpstreamsZone, ActiveScriptSrcImportZone, RefreshSelectedSourceStatus);
         }
 
         private void RefreshEncTermsState()
@@ -614,7 +626,9 @@ namespace OneColumnEncoder.ViewModels
         #region Button state updates
         public void UpdateFilterScbButtonsState()
         {
-            bool hasVideoSrc = VideoSrcImportZone.Any(t => !IsVideoSourceQueueItem(t) && !string.IsNullOrWhiteSpace(t.P2TextData));
+            bool hasVideoSrc = IsQueueRouteActive()
+                ? GetCurrentQueueFilePaths().Length > 0
+                : VideoSrcImportZone.Any(t => !IsVideoSourceQueueItem(t) && !string.IsNullOrWhiteSpace(t.P2TextData));
             FilterScbButtons.B2_2IsEnabled = hasVideoSrc;
 
             if (_modalNavS.CurrentModalVM is FilterScribeVM modal)
@@ -691,7 +705,7 @@ namespace OneColumnEncoder.ViewModels
                 _ => null
             };
 
-            bool scriptSourcePicked = expectedKind == null || ScriptSrcImportZone.Any(t =>
+            bool scriptSourcePicked = expectedKind == null || ActiveScriptSrcImportZone.Any(t =>
                 t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData) &&
                 ResolveSourceFileKind(t.Name) == expectedKind.Value);
             ToolsImportCard.SetScriptSourcePickedStatus(expectedKind != null, scriptSourcePicked);
@@ -715,6 +729,7 @@ namespace OneColumnEncoder.ViewModels
         {
             foreach (ToolItemCardVM tool in VideoSrcImportZone) WireUpSourceCmd(tool);
             foreach (ToolItemCardVM tool in ScriptSrcImportZone) WireUpSourceCmd(tool);
+            foreach (ToolItemCardVM tool in QueueScriptSrcImportZone) WireUpSourceCmd(tool);
             foreach (ToolItemCardVM tool in EncSettingsZone) WireUpStaticClearCmd(tool);
             WireUpEncSettingsCmds();
             foreach (ObservableCollection<ToolItemCardVM> zone in AllImportedToolZones)
@@ -753,10 +768,18 @@ namespace OneColumnEncoder.ViewModels
             }
 
             SourceFileKind kind = ResolveSourceFileKind(item.Name);
-            item.R1Command = kind == SourceFileKind.Video
-                ? new BrowseSourcePathCmd(item, kind, _appDataM, _modalNavS, OnVideoSourceImported)
-                : new BrowseSourcePathCmd(item, kind, _appDataM, _modalNavS, OnVideoSourceImported, GetCurrentVideoSourcePath);
-            item.R2Command = new ClearToolItemCmd(item, () => OnSourceCleared(kind));
+            if (QueueScriptSrcImportZone.Contains(item))
+            {
+                item.R1Command = new BrowseSourceScriptQueueCmd(item, kind, OnSourceScriptQueueImported);
+                item.R2Command = new ClearToolItemCmd(item, () => OnSourceScriptQueueCleared(item));
+            }
+            else
+            {
+                item.R1Command = kind == SourceFileKind.Video
+                    ? new BrowseSourcePathCmd(item, kind, _appDataM, _modalNavS, OnVideoSourceImported)
+                    : new BrowseSourcePathCmd(item, kind, _appDataM, _modalNavS, OnVideoSourceImported, GetCurrentVideoSourcePath);
+                item.R2Command = new ClearToolItemCmd(item, () => OnSourceCleared(kind));
+            }
             item.PropertyChanged += OnVideoSrcItemPropertyChanged;
         }
         private static void WireUpStaticClearCmd(ToolItemCardVM item) =>
@@ -835,7 +858,7 @@ namespace OneColumnEncoder.ViewModels
             ItemCardSelectionH.HandleItemCardClick(
                 clickedTool,
                 UpstreamsZone, EncodersZone, AnalyticsZone, DependenciesZone,
-                VideoSrcImportZone, ScriptSrcImportZone,
+                VideoSrcImportZone, ActiveScriptSrcImportZone,
                 ToolsImportCard,
                 RefreshSelectedSourceStatusAfterSourceSelection,
                 UpdateEncStartButtonsState,
@@ -867,19 +890,15 @@ namespace OneColumnEncoder.ViewModels
                 foreach (ToolItemCardVM source in VideoSrcImportZone)
                     source.IsSelected = false;
 
-                foreach (ToolItemCardVM script in ScriptSrcImportZone)
-                {
-                    script.P2TextData = string.Empty;
-                    script.P1TextData = string.Empty;
-                    script.IsSelected = false;
-                }
+                ClearScriptSourceZone(ScriptSrcImportZone);
+                ClearScriptSourceZone(QueueScriptSrcImportZone);
                 SaveSourcePath(SourceFileKind.AviSynthScript, string.Empty);
                 SaveSourcePath(SourceFileKind.VapourSynthScript, string.Empty);
                 SaveSourcePath(SourceFileKind.SvfiIni, string.Empty);
             }
             else
             {
-                foreach (ToolItemCardVM source in ScriptSrcImportZone)
+                foreach (ToolItemCardVM source in ActiveScriptSrcImportZone)
                     source.IsSelected = false;
             }
 
@@ -992,12 +1011,8 @@ namespace OneColumnEncoder.ViewModels
             foreach (ToolItemCardVM source in VideoSrcImportZone)
                 source.IsSelected = false;
 
-            foreach (ToolItemCardVM script in ScriptSrcImportZone)
-            {
-                script.P2TextData = string.Empty;
-                script.P1TextData = string.Empty;
-                script.IsSelected = false;
-            }
+            ClearScriptSourceZone(ScriptSrcImportZone);
+            ClearScriptSourceZone(QueueScriptSrcImportZone);
 
             SaveSourcePath(SourceFileKind.Video, string.Empty);
             SaveSourcePath(SourceFileKind.AviSynthScript, string.Empty);
@@ -1018,12 +1033,40 @@ namespace OneColumnEncoder.ViewModels
             RefreshSelectedSourceStatus(resetAnalysis: !VideoSrcImportZone.Any(t => t.IsSelected));
         }
 
+        private void OnSourceScriptQueueImported(ToolItemCardVM item, SourceFileKind kind, string folderPath, string[] filePaths)
+        {
+            foreach (ToolItemCardVM source in ActiveScriptSrcImportZone)
+                source.IsSelected = false;
+
+            if (filePaths.Length > 0)
+                item.IsSelected = true;
+
+            RefreshSelectedSourceStatus(resetAnalysis: false);
+        }
+
+        private void OnSourceScriptQueueCleared(ToolItemCardVM item)
+        {
+            item.IsSelected = false;
+            RefreshSelectedSourceStatus(resetAnalysis: !VideoSrcImportZone.Any(t => t.IsSelected));
+        }
+
+        private static void ClearScriptSourceZone(IEnumerable<ToolItemCardVM> zone)
+        {
+            foreach (ToolItemCardVM script in zone)
+            {
+                script.P2TextData = string.Empty;
+                script.P1TextData = string.Empty;
+                script.IsSelected = false;
+            }
+        }
+
         private void OnSourceQueueAccepted(string[] acceptedFilePaths, string queueJsonPath)
         {
             if (_videoSourceQueueCard == null) return;
 
             _sourceQueueFilePaths[_videoSourceQueueCard] = acceptedFilePaths;
-            _sourceQueueFileNames[_videoSourceQueueCard] = [.. acceptedFilePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!)];
+            _sourceQueueFileNames[_videoSourceQueueCard] =
+                [.. acceptedFilePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!)];
             _videoSourceQueueCard.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(_sourceQueueFileNames[_videoSourceQueueCard]);
             RefreshSourceQueueTitle(_videoSourceQueueCard, acceptedFilePaths.Length);
         }
@@ -1054,7 +1097,7 @@ namespace OneColumnEncoder.ViewModels
             RefreshActiveSourceRoute();
             bool anySelected =
                 VideoSrcImportZone.Any(t => t.IsSelected) ||
-                ScriptSrcImportZone.Any(t => t.IsSelected);
+                ActiveScriptSrcImportZone.Any(t => t.IsSelected);
             if (resetAnalysis)
             {
                 _srcVideoAnalysis.Clear();
@@ -1129,7 +1172,7 @@ namespace OneColumnEncoder.ViewModels
         {
             if (IsCurrentAnalysisFor(GetSelectedVideoSourcePath(), GetSelectedFfprobePath())) return;
 
-            bool anySelected = VideoSrcImportZone.Any(t => t.IsSelected) || ScriptSrcImportZone.Any(t => t.IsSelected);
+            bool anySelected = VideoSrcImportZone.Any(t => t.IsSelected) || ActiveScriptSrcImportZone.Any(t => t.IsSelected);
             _srcVideoAnalysis.Clear();
             ActiveSrcValidationCard.ResetAnalysisStatus();
             ToolsImportCard.ResetCompleteSourceAnalysisStatus();
@@ -1140,6 +1183,11 @@ namespace OneColumnEncoder.ViewModels
             ActiveSrcValidationCard = IsQueueRouteActive()
                 ? QueueSrcFilterCard
                 : SrcValidationCard;
+            ActiveScriptSrcImportZone = IsQueueRouteActive()
+                ? QueueScriptSrcImportZone
+                : ScriptSrcImportZone;
+            ToolCompatibilityH.RefreshSourceSelectionState(
+                UpstreamsZone, ActiveScriptSrcImportZone, () => { });
         }
 
         private bool IsQueueRouteActive() =>
@@ -1214,7 +1262,7 @@ namespace OneColumnEncoder.ViewModels
 
         private string GetSelectedSvfiIniPath()
         {
-            ToolItemCardVM? svfiIni = ScriptSrcImportZone.FirstOrDefault(t =>
+            ToolItemCardVM? svfiIni = ActiveScriptSrcImportZone.FirstOrDefault(t =>
                 t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData) &&
                 ResolveSourceFileKind(t.Name) == SourceFileKind.SvfiIni);
             return svfiIni?.P2TextData ?? string.Empty;
@@ -1230,7 +1278,7 @@ namespace OneColumnEncoder.ViewModels
                 ? SourceFileKind.VapourSynthScript
                 : SourceFileKind.AviSynthScript;
 
-            ToolItemCardVM? source = ScriptSrcImportZone.FirstOrDefault(t =>
+            ToolItemCardVM? source = ActiveScriptSrcImportZone.FirstOrDefault(t =>
                 ResolveSourceFileKind(t.Name) == kind && !string.IsNullOrWhiteSpace(t.P2TextData));
             return source?.P2TextData ?? string.Empty;
         }
@@ -1512,6 +1560,8 @@ namespace OneColumnEncoder.ViewModels
             RefreshSourceZonePrimaryText(VideoSrcImportZone);
             ApplyDefinitionsToZone(ScriptSrcImportZone, ToolCatalogProviderM.GetScriptSrcImportDefs());
             RefreshSourceZonePrimaryText(ScriptSrcImportZone);
+            ApplyDefinitionsToZone(QueueScriptSrcImportZone, ToolCatalogProviderM.GetScriptSrcImportQueueDefs());
+            RefreshScriptQueuePrimaryText();
             ApplyDefinitionsToZone(EncSettingsZone, ToolCatalogProviderM.GetEncSettingsDefinitions());
             WireUpEncSettingsCmds();
             foreach (ObservableCollection<ToolItemCardVM> zone in AllImportedToolZones)
@@ -1552,6 +1602,29 @@ namespace OneColumnEncoder.ViewModels
                 item.P1TextData = SourceFilePickerH.GetPrimaryText(fileKind, item.P2TextData);
             }
         }
+
+        private void RefreshScriptQueuePrimaryText()
+        {
+            foreach (ToolItemCardVM item in QueueScriptSrcImportZone)
+            {
+                if (string.IsNullOrWhiteSpace(item.P2TextData)) continue;
+                SourceFileKind fileKind = ResolveSourceFileKind(item.Name);
+                string[] filePaths = SourceFilePickerH.GetSourceFilesInFolder(item.P2TextData, fileKind);
+                item.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(
+                    filePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!));
+            }
+        }
+
+        private void ApplyQueueScriptSourceCardStyle()
+        {
+            foreach (ToolItemCardVM item in QueueScriptSrcImportZone)
+            {
+                item.UseAutoAddReplaceText = false;
+                item.R1Text = UILangProviderM.Current["Buttons.Import"];
+                item.P1Name = UILangProviderM.Current["SourceQueue.Sequence"];
+                item.P2Name = UILangProviderM.Current["ToolField.Path"];
+            }
+        }
         private static void ApplyDefinitionsToZone(ObservableCollection<ToolItemCardVM> zone, List<ToolDefinitionM> definitions)
         {
             for (int i = 0; (i < definitions.Count && i < zone.Count); i++)
@@ -1575,6 +1648,7 @@ namespace OneColumnEncoder.ViewModels
         {
             foreach (ToolItemCardVM tool in VideoSrcImportZone) UnwireSourceCmd(tool);
             foreach (ToolItemCardVM tool in ScriptSrcImportZone) UnwireSourceCmd(tool);
+            foreach (ToolItemCardVM tool in QueueScriptSrcImportZone) UnwireSourceCmd(tool);
             foreach (ToolItemCardVM tool in EncSettingsZone) UnwireStaticClearCmd(tool);
             foreach (ObservableCollection<ToolItemCardVM> zone in AllImportedToolZones)
                 foreach (ToolItemCardVM tool in zone) UnwireToolCmd(tool);

@@ -11,14 +11,14 @@ namespace OneColumnEncoder.Commands.SaveLoad
 {
     public class OneClickScriptGenCmd(
         Func<string> getSourcePath,
-        ToolItemCardVM avsItem,
-        ToolItemCardVM vpyItem,
+        Func<ToolItemCardVM> getAvsItem,
+        Func<ToolItemCardVM> getVpyItem,
         IEnumerable<ToolItemCardVM> upstreamsZone,
         ModalNavS modalNavS) : BaseCmd
     {
         private readonly Func<string> _getSourcePath = getSourcePath;
-        private readonly ToolItemCardVM _avsItem = avsItem;
-        private readonly ToolItemCardVM _vpyItem = vpyItem;
+        private readonly Func<ToolItemCardVM> _getAvsItem = getAvsItem;
+        private readonly Func<ToolItemCardVM> _getVpyItem = getVpyItem;
         private readonly IEnumerable<ToolItemCardVM> _upstreamsZone = upstreamsZone; // For making auto selection
         private readonly ModalNavS _modalNavS = modalNavS;
 
@@ -57,6 +57,8 @@ namespace OneColumnEncoder.Commands.SaveLoad
             string avsPath = dialog.FileName;
             string directory = Path.GetDirectoryName(avsPath) ?? ".";
             string vpyPath = Path.Combine(directory, Path.GetFileNameWithoutExtension(avsPath) + ".vpy");
+            ToolItemCardVM avsItem = _getAvsItem();
+            ToolItemCardVM vpyItem = _getVpyItem();
 
             try
             {
@@ -72,11 +74,11 @@ namespace OneColumnEncoder.Commands.SaveLoad
                 return;
             }
 
-            _avsItem.P2TextData = avsPath;
-            _avsItem.P1TextData = SourceFilePickerH.GetPrimaryText(SourceFileKind.AviSynthScript, avsPath);
+            avsItem.P2TextData = avsPath;
+            avsItem.P1TextData = SourceFilePickerH.GetPrimaryText(SourceFileKind.AviSynthScript, avsPath);
 
-            _vpyItem.P2TextData = vpyPath;
-            _vpyItem.P1TextData = SourceFilePickerH.GetPrimaryText(SourceFileKind.VapourSynthScript, vpyPath);
+            vpyItem.P2TextData = vpyPath;
+            vpyItem.P1TextData = SourceFilePickerH.GetPrimaryText(SourceFileKind.VapourSynthScript, vpyPath);
 
             // Auto ScriptSrcImportZone selection: try select script import when upstream program relates
             ToolItemCardVM? selectedUpstream = _upstreamsZone.FirstOrDefault(t => t.IsSelected);
@@ -84,14 +86,14 @@ namespace OneColumnEncoder.Commands.SaveLoad
             {
                 if (ToolDefinitionProviderM.IsImportedTool(selectedUpstream.Name, "vspipe.exe"))
                 {
-                    _avsItem.IsSelected = false;
-                    if (_vpyItem.IsEnabled) _vpyItem.IsSelected = true;
+                    avsItem.IsSelected = false;
+                    if (vpyItem.IsEnabled) vpyItem.IsSelected = true;
                 }
                 else if (ToolDefinitionProviderM.IsImportedTool(selectedUpstream.Name, "avs2yuv.exe") ||
                          ToolDefinitionProviderM.IsImportedTool(selectedUpstream.Name, "avs2pipemod.exe"))
                 {
-                    _vpyItem.IsSelected = false;
-                    if (_avsItem.IsEnabled) _avsItem.IsSelected = true;
+                    vpyItem.IsSelected = false;
+                    if (avsItem.IsEnabled) avsItem.IsSelected = true;
                 }
             }
 
