@@ -201,7 +201,8 @@ namespace OneColumnEncoder.ViewModels
             SampleClip = new OpenSampleClipCmd(
                 modalNavS,
                 BuildEncodingPipelineRequest,
-                _srcVideoAnalysis);
+                _srcVideoAnalysis,
+                IsQueueRouteActive);
             StartEncode = new StartEncCmd(
                 BuildEncodingPipelineRequest,
                 modalNavS,
