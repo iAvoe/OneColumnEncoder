@@ -2,6 +2,7 @@ using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
+using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.ViewModels.Cards;
 using System.IO;
 using System.Text;
@@ -111,7 +112,11 @@ namespace OneColumnEncoder.Commands
                 probeCard.ApplyFfprobeAnalysisJson(rawJson);
                 SourceCheckSignature signature = probeCard.GetSignature();
                 using JsonDocument rawDocument = JsonDocument.Parse(rawJson);
-                QueueSourceEntry entry = new(filePath, Path.GetFileName(filePath), rawDocument.RootElement.Clone());
+                QueueSourceEntry entry = new(
+                    filePath,
+                    Path.GetFileName(filePath),
+                    QueueSourceCheckResult.FromCard(probeCard),
+                    rawDocument.RootElement.Clone());
 
                 if (referenceSignature == null)
                 {
@@ -154,6 +159,7 @@ namespace OneColumnEncoder.Commands
             string message = string.Format(
                 UILangProviderM.Current["SourceQueue.AnalysisCompleted"],
                 excluded.Count,
+                queueJsonPath,
                 excludedJsonPath);
             new OpenInfoModalCmd(_modalNavS, UILangProviderM.SrcAnalysisWindowTitle, message).Execute(null);
         }
@@ -163,7 +169,27 @@ namespace OneColumnEncoder.Commands
             protected override string FilePath => string.Empty;
         }
 
-        private sealed record QueueSourceEntry(string FilePath, string DisplayName, JsonElement FfprobeJson);
+        private sealed record QueueSourceEntry(
+            string FilePath,
+            string DisplayName,
+            QueueSourceCheckResult CheckResult,
+            JsonElement FfprobeJson);
+
+        private sealed record QueueSourceCheckResult(
+            IReadOnlyList<QueueSourceCheckItem> Severe,
+            IReadOnlyList<QueueSourceCheckItem> Moderate)
+        {
+            public static QueueSourceCheckResult FromCard(SourceCheckCardVM card) =>
+                new(
+                    [.. card.Checklist1.Select(QueueSourceCheckItem.FromEntry)],
+                    [.. card.Checklist2.Select(QueueSourceCheckItem.FromEntry)]);
+        }
+
+        private sealed record QueueSourceCheckItem(string Text, StatusType Status, bool IsEnabled)
+        {
+            public static QueueSourceCheckItem FromEntry(ChecklistEntryVM entry) =>
+                new(entry.Text, entry.Status, entry.IsEnabled);
+        }
 
         private sealed record QueueSourceData(string ReferenceFilePath, IReadOnlyList<QueueSourceEntry> Entries);
     }
