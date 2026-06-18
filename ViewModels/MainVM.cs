@@ -21,6 +21,8 @@ namespace OneColumnEncoder.ViewModels
         private readonly ModalNavS _modalNavS;
         private readonly VideoAnalysisM _srcVideoAnalysis = new();
         private readonly ToolItemCardVM? _outputSettingCard;
+        private readonly ToolItemCardVM? _videoSourceQueueCard;
+        private readonly Dictionary<ToolItemCardVM, string[]> _sourceQueueFileNames = [];
         private string _scriptScribeFfmpegFilterArgs = string.Empty;
 
         // Groups of Card or other element UIs
@@ -107,6 +109,9 @@ namespace OneColumnEncoder.ViewModels
 
             ToolsImportCard = new ToolsImportCardVM(modalNavS);
             VideoSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetVideoSrcImportDefs(), true, false);
+            _videoSourceQueueCard = VideoSrcImportZone.Count > 1 ? VideoSrcImportZone[1] : null;
+            if (_videoSourceQueueCard != null)
+                _videoSourceQueueCard.UseAutoAddReplaceText = false;
             ScriptSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetScriptSrcImportDefs(), true, false);
             EncSettingsZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetEncSettingsDefinitions(), enableRealCheck: false);
             UpstreamsZone = [];
@@ -586,7 +591,7 @@ namespace OneColumnEncoder.ViewModels
         #region Button state updates
         public void UpdateFilterScbButtonsState()
         {
-            bool hasVideoSrc = VideoSrcImportZone.Any(t => !string.IsNullOrWhiteSpace(t.P2TextData));
+            bool hasVideoSrc = VideoSrcImportZone.Any(t => !IsVideoSourceQueueItem(t) && !string.IsNullOrWhiteSpace(t.P2TextData));
             FilterScbButtons.B2_2IsEnabled = hasVideoSrc;
 
             if (_modalNavS.CurrentModalVM is FilterScribeVM modal)
@@ -715,6 +720,14 @@ namespace OneColumnEncoder.ViewModels
         }
         private void WireUpSourceCmd(ToolItemCardVM item)
         {
+            if (IsVideoSourceQueueItem(item))
+            {
+                item.R1Command = new BrowseSourceQueueCmd(item, OnSourceQueueImported);
+                item.R2Command = new ClearToolItemCmd(item, () => OnSourceQueueCleared(item));
+                item.PropertyChanged += OnVideoSrcItemPropertyChanged;
+                return;
+            }
+
             SourceFileKind kind = ResolveSourceFileKind(item.Name);
             item.R1Command = kind == SourceFileKind.Video
                 ? new BrowseSourcePathCmd(item, kind, _appDataM, _modalNavS, OnVideoSourceImported)
@@ -946,6 +959,39 @@ namespace OneColumnEncoder.ViewModels
                 resetAnalysis: kind == SourceFileKind.Video || !VideoSrcImportZone.Any(t => t.IsSelected));
         }
 
+        private void OnSourceQueueImported(ToolItemCardVM item, string folderPath, string[] filePaths)
+        {
+            _sourceQueueFileNames[item] = [.. filePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!)];
+            RefreshSourceQueueTitle(item, filePaths.Length);
+
+            foreach (ToolItemCardVM source in VideoSrcImportZone)
+                source.IsSelected = false;
+
+            foreach (ToolItemCardVM script in ScriptSrcImportZone)
+            {
+                script.P2TextData = string.Empty;
+                script.P1TextData = string.Empty;
+                script.IsSelected = false;
+            }
+
+            SaveSourcePath(SourceFileKind.Video, string.Empty);
+            SaveSourcePath(SourceFileKind.AviSynthScript, string.Empty);
+            SaveSourcePath(SourceFileKind.VapourSynthScript, string.Empty);
+            SaveSourcePath(SourceFileKind.SvfiIni, string.Empty);
+
+            if (filePaths.Length > 0)
+                item.IsSelected = true;
+            _appDataM.Save();
+            RefreshSelectedSourceStatus(resetAnalysis: true);
+        }
+
+        private void OnSourceQueueCleared(ToolItemCardVM item)
+        {
+            _sourceQueueFileNames.Remove(item);
+            item.Name = UILangProviderM.Current["Tool.Source.VideoSrcQueue"];
+            RefreshSelectedSourceStatus(resetAnalysis: !VideoSrcImportZone.Any(t => t.IsSelected));
+        }
+
         private void SaveSourcePath(SourceFileKind kind, string filePath)
         {
             switch (kind)
@@ -1031,12 +1077,12 @@ namespace OneColumnEncoder.ViewModels
         }
         private string GetCurrentVideoSourcePath()
         {
-            ToolItemCardVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => !string.IsNullOrWhiteSpace(t.P2TextData));
+            ToolItemCardVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => !IsVideoSourceQueueItem(t) && !string.IsNullOrWhiteSpace(t.P2TextData));
             return videoSrc?.P2TextData ?? string.Empty;
         }
 
         private bool CanRunSourceAnalysis() =>
-            VideoSrcImportZone.Any(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData)) &&
+            VideoSrcImportZone.Any(t => !IsVideoSourceQueueItem(t) && t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData)) &&
             AnalyticsZone.Any(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
 
         private bool IsCurrentAnalysisFor(string sourcePath, string ffprobePath) =>
@@ -1056,7 +1102,7 @@ namespace OneColumnEncoder.ViewModels
 
         private string GetSelectedVideoSourcePath()
         {
-            ToolItemCardVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
+            ToolItemCardVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => !IsVideoSourceQueueItem(t) && t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
             return videoSrc?.P2TextData ?? string.Empty;
         }
 
@@ -1151,6 +1197,16 @@ namespace OneColumnEncoder.ViewModels
                 return SourceFileKind.SvfiIni;
 
             throw new ArgumentException($"Unknown source type: {displayName}");
+        }
+
+        private bool IsVideoSourceQueueItem(ToolItemCardVM item) =>
+            ReferenceEquals(item, _videoSourceQueueCard);
+
+        private static void RefreshSourceQueueTitle(ToolItemCardVM item, int queueCount)
+        {
+            item.Name = queueCount > 0
+                ? string.Format(UILangProviderM.Current["Tool.Source.VideoSrcQueueWithCount"], queueCount)
+                : UILangProviderM.Current["Tool.Source.VideoSrcQueue"];
         }
         #endregion
 
@@ -1401,6 +1457,7 @@ namespace OneColumnEncoder.ViewModels
         private void RefreshZoneLanguage()
         {
             ApplyDefinitionsToZone(VideoSrcImportZone, ToolCatalogProviderM.GetVideoSrcImportDefs());
+            RefreshSourceQueueLanguage();
             RefreshSourceZonePrimaryText(VideoSrcImportZone);
             ApplyDefinitionsToZone(ScriptSrcImportZone, ToolCatalogProviderM.GetScriptSrcImportDefs());
             RefreshSourceZonePrimaryText(ScriptSrcImportZone);
@@ -1421,11 +1478,24 @@ namespace OneColumnEncoder.ViewModels
                 _appDataM.Tools.VspipePath,
                 _appDataM.Tools.VspipeY4mArg);
         }
-        private static void RefreshSourceZonePrimaryText(ObservableCollection<ToolItemCardVM> zone)
+        private void RefreshSourceQueueLanguage()
+        {
+            if (_videoSourceQueueCard == null) return;
+            _videoSourceQueueCard.UseAutoAddReplaceText = false;
+            _sourceQueueFileNames.TryGetValue(_videoSourceQueueCard, out string[]? fileNames);
+            int queueCount = fileNames?.Length ?? 0;
+            RefreshSourceQueueTitle(_videoSourceQueueCard, queueCount);
+            if (queueCount > 0)
+                _videoSourceQueueCard.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(fileNames!);
+        }
+
+        private void RefreshSourceZonePrimaryText(ObservableCollection<ToolItemCardVM> zone)
         {
             foreach (ToolItemCardVM item in zone)
             {
                 if (string.IsNullOrWhiteSpace(item.P2TextData)) continue;
+
+                if (IsVideoSourceQueueItem(item)) continue;
 
                 SourceFileKind fileKind = ResolveSourceFileKind(item.Name);
                 item.P1TextData = SourceFilePickerH.GetPrimaryText(fileKind, item.P2TextData);

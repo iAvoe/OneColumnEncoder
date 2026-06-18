@@ -4,13 +4,18 @@ namespace OneColumnEncoder.Models;
 
 public static class ToolCatalogProviderM
 {
-    // Video Source Import zone (1 item)
+    // Video Source Import zone (2 items)
     public static List<ToolDefinitionM> GetVideoSrcImportDefs() =>
     [
         new(UILangProviderM.Current["Tool.Source.VideoSource"],
             UILangProviderM.Current["Buttons.Replace"],
             UILangProviderM.Current["Buttons.Clear"],
             UILangProviderM.Current["ToolField.Name"],
+            UILangProviderM.Current["ToolField.Path"]),
+        new(UILangProviderM.Current["Tool.Source.VideoSrcQueue"],
+            UILangProviderM.Current["Buttons.Import"],
+            UILangProviderM.Current["Buttons.Clear"],
+            UILangProviderM.Current["SourceQueue.Queue"],
             UILangProviderM.Current["ToolField.Path"]),
     ];
     // Script Source Import zone (3 items)

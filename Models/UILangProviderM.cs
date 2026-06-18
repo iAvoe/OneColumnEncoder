@@ -60,6 +60,7 @@ public class UILangProviderM
             ["Buttons.Delete"] = "Delete",
             ["Buttons.Clear"] = "Clear",
             ["Buttons.Edit"] = "Edit",
+            ["Buttons.Import"] = "Import",
 
             // AppConf group headers
             ["AppConf.Overwrite"] = "Overwrite Handling",
@@ -103,6 +104,8 @@ public class UILangProviderM
             ["ToolField.OtherCustomParams"] = "Other custom params",
 
             ["Tool.Source.VideoSource"] = "Video Source",
+            ["Tool.Source.VideoSrcQueue"] = "\U0001F5C1 Video Src. Queue",
+            ["Tool.Source.VideoSrcQueueWithCount"] = "\U0001F5C1 Video Src. Queue ({0})",
             ["Tool.Source.AviSynth"] = "AviSynth .avs Source",
             ["Tool.Source.VapourSynth"] = "VapourSynth .vpy Source",
             ["Tool.Source.Svfi"] = "SVFI .ini Source",
@@ -110,6 +113,10 @@ public class UILangProviderM
             ["Tool.Enc.OutputSetting"] = "Output Setting",
             ["Tool.Enc.Parallelism"] = "Parallelism Control",
             ["Tool.Enc.EncParams"] = "Encode Settings",
+
+            // Source queue card
+            ["SourceQueue.Queue"] = "Queue",
+            ["SourceQueue.SelectFolderTitle"] = "Select video source queue folder",
 
             // Dialogs
             ["Dialog.SelectTitle"] = "Select {0}",
@@ -368,6 +375,7 @@ public class UILangProviderM
             ["Buttons.Delete"] = "删除",
             ["Buttons.Clear"] = "清空",
             ["Buttons.Edit"] = "编辑",
+            ["Buttons.Import"] = "导入",
 
             ["AppConf.Overwrite"] = "文件覆盖确认行为",
             ["AppConf.Language"] = "语言/Language",
@@ -405,6 +413,8 @@ public class UILangProviderM
             ["ToolField.OtherCustomParams"] = "其他自定义参数",
 
             ["Tool.Source.VideoSource"] = "视频源",
+            ["Tool.Source.VideoSrcQueue"] = "\U0001F5C1 Video Src. Queue",
+            ["Tool.Source.VideoSrcQueueWithCount"] = "\U0001F5C1 \U0001F5C1 Video Src. Queue ({0})",
             ["Tool.Source.AviSynth"] = "AviSynth .avs 源",
             ["Tool.Source.VapourSynth"] = "VapourSynth .vpy 源",
             ["Tool.Source.Svfi"] = "SVFI .ini 源",
@@ -412,6 +422,9 @@ public class UILangProviderM
             ["Tool.Enc.OutputSetting"] = "输出设置",
             ["Tool.Enc.Parallelism"] = "并行计算调度",
             ["Tool.Enc.EncParams"] = "压缩参数配置",
+
+            ["SourceQueue.Queue"] = "序列",
+            ["SourceQueue.SelectFolderTitle"] = "选择视频源队列文件夹",
 
             ["Dialog.SelectTitle"] = "选择 {0}",
             ["Dialog.ReplaceTitle"] = "替换 {0}",
@@ -655,6 +668,7 @@ public class UILangProviderM
             ["Buttons.Delete"] = "刪除",
             ["Buttons.Clear"] = "清空",
             ["Buttons.Edit"] = "編輯",
+            ["Buttons.Import"] = "導入",
 
             ["AppConf.Overwrite"] = "文件覆蓋確認行為",
             ["AppConf.Language"] = "語言/Language",
@@ -692,6 +706,8 @@ public class UILangProviderM
             ["ToolField.OtherCustomParams"] = "其他自訂參數",
 
             ["Tool.Source.VideoSource"] = "視訊來源",
+            ["Tool.Source.VideoSrcQueue"] = "\U0001F5C1 Video Src. Queue",
+            ["Tool.Source.VideoSrcQueueWithCount"] = "\U0001F5C1 \U0001F5C1 Video Src. Queue ({0})",
             ["Tool.Source.AviSynth"] = "AviSynth .avs 來源",
             ["Tool.Source.VapourSynth"] = "VapourSynth .vpy 來源",
             ["Tool.Source.Svfi"] = "SVFI .ini 來源",
@@ -699,6 +715,9 @@ public class UILangProviderM
             ["Tool.Enc.OutputSetting"] = "輸出設定",
             ["Tool.Enc.Parallelism"] = "平行計算調度",
             ["Tool.Enc.EncParams"] = "壓縮參數配置",
+
+            ["SourceQueue.Queue"] = "序列",
+            ["SourceQueue.SelectFolderTitle"] = "選擇視訊來源序列資料夾",
 
             ["Dialog.SelectTitle"] = "選擇 {0}",
             ["Dialog.ReplaceTitle"] = "替換 {0}",

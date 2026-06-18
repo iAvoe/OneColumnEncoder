@@ -5,6 +5,7 @@ using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.Views;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows;
 
 namespace OneColumnEncoder.Helpers
@@ -52,6 +53,39 @@ namespace OneColumnEncoder.Helpers
             return fileKind == SourceFileKind.Video
                 ? Path.GetFileName(filePath)
                 : GetCustomScriptModeText();
+        }
+
+        public static string[] GetVideoFilesInFolder(string folderPath)
+        {
+            if (string.IsNullOrWhiteSpace(folderPath) || !Directory.Exists(folderPath))
+                return [];
+
+            string[] extensions = SourceFilePickerLangProviderM.VideoExtensions
+                .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Select(extension => extension.TrimStart('*').ToLowerInvariant())
+                .ToArray();
+
+            return [.. Directory.EnumerateFiles(folderPath)
+                .Where(filePath => extensions.Contains(Path.GetExtension(filePath).ToLowerInvariant()))
+                .OrderBy(filePath => filePath, NaturalFilePathComparer.Instance)];
+        }
+
+        private sealed class NaturalFilePathComparer : IComparer<string>
+        {
+            public static NaturalFilePathComparer Instance { get; } = new();
+
+            public int Compare(string? x, string? y)
+            {
+                string xName = Path.GetFileName(x ?? string.Empty);
+                string yName = Path.GetFileName(y ?? string.Empty);
+                int result = StrCmpLogicalW(xName, yName);
+                return result != 0
+                    ? result
+                    : StringComparer.OrdinalIgnoreCase.Compare(x, y);
+            }
+
+            [DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
+            private static extern int StrCmpLogicalW(string x, string y);
         }
 
         private static string? SelectFile(string title, string filter, string? initialDirectory)
