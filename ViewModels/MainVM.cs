@@ -666,7 +666,7 @@ namespace OneColumnEncoder.ViewModels
                 ToolDefinitionProviderM.IsImportedTool(t.Name, "one_line_shot_args.exe"));
 
             bool allReady = toolsReady && toolsChecklistReady && sourceValidationReady && encodeTermsReady && dependencyReady;
-            EncStartButtons.B3_2IsEnabled = allReady && !oneLineShotSelected;
+            EncStartButtons.B3_2IsEnabled = allReady && !oneLineShotSelected && !IsQueueRouteActive();
             EncStartButtons.B3_3IsEnabled = allReady;
             SVFIClipDisabledHintVisible = oneLineShotSelected;
         }

@@ -4,11 +4,13 @@ using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.ViewModels.Cards;
+using OneColumnEncoder.Views;
 using System.IO;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Windows;
 
 namespace OneColumnEncoder.Commands
 {
@@ -161,7 +163,30 @@ namespace OneColumnEncoder.Commands
                 excluded.Count,
                 queueJsonPath,
                 excludedJsonPath);
-            new OpenInfoModalCmd(_modalNavS, UILangProviderM.SrcAnalysisWindowTitle, message).Execute(null);
+            ShowQueueAnalysisCompletedModal(message, queueJsonPath, excludedJsonPath);
+        }
+
+        private void ShowQueueAnalysisCompletedModal(string message, string queueJsonPath, string excludedJsonPath)
+        {
+            ConfirmationModal window = new();
+            CloseModalCmd closeCmd = new(window.Close);
+            ConfirmationVM vm = ConfirmationVM.CreateInfo(
+                UILangProviderM.SrcAnalysisWindowTitle,
+                message,
+                closeCmd,
+                closeCmd);
+            vm.ContextMenuItems.Add(new(
+                UILangProviderM.Current["SourceQueue.CopyQueueJsonPath"],
+                new ActionCmd(_ => Clipboard.SetText(queueJsonPath))));
+            vm.ContextMenuItems.Add(new(
+                UILangProviderM.Current["SourceQueue.CopyExcludedJsonPath"],
+                new ActionCmd(_ => Clipboard.SetText(excludedJsonPath))));
+
+            window.DataContext = vm;
+            window.Owner = Application.Current.MainWindow;
+            window.Closed += (_, _) => _modalNavS.Close();
+            _modalNavS.CurrentModalVM = vm;
+            window.ShowDialog();
         }
 
         private sealed class SaveLoadPlaceholder : SaveLoadBaseH<SaveLoadPlaceholder>
