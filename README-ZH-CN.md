@@ -70,7 +70,7 @@
 
 **系统**：
 - Windows 10 22H2
-- Windows 11 未知版本号（感谢 Luft 帮助验证）
+- Windows 11 25H2（感谢 @Ronifue 帮助验证）
 
 **硬件**：
 - Core i5 7600k（4C4T）

@@ -68,7 +68,7 @@ Or, TLDR; and use tools provided in this package (not recommended but its an opt
 
 **OS**：
 - Windows 10 22H2
-- Windows 11 Unknown version (thanks to Luft)
+- Windows 11 25H2 (thanks to @Ronifue)
 
 **Hardware**：
 - Core i5 7600k (4C4T)
