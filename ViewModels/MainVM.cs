@@ -960,7 +960,7 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        private void PromptRunSourceAnalysisAfterReplace()
+        private void PromptRunSourceAnalysisAfterReplace(bool promptScriptGenAfterAnalysis = true)
         {
             if (!AnalyzeSrcVideo.CanExecute(null)) return;
 
@@ -974,7 +974,7 @@ namespace OneColumnEncoder.ViewModels
                 {
                     window.DialogResult = true;
                     window.Close();
-                    _promptScriptGenAfterAnalysis = true;
+                    _promptScriptGenAfterAnalysis = promptScriptGenAfterAnalysis;
                     if (AnalyzeSrcVideo.CanExecute(null))
                         AnalyzeSrcVideo.Execute(null);
                 }));
@@ -1012,6 +1012,8 @@ namespace OneColumnEncoder.ViewModels
                 item.IsSelected = true;
             _appDataM.Save();
             RefreshSelectedSourceStatus(resetAnalysis: true);
+            if (filePaths.Length > 0)
+                PromptRunSourceAnalysisAfterReplace(promptScriptGenAfterAnalysis: false);
         }
 
         private void OnSourceQueueCleared(ToolItemCardVM item)
@@ -1585,7 +1587,7 @@ namespace OneColumnEncoder.ViewModels
                 SourceFileKind fileKind = ResolveSourceFileKind(item.Name);
                 string[] filePaths = SourceFilePickerH.GetSourceFilesInFolder(item.P2TextData, fileKind);
                 item.P1TextData = VideoSourceQueueH.GetQueueP1Text(
-                    filePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!).ToArray());
+                    [.. filePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!)]);
             }
         }
 
