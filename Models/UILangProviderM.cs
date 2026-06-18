@@ -119,7 +119,7 @@ public class UILangProviderM
             // Source queue card
             ["SourceQueue.Sequence"] = "Seq.",
             ["SourceQueue.SelectFolderTitle"] = "Select video source queue folder",
-            ["SourceQueue.AnalysisCompleted"] = "Queue source analysis completed. Filtered out {0} video(s) due to excessive differences. Exclusion list JSON:\n{1}",
+            ["SourceQueue.AnalysisCompleted"] = "Queue source analysis completed. Filtered out {0} video(s) due to excessive differences. Exclusion list:\n\n{1}",
 
             // Dialogs
             ["Dialog.SelectTitle"] = "Select {0}",
@@ -430,7 +430,7 @@ public class UILangProviderM
 
             ["SourceQueue.Sequence"] = "序列",
             ["SourceQueue.SelectFolderTitle"] = "选择视频源队列文件夹",
-            ["SourceQueue.AnalysisCompleted"] = "队列视频源分析已完成。因差异过大过滤掉 {0} 个视频。排除列表 JSON：\n{1}",
+            ["SourceQueue.AnalysisCompleted"] = "队列视频源分析已完成。因差异过大过滤掉 {0} 个视频。排除列表：\n{1}",
 
             ["Dialog.SelectTitle"] = "选择 {0}",
             ["Dialog.ReplaceTitle"] = "替换 {0}",
@@ -726,7 +726,7 @@ public class UILangProviderM
 
             ["SourceQueue.Sequence"] = "序列",
             ["SourceQueue.SelectFolderTitle"] = "選擇視訊來源序列資料夾",
-            ["SourceQueue.AnalysisCompleted"] = "佇列視訊來源分析已完成。因差異過大過濾掉 {0} 個視訊。排除列表 JSON：\n{1}",
+            ["SourceQueue.AnalysisCompleted"] = "佇列視訊來源分析已完成。因差異過大過濾掉 {0} 個視訊。排除列表：\n{1}",
 
             ["Dialog.SelectTitle"] = "選擇 {0}",
             ["Dialog.ReplaceTitle"] = "替換 {0}",

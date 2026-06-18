@@ -110,7 +110,8 @@ namespace OneColumnEncoder.Commands
                 string rawJson = await FfprobeVideoAnalysisH.AnalyzeAsync(ffprobePath, filePath);
                 probeCard.ApplyFfprobeAnalysisJson(rawJson);
                 SourceCheckSignature signature = probeCard.GetSignature();
-                QueueSourceEntry entry = new(filePath, Path.GetFileName(filePath), rawJson);
+                using JsonDocument rawDocument = JsonDocument.Parse(rawJson);
+                QueueSourceEntry entry = new(filePath, Path.GetFileName(filePath), rawDocument.RootElement.Clone());
 
                 if (referenceSignature == null)
                 {
@@ -162,7 +163,7 @@ namespace OneColumnEncoder.Commands
             protected override string FilePath => string.Empty;
         }
 
-        private sealed record QueueSourceEntry(string FilePath, string DisplayName, string FfprobeJson);
+        private sealed record QueueSourceEntry(string FilePath, string DisplayName, JsonElement FfprobeJson);
 
         private sealed record QueueSourceData(string ReferenceFilePath, IReadOnlyList<QueueSourceEntry> Entries);
     }
