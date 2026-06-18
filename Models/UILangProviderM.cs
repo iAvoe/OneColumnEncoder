@@ -16,6 +16,8 @@ public class UILangProviderM
             // Cards section headers
             ["Cards.ToolsImport"] = "Import or Replace Tools",
             ["Cards.SourceValidation"] = "Source Video Validation",
+            ["Cards.QueueSourceFilter"] = "Queue Source Filter",
+            ["Cards.QueueSourceFilterSubtitle"] = "Ensures queue consistency",
             ["Cards.SrcIncompatOrCorrupted"] = "Incompatibility / Corrupted (red)",
             ["Cards.SrcQualityIssues"] = "Quality Issues (yellow-orange)",
             ["Cards.EncPrerequisites"] = "Encoding Prerequisites",
@@ -115,8 +117,9 @@ public class UILangProviderM
             ["Tool.Enc.EncParams"] = "Encode Settings",
 
             // Source queue card
-            ["SourceQueue.Queue"] = "Queue",
+            ["SourceQueue.Sequence"] = "Seq.",
             ["SourceQueue.SelectFolderTitle"] = "Select video source queue folder",
+            ["SourceQueue.AnalysisCompleted"] = "Queue source analysis completed. Filtered out {0} video(s) due to excessive differences. Exclusion list JSON:\n{1}",
 
             // Dialogs
             ["Dialog.SelectTitle"] = "Select {0}",
@@ -155,7 +158,7 @@ public class UILangProviderM
             ["Checklist.Tools.AnalysisPicked"] = "Click-select an analysis program",
             ["Checklist.Tools.CompleteSourceAnalysis"] = "Complete source analysis",
             ["Checklist.Tools.DependenciesPicked"] = "Click-select a dependency program",
-            ["Checklist.Tools.VideoSourcePicked"] = "Click-select a video source",
+            ["Checklist.Tools.VideoSourcePicked"] = "Click-select video source or queue",
             ["Checklist.Tools.ScriptSourcePicked"] = "Click-select a script source (VS/AVS/SVFI upstream)",
             ["Checklist.Tools.SourcePicked"] = "Source video is imported and selected",
 
@@ -333,6 +336,8 @@ public class UILangProviderM
         {
             ["Cards.ToolsImport"] = "导入或更换程序",
             ["Cards.SourceValidation"] = "视频源检查",
+            ["Cards.QueueSourceFilter"] = "队列源筛选",
+            ["Cards.QueueSourceFilterSubtitle"] = "确保队列一致性",
             ["Cards.SrcIncompatOrCorrupted"] = "兼容问题 / 数据损坏（红色）",
             ["Cards.SrcQualityIssues"] = "质量问题（橙黄色）",
             ["Cards.EncPrerequisites"] = "开始压制前提",
@@ -413,7 +418,7 @@ public class UILangProviderM
             ["ToolField.OtherCustomParams"] = "其他自定义参数",
 
             ["Tool.Source.VideoSource"] = "视频源",
-            ["Tool.Source.VideoSrcQueue"] = "\U0001F5C1 Video Src. Queue",
+            ["Tool.Source.VideoSrcQueue"] = "\U0001F5C1 Video Source Queue",
             ["Tool.Source.VideoSrcQueueWithCount"] = "\U0001F5C1 \U0001F5C1 Video Src. Queue ({0})",
             ["Tool.Source.AviSynth"] = "AviSynth .avs 源",
             ["Tool.Source.VapourSynth"] = "VapourSynth .vpy 源",
@@ -423,8 +428,9 @@ public class UILangProviderM
             ["Tool.Enc.Parallelism"] = "并行计算调度",
             ["Tool.Enc.EncParams"] = "压缩参数配置",
 
-            ["SourceQueue.Queue"] = "序列",
+            ["SourceQueue.Sequence"] = "序列",
             ["SourceQueue.SelectFolderTitle"] = "选择视频源队列文件夹",
+            ["SourceQueue.AnalysisCompleted"] = "队列视频源分析已完成。因差异过大过滤掉 {0} 个视频。排除列表 JSON：\n{1}",
 
             ["Dialog.SelectTitle"] = "选择 {0}",
             ["Dialog.ReplaceTitle"] = "替换 {0}",
@@ -458,7 +464,7 @@ public class UILangProviderM
             ["Checklist.Tools.AnalysisPicked"] = "点选分析工具",
             ["Checklist.Tools.CompleteSourceAnalysis"] = "完成视频源分析",
             ["Checklist.Tools.DependenciesPicked"] = "点选依赖程序",
-            ["Checklist.Tools.VideoSourcePicked"] = "选中视频源",
+            ["Checklist.Tools.VideoSourcePicked"] = "选中视频源或队列",
             ["Checklist.Tools.ScriptSourcePicked"] = "选中 VS/AVS/SVFI 上游时点选脚本源",
             ["Checklist.Tools.SourcePicked"] = "待压制的源文件存在且已被选择",
 
@@ -626,6 +632,8 @@ public class UILangProviderM
         {
             ["Cards.ToolsImport"] = "導入或更換程序",
             ["Cards.SourceValidation"] = "影片源檢查",
+            ["Cards.QueueSourceFilter"] = "佇列源篩選",
+            ["Cards.QueueSourceFilterSubtitle"] = "確保佇列一致性",
             ["Cards.SrcIncompatOrCorrupted"] = "相容問題 / 數據損壞（紅色）",
             ["Cards.SrcQualityIssues"] = "品質問題（橙黃色）",
             ["Cards.EncPrerequisites"] = "開始壓制前提",
@@ -716,8 +724,9 @@ public class UILangProviderM
             ["Tool.Enc.Parallelism"] = "平行計算調度",
             ["Tool.Enc.EncParams"] = "壓縮參數配置",
 
-            ["SourceQueue.Queue"] = "序列",
+            ["SourceQueue.Sequence"] = "序列",
             ["SourceQueue.SelectFolderTitle"] = "選擇視訊來源序列資料夾",
+            ["SourceQueue.AnalysisCompleted"] = "佇列視訊來源分析已完成。因差異過大過濾掉 {0} 個視訊。排除列表 JSON：\n{1}",
 
             ["Dialog.SelectTitle"] = "選擇 {0}",
             ["Dialog.ReplaceTitle"] = "替換 {0}",
@@ -751,7 +760,7 @@ public class UILangProviderM
             ["Checklist.Tools.AnalysisPicked"] = "點選分析工具",
             ["Checklist.Tools.CompleteSourceAnalysis"] = "完成影片來源分析",
             ["Checklist.Tools.DependenciesPicked"] = "點選依賴程式",
-            ["Checklist.Tools.VideoSourcePicked"] = "點選影片來源",
+            ["Checklist.Tools.VideoSourcePicked"] = "點選視訊來源或隊列",
             ["Checklist.Tools.ScriptSourcePicked"] = "選中 VS/AVS/SVFI 上游時點選腳本源",
             ["Checklist.Tools.SourcePicked"] = "待壓制的源文件存在且已被選擇",
 
@@ -1023,7 +1032,7 @@ public class UILangProviderM
         ["Checklist.Tools.AnalysisPicked"] = "Sélectionner un analyseur",
         ["Checklist.Tools.CompleteSourceAnalysis"] = "Analyse source terminée",
         ["Checklist.Tools.DependenciesPicked"] = "Sélectionner dépendance",
-        ["Checklist.Tools.VideoSourcePicked"] = "Sélectionner la source vidéo",
+        ["Checklist.Tools.VideoSourcePicked"] = "Sélectionner la source vidéo ou la file d'attente",
         ["Checklist.Tools.ScriptSourcePicked"] = "Sélectionner un script source (amont VS/AVS/SVFI)",
         ["Checklist.Tools.SourcePicked"] = "Source vidéo importée et choisie",
         ["Checklist.Source1.Metadata"] = "Métadonnées et SEI lisibles",
@@ -1272,7 +1281,7 @@ public class UILangProviderM
         ["Checklist.Tools.AnalysisPicked"] = "Seleccionar analizador",
         ["Checklist.Tools.CompleteSourceAnalysis"] = "Análisis de fuente completo",
         ["Checklist.Tools.DependenciesPicked"] = "Seleccionar dependencia",
-        ["Checklist.Tools.VideoSourcePicked"] = "Seleccionar fuente de video",
+        ["Checklist.Tools.VideoSourcePicked"] = "Seleccionar fuente de video o cola",
         ["Checklist.Tools.ScriptSourcePicked"] = "Seleccionar script fuente (upstream VS/AVS/SVFI)",
         ["Checklist.Tools.SourcePicked"] = "Vídeo fuente importado y elegido",
         ["Checklist.Source1.Metadata"] = "Metadatos y SEI legibles",
@@ -1512,7 +1521,7 @@ public class UILangProviderM
         ["Checklist.Tools.AnalysisPicked"] = "解析プログラムを選択",
         ["Checklist.Tools.CompleteSourceAnalysis"] = "ソース解析完了",
         ["Checklist.Tools.DependenciesPicked"] = "依存プログラムを選択",
-        ["Checklist.Tools.VideoSourcePicked"] = "ビデオソースを選択",
+        ["Checklist.Tools.VideoSourcePicked"] = "ビデオソースまたはキューを選択",
         ["Checklist.Tools.ScriptSourcePicked"] = "VS/AVS/SVFI 上流のスクリプトソースを選択",
         ["Checklist.Source1.Metadata"] = "メタデータと SEI が読取可能",
         ["Checklist.Source1.Progressive"] = "プログレッシブ / 非インターレース",
@@ -1762,7 +1771,7 @@ public class UILangProviderM
         ["Checklist.Tools.AnalysisPicked"] = "Выбрать анализатор",
         ["Checklist.Tools.CompleteSourceAnalysis"] = "Завершить анализ источника",
         ["Checklist.Tools.DependenciesPicked"] = "Выбрать зависимость",
-        ["Checklist.Tools.VideoSourcePicked"] = "Выбрать видеоисточник",
+        ["Checklist.Tools.VideoSourcePicked"] = "Выбрать видеоисточник или очередь",
         ["Checklist.Tools.ScriptSourcePicked"] = "Выбрать скрипт-источник (апстрим VS/AVS/SVFI)",
         ["Checklist.Source1.Metadata"] = "Метаданные и SEI читаются",
         ["Checklist.Source1.Progressive"] = "Прогрессивное видео / не чересстрочное",

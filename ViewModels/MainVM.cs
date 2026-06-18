@@ -23,6 +23,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly ToolItemCardVM? _outputSettingCard;
         private readonly ToolItemCardVM? _videoSourceQueueCard;
         private readonly Dictionary<ToolItemCardVM, string[]> _sourceQueueFileNames = [];
+        private readonly Dictionary<ToolItemCardVM, string[]> _sourceQueueFilePaths = [];
         private string _scriptScribeFfmpegFilterArgs = string.Empty;
 
         // Groups of Card or other element UIs
@@ -63,8 +64,15 @@ namespace OneColumnEncoder.ViewModels
         // Checklist Card UIs
         public ToolsImportCardVM ToolsImportCard { get; }
         public SourceCheckCardVM SrcValidationCard { get; } = new();
+        public QueueSrcFilterCardVM QueueSrcFilterCard { get; } = new();
         public EncTermsCardVM EncTermsCard { get; } = new();
         public BestPracsSelfCheckCardVM BestPracticesCard { get; } = new();
+        private SourceCheckCardVM _activeSrcValidationCard = null!;
+        public SourceCheckCardVM ActiveSrcValidationCard
+        {
+            get => _activeSrcValidationCard;
+            private set => SetProperty(ref _activeSrcValidationCard, value);
+        }
         // Section header texts
         public static string SectionSelectUpstream => UICaptionProviderM.Sections.SelectUpstream;
         public static string SectionSelectEncoder => UICaptionProviderM.Sections.SelectEncoder;
@@ -106,6 +114,7 @@ namespace OneColumnEncoder.ViewModels
             OpenAppConf = openAppConf;
             OpenUsages = openUsages;
             SelectTool = new SelectToolCmd(this);
+            ActiveSrcValidationCard = SrcValidationCard;
 
             ToolsImportCard = new ToolsImportCardVM(modalNavS);
             VideoSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetVideoSrcImportDefs(), true, false);
@@ -172,8 +181,11 @@ namespace OneColumnEncoder.ViewModels
                 GetSelectedFfprobePath,
                 GetSelectedVideoSourcePath,
                 _srcVideoAnalysis,
-                SrcValidationCard,
+                () => ActiveSrcValidationCard,
                 modalNavS,
+                IsQueueRouteActive,
+                GetCurrentQueueFilePaths,
+                OnSourceQueueAccepted,
                 OnSourceAnalysisCompleted,
                 () =>
                 { // On source analysis complete
@@ -181,9 +193,9 @@ namespace OneColumnEncoder.ViewModels
                     UpdateEncStartButtonsState();
                 });
             InspectSrcProblems = new InspectSrcProblemsCmd(
-                _srcVideoAnalysis, SrcValidationCard, modalNavS);
+                _srcVideoAnalysis, () => ActiveSrcValidationCard, modalNavS);
             BypassSrcChecklist = new BypsSrcChecklistCmd(
-                SrcValidationCard,
+                () => ActiveSrcValidationCard,
                 () => !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson),
                 UpdateEncStartButtonsState);
             SampleClip = new OpenSampleClipCmd(
@@ -234,6 +246,7 @@ namespace OneColumnEncoder.ViewModels
             SrcValidationCard.Name = UICaptionProviderM.Cards.SourceValidation;
             SrcValidationCard.P1Name = UICaptionProviderM.Cards.SourceIncompatOrCorrupted;
             SrcValidationCard.P3Name = UICaptionProviderM.Cards.SrcQualityIssues;
+            QueueSrcFilterCard.RefreshLanguage();
             EncTermsCard.Name = UICaptionProviderM.Cards.EncPrerequisites;
             EncTermsCard.P1Name = UICaptionProviderM.Cards.EncHardware;
             EncTermsCard.P3Name = UICaptionProviderM.Cards.EncSoftware;
@@ -245,6 +258,7 @@ namespace OneColumnEncoder.ViewModels
             SrcValidationCard.IsSvtav1SelectedFunc = () =>
                 EncodersZone.Any(t => t.IsSelected
                     && ToolDefinitionProviderM.IsImportedTool(t.Name, "svtav1encapp.exe"));
+            QueueSrcFilterCard.IsSvtav1SelectedFunc = SrcValidationCard.IsSvtav1SelectedFunc;
 
             EncTermsCard.GetOutputDirectoryFunc = () =>
             {
@@ -556,6 +570,10 @@ namespace OneColumnEncoder.ViewModels
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
             foreach (ChecklistEntryVM entry in SrcValidationCard.Checklist2)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
+            foreach (ChecklistEntryVM entry in QueueSrcFilterCard.Checklist1)
+                entry.PropertyChanged += OnChecklistEntryPropertyChanged;
+            foreach (ChecklistEntryVM entry in QueueSrcFilterCard.Checklist2)
+                entry.PropertyChanged += OnChecklistEntryPropertyChanged;
             foreach (ChecklistEntryVM entry in EncTermsCard.Checklist1)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
             foreach (ChecklistEntryVM entry in EncTermsCard.Checklist2)
@@ -571,6 +589,10 @@ namespace OneColumnEncoder.ViewModels
             foreach (ChecklistEntryVM entry in SrcValidationCard.Checklist1)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
             foreach (ChecklistEntryVM entry in SrcValidationCard.Checklist2)
+                entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
+            foreach (ChecklistEntryVM entry in QueueSrcFilterCard.Checklist1)
+                entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
+            foreach (ChecklistEntryVM entry in QueueSrcFilterCard.Checklist2)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
             foreach (ChecklistEntryVM entry in EncTermsCard.Checklist1)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
@@ -622,10 +644,11 @@ namespace OneColumnEncoder.ViewModels
             // Checklist:
             // 1. Selected 
             // SVT-AV1 may eventually have 12bit support, but for now keep encoding start button disabled
-            bool sourceValidationReady = SrcValidationCard.IsBypassed ||
+            SourceCheckCardVM activeSrcCard = ActiveSrcValidationCard;
+            bool sourceValidationReady = activeSrcCard.IsBypassed ||
                 (hasRawJson &&
-                SrcValidationCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
-                SrcValidationCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success));
+                activeSrcCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
+                activeSrcCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success));
 
             bool encodeTermsReady = EncTermsCard.IsBypassed ||
                 EncTermsCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
@@ -962,6 +985,7 @@ namespace OneColumnEncoder.ViewModels
         private void OnSourceQueueImported(ToolItemCardVM item, string folderPath, string[] filePaths)
         {
             _sourceQueueFileNames[item] = [.. filePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!)];
+            _sourceQueueFilePaths[item] = filePaths;
             RefreshSourceQueueTitle(item, filePaths.Length);
 
             foreach (ToolItemCardVM source in VideoSrcImportZone)
@@ -988,8 +1012,19 @@ namespace OneColumnEncoder.ViewModels
         private void OnSourceQueueCleared(ToolItemCardVM item)
         {
             _sourceQueueFileNames.Remove(item);
+            _sourceQueueFilePaths.Remove(item);
             item.Name = UILangProviderM.Current["Tool.Source.VideoSrcQueue"];
             RefreshSelectedSourceStatus(resetAnalysis: !VideoSrcImportZone.Any(t => t.IsSelected));
+        }
+
+        private void OnSourceQueueAccepted(string[] acceptedFilePaths, string queueJsonPath)
+        {
+            if (_videoSourceQueueCard == null) return;
+
+            _sourceQueueFilePaths[_videoSourceQueueCard] = acceptedFilePaths;
+            _sourceQueueFileNames[_videoSourceQueueCard] = [.. acceptedFilePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!)];
+            _videoSourceQueueCard.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(_sourceQueueFileNames[_videoSourceQueueCard]);
+            RefreshSourceQueueTitle(_videoSourceQueueCard, acceptedFilePaths.Length);
         }
 
         private void SaveSourcePath(SourceFileKind kind, string filePath)
@@ -1015,18 +1050,19 @@ namespace OneColumnEncoder.ViewModels
 
         public void RefreshSelectedSourceStatus(bool resetAnalysis)
         {
+            RefreshActiveSourceRoute();
             bool anySelected =
                 VideoSrcImportZone.Any(t => t.IsSelected) ||
                 ScriptSrcImportZone.Any(t => t.IsSelected);
             if (resetAnalysis)
             {
                 _srcVideoAnalysis.Clear();
-                SrcValidationCard.ResetAnalysisStatus(anySelected);
+                ActiveSrcValidationCard.ResetAnalysisStatus(anySelected);
                 ToolsImportCard.ResetCompleteSourceAnalysisStatus();
             }
             else
             {
-                SrcValidationCard.SetSourcePickedStatus(anySelected);
+                ActiveSrcValidationCard.SetSourcePickedStatus(anySelected);
             }
 
             RefreshToolSourceChecklistStatus();
@@ -1058,8 +1094,8 @@ namespace OneColumnEncoder.ViewModels
             if (!_isInspBypsChkButtonsReady) return;
 
             bool hasRawJson = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
-            if (!hasRawJson && SrcValidationCard.IsBypassed)
-                SrcValidationCard.SetBypassed(false);
+            if (!hasRawJson && ActiveSrcValidationCard.IsBypassed)
+                ActiveSrcValidationCard.SetBypassed(false);
 
             InspBypsChkButtons.B2_1IsEnabled = hasRawJson;
             InspBypsChkButtons.B2_2IsEnabled = hasRawJson;
@@ -1082,7 +1118,9 @@ namespace OneColumnEncoder.ViewModels
         }
 
         private bool CanRunSourceAnalysis() =>
-            VideoSrcImportZone.Any(t => !IsVideoSourceQueueItem(t) && t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData)) &&
+            (IsQueueRouteActive()
+                ? GetCurrentQueueFilePaths().Length > 0
+                : VideoSrcImportZone.Any(t => !IsVideoSourceQueueItem(t) && t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData))) &&
             AnalyticsZone.Any(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
 
         private bool IsCurrentAnalysisFor(string sourcePath, string ffprobePath) =>
@@ -1096,9 +1134,24 @@ namespace OneColumnEncoder.ViewModels
 
             bool anySelected = VideoSrcImportZone.Any(t => t.IsSelected) || ScriptSrcImportZone.Any(t => t.IsSelected);
             _srcVideoAnalysis.Clear();
-            SrcValidationCard.ResetAnalysisStatus(anySelected);
+            ActiveSrcValidationCard.ResetAnalysisStatus(anySelected);
             ToolsImportCard.ResetCompleteSourceAnalysisStatus();
         }
+
+        private void RefreshActiveSourceRoute()
+        {
+            ActiveSrcValidationCard = IsQueueRouteActive()
+                ? QueueSrcFilterCard
+                : SrcValidationCard;
+        }
+
+        private bool IsQueueRouteActive() =>
+            _videoSourceQueueCard != null && _videoSourceQueueCard.IsSelected;
+
+        private string[] GetCurrentQueueFilePaths() =>
+            _videoSourceQueueCard != null && _sourceQueueFilePaths.TryGetValue(_videoSourceQueueCard, out string[]? filePaths)
+                ? filePaths
+                : [];
 
         private string GetSelectedVideoSourcePath()
         {
@@ -1442,6 +1495,7 @@ namespace OneColumnEncoder.ViewModels
             SrcValidationCard.P1Name = UICaptionProviderM.Cards.SourceIncompatOrCorrupted;
             SrcValidationCard.P3Name = UICaptionProviderM.Cards.SrcQualityIssues;
             SrcValidationCard.RefreshLanguage();
+            QueueSrcFilterCard.RefreshLanguage();
 
             EncTermsCard.Name = UICaptionProviderM.Cards.EncPrerequisites;
             EncTermsCard.P1Name = UICaptionProviderM.Cards.EncHardware;

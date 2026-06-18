@@ -2,9 +2,9 @@ using OneColumnEncoder.ViewModels.Cards;
 
 namespace OneColumnEncoder.Commands
 {
-    public class BypsSrcChecklistCmd(SourceCheckCardVM srcValidationCard, Func<bool> hasRawJson, Action updateEncStartButtonsState) : BaseCmd
+    public class BypsSrcChecklistCmd(Func<SourceCheckCardVM> getSrcValidationCard, Func<bool> hasRawJson, Action updateEncStartButtonsState) : BaseCmd
     {
-        private readonly SourceCheckCardVM _srcValidationCard = srcValidationCard;
+        private readonly Func<SourceCheckCardVM> _getSrcValidationCard = getSrcValidationCard;
         private readonly Func<bool> _hasRawJson = hasRawJson;
         private readonly Action _updateEncStartButtonsState = updateEncStartButtonsState;
 
@@ -14,7 +14,8 @@ namespace OneColumnEncoder.Commands
         {
             if (!CanExecute(parameter)) return;
 
-            _srcValidationCard.SetBypassed(!_srcValidationCard.IsBypassed);
+            SourceCheckCardVM srcValidationCard = _getSrcValidationCard();
+            srcValidationCard.SetBypassed(!srcValidationCard.IsBypassed);
             _updateEncStartButtonsState();
         }
     }

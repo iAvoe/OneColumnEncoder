@@ -17,11 +17,11 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         private string? _lastAnalysisJson;
 
-        private const int SourcePickedChecklistIdx = 0;
-        private const int MetadataChecklistIdx = 1;
-        private const int ProgressiveChecklistIdx = 2;
-        private const int Svtav1BitDepthChecklistIdx = 3;
-        private const int MaxBitDepthChecklistIdx = 4;
+        protected const int SourcePickedChecklistIdx = 0;
+        protected const int MetadataChecklistIdx = 1;
+        protected const int ProgressiveChecklistIdx = 2;
+        protected const int Svtav1BitDepthChecklistIdx = 3;
+        protected const int MaxBitDepthChecklistIdx = 4;
 
         public SourceCheckCardVM()
         {
@@ -130,6 +130,11 @@ namespace OneColumnEncoder.ViewModels.Cards
             for (int i = 0; i < Checklist2.Count; i++) SetChecklist2(i, StatusType.Waiting);
         }
 
+        public SourceCheckSignature GetSignature() =>
+            new(
+                [.. Checklist1.Select(entry => entry.Status)],
+                [.. Checklist2.Select(entry => entry.Status)]);
+
         #endregion
 
         public void RefreshLanguage()
@@ -188,13 +193,13 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         #region Private Checklist Setters
 
-        private void SetChecklist1(int index, StatusType status)
+        protected void SetChecklist1(int index, StatusType status)
         {
             if (index >= 0 && index < Checklist1.Count)
                 Checklist1[index].Status = status;
         }
 
-        private void SetChecklist2(int index, StatusType status)
+        protected void SetChecklist2(int index, StatusType status)
         {
             if (index >= 0 && index < Checklist2.Count)
                 Checklist2[index].Status = status;
@@ -274,5 +279,11 @@ namespace OneColumnEncoder.ViewModels.Cards
 
 
         #endregion
+    }
+
+    public sealed record SourceCheckSignature(StatusType[] Checklist1, StatusType[] Checklist2)
+    {
+        public bool Matches(SourceCheckSignature other) =>
+            Checklist1.SequenceEqual(other.Checklist1) && Checklist2.SequenceEqual(other.Checklist2);
     }
 }

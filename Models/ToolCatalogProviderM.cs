@@ -15,7 +15,7 @@ public static class ToolCatalogProviderM
         new(UILangProviderM.Current["Tool.Source.VideoSrcQueue"],
             UILangProviderM.Current["Buttons.Import"],
             UILangProviderM.Current["Buttons.Clear"],
-            UILangProviderM.Current["SourceQueue.Queue"],
+            UILangProviderM.Current["SourceQueue.Sequence"],
             UILangProviderM.Current["ToolField.Path"]),
     ];
     // Script Source Import zone (3 items)

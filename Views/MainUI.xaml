@@ -244,8 +244,8 @@
             <!-- AnalyticResultsZone -->
             <comps:SectionHeader HeaderText="{Binding SectionAnalysisResults}" />
 
-            <comps:ValidationCard DataContext="{Binding SrcValidationCard}"
-                                  Margin="5 15 5 0" />
+            <comps:ValidationCard DataContext="{Binding ActiveSrcValidationCard}"
+                                   Margin="5 15 5 0" />
 
             <!-- Inspect and bypass blocking checks -->
             <comps:TwoButtonGroup DataContext="{Binding InspBypsChkButtons}"

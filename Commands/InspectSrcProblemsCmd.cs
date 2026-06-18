@@ -5,10 +5,10 @@ using OneColumnEncoder.ViewModels.Cards;
 
 namespace OneColumnEncoder.Commands
 {
-    public class InspectSrcProblemsCmd(VideoAnalysisM analysis, SourceCheckCardVM srcValidationCard, ModalNavS modalNavS) : BaseCmd
+    public class InspectSrcProblemsCmd(VideoAnalysisM analysis, Func<SourceCheckCardVM> getSrcValidationCard, ModalNavS modalNavS) : BaseCmd
     {
         private readonly VideoAnalysisM _analysis = analysis;
-        private readonly SourceCheckCardVM _srcValidationCard = srcValidationCard;
+        private readonly Func<SourceCheckCardVM> _getSrcValidationCard = getSrcValidationCard;
         private readonly ModalNavS _modalNavS = modalNavS;
 
         public override bool CanExecute(object? parameter) =>
@@ -18,8 +18,9 @@ namespace OneColumnEncoder.Commands
         {
             if (!CanExecute(parameter)) return;
 
-            string severeText = _srcValidationCard.SevereIssuesFormatted;
-            string moderateText = _srcValidationCard.ModerateIssuesFormatted;
+            SourceCheckCardVM srcValidationCard = _getSrcValidationCard();
+            string severeText = srcValidationCard.SevereIssuesFormatted;
+            string moderateText = srcValidationCard.ModerateIssuesFormatted;
 
             if (severeText.Length == 0 && moderateText.Length == 0)
             {
