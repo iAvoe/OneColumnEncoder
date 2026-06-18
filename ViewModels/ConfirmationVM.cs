@@ -1,5 +1,6 @@
 ﻿using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -11,6 +12,11 @@ public class ConfirmationVM(string windowTitle, string message, ImageSource imag
     public string P1Text { get; } = message;
     public static string CopyText => UILangProviderM.Current["ConfirmDialog.CopyText"];
     public static string CopyHint => UILangProviderM.Current["ConfirmDialog.CopyHint"];
+    public ObservableCollection<ConfirmationContextMenuItemVM> ContextMenuItems { get; } = [];
+    public ConfirmationContextMenuItemVM? ContextMenuItem1 => ContextMenuItems.Count > 0 ? ContextMenuItems[0] : null;
+    public ConfirmationContextMenuItemVM? ContextMenuItem2 => ContextMenuItems.Count > 1 ? ContextMenuItems[1] : null;
+    public bool HasContextMenuItem1 => ContextMenuItem1 != null;
+    public bool HasContextMenuItem2 => ContextMenuItem2 != null;
     public ImageSource I1Source { get; } = image;
     public ButtonGroupVM FinishWarnErrButtons { get; } =
         ButtonGroupVM.CreateTwoButton(
@@ -29,4 +35,10 @@ public class ConfirmationVM(string windowTitle, string message, ImageSource imag
 
     public static ConfirmationVM CreateInfo(string title, string p1Text, ICommand cancelCmd, ICommand confirmCmd) =>
         new(UILangProviderM.Current["ConfirmDialog.InfoPrefix"] + title, p1Text, SvgIconProviderH.AzureConsortium, cancelCmd, confirmCmd);
+}
+
+public sealed class ConfirmationContextMenuItemVM(string header, ICommand command)
+{
+    public string Header { get; } = header;
+    public ICommand Command { get; } = command;
 }

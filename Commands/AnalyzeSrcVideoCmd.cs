@@ -8,6 +8,7 @@ using System.IO;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace OneColumnEncoder.Commands
 {
@@ -106,7 +107,6 @@ namespace OneColumnEncoder.Commands
                 {
                     IsSvtav1SelectedFunc = queueCard.IsSvtav1SelectedFunc
                 };
-                probeCard.SetSourcePickedStatus(true);
 
                 string rawJson = await FfprobeVideoAnalysisH.AnalyzeAsync(ffprobePath, filePath);
                 probeCard.ApplyFfprobeAnalysisJson(rawJson);
@@ -124,7 +124,6 @@ namespace OneColumnEncoder.Commands
                     referenceRawJson = rawJson;
                     referencePath = filePath;
                     accepted.Add(entry);
-                    queueCard.SetSourcePickedStatus(true);
                     queueCard.ApplyFfprobeAnalysisJson(rawJson);
                     continue;
                 }
@@ -146,6 +145,7 @@ namespace OneColumnEncoder.Commands
                 WriteIndented = true,
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             };
+            jsonOptions.Converters.Add(new JsonStringEnumConverter());
             UTF8Encoding utf8NoBom = new(false);
             File.WriteAllText(queueJsonPath, JsonSerializer.Serialize(new QueueSourceData(referencePath, accepted), jsonOptions), utf8NoBom);
             File.WriteAllText(excludedJsonPath, JsonSerializer.Serialize(new QueueSourceData(referencePath, excluded), jsonOptions), utf8NoBom);
@@ -185,10 +185,10 @@ namespace OneColumnEncoder.Commands
                     [.. card.Checklist2.Select(QueueSourceCheckItem.FromEntry)]);
         }
 
-        private sealed record QueueSourceCheckItem(string Text, StatusType Status, bool IsEnabled)
+        private sealed record QueueSourceCheckItem(string Text, StatusType Status)
         {
             public static QueueSourceCheckItem FromEntry(ChecklistEntryVM entry) =>
-                new(entry.Text, entry.Status, entry.IsEnabled);
+                new(entry.Text, entry.Status);
         }
 
         private sealed record QueueSourceData(string ReferenceFilePath, IReadOnlyList<QueueSourceEntry> Entries);

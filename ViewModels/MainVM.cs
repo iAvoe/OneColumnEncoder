@@ -1057,12 +1057,8 @@ namespace OneColumnEncoder.ViewModels
             if (resetAnalysis)
             {
                 _srcVideoAnalysis.Clear();
-                ActiveSrcValidationCard.ResetAnalysisStatus(anySelected);
+                ActiveSrcValidationCard.ResetAnalysisStatus();
                 ToolsImportCard.ResetCompleteSourceAnalysisStatus();
-            }
-            else
-            {
-                ActiveSrcValidationCard.SetSourcePickedStatus(anySelected);
             }
 
             RefreshToolSourceChecklistStatus();
@@ -1134,7 +1130,7 @@ namespace OneColumnEncoder.ViewModels
 
             bool anySelected = VideoSrcImportZone.Any(t => t.IsSelected) || ScriptSrcImportZone.Any(t => t.IsSelected);
             _srcVideoAnalysis.Clear();
-            ActiveSrcValidationCard.ResetAnalysisStatus(anySelected);
+            ActiveSrcValidationCard.ResetAnalysisStatus();
             ToolsImportCard.ResetCompleteSourceAnalysisStatus();
         }
 

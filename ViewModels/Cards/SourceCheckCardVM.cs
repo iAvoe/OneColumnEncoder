@@ -17,11 +17,10 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         private string? _lastAnalysisJson;
 
-        protected const int SourcePickedChecklistIdx = 0;
-        protected const int MetadataChecklistIdx = 1;
-        protected const int ProgressiveChecklistIdx = 2;
-        protected const int Svtav1BitDepthChecklistIdx = 3;
-        protected const int MaxBitDepthChecklistIdx = 4;
+        protected const int MetadataChecklistIdx = 0;
+        protected const int ProgressiveChecklistIdx = 1;
+        protected const int Svtav1BitDepthChecklistIdx = 2;
+        protected const int MaxBitDepthChecklistIdx = 3;
 
         public SourceCheckCardVM()
         {
@@ -30,24 +29,16 @@ namespace OneColumnEncoder.ViewModels.Cards
         }
 
         #region TwoButtonGroup commands
-        public void SetSourcePickedStatus(bool isPicked)
-        {
-            if (SourcePickedChecklistIdx >= 0 && SourcePickedChecklistIdx < Checklist1.Count)
-                Checklist1[SourcePickedChecklistIdx].Status = isPicked
-                    ? StatusType.Success
-                    : StatusType.Error;
-        }
         public void SetBypassed(bool isBypassed)
         {
             IsBypassed = isBypassed;
             CardOpacity = isBypassed ? 0.45 : 1.0;
         }
-        public void ResetAnalysisStatus(bool isSourcePicked)
+        public void ResetAnalysisStatus()
         {
             SetBypassed(false);
-            SetSourcePickedStatus(isSourcePicked);
 
-            for (int i = 1; i < Checklist1.Count; i++)
+            for (int i = 0; i < Checklist1.Count; i++)
                 SetChecklist1(i, StatusType.Waiting);
 
             for (int i = 0; i < Checklist2.Count; i++)

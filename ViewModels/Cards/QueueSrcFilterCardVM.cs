@@ -15,7 +15,6 @@ namespace OneColumnEncoder.ViewModels.Cards
             ExcludedCount = excludedCount;
             QueueJsonPath = queueJsonPath;
             ExcludedJsonPath = excludedJsonPath;
-            SetSourcePickedStatus(includedCount > 0);
         }
 
         public new void RefreshLanguage()

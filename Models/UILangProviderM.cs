@@ -160,7 +160,7 @@ public class UILangProviderM
             ["Checklist.Tools.DependenciesPicked"] = "Click-select a dependency program",
             ["Checklist.Tools.VideoSourcePicked"] = "Click-select video source or queue",
             ["Checklist.Tools.ScriptSourcePicked"] = "Click-select a script source (VS/AVS/SVFI upstream)",
-            ["Checklist.Tools.SourcePicked"] = "Source video is imported and selected",
+
 
             // Checklist - Source Validation 1 (Severe)
             ["Checklist.Source1.Metadata"] = "Metadata and SEI data are readable",
@@ -466,8 +466,6 @@ public class UILangProviderM
             ["Checklist.Tools.DependenciesPicked"] = "点选依赖程序",
             ["Checklist.Tools.VideoSourcePicked"] = "选中视频源或队列",
             ["Checklist.Tools.ScriptSourcePicked"] = "选中 VS/AVS/SVFI 上游时点选脚本源",
-            ["Checklist.Tools.SourcePicked"] = "待压制的源文件存在且已被选择",
-
             ["Checklist.Source1.Metadata"] = "元数据与 SEI 数据可读",
             ["Checklist.Source1.Progressive"] = "逐行扫描视频帧 / 非隔行（SVT-AV1 要求）",
             ["Checklist.Source1.BitDepth"] = "位深小于 12bit（8 或 10，SVT-AV1 要求）",
@@ -762,8 +760,6 @@ public class UILangProviderM
             ["Checklist.Tools.DependenciesPicked"] = "點選依賴程式",
             ["Checklist.Tools.VideoSourcePicked"] = "點選視訊來源或隊列",
             ["Checklist.Tools.ScriptSourcePicked"] = "選中 VS/AVS/SVFI 上游時點選腳本源",
-            ["Checklist.Tools.SourcePicked"] = "待壓制的源文件存在且已被選擇",
-
             ["Checklist.Source1.Metadata"] = "元數據與 SEI 數據可讀",
             ["Checklist.Source1.Progressive"] = "逐行掃描影片幀 / 非隔行（SVT-AV1 要求）",
             ["Checklist.Source1.BitDepth"] = "位深小於 12bit（8 或 10，SVT-AV1 要求）",
@@ -1034,7 +1030,6 @@ public class UILangProviderM
         ["Checklist.Tools.DependenciesPicked"] = "Sélectionner dépendance",
         ["Checklist.Tools.VideoSourcePicked"] = "Sélectionner la source vidéo ou la file d'attente",
         ["Checklist.Tools.ScriptSourcePicked"] = "Sélectionner un script source (amont VS/AVS/SVFI)",
-        ["Checklist.Tools.SourcePicked"] = "Source vidéo importée et choisie",
         ["Checklist.Source1.Metadata"] = "Métadonnées et SEI lisibles",
         ["Checklist.Source1.Progressive"] = "Image progressive / non entrelacée (SVT-AV1)",
         ["Checklist.Source1.BitDepth"] = "Profondeur < 12 bits (8 ou 10, SVT-AV1)",
@@ -1283,7 +1278,6 @@ public class UILangProviderM
         ["Checklist.Tools.DependenciesPicked"] = "Seleccionar dependencia",
         ["Checklist.Tools.VideoSourcePicked"] = "Seleccionar fuente de video o cola",
         ["Checklist.Tools.ScriptSourcePicked"] = "Seleccionar script fuente (upstream VS/AVS/SVFI)",
-        ["Checklist.Tools.SourcePicked"] = "Vídeo fuente importado y elegido",
         ["Checklist.Source1.Metadata"] = "Metadatos y SEI legibles",
         ["Checklist.Source1.Progressive"] = "Fotogramas progresivos / no entrelazado",
         ["Checklist.Source1.BitDepth"] = "Profundidad de bits inferior a 12 (SVT-AV1)",
@@ -1515,7 +1509,6 @@ public class UILangProviderM
         ["Checklist.Tools.Upstream"] = "上流プログラム取込済み",
         ["Checklist.Tools.Downstream"] = "下流プログラム取込済み",
         ["Checklist.Tools.Analysis"] = "解析プログラム取込済み",
-        ["Checklist.Tools.SourcePicked"] = "ソース動画が取込・選択済み",
         ["Checklist.Tools.UpstreamPicked"] = "上流プログラムを選択",
         ["Checklist.Tools.DownstreamPicked"] = "下流プログラムを選択",
         ["Checklist.Tools.AnalysisPicked"] = "解析プログラムを選択",
@@ -1765,7 +1758,6 @@ public class UILangProviderM
         ["Checklist.Tools.Upstream"] = "Один апстрим импортирован",
         ["Checklist.Tools.Downstream"] = "Один даунстрим импортирован",
         ["Checklist.Tools.Analysis"] = "Один анализатор импортирован",
-        ["Checklist.Tools.SourcePicked"] = "Видеоисточник импортирован и выбран",
         ["Checklist.Tools.UpstreamPicked"] = "Выбрать программу-апстрим",
         ["Checklist.Tools.DownstreamPicked"] = "Выбрать программу-даунстрим",
         ["Checklist.Tools.AnalysisPicked"] = "Выбрать анализатор",

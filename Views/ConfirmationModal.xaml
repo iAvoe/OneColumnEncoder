@@ -56,6 +56,53 @@
                             <MenuItem Header="{Binding PlacementTarget.DataContext.CopyText, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                       Command="ApplicationCommands.Copy"
                                       CommandTarget="{Binding PlacementTarget, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
+                            <Separator>
+                                <Separator.Style>
+                                    <Style TargetType="Separator">
+                                        <Setter Property="Visibility"
+                                                Value="Visible" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding PlacementTarget.DataContext.ContextMenuItems.Count, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                         Value="0">
+                                                <Setter Property="Visibility"
+                                                        Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Separator.Style>
+                            </Separator>
+                            <MenuItem Header="{Binding PlacementTarget.DataContext.ContextMenuItem1.Header, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                      Command="{Binding PlacementTarget.DataContext.ContextMenuItem1.Command, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                                <MenuItem.Style>
+                                    <Style TargetType="MenuItem">
+                                        <Setter Property="Visibility"
+                                                Value="Visible" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding PlacementTarget.DataContext.HasContextMenuItem1, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                         Value="False">
+                                                <Setter Property="Visibility"
+                                                        Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </MenuItem.Style>
+                            </MenuItem>
+                            <MenuItem Header="{Binding PlacementTarget.DataContext.ContextMenuItem2.Header, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                      Command="{Binding PlacementTarget.DataContext.ContextMenuItem2.Command, RelativeSource={RelativeSource AncestorType=ContextMenu}}">
+                                <MenuItem.Style>
+                                    <Style TargetType="MenuItem">
+                                        <Setter Property="Visibility"
+                                                Value="Visible" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding PlacementTarget.DataContext.HasContextMenuItem2, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                                         Value="False">
+                                                <Setter Property="Visibility"
+                                                        Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </MenuItem.Style>
+                            </MenuItem>
                         </ContextMenu>
                     </TextBlock.ContextMenu>
                 </TextBlock>
