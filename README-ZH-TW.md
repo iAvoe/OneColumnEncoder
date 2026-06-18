@@ -69,7 +69,7 @@
 
 **系統**：
 - Windows 10 22H2
-- Windows 11 25H2（感謝 @Ronifue 幫助驗證）
+- Windows 11 25H2（感謝 [Lofu](https://github.com/Ronifue) 幫助驗證）
 
 **硬體**：
 - Core i5 7600k（4C4T）
