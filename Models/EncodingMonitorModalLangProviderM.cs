@@ -71,6 +71,11 @@ public class EncodingMonitorModalLangProviderM
             ["NotAvailableText"] = "N/A",
             ["ABRText"] = "ABR",
             ["CRFText"] = "CRF",
+
+            ["QueueSidebarTitle"] = "Queue",
+            ["QueueSidebarStartBatchText"] = "Start batch",
+            ["QueueSidebarCancelAllText"] = "Cancel all",
+            ["QueueSidebarCollapseText"] = "Collapse",
         },
         ["zh-cn"] = new()
         {
@@ -535,10 +540,21 @@ public class EncodingMonitorModalLangProviderM
     public string NotAvailableText { get; }
     public string ABRText { get; }
     public string CRFText { get; }
+
+    public string QueueSidebarTitle { get; }
+    public string QueueSidebarStartBatchText { get; }
+    public string QueueSidebarCancelAllText { get; }
+    public string QueueSidebarCollapseText { get; }
+
     public string LanguageCode { get; }
     private readonly Dictionary<string, string> _d;
 
-    public string this[string key] => _d.TryGetValue(key, out var v) ? v : key;
+    public string this[string key] =>
+        _d.TryGetValue(key, out string? value)
+            ? value
+            : Data["en"].TryGetValue(key, out string? fallback)
+                ? fallback
+                : key;
 
     public EncodingMonitorModalLangProviderM(string languageCode)
     {
@@ -608,5 +624,10 @@ public class EncodingMonitorModalLangProviderM
         NotAvailableText = _d["NotAvailableText"];
         ABRText = _d["ABRText"];
         CRFText = _d["CRFText"];
+
+        QueueSidebarTitle = this["QueueSidebarTitle"];
+        QueueSidebarStartBatchText = this["QueueSidebarStartBatchText"];
+        QueueSidebarCancelAllText = this["QueueSidebarCancelAllText"];
+        QueueSidebarCollapseText = this["QueueSidebarCollapseText"];
     }
 }

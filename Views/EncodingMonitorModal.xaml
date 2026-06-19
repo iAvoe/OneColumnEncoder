@@ -16,24 +16,109 @@
         Height="900"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
-    <Grid Margin="15">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
-        <ScrollViewer Grid.Row="0"
-                      VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Disabled">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+        <!-- Queue sidebar panel (column 0) -->
+        <Grid Grid.Column="0"
+              Width="280"
+              Visibility="{Binding QueueSidebar.IsVisible, Converter={StaticResource BoolToVisibility}}"
+              Background="{StaticResource Background}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Queue sidebar header with batch controls -->
+            <StackPanel Grid.Row="0" Margin="8 8 8 4">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding Lang.QueueSidebarTitle}"
+                               Style="{StaticResource H3}"
+                               VerticalAlignment="Center" />
+                    <Button Grid.Column="1"
+                            Content="{Binding Lang.QueueSidebarCollapseText}"
+                            Command="{Binding QueueSidebarToggleCmd}"
+                            Style="{StaticResource LinkButton}"
+                            FontSize="11" />
+                </Grid>
+                <comps:TwoButtonGroup Margin="0 6 0 0"
+                                      DataContext="{Binding QueueSidebarButtons}"
+                                      ButtonHeight="26"
+                                      Button1Command="{Binding Cmd1}"
+                                      Button2Command="{Binding Cmd2}"
+                                      Button1IsEnabled="{Binding B2_1IsEnabled}"
+                                      Button2IsEnabled="{Binding B2_2IsEnabled}" />
+            </StackPanel>
+
+            <!-- Virtualized job list -->
+            <ListBox Grid.Row="1"
+                     ItemsSource="{Binding QueueSidebar.Jobs}"
+                     BorderThickness="0"
+                     Background="Transparent"
+                     ScrollViewer.IsDeferredScrollingEnabled="True"
+                     VirtualizingPanel.VirtualizationMode="Recycling"
+                     VirtualizingPanel.ScrollUnit="Item"
+                     Margin="4 0">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="0 0 0 4">
+                            <comps:ItemCard DataContext="{Binding}"
+                                            IsSelected="{Binding IsSelected}"
+                                            IsCancel="{Binding IsCancel}"
+                                            IsReal="{Binding IsReal}"
+                                            EnableRealCheck="{Binding EnableRealCheck}" />
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <!-- Queue sidebar stats footer -->
+            <StackPanel Grid.Row="2" Margin="8 4 8 8">
+                <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarTitle}" />
+                <TextBlock Text="{Binding QueueSidebar.StatsText}"
+                           FontSize="10"
+                           Foreground="{StaticResource GlobalSecondary}"
+                           Margin="0 4 0 0"
+                           TextWrapping="Wrap" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Grid splitter (column 1) -->
+        <GridSplitter Grid.Column="1"
+                      Width="5"
+                      ResizeBehavior="PreviousAndNext"
+                      IsEnabled="{Binding QueueSidebar.IsVisible}"
+                      Visibility="{Binding QueueSidebar.IsVisible, Converter={StaticResource BoolToVisibility}}" />
+
+        <!-- Main content (column 2) -->
+        <Grid Grid.Column="2" Margin="15">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <ScrollViewer Grid.Row="0"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
 
                 <!-- Encoding progress bar -->
                 <Grid Grid.Row="0">
@@ -267,4 +352,5 @@
                              Margin="0 3 0 0" />
         </StackPanel>
     </Grid>
+</Grid>
 </helpers:AdaptiveWindow>

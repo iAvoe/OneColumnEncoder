@@ -105,6 +105,9 @@ namespace OneColumnEncoder.ViewModels
         public ActionCmd FreezeOrContinueCmd { get; }
         public ActionCmd ResetStatsCmd { get; }
         public CloseModalCmd CloseCmd { get; }
+        public QueueSidebarVM QueueSidebar { get; }
+        public ActionCmd QueueSidebarToggleCmd { get; }
+        public ButtonGroupVM QueueSidebarButtons { get; }
 
         private int _progressValue;
         public int ProgressValue
@@ -275,6 +278,12 @@ namespace OneColumnEncoder.ViewModels
                 new ActionCmd(_ => TryInterruptEncoder()),
                 CloseCmd);
             FinishButtons.B5_5IsEnabled = false;
+
+            QueueSidebar = new QueueSidebarVM();
+            QueueSidebarToggleCmd = new ActionCmd(_ => QueueSidebar.IsVisible = !QueueSidebar.IsVisible);
+            QueueSidebarButtons = ButtonGroupVM.CreateTwoButton(
+                Lang.QueueSidebarStartBatchText,
+                Lang.QueueSidebarCancelAllText);
 
             BuildMetrics();
             BuildFooter();
@@ -1721,6 +1730,9 @@ namespace OneColumnEncoder.ViewModels
             FinishButtons.B5_4Text = Lang.InterruptEncoderText;
             FinishButtons.B5_5Text = Lang.CloseAfterDoneText;
 
+            QueueSidebarButtons.B2_1Text = Lang.QueueSidebarStartBatchText;
+            QueueSidebarButtons.B2_2Text = Lang.QueueSidebarCancelAllText;
+
             if (FooterColumns.Count == 6)
             {
                 FooterColumns[0].TopText = StartedAtLabel;
@@ -1766,6 +1778,7 @@ namespace OneColumnEncoder.ViewModels
             _timer.Tick -= OnTimerTick;
             UILangProviderM.CurrentChanged -= OnLanguageChanged;
             _cts?.Dispose();
+            QueueSidebar.Dispose();
             base.Dispose();
         }
 
