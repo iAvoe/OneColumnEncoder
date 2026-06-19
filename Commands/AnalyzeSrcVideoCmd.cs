@@ -187,19 +187,19 @@ namespace OneColumnEncoder.Commands
                 closeCmd,
                 closeCmd);
             vm.ContextMenuItems.Add(new(
-                UILangProviderM.Current["SourceQueue.CopyQueueJsonPath"],
-                new ActionCmd(_ => Clipboard.SetText(queueJsonPath))));
-            vm.ContextMenuItems.Add(new(
                 UILangProviderM.Current["SourceQueue.OpenQueueJson"],
                 new ActionCmd(_ => OpenJsonPath(queueJsonPath))));
+            vm.ContextMenuItems.Add(new(
+                UILangProviderM.Current["SourceQueue.CopyQueueJsonPath"],
+                new ActionCmd(_ => Clipboard.SetText(queueJsonPath))));
             if (!string.IsNullOrWhiteSpace(excludedJsonPath))
             {
                 vm.ContextMenuItems.Add(new(
-                    UILangProviderM.Current["SourceQueue.CopyExcludedJsonPath"],
-                    new ActionCmd(_ => Clipboard.SetText(excludedJsonPath))));
-                vm.ContextMenuItems.Add(new(
                     UILangProviderM.Current["SourceQueue.OpenExcludedJson"],
                     new ActionCmd(_ => OpenJsonPath(excludedJsonPath))));
+                vm.ContextMenuItems.Add(new(
+                    UILangProviderM.Current["SourceQueue.CopyExcludedJsonPath"],
+                    new ActionCmd(_ => Clipboard.SetText(excludedJsonPath))));
             }
 
             window.DataContext = vm;

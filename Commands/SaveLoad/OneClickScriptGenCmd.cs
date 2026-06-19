@@ -98,7 +98,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
             new OpenInfoModalCmd(
                 _modalNavS,
                 UILangProviderM.SrcScribeWindowTitle,
-                $"Scripts saved:\n{avsPath}\n{vpyPath}").Execute(null);
+                string.Format(UILangProviderM.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, [avsPath, vpyPath]))).Execute(null);
         }
 
         private bool IsQueueRoute() => _isQueueRoute?.Invoke() == true;
@@ -161,7 +161,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
             new OpenInfoModalCmd(
                 _modalNavS,
                 UILangProviderM.SrcScribeWindowTitle,
-                $"Scripts saved:\n{directory}").Execute(null);
+                string.Format(UILangProviderM.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, savedPaths))).Execute(null);
         }
 
         private void ApplyUpstreamScriptSelection(ToolItemCardVM avsItem, ToolItemCardVM vpyItem)

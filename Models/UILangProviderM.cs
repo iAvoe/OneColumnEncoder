@@ -325,6 +325,7 @@ public class UILangProviderM
             ["SrcAnalysis.Copied"] = "Raw ffprobe JSON copied to clipboard.",
 
             ["ScriptGen.RunAfterReplace"] = "Generate AVS and VPY scripts now?",
+            ["ScriptGen.ScriptsSaved"] = "Scripts saved:\n{0}",
 
             // InspectSrcProblems modal texts
             ["SrcInspect.InfoTitle"] = "Source Check",
@@ -628,6 +629,7 @@ public class UILangProviderM
             ["SrcAnalysis.Copied"] = "ffprobe 原生 JSON 已复制到剪贴板。",
 
             ["ScriptGen.RunAfterReplace"] = "是否生成 AVS 与 VPY 脚本？",
+            ["ScriptGen.ScriptsSaved"] = "脚本已保存：\n{0}",
 
             // InspectSrcProblems modal texts
             ["SrcInspect.InfoTitle"] = "视频源检查",
@@ -931,6 +933,7 @@ public class UILangProviderM
             ["SrcAnalysis.Copied"] = "ffprobe 原生 JSON 已複製到剪貼簿。",
 
             ["ScriptGen.RunAfterReplace"] = "是否生成 AVS 與 VPY 腳本？",
+            ["ScriptGen.ScriptsSaved"] = "腳本已儲存：\n{0}",
 
             // InspectSrcProblems modal texts
             ["SrcInspect.InfoTitle"] = "影片源檢查",
