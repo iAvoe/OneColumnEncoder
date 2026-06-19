@@ -61,16 +61,21 @@ namespace OneColumnEncoder.Commands
                 string sourcePath = _getSourcePath();
                 string rawJson =
                     await FfprobeVideoAnalysisH.AnalyzeAsync(ffprobePath, sourcePath);
+                FfprobeFrameCountSupplementResult supplementResult = FfprobeFrameCountSupplementH.Supplement(rawJson);
+                rawJson = supplementResult.RawJson;
 
                 _analysis.FfprobePath = ffprobePath;
                 _analysis.SourcePath = sourcePath;
                 _analysis.RawJson = rawJson;
                 _getActiveSrcValidationCard().ApplyFfprobeAnalysisJson(rawJson);
 
-                new OpenSuccModalCmd(
-                    _modalNavS,
-                    UILangProviderM.SrcAnalysisWindowTitle,
-                    UILangProviderM.Current["SrcAnalysis.Completed"]).Execute(null);
+                if (supplementResult.SupplementedCount > 0)
+                    ShowFrameCountSupplementedModal(FormatFrameCountSupplementMessage(supplementResult.SupplementedCount));
+                else
+                    new OpenSuccModalCmd(
+                        _modalNavS,
+                        UILangProviderM.SrcAnalysisWindowTitle,
+                        UILangProviderM.Current["SrcAnalysis.Completed"]).Execute(null);
             }
             catch (Exception ex)
             {
@@ -104,6 +109,7 @@ namespace OneColumnEncoder.Commands
             SourceCheckSignature? referenceSignature = null;
             string referenceRawJson = string.Empty;
             string referencePath = string.Empty;
+            int supplementedCount = 0;
 
             bool shouldFilterQueue = !queueCard.IsBypassed;
             foreach (string filePath in queueFilePaths)
@@ -114,6 +120,9 @@ namespace OneColumnEncoder.Commands
                 };
 
                 string rawJson = await FfprobeVideoAnalysisH.AnalyzeAsync(ffprobePath, filePath);
+                FfprobeFrameCountSupplementResult supplementResult = FfprobeFrameCountSupplementH.Supplement(rawJson);
+                rawJson = supplementResult.RawJson;
+                supplementedCount += supplementResult.SupplementedCount;
                 probeCard.ApplyFfprobeAnalysisJson(rawJson);
                 SourceCheckSignature signature = probeCard.GetSignature();
                 using JsonDocument rawDocument = JsonDocument.Parse(rawJson);
@@ -174,7 +183,38 @@ namespace OneColumnEncoder.Commands
                     excluded.Count,
                     queueJsonPath,
                     excludedJsonPath);
+            if (supplementedCount > 0)
+                message = FormatQueueFrameCountSupplementMessage(message, supplementedCount);
             ShowQueueAnalysisCompletedModal(message, queueJsonPath, excludedJsonPath);
+        }
+
+        private static string FormatFrameCountSupplementMessage(int supplementedCount) =>
+            UILangProviderM.Current["SrcAnalysis.Completed"]
+            + Environment.NewLine
+            + Environment.NewLine
+            + string.Format(UILangProviderM.Current["SrcAnalysis.FrameCountSupplemented"], supplementedCount);
+
+        private static string FormatQueueFrameCountSupplementMessage(string message, int supplementedCount) =>
+            message
+            + Environment.NewLine
+            + Environment.NewLine
+            + string.Format(UILangProviderM.Current["SrcAnalysis.FrameCountSupplemented"], supplementedCount);
+
+        private void ShowFrameCountSupplementedModal(string message)
+        {
+            ConfirmationModal window = new();
+            CloseModalCmd closeCmd = new(window.Close);
+            ConfirmationVM vm = ConfirmationVM.CreateInfo(
+                UILangProviderM.SrcAnalysisWindowTitle,
+                message,
+                closeCmd,
+                closeCmd);
+
+            window.DataContext = vm;
+            window.Owner = Application.Current.MainWindow;
+            window.Closed += (_, _) => _modalNavS.Close();
+            _modalNavS.CurrentModalVM = vm;
+            window.ShowDialog();
         }
 
         private void ShowQueueAnalysisCompletedModal(string message, string queueJsonPath, string? excludedJsonPath)
