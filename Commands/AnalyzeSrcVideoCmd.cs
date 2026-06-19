@@ -61,7 +61,8 @@ namespace OneColumnEncoder.Commands
                 string sourcePath = _getSourcePath();
                 string rawJson =
                     await FfprobeVideoAnalysisH.AnalyzeAsync(ffprobePath, sourcePath);
-                FfprobeFrameCountSupplementResult supplementResult = FfprobeFrameCountSupplementH.Supplement(rawJson);
+                FfprobeFrameCountSupplementResult supplementResult =
+                    FfprobeFrameCountSupplementH.Supplement(rawJson);
                 rawJson = supplementResult.RawJson;
 
                 _analysis.FfprobePath = ffprobePath;
@@ -69,13 +70,10 @@ namespace OneColumnEncoder.Commands
                 _analysis.RawJson = rawJson;
                 _getActiveSrcValidationCard().ApplyFfprobeAnalysisJson(rawJson);
 
-                if (supplementResult.SupplementedCount > 0)
+                if (supplementResult.IsNbFramesCalculated)
                     ShowFrameCountSupplementedModal(FormatFrameCountSupplementMessage(rawJson, supplementResult.SupplementedCount));
                 else
-                    new OpenSuccModalCmd(
-                        _modalNavS,
-                        UILangProviderM.SrcAnalysisWindowTitle,
-                        UILangProviderM.Current["SrcAnalysis.Completed"]).Execute(null);
+                    ShowSourceAnalysisCompletedModal(UILangProviderM.Current["SrcAnalysis.Completed"]);
             }
             catch (Exception ex)
             {
@@ -206,7 +204,7 @@ namespace OneColumnEncoder.Commands
             {
                 using JsonDocument document = JsonDocument.Parse(rawJson);
                 JsonElement stream = document.RootElement.GetProperty("streams")[0];
-                long? parsedTotalFrames = JsonElementHelper.TryGetLong(stream, "nb_frames");
+                long? parsedTotalFrames = JsonElementHelper.TryGetFrameCount(stream);
                 if (parsedTotalFrames is null)
                     return false;
 
@@ -230,6 +228,23 @@ namespace OneColumnEncoder.Commands
             ConfirmationModal window = new();
             CloseModalCmd closeCmd = new(window.Close);
             ConfirmationVM vm = ConfirmationVM.CreateInfo(
+                UILangProviderM.SrcAnalysisWindowTitle,
+                message,
+                closeCmd,
+                closeCmd);
+
+            window.DataContext = vm;
+            window.Owner = Application.Current.MainWindow;
+            window.Closed += (_, _) => _modalNavS.Close();
+            _modalNavS.CurrentModalVM = vm;
+            window.ShowDialog();
+        }
+
+        private void ShowSourceAnalysisCompletedModal(string message)
+        {
+            ConfirmationModal window = new();
+            CloseModalCmd closeCmd = new(window.Close);
+            ConfirmationVM vm = ConfirmationVM.CreateSuccess(
                 UILangProviderM.SrcAnalysisWindowTitle,
                 message,
                 closeCmd,

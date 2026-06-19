@@ -515,7 +515,7 @@ namespace OneColumnEncoder.ViewModels
                     ?? ParseFrameRate(JsonElementHelper.TryGetString(stream, "r_frame_rate"))
                     ?? fallbackFrameRate;
 
-                long totalFrames = JsonElementHelper.TryGetLong(stream, "nb_frames")
+                long totalFrames = JsonElementHelper.TryGetFrameCount(stream)
                     ?? Math.Max(0L, (long)Math.Round(duration * frameRate));
 
                 string? fieldOrder = JsonElementHelper.TryGetString(stream, "field_order");

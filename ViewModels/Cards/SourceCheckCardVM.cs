@@ -36,6 +36,7 @@ namespace OneColumnEncoder.ViewModels.Cards
         }
         public void ResetAnalysisStatus()
         {
+            _lastAnalysisJson = null;
             SetBypassed(false);
 
             for (int i = 0; i < Checklist1.Count; i++)
@@ -114,6 +115,7 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         public void SetAnalysisFailedStatus()
         {
+            _lastAnalysisJson = null;
             SetChecklist1(MetadataChecklistIdx, StatusType.Error);
             SetChecklist1(ProgressiveChecklistIdx, StatusType.Waiting);
             SetChecklist1(Svtav1BitDepthChecklistIdx, StatusType.Waiting);

@@ -13,7 +13,7 @@ internal static class FfprobeFrameCountSupplementH
         if (!root.TryGetProperty("streams", out JsonElement streams)
             || streams.ValueKind != JsonValueKind.Array
             || streams.GetArrayLength() < 1)
-            return new(rawJson, 0);
+            return new(rawJson, 0, false);
 
         int supplementedCount = 0;
         JsonObject? rootNode = null;
@@ -28,18 +28,19 @@ internal static class FfprobeFrameCountSupplementH
             streamNodes ??= rootNode?["streams"]?.AsArray();
             JsonObject? streamNode = streamNodes?[i]?.AsObject();
             if (streamNode == null) continue;
-            
+
             streamNode["nb_frames"] = frameCount.ToString(CultureInfo.InvariantCulture);
+            streamNode["1cenc_is_nb_frames_calculated"] = true;
             supplementedCount++;
         }
 
         return supplementedCount > 0 && rootNode != null
-            ? new(rootNode.ToJsonString(FfprobeJsonFormattingH.Options), supplementedCount)
-            : new(rawJson, 0);
+            ? new(rootNode.ToJsonString(FfprobeJsonFormattingH.Options), supplementedCount, true)
+            : new(rawJson, 0, false);
     }
 
     private static bool HasUsableFrameCount(JsonElement stream) =>
-        JsonElementHelper.TryGetLong(stream, "nb_frames") is > 0;
+        JsonElementHelper.TryGetFrameCount(stream) is > 0;
 
     private static bool TryEstimateFrameCount(JsonElement root, JsonElement stream, out long frameCount)
     {
@@ -79,4 +80,4 @@ internal static class FfprobeFrameCountSupplementH
     }
 }
 
-internal sealed record FfprobeFrameCountSupplementResult(string RawJson, int SupplementedCount);
+internal sealed record FfprobeFrameCountSupplementResult(string RawJson, int SupplementedCount, bool IsNbFramesCalculated);

@@ -442,19 +442,7 @@ public static partial class EncodingPipelineH
             using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
             if (!TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return null;
 
-            long? frameCount = JsonElementHelper.TryGetLong(stream, "nb_frames");
-            if (frameCount == null && stream.TryGetProperty("tags", out JsonElement tags))
-            {
-                foreach (JsonProperty tag in tags.EnumerateObject())
-                {
-                    if (tag.Name.StartsWith("NUMBER_OF_FRAMES", StringComparison.OrdinalIgnoreCase) &&
-                        long.TryParse(tag.Value.GetString(), out long value))
-                    {
-                        frameCount = value;
-                        break;
-                    }
-                }
-            }
+            long? frameCount = JsonElementHelper.TryGetFrameCount(stream);
 
             if (frameCount is > 0) return frameCount;
 
@@ -585,8 +573,7 @@ public static partial class EncodingPipelineH
     private static string GetFrameCount(JsonElement stream, EncodingClipRequest? clip, bool isSvtAv1)
     {
         long? frameCount = GetClipFrameCount(clip)
-            ?? JsonElementHelper.TryGetLong(stream, "nb_frames")
-            ?? JsonElementHelper.TryGetLong(stream, "NUMBER_OF_FRAMES", "tags");
+            ?? JsonElementHelper.TryGetFrameCount(stream);
 
         return frameCount is > 0
             ? isSvtAv1 ? $"-n {frameCount}" : $"--frames {frameCount}"

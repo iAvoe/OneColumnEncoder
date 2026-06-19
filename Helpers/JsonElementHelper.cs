@@ -43,6 +43,36 @@ internal static class JsonElementHelper
                 : null;
     }
 
+    public static long? TryGetFrameCount(JsonElement stream)
+    {
+        long? frameCount = TryGetLong(stream, "nb_frames");
+        if (frameCount is > 0) return frameCount;
+
+        if (!stream.TryGetProperty("tags", out JsonElement tags) || tags.ValueKind != JsonValueKind.Object)
+            return null;
+
+        foreach (JsonProperty tag in tags.EnumerateObject())
+        {
+            if (!IsFrameCountTagName(tag.Name) || !TryGetLong(tag.Value, out long value)) continue;
+            if (value > 0) return value;
+        }
+
+        return null;
+    }
+
+    private static bool IsFrameCountTagName(string name) =>
+        name.Equals("NUMBER_OF_FRAMES", StringComparison.OrdinalIgnoreCase) ||
+        name.StartsWith("NUMBER_OF_FRAMES-", StringComparison.OrdinalIgnoreCase) &&
+        name.Length > "NUMBER_OF_FRAMES-".Length;
+
+    private static bool TryGetLong(JsonElement element, out long value)
+    {
+        value = 0;
+        if (element.ValueKind == JsonValueKind.Number) return element.TryGetInt64(out value);
+        return element.ValueKind == JsonValueKind.String
+            && long.TryParse(element.GetString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out value);
+    }
+
     public static double? TryGetDouble(JsonElement element, string propertyName)
     {
         if (!element.TryGetProperty(propertyName, out JsonElement property)) return null;
