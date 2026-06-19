@@ -68,6 +68,8 @@ namespace OneColumnEncoder.ViewModels
         private long _currentOutputSizeBytes;
         private int _writtenFrames;
         private bool _userInterruptRequested;
+        private bool _upstreamInterruptButtonClicked;
+        private bool _encoderInterruptButtonClicked;
         private Stream? _upstreamStdoutStream;
         private Stream? _encoderStdinStream;
 
@@ -1684,7 +1686,9 @@ namespace OneColumnEncoder.ViewModels
         private void TryInterruptUpstream()
         {
             _userInterruptRequested = true;
+            _upstreamInterruptButtonClicked = true;
             FinishButtons.B5_3IsEnabled = false;
+            FinishButtons.B5_3Text = Lang.InterruptingUpstreamText;
             StatusText = Lang.InterruptingUpstreamText;
 
             Task.Run(() =>
@@ -1709,8 +1713,10 @@ namespace OneColumnEncoder.ViewModels
         private void TryInterruptEncoder()
         {
             _userInterruptRequested = true;
+            _encoderInterruptButtonClicked = true;
             FinishButtons.B5_3IsEnabled = false;
             FinishButtons.B5_4IsEnabled = false;
+            FinishButtons.B5_4Text = Lang.InterruptingEncoderText;
             StatusText = Lang.InterruptingEncoderText;
 
             Task.Run(() =>
@@ -1857,8 +1863,8 @@ namespace OneColumnEncoder.ViewModels
             ReportButtons.B3_3Text = Lang.RotateLogFontSizeText;
             FinishButtons.B5_1Text = Lang.OpenOutputDirectoryText;
             FinishButtons.B5_2Text = Lang.ViewEncodingCommandText;
-            FinishButtons.B5_3Text = Lang.InterruptUpstreamText;
-            FinishButtons.B5_4Text = Lang.InterruptEncoderText;
+            FinishButtons.B5_3Text = _upstreamInterruptButtonClicked ? Lang.InterruptingUpstreamText : Lang.InterruptUpstreamText;
+            FinishButtons.B5_4Text = _encoderInterruptButtonClicked ? Lang.InterruptingEncoderText : Lang.InterruptEncoderText;
             FinishButtons.B5_5Text = Lang.CloseAfterDoneText;
 
             QueueSidebarButtons.B2_1Text = Lang.QueueSidebarStartBatchText;
