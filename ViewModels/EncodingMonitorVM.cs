@@ -241,7 +241,8 @@ namespace OneColumnEncoder.ViewModels
             Action closeAction,
             EncodingPipelineRequest request,
             EncodingPipelineCommand command,
-            bool isSample)
+            bool isSample,
+            bool enableQueueSidebar = false)
         {
             _modalNavS = modalNavS;
             _closeAction = closeAction;
@@ -282,8 +283,12 @@ namespace OneColumnEncoder.ViewModels
                 CloseCmd);
             FinishButtons.B5_5IsEnabled = false;
 
-            QueueSidebar = new QueueSidebarVM();
-            QueueSidebarToggleCmd = new ActionCmd(_ => QueueSidebar.IsVisible = !QueueSidebar.IsVisible);
+            QueueSidebar = new QueueSidebarVM(enableQueueSidebar);
+            QueueSidebarToggleCmd = new ActionCmd(_ =>
+            {
+                if (enableQueueSidebar)
+                    QueueSidebar.IsVisible = !QueueSidebar.IsVisible;
+            });
             QueueSidebarButtons = ButtonGroupVM.CreateTwoButton(
                 Lang.QueueSidebarStartBatchText,
                 Lang.QueueSidebarCancelAllText);
@@ -303,7 +308,7 @@ namespace OneColumnEncoder.ViewModels
             ModalNavS modalNavS,
             Action closeAction,
             IReadOnlyList<(EncodingPipelineRequest Request, EncodingPipelineCommand Command)> queueItems)
-            : this(modalNavS, closeAction, queueItems[0].Request, queueItems[0].Command, false)
+            : this(modalNavS, closeAction, queueItems[0].Request, queueItems[0].Command, false, true)
         {
             _queueItems = queueItems;
         }
@@ -315,7 +320,7 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _logFontSize, value);
         }
 
-        private bool _logRichTextMode;
+        private bool _logRichTextMode = true;
         public bool LogRichTextMode
         {
             get => _logRichTextMode;
@@ -894,7 +899,7 @@ namespace OneColumnEncoder.ViewModels
             if (TryParseEncoderFrame(trimmed) is int frame)
             {
                 UpdateWrittenFrames(frame);
-                if (updateMainProgress && _totalFrames is > 0)
+                if (updateMainProgress && isProgressLine && _totalFrames is > 0)
                 {
                     int frameProgress = (int)Math.Min(100d, Math.Round(frame * 100d / _totalFrames.Value));
                     ProgressValue = Math.Max(ProgressValue, frameProgress);
@@ -963,14 +968,10 @@ namespace OneColumnEncoder.ViewModels
         [GeneratedRegex(@"(?<!\d)(\d+)\s+frames?\s+encoded", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
         private static partial Regex FramesEncodedRegex();
 
-        [GeneratedRegex(@"(?<!\d)(\d+)\s+frames?\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
-        private static partial Regex SvtAv1FrameRegex();
-
         /// <summary>
         /// Attempts to extract a frame number from a log line using multiple regex patterns.
         /// Supports ffmpeg "frame= 1234", x264 "1234 frames:", "1234/5000 frames",
-        /// "encoding frame 1234", "encoded 1234 frames", "1234 frames encoded",
-        /// and "1813 Frames @" (SVT-AV1 variants without total frame count).
+        /// "encoding frame 1234", "encoded 1234 frames", "1234 frames encoded".
         /// </summary>
         private static int? TryParseEncoderFrame(string line)
         {
@@ -979,7 +980,6 @@ namespace OneColumnEncoder.ViewModels
             line = NormalizeLogLineForProgress(line);
 
             if (TryParseFirstRegexGroup(FfmpegFrameRegex().Match(line), out int value)) return value;
-            if (TryParseFirstRegexGroup(SvtAv1FrameRegex().Match(line), out value)) return value;
             if (TryParseFirstRegexGroup(X264FrameRegex().Match(line), out value)) return value;
             if (TryParseFirstRegexGroup(SlashFrameRegex().Match(line), out value)) return value;
             if (TryParseFirstRegexGroup(FramesAtRegex().Match(line), out value)) return value;

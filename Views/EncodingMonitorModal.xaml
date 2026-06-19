@@ -11,9 +11,8 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="1020"
-        MaxHeight="1090"
         MinWidth="860"
-        Height="930"
+        MinHeight="860"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid>
@@ -25,7 +24,7 @@
 
         <!-- Queue sidebar panel (column 0) -->
         <Grid Grid.Column="0"
-              Width="500"
+              Width="200"
               Visibility="{Binding QueueSidebar.IsVisible, Converter={StaticResource BoolToVisibility}}"
               Background="{StaticResource Background}">
             <Grid.RowDefinitions>
@@ -72,11 +71,9 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Border Margin="0 0 0 4">
-                            <comps:ItemCard DataContext="{Binding}"
-                                            IsSelected="{Binding IsSelected}"
-                                            IsCancel="{Binding IsCancel}"
-                                            IsReal="{Binding IsReal}"
-                                            EnableRealCheck="{Binding EnableRealCheck}" />
+                            <cards:MiniItemCard DataContext="{Binding}"
+                                                IsSelected="{Binding IsSelected}"
+                                                IsCancel="{Binding IsCancel}" />
                         </Border>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

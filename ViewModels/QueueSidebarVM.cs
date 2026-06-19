@@ -7,11 +7,13 @@ namespace OneColumnEncoder.ViewModels
     public class QueueSidebarVM : BaseVM
     {
         private readonly QueueJobsStoreM _store;
+        private readonly bool _isPersistent;
         private bool _isVisible;
 
-        public QueueSidebarVM()
+        public QueueSidebarVM(bool loadFromDisk = true)
         {
-            _store = QueueJobsStoreM.Load();
+            _isPersistent = loadFromDisk;
+            _store = loadFromDisk ? QueueJobsStoreM.Load() : new QueueJobsStoreM();
             _isVisible = _store.Jobs.Count > 1;
             RefreshJobs();
         }
@@ -46,6 +48,7 @@ namespace OneColumnEncoder.ViewModels
 
         public void LoadFromDisk()
         {
+            if (!_isPersistent) return;
             var loaded = QueueJobsStoreM.Load();
             _store.Jobs.Clear();
             foreach (var job in loaded.Jobs)
@@ -56,6 +59,7 @@ namespace OneColumnEncoder.ViewModels
 
         public void SaveToDisk()
         {
+            if (!_isPersistent) return;
             _store.Save();
         }
 
@@ -126,6 +130,11 @@ namespace OneColumnEncoder.ViewModels
 
         public override void Dispose()
         {
+            if (!_isPersistent)
+            {
+                base.Dispose();
+                return;
+            }
             SaveToDisk();
             base.Dispose();
         }

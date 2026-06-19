@@ -7,8 +7,8 @@ namespace OneColumnEncoder.Views
 {
     public partial class EncodingMonitorModal : AdaptiveWindow
     {
-        private const int SidebarWidth = 290;
-        private const int DefaultWidth = 1000;
+        private const int SidebarWidth = 360;
+        private const int DefaultWidth = 1080;
         private const int MinWidthDefault = 860;
         private const int MinWidthSidebar = 860 + SidebarWidth;
 

@@ -806,6 +806,17 @@ namespace OneColumnEncoder.ViewModels
         }
         private static void WireUpStaticClearCmd(ToolItemCardVM item) =>
             item.R2Command = new ClearToolItemCmd(item);
+
+        private void RefreshOutputSettingCommand(ToolItemCardVM? outputSetting = null)
+        {
+            outputSetting ??= _outputSettingCard;
+            if (outputSetting == null) return;
+
+            outputSetting.R1Command = IsQueueRouteActive()
+                ? new BrowseOutputDirectoryCmd(outputSetting)
+                : new OpenFilenameScribeCmd(_modalNavS, outputSetting);
+        }
+
         private void WireUpEncSettingsCmds()
         {
             if (EncodingConfZone.Count > 1)
@@ -815,7 +826,7 @@ namespace OneColumnEncoder.ViewModels
                 t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
 
             if (outputSetting != null)
-                outputSetting.R1Command = new OpenFilenameScribeCmd(_modalNavS, outputSetting);
+                RefreshOutputSettingCommand(outputSetting);
 
             ToolItemCardVM? compressionParams = EncodingConfZone.FirstOrDefault(t =>
                 t.Name.Equals(UILangProviderM.Current["Tool.Enc.EncParams"], StringComparison.OrdinalIgnoreCase));
@@ -1202,7 +1213,7 @@ namespace OneColumnEncoder.ViewModels
                 UpstreamsZone, ActiveScriptSrcImportZone, () => { });
             ToolCompatibilityH.RefreshVideoSourceSelectionState(
                 UpstreamsZone, VideoSrcImportZone);
-            (_outputSettingCard?.R1Command as BaseCmd)?.OnCanExecuteChanged();
+            RefreshOutputSettingCommand();
         }
 
         private bool IsQueueRouteActive() =>
