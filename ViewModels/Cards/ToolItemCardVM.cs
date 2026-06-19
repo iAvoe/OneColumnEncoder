@@ -48,6 +48,20 @@ namespace OneColumnEncoder.ViewModels.Cards
             {
                 SetProperty(ref _p1TextData, value);
                 OnPropertyChanged(nameof(P1Text));
+                OnPropertyChanged(nameof(P1TooltipText)); // Fallback value changed
+            }
+        }
+
+        // Longer text shown in tooltip for queue items (up to ~512 chars of file names).
+        // Falls back to P1TextData when not explicitly set, so non-queue items are unaffected.
+        private string? _p1TooltipText;
+        public string? P1TooltipText
+        {
+            get => _p1TooltipText ?? P1TextData;
+            set
+            {
+                if (SetProperty(ref _p1TooltipText, value))
+                    OnPropertyChanged(nameof(P1TooltipText));
             }
         }
 

@@ -1049,6 +1049,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 script.P2TextData = string.Empty;
                 script.P1TextData = string.Empty;
+                script.P1TooltipText = null; // Reset tooltip to fall back to P1TextData
                 script.IsSelected = false;
             }
         }

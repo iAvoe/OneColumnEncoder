@@ -11,6 +11,7 @@ namespace OneColumnEncoder.Commands
         {
             _item.P2TextData = string.Empty;
             _item.P1TextData = string.Empty;
+            _item.P1TooltipText = null; // Reset tooltip to fall back to P1TextData
             _item.IsSelected = false;
             _afterClear?.Invoke();
         }

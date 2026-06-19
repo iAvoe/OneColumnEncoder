@@ -149,12 +149,17 @@ namespace OneColumnEncoder.Commands.SaveLoad
 
             ToolItemCardVM avsItem = _getAvsItem();
             ToolItemCardVM vpyItem = _getVpyItem();
+            // Extract saved script file names for card display and hover tooltip
+            string[] avsFileNames = savedPaths.Where(path => path.EndsWith(".avs", StringComparison.OrdinalIgnoreCase))
+                .Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!).ToArray();
+            string[] vpyFileNames = savedPaths.Where(path => path.EndsWith(".vpy", StringComparison.OrdinalIgnoreCase))
+                .Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!).ToArray();
             avsItem.P2TextData = directory;
-            avsItem.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(
-                savedPaths.Where(path => path.EndsWith(".avs", StringComparison.OrdinalIgnoreCase)).Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!));
+            avsItem.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(avsFileNames);
+            avsItem.P1TooltipText = BrowseSourceQueueCmd.FormatQueueP1TooltipText(avsFileNames);
             vpyItem.P2TextData = directory;
-            vpyItem.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(
-                savedPaths.Where(path => path.EndsWith(".vpy", StringComparison.OrdinalIgnoreCase)).Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!));
+            vpyItem.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(vpyFileNames);
+            vpyItem.P1TooltipText = BrowseSourceQueueCmd.FormatQueueP1TooltipText(vpyFileNames);
 
             ApplyUpstreamScriptSelection(avsItem, vpyItem);
 

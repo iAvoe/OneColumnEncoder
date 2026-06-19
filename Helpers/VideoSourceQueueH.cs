@@ -45,6 +45,7 @@ namespace OneColumnEncoder.Helpers
 
             _sourceQueueFilePaths[_videoSourceQueueCard] = acceptedFilePaths;
             _videoSourceQueueCard.P1TextData = VideoSourceQueueH.GetQueueP1Text(acceptedFilePaths);
+            _videoSourceQueueCard.P1TooltipText = BrowseSourceQueueCmd.FormatQueueP1TooltipText(acceptedFilePaths); // Show full file list on hover
             VideoSourceQueueH.RefreshSourceQueueTitle(_videoSourceQueueCard, acceptedFilePaths.Length);
         }
 
@@ -57,7 +58,10 @@ namespace OneColumnEncoder.Helpers
 
             VideoSourceQueueH.RefreshSourceQueueTitle(_videoSourceQueueCard, filePaths.Length);
             if (filePaths.Length > 0)
+            {
                 _videoSourceQueueCard.P1TextData = VideoSourceQueueH.GetQueueP1Text(filePaths);
+                _videoSourceQueueCard.P1TooltipText = BrowseSourceQueueCmd.FormatQueueP1TooltipText(filePaths); // Show full file list on hover
+            }
         }
     }
 

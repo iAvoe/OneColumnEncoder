@@ -32,10 +32,12 @@ namespace OneColumnEncoder.Commands
 
             string folderPath = dialog.FolderName;
             string[] filePaths = SourceFilePickerH.GetSourceFilesInFolder(folderPath, _kind);
+            // Extract file names for both short card display and long tooltip display
+            string[] fileNames = filePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!).ToArray();
 
             _item.P2TextData = folderPath;
-            _item.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(
-                filePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!));
+            _item.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(fileNames);
+            _item.P1TooltipText = BrowseSourceQueueCmd.FormatQueueP1TooltipText(fileNames);
             _afterImport?.Invoke(_item, _kind, folderPath, filePaths);
             Application.Current.MainWindow?.Activate();
         }

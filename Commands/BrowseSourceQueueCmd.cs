@@ -31,9 +31,12 @@ namespace OneColumnEncoder.Commands
             string folderPath = dialog.FolderName;
             string[] filePaths = SourceFilePickerH.GetVideoFilesInFolder(folderPath);
 
+            // Extract file names for both short card display and long tooltip display
+            string[] fileNames = filePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!).ToArray();
+
             _item.P2TextData = folderPath;
-            _item.P1TextData = FormatQueueP1Text(
-                filePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!));
+            _item.P1TextData = FormatQueueP1Text(fileNames);
+            _item.P1TooltipText = FormatQueueP1TooltipText(fileNames);
             _afterImport?.Invoke(_item, folderPath, filePaths);
             Application.Current.MainWindow?.Activate();
         }
@@ -53,6 +56,23 @@ namespace OneColumnEncoder.Commands
             if (names.Length == 1) return Prefix(names[0]);
 
             return $"{Prefix(names[0])}..{Prefix(names[^1])}";
+        }
+
+        // Generates a comma-separated file list for tooltip display (up to maxLength chars).
+        // Unlike FormatQueueP1Text which truncates each name to 12 chars, this preserves
+        // full file names so users can see the complete queue contents on hover.
+        public static string FormatQueueP1TooltipText(IEnumerable<string> fileNames, int maxLength = 512)
+        {
+            string[] names = [.. fileNames
+                .Select(f => Path.GetFileName(f))
+                .Where(n => !string.IsNullOrWhiteSpace(n))
+                .Select(n => n!)];
+            if (names.Length == 0 || maxLength <= 0) return string.Empty;
+
+            string result = string.Join(", ", names);
+            if (result.Length <= maxLength) return result;
+            if (maxLength <= 3) return result[..maxLength];
+            return result[..(maxLength - 3)] + "...";
         }
     }
 }
