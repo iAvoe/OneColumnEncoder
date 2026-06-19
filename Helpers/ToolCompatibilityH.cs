@@ -93,7 +93,6 @@ namespace OneColumnEncoder.Helpers
             ToolItemCardVM queueCard = videoSrcImportZone[1];
 
             bool shouldDisable = upstream != null && (
-                ToolDefinitionProviderM.IsImportedTool(upstream.Name, "ffmpeg.exe") ||
                 ToolDefinitionProviderM.IsImportedTool(upstream.Name, "one_line_shot_args.exe"));
 
             if (shouldDisable)

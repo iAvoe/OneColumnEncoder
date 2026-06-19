@@ -218,8 +218,7 @@ When an upstream tool is selected, certain source cards are disabled to prevent 
 ### 7.2 Video Source Queue Disabling (`RefreshVideoSourceSelectionState`)
 
 | Selected Upstream | Effect on `VideoSrcImportZone[1]` (Video Src. Queue) |
-|---|---|
-| **ffmpeg.exe** | Queue card is disabled — ffmpeg processes single video files directly |
+|---|---|---|
 | **one_line_shot_args.exe** | Queue card is disabled — OneLineShotArgs works on a single SVFI ini config |
 | none / other | Queue card is re-enabled |
 
