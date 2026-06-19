@@ -213,7 +213,11 @@ namespace OneColumnEncoder.ViewModels
             StartEncode = new StartEncCmd(
                 BuildEncodingPipelineRequest,
                 modalNavS,
-                appConfM);
+                appConfM,
+                IsQueueRouteActive,
+                GetCurrentQueueJsonPath,
+                BuildQueueEncodingPipelineRequests,
+                IsFfmpegQueueRoute);
 
             // Buttons
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
@@ -1181,6 +1185,18 @@ namespace OneColumnEncoder.ViewModels
         private string[] GetCurrentQueueFilePaths() =>
             _videoSourceQueue.CurrentFilePaths;
 
+        private string GetCurrentQueueJsonPath() =>
+            QueueSrcFilterCard.QueueJsonPath;
+
+        private bool IsFfmpegQueueRoute()
+        {
+            ToolItemCardVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected && t.IsEnabled && !string.IsNullOrWhiteSpace(t.P2TextData));
+            string? upstreamExeName = upstream == null
+                ? null
+                : ToolCatalogProviderM.ResolveExeFromDisplayName(upstream.Name);
+            return upstreamExeName?.Equals("ffmpeg.exe", StringComparison.OrdinalIgnoreCase) == true;
+        }
+
         private string GetSelectedVideoSourcePath()
         {
             ToolItemCardVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => !_videoSourceQueue.IsQueueItem(t) && t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
@@ -1241,6 +1257,41 @@ namespace OneColumnEncoder.ViewModels
                 SvfiIniPath: svfiIniPath,
                 SvfiTaskId: svfiTaskId,
                 FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs);
+        }
+
+        private EncodingPipelineRequest[]? BuildQueueEncodingPipelineRequests(string[] sourcePaths)
+        {
+            ToolItemCardVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected && t.IsEnabled && !string.IsNullOrWhiteSpace(t.P2TextData));
+            ToolItemCardVM? encoder = EncodersZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
+            ToolItemCardVM? outputSetting = EncSettingsZone.FirstOrDefault(t =>
+                t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+
+            if (upstream == null || encoder == null || outputSetting == null) return null;
+
+            string? upstreamExeName = ToolCatalogProviderM.ResolveExeFromDisplayName(upstream.Name);
+            string? encoderExeName = ToolCatalogProviderM.ResolveExeFromDisplayName(encoder.Name);
+            if (string.IsNullOrWhiteSpace(upstreamExeName) || string.IsNullOrWhiteSpace(encoderExeName)) return null;
+            if (!upstreamExeName.Equals("ffmpeg.exe", StringComparison.OrdinalIgnoreCase)) return null;
+            if (string.IsNullOrWhiteSpace(outputSetting.P2TextData)) return null;
+
+            EncoderConfM encoderConf = EncoderConfM.Load();
+            ParallelismConfM parallelismConf = ParallelismConfM.LoadEffective();
+            string outputDirectory = outputSetting.P2TextData;
+
+            return [.. sourcePaths.Select(sourcePath => new EncodingPipelineRequest(
+                upstreamExeName,
+                upstream.P2TextData,
+                sourcePath,
+                encoderExeName,
+                encoder.P2TextData,
+                _appDataM.Tools.FfmpegPath,
+                sourcePath,
+                Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(sourcePath)),
+                encoderConf,
+                _appDataM.Tools.VspipeY4mArg,
+                SourceFfprobeJson: _srcVideoAnalysis.RawJson,
+                ParallelismConf: parallelismConf,
+                FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs))];
         }
 
         private string GetSelectedSvfiIniPath()

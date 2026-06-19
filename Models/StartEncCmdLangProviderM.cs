@@ -16,6 +16,14 @@ public class StartEncCmdLangProviderM
             ["OverwriteTargetLabel"] = "{0}: {1} ({2})",
             ["LargestExistingSizeLabel"] = "Largest existing size: {0}",
             ["ConfirmDelayLabel"] = "Confirm button unlocks after {0} seconds.",
+            ["AdditionalOverwriteTargetsLabel"] = "...and {0} more target(s).",
+            ["QueueJsonMissingMsg"] = "Queue JSON is missing. Run source queue analysis before starting queue encoding.",
+            ["QueueJsonInvalidMsg"] = "Queue JSON cannot be read or parsed: {0}",
+            ["QueueJsonNoEntriesMsg"] = "Queue JSON contains no accepted source entries.",
+            ["QueueUnsupportedRouteMsg"] = "Queue encoding currently supports ffmpeg upstream only.",
+            ["QueueSourceMissingMsg"] = "Queue source file(s) are missing. Encoding cannot continue:",
+            ["QueueDuplicateOutputMsg"] = "Queue output paths collide. Encoding cannot continue:",
+            ["QueueEncodingPendingMsg"] = "Queue overwrite protection completed. Queue execution is not wired yet.",
             ["GbSuffix"] = " GB",
             ["MbSuffix"] = " MB",
         },
@@ -31,6 +39,14 @@ public class StartEncCmdLangProviderM
             ["OverwriteTargetLabel"] = "{0}：{1}（{2}）",
             ["LargestExistingSizeLabel"] = "最大现有大小：{0}",
             ["ConfirmDelayLabel"] = "确认按钮将在 {0} 秒后解锁。",
+            ["AdditionalOverwriteTargetsLabel"] = "……以及另外 {0} 个目标。",
+            ["QueueJsonMissingMsg"] = "缺少队列 JSON。请先运行源队列分析再开始队列压制。",
+            ["QueueJsonInvalidMsg"] = "无法读取或解析队列 JSON：{0}",
+            ["QueueJsonNoEntriesMsg"] = "队列 JSON 中没有可接受的源条目。",
+            ["QueueUnsupportedRouteMsg"] = "队列压制当前仅支持 ffmpeg 上游。",
+            ["QueueSourceMissingMsg"] = "以下队列源文件缺失，无法继续压制：",
+            ["QueueDuplicateOutputMsg"] = "以下队列输出路径发生冲突，无法继续压制：",
+            ["QueueEncodingPendingMsg"] = "队列覆盖保护检查已完成。队列执行流程尚未接入。",
             ["GbSuffix"] = " GB",
             ["MbSuffix"] = " MB",
         },
@@ -46,6 +62,14 @@ public class StartEncCmdLangProviderM
             ["OverwriteTargetLabel"] = "{0}：{1}（{2}）",
             ["LargestExistingSizeLabel"] = "最大現有大小：{0}",
             ["ConfirmDelayLabel"] = "確認按鈕將在 {0} 秒後解鎖。",
+            ["AdditionalOverwriteTargetsLabel"] = "……以及另外 {0} 個目標。",
+            ["QueueJsonMissingMsg"] = "缺少佇列 JSON。請先執行來源佇列分析再開始佇列壓製。",
+            ["QueueJsonInvalidMsg"] = "無法讀取或解析佇列 JSON：{0}",
+            ["QueueJsonNoEntriesMsg"] = "佇列 JSON 中沒有可接受的來源項目。",
+            ["QueueUnsupportedRouteMsg"] = "佇列壓製目前僅支援 ffmpeg 上游。",
+            ["QueueSourceMissingMsg"] = "以下佇列來源檔案缺失，無法繼續壓製：",
+            ["QueueDuplicateOutputMsg"] = "以下佇列輸出路徑發生衝突，無法繼續壓製：",
+            ["QueueEncodingPendingMsg"] = "佇列覆蓋保護檢查已完成。佇列執行流程尚未接入。",
             ["GbSuffix"] = " GB",
             ["MbSuffix"] = " MB",
         }
@@ -117,6 +141,14 @@ public class StartEncCmdLangProviderM
     public string OverwriteTargetLabel { get; }
     public string LargestExistingSizeLabel { get; }
     public string ConfirmDelayLabel { get; }
+    public string AdditionalOverwriteTargetsLabel { get; }
+    public string QueueJsonMissingMsg { get; }
+    public string QueueJsonInvalidMsg { get; }
+    public string QueueJsonNoEntriesMsg { get; }
+    public string QueueUnsupportedRouteMsg { get; }
+    public string QueueSourceMissingMsg { get; }
+    public string QueueDuplicateOutputMsg { get; }
+    public string QueueEncodingPendingMsg { get; }
     public string GbSuffix { get; }
     public string MbSuffix { get; }
     public string LanguageCode { get; }
@@ -138,6 +170,14 @@ public class StartEncCmdLangProviderM
         OverwriteTargetLabel = _d["OverwriteTargetLabel"];
         LargestExistingSizeLabel = _d["LargestExistingSizeLabel"];
         ConfirmDelayLabel = _d["ConfirmDelayLabel"];
+        AdditionalOverwriteTargetsLabel = _d["AdditionalOverwriteTargetsLabel"];
+        QueueJsonMissingMsg = _d["QueueJsonMissingMsg"];
+        QueueJsonInvalidMsg = _d["QueueJsonInvalidMsg"];
+        QueueJsonNoEntriesMsg = _d["QueueJsonNoEntriesMsg"];
+        QueueUnsupportedRouteMsg = _d["QueueUnsupportedRouteMsg"];
+        QueueSourceMissingMsg = _d["QueueSourceMissingMsg"];
+        QueueDuplicateOutputMsg = _d["QueueDuplicateOutputMsg"];
+        QueueEncodingPendingMsg = _d["QueueEncodingPendingMsg"];
         GbSuffix = _d["GbSuffix"];
         MbSuffix = _d["MbSuffix"];
     }
