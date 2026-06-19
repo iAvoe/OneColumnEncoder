@@ -83,6 +83,30 @@ namespace OneColumnEncoder.Helpers
             refreshSelectedSourceStatus();
         }
 
+        public static void RefreshVideoSourceSelectionState(
+            IEnumerable<ToolItemCardVM> upstreamsZone,
+            IList<ToolItemCardVM> videoSrcImportZone)
+        {
+            if (videoSrcImportZone.Count < 2) return;
+
+            ToolItemCardVM? upstream = upstreamsZone.FirstOrDefault(t => t.IsSelected);
+            ToolItemCardVM queueCard = videoSrcImportZone[1];
+
+            bool shouldDisable = upstream != null && (
+                ToolDefinitionProviderM.IsImportedTool(upstream.Name, "ffmpeg.exe") ||
+                ToolDefinitionProviderM.IsImportedTool(upstream.Name, "one_line_shot_args.exe"));
+
+            if (shouldDisable)
+            {
+                queueCard.IsSelected = false;
+                queueCard.IsEnabled = false;
+            }
+            else
+            {
+                queueCard.IsEnabled = true;
+            }
+        }
+
         private static string? ResolveScriptSourceName(
             IEnumerable<ToolItemCardVM> scriptSrcImportZone,
             string primaryKey,

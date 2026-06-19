@@ -78,6 +78,8 @@ namespace OneColumnEncoder.Helpers
                 upstreamsZone, dependenciesZone, updateEncStartButtonsState);
             ToolCompatibilityH.RefreshSourceSelectionState(
                 upstreamsZone, scriptSrcImportZone, refreshSelectedSourceStatus);
+            ToolCompatibilityH.RefreshVideoSourceSelectionState(
+                upstreamsZone, videoSrcImportZone);
         }
 
         public static bool ApplyDefaultSelection(ObservableCollection<ToolItemCardVM> zone)

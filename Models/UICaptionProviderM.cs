@@ -89,6 +89,7 @@ public static class UICaptionProviderM
         public static string NumaCpuCheckTrigger => UILangProviderM.Current["Hint.NumaCpuCheckTrigger"];
         public static string AppConfNotificationPolicy => UILangProviderM.Current["Hint.AppConfNotificationPolicy"];
         public static string QueueRouteSampleClipDisabled => UILangProviderM.Current["Hint.QueueRouteSampleClipDisabled"];
+        public static string FilterScribeDisabled => UILangProviderM.Current["Hint.FilterScribeDisabled"];
     }
 
     public static class AppConf

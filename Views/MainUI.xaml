@@ -258,7 +258,7 @@
 
             <!-- Encoding Settings -->
             <comps:SectionHeader HeaderText="{Binding SectionEncodingConfigs}" />
-            <ItemsControl ItemsSource="{Binding EncSettingsZone}"
+            <ItemsControl ItemsSource="{Binding EncodingConfZone}"
                           Margin="0 15">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>

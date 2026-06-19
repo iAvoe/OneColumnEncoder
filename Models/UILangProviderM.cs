@@ -315,6 +315,7 @@ public class UILangProviderM
             ["Hint.NumaCpuCheckTrigger"] = "NUMA node CPU usage updates on mouse click or keyboard input event",
             ["Hint.AppConfNotificationPolicy"] = "Notification features are intentionally unprovided—Evidences suggested phone notif. may lower neural activity that correlates cognitive control: Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725\r\n",
             ["Hint.QueueRouteSampleClipDisabled"] = "Video Source Queue mode does not support sample clipping. Run Sample has been disabled.",
+            ["Hint.FilterScribeDisabled"] = "OneLineShotArgs does not support script generation, disabling Filter Scribe.",
 
             // Heatmap
             ["Heatmap.Cold"] = "Cold",
@@ -621,6 +622,7 @@ public class UILangProviderM
             ["Hint.NumaCpuCheckTrigger"] = "NUMA 节点 CPU 占用检测会在鼠标点击或键盘输入事件时更新。",
             ["Hint.AppConfNotificationPolicy"] = "本应用有意不提供通知功能——研究结果表明，智能手机通知可能会降低与认知控制功能相关的脑神经活动：Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725",
             ["Hint.QueueRouteSampleClipDisabled"] = "队列视频源模式不支持取段打样，已禁用取段打样按钮。",
+            ["Hint.FilterScribeDisabled"] = "OneLineShotArgs 上游不支持脚本生成，已禁用脚本编辑器。",
 
             // Heatmap
             ["Heatmap.Cold"] = "冷",
@@ -926,6 +928,7 @@ public class UILangProviderM
             ["Hint.NumaCpuCheckTrigger"] = "NUMA 節點 CPU 占用檢測會在滑鼠點擊或鍵盤輸入事件時更新。",
             ["Hint.AppConfNotificationPolicy"] = "本應用有意不提供通知功能——研究結果表明，智慧型手機通知可能會降低與認知控制功能相關的腦神經活動：Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725",
             ["Hint.QueueRouteSampleClipDisabled"] = "佇列影片源模式不支援取段打樣，已禁用取段打樣按鈕。",
+            ["Hint.FilterScribeDisabled"] = "OneLineShotArgs 上游不支援腳本生成，已禁用腳本編輯器。",
 
             // Heatmap
             ["Heatmap.Cold"] = "冷",
@@ -1013,6 +1016,7 @@ public class UILangProviderM
         ["Hint.NumaCpuCheckTrigger"] = "La charge CPU du noeud NUMA se met à jour au clic souris ou à la saisie clavier.",
         ["Hint.AppConfNotificationPolicy"] = "Les notifications ne sont pas fournies volontairement : des données suggèrent qu'elles peuvent réduire l'activité neuronale liée au contrôle cognitif. Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725",
         ["Hint.QueueRouteSampleClipDisabled"] = "Le mode file d'attente de source vidéo ne prend pas en charge l'échantillonnage; bouton Échantillon désactivé.",
+        ["Hint.FilterScribeDisabled"] = "OneLineShotArgs ne prend pas en charge la génération de scripts; le Scribe de filtres est désactivé.",
         ["AppConfModal.Title"] = "Paramètres 1cenc",
         ["AppConfModal.Header"] = "Paramètres",
         ["Import.NoSelection"] = "Aucune sélection",
@@ -1267,6 +1271,7 @@ public class UILangProviderM
         ["Hint.NumaCpuCheckTrigger"] = "El uso de CPU del nodo NUMA se actualiza con clic de ratón o entrada de teclado.",
         ["Hint.AppConfNotificationPolicy"] = "Las notificaciones se omiten deliberadamente: hay evidencia de que pueden reducir actividad neuronal asociada al control cognitivo. Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725",
         ["Hint.QueueRouteSampleClipDisabled"] = "El modo de cola de fuente de vídeo no admite recorte de muestra; botón Muestra desactivado.",
+        ["Hint.FilterScribeDisabled"] = "OneLineShotArgs no admite la generación de scripts; Scribe de filtros desactivado.",
         ["AppConfModal.Title"] = "Ajustes de 1cenc",
         ["AppConfModal.Header"] = "Ajustes",
         ["Import.NoSelection"] = "Sin selección",
@@ -1521,6 +1526,7 @@ public class UILangProviderM
         ["Hint.NumaCpuCheckTrigger"] = "NUMA ノード CPU 使用率は、マウスクリックまたはキー入力時に更新されます。",
         ["Hint.AppConfNotificationPolicy"] = "通知機能は意図的に提供していません。スマートフォン通知は認知制御に関連する神経活動を低下させる可能性が示唆されています: Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725",
         ["Hint.QueueRouteSampleClipDisabled"] = "動画ソースキューモードはサンプル切り出し非対応のため、サンプル実行を無効化しました。",
+        ["Hint.FilterScribeDisabled"] = "OneLineShotArgs はスクリプト生成非対応のため、フィルタースクライブを無効化しました。",
         ["AppConfModal.Title"] = "1cenc 設定",
         ["AppConfModal.Header"] = "設定",
         ["Import.NoSelection"] = "未選択",
@@ -1775,6 +1781,7 @@ public class UILangProviderM
         ["Hint.NumaCpuCheckTrigger"] = "Загрузка CPU NUMA-узла обновляется при клике мыши или вводе с клавиатуры.",
         ["Hint.AppConfNotificationPolicy"] = "Уведомления намеренно не предоставляются: данные показывают, что они могут снижать нейронную активность, связанную с когнитивным контролем. Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725",
         ["Hint.QueueRouteSampleClipDisabled"] = "Режим очереди видеоисточников не поддерживает пробный отрезок; кнопка пробы отключена.",
+        ["Hint.FilterScribeDisabled"] = "OneLineShotArgs не поддерживает генерацию скриптов; редактор фильтров отключен.",
         ["AppConfModal.Title"] = "Настройки 1cenc",
         ["AppConfModal.Header"] = "Настройки",
         ["Import.NoSelection"] = "Не выбрано",

@@ -71,7 +71,7 @@ All zones are `ObservableCollection<ToolItemCardVM>` declared in `MainVM`. Cards
 | `ScriptSrcImportZone` | AVS, VPY, SVFI (single-file) | 3 | Yes | Yes |
 | `QueueScriptSrcImportZone` | AVS Queue, VPY Queue, SVFI Queue | 3 | No | No |
 | `ActiveScriptSrcImportZone` | Points to `ScriptSrcImportZone` or `QueueScriptSrcImportZone` | 3 | — | — |
-| `EncSettingsZone` | Output Setting, Parallelism, Enc Params | 3 | No | No |
+| `EncodingConfZone` | Output Setting, Parallelism, Enc Params | 3 | No | No |
 | `UpstreamsZone` | Imported upstream tools (ffmpeg, vspipe, etc.) | Dynamic | No | Yes |
 | `EncodersZone` | Imported encoders (x264, x265, svtav1encapp) | Dynamic | No | Yes |
 | `AnalyticsZone` | Imported analytics (ffprobe) | Dynamic | No | Yes |
@@ -201,7 +201,48 @@ P2Name: P2Text           ← always shows the full path / folder path
 
 ---
 
-## 7. Typical Data Flow Examples
+## 7. Upstream Compatibility Rules
+
+When an upstream tool is selected, certain source cards are disabled to prevent incompatible configurations. The rules are applied in `ToolCompatibilityH`:
+
+### 7.1 Script Source Disabling (`RefreshSourceSelectionState`)
+
+| Selected Upstream | Effect on `ScriptSrcImportZone` / `ActiveScriptSrcImportZone` |
+|---|---|
+| **ffmpeg.exe** | All script source cards are disabled (`IsEnabled = false`, `IsSelected = false`) — ffmpeg feeds video source directly |
+| **vspipe.exe** | Only "VapourSynth" (or "VapourSynthQueue") remains enabled |
+| **avs2yuv.exe** / **avs2pipemod.exe** | Only "AviSynth" (or "AviSynthQueue") remains enabled |
+| **one_line_shot_args.exe** | Only "SVFI" (or "SVFI Queue") remains enabled — uses SVFI's own ini-based source resolution |
+| none / other | All script source cards are enabled |
+
+### 7.2 Video Source Queue Disabling (`RefreshVideoSourceSelectionState`)
+
+| Selected Upstream | Effect on `VideoSrcImportZone[1]` (Video Src. Queue) |
+|---|---|
+| **ffmpeg.exe** | Queue card is disabled — ffmpeg processes single video files directly |
+| **one_line_shot_args.exe** | Queue card is disabled — OneLineShotArgs works on a single SVFI ini config |
+| none / other | Queue card is re-enabled |
+
+### 7.3 FilterScribe Disabling
+
+When `one_line_shot_args.exe` is selected in `UpstreamsZone`:
+- **FilterScbButtons** (One-Click Script Gen. & Open Filter Scribe) are disabled via `UpdateFilterScbButtonsState()` in `MainVM.cs:632`. Both `B2_1IsEnabled` and `B2_2IsEnabled` are set to `false`.
+- **OpenFilterScribeCmd** (`Commands/OpenClose/OpenFilterScribeCmd.cs:28`) checks the `isOneLineShotSelected` delegate before opening the modal. If `true`, it shows a `ConfirmationModal` warning (localized `"Hint.FilterScribeDisabled"`) and returns without opening FilterScribe.
+- The FilterScribe modal's `ScriptExportButtons` (B3_1, B3_2, B3_3) are also disabled when OneLineShotArgs is active.
+
+### 7.4 Run Sample Disabling
+
+When `one_line_shot_args.exe` is selected in `UpstreamsZone`:
+- `EncStartButtons.B3_2IsEnabled` (Run Sample) is set to `false` in `UpdateEncStartButtonsState()` (`MainVM.cs:683`), because OneLineShotArgs/SVFI does not support clip sampling.
+- A localized hint panel (`SVFIClipDisabledHintVisible`) becomes visible to explain the disabled state.
+
+### 7.5 Dependency Compatibility (`RefreshDependencySelectionState`)
+
+When `avs2pipemod.exe` is selected in `UpstreamsZone`, the `DependenciesZone` card for `avisynth.dll` must also be selected. If one is selected without the other, the auto-selected item is marked with `IsCancel = true` (red styling), and the auto-selection will be reverted by `RevertCancelledAutoSelection` unless the user manually corrects the pairing.
+
+---
+
+## 8. Typical Data Flow Examples
 
 ### 7.1 Single-File Video Source
 

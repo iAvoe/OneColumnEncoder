@@ -134,7 +134,7 @@ namespace OneColumnEncoder.ViewModels
             LoadSourcesFromAppDataM();
             WireUpZoneDeleteCmds();
 
-            // Set default values for output setting in EncSettingsZone
+            // Set default values for output setting in EncodingConfZone
             ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t => t.Name.Equals(
                 UILangProviderM.Current["Tool.Enc.OutputSetting"],
                 StringComparison.OrdinalIgnoreCase));
@@ -180,6 +180,9 @@ namespace OneColumnEncoder.ViewModels
                 () => SrcValidationCard.Checklist2.Count > 1
                     && SrcValidationCard.Checklist2[1].Status == StatusType.Warning,
                 () => _srcVideoAnalysis.RawJson,
+                () => UpstreamsZone.Any(
+                    t => t.IsSelected &&
+                    ToolDefinitionProviderM.IsImportedTool(t.Name, "one_line_shot_args.exe")),
                 IsQueueRouteActive,
                 GetCurrentQueueFilePaths);
             CopyRawAnalysis = new CopyRawAnalysisCmd(
@@ -463,6 +466,8 @@ namespace OneColumnEncoder.ViewModels
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
             ToolCompatibilityH.RefreshSourceSelectionState(
                 UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
+            ToolCompatibilityH.RefreshVideoSourceSelectionState(
+                UpstreamsZone, VideoSrcImportZone);
 
             // Revert the selection for IsCancel caused by "Auto Selection".
             // Must revert both zones because RefreshDependencySelectionState can set
@@ -499,6 +504,8 @@ namespace OneColumnEncoder.ViewModels
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
             ToolCompatibilityH.RefreshSourceSelectionState(
                 UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
+            ToolCompatibilityH.RefreshVideoSourceSelectionState(
+                UpstreamsZone, VideoSrcImportZone);
         }
 
         private void RefreshUpstreamToolState()
@@ -532,6 +539,8 @@ namespace OneColumnEncoder.ViewModels
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
             ToolCompatibilityH.RefreshSourceSelectionState(
                 UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
+            ToolCompatibilityH.RefreshVideoSourceSelectionState(
+                UpstreamsZone, VideoSrcImportZone);
         }
 
         private void RefreshEncTermsState()
@@ -625,16 +634,30 @@ namespace OneColumnEncoder.ViewModels
         #region Button state updates
         public void UpdateFilterScbButtonsState()
         {
+            bool oneLineShotSelected = UpstreamsZone.Any(
+                t => t.IsSelected &&
+                ToolDefinitionProviderM.IsImportedTool(t.Name, "one_line_shot_args.exe"));
+
             bool hasVideoSrc = IsQueueRouteActive()
                 ? GetCurrentQueueFilePaths().Length > 0
                 : VideoSrcImportZone.Any(t => !IsVideoSourceQueueItem(t) && !string.IsNullOrWhiteSpace(t.P2TextData));
-            FilterScbButtons.B2_2IsEnabled = hasVideoSrc;
+
+            if (oneLineShotSelected)
+            {
+                FilterScbButtons.B2_1IsEnabled = false;
+                FilterScbButtons.B2_2IsEnabled = false;
+            }
+            else
+            {
+                FilterScbButtons.B2_1IsEnabled = true;
+                FilterScbButtons.B2_2IsEnabled = hasVideoSrc;
+            }
 
             if (_modalNavS.CurrentModalVM is FilterScribeVM modal)
             {
-                modal.ScriptExportButtons.B3_1IsEnabled = hasVideoSrc;
-                modal.ScriptExportButtons.B3_2IsEnabled = hasVideoSrc;
-                modal.ScriptExportButtons.B3_3IsEnabled = hasVideoSrc;
+                modal.ScriptExportButtons.B3_1IsEnabled = !oneLineShotSelected && hasVideoSrc;
+                modal.ScriptExportButtons.B3_2IsEnabled = !oneLineShotSelected && hasVideoSrc;
+                modal.ScriptExportButtons.B3_3IsEnabled = !oneLineShotSelected && hasVideoSrc;
             }
 
             OneClickScriptGen.OnCanExecuteChanged();
@@ -1177,6 +1200,8 @@ namespace OneColumnEncoder.ViewModels
                 : ScriptSrcImportZone;
             ToolCompatibilityH.RefreshSourceSelectionState(
                 UpstreamsZone, ActiveScriptSrcImportZone, () => { });
+            ToolCompatibilityH.RefreshVideoSourceSelectionState(
+                UpstreamsZone, VideoSrcImportZone);
             (_outputSettingCard?.R1Command as BaseCmd)?.OnCanExecuteChanged();
         }
 
