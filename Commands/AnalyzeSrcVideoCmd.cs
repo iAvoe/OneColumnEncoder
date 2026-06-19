@@ -67,7 +67,7 @@ namespace OneColumnEncoder.Commands
                 _analysis.RawJson = rawJson;
                 _getActiveSrcValidationCard().ApplyFfprobeAnalysisJson(rawJson);
 
-                new OpenInfoModalCmd(
+                new OpenSuccModalCmd(
                     _modalNavS,
                     UILangProviderM.SrcAnalysisWindowTitle,
                     UILangProviderM.Current["SrcAnalysis.Completed"]).Execute(null);
@@ -181,7 +181,7 @@ namespace OneColumnEncoder.Commands
         {
             ConfirmationModal window = new();
             CloseModalCmd closeCmd = new(window.Close);
-            ConfirmationVM vm = ConfirmationVM.CreateInfo(
+            ConfirmationVM vm = ConfirmationVM.CreateSuccess(
                 UILangProviderM.SrcAnalysisWindowTitle,
                 message,
                 closeCmd,

@@ -24,7 +24,7 @@ namespace OneColumnEncoder.Commands
             try
             {
                 Clipboard.SetText(GetRawJson());
-                new OpenInfoModalCmd(
+                new OpenSuccModalCmd(
                     _modalNavS,
                     UILangProviderM.SrcAnalysisWindowTitle,
                     UILangProviderM.Current["SrcAnalysis.Copied"]).Execute(null);

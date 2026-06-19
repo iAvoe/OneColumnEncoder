@@ -145,6 +145,7 @@ public class UILangProviderM
             ["ConfirmDialog.ErrorPrefix"] = "Error: ",
             ["ConfirmDialog.DebugPrefix"] = "Debug: ",
             ["ConfirmDialog.InfoPrefix"] = "Info: ",
+            ["ConfirmDialog.SuccessPrefix"] = "Success: ",
 
             // Auto tool import
             ["AutoImport.Title"] = "Auto Tool Import",
@@ -464,6 +465,7 @@ public class UILangProviderM
             ["ConfirmDialog.ErrorPrefix"] = "错误：",
             ["ConfirmDialog.DebugPrefix"] = "调试：",
             ["ConfirmDialog.InfoPrefix"] = "信息：",
+            ["ConfirmDialog.SuccessPrefix"] = "成功：",
 
             ["AutoImport.Title"] = "自动导入工具",
             ["AutoImport.FoundMessage"] = "发现以下已验证的可执行文件，是否现在导入？\n\n{0}",
@@ -768,6 +770,7 @@ public class UILangProviderM
             ["ConfirmDialog.ErrorPrefix"] = "錯誤：",
             ["ConfirmDialog.DebugPrefix"] = "除錯：",
             ["ConfirmDialog.InfoPrefix"] = "資訊：",
+            ["ConfirmDialog.SuccessPrefix"] = "成功：",
 
             ["AutoImport.Title"] = "自動導入工具",
             ["AutoImport.FoundMessage"] = "發現以下已驗證的可執行文件，是否現在導入？\n\n{0}",
@@ -1047,6 +1050,7 @@ public class UILangProviderM
         ["ConfirmDialog.ErrorPrefix"] = "Erreur : ",
         ["ConfirmDialog.DebugPrefix"] = "Debug : ",
         ["ConfirmDialog.InfoPrefix"] = "Info : ",
+        ["ConfirmDialog.SuccessPrefix"] = "Succès : ",
         ["AutoImport.Title"] = "Import automatique d'outils",
         ["AutoImport.FoundMessage"] = "Fichiers exécutables vérifiés trouvés. Les importer maintenant ?\n\n{0}",
         ["AutoImport.NotFoundMessage"] = "Aucun outil importable n'a été détecté dans le dossier de l'application. Pour revérifier plus tard, activez Réglages → Mode initial → Importer outils au prochain démarrage.",
@@ -1299,6 +1303,7 @@ public class UILangProviderM
         ["ConfirmDialog.WarningPrefix"] = "Aviso: ",
         ["ConfirmDialog.ErrorPrefix"] = "Error: ",
         ["ConfirmDialog.InfoPrefix"] = "Info: ",
+        ["ConfirmDialog.SuccessPrefix"] = "Correcto: ",
         ["AutoImport.Title"] = "Importación automática",
         ["AutoImport.FoundMessage"] = "Se encontraron estos ejecutables verificados. ¿Importarlos ahora?\n\n{0}",
         ["AutoImport.NotFoundMessage"] = "No se detectaron herramientas importables en la carpeta de la aplicación. Para revisar de nuevo, active Ajustes → Modo inicial → Auto-importar herramientas al inicio.",
@@ -1541,6 +1546,7 @@ public class UILangProviderM
         ["ConfirmDialog.WarningPrefix"] = "警告: ",
         ["ConfirmDialog.ErrorPrefix"] = "エラー: ",
         ["ConfirmDialog.InfoPrefix"] = "情報: ",
+        ["ConfirmDialog.SuccessPrefix"] = "成功: ",
         ["AutoImport.Title"] = "ツール自動取込",
         ["AutoImport.FoundMessage"] = "検証済みの実行ファイルが見つかりました。今すぐ取り込みますか？\n\n{0}",
         ["AutoImport.NotFoundMessage"] = "このアプリのフォルダに取込可能なツールは見つかりませんでした。再確認するには、設定 → 初期化モード → 次回起動時にツールを自動取込 を有効にしてください。",
@@ -1794,6 +1800,7 @@ public class UILangProviderM
         ["ConfirmDialog.WarningPrefix"] = "Предупреждение: ",
         ["ConfirmDialog.ErrorPrefix"] = "Ошибка: ",
         ["ConfirmDialog.InfoPrefix"] = "Инфо: ",
+        ["ConfirmDialog.SuccessPrefix"] = "Успех: ",
         ["AutoImport.Title"] = "Автоимпорт инструментов",
         ["AutoImport.FoundMessage"] = "Найдены проверенные исполняемые файлы. Импортировать сейчас?\n\n{0}",
         ["AutoImport.NotFoundMessage"] = "В папке приложения не найдены инструменты для импорта. Чтобы проверить снова, включите Настр. → Режим инициализации → Автоимпорт инструментов при запуске.",

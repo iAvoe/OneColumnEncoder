@@ -8,6 +8,7 @@ internal static class SvgIconProviderH
 {
     public static ImageSource GlobeWarning { get; }
     public static ImageSource GlobeError { get; }
+    public static ImageSource GlobeSuccess { get; }
     public static ImageSource Troubleshoot { get; }
     public static ImageSource AzureConsortium { get; }
     public static ImageSource AzureSearch { get; }
@@ -27,8 +28,8 @@ internal static class SvgIconProviderH
     public static ImageSource GamePlay { get; }
     public static ImageSource GameRefresh { get; }
 
-    private static Brush Brush(string hex) =>
-        new SolidColorBrush((Color)ColorConverter.ConvertFromString(hex)!);
+    private static SolidColorBrush Brush(string hex) =>
+        new((Color)ColorConverter.ConvertFromString(hex)!);
 
     private static Color Color(string hex) =>
         (Color)ColorConverter.ConvertFromString(hex)!;
@@ -42,7 +43,7 @@ internal static class SvgIconProviderH
     private static void Add(DrawingGroup g, Geometry geometry, Pen pen) =>
         g.Children.Add(new GeometryDrawing(null, pen, geometry));
 
-    private static Geometry Polygon(string points)
+    private static StreamGeometry Polygon(string points)
     {
         StreamGeometry geometry = new();
         using StreamGeometryContext ctx = geometry.Open();
@@ -60,7 +61,7 @@ internal static class SvgIconProviderH
         return geometry;
     }
 
-    private static Geometry Rect(double x, double y, double width, double height, double rx = 0, Transform? transform = null)
+    private static RectangleGeometry Rect(double x, double y, double width, double height, double rx = 0, Transform? transform = null)
     {
         RectangleGeometry geometry = new(new Rect(x, y, width, height), rx, rx, transform);
         geometry.Freeze();
@@ -74,7 +75,7 @@ internal static class SvgIconProviderH
         Brush graya3 = Brush("#a3a3a3");
         Brush orange = Brush("#F68819");
         Brush white = Brush("#f2f2f2");
-        Brush red = Brush("#95000E");
+        // Brush red = Brush("#95000E");
         Brush blue1 = Brush("#198ab3");
         Brush blue2 = Brush("#32d4f5");
         Brush purple1 = Brush("#773adc");
@@ -140,7 +141,16 @@ internal static class SvgIconProviderH
         Add(azureGlobeWarning, "M9.3,14.752c0-.154-.613-.154-.613,0a1.656,1.656,0,0,1-1.636,1.8h3.882A1.655,1.655,0,0,1,9.3,14.752Z", gray999);
         Add(azureGlobeWarning, "M13.335,1.1a.571.571,0,0,1,.807,0l.026.028A8.32,8.32,0,0,1,2.432,12.858a.57.57,0,0,1-.049-.8l.025-.026h0A.571.571,0,0,1,3.19,12,7.178,7.178,0,0,0,13.312,1.882.573.573,0,0,1,13.335,1.1Z", graya3);
         Add(azureGlobeWarning, "M11.946,17.5h-5.9a.476.476,0,0,1-.476-.476h0a.476.476,0,0,1,.476-.476h5.9a.476.476,0,0,1,.475.476h0A.476.476,0,0,1,11.946,17.5Z", graya3);
-        Add(azureGlobeWarning, new EllipseGeometry(new Point(7.871, 6.563), 6.063, 6.063), orange);
+        LinearGradientBrush globeWarningGradient = new()
+        {
+            MappingMode = BrushMappingMode.Absolute,
+            StartPoint = new Point(4.491, 4.492),
+            EndPoint = new Point(13.066, 13.067)
+        };
+        globeWarningGradient.GradientStops.Add(new GradientStop(Color("#d15900"), 0));
+        globeWarningGradient.GradientStops.Add(new GradientStop(Color("#f68819"), 0.82));
+        globeWarningGradient.Freeze();
+        Add(azureGlobeWarning, new EllipseGeometry(new Point(7.871, 6.563), 6.063, 6.063), globeWarningGradient);
         Add(azureGlobeWarning, "M4.15,9.515h7.562a.293.293,0,0,0,.251-.443L8.183,2.717a.293.293,0,0,0-.5,0L3.9,9.072A.293.293,0,0,0,4.15,9.515Z", white);
         Add(azureGlobeWarning, "M8.254,7.571H7.608a.146.146,0,0,1-.152-.134L7.387,4.491a.144.144,0,0,1,.151-.14h.786a.144.144,0,0,1,.151.14L8.406,7.437A.146.146,0,0,1,8.254,7.571Z", orange);
         Add(azureGlobeWarning, new EllipseGeometry(new Point(7.931, 8.451), 0.516, 0.516), orange);
@@ -150,10 +160,55 @@ internal static class SvgIconProviderH
         Add(azureGlobeError, "M9.3,14.752c0-.154-.613-.154-.613,0a1.656,1.656,0,0,1-1.636,1.8h3.882A1.655,1.655,0,0,1,9.3,14.752Z", gray999);
         Add(azureGlobeError, "M13.335,1.1a.571.571,0,0,1,.807,0l.026.028A8.32,8.32,0,0,1,2.432,12.858a.57.57,0,0,1-.049-.8l.025-.026h0A.571.571,0,0,1,3.19,12,7.178,7.178,0,0,0,13.312,1.882.573.573,0,0,1,13.335,1.1Z", graya3);
         Add(azureGlobeError, "M11.946,17.5h-5.9a.476.476,0,0,1-.476-.476h0a.476.476,0,0,1,.476-.476h5.9a.476.476,0,0,1,.475.476h0A.476.476,0,0,1,11.946,17.5Z", graya3);
-        Add(azureGlobeError, new EllipseGeometry(new Point(7.871, 6.563), 6.063, 6.063), red);
+        LinearGradientBrush globeErrorGradient = new()
+        {
+            MappingMode = BrushMappingMode.Absolute,
+            StartPoint = new Point(4.491, 4.492),
+            EndPoint = new Point(13.066, 13.067)
+        };
+        globeErrorGradient.GradientStops.Add(new GradientStop(Color("#7f000d"), 0));
+        globeErrorGradient.GradientStops.Add(new GradientStop(Color("#c10015"), 0.82));
+        globeErrorGradient.Freeze();
+        Add(azureGlobeError, new EllipseGeometry(new Point(7.871, 6.563), 6.063, 6.063), globeErrorGradient);
         Add(azureGlobeError, "M8.391,8.105H7.256a.255.255,0,0,1-.265-.236L6.869,2.705a.254.254,0,0,1,.266-.246H8.512a.254.254,0,0,1,.266.246L8.656,7.869A.255.255,0,0,1,8.391,8.105Z", white);
         Add(azureGlobeError, new EllipseGeometry(new Point(7.823, 9.647), 0.905, 0.905), white);
         GlobeError = new DrawingImage(azureGlobeError);
+
+        DrawingGroup azureGlobeSuccess = new();
+        Add(azureGlobeSuccess, "M9.3,14.752c0-.154-.613-.154-.613,0a1.656,1.656,0,0,1-1.636,1.8h3.882A1.655,1.655,0,0,1,9.3,14.752Z", gray999);
+        Add(azureGlobeSuccess, "M13.335,1.1a.571.571,0,0,1,.807,0l.026.028A8.32,8.32,0,0,1,2.432,12.858a.57.57,0,0,1-.049-.8l.025-.026h0A.571.571,0,0,1,3.19,12,7.178,7.178,0,0,0,13.312,1.882.573.573,0,0,1,13.335,1.1Z", graya3);
+        Add(azureGlobeSuccess, "M11.946,17.5h-5.9a.476.476,0,0,1-.476-.476h0a.476.476,0,0,1,.476-.476h5.9a.476.476,0,0,1,.475.476h0A.476.476,0,0,1,11.946,17.5Z", graya3);
+        LinearGradientBrush globeSuccessGradient = new()
+        {
+            MappingMode = BrushMappingMode.Absolute,
+            StartPoint = new Point(4.491, 4.492),
+            EndPoint = new Point(13.066, 13.067)
+        };
+        globeSuccessGradient.GradientStops.Add(new GradientStop(Color("#5e9624"), 0));
+        globeSuccessGradient.GradientStops.Add(new GradientStop(Color("#76bc2d"), 0.82));
+        globeSuccessGradient.Freeze();
+        Add(azureGlobeSuccess, new EllipseGeometry(new Point(7.871, 6.563), 6.063, 6.063), globeSuccessGradient);
+        Geometry successBar1 = Geometry.Parse("M5.093,5.875h.788a.243.243,0,0,1,.243.243V9.247a.243.243,0,0,1-.243.243H5.336a.243.243,0,0,1-.243-.243V5.875A0,0,0,0,1,5.093,5.875Z").Clone();
+        successBar1.Transform = new TransformGroup
+        {
+            Children =
+            [
+                new RotateTransform(135),
+                new TranslateTransform(15.006, 9.149)
+            ]
+        };
+        Add(azureGlobeSuccess, successBar1, white);
+        Geometry successBar2 = Geometry.Parse("M8.525,2.615h.788a0,0,0,0,1,0,0v7.2a.243.243,0,0,1-.243.243H8.525a.243.243,0,0,1-.243-.243V2.857a.243.243,0,0,1,.243-.243Z").Clone();
+        successBar2.Transform = new TransformGroup
+        {
+            Children =
+            [
+                new RotateTransform(-135),
+                new TranslateTransform(10.54, 17.034)
+            ]
+        };
+        Add(azureGlobeSuccess, successBar2, white);
+        GlobeSuccess = new DrawingImage(azureGlobeSuccess);
 
         DrawingGroup azureTroubleshoot = new();
         Add(azureTroubleshoot, "M14.37,4.17l.08.07a.14.14,0,0,0,.19,0l.74-.62,1.34-2.21a.14.14,0,0,0,0-.17L16.49,1a.14.14,0,0,0-.17,0L14.21,2.43l-.6.77a.14.14,0,0,0,0,.18l.08.08L9.33,8,8.43,7l-1,1A1.81,1.81,0,0,1,7,9.51a1.57,1.57,0,0,1-1.37.5L1.34,14.36a.27.27,0,0,0,0,.39l2.08,2.16a.27.27,0,0,0,.4,0L8,12.55a1.72,1.72,0,0,1,.5-1.44,1.6,1.6,0,0,1,1.37-.5l1-1L10,8.64Z", blue1);

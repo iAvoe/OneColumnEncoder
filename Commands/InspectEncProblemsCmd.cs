@@ -16,7 +16,7 @@ namespace OneColumnEncoder.Commands
 
             if (string.IsNullOrWhiteSpace(inspectText))
             {
-                new OpenInfoModalCmd(
+                new OpenSuccModalCmd(
                     _modalNavS,
                     UICaptionProviderM.EncInspect.InfoTitle,
                     UICaptionProviderM.EncInspect.InfoMsg).Execute(null);

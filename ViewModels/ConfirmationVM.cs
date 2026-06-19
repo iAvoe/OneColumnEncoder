@@ -39,6 +39,9 @@ public class ConfirmationVM(string windowTitle, string message, ImageSource imag
 
     public static ConfirmationVM CreateInfo(string title, string p1Text, ICommand cancelCmd, ICommand confirmCmd) =>
         new(UILangProviderM.Current["ConfirmDialog.InfoPrefix"] + title, p1Text, SvgIconProviderH.AzureConsortium, cancelCmd, confirmCmd);
+
+    public static ConfirmationVM CreateSuccess(string title, string p1Text, ICommand cancelCmd, ICommand confirmCmd) =>
+        new(UILangProviderM.Current["ConfirmDialog.SuccessPrefix"] + title, p1Text, SvgIconProviderH.GlobeSuccess, cancelCmd, confirmCmd);
 }
 
 public sealed class ConfirmationContextMenuItemVM(string header, ICommand command)

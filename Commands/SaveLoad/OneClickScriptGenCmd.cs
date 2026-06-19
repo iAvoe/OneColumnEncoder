@@ -95,7 +95,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
 
             ApplyUpstreamScriptSelection(avsItem, vpyItem);
 
-            new OpenInfoModalCmd(
+            new OpenSuccModalCmd(
                 _modalNavS,
                 UILangProviderM.SrcScribeWindowTitle,
                 string.Format(UILangProviderM.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, [avsPath, vpyPath]))).Execute(null);
@@ -163,7 +163,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
 
             ApplyUpstreamScriptSelection(avsItem, vpyItem);
 
-            new OpenInfoModalCmd(
+            new OpenSuccModalCmd(
                 _modalNavS,
                 UILangProviderM.SrcScribeWindowTitle,
                 string.Format(UILangProviderM.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, savedPaths))).Execute(null);

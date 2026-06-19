@@ -554,7 +554,7 @@ namespace OneColumnEncoder.ViewModels
         private void CopyFullScript()
         {
             Clipboard.SetText(GetCurrentFullScript());
-            new OpenInfoModalCmd(
+            new OpenSuccModalCmd(
                 _modalNavS,
                 UILangProviderM.SrcScribeWindowTitle,
                 UILangProviderM.Current["SrcScribe.CopiedFull"]).Execute(null);
@@ -572,7 +572,7 @@ namespace OneColumnEncoder.ViewModels
             };
 
             Clipboard.SetText(inOutText);
-            new OpenInfoModalCmd(
+            new OpenSuccModalCmd(
                 _modalNavS,
                 UILangProviderM.SrcScribeWindowTitle,
                 UILangProviderM.Current["SrcScribe.CopiedSection"]).Execute(null);
@@ -661,7 +661,7 @@ namespace OneColumnEncoder.ViewModels
                 savedPaths.Add(vpyPath);
             }
 
-            new OpenInfoModalCmd(
+            new OpenSuccModalCmd(
                 _modalNavS,
                 UILangProviderM.SrcScribeWindowTitle,
                 $"Scripts saved:\n{string.Join(Environment.NewLine, savedPaths)}").Execute(null);
@@ -720,7 +720,7 @@ namespace OneColumnEncoder.ViewModels
             _vpyItem.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(vpyFileNames);
             _vpyItem.P1TooltipText = BrowseSourceQueueCmd.FormatQueueP1TooltipText(vpyFileNames);
 
-            new OpenInfoModalCmd(
+            new OpenSuccModalCmd(
                 _modalNavS,
                 UILangProviderM.SrcScribeWindowTitle,
                 $"Scripts saved:\n{string.Join(Environment.NewLine, savedPaths)}").Execute(null);
@@ -762,7 +762,7 @@ namespace OneColumnEncoder.ViewModels
 
             ImportScript(_avsItem, SourceFileKind.AviSynthScript, avsPath);
             ImportScript(_vpyItem, SourceFileKind.VapourSynthScript, vpyPath);
-            new OpenInfoModalCmd(
+            new OpenSuccModalCmd(
                 _modalNavS,
                 UILangProviderM.SrcScribeWindowTitle,
                 $"Scripts saved:\n{avsPath}\n{vpyPath}").Execute(null);
@@ -829,7 +829,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void ShowSavedMessage(string path)
         {
-            new OpenInfoModalCmd(
+            new OpenSuccModalCmd(
                 _modalNavS,
                 UILangProviderM.SrcScribeWindowTitle,
                 $"Script saved:\n{path}").Execute(null);

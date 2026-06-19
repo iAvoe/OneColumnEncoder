@@ -927,7 +927,7 @@ namespace OneColumnEncoder.ViewModels
 
             ConfirmationModal window = new();
             CloseModalCmd cancelCmd = new(window.Close);
-            ConfirmationVM vm = ConfirmationVM.CreateWarning(
+            ConfirmationVM vm = ConfirmationVM.CreateInfo(
                 UILangProviderM.ScriptGenWindowTitle,
                 UILangProviderM.Current["ScriptGen.RunAfterReplace"],
                 cancelCmd,
@@ -970,7 +970,7 @@ namespace OneColumnEncoder.ViewModels
 
             ConfirmationModal window = new();
             CloseModalCmd cancelCmd = new(window.Close);
-            ConfirmationVM vm = ConfirmationVM.CreateWarning(
+            ConfirmationVM vm = ConfirmationVM.CreateInfo(
                 UILangProviderM.SrcAnalysisWindowTitle,
                 UILangProviderM.Current["SrcAnalysis.RunAfterReplace"],
                 cancelCmd,
