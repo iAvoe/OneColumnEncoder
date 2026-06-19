@@ -15,8 +15,12 @@ public class ConfirmationVM(string windowTitle, string message, ImageSource imag
     public ObservableCollection<ConfirmationContextMenuItemVM> ContextMenuItems { get; } = [];
     public ConfirmationContextMenuItemVM? ContextMenuItem1 => ContextMenuItems.Count > 0 ? ContextMenuItems[0] : null;
     public ConfirmationContextMenuItemVM? ContextMenuItem2 => ContextMenuItems.Count > 1 ? ContextMenuItems[1] : null;
+    public ConfirmationContextMenuItemVM? ContextMenuItem3 => ContextMenuItems.Count > 2 ? ContextMenuItems[2] : null;
+    public ConfirmationContextMenuItemVM? ContextMenuItem4 => ContextMenuItems.Count > 3 ? ContextMenuItems[3] : null;
     public bool HasContextMenuItem1 => ContextMenuItem1 != null;
     public bool HasContextMenuItem2 => ContextMenuItem2 != null;
+    public bool HasContextMenuItem3 => ContextMenuItem3 != null;
+    public bool HasContextMenuItem4 => ContextMenuItem4 != null;
     public ImageSource I1Source { get; } = image;
     public ButtonGroupVM FinishWarnErrButtons { get; } =
         ButtonGroupVM.CreateTwoButton(

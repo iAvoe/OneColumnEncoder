@@ -5,6 +5,7 @@ using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.ViewModels.Cards;
 using OneColumnEncoder.Views;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -99,10 +100,12 @@ namespace OneColumnEncoder.Commands
 
             List<QueueSourceEntry> accepted = [];
             List<QueueSourceEntry> excluded = [];
+            List<QueueSourceRawAnalysis> rawAnalyses = [];
             SourceCheckSignature? referenceSignature = null;
             string referenceRawJson = string.Empty;
             string referencePath = string.Empty;
 
+            bool shouldFilterQueue = !queueCard.IsBypassed;
             foreach (string filePath in queueFilePaths)
             {
                 SourceCheckCardVM probeCard = new()
@@ -114,11 +117,13 @@ namespace OneColumnEncoder.Commands
                 probeCard.ApplyFfprobeAnalysisJson(rawJson);
                 SourceCheckSignature signature = probeCard.GetSignature();
                 using JsonDocument rawDocument = JsonDocument.Parse(rawJson);
+                JsonElement rawElement = rawDocument.RootElement.Clone();
                 QueueSourceEntry entry = new(
                     filePath,
                     Path.GetFileName(filePath),
                     QueueSourceCheckResult.FromCard(probeCard),
-                    rawDocument.RootElement.Clone());
+                    rawElement);
+                rawAnalyses.Add(new(filePath, Path.GetFileName(filePath), rawElement));
 
                 if (referenceSignature == null)
                 {
@@ -130,7 +135,7 @@ namespace OneColumnEncoder.Commands
                     continue;
                 }
 
-                if (signature.Matches(referenceSignature))
+                if (!shouldFilterQueue || signature.Matches(referenceSignature))
                     accepted.Add(entry);
                 else
                     excluded.Add(entry);
@@ -140,7 +145,9 @@ namespace OneColumnEncoder.Commands
             Directory.CreateDirectory(directory);
             string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             string queueJsonPath = Path.Combine(directory, $"source_queue_{timestamp}.json");
-            string excludedJsonPath = Path.Combine(directory, $"source_queue_excluded_{timestamp}.json");
+            string? excludedJsonPath = excluded.Count > 0
+                ? Path.Combine(directory, $"source_queue_excluded_{timestamp}.json")
+                : null;
 
             JsonSerializerOptions jsonOptions = new()
             {
@@ -150,23 +157,27 @@ namespace OneColumnEncoder.Commands
             jsonOptions.Converters.Add(new JsonStringEnumConverter());
             UTF8Encoding utf8NoBom = new(false);
             File.WriteAllText(queueJsonPath, JsonSerializer.Serialize(new QueueSourceData(referencePath, accepted), jsonOptions), utf8NoBom);
-            File.WriteAllText(excludedJsonPath, JsonSerializer.Serialize(new QueueSourceData(referencePath, excluded), jsonOptions), utf8NoBom);
+            if (!string.IsNullOrWhiteSpace(excludedJsonPath))
+                File.WriteAllText(excludedJsonPath, JsonSerializer.Serialize(new QueueSourceData(referencePath, excluded), jsonOptions), utf8NoBom);
 
             _analysis.FfprobePath = ffprobePath;
             _analysis.SourcePath = referencePath;
             _analysis.RawJson = referenceRawJson;
-            queueCard.ApplyQueueResult(accepted.Count, excluded.Count, queueJsonPath, excludedJsonPath);
+            _analysis.QueueRawJson = JsonSerializer.Serialize(new QueueRawAnalysisData(rawAnalyses), jsonOptions);
+            queueCard.ApplyQueueResult(accepted.Count, excluded.Count, queueJsonPath, excludedJsonPath ?? string.Empty);
             _onQueueAccepted?.Invoke([.. accepted.Select(entry => entry.FilePath)], queueJsonPath);
 
-            string message = string.Format(
-                UILangProviderM.Current["SourceQueue.AnalysisCompleted"],
-                excluded.Count,
-                queueJsonPath,
-                excludedJsonPath);
+            string message = string.IsNullOrWhiteSpace(excludedJsonPath)
+                ? string.Format(UILangProviderM.Current["SourceQueue.AnalysisCompletedNoExcluded"], queueJsonPath)
+                : string.Format(
+                    UILangProviderM.Current["SourceQueue.AnalysisCompleted"],
+                    excluded.Count,
+                    queueJsonPath,
+                    excludedJsonPath);
             ShowQueueAnalysisCompletedModal(message, queueJsonPath, excludedJsonPath);
         }
 
-        private void ShowQueueAnalysisCompletedModal(string message, string queueJsonPath, string excludedJsonPath)
+        private void ShowQueueAnalysisCompletedModal(string message, string queueJsonPath, string? excludedJsonPath)
         {
             ConfirmationModal window = new();
             CloseModalCmd closeCmd = new(window.Close);
@@ -179,8 +190,17 @@ namespace OneColumnEncoder.Commands
                 UILangProviderM.Current["SourceQueue.CopyQueueJsonPath"],
                 new ActionCmd(_ => Clipboard.SetText(queueJsonPath))));
             vm.ContextMenuItems.Add(new(
-                UILangProviderM.Current["SourceQueue.CopyExcludedJsonPath"],
-                new ActionCmd(_ => Clipboard.SetText(excludedJsonPath))));
+                UILangProviderM.Current["SourceQueue.OpenQueueJson"],
+                new ActionCmd(_ => OpenJsonPath(queueJsonPath))));
+            if (!string.IsNullOrWhiteSpace(excludedJsonPath))
+            {
+                vm.ContextMenuItems.Add(new(
+                    UILangProviderM.Current["SourceQueue.CopyExcludedJsonPath"],
+                    new ActionCmd(_ => Clipboard.SetText(excludedJsonPath))));
+                vm.ContextMenuItems.Add(new(
+                    UILangProviderM.Current["SourceQueue.OpenExcludedJson"],
+                    new ActionCmd(_ => OpenJsonPath(excludedJsonPath))));
+            }
 
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
@@ -188,6 +208,9 @@ namespace OneColumnEncoder.Commands
             _modalNavS.CurrentModalVM = vm;
             window.ShowDialog();
         }
+
+        private static void OpenJsonPath(string jsonPath) =>
+            Process.Start(new ProcessStartInfo(jsonPath) { UseShellExecute = true });
 
         private sealed class SaveLoadPlaceholder : SaveLoadBaseH<SaveLoadPlaceholder>
         {
@@ -198,6 +221,11 @@ namespace OneColumnEncoder.Commands
             string FilePath,
             string DisplayName,
             QueueSourceCheckResult CheckResult,
+            JsonElement FfprobeJson);
+
+        private sealed record QueueSourceRawAnalysis(
+            string FilePath,
+            string DisplayName,
             JsonElement FfprobeJson);
 
         private sealed record QueueSourceCheckResult(
@@ -217,5 +245,7 @@ namespace OneColumnEncoder.Commands
         }
 
         private sealed record QueueSourceData(string ReferenceFilePath, IReadOnlyList<QueueSourceEntry> Entries);
+
+        private sealed record QueueRawAnalysisData(IReadOnlyList<QueueSourceRawAnalysis> Entries);
     }
 }

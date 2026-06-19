@@ -165,7 +165,9 @@ namespace OneColumnEncoder.ViewModels
                 () => ActiveScriptSrcImportZone[0],
                 () => ActiveScriptSrcImportZone[1],
                 UpstreamsZone,
-                modalNavS);
+                modalNavS,
+                IsQueueRouteActive,
+                GetCurrentQueueFilePaths);
             OpenFilterScribe = new OpenFilterScribeCmd(
                 modalNavS,
                 () => GetCurrentVideoSourcePath(),
@@ -179,7 +181,7 @@ namespace OneColumnEncoder.ViewModels
                     && SrcValidationCard.Checklist2[1].Status == StatusType.Warning,
                 () => _srcVideoAnalysis.RawJson);
             CopyRawAnalysis = new CopyRawAnalysisCmd(
-                _srcVideoAnalysis, modalNavS);
+                _srcVideoAnalysis, modalNavS, IsQueueRouteActive);
             AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(
                 GetSelectedFfprobePath,
                 GetSelectedVideoSourcePath,

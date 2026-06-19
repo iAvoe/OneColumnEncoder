@@ -123,8 +123,11 @@ public class UILangProviderM
             ["SourceQueue.Sequence"] = "Seq.",
             ["SourceQueue.SelectFolderTitle"] = "Select video source queue folder",
             ["SourceQueue.AnalysisCompleted"] = "Queue source analysis completed. Filtered out {0} video(s) due to excessive differences.\n\nQueue data JSON:\n{1}\n\nExclusion list:\n{2}",
+            ["SourceQueue.AnalysisCompletedNoExcluded"] = "Queue source analysis completed. No videos were filtered out.\n\nQueue data JSON:\n{0}",
             ["SourceQueue.CopyQueueJsonPath"] = "Copy Queue JSON Path",
             ["SourceQueue.CopyExcludedJsonPath"] = "Copy Exclusion JSON Path",
+            ["SourceQueue.OpenQueueJson"] = "Open Queue JSON",
+            ["SourceQueue.OpenExcludedJson"] = "Open Exclusion JSON",
 
             // Dialogs
             ["Dialog.SelectTitle"] = "Select {0}",
@@ -440,8 +443,11 @@ public class UILangProviderM
             ["SourceQueue.Sequence"] = "序列",
             ["SourceQueue.SelectFolderTitle"] = "选择视频源队列文件夹",
             ["SourceQueue.AnalysisCompleted"] = "队列视频源分析已完成。因差异过大过滤掉 {0} 个视频。\n\n队列数据 JSON：\n{1}\n\n排除列表：\n{2}",
+            ["SourceQueue.AnalysisCompletedNoExcluded"] = "队列视频源分析已完成。未过滤掉视频。\n\n队列数据 JSON：\n{0}",
             ["SourceQueue.CopyQueueJsonPath"] = "复制队列 JSON 路径",
             ["SourceQueue.CopyExcludedJsonPath"] = "复制排除列表 JSON 路径",
+            ["SourceQueue.OpenQueueJson"] = "打开队列 JSON",
+            ["SourceQueue.OpenExcludedJson"] = "打开排除列表 JSON",
 
             ["Dialog.SelectTitle"] = "选择 {0}",
             ["Dialog.ReplaceTitle"] = "替换 {0}",
@@ -740,8 +746,11 @@ public class UILangProviderM
             ["SourceQueue.Sequence"] = "序列",
             ["SourceQueue.SelectFolderTitle"] = "選擇視訊來源序列資料夾",
             ["SourceQueue.AnalysisCompleted"] = "佇列視訊來源分析已完成。因差異過大過濾掉 {0} 個視訊。\n\n佇列資料 JSON：\n{1}\n\n排除列表：\n{2}",
+            ["SourceQueue.AnalysisCompletedNoExcluded"] = "佇列視訊來源分析已完成。未過濾掉視訊。\n\n佇列資料 JSON：\n{0}",
             ["SourceQueue.CopyQueueJsonPath"] = "複製佇列 JSON 路徑",
             ["SourceQueue.CopyExcludedJsonPath"] = "複製排除列表 JSON 路徑",
+            ["SourceQueue.OpenQueueJson"] = "開啟佇列 JSON",
+            ["SourceQueue.OpenExcludedJson"] = "開啟排除列表 JSON",
 
             ["Dialog.SelectTitle"] = "選擇 {0}",
             ["Dialog.ReplaceTitle"] = "替換 {0}",

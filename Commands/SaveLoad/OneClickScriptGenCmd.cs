@@ -14,20 +14,25 @@ namespace OneColumnEncoder.Commands.SaveLoad
         Func<ToolItemCardVM> getAvsItem,
         Func<ToolItemCardVM> getVpyItem,
         IEnumerable<ToolItemCardVM> upstreamsZone,
-        ModalNavS modalNavS) : BaseCmd
+        ModalNavS modalNavS,
+        Func<bool>? isQueueRoute = null,
+        Func<string[]>? getQueueFilePaths = null) : BaseCmd
     {
         private readonly Func<string> _getSourcePath = getSourcePath;
         private readonly Func<ToolItemCardVM> _getAvsItem = getAvsItem;
         private readonly Func<ToolItemCardVM> _getVpyItem = getVpyItem;
         private readonly IEnumerable<ToolItemCardVM> _upstreamsZone = upstreamsZone; // For making auto selection
         private readonly ModalNavS _modalNavS = modalNavS;
+        private readonly Func<bool>? _isQueueRoute = isQueueRoute;
+        private readonly Func<string[]>? _getQueueFilePaths = getQueueFilePaths;
 
         public override bool CanExecute(object? parameter) =>
-            !string.IsNullOrWhiteSpace(_getSourcePath());
+            IsQueueRoute()
+                ? (_getQueueFilePaths?.Invoke().Length ?? 0) > 0
+                : !string.IsNullOrWhiteSpace(_getSourcePath());
 
         public override void Execute(object? parameter)
         {
-            string sourcePath = _getSourcePath();
             if (!CanExecute(null))
             {
                 new OpenWarnModalCmd(
@@ -36,6 +41,14 @@ namespace OneColumnEncoder.Commands.SaveLoad
                     UILangProviderM.Current["SrcScribe.NoVidSrcWarning"]).Execute(null);
                 return;
             }
+
+            if (IsQueueRoute())
+            {
+                ExecuteQueueScriptGen();
+                return;
+            }
+
+            string sourcePath = _getSourcePath();
             string avsScript = ScriptTemplateH.BuildAvsExportScript(
                 sourcePath,
                 FilterScribeVM.AvsPrefix2,
@@ -80,27 +93,93 @@ namespace OneColumnEncoder.Commands.SaveLoad
             vpyItem.P2TextData = vpyPath;
             vpyItem.P1TextData = SourceFilePickerH.GetPrimaryText(SourceFileKind.VapourSynthScript, vpyPath);
 
-            // Auto ScriptSrcImportZone selection: try select script import when upstream program relates
-            ToolItemCardVM? selectedUpstream = _upstreamsZone.FirstOrDefault(t => t.IsSelected);
-            if (selectedUpstream != null)
-            {
-                if (ToolDefinitionProviderM.IsImportedTool(selectedUpstream.Name, "vspipe.exe"))
-                {
-                    avsItem.IsSelected = false;
-                    if (vpyItem.IsEnabled) vpyItem.IsSelected = true;
-                }
-                else if (ToolDefinitionProviderM.IsImportedTool(selectedUpstream.Name, "avs2yuv.exe") ||
-                         ToolDefinitionProviderM.IsImportedTool(selectedUpstream.Name, "avs2pipemod.exe"))
-                {
-                    vpyItem.IsSelected = false;
-                    if (avsItem.IsEnabled) avsItem.IsSelected = true;
-                }
-            }
+            ApplyUpstreamScriptSelection(avsItem, vpyItem);
 
             new OpenInfoModalCmd(
                 _modalNavS,
                 UILangProviderM.SrcScribeWindowTitle,
                 $"Scripts saved:\n{avsPath}\n{vpyPath}").Execute(null);
+        }
+
+        private bool IsQueueRoute() => _isQueueRoute?.Invoke() == true;
+
+        private void ExecuteQueueScriptGen()
+        {
+            string[] sourcePaths = _getQueueFilePaths?.Invoke() ?? [];
+            if (sourcePaths.Length == 0) return;
+
+            OpenFolderDialog dialog = new()
+            {
+                Title = UILangProviderM.Current["SrcScribe.SavingWindowTitle"]
+            };
+
+            if (dialog.ShowDialog() != true) return;
+
+            string directory = dialog.FolderName;
+            List<string> savedPaths = [];
+
+            try
+            {
+                foreach (string sourcePath in sourcePaths)
+                {
+                    string baseName = Path.GetFileNameWithoutExtension(sourcePath);
+                    string avsPath = Path.Combine(directory, baseName + ".avs");
+                    string vpyPath = Path.Combine(directory, baseName + ".vpy");
+
+                    File.WriteAllText(avsPath, ScriptTemplateH.BuildAvsExportScript(
+                        sourcePath,
+                        FilterScribeVM.AvsPrefix2,
+                        FilterScribeVM.AvsSuffix));
+                    File.WriteAllText(vpyPath, ScriptTemplateH.BuildVpyExportScript(
+                        sourcePath,
+                        FilterScribeVM.VpyPrefix2,
+                        FilterScribeVM.VpySuffix));
+                    savedPaths.Add(avsPath);
+                    savedPaths.Add(vpyPath);
+                }
+            }
+            catch (Exception ex)
+            {
+                new OpenErrModalCmd(
+                    _modalNavS,
+                    UILangProviderM.SrcScribeWindowTitle,
+                    $"Failed to save scripts: {ex.Message}").Execute(null);
+                return;
+            }
+
+            ToolItemCardVM avsItem = _getAvsItem();
+            ToolItemCardVM vpyItem = _getVpyItem();
+            avsItem.P2TextData = directory;
+            avsItem.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(
+                savedPaths.Where(path => path.EndsWith(".avs", StringComparison.OrdinalIgnoreCase)).Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!));
+            vpyItem.P2TextData = directory;
+            vpyItem.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(
+                savedPaths.Where(path => path.EndsWith(".vpy", StringComparison.OrdinalIgnoreCase)).Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!));
+
+            ApplyUpstreamScriptSelection(avsItem, vpyItem);
+
+            new OpenInfoModalCmd(
+                _modalNavS,
+                UILangProviderM.SrcScribeWindowTitle,
+                $"Scripts saved:\n{directory}").Execute(null);
+        }
+
+        private void ApplyUpstreamScriptSelection(ToolItemCardVM avsItem, ToolItemCardVM vpyItem)
+        {
+            ToolItemCardVM? selectedUpstream = _upstreamsZone.FirstOrDefault(t => t.IsSelected);
+            if (selectedUpstream == null) return;
+
+            if (ToolDefinitionProviderM.IsImportedTool(selectedUpstream.Name, "vspipe.exe"))
+            {
+                avsItem.IsSelected = false;
+                if (vpyItem.IsEnabled) vpyItem.IsSelected = true;
+            }
+            else if (ToolDefinitionProviderM.IsImportedTool(selectedUpstream.Name, "avs2yuv.exe") ||
+                     ToolDefinitionProviderM.IsImportedTool(selectedUpstream.Name, "avs2pipemod.exe"))
+            {
+                vpyItem.IsSelected = false;
+                if (avsItem.IsEnabled) avsItem.IsSelected = true;
+            }
         }
     }
 }
