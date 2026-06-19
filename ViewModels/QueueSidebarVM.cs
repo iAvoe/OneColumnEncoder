@@ -37,6 +37,13 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
+        public void ClearAllJobs()
+        {
+            _store.Jobs.Clear();
+            Jobs.Clear();
+            RefreshBindings();
+        }
+
         public void LoadFromDisk()
         {
             var loaded = QueueJobsStoreM.Load();

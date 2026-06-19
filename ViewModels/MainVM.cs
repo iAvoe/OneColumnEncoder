@@ -32,7 +32,7 @@ namespace OneColumnEncoder.ViewModels
         public ObservableCollection<ToolItemCardVM> VideoSrcImportZone { get; } // V-S separated for dual single-select
         public ObservableCollection<ToolItemCardVM> ScriptSrcImportZone { get; }
         public ObservableCollection<ToolItemCardVM> QueueScriptSrcImportZone { get; }
-        public ObservableCollection<ToolItemCardVM> EncSettingsZone { get; }
+        public ObservableCollection<ToolItemCardVM> EncodingConfZone { get; }
         private ObservableCollection<ToolItemCardVM> _activeScriptSrcImportZone = null!;
         public ObservableCollection<ToolItemCardVM> ActiveScriptSrcImportZone
         {
@@ -125,7 +125,7 @@ namespace OneColumnEncoder.ViewModels
             ScriptSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetScriptSrcImportDefs(), true, false);
             QueueScriptSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetScriptSrcImportQueueDefs(), false, false);
             ActiveScriptSrcImportZone = ScriptSrcImportZone;
-            EncSettingsZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetEncSettingsDefinitions(), enableRealCheck: false);
+            EncodingConfZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetEncSettingsDefinitions(), enableRealCheck: false);
             UpstreamsZone = [];
             EncodersZone = [];
             AnalyticsZone = [];
@@ -135,7 +135,7 @@ namespace OneColumnEncoder.ViewModels
             WireUpZoneDeleteCmds();
 
             // Set default values for output setting in EncSettingsZone
-            ToolItemCardVM? outputSetting = EncSettingsZone.FirstOrDefault(t => t.Name.Equals(
+            ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t => t.Name.Equals(
                 UILangProviderM.Current["Tool.Enc.OutputSetting"],
                 StringComparison.OrdinalIgnoreCase));
             _outputSettingCard = outputSetting;
@@ -153,7 +153,7 @@ namespace OneColumnEncoder.ViewModels
             }
 
             // Load saved parallelism settings onto the card
-            ToolItemCardVM? parallelismCard = EncSettingsZone.FirstOrDefault(t => t.Name.Equals(
+            ToolItemCardVM? parallelismCard = EncodingConfZone.FirstOrDefault(t => t.Name.Equals(
                 UILangProviderM.Current["Tool.Enc.Parallelism"],
                 StringComparison.OrdinalIgnoreCase));
             if (parallelismCard != null)
@@ -274,13 +274,13 @@ namespace OneColumnEncoder.ViewModels
 
             EncTermsCard.GetOutputDirectoryFunc = () =>
             {
-                ToolItemCardVM? output = EncSettingsZone.FirstOrDefault(t =>
+                ToolItemCardVM? output = EncodingConfZone.FirstOrDefault(t =>
                     t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
                 return output?.P2TextData ?? string.Empty;
             };
             EncTermsCard.GetOutputFilePathFunc = () =>
             {
-                ToolItemCardVM? output = EncSettingsZone.FirstOrDefault(t =>
+                ToolItemCardVM? output = EncodingConfZone.FirstOrDefault(t =>
                     t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
                 if (output is null || string.IsNullOrWhiteSpace(output.P2TextData) || string.IsNullOrWhiteSpace(output.P1TextData))
                     return string.Empty;
@@ -546,13 +546,13 @@ namespace OneColumnEncoder.ViewModels
         private void RefreshEncSettingsState()
         {
             bool hasVideoSource = CanRunSourceAnalysis();
-            foreach (ToolItemCardVM item in EncSettingsZone)
+            foreach (ToolItemCardVM item in EncodingConfZone)
                 item.IsEnabled = hasVideoSource;
         }
 
         private void SyncOutputFilenameWithVideoSource(string? filePath = null)
         {
-            ToolItemCardVM? outputSetting = EncSettingsZone.FirstOrDefault(t =>
+            ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t =>
                 t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
             if (outputSetting == null) return;
 
@@ -729,7 +729,7 @@ namespace OneColumnEncoder.ViewModels
             foreach (ToolItemCardVM tool in VideoSrcImportZone) WireUpSourceCmd(tool);
             foreach (ToolItemCardVM tool in ScriptSrcImportZone) WireUpSourceCmd(tool);
             foreach (ToolItemCardVM tool in QueueScriptSrcImportZone) WireUpSourceCmd(tool);
-            foreach (ToolItemCardVM tool in EncSettingsZone) WireUpStaticClearCmd(tool);
+            foreach (ToolItemCardVM tool in EncodingConfZone) WireUpStaticClearCmd(tool);
             WireUpEncSettingsCmds();
             foreach (ObservableCollection<ToolItemCardVM> zone in AllImportedToolZones)
                 foreach (ToolItemCardVM tool in zone) WireUpToolCmd(tool);
@@ -785,16 +785,16 @@ namespace OneColumnEncoder.ViewModels
             item.R2Command = new ClearToolItemCmd(item);
         private void WireUpEncSettingsCmds()
         {
-            if (EncSettingsZone.Count > 1)
-                EncSettingsZone[1].R1Command = new OpenParallelismConfCmd(_modalNavS, EncSettingsZone[1]);
+            if (EncodingConfZone.Count > 1)
+                EncodingConfZone[1].R1Command = new OpenParallelismConfCmd(_modalNavS, EncodingConfZone[1]);
 
-            ToolItemCardVM? outputSetting = EncSettingsZone.FirstOrDefault(t =>
+            ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t =>
                 t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
 
             if (outputSetting != null)
                 outputSetting.R1Command = new OpenFilenameScribeCmd(_modalNavS, outputSetting);
 
-            ToolItemCardVM? compressionParams = EncSettingsZone.FirstOrDefault(t =>
+            ToolItemCardVM? compressionParams = EncodingConfZone.FirstOrDefault(t =>
                 t.Name.Equals(UILangProviderM.Current["Tool.Enc.EncParams"], StringComparison.OrdinalIgnoreCase));
 
             if (compressionParams != null)
@@ -1213,7 +1213,7 @@ namespace OneColumnEncoder.ViewModels
         {
             ToolItemCardVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected && t.IsEnabled && !string.IsNullOrWhiteSpace(t.P2TextData));
             ToolItemCardVM? encoder = EncodersZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
-            ToolItemCardVM? outputSetting = EncSettingsZone.FirstOrDefault(t =>
+            ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t =>
                 t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
 
             if (upstream == null || encoder == null || outputSetting == null) return null;
@@ -1263,7 +1263,7 @@ namespace OneColumnEncoder.ViewModels
         {
             ToolItemCardVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected && t.IsEnabled && !string.IsNullOrWhiteSpace(t.P2TextData));
             ToolItemCardVM? encoder = EncodersZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
-            ToolItemCardVM? outputSetting = EncSettingsZone.FirstOrDefault(t =>
+            ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t =>
                 t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
 
             if (upstream == null || encoder == null || outputSetting == null) return null;
@@ -1594,7 +1594,7 @@ namespace OneColumnEncoder.ViewModels
             RefreshSourceZonePrimaryText(ScriptSrcImportZone);
             ApplyDefinitionsToZone(QueueScriptSrcImportZone, ToolCatalogProviderM.GetScriptSrcImportQueueDefs());
             RefreshScriptQueuePrimaryText();
-            ApplyDefinitionsToZone(EncSettingsZone, ToolCatalogProviderM.GetEncSettingsDefinitions());
+            ApplyDefinitionsToZone(EncodingConfZone, ToolCatalogProviderM.GetEncSettingsDefinitions());
             WireUpEncSettingsCmds();
             foreach (ObservableCollection<ToolItemCardVM> zone in AllImportedToolZones)
                 ApplyImportedToolDefs(zone);
@@ -1671,7 +1671,7 @@ namespace OneColumnEncoder.ViewModels
             foreach (ToolItemCardVM tool in VideoSrcImportZone) UnwireSourceCmd(tool);
             foreach (ToolItemCardVM tool in ScriptSrcImportZone) UnwireSourceCmd(tool);
             foreach (ToolItemCardVM tool in QueueScriptSrcImportZone) UnwireSourceCmd(tool);
-            foreach (ToolItemCardVM tool in EncSettingsZone) UnwireStaticClearCmd(tool);
+            foreach (ToolItemCardVM tool in EncodingConfZone) UnwireStaticClearCmd(tool);
             foreach (ObservableCollection<ToolItemCardVM> zone in AllImportedToolZones)
                 foreach (ToolItemCardVM tool in zone) UnwireToolCmd(tool);
         }

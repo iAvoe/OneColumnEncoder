@@ -35,8 +35,8 @@ namespace OneColumnEncoder.ViewModels
         private CpuSetsLangProviderM _cpuSetsLang = new(UILangProviderM.Current.LanguageCode);
         private readonly ModalNavS _modalNavS;
         private readonly Action _closeAction;
-        private readonly EncodingPipelineRequest _request;
-        private readonly EncodingPipelineCommand _command;
+        private EncodingPipelineRequest _request;
+        private EncodingPipelineCommand _command;
         private readonly bool _isSample;
         private readonly Stopwatch _stopwatch = new();
         private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(500) };
@@ -45,7 +45,9 @@ namespace OneColumnEncoder.ViewModels
         private readonly LogFoldState _upstreamStderrFoldState = new();
         private readonly LogFoldState _downstreamStderrFoldState = new();
         private readonly ConcurrentQueue<ProcessLogEntry> _logQueue = new();
-        private readonly long? _totalFrames;
+        private long? _totalFrames;
+        private readonly IReadOnlyList<(EncodingPipelineRequest Request, EncodingPipelineCommand Command)>? _queueItems;
+        private int _queueModeIndex = -1;
         private readonly Lock _logLock = new();
         private DateTime _lastStatsUpdate = DateTime.MinValue;
         private DateTime _lastMemoryStatsUpdate = DateTime.MinValue;
@@ -292,6 +294,19 @@ namespace OneColumnEncoder.ViewModels
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
 
+        /// <summary>
+        /// Constructs the encoding monitor view model for queue (batch) mode.
+        /// Accepts a list of pipeline request/command pairs and processes them sequentially.
+        /// </summary>
+        public EncodingMonitorVM(
+            ModalNavS modalNavS,
+            Action closeAction,
+            IReadOnlyList<(EncodingPipelineRequest Request, EncodingPipelineCommand Command)> queueItems)
+            : this(modalNavS, closeAction, queueItems[0].Request, queueItems[0].Command, false)
+        {
+            _queueItems = queueItems;
+        }
+
         private double _logFontSize = 11;
         public double LogFontSize
         {
@@ -310,7 +325,10 @@ namespace OneColumnEncoder.ViewModels
             _cts = new CancellationTokenSource();
             _stopwatch.Start();
             _timer.Start();
-            _ = RunEncodingAsync(_cts.Token);
+            if (_queueItems != null)
+                _ = RunQueueEncodingAsync(_cts.Token);
+            else
+                _ = RunEncodingAsync(_cts.Token);
         }
 
         /// <summary>
@@ -459,22 +477,101 @@ namespace OneColumnEncoder.ViewModels
             }
             finally
             {
-                _stopwatch.Stop();
-                _timer.Stop();
+                if (_queueItems == null)
+                {
+                    _stopwatch.Stop();
+                    _timer.Stop();
+                    EnableCloseButton();
+                }
+
                 ProgressValue = _success ? 100 : ProgressValue;
                 UpdateProgressDetails();
-                StatusText = _success
-                    ? Lang.CompletedText
-                    : _userInterruptRequested
-                        ? Lang.InterruptedText
-                        : StatusText == Lang.EncodingText || StatusText == Lang.MuxingText ? Lang.FailedText : StatusText;
+                if (_queueItems == null)
+                    StatusText = _success
+                        ? Lang.CompletedText
+                        : _userInterruptRequested
+                            ? Lang.InterruptedText
+                            : StatusText == Lang.EncodingText || StatusText == Lang.MuxingText ? Lang.FailedText : StatusText;
                 FlushLogsToProperties();
-                UpdateFooterTimes(final: true);
-                EnableCloseButton();
+                UpdateFooterTimes(final: _queueItems == null);
                 IsMonitoringEnabled = false;
                 _upstreamStdoutStream = null;
                 _encoderStdinStream = null;
             }
+        }
+
+        /// <summary>
+        /// Processes all queue items sequentially. Populates the sidebar, marks each job
+        /// as Encoding while it runs, then Completed or Failed. Stops on first failure.
+        /// Timer and stopwatch accumulate across the entire batch.
+        /// </summary>
+        private async Task RunQueueEncodingAsync(CancellationToken cancellationToken)
+        {
+            int total = _queueItems!.Count;
+            int completed = 0;
+
+            QueueSidebar.ClearAllJobs();
+            QueueSidebar.IsVisible = true;
+
+            for (int i = 0; i < total; i++)
+            {
+                var (request, command) = _queueItems[i];
+                var job = new QueueJobItemM
+                {
+                    JobId = Guid.NewGuid().ToString(),
+                    SourcePath = request.UpstreamInputPath,
+                    OutputPath = request.OutputPath,
+                    Status = "Pending",
+                    EncoderExeName = request.EncoderExeName,
+                    QueuedAt = DateTime.Now
+                };
+                QueueSidebar.AddJob(job);
+            }
+            QueueSidebar.SaveToDisk();
+
+            for (int i = 0; i < total; i++)
+            {
+                if (cancellationToken.IsCancellationRequested) break;
+
+                _queueModeIndex = i;
+                var (request, command) = _queueItems[i];
+                _request = request;
+                _command = command;
+                _totalFrames = EncodingPipelineH.GetSourceTotalFrames(request.SourceFfprobeJson);
+                EnableMux = command.MuxCommand != null
+                    && !string.Equals(request.EncoderExeName, "x264.exe", StringComparison.OrdinalIgnoreCase);
+                _writtenFrames = 0;
+                _currentOutputSizeBytes = 0;
+                _success = false;
+                _userInterruptRequested = false;
+                _upstreamProcess = null;
+                _encoderProcess = null;
+                _muxProcess = null;
+
+                var jobVM = QueueSidebar.Jobs[i];
+                QueueSidebar.MarkJobEncoding(jobVM);
+
+                await RunEncodingAsync(cancellationToken);
+
+                if (_success)
+                {
+                    QueueSidebar.MarkJobCompleted(jobVM);
+                    completed++;
+                }
+                else if (!_userInterruptRequested)
+                {
+                    QueueSidebar.MarkJobFailed(jobVM, StatusText);
+                    break;
+                }
+            }
+
+            _stopwatch.Stop();
+            _timer.Stop();
+            EnableCloseButton();
+            UpdateFooterTimes(final: true);
+            StatusText = completed == total
+                ? $"{Lang.CompletedText}: {completed}/{total}"
+                : $"{Lang.FailedText}: {completed}/{total}";
         }
 
         /// <summary>

@@ -301,7 +301,27 @@ namespace OneColumnEncoder.Commands
 
         private void StartQueueEncoding(QueueEncodingItem[] queueItems)
         {
-            new OpenErrModalCmd(_modalNavS, _lang.WarnTitle, _lang.QueueEncodingPendingMsg).Execute(null);
+            var pairs = queueItems.Select(item => (item.Request, item.Command)).ToArray();
+
+            EncodingMonitorModal? existingWindow = Application.Current.Windows
+                .OfType<EncodingMonitorModal>()
+                .FirstOrDefault();
+            if (existingWindow != null)
+            {
+                existingWindow.Activate();
+                return;
+            }
+
+            if (_modalNavS.IsOpen)
+                _modalNavS.Close();
+
+            EncodingMonitorModal window = new();
+            EncodingMonitorVM vm = new(_modalNavS, window.Close, pairs);
+            window.DataContext = vm;
+            window.Owner = Application.Current.MainWindow;
+            window.Closed += (_, _) => _modalNavS.Close();
+            _modalNavS.CurrentModalVM = vm;
+            window.Show();
         }
 
         private int CalculateOverwriteConfirmDelayMs(long fileLengthBytes)
