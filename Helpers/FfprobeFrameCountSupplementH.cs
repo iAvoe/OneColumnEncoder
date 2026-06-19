@@ -30,7 +30,7 @@ internal static class FfprobeFrameCountSupplementH
             if (streamNode == null) continue;
 
             streamNode["nb_frames"] = frameCount.ToString(CultureInfo.InvariantCulture);
-            streamNode["1cenc_is_nb_frames_calculated"] = true;
+            streamNode["nb_frames_by_1cenc"] = true;
             supplementedCount++;
         }
 

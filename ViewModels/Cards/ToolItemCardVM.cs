@@ -188,6 +188,7 @@ namespace OneColumnEncoder.ViewModels.Cards
         public void SetStoredFingerprint(long? fileSize)
         {
             _expectedFileSize = fileSize;
+            Validate();
         }
 
         private void Validate()
