@@ -792,7 +792,7 @@ namespace OneColumnEncoder.ViewModels
                 t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
 
             if (outputSetting != null)
-                outputSetting.R1Command = new OpenFilenameScribeCmd(_modalNavS, outputSetting);
+                outputSetting.R1Command = new OpenFilenameScribeCmd(_modalNavS, outputSetting, IsQueueRouteActive);
 
             ToolItemCardVM? compressionParams = EncodingConfZone.FirstOrDefault(t =>
                 t.Name.Equals(UILangProviderM.Current["Tool.Enc.EncParams"], StringComparison.OrdinalIgnoreCase));
@@ -1177,6 +1177,7 @@ namespace OneColumnEncoder.ViewModels
                 : ScriptSrcImportZone;
             ToolCompatibilityH.RefreshSourceSelectionState(
                 UpstreamsZone, ActiveScriptSrcImportZone, () => { });
+            (_outputSettingCard?.R1Command as BaseCmd)?.OnCanExecuteChanged();
         }
 
         private bool IsQueueRouteActive() =>

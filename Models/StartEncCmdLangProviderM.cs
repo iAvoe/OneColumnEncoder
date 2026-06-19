@@ -88,7 +88,17 @@ public class StartEncCmdLangProviderM
             ["MuxOutputLabel"] = "Sortie mux",
             ["OverwriteTargetLabel"] = "{0} : {1} ({2})",
             ["LargestExistingSizeLabel"] = "Plus grande taille existante : {0}",
-            ["ConfirmDelayLabel"] = "Le bouton de confirmation se déverrouille dans {0} s."
+            ["ConfirmDelayLabel"] = "Le bouton de confirmation se déverrouille dans {0} s.",
+            ["AdditionalOverwriteTargetsLabel"] = "...et {0} autre(s) cible(s).",
+            ["QueueJsonMissingMsg"] = "JSON de file d'attente manquant. Exécutez l'analyse de la file d'attente source avant de lancer l'encodage.",
+            ["QueueJsonInvalidMsg"] = "Le JSON de file d'attente est illisible ou invalide : {0}",
+            ["QueueJsonNoEntriesMsg"] = "Le JSON de file d'attente ne contient aucune entrée source acceptée.",
+            ["QueueUnsupportedRouteMsg"] = "L'encodage en file d'attente ne prend actuellement en charge que ffmpeg comme amont.",
+            ["QueueSourceMissingMsg"] = "Fichier(s) source de file d'attente manquant(s). L'encodage ne peut pas continuer :",
+            ["QueueDuplicateOutputMsg"] = "Les chemins de sortie de la file d'attente entrent en collision. L'encodage ne peut pas continuer :",
+            ["QueueEncodingPendingMsg"] = "Protection contre l'écrasement de la file d'attente terminée. L'exécution de la file d'attente n'est pas encore câblée.",
+            ["GbSuffix"] = " Go",
+            ["MbSuffix"] = " Mo"
         };
         Data["es"] = new(Data["en"])
         {
@@ -101,7 +111,17 @@ public class StartEncCmdLangProviderM
             ["MuxOutputLabel"] = "Salida mux",
             ["OverwriteTargetLabel"] = "{0}: {1} ({2})",
             ["LargestExistingSizeLabel"] = "Mayor tamaño existente: {0}",
-            ["ConfirmDelayLabel"] = "El botón se desbloquea en {0} s."
+            ["ConfirmDelayLabel"] = "El botón se desbloquea en {0} s.",
+            ["AdditionalOverwriteTargetsLabel"] = "...y {0} destino(s) más.",
+            ["QueueJsonMissingMsg"] = "Falta el JSON de la cola. Ejecute el análisis de la cola de origen antes de iniciar la codificación por cola.",
+            ["QueueJsonInvalidMsg"] = "No se puede leer o analizar el JSON de la cola: {0}",
+            ["QueueJsonNoEntriesMsg"] = "El JSON de la cola no contiene entradas de origen aceptadas.",
+            ["QueueUnsupportedRouteMsg"] = "La codificación por cola actualmente solo admite ffmpeg como aguas arriba.",
+            ["QueueSourceMissingMsg"] = "Faltan archivos de origen de la cola. No se puede continuar la codificación:",
+            ["QueueDuplicateOutputMsg"] = "Las rutas de salida de la cola colisionan. No se puede continuar la codificación:",
+            ["QueueEncodingPendingMsg"] = "Protección contra sobrescritura de cola completada. La ejecución de la cola aún no está conectada.",
+            ["GbSuffix"] = " GB",
+            ["MbSuffix"] = " MB"
         };
         Data["ja"] = new(Data["en"])
         {
@@ -114,7 +134,17 @@ public class StartEncCmdLangProviderM
             ["MuxOutputLabel"] = "Mux 出力",
             ["OverwriteTargetLabel"] = "{0}: {1} ({2})",
             ["LargestExistingSizeLabel"] = "既存最大サイズ: {0}",
-            ["ConfirmDelayLabel"] = "確認ボタンは {0} 秒後に有効になります。"
+            ["ConfirmDelayLabel"] = "確認ボタンは {0} 秒後に有効になります。",
+            ["AdditionalOverwriteTargetsLabel"] = "...他 {0} 個のターゲット。",
+            ["QueueJsonMissingMsg"] = "キュー JSON が見つかりません。キューエンコードを開始する前にソースキュー分析を実行してください。",
+            ["QueueJsonInvalidMsg"] = "キュー JSON を読み取りまたは解析できません: {0}",
+            ["QueueJsonNoEntriesMsg"] = "キュー JSON に受け入れられたソースエントリがありません。",
+            ["QueueUnsupportedRouteMsg"] = "キューエンコードは現在 ffmpeg 上流のみをサポートしています。",
+            ["QueueSourceMissingMsg"] = "キューのソースファイルが見つかりません。エンコードを続行できません:",
+            ["QueueDuplicateOutputMsg"] = "キューの出力パスが衝突しています。エンコードを続行できません:",
+            ["QueueEncodingPendingMsg"] = "キューの上書き保護が完了しました。キューの実行はまだ配線されていません。",
+            ["GbSuffix"] = " GB",
+            ["MbSuffix"] = " MB"
         };
         Data["ru"] = new(Data["en"])
         {
@@ -127,7 +157,17 @@ public class StartEncCmdLangProviderM
             ["MuxOutputLabel"] = "Вывод mux",
             ["OverwriteTargetLabel"] = "{0}: {1} ({2})",
             ["LargestExistingSizeLabel"] = "Наибольший существующий размер: {0}",
-            ["ConfirmDelayLabel"] = "Кнопка подтверждения откроется через {0} с."
+            ["ConfirmDelayLabel"] = "Кнопка подтверждения откроется через {0} с.",
+            ["AdditionalOverwriteTargetsLabel"] = "...и ещё {0} цель(ей).",
+            ["QueueJsonMissingMsg"] = "Отсутствует JSON очереди. Запустите анализ очереди источников перед запуском пакетного кодирования.",
+            ["QueueJsonInvalidMsg"] = "Невозможно прочитать или разобрать JSON очереди: {0}",
+            ["QueueJsonNoEntriesMsg"] = "JSON очереди не содержит принятых записей источников.",
+            ["QueueUnsupportedRouteMsg"] = "Пакетное кодирование в настоящее время поддерживает только ffmpeg в качестве апстрима.",
+            ["QueueSourceMissingMsg"] = "Файлы источников очереди отсутствуют. Кодирование невозможно:",
+            ["QueueDuplicateOutputMsg"] = "Пути вывода очереди конфликтуют. Кодирование невозможно:",
+            ["QueueEncodingPendingMsg"] = "Защита от перезаписи очереди завершена. Выполнение очереди ещё не подключено.",
+            ["GbSuffix"] = " ГБ",
+            ["MbSuffix"] = " МБ"
         };
     }
 

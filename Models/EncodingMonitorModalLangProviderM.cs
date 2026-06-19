@@ -144,6 +144,11 @@ public class EncodingMonitorModalLangProviderM
             ["NotAvailableText"] = "N/A",
             ["ABRText"] = "ABR",
             ["CRFText"] = "CRF",
+
+            ["QueueSidebarTitle"] = "队列",
+            ["QueueSidebarStartBatchText"] = "开始批处理",
+            ["QueueSidebarCancelAllText"] = "取消全部",
+            ["QueueSidebarCollapseText"] = "折叠",
         },
         ["zh-tw"] = new()
         {
@@ -205,13 +210,18 @@ public class EncodingMonitorModalLangProviderM
             ["InterruptedText"] = "已中斷",
             ["FailedText"] = "壓制失敗",
             ["CompletedText"] = "壓制完成",
-            ["ResetUsageStatusText"] = "已重置占用值",
+            ["ResetUsageStatusText"] = "已重置佔用值",
             ["InterruptingUpstreamText"] = "正在中斷上游程式",
             ["InterruptingEncoderText"] = "正在中斷編碼器",
             ["ModeText"] = "模式",
             ["NotAvailableText"] = "N/A",
             ["ABRText"] = "ABR",
             ["CRFText"] = "CRF",
+
+            ["QueueSidebarTitle"] = "佇列",
+            ["QueueSidebarStartBatchText"] = "開始批次處理",
+            ["QueueSidebarCancelAllText"] = "取消全部",
+            ["QueueSidebarCollapseText"] = "折疊",
         }
     };
 
@@ -279,7 +289,11 @@ public class EncodingMonitorModalLangProviderM
             ["InterruptingUpstreamText"] = "Interruption amont",
             ["InterruptingEncoderText"] = "Interruption encodeur",
             ["ModeText"] = "mode",
-            ["NotAvailableText"] = "N/A"
+            ["NotAvailableText"] = "N/A",
+            ["QueueSidebarTitle"] = "File d'attente",
+            ["QueueSidebarStartBatchText"] = "Lancer le lot",
+            ["QueueSidebarCancelAllText"] = "Tout annuler",
+            ["QueueSidebarCollapseText"] = "Réduire"
         };
         Data["es"] = new(Data["en"])
         {
@@ -343,7 +357,11 @@ public class EncodingMonitorModalLangProviderM
             ["InterruptingUpstreamText"] = "Interrumpiendo upstream",
             ["InterruptingEncoderText"] = "Interrumpiendo codificador",
             ["ModeText"] = "modo",
-            ["NotAvailableText"] = "N/D"
+            ["NotAvailableText"] = "N/D",
+            ["QueueSidebarTitle"] = "Cola",
+            ["QueueSidebarStartBatchText"] = "Iniciar lote",
+            ["QueueSidebarCancelAllText"] = "Cancelar todo",
+            ["QueueSidebarCollapseText"] = "Colapsar"
         };
         Data["ja"] = new(Data["en"])
         {
@@ -407,8 +425,13 @@ public class EncodingMonitorModalLangProviderM
             ["InterruptingUpstreamText"] = "上流を中断中",
             ["InterruptingEncoderText"] = "エンコーダを中断中",
             ["ModeText"] = "モード",
-            ["NotAvailableText"] = "N/A"
+            ["NotAvailableText"] = "N/A",
+            ["QueueSidebarTitle"] = "キュー",
+            ["QueueSidebarStartBatchText"] = "バッチ開始",
+            ["QueueSidebarCancelAllText"] = "すべてキャンセル",
+            ["QueueSidebarCollapseText"] = "折りたたむ"
         };
+
         Data["ru"] = new(Data["en"])
         {
             ["ProgressTitle"] = "Прогресс",
@@ -471,7 +494,11 @@ public class EncodingMonitorModalLangProviderM
             ["InterruptingUpstreamText"] = "Прерывание upstream",
             ["InterruptingEncoderText"] = "Прерывание кодера",
             ["ModeText"] = "режим",
-            ["NotAvailableText"] = "N/A"
+            ["NotAvailableText"] = "N/A",
+            ["QueueSidebarTitle"] = "Очередь",
+            ["QueueSidebarStartBatchText"] = "Запустить пакет",
+            ["QueueSidebarCancelAllText"] = "Отменить всё",
+            ["QueueSidebarCollapseText"] = "Свернуть"
         };
     }
 
