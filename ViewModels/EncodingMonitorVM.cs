@@ -1688,6 +1688,7 @@ namespace OneColumnEncoder.ViewModels
             _userInterruptRequested = true;
             _upstreamInterruptButtonClicked = true;
             FinishButtons.B5_3IsEnabled = false;
+            FinishButtons.B5_4IsEnabled = false;
             FinishButtons.B5_3Text = Lang.InterruptingUpstreamText;
             StatusText = Lang.InterruptingUpstreamText;
 

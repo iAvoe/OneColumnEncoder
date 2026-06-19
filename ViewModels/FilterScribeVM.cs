@@ -221,8 +221,7 @@ namespace OneColumnEncoder.ViewModels
                 string? color = ColorSpaceFilterChain;
                 string? fps = FpsFilterChain;
                 string? scale = ScaleFilterChain;
-                bool hasAny = color != null || fps != null || scale != null;
-                if (!hasAny) return "N/A";
+                if (color == null || fps == null || scale == null) return "N/A";
                 return BuildFfmpegFilterArgs(includeSwsFlags: scale != null, includeCsp709Flags: color != null, SarRepairFilterChain, color, fps, scale);
             }
         }
