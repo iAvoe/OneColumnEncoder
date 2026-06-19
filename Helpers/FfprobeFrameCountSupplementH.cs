@@ -28,7 +28,7 @@ internal static class FfprobeFrameCountSupplementH
             streamNodes ??= rootNode?["streams"]?.AsArray();
             JsonObject? streamNode = streamNodes?[i]?.AsObject();
             if (streamNode == null) continue;
-
+            
             streamNode["nb_frames"] = frameCount.ToString(CultureInfo.InvariantCulture);
             supplementedCount++;
         }

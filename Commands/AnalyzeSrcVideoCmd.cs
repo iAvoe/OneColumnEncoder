@@ -70,7 +70,7 @@ namespace OneColumnEncoder.Commands
                 _getActiveSrcValidationCard().ApplyFfprobeAnalysisJson(rawJson);
 
                 if (supplementResult.SupplementedCount > 0)
-                    ShowFrameCountSupplementedModal(FormatFrameCountSupplementMessage(supplementResult.SupplementedCount));
+                    ShowFrameCountSupplementedModal(FormatFrameCountSupplementMessage(rawJson, supplementResult.SupplementedCount));
                 else
                     new OpenSuccModalCmd(
                         _modalNavS,
@@ -188,11 +188,36 @@ namespace OneColumnEncoder.Commands
             ShowQueueAnalysisCompletedModal(message, queueJsonPath, excludedJsonPath);
         }
 
-        private static string FormatFrameCountSupplementMessage(int supplementedCount) =>
-            UILangProviderM.Current["SrcAnalysis.Completed"]
-            + Environment.NewLine
-            + Environment.NewLine
-            + string.Format(UILangProviderM.Current["SrcAnalysis.FrameCountSupplemented"], supplementedCount);
+        private static string FormatFrameCountSupplementMessage(string rawJson, int supplementedCount)
+        {
+            List<string> lines = [UILangProviderM.Current["SrcAnalysis.Completed"]];
+            if (TryGetTotalFrameCount(rawJson, out long totalFrameCount))
+                lines.Add($"{new ClipRangeSelectorLangProviderM(UILangProviderM.Current.LanguageCode).SummaryTotalFramesLabel}: {totalFrameCount}");
+
+            lines.Add(string.Format(UILangProviderM.Current["SrcAnalysis.FrameCountSupplemented"], supplementedCount));
+            return string.Join(Environment.NewLine + Environment.NewLine, lines);
+        }
+
+        private static bool TryGetTotalFrameCount(string rawJson, out long totalFrameCount)
+        {
+            totalFrameCount = 0;
+
+            try
+            {
+                using JsonDocument document = JsonDocument.Parse(rawJson);
+                JsonElement stream = document.RootElement.GetProperty("streams")[0];
+                long? parsedTotalFrames = JsonElementHelper.TryGetLong(stream, "nb_frames");
+                if (parsedTotalFrames is null)
+                    return false;
+
+                totalFrameCount = parsedTotalFrames.Value;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         private static string FormatQueueFrameCountSupplementMessage(string message, int supplementedCount) =>
             message

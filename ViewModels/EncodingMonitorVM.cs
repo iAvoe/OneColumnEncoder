@@ -57,6 +57,7 @@ namespace OneColumnEncoder.ViewModels
         private Process? _muxProcess;
         private bool _hasStarted;
         private bool _finishEnabledAfterClose;
+        private bool _isWindowCloseEnabled;
         private int? _exitCode;
         private bool _success;
         private MemoryStatusSnapshot _lastMemoryStatus;
@@ -90,6 +91,11 @@ namespace OneColumnEncoder.ViewModels
         public string RichTextModeText => Lang.RichTextModeText;
         public string MuxTimebaseHint => Lang.MuxTimebaseHint;
         public bool CanMux => !_isSample && _command.MuxCommand != null;
+        public bool IsWindowCloseEnabled
+        {
+            get => _isWindowCloseEnabled;
+            private set => SetProperty(ref _isWindowCloseEnabled, value);
+        }
         public string DistributionUpstreamLabel => Lang.DistributionUpstreamLabel;
         public string DistributionDownstreamLabel => Lang.DistributionDownstreamLabel;
         public string DistributionCacheLabel => Lang.DistributionCacheLabel;
@@ -1750,6 +1756,7 @@ namespace OneColumnEncoder.ViewModels
         private void EnableCloseButton()
         {
             _finishEnabledAfterClose = true;
+            IsWindowCloseEnabled = true;
             FinishButtons.B5_5IsEnabled = true;
         }
 

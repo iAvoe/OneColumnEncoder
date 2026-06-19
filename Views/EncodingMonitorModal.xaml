@@ -12,7 +12,7 @@
         Title="{Binding WindowTitle}"
         Width="1020"
         MinWidth="860"
-        MinHeight="860"
+        MinHeight="900"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid>
