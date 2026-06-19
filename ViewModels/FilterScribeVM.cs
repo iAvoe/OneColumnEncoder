@@ -29,6 +29,8 @@ namespace OneColumnEncoder.ViewModels
         private readonly Action<string?> _applyFfmpegFilterArgs;
         private readonly Func<bool> _hasSourceValidationError;
         private readonly Func<bool> _hasSarRepairWarning;
+        private readonly Func<bool>? _isQueueRoute;
+        private readonly Func<string[]>? _getQueueFilePaths;
         private ColorSpaceAnalysisM _colorSpaceAnalysis = ColorSpaceConverterH.Analyze(null);
         public CloseModalCmd CloseCmd { get; }
         // 0: AVS, 1: VPY, 2: ffmpeg
@@ -414,7 +416,9 @@ namespace OneColumnEncoder.ViewModels
             Action<string?> applyFfmpegFilterArgs,
             Func<bool> hasSourceValidationError,
             Func<bool> hasSarRepairWarning,
-            string? sourceFfprobeJson = null)
+            string? sourceFfprobeJson = null,
+            Func<bool>? isQueueRoute = null,
+            Func<string[]>? getQueueFilePaths = null)
         {
             _modalNavS = modalNavS;
             _closeAction = closeAction;
@@ -426,6 +430,8 @@ namespace OneColumnEncoder.ViewModels
             _applyFfmpegFilterArgs = applyFfmpegFilterArgs;
             _hasSourceValidationError = hasSourceValidationError;
             _hasSarRepairWarning = hasSarRepairWarning;
+            _isQueueRoute = isQueueRoute;
+            _getQueueFilePaths = getQueueFilePaths;
             _baseAvsPrefix = UILangProviderM.Current["SrcScribe.AvsPrefix"];
             _baseVpyPrefix = UILangProviderM.Current["SrcScribe.VpyPrefix"];
             ParseColorSpaceInfo(sourceFfprobeJson);
@@ -573,6 +579,12 @@ namespace OneColumnEncoder.ViewModels
         }
         private void SaveAsFile()
         {
+            if (_isQueueRoute?.Invoke() == true)
+            {
+                ExecuteQueueSaveAsFile();
+                return;
+            }
+
             string sourcePath = _getSourcePath();
             int avsFpsnum = _avsEnableFpsParams ? _frameRateNum : 0;
             int avsFpsden = _avsEnableFpsParams ? _frameRateDen : 0;
@@ -614,9 +626,113 @@ namespace OneColumnEncoder.ViewModels
                 ShowSavedMessage(dialog.FileName);
         }
 
+        private void ExecuteQueueSaveAsFile()
+        {
+            string[] sourcePaths = _getQueueFilePaths?.Invoke() ?? [];
+            if (sourcePaths.Length == 0) return;
+
+            OpenFolderDialog dialog = new()
+            {
+                Title = UILangProviderM.Current["SrcScribe.SavingWindowTitle"]
+            };
+
+            if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
+
+            string directory = dialog.FolderName;
+            int avsFpsnum = _avsEnableFpsParams ? _frameRateNum : 0;
+            int avsFpsden = _avsEnableFpsParams ? _frameRateDen : 0;
+            int vpyFpsnum = _vpyEnableFpsParams ? _frameRateNum : 0;
+            int vpyFpsden = _vpyEnableFpsParams ? _frameRateDen : 0;
+            List<string> savedPaths = [];
+
+            foreach (string sourcePath in sourcePaths)
+            {
+                string baseName = Path.GetFileNameWithoutExtension(sourcePath);
+                string avsPath = Path.Combine(directory, baseName + ".avs");
+                string vpyPath = Path.Combine(directory, baseName + ".vpy");
+
+                if (!TryWriteScript(avsPath, ScriptTemplateH.BuildAvsExportScript(
+                        sourcePath, AvsPrefix2, AvsSuffix, AvsUserInput, avsFpsnum, avsFpsden)))
+                    return;
+                if (!TryWriteScript(vpyPath, ScriptTemplateH.BuildVpyExportScript(
+                        sourcePath, VpyPrefix2, VpySuffix, VpyUserInput, vpyFpsnum, vpyFpsden)))
+                    return;
+                savedPaths.Add(avsPath);
+                savedPaths.Add(vpyPath);
+            }
+
+            new OpenInfoModalCmd(
+                _modalNavS,
+                UILangProviderM.SrcScribeWindowTitle,
+                $"Scripts saved:\n{string.Join(Environment.NewLine, savedPaths)}").Execute(null);
+        }
+
+        private void ExecuteQueueSaveAndImport()
+        {
+            string[] sourcePaths = _getQueueFilePaths?.Invoke() ?? [];
+            if (sourcePaths.Length == 0) return;
+
+            OpenFolderDialog dialog = new()
+            {
+                Title = UILangProviderM.SavingScriptWindowTitle
+            };
+
+            if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
+
+            string directory = dialog.FolderName;
+            int avsFpsnum = _avsEnableFpsParams ? _frameRateNum : 0;
+            int avsFpsden = _avsEnableFpsParams ? _frameRateDen : 0;
+            int vpyFpsnum = _vpyEnableFpsParams ? _frameRateNum : 0;
+            int vpyFpsden = _vpyEnableFpsParams ? _frameRateDen : 0;
+            List<string> savedPaths = [];
+
+            try
+            {
+                foreach (string sourcePath in sourcePaths)
+                {
+                    string baseName = Path.GetFileNameWithoutExtension(sourcePath);
+                    string avsPath = Path.Combine(directory, baseName + ".avs");
+                    string vpyPath = Path.Combine(directory, baseName + ".vpy");
+
+                    File.WriteAllText(avsPath, ScriptTemplateH.BuildAvsExportScript(
+                        sourcePath, AvsPrefix2, AvsSuffix, AvsUserInput, avsFpsnum, avsFpsden));
+                    File.WriteAllText(vpyPath, ScriptTemplateH.BuildVpyExportScript(
+                        sourcePath, VpyPrefix2, VpySuffix, VpyUserInput, vpyFpsnum, vpyFpsden));
+                    savedPaths.Add(avsPath);
+                    savedPaths.Add(vpyPath);
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowSaveError(ex);
+                return;
+            }
+
+            _avsItem.P2TextData = directory;
+            _avsItem.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(
+                savedPaths.Where(path => path.EndsWith(".avs", StringComparison.OrdinalIgnoreCase))
+                          .Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!));
+            _vpyItem.P2TextData = directory;
+            _vpyItem.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(
+                savedPaths.Where(path => path.EndsWith(".vpy", StringComparison.OrdinalIgnoreCase))
+                          .Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!));
+
+            new OpenInfoModalCmd(
+                _modalNavS,
+                UILangProviderM.SrcScribeWindowTitle,
+                $"Scripts saved:\n{string.Join(Environment.NewLine, savedPaths)}").Execute(null);
+            _closeAction();
+        }
+
         private void SaveAndImportAll()
         {
             ApplyFfmpegFilterArgs();
+
+            if (_isQueueRoute?.Invoke() == true)
+            {
+                ExecuteQueueSaveAndImport();
+                return;
+            }
 
             string sourcePath = _getSourcePath();
             string avsScript = ScriptTemplateH.BuildAvsExportScript(

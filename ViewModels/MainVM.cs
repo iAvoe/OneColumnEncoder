@@ -179,7 +179,9 @@ namespace OneColumnEncoder.ViewModels
                     e => e.IsEnabled && e.Status == StatusType.Error),
                 () => SrcValidationCard.Checklist2.Count > 1
                     && SrcValidationCard.Checklist2[1].Status == StatusType.Warning,
-                () => _srcVideoAnalysis.RawJson);
+                () => _srcVideoAnalysis.RawJson,
+                IsQueueRouteActive,
+                GetCurrentQueueFilePaths);
             CopyRawAnalysis = new CopyRawAnalysisCmd(
                 _srcVideoAnalysis, modalNavS, IsQueueRouteActive);
             AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(

@@ -16,7 +16,9 @@ namespace OneColumnEncoder.Commands.OpenClose
         Action<string?> applyFfmpegFilterArgs,
         Func<bool> hasSourceValidationError,
         Func<bool> hasSarRepairWarning,
-        Func<string?> getSourceFfprobeJson) : BaseCmd
+        Func<string?> getSourceFfprobeJson,
+        Func<bool>? isQueueRoute = null,
+        Func<string[]>? getQueueFilePaths = null) : BaseCmd
     {
         private readonly ModalNavS _modalNavS = modalNavS;
         public override void Execute(object? parameter)
@@ -43,7 +45,9 @@ namespace OneColumnEncoder.Commands.OpenClose
                 applyFfmpegFilterArgs,
                 hasSourceValidationError,
                 hasSarRepairWarning,
-                getSourceFfprobeJson());
+                getSourceFfprobeJson(),
+                isQueueRoute,
+                getQueueFilePaths);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();
