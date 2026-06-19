@@ -31,6 +31,30 @@
             <Setter Property="VerticalScrollBarVisibility"
                     Value="Auto" />
         </Style>
+
+        <Style x:Key="SplitRichTextBox"
+               TargetType="RichTextBox">
+            <Setter Property="AcceptsTab"
+                    Value="True" />
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="FontFamily"
+                    Value="Consolas" />
+            <Setter Property="Foreground"
+                    Value="{StaticResource GlobalPrimary}" />
+            <Setter Property="HorizontalScrollBarVisibility"
+                    Value="Auto" />
+            <Setter Property="IsDocumentEnabled"
+                    Value="False" />
+            <Setter Property="IsReadOnly"
+                    Value="True" />
+            <Setter Property="Padding"
+                    Value="5 10" />
+            <Setter Property="VerticalScrollBarVisibility"
+                    Value="Auto" />
+        </Style>
     </UserControl.Resources>
 
     <Grid>
@@ -75,14 +99,45 @@
                                       MinWidth="35" />
                 </Grid.ColumnDefinitions>
 
-                <TextBox x:Name="LeftTextBox"
-                         Grid.Column="0"
-                         Text="{Binding LeftText, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                         FontSize="{Binding TextFontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                         Style="{StaticResource SplitTextBox}"
-                         TextChanged="OnTextChanged"
-                         Padding="5 10" />
+                <Grid Grid.Column="0">
+                    <TextBox x:Name="LeftTextBox"
+                             Text="{Binding LeftText, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                             FontSize="{Binding TextFontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                             TextChanged="OnTextChanged"
+                             Padding="5 10">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox"
+                                   BasedOn="{StaticResource SplitTextBox}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsRichTextMode, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                 Value="True">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+
+                    <RichTextBox x:Name="LeftRichTextBox"
+                                 FontSize="{Binding TextFontSize, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                        <RichTextBox.Style>
+                            <Style TargetType="RichTextBox"
+                                   BasedOn="{StaticResource SplitRichTextBox}">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsRichTextMode, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                 Value="True">
+                                        <Setter Property="Visibility"
+                                                Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </RichTextBox.Style>
+                    </RichTextBox>
+                </Grid>
 
                 <GridSplitter Grid.Column="1"
                               Width="2"
@@ -96,14 +151,45 @@
                               ResizeDirection="Columns"
                               ShowsPreview="False" />
 
-                <TextBox x:Name="RightTextBox"
-                         Grid.Column="2"
-                         Text="{Binding RightText, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=OneWay}"
-                         IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                         FontSize="{Binding TextFontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                         Style="{StaticResource SplitTextBox}"
-                         TextChanged="OnTextChanged"
-                         Padding="5 10" />
+                <Grid Grid.Column="2">
+                    <TextBox x:Name="RightTextBox"
+                             Text="{Binding RightText, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=OneWay}"
+                             IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                             FontSize="{Binding TextFontSize, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                             TextChanged="OnTextChanged"
+                             Padding="5 10">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox"
+                                   BasedOn="{StaticResource SplitTextBox}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsRichTextMode, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                 Value="True">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+
+                    <RichTextBox x:Name="RightRichTextBox"
+                                 FontSize="{Binding TextFontSize, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                        <RichTextBox.Style>
+                            <Style TargetType="RichTextBox"
+                                   BasedOn="{StaticResource SplitRichTextBox}">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsRichTextMode, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                 Value="True">
+                                        <Setter Property="Visibility"
+                                                Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </RichTextBox.Style>
+                    </RichTextBox>
+                </Grid>
             </Grid>
         </Border>
     </Grid>

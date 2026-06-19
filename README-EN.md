@@ -211,7 +211,11 @@ The Overwrite setting will append an overwrite confirmation pop-up if the output
 
 ### Unverified
 
-#### None currently
+#### Queue Mode
+
+- Queue encoding is currently limited to `ffmpeg` upstream
+- `vspipe`, `avs2yuv`, and `avs2pipemod` queue suppression are not implemented yet
+- Verify basic and filtered queue suppression on the `ffmpeg` queue route
 
 ---
 
@@ -232,6 +236,13 @@ This feature cannot be implemented due to the need to modify the upstream progra
 ### Large Pages Implementation
 
 This feature cannot be implemented due to the need to modify the upstream program and encoder source code
+
+#### Automatic Precise Keyframe Marker (qpfile)
+
+Implementation failed due to excessive complexity and encoding time addition
+- A better scene-change detection function than the video encoder's built-in method must be used
+- A slower scene-change detection function will significantly increase overall encoding task duration (+50~150%)
+- The final expected compression ratio & image quality improvement are only about 5% (compared to compression results without this function).
 
 ---
 
@@ -255,12 +266,12 @@ This feature cannot be implemented due to the need to modify the upstream progra
 
 ## Confirm action window (ConfirmationModal) Popup locations
 
-- Confirm encoding commands before starting encode, and file overwriting：`Commands/StartEncCmd.cs`
-- Sample clip confirmation before starting encode：`ViewModels/SampleClipVM.cs`
-- View encoding commands in the encoding monitor：`ViewModels/EncodingMonitorVM.cs`
-- Copy/save results after script generation：`ViewModels/ScriptScribeVM.cs`、`Commands/SaveLoad/OneClickScriptGenCmd.cs`
-- Source analysis and check results：`Commands/AnalyzeSrcVideoCmd.cs`、`Commands/CopyRawAnalysisCmd.cs`、`Commands/InspectEncProblemsCmd.cs`、`Commands/InspectSrcProblemsCmd.cs`
-- Secondary confirmation when importing tools/selecting files：`Commands/ImportToolCmd.cs`、`Helpers/SourceFilePickerH.cs`
+- Confirm encoding commands before starting encode, and file overwriting:`Commands/StartEncCmd.cs`
+- Sample clip confirmation before starting encode:`ViewModels/SampleClipVM.cs`
+- View encoding commands in the encoding monitor:`ViewModels/EncodingMonitorVM.cs`
+- Copy/save results after script generation:`ViewModels/ScriptScribeVM.cs`、`Commands/SaveLoad/OneClickScriptGenCmd.cs`
+- Source analysis and check results:`Commands/AnalyzeSrcVideoCmd.cs`、`Commands/CopyRawAnalysisCmd.cs`、`Commands/InspectEncProblemsCmd.cs`、`Commands/InspectSrcProblemsCmd.cs`
+- Secondary confirmation when importing tools/selecting files:`Commands/ImportToolCmd.cs`、`Helpers/SourceFilePickerH.cs`
 
 ## Settings Storage Location
 

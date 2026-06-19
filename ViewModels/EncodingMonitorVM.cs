@@ -314,6 +314,13 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _logFontSize, value);
         }
 
+        private bool _logRichTextMode;
+        public bool LogRichTextMode
+        {
+            get => _logRichTextMode;
+            set => SetProperty(ref _logRichTextMode, value);
+        }
+
         /// <summary>
         /// Starts the encoding pipeline. Can only be called once.
         /// Launches the async encoding task (fire-and-forget) and starts the UI timer.
@@ -875,7 +882,7 @@ namespace OneColumnEncoder.ViewModels
         /// </summary>
         private void UpdateProgressFromLogLine(string line, bool updateMainProgress)
         {
-            string trimmed = line.Trim();
+            string trimmed = NormalizeLogLineForProgress(line);
             if (string.IsNullOrWhiteSpace(trimmed) || IsIndexProgressLine(trimmed)) return;
 
             bool isProgressLine = IsProgressLine(trimmed);
@@ -907,6 +914,14 @@ namespace OneColumnEncoder.ViewModels
 
         [GeneratedRegex(@"(?:^|\s)(?:frame|fps|size|time|bitrate|speed|dup|drop)\s*[=:]", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
         private static partial Regex FfmpegProgressKeyRegex();
+
+        [GeneratedRegex(@"\x1B\[[0-?]*[ -/]*[@-~]", RegexOptions.CultureInvariant)]
+        private static partial Regex AnsiEscapeRegex();
+
+        private static string NormalizeLogLineForProgress(string line)
+        {
+            return AnsiEscapeRegex().Replace(line, string.Empty).Trim();
+        }
 
         private static bool IsProgressLine(string line)
         {
@@ -947,6 +962,9 @@ namespace OneColumnEncoder.ViewModels
         [GeneratedRegex(@"(?<!\d)(\d+)\s+frames?\s+encoded", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
         private static partial Regex FramesEncodedRegex();
 
+        [GeneratedRegex(@"(?<!\d)(\d+)\s+frames?\b", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+        private static partial Regex SvtAv1FrameRegex();
+
         /// <summary>
         /// Attempts to extract a frame number from a log line using multiple regex patterns.
         /// Supports ffmpeg "frame= 1234", x264 "1234 frames:", "1234/5000 frames",
@@ -957,7 +975,10 @@ namespace OneColumnEncoder.ViewModels
         {
             if (string.IsNullOrWhiteSpace(line)) return null;
 
+            line = NormalizeLogLineForProgress(line);
+
             if (TryParseFirstRegexGroup(FfmpegFrameRegex().Match(line), out int value)) return value;
+            if (TryParseFirstRegexGroup(SvtAv1FrameRegex().Match(line), out value)) return value;
             if (TryParseFirstRegexGroup(X264FrameRegex().Match(line), out value)) return value;
             if (TryParseFirstRegexGroup(SlashFrameRegex().Match(line), out value)) return value;
             if (TryParseFirstRegexGroup(FramesAtRegex().Match(line), out value)) return value;

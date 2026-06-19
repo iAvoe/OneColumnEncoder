@@ -298,10 +298,15 @@
                 <StackPanel Grid.Row="5"
                             Margin="0 15 0 0">
                     <!-- Process stderr: upstream | encoder -->
+                     <CheckBox Content="富文本模式"
+                               IsChecked="{Binding LogRichTextMode, Mode=TwoWay}"
+                               HorizontalAlignment="Left"
+                               Margin="0 0 0 6" />
                      <cards:SplitTextCard Title="{Binding StderrTitle}"
-                                         LeftText="{Binding UpstreamReportText, Mode=TwoWay}"
-                                         RightText="{Binding DownstreamReportText, Mode=TwoWay}"
-                                          TextFontSize="{Binding LogFontSize}" />
+                                          LeftText="{Binding UpstreamReportText, Mode=TwoWay}"
+                                          RightText="{Binding DownstreamReportText, Mode=TwoWay}"
+                                          TextFontSize="{Binding LogFontSize}"
+                                          IsRichTextMode="{Binding LogRichTextMode}" />
 
                     <comps:ThreeButtonGroup Margin="0 15 0 0"
                                             DataContext="{Binding ReportButtons}"

@@ -40,7 +40,7 @@
 
 或者著急要用的話，也可以無視上述教學並使用這個壓縮包的工具（不推薦但可以）
 - [Google Drive / ffmepg-ffprobe-x264-x265-SVTAV1 Pkg.](https://drive.google.com/file/d/1DNrVBoJtmYka0LiorjuWDgeGxfnq62PM/view?usp=sharing)
-- [Baidu Netdisk / ffmpeg-ffprobe-x264-x265-SVTAV1 Pkg.](https://pan.baidu.com/s/1I-WsIBdr2syvHmkhdLGdHA?pwd=ya32) 提取碼: ya32
+- [Baidu Netdisk / ffmpeg-ffprobe-x264-x265-SVTAV1 Pkg.](https://pan.baidu.com/s/1I-WsIBdr2syvHmkhdLGdHA?pwd=ya32)提取碼：ya32
 
 > 最少只需一個上遊程序 + 一個下遊程序
 
@@ -213,7 +213,11 @@
 
 ### 未驗證
 
-#### 暫無
+#### 隊列模式
+
+- 隊列壓製目前僅限 `ffmpeg` 上游
+- `vspipe`、`avs2yuv`、`avs2pipemod` 的隊列壓製尚未實作
+- 驗證 `ffmpeg` 隊列路線下的基本與帶濾鏡壓製行為
 
 ---
 
@@ -234,6 +238,13 @@
 #### Large Pages 實現
 
 由於需要修改上遊程序和編碼器原始碼，該功能無法實現
+
+#### 自動生成關鍵幀 qpfile
+
+由於行為過於複雜且耗時，實現失敗
+- 必須使用比影片編碼器自帶方法更好的轉場檢測功能
+- 比影片編碼器更好的轉場檢測功能更慢，會大幅增加整體壓制耗時
+- 最終預期的壓縮率和畫質提升平均只有（不經過該功能壓制結果的）5%
 
 ---
 
