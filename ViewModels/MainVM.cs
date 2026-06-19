@@ -815,7 +815,7 @@ namespace OneColumnEncoder.ViewModels
                 t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
 
             if (outputSetting != null)
-                outputSetting.R1Command = new OpenFilenameScribeCmd(_modalNavS, outputSetting, IsQueueRouteActive);
+                outputSetting.R1Command = new OpenFilenameScribeCmd(_modalNavS, outputSetting);
 
             ToolItemCardVM? compressionParams = EncodingConfZone.FirstOrDefault(t =>
                 t.Name.Equals(UILangProviderM.Current["Tool.Enc.EncParams"], StringComparison.OrdinalIgnoreCase));

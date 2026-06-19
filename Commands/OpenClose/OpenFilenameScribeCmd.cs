@@ -8,14 +8,12 @@ namespace OneColumnEncoder.Commands.OpenClose
 {
     public class OpenFilenameScribeCmd(
         ModalNavS modalNavS,
-        ToolItemCardVM outputSettingItem,
-        Func<bool>? isQueueRouteActive = null) : BaseCmd
+        ToolItemCardVM outputSettingItem) : BaseCmd
     {
         private readonly ModalNavS _modalNavS = modalNavS;
         private readonly ToolItemCardVM _outputSettingItem = outputSettingItem;
-        private readonly Func<bool> _isQueueRouteActive = isQueueRouteActive ?? (() => false);
 
-        public override bool CanExecute(object? parameter) => !_isQueueRouteActive();
+        public override bool CanExecute(object? parameter) => true;
 
         public override void Execute(object? parameter)
         {
