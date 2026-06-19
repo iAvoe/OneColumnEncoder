@@ -68,6 +68,37 @@ internal static class SvgIconProviderH
         return geometry;
     }
 
+    private static RectangleGeometry CreateBounds(double size)
+    {
+        RectangleGeometry g = new(new Rect(0, 0, size, size));
+        g.Freeze();
+        return g;
+    }
+
+    private static readonly RectangleGeometry SharedBounds10 = CreateBounds(10);
+
+    private static LinearGradientBrush MakeLinearGradient(
+        Point start, Point end, (string color, double offset)[] stops)
+    {
+        LinearGradientBrush brush = new()
+        {
+            MappingMode = BrushMappingMode.Absolute,
+            StartPoint = start,
+            EndPoint = end
+        };
+        foreach (var (color, offset) in stops)
+            brush.GradientStops.Add(new GradientStop(Color(color), offset));
+        brush.Freeze();
+        return brush;
+    }
+
+    private static void AddGlobeBase(DrawingGroup g, Brush stroke, Brush fill)
+    {
+        Add(g, "M9.3,14.752c0-.154-.613-.154-.613,0a1.656,1.656,0,0,1-1.636,1.8h3.882A1.655,1.655,0,0,1,9.3,14.752Z", stroke);
+        Add(g, "M13.335,1.1a.571.571,0,0,1,.807,0l.026.028A8.32,8.32,0,0,1,2.432,12.858a.57.57,0,0,1-.049-.8l.025-.026h0A.571.571,0,0,1,3.19,12,7.178,7.178,0,0,0,13.312,1.882.573.573,0,0,1,13.335,1.1Z", fill);
+        Add(g, "M11.946,17.5h-5.9a.476.476,0,0,1-.476-.476h0a.476.476,0,0,1,.476-.476h5.9a.476.476,0,0,1,.475.476h0A.476.476,0,0,1,11.946,17.5Z", fill);
+    }
+
     static SvgIconProviderH()
     {
         // These colors are within SVG
@@ -137,57 +168,32 @@ internal static class SvgIconProviderH
         Add(azureSearch, "M5.535,8.353S6.97,1.171,13.676,2.8a5.14,5.14,0,0,0-6.186.047A5.121,5.121,0,0,0,5.535,8.353Z", Brush("#c3f1ff"));
         AzureSearch = new DrawingImage(azureSearch);
 
+        EllipseGeometry globeEllipse = new(new Point(7.871, 6.563), 6.063, 6.063);
+
         DrawingGroup azureGlobeWarning = new();
-        Add(azureGlobeWarning, "M9.3,14.752c0-.154-.613-.154-.613,0a1.656,1.656,0,0,1-1.636,1.8h3.882A1.655,1.655,0,0,1,9.3,14.752Z", gray999);
-        Add(azureGlobeWarning, "M13.335,1.1a.571.571,0,0,1,.807,0l.026.028A8.32,8.32,0,0,1,2.432,12.858a.57.57,0,0,1-.049-.8l.025-.026h0A.571.571,0,0,1,3.19,12,7.178,7.178,0,0,0,13.312,1.882.573.573,0,0,1,13.335,1.1Z", graya3);
-        Add(azureGlobeWarning, "M11.946,17.5h-5.9a.476.476,0,0,1-.476-.476h0a.476.476,0,0,1,.476-.476h5.9a.476.476,0,0,1,.475.476h0A.476.476,0,0,1,11.946,17.5Z", graya3);
-        LinearGradientBrush globeWarningGradient = new()
-        {
-            MappingMode = BrushMappingMode.Absolute,
-            StartPoint = new Point(4.491, 4.492),
-            EndPoint = new Point(13.066, 13.067)
-        };
-        globeWarningGradient.GradientStops.Add(new GradientStop(Color("#d15900"), 0));
-        globeWarningGradient.GradientStops.Add(new GradientStop(Color("#f68819"), 0.82));
-        globeWarningGradient.Freeze();
-        Add(azureGlobeWarning, new EllipseGeometry(new Point(7.871, 6.563), 6.063, 6.063), globeWarningGradient);
+        AddGlobeBase(azureGlobeWarning, gray999, graya3);
+        Add(azureGlobeWarning, globeEllipse, MakeLinearGradient(
+            new Point(4.491, 4.492), new Point(13.066, 13.067),
+            [("#d15900", 0), ("#f68819", 0.82)]));
         Add(azureGlobeWarning, "M4.15,9.515h7.562a.293.293,0,0,0,.251-.443L8.183,2.717a.293.293,0,0,0-.5,0L3.9,9.072A.293.293,0,0,0,4.15,9.515Z", white);
         Add(azureGlobeWarning, "M8.254,7.571H7.608a.146.146,0,0,1-.152-.134L7.387,4.491a.144.144,0,0,1,.151-.14h.786a.144.144,0,0,1,.151.14L8.406,7.437A.146.146,0,0,1,8.254,7.571Z", orange);
         Add(azureGlobeWarning, new EllipseGeometry(new Point(7.931, 8.451), 0.516, 0.516), orange);
         GlobeWarning = new DrawingImage(azureGlobeWarning);
 
         DrawingGroup azureGlobeError = new();
-        Add(azureGlobeError, "M9.3,14.752c0-.154-.613-.154-.613,0a1.656,1.656,0,0,1-1.636,1.8h3.882A1.655,1.655,0,0,1,9.3,14.752Z", gray999);
-        Add(azureGlobeError, "M13.335,1.1a.571.571,0,0,1,.807,0l.026.028A8.32,8.32,0,0,1,2.432,12.858a.57.57,0,0,1-.049-.8l.025-.026h0A.571.571,0,0,1,3.19,12,7.178,7.178,0,0,0,13.312,1.882.573.573,0,0,1,13.335,1.1Z", graya3);
-        Add(azureGlobeError, "M11.946,17.5h-5.9a.476.476,0,0,1-.476-.476h0a.476.476,0,0,1,.476-.476h5.9a.476.476,0,0,1,.475.476h0A.476.476,0,0,1,11.946,17.5Z", graya3);
-        LinearGradientBrush globeErrorGradient = new()
-        {
-            MappingMode = BrushMappingMode.Absolute,
-            StartPoint = new Point(4.491, 4.492),
-            EndPoint = new Point(13.066, 13.067)
-        };
-        globeErrorGradient.GradientStops.Add(new GradientStop(Color("#7f000d"), 0));
-        globeErrorGradient.GradientStops.Add(new GradientStop(Color("#c10015"), 0.82));
-        globeErrorGradient.Freeze();
-        Add(azureGlobeError, new EllipseGeometry(new Point(7.871, 6.563), 6.063, 6.063), globeErrorGradient);
+        AddGlobeBase(azureGlobeError, gray999, graya3);
+        Add(azureGlobeError, globeEllipse, MakeLinearGradient(
+            new Point(4.491, 4.492), new Point(13.066, 13.067),
+            [("#7f000d", 0), ("#c10015", 0.82)]));
         Add(azureGlobeError, "M8.391,8.105H7.256a.255.255,0,0,1-.265-.236L6.869,2.705a.254.254,0,0,1,.266-.246H8.512a.254.254,0,0,1,.266.246L8.656,7.869A.255.255,0,0,1,8.391,8.105Z", white);
         Add(azureGlobeError, new EllipseGeometry(new Point(7.823, 9.647), 0.905, 0.905), white);
         GlobeError = new DrawingImage(azureGlobeError);
 
         DrawingGroup azureGlobeSuccess = new();
-        Add(azureGlobeSuccess, "M9.3,14.752c0-.154-.613-.154-.613,0a1.656,1.656,0,0,1-1.636,1.8h3.882A1.655,1.655,0,0,1,9.3,14.752Z", gray999);
-        Add(azureGlobeSuccess, "M13.335,1.1a.571.571,0,0,1,.807,0l.026.028A8.32,8.32,0,0,1,2.432,12.858a.57.57,0,0,1-.049-.8l.025-.026h0A.571.571,0,0,1,3.19,12,7.178,7.178,0,0,0,13.312,1.882.573.573,0,0,1,13.335,1.1Z", graya3);
-        Add(azureGlobeSuccess, "M11.946,17.5h-5.9a.476.476,0,0,1-.476-.476h0a.476.476,0,0,1,.476-.476h5.9a.476.476,0,0,1,.475.476h0A.476.476,0,0,1,11.946,17.5Z", graya3);
-        LinearGradientBrush globeSuccessGradient = new()
-        {
-            MappingMode = BrushMappingMode.Absolute,
-            StartPoint = new Point(4.491, 4.492),
-            EndPoint = new Point(13.066, 13.067)
-        };
-        globeSuccessGradient.GradientStops.Add(new GradientStop(Color("#5e9624"), 0));
-        globeSuccessGradient.GradientStops.Add(new GradientStop(Color("#76bc2d"), 0.82));
-        globeSuccessGradient.Freeze();
-        Add(azureGlobeSuccess, new EllipseGeometry(new Point(7.871, 6.563), 6.063, 6.063), globeSuccessGradient);
+        AddGlobeBase(azureGlobeSuccess, gray999, graya3);
+        Add(azureGlobeSuccess, globeEllipse, MakeLinearGradient(
+            new Point(4.491, 4.492), new Point(13.066, 13.067),
+            [("#5e9624", 0), ("#76bc2d", 0.82)]));
         Geometry successBar1 = Geometry.Parse("M5.093,5.875h.788a.243.243,0,0,1,.243.243V9.247a.243.243,0,0,1-.243.243H5.336a.243.243,0,0,1-.243-.243V5.875A0,0,0,0,1,5.093,5.875Z").Clone();
         successBar1.Transform = new TransformGroup
         {
@@ -253,8 +259,11 @@ internal static class SvgIconProviderH
         SetBounds(gameCorrectMark);
         GameCorrectMark = new DrawingImage(gameCorrectMark);
 
+        Geometry replaceRefreshGeo = Geometry.Parse("M7.63031 2.46509C7.87127 2.56405 7.95006 2.91503 8.10747 3.61621L8.1786 3.93316C8.3178 4.55326 8.38761 4.86344 8.23384 5.05183C8.21261 5.07783 8.18872 5.10172 8.16271 5.12295C7.97433 5.27675 7.66417 5.20692 7.04405 5.06771L6.72709 4.99658C6.02591 4.83917 5.67493 4.76039 5.57597 4.51943C5.56248 4.48652 5.55181 4.45224 5.54559 4.41723C5.52864 4.32162 5.55348 4.2264 5.61758 4.11826C5.76502 3.86948 5.83874 3.74509 5.81516 3.63127C5.81198 3.61593 5.8069 3.59866 5.80125 3.58404C5.75937 3.47561 5.67968 3.43584 5.52031 3.3563C5.37559 3.28407 5.22114 3.23101 5.06084 3.19912C4.7071 3.12876 4.34031 3.16473 4.00708 3.3027C3.67379 3.44076 3.38853 3.67533 3.18811 3.97528C2.98786 4.27515 2.88082 4.62771 2.88082 4.9883C2.88084 5.3489 2.98782 5.70144 3.18811 6.00131C3.38853 6.30127 3.67379 6.53584 4.00708 6.67389C4.34028 6.81184 4.70713 6.84782 5.06084 6.77747C5.22089 6.74563 5.37489 6.69212 5.51935 6.62003C5.8099 6.47498 6.1812 6.46429 6.41083 6.69392C6.64011 6.92348 6.64237 7.30129 6.37285 7.48182C6.04664 7.69994 5.6787 7.85336 5.29009 7.93066C4.70819 8.04638 4.10499 7.98646 3.55685 7.75941C3.00876 7.53234 2.53992 7.14785 2.21031 6.65456C1.88084 6.16131 1.70555 5.58147 1.70553 4.9883C1.70553 4.39495 1.88136 3.8147 2.211 3.32135C2.54058 2.82823 3.0089 2.44421 3.55685 2.21718C4.105 1.99014 4.70818 1.9302 5.29009 2.04593C5.68265 2.12402 6.05377 2.27934 6.38252 2.50096C6.58342 2.63638 6.68387 2.70409 6.7601 2.71123C6.7755 2.71267 6.77792 2.71276 6.79338 2.71249C6.86993 2.71113 6.99342 2.64084 7.2404 2.50025C7.34365 2.44148 7.43536 2.41916 7.52742 2.43539C7.5625 2.44161 7.59735 2.45157 7.63031 2.46509Z");
+        replaceRefreshGeo.Freeze();
+
         DrawingGroup gameReplace = new();
-        Add(gameReplace, "M7.63031 2.46509C7.87127 2.56405 7.95006 2.91503 8.10747 3.61621L8.1786 3.93316C8.3178 4.55326 8.38761 4.86344 8.23384 5.05183C8.21261 5.07783 8.18872 5.10172 8.16271 5.12295C7.97433 5.27675 7.66417 5.20692 7.04405 5.06771L6.72709 4.99658C6.02591 4.83917 5.67493 4.76039 5.57597 4.51943C5.56248 4.48652 5.55181 4.45224 5.54559 4.41723C5.52864 4.32162 5.55348 4.2264 5.61758 4.11826C5.76502 3.86948 5.83874 3.74509 5.81516 3.63127C5.81198 3.61593 5.8069 3.59866 5.80125 3.58404C5.75937 3.47561 5.67968 3.43584 5.52031 3.3563C5.37559 3.28407 5.22114 3.23101 5.06084 3.19912C4.7071 3.12876 4.34031 3.16473 4.00708 3.3027C3.67379 3.44076 3.38853 3.67533 3.18811 3.97528C2.98786 4.27515 2.88082 4.62771 2.88082 4.9883C2.88084 5.3489 2.98782 5.70144 3.18811 6.00131C3.38853 6.30127 3.67379 6.53584 4.00708 6.67389C4.34028 6.81184 4.70713 6.84782 5.06084 6.77747C5.22089 6.74563 5.37489 6.69212 5.51935 6.62003C5.8099 6.47498 6.1812 6.46429 6.41083 6.69392C6.64011 6.92348 6.64237 7.30129 6.37285 7.48182C6.04664 7.69994 5.6787 7.85336 5.29009 7.93066C4.70819 8.04638 4.10499 7.98646 3.55685 7.75941C3.00876 7.53234 2.53992 7.14785 2.21031 6.65456C1.88084 6.16131 1.70555 5.58147 1.70553 4.9883C1.70553 4.39495 1.88136 3.8147 2.211 3.32135C2.54058 2.82823 3.0089 2.44421 3.55685 2.21718C4.105 1.99014 4.70818 1.9302 5.29009 2.04593C5.68265 2.12402 6.05377 2.27934 6.38252 2.50096C6.58342 2.63638 6.68387 2.70409 6.7601 2.71123C6.7755 2.71267 6.77792 2.71276 6.79338 2.71249C6.86993 2.71113 6.99342 2.64084 7.2404 2.50025C7.34365 2.44148 7.43536 2.41916 7.52742 2.43539C7.5625 2.44161 7.59735 2.45157 7.63031 2.46509Z", white);
+        Add(gameReplace, replaceRefreshGeo, white);
         SetBounds(gameReplace);
         GameReplace = new DrawingImage(gameReplace);
 
@@ -309,12 +318,21 @@ internal static class SvgIconProviderH
         GamePlay = new DrawingImage(gamePlayGroup);
 
         DrawingGroup gameRefreshGroup = new();
-        Add(gameRefreshGroup, "M7.63031 2.46509C7.87127 2.56405 7.95006 2.91503 8.10747 3.61621L8.1786 3.93316C8.3178 4.55326 8.38761 4.86344 8.23384 5.05183C8.21261 5.07783 8.18872 5.10172 8.16271 5.12295C7.97433 5.27675 7.66417 5.20692 7.04405 5.06771L6.72709 4.99658C6.02591 4.83917 5.67493 4.76039 5.57597 4.51943C5.56248 4.48652 5.55181 4.45224 5.54559 4.41723C5.52864 4.32162 5.55348 4.2264 5.61758 4.11826C5.76502 3.86948 5.83874 3.74509 5.81516 3.63127C5.81198 3.61593 5.8069 3.59866 5.80125 3.58404C5.75937 3.47561 5.67968 3.43584 5.52031 3.3563C5.37559 3.28407 5.22114 3.23101 5.06084 3.19912C4.7071 3.12876 4.34031 3.16473 4.00708 3.3027C3.67379 3.44076 3.38853 3.67533 3.18811 3.97528C2.98786 4.27515 2.88082 4.62771 2.88082 4.9883C2.88084 5.3489 2.98782 5.70144 3.18811 6.00131C3.38853 6.30127 3.67379 6.53584 4.00708 6.67389C4.34028 6.81184 4.70713 6.84782 5.06084 6.77747C5.22089 6.74563 5.37489 6.69212 5.51935 6.62003C5.8099 6.47498 6.1812 6.46429 6.41083 6.69392C6.64011 6.92348 6.64237 7.30129 6.37285 7.48182C6.04664 7.69994 5.6787 7.85336 5.29009 7.93066C4.70819 8.04638 4.10499 7.98646 3.55685 7.75941C3.00876 7.53234 2.53992 7.14785 2.21031 6.65456C1.88084 6.16131 1.70555 5.58147 1.70553 4.9883C1.70553 4.39495 1.88136 3.8147 2.211 3.32135C2.54058 2.82823 3.0089 2.44421 3.55685 2.21718C4.105 1.99014 4.70818 1.9302 5.29009 2.04593C5.68265 2.12402 6.05377 2.27934 6.38252 2.50096C6.58342 2.63638 6.68387 2.70409 6.7601 2.71123C6.7755 2.71267 6.77792 2.71276 6.79338 2.71249C6.86993 2.71113 6.99342 2.64084 7.2404 2.50025C7.34365 2.44148 7.43536 2.41916 7.52742 2.43539C7.5625 2.44161 7.59735 2.45157 7.63031 2.46509Z", white);
+        Add(gameRefreshGroup, replaceRefreshGeo, white);
         SetBounds(gameRefreshGroup);
         GameRefresh = new DrawingImage(gameRefreshGroup);
 
     }
 
-    private static void SetBounds(DrawingGroup g, double size = 10.0) =>
-        g.ClipGeometry = new RectangleGeometry(new Rect(0, 0, size, size));
+    private static void SetBounds(DrawingGroup g, double size = 10.0)
+    {
+        if (size == 10.0)
+            g.ClipGeometry = SharedBounds10;
+        else
+        {
+            RectangleGeometry geo = new(new Rect(0, 0, size, size));
+            geo.Freeze();
+            g.ClipGeometry = geo;
+        }
+    }
 }
