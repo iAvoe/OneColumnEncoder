@@ -1,8 +1,12 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Media;
-using System.Text.RegularExpressions;
 
 namespace OneColumnEncoder.Components.Cards
 {
@@ -16,14 +20,14 @@ namespace OneColumnEncoder.Components.Cards
                 nameof(LeftText),
                 typeof(string),
                 typeof(SplitTextCard),
-                new FrameworkPropertyMetadata(string.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+                new FrameworkPropertyMetadata(string.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnTextPropertyChanged));
 
         public static readonly DependencyProperty RightTextProperty =
             DependencyProperty.Register(
                 nameof(RightText),
                 typeof(string),
                 typeof(SplitTextCard),
-                new PropertyMetadata(string.Empty));
+                new PropertyMetadata(string.Empty, OnTextPropertyChanged));
 
         public static readonly DependencyProperty IsReadOnlyProperty =
             DependencyProperty.Register(nameof(IsReadOnly), typeof(bool), typeof(SplitTextCard), new PropertyMetadata(true));
@@ -70,15 +74,16 @@ namespace OneColumnEncoder.Components.Cards
             set => SetValue(IsRichTextModeProperty, value);
         }
 
-        private ScrollViewer? _leftScrollViewer;
-        private ScrollViewer? _rightScrollViewer;
-        private ScrollViewer? _leftRichScrollViewer;
-        private ScrollViewer? _rightRichScrollViewer;
-
         public SplitTextCard()
         {
             InitializeComponent();
             Loaded += OnLoaded;
+        }
+
+        private static void OnTextPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is SplitTextCard card)
+                card.OnTextUpdated();
         }
 
         private static void OnIsRichTextModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -89,11 +94,74 @@ namespace OneColumnEncoder.Components.Cards
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            _leftScrollViewer = FindScrollViewer(LeftTextBox);
-            _rightScrollViewer = FindScrollViewer(RightTextBox);
-            _leftRichScrollViewer = FindScrollViewer(LeftRichTextBox);
-            _rightRichScrollViewer = FindScrollViewer(RightRichTextBox);
             RefreshRichTextDocuments();
+        }
+
+        private void OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            bool isLeftPane = textBox == LeftTextBox;
+
+            if (!IsRichTextMode)
+            {
+                if (IsTextAtBottom(textBox))
+                    ScrollToBottom(textBox);
+                return;
+            }
+
+            RefreshRichTextDocuments();
+            if (isLeftPane ? IsScrollAtBottom(LeftRichTextBox) : IsScrollAtBottom(RightRichTextBox))
+                ScrollToBottom(isLeftPane ? LeftRichTextBox : RightRichTextBox);
+        }
+
+        private void OnTextUpdated()
+        {
+            if (!IsLoaded) return;
+
+            if (IsRichTextMode)
+                RefreshRichTextDocuments();
+        }
+
+        private static void ScrollToBottom(TextBoxBase? control)
+        {
+            if (control == null) return;
+            control.Dispatcher.BeginInvoke(control.ScrollToEnd, System.Windows.Threading.DispatcherPriority.Background);
+        }
+
+        private void RefreshRichTextDocuments()
+        {
+            if (!IsRichTextMode) return;
+
+            bool leftAtBottom = IsScrollAtBottom(LeftRichTextBox);
+            bool rightAtBottom = IsScrollAtBottom(RightRichTextBox);
+
+            SetRichTextDocument(LeftRichTextBox, LeftText);
+            SetRichTextDocument(RightRichTextBox, RightText);
+
+            if (leftAtBottom)
+                ScrollToBottom(LeftRichTextBox);
+            if (rightAtBottom)
+                ScrollToBottom(RightRichTextBox);
+        }
+
+        private static bool IsScrollAtBottom(RichTextBox? richTextBox)
+        {
+            if (richTextBox?.Document == null) return true;
+
+            ScrollViewer? sv = FindScrollViewer(richTextBox);
+            if (sv == null) return true;
+
+            return Math.Abs(sv.VerticalOffset + sv.ViewportHeight - sv.ExtentHeight) < 1d;
+        }
+
+        private static bool IsTextAtBottom(TextBox? textBox)
+        {
+            if (textBox == null) return true;
+
+            ScrollViewer? sv = FindScrollViewer(textBox);
+            if (sv == null) return true;
+
+            return Math.Abs(sv.VerticalOffset + sv.ViewportHeight - sv.ExtentHeight) < 1d;
         }
 
         private static ScrollViewer? FindScrollViewer(DependencyObject visual)
@@ -107,54 +175,24 @@ namespace OneColumnEncoder.Components.Cards
             return null;
         }
 
-        private void OnTextChanged(object sender, TextChangedEventArgs e)
-        {
-            TextBox textBox = (TextBox)sender;
-            ScrollViewer? sv = textBox == LeftTextBox ? _leftScrollViewer : _rightScrollViewer;
-            if (sv == null) return;
-
-            bool isAtBottom = Math.Abs(sv.VerticalOffset + sv.ViewportHeight - sv.ExtentHeight) < 1d;
-            if (isAtBottom)
-            {
-                Dispatcher.BeginInvoke(sv.ScrollToEnd, System.Windows.Threading.DispatcherPriority.Background);
-            }
-
-            if (IsRichTextMode)
-                RefreshRichTextDocuments();
-        }
-
-        private void RefreshRichTextDocuments()
-        {
-            if (!IsRichTextMode) return;
-
-            SetRichTextDocument(LeftRichTextBox, LeftText);
-            SetRichTextDocument(RightRichTextBox, RightText);
-            ScrollRichTextToEndIfNeeded(LeftRichTextBox, _leftRichScrollViewer);
-            ScrollRichTextToEndIfNeeded(RightRichTextBox, _rightRichScrollViewer);
-        }
-
-        private static void ScrollRichTextToEndIfNeeded(RichTextBox richTextBox, ScrollViewer? scrollViewer)
-        {
-            if (scrollViewer == null) return;
-
-            bool isAtBottom = Math.Abs(scrollViewer.VerticalOffset + scrollViewer.ViewportHeight - scrollViewer.ExtentHeight) < 1d;
-            if (isAtBottom)
-                richTextBox.Dispatcher.BeginInvoke(scrollViewer.ScrollToEnd, System.Windows.Threading.DispatcherPriority.Background);
-        }
-
         private static void SetRichTextDocument(RichTextBox richTextBox, string text)
         {
-            FlowDocument document = new()
+            FlowDocument document = richTextBox.Document;
+            if (document == null)
             {
-                PagePadding = new Thickness(0),
-                ColumnWidth = double.PositiveInfinity,
-                FontFamily = new FontFamily("Consolas"),
-                FontSize = richTextBox.FontSize,
-                Foreground = richTextBox.Foreground,
-                Background = Brushes.Transparent
-            };
+                document = new FlowDocument();
+                richTextBox.Document = document;
+            }
 
-            Paragraph paragraph = new(new Run())
+            document.PagePadding = new Thickness(0);
+            document.ColumnWidth = double.PositiveInfinity;
+            document.FontFamily = new FontFamily("Consolas");
+            document.FontSize = richTextBox.FontSize;
+            document.Foreground = richTextBox.Foreground;
+            document.Background = Brushes.Transparent;
+            document.Blocks.Clear();
+
+            Paragraph paragraph = new()
             {
                 Margin = new Thickness(0)
             };
@@ -163,12 +201,11 @@ namespace OneColumnEncoder.Components.Cards
                 paragraph.Inlines.Add(inline);
 
             document.Blocks.Add(paragraph);
-            richTextBox.Document = document;
         }
 
         private static IEnumerable<Inline> BuildAnsiRuns(string text, Brush defaultBrush)
         {
-            const string ansiPattern = "\\x1B\\[(?<code>[0-9;]*)m";
+            const string ansiPattern = "\x1B\\[(?<code>[0-9;]*)m";
             Regex regex = new(ansiPattern, RegexOptions.CultureInvariant);
 
             Brush currentBrush = defaultBrush;

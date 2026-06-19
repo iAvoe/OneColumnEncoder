@@ -10,10 +10,10 @@
         d:DataContext="{d:DesignInstance Type=vms:EncodingMonitorVM}"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
-        Width="1000"
-        MaxHeight="1060"
+        Width="1020"
+        MaxHeight="1090"
         MinWidth="860"
-        Height="900"
+        Height="930"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid>
@@ -298,10 +298,6 @@
                 <StackPanel Grid.Row="5"
                             Margin="0 15 0 0">
                     <!-- Process stderr: upstream | encoder -->
-                     <CheckBox Content="富文本模式"
-                               IsChecked="{Binding LogRichTextMode, Mode=TwoWay}"
-                               HorizontalAlignment="Left"
-                               Margin="0 0 0 6" />
                      <cards:SplitTextCard Title="{Binding StderrTitle}"
                                           LeftText="{Binding UpstreamReportText, Mode=TwoWay}"
                                           RightText="{Binding DownstreamReportText, Mode=TwoWay}"
@@ -329,12 +325,16 @@
         <StackPanel Grid.Row="1">
             <comps:ColumnTextGrid Items="{Binding FooterColumns}"
                                    ColumnCount="6" />
-            <CheckBox Content="{Binding EnableMuxText}"
-                      IsChecked="{Binding EnableMux, Mode=TwoWay}"
-                      IsEnabled="{Binding CanMux}"
-                      HorizontalAlignment="Left"
-                      VerticalAlignment="Center"
-                      Margin="0 10 0 0" />
+            <StackPanel Orientation="Horizontal" Margin="0 10 0 0">
+                <CheckBox Content="{Binding EnableMuxText}"
+                          IsChecked="{Binding EnableMux, Mode=TwoWay}"
+                          IsEnabled="{Binding CanMux}"
+                          VerticalAlignment="Center" />
+                <CheckBox Content="{Binding RichTextModeText}"
+                          IsChecked="{Binding LogRichTextMode, Mode=TwoWay}"
+                          Margin="20 0 0 0"
+                          VerticalAlignment="Center" />
+            </StackPanel>
             <comps:HintPanel Text="{Binding MuxTimebaseHint}"
                              HintBrush="{StaticResource GlobalSecondary}"
                              Margin="0 3 0 0" />
