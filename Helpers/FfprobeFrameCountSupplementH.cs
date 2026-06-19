@@ -34,7 +34,7 @@ internal static class FfprobeFrameCountSupplementH
         }
 
         return supplementedCount > 0 && rootNode != null
-            ? new(rootNode.ToJsonString(new JsonSerializerOptions { WriteIndented = true }), supplementedCount)
+            ? new(rootNode.ToJsonString(FfprobeJsonFormattingH.Options), supplementedCount)
             : new(rawJson, 0);
     }
 

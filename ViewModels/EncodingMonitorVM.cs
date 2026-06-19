@@ -112,19 +112,24 @@ namespace OneColumnEncoder.ViewModels
         public ActionCmd QueueSidebarToggleCmd { get; }
         public ButtonGroupVM QueueSidebarButtons { get; }
 
-        private int _progressValue;
-        public int ProgressValue
+        private double _progressValue;
+        public double ProgressValue
         {
             get => _progressValue;
             set
             {
-                if (!SetProperty(ref _progressValue, Math.Clamp(value, 0, 100))) return;
+                double next = Math.Clamp(value, 0d, 100d);
+                if (Math.Abs(_progressValue - next) < 0.005d) return;
+                _progressValue = next;
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(ProgressText));
                 OnPropertyChanged(nameof(EstimatedSizeLabel));
             }
         }
 
-        public string ProgressText => $"{ProgressValue}%";
+        public string ProgressText => ProgressValue is > 0d and < 1d
+            ? $"{ProgressValue:F2}%"
+            : $"{ProgressValue:F0}%";
 
         private int _sampleIntervalSeconds = 10;
         public int SampleIntervalSeconds
@@ -901,7 +906,7 @@ namespace OneColumnEncoder.ViewModels
                 UpdateWrittenFrames(frame);
                 if (updateMainProgress && isProgressLine && _totalFrames is > 0)
                 {
-                    int frameProgress = (int)Math.Min(100d, Math.Round(frame * 100d / _totalFrames.Value));
+                    double frameProgress = Math.Min(100d, frame * 100d / _totalFrames.Value);
                     ProgressValue = Math.Max(ProgressValue, frameProgress);
                 }
             }
@@ -1219,9 +1224,9 @@ namespace OneColumnEncoder.ViewModels
         /// Scans log text for percentage values (e.g. "56.3%") and returns the highest found.
         /// Only returns values >= current (monotonic progress).
         /// </summary>
-        private static int InferProgress(int current, string log)
+        private static double InferProgress(double current, string log)
         {
-            int found = current;
+            double found = current;
             foreach (string line in log.Split('\n'))
             {
                 string trimmed = line.Trim();
@@ -1230,8 +1235,8 @@ namespace OneColumnEncoder.ViewModels
                 MatchCollection matches = ProgressPercentRegex().Matches(trimmed);
                 foreach (Match match in matches)
                 {
-                    if (int.TryParse(match.Groups[1].Value, out int value))
-                        found = Math.Max(found, Math.Clamp(value, 0, 100));
+                    if (double.TryParse(match.Value.TrimEnd('%', ' '), NumberStyles.Float, CultureInfo.InvariantCulture, out double value))
+                        found = Math.Max(found, Math.Clamp(value, 0d, 100d));
                 }
             }
             return found;

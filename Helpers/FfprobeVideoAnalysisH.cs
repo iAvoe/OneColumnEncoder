@@ -62,7 +62,7 @@ namespace OneColumnEncoder.Helpers
                     : stderr.Trim());
 
             ValidateJson(json);
-            return json.Trim();
+            return FfprobeJsonFormattingH.Normalize(json);
         }
 
         private static void ValidateJson(string json)

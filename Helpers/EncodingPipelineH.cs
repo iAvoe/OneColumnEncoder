@@ -442,8 +442,19 @@ public static partial class EncodingPipelineH
             using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
             if (!TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return null;
 
-            long? frameCount = JsonElementHelper.TryGetLong(stream, "nb_frames")
-                ?? JsonElementHelper.TryGetLong(stream, "NUMBER_OF_FRAMES", "tags");
+            long? frameCount = JsonElementHelper.TryGetLong(stream, "nb_frames");
+            if (frameCount == null && stream.TryGetProperty("tags", out JsonElement tags))
+            {
+                foreach (JsonProperty tag in tags.EnumerateObject())
+                {
+                    if (tag.Name.StartsWith("NUMBER_OF_FRAMES", StringComparison.OrdinalIgnoreCase) &&
+                        long.TryParse(tag.Value.GetString(), out long value))
+                    {
+                        frameCount = value;
+                        break;
+                    }
+                }
+            }
 
             if (frameCount is > 0) return frameCount;
 
@@ -458,10 +469,7 @@ public static partial class EncodingPipelineH
 
             return null;
         }
-        catch
-        {
-            return null;
-        }
+        catch { return null; }
     }
 
     private static string BuildX264Params(EncoderConfM model, bool useAbr)
