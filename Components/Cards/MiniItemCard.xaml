@@ -54,29 +54,85 @@
         </Style>
     </UserControl.Resources>
 
-    <Border BorderThickness="1.25"
-            CornerRadius="6.5"
-            Padding="6 5"
-            SnapsToDevicePixels="True">
-        <Border.Style>
-            <Style TargetType="Border">
-                <Setter Property="BorderBrush" Value="{StaticResource GlobalPrimary}" />
-                <Setter Property="Background" Value="{StaticResource Background}" />
-                <Setter Property="TextElement.Foreground" Value="{StaticResource GlobalPrimary}" />
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
-                        <Setter Property="BorderBrush" Value="{StaticResource BorderGreen}" />
-                        <Setter Property="Background" Value="{StaticResource BackgroundGreen}" />
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
-                        <Setter Property="BorderBrush" Value="{StaticResource BorderRed}" />
-                        <Setter Property="Background" Value="{StaticResource BackgroundRed}" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-        </Border.Style>
+    <!--
+    Two-layer technique: a dedicated shadow border sits behind the content border.
+    This avoids DropShadowEffect being applied to the content layer, which would
+    blur text and UI elements (WPF renders Effect on the entire visual tree of the
+    element it is attached to). IsHitTestVisible="False" ensures the shadow layer
+    never intercepts mouse input.
+    -->
+    <Grid>
+        <!-- Shadow layer: transparent background, no hit-test, carries only the effect. -->
+        <Border BorderThickness="1.25"
+                CornerRadius="6.5"
+                IsHitTestVisible="False"
+                SnapsToDevicePixels="True"
+                Background="Transparent">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="BorderBrush" Value="{StaticResource GlobalPrimary}" />
+                    <Setter Property="Background" Value="{StaticResource Background}" />
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect BlurRadius="8"
+                                              ShadowDepth="1.5"
+                                              Opacity="0.18"
+                                              Color="#000000" />
+                        </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource BorderGreen}" />
+                            <Setter Property="Background" Value="{StaticResource BackgroundGreen}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource BorderRed}" />
+                            <Setter Property="Background" Value="{StaticResource BackgroundRed}" />
+                        </DataTrigger>
+                        <!-- Strengthen the shadow on hover for a subtle lift feedback. -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Effect">
+                                <Setter.Value>
+                                    <DropShadowEffect BlurRadius="10"
+                                                      ShadowDepth="2"
+                                                      Opacity="0.26"
+                                                      Color="#000000" />
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
 
-        <Grid>
+        <!-- Content layer: holds the actual card layout with no Effect so text stays sharp. -->
+        <Border BorderThickness="1.25"
+                CornerRadius="6.5"
+                Padding="6 5"
+                SnapsToDevicePixels="True">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="BorderBrush" Value="{StaticResource GlobalPrimary}" />
+                    <Setter Property="Background" Value="{StaticResource Background}" />
+                    <Setter Property="TextElement.Foreground" Value="{StaticResource GlobalPrimary}" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource BorderGreen}" />
+                            <Setter Property="Background" Value="{StaticResource BackgroundGreen}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource BorderRed}" />
+                            <Setter Property="Background" Value="{StaticResource BackgroundRed}" />
+                        </DataTrigger>
+                        <!-- Fade content slightly on hover; the shadow layer handles the elevation cue. -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" Value="0.65" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+
+            <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" MinWidth="0" />
                 <ColumnDefinition Width="Auto" />
@@ -128,4 +184,5 @@
             </StackPanel>
         </Grid>
     </Border>
+    </Grid>
 </UserControl>
