@@ -25,6 +25,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly Action _closeAction;
         private readonly ToolItemCardVM _avsItem;
         private readonly ToolItemCardVM _vpyItem;
+        private readonly Func<SourceFileKind?> _getPreferredScriptSourceKind;
         private readonly Action<ToolItemCardVM, SourceFileKind, string> _afterImport;
         private readonly Action<string?> _applyFfmpegFilterArgs;
         private readonly Func<bool> _hasSourceValidationError;
@@ -411,6 +412,7 @@ namespace OneColumnEncoder.ViewModels
             Func<string> getSourcePath,
             ToolItemCardVM avsItem,
             ToolItemCardVM vpyItem,
+            Func<SourceFileKind?> getPreferredScriptSourceKind,
             Action<ToolItemCardVM, SourceFileKind, string> afterImport,
             Action<string?> applyFfmpegFilterArgs,
             Func<bool> hasSourceValidationError,
@@ -425,6 +427,7 @@ namespace OneColumnEncoder.ViewModels
             _getSourcePath = getSourcePath;
             _avsItem = avsItem;
             _vpyItem = vpyItem;
+            _getPreferredScriptSourceKind = getPreferredScriptSourceKind;
             _afterImport = afterImport;
             _applyFfmpegFilterArgs = applyFfmpegFilterArgs;
             _hasSourceValidationError = hasSourceValidationError;
@@ -719,6 +722,8 @@ namespace OneColumnEncoder.ViewModels
             _vpyItem.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(vpyFileNames);
             _vpyItem.P1TooltipText = BrowseSourceQueueCmd.FormatQueueP1TooltipText(vpyFileNames);
 
+            SelectPreferredScriptItem();
+
             new OpenSuccModalCmd(
                 _modalNavS,
                 UILangProviderM.SrcScribeWindowTitle,
@@ -759,8 +764,22 @@ namespace OneColumnEncoder.ViewModels
 
             if (!TryWriteScripts(avsPath, avsScript, vpyPath, vpyScript)) return;
 
-            ImportScript(_avsItem, SourceFileKind.AviSynthScript, avsPath);
-            ImportScript(_vpyItem, SourceFileKind.VapourSynthScript, vpyPath);
+            SourceFileKind? preferredKind = _getPreferredScriptSourceKind();
+            if (preferredKind == SourceFileKind.AviSynthScript)
+            {
+                ImportScript(_avsItem, SourceFileKind.AviSynthScript, avsPath);
+            }
+            else if (preferredKind == SourceFileKind.VapourSynthScript)
+            {
+                ImportScript(_vpyItem, SourceFileKind.VapourSynthScript, vpyPath);
+            }
+            else
+            {
+                ImportScript(_avsItem, SourceFileKind.AviSynthScript, avsPath);
+                ImportScript(_vpyItem, SourceFileKind.VapourSynthScript, vpyPath);
+            }
+
+            SelectPreferredScriptItem();
             new OpenSuccModalCmd(
                 _modalNavS,
                 UILangProviderM.SrcScribeWindowTitle,
@@ -816,6 +835,20 @@ namespace OneColumnEncoder.ViewModels
             item.P2TextData = path;
             item.P1TextData = SourceFilePickerH.GetPrimaryText(kind, path);
             _afterImport(item, kind, path);
+        }
+
+        private void SelectPreferredScriptItem()
+        {
+            SourceFileKind? preferredKind = _getPreferredScriptSourceKind();
+            if (preferredKind == null) return;
+
+            ToolItemCardVM target = preferredKind == SourceFileKind.AviSynthScript ? _avsItem : _vpyItem;
+            if (target == _avsItem)
+                _vpyItem.IsSelected = false;
+            else
+                _avsItem.IsSelected = false;
+
+            if (target.IsEnabled) target.IsSelected = true;
         }
 
         private void ShowSaveError(Exception ex)

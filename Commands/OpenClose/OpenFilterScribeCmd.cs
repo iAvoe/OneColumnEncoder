@@ -13,6 +13,7 @@ namespace OneColumnEncoder.Commands.OpenClose
         Func<string> getSourcePath,
         Func<ToolItemCardVM> getAvsItem,
         Func<ToolItemCardVM> getVpyItem,
+        Func<SourceFileKind?> getPreferredScriptSourceKind,
         Action<ToolItemCardVM, SourceFileKind, string> afterImport, // File save & ItemCard write back
         Action<string?> applyFfmpegFilterArgs,
         Func<bool> hasSourceValidationError,
@@ -62,6 +63,7 @@ namespace OneColumnEncoder.Commands.OpenClose
                 window.Close,
                 getSourcePath,
                 getAvsItem(), getVpyItem(),
+                getPreferredScriptSourceKind,
                 afterImport,
                 applyFfmpegFilterArgs,
                 hasSourceValidationError,

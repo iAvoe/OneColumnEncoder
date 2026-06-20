@@ -171,6 +171,7 @@ namespace OneColumnEncoder.ViewModels
                 () => GetCurrentVideoSourcePath(),
                 () => ActiveScriptSrcImportZone[0],
                 () => ActiveScriptSrcImportZone[1],
+                GetPreferredScriptSourceKindForSelectedUpstream,
                 OnSourceImported,
                 args => _scriptScribeFfmpegFilterArgs = args ?? string.Empty,
                 () => SrcValidationCard.Checklist1.Any(
@@ -927,14 +928,23 @@ namespace OneColumnEncoder.ViewModels
             }
             else
             {
-                foreach (ToolItemCardVM source in ActiveScriptSrcImportZone)
-                    source.IsSelected = false;
+                if (ShouldSelectImportedScriptSource(kind))
+                {
+                    foreach (ToolItemCardVM source in ActiveScriptSrcImportZone)
+                        source.IsSelected = false;
+                }
             }
 
             // Prevent UX bug: enabled ItemCard becomes selected immediately
-            if (item.IsEnabled) item.IsSelected = true;
+            if (item.IsEnabled && ShouldSelectImportedScriptSource(kind)) item.IsSelected = true;
             _appDataM.Save();
             RefreshSelectedSourceStatus(resetAnalysis: kind == SourceFileKind.Video);
+        }
+
+        private bool ShouldSelectImportedScriptSource(SourceFileKind kind)
+        {
+            SourceFileKind? preferredKind = GetPreferredScriptSourceKindForSelectedUpstream();
+            return preferredKind == null || kind == preferredKind.Value;
         }
 
         private void OnVideoSourceImported(ToolItemCardVM item, SourceFileKind kind, string filePath, bool wasReplaced)
@@ -1585,6 +1595,21 @@ namespace OneColumnEncoder.ViewModels
             ToolItemCardVM? source = ActiveScriptSrcImportZone.FirstOrDefault(t =>
                 ResolveSourceFileKind(t.Name) == kind && !string.IsNullOrWhiteSpace(t.P2TextData));
             return source?.P2TextData ?? string.Empty;
+        }
+
+        private SourceFileKind? GetPreferredScriptSourceKindForSelectedUpstream()
+        {
+            ToolItemCardVM? selectedUpstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected);
+            string? upstreamExeName = selectedUpstream == null
+                ? null
+                : ToolCatalogProviderM.ResolveExeFromDisplayName(selectedUpstream.Name);
+
+            return upstreamExeName switch
+            {
+                "vspipe.exe" => SourceFileKind.VapourSynthScript,
+                "avs2yuv.exe" or "avs2pipemod.exe" => SourceFileKind.AviSynthScript,
+                _ => null
+            };
         }
 
         private static SourceFileKind ResolveSourceFileKind(string displayName)
