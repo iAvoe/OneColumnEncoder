@@ -117,6 +117,16 @@ namespace OneColumnEncoder.ViewModels
             return true;
         }
 
+        public bool MoveJobDown(QueueJobItemVM job)
+        {
+            int index = Jobs.IndexOf(job);
+            if (index < 0 || index >= Jobs.Count - 1) return false;
+            (_store.Jobs[index], _store.Jobs[index + 1]) = (_store.Jobs[index + 1], _store.Jobs[index]);
+            Jobs.Move(index, index + 1);
+            RefreshBindings();
+            return true;
+        }
+
         public QueueJobItemVM? GetNextPending()
         {
             var next = _store.Jobs.FirstOrDefault(j => j.Status == "Pending");

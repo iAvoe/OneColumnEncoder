@@ -21,6 +21,8 @@ namespace OneColumnEncoder.ViewModels
         }
 
         public QueueJobItemM Model => _model;
+        public EncodingPipelineRequest? Request => _request;
+        public EncodingPipelineCommand? Command => DeserializeCommand(_model.SerializedCommand);
         public string JobId => _model.JobId;
         public string Name => Path.GetFileName(_model.SourcePath) ?? _model.SourcePath;
         public string P1Text
@@ -32,8 +34,10 @@ namespace OneColumnEncoder.ViewModels
 
         public string DisplayR1Text => _queueLang.QueueItemRemoveText;
         public string R2Text => _queueLang.QueueItemMoveUpText;
+        public string R3Text => _queueLang.QueueItemMoveDownText;
         public bool R1IsEnabled => _model.Status == "Pending";
         public bool R2IsEnabled => _model.Status == "Pending";
+        public bool R3IsEnabled => _model.Status == "Pending";
 
         public bool IsSelected => _isSidebarSelected || _model.Status == "Encoding";
         public bool IsCancel => _model.Status == "Failed";
@@ -43,6 +47,7 @@ namespace OneColumnEncoder.ViewModels
 
         public ICommand? R1Command { get; set; }
         public ICommand? R2Command { get; set; }
+        public ICommand? R3Command { get; set; }
 
         public int UpstreamPid
         {
@@ -77,8 +82,10 @@ namespace OneColumnEncoder.ViewModels
                     OnPropertyChanged(nameof(Status));
                     OnPropertyChanged(nameof(DisplayR1Text));
                     OnPropertyChanged(nameof(R2Text));
+                    OnPropertyChanged(nameof(R3Text));
                     OnPropertyChanged(nameof(R1IsEnabled));
                     OnPropertyChanged(nameof(R2IsEnabled));
+                    OnPropertyChanged(nameof(R3IsEnabled));
                     OnPropertyChanged(nameof(IsSelected));
                     OnPropertyChanged(nameof(IsCancel));
                 }
@@ -105,8 +112,10 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(P1TooltipText));
             OnPropertyChanged(nameof(DisplayR1Text));
             OnPropertyChanged(nameof(R2Text));
+            OnPropertyChanged(nameof(R3Text));
             OnPropertyChanged(nameof(R1IsEnabled));
             OnPropertyChanged(nameof(R2IsEnabled));
+            OnPropertyChanged(nameof(R3IsEnabled));
             OnPropertyChanged(nameof(IsSelected));
             OnPropertyChanged(nameof(IsCancel));
             OnPropertyChanged(nameof(Name));
@@ -118,6 +127,19 @@ namespace OneColumnEncoder.ViewModels
             try
             {
                 return JsonSerializer.Deserialize<EncodingPipelineRequest>(serializedRequest);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static EncodingPipelineCommand? DeserializeCommand(string serializedCommand)
+        {
+            if (string.IsNullOrWhiteSpace(serializedCommand)) return null;
+            try
+            {
+                return JsonSerializer.Deserialize<EncodingPipelineCommand>(serializedCommand);
             }
             catch
             {

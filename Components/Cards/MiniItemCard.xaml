@@ -119,6 +119,13 @@
                         Focusable="False"
                         Margin="5 0 0 0"
                         Style="{StaticResource MiniLinkButton}" />
+                <Button Content="{Binding R3Text}"
+                        Command="{Binding R3Command}"
+                        IsEnabled="{Binding R3IsEnabled}"
+                        FontSize="10"
+                        Focusable="False"
+                        Margin="5 0 0 0"
+                        Style="{StaticResource MiniLinkButton}" />
             </StackPanel>
         </Grid>
     </Border>

@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
+using System.Text.Json;
 using System.Windows;
 
 namespace OneColumnEncoder.ViewModels
@@ -1321,6 +1322,11 @@ namespace OneColumnEncoder.ViewModels
             EncoderConfM encoderConf = EncoderConfM.Load();
             ParallelismConfM parallelismConf = ParallelismConfM.LoadEffective();
             string outputDirectory = outputSetting.P2TextData;
+            Dictionary<string, string> queueFfprobeJsonByPath = LoadQueueFfprobeJsonByPath();
+            string GetSourceFfprobeJson(string sourcePath) =>
+                queueFfprobeJsonByPath.TryGetValue(sourcePath, out string? rawJson)
+                    ? rawJson
+                    : _srcVideoAnalysis.RawJson;
 
             return [.. sourcePaths.Select(sourcePath => new EncodingPipelineRequest(
                 upstreamExeName,
@@ -1333,9 +1339,31 @@ namespace OneColumnEncoder.ViewModels
                 Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(sourcePath)),
                 encoderConf,
                 _appDataM.Tools.VspipeY4mArg,
-                SourceFfprobeJson: _srcVideoAnalysis.RawJson,
+                SourceFfprobeJson: GetSourceFfprobeJson(sourcePath),
                 ParallelismConf: parallelismConf,
                 FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs))];
+        }
+
+        private Dictionary<string, string> LoadQueueFfprobeJsonByPath()
+        {
+            string queueJsonPath = GetCurrentQueueJsonPath();
+            if (string.IsNullOrWhiteSpace(queueJsonPath) || !File.Exists(queueJsonPath)) return [];
+
+            try
+            {
+                string json = File.ReadAllText(queueJsonPath);
+                QueueSourceData? data = JsonSerializer.Deserialize<QueueSourceData>(json);
+                return data?.Entries
+                    .Where(entry => !string.IsNullOrWhiteSpace(entry.FilePath) && entry.FfprobeJson.ValueKind != JsonValueKind.Undefined)
+                    .ToDictionary(
+                        entry => entry.FilePath,
+                        entry => entry.FfprobeJson.GetRawText(),
+                        StringComparer.OrdinalIgnoreCase) ?? [];
+            }
+            catch
+            {
+                return [];
+            }
         }
 
         private string GetSelectedSvfiIniPath()
@@ -1381,6 +1409,17 @@ namespace OneColumnEncoder.ViewModels
 
         private bool IsVideoSourceQueueItem(ToolItemCardVM item) =>
             _videoSourceQueue.IsQueueItem(item);
+
+        private sealed class QueueSourceData
+        {
+            public List<QueueSourceEntry> Entries { get; set; } = [];
+        }
+
+        private sealed class QueueSourceEntry
+        {
+            public string FilePath { get; set; } = string.Empty;
+            public JsonElement FfprobeJson { get; set; }
+        }
 
         #endregion
 

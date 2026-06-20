@@ -308,7 +308,7 @@ namespace OneColumnEncoder.ViewModels
             if (!enableQueueSidebar)
             {
                 QueueSidebar.IsVisible = true;
-                QueueSidebar.AddJob(CreateSidebarJob(_request, "Pending"));
+                QueueSidebar.AddJob(CreateSidebarJob(_request, _command, "Pending"));
             }
             QueueSidebarToggleCmd = new ActionCmd(_ =>
             {
@@ -382,15 +382,15 @@ namespace OneColumnEncoder.ViewModels
             await RunEncodingAsync(cancellationToken);
 
             if (jobVM == null) return;
-            if (_success)
-                QueueSidebar.MarkJobCompleted(jobVM);
-            else if (_userInterruptRequested)
+            if (_userInterruptRequested)
                 QueueSidebar.MarkJobInterrupted(jobVM);
+            else if (_success)
+                QueueSidebar.MarkJobCompleted(jobVM);
             else
                 QueueSidebar.MarkJobFailed(jobVM, StatusText);
         }
 
-        private QueueJobItemM CreateSidebarJob(EncodingPipelineRequest request, string status)
+        private QueueJobItemM CreateSidebarJob(EncodingPipelineRequest request, EncodingPipelineCommand command, string status)
         {
             return new QueueJobItemM
             {
@@ -400,6 +400,7 @@ namespace OneColumnEncoder.ViewModels
                 Status = status,
                 EncoderExeName = request.EncoderExeName,
                 SerializedRequest = JsonSerializer.Serialize(request),
+                SerializedCommand = JsonSerializer.Serialize(command),
                 QueuedAt = DateTime.Now
             };
         }
@@ -672,23 +673,32 @@ namespace OneColumnEncoder.ViewModels
             for (int i = 0; i < total; i++)
             {
                 var (request, command) = _queueItems[i];
-                QueueSidebar.AddJob(CreateSidebarJob(request, "Pending"));
+                QueueSidebar.AddJob(CreateSidebarJob(request, command, "Pending"));
             }
             QueueSidebar.SaveToDisk();
 
-            // Wire sidebar edit commands (remove / move up)
+            // Wire sidebar edit commands (remove / move up / move down)
             foreach (QueueJobItemVM job in QueueSidebar.Jobs)
             {
                 job.R1Command = new ActionCmd(_ => QueueSidebar.RemoveJob(job));
                 job.R2Command = new ActionCmd(_ => QueueSidebar.MoveJobUp(job));
+                job.R3Command = new ActionCmd(_ => QueueSidebar.MoveJobDown(job));
             }
 
-            for (int i = 0; i < total; i++)
+            for (int i = 0; i < QueueSidebar.Jobs.Count; i++)
             {
                 if (cancellationToken.IsCancellationRequested) break;
 
                 _queueModeIndex = i;
-                var (request, command) = _queueItems[i];
+                var jobVM = QueueSidebar.Jobs[i];
+                EncodingPipelineRequest? request = jobVM.Request;
+                EncodingPipelineCommand? command = jobVM.Command;
+                if (request == null || command == null)
+                {
+                    QueueSidebar.MarkJobFailed(jobVM, "Failed to load queued encoding request.");
+                    break;
+                }
+
                 _request = request;
                 _command = command;
                 _totalFrames = EncodingPipelineH.GetSourceTotalFrames(request.SourceFfprobeJson);
@@ -704,7 +714,6 @@ namespace OneColumnEncoder.ViewModels
                 _encoderProcess = null;
                 _muxProcess = null;
 
-                var jobVM = QueueSidebar.Jobs[i];
                 _activeLogJobId = jobVM.JobId;
                 _activeJobVM = jobVM;
                 ResetActiveLogState(jobVM.JobId);
@@ -713,21 +722,21 @@ namespace OneColumnEncoder.ViewModels
 
                 await RunEncodingAsync(cancellationToken);
 
-                if (_success)
-                {
-                    QueueSidebar.MarkJobCompleted(jobVM);
-                    completed++;
-                }
-                else if (!_userInterruptRequested)
-                {
-                    QueueSidebar.MarkJobFailed(jobVM, StatusText);
-                    break;
-                }
-                else
+                if (_userInterruptRequested)
                 {
                     QueueSidebar.MarkJobInterrupted(jobVM);
                     if (AskStopQueueConfirmation())
                         break;
+                }
+                else if (_success)
+                {
+                    QueueSidebar.MarkJobCompleted(jobVM);
+                    completed++;
+                }
+                else
+                {
+                    QueueSidebar.MarkJobFailed(jobVM, StatusText);
+                    break;
                 }
             }
 
@@ -735,9 +744,10 @@ namespace OneColumnEncoder.ViewModels
             _timer.Stop();
             EnableCloseButton();
             UpdateFooterTimes(final: true);
-            StatusText = completed == total
-                ? $"{Lang.CompletedText}: {completed}/{total}"
-                : $"{Lang.FailedText}: {completed}/{total}";
+            int currentTotal = QueueSidebar.Jobs.Count;
+            StatusText = completed == currentTotal
+                ? $"{Lang.CompletedText}: {completed}/{currentTotal}"
+                : $"{Lang.FailedText}: {completed}/{currentTotal}";
         }
 
         /// <summary>
