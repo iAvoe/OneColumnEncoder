@@ -1207,7 +1207,7 @@ namespace OneColumnEncoder.ViewModels
                 ? QueueScriptSrcImportZone
                 : ScriptSrcImportZone;
             ToolCompatibilityH.RefreshSourceSelectionState(
-                UpstreamsZone, VideoSrcImportZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
+                UpstreamsZone, VideoSrcImportZone, ActiveScriptSrcImportZone, static () => { });
             ToolCompatibilityH.RefreshVideoSourceSelectionState(
                 UpstreamsZone, VideoSrcImportZone);
             RefreshOutputSettingCommand();
