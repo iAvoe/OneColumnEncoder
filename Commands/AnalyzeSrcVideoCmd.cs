@@ -175,9 +175,9 @@ namespace OneColumnEncoder.Commands
             _onQueueAccepted?.Invoke([.. accepted.Select(entry => entry.FilePath)], queueJsonPath);
 
             string message = string.IsNullOrWhiteSpace(excludedJsonPath)
-                ? string.Format(UILangProviderM.Current["SourceQueue.AnalysisCompletedNoExcluded"], queueJsonPath)
+                ? string.Format(UILangProviderM.Current["SourceQueue.AnalyzedNoEx"], queueJsonPath)
                 : string.Format(
-                    UILangProviderM.Current["SourceQueue.AnalysisCompleted"],
+                    UILangProviderM.Current["SourceQueue.Analyzed"],
                     excluded.Count,
                     queueJsonPath,
                     excludedJsonPath);

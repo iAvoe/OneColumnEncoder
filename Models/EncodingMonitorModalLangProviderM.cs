@@ -221,7 +221,7 @@ public class EncodingMonitorModalLangProviderM
             ["ABRText"] = "ABR",
             ["CRFText"] = "CRF",
 
-            ["QueueSidebarTitle"] = "佇列",
+            ["QueueSidebarTitle"] = "隊列",
             ["QueueSidebarStartBatchText"] = "開始批次處理",
             ["QueueSidebarCancelAllText"] = "取消全部",
             ["QueueSidebarCollapseText"] = "折疊",
