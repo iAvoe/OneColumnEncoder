@@ -21,7 +21,6 @@ public class StartEncCmdLangProviderM
             ["QueueJsonInvalidMsg"] = "Queue JSON cannot be read or parsed: {0}",
             ["QueueJsonNoEntriesMsg"] = "Queue JSON contains no accepted source entries.",
             ["QueueUnsupportedRouteMsg"] = "Queue encoding does not support the selected upstream tool.",
-            ["QueueScriptCountMismatchMsg"] = "Script count mismatch: {0} of {1} scripts are missing for the selected upstream. Missing: {2}",
             ["QueueSourceMissingMsg"] = "Queue source file(s) are missing. Encoding cannot continue:",
             ["QueueDuplicateOutputMsg"] = "Queue output paths collide. Encoding cannot continue:",
             ["QueueEncodingPendingMsg"] = "Queue overwrite protection completed. Queue execution is not wired yet.",
@@ -45,7 +44,6 @@ public class StartEncCmdLangProviderM
             ["QueueJsonInvalidMsg"] = "无法读取或解析队列 JSON：{0}",
             ["QueueJsonNoEntriesMsg"] = "队列 JSON 中没有可接受的源条目。",
             ["QueueUnsupportedRouteMsg"] = "队列压制不支持当前选中的上游工具。",
-            ["QueueScriptCountMismatchMsg"] = "脚本数量不匹配：选中的上游缺少 {0}/{1} 个脚本。缺失：{2}",
             ["QueueSourceMissingMsg"] = "以下队列源文件缺失，无法继续压制：",
             ["QueueDuplicateOutputMsg"] = "以下队列输出路径发生冲突，无法继续压制：",
             ["QueueEncodingPendingMsg"] = "队列覆盖保护检查已完成。队列执行流程尚未接入。",
@@ -69,7 +67,6 @@ public class StartEncCmdLangProviderM
             ["QueueJsonInvalidMsg"] = "無法讀取或解析隊列 JSON：{0}",
             ["QueueJsonNoEntriesMsg"] = "隊列 JSON 中沒有可接受的來源項目。",
             ["QueueUnsupportedRouteMsg"] = "隊列壓製不支援目前選取的上游工具。",
-            ["QueueScriptCountMismatchMsg"] = "腳本數量不匹配：選中的上游缺少 {0}/{1} 個腳本。缺失：{2}",
             ["QueueSourceMissingMsg"] = "以下隊列來源檔案缺失，無法繼續壓製：",
             ["QueueDuplicateOutputMsg"] = "以下隊列輸出路徑發生衝突，無法繼續壓製：",
             ["QueueEncodingPendingMsg"] = "隊列覆蓋保護檢查已完成。隊列執行流程尚未接入。",
@@ -97,7 +94,6 @@ public class StartEncCmdLangProviderM
             ["QueueJsonInvalidMsg"] = "Le JSON de file d'attente est illisible ou invalide : {0}",
             ["QueueJsonNoEntriesMsg"] = "Le JSON de file d'attente ne contient aucune entrée source acceptée.",
             ["QueueUnsupportedRouteMsg"] = "L'encodage en file d'attente ne prend pas en charge l'outil amont sélectionné.",
-            ["QueueScriptCountMismatchMsg"] = "Nombre de scripts non concordant : {0} sur {1} scripts manquants pour l'outil amont sélectionné. Manquant : {2}",
             ["QueueSourceMissingMsg"] = "Fichier(s) source de file d'attente manquant(s). L'encodage ne peut pas continuer :",
             ["QueueDuplicateOutputMsg"] = "Les chemins de sortie de la file d'attente entrent en collision. L'encodage ne peut pas continuer :",
             ["QueueEncodingPendingMsg"] = "Protection contre l'écrasement de la file d'attente terminée. L'exécution de la file d'attente n'est pas encore câblée.",
@@ -121,7 +117,6 @@ public class StartEncCmdLangProviderM
             ["QueueJsonInvalidMsg"] = "No se puede leer o analizar el JSON de la cola: {0}",
             ["QueueJsonNoEntriesMsg"] = "El JSON de la cola no contiene entradas de origen aceptadas.",
             ["QueueUnsupportedRouteMsg"] = "La codificación por cola no admite la herramienta aguas arriba seleccionada.",
-            ["QueueScriptCountMismatchMsg"] = "Recuento de scripts no coincide: faltan {0} de {1} scripts para la herramienta aguas arriba seleccionada. Faltan: {2}",
             ["QueueSourceMissingMsg"] = "Faltan archivos de origen de la cola. No se puede continuar la codificación:",
             ["QueueDuplicateOutputMsg"] = "Las rutas de salida de la cola colisionan. No se puede continuar la codificación:",
             ["QueueEncodingPendingMsg"] = "Protección contra sobrescritura de cola completada. La ejecución de la cola aún no está conectada.",
@@ -145,7 +140,6 @@ public class StartEncCmdLangProviderM
             ["QueueJsonInvalidMsg"] = "キュー JSON を読み取りまたは解析できません: {0}",
             ["QueueJsonNoEntriesMsg"] = "キュー JSON に受け入れられたソースエントリがありません。",
             ["QueueUnsupportedRouteMsg"] = "キューエンコードは選択された上流ツールをサポートしていません。",
-            ["QueueScriptCountMismatchMsg"] = "スクリプト数が一致しません：選択された上流に {0}/{1} のスクリプトが不足しています。不足：{2}",
             ["QueueSourceMissingMsg"] = "キューのソースファイルが見つかりません。エンコードを続行できません:",
             ["QueueDuplicateOutputMsg"] = "キューの出力パスが衝突しています。エンコードを続行できません:",
             ["QueueEncodingPendingMsg"] = "キューの上書き保護が完了しました。キューの実行はまだ配線されていません。",
@@ -169,7 +163,6 @@ public class StartEncCmdLangProviderM
             ["QueueJsonInvalidMsg"] = "Невозможно прочитать или разобрать JSON очереди: {0}",
             ["QueueJsonNoEntriesMsg"] = "JSON очереди не содержит принятых записей источников.",
             ["QueueUnsupportedRouteMsg"] = "Пакетное кодирование не поддерживает выбранный апстрим-инструмент.",
-            ["QueueScriptCountMismatchMsg"] = "Несоответствие количества скриптов: отсутствует {0} из {1} скриптов для выбранного апстрим-инструмента. Отсутствуют: {2}",
             ["QueueSourceMissingMsg"] = "Файлы источников очереди отсутствуют. Кодирование невозможно:",
             ["QueueDuplicateOutputMsg"] = "Пути вывода очереди конфликтуют. Кодирование невозможно:",
             ["QueueEncodingPendingMsg"] = "Защита от перезаписи очереди завершена. Выполнение очереди ещё не подключено.",
@@ -193,7 +186,6 @@ public class StartEncCmdLangProviderM
     public string QueueJsonInvalidMsg { get; }
     public string QueueJsonNoEntriesMsg { get; }
     public string QueueUnsupportedRouteMsg { get; }
-    public string QueueScriptCountMismatchMsg { get; }
     public string QueueSourceMissingMsg { get; }
     public string QueueDuplicateOutputMsg { get; }
     public string QueueEncodingPendingMsg { get; }
@@ -223,7 +215,6 @@ public class StartEncCmdLangProviderM
         QueueJsonInvalidMsg = _d["QueueJsonInvalidMsg"];
         QueueJsonNoEntriesMsg = _d["QueueJsonNoEntriesMsg"];
         QueueUnsupportedRouteMsg = _d["QueueUnsupportedRouteMsg"];
-        QueueScriptCountMismatchMsg = _d["QueueScriptCountMismatchMsg"];
         QueueSourceMissingMsg = _d["QueueSourceMissingMsg"];
         QueueDuplicateOutputMsg = _d["QueueDuplicateOutputMsg"];
         QueueEncodingPendingMsg = _d["QueueEncodingPendingMsg"];

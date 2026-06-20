@@ -11,6 +11,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Windows;
 
 namespace OneColumnEncoder.ViewModels
@@ -1353,9 +1354,11 @@ namespace OneColumnEncoder.ViewModels
             if (scriptDir != null)
             {
                 string ext = scriptKind == SourceFileKind.VapourSynthScript ? ".vpy" : ".avs";
-                int missingCount = 0;
                 const int maxListed = 5;
+                int missingCount = 0;
                 List<string> missingFiles = [];
+                int mismatchCount = 0;
+                List<string> mismatchFiles = [];
                 foreach (string sourcePath in sourcePaths)
                 {
                     string scriptPath = Path.Combine(scriptDir, Path.GetFileNameWithoutExtension(sourcePath) + ext);
@@ -1365,6 +1368,17 @@ namespace OneColumnEncoder.ViewModels
                         if (missingFiles.Count < maxListed)
                             missingFiles.Add(Path.GetFileName(scriptPath)!);
                     }
+                    else
+                    {
+                        string? embeddedPath = ExtractScriptSourcePath(scriptPath, ext);
+                        if (embeddedPath != null &&
+                            !string.Equals(embeddedPath, sourcePath, StringComparison.OrdinalIgnoreCase))
+                        {
+                            mismatchCount++;
+                            if (mismatchFiles.Count < maxListed)
+                                mismatchFiles.Add($"{Path.GetFileName(scriptPath)} (refers \"{embeddedPath}\", paired \"{sourcePath}\")");
+                        }
+                    }
                 }
                 if (missingCount > 0)
                 {
@@ -1372,9 +1386,17 @@ namespace OneColumnEncoder.ViewModels
                     string omitted = missingCount > maxListed
                         ? $" ({missingCount - maxListed} more)"
                         : string.Empty;
-                    string missingDetail = $"{missingList}{omitted}";
-                    string format = new StartEncCmdLangProviderM(UILangProviderM.Current.LanguageCode).QueueScriptCountMismatchMsg;
-                    throw new InvalidOperationException(string.Format(format, missingCount, sourcePaths.Length, missingDetail));
+                    throw new InvalidOperationException(
+                        $"Script count mismatch: {missingCount} of {sourcePaths.Length} scripts are missing for the selected upstream. Missing: {missingList}{omitted}");
+                }
+                if (mismatchCount > 0)
+                {
+                    string mismatchList = string.Join("; ", mismatchFiles);
+                    string omitted = mismatchCount > maxListed
+                        ? $" ({mismatchCount - maxListed} more)"
+                        : string.Empty;
+                    throw new InvalidOperationException(
+                        $"Script source mismatch: {mismatchCount} script(s) reference a different video source. Details: {mismatchList}{omitted}");
                 }
             }
 
@@ -1424,6 +1446,28 @@ namespace OneColumnEncoder.ViewModels
             {
                 return [];
             }
+        }
+
+        private static string? ExtractScriptSourcePath(string scriptFilePath, string ext)
+        {
+            if (!File.Exists(scriptFilePath)) return null;
+
+            string[] lines = File.ReadAllLines(scriptFilePath);
+            string pattern = ext.Equals(".vpy", StringComparison.OrdinalIgnoreCase)
+                ? @"src\s*=\s*core\.lsmas\.LWLibavSource\(source=r""([^""]+)"""
+                : @"LWLibavVideoSource\(""([^""]+)""";
+
+            foreach (string line in lines)
+            {
+                string trimmed = line.Trim();
+                if (string.IsNullOrEmpty(trimmed) || trimmed.StartsWith('#') || trimmed.StartsWith(';'))
+                    continue;
+                Match m = Regex.Match(trimmed, pattern);
+                if (m.Success)
+                    return m.Groups[1].Value;
+            }
+
+            return null;
         }
 
         private string GetSelectedSvfiIniPath()
