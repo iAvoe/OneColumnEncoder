@@ -300,7 +300,7 @@ namespace OneColumnEncoder.ViewModels
             FinishButtons = ButtonGroupVM.CreateFiveButton(
                 Lang.OpenOutputDirectoryText, Lang.ViewEncodingCommandText, Lang.InterruptUpstreamText, Lang.InterruptEncoderText, Lang.CloseAfterDoneText,
                 new ActionCmd(_ => OpenOutputDirectory()),
-                new ActionCmd(_ => new OpenDebugModalCmd(_modalNavS, Lang.EncodingCommandTitle, _command.DisplayCommandLine).Execute(null)),
+                new ActionCmd(_ => ShowEncodingCommand()),
                 new ActionCmd(_ => TryInterruptUpstream()),
                 new ActionCmd(_ => TryInterruptEncoder()),
                 CloseCmd);
@@ -1977,6 +1977,12 @@ namespace OneColumnEncoder.ViewModels
             string? directory = Path.GetDirectoryName(_request.OutputPath);
             if (string.IsNullOrWhiteSpace(directory) || !Directory.Exists(directory)) return;
             Process.Start(new ProcessStartInfo { FileName = directory, UseShellExecute = true });
+        }
+
+        private void ShowEncodingCommand()
+        {
+            EncodingPipelineCommand command = QueueSidebar.SelectedJob?.Command ?? _command;
+            new OpenDebugModalCmd(_modalNavS, Lang.EncodingCommandTitle, command.DisplayCommandLine).Execute(null);
         }
 
         /// <summary>
