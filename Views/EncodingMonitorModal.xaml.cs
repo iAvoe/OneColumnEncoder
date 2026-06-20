@@ -12,10 +12,12 @@ namespace OneColumnEncoder.Views
         private const uint ScClose = 0xF060;
         private const uint MfByCommand = 0x00000000;
         private const uint MfGrayed = 0x00000001;
-        private const int SidebarWidth = 360;
         private const int DefaultWidth = 1080;
+        private const int SidebarWidth = 310;
+        private const int SplitterWidth = 2;
+        private const int DefaultWidthWithSidebar = DefaultWidth + SidebarWidth + SplitterWidth;
         private const int MinWidthDefault = 860;
-        private const int MinWidthSidebar = 860 + SidebarWidth;
+        private const int MinWidthSidebar = MinWidthDefault + SidebarWidth + SplitterWidth;
 
         public EncodingMonitorModal()
         {
@@ -42,8 +44,7 @@ namespace OneColumnEncoder.Views
             {
                 vm.QueueSidebar.PropertyChanged += OnQueueSidebarPropertyChanged;
                 vm.PropertyChanged += OnViewModelPropertyChanged;
-                if (vm.QueueSidebar.IsVisible)
-                    ExpandForSidebar();
+                SyncSidebarWidth(vm.QueueSidebar.IsVisible);
                 UpdateSystemCloseButton(vm.IsWindowCloseEnabled);
                 vm.Start();
             }
@@ -61,10 +62,7 @@ namespace OneColumnEncoder.Views
             {
                 if (sender is QueueSidebarVM sidebar)
                 {
-                    if (sidebar.IsVisible)
-                        ExpandForSidebar();
-                    else
-                        CollapseSidebar();
+                    SyncSidebarWidth(sidebar.IsVisible);
                 }
             }
         }
@@ -94,11 +92,19 @@ namespace OneColumnEncoder.Views
             DrawMenuBar(handle);
         }
 
+        private void SyncSidebarWidth(bool isSidebarVisible)
+        {
+            if (isSidebarVisible)
+                ExpandForSidebar();
+            else
+                CollapseSidebar();
+        }
+
         private void ExpandForSidebar()
         {
             MinWidth = MinWidthSidebar;
-            if (Width < MinWidthSidebar)
-                Width = MinWidthSidebar;
+            if (Width < DefaultWidthWithSidebar)
+                Width = DefaultWidthWithSidebar;
         }
 
         private void CollapseSidebar()
