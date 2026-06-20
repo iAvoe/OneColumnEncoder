@@ -231,7 +231,7 @@
                           VerticalAlignment="Center" />
                 <CheckBox Content="{Binding RichTextModeText}"
                           IsChecked="{Binding LogRichTextMode, Mode=TwoWay}"
-                          Margin="20 0 0 0"
+                          Margin="15 0 0 0"
                           VerticalAlignment="Center" />
             </StackPanel>
             <comps:HintPanel Text="{Binding MuxTimebaseHint}"

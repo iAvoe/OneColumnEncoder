@@ -297,8 +297,7 @@ namespace OneColumnEncoder.ViewModels
             for (int i = 0; i < WaitingJobs.Count; i++)
                 WaitingJobs[i].SetMoveButtonAvailability(i > 0, i < WaitingJobs.Count - 1);
 
-            if (RunningJob != null)
-                RunningJob.SetMoveButtonAvailability(false, false);
+            RunningJob?.SetMoveButtonAvailability(false, false);
 
             foreach (QueueJobItemVM job in CompletedJobs)
                 job.SetMoveButtonAvailability(false, false);
