@@ -1,3 +1,4 @@
+using OneColumnEncoder.Commands;
 using OneColumnEncoder.Models;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -17,11 +18,16 @@ namespace OneColumnEncoder.ViewModels
             _isPersistent = loadFromDisk;
             _store = loadFromDisk ? QueueJobsStoreM.Load() : new QueueJobsStoreM();
             _isVisible = _store.Jobs.Count > 1;
+            SelectJobCommand = new ActionCmd(job =>
+            {
+                if (job is QueueJobItemVM jobVM) SelectedJob = jobVM;
+            });
             RefreshJobs();
         }
 
         public ObservableCollection<QueueJobItemVM> WaitingJobs { get; } = [];
         public ObservableCollection<QueueJobItemVM> CompletedJobs { get; } = [];
+        public ActionCmd SelectJobCommand { get; }
         public int TotalCount => _store.Jobs.Count;
 
         public QueueJobItemVM? RunningJob

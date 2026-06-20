@@ -138,6 +138,8 @@ namespace OneColumnEncoder.ViewModels
                 double next = Math.Clamp(value, 0d, 100d);
                 if (Math.Abs(_progressValue - next) < 0.005d) return;
                 _progressValue = next;
+                if (_activeJobVM != null)
+                    _activeJobVM.ProgressPercent = (int)Math.Round(next);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(ProgressText));
                 OnPropertyChanged(nameof(EstimatedSizeLabel));
@@ -372,6 +374,8 @@ namespace OneColumnEncoder.ViewModels
             if (jobVM != null)
             {
                 _activeLogJobId = jobVM.JobId;
+                _activeJobVM = jobVM;
+                ResetActiveEncodingState();
                 ResetActiveLogState(jobVM.JobId);
                 QueueSidebar.MarkJobEncoding(jobVM);
             }
@@ -712,6 +716,7 @@ namespace OneColumnEncoder.ViewModels
 
                 _activeLogJobId = jobVM.JobId;
                 _activeJobVM = jobVM;
+                ResetActiveEncodingState();
                 ResetActiveLogState(jobVM.JobId);
                 QueueSidebar.MarkJobEncoding(jobVM);
                 IsMonitoringEnabled = true;
@@ -746,6 +751,25 @@ namespace OneColumnEncoder.ViewModels
                 : completed == currentTotal
                 ? $"{Lang.CompletedText}: {completed}/{currentTotal}"
                 : $"{Lang.FailedText}: {completed}/{currentTotal}";
+        }
+
+        private void ResetActiveEncodingState()
+        {
+            ProgressValue = 0;
+            SetCurrentOutputSizeBytes(0);
+            _writtenFrames = 0;
+            _lastUpstreamWorkingSetBytes = 0;
+            _lastEncoderWorkingSetBytes = 0;
+            _upstreamWorkingSetPeakBytes = 0;
+            _encoderWorkingSetPeakBytes = 0;
+            OnPropertyChanged(nameof(WrittenFramesLabel));
+            OnPropertyChanged(nameof(EstimatedSizeLabel));
+
+            if (FooterColumns.Count == 6)
+            {
+                FooterColumns[4].MainText = GetRateControlText();
+                FooterColumns[5].MainText = GetPresetText();
+            }
         }
 
         /// <summary>

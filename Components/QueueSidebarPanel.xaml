@@ -62,7 +62,14 @@
                         <cards:MiniItemCard DataContext="{Binding QueueSidebar.RunningJob}"
                                             IsSelected="{Binding IsSelected}"
                                             IsCancel="{Binding IsCancel}"
-                                            HorizontalAlignment="Stretch" />
+                                            HorizontalAlignment="Stretch">
+                            <cards:MiniItemCard.InputBindings>
+                                <MouseBinding MouseAction="LeftClick"
+                                              Command="{Binding DataContext.QueueSidebar.SelectJobCommand,
+                                                                RelativeSource={RelativeSource AncestorType=comps:QueueSidebarPanel}}"
+                                              CommandParameter="{Binding}" />
+                            </cards:MiniItemCard.InputBindings>
+                        </cards:MiniItemCard>
                     </Border>
 
                     <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarWaitingHeaderText}"
