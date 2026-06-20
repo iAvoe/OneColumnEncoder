@@ -14,7 +14,7 @@ namespace OneColumnEncoder
         public MainWindow()
         {
             InitializeComponent();
-            Title = $"1cenc (Commit {GetGitCommitCount()})";
+            Title = $"1cenc (Beta——Commit {GetGitCommitCount()})";
             Closing += OnClosing;
             Closed += OnClosed;
             PreviewMouseDown += OnPreviewMouseDown;

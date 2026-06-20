@@ -9,15 +9,25 @@
     <Platforms>AnyCPU;x64</Platforms>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
-    <GitCommitCount Condition="'$(GitCommitCount)' == ''">0</GitCommitCount>
   </PropertyGroup>
 
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
-      <_Parameter1>GitCommitCount</_Parameter1>
-      <_Parameter2>$(GitCommitCount)</_Parameter2>
-    </AssemblyAttribute>
-  </ItemGroup>
+  <Target Name="AppendGitCommitCount" AfterTargets="CoreGenerateAssemblyInfo" BeforeTargets="CoreCompile">
+    <Exec Command="git rev-list --count HEAD"
+          ConsoleToMSBuild="true"
+          IgnoreExitCode="true"
+          StandardOutputImportance="low"
+          Condition="'$(GitCommitCount)' == ''">
+      <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitCount" />
+    </Exec>
+
+    <PropertyGroup>
+      <GitCommitCount Condition="'$(GitCommitCount)' == ''">0</GitCommitCount>
+    </PropertyGroup>
+
+    <WriteLinesToFile File="$(GeneratedAssemblyInfoFile)"
+                      Lines="[assembly: System.Reflection.AssemblyMetadataAttribute(&quot;GitCommitCount&quot;, &quot;$(GitCommitCount)&quot;)]"
+                      Overwrite="false" />
+  </Target>
 
   <ItemGroup>
     <Resource Include="favicon.ico" />

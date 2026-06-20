@@ -11,6 +11,7 @@
                         Width="920"
                         Height="1220"
                         WindowStartupLocation="CenterScreen">
+    <!-- If Commit number can be read, the Title will be replaced by this.xaml.cs -->
     <!-- Horizontal scrollbar visibility prevents over stretching on ItemCards implicitly -->
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Disabled">
