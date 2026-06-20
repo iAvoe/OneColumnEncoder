@@ -77,7 +77,7 @@ namespace OneColumnEncoder.Helpers
             ToolCompatibilityH.RefreshDependencySelectionState(
                 upstreamsZone, dependenciesZone, updateEncStartButtonsState);
             ToolCompatibilityH.RefreshSourceSelectionState(
-                upstreamsZone, videoSrcImportZone, scriptSrcImportZone, refreshSelectedSourceStatus);
+                upstreamsZone, scriptSrcImportZone, refreshSelectedSourceStatus);
             ToolCompatibilityH.RefreshVideoSourceSelectionState(
                 upstreamsZone, videoSrcImportZone);
         }

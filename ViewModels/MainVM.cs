@@ -463,7 +463,7 @@ namespace OneColumnEncoder.ViewModels
             ToolCompatibilityH.RefreshDependencySelectionState(
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
             ToolCompatibilityH.RefreshSourceSelectionState(
-                UpstreamsZone, VideoSrcImportZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
+                UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
             ToolCompatibilityH.RefreshVideoSourceSelectionState(
                 UpstreamsZone, VideoSrcImportZone);
 
@@ -501,7 +501,7 @@ namespace OneColumnEncoder.ViewModels
             ToolCompatibilityH.RefreshDependencySelectionState(
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
             ToolCompatibilityH.RefreshSourceSelectionState(
-                UpstreamsZone, VideoSrcImportZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
+                UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
             ToolCompatibilityH.RefreshVideoSourceSelectionState(
                 UpstreamsZone, VideoSrcImportZone);
         }
@@ -536,7 +536,7 @@ namespace OneColumnEncoder.ViewModels
             ToolCompatibilityH.RefreshDependencySelectionState(
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
             ToolCompatibilityH.RefreshSourceSelectionState(
-                UpstreamsZone, VideoSrcImportZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
+                UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
             ToolCompatibilityH.RefreshVideoSourceSelectionState(
                 UpstreamsZone, VideoSrcImportZone);
         }
@@ -1062,6 +1062,16 @@ namespace OneColumnEncoder.ViewModels
 
         private void OnSourceScriptQueueImported(ToolItemCardVM item, SourceFileKind kind, string folderPath, string[] filePaths)
         {
+            string? error = ValidateScriptQueueImport(kind, folderPath, filePaths);
+            if (error != null)
+            {
+                item.P2TextData = string.Empty;
+                item.P1TextData = string.Empty;
+                item.P1TooltipText = null;
+                new OpenErrModalCmd(_modalNavS, UILangProviderM.Current["Warn.SourceCheck"], error).Execute(null);
+                return;
+            }
+
             foreach (ToolItemCardVM source in ActiveScriptSrcImportZone)
                 source.IsSelected = false;
 
@@ -1069,6 +1079,72 @@ namespace OneColumnEncoder.ViewModels
                 item.IsSelected = true;
 
             RefreshSelectedSourceStatus(resetAnalysis: false);
+        }
+
+        private string? ValidateScriptQueueImport(SourceFileKind kind, string folderPath, string[] filePaths)
+        {
+            string[] videoPaths = GetCurrentQueueFilePaths();
+            if (videoPaths.Length == 0) return null;
+
+            string ext = kind switch
+            {
+                SourceFileKind.VapourSynthScript => ".vpy",
+                SourceFileKind.AviSynthScript => ".avs",
+                _ => string.Empty
+            };
+            if (string.IsNullOrEmpty(ext)) return null;
+
+            Dictionary<string, string> videoByBasename = new(StringComparer.OrdinalIgnoreCase);
+            foreach (string videoPath in videoPaths)
+                videoByBasename[Path.GetFileNameWithoutExtension(videoPath)] = videoPath;
+
+            const int maxDetails = 5;
+            List<string> details = [];
+            int unmatchedCount = 0;
+            int mismatchCount = 0;
+
+            foreach (string scriptPath in filePaths)
+            {
+                string scriptBasename = Path.GetFileNameWithoutExtension(scriptPath);
+
+                if (!videoByBasename.TryGetValue(scriptBasename, out string? videoPath))
+                {
+                    unmatchedCount++;
+                    if (details.Count < maxDetails)
+                        details.Add($"'{Path.GetFileName(scriptPath)}' — no matching video source by basename");
+                    continue;
+                }
+
+                string? embeddedPath = ExtractScriptSourcePath(scriptPath, ext);
+                if (embeddedPath == null)
+                {
+                    mismatchCount++;
+                    if (details.Count < maxDetails)
+                        details.Add($"'{Path.GetFileName(scriptPath)}' — unrecognized script format, cannot verify source path");
+                    continue;
+                }
+
+                string normalizedEmbedded = Path.GetFullPath(embeddedPath);
+                string normalizedVideo = Path.GetFullPath(videoPath);
+                if (!string.Equals(normalizedEmbedded, normalizedVideo, StringComparison.OrdinalIgnoreCase))
+                {
+                    mismatchCount++;
+                    if (details.Count < maxDetails)
+                        details.Add($"'{Path.GetFileName(scriptPath)}' — refers \"{embeddedPath}\", expected \"{videoPath}\"");
+                }
+            }
+
+            if (unmatchedCount > 0 || mismatchCount > 0)
+            {
+                int total = unmatchedCount + mismatchCount;
+                int omitted = total - Math.Min(total, maxDetails);
+                string msg = $"Import rejected: {unmatchedCount} unmatched basename(s), {mismatchCount} path mismatch(es).";
+                msg += "\n\nDetails:\n" + string.Join("\n", details);
+                if (omitted > 0) msg += $"\n...and {omitted} more.";
+                return msg;
+            }
+
+            return null;
         }
 
         private void OnSourceScriptQueueCleared(ToolItemCardVM item)
@@ -1207,7 +1283,7 @@ namespace OneColumnEncoder.ViewModels
                 ? QueueScriptSrcImportZone
                 : ScriptSrcImportZone;
             ToolCompatibilityH.RefreshSourceSelectionState(
-                UpstreamsZone, VideoSrcImportZone, ActiveScriptSrcImportZone, static () => { });
+                UpstreamsZone, ActiveScriptSrcImportZone, () => { });
             ToolCompatibilityH.RefreshVideoSourceSelectionState(
                 UpstreamsZone, VideoSrcImportZone);
             RefreshOutputSettingCommand();
@@ -1371,12 +1447,22 @@ namespace OneColumnEncoder.ViewModels
                     else
                     {
                         string? embeddedPath = ExtractScriptSourcePath(scriptPath, ext);
-                        if (embeddedPath != null &&
-                            !string.Equals(embeddedPath, sourcePath, StringComparison.OrdinalIgnoreCase))
+                        if (embeddedPath == null)
                         {
                             mismatchCount++;
                             if (mismatchFiles.Count < maxListed)
-                                mismatchFiles.Add($"{Path.GetFileName(scriptPath)} (refers \"{embeddedPath}\", paired \"{sourcePath}\")");
+                                mismatchFiles.Add($"{Path.GetFileName(scriptPath)} (unrecognized script format)");
+                        }
+                        else
+                        {
+                            string normalizedEmbedded = Path.GetFullPath(embeddedPath);
+                            string normalizedSource = Path.GetFullPath(sourcePath);
+                            if (!string.Equals(normalizedEmbedded, normalizedSource, StringComparison.OrdinalIgnoreCase))
+                            {
+                                mismatchCount++;
+                                if (mismatchFiles.Count < maxListed)
+                                    mismatchFiles.Add($"{Path.GetFileName(scriptPath)} (refers \"{embeddedPath}\", paired \"{sourcePath}\")");
+                            }
                         }
                     }
                 }
@@ -1452,19 +1538,25 @@ namespace OneColumnEncoder.ViewModels
         {
             if (!File.Exists(scriptFilePath)) return null;
 
-            string[] lines = File.ReadAllLines(scriptFilePath);
-            string pattern = ext.Equals(".vpy", StringComparison.OrdinalIgnoreCase)
-                ? @"src\s*=\s*core\.lsmas\.LWLibavSource\(source=r""([^""]+)"""
-                : @"LWLibavVideoSource\(""([^""]+)""";
-
-            foreach (string line in lines)
+            try
             {
-                string trimmed = line.Trim();
-                if (string.IsNullOrEmpty(trimmed) || trimmed.StartsWith('#') || trimmed.StartsWith(';'))
-                    continue;
-                Match m = Regex.Match(trimmed, pattern);
-                if (m.Success)
-                    return m.Groups[1].Value;
+                string[] lines = File.ReadAllLines(scriptFilePath);
+                string pattern = ext.Equals(".vpy", StringComparison.OrdinalIgnoreCase)
+                    ? @"src\s*=\s*core\.lsmas\.LWLibavSource\(source=r""([^""]+)"""
+                    : @"LWLibavVideoSource\(""([^""]+)""";
+
+                foreach (string line in lines)
+                {
+                    string trimmed = line.Trim();
+                    if (string.IsNullOrEmpty(trimmed) || trimmed.StartsWith('#') || trimmed.StartsWith(';'))
+                        continue;
+                    Match m = Regex.Match(trimmed, pattern);
+                    if (m.Success)
+                        return m.Groups[1].Value.Trim();
+                }
+            }
+            catch
+            {
             }
 
             return null;

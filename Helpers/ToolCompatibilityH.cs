@@ -40,7 +40,6 @@ namespace OneColumnEncoder.Helpers
 
         public static void RefreshSourceSelectionState(
             IEnumerable<ToolItemCardVM> upstreamsZone,
-            IEnumerable<ToolItemCardVM> videoSrcImportZone,
             IEnumerable<ToolItemCardVM> scriptSrcImportZone,
             Action refreshSelectedSourceStatus)
         {
@@ -69,8 +68,6 @@ namespace OneColumnEncoder.Helpers
                     break;
             }
 
-            bool hasVideoSource = videoSrcImportZone.Any(t => !string.IsNullOrWhiteSpace(t.P2TextData));
-
             foreach (ToolItemCardVM item in scriptSrcImportZone)
             {
                 bool shouldEnable = allDisabled switch
@@ -79,9 +76,6 @@ namespace OneColumnEncoder.Helpers
                     _ when allowedName == null => true,
                     _ => item.Name.Equals(allowedName, StringComparison.OrdinalIgnoreCase)
                 };
-
-                if (shouldEnable && allowedName != null)
-                    shouldEnable = hasVideoSource;
 
                 if (!shouldEnable) item.IsSelected = false;
                 item.IsEnabled = shouldEnable;
