@@ -171,6 +171,7 @@ namespace OneColumnEncoder.ViewModels
             if (storeIndex < 0 || previousStoreIndex < 0) return false;
             (_store.Jobs[storeIndex], _store.Jobs[previousStoreIndex]) = (_store.Jobs[previousStoreIndex], _store.Jobs[storeIndex]);
             WaitingJobs.Move(index, index - 1);
+            job.FlashMovedHighlight();
             RefreshWaitingMoveStates();
             RefreshBindings();
             return true;
@@ -185,6 +186,7 @@ namespace OneColumnEncoder.ViewModels
             if (storeIndex < 0 || nextStoreIndex < 0) return false;
             (_store.Jobs[storeIndex], _store.Jobs[nextStoreIndex]) = (_store.Jobs[nextStoreIndex], _store.Jobs[storeIndex]);
             WaitingJobs.Move(index, index + 1);
+            job.FlashMovedHighlight();
             RefreshWaitingMoveStates();
             RefreshBindings();
             return true;

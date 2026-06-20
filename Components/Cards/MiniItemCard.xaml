@@ -81,6 +81,10 @@
                         </Setter.Value>
                     </Setter>
                     <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsRecentlyMoved}" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource BorderAmber}" />
+                            <Setter Property="Background" Value="{StaticResource BackgroundAmber}" />
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
                             <Setter Property="BorderBrush" Value="{StaticResource BorderGreen}" />
                             <Setter Property="Background" Value="{StaticResource BackgroundGreen}" />
@@ -116,6 +120,10 @@
                     <Setter Property="Background" Value="{StaticResource Background}" />
                     <Setter Property="TextElement.Foreground" Value="{StaticResource GlobalPrimary}" />
                     <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsRecentlyMoved}" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource BorderAmber}" />
+                            <Setter Property="Background" Value="{StaticResource BackgroundAmber}" />
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
                             <Setter Property="BorderBrush" Value="{StaticResource BorderGreen}" />
                             <Setter Property="Background" Value="{StaticResource BackgroundGreen}" />

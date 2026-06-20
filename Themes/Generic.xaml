@@ -60,6 +60,10 @@
                      x:Key="WarningOrange" />
     <SolidColorBrush Color="#95000E"
                      x:Key="ErrorRed" />
+    <SolidColorBrush Color="#D4A017"
+                     x:Key="BorderAmber" />
+    <SolidColorBrush Color="#FFF8E1"
+                     x:Key="BackgroundAmber" />
     <SolidColorBrush Color="#343A40"
                      x:Key="ButtonPrimary" />
     <SolidColorBrush Color="#878574"

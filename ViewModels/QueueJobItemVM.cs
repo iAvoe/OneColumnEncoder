@@ -3,6 +3,7 @@ using OneColumnEncoder.Helpers;
 using System.IO;
 using System.Text.Json;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -14,6 +15,8 @@ namespace OneColumnEncoder.ViewModels
         private bool _isSidebarSelected;
         private bool _canMoveUp;
         private bool _canMoveDown;
+        private bool _isRecentlyMoved;
+        private DispatcherTimer? _moveFlashTimer;
 
         public QueueJobItemVM(QueueJobItemM model)
         {
@@ -46,6 +49,16 @@ namespace OneColumnEncoder.ViewModels
         public bool IsReal => true;
         public bool EnableRealCheck => false;
         public bool IsEnabled => true;
+
+        public bool IsRecentlyMoved
+        {
+            get => _isRecentlyMoved;
+            private set
+            {
+                if (!SetProperty(ref _isRecentlyMoved, value)) return;
+                OnPropertyChanged(nameof(IsRecentlyMoved));
+            }
+        }
 
         public ICommand? R1Command { get; set; }
         public ICommand? R2Command { get; set; }
@@ -121,6 +134,19 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(IsSelected));
             OnPropertyChanged(nameof(IsCancel));
             OnPropertyChanged(nameof(Name));
+        }
+
+        public void FlashMovedHighlight()
+        {
+            IsRecentlyMoved = true;
+            _moveFlashTimer?.Stop();
+            _moveFlashTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(600), DispatcherPriority.Normal, (_, _) =>
+            {
+                IsRecentlyMoved = false;
+                _moveFlashTimer?.Stop();
+                _moveFlashTimer = null;
+            }, Dispatcher.CurrentDispatcher);
+            _moveFlashTimer.Start();
         }
 
         public void SetMoveButtonAvailability(bool canMoveUp, bool canMoveDown)
