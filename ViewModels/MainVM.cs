@@ -1975,6 +1975,7 @@ namespace OneColumnEncoder.ViewModels
             UnsubFromImportedToolZones();
             UnsubFromToolsChecklist();
             base.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }
