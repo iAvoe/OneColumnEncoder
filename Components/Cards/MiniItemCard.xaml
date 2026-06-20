@@ -81,10 +81,6 @@
                         </Setter.Value>
                     </Setter>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsRecentlyMoved}" Value="True">
-                            <Setter Property="BorderBrush" Value="{StaticResource BorderAmber}" />
-                            <Setter Property="Background" Value="{StaticResource BackgroundAmber}" />
-                        </DataTrigger>
                         <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
                             <Setter Property="BorderBrush" Value="{StaticResource BorderGreen}" />
                             <Setter Property="Background" Value="{StaticResource BackgroundGreen}" />
@@ -120,10 +116,6 @@
                     <Setter Property="Background" Value="{StaticResource Background}" />
                     <Setter Property="TextElement.Foreground" Value="{StaticResource GlobalPrimary}" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsRecentlyMoved}" Value="True">
-                            <Setter Property="BorderBrush" Value="{StaticResource BorderAmber}" />
-                            <Setter Property="Background" Value="{StaticResource BackgroundAmber}" />
-                        </DataTrigger>
                         <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
                             <Setter Property="BorderBrush" Value="{StaticResource BorderGreen}" />
                             <Setter Property="Background" Value="{StaticResource BackgroundGreen}" />
@@ -190,7 +182,25 @@
                         Focusable="False"
                         Style="{StaticResource MiniLinkButton}" />
             </StackPanel>
-        </Grid>
-    </Border>
+            </Grid>
+        </Border>
+
+        <Border BorderThickness="1.5"
+                CornerRadius="7"
+                IsHitTestVisible="False"
+                SnapsToDevicePixels="True"
+                BorderBrush="{StaticResource BorderAmber}"
+                Background="Transparent">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsRecentlyMoved}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
     </Grid>
 </UserControl>
