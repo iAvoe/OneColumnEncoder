@@ -216,9 +216,7 @@
 
 #### 队列模式
 
-- 队列压制目前仅限 `ffmpeg` 上游
-- `vspipe`、`avs2yuv`、`avs2pipemod` 的队列压制尚未实现
-- 验证 `ffmpeg` 队列路线下的基本与带滤镜压制行为
+- 验证 `ffmpeg`、`vspipe`、`avs2yuv`、`avs2pipemod` 队列路线下的基本与带滤镜压制行为
 
 ---
 

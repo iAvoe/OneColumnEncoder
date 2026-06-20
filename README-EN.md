@@ -213,9 +213,7 @@ The Overwrite setting will append an overwrite confirmation pop-up if the output
 
 #### Queue Mode
 
-- Queue encoding is currently limited to `ffmpeg` upstream
-- `vspipe`, `avs2yuv`, and `avs2pipemod` queue suppression are not implemented yet
-- Verify basic and filtered queue suppression on the `ffmpeg` queue route
+- Verify basic and filtered queue suppression on `ffmpeg`, `vspipe`, `avs2yuv`, and `avs2pipemod` queue routes
 
 ---
 

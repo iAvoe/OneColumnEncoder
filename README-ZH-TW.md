@@ -215,9 +215,7 @@
 
 #### 隊列模式
 
-- 隊列壓製目前僅限 `ffmpeg` 上游
-- `vspipe`、`avs2yuv`、`avs2pipemod` 的隊列壓製尚未實作
-- 驗證 `ffmpeg` 隊列路線下的基本與帶濾鏡壓製行為
+- 驗證 `ffmpeg`、`vspipe`、`avs2yuv`、`avs2pipemod` 隊列路線下的基本與帶濾鏡壓製行為
 
 ---
 

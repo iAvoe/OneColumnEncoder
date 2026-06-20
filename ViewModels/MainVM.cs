@@ -217,7 +217,7 @@ namespace OneColumnEncoder.ViewModels
                 IsQueueRouteActive,
                 GetCurrentQueueJsonPath,
                 BuildQueueEncodingPipelineRequests,
-                IsFfmpegQueueRoute);
+                IsQueueRouteSupported);
 
             // Buttons
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
@@ -1233,13 +1233,16 @@ namespace OneColumnEncoder.ViewModels
         private string GetCurrentQueueJsonPath() =>
             QueueSrcFilterCard.QueueJsonPath;
 
-        private bool IsFfmpegQueueRoute()
+        private bool IsQueueRouteSupported()
         {
             ToolItemCardVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected && t.IsEnabled && !string.IsNullOrWhiteSpace(t.P2TextData));
             string? upstreamExeName = upstream == null
                 ? null
                 : ToolCatalogProviderM.ResolveExeFromDisplayName(upstream.Name);
-            return upstreamExeName?.Equals("ffmpeg.exe", StringComparison.OrdinalIgnoreCase) == true;
+            return upstreamExeName?.Equals("ffmpeg.exe", StringComparison.OrdinalIgnoreCase) == true
+                || upstreamExeName?.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase) == true
+                || upstreamExeName?.Equals("avs2yuv.exe", StringComparison.OrdinalIgnoreCase) == true
+                || upstreamExeName?.Equals("avs2pipemod.exe", StringComparison.OrdinalIgnoreCase) == true;
         }
 
         private string GetSelectedVideoSourcePath()
@@ -1316,7 +1319,6 @@ namespace OneColumnEncoder.ViewModels
             string? upstreamExeName = ToolCatalogProviderM.ResolveExeFromDisplayName(upstream.Name);
             string? encoderExeName = ToolCatalogProviderM.ResolveExeFromDisplayName(encoder.Name);
             if (string.IsNullOrWhiteSpace(upstreamExeName) || string.IsNullOrWhiteSpace(encoderExeName)) return null;
-            if (!upstreamExeName.Equals("ffmpeg.exe", StringComparison.OrdinalIgnoreCase)) return null;
             if (string.IsNullOrWhiteSpace(outputSetting.P2TextData)) return null;
 
             EncoderConfM encoderConf = EncoderConfM.Load();
@@ -1328,20 +1330,50 @@ namespace OneColumnEncoder.ViewModels
                     ? rawJson
                     : _srcVideoAnalysis.RawJson;
 
-            return [.. sourcePaths.Select(sourcePath => new EncodingPipelineRequest(
-                upstreamExeName,
-                upstream.P2TextData,
-                sourcePath,
-                encoderExeName,
-                encoder.P2TextData,
-                _appDataM.Tools.FfmpegPath,
-                sourcePath,
-                Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(sourcePath)),
-                encoderConf,
-                _appDataM.Tools.VspipeY4mArg,
-                SourceFfprobeJson: GetSourceFfprobeJson(sourcePath),
-                ParallelismConf: parallelismConf,
-                FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs))];
+            string? scriptDir = null;
+            SourceFileKind scriptKind = SourceFileKind.Video;
+            if (upstreamExeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase))
+            {
+                scriptKind = SourceFileKind.VapourSynthScript;
+                ToolItemCardVM? vpyItem = ActiveScriptSrcImportZone.FirstOrDefault(t =>
+                    ResolveSourceFileKind(t.Name) == scriptKind && !string.IsNullOrWhiteSpace(t.P2TextData));
+                if (vpyItem == null) return null;
+                scriptDir = vpyItem.P2TextData;
+            }
+            else if (upstreamExeName.Equals("avs2yuv.exe", StringComparison.OrdinalIgnoreCase) ||
+                     upstreamExeName.Equals("avs2pipemod.exe", StringComparison.OrdinalIgnoreCase))
+            {
+                scriptKind = SourceFileKind.AviSynthScript;
+                ToolItemCardVM? avsItem = ActiveScriptSrcImportZone.FirstOrDefault(t =>
+                    ResolveSourceFileKind(t.Name) == scriptKind && !string.IsNullOrWhiteSpace(t.P2TextData));
+                if (avsItem == null) return null;
+                scriptDir = avsItem.P2TextData;
+            }
+
+            return [.. sourcePaths.Select(sourcePath =>
+            {
+                string inputPath = sourcePath;
+                if (scriptDir != null)
+                {
+                    string ext = scriptKind == SourceFileKind.VapourSynthScript ? ".vpy" : ".avs";
+                    inputPath = Path.Combine(scriptDir, Path.GetFileNameWithoutExtension(sourcePath) + ext);
+                }
+
+                return new EncodingPipelineRequest(
+                    upstreamExeName,
+                    upstream.P2TextData,
+                    inputPath,
+                    encoderExeName,
+                    encoder.P2TextData,
+                    _appDataM.Tools.FfmpegPath,
+                    sourcePath,
+                    Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(sourcePath)),
+                    encoderConf,
+                    _appDataM.Tools.VspipeY4mArg,
+                    SourceFfprobeJson: GetSourceFfprobeJson(sourcePath),
+                    ParallelismConf: parallelismConf,
+                    FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs);
+            })];
         }
 
         private Dictionary<string, string> LoadQueueFfprobeJsonByPath()
