@@ -13,26 +13,16 @@
         <Style x:Key="MiniLinkButton"
                TargetType="Button"
                BasedOn="{StaticResource H3C}">
-            <Setter Property="Background"
-                    Value="Transparent" />
-            <Setter Property="Foreground"
-                    Value="{StaticResource GlobalPrimary}" />
-            <Setter Property="BorderThickness"
-                    Value="0" />
-            <Setter Property="VerticalAlignment"
-                    Value="Center" />
-            <Setter Property="HorizontalContentAlignment"
-                    Value="Center" />
-            <Setter Property="VerticalContentAlignment"
-                    Value="Center" />
-            <Setter Property="Padding"
-                    Value="4 0" />
-            <Setter Property="Margin"
-                    Value="0" />
-            <Setter Property="MinWidth"
-                    Value="0" />
-            <Setter Property="Cursor"
-                    Value="Hand" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource GlobalPrimary}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Padding" Value="4 0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -48,121 +38,85 @@
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
-                <Trigger Property="IsMouseOver"
-                         Value="True">
-                    <Setter Property="Opacity"
-                            Value="0.85" />
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.85" />
                 </Trigger>
-                <Trigger Property="IsEnabled"
-                         Value="False">
-                    <Setter Property="Foreground"
-                            Value="{StaticResource GlobalSecondary}" />
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="{StaticResource GlobalSecondary}" />
                 </Trigger>
-                <Trigger Property="IsFocused"
-                         Value="True">
-                    <Setter Property="Foreground"
-                            Value="{StaticResource BorderGreen}" />
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource BorderGreen}" />
                 </Trigger>
-                <Trigger Property="IsCancel"
-                         Value="True">
-                    <Setter Property="Foreground"
-                            Value="{StaticResource BorderRed}" />
+                <Trigger Property="IsCancel" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource BorderRed}" />
                 </Trigger>
             </Style.Triggers>
         </Style>
     </UserControl.Resources>
+
     <Border BorderThickness="1.25"
             CornerRadius="6.5"
             Padding="6 5"
             SnapsToDevicePixels="True">
         <Border.Style>
             <Style TargetType="Border">
-                <Setter Property="BorderBrush"
-                        Value="{StaticResource GlobalPrimary}" />
-                <Setter Property="Background"
-                        Value="{StaticResource Background}" />
-                <Setter Property="TextElement.Foreground"
-                        Value="{StaticResource GlobalPrimary}" />
+                <Setter Property="BorderBrush" Value="{StaticResource GlobalPrimary}" />
+                <Setter Property="Background" Value="{StaticResource Background}" />
+                <Setter Property="TextElement.Foreground" Value="{StaticResource GlobalPrimary}" />
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                 Value="True">
-                        <Setter Property="BorderBrush"
-                                Value="{StaticResource BorderGreen}" />
-                        <Setter Property="Background"
-                                Value="{StaticResource BackgroundGreen}" />
+                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                        <Setter Property="BorderBrush" Value="{StaticResource BorderGreen}" />
+                        <Setter Property="Background" Value="{StaticResource BackgroundGreen}" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                 Value="True">
-                        <Setter Property="BorderBrush"
-                                Value="{StaticResource BorderRed}" />
-                        <Setter Property="Background"
-                                Value="{StaticResource BackgroundRed}" />
+                    <DataTrigger Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                        <Setter Property="BorderBrush" Value="{StaticResource BorderRed}" />
+                        <Setter Property="Background" Value="{StaticResource BackgroundRed}" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
         </Border.Style>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
 
-            <!-- Row 0: Source filename + Status -->
-            <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0"
-                           Text="{Binding Name}"
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" MinWidth="0" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0"
+                        VerticalAlignment="Center"
+                        MinWidth="0">
+                <TextBlock Text="{Binding Name}"
                            FontWeight="Bold"
                            FontSize="12"
                            TextTrimming="CharacterEllipsis"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Top"
+                           HorizontalAlignment="Stretch"
                            MaxWidth="220" />
-                <TextBlock Grid.Column="1"
-                           Text="{Binding P1Text}"
+                <TextBlock Text="{Binding P1Text}"
                            FontSize="10"
                            Foreground="{StaticResource GlobalSecondary}"
                            TextTrimming="CharacterEllipsis"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center"
-                           MaxWidth="200" />
-            </Grid>
+                           HorizontalAlignment="Stretch"
+                           MaxWidth="220" />
+            </StackPanel>
 
-            <!-- Row 1: Output filename + action buttons -->
-            <Grid Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0"
-                           Text="{Binding P2Text}"
-                           FontSize="10"
-                           Foreground="{StaticResource GlobalSecondary}"
-                           TextTrimming="CharacterEllipsis"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Center"
-                           MaxWidth="200" />
-                <StackPanel Grid.Column="1"
-                            Height="20"
-                            Orientation="Horizontal">
-                    <Button Content="{Binding DisplayR1Text}"
-                             Command="{Binding R1Command}"
-                             IsEnabled="{Binding R1IsEnabled}"
-                             FontSize="10"
-                             Focusable="False"
-                             Style="{StaticResource MiniLinkButton}" />
-                    <Button Content="{Binding R2Text}"
-                             Command="{Binding R2Command}"
-                             IsEnabled="{Binding R2IsEnabled}"
-                             FontSize="10"
-                             Focusable="False"
-                             Margin="5 0 0 0"
-                             Style="{StaticResource MiniLinkButton}" />
-                </StackPanel>
-            </Grid>
+            <StackPanel Grid.Column="1"
+                        Height="20"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center">
+                <Button Content="{Binding DisplayR1Text}"
+                        Command="{Binding R1Command}"
+                        IsEnabled="{Binding R1IsEnabled}"
+                        FontSize="10"
+                        Focusable="False"
+                        Style="{StaticResource MiniLinkButton}" />
+                <Button Content="{Binding R2Text}"
+                        Command="{Binding R2Command}"
+                        IsEnabled="{Binding R2IsEnabled}"
+                        FontSize="10"
+                        Focusable="False"
+                        Margin="5 0 0 0"
+                        Style="{StaticResource MiniLinkButton}" />
+            </StackPanel>
         </Grid>
     </Border>
 </UserControl>

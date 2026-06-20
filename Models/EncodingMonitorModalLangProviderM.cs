@@ -77,6 +77,8 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarStartBatchText"] = "Start batch",
             ["QueueSidebarCancelAllText"] = "Cancel all",
             ["QueueSidebarCollapseText"] = "Collapse",
+            ["StopQueueConfirmTitle"] = "Stop queue",
+            ["StopQueueConfirmMessage"] = "The current job has been interrupted. Stop the entire queue?",
         },
         ["zh-cn"] = new()
         {
@@ -151,6 +153,8 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarStartBatchText"] = "开始批处理",
             ["QueueSidebarCancelAllText"] = "取消全部",
             ["QueueSidebarCollapseText"] = "折叠",
+            ["StopQueueConfirmTitle"] = "停止队列",
+            ["StopQueueConfirmMessage"] = "当前任务已中断。是否停止整个队列？",
         },
         ["zh-tw"] = new()
         {
@@ -225,6 +229,8 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarStartBatchText"] = "開始批次處理",
             ["QueueSidebarCancelAllText"] = "取消全部",
             ["QueueSidebarCollapseText"] = "折疊",
+            ["StopQueueConfirmTitle"] = "停止隊列",
+            ["StopQueueConfirmMessage"] = "當前任務已中斷。是否停止整個隊列？",
         }
     };
 
@@ -297,7 +303,9 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarTitle"] = "File d'attente",
             ["QueueSidebarStartBatchText"] = "Lancer le lot",
             ["QueueSidebarCancelAllText"] = "Tout annuler",
-            ["QueueSidebarCollapseText"] = "Réduire"
+            ["QueueSidebarCollapseText"] = "Réduire",
+            ["StopQueueConfirmTitle"] = "Arrêter la file",
+            ["StopQueueConfirmMessage"] = "La tâche actuelle a été interrompue. Arrêter toute la file d'attente ?"
         };
         Data["es"] = new(Data["en"])
         {
@@ -366,7 +374,9 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarTitle"] = "Cola",
             ["QueueSidebarStartBatchText"] = "Iniciar lote",
             ["QueueSidebarCancelAllText"] = "Cancelar todo",
-            ["QueueSidebarCollapseText"] = "Colapsar"
+            ["QueueSidebarCollapseText"] = "Colapsar",
+            ["StopQueueConfirmTitle"] = "Detener cola",
+            ["StopQueueConfirmMessage"] = "La tarea actual ha sido interrumpida. ¿Detener toda la cola?"
         };
         Data["ja"] = new(Data["en"])
         {
@@ -435,7 +445,9 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarTitle"] = "キュー",
             ["QueueSidebarStartBatchText"] = "バッチ開始",
             ["QueueSidebarCancelAllText"] = "すべてキャンセル",
-            ["QueueSidebarCollapseText"] = "折りたたむ"
+            ["QueueSidebarCollapseText"] = "折りたたむ",
+            ["StopQueueConfirmTitle"] = "キューを停止",
+            ["StopQueueConfirmMessage"] = "現在のジョブが中断されました。キュー全体を停止しますか？"
         };
 
         Data["ru"] = new(Data["en"])
@@ -505,7 +517,9 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarTitle"] = "Очередь",
             ["QueueSidebarStartBatchText"] = "Запустить пакет",
             ["QueueSidebarCancelAllText"] = "Отменить всё",
-            ["QueueSidebarCollapseText"] = "Свернуть"
+            ["QueueSidebarCollapseText"] = "Свернуть",
+            ["StopQueueConfirmTitle"] = "Остановить очередь",
+            ["StopQueueConfirmMessage"] = "Текущая задача прервана. Остановить всю очередь?"
         };
     }
 
@@ -580,6 +594,8 @@ public class EncodingMonitorModalLangProviderM
     public string QueueSidebarStartBatchText { get; }
     public string QueueSidebarCancelAllText { get; }
     public string QueueSidebarCollapseText { get; }
+    public string StopQueueConfirmTitle { get; }
+    public string StopQueueConfirmMessage { get; }
 
     public string LanguageCode { get; }
     private readonly Dictionary<string, string> _d;
@@ -665,5 +681,7 @@ public class EncodingMonitorModalLangProviderM
         QueueSidebarStartBatchText = this["QueueSidebarStartBatchText"];
         QueueSidebarCancelAllText = this["QueueSidebarCancelAllText"];
         QueueSidebarCollapseText = this["QueueSidebarCollapseText"];
+        StopQueueConfirmTitle = this["StopQueueConfirmTitle"];
+        StopQueueConfirmMessage = this["StopQueueConfirmMessage"];
     }
 }

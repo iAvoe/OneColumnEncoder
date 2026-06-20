@@ -1,40 +1,32 @@
 using OneColumnEncoder.Models;
+using OneColumnEncoder.Helpers;
 using System.IO;
+using System.Text.Json;
 using System.Windows.Input;
 
 namespace OneColumnEncoder.ViewModels
 {
     public class QueueJobItemVM : BaseVM
     {
+        private readonly EncodingPipelineRequest? _request;
         private readonly QueueJobItemM _model;
         private bool _isSidebarSelected;
 
         public QueueJobItemVM(QueueJobItemM model)
         {
             _model = model;
+            _request = DeserializeRequest(model.SerializedRequest);
         }
 
         public QueueJobItemM Model => _model;
         public string JobId => _model.JobId;
         public string Name => Path.GetFileName(_model.SourcePath) ?? _model.SourcePath;
-
-        public string P1Name => Status;
         public string P1Text
         {
-            get
-            {
-                string status = _model.Status;
-                return status == "Encoding"
-                    ? $"{status} ({_model.ProgressPercent}%)"
-                    : status;
-            }
+            get => GetFrameCountText();
         }
 
         public string P1TooltipText => _model.ErrorMessage ?? P1Text;
-        public string SeparatorText => ": ";
-
-        public string P2Name => "Output";
-        public string P2Text => Path.GetFileName(_model.OutputPath) ?? _model.OutputPath;
 
         public string DisplayR1Text => "Cancel";
         public string R2Text => "Retry";
@@ -69,8 +61,6 @@ namespace OneColumnEncoder.ViewModels
                 {
                     _model.Status = value;
                     OnPropertyChanged(nameof(Status));
-                    OnPropertyChanged(nameof(P1Name));
-                    OnPropertyChanged(nameof(P1Text));
                     OnPropertyChanged(nameof(DisplayR1Text));
                     OnPropertyChanged(nameof(R2Text));
                     OnPropertyChanged(nameof(R1IsEnabled));
@@ -90,7 +80,6 @@ namespace OneColumnEncoder.ViewModels
                 {
                     _model.ProgressPercent = value;
                     OnPropertyChanged(nameof(ProgressPercent));
-                    OnPropertyChanged(nameof(P1Text));
                 }
             }
         }
@@ -98,10 +87,8 @@ namespace OneColumnEncoder.ViewModels
         public void RefreshBindings()
         {
             OnPropertyChanged(nameof(Status));
-            OnPropertyChanged(nameof(P1Name));
             OnPropertyChanged(nameof(P1Text));
             OnPropertyChanged(nameof(P1TooltipText));
-            OnPropertyChanged(nameof(P2Text));
             OnPropertyChanged(nameof(DisplayR1Text));
             OnPropertyChanged(nameof(R2Text));
             OnPropertyChanged(nameof(R1IsEnabled));
@@ -109,6 +96,31 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(IsSelected));
             OnPropertyChanged(nameof(IsCancel));
             OnPropertyChanged(nameof(Name));
+        }
+
+        private static EncodingPipelineRequest? DeserializeRequest(string serializedRequest)
+        {
+            if (string.IsNullOrWhiteSpace(serializedRequest)) return null;
+            try
+            {
+                return JsonSerializer.Deserialize<EncodingPipelineRequest>(serializedRequest);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private string GetFrameCountText()
+        {
+            long? frameCount = _request?.SourceFfprobeJson is { Length: > 0 }
+                ? EncodingPipelineH.GetSourceTotalFrames(_request.SourceFfprobeJson)
+                : null;
+
+            if (frameCount is > 0)
+                return $"{new ClipRangeSelectorLangProviderM(UILangProviderM.Current.LanguageCode).SummaryTotalFramesLabel}: {frameCount:N0}";
+
+            return "N/A";
         }
     }
 }

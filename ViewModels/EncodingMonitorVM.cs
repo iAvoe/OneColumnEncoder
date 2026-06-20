@@ -3,14 +3,17 @@ using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
+using OneColumnEncoder.Views;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Windows.Threading;
 
@@ -395,6 +398,7 @@ namespace OneColumnEncoder.ViewModels
                 OutputPath = request.OutputPath,
                 Status = status,
                 EncoderExeName = request.EncoderExeName,
+                SerializedRequest = JsonSerializer.Serialize(request),
                 QueuedAt = DateTime.Now
             };
         }
@@ -677,6 +681,12 @@ namespace OneColumnEncoder.ViewModels
                 {
                     QueueSidebar.MarkJobFailed(jobVM, StatusText);
                     break;
+                }
+                else
+                {
+                    QueueSidebar.MarkJobInterrupted(jobVM);
+                    if (AskStopQueueConfirmation())
+                        break;
                 }
             }
 
@@ -1871,6 +1881,32 @@ namespace OneColumnEncoder.ViewModels
             string? directory = Path.GetDirectoryName(_request.OutputPath);
             if (string.IsNullOrWhiteSpace(directory) || !Directory.Exists(directory)) return;
             Process.Start(new ProcessStartInfo { FileName = directory, UseShellExecute = true });
+        }
+
+        /// <summary>
+        /// Shows a confirmation dialog asking whether to stop the entire queue.
+        /// Returns true if the user confirms (stop queue), false to continue.
+        /// </summary>
+        private bool AskStopQueueConfirmation()
+        {
+            bool? result = null;
+
+            ConfirmationModal window = new();
+            CloseModalCmd cancelCmd = new(() => { result = false; window.Close(); });
+            CloseModalCmd confirmCmd = new(() => { result = true; window.Close(); });
+
+            ConfirmationVM vm = ConfirmationVM.CreateWarning(
+                Lang.StopQueueConfirmTitle,
+                Lang.StopQueueConfirmMessage,
+                cancelCmd, confirmCmd);
+
+            window.DataContext = vm;
+            window.Owner = Application.Current.MainWindow;
+            window.Closed += (_, _) => _modalNavS.Close();
+            _modalNavS.CurrentModalVM = vm;
+            window.ShowDialog();
+
+            return result ?? false;
         }
 
         /// <summary>
