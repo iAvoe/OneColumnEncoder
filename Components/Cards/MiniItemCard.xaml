@@ -110,7 +110,7 @@
             <!-- Row 0: Source filename + Status -->
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0"
@@ -118,22 +118,23 @@
                            FontWeight="Bold"
                            FontSize="12"
                            TextTrimming="CharacterEllipsis"
-                           HorizontalAlignment="Stretch"
+                           HorizontalAlignment="Left"
                            VerticalAlignment="Top"
                            MaxWidth="220" />
                 <TextBlock Grid.Column="1"
                            Text="{Binding P1Text}"
                            FontSize="10"
                            Foreground="{StaticResource GlobalSecondary}"
-                           VerticalAlignment="Top"
-                           Margin="2.5 0 0 0" />
+                           TextTrimming="CharacterEllipsis"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           MaxWidth="200" />
             </Grid>
 
             <!-- Row 1: Output filename + action buttons -->
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"
-                                      MinWidth="0" />
+                    <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0"
@@ -141,13 +142,12 @@
                            FontSize="10"
                            Foreground="{StaticResource GlobalSecondary}"
                            TextTrimming="CharacterEllipsis"
-                           HorizontalAlignment="Stretch"
+                           HorizontalAlignment="Left"
                            VerticalAlignment="Center"
-                           MaxWidth="170" />
+                           MaxWidth="200" />
                 <StackPanel Grid.Column="1"
                             Height="20"
-                            Orientation="Horizontal"
-                            Margin="5 0 0 0">
+                            Orientation="Horizontal">
                     <Button Content="{Binding DisplayR1Text}"
                              Command="{Binding R1Command}"
                              IsEnabled="{Binding R1IsEnabled}"

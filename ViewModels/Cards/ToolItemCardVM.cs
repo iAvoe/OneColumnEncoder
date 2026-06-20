@@ -1,4 +1,7 @@
 ﻿using OneColumnEncoder.Models;
+using OneColumnEncoder.Commands;
+using OneColumnEncoder.Commands.OpenClose;
+using OneColumnEncoder.Stores;
 using System.IO;
 using System.Windows.Input;
 
@@ -231,6 +234,34 @@ namespace OneColumnEncoder.ViewModels.Cards
         {
             P2TextData = line2;
             P1TextData = line1;
+        }
+
+        private const string DefaultOutputSettingText = "1cenc output";
+
+        public void InitializeOutputSetting(string outputDirectory)
+        {
+            if (string.IsNullOrWhiteSpace(P2TextData))
+                P2TextData = outputDirectory;
+
+            if (string.IsNullOrWhiteSpace(P1TextData))
+                P1TextData = DefaultOutputSettingText;
+        }
+
+        public void RefreshOutputSetting(bool queueRouteActive, ModalNavS modalNavS, string? sourcePath = null)
+        {
+            R1Command = queueRouteActive
+                ? new BrowseOutputDirectoryCmd(this)
+                : new OpenFilenameScribeCmd(modalNavS, this);
+
+            if (queueRouteActive)
+            {
+                P1TextData = "N/A";
+                P1TooltipText = null;
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(sourcePath))
+                P1TextData = Path.GetFileNameWithoutExtension(sourcePath);
         }
         #endregion
     }

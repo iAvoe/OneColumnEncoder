@@ -8,9 +8,9 @@
              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
              d:DataContext="{d:DesignInstance Type=vms:EncodingMonitorVM}"
              mc:Ignorable="d"
-             Width="300">
+             Width="315">
     <UserControl.Resources>
-        <Thickness x:Key="QueueSidebarContentPadding">10</Thickness>
+        <Thickness x:Key="QueueSidebarContentPadding">7.5 10</Thickness>
         <Thickness x:Key="QueueSidebarItemMargin">0 2.5</Thickness>
     </UserControl.Resources>
 

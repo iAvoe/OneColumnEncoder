@@ -145,11 +145,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 string cachedOutputDirectory = NormalizeOutputDirectory(_appDataM.Encoding.OutputDirectory);
                 outputSetting.PropertyChanged += OnOutputSettingPropertyChanged;
-                // Must be set first because Path setter has Validate() call which clears VersionText
-                if (string.IsNullOrWhiteSpace(outputSetting.P2TextData))
-                    outputSetting.P2TextData = cachedOutputDirectory;
-                if (string.IsNullOrWhiteSpace(outputSetting.P1TextData))
-                    outputSetting.P1TextData = "1cenc output";
+                outputSetting.InitializeOutputSetting(cachedOutputDirectory);
             }
 
             // Load saved parallelism settings onto the card
@@ -571,7 +567,7 @@ namespace OneColumnEncoder.ViewModels
 
             if (string.IsNullOrWhiteSpace(sourcePath)) return;
 
-            outputSetting.P1TextData = Path.GetFileNameWithoutExtension(sourcePath);
+            outputSetting.RefreshOutputSetting(false, _modalNavS, sourcePath);
         }
 
         private bool HasImportedFfprobe() =>
@@ -812,9 +808,7 @@ namespace OneColumnEncoder.ViewModels
             outputSetting ??= _outputSettingCard;
             if (outputSetting == null) return;
 
-            outputSetting.R1Command = IsQueueRouteActive()
-                ? new BrowseOutputDirectoryCmd(outputSetting)
-                : new OpenFilenameScribeCmd(_modalNavS, outputSetting);
+            outputSetting.RefreshOutputSetting(IsQueueRouteActive(), _modalNavS, GetSelectedVideoSourcePath());
         }
 
         private void WireUpEncSettingsCmds()
@@ -1220,8 +1214,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 if (queueActive)
                 {
-                    _outputSettingCard.P1TextData = "N/A";
-                    _outputSettingCard.P1TooltipText = null;
+                    _outputSettingCard.RefreshOutputSetting(true, _modalNavS);
                 }
                 else
                 {
