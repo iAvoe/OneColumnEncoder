@@ -74,7 +74,6 @@ public class EncodingMonitorModalLangProviderM
             ["CRFText"] = "CRF",
 
             ["QueueSidebarTitle"] = "Queue",
-            ["QueueSidebarStartBatchText"] = "Start batch",
             ["QueueSidebarCancelAllText"] = "Cancel all",
             ["QueueSidebarRunningHeaderText"] = "Running",
             ["QueueSidebarWaitingHeaderText"] = "Pending",
@@ -156,7 +155,6 @@ public class EncodingMonitorModalLangProviderM
             ["CRFText"] = "CRF",
 
             ["QueueSidebarTitle"] = "队列",
-            ["QueueSidebarStartBatchText"] = "开始批处理",
             ["QueueSidebarCancelAllText"] = "取消全部",
             ["QueueSidebarRunningHeaderText"] = "当前运行",
             ["QueueSidebarWaitingHeaderText"] = "待运行",
@@ -238,7 +236,6 @@ public class EncodingMonitorModalLangProviderM
             ["CRFText"] = "CRF",
 
             ["QueueSidebarTitle"] = "隊列",
-            ["QueueSidebarStartBatchText"] = "開始批次處理",
             ["QueueSidebarCancelAllText"] = "取消全部",
             ["QueueSidebarRunningHeaderText"] = "目前執行",
             ["QueueSidebarWaitingHeaderText"] = "待執行",
@@ -319,7 +316,6 @@ public class EncodingMonitorModalLangProviderM
             ["ModeText"] = "mode",
             ["NotAvailableText"] = "N/A",
             ["QueueSidebarTitle"] = "File d'attente",
-            ["QueueSidebarStartBatchText"] = "Lancer le lot",
             ["QueueSidebarCancelAllText"] = "Tout annuler",
 
             ["QueueItemRemoveText"] = "Supprimer",
@@ -393,7 +389,6 @@ public class EncodingMonitorModalLangProviderM
             ["ModeText"] = "modo",
             ["NotAvailableText"] = "N/D",
             ["QueueSidebarTitle"] = "Cola",
-            ["QueueSidebarStartBatchText"] = "Iniciar lote",
             ["QueueSidebarCancelAllText"] = "Cancelar todo",
 
             ["QueueItemRemoveText"] = "Eliminar",
@@ -467,7 +462,6 @@ public class EncodingMonitorModalLangProviderM
             ["ModeText"] = "モード",
             ["NotAvailableText"] = "N/A",
             ["QueueSidebarTitle"] = "キュー",
-            ["QueueSidebarStartBatchText"] = "バッチ開始",
             ["QueueSidebarCancelAllText"] = "すべてキャンセル",
 
             ["QueueItemRemoveText"] = "削除",
@@ -541,7 +535,6 @@ public class EncodingMonitorModalLangProviderM
             ["ModeText"] = "режим",
             ["NotAvailableText"] = "N/A",
             ["QueueSidebarTitle"] = "Очередь",
-            ["QueueSidebarStartBatchText"] = "Запустить пакет",
             ["QueueSidebarCancelAllText"] = "Отменить всё",
 
             ["QueueItemRemoveText"] = "Удалить",
@@ -620,7 +613,6 @@ public class EncodingMonitorModalLangProviderM
     public string CRFText { get; }
 
     public string QueueSidebarTitle { get; }
-    public string QueueSidebarStartBatchText { get; }
     public string QueueSidebarCancelAllText { get; }
     public string QueueSidebarRunningHeaderText { get; }
     public string QueueSidebarWaitingHeaderText { get; }
@@ -712,7 +704,6 @@ public class EncodingMonitorModalLangProviderM
         CRFText = _d["CRFText"];
 
         QueueSidebarTitle = this["QueueSidebarTitle"];
-        QueueSidebarStartBatchText = this["QueueSidebarStartBatchText"];
         QueueSidebarCancelAllText = this["QueueSidebarCancelAllText"];
         QueueSidebarRunningHeaderText = this["QueueSidebarRunningHeaderText"];
         QueueSidebarWaitingHeaderText = this["QueueSidebarWaitingHeaderText"];

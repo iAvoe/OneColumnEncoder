@@ -27,27 +27,6 @@
                 <TextBlock Text="{Binding Lang.QueueSidebarTitle}"
                            Style="{StaticResource H3}"
                            VerticalAlignment="Center" />
-                <Grid Margin="0 0 0 5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="5" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0"
-                            Content="{Binding Lang.QueueSidebarStartBatchText}"
-                            Command="{Binding StartBatchCommand}"
-                            IsEnabled="{Binding IsStartBatchEnabled}"
-                            Height="25"
-                            HorizontalAlignment="Stretch"
-                            Style="{StaticResource NormalButton}" />
-                    <Button Grid.Column="2"
-                            Content="{Binding Lang.QueueSidebarCancelAllText}"
-                            Command="{Binding CancelAllQueueCommand}"
-                            IsEnabled="{Binding IsCancelAllEnabled}"
-                            Height="25"
-                            HorizontalAlignment="Stretch"
-                            Style="{StaticResource PrimaryButton}" />
-                </Grid>
             </StackPanel>
 
             <ScrollViewer Grid.Row="1"
@@ -160,6 +139,12 @@
 
             <StackPanel Grid.Row="2"
                         Margin="0 5 0 0">
+                <Button Content="{Binding Lang.QueueSidebarCancelAllText}"
+                        Command="{Binding CancelAllQueueCommand}"
+                        IsEnabled="{Binding IsCancelAllEnabled}"
+                        Height="25"
+                        HorizontalAlignment="Stretch"
+                        Style="{StaticResource PrimaryButton}" />
                 <TextBlock Text="{Binding QueueSidebar.StatsText}"
                            FontSize="10"
                            Foreground="{StaticResource GlobalSecondary}"

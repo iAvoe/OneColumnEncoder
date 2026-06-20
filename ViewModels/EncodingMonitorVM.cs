@@ -120,13 +120,11 @@ namespace OneColumnEncoder.ViewModels
         public ButtonGroupVM MonitorButtons { get; }
         public ButtonGroupVM ReportButtons { get; }
         public ButtonGroupVM FinishButtons { get; }
-        public ActionCmd StartBatchCommand { get; }
         public ActionCmd CancelAllQueueCommand { get; }
         public ActionCmd FreezeOrContinueCmd { get; }
         public ActionCmd ResetStatsCmd { get; }
         public CloseModalCmd CloseCmd { get; }
         public QueueSidebarVM QueueSidebar { get; }
-        public bool IsStartBatchEnabled => !_hasStarted;
         public bool IsCancelAllEnabled => _hasStarted && !_finishEnabledAfterClose && !_cancelAllRequested;
 
         private double _progressValue;
@@ -280,7 +278,6 @@ namespace OneColumnEncoder.ViewModels
 
             FreezeOrContinueCmd = new ActionCmd(_ => IsFrozen = !IsFrozen);
             ResetStatsCmd = new ActionCmd(_ => ResetStats());
-            StartBatchCommand = new ActionCmd(_ => Start());
             CancelAllQueueCommand = new ActionCmd(_ => CancelAllQueue());
             CloseCmd = new CloseModalCmd(() =>
             {
@@ -361,7 +358,7 @@ namespace OneColumnEncoder.ViewModels
             _cts = new CancellationTokenSource();
             _stopwatch.Start();
             _timer.Start();
-            RefreshQueueActionBindings();
+            RefreshCancelAllBindings();
             if (_queueItems != null)
                 _ = RunQueueEncodingAsync(_cts.Token);
             else
@@ -1956,7 +1953,7 @@ namespace OneColumnEncoder.ViewModels
             _finishEnabledAfterClose = true;
             IsWindowCloseEnabled = true;
             FinishButtons.B5_5IsEnabled = true;
-            RefreshQueueActionBindings();
+            RefreshCancelAllBindings();
         }
 
         private void CancelAllQueue()
@@ -1964,13 +1961,12 @@ namespace OneColumnEncoder.ViewModels
             if (!IsCancelAllEnabled) return;
             _cancelAllRequested = true;
             QueueSidebar.CancelPendingJobs();
-            RefreshQueueActionBindings();
+            RefreshCancelAllBindings();
             TryInterruptEncoder();
         }
 
-        private void RefreshQueueActionBindings()
+        private void RefreshCancelAllBindings()
         {
-            OnPropertyChanged(nameof(IsStartBatchEnabled));
             OnPropertyChanged(nameof(IsCancelAllEnabled));
         }
 
