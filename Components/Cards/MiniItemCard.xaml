@@ -63,8 +63,8 @@
     -->
     <Grid>
         <!-- Shadow layer: transparent background, no hit-test, carries only the effect. -->
-        <Border BorderThickness="1.25"
-                CornerRadius="6.5"
+        <Border BorderThickness="1"
+                CornerRadius="7"
                 IsHitTestVisible="False"
                 SnapsToDevicePixels="True"
                 Background="Transparent">
@@ -106,8 +106,8 @@
         </Border>
 
         <!-- Content layer: holds the actual card layout with no Effect so text stays sharp. -->
-        <Border BorderThickness="1.25"
-                CornerRadius="6.5"
+        <Border BorderThickness="1"
+                CornerRadius="7"
                 Padding="6 5"
                 SnapsToDevicePixels="True">
             <Border.Style>

@@ -17,7 +17,7 @@ namespace OneColumnEncoder.ViewModels
         {
             _isPersistent = loadFromDisk;
             _store = loadFromDisk ? QueueJobsStoreM.Load() : new QueueJobsStoreM();
-            _isVisible = _store.Jobs.Count > 1;
+            _isVisible = ShouldShowSidebar();
             SelectJobCommand = new ActionCmd(job =>
             {
                 if (job is QueueJobItemVM jobVM) SelectedJob = jobVM;
@@ -111,7 +111,7 @@ namespace OneColumnEncoder.ViewModels
             _store.Jobs.Clear();
             foreach (var job in loaded.Jobs)
                 _store.Jobs.Add(job);
-            IsVisible = _store.Jobs.Count > 1;
+            IsVisible = ShouldShowSidebar();
             RefreshJobs();
         }
 
@@ -313,7 +313,10 @@ namespace OneColumnEncoder.ViewModels
         {
             OnPropertyChanged(nameof(TotalCount));
             OnPropertyChanged(nameof(StatsText));
+            IsVisible = ShouldShowSidebar();
         }
+
+        private bool ShouldShowSidebar() => _store.Jobs.Count > 1;
 
         public override void Dispose()
         {

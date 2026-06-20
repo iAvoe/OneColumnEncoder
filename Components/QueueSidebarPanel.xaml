@@ -10,8 +10,8 @@
              mc:Ignorable="d"
              Width="310">
     <UserControl.Resources>
-        <Thickness x:Key="QueueSidebarContentPadding">7.5 10</Thickness>
-        <Thickness x:Key="QueueSidebarItemMargin">0 2.5</Thickness>
+        <Thickness x:Key="QueueSidebarContentPadding">7.5 10 7.5 15</Thickness>
+        <Thickness x:Key="QueueSidebarItemMargin">0 5</Thickness>
     </UserControl.Resources>
 
     <Border Background="{StaticResource Background}"
@@ -30,11 +30,11 @@
             </StackPanel>
 
             <ScrollViewer Grid.Row="1"
-                          Margin="0 5 0 0"
                           HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Auto">
                 <StackPanel>
-                    <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarRunningHeaderText}" />
+                    <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarRunningHeaderText}"
+                                         Margin="0 0 0 5" />
                     <Border Margin="{StaticResource QueueSidebarItemMargin}"
                             HorizontalAlignment="Stretch"
                             Visibility="{Binding QueueSidebar.HasRunningJob, Converter={StaticResource BoolToVisibility}}">
@@ -52,7 +52,7 @@
                     </Border>
 
                     <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarWaitingHeaderText}"
-                                         Margin="0 5 0 0" />
+                                         Margin="0 5" />
                     <ListBox ItemsSource="{Binding QueueSidebar.WaitingJobs}"
                              SelectedItem="{Binding QueueSidebar.SelectedWaitingJob, Mode=OneWayToSource}"
                              BorderThickness="0"
@@ -62,12 +62,18 @@
                              HorizontalContentAlignment="Stretch">
                         <ListBox.ItemContainerStyle>
                             <Style TargetType="ListBoxItem">
-                                <Setter Property="Padding" Value="0" />
-                                <Setter Property="Margin" Value="0" />
-                                <Setter Property="BorderThickness" Value="0" />
-                                <Setter Property="Background" Value="Transparent" />
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                                <Setter Property="Padding"
+                                        Value="0" />
+                                <Setter Property="Margin"
+                                        Value="0" />
+                                <Setter Property="BorderThickness"
+                                        Value="0" />
+                                <Setter Property="Background"
+                                        Value="Transparent" />
+                                <Setter Property="HorizontalContentAlignment"
+                                        Value="Stretch" />
+                                <Setter Property="FocusVisualStyle"
+                                        Value="{x:Null}" />
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="ListBoxItem">
@@ -94,7 +100,7 @@
                     </ListBox>
 
                     <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarCompletedHeaderText}"
-                                         Margin="0 5 0 0" />
+                                         Margin="0 5" />
                     <ListBox ItemsSource="{Binding QueueSidebar.CompletedJobs}"
                              SelectedItem="{Binding QueueSidebar.SelectedCompletedJob, Mode=OneWayToSource}"
                              BorderThickness="0"
@@ -104,12 +110,18 @@
                              HorizontalContentAlignment="Stretch">
                         <ListBox.ItemContainerStyle>
                             <Style TargetType="ListBoxItem">
-                                <Setter Property="Padding" Value="0" />
-                                <Setter Property="Margin" Value="0" />
-                                <Setter Property="BorderThickness" Value="0" />
-                                <Setter Property="Background" Value="Transparent" />
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                                <Setter Property="Padding"
+                                        Value="0" />
+                                <Setter Property="Margin"
+                                        Value="0" />
+                                <Setter Property="BorderThickness"
+                                        Value="0" />
+                                <Setter Property="Background"
+                                        Value="Transparent" />
+                                <Setter Property="HorizontalContentAlignment"
+                                        Value="Stretch" />
+                                <Setter Property="FocusVisualStyle"
+                                        Value="{x:Null}" />
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="ListBoxItem">
@@ -137,16 +149,17 @@
                 </StackPanel>
             </ScrollViewer>
 
-            <StackPanel Grid.Row="2"
-                        Margin="0 5 0 0">
+            <StackPanel Grid.Row="2">
                 <Button Content="{Binding Lang.QueueSidebarCancelAllText}"
                         Command="{Binding CancelAllQueueCommand}"
                         IsEnabled="{Binding IsCancelAllEnabled}"
-                        Height="25"
+                        Height="30"
                         HorizontalAlignment="Stretch"
                         Style="{StaticResource PrimaryButton}" />
                 <TextBlock Text="{Binding QueueSidebar.StatsText}"
                            FontSize="10"
+                           Height="15"
+                           Margin="0 2.5 0 0"
                            Foreground="{StaticResource GlobalSecondary}"
                            TextWrapping="Wrap" />
             </StackPanel>

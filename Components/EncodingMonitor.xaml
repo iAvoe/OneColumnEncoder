@@ -215,7 +215,7 @@
                                             Button3IsEnabled="{Binding B3_3IsEnabled}" />
                     <comps:HintPanel Text="{Binding DragLogReportHint}"
                                      HintBrush="{StaticResource GlobalSecondary}"
-                                     Margin="0 3 0 0" />
+                                     Margin="0 2.5 0 0" />
                 </StackPanel>
             </Grid>
         </ScrollViewer>
@@ -236,7 +236,7 @@
             </StackPanel>
             <comps:HintPanel Text="{Binding MuxTimebaseHint}"
                              HintBrush="{StaticResource GlobalSecondary}"
-                             Margin="0 3 0 0" />
+                             Margin="0 2.5 0 0" />
             <comps:FiveButtonGroup Margin="0 15 0 0"
                                    DataContext="{Binding FinishButtons}"
                                    ButtonHeight="30"
@@ -252,7 +252,7 @@
                                    Button5IsEnabled="{Binding B5_5IsEnabled}" />
             <comps:HintPanel Text="{Binding SmallNoteText}"
                              HintBrush="{StaticResource GlobalSecondary}"
-                             Margin="0 3 0 0" />
+                             Margin="0 2.5 0 0" />
         </StackPanel>
     </Grid>
 </UserControl>

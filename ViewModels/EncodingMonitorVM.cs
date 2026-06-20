@@ -310,7 +310,6 @@ namespace OneColumnEncoder.ViewModels
             QueueSidebar.PropertyChanged += OnQueueSidebarPropertyChanged;
             if (!enableQueueSidebar)
             {
-                QueueSidebar.IsVisible = true;
                 QueueSidebar.AddJob(CreateSidebarJob(_request, _command, "Pending"));
             }
             BuildMetrics();
