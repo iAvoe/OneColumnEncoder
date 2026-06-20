@@ -463,7 +463,7 @@ namespace OneColumnEncoder.ViewModels
             ToolCompatibilityH.RefreshDependencySelectionState(
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
             ToolCompatibilityH.RefreshSourceSelectionState(
-                UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
+                UpstreamsZone, VideoSrcImportZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
             ToolCompatibilityH.RefreshVideoSourceSelectionState(
                 UpstreamsZone, VideoSrcImportZone);
 
@@ -501,7 +501,7 @@ namespace OneColumnEncoder.ViewModels
             ToolCompatibilityH.RefreshDependencySelectionState(
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
             ToolCompatibilityH.RefreshSourceSelectionState(
-                UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
+                UpstreamsZone, VideoSrcImportZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
             ToolCompatibilityH.RefreshVideoSourceSelectionState(
                 UpstreamsZone, VideoSrcImportZone);
         }
@@ -536,7 +536,7 @@ namespace OneColumnEncoder.ViewModels
             ToolCompatibilityH.RefreshDependencySelectionState(
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
             ToolCompatibilityH.RefreshSourceSelectionState(
-                UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
+                UpstreamsZone, VideoSrcImportZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
             ToolCompatibilityH.RefreshVideoSourceSelectionState(
                 UpstreamsZone, VideoSrcImportZone);
         }
@@ -1207,7 +1207,7 @@ namespace OneColumnEncoder.ViewModels
                 ? QueueScriptSrcImportZone
                 : ScriptSrcImportZone;
             ToolCompatibilityH.RefreshSourceSelectionState(
-                UpstreamsZone, ActiveScriptSrcImportZone, () => { });
+                UpstreamsZone, VideoSrcImportZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
             ToolCompatibilityH.RefreshVideoSourceSelectionState(
                 UpstreamsZone, VideoSrcImportZone);
             RefreshOutputSettingCommand();
