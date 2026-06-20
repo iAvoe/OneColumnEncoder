@@ -8,11 +8,12 @@
              d:DataContext="{d:DesignInstance Type=vms:QueueJobItemVM}"
              mc:Ignorable="d"
              d:DesignHeight="55"
-             d:DesignWidth="280">
+             d:DesignWidth="280"
+             HorizontalAlignment="Stretch">
     <UserControl.Resources>
         <conv:StringToVisibilityConverter x:Key="StringToVisibility" />
     </UserControl.Resources>
-    <Border BorderThickness="1.5" CornerRadius="8" Padding="8 5" SnapsToDevicePixels="True">
+    <Border BorderThickness="1.5" CornerRadius="8" Padding="8 5" SnapsToDevicePixels="True" HorizontalAlignment="Stretch">
         <Border.Style>
             <Style TargetType="Border">
                 <Setter Property="BorderBrush" Value="{StaticResource GlobalPrimary}" />
@@ -39,13 +40,14 @@
             <!-- Row 0: Source filename + Status -->
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" MinWidth="0" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0"
                            Text="{Binding Name}"
                            FontWeight="Bold" FontSize="12"
                            TextTrimming="CharacterEllipsis"
+                           HorizontalAlignment="Stretch"
                            VerticalAlignment="Center" />
                 <TextBlock Grid.Column="1"
                            Text="{Binding P1Text}"
@@ -58,7 +60,7 @@
             <!-- Row 1: Output filename + action buttons -->
             <Grid Grid.Row="1" Margin="0 2 0 0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" MinWidth="0" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0"
@@ -66,6 +68,7 @@
                            FontSize="10"
                            Foreground="{StaticResource GlobalSecondary}"
                            TextTrimming="CharacterEllipsis"
+                           HorizontalAlignment="Stretch"
                            VerticalAlignment="Center" />
                 <StackPanel Grid.Column="1"
                             Orientation="Horizontal"
