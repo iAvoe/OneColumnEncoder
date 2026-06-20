@@ -42,6 +42,18 @@ namespace OneColumnEncoder.ViewModels
         public ICommand? R1Command { get; set; }
         public ICommand? R2Command { get; set; }
 
+        public int UpstreamPid
+        {
+            get => _model.UpstreamPid;
+            set { _model.UpstreamPid = value; OnPropertyChanged(); }
+        }
+
+        public int EncoderPid
+        {
+            get => _model.EncoderPid;
+            set { _model.EncoderPid = value; OnPropertyChanged(); }
+        }
+
         public bool IsSidebarSelected
         {
             get => _isSidebarSelected;

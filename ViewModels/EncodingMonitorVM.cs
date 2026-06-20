@@ -54,6 +54,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly IReadOnlyList<(EncodingPipelineRequest Request, EncodingPipelineCommand Command)>? _queueItems;
         private int _queueModeIndex = -1;
         private string? _activeLogJobId;
+        private QueueJobItemVM? _activeJobVM;
         private readonly Lock _logLock = new();
         private DateTime _lastStatsUpdate = DateTime.MinValue;
         private DateTime _lastMemoryStatsUpdate = DateTime.MinValue;
@@ -547,6 +548,21 @@ namespace OneColumnEncoder.ViewModels
                 encoder.Start();
                 ApplyParallelismSettings(encoder, isEncoder: true);
 
+                // Record PIDs for wait-chain monitoring
+                if (_activeJobVM != null)
+                {
+                    _activeJobVM.UpstreamPid = upstream.Id;
+                    _activeJobVM.EncoderPid = encoder.Id;
+                }
+
+                // Use TaskCompletionSource backed by Process.Exited for robust exit detection
+                TaskCompletionSource upstreamExited = new();
+                TaskCompletionSource encoderExited = new();
+                upstream.Exited += (_, _) => upstreamExited.TrySetResult();
+                encoder.Exited += (_, _) => encoderExited.TrySetResult();
+                if (upstream.HasExited) upstreamExited.TrySetResult();
+                if (encoder.HasExited) encoderExited.TrySetResult();
+
                 // Pipe upstream stdout -> encoder stdin (raw byte transfer, 80 KB buffer).
                 // Closing encoder stdin signals EOF so the encoder can flush and finish.
                 Task pipeTask = Task.Run(async () =>
@@ -554,7 +570,7 @@ namespace OneColumnEncoder.ViewModels
                     Stream? encoderStdin = null;
                     try
                     {
-                        byte[] buffer = new byte[81920]; // ReadAsync reads in blocks, so this size is sufficient
+                        byte[] buffer = new byte[81920];
                         Stream upstreamStdout = upstream.StandardOutput.BaseStream;
                         encoderStdin = encoder.StandardInput.BaseStream;
                         _upstreamStdoutStream = upstreamStdout;
@@ -580,10 +596,26 @@ namespace OneColumnEncoder.ViewModels
                 Task encoderStderrTask = ReadStreamAsync(
                     encoder.StandardError, ProcessLogKind.DownstreamStderr, cancellationToken);
 
+                // Wait for data transfer to finish, then ensure processes have exited
                 await Task.WhenAll(pipeTask, upstreamStderrTask, encoderStderrTask);
 
-                await upstream.WaitForExitAsync(cancellationToken);
-                await encoder.WaitForExitAsync(cancellationToken);
+                // Close encoder stdin if still open to signal EOF (safety net)
+                TryCloseStream(_encoderStdinStream);
+
+                // Wait for process exit with a timeout (after streams closed, should exit quickly)
+                const int processExitTimeoutMs = 15000;
+                if (await Task.WhenAny(upstreamExited.Task, Task.Delay(processExitTimeoutMs, cancellationToken)) != upstreamExited.Task)
+                {
+                    TryCloseMainWindow(upstream);
+                    if (!upstream.HasExited) TryKillProcess(upstream);
+                    await upstreamExited.Task; // ensure we wait until truly dead
+                }
+                if (await Task.WhenAny(encoderExited.Task, Task.Delay(processExitTimeoutMs, cancellationToken)) != encoderExited.Task)
+                {
+                    TryCloseMainWindow(encoder);
+                    if (!encoder.HasExited) TryKillProcess(encoder);
+                    await encoderExited.Task;
+                }
 
                 _exitCode = encoder.ExitCode;
                 _success = _exitCode == 0;
@@ -667,8 +699,10 @@ namespace OneColumnEncoder.ViewModels
 
                 var jobVM = QueueSidebar.Jobs[i];
                 _activeLogJobId = jobVM.JobId;
+                _activeJobVM = jobVM;
                 ResetActiveLogState(jobVM.JobId);
                 QueueSidebar.MarkJobEncoding(jobVM);
+                IsMonitoringEnabled = true;
 
                 await RunEncodingAsync(cancellationToken);
 
@@ -1860,6 +1894,18 @@ namespace OneColumnEncoder.ViewModels
             try
             {
                 stream?.Close();
+            }
+            catch
+            {
+            }
+        }
+
+        private static void TryKillProcess(Process? process)
+        {
+            try
+            {
+                if (process is { HasExited: false })
+                    process.Kill();
             }
             catch
             {

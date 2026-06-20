@@ -16,5 +16,7 @@ namespace OneColumnEncoder.Models
         public string EncoderExeName { get; set; } = "";
         public string SerializedRequest { get; set; } = "";
         public string SerializedCommand { get; set; } = "";
+        public int UpstreamPid { get; set; }
+        public int EncoderPid { get; set; }
     }
 }
