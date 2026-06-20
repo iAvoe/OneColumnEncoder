@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
@@ -38,7 +39,17 @@ namespace OneColumnEncoder.Commands
                 toolToImport, "Dialog.SelectTitle", _modalNavS);
             if (string.IsNullOrEmpty(filePath)) return;
 
-            string? version = await ToolVersionDetectH.TryDetectAsync(toolToImport, filePath);
+            string? version;
+            try
+            {
+                version = await ToolVersionDetectH.TryDetectAsync(toolToImport, filePath);
+            }
+            catch (ToolVersionDetectTimeoutException)
+            {
+                ShowVersionDetectTimeoutError(toolToImport);
+                return;
+            }
+
             if (_onSuccess != null) await _onSuccess(toolToImport, filePath, version);
             foreach (ChecklistEntryVM t in _knownTools)
             {
@@ -51,6 +62,14 @@ namespace OneColumnEncoder.Commands
         }
 
         #region Validations
+        internal void ShowVersionDetectTimeoutError(string toolName)
+        {
+            new OpenErrModalCmd(
+                _modalNavS,
+                UILangProviderM.Current["Import.VersionDetectTimeoutTitle"],
+                string.Format(UILangProviderM.Current["Import.VersionDetectTimeoutMessage"], toolName)).Execute(null);
+        }
+
         internal static bool ShouldSkipFileNameValidation(string toolName) =>
             toolName.Equals("one_line_shot_args.exe", StringComparison.OrdinalIgnoreCase);
 

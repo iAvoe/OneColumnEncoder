@@ -1,3 +1,4 @@
+using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
@@ -21,7 +22,20 @@ namespace OneColumnEncoder.Commands
                 def.ExeName, "Dialog.ReplaceTitle", _modalNavS);
             if (string.IsNullOrEmpty(filePath)) return;
 
-            string? version = await ToolVersionDetectH.TryDetectAsync(def.ExeName, filePath);
+            string? version;
+            try
+            {
+                version = await ToolVersionDetectH.TryDetectAsync(def.ExeName, filePath);
+            }
+            catch (ToolVersionDetectTimeoutException)
+            {
+                new OpenErrModalCmd(
+                    _modalNavS,
+                    UILangProviderM.Current["Import.VersionDetectTimeoutTitle"],
+                    string.Format(UILangProviderM.Current["Import.VersionDetectTimeoutMessage"], def.ExeName)).Execute(null);
+                return;
+            }
+
             await ToolVersionDetectH.DetectAndStoreVspipeY4mArgAsync(
                 def.ExeName,
                 filePath,

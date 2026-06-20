@@ -142,7 +142,16 @@ public static class AutoToolImportH
 
     private static async Task<Candidate?> TryBuildCandidateAsync(string exeName, string filePath)
     {
-        string? version = await ToolVersionDetectH.TryDetectAsync(exeName, filePath);
+        string? version;
+        try
+        {
+            version = await ToolVersionDetectH.TryDetectAsync(exeName, filePath);
+        }
+        catch (ToolVersionDetectTimeoutException)
+        {
+            return null;
+        }
+
         return string.IsNullOrWhiteSpace(version)
             ? null
             : new Candidate(exeName, filePath, version);

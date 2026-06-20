@@ -88,6 +88,8 @@ public class UILangProviderM
             ["AppConfModal.Header"] = "Settings",
 
             ["Import.NoSelection"] = "No Selection",
+            ["Import.VersionDetectTimeoutTitle"] = "Tool Import Failed",
+            ["Import.VersionDetectTimeoutMessage"] = "Import was rejected because {0} did not return version information within 3 seconds.",
 
             // ItemCard separator
             ["ItemCard.Separator"] = ": ",
@@ -416,6 +418,8 @@ public class UILangProviderM
             ["AppConfModal.Header"] = "设置",
 
             ["Import.NoSelection"] = "未选择",
+            ["Import.VersionDetectTimeoutTitle"] = "工具导入失败",
+            ["Import.VersionDetectTimeoutMessage"] = "已拒绝导入：{0} 未能在 3 秒内返回版本信息。",
 
             ["ItemCard.Separator"] = "：",
             ["ToolField.Version"] = "版本",
@@ -723,6 +727,8 @@ public class UILangProviderM
             ["AppConfModal.Header"] = "設置",
 
             ["Import.NoSelection"] = "未選擇",
+            ["Import.VersionDetectTimeoutTitle"] = "工具導入失敗",
+            ["Import.VersionDetectTimeoutMessage"] = "已拒絕導入：{0} 未能在 3 秒內返回版本資訊。",
 
             ["ItemCard.Separator"] = "：",
             ["ToolField.Version"] = "版本",
@@ -1023,6 +1029,8 @@ public class UILangProviderM
         ["AppConfModal.Title"] = "Paramètres 1cenc",
         ["AppConfModal.Header"] = "Paramètres",
         ["Import.NoSelection"] = "Aucune sélection",
+        ["Import.VersionDetectTimeoutTitle"] = "Échec de l'import d'outil",
+        ["Import.VersionDetectTimeoutMessage"] = "L'import a été rejeté car {0} n'a pas renvoyé d'informations de version sous 3 secondes.",
         ["ToolField.Version"] = "Version",
         ["ToolField.Path"] = "Chemin",
         ["ToolField.Name"] = "Nom",
@@ -1279,6 +1287,8 @@ public class UILangProviderM
         ["AppConfModal.Title"] = "Ajustes de 1cenc",
         ["AppConfModal.Header"] = "Ajustes",
         ["Import.NoSelection"] = "Sin selección",
+        ["Import.VersionDetectTimeoutTitle"] = "Error al importar herramienta",
+        ["Import.VersionDetectTimeoutMessage"] = "Se rechazó la importación porque {0} no devolvió información de versión en 3 segundos.",
         ["ToolField.Version"] = "Versión",
         ["ToolField.Path"] = "Ruta",
         ["ToolField.Name"] = "Nombre",
@@ -1535,6 +1545,8 @@ public class UILangProviderM
         ["AppConfModal.Title"] = "1cenc 設定",
         ["AppConfModal.Header"] = "設定",
         ["Import.NoSelection"] = "未選択",
+        ["Import.VersionDetectTimeoutTitle"] = "ツール取込失敗",
+        ["Import.VersionDetectTimeoutMessage"] = "{0} が 3 秒以内にバージョン情報を返さなかったため、取込を拒否しました。",
         ["ToolField.Version"] = "バージョン",
         ["ToolField.Path"] = "パス",
         ["ToolField.Name"] = "名前",
@@ -1791,6 +1803,8 @@ public class UILangProviderM
         ["AppConfModal.Title"] = "Настройки 1cenc",
         ["AppConfModal.Header"] = "Настройки",
         ["Import.NoSelection"] = "Не выбрано",
+        ["Import.VersionDetectTimeoutTitle"] = "Не удалось импортировать инструмент",
+        ["Import.VersionDetectTimeoutMessage"] = "Импорт отклонен: {0} не вернул сведения о версии за 3 секунды.",
         ["ToolField.Version"] = "Версия",
         ["ToolField.Path"] = "Путь",
         ["ToolField.Name"] = "Имя",

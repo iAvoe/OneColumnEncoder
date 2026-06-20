@@ -5,8 +5,15 @@ using System.Text.RegularExpressions;
 
 namespace OneColumnEncoder.Helpers
 {
+    public class ToolVersionDetectTimeoutException(string exeName)
+        : TimeoutException($"Tool version detection timed out for {exeName}.")
+    {
+    }
+
     public partial class ToolVersionDetectH
     {
+        private static readonly TimeSpan VersionDetectTimeout = TimeSpan.FromSeconds(3);
+
         [GeneratedRegex(@"\bver\s+\S+", RegexOptions.IgnoreCase)]
         private static partial Regex Avs2pipemodVersion();
 
@@ -44,11 +51,12 @@ namespace OneColumnEncoder.Helpers
                 _ => "",
             };
 
-            string exePrints = await RunAndCaptureAsync(filePath, exeArgs, outputEncoding: GetSystemTextEncoding());
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            string exePrints = await RunAndCaptureAsync(filePath, exeArgs, GetRemainingTimeout(stopwatch), outputEncoding: GetSystemTextEncoding());
             string? version = ParseVersion(exeName, exePrints);
             if (version != null) return version;
 
-            exePrints = await RunAndCaptureAsync(filePath, exeArgs, useUtf8: true);
+            exePrints = await RunAndCaptureAsync(filePath, exeArgs, GetRemainingTimeout(stopwatch), useUtf8: true);
             return ParseVersion(exeName, exePrints);
         }
 
@@ -73,6 +81,16 @@ namespace OneColumnEncoder.Helpers
         }
 
         public static async Task<string> RunAndCaptureAsync(string filePath, string exeArgs, bool useUtf8 = false, Encoding? outputEncoding = null)
+        {
+            return await RunAndCaptureAsync(filePath, exeArgs, TimeSpan.FromSeconds(5), false, useUtf8, outputEncoding);
+        }
+
+        public static async Task<string> RunAndCaptureAsync(string filePath, string exeArgs, TimeSpan timeout, bool useUtf8 = false, Encoding? outputEncoding = null)
+        {
+            return await RunAndCaptureAsync(filePath, exeArgs, timeout, true, useUtf8, outputEncoding);
+        }
+
+        private static async Task<string> RunAndCaptureAsync(string filePath, string exeArgs, TimeSpan timeout, bool throwOnTimeout, bool useUtf8 = false, Encoding? outputEncoding = null)
         {
             ProcessStartInfo psi = new()
             {
@@ -102,14 +120,15 @@ namespace OneColumnEncoder.Helpers
             Task<string> stdoutTask = process.StandardOutput.ReadToEndAsync();
             Task<string> stderrTask = process.StandardError.ReadToEndAsync();
 
-            // Timeout
-            using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+            using CancellationTokenSource cts = new(timeout);
             try { await process.WaitForExitAsync(cts.Token); }
-            catch
+            catch (OperationCanceledException)
             {
                 // Maybe something else was opened (user can import any exe by ignoring warnings)
                 try { if (!process.HasExited) process.Kill(true); }
                 catch { }
+                if (throwOnTimeout)
+                    throw new ToolVersionDetectTimeoutException(Path.GetFileName(filePath));
             }
 
             string stdout = await stdoutTask;
@@ -123,6 +142,13 @@ namespace OneColumnEncoder.Helpers
         {
             try { return Console.OutputEncoding; }
             catch { return null; }
+        }
+
+        private static TimeSpan GetRemainingTimeout(Stopwatch stopwatch)
+        {
+            TimeSpan remaining = VersionDetectTimeout - stopwatch.Elapsed;
+            if (remaining <= TimeSpan.Zero) throw new ToolVersionDetectTimeoutException("tool");
+            return remaining;
         }
 
         public static string? ParseVersion(string exeName, string text)
