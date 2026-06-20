@@ -198,7 +198,7 @@
                               Foreground="{StaticResource ScriptAccentFfmpegForeground}"
                               TextWrapping="Wrap"
                               AcceptsReturn="False"
-                              Padding="5"
+                              Padding="2 2.5"
                               FontSize="13"
                               FontFamily="Consolas"
                               HorizontalScrollBarVisibility="Auto"

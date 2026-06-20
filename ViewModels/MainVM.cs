@@ -1203,10 +1203,11 @@ namespace OneColumnEncoder.ViewModels
 
         private void RefreshActiveSourceRoute()
         {
-            ActiveSrcValidationCard = IsQueueRouteActive()
+            bool queueActive = IsQueueRouteActive();
+            ActiveSrcValidationCard = queueActive
                 ? QueueSrcFilterCard
                 : SrcValidationCard;
-            ActiveScriptSrcImportZone = IsQueueRouteActive()
+            ActiveScriptSrcImportZone = queueActive
                 ? QueueScriptSrcImportZone
                 : ScriptSrcImportZone;
             ToolCompatibilityH.RefreshSourceSelectionState(
@@ -1214,6 +1215,19 @@ namespace OneColumnEncoder.ViewModels
             ToolCompatibilityH.RefreshVideoSourceSelectionState(
                 UpstreamsZone, VideoSrcImportZone);
             RefreshOutputSettingCommand();
+
+            if (_outputSettingCard != null)
+            {
+                if (queueActive)
+                {
+                    _outputSettingCard.P1TextData = "N/A";
+                    _outputSettingCard.P1TooltipText = null;
+                }
+                else
+                {
+                    SyncOutputFilenameWithVideoSource();
+                }
+            }
         }
 
         private bool IsQueueRouteActive() =>

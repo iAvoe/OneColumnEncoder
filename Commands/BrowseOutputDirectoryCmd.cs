@@ -25,8 +25,6 @@ namespace OneColumnEncoder.Commands
             if (result != true) return;
 
             _item.P2TextData = dialog.FolderName;
-            _item.P1TextData = "N/A";
-            _item.P1TooltipText = null;
             Application.Current.MainWindow?.Activate();
         }
     }

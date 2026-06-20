@@ -42,8 +42,8 @@ namespace OneColumnEncoder.ViewModels
         private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(500) };
         private readonly StringBuilder _upstreamStderrBuilder = new();
         private readonly StringBuilder _downstreamStderrBuilder = new();
-        private readonly LogFoldState _upstreamStderrFoldState = new();
-        private readonly LogFoldState _downstreamStderrFoldState = new();
+        private LogFoldState _upstreamStderrFoldState = new();
+        private LogFoldState _downstreamStderrFoldState = new();
         private readonly ConcurrentQueue<ProcessLogEntry> _logQueue = new();
         private long? _totalFrames;
         private readonly IReadOnlyList<(EncodingPipelineRequest Request, EncodingPipelineCommand Command)>? _queueItems;
@@ -568,11 +568,21 @@ namespace OneColumnEncoder.ViewModels
                     && !string.Equals(request.EncoderExeName, "x264.exe", StringComparison.OrdinalIgnoreCase);
                 _writtenFrames = 0;
                 _currentOutputSizeBytes = 0;
+                _upstreamWorkingSetPeakBytes = 0;
+                _encoderWorkingSetPeakBytes = 0;
                 _success = false;
                 _userInterruptRequested = false;
                 _upstreamProcess = null;
                 _encoderProcess = null;
                 _muxProcess = null;
+
+                _upstreamStderrBuilder.Clear();
+                _downstreamStderrBuilder.Clear();
+                _upstreamStderrFoldState = new LogFoldState();
+                _downstreamStderrFoldState = new LogFoldState();
+                _logQueue.Clear();
+                UpstreamReportText = string.Empty;
+                DownstreamReportText = string.Empty;
 
                 var jobVM = QueueSidebar.Jobs[i];
                 QueueSidebar.MarkJobEncoding(jobVM);

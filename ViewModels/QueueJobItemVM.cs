@@ -35,8 +35,10 @@ namespace OneColumnEncoder.ViewModels
         public string P2Name => "Output";
         public string P2Text => Path.GetFileName(_model.OutputPath) ?? _model.OutputPath;
 
-        public string DisplayR1Text => _model.Status == "Encoding" ? "Cancel" : "";
-        public string R2Text => _model.Status == "Failed" ? "Retry" : "";
+        public string DisplayR1Text => "Cancel";
+        public string R2Text => "Retry";
+        public bool R1IsEnabled => _model.Status == "Encoding";
+        public bool R2IsEnabled => _model.Status == "Failed";
 
         public bool IsSelected => _model.Status == "Encoding";
         public bool IsCancel => _model.Status == "Failed";
@@ -60,6 +62,8 @@ namespace OneColumnEncoder.ViewModels
                     OnPropertyChanged(nameof(P1Text));
                     OnPropertyChanged(nameof(DisplayR1Text));
                     OnPropertyChanged(nameof(R2Text));
+                    OnPropertyChanged(nameof(R1IsEnabled));
+                    OnPropertyChanged(nameof(R2IsEnabled));
                     OnPropertyChanged(nameof(IsSelected));
                     OnPropertyChanged(nameof(IsCancel));
                 }
@@ -89,6 +93,8 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(P2Text));
             OnPropertyChanged(nameof(DisplayR1Text));
             OnPropertyChanged(nameof(R2Text));
+            OnPropertyChanged(nameof(R1IsEnabled));
+            OnPropertyChanged(nameof(R2IsEnabled));
             OnPropertyChanged(nameof(IsSelected));
             OnPropertyChanged(nameof(IsCancel));
             OnPropertyChanged(nameof(Name));

@@ -15,9 +15,10 @@
                         WindowStartupLocation="CenterOwner"
                         Background="{StaticResource Background}">
     <Grid>
+        <!-- Sidebar, ColumnSplitter, EncodingMonitor -->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="2" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
@@ -26,8 +27,9 @@
 
         <!-- Grid splitter (column 1) -->
         <GridSplitter Grid.Column="1"
-                      Width="5"
+                      Width="2"
                       ResizeBehavior="PreviousAndNext"
+                      HorizontalAlignment="Stretch"
                       IsEnabled="{Binding QueueSidebar.IsVisible}"
                       Visibility="{Binding QueueSidebar.IsVisible, Converter={StaticResource BoolToVisibility}}" />
 

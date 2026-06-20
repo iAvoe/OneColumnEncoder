@@ -3,30 +3,100 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:conv="clr-namespace:OneColumnEncoder.Converters"
              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
              d:DataContext="{d:DesignInstance Type=vms:QueueJobItemVM}"
              mc:Ignorable="d"
              d:DesignHeight="55"
-             d:DesignWidth="280"
+             d:DesignWidth="270"
              HorizontalAlignment="Stretch">
     <UserControl.Resources>
-        <conv:StringToVisibilityConverter x:Key="StringToVisibility" />
+        <Style x:Key="MiniLinkButton"
+               TargetType="Button"
+               BasedOn="{StaticResource H3C}">
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="Foreground"
+                    Value="{StaticResource GlobalPrimary}" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="VerticalAlignment"
+                    Value="Center" />
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Center" />
+            <Setter Property="VerticalContentAlignment"
+                    Value="Center" />
+            <Setter Property="Padding"
+                    Value="4 0" />
+            <Setter Property="Margin"
+                    Value="0" />
+            <Setter Property="MinWidth"
+                    Value="0" />
+            <Setter Property="Cursor"
+                    Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                Margin="{TemplateBinding Margin}"
+                                Padding="{TemplateBinding Padding}"
+                                BorderThickness="0"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter Property="Opacity"
+                            Value="0.85" />
+                </Trigger>
+                <Trigger Property="IsEnabled"
+                         Value="False">
+                    <Setter Property="Foreground"
+                            Value="{StaticResource GlobalSecondary}" />
+                </Trigger>
+                <Trigger Property="IsFocused"
+                         Value="True">
+                    <Setter Property="Foreground"
+                            Value="{StaticResource BorderGreen}" />
+                </Trigger>
+                <Trigger Property="IsCancel"
+                         Value="True">
+                    <Setter Property="Foreground"
+                            Value="{StaticResource BorderRed}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
-    <Border BorderThickness="1.5" CornerRadius="8" Padding="8 5" SnapsToDevicePixels="True" HorizontalAlignment="Stretch">
+    <Border BorderThickness="1.25"
+            CornerRadius="6.5"
+            Padding="6 5"
+            SnapsToDevicePixels="True">
         <Border.Style>
             <Style TargetType="Border">
-                <Setter Property="BorderBrush" Value="{StaticResource GlobalPrimary}" />
-                <Setter Property="Background" Value="{StaticResource Background}" />
-                <Setter Property="TextElement.Foreground" Value="{StaticResource GlobalPrimary}" />
+                <Setter Property="BorderBrush"
+                        Value="{StaticResource GlobalPrimary}" />
+                <Setter Property="Background"
+                        Value="{StaticResource Background}" />
+                <Setter Property="TextElement.Foreground"
+                        Value="{StaticResource GlobalPrimary}" />
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
-                        <Setter Property="BorderBrush" Value="{StaticResource BorderGreen}" />
-                        <Setter Property="Background" Value="{StaticResource BackgroundGreen}" />
+                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                 Value="True">
+                        <Setter Property="BorderBrush"
+                                Value="{StaticResource BorderGreen}" />
+                        <Setter Property="Background"
+                                Value="{StaticResource BackgroundGreen}" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
-                        <Setter Property="BorderBrush" Value="{StaticResource BorderRed}" />
-                        <Setter Property="Background" Value="{StaticResource BackgroundRed}" />
+                    <DataTrigger Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                 Value="True">
+                        <Setter Property="BorderBrush"
+                                Value="{StaticResource BorderRed}" />
+                        <Setter Property="Background"
+                                Value="{StaticResource BackgroundRed}" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
@@ -40,27 +110,30 @@
             <!-- Row 0: Source filename + Status -->
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" MinWidth="0" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0"
                            Text="{Binding Name}"
-                           FontWeight="Bold" FontSize="12"
+                           FontWeight="Bold"
+                           FontSize="12"
                            TextTrimming="CharacterEllipsis"
                            HorizontalAlignment="Stretch"
-                           VerticalAlignment="Center" />
+                           VerticalAlignment="Top"
+                           MaxWidth="220" />
                 <TextBlock Grid.Column="1"
                            Text="{Binding P1Text}"
-                           FontSize="11"
+                           FontSize="10"
                            Foreground="{StaticResource GlobalSecondary}"
-                           VerticalAlignment="Center"
-                           Margin="4 0 0 0" />
+                           VerticalAlignment="Top"
+                           Margin="2.5 0 0 0" />
             </Grid>
 
             <!-- Row 1: Output filename + action buttons -->
-            <Grid Grid.Row="1" Margin="0 2 0 0">
+            <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" MinWidth="0" />
+                    <ColumnDefinition Width="*"
+                                      MinWidth="0" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0"
@@ -69,23 +142,25 @@
                            Foreground="{StaticResource GlobalSecondary}"
                            TextTrimming="CharacterEllipsis"
                            HorizontalAlignment="Stretch"
-                           VerticalAlignment="Center" />
+                           VerticalAlignment="Center"
+                           MaxWidth="170" />
                 <StackPanel Grid.Column="1"
+                            Height="20"
                             Orientation="Horizontal"
-                            Margin="4 0 0 0">
+                            Margin="5 0 0 0">
                     <Button Content="{Binding DisplayR1Text}"
-                            Command="{Binding R1Command}"
-                            Style="{StaticResource LinkButton}"
-                            FontSize="10"
-                            Focusable="False"
-                            Visibility="{Binding DisplayR1Text, Converter={StaticResource StringToVisibility}}" />
+                             Command="{Binding R1Command}"
+                             IsEnabled="{Binding R1IsEnabled}"
+                             FontSize="10"
+                             Focusable="False"
+                             Style="{StaticResource MiniLinkButton}" />
                     <Button Content="{Binding R2Text}"
-                            Command="{Binding R2Command}"
-                            Style="{StaticResource LinkButton}"
-                            FontSize="10"
-                            Focusable="False"
-                            Margin="4 0 0 0"
-                            Visibility="{Binding R2Text, Converter={StaticResource StringToVisibility}}" />
+                             Command="{Binding R2Command}"
+                             IsEnabled="{Binding R2IsEnabled}"
+                             FontSize="10"
+                             Focusable="False"
+                             Margin="5 0 0 0"
+                             Style="{StaticResource MiniLinkButton}" />
                 </StackPanel>
             </Grid>
         </Grid>
