@@ -10,7 +10,7 @@
              mc:Ignorable="d"
              Width="310">
     <UserControl.Resources>
-        <Thickness x:Key="QueueSidebarContentPadding">7.5 10 7.5 15</Thickness>
+        <Thickness x:Key="QueueSidebarContentPadding">7 10 7 14</Thickness>
         <Thickness x:Key="QueueSidebarItemMargin">0 5</Thickness>
     </UserControl.Resources>
 
@@ -206,7 +206,7 @@
                         Style="{StaticResource PrimaryButton}" />
                 <TextBlock Text="{Binding QueueSidebar.StatsText}"
                            FontSize="10"
-                           Height="15"
+                           Height="12.5"
                            Margin="0 2.5 0 0"
                            Foreground="{StaticResource GlobalSecondary}"
                            TextWrapping="Wrap" />
