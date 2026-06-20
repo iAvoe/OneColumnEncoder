@@ -45,7 +45,7 @@
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
                                         IsReal="{Binding IsReal}"
-                                        IsCardEnabled="{Binding IsEnabled}"
+                                        IsEnabled="{Binding IsEnabled}"
                                         Margin="5">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
@@ -185,7 +185,7 @@
                                         IsCancel="{Binding IsCancel}"
                                         IsReal="{Binding IsReal}"
                                         EnableRealCheck="False"
-                                         IsCardEnabled="{Binding IsEnabled}"
+                                        IsEnabled="{Binding IsEnabled}"
                                         Margin="5">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
@@ -216,7 +216,7 @@
                                         IsCancel="{Binding IsCancel}"
                                         IsReal="{Binding IsReal}"
                                         EnableRealCheck="False"
-                                         IsCardEnabled="{Binding IsEnabled}"
+                                        IsEnabled="{Binding IsEnabled}"
                                         Margin="5">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
@@ -272,7 +272,7 @@
                                         IsCancel="{Binding IsCancel}"
                                         IsReal="{Binding IsReal}"
                                         EnableRealCheck="False"
-                                         IsCardEnabled="{Binding IsEnabled}"
+                                        IsEnabled="{Binding IsEnabled}"
                                         Margin="5" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

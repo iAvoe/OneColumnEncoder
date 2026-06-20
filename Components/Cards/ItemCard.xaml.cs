@@ -53,19 +53,6 @@ namespace OneColumnEncoder.Components
             set => SetValue(IsRealProperty, value);
         }
 
-        public static readonly DependencyProperty IsCardEnabledProperty =
-            DependencyProperty.Register(
-                nameof(IsCardEnabled),
-                typeof(bool),
-                typeof(ItemCard),
-                new PropertyMetadata(true));
-
-        public bool IsCardEnabled
-        {
-            get => (bool)GetValue(IsCardEnabledProperty);
-            set => SetValue(IsCardEnabledProperty, value);
-        }
-
         public static readonly DependencyProperty EnableRealCheckProperty =
             DependencyProperty.Register(
                 nameof(EnableRealCheck),
