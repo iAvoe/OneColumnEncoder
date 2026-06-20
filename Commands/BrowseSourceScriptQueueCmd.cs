@@ -10,18 +10,20 @@ namespace OneColumnEncoder.Commands
     public class BrowseSourceScriptQueueCmd(
         ToolItemCardVM item,
         SourceFileKind kind,
-        Action<ToolItemCardVM, SourceFileKind, string, string[]>? afterImport = null) : BaseCmd
+        Action<ToolItemCardVM, SourceFileKind, string, string[]>? afterImport = null,
+        Func<string>? getInitialPath = null) : BaseCmd
     {
         private readonly ToolItemCardVM _item = item;
         private readonly SourceFileKind _kind = kind;
         private readonly Action<ToolItemCardVM, SourceFileKind, string, string[]>? _afterImport = afterImport;
+        private readonly Func<string>? _getInitialPath = getInitialPath;
 
         public override void Execute(object? parameter)
         {
             OpenFolderDialog dialog = new()
             {
                 Title = UILangProviderM.Current["SourceQueue.SelectFolderTitle"],
-                InitialDirectory = OutputPathH.GetInitialDirectory(_item.P2TextData)
+                InitialDirectory = OutputPathH.GetInitialDirectory(_getInitialPath?.Invoke() ?? _item.P2TextData)
             };
 
             Window? owner = Application.Current.MainWindow;

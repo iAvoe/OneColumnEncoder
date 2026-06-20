@@ -791,14 +791,14 @@ namespace OneColumnEncoder.ViewModels
             SourceFileKind kind = SourceFileKindH.ResolveSourceFileKind(item.Name);
             if (QueueScriptSrcImportZone.Contains(item))
             {
-                item.R1Command = new BrowseSourceScriptQueueCmd(item, kind, OnSourceScriptQueueImported);
+                item.R1Command = new BrowseSourceScriptQueueCmd(item, kind, OnSourceScriptQueueImported, GetCurrentSourceImportPath);
                 item.R2Command = new ClearToolItemCmd(item, () => OnSourceScriptQueueCleared(item));
             }
             else
             {
                 item.R1Command = kind == SourceFileKind.Video
                     ? new BrowseSourcePathCmd(item, kind, _appDataM, _modalNavS, OnVideoSourceImported)
-                    : new BrowseSourcePathCmd(item, kind, _appDataM, _modalNavS, OnVideoSourceImported, GetCurrentVideoSourcePath);
+                    : new BrowseSourcePathCmd(item, kind, _appDataM, _modalNavS, OnVideoSourceImported, GetCurrentSourceImportPath);
                 item.R2Command = new ClearToolItemCmd(item, () => OnSourceCleared(kind));
             }
             item.PropertyChanged += OnVideoSrcItemPropertyChanged;
@@ -1262,6 +1262,17 @@ namespace OneColumnEncoder.ViewModels
         {
             ToolItemCardVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t => !IsVideoSourceQueueItem(t) && !string.IsNullOrWhiteSpace(t.P2TextData));
             return videoSrc?.P2TextData ?? string.Empty;
+        }
+
+        private string GetCurrentSourceImportPath()
+        {
+            if (IsQueueRouteActive())
+            {
+                ToolItemCardVM? queueSrc = VideoSrcImportZone.FirstOrDefault(t => IsVideoSourceQueueItem(t) && !string.IsNullOrWhiteSpace(t.P2TextData));
+                return queueSrc?.P2TextData ?? string.Empty;
+            }
+
+            return GetCurrentVideoSourcePath();
         }
 
         private bool CanRunSourceAnalysis() =>
