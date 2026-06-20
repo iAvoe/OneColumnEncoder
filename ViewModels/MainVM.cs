@@ -1062,7 +1062,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void OnSourceScriptQueueImported(ToolItemCardVM item, SourceFileKind kind, string folderPath, string[] filePaths)
         {
-            string? error = ValidateScriptQueueImport(kind, folderPath, filePaths);
+            string? error = ValidateScriptQueueImport(kind, filePaths);
             if (error != null)
             {
                 item.P2TextData = string.Empty;
@@ -1081,7 +1081,7 @@ namespace OneColumnEncoder.ViewModels
             RefreshSelectedSourceStatus(resetAnalysis: false);
         }
 
-        private string? ValidateScriptQueueImport(SourceFileKind kind, string folderPath, string[] filePaths)
+        private string? ValidateScriptQueueImport(SourceFileKind kind, string[] filePaths)
         {
             string[] videoPaths = GetCurrentQueueFilePaths();
             if (videoPaths.Length == 0) return null;
