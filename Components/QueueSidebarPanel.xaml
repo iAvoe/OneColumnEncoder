@@ -8,7 +8,7 @@
              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
              d:DataContext="{d:DesignInstance Type=vms:EncodingMonitorVM}"
              mc:Ignorable="d"
-             Width="315">
+             Width="310">
     <UserControl.Resources>
         <Thickness x:Key="QueueSidebarContentPadding">7.5 10</Thickness>
         <Thickness x:Key="QueueSidebarItemMargin">0 2.5</Thickness>
@@ -33,11 +33,6 @@
                                Text="{Binding Lang.QueueSidebarTitle}"
                                Style="{StaticResource H3}"
                                VerticalAlignment="Center" />
-                    <Button Grid.Column="1"
-                            Content="{Binding Lang.QueueSidebarCollapseText}"
-                            Command="{Binding QueueSidebarToggleCmd}"
-                            Style="{StaticResource LinkButton}"
-                            FontSize="13" />
                 </Grid>
                 <comps:TwoButtonGroup DataContext="{Binding QueueSidebarButtons}"
                                       ButtonHeight="25"

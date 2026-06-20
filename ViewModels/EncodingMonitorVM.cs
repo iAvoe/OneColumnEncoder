@@ -124,7 +124,6 @@ namespace OneColumnEncoder.ViewModels
         public ActionCmd ResetStatsCmd { get; }
         public CloseModalCmd CloseCmd { get; }
         public QueueSidebarVM QueueSidebar { get; }
-        public ActionCmd QueueSidebarToggleCmd { get; }
         public ButtonGroupVM QueueSidebarButtons { get; }
 
         private double _progressValue;
@@ -310,10 +309,6 @@ namespace OneColumnEncoder.ViewModels
                 QueueSidebar.IsVisible = true;
                 QueueSidebar.AddJob(CreateSidebarJob(_request, _command, "Pending"));
             }
-            QueueSidebarToggleCmd = new ActionCmd(_ =>
-            {
-                QueueSidebar.IsVisible = !QueueSidebar.IsVisible;
-            });
             QueueSidebarButtons = ButtonGroupVM.CreateTwoButton(
                 Lang.QueueSidebarStartBatchText,
                 Lang.QueueSidebarCancelAllText);

@@ -19,7 +19,7 @@
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="Padding" Value="4 0" />
+            <Setter Property="Padding" Value="0" />
             <Setter Property="Margin" Value="0" />
             <Setter Property="MinWidth" Value="0" />
             <Setter Property="Cursor" Value="Hand" />
@@ -103,7 +103,6 @@
             </Grid>
 
             <StackPanel Grid.Column="1"
-                        Height="20"
                         Orientation="Horizontal"
                         VerticalAlignment="Center">
                 <Button Content="{Binding DisplayR1Text}"
@@ -116,15 +115,15 @@
                         Command="{Binding R2Command}"
                         IsEnabled="{Binding R2IsEnabled}"
                         FontSize="10"
+                        Margin="2.5 0 0 0"
                         Focusable="False"
-                        Margin="5 0 0 0"
                         Style="{StaticResource MiniLinkButton}" />
                 <Button Content="{Binding R3Text}"
                         Command="{Binding R3Command}"
                         IsEnabled="{Binding R3IsEnabled}"
                         FontSize="10"
+                        Margin="2.5 0 0 0"
                         Focusable="False"
-                        Margin="5 0 0 0"
                         Style="{StaticResource MiniLinkButton}" />
             </StackPanel>
         </Grid>

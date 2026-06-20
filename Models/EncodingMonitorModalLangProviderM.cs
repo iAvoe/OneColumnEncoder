@@ -76,7 +76,7 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarTitle"] = "Queue",
             ["QueueSidebarStartBatchText"] = "Start batch",
             ["QueueSidebarCancelAllText"] = "Cancel all",
-            ["QueueSidebarCollapseText"] = "Collapse",
+
             ["QueueItemRemoveText"] = "Remove",
             ["QueueItemMoveUpText"] = "Move up",
             ["QueueItemMoveDownText"] = "Move down",
@@ -155,7 +155,7 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarTitle"] = "队列",
             ["QueueSidebarStartBatchText"] = "开始批处理",
             ["QueueSidebarCancelAllText"] = "取消全部",
-            ["QueueSidebarCollapseText"] = "折叠",
+
             ["QueueItemRemoveText"] = "删除",
             ["QueueItemMoveUpText"] = "上移",
             ["QueueItemMoveDownText"] = "下移",
@@ -234,7 +234,7 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarTitle"] = "隊列",
             ["QueueSidebarStartBatchText"] = "開始批次處理",
             ["QueueSidebarCancelAllText"] = "取消全部",
-            ["QueueSidebarCollapseText"] = "折疊",
+
             ["QueueItemRemoveText"] = "刪除",
             ["QueueItemMoveUpText"] = "上移",
             ["QueueItemMoveDownText"] = "下移",
@@ -312,7 +312,7 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarTitle"] = "File d'attente",
             ["QueueSidebarStartBatchText"] = "Lancer le lot",
             ["QueueSidebarCancelAllText"] = "Tout annuler",
-            ["QueueSidebarCollapseText"] = "Réduire",
+
             ["QueueItemRemoveText"] = "Supprimer",
             ["QueueItemMoveUpText"] = "Monter",
             ["QueueItemMoveDownText"] = "Descendre",
@@ -386,7 +386,7 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarTitle"] = "Cola",
             ["QueueSidebarStartBatchText"] = "Iniciar lote",
             ["QueueSidebarCancelAllText"] = "Cancelar todo",
-            ["QueueSidebarCollapseText"] = "Colapsar",
+
             ["QueueItemRemoveText"] = "Eliminar",
             ["QueueItemMoveUpText"] = "Subir",
             ["QueueItemMoveDownText"] = "Bajar",
@@ -460,7 +460,7 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarTitle"] = "キュー",
             ["QueueSidebarStartBatchText"] = "バッチ開始",
             ["QueueSidebarCancelAllText"] = "すべてキャンセル",
-            ["QueueSidebarCollapseText"] = "折りたたむ",
+
             ["QueueItemRemoveText"] = "削除",
             ["QueueItemMoveUpText"] = "上へ",
             ["QueueItemMoveDownText"] = "下へ",
@@ -534,7 +534,7 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarTitle"] = "Очередь",
             ["QueueSidebarStartBatchText"] = "Запустить пакет",
             ["QueueSidebarCancelAllText"] = "Отменить всё",
-            ["QueueSidebarCollapseText"] = "Свернуть",
+
             ["QueueItemRemoveText"] = "Удалить",
             ["QueueItemMoveUpText"] = "Вверх",
             ["QueueItemMoveDownText"] = "Вниз",
@@ -613,7 +613,6 @@ public class EncodingMonitorModalLangProviderM
     public string QueueSidebarTitle { get; }
     public string QueueSidebarStartBatchText { get; }
     public string QueueSidebarCancelAllText { get; }
-    public string QueueSidebarCollapseText { get; }
     public string QueueItemRemoveText { get; }
     public string QueueItemMoveUpText { get; }
     public string QueueItemMoveDownText { get; }
@@ -703,7 +702,6 @@ public class EncodingMonitorModalLangProviderM
         QueueSidebarTitle = this["QueueSidebarTitle"];
         QueueSidebarStartBatchText = this["QueueSidebarStartBatchText"];
         QueueSidebarCancelAllText = this["QueueSidebarCancelAllText"];
-        QueueSidebarCollapseText = this["QueueSidebarCollapseText"];
         QueueItemRemoveText = this["QueueItemRemoveText"];
         QueueItemMoveUpText = this["QueueItemMoveUpText"];
         QueueItemMoveDownText = this["QueueItemMoveDownText"];
