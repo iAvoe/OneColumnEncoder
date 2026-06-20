@@ -77,6 +77,7 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarCancelAllText"] = "Cancel all",
             ["QueueSidebarRunningHeaderText"] = "Running",
             ["QueueSidebarWaitingHeaderText"] = "Pending",
+            ["QueueSidebarUnfinishedHeaderText"] = "Unfinished",
             ["QueueSidebarCompletedHeaderText"] = "Completed",
 
             ["QueueItemRemoveText"] = "Remove",
@@ -158,6 +159,7 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarCancelAllText"] = "取消全部",
             ["QueueSidebarRunningHeaderText"] = "当前运行",
             ["QueueSidebarWaitingHeaderText"] = "待运行",
+            ["QueueSidebarUnfinishedHeaderText"] = "未完成",
             ["QueueSidebarCompletedHeaderText"] = "已完成",
 
             ["QueueItemRemoveText"] = "删除",
@@ -239,6 +241,7 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarCancelAllText"] = "取消全部",
             ["QueueSidebarRunningHeaderText"] = "目前執行",
             ["QueueSidebarWaitingHeaderText"] = "待執行",
+            ["QueueSidebarUnfinishedHeaderText"] = "未完成",
             ["QueueSidebarCompletedHeaderText"] = "已完成",
 
             ["QueueItemRemoveText"] = "刪除",
@@ -616,6 +619,7 @@ public class EncodingMonitorModalLangProviderM
     public string QueueSidebarCancelAllText { get; }
     public string QueueSidebarRunningHeaderText { get; }
     public string QueueSidebarWaitingHeaderText { get; }
+    public string QueueSidebarUnfinishedHeaderText { get; }
     public string QueueSidebarCompletedHeaderText { get; }
     public string QueueItemRemoveText { get; }
     public string QueueItemMoveUpText { get; }
@@ -707,6 +711,7 @@ public class EncodingMonitorModalLangProviderM
         QueueSidebarCancelAllText = this["QueueSidebarCancelAllText"];
         QueueSidebarRunningHeaderText = this["QueueSidebarRunningHeaderText"];
         QueueSidebarWaitingHeaderText = this["QueueSidebarWaitingHeaderText"];
+        QueueSidebarUnfinishedHeaderText = this["QueueSidebarUnfinishedHeaderText"];
         QueueSidebarCompletedHeaderText = this["QueueSidebarCompletedHeaderText"];
         QueueItemRemoveText = this["QueueItemRemoveText"];
         QueueItemMoveUpText = this["QueueItemMoveUpText"];

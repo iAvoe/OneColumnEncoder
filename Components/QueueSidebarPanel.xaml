@@ -99,6 +99,54 @@
                         </ListBox.ItemTemplate>
                     </ListBox>
 
+                    <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarUnfinishedHeaderText}"
+                                         Margin="0 5" />
+                    <ListBox ItemsSource="{Binding QueueSidebar.UnfinishedJobs}"
+                             SelectedItem="{Binding QueueSidebar.SelectedUnfinishedJob, Mode=OneWayToSource}"
+                             BorderThickness="0"
+                             Background="Transparent"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                             HorizontalContentAlignment="Stretch">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding"
+                                        Value="0" />
+                                <Setter Property="Margin"
+                                        Value="0" />
+                                <Setter Property="BorderThickness"
+                                        Value="0" />
+                                <Setter Property="Background"
+                                        Value="Transparent" />
+                                <Setter Property="HorizontalContentAlignment"
+                                        Value="Stretch" />
+                                <Setter Property="FocusVisualStyle"
+                                        Value="{x:Null}" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <ContentPresenter Margin="{TemplateBinding Padding}"
+                                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="{StaticResource QueueSidebarItemMargin}"
+                                        HorizontalAlignment="Stretch">
+                                    <cards:MiniItemCard DataContext="{Binding}"
+                                                        IsSelected="{Binding IsSelected}"
+                                                        IsCancel="{Binding IsCancel}"
+                                                        HorizontalAlignment="Stretch" />
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
                     <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarCompletedHeaderText}"
                                          Margin="0 5" />
                     <ListBox ItemsSource="{Binding QueueSidebar.CompletedJobs}"
