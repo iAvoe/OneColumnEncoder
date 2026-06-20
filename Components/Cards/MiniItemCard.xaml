@@ -82,22 +82,25 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0"
-                        VerticalAlignment="Center"
-                        MinWidth="0">
+            <Grid Grid.Column="0"
+                  VerticalAlignment="Center"
+                  MinWidth="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
                 <TextBlock Text="{Binding Name}"
-                           FontWeight="Bold"
-                           FontSize="12"
-                           TextTrimming="CharacterEllipsis"
-                           HorizontalAlignment="Stretch"
-                           MaxWidth="220" />
-                <TextBlock Text="{Binding P1Text}"
+                            FontWeight="Bold"
+                            FontSize="12"
+                            TextTrimming="CharacterEllipsis"
+                            HorizontalAlignment="Stretch" />
+                <TextBlock Grid.Row="1"
+                           Text="{Binding P1Text}"
                            FontSize="10"
                            Foreground="{StaticResource GlobalSecondary}"
                            TextTrimming="CharacterEllipsis"
-                           HorizontalAlignment="Stretch"
-                           MaxWidth="220" />
-            </StackPanel>
+                           HorizontalAlignment="Stretch" />
+            </Grid>
 
             <StackPanel Grid.Column="1"
                         Height="20"

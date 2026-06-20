@@ -53,6 +53,7 @@
                      BorderThickness="0"
                      Background="Transparent"
                      Margin="0 5 0 0"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      ScrollViewer.IsDeferredScrollingEnabled="True"
                      VirtualizingPanel.VirtualizationMode="Recycling"
                      VirtualizingPanel.ScrollUnit="Item"

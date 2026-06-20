@@ -10,12 +10,14 @@ namespace OneColumnEncoder.ViewModels
     {
         private readonly EncodingPipelineRequest? _request;
         private readonly QueueJobItemM _model;
+        private readonly EncodingMonitorModalLangProviderM _queueLang;
         private bool _isSidebarSelected;
 
         public QueueJobItemVM(QueueJobItemM model)
         {
             _model = model;
             _request = DeserializeRequest(model.SerializedRequest);
+            _queueLang = new EncodingMonitorModalLangProviderM(UILangProviderM.Current.LanguageCode);
         }
 
         public QueueJobItemM Model => _model;
@@ -28,10 +30,10 @@ namespace OneColumnEncoder.ViewModels
 
         public string P1TooltipText => _model.ErrorMessage ?? P1Text;
 
-        public string DisplayR1Text => "Cancel";
-        public string R2Text => "Retry";
-        public bool R1IsEnabled => _model.Status == "Encoding";
-        public bool R2IsEnabled => _model.Status == "Failed";
+        public string DisplayR1Text => _queueLang.QueueItemRemoveText;
+        public string R2Text => _queueLang.QueueItemMoveUpText;
+        public bool R1IsEnabled => _model.Status == "Pending";
+        public bool R2IsEnabled => _model.Status == "Pending";
 
         public bool IsSelected => _isSidebarSelected || _model.Status == "Encoding";
         public bool IsCancel => _model.Status == "Failed";

@@ -97,6 +97,26 @@ namespace OneColumnEncoder.ViewModels
             RefreshBindings();
         }
 
+        public void RemoveJob(QueueJobItemVM job)
+        {
+            int index = Jobs.IndexOf(job);
+            if (index < 0) return;
+            _store.Jobs.RemoveAt(index);
+            Jobs.RemoveAt(index);
+            if (SelectedJob == job) SelectedJob = Jobs.Count > 0 ? Jobs[Math.Min(index, Jobs.Count - 1)] : null;
+            RefreshBindings();
+        }
+
+        public bool MoveJobUp(QueueJobItemVM job)
+        {
+            int index = Jobs.IndexOf(job);
+            if (index <= 0) return false;
+            (_store.Jobs[index], _store.Jobs[index - 1]) = (_store.Jobs[index - 1], _store.Jobs[index]);
+            Jobs.Move(index, index - 1);
+            RefreshBindings();
+            return true;
+        }
+
         public QueueJobItemVM? GetNextPending()
         {
             var next = _store.Jobs.FirstOrDefault(j => j.Status == "Pending");

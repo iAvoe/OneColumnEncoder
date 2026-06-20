@@ -676,6 +676,13 @@ namespace OneColumnEncoder.ViewModels
             }
             QueueSidebar.SaveToDisk();
 
+            // Wire sidebar edit commands (remove / move up)
+            foreach (QueueJobItemVM job in QueueSidebar.Jobs)
+            {
+                job.R1Command = new ActionCmd(_ => QueueSidebar.RemoveJob(job));
+                job.R2Command = new ActionCmd(_ => QueueSidebar.MoveJobUp(job));
+            }
+
             for (int i = 0; i < total; i++)
             {
                 if (cancellationToken.IsCancellationRequested) break;
