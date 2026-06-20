@@ -76,6 +76,9 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarTitle"] = "Queue",
             ["QueueSidebarStartBatchText"] = "Start batch",
             ["QueueSidebarCancelAllText"] = "Cancel all",
+            ["QueueSidebarRunningHeaderText"] = "Running",
+            ["QueueSidebarWaitingHeaderText"] = "Pending",
+            ["QueueSidebarCompletedHeaderText"] = "Completed",
 
             ["QueueItemRemoveText"] = "Remove",
             ["QueueItemMoveUpText"] = "Move up",
@@ -155,6 +158,9 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarTitle"] = "队列",
             ["QueueSidebarStartBatchText"] = "开始批处理",
             ["QueueSidebarCancelAllText"] = "取消全部",
+            ["QueueSidebarRunningHeaderText"] = "当前运行",
+            ["QueueSidebarWaitingHeaderText"] = "待运行",
+            ["QueueSidebarCompletedHeaderText"] = "已完成",
 
             ["QueueItemRemoveText"] = "删除",
             ["QueueItemMoveUpText"] = "上移",
@@ -234,6 +240,9 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarTitle"] = "隊列",
             ["QueueSidebarStartBatchText"] = "開始批次處理",
             ["QueueSidebarCancelAllText"] = "取消全部",
+            ["QueueSidebarRunningHeaderText"] = "目前執行",
+            ["QueueSidebarWaitingHeaderText"] = "待執行",
+            ["QueueSidebarCompletedHeaderText"] = "已完成",
 
             ["QueueItemRemoveText"] = "刪除",
             ["QueueItemMoveUpText"] = "上移",
@@ -613,6 +622,9 @@ public class EncodingMonitorModalLangProviderM
     public string QueueSidebarTitle { get; }
     public string QueueSidebarStartBatchText { get; }
     public string QueueSidebarCancelAllText { get; }
+    public string QueueSidebarRunningHeaderText { get; }
+    public string QueueSidebarWaitingHeaderText { get; }
+    public string QueueSidebarCompletedHeaderText { get; }
     public string QueueItemRemoveText { get; }
     public string QueueItemMoveUpText { get; }
     public string QueueItemMoveDownText { get; }
@@ -702,6 +714,9 @@ public class EncodingMonitorModalLangProviderM
         QueueSidebarTitle = this["QueueSidebarTitle"];
         QueueSidebarStartBatchText = this["QueueSidebarStartBatchText"];
         QueueSidebarCancelAllText = this["QueueSidebarCancelAllText"];
+        QueueSidebarRunningHeaderText = this["QueueSidebarRunningHeaderText"];
+        QueueSidebarWaitingHeaderText = this["QueueSidebarWaitingHeaderText"];
+        QueueSidebarCompletedHeaderText = this["QueueSidebarCompletedHeaderText"];
         QueueItemRemoveText = this["QueueItemRemoveText"];
         QueueItemMoveUpText = this["QueueItemMoveUpText"];
         QueueItemMoveDownText = this["QueueItemMoveDownText"];

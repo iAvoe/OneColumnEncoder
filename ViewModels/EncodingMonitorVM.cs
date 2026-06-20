@@ -52,7 +52,6 @@ namespace OneColumnEncoder.ViewModels
         private readonly Dictionary<string, EncodingLogSnapshot> _logSnapshotsByJobId = [];
         private long? _totalFrames;
         private readonly IReadOnlyList<(EncodingPipelineRequest Request, EncodingPipelineCommand Command)>? _queueItems;
-        private int _queueModeIndex = -1;
         private string? _activeLogJobId;
         private QueueJobItemVM? _activeJobVM;
         private readonly Lock _logLock = new();
@@ -75,6 +74,7 @@ namespace OneColumnEncoder.ViewModels
         private long _currentOutputSizeBytes;
         private int _writtenFrames;
         private bool _userInterruptRequested;
+        private bool _cancelAllRequested;
         private bool _upstreamInterruptButtonClicked;
         private bool _encoderInterruptButtonClicked;
         private Stream? _upstreamStdoutStream;
@@ -120,11 +120,14 @@ namespace OneColumnEncoder.ViewModels
         public ButtonGroupVM MonitorButtons { get; }
         public ButtonGroupVM ReportButtons { get; }
         public ButtonGroupVM FinishButtons { get; }
+        public ActionCmd StartBatchCommand { get; }
+        public ActionCmd CancelAllQueueCommand { get; }
         public ActionCmd FreezeOrContinueCmd { get; }
         public ActionCmd ResetStatsCmd { get; }
         public CloseModalCmd CloseCmd { get; }
         public QueueSidebarVM QueueSidebar { get; }
-        public ButtonGroupVM QueueSidebarButtons { get; }
+        public bool IsStartBatchEnabled => !_hasStarted;
+        public bool IsCancelAllEnabled => _hasStarted && !_finishEnabledAfterClose && !_cancelAllRequested;
 
         private double _progressValue;
         public double ProgressValue
@@ -275,6 +278,8 @@ namespace OneColumnEncoder.ViewModels
 
             FreezeOrContinueCmd = new ActionCmd(_ => IsFrozen = !IsFrozen);
             ResetStatsCmd = new ActionCmd(_ => ResetStats());
+            StartBatchCommand = new ActionCmd(_ => Start());
+            CancelAllQueueCommand = new ActionCmd(_ => CancelAllQueue());
             CloseCmd = new CloseModalCmd(() =>
             {
                 if (!_finishEnabledAfterClose) return;
@@ -309,10 +314,6 @@ namespace OneColumnEncoder.ViewModels
                 QueueSidebar.IsVisible = true;
                 QueueSidebar.AddJob(CreateSidebarJob(_request, _command, "Pending"));
             }
-            QueueSidebarButtons = ButtonGroupVM.CreateTwoButton(
-                Lang.QueueSidebarStartBatchText,
-                Lang.QueueSidebarCancelAllText);
-
             BuildMetrics();
             BuildFooter();
             BuildMemoryRangeBlocks();
@@ -358,6 +359,7 @@ namespace OneColumnEncoder.ViewModels
             _cts = new CancellationTokenSource();
             _stopwatch.Start();
             _timer.Start();
+            RefreshQueueActionBindings();
             if (_queueItems != null)
                 _ = RunQueueEncodingAsync(_cts.Token);
             else
@@ -366,7 +368,7 @@ namespace OneColumnEncoder.ViewModels
 
         private async Task RunSingleEncodingAsync(CancellationToken cancellationToken)
         {
-            QueueJobItemVM? jobVM = QueueSidebar.SelectedJob ?? (QueueSidebar.Jobs.Count > 0 ? QueueSidebar.Jobs[0] : null);
+            QueueJobItemVM? jobVM = QueueSidebar.SelectedJob ?? (QueueSidebar.WaitingJobs.Count > 0 ? QueueSidebar.WaitingJobs[0] : null);
             if (jobVM != null)
             {
                 _activeLogJobId = jobVM.JobId;
@@ -672,20 +674,19 @@ namespace OneColumnEncoder.ViewModels
             }
             QueueSidebar.SaveToDisk();
 
-            // Wire sidebar edit commands (remove / move up / move down)
-            foreach (QueueJobItemVM job in QueueSidebar.Jobs)
+            foreach (QueueJobItemVM job in QueueSidebar.WaitingJobs)
             {
                 job.R1Command = new ActionCmd(_ => QueueSidebar.RemoveJob(job));
                 job.R2Command = new ActionCmd(_ => QueueSidebar.MoveJobUp(job));
                 job.R3Command = new ActionCmd(_ => QueueSidebar.MoveJobDown(job));
             }
 
-            for (int i = 0; i < QueueSidebar.Jobs.Count; i++)
+            while (true)
             {
                 if (cancellationToken.IsCancellationRequested) break;
 
-                _queueModeIndex = i;
-                var jobVM = QueueSidebar.Jobs[i];
+                var jobVM = QueueSidebar.GetNextPending();
+                if (jobVM == null) break;
                 EncodingPipelineRequest? request = jobVM.Request;
                 EncodingPipelineCommand? command = jobVM.Command;
                 if (request == null || command == null)
@@ -720,7 +721,7 @@ namespace OneColumnEncoder.ViewModels
                 if (_userInterruptRequested)
                 {
                     QueueSidebar.MarkJobInterrupted(jobVM);
-                    if (AskStopQueueConfirmation())
+                    if (_cancelAllRequested || AskStopQueueConfirmation())
                         break;
                 }
                 else if (_success)
@@ -739,8 +740,10 @@ namespace OneColumnEncoder.ViewModels
             _timer.Stop();
             EnableCloseButton();
             UpdateFooterTimes(final: true);
-            int currentTotal = QueueSidebar.Jobs.Count;
-            StatusText = completed == currentTotal
+            int currentTotal = QueueSidebar.TotalCount;
+            StatusText = _cancelAllRequested
+                ? $"{Lang.InterruptedText}: {completed}/{currentTotal}"
+                : completed == currentTotal
                 ? $"{Lang.CompletedText}: {completed}/{currentTotal}"
                 : $"{Lang.FailedText}: {completed}/{currentTotal}";
         }
@@ -1929,6 +1932,22 @@ namespace OneColumnEncoder.ViewModels
             _finishEnabledAfterClose = true;
             IsWindowCloseEnabled = true;
             FinishButtons.B5_5IsEnabled = true;
+            RefreshQueueActionBindings();
+        }
+
+        private void CancelAllQueue()
+        {
+            if (!IsCancelAllEnabled) return;
+            _cancelAllRequested = true;
+            QueueSidebar.CancelPendingJobs();
+            RefreshQueueActionBindings();
+            TryInterruptEncoder();
+        }
+
+        private void RefreshQueueActionBindings()
+        {
+            OnPropertyChanged(nameof(IsStartBatchEnabled));
+            OnPropertyChanged(nameof(IsCancelAllEnabled));
         }
 
         /// <summary>
@@ -2057,9 +2076,6 @@ namespace OneColumnEncoder.ViewModels
             FinishButtons.B5_3Text = _upstreamInterruptButtonClicked ? Lang.InterruptingUpstreamText : Lang.InterruptUpstreamText;
             FinishButtons.B5_4Text = _encoderInterruptButtonClicked ? Lang.InterruptingEncoderText : Lang.InterruptEncoderText;
             FinishButtons.B5_5Text = Lang.CloseAfterDoneText;
-
-            QueueSidebarButtons.B2_1Text = Lang.QueueSidebarStartBatchText;
-            QueueSidebarButtons.B2_2Text = Lang.QueueSidebarCancelAllText;
 
             if (FooterColumns.Count == 6)
             {

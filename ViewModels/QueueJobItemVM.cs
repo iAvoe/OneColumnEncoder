@@ -12,6 +12,8 @@ namespace OneColumnEncoder.ViewModels
         private readonly QueueJobItemM _model;
         private readonly EncodingMonitorModalLangProviderM _queueLang;
         private bool _isSidebarSelected;
+        private bool _canMoveUp;
+        private bool _canMoveDown;
 
         public QueueJobItemVM(QueueJobItemM model)
         {
@@ -36,8 +38,8 @@ namespace OneColumnEncoder.ViewModels
         public string R2Text => _queueLang.QueueItemMoveUpText;
         public string R3Text => _queueLang.QueueItemMoveDownText;
         public bool R1IsEnabled => _model.Status == "Pending";
-        public bool R2IsEnabled => _model.Status == "Pending";
-        public bool R3IsEnabled => _model.Status == "Pending";
+        public bool R2IsEnabled => _model.Status == "Pending" && _canMoveUp;
+        public bool R3IsEnabled => _model.Status == "Pending" && _canMoveDown;
 
         public bool IsSelected => _isSidebarSelected || _model.Status == "Encoding";
         public bool IsCancel => _model.Status == "Failed";
@@ -119,6 +121,21 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(IsSelected));
             OnPropertyChanged(nameof(IsCancel));
             OnPropertyChanged(nameof(Name));
+        }
+
+        public void SetMoveButtonAvailability(bool canMoveUp, bool canMoveDown)
+        {
+            if (_canMoveUp != canMoveUp)
+            {
+                _canMoveUp = canMoveUp;
+                OnPropertyChanged(nameof(R2IsEnabled));
+            }
+
+            if (_canMoveDown != canMoveDown)
+            {
+                _canMoveDown = canMoveDown;
+                OnPropertyChanged(nameof(R3IsEnabled));
+            }
         }
 
         private static EncodingPipelineRequest? DeserializeRequest(string serializedRequest)

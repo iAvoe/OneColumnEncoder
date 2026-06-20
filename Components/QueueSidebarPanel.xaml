@@ -24,71 +24,135 @@
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0">
-                <Grid>
+                <TextBlock Text="{Binding Lang.QueueSidebarTitle}"
+                           Style="{StaticResource H3}"
+                           VerticalAlignment="Center" />
+                <Grid Margin="0 0 0 5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="5" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding Lang.QueueSidebarTitle}"
-                               Style="{StaticResource H3}"
-                               VerticalAlignment="Center" />
+                    <Button Grid.Column="0"
+                            Content="{Binding Lang.QueueSidebarStartBatchText}"
+                            Command="{Binding StartBatchCommand}"
+                            IsEnabled="{Binding IsStartBatchEnabled}"
+                            Height="25"
+                            HorizontalAlignment="Stretch"
+                            Style="{StaticResource NormalButton}" />
+                    <Button Grid.Column="2"
+                            Content="{Binding Lang.QueueSidebarCancelAllText}"
+                            Command="{Binding CancelAllQueueCommand}"
+                            IsEnabled="{Binding IsCancelAllEnabled}"
+                            Height="25"
+                            HorizontalAlignment="Stretch"
+                            Style="{StaticResource PrimaryButton}" />
                 </Grid>
-                <comps:TwoButtonGroup DataContext="{Binding QueueSidebarButtons}"
-                                      ButtonHeight="25"
-                                      Button1Command="{Binding Cmd1}"
-                                      Button2Command="{Binding Cmd2}"
-                                      Button1IsEnabled="{Binding B2_1IsEnabled}"
-                                      Button2IsEnabled="{Binding B2_2IsEnabled}" />
             </StackPanel>
 
-            <ListBox Grid.Row="1"
-                     ItemsSource="{Binding QueueSidebar.Jobs}"
-                     SelectedItem="{Binding QueueSidebar.SelectedJob, Mode=TwoWay}"
-                     BorderThickness="0"
-                     Background="Transparent"
-                     Margin="0 5 0 0"
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     ScrollViewer.IsDeferredScrollingEnabled="True"
-                     VirtualizingPanel.VirtualizationMode="Recycling"
-                     VirtualizingPanel.ScrollUnit="Item"
-                     HorizontalContentAlignment="Stretch">
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="Padding" Value="0" />
-                        <Setter Property="Margin" Value="0" />
-                        <Setter Property="BorderThickness" Value="0" />
-                        <Setter Property="Background" Value="Transparent" />
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="ListBoxItem">
-                                    <ContentPresenter Margin="{TemplateBinding Padding}"
-                                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </ListBox.ItemContainerStyle>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Border Margin="{StaticResource QueueSidebarItemMargin}"
-                                HorizontalAlignment="Stretch">
-                            <cards:MiniItemCard DataContext="{Binding}"
-                                                IsSelected="{Binding IsSelected}"
-                                                IsCancel="{Binding IsCancel}"
-                                                HorizontalAlignment="Stretch" />
-                        </Border>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <ScrollViewer Grid.Row="1"
+                          Margin="0 5 0 0"
+                          HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarRunningHeaderText}" />
+                    <Border Margin="{StaticResource QueueSidebarItemMargin}"
+                            HorizontalAlignment="Stretch"
+                            Visibility="{Binding QueueSidebar.HasRunningJob, Converter={StaticResource BoolToVisibility}}">
+                        <cards:MiniItemCard DataContext="{Binding QueueSidebar.RunningJob}"
+                                            IsSelected="{Binding IsSelected}"
+                                            IsCancel="{Binding IsCancel}"
+                                            HorizontalAlignment="Stretch" />
+                    </Border>
+
+                    <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarWaitingHeaderText}"
+                                         Margin="0 5 0 0" />
+                    <ListBox ItemsSource="{Binding QueueSidebar.WaitingJobs}"
+                             SelectedItem="{Binding QueueSidebar.SelectedWaitingJob, Mode=OneWayToSource}"
+                             BorderThickness="0"
+                             Background="Transparent"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                             HorizontalContentAlignment="Stretch">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding" Value="0" />
+                                <Setter Property="Margin" Value="0" />
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <ContentPresenter Margin="{TemplateBinding Padding}"
+                                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="{StaticResource QueueSidebarItemMargin}"
+                                        HorizontalAlignment="Stretch">
+                                    <cards:MiniItemCard DataContext="{Binding}"
+                                                        IsSelected="{Binding IsSelected}"
+                                                        IsCancel="{Binding IsCancel}"
+                                                        HorizontalAlignment="Stretch" />
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarCompletedHeaderText}"
+                                         Margin="0 5 0 0" />
+                    <ListBox ItemsSource="{Binding QueueSidebar.CompletedJobs}"
+                             SelectedItem="{Binding QueueSidebar.SelectedCompletedJob, Mode=OneWayToSource}"
+                             BorderThickness="0"
+                             Background="Transparent"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                             HorizontalContentAlignment="Stretch">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding" Value="0" />
+                                <Setter Property="Margin" Value="0" />
+                                <Setter Property="BorderThickness" Value="0" />
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <ContentPresenter Margin="{TemplateBinding Padding}"
+                                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="{StaticResource QueueSidebarItemMargin}"
+                                        HorizontalAlignment="Stretch">
+                                    <cards:MiniItemCard DataContext="{Binding}"
+                                                        IsSelected="{Binding IsSelected}"
+                                                        IsCancel="{Binding IsCancel}"
+                                                        HorizontalAlignment="Stretch" />
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+            </ScrollViewer>
 
             <StackPanel Grid.Row="2"
                         Margin="0 5 0 0">
-                <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarTitle}" />
                 <TextBlock Text="{Binding QueueSidebar.StatsText}"
                            FontSize="10"
                            Foreground="{StaticResource GlobalSecondary}"

@@ -7,7 +7,7 @@
                         xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
                         xmlns:views="clr-namespace:OneColumnEncoder.Views"
                         mc:Ignorable="d"
-                        Title="1cenc (Commit 527)"
+                        Title="1cenc (Commit 532)"
                         Width="920"
                         Height="1220"
                         WindowStartupLocation="CenterScreen">

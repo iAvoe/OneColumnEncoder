@@ -10,6 +10,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly bool _isPersistent;
         private bool _isVisible;
         private QueueJobItemVM? _selectedJob;
+        private QueueJobItemVM? _runningJob;
 
         public QueueSidebarVM(bool loadFromDisk = true)
         {
@@ -19,7 +20,39 @@ namespace OneColumnEncoder.ViewModels
             RefreshJobs();
         }
 
-        public ObservableCollection<QueueJobItemVM> Jobs { get; } = [];
+        public ObservableCollection<QueueJobItemVM> WaitingJobs { get; } = [];
+        public ObservableCollection<QueueJobItemVM> CompletedJobs { get; } = [];
+        public int TotalCount => _store.Jobs.Count;
+
+        public QueueJobItemVM? RunningJob
+        {
+            get => _runningJob;
+            private set
+            {
+                if (!SetProperty(ref _runningJob, value)) return;
+                OnPropertyChanged(nameof(HasRunningJob));
+            }
+        }
+
+        public bool HasRunningJob => RunningJob != null;
+
+        public QueueJobItemVM? SelectedWaitingJob
+        {
+            get => null;
+            set
+            {
+                if (value != null) SelectedJob = value;
+            }
+        }
+
+        public QueueJobItemVM? SelectedCompletedJob
+        {
+            get => null;
+            set
+            {
+                if (value != null) SelectedJob = value;
+            }
+        }
 
         public bool IsVisible
         {
@@ -48,7 +81,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 int total = _store.Jobs.Count;
                 int pending = _store.Jobs.Count(j => j.Status == "Pending");
-                int completed = _store.Jobs.Count(j => j.Status == "Completed");
+                int completed = _store.Jobs.Count(j => j.Status is "Completed" or "Interrupted");
                 int failed = _store.Jobs.Count(j => j.Status == "Failed");
                 int encoding = _store.Jobs.Count(j => j.Status == "Encoding");
                 return $"Total: {total}  |  Pending: {pending}  |  Encoding: {encoding}  |  Done: {completed}  |  Failed: {failed}";
@@ -58,7 +91,9 @@ namespace OneColumnEncoder.ViewModels
         public void ClearAllJobs()
         {
             _store.Jobs.Clear();
-            Jobs.Clear();
+            WaitingJobs.Clear();
+            CompletedJobs.Clear();
+            RunningJob = null;
             SelectedJob = null;
             RefreshBindings();
         }
@@ -84,45 +119,56 @@ namespace OneColumnEncoder.ViewModels
         {
             _store.Jobs.Add(job);
             QueueJobItemVM jobVM = new(job);
-            Jobs.Add(jobVM);
+            AddJobToStatusCollection(jobVM);
             SelectedJob ??= jobVM;
+            RefreshWaitingMoveStates();
             RefreshBindings();
         }
 
         public void RemoveJob(QueueJobItemM job)
         {
             _store.Jobs.Remove(job);
-            var vm = Jobs.FirstOrDefault(j => j.JobId == job.JobId);
-            if (vm != null) Jobs.Remove(vm);
+            var vm = FindJobVM(job.JobId);
+            if (vm != null) RemoveJobFromStatusCollection(vm);
+            RefreshWaitingMoveStates();
             RefreshBindings();
         }
 
         public void RemoveJob(QueueJobItemVM job)
         {
-            int index = Jobs.IndexOf(job);
+            int index = WaitingJobs.IndexOf(job);
             if (index < 0) return;
-            _store.Jobs.RemoveAt(index);
-            Jobs.RemoveAt(index);
-            if (SelectedJob == job) SelectedJob = Jobs.Count > 0 ? Jobs[Math.Min(index, Jobs.Count - 1)] : null;
+            _store.Jobs.Remove(job.Model);
+            WaitingJobs.RemoveAt(index);
+            if (SelectedJob == job) SelectedJob = WaitingJobs.Count > 0 ? WaitingJobs[Math.Min(index, WaitingJobs.Count - 1)] : RunningJob ?? CompletedJobs.LastOrDefault();
+            RefreshWaitingMoveStates();
             RefreshBindings();
         }
 
         public bool MoveJobUp(QueueJobItemVM job)
         {
-            int index = Jobs.IndexOf(job);
+            int index = WaitingJobs.IndexOf(job);
             if (index <= 0) return false;
-            (_store.Jobs[index], _store.Jobs[index - 1]) = (_store.Jobs[index - 1], _store.Jobs[index]);
-            Jobs.Move(index, index - 1);
+            int storeIndex = GetStoreIndex(job);
+            int previousStoreIndex = GetStoreIndex(WaitingJobs[index - 1]);
+            if (storeIndex < 0 || previousStoreIndex < 0) return false;
+            (_store.Jobs[storeIndex], _store.Jobs[previousStoreIndex]) = (_store.Jobs[previousStoreIndex], _store.Jobs[storeIndex]);
+            WaitingJobs.Move(index, index - 1);
+            RefreshWaitingMoveStates();
             RefreshBindings();
             return true;
         }
 
         public bool MoveJobDown(QueueJobItemVM job)
         {
-            int index = Jobs.IndexOf(job);
-            if (index < 0 || index >= Jobs.Count - 1) return false;
-            (_store.Jobs[index], _store.Jobs[index + 1]) = (_store.Jobs[index + 1], _store.Jobs[index]);
-            Jobs.Move(index, index + 1);
+            int index = WaitingJobs.IndexOf(job);
+            if (index < 0 || index >= WaitingJobs.Count - 1) return false;
+            int storeIndex = GetStoreIndex(job);
+            int nextStoreIndex = GetStoreIndex(WaitingJobs[index + 1]);
+            if (storeIndex < 0 || nextStoreIndex < 0) return false;
+            (_store.Jobs[storeIndex], _store.Jobs[nextStoreIndex]) = (_store.Jobs[nextStoreIndex], _store.Jobs[storeIndex]);
+            WaitingJobs.Move(index, index + 1);
+            RefreshWaitingMoveStates();
             RefreshBindings();
             return true;
         }
@@ -130,51 +176,137 @@ namespace OneColumnEncoder.ViewModels
         public QueueJobItemVM? GetNextPending()
         {
             var next = _store.Jobs.FirstOrDefault(j => j.Status == "Pending");
-            return next != null ? Jobs.FirstOrDefault(j => j.JobId == next.JobId) : null;
+            return next != null ? WaitingJobs.FirstOrDefault(j => j.JobId == next.JobId) : null;
         }
 
         public void MarkJobEncoding(QueueJobItemVM job)
         {
+            RemoveJobFromStatusCollection(job);
             job.Status = "Encoding";
+            RunningJob = job;
             SelectedJob = job;
+            RefreshWaitingMoveStates();
             SaveToDisk();
             RefreshBindings();
         }
 
         public void MarkJobCompleted(QueueJobItemVM job)
         {
+            MoveJobToCompleted(job);
             job.Status = "Completed";
             job.Model.CompletedAt = System.DateTime.Now;
+            RefreshWaitingMoveStates();
             SaveToDisk();
             RefreshBindings();
         }
 
         public void MarkJobFailed(QueueJobItemVM job, string? error = null)
         {
+            MoveJobToCompleted(job);
             job.Status = "Failed";
             job.Model.ErrorMessage = error;
             job.Model.CompletedAt = System.DateTime.Now;
+            RefreshWaitingMoveStates();
             SaveToDisk();
             RefreshBindings();
         }
 
         public void MarkJobInterrupted(QueueJobItemVM job)
         {
+            MoveJobToCompleted(job);
             job.Status = "Interrupted";
             job.Model.CompletedAt = System.DateTime.Now;
+            RefreshWaitingMoveStates();
+            SaveToDisk();
+            RefreshBindings();
+        }
+
+        public void CancelPendingJobs()
+        {
+            QueueJobItemVM[] pendingJobs = [.. WaitingJobs];
+            foreach (QueueJobItemVM job in pendingJobs)
+            {
+                job.Status = "Interrupted";
+                job.Model.CompletedAt = System.DateTime.Now;
+                WaitingJobs.Remove(job);
+                CompletedJobs.Add(job);
+            }
+
+            if (SelectedJob != null && pendingJobs.Any(job => job.JobId == SelectedJob.JobId))
+                SelectedJob = RunningJob ?? CompletedJobs.LastOrDefault();
+            RefreshWaitingMoveStates();
             SaveToDisk();
             RefreshBindings();
         }
 
         private void RefreshJobs()
         {
-            Jobs.Clear();
+            WaitingJobs.Clear();
+            CompletedJobs.Clear();
+            RunningJob = null;
             foreach (var job in _store.Jobs)
-                Jobs.Add(new QueueJobItemVM(job));
+                AddJobToStatusCollection(new QueueJobItemVM(job));
+            RefreshWaitingMoveStates();
+        }
+
+        private void AddJobToStatusCollection(QueueJobItemVM job)
+        {
+            switch (job.Status)
+            {
+                case "Encoding":
+                    RunningJob = job;
+                    break;
+                case "Completed":
+                case "Failed":
+                case "Interrupted":
+                    CompletedJobs.Add(job);
+                    break;
+                default:
+                    WaitingJobs.Add(job);
+                    break;
+            }
+        }
+
+        private QueueJobItemVM? FindJobVM(string jobId)
+        {
+            if (RunningJob?.JobId == jobId) return RunningJob;
+            return WaitingJobs.FirstOrDefault(job => job.JobId == jobId)
+                ?? CompletedJobs.FirstOrDefault(job => job.JobId == jobId);
+        }
+
+        private int GetStoreIndex(QueueJobItemVM job)
+        {
+            return _store.Jobs.FindIndex(item => item.JobId == job.JobId);
+        }
+
+        private void RemoveJobFromStatusCollection(QueueJobItemVM job)
+        {
+            if (RunningJob == job) RunningJob = null;
+            WaitingJobs.Remove(job);
+            CompletedJobs.Remove(job);
+        }
+
+        private void MoveJobToCompleted(QueueJobItemVM job)
+        {
+            RemoveJobFromStatusCollection(job);
+            CompletedJobs.Add(job);
+        }
+
+        private void RefreshWaitingMoveStates()
+        {
+            for (int i = 0; i < WaitingJobs.Count; i++)
+                WaitingJobs[i].SetMoveButtonAvailability(i > 0, i < WaitingJobs.Count - 1);
+
+            if (RunningJob != null)
+                RunningJob.SetMoveButtonAvailability(false, false);
+
+            foreach (QueueJobItemVM job in CompletedJobs)
+                job.SetMoveButtonAvailability(false, false);
         }
 
         private void RefreshBindings()
         {
+            OnPropertyChanged(nameof(TotalCount));
             OnPropertyChanged(nameof(StatsText));
         }
 
