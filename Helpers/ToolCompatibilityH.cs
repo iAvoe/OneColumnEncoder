@@ -64,6 +64,7 @@ namespace OneColumnEncoder.Helpers
                     break;
                 case var u when ToolDefinitionProviderM.IsImportedTool(u.Name, "one_line_shot_args.exe"):
                     allowedName = ResolveScriptSourceName(scriptSrcImportZone, "Tool.Source.Svfi", "Tool.Source.SvfiQueue");
+                    if (allowedName == null) allDisabled = true;
                     break;
             }
 

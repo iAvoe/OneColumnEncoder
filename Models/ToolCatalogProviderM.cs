@@ -50,11 +50,6 @@ public static class ToolCatalogProviderM
             UILangProviderM.Current["Buttons.Clear"],
             UILangProviderM.Current["SourceQueue.Sequence"],
             UILangProviderM.Current["ToolField.Path"]),
-        new(UILangProviderM.Current["Tool.Source.SvfiQueue"],
-            UILangProviderM.Current["Buttons.Import"],
-            UILangProviderM.Current["Buttons.Clear"],
-            UILangProviderM.Current["SourceQueue.Sequence"],
-            UILangProviderM.Current["ToolField.Path"]),
     ];
 
     // Enc Settings zone (3 items)

@@ -1350,6 +1350,34 @@ namespace OneColumnEncoder.ViewModels
                 scriptDir = avsItem.P2TextData;
             }
 
+            if (scriptDir != null)
+            {
+                string ext = scriptKind == SourceFileKind.VapourSynthScript ? ".vpy" : ".avs";
+                int missingCount = 0;
+                const int maxListed = 5;
+                List<string> missingFiles = [];
+                foreach (string sourcePath in sourcePaths)
+                {
+                    string scriptPath = Path.Combine(scriptDir, Path.GetFileNameWithoutExtension(sourcePath) + ext);
+                    if (!File.Exists(scriptPath))
+                    {
+                        missingCount++;
+                        if (missingFiles.Count < maxListed)
+                            missingFiles.Add(Path.GetFileName(scriptPath)!);
+                    }
+                }
+                if (missingCount > 0)
+                {
+                    string missingList = string.Join(", ", missingFiles);
+                    string omitted = missingCount > maxListed
+                        ? $" ({missingCount - maxListed} more)"
+                        : string.Empty;
+                    string missingDetail = $"{missingList}{omitted}";
+                    string format = new StartEncCmdLangProviderM(UILangProviderM.Current.LanguageCode).QueueScriptCountMismatchMsg;
+                    throw new InvalidOperationException(string.Format(format, missingCount, sourcePaths.Length, missingDetail));
+                }
+            }
+
             return [.. sourcePaths.Select(sourcePath =>
             {
                 string inputPath = sourcePath;
