@@ -1111,7 +1111,7 @@ namespace OneColumnEncoder.ViewModels
                 {
                     unmatchedCount++;
                     if (details.Count < maxDetails)
-                        details.Add($"'{Path.GetFileName(scriptPath)}' — no matching video source by basename");
+                        details.Add(string.Format(UILangProviderM.Current["ScriptQueueImport.DetailNoMatch"], Path.GetFileName(scriptPath)));
                     continue;
                 }
 
@@ -1120,7 +1120,7 @@ namespace OneColumnEncoder.ViewModels
                 {
                     mismatchCount++;
                     if (details.Count < maxDetails)
-                        details.Add($"'{Path.GetFileName(scriptPath)}' — unrecognized script format, cannot verify source path");
+                        details.Add(string.Format(UILangProviderM.Current["ScriptQueueImport.DetailUnreadable"], Path.GetFileName(scriptPath)));
                     continue;
                 }
 
@@ -1130,7 +1130,7 @@ namespace OneColumnEncoder.ViewModels
                 {
                     mismatchCount++;
                     if (details.Count < maxDetails)
-                        details.Add($"'{Path.GetFileName(scriptPath)}' — refers \"{embeddedPath}\", expected \"{videoPath}\"");
+                        details.Add(string.Format(UILangProviderM.Current["ScriptQueueImport.DetailMismatch"], Path.GetFileName(scriptPath), embeddedPath, videoPath));
                 }
             }
 
@@ -1138,9 +1138,9 @@ namespace OneColumnEncoder.ViewModels
             {
                 int total = unmatchedCount + mismatchCount;
                 int omitted = total - Math.Min(total, maxDetails);
-                string msg = $"Import rejected: {unmatchedCount} unmatched basename(s), {mismatchCount} path mismatch(es).";
-                msg += "\n\nDetails:\n" + string.Join("\n", details);
-                if (omitted > 0) msg += $"\n...and {omitted} more.";
+                string msg = string.Format(UILangProviderM.Current["ScriptQueueImport.RejectedPrefix"], unmatchedCount, mismatchCount);
+                msg += "\n\n" + UILangProviderM.Current["ScriptQueueImport.DetailsHeader"] + "\n" + string.Join("\n", details);
+                if (omitted > 0) msg += "\n" + string.Format(UILangProviderM.Current["ScriptQueueImport.MoreCount"], omitted);
                 return msg;
             }
 
