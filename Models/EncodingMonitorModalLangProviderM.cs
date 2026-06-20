@@ -252,7 +252,7 @@ public class EncodingMonitorModalLangProviderM
         {
             ["ProgressTitle"] = "Progression",
             ["ProgressReportTitle"] = "Flux de progression",
-            ["MemoryTitle"] = "RAM utilisée",
+            ["MemoryTitle"] = "RAM util.",
             ["StderrTitle"] = "Journal du processus",
             ["DragLogReportHint"] = "Glissez le bord de la fenêtre pour redimensionner le journal; glissez le séparateur pour la largeur",
             ["CurrentSizeLabel"] = "Taille actuelle / GB",
@@ -323,7 +323,7 @@ public class EncodingMonitorModalLangProviderM
         {
             ["ProgressTitle"] = "Progreso",
             ["ProgressReportTitle"] = "Flujo de progreso",
-            ["MemoryTitle"] = "Uso de RAM",
+            ["MemoryTitle"] = "RAM uso",
             ["StderrTitle"] = "Registro del proceso",
             ["DragLogReportHint"] = "Arrastre el borde de la ventana para redimensionar el log; arrastre el divisor para ajustar ancho",
             ["CurrentSizeLabel"] = "Tamaño actual / GB",
@@ -394,7 +394,7 @@ public class EncodingMonitorModalLangProviderM
         {
             ["ProgressTitle"] = "進捗",
             ["ProgressReportTitle"] = "進捗ストリーム",
-            ["MemoryTitle"] = "RAM 使用量",
+            ["MemoryTitle"] = "RAM 使用",
             ["StderrTitle"] = "プロセスログ",
             ["DragLogReportHint"] = "ウィンドウの端をドラッグしてログ領域を変更; 区切り線で幅を調整",
             ["CurrentSizeLabel"] = "現在サイズ / GB",
@@ -465,7 +465,7 @@ public class EncodingMonitorModalLangProviderM
         {
             ["ProgressTitle"] = "Прогресс",
             ["ProgressReportTitle"] = "Поток прогресса",
-            ["MemoryTitle"] = "RAM",
+            ["MemoryTitle"] = "Исп. ОЗУ",
             ["StderrTitle"] = "Журнал процесса",
             ["DragLogReportHint"] = "Перетащите край окна, чтобы изменить область лога; перетащите разделитель для ширины",
             ["CurrentSizeLabel"] = "Текущий размер / GB",

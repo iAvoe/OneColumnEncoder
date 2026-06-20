@@ -83,7 +83,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
                 new OpenErrModalCmd(
                     _modalNavS,
                     UILangProviderM.SrcScribeWindowTitle,
-                    $"Failed to save scripts: {ex.Message}").Execute(null);
+                    string.Format(UILangProviderM.Current["SrcScribe.FailedToSave"], ex.Message)).Execute(null);
                 return;
             }
 
@@ -143,7 +143,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
                 new OpenErrModalCmd(
                     _modalNavS,
                     UILangProviderM.SrcScribeWindowTitle,
-                    $"Failed to save scripts: {ex.Message}").Execute(null);
+                    string.Format(UILangProviderM.Current["SrcScribe.FailedToSave"], ex.Message)).Execute(null);
                 return;
             }
 

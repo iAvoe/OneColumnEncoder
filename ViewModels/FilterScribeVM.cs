@@ -663,7 +663,7 @@ namespace OneColumnEncoder.ViewModels
             new OpenSuccModalCmd(
                 _modalNavS,
                 UILangProviderM.SrcScribeWindowTitle,
-                $"Scripts saved:\n{string.Join(Environment.NewLine, savedPaths)}").Execute(null);
+                string.Format(UILangProviderM.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, savedPaths))).Execute(null);
         }
 
         private void ExecuteQueueSaveAndImport()
@@ -708,10 +708,10 @@ namespace OneColumnEncoder.ViewModels
             }
 
             // Extract saved script file names for card display and hover tooltip
-            string[] avsFileNames = savedPaths.Where(path => path.EndsWith(".avs", StringComparison.OrdinalIgnoreCase))
-                .Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!).ToArray();
-            string[] vpyFileNames = savedPaths.Where(path => path.EndsWith(".vpy", StringComparison.OrdinalIgnoreCase))
-                .Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!).ToArray();
+            string[] avsFileNames = [.. savedPaths.Where(path => path.EndsWith(".avs", StringComparison.OrdinalIgnoreCase))
+                .Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!)];
+            string[] vpyFileNames = [.. savedPaths.Where(path => path.EndsWith(".vpy", StringComparison.OrdinalIgnoreCase))
+                .Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!)];
             _avsItem.P2TextData = directory;
             _avsItem.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(avsFileNames);
             _avsItem.P1TooltipText = BrowseSourceQueueCmd.FormatQueueP1TooltipText(avsFileNames);
@@ -722,7 +722,7 @@ namespace OneColumnEncoder.ViewModels
             new OpenSuccModalCmd(
                 _modalNavS,
                 UILangProviderM.SrcScribeWindowTitle,
-                $"Scripts saved:\n{string.Join(Environment.NewLine, savedPaths)}").Execute(null);
+                string.Format(UILangProviderM.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, savedPaths))).Execute(null);
             _closeAction();
         }
 
@@ -764,7 +764,7 @@ namespace OneColumnEncoder.ViewModels
             new OpenSuccModalCmd(
                 _modalNavS,
                 UILangProviderM.SrcScribeWindowTitle,
-                $"Scripts saved:\n{avsPath}\n{vpyPath}").Execute(null);
+                string.Format(UILangProviderM.Current["ScriptGen.ScriptsSaved"], $"{avsPath}\n{vpyPath}")).Execute(null);
             _closeAction();
         }
 
@@ -823,7 +823,7 @@ namespace OneColumnEncoder.ViewModels
             new OpenErrModalCmd(
                 _modalNavS,
                 UILangProviderM.SrcScribeWindowTitle,
-                $"Failed to save scripts: {ex.Message}").Execute(null);
+                string.Format(UILangProviderM.Current["SrcScribe.FailedToSave"], ex.Message)).Execute(null);
         }
 
         private void ShowSavedMessage(string path)
@@ -831,7 +831,7 @@ namespace OneColumnEncoder.ViewModels
             new OpenSuccModalCmd(
                 _modalNavS,
                 UILangProviderM.SrcScribeWindowTitle,
-                $"Script saved:\n{path}").Execute(null);
+                string.Format(UILangProviderM.Current["SrcScribe.ScriptSaved"], path)).Execute(null);
         }
 
         private string GetCurrentFullScript()
