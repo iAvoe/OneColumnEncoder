@@ -49,6 +49,7 @@
 
             <ListBox Grid.Row="1"
                      ItemsSource="{Binding QueueSidebar.Jobs}"
+                     SelectedItem="{Binding QueueSidebar.SelectedJob, Mode=TwoWay}"
                      BorderThickness="0"
                      Background="Transparent"
                      Margin="0 5 0 0"

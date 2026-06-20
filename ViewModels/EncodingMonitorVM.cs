@@ -5,6 +5,7 @@ using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -45,9 +46,11 @@ namespace OneColumnEncoder.ViewModels
         private LogFoldState _upstreamStderrFoldState = new();
         private LogFoldState _downstreamStderrFoldState = new();
         private readonly ConcurrentQueue<ProcessLogEntry> _logQueue = new();
+        private readonly Dictionary<string, EncodingLogSnapshot> _logSnapshotsByJobId = [];
         private long? _totalFrames;
         private readonly IReadOnlyList<(EncodingPipelineRequest Request, EncodingPipelineCommand Command)>? _queueItems;
         private int _queueModeIndex = -1;
+        private string? _activeLogJobId;
         private readonly Lock _logLock = new();
         private DateTime _lastStatsUpdate = DateTime.MinValue;
         private DateTime _lastMemoryStatsUpdate = DateTime.MinValue;
@@ -297,10 +300,15 @@ namespace OneColumnEncoder.ViewModels
             FinishButtons.B5_5IsEnabled = false;
 
             QueueSidebar = new QueueSidebarVM(enableQueueSidebar);
+            QueueSidebar.PropertyChanged += OnQueueSidebarPropertyChanged;
+            if (!enableQueueSidebar)
+            {
+                QueueSidebar.IsVisible = true;
+                QueueSidebar.AddJob(CreateSidebarJob(_request, "Pending"));
+            }
             QueueSidebarToggleCmd = new ActionCmd(_ =>
             {
-                if (enableQueueSidebar)
-                    QueueSidebar.IsVisible = !QueueSidebar.IsVisible;
+                QueueSidebar.IsVisible = !QueueSidebar.IsVisible;
             });
             QueueSidebarButtons = ButtonGroupVM.CreateTwoButton(
                 Lang.QueueSidebarStartBatchText,
@@ -354,7 +362,93 @@ namespace OneColumnEncoder.ViewModels
             if (_queueItems != null)
                 _ = RunQueueEncodingAsync(_cts.Token);
             else
-                _ = RunEncodingAsync(_cts.Token);
+                _ = RunSingleEncodingAsync(_cts.Token);
+        }
+
+        private async Task RunSingleEncodingAsync(CancellationToken cancellationToken)
+        {
+            QueueJobItemVM? jobVM = QueueSidebar.SelectedJob ?? (QueueSidebar.Jobs.Count > 0 ? QueueSidebar.Jobs[0] : null);
+            if (jobVM != null)
+            {
+                _activeLogJobId = jobVM.JobId;
+                ResetActiveLogState(jobVM.JobId);
+                QueueSidebar.MarkJobEncoding(jobVM);
+            }
+
+            await RunEncodingAsync(cancellationToken);
+
+            if (jobVM == null) return;
+            if (_success)
+                QueueSidebar.MarkJobCompleted(jobVM);
+            else if (_userInterruptRequested)
+                QueueSidebar.MarkJobInterrupted(jobVM);
+            else
+                QueueSidebar.MarkJobFailed(jobVM, StatusText);
+        }
+
+        private QueueJobItemM CreateSidebarJob(EncodingPipelineRequest request, string status)
+        {
+            return new QueueJobItemM
+            {
+                JobId = Guid.NewGuid().ToString(),
+                SourcePath = request.UpstreamInputPath,
+                OutputPath = request.OutputPath,
+                Status = status,
+                EncoderExeName = request.EncoderExeName,
+                QueuedAt = DateTime.Now
+            };
+        }
+
+        private void ResetActiveLogState(string jobId)
+        {
+            _upstreamStderrBuilder.Clear();
+            _downstreamStderrBuilder.Clear();
+            _upstreamStderrFoldState = new LogFoldState();
+            _downstreamStderrFoldState = new LogFoldState();
+            _logQueue.Clear();
+            _logSnapshotsByJobId[jobId] = new EncodingLogSnapshot(string.Empty, string.Empty);
+            SetDisplayedLogs(string.Empty, string.Empty);
+        }
+
+        private void UpdateActiveLogSnapshot()
+        {
+            if (_activeLogJobId == null) return;
+            _logSnapshotsByJobId[_activeLogJobId] = new EncodingLogSnapshot(
+                _upstreamStderrBuilder.ToString(),
+                _downstreamStderrBuilder.ToString());
+        }
+
+        private bool IsActiveLogSelected()
+        {
+            QueueJobItemVM? selectedJob = QueueSidebar.SelectedJob;
+            return selectedJob == null || selectedJob.JobId == _activeLogJobId;
+        }
+
+        private void SetDisplayedLogs(string upstreamText, string downstreamText)
+        {
+            UpstreamReportText = upstreamText;
+            DownstreamReportText = downstreamText;
+        }
+
+        private void OnQueueSidebarPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != nameof(QueueSidebarVM.SelectedJob)) return;
+
+            lock (_logLock)
+            {
+                QueueJobItemVM? selectedJob = QueueSidebar.SelectedJob;
+                if (selectedJob == null) return;
+                if (selectedJob.JobId == _activeLogJobId)
+                {
+                    SetDisplayedLogs(_upstreamStderrBuilder.ToString(), _downstreamStderrBuilder.ToString());
+                    return;
+                }
+
+                if (_logSnapshotsByJobId.TryGetValue(selectedJob.JobId, out EncodingLogSnapshot snapshot))
+                    SetDisplayedLogs(snapshot.UpstreamText, snapshot.DownstreamText);
+                else
+                    SetDisplayedLogs(string.Empty, string.Empty);
+            }
         }
 
         /// <summary>
@@ -542,16 +636,7 @@ namespace OneColumnEncoder.ViewModels
             for (int i = 0; i < total; i++)
             {
                 var (request, command) = _queueItems[i];
-                var job = new QueueJobItemM
-                {
-                    JobId = Guid.NewGuid().ToString(),
-                    SourcePath = request.UpstreamInputPath,
-                    OutputPath = request.OutputPath,
-                    Status = "Pending",
-                    EncoderExeName = request.EncoderExeName,
-                    QueuedAt = DateTime.Now
-                };
-                QueueSidebar.AddJob(job);
+                QueueSidebar.AddJob(CreateSidebarJob(request, "Pending"));
             }
             QueueSidebar.SaveToDisk();
 
@@ -576,15 +661,9 @@ namespace OneColumnEncoder.ViewModels
                 _encoderProcess = null;
                 _muxProcess = null;
 
-                _upstreamStderrBuilder.Clear();
-                _downstreamStderrBuilder.Clear();
-                _upstreamStderrFoldState = new LogFoldState();
-                _downstreamStderrFoldState = new LogFoldState();
-                _logQueue.Clear();
-                UpstreamReportText = string.Empty;
-                DownstreamReportText = string.Empty;
-
                 var jobVM = QueueSidebar.Jobs[i];
+                _activeLogJobId = jobVM.JobId;
+                ResetActiveLogState(jobVM.JobId);
                 QueueSidebar.MarkJobEncoding(jobVM);
 
                 await RunEncodingAsync(cancellationToken);
@@ -770,8 +849,9 @@ namespace OneColumnEncoder.ViewModels
             if (IsFrozen) return;
             lock (_logLock)
             {
-                UpstreamReportText = _upstreamStderrBuilder.ToString();
-                DownstreamReportText = _downstreamStderrBuilder.ToString();
+                UpdateActiveLogSnapshot();
+                if (IsActiveLogSelected())
+                    SetDisplayedLogs(_upstreamStderrBuilder.ToString(), _downstreamStderrBuilder.ToString());
             }
         }
 
@@ -843,9 +923,15 @@ namespace OneColumnEncoder.ViewModels
             {
                 lock (_logLock)
                 {
-                    UpstreamReportText = _upstreamStderrBuilder.ToString();
-                    DownstreamReportText = _downstreamStderrBuilder.ToString();
+                    UpdateActiveLogSnapshot();
+                    if (IsActiveLogSelected())
+                        SetDisplayedLogs(_upstreamStderrBuilder.ToString(), _downstreamStderrBuilder.ToString());
                 }
+            }
+            else if (changed)
+            {
+                lock (_logLock)
+                    UpdateActiveLogSnapshot();
             }
         }
 
@@ -1926,6 +2012,7 @@ namespace OneColumnEncoder.ViewModels
             _timer.Stop();
             _timer.Tick -= OnTimerTick;
             UILangProviderM.CurrentChanged -= OnLanguageChanged;
+            QueueSidebar.PropertyChanged -= OnQueueSidebarPropertyChanged;
             _cts?.Dispose();
             QueueSidebar.Dispose();
             base.Dispose();
@@ -1943,6 +2030,8 @@ namespace OneColumnEncoder.ViewModels
         }
 
         private readonly record struct ProcessLogEntry(ProcessLogKind Kind, string Line, bool OverwritesPreviousLine);
+
+        private readonly record struct EncodingLogSnapshot(string UpstreamText, string DownstreamText);
 
         private readonly record struct LogFoldEntry(string Line, int RepeatCount);
 

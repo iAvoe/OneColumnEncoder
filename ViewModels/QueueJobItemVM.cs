@@ -7,6 +7,7 @@ namespace OneColumnEncoder.ViewModels
     public class QueueJobItemVM : BaseVM
     {
         private readonly QueueJobItemM _model;
+        private bool _isSidebarSelected;
 
         public QueueJobItemVM(QueueJobItemM model)
         {
@@ -40,7 +41,7 @@ namespace OneColumnEncoder.ViewModels
         public bool R1IsEnabled => _model.Status == "Encoding";
         public bool R2IsEnabled => _model.Status == "Failed";
 
-        public bool IsSelected => _model.Status == "Encoding";
+        public bool IsSelected => _isSidebarSelected || _model.Status == "Encoding";
         public bool IsCancel => _model.Status == "Failed";
         public bool IsReal => true;
         public bool EnableRealCheck => false;
@@ -48,6 +49,16 @@ namespace OneColumnEncoder.ViewModels
 
         public ICommand? R1Command { get; set; }
         public ICommand? R2Command { get; set; }
+
+        public bool IsSidebarSelected
+        {
+            get => _isSidebarSelected;
+            set
+            {
+                if (!SetProperty(ref _isSidebarSelected, value)) return;
+                OnPropertyChanged(nameof(IsSelected));
+            }
+        }
 
         public string Status
         {

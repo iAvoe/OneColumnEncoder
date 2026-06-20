@@ -9,6 +9,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly QueueJobsStoreM _store;
         private readonly bool _isPersistent;
         private bool _isVisible;
+        private QueueJobItemVM? _selectedJob;
 
         public QueueSidebarVM(bool loadFromDisk = true)
         {
@@ -24,6 +25,21 @@ namespace OneColumnEncoder.ViewModels
         {
             get => _isVisible;
             set => SetProperty(ref _isVisible, value);
+        }
+
+        public QueueJobItemVM? SelectedJob
+        {
+            get => _selectedJob;
+            set
+            {
+                if (_selectedJob == value) return;
+                if (_selectedJob != null)
+                    _selectedJob.IsSidebarSelected = false;
+                _selectedJob = value;
+                if (_selectedJob != null)
+                    _selectedJob.IsSidebarSelected = true;
+                OnPropertyChanged();
+            }
         }
 
         public string StatsText
@@ -43,6 +59,7 @@ namespace OneColumnEncoder.ViewModels
         {
             _store.Jobs.Clear();
             Jobs.Clear();
+            SelectedJob = null;
             RefreshBindings();
         }
 
@@ -66,7 +83,9 @@ namespace OneColumnEncoder.ViewModels
         public void AddJob(QueueJobItemM job)
         {
             _store.Jobs.Add(job);
-            Jobs.Add(new QueueJobItemVM(job));
+            QueueJobItemVM jobVM = new(job);
+            Jobs.Add(jobVM);
+            SelectedJob ??= jobVM;
             RefreshBindings();
         }
 
@@ -87,6 +106,7 @@ namespace OneColumnEncoder.ViewModels
         public void MarkJobEncoding(QueueJobItemVM job)
         {
             job.Status = "Encoding";
+            SelectedJob = job;
             SaveToDisk();
             RefreshBindings();
         }
