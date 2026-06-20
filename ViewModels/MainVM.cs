@@ -171,7 +171,7 @@ namespace OneColumnEncoder.ViewModels
                 () => GetCurrentVideoSourcePath(),
                 () => ActiveScriptSrcImportZone[0],
                 () => ActiveScriptSrcImportZone[1],
-                GetPreferredScriptSourceKindForSelectedUpstream,
+                () => SourceFileKindH.GetPreferredScriptSourceKind(UpstreamsZone),
                 OnSourceImported,
                 args => _scriptScribeFfmpegFilterArgs = args ?? string.Empty,
                 () => SrcValidationCard.Checklist1.Any(
@@ -728,7 +728,7 @@ namespace OneColumnEncoder.ViewModels
 
             bool scriptSourcePicked = expectedKind == null || ActiveScriptSrcImportZone.Any(t =>
                 t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData) &&
-                ResolveSourceFileKind(t.Name) == expectedKind.Value);
+                SourceFileKindH.ResolveSourceFileKind(t.Name) == expectedKind.Value);
             ToolsImportCard.SetScriptSourcePickedStatus(expectedKind != null, scriptSourcePicked);
         }
 
@@ -788,7 +788,7 @@ namespace OneColumnEncoder.ViewModels
                 return;
             }
 
-            SourceFileKind kind = ResolveSourceFileKind(item.Name);
+            SourceFileKind kind = SourceFileKindH.ResolveSourceFileKind(item.Name);
             if (QueueScriptSrcImportZone.Contains(item))
             {
                 item.R1Command = new BrowseSourceScriptQueueCmd(item, kind, OnSourceScriptQueueImported);
@@ -943,7 +943,7 @@ namespace OneColumnEncoder.ViewModels
 
         private bool ShouldSelectImportedScriptSource(SourceFileKind kind)
         {
-            SourceFileKind? preferredKind = GetPreferredScriptSourceKindForSelectedUpstream();
+            SourceFileKind? preferredKind = SourceFileKindH.GetPreferredScriptSourceKind(UpstreamsZone);
             return preferredKind == null || kind == preferredKind.Value;
         }
 
@@ -1328,10 +1328,7 @@ namespace OneColumnEncoder.ViewModels
             string? upstreamExeName = upstream == null
                 ? null
                 : ToolCatalogProviderM.ResolveExeFromDisplayName(upstream.Name);
-            return upstreamExeName?.Equals("ffmpeg.exe", StringComparison.OrdinalIgnoreCase) == true
-                || upstreamExeName?.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase) == true
-                || upstreamExeName?.Equals("avs2yuv.exe", StringComparison.OrdinalIgnoreCase) == true
-                || upstreamExeName?.Equals("avs2pipemod.exe", StringComparison.OrdinalIgnoreCase) == true;
+            return SourceFileKindH.IsQueueRouteSupportedUpstream(upstreamExeName);
         }
 
         private string GetSelectedVideoSourcePath()
@@ -1425,7 +1422,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 scriptKind = SourceFileKind.VapourSynthScript;
                 ToolItemCardVM? vpyItem = ActiveScriptSrcImportZone.FirstOrDefault(t =>
-                    ResolveSourceFileKind(t.Name) == scriptKind && !string.IsNullOrWhiteSpace(t.P2TextData));
+                    SourceFileKindH.ResolveSourceFileKind(t.Name) == scriptKind && !string.IsNullOrWhiteSpace(t.P2TextData));
                 if (vpyItem == null) return null;
                 scriptDir = vpyItem.P2TextData;
             }
@@ -1434,7 +1431,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 scriptKind = SourceFileKind.AviSynthScript;
                 ToolItemCardVM? avsItem = ActiveScriptSrcImportZone.FirstOrDefault(t =>
-                    ResolveSourceFileKind(t.Name) == scriptKind && !string.IsNullOrWhiteSpace(t.P2TextData));
+                    SourceFileKindH.ResolveSourceFileKind(t.Name) == scriptKind && !string.IsNullOrWhiteSpace(t.P2TextData));
                 if (avsItem == null) return null;
                 scriptDir = avsItem.P2TextData;
             }
@@ -1578,7 +1575,7 @@ namespace OneColumnEncoder.ViewModels
         {
             ToolItemCardVM? svfiIni = ActiveScriptSrcImportZone.FirstOrDefault(t =>
                 t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData) &&
-                ResolveSourceFileKind(t.Name) == SourceFileKind.SvfiIni);
+                SourceFileKindH.ResolveSourceFileKind(t.Name) == SourceFileKind.SvfiIni);
             return svfiIni?.P2TextData ?? string.Empty;
         }
 
@@ -1593,41 +1590,8 @@ namespace OneColumnEncoder.ViewModels
                 : SourceFileKind.AviSynthScript;
 
             ToolItemCardVM? source = ActiveScriptSrcImportZone.FirstOrDefault(t =>
-                ResolveSourceFileKind(t.Name) == kind && !string.IsNullOrWhiteSpace(t.P2TextData));
+                SourceFileKindH.ResolveSourceFileKind(t.Name) == kind && !string.IsNullOrWhiteSpace(t.P2TextData));
             return source?.P2TextData ?? string.Empty;
-        }
-
-        private SourceFileKind? GetPreferredScriptSourceKindForSelectedUpstream()
-        {
-            ToolItemCardVM? selectedUpstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected);
-            string? upstreamExeName = selectedUpstream == null
-                ? null
-                : ToolCatalogProviderM.ResolveExeFromDisplayName(selectedUpstream.Name);
-
-            return upstreamExeName switch
-            {
-                "vspipe.exe" => SourceFileKind.VapourSynthScript,
-                "avs2yuv.exe" or "avs2pipemod.exe" => SourceFileKind.AviSynthScript,
-                _ => null
-            };
-        }
-
-        private static SourceFileKind ResolveSourceFileKind(string displayName)
-        {
-            if (displayName.Equals(UILangProviderM.Current["Tool.Source.VideoSource"], StringComparison.OrdinalIgnoreCase) ||
-                displayName.Equals(UILangProviderM.Current["Tool.Source.VideoSrcQueue"], StringComparison.OrdinalIgnoreCase))
-                return SourceFileKind.Video;
-            if (displayName.Equals(UILangProviderM.Current["Tool.Source.AviSynth"], StringComparison.OrdinalIgnoreCase) ||
-                displayName.Equals(UILangProviderM.Current["Tool.Source.AviSynthQueue"], StringComparison.OrdinalIgnoreCase))
-                return SourceFileKind.AviSynthScript;
-            if (displayName.Equals(UILangProviderM.Current["Tool.Source.VapourSynth"], StringComparison.OrdinalIgnoreCase) ||
-                displayName.Equals(UILangProviderM.Current["Tool.Source.VapourSynthQueue"], StringComparison.OrdinalIgnoreCase))
-                return SourceFileKind.VapourSynthScript;
-            if (displayName.Equals(UILangProviderM.Current["Tool.Source.Svfi"], StringComparison.OrdinalIgnoreCase) ||
-                displayName.Equals(UILangProviderM.Current["Tool.Source.SvfiQueue"], StringComparison.OrdinalIgnoreCase))
-                return SourceFileKind.SvfiIni;
-
-            throw new ArgumentException($"Unknown source type: {displayName}");
         }
 
         private bool IsVideoSourceQueueItem(ToolItemCardVM item) =>
@@ -1787,7 +1751,7 @@ namespace OneColumnEncoder.ViewModels
                     {
                         if (string.IsNullOrWhiteSpace(src.P2TextData)) continue;
 
-                        bool isMatch = (upstreamExe, ResolveSourceFileKind(src.Name)) switch
+                        bool isMatch = (upstreamExe, SourceFileKindH.ResolveSourceFileKind(src.Name)) switch
                         {
                             ("vspipe.exe", SourceFileKind.VapourSynthScript) => true,
                             ("avs2yuv.exe", SourceFileKind.AviSynthScript) => true,
@@ -1933,7 +1897,7 @@ namespace OneColumnEncoder.ViewModels
 
                 if (IsVideoSourceQueueItem(item)) continue;
 
-                SourceFileKind fileKind = ResolveSourceFileKind(item.Name);
+                SourceFileKind fileKind = SourceFileKindH.ResolveSourceFileKind(item.Name);
                 item.P1TextData = SourceFilePickerH.GetPrimaryText(fileKind, item.P2TextData);
             }
         }
@@ -1946,7 +1910,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 if (item == null) continue;
                 if (string.IsNullOrWhiteSpace(item.P2TextData)) continue;
-                SourceFileKind fileKind = ResolveSourceFileKind(item.Name);
+                SourceFileKind fileKind = SourceFileKindH.ResolveSourceFileKind(item.Name);
                 string[] filePaths = SourceFilePickerH.GetSourceFilesInFolder(item.P2TextData, fileKind);
                 item.P1TextData = VideoSourceQueueH.GetQueueP1Text(
                     [.. filePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!)]);
