@@ -73,7 +73,7 @@
                             <Setter Property="Background"
                                     Value="{StaticResource BackgroundRed}" />
                         </MultiDataTrigger>
-                        <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        <DataTrigger Binding="{Binding IsCardEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      Value="False">
                             <Setter Property="BorderBrush"
                                     Value="{StaticResource GlobalSecondary}" />
@@ -158,7 +158,7 @@
                             <Setter Property="Background"
                                     Value="{StaticResource BackgroundRed}" />
                         </MultiDataTrigger>
-                        <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        <DataTrigger Binding="{Binding IsCardEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      Value="False">
                             <Setter Property="BorderBrush"
                                     Value="{StaticResource GlobalSecondary}" />

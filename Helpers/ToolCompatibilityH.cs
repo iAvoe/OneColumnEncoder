@@ -91,7 +91,10 @@ namespace OneColumnEncoder.Helpers
             if (videoSrcImportZone.Count < 2) return;
 
             ToolItemCardVM? upstream = upstreamsZone.FirstOrDefault(t => t.IsSelected);
+            ToolItemCardVM singleVideoCard = videoSrcImportZone[0];
             ToolItemCardVM queueCard = videoSrcImportZone[1];
+
+            singleVideoCard.IsEnabled = true;
 
             bool shouldDisable = upstream != null && (
                 ToolDefinitionProviderM.IsImportedTool(upstream.Name, "one_line_shot_args.exe"));
