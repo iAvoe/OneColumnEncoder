@@ -29,7 +29,7 @@ namespace OneColumnEncoder.Commands
         private readonly Func<string>? _getQueueJsonPath = getQueueJsonPath;
         private readonly Func<string[], EncodingPipelineRequest[]?>? _buildQueueRequests = buildQueueRequests;
         private readonly Func<bool>? _isQueueRouteSupported = isQueueRouteSupported;
-        private readonly StartEncCmdLangProviderM _lang = new(UILangProviderM.Current.LanguageCode);
+        private static StartEncCmdLangProviderM Lang => new(UILangProviderM.Current.LanguageCode);
 
         public override void Execute(object? parameter)
         {
@@ -44,8 +44,8 @@ namespace OneColumnEncoder.Commands
             {
                 new OpenWarnModalCmd(
                     _modalNavS,
-                    _lang.WarnTitle,
-                    _lang.MissingUpstreamMsg).Execute(null);
+                    Lang.WarnTitle,
+                    Lang.MissingUpstreamMsg).Execute(null);
                 return;
             }
 
@@ -64,7 +64,7 @@ namespace OneColumnEncoder.Commands
             ConfirmationModal window = new();
             CloseModalCmd closeCmd = new(window.Close);
             ConfirmationVM vm = ConfirmationVM.CreateDebug(
-                _lang.ConfirmTitle, command.DisplayCommandLine,
+                Lang.ConfirmTitle, command.DisplayCommandLine,
                 closeCmd,
                 new ActionCmd(_ =>
                 {
@@ -86,7 +86,7 @@ namespace OneColumnEncoder.Commands
         {
             if (_isQueueRouteSupported?.Invoke() == false)
             {
-                new OpenErrModalCmd(_modalNavS, _lang.WarnTitle, _lang.QueueUnsupportedRouteMsg).Execute(null);
+                new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, Lang.QueueUnsupportedRouteMsg).Execute(null);
                 return;
             }
 
@@ -100,7 +100,7 @@ namespace OneColumnEncoder.Commands
             }
             catch (Exception ex)
             {
-                new OpenErrModalCmd(_modalNavS, _lang.WarnTitle, ex.Message).Execute(null);
+                new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, ex.Message).Execute(null);
                 return;
             }
 
@@ -108,15 +108,15 @@ namespace OneColumnEncoder.Commands
             {
                 new OpenWarnModalCmd(
                     _modalNavS,
-                    _lang.WarnTitle,
-                    _lang.MissingUpstreamMsg).Execute(null);
+                    Lang.WarnTitle,
+                    Lang.MissingUpstreamMsg).Execute(null);
                 return;
             }
 
             string? queueError = GetQueueValidationError(queueItems);
             if (!string.IsNullOrWhiteSpace(queueError))
             {
-                new OpenErrModalCmd(_modalNavS, _lang.WarnTitle, queueError).Execute(null);
+                new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, queueError).Execute(null);
                 return;
             }
 
@@ -128,7 +128,7 @@ namespace OneColumnEncoder.Commands
             string queueJsonPath = _getQueueJsonPath?.Invoke() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(queueJsonPath) || !File.Exists(queueJsonPath))
             {
-                new OpenErrModalCmd(_modalNavS, _lang.WarnTitle, _lang.QueueJsonMissingMsg).Execute(null);
+                new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, Lang.QueueJsonMissingMsg).Execute(null);
                 return null;
             }
 
@@ -144,7 +144,7 @@ namespace OneColumnEncoder.Commands
 
                 if (sourcePaths.Length == 0)
                 {
-                    new OpenErrModalCmd(_modalNavS, _lang.WarnTitle, _lang.QueueJsonNoEntriesMsg).Execute(null);
+                    new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, Lang.QueueJsonNoEntriesMsg).Execute(null);
                     return null;
                 }
 
@@ -154,8 +154,8 @@ namespace OneColumnEncoder.Commands
             {
                 new OpenErrModalCmd(
                     _modalNavS,
-                    _lang.WarnTitle,
-                    string.Format(_lang.QueueJsonInvalidMsg, ex.Message)).Execute(null);
+                    Lang.WarnTitle,
+                    string.Format(Lang.QueueJsonInvalidMsg, ex.Message)).Execute(null);
                 return null;
             }
         }
@@ -193,7 +193,7 @@ namespace OneColumnEncoder.Commands
             ConfirmationModal window = new();
             CloseModalCmd closeCmd = new(window.Close);
             ConfirmationVM vm = ConfirmationVM.CreateWarning(
-                _lang.OverwriteTitle,
+                Lang.OverwriteTitle,
                 BuildOverwriteWarningMessage(overwriteTargets, maxOutputLengthBytes, confirmDelayMs),
                 closeCmd,
                 new ActionCmd(_ =>
@@ -253,14 +253,14 @@ namespace OneColumnEncoder.Commands
                 ? new[]
                 {
                     new OverwriteTarget(
-                        Label(_lang.EncodedOutputLabel),
+                        Label(Lang.EncodedOutputLabel),
                         EncodingPipelineH.ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath),
                         0L)
                 }
                 : new[]
                 {
-                    new OverwriteTarget(Label(_lang.EncodedOutputLabel), command.MuxCommand.EncodedVideoPath, 0L),
-                    new OverwriteTarget(Label(_lang.MuxOutputLabel), command.MuxCommand.OutputPath, 0L)
+                    new OverwriteTarget(Label(Lang.EncodedOutputLabel), command.MuxCommand.EncodedVideoPath, 0L),
+                    new OverwriteTarget(Label(Lang.MuxOutputLabel), command.MuxCommand.OutputPath, 0L)
                 };
         }
 
@@ -270,7 +270,7 @@ namespace OneColumnEncoder.Commands
                 .Select(item => item.Request.UpstreamInputPath)
                 .Where(path => string.IsNullOrWhiteSpace(path) || !File.Exists(path))];
             if (missingSourcePaths.Length > 0)
-                return BuildPathListMessage(_lang.QueueSourceMissingMsg, missingSourcePaths);
+                return BuildPathListMessage(Lang.QueueSourceMissingMsg, missingSourcePaths);
 
             string[] duplicateOutputPaths = [.. queueItems
                 .SelectMany(item => GetOverwriteCandidates(item.Request, item.Command))
@@ -278,7 +278,7 @@ namespace OneColumnEncoder.Commands
                 .Where(group => group.Count() > 1)
                 .Select(group => group.Key)];
             return duplicateOutputPaths.Length > 0
-                ? BuildPathListMessage(_lang.QueueDuplicateOutputMsg, duplicateOutputPaths)
+                ? BuildPathListMessage(Lang.QueueDuplicateOutputMsg, duplicateOutputPaths)
                 : null;
         }
 
@@ -288,7 +288,7 @@ namespace OneColumnEncoder.Commands
                 .Take(MaxListedOverwriteTargets)
                 .Select(path => $"- {path}");
             string omittedLine = paths.Length > MaxListedOverwriteTargets
-                ? Environment.NewLine + string.Format(_lang.AdditionalOverwriteTargetsLabel, paths.Length - MaxListedOverwriteTargets)
+                ? Environment.NewLine + string.Format(Lang.AdditionalOverwriteTargetsLabel, paths.Length - MaxListedOverwriteTargets)
                 : string.Empty;
 
             return string.Join(Environment.NewLine, new[] { header }.Concat(listedPaths)) + omittedLine;
@@ -346,19 +346,19 @@ namespace OneColumnEncoder.Commands
             double seconds = confirmDelayMs / 1000d;
             string[] targetLines = targets
                 .Take(MaxListedOverwriteTargets)
-                .Select(t => string.Format(_lang.OverwriteTargetLabel, t.Label, t.Path, FormatFileSize(t.LengthBytes)))
+                .Select(t => string.Format(Lang.OverwriteTargetLabel, t.Label, t.Path, FormatFileSize(t.LengthBytes)))
                 .ToArray();
             string omittedLine = targets.Length > MaxListedOverwriteTargets
-                ? string.Format(_lang.AdditionalOverwriteTargetsLabel, targets.Length - MaxListedOverwriteTargets)
+                ? string.Format(Lang.AdditionalOverwriteTargetsLabel, targets.Length - MaxListedOverwriteTargets)
                 : string.Empty;
 
             string[] messageParts =
             [
-                _lang.OverwriteMsg,
+                Lang.OverwriteMsg,
                 string.Join(Environment.NewLine, targetLines),
                 omittedLine,
-                string.Format(_lang.LargestExistingSizeLabel, FormatFileSize(maxFileLengthBytes)),
-                string.Format(_lang.ConfirmDelayLabel, seconds.ToString("0.0", CultureInfo.InvariantCulture))
+                string.Format(Lang.LargestExistingSizeLabel, FormatFileSize(maxFileLengthBytes)),
+                string.Format(Lang.ConfirmDelayLabel, seconds.ToString("0.0", CultureInfo.InvariantCulture))
             ];
 
             return string.Join(Environment.NewLine, messageParts.Where(part => !string.IsNullOrWhiteSpace(part)));
@@ -378,8 +378,8 @@ namespace OneColumnEncoder.Commands
             const long bytesPerGb = 1024L * 1024L * 1024L;
 
             if (bytes >= bytesPerGb)
-                return $"{bytes / (double)bytesPerGb:0.0}{_lang.GbSuffix}";
-            return $"{bytes / (double)bytesPerMb:0.0}{_lang.MbSuffix}";
+                return $"{bytes / (double)bytesPerGb:0.0}{Lang.GbSuffix}";
+            return $"{bytes / (double)bytesPerMb:0.0}{Lang.MbSuffix}";
         }
 
         private readonly record struct OverwriteTarget(string Label, string Path, long LengthBytes);

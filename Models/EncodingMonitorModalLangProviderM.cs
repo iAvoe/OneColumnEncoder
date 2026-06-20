@@ -81,8 +81,6 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarCompletedHeaderText"] = "Completed",
 
             ["QueueItemRemoveText"] = "Remove",
-            ["QueueItemMoveUpText"] = "Move up",
-            ["QueueItemMoveDownText"] = "Move down",
             ["StopQueueConfirmTitle"] = "Stop queue",
             ["StopQueueConfirmMessage"] = "The current job has been interrupted. Stop the entire queue?",
         },
@@ -163,8 +161,6 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarCompletedHeaderText"] = "已完成",
 
             ["QueueItemRemoveText"] = "删除",
-            ["QueueItemMoveUpText"] = "上移",
-            ["QueueItemMoveDownText"] = "下移",
             ["StopQueueConfirmTitle"] = "停止队列",
             ["StopQueueConfirmMessage"] = "当前任务已中断。是否停止整个队列？",
         },
@@ -245,8 +241,6 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarCompletedHeaderText"] = "已完成",
 
             ["QueueItemRemoveText"] = "刪除",
-            ["QueueItemMoveUpText"] = "上移",
-            ["QueueItemMoveDownText"] = "下移",
             ["StopQueueConfirmTitle"] = "停止隊列",
             ["StopQueueConfirmMessage"] = "當前任務已中斷。是否停止整個隊列？",
         }
@@ -322,8 +316,6 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarCancelAllText"] = "Tout annuler",
 
             ["QueueItemRemoveText"] = "Supprimer",
-            ["QueueItemMoveUpText"] = "Monter",
-            ["QueueItemMoveDownText"] = "Descendre",
             ["StopQueueConfirmTitle"] = "Arrêter la file",
             ["StopQueueConfirmMessage"] = "La tâche actuelle a été interrompue. Arrêter toute la file d'attente ?"
         };
@@ -395,8 +387,6 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarCancelAllText"] = "Cancelar todo",
 
             ["QueueItemRemoveText"] = "Eliminar",
-            ["QueueItemMoveUpText"] = "Subir",
-            ["QueueItemMoveDownText"] = "Bajar",
             ["StopQueueConfirmTitle"] = "Detener cola",
             ["StopQueueConfirmMessage"] = "La tarea actual ha sido interrumpida. ¿Detener toda la cola?"
         };
@@ -468,8 +458,6 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarCancelAllText"] = "すべてキャンセル",
 
             ["QueueItemRemoveText"] = "削除",
-            ["QueueItemMoveUpText"] = "上へ",
-            ["QueueItemMoveDownText"] = "下へ",
             ["StopQueueConfirmTitle"] = "キューを停止",
             ["StopQueueConfirmMessage"] = "現在のジョブが中断されました。キュー全体を停止しますか？"
         };
@@ -541,8 +529,6 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarCancelAllText"] = "Отменить всё",
 
             ["QueueItemRemoveText"] = "Удалить",
-            ["QueueItemMoveUpText"] = "Вверх",
-            ["QueueItemMoveDownText"] = "Вниз",
             ["StopQueueConfirmTitle"] = "Остановить очередь",
             ["StopQueueConfirmMessage"] = "Текущая задача прервана. Остановить всю очередь?"
         };
@@ -714,8 +700,8 @@ public class EncodingMonitorModalLangProviderM
         QueueSidebarUnfinishedHeaderText = this["QueueSidebarUnfinishedHeaderText"];
         QueueSidebarCompletedHeaderText = this["QueueSidebarCompletedHeaderText"];
         QueueItemRemoveText = this["QueueItemRemoveText"];
-        QueueItemMoveUpText = this["QueueItemMoveUpText"];
-        QueueItemMoveDownText = this["QueueItemMoveDownText"];
+        QueueItemMoveUpText = "↑↑";
+        QueueItemMoveDownText = "↓↓";
         StopQueueConfirmTitle = this["StopQueueConfirmTitle"];
         StopQueueConfirmMessage = this["StopQueueConfirmMessage"];
     }
