@@ -45,7 +45,7 @@
                     <TabItem Header="{Binding CrfModeText}"
                              Padding="15 7.5"
                              FontWeight="Bold">
-                        <comps:IntegerSliderGroup Margin="10 5 0 7.5">
+                        <comps:IntegerSliderGroup Margin="10 5 0 5">
                             <comps:IntegerSlider Label="x264"
                                                  Minimum="0"
                                                  Maximum="25"
@@ -73,7 +73,7 @@
                     <TabItem Header="{Binding AbrModeText}"
                              Padding="15 7.5"
                              FontWeight="Bold">
-                        <comps:IntegerSliderGroup Margin="10 5 0 7.5">
+                        <comps:IntegerSliderGroup Margin="10 5 0 5">
                             <comps:IntegerSlider Label="x264"
                                                  Minimum="10"
                                                  Maximum="500"
@@ -105,12 +105,12 @@
                 <!-- CRF, ABR Hint -->
                 <comps:HintPanel Grid.Row="2"
                                  Text="{Binding CrfHintText, Mode=OneWay}"
-                                 Margin="5 10 5 0"
+                                 Margin="5 5 5 0"
                                  HorizontalAlignment="Left"
                                  VerticalAlignment="Center" />
                 <comps:HintPanel Grid.Row="3"
                                  Text="{Binding AbrHintText, Mode=OneWay}"
-                                 Margin="5 10 5 0"
+                                 Margin="5 5 5 0"
                                  HorizontalAlignment="Left"
                                  VerticalAlignment="Center" />
 

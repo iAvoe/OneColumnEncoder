@@ -7,6 +7,7 @@
              mc:Ignorable="d"
              d:DesignHeight="50"
              d:DesignWidth="520">
+    <!-- Shared converters used to map slider values to visual positions. -->
     <UserControl.Resources>
         <conv:SliderTrackPositionConverter x:Key="SliderTrackPositionConverter" />
         <conv:SliderValuePopupPositionConverter x:Key="SliderValuePopupPositionConverter" />
@@ -18,6 +19,7 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
+        <!-- Left-side label for the slider caption. -->
         <TextBlock x:Name="LabelTextBlock"
                    Grid.Column="0"
                    VerticalAlignment="Center"
@@ -25,18 +27,20 @@
                    Text="{Binding Label, RelativeSource={RelativeSource AncestorType=UserControl}}"
                    FontSize="13" />
 
+        <!-- Right-side slider area with track, thumb, popup value, and tick labels. -->
         <Grid Grid.Column="1"
               VerticalAlignment="Center"
               HorizontalAlignment="Stretch"
               MaxWidth="{Binding SliderMaxWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
               Height="40"
-              Margin="5 0">
+              Margin="5 0 10 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="15" />
                 <RowDefinition Height="10" />
                 <RowDefinition Height="15" />
             </Grid.RowDefinitions>
 
+            <!-- Track host: draws the rail and places the draggable thumb. -->
             <Grid Grid.Row="1"
                   x:Name="TrackHost"
                   VerticalAlignment="Center">
@@ -46,6 +50,7 @@
                         VerticalAlignment="Center" />
                 <Canvas Height="14"
                         VerticalAlignment="Center">
+                    <!-- Draggable thumb that follows the current slider value. -->
                     <Thumb Width="14"
                            Height="14"
                            Background="Transparent"
@@ -83,6 +88,8 @@
                             </TranslateTransform>
                         </Thumb.RenderTransform>
                     </Thumb>
+                    
+                    <!-- Floating value popup shown above the thumb. -->
                     <Border Padding="2.5 0.75"
                             CornerRadius="2"
                             Canvas.Top="-18"
@@ -113,6 +120,7 @@
                 </Canvas>
             </Grid>
 
+            <!-- Tick labels rendered along the bottom of the track. -->
             <ItemsControl Grid.Row="2"
                           Width="{Binding ActualWidth, ElementName=TrackHost}"
                           HorizontalAlignment="Left"
