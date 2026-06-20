@@ -848,7 +848,7 @@ namespace OneColumnEncoder.ViewModels
             else
                 _avsItem.IsSelected = false;
 
-            if (target.IsEnabled) target.IsSelected = true;
+            if (target.IsEnabled && !string.IsNullOrWhiteSpace(target.P2TextData)) target.IsSelected = true;
         }
 
         private void ShowSaveError(Exception ex)

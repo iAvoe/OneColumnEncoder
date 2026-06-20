@@ -11,7 +11,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
-using System.Text.RegularExpressions;
 using System.Windows;
 
 namespace OneColumnEncoder.ViewModels
@@ -558,6 +557,20 @@ namespace OneColumnEncoder.ViewModels
                 item.IsEnabled = hasVideoSource;
         }
 
+        private void RefreshScriptSourceEnabledState()
+        {
+            if (IsQueueRouteActive()) return;
+
+            bool hasVideoSource = !string.IsNullOrWhiteSpace(GetCurrentVideoSourcePath());
+            if (hasVideoSource) return;
+
+            foreach (ToolItemCardVM item in ScriptSrcImportZone)
+            {
+                item.IsSelected = false;
+                item.IsEnabled = false;
+            }
+        }
+
         private void SyncOutputFilenameWithVideoSource(string? filePath = null)
         {
             ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t =>
@@ -911,6 +924,20 @@ namespace OneColumnEncoder.ViewModels
         // File save & ItemCard write back logic after FilterScribeModal completes
         private void OnSourceImported(ToolItemCardVM item, SourceFileKind kind, string filePath)
         {
+            if (kind != SourceFileKind.Video)
+            {
+                string? error = ValidateSingleScriptImport(kind, filePath);
+                if (error != null)
+                {
+                    ClearSourceItem(item);
+                    SaveSourcePath(kind, string.Empty);
+                    _appDataM.Save();
+                    new OpenErrModalCmd(_modalNavS, UILangProviderM.Current["Warn.SourceCheck"], error).Execute(null);
+                    RefreshSelectedSourceStatus(resetAnalysis: false);
+                    return;
+                }
+            }
+
             SaveSourcePath(kind, filePath);
 
             if (kind == SourceFileKind.Video)
@@ -945,6 +972,13 @@ namespace OneColumnEncoder.ViewModels
         {
             SourceFileKind? preferredKind = SourceFileKindH.GetPreferredScriptSourceKind(UpstreamsZone);
             return preferredKind == null || kind == preferredKind.Value;
+        }
+
+        private string? ValidateSingleScriptImport(SourceFileKind kind, string filePath)
+        {
+            string videoPath = GetCurrentVideoSourcePath();
+            ScriptSourceValidationIssue? issue = ScriptSourceValidationH.ValidateSingle(kind, filePath, videoPath);
+            return issue == null ? null : FormatScriptImportIssues([issue]);
         }
 
         private void OnVideoSourceImported(ToolItemCardVM item, SourceFileKind kind, string filePath, bool wasReplaced)
@@ -1075,10 +1109,7 @@ namespace OneColumnEncoder.ViewModels
             string? error = ValidateScriptQueueImport(kind, filePaths);
             if (error != null)
             {
-                item.P2TextData = string.Empty;
-                item.P1TextData = string.Empty;
-                item.P1TooltipText = null;
-                item.IsSelected = false;
+                ClearSourceItem(item);
                 new OpenErrModalCmd(_modalNavS, UILangProviderM.Current["Warn.SourceCheck"], error).Execute(null);
                 RefreshSelectedSourceStatus(resetAnalysis: false);
                 return;
@@ -1098,65 +1129,41 @@ namespace OneColumnEncoder.ViewModels
             string[] videoPaths = GetCurrentQueueFilePaths();
             if (videoPaths.Length == 0) return null;
 
-            string ext = kind switch
-            {
-                SourceFileKind.VapourSynthScript => ".vpy",
-                SourceFileKind.AviSynthScript => ".avs",
-                _ => string.Empty
-            };
-            if (string.IsNullOrEmpty(ext)) return null;
+            IReadOnlyList<ScriptSourceValidationIssue> issues =
+                ScriptSourceValidationH.ValidateQueue(kind, filePaths, videoPaths);
+            return issues.Count == 0 ? null : FormatScriptImportIssues(issues);
+        }
 
-            Dictionary<string, string> videoByBasename = new(StringComparer.OrdinalIgnoreCase);
-            foreach (string videoPath in videoPaths)
-                videoByBasename[Path.GetFileNameWithoutExtension(videoPath)] = videoPath;
-
+        private static string FormatScriptImportIssues(IReadOnlyList<ScriptSourceValidationIssue> issues)
+        {
             const int maxDetails = 5;
             List<string> details = [];
-            int unmatchedCount = 0;
-            int mismatchCount = 0;
+            int unmatchedCount = issues.Count(issue => issue.Kind == ScriptSourceValidationIssueKind.NoMatchingVideoSource);
+            int mismatchCount = issues.Count - unmatchedCount;
 
-            foreach (string scriptPath in filePaths)
+            foreach (ScriptSourceValidationIssue issue in issues.Take(maxDetails))
             {
-                string scriptBasename = Path.GetFileNameWithoutExtension(scriptPath);
-
-                if (!videoByBasename.TryGetValue(scriptBasename, out string? videoPath))
+                string scriptName = Path.GetFileName(issue.ScriptPath);
+                string detail = issue.Kind switch
                 {
-                    unmatchedCount++;
-                    if (details.Count < maxDetails)
-                        details.Add(string.Format(UILangProviderM.Current["ScriptQueueImport.DetailNoMatch"], Path.GetFileName(scriptPath)));
-                    continue;
-                }
-
-                string? embeddedPath = ExtractScriptSourcePath(scriptPath, ext);
-                if (embeddedPath == null)
-                {
-                    mismatchCount++;
-                    if (details.Count < maxDetails)
-                        details.Add(string.Format(UILangProviderM.Current["ScriptQueueImport.DetailUnreadable"], Path.GetFileName(scriptPath)));
-                    continue;
-                }
-
-                string normalizedEmbedded = Path.GetFullPath(embeddedPath);
-                string normalizedVideo = Path.GetFullPath(videoPath);
-                if (!string.Equals(normalizedEmbedded, normalizedVideo, StringComparison.OrdinalIgnoreCase))
-                {
-                    mismatchCount++;
-                    if (details.Count < maxDetails)
-                        details.Add(string.Format(UILangProviderM.Current["ScriptQueueImport.DetailMismatch"], Path.GetFileName(scriptPath), embeddedPath, videoPath));
-                }
+                    ScriptSourceValidationIssueKind.NoMatchingVideoSource =>
+                        string.Format(UILangProviderM.Current["ScriptQueueImport.DetailNoMatch"], scriptName),
+                    ScriptSourceValidationIssueKind.UnreadableScript =>
+                        string.Format(UILangProviderM.Current["ScriptQueueImport.DetailUnreadable"], scriptName),
+                    _ => string.Format(
+                        UILangProviderM.Current["ScriptQueueImport.DetailMismatch"],
+                        scriptName,
+                        issue.EmbeddedPath ?? string.Empty,
+                        issue.ExpectedPath ?? string.Empty)
+                };
+                details.Add(detail);
             }
 
-            if (unmatchedCount > 0 || mismatchCount > 0)
-            {
-                int total = unmatchedCount + mismatchCount;
-                int omitted = total - Math.Min(total, maxDetails);
-                string msg = string.Format(UILangProviderM.Current["ScriptQueueImport.RejectedPrefix"], unmatchedCount, mismatchCount);
-                msg += "\n\n" + UILangProviderM.Current["ScriptQueueImport.DetailsHeader"] + "\n" + string.Join("\n", details);
-                if (omitted > 0) msg += "\n" + string.Format(UILangProviderM.Current["ScriptQueueImport.MoreCount"], omitted);
-                return msg;
-            }
-
-            return null;
+            int omitted = issues.Count - Math.Min(issues.Count, maxDetails);
+            string msg = string.Format(UILangProviderM.Current["ScriptQueueImport.RejectedPrefix"], unmatchedCount, mismatchCount);
+            msg += "\n\n" + UILangProviderM.Current["ScriptQueueImport.DetailsHeader"] + "\n" + string.Join("\n", details);
+            if (omitted > 0) msg += "\n" + string.Format(UILangProviderM.Current["ScriptQueueImport.MoreCount"], omitted);
+            return msg;
         }
 
         private void OnSourceScriptQueueCleared(ToolItemCardVM item)
@@ -1168,12 +1175,15 @@ namespace OneColumnEncoder.ViewModels
         private static void ClearScriptSourceZone(IEnumerable<ToolItemCardVM> zone)
         {
             foreach (ToolItemCardVM script in zone)
-            {
-                script.P2TextData = string.Empty;
-                script.P1TextData = string.Empty;
-                script.P1TooltipText = null; // Reset tooltip to fall back to P1TextData
-                script.IsSelected = false;
-            }
+                ClearSourceItem(script);
+        }
+
+        private static void ClearSourceItem(ToolItemCardVM item)
+        {
+            item.P2TextData = string.Empty;
+            item.P1TextData = string.Empty;
+            item.P1TooltipText = null; // Reset tooltip to fall back to P1TextData
+            item.IsSelected = false;
         }
 
         private void OnSourceQueueAccepted(string[] acceptedFilePaths, string queueJsonPath)
@@ -1307,6 +1317,7 @@ namespace OneColumnEncoder.ViewModels
                 : ScriptSrcImportZone;
             ToolCompatibilityH.RefreshSourceSelectionState(
                 UpstreamsZone, ActiveScriptSrcImportZone, () => { });
+            RefreshScriptSourceEnabledState();
             ToolCompatibilityH.RefreshVideoSourceSelectionState(
                 UpstreamsZone, VideoSrcImportZone);
             RefreshOutputSettingCommand();
@@ -1466,7 +1477,7 @@ namespace OneColumnEncoder.ViewModels
                     }
                     else
                     {
-                        string? embeddedPath = ExtractScriptSourcePath(scriptPath, ext);
+                        string? embeddedPath = ScriptSourceValidationH.ExtractScriptSourcePath(scriptPath, ext);
                         if (embeddedPath == null)
                         {
                             mismatchCount++;
@@ -1552,34 +1563,6 @@ namespace OneColumnEncoder.ViewModels
             {
                 return [];
             }
-        }
-
-        private static string? ExtractScriptSourcePath(string scriptFilePath, string ext)
-        {
-            if (!File.Exists(scriptFilePath)) return null;
-
-            try
-            {
-                string[] lines = File.ReadAllLines(scriptFilePath);
-                string pattern = ext.Equals(".vpy", StringComparison.OrdinalIgnoreCase)
-                    ? @"src\s*=\s*core\.lsmas\.LWLibavSource\(source=r""([^""]+)"""
-                    : @"LWLibavVideoSource\(""([^""]+)""";
-
-                foreach (string line in lines)
-                {
-                    string trimmed = line.Trim();
-                    if (string.IsNullOrEmpty(trimmed) || trimmed.StartsWith('#') || trimmed.StartsWith(';'))
-                        continue;
-                    Match m = Regex.Match(trimmed, pattern);
-                    if (m.Success)
-                        return m.Groups[1].Value.Trim();
-                }
-            }
-            catch
-            {
-            }
-
-            return null;
         }
 
         private string GetSelectedSvfiIniPath()
