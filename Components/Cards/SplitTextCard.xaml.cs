@@ -185,6 +185,7 @@ namespace OneColumnEncoder.Components.Cards
             }
 
             document.PagePadding = new Thickness(0);
+            document.PageWidth = double.PositiveInfinity;
             document.ColumnWidth = double.PositiveInfinity;
             document.FontFamily = new FontFamily("Consolas");
             document.FontSize = richTextBox.FontSize;
