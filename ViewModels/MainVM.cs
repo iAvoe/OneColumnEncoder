@@ -1554,9 +1554,10 @@ namespace OneColumnEncoder.ViewModels
                 QueueSourceData? data = JsonSerializer.Deserialize<QueueSourceData>(json);
                 return data?.Entries
                     .Where(entry => !string.IsNullOrWhiteSpace(entry.FilePath) && entry.FfprobeJson.ValueKind != JsonValueKind.Undefined)
+                    .GroupBy(entry => entry.FilePath, StringComparer.OrdinalIgnoreCase)
                     .ToDictionary(
-                        entry => entry.FilePath,
-                        entry => entry.FfprobeJson.GetRawText(),
+                        group => group.Key,
+                        group => group.First().FfprobeJson.GetRawText(),
                         StringComparer.OrdinalIgnoreCase) ?? [];
             }
             catch

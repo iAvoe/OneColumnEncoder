@@ -2144,11 +2144,26 @@ namespace OneColumnEncoder.ViewModels
         /// </summary>
         public override void Dispose()
         {
+            _cts?.Cancel();
+            TryCloseStream(_encoderStdinStream);
+            TryCloseStream(_upstreamStdoutStream);
+            TryCloseMainWindow(_muxProcess);
+            TryCloseMainWindow(_encoderProcess);
+            TryCloseMainWindow(_upstreamProcess);
+            TryKillProcess(_muxProcess);
+            TryKillProcess(_encoderProcess);
+            TryKillProcess(_upstreamProcess);
             _timer.Stop();
             _timer.Tick -= OnTimerTick;
             UILangProviderM.CurrentChanged -= OnLanguageChanged;
             QueueSidebar.PropertyChanged -= OnQueueSidebarPropertyChanged;
             _cts?.Dispose();
+            _cts = null;
+            _muxProcess = null;
+            _encoderProcess = null;
+            _upstreamProcess = null;
+            _encoderStdinStream = null;
+            _upstreamStdoutStream = null;
             QueueSidebar.Dispose();
             base.Dispose();
         }

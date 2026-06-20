@@ -1,5 +1,6 @@
 ﻿using OneColumnEncoder.Helpers;
 using System.ComponentModel;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 
@@ -13,9 +14,19 @@ namespace OneColumnEncoder
         public MainWindow()
         {
             InitializeComponent();
+            Title = $"1cenc (Commit {GetGitCommitCount()})";
             Closing += OnClosing;
+            Closed += OnClosed;
             PreviewMouseDown += OnPreviewMouseDown;
             PreviewKeyDown += OnPreviewKeyDown;
+        }
+
+        private static string GetGitCommitCount()
+        {
+            return Assembly.GetExecutingAssembly()
+                .GetCustomAttributes<AssemblyMetadataAttribute>()
+                .FirstOrDefault(attribute => attribute.Key == "GitCommitCount")
+                ?.Value ?? "0";
         }
 
         private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
@@ -47,11 +58,29 @@ namespace OneColumnEncoder
                 window.Close();
             }
 
+            if (Application.Current.Windows.OfType<Window>().Any(window => window != this))
+            {
+                e.Cancel = true;
+                return;
+            }
+
             // Clear modal navigation state so no stale VM lingers
             if (Application.Current is App app)
             {
-                app._modalNavM.Close();
+                app._modalNavM.CloseAll();
             }
+        }
+
+        private void OnClosed(object? sender, EventArgs e)
+        {
+            if (DataContext is IDisposable disposable)
+                disposable.Dispose();
+
+            DataContext = null;
+            Closing -= OnClosing;
+            Closed -= OnClosed;
+            PreviewMouseDown -= OnPreviewMouseDown;
+            PreviewKeyDown -= OnPreviewKeyDown;
         }
     }
 }

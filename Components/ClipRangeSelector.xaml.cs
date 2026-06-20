@@ -17,8 +17,9 @@ namespace OneColumnEncoder.Components
         public ClipRangeSelector()
         {
             InitializeComponent();
-            Loaded += (_, _) => UpdateLayoutMetrics();
-            SizeChanged += (_, _) => UpdateLayoutMetrics();
+            Loaded += OnLoaded;
+            Unloaded += OnUnloaded;
+            SizeChanged += OnSizeChanged;
         }
 
         public static readonly DependencyProperty AxisLabelsProperty = DependencyProperty.Register(
@@ -110,9 +111,26 @@ namespace OneColumnEncoder.Components
         private static void OnAxisLabelsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             ClipRangeSelector control = (ClipRangeSelector)d;
-            control.UnhookAxisLabels(e.OldValue as IEnumerable<string>);
+            control.UnhookAxisLabels();
             control.HookAxisLabels(e.NewValue as IEnumerable<string>);
             control.RefreshAxisLabels();
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            HookAxisLabels(AxisLabels);
+            RefreshAxisLabels();
+            UpdateLayoutMetrics();
+        }
+
+        private void OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            UnhookAxisLabels();
+        }
+
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdateLayoutMetrics();
         }
 
         private static void OnSelectionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -126,12 +144,14 @@ namespace OneColumnEncoder.Components
         {
             if (labels is INotifyCollectionChanged notify)
             {
+                if (_axisLabelsNotify == notify) return;
+                UnhookAxisLabels();
                 _axisLabelsNotify = notify;
                 notify.CollectionChanged += AxisLabels_CollectionChanged;
             }
         }
 
-        private void UnhookAxisLabels(IEnumerable<string>? labels)
+        private void UnhookAxisLabels()
         {
             if (_axisLabelsNotify != null)
             {

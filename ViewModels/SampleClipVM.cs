@@ -6,7 +6,6 @@ using OneColumnEncoder.Stores;
 using OneColumnEncoder.Views;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Text.Json;
 using System.Windows;
 
 namespace OneColumnEncoder.ViewModels
@@ -154,8 +153,12 @@ namespace OneColumnEncoder.ViewModels
             _modalNavS = modalNavS;
             _closeAction = closeAction;
             _buildRequest = buildRequest;
-            (_totalSeconds, _frameRate, long totalFrames, _fieldOrderKind, _frameRateKind) = ReadSourceStats(srcVideoAnalysis.RawJson);
-            _totalFrames = Math.Max(1L, totalFrames);
+            FfprobeSourceStats sourceStats = FfprobeSourceStatsH.Read(srcVideoAnalysis.RawJson);
+            _totalSeconds = sourceStats.DurationSeconds;
+            _frameRate = sourceStats.FrameRate;
+            _totalFrames = Math.Max(1L, sourceStats.TotalFrames);
+            _fieldOrderKind = sourceStats.FieldOrderKind;
+            _frameRateKind = sourceStats.FrameRateKind;
 
             Lang = new ClipRangeSelectorLangProviderM(UILangProviderM.Current.LanguageCode);
 
@@ -493,52 +496,6 @@ namespace OneColumnEncoder.ViewModels
             return Math.Max(0, value);
         }
 
-        private static (double DurationSeconds, double FrameRate, long TotalFrames, string FieldOrderKind, string FrameRateKind) ReadSourceStats(string rawJson)
-        {
-            const double fallbackDuration = 600d;
-            const double fallbackFrameRate = 30d;
-
-            if (string.IsNullOrWhiteSpace(rawJson))
-                return (fallbackDuration, fallbackFrameRate, (long)(fallbackDuration * fallbackFrameRate), "unknown", "unknown");
-
-            try
-            {
-                using JsonDocument document = JsonDocument.Parse(rawJson);
-                JsonElement root = document.RootElement;
-                JsonElement stream = root.GetProperty("streams")[0];
-
-                double duration = JsonElementHelper.TryGetDouble(stream, "duration")
-                    ?? (root.TryGetProperty("format", out JsonElement format) ? JsonElementHelper.TryGetDouble(format, "duration") : null)
-                    ?? fallbackDuration;
-
-                double frameRate = ParseFrameRate(JsonElementHelper.TryGetString(stream, "avg_frame_rate"))
-                    ?? ParseFrameRate(JsonElementHelper.TryGetString(stream, "r_frame_rate"))
-                    ?? fallbackFrameRate;
-
-                long totalFrames = JsonElementHelper.TryGetFrameCount(stream)
-                    ?? Math.Max(0L, (long)Math.Round(duration * frameRate));
-
-                string? fieldOrder = JsonElementHelper.TryGetString(stream, "field_order");
-                string fieldOrderKind = string.IsNullOrWhiteSpace(fieldOrder) || fieldOrder.Equals("unknown", StringComparison.OrdinalIgnoreCase)
-                    ? "unknown"
-                    : fieldOrder.Equals("progressive", StringComparison.OrdinalIgnoreCase)
-                        ? "progressive"
-                        : "interlaced";
-
-                string? avg = JsonElementHelper.TryGetString(stream, "avg_frame_rate");
-                string? r = JsonElementHelper.TryGetString(stream, "r_frame_rate");
-                string frameRateKind = !string.IsNullOrWhiteSpace(avg) && !avg.Equals("0/0", StringComparison.OrdinalIgnoreCase)
-                    ? string.Equals(avg, r, StringComparison.OrdinalIgnoreCase) ? "constant" : "variable"
-                    : "unknown";
-
-                return (duration, frameRate, totalFrames, fieldOrderKind, frameRateKind);
-            }
-            catch
-            {
-                return (fallbackDuration, fallbackFrameRate, (long)(fallbackDuration * fallbackFrameRate), "unknown", "unknown");
-            }
-        }
-
         private static string FormatAxisTimestamp(double seconds)
         {
             TimeSpan t = TimeSpan.FromSeconds(Math.Max(0d, seconds));
@@ -576,21 +533,5 @@ namespace OneColumnEncoder.ViewModels
             base.Dispose();
         }
 
-        private static double? ParseFrameRate(string? text)
-        {
-            if (string.IsNullOrWhiteSpace(text) || text.Equals("0/0", StringComparison.OrdinalIgnoreCase))
-                return null;
-
-            string[] parts = text.Split('/');
-            if (parts.Length == 2
-                && double.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double n)
-                && double.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double d)
-                && d > 0)
-                return n / d;
-
-            return double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out double value)
-                ? value
-                : null;
-        }
     }
 }

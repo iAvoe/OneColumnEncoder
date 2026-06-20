@@ -9,7 +9,7 @@ namespace OneColumnEncoder.ViewModels
     /// Centralized base class for all ViewModels in the application,
     /// providing optional property change notification and resource management.
     /// </summary>
-    public class BaseVM : INotifyPropertyChanged
+    public class BaseVM : INotifyPropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler? PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)

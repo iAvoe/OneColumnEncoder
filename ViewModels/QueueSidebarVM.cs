@@ -106,6 +106,7 @@ namespace OneColumnEncoder.ViewModels
 
         public void ClearAllJobs()
         {
+            DisposeJobVMs();
             _store.Jobs.Clear();
             WaitingJobs.Clear();
             UnfinishedJobs.Clear();
@@ -146,7 +147,12 @@ namespace OneColumnEncoder.ViewModels
         {
             _store.Jobs.Remove(job);
             var vm = FindJobVM(job.JobId);
-            if (vm != null) RemoveJobFromStatusCollection(vm);
+            if (vm != null)
+            {
+                RemoveJobFromStatusCollection(vm);
+                if (SelectedJob == vm) SelectedJob = RunningJob ?? WaitingJobs.LastOrDefault() ?? UnfinishedJobs.LastOrDefault() ?? CompletedJobs.LastOrDefault();
+                vm.Dispose();
+            }
             RefreshWaitingMoveStates();
             RefreshBindings();
         }
@@ -158,6 +164,7 @@ namespace OneColumnEncoder.ViewModels
             _store.Jobs.Remove(job.Model);
             WaitingJobs.RemoveAt(index);
             if (SelectedJob == job) SelectedJob = WaitingJobs.Count > 0 ? WaitingJobs[Math.Min(index, WaitingJobs.Count - 1)] : RunningJob ?? UnfinishedJobs.LastOrDefault() ?? CompletedJobs.LastOrDefault();
+            job.Dispose();
             RefreshWaitingMoveStates();
             RefreshBindings();
         }
@@ -260,6 +267,8 @@ namespace OneColumnEncoder.ViewModels
 
         private void RefreshJobs()
         {
+            DisposeJobVMs();
+            SelectedJob = null;
             WaitingJobs.Clear();
             UnfinishedJobs.Clear();
             CompletedJobs.Clear();
@@ -345,14 +354,24 @@ namespace OneColumnEncoder.ViewModels
 
         private bool ShouldShowSidebar() => _store.Jobs.Count > 1;
 
+        private IEnumerable<QueueJobItemVM> EnumerateJobVMs()
+        {
+            foreach (QueueJobItemVM job in WaitingJobs) yield return job;
+            foreach (QueueJobItemVM job in UnfinishedJobs) yield return job;
+            foreach (QueueJobItemVM job in CompletedJobs) yield return job;
+            if (RunningJob != null) yield return RunningJob;
+        }
+
+        private void DisposeJobVMs()
+        {
+            foreach (QueueJobItemVM job in EnumerateJobVMs().Distinct())
+                job.Dispose();
+        }
+
         public override void Dispose()
         {
-            if (!_isPersistent)
-            {
-                base.Dispose();
-                return;
-            }
-            SaveToDisk();
+            if (_isPersistent) SaveToDisk();
+            DisposeJobVMs();
             base.Dispose();
         }
     }

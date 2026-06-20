@@ -1,6 +1,5 @@
 ﻿using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
-using System.Text.Json;
 
 namespace OneColumnEncoder.ViewModels.Cards
 {
@@ -54,30 +53,29 @@ namespace OneColumnEncoder.ViewModels.Cards
             _lastAnalysisJson = rawJson;
             try
             {
-                using JsonDocument document = JsonDocument.Parse(rawJson);
-                JsonElement stream = document.RootElement.GetProperty("streams")[0];
+                FfprobeSourceValidationResult result = FfprobeSourceValidationH.Analyze(rawJson);
 
                 SetChecklist1(MetadataChecklistIdx, StatusType.Success);
-                SetChecklist1(ProgressiveChecklistIdx, IsProgressive(stream)
+                SetChecklist1(ProgressiveChecklistIdx, result.IsProgressive
                     ? StatusType.Success : StatusType.Error);
-                SetChecklist1(Svtav1BitDepthChecklistIdx, IsSupportedBitDepth(stream, 10)
+                SetChecklist1(Svtav1BitDepthChecklistIdx, result.IsSvtAv1BitDepthSupported
                     ? StatusType.Success
                     : IsSelectingSvtav1()
                         ? StatusType.Error
                         : StatusType.Warning);
-                SetChecklist1(MaxBitDepthChecklistIdx, IsSupportedBitDepth(stream, 12)
+                SetChecklist1(MaxBitDepthChecklistIdx, result.IsMaxBitDepthSupported
                     ? StatusType.Success : StatusType.Error);
-                SetChecklist2(0, HasConstantFrameRate(stream)
+                SetChecklist2(0, result.HasConstantFrameRate
                     ? StatusType.Success : StatusType.Warning);
-                SetChecklist2(1, HasSquarePixels(stream)
+                SetChecklist2(1, result.HasSquarePixels
                     ? StatusType.Success : StatusType.Warning);
-                SetChecklist2(2, HasKnownMetadata(stream, "color_space")
+                SetChecklist2(2, result.HasColorSpace
                     ? StatusType.Success : StatusType.Warning);
-                SetChecklist2(3, HasKnownMetadata(stream, "color_transfer")
+                SetChecklist2(3, result.HasColorTransfer
                     ? StatusType.Success : StatusType.Warning);
-                SetChecklist2(4, HasKnownMetadata(stream, "color_primaries")
+                SetChecklist2(4, result.HasColorPrimaries
                     ? StatusType.Success : StatusType.Warning);
-                SetChecklist2(5, HasSupportedChroma(stream)
+                SetChecklist2(5, result.HasSupportedChroma
                     ? StatusType.Success : StatusType.Warning);
             }
             catch
@@ -98,10 +96,7 @@ namespace OneColumnEncoder.ViewModels.Cards
 
             try
             {
-                using JsonDocument document = JsonDocument.Parse(_lastAnalysisJson);
-                JsonElement stream = document.RootElement.GetProperty("streams")[0];
-
-                SetChecklist1(Svtav1BitDepthChecklistIdx, IsSupportedBitDepth(stream, 10)
+                SetChecklist1(Svtav1BitDepthChecklistIdx, FfprobeSourceValidationH.IsSvtAv1BitDepthSupported(_lastAnalysisJson)
                     ? StatusType.Success
                     : IsSelectingSvtav1()
                         ? StatusType.Error
@@ -200,78 +195,6 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         #endregion
 
-        #region Static Analysis Helpers
-
-        private static bool IsProgressive(JsonElement stream)
-        {
-            string? fieldOrder = JsonElementHelper.TryGetString(stream, "field_order");
-            return string.IsNullOrWhiteSpace(fieldOrder)
-                || fieldOrder.Equals("progressive", StringComparison.OrdinalIgnoreCase)
-                || fieldOrder.Equals("unknown", StringComparison.OrdinalIgnoreCase);
-        }
-
-        private static bool IsSupportedBitDepth(JsonElement stream, int max = 12)
-        {
-            int bitDepth = GetBitDepth(stream);
-            return bitDepth == 8 || bitDepth == 10 || bitDepth == max;
-        }
-
-        private static int GetBitDepth(JsonElement stream)
-        {
-            if (JsonElementHelper.TryGetInt(stream, "bits_per_raw_sample", out int rawBits)) return rawBits;
-            if (JsonElementHelper.TryGetInt(stream, "bits_per_sample", out int sampleBits)) return sampleBits;
-
-            string pixFmt = JsonElementHelper.TryGetString(stream, "pix_fmt") ?? string.Empty;
-            if (pixFmt.Contains("10", StringComparison.OrdinalIgnoreCase)) return 10;
-            if (pixFmt.Contains("12", StringComparison.OrdinalIgnoreCase)) return 12;
-            if (pixFmt.Contains("14", StringComparison.OrdinalIgnoreCase)) return 14;
-            if (pixFmt.Contains("16", StringComparison.OrdinalIgnoreCase)) return 16;
-            return string.IsNullOrWhiteSpace(pixFmt) ? 0 : 8;
-        }
-
-        private static bool HasConstantFrameRate(JsonElement stream)
-        {
-            string? avg = JsonElementHelper.TryGetString(stream, "avg_frame_rate");
-            string? r = JsonElementHelper.TryGetString(stream, "r_frame_rate");
-            return !string.IsNullOrWhiteSpace(avg)
-                && !avg.Equals("0/0", StringComparison.OrdinalIgnoreCase)
-                && string.Equals(avg, r, StringComparison.OrdinalIgnoreCase);
-        }
-
-        private static bool HasSquarePixels(JsonElement stream)
-        {
-            string? sar = JsonElementHelper.TryGetString(stream, "sample_aspect_ratio");
-            return string.Equals(sar, "1:1", StringComparison.OrdinalIgnoreCase);
-        }
-
-        private static bool HasKnownMetadata(JsonElement stream, string propertyName)
-        {
-            string? value = JsonElementHelper.TryGetString(stream, propertyName);
-            return !string.IsNullOrWhiteSpace(value)
-                && !value.Equals("unknown", StringComparison.OrdinalIgnoreCase)
-                && !value.Equals("unspecified", StringComparison.OrdinalIgnoreCase)
-                && !value.Equals("reserved", StringComparison.OrdinalIgnoreCase);
-        }
-
-        private static bool HasSupportedChroma(JsonElement stream)
-        {
-            string pixFmt = JsonElementHelper.TryGetString(stream, "pix_fmt") ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(pixFmt)) return false;
-            if (pixFmt.Contains("444", StringComparison.OrdinalIgnoreCase)
-                || pixFmt.Contains("rgb", StringComparison.OrdinalIgnoreCase)
-                || pixFmt.Contains("gbr", StringComparison.OrdinalIgnoreCase)
-                || pixFmt.Contains("gray", StringComparison.OrdinalIgnoreCase))
-                return true;
-
-            string? chromaLocation = JsonElementHelper.TryGetString(stream, "chroma_location");
-            return pixFmt.Contains("yuv", StringComparison.OrdinalIgnoreCase)
-                && (chromaLocation?.Equals("left", StringComparison.OrdinalIgnoreCase) == true
-                    || chromaLocation?.Equals("topleft", StringComparison.OrdinalIgnoreCase) == true);
-        }
-
-
-
-        #endregion
     }
 
     public sealed record SourceCheckSignature(StatusType[] Checklist1, StatusType[] Checklist2)

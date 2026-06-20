@@ -139,14 +139,24 @@ namespace OneColumnEncoder.ViewModels
         public void FlashMovedHighlight()
         {
             IsRecentlyMoved = true;
-            _moveFlashTimer?.Stop();
-            _moveFlashTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(600), DispatcherPriority.Normal, (_, _) =>
-            {
-                IsRecentlyMoved = false;
-                _moveFlashTimer?.Stop();
-                _moveFlashTimer = null;
-            }, Dispatcher.CurrentDispatcher);
+            StopMoveFlashTimer();
+            _moveFlashTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(600), DispatcherPriority.Normal, OnMoveFlashTimerTick, Dispatcher.CurrentDispatcher);
             _moveFlashTimer.Start();
+        }
+
+        private void OnMoveFlashTimerTick(object? sender, EventArgs e)
+        {
+            IsRecentlyMoved = false;
+            StopMoveFlashTimer();
+        }
+
+        private void StopMoveFlashTimer()
+        {
+            if (_moveFlashTimer == null) return;
+
+            _moveFlashTimer.Stop();
+            _moveFlashTimer.Tick -= OnMoveFlashTimerTick;
+            _moveFlashTimer = null;
         }
 
         public void SetMoveButtonAvailability(bool canMoveUp, bool canMoveDown)
@@ -200,6 +210,12 @@ namespace OneColumnEncoder.ViewModels
                 return $"{new ClipRangeSelectorLangProviderM(UILangProviderM.Current.LanguageCode).SummaryTotalFramesLabel}: {frameCount:N0}";
 
             return "N/A";
+        }
+
+        public override void Dispose()
+        {
+            StopMoveFlashTimer();
+            base.Dispose();
         }
     }
 }

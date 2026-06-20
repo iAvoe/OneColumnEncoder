@@ -77,9 +77,22 @@ namespace OneColumnEncoder.Stores
             if (_modalStack.Count > 0)
             {
                 BaseVM popped = _modalStack.Pop();
-                if (popped is IDisposable disposable) disposable.Dispose();
+                popped.Dispose();
                 CurrentViewModelChanged?.Invoke();
             }
+        }
+
+        internal void CloseAll()
+        {
+            if (_modalStack.Count == 0) return;
+
+            while (_modalStack.Count > 0)
+            {
+                BaseVM popped = _modalStack.Pop();
+                popped.Dispose();
+            }
+
+            CurrentViewModelChanged?.Invoke();
         }
 
         public event Action? CurrentViewModelChanged;

@@ -18,6 +18,8 @@ namespace OneColumnEncoder.Views
         private const int DefaultWidthWithSidebar = DefaultWidth + SidebarWidth + SplitterWidth;
         private const int MinWidthDefault = 860;
         private const int MinWidthSidebar = MinWidthDefault + SidebarWidth + SplitterWidth;
+        private EncodingMonitorVM? _subscribedVm;
+        private QueueSidebarVM? _subscribedQueueSidebar;
 
         public EncodingMonitorModal()
         {
@@ -25,6 +27,7 @@ namespace OneColumnEncoder.Views
             Loaded += OnLoaded;
             SourceInitialized += OnSourceInitialized;
             Closing += OnClosing;
+            Closed += OnClosed;
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
@@ -42,8 +45,15 @@ namespace OneColumnEncoder.Views
         {
             if (DataContext is EncodingMonitorVM vm)
             {
-                vm.QueueSidebar.PropertyChanged += OnQueueSidebarPropertyChanged;
-                vm.PropertyChanged += OnViewModelPropertyChanged;
+                if (_subscribedVm != vm)
+                {
+                    DetachViewModelEvents();
+                    _subscribedVm = vm;
+                    _subscribedQueueSidebar = vm.QueueSidebar;
+                    vm.QueueSidebar.PropertyChanged += OnQueueSidebarPropertyChanged;
+                    vm.PropertyChanged += OnViewModelPropertyChanged;
+                }
+
                 SyncSidebarWidth(vm.QueueSidebar.IsVisible);
                 UpdateSystemCloseButton(vm.IsWindowCloseEnabled);
                 vm.Start();
@@ -78,6 +88,26 @@ namespace OneColumnEncoder.Views
         {
             if (DataContext is EncodingMonitorVM vm && !vm.IsWindowCloseEnabled)
                 e.Cancel = true;
+        }
+
+        private void OnClosed(object? sender, EventArgs e)
+        {
+            DetachViewModelEvents();
+            Loaded -= OnLoaded;
+            SourceInitialized -= OnSourceInitialized;
+            Closing -= OnClosing;
+            Closed -= OnClosed;
+        }
+
+        private void DetachViewModelEvents()
+        {
+            if (_subscribedQueueSidebar != null)
+                _subscribedQueueSidebar.PropertyChanged -= OnQueueSidebarPropertyChanged;
+            if (_subscribedVm != null)
+                _subscribedVm.PropertyChanged -= OnViewModelPropertyChanged;
+
+            _subscribedQueueSidebar = null;
+            _subscribedVm = null;
         }
 
         private void UpdateSystemCloseButton(bool isEnabled)
