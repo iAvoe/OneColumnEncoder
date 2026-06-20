@@ -1068,7 +1068,9 @@ namespace OneColumnEncoder.ViewModels
                 item.P2TextData = string.Empty;
                 item.P1TextData = string.Empty;
                 item.P1TooltipText = null;
+                item.IsSelected = false;
                 new OpenErrModalCmd(_modalNavS, UILangProviderM.Current["Warn.SourceCheck"], error).Execute(null);
+                RefreshSelectedSourceStatus(resetAnalysis: false);
                 return;
             }
 
