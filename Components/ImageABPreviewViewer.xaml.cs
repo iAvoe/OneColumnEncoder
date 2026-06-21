@@ -5,10 +5,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.ComponentModel;
+using System.Windows.Threading;
 
 namespace OneColumnEncoder.Components
 {
-    public partial class ImageABViewer : UserControl
+    public partial class ImageABPreviewViewer : UserControl
     {
         private bool _isPanning;
         private bool _isDraggingSplit;
@@ -19,7 +20,7 @@ namespace OneColumnEncoder.Components
         private double _offsetY;
         private ImageABPreviewVM? _subscribedVm;
 
-        public ImageABViewer()
+        public ImageABPreviewViewer()
         {
             InitializeComponent();
             Loaded += (_, _) => ApplyView();
@@ -59,10 +60,13 @@ namespace OneColumnEncoder.Components
         {
             if (e.PropertyName is nameof(ImageABPreviewVM.SourceImage) or nameof(ImageABPreviewVM.EncodedImage))
             {
-                if (ViewModel?.IsFitMode == true)
-                    FitImage();
-                else
-                    ApplyView();
+                Dispatcher.BeginInvoke(() =>
+                {
+                    if (ViewModel?.IsFitMode == true)
+                        FitImage();
+                    else
+                        ApplyView();
+                }, DispatcherPriority.Loaded);
             }
         }
 
@@ -130,8 +134,12 @@ namespace OneColumnEncoder.Components
         private void SplitHandle_MouseMove(object sender, MouseEventArgs e)
         {
             if (!_isDraggingSplit) return;
-            double width = Math.Max(1d, Viewport.ActualWidth);
-            _splitRatio = Math.Max(0d, Math.Min(1d, e.GetPosition(Viewport).X / width));
+            Point point = e.GetPosition(Viewport);
+            double imageWidth = GetImagePixelWidth() * _zoom;
+            if (imageWidth > 0d)
+                _splitRatio = Math.Max(0d, Math.Min(1d, (point.X - _offsetX) / imageWidth));
+            else
+                _splitRatio = Math.Max(0d, Math.Min(1d, point.X / Math.Max(1d, Viewport.ActualWidth)));
             UpdateSplitVisual();
             e.Handled = true;
         }
@@ -179,6 +187,7 @@ namespace OneColumnEncoder.Components
         {
             SyncImageLayoutSize(SourceImage);
             SyncImageLayoutSize(EncodedImage);
+            CenterImageIfSmallerThanViewport();
             SourceScale.ScaleX = _zoom;
             SourceScale.ScaleY = _zoom;
             EncodedScale.ScaleX = _zoom;
@@ -198,10 +207,34 @@ namespace OneColumnEncoder.Components
             image.Height = bitmap.PixelHeight;
         }
 
+        private void CenterImageIfSmallerThanViewport()
+        {
+            double imageWidth = GetImagePixelWidth() * _zoom;
+            double imageHeight = GetImagePixelHeight() * _zoom;
+            double viewportWidth = Viewport.ActualWidth;
+            double viewportHeight = Viewport.ActualHeight;
+
+            if (imageWidth > 0d && viewportWidth > 0d && imageWidth <= viewportWidth)
+                _offsetX = (viewportWidth - imageWidth) / 2d;
+
+            if (imageHeight > 0d && viewportHeight > 0d && imageHeight <= viewportHeight)
+                _offsetY = (viewportHeight - imageHeight) / 2d;
+        }
+
+        private double GetImagePixelWidth() =>
+            (SourceImage.Source as BitmapSource ?? EncodedImage.Source as BitmapSource)?.PixelWidth ?? 0d;
+
+        private double GetImagePixelHeight() =>
+            (SourceImage.Source as BitmapSource ?? EncodedImage.Source as BitmapSource)?.PixelHeight ?? 0d;
+
         private void UpdateSplitVisual()
         {
-            double width = Math.Max(0d, Viewport.ActualWidth);
-            double splitX = width * _splitRatio;
+            double viewportWidth = Math.Max(0d, Viewport.ActualWidth);
+            double imageWidth = GetImagePixelWidth() * _zoom;
+            double splitX = imageWidth > 0d
+                ? _offsetX + imageWidth * _splitRatio
+                : viewportWidth * _splitRatio;
+            splitX = Math.Max(0d, Math.Min(viewportWidth, splitX));
             SourceLayer.Width = splitX;
             SplitHandle.Height = Math.Max(0d, Viewport.ActualHeight);
             SplitHandle.Margin = new Thickness(Math.Max(0d, splitX - SplitHandle.Width / 2d), 0, 0, 0);

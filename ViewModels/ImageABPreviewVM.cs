@@ -26,7 +26,7 @@ namespace OneColumnEncoder.ViewModels
         public ActionCmd PreviewCommand { get; }
         public ObservableCollection<string> PositionTickLabels { get; } = [];
 
-        public static string WindowTitle => "CRF Image Preview";
+        public static string WindowTitle => "1cenc A-B Preview";
         public static string EncoderLabel => "Encoder";
         public static string ZoomLabel => "Zoom";
         public static string PositionLabel => "Image Position";

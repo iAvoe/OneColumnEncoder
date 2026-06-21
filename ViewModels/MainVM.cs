@@ -853,11 +853,16 @@ namespace OneColumnEncoder.ViewModels
                     _modalNavS,
                     compressionParams,
                     () => _appDataM.Tools.FfmpegPath,
-                    GetSelectedVideoSourcePath,
+                    GetPreviewSourceVideoPath,
                     () => _srcVideoAnalysis.RawJson);
                 EncoderConfVM.ApplySavedSettingsToCard(compressionParams);
             }
         }
+
+        private string GetPreviewSourceVideoPath() =>
+            IsQueueRouteActive()
+                ? GetCurrentQueueFilePaths().FirstOrDefault() ?? string.Empty
+                : GetSelectedVideoSourcePath();
         private void OnVideoSrcItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (sender is not ToolItemCardVM) return;

@@ -30,76 +30,87 @@
                 <ColumnDefinition Width="190" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="40" />
-                <ColumnDefinition Width="40" />
-                <ColumnDefinition Width="55" />
-                <ColumnDefinition Width="40" />
-                <ColumnDefinition Width="40" />
-                <ColumnDefinition Width="330" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Column="0"
                        Text="{Binding EncoderLabel}"
                        FontSize="14"
                        VerticalAlignment="Center"
-                       Margin="0 0 10 0" />
+                       Margin="0 0 10 0"
+                       Foreground="{StaticResource GlobalPrimary}" />
             <comps:DropdownMenu Grid.Column="1"
                                 Height="29"
                                 IsEnabled="{Binding DataContext.IsIdle, RelativeSource={RelativeSource AncestorType=helpers:AdaptiveWindow}}"
                                 DataContext="{Binding EncoderDropdown}" />
 
-            <TextBlock Grid.Column="3"
-                       Text="{Binding ZoomLabel}"
-                       FontSize="14"
-                       VerticalAlignment="Center"
-                       Margin="0 0 10 0" />
-            <Button Grid.Column="4"
-                    Content="--"
-                    Width="30"
-                    Height="30"
-                    Style="{StaticResource NormalButton}"
-                    Click="ZoomFineOut_Click" />
-            <Button Grid.Column="5"
-                    Content="-"
-                    Width="30"
-                    Height="30"
-                    Style="{StaticResource NormalButton}"
-                    Click="ZoomOut_Click" />
-            <TextBlock Grid.Column="6"
-                       Text="{Binding ZoomPercent, StringFormat={}{0}%}"
-                       FontSize="14"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center" />
-            <Button Grid.Column="7"
-                    Content="+"
-                    Width="30"
-                    Height="30"
-                    Style="{StaticResource NormalButton}"
-                    Click="ZoomIn_Click" />
-            <Button Grid.Column="8"
-                    Content="++"
-                    Width="30"
-                    Height="30"
-                    Style="{StaticResource NormalButton}"
-                    Click="ZoomFineIn_Click" />
-            <comps:ThreeButtonGroup Grid.Column="9"
+            <StackPanel Grid.Column="3"
+                        Orientation="Horizontal"
+                        VerticalAlignment="Center"
+                        Margin="10 0">
+
+                <TextBlock Text="{Binding ZoomLabel}"
+                           FontSize="14"
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource GlobalPrimary}" />
+
+                <Rectangle Width="10" />
+
+                <Button Content="--"
+                        Width="30"
+                        Height="30"
+                        Style="{StaticResource NormalButton}"
+                        Click="ZoomFineOut_Click" />
+
+                <Rectangle Width="5" />
+
+                <Button Content="-"
+                        Width="30"
+                        Height="30"
+                        Style="{StaticResource NormalButton}"
+                        Click="ZoomOut_Click" />
+
+                <TextBlock Text="{Binding ZoomPercent, StringFormat={}{0}%}"
+                           Width="55"
+                           FontSize="14"
+                           TextAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="{StaticResource GlobalPrimary}"/>
+
+                <Button Content="+"
+                        Width="30"
+                        Height="30"
+                        Style="{StaticResource NormalButton}"
+                        Click="ZoomIn_Click" />
+
+                <Rectangle Width="5" />
+
+                <Button Content="++"
+                        Width="30"
+                        Height="30"
+                        Style="{StaticResource NormalButton}"
+                        Click="ZoomFineIn_Click" />
+            </StackPanel>
+
+            <comps:ThreeButtonGroup Grid.Column="4"
                                     DataContext="{Binding ZoomPresetButtons}"
                                     ButtonHeight="30"
-                                    Margin="5 0 0 0"
+                                    Width="330"
                                     Button1Command="{Binding Cmd1}"
                                     Button2Command="{Binding Cmd2}"
                                     Button3Command="{Binding Cmd3}" />
         </Grid>
 
-        <comps:ImageABViewer x:Name="PreviewViewer"
-                             Grid.Row="1"
-                             Margin="0 10 0 10" />
+        <!-- Set gap with EncoderConfModal in OpenEncoderConfCmd -->
+        <comps:ImageABPreviewViewer x:Name="PreviewViewer"
+                                    Grid.Row="1"
+                                    Margin="0 10 0 10" />
 
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="110" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="130" />
+                <ColumnDefinition Width="107" />
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0"
                        Text="{Binding PositionLabel}"
@@ -112,13 +123,13 @@
                                   TickLabels="{Binding PositionTickLabels}"
                                   TickCount="5"
                                   LabelWidth="0"
-                                  SliderMaxWidth="900"
+                                  SliderMaxWidth="1200"
                                   IsEnabled="{Binding IsIdle}" />
             <Button Grid.Column="2"
                     Content="{Binding PreviewButtonText}"
                     Command="{Binding PreviewCommand}"
                     Height="30"
-                    Margin="10 0 0 0"
+                    HorizontalAlignment="Stretch"
                     Style="{StaticResource PrimaryButton}" />
         </Grid>
 

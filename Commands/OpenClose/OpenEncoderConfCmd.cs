@@ -6,25 +6,17 @@ using System.Windows;
 
 namespace OneColumnEncoder.Commands.OpenClose
 {
-    public class OpenEncoderConfCmd : BaseCmd
+    public class OpenEncoderConfCmd(ModalNavS modalNavS,
+        ToolItemCardVM? compressionParamsItem = null,
+        Func<string?>? getFfmpegPath = null,
+        Func<string?>? getSourceVideoPath = null,
+        Func<string?>? getSourceFfprobeJson = null) : BaseCmd
     {
-        private readonly ModalNavS _modalNavS;
-        private readonly ToolItemCardVM? _compressionParamsItem;
-        private readonly Func<string?>? _getFfmpegPath;
-        private readonly Func<string?>? _getSourceVideoPath;
-        private readonly Func<string?>? _getSourceFfprobeJson;
-        public OpenEncoderConfCmd(ModalNavS modalNavS,
-            ToolItemCardVM? compressionParamsItem = null,
-            Func<string?>? getFfmpegPath = null,
-            Func<string?>? getSourceVideoPath = null,
-            Func<string?>? getSourceFfprobeJson = null)
-        {
-            _modalNavS = modalNavS;
-            _compressionParamsItem = compressionParamsItem;
-            _getFfmpegPath = getFfmpegPath;
-            _getSourceVideoPath = getSourceVideoPath;
-            _getSourceFfprobeJson = getSourceFfprobeJson;
-        }
+        private readonly ModalNavS _modalNavS = modalNavS;
+        private readonly ToolItemCardVM? _compressionParamsItem = compressionParamsItem;
+        private readonly Func<string?>? _getFfmpegPath = getFfmpegPath;
+        private readonly Func<string?>? _getSourceVideoPath = getSourceVideoPath;
+        private readonly Func<string?>? _getSourceFfprobeJson = getSourceFfprobeJson;
 
         public override void Execute(object? parameter)
         {
@@ -68,19 +60,22 @@ namespace OneColumnEncoder.Commands.OpenClose
             window.SizeChanged += (_, _) => PositionPreviewWindow(window, previewWindow);
             _modalNavS.CurrentModalVM = vm;
             window.Show();
-            PositionPreviewWindow(window, previewWindow);
             previewWindow.Show();
+            PositionPreviewWindow(window, previewWindow);
         }
 
+        // Open ImageABViewer beside EncoderConfModal
         private static void PositionPreviewWindow(Window owner, Window preview)
         {
-            const double gap = 8d;
             Rect workArea = SystemParameters.WorkArea;
-            double left = owner.Left + owner.ActualWidth + gap;
-            double ownerWidth = owner.ActualWidth > 0 ? owner.ActualWidth : owner.Width;
-            left = owner.Left + ownerWidth + gap;
-            if (left + preview.Width > workArea.Right)
-                left = Math.Max(workArea.Left, owner.Left - preview.Width - gap);
+            double ownerWidth = owner.Width > 0 && !double.IsNaN(owner.Width) ? owner.Width : owner.ActualWidth;
+            double left = owner.Left + ownerWidth;
+            double rightSpace = workArea.Right - left;
+
+            if (rightSpace >= preview.MinWidth)
+                preview.Width = Math.Min(Math.Max(preview.Width, preview.MinWidth), rightSpace);
+            else if (left + preview.Width > workArea.Right)
+                left = Math.Max(workArea.Left, workArea.Right - preview.Width);
 
             preview.Left = Math.Max(workArea.Left, Math.Min(workArea.Right - preview.Width, left));
             preview.Top = Math.Max(workArea.Top, Math.Min(workArea.Bottom - preview.Height, owner.Top));
