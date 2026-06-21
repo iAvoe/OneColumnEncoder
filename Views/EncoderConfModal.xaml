@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
         Width="520"
-        Height="1190"
+        Height="1170"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid>

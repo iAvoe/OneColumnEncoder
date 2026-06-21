@@ -60,16 +60,18 @@ namespace OneColumnEncoder.Commands.OpenClose
             window.SizeChanged += (_, _) => PositionPreviewWindow(window, previewWindow);
             _modalNavS.CurrentModalVM = vm;
             window.Show();
-            previewWindow.Show();
+            // Set preview position BEFORE Show() so it never flashes at the Windows default location.
+            // ApplyAdaptiveBounds runs after Show() via Dispatcher, so the encoder window may have
+            // a pre-correction Left here — LocationChanged below will re-sync it immediately after.
             PositionPreviewWindow(window, previewWindow);
+            previewWindow.Show();
         }
 
         // Open ImageABViewer beside EncoderConfModal
         private static void PositionPreviewWindow(Window owner, Window preview)
         {
             Rect workArea = SystemParameters.WorkArea;
-            double ownerWidth = owner.Width > 0 && !double.IsNaN(owner.Width) ? owner.Width : owner.ActualWidth;
-            double left = owner.Left + ownerWidth;
+            double left = owner.Left + owner.ActualWidth;
             double rightSpace = workArea.Right - left;
 
             if (rightSpace >= preview.MinWidth)

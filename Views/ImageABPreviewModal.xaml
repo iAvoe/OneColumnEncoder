@@ -15,7 +15,7 @@
         MinHeight="520"
         WindowStartupLocation="Manual"
         Background="{StaticResource Background}">
-    <Grid Margin="20 10 20 20">
+    <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
