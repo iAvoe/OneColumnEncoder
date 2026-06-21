@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 
 namespace OneColumnEncoder.ViewModels
 {
-    public class ImageABPreviewVM : BaseVM
+    public class ImgABPvVM : BaseVM
     {
         private readonly EncoderConfVM _encoderConfVM;
         private readonly string? _ffmpegPath;
@@ -22,8 +22,8 @@ namespace OneColumnEncoder.ViewModels
         private Process? _currentProcess;
         private bool _isFitMode = true;
         private PreviewDisplayMode _displayMode = PreviewDisplayMode.Raw;
-        private ImageABPreviewLangProviderM _lang = new(UILangProviderM.Current.LanguageCode);
-        public ImageABPreviewLangProviderM Lang
+        private ImgABPvLangProviderM _lang = new(UILangProviderM.Current.LanguageCode);
+        public ImgABPvLangProviderM Lang
         {
             get => _lang;
             private set => SetProperty(ref _lang, value);
@@ -108,7 +108,7 @@ namespace OneColumnEncoder.ViewModels
         public bool IsIdle => !IsBusy;
         public bool IsFitMode => _isFitMode;
 
-        public ImageABPreviewVM(EncoderConfVM encoderConfVM, string? ffmpegPath, string? sourceVideoPath, string? sourceFfprobeJson)
+        public ImgABPvVM(EncoderConfVM encoderConfVM, string? ffmpegPath, string? sourceVideoPath, string? sourceFfprobeJson)
         {
             _encoderConfVM = encoderConfVM;
             _ffmpegPath = ffmpegPath;
@@ -125,10 +125,10 @@ namespace OneColumnEncoder.ViewModels
             EncoderDropdown.SelectionChangedCommand = new ActionCmd(_ => RefreshSelectedEncodedImage());
             DisplayModeButtons = ButtonGroupVM.CreateFiveButton(
                 Lang.RawButtonText,
-                "Low��Bt709",
-                "WCG��Bt709",
-                "HDR��SDR",
-                "HDRWCG��SDR709",
+                "Low\u2192Bt709",
+                "WCG\u2192Bt709",
+                "HDR\u2192SDR",
+                "HDRWCG\u2192SDR709",
                 new ActionCmd(_ => SetDisplayMode(PreviewDisplayMode.Raw)),
                 new ActionCmd(_ => SetDisplayMode(PreviewDisplayMode.LowToBt709)),
                 new ActionCmd(_ => SetDisplayMode(PreviewDisplayMode.WcgToBt709)),
@@ -546,7 +546,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void OnLanguageChanged()
         {
-            Lang = new ImageABPreviewLangProviderM(UILangProviderM.Current.LanguageCode);
+            Lang = new ImgABPvLangProviderM(UILangProviderM.Current.LanguageCode);
             ZoomPresetButtons.B3_1Text = Lang.FitButtonText;
             DisplayModeButtons.B5_1Text = Lang.RawButtonText;
             if (!IsBusy)

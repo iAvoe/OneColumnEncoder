@@ -9,7 +9,7 @@ using System.Windows.Threading;
 
 namespace OneColumnEncoder.Components
 {
-    public partial class ImageABPreviewViewer : UserControl
+    public partial class ImgABPvViewer : UserControl
     {
         private bool _isPanning;
         private bool _isDraggingSplit;
@@ -18,10 +18,10 @@ namespace OneColumnEncoder.Components
         private double _zoom = 1d;
         private double _offsetX;
         private double _offsetY;
-        private ImageABPreviewVM? _subscribedVm;
+        private ImgABPvVM? _subscribedVm;
         private bool _isFitQueued;
 
-        public ImageABPreviewViewer()
+        public ImgABPvViewer()
         {
             InitializeComponent();
             Loaded += (_, _) => ApplyView();
@@ -37,13 +37,13 @@ namespace OneColumnEncoder.Components
         public void SetActualSize() => SetZoom(1d, GetViewportCenter());
         public void SetDoubleSize() => SetZoom(2d, GetViewportCenter());
 
-        private ImageABPreviewVM? ViewModel => DataContext as ImageABPreviewVM;
+        private ImgABPvVM? ViewModel => DataContext as ImgABPvVM;
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             UnsubscribeViewModel();
 
-            _subscribedVm = e.NewValue as ImageABPreviewVM;
+            _subscribedVm = e.NewValue as ImgABPvVM;
             if (_subscribedVm != null)
                 _subscribedVm.PropertyChanged += OnViewModelPropertyChanged;
 
@@ -59,7 +59,7 @@ namespace OneColumnEncoder.Components
 
         private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName is nameof(ImageABPreviewVM.SourceImage) or nameof(ImageABPreviewVM.EncodedImage))
+            if (e.PropertyName is nameof(ImgABPvVM.SourceImage) or nameof(ImgABPvVM.EncodedImage))
             {
                 QueueFitImage();
             }

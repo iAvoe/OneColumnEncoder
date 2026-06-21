@@ -14,7 +14,7 @@ namespace OneColumnEncoder.Components
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            if (DataContext is not ImageABPreviewVM vm) return;
+            if (DataContext is not ImgABPvVM vm) return;
 
             vm.ZoomPresetButtons.Cmd1 = new ActionCmd(_ => PreviewViewer.Fit());
             vm.ZoomPresetButtons.Cmd2 = new ActionCmd(_ => PreviewViewer.SetActualSize());

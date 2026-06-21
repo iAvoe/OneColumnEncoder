@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models;
 
-public class ImageABPreviewLangProviderM
+public class ImgABPvLangProviderM
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -36,67 +36,67 @@ public class ImageABPreviewLangProviderM
         },
         ["zh-cn"] = new()
         {
-            ["EncoderLabel"] = "编码器",
-            ["DisplayModeLabel"] = "显示",
-            ["ZoomLabel"] = "缩放",
-            ["PositionLabel"] = "画面位置",
-            ["FitButtonText"] = "适应",
-            ["RawButtonText"] = "原始",
-            ["Hint1Text"] = "拖拽分割线来比较源帧与编码帧。",
-            ["Hint2Text"] = "预览仅使用 ffmpeg，可用编码选项可能不同于导入的编码器。",
-            ["Hint3Text"] = "压缩仅在点击预览后运行。",
-            ["PreviewButtonText"] = "预览",
-            ["CancelButtonText"] = "取消",
-            ["StatusReady"] = "就绪。",
-            ["StatusExtracting"] = "正在提取源帧...",
-            ["StatusConverting"] = "正在转换源帧（{0}）...",
-            ["StatusEncoding"] = "正在用 {0} 编码...",
-            ["StatusDecoding"] = "正在解码预览帧...",
-            ["StatusPreviewReady"] = "预览就绪：{0}，CRF {1}。",
-            ["StatusCancelled"] = "预览已取消。",
-            ["StatusNoFfmpeg"] = "未导入 ffmpeg.exe。",
-            ["StatusNoSource"] = "未选择有效视频源。",
-            ["StatusDisplayModeBlocked"] = "预览运行时无法更改显示模式。",
-            ["StatusDisplayModeSet"] = "显示模式：{0}。",
-            ["DisplayModeRaw"] = "原始",
-            ["DisplayModeLowToBt709"] = "低色域转 BT.709",
-            ["DisplayModeWcgToBt709"] = "WCG 转 BT.709",
-            ["DisplayModeHdrToSdr"] = "HDR 转 SDR",
-            ["DisplayModeHighHdrToSdr"] = "高 HDR 转 SDR",
+            ["EncoderLabel"] = "\u7f16\u7801\u5668",
+            ["DisplayModeLabel"] = "\u663e\u793a",
+            ["ZoomLabel"] = "\u7f29\u653e",
+            ["PositionLabel"] = "\u753b\u9762\u4f4d\u7f6e",
+            ["FitButtonText"] = "\u9002\u5e94",
+            ["RawButtonText"] = "\u539f\u59cb",
+            ["Hint1Text"] = "\u62d6\u62fd\u5206\u5272\u7ebf\u6765\u6bd4\u8f83\u6e90\u5e27\u4e0e\u7f16\u7801\u5e27\u3002",
+            ["Hint2Text"] = "\u9884\u89c8\u4ec5\u4f7f\u7528 ffmpeg\uff0c\u53ef\u7528\u7f16\u7801\u9009\u9879\u53ef\u80fd\u4e0d\u540c\u4e8e\u5bfc\u5165\u7684\u7f16\u7801\u5668\u3002",
+            ["Hint3Text"] = "\u538b\u7f29\u4ec5\u5728\u70b9\u51fb\u9884\u89c8\u540e\u8fd0\u884c\u3002",
+            ["PreviewButtonText"] = "\u9884\u89c8",
+            ["CancelButtonText"] = "\u53d6\u6d88",
+            ["StatusReady"] = "\u5c31\u7eea\u3002",
+            ["StatusExtracting"] = "\u6b63\u5728\u63d0\u53d6\u6e90\u5e27...",
+            ["StatusConverting"] = "\u6b63\u5728\u8f6c\u6362\u6e90\u5e27\uff08{0}\uff09...",
+            ["StatusEncoding"] = "\u6b63\u5728\u7528 {0} \u7f16\u7801...",
+            ["StatusDecoding"] = "\u6b63\u5728\u89e3\u7801\u9884\u89c8\u5e27...",
+            ["StatusPreviewReady"] = "\u9884\u89c8\u5c31\u7eea\uff1a{0}\uff0cCRF {1}\u3002",
+            ["StatusCancelled"] = "\u9884\u89c8\u5df2\u53d6\u6d88\u3002",
+            ["StatusNoFfmpeg"] = "\u672a\u5bfc\u5165 ffmpeg.exe\u3002",
+            ["StatusNoSource"] = "\u672a\u9009\u62e9\u6709\u6548\u89c6\u9891\u6e90\u3002",
+            ["StatusDisplayModeBlocked"] = "\u9884\u89c8\u8fd0\u884c\u65f6\u65e0\u6cd5\u66f4\u6539\u663e\u793a\u6a21\u5f0f\u3002",
+            ["StatusDisplayModeSet"] = "\u663e\u793a\u6a21\u5f0f\uff1a{0}\u3002",
+            ["DisplayModeRaw"] = "\u539f\u59cb",
+            ["DisplayModeLowToBt709"] = "\u4f4e\u8272\u57df\u8f6c BT.709",
+            ["DisplayModeWcgToBt709"] = "WCG \u8f6c BT.709",
+            ["DisplayModeHdrToSdr"] = "HDR \u8f6c SDR",
+            ["DisplayModeHighHdrToSdr"] = "\u9ad8 HDR \u8f6c SDR",
         },
         ["zh-tw"] = new()
         {
-            ["EncoderLabel"] = "編碼器",
-            ["DisplayModeLabel"] = "顯示",
-            ["ZoomLabel"] = "縮放",
-            ["PositionLabel"] = "畫面位置",
-            ["FitButtonText"] = "適應",
-            ["RawButtonText"] = "原始",
-            ["Hint1Text"] = "拖拽分割線來比較源幀與編碼幀。",
-            ["Hint2Text"] = "預覽僅使用 ffmpeg，可用編碼選項可能不同於導入的編碼器。",
-            ["Hint3Text"] = "壓縮僅在點擊預覽後運行。",
-            ["PreviewButtonText"] = "預覽",
-            ["CancelButtonText"] = "取消",
-            ["StatusReady"] = "就緒。",
-            ["StatusExtracting"] = "正在提取源幀...",
-            ["StatusConverting"] = "正在轉換源幀（{0}）...",
-            ["StatusEncoding"] = "正在用 {0} 編碼...",
-            ["StatusDecoding"] = "正在解碼預覽幀...",
-            ["StatusPreviewReady"] = "預覽就緒：{0}，CRF {1}。",
-            ["StatusCancelled"] = "預覽已取消。",
-            ["StatusNoFfmpeg"] = "未導入 ffmpeg.exe。",
-            ["StatusNoSource"] = "未選擇有效視訊源。",
-            ["StatusDisplayModeBlocked"] = "預覽運行時無法變更顯示模式。",
-            ["StatusDisplayModeSet"] = "顯示模式：{0}。",
-            ["DisplayModeRaw"] = "原始",
-            ["DisplayModeLowToBt709"] = "低色域轉 BT.709",
-            ["DisplayModeWcgToBt709"] = "WCG 轉 BT.709",
-            ["DisplayModeHdrToSdr"] = "HDR 轉 SDR",
-            ["DisplayModeHighHdrToSdr"] = "高 HDR 轉 SDR",
+            ["EncoderLabel"] = "\u7de8\u78bc\u5668",
+            ["DisplayModeLabel"] = "\u986f\u793a",
+            ["ZoomLabel"] = "\u7e2e\u653e",
+            ["PositionLabel"] = "\u753b\u9762\u4f4d\u7f6e",
+            ["FitButtonText"] = "\u9069\u61c9",
+            ["RawButtonText"] = "\u539f\u59cb",
+            ["Hint1Text"] = "\u62d6\u62fd\u5206\u5272\u7dda\u4f86\u6bd4\u8f03\u6e90\u5e40\u8207\u7de8\u78bc\u5e40\u3002",
+            ["Hint2Text"] = "\u9810\u89bd\u50c5\u4f7f\u7528 ffmpeg\uff0c\u53ef\u7528\u7de8\u78bc\u9078\u9805\u53ef\u80fd\u4e0d\u540c\u65bc\u5c0e\u5165\u7684\u7de8\u78bc\u5668\u3002",
+            ["Hint3Text"] = "\u58d3\u7e2e\u50c5\u5728\u9ede\u64ca\u9810\u89bd\u5f8c\u904b\u884c\u3002",
+            ["PreviewButtonText"] = "\u9810\u89bd",
+            ["CancelButtonText"] = "\u53d6\u6d88",
+            ["StatusReady"] = "\u5c31\u7e6c\u3002",
+            ["StatusExtracting"] = "\u6b63\u5728\u63d0\u53d6\u6e90\u5e40...",
+            ["StatusConverting"] = "\u6b63\u5728\u8f49\u63db\u6e90\u5e40\uff08{0}\uff09...",
+            ["StatusEncoding"] = "\u6b63\u5728\u7528 {0} \u7de8\u78bc...",
+            ["StatusDecoding"] = "\u6b63\u5728\u89e3\u78bc\u9810\u89bd\u5e40...",
+            ["StatusPreviewReady"] = "\u9810\u89bd\u5c31\u7e6c\uff1a{0}\uff0cCRF {1}\u3002",
+            ["StatusCancelled"] = "\u9810\u89bd\u5df2\u53d6\u6d88\u3002",
+            ["StatusNoFfmpeg"] = "\u672a\u5c0e\u5165 ffmpeg.exe\u3002",
+            ["StatusNoSource"] = "\u672a\u9078\u64c7\u6709\u6548\u8996\u8a0a\u6e90\u3002",
+            ["StatusDisplayModeBlocked"] = "\u9810\u89bd\u904b\u884c\u6642\u7121\u6cd5\u8b8a\u66f4\u986f\u793a\u6a21\u5f0f\u3002",
+            ["StatusDisplayModeSet"] = "\u986f\u793a\u6a21\u5f0f\uff1a{0}\u3002",
+            ["DisplayModeRaw"] = "\u539f\u59cb",
+            ["DisplayModeLowToBt709"] = "\u4f4e\u8272\u57df\u8f49 BT.709",
+            ["DisplayModeWcgToBt709"] = "WCG \u8f49 BT.709",
+            ["DisplayModeHdrToSdr"] = "HDR \u8f49 SDR",
+            ["DisplayModeHighHdrToSdr"] = "\u9ad8 HDR \u8f49 SDR",
         },
     };
 
-    static ImageABPreviewLangProviderM()
+    static ImgABPvLangProviderM()
     {
         Data["fr"] = new(Data["en"])
         {
@@ -252,7 +252,7 @@ public class ImageABPreviewLangProviderM
     public string DisplayModeHdrToSdr { get; }
     public string DisplayModeHighHdrToSdr { get; }
 
-    public ImageABPreviewLangProviderM(string languageCode)
+    public ImgABPvLangProviderM(string languageCode)
     {
         LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
         _d = Data[LanguageCode];

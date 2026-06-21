@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
-             d:DataContext="{d:DesignInstance Type=vms:ImageABPreviewVM}"
+             d:DataContext="{d:DesignInstance Type=vms:ImgABPvVM}"
              mc:Ignorable="d"
              Loaded="OnLoaded">
     <Grid>
@@ -103,7 +103,7 @@
                                     Button3Command="{Binding Cmd3}" />
         </Grid>
 
-        <comps:ImageABPreviewViewer Grid.Row="1"
+        <comps:ImgABPvViewer Grid.Row="1"
                                     x:Name="PreviewViewer"
                                     Margin="0 10 0 10" />
 

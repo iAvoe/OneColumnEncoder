@@ -19,7 +19,7 @@ namespace OneColumnEncoder.ViewModels
         public CloseModalCmd CloseCmd { get; }
         public ActionCmd ConfirmCmd { get; }
         public ButtonGroupVM FinishButtons { get; }
-        public ImageABPreviewVM PreviewVM { get; }
+        public ImgABPvVM PreviewVM { get; }
 
         private bool _isPreviewBusy;
         public bool IsPreviewBusy
@@ -239,7 +239,7 @@ namespace OneColumnEncoder.ViewModels
                 CancelButtonText, ConfirmButtonText, CloseCmd, ConfirmCmd);
             PopulateDropdowns();
             LoadModelToUi();
-            PreviewVM = new ImageABPreviewVM(this, ffmpegPath, sourceVideoPath, sourceFfprobeJson);
+            PreviewVM = new ImgABPvVM(this, ffmpegPath, sourceVideoPath, sourceFfprobeJson);
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
 
