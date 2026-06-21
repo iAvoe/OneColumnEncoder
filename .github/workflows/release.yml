@@ -2,11 +2,14 @@ name: Build and Release x86 x64 7zips
 
 on:
   workflow_dispatch:
-
+    inputs:
+      tag_name:
+        description: 'Tag to create release for'
+        required: true
+        type: string
   push:
     tags:
       - 'v*' # v1.x pattern
-      - 'Late-beta' # Current pattern
       - '*-beta' # 'v1.0-beta'
 
 # Reference: https://github.com/actions/setup-dotnet
@@ -76,7 +79,6 @@ jobs:
           }
 
       # 7. Pack zips
-
       - name: Pack x86
         run: 7z a -t7z -mx9 1cenc-win-x86.7z .\publish\x86\*
 
@@ -107,6 +109,7 @@ jobs:
 
       # 9. Delete existing release to fix blockings
       - name: Delete existing release (if any)
+        if: startsWith(github.ref, 'refs/tags/')
         shell: pwsh
         run: |
           gh release delete ${{ github.ref_name }} -y || true
@@ -115,6 +118,7 @@ jobs:
 
       # 10. Create release and publish the 2 7zips without --force
       - name: Create Release and Upload Assets
+        if: startsWith(github.ref, 'refs/tags/')
         shell: pwsh
         run: |
           gh release create ${{ github.ref_name }} `
