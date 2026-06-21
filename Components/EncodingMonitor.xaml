@@ -74,7 +74,7 @@
                                       HorizontalScrollBarVisibility="Auto"
                                       VerticalScrollBarVisibility="Disabled">
                             <comps:MemoryRangeBar Items="{Binding MemoryRangeBlocks}"
-                                                  HorizontalAlignment="Left"
+                                                  HorizontalAlignment="Stretch"
                                                   VerticalAlignment="Center" />
                         </ScrollViewer>
                         <TextBlock Grid.Column="2"

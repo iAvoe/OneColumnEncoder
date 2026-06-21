@@ -97,6 +97,12 @@ namespace OneColumnEncoder.ViewModels
             get => _isOverlayVisible;
             set => SetProperty(ref _isOverlayVisible, value);
         }
+        private bool _isEncoding;
+        public bool IsEncoding
+        {
+            get => _isEncoding;
+            set => SetProperty(ref _isEncoding, value);
+        }
         // Hide SVFI hint when unselected
         private bool _svfiClipDisabledHintVisible;
         public bool SVFIClipDisabledHintVisible
@@ -1787,7 +1793,23 @@ namespace OneColumnEncoder.ViewModels
 
         #endregion
 
-        private void OnModalStateChanged() { IsOverlayVisible = _modalNavS.IsOpen; }
+        private void OnModalStateChanged()
+        {
+            IsOverlayVisible = _modalNavS.IsOpen;
+            bool isCurrentlyEncoding = _modalNavS.CurrentModalVM is EncodingMonitorVM;
+
+            if (isCurrentlyEncoding && !_isEncoding)
+            {
+                IsEncoding = true;
+                Application.Current.MainWindow?.Hide();
+            }
+            else if (!isCurrentlyEncoding && _isEncoding)
+            {
+                IsEncoding = false;
+                if (Application.Current.MainWindow is { Visibility: Visibility.Hidden } mw)
+                    mw.Show();
+            }
+        }
 
         #region Language Switching
         private void OnLanguageChanged() { RefreshLanguage(); }
