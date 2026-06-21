@@ -23,6 +23,8 @@ namespace OneColumnEncoder.ViewModels
     {
         private const int MemoryRangeBlockCount = 128;
         private const int MemoryRangeMaxFillLevel = 8;
+        private const int UpstreamShutdownAfterEncoderExitDelayMs = 5000;
+        private const int UpstreamKillAfterShutdownTimeoutMs = 1000;
         private const long BytesPerMb = 1024L * 1024L;
         private const long BytesPerGb = 1024L * 1024L * 1024L;
         private const uint TH32CS_SNAPPROCESS = 0x00000002;
@@ -593,9 +595,10 @@ namespace OneColumnEncoder.ViewModels
                     upstream.StandardError, ProcessLogKind.UpstreamStderr, cancellationToken);
                 Task encoderStderrTask = ReadStreamAsync(
                     encoder.StandardError, ProcessLogKind.DownstreamStderr, cancellationToken);
+                Task upstreamShutdownTask = StopUpstreamAfterEncoderExitAsync(encoderExited.Task, upstream, cancellationToken);
 
                 // Wait for data transfer to finish, then ensure processes have exited
-                await Task.WhenAll(pipeTask, upstreamStderrTask, encoderStderrTask);
+                await Task.WhenAll(pipeTask, upstreamStderrTask, encoderStderrTask, upstreamShutdownTask);
 
                 // Close encoder stdin if still open to signal EOF (safety net)
                 TryCloseStream(_encoderStdinStream);
@@ -1918,6 +1921,31 @@ namespace OneColumnEncoder.ViewModels
             {
                 if (process is { HasExited: false })
                     process.CloseMainWindow();
+            }
+            catch
+            {
+            }
+        }
+
+        private async Task StopUpstreamAfterEncoderExitAsync(Task encoderExitedTask, Process upstream, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await encoderExitedTask.WaitAsync(cancellationToken);
+                if (upstream.HasExited) return;
+
+                await Task.Delay(UpstreamShutdownAfterEncoderExitDelayMs, cancellationToken);
+                if (upstream.HasExited) return;
+
+                TryCloseStream(_upstreamStdoutStream);
+                TryCloseMainWindow(upstream);
+
+                await Task.Delay(UpstreamKillAfterShutdownTimeoutMs, cancellationToken);
+                if (!upstream.HasExited)
+                    TryKillProcess(upstream);
+            }
+            catch (OperationCanceledException)
+            {
             }
             catch
             {
