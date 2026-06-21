@@ -1,0 +1,147 @@
+<helpers:AdaptiveWindow x:Class="OneColumnEncoder.Views.ImageABPreviewModal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+        xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
+        xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
+        d:DataContext="{d:DesignInstance Type=vms:ImageABPreviewVM}"
+        mc:Ignorable="d"
+        Title="{Binding WindowTitle}"
+        Width="1000"
+        Height="720"
+        MinWidth="760"
+        MinHeight="520"
+        WindowStartupLocation="Manual"
+        Background="{StaticResource Background}">
+    <Grid Margin="20 10 20 20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="190" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="55" />
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="330" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       Text="{Binding EncoderLabel}"
+                       FontSize="14"
+                       VerticalAlignment="Center"
+                       Margin="0 0 10 0" />
+            <comps:DropdownMenu Grid.Column="1"
+                                Height="29"
+                                IsEnabled="{Binding DataContext.IsIdle, RelativeSource={RelativeSource AncestorType=helpers:AdaptiveWindow}}"
+                                DataContext="{Binding EncoderDropdown}" />
+
+            <TextBlock Grid.Column="3"
+                       Text="{Binding ZoomLabel}"
+                       FontSize="14"
+                       VerticalAlignment="Center"
+                       Margin="0 0 10 0" />
+            <Button Grid.Column="4"
+                    Content="--"
+                    Width="30"
+                    Height="30"
+                    Style="{StaticResource NormalButton}"
+                    Click="ZoomFineOut_Click" />
+            <Button Grid.Column="5"
+                    Content="-"
+                    Width="30"
+                    Height="30"
+                    Style="{StaticResource NormalButton}"
+                    Click="ZoomOut_Click" />
+            <TextBlock Grid.Column="6"
+                       Text="{Binding ZoomPercent, StringFormat={}{0}%}"
+                       FontSize="14"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center" />
+            <Button Grid.Column="7"
+                    Content="+"
+                    Width="30"
+                    Height="30"
+                    Style="{StaticResource NormalButton}"
+                    Click="ZoomIn_Click" />
+            <Button Grid.Column="8"
+                    Content="++"
+                    Width="30"
+                    Height="30"
+                    Style="{StaticResource NormalButton}"
+                    Click="ZoomFineIn_Click" />
+            <comps:ThreeButtonGroup Grid.Column="9"
+                                    DataContext="{Binding ZoomPresetButtons}"
+                                    ButtonHeight="30"
+                                    Margin="5 0 0 0"
+                                    Button1Command="{Binding Cmd1}"
+                                    Button2Command="{Binding Cmd2}"
+                                    Button3Command="{Binding Cmd3}" />
+        </Grid>
+
+        <comps:ImageABViewer x:Name="PreviewViewer"
+                             Grid.Row="1"
+                             Margin="0 10 0 10" />
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="110" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="130" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0"
+                       Text="{Binding PositionLabel}"
+                       FontSize="14"
+                       VerticalAlignment="Center" />
+            <comps:IntegerSlider Grid.Column="1"
+                                  Minimum="0"
+                                  Maximum="{Binding MaxPositionSeconds}"
+                                  Value="{Binding PreviewPositionSeconds, Mode=TwoWay}"
+                                  TickLabels="{Binding PositionTickLabels}"
+                                  TickCount="5"
+                                  LabelWidth="0"
+                                  SliderMaxWidth="900"
+                                  IsEnabled="{Binding IsIdle}" />
+            <Button Grid.Column="2"
+                    Content="{Binding PreviewButtonText}"
+                    Command="{Binding PreviewCommand}"
+                    Height="30"
+                    Margin="10 0 0 0"
+                    Style="{StaticResource PrimaryButton}" />
+        </Grid>
+
+        <TextBlock Grid.Row="3"
+                   Text="{Binding StatusText}"
+                   FontSize="11"
+                   Foreground="{StaticResource GlobalSecondary}"
+                   TextWrapping="Wrap"
+                   Margin="0 6 0 0" />
+
+        <StackPanel Grid.Row="4"
+                    Margin="0 6 0 0">
+            <comps:HintPanel Text="{Binding Hint1Text}"
+                             HintBrush="{StaticResource GlobalSecondary}"
+                             FontSize="11" />
+            <comps:HintPanel Text="{Binding Hint2Text}"
+                             HintBrush="{StaticResource GlobalSecondary}"
+                             FontSize="11"
+                             Margin="0 4 0 0" />
+            <comps:HintPanel Text="{Binding Hint3Text}"
+                             HintBrush="{StaticResource GlobalSecondary}"
+                             FontSize="11"
+                             Margin="0 4 0 0" />
+        </StackPanel>
+    </Grid>
+</helpers:AdaptiveWindow>

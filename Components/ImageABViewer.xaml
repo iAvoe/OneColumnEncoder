@@ -1,0 +1,112 @@
+<UserControl x:Class="OneColumnEncoder.Components.ImageABViewer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             ClipToBounds="True"
+             Focusable="True"
+             Background="White"
+             MouseWheel="Viewer_MouseWheel"
+             MouseLeftButtonDown="Viewer_MouseLeftButtonDown"
+             MouseLeftButtonUp="Viewer_MouseLeftButtonUp"
+             MouseMove="Viewer_MouseMove"
+             SizeChanged="Viewer_SizeChanged">
+    <Grid>
+        <Border BorderBrush="{StaticResource GlobalPrimary}"
+                BorderThickness="1.5"
+                CornerRadius="10"
+                Background="White" />
+        <Border Margin="1.5"
+                CornerRadius="8.5"
+                ClipToBounds="True">
+            <Grid x:Name="Viewport"
+                  Background="White">
+            <Image x:Name="EncodedImage"
+                   Source="{Binding EncodedImage}"
+                   Stretch="None"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Top"
+                   SnapsToDevicePixels="True"
+                   RenderOptions.BitmapScalingMode="NearestNeighbor">
+                <Image.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform x:Name="EncodedScale" />
+                        <TranslateTransform x:Name="EncodedTranslate" />
+                    </TransformGroup>
+                </Image.RenderTransform>
+            </Image>
+
+            <Grid x:Name="SourceLayer"
+                  ClipToBounds="True"
+                  HorizontalAlignment="Left">
+                <Image x:Name="SourceImage"
+                       Source="{Binding SourceImage}"
+                       Stretch="None"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       SnapsToDevicePixels="True"
+                       RenderOptions.BitmapScalingMode="NearestNeighbor">
+                    <Image.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform x:Name="SourceScale" />
+                            <TranslateTransform x:Name="SourceTranslate" />
+                        </TransformGroup>
+                    </Image.RenderTransform>
+                </Image>
+            </Grid>
+
+            <Border x:Name="SplitHandle"
+                    Width="2"
+                    HorizontalAlignment="Left"
+                    Background="{StaticResource GlobalSecondary}"
+                    Cursor="SizeWE"
+                    MouseLeftButtonDown="SplitHandle_MouseLeftButtonDown"
+                    MouseLeftButtonUp="SplitHandle_MouseLeftButtonUp"
+                    MouseMove="SplitHandle_MouseMove" />
+
+            <TextBlock Text="SOURCE"
+                       FontSize="72"
+                       Foreground="{StaticResource GlobalSecondary}"
+                       Opacity="0.75"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       Margin="28 0 0 0"
+                       IsHitTestVisible="False">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SourceImage}"
+                                         Value="{x:Null}">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <TextBlock Text="ENCODE"
+                       FontSize="72"
+                       Foreground="{StaticResource GlobalSecondary}"
+                       Opacity="0.75"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center"
+                       Margin="0 0 42 0"
+                       IsHitTestVisible="False">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding EncodedImage}"
+                                         Value="{x:Null}">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Grid>
+        </Border>
+    </Grid>
+</UserControl>

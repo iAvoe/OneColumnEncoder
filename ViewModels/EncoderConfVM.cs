@@ -20,6 +20,19 @@ namespace OneColumnEncoder.ViewModels
         public ActionCmd ConfirmCmd { get; }
         public ButtonGroupVM FinishButtons { get; }
 
+        private bool _isPreviewBusy;
+        public bool IsPreviewBusy
+        {
+            get => _isPreviewBusy;
+            private set
+            {
+                if (!SetProperty(ref _isPreviewBusy, value)) return;
+                OnPropertyChanged(nameof(IsConfigUiEnabled));
+            }
+        }
+
+        public bool IsConfigUiEnabled => !IsPreviewBusy;
+
         private int _selectedTabIndex;
         public int SelectedTabIndex
         {
@@ -281,30 +294,44 @@ namespace OneColumnEncoder.ViewModels
 
         private void SaveModel()
         {
-            _model.EncoderModeTabIndex = SelectedTabIndex;
-            _model.RateControlMode = IsAbrTabSelected ? "ABR" : "CRF";
-            _model.X264Crf = X264Crf;
-            _model.X265Crf = X265Crf;
-            _model.SvtAv1Crf = SvtAv1Crf;
-            _model.X264Abr = X264Abr;
-            _model.X265Abr = X265Abr;
-            _model.SvtAv1Abr = SvtAv1Abr;
-            _model.X264Keyframe = X264Keyframe;
-            _model.X265Keyframe = X265Keyframe;
-            _model.SvtAv1Keyframe = SvtAv1Keyframe;
-            _model.X264Mod = X264Mod;
-            _model.X265Aq = X265Aq;
-            _model.X265Dark = X265Dark;
-            _model.X265Texture = X265Texture;
-            _model.SvtAv1Dl2 = SvtAv1Dl2;
-            _model.SvtAv1AutoTile = SvtAv1AutoTile;
-            _model.CustomParamsX264 = FreeTextParamsX264;
-            _model.CustomParamsX265 = FreeTextParamsX265;
-            _model.CustomParamsSvtAv1 = FreeTextParamsSvtAv1;
-            _model.X264Mode = X264ModeDropdown.SelectedItem?.Tag is int x264Mode ? x264Mode : -1;
-            _model.X265Mode = X265ModeDropdown.SelectedItem?.Tag is int x265Mode ? x265Mode : -1;
-            _model.SvtAv1Mode = SvtAv1ModeDropdown.SelectedItem?.Tag is int svtAv1Mode ? svtAv1Mode : -1;
+            FillModelFromUi(_model, forceCrfMode: false);
             _model.Save();
+        }
+
+        public EncoderConfM CreatePreviewModel()
+        {
+            EncoderConfM previewModel = new();
+            FillModelFromUi(previewModel, forceCrfMode: true);
+            return previewModel;
+        }
+
+        public void SetPreviewBusy(bool isBusy) => IsPreviewBusy = isBusy;
+
+        private void FillModelFromUi(EncoderConfM model, bool forceCrfMode)
+        {
+            model.EncoderModeTabIndex = SelectedTabIndex;
+            model.RateControlMode = forceCrfMode ? "CRF" : IsAbrTabSelected ? "ABR" : "CRF";
+            model.X264Crf = X264Crf;
+            model.X265Crf = X265Crf;
+            model.SvtAv1Crf = SvtAv1Crf;
+            model.X264Abr = X264Abr;
+            model.X265Abr = X265Abr;
+            model.SvtAv1Abr = SvtAv1Abr;
+            model.X264Keyframe = X264Keyframe;
+            model.X265Keyframe = X265Keyframe;
+            model.SvtAv1Keyframe = SvtAv1Keyframe;
+            model.X264Mod = X264Mod;
+            model.X265Aq = X265Aq;
+            model.X265Dark = X265Dark;
+            model.X265Texture = X265Texture;
+            model.SvtAv1Dl2 = SvtAv1Dl2;
+            model.SvtAv1AutoTile = SvtAv1AutoTile;
+            model.CustomParamsX264 = FreeTextParamsX264;
+            model.CustomParamsX265 = FreeTextParamsX265;
+            model.CustomParamsSvtAv1 = FreeTextParamsSvtAv1;
+            model.X264Mode = X264ModeDropdown.SelectedItem?.Tag is int x264Mode ? x264Mode : -1;
+            model.X265Mode = X265ModeDropdown.SelectedItem?.Tag is int x265Mode ? x265Mode : -1;
+            model.SvtAv1Mode = SvtAv1ModeDropdown.SelectedItem?.Tag is int svtAv1Mode ? svtAv1Mode : -1;
         }
         #endregion
 

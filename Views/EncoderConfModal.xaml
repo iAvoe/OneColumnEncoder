@@ -20,7 +20,8 @@
         </Grid.RowDefinitions>
 
         <ScrollViewer Grid.Row="0"
-                      Padding="15 10 15 0"
+                      IsEnabled="{Binding IsConfigUiEnabled}"
+                       Padding="15 10 15 0"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled">
             <Grid>

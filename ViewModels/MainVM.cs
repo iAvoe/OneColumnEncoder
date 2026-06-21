@@ -849,7 +849,12 @@ namespace OneColumnEncoder.ViewModels
 
             if (compressionParams != null)
             {
-                compressionParams.R1Command = new OpenEncoderConfCmd(_modalNavS, compressionParams);
+                compressionParams.R1Command = new OpenEncoderConfCmd(
+                    _modalNavS,
+                    compressionParams,
+                    () => _appDataM.Tools.FfmpegPath,
+                    GetSelectedVideoSourcePath,
+                    () => _srcVideoAnalysis.RawJson);
                 EncoderConfVM.ApplySavedSettingsToCard(compressionParams);
             }
         }
