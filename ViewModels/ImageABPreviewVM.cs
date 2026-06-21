@@ -17,17 +17,21 @@ namespace OneColumnEncoder.ViewModels
         private readonly string? _ffmpegPath;
         private readonly string? _sourceVideoPath;
         private readonly string _workDirectory;
+        private readonly ColorSpaceAnalysisM _colorSpaceAnalysis;
         private CancellationTokenSource? _previewCts;
         private Process? _currentProcess;
         private bool _isFitMode = true;
+        private PreviewDisplayMode _displayMode = PreviewDisplayMode.Raw;
 
         public DropdownMenuVM EncoderDropdown { get; } = new();
         public ButtonGroupVM ZoomPresetButtons { get; } = ButtonGroupVM.CreateThreeButton("Fit", "100%", "200%");
+        public ButtonGroupVM DisplayModeButtons { get; }
         public ActionCmd PreviewCommand { get; }
         public ObservableCollection<string> PositionTickLabels { get; } = [];
 
         public static string WindowTitle => "1cenc A-B Preview";
         public static string EncoderLabel => "Encoder";
+        public static string DisplayModeLabel => "Display";
         public static string ZoomLabel => "Zoom";
         public static string PositionLabel => "Image Position";
         public static string Hint1Text => "Drag the split line to compare source and encoded frame.";
@@ -112,10 +116,25 @@ namespace OneColumnEncoder.ViewModels
             EncoderDropdown.Items.Add(new DropdownItemM("libsvtav1") { Tag = PreviewEncoder.SvtAv1 });
             EncoderDropdown.SelectedItem = EncoderDropdown.Items[0];
             EncoderDropdown.SelectionChangedCommand = new ActionCmd(_ => RefreshSelectedEncodedImage());
+            DisplayModeButtons = ButtonGroupVM.CreateFiveButton(
+                "Raw",
+                "Low¡úBt709",
+                "WCG¡úBt709",
+                "HDR¡úSDR",
+                "HDRWCG¡úSDR709",
+                new ActionCmd(_ => SetDisplayMode(PreviewDisplayMode.Raw)),
+                new ActionCmd(_ => SetDisplayMode(PreviewDisplayMode.LowToBt709)),
+                new ActionCmd(_ => SetDisplayMode(PreviewDisplayMode.WcgToBt709)),
+                new ActionCmd(_ => SetDisplayMode(PreviewDisplayMode.HdrToSdr)),
+                new ActionCmd(_ => SetDisplayMode(PreviewDisplayMode.HighHdrToSdr)));
 
+            bool hasSourceStats = !string.IsNullOrWhiteSpace(sourceFfprobeJson);
+            _colorSpaceAnalysis = ColorSpaceConverterH.Analyze(sourceFfprobeJson);
             FfprobeSourceStats sourceStats = FfprobeSourceStatsH.Read(sourceFfprobeJson ?? string.Empty);
             MaxPositionSeconds = Math.Max(1, (int)Math.Floor(Math.Min(int.MaxValue, sourceStats.DurationSeconds)) - 1);
-            PreviewPositionSeconds = Math.Min(MaxPositionSeconds, Math.Max(0, MaxPositionSeconds / 2));
+            PreviewPositionSeconds = hasSourceStats
+                ? Math.Min(MaxPositionSeconds, Math.Max(0, MaxPositionSeconds / 2))
+                : 0;
             BuildPositionTickLabels(sourceStats.DurationSeconds);
 
             PreviewCommand = new ActionCmd(_ => PreviewOrCancel());
@@ -160,19 +179,32 @@ namespace OneColumnEncoder.ViewModels
             {
                 EncoderConfM model = _encoderConfVM.CreatePreviewModel();
                 PreviewEncoder encoder = GetSelectedEncoder();
-                string sourcePath = GetWorkPath("source.png");
+                string displayFilter = BuildDisplayFilter() ?? string.Empty;
+                string rawSourcePath = GetWorkPath("source-raw.png");
+                string sourcePath = string.IsNullOrWhiteSpace(displayFilter)
+                    ? rawSourcePath
+                    : GetWorkPath($"source-{GetDisplayModeFileSuffix()}.png");
                 string encodedPath = GetEncodedPath(encoder);
                 string decodedPath = GetDecodedPath(encoder);
 
                 StatusText = "Extracting source frame...";
-                await RunFfmpegAsync(BuildSourceArgs(sourcePath), token);
+                await RunFfmpegAsync(BuildSourceArgs(rawSourcePath), token);
+                EnsureFileExists(rawSourcePath, "Source preview frame was not generated.");
+
+                if (!string.IsNullOrWhiteSpace(displayFilter))
+                {
+                    StatusText = $"Converting source frame ({GetDisplayModeTitle(_displayMode)})...";
+                    await RunFfmpegAsync(BuildSourceArgs(sourcePath, displayFilter), token);
+                }
+                EnsureFileExists(sourcePath, "Source preview frame was not generated.");
                 SourceImage = LoadBitmap(sourcePath);
 
                 StatusText = $"Encoding with {GetEncoderTitle(encoder)}...";
-                await RunFfmpegAsync(BuildEncodeArgs(encoder, model, sourcePath, encodedPath), token);
+                await RunFfmpegAsync(BuildEncodeArgs(encoder, model, rawSourcePath, encodedPath), token);
 
                 StatusText = "Decoding preview frame...";
-                await RunFfmpegAsync(BuildDecodeArgs(encodedPath, decodedPath), token);
+                await RunFfmpegAsync(BuildDecodeArgs(encodedPath, decodedPath, displayFilter), token);
+                EnsureFileExists(decodedPath, "Encoded preview frame was not generated.");
                 EncodedImage = LoadBitmap(decodedPath);
 
                 StatusText = $"Preview ready: {GetEncoderTitle(encoder)}, CRF {GetCrfValue(encoder, model)}.";
@@ -192,20 +224,31 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        private string[] BuildSourceArgs(string outputPath) =>
-        [
-            "-hide_banner",
-            "-y",
-            "-ss",
-            EncodingPipelineH.FormatTimestamp(TimeSpan.FromSeconds(PreviewPositionSeconds)),
-            "-i",
-            _sourceVideoPath!,
-            "-vframes",
-            "1",
-            "-c:v",
-            "png",
-            outputPath
-        ];
+        private string[] BuildSourceArgs(string outputPath, string? displayFilter = null)
+        {
+            List<string> args =
+            [
+                "-hide_banner",
+                "-y",
+                "-ss",
+                EncodingPipelineH.FormatTimestamp(TimeSpan.FromSeconds(PreviewPositionSeconds)),
+                "-i",
+                _sourceVideoPath!
+            ];
+
+            if (!string.IsNullOrWhiteSpace(displayFilter))
+                args.AddRange(["-vf", displayFilter]);
+
+            args.AddRange(
+            [
+                "-vframes",
+                "1",
+                "-c:v",
+                "png",
+                outputPath
+            ]);
+            return [.. args];
+        }
 
         private static string[] BuildEncodeArgs(PreviewEncoder encoder, EncoderConfM model, string sourcePath, string outputPath)
         {
@@ -233,18 +276,29 @@ namespace OneColumnEncoder.ViewModels
             return [.. args];
         }
 
-        private static string[] BuildDecodeArgs(string inputPath, string outputPath) =>
-        [
-            "-hide_banner",
-            "-y",
-            "-i",
-            inputPath,
-            "-frames:v",
-            "1",
-            "-c:v",
-            "png",
-            outputPath
-        ];
+        private static string[] BuildDecodeArgs(string inputPath, string outputPath, string displayFilter)
+        {
+            List<string> args =
+            [
+                "-hide_banner",
+                "-y",
+                "-i",
+                inputPath
+            ];
+
+            if (!string.IsNullOrWhiteSpace(displayFilter))
+                args.AddRange(["-vf", displayFilter]);
+
+            args.AddRange(
+            [
+                "-frames:v",
+                "1",
+                "-c:v",
+                "png",
+                outputPath
+            ]);
+            return [.. args];
+        }
 
         private async Task RunFfmpegAsync(IReadOnlyList<string> args, CancellationToken token)
         {
@@ -300,6 +354,12 @@ namespace OneColumnEncoder.ViewModels
             return bitmap;
         }
 
+        private static void EnsureFileExists(string path, string message)
+        {
+            if (!File.Exists(path))
+                throw new FileNotFoundException(message, path);
+        }
+
         private void RefreshSelectedEncodedImage()
         {
             string decodedPath = GetDecodedPath(GetSelectedEncoder());
@@ -321,16 +381,76 @@ namespace OneColumnEncoder.ViewModels
 
         private string GetEncodedPath(PreviewEncoder encoder) => encoder switch
         {
-            PreviewEncoder.X264 => GetWorkPath("x264.h264"),
-            PreviewEncoder.X265 => GetWorkPath("x265.hevc"),
-            _ => GetWorkPath("svtav1.obu")
+            PreviewEncoder.X264 => GetWorkPath($"x264-{GetDisplayModeFileSuffix()}.h264"),
+            PreviewEncoder.X265 => GetWorkPath($"x265-{GetDisplayModeFileSuffix()}.hevc"),
+            _ => GetWorkPath($"svtav1-{GetDisplayModeFileSuffix()}.obu")
         };
 
         private string GetDecodedPath(PreviewEncoder encoder) => encoder switch
         {
-            PreviewEncoder.X264 => GetWorkPath("x264.png"),
-            PreviewEncoder.X265 => GetWorkPath("x265.png"),
-            _ => GetWorkPath("svtav1.png")
+            PreviewEncoder.X264 => GetWorkPath($"x264-{GetDisplayModeFileSuffix()}.png"),
+            PreviewEncoder.X265 => GetWorkPath($"x265-{GetDisplayModeFileSuffix()}.png"),
+            _ => GetWorkPath($"svtav1-{GetDisplayModeFileSuffix()}.png")
+        };
+
+        private void SetDisplayMode(PreviewDisplayMode displayMode)
+        {
+            if (_displayMode == displayMode) return;
+            if (IsBusy)
+            {
+                StatusText = "Display mode cannot be changed while preview is running.";
+                return;
+            }
+
+            _displayMode = displayMode;
+            StatusText = $"Display mode: {GetDisplayModeTitle(displayMode)}.";
+            RefreshSelectedEncodedImage();
+            if (!IsBusy && SourceImage != null)
+                _ = GeneratePreviewAsync();
+        }
+
+        private string? BuildDisplayFilter()
+        {
+            ColorSpaceStrategy? strategy = _displayMode switch
+            {
+                PreviewDisplayMode.LowToBt709 => ColorSpaceStrategy.LowToHigh,
+                PreviewDisplayMode.WcgToBt709 => ColorSpaceStrategy.HighToLow,
+                PreviewDisplayMode.HdrToSdr => ColorSpaceStrategy.HdrToSdr,
+                PreviewDisplayMode.HighHdrToSdr => ColorSpaceStrategy.HighHdrToSdr,
+                _ => null
+            };
+            if (strategy == null) return null;
+
+            string? filter = ColorSpaceConverterH.BuildFfmpegFilter(
+                strategy.Value,
+                _colorSpaceAnalysis.ColorMatrix,
+                _colorSpaceAnalysis.ColorChromaLocation,
+                _colorSpaceAnalysis.ColorPrimaries,
+                _colorSpaceAnalysis.PixelFormat);
+            if (string.IsNullOrWhiteSpace(filter)) return null;
+
+            filter = filter.Replace("<nits>", "1000", StringComparison.Ordinal);
+            if (strategy == ColorSpaceStrategy.HdrToSdr)
+                filter = string.Join(',', filter, "zscale=matrix=bt709:primaries=bt709:transfer=bt709");
+            return string.Join(',', filter, "format=rgb24");
+        }
+
+        private string GetDisplayModeFileSuffix() => _displayMode switch
+        {
+            PreviewDisplayMode.LowToBt709 => "low709",
+            PreviewDisplayMode.WcgToBt709 => "wcg709",
+            PreviewDisplayMode.HdrToSdr => "hdrsdr",
+            PreviewDisplayMode.HighHdrToSdr => "highhdrsdr",
+            _ => "raw"
+        };
+
+        private static string GetDisplayModeTitle(PreviewDisplayMode displayMode) => displayMode switch
+        {
+            PreviewDisplayMode.LowToBt709 => "Low gamut to BT.709",
+            PreviewDisplayMode.WcgToBt709 => "WCG to BT.709",
+            PreviewDisplayMode.HdrToSdr => "HDR to SDR",
+            PreviewDisplayMode.HighHdrToSdr => "High HDR to SDR",
+            _ => "Raw"
         };
 
         private static string GetFfmpegEncoderName(PreviewEncoder encoder) => encoder switch
@@ -433,5 +553,6 @@ namespace OneColumnEncoder.ViewModels
         }
 
         private enum PreviewEncoder { X264, X265, SvtAv1 }
+        private enum PreviewDisplayMode { Raw, LowToBt709, WcgToBt709, HdrToSdr, HighHdrToSdr }
     }
 }

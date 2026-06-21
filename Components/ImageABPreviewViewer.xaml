@@ -75,7 +75,7 @@
                            Opacity="0.75"
                            HorizontalAlignment="Left"
                            VerticalAlignment="Center"
-                           Margin="50 0 0 0"
+                           Margin="175 0 0 0"
                            IsHitTestVisible="False">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
@@ -98,7 +98,7 @@
                            Opacity="0.75"
                            HorizontalAlignment="Right"
                            VerticalAlignment="Center"
-                           Margin="0 0 50 0"
+                           Margin="0 0 175 0"
                            IsHitTestVisible="False">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">

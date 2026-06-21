@@ -9,10 +9,8 @@
         d:DataContext="{d:DesignInstance Type=vms:EncoderConfVM}"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
-        Width="1520"
-        Height="900"
-        MinWidth="1180"
-        MinHeight="700"
+        Width="1920"
+        Height="1080"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid Margin="15">

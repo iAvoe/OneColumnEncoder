@@ -20,22 +20,31 @@
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="190" />
+                <ColumnDefinition Width="120" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Column="0"
                        Text="{Binding EncoderLabel}"
-                       FontSize="14"
+                       FontSize="13"
                        VerticalAlignment="Center"
                        Margin="0 0 10 0"
                        Foreground="{StaticResource GlobalPrimary}" />
             <comps:DropdownMenu Grid.Column="1"
-                                Height="29"
+                                Height="30"
                                 IsEnabled="true"
                                 DataContext="{Binding EncoderDropdown}" />
+
+            <TextBlock Grid.Column="2"
+                       Text="{Binding StatusText}"
+                       FontSize="13"
+                       Foreground="{StaticResource GlobalSecondary}"
+                       TextWrapping="Wrap"
+                       VerticalAlignment="Center"
+                       Margin="5 0 0 0" />
 
             <StackPanel Grid.Column="3"
                         Orientation="Horizontal"
@@ -43,7 +52,7 @@
                         Margin="10 0">
 
                 <TextBlock Text="{Binding ZoomLabel}"
-                           FontSize="14"
+                           FontSize="13"
                            VerticalAlignment="Center"
                            Foreground="{StaticResource GlobalPrimary}" />
 
@@ -65,7 +74,7 @@
 
                 <TextBlock Text="{Binding ZoomPercent, StringFormat={}{0}%}"
                            Width="55"
-                           FontSize="14"
+                           FontSize="13"
                            TextAlignment="Center"
                            VerticalAlignment="Center"
                            Foreground="{StaticResource GlobalPrimary}" />
@@ -94,57 +103,77 @@
                                     Button3Command="{Binding Cmd3}" />
         </Grid>
 
-        <comps:ImageABPreviewViewer x:Name="PreviewViewer"
-                                    Grid.Row="1"
+        <comps:ImageABPreviewViewer Grid.Row="1"
+                                    x:Name="PreviewViewer"
                                     Margin="0 10 0 10" />
 
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="107" />
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0"
                        Text="{Binding PositionLabel}"
-                       FontSize="14"
+                       FontSize="13"
                        VerticalAlignment="Center" />
             <comps:IntegerSlider Grid.Column="1"
-                                  Minimum="0"
-                                  Maximum="{Binding MaxPositionSeconds}"
-                                  Value="{Binding PreviewPositionSeconds, Mode=TwoWay}"
-                                  TickLabels="{Binding PositionTickLabels}"
-                                  TickCount="5"
-                                  LabelWidth="0"
-                                  SliderMaxWidth="1200"
-                                  IsEnabled="{Binding IsIdle}" />
-            <Button Grid.Column="2"
+                                 Minimum="0"
+                                 Maximum="{Binding MaxPositionSeconds}"
+                                 Value="{Binding PreviewPositionSeconds, Mode=TwoWay}"
+                                 TickLabels="{Binding PositionTickLabels}"
+                                 TickCount="5"
+                                 LabelWidth="0"
+                                 SliderMaxWidth="1200"
+                                 IsEnabled="{Binding IsIdle}" />
+        </Grid>
+
+        <Grid Grid.Row="3"
+              Margin="0 5 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="850" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="180" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       Text="{Binding DisplayModeLabel}"
+                       FontSize="13"
+                       VerticalAlignment="Center"
+                       Margin="0 0 10 0"
+                       Foreground="{StaticResource GlobalPrimary}" />
+
+            <comps:FiveButtonGroup Grid.Column="1"
+                                   DataContext="{Binding DisplayModeButtons}"
+                                   ButtonHeight="30"
+                                   Button1Command="{Binding Cmd1}"
+                                   Button2Command="{Binding Cmd2}"
+                                   Button3Command="{Binding Cmd3}"
+                                   Button4Command="{Binding Cmd4}"
+                                   Button5Command="{Binding Cmd5}" />
+
+            <Button Grid.Column="3"
                     Content="{Binding PreviewButtonText}"
                     Command="{Binding PreviewCommand}"
                     Height="30"
                     HorizontalAlignment="Stretch"
-                    Style="{StaticResource PrimaryButton}" />
+                    Style="{StaticResource PrimaryButton}"
+                    Background="Black" />
         </Grid>
 
-        <TextBlock Grid.Row="3"
-                   Text="{Binding StatusText}"
-                   FontSize="11"
-                   Foreground="{StaticResource GlobalSecondary}"
-                   TextWrapping="Wrap"
-                   Margin="0 6 0 0" />
-
-        <StackPanel Grid.Row="4"
-                    Margin="0 6 0 0">
+        <StackPanel Grid.Row="5">
             <comps:HintPanel Text="{Binding Hint1Text}"
                              HintBrush="{StaticResource GlobalSecondary}"
-                             FontSize="11" />
+                             FontSize="10"
+                             Margin="0 10 0 0" />
             <comps:HintPanel Text="{Binding Hint2Text}"
                              HintBrush="{StaticResource GlobalSecondary}"
-                             FontSize="11"
-                             Margin="0 4 0 0" />
+                             FontSize="10"
+                             Margin="0 5 0 0" />
             <comps:HintPanel Text="{Binding Hint3Text}"
                              HintBrush="{StaticResource GlobalSecondary}"
-                             FontSize="11"
-                             Margin="0 4 0 0" />
+                             FontSize="10"
+                             Margin="0 5 0 0" />
         </StackPanel>
     </Grid>
 </UserControl>
