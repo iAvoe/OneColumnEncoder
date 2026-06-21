@@ -14,6 +14,9 @@ jobs:
   build:
     runs-on: windows-latest # WPF req.
 
+    permissions:
+      contents: write # Resolve 403 error
+
     steps:
       # 1. Use GitHub Actions checkout to get repo info
       - name: Checkout code
@@ -53,8 +56,8 @@ jobs:
       - name: Copy extra tools
         run: |
           if (Test-Path ".\Tools") {
-            Copy-Item -Path ".\Tools\x86\*.exe" -Destination ".\publish\x86\" -Force
-            Copy-Item -Path ".\Tools\x64\*.exe" -Destination ".\publish\x64\" -Force
+            Copy-Item -Path ".\.cicd\x86\*.exe" -Destination ".\publish\x86\" -Force
+            Copy-Item -Path ".\.cicd\x64\*.exe" -Destination ".\publish\x64\" -Force
             Write-Host "[EXIST] Tools copied to both publish folders."
           }
           else {
@@ -86,7 +89,7 @@ jobs:
           $body += "- [Encoding Tools Download Tutorial](https://github.com/iAvoe/encoding-tools-download-tutorial)`n`n"
           $body += "Or, TLDR; and use tools provided in downloaded package (not recommended but its an option) | 或者着急要用的话，也可以无视上述教程，下载并直接使用附带的工具（不推荐但可以）"
 
-          # 写入环境变量和文件
+          # Save Title and Release Note
           echo "RELEASE_TITLE=$title" >> $env:GITHUB_ENV
           $body | Out-File -FilePath .\release-notes.md -Encoding utf8
 
