@@ -149,6 +149,7 @@ namespace OneColumnEncoder.Components
             _zoom = zoom;
             _offsetX = anchor.X - imageX * _zoom;
             _offsetY = anchor.Y - imageY * _zoom;
+            ClampOffsetToViewport();
             ViewModel?.SetFitMode(false);
             ApplyView();
         }
@@ -192,6 +193,7 @@ namespace OneColumnEncoder.Components
 
         private void ApplyView()
         {
+            ClampOffsetToViewport();
             SyncImageLayoutSize(SourceImage);
             SyncImageLayoutSize(EncodedImage);
             Canvas.SetLeft(SourceImage, _offsetX);
@@ -208,6 +210,33 @@ namespace OneColumnEncoder.Components
             image.Width = Math.Max(1d, bitmap.PixelWidth * _zoom);
             image.Height = Math.Max(1d, bitmap.PixelHeight * _zoom);
         }
+
+        private void ClampOffsetToViewport()
+        {
+            BitmapSource? bitmap = GetActiveBitmap();
+            if (bitmap == null) return;
+
+            double viewportWidth = Math.Max(0d, Viewport.ActualWidth);
+            double viewportHeight = Math.Max(0d, Viewport.ActualHeight);
+            double imageWidth = bitmap.PixelWidth * _zoom;
+            double imageHeight = bitmap.PixelHeight * _zoom;
+
+            _offsetX = ClampOffset(_offsetX, imageWidth, viewportWidth);
+            _offsetY = ClampOffset(_offsetY, imageHeight, viewportHeight);
+        }
+
+        private static double ClampOffset(double offset, double contentSize, double viewportSize)
+        {
+            if (contentSize <= 0d || viewportSize <= 0d) return offset;
+            if (contentSize <= viewportSize)
+                return (viewportSize - contentSize) / 2d;
+
+            double minOffset = viewportSize - contentSize;
+            double maxOffset = 0d;
+            return Math.Max(minOffset, Math.Min(maxOffset, offset));
+        }
+
+        private BitmapSource? GetActiveBitmap() => SourceImage.Source as BitmapSource ?? EncodedImage.Source as BitmapSource;
 
         private double GetImagePixelWidth() =>
             (SourceImage.Source as BitmapSource ?? EncodedImage.Source as BitmapSource)?.PixelWidth ?? 0d;
