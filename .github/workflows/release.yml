@@ -9,6 +9,7 @@ on:
       - 'Late-beta' # Current pattern
       - '*-beta' # 'v1.0-beta'
 
+# Reference: https://github.com/actions/setup-dotnet
 jobs:
   build:
     runs-on: windows-latest # WPF req.
@@ -16,13 +17,13 @@ jobs:
     steps:
       # 1. Use GitHub Actions checkout to get repo info
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0 # Fetch all commit history to get commit count (git rev-list --count HEAD)
 
       # 2. Build env for net9.0-windows: .NET 9 SDK
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '9.0.x'
 
@@ -62,10 +63,10 @@ jobs:
 
       # 6. Pack 7zips
       - name: Pack x86
-        run: 7z a -t7z -mx9 OneColumnEncoder-win-x86.7z .\publish\x86\*
+        run: 7z a -t7z -mx9 1cenc-win-x86.7z .\publish\x86\*
 
       - name: Pack x64
-        run: 7z a -t7z -mx9 OneColumnEncoder-win-x64.7z .\publish\x64\*
+        run: 7z a -t7z -mx9 1cenc-win-x64.7z .\publish\x64\*
 
       # 7. Release note prep (Get latest commit # and latest commit SHA)
       - name: Prepare Release Info
@@ -104,6 +105,6 @@ jobs:
           gh release create ${{ github.ref_name }} `
             --title "${{ env.RELEASE_TITLE }}" `
             --notes-file .\release-notes.md `
-            1cenc-publish-x86.7z 1cenc-publish-x64.7z
+            1cenc-win-x86.7z 1cenc-win-x64.7z
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
