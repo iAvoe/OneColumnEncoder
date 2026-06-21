@@ -39,49 +39,35 @@
 
             <Grid x:Name="Viewport"
                   Background="White">
-
-                <Image x:Name="EncodedImage"
-                       Source="{Binding EncodedImage}"
-                       Stretch="None"
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Top"
-                       SnapsToDevicePixels="True"
-                       RenderOptions.BitmapScalingMode="NearestNeighbor">
-                    <Image.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform x:Name="EncodedScale" />
-                            <TranslateTransform x:Name="EncodedTranslate" />
-                        </TransformGroup>
-                    </Image.RenderTransform>
-                </Image>
-
-                <Grid x:Name="SourceLayer"
-                      ClipToBounds="True"
-                      HorizontalAlignment="Left">
-                    <Image x:Name="SourceImage"
-                           Source="{Binding SourceImage}"
-                           Stretch="None"
-                           HorizontalAlignment="Left"
-                           VerticalAlignment="Top"
+                <Canvas x:Name="ImageCanvas"
+                        ClipToBounds="True"
+                        Width="{Binding ActualWidth, ElementName=Viewport}"
+                        Height="{Binding ActualHeight, ElementName=Viewport}">
+                    <Image x:Name="EncodedImage"
+                           Source="{Binding EncodedImage}"
+                           Stretch="Fill"
                            SnapsToDevicePixels="True"
-                           RenderOptions.BitmapScalingMode="NearestNeighbor">
-                        <Image.RenderTransform>
-                            <TransformGroup>
-                                <ScaleTransform x:Name="SourceScale" />
-                                <TranslateTransform x:Name="SourceTranslate" />
-                            </TransformGroup>
-                        </Image.RenderTransform>
-                    </Image>
-                </Grid>
+                           RenderOptions.BitmapScalingMode="NearestNeighbor" />
 
-                <Border x:Name="SplitHandle"
-                        Width="2"
-                        HorizontalAlignment="Left"
-                        Background="{StaticResource GlobalSecondary}"
-                        Cursor="SizeWE"
-                        MouseLeftButtonDown="SplitHandle_MouseLeftButtonDown"
-                        MouseLeftButtonUp="SplitHandle_MouseLeftButtonUp"
-                        MouseMove="SplitHandle_MouseMove" />
+                    <Canvas x:Name="SourceLayer"
+                            ClipToBounds="True"
+                            Canvas.Left="0"
+                            Canvas.Top="0">
+                        <Image x:Name="SourceImage"
+                               Source="{Binding SourceImage}"
+                               Stretch="Fill"
+                               SnapsToDevicePixels="True"
+                               RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                    </Canvas>
+
+                    <Border x:Name="SplitHandle"
+                            Width="2"
+                            Background="{StaticResource GlobalSecondary}"
+                            Cursor="SizeWE"
+                            MouseLeftButtonDown="SplitHandle_MouseLeftButtonDown"
+                            MouseLeftButtonUp="SplitHandle_MouseLeftButtonUp"
+                            MouseMove="SplitHandle_MouseMove" />
+                </Canvas>
 
                 <TextBlock Text="SOURCE"
                            FontSize="80"

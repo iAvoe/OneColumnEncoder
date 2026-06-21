@@ -19,6 +19,7 @@ namespace OneColumnEncoder.ViewModels
         public CloseModalCmd CloseCmd { get; }
         public ActionCmd ConfirmCmd { get; }
         public ButtonGroupVM FinishButtons { get; }
+        public ImageABPreviewVM PreviewVM { get; }
 
         private bool _isPreviewBusy;
         public bool IsPreviewBusy
@@ -218,7 +219,12 @@ namespace OneColumnEncoder.ViewModels
         public static IEnumerable<string> X265KeyframeLabels => ["4", "7", "10", "13"];
         public static IEnumerable<string> SvtAv1KeyframeLabels => ["6", "9", "12", "15"];
 
-        public EncoderConfVM(Action closeAction, ToolItemCardVM? targetItem)
+        public EncoderConfVM(
+            Action closeAction,
+            ToolItemCardVM? targetItem,
+            string? ffmpegPath,
+            string? sourceVideoPath,
+            string? sourceFfprobeJson)
         {
             _model = EncoderConfM.Load();
             _targetItem = targetItem;
@@ -233,6 +239,7 @@ namespace OneColumnEncoder.ViewModels
                 CancelButtonText, ConfirmButtonText, CloseCmd, ConfirmCmd);
             PopulateDropdowns();
             LoadModelToUi();
+            PreviewVM = new ImageABPreviewVM(this, ffmpegPath, sourceVideoPath, sourceFfprobeJson);
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
 
@@ -431,6 +438,7 @@ namespace OneColumnEncoder.ViewModels
         public override void Dispose()
         {
             UILangProviderM.CurrentChanged -= OnLanguageChanged;
+            PreviewVM.Dispose();
             base.Dispose();
         }
     }

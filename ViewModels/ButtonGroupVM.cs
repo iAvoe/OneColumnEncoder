@@ -115,9 +115,12 @@ namespace OneColumnEncoder.ViewModels
         }
 
         // Button commands
-        public ICommand? Cmd1 { get; set; }
-        public ICommand? Cmd2 { get; set; }
-        public ICommand? Cmd3 { get; set; }
+        private ICommand? _cmd1;
+        public ICommand? Cmd1 { get => _cmd1; set => SetProperty(ref _cmd1, value); }
+        private ICommand? _cmd2;
+        public ICommand? Cmd2 { get => _cmd2; set => SetProperty(ref _cmd2, value); }
+        private ICommand? _cmd3;
+        public ICommand? Cmd3 { get => _cmd3; set => SetProperty(ref _cmd3, value); }
         public ICommand? Cmd4 { get; set; }
         public ICommand? Cmd5 { get; set; }
 

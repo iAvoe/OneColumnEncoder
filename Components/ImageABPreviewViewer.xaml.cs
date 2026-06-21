@@ -19,6 +19,7 @@ namespace OneColumnEncoder.Components
         private double _offsetX;
         private double _offsetY;
         private ImageABPreviewVM? _subscribedVm;
+        private bool _isFitQueued;
 
         public ImageABPreviewViewer()
         {
@@ -60,13 +61,7 @@ namespace OneColumnEncoder.Components
         {
             if (e.PropertyName is nameof(ImageABPreviewVM.SourceImage) or nameof(ImageABPreviewVM.EncodedImage))
             {
-                Dispatcher.BeginInvoke(() =>
-                {
-                    if (ViewModel?.IsFitMode == true)
-                        FitImage();
-                    else
-                        ApplyView();
-                }, DispatcherPriority.Loaded);
+                QueueFitImage();
             }
         }
 
@@ -160,6 +155,11 @@ namespace OneColumnEncoder.Components
 
         private void FitImage()
         {
+            _isFitQueued = false;
+            UpdateLayout();
+            SyncImageLayoutSize(SourceImage);
+            SyncImageLayoutSize(EncodedImage);
+
             BitmapSource? bitmap = SourceImage.Source as BitmapSource ?? EncodedImage.Source as BitmapSource;
             double width = Viewport.ActualWidth;
             double height = Viewport.ActualHeight;
@@ -180,6 +180,13 @@ namespace OneColumnEncoder.Components
             ApplyView();
         }
 
+        private void QueueFitImage()
+        {
+            if (_isFitQueued) return;
+            _isFitQueued = true;
+            Dispatcher.BeginInvoke(FitImage, DispatcherPriority.ContextIdle);
+        }
+
         private Point GetViewportCenter() =>
             new(Math.Max(0d, Viewport.ActualWidth) / 2d, Math.Max(0d, Viewport.ActualHeight) / 2d);
 
@@ -187,38 +194,19 @@ namespace OneColumnEncoder.Components
         {
             SyncImageLayoutSize(SourceImage);
             SyncImageLayoutSize(EncodedImage);
-            CenterImageIfSmallerThanViewport();
-            SourceScale.ScaleX = _zoom;
-            SourceScale.ScaleY = _zoom;
-            EncodedScale.ScaleX = _zoom;
-            EncodedScale.ScaleY = _zoom;
-            SourceTranslate.X = _offsetX;
-            SourceTranslate.Y = _offsetY;
-            EncodedTranslate.X = _offsetX;
-            EncodedTranslate.Y = _offsetY;
+            Canvas.SetLeft(SourceImage, _offsetX);
+            Canvas.SetTop(SourceImage, _offsetY);
+            Canvas.SetLeft(EncodedImage, _offsetX);
+            Canvas.SetTop(EncodedImage, _offsetY);
             ViewModel?.SetZoomPercent((int)Math.Round(_zoom * 100d));
             UpdateSplitVisual();
         }
 
-        private static void SyncImageLayoutSize(Image image)
+        private void SyncImageLayoutSize(Image image)
         {
             if (image.Source is not BitmapSource bitmap) return;
-            image.Width = bitmap.PixelWidth;
-            image.Height = bitmap.PixelHeight;
-        }
-
-        private void CenterImageIfSmallerThanViewport()
-        {
-            double imageWidth = GetImagePixelWidth() * _zoom;
-            double imageHeight = GetImagePixelHeight() * _zoom;
-            double viewportWidth = Viewport.ActualWidth;
-            double viewportHeight = Viewport.ActualHeight;
-
-            if (imageWidth > 0d && viewportWidth > 0d && imageWidth <= viewportWidth)
-                _offsetX = (viewportWidth - imageWidth) / 2d;
-
-            if (imageHeight > 0d && viewportHeight > 0d && imageHeight <= viewportHeight)
-                _offsetY = (viewportHeight - imageHeight) / 2d;
+            image.Width = Math.Max(1d, bitmap.PixelWidth * _zoom);
+            image.Height = Math.Max(1d, bitmap.PixelHeight * _zoom);
         }
 
         private double GetImagePixelWidth() =>
@@ -236,8 +224,10 @@ namespace OneColumnEncoder.Components
                 : viewportWidth * _splitRatio;
             splitX = Math.Max(0d, Math.Min(viewportWidth, splitX));
             SourceLayer.Width = splitX;
+            SourceLayer.Height = Math.Max(0d, Viewport.ActualHeight);
             SplitHandle.Height = Math.Max(0d, Viewport.ActualHeight);
-            SplitHandle.Margin = new Thickness(Math.Max(0d, splitX - SplitHandle.Width / 2d), 0, 0, 0);
+            Canvas.SetLeft(SplitHandle, Math.Max(0d, splitX - SplitHandle.Width / 2d));
+            Canvas.SetTop(SplitHandle, 0d);
         }
     }
 }
