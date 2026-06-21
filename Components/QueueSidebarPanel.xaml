@@ -8,7 +8,8 @@
              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
              d:DataContext="{d:DesignInstance Type=vms:EncodingMonitorVM}"
              mc:Ignorable="d"
-             Width="310">
+             Width="310"
+             PreviewMouseWheel="QueueSidebarPanel_PreviewMouseWheel">
     <UserControl.Resources>
         <Thickness x:Key="QueueSidebarContentPadding">7 10 7 14</Thickness>
         <Thickness x:Key="QueueSidebarItemMargin">0 5</Thickness>
@@ -29,7 +30,8 @@
                            VerticalAlignment="Center" />
             </StackPanel>
 
-            <ScrollViewer Grid.Row="1"
+            <ScrollViewer x:Name="QueueScrollViewer"
+                          Grid.Row="1"
                           HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Auto">
                 <StackPanel>
@@ -53,7 +55,8 @@
 
                     <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarWaitingHeaderText}"
                                          Margin="0 5" />
-                    <ListBox ItemsSource="{Binding QueueSidebar.WaitingJobs}"
+                    <ListBox x:Name="WaitingListBox"
+                             ItemsSource="{Binding QueueSidebar.WaitingJobs}"
                              SelectedItem="{Binding QueueSidebar.SelectedWaitingJob, Mode=OneWayToSource}"
                              BorderThickness="0"
                              Background="Transparent"
@@ -101,7 +104,8 @@
 
                     <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarUnfinishedHeaderText}"
                                          Margin="0 5" />
-                    <ListBox ItemsSource="{Binding QueueSidebar.UnfinishedJobs}"
+                    <ListBox x:Name="UnfinishedListBox"
+                             ItemsSource="{Binding QueueSidebar.UnfinishedJobs}"
                              SelectedItem="{Binding QueueSidebar.SelectedUnfinishedJob, Mode=OneWayToSource}"
                              BorderThickness="0"
                              Background="Transparent"
@@ -149,7 +153,8 @@
 
                     <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarCompletedHeaderText}"
                                          Margin="0 5" />
-                    <ListBox ItemsSource="{Binding QueueSidebar.CompletedJobs}"
+                    <ListBox x:Name="CompletedListBox"
+                             ItemsSource="{Binding QueueSidebar.CompletedJobs}"
                              SelectedItem="{Binding QueueSidebar.SelectedCompletedJob, Mode=OneWayToSource}"
                              BorderThickness="0"
                              Background="Transparent"
