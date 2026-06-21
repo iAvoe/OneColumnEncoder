@@ -33,25 +33,12 @@
                             Value="{StaticResource Background}" />
                     <Setter Property="Effect">
                         <Setter.Value>
-                            <DropShadowEffect BlurRadius="10"
-                                              ShadowDepth="2"
-                                              Opacity="0.18"
-                                              Color="#000000" />
+                            <DropShadowEffect BlurRadius="13"
+                                              ShadowDepth="3"
+                                              Opacity="0.3"
+                                              Color="Black" />
                         </Setter.Value>
                     </Setter>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                     Value="True">
-                            <Setter Property="Effect">
-                                <Setter.Value>
-                                    <DropShadowEffect BlurRadius="14"
-                                                      ShadowDepth="3"
-                                                      Opacity="0.26"
-                                                      Color="#000000" />
-                                </Setter.Value>
-                            </Setter>
-                        </DataTrigger>
-                    </Style.Triggers>
                 </Style>
             </Border.Style>
         </Border>

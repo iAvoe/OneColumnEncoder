@@ -37,8 +37,8 @@
                         <Setter.Value>
                             <DropShadowEffect BlurRadius="10"
                                               ShadowDepth="2"
-                                              Opacity="0.18"
-                                              Color="#000000" />
+                                              Opacity="0.36"
+                                              Color="Black" />
                         </Setter.Value>
                     </Setter>
                     <Style.Triggers>
@@ -80,17 +80,6 @@
                             <Setter Property="Effect"
                                     Value="{x:Null}" />
                         </DataTrigger>
-                        <Trigger Property="IsMouseOver"
-                                 Value="True">
-                            <Setter Property="Effect">
-                                <Setter.Value>
-                                    <DropShadowEffect BlurRadius="14"
-                                                      ShadowDepth="3"
-                                                      Opacity="0.26"
-                                                      Color="#000000" />
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
                     </Style.Triggers>
                 </Style>
             </Border.Style>
@@ -170,7 +159,7 @@
                         <Trigger Property="IsMouseOver"
                                  Value="True">
                             <Setter Property="Opacity"
-                                    Value="0.65" />
+                                    Value="0.7" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>
