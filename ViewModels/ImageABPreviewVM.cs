@@ -22,21 +22,26 @@ namespace OneColumnEncoder.ViewModels
         private Process? _currentProcess;
         private bool _isFitMode = true;
         private PreviewDisplayMode _displayMode = PreviewDisplayMode.Raw;
+        private ImageABPreviewLangProviderM _lang = new(UILangProviderM.Current.LanguageCode);
+        public ImageABPreviewLangProviderM Lang
+        {
+            get => _lang;
+            private set => SetProperty(ref _lang, value);
+        }
 
         public DropdownMenuVM EncoderDropdown { get; } = new();
-        public ButtonGroupVM ZoomPresetButtons { get; } = ButtonGroupVM.CreateThreeButton("Fit", "100%", "200%");
+        public ButtonGroupVM ZoomPresetButtons { get; }
         public ButtonGroupVM DisplayModeButtons { get; }
         public ActionCmd PreviewCommand { get; }
         public ObservableCollection<string> PositionTickLabels { get; } = [];
 
-        public static string WindowTitle => "1cenc A-B Preview";
-        public static string EncoderLabel => "Encoder";
-        public static string DisplayModeLabel => "Display";
-        public static string ZoomLabel => "Zoom";
-        public static string PositionLabel => "Image Position";
-        public static string Hint1Text => "Drag the split line to compare source and encoded frame.";
-        public static string Hint2Text => "Preview uses ffmpeg only; available encoder options may differ from imported encoders.";
-        public static string Hint3Text => "Compression runs only after Preview is clicked.";
+        public string EncoderLabel => Lang.EncoderLabel;
+        public string DisplayModeLabel => Lang.DisplayModeLabel;
+        public string ZoomLabel => Lang.ZoomLabel;
+        public string PositionLabel => Lang.PositionLabel;
+        public string Hint1Text => Lang.Hint1Text;
+        public string Hint2Text => Lang.Hint2Text;
+        public string Hint3Text => Lang.Hint3Text;
 
         private ImageSource? _sourceImage;
         public ImageSource? SourceImage
@@ -66,7 +71,7 @@ namespace OneColumnEncoder.ViewModels
             private set => SetProperty(ref _maxPositionSeconds, Math.Max(1, value));
         }
 
-        private string _statusText = "Ready.";
+        private string _statusText = "";
         public string StatusText
         {
             get => _statusText;
@@ -95,7 +100,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 if (!SetProperty(ref _isBusy, value)) return;
                 OnPropertyChanged(nameof(IsIdle));
-                PreviewButtonText = value ? "Cancel" : "Preview";
+                PreviewButtonText = value ? Lang.CancelButtonText : Lang.PreviewButtonText;
                 _encoderConfVM.SetPreviewBusy(value);
             }
         }
@@ -111,17 +116,19 @@ namespace OneColumnEncoder.ViewModels
             _workDirectory = Path.Combine(Path.GetTempPath(), "1cenc-image-preview-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(_workDirectory);
 
+            ZoomPresetButtons = ButtonGroupVM.CreateThreeButton(Lang.FitButtonText, "100%", "200%");
+
             EncoderDropdown.Items.Add(new DropdownItemM("libx264") { Tag = PreviewEncoder.X264 });
             EncoderDropdown.Items.Add(new DropdownItemM("libx265") { Tag = PreviewEncoder.X265 });
             EncoderDropdown.Items.Add(new DropdownItemM("libsvtav1") { Tag = PreviewEncoder.SvtAv1 });
             EncoderDropdown.SelectedItem = EncoderDropdown.Items[0];
             EncoderDropdown.SelectionChangedCommand = new ActionCmd(_ => RefreshSelectedEncodedImage());
             DisplayModeButtons = ButtonGroupVM.CreateFiveButton(
-                "Raw",
-                "Low¡úBt709",
-                "WCG¡úBt709",
-                "HDR¡úSDR",
-                "HDRWCG¡úSDR709",
+                Lang.RawButtonText,
+                "Lowï¿½ï¿½Bt709",
+                "WCGï¿½ï¿½Bt709",
+                "HDRï¿½ï¿½SDR",
+                "HDRWCGï¿½ï¿½SDR709",
                 new ActionCmd(_ => SetDisplayMode(PreviewDisplayMode.Raw)),
                 new ActionCmd(_ => SetDisplayMode(PreviewDisplayMode.LowToBt709)),
                 new ActionCmd(_ => SetDisplayMode(PreviewDisplayMode.WcgToBt709)),
@@ -137,7 +144,10 @@ namespace OneColumnEncoder.ViewModels
                 : 0;
             BuildPositionTickLabels(sourceStats.DurationSeconds);
 
+            StatusText = Lang.StatusReady;
+            PreviewButtonText = Lang.PreviewButtonText;
             PreviewCommand = new ActionCmd(_ => PreviewOrCancel());
+            UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
 
         public void SetZoomPercent(int percent) => ZoomPercent = Math.Max(1, percent);
@@ -160,13 +170,13 @@ namespace OneColumnEncoder.ViewModels
         {
             if (string.IsNullOrWhiteSpace(_ffmpegPath) || !File.Exists(_ffmpegPath))
             {
-                StatusText = "ffmpeg.exe is not imported.";
+                StatusText = Lang.StatusNoFfmpeg;
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(_sourceVideoPath) || !File.Exists(_sourceVideoPath))
             {
-                StatusText = "No valid video source selected.";
+                StatusText = Lang.StatusNoSource;
                 return;
             }
 
@@ -187,31 +197,31 @@ namespace OneColumnEncoder.ViewModels
                 string encodedPath = GetEncodedPath(encoder);
                 string decodedPath = GetDecodedPath(encoder);
 
-                StatusText = "Extracting source frame...";
+                StatusText = Lang.StatusExtracting;
                 await RunFfmpegAsync(BuildSourceArgs(rawSourcePath), token);
                 EnsureFileExists(rawSourcePath, "Source preview frame was not generated.");
 
                 if (!string.IsNullOrWhiteSpace(displayFilter))
                 {
-                    StatusText = $"Converting source frame ({GetDisplayModeTitle(_displayMode)})...";
+                    StatusText = string.Format(Lang.StatusConverting, GetDisplayModeTitle(_displayMode));
                     await RunFfmpegAsync(BuildSourceArgs(sourcePath, displayFilter), token);
                 }
                 EnsureFileExists(sourcePath, "Source preview frame was not generated.");
                 SourceImage = LoadBitmap(sourcePath);
 
-                StatusText = $"Encoding with {GetEncoderTitle(encoder)}...";
+                StatusText = string.Format(Lang.StatusEncoding, GetEncoderTitle(encoder));
                 await RunFfmpegAsync(BuildEncodeArgs(encoder, model, rawSourcePath, encodedPath), token);
 
-                StatusText = "Decoding preview frame...";
+                StatusText = Lang.StatusDecoding;
                 await RunFfmpegAsync(BuildDecodeArgs(encodedPath, decodedPath, displayFilter), token);
                 EnsureFileExists(decodedPath, "Encoded preview frame was not generated.");
                 EncodedImage = LoadBitmap(decodedPath);
 
-                StatusText = $"Preview ready: {GetEncoderTitle(encoder)}, CRF {GetCrfValue(encoder, model)}.";
+                StatusText = string.Format(Lang.StatusPreviewReady, GetEncoderTitle(encoder), GetCrfValue(encoder, model));
             }
             catch (OperationCanceledException)
             {
-                StatusText = "Preview cancelled.";
+                StatusText = Lang.StatusCancelled;
             }
             catch (Exception ex)
             {
@@ -398,12 +408,12 @@ namespace OneColumnEncoder.ViewModels
             if (_displayMode == displayMode) return;
             if (IsBusy)
             {
-                StatusText = "Display mode cannot be changed while preview is running.";
+                StatusText = Lang.StatusDisplayModeBlocked;
                 return;
             }
 
             _displayMode = displayMode;
-            StatusText = $"Display mode: {GetDisplayModeTitle(displayMode)}.";
+            StatusText = string.Format(Lang.StatusDisplayModeSet, GetDisplayModeTitle(displayMode));
             RefreshSelectedEncodedImage();
             if (!IsBusy && SourceImage != null)
                 _ = GeneratePreviewAsync();
@@ -444,13 +454,13 @@ namespace OneColumnEncoder.ViewModels
             _ => "raw"
         };
 
-        private static string GetDisplayModeTitle(PreviewDisplayMode displayMode) => displayMode switch
+        private string GetDisplayModeTitle(PreviewDisplayMode displayMode) => displayMode switch
         {
-            PreviewDisplayMode.LowToBt709 => "Low gamut to BT.709",
-            PreviewDisplayMode.WcgToBt709 => "WCG to BT.709",
-            PreviewDisplayMode.HdrToSdr => "HDR to SDR",
-            PreviewDisplayMode.HighHdrToSdr => "High HDR to SDR",
-            _ => "Raw"
+            PreviewDisplayMode.LowToBt709 => Lang.DisplayModeLowToBt709,
+            PreviewDisplayMode.WcgToBt709 => Lang.DisplayModeWcgToBt709,
+            PreviewDisplayMode.HdrToSdr => Lang.DisplayModeHdrToSdr,
+            PreviewDisplayMode.HighHdrToSdr => Lang.DisplayModeHighHdrToSdr,
+            _ => Lang.DisplayModeRaw
         };
 
         private static string GetFfmpegEncoderName(PreviewEncoder encoder) => encoder switch
@@ -534,8 +544,25 @@ namespace OneColumnEncoder.ViewModels
             catch { }
         }
 
+        private void OnLanguageChanged()
+        {
+            Lang = new ImageABPreviewLangProviderM(UILangProviderM.Current.LanguageCode);
+            ZoomPresetButtons.B3_1Text = Lang.FitButtonText;
+            DisplayModeButtons.B5_1Text = Lang.RawButtonText;
+            if (!IsBusy)
+                PreviewButtonText = Lang.PreviewButtonText;
+            OnPropertyChanged(nameof(EncoderLabel));
+            OnPropertyChanged(nameof(DisplayModeLabel));
+            OnPropertyChanged(nameof(ZoomLabel));
+            OnPropertyChanged(nameof(PositionLabel));
+            OnPropertyChanged(nameof(Hint1Text));
+            OnPropertyChanged(nameof(Hint2Text));
+            OnPropertyChanged(nameof(Hint3Text));
+        }
+
         public override void Dispose()
         {
+            UILangProviderM.CurrentChanged -= OnLanguageChanged;
             GC.SuppressFinalize(this);
             _previewCts?.Cancel();
             TryKillCurrentProcess();
