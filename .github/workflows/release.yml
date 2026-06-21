@@ -55,7 +55,7 @@ jobs:
       # 5. Copy tools if there are any under Tools\x86 or Tools\x64 folder
       - name: Copy extra tools
         run: |
-          if (Test-Path ".\Tools") {
+          if (Test-Path ".\.cicd") {
             Copy-Item -Path ".\.cicd\x86\*.exe" -Destination ".\publish\x86\" -Force
             Copy-Item -Path ".\.cicd\x64\*.exe" -Destination ".\publish\x64\" -Force
             Write-Host "[EXIST] Tools copied to both publish folders."
