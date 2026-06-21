@@ -76,11 +76,12 @@ jobs:
           }
 
       # 7. Pack zips
+
       - name: Pack x86
-        run: 7z a -tzip -mx9 1cenc-win-x86.zip .\publish\x86\*
+        run: 7z a -t7z -mx9 1cenc-win-x86.7z .\publish\x86\*
 
       - name: Pack x64
-        run: 7z a -tzip -mx9 1cenc-win-x64.zip .\publish\x64\*
+        run: 7z a -t7z -mx9 1cenc-win-x64.7z .\publish\x64\* 
 
       # 8. Release note prep (Get latest commit # and latest commit SHA)
       - name: Prepare Release Info
@@ -119,6 +120,6 @@ jobs:
           gh release create ${{ github.ref_name }} `
             --title "${{ env.RELEASE_TITLE }}" `
             --notes-file .\release-notes.md `
-            1cenc-win-x86.zip 1cenc-win-x64.zip
+            1cenc-win-x86.7z 1cenc-win-x64.7z
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
