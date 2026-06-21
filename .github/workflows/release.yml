@@ -1,6 +1,8 @@
-name: Build and Release
+name: Build and Release x86 x64 7zips
 
 on:
+  workflow_dispatch:
+
   push:
     tags:
       - 'v*' # v1.x pattern
