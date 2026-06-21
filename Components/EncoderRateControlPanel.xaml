@@ -27,27 +27,27 @@
                      Padding="15 7.5"
                      FontWeight="Bold">
                 <comps:IntegerSliderGroup Margin="10 5 0 5">
-                    <comps:IntegerSlider Label="x264"
-                                         Minimum="0"
-                                         Maximum="25"
-                                         Value="{Binding X264Crf, Mode=TwoWay}"
-                                         TickLabels="{Binding X264CrfLabels}"
-                                         TickCount="5"
-                                         SliderMaxWidth="340" />
-                    <comps:IntegerSlider Label="x265"
-                                         Minimum="0"
-                                         Maximum="30"
-                                         Value="{Binding X265Crf, Mode=TwoWay}"
-                                         TickLabels="{Binding X265CrfLabels}"
-                                         TickCount="5"
-                                         SliderMaxWidth="340" />
-                    <comps:IntegerSlider Label="SVT-AV1"
-                                         Minimum="0"
-                                         Maximum="43"
-                                         Value="{Binding SvtAv1Crf, Mode=TwoWay}"
-                                         TickLabels="{Binding SvtAv1CrfLabels}"
-                                         TickCount="5"
-                                         SliderMaxWidth="340" />
+                     <comps:IntegerSlider Label="x264"
+                                          Minimum="0"
+                                          Maximum="25"
+                                          Value="{Binding X264Crf, Mode=TwoWay}"
+                                          TickLabels="{Binding X264CrfLabels}"
+                                          TickCount="5"
+                                          HorizontalAlignment="Stretch" />
+                     <comps:IntegerSlider Label="x265"
+                                          Minimum="0"
+                                          Maximum="30"
+                                          Value="{Binding X265Crf, Mode=TwoWay}"
+                                          TickLabels="{Binding X265CrfLabels}"
+                                          TickCount="5"
+                                          HorizontalAlignment="Stretch" />
+                     <comps:IntegerSlider Label="SVT-AV1"
+                                          Minimum="0"
+                                          Maximum="43"
+                                          Value="{Binding SvtAv1Crf, Mode=TwoWay}"
+                                          TickLabels="{Binding SvtAv1CrfLabels}"
+                                          TickCount="5"
+                                          HorizontalAlignment="Stretch" />
                 </comps:IntegerSliderGroup>
             </TabItem>
 
@@ -55,30 +55,30 @@
                      Padding="15 7.5"
                      FontWeight="Bold">
                 <comps:IntegerSliderGroup Margin="10 5 0 5">
-                    <comps:IntegerSlider Label="x264"
-                                         Minimum="10"
-                                         Maximum="500"
-                                         Value="{Binding X264Abr, Mode=TwoWay}"
-                                         TickLabels="{Binding X264AbrLabels}"
-                                         TickCount="4"
-                                         Step="10"
-                                         SliderMaxWidth="340" />
-                    <comps:IntegerSlider Label="x265"
-                                         Minimum="10"
-                                         Maximum="500"
-                                         Value="{Binding X265Abr, Mode=TwoWay}"
-                                         TickLabels="{Binding X265AbrLabels}"
-                                         TickCount="4"
-                                         Step="10"
-                                         SliderMaxWidth="340" />
-                    <comps:IntegerSlider Label="SVT-AV1"
-                                         Minimum="10"
-                                         Maximum="500"
-                                         Value="{Binding SvtAv1Abr, Mode=TwoWay}"
-                                         TickLabels="{Binding SvtAv1AbrLabels}"
-                                         TickCount="4"
-                                         Step="10"
-                                         SliderMaxWidth="340" />
+                     <comps:IntegerSlider Label="x264"
+                                          Minimum="10"
+                                          Maximum="500"
+                                          Value="{Binding X264Abr, Mode=TwoWay}"
+                                          TickLabels="{Binding X264AbrLabels}"
+                                          TickCount="4"
+                                          Step="10"
+                                          HorizontalAlignment="Stretch" />
+                     <comps:IntegerSlider Label="x265"
+                                          Minimum="10"
+                                          Maximum="500"
+                                          Value="{Binding X265Abr, Mode=TwoWay}"
+                                          TickLabels="{Binding X265AbrLabels}"
+                                          TickCount="4"
+                                          Step="10"
+                                          HorizontalAlignment="Stretch" />
+                     <comps:IntegerSlider Label="SVT-AV1"
+                                          Minimum="10"
+                                          Maximum="500"
+                                          Value="{Binding SvtAv1Abr, Mode=TwoWay}"
+                                          TickLabels="{Binding SvtAv1AbrLabels}"
+                                          TickCount="4"
+                                          Step="10"
+                                          HorizontalAlignment="Stretch" />
                 </comps:IntegerSliderGroup>
             </TabItem>
         </TabControl>

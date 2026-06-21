@@ -117,14 +117,14 @@
                        FontSize="13"
                        VerticalAlignment="Center" />
             <comps:IntegerSlider Grid.Column="1"
-                                 Minimum="0"
-                                 Maximum="{Binding MaxPositionSeconds}"
-                                 Value="{Binding PreviewPositionSeconds, Mode=TwoWay}"
-                                 TickLabels="{Binding PositionTickLabels}"
-                                 TickCount="5"
-                                 LabelWidth="0"
-                                 SliderMaxWidth="1200"
-                                 IsEnabled="{Binding IsIdle}" />
+                                  Minimum="0"
+                                  Maximum="{Binding MaxPositionSeconds}"
+                                  Value="{Binding PreviewPositionSeconds, Mode=TwoWay}"
+                                  TickLabels="{Binding PositionTickLabels}"
+                                  TickCount="5"
+                                  LabelWidth="0"
+                                  HorizontalAlignment="Stretch"
+                                  IsEnabled="{Binding IsIdle}" />
         </Grid>
 
         <Grid Grid.Row="3"
