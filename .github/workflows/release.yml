@@ -56,20 +56,20 @@ jobs:
       - name: Copy extra tools
         run: |
           if (Test-Path ".\cicd") {
-            Copy-Item -Path ".\cicd\x86\*.exe" -Destination ".\publish\x86\" -Force
-            Copy-Item -Path ".\cicd\x64\*.exe" -Destination ".\publish\x64\" -Force
-            Write-Host "[EXIST] Tools copied to both publish folders."
+            Copy-Item -Path ".\cicd\x64-upstreams-encoders.7z" -Destination ".\publish\x64\" -Force
+            Copy-Item -Path ".\cicd\x86-upstreams-encoders.7z" -Destination ".\publish\x86\" -Force
+            Write-Host "[EXIST] Tools copied to both publish folders"
           }
           else {
-            Write-Host "[MISSING] No Tools folder found, skipping copy."
+            throw "[MISSING] No cicd folder found, cannot continue"
           }
 
-      # 6. Pack 7zips
+      # 6. Pack zips
       - name: Pack x86
-        run: 7z a -t7z -mx9 1cenc-win-x86.7z .\publish\x86\*
+        run: 7z a -tzip -mx9 1cenc-win-x86.zip .\publish\x86\*
 
       - name: Pack x64
-        run: 7z a -t7z -mx9 1cenc-win-x64.7z .\publish\x64\*
+        run: 7z a -tzip -mx9 1cenc-win-x64.zip .\publish\x64\*
 
       # 7. Release note prep (Get latest commit # and latest commit SHA)
       - name: Prepare Release Info
