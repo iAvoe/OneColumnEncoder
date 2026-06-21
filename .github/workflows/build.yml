@@ -1,0 +1,46 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Restore NuGet packages
+      run: dotnet restore OneColumnEncoder.csproj
+
+    - name: Publish x64
+      run: dotnet publish OneColumnEncoder.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o ./publish/x64
+
+    - name: Publish x86
+      run: dotnet publish OneColumnEncoder.csproj -c Release -r win-x86 --self-contained false -p:PublishSingleFile=true -o ./publish/x86
+
+    - name: Pack x64
+      run: 7z a -t7z -mx9 x64-build.7z ./publish/x64/*
+
+    - name: Pack x86
+      run: 7z a -t7z -mx9 x86-build.7z ./publish/x86/*
+
+    - name: Create Release and Upload Assets
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          x86-build.7z
+          x64-build.7z
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

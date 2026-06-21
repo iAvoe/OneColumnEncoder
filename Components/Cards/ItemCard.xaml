@@ -37,7 +37,7 @@
                         <Setter.Value>
                             <DropShadowEffect BlurRadius="10"
                                               ShadowDepth="2"
-                                              Opacity="0.36"
+                                              Opacity="0.4"
                                               Color="Black" />
                         </Setter.Value>
                     </Setter>
@@ -160,6 +160,8 @@
                                  Value="True">
                             <Setter Property="Opacity"
                                     Value="0.7" />
+                            <Setter Property="BorderBrush"
+                                    Value="AliceBlue" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>

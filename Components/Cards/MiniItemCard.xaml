@@ -13,16 +13,26 @@
         <Style x:Key="MiniLinkButton"
                TargetType="Button"
                BasedOn="{StaticResource H3C}">
-            <Setter Property="Background" Value="Transparent" />
-            <Setter Property="Foreground" Value="{StaticResource GlobalPrimary}" />
-            <Setter Property="BorderThickness" Value="0" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="HorizontalContentAlignment" Value="Center" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="Padding" Value="0" />
-            <Setter Property="Margin" Value="0" />
-            <Setter Property="MinWidth" Value="0" />
-            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Setter Property="Foreground"
+                    Value="{StaticResource GlobalPrimary}" />
+            <Setter Property="BorderThickness"
+                    Value="0" />
+            <Setter Property="VerticalAlignment"
+                    Value="Center" />
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Center" />
+            <Setter Property="VerticalContentAlignment"
+                    Value="Center" />
+            <Setter Property="Padding"
+                    Value="0" />
+            <Setter Property="Margin"
+                    Value="0" />
+            <Setter Property="MinWidth"
+                    Value="0" />
+            <Setter Property="Cursor"
+                    Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -38,17 +48,27 @@
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Opacity" Value="0.85" />
+                <Trigger Property="IsMouseOver"
+                         Value="True">
+                    <Setter Property="Opacity"
+                            Value="0.7" />
+                    <Setter Property="BorderBrush"
+                            Value="AliceBlue" />
                 </Trigger>
-                <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Foreground" Value="{StaticResource GlobalSecondary}" />
+                <Trigger Property="IsEnabled"
+                         Value="False">
+                    <Setter Property="Foreground"
+                            Value="{StaticResource GlobalSecondary}" />
                 </Trigger>
-                <Trigger Property="IsFocused" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource BorderGreen}" />
+                <Trigger Property="IsFocused"
+                         Value="True">
+                    <Setter Property="Foreground"
+                            Value="{StaticResource BorderGreen}" />
                 </Trigger>
-                <Trigger Property="IsCancel" Value="True">
-                    <Setter Property="Foreground" Value="{StaticResource BorderRed}" />
+                <Trigger Property="IsCancel"
+                         Value="True">
+                    <Setter Property="Foreground"
+                            Value="{StaticResource BorderRed}" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -70,8 +90,10 @@
                 Background="Transparent">
             <Border.Style>
                 <Style TargetType="Border">
-                    <Setter Property="BorderBrush" Value="{StaticResource GlobalPrimary}" />
-                    <Setter Property="Background" Value="{StaticResource Background}" />
+                    <Setter Property="BorderBrush"
+                            Value="{StaticResource GlobalPrimary}" />
+                    <Setter Property="Background"
+                            Value="{StaticResource Background}" />
                     <Setter Property="Effect">
                         <Setter.Value>
                             <DropShadowEffect BlurRadius="8"
@@ -81,16 +103,23 @@
                         </Setter.Value>
                     </Setter>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
-                            <Setter Property="BorderBrush" Value="{StaticResource BorderGreen}" />
-                            <Setter Property="Background" Value="{StaticResource BackgroundGreen}" />
+                        <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="True">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource BorderGreen}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource BackgroundGreen}" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
-                            <Setter Property="BorderBrush" Value="{StaticResource BorderRed}" />
-                            <Setter Property="Background" Value="{StaticResource BackgroundRed}" />
+                        <DataTrigger Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="True">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource BorderRed}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource BackgroundRed}" />
                         </DataTrigger>
                         <!-- Strengthen the shadow on hover for a subtle lift feedback. -->
-                        <Trigger Property="IsMouseOver" Value="True">
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
                             <Setter Property="Effect">
                                 <Setter.Value>
                                     <DropShadowEffect BlurRadius="10"
@@ -112,76 +141,88 @@
                 SnapsToDevicePixels="True">
             <Border.Style>
                 <Style TargetType="Border">
-                    <Setter Property="BorderBrush" Value="{StaticResource GlobalPrimary}" />
-                    <Setter Property="Background" Value="{StaticResource Background}" />
-                    <Setter Property="TextElement.Foreground" Value="{StaticResource GlobalPrimary}" />
+                    <Setter Property="BorderBrush"
+                            Value="{StaticResource GlobalPrimary}" />
+                    <Setter Property="Background"
+                            Value="{StaticResource Background}" />
+                    <Setter Property="TextElement.Foreground"
+                            Value="{StaticResource GlobalPrimary}" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
-                            <Setter Property="BorderBrush" Value="{StaticResource BorderGreen}" />
-                            <Setter Property="Background" Value="{StaticResource BackgroundGreen}" />
+                        <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="True">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource BorderGreen}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource BackgroundGreen}" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
-                            <Setter Property="BorderBrush" Value="{StaticResource BorderRed}" />
-                            <Setter Property="Background" Value="{StaticResource BackgroundRed}" />
+                        <DataTrigger Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="True">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource BorderRed}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource BackgroundRed}" />
                         </DataTrigger>
                         <!-- Fade content slightly on hover; the shadow layer handles the elevation cue. -->
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Opacity" Value="0.65" />
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter Property="Opacity"
+                                    Value="0.65" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>
             </Border.Style>
 
             <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" MinWidth="0" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"
+                                      MinWidth="0" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-            <Grid Grid.Column="0"
-                  VerticalAlignment="Center"
-                  MinWidth="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <TextBlock Text="{Binding Name}"
-                            FontWeight="Bold"
-                            FontSize="12"
-                            TextTrimming="CharacterEllipsis"
-                            HorizontalAlignment="Stretch" />
-                <TextBlock Grid.Row="1"
-                           Text="{Binding P1Text}"
-                           FontSize="10"
-                           Foreground="{StaticResource GlobalSecondary}"
-                           TextTrimming="CharacterEllipsis"
-                           HorizontalAlignment="Stretch" />
-            </Grid>
+                <Grid Grid.Column="0"
+                      VerticalAlignment="Center"
+                      MinWidth="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="{Binding Name}"
+                               FontWeight="Bold"
+                               FontSize="12"
+                               TextTrimming="CharacterEllipsis"
+                               HorizontalAlignment="Stretch" />
+                    <TextBlock Grid.Row="1"
+                               Text="{Binding P1Text}"
+                               FontSize="10"
+                               Foreground="{StaticResource GlobalSecondary}"
+                               TextTrimming="CharacterEllipsis"
+                               HorizontalAlignment="Stretch" />
+                </Grid>
 
-            <StackPanel Grid.Column="1"
-                        Orientation="Horizontal"
-                        VerticalAlignment="Center">
-                <Button Content="{Binding DisplayR1Text}"
-                        Command="{Binding R1Command}"
-                        IsEnabled="{Binding R1IsEnabled}"
-                        FontSize="10"
-                        Focusable="False"
-                        Style="{StaticResource MiniLinkButton}" />
-                <Button Content="{Binding R2Text}"
-                        Command="{Binding R2Command}"
-                        IsEnabled="{Binding R2IsEnabled}"
-                        FontSize="10"
-                        Margin="2.5 0 0 0"
-                        Focusable="False"
-                        Style="{StaticResource MiniLinkButton}" />
-                <Button Content="{Binding R3Text}"
-                        Command="{Binding R3Command}"
-                        IsEnabled="{Binding R3IsEnabled}"
-                        FontSize="10"
-                        Margin="2.5 0 0 0"
-                        Focusable="False"
-                        Style="{StaticResource MiniLinkButton}" />
-            </StackPanel>
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
+                    <Button Content="{Binding DisplayR1Text}"
+                            Command="{Binding R1Command}"
+                            IsEnabled="{Binding R1IsEnabled}"
+                            FontSize="10"
+                            Focusable="False"
+                            Style="{StaticResource MiniLinkButton}" />
+                    <Button Content="{Binding R2Text}"
+                            Command="{Binding R2Command}"
+                            IsEnabled="{Binding R2IsEnabled}"
+                            FontSize="10"
+                            Margin="2.5 0 0 0"
+                            Focusable="False"
+                            Style="{StaticResource MiniLinkButton}" />
+                    <Button Content="{Binding R3Text}"
+                            Command="{Binding R3Command}"
+                            IsEnabled="{Binding R3IsEnabled}"
+                            FontSize="10"
+                            Margin="2.5 0 0 0"
+                            Focusable="False"
+                            Style="{StaticResource MiniLinkButton}" />
+                </StackPanel>
             </Grid>
         </Border>
 
@@ -193,10 +234,13 @@
                 Background="Transparent">
             <Border.Style>
                 <Style TargetType="Border">
-                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Setter Property="Visibility"
+                            Value="Collapsed" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsRecentlyMoved}" Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
+                        <DataTrigger Binding="{Binding IsRecentlyMoved}"
+                                     Value="True">
+                            <Setter Property="Visibility"
+                                    Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>

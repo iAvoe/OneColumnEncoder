@@ -1,0 +1,105 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*' # v1.x pattern
+      - 'Late-beta' # Current pattern
+      - '*-beta' # 'v1.0-beta'
+
+jobs:
+  build:
+    runs-on: windows-latest # WPF req.
+
+    steps:
+      # 1. Use GitHub Actions checkout to get repo info
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all commit history to get commit count (git rev-list --count HEAD)
+
+      # 2. Build env for net9.0-windows: .NET 9 SDK
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      # 3. Build x86 version (single file, self-contained，RuntimeIdentifier win-x86)
+      - name: Publish x86
+        run: |
+          dotnet publish OneColumnEncoder.csproj `
+            --configuration Release `
+            --runtime win-x86 `
+            --self-contained true `
+            -p:PublishSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
+            --output ./publish/x86
+
+      # 4. Build x64 version (RuntimeIdentifier win-x64)
+      - name: Publish x64
+        run: |
+          dotnet publish OneColumnEncoder.csproj `
+            --configuration Release `
+            --runtime win-x64 `
+            --self-contained true `
+            -p:PublishSingleFile=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
+            --output ./publish/x64
+
+      # 5. Copy tools if there are any under Tools\x86 or Tools\x64 folder
+      - name: Copy extra tools
+        run: |
+          if (Test-Path ".\Tools") {
+            Copy-Item -Path ".\Tools\x86\*.exe" -Destination ".\publish\x86\" -Force
+            Copy-Item -Path ".\Tools\x64\*.exe" -Destination ".\publish\x64\" -Force
+            Write-Host "✅ Tools copied to both publish folders."
+          }
+          else {
+            Write-Host "No Tools folder found, skipping copy."
+          }
+
+      # 6. Pack 7zips
+      - name: Pack x86
+        run: 7z a -t7z -mx9 OneColumnEncoder-win-x86.7z .\publish\x86\*
+
+      - name: Pack x64
+        run: 7z a -t7z -mx9 OneColumnEncoder-win-x64.7z .\publish\x64\*
+
+      # 7. Release note prep (Get latest commit # and latest commit SHA)
+      - name: Prepare Release Info
+        shell: pwsh
+        run: |
+          $count = git rev-list --count HEAD
+          $sha = git rev-parse HEAD
+          $title = "Commit $count"
+          
+          # Write release notes
+          $body = @"Commit# | 提交序号
+- https://github.com/iAvoe/OneColumnEncoder/commit/$sha
+
+> [!CAUTION]
+> Queue encoding feature is working, but lacks of testing, proceed with caution
+> 队列编码功能能正常工作但缺乏测试，使用时请当心
+
+Follow this tutorial to get tools (pipe upstream / filtering tools & video encoders) tailored for your use case | 你可以根据此教程来获取合适的工具（管道上游程序/滤镜工具与视频编码器）:
+- [Encoding Tools Download Tutorial](https://github.com/iAvoe/encoding-tools-download-tutorial)
+
+Or, TLDR; and use tools provided in downloaded package (not recommended but its an option) | 或者着急要用的话，也可以无视上述教程，下载并直接使用附带的工具（不推荐但可以）"@
+          
+          # Title to environment variable
+          echo "RELEASE_TITLE=$title" >> $env:GITHUB_ENV
+          
+          # Write body to file for parsing
+          $body | Out-File -FilePath .\release-notes.md -Encoding utf8
+
+      # 8. Create release (override release)
+      - name: Create Release and Upload Assets
+        shell: pwsh
+        run: |
+          gh release create ${{ github.ref_name }} `
+            --title "${{ env.RELEASE_TITLE }}" `
+            --notes-file .\release-notes.md `
+            --force `
+            1cenc-publish-x86.7z 1cenc-publish-x64.7z
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
