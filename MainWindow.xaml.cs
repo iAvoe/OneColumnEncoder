@@ -35,10 +35,7 @@ namespace OneColumnEncoder
                 TriggerNumaCpuCheck();
         }
 
-        private void OnPreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            TriggerNumaCpuCheck();
-        }
+        private void OnPreviewKeyDown(object sender, KeyEventArgs e) => TriggerNumaCpuCheck();
 
         private void TriggerNumaCpuCheck()
         {
@@ -54,9 +51,7 @@ namespace OneColumnEncoder
         {
             // Close all child windows before the main window closes
             foreach (Window? window in Application.Current.Windows.OfType<Window>().Except([this]).ToArray())
-            {
                 window.Close();
-            }
 
             if (Application.Current.Windows.OfType<Window>().Any(window => window != this))
             {
@@ -65,16 +60,12 @@ namespace OneColumnEncoder
             }
 
             // Clear modal navigation state so no stale VM lingers
-            if (Application.Current is App app)
-            {
-                app._modalNavM.CloseAll();
-            }
+            if (Application.Current is App app) app._modalNavM.CloseAll();
         }
 
         private void OnClosed(object? sender, EventArgs e)
         {
-            if (DataContext is IDisposable disposable)
-                disposable.Dispose();
+            if (DataContext is IDisposable disposable) disposable.Dispose();
 
             DataContext = null;
             Closing -= OnClosing;
