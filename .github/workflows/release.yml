@@ -54,10 +54,10 @@ jobs:
           if (Test-Path ".\Tools") {
             Copy-Item -Path ".\Tools\x86\*.exe" -Destination ".\publish\x86\" -Force
             Copy-Item -Path ".\Tools\x64\*.exe" -Destination ".\publish\x64\" -Force
-            Write-Host "✅ Tools copied to both publish folders."
+            Write-Host "[EXIST] Tools copied to both publish folders."
           }
           else {
-            Write-Host "No Tools folder found, skipping copy."
+            Write-Host "[MISSING] No Tools folder found, skipping copy."
           }
 
       # 6. Pack 7zips
@@ -74,25 +74,19 @@ jobs:
           $count = git rev-list --count HEAD
           $sha = git rev-parse HEAD
           $title = "Commit $count"
-          
-          # Write release notes
-          $body = 
-            @"Commit# | 提交序号
-            - https://github.com/iAvoe/OneColumnEncoder/commit/$sha
 
-            > [!CAUTION]
-            > Queue encoding feature is working, but lacks of testing, proceed with caution
-            > 队列编码功能能正常工作但缺乏测试，使用时请当心
+          # Using string append to improve reliability
+          $body = "Commit# | 提交序号`n"
+          $body += "- https://github.com/iAvoe/OneColumnEncoder/commit/$sha`n`n"
+          $body += "> [!CAUTION]`n"
+          $body += "> Queue encoding feature is working, but lacks of testing, proceed with caution`n"
+          $body += "> 队列编码功能能正常工作但缺乏测试，使用时请当心`n`n"
+          $body += "Follow this tutorial to get tools (pipe upstream / filtering tools & video encoders) tailored for your use case | 你可以根据此教程来获取合适的工具（管道上游程序/滤镜工具与视频编码器）:`n"
+          $body += "- [Encoding Tools Download Tutorial](https://github.com/iAvoe/encoding-tools-download-tutorial)`n`n"
+          $body += "Or, TLDR; and use tools provided in downloaded package (not recommended but its an option) | 或者着急要用的话，也可以无视上述教程，下载并直接使用附带的工具（不推荐但可以）"
 
-            Follow this tutorial to get tools (pipe upstream / filtering tools & video encoders) tailored for your use case | 你可以根据此教程来获取合适的工具（管道上游程序/滤镜工具与视频编码器）:
-            - [Encoding Tools Download Tutorial](https://github.com/iAvoe/encoding-tools-download-tutorial)
-
-            Or, TLDR; and use tools provided in downloaded package (not recommended but its an option) | 或者着急要用的话，也可以无视上述教程，下载并直接使用附带的工具（不推荐但可以）"@
-          
-          # Title to environment variable
+          # 写入环境变量和文件
           echo "RELEASE_TITLE=$title" >> $env:GITHUB_ENV
-          
-          # Write body to file for parsing
           $body | Out-File -FilePath .\release-notes.md -Encoding utf8
 
       # 8. Create release (override release)
