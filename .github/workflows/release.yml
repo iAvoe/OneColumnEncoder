@@ -24,13 +24,24 @@ jobs:
         with:
           fetch-depth: 0 # Fetch all commit history to get commit count (git rev-list --count HEAD)
 
-      # 2. Build env for net9.0-windows: .NET 9 SDK
+      # 2. Do not duplicate tags
+      - name: Prevent branch-named tags
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $branches = git branch -r --format '%(refname:short)' | ForEach-Object { ($_ -split '/')[1] }
+          if ($branches -contains $tag) {
+            Write-Error "Tag name '$tag' conflicts with an existing branch. Aborting."
+            exit 1
+          }
+
+      # 3. Build env for net9.0-windows: .NET 9 SDK
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '9.0.x'
 
-      # 3. Build x86 version (single file, self-contained，RuntimeIdentifier win-x86)
+      # 4. Build x86 version (single file, self-contained，RuntimeIdentifier win-x86)
       - name: Publish x86
         run: |
           dotnet publish OneColumnEncoder.csproj `
@@ -41,7 +52,7 @@ jobs:
             -p:IncludeNativeLibrariesForSelfExtract=true `
             --output ./publish/x86
 
-      # 4. Build x64 version (RuntimeIdentifier win-x64)
+      # 5. Build x64 version (RuntimeIdentifier win-x64)
       - name: Publish x64
         run: |
           dotnet publish OneColumnEncoder.csproj `
@@ -52,7 +63,7 @@ jobs:
             -p:IncludeNativeLibrariesForSelfExtract=true `
             --output ./publish/x64
 
-      # 5. Copy tools if there are any under Tools\x86 or Tools\x64 folder
+      # 6. Copy tools if there are any under Tools\x86 or Tools\x64 folder
       - name: Copy extra tools
         run: |
           if (Test-Path ".\cicd") {
@@ -64,14 +75,14 @@ jobs:
             throw "[MISSING] No cicd folder found, cannot continue"
           }
 
-      # 6. Pack zips
+      # 7. Pack zips
       - name: Pack x86
         run: 7z a -tzip -mx9 1cenc-win-x86.zip .\publish\x86\*
 
       - name: Pack x64
         run: 7z a -tzip -mx9 1cenc-win-x64.zip .\publish\x64\*
 
-      # 7. Release note prep (Get latest commit # and latest commit SHA)
+      # 8. Release note prep (Get latest commit # and latest commit SHA)
       - name: Prepare Release Info
         shell: pwsh
         run: |
@@ -93,7 +104,7 @@ jobs:
           echo "RELEASE_TITLE=$title" >> $env:GITHUB_ENV
           $body | Out-File -FilePath .\release-notes.md -Encoding utf8
 
-      # 8. Delete existing release to fix blockings
+      # 9. Delete existing release to fix blockings
       - name: Delete existing release (if any)
         shell: pwsh
         run: |
@@ -101,13 +112,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # 9. Create release and publish the 2 7zips without --force
+      # 10. Create release and publish the 2 7zips without --force
       - name: Create Release and Upload Assets
         shell: pwsh
         run: |
           gh release create ${{ github.ref_name }} `
             --title "${{ env.RELEASE_TITLE }}" `
             --notes-file .\release-notes.md `
-            1cenc-win-x86.7z 1cenc-win-x64.7z
+            1cenc-win-x86.zip 1cenc-win-x64.zip
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
