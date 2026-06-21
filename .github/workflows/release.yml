@@ -89,14 +89,21 @@ jobs:
           echo "RELEASE_TITLE=$title" >> $env:GITHUB_ENV
           $body | Out-File -FilePath .\release-notes.md -Encoding utf8
 
-      # 8. Create release (override release)
+      # 8. Delete existing release to fix blockings
+      - name: Delete existing release (if any)
+        shell: pwsh
+        run: |
+          gh release delete ${{ github.ref_name }} -y || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # 9. Create release and publish the 2 7zips without --force
       - name: Create Release and Upload Assets
         shell: pwsh
         run: |
           gh release create ${{ github.ref_name }} `
             --title "${{ env.RELEASE_TITLE }}" `
             --notes-file .\release-notes.md `
-            --force `
             1cenc-publish-x86.7z 1cenc-publish-x64.7z
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
