@@ -28,10 +28,6 @@
 
 - Windows 10/11 x64
   - 推荐 1809 / 21H2（LTSC）或更高版本，最低 1607
-- .NET 9 Desktop Runtime
-  - 下载地址：[微软官网](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
-
-<p align="center"><img src="WireframeMockups/Actual-Binary-Link-Position.png" alt="Actual link is on the right side" width="600"></p>
 
 ### 下载编码相关工具
 

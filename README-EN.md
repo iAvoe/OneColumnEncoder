@@ -28,10 +28,6 @@ This software supports multiple languages, but English text screenshots are used
 
 - Windows 10/11 x64
   - Recommended version: 1809/21H2 (LTSC) or higher; minimum: 1607
-- .NET 9 Desktop Runtime
-  - Download: [Microsoft Official Website](https://dotnet.microsoft.com/en-us/download/dotnet/9.0)
-
-<p align="center"><img src="WireframeMockups/Actual-Binary-Link-Position.png" alt="Actual link is on the right side" width="600"></p>
 
 ### Download Encoding Tools
 
