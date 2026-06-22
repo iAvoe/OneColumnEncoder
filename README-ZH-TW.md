@@ -10,11 +10,12 @@
 
 1. 主界面：工具區、源導入區、分析區、檢查卡、編碼設置區和啟動區
 2. 腳本編輯器：AVS / VPY 編輯區、影片縮放與 VFR 轉 CFR 命令生成功能
-3. 編碼設置：CRF / ABR 參數、自訂預設等配置
+3. 編碼設置：CRF / ABR 參數、自訂預設等控制 + 標籤頁菜單、滑條、下拉菜單控制元素 + 即時 A/B 對比預覽器
 4. 並行設置：NUMA 節點、CPU Sets 和高級執行緒數限制
 5. 採樣片段：時間/幀號選擇、轉換和基本預覽
 6. 編碼監控：日誌、進度、資源占用、高級中斷控制和自動封裝控制
 7. 警告模態窗和文件覆蓋保護功能
+8. 隊列壓制模式 + 動態可編輯等待隊列
 
 <p align="center"><img src="WireframeMockups/1-Main-Page.png" alt="Main Window" width="600"><br>
 <img src="WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window" width="500"><br>

@@ -10,11 +10,12 @@ This software supports multiple languages, but English text screenshots are used
 
 1. Main Interface: Tools area, Source Import area, Analysis area, Checklist, Encoding Settings area, and Startup area
 2. Script Editor: AVS/VPY editing & script generator, video scaling and VFR to CFR command generation
-3. Encoding Settings: CRF/ABR parameters, custom presets, and 3rd party encoder arguments
+3. Encode Settings: CRF/ABR parameters, custom presets, 3rd party encoder arguments controlled via UI such as tab menus, sliders and dropdowns + live A-B comparison previewr
 4. Parallelism Settings: NUMA nodes, CPU Sets, and advanced thread limit
 5. Clip Sampler: Time/Frame Number selection, conversion, basic preview and FFMPEG/vspipe/Avs2Yuv/AVS2PipeMod commandline generation
-6. Encoding Monitoring: Logs, progress, resource usage, interrupt control, as well as auto-multiplexing
+6. Encode Monitoring: Logs, progress, resource usage, interrupt control, as well as auto-multiplexing
 7. Warning Modal & File Overwrite Protection
+8. Queue encoding mode with dynamically editable waiting queue
 
 <p align="center"><img src="WireframeMockups/1-Main-Page.png" alt="Main Window" width="600"><br>
 <img src="WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window" width="500"><br>
