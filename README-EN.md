@@ -73,6 +73,9 @@ Or, TLDR; and use tools provided in this package (not recommended but its an opt
 - EPYC 7R13 (6CCD 48C96T)
 - Intel i7 14700K (thanks to Whithost)
 
+**High load**
+- Long queue with 30+ 4k videos and x265 encoding was successful
+
 ## Localization Status
 
 - **Supported:** English, Simplified Chinese, Traditional Chinese
@@ -89,13 +92,6 @@ Its not esay to develop these tools. If this software helped, please consider sp
 <p align="center"><img src="WireframeMockups/bmc_qr.png" alt="Support me -_-"><br><img src="WireframeMockups/pp_tip_qr.png" alt="Pls support =_="></p>
 
 ## Project Status
-
-The content below organizes the implementation status based on the current project status, marking the completion status of major and sub-modules, classified as:
-
-- Done: Implemented and has been integrated into the main workflow or current UI.
-- Unverified: Complete implementation exists, but has not yet been actually tested due to environment or external service limitations.
-- Incomplete: UI, models, or some logic exist, but the behavior is incomplete, or some configurations have not yet been consumed.
-- Not Started: Only placeholders, manifests, fields, or old code exist; currently, there is no actual functionality or it is not integrated into the main workflow.
 
 ### Done
 
