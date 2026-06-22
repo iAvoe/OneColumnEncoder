@@ -37,6 +37,7 @@ namespace OneColumnEncoder.Commands.OpenClose
             EncoderConfVM vm = new(
                 window.Close,
                 _compressionParamsItem,
+                _modalNavS,
                 _getFfmpegPath?.Invoke(),
                 _getSourceVideoPath?.Invoke(),
                 _getSourceFfprobeJson?.Invoke());

@@ -14,7 +14,7 @@ public class ImgABPvLangProviderM
             ["RawButtonText"] = "Raw",
             ["Hint1Text"] = "Compression is only performed after clicking Preview due to the slowness of some encoders",
             ["Hint2Text"] = "Preview is only via ffmpeg to ensure usability when no encoder is imported",
-            ["Hint3Text"] = "Drag the separator line to compare; beware that you are comparing “paused”, not “motion” picture quality",
+            ["Hint3Text"] = "Drag the separator line to compare; beware that you are comparing \u201Cpaused\u201D, not \u201Cmotion\u201D picture quality",
             ["PreviewButtonText"] = "Preview",
             ["CancelButtonText"] = "Cancel",
             ["StatusReady"] = "Ready",
@@ -33,6 +33,7 @@ public class ImgABPvLangProviderM
             ["DisplayModeWcgToBt709"] = "WCG to BT.709",
             ["DisplayModeHdrToSdr"] = "HDR to SDR",
             ["DisplayModeHighHdrToSdr"] = "High HDR to SDR",
+            ["WarnSvtAv1No12Bit"] = "libsvtav1 does not support 12-bit source preview.\nPlease use libx265 or select a different source.",
         },
         ["zh-cn"] = new()
         {
@@ -63,6 +64,7 @@ public class ImgABPvLangProviderM
             ["DisplayModeWcgToBt709"] = "WCG 转 BT.709",
             ["DisplayModeHdrToSdr"] = "HDR 转 SDR",
             ["DisplayModeHighHdrToSdr"] = "高 HDR 转 SDR",
+            ["WarnSvtAv1No12Bit"] = "libsvtav1 不支持 12bit 源预览。\n请改用 libx265 或更换视频源。",
         },
         ["zh-tw"] = new()
         {
@@ -93,6 +95,7 @@ public class ImgABPvLangProviderM
             ["DisplayModeWcgToBt709"] = "WCG 轉 BT.709",
             ["DisplayModeHdrToSdr"] = "HDR 轉 SDR",
             ["DisplayModeHighHdrToSdr"] = "高 HDR 轉 SDR",
+            ["WarnSvtAv1No12Bit"] = "libsvtav1 不支援 12bit 源預覽。\n请改用 libx265 或更換視訊源。",
         },
     };
 
@@ -251,6 +254,7 @@ public class ImgABPvLangProviderM
     public string DisplayModeWcgToBt709 { get; }
     public string DisplayModeHdrToSdr { get; }
     public string DisplayModeHighHdrToSdr { get; }
+    public string WarnSvtAv1No12Bit { get; }
 
     public ImgABPvLangProviderM(string languageCode)
     {
@@ -283,5 +287,6 @@ public class ImgABPvLangProviderM
         DisplayModeWcgToBt709 = _d["DisplayModeWcgToBt709"];
         DisplayModeHdrToSdr = _d["DisplayModeHdrToSdr"];
         DisplayModeHighHdrToSdr = _d["DisplayModeHighHdrToSdr"];
+        WarnSvtAv1No12Bit = _d["WarnSvtAv1No12Bit"];
     }
 }

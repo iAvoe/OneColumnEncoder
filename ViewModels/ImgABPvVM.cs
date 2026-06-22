@@ -14,6 +14,7 @@ namespace OneColumnEncoder.ViewModels
     public class ImgABPvVM : BaseVM
     {
         private readonly EncoderConfVM _encoderConfVM;
+        private readonly Stores.ModalNavS _modalNavS;
         private readonly string? _ffmpegPath;
         private readonly string? _sourceVideoPath;
         private readonly string _workDirectory;
@@ -108,9 +109,10 @@ namespace OneColumnEncoder.ViewModels
         public bool IsIdle => !IsBusy;
         public bool IsFitMode => _isFitMode;
 
-        public ImgABPvVM(EncoderConfVM encoderConfVM, string? ffmpegPath, string? sourceVideoPath, string? sourceFfprobeJson)
+        public ImgABPvVM(EncoderConfVM encoderConfVM, Stores.ModalNavS modalNavS, string? ffmpegPath, string? sourceVideoPath, string? sourceFfprobeJson)
         {
             _encoderConfVM = encoderConfVM;
+            _modalNavS = modalNavS;
             _ffmpegPath = ffmpegPath;
             _sourceVideoPath = sourceVideoPath;
             _workDirectory = Path.Combine(Path.GetTempPath(), "1cenc-image-preview-" + Guid.NewGuid().ToString("N"));
@@ -189,6 +191,14 @@ namespace OneColumnEncoder.ViewModels
             {
                 EncoderConfM model = _encoderConfVM.CreatePreviewModel();
                 PreviewEncoder encoder = GetSelectedEncoder();
+
+                if (encoder == PreviewEncoder.SvtAv1 && IsSource12Bit())
+                {
+                    _modalNavS.Close();
+                    new Commands.OpenClose.OpenErrModalCmd(_modalNavS, Lang.EncoderLabel, Lang.WarnSvtAv1No12Bit).Execute(null);
+                    return;
+                }
+
                 string displayFilter = BuildDisplayFilter() ?? string.Empty;
                 string rawSourcePath = GetWorkPath("source-raw.png");
                 string sourcePath = string.IsNullOrWhiteSpace(displayFilter)
@@ -240,6 +250,8 @@ namespace OneColumnEncoder.ViewModels
             [
                 "-hide_banner",
                 "-y",
+                "-strict",
+                "unofficial",
                 "-ss",
                 EncodingPipelineH.FormatTimestamp(TimeSpan.FromSeconds(PreviewPositionSeconds)),
                 "-i",
@@ -266,6 +278,8 @@ namespace OneColumnEncoder.ViewModels
             [
                 "-hide_banner",
                 "-y",
+                "-strict",
+                "unofficial",
                 "-i",
                 sourcePath,
                 "-c:v",
@@ -292,6 +306,8 @@ namespace OneColumnEncoder.ViewModels
             [
                 "-hide_banner",
                 "-y",
+                "-strict",
+                "unofficial",
                 "-i",
                 inputPath
             ];
@@ -522,6 +538,9 @@ namespace OneColumnEncoder.ViewModels
             if (current.Length > 0)
                 yield return current.ToString();
         }
+
+        private bool IsSource12Bit() =>
+            _colorSpaceAnalysis.PixelFormat?.Contains("12le", StringComparison.OrdinalIgnoreCase) == true;
 
         private static string TrimProcessMessage(string message)
         {

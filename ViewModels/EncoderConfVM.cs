@@ -222,6 +222,7 @@ namespace OneColumnEncoder.ViewModels
         public EncoderConfVM(
             Action closeAction,
             ToolItemCardVM? targetItem,
+            Stores.ModalNavS modalNavS,
             string? ffmpegPath,
             string? sourceVideoPath,
             string? sourceFfprobeJson)
@@ -239,7 +240,7 @@ namespace OneColumnEncoder.ViewModels
                 CancelButtonText, ConfirmButtonText, CloseCmd, ConfirmCmd);
             PopulateDropdowns();
             LoadModelToUi();
-            PreviewVM = new ImgABPvVM(this, ffmpegPath, sourceVideoPath, sourceFfprobeJson);
+            PreviewVM = new ImgABPvVM(this, modalNavS, ffmpegPath, sourceVideoPath, sourceFfprobeJson);
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
 
