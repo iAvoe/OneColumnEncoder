@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
+             xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
              d:DataContext="{d:DesignInstance Type=vms:ImgABPvVM}"
              mc:Ignorable="d"
              Loaded="OnLoaded">
@@ -153,12 +154,30 @@
                                    Button5Command="{Binding Cmd5}" />
 
             <Button Grid.Column="3"
-                    Content="{Binding PreviewButtonText}"
                     Command="{Binding PreviewCommand}"
                     Height="30"
                     HorizontalAlignment="Stretch"
                     Style="{StaticResource PrimaryButton}"
-                    Background="Black" />
+                    Background="Black">
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
+                    <Rectangle Width="14"
+                               Height="14"
+                               VerticalAlignment="Center"
+                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GamePlay}"
+                                        Stretch="Uniform"
+                                        AlignmentX="Center"
+                                        AlignmentY="Center" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Text="{Binding PreviewButtonText}"
+                               VerticalAlignment="Center"
+                               Margin="5 0 0 0" />
+                </StackPanel>
+            </Button>
         </Grid>
 
         <StackPanel Grid.Row="5">
