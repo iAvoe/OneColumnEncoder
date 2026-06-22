@@ -5,7 +5,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -192,42 +191,42 @@ namespace OneColumnEncoder.ViewModels
                 EncoderConfM model = _encoderConfVM.CreatePreviewModel();
                 PreviewEncoder encoder = GetSelectedEncoder();
 
-                if (encoder == PreviewEncoder.SvtAv1 && IsSource12Bit())
+                if (encoder == PreviewEncoder.SvtAv1 && PreviewPipelineH.IsSource12Bit(_colorSpaceAnalysis))
                 {
                     _modalNavS.Close();
                     new Commands.OpenClose.OpenErrModalCmd(_modalNavS, Lang.EncoderLabel, Lang.WarnSvtAv1No12Bit).Execute(null);
                     return;
                 }
 
-                string displayFilter = BuildDisplayFilter() ?? string.Empty;
+                string displayFilter = PreviewPipelineH.BuildDisplayFilter(_displayMode, _colorSpaceAnalysis) ?? string.Empty;
                 string rawSourcePath = GetWorkPath("source-raw.png");
                 string sourcePath = string.IsNullOrWhiteSpace(displayFilter)
                     ? rawSourcePath
-                    : GetWorkPath($"source-{GetDisplayModeFileSuffix()}.png");
+                    : GetWorkPath($"source-{PreviewPipelineH.GetDisplayModeFileSuffix(_displayMode)}.png");
                 string encodedPath = GetEncodedPath(encoder);
                 string decodedPath = GetDecodedPath(encoder);
 
                 StatusText = Lang.StatusExtracting;
-                await RunFfmpegAsync(BuildSourceArgs(rawSourcePath), token);
+                await RunFfmpegAsync(PreviewPipelineH.BuildSourceArgs(_sourceVideoPath!, PreviewPositionSeconds, rawSourcePath), token);
                 EnsureFileExists(rawSourcePath, "Source preview frame was not generated.");
 
                 if (!string.IsNullOrWhiteSpace(displayFilter))
                 {
                     StatusText = string.Format(Lang.StatusConverting, GetDisplayModeTitle(_displayMode));
-                    await RunFfmpegAsync(BuildSourceArgs(sourcePath, displayFilter), token);
+                    await RunFfmpegAsync(PreviewPipelineH.BuildSourceArgs(_sourceVideoPath!, PreviewPositionSeconds, sourcePath, displayFilter), token);
                 }
                 EnsureFileExists(sourcePath, "Source preview frame was not generated.");
-                SourceImage = LoadBitmap(sourcePath);
+                SourceImage = PreviewPipelineH.LoadBitmap(sourcePath);
 
-                StatusText = string.Format(Lang.StatusEncoding, GetEncoderTitle(encoder));
-                await RunFfmpegAsync(BuildEncodeArgs(encoder, model, sourcePath, encodedPath), token);
+                StatusText = string.Format(Lang.StatusEncoding, PreviewPipelineH.GetEncoderTitle(encoder));
+                await RunFfmpegAsync(PreviewPipelineH.BuildEncodeArgs(encoder, model, sourcePath, encodedPath), token);
 
                 StatusText = Lang.StatusDecoding;
-                await RunFfmpegAsync(BuildDecodeArgs(encodedPath, decodedPath), token);
+                await RunFfmpegAsync(PreviewPipelineH.BuildDecodeArgs(encodedPath, decodedPath), token);
                 EnsureFileExists(decodedPath, "Encoded preview frame was not generated.");
-                EncodedImage = LoadBitmap(decodedPath);
+                EncodedImage = PreviewPipelineH.LoadBitmap(decodedPath);
 
-                StatusText = string.Format(Lang.StatusPreviewReady, GetEncoderTitle(encoder), GetCrfValue(encoder, model));
+                StatusText = string.Format(Lang.StatusPreviewReady, PreviewPipelineH.GetEncoderTitle(encoder), PreviewPipelineH.GetCrfValue(encoder, model));
             }
             catch (OperationCanceledException)
             {
@@ -244,85 +243,6 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        private string[] BuildSourceArgs(string outputPath, string? displayFilter = null)
-        {
-            List<string> args =
-            [
-                "-hide_banner",
-                "-y",
-                "-strict",
-                "unofficial",
-                "-ss",
-                EncodingPipelineH.FormatTimestamp(TimeSpan.FromSeconds(PreviewPositionSeconds)),
-                "-i",
-                _sourceVideoPath!
-            ];
-
-            if (!string.IsNullOrWhiteSpace(displayFilter))
-                args.AddRange(["-vf", displayFilter]);
-
-            args.AddRange(
-            [
-                "-vframes",
-                "1",
-                "-c:v",
-                "png",
-                outputPath
-            ]);
-            return [.. args];
-        }
-
-        private static string[] BuildEncodeArgs(PreviewEncoder encoder, EncoderConfM model, string sourcePath, string outputPath)
-        {
-            List<string> args =
-            [
-                "-hide_banner",
-                "-y",
-                "-strict",
-                "unofficial",
-                "-i",
-                sourcePath,
-                "-c:v",
-                GetFfmpegEncoderName(encoder),
-                "-crf",
-                GetCrfValue(encoder, model).ToString(CultureInfo.InvariantCulture)
-            ];
-
-            args.AddRange(SplitArgs(GetCustomParams(encoder, model)));
-            args.AddRange(["-frames:v", "1"]);
-
-            if (encoder == PreviewEncoder.X264)
-                args.AddRange(["-f", "h264"]);
-            else if (encoder == PreviewEncoder.X265)
-                args.AddRange(["-f", "hevc"]);
-
-            args.Add(outputPath);
-            return [.. args];
-        }
-
-        private static string[] BuildDecodeArgs(string inputPath, string outputPath)
-        {
-            List<string> args =
-            [
-                "-hide_banner",
-                "-y",
-                "-strict",
-                "unofficial",
-                "-i",
-                inputPath
-            ];
-
-            args.AddRange(
-            [
-                "-frames:v",
-                "1",
-                "-c:v",
-                "png",
-                outputPath
-            ]);
-            return [.. args];
-        }
-
         private async Task RunFfmpegAsync(IReadOnlyList<string> args, CancellationToken token)
         {
             ProcessStartInfo psi = new()
@@ -332,8 +252,8 @@ namespace OneColumnEncoder.ViewModels
                 UseShellExecute = false,
                 RedirectStandardError = true,
                 RedirectStandardOutput = true,
-                StandardErrorEncoding = Encoding.UTF8,
-                StandardOutputEncoding = Encoding.UTF8,
+                StandardErrorEncoding = System.Text.Encoding.UTF8,
+                StandardOutputEncoding = System.Text.Encoding.UTF8,
                 CreateNoWindow = true
             };
 
@@ -352,7 +272,7 @@ namespace OneColumnEncoder.ViewModels
             }
             catch (OperationCanceledException)
             {
-                TryKillProcess(process);
+                PreviewPipelineH.TryKillProcess(process);
                 throw;
             }
 
@@ -361,32 +281,14 @@ namespace OneColumnEncoder.ViewModels
             if (process.ExitCode != 0)
             {
                 string message = string.IsNullOrWhiteSpace(stderr) ? stdout : stderr;
-                throw new InvalidOperationException(TrimProcessMessage(message));
+                throw new InvalidOperationException(PreviewPipelineH.TrimProcessMessage(message));
             }
-        }
-
-        private static BitmapImage LoadBitmap(string path)
-        {
-            BitmapImage bitmap = new();
-            bitmap.BeginInit();
-            bitmap.CacheOption = BitmapCacheOption.OnLoad;
-            bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-            bitmap.UriSource = new Uri(path, UriKind.Absolute);
-            bitmap.EndInit();
-            bitmap.Freeze();
-            return bitmap;
-        }
-
-        private static void EnsureFileExists(string path, string message)
-        {
-            if (!File.Exists(path))
-                throw new FileNotFoundException(message, path);
         }
 
         private void RefreshSelectedEncodedImage()
         {
             string decodedPath = GetDecodedPath(GetSelectedEncoder());
-            EncodedImage = File.Exists(decodedPath) ? LoadBitmap(decodedPath) : null;
+            EncodedImage = File.Exists(decodedPath) ? PreviewPipelineH.LoadBitmap(decodedPath) : null;
         }
 
         private void BuildPositionTickLabels(double durationSeconds)
@@ -404,16 +306,16 @@ namespace OneColumnEncoder.ViewModels
 
         private string GetEncodedPath(PreviewEncoder encoder) => encoder switch
         {
-            PreviewEncoder.X264 => GetWorkPath($"x264-{GetDisplayModeFileSuffix()}.h264"),
-            PreviewEncoder.X265 => GetWorkPath($"x265-{GetDisplayModeFileSuffix()}.hevc"),
-            _ => GetWorkPath($"svtav1-{GetDisplayModeFileSuffix()}.obu")
+            PreviewEncoder.X264 => GetWorkPath($"x264-{PreviewPipelineH.GetDisplayModeFileSuffix(_displayMode)}.h264"),
+            PreviewEncoder.X265 => GetWorkPath($"x265-{PreviewPipelineH.GetDisplayModeFileSuffix(_displayMode)}.hevc"),
+            _ => GetWorkPath($"svtav1-{PreviewPipelineH.GetDisplayModeFileSuffix(_displayMode)}.obu")
         };
 
         private string GetDecodedPath(PreviewEncoder encoder) => encoder switch
         {
-            PreviewEncoder.X264 => GetWorkPath($"x264-{GetDisplayModeFileSuffix()}.png"),
-            PreviewEncoder.X265 => GetWorkPath($"x265-{GetDisplayModeFileSuffix()}.png"),
-            _ => GetWorkPath($"svtav1-{GetDisplayModeFileSuffix()}.png")
+            PreviewEncoder.X264 => GetWorkPath($"x264-{PreviewPipelineH.GetDisplayModeFileSuffix(_displayMode)}.png"),
+            PreviewEncoder.X265 => GetWorkPath($"x265-{PreviewPipelineH.GetDisplayModeFileSuffix(_displayMode)}.png"),
+            _ => GetWorkPath($"svtav1-{PreviewPipelineH.GetDisplayModeFileSuffix(_displayMode)}.png")
         };
 
         private void SetDisplayMode(PreviewDisplayMode displayMode)
@@ -432,41 +334,6 @@ namespace OneColumnEncoder.ViewModels
                 _ = GeneratePreviewAsync();
         }
 
-        private string? BuildDisplayFilter()
-        {
-            ColorSpaceStrategy? strategy = _displayMode switch
-            {
-                PreviewDisplayMode.LowToBt709 => ColorSpaceStrategy.LowToHigh,
-                PreviewDisplayMode.WcgToBt709 => ColorSpaceStrategy.HighToLow,
-                PreviewDisplayMode.HdrToSdr => ColorSpaceStrategy.HdrToSdr,
-                PreviewDisplayMode.HighHdrToSdr => ColorSpaceStrategy.HighHdrToSdr,
-                _ => null
-            };
-            if (strategy == null) return null;
-
-            string? filter = ColorSpaceConverterH.BuildFfmpegFilter(
-                strategy.Value,
-                _colorSpaceAnalysis.ColorMatrix,
-                _colorSpaceAnalysis.ColorChromaLocation,
-                _colorSpaceAnalysis.ColorPrimaries,
-                _colorSpaceAnalysis.PixelFormat);
-            if (string.IsNullOrWhiteSpace(filter)) return null;
-
-            filter = filter.Replace("<nits>", "1000", StringComparison.Ordinal);
-            if (strategy == ColorSpaceStrategy.HdrToSdr)
-                filter = string.Join(',', filter, "zscale=matrix=bt709:primaries=bt709:transfer=bt709");
-            return string.Join(',', filter, "format=rgb24");
-        }
-
-        private string GetDisplayModeFileSuffix() => _displayMode switch
-        {
-            PreviewDisplayMode.LowToBt709 => "low709",
-            PreviewDisplayMode.WcgToBt709 => "wcg709",
-            PreviewDisplayMode.HdrToSdr => "hdrsdr",
-            PreviewDisplayMode.HighHdrToSdr => "highhdrsdr",
-            _ => "raw"
-        };
-
         private string GetDisplayModeTitle(PreviewDisplayMode displayMode) => displayMode switch
         {
             PreviewDisplayMode.LowToBt709 => Lang.DisplayModeLowToBt709,
@@ -476,88 +343,16 @@ namespace OneColumnEncoder.ViewModels
             _ => Lang.DisplayModeRaw
         };
 
-        private static string GetFfmpegEncoderName(PreviewEncoder encoder) => encoder switch
+        private static void EnsureFileExists(string path, string message)
         {
-            PreviewEncoder.X264 => "libx264",
-            PreviewEncoder.X265 => "libx265",
-            _ => "libsvtav1"
-        };
-
-        private static string GetEncoderTitle(PreviewEncoder encoder) => encoder switch
-        {
-            PreviewEncoder.X264 => "libx264",
-            PreviewEncoder.X265 => "libx265",
-            _ => "libsvtav1"
-        };
-
-        private static int GetCrfValue(PreviewEncoder encoder, EncoderConfM model) => encoder switch
-        {
-            PreviewEncoder.X264 => model.X264Crf,
-            PreviewEncoder.X265 => model.X265Crf,
-            _ => model.SvtAv1Crf
-        };
-
-        private static string GetCustomParams(PreviewEncoder encoder, EncoderConfM model) => encoder switch
-        {
-            PreviewEncoder.X264 => model.CustomParamsX264,
-            PreviewEncoder.X265 => model.CustomParamsX265,
-            _ => model.CustomParamsSvtAv1
-        };
-
-        private static IEnumerable<string> SplitArgs(string value)
-        {
-            if (string.IsNullOrWhiteSpace(value)) yield break;
-
-            StringBuilder current = new();
-            bool inQuotes = false;
-            for (int i = 0; i < value.Length; i++)
-            {
-                char c = value[i];
-                if (c == '"')
-                {
-                    inQuotes = !inQuotes;
-                    continue;
-                }
-
-                if (char.IsWhiteSpace(c) && !inQuotes)
-                {
-                    if (current.Length > 0)
-                    {
-                        yield return current.ToString();
-                        current.Clear();
-                    }
-                    continue;
-                }
-
-                current.Append(c);
-            }
-
-            if (current.Length > 0)
-                yield return current.ToString();
-        }
-
-        private bool IsSource12Bit() =>
-            _colorSpaceAnalysis.PixelFormat?.Contains("12le", StringComparison.OrdinalIgnoreCase) == true;
-
-        private static string TrimProcessMessage(string message)
-        {
-            string text = string.IsNullOrWhiteSpace(message) ? "ffmpeg failed." : message.Trim();
-            text = text.Replace("\r", " ", StringComparison.Ordinal).Replace("\n", " ", StringComparison.Ordinal);
-            while (text.Contains("  ", StringComparison.Ordinal))
-                text = text.Replace("  ", " ", StringComparison.Ordinal);
-            return text.Length <= 700 ? text : text[^700..];
+            if (!File.Exists(path))
+                throw new FileNotFoundException(message, path);
         }
 
         private void TryKillCurrentProcess()
         {
             if (_currentProcess != null)
-                TryKillProcess(_currentProcess);
-        }
-
-        private static void TryKillProcess(Process process)
-        {
-            try { if (!process.HasExited) process.Kill(true); }
-            catch { }
+                PreviewPipelineH.TryKillProcess(_currentProcess);
         }
 
         private void OnLanguageChanged()
@@ -594,8 +389,5 @@ namespace OneColumnEncoder.ViewModels
 
             base.Dispose();
         }
-
-        private enum PreviewEncoder { X264, X265, SvtAv1 }
-        private enum PreviewDisplayMode { Raw, LowToBt709, WcgToBt709, HdrToSdr, HighHdrToSdr }
     }
 }
