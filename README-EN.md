@@ -4,18 +4,30 @@ A next-gen smart video encoding utility based on .NET 9/WPF, revolves around “
 
 <p align="center"><img src="WireframeMockups/logo.png" alt="Logo" width="200"></p>
 
+## Featuring:
+- Source Validation:
+  - Validate source video from ffprobe readings
+  - Providing source checklist with Success, Warning & Error status types
+  - Providing bypass feature to continue on error
+- Encode Settings:
+  - Customize via UI controls including tabs, sliders, dropdown menus, etc.
+  - Perform A/B comparison to check impacts as you go
+- Advanced Parallelism:
+  - Physical Core & NUMA Binding on top of Thread limiting
+- Automation & Customization:
+  - Auto-generate basic AviSynth & VapourSynth scripts
+  - Generate VFR→CFR, HDR→SDR (& WCG) conversion, resize & SAR repair filter for FFMPEG-VS-AVS
+  - FFMPEG-VS-AVS parameter/script text editor available
+  - Auto-generate video and audio encoding commandlines
+  - Providing queued encoding with editable queue
+- Clip Sampling: Time/Frame# selection with FFMPEG-VS-AVS commandline generation
+- Advanced Monitoring: Monitor RAM usage per-app, separated view of upstream & downstream (encoder) logs
+- Interrupt Control: Either interrupt upstream or downstream program (encoder) to consistently exit an encoding session
+- Overwrite Protection: Fool-proof Start-Encode cooldown based on file size to be overwritten
+
 ## Gallery
 
 This software supports multiple languages, but English text screenshots are used here to reduce the number of images. Some UI elements or text in the images may be outdated, but the overall layout and functional area divisions remain applicable. Please refer to the actual version you are using.
-
-1. Main Interface: Tools area, Source Import area, Analysis area, Checklist, Encoding Settings area, and Startup area
-2. Script Editor: AVS/VPY editing & script generator, video scaling and VFR to CFR command generation
-3. Encode Settings: CRF/ABR parameters, custom presets, 3rd party encoder arguments controlled via UI such as tab menus, sliders and dropdowns + live A-B comparison previewr
-4. Parallelism Settings: NUMA nodes, CPU Sets, and advanced thread limit
-5. Clip Sampler: Time/Frame Number selection, conversion, basic preview and FFMPEG/vspipe/Avs2Yuv/AVS2PipeMod commandline generation
-6. Encode Monitoring: Logs, progress, resource usage, interrupt control, as well as auto-multiplexing
-7. Warning Modal & File Overwrite Protection
-8. Queue encoding mode with dynamically editable waiting queue
 
 <p align="center"><img src="WireframeMockups/1-Main-Page.png" alt="Main Window" width="600"><br>
 <img src="WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window" width="500"><br>
