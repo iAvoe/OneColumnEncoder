@@ -220,10 +220,10 @@ namespace OneColumnEncoder.ViewModels
                 SourceImage = LoadBitmap(sourcePath);
 
                 StatusText = string.Format(Lang.StatusEncoding, GetEncoderTitle(encoder));
-                await RunFfmpegAsync(BuildEncodeArgs(encoder, model, rawSourcePath, encodedPath), token);
+                await RunFfmpegAsync(BuildEncodeArgs(encoder, model, sourcePath, encodedPath), token);
 
                 StatusText = Lang.StatusDecoding;
-                await RunFfmpegAsync(BuildDecodeArgs(encodedPath, decodedPath, displayFilter), token);
+                await RunFfmpegAsync(BuildDecodeArgs(encodedPath, decodedPath), token);
                 EnsureFileExists(decodedPath, "Encoded preview frame was not generated.");
                 EncodedImage = LoadBitmap(decodedPath);
 
@@ -300,7 +300,7 @@ namespace OneColumnEncoder.ViewModels
             return [.. args];
         }
 
-        private static string[] BuildDecodeArgs(string inputPath, string outputPath, string displayFilter)
+        private static string[] BuildDecodeArgs(string inputPath, string outputPath)
         {
             List<string> args =
             [
@@ -311,9 +311,6 @@ namespace OneColumnEncoder.ViewModels
                 "-i",
                 inputPath
             ];
-
-            if (!string.IsNullOrWhiteSpace(displayFilter))
-                args.AddRange(["-vf", displayFilter]);
 
             args.AddRange(
             [
