@@ -8,6 +8,10 @@
              mc:Ignorable="d"
              d:DesignHeight="20"
              d:DesignWidth="400">
+    <UserControl.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Copy"
+                        Executed="CopyText_Executed" />
+    </UserControl.CommandBindings>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -29,7 +33,14 @@
                    Foreground="{Binding HintBrush, ElementName=uc}"
                    Margin="3.5 0 0 0"
                    VerticalAlignment="Center"
-                   Focusable="False"
-                   TextWrapping="Wrap" />
+                   TextWrapping="Wrap">
+            <TextBlock.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Copy"
+                              Command="ApplicationCommands.Copy"
+                              CommandTarget="{Binding PlacementTarget, RelativeSource={RelativeSource FindAncestor, AncestorType=ContextMenu}}" />
+                </ContextMenu>
+            </TextBlock.ContextMenu>
+        </TextBlock>
     </Grid>
 </UserControl>

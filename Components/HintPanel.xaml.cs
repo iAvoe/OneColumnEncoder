@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace OneColumnEncoder.Components
@@ -32,6 +33,12 @@ namespace OneColumnEncoder.Components
             FontSize = 9.0;
             if (ReadLocalValue(HintBrushProperty) == DependencyProperty.UnsetValue)
                 SetCurrentValue(HintBrushProperty, TryFindResource("GlobalTertiary") as Brush);
+        }
+
+        private void CopyText_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(Text))
+                Clipboard.SetText(Text);
         }
     }
 }
