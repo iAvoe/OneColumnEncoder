@@ -101,6 +101,8 @@ namespace OneColumnEncoder.ViewModels
         public string EnableMuxText => Lang.EnableMuxText;
         public string RichTextModeText => Lang.RichTextModeText;
         public string MuxTimebaseHint => Lang.MuxTimebaseHint;
+        public string OpusAudioCommandHint => BuildOpusAudioCommandHint();
+        public string OpusAudioBitrateHint => Lang.OpusAudioBitrateHint;
         public bool CanMux => !_isSample && _command.MuxCommand != null;
         public bool IsWindowCloseEnabled
         {
@@ -446,14 +448,14 @@ namespace OneColumnEncoder.ViewModels
                 if (selectedJob.JobId == _activeLogJobId)
                 {
                     SetDisplayedLogs(_upstreamStderrBuilder.ToString(), _downstreamStderrBuilder.ToString());
-                    return;
                 }
-
-                if (_logSnapshotsByJobId.TryGetValue(selectedJob.JobId, out EncodingLogSnapshot snapshot))
+                else if (_logSnapshotsByJobId.TryGetValue(selectedJob.JobId, out EncodingLogSnapshot snapshot))
                     SetDisplayedLogs(snapshot.UpstreamText, snapshot.DownstreamText);
                 else
                     SetDisplayedLogs(string.Empty, string.Empty);
             }
+
+            OnPropertyChanged(nameof(OpusAudioCommandHint));
         }
 
         /// <summary>
@@ -701,6 +703,7 @@ namespace OneColumnEncoder.ViewModels
                 _request = request;
                 _command = command;
                 _totalFrames = EncodingPipelineH.GetSourceTotalFrames(request.SourceFfprobeJson);
+                OnPropertyChanged(nameof(OpusAudioCommandHint));
                 EnableMux = command.MuxCommand != null
                     && !string.Equals(request.EncoderExeName, "x264.exe", StringComparison.OrdinalIgnoreCase);
                 _writtenFrames = 0;
@@ -2013,6 +2016,29 @@ namespace OneColumnEncoder.ViewModels
             new OpenDebugModalCmd(_modalNavS, Lang.EncodingCommandTitle, command.DisplayCommandLine).Execute(null);
         }
 
+        private string BuildOpusAudioCommandHint()
+        {
+            EncodingPipelineRequest request = QueueSidebar.SelectedJob?.Request ?? _request;
+            string command = BuildOpusAudioCommand(request);
+            return string.IsNullOrEmpty(command)
+                ? string.Empty
+                : string.Format(CultureInfo.InvariantCulture, Lang.OpusAudioCommandHintFormat, command);
+        }
+
+        private static string BuildOpusAudioCommand(EncodingPipelineRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.FfmpegPath) || string.IsNullOrWhiteSpace(request.SourceVideoPath))
+                return string.Empty;
+
+            string outputDirectory = Path.GetDirectoryName(request.OutputPath) ?? string.Empty;
+            string outputFileName = Path.ChangeExtension(Path.GetFileName(request.SourceVideoPath), ".ogg");
+            string outputPath = Path.Combine(outputDirectory, outputFileName);
+            return $"{QuoteArgument(request.FfmpegPath)} -i {QuoteArgument(request.SourceVideoPath)} -vn -c:a libopus -b:a 320000 -vbr on -compression_level 10 -frame_duration 100 {QuoteArgument(outputPath)}";
+        }
+
+        private static string QuoteArgument(string value) =>
+            $"\"{value.Replace("\"", "\\\"", StringComparison.Ordinal)}\"";
+
         /// <summary>
         /// Shows a confirmation dialog asking whether to stop the entire queue.
         /// Returns true if the user confirms (stop queue), false to continue.
@@ -2157,6 +2183,8 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(EnableMuxText));
             OnPropertyChanged(nameof(RichTextModeText));
             OnPropertyChanged(nameof(MuxTimebaseHint));
+            OnPropertyChanged(nameof(OpusAudioCommandHint));
+            OnPropertyChanged(nameof(OpusAudioBitrateHint));
             OnPropertyChanged(nameof(DistributionUpstreamLabel));
             OnPropertyChanged(nameof(DistributionDownstreamLabel));
             OnPropertyChanged(nameof(DistributionCacheLabel));

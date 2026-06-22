@@ -5,9 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:cards="clr-namespace:OneColumnEncoder.Components.Cards"
              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+             xmlns:conv="clr-namespace:OneColumnEncoder.Converters"
              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
              d:DataContext="{d:DesignInstance Type=vms:EncodingMonitorVM}"
              mc:Ignorable="d">
+    <UserControl.Resources>
+        <conv:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+    </UserControl.Resources>
     <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -237,7 +241,7 @@
             <comps:HintPanel Text="{Binding MuxTimebaseHint}"
                              HintBrush="{StaticResource GlobalSecondary}"
                              Margin="0 2.5 0 0" />
-            <comps:FiveButtonGroup Margin="0 15 0 0"
+            <comps:FiveButtonGroup Margin="0 10 0 0"
                                    DataContext="{Binding FinishButtons}"
                                    ButtonHeight="30"
                                    Button1Command="{Binding Cmd1}"
@@ -250,9 +254,17 @@
                                    Button3IsEnabled="{Binding B5_3IsEnabled}"
                                    Button4IsEnabled="{Binding B5_4IsEnabled}"
                                    Button5IsEnabled="{Binding B5_5IsEnabled}" />
+            <StackPanel Visibility="{Binding OpusAudioCommandHint, Converter={StaticResource StringToVisibilityConverter}}">
+                <comps:HintPanel Text="{Binding OpusAudioCommandHint}"
+                                 HintBrush="{StaticResource GlobalSecondary}"
+                                 Margin="0 5 0 0" />
+                <comps:HintPanel Text="{Binding OpusAudioBitrateHint}"
+                                 HintBrush="{StaticResource GlobalSecondary}"
+                                 Margin="0 5 0 0" />
+            </StackPanel>
             <comps:HintPanel Text="{Binding SmallNoteText}"
-                             HintBrush="{StaticResource GlobalSecondary}"
-                             Margin="0 2.5 0 0" />
+                              HintBrush="{StaticResource GlobalSecondary}"
+                              Margin="0 5 0 0" />
         </StackPanel>
     </Grid>
 </UserControl>
