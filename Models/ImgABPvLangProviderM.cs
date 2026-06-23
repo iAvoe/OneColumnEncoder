@@ -142,6 +142,7 @@ public class ImgABPvLangProviderM
             ["WarnSvtAv1No12Bit"] = "libsvtav1 ne prend pas en charge la prévisualisation des sources 12 bits.\nVeuillez utiliser libx265 ou sélectionner une autre source.",
             ["Ssimulacra2ToolMissing"] = "L'outil SSIMULACRA2.1 est introuvable. Placez le fichier x64-CloudinarySSIMULACRA2.1 à côté de l'exécutable et redémarrez.",
             ["Ssimulacra2ToolPresent"] = "La métrique de qualité SSIMULACRA2.1 est prête",
+            ["SsimulacraScoreHint"] = "Score SSIMULACRA : 100 Sans perte | 90 Sans perte visuelle | 85 Perte minime | 80 Légère | 70 Visible | 50 Notable | 30 Grave",
         };
         Data["es"] = new(Data["en"])
         {
@@ -175,6 +176,7 @@ public class ImgABPvLangProviderM
             ["WarnSvtAv1No12Bit"] = "libsvtav1 no es compatible con la vista previa de fuentes de 12 bits.\nUtilice libx265 o seleccione una fuente diferente.",
             ["Ssimulacra2ToolMissing"] = "No se encontró la herramienta SSIMULACRA2.1. Coloque x64-CloudinarySSIMULACRA2.1 junto al ejecutable y reinicie.",
             ["Ssimulacra2ToolPresent"] = "La métrica de calidad SSIMULACRA2.1 está lista.",
+            ["SsimulacraScoreHint"] = "SSIMULACRA: 100 Sin pérdida | 90 Sin pérdida visual | 85 Pérdida mínima | 80 Notable | 70 Visible | 50 Considerable | 30 Grave",
         };
         Data["ja"] = new(Data["en"])
         {
@@ -208,6 +210,7 @@ public class ImgABPvLangProviderM
             ["WarnSvtAv1No12Bit"] = "libsvtav1 は 12ビットソースのプレビューをサポートしていません。\nlibx265 を使用するか、別のソースを選択してください。",
             ["Ssimulacra2ToolMissing"] = "SSIMULACRA2.1 ツールが見つかりません。x64-CloudinarySSIMULACRA2.1 を実行ファイルの隣に配置して再起動してください。",
             ["Ssimulacra2ToolPresent"] = "SSIMULACRA2.1 品質メトリックの準備ができました。",
+            ["SsimulacraScoreHint"] = "SSIMULACRA スコア：100 数学的無損失 | 90 視覚的無損失 | 85 わずかな損失 | 80 顕著な損失 | 70 目に見える損失 | 50 大きな損失 | 30 致命的な損失",
         };
         Data["ru"] = new(Data["en"])
         {
@@ -241,6 +244,7 @@ public class ImgABPvLangProviderM
             ["WarnSvtAv1No12Bit"] = "libsvtav1 не поддерживает предварительный просмотр 12-битных источников.\nПожалуйста, используйте libx265 или выберите другой источник.",
             ["Ssimulacra2ToolMissing"] = "Инструмент SSIMULACRA2.1 не найден. Поместите x64-CloudinarySSIMULACRA2.1 рядом с исполняемым файлом и перезапустите.",
             ["Ssimulacra2ToolPresent"] = "Метрика качества SSIMULACRA2.1 готова.",
+            ["SsimulacraScoreHint"] = "Оценка SSIMULACRA: 100 Мате. без потерь | 90 Визуально без потерь | 85 Незначительные потери | 80 Заметные | 70 Видимые | 50 Значительные | 30 Критические",
         };
     }
 
