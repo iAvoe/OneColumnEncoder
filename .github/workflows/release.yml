@@ -80,6 +80,8 @@ jobs:
           if (Test-Path ".\cicd") {
             Copy-Item -Path ".\cicd\x64-upstreams-encoders.7z" -Destination ".\publish\x64\" -Force
             Copy-Item -Path ".\cicd\x86-upstreams-encoders.7z" -Destination ".\publish\x86\" -Force
+            # 完整拷贝 x64-CloudinarySSIMULACRA2.1 文件夹及其子文件
+            Copy-Item -Path ".\cicd\x64-CloudinarySSIMULACRA2.1" -Destination ".\publish\x64\" -Recurse -Force
             Write-Host "✅ Tools copied to both publish folders."
           } else {
             throw "[MISSING] No 'cicd' folder found, cannot continue."

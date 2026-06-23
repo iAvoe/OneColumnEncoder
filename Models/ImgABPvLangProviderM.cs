@@ -36,6 +36,7 @@ public class ImgABPvLangProviderM
             ["WarnSvtAv1No12Bit"] = "libsvtav1 does not support 12-bit source preview.\nPlease use libx265 or select a different source",
             ["Ssimulacra2ToolMissing"] = "SSIMULACRA2.1 tool not found. Place x64-CloudinarySSIMULACRA2.1 next to the executable and restart",
             ["Ssimulacra2ToolPresent"] = "SSIMULACRA2.1 quality metric is ready",
+            ["SsimulacraScoreHint"] = "SSIMULACRA score: 100 Math Lossless | 90 VQA Lossless | 85 Marginal Loss | 80 Revealing Loss | 70 Tangible loss | 50 Substantial loss | 30 Breaking loss",
         },
         ["zh-cn"] = new()
         {
@@ -69,6 +70,7 @@ public class ImgABPvLangProviderM
             ["WarnSvtAv1No12Bit"] = "libsvtav1 不支持 12bit 源预览。\n请改用 libx265 或更换视频源",
             ["Ssimulacra2ToolMissing"] = "SSIMULACRA2.1 质量指标工具缺失。请将 x64-CloudinarySSIMULACRA2.1 文件夹放在程序目录旁，再重启应用",
             ["Ssimulacra2ToolPresent"] = "SSIMULACRA2.1 质量指标工具已就绪",
+            ["SsimulacraScoreHint"] = "SSIMULACRA 分数：100 数据无损 | 90 视觉无损 | 85 差异极小 | 80 差异显露 | 70 差异可见 | 50 差异较大 | 30 差异巨大",
         },
         ["zh-tw"] = new()
         {
@@ -102,6 +104,7 @@ public class ImgABPvLangProviderM
             ["WarnSvtAv1No12Bit"] = "libsvtav1 不支援 12bit 源預覽。\n请改用 libx265 或更換視訊源",
             ["Ssimulacra2ToolMissing"] = "SSIMULACRA2.1 質量指標工具缺失。請將 x64-CloudinarySSIMULACRA2.1 文件夾放在程序目錄旁，再重啟應用",
             ["Ssimulacra2ToolPresent"] = "SSIMULACRA2.1 質量指標工具已就緒",
+            ["SsimulacraScoreHint"] = "SSIMULACRA 分數：100 數據無損 | 90 視覺無損 | 85 差異極小 | 80 差異顯露 | 70 差異可見 | 50 差異較大 | 30 差異巨大",
         },
     };
 
@@ -275,6 +278,7 @@ public class ImgABPvLangProviderM
     public string WarnSvtAv1No12Bit { get; }
     public string Ssimulacra2ToolMissing { get; }
     public string Ssimulacra2ToolPresent { get; }
+    public string SsimulacraScoreHint { get; }
 
     public ImgABPvLangProviderM(string languageCode)
     {
@@ -310,5 +314,6 @@ public class ImgABPvLangProviderM
         WarnSvtAv1No12Bit = _d["WarnSvtAv1No12Bit"];
         Ssimulacra2ToolMissing = _d["Ssimulacra2ToolMissing"];
         Ssimulacra2ToolPresent = _d["Ssimulacra2ToolPresent"];
+        SsimulacraScoreHint = _d["SsimulacraScoreHint"];
     }
 }

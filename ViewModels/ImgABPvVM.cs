@@ -42,6 +42,7 @@ namespace OneColumnEncoder.ViewModels
         public string Hint1Text => Lang.Hint1Text;
         public string Hint2Text => Lang.Hint2Text;
         public string Hint3Text => Lang.Hint3Text;
+        public string SsimulacraScoreHint => Lang.SsimulacraScoreHint;
 
         private ImageSource? _sourceImage;
         public ImageSource? SourceImage
@@ -241,7 +242,7 @@ namespace OneColumnEncoder.ViewModels
                     Ssimulacra2StatusText = Lang.Ssimulacra2ToolPresent;
                     var (score, error) = await Ssimulacra2H.RunScoreAsync(sourcePath, decodedPath);
                     Ssimulacra2StatusText = score.HasValue
-                        ? $"SSIMULACRA2.1: {score.Value:F2}%"
+                        ? $"SSIMULACRA2.1: {score.Value:F2}"
                         : $"SSIMULACRA2.1: {error}";
                 }
             }
@@ -399,6 +400,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(Hint1Text));
             OnPropertyChanged(nameof(Hint2Text));
             OnPropertyChanged(nameof(Hint3Text));
+            OnPropertyChanged(nameof(SsimulacraScoreHint));
             RefreshSsimulacra2Status();
         }
 

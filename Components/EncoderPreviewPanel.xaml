@@ -199,6 +199,10 @@
                                  HintBrush="{StaticResource GlobalSecondary}"
                                  FontSize="10"
                                  Margin="0 5 0 0" />
+                <comps:HintPanel Text="{Binding SsimulacraScoreHint}"
+                                  HintBrush="{StaticResource GlobalSecondary}"
+                                  FontSize="10"
+                                  Margin="0 5 0 0" />
             </StackPanel>
 
             <TextBlock Grid.Column="1"
