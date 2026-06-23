@@ -108,6 +108,13 @@ namespace OneColumnEncoder.ViewModels
         public bool IsIdle => !IsBusy;
         public bool IsFitMode => _isFitMode;
 
+        private string _ssimulacra2StatusText = "";
+        public string Ssimulacra2StatusText
+        {
+            get => _ssimulacra2StatusText;
+            private set => SetProperty(ref _ssimulacra2StatusText, value);
+        }
+
         public ImgABPvVM(EncoderConfVM encoderConfVM, Stores.ModalNavS modalNavS, string? ffmpegPath, string? sourceVideoPath, string? sourceFfprobeJson)
         {
             _encoderConfVM = encoderConfVM;
@@ -148,6 +155,7 @@ namespace OneColumnEncoder.ViewModels
             StatusText = Lang.StatusReady;
             PreviewButtonText = Lang.PreviewButtonText;
             PreviewCommand = new ActionCmd(_ => PreviewOrCancel());
+            RefreshSsimulacra2Status();
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
 
@@ -227,6 +235,15 @@ namespace OneColumnEncoder.ViewModels
                 EncodedImage = PreviewPipelineH.LoadBitmap(decodedPath);
 
                 StatusText = string.Format(Lang.StatusPreviewReady, PreviewPipelineH.GetEncoderTitle(encoder), PreviewPipelineH.GetCrfValue(encoder, model));
+
+                if (Ssimulacra2H.IsSsimU2Present)
+                {
+                    Ssimulacra2StatusText = Lang.Ssimulacra2ToolPresent;
+                    var (score, error) = await Ssimulacra2H.RunScoreAsync(sourcePath, decodedPath);
+                    Ssimulacra2StatusText = score.HasValue
+                        ? $"SSIMULACRA2: {score.Value:F2}"
+                        : $"SSIMULACRA2: {error}";
+                }
             }
             catch (OperationCanceledException)
             {
@@ -355,6 +372,19 @@ namespace OneColumnEncoder.ViewModels
                 PreviewPipelineH.TryKillProcess(_currentProcess);
         }
 
+        private void RefreshSsimulacra2Status()
+        {
+            if (!Ssimulacra2H.Is64Bit)
+            {
+                Ssimulacra2StatusText = "";
+                return;
+            }
+
+            Ssimulacra2StatusText = Ssimulacra2H.IsSsimU2Present
+                ? Lang.Ssimulacra2ToolPresent
+                : Lang.Ssimulacra2ToolMissing;
+        }
+
         private void OnLanguageChanged()
         {
             Lang = new ImgABPvLangProviderM(UILangProviderM.Current.LanguageCode);
@@ -369,6 +399,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(Hint1Text));
             OnPropertyChanged(nameof(Hint2Text));
             OnPropertyChanged(nameof(Hint3Text));
+            RefreshSsimulacra2Status();
         }
 
         public override void Dispose()

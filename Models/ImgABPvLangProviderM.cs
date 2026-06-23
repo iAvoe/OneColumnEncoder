@@ -34,6 +34,8 @@ public class ImgABPvLangProviderM
             ["DisplayModeHdrToSdr"] = "HDR to SDR",
             ["DisplayModeHighHdrToSdr"] = "High HDR to SDR",
             ["WarnSvtAv1No12Bit"] = "libsvtav1 does not support 12-bit source preview.\nPlease use libx265 or select a different source.",
+            ["Ssimulacra2ToolMissing"] = "SSIMULACRA2 tool not found. Place x64-CloudinarySSIMULACRA2.1 next to the executable for quality metrics.",
+            ["Ssimulacra2ToolPresent"] = "SSIMULACRA2 quality metric tool is ready.",
         },
         ["zh-cn"] = new()
         {
@@ -65,6 +67,8 @@ public class ImgABPvLangProviderM
             ["DisplayModeHdrToSdr"] = "HDR 转 SDR",
             ["DisplayModeHighHdrToSdr"] = "高 HDR 转 SDR",
             ["WarnSvtAv1No12Bit"] = "libsvtav1 不支持 12bit 源预览。\n请改用 libx265 或更换视频源。",
+            ["Ssimulacra2ToolMissing"] = "未找到 SSIMULACRA2 质量指标工具。请将 x64-CloudinarySSIMULACRA2.1 文件夹放在程序目录旁。",
+            ["Ssimulacra2ToolPresent"] = "SSIMULACRA2 质量指标工具已就绪。",
         },
         ["zh-tw"] = new()
         {
@@ -96,6 +100,8 @@ public class ImgABPvLangProviderM
             ["DisplayModeHdrToSdr"] = "HDR 轉 SDR",
             ["DisplayModeHighHdrToSdr"] = "高 HDR 轉 SDR",
             ["WarnSvtAv1No12Bit"] = "libsvtav1 不支援 12bit 源預覽。\n请改用 libx265 或更換視訊源。",
+            ["Ssimulacra2ToolMissing"] = "未找到 SSIMULACRA2 品質指標工具。請將 x64-CloudinarySSIMULACRA2.1 資料夾放在程式目錄旁。",
+            ["Ssimulacra2ToolPresent"] = "SSIMULACRA2 品質指標工具已就緒。",
         },
     };
 
@@ -103,6 +109,8 @@ public class ImgABPvLangProviderM
     {
         Data["fr"] = new(Data["en"])
         {
+            ["Ssimulacra2ToolMissing"] = "Outil SSIMULACRA2 introuvable. Placez le dossier x64-CloudinarySSIMULACRA2.1 à côté de l'exécutable.",
+            ["Ssimulacra2ToolPresent"] = "L'outil de métrique SSIMULACRA2 est prêt.",
             ["EncoderLabel"] = "Encodeur",
             ["DisplayModeLabel"] = "Affichage",
             ["ZoomLabel"] = "Zoom",
@@ -255,6 +263,8 @@ public class ImgABPvLangProviderM
     public string DisplayModeHdrToSdr { get; }
     public string DisplayModeHighHdrToSdr { get; }
     public string WarnSvtAv1No12Bit { get; }
+    public string Ssimulacra2ToolMissing { get; }
+    public string Ssimulacra2ToolPresent { get; }
 
     public ImgABPvLangProviderM(string languageCode)
     {
@@ -288,5 +298,7 @@ public class ImgABPvLangProviderM
         DisplayModeHdrToSdr = _d["DisplayModeHdrToSdr"];
         DisplayModeHighHdrToSdr = _d["DisplayModeHighHdrToSdr"];
         WarnSvtAv1No12Bit = _d["WarnSvtAv1No12Bit"];
+        Ssimulacra2ToolMissing = _d["Ssimulacra2ToolMissing"];
+        Ssimulacra2ToolPresent = _d["Ssimulacra2ToolPresent"];
     }
 }

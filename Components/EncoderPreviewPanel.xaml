@@ -25,7 +25,6 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Column="0"
@@ -180,19 +179,55 @@
             </Button>
         </Grid>
 
-        <StackPanel Grid.Row="5">
-            <comps:HintPanel Text="{Binding Hint1Text}"
-                             HintBrush="{StaticResource GlobalSecondary}"
-                             FontSize="10"
-                             Margin="0 10 0 0" />
-            <comps:HintPanel Text="{Binding Hint2Text}"
-                             HintBrush="{StaticResource GlobalSecondary}"
-                             FontSize="10"
-                             Margin="0 5 0 0" />
-            <comps:HintPanel Text="{Binding Hint3Text}"
-                             HintBrush="{StaticResource GlobalSecondary}"
-                             FontSize="10"
-                             Margin="0 5 0 0" />
-        </StackPanel>
+        <Grid Grid.Row="4"
+              Margin="0 5 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel Grid.Column="0">
+                <comps:HintPanel Text="{Binding Hint1Text}"
+                                 HintBrush="{StaticResource GlobalSecondary}"
+                                 FontSize="10"
+                                 Margin="0 10 0 0" />
+                <comps:HintPanel Text="{Binding Hint2Text}"
+                                 HintBrush="{StaticResource GlobalSecondary}"
+                                 FontSize="10"
+                                 Margin="0 5 0 0" />
+                <comps:HintPanel Text="{Binding Hint3Text}"
+                                 HintBrush="{StaticResource GlobalSecondary}"
+                                 FontSize="10"
+                                 Margin="0 5 0 0" />
+            </StackPanel>
+
+            <Border Grid.Column="1"
+                    BorderThickness="1"
+                    CornerRadius="4"
+                    Padding="6 5"
+                    Margin="0 5 0 0">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Background"
+                                Value="#FFF0E0" />
+                        <Setter Property="BorderBrush"
+                                Value="#FFCC80" />
+                    </Style>
+                </Border.Style>
+                <TextBlock Text="{Binding Ssimulacra2StatusText}"
+                           FontSize="11"
+                           TextWrapping="Wrap"
+                           TextAlignment="Right"
+                           VerticalAlignment="Top"
+                           HorizontalAlignment="Right">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground"
+                                    Value="#CC6600" />
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>
