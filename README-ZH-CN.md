@@ -102,7 +102,10 @@
 
 开发这些工具并不容易。如果这套工具提高了你的效率，那么不妨赞助或推广一下。
 
-<p align="center"><img src="WireframeMockups/bmc_qr.png" alt="支持一下 -_-"><br><img src="WireframeMockups/pp_tip_qr.png" alt="支持一下 =_="><br><img src="WireframeMockups/qr_ap.png" alt="支持一下 w_w"><br><img src="WireframeMockups/qr_wx.png" alt="支持一下 @_@"></p>
+<p align="center"><img src="WireframeMockups/bmc_qr.png" alt="支持一下 -_-" width="300"><br>
+<img src="WireframeMockups/pp_tip_qr.png" alt="支持一下 =_=" width="300"><br>
+<img src="WireframeMockups/qr_ap.png" alt="支持一下 w_w" width="300"><br>
+<img src="WireframeMockups/qr_wx.png" alt="支持一下 @_@" width="300"></p>
 
 ## 项目状态
 
