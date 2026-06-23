@@ -216,14 +216,14 @@ namespace OneColumnEncoder.ViewModels
 
                 StatusText = Lang.StatusExtracting;
                 await RunFfmpegAsync(PreviewPipelineH.BuildSourceArgs(_sourceVideoPath!, PreviewPositionSeconds, rawSourcePath), token);
-                EnsureFileExists(rawSourcePath, "Source preview frame was not generated.");
+                EnsureFileExists(rawSourcePath, "!SOURCE");
 
                 if (!string.IsNullOrWhiteSpace(displayFilter))
                 {
                     StatusText = string.Format(Lang.StatusConverting, GetDisplayModeTitle(_displayMode));
                     await RunFfmpegAsync(PreviewPipelineH.BuildSourceArgs(_sourceVideoPath!, PreviewPositionSeconds, sourcePath, displayFilter), token);
                 }
-                EnsureFileExists(sourcePath, "Source preview frame was not generated.");
+                EnsureFileExists(sourcePath, "!SOURCE");
                 SourceImage = PreviewPipelineH.LoadBitmap(sourcePath);
 
                 StatusText = string.Format(Lang.StatusEncoding, PreviewPipelineH.GetEncoderTitle(encoder));
@@ -231,7 +231,7 @@ namespace OneColumnEncoder.ViewModels
 
                 StatusText = Lang.StatusDecoding;
                 await RunFfmpegAsync(PreviewPipelineH.BuildDecodeArgs(encodedPath, decodedPath), token);
-                EnsureFileExists(decodedPath, "Encoded preview frame was not generated.");
+                EnsureFileExists(decodedPath, "!ENCODE");
                 EncodedImage = PreviewPipelineH.LoadBitmap(decodedPath);
 
                 StatusText = string.Format(Lang.StatusPreviewReady, PreviewPipelineH.GetEncoderTitle(encoder), PreviewPipelineH.GetCrfValue(encoder, model));
@@ -241,8 +241,8 @@ namespace OneColumnEncoder.ViewModels
                     Ssimulacra2StatusText = Lang.Ssimulacra2ToolPresent;
                     var (score, error) = await Ssimulacra2H.RunScoreAsync(sourcePath, decodedPath);
                     Ssimulacra2StatusText = score.HasValue
-                        ? $"SSIMULACRA2: {score.Value:F2}"
-                        : $"SSIMULACRA2: {error}";
+                        ? $"SSIMULACRA2.1: {score.Value:F2}%"
+                        : $"SSIMULACRA2.1: {error}";
                 }
             }
             catch (OperationCanceledException)

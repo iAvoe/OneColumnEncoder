@@ -33,9 +33,9 @@ public class ImgABPvLangProviderM
             ["DisplayModeWcgToBt709"] = "WCG to BT.709",
             ["DisplayModeHdrToSdr"] = "HDR to SDR",
             ["DisplayModeHighHdrToSdr"] = "High HDR to SDR",
-            ["WarnSvtAv1No12Bit"] = "libsvtav1 does not support 12-bit source preview.\nPlease use libx265 or select a different source.",
-            ["Ssimulacra2ToolMissing"] = "SSIMULACRA2 tool not found. Place x64-CloudinarySSIMULACRA2.1 next to the executable for quality metrics.",
-            ["Ssimulacra2ToolPresent"] = "SSIMULACRA2 quality metric tool is ready.",
+            ["WarnSvtAv1No12Bit"] = "libsvtav1 does not support 12-bit source preview.\nPlease use libx265 or select a different source",
+            ["Ssimulacra2ToolMissing"] = "SSIMULACRA2.1 tool not found. Place x64-CloudinarySSIMULACRA2.1 next to the executable and restart",
+            ["Ssimulacra2ToolPresent"] = "SSIMULACRA2.1 quality metric is ready",
         },
         ["zh-cn"] = new()
         {
@@ -66,9 +66,9 @@ public class ImgABPvLangProviderM
             ["DisplayModeWcgToBt709"] = "WCG 转 BT.709",
             ["DisplayModeHdrToSdr"] = "HDR 转 SDR",
             ["DisplayModeHighHdrToSdr"] = "高 HDR 转 SDR",
-            ["WarnSvtAv1No12Bit"] = "libsvtav1 不支持 12bit 源预览。\n请改用 libx265 或更换视频源。",
-            ["Ssimulacra2ToolMissing"] = "未找到 SSIMULACRA2 质量指标工具。请将 x64-CloudinarySSIMULACRA2.1 文件夹放在程序目录旁。",
-            ["Ssimulacra2ToolPresent"] = "SSIMULACRA2 质量指标工具已就绪。",
+            ["WarnSvtAv1No12Bit"] = "libsvtav1 不支持 12bit 源预览。\n请改用 libx265 或更换视频源",
+            ["Ssimulacra2ToolMissing"] = "SSIMULACRA2.1 质量指标工具缺失。请将 x64-CloudinarySSIMULACRA2.1 文件夹放在程序目录旁，再重启应用",
+            ["Ssimulacra2ToolPresent"] = "SSIMULACRA2.1 质量指标工具已就绪",
         },
         ["zh-tw"] = new()
         {
@@ -99,9 +99,9 @@ public class ImgABPvLangProviderM
             ["DisplayModeWcgToBt709"] = "WCG 轉 BT.709",
             ["DisplayModeHdrToSdr"] = "HDR 轉 SDR",
             ["DisplayModeHighHdrToSdr"] = "高 HDR 轉 SDR",
-            ["WarnSvtAv1No12Bit"] = "libsvtav1 不支援 12bit 源預覽。\n请改用 libx265 或更換視訊源。",
-            ["Ssimulacra2ToolMissing"] = "未找到 SSIMULACRA2 品質指標工具。請將 x64-CloudinarySSIMULACRA2.1 資料夾放在程式目錄旁。",
-            ["Ssimulacra2ToolPresent"] = "SSIMULACRA2 品質指標工具已就緒。",
+            ["WarnSvtAv1No12Bit"] = "libsvtav1 不支援 12bit 源預覽。\n请改用 libx265 或更換視訊源",
+            ["Ssimulacra2ToolMissing"] = "SSIMULACRA2.1 質量指標工具缺失。請將 x64-CloudinarySSIMULACRA2.1 文件夾放在程序目錄旁，再重啟應用",
+            ["Ssimulacra2ToolPresent"] = "SSIMULACRA2.1 質量指標工具已就緒",
         },
     };
 
@@ -109,8 +109,6 @@ public class ImgABPvLangProviderM
     {
         Data["fr"] = new(Data["en"])
         {
-            ["Ssimulacra2ToolMissing"] = "Outil SSIMULACRA2 introuvable. Placez le dossier x64-CloudinarySSIMULACRA2.1 à côté de l'exécutable.",
-            ["Ssimulacra2ToolPresent"] = "L'outil de métrique SSIMULACRA2 est prêt.",
             ["EncoderLabel"] = "Encodeur",
             ["DisplayModeLabel"] = "Affichage",
             ["ZoomLabel"] = "Zoom",
@@ -138,6 +136,9 @@ public class ImgABPvLangProviderM
             ["DisplayModeWcgToBt709"] = "WCG → BT.709",
             ["DisplayModeHdrToSdr"] = "HDR → SDR",
             ["DisplayModeHighHdrToSdr"] = "HDR élevé → SDR",
+            ["WarnSvtAv1No12Bit"] = "libsvtav1 ne prend pas en charge la prévisualisation des sources 12 bits.\nVeuillez utiliser libx265 ou sélectionner une autre source.",
+            ["Ssimulacra2ToolMissing"] = "L'outil SSIMULACRA2.1 est introuvable. Placez le fichier x64-CloudinarySSIMULACRA2.1 à côté de l'exécutable et redémarrez.",
+            ["Ssimulacra2ToolPresent"] = "La métrique de qualité SSIMULACRA2.1 est prête",
         };
         Data["es"] = new(Data["en"])
         {
@@ -168,6 +169,9 @@ public class ImgABPvLangProviderM
             ["DisplayModeWcgToBt709"] = "WCG → BT.709",
             ["DisplayModeHdrToSdr"] = "HDR → SDR",
             ["DisplayModeHighHdrToSdr"] = "HDR alto → SDR",
+            ["WarnSvtAv1No12Bit"] = "libsvtav1 no es compatible con la vista previa de fuentes de 12 bits.\nUtilice libx265 o seleccione una fuente diferente.",
+            ["Ssimulacra2ToolMissing"] = "No se encontró la herramienta SSIMULACRA2.1. Coloque x64-CloudinarySSIMULACRA2.1 junto al ejecutable y reinicie.",
+            ["Ssimulacra2ToolPresent"] = "La métrica de calidad SSIMULACRA2.1 está lista.",
         };
         Data["ja"] = new(Data["en"])
         {
@@ -198,6 +202,9 @@ public class ImgABPvLangProviderM
             ["DisplayModeWcgToBt709"] = "WCG→BT.709",
             ["DisplayModeHdrToSdr"] = "HDR→SDR",
             ["DisplayModeHighHdrToSdr"] = "高HDR→SDR",
+            ["WarnSvtAv1No12Bit"] = "libsvtav1 は 12ビットソースのプレビューをサポートしていません。\nlibx265 を使用するか、別のソースを選択してください。",
+            ["Ssimulacra2ToolMissing"] = "SSIMULACRA2.1 ツールが見つかりません。x64-CloudinarySSIMULACRA2.1 を実行ファイルの隣に配置して再起動してください。",
+            ["Ssimulacra2ToolPresent"] = "SSIMULACRA2.1 品質メトリックの準備ができました。",
         };
         Data["ru"] = new(Data["en"])
         {
@@ -228,6 +235,9 @@ public class ImgABPvLangProviderM
             ["DisplayModeWcgToBt709"] = "WCG→BT.709",
             ["DisplayModeHdrToSdr"] = "HDR→SDR",
             ["DisplayModeHighHdrToSdr"] = "Высокий HDR→SDR",
+            ["WarnSvtAv1No12Bit"] = "libsvtav1 не поддерживает предварительный просмотр 12-битных источников.\nПожалуйста, используйте libx265 или выберите другой источник.",
+            ["Ssimulacra2ToolMissing"] = "Инструмент SSIMULACRA2.1 не найден. Поместите x64-CloudinarySSIMULACRA2.1 рядом с исполняемым файлом и перезапустите.",
+            ["Ssimulacra2ToolPresent"] = "Метрика качества SSIMULACRA2.1 готова.",
         };
     }
 
