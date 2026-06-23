@@ -201,33 +201,23 @@
                                  Margin="0 5 0 0" />
             </StackPanel>
 
-            <Border Grid.Column="1"
-                    BorderThickness="1"
-                    CornerRadius="4"
-                    Padding="6 5"
-                    Margin="0 5 0 0">
-                <Border.Style>
-                    <Style TargetType="Border">
-                        <Setter Property="Background"
-                                Value="#FFF0E0" />
-                        <Setter Property="BorderBrush"
-                                Value="#FFCC80" />
+            <TextBlock Grid.Column="1"
+                       Text="{Binding Ssimulacra2StatusText}"
+                       FontSize="12"
+                       TextWrapping="Wrap"
+                       TextAlignment="Right"
+                       VerticalAlignment="Bottom"
+                       HorizontalAlignment="Right"
+                       Margin="2.5"
+                       Background="AliceBlue"
+                       Padding="1">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Foreground"
+                                Value="#10739E" />
                     </Style>
-                </Border.Style>
-                <TextBlock Text="{Binding Ssimulacra2StatusText}"
-                           FontSize="11"
-                           TextWrapping="Wrap"
-                           TextAlignment="Right"
-                           VerticalAlignment="Top"
-                           HorizontalAlignment="Right">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Foreground"
-                                    Value="#CC6600" />
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
-            </Border>
+                </TextBlock.Style>
+            </TextBlock>
         </Grid>
     </Grid>
 </UserControl>
