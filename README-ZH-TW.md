@@ -101,7 +101,7 @@
 
 開發這些工具並不容易。如果這套工具提高了你的效率，那麼不妨贊助或推廣一下。
 
-<p align="center"><img src="WireframeMockups/bmc_qr.png" alt="支持一下 -_-"><br><img src="WireframeMockups/pp_tip_qr.png" alt="支持一下 =_="></p>
+<p align="center"><img src="WireframeMockups/bmc_qr.png" alt="支持一下 -_-"><br><img src="WireframeMockups/pp_tip_qr.png" alt="支持一下 =_="><br><img src="WireframeMockups/qr_ap.png" alt="支持一下 w_w"><br><img src="WireframeMockups/qr_wx.png" alt="支持一下 @_@"></p>
 
 ## 項目狀態
 
