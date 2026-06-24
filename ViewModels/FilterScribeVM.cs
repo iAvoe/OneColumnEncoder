@@ -142,9 +142,9 @@ namespace OneColumnEncoder.ViewModels
             var (_, _) = ResolutionScaleH.ComputeTargetDimensions(SourceWidth, SourceHeight, ScalePercent);
             OnPropertyChanged(nameof(TargetDisplay));
             OnPropertyChanged(nameof(FfmpegResizeFilter));
-            OnPropertyChanged(nameof(Ffmpeg2xFilter));
-            OnPropertyChanged(nameof(Ffmpeg3xFilter));
-            OnPropertyChanged(nameof(Ffmpeg4xFilter));
+            OnPropertyChanged(nameof(FfmpegFpsScaleFilter));
+            OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
+            OnPropertyChanged(nameof(FfmpegFullChainFilter));
             OnPropertyChanged(nameof(VapourSynthResizeFilter));
             OnPropertyChanged(nameof(AviSynthResizeFilter));
         }
@@ -200,10 +200,13 @@ namespace OneColumnEncoder.ViewModels
                 ? "-filter:v \"libplacebo=reset_sar=1\""
                 : "N/A";
 
-        // Rule of filtering: follow a fixing→customizing order; therefore order of filter is not to be noted in variable name
-        public string Ffmpeg2xFilter =>
+        public string FfmpegDenoiseFilter => UILangProviderM.Current["SrcScribe.FilterPlaceholder"];
+
+        public string FfmpegSubtitleFilter => UILangProviderM.Current["SrcScribe.FilterPlaceholder"];
+
+        public string FfmpegFpsScaleFilter =>
             HasFpsFilter && HasScaleFilter
-                ? BuildFfmpegFilterArgs(includeSwsFlags: true, includeCsp709Flags: false, SarRepairFilterChain, FpsFilterChain, ScaleFilterChain)
+                ? BuildFfmpegFilterArgs(includeSwsFlags: true, includeCsp709Flags: false, FpsFilterChain, ScaleFilterChain)
                 : "N/A";
 
         public string FfmpegLowToHighColorFilter => GetColorSpaceStrategyFilter(ColorSpaceStrategy.LowToHigh);
@@ -214,8 +217,7 @@ namespace OneColumnEncoder.ViewModels
 
         public string FfmpegHighHdrToLowSdrColorFilter => GetColorSpaceStrategyFilter(ColorSpaceStrategy.HighHdrToSdr);
 
-        // Rule of filtering: follow a fixing→customizing order; therefore order of filter is not to be noted in variable name
-        public string Ffmpeg3xFilter
+        public string FfmpegFpsColorScaleFilter
         {
             get
             {
@@ -223,12 +225,11 @@ namespace OneColumnEncoder.ViewModels
                 string? fps = FpsFilterChain;
                 string? scale = ScaleFilterChain;
                 if (color == null || fps == null || scale == null) return "N/A";
-                return BuildFfmpegFilterArgs(includeSwsFlags: scale != null, includeCsp709Flags: color != null, SarRepairFilterChain, color, fps, scale);
+                return BuildFfmpegFilterArgs(includeSwsFlags: scale != null, includeCsp709Flags: color != null, fps, color, scale);
             }
         }
 
-        // Rule of filtering: follow a fixing→customizing order; therefore order of filter is not to be noted in variable name
-        public string Ffmpeg4xFilter
+        public string FfmpegFullChainFilter
         {
             get
             {
@@ -237,7 +238,7 @@ namespace OneColumnEncoder.ViewModels
                 string? fps = FpsFilterChain;
                 string? scale = ScaleFilterChain;
                 if (sar == null || color == null || fps == null || scale == null) return "N/A";
-                return BuildFfmpegFilterArgs(includeSwsFlags: scale != null, includeCsp709Flags: color != null, sar, color, fps, scale);
+                return BuildFfmpegFilterArgs(includeSwsFlags: scale != null, includeCsp709Flags: color != null, fps, sar, color, scale);
             }
         }
 
@@ -251,7 +252,7 @@ namespace OneColumnEncoder.ViewModels
                 bool hasScale = HasScaleFilter;
                 if (!hasSar && !hasColor && !hasFps && !hasScale) return string.Empty;
                 if (hasSar && !hasColor && !hasFps && !hasScale) return BuildFfmpegFilterArgs(includeSwsFlags: false, includeCsp709Flags: false, SarRepairFilterChain);
-                return BuildFfmpegFilterArgs(hasScale, hasColor, SarRepairFilterChain, ColorSpaceFilterChain, FpsFilterChain, ScaleFilterChain);
+                return BuildFfmpegFilterArgs(hasScale, hasColor, FpsFilterChain, SarRepairFilterChain, ColorSpaceFilterChain, ScaleFilterChain);
             }
         }
 
@@ -317,9 +318,9 @@ namespace OneColumnEncoder.ViewModels
                 OnPropertyChanged(nameof(TargetHeight));
                 OnPropertyChanged(nameof(TargetDisplay));
                 OnPropertyChanged(nameof(FfmpegResizeFilter));
-                OnPropertyChanged(nameof(Ffmpeg2xFilter));
-                OnPropertyChanged(nameof(Ffmpeg3xFilter));
-                OnPropertyChanged(nameof(Ffmpeg4xFilter));
+                OnPropertyChanged(nameof(FfmpegFpsScaleFilter));
+                OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
+                OnPropertyChanged(nameof(FfmpegFullChainFilter));
                 OnPropertyChanged(nameof(VapourSynthResizeFilter));
                 OnPropertyChanged(nameof(AviSynthResizeFilter));
             }
@@ -396,6 +397,9 @@ namespace OneColumnEncoder.ViewModels
         public static string AviSynthAutoFilter => "AVS(+)";
         public static string FrameRateConvertTitle => UILangProviderM.Current["SrcScribe.FrameRateConvertTitle"];
         public static string ColorSpaceConvertTitle => UILangProviderM.Current["SrcScribe.ColorSpaceConvertTitle"];
+        public static string DenoiseTitle => UILangProviderM.Current["SrcScribe.DenoiseTitle"];
+        public static string SubtitleBurnTitle => UILangProviderM.Current["SrcScribe.SubtitleBurnTitle"];
+        public static string MultiFilterAssemblyTitle => UILangProviderM.Current["SrcScribe.MultiFilterAssemblyTitle"];
         public static string LowToHighColorFilterLabel => "NCG";
         public static string HighToLowColorFilterLabel => "WCG";
         public static string HdrToSdrColorFilterLabel => "HDR→SDR";
@@ -450,16 +454,16 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(FfmpegHighToLowColorFilter));
             OnPropertyChanged(nameof(FfmpegHdrToSdrColorFilter));
             OnPropertyChanged(nameof(FfmpegHighHdrToLowSdrColorFilter));
-            OnPropertyChanged(nameof(Ffmpeg3xFilter));
-            OnPropertyChanged(nameof(Ffmpeg4xFilter));
+            OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
+            OnPropertyChanged(nameof(FfmpegFullChainFilter));
         }
 
         public void RefreshGeneratedFfmpegFilters()
         {
             OnPropertyChanged(nameof(FfmpegSarRepairFilter));
-            OnPropertyChanged(nameof(Ffmpeg2xFilter));
-            OnPropertyChanged(nameof(Ffmpeg3xFilter));
-            OnPropertyChanged(nameof(Ffmpeg4xFilter));
+            OnPropertyChanged(nameof(FfmpegFpsScaleFilter));
+            OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
+            OnPropertyChanged(nameof(FfmpegFullChainFilter));
         }
 
         private void ParseSourceResolution(string? sourceFfprobeJson)
@@ -525,9 +529,9 @@ namespace OneColumnEncoder.ViewModels
                 OnPropertyChanged(nameof(FrameRateNum));
                 OnPropertyChanged(nameof(FrameRateDen));
                 OnPropertyChanged(nameof(FfmpegFpsFilter));
-                OnPropertyChanged(nameof(Ffmpeg2xFilter));
-                OnPropertyChanged(nameof(Ffmpeg3xFilter));
-                OnPropertyChanged(nameof(Ffmpeg4xFilter));
+                OnPropertyChanged(nameof(FfmpegFpsScaleFilter));
+                OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
+                OnPropertyChanged(nameof(FfmpegFullChainFilter));
             }
             catch { } // ignore parse errors
         }
@@ -907,13 +911,18 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(FfmpegAutoFilter));
             OnPropertyChanged(nameof(SarRepairTitle));
             OnPropertyChanged(nameof(FfmpegSarRepairFilter));
-            OnPropertyChanged(nameof(Ffmpeg2xFilter));
-            OnPropertyChanged(nameof(Ffmpeg3xFilter));
-            OnPropertyChanged(nameof(Ffmpeg4xFilter));
+            OnPropertyChanged(nameof(FfmpegDenoiseFilter));
+            OnPropertyChanged(nameof(FfmpegSubtitleFilter));
+            OnPropertyChanged(nameof(FfmpegFpsScaleFilter));
+            OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
+            OnPropertyChanged(nameof(FfmpegFullChainFilter));
             OnPropertyChanged(nameof(VapourSynthAutoFilter));
             OnPropertyChanged(nameof(AviSynthAutoFilter));
             OnPropertyChanged(nameof(FrameRateConvertTitle));
             OnPropertyChanged(nameof(ColorSpaceConvertTitle));
+            OnPropertyChanged(nameof(DenoiseTitle));
+            OnPropertyChanged(nameof(SubtitleBurnTitle));
+            OnPropertyChanged(nameof(MultiFilterAssemblyTitle));
             OnPropertyChanged(nameof(LowToHighColorFilterLabel));
             OnPropertyChanged(nameof(HighToLowColorFilterLabel));
             OnPropertyChanged(nameof(HdrToSdrColorFilterLabel));
@@ -936,6 +945,7 @@ namespace OneColumnEncoder.ViewModels
         {
             UILangProviderM.CurrentChanged -= OnLanguageChanged;
             base.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }
