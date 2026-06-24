@@ -260,8 +260,8 @@ public class UILangProviderM
             ["SrcScribe.FfmpegFreeTextHint"] = "Enter custom ffmpeg filter params (available in this session only, no line breaks)",
             ["SrcScribe.SarRepairTitle"] = "SAR Repair Filter Generator (Experimental, FFMPEG only)",
             ["SrcScribe.FrameRateConvertTitle"] = "FFMPEG VFR→CFR Parameter Generator",
-            ["SrcScribe.DenoiseTitle"] = "Denoise Filter Placeholder (FFMPEG only)",
-            ["SrcScribe.SubtitleBurnTitle"] = "Subtitle Burn-in Filter Placeholder (last resort only)",
+            ["SrcScribe.DenoiseTitle"] = "Simple 3D Denoise Filter",
+            ["SrcScribe.SubtitleBurnTitle"] = "Subtitle Burn-in Filter (damaging, avoid if possible)",
             ["SrcScribe.MultiFilterAssemblyTitle"] = "FFMPEG Multi-filter Assembly",
             ["SrcScribe.FilterPlaceholder"] = "Placeholder - filter syntax pending",
 
@@ -587,8 +587,8 @@ public class UILangProviderM
             ["SrcScribe.FfmpegFreeTextHint"] = "输入自定义 ffmpeg 滤镜参数（仅本次会话有效，不可换行）",
             ["SrcScribe.SarRepairTitle"] = "SAR 修复滤镜生成器（实验性，仅 FFMPEG）",
             ["SrcScribe.FrameRateConvertTitle"] = "FFMPEG 可变帧率→恒定帧率（VFR→CFR）参数生成器",
-            ["SrcScribe.DenoiseTitle"] = "降噪滤镜占位（仅 FFMPEG）",
-            ["SrcScribe.SubtitleBurnTitle"] = "字幕烧录滤镜占位（仅 FFMPEG）",
+            ["SrcScribe.DenoiseTitle"] = "简易 3D 降噪滤镜",
+            ["SrcScribe.SubtitleBurnTitle"] = "字幕烧录滤镜（破坏片源的下下策）",
             ["SrcScribe.MultiFilterAssemblyTitle"] = "FFMPEG 多滤镜组装器",
             ["SrcScribe.FilterPlaceholder"] = "占位 - 滤镜写法待补充",
 
@@ -913,8 +913,8 @@ public class UILangProviderM
             ["SrcScribe.FfmpegFreeTextHint"] = "輸入自訂 ffmpeg 濾鏡參數（僅本次會話有效，不可換行）",
             ["SrcScribe.SarRepairTitle"] = "SAR 修復濾鏡生成器（實驗性，僅 FFMPEG）",
             ["SrcScribe.FrameRateConvertTitle"] = "FFMPEG 可變幀率→恆定幀率參數生成器",
-            ["SrcScribe.DenoiseTitle"] = "降噪濾鏡佔位（僅 FFMPEG）",
-            ["SrcScribe.SubtitleBurnTitle"] = "字幕燒錄濾鏡佔位（僅 FFMPEG）",
+            ["SrcScribe.DenoiseTitle"] = "簡易 3D 降噪濾鏡",
+            ["SrcScribe.SubtitleBurnTitle"] = "字幕燒錄濾鏡佔位（破壞片源的下下策）",
             ["SrcScribe.MultiFilterAssemblyTitle"] = "FFMPEG 多濾鏡組裝器",
             ["SrcScribe.FilterPlaceholder"] = "佔位 - 濾鏡寫法待補充",
 

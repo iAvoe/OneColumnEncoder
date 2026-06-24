@@ -1,24 +1,24 @@
 ﻿<helpers:AdaptiveWindow x:Class="OneColumnEncoder.Views.FilterScribeModal"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:local="clr-namespace:OneColumnEncoder.Views"
-        xmlns:comps="clr-namespace:OneColumnEncoder.Components"
-        xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
-        xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
-        d:DataContext="{d:DesignInstance Type=vms:FilterScribeVM}"
-        mc:Ignorable="d"
-        Title="{Binding WindowTitle}"
-        Width="740"
-        Height="1020"
-        WindowStartupLocation="CenterOwner"
-        Background="{StaticResource Background}">
+                        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                        xmlns:local="clr-namespace:OneColumnEncoder.Views"
+                        xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+                        xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
+                        xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
+                        d:DataContext="{d:DesignInstance Type=vms:FilterScribeVM}"
+                        mc:Ignorable="d"
+                        Title="{Binding WindowTitle}"
+                        Width="740"
+                        Height="1100"
+                        WindowStartupLocation="CenterOwner"
+                        Background="{StaticResource Background}">
     <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -174,7 +174,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*"
-                                       MinHeight="180"/>
+                                       MinHeight="180" />
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0"
                                Text="{Binding FfmpegFreeTextHint}"
@@ -182,23 +182,23 @@
                                Foreground="{StaticResource GlobalSecondary}"
                                TextWrapping="Wrap"
                                Margin="5 0 0 10"
-                               FontWeight="Normal"/>
-                     <TextBox Grid.Row="1"
-                              Text="{Binding FfmpegFreeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              BorderThickness="0"
-                              Background="{StaticResource ScriptAccentFfmpegBackground}"
-                              Foreground="{StaticResource ScriptAccentFfmpegForeground}"
-                              TextWrapping="Wrap"
-                              AcceptsReturn="False"
-                              Padding="2 2.5"
-                              FontSize="13"
-                              FontFamily="Consolas"
-                              HorizontalScrollBarVisibility="Auto"
-                              VerticalScrollBarVisibility="Disabled"
-                              PreviewKeyDown="FfmpegFreeText_PreviewKeyDown"
-                              DataObject.Pasting="FfmpegFreeText_Pasting"
-                              PreviewMouseWheel="UserInput_PreviewMouseWheel"
-                              FontWeight="Normal" />
+                               FontWeight="Normal" />
+                    <TextBox Grid.Row="1"
+                             Text="{Binding FfmpegFreeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             BorderThickness="0"
+                             Background="{StaticResource ScriptAccentFfmpegBackground}"
+                             Foreground="{StaticResource ScriptAccentFfmpegForeground}"
+                             TextWrapping="Wrap"
+                             AcceptsReturn="False"
+                             Padding="2 2.5"
+                             FontSize="13"
+                             FontFamily="Consolas"
+                             HorizontalScrollBarVisibility="Auto"
+                             VerticalScrollBarVisibility="Disabled"
+                             PreviewKeyDown="FfmpegFreeText_PreviewKeyDown"
+                             DataObject.Pasting="FfmpegFreeText_Pasting"
+                             PreviewMouseWheel="UserInput_PreviewMouseWheel"
+                             FontWeight="Normal" />
                 </Grid>
             </TabItem>
         </TabControl>
@@ -213,7 +213,7 @@
                                 Button1IsEnabled="{Binding B3_1IsEnabled}"
                                 Button2IsEnabled="{Binding B3_2IsEnabled}"
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
-        
+
         <StackPanel Grid.Row="4"
                     Margin="0 15 0 0">
             <StackPanel Margin="0 5 0 0">
@@ -273,87 +273,87 @@
                            Style="{StaticResource H3}"
                            Margin="0 15 0 0" />
                 <StackPanel Margin="0 5 0 0">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="62" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding LowToHighColorFilterLabel}"
-                               FontSize="11"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1"
-                             Text="{Binding FfmpegLowToHighColorFilter, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             FontSize="11"
-                             FontFamily="Segoe UI"
-                             VerticalScrollBarVisibility="Disabled" />
-                </Grid>
-                <Grid Margin="0 3 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="62" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding HighToLowColorFilterLabel}"
-                               FontSize="11"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1"
-                             Text="{Binding FfmpegHighToLowColorFilter, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             FontSize="11"
-                             FontFamily="Segoe UI"
-                             VerticalScrollBarVisibility="Disabled" />
-                </Grid>
-                <Grid Margin="0 3 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="62" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding HdrToSdrColorFilterLabel}"
-                               FontSize="11"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1"
-                             Text="{Binding FfmpegHdrToSdrColorFilter, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             FontSize="11"
-                             FontFamily="Segoe UI"
-                             VerticalScrollBarVisibility="Disabled" />
-                </Grid>
-                <Grid Margin="0 3 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="62" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding HighHdrToLowSdrColorFilterLabel}"
-                               FontSize="11"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1"
-                             Text="{Binding FfmpegHighHdrToLowSdrColorFilter, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             FontSize="11"
-                             FontFamily="Segoe UI"
-                             VerticalScrollBarVisibility="Disabled" />
-                </Grid>
-            </StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="62" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding LowToHighColorFilterLabel}"
+                                   FontSize="11"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding FfmpegLowToHighColorFilter, Mode=OneWay}"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 FontSize="11"
+                                 FontFamily="Segoe UI"
+                                 VerticalScrollBarVisibility="Disabled" />
+                    </Grid>
+                    <Grid Margin="0 3 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="62" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding HighToLowColorFilterLabel}"
+                                   FontSize="11"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding FfmpegHighToLowColorFilter, Mode=OneWay}"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 FontSize="11"
+                                 FontFamily="Segoe UI"
+                                 VerticalScrollBarVisibility="Disabled" />
+                    </Grid>
+                    <Grid Margin="0 3 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="62" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding HdrToSdrColorFilterLabel}"
+                                   FontSize="11"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding FfmpegHdrToSdrColorFilter, Mode=OneWay}"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 FontSize="11"
+                                 FontFamily="Segoe UI"
+                                 VerticalScrollBarVisibility="Disabled" />
+                    </Grid>
+                    <Grid Margin="0 3 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="62" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding HighHdrToLowSdrColorFilterLabel}"
+                                   FontSize="11"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding FfmpegHighHdrToLowSdrColorFilter, Mode=OneWay}"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 FontSize="11"
+                                 FontFamily="Segoe UI"
+                                 VerticalScrollBarVisibility="Disabled" />
+                    </Grid>
+                </StackPanel>
             </StackPanel>
 
             <comps:HintPanel Margin="0 5 0 0"
@@ -383,6 +383,46 @@
                              FontFamily="Segoe UI"
                              VerticalScrollBarVisibility="Disabled" />
                 </Grid>
+                <Grid Margin="0 5 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="49" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding VapourSynthText}"
+                               FontSize="11"
+                               Foreground="{StaticResource GlobalSecondary}"
+                               VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1"
+                             Text="{Binding VapourSynthHqdn3dDenoiseFilter, Mode=OneWay}"
+                             IsReadOnly="True"
+                             BorderThickness="0"
+                             Background="{StaticResource Background}"
+                             Foreground="{StaticResource ButtonTertiary}"
+                             FontSize="11"
+                             FontFamily="Segoe UI"
+                             VerticalScrollBarVisibility="Disabled" />
+                </Grid>
+                <Grid Margin="0 5 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="49" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding AviSynthText}"
+                               FontSize="11"
+                               Foreground="{StaticResource GlobalSecondary}"
+                               VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1"
+                             Text="{Binding AviSynthHqdn3dDenoiseFilter, Mode=OneWay}"
+                             IsReadOnly="True"
+                             BorderThickness="0"
+                             Background="{StaticResource Background}"
+                             Foreground="{StaticResource ButtonTertiary}"
+                             FontSize="11"
+                             FontFamily="Segoe UI"
+                             VerticalScrollBarVisibility="Disabled" />
+                </Grid>
             </StackPanel>
 
             <StackPanel>
@@ -404,7 +444,7 @@
                                          Value="{Binding ScalePercent}"
                                          TickLabels="{Binding ScaleTickLabels}"
                                          TickCount="5"
-                                         Step="1" >
+                                         Step="1">
                         <comps:IntegerSlider.Style>
                             <Style TargetType="comps:IntegerSlider">
                                 <Setter Property="Visibility"
@@ -554,6 +594,46 @@
                              FontFamily="Segoe UI"
                              VerticalScrollBarVisibility="Disabled" />
                 </Grid>
+                <Grid Margin="0 5 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="49" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding VapourSynthText}"
+                               FontSize="11"
+                               Foreground="{StaticResource GlobalSecondary}"
+                               VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1"
+                             Text="{Binding VapourSynthSubtitleFilter, Mode=OneWay}"
+                             IsReadOnly="True"
+                             BorderThickness="0"
+                             Background="{StaticResource Background}"
+                             Foreground="{StaticResource ButtonTertiary}"
+                             FontSize="11"
+                             FontFamily="Segoe UI"
+                             VerticalScrollBarVisibility="Disabled" />
+                </Grid>
+                <Grid Margin="0 5 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="49" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding AviSynthText}"
+                               FontSize="11"
+                               Foreground="{StaticResource GlobalSecondary}"
+                               VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1"
+                             Text="{Binding AviSynthSubtitleFilter, Mode=OneWay}"
+                             IsReadOnly="True"
+                             BorderThickness="0"
+                             Background="{StaticResource Background}"
+                             Foreground="{StaticResource ButtonTertiary}"
+                             FontSize="11"
+                             FontFamily="Segoe UI"
+                             VerticalScrollBarVisibility="Disabled" />
+                </Grid>
             </StackPanel>
 
             <StackPanel>
@@ -633,7 +713,7 @@
                                 Button1IsEnabled="{Binding B3_1IsEnabled}"
                                 Button2IsEnabled="{Binding B3_2IsEnabled}"
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
-        
+
         <comps:HintPanel Grid.Row="6"
                          Margin="0 5 0 5"
                          Text="{Binding NoteText}" />
