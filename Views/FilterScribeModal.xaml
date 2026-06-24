@@ -216,11 +216,10 @@
         
         <StackPanel Grid.Row="4"
                     Margin="0 15 0 0">
-            <TextBlock Text="{Binding FrameRateConvertTitle}"
-                       Style="{StaticResource H3}"
-                       Margin="0 0 0 0" />
-
             <StackPanel Margin="0 5 0 0">
+                <TextBlock Text="{Binding FrameRateConvertTitle}"
+                           Style="{StaticResource H3}"
+                           Margin="0 0 0 0" />
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="49" />
@@ -269,11 +268,11 @@
                 </Grid>
             </StackPanel>
 
-            <TextBlock Text="{Binding ColorSpaceConvertTitle}"
-                       Style="{StaticResource H3}"
-                       Margin="0 15 0 0" />
-
-            <StackPanel Margin="0 5 0 0">
+            <StackPanel>
+                <TextBlock Text="{Binding ColorSpaceConvertTitle}"
+                           Style="{StaticResource H3}"
+                           Margin="0 15 0 0" />
+                <StackPanel Margin="0 5 0 0">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="62" />
@@ -355,6 +354,7 @@
                              VerticalScrollBarVisibility="Disabled" />
                 </Grid>
             </StackPanel>
+            </StackPanel>
 
             <comps:HintPanel Margin="0 5 0 0"
                              Text="{Binding ColorSpacePeakNitsHint}" />
@@ -385,147 +385,149 @@
                 </Grid>
             </StackPanel>
 
-            <TextBlock Text="{Binding ResolutionScaleTitle}"
-                       Style="{StaticResource H3}"
-                       Margin="0 15 0 0" />
-
-            <Grid Margin="0 2.5 0 0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto"
-                                      MinWidth="60" />
-                </Grid.ColumnDefinitions>
-
-                <comps:IntegerSlider Grid.Column="0"
-                                     Label="{Binding ScalePercentLabel}"
-                                     Minimum="10"
-                                     Maximum="100"
-                                     Value="{Binding ScalePercent}"
-                                     TickLabels="{Binding ScaleTickLabels}"
-                                     TickCount="5"
-                                     Step="1" >
-                    <comps:IntegerSlider.Style>
-                        <Style TargetType="comps:IntegerSlider">
-                            <Setter Property="Visibility"
-                                    Value="Visible" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsScaleApplicable}"
-                                             Value="False">
-                                    <Setter Property="Visibility"
-                                            Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </comps:IntegerSlider.Style>
-                </comps:IntegerSlider>
-
-                <TextBlock Grid.Column="0"
-                           Text="{Binding ScaleNotApplicableText}"
-                           FontSize="12"
-                           Margin="0 0 0 5"
-                           Foreground="{StaticResource ButtonTertiary}"
-                           VerticalAlignment="Center"
-                           TextWrapping="Wrap">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Visibility"
-                                    Value="Collapsed" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsScaleApplicable}"
-                                             Value="False">
-                                    <Setter Property="Visibility"
-                                            Value="Visible" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
-
-                <Border Grid.Column="1"
-                        VerticalAlignment="Center"
-                        BorderThickness="0"
-                        Margin="5 0 0 0">
-                    <Border.Style>
-                        <Style TargetType="Border">
-                            <Setter Property="Visibility"
-                                    Value="Visible" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsScaleApplicable}"
-                                             Value="False">
-                                    <Setter Property="Visibility"
-                                            Value="Collapsed" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Border.Style>
-                    <TextBlock Text="{Binding TargetDisplay}"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               FontSize="11"
-                               HorizontalAlignment="Center" />
-                </Border>
-            </Grid>
-
             <StackPanel>
-                <Grid>
+                <TextBlock Text="{Binding ResolutionScaleTitle}"
+                           Style="{StaticResource H3}"
+                           Margin="0 15 0 0" />
+
+                <Grid Margin="0 2.5 0 0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="49" />
                         <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto"
+                                          MinWidth="60" />
                     </Grid.ColumnDefinitions>
+
+                    <comps:IntegerSlider Grid.Column="0"
+                                         Label="{Binding ScalePercentLabel}"
+                                         Minimum="10"
+                                         Maximum="100"
+                                         Value="{Binding ScalePercent}"
+                                         TickLabels="{Binding ScaleTickLabels}"
+                                         TickCount="5"
+                                         Step="1" >
+                        <comps:IntegerSlider.Style>
+                            <Style TargetType="comps:IntegerSlider">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsScaleApplicable}"
+                                                 Value="False">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </comps:IntegerSlider.Style>
+                    </comps:IntegerSlider>
+
                     <TextBlock Grid.Column="0"
-                               Text="{Binding FfmpegText}"
-                               FontSize="11"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1"
-                             Text="{Binding FfmpegResizeFilter, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             FontSize="11"
-                             FontFamily="Segoe UI"
-                             VerticalScrollBarVisibility="Disabled" />
+                               Text="{Binding ScaleNotApplicableText}"
+                               FontSize="12"
+                               Margin="0 0 0 5"
+                               Foreground="{StaticResource ButtonTertiary}"
+                               VerticalAlignment="Center"
+                               TextWrapping="Wrap">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsScaleApplicable}"
+                                                 Value="False">
+                                        <Setter Property="Visibility"
+                                                Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+
+                    <Border Grid.Column="1"
+                            VerticalAlignment="Center"
+                            BorderThickness="0"
+                            Margin="5 0 0 0">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsScaleApplicable}"
+                                                 Value="False">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <TextBlock Text="{Binding TargetDisplay}"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   FontSize="11"
+                                   HorizontalAlignment="Center" />
+                    </Border>
                 </Grid>
-                <Grid Margin="0 5 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="49" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding VapourSynthText}"
-                               FontSize="11"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1"
-                             Text="{Binding VapourSynthResizeFilter, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             FontSize="11"
-                             FontFamily="Segoe UI"
-                             VerticalScrollBarVisibility="Disabled" />
-                </Grid>
-                <Grid Margin="0 5 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="49" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding AviSynthText}"
-                               FontSize="11"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1"
-                             Text="{Binding AviSynthResizeFilter, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             FontSize="11"
-                             FontFamily="Segoe UI"
-                             VerticalScrollBarVisibility="Disabled" />
-                </Grid>
+
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="49" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding FfmpegText}"
+                                   FontSize="11"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding FfmpegResizeFilter, Mode=OneWay}"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 FontSize="11"
+                                 FontFamily="Segoe UI"
+                                 VerticalScrollBarVisibility="Disabled" />
+                    </Grid>
+                    <Grid Margin="0 5 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="49" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding VapourSynthText}"
+                                   FontSize="11"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding VapourSynthResizeFilter, Mode=OneWay}"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 FontSize="11"
+                                 FontFamily="Segoe UI"
+                                 VerticalScrollBarVisibility="Disabled" />
+                    </Grid>
+                    <Grid Margin="0 5 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="49" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding AviSynthText}"
+                                   FontSize="11"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding AviSynthResizeFilter, Mode=OneWay}"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 FontSize="11"
+                                 FontFamily="Segoe UI"
+                                 VerticalScrollBarVisibility="Disabled" />
+                    </Grid>
+                </StackPanel>
             </StackPanel>
 
             <StackPanel>
