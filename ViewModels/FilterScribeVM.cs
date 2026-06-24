@@ -414,6 +414,7 @@ namespace OneColumnEncoder.ViewModels
         public static string HdrToSdrColorFilterLabel => "HDR→SDR";
         public static string HighHdrToLowSdrColorFilterLabel => "H&W→SDR";
         public static string ColorSpacePeakNitsHint => UILangProviderM.Current["SrcScribe.ColorSpacePeakNitsHint"];
+        public static string VSInstallHqdn3dHint => UILangProviderM.Current["SrcScribe.VSInstallHqdn3dHint"];
         #endregion
 
         public ButtonGroupVM ScriptExportButtons { get; private set; } = null!;
@@ -937,6 +938,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(HdrToSdrColorFilterLabel));
             OnPropertyChanged(nameof(HighHdrToLowSdrColorFilterLabel));
             OnPropertyChanged(nameof(ColorSpacePeakNitsHint));
+            OnPropertyChanged(nameof(VSInstallHqdn3dHint));
             OnPropertyChanged(nameof(FfmpegLowToHighColorFilter));
             OnPropertyChanged(nameof(FfmpegHighToLowColorFilter));
             OnPropertyChanged(nameof(FfmpegHdrToSdrColorFilter));

@@ -10,8 +10,8 @@
                         d:DataContext="{d:DesignInstance Type=vms:FilterScribeVM}"
                         mc:Ignorable="d"
                         Title="{Binding WindowTitle}"
-                        Width="740"
-                        Height="1100"
+                        Width="760"
+                        Height="1120"
                         WindowStartupLocation="CenterOwner"
                         Background="{StaticResource Background}">
     <Grid Margin="15">
@@ -424,6 +424,9 @@
                              VerticalScrollBarVisibility="Disabled" />
                 </Grid>
             </StackPanel>
+
+            <comps:HintPanel Margin="0 5 0 0"
+                             Text="{Binding VSInstallHqdn3dHint}" />
 
             <StackPanel>
                 <TextBlock Text="{Binding ResolutionScaleTitle}"

@@ -228,7 +228,7 @@ public class UILangProviderM
             ["AppConf.Validation.InvalidNumericInputTitle"] = "Invalid Input",
 
             // FilterScribeModal
-            ["SrcScribe.Description1"] = "Automatically builds a decoder-to-Y4M pipe script based on imported video path. You may paste additional filters here, or copy the In/Out section to your desired script.",
+            ["SrcScribe.Description1"] = "Auto-builds a decoder-to-Y4M pipe script based on imported video. You may paste more filters in or copy them out",
             ["SrcScribe.Description2"] = "If buttons are locked, return to the main UI and import a video file first.",
             ["SrcScribe.NoVidSrcWarning"] = "Lack of video source analysis, cannot show",
             ["SrcScribe.NoteText"] = "Note: Resize window to resize textbox; Right click on command to copy",
@@ -267,6 +267,7 @@ public class UILangProviderM
 
             ["SrcScribe.ColorSpaceConvertTitle"] = "Convert colorspace to Bt.709 (Experimental, FFMPEG only)",
             ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> requires manual input; please check filename/metadata for it",
+            ["SrcScribe.VSInstallHqdn3dHint"] = "Get this filter for VapourSynth: In CMD, run `where vsrepo`, then run `python \"<last command output>\" install hqdn3d`",
 
             ["SrcScribe.ColorSpace.DefaultNullValue"] = "not specified",
             ["SrcScribe.ColorSpace.DescribeColorMeta"] = "primaries={0} transfer={1} matrix={2} chroma_location={3} pixel_format={4}",
@@ -555,7 +556,7 @@ public class UILangProviderM
 
             ["Setting.Language.Select"] = "选择语言",
 
-            ["SrcScribe.Description1"] = "自动根据已导入的视频构建「调用解码器生成 Y4M 流并导出」的脚本，可以将需要的滤镜粘贴进来，也可以将解码输出段落复制给其它的待命脚本。",
+            ["SrcScribe.Description1"] = "自动根据已导入的视频构建「调用解码器生成 Y4M 流并导出」的脚本，可将需要的滤镜粘贴进来或拷出去",
             ["SrcScribe.Description2"] = "若按钮锁定，则先回到主界面完成视频文件导入操作。",
             ["SrcScribe.NoVidSrcWarning"] = "未导入或未运行视频源分析，无法显示",
             ["SrcScribe.NoteText"] = "注：拖拽窗口边缘以缩放文本框；右键点击命令以复制",
@@ -594,6 +595,7 @@ public class UILangProviderM
 
             ["SrcScribe.ColorSpaceConvertTitle"] = "转换色彩空间到 Bt.709（实验性，仅 FFMPEG）",
             ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> 需手动填写；请检查文件名/元数据",
+            ["SrcScribe.VSInstallHqdn3dHint"] = "安装该滤镜到 VapourSynth：CMD 运行 `where vsrepo`，再运行 `python \"<先前命令输出>\" install hqdn3d`",
 
             ["SrcScribe.ColorSpace.DefaultNullValue"] = "未指定",
             ["SrcScribe.ColorSpace.DescribeColorMeta"] = "原色={0} 传输={1} 矩阵={2} 色度位置={3} 像素格式={4}",
@@ -881,7 +883,7 @@ public class UILangProviderM
 
             ["Setting.Language.Select"] = "選擇語言",
 
-            ["SrcScribe.Description1"] = "自動根據已導入的影片構建「調用解碼器生成 Y4M 流並導出」的腳本，可以將需要的濾鏡粘貼進來，也可以將解碼輸出段落複製給其它的待命腳本。",
+            ["SrcScribe.Description1"] = "自動根據已導入的影片構建「調用解碼器生成 Y4M 流並導出」的腳本，可將需要的濾鏡黏貼進來或拷出去",
             ["SrcScribe.Description2"] = "若按鈕鎖定，則先回到主界面完成影片文件導入操作。",
             ["SrcScribe.NoVidSrcWarning"] = "未導入或未運行影片源分析，無法顯示",
             ["SrcScribe.NoteText"] = "註：拖拽窗口邊緣以縮放文本框；右鍵點擊命令以複製",
@@ -920,6 +922,7 @@ public class UILangProviderM
 
             ["SrcScribe.ColorSpaceConvertTitle"] = "轉換色彩空間到 Bt.709（實驗性，僅 FFMPEG）",
             ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> 需手動填寫；請檢查檔案名/元數據",
+            ["SrcScribe.VSInstallHqdn3dHint"] = "安裝該濾鏡到 VapourSynth：CMD 運行 `where vsrepo`，再運行 `python \"<先前命令輸出>\" install hqdn3d`",
 
             ["SrcScribe.ColorSpace.DefaultNullValue"] = "未指定",
             ["SrcScribe.ColorSpace.DescribeColorMeta"] = "原色={0} 傳輸={1} 矩陣={2} 色度位置={3} 像素格式={4}",
@@ -1182,7 +1185,7 @@ public class UILangProviderM
         ["AppConf.Validation.Max"] = "{0} doit être <= {1}.",
         ["AppConf.Validation.InvalidNumericInput"] = "Seuls les chiffres sont autorisés.",
         ["AppConf.Validation.InvalidNumericInputTitle"] = "Entrée invalide",
-        ["SrcScribe.Description1"] = "Construit un script pipe décodeur→Y4M depuis la vidéo importée. Ajoutez des filtres ou copiez la section In/Out.",
+        ["SrcScribe.Description1"] = "Construit automatiquement un script pipe décodeur→Y4M basé sur la vidéo importée. Vous pouvez y coller d'autres filtres ou le copier ailleurs.",
         ["SrcScribe.Description2"] = "Si les boutons sont verrouillés, importez d'abord une vidéo dans l'UI principale.",
         ["SrcScribe.NoVidSrcWarning"] = "Analyse source absente, affichage impossible",
         ["SrcScribe.NoteText"] = "Note : redimensionnez la fenêtre; clic droit sur commande pour copier",
@@ -1282,6 +1285,7 @@ public class UILangProviderM
         ["SrcScribe.TabFfmpeg"] = "Filtre ffmpeg",
         ["SrcScribe.ColorSpaceConvertTitle"] = "Convertir l'espace colorimétrique en Bt.709 (expérimental, FFMPEG uniquement)",
         ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> nécessite une saisie manuelle; vérifiez le nom du fichier/les métadonnées",
+        ["SrcScribe.VSInstallHqdn3dHint"] = "Obtenez ce filtre pour VapourSynth : Dans CMD, exécutez `where vsrepo`, puis `python \"<sortie de la commande précédente>\" install hqdn3d`",
         ["SrcScribe.ColorSpace.DefaultNullValue"] = "non spécifié",
         ["SrcScribe.ColorSpace.DescribeColorMeta"] = "primaires={0} transfert={1} matrice={2} chroma_location={3} pixel_format={4}",
         ["SrcScribe.ColorSpace.DisplayNativeBt709"] = "N/A - Déjà bt709",
@@ -1530,7 +1534,7 @@ public class UILangProviderM
         ["AppConf.Validation.Max"] = "{0} debe ser <= {1}.",
         ["AppConf.Validation.InvalidNumericInput"] = "Solo se permiten valores numéricos.",
         ["AppConf.Validation.InvalidNumericInputTitle"] = "Entrada no válida",
-        ["SrcScribe.Description1"] = "Crea automáticamente un script de tubería decodificador→Y4M a partir de la ruta del vídeo importado. Puede pegar filtros adicionales aquí o copiar la sección de entrada/salida al script que desee.",
+        ["SrcScribe.Description1"] = "Crea automáticamente un script de tubería decodificador→Y4M basado en el vídeo importado. Puede pegar más filtros en él o copiarlo fuera.",
         ["SrcScribe.Description2"] = "Si los botones están bloqueados, vuelva a la interfaz principal e importe primero un archivo de vídeo.",
         ["SrcScribe.NoVidSrcWarning"] = "Falta el análisis del vídeo fuente; no se puede mostrar",
         ["SrcScribe.NoteText"] = "Nota: redimensione la ventana para redimensionar el cuadro de texto; clic derecho en el comando para copiar",
@@ -1564,6 +1568,7 @@ public class UILangProviderM
         ["ScriptGen.ScriptsSaved"] = "Scripts guardados:\n{0}",
         ["SrcScribe.ColorSpaceConvertTitle"] = "Convertir espacio de color a Bt.709 (experimental, solo FFMPEG)",
         ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> requiere entrada manual; compruebe el nombre del archivo/los metadatos",
+        ["SrcScribe.VSInstallHqdn3dHint"] = "Obtenga este filtro para VapourSynth: En CMD, ejecute `where vsrepo`, luego `python \"<salida del comando anterior>\" install hqdn3d`",
         ["SrcScribe.ColorSpace.DefaultNullValue"] = "no especificado",
         ["SrcScribe.ColorSpace.DescribeColorMeta"] = "primarios={0} transferencia={1} matriz={2} chroma_location={3} pixel_format={4}",
         ["SrcScribe.ColorSpace.DisplayNativeBt709"] = "N/A - Ya es bt709",
@@ -1812,7 +1817,7 @@ public class UILangProviderM
         ["AppConf.Validation.Max"] = "{0} は {1} 以下である必要があります。",
         ["AppConf.Validation.InvalidNumericInput"] = "数値のみ入力できます。",
         ["AppConf.Validation.InvalidNumericInputTitle"] = "無効な入力",
-        ["SrcScribe.Description1"] = "インポート済み動画のパスに基づいて、デコーダーから Y4M へのパイプスクリプトを自動生成します。ここに追加フィルタを貼り付けるか、入出力セクションを目的のスクリプトへコピーできます。",
+        ["SrcScribe.Description1"] = "インポート済み動画に基づいて、デコーダーから Y4M へのパイプスクリプトを自動生成します。フィルタを追加で貼り付けるか、スクリプトを外部にコピーできます。",
         ["SrcScribe.Description2"] = "ボタンがロックされている場合は、メイン UI に戻って先に動画ファイルをインポートしてください。",
         ["SrcScribe.NoVidSrcWarning"] = "ソース動画解析がないため表示できません",
         ["SrcScribe.NoteText"] = "注: ウィンドウサイズ変更でテキストボックスも変更できます。コマンドは右クリックでコピーできます",
@@ -1846,6 +1851,7 @@ public class UILangProviderM
         ["ScriptGen.ScriptsSaved"] = "スクリプトを保存しました：\n{0}",
         ["SrcScribe.ColorSpaceConvertTitle"] = "色空間を Bt.709 に変換（実験的、FFMPEG のみ）",
         ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> は手動入力が必要です。ファイル名/メタデータを確認してください",
+        ["SrcScribe.VSInstallHqdn3dHint"] = "VapourSynth 用にこのフィルタを入手する：CMD で `where vsrepo` を実行し、次に `python \"<前のコマンド出力>\" install hqdn3d` を実行してください",
         ["SrcScribe.ColorSpace.DefaultNullValue"] = "未指定",
         ["SrcScribe.ColorSpace.DescribeColorMeta"] = "原色={0} 転送={1} 行列={2} クロマ位置={3} ピクセル形式={4}",
         ["SrcScribe.ColorSpace.DisplayNativeBt709"] = "N/A - 既に bt709",
@@ -2094,7 +2100,7 @@ public class UILangProviderM
         ["AppConf.Validation.Max"] = "{0} должно быть <= {1}.",
         ["AppConf.Validation.InvalidNumericInput"] = "Разрешены только числовые значения.",
         ["AppConf.Validation.InvalidNumericInputTitle"] = "Недопустимый ввод",
-        ["SrcScribe.Description1"] = "Автоматически создаёт скрипт конвейера декодер→Y4M на основе пути импортированного видео. Здесь можно вставить дополнительные фильтры или скопировать секцию ввода/вывода в нужный скрипт.",
+        ["SrcScribe.Description1"] = "Автоматически создаёт скрипт конвейера декодер→Y4M на основе импортированного видео. Вы можете вставить в него дополнительные фильтры или скопировать его наружу.",
         ["SrcScribe.Description2"] = "Если кнопки заблокированы, вернитесь в основной интерфейс и сначала импортируйте видеофайл.",
         ["SrcScribe.NoVidSrcWarning"] = "Нет анализа видеоисточника; отображение невозможно",
         ["SrcScribe.NoteText"] = "Примечание: измените размер окна, чтобы изменить размер текстового поля; щёлкните команду правой кнопкой, чтобы скопировать",
@@ -2128,6 +2134,7 @@ public class UILangProviderM
         ["ScriptGen.ScriptsSaved"] = "Скрипты сохранены:\n{0}",
         ["SrcScribe.ColorSpaceConvertTitle"] = "Преобразование цветового пространства в Bt.709 (экспериментально, только FFMPEG)",
         ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> требует ручного ввода; проверьте имя файла/метаданные",
+        ["SrcScribe.VSInstallHqdn3dHint"] = "Получите этот фильтр для VapourSynth: В CMD выполните `where vsrepo`, затем `python \"<вывод предыдущей команды>\" install hqdn3d`",
         ["SrcScribe.ColorSpace.DefaultNullValue"] = "не указано",
         ["SrcScribe.ColorSpace.DescribeColorMeta"] = "основные цвета={0} передача={1} матрица={2} chroma_location={3} pixel_format={4}",
         ["SrcScribe.ColorSpace.DisplayNativeBt709"] = "Н/Д - уже bt709",
