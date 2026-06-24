@@ -200,9 +200,18 @@ namespace OneColumnEncoder.ViewModels
                 ? "-filter:v \"libplacebo=reset_sar=1\""
                 : "N/A";
 
-        public string FfmpegDenoiseFilter => UILangProviderM.Current["SrcScribe.FilterPlaceholder"];
-
-        public string FfmpegSubtitleFilter => UILangProviderM.Current["SrcScribe.FilterPlaceholder"];
+        public static string VapourSynthHqdn3dDenoiseFilter =>
+            UILangProviderM.Current["SrcScribe.FilterPlaceholder"];
+        public static string AviSynthHqdn3dDenoiseFilter =>
+            UILangProviderM.Current["SrcScribe.FilterPlaceholder"];
+        public static string FfmpegHqdn3dDenoiseFilter =>
+            UILangProviderM.Current["SrcScribe.FilterPlaceholder"];
+        public static string VapourSynthSubtitleFilter =>
+            UILangProviderM.Current["SrcScribe.FilterPlaceholder"];
+        public static string AviSynthSubtitleFilter =>
+            UILangProviderM.Current["SrcScribe.FilterPlaceholder"];
+        public static string FfmpegSubtitleFilter =>
+            UILangProviderM.Current["SrcScribe.FilterPlaceholder"];
 
         public string FfmpegFpsScaleFilter =>
             HasFpsFilter && HasScaleFilter
@@ -381,6 +390,9 @@ namespace OneColumnEncoder.ViewModels
         #endregion
 
         #region UILang properties
+        public static string FfmpegText => "ffmpeg";
+        public static string VapourSynthText => "VS";
+        public static string AviSynthText => "AVS(+)";
         public static string WindowTitle => UILangProviderM.FltScribeWindowTitle;
         public static string ScribeDescription1 => UILangProviderM.Current["SrcScribe.Description1"];
         public static string ScribeDescription2 => UILangProviderM.Current["SrcScribe.Description2"];
@@ -391,10 +403,7 @@ namespace OneColumnEncoder.ViewModels
         public static string ResolutionScaleTitle => UILangProviderM.Current["SrcScribe.ResolutionScaleTitle"];
         public static string ScalePercentLabel => UILangProviderM.Current["SrcScribe.ScalePercentLabel"];
         public static string FfmpegFreeTextHint => UILangProviderM.Current["SrcScribe.FfmpegFreeTextHint"];
-        public static string FfmpegAutoFilter => "ffmpeg";
         public static string SarRepairTitle => UILangProviderM.Current["SrcScribe.SarRepairTitle"];
-        public static string VapourSynthAutoFilter => "VS";
-        public static string AviSynthAutoFilter => "AVS(+)";
         public static string FrameRateConvertTitle => UILangProviderM.Current["SrcScribe.FrameRateConvertTitle"];
         public static string ColorSpaceConvertTitle => UILangProviderM.Current["SrcScribe.ColorSpaceConvertTitle"];
         public static string DenoiseTitle => UILangProviderM.Current["SrcScribe.DenoiseTitle"];
@@ -908,16 +917,16 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(ScaleNotApplicableText));
             OnPropertyChanged(nameof(TargetDisplay));
             OnPropertyChanged(nameof(FfmpegFreeTextHint));
-            OnPropertyChanged(nameof(FfmpegAutoFilter));
+            OnPropertyChanged(nameof(FfmpegText));
             OnPropertyChanged(nameof(SarRepairTitle));
             OnPropertyChanged(nameof(FfmpegSarRepairFilter));
-            OnPropertyChanged(nameof(FfmpegDenoiseFilter));
+            OnPropertyChanged(nameof(FfmpegHqdn3dDenoiseFilter));
             OnPropertyChanged(nameof(FfmpegSubtitleFilter));
             OnPropertyChanged(nameof(FfmpegFpsScaleFilter));
             OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
             OnPropertyChanged(nameof(FfmpegFullChainFilter));
-            OnPropertyChanged(nameof(VapourSynthAutoFilter));
-            OnPropertyChanged(nameof(AviSynthAutoFilter));
+            OnPropertyChanged(nameof(VapourSynthText));
+            OnPropertyChanged(nameof(AviSynthText));
             OnPropertyChanged(nameof(FrameRateConvertTitle));
             OnPropertyChanged(nameof(ColorSpaceConvertTitle));
             OnPropertyChanged(nameof(DenoiseTitle));
