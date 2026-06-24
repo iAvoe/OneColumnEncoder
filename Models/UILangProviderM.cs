@@ -5,7 +5,7 @@ public class UILangProviderM
     public static UILangProviderM Current { get; private set; } = null!;
     public static event Action? CurrentChanged;
     public const string SrcAnalysisWindowTitle = "1cenc Source Analysis";
-    public const string SrcScribeWindowTitle = "1cenc Script Generator";
+    public const string FltScribeWindowTitle = "1cenc Filter Scribe";
     public const string FilenameScribeWindowTitle = "1cenc Filename";
     public const string ScriptGenWindowTitle = "1cenc Script Generation";
     public const string SavingScriptWindowTitle = "Saving all scripts (AVS & VPY)...";

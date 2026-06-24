@@ -380,7 +380,7 @@ namespace OneColumnEncoder.ViewModels
         #endregion
 
         #region UILang properties
-        public static string WindowTitle => UILangProviderM.SrcScribeWindowTitle;
+        public static string WindowTitle => UILangProviderM.FltScribeWindowTitle;
         public static string ScribeDescription1 => UILangProviderM.Current["SrcScribe.Description1"];
         public static string ScribeDescription2 => UILangProviderM.Current["SrcScribe.Description2"];
         public static string NoteText => UILangProviderM.Current["SrcScribe.NoteText"];
@@ -558,7 +558,7 @@ namespace OneColumnEncoder.ViewModels
             Clipboard.SetText(GetCurrentFullScript());
             new OpenSuccModalCmd(
                 _modalNavS,
-                UILangProviderM.SrcScribeWindowTitle,
+                UILangProviderM.FltScribeWindowTitle,
                 UILangProviderM.Current["SrcScribe.CopiedFull"]).Execute(null);
         }
         private void CopyInOutSection()
@@ -576,7 +576,7 @@ namespace OneColumnEncoder.ViewModels
             Clipboard.SetText(inOutText);
             new OpenSuccModalCmd(
                 _modalNavS,
-                UILangProviderM.SrcScribeWindowTitle,
+                UILangProviderM.FltScribeWindowTitle,
                 UILangProviderM.Current["SrcScribe.CopiedSection"]).Execute(null);
         }
         private void SaveAsFile()
@@ -665,7 +665,7 @@ namespace OneColumnEncoder.ViewModels
 
             new OpenSuccModalCmd(
                 _modalNavS,
-                UILangProviderM.SrcScribeWindowTitle,
+                UILangProviderM.FltScribeWindowTitle,
                 string.Format(UILangProviderM.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, savedPaths))).Execute(null);
         }
 
@@ -726,7 +726,7 @@ namespace OneColumnEncoder.ViewModels
 
             new OpenSuccModalCmd(
                 _modalNavS,
-                UILangProviderM.SrcScribeWindowTitle,
+                UILangProviderM.FltScribeWindowTitle,
                 string.Format(UILangProviderM.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, savedPaths))).Execute(null);
             _closeAction();
         }
@@ -782,7 +782,7 @@ namespace OneColumnEncoder.ViewModels
             SelectPreferredScriptItem();
             new OpenSuccModalCmd(
                 _modalNavS,
-                UILangProviderM.SrcScribeWindowTitle,
+                UILangProviderM.FltScribeWindowTitle,
                 string.Format(UILangProviderM.Current["ScriptGen.ScriptsSaved"], $"{avsPath}\n{vpyPath}")).Execute(null);
             _closeAction();
         }
@@ -855,7 +855,7 @@ namespace OneColumnEncoder.ViewModels
         {
             new OpenErrModalCmd(
                 _modalNavS,
-                UILangProviderM.SrcScribeWindowTitle,
+                UILangProviderM.FltScribeWindowTitle,
                 string.Format(UILangProviderM.Current["SrcScribe.FailedToSave"], ex.Message)).Execute(null);
         }
 
@@ -863,7 +863,7 @@ namespace OneColumnEncoder.ViewModels
         {
             new OpenSuccModalCmd(
                 _modalNavS,
-                UILangProviderM.SrcScribeWindowTitle,
+                UILangProviderM.FltScribeWindowTitle,
                 string.Format(UILangProviderM.Current["SrcScribe.ScriptSaved"], path)).Execute(null);
         }
 
