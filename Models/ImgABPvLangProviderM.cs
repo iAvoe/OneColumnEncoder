@@ -23,6 +23,7 @@ public class ImgABPvLangProviderM
             ["StatusEncoding"] = "Encoding with {0}...",
             ["StatusDecoding"] = "Decoding preview frame...",
             ["StatusPreviewReady"] = "Preview ready: {0}, CRF {1}",
+            ["StatusComputingScores"] = "Computing quality metrics...",
             ["StatusCancelled"] = "Preview cancelled",
             ["StatusNoFfmpeg"] = "ffmpeg.exe is not imported",
             ["StatusNoSource"] = "No valid video source selected",
@@ -60,6 +61,7 @@ public class ImgABPvLangProviderM
             ["StatusEncoding"] = "正在用 {0} 编码...",
             ["StatusDecoding"] = "正在解码预览帧...",
             ["StatusPreviewReady"] = "预览就绪：{0}，CRF {1}",
+            ["StatusComputingScores"] = "正在计算画质跑分...",
             ["StatusCancelled"] = "预览已取消",
             ["StatusNoFfmpeg"] = "未导入 ffmpeg.exe",
             ["StatusNoSource"] = "未选择有效视频源",
@@ -97,6 +99,7 @@ public class ImgABPvLangProviderM
             ["StatusEncoding"] = "正在用 {0} 編碼...",
             ["StatusDecoding"] = "正在解碼預覽幀...",
             ["StatusPreviewReady"] = "預覽就繬：{0}，CRF {1}",
+            ["StatusComputingScores"] = "正在計算畫質跑分...",
             ["StatusCancelled"] = "預覽已取消",
             ["StatusNoFfmpeg"] = "未導入 ffmpeg.exe",
             ["StatusNoSource"] = "未選擇有效視訊源",
@@ -138,6 +141,7 @@ public class ImgABPvLangProviderM
             ["StatusEncoding"] = "Encodage avec {0}...",
             ["StatusDecoding"] = "Décodage de l'aperçu...",
             ["StatusPreviewReady"] = "Aperçu prêt : {0}, CRF {1}",
+            ["StatusComputingScores"] = "Calcul des métriques de qualité...",
             ["StatusCancelled"] = "Aperçu annulé",
             ["StatusNoFfmpeg"] = "ffmpeg.exe n'est pas importé",
             ["StatusNoSource"] = "Aucune source vidéo valide sélectionnée",
@@ -175,6 +179,7 @@ public class ImgABPvLangProviderM
             ["StatusEncoding"] = "Codificando con {0}...",
             ["StatusDecoding"] = "Decodificando vista previa...",
             ["StatusPreviewReady"] = "Vista previa lista: {0}, CRF {1}",
+            ["StatusComputingScores"] = "Calculando métricas de calidad...",
             ["StatusCancelled"] = "Vista previa cancelada",
             ["StatusNoFfmpeg"] = "ffmpeg.exe no está importado",
             ["StatusNoSource"] = "No hay fuente de video válida seleccionada",
@@ -212,6 +217,7 @@ public class ImgABPvLangProviderM
             ["StatusEncoding"] = "{0} でエンコード中...",
             ["StatusDecoding"] = "プレビューフレームをデコード中...",
             ["StatusPreviewReady"] = "プレビュー準備完了：{0}、CRF {1}",
+            ["StatusComputingScores"] = "画質スコアを計算中...",
             ["StatusCancelled"] = "プレビューがキャンセルされました",
             ["StatusNoFfmpeg"] = "ffmpeg.exe がインポートされていません",
             ["StatusNoSource"] = "有効な動画ソースが選択されていません",
@@ -249,6 +255,7 @@ public class ImgABPvLangProviderM
             ["StatusEncoding"] = "Кодирование с {0}...",
             ["StatusDecoding"] = "Декодирование кадра предпросмотра...",
             ["StatusPreviewReady"] = "Предпросмотр готов: {0}, CRF {1}",
+            ["StatusComputingScores"] = "Вычисление метрик качества...",
             ["StatusCancelled"] = "Предпросмотр отменён",
             ["StatusNoFfmpeg"] = "ffmpeg.exe не импортирован",
             ["StatusNoSource"] = "Не выбран действительный источник видео",
@@ -290,6 +297,7 @@ public class ImgABPvLangProviderM
     public string StatusEncoding { get; }
     public string StatusDecoding { get; }
     public string StatusPreviewReady { get; }
+    public string StatusComputingScores { get; }
     public string StatusCancelled { get; }
     public string StatusNoFfmpeg { get; }
     public string StatusNoSource { get; }
@@ -329,6 +337,7 @@ public class ImgABPvLangProviderM
         StatusEncoding = _d["StatusEncoding"];
         StatusDecoding = _d["StatusDecoding"];
         StatusPreviewReady = _d["StatusPreviewReady"];
+        StatusComputingScores = _d["StatusComputingScores"];
         StatusCancelled = _d["StatusCancelled"];
         StatusNoFfmpeg = _d["StatusNoFfmpeg"];
         StatusNoSource = _d["StatusNoSource"];

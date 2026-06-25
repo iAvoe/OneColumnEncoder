@@ -213,6 +213,7 @@ namespace OneColumnEncoder.ViewModels
                 {
                     _modalNavS.Close();
                     new Commands.OpenClose.OpenErrModalCmd(_modalNavS, Lang.EncoderLabel, Lang.WarnSvtAv1No12Bit).Execute(null);
+                    IsBusy = false;
                     return;
                 }
 
@@ -244,7 +245,7 @@ namespace OneColumnEncoder.ViewModels
                 EnsureFileExists(decodedPath, "!ENCODE");
                 EncodedImage = PreviewPipelineH.LoadBitmap(decodedPath);
 
-                StatusText = string.Format(Lang.StatusPreviewReady, PreviewPipelineH.GetEncoderTitle(encoder), PreviewPipelineH.GetCrfValue(encoder, model));
+                StatusText = Lang.StatusComputingScores;
 
                 if (Ssimulacra2H.IsSsimU2Present)
                 {
@@ -263,6 +264,8 @@ namespace OneColumnEncoder.ViewModels
                         ? $"Butteraugli: {score.Value:F4}"
                         : $"Butteraugli: {error}";
                 }
+
+                StatusText = string.Format(Lang.StatusPreviewReady, PreviewPipelineH.GetEncoderTitle(encoder), PreviewPipelineH.GetCrfValue(encoder, model));
             }
             catch (OperationCanceledException)
             {
@@ -275,8 +278,9 @@ namespace OneColumnEncoder.ViewModels
             finally
             {
                 _currentProcess = null;
-                IsBusy = false;
             }
+
+            IsBusy = false;
         }
 
         private async Task RunFfmpegAsync(IReadOnlyList<string> args, CancellationToken token)
