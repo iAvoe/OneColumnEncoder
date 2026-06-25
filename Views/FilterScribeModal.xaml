@@ -617,26 +617,6 @@
                              FontFamily="Segoe UI"
                              VerticalScrollBarVisibility="Disabled" />
                 </Grid>
-                <Grid Margin="0 5 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="49" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding AviSynthText}"
-                               FontSize="11"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1"
-                             Text="{Binding AviSynthSubtitleFilter, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             FontSize="11"
-                             FontFamily="Segoe UI"
-                             VerticalScrollBarVisibility="Disabled" />
-                </Grid>
             </StackPanel>
 
             <StackPanel>

@@ -205,9 +205,7 @@ namespace OneColumnEncoder.ViewModels
         public static string AviSynthHqdn3dDenoiseFilter => "hqdn3d(src)";
         public static string FfmpegHqdn3dDenoiseFilter => "-filter:v \"hqdn3d\"";
         public static string VapourSynthSubtitleFilter =>
-            UILangProviderM.Current["SrcScribe.FilterPlaceholder"];
-        public static string AviSynthSubtitleFilter =>
-            UILangProviderM.Current["SrcScribe.FilterPlaceholder"];
+            "src = core.sub.TextFile(src, file=r\"X:\\path\\to\\subtitle.ass\", fontdir=r\"Y:\\dir\\of\\fonts\")";
         public static string FfmpegSubtitleFilter =>
             "-filter_complex \"ass='X\\:/path/to/subtitle.ass':fontsdir='Y\\:/dir/of/fonts'\"";
 
