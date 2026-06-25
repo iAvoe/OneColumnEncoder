@@ -209,7 +209,7 @@ namespace OneColumnEncoder.ViewModels
         public static string AviSynthSubtitleFilter =>
             UILangProviderM.Current["SrcScribe.FilterPlaceholder"];
         public static string FfmpegSubtitleFilter =>
-            UILangProviderM.Current["SrcScribe.FilterPlaceholder"];
+            "-filter_complex \"ass='X\\:/path/to/subtitle.ass':fontsdir='Y\\:/dir/of/fonts'\"";
 
         public string FfmpegFpsScaleFilter =>
             HasFpsFilter && HasScaleFilter
