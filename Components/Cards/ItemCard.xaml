@@ -42,31 +42,35 @@
                         </Setter.Value>
                     </Setter>
                     <Style.Triggers>
-                        <!-- Remixed: applies to default state only (state triggers below override) -->
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsInverted, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                           Value="True" />
-                                <Condition Binding="{Binding UseAltInvertedPalette, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                           Value="False" />
-                            </MultiDataTrigger.Conditions>
+                        <!-- Remixed palette -->
+                        <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="1">
                             <Setter Property="BorderBrush"
                                     Value="{StaticResource RemixedBorder}" />
                             <Setter Property="Background"
                                     Value="{StaticResource RemixedBackground}" />
-                        </MultiDataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsInverted, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                           Value="True" />
-                                <Condition Binding="{Binding UseAltInvertedPalette, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                           Value="True" />
-                            </MultiDataTrigger.Conditions>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="2">
                             <Setter Property="BorderBrush"
                                     Value="{StaticResource RemixedBorder2}" />
                             <Setter Property="Background"
                                     Value="{StaticResource RemixedBackground2}" />
-                        </MultiDataTrigger>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="3">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource RemixedBorder3}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource RemixedBackground3}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="4">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource RemixedBorder4}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource RemixedBackground4}" />
+                        </DataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -143,41 +147,49 @@
                     <Setter Property="TextElement.Foreground"
                             Value="{StaticResource GlobalPrimary}" />
                     <Style.Triggers>
-                        <!-- Remixed: applies to default state only (state triggers below override) -->
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsInverted, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                           Value="True" />
-                                <Condition Binding="{Binding UseAltInvertedPalette, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                           Value="False" />
-                            </MultiDataTrigger.Conditions>
+                        <!-- Remixed palette -->
+                        <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="1">
                             <Setter Property="BorderBrush"
                                     Value="{StaticResource RemixedBorder}" />
                             <Setter Property="Background"
                                     Value="{StaticResource RemixedBackground}" />
                             <Setter Property="TextElement.Foreground"
                                     Value="{StaticResource RemixedForeground}" />
-                        </MultiDataTrigger>
-                        <MultiDataTrigger>
-                            <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding IsInverted, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                           Value="True" />
-                                <Condition Binding="{Binding UseAltInvertedPalette, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                           Value="True" />
-                            </MultiDataTrigger.Conditions>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="2">
                             <Setter Property="BorderBrush"
                                     Value="{StaticResource RemixedBorder2}" />
                             <Setter Property="Background"
                                     Value="{StaticResource RemixedBackground2}" />
                             <Setter Property="TextElement.Foreground"
                                     Value="{StaticResource RemixedForeground2}" />
-                        </MultiDataTrigger>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="3">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource RemixedBorder3}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource RemixedBackground3}" />
+                            <Setter Property="TextElement.Foreground"
+                                    Value="{StaticResource RemixedForeground3}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="4">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource RemixedBorder4}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource RemixedBackground4}" />
+                            <Setter Property="TextElement.Foreground"
+                                    Value="{StaticResource RemixedForeground4}" />
+                        </DataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                            Value="True" />
-                                <Condition Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                           Value="False" />
+                                    <Condition Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                               Value="False" />
                             </MultiDataTrigger.Conditions>
                             <Setter Property="BorderBrush"
                                     Value="{StaticResource BorderGreen}" />
@@ -267,26 +279,26 @@
                             <Style TargetType="Button"
                                    BasedOn="{StaticResource LinkButton}">
                                 <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding IsInverted, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                       Value="True" />
-                                            <Condition Binding="{Binding UseAltInvertedPalette, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                       Value="False" />
-                                        </MultiDataTrigger.Conditions>
+                                    <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                 Value="1">
                                         <Setter Property="Foreground"
                                                 Value="{StaticResource RemixedForeground}" />
-                                    </MultiDataTrigger>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding IsInverted, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                       Value="True" />
-                                            <Condition Binding="{Binding UseAltInvertedPalette, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                       Value="True" />
-                                        </MultiDataTrigger.Conditions>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                 Value="2">
                                         <Setter Property="Foreground"
                                                 Value="{StaticResource RemixedForeground2}" />
-                                    </MultiDataTrigger>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                 Value="3">
+                                        <Setter Property="Foreground"
+                                                Value="{StaticResource RemixedForeground3}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                 Value="4">
+                                        <Setter Property="Foreground"
+                                                Value="{StaticResource RemixedForeground4}" />
+                                    </DataTrigger>
                                     <Trigger Property="IsEnabled"
                                              Value="False">
                                         <Setter Property="Foreground"
@@ -303,26 +315,26 @@
                             <Style TargetType="Button"
                                    BasedOn="{StaticResource LinkButton}">
                                 <Style.Triggers>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding IsInverted, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                       Value="True" />
-                                            <Condition Binding="{Binding UseAltInvertedPalette, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                       Value="False" />
-                                        </MultiDataTrigger.Conditions>
+                                    <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                 Value="1">
                                         <Setter Property="Foreground"
                                                 Value="{StaticResource RemixedForeground}" />
-                                    </MultiDataTrigger>
-                                    <MultiDataTrigger>
-                                        <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding IsInverted, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                       Value="True" />
-                                            <Condition Binding="{Binding UseAltInvertedPalette, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                       Value="True" />
-                                        </MultiDataTrigger.Conditions>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                 Value="2">
                                         <Setter Property="Foreground"
                                                 Value="{StaticResource RemixedForeground2}" />
-                                    </MultiDataTrigger>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                 Value="3">
+                                        <Setter Property="Foreground"
+                                                Value="{StaticResource RemixedForeground3}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                 Value="4">
+                                        <Setter Property="Foreground"
+                                                Value="{StaticResource RemixedForeground4}" />
+                                    </DataTrigger>
                                     <Trigger Property="IsEnabled"
                                              Value="False">
                                         <Setter Property="Foreground"

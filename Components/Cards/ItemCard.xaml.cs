@@ -66,30 +66,17 @@ namespace OneColumnEncoder.Components
             set => SetValue(EnableRealCheckProperty, value);
         }
 
-        public static readonly DependencyProperty IsInvertedProperty =
+        public static readonly DependencyProperty PaletteIndexProperty =
             DependencyProperty.Register(
-                nameof(IsInverted),
-                typeof(bool),
+                nameof(PaletteIndex),
+                typeof(int),
                 typeof(ItemCard),
-                new PropertyMetadata(false));
+                new PropertyMetadata(0));
 
-        public bool IsInverted
+        public int PaletteIndex
         {
-            get => (bool)GetValue(IsInvertedProperty);
-            set => SetValue(IsInvertedProperty, value);
-        }
-
-        public static readonly DependencyProperty UseAltInvertedPaletteProperty =
-            DependencyProperty.Register(
-                nameof(UseAltInvertedPalette),
-                typeof(bool),
-                typeof(ItemCard),
-                new PropertyMetadata(false));
-
-        public bool UseAltInvertedPalette
-        {
-            get => (bool)GetValue(UseAltInvertedPaletteProperty);
-            set => SetValue(UseAltInvertedPaletteProperty, value);
+            get => (int)GetValue(PaletteIndexProperty);
+            set => SetValue(PaletteIndexProperty, value);
         }
     }
 }

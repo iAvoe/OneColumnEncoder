@@ -46,6 +46,7 @@
                                         IsCancel="{Binding IsCancel}"
                                         IsReal="{Binding IsReal}"
                                         IsEnabled="{Binding IsEnabled}"
+                                        PaletteIndex="3"
                                         Margin="5">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
@@ -77,6 +78,7 @@
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
                                         IsReal="{Binding IsReal}"
+                                        PaletteIndex="4"
                                         Margin="5">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
@@ -108,6 +110,7 @@
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
                                         IsReal="{Binding IsReal}"
+                                        PaletteIndex="4"
                                         Margin="5">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
@@ -186,11 +189,12 @@
                                         IsReal="{Binding IsReal}"
                                         EnableRealCheck="False"
                                         IsEnabled="{Binding IsEnabled}"
+                                        PaletteIndex="1"
                                         Margin="5">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
-                                                                 RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                                                  RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                               CommandParameter="{Binding}" />
                                 <KeyBinding Key="Enter"
                                             Command="{Binding DataContext.SelectTool,
@@ -232,13 +236,12 @@
                                         IsReal="{Binding IsReal}"
                                         EnableRealCheck="False"
                                         IsEnabled="{Binding IsEnabled}"
-                                        IsInverted="True"
-                                        UseAltInvertedPalette="True"
+                                        PaletteIndex="1"
                                         Margin="5">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
-                                                                 RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                                                  RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                               CommandParameter="{Binding}" />
                                 <KeyBinding Key="Enter"
                                             Command="{Binding DataContext.SelectTool,
@@ -290,7 +293,7 @@
                                         IsReal="{Binding IsReal}"
                                         EnableRealCheck="False"
                                         IsEnabled="{Binding IsEnabled}"
-                                        IsInverted="True"
+                                        PaletteIndex="2"
                                         Margin="5" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

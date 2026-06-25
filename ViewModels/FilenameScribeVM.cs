@@ -212,6 +212,7 @@ namespace OneColumnEncoder.ViewModels
         {
             UILangProviderM.CurrentChanged -= OnLanguageChanged;
             base.Dispose();
+            GC.SuppressFinalize(this);
         }
 
     }
