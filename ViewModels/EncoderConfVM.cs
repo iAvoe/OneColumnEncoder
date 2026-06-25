@@ -60,6 +60,8 @@ namespace OneColumnEncoder.ViewModels
         public string KeyframeSecondsText => Lang.KeyframeSecondsText;
         public string ThirdPartyParamsText => Lang.ThirdPartyParamsText;
         public string FreeTextControlTitle => Lang.FreeTextControlTitle;
+        public string PreviewFreeTextControlTitle => Lang.PreviewFreeTextControlTitle;
+        public string PreviewFreeTextHint => Lang.PreviewFreeTextHint;
         public string X264ModText => Lang.X264ModText;
         public string X265JpsdrAqText => Lang.X265JpsdrAqText;
         public string X265JpsdrDarkText => Lang.X265JpsdrDarkText;
@@ -93,7 +95,7 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _freeTextParamsX265, value);
         }
 
-private string _freeTextParamsSvtAv1 = string.Empty;
+        private string _freeTextParamsSvtAv1 = string.Empty;
         public string FreeTextParamsSvtAv1
         {
             get => _freeTextParamsSvtAv1;
@@ -419,8 +421,8 @@ model.SvtAv1Dl2 = SvtAv1Dl2;
             OnPropertyChanged(nameof(KeyframeSecondsText));
             OnPropertyChanged(nameof(ThirdPartyParamsText));
             OnPropertyChanged(nameof(FreeTextControlTitle));
-            OnPropertyChanged(nameof(Lang.PreviewFreeTextControlTitle));
-            OnPropertyChanged(nameof(Lang.PreviewFreeTextHint));
+            OnPropertyChanged(nameof(PreviewFreeTextControlTitle));
+            OnPropertyChanged(nameof(PreviewFreeTextHint));
             OnPropertyChanged(nameof(X264ModText));
             OnPropertyChanged(nameof(X265JpsdrAqText));
             OnPropertyChanged(nameof(X265JpsdrDarkText));

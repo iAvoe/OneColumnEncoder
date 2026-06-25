@@ -23,7 +23,7 @@ public class EncoderConfLangProviderM
             ["BasicParamsText"] = "Basic Parameters",
             ["KeyframeSecondsText"] = "Keyframe Interval (seconds)",
             ["ThirdPartyParamsText"] = "3rd Party Extended Parameters",
-["FreeTextControlTitle"] = "Additional Encoder Parameters (CLI Format)",
+            ["FreeTextControlTitle"] = "Additional Encoder Parameters (CLI Format)",
             ["PreviewFreeTextControlTitle"] = "Additional Encoder Parameters (Preview/FFmpeg Format)",
             ["PreviewFreeTextHint"] = "Use FFmpeg API format: -x264-params, -x265-params, -svtav1-params",
             ["X264ModText"] = "x264 Mod：Film Grain Rate Distortion Optimization (FGO-RD)",
@@ -71,7 +71,7 @@ public class EncoderConfLangProviderM
             ["BasicParamsText"] = "基础参数",
             ["KeyframeSecondsText"] = "关键帧距离秒数",
             ["ThirdPartyParamsText"] = "第三方扩展参数（不支持或不确定则关）",
-["FreeTextControlTitle"] = "附加编码器参数（CLI 格式）",
+            ["FreeTextControlTitle"] = "附加编码器参数（CLI 格式）",
             ["PreviewFreeTextControlTitle"] = "附加编码器参数（预览/FFmpeg 格式）",
             ["PreviewFreeTextHint"] = "使用 FFmpeg API 格式：-x264-params, -x265-params, -svtav1-params",
             ["X264ModText"] = "x264 Mod：基于高频信息的率失真优化（FGO-RD）",
@@ -119,7 +119,7 @@ public class EncoderConfLangProviderM
             ["BasicParamsText"] = "基礎參數",
             ["KeyframeSecondsText"] = "關鍵幀距離秒數",
             ["ThirdPartyParamsText"] = "第三方擴展參數（不支持或不確定則關）",
-["FreeTextControlTitle"] = "附加編碼器參數（CLI 格式）",
+            ["FreeTextControlTitle"] = "附加編碼器參數（CLI 格式）",
             ["PreviewFreeTextControlTitle"] = "附加編碼器參數（預覽/FFmpeg 格式）",
             ["PreviewFreeTextHint"] = "使用 FFmpeg API 格式：-x264-params, -x265-params, -svtav1-params",
             ["X264ModText"] = "x264 Mod：基於高頻信息的率失真優化（FGO-RD）",
@@ -162,7 +162,7 @@ public class EncoderConfLangProviderM
             ["BasicParamsText"] = "Paramètres de base",
             ["KeyframeSecondsText"] = "Intervalle d'images clés (s)",
             ["ThirdPartyParamsText"] = "Paramètres étendus tiers",
-["FreeTextControlTitle"] = "Paramètres encodeur additionnels (format CLI)",
+            ["FreeTextControlTitle"] = "Paramètres encodeur additionnels (format CLI)",
             ["PreviewFreeTextControlTitle"] = "Paramètres encodeur additionnels (format prévisualisation/FFmpeg)",
             ["PreviewFreeTextHint"] = "Utilisez le format API FFmpeg : -x264-params, -x265-params, -svtav1-params",
             ["X264ModText"] = "x264 Mod : optimisation R-D grain film (FGO-RD)",
@@ -201,7 +201,7 @@ public class EncoderConfLangProviderM
             ["BasicParamsText"] = "Parámetros básicos",
             ["KeyframeSecondsText"] = "Intervalo de keyframes (s)",
             ["ThirdPartyParamsText"] = "Parámetros extendidos de terceros",
-["FreeTextControlTitle"] = "Parámetros extra del codificador (formato CLI)",
+            ["FreeTextControlTitle"] = "Parámetros extra del codificador (formato CLI)",
             ["PreviewFreeTextControlTitle"] = "Parámetros extra del codificador (formato previsualización/FFmpeg)",
             ["PreviewFreeTextHint"] = "Use formato API FFmpeg: -x264-params, -x265-params, -svtav1-params",
             ["X264ModText"] = "x264 Mod: optimización R-D de grano (FGO-RD)",
@@ -240,7 +240,7 @@ public class EncoderConfLangProviderM
             ["BasicParamsText"] = "基本パラメータ",
             ["KeyframeSecondsText"] = "キーフレーム間隔 (秒)",
             ["ThirdPartyParamsText"] = "サードパーティ拡張パラメータ",
-["FreeTextControlTitle"] = "追加エンコーダパラメータ（CLI 形式）",
+            ["FreeTextControlTitle"] = "追加エンコーダパラメータ（CLI 形式）",
             ["PreviewFreeTextControlTitle"] = "追加エンコーダパラメータ（プレビュー/FFmpeg 形式）",
             ["PreviewFreeTextHint"] = "FFmpeg API 形式を使用: -x264-params, -x265-params, -svtav1-params",
             ["X264ModText"] = "x264 Mod: フィルム粒子 R-D 最適化 (FGO-RD)",
@@ -279,7 +279,7 @@ public class EncoderConfLangProviderM
             ["BasicParamsText"] = "Базовые параметры",
             ["KeyframeSecondsText"] = "Интервал ключевых кадров (с)",
             ["ThirdPartyParamsText"] = "Расширения сторонних сборок",
-["FreeTextControlTitle"] = "Доп. параметры кодера (CLI формат)",
+            ["FreeTextControlTitle"] = "Доп. параметры кодера (CLI формат)",
             ["PreviewFreeTextControlTitle"] = "Доп. параметры кодера (предпросмотр/FFmpeg формат)",
             ["PreviewFreeTextHint"] = "Используйте формат FFmpeg API: -x264-params, -x265-params, -svtav1-params",
             ["X264ModText"] = "x264 Mod: R-D оптимизация зерна (FGO-RD)",
@@ -329,10 +329,10 @@ public class EncoderConfLangProviderM
     public string BasicParamsText { get; }
     public string KeyframeSecondsText { get; }
     public string ThirdPartyParamsText { get; }
-public string FreeTextControlTitle { get; }
-        public string PreviewFreeTextControlTitle { get; }
-        public string PreviewFreeTextHint { get; }
-        public string X264ModText { get; }
+    public string FreeTextControlTitle { get; }
+    public string PreviewFreeTextControlTitle { get; }
+    public string PreviewFreeTextHint { get; }
+    public string X264ModText { get; }
     public string X265JpsdrAqText { get; }
     public string X265JpsdrDarkText { get; }
     public string X265JpsdrTextureText { get; }
