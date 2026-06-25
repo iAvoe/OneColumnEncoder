@@ -112,11 +112,11 @@
                      x:Key="RemixedBorder2" />
 
     <!-- Remixed card palette (light pink background, left analogous) -->
-    <SolidColorBrush Color="#EAD2BC"
+    <SolidColorBrush Color="#EAD6BC"
                      x:Key="RemixedBackground3" />
-    <SolidColorBrush Color="#271E0C"
+    <SolidColorBrush Color="#27200C"
                      x:Key="RemixedForeground3" />
-    <SolidColorBrush Color="#623B1E"
+    <SolidColorBrush Color="#62411E"
                      x:Key="RemixedBorder3" />
 
     <!-- Remixed card palette (light purple background, left analogous) -->
