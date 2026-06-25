@@ -43,6 +43,7 @@ namespace OneColumnEncoder.ViewModels
         public string Hint2Text => Lang.Hint2Text;
         public string Hint3Text => Lang.Hint3Text;
         public string SsimulacraScoreHint => Lang.SsimulacraScoreHint;
+        public string ButteraugliScoreHint => Lang.ButteraugliScoreHint;
 
         private ImageSource? _sourceImage;
         public ImageSource? SourceImage
@@ -116,6 +117,13 @@ namespace OneColumnEncoder.ViewModels
             private set => SetProperty(ref _ssimulacra2StatusText, value);
         }
 
+        private string _butteraugliStatusText = "";
+        public string ButteraugliStatusText
+        {
+            get => _butteraugliStatusText;
+            private set => SetProperty(ref _butteraugliStatusText, value);
+        }
+
         public ImgABPvVM(EncoderConfVM encoderConfVM, Stores.ModalNavS modalNavS, string? ffmpegPath, string? sourceVideoPath, string? sourceFfprobeJson)
         {
             _encoderConfVM = encoderConfVM;
@@ -157,6 +165,7 @@ namespace OneColumnEncoder.ViewModels
             PreviewButtonText = Lang.PreviewButtonText;
             PreviewCommand = new ActionCmd(_ => PreviewOrCancel());
             RefreshSsimulacra2Status();
+            RefreshButteraugliStatus();
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
 
@@ -244,6 +253,15 @@ namespace OneColumnEncoder.ViewModels
                     Ssimulacra2StatusText = score.HasValue
                         ? $"SSIMULACRA2.1: {score.Value:F2}"
                         : $"SSIMULACRA2.1: {error}";
+                }
+
+                if (ButteraugliH.IsPresent)
+                {
+                    ButteraugliStatusText = Lang.ButteraugliToolPresent;
+                    var (score, error) = await ButteraugliH.RunScoreAsync(sourcePath, decodedPath);
+                    ButteraugliStatusText = score.HasValue
+                        ? $"Butteraugli: {score.Value:F4}"
+                        : $"Butteraugli: {error}";
                 }
             }
             catch (OperationCanceledException)
@@ -386,6 +404,19 @@ namespace OneColumnEncoder.ViewModels
                 : Lang.Ssimulacra2ToolMissing;
         }
 
+        private void RefreshButteraugliStatus()
+        {
+            if (!ButteraugliH.Is64Bit)
+            {
+                ButteraugliStatusText = "";
+                return;
+            }
+
+            ButteraugliStatusText = ButteraugliH.IsPresent
+                ? Lang.ButteraugliToolPresent
+                : Lang.ButteraugliToolMissing;
+        }
+
         private void OnLanguageChanged()
         {
             Lang = new ImgABPvLangProviderM(UILangProviderM.Current.LanguageCode);
@@ -401,7 +432,9 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(Hint2Text));
             OnPropertyChanged(nameof(Hint3Text));
             OnPropertyChanged(nameof(SsimulacraScoreHint));
+            OnPropertyChanged(nameof(ButteraugliScoreHint));
             RefreshSsimulacra2Status();
+            RefreshButteraugliStatus();
         }
 
         public override void Dispose()

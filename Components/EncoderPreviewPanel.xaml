@@ -203,25 +203,46 @@
                                   HintBrush="{StaticResource GlobalSecondary}"
                                   FontSize="10"
                                   Margin="0 5 0 0" />
+                <comps:HintPanel Text="{Binding ButteraugliScoreHint}"
+                                  HintBrush="{StaticResource GlobalSecondary}"
+                                  FontSize="10"
+                                  Margin="0 5 0 0" />
             </StackPanel>
 
-            <TextBlock Grid.Column="1"
-                       Text="{Binding Ssimulacra2StatusText}"
-                       FontSize="12"
-                       TextWrapping="Wrap"
-                       TextAlignment="Right"
-                       VerticalAlignment="Bottom"
-                       HorizontalAlignment="Right"
-                       Margin="2.5"
-                       Background="AliceBlue"
-                       Padding="1">
-                <TextBlock.Style>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="Foreground"
-                                Value="#10739E" />
-                    </Style>
-                </TextBlock.Style>
-            </TextBlock>
+            <StackPanel Grid.Column="1"
+                        VerticalAlignment="Bottom"
+                        HorizontalAlignment="Right">
+                <TextBlock Text="{Binding Ssimulacra2StatusText}"
+                           FontSize="12"
+                           TextWrapping="Wrap"
+                           TextAlignment="Right"
+                           HorizontalAlignment="Right"
+                           Margin="2.5 2.5 2.5 1"
+                           Background="AliceBlue"
+                           Padding="1">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground"
+                                    Value="#10739E" />
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <TextBlock Text="{Binding ButteraugliStatusText}"
+                           FontSize="12"
+                           TextWrapping="Wrap"
+                           TextAlignment="Right"
+                           HorizontalAlignment="Right"
+                           Margin="2.5 1 2.5 2.5"
+                           Background="AliceBlue"
+                           Padding="1">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground"
+                                    Value="#10739E" />
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>

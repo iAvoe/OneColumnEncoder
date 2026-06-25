@@ -37,6 +37,9 @@ public class ImgABPvLangProviderM
             ["Ssimulacra2ToolMissing"] = "SSIMULACRA2.1 tool not found. Place x64-CloudinarySSIMULACRA2.1 next to the executable and restart",
             ["Ssimulacra2ToolPresent"] = "SSIMULACRA2.1 quality metric is ready",
             ["SsimulacraScoreHint"] = "SSIMULACRA score: 100 Math Lossless | 90 VQA Lossless | 85 Marginal Loss | 80 Revealing Loss | 70 Tangible loss | 50 Substantial loss | 30 Breaking loss",
+            ["ButteraugliToolMissing"] = "Butteraugli tool not found. Place x64-GoogleButteraugli next to the executable and restart",
+            ["ButteraugliToolPresent"] = "Butteraugli quality metric is ready",
+            ["ButteraugliScoreHint"] = "Butteraugli score (heuristic): <1 Theoretically lossless | 1-2 Visually lossless | 2-4 Slight loss | 4-6 Noticeable loss | 6-8 Heavy loss | >8 Severe loss",
         },
         ["zh-cn"] = new()
         {
@@ -71,6 +74,9 @@ public class ImgABPvLangProviderM
             ["Ssimulacra2ToolMissing"] = "SSIMULACRA2.1 质量指标工具缺失。请将 x64-CloudinarySSIMULACRA2.1 文件夹放在程序目录旁，再重启应用",
             ["Ssimulacra2ToolPresent"] = "SSIMULACRA2.1 质量指标工具已就绪",
             ["SsimulacraScoreHint"] = "SSIMULACRA 分数：100 数据无损 | 90 视觉无损 | 85 差异极小 | 80 差异显露 | 70 差异可见 | 50 差异较大 | 30 差异巨大",
+            ["ButteraugliToolMissing"] = "Butteraugli 质量指标工具缺失。请将 x64-GoogleButteraugli 文件夹放在程序目录旁，再重启应用",
+            ["ButteraugliToolPresent"] = "Butteraugli 质量指标工具已就绪",
+            ["ButteraugliScoreHint"] = "Butteraugli 分数（经验分级）：<1 理论无损 | 1-2 视觉无损 | 2-4 轻微可见损失 | 4-6 明显损失 | 6-8 严重损失 | >8 极重损失",
         },
         ["zh-tw"] = new()
         {
@@ -105,6 +111,9 @@ public class ImgABPvLangProviderM
             ["Ssimulacra2ToolMissing"] = "SSIMULACRA2.1 質量指標工具缺失。請將 x64-CloudinarySSIMULACRA2.1 文件夾放在程序目錄旁，再重啟應用",
             ["Ssimulacra2ToolPresent"] = "SSIMULACRA2.1 質量指標工具已就緒",
             ["SsimulacraScoreHint"] = "SSIMULACRA 分數：100 數據無損 | 90 視覺無損 | 85 差異極小 | 80 差異顯露 | 70 差異可見 | 50 差異較大 | 30 差異巨大",
+            ["ButteraugliToolMissing"] = "Butteraugli 質量指標工具缺失。請將 x64-GoogleButteraugli 文件夾放在程序目錄旁，再重啟應用",
+            ["ButteraugliToolPresent"] = "Butteraugli 質量指標工具已就緒",
+            ["ButteraugliScoreHint"] = "Butteraugli 分數（經驗分級）：<1 理論無損 | 1-2 視覺無損 | 2-4 輕微可見損失 | 4-6 明顯損失 | 6-8 嚴重損失 | >8 極重損失",
         },
     };
 
@@ -143,6 +152,9 @@ public class ImgABPvLangProviderM
             ["Ssimulacra2ToolMissing"] = "L'outil SSIMULACRA2.1 est introuvable. Placez le fichier x64-CloudinarySSIMULACRA2.1 à côté de l'exécutable et redémarrez.",
             ["Ssimulacra2ToolPresent"] = "La métrique de qualité SSIMULACRA2.1 est prête",
             ["SsimulacraScoreHint"] = "Score SSIMULACRA : 100 Sans perte | 90 Sans perte visuelle | 85 Perte minime | 80 Légère | 70 Visible | 50 Notable | 30 Grave",
+            ["ButteraugliToolMissing"] = "L'outil Butteraugli est introuvable. Placez x64-GoogleButteraugli à côté de l'exécutable et redémarrez.",
+            ["ButteraugliToolPresent"] = "La métrique de qualité Butteraugli est prête",
+            ["ButteraugliScoreHint"] = "Score Butteraugli : plus bas = meilleur",
         };
         Data["es"] = new(Data["en"])
         {
@@ -177,6 +189,9 @@ public class ImgABPvLangProviderM
             ["Ssimulacra2ToolMissing"] = "No se encontró la herramienta SSIMULACRA2.1. Coloque x64-CloudinarySSIMULACRA2.1 junto al ejecutable y reinicie.",
             ["Ssimulacra2ToolPresent"] = "La métrica de calidad SSIMULACRA2.1 está lista.",
             ["SsimulacraScoreHint"] = "SSIMULACRA: 100 Sin pérdida | 90 Sin pérdida visual | 85 Pérdida mínima | 80 Notable | 70 Visible | 50 Considerable | 30 Grave",
+            ["ButteraugliToolMissing"] = "No se encontró la herramienta Butteraugli. Coloque x64-GoogleButteraugli junto al ejecutable y reinicie.",
+            ["ButteraugliToolPresent"] = "La métrica de calidad Butteraugli está lista.",
+            ["ButteraugliScoreHint"] = "Butteraugli: puntuación más baja = mejor calidad",
         };
         Data["ja"] = new(Data["en"])
         {
@@ -211,6 +226,9 @@ public class ImgABPvLangProviderM
             ["Ssimulacra2ToolMissing"] = "SSIMULACRA2.1 ツールが見つかりません。x64-CloudinarySSIMULACRA2.1 を実行ファイルの隣に配置して再起動してください。",
             ["Ssimulacra2ToolPresent"] = "SSIMULACRA2.1 品質メトリックの準備ができました。",
             ["SsimulacraScoreHint"] = "SSIMULACRA スコア：100 数学的無損失 | 90 視覚的無損失 | 85 わずかな損失 | 80 顕著な損失 | 70 目に見える損失 | 50 大きな損失 | 30 致命的な損失",
+            ["ButteraugliToolMissing"] = "Butteraugli ツールが見つかりません。x64-GoogleButteraugli を実行ファイルの隣に配置して再起動してください。",
+            ["ButteraugliToolPresent"] = "Butteraugli 品質メトリックの準備ができました。",
+            ["ButteraugliScoreHint"] = "Butteraugli スコア：低いほど良い",
         };
         Data["ru"] = new(Data["en"])
         {
@@ -245,6 +263,9 @@ public class ImgABPvLangProviderM
             ["Ssimulacra2ToolMissing"] = "Инструмент SSIMULACRA2.1 не найден. Поместите x64-CloudinarySSIMULACRA2.1 рядом с исполняемым файлом и перезапустите.",
             ["Ssimulacra2ToolPresent"] = "Метрика качества SSIMULACRA2.1 готова.",
             ["SsimulacraScoreHint"] = "Оценка SSIMULACRA: 100 Мате. без потерь | 90 Визуально без потерь | 85 Незначительные потери | 80 Заметные | 70 Видимые | 50 Значительные | 30 Критические",
+            ["ButteraugliToolMissing"] = "Инструмент Butteraugli не найден. Поместите x64-GoogleButteraugli рядом с исполняемым файлом и перезапустите.",
+            ["ButteraugliToolPresent"] = "Метрика качества Butteraugli готова.",
+            ["ButteraugliScoreHint"] = "Оценка Butteraugli: чем ниже, тем лучше",
         };
     }
 
@@ -283,6 +304,9 @@ public class ImgABPvLangProviderM
     public string Ssimulacra2ToolMissing { get; }
     public string Ssimulacra2ToolPresent { get; }
     public string SsimulacraScoreHint { get; }
+    public string ButteraugliToolMissing { get; }
+    public string ButteraugliToolPresent { get; }
+    public string ButteraugliScoreHint { get; }
 
     public ImgABPvLangProviderM(string languageCode)
     {
@@ -319,5 +343,8 @@ public class ImgABPvLangProviderM
         Ssimulacra2ToolMissing = _d["Ssimulacra2ToolMissing"];
         Ssimulacra2ToolPresent = _d["Ssimulacra2ToolPresent"];
         SsimulacraScoreHint = _d["SsimulacraScoreHint"];
+        ButteraugliToolMissing = _d["ButteraugliToolMissing"];
+        ButteraugliToolPresent = _d["ButteraugliToolPresent"];
+        ButteraugliScoreHint = _d["ButteraugliScoreHint"];
     }
 }
