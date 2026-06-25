@@ -475,6 +475,7 @@ model.SvtAv1Dl2 = SvtAv1Dl2;
             UILangProviderM.CurrentChanged -= OnLanguageChanged;
             PreviewVM.Dispose();
             base.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }
