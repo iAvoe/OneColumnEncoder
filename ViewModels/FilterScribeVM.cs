@@ -145,6 +145,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(FfmpegFpsScaleFilter));
             OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
             OnPropertyChanged(nameof(FfmpegFullChainFilter));
+            OnPropertyChanged(nameof(FfmpegHqdn3dFullChainFilter));
             OnPropertyChanged(nameof(VapourSynthResizeFilter));
             OnPropertyChanged(nameof(AviSynthResizeFilter));
         }
@@ -200,12 +201,9 @@ namespace OneColumnEncoder.ViewModels
                 ? "-filter:v \"libplacebo=reset_sar=1\""
                 : "N/A";
 
-        public static string VapourSynthHqdn3dDenoiseFilter =>
-            UILangProviderM.Current["SrcScribe.FilterPlaceholder"];
-        public static string AviSynthHqdn3dDenoiseFilter =>
-            UILangProviderM.Current["SrcScribe.FilterPlaceholder"];
-        public static string FfmpegHqdn3dDenoiseFilter =>
-            UILangProviderM.Current["SrcScribe.FilterPlaceholder"];
+        public static string VapourSynthHqdn3dDenoiseFilter => "src = hqdn3d.Hqdn3d(src)";
+        public static string AviSynthHqdn3dDenoiseFilter => "hqdn3d(src)";
+        public static string FfmpegHqdn3dDenoiseFilter => "-filter:v \"hqdn3d\"";
         public static string VapourSynthSubtitleFilter =>
             UILangProviderM.Current["SrcScribe.FilterPlaceholder"];
         public static string AviSynthSubtitleFilter =>
@@ -248,6 +246,19 @@ namespace OneColumnEncoder.ViewModels
                 string? scale = ScaleFilterChain;
                 if (sar == null || color == null || fps == null || scale == null) return "N/A";
                 return BuildFfmpegFilterArgs(includeSwsFlags: scale != null, includeCsp709Flags: color != null, fps, sar, color, scale);
+            }
+        }
+
+        public string FfmpegHqdn3dFullChainFilter
+        {
+            get
+            {
+                string? sar = SarRepairFilterChain;
+                string? color = ColorSpaceFilterChain;
+                string? fps = FpsFilterChain;
+                string? scale = ScaleFilterChain;
+                if (sar == null || color == null || fps == null || scale == null) return "N/A";
+                return BuildFfmpegFilterArgs(includeSwsFlags: scale != null, includeCsp709Flags: color != null, "hqdn3d", fps, sar, color, scale);
             }
         }
 
@@ -330,6 +341,7 @@ namespace OneColumnEncoder.ViewModels
                 OnPropertyChanged(nameof(FfmpegFpsScaleFilter));
                 OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
                 OnPropertyChanged(nameof(FfmpegFullChainFilter));
+                OnPropertyChanged(nameof(FfmpegHqdn3dFullChainFilter));
                 OnPropertyChanged(nameof(VapourSynthResizeFilter));
                 OnPropertyChanged(nameof(AviSynthResizeFilter));
             }
