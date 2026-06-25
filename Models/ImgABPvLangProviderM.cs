@@ -154,7 +154,7 @@ public class ImgABPvLangProviderM
             ["SsimulacraScoreHint"] = "Score SSIMULACRA : 100 Sans perte | 90 Sans perte visuelle | 85 Perte minime | 80 Légère | 70 Visible | 50 Notable | 30 Grave",
             ["ButteraugliToolMissing"] = "L'outil Butteraugli est introuvable. Placez x64-GoogleButteraugli à côté de l'exécutable et redémarrez.",
             ["ButteraugliToolPresent"] = "La métrique de qualité Butteraugli est prête",
-            ["ButteraugliScoreHint"] = "Score Butteraugli : plus bas = meilleur",
+            ["ButteraugliScoreHint"] = "Score Butteraugli (heuristique) : <1 Théoriquement sans perte | 1-2 Visuellement sans perte | 2-4 Perte légère | 4-6 Perte notable | 6-8 Perte importante | >8 Perte sévère",
         };
         Data["es"] = new(Data["en"])
         {
@@ -191,7 +191,7 @@ public class ImgABPvLangProviderM
             ["SsimulacraScoreHint"] = "SSIMULACRA: 100 Sin pérdida | 90 Sin pérdida visual | 85 Pérdida mínima | 80 Notable | 70 Visible | 50 Considerable | 30 Grave",
             ["ButteraugliToolMissing"] = "No se encontró la herramienta Butteraugli. Coloque x64-GoogleButteraugli junto al ejecutable y reinicie.",
             ["ButteraugliToolPresent"] = "La métrica de calidad Butteraugli está lista.",
-            ["ButteraugliScoreHint"] = "Butteraugli: puntuación más baja = mejor calidad",
+            ["ButteraugliScoreHint"] = "Puntuación Butteraugli (heurística): <1 Sin pérdida teórica | 1-2 Sin pérdida visual | 2-4 Pérdida leve | 4-6 Pérdida notable | 6-8 Pérdida grave | >8 Pérdida severa",
         };
         Data["ja"] = new(Data["en"])
         {
@@ -228,7 +228,7 @@ public class ImgABPvLangProviderM
             ["SsimulacraScoreHint"] = "SSIMULACRA スコア：100 数学的無損失 | 90 視覚的無損失 | 85 わずかな損失 | 80 顕著な損失 | 70 目に見える損失 | 50 大きな損失 | 30 致命的な損失",
             ["ButteraugliToolMissing"] = "Butteraugli ツールが見つかりません。x64-GoogleButteraugli を実行ファイルの隣に配置して再起動してください。",
             ["ButteraugliToolPresent"] = "Butteraugli 品質メトリックの準備ができました。",
-            ["ButteraugliScoreHint"] = "Butteraugli スコア：低いほど良い",
+            ["ButteraugliScoreHint"] = "Butteraugli スコア（ヒューリスティック）：<1 理論的ロスレス | 1-2 視覚的ロスレス | 2-4 軽微な損失 | 4-6 顕著な損失 | 6-8 大きな損失 | >8 深刻な損失",
         };
         Data["ru"] = new(Data["en"])
         {
@@ -265,7 +265,7 @@ public class ImgABPvLangProviderM
             ["SsimulacraScoreHint"] = "Оценка SSIMULACRA: 100 Мате. без потерь | 90 Визуально без потерь | 85 Незначительные потери | 80 Заметные | 70 Видимые | 50 Значительные | 30 Критические",
             ["ButteraugliToolMissing"] = "Инструмент Butteraugli не найден. Поместите x64-GoogleButteraugli рядом с исполняемым файлом и перезапустите.",
             ["ButteraugliToolPresent"] = "Метрика качества Butteraugli готова.",
-            ["ButteraugliScoreHint"] = "Оценка Butteraugli: чем ниже, тем лучше",
+            ["ButteraugliScoreHint"] = "Оценка Butteraugli (эвристическая): <1 Теоретически без потерь | 1-2 Визуально без потерь | 2-4 Небольшая потеря | 4-6 Заметная потеря | 6-8 Значительная потеря | >8 Критическая потеря",
         };
     }
 
