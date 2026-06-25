@@ -643,86 +643,8 @@
                 <TextBlock Text="{Binding MultiFilterAssemblyTitle}"
                            Style="{StaticResource H3}"
                            Margin="0 15 0 0" />
-                <Grid Margin="0 5 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="49" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="ffmpeg::"
-                               FontSize="11"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1"
-                             Text="{Binding FfmpegFpsScaleFilter, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             FontSize="11"
-                             FontFamily="Segoe UI"
-                             VerticalScrollBarVisibility="Disabled" />
-                </Grid>
-                <Grid Margin="0 3 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="49" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="ffmpeg:::"
-                               FontSize="11"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1"
-                             Text="{Binding FfmpegFpsColorScaleFilter, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             FontSize="11"
-                             FontFamily="Segoe UI"
-                             VerticalScrollBarVisibility="Disabled" />
-                </Grid>
-                <Grid Margin="0 3 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="49" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="ffmpeg::::"
-                               FontSize="11"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1"
-                             Text="{Binding FfmpegFullChainFilter, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             FontSize="11"
-                             FontFamily="Segoe UI"
-                             VerticalScrollBarVisibility="Disabled" />
-                </Grid>
-                <Grid Margin="0 3 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="49" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="ffmpeg:::::"
-                               FontSize="11"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1"
-                             Text="{Binding FfmpegHqdn3dFullChainFilter, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             FontSize="11"
-                             FontFamily="Segoe UI"
-                             VerticalScrollBarVisibility="Disabled" />
-                </Grid>
+                <comps:HintPanel Margin="0 5 0 0"
+                                 Text="ffmpeg::  -filter:v &quot;fps=30000/1001,scale=1280:720&quot;&#x0a;ffmpeg::: -filter:v &quot;fps=30000/1001,zscale=matrix=bt709:primaries=bt709:transfer=bt709,scale=1280:720&quot;&#x0a;ffmpeg:::: -filter:v &quot;fps=30000/1001,libplacebo=reset_sar=1,zscale=matrix=bt709:primaries=bt709:transfer=bt709,scale=1280:720&quot;&#x0a;ffmpeg::::: -filter:v &quot;hqdn3d,fps=30000/1001,libplacebo=reset_sar=1,zscale=matrix=bt709:primaries=bt709:transfer=bt709,scale=1280:720&quot;" />
             </StackPanel>
         </StackPanel>
 
