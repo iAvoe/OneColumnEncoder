@@ -42,6 +42,31 @@
                         </Setter.Value>
                     </Setter>
                     <Style.Triggers>
+                        <!-- Remixed: applies to default state only (state triggers below override) -->
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsInverted, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="True" />
+                                <Condition Binding="{Binding UseAltInvertedPalette, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource RemixedBorder}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource RemixedBackground}" />
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsInverted, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="True" />
+                                <Condition Binding="{Binding UseAltInvertedPalette, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource RemixedBorder2}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource RemixedBackground2}" />
+                        </MultiDataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -118,6 +143,35 @@
                     <Setter Property="TextElement.Foreground"
                             Value="{StaticResource GlobalPrimary}" />
                     <Style.Triggers>
+                        <!-- Remixed: applies to default state only (state triggers below override) -->
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsInverted, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="True" />
+                                <Condition Binding="{Binding UseAltInvertedPalette, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource RemixedBorder}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource RemixedBackground}" />
+                            <Setter Property="TextElement.Foreground"
+                                    Value="{StaticResource RemixedForeground}" />
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsInverted, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="True" />
+                                <Condition Binding="{Binding UseAltInvertedPalette, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="True" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource RemixedBorder2}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource RemixedBackground2}" />
+                            <Setter Property="TextElement.Foreground"
+                                    Value="{StaticResource RemixedForeground2}" />
+                        </MultiDataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -208,12 +262,76 @@
                             Orientation="Horizontal" >
                     <Button Content="{Binding DisplayR1Text}"
                             Command="{Binding R1Command}"
-                            Style="{StaticResource LinkButton}"
-                            Focusable="False" />
+                            Focusable="False">
+                        <Button.Style>
+                            <Style TargetType="Button"
+                                   BasedOn="{StaticResource LinkButton}">
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsInverted, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                       Value="True" />
+                                            <Condition Binding="{Binding UseAltInvertedPalette, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                       Value="False" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Foreground"
+                                                Value="{StaticResource RemixedForeground}" />
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsInverted, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                       Value="True" />
+                                            <Condition Binding="{Binding UseAltInvertedPalette, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                       Value="True" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Foreground"
+                                                Value="{StaticResource RemixedForeground2}" />
+                                    </MultiDataTrigger>
+                                    <Trigger Property="IsEnabled"
+                                             Value="False">
+                                        <Setter Property="Foreground"
+                                                Value="{StaticResource GlobalSecondary}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
                     <Button Content="{Binding R2Text}"
                             Command="{Binding R2Command}"
-                            Style="{StaticResource LinkButton}"
-                            Focusable="False" />
+                            Focusable="False">
+                        <Button.Style>
+                            <Style TargetType="Button"
+                                   BasedOn="{StaticResource LinkButton}">
+                                <Style.Triggers>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsInverted, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                       Value="True" />
+                                            <Condition Binding="{Binding UseAltInvertedPalette, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                       Value="False" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Foreground"
+                                                Value="{StaticResource RemixedForeground}" />
+                                    </MultiDataTrigger>
+                                    <MultiDataTrigger>
+                                        <MultiDataTrigger.Conditions>
+                                            <Condition Binding="{Binding IsInverted, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                       Value="True" />
+                                            <Condition Binding="{Binding UseAltInvertedPalette, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                       Value="True" />
+                                        </MultiDataTrigger.Conditions>
+                                        <Setter Property="Foreground"
+                                                Value="{StaticResource RemixedForeground2}" />
+                                    </MultiDataTrigger>
+                                    <Trigger Property="IsEnabled"
+                                             Value="False">
+                                        <Setter Property="Foreground"
+                                                Value="{StaticResource GlobalSecondary}" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
                 </StackPanel>
             </Grid>
         </Border>

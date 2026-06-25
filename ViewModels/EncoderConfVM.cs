@@ -93,11 +93,32 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _freeTextParamsX265, value);
         }
 
-        private string _freeTextParamsSvtAv1 = string.Empty;
+private string _freeTextParamsSvtAv1 = string.Empty;
         public string FreeTextParamsSvtAv1
         {
             get => _freeTextParamsSvtAv1;
             set => SetProperty(ref _freeTextParamsSvtAv1, value);
+        }
+
+        private string _previewFreeTextParamsX264 = string.Empty;
+        public string PreviewFreeTextParamsX264
+        {
+            get => _previewFreeTextParamsX264;
+            set => SetProperty(ref _previewFreeTextParamsX264, value);
+        }
+
+        private string _previewFreeTextParamsX265 = string.Empty;
+        public string PreviewFreeTextParamsX265
+        {
+            get => _previewFreeTextParamsX265;
+            set => SetProperty(ref _previewFreeTextParamsX265, value);
+        }
+
+        private string _previewFreeTextParamsSvtAv1 = string.Empty;
+        public string PreviewFreeTextParamsSvtAv1
+        {
+            get => _previewFreeTextParamsSvtAv1;
+            set => SetProperty(ref _previewFreeTextParamsSvtAv1, value);
         }
 
         private bool IsAbrTabSelected => SelectedTabIndex == 1;
@@ -298,6 +319,9 @@ namespace OneColumnEncoder.ViewModels
             FreeTextParamsX264 = _model.CustomParamsX264;
             FreeTextParamsX265 = _model.CustomParamsX265;
             FreeTextParamsSvtAv1 = _model.CustomParamsSvtAv1;
+            PreviewFreeTextParamsX264 = _model.PreviewCustomParamsX264;
+            PreviewFreeTextParamsX265 = _model.PreviewCustomParamsX265;
+            PreviewFreeTextParamsSvtAv1 = _model.PreviewCustomParamsSvtAv1;
         }
 
         private void SaveModel()
@@ -306,10 +330,13 @@ namespace OneColumnEncoder.ViewModels
             _model.Save();
         }
 
-        public EncoderConfM CreatePreviewModel()
+public EncoderConfM CreatePreviewModel()
         {
             EncoderConfM previewModel = new();
             FillModelFromUi(previewModel, forceCrfMode: true);
+            previewModel.CustomParamsX264 = PreviewFreeTextParamsX264;
+            previewModel.CustomParamsX265 = PreviewFreeTextParamsX265;
+            previewModel.CustomParamsSvtAv1 = PreviewFreeTextParamsSvtAv1;
             return previewModel;
         }
 
@@ -332,11 +359,14 @@ namespace OneColumnEncoder.ViewModels
             model.X265Aq = X265Aq;
             model.X265Dark = X265Dark;
             model.X265Texture = X265Texture;
-            model.SvtAv1Dl2 = SvtAv1Dl2;
+model.SvtAv1Dl2 = SvtAv1Dl2;
             model.SvtAv1AutoTile = SvtAv1AutoTile;
             model.CustomParamsX264 = FreeTextParamsX264;
             model.CustomParamsX265 = FreeTextParamsX265;
             model.CustomParamsSvtAv1 = FreeTextParamsSvtAv1;
+            model.PreviewCustomParamsX264 = PreviewFreeTextParamsX264;
+            model.PreviewCustomParamsX265 = PreviewFreeTextParamsX265;
+            model.PreviewCustomParamsSvtAv1 = PreviewFreeTextParamsSvtAv1;
             model.X264Mode = X264ModeDropdown.SelectedItem?.Tag is int x264Mode ? x264Mode : -1;
             model.X265Mode = X265ModeDropdown.SelectedItem?.Tag is int x265Mode ? x265Mode : -1;
             model.SvtAv1Mode = SvtAv1ModeDropdown.SelectedItem?.Tag is int svtAv1Mode ? svtAv1Mode : -1;
@@ -389,6 +419,8 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(KeyframeSecondsText));
             OnPropertyChanged(nameof(ThirdPartyParamsText));
             OnPropertyChanged(nameof(FreeTextControlTitle));
+            OnPropertyChanged(nameof(Lang.PreviewFreeTextControlTitle));
+            OnPropertyChanged(nameof(Lang.PreviewFreeTextHint));
             OnPropertyChanged(nameof(X264ModText));
             OnPropertyChanged(nameof(X265JpsdrAqText));
             OnPropertyChanged(nameof(X265JpsdrDarkText));

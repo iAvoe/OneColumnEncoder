@@ -90,6 +90,32 @@
                       x:Key="TimelineThumbBackground" />
     <SolidColorBrush Color="#D2B45A"
                       x:Key="TimelineThumbBorder" />
+    <!-- Remixed card palette (light gray blue background) -->
+    <SolidColorBrush Color="#BAC8D3"
+                     x:Key="RemixedBackground" />
+    <SolidColorBrush Color="#013"
+                     x:Key="RemixedForeground" />
+    <SolidColorBrush Color="#23445D"
+                     x:Key="RemixedBorder" />
+    <SolidColorBrush Color="#808080"
+                     x:Key="RemixedDisabledForeground" />
+    <SolidColorBrush Color="#2A3A3A"
+                     x:Key="RemixedBackgroundGreen" />
+    <SolidColorBrush Color="#3A2A2A"
+                     x:Key="RemixedBackgroundRed" />
+    <!-- Remixed card palette (light orange background) -->
+    <SolidColorBrush Color="#fee7cb"
+                     x:Key="RemixedBackground2" />
+    <SolidColorBrush Color="#2d1901"
+                     x:Key="RemixedForeground2" />
+    <SolidColorBrush Color="#663300"
+                     x:Key="RemixedBorder2" />
+    <SolidColorBrush Color="#808080"
+                     x:Key="RemixedDisabledForeground2" />
+    <SolidColorBrush Color="#2A3A3A"
+                     x:Key="RemixedBackgroundGreen2" />
+    <SolidColorBrush Color="#3A2A2A"
+                     x:Key="RemixedBackgroundRed2" />
     <!-- Memory range palette: empty block -->
     <SolidColorBrush Color="#E9EEF2"
                      x:Key="MemoryRangeEmpty" />

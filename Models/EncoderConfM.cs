@@ -46,6 +46,10 @@ namespace OneColumnEncoder.Models
         public string CustomParamsX265 { get; set; } = "";
         public string CustomParamsSvtAv1 { get; set; } = "";
 
+        public string PreviewCustomParamsX264 { get; set; } = "";
+        public string PreviewCustomParamsX265 { get; set; } = "";
+        public string PreviewCustomParamsSvtAv1 { get; set; } = "";
+
         private sealed class LegacyPresetKeyIntConverter : JsonConverter<int>
         {
             public override int Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
