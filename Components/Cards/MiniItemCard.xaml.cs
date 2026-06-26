@@ -61,5 +61,18 @@ namespace OneColumnEncoder.Components.Cards
             get => (bool)GetValue(IsCompactTextProperty);
             set => SetValue(IsCompactTextProperty, value);
         }
+
+        public static readonly DependencyProperty PaletteIndexProperty =
+            DependencyProperty.Register(
+                nameof(PaletteIndex),
+                typeof(int),
+                typeof(MiniItemCard),
+                new PropertyMetadata(0));
+
+        public int PaletteIndex
+        {
+            get => (int)GetValue(PaletteIndexProperty);
+            set => SetValue(PaletteIndexProperty, value);
+        }
     }
 }

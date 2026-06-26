@@ -1,5 +1,6 @@
 using OneColumnEncoder.Persistence;
 using System.IO;
+using System.Text.Json.Serialization;
 
 namespace OneColumnEncoder.Models
 {
@@ -11,11 +12,20 @@ namespace OneColumnEncoder.Models
 
         public Importables Tools { get; set; } = new Importables();
         public EncodingSettings Encoding { get; set; } = new EncodingSettings();
-        public bool IsMiniUpstreamsZone { get; set; }
-        public bool IsMiniEncodersZone { get; set; }
-        public bool IsMiniAnalyticsZone { get; set; }
-        public bool IsMiniDependenciesZone { get; set; }
-        public bool ShowBestPracticesCard { get; set; } = false;
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public bool? IsMiniUpstreamsZone { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public bool? IsMiniEncodersZone { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public bool? IsMiniAnalyticsZone { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public bool? IsMiniDependenciesZone { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public bool? IsMiniVideoSrcImportZone { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public bool? IsMiniScriptSrcImportZone { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public bool? ShowBestPracticesCard { get; set; }
 
         // File sizes are used for detecting tool replacements
         #region ImportedTools data structure

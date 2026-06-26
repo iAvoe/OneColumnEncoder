@@ -33,6 +33,8 @@ namespace OneColumnEncoder.ViewModels
         private bool _isMiniEncodersZone;
         private bool _isMiniAnalyticsZone;
         private bool _isMiniDependenciesZone;
+        private bool _isMiniVideoSrcImportZone;
+        private bool _isMiniScriptSrcImportZone;
         private bool _showBestPracticesCard;
         private string _upstreamsZoneSelectedPath = string.Empty;
         private string _encodersZoneSelectedPath = string.Empty;
@@ -75,6 +77,8 @@ namespace OneColumnEncoder.ViewModels
         public ActionCmd ToggleMiniEncodersZoneCmd { get; }
         public ActionCmd ToggleMiniAnalyticsZoneCmd { get; }
         public ActionCmd ToggleMiniDependenciesZoneCmd { get; }
+        public ActionCmd ToggleMiniVideoSrcImportZoneCmd { get; }
+        public ActionCmd ToggleMiniScriptSrcImportZoneCmd { get; }
         public ActionCmd ToggleShowBestPracticesCardCmd { get; }
         public OneClickScriptGenCmd OneClickScriptGen { get; }
         public OpenFilterScribeCmd OpenFilterScribe { get; }
@@ -172,6 +176,18 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _isMiniDependenciesZone, value);
         }
 
+        public bool IsMiniVideoSrcImportZone
+        {
+            get => _isMiniVideoSrcImportZone;
+            set => SetProperty(ref _isMiniVideoSrcImportZone, value);
+        }
+
+        public bool IsMiniScriptSrcImportZone
+        {
+            get => _isMiniScriptSrcImportZone;
+            set => SetProperty(ref _isMiniScriptSrcImportZone, value);
+        }
+
         public bool ShowBestPracticesCard
         {
             get => _showBestPracticesCard;
@@ -190,6 +206,16 @@ namespace OneColumnEncoder.ViewModels
 
         public string ToggleMiniDependenciesZoneText =>
             IsMiniDependenciesZone
+                ? UILangProviderM.Current["Expand"]
+                : UILangProviderM.Current["Collapse"];
+
+        public string ToggleMiniVideoSrcImportZoneText =>
+            IsMiniVideoSrcImportZone
+                ? UILangProviderM.Current["Expand"]
+                : UILangProviderM.Current["Collapse"];
+
+        public string ToggleMiniScriptSrcImportZoneText =>
+            IsMiniScriptSrcImportZone
                 ? UILangProviderM.Current["Expand"]
                 : UILangProviderM.Current["Collapse"];
 
@@ -244,11 +270,13 @@ namespace OneColumnEncoder.ViewModels
             _appDataM = appDataM;
             _appConfM = appConfM;
             _modalNavS = modalNavS;
-            _isMiniUpstreamsZone = _appDataM.IsMiniUpstreamsZone;
-            _isMiniEncodersZone = _appDataM.IsMiniEncodersZone;
-            _isMiniAnalyticsZone = _appDataM.IsMiniAnalyticsZone;
-            _isMiniDependenciesZone = _appDataM.IsMiniDependenciesZone;
-            _showBestPracticesCard = _appDataM.ShowBestPracticesCard;
+            _isMiniUpstreamsZone = _appDataM.IsMiniUpstreamsZone ?? false;
+            _isMiniEncodersZone = _appDataM.IsMiniEncodersZone ?? false;
+            _isMiniAnalyticsZone = _appDataM.IsMiniAnalyticsZone ?? false;
+            _isMiniDependenciesZone = _appDataM.IsMiniDependenciesZone ?? false;
+            _isMiniVideoSrcImportZone = _appDataM.IsMiniVideoSrcImportZone ?? false;
+            _isMiniScriptSrcImportZone = _appDataM.IsMiniScriptSrcImportZone ?? false;
+            _showBestPracticesCard = _appDataM.ShowBestPracticesCard ?? false;
             OpenAppConf = openAppConf;
             OpenUsages = openUsages;
 
@@ -281,6 +309,20 @@ namespace OneColumnEncoder.ViewModels
                 _appDataM.IsMiniDependenciesZone = IsMiniDependenciesZone;
                 _appDataM.Save();
                 OnPropertyChanged(nameof(ToggleMiniDependenciesZoneText));
+            });
+            ToggleMiniVideoSrcImportZoneCmd = new ActionCmd(_ =>
+            {
+                IsMiniVideoSrcImportZone = !IsMiniVideoSrcImportZone;
+                _appDataM.IsMiniVideoSrcImportZone = IsMiniVideoSrcImportZone;
+                _appDataM.Save();
+                OnPropertyChanged(nameof(ToggleMiniVideoSrcImportZoneText));
+            });
+            ToggleMiniScriptSrcImportZoneCmd = new ActionCmd(_ =>
+            {
+                IsMiniScriptSrcImportZone = !IsMiniScriptSrcImportZone;
+                _appDataM.IsMiniScriptSrcImportZone = IsMiniScriptSrcImportZone;
+                _appDataM.Save();
+                OnPropertyChanged(nameof(ToggleMiniScriptSrcImportZoneText));
             });
             ToggleShowBestPracticesCardCmd = new ActionCmd(_ =>
             {
@@ -2130,6 +2172,8 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(ToggleMiniEncodersZoneText));
             OnPropertyChanged(nameof(ToggleMiniAnalyticsZoneText));
             OnPropertyChanged(nameof(ToggleMiniDependenciesZoneText));
+            OnPropertyChanged(nameof(ToggleMiniVideoSrcImportZoneText));
+            OnPropertyChanged(nameof(ToggleMiniScriptSrcImportZoneText));
             OnPropertyChanged(nameof(ToggleShowBestPracticesCardText));
             EncStartButtons.B3_1Text = UICaptionProviderM.Buttons.ReEvaluate;
             EncStartButtons.B3_2Text = UICaptionProviderM.Buttons.RunSample;

@@ -26,11 +26,33 @@
                TargetType="TextBlock">
             <Setter Property="FontSize"
                     Value="10" />
+            <Setter Property="Foreground"
+                    Value="{StaticResource GlobalSecondary}" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsCompactText, RelativeSource={RelativeSource AncestorType=UserControl}}"
                              Value="True">
                     <Setter Property="FontSize"
                             Value="11" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                             Value="1">
+                    <Setter Property="Foreground"
+                            Value="{StaticResource RemixedForeground}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                             Value="2">
+                    <Setter Property="Foreground"
+                            Value="{StaticResource RemixedForeground2}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                             Value="3">
+                    <Setter Property="Foreground"
+                            Value="{StaticResource RemixedForeground3}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                             Value="4">
+                    <Setter Property="Foreground"
+                            Value="{StaticResource RemixedForeground4}" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -74,6 +96,26 @@
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
+                <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                             Value="1">
+                    <Setter Property="Foreground"
+                            Value="{StaticResource RemixedForeground}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                             Value="2">
+                    <Setter Property="Foreground"
+                            Value="{StaticResource RemixedForeground2}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                             Value="3">
+                    <Setter Property="Foreground"
+                            Value="{StaticResource RemixedForeground3}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                             Value="4">
+                    <Setter Property="Foreground"
+                            Value="{StaticResource RemixedForeground4}" />
+                </DataTrigger>
                 <DataTrigger Binding="{Binding IsCompactText, RelativeSource={RelativeSource AncestorType=UserControl}}"
                              Value="True">
                     <Setter Property="FontSize"
@@ -134,6 +176,34 @@
                         </Setter.Value>
                     </Setter>
                     <Style.Triggers>
+                        <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="1">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource RemixedBorder}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource RemixedBackground}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="2">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource RemixedBorder2}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource RemixedBackground2}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="3">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource RemixedBorder3}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource RemixedBackground3}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="4">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource RemixedBorder4}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource RemixedBackground4}" />
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      Value="True">
                             <Setter Property="BorderBrush"
@@ -179,6 +249,42 @@
                     <Setter Property="TextElement.Foreground"
                             Value="{StaticResource GlobalPrimary}" />
                     <Style.Triggers>
+                        <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="1">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource RemixedBorder}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource RemixedBackground}" />
+                            <Setter Property="TextElement.Foreground"
+                                    Value="{StaticResource RemixedForeground}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="2">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource RemixedBorder2}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource RemixedBackground2}" />
+                            <Setter Property="TextElement.Foreground"
+                                    Value="{StaticResource RemixedForeground2}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="3">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource RemixedBorder3}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource RemixedBackground3}" />
+                            <Setter Property="TextElement.Foreground"
+                                    Value="{StaticResource RemixedForeground3}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="4">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource RemixedBorder4}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource RemixedBackground4}" />
+                            <Setter Property="TextElement.Foreground"
+                                    Value="{StaticResource RemixedForeground4}" />
+                        </DataTrigger>
                         <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      Value="True">
                             <Setter Property="BorderBrush"
@@ -225,7 +331,6 @@
                     <TextBlock Grid.Row="1"
                                Text="{Binding P1Text}"
                                Style="{StaticResource MiniSecondaryText}"
-                               Foreground="{StaticResource GlobalSecondary}"
                                TextTrimming="CharacterEllipsis"
                                HorizontalAlignment="Stretch" />
                 </Grid>
