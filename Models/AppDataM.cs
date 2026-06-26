@@ -15,6 +15,7 @@ namespace OneColumnEncoder.Models
         public bool IsMiniEncodersZone { get; set; }
         public bool IsMiniAnalyticsZone { get; set; }
         public bool IsMiniDependenciesZone { get; set; }
+        public bool ShowBestPracticesCard { get; set; } = false;
 
         // File sizes are used for detecting tool replacements
         #region ImportedTools data structure

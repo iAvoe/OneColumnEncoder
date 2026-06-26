@@ -604,7 +604,17 @@
 
             <!-- Starting Options -->
             <comps:SectionHeader HeaderText="{Binding SectionStartEncoding}"
-                                 Margin="0 15 0 0" />
+                                 Margin="0 15 0 0">
+                <comps:SectionHeader.HeaderExtra>
+                    <Button Content="{Binding ToggleShowBestPracticesCardText}"
+                            Command="{Binding ToggleShowBestPracticesCardCmd}"
+                            VerticalAlignment="Center"
+                            Focusable="False"
+                            KeyboardNavigation.IsTabStop="False"
+                            Margin="5 0"
+                            Style="{StaticResource LinkButton}" />
+                </comps:SectionHeader.HeaderExtra>
+            </comps:SectionHeader>
             <comps:ValidationCard DataContext="{Binding EncTermsCard}"
                                   Margin="5 15 5 5" />
 
@@ -624,7 +634,21 @@
                                   Margin="10 15 10 0" />
 
             <comps:ValidationCard DataContext="{Binding BestPracticesCard}"
-                                  Margin="5 15 5 5" />
+                                  Margin="5 15 5 5">
+                <comps:ValidationCard.Style>
+                    <Style TargetType="comps:ValidationCard">
+                        <Setter Property="Visibility"
+                                Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding DataContext.ShowBestPracticesCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </comps:ValidationCard.Style>
+            </comps:ValidationCard>
 
             <comps:ThreeButtonGroup DataContext="{Binding EncStartButtons}"
                                     ButtonHeight="35"

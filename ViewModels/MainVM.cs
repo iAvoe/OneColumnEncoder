@@ -33,6 +33,7 @@ namespace OneColumnEncoder.ViewModels
         private bool _isMiniEncodersZone;
         private bool _isMiniAnalyticsZone;
         private bool _isMiniDependenciesZone;
+        private bool _showBestPracticesCard;
         private string _upstreamsZoneSelectedPath = string.Empty;
         private string _encodersZoneSelectedPath = string.Empty;
         private string _analyticsZoneSelectedPath = string.Empty;
@@ -74,6 +75,7 @@ namespace OneColumnEncoder.ViewModels
         public ActionCmd ToggleMiniEncodersZoneCmd { get; }
         public ActionCmd ToggleMiniAnalyticsZoneCmd { get; }
         public ActionCmd ToggleMiniDependenciesZoneCmd { get; }
+        public ActionCmd ToggleShowBestPracticesCardCmd { get; }
         public OneClickScriptGenCmd OneClickScriptGen { get; }
         public OpenFilterScribeCmd OpenFilterScribe { get; }
         public CopyRawAnalysisCmd CopyRawAnalysis { get; } // Copy (ffprobe JSON) to clipboard
@@ -170,6 +172,12 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _isMiniDependenciesZone, value);
         }
 
+        public bool ShowBestPracticesCard
+        {
+            get => _showBestPracticesCard;
+            set => SetProperty(ref _showBestPracticesCard, value);
+        }
+
         public string ToggleMiniEncodersZoneText =>
             IsMiniEncodersZone
                 ? UILangProviderM.Current["Expand"]
@@ -182,6 +190,11 @@ namespace OneColumnEncoder.ViewModels
 
         public string ToggleMiniDependenciesZoneText =>
             IsMiniDependenciesZone
+                ? UILangProviderM.Current["Expand"]
+                : UILangProviderM.Current["Collapse"];
+
+        public string ToggleShowBestPracticesCardText =>
+            ShowBestPracticesCard
                 ? UILangProviderM.Current["Expand"]
                 : UILangProviderM.Current["Collapse"];
 
@@ -235,6 +248,7 @@ namespace OneColumnEncoder.ViewModels
             _isMiniEncodersZone = _appDataM.IsMiniEncodersZone;
             _isMiniAnalyticsZone = _appDataM.IsMiniAnalyticsZone;
             _isMiniDependenciesZone = _appDataM.IsMiniDependenciesZone;
+            _showBestPracticesCard = _appDataM.ShowBestPracticesCard;
             OpenAppConf = openAppConf;
             OpenUsages = openUsages;
 
@@ -267,6 +281,13 @@ namespace OneColumnEncoder.ViewModels
                 _appDataM.IsMiniDependenciesZone = IsMiniDependenciesZone;
                 _appDataM.Save();
                 OnPropertyChanged(nameof(ToggleMiniDependenciesZoneText));
+            });
+            ToggleShowBestPracticesCardCmd = new ActionCmd(_ =>
+            {
+                ShowBestPracticesCard = !ShowBestPracticesCard;
+                _appDataM.ShowBestPracticesCard = ShowBestPracticesCard;
+                _appDataM.Save();
+                OnPropertyChanged(nameof(ToggleShowBestPracticesCardText));
             });
             ActiveSrcValidationCard = SrcValidationCard;
 
@@ -2109,6 +2130,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(ToggleMiniEncodersZoneText));
             OnPropertyChanged(nameof(ToggleMiniAnalyticsZoneText));
             OnPropertyChanged(nameof(ToggleMiniDependenciesZoneText));
+            OnPropertyChanged(nameof(ToggleShowBestPracticesCardText));
             EncStartButtons.B3_1Text = UICaptionProviderM.Buttons.ReEvaluate;
             EncStartButtons.B3_2Text = UICaptionProviderM.Buttons.RunSample;
             EncStartButtons.B3_3Text = UICaptionProviderM.Buttons.StartEncode;
