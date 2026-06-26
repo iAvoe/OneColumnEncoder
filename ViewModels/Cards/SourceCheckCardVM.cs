@@ -53,7 +53,7 @@ namespace OneColumnEncoder.ViewModels.Cards
             _lastAnalysisJson = rawJson;
             try
             {
-                FfprobeSourceValidationResult result = FfprobeSourceValidationH.Analyze(rawJson);
+                FFProbeSourceValidationResult result = FFProbeSourceValidationH.Analyze(rawJson);
 
                 SetChecklist1(MetadataChecklistIdx, StatusType.Success);
                 SetChecklist1(ProgressiveChecklistIdx, result.IsProgressive
@@ -96,7 +96,7 @@ namespace OneColumnEncoder.ViewModels.Cards
 
             try
             {
-                SetChecklist1(Svtav1BitDepthChecklistIdx, FfprobeSourceValidationH.IsSvtAv1BitDepthSupported(_lastAnalysisJson)
+                SetChecklist1(Svtav1BitDepthChecklistIdx, FFProbeSourceValidationH.IsSvtAv1BitDepthSupported(_lastAnalysisJson)
                     ? StatusType.Success
                     : IsSelectingSvtav1()
                         ? StatusType.Error

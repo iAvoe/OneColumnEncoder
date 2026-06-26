@@ -4,9 +4,9 @@ using System.Text.Json.Nodes;
 
 namespace OneColumnEncoder.Helpers;
 
-internal static class FfprobeFrameCountSupplementH
+internal static class FFProbeFrameCountSupplementH
 {
-    public static FfprobeFrameCountSupplementResult Supplement(string rawJson)
+    public static FFProbeFrameCountSupplementResult Supplement(string rawJson)
     {
         using JsonDocument document = JsonDocument.Parse(rawJson);
         JsonElement root = document.RootElement;
@@ -35,7 +35,7 @@ internal static class FfprobeFrameCountSupplementH
         }
 
         return supplementedCount > 0 && rootNode != null
-            ? new(rootNode.ToJsonString(FfprobeJsonFormattingH.Options), supplementedCount, true)
+            ? new(rootNode.ToJsonString(FFProbeJsonFormattingH.Options), supplementedCount, true)
             : new(rawJson, 0, false);
     }
 
@@ -80,4 +80,4 @@ internal static class FfprobeFrameCountSupplementH
     }
 }
 
-internal sealed record FfprobeFrameCountSupplementResult(string RawJson, int SupplementedCount, bool IsNbFramesCalculated);
+internal sealed record FFProbeFrameCountSupplementResult(string RawJson, int SupplementedCount, bool IsNbFramesCalculated);

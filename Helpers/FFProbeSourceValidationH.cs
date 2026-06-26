@@ -2,7 +2,7 @@ using System.Text.Json;
 
 namespace OneColumnEncoder.Helpers;
 
-public readonly record struct FfprobeSourceValidationResult(
+public readonly record struct FFProbeSourceValidationResult(
     bool IsProgressive,
     bool IsSvtAv1BitDepthSupported,
     bool IsMaxBitDepthSupported,
@@ -13,15 +13,15 @@ public readonly record struct FfprobeSourceValidationResult(
     bool HasColorPrimaries,
     bool HasSupportedChroma);
 
-public static class FfprobeSourceValidationH
+public static class FFProbeSourceValidationH
 {
-    public static FfprobeSourceValidationResult Analyze(string rawJson)
+    public static FFProbeSourceValidationResult Analyze(string rawJson)
     {
         using JsonDocument document = JsonDocument.Parse(rawJson);
         if (!FrameRateH.TryGetFirstVideoStream(document.RootElement, out JsonElement stream))
             throw new InvalidOperationException("ffprobe returned no video stream information.");
 
-        return new FfprobeSourceValidationResult(
+        return new FFProbeSourceValidationResult(
             IsProgressive(stream),
             IsSupportedBitDepth(stream, 10),
             IsSupportedBitDepth(stream, 12),

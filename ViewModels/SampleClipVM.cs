@@ -153,7 +153,7 @@ namespace OneColumnEncoder.ViewModels
             _modalNavS = modalNavS;
             _closeAction = closeAction;
             _buildRequest = buildRequest;
-            FfprobeSourceStats sourceStats = FfprobeSourceStatsH.Read(srcVideoAnalysis.RawJson);
+            FFProbeSourceStats sourceStats = FFProbeSourceStatsH.Read(srcVideoAnalysis.RawJson);
             _totalSeconds = sourceStats.DurationSeconds;
             _frameRate = sourceStats.FrameRate;
             _totalFrames = Math.Max(1L, sourceStats.TotalFrames);

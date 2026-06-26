@@ -60,9 +60,9 @@ namespace OneColumnEncoder.Commands
                 string ffprobePath = _getFfprobePath();
                 string sourcePath = _getSourcePath();
                 string rawJson =
-                    await FfprobeVideoAnalysisH.AnalyzeAsync(ffprobePath, sourcePath);
-                FfprobeFrameCountSupplementResult supplementResult =
-                    FfprobeFrameCountSupplementH.Supplement(rawJson);
+                    await FFProbeVideoAnalysisH.AnalyzeAsync(ffprobePath, sourcePath);
+                FFProbeFrameCountSupplementResult supplementResult =
+                    FFProbeFrameCountSupplementH.Supplement(rawJson);
                 rawJson = supplementResult.RawJson;
 
                 _analysis.FfprobePath = ffprobePath;
@@ -117,8 +117,8 @@ namespace OneColumnEncoder.Commands
                     IsSvtav1SelectedFunc = queueCard.IsSvtav1SelectedFunc
                 };
 
-                string rawJson = await FfprobeVideoAnalysisH.AnalyzeAsync(ffprobePath, filePath);
-                FfprobeFrameCountSupplementResult supplementResult = FfprobeFrameCountSupplementH.Supplement(rawJson);
+                string rawJson = await FFProbeVideoAnalysisH.AnalyzeAsync(ffprobePath, filePath);
+                FFProbeFrameCountSupplementResult supplementResult = FFProbeFrameCountSupplementH.Supplement(rawJson);
                 rawJson = supplementResult.RawJson;
                 supplementedCount += supplementResult.SupplementedCount;
                 probeCard.ApplyFfprobeAnalysisJson(rawJson);

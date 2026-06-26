@@ -3,19 +3,19 @@ using System.Text.Json;
 
 namespace OneColumnEncoder.Helpers;
 
-public readonly record struct FfprobeSourceStats(
+public readonly record struct FFProbeSourceStats(
     double DurationSeconds,
     double FrameRate,
     long TotalFrames,
     string FieldOrderKind,
     string FrameRateKind);
 
-public static class FfprobeSourceStatsH
+public static class FFProbeSourceStatsH
 {
     private const double FallbackDuration = 600d;
     private const double FallbackFrameRate = 30d;
 
-    public static FfprobeSourceStats Read(string rawJson)
+    public static FFProbeSourceStats Read(string rawJson)
     {
         if (string.IsNullOrWhiteSpace(rawJson))
             return CreateFallback();
@@ -38,7 +38,7 @@ public static class FfprobeSourceStatsH
             long totalFrames = JsonElementHelper.TryGetFrameCount(stream)
                 ?? Math.Max(0L, (long)Math.Round(duration * frameRate));
 
-            return new FfprobeSourceStats(
+            return new FFProbeSourceStats(
                 duration,
                 frameRate,
                 totalFrames,
@@ -51,7 +51,7 @@ public static class FfprobeSourceStatsH
         }
     }
 
-    private static FfprobeSourceStats CreateFallback() =>
+    private static FFProbeSourceStats CreateFallback() =>
         new(FallbackDuration, FallbackFrameRate, (long)(FallbackDuration * FallbackFrameRate), "unknown", "unknown");
 
     private static string GetFieldOrderKind(JsonElement stream)

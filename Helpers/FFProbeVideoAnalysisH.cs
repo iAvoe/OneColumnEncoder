@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace OneColumnEncoder.Helpers
 {
-    public static class FfprobeVideoAnalysisH
+    public static class FFProbeVideoAnalysisH
     {
         public static async Task<string> AnalyzeAsync(string ffprobePath, string videoSource, string showEntries = "stream")
         {
@@ -62,7 +62,7 @@ namespace OneColumnEncoder.Helpers
                     : stderr.Trim());
 
             ValidateJson(json);
-            return FfprobeJsonFormattingH.Normalize(json);
+            return FFProbeJsonFormattingH.Normalize(json);
         }
 
         private static void ValidateJson(string json)

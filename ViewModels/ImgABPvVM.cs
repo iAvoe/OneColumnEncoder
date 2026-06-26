@@ -154,7 +154,7 @@ namespace OneColumnEncoder.ViewModels
 
             bool hasSourceStats = !string.IsNullOrWhiteSpace(sourceFfprobeJson);
             _colorSpaceAnalysis = ColorSpaceConverterH.Analyze(sourceFfprobeJson);
-            FfprobeSourceStats sourceStats = FfprobeSourceStatsH.Read(sourceFfprobeJson ?? string.Empty);
+            FFProbeSourceStats sourceStats = FFProbeSourceStatsH.Read(sourceFfprobeJson ?? string.Empty);
             MaxPositionSeconds = Math.Max(1, (int)Math.Floor(Math.Min(int.MaxValue, sourceStats.DurationSeconds)) - 1);
             PreviewPositionSeconds = hasSourceStats
                 ? Math.Min(MaxPositionSeconds, Math.Max(0, MaxPositionSeconds / 2))

@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace OneColumnEncoder.Helpers;
 
-internal static class FfprobeJsonFormattingH
+internal static class FFProbeJsonFormattingH
 {
     public static readonly JsonSerializerOptions Options = new()
     {
