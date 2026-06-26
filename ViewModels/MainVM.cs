@@ -998,6 +998,13 @@ namespace OneColumnEncoder.ViewModels
 
         public void SelectItemCard(ToolItemCardVM clickedTool)
         {
+            if (VideoSrcImportZone.Contains(clickedTool))
+            {
+                if (clickedTool.R1Command?.CanExecute(null) == true)
+                    clickedTool.R1Command.Execute(null);
+                return;
+            }
+
             ItemCardSelectionH.HandleItemCardClick(
                 clickedTool,
                 UpstreamsZone, EncodersZone, AnalyticsZone, DependenciesZone,
