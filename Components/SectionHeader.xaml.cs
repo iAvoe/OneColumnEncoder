@@ -1,5 +1,7 @@
-﻿using System.Windows;
+﻿using OneColumnEncoder.Models;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace OneColumnEncoder.Components
 {
@@ -37,6 +39,25 @@ namespace OneColumnEncoder.Components
         public SectionHeader()
         {
             InitializeComponent();
+            Loaded += OnLoaded;
+            Unloaded += OnUnloaded;
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            UILangProviderM.CurrentChanged -= OnLanguageChanged;
+            UILangProviderM.CurrentChanged += OnLanguageChanged;
+        }
+
+        private void OnUnloaded(object sender, RoutedEventArgs e)
+        {
+            UILangProviderM.CurrentChanged -= OnLanguageChanged;
+        }
+
+        private void OnLanguageChanged()
+        {
+            BindingExpression? binding = GetBindingExpression(HeaderTextProperty);
+            binding?.UpdateTarget();
         }
     }
 }

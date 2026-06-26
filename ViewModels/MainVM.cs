@@ -120,19 +120,17 @@ namespace OneColumnEncoder.ViewModels
             private set => SetProperty(ref _activeSrcValidationCard, value);
         }
 
-        // SectionHeaders — Keep these localized UI texts as instance properties so OnPropertyChanged refreshes bindings after language changes.
-#pragma warning disable CA1822
-        public string SectionSelectUpstream => UICaptionProviderM.Sections.SelectUpstream;
-        public string SectionSelectEncoder => UICaptionProviderM.Sections.SelectEncoder;
-        public string SectionSelectAnalytics => UICaptionProviderM.Sections.SelectAnalytics;
-        public string SectionSelectDependencies => UICaptionProviderM.Sections.SelectDependencies;
-        public string SectionImportSource => UICaptionProviderM.Sections.ImportSource;
-        public string SectionEncodingConfigs => UICaptionProviderM.Sections.EncodingConfigs;
-        public string SectionStartEncoding => UICaptionProviderM.Sections.StartEncoding;
-        public string SVFIClipDisabledHintText => UICaptionProviderM.Hints.SVFIClipDisabled;
-        public string AnalyzeNeedsSourceText => UICaptionProviderM.Hints.AnalyzeNeedsSource;
-        public string NumaCpuCheckHintText => UICaptionProviderM.Hints.NumaCpuCheckTrigger;
-#pragma warning restore CA1822
+        // SectionHeaders — SectionHeader refreshes these static localized bindings when the global language changes.
+        public static string SectionSelectUpstream => UICaptionProviderM.Sections.SelectUpstream;
+        public static string SectionSelectEncoder => UICaptionProviderM.Sections.SelectEncoder;
+        public static string SectionSelectAnalytics => UICaptionProviderM.Sections.SelectAnalytics;
+        public static string SectionSelectDependencies => UICaptionProviderM.Sections.SelectDependencies;
+        public static string SectionImportSource => UICaptionProviderM.Sections.ImportSource;
+        public static string SectionEncodingConfigs => UICaptionProviderM.Sections.EncodingConfigs;
+        public static string SectionStartEncoding => UICaptionProviderM.Sections.StartEncoding;
+        public static string SVFIClipDisabledHintText => UICaptionProviderM.Hints.SVFIClipDisabled;
+        public static string AnalyzeNeedsSourceText => UICaptionProviderM.Hints.AnalyzeNeedsSource;
+        public static string NumaCpuCheckHintText => UICaptionProviderM.Hints.NumaCpuCheckTrigger;
         private bool _isOverlayVisible;
         public bool IsOverlayVisible
         {
