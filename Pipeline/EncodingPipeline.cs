@@ -1,5 +1,5 @@
 using OneColumnEncoder.CPU;
-using OneColumnEncoder.Core;
+using OneColumnEncoder.Json;
 using OneColumnEncoder.Models;
 using System.Globalization;
 using System.IO;

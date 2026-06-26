@@ -1,7 +1,7 @@
 using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.FFmpeg;
 using OneColumnEncoder.Persistence;
-using OneColumnEncoder.Core;
+using OneColumnEncoder.Json;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;

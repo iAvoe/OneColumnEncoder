@@ -1,4 +1,4 @@
-using OneColumnEncoder.Core;
+using OneColumnEncoder.Json;
 using System.Text.Json;
 using OneColumnEncoder.Models;
 

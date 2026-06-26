@@ -1,5 +1,5 @@
 using System.Globalization;
-using OneColumnEncoder.Core;
+using OneColumnEncoder.Json;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 

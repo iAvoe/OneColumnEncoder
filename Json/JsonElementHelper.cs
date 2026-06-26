@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Text.Json;
 
-namespace OneColumnEncoder.Core;
+namespace OneColumnEncoder.Json;
 
 internal static class JsonElementHelper
 {
