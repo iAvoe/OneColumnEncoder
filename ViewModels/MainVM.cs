@@ -998,7 +998,7 @@ namespace OneColumnEncoder.ViewModels
 
         public void SelectItemCard(ToolItemCardVM clickedTool)
         {
-            if (VideoSrcImportZone.Contains(clickedTool))
+            if (ShouldRunPrimaryCardCommandOnClick(clickedTool))
             {
                 if (clickedTool.R1Command?.CanExecute(null) == true)
                     clickedTool.R1Command.Execute(null);
@@ -1014,6 +1014,12 @@ namespace OneColumnEncoder.ViewModels
                 UpdateEncStartButtonsState,
                 () => RefreshSelectedSourceStatus());
         }
+
+        private bool ShouldRunPrimaryCardCommandOnClick(ToolItemCardVM clickedTool) =>
+            VideoSrcImportZone.Contains(clickedTool) ||
+            ScriptSrcImportZone.Contains(clickedTool) ||
+            QueueScriptSrcImportZone.Contains(clickedTool) ||
+            EncodingConfZone.Contains(clickedTool);
 
         private void RefreshToolPickedStatus(ToolZone toolZone, ObservableCollection<ToolItemCardVM> itemZone) =>
             ItemCardSelectionH.RefreshToolPickedStatus(ToolsImportCard, toolZone, itemZone);

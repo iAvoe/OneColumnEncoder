@@ -554,7 +554,18 @@
                                         EnableRealCheck="False"
                                         IsEnabled="{Binding IsEnabled}"
                                         PaletteIndex="2"
-                                        Margin="5" />
+                                        Margin="5">
+                            <comps:ItemCard.InputBindings>
+                                <MouseBinding MouseAction="LeftClick"
+                                              Command="{Binding DataContext.SelectTool,
+                                                                  RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                              CommandParameter="{Binding}" />
+                                <KeyBinding Key="Enter"
+                                            Command="{Binding DataContext.SelectTool,
+                                                               RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                            CommandParameter="{Binding}" />
+                            </comps:ItemCard.InputBindings>
+                        </comps:ItemCard>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
