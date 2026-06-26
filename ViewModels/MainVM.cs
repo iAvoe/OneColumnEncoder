@@ -100,11 +100,6 @@ namespace OneColumnEncoder.ViewModels
         public ButtonGroupVM InspBypsChkButtons { get; } // InspectSrcProbelms & BypsSrcChecklist
         public ButtonGroupVM InspBypsEncChkButtons { get; } // InspectEncPreProblems & BypassEncChecklist
         public ButtonGroupVM EncStartButtons { get; }
-        // Button guards
-        private readonly bool _isAnalyzeSrcButtonsReady;
-        private readonly bool _isInspBypsChkButtonsReady;
-        private readonly bool _isInspBypsEncChkButtonsReady;
-        private readonly bool _isEncStartButtonsReady;
         private bool _importedToolZonesSubscribed;
         private bool _promptScriptGenAfterAnalysis;
         // Checklist Card UIs
@@ -487,23 +482,19 @@ namespace OneColumnEncoder.ViewModels
                 UICaptionProviderM.Buttons.OneClickScriptGen, UICaptionProviderM.Buttons.OpenScribeSrcScribe, OneClickScriptGen, OpenFilterScribe);
             AnalyzeSrcButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProviderM.Buttons.CopyRawAnalysis, UICaptionProviderM.Buttons.AnalyzeSrcVideo, CopyRawAnalysis, AnalyzeSrcVideo);
-            _isAnalyzeSrcButtonsReady = true;
             EncStartButtons = ButtonGroupVM.CreateThreeButton( // UpdateEncStartButtonsState()
                 UICaptionProviderM.Buttons.ReEvaluate, UICaptionProviderM.Buttons.RunSample, UICaptionProviderM.Buttons.StartEncode,
                 new ActionCmd(_ => ReEvaluateAllChecks()), SampleClip, StartEncode);
             EncStartButtons.B3_1Icon = SvgIconProvider.GameRefresh;
             EncStartButtons.B3_2Icon = SvgIconProvider.GameLocation;
             EncStartButtons.B3_3Icon = SvgIconProvider.GamePlay;
-            _isEncStartButtonsReady = true;
             InspBypsChkButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProviderM.Buttons.InspectSrcProbelms, UICaptionProviderM.Buttons.BypassSrcChecklist, InspectSrcProblems, BypassSrcChecklist);
-            _isInspBypsChkButtonsReady = true;
 
             InspectEncProblems = new InspectEncProblemsCmd(EncTermsCard, modalNavS);
             BypassEncChecklist = new BypassEncChecklistCmd(EncTermsCard, UpdateEncStartButtonsState);
             InspBypsEncChkButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProviderM.Buttons.InspectEncPreProblems, UICaptionProviderM.Buttons.BypassEncChecklist, InspectEncProblems, BypassEncChecklist);
-            _isInspBypsEncChkButtonsReady = true;
 
             // Import dropdown menu and behavior
             ToolsImportCard.ToolImported += OnToolImported;
@@ -932,8 +923,6 @@ namespace OneColumnEncoder.ViewModels
         }
         public void UpdateEncStartButtonsState()
         {
-            if (!_isEncStartButtonsReady) return;
-
             bool vspipeReady = UpstreamsZone.All(t =>
                 !ToolDefinitionProviderM.IsImportedTool(t.Name, "vspipe.exe") || t.IsEnabled);
 
@@ -1492,8 +1481,6 @@ namespace OneColumnEncoder.ViewModels
         }
         public void UpdateAnalyzeSrcButtonsState()
         {
-            if (!_isAnalyzeSrcButtonsReady) return;
-
             bool hasVideoSource = CanRunSourceAnalysis();
 
             RefreshEncSettingsState();
@@ -1505,8 +1492,6 @@ namespace OneColumnEncoder.ViewModels
         }
         public void UpdateInspBypsChkButtonsState()
         {
-            if (!_isInspBypsChkButtonsReady) return;
-
             bool hasRawJson = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
             if (!hasRawJson && ActiveSrcValidationCard.IsBypassed)
                 ActiveSrcValidationCard.SetBypassed(false);
@@ -1518,8 +1503,6 @@ namespace OneColumnEncoder.ViewModels
         }
         public void UpdateInspBypsEncChkButtonsState()
         {
-            if (!_isInspBypsEncChkButtonsReady) return;
-
             InspBypsEncChkButtons.B2_1IsEnabled = true;
             InspBypsEncChkButtons.B2_2IsEnabled = true;
             InspectEncProblems.OnCanExecuteChanged();
