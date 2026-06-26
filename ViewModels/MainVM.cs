@@ -695,9 +695,12 @@ namespace OneColumnEncoder.ViewModels
 
         private void RefreshEncSettingsState()
         {
-            bool hasVideoSource = CanRunSourceAnalysis();
+            bool hasAnySource = IsQueueRouteActive()
+                ? GetCurrentQueueFilePaths().Length > 0
+                : VideoSrcImportZone.Any(t => !IsVideoSourceQueueItem(t) && t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData)) ||
+                  ActiveScriptSrcImportZone.Any(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
             foreach (ToolItemCardVM item in EncodingConfZone)
-                item.IsEnabled = hasVideoSource;
+                item.IsEnabled = hasAnySource;
         }
 
         private void RefreshScriptSourceEnabledState()
