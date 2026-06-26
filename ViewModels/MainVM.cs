@@ -35,6 +35,7 @@ namespace OneColumnEncoder.ViewModels
         private bool _isMiniDependenciesZone;
         private bool _isMiniVideoSrcImportZone;
         private bool _isMiniScriptSrcImportZone;
+        private bool _isMiniEncodingConfZone;
         private bool _showBestPracticesCard;
         private string _upstreamsZoneSelectedPath = string.Empty;
         private string _encodersZoneSelectedPath = string.Empty;
@@ -42,6 +43,7 @@ namespace OneColumnEncoder.ViewModels
         private string _dependenciesZoneSelectedPath = string.Empty;
         private string _videoSrcImportZoneSelectedPath = string.Empty;
         private string _activeScriptSrcImportZoneSelectedPath = string.Empty;
+        private string _encodingConfZoneSelectedPath = string.Empty;
 
         // Groups of Card or other element UIs
         public ObservableCollection<ToolItemCardVM> UpstreamsZone { get; }
@@ -79,6 +81,7 @@ namespace OneColumnEncoder.ViewModels
         public ActionCmd ToggleMiniDependenciesZoneCmd { get; }
         public ActionCmd ToggleMiniVideoSrcImportZoneCmd { get; }
         public ActionCmd ToggleMiniScriptSrcImportZoneCmd { get; }
+        public ActionCmd ToggleMiniEncodingConfZoneCmd { get; }
         public ActionCmd ToggleShowBestPracticesCardCmd { get; }
         public OneClickScriptGenCmd OneClickScriptGen { get; }
         public OpenFilterScribeCmd OpenFilterScribe { get; }
@@ -188,6 +191,12 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _isMiniScriptSrcImportZone, value);
         }
 
+        public bool IsMiniEncodingConfZone
+        {
+            get => _isMiniEncodingConfZone;
+            set => SetProperty(ref _isMiniEncodingConfZone, value);
+        }
+
         public bool ShowBestPracticesCard
         {
             get => _showBestPracticesCard;
@@ -216,6 +225,11 @@ namespace OneColumnEncoder.ViewModels
 
         public string ToggleMiniScriptSrcImportZoneText =>
             IsMiniScriptSrcImportZone
+                ? UILangProviderM.Current["Expand"]
+                : UILangProviderM.Current["Collapse"];
+
+        public string ToggleMiniEncodingConfZoneText =>
+            IsMiniEncodingConfZone
                 ? UILangProviderM.Current["Expand"]
                 : UILangProviderM.Current["Collapse"];
 
@@ -260,6 +274,12 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _activeScriptSrcImportZoneSelectedPath, value);
         }
 
+        public string EncodingConfZoneSelectedPath
+        {
+            get => _encodingConfZoneSelectedPath;
+            set => SetProperty(ref _encodingConfZoneSelectedPath, value);
+        }
+
         private ObservableCollection<ToolItemCardVM>[] AllImportedToolZones =>
             [UpstreamsZone, EncodersZone, AnalyticsZone, DependenciesZone];
 
@@ -276,6 +296,7 @@ namespace OneColumnEncoder.ViewModels
             _isMiniDependenciesZone = _appDataM.IsMiniDependenciesZone ?? false;
             _isMiniVideoSrcImportZone = _appDataM.IsMiniVideoSrcImportZone ?? false;
             _isMiniScriptSrcImportZone = _appDataM.IsMiniScriptSrcImportZone ?? false;
+            _isMiniEncodingConfZone = _appDataM.IsMiniEncodingConfZone ?? false;
             _showBestPracticesCard = _appDataM.ShowBestPracticesCard ?? false;
             OpenAppConf = openAppConf;
             OpenUsages = openUsages;
@@ -323,6 +344,13 @@ namespace OneColumnEncoder.ViewModels
                 _appDataM.IsMiniScriptSrcImportZone = IsMiniScriptSrcImportZone;
                 _appDataM.Save();
                 OnPropertyChanged(nameof(ToggleMiniScriptSrcImportZoneText));
+            });
+            ToggleMiniEncodingConfZoneCmd = new ActionCmd(_ =>
+            {
+                IsMiniEncodingConfZone = !IsMiniEncodingConfZone;
+                _appDataM.IsMiniEncodingConfZone = IsMiniEncodingConfZone;
+                _appDataM.Save();
+                OnPropertyChanged(nameof(ToggleMiniEncodingConfZoneText));
             });
             ToggleShowBestPracticesCardCmd = new ActionCmd(_ =>
             {
@@ -1952,6 +1980,7 @@ namespace OneColumnEncoder.ViewModels
             EncodersZoneSelectedPath = GetZoneSelectedPath(EncodersZone);
             AnalyticsZoneSelectedPath = GetZoneSelectedPath(AnalyticsZone);
             DependenciesZoneSelectedPath = GetZoneSelectedPath(DependenciesZone);
+            EncodingConfZoneSelectedPath = GetOutputSettingPath();
             // Import zones don't require selection — show the first item that has a path
             VideoSrcImportZoneSelectedPath = GetFirstSourcePath(VideoSrcImportZone);
             ActiveScriptSrcImportZoneSelectedPath = GetFirstSourcePath(ActiveScriptSrcImportZone);
@@ -1967,6 +1996,12 @@ namespace OneColumnEncoder.ViewModels
 
         // Returns P2TextData of the first item with a non-empty path, regardless of selection.
         // Source items in the same zone are typically in the same directory, so the first path is sufficient.
+        private string GetOutputSettingPath()
+        {
+            ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault();
+            return outputSetting?.P2TextData ?? "!Path";
+        }
+
         private static string GetFirstSourcePath(ObservableCollection<ToolItemCardVM>? zone)
         {
             ToolItemCardVM? first = zone?.FirstOrDefault(t => !string.IsNullOrWhiteSpace(t.P2TextData));
@@ -2174,6 +2209,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(ToggleMiniDependenciesZoneText));
             OnPropertyChanged(nameof(ToggleMiniVideoSrcImportZoneText));
             OnPropertyChanged(nameof(ToggleMiniScriptSrcImportZoneText));
+            OnPropertyChanged(nameof(ToggleMiniEncodingConfZoneText));
             OnPropertyChanged(nameof(ToggleShowBestPracticesCardText));
             EncStartButtons.B3_1Text = UICaptionProviderM.Buttons.ReEvaluate;
             EncStartButtons.B3_2Text = UICaptionProviderM.Buttons.RunSample;

@@ -25,6 +25,8 @@ namespace OneColumnEncoder.Models
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public bool? IsMiniScriptSrcImportZone { get; set; }
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public bool? IsMiniEncodingConfZone { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public bool? ShowBestPracticesCard { get; set; }
 
         // File sizes are used for detecting tool replacements

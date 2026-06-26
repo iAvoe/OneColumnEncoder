@@ -358,7 +358,7 @@
 
             <!-- Import Source 1 -->
             <comps:SectionHeader HeaderText="{Binding SectionImportSource}"
-                                  Margin="0 15 0 0">
+                                 Margin="0 15 0 0">
                 <comps:SectionHeader.HeaderExtra>
                     <StackPanel Orientation="Horizontal">
                         <Button Command="{Binding ToggleMiniVideoSrcImportZoneCmd}"
@@ -450,6 +450,7 @@
                                             IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                             IsCancel="{Binding IsCancel}"
                                             IsEnabled="{Binding IsEnabled}"
+                                            ShowActionButtons="False"
                                             PaletteIndex="1"
                                             Margin="4">
                             <cards:MiniItemCard.InputBindings>
@@ -571,6 +572,7 @@
                                             IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                             IsCancel="{Binding IsCancel}"
                                             IsEnabled="{Binding IsEnabled}"
+                                            ShowActionButtons="False"
                                             PaletteIndex="1"
                                             Margin="4">
                             <cards:MiniItemCard.InputBindings>
@@ -599,11 +601,11 @@
                                   Button2Command="{Binding Cmd2}"
                                   Button1IsEnabled="{Binding B2_1IsEnabled}"
                                   Button2IsEnabled="{Binding B2_2IsEnabled}"
-                                   Margin="5 5 5 0" />
+                                  Margin="5 5 5 0" />
 
             <!-- Select Analytic Tools -->
             <comps:SectionHeader HeaderText="{Binding SectionSelectAnalytics}"
-                                  Margin="0 15 0 0">
+                                 Margin="0 15 0 0">
                 <comps:SectionHeader.HeaderExtra>
                     <Button Command="{Binding ToggleMiniAnalyticsZoneCmd}"
                             Tag="{Binding IsMiniAnalyticsZone}"
@@ -699,7 +701,6 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-
             <comps:TwoButtonGroup DataContext="{Binding AnalyzeSrcButtons}"
                                   ButtonHeight="30"
                                   Button1Command="{Binding Cmd1}"
@@ -733,9 +734,33 @@
 
             <!-- Encoding Settings -->
             <comps:SectionHeader HeaderText="{Binding SectionEncodingConfigs}"
-                                 Margin="0 15 0 0"/>
+                                 Margin="0 15 0 0">
+                <comps:SectionHeader.HeaderExtra>
+                    <Button Command="{Binding ToggleMiniEncodingConfZoneCmd}"
+                            Tag="{Binding IsMiniEncodingConfZone}"
+                            ToolTip="{Binding ToggleMiniEncodingConfZoneText}"
+                            VerticalAlignment="Center"
+                            Focusable="False"
+                            KeyboardNavigation.IsTabStop="False"
+                            Margin="5 0"
+                            Style="{StaticResource SectionHeaderToggleButton}" />
+                </comps:SectionHeader.HeaderExtra>
+            </comps:SectionHeader>
             <ItemsControl ItemsSource="{Binding EncodingConfZone}"
                           Margin="0 5 0 0">
+                <ItemsControl.Style>
+                    <Style TargetType="ItemsControl">
+                        <Setter Property="Visibility"
+                                Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMiniEncodingConfZone}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ItemsControl.Style>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=3}" />
@@ -765,6 +790,55 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+            <ItemsControl ItemsSource="{Binding EncodingConfZone}"
+                          Margin="0 5 0 0">
+                <ItemsControl.Style>
+                    <Style TargetType="ItemsControl">
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMiniEncodingConfZone}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ItemsControl.Style>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=5:120}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <cards:MiniItemCard DataContext="{Binding}"
+                                            IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                                            IsCancel="{Binding IsCancel}"
+                                            IsEnabled="{Binding IsEnabled}"
+                                            PaletteIndex="2"
+                                            ShowActionButtons="False"
+                                            IsCompactText="True"
+                                            Margin="4">
+                            <cards:MiniItemCard.InputBindings>
+                                <MouseBinding MouseAction="LeftClick"
+                                              Command="{Binding DataContext.SelectTool,
+                                                                  RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                              CommandParameter="{Binding}" />
+                                <KeyBinding Key="Enter"
+                                            Command="{Binding DataContext.SelectTool,
+                                                               RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                            CommandParameter="{Binding}" />
+                            </cards:MiniItemCard.InputBindings>
+                        </cards:MiniItemCard>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <comps:HintPanel Text="{Binding EncodingConfZoneSelectedPath}"
+                             Margin="10 0 5 0"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center" />
             <!-- Starting Options -->
             <comps:SectionHeader HeaderText="{Binding SectionStartEncoding}"
                                  Margin="0 15 0 0">
