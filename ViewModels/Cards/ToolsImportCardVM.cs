@@ -110,7 +110,7 @@ namespace OneColumnEncoder.ViewModels.Cards
         public void ResetCompleteSourceAnalysisStatus()
         {
             if (CompleteSourceAnalysisChecklistIdx >= 0 && CompleteSourceAnalysisChecklistIdx < Checklist2.Count)
-                Checklist2[CompleteSourceAnalysisChecklistIdx].Status = StatusType.Waiting;
+                Checklist2[CompleteSourceAnalysisChecklistIdx].Status = StatusType.Error;
         }
 
         private void UpdateChecklistStatus(int index, bool isReady)
@@ -161,6 +161,7 @@ namespace OneColumnEncoder.ViewModels.Cards
         {
             ImportDropdown.PropertyChanged -= _onDropdownPropertyChanged;
             base.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }

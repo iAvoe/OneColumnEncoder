@@ -52,7 +52,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 if (_activeScriptSrcImportZone != null)
                     UnsubZoneItemsCollectionChanged(_activeScriptSrcImportZone);
-                if (value != null && SetProperty(ref _activeScriptSrcImportZone, value))
+                if (value != null && _activeScriptSrcImportZone != null && SetProperty(ref _activeScriptSrcImportZone, value))
                 {
                     SubZoneItemsCollectionChanged(value);
                     RefreshAllZoneSelectedPaths();
