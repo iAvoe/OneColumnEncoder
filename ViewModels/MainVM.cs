@@ -50,10 +50,13 @@ namespace OneColumnEncoder.ViewModels
             get => _activeScriptSrcImportZone;
             private set
             {
-                if (_activeScriptSrcImportZone != null)
-                    UnsubZoneItemsCollectionChanged(_activeScriptSrcImportZone);
-                if (value != null && _activeScriptSrcImportZone != null && SetProperty(ref _activeScriptSrcImportZone, value))
+                ObservableCollection<ToolItemCardVM>? previousZone = _activeScriptSrcImportZone;
+                if (!SetProperty(ref _activeScriptSrcImportZone, value)) return;
+
+                // The first assignment happens before all startup state is ready; only rewire after a previous zone exists.
+                if (previousZone != null)
                 {
+                    UnsubZoneItemsCollectionChanged(previousZone);
                     SubZoneItemsCollectionChanged(value);
                     RefreshAllZoneSelectedPaths();
                 }
