@@ -46,7 +46,6 @@
                                         IsCancel="{Binding IsCancel}"
                                         IsReal="{Binding IsReal}"
                                         IsEnabled="{Binding IsEnabled}"
-                                        PaletteIndex="3"
                                         Margin="5">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
@@ -78,7 +77,6 @@
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
                                         IsReal="{Binding IsReal}"
-                                        PaletteIndex="4"
                                         Margin="5">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
@@ -110,7 +108,6 @@
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
                                         IsReal="{Binding IsReal}"
-                                        PaletteIndex="4"
                                         Margin="5">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
