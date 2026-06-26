@@ -1370,6 +1370,8 @@ namespace OneColumnEncoder.ViewModels
                 ToolsImportCard.ResetCompleteSourceAnalysisStatus();
             }
 
+            // Keep import-zone HintPanel paths in sync after any source change
+            RefreshAllZoneSelectedPaths();
             RefreshToolSourceChecklistStatus();
             UpdateFilterScbButtonsState();
             UpdateAnalyzeSrcButtonsState();
@@ -1887,8 +1889,9 @@ namespace OneColumnEncoder.ViewModels
             EncodersZoneSelectedPath = GetZoneSelectedPath(EncodersZone);
             AnalyticsZoneSelectedPath = GetZoneSelectedPath(AnalyticsZone);
             DependenciesZoneSelectedPath = GetZoneSelectedPath(DependenciesZone);
-            VideoSrcImportZoneSelectedPath = GetZoneSelectedPath(VideoSrcImportZone);
-            ActiveScriptSrcImportZoneSelectedPath = GetZoneSelectedPath(ActiveScriptSrcImportZone);
+            // Import zones don't require selection — show the first item that has a path
+            VideoSrcImportZoneSelectedPath = GetFirstSourcePath(VideoSrcImportZone);
+            ActiveScriptSrcImportZoneSelectedPath = GetFirstSourcePath(ActiveScriptSrcImportZone);
         }
 
         private static string GetZoneSelectedPath(ObservableCollection<ToolItemCardVM>? zone)
@@ -1897,6 +1900,14 @@ namespace OneColumnEncoder.ViewModels
             if (selected == null || string.IsNullOrWhiteSpace(selected.P2TextData))
                 return "!Path";
             return selected.P2TextData;
+        }
+
+        // Returns P2TextData of the first item with a non-empty path, regardless of selection.
+        // Source items in the same zone are typically in the same directory, so the first path is sufficient.
+        private static string GetFirstSourcePath(ObservableCollection<ToolItemCardVM>? zone)
+        {
+            ToolItemCardVM? first = zone?.FirstOrDefault(t => !string.IsNullOrWhiteSpace(t.P2TextData));
+            return first?.P2TextData ?? "!Path";
         }
         #endregion
 
@@ -1996,7 +2007,8 @@ namespace OneColumnEncoder.ViewModels
         {
             bool hasVideoSource = LoadSourceItem(VideoSrcImportZone[0], SourceFileKind.Video, _appDataM.Tools.VideoSourcePath);
             VideoSrcImportZone[0].IsSelected = hasVideoSource;
-            VideoSrcImportZoneSelectedPath = GetZoneSelectedPath(VideoSrcImportZone);
+            // Use non-selection lookup so the path shows even before an explicit selection occurs
+            VideoSrcImportZoneSelectedPath = GetFirstSourcePath(VideoSrcImportZone);
             if (!hasVideoSource && !string.IsNullOrWhiteSpace(_appDataM.Tools.VideoSourcePath))
             {
                 _appDataM.Tools.VideoSourcePath = string.Empty;
