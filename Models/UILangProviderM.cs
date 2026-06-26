@@ -460,7 +460,7 @@ public class UILangProviderM
 
             ["Tool.Source.VideoSource"] = "视频源",
             ["Tool.Source.VideoSrcQueue"] = "\U0001F5C1 视频源队列",
-            ["Tool.Source.VideoSrcQueueWithCount"] = "\U0001F5C1 \U0001F5C1 Video Src. Queue ({0})",
+            ["Tool.Source.VideoSrcQueueWithCount"] = "\U0001F5C1 视频源队列 ({0})",
             ["Tool.Source.AviSynth"] = "AviSynth .avs 源",
             ["Tool.Source.VapourSynth"] = "VapourSynth .vpy 源",
             ["Tool.Source.Svfi"] = "SVFI .ini 源",
@@ -789,7 +789,7 @@ public class UILangProviderM
 
             ["Tool.Source.VideoSource"] = "視訊來源",
             ["Tool.Source.VideoSrcQueue"] = "\U0001F5C1 視訊源隊列",
-            ["Tool.Source.VideoSrcQueueWithCount"] = "\U0001F5C1 \U0001F5C1 Video Src. Queue ({0})",
+            ["Tool.Source.VideoSrcQueueWithCount"] = "\U0001F5C1 視訊源隊列 ({0})",
             ["Tool.Source.AviSynth"] = "AviSynth .avs 來源",
             ["Tool.Source.VapourSynth"] = "VapourSynth .vpy 來源",
             ["Tool.Source.Svfi"] = "SVFI .ini 來源",

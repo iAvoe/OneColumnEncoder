@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conv="clr-namespace:OneColumnEncoder.Converters"
              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
              d:DataContext="{d:DesignInstance Type=vms:QueueJobItemVM}"
              mc:Ignorable="d"
@@ -10,6 +11,7 @@
              d:DesignWidth="270"
              HorizontalAlignment="Stretch">
     <UserControl.Resources>
+        <conv:NullOrWhiteSpaceToPlaceholderConverter x:Key="NullOrWhiteSpaceToPlaceholderConverter" />
         <Style x:Key="MiniPrimaryText"
                TargetType="TextBlock">
             <Setter Property="FontSize"
@@ -329,7 +331,7 @@
                                TextTrimming="CharacterEllipsis"
                                HorizontalAlignment="Stretch" />
                     <TextBlock Grid.Row="1"
-                               Text="{Binding P1Text}"
+                               Text="{Binding P1Text, Converter={StaticResource NullOrWhiteSpaceToPlaceholderConverter}}"
                                Style="{StaticResource MiniSecondaryText}"
                                TextTrimming="CharacterEllipsis"
                                HorizontalAlignment="Stretch" />
