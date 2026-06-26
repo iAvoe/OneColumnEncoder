@@ -6,9 +6,9 @@
              xmlns:views="clr-namespace:OneColumnEncoder.Views"
              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
              xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
-              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
-              xmlns:cards="clr-namespace:OneColumnEncoder.Components.Cards"
-              xmlns:conv="clr-namespace:OneColumnEncoder.Converters"
+             xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+             xmlns:cards="clr-namespace:OneColumnEncoder.Components.Cards"
+             xmlns:conv="clr-namespace:OneColumnEncoder.Converters"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vms:MainVM}"
              Background="WhiteSmoke">
@@ -31,27 +31,30 @@
                                   Button2IsEnabled="{Binding B2_2IsEnabled}"
                                   Margin="10 15" />
 
-             <!-- Select Upstream Tools -->
+            <!-- Select Upstream Tools -->
             <comps:SectionHeader HeaderText="{Binding SectionSelectUpstream}"
                                  Margin="0 15 0 0">
                 <comps:SectionHeader.HeaderExtra>
-                     <Button Content="{Binding ToggleMiniUpstreamsZoneText}"
-                             Command="{Binding ToggleMiniUpstreamsZoneCmd}"
-                             VerticalAlignment="Center"
-                             Focusable="False"
-                             KeyboardNavigation.IsTabStop="False"
-                             Margin="5 0"
-                             Style="{StaticResource LinkButton}" />
+                    <Button Content="{Binding ToggleMiniUpstreamsZoneText}"
+                            Command="{Binding ToggleMiniUpstreamsZoneCmd}"
+                            VerticalAlignment="Center"
+                            Focusable="False"
+                            KeyboardNavigation.IsTabStop="False"
+                            Margin="5 0"
+                            Style="{StaticResource LinkButton}" />
                 </comps:SectionHeader.HeaderExtra>
             </comps:SectionHeader>
             <ItemsControl ItemsSource="{Binding UpstreamsZone}"
                           Margin="0 15">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
-                        <Setter Property="Visibility" Value="Visible" />
+                        <Setter Property="Visibility"
+                                Value="Visible" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsMiniUpstreamsZone}" Value="True">
-                                <Setter Property="Visibility" Value="Collapsed" />
+                            <DataTrigger Binding="{Binding IsMiniUpstreamsZone}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -87,10 +90,13 @@
                           Margin="0 15">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
-                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsMiniUpstreamsZone}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
+                            <DataTrigger Binding="{Binding IsMiniUpstreamsZone}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -108,7 +114,7 @@
                                             IsCancel="{Binding IsCancel}"
                                             ShowActionButtons="False"
                                             IsCompactText="True"
-                                            Margin="3">
+                                            Margin="4">
                             <cards:MiniItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -127,23 +133,26 @@
             <!-- Select Encoders -->
             <comps:SectionHeader HeaderText="{Binding SectionSelectEncoder}">
                 <comps:SectionHeader.HeaderExtra>
-                     <Button Content="{Binding ToggleMiniEncodersZoneText}"
-                             Command="{Binding ToggleMiniEncodersZoneCmd}"
-                             VerticalAlignment="Center"
-                             Focusable="False"
-                             KeyboardNavigation.IsTabStop="False"
-                             Margin="5 0"
-                             Style="{StaticResource LinkButton}" />
+                    <Button Content="{Binding ToggleMiniEncodersZoneText}"
+                            Command="{Binding ToggleMiniEncodersZoneCmd}"
+                            VerticalAlignment="Center"
+                            Focusable="False"
+                            KeyboardNavigation.IsTabStop="False"
+                            Margin="5 0"
+                            Style="{StaticResource LinkButton}" />
                 </comps:SectionHeader.HeaderExtra>
             </comps:SectionHeader>
             <ItemsControl ItemsSource="{Binding EncodersZone}"
                           Margin="0 15">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
-                        <Setter Property="Visibility" Value="Visible" />
+                        <Setter Property="Visibility"
+                                Value="Visible" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsMiniEncodersZone}" Value="True">
-                                <Setter Property="Visibility" Value="Collapsed" />
+                            <DataTrigger Binding="{Binding IsMiniEncodersZone}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -178,10 +187,13 @@
                           Margin="0 15">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
-                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsMiniEncodersZone}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
+                            <DataTrigger Binding="{Binding IsMiniEncodersZone}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -198,7 +210,7 @@
                                             IsCancel="{Binding IsCancel}"
                                             ShowActionButtons="False"
                                             IsCompactText="True"
-                                            Margin="3">
+                                            Margin="4">
                             <cards:MiniItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -217,23 +229,26 @@
             <!-- Select Analytic Tools -->
             <comps:SectionHeader HeaderText="{Binding SectionSelectAnalytics}">
                 <comps:SectionHeader.HeaderExtra>
-                     <Button Content="{Binding ToggleMiniAnalyticsZoneText}"
-                             Command="{Binding ToggleMiniAnalyticsZoneCmd}"
-                             VerticalAlignment="Center"
-                             Focusable="False"
-                             KeyboardNavigation.IsTabStop="False"
-                             Margin="5 0"
-                             Style="{StaticResource LinkButton}" />
+                    <Button Content="{Binding ToggleMiniAnalyticsZoneText}"
+                            Command="{Binding ToggleMiniAnalyticsZoneCmd}"
+                            VerticalAlignment="Center"
+                            Focusable="False"
+                            KeyboardNavigation.IsTabStop="False"
+                            Margin="5 0"
+                            Style="{StaticResource LinkButton}" />
                 </comps:SectionHeader.HeaderExtra>
             </comps:SectionHeader>
             <ItemsControl ItemsSource="{Binding AnalyticsZone}"
                           Margin="0 15">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
-                        <Setter Property="Visibility" Value="Visible" />
+                        <Setter Property="Visibility"
+                                Value="Visible" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsMiniAnalyticsZone}" Value="True">
-                                <Setter Property="Visibility" Value="Collapsed" />
+                            <DataTrigger Binding="{Binding IsMiniAnalyticsZone}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -268,10 +283,13 @@
                           Margin="0 15">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
-                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsMiniAnalyticsZone}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
+                            <DataTrigger Binding="{Binding IsMiniAnalyticsZone}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -288,7 +306,7 @@
                                             IsCancel="{Binding IsCancel}"
                                             ShowActionButtons="False"
                                             IsCompactText="True"
-                                            Margin="3">
+                                            Margin="4">
                             <cards:MiniItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -321,23 +339,26 @@
             <!-- Select Tool Dependencies -->
             <comps:SectionHeader HeaderText="{Binding SectionSelectDependencies}">
                 <comps:SectionHeader.HeaderExtra>
-                     <Button Content="{Binding ToggleMiniDependenciesZoneText}"
-                             Command="{Binding ToggleMiniDependenciesZoneCmd}"
-                             VerticalAlignment="Center"
-                             Focusable="False"
-                             KeyboardNavigation.IsTabStop="False"
-                             Margin="5 0"
-                             Style="{StaticResource LinkButton}" />
+                    <Button Content="{Binding ToggleMiniDependenciesZoneText}"
+                            Command="{Binding ToggleMiniDependenciesZoneCmd}"
+                            VerticalAlignment="Center"
+                            Focusable="False"
+                            KeyboardNavigation.IsTabStop="False"
+                            Margin="5 0"
+                            Style="{StaticResource LinkButton}" />
                 </comps:SectionHeader.HeaderExtra>
             </comps:SectionHeader>
             <ItemsControl ItemsSource="{Binding DependenciesZone}"
                           Margin="0 15">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
-                        <Setter Property="Visibility" Value="Visible" />
+                        <Setter Property="Visibility"
+                                Value="Visible" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsMiniDependenciesZone}" Value="True">
-                                <Setter Property="Visibility" Value="Collapsed" />
+                            <DataTrigger Binding="{Binding IsMiniDependenciesZone}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -372,10 +393,13 @@
                           Margin="0 15">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
-                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsMiniDependenciesZone}" Value="True">
-                                <Setter Property="Visibility" Value="Visible" />
+                            <DataTrigger Binding="{Binding IsMiniDependenciesZone}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -392,7 +416,7 @@
                                             IsCancel="{Binding IsCancel}"
                                             ShowActionButtons="False"
                                             IsCompactText="True"
-                                            Margin="3">
+                                            Margin="4">
                             <cards:MiniItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -501,7 +525,7 @@
             <comps:SectionHeader HeaderText="{Binding SectionAnalysisResults}" />
 
             <comps:ValidationCard DataContext="{Binding ActiveSrcValidationCard}"
-                                   Margin="5 15 5 0" />
+                                  Margin="5 15 5 0" />
 
             <!-- Inspect and bypass blocking checks -->
             <comps:TwoButtonGroup DataContext="{Binding InspBypsChkButtons}"
@@ -570,11 +594,11 @@
                                     Margin="10 10 10 0" />
 
             <!-- Hint: OneLineShotArgs upstream does not support clipping -->
-                <comps:HintPanel Visibility="{Binding SVFIClipDisabledHintVisible, Converter={StaticResource BoolToVisibility}}"
-                              Text="{Binding SVFIClipDisabledHintText}"
-                              Margin="5 5 5 0"
-                              HorizontalAlignment="Left"
-                              VerticalAlignment="Center" />
+            <comps:HintPanel Visibility="{Binding SVFIClipDisabledHintVisible, Converter={StaticResource BoolToVisibility}}"
+                             Text="{Binding SVFIClipDisabledHintText}"
+                             Margin="5 5 5 0"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center" />
         </StackPanel>
 
         <Border Visibility="{Binding IsOverlayVisible, Converter={StaticResource BoolToVisibility}}"
