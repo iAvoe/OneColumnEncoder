@@ -46,7 +46,7 @@
                                   Margin="10 15 10 0" />
 
             <!-- Select Upstream Tools -->
-            <comps:SectionHeader HeaderText="{Binding SectionSelectUpstream}"
+            <comps:SectionHeader HeaderText="{Binding SectionTexts[SelectUpstream]}"
                                  Margin="0 15 0 0">
                 <comps:SectionHeader.HeaderExtra>
                     <Button Command="{Binding ToggleMiniUpstreamsZoneCmd}"
@@ -151,7 +151,7 @@
                              VerticalAlignment="Center" />
 
             <!-- Select Encoders -->
-            <comps:SectionHeader HeaderText="{Binding SectionSelectEncoder}"
+            <comps:SectionHeader HeaderText="{Binding SectionTexts[SelectEncoder]}"
                                  Margin="0 15 0 0">
                 <comps:SectionHeader.HeaderExtra>
                     <Button Command="{Binding ToggleMiniEncodersZoneCmd}"
@@ -254,7 +254,7 @@
                              VerticalAlignment="Center" />
 
             <!-- Select Tool Dependencies -->
-            <comps:SectionHeader HeaderText="{Binding SectionSelectDependencies}"
+            <comps:SectionHeader HeaderText="{Binding SectionTexts[SelectDependencies]}"
                                  Margin="0 15 0 0">
                 <comps:SectionHeader.HeaderExtra>
                     <Button Command="{Binding ToggleMiniDependenciesZoneCmd}"
@@ -357,7 +357,7 @@
                              VerticalAlignment="Center" />
 
             <!-- Import Source 1 -->
-            <comps:SectionHeader HeaderText="{Binding SectionImportSource}"
+            <comps:SectionHeader HeaderText="{Binding SectionTexts[ImportSource]}"
                                  Margin="0 15 0 0">
                 <comps:SectionHeader.HeaderExtra>
                     <StackPanel Orientation="Horizontal">
@@ -604,7 +604,7 @@
                                   Margin="5 5 5 0" />
 
             <!-- Select Analytic Tools -->
-            <comps:SectionHeader HeaderText="{Binding SectionSelectAnalytics}"
+            <comps:SectionHeader HeaderText="{Binding SectionTexts[SelectAnalytics]}"
                                  Margin="0 15 0 0">
                 <comps:SectionHeader.HeaderExtra>
                     <Button Command="{Binding ToggleMiniAnalyticsZoneCmd}"
@@ -733,7 +733,7 @@
                                   Margin="10 15 10 0" />
 
             <!-- Encoding Settings -->
-            <comps:SectionHeader HeaderText="{Binding SectionEncodingConfigs}"
+            <comps:SectionHeader HeaderText="{Binding SectionTexts[EncodingConfigs]}"
                                  Margin="0 15 0 0">
                 <comps:SectionHeader.HeaderExtra>
                     <Button Command="{Binding ToggleMiniEncodingConfZoneCmd}"
@@ -840,7 +840,7 @@
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
             <!-- Starting Options -->
-            <comps:SectionHeader HeaderText="{Binding SectionStartEncoding}"
+            <comps:SectionHeader HeaderText="{Binding SectionTexts[StartEncoding]}"
                                  Margin="0 15 0 0">
                 <comps:SectionHeader.HeaderExtra>
                     <Button Command="{Binding ToggleShowBestPracticesCardCmd}"

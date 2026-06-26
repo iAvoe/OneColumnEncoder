@@ -120,17 +120,32 @@ namespace OneColumnEncoder.ViewModels
             private set => SetProperty(ref _activeSrcValidationCard, value);
         }
 
-        // SectionHeaders — SectionHeader refreshes these static localized bindings when the global language changes.
-        public static string SectionSelectUpstream => UICaptionProviderM.Sections.SelectUpstream;
-        public static string SectionSelectEncoder => UICaptionProviderM.Sections.SelectEncoder;
-        public static string SectionSelectAnalytics => UICaptionProviderM.Sections.SelectAnalytics;
-        public static string SectionSelectDependencies => UICaptionProviderM.Sections.SelectDependencies;
-        public static string SectionImportSource => UICaptionProviderM.Sections.ImportSource;
-        public static string SectionEncodingConfigs => UICaptionProviderM.Sections.EncodingConfigs;
-        public static string SectionStartEncoding => UICaptionProviderM.Sections.StartEncoding;
+        // SectionHeader refreshes this dynamic lookup when the global language changes.
+        private readonly LocalizedTextLookup _sectionTexts = new(new Dictionary<string, Func<string>>
+        {
+            ["SelectUpstream"] = () => UICaptionProviderM.Sections.SelectUpstream,
+            ["SelectEncoder"] = () => UICaptionProviderM.Sections.SelectEncoder,
+            ["SelectAnalytics"] = () => UICaptionProviderM.Sections.SelectAnalytics,
+            ["SelectDependencies"] = () => UICaptionProviderM.Sections.SelectDependencies,
+            ["ImportSource"] = () => UICaptionProviderM.Sections.ImportSource,
+            ["EncodingConfigs"] = () => UICaptionProviderM.Sections.EncodingConfigs,
+            ["StartEncoding"] = () => UICaptionProviderM.Sections.StartEncoding
+        });
+
+        public LocalizedTextLookup SectionTexts => _sectionTexts;
+
         public static string SVFIClipDisabledHintText => UICaptionProviderM.Hints.SVFIClipDisabled;
         public static string AnalyzeNeedsSourceText => UICaptionProviderM.Hints.AnalyzeNeedsSource;
         public static string NumaCpuCheckHintText => UICaptionProviderM.Hints.NumaCpuCheckTrigger;
+
+        public sealed class LocalizedTextLookup(IReadOnlyDictionary<string, Func<string>> getters)
+        {
+            private readonly IReadOnlyDictionary<string, Func<string>> _getters = getters;
+
+            public string this[string key] => _getters.TryGetValue(key, out Func<string>? getter)
+                ? getter()
+                : key;
+        }
         private bool _isOverlayVisible;
         public bool IsOverlayVisible
         {
@@ -2187,13 +2202,6 @@ namespace OneColumnEncoder.ViewModels
         }
         private void RefreshSectionHeaders()
         {
-            OnPropertyChanged(nameof(SectionSelectUpstream));
-            OnPropertyChanged(nameof(SectionSelectEncoder));
-            OnPropertyChanged(nameof(SectionSelectAnalytics));
-            OnPropertyChanged(nameof(SectionSelectDependencies));
-            OnPropertyChanged(nameof(SectionImportSource));
-            OnPropertyChanged(nameof(SectionEncodingConfigs));
-            OnPropertyChanged(nameof(SectionStartEncoding));
             OnPropertyChanged(nameof(SVFIClipDisabledHintText));
             OnPropertyChanged(nameof(AnalyzeNeedsSourceText));
             OnPropertyChanged(nameof(NumaCpuCheckHintText));
