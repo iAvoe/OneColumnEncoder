@@ -1274,6 +1274,8 @@ namespace OneColumnEncoder.ViewModels
 
         private void OnSourceQueueCleared(ToolItemCardVM item)
         {
+            // The queue card label is restored by VideoSourceQueueState.
+            // This handler only clears the stored files and refreshes selection state.
             _videoSourceQueue.Clear(item);
             RefreshSelectedSourceStatus(resetAnalysis: !VideoSrcImportZone.Any(t => t.IsSelected));
         }

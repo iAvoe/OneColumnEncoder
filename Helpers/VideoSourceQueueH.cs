@@ -95,8 +95,8 @@ namespace OneColumnEncoder.Helpers
             if (item == null) return;
 
             item.Name = queueCount > 0
-                ? string.Format(Lang.ToolSourceVideoSrcQueueWithCount, queueCount)
-                : Lang.ToolSourceVideoSrcQueue;
+                ? string.Format(UILangProviderM.Current["Tool.Source.VideoSrcQueueWithCount"], queueCount)
+                : UILangProviderM.Current["Tool.Source.VideoSrcQueue"];
         }
 
         public static string GetQueueP1Text(string[] fileNames) =>

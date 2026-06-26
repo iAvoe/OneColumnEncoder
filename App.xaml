@@ -7,7 +7,7 @@
         <ResourceDictionary>
             <!-- Spacing, fonts, colors -->
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Themes/Generic.xaml" />
+                <ResourceDictionary Source="Views/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
             
             <!-- DropdownMenu.xaml: IsSeparator -->

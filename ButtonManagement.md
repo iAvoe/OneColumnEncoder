@@ -18,7 +18,7 @@ This document describes how to create, style, and wire up buttons in the OneColu
 
 ## 1. Button Styles (Types)
 
-All button styles are defined in `App.xaml` (based on `BaseButton` in `Themes/Generic.xaml`). Five styles form a visual hierarchy:
+All button styles are defined in `App.xaml` (based on `BaseButton` in `Views/Themes/Generic.xaml`). Five styles form a visual hierarchy:
 
 | Style Key          | Default BG          | Default FG   | Hover BG → FG      | Usage                            |
 |--------------------|---------------------|--------------|--------------------|----------------------------------|
