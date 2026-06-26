@@ -97,7 +97,8 @@
                 </ItemsControl.Style>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=7:120}" />
+                        <!-- 5:120: max number of columns : width per column -->
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=5:120}" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
@@ -106,6 +107,7 @@
                                             IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                             IsCancel="{Binding IsCancel}"
                                             ShowActionButtons="False"
+                                            IsCompactText="True"
                                             Margin="3">
                             <cards:MiniItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
@@ -123,9 +125,29 @@
             </ItemsControl>
 
             <!-- Select Encoders -->
-            <comps:SectionHeader HeaderText="{Binding SectionSelectEncoder}" />
+            <comps:SectionHeader HeaderText="{Binding SectionSelectEncoder}">
+                <comps:SectionHeader.HeaderExtra>
+                     <Button Content="{Binding ToggleMiniEncodersZoneText}"
+                             Command="{Binding ToggleMiniEncodersZoneCmd}"
+                             VerticalAlignment="Center"
+                             Focusable="False"
+                             KeyboardNavigation.IsTabStop="False"
+                             Margin="5 0"
+                             Style="{StaticResource LinkButton}" />
+                </comps:SectionHeader.HeaderExtra>
+            </comps:SectionHeader>
             <ItemsControl ItemsSource="{Binding EncodersZone}"
                           Margin="0 15">
+                <ItemsControl.Style>
+                    <Style TargetType="ItemsControl">
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMiniEncodersZone}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ItemsControl.Style>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=3}" />
@@ -141,22 +163,81 @@
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
-                                                                RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                                                 RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                               CommandParameter="{Binding}" />
                                 <KeyBinding Key="Enter"
                                             Command="{Binding DataContext.SelectTool,
-                                                              RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                                               RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                             CommandParameter="{Binding}" />
                             </comps:ItemCard.InputBindings>
                         </comps:ItemCard>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+            <ItemsControl ItemsSource="{Binding EncodersZone}"
+                          Margin="0 15">
+                <ItemsControl.Style>
+                    <Style TargetType="ItemsControl">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMiniEncodersZone}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ItemsControl.Style>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=5:120}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <cards:MiniItemCard DataContext="{Binding}"
+                                            IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                                            IsCancel="{Binding IsCancel}"
+                                            ShowActionButtons="False"
+                                            IsCompactText="True"
+                                            Margin="3">
+                            <cards:MiniItemCard.InputBindings>
+                                <MouseBinding MouseAction="LeftClick"
+                                              Command="{Binding DataContext.SelectTool,
+                                                                  RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                              CommandParameter="{Binding}" />
+                                <KeyBinding Key="Enter"
+                                            Command="{Binding DataContext.SelectTool,
+                                                               RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                            CommandParameter="{Binding}" />
+                            </cards:MiniItemCard.InputBindings>
+                        </cards:MiniItemCard>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
 
             <!-- Select Analytic Tools -->
-            <comps:SectionHeader HeaderText="{Binding SectionSelectAnalytics}" />
+            <comps:SectionHeader HeaderText="{Binding SectionSelectAnalytics}">
+                <comps:SectionHeader.HeaderExtra>
+                     <Button Content="{Binding ToggleMiniAnalyticsZoneText}"
+                             Command="{Binding ToggleMiniAnalyticsZoneCmd}"
+                             VerticalAlignment="Center"
+                             Focusable="False"
+                             KeyboardNavigation.IsTabStop="False"
+                             Margin="5 0"
+                             Style="{StaticResource LinkButton}" />
+                </comps:SectionHeader.HeaderExtra>
+            </comps:SectionHeader>
             <ItemsControl ItemsSource="{Binding AnalyticsZone}"
                           Margin="0 15">
+                <ItemsControl.Style>
+                    <Style TargetType="ItemsControl">
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMiniAnalyticsZone}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ItemsControl.Style>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=3}" />
@@ -172,14 +253,53 @@
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
-                                                                RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                                                 RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                               CommandParameter="{Binding}" />
                                 <KeyBinding Key="Enter"
                                             Command="{Binding DataContext.SelectTool,
-                                                              RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                                               RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                             CommandParameter="{Binding}" />
                             </comps:ItemCard.InputBindings>
                         </comps:ItemCard>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <ItemsControl ItemsSource="{Binding AnalyticsZone}"
+                          Margin="0 15">
+                <ItemsControl.Style>
+                    <Style TargetType="ItemsControl">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMiniAnalyticsZone}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ItemsControl.Style>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=5:120}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <cards:MiniItemCard DataContext="{Binding}"
+                                            IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                                            IsCancel="{Binding IsCancel}"
+                                            ShowActionButtons="False"
+                                            IsCompactText="True"
+                                            Margin="3">
+                            <cards:MiniItemCard.InputBindings>
+                                <MouseBinding MouseAction="LeftClick"
+                                              Command="{Binding DataContext.SelectTool,
+                                                                  RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                              CommandParameter="{Binding}" />
+                                <KeyBinding Key="Enter"
+                                            Command="{Binding DataContext.SelectTool,
+                                                               RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                            CommandParameter="{Binding}" />
+                            </cards:MiniItemCard.InputBindings>
+                        </cards:MiniItemCard>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -199,9 +319,29 @@
                              VerticalAlignment="Center" />
 
             <!-- Select Tool Dependencies -->
-            <comps:SectionHeader HeaderText="{Binding SectionSelectDependencies}" />
+            <comps:SectionHeader HeaderText="{Binding SectionSelectDependencies}">
+                <comps:SectionHeader.HeaderExtra>
+                     <Button Content="{Binding ToggleMiniDependenciesZoneText}"
+                             Command="{Binding ToggleMiniDependenciesZoneCmd}"
+                             VerticalAlignment="Center"
+                             Focusable="False"
+                             KeyboardNavigation.IsTabStop="False"
+                             Margin="5 0"
+                             Style="{StaticResource LinkButton}" />
+                </comps:SectionHeader.HeaderExtra>
+            </comps:SectionHeader>
             <ItemsControl ItemsSource="{Binding DependenciesZone}"
                           Margin="0 15">
+                <ItemsControl.Style>
+                    <Style TargetType="ItemsControl">
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMiniDependenciesZone}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ItemsControl.Style>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=3}" />
@@ -217,14 +357,53 @@
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
-                                                                RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                                                 RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                               CommandParameter="{Binding}" />
                                 <KeyBinding Key="Enter"
                                             Command="{Binding DataContext.SelectTool,
-                                                              RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                                               RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                             CommandParameter="{Binding}" />
                             </comps:ItemCard.InputBindings>
                         </comps:ItemCard>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <ItemsControl ItemsSource="{Binding DependenciesZone}"
+                          Margin="0 15">
+                <ItemsControl.Style>
+                    <Style TargetType="ItemsControl">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMiniDependenciesZone}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ItemsControl.Style>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=5:120}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <cards:MiniItemCard DataContext="{Binding}"
+                                            IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                                            IsCancel="{Binding IsCancel}"
+                                            ShowActionButtons="False"
+                                            IsCompactText="True"
+                                            Margin="3">
+                            <cards:MiniItemCard.InputBindings>
+                                <MouseBinding MouseAction="LeftClick"
+                                              Command="{Binding DataContext.SelectTool,
+                                                                  RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                              CommandParameter="{Binding}" />
+                                <KeyBinding Key="Enter"
+                                            Command="{Binding DataContext.SelectTool,
+                                                               RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                            CommandParameter="{Binding}" />
+                            </cards:MiniItemCard.InputBindings>
+                        </cards:MiniItemCard>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

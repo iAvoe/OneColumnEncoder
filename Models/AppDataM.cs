@@ -12,6 +12,9 @@ namespace OneColumnEncoder.Models
         public Importables Tools { get; set; } = new Importables();
         public EncodingSettings Encoding { get; set; } = new EncodingSettings();
         public bool IsMiniUpstreamsZone { get; set; }
+        public bool IsMiniEncodersZone { get; set; }
+        public bool IsMiniAnalyticsZone { get; set; }
+        public bool IsMiniDependenciesZone { get; set; }
 
         // File sizes are used for detecting tool replacements
         #region ImportedTools data structure

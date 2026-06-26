@@ -10,6 +10,30 @@
              d:DesignWidth="270"
              HorizontalAlignment="Stretch">
     <UserControl.Resources>
+        <Style x:Key="MiniPrimaryText"
+               TargetType="TextBlock">
+            <Setter Property="FontSize"
+                    Value="12" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsCompactText, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                             Value="True">
+                    <Setter Property="FontSize"
+                            Value="14" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="MiniSecondaryText"
+               TargetType="TextBlock">
+            <Setter Property="FontSize"
+                    Value="10" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsCompactText, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                             Value="True">
+                    <Setter Property="FontSize"
+                            Value="11" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
         <Style x:Key="MiniLinkButton"
                TargetType="Button"
                BasedOn="{StaticResource H3C}">
@@ -33,6 +57,8 @@
                     Value="0" />
             <Setter Property="Cursor"
                     Value="Hand" />
+            <Setter Property="FontSize"
+                    Value="10" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -48,6 +74,11 @@
                 </Setter.Value>
             </Setter>
             <Style.Triggers>
+                <DataTrigger Binding="{Binding IsCompactText, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                             Value="True">
+                    <Setter Property="FontSize"
+                            Value="11" />
+                </DataTrigger>
                 <Trigger Property="IsMouseOver"
                          Value="True">
                     <Setter Property="Opacity"
@@ -188,12 +219,12 @@
                     </Grid.RowDefinitions>
                     <TextBlock Text="{Binding Name}"
                                FontWeight="Bold"
-                               FontSize="12"
+                               Style="{StaticResource MiniPrimaryText}"
                                TextTrimming="CharacterEllipsis"
                                HorizontalAlignment="Stretch" />
                     <TextBlock Grid.Row="1"
                                Text="{Binding P1Text}"
-                               FontSize="10"
+                               Style="{StaticResource MiniSecondaryText}"
                                Foreground="{StaticResource GlobalSecondary}"
                                TextTrimming="CharacterEllipsis"
                                HorizontalAlignment="Stretch" />
@@ -216,20 +247,17 @@
                     <Button Content="{Binding DisplayR1Text}"
                             Command="{Binding R1Command}"
                             IsEnabled="{Binding R1IsEnabled}"
-                            FontSize="10"
                             Focusable="False"
                             Style="{StaticResource MiniLinkButton}" />
                     <Button Content="{Binding R2Text}"
                             Command="{Binding R2Command}"
                             IsEnabled="{Binding R2IsEnabled}"
-                            FontSize="10"
                             Margin="2.5 0 0 0"
                             Focusable="False"
                             Style="{StaticResource MiniLinkButton}" />
                     <Button Content="{Binding R3Text}"
                             Command="{Binding R3Command}"
                             IsEnabled="{Binding R3IsEnabled}"
-                            FontSize="10"
                             Margin="2.5 0 0 0"
                             Focusable="False"
                             Style="{StaticResource MiniLinkButton}" />

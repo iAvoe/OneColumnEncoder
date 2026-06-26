@@ -25,6 +25,9 @@ namespace OneColumnEncoder.ViewModels
         private readonly VideoSourceQueueState _videoSourceQueue;
         private string _scriptScribeFfmpegFilterArgs = string.Empty;
         private bool _isMiniUpstreamsZone;
+        private bool _isMiniEncodersZone;
+        private bool _isMiniAnalyticsZone;
+        private bool _isMiniDependenciesZone;
 
         // Groups of Card or other element UIs
         public ObservableCollection<ToolItemCardVM> UpstreamsZone { get; }
@@ -45,6 +48,9 @@ namespace OneColumnEncoder.ViewModels
         public OpenUsagesCmd OpenUsages { get; }
         public OpenAppConfCmd OpenAppConf { get; }
         public ActionCmd ToggleMiniUpstreamsZoneCmd { get; }
+        public ActionCmd ToggleMiniEncodersZoneCmd { get; }
+        public ActionCmd ToggleMiniAnalyticsZoneCmd { get; }
+        public ActionCmd ToggleMiniDependenciesZoneCmd { get; }
         public OneClickScriptGenCmd OneClickScriptGen { get; }
         public OpenFilterScribeCmd OpenFilterScribe { get; }
         public CopyRawAnalysisCmd CopyRawAnalysis { get; } // Copy (ffprobe JSON) to clipboard
@@ -121,8 +127,41 @@ namespace OneColumnEncoder.ViewModels
 
         public string ToggleMiniUpstreamsZoneText =>
             IsMiniUpstreamsZone
-                ? UILangProviderM.Current["ToggleMiniUpstreamsZone.Expand"]
-                : UILangProviderM.Current["ToggleMiniUpstreamsZone.Collapse"];
+                ? UILangProviderM.Current["Expand"]
+                : UILangProviderM.Current["Collapse"];
+
+        public bool IsMiniEncodersZone
+        {
+            get => _isMiniEncodersZone;
+            set => SetProperty(ref _isMiniEncodersZone, value);
+        }
+
+        public bool IsMiniAnalyticsZone
+        {
+            get => _isMiniAnalyticsZone;
+            set => SetProperty(ref _isMiniAnalyticsZone, value);
+        }
+
+        public bool IsMiniDependenciesZone
+        {
+            get => _isMiniDependenciesZone;
+            set => SetProperty(ref _isMiniDependenciesZone, value);
+        }
+
+        public string ToggleMiniEncodersZoneText =>
+            IsMiniEncodersZone
+                ? UILangProviderM.Current["Expand"]
+                : UILangProviderM.Current["Collapse"];
+
+        public string ToggleMiniAnalyticsZoneText =>
+            IsMiniAnalyticsZone
+                ? UILangProviderM.Current["Expand"]
+                : UILangProviderM.Current["Collapse"];
+
+        public string ToggleMiniDependenciesZoneText =>
+            IsMiniDependenciesZone
+                ? UILangProviderM.Current["Expand"]
+                : UILangProviderM.Current["Collapse"];
 
         private ObservableCollection<ToolItemCardVM>[] AllImportedToolZones =>
             [UpstreamsZone, EncodersZone, AnalyticsZone, DependenciesZone];
@@ -135,6 +174,9 @@ namespace OneColumnEncoder.ViewModels
             _appConfM = appConfM;
             _modalNavS = modalNavS;
             _isMiniUpstreamsZone = _appDataM.IsMiniUpstreamsZone;
+            _isMiniEncodersZone = _appDataM.IsMiniEncodersZone;
+            _isMiniAnalyticsZone = _appDataM.IsMiniAnalyticsZone;
+            _isMiniDependenciesZone = _appDataM.IsMiniDependenciesZone;
             OpenAppConf = openAppConf;
             OpenUsages = openUsages;
             SelectTool = new SelectToolCmd(this);
@@ -144,6 +186,27 @@ namespace OneColumnEncoder.ViewModels
                 _appDataM.IsMiniUpstreamsZone = IsMiniUpstreamsZone;
                 _appDataM.Save();
                 OnPropertyChanged(nameof(ToggleMiniUpstreamsZoneText));
+            });
+            ToggleMiniEncodersZoneCmd = new ActionCmd(_ =>
+            {
+                IsMiniEncodersZone = !IsMiniEncodersZone;
+                _appDataM.IsMiniEncodersZone = IsMiniEncodersZone;
+                _appDataM.Save();
+                OnPropertyChanged(nameof(ToggleMiniEncodersZoneText));
+            });
+            ToggleMiniAnalyticsZoneCmd = new ActionCmd(_ =>
+            {
+                IsMiniAnalyticsZone = !IsMiniAnalyticsZone;
+                _appDataM.IsMiniAnalyticsZone = IsMiniAnalyticsZone;
+                _appDataM.Save();
+                OnPropertyChanged(nameof(ToggleMiniAnalyticsZoneText));
+            });
+            ToggleMiniDependenciesZoneCmd = new ActionCmd(_ =>
+            {
+                IsMiniDependenciesZone = !IsMiniDependenciesZone;
+                _appDataM.IsMiniDependenciesZone = IsMiniDependenciesZone;
+                _appDataM.Save();
+                OnPropertyChanged(nameof(ToggleMiniDependenciesZoneText));
             });
             ActiveSrcValidationCard = SrcValidationCard;
 
@@ -1872,6 +1935,9 @@ namespace OneColumnEncoder.ViewModels
             FilterScbButtons.B2_1Text = UICaptionProviderM.Buttons.OneClickScriptGen;
             FilterScbButtons.B2_2Text = UICaptionProviderM.Buttons.OpenScribeSrcScribe;
             OnPropertyChanged(nameof(ToggleMiniUpstreamsZoneText));
+            OnPropertyChanged(nameof(ToggleMiniEncodersZoneText));
+            OnPropertyChanged(nameof(ToggleMiniAnalyticsZoneText));
+            OnPropertyChanged(nameof(ToggleMiniDependenciesZoneText));
             EncStartButtons.B3_1Text = UICaptionProviderM.Buttons.ReEvaluate;
             EncStartButtons.B3_2Text = UICaptionProviderM.Buttons.RunSample;
             EncStartButtons.B3_3Text = UICaptionProviderM.Buttons.StartEncode;

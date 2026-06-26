@@ -64,8 +64,8 @@ public class UILangProviderM
             ["Buttons.Edit"] = "Edit",
             ["Buttons.Import"] = "Import",
 
-            ["ToggleMiniUpstreamsZone.Collapse"] = "\u25B2 Collapse",
-            ["ToggleMiniUpstreamsZone.Expand"] = "\u25BC Expand",
+            ["Collapse"] = "\u25B2 Collapse",
+            ["Expand"] = "\u25BC Expand",
 
             // AppConf group headers
             ["AppConf.Overwrite"] = "Overwrite Handling",
@@ -418,8 +418,8 @@ public class UILangProviderM
             ["Buttons.Edit"] = "编辑",
             ["Buttons.Import"] = "导入",
 
-            ["ToggleMiniUpstreamsZone.Collapse"] = "\u25B2 折叠",
-            ["ToggleMiniUpstreamsZone.Expand"] = "\u25BC 展开",
+            ["Collapse"] = "\u25B2 折叠",
+            ["Expand"] = "\u25BC 展开",
 
             ["AppConf.Overwrite"] = "文件覆盖确认行为",
             ["AppConf.Language"] = "语言/Language",
@@ -747,6 +747,8 @@ public class UILangProviderM
             ["Buttons.Clear"] = "清空",
             ["Buttons.Edit"] = "編輯",
             ["Buttons.Import"] = "導入",
+            ["Collapse"] = "\u25B2 折叠",
+            ["Expand"] = "\u25BC 展开",
 
             ["AppConf.Overwrite"] = "文件覆蓋確認行為",
             ["AppConf.Language"] = "語言/Language",
@@ -1061,6 +1063,8 @@ public class UILangProviderM
         ["Buttons.Delete"] = "Supprimer",
         ["Buttons.Clear"] = "Effacer",
         ["Buttons.Edit"] = "Modifier",
+        ["Collapse"] = "\u25B2 Réduire",
+        ["Expand"] = "\u25BC Développer",
         ["AppConf.Overwrite"] = "Gestion écrasement",
         ["AppConf.Language"] = "Langue/Language",
         ["AppConf.InitMode"] = "Mode initial",
@@ -1344,6 +1348,8 @@ public class UILangProviderM
         ["Buttons.Delete"] = "Elim.",
         ["Buttons.Clear"] = "Limp.",
         ["Buttons.Edit"] = "Edit",
+        ["Collapse"] = "\u25B2 Contraer",
+        ["Expand"] = "\u25BC Expandir",
         ["AppConf.Overwrite"] = "Gestión de sobrescritura",
         ["AppConf.Language"] = "Idioma/Language",
         ["AppConf.InitMode"] = "Modo inicial",
@@ -1627,6 +1633,8 @@ public class UILangProviderM
         ["Buttons.Delete"] = "削除",
         ["Buttons.Clear"] = "クリア",
         ["Buttons.Edit"] = "編集",
+        ["Collapse"] = "\u25B2 折りたたむ",
+        ["Expand"] = "\u25BC 展開",
         ["AppConf.Overwrite"] = "上書き処理",
         ["AppConf.Language"] = "言語/Language",
         ["AppConf.InitMode"] = "初期化モード",
@@ -1910,6 +1918,8 @@ public class UILangProviderM
         ["Buttons.Delete"] = "Удал.",
         ["Buttons.Clear"] = "Очист.",
         ["Buttons.Edit"] = "Прав.",
+        ["Collapse"] = "\u25B2 Свернуть",
+        ["Expand"] = "\u25BC Развернуть",
         ["AppConf.Overwrite"] = "Перезапись файлов",
         ["AppConf.Language"] = "Язык/Language",
         ["AppConf.InitMode"] = "Режим инициализации",
