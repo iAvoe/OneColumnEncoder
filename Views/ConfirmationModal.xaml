@@ -147,6 +147,7 @@
                                   Button2IsEnabled="{Binding B2_2IsEnabled}"
                                   Margin="0 15 0 0" />
             <comps:HintPanel Text="{Binding CopyHint}"
+                             RefreshTextOnLanguageChanged="True"
                              Margin="5 1.25 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
