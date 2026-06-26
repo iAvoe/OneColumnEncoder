@@ -1,14 +1,14 @@
 ﻿using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Commands.SaveLoad;
+using OneColumnEncoder.FileManagement;
+using OneColumnEncoder.Models;
+using OneColumnEncoder.Pipeline;
+using OneColumnEncoder.QueueManagement;
+using OneColumnEncoder.Stores;
 using OneColumnEncoder.ToolManagement;
 using OneColumnEncoder.UI;
-using OneColumnEncoder.FileManagement;
 using OneColumnEncoder.Validation;
-using OneColumnEncoder.QueueManagement;
-using OneColumnEncoder.Pipeline;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels.Cards;
 using OneColumnEncoder.Views;
 using System.Collections.ObjectModel;
@@ -29,6 +29,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly ToolItemCardVM? _outputSettingCard;
         private readonly VideoSourceQueueState _videoSourceQueue;
         private string _scriptScribeFfmpegFilterArgs = string.Empty;
+        #region MiniItemCard State
         private bool _isMiniUpstreamsZone;
         private bool _isMiniEncodersZone;
         private bool _isMiniAnalyticsZone;
@@ -37,6 +38,7 @@ namespace OneColumnEncoder.ViewModels
         private bool _isMiniScriptSrcImportZone;
         private bool _isMiniEncodingConfZone;
         private bool _showBestPracticesCard;
+        #endregion
         private string _upstreamsZoneSelectedPath = string.Empty;
         private string _encodersZoneSelectedPath = string.Empty;
         private string _analyticsZoneSelectedPath = string.Empty;
@@ -75,6 +77,7 @@ namespace OneColumnEncoder.ViewModels
         // Cmds and buttons
         public OpenUsagesCmd OpenUsages { get; }
         public OpenAppConfCmd OpenAppConf { get; }
+        #region MiniItemCard Commands
         public ActionCmd ToggleMiniUpstreamsZoneCmd { get; }
         public ActionCmd ToggleMiniEncodersZoneCmd { get; }
         public ActionCmd ToggleMiniAnalyticsZoneCmd { get; }
@@ -83,6 +86,7 @@ namespace OneColumnEncoder.ViewModels
         public ActionCmd ToggleMiniScriptSrcImportZoneCmd { get; }
         public ActionCmd ToggleMiniEncodingConfZoneCmd { get; }
         public ActionCmd ToggleShowBestPracticesCardCmd { get; }
+        #endregion
         public OneClickScriptGenCmd OneClickScriptGen { get; }
         public OpenFilterScribeCmd OpenFilterScribe { get; }
         public CopyRawAnalysisCmd CopyRawAnalysis { get; } // Copy (ffprobe JSON) to clipboard
@@ -161,6 +165,7 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _svfiClipDisabledHintVisible, value);
         }
 
+        #region MiniItemCard Properties
         public bool IsMiniUpstreamsZone
         {
             get => _isMiniUpstreamsZone;
@@ -248,6 +253,7 @@ namespace OneColumnEncoder.ViewModels
             ShowBestPracticesCard
                 ? UILangProviderM.Current["Expand"]
                 : UILangProviderM.Current["Collapse"];
+        #endregion
 
         public string UpstreamsZoneSelectedPath
         {
@@ -301,6 +307,7 @@ namespace OneColumnEncoder.ViewModels
             _appDataM = appDataM;
             _appConfM = appConfM;
             _modalNavS = modalNavS;
+            #region MiniItemCard Init
             _isMiniUpstreamsZone = _appDataM.IsMiniUpstreamsZone ?? false;
             _isMiniEncodersZone = _appDataM.IsMiniEncodersZone ?? false;
             _isMiniAnalyticsZone = _appDataM.IsMiniAnalyticsZone ?? false;
@@ -370,6 +377,7 @@ namespace OneColumnEncoder.ViewModels
                 _appDataM.Save();
                 OnPropertyChanged(nameof(ToggleShowBestPracticesCardText));
             });
+            #endregion
             ActiveSrcValidationCard = SrcValidationCard;
 
             // Create static card zones, then restore imported tools and cached sources.
@@ -1136,6 +1144,7 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
+        #region ItemCard Selection
         public void SelectItemCard(ToolItemCardVM clickedTool)
         {
             if (ShouldRunPrimaryCardCommandOnClick(clickedTool))
@@ -1173,6 +1182,7 @@ namespace OneColumnEncoder.ViewModels
             else if (itemZone == AnalyticsZone)
                 RefreshToolPickedStatus(ToolZone.Analytics, itemZone);
         }
+        #endregion
 
         // File save & ItemCard write back logic after FilterScribeModal completes
         private void OnSourceImported(ToolItemCardVM item, SourceFileKind kind, string filePath)
@@ -1328,7 +1338,7 @@ namespace OneColumnEncoder.ViewModels
                 resetAnalysis: kind == SourceFileKind.Video || !HasSelectedVideoSource());
         }
 
-        private void OnSourceQueueImported(ToolItemCardVM item, string folderPath, string[] filePaths)
+        private void OnSourceQueueImported(ToolItemCardVM item, string _, string[] filePaths)
         {
             _videoSourceQueue.ApplyImportedFiles(item, filePaths);
 
@@ -1359,7 +1369,7 @@ namespace OneColumnEncoder.ViewModels
             RefreshSelectedSourceStatus(resetAnalysis: !HasSelectedVideoSource());
         }
 
-        private void OnSourceScriptQueueImported(ToolItemCardVM item, SourceFileKind kind, string folderPath, string[] filePaths)
+        private void OnSourceScriptQueueImported(ToolItemCardVM item, SourceFileKind kind, string _, string[] filePaths)
         {
             string? error = ValidateScriptQueueImport(kind, filePaths);
             if (error != null)
@@ -1441,7 +1451,7 @@ namespace OneColumnEncoder.ViewModels
             item.IsSelected = false;
         }
 
-        private void OnSourceQueueAccepted(string[] acceptedFilePaths, string queueJsonPath)
+        private void OnSourceQueueAccepted(string[] acceptedFilePaths, string _)
         {
             _videoSourceQueue.ApplyAcceptedFiles(acceptedFilePaths);
             RefreshSelectedSourceStatus(resetAnalysis: false);
@@ -1456,9 +1466,6 @@ namespace OneColumnEncoder.ViewModels
         {
             RefreshActiveSourceRoute();
             SelectMatchingScriptSourceForSelectedUpstream();
-            bool anySelected =
-                VideoSrcImportZone.Any(t => t.IsSelected) ||
-                ActiveScriptSrcImportZone.Any(t => t.IsSelected);
             if (resetAnalysis)
             {
                 _srcVideoAnalysis.Clear();
@@ -2152,8 +2159,6 @@ namespace OneColumnEncoder.ViewModels
             item.P1TextData = SourceFilePicker.GetPrimaryText(kind, path);
             return true;
         }
-
-
         #endregion
 
         private void OnModalStateChanged()
@@ -2261,10 +2266,7 @@ namespace OneColumnEncoder.ViewModels
                 _appDataM.Tools.VspipePath,
                 _appDataM.Tools.VspipeY4mArg);
         }
-        private void RefreshSourceQueueLanguage()
-        {
-            _videoSourceQueue.RefreshLanguage();
-        }
+        private void RefreshSourceQueueLanguage() => _videoSourceQueue.RefreshLanguage();
 
         private void RefreshSourceZonePrimaryText(ObservableCollection<ToolItemCardVM> zone)
         {
