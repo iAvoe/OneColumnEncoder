@@ -8,7 +8,7 @@
                         xmlns:views="clr-namespace:OneColumnEncoder.Views"
                         mc:Ignorable="d"
                         Title="1cenc"
-                        Width="920"
+                        Width="800"
                         Height="1220"
                         WindowStartupLocation="CenterScreen">
     <!-- If Commit number can be read, the Title will be replaced by this.xaml.cs -->
