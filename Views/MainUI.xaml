@@ -711,6 +711,7 @@
 
             <!-- Hint: OneLineShotArgs upstream does not support clipping -->
             <comps:HintPanel Text="{Binding AnalyzeNeedsSourceText}"
+                             RefreshTextOnLanguageChanged="True"
                              Margin="10 0 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
@@ -858,6 +859,7 @@
 
             <!-- Hint: NUMA CPU check trigger -->
             <comps:HintPanel Text="{Binding NumaCpuCheckHintText}"
+                             RefreshTextOnLanguageChanged="True"
                              Margin="10 0 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
@@ -900,10 +902,11 @@
 
             <!-- Hint: OneLineShotArgs upstream does not support clipping -->
             <comps:HintPanel Visibility="{Binding SVFIClipDisabledHintVisible, Converter={StaticResource BoolToVisibility}}"
-                             Text="{Binding SVFIClipDisabledHintText}"
-                             Margin="10 0 5 0"
-                             HorizontalAlignment="Left"
-                             VerticalAlignment="Center" />
+                              Text="{Binding SVFIClipDisabledHintText}"
+                              RefreshTextOnLanguageChanged="True"
+                              Margin="10 0 5 0"
+                              HorizontalAlignment="Left"
+                              VerticalAlignment="Center" />
         </StackPanel>
 
         <Border Visibility="{Binding IsOverlayVisible, Converter={StaticResource BoolToVisibility}}"

@@ -13,6 +13,7 @@ namespace OneColumnEncoder.Components
             DependencyProperty.Register(nameof(Text), typeof(string), typeof(HintPanel),
                 new PropertyMetadata(null));
 
+        // Opt in only for hints that need live language refresh.
         public static readonly DependencyProperty RefreshTextOnLanguageChangedProperty =
             DependencyProperty.Register(nameof(RefreshTextOnLanguageChanged), typeof(bool), typeof(HintPanel),
                 new PropertyMetadata(false, OnRefreshTextOnLanguageChangedChanged));
@@ -65,6 +66,7 @@ namespace OneColumnEncoder.Components
             hintPanel.SyncLanguageChangedSubscription();
         }
 
+        // Keep the language subscription aligned with the opt-in flag.
         private void SyncLanguageChangedSubscription()
         {
             UILangProviderM.CurrentChanged -= OnLanguageChanged;
@@ -72,6 +74,7 @@ namespace OneColumnEncoder.Components
                 UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
 
+        // Rebind the text so the localized value is pulled again.
         private void OnLanguageChanged()
         {
             BindingExpression? binding = GetBindingExpression(TextProperty);
