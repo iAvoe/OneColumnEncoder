@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net9.0-windows</TargetFramework>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
@@ -20,12 +21,24 @@
       <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitCount" />
     </Exec>
 
+    <Exec Command="git rev-parse --short=8 HEAD"
+          ConsoleToMSBuild="true"
+          IgnoreExitCode="true"
+          StandardOutputImportance="low"
+          Condition="'$(GitCommitShortHash)' == ''">
+      <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitShortHash" />
+    </Exec>
+
     <PropertyGroup>
       <GitCommitCount Condition="'$(GitCommitCount)' == ''">0</GitCommitCount>
+      <GitCommitShortHash Condition="'$(GitCommitShortHash)' == ''">unknown</GitCommitShortHash>
     </PropertyGroup>
 
     <WriteLinesToFile File="$(GeneratedAssemblyInfoFile)"
                       Lines="[assembly: System.Reflection.AssemblyMetadataAttribute(&quot;GitCommitCount&quot;, &quot;$(GitCommitCount)&quot;)]"
+                      Overwrite="false" />
+    <WriteLinesToFile File="$(GeneratedAssemblyInfoFile)"
+                      Lines="[assembly: System.Reflection.AssemblyMetadataAttribute(&quot;GitCommitShortHash&quot;, &quot;$(GitCommitShortHash)&quot;)]"
                       Overwrite="false" />
   </Target>
 

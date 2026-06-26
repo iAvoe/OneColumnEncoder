@@ -98,11 +98,11 @@ jobs:
         shell: pwsh
         run: |
           $count = git rev-list --count HEAD
-          $sha = git rev-parse HEAD
-          $title = "Commit $count"
+          $sha = git rev-parse --short=8 HEAD
+          $title = "Commit $count $sha"
 
-          $body = "Commit# | 提交序号`n"
-          $body += "- https://github.com/iAvoe/OneColumnEncoder/commit/$sha`n`n"
+          $body = "Commit# | 提交序号 / SHA`n"
+          $body += "- https://github.com/iAvoe/OneColumnEncoder/commit/$($env:GITHUB_SHA)`n`n"
           $body += "> [!CAUTION]`n"
           $body += "> Queue encoding feature is working, but lacks of testing, proceed with caution`n"
           $body += "> 队列编码功能能正常工作但缺乏测试，使用时请当心`n`n"

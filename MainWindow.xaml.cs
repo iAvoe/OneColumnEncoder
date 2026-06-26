@@ -14,7 +14,7 @@ namespace OneColumnEncoder
         public MainWindow()
         {
             InitializeComponent();
-            Title = $"1cenc (Beta——Commit {GetGitCommitCount()})";
+            Title = $"1cenc (Beta——Commit {GetGitCommitCount()} {GetGitCommitShortHash()})";
             Closing += OnClosing;
             Closed += OnClosed;
             PreviewMouseDown += OnPreviewMouseDown;
@@ -27,6 +27,14 @@ namespace OneColumnEncoder
                 .GetCustomAttributes<AssemblyMetadataAttribute>()
                 .FirstOrDefault(attribute => attribute.Key == "GitCommitCount")
                 ?.Value ?? "0";
+        }
+
+        private static string GetGitCommitShortHash()
+        {
+            return Assembly.GetExecutingAssembly()
+                .GetCustomAttributes<AssemblyMetadataAttribute>()
+                .FirstOrDefault(attribute => attribute.Key == "GitCommitShortHash")
+                ?.Value ?? "unknown";
         }
 
         private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
