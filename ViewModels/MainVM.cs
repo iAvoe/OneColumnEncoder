@@ -1359,6 +1359,7 @@ namespace OneColumnEncoder.ViewModels
         public void RefreshSelectedSourceStatus(bool resetAnalysis = false)
         {
             RefreshActiveSourceRoute();
+            SelectMatchingScriptSourceForSelectedUpstream();
             bool anySelected =
                 VideoSrcImportZone.Any(t => t.IsSelected) ||
                 ActiveScriptSrcImportZone.Any(t => t.IsSelected);
@@ -1521,6 +1522,25 @@ namespace OneColumnEncoder.ViewModels
         {
             SourceFileKind? expectedKind = GetExpectedScriptSourceKindForSelectedUpstream();
             return expectedKind == null || IsScriptSourceSelected(expectedKind.Value);
+        }
+
+        private void SelectMatchingScriptSourceForSelectedUpstream()
+        {
+            SourceFileKind? expectedKind = GetExpectedScriptSourceKindForSelectedUpstream();
+            if (expectedKind == null) return;
+
+            ToolItemCardVM? target = ActiveScriptSrcImportZone.FirstOrDefault(t =>
+                t.IsEnabled &&
+                !string.IsNullOrWhiteSpace(t.P2TextData) &&
+                SourceFileKindResolver.ResolveSourceFileKind(t.Name) == expectedKind.Value);
+            if (target == null) return;
+
+            foreach (ToolItemCardVM source in ActiveScriptSrcImportZone)
+            {
+                bool shouldSelect = source == target;
+                if (source.IsSelected != shouldSelect)
+                    source.IsSelected = shouldSelect;
+            }
         }
 
         private bool IsScriptSourceSelected(SourceFileKind expectedKind) =>
