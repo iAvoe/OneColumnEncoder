@@ -220,7 +220,7 @@ namespace OneColumnEncoder.ViewModels
         #region Constructor
         public MainVM(OpenAppConfCmd openAppConf, OpenUsagesCmd openUsages, AppDataM appDataM, AppConfM appConfM, ModalNavS modalNavS)
         {
-            // Tools data, Settings data, Modal Navigation, Open Settings Command
+            // Capture persistent models and restore UI collapse state before commands bind to them.
             _appDataM = appDataM;
             _appConfM = appConfM;
             _modalNavS = modalNavS;
@@ -230,6 +230,8 @@ namespace OneColumnEncoder.ViewModels
             _isMiniDependenciesZone = _appDataM.IsMiniDependenciesZone;
             OpenAppConf = openAppConf;
             OpenUsages = openUsages;
+
+            // Build simple commands first because later UI groups reference them directly.
             SelectTool = new SelectToolCmd(this);
             ToggleMiniUpstreamsZoneCmd = new ActionCmd(_ =>
             {
@@ -261,6 +263,7 @@ namespace OneColumnEncoder.ViewModels
             });
             ActiveSrcValidationCard = SrcValidationCard;
 
+            // Create static card zones, then restore imported tools and cached sources.
             ToolsImportCard = new ToolsImportCardVM(modalNavS);
             VideoSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetVideoSrcImportDefs(), true, false);
             _videoSourceQueue = new(VideoSrcImportZone);
@@ -276,7 +279,7 @@ namespace OneColumnEncoder.ViewModels
             LoadSourcesFromAppDataM();
             WireUpZoneDeleteCmds();
 
-            // Set default values for output setting in EncodingConfZone
+            // Restore encoding cards after source import so output defaults can sync with source state.
             ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t => t.Name.Equals(
                 UILangProviderM.Current["Tool.Enc.OutputSetting"],
                 StringComparison.OrdinalIgnoreCase));
@@ -297,7 +300,7 @@ namespace OneColumnEncoder.ViewModels
             if (parallelismCard != null)
                 ParallelismConfVM.ApplySavedSettingsToCard(parallelismCard);
 
-            // Commands
+            // Build workflow commands after zones exist so delegates can resolve current selections lazily.
             OneClickScriptGen = new OneClickScriptGenCmd(
                 () => GetCurrentVideoSourcePath(),
                 () => ActiveScriptSrcImportZone[0],
@@ -361,7 +364,7 @@ namespace OneColumnEncoder.ViewModels
                 BuildQueueEncodingPipelineRequests,
                 IsQueueRouteSupported);
 
-            // Buttons
+            // Build button groups after commands so initial CanExecute refreshes have valid targets.
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProviderM.Buttons.UsageAndCompliance, UICaptionProviderM.Buttons.Settings, OpenUsages, OpenAppConf);
             OpenAppConfButtons.B2_1Icon = SvgIconProviderH.GamePhone;
@@ -396,7 +399,7 @@ namespace OneColumnEncoder.ViewModels
                 ToolsImportCard.ImportDropdown.Items.Add(item);
             ToolsImportCard.ImportDropdown.SelectedItem = ToolsImportCard.ImportDropdown.Items[0];
 
-            // Other validations or simply lists for Start Encode button
+            // Configure validation cards and deferred getters used by checks and encoding requests.
             SrcValidationCard.Name = UICaptionProviderM.Cards.SourceValidation;
             SrcValidationCard.P1Name = UICaptionProviderM.Cards.SourceIncompatOrCorrupted;
             SrcValidationCard.P3Name = UICaptionProviderM.Cards.SrcQualityIssues;
@@ -446,7 +449,7 @@ namespace OneColumnEncoder.ViewModels
                 return videoSrc?.P2TextData ?? string.Empty;
             };
 
-            // Checklist subs, nav subs, overlay subs
+            // Run final state refreshes after all cards, commands, and subscriptions are ready.
             EncTermsCard.RunAllChecks();
             SyncOutputFilenameWithVideoSource();
             SubToImportedToolZones();
@@ -1362,21 +1365,8 @@ namespace OneColumnEncoder.ViewModels
 
         private void SaveSourcePath(SourceFileKind kind, string filePath)
         {
-            switch (kind)
-            {
-                case SourceFileKind.Video:
-                    _appDataM.Tools.VideoSourcePath = filePath;
-                    break;
-                case SourceFileKind.AviSynthScript:
-                    _appDataM.Tools.AvsSourcePath = filePath;
-                    break;
-                case SourceFileKind.VapourSynthScript:
-                    _appDataM.Tools.VpySourcePath = filePath;
-                    break;
-                case SourceFileKind.SvfiIni:
-                    _appDataM.Tools.SvfiSourcePath = filePath;
-                    break;
-            }
+            if (kind == SourceFileKind.Video)
+                _appDataM.Tools.VideoSourcePath = filePath;
         }
         public void RefreshSelectedSourceStatus(bool resetAnalysis = false)
         {
@@ -1955,41 +1945,31 @@ namespace OneColumnEncoder.ViewModels
         {
             bool hasVideoSource = LoadSourceItem(VideoSrcImportZone[0], SourceFileKind.Video, _appDataM.Tools.VideoSourcePath);
             VideoSrcImportZone[0].IsSelected = hasVideoSource;
+            VideoSrcImportZoneSelectedPath = GetZoneSelectedPath(VideoSrcImportZone);
             if (!hasVideoSource && !string.IsNullOrWhiteSpace(_appDataM.Tools.VideoSourcePath))
             {
                 _appDataM.Tools.VideoSourcePath = string.Empty;
                 _appDataM.Save();
             }
 
-            LoadSourceItem(ScriptSrcImportZone[0], SourceFileKind.AviSynthScript, _appDataM.Tools.AvsSourcePath);
-            LoadSourceItem(ScriptSrcImportZone[1], SourceFileKind.VapourSynthScript, _appDataM.Tools.VpySourcePath);
-            LoadSourceItem(ScriptSrcImportZone[2], SourceFileKind.SvfiIni, _appDataM.Tools.SvfiSourcePath);
-
-            ToolItemCardVM? selectedUpstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected);
-            if (selectedUpstream != null)
-            {
-                string? upstreamExe = ToolCatalogProviderM.ResolveExeFromDisplayName(selectedUpstream.Name);
-                if (upstreamExe != null)
-                {
-                    foreach (ToolItemCardVM src in ScriptSrcImportZone)
-                    {
-                        if (string.IsNullOrWhiteSpace(src.P2TextData)) continue;
-
-                        bool isMatch = (upstreamExe, SourceFileKindH.ResolveSourceFileKind(src.Name)) switch
-                        {
-                            ("vspipe.exe", SourceFileKind.VapourSynthScript) => true,
-                            ("avs2yuv.exe", SourceFileKind.AviSynthScript) => true,
-                            ("avs2pipemod.exe", SourceFileKind.AviSynthScript) => true,
-                            ("one_line_shot_args.exe", SourceFileKind.SvfiIni) => true,
-                            _ => false
-                        };
-
-                        if (isMatch) src.IsSelected = true;
-                    }
-                }
-            }
+            // Script sources are not cached: without a selected upstream at startup,
+            // the matching script ItemCard cannot be selected reliably and may leave the UI in an invalid state.
+            ClearLegacyCachedScriptSources();
 
             RefreshEncSettingsState();
+        }
+
+        private void ClearLegacyCachedScriptSources()
+        {
+            if (string.IsNullOrWhiteSpace(_appDataM.Tools.AvsSourcePath) &&
+                string.IsNullOrWhiteSpace(_appDataM.Tools.VpySourcePath) &&
+                string.IsNullOrWhiteSpace(_appDataM.Tools.SvfiSourcePath))
+                return;
+
+            _appDataM.Tools.AvsSourcePath = string.Empty;
+            _appDataM.Tools.VpySourcePath = string.Empty;
+            _appDataM.Tools.SvfiSourcePath = string.Empty;
+            _appDataM.Save();
         }
 
         private static string NormalizeOutputDirectory(string? path)
