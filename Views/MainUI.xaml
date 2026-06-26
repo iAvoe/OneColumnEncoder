@@ -116,10 +116,10 @@
                         </Style.Triggers>
                     </Style>
                 </ItemsControl.Style>
+                <!-- Columns : Width per column -->
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <!-- 5:120: max number of columns : width per column -->
-                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=5:120}" />
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=4:156.25}" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
@@ -222,7 +222,7 @@
                 </ItemsControl.Style>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=5:120}" />
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=4:156.25}" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
@@ -325,7 +325,7 @@
                 </ItemsControl.Style>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=5:120}" />
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=4:156.25}" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
@@ -675,7 +675,7 @@
                 </ItemsControl.Style>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=5:120}" />
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=4:156.25}" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
@@ -807,7 +807,7 @@
                 </ItemsControl.Style>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=5:120}" />
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=4:156.25}" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
