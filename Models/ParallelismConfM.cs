@@ -1,9 +1,10 @@
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.Persistence;
+using OneColumnEncoder.CPU;
 using System.IO;
 
 namespace OneColumnEncoder.Models
 {
-    public class ParallelismConfM : SaveLoadBaseH<ParallelismConfM>
+    public class ParallelismConfM : SaveLoadBase<ParallelismConfM>
     {
         private static readonly string ConfigFilePath =
             Path.Combine(GetConfigDirectory(), "parallelismconfig.json");
@@ -21,7 +22,7 @@ namespace OneColumnEncoder.Models
         public static ParallelismConfM LoadEffective()
         {
             ParallelismConfM model = Load();
-            List<NumaNodeInfo> nodes = NumaTopologyH.GetNumaNodes();
+            List<NumaNodeInfo> nodes = NumaTopology.GetNumaNodes();
 
             int upstreamNodeId = nodes.FirstOrDefault(n => n.NodeId == model.UpstreamNodeId)?.NodeId
                 ?? nodes.FirstOrDefault()?.NodeId
@@ -37,7 +38,7 @@ namespace OneColumnEncoder.Models
                 PreferPhysicalCores = model.PreferPhysicalCores,
                 PreferPCoreCompute = model.PreferPCoreCompute,
                 PreferECoreLookahead = model.PreferECoreLookahead,
-                EncoderThreadCount = CpuSetsH.ClampThreadCountForNode(
+                EncoderThreadCount = CpuSets.ClampThreadCountForNode(
                     downstreamNodeId,
                     model.PreferPhysicalCores,
                     model.EncoderThreadCount)

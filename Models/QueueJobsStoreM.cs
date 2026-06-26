@@ -1,10 +1,10 @@
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.Persistence;
 using System.Collections.Generic;
 using System.IO;
 
 namespace OneColumnEncoder.Models
 {
-    public class QueueJobsStoreM : SaveLoadBaseH<QueueJobsStoreM>
+    public class QueueJobsStoreM : SaveLoadBase<QueueJobsStoreM>
     {
         public List<QueueJobItemM> Jobs { get; set; } = [];
         public bool IsBatchActive { get; set; }

@@ -1,7 +1,7 @@
 ﻿using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Commands.SaveLoad;
 using OneColumnEncoder.Components;
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.UI;
 using OneColumnEncoder.Models;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -49,7 +49,7 @@ namespace OneColumnEncoder.ViewModels
                 UICaptionProviderM.AppConf.Buttons.Save,
                 CloseCmd,
                 SaveCmd);
-            FinishSettingButtons.B2_2Icon = SvgIconProviderH.GameSave;
+            FinishSettingButtons.B2_2Icon = SvgIconProvider.GameSave;
             BuildSettingsListing();
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }

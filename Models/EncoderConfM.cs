@@ -1,11 +1,11 @@
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.Persistence;
 using System.IO;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace OneColumnEncoder.Models
 {
-    public class EncoderConfM : SaveLoadBaseH<EncoderConfM>
+    public class EncoderConfM : SaveLoadBase<EncoderConfM>
     {
         private static readonly string ConfigFilePath =
             Path.Combine(GetConfigDirectory(), "encodingconf.json");

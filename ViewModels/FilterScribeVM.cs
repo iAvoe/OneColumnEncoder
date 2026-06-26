@@ -1,7 +1,11 @@
 ﻿using Microsoft.Win32;
 using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.FFmpeg;
+using OneColumnEncoder.Pipeline;
+using OneColumnEncoder.UI;
+using OneColumnEncoder.ScriptGeneration;
+using OneColumnEncoder.FileManagement;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels.Cards;
@@ -31,7 +35,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly Func<bool> _hasSarRepairWarning;
         private readonly Func<bool>? _isQueueRoute;
         private readonly Func<string[]>? _getQueueFilePaths;
-        private ColorSpaceAnalysisM _colorSpaceAnalysis = ColorSpaceConverterH.Analyze(null);
+        private ColorSpaceAnalysisM _colorSpaceAnalysis = ColorSpaceConverter.Analyze(null);
         public CloseModalCmd CloseCmd { get; }
         // 0: AVS, 1: VPY, 2: ffmpeg
         private int _selectedTabIndex;
@@ -117,7 +121,7 @@ namespace OneColumnEncoder.ViewModels
         }
 
         public bool IsScaleApplicable =>
-            HasSource && ResolutionScaleH.IsScaleApplicable(SourceWidth, SourceHeight);
+            HasSource && ResolutionScale.IsScaleApplicable(SourceWidth, SourceHeight);
 
         public string ScaleNotApplicableText =>
             !HasSource
@@ -138,7 +142,7 @@ namespace OneColumnEncoder.ViewModels
         {
             if (!IsScaleApplicable) return;
             // var w, h are discard values now
-            var (_, _) = ResolutionScaleH.ComputeTargetDimensions(SourceWidth, SourceHeight, ScalePercent);
+            var (_, _) = ResolutionScale.ComputeTargetDimensions(SourceWidth, SourceHeight, ScalePercent);
             OnPropertyChanged(nameof(TargetDisplay));
             OnPropertyChanged(nameof(FfmpegResizeFilter));
             OnPropertyChanged(nameof(FfmpegFpsScaleFilter));
@@ -182,7 +186,7 @@ namespace OneColumnEncoder.ViewModels
 
         private bool IsColorSpaceStrategyShown(ColorSpaceStrategy strategy) =>
             !_hasSourceValidationError()
-            && ColorSpaceConverterH.IsStrategyApplicable(strategy, _colorSpaceAnalysis.ColorPrimaries, _colorSpaceAnalysis.ColorTransfer)
+            && ColorSpaceConverter.IsStrategyApplicable(strategy, _colorSpaceAnalysis.ColorPrimaries, _colorSpaceAnalysis.ColorTransfer)
             && !string.IsNullOrWhiteSpace(BuildColorSpaceStrategyFilterChain(strategy));
 
         public string FfmpegResizeFilter =>
@@ -279,7 +283,7 @@ namespace OneColumnEncoder.ViewModels
                 : "N/A";
 
         private string? BuildColorSpaceStrategyFilterChain(ColorSpaceStrategy strategy) =>
-            ColorSpaceConverterH.BuildFfmpegFilter(
+            ColorSpaceConverter.BuildFfmpegFilter(
                 strategy,
                 _colorSpaceAnalysis.ColorMatrix,
                 _colorSpaceAnalysis.ColorChromaLocation,
@@ -288,7 +292,7 @@ namespace OneColumnEncoder.ViewModels
 
         private string BuildFfmpegFilterArgs(bool includeSwsFlags, bool includeCsp709Flags, params string?[] filters)
         {
-            return FfmpegFilterArgsH.Build(includeSwsFlags, includeCsp709Flags, _colorSpaceAnalysis.PixelFormat, filters);
+            return FfmpegFilterArgs.Build(includeSwsFlags, includeCsp709Flags, _colorSpaceAnalysis.PixelFormat, filters);
         }
 
         public string VapourSynthResizeFilter =>
@@ -302,12 +306,12 @@ namespace OneColumnEncoder.ViewModels
                 : "N/A";
 
         public static List<string> ScaleTickLabels =>
-            ResolutionScaleH.GenerateTickLabels(10, 100, 5);
+            ResolutionScale.GenerateTickLabels(10, 100, 5);
 
         private void RecomputeTarget()
         {
             if (!IsScaleApplicable) return;
-            var (w, h) = ResolutionScaleH.ComputeTargetDimensions(SourceWidth, SourceHeight, ScalePercent);
+            var (w, h) = ResolutionScale.ComputeTargetDimensions(SourceWidth, SourceHeight, ScalePercent);
             if (_targetWidth != w || _targetHeight != h)
             {
                 _targetWidth = w;
@@ -449,7 +453,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void ParseColorSpaceInfo(string? sourceFfprobeJson)
         {
-            _colorSpaceAnalysis = ColorSpaceConverterH.Analyze(sourceFfprobeJson);
+            _colorSpaceAnalysis = ColorSpaceConverter.Analyze(sourceFfprobeJson);
             OnPropertyChanged(nameof(FfmpegLowToHighColorFilter));
             OnPropertyChanged(nameof(FfmpegHighToLowColorFilter));
             OnPropertyChanged(nameof(FfmpegHdrToSdrColorFilter));
@@ -468,7 +472,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void ParseSourceResolution(string? sourceFfprobeJson)
         {
-            var resolution = FFProbeSourceResolutionH.Read(sourceFfprobeJson);
+            var resolution = FFProbeSourceResolution.Read(sourceFfprobeJson);
             if (resolution.HasValue)
             {
                 SourceWidth = resolution.Value.width;
@@ -478,7 +482,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void ParseFrameRateInfo(string? sourceFfprobeJson)
         {
-            var info = FrameRateH.GetVariableFrameRateInfo(sourceFfprobeJson);
+            var info = FrameRate.GetVariableFrameRateInfo(sourceFfprobeJson);
             if (!info.HasValue) return;
 
             _isFrameRateVariable = info.Value.isVariable;
@@ -507,7 +511,7 @@ namespace OneColumnEncoder.ViewModels
                 new ActionCmd(_ => CopyFullScript()),
                 new ActionCmd(_ => CopyInOutSection()),
                 new ActionCmd(_ => SaveAsFile()));
-            ScriptExportButtons.B3_3Icon = SvgIconProviderH.GameSave;
+            ScriptExportButtons.B3_3Icon = SvgIconProvider.GameSave;
 
             FinishScribeButtons = ButtonGroupVM.CreateThreeButton(
                 UILangProviderM.Current["SrcScribe.Cancel"],
@@ -532,9 +536,9 @@ namespace OneColumnEncoder.ViewModels
             string sourcePath = _getSourcePath();
             string inOutText = SelectedTabIndex switch
             {
-                0 => ScriptTemplateH.BuildAvsInOutSection(sourcePath, AvsPrefix2, AvsSuffix,
+                0 => ScriptTemplate.BuildAvsInOutSection(sourcePath, AvsPrefix2, AvsSuffix,
                     _avsEnableFpsParams ? _frameRateNum : 0, _avsEnableFpsParams ? _frameRateDen : 0),
-                1 => ScriptTemplateH.BuildVpyInOutSection(sourcePath, VpyPrefix2, VpySuffix,
+                1 => ScriptTemplate.BuildVpyInOutSection(sourcePath, VpyPrefix2, VpySuffix,
                     _vpyEnableFpsParams ? _frameRateNum : 0, _vpyEnableFpsParams ? _frameRateDen : 0),
                 _ => string.Empty
             };
@@ -560,9 +564,9 @@ namespace OneColumnEncoder.ViewModels
             int vpyFpsden = _vpyEnableFpsParams ? _frameRateDen : 0;
             string script = SelectedTabIndex switch
             {
-                0 => ScriptTemplateH.BuildAvsExportScript(
+                0 => ScriptTemplate.BuildAvsExportScript(
                     sourcePath, AvsPrefix2, AvsSuffix, AvsUserInput, avsFpsnum, avsFpsden),
-                1 => ScriptTemplateH.BuildVpyExportScript(
+                1 => ScriptTemplate.BuildVpyExportScript(
                     sourcePath, VpyPrefix2, VpySuffix, VpyUserInput, vpyFpsnum, vpyFpsden),
                 _ => FfmpegFreeText
             };
@@ -619,10 +623,10 @@ namespace OneColumnEncoder.ViewModels
                 string avsPath = Path.Combine(directory, baseName + ".avs");
                 string vpyPath = Path.Combine(directory, baseName + ".vpy");
 
-                if (!TryWriteScript(avsPath, ScriptTemplateH.BuildAvsExportScript(
+                if (!TryWriteScript(avsPath, ScriptTemplate.BuildAvsExportScript(
                         sourcePath, AvsPrefix2, AvsSuffix, AvsUserInput, avsFpsnum, avsFpsden)))
                     return;
-                if (!TryWriteScript(vpyPath, ScriptTemplateH.BuildVpyExportScript(
+                if (!TryWriteScript(vpyPath, ScriptTemplate.BuildVpyExportScript(
                         sourcePath, VpyPrefix2, VpySuffix, VpyUserInput, vpyFpsnum, vpyFpsden)))
                     return;
                 savedPaths.Add(avsPath);
@@ -662,9 +666,9 @@ namespace OneColumnEncoder.ViewModels
                     string avsPath = Path.Combine(directory, baseName + ".avs");
                     string vpyPath = Path.Combine(directory, baseName + ".vpy");
 
-                    File.WriteAllText(avsPath, ScriptTemplateH.BuildAvsExportScript(
+                    File.WriteAllText(avsPath, ScriptTemplate.BuildAvsExportScript(
                         sourcePath, AvsPrefix2, AvsSuffix, AvsUserInput, avsFpsnum, avsFpsden));
-                    File.WriteAllText(vpyPath, ScriptTemplateH.BuildVpyExportScript(
+                    File.WriteAllText(vpyPath, ScriptTemplate.BuildVpyExportScript(
                         sourcePath, VpyPrefix2, VpySuffix, VpyUserInput, vpyFpsnum, vpyFpsden));
                     savedPaths.Add(avsPath);
                     savedPaths.Add(vpyPath);
@@ -708,10 +712,10 @@ namespace OneColumnEncoder.ViewModels
             }
 
             string sourcePath = _getSourcePath();
-            string avsScript = ScriptTemplateH.BuildAvsExportScript(
+            string avsScript = ScriptTemplate.BuildAvsExportScript(
                 sourcePath, AvsPrefix2, AvsSuffix, AvsUserInput,
                 _avsEnableFpsParams ? _frameRateNum : 0, _avsEnableFpsParams ? _frameRateDen : 0);
-            string vpyScript = ScriptTemplateH.BuildVpyExportScript(
+            string vpyScript = ScriptTemplate.BuildVpyExportScript(
                 sourcePath, VpyPrefix2, VpySuffix, VpyUserInput,
                 _vpyEnableFpsParams ? _frameRateNum : 0, _vpyEnableFpsParams ? _frameRateDen : 0);
 
@@ -799,7 +803,7 @@ namespace OneColumnEncoder.ViewModels
         private void ImportScript(ToolItemCardVM item, SourceFileKind kind, string path)
         {
             item.P2TextData = path;
-            item.P1TextData = SourceFilePickerH.GetPrimaryText(kind, path);
+            item.P1TextData = SourceFilePicker.GetPrimaryText(kind, path);
             _afterImport(item, kind, path);
         }
 
@@ -838,9 +842,9 @@ namespace OneColumnEncoder.ViewModels
             string sourcePath = _getSourcePath();
             return SelectedTabIndex switch
             {
-                0 => ScriptTemplateH.BuildAvsEditorScript(sourcePath, AvsPrefix2, AvsUserInput,
+                0 => ScriptTemplate.BuildAvsEditorScript(sourcePath, AvsPrefix2, AvsUserInput,
                     _avsEnableFpsParams ? _frameRateNum : 0, _avsEnableFpsParams ? _frameRateDen : 0),
-                1 => ScriptTemplateH.BuildVpyEditorScript(sourcePath, VpyPrefix2, VpySuffix, VpyUserInput,
+                1 => ScriptTemplate.BuildVpyEditorScript(sourcePath, VpyPrefix2, VpySuffix, VpyUserInput,
                     _vpyEnableFpsParams ? _frameRateNum : 0, _vpyEnableFpsParams ? _frameRateDen : 0),
                 _ => FfmpegFreeText
             };

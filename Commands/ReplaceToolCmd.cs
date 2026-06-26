@@ -1,5 +1,5 @@
 using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.ToolManagement;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels.Cards;
@@ -25,7 +25,7 @@ namespace OneColumnEncoder.Commands
             string? version;
             try
             {
-                version = await ToolVersionDetectH.TryDetectAsync(def.ExeName, filePath);
+                version = await ToolVersionDetect.TryDetectAsync(def.ExeName, filePath);
             }
             catch (ToolVersionDetectTimeoutException)
             {
@@ -36,7 +36,7 @@ namespace OneColumnEncoder.Commands
                 return;
             }
 
-            await ToolVersionDetectH.DetectAndStoreVspipeY4mArgAsync(
+            await ToolVersionDetect.DetectAndStoreVspipeY4mArgAsync(
                 def.ExeName,
                 filePath,
                 y4mArg => _appDataM.Tools.VspipeY4mArg = y4mArg);

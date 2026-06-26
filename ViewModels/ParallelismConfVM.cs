@@ -1,6 +1,6 @@
 using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.CPU;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.ViewModels.Cards;
 using System.Collections.ObjectModel;
@@ -136,7 +136,7 @@ namespace OneColumnEncoder.ViewModels
         private static void BuildNodesFromTopology(ObservableCollection<CPUNodeCardVM> nodes)
         {
             nodes.Clear();
-            List<NumaNodeInfo> numaNodes = NumaTopologyH.GetNumaNodes();
+            List<NumaNodeInfo> numaNodes = NumaTopology.GetNumaNodes();
 
             bool isFirst = true;
             foreach (NumaNodeInfo n in numaNodes)
@@ -212,7 +212,7 @@ namespace OneColumnEncoder.ViewModels
 
             MaxThreadCount = downstream == null
                 ? Math.Max(1, Environment.ProcessorCount)
-                : CpuSetsH.GetNodeProcessorCapacity(downstream.NodeId, PreferPhysicalCores);
+                : CpuSets.GetNodeProcessorCapacity(downstream.NodeId, PreferPhysicalCores);
         }
 
         private static void SelectById(ObservableCollection<CPUNodeCardVM> zone, int nodeId)
@@ -272,10 +272,10 @@ namespace OneColumnEncoder.ViewModels
         private static string BuildCacheGroupHint()
         {
             ParallelismConfLangProviderM lang = new(UILangProviderM.Current.LanguageCode);
-            CpuTopologyH.CacheGroupInfo? cacheTopology = CpuTopologyH.GetCacheTopology();
+            CpuTopology.CacheGroupInfo? cacheTopology = CpuTopology.GetCacheTopology();
             if (cacheTopology == null)
             {
-                List<NumaNodeInfo> nodes = NumaTopologyH.GetNumaNodes();
+                List<NumaNodeInfo> nodes = NumaTopology.GetNumaNodes();
                 if (nodes.Count == 0) return string.Empty;
 
                 int coresPerGroup = nodes.Count == 1
@@ -334,8 +334,8 @@ namespace OneColumnEncoder.ViewModels
         public static void ApplySavedSettingsToCard(ToolItemCardVM targetItem)
         {
             ParallelismConfM model = ParallelismConfM.LoadEffective();
-            List<NumaNodeInfo> numaNodes = NumaTopologyH.GetNumaNodes();
-            int encoderThreadCount = CpuSetsH.ClampThreadCountForNode(
+            List<NumaNodeInfo> numaNodes = NumaTopology.GetNumaNodes();
+            int encoderThreadCount = CpuSets.ClampThreadCountForNode(
                 model.DownstreamNodeId,
                 model.PreferPhysicalCores,
                 model.EncoderThreadCount);

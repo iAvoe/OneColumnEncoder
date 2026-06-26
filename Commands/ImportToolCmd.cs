@@ -1,6 +1,6 @@
 ﻿using Microsoft.Win32;
 using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.ToolManagement;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
@@ -42,7 +42,7 @@ namespace OneColumnEncoder.Commands
             string? version;
             try
             {
-                version = await ToolVersionDetectH.TryDetectAsync(toolToImport, filePath);
+                version = await ToolVersionDetect.TryDetectAsync(toolToImport, filePath);
             }
             catch (ToolVersionDetectTimeoutException)
             {

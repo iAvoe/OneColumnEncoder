@@ -1,9 +1,9 @@
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.Persistence;
 using System.IO;
 
 namespace OneColumnEncoder.Models
 {
-    public class AppConfM : SaveLoadBaseH<AppConfM>
+    public class AppConfM : SaveLoadBase<AppConfM>
     {
         private static readonly string ConfigFilePath =
             Path.Combine(GetConfigDirectory(), "appconfig.json");

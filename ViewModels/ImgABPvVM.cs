@@ -1,5 +1,7 @@
 using OneColumnEncoder.Commands;
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.FFmpeg;
+using OneColumnEncoder.Pipeline;
+using OneColumnEncoder.Analytics;
 using OneColumnEncoder.Models;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -153,8 +155,8 @@ namespace OneColumnEncoder.ViewModels
                 new ActionCmd(_ => SetDisplayMode(PreviewDisplayMode.HighHdrToSdr)));
 
             bool hasSourceStats = !string.IsNullOrWhiteSpace(sourceFfprobeJson);
-            _colorSpaceAnalysis = ColorSpaceConverterH.Analyze(sourceFfprobeJson);
-            FFProbeSourceStats sourceStats = FFProbeSourceStatsH.Read(sourceFfprobeJson ?? string.Empty);
+            _colorSpaceAnalysis = ColorSpaceConverter.Analyze(sourceFfprobeJson);
+            FFProbeSourceStats sourceStats = FFProbeSourceStatsReader.Read(sourceFfprobeJson ?? string.Empty);
             MaxPositionSeconds = Math.Max(1, (int)Math.Floor(Math.Min(int.MaxValue, sourceStats.DurationSeconds)) - 1);
             PreviewPositionSeconds = hasSourceStats
                 ? Math.Min(MaxPositionSeconds, Math.Max(0, MaxPositionSeconds / 2))
@@ -209,7 +211,7 @@ namespace OneColumnEncoder.ViewModels
                 EncoderConfM model = _encoderConfVM.CreatePreviewModel();
                 PreviewEncoder encoder = GetSelectedEncoder();
 
-                if (encoder == PreviewEncoder.SvtAv1 && PreviewPipelineH.IsSource12Bit(_colorSpaceAnalysis))
+                if (encoder == PreviewEncoder.SvtAv1 && PreviewPipeline.IsSource12Bit(_colorSpaceAnalysis))
                 {
                     _modalNavS.Close();
                     new Commands.OpenClose.OpenErrModalCmd(_modalNavS, Lang.EncoderLabel, Lang.WarnSvtAv1No12Bit).Execute(null);
@@ -217,55 +219,55 @@ namespace OneColumnEncoder.ViewModels
                     return;
                 }
 
-                string displayFilter = PreviewPipelineH.BuildDisplayFilter(_displayMode, _colorSpaceAnalysis) ?? string.Empty;
+                string displayFilter = PreviewPipeline.BuildDisplayFilter(_displayMode, _colorSpaceAnalysis) ?? string.Empty;
                 string rawSourcePath = GetWorkPath("source-raw.png");
                 string sourcePath = string.IsNullOrWhiteSpace(displayFilter)
                     ? rawSourcePath
-                    : GetWorkPath($"source-{PreviewPipelineH.GetDisplayModeFileSuffix(_displayMode)}.png");
+                    : GetWorkPath($"source-{PreviewPipeline.GetDisplayModeFileSuffix(_displayMode)}.png");
                 string encodedPath = GetEncodedPath(encoder);
                 string decodedPath = GetDecodedPath(encoder);
 
                 StatusText = Lang.StatusExtracting;
-                await RunFfmpegAsync(PreviewPipelineH.BuildSourceArgs(_sourceVideoPath!, PreviewPositionSeconds, rawSourcePath), token);
+                await RunFfmpegAsync(PreviewPipeline.BuildSourceArgs(_sourceVideoPath!, PreviewPositionSeconds, rawSourcePath), token);
                 EnsureFileExists(rawSourcePath, "!SOURCE");
 
                 if (!string.IsNullOrWhiteSpace(displayFilter))
                 {
                     StatusText = string.Format(Lang.StatusConverting, GetDisplayModeTitle(_displayMode));
-                    await RunFfmpegAsync(PreviewPipelineH.BuildSourceArgs(_sourceVideoPath!, PreviewPositionSeconds, sourcePath, displayFilter), token);
+                    await RunFfmpegAsync(PreviewPipeline.BuildSourceArgs(_sourceVideoPath!, PreviewPositionSeconds, sourcePath, displayFilter), token);
                 }
                 EnsureFileExists(sourcePath, "!SOURCE");
-                SourceImage = PreviewPipelineH.LoadBitmap(sourcePath);
+                SourceImage = PreviewPipeline.LoadBitmap(sourcePath);
 
-                StatusText = string.Format(Lang.StatusEncoding, PreviewPipelineH.GetEncoderTitle(encoder));
-                await RunFfmpegAsync(PreviewPipelineH.BuildEncodeArgs(encoder, model, sourcePath, encodedPath), token);
+                StatusText = string.Format(Lang.StatusEncoding, PreviewPipeline.GetEncoderTitle(encoder));
+                await RunFfmpegAsync(PreviewPipeline.BuildEncodeArgs(encoder, model, sourcePath, encodedPath), token);
 
                 StatusText = Lang.StatusDecoding;
-                await RunFfmpegAsync(PreviewPipelineH.BuildDecodeArgs(encodedPath, decodedPath), token);
+                await RunFfmpegAsync(PreviewPipeline.BuildDecodeArgs(encodedPath, decodedPath), token);
                 EnsureFileExists(decodedPath, "!ENCODE");
-                EncodedImage = PreviewPipelineH.LoadBitmap(decodedPath);
+                EncodedImage = PreviewPipeline.LoadBitmap(decodedPath);
 
                 StatusText = Lang.StatusComputingScores;
 
-                if (Ssimulacra2H.IsSsimU2Present)
+                if (Ssimulacra2.IsSsimU2Present)
                 {
                     Ssimulacra2StatusText = Lang.Ssimulacra2ToolPresent;
-                    var (score, error) = await Ssimulacra2H.RunScoreAsync(sourcePath, decodedPath);
+                    var (score, error) = await Ssimulacra2.RunScoreAsync(sourcePath, decodedPath);
                     Ssimulacra2StatusText = score.HasValue
                         ? $"SSIMULACRA2.1: {score.Value:F2}"
                         : $"SSIMULACRA2.1: {error}";
                 }
 
-                if (ButteraugliH.IsPresent)
+                if (Butteraugli.IsPresent)
                 {
                     ButteraugliStatusText = Lang.ButteraugliToolPresent;
-                    var (score, error) = await ButteraugliH.RunScoreAsync(sourcePath, decodedPath);
+                    var (score, error) = await Butteraugli.RunScoreAsync(sourcePath, decodedPath);
                     ButteraugliStatusText = score.HasValue
                         ? $"Butteraugli: {score.Value:F4}"
                         : $"Butteraugli: {error}";
                 }
 
-                StatusText = string.Format(Lang.StatusPreviewReady, PreviewPipelineH.GetEncoderTitle(encoder), PreviewPipelineH.GetCrfValue(encoder, model));
+                StatusText = string.Format(Lang.StatusPreviewReady, PreviewPipeline.GetEncoderTitle(encoder), PreviewPipeline.GetCrfValue(encoder, model));
             }
             catch (OperationCanceledException)
             {
@@ -312,7 +314,7 @@ namespace OneColumnEncoder.ViewModels
             }
             catch (OperationCanceledException)
             {
-                PreviewPipelineH.TryKillProcess(process);
+                PreviewPipeline.TryKillProcess(process);
                 throw;
             }
 
@@ -321,14 +323,14 @@ namespace OneColumnEncoder.ViewModels
             if (process.ExitCode != 0)
             {
                 string message = string.IsNullOrWhiteSpace(stderr) ? stdout : stderr;
-                throw new InvalidOperationException(PreviewPipelineH.TrimProcessMessage(message));
+                throw new InvalidOperationException(PreviewPipeline.TrimProcessMessage(message));
             }
         }
 
         private void RefreshSelectedEncodedImage()
         {
             string decodedPath = GetDecodedPath(GetSelectedEncoder());
-            EncodedImage = File.Exists(decodedPath) ? PreviewPipelineH.LoadBitmap(decodedPath) : null;
+            EncodedImage = File.Exists(decodedPath) ? PreviewPipeline.LoadBitmap(decodedPath) : null;
         }
 
         private void BuildPositionTickLabels(double durationSeconds)
@@ -346,16 +348,16 @@ namespace OneColumnEncoder.ViewModels
 
         private string GetEncodedPath(PreviewEncoder encoder) => encoder switch
         {
-            PreviewEncoder.X264 => GetWorkPath($"x264-{PreviewPipelineH.GetDisplayModeFileSuffix(_displayMode)}.h264"),
-            PreviewEncoder.X265 => GetWorkPath($"x265-{PreviewPipelineH.GetDisplayModeFileSuffix(_displayMode)}.hevc"),
-            _ => GetWorkPath($"svtav1-{PreviewPipelineH.GetDisplayModeFileSuffix(_displayMode)}.obu")
+            PreviewEncoder.X264 => GetWorkPath($"x264-{PreviewPipeline.GetDisplayModeFileSuffix(_displayMode)}.h264"),
+            PreviewEncoder.X265 => GetWorkPath($"x265-{PreviewPipeline.GetDisplayModeFileSuffix(_displayMode)}.hevc"),
+            _ => GetWorkPath($"svtav1-{PreviewPipeline.GetDisplayModeFileSuffix(_displayMode)}.obu")
         };
 
         private string GetDecodedPath(PreviewEncoder encoder) => encoder switch
         {
-            PreviewEncoder.X264 => GetWorkPath($"x264-{PreviewPipelineH.GetDisplayModeFileSuffix(_displayMode)}.png"),
-            PreviewEncoder.X265 => GetWorkPath($"x265-{PreviewPipelineH.GetDisplayModeFileSuffix(_displayMode)}.png"),
-            _ => GetWorkPath($"svtav1-{PreviewPipelineH.GetDisplayModeFileSuffix(_displayMode)}.png")
+            PreviewEncoder.X264 => GetWorkPath($"x264-{PreviewPipeline.GetDisplayModeFileSuffix(_displayMode)}.png"),
+            PreviewEncoder.X265 => GetWorkPath($"x265-{PreviewPipeline.GetDisplayModeFileSuffix(_displayMode)}.png"),
+            _ => GetWorkPath($"svtav1-{PreviewPipeline.GetDisplayModeFileSuffix(_displayMode)}.png")
         };
 
         private void SetDisplayMode(PreviewDisplayMode displayMode)
@@ -392,31 +394,31 @@ namespace OneColumnEncoder.ViewModels
         private void TryKillCurrentProcess()
         {
             if (_currentProcess != null)
-                PreviewPipelineH.TryKillProcess(_currentProcess);
+                PreviewPipeline.TryKillProcess(_currentProcess);
         }
 
         private void RefreshSsimulacra2Status()
         {
-            if (!Ssimulacra2H.Is64Bit)
+            if (!Ssimulacra2.Is64Bit)
             {
                 Ssimulacra2StatusText = "";
                 return;
             }
 
-            Ssimulacra2StatusText = Ssimulacra2H.IsSsimU2Present
+            Ssimulacra2StatusText = Ssimulacra2.IsSsimU2Present
                 ? Lang.Ssimulacra2ToolPresent
                 : Lang.Ssimulacra2ToolMissing;
         }
 
         private void RefreshButteraugliStatus()
         {
-            if (!ButteraugliH.Is64Bit)
+            if (!Butteraugli.Is64Bit)
             {
                 ButteraugliStatusText = "";
                 return;
             }
 
-            ButteraugliStatusText = ButteraugliH.IsPresent
+            ButteraugliStatusText = Butteraugli.IsPresent
                 ? Lang.ButteraugliToolPresent
                 : Lang.ButteraugliToolMissing;
         }

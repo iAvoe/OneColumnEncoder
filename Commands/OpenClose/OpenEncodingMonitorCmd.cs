@@ -1,4 +1,4 @@
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.Pipeline;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.Views;

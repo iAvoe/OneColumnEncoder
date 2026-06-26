@@ -1,6 +1,6 @@
 using Microsoft.Win32;
 using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.FileManagement;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels.Cards;
@@ -23,7 +23,7 @@ namespace OneColumnEncoder.Commands
             OpenFolderDialog dialog = new()
             {
                 Title = UILangProviderM.Current["SourceQueue.SelectFolderTitle"],
-                InitialDirectory = OutputPathH.GetInitialDirectory(_item.P2TextData)
+                InitialDirectory = OutputPath.GetInitialDirectory(_item.P2TextData)
             };
 
             Window? owner = Application.Current.MainWindow;
@@ -33,7 +33,7 @@ namespace OneColumnEncoder.Commands
             if (result != true) return;
 
             string folderPath = dialog.FolderName;
-            string[] filePaths = SourceFilePickerH.GetVideoFilesInFolder(folderPath);
+            string[] filePaths = SourceFilePicker.GetVideoFilesInFolder(folderPath);
             if (filePaths.Length == 0)
             {
                 new OpenWarnModalCmd(

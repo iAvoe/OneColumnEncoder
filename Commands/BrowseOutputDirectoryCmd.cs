@@ -1,5 +1,5 @@
 using Microsoft.Win32;
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.FileManagement;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.ViewModels.Cards;
 using System.Windows;
@@ -15,7 +15,7 @@ namespace OneColumnEncoder.Commands
             OpenFolderDialog dialog = new()
             {
                 Title = FilenameScribeVM.WindowTitle,
-                InitialDirectory = OutputPathH.GetInitialDirectory(_item.P2TextData)
+                InitialDirectory = OutputPath.GetInitialDirectory(_item.P2TextData)
             };
 
             Window? owner = Application.Current.MainWindow;

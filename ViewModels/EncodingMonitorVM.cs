@@ -1,6 +1,7 @@
 using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.Pipeline;
+using OneColumnEncoder.CPU;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.Views;
@@ -275,7 +276,7 @@ namespace OneColumnEncoder.ViewModels
             _request = request;
             _command = command;
             _isSample = isSample;
-            _totalFrames = EncodingPipelineH.GetSourceTotalFrames(_request.SourceFfprobeJson);
+            _totalFrames = EncodingPipeline.GetSourceTotalFrames(_request.SourceFfprobeJson);
             _enableMux = CanMux && !string.Equals(_request.EncoderExeName, "x264.exe", StringComparison.OrdinalIgnoreCase);
 
             RefreshLanguageState();
@@ -702,7 +703,7 @@ namespace OneColumnEncoder.ViewModels
 
                 _request = request;
                 _command = command;
-                _totalFrames = EncodingPipelineH.GetSourceTotalFrames(request.SourceFfprobeJson);
+                _totalFrames = EncodingPipeline.GetSourceTotalFrames(request.SourceFfprobeJson);
                 OnPropertyChanged(nameof(OpusAudioCommandHint));
                 EnableMux = command.MuxCommand != null
                     && !string.Equals(request.EncoderExeName, "x264.exe", StringComparison.OrdinalIgnoreCase);
@@ -842,7 +843,7 @@ namespace OneColumnEncoder.ViewModels
             int? maxCpuSets = isEncoder ? parallelismConf.EncoderThreadCount : null;
             ProcessLogKind logKind = isEncoder ? ProcessLogKind.DownstreamStderr : ProcessLogKind.UpstreamStderr;
 
-            bool success = CpuSetsH.TryApplyProcessDefaultCpuSets(
+            bool success = CpuSets.TryApplyProcessDefaultCpuSets(
                 process,
                 nodeId,
                 physicalOnly,
@@ -1437,7 +1438,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 string resolvedPath = _success && _command.MuxCommand != null
                     ? _command.MuxCommand.OutputPath
-                    : EncodingPipelineH.ResolveOutputPathWithExtension(_request.EncoderExeName, _request.OutputPath);
+                    : EncodingPipeline.ResolveOutputPathWithExtension(_request.EncoderExeName, _request.OutputPath);
                 if (!File.Exists(resolvedPath)) return 0L;
                 return new FileInfo(resolvedPath).Length;
             }

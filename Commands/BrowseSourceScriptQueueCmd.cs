@@ -1,5 +1,5 @@
 using Microsoft.Win32;
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.FileManagement;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.ViewModels.Cards;
 using System.IO;
@@ -23,7 +23,7 @@ namespace OneColumnEncoder.Commands
             OpenFolderDialog dialog = new()
             {
                 Title = UILangProviderM.Current["SourceQueue.SelectFolderTitle"],
-                InitialDirectory = OutputPathH.GetInitialDirectory(_getInitialPath?.Invoke() ?? _item.P2TextData)
+                InitialDirectory = OutputPath.GetInitialDirectory(_getInitialPath?.Invoke() ?? _item.P2TextData)
             };
 
             Window? owner = Application.Current.MainWindow;
@@ -33,7 +33,7 @@ namespace OneColumnEncoder.Commands
             if (result != true) return;
 
             string folderPath = dialog.FolderName;
-            string[] filePaths = SourceFilePickerH.GetSourceFilesInFolder(folderPath, _kind);
+            string[] filePaths = SourceFilePicker.GetSourceFilesInFolder(folderPath, _kind);
             // Extract file names for both short card display and long tooltip display
             string[] fileNames = filePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!).ToArray();
 

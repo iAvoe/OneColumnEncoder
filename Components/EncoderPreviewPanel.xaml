@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
-             xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
+             xmlns:ui="clr-namespace:OneColumnEncoder.UI"
              d:DataContext="{d:DesignInstance Type=vms:ImgABPvVM}"
              mc:Ignorable="d"
              Loaded="OnLoaded">
@@ -166,7 +166,7 @@
                                VerticalAlignment="Center"
                                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
                         <Rectangle.OpacityMask>
-                            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GamePlay}"
+                            <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GamePlay}"
                                         Stretch="Uniform"
                                         AlignmentX="Center"
                                         AlignmentY="Center" />

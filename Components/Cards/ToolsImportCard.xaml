@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
              xmlns:conv="clr-namespace:OneColumnEncoder.Converters"
-             xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
+             xmlns:ui="clr-namespace:OneColumnEncoder.UI"
              xmlns:cards="clr-namespace:OneColumnEncoder.ViewModels.Cards"
              d:DataContext="{d:DesignInstance Type=cards:ToolsImportCardVM}"
              mc:Ignorable="d"
@@ -92,7 +92,7 @@
                                    VerticalAlignment="Center"
                                    Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
                             <Rectangle.OpacityMask>
-                                <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameImport}"
+                                <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GameImport}"
                                             Stretch="Uniform"
                                             AlignmentX="Center"
                                             AlignmentY="Center" />
@@ -109,7 +109,7 @@
                                    Margin="5 0 0 0"
                                    Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
                             <Rectangle.OpacityMask>
-                                <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameReplace}"
+                                <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GameReplace}"
                                             Stretch="Uniform"
                                             AlignmentX="Center"
                                             AlignmentY="Center" />

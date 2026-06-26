@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:views="clr-namespace:OneColumnEncoder.Views"
              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
-             xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
              xmlns:cards="clr-namespace:OneColumnEncoder.Components.Cards"
              xmlns:conv="clr-namespace:OneColumnEncoder.Converters"

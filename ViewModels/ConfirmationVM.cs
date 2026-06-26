@@ -1,4 +1,4 @@
-﻿using OneColumnEncoder.Helpers;
+﻿using OneColumnEncoder.UI;
 using OneColumnEncoder.Models;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -29,19 +29,19 @@ public class ConfirmationVM(string windowTitle, string message, ImageSource imag
             cancelCmd, confirmCmd);
 
     public static ConfirmationVM CreateWarning(string title, string p1Text, ICommand cancelCmd, ICommand confirmCmd) =>
-        new(UILangProviderM.Current["ConfirmDialog.WarningPrefix"] + title, p1Text, SvgIconProviderH.GlobeWarning, cancelCmd, confirmCmd);
+        new(UILangProviderM.Current["ConfirmDialog.WarningPrefix"] + title, p1Text, SvgIconProvider.GlobeWarning, cancelCmd, confirmCmd);
 
     public static ConfirmationVM CreateError(string title, string p1Text, ICommand cancelCmd, ICommand confirmCmd) =>
-        new(UILangProviderM.Current["ConfirmDialog.ErrorPrefix"] + title, p1Text, SvgIconProviderH.GlobeError, cancelCmd, confirmCmd);
+        new(UILangProviderM.Current["ConfirmDialog.ErrorPrefix"] + title, p1Text, SvgIconProvider.GlobeError, cancelCmd, confirmCmd);
 
     public static ConfirmationVM CreateDebug(string title, string p1Text, ICommand cancelCmd, ICommand confirmCmd) =>
-        new(UILangProviderM.Current["ConfirmDialog.DebugPrefix"] + title, p1Text, SvgIconProviderH.Troubleshoot, cancelCmd, confirmCmd);
+        new(UILangProviderM.Current["ConfirmDialog.DebugPrefix"] + title, p1Text, SvgIconProvider.Troubleshoot, cancelCmd, confirmCmd);
 
     public static ConfirmationVM CreateInfo(string title, string p1Text, ICommand cancelCmd, ICommand confirmCmd) =>
-        new(UILangProviderM.Current["ConfirmDialog.InfoPrefix"] + title, p1Text, SvgIconProviderH.AzureConsortium, cancelCmd, confirmCmd);
+        new(UILangProviderM.Current["ConfirmDialog.InfoPrefix"] + title, p1Text, SvgIconProvider.AzureConsortium, cancelCmd, confirmCmd);
 
     public static ConfirmationVM CreateSuccess(string title, string p1Text, ICommand cancelCmd, ICommand confirmCmd) =>
-        new(UILangProviderM.Current["ConfirmDialog.SuccessPrefix"] + title, p1Text, SvgIconProviderH.GlobeSuccess, cancelCmd, confirmCmd);
+        new(UILangProviderM.Current["ConfirmDialog.SuccessPrefix"] + title, p1Text, SvgIconProvider.GlobeSuccess, cancelCmd, confirmCmd);
 }
 
 public sealed class ConfirmationContextMenuItemVM(string header, ICommand command)

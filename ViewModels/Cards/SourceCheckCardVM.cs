@@ -1,4 +1,4 @@
-﻿using OneColumnEncoder.Helpers;
+﻿using OneColumnEncoder.FFmpeg;
 using OneColumnEncoder.Models;
 
 namespace OneColumnEncoder.ViewModels.Cards
@@ -53,7 +53,7 @@ namespace OneColumnEncoder.ViewModels.Cards
             _lastAnalysisJson = rawJson;
             try
             {
-                FFProbeSourceValidationResult result = FFProbeSourceValidationH.Analyze(rawJson);
+                FFProbeSourceValidationResult result = FFProbeSourceValidation.Analyze(rawJson);
 
                 SetChecklist1(MetadataChecklistIdx, StatusType.Success);
                 SetChecklist1(ProgressiveChecklistIdx, result.IsProgressive
@@ -96,7 +96,7 @@ namespace OneColumnEncoder.ViewModels.Cards
 
             try
             {
-                SetChecklist1(Svtav1BitDepthChecklistIdx, FFProbeSourceValidationH.IsSvtAv1BitDepthSupported(_lastAnalysisJson)
+                SetChecklist1(Svtav1BitDepthChecklistIdx, FFProbeSourceValidation.IsSvtAv1BitDepthSupported(_lastAnalysisJson)
                     ? StatusType.Success
                     : IsSelectingSvtav1()
                         ? StatusType.Error

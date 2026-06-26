@@ -1,7 +1,12 @@
 ﻿using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Commands.SaveLoad;
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.ToolManagement;
+using OneColumnEncoder.UI;
+using OneColumnEncoder.FileManagement;
+using OneColumnEncoder.Validation;
+using OneColumnEncoder.QueueManagement;
+using OneColumnEncoder.Pipeline;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels.Cards;
@@ -316,7 +321,7 @@ namespace OneColumnEncoder.ViewModels
                 () => GetCurrentVideoSourcePath(),
                 () => ActiveScriptSrcImportZone[0],
                 () => ActiveScriptSrcImportZone[1],
-                () => SourceFileKindH.GetPreferredScriptSourceKind(UpstreamsZone),
+                () => SourceFileKindResolver.GetPreferredScriptSourceKind(UpstreamsZone),
                 OnSourceImported,
                 args => _scriptScribeFfmpegFilterArgs = args ?? string.Empty,
                 () => SrcValidationCard.Checklist1.Any(
@@ -369,8 +374,8 @@ namespace OneColumnEncoder.ViewModels
             // Build button groups after commands so initial CanExecute refreshes have valid targets.
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProviderM.Buttons.UsageAndCompliance, UICaptionProviderM.Buttons.Settings, OpenUsages, OpenAppConf);
-            OpenAppConfButtons.B2_1Icon = SvgIconProviderH.GamePhone;
-            OpenAppConfButtons.B2_2Icon = SvgIconProviderH.GameSetting;
+            OpenAppConfButtons.B2_1Icon = SvgIconProvider.GamePhone;
+            OpenAppConfButtons.B2_2Icon = SvgIconProvider.GameSetting;
             FilterScbButtons = ButtonGroupVM.CreateTwoButton( // UpdateFilterScbButtonsState()
                 UICaptionProviderM.Buttons.OneClickScriptGen, UICaptionProviderM.Buttons.OpenScribeSrcScribe, OneClickScriptGen, OpenFilterScribe);
             AnalyzeSrcButtons = ButtonGroupVM.CreateTwoButton(
@@ -379,9 +384,9 @@ namespace OneColumnEncoder.ViewModels
             EncStartButtons = ButtonGroupVM.CreateThreeButton( // UpdateEncStartButtonsState()
                 UICaptionProviderM.Buttons.ReEvaluate, UICaptionProviderM.Buttons.RunSample, UICaptionProviderM.Buttons.StartEncode,
                 new ActionCmd(_ => ReEvaluateAllChecks()), SampleClip, StartEncode);
-            EncStartButtons.B3_1Icon = SvgIconProviderH.GameRefresh;
-            EncStartButtons.B3_2Icon = SvgIconProviderH.GameLocation;
-            EncStartButtons.B3_3Icon = SvgIconProviderH.GamePlay;
+            EncStartButtons.B3_1Icon = SvgIconProvider.GameRefresh;
+            EncStartButtons.B3_2Icon = SvgIconProvider.GameLocation;
+            EncStartButtons.B3_3Icon = SvgIconProvider.GamePlay;
             _isEncStartButtonsReady = true;
             InspBypsChkButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProviderM.Buttons.InspectSrcProbelms, UICaptionProviderM.Buttons.BypassSrcChecklist, InspectSrcProblems, BypassSrcChecklist);
@@ -483,8 +488,8 @@ namespace OneColumnEncoder.ViewModels
 
             try
             {
-                IReadOnlyList<AutoToolImportH.Candidate> candidates =
-                    await AutoToolImportH.FindImportableToolsAsync(_appDataM.Tools);
+                IReadOnlyList<AutoToolImport.Candidate> candidates =
+                    await AutoToolImport.FindImportableToolsAsync(_appDataM.Tools);
 
                 if (candidates.Count == 0)
                 {
@@ -496,7 +501,7 @@ namespace OneColumnEncoder.ViewModels
 
                 if (!ShowAutoImportConfirmation(candidates)) return;
 
-                foreach (AutoToolImportH.Candidate candidate in candidates)
+                foreach (AutoToolImport.Candidate candidate in candidates)
                 {
                     await OnToolImported(candidate.ExeName, candidate.FilePath, candidate.Version);
                 }
@@ -508,7 +513,7 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        private bool ShowAutoImportConfirmation(IReadOnlyList<AutoToolImportH.Candidate> candidates)
+        private bool ShowAutoImportConfirmation(IReadOnlyList<AutoToolImport.Candidate> candidates)
         {
             string itemText = string.Join(Environment.NewLine, candidates.Select(candidate => string.Format(
                 UILangProviderM.Current["AutoImport.ItemFormat"],
@@ -608,11 +613,11 @@ namespace OneColumnEncoder.ViewModels
             RefreshVspipeAvailability();
             RefreshImportedToolsChecklist();
             // Only mark IsCancel for auto-selected items, user manual selection won't be reverted
-            ToolCompatibilityH.RefreshDependencySelectionState(
+            ToolCompatibility.RefreshDependencySelectionState(
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
-            ToolCompatibilityH.RefreshSourceSelectionState(
+            ToolCompatibility.RefreshSourceSelectionState(
                 UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
-            ToolCompatibilityH.RefreshVideoSourceSelectionState(
+            ToolCompatibility.RefreshVideoSourceSelectionState(
                 UpstreamsZone, VideoSrcImportZone);
 
             // Revert the selection for IsCancel caused by "Auto Selection".
@@ -628,7 +633,7 @@ namespace OneColumnEncoder.ViewModels
 
         private bool ApplyDefaultImportedToolSelection(ObservableCollection<ToolItemCardVM> zone)
         {
-            bool autoSelected = ItemCardSelectionH.ApplyDefaultSelection(zone);
+            bool autoSelected = ItemCardSelection.ApplyDefaultSelection(zone);
             RefreshImportedToolPickedStatus(zone);
             return autoSelected;
         }
@@ -646,11 +651,11 @@ namespace OneColumnEncoder.ViewModels
             if (!reverted) return;
 
             RefreshImportedToolPickedStatus(zone);
-            ToolCompatibilityH.RefreshDependencySelectionState(
+            ToolCompatibility.RefreshDependencySelectionState(
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
-            ToolCompatibilityH.RefreshSourceSelectionState(
+            ToolCompatibility.RefreshSourceSelectionState(
                 UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
-            ToolCompatibilityH.RefreshVideoSourceSelectionState(
+            ToolCompatibility.RefreshVideoSourceSelectionState(
                 UpstreamsZone, VideoSrcImportZone);
         }
 
@@ -681,11 +686,11 @@ namespace OneColumnEncoder.ViewModels
             RefreshVspipeAvailability();
             RefreshImportedToolsChecklist();
             RefreshEncTermsState();
-            ToolCompatibilityH.RefreshDependencySelectionState(
+            ToolCompatibility.RefreshDependencySelectionState(
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
-            ToolCompatibilityH.RefreshSourceSelectionState(
+            ToolCompatibility.RefreshSourceSelectionState(
                 UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
-            ToolCompatibilityH.RefreshVideoSourceSelectionState(
+            ToolCompatibility.RefreshVideoSourceSelectionState(
                 UpstreamsZone, VideoSrcImportZone);
         }
 
@@ -892,7 +897,7 @@ namespace OneColumnEncoder.ViewModels
 
             bool scriptSourcePicked = expectedKind == null || ActiveScriptSrcImportZone.Any(t =>
                 t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData) &&
-                SourceFileKindH.ResolveSourceFileKind(t.Name) == expectedKind.Value);
+                SourceFileKindResolver.ResolveSourceFileKind(t.Name) == expectedKind.Value);
             ToolsImportCard.SetScriptSourcePickedStatus(expectedKind != null, scriptSourcePicked);
         }
 
@@ -952,7 +957,7 @@ namespace OneColumnEncoder.ViewModels
                 return;
             }
 
-            SourceFileKind kind = SourceFileKindH.ResolveSourceFileKind(item.Name);
+            SourceFileKind kind = SourceFileKindResolver.ResolveSourceFileKind(item.Name);
             if (QueueScriptSrcImportZone.Contains(item))
             {
                 item.R1Command = new BrowseSourceScriptQueueCmd(item, kind, OnSourceScriptQueueImported, GetCurrentSourceImportPath);
@@ -1066,7 +1071,7 @@ namespace OneColumnEncoder.ViewModels
                 return;
             }
 
-            ItemCardSelectionH.HandleItemCardClick(
+            ItemCardSelection.HandleItemCardClick(
                 clickedTool,
                 UpstreamsZone, EncodersZone, AnalyticsZone, DependenciesZone,
                 VideoSrcImportZone, ActiveScriptSrcImportZone,
@@ -1083,7 +1088,7 @@ namespace OneColumnEncoder.ViewModels
             EncodingConfZone.Contains(clickedTool);
 
         private void RefreshToolPickedStatus(ToolZone toolZone, ObservableCollection<ToolItemCardVM> itemZone) =>
-            ItemCardSelectionH.RefreshToolPickedStatus(ToolsImportCard, toolZone, itemZone);
+            ItemCardSelection.RefreshToolPickedStatus(ToolsImportCard, toolZone, itemZone);
 
         private void RefreshImportedToolPickedStatus(ObservableCollection<ToolItemCardVM> itemZone)
         {
@@ -1144,14 +1149,14 @@ namespace OneColumnEncoder.ViewModels
 
         private bool ShouldSelectImportedScriptSource(SourceFileKind kind)
         {
-            SourceFileKind? preferredKind = SourceFileKindH.GetPreferredScriptSourceKind(UpstreamsZone);
+            SourceFileKind? preferredKind = SourceFileKindResolver.GetPreferredScriptSourceKind(UpstreamsZone);
             return preferredKind == null || kind == preferredKind.Value;
         }
 
         private string? ValidateSingleScriptImport(SourceFileKind kind, string filePath)
         {
             string videoPath = GetCurrentVideoSourcePath();
-            ScriptSourceValidationIssue? issue = ScriptSourceValidationH.ValidateSingle(kind, filePath, videoPath);
+            ScriptSourceValidationIssue? issue = ScriptSourceValidation.ValidateSingle(kind, filePath, videoPath);
             return issue == null ? null : FormatScriptImportIssues([issue]);
         }
 
@@ -1306,7 +1311,7 @@ namespace OneColumnEncoder.ViewModels
             if (videoPaths.Length == 0) return null;
 
             IReadOnlyList<ScriptSourceValidationIssue> issues =
-                ScriptSourceValidationH.ValidateQueue(kind, filePaths, videoPaths);
+                ScriptSourceValidation.ValidateQueue(kind, filePaths, videoPaths);
             return issues.Count == 0 ? null : FormatScriptImportIssues(issues);
         }
 
@@ -1478,10 +1483,10 @@ namespace OneColumnEncoder.ViewModels
             ActiveScriptSrcImportZone = queueActive
                 ? QueueScriptSrcImportZone
                 : ScriptSrcImportZone;
-            ToolCompatibilityH.RefreshSourceSelectionState(
+            ToolCompatibility.RefreshSourceSelectionState(
                 UpstreamsZone, ActiveScriptSrcImportZone, () => { });
             RefreshScriptSourceEnabledState();
-            ToolCompatibilityH.RefreshVideoSourceSelectionState(
+            ToolCompatibility.RefreshVideoSourceSelectionState(
                 UpstreamsZone, VideoSrcImportZone);
             RefreshOutputSettingCommand();
 
@@ -1513,7 +1518,7 @@ namespace OneColumnEncoder.ViewModels
             string? upstreamExeName = upstream == null
                 ? null
                 : ToolCatalogProviderM.ResolveExeFromDisplayName(upstream.Name);
-            return SourceFileKindH.IsQueueRouteSupportedUpstream(upstreamExeName);
+            return SourceFileKindResolver.IsQueueRouteSupportedUpstream(upstreamExeName);
         }
 
         private string GetSelectedVideoSourcePath()
@@ -1551,7 +1556,7 @@ namespace OneColumnEncoder.ViewModels
                 svfiIniPath = GetSelectedSvfiIniPath();
                 if (!string.IsNullOrWhiteSpace(svfiIniPath))
                 {
-                    var (iniInputPath, iniTaskId) = EncodingPipelineH.ParseSvfiIni(svfiIniPath);
+                    var (iniInputPath, iniTaskId) = EncodingPipeline.ParseSvfiIni(svfiIniPath);
                     if (!string.IsNullOrWhiteSpace(iniInputPath))
                         upstreamInputPath = iniInputPath;
                     svfiTaskId = iniTaskId;
@@ -1607,7 +1612,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 scriptKind = SourceFileKind.VapourSynthScript;
                 ToolItemCardVM? vpyItem = ActiveScriptSrcImportZone.FirstOrDefault(t =>
-                    SourceFileKindH.ResolveSourceFileKind(t.Name) == scriptKind && !string.IsNullOrWhiteSpace(t.P2TextData));
+                    SourceFileKindResolver.ResolveSourceFileKind(t.Name) == scriptKind && !string.IsNullOrWhiteSpace(t.P2TextData));
                 if (vpyItem == null) return null;
                 scriptDir = vpyItem.P2TextData;
             }
@@ -1616,7 +1621,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 scriptKind = SourceFileKind.AviSynthScript;
                 ToolItemCardVM? avsItem = ActiveScriptSrcImportZone.FirstOrDefault(t =>
-                    SourceFileKindH.ResolveSourceFileKind(t.Name) == scriptKind && !string.IsNullOrWhiteSpace(t.P2TextData));
+                    SourceFileKindResolver.ResolveSourceFileKind(t.Name) == scriptKind && !string.IsNullOrWhiteSpace(t.P2TextData));
                 if (avsItem == null) return null;
                 scriptDir = avsItem.P2TextData;
             }
@@ -1640,7 +1645,7 @@ namespace OneColumnEncoder.ViewModels
                     }
                     else
                     {
-                        string? embeddedPath = ScriptSourceValidationH.ExtractScriptSourcePath(scriptPath, ext);
+                        string? embeddedPath = ScriptSourceValidation.ExtractScriptSourcePath(scriptPath, ext);
                         if (embeddedPath == null)
                         {
                             mismatchCount++;
@@ -1733,7 +1738,7 @@ namespace OneColumnEncoder.ViewModels
         {
             ToolItemCardVM? svfiIni = ActiveScriptSrcImportZone.FirstOrDefault(t =>
                 t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData) &&
-                SourceFileKindH.ResolveSourceFileKind(t.Name) == SourceFileKind.SvfiIni);
+                SourceFileKindResolver.ResolveSourceFileKind(t.Name) == SourceFileKind.SvfiIni);
             return svfiIni?.P2TextData ?? string.Empty;
         }
 
@@ -1748,7 +1753,7 @@ namespace OneColumnEncoder.ViewModels
                 : SourceFileKind.AviSynthScript;
 
             ToolItemCardVM? source = ActiveScriptSrcImportZone.FirstOrDefault(t =>
-                SourceFileKindH.ResolveSourceFileKind(t.Name) == kind && !string.IsNullOrWhiteSpace(t.P2TextData));
+                SourceFileKindResolver.ResolveSourceFileKind(t.Name) == kind && !string.IsNullOrWhiteSpace(t.P2TextData));
             return source?.P2TextData ?? string.Empty;
         }
 
@@ -1935,7 +1940,7 @@ namespace OneColumnEncoder.ViewModels
 
             if (exeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase))
             {
-                await ToolVersionDetectH.DetectAndStoreVspipeY4mArgAsync(
+                await ToolVersionDetect.DetectAndStoreVspipeY4mArgAsync(
                     exeName,
                     filePath,
                     y4mArg => _appDataM.Tools.VspipeY4mArg = y4mArg);
@@ -1993,7 +1998,7 @@ namespace OneColumnEncoder.ViewModels
             if (string.IsNullOrWhiteSpace(path) || !File.Exists(path)) return false;
 
             item.P2TextData = path;
-            item.P1TextData = SourceFilePickerH.GetPrimaryText(kind, path);
+            item.P1TextData = SourceFilePicker.GetPrimaryText(kind, path);
             return true;
         }
 
@@ -2104,7 +2109,7 @@ namespace OneColumnEncoder.ViewModels
                 ToolDefinitionProviderM.IsImportedTool(t.Name, "vspipe.exe"));
             if (vspipe == null) return;
 
-            vspipe.IsEnabled = ToolVersionDetectH.HasValidVspipeY4mArg(
+            vspipe.IsEnabled = ToolVersionDetect.HasValidVspipeY4mArg(
                 _appDataM.Tools.VspipePath,
                 _appDataM.Tools.VspipeY4mArg);
         }
@@ -2124,8 +2129,8 @@ namespace OneColumnEncoder.ViewModels
 
                 if (IsVideoSourceQueueItem(item)) continue;
 
-                SourceFileKind fileKind = SourceFileKindH.ResolveSourceFileKind(item.Name);
-                item.P1TextData = SourceFilePickerH.GetPrimaryText(fileKind, item.P2TextData);
+                SourceFileKind fileKind = SourceFileKindResolver.ResolveSourceFileKind(item.Name);
+                item.P1TextData = SourceFilePicker.GetPrimaryText(fileKind, item.P2TextData);
             }
         }
 
@@ -2137,9 +2142,9 @@ namespace OneColumnEncoder.ViewModels
             {
                 if (item == null) continue;
                 if (string.IsNullOrWhiteSpace(item.P2TextData)) continue;
-                SourceFileKind fileKind = SourceFileKindH.ResolveSourceFileKind(item.Name);
-                string[] filePaths = SourceFilePickerH.GetSourceFilesInFolder(item.P2TextData, fileKind);
-                item.P1TextData = VideoSourceQueueH.GetQueueP1Text(
+                SourceFileKind fileKind = SourceFileKindResolver.ResolveSourceFileKind(item.Name);
+                string[] filePaths = SourceFilePicker.GetSourceFilesInFolder(item.P2TextData, fileKind);
+                item.P1TextData = VideoSourceQueue.GetQueueP1Text(
                     [.. filePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!)]);
             }
         }

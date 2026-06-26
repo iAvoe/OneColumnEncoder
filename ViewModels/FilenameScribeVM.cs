@@ -1,7 +1,9 @@
 using Microsoft.Win32;
 using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.FileManagement;
+using OneColumnEncoder.UI;
+using OneColumnEncoder.Validation;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.ViewModels.Cards;
 using System.Collections.ObjectModel;
@@ -63,7 +65,7 @@ namespace OneColumnEncoder.ViewModels
         {
             _closeAction = closeAction;
             _outputSettingItem = outputSettingItem;
-            _videoFilename = OutputPathH.GetInitialFilename(outputSettingItem.P1TextData, outputSettingItem.P2TextData);
+            _videoFilename = OutputPath.GetInitialFilename(outputSettingItem.P1TextData, outputSettingItem.P2TextData);
             CloseCmd = new CloseModalCmd(closeAction);
             RotateFontSizeCmd = new ActionCmd(_ => RotateFontSize());
             BuildChecklist();
@@ -104,7 +106,7 @@ namespace OneColumnEncoder.ViewModels
                 UILangProviderM.Current["FilenameScribe.RotateFontSize"],
                 new ActionCmd(_ => PasteFromClipboard()),
                 RotateFontSizeCmd);
-            FilenameActionButtons.B2_1Icon = SvgIconProviderH.GamePaste;
+            FilenameActionButtons.B2_1Icon = SvgIconProvider.GamePaste;
 
             FilenameFinishButtons = ButtonGroupVM.CreateTwoButton(
                 UILangProviderM.Current["FilenameScribe.Cancel"],
@@ -135,7 +137,7 @@ namespace OneColumnEncoder.ViewModels
             OpenFolderDialog dialog = new()
             {
                 Title = WindowTitle,
-                InitialDirectory = OutputPathH.GetInitialDirectory(_outputSettingItem.P2TextData)
+                InitialDirectory = OutputPath.GetInitialDirectory(_outputSettingItem.P2TextData)
             };
 
             Window? owner = Application.Current.MainWindow;
@@ -158,15 +160,15 @@ namespace OneColumnEncoder.ViewModels
 
             string filename = VideoFilename.Trim();
             SetChecklistStatus(SevereIssueChecklist, 0, !string.IsNullOrWhiteSpace(VideoFilename));
-            SetChecklistStatus(SevereIssueChecklist, 1, FilenameValidationH.HasNoInvalidChars(filename));
-            SetChecklistStatus(SevereIssueChecklist, 2, FilenameValidationH.HasUnicodeCombiningMarks(filename));
-            SetChecklistStatus(SevereIssueChecklist, 3, FilenameValidationH.HasNoSpecialSpaceVariants(VideoFilename));
-            SetChecklistStatus(SevereIssueChecklist, 4, FilenameValidationH.IsNotReservedName(filename));
-            SetChecklistStatus(GeneralIssueChecklist, 0, FilenameValidationH.IsValidLength(filename), useWarning: true);
-            GeneralIssueChecklist[1].Status = FilenameValidationH.HasSpaces(VideoFilename)
+            SetChecklistStatus(SevereIssueChecklist, 1, FilenameValidation.HasNoInvalidChars(filename));
+            SetChecklistStatus(SevereIssueChecklist, 2, FilenameValidation.HasUnicodeCombiningMarks(filename));
+            SetChecklistStatus(SevereIssueChecklist, 3, FilenameValidation.HasNoSpecialSpaceVariants(VideoFilename));
+            SetChecklistStatus(SevereIssueChecklist, 4, FilenameValidation.IsNotReservedName(filename));
+            SetChecklistStatus(GeneralIssueChecklist, 0, FilenameValidation.IsValidLength(filename), useWarning: true);
+            GeneralIssueChecklist[1].Status = FilenameValidation.HasSpaces(VideoFilename)
                 ? StatusType.Warning
                 : StatusType.Success;
-            GeneralIssueChecklist[2].Status = FilenameValidationH.HasNoExtendedChars(filename)
+            GeneralIssueChecklist[2].Status = FilenameValidation.HasNoExtendedChars(filename)
                 ? StatusType.Success
                 : StatusType.Warning;
 

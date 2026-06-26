@@ -1,4 +1,4 @@
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.UI;
 
 namespace OneColumnEncoder.Views
 {

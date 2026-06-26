@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
+             xmlns:ui="clr-namespace:OneColumnEncoder.UI"
              x:Name="uc"
              mc:Ignorable="d"
              d:DesignHeight="20"
@@ -23,7 +23,7 @@
                    VerticalAlignment="Center"
                    Fill="{Binding HintBrush, ElementName=uc}">
             <Rectangle.OpacityMask>
-                <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameInfo}"
+                <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GameInfo}"
                             Stretch="Uniform" />
             </Rectangle.OpacityMask>
         </Rectangle>

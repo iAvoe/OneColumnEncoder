@@ -1,4 +1,4 @@
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.UI;
 using OneColumnEncoder.ViewModels;
 using System.ComponentModel;
 using System.Runtime.InteropServices;

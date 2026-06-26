@@ -1,10 +1,10 @@
-﻿<helpers:AdaptiveWindow x:Class="OneColumnEncoder.MainWindow"
+﻿<ui:AdaptiveWindow x:Class="OneColumnEncoder.MainWindow"
                         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                         xmlns:local="clr-namespace:OneColumnEncoder"
-                        xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
+                        xmlns:ui="clr-namespace:OneColumnEncoder.UI"
                         xmlns:views="clr-namespace:OneColumnEncoder.Views"
                         mc:Ignorable="d"
                         Title="1cenc"
@@ -18,4 +18,4 @@
         <!-- DataContext is inherited from parent (MainVM), so there is no binding needed here -->
         <views:MainUI />
     </ScrollViewer>
-</helpers:AdaptiveWindow>
+</ui:AdaptiveWindow>

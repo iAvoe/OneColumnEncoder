@@ -1,5 +1,5 @@
 using OneColumnEncoder.Models;
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.Pipeline;
 using System.IO;
 using System.Text.Json;
 using System.Windows.Input;
@@ -203,7 +203,7 @@ namespace OneColumnEncoder.ViewModels
         private string GetFrameCountText()
         {
             long? frameCount = _request?.SourceFfprobeJson is { Length: > 0 }
-                ? EncodingPipelineH.GetSourceTotalFrames(_request.SourceFfprobeJson)
+                ? EncodingPipeline.GetSourceTotalFrames(_request.SourceFfprobeJson)
                 : null;
 
             if (frameCount is > 0)

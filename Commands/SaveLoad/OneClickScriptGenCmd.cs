@@ -1,6 +1,7 @@
 using Microsoft.Win32;
 using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.ScriptGeneration;
+using OneColumnEncoder.FileManagement;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
@@ -49,11 +50,11 @@ namespace OneColumnEncoder.Commands.SaveLoad
             }
 
             string sourcePath = _getSourcePath();
-            string avsScript = ScriptTemplateH.BuildAvsExportScript(
+            string avsScript = ScriptTemplate.BuildAvsExportScript(
                 sourcePath,
                 FilterScribeVM.AvsPrefix2,
                 FilterScribeVM.AvsSuffix); // No user input (extra filter lines) in one click gen
-            string vpyScript = ScriptTemplateH.BuildVpyExportScript(
+            string vpyScript = ScriptTemplate.BuildVpyExportScript(
                 sourcePath,
                 FilterScribeVM.VpyPrefix2,
                 FilterScribeVM.VpySuffix);
@@ -88,10 +89,10 @@ namespace OneColumnEncoder.Commands.SaveLoad
             }
 
             avsItem.P2TextData = avsPath;
-            avsItem.P1TextData = SourceFilePickerH.GetPrimaryText(SourceFileKind.AviSynthScript, avsPath);
+            avsItem.P1TextData = SourceFilePicker.GetPrimaryText(SourceFileKind.AviSynthScript, avsPath);
 
             vpyItem.P2TextData = vpyPath;
-            vpyItem.P1TextData = SourceFilePickerH.GetPrimaryText(SourceFileKind.VapourSynthScript, vpyPath);
+            vpyItem.P1TextData = SourceFilePicker.GetPrimaryText(SourceFileKind.VapourSynthScript, vpyPath);
 
             ApplyUpstreamScriptSelection(avsItem, vpyItem);
 
@@ -126,11 +127,11 @@ namespace OneColumnEncoder.Commands.SaveLoad
                     string avsPath = Path.Combine(directory, baseName + ".avs");
                     string vpyPath = Path.Combine(directory, baseName + ".vpy");
 
-                    File.WriteAllText(avsPath, ScriptTemplateH.BuildAvsExportScript(
+                    File.WriteAllText(avsPath, ScriptTemplate.BuildAvsExportScript(
                         sourcePath,
                         FilterScribeVM.AvsPrefix2,
                         FilterScribeVM.AvsSuffix));
-                    File.WriteAllText(vpyPath, ScriptTemplateH.BuildVpyExportScript(
+                    File.WriteAllText(vpyPath, ScriptTemplate.BuildVpyExportScript(
                         sourcePath,
                         FilterScribeVM.VpyPrefix2,
                         FilterScribeVM.VpySuffix));

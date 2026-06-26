@@ -1,5 +1,5 @@
 ﻿using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.Pipeline;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
@@ -49,7 +49,7 @@ namespace OneColumnEncoder.Commands
                 return;
             }
 
-            EncodingPipelineCommand command = EncodingPipelineH.BuildY4mCommand(request);
+            EncodingPipelineCommand command = EncodingPipeline.BuildY4mCommand(request);
 
             ConfirmationModal? existing = Application.Current.Windows
                 .OfType<ConfirmationModal>()
@@ -164,7 +164,7 @@ namespace OneColumnEncoder.Commands
         {
             EncodingPipelineRequest[]? requests = _buildQueueRequests?.Invoke(sourcePaths);
             if (requests == null || requests.Length == 0) return null;
-            return [.. requests.Select(request => new QueueEncodingItem(request, EncodingPipelineH.BuildY4mCommand(request)))];
+            return [.. requests.Select(request => new QueueEncodingItem(request, EncodingPipeline.BuildY4mCommand(request)))];
         }
 
         private void OpenOverwriteConfirmationOrStart(EncodingPipelineRequest request, EncodingPipelineCommand command)
@@ -254,7 +254,7 @@ namespace OneColumnEncoder.Commands
                 {
                     new OverwriteTarget(
                         Label(Lang.EncodedOutputLabel),
-                        EncodingPipelineH.ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath),
+                        EncodingPipeline.ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath),
                         0L)
                 }
                 : new[]

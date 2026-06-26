@@ -1,6 +1,7 @@
 using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.FFmpeg;
+using OneColumnEncoder.Pipeline;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.Views;
@@ -153,7 +154,7 @@ namespace OneColumnEncoder.ViewModels
             _modalNavS = modalNavS;
             _closeAction = closeAction;
             _buildRequest = buildRequest;
-            FFProbeSourceStats sourceStats = FFProbeSourceStatsH.Read(srcVideoAnalysis.RawJson);
+            FFProbeSourceStats sourceStats = FFProbeSourceStatsReader.Read(srcVideoAnalysis.RawJson);
             _totalSeconds = sourceStats.DurationSeconds;
             _frameRate = sourceStats.FrameRate;
             _totalFrames = Math.Max(1L, sourceStats.TotalFrames);
@@ -222,7 +223,7 @@ namespace OneColumnEncoder.ViewModels
             for (int i = 0; i <= 4; i++)
             {
                 double seconds = _totalSeconds * i / 4d;
-                AxisLabels.Add(SampleClipH.FormatAxisTimestamp(seconds));
+                AxisLabels.Add(SampleClip.FormatAxisTimestamp(seconds));
             }
         }
 
@@ -261,16 +262,16 @@ namespace OneColumnEncoder.ViewModels
             double durationSeconds = Math.Max(0d, endSeconds - startSeconds);
 
             StartTimeText =
-                EncodingPipelineH.FormatTimestamp(TimeSpan.FromSeconds(startSeconds));
+                EncodingPipeline.FormatTimestamp(TimeSpan.FromSeconds(startSeconds));
             ClipDurationText =
-                EncodingPipelineH.FormatTimestamp(TimeSpan.FromSeconds(durationSeconds));
+                EncodingPipeline.FormatTimestamp(TimeSpan.FromSeconds(durationSeconds));
             EndTimeText =
-                EncodingPipelineH.FormatTimestamp(TimeSpan.FromSeconds(endSeconds));
+                EncodingPipeline.FormatTimestamp(TimeSpan.FromSeconds(endSeconds));
 
             long startFrame =
-                Math.Min(_totalFrames - 1L, SampleClipH.SecondsToFirstFrame(startSeconds, _frameRate));
+                Math.Min(_totalFrames - 1L, SampleClip.SecondsToFirstFrame(startSeconds, _frameRate));
             long endFrame =
-                Math.Min(_totalFrames - 1L, Math.Max(startFrame, SampleClipH.SecondsToLastFrame(endSeconds, _frameRate)));
+                Math.Min(_totalFrames - 1L, Math.Max(startFrame, SampleClip.SecondsToLastFrame(endSeconds, _frameRate)));
             StartFrameText =
                 startFrame.ToString(CultureInfo.InvariantCulture);
             ClipFrameCountText =
@@ -346,12 +347,12 @@ namespace OneColumnEncoder.ViewModels
             if (durationSeconds <= 0d)
                 durationSeconds = ClipLengthSeconds;
 
-            return SampleClipH.ClampDuration(durationSeconds, _totalSeconds, MinClipLengthSeconds, MaxClipLengthSeconds);
+            return SampleClip.ClampDuration(durationSeconds, _totalSeconds, MinClipLengthSeconds, MaxClipLengthSeconds);
         }
 
         private void ApplySelectionSeconds(double startSeconds, double endSeconds, bool anchorEnd)
         {
-            var selection = SampleClipH.NormalizeSelectionSeconds(
+            var selection = SampleClip.NormalizeSelectionSeconds(
                 startSeconds,
                 endSeconds,
                 anchorEnd,
@@ -375,7 +376,7 @@ namespace OneColumnEncoder.ViewModels
         {
             try
             {
-                return SampleClipH.TryParseSourceSeconds(text, _totalSeconds, allowSourceEnd, out seconds);
+                return SampleClip.TryParseSourceSeconds(text, _totalSeconds, allowSourceEnd, out seconds);
             }
             catch
             {
@@ -386,7 +387,7 @@ namespace OneColumnEncoder.ViewModels
 
         private bool TryParseSourceFrame(string text, out long frame)
         {
-            return SampleClipH.TryParseSourceFrame(text, _totalFrames, out frame);
+            return SampleClip.TryParseSourceFrame(text, _totalFrames, out frame);
         }
 
         private void RunSample()
@@ -401,7 +402,7 @@ namespace OneColumnEncoder.ViewModels
                 }
 
                 EncodingClipRequest clip = BuildClipRequest();
-                EncodingPipelineCommand command = EncodingPipelineH.BuildY4mCommand(request with { Clip = clip });
+                EncodingPipelineCommand command = EncodingPipeline.BuildY4mCommand(request with { Clip = clip });
 
                 ConfirmationModal? existing = Application.Current.Windows
                     .OfType<ConfirmationModal>()
@@ -440,10 +441,10 @@ namespace OneColumnEncoder.ViewModels
 
         private EncodingClipRequest BuildClipRequest()
         {
-            string startTime = EncodingPipelineH.FormatTimestamp(EncodingPipelineH.ParseTimestamp(StartTimeText));
-            string endTime = EncodingPipelineH.FormatTimestamp(EncodingPipelineH.ParseTimestamp(EndTimeText));
-            long? firstFrame = SampleClipH.TryParseNonNegativeLong(StartFrameText);
-            long? lastFrame = SampleClipH.TryParseNonNegativeLong(EndFrameText);
+            string startTime = EncodingPipeline.FormatTimestamp(EncodingPipeline.ParseTimestamp(StartTimeText));
+            string endTime = EncodingPipeline.FormatTimestamp(EncodingPipeline.ParseTimestamp(EndTimeText));
+            long? firstFrame = SampleClip.TryParseNonNegativeLong(StartFrameText);
+            long? lastFrame = SampleClip.TryParseNonNegativeLong(EndFrameText);
 
             return new EncodingClipRequest(startTime, endTime, firstFrame, lastFrame, _frameRate);
         }

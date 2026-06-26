@@ -1,4 +1,4 @@
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.FileManagement;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels.Cards;
@@ -33,7 +33,7 @@ namespace OneColumnEncoder.Commands
             if (_fileKind == SourceFileKind.Video)
                 foundPath = null;
 
-            string? filePath = SourceFilePickerH.GetSource(
+            string? filePath = SourceFilePicker.GetSource(
                 _fileKind,
                 dialogTitle,
                 foundPath: foundPath,
@@ -43,7 +43,7 @@ namespace OneColumnEncoder.Commands
                 return;
 
             _item.P2TextData = filePath;
-            _item.P1TextData = SourceFilePickerH.GetPrimaryText(_fileKind, filePath);
+            _item.P1TextData = SourceFilePicker.GetPrimaryText(_fileKind, filePath);
             _afterImport?.Invoke(_item, _fileKind, filePath, wasReplaced);
         }
     }

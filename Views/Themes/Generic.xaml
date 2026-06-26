@@ -1,7 +1,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:comps="clr-namespace:OneColumnEncoder.Components"
-                    xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
+                    xmlns:ui="clr-namespace:OneColumnEncoder.UI"
                     xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
                     xmlns:views="clr-namespace:OneColumnEncoder.Views">
 
@@ -410,7 +410,7 @@
                                    Fill="{TemplateBinding Foreground}"
                                    Margin="0 0 5 0">
                             <Rectangle.OpacityMask>
-                                <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameWaiting}"
+                                <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GameWaiting}"
                                             Stretch="Uniform" />
                             </Rectangle.OpacityMask>
                         </Rectangle>
@@ -432,7 +432,7 @@
                             <Setter TargetName="IconMask"
                                     Property="OpacityMask">
                                 <Setter.Value>
-                                    <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameWaiting}"
+                                    <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GameWaiting}"
                                                 Stretch="Uniform" />
                                 </Setter.Value>
                             </Setter>
@@ -445,7 +445,7 @@
                             <Setter TargetName="IconMask"
                                     Property="OpacityMask">
                                 <Setter.Value>
-                                    <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameCorrectMark}"
+                                    <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GameCorrectMark}"
                                                 Stretch="Uniform" />
                                 </Setter.Value>
                             </Setter>
@@ -458,7 +458,7 @@
                             <Setter TargetName="IconMask"
                                     Property="OpacityMask">
                                 <Setter.Value>
-                                    <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameWarning}"
+                                    <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GameWarning}"
                                                 Stretch="Uniform" />
                                 </Setter.Value>
                             </Setter>
@@ -471,7 +471,7 @@
                             <Setter TargetName="IconMask"
                                     Property="OpacityMask">
                                 <Setter.Value>
-                                    <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GameXMark}"
+                                    <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GameXMark}"
                                                 Stretch="Uniform" />
                                 </Setter.Value>
                             </Setter>

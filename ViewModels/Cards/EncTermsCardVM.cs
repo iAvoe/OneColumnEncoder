@@ -1,4 +1,4 @@
-﻿using OneColumnEncoder.Helpers;
+﻿using OneColumnEncoder.Validation;
 using OneColumnEncoder.Models;
 
 namespace OneColumnEncoder.ViewModels.Cards
@@ -61,7 +61,7 @@ namespace OneColumnEncoder.ViewModels.Cards
         private void RunChecklist1Checks()
         {
             SetChecklist1(OffGridChecklistIdx,
-                EncTermsCheckH.IsOnAcPower()
+                EncTermsCheck.IsOnAcPower()
                     ? StatusType.Success
                     : StatusType.Warning);
 
@@ -69,16 +69,16 @@ namespace OneColumnEncoder.ViewModels.Cards
             string? sourcePath = GetSourceVideoFilePathFunc?.Invoke();
             SetChecklist1(DiskSpaceChecklistIdx, EvaluateDiskSpace(outputDir, sourcePath));
 
-            SetChecklist1(NumaCpuLoadChecklistIdx, EncTermsCheckH.EvaluateNumaNodeCpuUsage());
+            SetChecklist1(NumaCpuLoadChecklistIdx, EncTermsCheck.EvaluateNumaNodeCpuUsage());
         }
 
         private static StatusType EvaluateDiskSpace(string? outputDir, string? sourcePath)
         {
-            long availBytes = EncTermsCheckH.GetAvailableDiskSpaceBytes(outputDir);
+            long availBytes = EncTermsCheck.GetAvailableDiskSpaceBytes(outputDir);
             if (availBytes < 0) return StatusType.Waiting;
 
             long requiredBytes;
-            long sourceSize = EncTermsCheckH.GetSourceVideoFileSize(sourcePath);
+            long sourceSize = EncTermsCheck.GetSourceVideoFileSize(sourcePath);
 
             if (sourceSize > 0)
                 requiredBytes = (long)(sourceSize * DiskSpaceSafetyMultiplier);
@@ -98,13 +98,13 @@ namespace OneColumnEncoder.ViewModels.Cards
         {
             string? outputDir = GetOutputDirectoryFunc?.Invoke();
             SetChecklist2(WritePermissionChecklistIdx,
-                EncTermsCheckH.HasWritePermission(outputDir)
+                EncTermsCheck.HasWritePermission(outputDir)
                     ? StatusType.Success
                     : StatusType.Error);
 
             string? outputPath = GetOutputFilePathFunc?.Invoke();
             SetChecklist2(OverwriteChecklistIdx,
-                EncTermsCheckH.OutputFileExists(outputPath)
+                EncTermsCheck.OutputFileExists(outputPath)
                     ? StatusType.Warning
                     : StatusType.Success);
 
@@ -113,7 +113,7 @@ namespace OneColumnEncoder.ViewModels.Cards
             SetChecklist2(LsmashChecklistIdx,
                 !isAvs2yuv
                     ? StatusType.Success
-                    : EncTermsCheckH.HasLsmashPlugin(avisynthPath)
+                    : EncTermsCheck.HasLsmashPlugin(avisynthPath)
                         ? StatusType.Success
                         : StatusType.Error);
         }

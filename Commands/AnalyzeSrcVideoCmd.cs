@@ -1,5 +1,7 @@
 using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Helpers;
+using OneColumnEncoder.FFmpeg;
+using OneColumnEncoder.Persistence;
+using OneColumnEncoder.Core;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
@@ -60,9 +62,9 @@ namespace OneColumnEncoder.Commands
                 string ffprobePath = _getFfprobePath();
                 string sourcePath = _getSourcePath();
                 string rawJson =
-                    await FFProbeVideoAnalysisH.AnalyzeAsync(ffprobePath, sourcePath);
+                    await FFProbeVideoAnalysis.AnalyzeAsync(ffprobePath, sourcePath);
                 FFProbeFrameCountSupplementResult supplementResult =
-                    FFProbeFrameCountSupplementH.Supplement(rawJson);
+                    FFProbeFrameCountSupplement.Supplement(rawJson);
                 rawJson = supplementResult.RawJson;
 
                 _analysis.FfprobePath = ffprobePath;
@@ -117,8 +119,8 @@ namespace OneColumnEncoder.Commands
                     IsSvtav1SelectedFunc = queueCard.IsSvtav1SelectedFunc
                 };
 
-                string rawJson = await FFProbeVideoAnalysisH.AnalyzeAsync(ffprobePath, filePath);
-                FFProbeFrameCountSupplementResult supplementResult = FFProbeFrameCountSupplementH.Supplement(rawJson);
+                string rawJson = await FFProbeVideoAnalysis.AnalyzeAsync(ffprobePath, filePath);
+                FFProbeFrameCountSupplementResult supplementResult = FFProbeFrameCountSupplement.Supplement(rawJson);
                 rawJson = supplementResult.RawJson;
                 supplementedCount += supplementResult.SupplementedCount;
                 probeCard.ApplyFfprobeAnalysisJson(rawJson);
@@ -148,7 +150,7 @@ namespace OneColumnEncoder.Commands
                     excluded.Add(entry);
             }
 
-            string directory = SaveLoadBaseH<SaveLoadPlaceholder>.GetConfigDirectory();
+            string directory = SaveLoadBase<SaveLoadPlaceholder>.GetConfigDirectory();
             Directory.CreateDirectory(directory);
             string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             string queueJsonPath = Path.Combine(directory, $"source_queue_{timestamp}.json");
@@ -292,7 +294,7 @@ namespace OneColumnEncoder.Commands
         private static void OpenJsonPath(string jsonPath) =>
             Process.Start(new ProcessStartInfo(jsonPath) { UseShellExecute = true });
 
-        private sealed class SaveLoadPlaceholder : SaveLoadBaseH<SaveLoadPlaceholder>
+        private sealed class SaveLoadPlaceholder : SaveLoadBase<SaveLoadPlaceholder>
         {
             protected override string FilePath => string.Empty;
         }
