@@ -931,6 +931,8 @@ namespace OneColumnEncoder.ViewModels
         }
         public void UpdateEncStartButtonsState()
         {
+            if (EncStartButtons == null) return;
+
             bool vspipeReady = UpstreamsZone.All(t =>
                 !ToolDefinitionProviderM.IsImportedTool(t.Name, "vspipe.exe") || t.IsEnabled);
 
@@ -1488,6 +1490,8 @@ namespace OneColumnEncoder.ViewModels
         }
         public void UpdateAnalyzeSrcButtonsState()
         {
+            if (AnalyzeSrcButtons == null) return;
+
             bool hasVideoSource = CanRunSourceAnalysis();
 
             RefreshEncSettingsState();
@@ -1499,6 +1503,8 @@ namespace OneColumnEncoder.ViewModels
         }
         public void UpdateInspBypsChkButtonsState()
         {
+            if (InspBypsChkButtons == null) return;
+
             bool hasRawJson = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
             if (!hasRawJson && ActiveSrcValidationCard.IsBypassed)
                 ActiveSrcValidationCard.SetBypassed(false);
@@ -1510,6 +1516,8 @@ namespace OneColumnEncoder.ViewModels
         }
         public void UpdateInspBypsEncChkButtonsState()
         {
+            if (InspBypsEncChkButtons == null) return;
+
             InspBypsEncChkButtons.B2_1IsEnabled = true;
             InspBypsEncChkButtons.B2_2IsEnabled = true;
             InspectEncProblems.OnCanExecuteChanged();
