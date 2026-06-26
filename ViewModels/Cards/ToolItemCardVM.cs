@@ -182,6 +182,13 @@ namespace OneColumnEncoder.ViewModels.Cards
             set => SetProperty(ref _r2Command, value);
         }
 
+        public bool R1IsEnabled => true;
+        public bool R2IsEnabled => true;
+        public string R3Text => string.Empty;
+        public ICommand? R3Command => null;
+        public bool R3IsEnabled => true;
+        public bool IsRecentlyMoved => false;
+
         #endregion
 
         #region Methods

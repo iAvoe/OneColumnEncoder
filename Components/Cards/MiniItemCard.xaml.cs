@@ -35,5 +35,18 @@ namespace OneColumnEncoder.Components.Cards
             get => (bool)GetValue(IsCancelProperty);
             set => SetValue(IsCancelProperty, value);
         }
+
+        public static readonly DependencyProperty ShowActionButtonsProperty =
+            DependencyProperty.Register(
+                nameof(ShowActionButtons),
+                typeof(bool),
+                typeof(MiniItemCard),
+                new PropertyMetadata(true));
+
+        public bool ShowActionButtons
+        {
+            get => (bool)GetValue(ShowActionButtonsProperty);
+            set => SetValue(ShowActionButtonsProperty, value);
+        }
     }
 }

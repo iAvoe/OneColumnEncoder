@@ -64,6 +64,9 @@ public class UILangProviderM
             ["Buttons.Edit"] = "Edit",
             ["Buttons.Import"] = "Import",
 
+            ["ToggleMiniUpstreamsZone.Collapse"] = "\u25B2 Collapse",
+            ["ToggleMiniUpstreamsZone.Expand"] = "\u25BC Expand",
+
             // AppConf group headers
             ["AppConf.Overwrite"] = "Overwrite Handling",
             ["AppConf.Language"] = "Language/\u8BED\u8A00",
@@ -414,6 +417,9 @@ public class UILangProviderM
             ["Buttons.Clear"] = "清空",
             ["Buttons.Edit"] = "编辑",
             ["Buttons.Import"] = "导入",
+
+            ["ToggleMiniUpstreamsZone.Collapse"] = "\u25B2 折叠",
+            ["ToggleMiniUpstreamsZone.Expand"] = "\u25BC 展开",
 
             ["AppConf.Overwrite"] = "文件覆盖确认行为",
             ["AppConf.Language"] = "语言/Language",

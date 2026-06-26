@@ -6,8 +6,9 @@
              xmlns:views="clr-namespace:OneColumnEncoder.Views"
              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
              xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"
-             xmlns:comps="clr-namespace:OneColumnEncoder.Components"
-             xmlns:conv="clr-namespace:OneColumnEncoder.Converters"
+              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+              xmlns:cards="clr-namespace:OneColumnEncoder.Components.Cards"
+              xmlns:conv="clr-namespace:OneColumnEncoder.Converters"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=vms:MainVM}"
              Background="WhiteSmoke">
@@ -30,10 +31,31 @@
                                   Button2IsEnabled="{Binding B2_2IsEnabled}"
                                   Margin="10 15" />
 
-            <!-- Select Upstream Tools -->
-            <comps:SectionHeader HeaderText="{Binding SectionSelectUpstream}" />
+             <!-- Select Upstream Tools -->
+            <comps:SectionHeader HeaderText="{Binding SectionSelectUpstream}"
+                                 Margin="0 15 0 0">
+                <comps:SectionHeader.HeaderExtra>
+                     <Button Content="{Binding ToggleMiniUpstreamsZoneText}"
+                             Command="{Binding ToggleMiniUpstreamsZoneCmd}"
+                             VerticalAlignment="Center"
+                             Focusable="False"
+                             KeyboardNavigation.IsTabStop="False"
+                             Margin="5 0"
+                             Style="{StaticResource LinkButton}" />
+                </comps:SectionHeader.HeaderExtra>
+            </comps:SectionHeader>
             <ItemsControl ItemsSource="{Binding UpstreamsZone}"
                           Margin="0 15">
+                <ItemsControl.Style>
+                    <Style TargetType="ItemsControl">
+                        <Setter Property="Visibility" Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMiniUpstreamsZone}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ItemsControl.Style>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=3}" />
@@ -50,7 +72,7 @@
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
-                                                                 RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                                                  RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                               CommandParameter="{Binding}" />
                                 <KeyBinding Key="Enter"
                                             Command="{Binding DataContext.SelectTool,
@@ -58,6 +80,44 @@
                                             CommandParameter="{Binding}" />
                             </comps:ItemCard.InputBindings>
                         </comps:ItemCard>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <ItemsControl ItemsSource="{Binding UpstreamsZone}"
+                          Margin="0 15">
+                <ItemsControl.Style>
+                    <Style TargetType="ItemsControl">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMiniUpstreamsZone}" Value="True">
+                                <Setter Property="Visibility" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ItemsControl.Style>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=7:120}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <cards:MiniItemCard DataContext="{Binding}"
+                                            IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                                            IsCancel="{Binding IsCancel}"
+                                            ShowActionButtons="False"
+                                            Margin="3">
+                            <cards:MiniItemCard.InputBindings>
+                                <MouseBinding MouseAction="LeftClick"
+                                              Command="{Binding DataContext.SelectTool,
+                                                                  RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                              CommandParameter="{Binding}" />
+                                <KeyBinding Key="Enter"
+                                            Command="{Binding DataContext.SelectTool,
+                                                               RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                            CommandParameter="{Binding}" />
+                            </cards:MiniItemCard.InputBindings>
+                        </cards:MiniItemCard>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

@@ -202,6 +202,17 @@
                 <StackPanel Grid.Column="1"
                             Orientation="Horizontal"
                             VerticalAlignment="Center">
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ShowActionButtons, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                             Value="False">
+                                    <Setter Property="Visibility"
+                                            Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
                     <Button Content="{Binding DisplayR1Text}"
                             Command="{Binding R1Command}"
                             IsEnabled="{Binding R1IsEnabled}"

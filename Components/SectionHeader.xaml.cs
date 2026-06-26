@@ -10,7 +10,7 @@ namespace OneColumnEncoder.Components
     {
         public static readonly DependencyProperty HeaderTextProperty =
             DependencyProperty.Register(
-                "HeaderText",
+                nameof(HeaderText),
                 typeof(string),
                 typeof(SectionHeader),
                 new PropertyMetadata(string.Empty));
@@ -19,6 +19,19 @@ namespace OneColumnEncoder.Components
         {
             get => (string)GetValue(HeaderTextProperty);
             set => SetValue(HeaderTextProperty, value);
+        }
+
+        public static readonly DependencyProperty HeaderExtraProperty =
+            DependencyProperty.Register(
+                nameof(HeaderExtra),
+                typeof(object),
+                typeof(SectionHeader),
+                new PropertyMetadata(null));
+
+        public object? HeaderExtra
+        {
+            get => GetValue(HeaderExtraProperty);
+            set => SetValue(HeaderExtraProperty, value);
         }
 
         public SectionHeader()
