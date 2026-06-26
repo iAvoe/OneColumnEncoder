@@ -52,6 +52,26 @@ public static class FrameRateH
         return avg.Value.num * r.Value.den != r.Value.num * avg.Value.den;
     }
 
+    public static (bool isVariable, int num, int den)? GetVariableFrameRateInfo(string? rawJson)
+    {
+        if (string.IsNullOrWhiteSpace(rawJson)) return null;
+
+        try
+        {
+            using JsonDocument document = JsonDocument.Parse(rawJson);
+            if (!TryGetFirstVideoStream(document.RootElement, out JsonElement stream))
+                return null;
+
+            bool isVariable = IsVariableFrameRate(stream) == true;
+            (int num, int den)? rate = isVariable ? GetRFrameRate(stream) : null;
+            return (isVariable, rate?.num ?? 0, rate?.den ?? 0);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     public static (int num, int den)? GetRFrameRate(JsonElement stream)
     {
         string? val = JsonElementHelper.TryGetString(stream, "r_frame_rate");

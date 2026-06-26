@@ -222,7 +222,7 @@ namespace OneColumnEncoder.ViewModels
             for (int i = 0; i <= 4; i++)
             {
                 double seconds = _totalSeconds * i / 4d;
-                AxisLabels.Add(FormatAxisTimestamp(seconds));
+                AxisLabels.Add(SampleClipH.FormatAxisTimestamp(seconds));
             }
         }
 
@@ -268,9 +268,9 @@ namespace OneColumnEncoder.ViewModels
                 EncodingPipelineH.FormatTimestamp(TimeSpan.FromSeconds(endSeconds));
 
             long startFrame =
-                Math.Min(_totalFrames - 1L, SecondsToFirstFrame(startSeconds));
+                Math.Min(_totalFrames - 1L, SampleClipH.SecondsToFirstFrame(startSeconds, _frameRate));
             long endFrame =
-                Math.Min(_totalFrames - 1L, Math.Max(startFrame, SecondsToLastFrame(endSeconds)));
+                Math.Min(_totalFrames - 1L, Math.Max(startFrame, SampleClipH.SecondsToLastFrame(endSeconds, _frameRate)));
             StartFrameText =
                 startFrame.ToString(CultureInfo.InvariantCulture);
             ClipFrameCountText =
@@ -346,57 +346,27 @@ namespace OneColumnEncoder.ViewModels
             if (durationSeconds <= 0d)
                 durationSeconds = ClipLengthSeconds;
 
-            double maxDurationSeconds = Math.Min(MaxClipLengthSeconds, _totalSeconds);
-            double minDurationSeconds = Math.Min(MinClipLengthSeconds, maxDurationSeconds);
-            return Clamp(durationSeconds, minDurationSeconds, maxDurationSeconds);
+            return SampleClipH.ClampDuration(durationSeconds, _totalSeconds, MinClipLengthSeconds, MaxClipLengthSeconds);
         }
 
         private void ApplySelectionSeconds(double startSeconds, double endSeconds, bool anchorEnd)
         {
-            if (_totalSeconds <= 0d || double.IsNaN(startSeconds) || double.IsNaN(endSeconds) || double.IsInfinity(startSeconds) || double.IsInfinity(endSeconds))
-            {
-                SyncFromSelection(updateClipLength: false);
-                return;
-            }
-
-            double maxDurationSeconds = Math.Min(MaxClipLengthSeconds, _totalSeconds);
-            double minDurationSeconds = Math.Min(MinClipLengthSeconds, maxDurationSeconds);
-            double durationSeconds = Clamp(endSeconds - startSeconds, minDurationSeconds, maxDurationSeconds);
-
-            if (anchorEnd)
-            {
-                endSeconds = Clamp(endSeconds, 0d, _totalSeconds);
-                startSeconds = endSeconds - durationSeconds;
-            }
-            else
-            {
-                startSeconds = Clamp(startSeconds, 0d, _totalSeconds);
-                endSeconds = startSeconds + durationSeconds;
-            }
-
-            if (startSeconds < 0d)
-            {
-                startSeconds = 0d;
-                endSeconds = Math.Min(_totalSeconds, durationSeconds);
-            }
-
-            if (endSeconds > _totalSeconds)
-            {
-                endSeconds = _totalSeconds;
-                startSeconds = Math.Max(0d, endSeconds - durationSeconds);
-            }
-
-            double start = Clamp(startSeconds / _totalSeconds, 0d, 1d);
-            double end = Clamp(endSeconds / _totalSeconds, 0d, 1d);
-            if (end <= start)
+            var selection = SampleClipH.NormalizeSelectionSeconds(
+                startSeconds,
+                endSeconds,
+                anchorEnd,
+                _totalSeconds,
+                MinClipLengthSeconds,
+                MaxClipLengthSeconds);
+            if (!selection.HasValue)
             {
                 SyncFromSelection(updateClipLength: false);
                 return;
             }
 
             _isSyncing = true;
-            SelectionStart = start;
-            SelectionEnd = end;
+            SelectionStart = selection.Value.selectionStart;
+            SelectionEnd = selection.Value.selectionEnd;
             _isSyncing = false;
             SyncFromSelection(updateClipLength: true);
         }
@@ -405,8 +375,7 @@ namespace OneColumnEncoder.ViewModels
         {
             try
             {
-                seconds = EncodingPipelineH.ParseTimestamp(text).TotalSeconds;
-                return seconds >= 0d && (allowSourceEnd ? seconds <= _totalSeconds : seconds < _totalSeconds);
+                return SampleClipH.TryParseSourceSeconds(text, _totalSeconds, allowSourceEnd, out seconds);
             }
             catch
             {
@@ -417,12 +386,8 @@ namespace OneColumnEncoder.ViewModels
 
         private bool TryParseSourceFrame(string text, out long frame)
         {
-            frame = TryParseNonNegativeLong(text) ?? -1L;
-            return frame >= 0L && frame < _totalFrames;
+            return SampleClipH.TryParseSourceFrame(text, _totalFrames, out frame);
         }
-
-        private static double Clamp(double value, double min, double max) =>
-            Math.Max(min, Math.Min(max, value));
 
         private void RunSample()
         {
@@ -477,29 +442,10 @@ namespace OneColumnEncoder.ViewModels
         {
             string startTime = EncodingPipelineH.FormatTimestamp(EncodingPipelineH.ParseTimestamp(StartTimeText));
             string endTime = EncodingPipelineH.FormatTimestamp(EncodingPipelineH.ParseTimestamp(EndTimeText));
-            long? firstFrame = TryParseNonNegativeLong(StartFrameText);
-            long? lastFrame = TryParseNonNegativeLong(EndFrameText);
+            long? firstFrame = SampleClipH.TryParseNonNegativeLong(StartFrameText);
+            long? lastFrame = SampleClipH.TryParseNonNegativeLong(EndFrameText);
 
             return new EncodingClipRequest(startTime, endTime, firstFrame, lastFrame, _frameRate);
-        }
-
-        private long SecondsToFirstFrame(double seconds) =>
-            Math.Max(0L, (long)Math.Ceiling(seconds * _frameRate));
-
-        private long SecondsToLastFrame(double seconds) =>
-            Math.Max(0L, (long)Math.Ceiling(seconds * _frameRate) - 1L);
-
-        private static long? TryParseNonNegativeLong(string text)
-        {
-            if (!long.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out long value))
-                return null;
-            return Math.Max(0, value);
-        }
-
-        private static string FormatAxisTimestamp(double seconds)
-        {
-            TimeSpan t = TimeSpan.FromSeconds(Math.Max(0d, seconds));
-            return $"{(long)t.TotalHours:00}:{t.Minutes:00}:{t.Seconds:00}";
         }
 
         private void OnLanguageChanged()
@@ -531,6 +477,7 @@ namespace OneColumnEncoder.ViewModels
             // Unsubscribe from the global language change event to avoid keeping this modal alive.
             UILangProviderM.CurrentChanged -= OnLanguageChanged;
             base.Dispose();
+            GC.SuppressFinalize(this);
         }
 
     }

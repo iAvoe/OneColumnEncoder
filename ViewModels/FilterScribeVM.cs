@@ -6,7 +6,6 @@ using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels.Cards;
 using System.IO;
-using System.Text.Json;
 using System.Windows;
 
 namespace OneColumnEncoder.ViewModels
@@ -289,26 +288,7 @@ namespace OneColumnEncoder.ViewModels
 
         private string BuildFfmpegFilterArgs(bool includeSwsFlags, bool includeCsp709Flags, params string?[] filters)
         {
-            string filterChain = string.Join(",", filters.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s!.Trim()));
-            if (string.IsNullOrWhiteSpace(filterChain)) return string.Empty;
-
-            string filterArgs = filterChain.Contains(',', StringComparison.Ordinal)
-                ? $"-filter:v \"{filterChain}\""
-                : $"-filter:v {filterChain}";
-
-            string csp709Flags = includeCsp709Flags
-                ? " -color_primaries bt709 -color_trc bt709 -colorspace bt709"
-                : string.Empty;
-
-            string pixelFormatFlag = includeCsp709Flags && !string.IsNullOrWhiteSpace(_colorSpaceAnalysis.PixelFormat)
-                ? $" -pix_fmt {_colorSpaceAnalysis.PixelFormat}"
-                : string.Empty;
-
-            string swsFlags = includeSwsFlags
-                ? " -sws_flags bicubic+full_chroma_int+full_chroma_inp+accurate_rnd"
-                : string.Empty;
-
-            return $"{filterArgs}{csp709Flags}{pixelFormatFlag}{swsFlags}";
+            return FfmpegFilterArgsH.Build(includeSwsFlags, includeCsp709Flags, _colorSpaceAnalysis.PixelFormat, filters);
         }
 
         public string VapourSynthResizeFilter =>
@@ -488,72 +468,34 @@ namespace OneColumnEncoder.ViewModels
 
         private void ParseSourceResolution(string? sourceFfprobeJson)
         {
-            if (string.IsNullOrWhiteSpace(sourceFfprobeJson)) return;
-
-            try
+            var resolution = FFProbeSourceResolutionH.Read(sourceFfprobeJson);
+            if (resolution.HasValue)
             {
-                using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
-                if (!document.RootElement.TryGetProperty("streams", out JsonElement streams)
-                    || streams.ValueKind != JsonValueKind.Array)
-                    return;
-
-                foreach (JsonElement stream in streams.EnumerateArray())
-                {
-                    string? codecType = null;
-                    if (stream.TryGetProperty("codec_type", out JsonElement ct))
-                        codecType = ct.GetString();
-
-                    if (codecType is null or "video")
-                    {
-                        if (stream.TryGetProperty("width", out JsonElement w) && w.TryGetInt32(out int width)
-                            && stream.TryGetProperty("height", out JsonElement h) && h.TryGetInt32(out int height))
-                        {
-                            SourceWidth = width;
-                            SourceHeight = height;
-                        }
-                        return;
-                    }
-                }
-            }
-            catch
-            {
-                // ignore parse errors
+                SourceWidth = resolution.Value.width;
+                SourceHeight = resolution.Value.height;
             }
         }
 
         private void ParseFrameRateInfo(string? sourceFfprobeJson)
         {
-            if (string.IsNullOrWhiteSpace(sourceFfprobeJson)) return;
+            var info = FrameRateH.GetVariableFrameRateInfo(sourceFfprobeJson);
+            if (!info.HasValue) return;
 
-            try
+            _isFrameRateVariable = info.Value.isVariable;
+            if (_isFrameRateVariable)
             {
-                using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
-                if (!FrameRateH.TryGetFirstVideoStream(document.RootElement, out JsonElement stream))
-                    return;
-
-                bool? isVfr = FrameRateH.IsVariableFrameRate(stream);
-                _isFrameRateVariable = isVfr == true;
-
-                if (_isFrameRateVariable)
-                {
-                    var r = FrameRateH.GetRFrameRate(stream);
-                    if (r.HasValue)
-                    {
-                        _frameRateNum = r.Value.num;
-                        _frameRateDen = r.Value.den;
-                    }
-                }
-
-                OnPropertyChanged(nameof(IsFrameRateVariable));
-                OnPropertyChanged(nameof(IsFrameRateApplicable));
-                OnPropertyChanged(nameof(FrameRateNum));
-                OnPropertyChanged(nameof(FrameRateDen));
-                OnPropertyChanged(nameof(FfmpegFpsFilter));
-                OnPropertyChanged(nameof(FfmpegFpsScaleFilter));
-                OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
-                OnPropertyChanged(nameof(FfmpegFullChainFilter));
+                _frameRateNum = info.Value.num;
+                _frameRateDen = info.Value.den;
             }
-            catch { } // ignore parse errors
+
+            OnPropertyChanged(nameof(IsFrameRateVariable));
+            OnPropertyChanged(nameof(IsFrameRateApplicable));
+            OnPropertyChanged(nameof(FrameRateNum));
+            OnPropertyChanged(nameof(FrameRateDen));
+            OnPropertyChanged(nameof(FfmpegFpsFilter));
+            OnPropertyChanged(nameof(FfmpegFpsScaleFilter));
+            OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
+            OnPropertyChanged(nameof(FfmpegFullChainFilter));
         }
 
         private void BuildButtonGroups()
