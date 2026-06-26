@@ -36,7 +36,6 @@ namespace OneColumnEncoder.Commands
             string? filePath = SourceFilePickerH.GetSource(
                 _fileKind,
                 dialogTitle,
-                _modalNavS,
                 foundPath: foundPath,
                 currentPath: _fileKind == SourceFileKind.Video ? _item.P2TextData : null);
 

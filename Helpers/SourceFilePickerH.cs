@@ -1,9 +1,5 @@
 using Microsoft.Win32;
-using OneColumnEncoder.Commands;
 using OneColumnEncoder.Models;
-using OneColumnEncoder.Stores;
-using OneColumnEncoder.ViewModels;
-using OneColumnEncoder.Views;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -26,26 +22,13 @@ namespace OneColumnEncoder.Helpers
         public static string? GetSource(
             SourceFileKind fileKind,
             string windowTitle,
-            ModalNavS? modalNavS = null,
             string? foundPath = null,
-            string? currentPath = null,
-            string? errorMessage = null)
+            string? currentPath = null)
         {
             string initialDirectory = ResolveInitialDirectory(fileKind, foundPath, currentPath);
             string filter = GetFilter(fileKind);
-            string retryMessage = string.IsNullOrWhiteSpace(errorMessage)
-                ? GetMissingSelectionMessage()
-                : errorMessage;
 
-            while (true)
-            {
-                string? filePath = SelectFile(windowTitle, filter, initialDirectory);
-                if (!string.IsNullOrWhiteSpace(filePath))
-                    return filePath;
-
-                if (!ShouldRetrySelection(modalNavS, retryMessage))
-                    return null;
-            }
+            return SelectFile(windowTitle, filter, initialDirectory);
         }
 
         public static string GetPrimaryText(SourceFileKind fileKind, string filePath)
@@ -169,44 +152,6 @@ namespace OneColumnEncoder.Helpers
                 _ => lang.AllFilesFilter
             };
         }
-
-        private static bool ShouldRetrySelection(ModalNavS? modalNavS, string message)
-        {
-            if (modalNavS != null)
-                return ShowWarningConfirmation(modalNavS, GetNoFileSelectedTitle(), message);
-
-            string title = GetNoFileSelectedTitle();
-            MessageBoxResult result = MessageBox.Show(
-                message,
-                title,
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning,
-                MessageBoxResult.Yes);
-
-            return result == MessageBoxResult.Yes;
-        }
-
-        private static bool ShowWarningConfirmation(ModalNavS modalNavS, string title, string message)
-        {
-            bool result = false;
-
-            ConfirmationModal window = new();
-            ActionCmd cancelCmd = new(_ => { result = false; window.Close(); });
-            ActionCmd confirmCmd = new(_ => { result = true; window.Close(); });
-            ConfirmationVM vm = ConfirmationVM.CreateWarning(title, message, cancelCmd, confirmCmd);
-
-            window.DataContext = vm;
-            window.Owner = Application.Current.MainWindow;
-            window.Closed += (_, _) => modalNavS.Close();
-            modalNavS.CurrentModalVM = vm;
-            window.ShowDialog();
-
-            return result;
-        }
-
-        private static string GetNoFileSelectedTitle() => Lang.NoFileSelectedTitle;
-
-        private static string GetMissingSelectionMessage() => Lang.MissingSelectionMessage;
 
         private static string GetCustomScriptModeText() => Lang.CustomScriptModeText;
     }

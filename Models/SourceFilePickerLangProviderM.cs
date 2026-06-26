@@ -13,8 +13,6 @@ public class SourceFilePickerLangProviderM
             ["Filter.VapourSynthScript"] = "VapourSynth script files (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "SVFI configuration files (*.ini)|*.ini",
             ["Filter.AllFiles"] = "All files (*.*)|*.*",
-            ["NoFileSelectedTitle"] = "No file selected",
-            ["MissingSelectionMessage"] = "No file selected. Choose Yes to try again, or No to cancel.",
             ["CustomScriptModeText"] = "Import custom script"
         },
         ["zh-cn"] = new()
@@ -24,8 +22,6 @@ public class SourceFilePickerLangProviderM
             ["Filter.VapourSynthScript"] = "VapourSynth 脚本文件 (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "SVFI 配置文件 (*.ini)|*.ini",
             ["Filter.AllFiles"] = "所有文件 (*.*)|*.*",
-            ["NoFileSelectedTitle"] = "未选择文件",
-            ["MissingSelectionMessage"] = "未选择文件。选择「是」重试，选择「否」取消。",
             ["CustomScriptModeText"] = "导入自定义脚本"
         },
         ["zh-tw"] = new()
@@ -35,8 +31,6 @@ public class SourceFilePickerLangProviderM
             ["Filter.VapourSynthScript"] = "VapourSynth 腳本檔案 (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "SVFI 設定檔 (*.ini)|*.ini",
             ["Filter.AllFiles"] = "所有檔案 (*.*)|*.*",
-            ["NoFileSelectedTitle"] = "未選擇檔案",
-            ["MissingSelectionMessage"] = "未選擇檔案。選擇「是」重試，選擇「否」取消。",
             ["CustomScriptModeText"] = "導入自訂腳本"
         }
     };
@@ -50,8 +44,6 @@ public class SourceFilePickerLangProviderM
             ["Filter.VapourSynthScript"] = "Scripts VapourSynth (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "Fichiers de configuration SVFI (*.ini)|*.ini",
             ["Filter.AllFiles"] = "Tous les fichiers (*.*)|*.*",
-            ["NoFileSelectedTitle"] = "Aucun fichier sélectionné",
-            ["MissingSelectionMessage"] = "Aucun fichier sélectionné. Oui pour réessayer, Non pour annuler.",
             ["CustomScriptModeText"] = "Importer un script perso"
         };
         Data["es"] = new(Data["en"])
@@ -61,8 +53,6 @@ public class SourceFilePickerLangProviderM
             ["Filter.VapourSynthScript"] = "Scripts VapourSynth (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "Configuración SVFI (*.ini)|*.ini",
             ["Filter.AllFiles"] = "Todos los archivos (*.*)|*.*",
-            ["NoFileSelectedTitle"] = "No se seleccionó archivo",
-            ["MissingSelectionMessage"] = "No se seleccionó archivo. Sí para reintentar; No para cancelar.",
             ["CustomScriptModeText"] = "Importar script propio"
         };
         Data["ja"] = new(Data["en"])
@@ -72,8 +62,6 @@ public class SourceFilePickerLangProviderM
             ["Filter.VapourSynthScript"] = "VapourSynth スクリプト (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "SVFI 設定ファイル (*.ini)|*.ini",
             ["Filter.AllFiles"] = "すべてのファイル (*.*)|*.*",
-            ["NoFileSelectedTitle"] = "ファイル未選択",
-            ["MissingSelectionMessage"] = "ファイルが選択されていません。「はい」で再試行、「いいえ」でキャンセル。",
             ["CustomScriptModeText"] = "カスタムスクリプトを取込"
         };
         Data["ru"] = new(Data["en"])
@@ -83,8 +71,6 @@ public class SourceFilePickerLangProviderM
             ["Filter.VapourSynthScript"] = "Скрипты VapourSynth (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "Конфигурации SVFI (*.ini)|*.ini",
             ["Filter.AllFiles"] = "Все файлы (*.*)|*.*",
-            ["NoFileSelectedTitle"] = "Файл не выбран",
-            ["MissingSelectionMessage"] = "Файл не выбран. Да — повторить, Нет — отменить.",
             ["CustomScriptModeText"] = "Импорт своего скрипта"
         };
     }
@@ -99,8 +85,6 @@ public class SourceFilePickerLangProviderM
     public string VapourSynthScriptFilter { get; }
     public string SvfiIniFilter { get; }
     public string AllFilesFilter { get; }
-    public string NoFileSelectedTitle { get; }
-    public string MissingSelectionMessage { get; }
     public string CustomScriptModeText { get; }
 
     public SourceFilePickerLangProviderM(string languageCode)
@@ -113,8 +97,6 @@ public class SourceFilePickerLangProviderM
         VapourSynthScriptFilter = _d["Filter.VapourSynthScript"];
         SvfiIniFilter = _d["Filter.SvfiIni"];
         AllFilesFilter = _d["Filter.AllFiles"];
-        NoFileSelectedTitle = _d["NoFileSelectedTitle"];
-        MissingSelectionMessage = _d["MissingSelectionMessage"];
         CustomScriptModeText = _d["CustomScriptModeText"];
     }
 }
