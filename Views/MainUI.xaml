@@ -237,123 +237,6 @@
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
 
-            <!-- Select Analytic Tools -->
-            <comps:SectionHeader HeaderText="{Binding SectionSelectAnalytics}"
-                                 Margin="0 15 0 0">
-                <comps:SectionHeader.HeaderExtra>
-                    <Button Content="{Binding ToggleMiniAnalyticsZoneText}"
-                            Command="{Binding ToggleMiniAnalyticsZoneCmd}"
-                            VerticalAlignment="Center"
-                            Focusable="False"
-                            KeyboardNavigation.IsTabStop="False"
-                            Margin="5 0"
-                            Style="{StaticResource LinkButton}" />
-                </comps:SectionHeader.HeaderExtra>
-            </comps:SectionHeader>
-            <ItemsControl ItemsSource="{Binding AnalyticsZone}"
-                          Margin="0 15 0 0">
-                <ItemsControl.Style>
-                    <Style TargetType="ItemsControl">
-                        <Setter Property="Visibility"
-                                Value="Visible" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsMiniAnalyticsZone}"
-                                         Value="True">
-                                <Setter Property="Visibility"
-                                        Value="Collapsed" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ItemsControl.Style>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=3}" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <comps:ItemCard DataContext="{Binding}"
-                                        IsSelected="{Binding IsSelected, Mode=TwoWay}"
-                                        IsCancel="{Binding IsCancel}"
-                                        IsReal="{Binding IsReal}"
-                                        Margin="5">
-                            <comps:ItemCard.InputBindings>
-                                <MouseBinding MouseAction="LeftClick"
-                                              Command="{Binding DataContext.SelectTool,
-                                                                 RelativeSource={RelativeSource AncestorType=views:MainUI}}"
-                                              CommandParameter="{Binding}" />
-                                <KeyBinding Key="Enter"
-                                            Command="{Binding DataContext.SelectTool,
-                                                               RelativeSource={RelativeSource AncestorType=views:MainUI}}"
-                                            CommandParameter="{Binding}" />
-                            </comps:ItemCard.InputBindings>
-                        </comps:ItemCard>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-            <ItemsControl ItemsSource="{Binding AnalyticsZone}"
-                          Margin="0 15 0 0">
-                <ItemsControl.Style>
-                    <Style TargetType="ItemsControl">
-                        <Setter Property="Visibility"
-                                Value="Collapsed" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsMiniAnalyticsZone}"
-                                         Value="True">
-                                <Setter Property="Visibility"
-                                        Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ItemsControl.Style>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=5:120}" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <cards:MiniItemCard DataContext="{Binding}"
-                                            IsSelected="{Binding IsSelected, Mode=TwoWay}"
-                                            IsCancel="{Binding IsCancel}"
-                                            ShowActionButtons="False"
-                                            IsCompactText="True"
-                                            Margin="4">
-                            <cards:MiniItemCard.InputBindings>
-                                <MouseBinding MouseAction="LeftClick"
-                                              Command="{Binding DataContext.SelectTool,
-                                                                  RelativeSource={RelativeSource AncestorType=views:MainUI}}"
-                                              CommandParameter="{Binding}" />
-                                <KeyBinding Key="Enter"
-                                            Command="{Binding DataContext.SelectTool,
-                                                               RelativeSource={RelativeSource AncestorType=views:MainUI}}"
-                                            CommandParameter="{Binding}" />
-                            </cards:MiniItemCard.InputBindings>
-                        </cards:MiniItemCard>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-
-
-            <comps:TwoButtonGroup DataContext="{Binding AnalyzeSrcButtons}"
-                                  ButtonHeight="30"
-                                  Button1Command="{Binding Cmd1}"
-                                  Button2Command="{Binding Cmd2}"
-                                  Button1IsEnabled="{Binding B2_1IsEnabled}"
-                                  Button2IsEnabled="{Binding B2_2IsEnabled}"
-                                  Margin="5 5 5 0" />
-
-            <!-- Hint: OneLineShotArgs upstream does not support clipping -->
-            <comps:HintPanel Text="{Binding AnalyzeNeedsSourceText}"
-                             Margin="10 0 5 0"
-                             HorizontalAlignment="Left"
-                             VerticalAlignment="Center" />
-
-            <comps:HintPanel Text="{Binding AnalyticsZoneSelectedPath}"
-                             Margin="10 5 5 0"
-                             HorizontalAlignment="Left"
-                             VerticalAlignment="Center" />
-            
             <!-- Select Tool Dependencies -->
             <comps:SectionHeader HeaderText="{Binding SectionSelectDependencies}"
                                  Margin="0 15 0 0">
@@ -554,11 +437,124 @@
                                   Button2Command="{Binding Cmd2}"
                                   Button1IsEnabled="{Binding B2_1IsEnabled}"
                                   Button2IsEnabled="{Binding B2_2IsEnabled}"
+                                   Margin="5 5 5 0" />
+
+            <!-- Select Analytic Tools -->
+            <comps:SectionHeader HeaderText="{Binding SectionSelectAnalytics}"
+                                  Margin="0 15 0 0">
+                <comps:SectionHeader.HeaderExtra>
+                    <Button Content="{Binding ToggleMiniAnalyticsZoneText}"
+                            Command="{Binding ToggleMiniAnalyticsZoneCmd}"
+                            VerticalAlignment="Center"
+                            Focusable="False"
+                            KeyboardNavigation.IsTabStop="False"
+                            Margin="5 0"
+                            Style="{StaticResource LinkButton}" />
+                </comps:SectionHeader.HeaderExtra>
+            </comps:SectionHeader>
+            <ItemsControl ItemsSource="{Binding AnalyticsZone}"
+                          Margin="0 15 0 0">
+                <ItemsControl.Style>
+                    <Style TargetType="ItemsControl">
+                        <Setter Property="Visibility"
+                                Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMiniAnalyticsZone}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ItemsControl.Style>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=3}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <comps:ItemCard DataContext="{Binding}"
+                                        IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                                        IsCancel="{Binding IsCancel}"
+                                        IsReal="{Binding IsReal}"
+                                        Margin="5">
+                            <comps:ItemCard.InputBindings>
+                                <MouseBinding MouseAction="LeftClick"
+                                              Command="{Binding DataContext.SelectTool,
+                                                                  RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                              CommandParameter="{Binding}" />
+                                <KeyBinding Key="Enter"
+                                            Command="{Binding DataContext.SelectTool,
+                                                                RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                            CommandParameter="{Binding}" />
+                            </comps:ItemCard.InputBindings>
+                        </comps:ItemCard>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <ItemsControl ItemsSource="{Binding AnalyticsZone}"
+                          Margin="0 15 0 0">
+                <ItemsControl.Style>
+                    <Style TargetType="ItemsControl">
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMiniAnalyticsZone}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ItemsControl.Style>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=5:120}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <cards:MiniItemCard DataContext="{Binding}"
+                                            IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                                            IsCancel="{Binding IsCancel}"
+                                            ShowActionButtons="False"
+                                            IsCompactText="True"
+                                            Margin="4">
+                            <cards:MiniItemCard.InputBindings>
+                                <MouseBinding MouseAction="LeftClick"
+                                              Command="{Binding DataContext.SelectTool,
+                                                                   RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                              CommandParameter="{Binding}" />
+                                <KeyBinding Key="Enter"
+                                            Command="{Binding DataContext.SelectTool,
+                                                                RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                            CommandParameter="{Binding}" />
+                            </cards:MiniItemCard.InputBindings>
+                        </cards:MiniItemCard>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+
+            <comps:TwoButtonGroup DataContext="{Binding AnalyzeSrcButtons}"
+                                  ButtonHeight="30"
+                                  Button1Command="{Binding Cmd1}"
+                                  Button2Command="{Binding Cmd2}"
+                                  Button1IsEnabled="{Binding B2_1IsEnabled}"
+                                  Button2IsEnabled="{Binding B2_2IsEnabled}"
                                   Margin="5 5 5 0" />
 
-            <!-- AnalyticResultsZone -->
-            <comps:SectionHeader HeaderText="{Binding SectionAnalysisResults}"
-                                 Margin="0 15 0 0"/>
+            <!-- Hint: OneLineShotArgs upstream does not support clipping -->
+            <comps:HintPanel Text="{Binding AnalyzeNeedsSourceText}"
+                             Margin="10 0 5 0"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center" />
+
+            <comps:HintPanel Text="{Binding AnalyticsZoneSelectedPath}"
+                             Margin="10 5 5 0"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center" />
 
             <comps:ValidationCard DataContext="{Binding ActiveSrcValidationCard}"
                                   Margin="5 15 5 5" />

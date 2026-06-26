@@ -111,7 +111,6 @@ namespace OneColumnEncoder.ViewModels
         public static string SectionSelectAnalytics => UICaptionProviderM.Sections.SelectAnalytics;
         public static string SectionSelectDependencies => UICaptionProviderM.Sections.SelectDependencies;
         public static string SectionImportSource => UICaptionProviderM.Sections.ImportSource;
-        public static string SectionAnalysisResults => UICaptionProviderM.Sections.AnalysisResults;
         public static string SectionEncodingConfigs => UICaptionProviderM.Sections.EncodingConfigs;
         public static string SectionStartEncoding => UICaptionProviderM.Sections.StartEncoding;
         public static string SVFIClipDisabledHintText => UICaptionProviderM.Hints.SVFIClipDisabled;
@@ -2033,7 +2032,6 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(SectionSelectAnalytics));
             OnPropertyChanged(nameof(SectionSelectDependencies));
             OnPropertyChanged(nameof(SectionImportSource));
-            OnPropertyChanged(nameof(SectionAnalysisResults));
             OnPropertyChanged(nameof(SectionEncodingConfigs));
             OnPropertyChanged(nameof(SectionStartEncoding));
             OnPropertyChanged(nameof(SVFIClipDisabledHintText));
