@@ -15,6 +15,21 @@
         <FrameworkElement x:Key="BindingProxy"
                           DataContext="{Binding}" />
         <conv:WidthToColumnCountConverter x:Key="WidthToColumnCount" />
+        <Style x:Key="SectionHeaderToggleButton"
+               TargetType="Button"
+               BasedOn="{StaticResource LinkButton}">
+            <Setter Property="Content"
+                    Value=" &#x25BC;&#x25BC; " />
+            <Setter Property="MinWidth"
+                    Value="40" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                             Value="True">
+                    <Setter Property="Content"
+                            Value=" &#x25B6;&#x25B6; " />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Grid>
         <StackPanel Margin="10 2 10 15">
@@ -34,17 +49,18 @@
             <comps:SectionHeader HeaderText="{Binding SectionSelectUpstream}"
                                  Margin="0 15 0 0">
                 <comps:SectionHeader.HeaderExtra>
-                    <Button Content="{Binding ToggleMiniUpstreamsZoneText}"
-                            Command="{Binding ToggleMiniUpstreamsZoneCmd}"
+                    <Button Command="{Binding ToggleMiniUpstreamsZoneCmd}"
+                            Tag="{Binding IsMiniUpstreamsZone}"
+                            ToolTip="{Binding ToggleMiniUpstreamsZoneText}"
                             VerticalAlignment="Center"
                             Focusable="False"
                             KeyboardNavigation.IsTabStop="False"
                             Margin="5 0"
-                            Style="{StaticResource LinkButton}" />
+                            Style="{StaticResource SectionHeaderToggleButton}" />
                 </comps:SectionHeader.HeaderExtra>
             </comps:SectionHeader>
             <ItemsControl ItemsSource="{Binding UpstreamsZone}"
-                          Margin="0 15 0 0">
+                          Margin="0 5 0 0">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
                         <Setter Property="Visibility"
@@ -86,7 +102,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             <ItemsControl ItemsSource="{Binding UpstreamsZone}"
-                          Margin="0 15 0 0">
+                          Margin="0 5 0 0">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
                         <Setter Property="Visibility"
@@ -138,17 +154,18 @@
             <comps:SectionHeader HeaderText="{Binding SectionSelectEncoder}"
                                  Margin="0 15 0 0">
                 <comps:SectionHeader.HeaderExtra>
-                    <Button Content="{Binding ToggleMiniEncodersZoneText}"
-                            Command="{Binding ToggleMiniEncodersZoneCmd}"
+                    <Button Command="{Binding ToggleMiniEncodersZoneCmd}"
+                            Tag="{Binding IsMiniEncodersZone}"
+                            ToolTip="{Binding ToggleMiniEncodersZoneText}"
                             VerticalAlignment="Center"
                             Focusable="False"
                             KeyboardNavigation.IsTabStop="False"
                             Margin="5 0"
-                            Style="{StaticResource LinkButton}" />
+                            Style="{StaticResource SectionHeaderToggleButton}" />
                 </comps:SectionHeader.HeaderExtra>
             </comps:SectionHeader>
             <ItemsControl ItemsSource="{Binding EncodersZone}"
-                          Margin="0 15 0 0">
+                          Margin="0 5 0 0">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
                         <Setter Property="Visibility"
@@ -189,7 +206,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             <ItemsControl ItemsSource="{Binding EncodersZone}"
-                          Margin="0 15 0 0">
+                          Margin="0 5 0 0">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
                         <Setter Property="Visibility"
@@ -240,17 +257,18 @@
             <comps:SectionHeader HeaderText="{Binding SectionSelectDependencies}"
                                  Margin="0 15 0 0">
                 <comps:SectionHeader.HeaderExtra>
-                    <Button Content="{Binding ToggleMiniDependenciesZoneText}"
-                            Command="{Binding ToggleMiniDependenciesZoneCmd}"
+                    <Button Command="{Binding ToggleMiniDependenciesZoneCmd}"
+                            Tag="{Binding IsMiniDependenciesZone}"
+                            ToolTip="{Binding ToggleMiniDependenciesZoneText}"
                             VerticalAlignment="Center"
                             Focusable="False"
                             KeyboardNavigation.IsTabStop="False"
                             Margin="5 0"
-                            Style="{StaticResource LinkButton}" />
+                            Style="{StaticResource SectionHeaderToggleButton}" />
                 </comps:SectionHeader.HeaderExtra>
             </comps:SectionHeader>
             <ItemsControl ItemsSource="{Binding DependenciesZone}"
-                          Margin="0 15 0 0">
+                          Margin="0 5 0 0">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
                         <Setter Property="Visibility"
@@ -291,7 +309,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             <ItemsControl ItemsSource="{Binding DependenciesZone}"
-                          Margin="0 15 0 0">
+                          Margin="0 5 0 0">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
                         <Setter Property="Visibility"
@@ -342,7 +360,7 @@
             <comps:SectionHeader HeaderText="{Binding SectionImportSource}"
                                  Margin="0 15 0 0"/>
             <ItemsControl ItemsSource="{Binding VideoSrcImportZone}"
-                          Margin="0 15 0 0">
+                          Margin="0 5 0 0">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=3}" />
@@ -380,7 +398,7 @@
 
             <!-- Import Source 2 -->
             <ItemsControl ItemsSource="{Binding ActiveScriptSrcImportZone}"
-                          Margin="0 15 0 0">
+                          Margin="0 5 0 0">
                 <ItemsControl.Resources>
                     <SolidColorBrush x:Key="RemixedBackground"
                                      Color="#FAD7AC" />
@@ -442,17 +460,18 @@
             <comps:SectionHeader HeaderText="{Binding SectionSelectAnalytics}"
                                   Margin="0 15 0 0">
                 <comps:SectionHeader.HeaderExtra>
-                    <Button Content="{Binding ToggleMiniAnalyticsZoneText}"
-                            Command="{Binding ToggleMiniAnalyticsZoneCmd}"
+                    <Button Command="{Binding ToggleMiniAnalyticsZoneCmd}"
+                            Tag="{Binding IsMiniAnalyticsZone}"
+                            ToolTip="{Binding ToggleMiniAnalyticsZoneText}"
                             VerticalAlignment="Center"
                             Focusable="False"
                             KeyboardNavigation.IsTabStop="False"
                             Margin="5 0"
-                            Style="{StaticResource LinkButton}" />
+                            Style="{StaticResource SectionHeaderToggleButton}" />
                 </comps:SectionHeader.HeaderExtra>
             </comps:SectionHeader>
             <ItemsControl ItemsSource="{Binding AnalyticsZone}"
-                          Margin="0 15 0 0">
+                          Margin="0 5 0 0">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
                         <Setter Property="Visibility"
@@ -493,7 +512,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             <ItemsControl ItemsSource="{Binding AnalyticsZone}"
-                          Margin="0 15 0 0">
+                          Margin="0 5 0 0">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
                         <Setter Property="Visibility"
@@ -571,7 +590,7 @@
             <comps:SectionHeader HeaderText="{Binding SectionEncodingConfigs}"
                                  Margin="0 15 0 0"/>
             <ItemsControl ItemsSource="{Binding EncodingConfZone}"
-                          Margin="0 15 0 0">
+                          Margin="0 5 0 0">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=3}" />
@@ -586,7 +605,7 @@
                                         EnableRealCheck="False"
                                         IsEnabled="{Binding IsEnabled}"
                                         PaletteIndex="2"
-                                        Margin="5">
+                                        Margin="5 5 5 0">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -606,17 +625,18 @@
             <comps:SectionHeader HeaderText="{Binding SectionStartEncoding}"
                                  Margin="0 15 0 0">
                 <comps:SectionHeader.HeaderExtra>
-                    <Button Content="{Binding ToggleShowBestPracticesCardText}"
-                            Command="{Binding ToggleShowBestPracticesCardCmd}"
+                    <Button Command="{Binding ToggleShowBestPracticesCardCmd}"
+                            Tag="{Binding ShowBestPracticesCard}"
+                            ToolTip="{Binding ToggleShowBestPracticesCardText}"
                             VerticalAlignment="Center"
                             Focusable="False"
                             KeyboardNavigation.IsTabStop="False"
                             Margin="5 0"
-                            Style="{StaticResource LinkButton}" />
+                            Style="{StaticResource SectionHeaderToggleButton}" />
                 </comps:SectionHeader.HeaderExtra>
             </comps:SectionHeader>
             <comps:ValidationCard DataContext="{Binding EncTermsCard}"
-                                  Margin="5 15 5 5" />
+                                  Margin="5" />
 
             <!-- Hint: NUMA CPU check trigger -->
             <comps:HintPanel Text="{Binding NumaCpuCheckHintText}"

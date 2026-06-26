@@ -4,69 +4,31 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:OneColumnEncoder.Components"
-             xmlns:conv="clr-namespace:OneColumnEncoder.Converters"
-             xmlns:viewmodels="clr-namespace:OneColumnEncoder.ViewModels"
              mc:Ignorable="d"
-             d:DesignHeight="40"
+             d:DesignHeight="20"
              d:DesignWidth="450">
-    <UserControl.Resources>
-        <conv:StringToCharArray x:Key="StringToCharArray" />
-    </UserControl.Resources>
-
-    <Grid Grid.IsSharedSizeScope="True">
+    <Grid Margin="5 0">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"
-                              SharedSizeGroup="HeaderExtra" />
-            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto"
-                              SharedSizeGroup="HeaderExtra" />
         </Grid.ColumnDefinitions>
 
-        <Border Grid.Column="0"
-                Grid.ColumnSpan="3"
-                Height="1"
-                VerticalAlignment="Center"
-                SnapsToDevicePixels="True"
-                Background="{StaticResource GlobalTertiary}" />
+        <TextBlock Grid.Column="0"
+                   Text="{Binding HeaderText,
+                                  RelativeSource={RelativeSource AncestorType=local:SectionHeader}}"
+                   VerticalAlignment="Center"
+                   FontSize="16"
+                   FontWeight="Bold"
+                   Foreground="{StaticResource GlobalPrimary}" />
 
-        <!-- Text part with letter spacing -->
-        <ItemsControl Grid.Column="3"
-                      VerticalAlignment="Center"
-                      ItemsSource="{Binding Path=HeaderText,
-                                    RelativeSource={RelativeSource AncestorType=local:SectionHeader},
-                                    Converter={StaticResource StringToCharArray}}">
-
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding}"
-                               FontSize="13"
-                               FontStretch="ExtraExpanded"
-                               Foreground="{StaticResource GlobalTertiary}"
-                               Margin="1 0 1 0" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-
-        <Border Grid.Column="4"
-                Height="1"
-                VerticalAlignment="Center"
-                SnapsToDevicePixels="True"
-                Background="{StaticResource GlobalTertiary}" />
-
-        <ContentPresenter Grid.Column="5"
+        <ContentPresenter Grid.Column="1"
                           VerticalAlignment="Center"
+                          HorizontalAlignment="Right"
                           Focusable="False"
                           KeyboardNavigation.IsTabStop="False"
                           Content="{Binding HeaderExtra,
                                     RelativeSource={RelativeSource AncestorType=local:SectionHeader}}" />
+
+        <!-- SectionHeaderToggleButton: Views/MainUI.xaml -->
     </Grid>
 </UserControl>
