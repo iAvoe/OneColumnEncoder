@@ -1,6 +1,8 @@
 using Microsoft.Win32;
+using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Helpers;
 using OneColumnEncoder.Models;
+using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels.Cards;
 using System.IO;
 using System.Windows;
@@ -9,9 +11,11 @@ namespace OneColumnEncoder.Commands
 {
     public class BrowseSourceQueueCmd(
         ToolItemCardVM item,
+        ModalNavS modalNavS,
         Action<ToolItemCardVM, string, string[]>? afterImport = null) : BaseCmd
     {
         private readonly ToolItemCardVM _item = item;
+        private readonly ModalNavS _modalNavS = modalNavS;
         private readonly Action<ToolItemCardVM, string, string[]>? _afterImport = afterImport;
 
         public override void Execute(object? parameter)
@@ -30,6 +34,15 @@ namespace OneColumnEncoder.Commands
 
             string folderPath = dialog.FolderName;
             string[] filePaths = SourceFilePickerH.GetVideoFilesInFolder(folderPath);
+            if (filePaths.Length == 0)
+            {
+                new OpenWarnModalCmd(
+                    _modalNavS,
+                    UICaptionProviderM.SourceInspect.WarnTitle,
+                    new VideoSourceQueueLangProviderM(UILangProviderM.Current.LanguageCode)["SourceQueue.EmptyFolderWarnMessage"])
+                    .Execute(null);
+                return;
+            }
 
             // Extract file names for both short card display and long tooltip display
             string[] fileNames = filePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!).ToArray();

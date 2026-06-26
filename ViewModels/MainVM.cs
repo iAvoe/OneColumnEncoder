@@ -28,6 +28,12 @@ namespace OneColumnEncoder.ViewModels
         private bool _isMiniEncodersZone;
         private bool _isMiniAnalyticsZone;
         private bool _isMiniDependenciesZone;
+        private string _upstreamsZoneSelectedPath = string.Empty;
+        private string _encodersZoneSelectedPath = string.Empty;
+        private string _analyticsZoneSelectedPath = string.Empty;
+        private string _dependenciesZoneSelectedPath = string.Empty;
+        private string _videoSrcImportZoneSelectedPath = string.Empty;
+        private string _activeScriptSrcImportZoneSelectedPath = string.Empty;
 
         // Groups of Card or other element UIs
         public ObservableCollection<ToolItemCardVM> UpstreamsZone { get; }
@@ -42,7 +48,16 @@ namespace OneColumnEncoder.ViewModels
         public ObservableCollection<ToolItemCardVM> ActiveScriptSrcImportZone
         {
             get => _activeScriptSrcImportZone;
-            private set => SetProperty(ref _activeScriptSrcImportZone, value);
+            private set
+            {
+                if (_activeScriptSrcImportZone != null)
+                    UnsubZoneItemsCollectionChanged(_activeScriptSrcImportZone);
+                if (value != null && SetProperty(ref _activeScriptSrcImportZone, value))
+                {
+                    SubZoneItemsCollectionChanged(value);
+                    RefreshAllZoneSelectedPaths();
+                }
+            }
         }
         // Cmds and buttons
         public OpenUsagesCmd OpenUsages { get; }
@@ -162,6 +177,42 @@ namespace OneColumnEncoder.ViewModels
             IsMiniDependenciesZone
                 ? UILangProviderM.Current["Expand"]
                 : UILangProviderM.Current["Collapse"];
+
+        public string UpstreamsZoneSelectedPath
+        {
+            get => _upstreamsZoneSelectedPath;
+            set => SetProperty(ref _upstreamsZoneSelectedPath, value);
+        }
+
+        public string EncodersZoneSelectedPath
+        {
+            get => _encodersZoneSelectedPath;
+            set => SetProperty(ref _encodersZoneSelectedPath, value);
+        }
+
+        public string AnalyticsZoneSelectedPath
+        {
+            get => _analyticsZoneSelectedPath;
+            set => SetProperty(ref _analyticsZoneSelectedPath, value);
+        }
+
+        public string DependenciesZoneSelectedPath
+        {
+            get => _dependenciesZoneSelectedPath;
+            set => SetProperty(ref _dependenciesZoneSelectedPath, value);
+        }
+
+        public string VideoSrcImportZoneSelectedPath
+        {
+            get => _videoSrcImportZoneSelectedPath;
+            set => SetProperty(ref _videoSrcImportZoneSelectedPath, value);
+        }
+
+        public string ActiveScriptSrcImportZoneSelectedPath
+        {
+            get => _activeScriptSrcImportZoneSelectedPath;
+            set => SetProperty(ref _activeScriptSrcImportZoneSelectedPath, value);
+        }
 
         private ObservableCollection<ToolItemCardVM>[] AllImportedToolZones =>
             [UpstreamsZone, EncodersZone, AnalyticsZone, DependenciesZone];
@@ -413,6 +464,8 @@ namespace OneColumnEncoder.ViewModels
             IsOverlayVisible = _modalNavS.IsOpen;
             UILangProviderM.CurrentChanged += OnLanguageChanged;
             RefreshLanguage();
+            SubToAllZoneItemChanges();
+            RefreshAllZoneSelectedPaths();
             _ = Application.Current.Dispatcher.InvokeAsync(async () => await TryAutoImportToolsOnStartupAsync());
         }
         #endregion
@@ -885,7 +938,7 @@ namespace OneColumnEncoder.ViewModels
         {
             if (IsVideoSourceQueueItem(item))
             {
-                item.R1Command = new BrowseSourceQueueCmd(item, OnSourceQueueImported);
+                item.R1Command = new BrowseSourceQueueCmd(item, _modalNavS, OnSourceQueueImported);
                 item.R2Command = new ClearToolItemCmd(item, () => OnSourceQueueCleared(item));
                 item.PropertyChanged += OnVideoSrcItemPropertyChanged;
                 return;
@@ -1743,6 +1796,66 @@ namespace OneColumnEncoder.ViewModels
 
         #endregion
 
+        #region Hint Panel Subscription & Refresh
+        private void SubToAllZoneItemChanges()
+        {
+            SubZoneItemsCollectionChanged(UpstreamsZone);
+            SubZoneItemsCollectionChanged(EncodersZone);
+            SubZoneItemsCollectionChanged(AnalyticsZone);
+            SubZoneItemsCollectionChanged(DependenciesZone);
+            SubZoneItemsCollectionChanged(VideoSrcImportZone);
+        }
+
+        private void SubZoneItemsCollectionChanged(ObservableCollection<ToolItemCardVM> zone)
+        {
+            foreach (ToolItemCardVM item in zone)
+                item.PropertyChanged += OnAnyToolCardPropertyChanged;
+            zone.CollectionChanged += OnAnyZoneCollectionChanged;
+        }
+
+        private void UnsubZoneItemsCollectionChanged(ObservableCollection<ToolItemCardVM> zone)
+        {
+            foreach (ToolItemCardVM item in zone)
+                item.PropertyChanged -= OnAnyToolCardPropertyChanged;
+            zone.CollectionChanged -= OnAnyZoneCollectionChanged;
+        }
+
+        private void OnAnyToolCardPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName is nameof(ToolItemCardVM.IsSelected) or nameof(ToolItemCardVM.P2TextData))
+                RefreshAllZoneSelectedPaths();
+        }
+
+        private void OnAnyZoneCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.OldItems != null)
+                foreach (ToolItemCardVM item in e.OldItems)
+                    item.PropertyChanged -= OnAnyToolCardPropertyChanged;
+            if (e.NewItems != null)
+                foreach (ToolItemCardVM item in e.NewItems)
+                    item.PropertyChanged += OnAnyToolCardPropertyChanged;
+            RefreshAllZoneSelectedPaths();
+        }
+
+        private void RefreshAllZoneSelectedPaths()
+        {
+            UpstreamsZoneSelectedPath = GetZoneSelectedPath(UpstreamsZone);
+            EncodersZoneSelectedPath = GetZoneSelectedPath(EncodersZone);
+            AnalyticsZoneSelectedPath = GetZoneSelectedPath(AnalyticsZone);
+            DependenciesZoneSelectedPath = GetZoneSelectedPath(DependenciesZone);
+            VideoSrcImportZoneSelectedPath = GetZoneSelectedPath(VideoSrcImportZone);
+            ActiveScriptSrcImportZoneSelectedPath = GetZoneSelectedPath(ActiveScriptSrcImportZone);
+        }
+
+        private static string GetZoneSelectedPath(ObservableCollection<ToolItemCardVM>? zone)
+        {
+            ToolItemCardVM? selected = zone?.FirstOrDefault(t => t.IsSelected);
+            if (selected == null || string.IsNullOrWhiteSpace(selected.P2TextData))
+                return "!Path";
+            return selected.P2TextData;
+        }
+        #endregion
+
         #region Loading or adding other persistent data
         private void AddOrUpdateTool(string defKey, string? filePath, string? version, long? fileSize = null)
         {
@@ -2107,6 +2220,11 @@ namespace OneColumnEncoder.ViewModels
             ToolsImportCard.Dispose();
             UnsubFromImportedToolZones();
             UnsubFromToolsChecklist();
+            UnsubZoneItemsCollectionChanged(UpstreamsZone);
+            UnsubZoneItemsCollectionChanged(EncodersZone);
+            UnsubZoneItemsCollectionChanged(AnalyticsZone);
+            UnsubZoneItemsCollectionChanged(DependenciesZone);
+            UnsubZoneItemsCollectionChanged(VideoSrcImportZone);
             base.Dispose();
             GC.SuppressFinalize(this);
         }

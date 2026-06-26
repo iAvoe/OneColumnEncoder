@@ -45,7 +45,7 @@
                 </comps:SectionHeader.HeaderExtra>
             </comps:SectionHeader>
             <ItemsControl ItemsSource="{Binding UpstreamsZone}"
-                          Margin="0 15">
+                          Margin="0 15 0 0">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
                         <Setter Property="Visibility"
@@ -87,7 +87,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             <ItemsControl ItemsSource="{Binding UpstreamsZone}"
-                          Margin="0 15">
+                          Margin="0 15 0 0">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
                         <Setter Property="Visibility"
@@ -130,6 +130,11 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
+            <comps:HintPanel Text="{Binding UpstreamsZoneSelectedPath}"
+                             Margin="10 0 5 5"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center" />
+
             <!-- Select Encoders -->
             <comps:SectionHeader HeaderText="{Binding SectionSelectEncoder}">
                 <comps:SectionHeader.HeaderExtra>
@@ -143,7 +148,7 @@
                 </comps:SectionHeader.HeaderExtra>
             </comps:SectionHeader>
             <ItemsControl ItemsSource="{Binding EncodersZone}"
-                          Margin="0 15">
+                          Margin="0 15 0 0">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
                         <Setter Property="Visibility"
@@ -184,7 +189,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             <ItemsControl ItemsSource="{Binding EncodersZone}"
-                          Margin="0 15">
+                          Margin="0 15 0 0">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
                         <Setter Property="Visibility"
@@ -226,6 +231,11 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
+            <comps:HintPanel Text="{Binding EncodersZoneSelectedPath}"
+                             Margin="10 0 5 5"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center" />
+
             <!-- Select Analytic Tools -->
             <comps:SectionHeader HeaderText="{Binding SectionSelectAnalytics}">
                 <comps:SectionHeader.HeaderExtra>
@@ -239,7 +249,7 @@
                 </comps:SectionHeader.HeaderExtra>
             </comps:SectionHeader>
             <ItemsControl ItemsSource="{Binding AnalyticsZone}"
-                          Margin="0 15">
+                          Margin="0 15 0 0">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
                         <Setter Property="Visibility"
@@ -280,7 +290,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             <ItemsControl ItemsSource="{Binding AnalyticsZone}"
-                          Margin="0 15">
+                          Margin="0 15 0 0">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
                         <Setter Property="Visibility"
@@ -321,6 +331,11 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+
+            <comps:HintPanel Text="{Binding AnalyticsZoneSelectedPath}"
+                             Margin="10 0 5 5"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center" />
 
             <comps:TwoButtonGroup DataContext="{Binding AnalyzeSrcButtons}"
                                   ButtonHeight="30"
@@ -349,7 +364,7 @@
                 </comps:SectionHeader.HeaderExtra>
             </comps:SectionHeader>
             <ItemsControl ItemsSource="{Binding DependenciesZone}"
-                          Margin="0 15">
+                          Margin="0 15 0 0">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
                         <Setter Property="Visibility"
@@ -390,7 +405,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             <ItemsControl ItemsSource="{Binding DependenciesZone}"
-                          Margin="0 15">
+                          Margin="0 15 0 0">
                 <ItemsControl.Style>
                     <Style TargetType="ItemsControl">
                         <Setter Property="Visibility"
@@ -431,6 +446,11 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+
+            <comps:HintPanel Text="{Binding DependenciesZoneSelectedPath}"
+                             Margin="10 0 5 5"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center" />
 
             <!-- Import Source 1 -->
             <comps:SectionHeader HeaderText="{Binding SectionImportSource}" />
@@ -465,6 +485,11 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
+
+            <comps:HintPanel Text="{Binding VideoSrcImportZoneSelectedPath}"
+                             Margin="10 0 5 5"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center" />
 
             <!-- Import Source 2 -->
             <ItemsControl ItemsSource="{Binding ActiveScriptSrcImportZone}"
@@ -513,6 +538,11 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
+            <comps:HintPanel Text="{Binding ActiveScriptSrcImportZoneSelectedPath}"
+                             Margin="10 0 5 5"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center" />
+
             <comps:TwoButtonGroup DataContext="{Binding FilterScbButtons}"
                                   ButtonHeight="30"
                                   Button1Command="{Binding Cmd1}"
@@ -539,7 +569,7 @@
             <!-- Encoding Settings -->
             <comps:SectionHeader HeaderText="{Binding SectionEncodingConfigs}" />
             <ItemsControl ItemsSource="{Binding EncodingConfZone}"
-                          Margin="0 15">
+                          Margin="0 15 0 0">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=3}" />
