@@ -18,11 +18,6 @@
             <Setter Property="FontWeight"
                     Value="Bold" />
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsCompactText, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                             Value="True">
-                    <Setter Property="FontSize"
-                            Value="13" />
-                </DataTrigger>
             </Style.Triggers>
         </Style>
         <Style x:Key="MiniValidationSectionHeader"
@@ -140,7 +135,7 @@
 
     <Grid>
         <!-- Shadow layer: transparent background, no hit-test, carries only the effect. -->
-        <Border BorderThickness="1"
+        <Border BorderThickness="1.5"
                 CornerRadius="13"
                 IsHitTestVisible="False"
                 SnapsToDevicePixels="True"
@@ -177,7 +172,7 @@
         </Border>
 
         <!-- Content layer: holds the actual card layout with no Effect so text stays sharp. -->
-        <Border BorderThickness="1"
+        <Border BorderThickness="1.5"
                 CornerRadius="13"
                 Padding="14 15"
                 SnapsToDevicePixels="True"

@@ -37,7 +37,7 @@
                                    ToggleCommand="{Binding DataContext.ToggleMiniToolsImportCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                    ToggleTag="{Binding DataContext.IsMiniToolsImportCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                    ToggleToolTip="{Binding DataContext.ToggleMiniToolsImportCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
-                                   Margin="5">
+                                   Margin="5 3">
                 <comps:ToolsImportCard.Style>
                     <Style TargetType="comps:ToolsImportCard">
                         <Setter Property="Visibility"
@@ -56,7 +56,7 @@
                                        ToggleCommand="{Binding DataContext.ToggleMiniToolsImportCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                        ToggleTag="{Binding DataContext.IsMiniToolsImportCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                        ToggleToolTip="{Binding DataContext.ToggleMiniToolsImportCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
-                                       Margin="5">
+                                       Margin="5 3">
                 <cards:MiniToolsImportCard.Style>
                     <Style TargetType="cards:MiniToolsImportCard">
                         <Setter Property="Visibility"
@@ -79,7 +79,7 @@
                                   Button2Command="{Binding Cmd2}"
                                   Button1IsEnabled="{Binding B2_1IsEnabled}"
                                   Button2IsEnabled="{Binding B2_2IsEnabled}"
-                                  Margin="10 15 10 0" />
+                                  Margin="10 10 10 0" />
 
             <!-- Select Upstream Tools -->
             <comps:SectionHeader HeaderText="{Binding SectionTexts[SelectUpstream]}"
@@ -91,7 +91,7 @@
                             VerticalAlignment="Center"
                             Focusable="False"
                             KeyboardNavigation.IsTabStop="False"
-                            Margin="5 0"
+                            Margin="5 3"
                             Style="{StaticResource SectionHeaderToggleButton}" />
                 </comps:SectionHeader.HeaderExtra>
             </comps:SectionHeader>
@@ -122,7 +122,7 @@
                                         IsCancel="{Binding IsCancel}"
                                         IsReal="{Binding IsReal}"
                                         IsEnabled="{Binding IsEnabled}"
-                                        Margin="5">
+                                        Margin="5 3">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -164,8 +164,7 @@
                                             IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                             IsCancel="{Binding IsCancel}"
                                             ShowActionButtons="False"
-                                            IsCompactText="True"
-                                            Margin="4">
+                                            Margin="5 3">
                             <cards:MiniItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -182,7 +181,7 @@
             </ItemsControl>
 
             <comps:HintPanel Text="{Binding UpstreamsZoneSelectedPath}"
-                             Margin="10 0 5 0"
+                             Margin="10 5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
 
@@ -196,7 +195,7 @@
                             VerticalAlignment="Center"
                             Focusable="False"
                             KeyboardNavigation.IsTabStop="False"
-                            Margin="5 0"
+                            Margin="5 3"
                             Style="{StaticResource SectionHeaderToggleButton}" />
                 </comps:SectionHeader.HeaderExtra>
             </comps:SectionHeader>
@@ -226,7 +225,7 @@
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
                                         IsReal="{Binding IsReal}"
-                                        Margin="5">
+                                        Margin="5 3">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -267,8 +266,7 @@
                                             IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                             IsCancel="{Binding IsCancel}"
                                             ShowActionButtons="False"
-                                            IsCompactText="True"
-                                            Margin="4">
+                                            Margin="5 3">
                             <cards:MiniItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -285,7 +283,7 @@
             </ItemsControl>
 
             <comps:HintPanel Text="{Binding EncodersZoneSelectedPath}"
-                             Margin="10 0 5 0"
+                             Margin="10 5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
 
@@ -299,7 +297,7 @@
                             VerticalAlignment="Center"
                             Focusable="False"
                             KeyboardNavigation.IsTabStop="False"
-                            Margin="5 0"
+                            Margin="5 3"
                             Style="{StaticResource SectionHeaderToggleButton}" />
                 </comps:SectionHeader.HeaderExtra>
             </comps:SectionHeader>
@@ -329,7 +327,7 @@
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
                                         IsReal="{Binding IsReal}"
-                                        Margin="5">
+                                        Margin="5 3">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -370,8 +368,7 @@
                                             IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                             IsCancel="{Binding IsCancel}"
                                             ShowActionButtons="False"
-                                            IsCompactText="True"
-                                            Margin="4">
+                                            Margin="5 3">
                             <cards:MiniItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -388,7 +385,7 @@
             </ItemsControl>
 
             <comps:HintPanel Text="{Binding DependenciesZoneSelectedPath}"
-                             Margin="10 0 5 0"
+                             Margin="10 5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
 
@@ -411,7 +408,7 @@
                                 VerticalAlignment="Center"
                                 Focusable="False"
                                 KeyboardNavigation.IsTabStop="False"
-                                Margin="5 0"
+                                Margin="5 3"
                                 Style="{StaticResource SectionHeaderToggleButton}" />
                     </StackPanel>
                 </comps:SectionHeader.HeaderExtra>
@@ -445,7 +442,7 @@
                                         EnableRealCheck="False"
                                         IsEnabled="{Binding IsEnabled}"
                                         PaletteIndex="1"
-                                        Margin="5">
+                                        Margin="5 3">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -488,7 +485,7 @@
                                             IsEnabled="{Binding IsEnabled}"
                                             ShowActionButtons="False"
                                             PaletteIndex="1"
-                                            Margin="4">
+                                            Margin="5 3">
                             <cards:MiniItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -505,7 +502,7 @@
             </ItemsControl>
 
             <comps:HintPanel Text="{Binding VideoSrcImportZoneSelectedPath}"
-                             Margin="10 0 5 0"
+                             Margin="10 5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
 
@@ -553,7 +550,7 @@
                                         EnableRealCheck="False"
                                         IsEnabled="{Binding IsEnabled}"
                                         PaletteIndex="1"
-                                        Margin="5">
+                                        Margin="5 3">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -610,7 +607,7 @@
                                             IsEnabled="{Binding IsEnabled}"
                                             ShowActionButtons="False"
                                             PaletteIndex="1"
-                                            Margin="4">
+                                            Margin="5 3">
                             <cards:MiniItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -627,7 +624,7 @@
             </ItemsControl>
 
             <comps:HintPanel Text="{Binding ActiveScriptSrcImportZoneSelectedPath}"
-                             Margin="10 0 5 0"
+                             Margin="10 5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
 
@@ -637,7 +634,7 @@
                                   Button2Command="{Binding Cmd2}"
                                   Button1IsEnabled="{Binding B2_1IsEnabled}"
                                   Button2IsEnabled="{Binding B2_2IsEnabled}"
-                                  Margin="5 5 5 0" />
+                                  Margin="10 10 10 0" />
 
             <!-- Select Analytic Tools -->
             <comps:SectionHeader HeaderText="{Binding SectionTexts[SelectAnalytics]}"
@@ -649,7 +646,7 @@
                             VerticalAlignment="Center"
                             Focusable="False"
                             KeyboardNavigation.IsTabStop="False"
-                            Margin="5 0"
+                            Margin="5 3"
                             Style="{StaticResource SectionHeaderToggleButton}" />
                 </comps:SectionHeader.HeaderExtra>
             </comps:SectionHeader>
@@ -679,7 +676,7 @@
                                         IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                         IsCancel="{Binding IsCancel}"
                                         IsReal="{Binding IsReal}"
-                                        Margin="5">
+                                        Margin="5 3">
                             <comps:ItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -720,8 +717,7 @@
                                             IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                             IsCancel="{Binding IsCancel}"
                                             ShowActionButtons="False"
-                                            IsCompactText="True"
-                                            Margin="4">
+                                            Margin="5 3">
                             <cards:MiniItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -743,12 +739,12 @@
                                   Button2Command="{Binding Cmd2}"
                                   Button1IsEnabled="{Binding B2_1IsEnabled}"
                                   Button2IsEnabled="{Binding B2_2IsEnabled}"
-                                  Margin="5 5 5 0" />
+                                  Margin="10 10 10 0" />
 
             <!-- Hint: OneLineShotArgs upstream does not support clipping -->
             <comps:HintPanel Text="{Binding AnalyzeNeedsSourceText}"
                              RefreshTextOnLanguageChanged="True"
-                             Margin="10 0 5 0"
+                             Margin="10 5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
 
@@ -780,7 +776,6 @@
                                       ToggleCommand="{Binding DataContext.ToggleMiniSrcValidationCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                       ToggleTag="{Binding DataContext.IsMiniSrcValidationCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                       ToggleToolTip="{Binding DataContext.ToggleMiniSrcValidationCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
-                                      IsCompactText="True"
                                       Margin="5 5 5 0">
                 <cards:MiniValidationCard.Style>
                     <Style TargetType="cards:MiniValidationCard">
@@ -804,7 +799,7 @@
                                   Button2Command="{Binding Cmd2}"
                                   Button1IsEnabled="{Binding B2_1IsEnabled}"
                                   Button2IsEnabled="{Binding B2_2IsEnabled}"
-                                  Margin="10 15 10 0" />
+                                  Margin="10 10 10 0" />
 
             <!-- Encoding Settings -->
             <comps:SectionHeader HeaderText="{Binding SectionTexts[EncodingConfigs]}"
@@ -816,7 +811,7 @@
                             VerticalAlignment="Center"
                             Focusable="False"
                             KeyboardNavigation.IsTabStop="False"
-                            Margin="5 0"
+                            Margin="5 3"
                             Style="{StaticResource SectionHeaderToggleButton}" />
                 </comps:SectionHeader.HeaderExtra>
             </comps:SectionHeader>
@@ -892,8 +887,7 @@
                                             IsEnabled="{Binding IsEnabled}"
                                             PaletteIndex="2"
                                             ShowActionButtons="False"
-                                            IsCompactText="True"
-                                            Margin="4">
+                                            Margin="5 3">
                             <cards:MiniItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.SelectTool,
@@ -910,7 +904,7 @@
             </ItemsControl>
 
             <comps:HintPanel Text="{Binding EncodingConfZoneSelectedPath}"
-                             Margin="10 0 5 0"
+                             Margin="10 5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
             <!-- Starting Options -->
@@ -939,7 +933,6 @@
                                       ToggleCommand="{Binding DataContext.ToggleMiniEncTermsCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                       ToggleTag="{Binding DataContext.IsMiniEncTermsCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                       ToggleToolTip="{Binding DataContext.ToggleMiniEncTermsCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
-                                      IsCompactText="True"
                                       Margin="5 10 5 0">
                 <cards:MiniValidationCard.Style>
                     <Style TargetType="cards:MiniValidationCard">
@@ -959,7 +952,7 @@
             <!-- Hint: NUMA CPU check trigger -->
             <comps:HintPanel Text="{Binding NumaCpuCheckHintText}"
                              RefreshTextOnLanguageChanged="True"
-                             Margin="10 0 5 0"
+                             Margin="10 5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
 
@@ -970,7 +963,7 @@
                                   Button2Command="{Binding Cmd2}"
                                   Button1IsEnabled="{Binding B2_1IsEnabled}"
                                   Button2IsEnabled="{Binding B2_2IsEnabled}"
-                                  Margin="10 15 10 0" />
+                                  Margin="10 10 10 0" />
 
             <comps:ValidationCard DataContext="{Binding BestPracticesCard}"
                                   ToggleCommand="{Binding DataContext.ToggleMiniBestPracticesCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
@@ -995,7 +988,6 @@
                                       ToggleCommand="{Binding DataContext.ToggleMiniBestPracticesCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                       ToggleTag="{Binding DataContext.IsMiniBestPracticesCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                       ToggleToolTip="{Binding DataContext.ToggleMiniBestPracticesCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
-                                      IsCompactText="True"
                                       Margin="5 15 5 5">
                 <cards:MiniValidationCard.Style>
                     <Style TargetType="cards:MiniValidationCard">
@@ -1026,7 +1018,7 @@
             <comps:HintPanel Visibility="{Binding SVFIClipDisabledHintVisible, Converter={StaticResource BoolToVisibility}}"
                              Text="{Binding SVFIClipDisabledHintText}"
                              RefreshTextOnLanguageChanged="True"
-                             Margin="10 0 5 0"
+                             Margin="10 5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
         </StackPanel>

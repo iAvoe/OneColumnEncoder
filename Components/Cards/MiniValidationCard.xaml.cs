@@ -11,19 +11,6 @@ namespace OneColumnEncoder.Components.Cards
             InitializeComponent();
         }
 
-        public static readonly DependencyProperty IsCompactTextProperty =
-            DependencyProperty.Register(
-                nameof(IsCompactText),
-                typeof(bool),
-                typeof(MiniValidationCard),
-                new PropertyMetadata(false));
-
-        public bool IsCompactText
-        {
-            get => (bool)GetValue(IsCompactTextProperty);
-            set => SetValue(IsCompactTextProperty, value);
-        }
-
         public static readonly DependencyProperty ToggleCommandProperty =
             DependencyProperty.Register(
                 nameof(ToggleCommand),
