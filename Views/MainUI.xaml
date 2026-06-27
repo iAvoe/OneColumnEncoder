@@ -375,7 +375,7 @@
                                 VerticalAlignment="Center"
                                 Focusable="False"
                                 KeyboardNavigation.IsTabStop="False"
-                                Margin="5 0 0 0"
+                                Margin="5 0"
                                 Style="{StaticResource SectionHeaderToggleButton}" />
                     </StackPanel>
                 </comps:SectionHeader.HeaderExtra>
@@ -387,7 +387,7 @@
                         <Setter Property="Visibility"
                                 Value="Visible" />
                         <Style.Triggers>
-<DataTrigger Binding="{Binding IsMiniVideoSrcImportZone}"
+                            <DataTrigger Binding="{Binding IsMiniVideoSrcImportZone}"
                                          Value="True">
                                 <Setter Property="Visibility"
                                         Value="Collapsed" />
@@ -500,12 +500,12 @@
                                      Color="#808080" />
                     <SolidColorBrush x:Key="RemixedBackgroundGreen"
                                      Color="#2A3A3A" />
-<SolidColorBrush x:Key="RemixedBackgroundRed"
+                    <SolidColorBrush x:Key="RemixedBackgroundRed"
                                      Color="#3A2A2A" />
-                    </ItemsControl.Resources>
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=3:190}" />
+                </ItemsControl.Resources>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=3:190}" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
@@ -902,11 +902,11 @@
 
             <!-- Hint: OneLineShotArgs upstream does not support clipping -->
             <comps:HintPanel Visibility="{Binding SVFIClipDisabledHintVisible, Converter={StaticResource BoolToVisibility}}"
-                              Text="{Binding SVFIClipDisabledHintText}"
-                              RefreshTextOnLanguageChanged="True"
-                              Margin="10 0 5 0"
-                              HorizontalAlignment="Left"
-                              VerticalAlignment="Center" />
+                             Text="{Binding SVFIClipDisabledHintText}"
+                             RefreshTextOnLanguageChanged="True"
+                             Margin="10 0 5 0"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center" />
         </StackPanel>
 
         <Border Visibility="{Binding IsOverlayVisible, Converter={StaticResource BoolToVisibility}}"
