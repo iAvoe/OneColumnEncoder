@@ -91,7 +91,8 @@ Or, TLDR; and use tools provided in this package (not recommended but its an opt
 ## Localization Status
 
 - **Supported:** English, Simplified Chinese, Traditional Chinese
-- **MTL Only:** French, Spanish, Japanese, Russian
+- **Not Localized:** French, Spanish, Japanese, Russian
+  - MTL with basic checks only, might have errors
 - To provide a translation, please fork this repository, add a new language entry in `Models/XxxLangProviderM`, and submit a pull request
   - Translation of the README is not required, but it would be great if you can do that
 

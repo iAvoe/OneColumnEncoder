@@ -113,10 +113,10 @@ public static class UICaptionProviderM
 
             public static string GetDisplayName(string code) => code switch
             {
-                "fr" => "fr (MTL Only)",
-                "es" => "es (MTL Only)",
-                "ja" => "ja (MTL Only)",
-                "ru" => "ru (MTL Only)",
+                "fr" => "fr (!Localized)",
+                "es" => "es (!Localized)",
+                "ja" => "ja (!Localized)",
+                "ru" => "ru (!Localized)",
                 _ => code
             };
         }
