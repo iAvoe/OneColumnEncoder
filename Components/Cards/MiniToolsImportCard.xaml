@@ -14,7 +14,7 @@
         <Style x:Key="MiniToolsImportTitle"
                TargetType="TextBlock">
             <Setter Property="FontSize"
-                    Value="12" />
+                    Value="13" />
             <Setter Property="FontWeight"
                     Value="Bold" />
         </Style>
@@ -50,8 +50,8 @@
                             </Grid.ColumnDefinitions>
                             <Rectangle x:Name="IconMask"
                                        Grid.Column="0"
-                                       Width="11"
-                                       Height="11"
+                                       Width="12"
+                                       Height="12"
                                        VerticalAlignment="Center"
                                        Fill="{TemplateBinding Foreground}"
                                        Margin="0 0 4 0">
@@ -61,11 +61,11 @@
                                 </Rectangle.OpacityMask>
                             </Rectangle>
                             <TextBlock Grid.Column="1"
-                                       Text="{TemplateBinding Text}"
-                                       VerticalAlignment="Center"
-                                       FontSize="11"
-                                       Foreground="{TemplateBinding Foreground}"
-                                       TextWrapping="Wrap" />
+                                        Text="{TemplateBinding Text}"
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Foreground="{TemplateBinding Foreground}"
+                                        TextWrapping="Wrap" />
                         </Grid>
 
                         <ControlTemplate.Triggers>
@@ -125,14 +125,15 @@
     </UserControl.Resources>
 
     <Grid>
-        <Border BorderBrush="{StaticResource GlobalPrimary}"
-                BorderThickness="1"
-                CornerRadius="7"
+        <Border BorderThickness="1.5"
+                CornerRadius="13"
                 IsHitTestVisible="False"
                 SnapsToDevicePixels="True"
                 Background="Transparent">
             <Border.Style>
                 <Style TargetType="Border">
+                    <Setter Property="BorderBrush"
+                            Value="{StaticResource GlobalPrimary}" />
                     <Setter Property="Background"
                             Value="{StaticResource Background}" />
                     <Setter Property="Effect">
@@ -147,25 +148,50 @@
             </Border.Style>
         </Border>
 
-        <Border BorderBrush="{StaticResource GlobalPrimary}"
-                BorderThickness="1"
-                CornerRadius="7"
-                Padding="11 9"
+        <Border BorderThickness="1.5"
+                CornerRadius="13"
+                Padding="14 15"
                 SnapsToDevicePixels="True"
-                Background="{StaticResource Background}">
+                Opacity="{Binding CardOpacity}">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="BorderBrush"
+                            Value="{StaticResource GlobalPrimary}" />
+                    <Setter Property="Background"
+                            Value="{StaticResource Background}" />
+                    <Setter Property="TextElement.Foreground"
+                            Value="{StaticResource GlobalPrimary}" />
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter Property="Opacity"
+                                    Value="0.65" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{Binding Name}"
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding Name}"
                                Style="{StaticResource MiniToolsImportTitle}"
                                TextTrimming="CharacterEllipsis"
+                               HorizontalAlignment="Stretch"
                                VerticalAlignment="Center" />
 
-                    <Button Command="{Binding ToggleCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                    <Button Grid.Column="1"
+                            Command="{Binding ToggleCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                             Tag="{Binding ToggleTag, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                             ToolTip="{Binding ToggleToolTip, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                             VerticalAlignment="Center"
@@ -173,7 +199,7 @@
                             KeyboardNavigation.IsTabStop="False"
                             Margin="5 0 0 0"
                             Style="{StaticResource MiniToolsImportToggleButton}" />
-                </StackPanel>
+                </Grid>
 
                 <UniformGrid Grid.Row="1"
                              Columns="2"

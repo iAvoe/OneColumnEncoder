@@ -34,6 +34,8 @@ namespace OneColumnEncoder.Models
         public bool? IsMiniBestPracticesCard { get; set; }
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public bool? IsMiniToolsImportCard { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public bool? IsMiniStartEncodingZone { get; set; }
 
         // File sizes are used for detecting tool replacements
         #region ImportedTools data structure

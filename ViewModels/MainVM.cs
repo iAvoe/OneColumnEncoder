@@ -41,6 +41,8 @@ namespace OneColumnEncoder.ViewModels
         private bool _isMiniEncTermsCard;
         private bool _isMiniBestPracticesCard;
         private bool _isMiniToolsImportCard;
+        private bool _isMiniStartEncodingZone;
+
         #endregion
         private string _upstreamsZoneSelectedPath = string.Empty;
         private string _encodersZoneSelectedPath = string.Empty;
@@ -92,6 +94,7 @@ namespace OneColumnEncoder.ViewModels
         public ActionCmd ToggleMiniEncTermsCardCmd { get; }
         public ActionCmd ToggleMiniBestPracticesCardCmd { get; }
         public ActionCmd ToggleMiniToolsImportCardCmd { get; }
+        public ActionCmd ToggleMiniStartEncodingZoneCmd { get; }
         #endregion
         public OneClickScriptGenCmd OneClickScriptGen { get; }
         public OpenFilterScribeCmd OpenFilterScribe { get; }
@@ -243,6 +246,12 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _isMiniToolsImportCard, value);
         }
 
+        public bool IsMiniStartEncodingZone
+        {
+            get => _isMiniStartEncodingZone;
+            set => SetProperty(ref _isMiniStartEncodingZone, value);
+        }
+
         public string ToggleMiniEncodersZoneText =>
             IsMiniEncodersZone
                 ? UILangProviderM.Current["Expand"]
@@ -290,6 +299,11 @@ namespace OneColumnEncoder.ViewModels
 
         public string ToggleMiniToolsImportCardText =>
             IsMiniToolsImportCard
+                ? UILangProviderM.Current["Expand"]
+                : UILangProviderM.Current["Collapse"];
+
+        public string ToggleMiniStartEncodingZoneText =>
+            IsMiniStartEncodingZone
                 ? UILangProviderM.Current["Expand"]
                 : UILangProviderM.Current["Collapse"];
 
@@ -359,6 +373,7 @@ namespace OneColumnEncoder.ViewModels
             _isMiniEncTermsCard = _appDataM.IsMiniEncTermsCard ?? false;
             _isMiniBestPracticesCard = _appDataM.IsMiniBestPracticesCard ?? false;
             _isMiniToolsImportCard = _appDataM.IsMiniToolsImportCard ?? false;
+            _isMiniStartEncodingZone = _appDataM.IsMiniStartEncodingZone ?? false;
             OpenAppConf = openAppConf;
             OpenUsages = openUsages;
 
@@ -440,6 +455,13 @@ namespace OneColumnEncoder.ViewModels
                 _appDataM.IsMiniToolsImportCard = IsMiniToolsImportCard;
                 _appDataM.Save();
                 OnPropertyChanged(nameof(ToggleMiniToolsImportCardText));
+            });
+            ToggleMiniStartEncodingZoneCmd = new ActionCmd(_ =>
+            {
+                IsMiniStartEncodingZone = !IsMiniStartEncodingZone;
+                _appDataM.IsMiniStartEncodingZone = IsMiniStartEncodingZone;
+                _appDataM.Save();
+                OnPropertyChanged(nameof(ToggleMiniStartEncodingZoneText));
             });
             #endregion
             ActiveSrcValidationCard = SrcValidationCard;
@@ -2328,6 +2350,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(ToggleMiniEncTermsCardText));
             OnPropertyChanged(nameof(ToggleMiniBestPracticesCardText));
             OnPropertyChanged(nameof(ToggleMiniToolsImportCardText));
+            OnPropertyChanged(nameof(ToggleMiniStartEncodingZoneText));
             EncStartButtons.B3_1Text = UICaptionProviderM.Buttons.ReEvaluate;
             EncStartButtons.B3_2Text = UICaptionProviderM.Buttons.RunSample;
             EncStartButtons.B3_3Text = UICaptionProviderM.Buttons.StartEncode;

@@ -909,7 +909,18 @@
                              VerticalAlignment="Center" />
             <!-- Starting Options -->
             <comps:SectionHeader HeaderText="{Binding SectionTexts[StartEncoding]}"
-                                 Margin="0 15 0 0" />
+                                 Margin="0 15 0 0">
+                <comps:SectionHeader.HeaderExtra>
+                    <Button Command="{Binding ToggleMiniStartEncodingZoneCmd}"
+                            Tag="{Binding IsMiniStartEncodingZone}"
+                            ToolTip="{Binding ToggleMiniStartEncodingZoneText}"
+                            VerticalAlignment="Center"
+                            Focusable="False"
+                            KeyboardNavigation.IsTabStop="False"
+                            Margin="5 3"
+                            Style="{StaticResource SectionHeaderToggleButton}" />
+                </comps:SectionHeader.HeaderExtra>
+            </comps:SectionHeader>
             <comps:ValidationCard DataContext="{Binding EncTermsCard}"
                                   ToggleCommand="{Binding DataContext.ToggleMiniEncTermsCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                   ToggleTag="{Binding DataContext.IsMiniEncTermsCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
@@ -980,6 +991,11 @@
                                 <Setter Property="Visibility"
                                         Value="Collapsed" />
                             </DataTrigger>
+                            <DataTrigger Binding="{Binding DataContext.IsMiniStartEncodingZone, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </comps:ValidationCard.Style>
@@ -998,6 +1014,11 @@
                                          Value="True">
                                 <Setter Property="Visibility"
                                         Value="Visible" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding DataContext.IsMiniStartEncodingZone, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
