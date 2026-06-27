@@ -5,21 +5,56 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
              xmlns:cards="clr-namespace:OneColumnEncoder.ViewModels.Cards"
+             xmlns:ui="clr-namespace:OneColumnEncoder.UI"
              d:DataContext="{d:DesignInstance Type=cards:ValidationCardBaseVM}"
              mc:Ignorable="d"
              d:DesignWidth="270"
              HorizontalAlignment="Stretch">
     <UserControl.Resources>
+        <SolidColorBrush Color="#F2FAF9"
+                         x:Key="RemixedBackground" />
+        <SolidColorBrush Color="#103E3E"
+                         x:Key="RemixedForeground" />
+        <SolidColorBrush Color="#4B8C88"
+                         x:Key="RemixedBorder" />
+        <SolidColorBrush Color="#F3F7FA"
+                         x:Key="RemixedBackground2" />
+        <SolidColorBrush Color="#102B3D"
+                         x:Key="RemixedForeground2" />
+        <SolidColorBrush Color="#557C99"
+                         x:Key="RemixedBorder2" />
+        <SolidColorBrush Color="#FFF6E8"
+                         x:Key="RemixedBackground3" />
+        <SolidColorBrush Color="#3D2A13"
+                         x:Key="RemixedForeground3" />
+        <SolidColorBrush Color="#A9793E"
+                         x:Key="RemixedBorder3" />
+        <SolidColorBrush Color="#F7F8EA"
+                         x:Key="RemixedBackground4" />
+        <SolidColorBrush Color="#30341F"
+                         x:Key="RemixedForeground4" />
+        <SolidColorBrush Color="#787A4B"
+                         x:Key="RemixedBorder4" />
         <Style x:Key="MiniValidationTitle"
-               TargetType="TextBlock"
-               BasedOn="{StaticResource H3}">
+               TargetType="TextBlock">
+            <Setter Property="FontSize"
+                    Value="12" />
+            <Setter Property="FontWeight"
+                    Value="Bold" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsCompactText, RelativeSource={RelativeSource AncestorType=UserControl}}"
                              Value="True">
                     <Setter Property="FontSize"
-                            Value="14" />
+                            Value="12" />
                 </DataTrigger>
             </Style.Triggers>
+        </Style>
+        <Style x:Key="MiniValidationSectionHeader"
+               TargetType="TextBlock">
+            <Setter Property="FontSize"
+                    Value="10" />
+            <Setter Property="FontWeight"
+                    Value="Bold" />
         </Style>
         <Style x:Key="MiniValidationToggleButton"
                TargetType="Button"
@@ -27,7 +62,11 @@
             <Setter Property="Content"
                     Value=" &#x25BC;&#x25BC; " />
             <Setter Property="MinWidth"
-                    Value="40" />
+                    Value="32" />
+            <Setter Property="FontSize"
+                    Value="11" />
+            <Setter Property="Padding"
+                    Value="0" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource Self}}"
                              Value="True">
@@ -35,6 +74,91 @@
                             Value=" &#x25B6;&#x25B6; " />
                 </DataTrigger>
             </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type comps:ChecklistItem}">
+            <Setter Property="Foreground"
+                    Value="{StaticResource ButtonPrimary}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type comps:ChecklistItem}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Rectangle x:Name="IconMask"
+                                       Grid.Column="0"
+                                       Width="11"
+                                       Height="11"
+                                       VerticalAlignment="Center"
+                                       Fill="{TemplateBinding Foreground}"
+                                       Margin="0 0 4 0">
+                                <Rectangle.OpacityMask>
+                                    <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GameWaiting}"
+                                                Stretch="Uniform" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <TextBlock Grid.Column="1"
+                                       Text="{TemplateBinding Text}"
+                                       VerticalAlignment="Center"
+                                       FontSize="11"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       TextWrapping="Wrap" />
+                        </Grid>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="comps:ChecklistItem.Status"
+                                     Value="Waiting">
+                                <Setter Property="Foreground"
+                                        Value="{StaticResource ButtonPrimary}" />
+                                <Setter TargetName="IconMask"
+                                        Property="OpacityMask">
+                                    <Setter.Value>
+                                        <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GameWaiting}"
+                                                    Stretch="Uniform" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="comps:ChecklistItem.Status"
+                                     Value="Success">
+                                <Setter Property="Foreground"
+                                        Value="{StaticResource CorrectTeal}" />
+                                <Setter TargetName="IconMask"
+                                        Property="OpacityMask">
+                                    <Setter.Value>
+                                        <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GameCorrectMark}"
+                                                    Stretch="Uniform" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="comps:ChecklistItem.Status"
+                                     Value="Warning">
+                                <Setter Property="Foreground"
+                                        Value="{StaticResource WarningOrange}" />
+                                <Setter TargetName="IconMask"
+                                        Property="OpacityMask">
+                                    <Setter.Value>
+                                        <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GameWarning}"
+                                                    Stretch="Uniform" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="comps:ChecklistItem.Status"
+                                     Value="Error">
+                                <Setter Property="Foreground"
+                                        Value="{StaticResource ErrorRed}" />
+                                <Setter TargetName="IconMask"
+                                        Property="OpacityMask">
+                                    <Setter.Value>
+                                        <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GameXMark}"
+                                                    Stretch="Uniform" />
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </UserControl.Resources>
 
@@ -107,7 +231,7 @@
         <!-- Content layer: holds the actual card layout with no Effect so text stays sharp. -->
         <Border BorderThickness="1"
                 CornerRadius="7"
-                Padding="6 5"
+                Padding="11 9"
                 SnapsToDevicePixels="True"
                 Opacity="{Binding CardOpacity}">
             <Border.Style>
@@ -194,33 +318,37 @@
                             Style="{StaticResource MiniValidationToggleButton}" />
                 </Grid>
 
-                <StackPanel Grid.Row="1"
-                            Margin="0 4 0 0">
-                    <TextBlock Text="{Binding P1Name}"
-                               Style="{StaticResource H4}" />
-                    <comps:ChecklistContainer ItemsSource="{Binding Checklist1}">
-                        <comps:ChecklistContainer.ItemTemplate>
-                            <DataTemplate>
-                                <comps:ChecklistItem Text="{Binding Text}"
-                                                     Status="{Binding Status}"
-                                                     Margin="0 5 0 0" />
-                            </DataTemplate>
-                        </comps:ChecklistContainer.ItemTemplate>
-                    </comps:ChecklistContainer>
+                <UniformGrid Grid.Row="1"
+                             Columns="2"
+                             Margin="0 6 0 0">
+                    <StackPanel Margin="0 0 10 0">
+                        <TextBlock Text="{Binding P1Name}"
+                                   Style="{StaticResource MiniValidationSectionHeader}" />
+                        <comps:ChecklistContainer ItemsSource="{Binding Checklist1}">
+                            <comps:ChecklistContainer.ItemTemplate>
+                                <DataTemplate>
+                                    <comps:ChecklistItem Text="{Binding Text}"
+                                                         Status="{Binding Status}"
+                                                         Margin="0 6 0 0" />
+                                </DataTemplate>
+                            </comps:ChecklistContainer.ItemTemplate>
+                        </comps:ChecklistContainer>
+                    </StackPanel>
 
-                    <TextBlock Text="{Binding P3Name}"
-                               Style="{StaticResource H4}"
-                               Margin="0 5 0 0" />
-                    <comps:ChecklistContainer ItemsSource="{Binding Checklist2}">
-                        <comps:ChecklistContainer.ItemTemplate>
-                            <DataTemplate>
-                                <comps:ChecklistItem Text="{Binding Text}"
-                                                     Status="{Binding Status}"
-                                                     Margin="0 5 0 0" />
-                            </DataTemplate>
-                        </comps:ChecklistContainer.ItemTemplate>
-                    </comps:ChecklistContainer>
-                </StackPanel>
+                    <StackPanel Margin="10 0 0 0">
+                        <TextBlock Text="{Binding P3Name}"
+                                   Style="{StaticResource MiniValidationSectionHeader}" />
+                        <comps:ChecklistContainer ItemsSource="{Binding Checklist2}">
+                            <comps:ChecklistContainer.ItemTemplate>
+                                <DataTemplate>
+                                    <comps:ChecklistItem Text="{Binding Text}"
+                                                         Status="{Binding Status}"
+                                                         Margin="0 6 0 0" />
+                                </DataTemplate>
+                            </comps:ChecklistContainer.ItemTemplate>
+                        </comps:ChecklistContainer>
+                    </StackPanel>
+                </UniformGrid>
             </Grid>
         </Border>
     </Grid>

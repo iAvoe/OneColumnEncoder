@@ -746,7 +746,7 @@
                                       ToggleToolTip="{Binding DataContext.ToggleMiniSrcValidationCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                       PaletteIndex="1"
                                       IsCompactText="True"
-                                      Margin="4 15 4 5">
+                                      Margin="5 15 5 5">
                 <cards:MiniValidationCard.Style>
                     <Style TargetType="cards:MiniValidationCard">
                         <Setter Property="Visibility"
@@ -906,7 +906,7 @@
                                       ToggleToolTip="{Binding DataContext.ToggleMiniEncTermsCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                       PaletteIndex="2"
                                       IsCompactText="True"
-                                      Margin="4">
+                                      Margin="5">
                 <cards:MiniValidationCard.Style>
                     <Style TargetType="cards:MiniValidationCard">
                         <Setter Property="Visibility"
@@ -963,7 +963,7 @@
                                       ToggleToolTip="{Binding DataContext.ToggleMiniBestPracticesCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                       PaletteIndex="3"
                                       IsCompactText="True"
-                                      Margin="4 15 4 5">
+                                      Margin="5 15 5 5">
                 <cards:MiniValidationCard.Style>
                     <Style TargetType="cards:MiniValidationCard">
                         <Setter Property="Visibility"
