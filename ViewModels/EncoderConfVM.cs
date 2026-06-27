@@ -80,6 +80,8 @@ namespace OneColumnEncoder.ViewModels
         public string ThirdPartyHintText4 => Lang.ThirdPartyHintText4;
         public string BlankPresetText => Lang.BlankPresetText;
         public string BlankPresetHint => Lang.BlankPresetHint;
+        public string VvencText => Lang.VvencText;
+        public string VvencHintText => Lang.VvencHintText;
 
         private string _freeTextParamsX264 = string.Empty;
         public string FreeTextParamsX264
@@ -459,6 +461,8 @@ model.SvtAv1Dl2 = SvtAv1Dl2;
             OnPropertyChanged(nameof(ThirdPartyHintText4));
             OnPropertyChanged(nameof(BlankPresetText));
             OnPropertyChanged(nameof(BlankPresetHint));
+            OnPropertyChanged(nameof(VvencText));
+            OnPropertyChanged(nameof(VvencHintText));
             FinishButtons.B2_1Text = CancelButtonText;
             FinishButtons.B2_2Text = ConfirmButtonText;
         }

@@ -39,7 +39,7 @@
 
             <comps:TwoButtonGroup Grid.Row="1"
                                   ButtonHeight="30"
-                                  Margin="0 15 5 0"
+                                  Margin="0 5 5 0"
                                   DataContext="{Binding FinishButtons}"
                                   Button1Command="{Binding Cmd1}"
                                   Button2Command="{Binding Cmd2}" />
@@ -47,7 +47,6 @@
 
         <Border Grid.Column="1"
                 Width="1"
-                Margin="7 0"
                 Background="{StaticResource GlobalTertiary}" />
 
         <comps:EncoderPreviewPanel Grid.Column="2"

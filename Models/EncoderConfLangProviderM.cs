@@ -49,6 +49,8 @@ public class EncoderConfLangProviderM
             ["CompressionOptText"] = "High Compression",
             ["SpeedOptimizedText"] = "Fast",
             ["BlankPresetText"] = "None",
+            ["VvencText"] = "VVenC (Preview)",
+            ["VvencHintText"] = "VVenC is only for single-image preview, not used in main encoding",
             ["BlankPresetHint"] = "None: use encoder default / fully customize via additional parameter textbox",
             ["CancelButtonText"] = "Cancel",
             ["ConfirmButtonText"] = "Confirm",
@@ -97,6 +99,8 @@ public class EncoderConfLangProviderM
             ["CompressionOptText"] = "优化压缩",
             ["SpeedOptimizedText"] = "优化速度",
             ["BlankPresetText"] = "留空",
+            ["VvencText"] = "VVenC（预览限定）",
+            ["VvencHintText"] = "VVenC 仅用于单帧预览，不参与主编码流程",
             ["BlankPresetHint"] = "留空：使用编码器默认或底部附加编码器参数文本框写入",
             ["CancelButtonText"] = "取消",
             ["ConfirmButtonText"] = "确认",
@@ -145,6 +149,8 @@ public class EncoderConfLangProviderM
             ["CompressionOptText"] = "優化壓縮",
             ["SpeedOptimizedText"] = "優化速度",
             ["BlankPresetText"] = "留空",
+            ["VvencText"] = "VVenC（預覽限定）",
+            ["VvencHintText"] = "VVenC 僅用於單幀預覽，不參與主編碼流程",
             ["BlankPresetHint"] = "留空：使用編碼器默認或底部附加編碼器參數文本框寫入",
             ["CancelButtonText"] = "取消",
             ["ConfirmButtonText"] = "確認",
@@ -188,6 +194,8 @@ public class EncoderConfLangProviderM
             ["CompressionOptText"] = "Compression élevée",
             ["SpeedOptimizedText"] = "Rapide",
             ["BlankPresetText"] = "Aucun",
+            ["VvencText"] = "VVenC (Aperçu)",
+            ["VvencHintText"] = "VVenC est réservé à l'aperçu d'une seule image, pas utilisé pour l'encodage principal",
             ["BlankPresetHint"] = "Aucun : défaut encodeur / personnalisation par paramètres additionnels",
             ["CancelButtonText"] = "Annuler",
             ["ConfirmButtonText"] = "Confirmer"
@@ -227,6 +235,8 @@ public class EncoderConfLangProviderM
             ["CompressionOptText"] = "Alta compresión",
             ["SpeedOptimizedText"] = "Rápido",
             ["BlankPresetText"] = "Ninguno",
+            ["VvencText"] = "VVenC (Vista previa)",
+            ["VvencHintText"] = "VVenC es solo para vista previa de imagen única, no se usa en codificación principal",
             ["BlankPresetHint"] = "Ninguno: usar defecto del codificador / personalizar abajo",
             ["CancelButtonText"] = "Cancelar",
             ["ConfirmButtonText"] = "Confirmar"
@@ -266,6 +276,8 @@ public class EncoderConfLangProviderM
             ["CompressionOptText"] = "高圧縮",
             ["SpeedOptimizedText"] = "高速",
             ["BlankPresetText"] = "なし",
+            ["VvencText"] = "VVenC（プレビュー）",
+            ["VvencHintText"] = "VVenC は単一画像プレビューのみで使用、本エンコードでは使用しません",
             ["BlankPresetHint"] = "なし: エンコーダ既定値 / 下の追加パラメータで完全指定",
             ["CancelButtonText"] = "キャンセル",
             ["ConfirmButtonText"] = "確認"
@@ -305,6 +317,8 @@ public class EncoderConfLangProviderM
             ["CompressionOptText"] = "Высокое сжатие",
             ["SpeedOptimizedText"] = "Быстро",
             ["BlankPresetText"] = "Нет",
+            ["VvencText"] = "VVenC (предпросмотр)",
+            ["VvencHintText"] = "VVenC используется только для предпросмотра одного кадра, не для основного кодирования",
             ["BlankPresetHint"] = "Нет: настройки кодера по умолчанию / полная настройка ниже",
             ["CancelButtonText"] = "Отмена",
             ["ConfirmButtonText"] = "Подтвердить"
@@ -356,6 +370,8 @@ public class EncoderConfLangProviderM
     public string SpeedOptimizedText { get; }
     public string BlankPresetText { get; }
     public string BlankPresetHint { get; }
+    public string VvencText { get; }
+    public string VvencHintText { get; }
     public string CancelButtonText { get; }
     public string ConfirmButtonText { get; }
 
@@ -411,6 +427,8 @@ public class EncoderConfLangProviderM
         SpeedOptimizedText = _d["SpeedOptimizedText"];
         BlankPresetText = _d["BlankPresetText"];
         BlankPresetHint = _d["BlankPresetHint"];
+        VvencText = _d["VvencText"];
+        VvencHintText = _d["VvencHintText"];
         CancelButtonText = _d["CancelButtonText"];
         ConfirmButtonText = _d["ConfirmButtonText"];
         Current = this;

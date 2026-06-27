@@ -20,7 +20,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="x264"
+            <TextBlock Text="{Binding X264Text}"
                        FontSize="13"
                        VerticalAlignment="Center" />
             <comps:DropdownMenu Grid.Column="1"
@@ -34,7 +34,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="x265"
+            <TextBlock Text="{Binding X265Text}"
                        FontSize="13"
                        VerticalAlignment="Center" />
             <comps:DropdownMenu Grid.Column="1"
@@ -48,7 +48,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="SVT-AV1"
+            <TextBlock Text="{Binding SvtAv1Text}"
                        FontSize="13"
                        VerticalAlignment="Center" />
             <comps:DropdownMenu Grid.Column="1"
@@ -62,7 +62,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="VVenC (Preview)"
+            <TextBlock Text="{Binding VvencText}"
                        FontSize="13"
                        VerticalAlignment="Center" />
             <comps:DropdownMenu Grid.Column="1"
@@ -71,8 +71,7 @@
                                 DataContext="{Binding VvencModeDropdown}" />
         </Grid>
 
-        <comps:HintPanel Text="VVenC is only for single-image preview, not used in main encoding"
-                         HintBrush="{StaticResource GlobalSecondary}"
+        <comps:HintPanel Text="{Binding VvencHintText, Mode=OneWay}"
                          FontSize="10"
                          Margin="5 2 5 0" />
         <comps:HintPanel Text="{Binding BlankPresetHint, Mode=OneWay}"

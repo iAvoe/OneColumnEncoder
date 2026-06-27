@@ -17,37 +17,37 @@
     <UserControl.Resources>
         <DrawingBrush x:Key="ViewportCheckerBrush"
                       TileMode="Tile"
-                      Viewbox="0,0,16,16"
+                      Viewbox="0,0,30,30"
                       ViewboxUnits="Absolute"
-                      Viewport="0,0,16,16"
+                      Viewport="0,0,30,30"
                       ViewportUnits="Absolute"
                       Stretch="None">
             <DrawingBrush.Drawing>
                 <DrawingGroup>
-                    <GeometryDrawing Brush="#FFF2F2F2"
-                                     Geometry="M 0,0 L 16,0 16,16 0,16 Z" />
-                    <GeometryDrawing Brush="#FFD8D8D8"
-                                     Geometry="M 0,0 L 8,0 8,8 0,8 Z M 8,8 L 16,8 16,16 8,16 Z" />
+                    <GeometryDrawing Brush="#E7E6E5"
+                                     Geometry="M 0,0 L 30,0 30,30 0,30 Z" />
+                    <GeometryDrawing Brush="White"
+                                     Geometry="M 0,0 L 15,0 15,15 0,15 Z M 15,15 L 30,15 30,30 15,30 Z" />
                 </DrawingGroup>
             </DrawingBrush.Drawing>
         </DrawingBrush>
 
         <DrawingBrush x:Key="SourceCheckerBrush"
                       TileMode="Tile"
-                      Viewbox="0,0,16,16"
+                      Viewbox="0,0,30,30"
                       ViewboxUnits="Absolute"
-                      Viewport="0,0,16,16"
+                      Viewport="0,0,30,30"
                       ViewportUnits="Absolute"
                       Stretch="None">
             <DrawingBrush.Transform>
-                <TranslateTransform X="8" Y="8" />
+                <TranslateTransform X="8" Y="0" />
             </DrawingBrush.Transform>
             <DrawingBrush.Drawing>
                 <DrawingGroup>
-                    <GeometryDrawing Brush="#FFEFEFEF"
-                                     Geometry="M 0,0 L 16,0 16,16 0,16 Z" />
-                    <GeometryDrawing Brush="#FFCFCFCF"
-                                     Geometry="M 0,0 L 8,0 8,8 0,8 Z M 8,8 L 16,8 16,16 8,16 Z" />
+                    <GeometryDrawing Brush="White"
+                                     Geometry="M 0,0 L 30,0 30,30 0,30 Z" />
+                    <GeometryDrawing Brush="#E5E6E7"
+                                     Geometry="M 0,0 L 15,0 15,15 0,15 Z M 15,15 L 30,15 30,30 15,30 Z" />
                 </DrawingGroup>
             </DrawingBrush.Drawing>
         </DrawingBrush>

@@ -54,7 +54,7 @@ public static partial class PreviewPipeline
             "-qp",
             Math.Clamp(model.VvencQp, 0, 63).ToString(CultureInfo.InvariantCulture),
             "-vvenc-params",
-            "qpa=1:gopsize=1:intraperiod=1:refreshtype=idr:tier=1",
+            "qpa=1:gopsize=1:intraperiod=1:refreshtype=idr:tier=high",
             "-frames:v",
             "1",
             "-f",
