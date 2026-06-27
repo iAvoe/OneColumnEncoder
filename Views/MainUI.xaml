@@ -722,7 +722,38 @@
                              VerticalAlignment="Center" />
 
             <comps:ValidationCard DataContext="{Binding ActiveSrcValidationCard}"
-                                  Margin="5 15 5 5" />
+                                  Margin="5 15 5 5">
+                <comps:ValidationCard.Style>
+                    <Style TargetType="comps:ValidationCard">
+                        <Setter Property="Visibility"
+                                Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMiniAnalyticsZone}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </comps:ValidationCard.Style>
+            </comps:ValidationCard>
+            <cards:MiniValidationCard DataContext="{Binding ActiveSrcValidationCard}"
+                                      IsCompactText="True"
+                                      Margin="4 15 4 5">
+                <cards:MiniValidationCard.Style>
+                    <Style TargetType="cards:MiniValidationCard">
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMiniAnalyticsZone}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </cards:MiniValidationCard.Style>
+            </cards:MiniValidationCard>
 
             <!-- Inspect and bypass blocking checks -->
             <comps:TwoButtonGroup DataContext="{Binding InspBypsChkButtons}"
@@ -855,7 +886,39 @@
                 </comps:SectionHeader.HeaderExtra>
             </comps:SectionHeader>
             <comps:ValidationCard DataContext="{Binding EncTermsCard}"
-                                  Margin="5" />
+                                  Margin="5">
+                <comps:ValidationCard.Style>
+                    <Style TargetType="comps:ValidationCard">
+                        <Setter Property="Visibility"
+                                Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMiniEncodingConfZone}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </comps:ValidationCard.Style>
+            </comps:ValidationCard>
+            <cards:MiniValidationCard DataContext="{Binding EncTermsCard}"
+                                      PaletteIndex="2"
+                                      IsCompactText="True"
+                                      Margin="4">
+                <cards:MiniValidationCard.Style>
+                    <Style TargetType="cards:MiniValidationCard">
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsMiniEncodingConfZone}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </cards:MiniValidationCard.Style>
+            </cards:MiniValidationCard>
 
             <!-- Hint: NUMA CPU check trigger -->
             <comps:HintPanel Text="{Binding NumaCpuCheckHintText}"
@@ -889,6 +952,23 @@
                     </Style>
                 </comps:ValidationCard.Style>
             </comps:ValidationCard>
+            <cards:MiniValidationCard DataContext="{Binding BestPracticesCard}"
+                                      IsCompactText="True"
+                                      Margin="4 15 4 5">
+                <cards:MiniValidationCard.Style>
+                    <Style TargetType="cards:MiniValidationCard">
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding DataContext.ShowBestPracticesCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </cards:MiniValidationCard.Style>
+            </cards:MiniValidationCard>
 
             <comps:ThreeButtonGroup DataContext="{Binding EncStartButtons}"
                                     ButtonHeight="35"
