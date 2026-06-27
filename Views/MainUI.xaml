@@ -792,14 +792,14 @@
                 </cards:MiniValidationCard.Style>
             </cards:MiniValidationCard>
 
-            <!-- Inspect and bypass blocking checks -->
+            <!-- Inspect and bypass blocking checks; This button needs extra top margin since (Mini)ValidationCard is above -->
             <comps:TwoButtonGroup DataContext="{Binding InspBypsChkButtons}"
                                   ButtonHeight="30"
                                   Button1Command="{Binding Cmd1}"
                                   Button2Command="{Binding Cmd2}"
                                   Button1IsEnabled="{Binding B2_1IsEnabled}"
                                   Button2IsEnabled="{Binding B2_2IsEnabled}"
-                                  Margin="10 10 10 0" />
+                                  Margin="10 15 10 0" />
 
             <!-- Encoding Settings -->
             <comps:SectionHeader HeaderText="{Binding SectionTexts[EncodingConfigs]}"

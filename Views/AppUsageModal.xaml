@@ -40,7 +40,7 @@
                            Foreground="{StaticResource GlobalPrimary}">
                     <Run Text="{Binding Lang.Description, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="0 6 0 0"
+                <Paragraph Margin="0 5 0 0"
                            FontSize="12"
                            Foreground="{StaticResource ButtonTertiary}"
                            FontStyle="Italic">
