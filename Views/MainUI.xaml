@@ -722,13 +722,16 @@
                              VerticalAlignment="Center" />
 
             <comps:ValidationCard DataContext="{Binding ActiveSrcValidationCard}"
+                                  ToggleCommand="{Binding DataContext.ToggleMiniSrcValidationCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                  ToggleTag="{Binding DataContext.IsMiniSrcValidationCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                  ToggleToolTip="{Binding DataContext.ToggleMiniSrcValidationCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                   Margin="5 15 5 5">
                 <comps:ValidationCard.Style>
                     <Style TargetType="comps:ValidationCard">
                         <Setter Property="Visibility"
                                 Value="Visible" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsMiniAnalyticsZone}"
+                            <DataTrigger Binding="{Binding DataContext.IsMiniSrcValidationCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                          Value="True">
                                 <Setter Property="Visibility"
                                         Value="Collapsed" />
@@ -738,6 +741,10 @@
                 </comps:ValidationCard.Style>
             </comps:ValidationCard>
             <cards:MiniValidationCard DataContext="{Binding ActiveSrcValidationCard}"
+                                      ToggleCommand="{Binding DataContext.ToggleMiniSrcValidationCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                      ToggleTag="{Binding DataContext.IsMiniSrcValidationCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                      ToggleToolTip="{Binding DataContext.ToggleMiniSrcValidationCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                      PaletteIndex="1"
                                       IsCompactText="True"
                                       Margin="4 15 4 5">
                 <cards:MiniValidationCard.Style>
@@ -745,7 +752,7 @@
                         <Setter Property="Visibility"
                                 Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsMiniAnalyticsZone}"
+                            <DataTrigger Binding="{Binding DataContext.IsMiniSrcValidationCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                          Value="True">
                                 <Setter Property="Visibility"
                                         Value="Visible" />
@@ -873,26 +880,18 @@
                              VerticalAlignment="Center" />
             <!-- Starting Options -->
             <comps:SectionHeader HeaderText="{Binding SectionTexts[StartEncoding]}"
-                                 Margin="0 15 0 0">
-                <comps:SectionHeader.HeaderExtra>
-                    <Button Command="{Binding ToggleShowBestPracticesCardCmd}"
-                            Tag="{Binding ShowBestPracticesCard}"
-                            ToolTip="{Binding ToggleShowBestPracticesCardText}"
-                            VerticalAlignment="Center"
-                            Focusable="False"
-                            KeyboardNavigation.IsTabStop="False"
-                            Margin="5 0"
-                            Style="{StaticResource SectionHeaderToggleButton}" />
-                </comps:SectionHeader.HeaderExtra>
-            </comps:SectionHeader>
+                                 Margin="0 15 0 0" />
             <comps:ValidationCard DataContext="{Binding EncTermsCard}"
+                                  ToggleCommand="{Binding DataContext.ToggleMiniEncTermsCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                  ToggleTag="{Binding DataContext.IsMiniEncTermsCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                  ToggleToolTip="{Binding DataContext.ToggleMiniEncTermsCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                   Margin="5">
                 <comps:ValidationCard.Style>
                     <Style TargetType="comps:ValidationCard">
                         <Setter Property="Visibility"
                                 Value="Visible" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsMiniEncodingConfZone}"
+                            <DataTrigger Binding="{Binding DataContext.IsMiniEncTermsCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                          Value="True">
                                 <Setter Property="Visibility"
                                         Value="Collapsed" />
@@ -902,6 +901,9 @@
                 </comps:ValidationCard.Style>
             </comps:ValidationCard>
             <cards:MiniValidationCard DataContext="{Binding EncTermsCard}"
+                                      ToggleCommand="{Binding DataContext.ToggleMiniEncTermsCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                      ToggleTag="{Binding DataContext.IsMiniEncTermsCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                      ToggleToolTip="{Binding DataContext.ToggleMiniEncTermsCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                       PaletteIndex="2"
                                       IsCompactText="True"
                                       Margin="4">
@@ -910,7 +912,7 @@
                         <Setter Property="Visibility"
                                 Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsMiniEncodingConfZone}"
+                            <DataTrigger Binding="{Binding DataContext.IsMiniEncTermsCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                          Value="True">
                                 <Setter Property="Visibility"
                                         Value="Visible" />
@@ -937,13 +939,16 @@
                                   Margin="10 15 10 0" />
 
             <comps:ValidationCard DataContext="{Binding BestPracticesCard}"
+                                  ToggleCommand="{Binding DataContext.ToggleMiniBestPracticesCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                  ToggleTag="{Binding DataContext.IsMiniBestPracticesCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                  ToggleToolTip="{Binding DataContext.ToggleMiniBestPracticesCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                   Margin="5 15 5 5">
                 <comps:ValidationCard.Style>
                     <Style TargetType="comps:ValidationCard">
                         <Setter Property="Visibility"
                                 Value="Visible" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding DataContext.ShowBestPracticesCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                            <DataTrigger Binding="{Binding DataContext.IsMiniBestPracticesCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                          Value="True">
                                 <Setter Property="Visibility"
                                         Value="Collapsed" />
@@ -953,6 +958,10 @@
                 </comps:ValidationCard.Style>
             </comps:ValidationCard>
             <cards:MiniValidationCard DataContext="{Binding BestPracticesCard}"
+                                      ToggleCommand="{Binding DataContext.ToggleMiniBestPracticesCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                      ToggleTag="{Binding DataContext.IsMiniBestPracticesCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                      ToggleToolTip="{Binding DataContext.ToggleMiniBestPracticesCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                      PaletteIndex="3"
                                       IsCompactText="True"
                                       Margin="4 15 4 5">
                 <cards:MiniValidationCard.Style>
@@ -960,7 +969,7 @@
                         <Setter Property="Visibility"
                                 Value="Collapsed" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding DataContext.ShowBestPracticesCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                            <DataTrigger Binding="{Binding DataContext.IsMiniBestPracticesCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                          Value="True">
                                 <Setter Property="Visibility"
                                         Value="Visible" />

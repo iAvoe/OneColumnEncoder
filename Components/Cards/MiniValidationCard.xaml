@@ -21,6 +21,21 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="MiniValidationToggleButton"
+               TargetType="Button"
+               BasedOn="{StaticResource LinkButton}">
+            <Setter Property="Content"
+                    Value=" &#x25BC;&#x25BC; " />
+            <Setter Property="MinWidth"
+                    Value="40" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                             Value="True">
+                    <Setter Property="Content"
+                            Value=" &#x25B6;&#x25B6; " />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
 
     <Grid>
@@ -155,10 +170,29 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="{Binding Name}"
-                           Style="{StaticResource MiniValidationTitle}"
-                           TextTrimming="CharacterEllipsis"
-                           HorizontalAlignment="Stretch" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"
+                                          MinWidth="0" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="{Binding Name}"
+                               Style="{StaticResource MiniValidationTitle}"
+                               TextTrimming="CharacterEllipsis"
+                               HorizontalAlignment="Stretch"
+                               VerticalAlignment="Center" />
+
+                    <Button Grid.Column="1"
+                            Command="{Binding ToggleCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                            Tag="{Binding ToggleTag, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                            ToolTip="{Binding ToggleToolTip, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                            VerticalAlignment="Center"
+                            Focusable="False"
+                            KeyboardNavigation.IsTabStop="False"
+                            Margin="5 0 0 0"
+                            Style="{StaticResource MiniValidationToggleButton}" />
+                </Grid>
 
                 <StackPanel Grid.Row="1"
                             Margin="0 4 0 0">

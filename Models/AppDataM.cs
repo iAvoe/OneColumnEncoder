@@ -27,7 +27,11 @@ namespace OneColumnEncoder.Models
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public bool? IsMiniEncodingConfZone { get; set; }
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public bool? ShowBestPracticesCard { get; set; }
+        public bool? IsMiniSrcValidationCard { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public bool? IsMiniEncTermsCard { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public bool? IsMiniBestPracticesCard { get; set; }
 
         // File sizes are used for detecting tool replacements
         #region ImportedTools data structure

@@ -37,7 +37,9 @@ namespace OneColumnEncoder.ViewModels
         private bool _isMiniVideoSrcImportZone;
         private bool _isMiniScriptSrcImportZone;
         private bool _isMiniEncodingConfZone;
-        private bool _showBestPracticesCard;
+        private bool _isMiniSrcValidationCard;
+        private bool _isMiniEncTermsCard;
+        private bool _isMiniBestPracticesCard;
         #endregion
         private string _upstreamsZoneSelectedPath = string.Empty;
         private string _encodersZoneSelectedPath = string.Empty;
@@ -85,7 +87,9 @@ namespace OneColumnEncoder.ViewModels
         public ActionCmd ToggleMiniVideoSrcImportZoneCmd { get; }
         public ActionCmd ToggleMiniScriptSrcImportZoneCmd { get; }
         public ActionCmd ToggleMiniEncodingConfZoneCmd { get; }
-        public ActionCmd ToggleShowBestPracticesCardCmd { get; }
+        public ActionCmd ToggleMiniSrcValidationCardCmd { get; }
+        public ActionCmd ToggleMiniEncTermsCardCmd { get; }
+        public ActionCmd ToggleMiniBestPracticesCardCmd { get; }
         #endregion
         public OneClickScriptGenCmd OneClickScriptGen { get; }
         public OpenFilterScribeCmd OpenFilterScribe { get; }
@@ -213,10 +217,22 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _isMiniEncodingConfZone, value);
         }
 
-        public bool ShowBestPracticesCard
+        public bool IsMiniSrcValidationCard
         {
-            get => _showBestPracticesCard;
-            set => SetProperty(ref _showBestPracticesCard, value);
+            get => _isMiniSrcValidationCard;
+            set => SetProperty(ref _isMiniSrcValidationCard, value);
+        }
+
+        public bool IsMiniEncTermsCard
+        {
+            get => _isMiniEncTermsCard;
+            set => SetProperty(ref _isMiniEncTermsCard, value);
+        }
+
+        public bool IsMiniBestPracticesCard
+        {
+            get => _isMiniBestPracticesCard;
+            set => SetProperty(ref _isMiniBestPracticesCard, value);
         }
 
         public string ToggleMiniEncodersZoneText =>
@@ -249,10 +265,21 @@ namespace OneColumnEncoder.ViewModels
                 ? UILangProviderM.Current["Expand"]
                 : UILangProviderM.Current["Collapse"];
 
-        public string ToggleShowBestPracticesCardText =>
-            ShowBestPracticesCard
+        public string ToggleMiniSrcValidationCardText =>
+            IsMiniSrcValidationCard
                 ? UILangProviderM.Current["Expand"]
                 : UILangProviderM.Current["Collapse"];
+
+        public string ToggleMiniEncTermsCardText =>
+            IsMiniEncTermsCard
+                ? UILangProviderM.Current["Expand"]
+                : UILangProviderM.Current["Collapse"];
+
+        public string ToggleMiniBestPracticesCardText =>
+            IsMiniBestPracticesCard
+                ? UILangProviderM.Current["Expand"]
+                : UILangProviderM.Current["Collapse"];
+
         #endregion
 
         public string UpstreamsZoneSelectedPath
@@ -315,7 +342,9 @@ namespace OneColumnEncoder.ViewModels
             _isMiniVideoSrcImportZone = _appDataM.IsMiniVideoSrcImportZone ?? false;
             _isMiniScriptSrcImportZone = _appDataM.IsMiniScriptSrcImportZone ?? false;
             _isMiniEncodingConfZone = _appDataM.IsMiniEncodingConfZone ?? false;
-            _showBestPracticesCard = _appDataM.ShowBestPracticesCard ?? false;
+            _isMiniSrcValidationCard = _appDataM.IsMiniSrcValidationCard ?? false;
+            _isMiniEncTermsCard = _appDataM.IsMiniEncTermsCard ?? false;
+            _isMiniBestPracticesCard = _appDataM.IsMiniBestPracticesCard ?? false;
             OpenAppConf = openAppConf;
             OpenUsages = openUsages;
 
@@ -370,12 +399,26 @@ namespace OneColumnEncoder.ViewModels
                 _appDataM.Save();
                 OnPropertyChanged(nameof(ToggleMiniEncodingConfZoneText));
             });
-            ToggleShowBestPracticesCardCmd = new ActionCmd(_ =>
+            ToggleMiniSrcValidationCardCmd = new ActionCmd(_ =>
             {
-                ShowBestPracticesCard = !ShowBestPracticesCard;
-                _appDataM.ShowBestPracticesCard = ShowBestPracticesCard;
+                IsMiniSrcValidationCard = !IsMiniSrcValidationCard;
+                _appDataM.IsMiniSrcValidationCard = IsMiniSrcValidationCard;
                 _appDataM.Save();
-                OnPropertyChanged(nameof(ToggleShowBestPracticesCardText));
+                OnPropertyChanged(nameof(ToggleMiniSrcValidationCardText));
+            });
+            ToggleMiniEncTermsCardCmd = new ActionCmd(_ =>
+            {
+                IsMiniEncTermsCard = !IsMiniEncTermsCard;
+                _appDataM.IsMiniEncTermsCard = IsMiniEncTermsCard;
+                _appDataM.Save();
+                OnPropertyChanged(nameof(ToggleMiniEncTermsCardText));
+            });
+            ToggleMiniBestPracticesCardCmd = new ActionCmd(_ =>
+            {
+                IsMiniBestPracticesCard = !IsMiniBestPracticesCard;
+                _appDataM.IsMiniBestPracticesCard = IsMiniBestPracticesCard;
+                _appDataM.Save();
+                OnPropertyChanged(nameof(ToggleMiniBestPracticesCardText));
             });
             #endregion
             ActiveSrcValidationCard = SrcValidationCard;
@@ -2260,7 +2303,9 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(ToggleMiniVideoSrcImportZoneText));
             OnPropertyChanged(nameof(ToggleMiniScriptSrcImportZoneText));
             OnPropertyChanged(nameof(ToggleMiniEncodingConfZoneText));
-            OnPropertyChanged(nameof(ToggleShowBestPracticesCardText));
+            OnPropertyChanged(nameof(ToggleMiniSrcValidationCardText));
+            OnPropertyChanged(nameof(ToggleMiniEncTermsCardText));
+            OnPropertyChanged(nameof(ToggleMiniBestPracticesCardText));
             EncStartButtons.B3_1Text = UICaptionProviderM.Buttons.ReEvaluate;
             EncStartButtons.B3_2Text = UICaptionProviderM.Buttons.RunSample;
             EncStartButtons.B3_3Text = UICaptionProviderM.Buttons.StartEncode;
