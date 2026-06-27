@@ -4,31 +4,18 @@ using System.Windows.Input;
 
 namespace OneColumnEncoder.Components.Cards
 {
-    public partial class MiniValidationCard : UserControl
+    public partial class MiniToolsImportCard : UserControl
     {
-        public MiniValidationCard()
+        public MiniToolsImportCard()
         {
             InitializeComponent();
-        }
-
-        public static readonly DependencyProperty IsCompactTextProperty =
-            DependencyProperty.Register(
-                nameof(IsCompactText),
-                typeof(bool),
-                typeof(MiniValidationCard),
-                new PropertyMetadata(false));
-
-        public bool IsCompactText
-        {
-            get => (bool)GetValue(IsCompactTextProperty);
-            set => SetValue(IsCompactTextProperty, value);
         }
 
         public static readonly DependencyProperty ToggleCommandProperty =
             DependencyProperty.Register(
                 nameof(ToggleCommand),
                 typeof(ICommand),
-                typeof(MiniValidationCard),
+                typeof(MiniToolsImportCard),
                 new PropertyMetadata(null));
 
         public ICommand? ToggleCommand
@@ -41,7 +28,7 @@ namespace OneColumnEncoder.Components.Cards
             DependencyProperty.Register(
                 nameof(ToggleTag),
                 typeof(bool),
-                typeof(MiniValidationCard),
+                typeof(MiniToolsImportCard),
                 new PropertyMetadata(false));
 
         public bool ToggleTag
@@ -54,7 +41,7 @@ namespace OneColumnEncoder.Components.Cards
             DependencyProperty.Register(
                 nameof(ToggleToolTip),
                 typeof(object),
-                typeof(MiniValidationCard),
+                typeof(MiniToolsImportCard),
                 new PropertyMetadata(null));
 
         public object? ToggleToolTip

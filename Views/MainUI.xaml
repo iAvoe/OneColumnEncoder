@@ -34,7 +34,43 @@
     <Grid>
         <StackPanel Margin="10 2 10 15">
             <comps:ToolsImportCard DataContext="{Binding ToolsImportCard}"
-                                   Margin="5" />
+                                   ToggleCommand="{Binding DataContext.ToggleMiniToolsImportCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                   ToggleTag="{Binding DataContext.IsMiniToolsImportCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                   ToggleToolTip="{Binding DataContext.ToggleMiniToolsImportCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                   Margin="5">
+                <comps:ToolsImportCard.Style>
+                    <Style TargetType="comps:ToolsImportCard">
+                        <Setter Property="Visibility"
+                                Value="Visible" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding DataContext.IsMiniToolsImportCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </comps:ToolsImportCard.Style>
+            </comps:ToolsImportCard>
+            <cards:MiniToolsImportCard DataContext="{Binding ToolsImportCard}"
+                                       ToggleCommand="{Binding DataContext.ToggleMiniToolsImportCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                       ToggleTag="{Binding DataContext.IsMiniToolsImportCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                       ToggleToolTip="{Binding DataContext.ToggleMiniToolsImportCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                       Margin="5">
+                <cards:MiniToolsImportCard.Style>
+                    <Style TargetType="cards:MiniToolsImportCard">
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding DataContext.IsMiniToolsImportCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
+                                         Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </cards:MiniToolsImportCard.Style>
+            </cards:MiniToolsImportCard>
 
             <!-- Setting Access -->
             <comps:TwoButtonGroup DataContext="{Binding OpenAppConfButtons}"
@@ -725,7 +761,7 @@
                                   ToggleCommand="{Binding DataContext.ToggleMiniSrcValidationCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                   ToggleTag="{Binding DataContext.IsMiniSrcValidationCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                   ToggleToolTip="{Binding DataContext.ToggleMiniSrcValidationCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
-                                  Margin="5 15 5 5">
+                                  Margin="5 5 5 0">
                 <comps:ValidationCard.Style>
                     <Style TargetType="comps:ValidationCard">
                         <Setter Property="Visibility"
@@ -744,9 +780,8 @@
                                       ToggleCommand="{Binding DataContext.ToggleMiniSrcValidationCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                       ToggleTag="{Binding DataContext.IsMiniSrcValidationCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                       ToggleToolTip="{Binding DataContext.ToggleMiniSrcValidationCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
-                                      PaletteIndex="1"
                                       IsCompactText="True"
-                                      Margin="5 15 5 5">
+                                      Margin="5 5 5 0">
                 <cards:MiniValidationCard.Style>
                     <Style TargetType="cards:MiniValidationCard">
                         <Setter Property="Visibility"
@@ -885,7 +920,7 @@
                                   ToggleCommand="{Binding DataContext.ToggleMiniEncTermsCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                   ToggleTag="{Binding DataContext.IsMiniEncTermsCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                   ToggleToolTip="{Binding DataContext.ToggleMiniEncTermsCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
-                                  Margin="5">
+                                  Margin="5 10 5 0">
                 <comps:ValidationCard.Style>
                     <Style TargetType="comps:ValidationCard">
                         <Setter Property="Visibility"
@@ -904,9 +939,8 @@
                                       ToggleCommand="{Binding DataContext.ToggleMiniEncTermsCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                       ToggleTag="{Binding DataContext.IsMiniEncTermsCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                       ToggleToolTip="{Binding DataContext.ToggleMiniEncTermsCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
-                                      PaletteIndex="2"
                                       IsCompactText="True"
-                                      Margin="5">
+                                      Margin="5 10 5 0">
                 <cards:MiniValidationCard.Style>
                     <Style TargetType="cards:MiniValidationCard">
                         <Setter Property="Visibility"
@@ -961,7 +995,6 @@
                                       ToggleCommand="{Binding DataContext.ToggleMiniBestPracticesCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                       ToggleTag="{Binding DataContext.IsMiniBestPracticesCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                       ToggleToolTip="{Binding DataContext.ToggleMiniBestPracticesCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
-                                      PaletteIndex="3"
                                       IsCompactText="True"
                                       Margin="5 15 5 5">
                 <cards:MiniValidationCard.Style>

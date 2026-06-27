@@ -12,6 +12,21 @@
              d:DesignWidth="450">
     <UserControl.Resources>
         <conv:WidthToColumnCountConverter x:Key="WidthToColumnCount" />
+        <Style x:Key="ToolsImportCardToggleButton"
+               TargetType="Button"
+               BasedOn="{StaticResource LinkButton}">
+            <Setter Property="Content"
+                    Value=" &#x25BC;&#x25BC; " />
+            <Setter Property="MinWidth"
+                    Value="40" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource Self}}"
+                             Value="True">
+                    <Setter Property="Content"
+                            Value=" &#x25B6;&#x25B6; " />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <!--
     | Title        | R1 | R2 |
@@ -51,14 +66,13 @@
                 Padding="17.5 20"
                 Background="{StaticResource Background}">
             <Grid>
-                <!-- Title, R1, R2 -->
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <!-- Title, P1 -->
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
@@ -68,21 +82,33 @@
                            VerticalAlignment="Top"
                            Text="{Binding Name}"
                            Style="{StaticResource H2}" />
-                
-                <!-- Import dropdown -->
-                <comps:DropdownMenu Grid.Row="0"
-                                    Grid.Column="1"
-                                    MinWidth="180"
-                                    Height="25"
-                                    Margin="0 0 5 0"
-                                    DataContext="{Binding ImportDropdown}" />
-                
-                <!-- Import button -->
+
                 <Button Grid.Row="0"
+                        Grid.Column="2"
+                        Command="{Binding ToggleCommand, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                        Tag="{Binding ToggleTag, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                        ToolTip="{Binding ToggleToolTip, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                        VerticalAlignment="Center"
+                        Focusable="False"
+                        KeyboardNavigation.IsTabStop="False"
+                        Margin="5 0 0 0"
+                        Style="{StaticResource ToolsImportCardToggleButton}" />
+                 
+                <!-- Import dropdown -->
+                <comps:DropdownMenu Grid.Row="1"
+                                     Grid.Column="1"
+                                     MinWidth="180"
+                                     Height="25"
+                                     Margin="0 8 5 0"
+                                     DataContext="{Binding ImportDropdown}" />
+                 
+                <!-- Import button -->
+                <Button Grid.Row="1"
                         Grid.Column="2"
                         MinWidth="90"
                         Height="25"
                         VerticalAlignment="Center"
+                        Margin="0 8 0 0"
                         Style="{StaticResource PrimaryButton}"
                         Command="{Binding ImportCommand}">
                     <StackPanel Orientation="Horizontal"
@@ -118,7 +144,7 @@
                     </StackPanel>
                 </Button>
 
-                <UniformGrid Grid.Row="1"
+                <UniformGrid Grid.Row="2"
                              Grid.ColumnSpan="3"
                              Columns="{Binding ActualWidth,
                                         RelativeSource={RelativeSource FindAncestor,

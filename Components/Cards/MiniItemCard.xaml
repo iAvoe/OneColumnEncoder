@@ -17,25 +17,15 @@
             <Setter Property="FontSize"
                     Value="12" />
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsCompactText, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                             Value="True">
-                    <Setter Property="FontSize"
-                            Value="14" />
-                </DataTrigger>
             </Style.Triggers>
         </Style>
         <Style x:Key="MiniSecondaryText"
                TargetType="TextBlock">
             <Setter Property="FontSize"
-                    Value="10" />
+                    Value="11" />
             <Setter Property="Foreground"
-                    Value="{StaticResource GlobalSecondary}" />
+                    Value="{StaticResource ButtonPrimary}" />
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsCompactText, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                             Value="True">
-                    <Setter Property="FontSize"
-                            Value="11" />
-                </DataTrigger>
                 <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
                              Value="1">
                     <Setter Property="Foreground"
@@ -117,11 +107,6 @@
                              Value="4">
                     <Setter Property="Foreground"
                             Value="{StaticResource RemixedForeground4}" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding IsCompactText, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                             Value="True">
-                    <Setter Property="FontSize"
-                            Value="11" />
                 </DataTrigger>
                 <Trigger Property="IsMouseOver"
                          Value="True">
@@ -240,7 +225,7 @@
         <!-- Content layer: holds the actual card layout with no Effect so text stays sharp. -->
         <Border BorderThickness="1"
                 CornerRadius="7"
-                Padding="6 5"
+                Padding="9 7"
                 SnapsToDevicePixels="True">
             <Border.Style>
                 <Style TargetType="Border">

@@ -49,19 +49,6 @@ namespace OneColumnEncoder.Components.Cards
             set => SetValue(ShowActionButtonsProperty, value);
         }
 
-        public static readonly DependencyProperty IsCompactTextProperty =
-            DependencyProperty.Register(
-                nameof(IsCompactText),
-                typeof(bool),
-                typeof(MiniItemCard),
-                new PropertyMetadata(false));
-
-        public bool IsCompactText
-        {
-            get => (bool)GetValue(IsCompactTextProperty);
-            set => SetValue(IsCompactTextProperty, value);
-        }
-
         public static readonly DependencyProperty PaletteIndexProperty =
             DependencyProperty.Register(
                 nameof(PaletteIndex),

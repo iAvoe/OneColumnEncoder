@@ -17,9 +17,7 @@
                    Text="{Binding HeaderText,
                                   RelativeSource={RelativeSource AncestorType=local:SectionHeader}}"
                    VerticalAlignment="Center"
-                   FontSize="16"
-                   FontWeight="Bold"
-                   Foreground="{StaticResource GlobalPrimary}" />
+                   Style="{StaticResource H2}" />
 
         <ContentPresenter Grid.Column="1"
                           VerticalAlignment="Center"
