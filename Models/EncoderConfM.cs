@@ -42,6 +42,10 @@ namespace OneColumnEncoder.Models
         public bool SvtAv1Dl2 { get; set; } = false;
         public bool SvtAv1AutoTile { get; set; } = false;
 
+        // VVenC (Preview only)
+        public int VvencQp { get; set; } = 32;
+        public int VvencMode { get; set; } = 0; // 0=medium(qpa), 1=slower(qpa), 2=slow(qpa)
+
         public string CustomParamsX264 { get; set; } = "";
         public string CustomParamsX265 { get; set; } = "";
         public string CustomParamsSvtAv1 { get; set; } = "";

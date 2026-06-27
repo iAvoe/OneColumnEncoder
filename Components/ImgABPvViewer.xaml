@@ -14,6 +14,45 @@
              MouseLeftButtonUp="Viewer_MouseLeftButtonUp"
              MouseMove="Viewer_MouseMove"
              SizeChanged="Viewer_SizeChanged">
+    <UserControl.Resources>
+        <DrawingBrush x:Key="ViewportCheckerBrush"
+                      TileMode="Tile"
+                      Viewbox="0,0,16,16"
+                      ViewboxUnits="Absolute"
+                      Viewport="0,0,16,16"
+                      ViewportUnits="Absolute"
+                      Stretch="None">
+            <DrawingBrush.Drawing>
+                <DrawingGroup>
+                    <GeometryDrawing Brush="#FFF2F2F2"
+                                     Geometry="M 0,0 L 16,0 16,16 0,16 Z" />
+                    <GeometryDrawing Brush="#FFD8D8D8"
+                                     Geometry="M 0,0 L 8,0 8,8 0,8 Z M 8,8 L 16,8 16,16 8,16 Z" />
+                </DrawingGroup>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
+
+        <DrawingBrush x:Key="SourceCheckerBrush"
+                      TileMode="Tile"
+                      Viewbox="0,0,16,16"
+                      ViewboxUnits="Absolute"
+                      Viewport="0,0,16,16"
+                      ViewportUnits="Absolute"
+                      Stretch="None">
+            <DrawingBrush.Transform>
+                <TranslateTransform X="8" Y="8" />
+            </DrawingBrush.Transform>
+            <DrawingBrush.Drawing>
+                <DrawingGroup>
+                    <GeometryDrawing Brush="#FFEFEFEF"
+                                     Geometry="M 0,0 L 16,0 16,16 0,16 Z" />
+                    <GeometryDrawing Brush="#FFCFCFCF"
+                                     Geometry="M 0,0 L 8,0 8,8 0,8 Z M 8,8 L 16,8 16,16 8,16 Z" />
+                </DrawingGroup>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
+    </UserControl.Resources>
+
     <Grid>
         <Grid.Resources>
             <Border x:Key="MaskSource"
@@ -38,7 +77,7 @@
             </Border.OpacityMask>
 
             <Grid x:Name="Viewport"
-                  Background="White">
+                  Background="{StaticResource ViewportCheckerBrush}">
                 <Canvas x:Name="ImageCanvas"
                         ClipToBounds="True"
                         Width="{Binding ActualWidth, ElementName=Viewport}"
@@ -50,9 +89,10 @@
                            RenderOptions.BitmapScalingMode="NearestNeighbor" />
 
                     <Canvas x:Name="SourceLayer"
-                            ClipToBounds="True"
-                            Canvas.Left="0"
-                            Canvas.Top="0">
+                            Background="{StaticResource SourceCheckerBrush}"
+                             ClipToBounds="True"
+                             Canvas.Left="0"
+                             Canvas.Top="0">
                         <Image x:Name="SourceImage"
                                Source="{Binding SourceImage}"
                                Stretch="Fill"

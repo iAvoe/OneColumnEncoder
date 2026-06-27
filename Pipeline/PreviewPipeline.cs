@@ -8,7 +8,7 @@ using System.Windows.Media.Imaging;
 
 namespace OneColumnEncoder.Pipeline;
 
-public enum PreviewEncoder { X264, X265, SvtAv1 }
+public enum PreviewEncoder { X264, X265, SvtAv1, Vvenc }
 
 public enum PreviewDisplayMode { Raw, LowToBt709, WcgToBt709, HdrToSdr, HighHdrToSdr }
 
@@ -35,8 +35,47 @@ public static partial class PreviewPipeline
         return [.. args];
     }
 
+    private static string[] BuildVvencEncodeArgs(EncoderConfM model, string sourcePath, string outputPath)
+    {
+        return
+        [
+            "-hide_banner",
+            "-y",
+            "-strict",
+            "unofficial",
+            "-i",
+            sourcePath,
+            "-vf",
+            "format=yuv420p10le",
+            "-c:v",
+            "libvvenc",
+            "-preset",
+            GetVvencPresetName(model.VvencMode),
+            "-qp",
+            Math.Clamp(model.VvencQp, 0, 63).ToString(CultureInfo.InvariantCulture),
+            "-vvenc-params",
+            "qpa=1:gopsize=1:intraperiod=1:refreshtype=idr:tier=1",
+            "-frames:v",
+            "1",
+            "-f",
+            "vvc",
+            outputPath
+        ];
+    }
+
+    public static string GetVvencPresetName(int presetKey) => presetKey switch
+    {
+        0 => "medium",
+        1 => "slower",
+        2 => "slow",
+        _ => "medium"
+    };
+
     public static string[] BuildEncodeArgs(PreviewEncoder encoder, EncoderConfM model, string sourcePath, string outputPath)
     {
+        if (encoder == PreviewEncoder.Vvenc)
+            return BuildVvencEncodeArgs(model, sourcePath, outputPath);
+
         List<string> args =
         [
             "-hide_banner",
@@ -130,6 +169,7 @@ public static partial class PreviewPipeline
     {
         PreviewEncoder.X264 => "libx264",
         PreviewEncoder.X265 => "libx265",
+        PreviewEncoder.Vvenc => "libvvenc",
         _ => "libsvtav1"
     };
 
@@ -137,6 +177,7 @@ public static partial class PreviewPipeline
     {
         PreviewEncoder.X264 => "libx264",
         PreviewEncoder.X265 => "libx265",
+        PreviewEncoder.Vvenc => "libvvenc",
         _ => "libsvtav1"
     };
 
@@ -144,6 +185,7 @@ public static partial class PreviewPipeline
     {
         PreviewEncoder.X264 => model.X264Crf,
         PreviewEncoder.X265 => model.X265Crf,
+        PreviewEncoder.Vvenc => model.VvencQp,
         _ => model.SvtAv1Crf
     };
 
@@ -151,6 +193,7 @@ public static partial class PreviewPipeline
     {
         PreviewEncoder.X264 => model.CustomParamsX264,
         PreviewEncoder.X265 => model.CustomParamsX265,
+        PreviewEncoder.Vvenc => "",
         _ => model.CustomParamsSvtAv1
     };
 

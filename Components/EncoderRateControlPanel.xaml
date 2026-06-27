@@ -42,12 +42,19 @@
                                           TickCount="5"
                                           HorizontalAlignment="Stretch" />
                      <comps:IntegerSlider Label="SVT-AV1"
-                                          Minimum="0"
-                                          Maximum="43"
-                                          Value="{Binding SvtAv1Crf, Mode=TwoWay}"
-                                          TickLabels="{Binding SvtAv1CrfLabels}"
-                                          TickCount="5"
-                                          HorizontalAlignment="Stretch" />
+                                           Minimum="0"
+                                           Maximum="43"
+                                           Value="{Binding SvtAv1Crf, Mode=TwoWay}"
+                                           TickLabels="{Binding SvtAv1CrfLabels}"
+                                           TickCount="5"
+                                           HorizontalAlignment="Stretch" />
+                     <comps:IntegerSlider Label="VVenC QP (Preview)"
+                                           Minimum="0"
+                                           Maximum="63"
+                                           Value="{Binding VvencQp, Mode=TwoWay}"
+                                           TickLabels="{Binding VvencQpLabels}"
+                                           TickCount="5"
+                                           HorizontalAlignment="Stretch" />
                 </comps:IntegerSliderGroup>
             </TabItem>
 

@@ -22,6 +22,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly ColorSpaceAnalysisM _colorSpaceAnalysis;
         private CancellationTokenSource? _previewCts;
         private Process? _currentProcess;
+        private string? _lastFfmpegStderr;
         private bool _isFitMode = true;
         private PreviewDisplayMode _displayMode = PreviewDisplayMode.Raw;
         private ImgABPvLangProviderM _lang = new(UILangProviderM.Current.LanguageCode);
@@ -140,6 +141,7 @@ namespace OneColumnEncoder.ViewModels
             EncoderDropdown.Items.Add(new DropdownItemM("libx264") { Tag = PreviewEncoder.X264 });
             EncoderDropdown.Items.Add(new DropdownItemM("libx265") { Tag = PreviewEncoder.X265 });
             EncoderDropdown.Items.Add(new DropdownItemM("libsvtav1") { Tag = PreviewEncoder.SvtAv1 });
+            EncoderDropdown.Items.Add(new DropdownItemM("libvvenc (Preview)") { Tag = PreviewEncoder.Vvenc });
             EncoderDropdown.SelectedItem = EncoderDropdown.Items[0];
             EncoderDropdown.SelectionChangedCommand = new ActionCmd(_ => RefreshSelectedEncodedImage());
             DisplayModeButtons = ButtonGroupVM.CreateFiveButton(
@@ -276,6 +278,14 @@ namespace OneColumnEncoder.ViewModels
             catch (Exception ex)
             {
                 StatusText = ex.Message;
+                if (!string.IsNullOrWhiteSpace(_lastFfmpegStderr))
+                {
+                    _modalNavS.Close();
+                    new Commands.OpenClose.OpenErrModalCmd(
+                        _modalNavS,
+                        Lang.EncoderLabel,
+                        _lastFfmpegStderr).Execute(null);
+                }
             }
             finally
             {
@@ -322,8 +332,11 @@ namespace OneColumnEncoder.ViewModels
             string stderr = await stderrTask;
             if (process.ExitCode != 0)
             {
-                string message = string.IsNullOrWhiteSpace(stderr) ? stdout : stderr;
-                throw new InvalidOperationException(PreviewPipeline.TrimProcessMessage(message));
+                _lastFfmpegStderr = stderr;
+                string diagnostic = string.IsNullOrWhiteSpace(stderr) ? stdout : stderr;
+                throw new InvalidOperationException(
+                    $"ffmpeg exited with code {process.ExitCode}. " +
+                    PreviewPipeline.TrimProcessMessage(diagnostic));
             }
         }
 
@@ -350,6 +363,7 @@ namespace OneColumnEncoder.ViewModels
         {
             PreviewEncoder.X264 => GetWorkPath($"x264-{PreviewPipeline.GetDisplayModeFileSuffix(_displayMode)}.h264"),
             PreviewEncoder.X265 => GetWorkPath($"x265-{PreviewPipeline.GetDisplayModeFileSuffix(_displayMode)}.hevc"),
+            PreviewEncoder.Vvenc => GetWorkPath($"vvenc-{PreviewPipeline.GetDisplayModeFileSuffix(_displayMode)}.vvc"),
             _ => GetWorkPath($"svtav1-{PreviewPipeline.GetDisplayModeFileSuffix(_displayMode)}.obu")
         };
 
@@ -357,6 +371,7 @@ namespace OneColumnEncoder.ViewModels
         {
             PreviewEncoder.X264 => GetWorkPath($"x264-{PreviewPipeline.GetDisplayModeFileSuffix(_displayMode)}.png"),
             PreviewEncoder.X265 => GetWorkPath($"x265-{PreviewPipeline.GetDisplayModeFileSuffix(_displayMode)}.png"),
+            PreviewEncoder.Vvenc => GetWorkPath($"vvenc-{PreviewPipeline.GetDisplayModeFileSuffix(_displayMode)}.png"),
             _ => GetWorkPath($"svtav1-{PreviewPipeline.GetDisplayModeFileSuffix(_displayMode)}.png")
         };
 

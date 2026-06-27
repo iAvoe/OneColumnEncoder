@@ -128,6 +128,7 @@ namespace OneColumnEncoder.ViewModels
         public DropdownMenuVM X264ModeDropdown { get; } = new();
         public DropdownMenuVM X265ModeDropdown { get; } = new();
         public DropdownMenuVM SvtAv1ModeDropdown { get; } = new();
+        public DropdownMenuVM VvencModeDropdown { get; } = new();
 
         private int _x264Crf = 23;
         public int X264Crf
@@ -146,6 +147,12 @@ namespace OneColumnEncoder.ViewModels
         {
             get => _svtAv1Crf;
             set => SetProperty(ref _svtAv1Crf, value);
+        }
+        private int _vvencQp = 32;
+        public int VvencQp
+        {
+            get => _vvencQp;
+            set => SetProperty(ref _vvencQp, value);
         }
 
         private int _x264Abr = 209;
@@ -241,6 +248,7 @@ namespace OneColumnEncoder.ViewModels
         public static IEnumerable<string> X264KeyframeLabels => ["6", "9 ", "12", "15"];
         public static IEnumerable<string> X265KeyframeLabels => ["4", "7", "10", "13"];
         public static IEnumerable<string> SvtAv1KeyframeLabels => ["6", "9", "12", "15"];
+        public static IEnumerable<string> VvencQpLabels => ["0", "16", "32", "48", "63"];
 
         public EncoderConfVM(
             Action closeAction,
@@ -281,9 +289,15 @@ namespace OneColumnEncoder.ViewModels
             foreach (EncoderPresetItem preset in EncoderPresetsM.SvtAv1Presets)
                 SvtAv1ModeDropdown.Items.Add(new DropdownItemM(Lang[preset.NameKey]) { Tag = preset.Key });
 
+            // VVenC preview presets — always qpa enabled
+            VvencModeDropdown.Items.Add(new DropdownItemM("qpa medium") { Tag = 0 });
+            VvencModeDropdown.Items.Add(new DropdownItemM("qpa slower") { Tag = 1 });
+            VvencModeDropdown.Items.Add(new DropdownItemM("qpa slow") { Tag = 2 });
+
             SelectDropdownByKey(X264ModeDropdown, _model.X264Mode);
             SelectDropdownByKey(X265ModeDropdown, _model.X265Mode);
             SelectDropdownByKey(SvtAv1ModeDropdown, _model.SvtAv1Mode);
+            SelectDropdownByKey(VvencModeDropdown, _model.VvencMode);
         }
 
         private void AddBlankPresetItem(DropdownMenuVM dropdown) =>
@@ -318,6 +332,8 @@ namespace OneColumnEncoder.ViewModels
             X265Texture = _model.X265Texture;
             SvtAv1Dl2 = _model.SvtAv1Dl2;
             SvtAv1AutoTile = _model.SvtAv1AutoTile;
+            VvencQp = _model.VvencQp;
+            SelectDropdownByKey(VvencModeDropdown, _model.VvencMode);
             FreeTextParamsX264 = _model.CustomParamsX264;
             FreeTextParamsX265 = _model.CustomParamsX265;
             FreeTextParamsSvtAv1 = _model.CustomParamsSvtAv1;
@@ -363,6 +379,8 @@ public EncoderConfM CreatePreviewModel()
             model.X265Texture = X265Texture;
 model.SvtAv1Dl2 = SvtAv1Dl2;
             model.SvtAv1AutoTile = SvtAv1AutoTile;
+            model.VvencQp = VvencQp;
+            model.VvencMode = VvencModeDropdown.SelectedItem?.Tag is int vvencMode ? vvencMode : 0;
             model.CustomParamsX264 = FreeTextParamsX264;
             model.CustomParamsX265 = FreeTextParamsX265;
             model.CustomParamsSvtAv1 = FreeTextParamsSvtAv1;

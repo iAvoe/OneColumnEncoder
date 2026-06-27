@@ -57,6 +57,24 @@
                                 DataContext="{Binding SvtAv1ModeDropdown}" />
         </Grid>
 
+        <Grid Margin="0 10 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="VVenC (Preview)"
+                       FontSize="13"
+                       VerticalAlignment="Center" />
+            <comps:DropdownMenu Grid.Column="1"
+                                MinWidth="150"
+                                Height="25"
+                                DataContext="{Binding VvencModeDropdown}" />
+        </Grid>
+
+        <comps:HintPanel Text="VVenC is only for single-image preview, not used in main encoding"
+                         HintBrush="{StaticResource GlobalSecondary}"
+                         FontSize="10"
+                         Margin="5 2 5 0" />
         <comps:HintPanel Text="{Binding BlankPresetHint, Mode=OneWay}"
                          Margin="5 5 5 0"
                          HorizontalAlignment="Left"
