@@ -29,7 +29,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly ToolItemCardVM? _outputSettingCard;
         private readonly VideoSourceQueueState _videoSourceQueue;
         private string _scriptScribeFfmpegFilterArgs = string.Empty;
-        #region MiniItemCard State
+        #region MiniItemCard state
         private bool _isMiniUpstreamsZone;
         private bool _isMiniEncodersZone;
         private bool _isMiniAnalyticsZone;
@@ -957,10 +957,13 @@ namespace OneColumnEncoder.ViewModels
             bool encodeTermsReady = EncTermsCard.IsBypassed ||
                 EncTermsCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
                 EncTermsCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
-            bool avsSelected = UpstreamsZone.Any(
-                t => t.IsSelected && ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe"));
-            bool aviSelected = DependenciesZone.Any(
-                t => t.IsSelected && ToolDefinitionProviderM.IsImportedTool(t.Name, "avisynth.dll"));
+            // Cache cards for avs2pipemod / avisynth.dll dependency check
+            ToolItemCardVM? avs2pipemodItem = UpstreamsZone.FirstOrDefault(
+                t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe"));
+            ToolItemCardVM? avisynthItem = DependenciesZone.FirstOrDefault(
+                t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avisynth.dll"));
+            bool avsSelected = avs2pipemodItem?.IsSelected ?? false;
+            bool aviSelected = avisynthItem?.IsSelected ?? false;
             bool dependencyReady = avsSelected == aviSelected;
 
             // SVFI currently doesn't support clipping, and its not really built with basic editing in design principle,
@@ -1164,6 +1167,48 @@ namespace OneColumnEncoder.ViewModels
                 RefreshSelectedSourceStatusAfterSourceSelection,
                 UpdateEncStartButtonsState,
                 () => RefreshSelectedSourceStatus());
+
+            // Keep avs2pipemod <-> avisynth.dll selection in lockstep.
+            // The user can freely select/deselect either card; the partner
+            // follows automatically. Selecting another card in either zone
+            // also deselects both partners so they never become out of sync.
+            ToolItemCardVM? avs2pipemod = UpstreamsZone.FirstOrDefault(
+                t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe"));
+            ToolItemCardVM? avisynth = DependenciesZone.FirstOrDefault(
+                t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avisynth.dll"));
+
+            if (avs2pipemod != null && avisynth != null && avs2pipemod.IsSelected != avisynth.IsSelected)
+            {
+                // Direct click on one of the pair – sync partner to match
+                // When selecting, also deselect other cards in the partner's zone
+                // to preserve the single-select invariant (ToggleOnly / SelectOnly).
+                if (clickedTool == avs2pipemod)
+                {
+                    if (avs2pipemod.IsSelected)
+                        ItemCardSelection.SelectOnly(DependenciesZone, avisynth);
+                    else
+                        avisynth.IsSelected = false;
+                }
+                else if (clickedTool == avisynth)
+                {
+                    if (avisynth.IsSelected)
+                        ItemCardSelection.SelectOnly(UpstreamsZone, avs2pipemod);
+                    else
+                        avs2pipemod.IsSelected = false;
+                }
+                // Another card in the same zone deselected one partner via ToggleOnly
+                else if (UpstreamsZone.Contains(clickedTool))
+                {
+                    avisynth.IsSelected = false;
+                }
+                else if (DependenciesZone.Contains(clickedTool))
+                {
+                    avs2pipemod.IsSelected = false;
+                }
+
+                ToolCompatibility.RefreshDependencySelectionState(
+                    UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
+            }
         }
 
         private bool ShouldRunPrimaryCardCommandOnClick(ToolItemCardVM clickedTool) =>
