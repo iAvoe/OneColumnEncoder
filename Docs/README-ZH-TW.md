@@ -2,7 +2,7 @@
 
 一款基於 .NET 9/WPF 的次時代智慧影片編碼輔助工具。主要工作流程圍繞“導入工具和編碼器、導入影片或腳本源、分析源影片、訂製編碼命令、自訂平行計算策略、現代化編碼監控、中斷與封裝”展開。
 
-<p align="center"><img src="WireframeMockups/logo.png" alt="Logo" width="200"></p>
+<p align="center"><img src="../WireframeMockups/logo.png" alt="Logo" width="200"></p>
 
 ## 功能概述
 
@@ -15,7 +15,7 @@
     - 提供單圖壓制 A/B 對比預覽器，即時檢查參數配置對任意幀的影響
 - **自動化與自訂：**
     - 自動編寫基本的 AviSynth、VapourSynth 腳本（影片解碼與管道輸出）
-    - 為 FFMPEG-VS-AVS 生成 VFR→CFR 濾鏡、HDR→SDR+色彩空間轉換濾鏡、縮放濾鏡、SAR 修復濾鏡
+    - 為 FFMPEG-VS-AVS 生成 VFR→CFR 濾鏡、HDR→SDR 轉換濾鏡、色彩空間轉換濾鏡、縮放濾鏡、SAR 修復濾鏡
     - 提供 FFMPEG-VS-AVS 濾鏡編輯器
     - 自動生成影片壓製參數，並生成音訊壓製命令
     - 提供可動態編輯的隊列模式
@@ -28,13 +28,13 @@
 
 本軟體支持多語言，但為減少圖片數量而在此統一用了英語文本截圖。圖片中可能會有一些過時的 UI 元素或文本，但整體布局和功能區域劃分仍然適用。請以實際使用版本為準。
 
-<p align="center"><img src="WireframeMockups/1-Main-Page.png" alt="Main Window" width="600"><br>
-<img src="WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window" width="500"><br>
-<img src="WireframeMockups/3-Encoder-Settings.png" alt="Encoder Setting Window" width="900"><br>
-<img src="WireframeMockups/4-Parallelism-Setting.png" alt="Parallelism Setting Window" width="400"><br>
-<img src="WireframeMockups/5-Clip-Sampler.png" alt="Clip Sampler Window" width="400"><br>
-<img src="WireframeMockups/6-Encoding-Monitor.png" alt="Encoding Monitor Window" width="650"><br>
-<img src="WireframeMockups/7-Warning-Modal-OW-Guard.png" alt="Warning Modal & Overwrite Protection" width="350"><br></p>
+<p align="center"><img src="../WireframeMockups/1-Main-Page.png" alt="Main Window" width="600"><br>
+<img src="../WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window" width="500"><br>
+<img src="../WireframeMockups/3-Encoder-Settings.png" alt="Encoder Setting Window" width="900"><br>
+<img src="../WireframeMockups/4-Parallelism-Setting.png" alt="Parallelism Setting Window" width="400"><br>
+<img src="../WireframeMockups/5-Clip-Sampler.png" alt="Clip Sampler Window" width="400"><br>
+<img src="../WireframeMockups/6-Encoding-Monitor.png" alt="Encoding Monitor Window" width="650"><br>
+<img src="../WireframeMockups/7-Warning-Modal-OW-Guard.png" alt="Warning Modal & Overwrite Protection" width="350"><br></p>
 
 ## 運行要求
 
@@ -75,18 +75,20 @@
 
 ## 驗證狀態
 
-**系統**：
+**已驗證 OS**：
 - Windows 10 22H2
-- Windows 11 25H2（感謝 [Lofu](https://github.com/Ronifue) 幫助驗證）
+- Windows 11 25H2（感謝 [Lofu](https://github.com/Ronifue) 幫助）
 
-**硬體**：
+**已驗證 CPU**：
 - Core i5 7600k（4C4T）
 - Ryzen 9 9900X（2CCD 12C24T）
 - EPYC 7R13（6CCD 48C96T）
-- Intel i7 14700K（感謝 Whithost 幫助驗證）
+- Intel i7 14700K（感謝 Whithost 幫助）
 
-**高負載**
-- 在無人值守的情況下完成了 30+ 4K 影片的長隊列壓製的測試成功
+> 包括 L3 快取大小與 CCD 分組辨識能力的檢測
+
+**長隊列驗證**
+- 圓滿完成了 30+ 4K 影片的長隊列壓製的測試（3 天無人值守）
 
 ## 在地化狀態
 
@@ -102,10 +104,10 @@
 
 開發這些工具並不容易。如果這套工具提高了你的效率，那麼不妨贊助或推廣一下。
 
-<p align="center"><img src="WireframeMockups/bmc_qr.png" alt="支持一下 -_-" width="300"><br>
-<img src="WireframeMockups/pp_tip_qr.png" alt="支持一下 =_=" width="300"><br>
-<img src="WireframeMockups/qr_ap.png" alt="支持一下 w_w" width="300"><br>
-<img src="WireframeMockups/qr_wx.png" alt="支持一下 @_@" width="300"></p>
+<p align="center"><img src="../WireframeMockups/bmc_qr.png" alt="支持一下 -_-" width="300"><br>
+<img src="../WireframeMockups/pp_tip_qr.png" alt="支持一下 =_=" width="300"><br>
+<img src="../WireframeMockups/qr_ap.png" alt="支持一下 w_w" width="300"><br>
+<img src="../WireframeMockups/qr_wx.png" alt="支持一下 @_@" width="300"></p>
 
 ## 項目狀態
 

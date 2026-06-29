@@ -8,7 +8,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -20,7 +19,13 @@ namespace OneColumnEncoder.ViewModels
         private readonly string? _sourceVideoPath;
         private readonly string _workDirectory;
         private readonly ColorSpaceAnalysisM _colorSpaceAnalysis;
+        // CTS for ffmpeg operations only (extract, encode, decode).
+        // Created fresh each preview run. Score tools (ssimulacra2, butteraugli)
+        // do NOT observe this token — they run independently once decoding finishes.
         private CancellationTokenSource? _previewCts;
+
+        // Tracks the running ffmpeg process so it can be force-killed on cancel.
+        // Not used for external score-tool processes.
         private Process? _currentProcess;
         private string? _lastFfmpegStderr;
         private bool _isFitMode = true;
@@ -177,6 +182,8 @@ namespace OneColumnEncoder.ViewModels
 
         public void SetFitMode(bool isFitMode) => _isFitMode = isFitMode;
 
+        // Toggle: cancel in-flight preview or start a new one.
+        // Cancellation signals the CTS, then immediately kills ffmpeg.
         private void PreviewOrCancel()
         {
             if (IsBusy)
@@ -203,10 +210,11 @@ namespace OneColumnEncoder.ViewModels
                 return;
             }
 
+            // Discard previous cancellation scope and start a fresh one
+            // for this preview run.
             _previewCts?.Dispose();
             _previewCts = new CancellationTokenSource();
             CancellationToken token = _previewCts.Token;
-            IsBusy = true;
 
             try
             {
@@ -251,6 +259,9 @@ namespace OneColumnEncoder.ViewModels
 
                 StatusText = Lang.StatusComputingScores;
 
+                // NOTE: Score tools do NOT accept the cancellation token.
+                // If the user cancels during this phase, the tools will still
+                // run to completion, then IsBusy resets normally.
                 if (Ssimulacra2.IsSsimU2Present)
                 {
                     Ssimulacra2StatusText = Lang.Ssimulacra2ToolPresent;
@@ -287,14 +298,14 @@ namespace OneColumnEncoder.ViewModels
                         _lastFfmpegStderr).Execute(null);
                 }
             }
-            finally
-            {
-                _currentProcess = null;
-            }
+            finally { _currentProcess = null; }
 
             IsBusy = false;
         }
 
+        // Runs ffmpeg with the given args. If token is cancelled during
+        // execution the process is killed and OperationCanceledException
+        // propagates to the caller.
         private async Task RunFfmpegAsync(IReadOnlyList<string> args, CancellationToken token)
         {
             ProcessStartInfo psi = new()
@@ -462,6 +473,8 @@ namespace OneColumnEncoder.ViewModels
         {
             UILangProviderM.CurrentChanged -= OnLanguageChanged;
             GC.SuppressFinalize(this);
+            // Order: cancel first so in-flight ffmpeg knows to stop,
+            // then kill the process, then release CTS resources.
             _previewCts?.Cancel();
             TryKillCurrentProcess();
             _previewCts?.Dispose();

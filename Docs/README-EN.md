@@ -2,7 +2,7 @@
 
 A next-gen smart video encoding utility based on .NET 9/WPF, revolves around “tool & encoder orchestrating, source analyzing, encode customizing, parallelism tailoring, modern GUI monitoring, encode interrupting, and auto-multiplexing”.
 
-<p align="center"><img src="WireframeMockups/logo.png" alt="Logo" width="200"></p>
+<p align="center"><img src="../WireframeMockups/logo.png" alt="Logo" width="200"></p>
 
 ## Featuring:
 - Source Validation:
@@ -29,13 +29,13 @@ A next-gen smart video encoding utility based on .NET 9/WPF, revolves around “
 
 This software supports multiple languages, but English text screenshots are used here to reduce the number of images. Some UI elements or text in the images may be outdated, but the overall layout and functional area divisions remain applicable. Please refer to the actual version you are using.
 
-<p align="center"><img src="WireframeMockups/1-Main-Page.png" alt="Main Window" width="600"><br>
-<img src="WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window" width="500"><br>
-<img src="WireframeMockups/3-Encoder-Settings.png" alt="Encoder Setting Window" width="900"><br>
-<img src="WireframeMockups/4-Parallelism-Setting.png" alt="Parallelism Setting Window" width="400"><br>
-<img src="WireframeMockups/5-Clip-Sampler.png" alt="Clip Sampler Window" width="400"><br>
-<img src="WireframeMockups/6-Encoding-Monitor.png" alt="Encoding Monitor Window" width="650"><br>
-<img src="WireframeMockups/7-Warning-Modal-OW-Guard.png" alt="Warning Modal & Overwrite Protection" width="350"><br></p>
+<p align="center"><img src="../WireframeMockups/1-Main-Page.png" alt="Main Window" width="600"><br>
+<img src="../WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window" width="500"><br>
+<img src="../WireframeMockups/3-Encoder-Settings.png" alt="Encoder Setting Window" width="900"><br>
+<img src="../WireframeMockups/4-Parallelism-Setting.png" alt="Parallelism Setting Window" width="400"><br>
+<img src="../WireframeMockups/5-Clip-Sampler.png" alt="Clip Sampler Window" width="400"><br>
+<img src="../WireframeMockups/6-Encoding-Monitor.png" alt="Encoding Monitor Window" width="650"><br>
+<img src="../WireframeMockups/7-Warning-Modal-OW-Guard.png" alt="Warning Modal & Overwrite Protection" width="350"><br></p>
 
 ## System Requirements
 
@@ -75,18 +75,20 @@ Or, TLDR; and use tools provided in this package (not recommended but its an opt
 
 ## Validation Status
 
-**OS**：
+**OS Validated**：
 - Windows 10 22H2
 - Windows 11 25H2 (thanks to [Lofu](https://github.com/Ronifue))
 
-**Hardware**：
+**CPUs Validated**：
 - Core i5 7600k (4C4T)
 - Ryzen 9 9900X (2CCD 12C24T)
 - EPYC 7R13 (6CCD 48C96T)
 - Intel i7 14700K (thanks to Whithost)
 
-**High load**
-- Long queue with 30+ 4k videos and x265 encoding was successful
+> This includes L3 cache size and CCD-aware grouping detection
+
+**Long Queue Validation**
+- 30+ 4k videos and x265 encoding was successful (3 days uninterrupted)
 
 ## Localization Status
 
@@ -102,7 +104,7 @@ Or, TLDR; and use tools provided in this package (not recommended but its an opt
 
 Its not esay to develop these tools. If this software helped, please consider sponsoring or promoting it.
 
-<p align="center"><img src="WireframeMockups/bmc_qr.png" alt="Support me -_-"><br><img src="WireframeMockups/pp_tip_qr.png" alt="Pls support =_="></p>
+<p align="center"><img src="../WireframeMockups/bmc_qr.png" alt="Support me -_-"><br><img src="../WireframeMockups/pp_tip_qr.png" alt="Pls support =_="></p>
 
 ## Project Status
 

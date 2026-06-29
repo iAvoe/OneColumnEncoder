@@ -12,6 +12,6 @@ OneColumnEncoder 提供了相对硬核，同时简洁直观的 UI/UX 流程，�
 
 This project supports has two language versions | 本项目支持两种语言：
 
-- [README-EN.md](./README-EN.md)
-- [README-ZH-CN.md](./README-ZH-CN.md)
-- [README-ZH-TW.md](./README-ZH-TW.md)
+- [README-EN.md](./Docs/README-EN.md)
+- [README-ZH-CN.md](./Docs/README-ZH-CN.md)
+- [README-ZH-TW.md](./Docs/README-ZH-TW.md)

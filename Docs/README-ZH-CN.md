@@ -2,7 +2,7 @@
 
 一款基于 .NET 9/WPF 的次时代智能视频编码辅助工具。主要工作流程围绕“导入工具和编码器、导入视频或脚本源、分析源视频、定制编码命令、自定义并行计算策略、现代化编码监控、中断与封装”展开。
 
-<p align="center"><img src="WireframeMockups/logo.png" alt="Logo" width="200"></p>
+<p align="center"><img src="../WireframeMockups/logo.png" alt="Logo" width="200"></p>
 
 ## 功能概述
 
@@ -15,7 +15,7 @@
     - 提供单图压制 A/B 对比预览器，实时检查参数配置对任意帧的影响
 - **自动化与自定义：**
     - 自动编写基本的 AviSynth、VapourSynth 脚本（视频解码与管道输出）
-    - 为 FFMPEG-VS-AVS 生成 VFR→CFR 滤镜、HDR→SDR+色彩空间转换滤镜、缩放滤镜、SAR 修复滤镜
+    - 为 FFMPEG-VS-AVS 生成 VFR→CFR 滤镜、HDR→SDR 转换滤镜、色彩空间转换滤镜、缩放滤镜、SAR 修复滤镜
     - 提供 FFMPEG-VS-AVS 滤镜编辑器
     - 自动生成视频压制参数，并生成音频压制命令
     - 提供可动态编辑的队列模式
@@ -28,13 +28,13 @@
 
 本软件支持多语言，但为减少图片数量而在此统一用了英语文本截图。图片中可能会有一些过时的 UI 元素或文本，但整体布局和功能区域划分仍然适用。请以实际使用版本为准。
 
-<p align="center"><img src="WireframeMockups/1-Main-Page.png" alt="Main Window" width="600"><br>
-<img src="WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window" width="500"><br>
-<img src="WireframeMockups/3-Encoder-Settings.png" alt="Encoder Setting Window" width="900"><br>
-<img src="WireframeMockups/4-Parallelism-Setting.png" alt="Parallelism Setting Window" width="400"><br>
-<img src="WireframeMockups/5-Clip-Sampler.png" alt="Clip Sampler Window" width="400"><br>
-<img src="WireframeMockups/6-Encoding-Monitor.png" alt="Encoding Monitor Window" width="650"><br>
-<img src="WireframeMockups/7-Warning-Modal-OW-Guard.png" alt="Warning Modal & Overwrite Protection" width="350"><br></p>
+<p align="center"><img src="../WireframeMockups/1-Main-Page.png" alt="Main Window" width="600"><br>
+<img src="../WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window" width="500"><br>
+<img src="../WireframeMockups/3-Encoder-Settings.png" alt="Encoder Setting Window" width="900"><br>
+<img src="../WireframeMockups/4-Parallelism-Setting.png" alt="Parallelism Setting Window" width="400"><br>
+<img src="../WireframeMockups/5-Clip-Sampler.png" alt="Clip Sampler Window" width="400"><br>
+<img src="../WireframeMockups/6-Encoding-Monitor.png" alt="Encoding Monitor Window" width="650"><br>
+<img src="../WireframeMockups/7-Warning-Modal-OW-Guard.png" alt="Warning Modal & Overwrite Protection" width="350"><br></p>
 
 ## 运行要求
 
@@ -66,7 +66,6 @@
 
 > 使用最新版本的编码器有助于提高性能（速度、画质、压缩率），以及更小的内存泄露概率
 
-
 ## 图标使用
 
 - Azure icons: [azureicons.com](https://www.azureicons.com)
@@ -76,18 +75,20 @@
 
 ## 验证状态
 
-**系统**：
+**已验证 OS**：
 - Windows 10 22H2
-- Windows 11 25H2（感谢 [Lofu](https://github.com/Ronifue) 帮助验证）
+- Windows 11 25H2（感谢 [Lofu](https://github.com/Ronifue) 帮助）
 
-**硬件**：
+**已验证 CPU**：
 - Core i5 7600k（4C4T）
 - Ryzen 9 9900X（2CCD 12C24T）
 - EPYC 7R13（6CCD 48C96T）
-- Intel i7 14700K（感谢 Whithost 帮助验证）
+- Intel i7 14700K（感谢 Whithost 帮助）
 
-**高负载**
-- 在无人值守的情况下完成了 30+ 4K 视频的长队列压制的测试成功
+> 包括 L3 缓存大小与 CCD 分组辨识能力的检测
+
+**长队列验证**
+- 圆满完成了 30+ 4K 视频的长队列压制的测试（3 天无人值守）
 
 ## 本地化状态
 
@@ -103,10 +104,10 @@
 
 开发这些工具并不容易。如果这套工具提高了你的效率，那么不妨赞助或推广一下。
 
-<p align="center"><img src="WireframeMockups/bmc_qr.png" alt="支持一下 -_-" width="300"><br>
-<img src="WireframeMockups/pp_tip_qr.png" alt="支持一下 =_=" width="300"><br>
-<img src="WireframeMockups/qr_ap.png" alt="支持一下 w_w" width="300"><br>
-<img src="WireframeMockups/qr_wx.png" alt="支持一下 @_@" width="300"></p>
+<p align="center"><img src="../WireframeMockups/bmc_qr.png" alt="支持一下 -_-" width="300"><br>
+<img src="../WireframeMockups/pp_tip_qr.png" alt="支持一下 =_=" width="300"><br>
+<img src="../WireframeMockups/qr_ap.png" alt="支持一下 w_w" width="300"><br>
+<img src="../WireframeMockups/qr_wx.png" alt="支持一下 @_@" width="300"></p>
 
 ## 项目状态
 
