@@ -45,7 +45,7 @@ namespace OneColumnEncoder.Components
             InitializeComponent();
             Loaded += OnLoaded;
             Unloaded += OnUnloaded;
-            FontSize = 9.0;
+            FontSize = 10d;
             if (ReadLocalValue(HintBrushProperty) == DependencyProperty.UnsetValue)
                 SetCurrentValue(HintBrushProperty, TryFindResource("GlobalTertiary") as Brush);
         }

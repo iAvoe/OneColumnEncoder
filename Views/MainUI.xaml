@@ -181,7 +181,7 @@
             </ItemsControl>
 
             <comps:HintPanel Text="{Binding UpstreamsZoneSelectedPath}"
-                             Margin="10 5 5 0"
+                             Margin="10 2.5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
 
@@ -283,7 +283,7 @@
             </ItemsControl>
 
             <comps:HintPanel Text="{Binding EncodersZoneSelectedPath}"
-                             Margin="10 5 5 0"
+                             Margin="10 2.5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
 
@@ -385,7 +385,7 @@
             </ItemsControl>
 
             <comps:HintPanel Text="{Binding DependenciesZoneSelectedPath}"
-                             Margin="10 5 5 0"
+                             Margin="10 2.5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
 
@@ -502,7 +502,7 @@
             </ItemsControl>
 
             <comps:HintPanel Text="{Binding VideoSrcImportZoneSelectedPath}"
-                             Margin="10 5 5 0"
+                             Margin="10 2.5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
 
@@ -624,7 +624,7 @@
             </ItemsControl>
 
             <comps:HintPanel Text="{Binding ActiveScriptSrcImportZoneSelectedPath}"
-                             Margin="10 5 5 0"
+                             Margin="10 2.5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
 
@@ -744,12 +744,12 @@
             <!-- Hint: OneLineShotArgs upstream does not support clipping -->
             <comps:HintPanel Text="{Binding AnalyzeNeedsSourceText}"
                              RefreshTextOnLanguageChanged="True"
-                             Margin="10 5 5 0"
+                             Margin="10 2.5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
 
             <comps:HintPanel Text="{Binding AnalyticsZoneSelectedPath}"
-                             Margin="10 5 5 0"
+                             Margin="10 2.5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
 
@@ -904,7 +904,7 @@
             </ItemsControl>
 
             <comps:HintPanel Text="{Binding EncodingConfZoneSelectedPath}"
-                             Margin="10 5 5 0"
+                             Margin="10 2.5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
             <!-- Starting Options -->
@@ -963,7 +963,7 @@
             <!-- Hint: NUMA CPU check trigger -->
             <comps:HintPanel Text="{Binding NumaCpuCheckHintText}"
                              RefreshTextOnLanguageChanged="True"
-                             Margin="10 5 5 0"
+                             Margin="10 2.5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
 
@@ -1039,7 +1039,7 @@
             <comps:HintPanel Visibility="{Binding SVFIClipDisabledHintVisible, Converter={StaticResource BoolToVisibility}}"
                              Text="{Binding SVFIClipDisabledHintText}"
                              RefreshTextOnLanguageChanged="True"
-                             Margin="10 5 5 0"
+                             Margin="10 2.5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
         </StackPanel>

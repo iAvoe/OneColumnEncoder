@@ -49,6 +49,7 @@
                         </Style>
                     </Rectangle.Style>
                 </Rectangle>
+                <!-- FontSize by App.xaml -->
                 <TextBlock Text="{Binding B2_1Text}"
                            VerticalAlignment="Center" />
             </StackPanel>
