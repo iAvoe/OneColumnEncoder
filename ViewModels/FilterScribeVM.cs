@@ -292,7 +292,7 @@ namespace OneColumnEncoder.ViewModels
 
         private string BuildFfmpegFilterArgs(bool includeSwsFlags, bool includeCsp709Flags, params string?[] filters)
         {
-            return FfmpegFilterArgs.Build(includeSwsFlags, includeCsp709Flags, _colorSpaceAnalysis.PixelFormat, filters);
+            return FFMpegFilterArgs.Build(includeSwsFlags, includeCsp709Flags, _colorSpaceAnalysis.PixelFormat, filters);
         }
 
         public string VapourSynthResizeFilter =>
@@ -388,8 +388,7 @@ namespace OneColumnEncoder.ViewModels
         public static string VapourSynthText => "VS";
         public static string AviSynthText => "AVS(+)";
         public static string WindowTitle => UILangProviderM.FltScribeWindowTitle;
-        public static string ScribeDescription1 => UILangProviderM.Current["SrcScribe.Description1"];
-        public static string ScribeDescription2 => UILangProviderM.Current["SrcScribe.Description2"];
+        public static string ScribeDescription => UILangProviderM.Current["SrcScribe.Description"];
         public static string NoteText => UILangProviderM.Current["SrcScribe.NoteText"];
         public static string TabAvs => UILangProviderM.Current["SrcScribe.TabAvs"];
         public static string TabVpy => UILangProviderM.Current["SrcScribe.TabVpy"];
@@ -858,8 +857,7 @@ namespace OneColumnEncoder.ViewModels
             _baseVpyPrefix = UILangProviderM.Current["SrcScribe.VpyPrefix"];
 
             OnPropertyChanged(nameof(WindowTitle));
-            OnPropertyChanged(nameof(ScribeDescription1));
-            OnPropertyChanged(nameof(ScribeDescription2));
+            OnPropertyChanged(nameof(ScribeDescription));
             OnPropertyChanged(nameof(NoteText));
             OnPropertyChanged(nameof(TabAvs));
             OnPropertyChanged(nameof(TabVpy));

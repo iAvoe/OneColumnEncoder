@@ -11,12 +11,11 @@
                         mc:Ignorable="d"
                         Title="{Binding WindowTitle}"
                         Width="740"
-                        Height="1030"
+                        Height="1010"
                         WindowStartupLocation="CenterOwner"
                         Background="{StaticResource Background}">
-    <Grid Margin="15">
+    <Grid Margin="15 10 15 0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -26,19 +25,13 @@
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0"
-                   Text="{Binding ScribeDescription1}"
-                   FontSize="13"
-                   TextWrapping="Wrap"
-                   Foreground="{StaticResource GlobalPrimary}" />
-        <TextBlock Grid.Row="1"
-                   Text="{Binding ScribeDescription2}"
-                   Margin="0 5 0 0"
+                   Text="{Binding ScribeDescription}"
                    FontSize="13"
                    TextWrapping="Wrap"
                    Foreground="{StaticResource GlobalPrimary}" />
 
         <!-- TabControl: AviSynth, VapourSynth, ffmpeg -->
-        <TabControl Grid.Row="2"
+        <TabControl Grid.Row="1"
                     SelectedIndex="{Binding SelectedTabIndex}"
                     Margin="0 10 0 0">
 
@@ -204,10 +197,10 @@
             </TabItem>
         </TabControl>
 
-        <comps:ThreeButtonGroup Grid.Row="3"
-                                Margin="0 10 0 0"
-                                ButtonHeight="30"
-                                DataContext="{Binding ScriptExportButtons}"
+        <comps:ThreeButtonGroup Grid.Row="2"
+                                 Margin="0 10 0 0"
+                                 ButtonHeight="30"
+                                 DataContext="{Binding ScriptExportButtons}"
                                 Button1Command="{Binding Cmd1}"
                                 Button2Command="{Binding Cmd2}"
                                 Button3Command="{Binding Cmd3}"
@@ -215,13 +208,13 @@
                                 Button2IsEnabled="{Binding B3_2IsEnabled}"
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
 
-        <StackPanel Grid.Row="4"
+        <StackPanel Grid.Row="3"
                     Margin="0 15 0 0">
             <StackPanel>
                 <TextBlock Text="{Binding FrameRateConvertTitle}"
                            Style="{StaticResource H3}"
                            Margin="0 0 0 0" />
-                <Grid>
+                <Grid Margin="0 2.5 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="49" />
                         <ColumnDefinition Width="*" />
@@ -273,7 +266,7 @@
                 <TextBlock Text="{Binding ColorSpaceConvertTitle}"
                            Style="{StaticResource H3}"
                            Margin="0 10 0 0" />
-                <StackPanel Margin="0 5 0 0">
+                <StackPanel Margin="0 2.5 0 0">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="62" />
@@ -578,7 +571,7 @@
                 <TextBlock Text="{Binding SubtitleBurnTitle}"
                            Style="{StaticResource H3}"
                            Margin="0 10 0 0" />
-                <Grid Margin="0 5 0 0">
+                <Grid Margin="0 2.5 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="49" />
                         <ColumnDefinition Width="*" />
@@ -635,7 +628,7 @@
             </StackPanel>
         </StackPanel>
 
-        <comps:ThreeButtonGroup Grid.Row="5"
+        <comps:ThreeButtonGroup Grid.Row="4"
                                 Margin="0 10 0 0"
                                 ButtonHeight="30"
                                 DataContext="{Binding FinishScribeButtons}"
@@ -646,8 +639,8 @@
                                 Button2IsEnabled="{Binding B3_2IsEnabled}"
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
 
-        <comps:HintPanel Grid.Row="6"
-                         Margin="0 2.5 0 5"
-                         Text="{Binding NoteText}" />
+        <comps:HintPanel Grid.Row="5"
+                          Margin="0 2.5 0 5"
+                          Text="{Binding NoteText}" />
     </Grid>
 </ui:AdaptiveWindow>

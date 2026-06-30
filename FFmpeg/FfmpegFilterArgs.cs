@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.FFmpeg;
 
-public static class FfmpegFilterArgs
+public static class FFMpegFilterArgs
 {
     public static string Build(bool includeSwsFlags, bool includeCsp709Flags, string? pixelFormat, params string?[] filters)
     {
