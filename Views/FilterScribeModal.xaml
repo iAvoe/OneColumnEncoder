@@ -10,8 +10,8 @@
                         d:DataContext="{d:DesignInstance Type=vms:FilterScribeVM}"
                         mc:Ignorable="d"
                         Title="{Binding WindowTitle}"
-                        Width="760"
-                        Height="1120"
+                        Width="740"
+                        Height="1030"
                         WindowStartupLocation="CenterOwner"
                         Background="{StaticResource Background}">
     <Grid Margin="15">
@@ -32,7 +32,7 @@
                    Foreground="{StaticResource GlobalPrimary}" />
         <TextBlock Grid.Row="1"
                    Text="{Binding ScribeDescription2}"
-                   Margin="0 10 0 0"
+                   Margin="0 5 0 0"
                    FontSize="13"
                    TextWrapping="Wrap"
                    Foreground="{StaticResource GlobalPrimary}" />
@@ -40,7 +40,7 @@
         <!-- TabControl: AviSynth, VapourSynth, ffmpeg -->
         <TabControl Grid.Row="2"
                     SelectedIndex="{Binding SelectedTabIndex}"
-                    Margin="0 15 0 0">
+                    Margin="0 10 0 0">
 
             <TabItem Header="{Binding TabAvs}"
                      Padding="15 7.5"
@@ -85,7 +85,7 @@
                              HorizontalScrollBarVisibility="Auto"
                              VerticalScrollBarVisibility="Auto"
                              PreviewMouseWheel="UserInput_PreviewMouseWheel"
-                             Margin="0 5 0 0"
+                             Margin="0 2.5 0 0"
                              FontWeight="Normal" />
                     <TextBox Grid.Row="3"
                              Text="{Binding AvsSuffix, Mode=OneWay}"
@@ -95,13 +95,13 @@
                              Foreground="{StaticResource ButtonTertiary}"
                              TextWrapping="Wrap"
                              AcceptsReturn="True"
-                             Margin="0 5 0 0"
+                             Margin="0 2.5 0 0"
                              FontWeight="Normal" />
                     <CheckBox Grid.Row="4"
                               Content="{Binding AvsEnableFpsParamsLabel}"
                               IsChecked="{Binding AvsEnableFpsParams}"
                               IsEnabled="{Binding IsFrameRateApplicable}"
-                              Margin="0 5 0 0"
+                              Margin="0 2.5 0 0"
                               FontWeight="Normal"
                               Foreground="{StaticResource GlobalSecondary}" />
                 </Grid>
@@ -145,7 +145,7 @@
                              Padding="5"
                              FontSize="13"
                              PreviewMouseWheel="UserInput_PreviewMouseWheel"
-                             Margin="0 5 0 0"
+                             Margin="0 2.5 0 0"
                              FontWeight="Normal" />
                     <TextBox Grid.Row="3"
                              Text="{Binding VpySuffix, Mode=OneWay}"
@@ -155,13 +155,13 @@
                              Foreground="{StaticResource ButtonTertiary}"
                              TextWrapping="Wrap"
                              AcceptsReturn="True"
-                             Margin="0 5 0 0"
+                             Margin="0 2.5 0 0"
                              FontWeight="Normal" />
                     <CheckBox Grid.Row="4"
                               Content="{Binding VpyEnableFpsParamsLabel}"
                               IsChecked="{Binding VpyEnableFpsParams}"
                               IsEnabled="{Binding IsFrameRateApplicable}"
-                              Margin="0 5 0 0"
+                              Margin="0 2.5 0 0"
                               FontWeight="Normal"
                               Foreground="{StaticResource GlobalSecondary}" />
                 </Grid>
@@ -174,14 +174,14 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*"
-                                       MinHeight="180" />
+                                       MinHeight="170" />
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0"
                                Text="{Binding FfmpegFreeTextHint}"
                                FontSize="12"
                                Foreground="{StaticResource GlobalSecondary}"
                                TextWrapping="Wrap"
-                               Margin="5 0 0 10"
+                               Margin="5 0 0 0"
                                FontWeight="Normal" />
                     <TextBox Grid.Row="1"
                              Text="{Binding FfmpegFreeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -190,7 +190,8 @@
                              Foreground="{StaticResource ScriptAccentFfmpegForeground}"
                              TextWrapping="Wrap"
                              AcceptsReturn="False"
-                             Padding="2 2.5"
+                             Margin="0 2.5 0 0"
+                             Padding="2.5"
                              FontSize="13"
                              FontFamily="Consolas"
                              HorizontalScrollBarVisibility="Auto"
@@ -216,7 +217,7 @@
 
         <StackPanel Grid.Row="4"
                     Margin="0 15 0 0">
-            <StackPanel Margin="0 5 0 0">
+            <StackPanel>
                 <TextBlock Text="{Binding FrameRateConvertTitle}"
                            Style="{StaticResource H3}"
                            Margin="0 0 0 0" />
@@ -245,7 +246,7 @@
             <StackPanel>
                 <TextBlock Text="{Binding SarRepairTitle}"
                            Style="{StaticResource H3}"
-                           Margin="0 15 0 0" />
+                           Margin="0 10 0 0" />
                 <Grid Margin="0 5 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="49" />
@@ -271,7 +272,7 @@
             <StackPanel>
                 <TextBlock Text="{Binding ColorSpaceConvertTitle}"
                            Style="{StaticResource H3}"
-                           Margin="0 15 0 0" />
+                           Margin="0 10 0 0" />
                 <StackPanel Margin="0 5 0 0">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -356,13 +357,13 @@
                 </StackPanel>
             </StackPanel>
 
-            <comps:HintPanel Margin="0 5 0 0"
+            <comps:HintPanel Margin="0 2.5 0 0"
                              Text="{Binding ColorSpacePeakNitsHint}" />
 
             <StackPanel>
                 <TextBlock Text="{Binding DenoiseTitle}"
                            Style="{StaticResource H3}"
-                           Margin="0 15 0 0" />
+                           Margin="0 10 0 0" />
                 <Grid Margin="0 5 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="49" />
@@ -425,13 +426,13 @@
                 </Grid>
             </StackPanel>
 
-            <comps:HintPanel Margin="0 5 0 0"
+            <comps:HintPanel Margin="0 2.5 0 0"
                              Text="{Binding VSInstallHqdn3dHint}" />
 
             <StackPanel>
                 <TextBlock Text="{Binding ResolutionScaleTitle}"
                            Style="{StaticResource H3}"
-                           Margin="0 15 0 0" />
+                           Margin="0 10 0 0" />
 
                 <Grid Margin="0 2.5 0 0">
                     <Grid.ColumnDefinitions>
@@ -576,7 +577,7 @@
             <StackPanel>
                 <TextBlock Text="{Binding SubtitleBurnTitle}"
                            Style="{StaticResource H3}"
-                           Margin="0 15 0 0" />
+                           Margin="0 10 0 0" />
                 <Grid Margin="0 5 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="49" />
@@ -622,9 +623,15 @@
             <StackPanel>
                 <TextBlock Text="{Binding MultiFilterAssemblyTitle}"
                            Style="{StaticResource H3}"
-                           Margin="0 15 0 0" />
-                <comps:HintPanel Margin="0 5 0 0"
-                                 Text="ffmpeg::  -filter:v &quot;fps=30000/1001,scale=1280:720&quot;&#x0a;ffmpeg::: -filter:v &quot;fps=30000/1001,zscale=matrix=bt709:primaries=bt709:transfer=bt709,scale=1280:720&quot;&#x0a;ffmpeg:::: -filter:v &quot;fps=30000/1001,libplacebo=reset_sar=1,zscale=matrix=bt709:primaries=bt709:transfer=bt709,scale=1280:720&quot;&#x0a;ffmpeg::::: -filter:v &quot;hqdn3d,fps=30000/1001,libplacebo=reset_sar=1,zscale=matrix=bt709:primaries=bt709:transfer=bt709,scale=1280:720&quot;" />
+                           Margin="0 10 0 0" />
+                <TextBox Margin="0 2.5 0 0"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         Background="{StaticResource Background}"
+                         Foreground="{StaticResource ButtonTertiary}"
+                         FontSize="10"
+                         VerticalAlignment="Center"
+                         Text="ffmpeg::  -filter:v &quot;fps=30000/1001,scale=1280:720&quot;&#x0a;ffmpeg::: -filter:v &quot;fps=30000/1001,zscale=matrix=bt709:primaries=bt709:transfer=bt709,scale=1280:720&quot;&#x0a;ffmpeg:::: -filter:v &quot;fps=30000/1001,libplacebo=reset_sar=1,zscale=matrix=bt709:primaries=bt709:transfer=bt709,scale=1280:720&quot;&#x0a;ffmpeg::::: -filter:v &quot;hqdn3d,fps=30000/1001,libplacebo=reset_sar=1,zscale=matrix=bt709:primaries=bt709:transfer=bt709,scale=1280:720&quot;" />
             </StackPanel>
         </StackPanel>
 
@@ -640,7 +647,7 @@
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
 
         <comps:HintPanel Grid.Row="6"
-                         Margin="0 5 0 5"
+                         Margin="0 2.5 0 5"
                          Text="{Binding NoteText}" />
     </Grid>
 </ui:AdaptiveWindow>
