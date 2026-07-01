@@ -100,7 +100,7 @@ namespace OneColumnEncoder.ViewModels
                 int completed = _store.Jobs.Count(j => j.Status == "Completed");
                 int unfinished = _store.Jobs.Count(j => j.Status is "Failed" or "Interrupted");
                 int encoding = _store.Jobs.Count(j => j.Status == "Encoding");
-                return $"Total: {total}  |  Pending: {pending}  |  Encoding: {encoding}  |  Done: {completed}  |  Unfinished: {unfinished}";
+                return $"Ttl: {total} | Pnd: {pending} | Enc: {encoding} | Done: {completed} | Undone: {unfinished}";
             }
         }
 

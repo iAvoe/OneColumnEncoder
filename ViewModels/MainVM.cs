@@ -1596,21 +1596,24 @@ namespace OneColumnEncoder.ViewModels
         {
             const int maxDetails = 5;
             List<string> details = [];
-            int unmatchedCount = issues.Count(issue => issue.Kind == ScriptSourceValidationIssueKind.NoMatchingVideoSource);
-            int mismatchCount = issues.Count - unmatchedCount;
+            int noVideoSrcCount = issues.Count(issue => issue.Kind == ScriptSourceValidationIssueKind.NoMatchingVideoSource);
+            int noScriptCount = issues.Count(issue => issue.Kind == ScriptSourceValidationIssueKind.NoMatchingScriptFile);
+            int mismatchCount = issues.Count - noVideoSrcCount - noScriptCount;
 
             foreach (ScriptSourceValidationIssue issue in issues.Take(maxDetails))
             {
-                string scriptName = Path.GetFileName(issue.ScriptPath);
+                string fileName = Path.GetFileName(issue.ScriptPath);
                 string detail = issue.Kind switch
                 {
                     ScriptSourceValidationIssueKind.NoMatchingVideoSource =>
-                        string.Format(UILangProviderM.Current["ScriptQueueImport.DetailNoMatch"], scriptName),
+                        string.Format(UILangProviderM.Current["ScriptQueueImport.DetailNoMatch"], fileName),
+                    ScriptSourceValidationIssueKind.NoMatchingScriptFile =>
+                        string.Format(UILangProviderM.Current["ScriptQueueImport.DetailNoScript"], fileName),
                     ScriptSourceValidationIssueKind.UnreadableScript =>
-                        string.Format(UILangProviderM.Current["ScriptQueueImport.DetailUnreadable"], scriptName),
+                        string.Format(UILangProviderM.Current["ScriptQueueImport.DetailUnreadable"], fileName),
                     _ => string.Format(
                         UILangProviderM.Current["ScriptQueueImport.DetailMismatch"],
-                        scriptName,
+                        fileName,
                         issue.EmbeddedPath ?? string.Empty,
                         issue.ExpectedPath ?? string.Empty)
                 };
@@ -1618,7 +1621,7 @@ namespace OneColumnEncoder.ViewModels
             }
 
             int omitted = issues.Count - Math.Min(issues.Count, maxDetails);
-            string msg = string.Format(UILangProviderM.Current["ScriptQueueImport.RejectedPrefix"], unmatchedCount, mismatchCount);
+            string msg = string.Format(UILangProviderM.Current["ScriptQueueImport.RejectedPrefix"], noVideoSrcCount + noScriptCount, mismatchCount);
             msg += "\n\n" + UILangProviderM.Current["ScriptQueueImport.DetailsHeader"] + "\n" + string.Join("\n", details);
             if (omitted > 0) msg += "\n" + string.Format(UILangProviderM.Current["ScriptQueueImport.MoreCount"], omitted);
             return msg;

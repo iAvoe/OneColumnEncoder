@@ -7,6 +7,7 @@ namespace OneColumnEncoder.Validation
     public enum ScriptSourceValidationIssueKind
     {
         NoMatchingVideoSource,
+        NoMatchingScriptFile,
         UnreadableScript,
         SourcePathMismatch
     }
@@ -32,9 +33,13 @@ namespace OneColumnEncoder.Validation
                 videoByBasename[Path.GetFileNameWithoutExtension(videoPath)] = videoPath;
 
             List<ScriptSourceValidationIssue> issues = [];
+
+            HashSet<string> scriptBasenames = new(StringComparer.OrdinalIgnoreCase);
             foreach (string scriptPath in scriptPaths)
             {
                 string scriptBasename = Path.GetFileNameWithoutExtension(scriptPath);
+                scriptBasenames.Add(scriptBasename);
+
                 if (!videoByBasename.TryGetValue(scriptBasename, out string? videoPath))
                 {
                     issues.Add(new(ScriptSourceValidationIssueKind.NoMatchingVideoSource, scriptPath));
@@ -42,6 +47,13 @@ namespace OneColumnEncoder.Validation
                 }
 
                 AddMismatchIssueIfNeeded(issues, scriptPath, ext, videoPath);
+            }
+
+            foreach (string videoPath in videoPaths)
+            {
+                string videoBasename = Path.GetFileNameWithoutExtension(videoPath);
+                if (!scriptBasenames.Contains(videoBasename))
+                    issues.Add(new(ScriptSourceValidationIssueKind.NoMatchingScriptFile, videoPath));
             }
 
             return issues;
