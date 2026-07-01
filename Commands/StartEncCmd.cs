@@ -19,7 +19,8 @@ namespace OneColumnEncoder.Commands
         Func<bool>? isQueueRoute = null,
         Func<string>? getQueueJsonPath = null,
         Func<string[], EncodingPipelineRequest[]?>? buildQueueRequests = null,
-        Func<bool>? isQueueRouteSupported = null) : BaseCmd
+        Func<bool>? isQueueRouteSupported = null,
+        Func<string[], string[]>? filterSourcePaths = null) : BaseCmd
     {
         private const int MaxListedOverwriteTargets = 50;
         private readonly Func<EncodingPipelineRequest?> _buildRequest = buildRequest;
@@ -29,6 +30,7 @@ namespace OneColumnEncoder.Commands
         private readonly Func<string>? _getQueueJsonPath = getQueueJsonPath;
         private readonly Func<string[], EncodingPipelineRequest[]?>? _buildQueueRequests = buildQueueRequests;
         private readonly Func<bool>? _isQueueRouteSupported = isQueueRouteSupported;
+        private readonly Func<string[], string[]>? _filterSourcePaths = filterSourcePaths;
         private static StartEncCmdLangProviderM Lang => new(UILangProviderM.Current.LanguageCode);
 
         public override void Execute(object? parameter)
@@ -92,6 +94,17 @@ namespace OneColumnEncoder.Commands
 
             string[]? sourcePaths = LoadQueueSourcePaths();
             if (sourcePaths == null) return;
+
+            if (_filterSourcePaths != null)
+                sourcePaths = _filterSourcePaths(sourcePaths);
+            if (sourcePaths.Length == 0)
+            {
+                new OpenWarnModalCmd(
+                    _modalNavS,
+                    Lang.WarnTitle,
+                    Lang.AllFilteredOutMsg).Execute(null);
+                return;
+            }
 
             QueueEncodingItem[]? queueItems;
             try

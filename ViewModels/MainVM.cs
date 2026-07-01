@@ -1,5 +1,6 @@
 ﻿using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
+using OneColumnEncoder.Json;
 using OneColumnEncoder.Commands.SaveLoad;
 using OneColumnEncoder.FileManagement;
 using OneColumnEncoder.Models;
@@ -29,6 +30,8 @@ namespace OneColumnEncoder.ViewModels
         private readonly ToolItemCardVM? _outputSettingCard;
         private readonly VideoSourceQueueState _videoSourceQueue;
         private string _scriptScribeFfmpegFilterArgs = string.Empty;
+        private bool _isDurationFilterEnabled;
+        private int _minVideoDurationSeconds = 30;
         #region MiniItemCard state
         private bool _isMiniUpstreamsZone;
         private bool _isMiniEncodersZone;
@@ -145,6 +148,12 @@ namespace OneColumnEncoder.ViewModels
         public static string SVFIClipDisabledHintText => UICaptionProviderM.Hints.SVFIClipDisabled;
         public static string AnalyzeNeedsSourceText => UICaptionProviderM.Hints.AnalyzeNeedsSource;
         public static string NumaCpuCheckHintText => UICaptionProviderM.Hints.NumaCpuCheckTrigger;
+        private string _minDurationFilterText = "";
+        public string MinDurationFilterText
+        {
+            get => _minDurationFilterText;
+            set => SetProperty(ref _minDurationFilterText, value);
+        }
 
         public sealed class LocalizedTextLookup(IReadOnlyDictionary<string, Func<string>> getters)
         {
@@ -307,6 +316,52 @@ namespace OneColumnEncoder.ViewModels
                 ? UILangProviderM.Current["Expand"]
                 : UILangProviderM.Current["Collapse"];
 
+        public bool IsDurationFilterEnabled
+        {
+            get => _isDurationFilterEnabled;
+            set
+            {
+                if (SetProperty(ref _isDurationFilterEnabled, value))
+                {
+                    _appDataM.IsDurationFilterEnabled = value;
+                    _appDataM.Save();
+                    RefreshDurationFilterStatus();
+                }
+            }
+        }
+
+        public int MinVideoDurationSeconds
+        {
+            get => _minVideoDurationSeconds;
+            set
+            {
+                if (SetProperty(ref _minVideoDurationSeconds, value))
+                {
+                    _appDataM.MinVideoDurationSeconds = value;
+                    _appDataM.Save();
+                    RefreshDurationFilterStatus();
+                }
+            }
+        }
+
+        public bool IsDurationFilterVisible => IsQueueRouteActive();
+
+        public string[] DurationTickLabels => ["10s", "70s", "130s", "190s", "250s", "310s"];
+
+        private string _durationFilterStatusText = "";
+        public string DurationFilterStatusText
+        {
+            get => _durationFilterStatusText;
+            set => SetProperty(ref _durationFilterStatusText, value);
+        }
+
+        private bool _isDurationFilterStatusVisible;
+        public bool IsDurationFilterStatusVisible
+        {
+            get => _isDurationFilterStatusVisible;
+            set => SetProperty(ref _isDurationFilterStatusVisible, value);
+        }
+
         #endregion
 
         public string UpstreamsZoneSelectedPath
@@ -374,6 +429,8 @@ namespace OneColumnEncoder.ViewModels
             _isMiniBestPracticesCard = _appDataM.IsMiniBestPracticesCard ?? false;
             _isMiniToolsImportCard = _appDataM.IsMiniToolsImportCard ?? false;
             _isMiniStartEncodingZone = _appDataM.IsMiniStartEncodingZone ?? false;
+            _isDurationFilterEnabled = _appDataM.IsDurationFilterEnabled ?? false;
+            _minVideoDurationSeconds = _appDataM.MinVideoDurationSeconds ?? 30;
             OpenAppConf = openAppConf;
             OpenUsages = openUsages;
 
@@ -565,7 +622,8 @@ namespace OneColumnEncoder.ViewModels
                 IsQueueRouteActive,
                 GetCurrentQueueJsonPath,
                 BuildQueueEncodingPipelineRequests,
-                IsQueueRouteSupported);
+                IsQueueRouteSupported,
+                FilterSourcePathsByDuration);
 
             // Build button groups after commands so initial CanExecute refreshes have valid targets.
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
@@ -1490,6 +1548,7 @@ namespace OneColumnEncoder.ViewModels
                 item.IsSelected = true;
             _appDataM.Save();
             RefreshSelectedSourceStatus(resetAnalysis: true);
+            RefreshDurationFilterStatus();
             if (filePaths.Length > 0)
                 PromptRunSourceAnalysisAfterReplace(promptScriptGenAfterAnalysis: false);
         }
@@ -1500,6 +1559,7 @@ namespace OneColumnEncoder.ViewModels
             // This handler only clears the stored files and refreshes selection state.
             _videoSourceQueue.Clear(item);
             RefreshSelectedSourceStatus(resetAnalysis: !HasSelectedVideoSource());
+            RefreshDurationFilterStatus();
         }
 
         private void OnSourceScriptQueueImported(ToolItemCardVM item, SourceFileKind kind, string _, string[] filePaths)
@@ -1588,6 +1648,7 @@ namespace OneColumnEncoder.ViewModels
         {
             _videoSourceQueue.ApplyAcceptedFiles(acceptedFilePaths);
             RefreshSelectedSourceStatus(resetAnalysis: false);
+            RefreshDurationFilterStatus();
         }
 
         private void SaveSourcePath(SourceFileKind kind, string filePath)
@@ -1704,6 +1765,8 @@ namespace OneColumnEncoder.ViewModels
             ToolCompatibility.RefreshVideoSourceSelectionState(
                 UpstreamsZone, VideoSrcImportZone);
             RefreshOutputSettingCommand();
+
+            OnPropertyChanged(nameof(IsDurationFilterVisible));
 
             if (_outputSettingCard != null)
             {
@@ -2011,6 +2074,85 @@ namespace OneColumnEncoder.ViewModels
             catch
             {
                 return [];
+            }
+        }
+
+        private string[] FilterSourcePathsByDuration(string[] sourcePaths)
+        {
+            if (!IsDurationFilterEnabled) return sourcePaths;
+
+            Dictionary<string, string> ffprobeByPath = LoadQueueFfprobeJsonByPath();
+            return sourcePaths.Where(path =>
+            {
+                if (!ffprobeByPath.TryGetValue(path, out string? json)) return true;
+                double? duration = ParseDurationFromFfprobeJson(json);
+                return duration == null || duration >= MinVideoDurationSeconds;
+            }).ToArray();
+        }
+
+        private static double? ParseDurationFromFfprobeJson(string? rawJson)
+        {
+            if (string.IsNullOrWhiteSpace(rawJson)) return null;
+
+            try
+            {
+                using JsonDocument doc = JsonDocument.Parse(rawJson);
+                JsonElement root = doc.RootElement;
+                if (root.TryGetProperty("streams", out JsonElement streams) &&
+                    streams.ValueKind == JsonValueKind.Array &&
+                    streams.GetArrayLength() > 0)
+                {
+                    double? fromStream = JsonElementHelper.TryGetDouble(streams[0], "duration");
+                    if (fromStream is > 0) return fromStream;
+                }
+                if (root.TryGetProperty("format", out JsonElement format))
+                    return JsonElementHelper.TryGetDouble(format, "duration");
+                return null;
+            }
+            catch { return null; }
+        }
+
+        private (int remaining, int removed, int total) GetDurationFilterStats()
+        {
+            string[] paths = GetCurrentQueueFilePaths();
+            int total = paths.Length;
+            if (total == 0) return (0, 0, 0);
+            if (!IsDurationFilterEnabled) return (total, 0, total);
+
+            Dictionary<string, string> ffprobeByPath = LoadQueueFfprobeJsonByPath();
+            int remaining = 0, removed = 0;
+            foreach (string path in paths)
+            {
+                if (!ffprobeByPath.TryGetValue(path, out string? json))
+                {
+                    remaining++;
+                    continue;
+                }
+                double? duration = ParseDurationFromFfprobeJson(json);
+                if (duration == null || duration >= MinVideoDurationSeconds)
+                    remaining++;
+                else
+                    removed++;
+            }
+            return (remaining, removed, total);
+        }
+
+        private void RefreshDurationFilterStatus()
+        {
+            var (remaining, removed, total) = GetDurationFilterStats();
+            if (!IsDurationFilterEnabled || removed == 0)
+            {
+                IsDurationFilterStatusVisible = false;
+            }
+            else if (remaining == 0)
+            {
+                DurationFilterStatusText = UICaptionProviderM.Hints.DurationFilterAllFiltered;
+                IsDurationFilterStatusVisible = true;
+            }
+            else
+            {
+                DurationFilterStatusText = string.Format(UICaptionProviderM.Hints.DurationFilterCount, removed, total);
+                IsDurationFilterStatusVisible = true;
             }
         }
 
@@ -2332,6 +2474,8 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(SVFIClipDisabledHintText));
             OnPropertyChanged(nameof(AnalyzeNeedsSourceText));
             OnPropertyChanged(nameof(NumaCpuCheckHintText));
+            MinDurationFilterText = UICaptionProviderM.Hints.MinDurationFilter;
+            RefreshDurationFilterStatus();
         }
         private void RefreshButtonCaptions()
         {

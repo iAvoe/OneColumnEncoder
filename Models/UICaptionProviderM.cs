@@ -90,6 +90,9 @@ public static class UICaptionProviderM
         public static string AppConfNotificationPolicy => UILangProviderM.Current["Hint.AppConfNotificationPolicy"];
         public static string QueueRouteSampleClipDisabled => UILangProviderM.Current["Hint.QueueRouteSampleClipDisabled"];
         public static string FilterScribeDisabled => UILangProviderM.Current["Hint.FilterScribeDisabled"];
+        public static string MinDurationFilter => UILangProviderM.Current["Hint.MinDurationFilter"];
+        public static string DurationFilterAllFiltered => UILangProviderM.Current["Hint.DurationFilterAllFiltered"];
+        public static string DurationFilterCount => UILangProviderM.Current["Hint.DurationFilterCount"];
     }
 
     public static class AppConf

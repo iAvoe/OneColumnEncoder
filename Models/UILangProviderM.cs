@@ -132,6 +132,8 @@ public class UILangProviderM
             ["SourceQueue.CopyExcludedJsonPath"] = "Copy Exclusion JSON Path",
             ["SourceQueue.OpenQueueJson"] = "Open Queue JSON",
             ["SourceQueue.OpenExcludedJson"] = "Open Exclusion JSON",
+            ["SourceQueue.FilterModeTitle"] = "Execute Queue Weighted Filter?",
+            ["SourceQueue.FilterModeMessage"] = "Confirm: consistent sources in similar duration\nCancel: Exc. BDMV/M3U intros, trailers by weighted voting\nA first-stream comparison exclusion will run afterward to ensure format consistency regardlessly",
 
             // Dialogs
             ["Dialog.SelectTitle"] = "Select {0}",
@@ -153,7 +155,7 @@ public class UILangProviderM
 
             // Auto tool import
             ["AutoImport.Title"] = "Auto Tool Import",
-            ["AutoImport.FoundMessage"] = "Found the following verified executable files. Import them now?\n\n{0}",
+            ["AutoImport.FoundMessage"] = "Detected following verified executable files. Import them now?\n\n{0}",
             ["AutoImport.NotFoundMessage"] = "No importable tools were detected in this app's directory. To recheck later, enable Settings → Init Mode → Auto-import tools on next launch.",
             ["AutoImport.ItemFormat"] = "- {0}: {1}\n  {2}",
 
@@ -337,6 +339,9 @@ public class UILangProviderM
             ["Hint.AppConfNotificationPolicy"] = "Notification features are intentionally unprovided—Evidences suggested phone notif. may lower neural activity that correlates cognitive control: Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725\r\n",
             ["Hint.QueueRouteSampleClipDisabled"] = "Video Source Queue mode does not support sample clipping. Run Sample has been disabled.",
             ["Hint.FilterScribeDisabled"] = "OneLineShotArgs does not support script generation, disabling Filter Scribe.",
+            ["Hint.MinDurationFilter"] = "Min Duration Filter (s):",
+            ["Hint.DurationFilterAllFiltered"] = "All videos filtered out by the duration filter.",
+            ["Hint.DurationFilterCount"] = "{0} of {1} videos filtered out.",
 
             // Heatmap
             ["Heatmap.Cold"] = "Cold",
@@ -477,6 +482,8 @@ public class UILangProviderM
             ["SourceQueue.CopyExcludedJsonPath"] = "复制排除列表 JSON 路径",
             ["SourceQueue.OpenQueueJson"] = "打开队列 JSON",
             ["SourceQueue.OpenExcludedJson"] = "打开排除列表 JSON",
+            ["SourceQueue.FilterModeTitle"] = "是否执行队列权重筛选",
+            ["SourceQueue.FilterModeMessage"] = "确认：所有源的时长一致，无需筛选\n取消：使用权重投票法排除 BDMV/M3U 片头片花\n两况皆会执行首流对比排除，以确保视频格式的一致性",
 
             ["Dialog.SelectTitle"] = "选择 {0}",
             ["Dialog.ReplaceTitle"] = "替换 {0}",
@@ -666,6 +673,9 @@ public class UILangProviderM
             ["Hint.AppConfNotificationPolicy"] = "本应用有意不提供通知功能——研究结果表明，智能手机通知可能会降低与认知控制功能相关的脑神经活动：Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725",
             ["Hint.QueueRouteSampleClipDisabled"] = "队列视频源模式不支持取段打样，已禁用取段打样按钮。",
             ["Hint.FilterScribeDisabled"] = "OneLineShotArgs 上游不支持脚本生成，已禁用脚本编辑器。",
+            ["Hint.MinDurationFilter"] = "最短时长筛选（秒）:",
+            ["Hint.DurationFilterAllFiltered"] = "所有视频均被时长筛选过滤。",
+            ["Hint.DurationFilterCount"] = "已过滤 {0}/{1} 个视频。",
 
             // Heatmap
             ["Heatmap.Cold"] = "冷",
@@ -804,6 +814,8 @@ public class UILangProviderM
             ["SourceQueue.CopyExcludedJsonPath"] = "複製排除列表 JSON 路徑",
             ["SourceQueue.OpenQueueJson"] = "開啟隊列 JSON",
             ["SourceQueue.OpenExcludedJson"] = "開啟排除列表 JSON",
+            ["SourceQueue.FilterModeTitle"] = "是否執行隊列權重篩選",
+            ["SourceQueue.FilterModeMessage"] = "確認：所有源的時長一致，無需篩選\n取消：使用權重投票法排除 BDMV/M3U 片頭片花\n兩況皆會執行首流對比排除，以確保影片格式的一致性",
 
             ["Dialog.SelectTitle"] = "選擇 {0}",
             ["Dialog.ReplaceTitle"] = "替換 {0}",
@@ -988,6 +1000,9 @@ public class UILangProviderM
             ["Hint.AppConfNotificationPolicy"] = "本應用有意不提供通知功能——研究結果表明，智慧型手機通知可能會降低與認知控制功能相關的腦神經活動：Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725",
             ["Hint.QueueRouteSampleClipDisabled"] = "隊列影片源模式不支援取段打樣，已禁用取段打樣按鈕。",
             ["Hint.FilterScribeDisabled"] = "OneLineShotArgs 上游不支援腳本生成，已禁用腳本編輯器。",
+            ["Hint.MinDurationFilter"] = "最短時長篩選（秒）:",
+            ["Hint.DurationFilterAllFiltered"] = "所有影片均被時長篩選過濾。",
+            ["Hint.DurationFilterCount"] = "已過濾 {0}/{1} 個影片。",
 
             // Heatmap
             ["Heatmap.Cold"] = "冷",
@@ -1084,6 +1099,9 @@ public class UILangProviderM
         ["Hint.AppConfNotificationPolicy"] = "Les notifications ne sont pas fournies volontairement : des données suggèrent qu'elles peuvent réduire l'activité neuronale liée au contrôle cognitif. Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725",
         ["Hint.QueueRouteSampleClipDisabled"] = "Le mode file d'attente de source vidéo ne prend pas en charge l'échantillonnage; bouton Échantillon désactivé.",
         ["Hint.FilterScribeDisabled"] = "OneLineShotArgs ne prend pas en charge la génération de scripts; le Scribe de filtres est désactivé.",
+        ["Hint.MinDurationFilter"] = "Filtrer durée min. (s) :",
+        ["Hint.DurationFilterAllFiltered"] = "Toutes les vidéos filtrées par le filtre de durée.",
+        ["Hint.DurationFilterCount"] = "{0} sur {1} vidéos filtrées.",
         ["AppConfModal.Title"] = "Paramètres 1cenc",
         ["AppConfModal.Header"] = "Paramètres",
         ["Import.NoSelection"] = "Aucune sélection",
@@ -1121,6 +1139,8 @@ public class UILangProviderM
         ["SourceQueue.CopyExcludedJsonPath"] = "Copier le chemin JSON d'exclusion",
         ["SourceQueue.OpenQueueJson"] = "Ouvrir le JSON de la file d'attente",
         ["SourceQueue.OpenExcludedJson"] = "Ouvrir le JSON d'exclusion",
+        ["SourceQueue.FilterModeTitle"] = "Faut-il exécuter le filtrage pondéré ?",
+        ["SourceQueue.FilterModeMessage"] = "Confirmer : toutes les sources ont une durée cohérente, aucun filtrage nécessaire\nAnnuler : exclusion des intros BDMV/M3U et bandes-annonces par vote pondéré\nDans tous les cas, une exclusion par comparaison du premier flux sera exécutée pour garantir la cohérence du format",
         ["Dialog.SelectTitle"] = "Choisir {0}",
         ["Dialog.ReplaceTitle"] = "Remplacer {0}",
         ["Dialog.Filter.All"] = "Tous les fichiers (*.*)|*.*",
@@ -1367,6 +1387,9 @@ public class UILangProviderM
         ["Hint.AppConfNotificationPolicy"] = "Las notificaciones se omiten deliberadamente: hay evidencia de que pueden reducir actividad neuronal asociada al control cognitivo. Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725",
         ["Hint.QueueRouteSampleClipDisabled"] = "El modo de cola de fuente de vídeo no admite recorte de muestra; botón Muestra desactivado.",
         ["Hint.FilterScribeDisabled"] = "OneLineShotArgs no admite la generación de scripts; Scribe de filtros desactivado.",
+        ["Hint.MinDurationFilter"] = "Filtro duración mín. (s):",
+        ["Hint.DurationFilterAllFiltered"] = "Todos los videos filtrados por el filtro de duración.",
+        ["Hint.DurationFilterCount"] = "{0} de {1} videos filtrados.",
         ["AppConfModal.Title"] = "Ajustes de 1cenc",
         ["AppConfModal.Header"] = "Ajustes",
         ["Import.NoSelection"] = "Sin selección",
@@ -1404,6 +1427,8 @@ public class UILangProviderM
         ["SourceQueue.CopyExcludedJsonPath"] = "Copiar ruta JSON de exclusión",
         ["SourceQueue.OpenQueueJson"] = "Abrir JSON de cola",
         ["SourceQueue.OpenExcludedJson"] = "Abrir JSON de exclusión",
+        ["SourceQueue.FilterModeTitle"] = "¿Ejecutar el filtrado ponderado de la cola?",
+        ["SourceQueue.FilterModeMessage"] = "Confirmar : todas las fuentes tienen una duración coherente, no es necesario filtrar\nCancelar : exclusión de intros BDMV/M3U y tráileres por voto ponderado\nEn ambos casos, se ejecutará una exclusión por comparación del primer flujo para garantizar la coherencia del formato",
         ["Dialog.SelectTitle"] = "Elegir {0}",
         ["Dialog.ReplaceTitle"] = "Reemplazar {0}",
         ["Dialog.Filter.All"] = "Todos los archivos (*.*)|*.*",
@@ -1650,6 +1675,9 @@ public class UILangProviderM
         ["Hint.AppConfNotificationPolicy"] = "通知機能は意図的に提供していません。スマートフォン通知は認知制御に関連する神経活動を低下させる可能性が示唆されています: Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725",
         ["Hint.QueueRouteSampleClipDisabled"] = "動画ソースキューモードはサンプル切り出し非対応のため、サンプル実行を無効化しました。",
         ["Hint.FilterScribeDisabled"] = "OneLineShotArgs はスクリプト生成非対応のため、フィルタースクライブを無効化しました。",
+        ["Hint.MinDurationFilter"] = "最小時間フィルター（秒）:",
+        ["Hint.DurationFilterAllFiltered"] = "すべての動画が時間フィルターで除外されました。",
+        ["Hint.DurationFilterCount"] = "{0}/{1} の動画を除外しました。",
         ["AppConfModal.Title"] = "1cenc 設定",
         ["AppConfModal.Header"] = "設定",
         ["Import.NoSelection"] = "未選択",
@@ -1679,6 +1707,8 @@ public class UILangProviderM
         ["SourceQueue.CopyExcludedJsonPath"] = "除外JSONパスをコピー",
         ["SourceQueue.OpenQueueJson"] = "キューJSONを開く",
         ["SourceQueue.OpenExcludedJson"] = "除外JSONを開く",
+        ["SourceQueue.FilterModeTitle"] = "キューの重み付きフィルタを実行しますか？",
+        ["SourceQueue.FilterModeMessage"] = "確認：すべてのソースの再生時間が一致しているため、フィルタは不要です\nキャンセル：重み付き投票により BDMV/M3U のオープニング・予告編を除外します\nどちらの場合も、先頭ストリームとの比較除外を実行し、フォーマットの一致を保証します",
         ["Dialog.SelectTitle"] = "{0} を選択",
         ["Dialog.ReplaceTitle"] = "{0} を置換",
         ["Dialog.Filter.All"] = "すべてのファイル (*.*)|*.*",
@@ -1933,6 +1963,9 @@ public class UILangProviderM
         ["Hint.AppConfNotificationPolicy"] = "Уведомления намеренно не предоставляются: данные показывают, что они могут снижать нейронную активность, связанную с когнитивным контролем. Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725",
         ["Hint.QueueRouteSampleClipDisabled"] = "Режим очереди видеоисточников не поддерживает пробный отрезок; кнопка пробы отключена.",
         ["Hint.FilterScribeDisabled"] = "OneLineShotArgs не поддерживает генерацию скриптов; редактор фильтров отключен.",
+        ["Hint.MinDurationFilter"] = "Фильтр мин. длительности (с):",
+        ["Hint.DurationFilterAllFiltered"] = "Все видео отфильтрованы фильтром длительности.",
+        ["Hint.DurationFilterCount"] = "Отфильтровано {0} из {1} видео.",
         ["AppConfModal.Title"] = "Настройки 1cenc",
         ["AppConfModal.Header"] = "Настройки",
         ["Import.NoSelection"] = "Не выбрано",
@@ -1962,6 +1995,8 @@ public class UILangProviderM
         ["SourceQueue.CopyExcludedJsonPath"] = "Копировать путь JSON исключений",
         ["SourceQueue.OpenQueueJson"] = "Открыть JSON очереди",
         ["SourceQueue.OpenExcludedJson"] = "Открыть JSON исключений",
+        ["SourceQueue.FilterModeTitle"] = "Выполнить взвешенную фильтрацию очереди?",
+        ["SourceQueue.FilterModeMessage"] = "Подтвердить: длительность всех источников согласована, фильтрация не требуется\nОтмена: исключение интро и трейлеров BDMV/M3U взвешенным голосованием\nВ любом случае будет выполнено сравнение с первым потоком для обеспечения согласованности формата",
         ["Dialog.SelectTitle"] = "Выбрать {0}",
         ["Dialog.ReplaceTitle"] = "Заменить {0}",
         ["Dialog.Filter.All"] = "Все файлы (*.*)|*.*",

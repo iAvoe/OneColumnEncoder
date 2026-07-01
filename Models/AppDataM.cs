@@ -36,6 +36,10 @@ namespace OneColumnEncoder.Models
         public bool? IsMiniToolsImportCard { get; set; }
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public bool? IsMiniStartEncodingZone { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public bool? IsDurationFilterEnabled { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public int? MinVideoDurationSeconds { get; set; }
 
         // File sizes are used for detecting tool replacements
         #region ImportedTools data structure

@@ -199,6 +199,12 @@ namespace OneColumnEncoder.ViewModels.Cards
 
     public sealed record SourceCheckSignature(StatusType[] Checklist1, StatusType[] Checklist2)
     {
+        public string MatchKey => string.Join(
+            "|",
+            Checklist1
+                .Select(status => ((int)status).ToString())
+                .Concat(Checklist2.Select(status => ((int)status).ToString())));
+
         public bool Matches(SourceCheckSignature other) =>
             Checklist1.SequenceEqual(other.Checklist1) && Checklist2.SequenceEqual(other.Checklist2);
     }

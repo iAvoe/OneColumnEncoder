@@ -907,9 +907,42 @@
                              Margin="10 2.5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
+            <!-- Duration filter for queue mode -->
+            <Grid Visibility="{Binding IsDurationFilterVisible, Converter={StaticResource BoolToVisibility}}"
+                  Margin="10 0 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <CheckBox Content="{Binding MinDurationFilterText}"
+                          Grid.Column="0"
+                          IsChecked="{Binding IsDurationFilterEnabled}"
+                          Foreground="{StaticResource GlobalSecondary}"
+                          FontWeight="Normal"
+                          Margin="0 2.5 0 0"
+                          VerticalAlignment="Center" />
+                <comps:IntegerSlider Grid.Column="1"
+                                     Label=""
+                                     Margin="2.5 0 0 0"
+                                     Minimum="10"
+                                     Maximum="310"
+                                     Value="{Binding MinVideoDurationSeconds, Mode=TwoWay}"
+                                     Step="10"
+                                     TickCount="6"
+                                     TickLabels="{Binding DurationTickLabels}"
+                                     IsEnabled="{Binding IsDurationFilterEnabled}"
+                                     LabelWidth="0"
+                                     HorizontalAlignment="Stretch" />
+            </Grid>
+            <comps:HintPanel Text="{Binding DurationFilterStatusText}"
+                             Visibility="{Binding IsDurationFilterStatusVisible, Converter={StaticResource BoolToVisibility}}"
+                             RefreshTextOnLanguageChanged="True"
+                             Margin="10 2.5 5 0"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center" />
             <!-- Starting Options -->
             <comps:SectionHeader HeaderText="{Binding SectionTexts[StartEncoding]}"
-                                 Margin="0 15 0 0">
+                                 Margin="0 5 0 0">
                 <comps:SectionHeader.HeaderExtra>
                     <Button Command="{Binding ToggleMiniStartEncodingZoneCmd}"
                             Tag="{Binding IsMiniStartEncodingZone}"

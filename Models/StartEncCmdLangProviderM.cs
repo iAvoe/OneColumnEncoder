@@ -24,6 +24,7 @@ public class StartEncCmdLangProviderM
             ["QueueSourceMissingMsg"] = "Queue source file(s) are missing. Encoding cannot continue:",
             ["QueueDuplicateOutputMsg"] = "Queue output paths collide. Encoding cannot continue:",
             ["QueueEncodingPendingMsg"] = "Queue overwrite protection completed. Queue execution is not wired yet.",
+            ["AllFilteredOutMsg"] = "All videos were filtered out by the duration filter.",
             ["GbSuffix"] = " GB",
             ["MbSuffix"] = " MB",
         },
@@ -47,6 +48,7 @@ public class StartEncCmdLangProviderM
             ["QueueSourceMissingMsg"] = "以下队列源文件缺失，无法继续压制：",
             ["QueueDuplicateOutputMsg"] = "以下队列输出路径发生冲突，无法继续压制：",
             ["QueueEncodingPendingMsg"] = "队列覆盖保护检查已完成。队列执行流程尚未接入。",
+            ["AllFilteredOutMsg"] = "所有视频已被时长过滤器过滤掉。",
             ["GbSuffix"] = " GB",
             ["MbSuffix"] = " MB",
         },
@@ -70,6 +72,7 @@ public class StartEncCmdLangProviderM
             ["QueueSourceMissingMsg"] = "以下隊列來源檔案缺失，無法繼續壓製：",
             ["QueueDuplicateOutputMsg"] = "以下隊列輸出路徑發生衝突，無法繼續壓製：",
             ["QueueEncodingPendingMsg"] = "隊列覆蓋保護檢查已完成。隊列執行流程尚未接入。",
+            ["AllFilteredOutMsg"] = "所有影片已被時長過濾器過濾掉。",
             ["GbSuffix"] = " GB",
             ["MbSuffix"] = " MB",
         }
@@ -97,6 +100,7 @@ public class StartEncCmdLangProviderM
             ["QueueSourceMissingMsg"] = "Fichier(s) source de file d'attente manquant(s). L'encodage ne peut pas continuer :",
             ["QueueDuplicateOutputMsg"] = "Les chemins de sortie de la file d'attente entrent en collision. L'encodage ne peut pas continuer :",
             ["QueueEncodingPendingMsg"] = "Protection contre l'écrasement de la file d'attente terminée. L'exécution de la file d'attente n'est pas encore câblée.",
+            ["AllFilteredOutMsg"] = "Toutes les vidéos ont été filtrées par le filtre de durée.",
             ["GbSuffix"] = " Go",
             ["MbSuffix"] = " Mo"
         };
@@ -120,6 +124,7 @@ public class StartEncCmdLangProviderM
             ["QueueSourceMissingMsg"] = "Faltan archivos de origen de la cola. No se puede continuar la codificación:",
             ["QueueDuplicateOutputMsg"] = "Las rutas de salida de la cola colisionan. No se puede continuar la codificación:",
             ["QueueEncodingPendingMsg"] = "Protección contra sobrescritura de cola completada. La ejecución de la cola aún no está conectada.",
+            ["AllFilteredOutMsg"] = "Todos los vídeos fueron filtrados por el filtro de duración.",
             ["GbSuffix"] = " GB",
             ["MbSuffix"] = " MB"
         };
@@ -143,6 +148,7 @@ public class StartEncCmdLangProviderM
             ["QueueSourceMissingMsg"] = "キューのソースファイルが見つかりません。エンコードを続行できません:",
             ["QueueDuplicateOutputMsg"] = "キューの出力パスが衝突しています。エンコードを続行できません:",
             ["QueueEncodingPendingMsg"] = "キューの上書き保護が完了しました。キューの実行はまだ配線されていません。",
+            ["AllFilteredOutMsg"] = "すべての動画が時間フィルターによって除外されました。",
             ["GbSuffix"] = " GB",
             ["MbSuffix"] = " MB"
         };
@@ -166,6 +172,7 @@ public class StartEncCmdLangProviderM
             ["QueueSourceMissingMsg"] = "Файлы источников очереди отсутствуют. Кодирование невозможно:",
             ["QueueDuplicateOutputMsg"] = "Пути вывода очереди конфликтуют. Кодирование невозможно:",
             ["QueueEncodingPendingMsg"] = "Защита от перезаписи очереди завершена. Выполнение очереди ещё не подключено.",
+            ["AllFilteredOutMsg"] = "Все видео отфильтрованы фильтром длительности.",
             ["GbSuffix"] = " ГБ",
             ["MbSuffix"] = " МБ"
         };
@@ -189,6 +196,7 @@ public class StartEncCmdLangProviderM
     public string QueueSourceMissingMsg { get; }
     public string QueueDuplicateOutputMsg { get; }
     public string QueueEncodingPendingMsg { get; }
+    public string AllFilteredOutMsg { get; }
     public string GbSuffix { get; }
     public string MbSuffix { get; }
     public string LanguageCode { get; }
@@ -218,6 +226,7 @@ public class StartEncCmdLangProviderM
         QueueSourceMissingMsg = _d["QueueSourceMissingMsg"];
         QueueDuplicateOutputMsg = _d["QueueDuplicateOutputMsg"];
         QueueEncodingPendingMsg = _d["QueueEncodingPendingMsg"];
+        AllFilteredOutMsg = _d["AllFilteredOutMsg"];
         GbSuffix = _d["GbSuffix"];
         MbSuffix = _d["MbSuffix"];
     }
