@@ -2,17 +2,20 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using OneColumnEncoder.Models;
 
 namespace OneColumnEncoder.FFmpeg
 {
     public static class FFProbeVideoAnalysis
     {
+        private static FFProbeVideoAnalysisLangProviderM Lang => new(UILangProviderM.Current.LanguageCode);
+
         public static async Task<string> AnalyzeAsync(string ffprobePath, string videoSource, string showEntries = "stream")
         {
             if (string.IsNullOrWhiteSpace(ffprobePath) || !File.Exists(ffprobePath))
-                throw new FileNotFoundException($"ffprobe.exe does not exist: {ffprobePath}");
+                throw new FileNotFoundException(string.Format(Lang.FfprobeNotFound, ffprobePath));
             if (string.IsNullOrWhiteSpace(videoSource) || !File.Exists(videoSource))
-                throw new FileNotFoundException($"Input video does not exist: {videoSource}");
+                throw new FileNotFoundException(string.Format(Lang.InputVideoNotFound, videoSource));
 
             ProcessStartInfo psi = new()
             {
@@ -50,7 +53,7 @@ namespace OneColumnEncoder.FFmpeg
             {
                 try { if (!process.HasExited) process.Kill(true); }
                 catch { }
-                throw new TimeoutException("ffprobe timed out while analyzing the source video.");
+                throw new TimeoutException(Lang.FfprobeTimedOut);
             }
 
             string json = await stdoutTask;
@@ -58,7 +61,7 @@ namespace OneColumnEncoder.FFmpeg
 
             if (process.ExitCode != 0 || string.IsNullOrWhiteSpace(json))
                 throw new InvalidOperationException(string.IsNullOrWhiteSpace(stderr)
-                    ? "ffprobe failed or returned no valid data."
+                    ? Lang.FfprobeFailedOrEmpty
                     : stderr.Trim());
 
             ValidateJson(json);
@@ -71,7 +74,7 @@ namespace OneColumnEncoder.FFmpeg
             if (!document.RootElement.TryGetProperty("streams", out JsonElement streams)
                 || streams.ValueKind != JsonValueKind.Array
                 || streams.GetArrayLength() < 1)
-                throw new InvalidOperationException("ffprobe returned no video stream information.");
+                throw new InvalidOperationException(Lang.NoVideoStreamInfo);
         }
     }
 }
