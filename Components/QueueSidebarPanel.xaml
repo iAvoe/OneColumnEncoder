@@ -24,12 +24,6 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0">
-                <TextBlock Text="{Binding Lang.QueueSidebarTitle}"
-                           Style="{StaticResource H3}"
-                           VerticalAlignment="Center" />
-            </StackPanel>
-
             <ScrollViewer x:Name="QueueScrollViewer"
                           Grid.Row="1"
                           HorizontalScrollBarVisibility="Disabled"

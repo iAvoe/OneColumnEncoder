@@ -73,7 +73,6 @@ public class EncodingMonitorModalLangProviderM
             ["ABRText"] = "ABR",
             ["CRFText"] = "CRF",
 
-            ["QueueSidebarTitle"] = "Queue",
             ["QueueSidebarCancelAllText"] = "Cancel all",
             ["QueueSidebarRunningHeaderText"] = "Running",
             ["QueueSidebarWaitingHeaderText"] = "Pending",
@@ -153,7 +152,6 @@ public class EncodingMonitorModalLangProviderM
             ["ABRText"] = "ABR",
             ["CRFText"] = "CRF",
 
-            ["QueueSidebarTitle"] = "队列",
             ["QueueSidebarCancelAllText"] = "取消全部",
             ["QueueSidebarRunningHeaderText"] = "当前运行",
             ["QueueSidebarWaitingHeaderText"] = "待运行",
@@ -233,7 +231,6 @@ public class EncodingMonitorModalLangProviderM
             ["ABRText"] = "ABR",
             ["CRFText"] = "CRF",
 
-            ["QueueSidebarTitle"] = "隊列",
             ["QueueSidebarCancelAllText"] = "取消全部",
             ["QueueSidebarRunningHeaderText"] = "目前執行",
             ["QueueSidebarWaitingHeaderText"] = "待執行",
@@ -312,7 +309,6 @@ public class EncodingMonitorModalLangProviderM
             ["InterruptingEncoderText"] = "Interruption encodeur",
             ["ModeText"] = "mode",
             ["NotAvailableText"] = "N/A",
-            ["QueueSidebarTitle"] = "File d'attente",
             ["QueueSidebarCancelAllText"] = "Tout annuler",
 
             ["QueueItemRemoveText"] = "Supprimer",
@@ -383,7 +379,6 @@ public class EncodingMonitorModalLangProviderM
             ["InterruptingEncoderText"] = "Interrumpiendo codificador",
             ["ModeText"] = "modo",
             ["NotAvailableText"] = "N/D",
-            ["QueueSidebarTitle"] = "Cola",
             ["QueueSidebarCancelAllText"] = "Cancelar todo",
 
             ["QueueItemRemoveText"] = "Eliminar",
@@ -454,7 +449,6 @@ public class EncodingMonitorModalLangProviderM
             ["InterruptingEncoderText"] = "エンコーダを中断中",
             ["ModeText"] = "モード",
             ["NotAvailableText"] = "N/A",
-            ["QueueSidebarTitle"] = "キュー",
             ["QueueSidebarCancelAllText"] = "すべてキャンセル",
 
             ["QueueItemRemoveText"] = "削除",
@@ -525,7 +519,6 @@ public class EncodingMonitorModalLangProviderM
             ["InterruptingEncoderText"] = "Прерывание кодера",
             ["ModeText"] = "режим",
             ["NotAvailableText"] = "N/A",
-            ["QueueSidebarTitle"] = "Очередь",
             ["QueueSidebarCancelAllText"] = "Отменить всё",
 
             ["QueueItemRemoveText"] = "Удалить",
@@ -603,7 +596,6 @@ public class EncodingMonitorModalLangProviderM
     public string ABRText { get; }
     public string CRFText { get; }
 
-    public string QueueSidebarTitle { get; }
     public string QueueSidebarCancelAllText { get; }
     public string QueueSidebarRunningHeaderText { get; }
     public string QueueSidebarWaitingHeaderText { get; }
@@ -697,7 +689,6 @@ public class EncodingMonitorModalLangProviderM
         ABRText = _d["ABRText"];
         CRFText = _d["CRFText"];
 
-        QueueSidebarTitle = this["QueueSidebarTitle"];
         QueueSidebarCancelAllText = this["QueueSidebarCancelAllText"];
         QueueSidebarRunningHeaderText = this["QueueSidebarRunningHeaderText"];
         QueueSidebarWaitingHeaderText = this["QueueSidebarWaitingHeaderText"];

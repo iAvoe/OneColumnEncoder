@@ -8,7 +8,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
         {
             ["QueueItemProgress"] = "Queue item {0}/{1}",
             ["SourceFilePath"] = "Source: {0}",
-            ["QueueItemSkipMsg"] = "This queue item will be skipped. Close this dialog to continue analyzing the remaining queue items.",
+            ["QueueItemSkipMsg"] = "Skipping this source item. Close this dialog to move on",
             ["AllQueueItemsFailed"] = "Source queue analysis failed: all {0} queue item(s) were skipped because they could not be analyzed.",
             ["SkippedItemsLabel"] = "Skipped failed queue item(s): {0}",
             ["ListItemPrefix"] = "- {0}",
@@ -19,7 +19,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
         {
             ["QueueItemProgress"] = "队列项目 {0}/{1}",
             ["SourceFilePath"] = "源文件：{0}",
-            ["QueueItemSkipMsg"] = "此队列项目将被跳过。关闭此对话框以继续分析其余队列项目。",
+            ["QueueItemSkipMsg"] = "将跳过此视频源，关闭继续分析其余项目",
             ["AllQueueItemsFailed"] = "队列源分析失败：所有 {0} 个队列项目均因无法分析而被跳过。",
             ["SkippedItemsLabel"] = "跳过的失败队列项目：{0}",
             ["ListItemPrefix"] = "- {0}",
@@ -30,7 +30,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
         {
             ["QueueItemProgress"] = "隊列項目 {0}/{1}",
             ["SourceFilePath"] = "來源檔案：{0}",
-            ["QueueItemSkipMsg"] = "此隊列項目將被跳過。關閉此對話框以繼續分析其餘隊列項目。",
+            ["QueueItemSkipMsg"] = "將跳過此影片源，關閉繼續分析其餘項目",
             ["AllQueueItemsFailed"] = "隊列來源分析失敗：所有 {0} 個隊列項目均因無法分析而被跳過。",
             ["SkippedItemsLabel"] = "跳過的失敗隊列項目：{0}",
             ["ListItemPrefix"] = "- {0}",
@@ -41,7 +41,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
         {
             ["QueueItemProgress"] = "Élément de file {0}/{1}",
             ["SourceFilePath"] = "Source : {0}",
-            ["QueueItemSkipMsg"] = "Cet élément sera ignoré. Fermez cette boîte de dialogue pour continuer l'analyse des éléments restants.",
+            ["QueueItemSkipMsg"] = "Cet élément source sera ignoré. Fermez cette boîte de dialogue pour continuer.",
             ["AllQueueItemsFailed"] = "Échec de l'analyse de la file d'attente : les {0} élément(s) de la file ont été ignorés car ils n'ont pas pu être analysés.",
             ["SkippedItemsLabel"] = "Élément(s) de file ignoré(s) : {0}",
             ["ListItemPrefix"] = "- {0}",
@@ -52,7 +52,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
         {
             ["QueueItemProgress"] = "Elemento de cola {0}/{1}",
             ["SourceFilePath"] = "Fuente: {0}",
-            ["QueueItemSkipMsg"] = "Este elemento de la cola se omitirá. Cierre este diálogo para continuar analizando los elementos restantes.",
+            ["QueueItemSkipMsg"] = "Se omitirá este elemento de origen. Cierre este diálogo para continuar.",
             ["AllQueueItemsFailed"] = "Error de análisis de cola: los {0} elemento(s) de la cola se omitieron porque no se pudieron analizar.",
             ["SkippedItemsLabel"] = "Elemento(s) de cola omitido(s): {0}",
             ["ListItemPrefix"] = "- {0}",
@@ -63,7 +63,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
         {
             ["QueueItemProgress"] = "キュー項目 {0}/{1}",
             ["SourceFilePath"] = "ソース: {0}",
-            ["QueueItemSkipMsg"] = "このキュー項目はスキップされます。このダイアログを閉じて、残りのキュー項目の解析を続行してください。",
+            ["QueueItemSkipMsg"] = "このソース項目はスキップされます。このダイアログを閉じて、残りの項目の解析を続行してください。",
             ["AllQueueItemsFailed"] = "キューのソース解析に失敗しました: すべての {0} 個のキュー項目を解析できなかったためスキップしました。",
             ["SkippedItemsLabel"] = "スキップされた失敗キュー項目: {0}",
             ["ListItemPrefix"] = "- {0}",
@@ -74,7 +74,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
         {
             ["QueueItemProgress"] = "Элемент очереди {0}/{1}",
             ["SourceFilePath"] = "Источник: {0}",
-            ["QueueItemSkipMsg"] = "Этот элемент очереди будет пропущен. Закройте этот диалог, чтобы продолжить анализ остальных элементов.",
+            ["QueueItemSkipMsg"] = "Этот исходный элемент будет пропущен. Закройте этот диалог, чтобы продолжить.",
             ["AllQueueItemsFailed"] = "Сбой анализа очереди: все {0} элементов очереди пропущены, так как их не удалось проанализировать.",
             ["SkippedItemsLabel"] = "Пропущенные элементы очереди: {0}",
             ["ListItemPrefix"] = "- {0}",

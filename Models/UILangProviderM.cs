@@ -133,7 +133,7 @@ public class UILangProviderM
             ["SourceQueue.OpenQueueJson"] = "Open Queue JSON",
             ["SourceQueue.OpenExcludedJson"] = "Open Exclusion JSON",
             ["SourceQueue.FilterModeTitle"] = "Execute Queue Weighted Filter?",
-            ["SourceQueue.FilterModeMessage"] = "Confirm: consistent sources in similar duration\nCancel: Exc. BDMV/M3U intros, trailers by weighted voting\nA first-stream comparison exclusion will run afterward to ensure format consistency regardlessly",
+            ["SourceQueue.FilterModeMessage"] = "Confirm: consistent sources in similar duration\nCancel: Exc. BDMV/M3U intros, trailers by weighted voting\nA first-stream comparison exclusion will run afterward to ensure format consistency regardlessly\n\nFor BDMV, use BDInfo/ChapterTool first to detect-&-fix under/over-segmented episodes.",
 
             // Dialogs
             ["Dialog.SelectTitle"] = "Select {0}",
@@ -483,7 +483,7 @@ public class UILangProviderM
             ["SourceQueue.OpenQueueJson"] = "打开队列 JSON",
             ["SourceQueue.OpenExcludedJson"] = "打开排除列表 JSON",
             ["SourceQueue.FilterModeTitle"] = "是否执行队列权重筛选",
-            ["SourceQueue.FilterModeMessage"] = "确认：所有源的时长一致，无需筛选\n取消：使用权重投票法排除 BDMV/M3U 片头片花\n两况皆会执行首流对比排除，以确保视频格式的一致性",
+            ["SourceQueue.FilterModeMessage"] = "确认：所有源的时长一致，无需筛选\n取消：使用权重投票法排除 BDMV/M3U 片头片花\n两况皆会执行首流对比排除，以确保视频格式的一致性\n\nBDMV：先用 BDInfo/ChapterTool 检查并修复欠分集、过分集等特殊情况",
 
             ["Dialog.SelectTitle"] = "选择 {0}",
             ["Dialog.ReplaceTitle"] = "替换 {0}",
@@ -815,7 +815,7 @@ public class UILangProviderM
             ["SourceQueue.OpenQueueJson"] = "開啟隊列 JSON",
             ["SourceQueue.OpenExcludedJson"] = "開啟排除列表 JSON",
             ["SourceQueue.FilterModeTitle"] = "是否執行隊列權重篩選",
-            ["SourceQueue.FilterModeMessage"] = "確認：所有源的時長一致，無需篩選\n取消：使用權重投票法排除 BDMV/M3U 片頭片花\n兩況皆會執行首流對比排除，以確保影片格式的一致性",
+            ["SourceQueue.FilterModeMessage"] = "確認：所有源的時長一致，無需篩選\n取消：使用權重投票法排除 BDMV/M3U 片頭片花\n兩況皆會執行首流對比排除，以確保影片格式的一致性\n\nBDMV：先用 BDInfo/ChapterTool 檢查並修復欠分集、過分集等特殊情況",
 
             ["Dialog.SelectTitle"] = "選擇 {0}",
             ["Dialog.ReplaceTitle"] = "替換 {0}",
