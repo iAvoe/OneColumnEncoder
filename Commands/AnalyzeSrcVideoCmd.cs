@@ -41,6 +41,8 @@ namespace OneColumnEncoder.Commands
         private readonly Action<bool>? _onAnalysisCompleted = onAnalysisCompleted;
         private readonly Action? _onCompleted = onCompleted;
 
+        private static AnalyzeSrcVideoCmdLangProviderM Lang => new(UILangProviderM.Current.LanguageCode);
+
         public override bool CanExecute(object? parameter) =>
             !string.IsNullOrWhiteSpace(_getFfprobePath()) &&
             (IsQueueRoute()
@@ -245,7 +247,7 @@ namespace OneColumnEncoder.Commands
         {
             List<string> lines = [UILangProviderM.Current["SrcAnalysis.Completed"]];
             if (TryGetTotalFrameCount(rawJson, out long totalFrameCount))
-                lines.Add($"{new ClipRangeSelectorLangProviderM(UILangProviderM.Current.LanguageCode).SummaryTotalFramesLabel}: {totalFrameCount}");
+                lines.Add(string.Format(Lang.TotalFramesFormat, new ClipRangeSelectorLangProviderM(UILangProviderM.Current.LanguageCode).SummaryTotalFramesLabel, totalFrameCount));
 
             lines.Add(string.Format(UILangProviderM.Current["SrcAnalysis.FrameCountSupplemented"], supplementedCount));
             return string.Join(Environment.NewLine + Environment.NewLine, lines);
@@ -393,33 +395,33 @@ namespace OneColumnEncoder.Commands
         {
             List<string> lines = [];
             if (queueIndex.HasValue && queueTotal.HasValue)
-                lines.Add($"Queue item {queueIndex.Value}/{queueTotal.Value}");
+                lines.Add(string.Format(Lang.QueueItemProgress, queueIndex.Value, queueTotal.Value));
 
-            lines.Add($"Source: {sourcePath}");
+            lines.Add(string.Format(Lang.SourceFilePath, sourcePath));
             lines.Add(detail);
             if (willSkipAndContinue)
             {
                 lines.Add(string.Empty);
-                lines.Add("This queue item will be skipped. Close this dialog to continue analyzing the remaining queue items.");
+                lines.Add(Lang.QueueItemSkipMsg);
             }
 
             return string.Join(Environment.NewLine, lines);
         }
 
         private static string FormatAllQueueItemsFailedMessage(int queueCount) =>
-            $"Source queue analysis failed: all {queueCount} queue item(s) were skipped because they could not be analyzed.";
+            string.Format(Lang.AllQueueItemsFailed, queueCount);
 
         private static string FormatQueueSkippedMessage(string message, IReadOnlyList<QueueSourceFailure> skipped)
         {
             const int maxDetails = 5;
-            List<string> skippedLines = [$"Skipped failed queue item(s): {skipped.Count}"];
+            List<string> skippedLines = [string.Format(Lang.SkippedItemsLabel, skipped.Count)];
             skippedLines.AddRange(skipped
                 .Take(maxDetails)
                 .Select(item => string.IsNullOrWhiteSpace(item.DisplayName) ? item.FilePath : item.DisplayName)
-                .Select(detail => $"- {detail}"));
+                .Select(detail => string.Format(Lang.ListItemPrefix, detail)));
             int omitted = skipped.Count - Math.Min(skipped.Count, maxDetails);
 
-            if (omitted > 0) skippedLines.Add($"...and {omitted} more.");
+            if (omitted > 0) skippedLines.Add(string.Format(Lang.AndMoreLabel, omitted));
             return message
                 + Environment.NewLine
                 + Environment.NewLine
