@@ -118,8 +118,7 @@ namespace OneColumnEncoder.ViewModels.Cards
             for (int i = 0; i < Checklist2.Count; i++) SetChecklist2(i, StatusType.Waiting);
         }
 
-        public SourceCheckSignature GetSignature() =>
-            new(
+        public SourceCheckSignature GetSignature() => new(
                 [.. Checklist1.Select(entry => entry.Status)],
                 [.. Checklist2.Select(entry => entry.Status)]);
 

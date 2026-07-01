@@ -18,6 +18,7 @@ using System.Windows;
 
 namespace OneColumnEncoder.Commands
 {
+    // Command that analyzes source video files via ffprobe, supports both single-file and queue (batch) analysis.
     public class AnalyzeSrcVideoCmd(
         Func<string> getFfprobePath,
         Func<string> getSourcePath,
@@ -49,6 +50,7 @@ namespace OneColumnEncoder.Commands
                 ? (_getQueueFilePaths?.Invoke().Length ?? 0) > 0
                 : !string.IsNullOrWhiteSpace(_getSourcePath()));
 
+        // Main entry: route to queue analysis or single-file analysis, then show result or error modal.
         protected override async Task ExecuteAsync(object? parameter)
         {
             _analysis.Clear();
@@ -62,6 +64,7 @@ namespace OneColumnEncoder.Commands
                     return;
                 }
 
+                // Single-file analysis: run ffprobe, supplement frame count, apply results to the validation card.
                 string ffprobePath = _getFfprobePath();
                 string sourcePath = _getSourcePath();
                 try
@@ -118,6 +121,13 @@ namespace OneColumnEncoder.Commands
                 : QueueFilterMode.WeightedVoteThenFirstStream;
         }
 
+        // Step 1: Initialize ffprobe path and queue file list. Abort if empty
+        // Step 2: For each file, run ffprobe analysis, supplement frame count, build a candidate signature + vote weight.
+        // Step 3: Select a reference candidate (first-stream or weighted-vote-then-first-stream)
+        // Step 4: Filter candidates: accepted if signature matches reference, otherwise excluded
+        // Step 5: Serialize accepted/excluded lists to JSON files in config directory
+        // Step 6: Update analysis model with reference file results and raw JSON for all files
+        // Step 7: Notify caller via _onQueueAccepted and show completion modal with summary
         private async Task ExecuteQueueAnalysisAsync()
         {
             string ffprobePath = _getFfprobePath();
@@ -136,6 +146,8 @@ namespace OneColumnEncoder.Commands
             QueueFilterMode filterMode = shouldFilterQueue && queueFilePaths.Length > 1
                 ? PromptQueueFilterMode()
                 : QueueFilterMode.FirstStream;
+
+            // Step 2
             for (int i = 0; i < queueFilePaths.Length; i++)
             {
                 string filePath = queueFilePaths[i];
@@ -163,7 +175,7 @@ namespace OneColumnEncoder.Commands
                     candidates.Add(new(
                         candidates.Count,
                         entry,
-                        QueueSourceSignature.From(signature, rawElement),
+                        QueueSourceGroupSignature.From(signature, rawElement),
                         rawJson,
                         CalculateQueueVoteWeight(rawElement)));
                 }
@@ -186,19 +198,23 @@ namespace OneColumnEncoder.Commands
             if (candidates.Count == 0)
                 throw new InvalidOperationException(FormatAllQueueItemsFailedMessage(queueFilePaths.Length));
 
+            // Step 3
             QueueSourceCandidate referenceCandidate = shouldFilterQueue
                 ? SelectReferenceCandidate(candidates, filterMode)
                 : candidates[0];
+
+            // Step 4
             List<QueueSourceEntry> accepted = [];
             List<QueueSourceEntry> excluded = [];
             foreach (QueueSourceCandidate candidate in candidates)
             {
-                if (!shouldFilterQueue || candidate.Signature.Matches(referenceCandidate.Signature))
+                if (!shouldFilterQueue || candidate.GroupSignature.Matches(referenceCandidate.GroupSignature))
                     accepted.Add(candidate.Entry);
                 else
                     excluded.Add(candidate.Entry);
             }
 
+            // Step 5
             string referenceRawJson = referenceCandidate.RawJson;
             string referencePath = referenceCandidate.Entry.FilePath;
             queueCard.ApplyFfprobeAnalysisJson(referenceRawJson);
@@ -222,6 +238,7 @@ namespace OneColumnEncoder.Commands
             if (!string.IsNullOrWhiteSpace(excludedJsonPath))
                 File.WriteAllText(excludedJsonPath, JsonSerializer.Serialize(new QueueSourceData(referencePath, excluded), jsonOptions), utf8NoBom);
 
+            // Step 6
             _analysis.FfprobePath = ffprobePath;
             _analysis.SourcePath = referencePath;
             _analysis.RawJson = referenceRawJson;
@@ -229,6 +246,7 @@ namespace OneColumnEncoder.Commands
             queueCard.ApplyQueueResult(accepted.Count, excluded.Count, queueJsonPath, excludedJsonPath ?? string.Empty);
             _onQueueAccepted?.Invoke([.. accepted.Select(entry => entry.FilePath)], queueJsonPath);
 
+            // Step 7
             string message = string.IsNullOrWhiteSpace(excludedJsonPath)
                 ? string.Format(UILangProviderM.Current["SourceQueue.AnalyzedNoEx"], queueJsonPath)
                 : string.Format(
@@ -243,6 +261,7 @@ namespace OneColumnEncoder.Commands
             ShowQueueAnalysisCompletedModal(message, queueJsonPath, excludedJsonPath);
         }
 
+        // Builds a message indicating analysis completed and (if available) total frame count + number of supplemented streams
         private static string FormatFrameCountSupplementMessage(string rawJson, int supplementedCount)
         {
             List<string> lines = [UILangProviderM.Current["SrcAnalysis.Completed"]];
@@ -253,17 +272,20 @@ namespace OneColumnEncoder.Commands
             return string.Join(Environment.NewLine + Environment.NewLine, lines);
         }
 
+        // Delegates reference selection based on filter mode: first-stream or weighted-vote-then-first-stream
         private static QueueSourceCandidate SelectReferenceCandidate(
             IReadOnlyList<QueueSourceCandidate> candidates,
             QueueFilterMode filterMode) =>
             filterMode == QueueFilterMode.FirstStream
                 ? SelectFirstStreamReferenceCandidate(candidates)
-                : SelectWeightedVoteThenFirstStreamReferenceCandidate(candidates);
+                : SelectWeightedReferenceCandidate(candidates);
 
-        private static QueueSourceCandidate SelectWeightedVoteThenFirstStreamReferenceCandidate(IReadOnlyList<QueueSourceCandidate> candidates)
+        // Groups candidates by group key, then picks the group with the highest total vote weight
+        // (ties broken by count, then earliest sequence). Within that group, returns the first stream.
+        private static QueueSourceCandidate SelectWeightedReferenceCandidate(IReadOnlyList<QueueSourceCandidate> candidates)
         {
             IEnumerable<QueueSourceCandidate> votedGroup = candidates
-                .GroupBy(candidate => candidate.Signature.MatchKey, StringComparer.Ordinal)
+                .GroupBy(candidate => candidate.GroupSignature.MatchKey, StringComparer.Ordinal)
                 .Select(group => new
                 {
                     Candidates = group,
@@ -280,9 +302,12 @@ namespace OneColumnEncoder.Commands
             return SelectFirstStreamReferenceCandidate(votedGroup);
         }
 
+        // Returns the candidate with the smallest sequence number (first file in insertion order)
         private static QueueSourceCandidate SelectFirstStreamReferenceCandidate(IEnumerable<QueueSourceCandidate> candidates) =>
             candidates.OrderBy(candidate => candidate.Sequence).First();
 
+        // Computes a vote weight for a candidate based on its duration (squared) or frame count (squared)
+        // Longer / higher-frame-count files get more influence in the weighted-vote reference selection
         private static double CalculateQueueVoteWeight(JsonElement rawElement)
         {
             if (!TryGetFirstVideoStream(rawElement, out JsonElement stream)) return 1d;
@@ -303,6 +328,7 @@ namespace OneColumnEncoder.Commands
             return 1d;
         }
 
+        // Attempts to extract duration from a stream property; falls back to the format-level duration if the stream value is missing/invalid.
         private static double? TryGetDuration(JsonElement root, JsonElement stream)
         {
             double? streamDuration = JsonElementHelper.TryGetDouble(stream, "duration");
@@ -313,6 +339,7 @@ namespace OneColumnEncoder.Commands
                 : null;
         }
 
+        // Tries avg_frame_rate first, then r_frame_rate as a fallback.
         private static double? TryGetFramesPerSecond(JsonElement stream)
         {
             if (TryParseFrameRate(JsonElementHelper.TryGetString(stream, "avg_frame_rate"), out double avg) && avg > 0d)
@@ -322,6 +349,7 @@ namespace OneColumnEncoder.Commands
                 : null;
         }
 
+        // Parses ffprobe frame rate strings like "30000/1001" or "29.97" into a double.
         private static bool TryParseFrameRate(string? value, out double fps)
         {
             fps = 0d;
@@ -340,6 +368,7 @@ namespace OneColumnEncoder.Commands
             return double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out fps);
         }
 
+        // Iterates ffprobe stream array and returns the first video stream (codec_type == null or "video").
         private static bool TryGetFirstVideoStream(JsonElement root, out JsonElement stream)
         {
             stream = default;
@@ -359,6 +388,7 @@ namespace OneColumnEncoder.Commands
             return false;
         }
 
+        // Parses total frame count from the first stream of the raw ffprobe JSON.
         private static bool TryGetTotalFrameCount(string rawJson, out long totalFrameCount)
         {
             totalFrameCount = 0;
@@ -386,6 +416,7 @@ namespace OneColumnEncoder.Commands
             + Environment.NewLine
             + string.Format(UILangProviderM.Current["SrcAnalysis.FrameCountSupplemented"], supplementedCount);
 
+        // Formats an error message with optional queue progress (e.g., "3/10") and a skip-notice suffix for queue mode.
         private static string FormatAnalysisFailureMessage(
             string sourcePath,
             string detail,
@@ -411,6 +442,7 @@ namespace OneColumnEncoder.Commands
         private static string FormatAllQueueItemsFailedMessage(int queueCount) =>
             string.Format(Lang.AllQueueItemsFailed, queueCount);
 
+        // Appends a list of skipped files (up to 5 details) to the existing message, with an "and N more" suffix if truncated.
         private static string FormatQueueSkippedMessage(string message, IReadOnlyList<QueueSourceFailure> skipped)
         {
             const int maxDetails = 5;
@@ -428,6 +460,7 @@ namespace OneColumnEncoder.Commands
                 + string.Join(Environment.NewLine, skippedLines);
         }
 
+        // Shows an info-level modal when frame count was supplemented for a single-file analysis.
         private void ShowFrameCountSupplementedModal(string message)
         {
             ConfirmationModal window = new();
@@ -445,6 +478,7 @@ namespace OneColumnEncoder.Commands
             window.ShowDialog();
         }
 
+        // Shows a success-level modal after single-file analysis completes without frame-count supplementation.
         private void ShowSourceAnalysisCompletedModal(string message)
         {
             ConfirmationModal window = new();
@@ -462,6 +496,7 @@ namespace OneColumnEncoder.Commands
             window.ShowDialog();
         }
 
+        // Shows a success modal for queue analysis with context-menu items to open/copy the generated JSON files.
         private void ShowQueueAnalysisCompletedModal(string message, string queueJsonPath, string? excludedJsonPath)
         {
             ConfirmationModal window = new();
@@ -494,31 +529,35 @@ namespace OneColumnEncoder.Commands
             window.ShowDialog();
         }
 
+        // Opens a JSON file in the default system editor via shell execute.
         private static void OpenJsonPath(string jsonPath) =>
             Process.Start(new ProcessStartInfo(jsonPath) { UseShellExecute = true });
 
+        // Placeholder type needed to resolve the config directory from SaveLoadBase.
         private sealed class SaveLoadPlaceholder : SaveLoadBase<SaveLoadPlaceholder>
         {
             protected override string FilePath => string.Empty;
         }
 
+        // Determines how the reference candidate is chosen from the queue.
         private enum QueueFilterMode
         {
             WeightedVoteThenFirstStream,
             FirstStream
         }
 
+        // A candidate in queue analysis: carries its position (Sequence), analysis result, signature, raw JSON, and vote weight.
         private sealed record QueueSourceCandidate(
             int Sequence,
             QueueSourceEntry Entry,
-            QueueSourceSignature Signature,
+            QueueSourceGroupSignature GroupSignature,
             string RawJson,
             double VoteWeight);
 
-        private sealed record QueueSourceSignature(
+        // Composite group signature used to compare queue items: checklist results + width + frame rates.
+        private sealed record QueueSourceGroupSignature(
             SourceCheckSignature CheckSignature,
             int? Width,
-            int? Height,
             string AvgFrameRate,
             string RFrameRate)
         {
@@ -526,29 +565,26 @@ namespace OneColumnEncoder.Commands
                 "|",
                 CheckSignature.MatchKey,
                 Width?.ToString(CultureInfo.InvariantCulture) ?? string.Empty,
-                Height?.ToString(CultureInfo.InvariantCulture) ?? string.Empty,
                 AvgFrameRate,
                 RFrameRate);
 
-            public bool Matches(QueueSourceSignature other) =>
+            public bool Matches(QueueSourceGroupSignature other) =>
                 string.Equals(MatchKey, other.MatchKey, StringComparison.Ordinal);
 
-            public static QueueSourceSignature From(SourceCheckSignature checkSignature, JsonElement rawElement)
+            public static QueueSourceGroupSignature From(SourceCheckSignature checkSignature, JsonElement rawElement)
             {
                 int? width = null;
-                int? height = null;
                 string avgFrameRate = string.Empty;
                 string rFrameRate = string.Empty;
 
                 if (TryGetFirstVideoStream(rawElement, out JsonElement stream))
                 {
                     if (JsonElementHelper.TryGetInt(stream, "width", out int parsedWidth)) width = parsedWidth;
-                    if (JsonElementHelper.TryGetInt(stream, "height", out int parsedHeight)) height = parsedHeight;
                     avgFrameRate = NormalizeFrameRate(JsonElementHelper.TryGetString(stream, "avg_frame_rate"));
                     rFrameRate = NormalizeFrameRate(JsonElementHelper.TryGetString(stream, "r_frame_rate"));
                 }
 
-                return new(checkSignature, width, height, avgFrameRate, rFrameRate);
+                return new(checkSignature, width, avgFrameRate, rFrameRate);
             }
 
             private static string NormalizeFrameRate(string? value)
@@ -584,19 +620,23 @@ namespace OneColumnEncoder.Commands
             }
         }
 
+        // A single queue entry: file path, display name, check-list results, and the raw ffprobe JSON tree.
         private sealed record QueueSourceEntry(
             string FilePath,
             string DisplayName,
             QueueSourceCheckResult CheckResult,
             JsonElement FfprobeJson);
 
+        // Lightweight record for raw analysis data (used in the queue-raw-json snapshot).
         private sealed record QueueSourceRawAnalysis(
             string FilePath,
             string DisplayName,
             JsonElement FfprobeJson);
 
+        // Records a file that was skipped during queue analysis due to an error.
         private sealed record QueueSourceFailure(string FilePath, string DisplayName, string ErrorMessage);
 
+        // Holds the severe and moderate check-list items from the validation card.
         private sealed record QueueSourceCheckResult(
             IReadOnlyList<QueueSourceCheckItem> Severe,
             IReadOnlyList<QueueSourceCheckItem> Moderate)
@@ -607,14 +647,17 @@ namespace OneColumnEncoder.Commands
                     [.. card.Checklist2.Select(QueueSourceCheckItem.FromEntry)]);
         }
 
+        // A single check-list item used in the serialized queue source result.
         private sealed record QueueSourceCheckItem(string Text, StatusType Status)
         {
             public static QueueSourceCheckItem FromEntry(ChecklistEntryVM entry) =>
                 new(entry.Text, entry.Status);
         }
 
+        // Top-level container for serialized queue data: reference file path + list of entries.
         private sealed record QueueSourceData(string ReferenceFilePath, IReadOnlyList<QueueSourceEntry> Entries);
 
+        // Container for all raw ffprobe analyses in the queue (used for later re-inspection).
         private sealed record QueueRawAnalysisData(IReadOnlyList<QueueSourceRawAnalysis> Entries);
     }
 }
