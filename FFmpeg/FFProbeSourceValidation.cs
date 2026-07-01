@@ -20,7 +20,7 @@ public static class FFProbeSourceValidation
     {
         using JsonDocument document = JsonDocument.Parse(rawJson);
         if (!FrameRate.TryGetFirstVideoStream(document.RootElement, out JsonElement stream))
-            throw new InvalidOperationException("ffprobe returned no video stream information.");
+            return default;
 
         return new FFProbeSourceValidationResult(
             IsProgressive(stream),
