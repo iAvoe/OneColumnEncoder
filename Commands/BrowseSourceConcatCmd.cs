@@ -39,6 +39,16 @@ namespace OneColumnEncoder.Commands
             string[] filePaths = dialog.FileNames;
             if (filePaths.Length == 0) return;
 
+            if (filePaths.Length < 2)
+            {
+                new OpenErrModalCmd(
+                    _modalNavS,
+                    UILangProviderM.Current["SrcScribe.ConcatNeedMultipleSourcesTitle"],
+                    UILangProviderM.Current["SrcScribe.ConcatNeedMultipleSources"]).Execute(null);
+                Application.Current.MainWindow?.Activate();
+                return;
+            }
+
             string? extensionError = GetExtensionMismatchMessage(filePaths);
             if (extensionError != null)
             {
