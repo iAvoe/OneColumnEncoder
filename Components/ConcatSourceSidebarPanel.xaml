@@ -13,16 +13,17 @@
     </UserControl.Resources>
 
     <Border Background="{StaticResource Background}"
-            BorderBrush="{StaticResource GlobalSecondary}"
-            BorderThickness="0 0 1.5 0">
-        <Grid Margin="0 0 10 0">
+            BorderBrush="{StaticResource RemixedBackground2}"
+            BorderThickness="0 0 0.5 0">
+        <Grid Margin="0 0 7.5 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
             <TextBlock Text="{Binding OrderingTitle}"
-                       Style="{StaticResource H3}" />
+                       Style="{StaticResource H3}"
+                       Margin="2.5 0 0 0"/>
 
             <ListBox Grid.Row="1"
                      ItemsSource="{Binding Items}"

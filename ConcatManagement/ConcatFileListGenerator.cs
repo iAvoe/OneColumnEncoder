@@ -1,4 +1,5 @@
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace OneColumnEncoder.ConcatManagement
@@ -7,27 +8,16 @@ namespace OneColumnEncoder.ConcatManagement
     {
         public static string GenerateFileList(string[] filePaths, string outputPath)
         {
-            var sb = new StringBuilder();
-            foreach (string path in filePaths)
-            {
-                sb.AppendLine($"file '{EscapePath(path)}'");
-            }
-
             string? directory = Path.GetDirectoryName(outputPath);
             if (!string.IsNullOrWhiteSpace(directory))
                 Directory.CreateDirectory(directory);
 
-            File.WriteAllText(outputPath, sb.ToString(), Encoding.UTF8);
+            File.WriteAllText(outputPath, BuildFileListContent(filePaths), Encoding.UTF8);
             return outputPath;
         }
 
-        public static string BuildFileListContent(string[] filePaths)
-        {
-            var sb = new StringBuilder();
-            foreach (string path in filePaths)
-                sb.AppendLine($"file '{EscapePath(path)}'");
-            return sb.ToString();
-        }
+        public static string BuildFileListContent(string[] filePaths) =>
+            string.Join("\r\n", filePaths.Select(path => $"file '{EscapePath(path)}'"));
 
         private static string EscapePath(string path) =>
             Path.GetFullPath(path)

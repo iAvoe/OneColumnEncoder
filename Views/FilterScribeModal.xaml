@@ -10,7 +10,7 @@
                    d:DataContext="{d:DesignInstance Type=vms:FilterScribeVM}"
                    mc:Ignorable="d"
                    Title="{Binding WindowTitle}"
-                    Width="740"
+                   Width="740"
                    Height="1010"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
@@ -21,7 +21,8 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*"
+                           MaxHeight="310"/>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -63,13 +64,13 @@
             <TabItem Header="{Binding TabAvs}"
                      Padding="15 7.5"
                      FontWeight="Bold">
-                <Grid Margin="0 5">
+                <Grid Margin="0 2.5">
                     <Grid.RowDefinitions>
                         <!-- Note: if modifying VS or ffmpeg tab height, go below -->
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*"
-                                       MinHeight="140" />
+                                       MinHeight="120" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
@@ -79,7 +80,7 @@
                              BorderThickness="0"
                              IsReadOnly="True"
                              Foreground="{StaticResource ButtonTertiary}"
-                             TextWrapping="Wrap"
+                             TextWrapping="NoWrap"
                              AcceptsReturn="True"
                              FontWeight="Normal" />
                     <TextBox Grid.Row="1"
@@ -88,7 +89,7 @@
                              BorderThickness="0"
                              IsReadOnly="True"
                              Foreground="{StaticResource ButtonTertiary}"
-                             TextWrapping="Wrap"
+                             TextWrapping="NoWrap"
                              AcceptsReturn="True"
                              FontWeight="Normal" />
                     <TextBox Grid.Row="2"
@@ -99,7 +100,7 @@
                              TextWrapping="Wrap"
                              AcceptsReturn="True"
                              Padding="5"
-                             FontSize="13"
+                             FontSize="12"
                              HorizontalScrollBarVisibility="Auto"
                              VerticalScrollBarVisibility="Auto"
                              PreviewMouseWheel="UserInput_PreviewMouseWheel"
@@ -111,7 +112,7 @@
                              BorderThickness="0"
                              Background="Transparent"
                              Foreground="{StaticResource ButtonTertiary}"
-                             TextWrapping="Wrap"
+                             TextWrapping="NoWrap"
                              AcceptsReturn="True"
                              Margin="0 2.5 0 0"
                              FontWeight="Normal" />
@@ -128,12 +129,12 @@
             <TabItem Header="{Binding TabVpy}"
                      Padding="15 7.5"
                      FontWeight="Bold">
-                <Grid Margin="0 5">
+                <Grid Margin="0 2.5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*"
-                                       MinHeight="90" />
+                                       MinHeight="80" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
@@ -142,7 +143,7 @@
                              BorderThickness="0"
                              IsReadOnly="True"
                              Foreground="{StaticResource ButtonTertiary}"
-                             TextWrapping="Wrap"
+                             TextWrapping="NoWrap"
                              AcceptsReturn="True"
                              FontWeight="Normal" />
                     <TextBox Grid.Row="1"
@@ -150,7 +151,7 @@
                              BorderThickness="0"
                              IsReadOnly="True"
                              Foreground="{StaticResource ButtonTertiary}"
-                             TextWrapping="Wrap"
+                             TextWrapping="NoWrap"
                              AcceptsReturn="True"
                              FontWeight="Normal" />
                     <TextBox Grid.Row="2"
@@ -161,7 +162,7 @@
                              TextWrapping="Wrap"
                              AcceptsReturn="True"
                              Padding="5"
-                             FontSize="13"
+                             FontSize="12"
                              PreviewMouseWheel="UserInput_PreviewMouseWheel"
                              Margin="0 2.5 0 0"
                              FontWeight="Normal" />
@@ -171,7 +172,7 @@
                              BorderThickness="0"
                              Background="Transparent"
                              Foreground="{StaticResource ButtonTertiary}"
-                             TextWrapping="Wrap"
+                             TextWrapping="NoWrap"
                              AcceptsReturn="True"
                              Margin="0 2.5 0 0"
                              FontWeight="Normal" />
@@ -188,7 +189,7 @@
             <TabItem Header="{Binding TabFfmpeg}"
                      Padding="15 7.5"
                      FontWeight="Bold">
-                <Grid Margin="0 5">
+                <Grid Margin="0 2.5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -203,10 +204,8 @@
                              Foreground="{StaticResource ButtonTertiary}"
                              TextWrapping="NoWrap"
                              AcceptsReturn="True"
-                             MinHeight="90"
                              Padding="2.5"
                              FontSize="12"
-                             FontFamily="Consolas"
                              HorizontalScrollBarVisibility="Auto"
                              VerticalScrollBarVisibility="Auto"
                              Visibility="{Binding IsConcatMode, Converter={StaticResource BoolToVisibility}}"
@@ -227,8 +226,7 @@
                              AcceptsReturn="False"
                              Margin="0 2.5 0 0"
                              Padding="2.5"
-                             FontSize="13"
-                             FontFamily="Consolas"
+                             FontSize="12"
                              HorizontalScrollBarVisibility="Auto"
                              VerticalScrollBarVisibility="Disabled"
                              PreviewKeyDown="FfmpegFreeText_PreviewKeyDown"
@@ -668,7 +666,7 @@
                          Foreground="{StaticResource ButtonTertiary}"
                          FontSize="10"
                          VerticalAlignment="Center"
-                         Text="ffmpeg::  -filter:v &quot;fps=30000/1001,scale=1280:720&quot;&#x0a;ffmpeg::: -filter:v &quot;fps=30000/1001,zscale=matrix=bt709:primaries=bt709:transfer=bt709,scale=1280:720&quot;&#x0a;ffmpeg:::: -filter:v &quot;fps=30000/1001,libplacebo=reset_sar=1,zscale=matrix=bt709:primaries=bt709:transfer=bt709,scale=1280:720&quot;&#x0a;ffmpeg::::: -filter:v &quot;hqdn3d,fps=30000/1001,libplacebo=reset_sar=1,zscale=matrix=bt709:primaries=bt709:transfer=bt709,scale=1280:720&quot;" />
+                         Text="ffmpeg::: -filter:v &quot;fps=30000/1001,zscale=matrix=bt709:primaries=bt709:transfer=bt709,scale=1280:720&quot;&#x0a;ffmpeg:::: -filter:v &quot;fps=30000/1001,libplacebo=reset_sar=1,zscale=matrix=bt709:primaries=bt709:transfer=bt709,scale=1280:720&quot;&#x0a;ffmpeg::::: -filter:v &quot;hqdn3d,fps=30000/1001,libplacebo=reset_sar=1,zscale=matrix=bt709:primaries=bt709:transfer=bt709,scale=1280:720&quot;" />
             </StackPanel>
         </StackPanel>
 
@@ -686,7 +684,7 @@
 
         <comps:HintPanel Grid.Row="5"
                           Grid.Column="1"
-                          Margin="0 2.5 0 5"
+                          Margin="0 2.5 0 10"
                           Text="{Binding NoteText}" />
     </Grid>
 </ui:AdaptiveWindow>

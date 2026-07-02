@@ -48,32 +48,34 @@
 
         public static string BuildConcatAvsSourceHeader(string[] filePaths)
         {
-            var sb = new System.Text.StringBuilder();
+            List<string> lines = [];
             for (int i = 0; i < filePaths.Length; i++)
             {
                 string varName = $"v{i + 1}";
-                sb.AppendLine($"{varName} = LWLibavVideoSource(\"{filePaths[i].Replace("\"", "\"\"")}\")");
+                lines.Add($"{varName} = LWLibavVideoSource(\"{filePaths[i].Replace("\"", "\"\"")}\")");
             }
-            sb.AppendLine($"src = {string.Join(" ++ ", Enumerable.Range(1, filePaths.Length).Select(i => $"v{i}"))}");
-            return sb.ToString();
+            lines.Add($"src = {string.Join(" ++ ", Enumerable.Range(1, filePaths.Length).Select(i => $"v{i}"))}");
+            return string.Join("\r\n", lines);
         }
 
         public static string BuildConcatVpySourceHeader(string[] filePaths)
         {
-            var sb = new System.Text.StringBuilder();
-            sb.AppendLine("import vapoursynth as vs");
-            sb.AppendLine("core = vs.core");
-            sb.AppendLine("src = core.std.BlankClip()");
+            List<string> lines =
+            [
+                "import vapoursynth as vs",
+                "core = vs.core",
+                "video_files = ["
+            ];
+
             for (int i = 0; i < filePaths.Length; i++)
             {
-                char varName = (char)('a' + i);
-                sb.AppendLine($"v{varName} = core.lsmas.LWLibavSource(source=r\"{filePaths[i]}\")");
-                if (i == 0)
-                    sb.AppendLine($"src = v{varName}");
-                else
-                    sb.AppendLine($"src = core.std.Splice([src, v{varName}])");
+                string suffix = i == filePaths.Length - 1 ? "]" : ",";
+                lines.Add($"    r\"{filePaths[i]}\"{suffix}");
             }
-            return sb.ToString();
+
+            lines.Add("clips = [core.lsmas.LWLibavSource(source=f) for f in video_files]");
+            lines.Add("src = core.std.Splice(clips=clips)");
+            return string.Join("\r\n", lines);
         }
 
         public static string BuildConcatFfmpegFileList(string[] filePaths) =>

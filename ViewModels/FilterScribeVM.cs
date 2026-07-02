@@ -38,6 +38,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly Func<bool>? _isConcatRoute;
         private readonly Func<string[]>? _getConcatFilePaths;
         private readonly Action<string[]>? _applyConcatFilePaths;
+        private const int DisplayConcatPathMaxLength = 90;
         private ColorSpaceAnalysisM _colorSpaceAnalysis = ColorSpaceConverter.Analyze(null);
         public CloseModalCmd CloseCmd { get; }
         public ConcatSourceListVM ConcatSources { get; } = new();
@@ -59,7 +60,7 @@ namespace OneColumnEncoder.ViewModels
             get
             {
                 if (IsConcatMode)
-                    return ScriptTemplate.BuildConcatAvsSourceHeader(GetCurrentConcatFilePaths());
+                    return ScriptTemplate.BuildConcatAvsSourceHeader(GetDisplayConcatFilePaths());
                 if (_isFrameRateVariable && _avsEnableFpsParams && _frameRateNum > 0 && _frameRateDen > 0)
                     return $"LWLibavVideoSource(\"video file path\", fpsnum={_frameRateNum}, fpsden={_frameRateDen})";
                 return _baseAvsPrefix;
@@ -80,7 +81,7 @@ namespace OneColumnEncoder.ViewModels
             get
             {
                 if (IsConcatMode)
-                    return ScriptTemplate.BuildConcatVpySourceHeader(GetCurrentConcatFilePaths());
+                    return ScriptTemplate.BuildConcatVpySourceHeader(GetDisplayConcatFilePaths());
                 if (_isFrameRateVariable && _vpyEnableFpsParams && _frameRateNum > 0 && _frameRateDen > 0)
                     return $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"video file path\", fpsnum={_frameRateNum}, fpsden={_frameRateDen})";
                 return _baseVpyPrefix;
@@ -392,7 +393,7 @@ namespace OneColumnEncoder.ViewModels
         }
 
         public string FfmpegConcatFileList => IsConcatMode
-            ? ScriptTemplate.BuildConcatFfmpegFileList(GetCurrentConcatFilePaths())
+            ? ScriptTemplate.BuildConcatFfmpegFileList(GetDisplayConcatFilePaths())
             : string.Empty;
         #endregion
 
@@ -508,6 +509,25 @@ namespace OneColumnEncoder.ViewModels
         private string[] GetCurrentConcatFilePaths() =>
             IsConcatMode ? ConcatSources.GetCurrentFilePaths() : [];
 
+        private string[] GetDisplayConcatFilePaths()
+        {
+            string[] paths = GetCurrentConcatFilePaths();
+            string[] displayPaths = new string[paths.Length];
+            for (int i = 0; i < paths.Length; i++)
+                displayPaths[i] = ShortenDisplayPath(paths[i]);
+            return displayPaths;
+        }
+
+        private static string ShortenDisplayPath(string path)
+        {
+            if (string.IsNullOrEmpty(path) || path.Length <= DisplayConcatPathMaxLength)
+                return path;
+
+            const string prefix = "...";
+            int tailLength = DisplayConcatPathMaxLength - prefix.Length;
+            return string.Concat(prefix, path.AsSpan(path.Length - tailLength, tailLength));
+        }
+
         private void RefreshConcatSourceLanguage()
         {
             EncodingMonitorModalLangProviderM lang = new(UILangProviderM.Current.LanguageCode);
@@ -606,7 +626,7 @@ namespace OneColumnEncoder.ViewModels
                 {
                     0 => ScriptTemplate.BuildConcatAvsExportScript(concatPaths, AvsPrefix2, AvsSuffix),
                     1 => ScriptTemplate.BuildConcatVpyExportScript(concatPaths, VpyPrefix2, VpySuffix),
-                    _ => FfmpegConcatFileList
+                    _ => ScriptTemplate.BuildConcatFfmpegFileList(concatPaths)
                 };
 
                 Clipboard.SetText(concatInOutText);
@@ -738,7 +758,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 0 => ScriptTemplate.BuildConcatAvsExportScript(concatPaths, AvsPrefix2, AvsSuffix, AvsUserInput),
                 1 => ScriptTemplate.BuildConcatVpyExportScript(concatPaths, VpyPrefix2, VpySuffix, VpyUserInput),
-                _ => FfmpegConcatFileList
+                _ => ScriptTemplate.BuildConcatFfmpegFileList(concatPaths)
             };
 
             string filter = SelectedTabIndex switch
@@ -1049,7 +1069,7 @@ namespace OneColumnEncoder.ViewModels
                 {
                     0 => ScriptTemplate.BuildConcatAvsExportScript(concatPaths, AvsPrefix2, AvsSuffix, AvsUserInput),
                     1 => ScriptTemplate.BuildConcatVpyExportScript(concatPaths, VpyPrefix2, VpySuffix, VpyUserInput),
-                    _ => FfmpegConcatFileList
+                    _ => ScriptTemplate.BuildConcatFfmpegFileList(concatPaths)
                 };
             }
 

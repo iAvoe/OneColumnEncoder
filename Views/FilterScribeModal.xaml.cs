@@ -10,11 +10,14 @@ namespace OneColumnEncoder.Views
     public partial class FilterScribeModal : AdaptiveWindow
     {
         private const int DefaultWidth = 740;
+        private const int DefaultMinWidth = 640;
         private const int SidebarWidth = 310;
         private const int SidebarGapWidth = 10;
         private const int DefaultWidthWithSidebar = DefaultWidth + SidebarWidth + SidebarGapWidth;
-        private const int MinWidthDefault = 640;
-        private const int MinWidthWithSidebar = MinWidthDefault + SidebarWidth + SidebarGapWidth;
+        private const int MinWidthWithSidebar = DefaultMinWidth + SidebarWidth + SidebarGapWidth;
+
+        private const int DefaultHeight = 1010;
+        private const int DefaultHeightWithSidebar = DefaultHeight + 50;
         private FilterScribeVM? _subscribedVm;
 
         public FilterScribeModal()
@@ -75,13 +78,19 @@ namespace OneColumnEncoder.Views
             MinWidth = MinWidthWithSidebar;
             if (Width < DefaultWidthWithSidebar)
                 Width = DefaultWidthWithSidebar;
+            // There is no minimal height: !MinHeight = !MinHeightWithSidebar;
+            if (Height < DefaultHeightWithSidebar)
+                Height = DefaultHeightWithSidebar;
         }
 
         private void CollapseSidebar()
         {
-            MinWidth = MinWidthDefault;
+            MinWidth = DefaultMinWidth;
             if (Width > DefaultWidth)
                 Width = DefaultWidth;
+            // There is no minimal height: !MinHeight;
+            if (Height < DefaultHeight)
+                Height = DefaultHeight;
         }
 
         private void UserInput_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
@@ -107,14 +116,12 @@ namespace OneColumnEncoder.Views
             string? text = e.SourceDataObject.GetData(DataFormats.UnicodeText) as string
                 ?? e.SourceDataObject.GetData(DataFormats.Text) as string;
 
-            if (text is null)
-                return;
+            if (text is null) return;
 
             string normalized = text.Replace("\r", string.Empty).Replace("\n", string.Empty);
-            if (normalized == text)
-                return;
+            if (normalized == text) return;
 
-            DataObject dataObject = new DataObject();
+            DataObject dataObject = new();
             dataObject.SetData(DataFormats.UnicodeText, normalized);
             e.DataObject = dataObject;
         }
