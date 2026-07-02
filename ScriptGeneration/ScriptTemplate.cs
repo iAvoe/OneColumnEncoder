@@ -66,20 +66,18 @@
             sb.AppendLine("src = core.std.BlankClip()");
             for (int i = 0; i < filePaths.Length; i++)
             {
-                char varName = (char)('a' + i);
-                sb.AppendLine($"v{varName} = core.lsmas.LWLibavSource(source=r\"{filePaths[i]}\")");
+                string varName = $"v{i + 1}";
+                sb.AppendLine($"{varName} = core.lsmas.LWLibavSource(source=r\"{filePaths[i]}\")");
                 if (i == 0)
-                    sb.AppendLine($"src = v{varName}");
+                    sb.AppendLine($"src = {varName}");
                 else
-                    sb.AppendLine($"src = core.std.Splice([src, v{varName}])");
+                    sb.AppendLine($"src = core.std.Splice([src, {varName}])");
             }
             return sb.ToString();
         }
 
-        public static string BuildConcatFfmpegFileList(string[] filePaths)
-        {
-            return OneColumnEncoder.ConcatManagement.ConcatFileListGenerator.BuildFileListContent(filePaths);
-        }
+        public static string BuildConcatFfmpegFileList(string[] filePaths) =>
+            OneColumnEncoder.ConcatManagement.ConcatFileListGenerator.BuildFileListContent(filePaths);
 
         public static string BuildConcatAvsExportScript(string[] filePaths, string avsPrefix2, string avsSuffix, string userInput = "")
         {

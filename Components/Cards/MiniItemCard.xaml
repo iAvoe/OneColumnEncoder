@@ -338,17 +338,20 @@
                     </StackPanel.Style>
                     <Button Content="{Binding DisplayR1Text}"
                             Command="{Binding R1Command}"
+                            CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}"
                             IsEnabled="{Binding R1IsEnabled}"
                             Focusable="False"
                             Style="{StaticResource MiniLinkButton}" />
                     <Button Content="{Binding R2Text}"
                             Command="{Binding R2Command}"
+                            CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}"
                             IsEnabled="{Binding R2IsEnabled}"
                             Margin="2.5 0 0 0"
                             Focusable="False"
                             Style="{StaticResource MiniLinkButton}" />
                     <Button Content="{Binding R3Text}"
                             Command="{Binding R3Command}"
+                            CommandParameter="{Binding DataContext, RelativeSource={RelativeSource AncestorType=UserControl}}"
                             IsEnabled="{Binding R3IsEnabled}"
                             Margin="2.5 0 0 0"
                             Focusable="False"

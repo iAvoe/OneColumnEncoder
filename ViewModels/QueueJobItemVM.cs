@@ -7,23 +7,16 @@ using System.Windows.Threading;
 
 namespace OneColumnEncoder.ViewModels
 {
-    public class QueueJobItemVM : BaseVM
+    public class QueueJobItemVM(QueueJobItemM model) : BaseVM
     {
-        private readonly EncodingPipelineRequest? _request;
-        private readonly QueueJobItemM _model;
-        private readonly EncodingMonitorModalLangProviderM _queueLang;
+        private readonly EncodingPipelineRequest? _request = DeserializeRequest(model.SerializedRequest);
+        private readonly QueueJobItemM _model = model;
+        private readonly EncodingMonitorModalLangProviderM _queueLang = new(UILangProviderM.Current.LanguageCode);
         private bool _isSidebarSelected;
         private bool _canMoveUp;
         private bool _canMoveDown;
         private bool _isRecentlyMoved;
         private DispatcherTimer? _moveFlashTimer;
-
-        public QueueJobItemVM(QueueJobItemM model)
-        {
-            _model = model;
-            _request = DeserializeRequest(model.SerializedRequest);
-            _queueLang = new EncodingMonitorModalLangProviderM(UILangProviderM.Current.LanguageCode);
-        }
 
         public QueueJobItemM Model => _model;
         public EncodingPipelineRequest? Request => _request;
@@ -216,6 +209,7 @@ namespace OneColumnEncoder.ViewModels
         {
             StopMoveFlashTimer();
             base.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }
