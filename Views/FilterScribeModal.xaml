@@ -82,7 +82,9 @@
                              Foreground="{StaticResource ButtonTertiary}"
                              TextWrapping="NoWrap"
                              AcceptsReturn="True"
-                             FontWeight="Normal" />
+                             FontWeight="Normal"
+                             MaxHeight="80"
+                             VerticalScrollBarVisibility="Auto"/>
                     <TextBox Grid.Row="1"
                              Text="{Binding AvsPrefix2, Mode=OneWay}"
                              VerticalAlignment="Stretch"
@@ -99,7 +101,7 @@
                              Foreground="{StaticResource ScriptAccentAvsForeground}"
                              TextWrapping="Wrap"
                              AcceptsReturn="True"
-                             Padding="5"
+                             Padding="2.5"
                              FontSize="12"
                              HorizontalScrollBarVisibility="Auto"
                              VerticalScrollBarVisibility="Auto"
@@ -145,7 +147,9 @@
                              Foreground="{StaticResource ButtonTertiary}"
                              TextWrapping="NoWrap"
                              AcceptsReturn="True"
-                             FontWeight="Normal" />
+                             FontWeight="Normal"
+                             MaxHeight="110"
+                             VerticalScrollBarVisibility="Auto" />
                     <TextBox Grid.Row="1"
                              Text="{Binding VpyPrefix2, Mode=OneWay}"
                              BorderThickness="0"
@@ -161,7 +165,7 @@
                              Foreground="{StaticResource ScriptAccentVpyForeground}"
                              TextWrapping="Wrap"
                              AcceptsReturn="True"
-                             Padding="5"
+                             Padding="2.5"
                              FontSize="12"
                              PreviewMouseWheel="UserInput_PreviewMouseWheel"
                              Margin="0 2.5 0 0"
@@ -206,6 +210,7 @@
                              AcceptsReturn="True"
                              Padding="2.5"
                              FontSize="12"
+                             MaxHeight="170"
                              HorizontalScrollBarVisibility="Auto"
                              VerticalScrollBarVisibility="Auto"
                              Visibility="{Binding IsConcatMode, Converter={StaticResource BoolToVisibility}}"

@@ -215,13 +215,23 @@ Its not esay to develop these tools. If this software helped, please consider sp
 
 The Overwrite setting will append an overwrite confirmation pop-up if the output file already exists after displaying and confirming the compression command, and delay enabling the confirmation button according to the size of the overwritten file
 
+#### Queue Mode
+
+Implemented and passed all tests, usability confirmed
+
 ---
 
 ### Unverified
 
-#### Queue Mode
+#### Concat Mode
 
-- Verify basic and filtered queue suppression on `ffmpeg`, `vspipe`, `avs2yuv`, and `avs2pipemod` queue routes
+- [x] Implement import logic and import rejection logic
+- [x] Implement ffmpeg-VS-AVS merge command construction
+- [x] Implement filter editor support extension for merge mode (front-end and back-end)
+- [x] Implement editable-queue styled concat item ordering
+- [ ] Verify that the concatenate commandline/script-line runs normally
+- [ ] Test that the code runs normally
+- [ ] Complete all localized text
 
 ---
 
