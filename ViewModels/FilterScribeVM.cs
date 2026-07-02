@@ -718,7 +718,7 @@ namespace OneColumnEncoder.ViewModels
         private void ExecuteConcatSaveAsFile()
         {
             string[] concatPaths = GetCurrentConcatFilePaths();
-            if (concatPaths.Length == 0) return;
+            if (!EnsureConcatSourceCount(concatPaths)) return;
 
             string script = SelectedTabIndex switch
             {
@@ -882,7 +882,7 @@ namespace OneColumnEncoder.ViewModels
         private void ExecuteConcatSaveAndImport()
         {
             string[] concatPaths = GetCurrentConcatFilePaths();
-            if (concatPaths.Length == 0) return;
+            if (!EnsureConcatSourceCount(concatPaths)) return;
 
             string avsScript = ScriptTemplate.BuildConcatAvsExportScript(
                 concatPaths,
@@ -933,6 +933,17 @@ namespace OneColumnEncoder.ViewModels
                 UILangProviderM.FltScribeWindowTitle,
                 string.Format(UILangProviderM.Current["ScriptGen.ScriptsSaved"], $"{avsPath}\n{vpyPath}")).Execute(null);
             _closeAction();
+        }
+
+        private bool EnsureConcatSourceCount(string[] concatPaths)
+        {
+            if (concatPaths.Length > 1) return true;
+
+            new OpenErrModalCmd(
+                _modalNavS,
+                UILangProviderM.Current["SrcScribe.ConcatNeedMultipleSourcesTitle"],
+                UILangProviderM.Current["SrcScribe.ConcatNeedMultipleSources"]).Execute(null);
+            return false;
         }
 
         private void ApplyFfmpegFilterArgsOnly()
