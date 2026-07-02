@@ -6,24 +6,16 @@ using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels.Cards;
 using System.IO;
-using System.Linq;
 using System.Windows;
 
 namespace OneColumnEncoder.Commands
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="item"></param>
-    /// <param name="modalNavS"></param>
-    /// <param name="getFfprobePath"></param>
-    /// <param name="isSvtav1SelectedFunc"></param>
-    /// <param name="afterImport"></param>
+
     public class BrowseSourceConcatCmd(
         ToolItemCardVM item,
         ModalNavS modalNavS,
         Func<string> getFfprobePath,
-        Func<bool>? isSvtav1SelectedFunc = null,
+        Func<bool>? isSvtav1SelectedFunc = null, // SVT-AV1 does not support 12bit, check needed
         Action<ToolItemCardVM, string[]>? afterImport = null) : BaseCmd
     {
         private readonly ToolItemCardVM _item = item;
@@ -34,11 +26,12 @@ namespace OneColumnEncoder.Commands
 
         public override async void Execute(object? parameter)
         {
+            // Use the shared video source filter so concat import only presents supported media files.
             OpenFileDialog dialog = new()
             {
                 Title = UILangProviderM.Current["SourceConcat.SelectFilesTitle"],
                 Multiselect = true,
-                Filter = UILangProviderM.Current["Dialog.Filter.All"],
+                Filter = new SourceFilePickerLangProviderM(UILangProviderM.Current.LanguageCode).VideoFilter,
                 InitialDirectory = OutputPath.GetInitialDirectory(_item.P2TextData)
             };
 
@@ -51,6 +44,19 @@ namespace OneColumnEncoder.Commands
             string[] filePaths = dialog.FileNames;
             if (filePaths.Length == 0) return;
 
+            // Reject unsupported extensions even if the user switches the dialog to "All files".
+            string? unsupportedExtensionError = GetUnsupportedExtensionMessage(filePaths);
+            if (unsupportedExtensionError != null)
+            {
+                new OpenErrModalCmd(
+                    _modalNavS,
+                    UICaptionProviderM.SourceInspect.WarnTitle,
+                    unsupportedExtensionError).Execute(null);
+                Application.Current.MainWindow?.Activate();
+                return;
+            }
+
+            // Concat mode needs at least two sources to build a meaningful file list.
             if (filePaths.Length < 2)
             {
                 new OpenErrModalCmd(
@@ -61,6 +67,7 @@ namespace OneColumnEncoder.Commands
                 return;
             }
 
+            // Keep all concat inputs on the same container/extension before deeper compatibility checks.
             string? extensionError = GetExtensionMismatchMessage(filePaths);
             if (extensionError != null)
             {
@@ -72,6 +79,7 @@ namespace OneColumnEncoder.Commands
                 return;
             }
 
+            // Probe the selected files for codec, resolution, frame rate, and SVT-AV1 constraints.
             try
             {
                 await ConcatCompatibilityAnalyzer.AnalyzeAsync(
@@ -89,6 +97,7 @@ namespace OneColumnEncoder.Commands
                 return;
             }
 
+            // Store the parent folder and show a compact, ordered file summary in the import card.
             string parentDir = Path.GetDirectoryName(filePaths[0]) ?? string.Empty;
             string[] fileNames = [.. filePaths.Select(Path.GetFileName).Where(n => !string.IsNullOrWhiteSpace(n)).Select(n => n!)];
 
@@ -103,6 +112,7 @@ namespace OneColumnEncoder.Commands
         {
             if (filePaths.Length < 2) return null;
 
+            // The concat demuxer path expects every selected source to use the same extension.
             string expectedExtension = Path.GetExtension(filePaths[0]) ?? string.Empty;
             string[] mismatched = [.. filePaths
                 .Where(path => !string.Equals(
@@ -116,6 +126,23 @@ namespace OneColumnEncoder.Commands
                 Environment.NewLine,
                 mismatched.Select(path => $"- {Path.GetFileName(path)} ({FormatExtension(Path.GetExtension(path) ?? string.Empty)})"));
             return string.Format(UILangProviderM.Current["SourceConcat.ExtensionMismatch"], expectedLabel, mismatchedList);
+        }
+
+        private static string? GetUnsupportedExtensionMessage(string[] filePaths)
+        {
+            // Normalize picker patterns like "*.mkv" to extensions like ".mkv" for lookup.
+            HashSet<string> videoExtensions = [.. SourceFilePickerLangProviderM.VideoExtensions
+                .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Select(extension => extension.TrimStart('*').ToLowerInvariant())];
+
+            string[] unsupported = [.. filePaths
+                .Where(path => !videoExtensions.Contains((Path.GetExtension(path) ?? string.Empty).ToLowerInvariant()))];
+            if (unsupported.Length == 0) return null;
+
+            string unsupportedList = string.Join(
+                Environment.NewLine,
+                unsupported.Select(path => $"- {Path.GetFileName(path)} ({FormatExtension(Path.GetExtension(path) ?? string.Empty)})"));
+            return string.Format(UILangProviderM.Current["SourceConcat.ExtensionMismatch"], SourceFilePickerLangProviderM.VideoExtensions, unsupportedList);
         }
 
         private static string FormatExtension(string extension) =>

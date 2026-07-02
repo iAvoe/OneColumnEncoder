@@ -390,6 +390,10 @@ namespace OneColumnEncoder.ViewModels
             get => _ffmpegFreeText;
             set => SetProperty(ref _ffmpegFreeText, value);
         }
+
+        public string FfmpegConcatFileList => IsConcatMode
+            ? ScriptTemplate.BuildConcatFfmpegFileList(GetCurrentConcatFilePaths())
+            : string.Empty;
         #endregion
 
         #region UILang properties
@@ -488,8 +492,18 @@ namespace OneColumnEncoder.ViewModels
             RefreshConcatSourceLanguage();
         }
 
-        private void ApplyConcatSources() =>
+        private void ApplyConcatSources()
+        {
             _applyConcatFilePaths?.Invoke(ConcatSources.GetCurrentFilePaths());
+            RefreshConcatGeneratedText();
+        }
+
+        private void RefreshConcatGeneratedText()
+        {
+            OnPropertyChanged(nameof(AvsPrefix));
+            OnPropertyChanged(nameof(VpyPrefix));
+            OnPropertyChanged(nameof(FfmpegConcatFileList));
+        }
 
         private string[] GetCurrentConcatFilePaths() =>
             IsConcatMode ? ConcatSources.GetCurrentFilePaths() : [];
@@ -592,7 +606,7 @@ namespace OneColumnEncoder.ViewModels
                 {
                     0 => ScriptTemplate.BuildConcatAvsExportScript(concatPaths, AvsPrefix2, AvsSuffix),
                     1 => ScriptTemplate.BuildConcatVpyExportScript(concatPaths, VpyPrefix2, VpySuffix),
-                    _ => string.Empty
+                    _ => FfmpegConcatFileList
                 };
 
                 Clipboard.SetText(concatInOutText);
@@ -724,7 +738,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 0 => ScriptTemplate.BuildConcatAvsExportScript(concatPaths, AvsPrefix2, AvsSuffix, AvsUserInput),
                 1 => ScriptTemplate.BuildConcatVpyExportScript(concatPaths, VpyPrefix2, VpySuffix, VpyUserInput),
-                _ => FfmpegFreeText
+                _ => FfmpegConcatFileList
             };
 
             string filter = SelectedTabIndex switch
@@ -1035,7 +1049,7 @@ namespace OneColumnEncoder.ViewModels
                 {
                     0 => ScriptTemplate.BuildConcatAvsExportScript(concatPaths, AvsPrefix2, AvsSuffix, AvsUserInput),
                     1 => ScriptTemplate.BuildConcatVpyExportScript(concatPaths, VpyPrefix2, VpySuffix, VpyUserInput),
-                    _ => FfmpegFreeText
+                    _ => FfmpegConcatFileList
                 };
             }
 
@@ -1067,6 +1081,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(AvsSuffix));
             OnPropertyChanged(nameof(VpyPrefix));
             OnPropertyChanged(nameof(VpySuffix));
+            OnPropertyChanged(nameof(FfmpegConcatFileList));
             OnPropertyChanged(nameof(ResolutionScaleTitle));
             OnPropertyChanged(nameof(ScalePercentLabel));
             OnPropertyChanged(nameof(HasSource));

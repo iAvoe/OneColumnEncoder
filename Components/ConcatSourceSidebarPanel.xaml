@@ -15,13 +15,13 @@
     <Border Background="{StaticResource Background}"
             BorderBrush="{StaticResource GlobalSecondary}"
             BorderThickness="0 0 1.5 0">
-        <Grid>
+        <Grid Margin="0 0 10 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <TextBlock Text="Concat Ordering"
+            <TextBlock Text="{Binding OrderingTitle}"
                        Style="{StaticResource H3}" />
 
             <ListBox Grid.Row="1"

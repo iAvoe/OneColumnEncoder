@@ -17,7 +17,6 @@
     <Grid Margin="10 10 15 0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="0" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -29,10 +28,10 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-<comps:ConcatSourceSidebarPanel Grid.Column="0"
-                                        Grid.RowSpan="6"
-                                        DataContext="{Binding ConcatSources}"
-                                        Margin="0 0 10 0">
+        <comps:ConcatSourceSidebarPanel Grid.Column="0"
+                                         Grid.RowSpan="6"
+                                         DataContext="{Binding ConcatSources}"
+                                         Margin="0 0 10 0">
             <comps:ConcatSourceSidebarPanel.Style>
                 <Style TargetType="comps:ConcatSourceSidebarPanel">
                     <Setter Property="Visibility"
@@ -48,28 +47,16 @@
             </comps:ConcatSourceSidebarPanel.Style>
         </comps:ConcatSourceSidebarPanel>
 
-        <GridSplitter Grid.Column="1"
-                      Width="0"
-                      Background="Transparent"
-                      Cursor="SizeWE"
-                      ResizeBehavior="PreviousAndNext"
-                      ResizeDirection="Columns"
-                      HorizontalAlignment="Stretch"
-                      IsEnabled="{Binding DataContext.IsConcatMode, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
-                      ShowsPreview="False"
-                      VerticalAlignment="Stretch"
-                      Visibility="{Binding DataContext.IsConcatMode, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}, Converter={StaticResource BoolToVisibility}}" />
-
         <TextBlock Grid.Row="0"
-                   Grid.Column="2"
+                   Grid.Column="1"
                    Text="{Binding ScribeDescription}"
                    FontSize="13"
                    TextWrapping="Wrap"
                    Foreground="{StaticResource GlobalPrimary}" />
 
         <!-- TabControl: AviSynth, VapourSynth, ffmpeg -->
-<TabControl Grid.Row="1"
-                    Grid.Column="2"
+        <TabControl Grid.Row="1"
+                    Grid.Column="1"
                     SelectedIndex="{Binding SelectedTabIndex}"
                     Margin="0 10 0 0">
 
@@ -204,17 +191,34 @@
                 <Grid Margin="0 5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="*"
                                        MinHeight="170" />
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0"
+                    <TextBox Grid.Row="0"
+                             Text="{Binding FfmpegConcatFileList, Mode=OneWay}"
+                             IsReadOnly="True"
+                             BorderThickness="0"
+                             Background="{StaticResource Background}"
+                             Foreground="{StaticResource ButtonTertiary}"
+                             TextWrapping="NoWrap"
+                             AcceptsReturn="True"
+                             MinHeight="90"
+                             Padding="2.5"
+                             FontSize="12"
+                             FontFamily="Consolas"
+                             HorizontalScrollBarVisibility="Auto"
+                             VerticalScrollBarVisibility="Auto"
+                             Visibility="{Binding IsConcatMode, Converter={StaticResource BoolToVisibility}}"
+                             FontWeight="Normal" />
+                    <TextBlock Grid.Row="1"
                                Text="{Binding FfmpegFreeTextHint}"
                                FontSize="12"
                                Foreground="{StaticResource GlobalSecondary}"
                                TextWrapping="Wrap"
                                Margin="5 0 0 0"
                                FontWeight="Normal" />
-                    <TextBox Grid.Row="1"
+                    <TextBox Grid.Row="2"
                              Text="{Binding FfmpegFreeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              BorderThickness="0"
                              Background="{StaticResource ScriptAccentFfmpegBackground}"
@@ -235,8 +239,8 @@
             </TabItem>
         </TabControl>
 
-<comps:ThreeButtonGroup Grid.Row="2"
-                                 Grid.Column="2"
+        <comps:ThreeButtonGroup Grid.Row="2"
+                                 Grid.Column="1"
                                  Margin="0 10 0 0"
                                 ButtonHeight="30"
                                 DataContext="{Binding ScriptExportButtons}"
@@ -247,8 +251,8 @@
                                 Button2IsEnabled="{Binding B3_2IsEnabled}"
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
 
-<StackPanel Grid.Row="3"
-                    Grid.Column="2"
+        <StackPanel Grid.Row="3"
+                    Grid.Column="1"
                     Margin="0 15 0 0">
             <StackPanel>
                 <TextBlock Text="{Binding FrameRateConvertTitle}"
@@ -668,8 +672,8 @@
             </StackPanel>
         </StackPanel>
 
-<comps:ThreeButtonGroup Grid.Row="4"
-                                 Grid.Column="2"
+        <comps:ThreeButtonGroup Grid.Row="4"
+                                 Grid.Column="1"
                                  Margin="0 10 0 0"
                                 ButtonHeight="30"
                                 DataContext="{Binding FinishScribeButtons}"
@@ -680,8 +684,8 @@
                                 Button2IsEnabled="{Binding B3_2IsEnabled}"
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
 
-<comps:HintPanel Grid.Row="5"
-                          Grid.Column="2"
+        <comps:HintPanel Grid.Row="5"
+                          Grid.Column="1"
                           Margin="0 2.5 0 5"
                           Text="{Binding NoteText}" />
     </Grid>
