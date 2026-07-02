@@ -36,6 +36,19 @@ namespace OneColumnEncoder.Components.Cards
             set => SetValue(IsCancelProperty, value);
         }
 
+        public static readonly DependencyProperty IsRecentlyMovedProperty =
+            DependencyProperty.Register(
+                nameof(IsRecentlyMoved),
+                typeof(bool),
+                typeof(MiniItemCard),
+                new PropertyMetadata(false));
+
+        public bool IsRecentlyMoved
+        {
+            get => (bool)GetValue(IsRecentlyMovedProperty);
+            set => SetValue(IsRecentlyMovedProperty, value);
+        }
+
         public static readonly DependencyProperty ShowActionButtonsProperty =
             DependencyProperty.Register(
                 nameof(ShowActionButtons),

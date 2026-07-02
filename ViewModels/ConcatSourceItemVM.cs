@@ -1,4 +1,5 @@
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -12,6 +13,8 @@ namespace OneColumnEncoder.ViewModels
         private string _displayR1Text = "";
         private string _r2Text = "";
         private string _r3Text = "";
+        private bool _isRecentlyMoved;
+        private DispatcherTimer? _moveFlashTimer;
 
         public ConcatSourceItemVM(string filePath, int index, ICommand? removeCmd, ICommand? moveUpCmd, ICommand? moveDownCmd)
         {
@@ -63,6 +66,12 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _isSelected, value);
         }
 
+        public bool IsRecentlyMoved
+        {
+            get => _isRecentlyMoved;
+            private set => SetProperty(ref _isRecentlyMoved, value);
+        }
+
         public bool CanMoveUp
         {
             get => _canMoveUp;
@@ -95,6 +104,35 @@ namespace OneColumnEncoder.ViewModels
         {
             Name = System.IO.Path.GetFileName(FilePath);
             P1Text = FilePath;
+        }
+
+        public void FlashMovedHighlight()
+        {
+            IsRecentlyMoved = true;
+            StopMoveFlashTimer();
+            _moveFlashTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(600), DispatcherPriority.Normal, OnMoveFlashTimerTick, Dispatcher.CurrentDispatcher);
+            _moveFlashTimer.Start();
+        }
+
+        private void OnMoveFlashTimerTick(object? sender, EventArgs e)
+        {
+            IsRecentlyMoved = false;
+            StopMoveFlashTimer();
+        }
+
+        private void StopMoveFlashTimer()
+        {
+            if (_moveFlashTimer == null) return;
+
+            _moveFlashTimer.Stop();
+            _moveFlashTimer.Tick -= OnMoveFlashTimerTick;
+            _moveFlashTimer = null;
+        }
+
+        public override void Dispose()
+        {
+            StopMoveFlashTimer();
+            base.Dispose();
         }
     }
 }

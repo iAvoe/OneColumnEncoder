@@ -368,8 +368,8 @@
                     <Setter Property="Visibility"
                             Value="Collapsed" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsRecentlyMoved}"
-                                     Value="True">
+                        <DataTrigger Binding="{Binding IsRecentlyMoved, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                      Value="True">
                             <Setter Property="Visibility"
                                     Value="Visible" />
                         </DataTrigger>

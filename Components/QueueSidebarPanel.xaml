@@ -37,6 +37,7 @@
                         <cards:MiniItemCard DataContext="{Binding QueueSidebar.RunningJob}"
                                             IsSelected="{Binding IsSelected}"
                                             IsCancel="{Binding IsCancel}"
+                                            IsRecentlyMoved="{Binding IsRecentlyMoved}"
                                             HorizontalAlignment="Stretch">
                             <cards:MiniItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
@@ -90,6 +91,7 @@
                                     <cards:MiniItemCard DataContext="{Binding}"
                                                         IsSelected="{Binding IsSelected}"
                                                         IsCancel="{Binding IsCancel}"
+                                                        IsRecentlyMoved="{Binding IsRecentlyMoved}"
                                                         HorizontalAlignment="Stretch" />
                                 </Border>
                             </DataTemplate>
@@ -139,6 +141,7 @@
                                     <cards:MiniItemCard DataContext="{Binding}"
                                                         IsSelected="{Binding IsSelected}"
                                                         IsCancel="{Binding IsCancel}"
+                                                        IsRecentlyMoved="{Binding IsRecentlyMoved}"
                                                         HorizontalAlignment="Stretch" />
                                 </Border>
                             </DataTemplate>
@@ -188,6 +191,7 @@
                                     <cards:MiniItemCard DataContext="{Binding}"
                                                         IsSelected="{Binding IsSelected}"
                                                         IsCancel="{Binding IsCancel}"
+                                                        IsRecentlyMoved="{Binding IsRecentlyMoved}"
                                                         HorizontalAlignment="Stretch" />
                                 </Border>
                             </DataTemplate>

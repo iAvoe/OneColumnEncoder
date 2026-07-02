@@ -55,6 +55,7 @@
                                 HorizontalAlignment="Stretch">
                             <cards:MiniItemCard DataContext="{Binding}"
                                                 IsSelected="{Binding IsSelected}"
+                                                IsRecentlyMoved="{Binding IsRecentlyMoved}"
                                                 HorizontalAlignment="Stretch" />
                         </Border>
                     </DataTemplate>

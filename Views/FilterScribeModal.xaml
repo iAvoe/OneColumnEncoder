@@ -52,6 +52,7 @@
                       Width="2"
                       ResizeBehavior="PreviousAndNext"
                       HorizontalAlignment="Stretch"
+                      IsEnabled="{Binding DataContext.IsConcatMode, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
                       VerticalAlignment="Stretch"
                       Visibility="{Binding DataContext.IsConcatMode, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}, Converter={StaticResource BoolToVisibility}}" />
 

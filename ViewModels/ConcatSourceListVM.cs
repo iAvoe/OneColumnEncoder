@@ -14,6 +14,7 @@ namespace OneColumnEncoder.ViewModels
 
         public void LoadItems(string[] filePaths)
         {
+            DisposeItems();
             Items.Clear();
             for (int i = 0; i < filePaths.Length; i++)
             {
@@ -29,6 +30,7 @@ namespace OneColumnEncoder.ViewModels
             int index = Items.IndexOf(item);
             if (index < 0) return;
             Items.RemoveAt(index);
+            item.Dispose();
             RefreshMoveStates();
         }
 
@@ -37,6 +39,7 @@ namespace OneColumnEncoder.ViewModels
             int index = Items.IndexOf(item);
             if (index <= 0) return false;
             Items.Move(index, index - 1);
+            item.FlashMovedHighlight();
             RefreshMoveStates();
             return true;
         }
@@ -46,6 +49,7 @@ namespace OneColumnEncoder.ViewModels
             int index = Items.IndexOf(item);
             if (index < 0 || index >= Items.Count - 1) return false;
             Items.Move(index, index + 1);
+            item.FlashMovedHighlight();
             RefreshMoveStates();
             return true;
         }
@@ -70,6 +74,18 @@ namespace OneColumnEncoder.ViewModels
                 Items[i].CanMoveUp = i > 0;
                 Items[i].CanMoveDown = i < Items.Count - 1;
             }
+        }
+
+        private void DisposeItems()
+        {
+            foreach (ConcatSourceItemVM item in Items)
+                item.Dispose();
+        }
+
+        public override void Dispose()
+        {
+            DisposeItems();
+            base.Dispose();
         }
     }
 }
