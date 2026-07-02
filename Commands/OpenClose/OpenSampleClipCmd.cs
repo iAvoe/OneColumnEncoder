@@ -7,16 +7,16 @@ using System.Windows;
 
 namespace OneColumnEncoder.Commands.OpenClose
 {
-    public class OpenSampleClipCmd(ModalNavS modalNavS, Func<EncodingPipelineRequest?> buildRequest, VideoAnalysisM srcVideoAnalysis, Func<bool> isQueueRouteActive) : BaseCmd
+    public class OpenSampleClipCmd(ModalNavS modalNavS, Func<EncodingPipelineRequest?> buildRequest, VideoAnalysisM srcVideoAnalysis, Func<bool> isMultiSourceRouteActive) : BaseCmd
     {
         private readonly ModalNavS _modalNavS = modalNavS;
         private readonly Func<EncodingPipelineRequest?> _buildRequest = buildRequest;
         private readonly VideoAnalysisM _srcVideoAnalysis = srcVideoAnalysis;
-        private readonly Func<bool> _isQueueRouteActive = isQueueRouteActive;
+        private readonly Func<bool> _isMultiSourceRouteActive = isMultiSourceRouteActive;
 
         public override void Execute(object? parameter)
         {
-            if (_isQueueRouteActive())
+            if (_isMultiSourceRouteActive())
             {
                 new OpenWarnModalCmd(
                     _modalNavS,

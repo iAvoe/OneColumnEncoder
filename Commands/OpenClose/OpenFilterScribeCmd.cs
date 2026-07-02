@@ -21,7 +21,10 @@ namespace OneColumnEncoder.Commands.OpenClose
         Func<string?> getSourceFfprobeJson,
         Func<bool> isOneLineShotSelected,
         Func<bool>? isQueueRoute = null,
-        Func<string[]>? getQueueFilePaths = null) : BaseCmd
+        Func<string[]>? getQueueFilePaths = null,
+        Func<bool>? isConcatRoute = null,
+        Func<string[]>? getConcatFilePaths = null,
+        Action<string[]>? applyConcatFilePaths = null) : BaseCmd
     {
         private readonly ModalNavS _modalNavS = modalNavS;
         public override void Execute(object? parameter)
@@ -70,7 +73,10 @@ namespace OneColumnEncoder.Commands.OpenClose
                 hasSarRepairWarning,
                 getSourceFfprobeJson(),
                 isQueueRoute,
-                getQueueFilePaths);
+                getQueueFilePaths,
+                isConcatRoute,
+                getConcatFilePaths,
+                applyConcatFilePaths);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();

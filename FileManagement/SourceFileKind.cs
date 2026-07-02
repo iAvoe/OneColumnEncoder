@@ -8,7 +8,8 @@ namespace OneColumnEncoder.FileManagement
         public static SourceFileKind ResolveSourceFileKind(string displayName)
         {
             if (displayName.Equals(UILangProviderM.Current["Tool.Source.VideoSource"], StringComparison.OrdinalIgnoreCase) ||
-                displayName.Equals(UILangProviderM.Current["Tool.Source.VideoSrcQueue"], StringComparison.OrdinalIgnoreCase))
+                displayName.Equals(UILangProviderM.Current["Tool.Source.VideoSrcQueue"], StringComparison.OrdinalIgnoreCase) ||
+                displayName.Equals(UILangProviderM.Current["Tool.Source.VideoSrcConcat"], StringComparison.OrdinalIgnoreCase))
                 return SourceFileKind.Video;
             if (displayName.Equals(UILangProviderM.Current["Tool.Source.AviSynth"], StringComparison.OrdinalIgnoreCase) ||
                 displayName.Equals(UILangProviderM.Current["Tool.Source.AviSynthQueue"], StringComparison.OrdinalIgnoreCase))
@@ -41,6 +42,12 @@ namespace OneColumnEncoder.FileManagement
         };
 
         public static bool IsQueueRouteSupportedUpstream(string? upstreamExeName) =>
+            upstreamExeName?.Equals("ffmpeg.exe", StringComparison.OrdinalIgnoreCase) == true ||
+            upstreamExeName?.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase) == true ||
+            upstreamExeName?.Equals("avs2yuv.exe", StringComparison.OrdinalIgnoreCase) == true ||
+            upstreamExeName?.Equals("avs2pipemod.exe", StringComparison.OrdinalIgnoreCase) == true;
+
+        public static bool IsConcatRouteSupportedUpstream(string? upstreamExeName) =>
             upstreamExeName?.Equals("ffmpeg.exe", StringComparison.OrdinalIgnoreCase) == true ||
             upstreamExeName?.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase) == true ||
             upstreamExeName?.Equals("avs2yuv.exe", StringComparison.OrdinalIgnoreCase) == true ||

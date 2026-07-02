@@ -20,7 +20,10 @@ namespace OneColumnEncoder.Commands
         Func<string>? getQueueJsonPath = null,
         Func<string[], EncodingPipelineRequest[]?>? buildQueueRequests = null,
         Func<bool>? isQueueRouteSupported = null,
-        Func<string[], string[]>? filterSourcePaths = null) : BaseCmd
+        Func<string[], string[]>? filterSourcePaths = null,
+        Func<bool>? isConcatRoute = null,
+        Func<EncodingPipelineRequest?>? buildConcatRequest = null,
+        Func<bool>? isConcatRouteSupported = null) : BaseCmd
     {
         private const int MaxListedOverwriteTargets = 50;
         private readonly Func<EncodingPipelineRequest?> _buildRequest = buildRequest;
@@ -31,10 +34,19 @@ namespace OneColumnEncoder.Commands
         private readonly Func<string[], EncodingPipelineRequest[]?>? _buildQueueRequests = buildQueueRequests;
         private readonly Func<bool>? _isQueueRouteSupported = isQueueRouteSupported;
         private readonly Func<string[], string[]>? _filterSourcePaths = filterSourcePaths;
+        private readonly Func<bool>? _isConcatRoute = isConcatRoute;
+        private readonly Func<EncodingPipelineRequest?>? _buildConcatRequest = buildConcatRequest;
+        private readonly Func<bool>? _isConcatRouteSupported = isConcatRouteSupported;
         private static StartEncCmdLangProviderM Lang => new(UILangProviderM.Current.LanguageCode);
 
         public override void Execute(object? parameter)
         {
+            if (IsConcatRoute())
+            {
+                ExecuteConcatRoute();
+                return;
+            }
+
             if (IsQueueRoute())
             {
                 ExecuteQueueRoute();
@@ -53,6 +65,36 @@ namespace OneColumnEncoder.Commands
 
             EncodingPipelineCommand command = EncodingPipeline.BuildY4mCommand(request);
 
+            OpenDebugConfirmation(request, command);
+        }
+
+        private bool IsQueueRoute() => _isQueueRoute?.Invoke() == true;
+        private bool IsConcatRoute() => _isConcatRoute?.Invoke() == true;
+
+        private void ExecuteConcatRoute()
+        {
+            if (_isConcatRouteSupported?.Invoke() == false)
+            {
+                new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, Lang.QueueUnsupportedRouteMsg).Execute(null);
+                return;
+            }
+
+            EncodingPipelineRequest? request = _buildConcatRequest?.Invoke();
+            if (request == null)
+            {
+                new OpenWarnModalCmd(
+                    _modalNavS,
+                    Lang.WarnTitle,
+                    Lang.MissingUpstreamMsg).Execute(null);
+                return;
+            }
+
+            EncodingPipelineCommand command = EncodingPipeline.BuildY4mCommand(request);
+            OpenDebugConfirmation(request, command);
+        }
+
+        private void OpenDebugConfirmation(EncodingPipelineRequest request, EncodingPipelineCommand command)
+        {
             ConfirmationModal? existing = Application.Current.Windows
                 .OfType<ConfirmationModal>()
                 .FirstOrDefault(w => w.DataContext is ConfirmationVM &&
@@ -81,8 +123,6 @@ namespace OneColumnEncoder.Commands
             _modalNavS.CurrentModalVM = vm;
             window.ShowDialog();
         }
-
-        private bool IsQueueRoute() => _isQueueRoute?.Invoke() == true;
 
         private void ExecuteQueueRoute()
         {

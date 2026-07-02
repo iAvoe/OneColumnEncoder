@@ -17,7 +17,9 @@ namespace OneColumnEncoder.Commands.SaveLoad
         IEnumerable<ToolItemCardVM> upstreamsZone,
         ModalNavS modalNavS,
         Func<bool>? isQueueRoute = null,
-        Func<string[]>? getQueueFilePaths = null) : BaseCmd
+        Func<string[]>? getQueueFilePaths = null,
+        Func<bool>? isConcatRoute = null,
+        Func<string[]>? getConcatFilePaths = null) : BaseCmd
     {
         private readonly Func<string> _getSourcePath = getSourcePath;
         private readonly Func<ToolItemCardVM> _getAvsItem = getAvsItem;
@@ -26,10 +28,14 @@ namespace OneColumnEncoder.Commands.SaveLoad
         private readonly ModalNavS _modalNavS = modalNavS;
         private readonly Func<bool>? _isQueueRoute = isQueueRoute;
         private readonly Func<string[]>? _getQueueFilePaths = getQueueFilePaths;
+        private readonly Func<bool>? _isConcatRoute = isConcatRoute;
+        private readonly Func<string[]>? _getConcatFilePaths = getConcatFilePaths;
 
         public override bool CanExecute(object? parameter) =>
             IsQueueRoute()
                 ? (_getQueueFilePaths?.Invoke().Length ?? 0) > 0
+                : IsConcatRoute()
+                    ? (_getConcatFilePaths?.Invoke().Length ?? 0) > 0
                 : !string.IsNullOrWhiteSpace(_getSourcePath());
 
         public override void Execute(object? parameter)
@@ -46,6 +52,12 @@ namespace OneColumnEncoder.Commands.SaveLoad
             if (IsQueueRoute())
             {
                 ExecuteQueueScriptGen();
+                return;
+            }
+
+            if (IsConcatRoute())
+            {
+                ExecuteConcatScriptGen();
                 return;
             }
 
@@ -103,6 +115,64 @@ namespace OneColumnEncoder.Commands.SaveLoad
         }
 
         private bool IsQueueRoute() => _isQueueRoute?.Invoke() == true;
+        private bool IsConcatRoute() => _isConcatRoute?.Invoke() == true;
+
+        private void ExecuteConcatScriptGen()
+        {
+            string[] sourcePaths = _getConcatFilePaths?.Invoke() ?? [];
+            if (sourcePaths.Length == 0) return;
+
+            string baseName = Path.GetFileNameWithoutExtension(sourcePaths[0]) ?? "concat";
+            string avsScript = ScriptTemplate.BuildConcatAvsExportScript(
+                sourcePaths,
+                FilterScribeVM.AvsPrefix2,
+                FilterScribeVM.AvsSuffix);
+            string vpyScript = ScriptTemplate.BuildConcatVpyExportScript(
+                sourcePaths,
+                FilterScribeVM.VpyPrefix2,
+                FilterScribeVM.VpySuffix);
+
+            SaveFileDialog dialog = new()
+            {
+                Title = UILangProviderM.Current["SrcScribe.SavingWindowTitle"],
+                Filter = "AviSynth Script (*.avs)|*.avs",
+                FileName = baseName + "_concat.avs"
+            };
+
+            if (dialog.ShowDialog() != true) return;
+
+            string avsPath = dialog.FileName;
+            string directory = Path.GetDirectoryName(avsPath) ?? ".";
+            string vpyPath = Path.Combine(directory, Path.GetFileNameWithoutExtension(avsPath) + ".vpy");
+
+            try
+            {
+                File.WriteAllText(avsPath, avsScript);
+                File.WriteAllText(vpyPath, vpyScript);
+            }
+            catch (Exception ex)
+            {
+                new OpenErrModalCmd(
+                    _modalNavS,
+                    UILangProviderM.FltScribeWindowTitle,
+                    string.Format(UILangProviderM.Current["SrcScribe.FailedToSave"], ex.Message)).Execute(null);
+                return;
+            }
+
+            ToolItemCardVM avsItem = _getAvsItem();
+            ToolItemCardVM vpyItem = _getVpyItem();
+            avsItem.P2TextData = avsPath;
+            avsItem.P1TextData = SourceFilePicker.GetPrimaryText(SourceFileKind.AviSynthScript, avsPath);
+            vpyItem.P2TextData = vpyPath;
+            vpyItem.P1TextData = SourceFilePicker.GetPrimaryText(SourceFileKind.VapourSynthScript, vpyPath);
+
+            ApplyUpstreamScriptSelection(avsItem, vpyItem);
+
+            new OpenSuccModalCmd(
+                _modalNavS,
+                UILangProviderM.FltScribeWindowTitle,
+                string.Format(UILangProviderM.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, [avsPath, vpyPath]))).Execute(null);
+        }
 
         private void ExecuteQueueScriptGen()
         {

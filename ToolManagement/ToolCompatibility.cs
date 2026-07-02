@@ -88,25 +88,29 @@ namespace OneColumnEncoder.ToolManagement
             IEnumerable<ToolItemCardVM> upstreamsZone,
             IList<ToolItemCardVM> videoSrcImportZone)
         {
-            if (videoSrcImportZone.Count < 2) return;
+            if (videoSrcImportZone.Count < 3) return;
 
             ToolItemCardVM? upstream = upstreamsZone.FirstOrDefault(t => t.IsSelected);
             ToolItemCardVM singleVideoCard = videoSrcImportZone[0];
             ToolItemCardVM queueCard = videoSrcImportZone[1];
+            ToolItemCardVM concatCard = videoSrcImportZone[2];
 
             singleVideoCard.IsEnabled = true;
 
-            bool shouldDisable = upstream != null && (
+            bool oneLineShotMode = upstream != null && (
                 ToolDefinitionProviderM.IsImportedTool(upstream.Name, "one_line_shot_args.exe"));
 
-            if (shouldDisable)
+            if (oneLineShotMode)
             {
                 queueCard.IsSelected = false;
                 queueCard.IsEnabled = false;
+                concatCard.IsSelected = false;
+                concatCard.IsEnabled = false;
             }
             else
             {
                 queueCard.IsEnabled = true;
+                concatCard.IsEnabled = true;
             }
         }
 

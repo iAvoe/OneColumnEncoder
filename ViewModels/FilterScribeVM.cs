@@ -35,8 +35,13 @@ namespace OneColumnEncoder.ViewModels
         private readonly Func<bool> _hasSarRepairWarning;
         private readonly Func<bool>? _isQueueRoute;
         private readonly Func<string[]>? _getQueueFilePaths;
+        private readonly Func<bool>? _isConcatRoute;
+        private readonly Func<string[]>? _getConcatFilePaths;
+        private readonly Action<string[]>? _applyConcatFilePaths;
         private ColorSpaceAnalysisM _colorSpaceAnalysis = ColorSpaceConverter.Analyze(null);
         public CloseModalCmd CloseCmd { get; }
+        public ConcatSourceListVM ConcatSources { get; } = new();
+        public bool IsConcatMode => _isConcatRoute?.Invoke() == true;
         // 0: AVS, 1: VPY, 2: ffmpeg
         private int _selectedTabIndex;
         public int SelectedTabIndex
@@ -53,6 +58,8 @@ namespace OneColumnEncoder.ViewModels
         {
             get
             {
+                if (IsConcatMode)
+                    return ScriptTemplate.BuildConcatAvsSourceHeader(GetCurrentConcatFilePaths());
                 if (_isFrameRateVariable && _avsEnableFpsParams && _frameRateNum > 0 && _frameRateDen > 0)
                     return $"LWLibavVideoSource(\"video file path\", fpsnum={_frameRateNum}, fpsden={_frameRateDen})";
                 return _baseAvsPrefix;
@@ -72,6 +79,8 @@ namespace OneColumnEncoder.ViewModels
         {
             get
             {
+                if (IsConcatMode)
+                    return ScriptTemplate.BuildConcatVpySourceHeader(GetCurrentConcatFilePaths());
                 if (_isFrameRateVariable && _vpyEnableFpsParams && _frameRateNum > 0 && _frameRateDen > 0)
                     return $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"video file path\", fpsnum={_frameRateNum}, fpsden={_frameRateDen})";
                 return _baseVpyPrefix;
@@ -426,7 +435,10 @@ namespace OneColumnEncoder.ViewModels
             Func<bool> hasSarRepairWarning,
             string? sourceFfprobeJson = null,
             Func<bool>? isQueueRoute = null,
-            Func<string[]>? getQueueFilePaths = null)
+            Func<string[]>? getQueueFilePaths = null,
+            Func<bool>? isConcatRoute = null,
+            Func<string[]>? getConcatFilePaths = null,
+            Action<string[]>? applyConcatFilePaths = null)
         {
             _modalNavS = modalNavS;
             _closeAction = closeAction;
@@ -441,13 +453,54 @@ namespace OneColumnEncoder.ViewModels
             _hasSarRepairWarning = hasSarRepairWarning;
             _isQueueRoute = isQueueRoute;
             _getQueueFilePaths = getQueueFilePaths;
+            _isConcatRoute = isConcatRoute;
+            _getConcatFilePaths = getConcatFilePaths;
+            _applyConcatFilePaths = applyConcatFilePaths;
             _baseAvsPrefix = UILangProviderM.Current["SrcScribe.AvsPrefix"];
             _baseVpyPrefix = UILangProviderM.Current["SrcScribe.VpyPrefix"];
+            ConfigureConcatSources();
             ParseColorSpaceInfo(sourceFfprobeJson);
             ParseSourceResolution(sourceFfprobeJson);
             ParseFrameRateInfo(sourceFfprobeJson);
             BuildButtonGroups();
             UILangProviderM.CurrentChanged += OnLanguageChanged;
+        }
+
+        private void ConfigureConcatSources()
+        {
+            ConcatSources.RemoveItemCommand = new ActionCmd(item =>
+            {
+                if (item is not ConcatSourceItemVM sourceItem) return;
+                ConcatSources.RemoveItem(sourceItem);
+                ApplyConcatSources();
+            });
+            ConcatSources.MoveItemUpCommand = new ActionCmd(item =>
+            {
+                if (item is not ConcatSourceItemVM sourceItem) return;
+                if (ConcatSources.MoveItemUp(sourceItem)) ApplyConcatSources();
+            });
+            ConcatSources.MoveItemDownCommand = new ActionCmd(item =>
+            {
+                if (item is not ConcatSourceItemVM sourceItem) return;
+                if (ConcatSources.MoveItemDown(sourceItem)) ApplyConcatSources();
+            });
+            ConcatSources.LoadItems(_getConcatFilePaths?.Invoke() ?? []);
+            RefreshConcatSourceLanguage();
+        }
+
+        private void ApplyConcatSources() =>
+            _applyConcatFilePaths?.Invoke(ConcatSources.GetCurrentFilePaths());
+
+        private string[] GetCurrentConcatFilePaths() =>
+            IsConcatMode ? ConcatSources.GetCurrentFilePaths() : [];
+
+        private void RefreshConcatSourceLanguage()
+        {
+            EncodingMonitorModalLangProviderM lang = new(UILangProviderM.Current.LanguageCode);
+            ConcatSources.RefreshLanguage(
+                lang.QueueItemRemoveText,
+                lang.QueueItemMoveUpText,
+                lang.QueueItemMoveDownText);
         }
 
         private void ParseColorSpaceInfo(string? sourceFfprobeJson)
@@ -532,6 +585,24 @@ namespace OneColumnEncoder.ViewModels
         }
         private void CopyInOutSection()
         {
+            if (IsConcatMode)
+            {
+                string[] concatPaths = GetCurrentConcatFilePaths();
+                string concatInOutText = SelectedTabIndex switch
+                {
+                    0 => ScriptTemplate.BuildConcatAvsExportScript(concatPaths, AvsPrefix2, AvsSuffix),
+                    1 => ScriptTemplate.BuildConcatVpyExportScript(concatPaths, VpyPrefix2, VpySuffix),
+                    _ => string.Empty
+                };
+
+                Clipboard.SetText(concatInOutText);
+                new OpenSuccModalCmd(
+                    _modalNavS,
+                    UILangProviderM.FltScribeWindowTitle,
+                    UILangProviderM.Current["SrcScribe.CopiedSection"]).Execute(null);
+                return;
+            }
+
             string sourcePath = _getSourcePath();
             string inOutText = SelectedTabIndex switch
             {
@@ -553,6 +624,12 @@ namespace OneColumnEncoder.ViewModels
             if (_isQueueRoute?.Invoke() == true)
             {
                 ExecuteQueueSaveAsFile();
+                return;
+            }
+
+            if (IsConcatMode)
+            {
+                ExecuteConcatSaveAsFile();
                 return;
             }
 
@@ -638,6 +715,46 @@ namespace OneColumnEncoder.ViewModels
                 string.Format(UILangProviderM.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, savedPaths))).Execute(null);
         }
 
+        private void ExecuteConcatSaveAsFile()
+        {
+            string[] concatPaths = GetCurrentConcatFilePaths();
+            if (concatPaths.Length == 0) return;
+
+            string script = SelectedTabIndex switch
+            {
+                0 => ScriptTemplate.BuildConcatAvsExportScript(concatPaths, AvsPrefix2, AvsSuffix, AvsUserInput),
+                1 => ScriptTemplate.BuildConcatVpyExportScript(concatPaths, VpyPrefix2, VpySuffix, VpyUserInput),
+                _ => FfmpegFreeText
+            };
+
+            string filter = SelectedTabIndex switch
+            {
+                0 => UILangProviderM.Current["SrcScribe.FilterAvs"],
+                1 => UILangProviderM.Current["SrcScribe.FilterVpy"],
+                _ => "Text files (*.txt)|*.txt"
+            };
+
+            string extension = SelectedTabIndex switch
+            {
+                0 => ".avs",
+                1 => ".vpy",
+                _ => ".txt"
+            };
+
+            SaveFileDialog dialog = new()
+            {
+                Title = UILangProviderM.Current["SrcScribe.SavingWindowTitle"],
+                Filter = filter,
+                FileName = GetScriptFileName(Path.GetFileNameWithoutExtension(concatPaths[0]) + "_concat", extension)
+            };
+
+            if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
+
+            ApplyConcatSources();
+            if (TryWriteScript(dialog.FileName, script))
+                ShowSavedMessage(dialog.FileName);
+        }
+
         private void ExecuteQueueSaveAndImport()
         {
             string[] sourcePaths = _getQueueFilePaths?.Invoke() ?? [];
@@ -710,6 +827,12 @@ namespace OneColumnEncoder.ViewModels
                 return;
             }
 
+            if (IsConcatMode)
+            {
+                ExecuteConcatSaveAndImport();
+                return;
+            }
+
             string sourcePath = _getSourcePath();
             string avsScript = ScriptTemplate.BuildAvsExportScript(
                 sourcePath, AvsPrefix2, AvsSuffix, AvsUserInput,
@@ -732,6 +855,62 @@ namespace OneColumnEncoder.ViewModels
             string vpyPath = Path.Combine(directory, Path.GetFileNameWithoutExtension(avsPath) + ".vpy");
 
             if (!TryWriteScripts(avsPath, avsScript, vpyPath, vpyScript)) return;
+
+            SourceFileKind? preferredKind = _getPreferredScriptSourceKind();
+            if (preferredKind == SourceFileKind.AviSynthScript)
+            {
+                ImportScript(_avsItem, SourceFileKind.AviSynthScript, avsPath);
+            }
+            else if (preferredKind == SourceFileKind.VapourSynthScript)
+            {
+                ImportScript(_vpyItem, SourceFileKind.VapourSynthScript, vpyPath);
+            }
+            else
+            {
+                ImportScript(_avsItem, SourceFileKind.AviSynthScript, avsPath);
+                ImportScript(_vpyItem, SourceFileKind.VapourSynthScript, vpyPath);
+            }
+
+            SelectPreferredScriptItem();
+            new OpenSuccModalCmd(
+                _modalNavS,
+                UILangProviderM.FltScribeWindowTitle,
+                string.Format(UILangProviderM.Current["ScriptGen.ScriptsSaved"], $"{avsPath}\n{vpyPath}")).Execute(null);
+            _closeAction();
+        }
+
+        private void ExecuteConcatSaveAndImport()
+        {
+            string[] concatPaths = GetCurrentConcatFilePaths();
+            if (concatPaths.Length == 0) return;
+
+            string avsScript = ScriptTemplate.BuildConcatAvsExportScript(
+                concatPaths,
+                AvsPrefix2,
+                AvsSuffix,
+                AvsUserInput);
+            string vpyScript = ScriptTemplate.BuildConcatVpyExportScript(
+                concatPaths,
+                VpyPrefix2,
+                VpySuffix,
+                VpyUserInput);
+
+            SaveFileDialog dialog = new()
+            {
+                Title = UILangProviderM.SavingScriptWindowTitle,
+                Filter = UILangProviderM.Current["SrcScribe.FilterAvs"],
+                FileName = GetScriptFileName(Path.GetFileNameWithoutExtension(concatPaths[0]) + "_concat", ".avs")
+            };
+
+            if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
+
+            string avsPath = dialog.FileName;
+            string directory = Path.GetDirectoryName(avsPath) ?? ".";
+            string vpyPath = Path.Combine(directory, Path.GetFileNameWithoutExtension(avsPath) + ".vpy");
+
+            if (!TryWriteScripts(avsPath, avsScript, vpyPath, vpyScript)) return;
+
+            ApplyConcatSources();
 
             SourceFileKind? preferredKind = _getPreferredScriptSourceKind();
             if (preferredKind == SourceFileKind.AviSynthScript)
@@ -838,6 +1017,17 @@ namespace OneColumnEncoder.ViewModels
 
         private string GetCurrentFullScript()
         {
+            if (IsConcatMode)
+            {
+                string[] concatPaths = GetCurrentConcatFilePaths();
+                return SelectedTabIndex switch
+                {
+                    0 => ScriptTemplate.BuildConcatAvsExportScript(concatPaths, AvsPrefix2, AvsSuffix, AvsUserInput),
+                    1 => ScriptTemplate.BuildConcatVpyExportScript(concatPaths, VpyPrefix2, VpySuffix, VpyUserInput),
+                    _ => FfmpegFreeText
+                };
+            }
+
             string sourcePath = _getSourcePath();
             return SelectedTabIndex switch
             {
@@ -899,6 +1089,8 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(FfmpegHighHdrToLowSdrColorFilter));
             OnPropertyChanged(nameof(AvsEnableFpsParamsLabel));
             OnPropertyChanged(nameof(VpyEnableFpsParamsLabel));
+            OnPropertyChanged(nameof(IsConcatMode));
+            RefreshConcatSourceLanguage();
 
             BuildButtonGroups();
             OnPropertyChanged(nameof(ScriptExportButtons));

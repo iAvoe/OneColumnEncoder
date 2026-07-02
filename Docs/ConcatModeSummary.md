@@ -1,0 +1,152 @@
+# Concat Mode Encoding
+
+This document explains the runtime flow for concat mode, from multi-file import to single-output encoding.
+
+## 1. What Concat Mode Is
+
+Concat mode is the `Video Src. Concat` card in `VideoSrcImportZone[2]`. `VideoSourceConcatState.IsActive` becomes true when that card is selected, and `MainVM.RefreshActiveSourceRoute()` switches the app to the concat validation card while keeping the normal script source zone.
+
+Concat mode is not queue mode. Queue mode means many source files produce many jobs and many outputs. Concat mode means many fragments become one logical source, one `EncodingPipelineRequest`, and one output.
+
+When concat mode is active:
+
+- The concat card title shows the current fragment count.
+- `ActiveSrcValidationCard` is `ConcatCheckCard`.
+- `Sample Clip` is disabled.
+- The duration filter is hidden.
+- `FilterScribeModal` shows `ConcatSourceSidebarPanel` for reorder/remove operations.
+
+## 2. Importing Concat Sources
+
+`BrowseSourceConcatCmd` opens a multi-select `OpenFileDialog`. It does not import a folder.
+
+Before accepting the selection, it checks that all selected files have the same extension. If any selected file differs, import aborts and opens `OpenErrModalCmd` with the expected extension and mismatched files.
+
+After import:
+
+- `P2TextData` stores the first file's parent directory.
+- `P1TextData` stores a compact label such as `firstFile..lastFile`.
+- `P1TooltipText` stores the full selected file list for hover text.
+- `VideoSourceConcatState` stores the ordered full file paths.
+- `source_concat_filelist.txt` is generated under the app config directory (`1cenc`).
+
+The filelist uses ffmpeg concat-demuxer syntax with absolute paths and `-safe 0` support:
+
+```text
+file 'G:/media/part01.mkv'
+file 'G:/media/part02.mkv'
+```
+
+## 3. Concat Source Analysis
+
+`AnalyzeSrcVideoCmd` has a concat branch. It analyzes every selected fragment with ffprobe and supplements frame counts the same way single and queue analysis do.
+
+Concat analysis is all-or-nothing:
+
+- If any file fails ffprobe, the whole concat source fails.
+- If any file lacks a readable video stream, the whole concat source fails.
+- If any file differs from the first file's key video signature, the whole concat source fails.
+
+The key signature currently includes:
+
+- source validation checklist signature
+- width
+- height
+- pixel format
+- codec
+- normalized `avg_frame_rate`
+- normalized `r_frame_rate`
+
+On success, the first fragment's raw ffprobe JSON is stored in `_srcVideoAnalysis.RawJson` and applied to `ConcatCheckCard`. This representative analysis drives encoder config previews and FilterScribe helpers.
+
+## 4. Script Generation
+
+Concat mode generates one AVS script and one VPY script for the whole fragment list.
+
+`OneClickScriptGenCmd` uses:
+
+- `ScriptTemplate.BuildConcatAvsExportScript()`
+- `ScriptTemplate.BuildConcatVpyExportScript()`
+
+AVS scripts are video-only and keep `src` as the final concatenated clip:
+
+```avs
+v1 = LWLibavVideoSource("G:\media\part01.mkv")
+v2 = LWLibavVideoSource("G:\media\part02.mkv")
+src = v1 ++ v2
+# Add more filters below or leave empty...
+# ...end of edit section
+```
+
+VPY scripts load each fragment with `LWLibavSource`, then splice clips with `core.std.Splice`. The final clip is also assigned to `src` before the user-edit section and `src.set_output()`.
+
+Audio is intentionally not loaded by AVS/VPY concat scripts.
+
+## 5. FilterScribe Flow
+
+`OpenFilterScribeCmd` passes concat delegates into `FilterScribeVM`:
+
+- `isConcatRoute`
+- `getConcatFilePaths`
+- `applyConcatFilePaths`
+
+In concat mode, `FilterScribeVM` loads `ConcatSourceListVM`, and `FilterScribeModal` displays `ConcatSourceSidebarPanel` on the left.
+
+The sidebar supports:
+
+- Remove fragment
+- Move fragment up
+- Move fragment down
+
+Every reorder/remove operation updates `VideoSourceConcatState` and regenerates `source_concat_filelist.txt` through the `applyConcatFilePaths` callback. `Save & Import` also uses the current sidebar order when writing AVS/VPY scripts.
+
+## 6. Starting Concat Encoding
+
+`StartEncCmd` checks concat before queue. In concat mode it calls `MainVM.BuildConcatEncodingPipelineRequest()` and starts a normal single request flow, including debug confirmation and overwrite confirmation.
+
+Concat encoding is supported for:
+
+- `ffmpeg.exe`
+- `vspipe.exe`
+- `avs2yuv.exe`
+- `avs2pipemod.exe`
+
+`one_line_shot_args.exe` is rejected because concat mode has multiple source files and no SVFI concat route.
+
+For `ffmpeg.exe`, `BuildConcatEncodingPipelineRequest()` sets a placeholder upstream input path but the actual upstream input is `ConcatFileListPath`. `EncodingPipeline.BuildUpstreamArgs()` emits:
+
+```text
+-hide_banner -f concat -safe 0 -i source_concat_filelist.txt -f yuv4mpegpipe -an -strict unofficial -
+```
+
+For `vspipe.exe` and AviSynth upstream tools, the upstream input is the selected concat script generated/imported through the normal script source zone.
+
+## 7. Audio Muxing
+
+Concat mode never muxes audio from `SourceVideoPath`; concat requests set `SourceVideoPath` to `null`.
+
+After video encoding, `EncodingPipeline.BuildMuxCommand()` uses the concat filelist as the second ffmpeg input:
+
+```text
+-i encoded_video -f concat -safe 0 -i source_concat_filelist.txt -map 0:v:0 -map 1:a? -c:v copy -c:a copy ... output
+```
+
+This keeps upstream pipes video-only while allowing audio streams from the concatenated source list to be copied into the final output.
+
+## 8. End-to-End Flow
+
+`Video Src. Concat` selected -> import multiple files -> extension check -> write filelist -> analyze all fragments -> optionally reorder/remove in FilterScribe -> regenerate filelist -> save/import concat script if needed -> press `Start Encode` -> build one concat request -> confirm command/overwrite -> encode one output -> mux audio from filelist.
+
+## Key Files
+
+- `ConcatManagement/VideoSourceConcat.cs`
+- `ConcatManagement/ConcatFileListGenerator.cs`
+- `Commands/BrowseSourceConcatCmd.cs`
+- `Commands/AnalyzeSrcVideoCmd.cs`
+- `Commands/StartEncCmd.cs`
+- `Commands/SaveLoad/OneClickScriptGenCmd.cs`
+- `Commands/OpenClose/OpenFilterScribeCmd.cs`
+- `ViewModels/FilterScribeVM.cs`
+- `Components/ConcatSourceSidebarPanel.xaml`
+- `Pipeline/EncodingPipeline.cs`
+- `ScriptGeneration/ScriptTemplate.cs`

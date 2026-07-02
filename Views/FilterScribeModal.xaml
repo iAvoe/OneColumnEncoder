@@ -10,11 +10,15 @@
                    d:DataContext="{d:DesignInstance Type=vms:FilterScribeVM}"
                    mc:Ignorable="d"
                    Title="{Binding WindowTitle}"
-                   Width="740"
+                   Width="1060"
                    Height="1010"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
     <Grid Margin="15 10 15 0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -24,7 +28,27 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
+        <comps:ConcatSourceSidebarPanel Grid.Column="0"
+                                        Grid.RowSpan="6"
+                                        DataContext="{Binding ConcatSources}"
+                                        Margin="0 0 10 0">
+            <comps:ConcatSourceSidebarPanel.Style>
+                <Style TargetType="comps:ConcatSourceSidebarPanel">
+                    <Setter Property="Visibility"
+                            Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding DataContext.IsConcatMode, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
+                                     Value="True">
+                            <Setter Property="Visibility"
+                                    Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </comps:ConcatSourceSidebarPanel.Style>
+        </comps:ConcatSourceSidebarPanel>
+
         <TextBlock Grid.Row="0"
+                   Grid.Column="1"
                    Text="{Binding ScribeDescription}"
                    FontSize="13"
                    TextWrapping="Wrap"
@@ -32,6 +56,7 @@
 
         <!-- TabControl: AviSynth, VapourSynth, ffmpeg -->
         <TabControl Grid.Row="1"
+                    Grid.Column="1"
                     SelectedIndex="{Binding SelectedTabIndex}"
                     Margin="0 10 0 0">
 
@@ -198,6 +223,7 @@
         </TabControl>
 
         <comps:ThreeButtonGroup Grid.Row="2"
+                                Grid.Column="1"
                                 Margin="0 10 0 0"
                                 ButtonHeight="30"
                                 DataContext="{Binding ScriptExportButtons}"
@@ -209,6 +235,7 @@
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
 
         <StackPanel Grid.Row="3"
+                    Grid.Column="1"
                     Margin="0 15 0 0">
             <StackPanel>
                 <TextBlock Text="{Binding FrameRateConvertTitle}"
@@ -629,6 +656,7 @@
         </StackPanel>
 
         <comps:ThreeButtonGroup Grid.Row="4"
+                                Grid.Column="1"
                                 Margin="0 10 0 0"
                                 ButtonHeight="30"
                                 DataContext="{Binding FinishScribeButtons}"
@@ -640,6 +668,7 @@
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
 
         <comps:HintPanel Grid.Row="5"
+                         Grid.Column="1"
                          Margin="0 2.5 0 5"
                          Text="{Binding NoteText}" />
     </Grid>

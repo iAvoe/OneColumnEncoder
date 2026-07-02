@@ -24,7 +24,9 @@ public record EncodingPipelineRequest(
     ParallelismConfM? ParallelismConf = null,
     string? SvfiIniPath = null,
     string? SvfiTaskId = null,
-    string? FfmpegFilterArgs = null);
+    string? FfmpegFilterArgs = null,
+    bool? IsConcatMode = null,
+    string? ConcatFileListPath = null);
 
 // For clip sampler
 public record EncodingClipRequest(
@@ -84,7 +86,8 @@ public static partial class EncodingPipeline
     private static EncodingMuxCommand? BuildMuxCommand(EncodingPipelineRequest request)
     {
         if (request.Clip != null) return null;
-        if (string.IsNullOrWhiteSpace(request.FfmpegPath) || string.IsNullOrWhiteSpace(request.SourceVideoPath)) return null;
+        if (string.IsNullOrWhiteSpace(request.FfmpegPath)) return null;
+        if (!request.IsConcatMode.GetValueOrDefault() && string.IsNullOrWhiteSpace(request.SourceVideoPath)) return null;
 
         string encodedVideoPath = ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath);
         string outputPath = ResolveMuxOutputPath(request.OutputPath);
@@ -92,12 +95,21 @@ public static partial class EncodingPipeline
         string videoTimescaleArgs = GetMuxVideoTrackTimescaleArgs(request.SourceFfprobeJson);
         string streamMapArgs = BuildStreamMapArgs(request.SourceFfprobeJson);
         string? inputFormatArgs = GetMuxInputFormatArgs(request.EncoderExeName, framerateValue);
+
+        bool isConcatMux = request.IsConcatMode.GetValueOrDefault() && request.ConcatFileListPath != null;
+        string secondInput = isConcatMux
+            ? $"-f concat -safe 0 -i {Quote(request.ConcatFileListPath!)}"
+            : $"-i {Quote(request.SourceVideoPath!)}";
+        string nonVideoMapAndCodecArgs = isConcatMux
+            ? "-map 1:a? -c:a copy"
+            : $"{streamMapArgs} -map_metadata 1 -map_chapters 1 -c:a copy -c:s copy";
+
         string args = JoinArgs(
             "-hide_banner -y",
             inputFormatArgs,
             $"-i {Quote(encodedVideoPath)}",
-            $"-i {Quote(request.SourceVideoPath)}",
-            $"-map 0:v:0 {streamMapArgs} -map_metadata 1 -map_chapters 1 -c:v copy -bsf:v setts=pts=N*DURATION -c:a copy -c:s copy {videoTimescaleArgs}",
+            secondInput,
+            $"-map 0:v:0 {nonVideoMapAndCodecArgs} -c:v copy -bsf:v setts=pts=N*DURATION {videoTimescaleArgs}",
             Quote(outputPath));
 
         return new($"{Quote(request.FfmpegPath)} {args}", args, encodedVideoPath, outputPath);
@@ -139,9 +151,12 @@ public static partial class EncodingPipeline
     {
         string input = Quote(request.UpstreamInputPath);
         string clipArgs = BuildUpstreamClipArgs(request.UpstreamExeName, request.Clip);
+        bool isConcat = request.IsConcatMode == true && request.ConcatFileListPath != null;
         return request.UpstreamExeName.ToLowerInvariant() switch
         {
-            "ffmpeg.exe" => JoinArgs($"-hide_banner", clipArgs, $"-i {input}", request.FfmpegFilterArgs, "-f yuv4mpegpipe -an -strict unofficial -"), // unofficial allows 10bit pipe
+            "ffmpeg.exe" => isConcat
+                ? JoinArgs("-hide_banner", "-f concat -safe 0", $"-i {Quote(request.ConcatFileListPath!)}", clipArgs, request.FfmpegFilterArgs, "-f yuv4mpegpipe -an -strict unofficial -")
+                : JoinArgs($"-hide_banner", clipArgs, $"-i {input}", request.FfmpegFilterArgs, "-f yuv4mpegpipe -an -strict unofficial -"), // unofficial allows 10bit pipe
             "vspipe.exe" => JoinArgs(input, clipArgs, NormalizeRequired(request.VspipeY4mArg, "vspipe Y4M argument"), "-"),
             "avs2yuv.exe" => JoinArgs(input, clipArgs, "-"),
             "avs2pipemod.exe" => JoinArgs(input, clipArgs, "-y4mp"),
