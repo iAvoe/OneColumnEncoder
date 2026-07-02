@@ -12,7 +12,9 @@
         <Thickness x:Key="ConcatSidebarItemMargin">0 5</Thickness>
     </UserControl.Resources>
 
-    <Border Background="{StaticResource Background}" >
+    <Border Background="{StaticResource Background}"
+            BorderBrush="{StaticResource GlobalSecondary}"
+            BorderThickness="0 0 1.5 0">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />

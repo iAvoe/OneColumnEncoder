@@ -15,9 +15,9 @@
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
     <Grid Margin="10 10 15 0">
-<Grid.ColumnDefinitions>
+        <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="2" />
+            <ColumnDefinition Width="0" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -49,10 +49,14 @@
         </comps:ConcatSourceSidebarPanel>
 
         <GridSplitter Grid.Column="1"
-                      Width="2"
+                      Width="0"
+                      Background="Transparent"
+                      Cursor="SizeWE"
                       ResizeBehavior="PreviousAndNext"
+                      ResizeDirection="Columns"
                       HorizontalAlignment="Stretch"
                       IsEnabled="{Binding DataContext.IsConcatMode, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
+                      ShowsPreview="False"
                       VerticalAlignment="Stretch"
                       Visibility="{Binding DataContext.IsConcatMode, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}, Converter={StaticResource BoolToVisibility}}" />
 

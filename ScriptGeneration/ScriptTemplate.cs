@@ -66,12 +66,12 @@
             sb.AppendLine("src = core.std.BlankClip()");
             for (int i = 0; i < filePaths.Length; i++)
             {
-                string varName = $"v{i + 1}";
-                sb.AppendLine($"{varName} = core.lsmas.LWLibavSource(source=r\"{filePaths[i]}\")");
+                char varName = (char)('a' + i);
+                sb.AppendLine($"v{varName} = core.lsmas.LWLibavSource(source=r\"{filePaths[i]}\")");
                 if (i == 0)
-                    sb.AppendLine($"src = {varName}");
+                    sb.AppendLine($"src = v{varName}");
                 else
-                    sb.AppendLine($"src = core.std.Splice([src, {varName}])");
+                    sb.AppendLine($"src = core.std.Splice([src, v{varName}])");
             }
             return sb.ToString();
         }
