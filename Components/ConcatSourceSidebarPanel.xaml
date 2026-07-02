@@ -12,17 +12,15 @@
         <Thickness x:Key="ConcatSidebarItemMargin">0 5</Thickness>
     </UserControl.Resources>
 
-    <Border Background="{StaticResource Background}"
-            Padding="7 10">
+    <Border Background="{StaticResource Background}" >
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <TextBlock Text="Concat Sources"
-                       FontWeight="Bold"
-                       Margin="0 0 0 5" />
+            <TextBlock Text="Concat Ordering"
+                       Style="{StaticResource H3}" />
 
             <ListBox Grid.Row="1"
                      ItemsSource="{Binding Items}"

@@ -46,9 +46,9 @@ namespace OneColumnEncoder.ViewModels
 
         public bool IsSelected => _isSidebarSelected || _model.Status == "Encoding";
         public bool IsCancel => _model.Status == "Failed";
-        public bool IsReal => true;
-        public bool EnableRealCheck => false;
-        public bool IsEnabled => true;
+        public static bool IsReal => true;
+        public static bool EnableRealCheck => false;
+        public static bool IsEnabled => true;
 
         public bool IsRecentlyMoved
         {

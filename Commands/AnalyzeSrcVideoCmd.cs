@@ -1,4 +1,5 @@
 using OneColumnEncoder.Commands.OpenClose;
+using OneColumnEncoder.ConcatManagement;
 using OneColumnEncoder.FFmpeg;
 using OneColumnEncoder.Persistence;
 using OneColumnEncoder.Json;
@@ -131,60 +132,10 @@ namespace OneColumnEncoder.Commands
             ConcatCheckCardVM concatCard = _getActiveSrcValidationCard() as ConcatCheckCardVM
                 ?? throw new InvalidOperationException("Concat source check card is not active.");
 
-            string? referenceRawJson = null;
-            string? referencePath = null;
-            ConcatSourceSignature? referenceSignature = null;
-            List<QueueSourceRawAnalysis> rawAnalyses = [];
-            int supplementedCount = 0;
-
-            for (int i = 0; i < concatFilePaths.Length; i++)
-            {
-                string filePath = concatFilePaths[i];
-                SourceCheckCardVM probeCard = new()
-                {
-                    IsSvtav1SelectedFunc = concatCard.IsSvtav1SelectedFunc
-                };
-
-                try
-                {
-                    string rawJson = await FFProbeVideoAnalysis.AnalyzeAsync(ffprobePath, filePath);
-                    FFProbeFrameCountSupplementResult supplementResult = FFProbeFrameCountSupplement.Supplement(rawJson);
-                    rawJson = supplementResult.RawJson;
-                    supplementedCount += supplementResult.SupplementedCount;
-                    probeCard.ApplyFfprobeAnalysisJson(rawJson);
-
-                    using JsonDocument rawDocument = JsonDocument.Parse(rawJson);
-                    JsonElement rawElement = rawDocument.RootElement.Clone();
-                    ConcatSourceSignature signature = ConcatSourceSignature.From(probeCard.GetSignature(), rawElement)
-                        ?? throw new InvalidOperationException(UILangProviderM.Current["SrcScribe.ColorSpace.NoVideoStream"]);
-
-                    if (referenceSignature == null)
-                    {
-                        referenceSignature = signature;
-                        referenceRawJson = rawJson;
-                        referencePath = filePath;
-                    }
-                    else if (!signature.Matches(referenceSignature))
-                    {
-                        throw new InvalidOperationException(string.Format(
-                            UILangProviderM.Current["SourceConcat.IncompatibleVideo"],
-                            i + 1,
-                            referenceSignature.Display,
-                            signature.Display));
-                    }
-
-                    rawAnalyses.Add(new(filePath, Path.GetFileName(filePath), rawElement));
-                }
-                catch (Exception ex)
-                {
-                    throw new InvalidOperationException(
-                        FormatAnalysisFailureMessage(filePath, ex.Message, i + 1, concatFilePaths.Length),
-                        ex);
-                }
-            }
-
-            if (referenceRawJson == null || referencePath == null)
-                throw new InvalidOperationException(FormatAllQueueItemsFailedMessage(concatFilePaths.Length));
+            ConcatCompatibilityAnalysisResult result = await ConcatCompatibilityAnalyzer.AnalyzeAsync(
+                ffprobePath,
+                concatFilePaths,
+                concatCard.IsSvtav1SelectedFunc);
 
             JsonSerializerOptions jsonOptions = new()
             {
@@ -194,15 +145,18 @@ namespace OneColumnEncoder.Commands
             jsonOptions.Converters.Add(new JsonStringEnumConverter());
 
             _analysis.FfprobePath = ffprobePath;
-            _analysis.SourcePath = referencePath;
-            _analysis.RawJson = referenceRawJson;
-            _analysis.QueueRawJson = JsonSerializer.Serialize(new QueueRawAnalysisData(rawAnalyses), jsonOptions);
-            concatCard.ApplyFfprobeAnalysisJson(referenceRawJson);
+            _analysis.SourcePath = result.ReferencePath;
+            _analysis.RawJson = result.ReferenceRawJson;
+            _analysis.QueueRawJson = JsonSerializer.Serialize(
+                new QueueRawAnalysisData([.. result.RawAnalyses.Select(entry =>
+                    new QueueSourceRawAnalysis(entry.FilePath, entry.DisplayName, entry.FfprobeJson))]),
+                jsonOptions);
+            concatCard.ApplyFfprobeAnalysisJson(result.ReferenceRawJson);
             concatCard.ApplyConcatAnalysis(concatFilePaths, allValid: true);
 
             string message = string.Format(UILangProviderM.Current["SourceConcat.Analyzed"], concatFilePaths.Length);
-            if (supplementedCount > 0)
-                message = FormatQueueFrameCountSupplementMessage(message, supplementedCount);
+            if (result.SupplementedCount > 0)
+                message = FormatQueueFrameCountSupplementMessage(message, result.SupplementedCount);
             ShowSourceAnalysisCompletedModal(message);
         }
 
@@ -714,49 +668,6 @@ namespace OneColumnEncoder.Commands
                 }
 
                 return a == 0 ? 1 : a;
-            }
-        }
-
-        private sealed record ConcatSourceSignature(
-            SourceCheckSignature CheckSignature,
-            int Width,
-            int Height,
-            string PixelFormat,
-            string Codec,
-            string AvgFrameRate,
-            string RFrameRate)
-        {
-            public string Display => string.Join(
-                ", ",
-                $"{Width}x{Height}",
-                string.IsNullOrWhiteSpace(PixelFormat) ? "pix_fmt=?" : $"pix_fmt={PixelFormat}",
-                string.IsNullOrWhiteSpace(Codec) ? "codec=?" : $"codec={Codec}",
-                string.IsNullOrWhiteSpace(AvgFrameRate) ? "avg_fps=?" : $"avg_fps={AvgFrameRate}",
-                string.IsNullOrWhiteSpace(RFrameRate) ? "r_fps=?" : $"r_fps={RFrameRate}");
-
-            public bool Matches(ConcatSourceSignature other) =>
-                CheckSignature.Matches(other.CheckSignature) &&
-                Width == other.Width &&
-                Height == other.Height &&
-                string.Equals(PixelFormat, other.PixelFormat, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(Codec, other.Codec, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(AvgFrameRate, other.AvgFrameRate, StringComparison.Ordinal) &&
-                string.Equals(RFrameRate, other.RFrameRate, StringComparison.Ordinal);
-
-            public static ConcatSourceSignature? From(SourceCheckSignature checkSignature, JsonElement rawElement)
-            {
-                if (!TryGetFirstVideoStream(rawElement, out JsonElement stream)) return null;
-                if (!JsonElementHelper.TryGetInt(stream, "width", out int width)) return null;
-                if (!JsonElementHelper.TryGetInt(stream, "height", out int height)) return null;
-
-                return new(
-                    checkSignature,
-                    width,
-                    height,
-                    JsonElementHelper.TryGetString(stream, "pix_fmt") ?? string.Empty,
-                    JsonElementHelper.TryGetString(stream, "codec_name") ?? string.Empty,
-                    QueueSourceGroupSignature.NormalizeFrameRate(JsonElementHelper.TryGetString(stream, "avg_frame_rate")),
-                    QueueSourceGroupSignature.NormalizeFrameRate(JsonElementHelper.TryGetString(stream, "r_frame_rate")));
             }
         }
 

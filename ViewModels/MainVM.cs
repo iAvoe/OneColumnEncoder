@@ -688,6 +688,7 @@ namespace OneColumnEncoder.ViewModels
                 EncodersZone.Any(t => t.IsSelected
                     && ToolDefinitionProviderM.IsImportedTool(t.Name, "svtav1encapp.exe"));
             QueueSrcFilterCard.IsSvtav1SelectedFunc = SrcValidationCard.IsSvtav1SelectedFunc;
+            ConcatCheckCard.IsSvtav1SelectedFunc = SrcValidationCard.IsSvtav1SelectedFunc;
 
             EncTermsCard.GetOutputDirectoryFunc = () =>
             {
@@ -1205,7 +1206,12 @@ namespace OneColumnEncoder.ViewModels
 
             if (IsVideoSourceConcatItem(item))
             {
-                item.R1Command = new BrowseSourceConcatCmd(item, _modalNavS, OnSourceConcatImported);
+                item.R1Command = new BrowseSourceConcatCmd(
+                    item,
+                    _modalNavS,
+                    GetSelectedFfprobePath,
+                    ConcatCheckCard.IsSvtav1SelectedFunc,
+                    OnSourceConcatImported);
                 item.R2Command = new ClearToolItemCmd(item, () => OnSourceConcatCleared(item));
                 item.PropertyChanged += OnVideoSrcItemPropertyChanged;
                 return;

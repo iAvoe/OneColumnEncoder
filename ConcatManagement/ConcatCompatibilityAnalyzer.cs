@@ -1,142 +1,199 @@
-using System.Text.Json;
+using OneColumnEncoder.FFmpeg;
 using OneColumnEncoder.Json;
+using OneColumnEncoder.Models;
+using OneColumnEncoder.ViewModels.Cards;
+using System.Globalization;
+using System.IO;
+using System.Text.Json;
 
 namespace OneColumnEncoder.ConcatManagement
 {
     public static class ConcatCompatibilityAnalyzer
     {
-        public static bool AnalyzeAllFiles(string[] filePaths, string? ffprobePath, out string resultJson)
-        {
-            var results = new System.Text.StringBuilder();
-            results.AppendLine("[");
+        private static AnalyzeSrcVideoCmdLangProviderM Lang => new(UILangProviderM.Current.LanguageCode);
 
-            bool allValid = true;
-            int? firstWidth = null, firstHeight = null;
-            string? firstPixFmt = null;
+        public static async Task<ConcatCompatibilityAnalysisResult> AnalyzeAsync(
+            string ffprobePath,
+            string[] filePaths,
+            Func<bool>? isSvtav1SelectedFunc = null)
+        {
+            string? referenceRawJson = null;
+            string? referencePath = null;
+            ConcatSourceSignature? referenceSignature = null;
+            List<ConcatSourceRawAnalysis> rawAnalyses = [];
+            int supplementedCount = 0;
 
             for (int i = 0; i < filePaths.Length; i++)
             {
-                string path = filePaths[i];
-                string? json = RunFfprobeGetJson(ffprobePath, path);
-                if (string.IsNullOrWhiteSpace(json))
+                string filePath = filePaths[i];
+                SourceCheckCardVM probeCard = new()
                 {
-                    allValid = false;
-                    results.AppendLine($"  {{ \"index\": {i}, \"path\": \"{EscapeJson(path)}\", \"error\": \"ffprobe failed\" }},");
-                    continue;
-                }
-
-                int width = 0, height = 0;
-                string? codec = null, pixFmt = null, fps = null;
-                bool hasVideo = TryParseVideoStreamInfo(json, out width, out height, out codec, out pixFmt, out fps);
-
-                if (!hasVideo)
-                {
-                    allValid = false;
-                    results.AppendLine($"  {{ \"index\": {i}, \"path\": \"{EscapeJson(path)}\", \"error\": \"no video stream\" }},");
-                    continue;
-                }
-
-                if (firstWidth == null)
-                {
-                    firstWidth = width;
-                    firstHeight = height;
-                    firstPixFmt = pixFmt;
-                }
-                else if (firstWidth != width || firstHeight != height || firstPixFmt != pixFmt)
-                {
-                    allValid = false;
-                    results.AppendLine($"  {{ \"index\": {i}, \"path\": \"{EscapeJson(path)}\", \"error\": \"incompatible video params\", \"details\": {{ \"width\": {width}, \"height\": {height}, \"codec\": \"{codec}\", \"pix_fmt\": \"{pixFmt}\" }} }},");
-                }
-
-                results.AppendLine($"  {{ \"index\": {i}, \"path\": \"{EscapeJson(path)}\", \"width\": {width}, \"height\": {height}, \"codec\": \"{codec}\", \"pix_fmt\": \"{pixFmt}\", \"fps\": \"{fps}\" }},");
-            }
-
-            results.AppendLine("]");
-            resultJson = results.ToString();
-            return allValid;
-        }
-
-        private static string? RunFfprobeGetJson(string? ffprobePath, string videoPath)
-        {
-            if (string.IsNullOrWhiteSpace(ffprobePath) || !System.IO.File.Exists(ffprobePath))
-                return null;
-            if (string.IsNullOrWhiteSpace(videoPath) || !System.IO.File.Exists(videoPath))
-                return null;
-
-            try
-            {
-                var psi = new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = ffprobePath,
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    StandardOutputEncoding = System.Text.Encoding.UTF8,
-                    StandardErrorEncoding = System.Text.Encoding.UTF8,
-                    CreateNoWindow = true
+                    IsSvtav1SelectedFunc = isSvtav1SelectedFunc
                 };
-                psi.ArgumentList.Add("-v");
-                psi.ArgumentList.Add("quiet");
-                psi.ArgumentList.Add("-hide_banner");
-                psi.ArgumentList.Add("-select_streams");
-                psi.ArgumentList.Add("v:0");
-                psi.ArgumentList.Add("-show_entries");
-                psi.ArgumentList.Add("stream=index,width,height,codec_name,pix_fmt,avg_frame_rate,r_frame_rate");
-                psi.ArgumentList.Add("-of");
-                psi.ArgumentList.Add("json");
-                psi.ArgumentList.Add(videoPath);
 
-                using var process = new System.Diagnostics.Process { StartInfo = psi };
-                process.Start();
-                string stdout = process.StandardOutput.ReadToEnd();
-                process.WaitForExit(5000);
-                return process.ExitCode == 0 && !string.IsNullOrWhiteSpace(stdout) ? stdout : null;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        private static bool TryParseVideoStreamInfo(string json, out int width, out int height,
-            out string? codec, out string? pixFmt, out string? fps)
-        {
-            width = height = 0;
-            codec = pixFmt = fps = null;
-
-            try
-            {
-                using JsonDocument doc = JsonDocument.Parse(json);
-                if (!doc.RootElement.TryGetProperty("streams", out JsonElement streams) ||
-                    streams.ValueKind != JsonValueKind.Array)
-                    return false;
-
-                foreach (JsonElement stream in streams.EnumerateArray())
+                try
                 {
-                    string? codecType = JsonElementHelper.TryGetString(stream, "codec_type");
-                    if (codecType is null || codecType.Equals("video", System.StringComparison.OrdinalIgnoreCase))
+                    string rawJson = await FFProbeVideoAnalysis.AnalyzeAsync(ffprobePath, filePath);
+                    FFProbeFrameCountSupplementResult supplementResult = FFProbeFrameCountSupplement.Supplement(rawJson);
+                    rawJson = supplementResult.RawJson;
+                    supplementedCount += supplementResult.SupplementedCount;
+                    probeCard.ApplyFfprobeAnalysisJson(rawJson);
+
+                    using JsonDocument rawDocument = JsonDocument.Parse(rawJson);
+                    JsonElement rawElement = rawDocument.RootElement.Clone();
+                    ConcatSourceSignature signature = ConcatSourceSignature.From(probeCard.GetSignature(), rawElement)
+                        ?? throw new InvalidOperationException(UILangProviderM.Current["SrcScribe.ColorSpace.NoVideoStream"]);
+
+                    if (referenceSignature == null)
                     {
-                        width = JsonElementHelper.TryGetInt(stream, "width", out int w) ? w : 0;
-                        height = JsonElementHelper.TryGetInt(stream, "height", out int h) ? h : 0;
-                        codec = JsonElementHelper.TryGetString(stream, "codec_name");
-                        pixFmt = JsonElementHelper.TryGetString(stream, "pix_fmt");
-
-                        string? avgFps = JsonElementHelper.TryGetString(stream, "avg_frame_rate");
-                        string? rFps = JsonElementHelper.TryGetString(stream, "r_frame_rate");
-                        fps = !string.IsNullOrWhiteSpace(avgFps) && avgFps != "0/0" ? avgFps : rFps;
-
-                        return width > 0 && height > 0;
+                        referenceSignature = signature;
+                        referenceRawJson = rawJson;
+                        referencePath = filePath;
                     }
+                    else if (!signature.Matches(referenceSignature))
+                    {
+                        throw new InvalidOperationException(string.Format(
+                            UILangProviderM.Current["SourceConcat.IncompatibleVideo"],
+                            i + 1,
+                            referenceSignature.Display,
+                            signature.Display));
+                    }
+
+                    rawAnalyses.Add(new(filePath, Path.GetFileName(filePath), rawElement));
                 }
-                return false;
+                catch (Exception ex)
+                {
+                    throw new InvalidOperationException(
+                        FormatAnalysisFailureMessage(filePath, ex.Message, i + 1, filePaths.Length),
+                        ex);
+                }
             }
-            catch
+
+            if (referenceRawJson == null || referencePath == null)
+                throw new InvalidOperationException(FormatAllItemsFailedMessage(filePaths.Length));
+
+            return new(referenceRawJson, referencePath, rawAnalyses, supplementedCount);
+        }
+
+        private static string FormatAnalysisFailureMessage(
+            string sourcePath,
+            string detail,
+            int queueIndex,
+            int queueTotal)
+        {
+            return string.Join(
+                Environment.NewLine,
+                string.Format(Lang.QueueItemProgress, queueIndex, queueTotal),
+                string.Format(Lang.SourceFilePath, sourcePath),
+                detail);
+        }
+
+        private static string FormatAllItemsFailedMessage(int count) =>
+            string.Format(Lang.AllQueueItemsFailed, count);
+
+        private sealed record ConcatSourceSignature(
+            SourceCheckSignature CheckSignature,
+            int Width,
+            int Height,
+            string PixelFormat,
+            string Codec,
+            string AvgFrameRate,
+            string RFrameRate)
+        {
+            public string Display => string.Join(
+                ", ",
+                $"{Width}x{Height}",
+                string.IsNullOrWhiteSpace(PixelFormat) ? "pix_fmt=?" : $"pix_fmt={PixelFormat}",
+                string.IsNullOrWhiteSpace(Codec) ? "codec=?" : $"codec={Codec}",
+                string.IsNullOrWhiteSpace(AvgFrameRate) ? "avg_fps=?" : $"avg_fps={AvgFrameRate}",
+                string.IsNullOrWhiteSpace(RFrameRate) ? "r_fps=?" : $"r_fps={RFrameRate}");
+
+            public bool Matches(ConcatSourceSignature other) =>
+                CheckSignature.Matches(other.CheckSignature) &&
+                Width == other.Width &&
+                Height == other.Height &&
+                string.Equals(PixelFormat, other.PixelFormat, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(Codec, other.Codec, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(AvgFrameRate, other.AvgFrameRate, StringComparison.Ordinal) &&
+                string.Equals(RFrameRate, other.RFrameRate, StringComparison.Ordinal);
+
+            public static ConcatSourceSignature? From(SourceCheckSignature checkSignature, JsonElement rawElement)
             {
-                return false;
+                if (!TryGetFirstVideoStream(rawElement, out JsonElement stream)) return null;
+                if (!JsonElementHelper.TryGetInt(stream, "width", out int width)) return null;
+                if (!JsonElementHelper.TryGetInt(stream, "height", out int height)) return null;
+
+                return new(
+                    checkSignature,
+                    width,
+                    height,
+                    JsonElementHelper.TryGetString(stream, "pix_fmt") ?? string.Empty,
+                    JsonElementHelper.TryGetString(stream, "codec_name") ?? string.Empty,
+                    NormalizeFrameRate(JsonElementHelper.TryGetString(stream, "avg_frame_rate")),
+                    NormalizeFrameRate(JsonElementHelper.TryGetString(stream, "r_frame_rate")));
             }
         }
 
-        private static string EscapeJson(string value) =>
-            value.Replace("\\", "\\\\").Replace("\"", "\\\"");
+        private static bool TryGetFirstVideoStream(JsonElement root, out JsonElement stream)
+        {
+            stream = default;
+            if (!root.TryGetProperty("streams", out JsonElement streams) || streams.ValueKind != JsonValueKind.Array)
+                return false;
+
+            foreach (JsonElement item in streams.EnumerateArray())
+            {
+                string? codecType = JsonElementHelper.TryGetString(item, "codec_type");
+                if (codecType is null || codecType.Equals("video", StringComparison.OrdinalIgnoreCase))
+                {
+                    stream = item;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static string NormalizeFrameRate(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value) || value.Equals("0/0", StringComparison.OrdinalIgnoreCase))
+                return string.Empty;
+
+            string[] parts = value.Split('/');
+            if (parts.Length == 2
+                && long.TryParse(parts[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out long numerator)
+                && long.TryParse(parts[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out long denominator)
+                && denominator != 0)
+            {
+                long gcd = GreatestCommonDivisor(Math.Abs(numerator), Math.Abs(denominator));
+                return string.Create(
+                    CultureInfo.InvariantCulture,
+                    $"{numerator / gcd}/{denominator / gcd}");
+            }
+
+            return value.Trim();
+        }
+
+        private static long GreatestCommonDivisor(long a, long b)
+        {
+            while (b != 0)
+            {
+                long t = a % b;
+                a = b;
+                b = t;
+            }
+
+            return a == 0 ? 1 : a;
+        }
     }
+
+    public sealed record ConcatCompatibilityAnalysisResult(
+        string ReferenceRawJson,
+        string ReferencePath,
+        IReadOnlyList<ConcatSourceRawAnalysis> RawAnalyses,
+        int SupplementedCount);
+
+    public sealed record ConcatSourceRawAnalysis(
+        string FilePath,
+        string DisplayName,
+        JsonElement FfprobeJson);
 }

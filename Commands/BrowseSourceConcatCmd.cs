@@ -11,16 +11,28 @@ using System.Windows;
 
 namespace OneColumnEncoder.Commands
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="modalNavS"></param>
+    /// <param name="getFfprobePath"></param>
+    /// <param name="isSvtav1SelectedFunc"></param>
+    /// <param name="afterImport"></param>
     public class BrowseSourceConcatCmd(
         ToolItemCardVM item,
         ModalNavS modalNavS,
+        Func<string> getFfprobePath,
+        Func<bool>? isSvtav1SelectedFunc = null,
         Action<ToolItemCardVM, string[]>? afterImport = null) : BaseCmd
     {
         private readonly ToolItemCardVM _item = item;
         private readonly ModalNavS _modalNavS = modalNavS;
+        private readonly Func<string> _getFfprobePath = getFfprobePath;
+        private readonly Func<bool>? _isSvtav1SelectedFunc = isSvtav1SelectedFunc;
         private readonly Action<ToolItemCardVM, string[]>? _afterImport = afterImport;
 
-        public override void Execute(object? parameter)
+        public override async void Execute(object? parameter)
         {
             OpenFileDialog dialog = new()
             {
@@ -60,8 +72,25 @@ namespace OneColumnEncoder.Commands
                 return;
             }
 
+            try
+            {
+                await ConcatCompatibilityAnalyzer.AnalyzeAsync(
+                    _getFfprobePath(),
+                    filePaths,
+                    _isSvtav1SelectedFunc);
+            }
+            catch (Exception ex)
+            {
+                new OpenErrModalCmd(
+                    _modalNavS,
+                    UICaptionProviderM.SourceInspect.WarnTitle,
+                    ex.Message).Execute(null);
+                Application.Current.MainWindow?.Activate();
+                return;
+            }
+
             string parentDir = Path.GetDirectoryName(filePaths[0]) ?? string.Empty;
-            string[] fileNames = filePaths.Select(Path.GetFileName).Where(n => !string.IsNullOrWhiteSpace(n)).Select(n => n!).ToArray();
+            string[] fileNames = [.. filePaths.Select(Path.GetFileName).Where(n => !string.IsNullOrWhiteSpace(n)).Select(n => n!)];
 
             _item.P2TextData = parentDir;
             _item.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(fileNames);

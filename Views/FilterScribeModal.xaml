@@ -14,9 +14,10 @@
                    Height="1010"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
-    <Grid Margin="15 10 15 0">
-        <Grid.ColumnDefinitions>
+    <Grid Margin="10 10 15 0">
+<Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="2" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -28,7 +29,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <comps:ConcatSourceSidebarPanel Grid.Column="0"
+<comps:ConcatSourceSidebarPanel Grid.Column="0"
                                         Grid.RowSpan="6"
                                         DataContext="{Binding ConcatSources}"
                                         Margin="0 0 10 0">
@@ -47,16 +48,23 @@
             </comps:ConcatSourceSidebarPanel.Style>
         </comps:ConcatSourceSidebarPanel>
 
+        <GridSplitter Grid.Column="1"
+                      Width="2"
+                      ResizeBehavior="PreviousAndNext"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      Visibility="{Binding DataContext.IsConcatMode, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}, Converter={StaticResource BoolToVisibility}}" />
+
         <TextBlock Grid.Row="0"
-                   Grid.Column="1"
+                   Grid.Column="2"
                    Text="{Binding ScribeDescription}"
                    FontSize="13"
                    TextWrapping="Wrap"
                    Foreground="{StaticResource GlobalPrimary}" />
 
         <!-- TabControl: AviSynth, VapourSynth, ffmpeg -->
-        <TabControl Grid.Row="1"
-                    Grid.Column="1"
+<TabControl Grid.Row="1"
+                    Grid.Column="2"
                     SelectedIndex="{Binding SelectedTabIndex}"
                     Margin="0 10 0 0">
 
@@ -222,9 +230,9 @@
             </TabItem>
         </TabControl>
 
-        <comps:ThreeButtonGroup Grid.Row="2"
-                                Grid.Column="1"
-                                Margin="0 10 0 0"
+<comps:ThreeButtonGroup Grid.Row="2"
+                                 Grid.Column="2"
+                                 Margin="0 10 0 0"
                                 ButtonHeight="30"
                                 DataContext="{Binding ScriptExportButtons}"
                                 Button1Command="{Binding Cmd1}"
@@ -234,8 +242,8 @@
                                 Button2IsEnabled="{Binding B3_2IsEnabled}"
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
 
-        <StackPanel Grid.Row="3"
-                    Grid.Column="1"
+<StackPanel Grid.Row="3"
+                    Grid.Column="2"
                     Margin="0 15 0 0">
             <StackPanel>
                 <TextBlock Text="{Binding FrameRateConvertTitle}"
@@ -655,9 +663,9 @@
             </StackPanel>
         </StackPanel>
 
-        <comps:ThreeButtonGroup Grid.Row="4"
-                                Grid.Column="1"
-                                Margin="0 10 0 0"
+<comps:ThreeButtonGroup Grid.Row="4"
+                                 Grid.Column="2"
+                                 Margin="0 10 0 0"
                                 ButtonHeight="30"
                                 DataContext="{Binding FinishScribeButtons}"
                                 Button1Command="{Binding Cmd1}"
@@ -667,9 +675,9 @@
                                 Button2IsEnabled="{Binding B3_2IsEnabled}"
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
 
-        <comps:HintPanel Grid.Row="5"
-                         Grid.Column="1"
-                         Margin="0 2.5 0 5"
-                         Text="{Binding NoteText}" />
+<comps:HintPanel Grid.Row="5"
+                          Grid.Column="2"
+                          Margin="0 2.5 0 5"
+                          Text="{Binding NoteText}" />
     </Grid>
 </ui:AdaptiveWindow>
