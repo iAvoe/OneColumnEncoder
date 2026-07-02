@@ -373,6 +373,7 @@ namespace OneColumnEncoder.ViewModels
             if (_isPersistent) SaveToDisk();
             DisposeJobVMs();
             base.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }
