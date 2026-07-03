@@ -286,6 +286,13 @@
                             <Setter Property="Background"
                                     Value="{StaticResource BackgroundRed}" />
                         </DataTrigger>
+                        <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                     Value="False">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource GlobalSecondary}" />
+                            <Setter Property="TextElement.Foreground"
+                                    Value="{StaticResource GlobalSecondary}" />
+                        </DataTrigger>
                         <!-- Fade content slightly on hover; the shadow layer handles the elevation cue. -->
                         <Trigger Property="IsMouseOver"
                                  Value="True">
