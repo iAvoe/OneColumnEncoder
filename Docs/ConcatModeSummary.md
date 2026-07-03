@@ -132,6 +132,19 @@ The sidebar supports:
 
 Every reorder/remove operation updates `VideoSourceConcatState` and regenerates `source_concat_filelist.txt` through the `applyConcatFilePaths` callback. `Save & Import` also uses the current sidebar order when writing AVS/VPY scripts.
 
+### 5.1 Script Import Validation
+
+`MainVM.OnSourceImported()` still runs the normal script import path for concat scripts, but it skips the single-source path check when concat mode is active.
+
+That guard exists because the regular source-check logic assumes a 1:1 relationship between a script and a single video file. Concat scripts are different: they intentionally embed multiple fragment paths, and the correct result is a multi-file script that maps to the current concat fragment list.
+
+In other words:
+
+- single-source mode validates `script -> one video path`
+- concat mode validates the fragment list earlier, then accepts the generated script without trying to force it into the single-source check
+
+This prevents a correct concat export/import from being rejected by `OpenErrModalCmd` as a false `SourcePathMismatch`.
+
 ## 6. Starting Concat Encoding
 
 `StartEncCmd` checks concat before queue. In concat mode it calls `MainVM.BuildConcatEncodingPipelineRequest()` and starts a normal single request flow, including debug confirmation and overwrite confirmation.

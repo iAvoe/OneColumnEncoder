@@ -1415,15 +1415,23 @@ namespace OneColumnEncoder.ViewModels
         {
             if (kind != SourceFileKind.Video)
             {
-                string? error = ValidateSingleScriptImport(kind, filePath);
-                if (error != null)
+                // The source-check modal is designed for the single-source workflow:
+                // one script file is compared against one active video path.
+                // Concat mode generates scripts that embed the whole fragment list,
+                // so that validation would reject a correct import even though the
+                // concat workflow itself has already validated the fragment set.
+                if (!IsConcatRouteActive())
                 {
-                    ClearSourceItem(item);
-                    SaveSourcePath(kind, string.Empty);
-                    _appDataM.Save();
-                    new OpenErrModalCmd(_modalNavS, UILangProviderM.Current["Warn.SourceCheck"], error).Execute(null);
-                    RefreshSelectedSourceStatus(resetAnalysis: false);
-                    return;
+                    string? error = ValidateSingleScriptImport(kind, filePath);
+                    if (error != null)
+                    {
+                        ClearSourceItem(item);
+                        SaveSourcePath(kind, string.Empty);
+                        _appDataM.Save();
+                        new OpenErrModalCmd(_modalNavS, UILangProviderM.Current["Warn.SourceCheck"], error).Execute(null);
+                        RefreshSelectedSourceStatus(resetAnalysis: false);
+                        return;
+                    }
                 }
             }
 
