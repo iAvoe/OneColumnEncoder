@@ -108,7 +108,7 @@ AVS concat scripts are video-only and preserve `src`:
 ```avs
 v1 = LWLibavVideoSource("part1.mkv")
 v2 = LWLibavVideoSource("part2.mkv")
-src = v1 ++ v2
+v1 ++ v2
 # user edit section follows
 ```
 

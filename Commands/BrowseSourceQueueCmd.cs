@@ -71,6 +71,23 @@ namespace OneColumnEncoder.Commands
             return $"{Prefix(names[0])}..{Prefix(names[^1])}";
         }
 
+        public static string FormatConcatFileName(IEnumerable<string> fileNames)
+        {
+            string[] names = [.. fileNames
+                .Select(Path.GetFileNameWithoutExtension)
+                .Where(name => !string.IsNullOrWhiteSpace(name))
+                .Select(name => name!)];
+
+            if (names.Length == 0) return "concat";
+            if (names.Length == 1) return names[0];
+
+            string first = names[0];
+            string last = names[^1];
+            return first.Equals(last, StringComparison.OrdinalIgnoreCase)
+                ? first
+                : $"{first}..{last}";
+        }
+
         // Generates a comma-separated file list for tooltip display (up to maxLength chars).
         // Unlike FormatQueueP1Text which truncates each name to 12 chars, this preserves
         // full file names so users can see the complete queue contents on hover.

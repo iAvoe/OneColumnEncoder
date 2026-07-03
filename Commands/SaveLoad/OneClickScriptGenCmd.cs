@@ -122,7 +122,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
             string[] sourcePaths = _getConcatFilePaths?.Invoke() ?? [];
             if (sourcePaths.Length == 0) return;
 
-            string baseName = Path.GetFileNameWithoutExtension(sourcePaths[0]) ?? "concat";
+            string baseName = BrowseSourceQueueCmd.FormatConcatFileName(sourcePaths);
             string avsScript = ScriptTemplate.BuildConcatAvsExportScript(
                 sourcePaths,
                 FilterScribeVM.AvsPrefix2,

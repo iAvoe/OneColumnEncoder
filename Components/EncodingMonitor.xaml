@@ -12,9 +12,9 @@
     <UserControl.Resources>
         <conv:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
     </UserControl.Resources>
-    <Grid Margin="15">
+    <Grid Margin="15 10 15 0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -188,7 +188,7 @@
                                       Button1IsEnabled="{Binding B2_1IsEnabled}"
                                       Button2IsEnabled="{Binding B2_2IsEnabled}" />
 
-                <StackPanel Margin="0 15 0 0">
+                <StackPanel Margin="0 10 0 0">
                     <cards:SplitTextCard Title="{Binding StderrTitle}"
                                          LeftText="{Binding UpstreamReportText, Mode=TwoWay}"
                                          RightText="{Binding DownstreamReportText, Mode=TwoWay}"
@@ -211,7 +211,8 @@
             </StackPanel>
         </ScrollViewer>
 
-        <StackPanel Grid.Row="1">
+        <StackPanel Grid.Row="1"
+                    Margin="0 10 0 0">
             <comps:ColumnTextGrid Items="{Binding FooterColumns}"
                                   ColumnCount="6" />
             <StackPanel Orientation="Horizontal"

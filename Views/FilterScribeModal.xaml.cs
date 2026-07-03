@@ -78,7 +78,7 @@ namespace OneColumnEncoder.Views
             MinWidth = MinWidthWithSidebar;
             if (Width < DefaultWidthWithSidebar)
                 Width = DefaultWidthWithSidebar;
-            // There is no minimal height: !MinHeight = !MinHeightWithSidebar;
+            // There is no minimal height: !MinHeightDefault = !MinHeightWithSidebar;
             if (Height < DefaultHeightWithSidebar)
                 Height = DefaultHeightWithSidebar;
         }
@@ -88,7 +88,7 @@ namespace OneColumnEncoder.Views
             MinWidth = DefaultMinWidth;
             if (Width > DefaultWidth)
                 Width = DefaultWidth;
-            // There is no minimal height: !MinHeight;
+            // There is no minimal height: !MinHeightDefault;
             if (Height < DefaultHeight)
                 Height = DefaultHeight;
         }

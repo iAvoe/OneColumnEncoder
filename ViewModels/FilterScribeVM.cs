@@ -795,7 +795,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 Title = UILangProviderM.Current["SrcScribe.SavingWindowTitle"],
                 Filter = filter,
-                FileName = GetScriptFileName(Path.GetFileNameWithoutExtension(concatPaths[0]) + "_concat", extension)
+                FileName = GetScriptFileName(BrowseSourceQueueCmd.FormatConcatFileName(concatPaths) + "_concat", extension)
             };
 
             if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
@@ -957,7 +957,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 Title = UILangProviderM.SavingScriptWindowTitle,
                 Filter = UILangProviderM.Current["SrcScribe.FilterAvs"],
-                FileName = GetScriptFileName(Path.GetFileNameWithoutExtension(concatPaths[0]) + "_concat", ".avs")
+                FileName = GetScriptFileName(BrowseSourceQueueCmd.FormatConcatFileName(concatPaths) + "_concat", ".avs")
             };
 
             if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;

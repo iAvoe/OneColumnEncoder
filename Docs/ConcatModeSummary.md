@@ -102,7 +102,7 @@ AVS scripts are video-only and keep `src` as the final concatenated clip:
 ```avs
 v1 = LWLibavVideoSource("G:\media\part01.mkv")
 v2 = LWLibavVideoSource("G:\media\part02.mkv")
-src = v1 ++ v2
+v1 ++ v2
 # Add more filters below or leave empty...
 # ...end of edit section
 ```

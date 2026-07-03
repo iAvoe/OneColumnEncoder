@@ -298,8 +298,8 @@ namespace OneColumnEncoder.ViewModels
 
             ReportButtons = ButtonGroupVM.CreateThreeButton(
                 Lang.SaveUpstreamStderrText, Lang.SaveDownstreamStderrText, Lang.RotateLogFontSizeText,
-                new ActionCmd(_ => SaveText(UpstreamReportText, "upstream-stderr.txt")),
-                new ActionCmd(_ => SaveText(DownstreamReportText, "downstream-stderr.txt")),
+                new ActionCmd(_ => SaveTextAndShowPath(UpstreamReportText, "upstream-stderr.txt")),
+                new ActionCmd(_ => SaveTextAndShowPath(DownstreamReportText, "downstream-stderr.txt")),
                 new ActionCmd(_ => RotateLogFontSize()));
 
             FinishButtons = ButtonGroupVM.CreateFiveButton(
@@ -2069,13 +2069,14 @@ namespace OneColumnEncoder.ViewModels
         /// <summary>
         /// Saves log text to a file in the output directory.
         /// </summary>
-        private void SaveText(string text, string fileName)
+        private void SaveTextAndShowPath(string text, string fileName)
         {
             if (string.IsNullOrEmpty(text)) return;
             string directory = Path.GetDirectoryName(_request.OutputPath) ?? Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             Directory.CreateDirectory(directory);
             string path = Path.Combine(directory, fileName);
             File.WriteAllText(path, text, Encoding.UTF8);
+            new OpenSuccModalCmd(_modalNavS, string.Empty, Path.GetFullPath(path)).Execute(null);
         }
 
         /// <summary>

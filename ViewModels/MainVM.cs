@@ -2194,7 +2194,7 @@ namespace OneColumnEncoder.ViewModels
             string outputBaseName;
 
             string[] concatPaths = GetConcatFilePaths();
-            outputBaseName = Path.GetFileNameWithoutExtension(concatPaths[0]) ?? "concat";
+            outputBaseName = BrowseSourceQueueCmd.FormatConcatFileName(concatPaths);
 
             if (upstreamExeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase))
             {

@@ -48,16 +48,23 @@
 
         public static string BuildConcatAvsSourceHeader(string[] filePaths, int fpsnum = 0, int fpsden = 0)
         {
-            List<string> lines = [];
-            for (int i = 0; i < filePaths.Length; i++)
-            {
-                string varName = $"v{i + 1}";
-                string line = $"LWLibavVideoSource(\"{filePaths[i].Replace("\"", "\"\"")}\")";
-                if (fpsnum > 0 && fpsden > 0)
-                    line = $"LWLibavVideoSource(\"{filePaths[i].Replace("\"", "\"\"")}\", fpsnum={fpsnum}, fpsden={fpsden})";
-                lines.Add($"{varName} = {line}");
-            }
-            lines.Add($"src = {string.Join(" ++ ", Enumerable.Range(1, filePaths.Length).Select(i => $"v{i}"))}");
+            // Build an AviSynth header that assigns each concat segment to its own source variable.
+            string BuildSource(string path) => fpsnum > 0 && fpsden > 0
+                ? $"LWLibavVideoSource(\"{path.Replace("\"", "\"\"")}\", fpsnum={fpsnum}, fpsden={fpsden})"
+                : $"LWLibavVideoSource(\"{path.Replace("\"", "\"\"")}\")";
+
+            List<string> lines =
+            [
+                $"v1 = {BuildSource(filePaths[0])}",
+                $"v2 = {BuildSource(filePaths[1])}"
+            ];
+
+            for (int i = 2; i < filePaths.Length; i++)
+                lines.Add($"v{i + 1} = {BuildSource(filePaths[i])}");
+
+            // Stitch the individual segment variables into one concat source.
+            // AVS doesn't have the "src = " prefix, do not add it
+            lines.Add($"{string.Join(" ++ ", Enumerable.Range(1, filePaths.Length).Select(i => $"v{i}"))}");
             return string.Join("\r\n", lines);
         }
 
@@ -70,11 +77,11 @@
                 "video_files = ["
             ];
 
-            for (int i = 0; i < filePaths.Length; i++)
-            {
-                string suffix = i == filePaths.Length - 1 ? "]" : ",";
-                lines.Add($"    r\"{filePaths[i]}\"{suffix}");
-            }
+            lines.Add($"    r\"{filePaths[0]}\",");
+            lines.Add($"    r\"{filePaths[1]}\"{(filePaths.Length == 2 ? "]" : ",")}");
+
+            for (int i = 2; i < filePaths.Length; i++)
+                lines.Add($"    r\"{filePaths[i]}\"{(i == filePaths.Length - 1 ? "]" : ",")}");
 
             string lwlibavCall = fpsnum > 0 && fpsden > 0
                 ? $"core.lsmas.LWLibavSource(source=f, fpsnum={fpsnum}, fpsden={fpsden})"
@@ -89,6 +96,7 @@
 
         public static string BuildConcatAvsExportScript(string[] filePaths, string avsPrefix2, string avsSuffix, string userInput = "", int fpsnum = 0, int fpsden = 0)
         {
+            // Reuse the concat AviSynth source header, then append the user script body.
             string content = string.IsNullOrEmpty(userInput)
                 ? $"{avsPrefix2}\r\n\r\n{avsSuffix}"
                 : $"{avsPrefix2}\r\n{userInput}\r\n{avsSuffix}";

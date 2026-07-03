@@ -18,6 +18,9 @@ namespace OneColumnEncoder.Views
         private const int DefaultWidthWithSidebar = DefaultWidth + SidebarWidth + SplitterWidth;
         private const int MinWidthDefault = 860;
         private const int MinWidthSidebar = MinWidthDefault + SidebarWidth + SplitterWidth;
+
+        private const int MinHeightDefault = 905; // Height without Opus audio encoding hint (concat mode)
+        private const int HeightDefault = 940; // Normal height
         private EncodingMonitorVM? _subscribedVm;
         private QueueSidebarVM? _subscribedQueueSidebar;
 
@@ -30,16 +33,16 @@ namespace OneColumnEncoder.Views
             Closed += OnClosed;
         }
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        private static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
+        [LibraryImport("user32.dll")]
+        private static partial IntPtr GetSystemMenu(IntPtr hWnd, [MarshalAs(UnmanagedType.Bool)] bool bRevert);
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        [LibraryImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool EnableMenuItem(IntPtr hMenu, uint uIDEnableItem, uint uEnable);
+        private static partial bool EnableMenuItem(IntPtr hMenu, uint uIDEnableItem, uint uEnable);
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        [LibraryImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool DrawMenuBar(IntPtr hWnd);
+        private static partial bool DrawMenuBar(IntPtr hWnd);
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
@@ -55,6 +58,7 @@ namespace OneColumnEncoder.Views
                 }
 
                 SyncSidebarWidth(vm.QueueSidebar.IsVisible);
+                SyncHeight(string.IsNullOrWhiteSpace(vm.OpusAudioCommandHint));
                 UpdateSystemCloseButton(vm.IsWindowCloseEnabled);
                 vm.Start();
             }
@@ -124,24 +128,23 @@ namespace OneColumnEncoder.Views
 
         private void SyncSidebarWidth(bool isSidebarVisible)
         {
-            if (isSidebarVisible)
-                ExpandForSidebar();
-            else
-                CollapseSidebar();
+            if (isSidebarVisible) ExpandForSidebar();
+            else CollapseSidebar();
         }
+
+        private void SyncHeight(bool hasOpusAudioCommandHint) =>
+            Height = hasOpusAudioCommandHint ? HeightDefault : MinHeightDefault;
 
         private void ExpandForSidebar()
         {
             MinWidth = MinWidthSidebar;
-            if (Width < DefaultWidthWithSidebar)
-                Width = DefaultWidthWithSidebar;
+            if (Width < DefaultWidthWithSidebar) Width = DefaultWidthWithSidebar;
         }
 
         private void CollapseSidebar()
         {
             MinWidth = MinWidthDefault;
-            if (Width > DefaultWidth)
-                Width = DefaultWidth;
+            if (Width > DefaultWidth) Width = DefaultWidth;
         }
     }
 }
