@@ -46,6 +46,11 @@
                     <Setter Property="Foreground"
                             Value="{StaticResource RemixedForeground4}" />
                 </DataTrigger>
+                <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                             Value="False">
+                    <Setter Property="Foreground"
+                            Value="{StaticResource GlobalSecondary}" />
+                </DataTrigger>
             </Style.Triggers>
         </Style>
         <Style x:Key="MiniLinkButton"
@@ -129,6 +134,11 @@
                          Value="True">
                     <Setter Property="Foreground"
                             Value="{StaticResource BorderRed}" />
+                </Trigger>
+                <Trigger Property="IsEnabled"
+                         Value="False">
+                    <Setter Property="Foreground"
+                            Value="{StaticResource GlobalSecondary}" />
                 </Trigger>
             </Style.Triggers>
         </Style>
