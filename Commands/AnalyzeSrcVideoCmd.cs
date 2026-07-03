@@ -149,17 +149,6 @@ namespace OneColumnEncoder.Commands
                 concatFilePaths,
                 concatCard.IsSvtav1SelectedFunc);
 
-            if (result.Warnings.Count > 0)
-            {
-                string warningMessage = string.Join(
-                    Environment.NewLine + Environment.NewLine,
-                    result.Warnings);
-                new OpenWarnModalCmd(
-                    _modalNavS,
-                    UICaptionProviderM.SourceInspect.WarnTitle,
-                    warningMessage).Execute(null);
-            }
-
             _analysis.FfprobePath = ffprobePath;
             _analysis.SourcePath = result.ReferencePath;
             _analysis.RawJson = result.ReferenceRawJson;

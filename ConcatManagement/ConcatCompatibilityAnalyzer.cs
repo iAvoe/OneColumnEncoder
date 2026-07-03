@@ -20,6 +20,7 @@ namespace OneColumnEncoder.ConcatManagement
             string? referenceRawJson = null;
             string? referencePath = null;
             ConcatSourceSignature? referenceSignature = null;
+            bool? referenceIsVariableFrameRate = null;
             List<ConcatSourceRawAnalysis> rawAnalyses = [];
             int supplementedCount = 0;
             long concatTotalFrames = 0;
@@ -54,10 +55,11 @@ namespace OneColumnEncoder.ConcatManagement
                     if (referenceSignature == null)
                     {
                         referenceSignature = signature;
+                        referenceIsVariableFrameRate = isVariableFrameRate;
                         referenceRawJson = rawJson;
                         referencePath = filePath;
                     }
-                    else if (isVariableFrameRate == false && !signature.Matches(referenceSignature))
+                    else if (referenceIsVariableFrameRate == false && isVariableFrameRate == false && !signature.Matches(referenceSignature))
                     {
                         warnings.Add(string.Format(
                             UILangProviderM.Current["SourceConcat.IncompatibleVideo"],
