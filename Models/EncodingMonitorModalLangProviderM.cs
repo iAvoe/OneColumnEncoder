@@ -69,9 +69,6 @@ public class EncodingMonitorModalLangProviderM
             ["InterruptingUpstreamText"] = "Interrupting upstream",
             ["InterruptingEncoderText"] = "Interrupting encoder",
             ["ModeText"] = "mode",
-            ["NotAvailableText"] = "N/A",
-            ["ABRText"] = "ABR",
-            ["CRFText"] = "CRF",
 
             ["QueueSidebarCancelAllText"] = "Cancel all",
             ["QueueSidebarRunningHeaderText"] = "Running",
@@ -79,7 +76,6 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarUnfinishedHeaderText"] = "Unfinished",
             ["QueueSidebarCompletedHeaderText"] = "Completed",
 
-            ["QueueItemRemoveText"] = "Remove",
             ["StopQueueConfirmTitle"] = "Stop queue",
             ["StopQueueConfirmMessage"] = "The current job has been interrupted. Stop the entire queue?",
         },
@@ -148,9 +144,6 @@ public class EncodingMonitorModalLangProviderM
             ["InterruptingUpstreamText"] = "正在中断上游程序",
             ["InterruptingEncoderText"] = "正在中断编码器",
             ["ModeText"] = "模式",
-            ["NotAvailableText"] = "N/A",
-            ["ABRText"] = "ABR",
-            ["CRFText"] = "CRF",
 
             ["QueueSidebarCancelAllText"] = "取消全部",
             ["QueueSidebarRunningHeaderText"] = "当前运行",
@@ -158,7 +151,6 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarUnfinishedHeaderText"] = "未完成",
             ["QueueSidebarCompletedHeaderText"] = "已完成",
 
-            ["QueueItemRemoveText"] = "删除",
             ["StopQueueConfirmTitle"] = "停止队列",
             ["StopQueueConfirmMessage"] = "当前任务已中断。是否停止整个队列？",
         },
@@ -227,9 +219,6 @@ public class EncodingMonitorModalLangProviderM
             ["InterruptingUpstreamText"] = "正在中斷上游程式",
             ["InterruptingEncoderText"] = "正在中斷編碼器",
             ["ModeText"] = "模式",
-            ["NotAvailableText"] = "N/A",
-            ["ABRText"] = "ABR",
-            ["CRFText"] = "CRF",
 
             ["QueueSidebarCancelAllText"] = "取消全部",
             ["QueueSidebarRunningHeaderText"] = "目前執行",
@@ -237,7 +226,6 @@ public class EncodingMonitorModalLangProviderM
             ["QueueSidebarUnfinishedHeaderText"] = "未完成",
             ["QueueSidebarCompletedHeaderText"] = "已完成",
 
-            ["QueueItemRemoveText"] = "刪除",
             ["StopQueueConfirmTitle"] = "停止隊列",
             ["StopQueueConfirmMessage"] = "當前任務已中斷。是否停止整個隊列？",
         }
@@ -308,10 +296,8 @@ public class EncodingMonitorModalLangProviderM
             ["InterruptingUpstreamText"] = "Interruption amont",
             ["InterruptingEncoderText"] = "Interruption encodeur",
             ["ModeText"] = "mode",
-            ["NotAvailableText"] = "N/A",
             ["QueueSidebarCancelAllText"] = "Tout annuler",
 
-            ["QueueItemRemoveText"] = "Supprimer",
             ["StopQueueConfirmTitle"] = "Arrêter la file",
             ["StopQueueConfirmMessage"] = "La tâche actuelle a été interrompue. Arrêter toute la file d'attente ?"
         };
@@ -378,10 +364,8 @@ public class EncodingMonitorModalLangProviderM
             ["InterruptingUpstreamText"] = "Interrumpiendo upstream",
             ["InterruptingEncoderText"] = "Interrumpiendo codificador",
             ["ModeText"] = "modo",
-            ["NotAvailableText"] = "N/D",
             ["QueueSidebarCancelAllText"] = "Cancelar todo",
 
-            ["QueueItemRemoveText"] = "Eliminar",
             ["StopQueueConfirmTitle"] = "Detener cola",
             ["StopQueueConfirmMessage"] = "La tarea actual ha sido interrumpida. ¿Detener toda la cola?"
         };
@@ -448,10 +432,8 @@ public class EncodingMonitorModalLangProviderM
             ["InterruptingUpstreamText"] = "上流を中断中",
             ["InterruptingEncoderText"] = "エンコーダを中断中",
             ["ModeText"] = "モード",
-            ["NotAvailableText"] = "N/A",
             ["QueueSidebarCancelAllText"] = "すべてキャンセル",
 
-            ["QueueItemRemoveText"] = "削除",
             ["StopQueueConfirmTitle"] = "キューを停止",
             ["StopQueueConfirmMessage"] = "現在のジョブが中断されました。キュー全体を停止しますか？"
         };
@@ -518,10 +500,8 @@ public class EncodingMonitorModalLangProviderM
             ["InterruptingUpstreamText"] = "Прерывание upstream",
             ["InterruptingEncoderText"] = "Прерывание кодера",
             ["ModeText"] = "режим",
-            ["NotAvailableText"] = "N/A",
             ["QueueSidebarCancelAllText"] = "Отменить всё",
 
-            ["QueueItemRemoveText"] = "Удалить",
             ["StopQueueConfirmTitle"] = "Остановить очередь",
             ["StopQueueConfirmMessage"] = "Текущая задача прервана. Остановить всю очередь?"
         };
@@ -685,16 +665,16 @@ public class EncodingMonitorModalLangProviderM
         InterruptingUpstreamText = _d["InterruptingUpstreamText"];
         InterruptingEncoderText = _d["InterruptingEncoderText"];
         ModeText = _d["ModeText"];
-        NotAvailableText = _d["NotAvailableText"];
-        ABRText = _d["ABRText"];
-        CRFText = _d["CRFText"];
+        NotAvailableText = "N/A";
+        ABRText = "ABR";
+        CRFText = "CRF";
 
         QueueSidebarCancelAllText = this["QueueSidebarCancelAllText"];
         QueueSidebarRunningHeaderText = this["QueueSidebarRunningHeaderText"];
         QueueSidebarWaitingHeaderText = this["QueueSidebarWaitingHeaderText"];
         QueueSidebarUnfinishedHeaderText = this["QueueSidebarUnfinishedHeaderText"];
         QueueSidebarCompletedHeaderText = this["QueueSidebarCompletedHeaderText"];
-        QueueItemRemoveText = this["QueueItemRemoveText"];
+        QueueItemRemoveText = "🗙";
         QueueItemMoveUpText = "↑↑";
         QueueItemMoveDownText = "↓↓";
         StopQueueConfirmTitle = this["StopQueueConfirmTitle"];
