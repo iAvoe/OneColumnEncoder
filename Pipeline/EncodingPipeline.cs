@@ -92,7 +92,7 @@ public static partial class EncodingPipeline
 
         string encodedVideoPath = ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath);
         string outputPath = ResolveMuxOutputPath(request.OutputPath);
-        string framerateValue = GetMuxFramerateValue(request.SourceFfprobeJson);
+        string framerateValue = GetMuxFramerateValue(request.SourceFfprobeJson, request.FfmpegFilterArgs);
         string videoTimescaleArgs = GetMuxVideoTrackTimescaleArgs(request.SourceFfprobeJson);
         string streamMapArgs = BuildStreamMapArgs(request.SourceFfprobeJson);
         string? inputFormatArgs = GetMuxInputFormatArgs(request.EncoderExeName, framerateValue);
@@ -868,7 +868,7 @@ public static partial class EncodingPipeline
     }
 
     public static string ResolveMuxOutputPath(string outputPath) =>
-        Path.ChangeExtension(RemoveRawVideoExtension(outputPath), ".mkv");
+        RemoveRawVideoExtension(outputPath) + ".mkv";
 
     private static string RemoveRawVideoExtension(string outputPath)
     {
@@ -883,8 +883,18 @@ public static partial class EncodingPipeline
             : outputPath;
     }
 
-    private static string GetMuxFramerateValue(string? sourceFfprobeJson)
+    private static string GetMuxFramerateValue(string? sourceFfprobeJson, string? filterArgs = null)
     {
+        if (!string.IsNullOrWhiteSpace(filterArgs))
+        {
+            var match = Regex.Match(filterArgs, @"fps=(\d+/\d+)");
+            if (match.Success)
+            {
+                string fps = match.Groups[1].Value;
+                if (IsUsableFrameRate(fps)) return fps;
+            }
+        }
+
         if (string.IsNullOrWhiteSpace(sourceFfprobeJson)) return string.Empty;
 
         try
@@ -950,9 +960,9 @@ public static partial class EncodingPipeline
         };
 
     private static string EnsureExtension(string outputPath, string extension) =>
-        string.IsNullOrWhiteSpace(Path.GetExtension(outputPath))
-            ? outputPath + extension
-            : outputPath;
+        string.IsNullOrEmpty(extension) || outputPath.EndsWith(extension, StringComparison.OrdinalIgnoreCase)
+            ? outputPath
+            : outputPath + extension;
 
     private static string NormalizeRequired(string? value, string name)
     {
