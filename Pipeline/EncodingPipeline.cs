@@ -537,22 +537,26 @@ public static partial class EncodingPipeline
         // and Get-EncoderAVSRawCSPBits are intentionally not emitted here.
         _ = (pixelFormat, width, height);
 
+        long? sourceTotalFramesOverride = request.IsConcatMode == true
+            ? request.ConcatTotalFrames
+            : null;
+
         return encoder switch
         {
             "x264.exe" => JoinArgs(
-                GetFrameCount(stream, request.Clip, isSvtAv1: false),
+                GetFrameCount(stream, request.Clip, sourceTotalFramesOverride, isSvtAv1: false),
                 GetRateControlLookahead(fpsString, TryGetIntegerArg(baseEncoderParams, "--bframes") ?? 0),
                 GetColorSpaceSei(stream, isX264: true, isX265: false, isSvtAv1: false),
                 GetRangeChromaLocation(stream, isX264: true, isX265: false, isSvtAv1: false)),
             "x265.exe" => JoinArgs(
-                GetFrameCount(stream, request.Clip, isSvtAv1: false),
+                GetFrameCount(stream, request.Clip, sourceTotalFramesOverride, isSvtAv1: false),
                 GetRateControlLookahead(fpsString, TryGetIntegerArg(baseEncoderParams, "--bframes") ?? 0),
                 GetX265MeRange(stream),
                 GetX265SubmotionEstimation(fpsString),
                 GetColorSpaceSei(stream, isX264: false, isX265: true, isSvtAv1: false),
                 GetRangeChromaLocation(stream, isX264: false, isX265: true, isSvtAv1: false)),
             "svtav1encapp.exe" => JoinArgs(
-                GetFrameCount(stream, request.Clip, isSvtAv1: true),
+                GetFrameCount(stream, request.Clip, sourceTotalFramesOverride, isSvtAv1: true),
                 GetColorSpaceSei(stream, isX264: false, isX265: false, isSvtAv1: true),
                 GetRangeChromaLocation(stream, isX264: false, isX265: false, isSvtAv1: true)),
             _ => string.Empty
@@ -590,9 +594,10 @@ public static partial class EncodingPipeline
         return $"--subme {subme}";
     }
 
-    private static string GetFrameCount(JsonElement stream, EncodingClipRequest? clip, bool isSvtAv1)
+    private static string GetFrameCount(JsonElement stream, EncodingClipRequest? clip, long? sourceTotalFramesOverride, bool isSvtAv1)
     {
         long? frameCount = GetClipFrameCount(clip)
+            ?? sourceTotalFramesOverride
             ?? JsonElementHelper.TryGetFrameCount(stream);
 
         return frameCount is > 0

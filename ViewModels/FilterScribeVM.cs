@@ -60,7 +60,11 @@ namespace OneColumnEncoder.ViewModels
             get
             {
                 if (IsConcatMode)
-                    return ScriptTemplate.BuildConcatAvsSourceHeader(GetDisplayConcatFilePaths());
+                {
+                    int fpsnum = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateNum : 0;
+                    int fpsden = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateDen : 0;
+                    return ScriptTemplate.BuildConcatAvsSourceHeader(GetDisplayConcatFilePaths(), fpsnum, fpsden);
+                }
                 if (_isFrameRateVariable && _avsEnableFpsParams && _frameRateNum > 0 && _frameRateDen > 0)
                     return $"LWLibavVideoSource(\"video file path\", fpsnum={_frameRateNum}, fpsden={_frameRateDen})";
                 return _baseAvsPrefix;
@@ -81,7 +85,11 @@ namespace OneColumnEncoder.ViewModels
             get
             {
                 if (IsConcatMode)
-                    return ScriptTemplate.BuildConcatVpySourceHeader(GetDisplayConcatFilePaths());
+                {
+                    int fpsnum = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateNum : 0;
+                    int fpsden = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateDen : 0;
+                    return ScriptTemplate.BuildConcatVpySourceHeader(GetDisplayConcatFilePaths(), fpsnum, fpsden);
+                }
                 if (_isFrameRateVariable && _vpyEnableFpsParams && _frameRateNum > 0 && _frameRateDen > 0)
                     return $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"video file path\", fpsnum={_frameRateNum}, fpsden={_frameRateDen})";
                 return _baseVpyPrefix;
@@ -622,10 +630,14 @@ namespace OneColumnEncoder.ViewModels
             if (IsConcatMode)
             {
                 string[] concatPaths = GetCurrentConcatFilePaths();
+                int avsFpsnum = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateNum : 0;
+                int avsFpsden = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateDen : 0;
+                int vpyFpsnum = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateNum : 0;
+                int vpyFpsden = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateDen : 0;
                 string concatInOutText = SelectedTabIndex switch
                 {
-                    0 => ScriptTemplate.BuildConcatAvsExportScript(concatPaths, AvsPrefix2, AvsSuffix),
-                    1 => ScriptTemplate.BuildConcatVpyExportScript(concatPaths, VpyPrefix2, VpySuffix),
+                    0 => ScriptTemplate.BuildConcatAvsExportScript(concatPaths, AvsPrefix2, AvsSuffix, "", avsFpsnum, avsFpsden),
+                    1 => ScriptTemplate.BuildConcatVpyExportScript(concatPaths, VpyPrefix2, VpySuffix, "", vpyFpsnum, vpyFpsden),
                     _ => ScriptTemplate.BuildConcatFfmpegFileList(concatPaths)
                 };
 
@@ -754,10 +766,14 @@ namespace OneColumnEncoder.ViewModels
             string[] concatPaths = GetCurrentConcatFilePaths();
             if (!EnsureConcatSourceCount(concatPaths)) return;
 
+            int avsFpsnum = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateNum : 0;
+            int avsFpsden = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateDen : 0;
+            int vpyFpsnum = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateNum : 0;
+            int vpyFpsden = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateDen : 0;
             string script = SelectedTabIndex switch
             {
-                0 => ScriptTemplate.BuildConcatAvsExportScript(concatPaths, AvsPrefix2, AvsSuffix, AvsUserInput),
-                1 => ScriptTemplate.BuildConcatVpyExportScript(concatPaths, VpyPrefix2, VpySuffix, VpyUserInput),
+                0 => ScriptTemplate.BuildConcatAvsExportScript(concatPaths, AvsPrefix2, AvsSuffix, AvsUserInput, avsFpsnum, avsFpsden),
+                1 => ScriptTemplate.BuildConcatVpyExportScript(concatPaths, VpyPrefix2, VpySuffix, VpyUserInput, vpyFpsnum, vpyFpsden),
                 _ => ScriptTemplate.BuildConcatFfmpegFileList(concatPaths)
             };
 
@@ -918,16 +934,24 @@ namespace OneColumnEncoder.ViewModels
             string[] concatPaths = GetCurrentConcatFilePaths();
             if (!EnsureConcatSourceCount(concatPaths)) return;
 
+            int avsFpsnum = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateNum : 0;
+            int avsFpsden = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateDen : 0;
+            int vpyFpsnum = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateNum : 0;
+            int vpyFpsden = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateDen : 0;
             string avsScript = ScriptTemplate.BuildConcatAvsExportScript(
                 concatPaths,
                 AvsPrefix2,
                 AvsSuffix,
-                AvsUserInput);
+                AvsUserInput,
+                avsFpsnum,
+                avsFpsden);
             string vpyScript = ScriptTemplate.BuildConcatVpyExportScript(
                 concatPaths,
                 VpyPrefix2,
                 VpySuffix,
-                VpyUserInput);
+                VpyUserInput,
+                vpyFpsnum,
+                vpyFpsden);
 
             SaveFileDialog dialog = new()
             {
@@ -1065,10 +1089,14 @@ namespace OneColumnEncoder.ViewModels
             if (IsConcatMode)
             {
                 string[] concatPaths = GetCurrentConcatFilePaths();
+                int avsFpsnum = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateNum : 0;
+                int avsFpsden = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateDen : 0;
+                int vpyFpsnum = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateNum : 0;
+                int vpyFpsden = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateDen : 0;
                 return SelectedTabIndex switch
                 {
-                    0 => ScriptTemplate.BuildConcatAvsExportScript(concatPaths, AvsPrefix2, AvsSuffix, AvsUserInput),
-                    1 => ScriptTemplate.BuildConcatVpyExportScript(concatPaths, VpyPrefix2, VpySuffix, VpyUserInput),
+                    0 => ScriptTemplate.BuildConcatAvsExportScript(concatPaths, AvsPrefix2, AvsSuffix, AvsUserInput, avsFpsnum, avsFpsden),
+                    1 => ScriptTemplate.BuildConcatVpyExportScript(concatPaths, VpyPrefix2, VpySuffix, VpyUserInput, vpyFpsnum, vpyFpsden),
                     _ => ScriptTemplate.BuildConcatFfmpegFileList(concatPaths)
                 };
             }
