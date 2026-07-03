@@ -63,7 +63,10 @@ namespace OneColumnEncoder.ViewModels
                 {
                     int fpsnum = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateNum : 0;
                     int fpsden = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateDen : 0;
-                    return ScriptTemplate.BuildConcatAvsSourceHeader(GetDisplayConcatFilePaths(), fpsnum, fpsden);
+                    string[] paths = GetDisplayConcatFilePaths();
+                    return paths.Length > 1
+                        ? ScriptTemplate.BuildConcatAvsSourceHeader(paths, fpsnum, fpsden)
+                        : string.Empty;
                 }
                 if (_isFrameRateVariable && _avsEnableFpsParams && _frameRateNum > 0 && _frameRateDen > 0)
                     return $"LWLibavVideoSource(\"video file path\", fpsnum={_frameRateNum}, fpsden={_frameRateDen})";
@@ -88,7 +91,10 @@ namespace OneColumnEncoder.ViewModels
                 {
                     int fpsnum = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateNum : 0;
                     int fpsden = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateDen : 0;
-                    return ScriptTemplate.BuildConcatVpySourceHeader(GetDisplayConcatFilePaths(), fpsnum, fpsden);
+                    string[] paths = GetDisplayConcatFilePaths();
+                    return paths.Length > 1
+                        ? ScriptTemplate.BuildConcatVpySourceHeader(paths, fpsnum, fpsden)
+                        : string.Empty;
                 }
                 if (_isFrameRateVariable && _vpyEnableFpsParams && _frameRateNum > 0 && _frameRateDen > 0)
                     return $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"video file path\", fpsnum={_frameRateNum}, fpsden={_frameRateDen})";
@@ -619,6 +625,8 @@ namespace OneColumnEncoder.ViewModels
         #region ThreeButtonGroup: copy full, copy in-out, save as file
         private void CopyFullScript()
         {
+            if (IsConcatMode && !EnsureConcatSourceCount(GetCurrentConcatFilePaths())) return;
+
             Clipboard.SetText(GetCurrentFullScript());
             new OpenSuccModalCmd(
                 _modalNavS,
@@ -630,6 +638,8 @@ namespace OneColumnEncoder.ViewModels
             if (IsConcatMode)
             {
                 string[] concatPaths = GetCurrentConcatFilePaths();
+                if (!EnsureConcatSourceCount(concatPaths)) return;
+
                 int avsFpsnum = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateNum : 0;
                 int avsFpsden = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateDen : 0;
                 int vpyFpsnum = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateNum : 0;

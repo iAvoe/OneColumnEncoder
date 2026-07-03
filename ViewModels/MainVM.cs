@@ -583,10 +583,10 @@ namespace OneColumnEncoder.ViewModels
                 () => SourceFileKindResolver.GetPreferredScriptSourceKind(UpstreamsZone),
                 OnSourceImported,
                 args => _scriptScribeFfmpegFilterArgs = args ?? string.Empty,
-                () => SrcValidationCard.Checklist1.Any(
+                () => ActiveSrcValidationCard.Checklist1.Any(
                     e => e.IsEnabled && e.Status == StatusType.Error),
-                () => SrcValidationCard.Checklist2.Count > 1
-                    && SrcValidationCard.Checklist2[1].Status == StatusType.Warning,
+                () => ActiveSrcValidationCard.Checklist2.Count > 1
+                    && ActiveSrcValidationCard.Checklist2[1].Status == StatusType.Warning,
                 () => _srcVideoAnalysis.RawJson,
                 () => UpstreamsZone.Any(
                     t => t.IsSelected &&
@@ -597,7 +597,7 @@ namespace OneColumnEncoder.ViewModels
                 GetConcatFilePaths,
                 ApplyConcatFilePathsFromFilterScribe);
             CopyRawAnalysis = new CopyRawAnalysisCmd(
-                _srcVideoAnalysis, modalNavS, IsQueueRouteActive);
+                _srcVideoAnalysis, modalNavS, IsQueueRouteActive, IsConcatRouteActive);
             AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(
                 GetSelectedFfprobePath,
                 GetSelectedVideoSourcePath,
@@ -1024,6 +1024,10 @@ namespace OneColumnEncoder.ViewModels
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
             foreach (ChecklistEntryVM entry in QueueSrcFilterCard.Checklist2)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
+            foreach (ChecklistEntryVM entry in ConcatCheckCard.Checklist1)
+                entry.PropertyChanged += OnChecklistEntryPropertyChanged;
+            foreach (ChecklistEntryVM entry in ConcatCheckCard.Checklist2)
+                entry.PropertyChanged += OnChecklistEntryPropertyChanged;
             foreach (ChecklistEntryVM entry in EncTermsCard.Checklist1)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
             foreach (ChecklistEntryVM entry in EncTermsCard.Checklist2)
@@ -1043,6 +1047,10 @@ namespace OneColumnEncoder.ViewModels
             foreach (ChecklistEntryVM entry in QueueSrcFilterCard.Checklist1)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
             foreach (ChecklistEntryVM entry in QueueSrcFilterCard.Checklist2)
+                entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
+            foreach (ChecklistEntryVM entry in ConcatCheckCard.Checklist1)
+                entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
+            foreach (ChecklistEntryVM entry in ConcatCheckCard.Checklist2)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
             foreach (ChecklistEntryVM entry in EncTermsCard.Checklist1)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
@@ -1302,6 +1310,8 @@ namespace OneColumnEncoder.ViewModels
             if (e.PropertyName == nameof(ToolItemCardVM.IsSelected))
             {
                 SrcValidationCard.RefreshSvtav1BitDepthStatus();
+                QueueSrcFilterCard.RefreshSvtav1BitDepthStatus();
+                ConcatCheckCard.RefreshSvtav1BitDepthStatus();
                 UpdateEncStartButtonsState();
             }
         }
@@ -1636,8 +1646,11 @@ namespace OneColumnEncoder.ViewModels
 
         private void ApplyConcatFilePathsFromFilterScribe(string[] filePaths)
         {
+            bool changed = !_videoSourceConcat.CurrentFilePaths.SequenceEqual(
+                filePaths,
+                StringComparer.OrdinalIgnoreCase);
             _videoSourceConcat.ReplaceFilePaths(filePaths);
-            RefreshSelectedSourceStatus(resetAnalysis: filePaths.Length == 0);
+            RefreshSelectedSourceStatus(resetAnalysis: changed);
         }
 
         private void OnSourceScriptQueueImported(ToolItemCardVM item, SourceFileKind kind, string _, string[] filePaths)
@@ -1826,6 +1839,7 @@ namespace OneColumnEncoder.ViewModels
 
         private bool CanRunSourceAnalysis() =>
             HasSelectedVideoSource() &&
+            (GetActiveSourceRoute() != SourceRouteKind.Concat || GetConcatFilePaths().Length > 1) &&
             AnalyticsZone.Any(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
 
         private bool IsCurrentAnalysisFor(string sourcePath, string ffprobePath) =>
@@ -1941,7 +1955,9 @@ namespace OneColumnEncoder.ViewModels
         }
 
         private bool BothSourceSelected() =>
-            HasSelectedVideoSource() && HasRequiredScriptSourceSelected();
+            HasSelectedVideoSource() &&
+            (GetActiveSourceRoute() != SourceRouteKind.Concat || GetConcatFilePaths().Length > 1) &&
+            HasRequiredScriptSourceSelected();
 
         private bool HasRequiredScriptSourceSelected()
         {
@@ -2202,6 +2218,7 @@ namespace OneColumnEncoder.ViewModels
             string outputBaseName;
 
             string[] concatPaths = GetConcatFilePaths();
+            if (concatPaths.Length < 2) return null;
             outputBaseName = BrowseSourceQueueCmd.FormatConcatFileName(concatPaths);
 
             if (upstreamExeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase))

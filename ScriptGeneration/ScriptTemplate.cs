@@ -48,6 +48,9 @@
 
         public static string BuildConcatAvsSourceHeader(string[] filePaths, int fpsnum = 0, int fpsden = 0)
         {
+            if (filePaths.Length < 2)
+                throw new ArgumentException("Concat script generation requires at least two source paths.", nameof(filePaths));
+
             // Build an AviSynth header that assigns each concat segment to its own source variable.
             string BuildSource(string path) => fpsnum > 0 && fpsden > 0
                 ? $"LWLibavVideoSource(\"{path.Replace("\"", "\"\"")}\", fpsnum={fpsnum}, fpsden={fpsden})"
@@ -70,6 +73,9 @@
 
         public static string BuildConcatVpySourceHeader(string[] filePaths, int fpsnum = 0, int fpsden = 0)
         {
+            if (filePaths.Length < 2)
+                throw new ArgumentException("Concat script generation requires at least two source paths.", nameof(filePaths));
+
             List<string> lines =
             [
                 "import vapoursynth as vs",

@@ -229,9 +229,9 @@ Implemented and passed all tests, usability confirmed
 - [x] Implement ffmpeg-VS-AVS merge command construction
 - [x] Implement filter editor support extension for merge mode (front-end and back-end)
 - [x] Implement editable-queue styled concat item ordering
-- [ ] Verify that the concatenate commandline/script-line runs normally
-- [ ] Test that the code runs normally
-- [ ] Complete all localized text
+- [x] Verify that the concatenate commandline/script-line runs normally
+- [x] Test and validaitons (ffmpeg-VS-AVS → x264-x265-SVTAV1)
+- [x] Complete all localized text
 
 ---
 

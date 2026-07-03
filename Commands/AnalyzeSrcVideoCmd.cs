@@ -7,15 +7,12 @@ using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.ViewModels.Cards;
-using OneColumnEncoder.Views;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Windows;
 
 namespace OneColumnEncoder.Commands
 {
@@ -66,7 +63,7 @@ namespace OneColumnEncoder.Commands
             (IsQueueRoute()
                 ? (_getQueueFilePaths?.Invoke().Length ?? 0) > 0
                 : IsConcatRoute()
-                    ? (_getConcatFilePaths?.Invoke().Length ?? 0) > 0
+                    ? (_getConcatFilePaths?.Invoke().Length ?? 0) > 1
                 : !string.IsNullOrWhiteSpace(_getSourcePath()));
 
         // Main entry: route to queue analysis or single-file analysis, then show result or error modal.
@@ -139,7 +136,8 @@ namespace OneColumnEncoder.Commands
         {
             string ffprobePath = _getFfprobePath();
             string[] concatFilePaths = _getConcatFilePaths?.Invoke() ?? [];
-            if (concatFilePaths.Length == 0) return;
+            if (concatFilePaths.Length < 2)
+                throw new InvalidOperationException(UILangProviderM.Current["SrcScribe.ConcatNeedMultipleSources"]);
 
             ConcatCheckCardVM concatCard = _getActiveSrcValidationCard() as ConcatCheckCardVM
                 ?? throw new InvalidOperationException("Concat source check card is not active.");
@@ -148,6 +146,9 @@ namespace OneColumnEncoder.Commands
                 ffprobePath,
                 concatFilePaths,
                 concatCard.IsSvtav1SelectedFunc);
+
+            if (result.HasResolutionMismatch)
+                throw new InvalidOperationException(result.ResolutionMismatchMessage ?? string.Empty);
 
             _analysis.FfprobePath = ffprobePath;
             _analysis.SourcePath = result.ReferencePath;
@@ -164,6 +165,17 @@ namespace OneColumnEncoder.Commands
             if (result.SupplementedCount > 0)
                 message = FormatQueueFrameCountSupplementMessage(message, result.SupplementedCount);
             ShowSourceAnalysisCompletedModal(message);
+
+            if (result.Warnings.Count > 0)
+            {
+                string warningMessage = string.Join(
+                    Environment.NewLine + Environment.NewLine,
+                    result.Warnings);
+                new OpenWarnModalCmd(
+                    _modalNavS,
+                    UICaptionProviderM.SourceInspect.WarnTitle,
+                    warningMessage).Execute(null);
+            }
 
             if (result.ConcatTotalFrames > 0)
             {
@@ -321,7 +333,11 @@ namespace OneColumnEncoder.Commands
                 message = FormatQueueFrameCountSupplementMessage(message, supplementedCount);
             if (skipped.Count > 0)
                 message = FormatQueueSkippedMessage(message, skipped);
-            ShowQueueAnalysisCompletedModal(message, queueJsonPath, excludedJsonPath);
+            new OpenQueueAnalysisCompletedModalCmd(
+                _modalNavS,
+                message,
+                queueJsonPath,
+                excludedJsonPath).Execute(null);
         }
 
         // Builds a message indicating analysis completed and (if available) total frame count + number of supplemented streams
@@ -523,78 +539,21 @@ namespace OneColumnEncoder.Commands
                 + string.Join(Environment.NewLine, skippedLines);
         }
 
-        // Shows an info-level modal when frame count was supplemented for a single-file analysis.
         private void ShowFrameCountSupplementedModal(string message)
         {
-            ConfirmationModal window = new();
-            CloseModalCmd closeCmd = new(window.Close);
-            ConfirmationVM vm = ConfirmationVM.CreateInfo(
+            new OpenInfoModalCmd(
+                _modalNavS,
                 UILangProviderM.SrcAnalysisWindowTitle,
-                message,
-                closeCmd,
-                closeCmd);
-
-            window.DataContext = vm;
-            window.Owner = Application.Current.MainWindow;
-            window.Closed += (_, _) => _modalNavS.Close();
-            _modalNavS.CurrentModalVM = vm;
-            window.ShowDialog();
+                message).Execute(null);
         }
 
-        // Shows a success-level modal after single-file analysis completes without frame-count supplementation.
         private void ShowSourceAnalysisCompletedModal(string message)
         {
-            ConfirmationModal window = new();
-            CloseModalCmd closeCmd = new(window.Close);
-            ConfirmationVM vm = ConfirmationVM.CreateSuccess(
+            new OpenSuccModalCmd(
+                _modalNavS,
                 UILangProviderM.SrcAnalysisWindowTitle,
-                message,
-                closeCmd,
-                closeCmd);
-
-            window.DataContext = vm;
-            window.Owner = Application.Current.MainWindow;
-            window.Closed += (_, _) => _modalNavS.Close();
-            _modalNavS.CurrentModalVM = vm;
-            window.ShowDialog();
+                message).Execute(null);
         }
-
-        // Shows a success modal for queue analysis with context-menu items to open/copy the generated JSON files.
-        private void ShowQueueAnalysisCompletedModal(string message, string queueJsonPath, string? excludedJsonPath)
-        {
-            ConfirmationModal window = new();
-            CloseModalCmd closeCmd = new(window.Close);
-            ConfirmationVM vm = ConfirmationVM.CreateSuccess(
-                UILangProviderM.SrcAnalysisWindowTitle,
-                message,
-                closeCmd,
-                closeCmd);
-            vm.ContextMenuItems.Add(new(
-                UILangProviderM.Current["SourceQueue.OpenQueueJson"],
-                new ActionCmd(_ => OpenJsonPath(queueJsonPath))));
-            vm.ContextMenuItems.Add(new(
-                UILangProviderM.Current["SourceQueue.CopyQueueJsonPath"],
-                new ActionCmd(_ => Clipboard.SetText(queueJsonPath))));
-            if (!string.IsNullOrWhiteSpace(excludedJsonPath))
-            {
-                vm.ContextMenuItems.Add(new(
-                    UILangProviderM.Current["SourceQueue.OpenExcludedJson"],
-                    new ActionCmd(_ => OpenJsonPath(excludedJsonPath))));
-                vm.ContextMenuItems.Add(new(
-                    UILangProviderM.Current["SourceQueue.CopyExcludedJsonPath"],
-                    new ActionCmd(_ => Clipboard.SetText(excludedJsonPath))));
-            }
-
-            window.DataContext = vm;
-            window.Owner = Application.Current.MainWindow;
-            window.Closed += (_, _) => _modalNavS.Close();
-            _modalNavS.CurrentModalVM = vm;
-            window.ShowDialog();
-        }
-
-        // Opens a JSON file in the default system editor via shell execute.
-        private static void OpenJsonPath(string jsonPath) =>
-            Process.Start(new ProcessStartInfo(jsonPath) { UseShellExecute = true });
 
         // Placeholder type needed to resolve the config directory from SaveLoadBase.
         private sealed class SaveLoadPlaceholder : SaveLoadBase<SaveLoadPlaceholder>

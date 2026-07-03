@@ -35,7 +35,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
             IsQueueRoute()
                 ? (_getQueueFilePaths?.Invoke().Length ?? 0) > 0
                 : IsConcatRoute()
-                    ? (_getConcatFilePaths?.Invoke().Length ?? 0) > 0
+                    ? (_getConcatFilePaths?.Invoke().Length ?? 0) > 1
                 : !string.IsNullOrWhiteSpace(_getSourcePath());
 
         public override void Execute(object? parameter)
@@ -120,7 +120,14 @@ namespace OneColumnEncoder.Commands.SaveLoad
         private void ExecuteConcatScriptGen()
         {
             string[] sourcePaths = _getConcatFilePaths?.Invoke() ?? [];
-            if (sourcePaths.Length == 0) return;
+            if (sourcePaths.Length < 2)
+            {
+                new OpenErrModalCmd(
+                    _modalNavS,
+                    UILangProviderM.Current["SrcScribe.ConcatNeedMultipleSourcesTitle"],
+                    UILangProviderM.Current["SrcScribe.ConcatNeedMultipleSources"]).Execute(null);
+                return;
+            }
 
             string baseName = BrowseSourceQueueCmd.FormatConcatFileName(sourcePaths);
             string avsScript = ScriptTemplate.BuildConcatAvsExportScript(

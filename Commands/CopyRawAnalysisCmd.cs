@@ -8,11 +8,13 @@ namespace OneColumnEncoder.Commands
     public class CopyRawAnalysisCmd(
         VideoAnalysisM analysis,
         ModalNavS modalNavS,
-        Func<bool>? isQueueRoute = null) : BaseCmd
+        Func<bool>? isQueueRoute = null,
+        Func<bool>? isConcatRoute = null) : BaseCmd
     {
         private readonly VideoAnalysisM _analysis = analysis;
         private readonly ModalNavS _modalNavS = modalNavS;
         private readonly Func<bool>? _isQueueRoute = isQueueRoute;
+        private readonly Func<bool>? _isConcatRoute = isConcatRoute;
 
         public override bool CanExecute(object? parameter) =>
             !string.IsNullOrWhiteSpace(GetRawJson());
@@ -39,7 +41,7 @@ namespace OneColumnEncoder.Commands
         }
 
         private string GetRawJson() =>
-            _isQueueRoute?.Invoke() == true && !string.IsNullOrWhiteSpace(_analysis.QueueRawJson)
+            (_isQueueRoute?.Invoke() == true || _isConcatRoute?.Invoke() == true) && !string.IsNullOrWhiteSpace(_analysis.QueueRawJson)
                 ? _analysis.QueueRawJson
                 : _analysis.RawJson;
     }

@@ -12,15 +12,17 @@ When concat mode is active:
 
 - The concat card title shows the current fragment count.
 - `ActiveSrcValidationCard` is `ConcatCheckCard`.
-- `Sample Clip` is disabled.
+- `Sample Clip` is disabled for the button state; if invoked directly, the command shows a warning and returns.
 - The duration filter is hidden.
 - `FilterScribeModal` shows `ConcatSourceSidebarPanel` for reorder/remove operations.
 
 ## 2. Importing Concat Sources
 
-`BrowseSourceConcatCmd` opens a multi-select `OpenFileDialog`. It does not import a folder.
+`BrowseSourceConcatCmd` opens a multi-select `OpenFileDialog`. It does not import a folder, and concat import requires at least two selected video files.
 
-Before accepting the selection, it checks that all selected files have the same extension. If any selected file differs, import aborts and opens `OpenErrModalCmd` with the expected extension and mismatched files.
+Before accepting the selection, it checks that all selected files use supported video extensions and have the same extension. If any selected file differs, import aborts and opens `OpenErrModalCmd` with the expected extension and mismatched files.
+
+The import command also runs a compatibility pre-analysis with ffprobe before accepting the files. This pre-analysis is an import gate only: it can reject or warn about the selection, but the accepted result is not stored into `_srcVideoAnalysis`. After import, the normal source-analysis flow still runs to populate representative raw JSON, all-fragment raw JSON, and concat total frame count.
 
 After import:
 
@@ -39,15 +41,16 @@ file 'G:/media/part02.mkv'
 
 ## 3. Concat Source Analysis
 
-`AnalyzeSrcVideoCmd` has a concat branch. It analyzes every selected fragment with ffprobe and supplements frame counts the same way single and queue analysis do.
+`AnalyzeSrcVideoCmd` has a concat branch. It requires at least two selected fragments, analyzes every selected fragment with ffprobe, and supplements frame counts the same way single and queue analysis do.
 
-Concat analysis is all-or-nothing:
+Concat analysis has hard failures and soft compatibility warnings:
 
 - If any file fails ffprobe, the whole concat source fails.
 - If any file lacks a readable video stream, the whole concat source fails.
-- If any file differs from the first file's key video signature, the whole concat source fails.
+- If any file differs from the first file's resolution, the whole concat source fails.
+- If codec, pixel format, source validation checklist signature, or CFR frame-rate signature differs, analysis emits `OpenWarnModalCmd` and continues.
 
-The key signature currently includes:
+The comparison signature currently includes:
 
 - source validation checklist signature
 - width
@@ -57,11 +60,11 @@ The key signature currently includes:
 - normalized `avg_frame_rate`
 - normalized `r_frame_rate`
 
-On success, the first fragment's raw ffprobe JSON is stored in `_srcVideoAnalysis.RawJson` and applied to `ConcatCheckCard`. This representative analysis drives encoder config previews and FilterScribe helpers.
+On success, the first fragment's raw ffprobe JSON is stored in `_srcVideoAnalysis.RawJson` and applied to `ConcatCheckCard`. This representative analysis drives encoder config previews and FilterScribe helpers. The full per-fragment analysis set is also serialized into `_srcVideoAnalysis.QueueRawJson` so `CopyRawAnalysisCmd` can copy all fragment JSON in concat mode.
 
 ### 3.1 VFR Handling in Concat Mode
 
-Concat analysis accepts variable frame rate (VFR) sources. If ffprobe detects VFR on any fragment, `AnalyzeSrcVideoCmd` shows `OpenWarnModalCmd` instead of an error modal and continues import.
+Concat analysis accepts variable frame rate (VFR) sources. If ffprobe detects VFR on any fragment, `BrowseSourceConcatCmd` and `AnalyzeSrcVideoCmd` show `OpenWarnModalCmd` instead of an error modal and continue.
 
 If later fragments do not match the first fragment's frame-rate signature, the analysis also emits a warning instead of aborting. Both warnings point the user to Filter Scribe and its VFR→CFR repair option.
 
@@ -69,7 +72,7 @@ This is important because many source collections are mixed VFR and should still
 
 ### 3.2 Concat Total Frame Count
 
-Concat mode calculates a **concat total frame count** — the sum of every fragment's individual frame count. This value is computed in `ConcatCompatibilityAnalyzer.AnalyzeAsync()` by iterating over each fragment's supplemented ffprobe JSON and summing the `nb_frames` field of the first video stream.
+Concat mode calculates a **concat total frame count** — the sum of every fragment's individual frame count. This value is computed in `ConcatCompatibilityAnalyzer.AnalyzeAsync()` by iterating over each fragment's supplemented ffprobe JSON and summing the first video stream's frame count. The frame-count reader accepts `nb_frames`, `NUMBER_OF_FRAMES*` tags, and frame counts supplemented from duration × average frame rate.
 
 The summed value flows through these stages:
 
@@ -90,14 +93,14 @@ This debug modal helps verify that the summed frame count is correct across all 
 
 ## 4. Script Generation
 
-Concat mode generates one AVS script and one VPY script for the whole fragment list.
+Concat mode generates one AVS script and one VPY script for the whole fragment list. AVS/VPY generation requires at least two concat paths; `OneClickScriptGenCmd` and FilterScribe copy/save paths block generation below that count.
 
 `OneClickScriptGenCmd` uses:
 
 - `ScriptTemplate.BuildConcatAvsExportScript()`
 - `ScriptTemplate.BuildConcatVpyExportScript()`
 
-AVS scripts are video-only and keep `src` as the final concatenated clip:
+AVS scripts are video-only. The final concatenated clip is the last expression in the source header:
 
 ```avs
 v1 = LWLibavVideoSource("G:\media\part01.mkv")
@@ -130,7 +133,7 @@ The sidebar supports:
 - Move fragment up
 - Move fragment down
 
-Every reorder/remove operation updates `VideoSourceConcatState` and regenerates `source_concat_filelist.txt` through the `applyConcatFilePaths` callback. `Save & Import` also uses the current sidebar order when writing AVS/VPY scripts.
+Every reorder/remove operation updates `VideoSourceConcatState` and regenerates `source_concat_filelist.txt` through the `applyConcatFilePaths` callback. When the list changes, `MainVM` clears the previous source analysis so stale representative JSON and `ConcatTotalFrames` cannot be used for encoding. Run source analysis again after changing the fragment order or removing fragments. `Save & Import` also uses the current sidebar order when writing AVS/VPY scripts.
 
 ### 5.1 Script Import Validation
 
@@ -147,7 +150,7 @@ This prevents a correct concat export/import from being rejected by `OpenErrModa
 
 ## 6. Starting Concat Encoding
 
-`StartEncCmd` checks concat before queue. In concat mode it calls `MainVM.BuildConcatEncodingPipelineRequest()` and starts a normal single request flow, including debug confirmation and overwrite confirmation.
+`StartEncCmd` checks concat before queue. In concat mode it calls `MainVM.BuildConcatEncodingPipelineRequest()` and starts a normal single request flow, including debug confirmation and overwrite confirmation. The request builder returns `null` unless at least two concat fragments are still present.
 
 Concat encoding is supported for:
 
@@ -180,7 +183,7 @@ This keeps upstream pipes video-only while allowing audio streams from the conca
 
 ## 8. End-to-End Flow
 
-`Video Src. Concat` selected -> import multiple files -> extension check -> write filelist -> analyze all fragments (sum concat total frame count) -> optionally reorder/remove in FilterScribe -> regenerate filelist -> save/import concat script if needed -> press `Start Encode` -> build one concat request with `ConcatTotalFrames` -> confirm command/overwrite -> encode one output (progress uses summed frame count) -> mux audio from filelist.
+`Video Src. Concat` selected -> import multiple files -> extension and compatibility precheck -> write filelist -> analyze all fragments (sum concat total frame count and store all raw JSON) -> optionally reorder/remove in FilterScribe -> regenerate filelist and clear stale analysis if the list changed -> rerun analysis if needed -> save/import concat script if needed -> press `Start Encode` -> build one concat request with `ConcatTotalFrames` -> confirm command/overwrite -> encode one output (progress uses summed frame count) -> mux audio from filelist.
 
 ## Key Files
 
@@ -193,6 +196,7 @@ This keeps upstream pipes video-only while allowing audio streams from the conca
 - `Commands/OpenClose/OpenDebugModalCmd.cs`
 - `Commands/SaveLoad/OneClickScriptGenCmd.cs`
 - `Commands/OpenClose/OpenFilterScribeCmd.cs`
+- `Commands/CopyRawAnalysisCmd.cs`
 - `ViewModels/FilterScribeVM.cs`
 - `ViewModels/EncodingMonitorVM.cs`
 - `ViewModels/QueueJobItemVM.cs`
