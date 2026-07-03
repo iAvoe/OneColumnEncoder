@@ -44,9 +44,9 @@ namespace OneColumnEncoder.ConcatManagement
                     using JsonDocument rawDocument = JsonDocument.Parse(rawJson);
                     JsonElement rawElement = rawDocument.RootElement.Clone();
 
-                    string? vfrWarning = CheckVariableFrameRate(filePath, rawElement);
-                    if (vfrWarning != null)
-                        warnings.Add(vfrWarning);
+                    bool? isVariableFrameRate = IsVariableFrameRate(rawElement);
+                    if (isVariableFrameRate == true)
+                        warnings.Add(FormatVariableFrameRateWarning(filePath));
 
                     ConcatSourceSignature signature = ConcatSourceSignature.From(probeCard.GetSignature(), rawElement)
                         ?? throw new InvalidOperationException(UILangProviderM.Current["SrcScribe.ColorSpace.NoVideoStream"]);
@@ -57,7 +57,7 @@ namespace OneColumnEncoder.ConcatManagement
                         referenceRawJson = rawJson;
                         referencePath = filePath;
                     }
-                    else if (!signature.Matches(referenceSignature))
+                    else if (isVariableFrameRate == false && !signature.Matches(referenceSignature))
                     {
                         warnings.Add(string.Format(
                             UILangProviderM.Current["SourceConcat.IncompatibleVideo"],
@@ -104,16 +104,17 @@ namespace OneColumnEncoder.ConcatManagement
         private static string FormatAllItemsFailedMessage(int count) =>
             string.Format(Lang.AllQueueItemsFailed, count);
 
-        private static string? CheckVariableFrameRate(string filePath, JsonElement rawElement)
+        private static bool? IsVariableFrameRate(JsonElement rawElement)
         {
             if (!TryGetFirstVideoStream(rawElement, out JsonElement stream)) return null;
-            if (FrameRate.IsVariableFrameRate(stream) == true)
-                return string.Format(
-                    "{0}: {1}",
-                    Path.GetFileName(filePath),
-                    UICaptionProviderM.SourceInspect.FramerateP1Text);
-            return null;
+            return FrameRate.IsVariableFrameRate(stream);
         }
+
+        private static string FormatVariableFrameRateWarning(string filePath) =>
+            string.Format(
+                "{0}: {1}",
+                Path.GetFileName(filePath),
+                UICaptionProviderM.SourceInspect.FramerateP1Text);
 
         private sealed record ConcatSourceSignature(
             SourceCheckSignature CheckSignature,
