@@ -277,9 +277,7 @@
                              BorderThickness="0"
                              Background="{StaticResource Background}"
                              Foreground="{StaticResource ButtonTertiary}"
-                             FontSize="11"
-                             FontFamily="Segoe UI"
-                             VerticalScrollBarVisibility="Disabled" />
+                             FontSize="11" />
                 </Grid>
             </StackPanel>
 
@@ -303,9 +301,7 @@
                              BorderThickness="0"
                              Background="{StaticResource Background}"
                              Foreground="{StaticResource ButtonTertiary}"
-                             FontSize="11"
-                             FontFamily="Segoe UI"
-                             VerticalScrollBarVisibility="Disabled" />
+                             FontSize="11" />
                 </Grid>
             </StackPanel>
 
@@ -330,9 +326,7 @@
                                  BorderThickness="0"
                                  Background="{StaticResource Background}"
                                  Foreground="{StaticResource ButtonTertiary}"
-                                 FontSize="11"
-                                 FontFamily="Segoe UI"
-                                 VerticalScrollBarVisibility="Disabled" />
+                                 FontSize="11" />
                     </Grid>
                     <Grid Margin="0 3 0 0">
                         <Grid.ColumnDefinitions>
@@ -350,9 +344,7 @@
                                  BorderThickness="0"
                                  Background="{StaticResource Background}"
                                  Foreground="{StaticResource ButtonTertiary}"
-                                 FontSize="11"
-                                 FontFamily="Segoe UI"
-                                 VerticalScrollBarVisibility="Disabled" />
+                                 FontSize="11" />
                     </Grid>
                     <Grid Margin="0 3 0 0">
                         <Grid.ColumnDefinitions>
@@ -370,9 +362,7 @@
                                  BorderThickness="0"
                                  Background="{StaticResource Background}"
                                  Foreground="{StaticResource ButtonTertiary}"
-                                 FontSize="11"
-                                 FontFamily="Segoe UI"
-                                 VerticalScrollBarVisibility="Disabled" />
+                                 FontSize="11" />
                     </Grid>
                     <Grid Margin="0 3 0 0">
                         <Grid.ColumnDefinitions>
@@ -390,9 +380,7 @@
                                  BorderThickness="0"
                                  Background="{StaticResource Background}"
                                  Foreground="{StaticResource ButtonTertiary}"
-                                 FontSize="11"
-                                 FontFamily="Segoe UI"
-                                 VerticalScrollBarVisibility="Disabled" />
+                                 FontSize="11" />
                     </Grid>
                 </StackPanel>
             </StackPanel>
@@ -420,9 +408,7 @@
                              BorderThickness="0"
                              Background="{StaticResource Background}"
                              Foreground="{StaticResource ButtonTertiary}"
-                             FontSize="11"
-                             FontFamily="Segoe UI"
-                             VerticalScrollBarVisibility="Disabled" />
+                             FontSize="11" />
                 </Grid>
                 <Grid Margin="0 5 0 0">
                     <Grid.ColumnDefinitions>
@@ -440,9 +426,7 @@
                              BorderThickness="0"
                              Background="{StaticResource Background}"
                              Foreground="{StaticResource ButtonTertiary}"
-                             FontSize="11"
-                             FontFamily="Segoe UI"
-                             VerticalScrollBarVisibility="Disabled" />
+                             FontSize="11" />
                 </Grid>
                 <Grid Margin="0 5 0 0">
                     <Grid.ColumnDefinitions>
@@ -460,9 +444,7 @@
                              BorderThickness="0"
                              Background="{StaticResource Background}"
                              Foreground="{StaticResource ButtonTertiary}"
-                             FontSize="11"
-                             FontFamily="Segoe UI"
-                             VerticalScrollBarVisibility="Disabled" />
+                             FontSize="11" />
                 </Grid>
             </StackPanel>
 
@@ -567,9 +549,7 @@
                                  BorderThickness="0"
                                  Background="{StaticResource Background}"
                                  Foreground="{StaticResource ButtonTertiary}"
-                                 FontSize="11"
-                                 FontFamily="Segoe UI"
-                                 VerticalScrollBarVisibility="Disabled" />
+                                 FontSize="11" />
                     </Grid>
                     <Grid Margin="0 5 0 0">
                         <Grid.ColumnDefinitions>
@@ -587,9 +567,7 @@
                                  BorderThickness="0"
                                  Background="{StaticResource Background}"
                                  Foreground="{StaticResource ButtonTertiary}"
-                                 FontSize="11"
-                                 FontFamily="Segoe UI"
-                                 VerticalScrollBarVisibility="Disabled" />
+                                 FontSize="11" />
                     </Grid>
                     <Grid Margin="0 5 0 0">
                         <Grid.ColumnDefinitions>
@@ -607,9 +585,7 @@
                                  BorderThickness="0"
                                  Background="{StaticResource Background}"
                                  Foreground="{StaticResource ButtonTertiary}"
-                                 FontSize="11"
-                                 FontFamily="Segoe UI"
-                                 VerticalScrollBarVisibility="Disabled" />
+                                 FontSize="11" />
                     </Grid>
                 </StackPanel>
             </StackPanel>
@@ -634,9 +610,7 @@
                              BorderThickness="0"
                              Background="{StaticResource Background}"
                              Foreground="{StaticResource ButtonTertiary}"
-                             FontSize="11"
-                             FontFamily="Segoe UI"
-                             VerticalScrollBarVisibility="Disabled" />
+                             FontSize="11" />
                 </Grid>
                 <Grid Margin="0 5 0 0">
                     <Grid.ColumnDefinitions>
@@ -654,9 +628,7 @@
                              BorderThickness="0"
                              Background="{StaticResource Background}"
                              Foreground="{StaticResource ButtonTertiary}"
-                             FontSize="11"
-                             FontFamily="Segoe UI"
-                             VerticalScrollBarVisibility="Disabled" />
+                             FontSize="11" />
                 </Grid>
             </StackPanel>
 

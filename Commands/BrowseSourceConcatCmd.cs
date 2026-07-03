@@ -98,6 +98,16 @@ namespace OneColumnEncoder.Commands
                 return;
             }
 
+            if (analysisResult is not null && analysisResult.HasResolutionMismatch)
+            {
+                new OpenErrModalCmd(
+                    _modalNavS,
+                    UICaptionProviderM.SourceInspect.ErrorTitle,
+                    analysisResult.ResolutionMismatchMessage ?? string.Empty).Execute(null);
+                Application.Current.MainWindow?.Activate();
+                return;
+            }
+
             if (analysisResult is not null && analysisResult.Warnings.Count > 0)
             {
                 string warningMessage = string.Join(

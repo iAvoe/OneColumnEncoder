@@ -25,6 +25,8 @@ namespace OneColumnEncoder.ConcatManagement
             int supplementedCount = 0;
             long concatTotalFrames = 0;
             List<string> warnings = [];
+            bool hasResolutionMismatch = false;
+            string? resolutionMismatchMessage = null;
 
             for (int i = 0; i < filePaths.Length; i++)
             {
@@ -59,7 +61,26 @@ namespace OneColumnEncoder.ConcatManagement
                         referenceRawJson = rawJson;
                         referencePath = filePath;
                     }
-                    else if (referenceIsVariableFrameRate == false && isVariableFrameRate == false && !signature.Matches(referenceSignature))
+                    else if (referenceSignature.Width != signature.Width
+                             || referenceSignature.Height != signature.Height)
+                    {
+                        hasResolutionMismatch = true;
+                        resolutionMismatchMessage = string.Format(
+                            UILangProviderM.Current["SourceConcat.ResolutionMismatch"],
+                            i + 1,
+                            referenceSignature.Display,
+                            signature.Display);
+                    }
+                    else if (!referenceSignature.MatchesEssential(signature))
+                    {
+                        warnings.Add(string.Format(
+                            UILangProviderM.Current["SourceConcat.IncompatibleVideo"],
+                            i + 1,
+                            referenceSignature.Display,
+                            signature.Display));
+                    }
+                    else if (referenceIsVariableFrameRate == false && isVariableFrameRate == false
+                             && !referenceSignature.MatchesFrameRate(signature))
                     {
                         warnings.Add(string.Format(
                             UILangProviderM.Current["SourceConcat.IncompatibleVideo"],
@@ -87,7 +108,15 @@ namespace OneColumnEncoder.ConcatManagement
             if (referenceRawJson == null || referencePath == null)
                 throw new InvalidOperationException(FormatAllItemsFailedMessage(filePaths.Length));
 
-            return new(referenceRawJson, referencePath, rawAnalyses, supplementedCount, concatTotalFrames, warnings);
+            return new(
+                referenceRawJson,
+                referencePath,
+                rawAnalyses,
+                supplementedCount,
+                concatTotalFrames,
+                warnings,
+                hasResolutionMismatch,
+                resolutionMismatchMessage);
         }
 
         private static string FormatAnalysisFailureMessage(
@@ -141,6 +170,15 @@ namespace OneColumnEncoder.ConcatManagement
                 Height == other.Height &&
                 string.Equals(PixelFormat, other.PixelFormat, StringComparison.OrdinalIgnoreCase) &&
                 string.Equals(Codec, other.Codec, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(AvgFrameRate, other.AvgFrameRate, StringComparison.Ordinal) &&
+                string.Equals(RFrameRate, other.RFrameRate, StringComparison.Ordinal);
+
+            public bool MatchesEssential(ConcatSourceSignature other) =>
+                CheckSignature.Matches(other.CheckSignature) &&
+                string.Equals(PixelFormat, other.PixelFormat, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(Codec, other.Codec, StringComparison.OrdinalIgnoreCase);
+
+            public bool MatchesFrameRate(ConcatSourceSignature other) =>
                 string.Equals(AvgFrameRate, other.AvgFrameRate, StringComparison.Ordinal) &&
                 string.Equals(RFrameRate, other.RFrameRate, StringComparison.Ordinal);
 
@@ -219,7 +257,9 @@ namespace OneColumnEncoder.ConcatManagement
         IReadOnlyList<ConcatSourceRawAnalysis> RawAnalyses,
         int SupplementedCount,
         long ConcatTotalFrames,
-        IReadOnlyList<string> Warnings);
+        IReadOnlyList<string> Warnings,
+        bool HasResolutionMismatch,
+        string? ResolutionMismatchMessage);
 
     public sealed record ConcatSourceRawAnalysis(
         string FilePath,
