@@ -80,9 +80,10 @@ namespace OneColumnEncoder.Commands
             }
 
             // Probe the selected files for codec, resolution, frame rate, and SVT-AV1 constraints.
+            ConcatCompatibilityAnalysisResult? analysisResult = null;
             try
             {
-                await ConcatCompatibilityAnalyzer.AnalyzeAsync(
+                analysisResult = await ConcatCompatibilityAnalyzer.AnalyzeAsync(
                     _getFfprobePath(),
                     filePaths,
                     _isSvtav1SelectedFunc);
@@ -95,6 +96,18 @@ namespace OneColumnEncoder.Commands
                     ex.Message).Execute(null);
                 Application.Current.MainWindow?.Activate();
                 return;
+            }
+
+            if (analysisResult is not null && analysisResult.Warnings.Count > 0)
+            {
+                string warningMessage = string.Join(
+                    Environment.NewLine + Environment.NewLine,
+                    analysisResult.Warnings);
+                new OpenWarnModalCmd(
+                    _modalNavS,
+                    UICaptionProviderM.SourceInspect.WarnTitle,
+                    warningMessage).Execute(null);
+                Application.Current.MainWindow?.Activate();
             }
 
             // Store the parent folder and show a compact, ordered file summary in the import card.

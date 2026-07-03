@@ -12,7 +12,7 @@ namespace OneColumnEncoder.ConcatManagement
             if (!string.IsNullOrWhiteSpace(directory))
                 Directory.CreateDirectory(directory);
 
-            File.WriteAllText(outputPath, BuildFileListContent(filePaths), Encoding.UTF8);
+            File.WriteAllText(outputPath, BuildFileListContent(filePaths), new UTF8Encoding(false));
             return outputPath;
         }
 

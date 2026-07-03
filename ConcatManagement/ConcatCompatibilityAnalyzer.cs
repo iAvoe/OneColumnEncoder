@@ -23,6 +23,7 @@ namespace OneColumnEncoder.ConcatManagement
             List<ConcatSourceRawAnalysis> rawAnalyses = [];
             int supplementedCount = 0;
             long concatTotalFrames = 0;
+            List<string> warnings = [];
 
             for (int i = 0; i < filePaths.Length; i++)
             {
@@ -42,7 +43,11 @@ namespace OneColumnEncoder.ConcatManagement
 
                     using JsonDocument rawDocument = JsonDocument.Parse(rawJson);
                     JsonElement rawElement = rawDocument.RootElement.Clone();
-                    ValidateConstantFrameRate(rawElement);
+
+                    string? vfrWarning = CheckVariableFrameRate(filePath, rawElement);
+                    if (vfrWarning != null)
+                        warnings.Add(vfrWarning);
+
                     ConcatSourceSignature signature = ConcatSourceSignature.From(probeCard.GetSignature(), rawElement)
                         ?? throw new InvalidOperationException(UILangProviderM.Current["SrcScribe.ColorSpace.NoVideoStream"]);
 
@@ -54,7 +59,7 @@ namespace OneColumnEncoder.ConcatManagement
                     }
                     else if (!signature.Matches(referenceSignature))
                     {
-                        throw new InvalidOperationException(string.Format(
+                        warnings.Add(string.Format(
                             UILangProviderM.Current["SourceConcat.IncompatibleVideo"],
                             i + 1,
                             referenceSignature.Display,
@@ -80,7 +85,7 @@ namespace OneColumnEncoder.ConcatManagement
             if (referenceRawJson == null || referencePath == null)
                 throw new InvalidOperationException(FormatAllItemsFailedMessage(filePaths.Length));
 
-            return new(referenceRawJson, referencePath, rawAnalyses, supplementedCount, concatTotalFrames);
+            return new(referenceRawJson, referencePath, rawAnalyses, supplementedCount, concatTotalFrames, warnings);
         }
 
         private static string FormatAnalysisFailureMessage(
@@ -99,11 +104,15 @@ namespace OneColumnEncoder.ConcatManagement
         private static string FormatAllItemsFailedMessage(int count) =>
             string.Format(Lang.AllQueueItemsFailed, count);
 
-        private static void ValidateConstantFrameRate(JsonElement rawElement)
+        private static string? CheckVariableFrameRate(string filePath, JsonElement rawElement)
         {
-            if (!TryGetFirstVideoStream(rawElement, out JsonElement stream)) return;
+            if (!TryGetFirstVideoStream(rawElement, out JsonElement stream)) return null;
             if (FrameRate.IsVariableFrameRate(stream) == true)
-                throw new InvalidOperationException(UILangProviderM.Current["SourceConcat.VariableFrameRate"]);
+                return string.Format(
+                    "{0}: {1}",
+                    Path.GetFileName(filePath),
+                    UICaptionProviderM.SourceInspect.FramerateP1Text);
+            return null;
         }
 
         private sealed record ConcatSourceSignature(
@@ -206,7 +215,8 @@ namespace OneColumnEncoder.ConcatManagement
         string ReferencePath,
         IReadOnlyList<ConcatSourceRawAnalysis> RawAnalyses,
         int SupplementedCount,
-        long ConcatTotalFrames);
+        long ConcatTotalFrames,
+        IReadOnlyList<string> Warnings);
 
     public sealed record ConcatSourceRawAnalysis(
         string FilePath,
