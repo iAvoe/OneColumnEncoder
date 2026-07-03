@@ -20,7 +20,7 @@ namespace OneColumnEncoder.Views
         private const int MinWidthSidebar = MinWidthDefault + SidebarWidth + SplitterWidth;
 
         private const int MinHeightDefault = 905; // Height without Opus audio encoding hint (concat mode)
-        private const int HeightDefault = 940; // Normal height
+        private const int HeightDefault = 950; // Normal height
         private EncodingMonitorVM? _subscribedVm;
         private QueueSidebarVM? _subscribedQueueSidebar;
 
@@ -58,7 +58,7 @@ namespace OneColumnEncoder.Views
                 }
 
                 SyncSidebarWidth(vm.QueueSidebar.IsVisible);
-                SyncHeight(string.IsNullOrWhiteSpace(vm.OpusAudioCommandHint));
+                SyncHeight(!string.IsNullOrWhiteSpace(vm.OpusAudioCommandHint));
                 UpdateSystemCloseButton(vm.IsWindowCloseEnabled);
                 vm.Start();
             }
@@ -132,8 +132,8 @@ namespace OneColumnEncoder.Views
             else CollapseSidebar();
         }
 
-        private void SyncHeight(bool hasOpusAudioCommandHint) =>
-            Height = hasOpusAudioCommandHint ? HeightDefault : MinHeightDefault;
+        private void SyncHeight(bool isOpusHintVisible) =>
+            Height = isOpusHintVisible ? HeightDefault : MinHeightDefault;
 
         private void ExpandForSidebar()
         {
