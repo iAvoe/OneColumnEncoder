@@ -147,6 +147,7 @@ namespace OneColumnEncoder.Commands
             _analysis.FfprobePath = ffprobePath;
             _analysis.SourcePath = result.ReferencePath;
             _analysis.RawJson = result.ReferenceRawJson;
+            _analysis.ConcatTotalFrames = result.ConcatTotalFrames;
             _analysis.QueueRawJson = JsonSerializer.Serialize(
                 new QueueRawAnalysisData([.. result.RawAnalyses.Select(entry =>
                     new QueueSourceRawAnalysis(entry.FilePath, entry.DisplayName, entry.FfprobeJson))]),
@@ -158,6 +159,18 @@ namespace OneColumnEncoder.Commands
             if (result.SupplementedCount > 0)
                 message = FormatQueueFrameCountSupplementMessage(message, result.SupplementedCount);
             ShowSourceAnalysisCompletedModal(message);
+
+            if (result.ConcatTotalFrames > 0)
+            {
+                string totalFramesLabel = new ClipRangeSelectorLangProviderM(UILangProviderM.Current.LanguageCode).SummaryTotalFramesLabel;
+                new OpenDebugModalCmd(
+                    _modalNavS,
+                    $"Concat {totalFramesLabel}",
+                    string.Format(
+                        Lang.TotalFramesFormat,
+                        $"{totalFramesLabel}（Concat 各源总和）",
+                        result.ConcatTotalFrames)).Execute(null);
+            }
         }
 
         private QueueFilterMode PromptQueueFilterMode()

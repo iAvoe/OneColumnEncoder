@@ -59,6 +59,26 @@ The key signature currently includes:
 
 On success, the first fragment's raw ffprobe JSON is stored in `_srcVideoAnalysis.RawJson` and applied to `ConcatCheckCard`. This representative analysis drives encoder config previews and FilterScribe helpers.
 
+### 3.1 Concat Total Frame Count
+
+Concat mode calculates a **concat total frame count** — the sum of every fragment's individual frame count. This value is computed in `ConcatCompatibilityAnalyzer.AnalyzeAsync()` by iterating over each fragment's supplemented ffprobe JSON and summing the `nb_frames` field of the first video stream.
+
+The summed value flows through these stages:
+
+1. Stored in `ConcatCompatibilityAnalysisResult.ConcatTotalFrames`.
+2. Passed into `VideoAnalysisM.ConcatTotalFrames` after analysis.
+3. Forwarded into `EncodingPipelineRequest.ConcatTotalFrames` when building the encoding request.
+4. Used by `EncodingPipeline.GetSourceTotalFrames()` — the optional `concatTotalFrames` parameter takes priority over the first fragment's single-source frame count.
+5. Consumed in `EncodingMonitorVM` (progress tracking) and `QueueJobItemVM` (frame count display).
+
+This ensures that encoding progress percentage and frame-count display reflect the true total across all concatenated fragments, rather than only the first fragment's frame count.
+
+### 3.2 Debug Modal for Concat Total Frame Count
+
+After a successful concat analysis, if `ConcatTotalFrames > 0`, an `OpenDebugModalCmd` is shown with the title `Concat {totalFramesLabel}` and a message like:
+
+This debug modal helps verify that the summed frame count is correct across all fragments.
+
 ## 4. Script Generation
 
 Concat mode generates one AVS script and one VPY script for the whole fragment list.
@@ -135,18 +155,23 @@ This keeps upstream pipes video-only while allowing audio streams from the conca
 
 ## 8. End-to-End Flow
 
-`Video Src. Concat` selected -> import multiple files -> extension check -> write filelist -> analyze all fragments -> optionally reorder/remove in FilterScribe -> regenerate filelist -> save/import concat script if needed -> press `Start Encode` -> build one concat request -> confirm command/overwrite -> encode one output -> mux audio from filelist.
+`Video Src. Concat` selected -> import multiple files -> extension check -> write filelist -> analyze all fragments (sum concat total frame count) -> optionally reorder/remove in FilterScribe -> regenerate filelist -> save/import concat script if needed -> press `Start Encode` -> build one concat request with `ConcatTotalFrames` -> confirm command/overwrite -> encode one output (progress uses summed frame count) -> mux audio from filelist.
 
 ## Key Files
 
 - `ConcatManagement/VideoSourceConcat.cs`
 - `ConcatManagement/ConcatFileListGenerator.cs`
+- `ConcatManagement/ConcatCompatibilityAnalyzer.cs`
 - `Commands/BrowseSourceConcatCmd.cs`
 - `Commands/AnalyzeSrcVideoCmd.cs`
 - `Commands/StartEncCmd.cs`
+- `Commands/OpenClose/OpenDebugModalCmd.cs`
 - `Commands/SaveLoad/OneClickScriptGenCmd.cs`
 - `Commands/OpenClose/OpenFilterScribeCmd.cs`
 - `ViewModels/FilterScribeVM.cs`
+- `ViewModels/EncodingMonitorVM.cs`
+- `ViewModels/QueueJobItemVM.cs`
 - `Components/ConcatSourceSidebarPanel.xaml`
 - `Pipeline/EncodingPipeline.cs`
+- `Models/VideoAnalysisM.cs`
 - `ScriptGeneration/ScriptTemplate.cs`

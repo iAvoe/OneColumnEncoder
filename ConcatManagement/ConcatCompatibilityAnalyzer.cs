@@ -22,6 +22,7 @@ namespace OneColumnEncoder.ConcatManagement
             ConcatSourceSignature? referenceSignature = null;
             List<ConcatSourceRawAnalysis> rawAnalyses = [];
             int supplementedCount = 0;
+            long concatTotalFrames = 0;
 
             for (int i = 0; i < filePaths.Length; i++)
             {
@@ -61,6 +62,12 @@ namespace OneColumnEncoder.ConcatManagement
                     }
 
                     rawAnalyses.Add(new(filePath, Path.GetFileName(filePath), rawElement));
+
+                    if (TryGetFirstVideoStream(rawElement, out JsonElement videoStream))
+                    {
+                        long? fragmentFrames = JsonElementHelper.TryGetFrameCount(videoStream);
+                        if (fragmentFrames > 0) concatTotalFrames += fragmentFrames.Value;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -73,7 +80,7 @@ namespace OneColumnEncoder.ConcatManagement
             if (referenceRawJson == null || referencePath == null)
                 throw new InvalidOperationException(FormatAllItemsFailedMessage(filePaths.Length));
 
-            return new(referenceRawJson, referencePath, rawAnalyses, supplementedCount);
+            return new(referenceRawJson, referencePath, rawAnalyses, supplementedCount, concatTotalFrames);
         }
 
         private static string FormatAnalysisFailureMessage(
@@ -198,7 +205,8 @@ namespace OneColumnEncoder.ConcatManagement
         string ReferenceRawJson,
         string ReferencePath,
         IReadOnlyList<ConcatSourceRawAnalysis> RawAnalyses,
-        int SupplementedCount);
+        int SupplementedCount,
+        long ConcatTotalFrames);
 
     public sealed record ConcatSourceRawAnalysis(
         string FilePath,

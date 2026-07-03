@@ -276,7 +276,7 @@ namespace OneColumnEncoder.ViewModels
             _request = request;
             _command = command;
             _isSample = isSample;
-            _totalFrames = EncodingPipeline.GetSourceTotalFrames(_request.SourceFfprobeJson);
+            _totalFrames = EncodingPipeline.GetSourceTotalFrames(_request.SourceFfprobeJson, _request.ConcatTotalFrames);
             _enableMux = CanMux && !string.Equals(_request.EncoderExeName, "x264.exe", StringComparison.OrdinalIgnoreCase);
 
             RefreshLanguageState();
@@ -703,7 +703,7 @@ namespace OneColumnEncoder.ViewModels
 
                 _request = request;
                 _command = command;
-                _totalFrames = EncodingPipeline.GetSourceTotalFrames(request.SourceFfprobeJson);
+                _totalFrames = EncodingPipeline.GetSourceTotalFrames(request.SourceFfprobeJson, request.ConcatTotalFrames);
                 OnPropertyChanged(nameof(OpusAudioCommandHint));
                 EnableMux = command.MuxCommand != null
                     && !string.Equals(request.EncoderExeName, "x264.exe", StringComparison.OrdinalIgnoreCase);

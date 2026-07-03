@@ -26,7 +26,8 @@ public record EncodingPipelineRequest(
     string? SvfiTaskId = null,
     string? FfmpegFilterArgs = null,
     bool? IsConcatMode = null,
-    string? ConcatFileListPath = null);
+    string? ConcatFileListPath = null,
+    long? ConcatTotalFrames = null);
 
 // For clip sampler
 public record EncodingClipRequest(
@@ -450,8 +451,10 @@ public static partial class EncodingPipeline
         return string.Join(" ", result);
     }
 
-    public static long? GetSourceTotalFrames(string? sourceFfprobeJson)
+    public static long? GetSourceTotalFrames(string? sourceFfprobeJson, long? concatTotalFrames = null)
     {
+        if (concatTotalFrames > 0) return concatTotalFrames.Value;
+
         if (string.IsNullOrWhiteSpace(sourceFfprobeJson)) return null;
 
         try

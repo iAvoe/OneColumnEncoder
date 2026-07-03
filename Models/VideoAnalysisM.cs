@@ -6,6 +6,7 @@ namespace OneColumnEncoder.Models
         public string FfprobePath { get; set; } = string.Empty;
         public string RawJson { get; set; } = string.Empty;
         public string QueueRawJson { get; set; } = string.Empty;
+        public long ConcatTotalFrames { get; set; }
 
         public void Clear()
         {
@@ -13,6 +14,7 @@ namespace OneColumnEncoder.Models
             FfprobePath = string.Empty;
             RawJson = string.Empty;
             QueueRawJson = string.Empty;
+            ConcatTotalFrames = 0;
         }
     }
 }

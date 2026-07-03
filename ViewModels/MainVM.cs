@@ -2231,7 +2231,8 @@ namespace OneColumnEncoder.ViewModels
                 ParallelismConf: parallelismConf,
                 FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs,
                 IsConcatMode: true,
-                ConcatFileListPath: _videoSourceConcat.RegenerateFileList());
+                ConcatFileListPath: _videoSourceConcat.RegenerateFileList(),
+                ConcatTotalFrames: _srcVideoAnalysis.ConcatTotalFrames);
         }
 
         private Dictionary<string, string> LoadQueueFfprobeJsonByPath()

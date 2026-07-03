@@ -85,9 +85,11 @@ After a successful import:
 |-------|-------------------|
 | Single | Analyze one source with ffprobe, supplement frame count, update `SrcValidationCard`. |
 | Queue | Analyze all queue files, optionally filter by first-stream or weighted vote, write accepted/excluded JSON. Individual failures can be skipped. |
-| Concat | Analyze all concat files. Any ffprobe failure or key video-parameter mismatch rejects the whole batch. No partial acceptance. |
+| Concat | Analyze all concat files. Any ffprobe failure or key video-parameter mismatch rejects the whole batch. No partial acceptance. Concat additionally sums every fragment's frame count into a **concat total frame count**. |
 
 Concat compares each file to the first file using checklist signature plus width, height, pixel format, codec, and frame-rate strings. The first file's raw ffprobe JSON becomes `_srcVideoAnalysis.RawJson`, so encoder config generation and FilterScribe use one representative source analysis.
+
+The summed frame count (computed in `ConcatCompatibilityAnalyzer.AnalyzeAsync()`) is stored in `VideoAnalysisM.ConcatTotalFrames` and later forwarded into `EncodingPipelineRequest.ConcatTotalFrames`. This value takes priority over the first fragment's individual frame count in `EncodingPipeline.GetSourceTotalFrames()` and is used by `EncodingMonitorVM` (progress bar) and `QueueJobItemVM` (frame count label).
 
 ## 6. Script Generation and FilterScribe
 
@@ -122,7 +124,8 @@ Concat requests set:
 
 ```csharp
 IsConcatMode: true,
-ConcatFileListPath: _videoSourceConcat.RegenerateFileList()
+ConcatFileListPath: _videoSourceConcat.RegenerateFileList(),
+ConcatTotalFrames: _srcVideoAnalysis.ConcatTotalFrames   // sum of all fragment frame counts
 ```
 
 For `ffmpeg.exe`, `EncodingPipeline.BuildUpstreamArgs()` uses:
