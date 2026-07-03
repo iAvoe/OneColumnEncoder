@@ -41,6 +41,7 @@ namespace OneColumnEncoder.ConcatManagement
 
                     using JsonDocument rawDocument = JsonDocument.Parse(rawJson);
                     JsonElement rawElement = rawDocument.RootElement.Clone();
+                    ValidateConstantFrameRate(rawElement);
                     ConcatSourceSignature signature = ConcatSourceSignature.From(probeCard.GetSignature(), rawElement)
                         ?? throw new InvalidOperationException(UILangProviderM.Current["SrcScribe.ColorSpace.NoVideoStream"]);
 
@@ -90,6 +91,13 @@ namespace OneColumnEncoder.ConcatManagement
 
         private static string FormatAllItemsFailedMessage(int count) =>
             string.Format(Lang.AllQueueItemsFailed, count);
+
+        private static void ValidateConstantFrameRate(JsonElement rawElement)
+        {
+            if (!TryGetFirstVideoStream(rawElement, out JsonElement stream)) return;
+            if (FrameRate.IsVariableFrameRate(stream) == true)
+                throw new InvalidOperationException(UILangProviderM.Current["SourceConcat.VariableFrameRate"]);
+        }
 
         private sealed record ConcatSourceSignature(
             SourceCheckSignature CheckSignature,

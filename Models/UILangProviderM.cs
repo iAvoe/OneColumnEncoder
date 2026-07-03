@@ -144,6 +144,7 @@ public class UILangProviderM
             ["SourceConcat.ExtensionMismatch"] = "Concat import requires all files to share the same extension.\n\nExpected: {0}\nMismatched files:\n{1}",
             ["SourceConcat.Analyzed"] = "Concat source analysis completed. {0} file(s) are compatible.",
             ["SourceConcat.IncompatibleVideo"] = "Concat source #{0} differs from the first video source.\nExpected: {1}\nActual: {2}",
+            ["SourceConcat.VariableFrameRate"] = "Concat mode does not support variable frame rate (VFR) sources. Convert this file to constant frame rate (CFR) before concatenation.",
 
             // Dialogs
             ["Dialog.SelectTitle"] = "Select {0}",
@@ -507,6 +508,7 @@ public class UILangProviderM
             ["SourceConcat.ExtensionMismatch"] = "拼接导入要求所有文件后缀名一致。\n\n期望：{0}\n不匹配文件：\n{1}",
             ["SourceConcat.Analyzed"] = "拼接视频源分析已完成，{0} 个文件兼容。",
             ["SourceConcat.IncompatibleVideo"] = "第 {0} 个拼接视频源与第一个视频源参数不一致。\n期望：{1}\n实际：{2}",
+            ["SourceConcat.VariableFrameRate"] = "Concat 模式不支持可变帧率（VFR）视频源。请先将此文件转换为恒定帧率（CFR）后再拼接。",
 
             ["Dialog.SelectTitle"] = "选择 {0}",
             ["Dialog.ReplaceTitle"] = "替换 {0}",
@@ -852,6 +854,7 @@ public class UILangProviderM
             ["SourceConcat.ExtensionMismatch"] = "拼接導入要求所有檔案副檔名一致。\n\n期望：{0}\n不匹配檔案：\n{1}",
             ["SourceConcat.Analyzed"] = "拼接影片源分析已完成，{0} 個檔案相容。",
             ["SourceConcat.IncompatibleVideo"] = "第 {0} 個拼接影片源與第一個影片源參數不一致。\n期望：{1}\n實際：{2}",
+            ["SourceConcat.VariableFrameRate"] = "Concat 模式不支援可變幀率（VFR）影片源。請先將此檔案轉換為恆定幀率（CFR）後再拼接。",
 
             ["Dialog.SelectTitle"] = "選擇 {0}",
             ["Dialog.ReplaceTitle"] = "替換 {0}",
@@ -1200,6 +1203,7 @@ public class UILangProviderM
         ["SourceConcat.ExtensionMismatch"] = "L'import concat exige que tous les fichiers aient la même extension.\n\nAttendue : {0}\nFichiers incompatibles :\n{1}",
         ["SourceConcat.Analyzed"] = "Analyse concat terminée. {0} fichier(s) compatibles.",
         ["SourceConcat.IncompatibleVideo"] = "La source concat #{0} diffère de la première source vidéo.\nAttendu : {1}\nActuel : {2}",
+        ["SourceConcat.VariableFrameRate"] = "Le mode concat ne prend pas en charge les sources à cadence variable (VFR). Convertissez ce fichier en cadence constante (CFR) avant la concaténation.",
         ["Dialog.SelectTitle"] = "Choisir {0}",
         ["Dialog.ReplaceTitle"] = "Remplacer {0}",
         ["Dialog.Filter.All"] = "Tous les fichiers (*.*)|*.*",
@@ -1509,6 +1513,7 @@ public class UILangProviderM
         ["SourceConcat.ExtensionMismatch"] = "La importación concat requiere que todos los archivos tengan la misma extensión.\n\nEsperada: {0}\nArchivos no coincidentes:\n{1}",
         ["SourceConcat.Analyzed"] = "Análisis concat completado. {0} archivo(s) compatibles.",
         ["SourceConcat.IncompatibleVideo"] = "La fuente concat #{0} difiere de la primera fuente de vídeo.\nEsperado: {1}\nActual: {2}",
+        ["SourceConcat.VariableFrameRate"] = "El modo concat no admite fuentes con velocidad de fotogramas variable (VFR). Convierte este archivo a velocidad constante (CFR) antes de concatenar.",
         ["Dialog.SelectTitle"] = "Elegir {0}",
         ["Dialog.ReplaceTitle"] = "Reemplazar {0}",
         ["Dialog.Filter.All"] = "Todos los archivos (*.*)|*.*",
@@ -1810,6 +1815,7 @@ public class UILangProviderM
         ["SourceConcat.ExtensionMismatch"] = "連結インポートでは、すべてのファイル拡張子が同一である必要があります。\n\n想定: {0}\n不一致ファイル:\n{1}",
         ["SourceConcat.Analyzed"] = "連結ソース解析が完了しました。{0} 個のファイルは互換です。",
         ["SourceConcat.IncompatibleVideo"] = "連結ソース #{0} は最初の動画ソースとパラメータが異なります。\n想定: {1}\n実際: {2}",
+        ["SourceConcat.VariableFrameRate"] = "連結モードは可変フレームレート (VFR) のソースに対応していません。連結前にこのファイルを固定フレームレート (CFR) に変換してください。",
         ["Dialog.SelectTitle"] = "{0} を選択",
         ["Dialog.ReplaceTitle"] = "{0} を置換",
         ["Dialog.Filter.All"] = "すべてのファイル (*.*)|*.*",
@@ -2119,6 +2125,7 @@ public class UILangProviderM
         ["SourceConcat.ExtensionMismatch"] = "Для импорта конкатенации все файлы должны иметь одинаковое расширение.\n\nОжидается: {0}\nНесовпадающие файлы:\n{1}",
         ["SourceConcat.Analyzed"] = "Анализ конкатенации завершён. Совместимых файлов: {0}.",
         ["SourceConcat.IncompatibleVideo"] = "Источник конкатенации #{0} отличается от первого видеоисточника.\nОжидается: {1}\nФактически: {2}",
+        ["SourceConcat.VariableFrameRate"] = "Режим concat не поддерживает источники с переменной частотой кадров (VFR). Перед конкатенацией преобразуйте этот файл в постоянную частоту кадров (CFR).",
         ["Dialog.SelectTitle"] = "Выбрать {0}",
         ["Dialog.ReplaceTitle"] = "Заменить {0}",
         ["Dialog.Filter.All"] = "Все файлы (*.*)|*.*",

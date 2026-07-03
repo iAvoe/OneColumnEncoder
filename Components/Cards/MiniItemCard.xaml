@@ -120,11 +120,6 @@
                     <Setter Property="BorderBrush"
                             Value="AliceBlue" />
                 </Trigger>
-                <Trigger Property="IsEnabled"
-                         Value="False">
-                    <Setter Property="Foreground"
-                            Value="{StaticResource GlobalSecondary}" />
-                </Trigger>
                 <Trigger Property="IsFocused"
                          Value="True">
                     <Setter Property="Foreground"
@@ -139,6 +134,8 @@
                          Value="False">
                     <Setter Property="Foreground"
                             Value="{StaticResource GlobalSecondary}" />
+                    <Setter Property="Cursor"
+                            Value="Arrow" />
                 </Trigger>
             </Style.Triggers>
         </Style>
