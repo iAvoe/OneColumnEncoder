@@ -14,6 +14,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
             ["ListItemPrefix"] = "- {0}",
             ["AndMoreLabel"] = "...and {0} more.",
             ["TotalFramesFormat"] = "{0}: {1}",
+            ["ConcatTotalFramesLabel"] = "Total Frames (Concat source total)",
         },
         ["zh-cn"] = new()
         {
@@ -25,6 +26,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
             ["ListItemPrefix"] = "- {0}",
             ["AndMoreLabel"] = "……以及另外 {0} 项。",
             ["TotalFramesFormat"] = "{0}：{1}",
+            ["ConcatTotalFramesLabel"] = "总帧数（Concat 各源总和）",
         },
         ["zh-tw"] = new()
         {
@@ -36,6 +38,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
             ["ListItemPrefix"] = "- {0}",
             ["AndMoreLabel"] = "……以及另外 {0} 項。",
             ["TotalFramesFormat"] = "{0}：{1}",
+            ["ConcatTotalFramesLabel"] = "總幀數（Concat 各源總和）",
         },
         ["fr"] = new()
         {
@@ -47,6 +50,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
             ["ListItemPrefix"] = "- {0}",
             ["AndMoreLabel"] = "...et {0} autre(s).",
             ["TotalFramesFormat"] = "{0} : {1}",
+            ["ConcatTotalFramesLabel"] = "Images totales (concaténation des sources)",
         },
         ["es"] = new()
         {
@@ -58,6 +62,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
             ["ListItemPrefix"] = "- {0}",
             ["AndMoreLabel"] = "...y {0} más.",
             ["TotalFramesFormat"] = "{0}: {1}",
+            ["ConcatTotalFramesLabel"] = "Fotogramas totales (suma de todas las fuentes concat.)",
         },
         ["ja"] = new()
         {
@@ -69,6 +74,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
             ["ListItemPrefix"] = "- {0}",
             ["AndMoreLabel"] = "...他 {0} 件。",
             ["TotalFramesFormat"] = "{0}: {1}",
+            ["ConcatTotalFramesLabel"] = "総フレーム数（Concat 各ソース合計）",
         },
         ["ru"] = new()
         {
@@ -80,6 +86,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
             ["ListItemPrefix"] = "- {0}",
             ["AndMoreLabel"] = "...и ещё {0}.",
             ["TotalFramesFormat"] = "{0}: {1}",
+            ["ConcatTotalFramesLabel"] = "Кадры всего (сумма по всем источникам concat)",
         },
     };
 
@@ -91,6 +98,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
     public string ListItemPrefix { get; }
     public string AndMoreLabel { get; }
     public string TotalFramesFormat { get; }
+    public string ConcatTotalFramesLabel { get; }
     public string LanguageCode { get; }
     private readonly Dictionary<string, string> _d;
 
@@ -108,5 +116,6 @@ public class AnalyzeSrcVideoCmdLangProviderM
         ListItemPrefix = _d["ListItemPrefix"];
         AndMoreLabel = _d["AndMoreLabel"];
         TotalFramesFormat = _d["TotalFramesFormat"];
+        ConcatTotalFramesLabel = _d["ConcatTotalFramesLabel"];
     }
 }

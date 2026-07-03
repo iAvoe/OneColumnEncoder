@@ -48,6 +48,18 @@ namespace OneColumnEncoder.Commands
         private readonly Func<string[]>? _getConcatFilePaths = getConcatFilePaths;
 
         private static AnalyzeSrcVideoCmdLangProviderM Lang => new(UILangProviderM.Current.LanguageCode);
+        private static readonly JsonSerializerOptions CachedJsonOptions = CreateJsonSerializerOptions();
+
+        private static JsonSerializerOptions CreateJsonSerializerOptions()
+        {
+            JsonSerializerOptions options = new()
+            {
+                WriteIndented = true,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+            };
+            options.Converters.Add(new JsonStringEnumConverter());
+            return options;
+        }
 
         public override bool CanExecute(object? parameter) =>
             !string.IsNullOrWhiteSpace(_getFfprobePath()) &&
@@ -137,13 +149,6 @@ namespace OneColumnEncoder.Commands
                 concatFilePaths,
                 concatCard.IsSvtav1SelectedFunc);
 
-            JsonSerializerOptions jsonOptions = new()
-            {
-                WriteIndented = true,
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            };
-            jsonOptions.Converters.Add(new JsonStringEnumConverter());
-
             _analysis.FfprobePath = ffprobePath;
             _analysis.SourcePath = result.ReferencePath;
             _analysis.RawJson = result.ReferenceRawJson;
@@ -151,7 +156,7 @@ namespace OneColumnEncoder.Commands
             _analysis.QueueRawJson = JsonSerializer.Serialize(
                 new QueueRawAnalysisData([.. result.RawAnalyses.Select(entry =>
                     new QueueSourceRawAnalysis(entry.FilePath, entry.DisplayName, entry.FfprobeJson))]),
-                jsonOptions);
+                CachedJsonOptions);
             concatCard.ApplyFfprobeAnalysisJson(result.ReferenceRawJson);
             concatCard.ApplyConcatAnalysis(concatFilePaths, allValid: true);
 
@@ -168,7 +173,7 @@ namespace OneColumnEncoder.Commands
                     $"Concat {totalFramesLabel}",
                     string.Format(
                         Lang.TotalFramesFormat,
-                        $"{totalFramesLabel}（Concat 各源总和）",
+                        Lang.ConcatTotalFramesLabel,
                         result.ConcatTotalFrames)).Execute(null);
             }
         }
@@ -291,22 +296,16 @@ namespace OneColumnEncoder.Commands
                 ? Path.Combine(directory, $"source_queue_excluded_{timestamp}.json")
                 : null;
 
-            JsonSerializerOptions jsonOptions = new()
-            {
-                WriteIndented = true,
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            };
-            jsonOptions.Converters.Add(new JsonStringEnumConverter());
             UTF8Encoding utf8NoBom = new(false);
-            File.WriteAllText(queueJsonPath, JsonSerializer.Serialize(new QueueSourceData(referencePath, accepted), jsonOptions), utf8NoBom);
+            File.WriteAllText(queueJsonPath, JsonSerializer.Serialize(new QueueSourceData(referencePath, accepted), CachedJsonOptions), utf8NoBom);
             if (!string.IsNullOrWhiteSpace(excludedJsonPath))
-                File.WriteAllText(excludedJsonPath, JsonSerializer.Serialize(new QueueSourceData(referencePath, excluded), jsonOptions), utf8NoBom);
+                File.WriteAllText(excludedJsonPath, JsonSerializer.Serialize(new QueueSourceData(referencePath, excluded), CachedJsonOptions), utf8NoBom);
 
             // Step 6
             _analysis.FfprobePath = ffprobePath;
             _analysis.SourcePath = referencePath;
             _analysis.RawJson = referenceRawJson;
-            _analysis.QueueRawJson = JsonSerializer.Serialize(new QueueRawAnalysisData(rawAnalyses), jsonOptions);
+            _analysis.QueueRawJson = JsonSerializer.Serialize(new QueueRawAnalysisData(rawAnalyses), CachedJsonOptions);
             queueCard.ApplyQueueResult(accepted.Count, excluded.Count, queueJsonPath, excludedJsonPath ?? string.Empty);
             _onQueueAccepted?.Invoke([.. accepted.Select(entry => entry.FilePath)], queueJsonPath);
 
