@@ -108,11 +108,11 @@ namespace OneColumnEncoder.Commands
                 return;
             }
 
-            if (analysisResult is not null && analysisResult.Warnings.Count > 0)
+            if (analysisResult is not null && analysisResult.VariableFrameRateWarnings.Count > 0)
             {
                 string warningMessage = string.Join(
                     Environment.NewLine + Environment.NewLine,
-                    analysisResult.Warnings);
+                    analysisResult.VariableFrameRateWarnings);
                 new OpenWarnModalCmd(
                     _modalNavS,
                     UICaptionProviderM.SourceInspect.WarnTitle,

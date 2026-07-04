@@ -20,11 +20,11 @@ namespace OneColumnEncoder.ConcatManagement
             string? referenceRawJson = null;
             string? referencePath = null;
             ConcatSourceSignature? referenceSignature = null;
-            bool? referenceIsVariableFrameRate = null;
             List<ConcatSourceRawAnalysis> rawAnalyses = [];
             int supplementedCount = 0;
             long concatTotalFrames = 0;
             List<string> warnings = [];
+            List<string> variableFrameRateWarnings = [];
             bool hasResolutionMismatch = false;
             string? resolutionMismatchMessage = null;
 
@@ -49,7 +49,7 @@ namespace OneColumnEncoder.ConcatManagement
 
                     bool? isVariableFrameRate = IsVariableFrameRate(rawElement);
                     if (isVariableFrameRate == true)
-                        warnings.Add(FormatVariableFrameRateWarning(filePath));
+                        variableFrameRateWarnings.Add(FormatVariableFrameRateWarning(filePath));
 
                     ConcatSourceSignature signature = ConcatSourceSignature.From(probeCard.GetSignature(), rawElement)
                         ?? throw new InvalidOperationException(UILangProviderM.Current["SrcScribe.ColorSpace.NoVideoStream"]);
@@ -57,7 +57,6 @@ namespace OneColumnEncoder.ConcatManagement
                     if (referenceSignature == null)
                     {
                         referenceSignature = signature;
-                        referenceIsVariableFrameRate = isVariableFrameRate;
                         referenceRawJson = rawJson;
                         referencePath = filePath;
                     }
@@ -79,11 +78,10 @@ namespace OneColumnEncoder.ConcatManagement
                             referenceSignature.Display,
                             signature.Display));
                     }
-                    else if (referenceIsVariableFrameRate == false && isVariableFrameRate == false
-                             && !referenceSignature.MatchesFrameRate(signature))
+                    else if (!referenceSignature.MatchesFrameRate(signature))
                     {
                         warnings.Add(string.Format(
-                            UILangProviderM.Current["SourceConcat.IncompatibleVideo"],
+                            UILangProviderM.Current["SourceConcat.IncompatibleFrameRate"],
                             i + 1,
                             referenceSignature.Display,
                             signature.Display));
@@ -115,6 +113,7 @@ namespace OneColumnEncoder.ConcatManagement
                 supplementedCount,
                 concatTotalFrames,
                 warnings,
+                variableFrameRateWarnings,
                 hasResolutionMismatch,
                 resolutionMismatchMessage);
         }
@@ -145,7 +144,7 @@ namespace OneColumnEncoder.ConcatManagement
             string.Format(
                 "{0}: {1}",
                 Path.GetFileName(filePath),
-                UICaptionProviderM.SourceInspect.FramerateP1Text);
+                UILangProviderM.Current["SourceConcat.VariableFrameRate"]);
 
         private sealed record ConcatSourceSignature(
             SourceCheckSignature CheckSignature,
@@ -258,6 +257,7 @@ namespace OneColumnEncoder.ConcatManagement
         int SupplementedCount,
         long ConcatTotalFrames,
         IReadOnlyList<string> Warnings,
+        IReadOnlyList<string> VariableFrameRateWarnings,
         bool HasResolutionMismatch,
         string? ResolutionMismatchMessage);
 
