@@ -104,7 +104,7 @@ jobs:
           $body = "Commit# | 提交序号 / SHA`n"
           $body += "- https://github.com/iAvoe/OneColumnEncoder/commit/$($env:GITHUB_SHA)`n`n"
           $body += "> [!NOTE]`n"
-          $body += "> The newly introduced “auto pipe buffer size calculation” can boost high resolution encoding speed in theory, but verification could not validate it (and disabled by default due to this reason). Consider it as an Alpha-Beta feature.`n"
+          $body += "> The newly introduced automatic pipe buffer size calculation can boost high resolution encoding speed in theory, but verification could not validate it (and disabled by default due to this reason). Consider it as an Alpha-Beta feature.`n"
           $body += "> 新增的“自动计算管道缓冲区大小”理论上能够在高分辨率上提速，但测试时看不出有什么差距（也因此默认关闭），请将其视为 A 测/B 测功能`n`n"
           $body += "> [!CAUTION]`n"
           $body += "> Concat encoding (join a queue of imported video sources) is now implemented and validated, but it may need further UI/UX improvements to make sense. Consider it as an Alpha-Beta feature.`n"
