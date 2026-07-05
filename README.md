@@ -10,8 +10,27 @@ OneColumnEncoder 提供了相对硬核，同时简洁直观的 UI/UX 流程，�
 
 <p align="center"><img src="WireframeMockups/logo.png" alt="Logo" width="250"></p>
 
-This project supports has two language versions | 本项目支持两种语言：
+This project supports has two language versions | 本项目支持两种语言
+
+Detailed project description with screenshots and basic usages | 项目描述、截图和基本使用方法：
 
 - [README-EN.md](./Docs/README-EN.md)
 - [README-ZH-CN.md](./Docs/README-ZH-CN.md)
 - [README-ZH-TW.md](./Docs/README-ZH-TW.md)
+
+Detailed explanation of the concept and design of this project | 项目概念和设计详情：
+
+- [ConceptsAndFeatures-EN.md](./Docs/ConceptsAndFeatures-EN.md)
+- [ConceptsAndFeatures-ZH-CN.md](./Docs/ConceptsAndFeatures-ZH-CN.md)
+- [ConceptsAndFeatures-ZH-TW.md](./Docs/ConceptsAndFeatures-ZH-TW.md)
+
+Other related documents | 其他相关文档（仅英文）：
+
+- Button deisng and layout: [ButtonManagement.md](./Docs/ButtonManagement.md)
+- Concatenation mode summary: [ConcatModeSummary.md](./Docs/ConcatModeSummary.md)
+- Queue mode summary: [QueueModeSummary.md](./Docs/QueueModeSummary.md)
+- Checklist editing: [EditingChecklist.md](./Docs/EditingChecklist.md)
+- Encoding mode routing design: [EncodingModeRouting.md](./Docs/EncodingModeRouting.md)
+- Encoding progress detection and monitoring: [EncodingProgressDetection.md](./Docs/EncodingProgressDetection.md)
+- Image A/B preview design: [ImgABPvVMPreviewGeneration.md](./Docs/ImgABPvVMPreviewGeneration.md)
+- ItemCard element: [ItemCardManagement.md](./Docs/ItemCardManagement.md)
