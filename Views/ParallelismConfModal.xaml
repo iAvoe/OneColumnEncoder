@@ -10,7 +10,7 @@
         d:DataContext="{d:DesignInstance Type=vms:ParallelismConfVM}"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
-        Width="570"
+        Width="600"
         Height="750"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
@@ -24,79 +24,79 @@
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled">
             <StackPanel Margin="0 0 0 15">
-            <comps:HintPanel Text="{Binding Lang.IntroText}"
-                             Margin="5 0 5 0" />
-            
-            <comps:HintPanel Text="{Binding Lang.PriorityText}"
-                             Margin="5 10 5 0" />
+                <comps:HintPanel Text="{Binding Lang.IntroText}"
+                                 Margin="5 0 5 0" />
 
-            <TextBlock Text="{Binding Lang.CacheGroupTitle}"
-                       Style="{StaticResource H3}"
-                       Margin="0 15 0 0"
-                       Foreground="{StaticResource GlobalPrimary}" />
+                <comps:HintPanel Text="{Binding Lang.PriorityText}"
+                                 Margin="5 10 5 0" />
 
-            <TextBlock Text="{Binding CacheGroupHint}"
-                       TextWrapping="Wrap"
-                       FontSize="13"
-                       Margin="0 10 0 0"
-                       Foreground="{StaticResource GlobalPrimary}" />
+                <TextBlock Text="{Binding Lang.CacheGroupTitle}"
+                           Style="{StaticResource H3}"
+                           Margin="0 15 0 0"
+                           Foreground="{StaticResource GlobalPrimary}" />
 
-            <comps:HintPanel Text="{Binding Lang.NumaTopologyHintText}"
-                             Margin="5 5 5 0"
-                             HorizontalAlignment="Left"
-                             VerticalAlignment="Center" />
+                <TextBlock Text="{Binding CacheGroupHint}"
+                           TextWrapping="Wrap"
+                           FontSize="13"
+                           Margin="0 10 0 0"
+                           Foreground="{StaticResource GlobalPrimary}" />
 
-            <TextBlock Text="{Binding Lang.UpstreamNumaTitle}"
-                       Style="{StaticResource H3}"
-                       Margin="0 15 0 0"
-                       Foreground="{StaticResource GlobalPrimary}" />
+                <comps:HintPanel Text="{Binding Lang.NumaTopologyHintText}"
+                                 Margin="5 5 5 0"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center" />
 
-            <cards:CPUNodeCardGroup ItemsSource="{Binding UpstreamNodes}" />
+                <TextBlock Text="{Binding Lang.UpstreamNumaTitle}"
+                           Style="{StaticResource H3}"
+                           Margin="0 15 0 0"
+                           Foreground="{StaticResource GlobalPrimary}" />
 
-            <TextBlock Text="{Binding Lang.DownstreamNumaTitle}"
-                       Style="{StaticResource H3}"
-                       Margin="0 15 0 0"
-                       Foreground="{StaticResource GlobalPrimary}" />
+                <cards:CPUNodeCardGroup ItemsSource="{Binding UpstreamNodes}" />
 
-            <cards:CPUNodeCardGroup ItemsSource="{Binding DownstreamNodes}" />
+                <TextBlock Text="{Binding Lang.DownstreamNumaTitle}"
+                           Style="{StaticResource H3}"
+                           Margin="0 15 0 0"
+                           Foreground="{StaticResource GlobalPrimary}" />
 
-            <comps:IntegerSlider Margin="5 5 5 0"
-                                 Label="{Binding EncoderThreadCountText}"
-                                Minimum="1"
-                                Maximum="{Binding MaxThreadCount}"
-                                Value="{Binding EncoderThreadCount, Mode=TwoWay}"
-                                TickLabels="{Binding EncoderThreadTickLabels}"
-                                TickCount="{Binding EncoderThreadTickCount}" />
+                <cards:CPUNodeCardGroup ItemsSource="{Binding DownstreamNodes}" />
 
-            <comps:HintPanel Text="{Binding Lang.NumaGuidanceText}"
-                             Margin="5 2.5 5 0"
-                             HorizontalAlignment="Left"
-                             VerticalAlignment="Center" />
+                <comps:IntegerSlider Margin="5 5 5 0"
+                                     Label="{Binding EncoderThreadCountText}"
+                                     Minimum="1"
+                                     Maximum="{Binding MaxThreadCount}"
+                                     Value="{Binding EncoderThreadCount, Mode=TwoWay}"
+                                     TickLabels="{Binding EncoderThreadTickLabels}"
+                                     TickCount="{Binding EncoderThreadTickCount}" />
 
-            <comps:AppConfContainer Header="{Binding Lang.ThreadStrategyTitle}"
-                                    Margin="0 15 0 0">
-                <comps:AppConfItem Text="{Binding Lang.PreferUpstreamPhysCoresText}">
-                    <CheckBox IsChecked="{Binding PreferUpstreamPhysicalCores, Mode=TwoWay}" />
-                </comps:AppConfItem>
-                <comps:AppConfItem Text="{Binding Lang.PreferDownstreamPhysCoresText}">
-                    <CheckBox IsChecked="{Binding PreferPhysicalCores, Mode=TwoWay}" />
-                </comps:AppConfItem>
-            </comps:AppConfContainer>
+                <comps:HintPanel Text="{Binding Lang.NumaGuidanceText}"
+                                 Margin="5 2.5 5 0"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center" />
+
+                <comps:AppConfContainer Header="{Binding Lang.ThreadStrategyTitle}"
+                                        Margin="0 15 0 0">
+                    <comps:AppConfItem Text="{Binding Lang.PreferUpstreamPhysCoresText}">
+                        <CheckBox IsChecked="{Binding PreferUpstreamPhysicalCores, Mode=TwoWay}" />
+                    </comps:AppConfItem>
+                    <comps:AppConfItem Text="{Binding Lang.PreferDownstreamPhysCoresText}">
+                        <CheckBox IsChecked="{Binding PreferPhysicalCores, Mode=TwoWay}" />
+                    </comps:AppConfItem>
+                </comps:AppConfContainer>
 
                 <comps:AppConfContainer Header="{Binding PipeBufferStrategyTitle}"
                                         Margin="0 10 0 0">
-                <comps:AppConfItem Text="{Binding UseLargePipeBufferText}">
-                    <CheckBox IsChecked="{Binding UseLargePipeBuffer, Mode=TwoWay}" />
+                <comps:AppConfItem Text="{Binding PipeBufferStrategyText}">
+                    <CheckBox IsChecked="{Binding OptimizePipeBufferSize, Mode=TwoWay}" />
                 </comps:AppConfItem>
-                <comps:HintPanel Text="{Binding LargePipeBufferHintText}"
-                                 Margin="5 0" />
-            </comps:AppConfContainer>
+                    <comps:HintPanel Text="{Binding PipeBufferHintText}"
+                                     Margin="5 0" />
+                </comps:AppConfContainer>
 
                 <comps:AppConfContainer Header="{Binding Lang.MemoryStrategyTitle}"
                                         Margin="0 15 0 0">
-                <comps:HintPanel Text="{Binding LargePagesUnavailableHintText}"
-                                 Margin="5 0" />
-            </comps:AppConfContainer>
+                    <comps:HintPanel Text="{Binding LargePagesUnavailableHintText}"
+                                     Margin="5 0" />
+                </comps:AppConfContainer>
             </StackPanel>
         </ScrollViewer>
 

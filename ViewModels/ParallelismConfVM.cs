@@ -72,11 +72,11 @@ namespace OneColumnEncoder.ViewModels
             EncoderThreadCount = ClampThreadCount(EncoderThreadCount, MaxThreadCount);
         }
 
-        private bool _useLargePipeBuffer;
-        public bool UseLargePipeBuffer
+        private bool _optimizePipeBufferSize;
+        public bool OptimizePipeBufferSize
         {
-            get => _useLargePipeBuffer;
-            set => SetProperty(ref _useLargePipeBuffer, value);
+            get => _optimizePipeBufferSize;
+            set => SetProperty(ref _optimizePipeBufferSize, value);
         }
 
         public static string WindowTitle => ParallelismConfLangProviderM.WindowTitle;
@@ -91,8 +91,8 @@ namespace OneColumnEncoder.ViewModels
         public string PreferUpstreamPhysCoresText => Lang.PreferUpstreamPhysCoresText;
         public string PreferDownstreamPhysCoresText => Lang.PreferDownstreamPhysCoresText;
         public string PipeBufferStrategyTitle => Lang.PipeBufferStrategyTitle;
-        public string UseLargePipeBufferText => Lang.UseLargePipeBufferText;
-        public string LargePipeBufferHintText => Lang.LargePipeBufferHintText;
+        public string PipeBufferStrategyText => Lang.PipeBufferStrategyText;
+        public string PipeBufferHintText => Lang.PipeBufferHintText;
         public string MemoryStrategyTitle => Lang.MemoryStrategyTitle;
         public string LargePagesUnavailableHintText => Lang.LargePagesUnavailableHintText;
         public string EncoderThreadCountText => Lang.EncoderThreadCountText;
@@ -183,7 +183,7 @@ namespace OneColumnEncoder.ViewModels
             _model.PreferUpstreamPhysicalCores = PreferUpstreamPhysicalCores;
             _model.PreferPhysicalCores = PreferPhysicalCores;
             _model.EncoderThreadCount = EncoderThreadCount;
-            _model.UseLargePipeBuffer = UseLargePipeBuffer;
+            _model.UseLargePipeBuffer = OptimizePipeBufferSize;
             _model.Save();
         }
 
@@ -195,7 +195,7 @@ namespace OneColumnEncoder.ViewModels
             SelectById(DownstreamNodes, _model.DownstreamNodeId);
             UpdateMaxThreadCount();
             EncoderThreadCount = _model.EncoderThreadCount;
-            UseLargePipeBuffer = _model.UseLargePipeBuffer;
+            OptimizePipeBufferSize = _model.UseLargePipeBuffer;
         }
 
         private void UpdateMaxThreadCount()
@@ -311,8 +311,8 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(PreferUpstreamPhysCoresText));
             OnPropertyChanged(nameof(PreferDownstreamPhysCoresText));
             OnPropertyChanged(nameof(PipeBufferStrategyTitle));
-            OnPropertyChanged(nameof(UseLargePipeBufferText));
-            OnPropertyChanged(nameof(LargePipeBufferHintText));
+            OnPropertyChanged(nameof(PipeBufferStrategyText));
+            OnPropertyChanged(nameof(PipeBufferHintText));
             OnPropertyChanged(nameof(MemoryStrategyTitle));
             OnPropertyChanged(nameof(LargePagesUnavailableHintText));
             OnPropertyChanged(nameof(EncoderThreadCountText));

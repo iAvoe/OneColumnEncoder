@@ -1,5 +1,7 @@
 using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
+using OneColumnEncoder.Converters;
+using OneColumnEncoder.Json;
 using OneColumnEncoder.Pipeline;
 using OneColumnEncoder.CPU;
 using OneColumnEncoder.Models;
@@ -581,9 +583,9 @@ namespace OneColumnEncoder.ViewModels
                     Stream? encoderStdin = null;
                     try
                     {
-                        int bufferSize = _request.ParallelismConf?.UseLargePipeBuffer == true
-                            ? 1024 * 1024
-                            : 81920;
+                        int bufferSize = PipeBufferSizeConverter.CalculatePipeBufferSizeKb(
+                            _request.ParallelismConf?.UseLargePipeBuffer == true,
+                            _request.SourceFfprobeJson) * 1024;
                         byte[] buffer = new byte[bufferSize];
                         Stream upstreamStdout = upstream.StandardOutput.BaseStream;
                         encoderStdin = encoder.StandardInput.BaseStream;
@@ -859,6 +861,9 @@ namespace OneColumnEncoder.ViewModels
                 nodeId,
                 physicalOnly,
                 maxCpuSets,
+                PipeBufferSizeConverter.CalculatePipeBufferSizeKb(
+                    _request.ParallelismConf?.UseLargePipeBuffer == true,
+                    _request.SourceFfprobeJson),
                 _cpuSetsLang,
                 out string message);
             EnqueueProcessLine(logKind, $"Parallelism: {(success ? message : _cpuSetsLang.SkippedPrefix + message)}");

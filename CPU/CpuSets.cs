@@ -40,6 +40,7 @@ public static partial class CpuSets
         int nodeId,
         bool physicalOnly,
         int? maxCpuSets,
+        int pipeBufferSizeKb,
         CpuSetsLangProviderM lang,
         out string message)
     {
@@ -68,7 +69,7 @@ public static partial class CpuSets
             }
 
             int updatedThreadCount = ApplyCurrentThreadCpuSets(process, cpuSetIds);
-            message = string.Format(lang.BoundSuccess, process.Id, nodeId, cpuSetIds.Length, updatedThreadCount);
+            message = string.Format(lang.BoundSuccess, process.Id, nodeId, cpuSetIds.Length, updatedThreadCount, pipeBufferSizeKb);
             return true;
         }
         catch (Exception ex) when (ex is EntryPointNotFoundException or DllNotFoundException or InvalidOperationException or System.ComponentModel.Win32Exception)

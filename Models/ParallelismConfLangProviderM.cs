@@ -18,8 +18,8 @@ public class ParallelismConfLangProviderM
             ["PreferUpstreamPhysCoresText"] = "Map upstream tool threads to phys. cores",
             ["PreferDownstreamPhysCoresText"] = "Map encoder threads to phys. cores",
             ["PipeBufferStrategyTitle"] = "Pipe Buffer",
-            ["UseLargePipeBufferText"] = "Use 1 MB stream buffer for 4K+ sources",
-            ["LargePipeBufferHintText"] = "May slightly reduce pipe I/O overhead for high-resolution sources. Uses about 1 MB more memory.",
+            ["PipeBufferStrategyText"] = "Optimize pipe buffer size to min(max(w×h×bpp(Y,U,V)÷10MB, 80KB), 16MB)",
+            ["PipeBufferHintText"] = "May reduce I/O request count, improving transfer rate",
             ["MemoryStrategyTitle"] = "Advanced RAM Allocation",
             ["LargePagesUnavailableHintText"] = "No tool provides large-page RAM allocation setting, therefore cannot boost high-res. encoding performance.",
             ["CancelButtonText"] = "Cancel",
@@ -44,8 +44,8 @@ public class ParallelismConfLangProviderM
             ["PreferUpstreamPhysCoresText"] = "限制上游程序线程到物理核心数",
             ["PreferDownstreamPhysCoresText"] = "限制下游程序线程到物理核心数",
             ["PipeBufferStrategyTitle"] = "管道缓冲区",
-            ["UseLargePipeBufferText"] = "为 4K 及以上视频使用 1 MB 流缓冲",
-            ["LargePipeBufferHintText"] = "可能略微降低高分辨率源的管道 I/O 开销，额外占用约 1 MB 内存。",
+            ["PipeBufferStrategyText"] = "优化管道缓冲区大小到 min(max(w×h×bpp(Y,U,V)÷10MB, 80KB), 16MB)",
+            ["PipeBufferHintText"] = "可能会减少请求次数，从而优化传输速率",
             ["MemoryStrategyTitle"] = "高级内存分配策略",
             ["LargePagesUnavailableHintText"] = "所有编码工具都不提供大内存页分配设置，因此无法提高高分辨率视频编码性能",
             ["CancelButtonText"] = "取消",
@@ -70,8 +70,8 @@ public class ParallelismConfLangProviderM
             ["PreferUpstreamPhysCoresText"] = "限制上遊程序執行緒到物理核心數",
             ["PreferDownstreamPhysCoresText"] = "限制下遊程序執行緒到物理核心數",
             ["PipeBufferStrategyTitle"] = "管道緩衝區",
-            ["UseLargePipeBufferText"] = "為 4K 及以上影片使用 1 MB 串流緩衝",
-            ["LargePipeBufferHintText"] = "可能略微降低高解析度來源的管道 I/O 開銷，額外占用約 1 MB 記憶體。",
+            ["PipeBufferStrategyText"] = "優化管道緩衝區大小到 min(max(w×h×bpp(Y,U,V)÷10MB, 80KB), 16MB)",
+            ["PipeBufferHintText"] = "可能會減少請求次數，從而優化傳輸速率",
             ["MemoryStrategyTitle"] = "高級記憶體分配策略",
             ["LargePagesUnavailableHintText"] = "所有編碼工具都不提供大記憶體頁分配設置，因此無法提高高解析度影片編碼性能",
             ["CancelButtonText"] = "取消",
@@ -96,8 +96,8 @@ public class ParallelismConfLangProviderM
             ["PreferUpstreamPhysCoresText"] = "Limiter les threads amont aux cœurs physiques",
             ["PreferDownstreamPhysCoresText"] = "Limiter les threads encodeur aux cœurs physiques",
             ["PipeBufferStrategyTitle"] = "Tampon du pipeline",
-            ["UseLargePipeBufferText"] = "Utiliser un tampon de 1 Mo pour les sources 4K+",
-            ["LargePipeBufferHintText"] = "Peut réduire légèrement les coûts E/S du pipeline pour les sources haute résolution. Utilise environ 1 Mo de mémoire en plus.",
+            ["PipeBufferStrategyText"] = "Optimiser la taille du tampon à min(max(w×h×bpp(Y,U,V)÷10Mo, 80Ko), 16Mo)",
+            ["PipeBufferHintText"] = "Peut réduire le nombre de requêtes E/S, améliorant le débit",
             ["MemoryStrategyTitle"] = "Allocation RAM avancée",
             ["LargePagesUnavailableHintText"] = "Aucun outil n'expose de réglage d'allocation RAM en grandes pages, donc impossible d'améliorer l'encodage haute résolution par ce moyen.",
             ["CancelButtonText"] = "Annuler",
@@ -122,8 +122,8 @@ public class ParallelismConfLangProviderM
             ["PreferUpstreamPhysCoresText"] = "Limitar hilos aguas arriba a núcleos físicos",
             ["PreferDownstreamPhysCoresText"] = "Limitar hilos codificador a núcleos físicos",
             ["PipeBufferStrategyTitle"] = "Búfer de tubería",
-            ["UseLargePipeBufferText"] = "Usar búfer de 1 MB para fuentes 4K+",
-            ["LargePipeBufferHintText"] = "Puede reducir ligeramente la sobrecarga de E/S de tubería en fuentes de alta resolución. Usa cerca de 1 MB más de memoria.",
+            ["PipeBufferStrategyText"] = "Optimizar búfer a min(max(w×h×bpp(Y,U,V)÷10MB, 80KB), 16MB)",
+            ["PipeBufferHintText"] = "Puede reducir las solicitudes de E/S, mejorando la tasa de transferencia",
             ["MemoryStrategyTitle"] = "Asignación avanzada de RAM",
             ["LargePagesUnavailableHintText"] = "Ninguna herramienta ofrece ajuste de asignación de RAM en páginas grandes, por lo tanto no se puede mejorar el rendimiento de codificación HD.",
             ["CancelButtonText"] = "Cancelar",
@@ -148,8 +148,8 @@ public class ParallelismConfLangProviderM
             ["PreferUpstreamPhysCoresText"] = "上流ツールのスレッドを物理コアに制限",
             ["PreferDownstreamPhysCoresText"] = "エンコーダのスレッドを物理コアに制限",
             ["PipeBufferStrategyTitle"] = "パイプバッファ",
-            ["UseLargePipeBufferText"] = "4K以上のソースに1 MBバッファを使用",
-            ["LargePipeBufferHintText"] = "高解像度ソースのパイプI/O負荷をわずかに減らす場合があります。約1 MBのメモリを追加で使用します。",
+            ["PipeBufferStrategyText"] = "パイプバッファサイズを min(max(w×h×bpp(Y,U,V)÷10MB, 80KB), 16MB) に最適化",
+            ["PipeBufferHintText"] = "I/O 要求数を減らし、転送速度を向上させる可能性があります",
             ["MemoryStrategyTitle"] = "高度な RAM 割り当て",
             ["LargePagesUnavailableHintText"] = "ラージページ RAM 割り当て設定を提供するツールがないため、この方法で高解像度エンコード性能を向上させることはできません。",
             ["CancelButtonText"] = "キャンセル",
@@ -163,19 +163,19 @@ public class ParallelismConfLangProviderM
         ["ru"] = new()
         {
             ["IntroText"] = "Эта программа игнорирует различные реализации параллелизма между инструментами и использует:\n· CPU Sets для предложения привязки потоков (разрешена временная миграция)\n· Пытается выделить RAM на NUMA-узле потоков кодирования",
-            ["PriorityText"] = "Эта программа не повышает приоритет задач и не объявляет кодирование чувствительным к задержке,\nпредотвращая зависание ОС из-за неотвечающих задач.",
+            ["PriorityText"] = "Эта программа не повышает приоритет задач и не объявляет кодирование чувствительным к задержке, предотвращая зависание ОС из-за неотвечающих задач.",
             ["CacheGroupTitle"] = "Группы L3-кэша (↑ переходы, ↓ попадания)",
             ["NumaTopologyHintText"] = "Если CPU содержит несколько NUMA-узлов, кодер занимает только 1 → можно выделить лишь часть ресурсов CPU.",
             ["UpstreamNumaTitle"] = "NUMA-привязка: апстрим",
             ["DownstreamNumaTitle"] = "NUMA-привязка: даунстрим (кодер)",
-            ["NumaGuidanceText"] = "Назначение кодера на другой узел может быть быстрее, если апстрим-инструмент использует медленные фильтры;\nв противном случае общий узел может быть быстрее — вычисления vs задержка.",
+            ["NumaGuidanceText"] = "Назначение кодера на другой узел может быть быстрее, если апстрим-инструмент использует медленные фильтры; в противном случае общий узел может быть быстрее — вычисления vs задержка.",
             ["ThreadStrategyTitle"] = "Планирование CPU",
             ["EncoderThreadCountText"] = "Потоки кодера",
             ["PreferUpstreamPhysCoresText"] = "Апстрим: физические ядра",
             ["PreferDownstreamPhysCoresText"] = "Кодер: физические ядра",
             ["PipeBufferStrategyTitle"] = "Буфер канала",
-            ["UseLargePipeBufferText"] = "Буфер 1 MB для 4K+",
-            ["LargePipeBufferHintText"] = "Чуть снижает I/O-накладные расходы для высоких разрешений. +1 MB RAM.",
+            ["PipeBufferStrategyText"] = "Оптимизировать буфер до min(max(w×h×bpp(Y,U,V)÷10MB, 80КБ), 16МБ)",
+            ["PipeBufferHintText"] = "Может уменьшить количество запросов ввода-вывода, улучшая скорость передачи",
             ["MemoryStrategyTitle"] = "RAM",
             ["LargePagesUnavailableHintText"] = "Ни один инструмент не предоставляет настройку выделения RAM большими страницами, поэтому невозможно повысить производительность HD-кодирования этим способом.",
             ["CancelButtonText"] = "Отмена",
@@ -200,8 +200,8 @@ public class ParallelismConfLangProviderM
     public string PreferUpstreamPhysCoresText { get; }
     public string PreferDownstreamPhysCoresText { get; }
     public string PipeBufferStrategyTitle { get; }
-    public string UseLargePipeBufferText { get; }
-    public string LargePipeBufferHintText { get; }
+    public string PipeBufferStrategyText { get; }
+    public string PipeBufferHintText { get; }
     public string MemoryStrategyTitle { get; }
     public string LargePagesUnavailableHintText { get; }
     public string CancelButtonText { get; }
@@ -227,8 +227,8 @@ public class ParallelismConfLangProviderM
         PreferUpstreamPhysCoresText = _d["PreferUpstreamPhysCoresText"];
         PreferDownstreamPhysCoresText = _d["PreferDownstreamPhysCoresText"];
         PipeBufferStrategyTitle = _d["PipeBufferStrategyTitle"];
-        UseLargePipeBufferText = _d["UseLargePipeBufferText"];
-        LargePipeBufferHintText = _d["LargePipeBufferHintText"];
+        PipeBufferStrategyText = _d["PipeBufferStrategyText"];
+        PipeBufferHintText = _d["PipeBufferHintText"];
         MemoryStrategyTitle = _d["MemoryStrategyTitle"];
         LargePagesUnavailableHintText = _d["LargePagesUnavailableHintText"];
         CancelButtonText = _d["CancelButtonText"];
