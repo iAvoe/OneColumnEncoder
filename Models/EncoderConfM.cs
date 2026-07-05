@@ -8,7 +8,7 @@ namespace OneColumnEncoder.Models
     public class EncoderConfM : SaveLoadBase<EncoderConfM>
     {
         private static readonly string ConfigFilePath =
-            Path.Combine(GetConfigDirectory(), "encodingconf.json");
+            Path.Combine(GetConfigDirectory(), "encodingconfig.json");
 
         protected override string FilePath => ConfigFilePath;
 

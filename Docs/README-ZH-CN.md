@@ -306,7 +306,7 @@
 |------|------|
 | `appconfig.json` | 应用设置（覆盖保护配置、语言选择） |
 | `appdata.json` | 工具路径/版本/大小、源视频路径、输出目录 |
-| `encodingconf.json` | 编码器参数（CRF/ABR、关键帧、预设、x264/x265/SVT-AV1 自定义参数） |
+| `encodingconfig.json` | 编码器参数（CRF/ABR、关键帧、预设、x264/x265/SVT-AV1 自定义参数） |
 | `parallelismconfig.json` | 并行设置（NUMA 节点 ID、CPU 偏好、线程数） |
 
 **持久化基类：**`Helpers\SaveLoadBaseH.cs` 的配置模型继承自 `SaveLoadBaseH<T>`，通过 `Save()` / `Load()` 提供 JSON 序列化/反序列化。

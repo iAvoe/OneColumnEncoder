@@ -297,7 +297,7 @@ All persistent configuration data is stored as **JSON files** under `{Applicatio
 |------|----------|
 | `appconfig.json` | App settings (overwrite config, language selection) |
 | `appdata.json` | Tool paths/versions/sizes, source video paths, output directory |
-| `encodingconf.json` | Encoder parameters (CRF/ABR, keyframe, presets, custom params for x264/x265/SVT-AV1) |
+| `encodingconfig.json` | Encoder parameters (CRF/ABR, keyframe, presets, custom params for x264/x265/SVT-AV1) |
 | `parallelismconfig.json` | Parallelism settings (NUMA node IDs, CPU preferences, thread count) |
 
 **Persistence base class:** `Helpers\SaveLoadBaseH.cs` — all configuration models inherit from `SaveLoadBaseH<T>` which provides JSON serialization/deserialization via `Save()` / `Load()`.
