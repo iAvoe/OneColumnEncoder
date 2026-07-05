@@ -1,6 +1,6 @@
 # Concat Mode Encoding
 
-This document explains the runtime flow for concat mode, from multi-file import to single-output encoding.
+> For a high-level overview of concat mode, see [Concat Mode](ConceptsAndFeatures-EN.md#concat-mode). This document covers runtime implementation details.
 
 ## 1. What Concat Mode Is
 

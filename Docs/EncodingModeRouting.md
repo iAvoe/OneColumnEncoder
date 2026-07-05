@@ -1,10 +1,6 @@
 # Encoding Mode Routing: Single, Queue, and Concat
 
-This document covers the three source routes used by OneColumnEncoder:
-
-- **Single Source**: one imported video or script source becomes one output.
-- **Queue Source**: many independent sources become many outputs.
-- **Concat Source**: many video fragments become one logical source and one output.
+> For a high-level overview of the three encoding modes, see [Encoding Modes](ConceptsAndFeatures-EN.md#encoding-modes). This document covers implementation details for each route.
 
 ## 1. Route Activation
 

@@ -1,6 +1,6 @@
 # Queue Mode Encoding
 
-This document explains the runtime flow for queue mode, from source import to batch execution.
+> For a high-level overview of queue mode, see [Queue Mode](ConceptsAndFeatures-EN.md#queue-mode). This document covers runtime implementation details.
 
 ## 1. What Queue Mode Is
 Queue mode is the `Video Src. Queue` card in `VideoSrcImportZone[1]`. `VideoSourceQueueState.IsActive` becomes true when that card is selected, and `MainVM.RefreshActiveSourceRoute()` switches the app to the queue-specific script zone and validation card.
