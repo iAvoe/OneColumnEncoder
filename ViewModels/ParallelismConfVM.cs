@@ -72,6 +72,13 @@ namespace OneColumnEncoder.ViewModels
             EncoderThreadCount = ClampThreadCount(EncoderThreadCount, MaxThreadCount);
         }
 
+        private bool _useLargePipeBuffer;
+        public bool UseLargePipeBuffer
+        {
+            get => _useLargePipeBuffer;
+            set => SetProperty(ref _useLargePipeBuffer, value);
+        }
+
         public static string WindowTitle => ParallelismConfLangProviderM.WindowTitle;
         public string IntroText => Lang.IntroText;
         public string PriorityText => Lang.PriorityText;
@@ -83,6 +90,9 @@ namespace OneColumnEncoder.ViewModels
         public string ThreadStrategyTitle => Lang.ThreadStrategyTitle;
         public string PreferUpstreamPhysCoresText => Lang.PreferUpstreamPhysCoresText;
         public string PreferDownstreamPhysCoresText => Lang.PreferDownstreamPhysCoresText;
+        public string PipeBufferStrategyTitle => Lang.PipeBufferStrategyTitle;
+        public string UseLargePipeBufferText => Lang.UseLargePipeBufferText;
+        public string LargePipeBufferHintText => Lang.LargePipeBufferHintText;
         public string MemoryStrategyTitle => Lang.MemoryStrategyTitle;
         public string LargePagesUnavailableHintText => Lang.LargePagesUnavailableHintText;
         public string EncoderThreadCountText => Lang.EncoderThreadCountText;
@@ -173,6 +183,7 @@ namespace OneColumnEncoder.ViewModels
             _model.PreferUpstreamPhysicalCores = PreferUpstreamPhysicalCores;
             _model.PreferPhysicalCores = PreferPhysicalCores;
             _model.EncoderThreadCount = EncoderThreadCount;
+            _model.UseLargePipeBuffer = UseLargePipeBuffer;
             _model.Save();
         }
 
@@ -184,6 +195,7 @@ namespace OneColumnEncoder.ViewModels
             SelectById(DownstreamNodes, _model.DownstreamNodeId);
             UpdateMaxThreadCount();
             EncoderThreadCount = _model.EncoderThreadCount;
+            UseLargePipeBuffer = _model.UseLargePipeBuffer;
         }
 
         private void UpdateMaxThreadCount()
@@ -298,6 +310,9 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(ThreadStrategyTitle));
             OnPropertyChanged(nameof(PreferUpstreamPhysCoresText));
             OnPropertyChanged(nameof(PreferDownstreamPhysCoresText));
+            OnPropertyChanged(nameof(PipeBufferStrategyTitle));
+            OnPropertyChanged(nameof(UseLargePipeBufferText));
+            OnPropertyChanged(nameof(LargePipeBufferHintText));
             OnPropertyChanged(nameof(MemoryStrategyTitle));
             OnPropertyChanged(nameof(LargePagesUnavailableHintText));
             OnPropertyChanged(nameof(EncoderThreadCountText));

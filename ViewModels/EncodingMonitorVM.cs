@@ -574,14 +574,17 @@ namespace OneColumnEncoder.ViewModels
                 if (upstream.HasExited) upstreamExited.TrySetResult();
                 if (encoder.HasExited) encoderExited.TrySetResult();
 
-                // Pipe upstream stdout -> encoder stdin (raw byte transfer, 80 KB buffer).
+                // Pipe upstream stdout -> encoder stdin (raw byte transfer).
                 // Closing encoder stdin signals EOF so the encoder can flush and finish.
                 Task pipeTask = Task.Run(async () =>
                 {
                     Stream? encoderStdin = null;
                     try
                     {
-                        byte[] buffer = new byte[81920];
+                        int bufferSize = _request.ParallelismConf?.UseLargePipeBuffer == true
+                            ? 1024 * 1024
+                            : 81920;
+                        byte[] buffer = new byte[bufferSize];
                         Stream upstreamStdout = upstream.StandardOutput.BaseStream;
                         encoderStdin = encoder.StandardInput.BaseStream;
                         _upstreamStdoutStream = upstreamStdout;

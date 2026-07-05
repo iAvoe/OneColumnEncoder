@@ -17,6 +17,9 @@ public class ParallelismConfLangProviderM
             ["EncoderThreadCountText"] = "Encoder threads",
             ["PreferUpstreamPhysCoresText"] = "Map upstream tool threads to phys. cores",
             ["PreferDownstreamPhysCoresText"] = "Map encoder threads to phys. cores",
+            ["PipeBufferStrategyTitle"] = "Pipe Buffer",
+            ["UseLargePipeBufferText"] = "Use 1 MB stream buffer for 4K+ sources",
+            ["LargePipeBufferHintText"] = "May slightly reduce pipe I/O overhead for high-resolution sources. Uses about 1 MB more memory.",
             ["MemoryStrategyTitle"] = "Advanced RAM Allocation",
             ["LargePagesUnavailableHintText"] = "No tool provides large-page RAM allocation setting, therefore cannot boost high-res. encoding performance.",
             ["CancelButtonText"] = "Cancel",
@@ -40,6 +43,9 @@ public class ParallelismConfLangProviderM
             ["EncoderThreadCountText"] = "编码器线程数",
             ["PreferUpstreamPhysCoresText"] = "限制上游程序线程到物理核心数",
             ["PreferDownstreamPhysCoresText"] = "限制下游程序线程到物理核心数",
+            ["PipeBufferStrategyTitle"] = "管道缓冲区",
+            ["UseLargePipeBufferText"] = "为 4K 及以上视频使用 1 MB 流缓冲",
+            ["LargePipeBufferHintText"] = "可能略微降低高分辨率源的管道 I/O 开销，额外占用约 1 MB 内存。",
             ["MemoryStrategyTitle"] = "高级内存分配策略",
             ["LargePagesUnavailableHintText"] = "所有编码工具都不提供大内存页分配设置，因此无法提高高分辨率视频编码性能",
             ["CancelButtonText"] = "取消",
@@ -63,6 +69,9 @@ public class ParallelismConfLangProviderM
             ["EncoderThreadCountText"] = "編碼器執行緒數",
             ["PreferUpstreamPhysCoresText"] = "限制上遊程序執行緒到物理核心數",
             ["PreferDownstreamPhysCoresText"] = "限制下遊程序執行緒到物理核心數",
+            ["PipeBufferStrategyTitle"] = "管道緩衝區",
+            ["UseLargePipeBufferText"] = "為 4K 及以上影片使用 1 MB 串流緩衝",
+            ["LargePipeBufferHintText"] = "可能略微降低高解析度來源的管道 I/O 開銷，額外占用約 1 MB 記憶體。",
             ["MemoryStrategyTitle"] = "高級記憶體分配策略",
             ["LargePagesUnavailableHintText"] = "所有編碼工具都不提供大記憶體頁分配設置，因此無法提高高解析度影片編碼性能",
             ["CancelButtonText"] = "取消",
@@ -86,6 +95,9 @@ public class ParallelismConfLangProviderM
             ["EncoderThreadCountText"] = "Threads encodeur",
             ["PreferUpstreamPhysCoresText"] = "Limiter les threads amont aux cœurs physiques",
             ["PreferDownstreamPhysCoresText"] = "Limiter les threads encodeur aux cœurs physiques",
+            ["PipeBufferStrategyTitle"] = "Tampon du pipeline",
+            ["UseLargePipeBufferText"] = "Utiliser un tampon de 1 Mo pour les sources 4K+",
+            ["LargePipeBufferHintText"] = "Peut réduire légèrement les coûts E/S du pipeline pour les sources haute résolution. Utilise environ 1 Mo de mémoire en plus.",
             ["MemoryStrategyTitle"] = "Allocation RAM avancée",
             ["LargePagesUnavailableHintText"] = "Aucun outil n'expose de réglage d'allocation RAM en grandes pages, donc impossible d'améliorer l'encodage haute résolution par ce moyen.",
             ["CancelButtonText"] = "Annuler",
@@ -109,6 +121,9 @@ public class ParallelismConfLangProviderM
             ["EncoderThreadCountText"] = "Hilos codificador",
             ["PreferUpstreamPhysCoresText"] = "Limitar hilos aguas arriba a núcleos físicos",
             ["PreferDownstreamPhysCoresText"] = "Limitar hilos codificador a núcleos físicos",
+            ["PipeBufferStrategyTitle"] = "Búfer de tubería",
+            ["UseLargePipeBufferText"] = "Usar búfer de 1 MB para fuentes 4K+",
+            ["LargePipeBufferHintText"] = "Puede reducir ligeramente la sobrecarga de E/S de tubería en fuentes de alta resolución. Usa cerca de 1 MB más de memoria.",
             ["MemoryStrategyTitle"] = "Asignación avanzada de RAM",
             ["LargePagesUnavailableHintText"] = "Ninguna herramienta ofrece ajuste de asignación de RAM en páginas grandes, por lo tanto no se puede mejorar el rendimiento de codificación HD.",
             ["CancelButtonText"] = "Cancelar",
@@ -132,6 +147,9 @@ public class ParallelismConfLangProviderM
             ["EncoderThreadCountText"] = "エンコーダスレッド数",
             ["PreferUpstreamPhysCoresText"] = "上流ツールのスレッドを物理コアに制限",
             ["PreferDownstreamPhysCoresText"] = "エンコーダのスレッドを物理コアに制限",
+            ["PipeBufferStrategyTitle"] = "パイプバッファ",
+            ["UseLargePipeBufferText"] = "4K以上のソースに1 MBバッファを使用",
+            ["LargePipeBufferHintText"] = "高解像度ソースのパイプI/O負荷をわずかに減らす場合があります。約1 MBのメモリを追加で使用します。",
             ["MemoryStrategyTitle"] = "高度な RAM 割り当て",
             ["LargePagesUnavailableHintText"] = "ラージページ RAM 割り当て設定を提供するツールがないため、この方法で高解像度エンコード性能を向上させることはできません。",
             ["CancelButtonText"] = "キャンセル",
@@ -155,6 +173,9 @@ public class ParallelismConfLangProviderM
             ["EncoderThreadCountText"] = "Потоков кодера",
             ["PreferUpstreamPhysCoresText"] = "Ограничить потоки апстрима физическими ядрами",
             ["PreferDownstreamPhysCoresText"] = "Ограничить потоки кодера физическими ядрами",
+            ["PipeBufferStrategyTitle"] = "Буфер канала",
+            ["UseLargePipeBufferText"] = "Использовать буфер 1 MB для источников 4K+",
+            ["LargePipeBufferHintText"] = "Может немного снизить накладные расходы ввода-вывода канала для источников высокого разрешения. Использует примерно на 1 MB больше памяти.",
             ["MemoryStrategyTitle"] = "Расширенное выделение RAM",
             ["LargePagesUnavailableHintText"] = "Ни один инструмент не предоставляет настройку выделения RAM большими страницами, поэтому невозможно повысить производительность HD-кодирования этим способом.",
             ["CancelButtonText"] = "Отмена",
@@ -178,6 +199,9 @@ public class ParallelismConfLangProviderM
     public string ThreadStrategyTitle { get; }
     public string PreferUpstreamPhysCoresText { get; }
     public string PreferDownstreamPhysCoresText { get; }
+    public string PipeBufferStrategyTitle { get; }
+    public string UseLargePipeBufferText { get; }
+    public string LargePipeBufferHintText { get; }
     public string MemoryStrategyTitle { get; }
     public string LargePagesUnavailableHintText { get; }
     public string CancelButtonText { get; }
@@ -202,6 +226,9 @@ public class ParallelismConfLangProviderM
         ThreadStrategyTitle = _d["ThreadStrategyTitle"];
         PreferUpstreamPhysCoresText = _d["PreferUpstreamPhysCoresText"];
         PreferDownstreamPhysCoresText = _d["PreferDownstreamPhysCoresText"];
+        PipeBufferStrategyTitle = _d["PipeBufferStrategyTitle"];
+        UseLargePipeBufferText = _d["UseLargePipeBufferText"];
+        LargePipeBufferHintText = _d["LargePipeBufferHintText"];
         MemoryStrategyTitle = _d["MemoryStrategyTitle"];
         LargePagesUnavailableHintText = _d["LargePagesUnavailableHintText"];
         CancelButtonText = _d["CancelButtonText"];

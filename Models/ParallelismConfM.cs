@@ -16,6 +16,7 @@ namespace OneColumnEncoder.Models
         public bool PreferUpstreamPhysicalCores { get; set; } = false;
         public bool PreferPhysicalCores { get; set; } = true;
         public int EncoderThreadCount { get; set; } = Environment.ProcessorCount;
+        public bool UseLargePipeBuffer { get; set; } = false;
 
         public static ParallelismConfM LoadEffective()
         {
@@ -37,7 +38,8 @@ namespace OneColumnEncoder.Models
                 EncoderThreadCount = CpuSets.ClampThreadCountForNode(
                     downstreamNodeId,
                     model.PreferPhysicalCores,
-                    model.EncoderThreadCount)
+                    model.EncoderThreadCount),
+                UseLargePipeBuffer = model.UseLargePipeBuffer
             };
         }
     }

@@ -83,6 +83,14 @@
                 </comps:AppConfItem>
             </comps:AppConfContainer>
 
+            <comps:AppConfContainer Header="{Binding PipeBufferStrategyTitle}">
+                <comps:AppConfItem Text="{Binding UseLargePipeBufferText}">
+                    <CheckBox IsChecked="{Binding UseLargePipeBuffer, Mode=TwoWay}" />
+                </comps:AppConfItem>
+                <comps:HintPanel Text="{Binding LargePipeBufferHintText}"
+                                 Margin="5 0" />
+            </comps:AppConfContainer>
+
             <comps:AppConfContainer Header="{Binding Lang.MemoryStrategyTitle}">
                 <comps:HintPanel Text="{Binding LargePagesUnavailableHintText}"
                                  Margin="5 0" />
