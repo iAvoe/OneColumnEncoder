@@ -349,7 +349,7 @@ namespace OneColumnEncoder.ViewModels
 
         public bool IsDurationFilterVisible => GetActiveSourceRoute() == SourceRouteKind.Queue;
 
-        public string[] DurationTickLabels => ["10s", "70s", "130s", "190s", "250s", "310s"];
+        public static string[] DurationTickLabels => ["10s", "70s", "130s", "190s", "250s", "310s"];
 
         private string _durationFilterStatusText = "";
         public string DurationFilterStatusText
@@ -1220,7 +1220,7 @@ namespace OneColumnEncoder.ViewModels
                     GetSelectedFfprobePath,
                     ConcatCheckCard.IsSvtav1SelectedFunc,
                     OnSourceConcatImported);
-                item.R2Command = new ClearToolItemCmd(item, () => OnSourceConcatCleared(item));
+                item.R2Command = new ClearToolItemCmd(item, OnSourceConcatCleared);
                 item.PropertyChanged += OnVideoSrcItemPropertyChanged;
                 return;
             }
@@ -1638,7 +1638,7 @@ namespace OneColumnEncoder.ViewModels
                 PromptRunSourceAnalysisAfterReplace(promptScriptGenAfterAnalysis: false);
         }
 
-        private void OnSourceConcatCleared(ToolItemCardVM item)
+        private void OnSourceConcatCleared()
         {
             _videoSourceConcat.Clear();
             RefreshSelectedSourceStatus(resetAnalysis: !HasSelectedVideoSource());
@@ -2288,12 +2288,12 @@ namespace OneColumnEncoder.ViewModels
             if (!IsDurationFilterEnabled) return sourcePaths;
 
             Dictionary<string, string> ffprobeByPath = LoadQueueFfprobeJsonByPath();
-            return sourcePaths.Where(path =>
+            return [.. sourcePaths.Where(path =>
             {
                 if (!ffprobeByPath.TryGetValue(path, out string? json)) return true;
                 double? duration = ParseDurationFromFfprobeJson(json);
                 return duration == null || duration >= MinVideoDurationSeconds;
-            }).ToArray();
+            })];
         }
 
         private static double? ParseDurationFromFfprobeJson(string? rawJson)

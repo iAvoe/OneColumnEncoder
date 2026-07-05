@@ -23,6 +23,14 @@ namespace OneColumnEncoder.ViewModels
     public partial class EncodingMonitorVM : BaseVM
     {
         private const int MemoryRangeBlockCount = 128;
+
+        private static readonly Encoding SystemTextEncoding = GetSystemTextEncoding();
+
+        private static Encoding GetSystemTextEncoding()
+        {
+            try { return Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.ANSICodePage); }
+            catch { try { return Console.OutputEncoding; } catch { return Encoding.UTF8; } }
+        }
         private const int MemoryRangeMaxFillLevel = 8;
         private const int UpstreamShutdownAfterEncoderExitDelayMs = 5000;
         private const int UpstreamKillAfterShutdownTimeoutMs = 1000;
@@ -523,8 +531,8 @@ namespace OneColumnEncoder.ViewModels
                         CreateNoWindow = true,
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
-                        StandardOutputEncoding = System.Text.Encoding.UTF8,
-                        StandardErrorEncoding = System.Text.Encoding.UTF8
+                        StandardOutputEncoding = SystemTextEncoding,
+                        StandardErrorEncoding = SystemTextEncoding
                     },
                     EnableRaisingEvents = true
                 };
@@ -538,7 +546,7 @@ namespace OneColumnEncoder.ViewModels
                         CreateNoWindow = true,
                         RedirectStandardInput = true,
                         RedirectStandardError = true,
-                        StandardErrorEncoding = System.Text.Encoding.UTF8
+                        StandardErrorEncoding = SystemTextEncoding
                     },
                     EnableRaisingEvents = true
                 };
@@ -807,8 +815,8 @@ namespace OneColumnEncoder.ViewModels
                         CreateNoWindow = true,
                         RedirectStandardError = true,
                         RedirectStandardOutput = true,
-                        StandardOutputEncoding = System.Text.Encoding.UTF8,
-                        StandardErrorEncoding = System.Text.Encoding.UTF8
+                        StandardOutputEncoding = SystemTextEncoding,
+                        StandardErrorEncoding = SystemTextEncoding
                     },
                 EnableRaisingEvents = true
             };

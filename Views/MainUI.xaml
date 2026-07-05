@@ -19,14 +19,14 @@
                TargetType="Button"
                BasedOn="{StaticResource LinkButton}">
             <Setter Property="Content"
-                    Value=" &#x25BC;&#x25BC; " />
+                    Value=" ▼▼ " />
             <Setter Property="MinWidth"
                     Value="40" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource Self}}"
                              Value="True">
                     <Setter Property="Content"
-                            Value=" &#x25B6;&#x25B6; " />
+                            Value=" ▶▶ " />
                 </DataTrigger>
             </Style.Triggers>
         </Style>

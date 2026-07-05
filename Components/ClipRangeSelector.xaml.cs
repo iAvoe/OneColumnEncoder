@@ -235,8 +235,7 @@ namespace OneColumnEncoder.Components
         private void UpdateSelectionVisuals()
         {
             double width = Math.Max(0d, TrackHost.ActualWidth);
-            if (width <= 0d)
-                return;
+            if (width <= 0d) return;
 
             double start = Clamp(SelectionStart, 0d, 1d);
             double end = Clamp(SelectionEnd, 0d, 1d);
@@ -246,7 +245,7 @@ namespace OneColumnEncoder.Components
             double actualWidth = Math.Max(MinRange, end - start);
             double maxStart = Math.Max(0d, 1d - actualWidth);
             start = Clamp(start, 0d, maxStart);
-            end = start + actualWidth;
+            // end = start + actualWidth;
 
             double selectionWidth = Math.Max(8d, actualWidth * width);
             double left = start * width;
