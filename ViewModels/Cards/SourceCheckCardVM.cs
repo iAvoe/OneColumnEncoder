@@ -148,7 +148,7 @@ namespace OneColumnEncoder.ViewModels.Cards
                 .Select(e => FormatIssue(e.entry.Text, e.description));
 
             return string.Join(
-                Environment.NewLine + Environment.NewLine, checklist1Issues.Concat(checklist2Issues));
+                Environment.NewLine + Environment.NewLine, checklist1Issues.Concat(checklist2Issues).Distinct());
         }
 
         private static string FormatIssue(string fallbackText, string? description)
