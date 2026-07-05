@@ -4,7 +4,13 @@
 
 ### Motivation
 
-The "quality" of video encoding is essentially an impossible triangle of quality, speed, and file size. As a result, general users can only accumulate subjective experience through extensive trial and error. On top of that, even advanced users encounter many error-prone steps — parameter spelling, path locations, text selection areas for copying — while also needing to remember compatibility and convention requirements between different tools. To avoid mistakes, strict and tedious procedural checks must be performed; otherwise, a single slip wastes significant time and compute.
+Video encoding is fundamentally an optimization problem constrained by the impossible triangle of visual quality, encoding speed, and file size. Most users can only build experience through trial and error, while even advanced users frequently encounter mistakes involving parameters, file paths, text selection, or compatibility requirements between tools. Avoiding these pitfalls often requires tedious verification, where a single oversight can waste hours of processing time and computing resources.
+
+The video encoding ecosystem is highly fragmented. Each tool defines its own syntax, I/O formats, and workflow, making knowledge difficult to transfer between applications. As a result, the learning curve is steep for beginners, while experienced users must still spend significant time adapting to new tools.
+
+Preparing an encoding job is often time-consuming, reducing productivity, killing the speed benefits from high-performance hardware, and consuming the user's free time.
+
+Many video encoding apps also suffer from poor UI/UX, including inefficient layouts, puzzled workflow, too-much-or-lacking status feedback. Users may need to frequently switch windows, deal with unintuitive controls, and combat with unreasonable defaults. As a result, pure command-line/terminal operation became a more efficient, more user-friendly approach than using the GUI.
 
 ### Core Positioning
 
