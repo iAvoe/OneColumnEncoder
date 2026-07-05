@@ -1062,7 +1062,7 @@ namespace OneColumnEncoder.ViewModels
             if (e.PropertyName == nameof(ChecklistEntryVM.Status))
             {
                 UpdateEncStartButtonsState();
-                if (_modalNavS.CurrentModalVM is FilterScribeVM modal)
+                if (_modalNavS.GetModal<FilterScribeVM>() is FilterScribeVM modal)
                     modal.RefreshGeneratedFfmpegFilters();
             }
         }
@@ -1088,7 +1088,7 @@ namespace OneColumnEncoder.ViewModels
                 FilterScbButtons.B2_2IsEnabled = hasVideoSrc;
             }
 
-            if (_modalNavS.CurrentModalVM is FilterScribeVM modal)
+            if (_modalNavS.GetModal<FilterScribeVM>() is FilterScribeVM modal)
             {
                 modal.ScriptExportButtons.B3_1IsEnabled = !oneLineShotSelected && hasVideoSrc;
                 modal.ScriptExportButtons.B3_2IsEnabled = !oneLineShotSelected && hasVideoSrc;
@@ -2654,14 +2654,20 @@ namespace OneColumnEncoder.ViewModels
         private void OnModalStateChanged()
         {
             IsOverlayVisible = _modalNavS.IsOpen;
-            bool isCurrentlyEncoding = _modalNavS.CurrentModalVM is EncodingMonitorVM;
+            bool shouldHideMainWindow =
+                _modalNavS.HasModal<EncodingMonitorVM>() ||
+                _modalNavS.HasModal<FilterScribeVM>() ||
+                _modalNavS.HasModal<EncoderConfVM>() ||
+                _modalNavS.HasModal<ParallelismConfVM>() ||
+                _modalNavS.HasModal<FilenameScribeVM>() ||
+                _modalNavS.HasModal<AppConfVM>();
 
-            if (isCurrentlyEncoding && !_isEncoding)
+            if (shouldHideMainWindow && !_isEncoding)
             {
                 IsEncoding = true;
                 Application.Current.MainWindow?.Hide();
             }
-            else if (!isCurrentlyEncoding && _isEncoding)
+            else if (!shouldHideMainWindow && _isEncoding)
             {
                 IsEncoding = false;
                 if (Application.Current.MainWindow is { Visibility: Visibility.Hidden } mw)

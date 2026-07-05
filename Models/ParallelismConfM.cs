@@ -15,8 +15,6 @@ namespace OneColumnEncoder.Models
         public int DownstreamNodeId { get; set; } = 1;
         public bool PreferUpstreamPhysicalCores { get; set; } = false;
         public bool PreferPhysicalCores { get; set; } = true;
-        public bool PreferPCoreCompute { get; set; } = false; // May be too hard for normal users since source code mod needed
-        public bool PreferECoreLookahead { get; set; } = false;
         public int EncoderThreadCount { get; set; } = Environment.ProcessorCount;
 
         public static ParallelismConfM LoadEffective()
@@ -36,8 +34,6 @@ namespace OneColumnEncoder.Models
                 DownstreamNodeId = downstreamNodeId,
                 PreferUpstreamPhysicalCores = model.PreferUpstreamPhysicalCores,
                 PreferPhysicalCores = model.PreferPhysicalCores,
-                PreferPCoreCompute = model.PreferPCoreCompute,
-                PreferECoreLookahead = model.PreferECoreLookahead,
                 EncoderThreadCount = CpuSets.ClampThreadCountForNode(
                     downstreamNodeId,
                     model.PreferPhysicalCores,

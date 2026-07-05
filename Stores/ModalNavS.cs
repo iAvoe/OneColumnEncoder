@@ -97,5 +97,7 @@ namespace OneColumnEncoder.Stores
 
         public event Action? CurrentViewModelChanged;
         public bool IsOpen => _modalStack.Count > 0;
+        public T? GetModal<T>() where T : BaseVM => _modalStack.OfType<T>().FirstOrDefault();
+        public bool HasModal<T>() where T : BaseVM => GetModal<T>() != null;
     }
 }

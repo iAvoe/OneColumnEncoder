@@ -1,4 +1,6 @@
-﻿namespace OneColumnEncoder.ViewModels.Cards
+﻿using System.Windows.Input;
+
+namespace OneColumnEncoder.ViewModels.Cards
 {
     public class CPUNodeCardVM : BaseVM
     {
@@ -60,6 +62,8 @@
         }
 
         public string ResourceLabel => IsEnabled ? $"T{MinThreadNum}-{MaxThreadNum} · {HasMemGB}GB" : "N/A";
+
+        public ICommand? SelectCommand { get; set; }
 
         // Card selection or disabling (no NUMA node on this range)
         private bool _isSelected = false;

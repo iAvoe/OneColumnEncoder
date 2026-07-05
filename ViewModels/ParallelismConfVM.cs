@@ -47,20 +47,6 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        private bool _preferPCoreCompute = true;
-        public bool PreferPCoreCompute
-        {
-            get => _preferPCoreCompute;
-            set => SetProperty(ref _preferPCoreCompute, value);
-        }
-
-        private bool _preferECoreLookahead = true;
-        public bool PreferECoreLookahead
-        {
-            get => _preferECoreLookahead;
-            set => SetProperty(ref _preferECoreLookahead, value);
-        }
-
         private int _encoderThreadCount = Environment.ProcessorCount;
         public int EncoderThreadCount
         {
@@ -97,8 +83,6 @@ namespace OneColumnEncoder.ViewModels
         public string ThreadStrategyTitle => Lang.ThreadStrategyTitle;
         public string PreferUpstreamPhysCoresText => Lang.PreferUpstreamPhysCoresText;
         public string PreferDownstreamPhysCoresText => Lang.PreferDownstreamPhysCoresText;
-        public string PreferPCoreComputeText => Lang.PreferPCoreComputeText;
-        public string PreferECoreLookaheadText => Lang.PreferECoreLookaheadText;
         public string MemoryStrategyTitle => Lang.MemoryStrategyTitle;
         public string LargePagesUnavailableHintText => Lang.LargePagesUnavailableHintText;
         public string EncoderThreadCountText => Lang.EncoderThreadCountText;
@@ -127,13 +111,13 @@ namespace OneColumnEncoder.ViewModels
             });
             FinishButtons = ButtonGroupVM.CreateTwoButton(CancelButtonText, ConfirmButtonText, CloseCmd, ConfirmCmd);
 
-            BuildNodesFromTopology(UpstreamNodes);
-            BuildNodesFromTopology(DownstreamNodes);
+            BuildNodesFromTopology(UpstreamNodes, SelectUpstreamNodeCmd);
+            BuildNodesFromTopology(DownstreamNodes, SelectDownstreamNodeCmd);
             LoadModelToUi();
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
 
-        private static void BuildNodesFromTopology(ObservableCollection<CPUNodeCardVM> nodes)
+        private static void BuildNodesFromTopology(ObservableCollection<CPUNodeCardVM> nodes, ICommand selectCommand)
         {
             nodes.Clear();
             List<NumaNodeInfo> numaNodes = NumaTopology.GetNumaNodes();
@@ -149,7 +133,8 @@ namespace OneColumnEncoder.ViewModels
                     MaxThreadNum = n.MaxThreadNum,
                     HasMemGB = n.HasMemGB,
                     IsEnabled = true,
-                    IsSelected = isFirst
+                    IsSelected = isFirst,
+                    SelectCommand = selectCommand
                 });
                 isFirst = false;
             }
@@ -159,7 +144,8 @@ namespace OneColumnEncoder.ViewModels
                 nodes.Add(new CPUNodeCardVM
                 {
                     IsEnabled = false,
-                    IsSelected = false
+                    IsSelected = false,
+                    SelectCommand = selectCommand
                 });
             }
         }
@@ -186,8 +172,6 @@ namespace OneColumnEncoder.ViewModels
             _model.DownstreamNodeId = downstream.NodeId;
             _model.PreferUpstreamPhysicalCores = PreferUpstreamPhysicalCores;
             _model.PreferPhysicalCores = PreferPhysicalCores;
-            _model.PreferPCoreCompute = PreferPCoreCompute;
-            _model.PreferECoreLookahead = PreferECoreLookahead;
             _model.EncoderThreadCount = EncoderThreadCount;
             _model.Save();
         }
@@ -196,9 +180,6 @@ namespace OneColumnEncoder.ViewModels
         {
             PreferUpstreamPhysicalCores = _model.PreferUpstreamPhysicalCores;
             PreferPhysicalCores = _model.PreferPhysicalCores;
-            PreferPCoreCompute = _model.PreferPCoreCompute;
-            PreferECoreLookahead = _model.PreferECoreLookahead;
-
             SelectById(UpstreamNodes, _model.UpstreamNodeId);
             SelectById(DownstreamNodes, _model.DownstreamNodeId);
             UpdateMaxThreadCount();
@@ -317,8 +298,6 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(ThreadStrategyTitle));
             OnPropertyChanged(nameof(PreferUpstreamPhysCoresText));
             OnPropertyChanged(nameof(PreferDownstreamPhysCoresText));
-            OnPropertyChanged(nameof(PreferPCoreComputeText));
-            OnPropertyChanged(nameof(PreferECoreLookaheadText));
             OnPropertyChanged(nameof(MemoryStrategyTitle));
             OnPropertyChanged(nameof(LargePagesUnavailableHintText));
             OnPropertyChanged(nameof(EncoderThreadCountText));

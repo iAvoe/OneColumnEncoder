@@ -1,0 +1,32 @@
+<UserControl x:Class="OneColumnEncoder.Components.Cards.CPUNodeCardGroup"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:cards="clr-namespace:OneColumnEncoder.Components.Cards"
+             x:Name="Root"
+             mc:Ignorable="d">
+    <ItemsControl ItemsSource="{Binding ItemsSource, ElementName=Root}">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <UniformGrid Columns="4" />
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <cards:CPUNodeCard IsSelected="{Binding IsSelected, Mode=TwoWay}"
+                                   IsEnabled="{Binding IsEnabled}"
+                                   Margin="2.5 5 2.5 0">
+                    <cards:CPUNodeCard.InputBindings>
+                        <MouseBinding MouseAction="LeftClick"
+                                      Command="{Binding SelectCommand}"
+                                      CommandParameter="{Binding}" />
+                        <KeyBinding Key="Enter"
+                                    Command="{Binding SelectCommand}"
+                                    CommandParameter="{Binding}" />
+                    </cards:CPUNodeCard.InputBindings>
+                </cards:CPUNodeCard>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+</UserControl>

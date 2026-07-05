@@ -14,7 +14,7 @@
                    Height="1010"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
-    <Grid Margin="10 10 15 0">
+    <Grid Margin="15 10 15 0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
@@ -661,7 +661,7 @@
 
         <comps:HintPanel Grid.Row="5"
                           Grid.Column="1"
-                          Margin="0 2.5 0 10"
+                          Margin="0 2.5 0 15"
                           Text="{Binding NoteText}" />
     </Grid>
 </ui:AdaptiveWindow>

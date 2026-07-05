@@ -10,8 +10,8 @@
         d:DataContext="{d:DesignInstance Type=vms:ParallelismConfVM}"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
-        Width="530"
-        Height="720"
+        Width="540"
+        Height="650"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid Margin="15">
@@ -23,119 +23,44 @@
         <ScrollViewer Grid.Row="0"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled">
-            <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
-            <comps:HintPanel Grid.Row="0"
-                             Text="{Binding Lang.IntroText}"
+            <StackPanel Margin="0 0 0 15">
+            <comps:HintPanel Text="{Binding Lang.IntroText}"
                              Margin="5 0 5 0" />
             
-            <comps:HintPanel Grid.Row="1"
-                             Text="{Binding Lang.PriorityText}"
+            <comps:HintPanel Text="{Binding Lang.PriorityText}"
                              Margin="5 10 5 0" />
 
-            <TextBlock Grid.Row="2"
-                       Text="{Binding Lang.CacheGroupTitle}"
+            <TextBlock Text="{Binding Lang.CacheGroupTitle}"
                        Style="{StaticResource H3}"
+                       Margin="0 15 0 0"
+                       Foreground="{StaticResource GlobalPrimary}" />
+
+            <TextBlock Text="{Binding CacheGroupHint}"
+                       TextWrapping="Wrap"
+                       FontSize="13"
                        Margin="0 10 0 0"
                        Foreground="{StaticResource GlobalPrimary}" />
 
-            <TextBlock Grid.Row="3"
-                       Text="{Binding CacheGroupHint}"
-                       TextWrapping="Wrap"
-                       FontSize="13"
-                       Margin="0 5 0 0"
-                       Foreground="{StaticResource GlobalPrimary}" />
-
-            <comps:HintPanel Grid.Row="4"
-                             Text="{Binding Lang.NumaTopologyHintText}"
-                             Margin="5 8 5 0"
+            <comps:HintPanel Text="{Binding Lang.NumaTopologyHintText}"
+                             Margin="5 5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
 
-            <TextBlock Grid.Row="5"
-                       Text="{Binding Lang.UpstreamNumaTitle}"
+            <TextBlock Text="{Binding Lang.UpstreamNumaTitle}"
                        Style="{StaticResource H3}"
-                       Margin="0 10 0 0"
+                       Margin="0 15 0 0"
                        Foreground="{StaticResource GlobalPrimary}" />
 
-            <ItemsControl Grid.Row="6"
-                          ItemsSource="{Binding UpstreamNodes}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Columns="4" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <cards:CPUNodeCard DataContext="{Binding}"
-                                           IsSelected="{Binding IsSelected, Mode=TwoWay}"
-                                           IsEnabled="{Binding IsEnabled}"
-                                           Margin="2.5 5 2.5 0">
-                            <cards:CPUNodeCard.InputBindings>
-                                <MouseBinding MouseAction="LeftClick"
-                                              Command="{Binding DataContext.SelectUpstreamNodeCmd,
-                                                                RelativeSource={RelativeSource AncestorType=Window}}"
-                                              CommandParameter="{Binding}" />
-                                <KeyBinding Key="Enter"
-                                            Command="{Binding DataContext.SelectUpstreamNodeCmd,
-                                                              RelativeSource={RelativeSource AncestorType=Window}}"
-                                            CommandParameter="{Binding}" />
-                            </cards:CPUNodeCard.InputBindings>
-                        </cards:CPUNodeCard>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            <cards:CPUNodeCardGroup ItemsSource="{Binding UpstreamNodes}" />
 
-            <TextBlock Grid.Row="7"
-                       Text="{Binding Lang.DownstreamNumaTitle}"
+            <TextBlock Text="{Binding Lang.DownstreamNumaTitle}"
                        Style="{StaticResource H3}"
-                       Margin="0 10 0 0"
+                       Margin="0 15 0 0"
                        Foreground="{StaticResource GlobalPrimary}" />
 
-            <ItemsControl Grid.Row="8"
-                          ItemsSource="{Binding DownstreamNodes}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Columns="4" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <cards:CPUNodeCard DataContext="{Binding}"
-                                           IsSelected="{Binding IsSelected, Mode=TwoWay}"
-                                           IsEnabled="{Binding IsEnabled}"
-                                           Margin="2.5 5 2.5 0">
-                            <cards:CPUNodeCard.InputBindings>
-                                <MouseBinding MouseAction="LeftClick"
-                                              Command="{Binding DataContext.SelectDownstreamNodeCmd,
-                                                                RelativeSource={RelativeSource AncestorType=Window}}"
-                                              CommandParameter="{Binding}" />
-                                <KeyBinding Key="Enter"
-                                            Command="{Binding DataContext.SelectDownstreamNodeCmd,
-                                                              RelativeSource={RelativeSource AncestorType=Window}}"
-                                            CommandParameter="{Binding}" />
-                            </cards:CPUNodeCard.InputBindings>
-                        </cards:CPUNodeCard>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            <cards:CPUNodeCardGroup ItemsSource="{Binding DownstreamNodes}" />
 
-            <comps:IntegerSlider Grid.Row="9"
-                                 Margin="5 10 5 0"
+            <comps:IntegerSlider Margin="5 5 5 0"
                                  Label="{Binding EncoderThreadCountText}"
                                 Minimum="1"
                                 Maximum="{Binding MaxThreadCount}"
@@ -143,37 +68,26 @@
                                 TickLabels="{Binding EncoderThreadTickLabels}"
                                 TickCount="{Binding EncoderThreadTickCount}" />
 
-            <comps:HintPanel Grid.Row="10"
-                             Text="{Binding Lang.NumaGuidanceText}"
-                             Margin="5 5 5 0"
+            <comps:HintPanel Text="{Binding Lang.NumaGuidanceText}"
+                             Margin="5 2.5 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
 
-            <StackPanel Grid.Row="11"
-                        Margin="0 10 0 0">
-                <comps:AppConfContainer Header="{Binding Lang.ThreadStrategyTitle}">
-                    <comps:AppConfItem Text="{Binding Lang.PreferUpstreamPhysCoresText}">
-                        <CheckBox IsChecked="{Binding PreferUpstreamPhysicalCores, Mode=TwoWay}" />
-                    </comps:AppConfItem>
-                    <comps:AppConfItem Text="{Binding Lang.PreferDownstreamPhysCoresText}">
-                        <CheckBox IsChecked="{Binding PreferPhysicalCores, Mode=TwoWay}" />
-                    </comps:AppConfItem>
-                    <comps:AppConfItem Text="{Binding Lang.PreferPCoreComputeText}">
-                        <CheckBox IsChecked="{Binding PreferPCoreCompute, Mode=TwoWay}"
-                                  IsEnabled="False"/>
-                    </comps:AppConfItem>
-                    <comps:AppConfItem Text="{Binding Lang.PreferECoreLookaheadText}">
-                        <CheckBox IsChecked="{Binding PreferECoreLookahead, Mode=TwoWay}"
-                                  IsEnabled="False" />
-                    </comps:AppConfItem>
-                </comps:AppConfContainer>
+            <comps:AppConfContainer Header="{Binding Lang.ThreadStrategyTitle}"
+                                    Margin="0 15 0 0">
+                <comps:AppConfItem Text="{Binding Lang.PreferUpstreamPhysCoresText}">
+                    <CheckBox IsChecked="{Binding PreferUpstreamPhysicalCores, Mode=TwoWay}" />
+                </comps:AppConfItem>
+                <comps:AppConfItem Text="{Binding Lang.PreferDownstreamPhysCoresText}">
+                    <CheckBox IsChecked="{Binding PreferPhysicalCores, Mode=TwoWay}" />
+                </comps:AppConfItem>
+            </comps:AppConfContainer>
 
-                <comps:AppConfContainer Header="{Binding Lang.MemoryStrategyTitle}">
-                    <comps:HintPanel Text="{Binding LargePagesUnavailableHintText}"
-                                     Margin="5 0" />
-                </comps:AppConfContainer>
+            <comps:AppConfContainer Header="{Binding Lang.MemoryStrategyTitle}">
+                <comps:HintPanel Text="{Binding LargePagesUnavailableHintText}"
+                                 Margin="5 0" />
+            </comps:AppConfContainer>
             </StackPanel>
-            </Grid>
         </ScrollViewer>
 
         <comps:TwoButtonGroup Grid.Row="1"
