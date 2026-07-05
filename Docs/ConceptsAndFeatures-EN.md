@@ -4,7 +4,7 @@
 
 ### Motivation
 
-Video encoding is fundamentally an optimization problem constrained by the impossible triangle of visual quality, encoding speed, and file size. Most users can only build experience through trial and error, while even advanced users frequently encounter mistakes involving parameters, file paths, text selection, or compatibility requirements between tools. Avoiding these pitfalls often requires tedious verification, where a single oversight can waste hours of processing time and computing resources.
+Video encoding is fundamentally an optimization problem constrained by the impossible triangle of visual quality, encoding speed, and file size. Most users can only build experience through trial and error, while even advanced users frequently encounter mistakes involving parameters, file paths, text selection misses, or compatibility requirements between tools. Avoiding these pitfalls often requires tedious, self-disciplined verification, where a single oversight can waste hours of processing time and computing resources.
 
 The video encoding ecosystem is highly fragmented. Each tool defines its own syntax, I/O formats, and workflow, making knowledge difficult to transfer between applications. As a result, the learning curve is steep for beginners, while experienced users must still spend significant time adapting to new tools.
 
