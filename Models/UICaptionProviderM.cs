@@ -106,8 +106,9 @@ public static class UICaptionProviderM
 
         public static class Buttons
         {
-            public static string Cancel => UILangProviderM.Current["AppConf.Cancel"];
-            public static string Save => UILangProviderM.Current["AppConf.Save"];
+        public static string Cancel => UILangProviderM.Current["AppConf.Cancel"];
+        public static string Save => UILangProviderM.Current["AppConf.Save"];
+        public static string ClearOldQueueJson => UILangProviderM.Current["AppConf.ClearOldQueueJson"];
         }
 
         public static class LanguageOptions

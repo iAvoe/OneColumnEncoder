@@ -16,7 +16,7 @@
         Background="{StaticResource Background}">
     <Grid Margin="15 15 15 0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
@@ -25,11 +25,12 @@
             <ItemsControl ItemsSource="{Binding SettingsListing}"/>
         </ScrollViewer>
 
-        <comps:TwoButtonGroup Grid.Row="1"
-                              ButtonHeight="30"
-                              DataContext="{Binding FinishSettingButtons}"
-                              Button1Command="{Binding Cmd1}"
-                              Button2Command="{Binding Cmd2}" />
+        <comps:ThreeButtonGroup Grid.Row="1"
+                                ButtonHeight="30"
+                                DataContext="{Binding FinishSettingButtons}"
+                                Button1Command="{Binding Cmd1}"
+                                Button2Command="{Binding Cmd2}"
+                                Button3Command="{Binding Cmd3}" />
 
         <comps:HintPanel Grid.Row="2"
                          Margin="0 5 0 0"

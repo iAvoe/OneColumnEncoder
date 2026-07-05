@@ -30,6 +30,8 @@ namespace OneColumnEncoder.ViewModels
 
         public ButtonGroupVM FinishSettingButtons { get; }
 
+        public ClearOldQueueJsonCmd ClearOldQueueJsonCmd { get; }
+
         public AppConfM.OverwriteSettings Overwrite => _appConfM.Overwrite;
 
         public ObservableCollection<AppConfContainer> SettingsListing { get; } = [];
@@ -44,12 +46,16 @@ namespace OneColumnEncoder.ViewModels
             CloseCmd = new CloseModalCmd(closeAction);
             SaveCmd = new SaveAppConfCmd(appConfS, closeAction);
             LoadCmd = new LoadAppConfCmd(appConfS);
-            FinishSettingButtons = ButtonGroupVM.CreateTwoButton(
+            ClearOldQueueJsonCmd = new ClearOldQueueJsonCmd();
+            FinishSettingButtons = ButtonGroupVM.CreateThreeButton(
                 UICaptionProviderM.AppConf.Buttons.Cancel,
+                UICaptionProviderM.AppConf.Buttons.ClearOldQueueJson,
                 UICaptionProviderM.AppConf.Buttons.Save,
                 CloseCmd,
+                ClearOldQueueJsonCmd,
                 SaveCmd);
-            FinishSettingButtons.B2_2Icon = SvgIconProvider.GameSave;
+            FinishSettingButtons.B3_2Icon = SvgIconProvider.GameDelete;
+            FinishSettingButtons.B3_3Icon = SvgIconProvider.GameSave;
             BuildSettingsListing();
             UILangProviderM.CurrentChanged += OnLanguageChanged;
         }
@@ -261,8 +267,9 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(HeaderText));
             OnPropertyChanged(nameof(NotificationPolicyHint));
 
-            FinishSettingButtons.B2_1Text = UICaptionProviderM.AppConf.Buttons.Cancel;
-            FinishSettingButtons.B2_2Text = UICaptionProviderM.AppConf.Buttons.Save;
+            FinishSettingButtons.B3_1Text = UICaptionProviderM.AppConf.Buttons.Cancel;
+            FinishSettingButtons.B3_2Text = UICaptionProviderM.AppConf.Buttons.ClearOldQueueJson;
+            FinishSettingButtons.B3_3Text = UICaptionProviderM.AppConf.Buttons.Save;
 
             SettingsListing.Clear();
             BuildSettingsListing();
