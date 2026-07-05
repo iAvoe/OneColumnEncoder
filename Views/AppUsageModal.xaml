@@ -9,8 +9,8 @@
         d:DataContext="{d:DesignInstance Type=viewmodels:AppUsageVM}"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
-        Width="600"
-        Height="1200"
+        Width="800"
+        Height="1100"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource Background}">
     
@@ -25,7 +25,7 @@
                                   HorizontalContentAlignment="Stretch"
                                   VerticalScrollBarVisibility="Auto"
                                   Margin="0"
-                                  Padding="15 10 15 0">
+                                  Padding="15 10 5 0">
             <FlowDocument FontFamily="Segoe UI"
                           PagePadding="0"
                           ColumnWidth="Infinity"
@@ -51,27 +51,27 @@
                            Foreground="{StaticResource GlobalPrimary}">
                     <Run Text="{Binding Lang.GettingStarted, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource GlobalPrimary}">
                     <Run Text="{Binding Lang.Step1, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource GlobalPrimary}">
                     <Run Text="{Binding Lang.Step2, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource GlobalPrimary}">
                     <Run Text="{Binding Lang.Step3, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource GlobalPrimary}">
                     <Run Text="{Binding Lang.Step4, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource GlobalPrimary}">
                     <Run Text="{Binding Lang.Step5, Mode=OneWay}" />
@@ -82,17 +82,17 @@
                            FontWeight="Bold">
                     <Run Text="{Binding Lang.WhyDisabledTitle, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource GlobalPrimary}">
                     <Run Text="{Binding Lang.WhyDisabled1, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource GlobalPrimary}">
                     <Run Text="{Binding Lang.WhyDisabled2, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource GlobalPrimary}">
                     <Run Text="{Binding Lang.WhyDisabled3, Mode=OneWay}" />
@@ -103,7 +103,7 @@
                            FontWeight="Bold">
                     <Run Text="{Binding Lang.ToolDownloadTitle, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource GlobalPrimary}">
                     <Run Text="{Binding Lang.ToolDownloadLink, Mode=OneWay}" />
@@ -119,42 +119,42 @@
                            Foreground="{StaticResource GlobalPrimary}">
                     <Run Text="{Binding Lang.ComplianceDesc, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource ButtonTertiary}">
                     <Run Text="{Binding Lang.LicenseFfmpeg, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource ButtonTertiary}">
                     <Run Text="{Binding Lang.LicenseVapourSynth, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource ButtonTertiary}">
                     <Run Text="{Binding Lang.LicenseAvs2yuv, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource ButtonTertiary}">
                     <Run Text="{Binding Lang.LicenseAvs2pipemod, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource ButtonTertiary}">
                     <Run Text="{Binding Lang.LicenseSvfi, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource ButtonTertiary}">
                     <Run Text="{Binding Lang.LicenseX264, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource ButtonTertiary}">
                     <Run Text="{Binding Lang.LicenseX265, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource ButtonTertiary}">
                     <Run Text="{Binding Lang.LicenseSvtAv1, Mode=OneWay}" />
@@ -185,17 +185,17 @@
                            FontWeight="Bold">
                     <Run Text="{Binding Lang.AutoParamTitle, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource GlobalPrimary}">
                     <Run Text="{Binding Lang.AutoParamBase, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource GlobalPrimary}">
                     <Run Text="{Binding Lang.AutoParamEncode, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource GlobalPrimary}">
                     <Run Text="{Binding Lang.AutoParamFooter, Mode=OneWay}" />
@@ -205,25 +205,15 @@
                            FontWeight="Bold">
                     <Run Text="{Binding Lang.ManualBaseTitle, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource GlobalPrimary}">
                     <Run Text="{Binding Lang.ManualBaseList, Mode=OneWay}" />
                 </Paragraph>
-                <Paragraph Margin="15 10 0 0"
+                <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource GlobalPrimary}">
                     <Run Text="{Binding Lang.ManualBaseFooter, Mode=OneWay}" />
-                </Paragraph>
-                <Paragraph Margin="0 10 0 0"
-                           FontSize="15"
-                           FontWeight="Bold">
-                    <Run Text="{Binding Lang.ManualCrfTitle, Mode=OneWay}" />
-                </Paragraph>
-                <Paragraph Margin="15 10 0 0"
-                           FontSize="13"
-                           Foreground="{StaticResource GlobalPrimary}">
-                    <Run Text="{Binding Lang.ManualCrfList, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="0 10 0 0"
                            FontSize="15"
@@ -239,7 +229,8 @@
         </FlowDocumentScrollViewer>
 
         <Button Grid.Row="1"
-                Margin="10"
+                Margin="10 5 10 10"
+                Height="40"
                 Content="{Binding Lang.CloseButtonText, Mode=OneWay}"
                 Command="{Binding CloseCmd}"
                 VerticalAlignment="Center"

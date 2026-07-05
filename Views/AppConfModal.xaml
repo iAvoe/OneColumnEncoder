@@ -10,8 +10,8 @@
         d:DataContext="{d:DesignInstance Type=vms:AppConfVM}"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
-        Width="600"
-        Height="410"
+        Width="590"
+        Height="380"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Grid Margin="15 15 15 0">
@@ -33,7 +33,7 @@
                                 Button3Command="{Binding Cmd3}" />
 
         <comps:HintPanel Grid.Row="2"
-                         Margin="0 5 0 0"
+                         Margin="0 2.5 0 0"
                          Text="{Binding NotificationPolicyHint}"
                          HintBrush="{StaticResource GlobalSecondary}" />
     </Grid>

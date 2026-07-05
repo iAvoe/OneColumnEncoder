@@ -2660,7 +2660,8 @@ namespace OneColumnEncoder.ViewModels
                 _modalNavS.HasModal<EncoderConfVM>() ||
                 _modalNavS.HasModal<ParallelismConfVM>() ||
                 _modalNavS.HasModal<FilenameScribeVM>() ||
-                _modalNavS.HasModal<AppConfVM>();
+                _modalNavS.HasModal<AppConfVM>() ||
+                _modalNavS.HasModal<AppUsageVM>();
 
             if (shouldHideMainWindow && !_isEncoding)
             {
