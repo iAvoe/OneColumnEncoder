@@ -2095,7 +2095,7 @@ public class UILangProviderM
         ["Setting.InitMode.IsFirstLaunch"] = "Автоимпорт инструментов при запуске",
         ["AppConf.Cancel"] = "Отмена",
         ["AppConf.Save"] = "Сохранить",
-        ["AppConf.ClearOldQueueJson"] = "Очистить старые данные очереди",
+        ["AppConf.ClearOldQueueJson"] = "Очист. стар. дан. очер.",
         ["AppConf.ClearOldQueueJsonTitle"] = "Очистить старые данные очереди",
         ["AppConf.ClearOldQueueJsonResult"] = "Удалено {0} старых файлов(а) очереди.",
         ["AppConf.NoOldQueueJson"] = "Данные очереди не найдены.",

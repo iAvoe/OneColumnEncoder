@@ -10,11 +10,11 @@
         d:DataContext="{d:DesignInstance Type=vms:ParallelismConfVM}"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
-        Width="550"
-        Height="720"
+        Width="570"
+        Height="750"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
-    <Grid Margin="15">
+    <Grid Margin="15 10 15 15">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
