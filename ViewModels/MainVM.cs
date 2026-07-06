@@ -1248,7 +1248,14 @@ namespace OneColumnEncoder.ViewModels
             outputSetting ??= _outputSettingCard;
             if (outputSetting == null) return;
 
-            outputSetting.RefreshOutputSetting(GetActiveSourceRoute() == SourceRouteKind.Queue, _modalNavS, GetSelectedVideoSourcePath());
+            SourceRouteKind route = GetActiveSourceRoute();
+            if (route == SourceRouteKind.Queue)
+            {
+                outputSetting.RefreshOutputSetting(true, _modalNavS);
+                return;
+            }
+
+            outputSetting.RefreshOutputSetting(false, _modalNavS, route == SourceRouteKind.Single ? GetSelectedVideoSourcePath() : null);
         }
 
         private void WireUpEncSettingsCmds()
@@ -1883,6 +1890,11 @@ namespace OneColumnEncoder.ViewModels
                 {
                     _outputSettingCard.RefreshOutputSetting(true, _modalNavS);
                 }
+                else if (route == SourceRouteKind.Concat)
+                {
+                    _outputSettingCard.P1TextData = GetConcatOutputBaseName();
+                    _outputSettingCard.RefreshOutputSetting(false, _modalNavS);
+                }
                 else
                 {
                     SyncOutputFilenameWithVideoSource();
@@ -1929,6 +1941,9 @@ namespace OneColumnEncoder.ViewModels
 
         private string[] GetConcatFilePaths() =>
             _videoSourceConcat.CurrentFilePaths;
+
+        private string GetConcatOutputBaseName() =>
+            BrowseSourceQueueCmd.FormatConcatFileName(GetConcatFilePaths());
 
         private string GetSelectedVideoSourcePath()
         {
@@ -2215,11 +2230,11 @@ namespace OneColumnEncoder.ViewModels
             string outputDirectory = outputSetting.P2TextData;
 
             string inputPath;
-            string outputBaseName;
-
             string[] concatPaths = GetConcatFilePaths();
             if (concatPaths.Length < 2) return null;
-            outputBaseName = BrowseSourceQueueCmd.FormatConcatFileName(concatPaths);
+            string outputBaseName = string.IsNullOrWhiteSpace(outputSetting.P1TextData)
+                ? GetConcatOutputBaseName()
+                : outputSetting.P1TextData.Trim();
 
             if (upstreamExeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase))
             {
