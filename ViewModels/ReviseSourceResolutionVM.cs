@@ -24,6 +24,7 @@ namespace OneColumnEncoder.ViewModels
         public string HeightLabel => UILangProviderM.Current["ReviseSourceResolution.HeightLabel"];
         public string CurrentResolutionLabel => UILangProviderM.Current["ReviseSourceResolution.CurrentLabel"];
         public string SuggestedResolutionLabel => UILangProviderM.Current["ReviseSourceResolution.SuggestedLabel"];
+        public string EvenResolutionHint => UILangProviderM.Current["ReviseSourceResolution.EvenResolutionHint"];
         public string CurrentResolutionText => FormatResolution(_currentWidth, _currentHeight);
         public string SuggestedResolutionText => FormatResolution(_suggestedWidth, _suggestedHeight);
 
@@ -43,6 +44,8 @@ namespace OneColumnEncoder.ViewModels
 
         public int ResolutionWidth { get; private set; }
         public int ResolutionHeight { get; private set; }
+        public ActionCmd UseCurrentResolutionCommand { get; }
+        public ActionCmd UseSuggestedResolutionCommand { get; }
         public ButtonGroupVM FinishButtons { get; private set; }
 
         public ReviseSourceResolutionVM(
@@ -67,6 +70,8 @@ namespace OneColumnEncoder.ViewModels
             ResolutionHeight = suggestedHeight;
             _resolutionWidthText = suggestedWidth > 0 ? suggestedWidth.ToString(CultureInfo.InvariantCulture) : string.Empty;
             _resolutionHeightText = suggestedHeight > 0 ? suggestedHeight.ToString(CultureInfo.InvariantCulture) : string.Empty;
+            UseCurrentResolutionCommand = new ActionCmd(_ => SetResolutionText(_currentWidth, _currentHeight), _ => _currentWidth > 0 && _currentHeight > 0);
+            UseSuggestedResolutionCommand = new ActionCmd(_ => SetResolutionText(_suggestedWidth, _suggestedHeight), _ => _suggestedWidth > 0 && _suggestedHeight > 0);
 
             FinishButtons = ButtonGroupVM.CreateTwoButton(
                 UILangProviderM.Current["ReviseSourceResolution.Cancel"],
@@ -104,6 +109,12 @@ namespace OneColumnEncoder.ViewModels
             return hasWidth && hasHeight;
         }
 
+        private void SetResolutionText(int width, int height)
+        {
+            ResolutionWidthText = width.ToString(CultureInfo.InvariantCulture);
+            ResolutionHeightText = height.ToString(CultureInfo.InvariantCulture);
+        }
+
         private static bool TryParseDimension(string? text, out int value)
         {
             return int.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out value)
@@ -130,6 +141,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(HeightLabel));
             OnPropertyChanged(nameof(CurrentResolutionLabel));
             OnPropertyChanged(nameof(SuggestedResolutionLabel));
+            OnPropertyChanged(nameof(EvenResolutionHint));
             OnPropertyChanged(nameof(CurrentResolutionText));
             OnPropertyChanged(nameof(SuggestedResolutionText));
 

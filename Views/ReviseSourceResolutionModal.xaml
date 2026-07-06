@@ -9,12 +9,13 @@
                    d:DataContext="{d:DesignInstance Type=vms:ReviseSourceResolutionVM}"
                    mc:Ignorable="d"
                    Title="{Binding WindowTitle}"
-                   Width="520"
+                   Width="560"
                    SizeToContent="Height"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
-    <Grid Margin="15">
+    <Grid Margin="15 10 15 15">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -28,44 +29,54 @@
                    Foreground="{StaticResource GlobalPrimary}" />
 
         <Grid Grid.Row="1"
-              Margin="0 12 0 0">
+              Margin="0 15 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0">
+            <StackPanel Grid.Column="0"
+                        Orientation="Horizontal">
                 <TextBlock Text="{Binding CurrentResolutionLabel}"
-                           Style="{StaticResource H3}" />
-                <TextBlock Text="{Binding CurrentResolutionText}"
-                           FontSize="13"
-                           Margin="0 4 0 0"
-                           Foreground="{StaticResource GlobalSecondary}" />
+                           Style="{StaticResource H3}"
+                           VerticalAlignment="Center" />
+                <Button Content="{Binding CurrentResolutionText}"
+                        Command="{Binding UseCurrentResolutionCommand}"
+                        Margin="5 0 0 0"
+                        Width="105"
+                        Height="30"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource NormalButton}" />
             </StackPanel>
             <StackPanel Grid.Column="1"
-                        Margin="12 0 0 0">
+                        Orientation="Horizontal">
                 <TextBlock Text="{Binding SuggestedResolutionLabel}"
-                           Style="{StaticResource H3}" />
-                <TextBlock Text="{Binding SuggestedResolutionText}"
-                           FontSize="13"
-                           Margin="0 4 0 0"
-                           Foreground="{StaticResource GlobalSecondary}" />
+                           Style="{StaticResource H3}"
+                           VerticalAlignment="Center"
+                           Margin="10 0 0 0" />
+                <Button Content="{Binding SuggestedResolutionText}"
+                        Command="{Binding UseSuggestedResolutionCommand}"
+                        Margin="5 0 0 0"
+                        Width="105"
+                        Height="30"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource NormalButton}" />
             </StackPanel>
         </Grid>
 
         <comps:AppConfContainer Grid.Row="2"
                                 Header="{Binding SettingsHeader}"
-                                Margin="0 14 0 0">
+                                Margin="0 15 0 0">
             <comps:AppConfItem Text="{Binding WidthLabel}">
-                <TextBox Width="180"
+                <TextBox Width="120"
                          Text="{Binding ResolutionWidthText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         HorizontalAlignment="Right"
+                         HorizontalAlignment="Left"
                          PreviewTextInput="NumericTextBox_PreviewTextInput"
                          DataObject.Pasting="NumericTextBox_Pasting" />
             </comps:AppConfItem>
             <comps:AppConfItem Text="{Binding HeightLabel}">
-                <TextBox Width="180"
+                <TextBox Width="120"
                          Text="{Binding ResolutionHeightText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         HorizontalAlignment="Right"
+                         HorizontalAlignment="Left"
                          PreviewTextInput="NumericTextBox_PreviewTextInput"
                          DataObject.Pasting="NumericTextBox_Pasting" />
             </comps:AppConfItem>
@@ -79,5 +90,9 @@
                               Button2Command="{Binding Cmd2}"
                               Button1IsEnabled="{Binding B2_1IsEnabled}"
                               Button2IsEnabled="{Binding B2_2IsEnabled}" />
+
+        <comps:HintPanel Grid.Row="4"
+                         Text="{Binding EvenResolutionHint}"
+                         Margin="0 2.5 0 0" />
     </Grid>
 </ui:AdaptiveWindow>
