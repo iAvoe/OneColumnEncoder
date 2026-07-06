@@ -1078,6 +1078,7 @@ namespace OneColumnEncoder.ViewModels
                 ToolDefinitionProviderM.IsImportedTool(t.Name, "one_line_shot_args.exe"));
 
             bool hasVideoSrc = HasSelectedVideoSource();
+            bool hasRawJson = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
 
             if (oneLineShotSelected)
             {
@@ -1087,7 +1088,7 @@ namespace OneColumnEncoder.ViewModels
             else
             {
                 FilterScbButtons.B2_1IsEnabled = true;
-                FilterScbButtons.B2_2IsEnabled = hasVideoSrc;
+                FilterScbButtons.B2_2IsEnabled = hasVideoSrc && hasRawJson;
             }
 
             if (_modalNavS.GetModal<FilterScribeVM>() is FilterScribeVM modal)
@@ -1095,6 +1096,7 @@ namespace OneColumnEncoder.ViewModels
                 modal.ScriptExportButtons.B3_1IsEnabled = !oneLineShotSelected && hasVideoSrc;
                 modal.ScriptExportButtons.B3_2IsEnabled = !oneLineShotSelected && hasVideoSrc;
                 modal.ScriptExportButtons.B3_3IsEnabled = !oneLineShotSelected && hasVideoSrc;
+                modal.SetSourceAnalysisState(hasVideoSrc && hasRawJson);
             }
 
             OneClickScriptGen.OnCanExecuteChanged();
@@ -1544,6 +1546,7 @@ namespace OneColumnEncoder.ViewModels
         private void OnSourceAnalysisCompleted(bool isSuccess)
         {
             ToolsImportCard.SetCompleteSourceAnalysisStatus(isSuccess);
+            UpdateFilterScbButtonsState();
 
             if (!isSuccess)
             {

@@ -42,9 +42,11 @@ namespace OneColumnEncoder.ViewModels
         private readonly Action<string[]>? _applyConcatFilePaths;
         private const int DisplayConcatPathMaxLength = 90;
         private ColorSpaceAnalysisM _colorSpaceAnalysis = ColorSpaceConverter.Analyze(null);
+        private bool _hasSourceAnalysis;
         public CloseModalCmd CloseCmd { get; }
         public ConcatSourceListVM ConcatSources { get; } = new();
         public bool IsConcatMode => _isConcatRoute?.Invoke() == true;
+        public bool HasSourceAnalysis => _hasSourceAnalysis;
         // 0: AVS, 1: VPY, 2: ffmpeg
         private int _selectedTabIndex;
         public int SelectedTabIndex
@@ -481,6 +483,7 @@ namespace OneColumnEncoder.ViewModels
             _applyConcatFilePaths = applyConcatFilePaths;
             _baseAvsPrefix = UILangProviderM.Current["SrcScribe.AvsPrefix"];
             _baseVpyPrefix = UILangProviderM.Current["SrcScribe.VpyPrefix"];
+            _hasSourceAnalysis = !string.IsNullOrWhiteSpace(sourceFfprobeJson);
             ConfigureConcatSources();
             ParseColorSpaceInfo(sourceFfprobeJson);
             ParseSourceResolution(sourceFfprobeJson);
@@ -624,6 +627,22 @@ namespace OneColumnEncoder.ViewModels
                 CloseCmd,
                 new ActionCmd(_ => ApplyFfmpegFilterArgsOnly()),
                 new ActionCmd(_ => SaveAndImportAll()));
+
+            UpdateFinishButtonState();
+        }
+
+        public void SetSourceAnalysisState(bool hasSourceAnalysis)
+        {
+            if (SetProperty(ref _hasSourceAnalysis, hasSourceAnalysis))
+                UpdateFinishButtonState();
+        }
+
+        private void UpdateFinishButtonState()
+        {
+            if (FinishScribeButtons == null) return;
+
+            FinishScribeButtons.B3_2IsEnabled = _hasSourceAnalysis;
+            FinishScribeButtons.B3_3IsEnabled = _hasSourceAnalysis;
         }
 
         #region ThreeButtonGroup: copy full, copy in-out, save as file
