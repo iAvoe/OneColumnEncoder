@@ -31,6 +31,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly ToolItemCardVM? _outputSettingCard;
         private readonly VideoSourceQueueState _videoSourceQueue;
         private readonly VideoSourceConcatState _videoSourceConcat;
+        private const int MaxResolutionDimension = 65535;
         private string _scriptScribeFfmpegFilterArgs = string.Empty;
         private bool _isDurationFilterEnabled;
         private int _minVideoDurationSeconds = 30;
@@ -588,6 +589,7 @@ namespace OneColumnEncoder.ViewModels
                 () => ActiveSrcValidationCard.Checklist2.Count > 1
                     && ActiveSrcValidationCard.Checklist2[1].Status == StatusType.Warning,
                 () => _srcVideoAnalysis.RawJson,
+                TryReviseSourceResolution,
                 () => UpstreamsZone.Any(
                     t => t.IsSelected &&
                     ToolDefinitionProviderM.IsImportedTool(t.Name, "one_line_shot_args.exe")),
@@ -2275,6 +2277,65 @@ namespace OneColumnEncoder.ViewModels
                 ConcatTotalFrames: _srcVideoAnalysis.ConcatTotalFrames);
         }
 
+        private string? TryReviseSourceResolution(int width, int height)
+        {
+            if (width <= 0 || height <= 0 || width > MaxResolutionDimension || height > MaxResolutionDimension)
+                return UILangProviderM.Current["ReviseSourceResolution.InvalidInput"];
+
+            if (string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson))
+                return UILangProviderM.Current["ReviseSourceResolution.NoFfprobeJson"];
+
+            try
+            {
+                SourceRouteKind route = GetActiveSourceRoute();
+                if (route == SourceRouteKind.Queue)
+                {
+                    string queueJsonPath = GetCurrentQueueJsonPath();
+                    if (string.IsNullOrWhiteSpace(queueJsonPath) || !File.Exists(queueJsonPath))
+                        return UILangProviderM.Current["ReviseSourceResolution.NoFfprobeJson"];
+
+                    ReviseQueueSourceResolution(queueJsonPath, width, height);
+                }
+                else if (route == SourceRouteKind.Concat)
+                {
+                    ReviseConcatSourceResolution(width, height);
+                }
+                else
+                {
+                    ReviseSingleSourceResolution(width, height);
+                }
+
+                ActiveSrcValidationCard.ApplyFfprobeAnalysisJson(_srcVideoAnalysis.RawJson);
+                UpdateAnalyzeSrcButtonsState();
+                UpdateEncStartButtonsState();
+                RefreshDurationFilterStatus();
+                return null;
+            }
+            catch (Exception ex)
+            {
+                return string.Format(UILangProviderM.Current["ReviseSourceResolution.UpdateFailed"], ex.Message);
+            }
+        }
+
+        private void ReviseSingleSourceResolution(int width, int height)
+        {
+            _srcVideoAnalysis.RawJson = FFProbeResolutionReviseModel.UpdateSingleSourceJson(_srcVideoAnalysis.RawJson, width, height);
+        }
+
+        private void ReviseQueueSourceResolution(string queueJsonPath, int width, int height)
+        {
+            (_srcVideoAnalysis.RawJson, _srcVideoAnalysis.QueueRawJson) =
+                FFProbeResolutionReviseModel.UpdateQueueSourceJson(
+                    queueJsonPath, _srcVideoAnalysis.RawJson, _srcVideoAnalysis.QueueRawJson, width, height);
+        }
+
+        private void ReviseConcatSourceResolution(int width, int height)
+        {
+            (_srcVideoAnalysis.RawJson, _srcVideoAnalysis.QueueRawJson) =
+                FFProbeResolutionReviseModel.UpdateConcatSourceJson(
+                    _srcVideoAnalysis.RawJson, _srcVideoAnalysis.QueueRawJson, width, height);
+        }
+
         private Dictionary<string, string> LoadQueueFfprobeJsonByPath()
         {
             string queueJsonPath = GetCurrentQueueJsonPath();
@@ -2669,6 +2730,8 @@ namespace OneColumnEncoder.ViewModels
         private void OnModalStateChanged()
         {
             IsOverlayVisible = _modalNavS.IsOpen;
+            // These modal views should hide the main window while they are open.
+            // The flag also prevents the window from being shown twice during modal transitions.
             bool shouldHideMainWindow =
                 _modalNavS.HasModal<EncodingMonitorVM>() ||
                 _modalNavS.HasModal<FilterScribeVM>() ||
@@ -2676,15 +2739,18 @@ namespace OneColumnEncoder.ViewModels
                 _modalNavS.HasModal<ParallelismConfVM>() ||
                 _modalNavS.HasModal<FilenameScribeVM>() ||
                 _modalNavS.HasModal<AppConfVM>() ||
-                _modalNavS.HasModal<AppUsageVM>();
+                _modalNavS.HasModal<AppUsageVM>() ||
+                _modalNavS.HasModal<ReviseSourceResolutionVM>();
 
             if (shouldHideMainWindow && !_isEncoding)
             {
+                // Mark the window as hidden by modal flow and hide the main window.
                 IsEncoding = true;
                 Application.Current.MainWindow?.Hide();
             }
             else if (!shouldHideMainWindow && _isEncoding)
             {
+                // Restore the main window after the modal stack is cleared.
                 IsEncoding = false;
                 if (Application.Current.MainWindow is { Visibility: Visibility.Hidden } mw)
                     mw.Show();

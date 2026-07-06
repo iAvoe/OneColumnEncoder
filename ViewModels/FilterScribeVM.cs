@@ -9,6 +9,7 @@ using OneColumnEncoder.FileManagement;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels.Cards;
+using OneColumnEncoder.Views;
 using System.IO;
 using System.Windows;
 
@@ -31,6 +32,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly Func<SourceFileKind?> _getPreferredScriptSourceKind;
         private readonly Action<ToolItemCardVM, SourceFileKind, string> _afterImport;
         private readonly Action<string?> _applyFfmpegFilterArgs;
+        private readonly Func<int, int, string?> _reviseSourceResolution;
         private readonly Func<bool> _hasSourceValidationError;
         private readonly Func<bool> _hasSarRepairWarning;
         private readonly Func<bool>? _isQueueRoute;
@@ -453,6 +455,7 @@ namespace OneColumnEncoder.ViewModels
             Func<bool> hasSourceValidationError,
             Func<bool> hasSarRepairWarning,
             string? sourceFfprobeJson = null,
+            Func<int, int, string?>? reviseSourceResolution = null,
             Func<bool>? isQueueRoute = null,
             Func<string[]>? getQueueFilePaths = null,
             Func<bool>? isConcatRoute = null,
@@ -468,6 +471,7 @@ namespace OneColumnEncoder.ViewModels
             _getPreferredScriptSourceKind = getPreferredScriptSourceKind;
             _afterImport = afterImport;
             _applyFfmpegFilterArgs = applyFfmpegFilterArgs;
+            _reviseSourceResolution = reviseSourceResolution ?? ((_, _) => null);
             _hasSourceValidationError = hasSourceValidationError;
             _hasSarRepairWarning = hasSarRepairWarning;
             _isQueueRoute = isQueueRoute;
@@ -879,6 +883,8 @@ namespace OneColumnEncoder.ViewModels
 
         private void SaveAndImportAll()
         {
+            if (!ShowReviseSourceResolutionModal()) return;
+
             ApplyFfmpegFilterArgs();
 
             if (_isQueueRoute?.Invoke() == true)
@@ -1016,6 +1022,8 @@ namespace OneColumnEncoder.ViewModels
 
         private void ApplyFfmpegFilterArgsOnly()
         {
+            if (!ShowReviseSourceResolutionModal()) return;
+
             ApplyFfmpegFilterArgs();
             _closeAction();
         }
@@ -1023,6 +1031,46 @@ namespace OneColumnEncoder.ViewModels
         private void ApplyFfmpegFilterArgs()
         {
             _applyFfmpegFilterArgs(FfmpegFreeText.Trim());
+        }
+
+        private bool ShowReviseSourceResolutionModal()
+        {
+            var (suggestedWidth, suggestedHeight) = GetSuggestedOutputResolution();
+
+            ReviseSourceResolutionModal window = new();
+            ReviseSourceResolutionVM vm = new(
+                _modalNavS,
+                window.Close,
+                result => window.DialogResult = result,
+                _reviseSourceResolution,
+                SourceWidth,
+                SourceHeight,
+                suggestedWidth,
+                suggestedHeight);
+
+            window.DataContext = vm;
+            window.Owner = Application.Current.Windows
+                .OfType<FilterScribeModal>()
+                .FirstOrDefault(w => ReferenceEquals(w.DataContext, this))
+                ?? Application.Current.MainWindow;
+            window.Closed += (_, _) => _modalNavS.Close();
+            _modalNavS.CurrentModalVM = vm;
+
+            bool confirmed = window.ShowDialog() == true;
+            if (confirmed)
+            {
+                SourceWidth = vm.ResolutionWidth;
+                SourceHeight = vm.ResolutionHeight;
+            }
+            return confirmed;
+        }
+
+        private (int width, int height) GetSuggestedOutputResolution()
+        {
+            if (IsScaleApplicable && TargetWidth > 0 && TargetHeight > 0)
+                return (TargetWidth, TargetHeight);
+
+            return HasSource ? (SourceWidth, SourceHeight) : (0, 0);
         }
 
         private bool TryWriteScript(string path, string script)
