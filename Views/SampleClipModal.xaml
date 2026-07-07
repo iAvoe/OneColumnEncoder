@@ -1,18 +1,18 @@
 <ui:AdaptiveWindow x:Class="OneColumnEncoder.Views.SampleClipModal"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:comps="clr-namespace:OneColumnEncoder.Components"
-        xmlns:ui="clr-namespace:OneColumnEncoder.UI"
-        xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
-        d:DataContext="{d:DesignInstance Type=vms:SampleClipVM}"
-        mc:Ignorable="d"
-        Title="{Binding WindowTitle}"
-        Width="600"
-        Height="520"
-        WindowStartupLocation="CenterOwner"
-        Background="{StaticResource Background}">
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                   xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+                   xmlns:ui="clr-namespace:OneColumnEncoder.UI"
+                   xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
+                   d:DataContext="{d:DesignInstance Type=vms:SampleClipVM}"
+                   mc:Ignorable="d"
+                   Title="{Binding WindowTitle}"
+                   Width="600"
+                   SizeToContent="Height"
+                   WindowStartupLocation="CenterOwner"
+                   Background="{StaticResource Background}">
     <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -34,165 +34,165 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-        <!-- Total duration, total frames, frame rate -->
-        <comps:ColumnTextGrid Grid.Row="0"
-                              Items="{Binding SummaryColumns}"
-                              ColumnCount="3" />
+                <!-- Total duration, total frames, frame rate -->
+                <comps:ColumnTextGrid Grid.Row="0"
+                                      Items="{Binding SummaryColumns}"
+                                      ColumnCount="3" />
 
-        <!-- Time range selector header -->
-        <TextBlock Grid.Row="1"
-                   Text="{Binding TimelineSectionTitle}"
-                   Style="{StaticResource H3}"
-                   Foreground="{StaticResource GlobalPrimary}"
-                   Margin="0 10 0 0" />
+                <!-- Time range selector header -->
+                <TextBlock Grid.Row="1"
+                           Text="{Binding TimelineSectionTitle}"
+                           Style="{StaticResource H3}"
+                           Foreground="{StaticResource GlobalPrimary}"
+                           Margin="0 10 0 0" />
 
-        <!-- Time range selector -->
-        <comps:ClipRangeSelector Grid.Row="2"
-                                  AxisLabels="{Binding AxisLabels}"
-                                  SelectionStart="{Binding SelectionStart, Mode=TwoWay}"
-                                  SelectionEnd="{Binding SelectionEnd, Mode=TwoWay}" />
+                <!-- Time range selector -->
+                <comps:ClipRangeSelector Grid.Row="2"
+                                         AxisLabels="{Binding AxisLabels}"
+                                         SelectionStart="{Binding SelectionStart, Mode=TwoWay}"
+                                         SelectionEnd="{Binding SelectionEnd, Mode=TwoWay}" />
 
-        <!-- Drag time range selector handle hint -->
-        <comps:HintPanel Grid.Row="3"
-                         Text="{Binding SelectionHintText}"
-                         HintBrush="{StaticResource GlobalSecondary}"
-                         FontSize="10"
-                         Margin="0 5 0 0"
-                         HorizontalAlignment="Left"
-                         VerticalAlignment="Center" />
+                <!-- Drag time range selector handle hint -->
+                <comps:HintPanel Grid.Row="3"
+                                 Text="{Binding SelectionHintText}"
+                                 HintBrush="{StaticResource GlobalSecondary}"
+                                 FontSize="10"
+                                 Margin="0 5 0 0"
+                                 HorizontalAlignment="Left"
+                                 VerticalAlignment="Center" />
 
-        <!-- Clip duration settings title -->
-        <TextBlock Grid.Row="4"
-                   Text="{Binding DurationSectionTitle}"
-                   Style="{StaticResource H3}"
-                   Foreground="{StaticResource GlobalPrimary}"
-                   Margin="0 10 0 0"/>
+                <!-- Clip duration settings title -->
+                <TextBlock Grid.Row="4"
+                           Text="{Binding DurationSectionTitle}"
+                           Style="{StaticResource H3}"
+                           Foreground="{StaticResource GlobalPrimary}"
+                           Margin="0 10 0 0" />
 
-        <!-- Clip duration slider -->
-        <comps:IntegerSlider Grid.Row="5"
-                              Margin="0 10 0 0"
-                              Label="{Binding ClipLengthLabel}"
-                              LabelWidth="73"
-                              Minimum="10"
-                              Maximum="600"
-                              Value="{Binding ClipLengthSeconds, Mode=TwoWay}"
-                              TickLabels="{Binding ClipLengthTickLabels}"
-                              TickCount="6"
-                              Step="10"/>
+                <!-- Clip duration slider -->
+                <comps:IntegerSlider Grid.Row="5"
+                                     Margin="0 10 0 0"
+                                     Label="{Binding ClipLengthLabel}"
+                                     LabelWidth="73"
+                                     Minimum="10"
+                                     Maximum="600"
+                                     Value="{Binding ClipLengthSeconds, Mode=TwoWay}"
+                                     TickLabels="{Binding ClipLengthTickLabels}"
+                                     TickCount="6"
+                                     Step="10" />
 
-        <!-- Specific time range text fields -->
-        <Grid Grid.Row="6"
-              Margin="0 10 0 0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+                <!-- Specific time range text fields -->
+                <Grid Grid.Row="6"
+                      Margin="0 10 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0"
-                       Grid.Column="0"
-                       Text="{Binding StartTimeLabel}"
-                       Style="{StaticResource H3}" />
-            <TextBlock Grid.Row="0"
-                       Grid.Column="1"
-                       Text="{Binding ClipDurationLabel}"
-                       Style="{StaticResource H3}"
-                       Margin="10 0 0 0" />
-            <TextBlock Grid.Row="0"
-                       Grid.Column="2"
-                       Text="{Binding EndTimeLabel}"
-                       Style="{StaticResource H3}"
-                       Margin="10 0 0 0" />
+                    <TextBlock Grid.Row="0"
+                               Grid.Column="0"
+                               Text="{Binding StartTimeLabel}"
+                               Style="{StaticResource H3}" />
+                    <TextBlock Grid.Row="0"
+                               Grid.Column="1"
+                               Text="{Binding ClipDurationLabel}"
+                               Style="{StaticResource H3}"
+                               Margin="10 0 0 0" />
+                    <TextBlock Grid.Row="0"
+                               Grid.Column="2"
+                               Text="{Binding EndTimeLabel}"
+                               Style="{StaticResource H3}"
+                               Margin="10 0 0 0" />
 
-            <TextBox Grid.Row="1"
-                      Grid.Column="0"
-                      Text="{Binding StartTimeText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                      FontSize="13"
-                      Padding="5"
-                      Margin="0 5 0 0" />
-            <TextBlock Grid.Row="1"
-                       Grid.Column="1"
-                       Text="{Binding ClipDurationText}"
-                       FontSize="13"
-                       Padding="5"
-                       Margin="10 5 0 0"
-                       VerticalAlignment="Center" />
-            <TextBox Grid.Row="1"
-                      Grid.Column="2"
-                      Text="{Binding EndTimeText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                      FontSize="13"
-                      Padding="5"
-                      Margin="10 5 0 0" />
-            <TextBlock Grid.Row="1"
-                       Grid.Column="3"
-                       Text="{Binding TimeFormatText}"
-                       FontSize="13"
-                       Foreground="{StaticResource GlobalSecondary}"
-                       VerticalAlignment="Center"
-                       Margin="10 5 0 0" />
-        </Grid>
+                    <TextBox Grid.Row="1"
+                             Grid.Column="0"
+                             Text="{Binding StartTimeText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                             FontSize="13"
+                             Padding="5"
+                             Margin="0 5 0 0" />
+                    <TextBlock Grid.Row="1"
+                               Grid.Column="1"
+                               Text="{Binding ClipDurationText}"
+                               FontSize="13"
+                               Padding="5"
+                               Margin="10 5 0 0"
+                               VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1"
+                             Grid.Column="2"
+                             Text="{Binding EndTimeText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                             FontSize="13"
+                             Padding="5"
+                             Margin="10 5 0 0" />
+                    <TextBlock Grid.Row="1"
+                               Grid.Column="3"
+                               Text="{Binding TimeFormatText}"
+                               FontSize="13"
+                               Foreground="{StaticResource GlobalSecondary}"
+                               VerticalAlignment="Center"
+                               Margin="10 5 0 0" />
+                </Grid>
 
-        <!-- Specific frame or field text fields -->
-        <Grid Grid.Row="7"
-              Margin="0 15 0 0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+                <!-- Specific frame or field text fields -->
+                <Grid Grid.Row="7"
+                      Margin="0 15 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0"
-                       Grid.Column="0"
-                       Text="{Binding StartFrameLabel}"
-                       Style="{StaticResource H3}" />
-            <TextBlock Grid.Row="0"
-                       Grid.Column="1"
-                       Text="{Binding ClipFrameCountLabel}"
-                       Style="{StaticResource H3}"
-                       Margin="10 0 0 0" />
-            <TextBlock Grid.Row="0"
-                       Grid.Column="2"
-                       Text="{Binding EndFrameLabel}"
-                       Style="{StaticResource H3}"
-                       Margin="10 0 0 0" />
+                    <TextBlock Grid.Row="0"
+                               Grid.Column="0"
+                               Text="{Binding StartFrameLabel}"
+                               Style="{StaticResource H3}" />
+                    <TextBlock Grid.Row="0"
+                               Grid.Column="1"
+                               Text="{Binding ClipFrameCountLabel}"
+                               Style="{StaticResource H3}"
+                               Margin="10 0 0 0" />
+                    <TextBlock Grid.Row="0"
+                               Grid.Column="2"
+                               Text="{Binding EndFrameLabel}"
+                               Style="{StaticResource H3}"
+                               Margin="10 0 0 0" />
 
-            <TextBox Grid.Row="1"
-                      Grid.Column="0"
-                      Text="{Binding StartFrameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                      FontSize="13"
-                      Padding="4"
-                      Margin="0 5 0 0" />
-            <TextBlock Grid.Row="1"
-                       Grid.Column="1"
-                       Text="{Binding ClipFrameCountText}"
-                       FontSize="13"
-                       Padding="4"
-                       Margin="10 5 0 0"
-                       VerticalAlignment="Center" />
-            <TextBox Grid.Row="1"
-                      Grid.Column="2"
-                      Text="{Binding EndFrameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                      FontSize="13"
-                      Padding="4"
-                      Margin="10 5 0 0" />
-            <TextBlock Grid.Row="1"
-                       Grid.Column="3"
-                       Text="{Binding FrameFormatText}"
-                       FontSize="13"
-                       Foreground="{StaticResource GlobalSecondary}"
-                       VerticalAlignment="Center"
-                       Margin="10 5 0 0" />
-        </Grid>
+                    <TextBox Grid.Row="1"
+                             Grid.Column="0"
+                             Text="{Binding StartFrameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                             FontSize="13"
+                             Padding="4"
+                             Margin="0 5 0 0" />
+                    <TextBlock Grid.Row="1"
+                               Grid.Column="1"
+                               Text="{Binding ClipFrameCountText}"
+                               FontSize="13"
+                               Padding="4"
+                               Margin="10 5 0 0"
+                               VerticalAlignment="Center" />
+                    <TextBox Grid.Row="1"
+                             Grid.Column="2"
+                             Text="{Binding EndFrameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                             FontSize="13"
+                             Padding="4"
+                             Margin="10 5 0 0" />
+                    <TextBlock Grid.Row="1"
+                               Grid.Column="3"
+                               Text="{Binding FrameFormatText}"
+                               FontSize="13"
+                               Foreground="{StaticResource GlobalSecondary}"
+                               VerticalAlignment="Center"
+                               Margin="10 5 0 0" />
+                </Grid>
 
             </Grid>
         </ScrollViewer>

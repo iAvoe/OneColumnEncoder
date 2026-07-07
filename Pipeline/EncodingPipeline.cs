@@ -855,6 +855,27 @@ public static partial class EncodingPipeline
         string.IsNullOrWhiteSpace(value) ? null : value.Trim().ToLowerInvariant();
     #endregion
 
+    public static EncodingMuxCommand? BuildVideoOnlyMuxCommand(EncodingPipelineRequest request)
+    {
+        if (request.Clip != null) return null;
+        if (string.IsNullOrWhiteSpace(request.FfmpegPath)) return null;
+
+        string encodedVideoPath = ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath);
+        string outputPath = ResolveMuxOutputPath(request.OutputPath);
+        string framerateValue = GetMuxFramerateValue(request.SourceFfprobeJson, request.FfmpegFilterArgs);
+        string videoTimescaleArgs = GetMuxVideoTrackTimescaleArgs(request.SourceFfprobeJson);
+        string? inputFormatArgs = GetMuxInputFormatArgs(request.EncoderExeName, framerateValue);
+
+        string args = JoinArgs(
+            "-hide_banner -y",
+            inputFormatArgs,
+            $"-i {Quote(encodedVideoPath)}",
+            "-map 0:v:0 -c:v copy -bsf:v setts=pts=N*DURATION " + videoTimescaleArgs,
+            Quote(outputPath));
+
+        return new($"{Quote(request.FfmpegPath)} {args}", args, encodedVideoPath, outputPath);
+    }
+
     public static string ResolveOutputPathWithExtension(string encoderExeName, string outputPath)
     {
         string ext = encoderExeName.ToLowerInvariant() switch

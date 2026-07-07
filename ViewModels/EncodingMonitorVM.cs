@@ -33,6 +33,15 @@ namespace OneColumnEncoder.ViewModels
             try { return Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.ANSICodePage); }
             catch { try { return Console.OutputEncoding; } catch { return Encoding.UTF8; } }
         }
+
+        private static Encoding GetEncodingForProcess(string exeName)
+        {
+            return exeName.ToLowerInvariant() switch
+            {
+                "avs2yuv.exe" or "avs2pipemod.exe" => SystemTextEncoding,
+                _ => Encoding.UTF8
+            };
+        }
         private const int MemoryRangeMaxFillLevel = 8;
         private const int UpstreamShutdownAfterEncoderExitDelayMs = 5000;
         private const int UpstreamKillAfterShutdownTimeoutMs = 1000;
@@ -523,6 +532,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 StatusText = Lang.EncodingText;
                 // Create the upstream decoder process (e.g. ffmpeg source)
+                Encoding upstreamEncoding = GetEncodingForProcess(_request.UpstreamExeName);
                 using Process upstream = new()
                 {
                     StartInfo = new ProcessStartInfo
@@ -533,8 +543,8 @@ namespace OneColumnEncoder.ViewModels
                         CreateNoWindow = true,
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
-                        StandardOutputEncoding = SystemTextEncoding,
-                        StandardErrorEncoding = SystemTextEncoding
+                        StandardOutputEncoding = upstreamEncoding,
+                        StandardErrorEncoding = upstreamEncoding
                     },
                     EnableRaisingEvents = true
                 };
@@ -548,7 +558,7 @@ namespace OneColumnEncoder.ViewModels
                         CreateNoWindow = true,
                         RedirectStandardInput = true,
                         RedirectStandardError = true,
-                        StandardErrorEncoding = SystemTextEncoding
+                        StandardErrorEncoding = Encoding.UTF8
                     },
                     EnableRaisingEvents = true
                 };
@@ -794,7 +804,9 @@ namespace OneColumnEncoder.ViewModels
         /// </summary>
         private async Task<bool> RunMuxAsync(CancellationToken cancellationToken)
         {
-            EncodingMuxCommand? muxCommand = _command.MuxCommand;
+            EncodingMuxCommand? muxCommand = _userInterruptRequested
+                ? EncodingPipeline.BuildVideoOnlyMuxCommand(_request)
+                : _command.MuxCommand;
             if (!EnableMux || muxCommand == null) return true;
 
             if (!File.Exists(muxCommand.EncodedVideoPath))
@@ -820,8 +832,8 @@ namespace OneColumnEncoder.ViewModels
                         CreateNoWindow = true,
                         RedirectStandardError = true,
                         RedirectStandardOutput = true,
-                        StandardOutputEncoding = SystemTextEncoding,
-                        StandardErrorEncoding = SystemTextEncoding
+                        StandardOutputEncoding = Encoding.UTF8,
+                        StandardErrorEncoding = Encoding.UTF8
                     },
                 EnableRaisingEvents = true
             };

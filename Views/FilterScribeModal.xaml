@@ -11,7 +11,7 @@
                    mc:Ignorable="d"
                    Title="{Binding WindowTitle}"
                    Width="740"
-                   Height="1010"
+                   SizeToContent="Height"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
     <Grid Margin="15 10 15 0">
@@ -22,7 +22,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*"
-                           MaxHeight="310"/>
+                           MaxHeight="310" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -30,9 +30,9 @@
         </Grid.RowDefinitions>
 
         <comps:ConcatSourceSidebarPanel Grid.Column="0"
-                                         Grid.RowSpan="6"
-                                         DataContext="{Binding ConcatSources}"
-                                         Margin="0 0 10 0">
+                                        Grid.RowSpan="6"
+                                        DataContext="{Binding ConcatSources}"
+                                        Margin="0 0 10 0">
             <comps:ConcatSourceSidebarPanel.Style>
                 <Style TargetType="comps:ConcatSourceSidebarPanel">
                     <Setter Property="Visibility"
@@ -84,7 +84,7 @@
                              AcceptsReturn="True"
                              FontWeight="Normal"
                              MaxHeight="80"
-                             VerticalScrollBarVisibility="Auto"/>
+                             VerticalScrollBarVisibility="Auto" />
                     <TextBox Grid.Row="1"
                              Text="{Binding AvsPrefix2, Mode=OneWay}"
                              VerticalAlignment="Stretch"
@@ -243,8 +243,8 @@
         </TabControl>
 
         <comps:ThreeButtonGroup Grid.Row="2"
-                                 Grid.Column="1"
-                                 Margin="0 10 0 0"
+                                Grid.Column="1"
+                                Margin="0 10 0 0"
                                 ButtonHeight="30"
                                 DataContext="{Binding ScriptExportButtons}"
                                 Button1Command="{Binding Cmd1}"
@@ -648,8 +648,8 @@
         </StackPanel>
 
         <comps:ThreeButtonGroup Grid.Row="4"
-                                 Grid.Column="1"
-                                 Margin="0 10 0 0"
+                                Grid.Column="1"
+                                Margin="0 10 0 0"
                                 ButtonHeight="30"
                                 DataContext="{Binding FinishScribeButtons}"
                                 Button1Command="{Binding Cmd1}"
@@ -660,8 +660,8 @@
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
 
         <comps:HintPanel Grid.Row="5"
-                          Grid.Column="1"
-                          Margin="0 2.5 0 15"
-                          Text="{Binding NoteText}" />
+                         Grid.Column="1"
+                         Margin="0 2.5 0 15"
+                         Text="{Binding NoteText}" />
     </Grid>
 </ui:AdaptiveWindow>

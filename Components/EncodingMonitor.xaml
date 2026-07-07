@@ -12,7 +12,7 @@
     <UserControl.Resources>
         <conv:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
     </UserControl.Resources>
-    <Grid Margin="15 10 15 0">
+    <Grid Margin="15 10 15 15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
