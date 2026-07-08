@@ -52,8 +52,19 @@ namespace OneColumnEncoder.ViewModels
         public int SelectedTabIndex
         {
             get => _selectedTabIndex;
-            set => SetProperty(ref _selectedTabIndex, value);
+            set
+            {
+                if (SetProperty(ref _selectedTabIndex, value))
+                {
+                    OnPropertyChanged(nameof(IsAvsTabSelected));
+                    OnPropertyChanged(nameof(IsVpyTabSelected));
+                    OnPropertyChanged(nameof(IsFfmpegTabSelected));
+                }
+            }
         }
+        public bool IsAvsTabSelected => _selectedTabIndex == 0;
+        public bool IsVpyTabSelected => _selectedTabIndex == 1;
+        public bool IsFfmpegTabSelected => _selectedTabIndex == 2;
 
         // Avs/VpyPrefix becomes instance property to support dynamic fpsnum/fpsden
         // Avs/VpyPrefix2 is a guidance comment to keep
