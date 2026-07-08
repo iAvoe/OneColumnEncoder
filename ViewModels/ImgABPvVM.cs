@@ -365,6 +365,7 @@ namespace OneColumnEncoder.ViewModels
                 PositionTickLabels.Add(Math.Round(safeDuration * i / 4d).ToString(CultureInfo.InvariantCulture));
         }
 
+        #region Preview Path Queries
         private PreviewEncoder GetSelectedEncoder() =>
             EncoderDropdown.SelectedItem?.Tag is PreviewEncoder encoder ? encoder : PreviewEncoder.X264;
 
@@ -386,6 +387,16 @@ namespace OneColumnEncoder.ViewModels
             _ => GetWorkPath($"svtav1-{PreviewPipeline.GetDisplayModeFileSuffix(_displayMode)}.png")
         };
 
+        private string GetDisplayModeTitle(PreviewDisplayMode displayMode) => displayMode switch
+        {
+            PreviewDisplayMode.LowToBt709 => Lang.DisplayModeLowToBt709,
+            PreviewDisplayMode.WcgToBt709 => Lang.DisplayModeWcgToBt709,
+            PreviewDisplayMode.HdrToSdr => Lang.DisplayModeHdrToSdr,
+            PreviewDisplayMode.HighHdrToSdr => Lang.DisplayModeHighHdrToSdr,
+            _ => Lang.DisplayModeRaw
+        };
+        #endregion
+
         private void SetDisplayMode(PreviewDisplayMode displayMode)
         {
             if (_displayMode == displayMode) return;
@@ -401,15 +412,6 @@ namespace OneColumnEncoder.ViewModels
             if (!IsBusy && SourceImage != null)
                 _ = GeneratePreviewAsync();
         }
-
-        private string GetDisplayModeTitle(PreviewDisplayMode displayMode) => displayMode switch
-        {
-            PreviewDisplayMode.LowToBt709 => Lang.DisplayModeLowToBt709,
-            PreviewDisplayMode.WcgToBt709 => Lang.DisplayModeWcgToBt709,
-            PreviewDisplayMode.HdrToSdr => Lang.DisplayModeHdrToSdr,
-            PreviewDisplayMode.HighHdrToSdr => Lang.DisplayModeHighHdrToSdr,
-            _ => Lang.DisplayModeRaw
-        };
 
         private static void EnsureFileExists(string path, string message)
         {

@@ -102,17 +102,18 @@ namespace OneColumnEncoder.ViewModels
             _finishAction(true);
         }
 
+        private void SetResolutionText(int width, int height)
+        {
+            ResolutionWidthText = width.ToString(CultureInfo.InvariantCulture);
+            ResolutionHeightText = height.ToString(CultureInfo.InvariantCulture);
+        }
+
+        #region Resolution Queries
         private bool TryParseResolution(out int width, out int height)
         {
             bool hasWidth = TryParseDimension(ResolutionWidthText, out width);
             bool hasHeight = TryParseDimension(ResolutionHeightText, out height);
             return hasWidth && hasHeight;
-        }
-
-        private void SetResolutionText(int width, int height)
-        {
-            ResolutionWidthText = width.ToString(CultureInfo.InvariantCulture);
-            ResolutionHeightText = height.ToString(CultureInfo.InvariantCulture);
         }
 
         private static bool TryParseDimension(string? text, out int value)
@@ -122,15 +123,16 @@ namespace OneColumnEncoder.ViewModels
                 && value <= MaxResolutionDimension;
         }
 
-        private void ShowError(string message)
-        {
-            new OpenErrModalCmd(_modalNavS, WindowTitle, message).Execute(null);
-        }
-
         private static string FormatResolution(int width, int height) =>
             width > 0 && height > 0
                 ? string.Format(UILangProviderM.Current["ReviseSourceResolution.ResolutionFormat"], width, height)
                 : UILangProviderM.Current["ReviseSourceResolution.UnknownResolution"];
+        #endregion
+
+        private void ShowError(string message)
+        {
+            new OpenErrModalCmd(_modalNavS, WindowTitle, message).Execute(null);
+        }
 
         private void OnLanguageChanged()
         {

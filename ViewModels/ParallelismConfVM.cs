@@ -235,6 +235,7 @@ namespace OneColumnEncoder.ViewModels
             return $"{encoderThreadCount} ({upstreamIndicator}, {encoderIndicator})";
         }
 
+        #region Thread Query Helpers
         private List<string> BuildThreadTickLabels()
         {
             int max = Math.Max(1, MaxThreadCount);
@@ -261,6 +262,7 @@ namespace OneColumnEncoder.ViewModels
                 _ => 32
             };
         }
+        #endregion
 
         private static string BuildCacheGroupHint()
         {
@@ -290,11 +292,13 @@ namespace OneColumnEncoder.ViewModels
             return Math.Max(1, Math.Min(Math.Max(1, maxThreadCount), threadCount));
         }
 
+        #region Node Query Helpers
         private static CPUNodeCardVM GetSelectedEnabledNode(ObservableCollection<CPUNodeCardVM> zone)
         {
             return zone.FirstOrDefault(n => n.IsSelected && n.IsEnabled)
                 ?? zone.First(n => n.IsEnabled);
         }
+        #endregion
 
         private void OnLanguageChanged()
         {

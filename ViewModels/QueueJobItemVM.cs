@@ -193,6 +193,7 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
+        #region Job Display Queries
         private string GetFrameCountText()
         {
             long? frameCount = _request?.SourceFfprobeJson is { Length: > 0 }
@@ -204,6 +205,7 @@ namespace OneColumnEncoder.ViewModels
 
             return "N/A";
         }
+        #endregion
 
         public override void Dispose()
         {

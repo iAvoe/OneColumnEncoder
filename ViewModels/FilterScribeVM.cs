@@ -527,6 +527,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(FfmpegConcatFileList));
         }
 
+        #region Concat Source Queries
         private string[] GetCurrentConcatFilePaths() =>
             IsConcatMode ? ConcatSources.GetCurrentFilePaths() : [];
 
@@ -548,6 +549,7 @@ namespace OneColumnEncoder.ViewModels
             int tailLength = DisplayConcatPathMaxLength - prefix.Length;
             return string.Concat(prefix, path.AsSpan(path.Length - tailLength, tailLength));
         }
+        #endregion
 
         private void RefreshConcatSourceLanguage()
         {
@@ -1084,6 +1086,7 @@ namespace OneColumnEncoder.ViewModels
             return confirmed;
         }
 
+        #region Script Save Queries
         private (int width, int height) GetSuggestedOutputResolution()
         {
             if (IsScaleApplicable && TargetWidth > 0 && TargetHeight > 0)
@@ -1091,6 +1094,10 @@ namespace OneColumnEncoder.ViewModels
 
             return HasSource ? (SourceWidth, SourceHeight) : (0, 0);
         }
+
+        private static string GetScriptFileName(string sourcePath, string extension) =>
+            Path.GetFileNameWithoutExtension(sourcePath) + extension;
+        #endregion
 
         private bool TryWriteScript(string path, string script)
         {
@@ -1105,9 +1112,6 @@ namespace OneColumnEncoder.ViewModels
                 return false;
             }
         }
-
-        private static string GetScriptFileName(string sourcePath, string extension) =>
-            Path.GetFileNameWithoutExtension(sourcePath) + extension;
 
         private bool TryWriteScripts(string avsPath, string avsScript, string vpyPath, string vpyScript)
         {
@@ -1161,6 +1165,7 @@ namespace OneColumnEncoder.ViewModels
                 string.Format(UILangProviderM.Current["SrcScribe.ScriptSaved"], path)).Execute(null);
         }
 
+        #region Script Text Queries
         private string GetCurrentFullScript()
         {
             if (IsConcatMode)
@@ -1188,6 +1193,7 @@ namespace OneColumnEncoder.ViewModels
                 _ => FfmpegFreeText
             };
         }
+        #endregion
         #endregion
 
         #region Language switching

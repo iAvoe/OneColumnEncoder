@@ -28,6 +28,7 @@ namespace OneColumnEncoder.ViewModels
 
         private static readonly Encoding SystemTextEncoding = GetSystemTextEncoding();
 
+        #region Encoding Queries
         private static Encoding GetSystemTextEncoding()
         {
             try { return Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.ANSICodePage); }
@@ -42,6 +43,8 @@ namespace OneColumnEncoder.ViewModels
                 _ => Encoding.UTF8
             };
         }
+        #endregion
+
         private const int MemoryRangeMaxFillLevel = 8;
         private const int UpstreamShutdownAfterEncoderExitDelayMs = 5000;
         private const int UpstreamKillAfterShutdownTimeoutMs = 1000;
@@ -445,11 +448,14 @@ namespace OneColumnEncoder.ViewModels
                 _downstreamStderrBuilder.ToString());
         }
 
+        #region Log State Queries
         private bool IsActiveLogSelected()
         {
             QueueJobItemVM? selectedJob = QueueSidebar.SelectedJob;
             return selectedJob == null || selectedJob.JobId == _activeLogJobId;
         }
+        #endregion
+
 
         private void SetDisplayedLogs(string upstreamText, string downstreamText)
         {
@@ -1132,6 +1138,7 @@ namespace OneColumnEncoder.ViewModels
                 StatusText = trimmed;
         }
 
+        #region Log Parsing Queries
         [GeneratedRegex(@"(?<![\d.])\d{1,3}(?:\.\d+)?\s*%")]
         private static partial Regex ProgressLineRegex();
 
@@ -1218,6 +1225,7 @@ namespace OneColumnEncoder.ViewModels
             return match.Success
                 && int.TryParse(match.Groups[1].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out value);
         }
+        #endregion
 
         /// <summary>
         /// Removes the last line from the StringBuilder and its associated fold state entry.
@@ -1289,6 +1297,7 @@ namespace OneColumnEncoder.ViewModels
             DistributionAvailable = FormatMb(memoryStatus.AvailablePhysicalBytes);
         }
 
+        #region Memory Sampling Queries
         /// <summary>
         /// Calculates the portion of system cache that is not part of the encoding processes'
         /// working set. This avoids double-counting cache that belongs to our processes.
@@ -1309,6 +1318,7 @@ namespace OneColumnEncoder.ViewModels
             if (intervalSeconds <= 0) return true;
             return (now - _lastMemoryStatsUpdate).TotalSeconds >= intervalSeconds;
         }
+        #endregion
 
         private void UpdateProgressDetails() =>
             SetCurrentOutputSizeBytes(TryGetOutputSizeBytes());
@@ -1438,6 +1448,7 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
+        #region Progress and Size Queries
         /// <summary>
         /// Scans log text for percentage values (e.g. "56.3%") and returns the highest found.
         /// Only returns values >= current (monotonic progress).
@@ -1475,6 +1486,7 @@ namespace OneColumnEncoder.ViewModels
                 return 0L;
             }
         }
+        #endregion
 
         private void SetCurrentOutputSizeBytes(long outputSizeBytes)
         {
@@ -1496,6 +1508,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(EstimatedSizeLabel));
         }
 
+        #region Progress Display Queries
         /// <summary>
         /// Estimates final output size by linearly extrapolating current output size
         /// based on progress ratio (frame-based if available, otherwise percentage-based).
@@ -1529,7 +1542,9 @@ namespace OneColumnEncoder.ViewModels
 
             return _writtenFrames > 0 ? _writtenFrames.ToString("N0", CultureInfo.InvariantCulture) : Lang.NotAvailableText;
         }
+        #endregion
 
+        #region Process Metric Queries
         private static long GetWorkingSetBytes(Process? process, Dictionary<int, List<int>>? childMap = null)
         {
             return SumProcessTreeValue(process, GetSingleProcessWorkingSetBytes, childMap);
@@ -1754,6 +1769,7 @@ namespace OneColumnEncoder.ViewModels
         {
             return value > long.MaxValue ? long.MaxValue : (long)value;
         }
+        #endregion
 
         [LibraryImport("kernel32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -2045,6 +2061,7 @@ namespace OneColumnEncoder.ViewModels
             new OpenDebugModalCmd(_modalNavS, Lang.EncodingCommandTitle, command.DisplayCommandLine).Execute(null);
         }
 
+        #region Command Text Queries
         private string BuildOpusAudioCommandHint()
         {
             EncodingPipelineRequest request = QueueSidebar.SelectedJob?.Request ?? _request;
@@ -2067,6 +2084,7 @@ namespace OneColumnEncoder.ViewModels
 
         private static string QuoteArgument(string value) =>
             $"\"{value.Replace("\"", "\\\"", StringComparison.Ordinal)}\"";
+        #endregion
 
         /// <summary>
         /// Shows a confirmation dialog asking whether to stop the entire queue.
@@ -2121,6 +2139,7 @@ namespace OneColumnEncoder.ViewModels
             };
         }
 
+        #region Footer Text Queries
         /// <summary>
         /// Formats the rate control display text (e.g. "CRF 18" or "ABR 8 Mbps")
         /// based on the encoder type and configuration.
@@ -2152,6 +2171,7 @@ namespace OneColumnEncoder.ViewModels
                 _ => Lang.NotAvailableText
             };
         }
+        #endregion
 
         private void RefreshLanguageState()
         {

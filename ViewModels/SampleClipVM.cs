@@ -341,6 +341,7 @@ namespace OneColumnEncoder.ViewModels
             ApplySelectionSeconds(endSeconds - durationSeconds, endSeconds, anchorEnd: true);
         }
 
+        #region Clip Input Queries
         private double GetCurrentClipDurationSeconds()
         {
             double durationSeconds = Math.Abs(SelectionEnd - SelectionStart) * _totalSeconds;
@@ -349,6 +350,25 @@ namespace OneColumnEncoder.ViewModels
 
             return SampleClip.ClampDuration(durationSeconds, _totalSeconds, MinClipLengthSeconds, MaxClipLengthSeconds);
         }
+
+        private bool TryParseSourceSeconds(string text, bool allowSourceEnd, out double seconds)
+        {
+            try
+            {
+                return SampleClip.TryParseSourceSeconds(text, _totalSeconds, allowSourceEnd, out seconds);
+            }
+            catch
+            {
+                seconds = 0d;
+                return false;
+            }
+        }
+
+        private bool TryParseSourceFrame(string text, out long frame)
+        {
+            return SampleClip.TryParseSourceFrame(text, _totalFrames, out frame);
+        }
+        #endregion
 
         private void ApplySelectionSeconds(double startSeconds, double endSeconds, bool anchorEnd)
         {
@@ -370,24 +390,6 @@ namespace OneColumnEncoder.ViewModels
             SelectionEnd = selection.Value.selectionEnd;
             _isSyncing = false;
             SyncFromSelection(updateClipLength: true);
-        }
-
-        private bool TryParseSourceSeconds(string text, bool allowSourceEnd, out double seconds)
-        {
-            try
-            {
-                return SampleClip.TryParseSourceSeconds(text, _totalSeconds, allowSourceEnd, out seconds);
-            }
-            catch
-            {
-                seconds = 0d;
-                return false;
-            }
-        }
-
-        private bool TryParseSourceFrame(string text, out long frame)
-        {
-            return SampleClip.TryParseSourceFrame(text, _totalFrames, out frame);
         }
 
         private void RunSample()

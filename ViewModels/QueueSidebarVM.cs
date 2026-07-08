@@ -298,6 +298,7 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
+        #region Queue State Queries
         private QueueJobItemVM? FindJobVM(string jobId)
         {
             if (RunningJob?.JobId == jobId) return RunningJob;
@@ -310,6 +311,7 @@ namespace OneColumnEncoder.ViewModels
         {
             return _store.Jobs.FindIndex(item => item.JobId == job.JobId);
         }
+        #endregion
 
         private void RemoveJobFromStatusCollection(QueueJobItemVM job)
         {
@@ -352,6 +354,7 @@ namespace OneColumnEncoder.ViewModels
             IsVisible = ShouldShowSidebar();
         }
 
+        #region Sidebar Queries
         private bool ShouldShowSidebar() => _store.Jobs.Count > 1;
 
         private IEnumerable<QueueJobItemVM> EnumerateJobVMs()
@@ -361,6 +364,7 @@ namespace OneColumnEncoder.ViewModels
             foreach (QueueJobItemVM job in CompletedJobs) yield return job;
             if (RunningJob != null) yield return RunningJob;
         }
+        #endregion
 
         private void DisposeJobVMs()
         {

@@ -152,7 +152,9 @@ namespace OneColumnEncoder.ViewModels
             Application.Current.MainWindow?.Activate();
         }
 
+        #region Command State Queries
         private bool CanConfirm() => FilenameFinishButtons.B2_2IsEnabled;
+        #endregion
 
         private void ValidateFilename()
         {
