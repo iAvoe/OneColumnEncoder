@@ -37,6 +37,7 @@ public class EncodingMonitorModalLangProviderM
             ["RotateLogFontSizeText"] = "Rotate log fontsize",
             ["SaveUpstreamStderrText"] = "Save upstream log",
             ["SaveDownstreamStderrText"] = "Save downstream log",
+            ["OpenTxtText"] = "Open TXT",
 
             ["OpenOutputDirectoryText"] = "Open output folder",
             ["ViewEncodingCommandText"] = "Revisit commandline",
@@ -112,6 +113,7 @@ public class EncodingMonitorModalLangProviderM
             ["RotateLogFontSizeText"] = "轮换日志字号",
             ["SaveUpstreamStderrText"] = "保存上游日志",
             ["SaveDownstreamStderrText"] = "保存下游日志",
+            ["OpenTxtText"] = "打开 TXT",
 
             ["OpenOutputDirectoryText"] = "打开输出目录",
             ["ViewEncodingCommandText"] = "查看编码参数",
@@ -187,6 +189,7 @@ public class EncodingMonitorModalLangProviderM
             ["RotateLogFontSizeText"] = "輪換日誌字型大小",
             ["SaveUpstreamStderrText"] = "保存上游日誌",
             ["SaveDownstreamStderrText"] = "保存下游日誌",
+            ["OpenTxtText"] = "開啟 TXT",
 
             ["OpenOutputDirectoryText"] = "開啟輸出資料夾",
             ["ViewEncodingCommandText"] = "檢視編碼參數",
@@ -265,6 +268,7 @@ public class EncodingMonitorModalLangProviderM
             ["RotateLogFontSizeText"] = "Changer taille police log",
             ["SaveUpstreamStderrText"] = "Sauver log amont",
             ["SaveDownstreamStderrText"] = "Sauver log aval",
+            ["OpenTxtText"] = "Ouvrir TXT",
             ["OpenOutputDirectoryText"] = "Ouvrir dossier sortie",
             ["ViewEncodingCommandText"] = "Revoir la commande",
             ["InterruptUpstreamText"] = "Interrompre amont",
@@ -333,6 +337,7 @@ public class EncodingMonitorModalLangProviderM
             ["RotateLogFontSizeText"] = "Cambiar tamaño del log",
             ["SaveUpstreamStderrText"] = "Guardar log aguas arriba",
             ["SaveDownstreamStderrText"] = "Guardar log aguas abajo",
+            ["OpenTxtText"] = "Abrir TXT",
             ["OpenOutputDirectoryText"] = "Abrir carpeta de salida",
             ["ViewEncodingCommandText"] = "Ver comando",
             ["InterruptUpstreamText"] = "Interrumpir aguas arriba",
@@ -401,6 +406,7 @@ public class EncodingMonitorModalLangProviderM
             ["RotateLogFontSizeText"] = "ログ文字サイズ変更",
             ["SaveUpstreamStderrText"] = "上流ログ保存",
             ["SaveDownstreamStderrText"] = "下流ログ保存",
+            ["OpenTxtText"] = "TXTを開く",
             ["OpenOutputDirectoryText"] = "出力フォルダを開く",
             ["ViewEncodingCommandText"] = "コマンド再表示",
             ["InterruptUpstreamText"] = "上流を中断",
@@ -469,6 +475,7 @@ public class EncodingMonitorModalLangProviderM
             ["RotateLogFontSizeText"] = "Сменить размер шрифта лога",
             ["SaveUpstreamStderrText"] = "Сохранить лог апстрима",
             ["SaveDownstreamStderrText"] = "Сохранить лог даунстрима",
+            ["OpenTxtText"] = "Открыть TXT",
             ["OpenOutputDirectoryText"] = "Открыть папку вывода",
             ["ViewEncodingCommandText"] = "Показать команду",
             ["InterruptUpstreamText"] = "Прервать апстрим",
@@ -541,6 +548,7 @@ public class EncodingMonitorModalLangProviderM
     public string RotateLogFontSizeText { get; }
     public string SaveUpstreamStderrText { get; }
     public string SaveDownstreamStderrText { get; }
+    public string OpenTxtText { get; }
     public string OpenOutputDirectoryText { get; }
     public string ViewEncodingCommandText { get; }
     public string InterruptUpstreamText { get; }
@@ -634,6 +642,7 @@ public class EncodingMonitorModalLangProviderM
         RotateLogFontSizeText = _d["RotateLogFontSizeText"];
         SaveUpstreamStderrText = _d["SaveUpstreamStderrText"];
         SaveDownstreamStderrText = _d["SaveDownstreamStderrText"];
+        OpenTxtText = _d["OpenTxtText"];
         OpenOutputDirectoryText = _d["OpenOutputDirectoryText"];
         ViewEncodingCommandText = _d["ViewEncodingCommandText"];
         InterruptUpstreamText = _d["InterruptUpstreamText"];

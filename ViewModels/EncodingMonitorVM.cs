@@ -2104,7 +2104,8 @@ namespace OneColumnEncoder.ViewModels
             Directory.CreateDirectory(directory);
             string path = Path.Combine(directory, fileName);
             File.WriteAllText(path, text, Encoding.UTF8);
-            new OpenSuccModalCmd(_modalNavS, string.Empty, Path.GetFullPath(path)).Execute(null);
+            string fullPath = Path.GetFullPath(path);
+            new OpenSavedTextModalCmd(_modalNavS, string.Empty, fullPath, Lang.OpenTxtText, fullPath).Execute(null);
         }
 
         /// <summary>
