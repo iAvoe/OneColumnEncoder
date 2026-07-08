@@ -75,7 +75,9 @@ public static class FFProbeSourceValidation
     private static bool HasSquarePixels(JsonElement stream)
     {
         string? sar = JsonElementHelper.TryGetString(stream, "sample_aspect_ratio");
-        return string.Equals(sar, "1:1", StringComparison.OrdinalIgnoreCase);
+        return string.IsNullOrWhiteSpace(sar)
+            || string.Equals(sar, "1:1", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(sar, "0:1", StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool HasKnownMetadata(JsonElement stream, string propertyName)

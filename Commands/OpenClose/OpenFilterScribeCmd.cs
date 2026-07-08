@@ -82,8 +82,8 @@ namespace OneColumnEncoder.Commands.OpenClose
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();
-            _modalNavS.CurrentModalVM = vm;
             window.Show();
+            _modalNavS.CurrentModalVM = vm;
         }
     }
 }

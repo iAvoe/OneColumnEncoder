@@ -157,7 +157,7 @@
                                Foreground="{StaticResource GlobalPrimary}" />
                 </StackPanel>
 
-                <!-- Row 5: 格式检查（严重问题 + 一般问题） -->
+                <!-- Row 5: Validation checklist -->
                 <StackPanel Grid.Row="5"
                             Margin="0 15 0 0">
                     <TextBlock Text="{Binding FormatCheckHeader}"
@@ -194,7 +194,7 @@
                     </comps:ChecklistContainer>
                 </StackPanel>
 
-                <!-- Row 6: 媒体刮削兼容性自查 -->
+                <!-- Row 6: Media scraping compatibility self-checklist -->
                 <StackPanel Grid.Row="6"
                             Margin="0 10 0 0">
                     <TextBlock Text="{Binding SelfCheckHeader}"
@@ -217,8 +217,8 @@
             </Grid>
         </ScrollViewer>
 
-        <!-- 取消 + 确认→定位输出路径 -->
-        <comps:TwoButtonGroup Grid.Row="1"
+        <!-- Cancel, Confirm -->
+        <comps:TwoButtonGroup Grid.Row="7"
                               Margin="0 15 0 0"
                               ButtonHeight="30"
                               DataContext="{Binding FilenameFinishButtons}"
