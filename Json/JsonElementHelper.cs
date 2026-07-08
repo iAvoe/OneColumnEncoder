@@ -16,6 +16,7 @@ internal static class JsonElementHelper
         };
     }
 
+    // Tries to get an integer. Returns false if failed, otherwise returns true
     public static bool TryGetInt(JsonElement element, string propertyName, out int value)
     {
         value = 0;
