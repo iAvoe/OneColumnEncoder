@@ -95,7 +95,7 @@ The summed frame count (computed in `ConcatCompatibilityAnalyzer.AnalyzeAsync()`
 | Queue | Writes one AVS and one VPY per queue file into a folder. | Saves/imports per-file scripts into a folder. |
 | Concat | Writes one AVS and one VPY script containing all fragments. | Saves/imports one concat AVS and one concat VPY script. |
 
-Concat FilterScribe displays `ConcatSourceSidebarPanel` on the left. Reorder/remove actions update `VideoSourceConcatState` and regenerate `source_concat_filelist.txt`.
+Concat FilterScribe displays `ConcatSidebarPanel` on the left. Reorder/remove actions update `VideoSourceConcatState` and regenerate `source_concat_filelist.txt`.
 
 Concat FilterScribe also respects the `LWLibavVideoSource VFR→CFR` and `LWLibavSource VFR→CFR` switches. When the concat analysis marks the source as VFR and the user enables the switch, generated AVS and VPY concat scripts pass `fpsnum` and `fpsden` into every source line, so the concat route uses the same repair mechanism already available in the single-source route.
 

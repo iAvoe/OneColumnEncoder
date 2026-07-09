@@ -1692,7 +1692,7 @@ namespace OneColumnEncoder.ViewModels
         {
             OnSourceImported(item, kind, filePath);
 
-            if (kind == SourceFileKind.Video)
+            if (kind == SourceFileKind.Video && AnalyzeSrcVideo.CanExecute(null))
             {
                 AnalyzeSrcVideo.Execute(null);
             }

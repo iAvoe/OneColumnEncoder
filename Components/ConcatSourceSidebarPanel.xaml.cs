@@ -2,9 +2,9 @@ using System.Windows.Controls;
 
 namespace OneColumnEncoder.Components
 {
-    public partial class ConcatSourceSidebarPanel : UserControl
+    public partial class ConcatSidebarPanel : UserControl
     {
-        public ConcatSourceSidebarPanel()
+        public ConcatSidebarPanel()
         {
             InitializeComponent();
         }

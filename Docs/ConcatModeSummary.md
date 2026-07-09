@@ -14,7 +14,7 @@ When concat mode is active:
 - `ActiveSrcValidationCard` is `ConcatCheckCard`.
 - `Sample Clip` is disabled for the button state; if invoked directly, the command shows a warning and returns.
 - The duration filter is hidden.
-- `FilterScribeModal` shows `ConcatSourceSidebarPanel` for reorder/remove operations.
+- `FilterScribeModal` shows `ConcatSidebarPanel` for reorder/remove operations.
 
 ## 2. Importing Concat Sources
 
@@ -122,7 +122,7 @@ Audio is intentionally not loaded by AVS/VPY concat scripts.
 - `getConcatFilePaths`
 - `applyConcatFilePaths`
 
-In concat mode, `FilterScribeVM` loads `ConcatSourceListVM`, and `FilterScribeModal` displays `ConcatSourceSidebarPanel` on the left.
+In concat mode, `FilterScribeVM` loads `ConcatSourceListVM`, and `FilterScribeModal` displays `ConcatSidebarPanel` on the left.
 
 The concat AVS and VPY source builders also have `LWLibavVideoSource VFR→CFR` and `LWLibavSource VFR→CFR` switches working, but differently since it applies to a list of sources.
 When the source analysis marks the inputs as VFR and the checkbox is enabled, the generated concat scripts pass `fpsnum` and `fpsden` through to every `LWLibavVideoSource` / `LWLibavSource` call, matching the behavior already used in single-source mode.
@@ -200,7 +200,7 @@ This keeps upstream pipes video-only while allowing audio streams from the conca
 - `ViewModels/FilterScribeVM.cs`
 - `ViewModels/EncodingMonitorVM.cs`
 - `ViewModels/QueueJobItemVM.cs`
-- `Components/ConcatSourceSidebarPanel.xaml`
+- `Components/ConcatSidebarPanel.xaml`
 - `Pipeline/EncodingPipeline.cs`
 - `Models/VideoAnalysisM.cs`
 - `ScriptGeneration/ScriptTemplate.cs`
