@@ -87,7 +87,6 @@ public static class UICaptionProviderM
         public static string SVFIClipDisabled => UILangProviderM.Current["Hint.SVFIClipDisabled"];
         public static string AnalyzeNeedsSource => UILangProviderM.Current["Hint.AnalyzeRunConditionDuration"];
         public static string NumaCpuCheckTrigger => UILangProviderM.Current["Hint.NumaCpuCheckTrigger"];
-        public static string AppConfNotificationPolicy => UILangProviderM.Current["Hint.AppConfNotificationPolicy"];
         public static string QueueRouteSampleClipDisabled => UILangProviderM.Current["Hint.QueueRouteSampleClipDisabled"];
         public static string FilterScribeDisabled => UILangProviderM.Current["Hint.FilterScribeDisabled"];
         public static string MinDurationFilter => UILangProviderM.Current["Hint.MinDurationFilter"];
@@ -97,25 +96,27 @@ public static class UICaptionProviderM
 
     public static class AppConf
     {
+        private static AppConfLangProviderM Lang => AppConfLangProviderM.Current;
+
         public static class Groups
         {
-            public static string Overwrite => UILangProviderM.Current["AppConf.Overwrite"];
-            public static string Language => UILangProviderM.Current["AppConf.Language"];
-            public static string InitMode => UILangProviderM.Current["AppConf.InitMode"];
-            public static string Bypass => UILangProviderM.Current["AppConf.Bypass"];
+            public static string Overwrite => Lang["AppConf.Overwrite"];
+            public static string Language => Lang["AppConf.Language"];
+            public static string InitMode => Lang["AppConf.InitMode"];
+            public static string Bypass => Lang["AppConf.Bypass"];
         }
 
         public static class BypassLabels
         {
-            public static string SrcValidationGroup => UILangProviderM.Current["Setting.Bypass.SrcValidationGroup"];
-            public static string EncTermsValidationGroup => UILangProviderM.Current["Setting.Bypass.EncTermsValidationGroup"];
+            public static string SrcValidationGroup => Lang["Setting.Bypass.SrcValidationGroup"];
+            public static string EncTermsValidationGroup => Lang["Setting.Bypass.EncTermsValidationGroup"];
         }
 
         public static class Buttons
         {
-        public static string Cancel => UILangProviderM.Current["AppConf.Cancel"];
-        public static string Save => UILangProviderM.Current["AppConf.Save"];
-        public static string ClearOldQueueJson => UILangProviderM.Current["AppConf.ClearOldQueueJson"];
+            public static string Cancel => Lang["AppConf.Cancel"];
+            public static string Save => Lang["AppConf.Save"];
+            public static string ClearOldQueueJson => Lang["AppConf.ClearOldQueueJson"];
         }
 
         public static class LanguageOptions

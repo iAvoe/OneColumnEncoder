@@ -8,12 +8,13 @@ namespace OneColumnEncoder.Commands.SaveLoad
     {
         public override void Execute(object? parameter)
         {
+            AppConfLangProviderM lang = AppConfLangProviderM.Current;
             string directory = SaveLoadBase<AppConfM>.GetConfigDirectory();
             if (!Directory.Exists(directory))
             {
                 System.Windows.MessageBox.Show(
-                    UILangProviderM.Current["AppConf.NoOldQueueJson"],
-                    UILangProviderM.Current["AppConf.ClearOldQueueJsonTitle"],
+                    lang["AppConf.NoOldQueueJson"],
+                    lang["AppConf.ClearOldQueueJsonTitle"],
                     System.Windows.MessageBoxButton.OK,
                     System.Windows.MessageBoxImage.Information);
                 return;
@@ -40,8 +41,8 @@ namespace OneColumnEncoder.Commands.SaveLoad
             }
 
             System.Windows.MessageBox.Show(
-                string.Format(UILangProviderM.Current["AppConf.ClearOldQueueJsonResult"], deletedCount),
-                UILangProviderM.Current["AppConf.ClearOldQueueJsonTitle"],
+                string.Format(lang["AppConf.ClearOldQueueJsonResult"], deletedCount),
+                lang["AppConf.ClearOldQueueJsonTitle"],
                 System.Windows.MessageBoxButton.OK,
                 System.Windows.MessageBoxImage.Information);
         }

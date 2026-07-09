@@ -15,14 +15,21 @@ namespace OneColumnEncoder.ViewModels
     public class AppConfVM : BaseVM
     {
         private readonly AppConfM _appConfM;
+        private AppConfLangProviderM _lang = AppConfLangProviderM.Current;
+
+        public AppConfLangProviderM Lang
+        {
+            get => _lang;
+            private set => SetProperty(ref _lang, value);
+        }
 
         #region Properties & Commands
 
-        public string WindowTitle => UILangProviderM.Current["AppConfModal.Title"];
+        public string WindowTitle => Lang["AppConfModal.Title"];
         public string HeaderText =>
-            UILangProviderM.Current["AppConfModal.Header"];
+            Lang["AppConfModal.Header"];
         public string NotificationPolicyHint =>
-            UICaptionProviderM.Hints.AppConfNotificationPolicy;
+            Lang["Hint.AppConfNotificationPolicy"];
 
         public CloseModalCmd CloseCmd { get; }
         public SaveAppConfCmd SaveCmd { get; }
@@ -177,8 +184,8 @@ namespace OneColumnEncoder.ViewModels
                 e.CancelCommand();
                 textBox.Dispatcher.InvokeAsync(() =>
                     System.Windows.MessageBox.Show(
-                        UILangProviderM.Current["AppConf.Validation.InvalidNumericInput"],
-                        UILangProviderM.Current["AppConf.Validation.InvalidNumericInputTitle"],
+                        AppConfLangProviderM.Current["AppConf.Validation.InvalidNumericInput"],
+                        AppConfLangProviderM.Current["AppConf.Validation.InvalidNumericInputTitle"],
                     MessageBoxButton.OK, MessageBoxImage.Warning));
             }
         }
@@ -198,21 +205,21 @@ namespace OneColumnEncoder.ViewModels
                 if (string.IsNullOrWhiteSpace(text))
                 {
                     return new ValidationResult(false, string.Format(
-                        UILangProviderM.Current["AppConf.Validation.Required"],
+                        AppConfLangProviderM.Current["AppConf.Validation.Required"],
                         FieldName));
                 }
 
                 if (!int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsed))
                 {
                     return new ValidationResult(false, string.Format(
-                        UILangProviderM.Current["AppConf.Validation.IntegerOnly"],
+                        AppConfLangProviderM.Current["AppConf.Validation.IntegerOnly"],
                         FieldName));
                 }
 
                 if (MinValue.HasValue && parsed < MinValue.Value)
                 {
                     return new ValidationResult(false, string.Format(
-                        UILangProviderM.Current["AppConf.Validation.Min"],
+                        AppConfLangProviderM.Current["AppConf.Validation.Min"],
                         FieldName,
                         MinValue.Value));
                 }
@@ -220,7 +227,7 @@ namespace OneColumnEncoder.ViewModels
                 if (MaxValue.HasValue && parsed > MaxValue.Value)
                 {
                     return new ValidationResult(false, string.Format(
-                        UILangProviderM.Current["AppConf.Validation.Max"],
+                        AppConfLangProviderM.Current["AppConf.Validation.Max"],
                         FieldName,
                         MaxValue.Value));
                 }
@@ -264,6 +271,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void OnLanguageChanged()
         {
+            Lang = AppConfLangProviderM.Current;
             OnPropertyChanged(nameof(WindowTitle));
             OnPropertyChanged(nameof(HeaderText));
             OnPropertyChanged(nameof(NotificationPolicyHint));
