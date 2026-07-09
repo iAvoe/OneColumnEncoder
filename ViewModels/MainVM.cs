@@ -43,8 +43,6 @@ namespace OneColumnEncoder.ViewModels
         private bool _isMiniVideoSrcImportZone;
         private bool _isMiniScriptSrcImportZone;
         private bool _isMiniEncodingConfZone;
-        private bool _isMiniSrcValidationCard;
-        private bool _isMiniEncTermsCard;
         private bool _isMiniBestPracticesCard;
         private bool _isMiniToolsImportCard;
         private bool _isMiniStartEncodingZone;
@@ -96,8 +94,6 @@ namespace OneColumnEncoder.ViewModels
         public ActionCmd ToggleMiniVideoSrcImportZoneCmd { get; }
         public ActionCmd ToggleMiniScriptSrcImportZoneCmd { get; }
         public ActionCmd ToggleMiniEncodingConfZoneCmd { get; }
-        public ActionCmd ToggleMiniSrcValidationCardCmd { get; }
-        public ActionCmd ToggleMiniEncTermsCardCmd { get; }
         public ActionCmd ToggleMiniBestPracticesCardCmd { get; }
         public ActionCmd ToggleMiniToolsImportCardCmd { get; }
         public ActionCmd ToggleMiniStartEncodingZoneCmd { get; }
@@ -116,9 +112,9 @@ namespace OneColumnEncoder.ViewModels
         public ButtonGroupVM OpenAppConfButtons { get; } // OpenUsages & OpenAppConf
         public ButtonGroupVM FilterScbButtons { get; } // OneClickScriptGen & OpenFilterScribe
         public ButtonGroupVM AnalyzeSrcButtons { get; } // AnalyzeSrcVideo & CopyRawAnalysis
-        public ButtonGroupVM InspBypsChkButtons { get; } // InspectSrcProbelms & BypsSrcChecklist
-        public ButtonGroupVM InspBypsEncChkButtons { get; } // InspectEncPreProblems & BypassEncChecklist
         public ButtonGroupVM EncStartButtons { get; }
+        public ValidationActionGroupVM SrcValidationGroup { get; private set; } = null!;
+        public ValidationActionGroupVM EncTermsValidationGroup { get; private set; } = null!;
         private bool _importedToolZonesSubscribed;
         // Checklist Card UIs
         public ToolsImportCardVM ToolsImportCard { get; }
@@ -131,7 +127,12 @@ namespace OneColumnEncoder.ViewModels
         public SourceCheckCardVM ActiveSrcValidationCard
         {
             get => _activeSrcValidationCard;
-            private set => SetProperty(ref _activeSrcValidationCard, value);
+            private set
+            {
+                if (!SetProperty(ref _activeSrcValidationCard, value)) return;
+                if (SrcValidationGroup != null)
+                    SrcValidationGroup.Card = value;
+            }
         }
 
         // SectionHeader refreshes this dynamic lookup when the global language changes.
@@ -234,18 +235,6 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _isMiniEncodingConfZone, value);
         }
 
-        public bool IsMiniSrcValidationCard
-        {
-            get => _isMiniSrcValidationCard;
-            set => SetProperty(ref _isMiniSrcValidationCard, value);
-        }
-
-        public bool IsMiniEncTermsCard
-        {
-            get => _isMiniEncTermsCard;
-            set => SetProperty(ref _isMiniEncTermsCard, value);
-        }
-
         public bool IsMiniBestPracticesCard
         {
             get => _isMiniBestPracticesCard;
@@ -291,16 +280,6 @@ namespace OneColumnEncoder.ViewModels
 
         public string ToggleMiniEncodingConfZoneText =>
             IsMiniEncodingConfZone
-                ? UILangProviderM.Current["Expand"]
-                : UILangProviderM.Current["Collapse"];
-
-        public string ToggleMiniSrcValidationCardText =>
-            IsMiniSrcValidationCard
-                ? UILangProviderM.Current["Expand"]
-                : UILangProviderM.Current["Collapse"];
-
-        public string ToggleMiniEncTermsCardText =>
-            IsMiniEncTermsCard
                 ? UILangProviderM.Current["Expand"]
                 : UILangProviderM.Current["Collapse"];
 
@@ -427,8 +406,6 @@ namespace OneColumnEncoder.ViewModels
             _isMiniVideoSrcImportZone = _appDataM.IsMiniVideoSrcImportZone ?? false;
             _isMiniScriptSrcImportZone = _appDataM.IsMiniScriptSrcImportZone ?? false;
             _isMiniEncodingConfZone = _appDataM.IsMiniEncodingConfZone ?? false;
-            _isMiniSrcValidationCard = _appDataM.IsMiniSrcValidationCard ?? false;
-            _isMiniEncTermsCard = _appDataM.IsMiniEncTermsCard ?? false;
             _isMiniBestPracticesCard = _appDataM.IsMiniBestPracticesCard ?? false;
             _isMiniToolsImportCard = _appDataM.IsMiniToolsImportCard ?? false;
             _isMiniStartEncodingZone = _appDataM.IsMiniStartEncodingZone ?? false;
@@ -487,20 +464,6 @@ namespace OneColumnEncoder.ViewModels
                 _appDataM.IsMiniEncodingConfZone = IsMiniEncodingConfZone;
                 _appDataM.Save();
                 OnPropertyChanged(nameof(ToggleMiniEncodingConfZoneText));
-            });
-            ToggleMiniSrcValidationCardCmd = new ActionCmd(_ =>
-            {
-                IsMiniSrcValidationCard = !IsMiniSrcValidationCard;
-                _appDataM.IsMiniSrcValidationCard = IsMiniSrcValidationCard;
-                _appDataM.Save();
-                OnPropertyChanged(nameof(ToggleMiniSrcValidationCardText));
-            });
-            ToggleMiniEncTermsCardCmd = new ActionCmd(_ =>
-            {
-                IsMiniEncTermsCard = !IsMiniEncTermsCard;
-                _appDataM.IsMiniEncTermsCard = IsMiniEncTermsCard;
-                _appDataM.Save();
-                OnPropertyChanged(nameof(ToggleMiniEncTermsCardText));
             });
             ToggleMiniBestPracticesCardCmd = new ActionCmd(_ =>
             {
@@ -655,13 +618,31 @@ namespace OneColumnEncoder.ViewModels
             EncStartButtons.B3_1Icon = SvgIconProvider.GameRefresh;
             EncStartButtons.B3_2Icon = SvgIconProvider.GameLocation;
             EncStartButtons.B3_3Icon = SvgIconProvider.GamePlay;
-            InspBypsChkButtons = ButtonGroupVM.CreateTwoButton(
+            ButtonGroupVM inspBypsChkButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProviderM.Buttons.InspectSrcProbelms, UICaptionProviderM.Buttons.BypassSrcChecklist, InspectSrcProblems, BypassSrcChecklist);
+            SrcValidationGroup = new ValidationActionGroupVM(
+                ActiveSrcValidationCard,
+                inspBypsChkButtons,
+                _appDataM.IsMiniSrcValidationCard ?? false,
+                isMini =>
+                {
+                    _appDataM.IsMiniSrcValidationCard = isMini;
+                    _appDataM.Save();
+                });
 
             InspectEncProblems = new InspectEncProblemsCmd(EncTermsCard, modalNavS);
             BypassEncChecklist = new BypassEncChecklistCmd(EncTermsCard, UpdateEncStartButtonsState);
-            InspBypsEncChkButtons = ButtonGroupVM.CreateTwoButton(
+            ButtonGroupVM inspBypsEncChkButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProviderM.Buttons.InspectEncPreProblems, UICaptionProviderM.Buttons.BypassEncChecklist, InspectEncProblems, BypassEncChecklist);
+            EncTermsValidationGroup = new ValidationActionGroupVM(
+                EncTermsCard,
+                inspBypsEncChkButtons,
+                _appDataM.IsMiniEncTermsCard ?? false,
+                isMini =>
+                {
+                    _appDataM.IsMiniEncTermsCard = isMini;
+                    _appDataM.Save();
+                });
 
             // Import dropdown menu and behavior
             ToolsImportCard.ToolImported += OnToolImported;
@@ -1952,23 +1933,19 @@ namespace OneColumnEncoder.ViewModels
         }
         public void UpdateInspBypsChkButtonsState()
         {
-            if (InspBypsChkButtons == null) return;
-
             bool hasRawJson = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
             if (!hasRawJson && ActiveSrcValidationCard.IsBypassed)
                 ActiveSrcValidationCard.SetBypassed(false);
 
-            InspBypsChkButtons.B2_1IsEnabled = hasRawJson;
-            InspBypsChkButtons.B2_2IsEnabled = hasRawJson;
+            SrcValidationGroup.Buttons.B2_1IsEnabled = hasRawJson;
+            SrcValidationGroup.Buttons.B2_2IsEnabled = hasRawJson;
             InspectSrcProblems.OnCanExecuteChanged();
             BypassSrcChecklist.OnCanExecuteChanged();
         }
         public void UpdateInspBypsEncChkButtonsState()
         {
-            if (InspBypsEncChkButtons == null) return;
-
-            InspBypsEncChkButtons.B2_1IsEnabled = true;
-            InspBypsEncChkButtons.B2_2IsEnabled = true;
+            EncTermsValidationGroup.Buttons.B2_1IsEnabled = true;
+            EncTermsValidationGroup.Buttons.B2_2IsEnabled = true;
             InspectEncProblems.OnCanExecuteChanged();
             BypassEncChecklist.OnCanExecuteChanged();
         }
@@ -2765,8 +2742,8 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(ToggleMiniVideoSrcImportZoneText));
             OnPropertyChanged(nameof(ToggleMiniScriptSrcImportZoneText));
             OnPropertyChanged(nameof(ToggleMiniEncodingConfZoneText));
-            OnPropertyChanged(nameof(ToggleMiniSrcValidationCardText));
-            OnPropertyChanged(nameof(ToggleMiniEncTermsCardText));
+            SrcValidationGroup.RefreshLanguage();
+            EncTermsValidationGroup.RefreshLanguage();
             OnPropertyChanged(nameof(ToggleMiniBestPracticesCardText));
             OnPropertyChanged(nameof(ToggleMiniToolsImportCardText));
             OnPropertyChanged(nameof(ToggleMiniStartEncodingZoneText));
@@ -2775,10 +2752,10 @@ namespace OneColumnEncoder.ViewModels
             EncStartButtons.B3_3Text = UICaptionProviderM.Buttons.StartEncode;
             AnalyzeSrcButtons.B2_1Text = UICaptionProviderM.Buttons.CopyRawAnalysis;
             AnalyzeSrcButtons.B2_2Text = UICaptionProviderM.Buttons.AnalyzeSrcVideo;
-            InspBypsChkButtons.B2_1Text = UICaptionProviderM.Buttons.InspectSrcProbelms;
-            InspBypsChkButtons.B2_2Text = UICaptionProviderM.Buttons.BypassSrcChecklist;
-            InspBypsEncChkButtons.B2_1Text = UICaptionProviderM.Buttons.InspectEncPreProblems;
-            InspBypsEncChkButtons.B2_2Text = UICaptionProviderM.Buttons.BypassEncChecklist;
+            SrcValidationGroup.Buttons.B2_1Text = UICaptionProviderM.Buttons.InspectSrcProbelms;
+            SrcValidationGroup.Buttons.B2_2Text = UICaptionProviderM.Buttons.BypassSrcChecklist;
+            EncTermsValidationGroup.Buttons.B2_1Text = UICaptionProviderM.Buttons.InspectEncPreProblems;
+            EncTermsValidationGroup.Buttons.B2_2Text = UICaptionProviderM.Buttons.BypassEncChecklist;
         }
         private void RefreshCardsLanguage()
         {
