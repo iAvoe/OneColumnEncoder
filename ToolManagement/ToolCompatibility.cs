@@ -86,14 +86,30 @@ namespace OneColumnEncoder.ToolManagement
 
         public static void RefreshVideoSourceSelectionState(
             IEnumerable<ToolItemCardVM> upstreamsZone,
-            IList<ToolItemCardVM> videoSrcImportZone)
+            IList<ToolItemCardVM> videoSrcImportZone,
+            bool hasFfprobe)
         {
             if (videoSrcImportZone.Count < 3) return;
 
-            ToolItemCardVM? upstream = upstreamsZone.FirstOrDefault(t => t.IsSelected);
             ToolItemCardVM singleVideoCard = videoSrcImportZone[0];
             ToolItemCardVM queueCard = videoSrcImportZone[1];
             ToolItemCardVM concatCard = videoSrcImportZone[2];
+
+            if (!hasFfprobe)
+            {
+                foreach (ToolItemCardVM item in videoSrcImportZone)
+                {
+                    item.IsSelected = false;
+                    item.IsEnabled = false;
+                    item.IsCancel = false;
+                }
+                return;
+            }
+
+            foreach (ToolItemCardVM item in videoSrcImportZone)
+                item.IsCancel = false;
+
+            ToolItemCardVM? upstream = upstreamsZone.FirstOrDefault(t => t.IsSelected);
 
             singleVideoCard.IsEnabled = true;
 

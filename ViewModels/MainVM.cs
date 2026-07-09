@@ -884,7 +884,7 @@ namespace OneColumnEncoder.ViewModels
             ToolCompatibility.RefreshSourceSelectionState(
                 UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
             ToolCompatibility.RefreshVideoSourceSelectionState(
-                UpstreamsZone, VideoSrcImportZone);
+                UpstreamsZone, VideoSrcImportZone, HasImportedFfprobe());
 
             // Revert the selection for IsCancel caused by "Auto Selection".
             // Must revert both zones because RefreshDependencySelectionState can set
@@ -922,7 +922,7 @@ namespace OneColumnEncoder.ViewModels
             ToolCompatibility.RefreshSourceSelectionState(
                 UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
             ToolCompatibility.RefreshVideoSourceSelectionState(
-                UpstreamsZone, VideoSrcImportZone);
+                UpstreamsZone, VideoSrcImportZone, HasImportedFfprobe());
         }
 
         private void RefreshUpstreamToolState()
@@ -957,7 +957,7 @@ namespace OneColumnEncoder.ViewModels
             ToolCompatibility.RefreshSourceSelectionState(
                 UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
             ToolCompatibility.RefreshVideoSourceSelectionState(
-                UpstreamsZone, VideoSrcImportZone);
+                UpstreamsZone, VideoSrcImportZone, HasImportedFfprobe());
         }
 
         private void RefreshEncTermsState()
@@ -1355,7 +1355,9 @@ namespace OneColumnEncoder.ViewModels
             _videoSourceConcat.IsConcatItem(item);
 
         private bool HasImportedFfprobe() =>
-            !string.IsNullOrWhiteSpace(_appDataM.Tools.FfprobePath);
+            AnalyticsZone.Any(t =>
+                ToolDefinitionProviderM.IsImportedTool(t.Name, "ffprobe.exe") &&
+                !string.IsNullOrWhiteSpace(t.P2TextData));
 
         private bool HasImportedAviSynthDll() =>
             !string.IsNullOrWhiteSpace(_appDataM.Tools.AviSynthDllPath);
@@ -1559,7 +1561,8 @@ namespace OneColumnEncoder.ViewModels
                 ToolsImportCard,
                 RefreshSelectedSourceStatusAfterSourceSelection,
                 UpdateEncStartButtonsState,
-                () => RefreshSelectedSourceStatus());
+                () => RefreshSelectedSourceStatus(),
+                HasImportedFfprobe());
 
             // Keep avs2pipemod <-> avisynth.dll selection in lockstep.
             // The user can freely select/deselect either card; the partner
@@ -2025,7 +2028,7 @@ namespace OneColumnEncoder.ViewModels
                 UpstreamsZone, ActiveScriptSrcImportZone, () => { });
             RefreshScriptSourceEnabledState();
             ToolCompatibility.RefreshVideoSourceSelectionState(
-                UpstreamsZone, VideoSrcImportZone);
+                UpstreamsZone, VideoSrcImportZone, HasImportedFfprobe());
             RefreshOutputSettingCommand();
 
             OnPropertyChanged(nameof(IsDurationFilterVisible));

@@ -39,7 +39,8 @@ namespace OneColumnEncoder.UI
             ToolsImportCardVM toolsImportCard,
             Action refreshSelectedSourceStatusAfterSourceSelection,
             Action updateEncStartButtonsState,
-            Action refreshSelectedSourceStatus)
+            Action refreshSelectedSourceStatus,
+            bool hasFfprobe)
         {
             if (upstreamsZone.Contains(clickedTool))
             {
@@ -80,7 +81,7 @@ namespace OneColumnEncoder.UI
             ToolCompatibility.RefreshSourceSelectionState(
                 upstreamsZone, scriptSrcImportZone, refreshSelectedSourceStatus);
             ToolCompatibility.RefreshVideoSourceSelectionState(
-                upstreamsZone, videoSrcImportZone);
+                upstreamsZone, videoSrcImportZone, hasFfprobe);
         }
 
         public static bool ApplyDefaultSelection(ObservableCollection<ToolItemCardVM> zone)
