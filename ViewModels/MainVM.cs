@@ -1097,14 +1097,13 @@ namespace OneColumnEncoder.ViewModels
             // 1. Selected 
             // SVT-AV1 may eventually have 12bit support, but for now keep encoding start button disabled
             SourceCheckCardVM activeSrcCard = ActiveSrcValidationCard;
-            bool sourceValidationReady = activeSrcCard.IsBypassed ||
-                (hasRawJson &&
-                activeSrcCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
-                activeSrcCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success));
+            bool allSrcSuccess = activeSrcCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
+                                 activeSrcCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
+            bool sourceValidationReady = activeSrcCard.IsBypassed || (hasRawJson && allSrcSuccess);
 
-            bool encodeTermsReady = EncTermsCard.IsBypassed ||
-                EncTermsCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
-                EncTermsCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
+            bool allEncSuccess = EncTermsCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
+                                 EncTermsCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
+            bool encodeTermsReady = EncTermsCard.IsBypassed || allEncSuccess;
             // Cache cards for avs2pipemod / avisynth.dll dependency check
             ToolItemCardVM? avs2pipemodItem = UpstreamsZone.FirstOrDefault(
                 t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe"));
@@ -1113,6 +1112,11 @@ namespace OneColumnEncoder.ViewModels
             bool avsSelected = avs2pipemodItem?.IsSelected ?? false;
             bool aviSelected = avisynthItem?.IsSelected ?? false;
             bool dependencyReady = avsSelected == aviSelected;
+
+            if (SrcValidationGroup != null)
+                SrcValidationGroup.Buttons.B2_2Highlight = hasRawJson && !activeSrcCard.IsBypassed && !allSrcSuccess;
+            if (EncTermsValidationGroup != null)
+                EncTermsValidationGroup.Buttons.B2_2Highlight = !EncTermsCard.IsBypassed && !allEncSuccess;
 
             // SVFI currently doesn't support clipping, and its not really built with basic editing in design principle,
             // disable clip sampling if SVFI is selected as upstream to avoid confusion
@@ -1933,19 +1937,33 @@ namespace OneColumnEncoder.ViewModels
         }
         public void UpdateInspBypsChkButtonsState()
         {
+            if (SrcValidationGroup == null) return;
+
             bool hasRawJson = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
             if (!hasRawJson && ActiveSrcValidationCard.IsBypassed)
                 ActiveSrcValidationCard.SetBypassed(false);
 
             SrcValidationGroup.Buttons.B2_1IsEnabled = hasRawJson;
             SrcValidationGroup.Buttons.B2_2IsEnabled = hasRawJson;
+
+            bool srcAllSuccess = ActiveSrcValidationCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
+                                 ActiveSrcValidationCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
+            SrcValidationGroup.Buttons.B2_2Highlight = hasRawJson && !ActiveSrcValidationCard.IsBypassed && !srcAllSuccess;
+
             InspectSrcProblems.OnCanExecuteChanged();
             BypassSrcChecklist.OnCanExecuteChanged();
         }
         public void UpdateInspBypsEncChkButtonsState()
         {
+            if (EncTermsValidationGroup == null) return;
+
             EncTermsValidationGroup.Buttons.B2_1IsEnabled = true;
             EncTermsValidationGroup.Buttons.B2_2IsEnabled = true;
+
+            bool encAllSuccess = EncTermsCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
+                                 EncTermsCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
+            EncTermsValidationGroup.Buttons.B2_2Highlight = !EncTermsCard.IsBypassed && !encAllSuccess;
+
             InspectEncProblems.OnCanExecuteChanged();
             BypassEncChecklist.OnCanExecuteChanged();
         }

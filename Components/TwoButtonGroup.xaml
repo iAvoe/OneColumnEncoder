@@ -12,6 +12,23 @@
              d:DesignWidth="450">
     <UserControl.Resources>
         <conv:ButtonWidthConverter x:Key="ButtonWidthConverter" />
+        <Style x:Key="HighlightablePrimaryButton"
+               TargetType="Button"
+               BasedOn="{StaticResource PrimaryButton}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Button2Highlight, RelativeSource={RelativeSource AncestorType=local:TwoButtonGroup}}"
+                             Value="True">
+                    <Setter Property="BorderBrush"
+                            Value="{StaticResource BorderAmber}" />
+                    <Setter Property="Background"
+                            Value="{StaticResource BackgroundAmber}" />
+                    <Setter Property="Foreground"
+                            Value="{StaticResource GlobalPrimary}" />
+                    <Setter Property="BorderThickness"
+                            Value="1.5" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -61,7 +78,7 @@
                 Height="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=ButtonHeight}"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Right"
-                Style="{StaticResource PrimaryButton}">
+                Style="{StaticResource HighlightablePrimaryButton}">
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Center">
                 <Rectangle Width="14"

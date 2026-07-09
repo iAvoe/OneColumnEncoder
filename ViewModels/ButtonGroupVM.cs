@@ -62,6 +62,12 @@ namespace OneColumnEncoder.ViewModels
             get => _b2_2IsEnabled;
             set => SetProperty(ref _b2_2IsEnabled, value);
         }
+        private bool _b2_2Highlight;
+        public bool B2_2Highlight
+        {
+            get => _b2_2Highlight;
+            set => SetProperty(ref _b2_2Highlight, value);
+        }
         private bool _b3_1IsEnabled = true;
         public bool B3_1IsEnabled
         {
