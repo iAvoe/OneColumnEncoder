@@ -14,7 +14,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
             ["ListItemPrefix"] = "- {0}",
             ["AndMoreLabel"] = "...and {0} more.",
             ["TotalFramesFormat"] = "{0}: {1}",
-            ["ConcatTotalFramesLabel"] = "Total Frames (Concat source total)",
+            ["ConcatTotalFramesLabel"] = "Total frames after concatenation",
         },
         ["zh-cn"] = new()
         {
@@ -26,7 +26,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
             ["ListItemPrefix"] = "- {0}",
             ["AndMoreLabel"] = "……以及另外 {0} 项。",
             ["TotalFramesFormat"] = "{0}：{1}",
-            ["ConcatTotalFramesLabel"] = "总帧数（Concat 各源总和）",
+            ["ConcatTotalFramesLabel"] = "拼接后的总帧数",
         },
         ["zh-tw"] = new()
         {
@@ -38,7 +38,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
             ["ListItemPrefix"] = "- {0}",
             ["AndMoreLabel"] = "……以及另外 {0} 項。",
             ["TotalFramesFormat"] = "{0}：{1}",
-            ["ConcatTotalFramesLabel"] = "總幀數（Concat 各源總和）",
+            ["ConcatTotalFramesLabel"] = "拼接總幀數",
         },
         ["fr"] = new()
         {
@@ -50,7 +50,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
             ["ListItemPrefix"] = "- {0}",
             ["AndMoreLabel"] = "...et {0} autre(s).",
             ["TotalFramesFormat"] = "{0} : {1}",
-            ["ConcatTotalFramesLabel"] = "Images totales (concaténation des sources)",
+            ["ConcatTotalFramesLabel"] = "Nombre total d'images après concaténation",
         },
         ["es"] = new()
         {
@@ -62,7 +62,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
             ["ListItemPrefix"] = "- {0}",
             ["AndMoreLabel"] = "...y {0} más.",
             ["TotalFramesFormat"] = "{0}: {1}",
-            ["ConcatTotalFramesLabel"] = "Fotogramas totales (suma de todas las fuentes concat.)",
+            ["ConcatTotalFramesLabel"] = "Fotogramas totales después de la concatenación",
         },
         ["ja"] = new()
         {
@@ -74,7 +74,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
             ["ListItemPrefix"] = "- {0}",
             ["AndMoreLabel"] = "...他 {0} 件。",
             ["TotalFramesFormat"] = "{0}: {1}",
-            ["ConcatTotalFramesLabel"] = "総フレーム数（Concat 各ソース合計）",
+            ["ConcatTotalFramesLabel"] = "スプライシング後の総フレーム数",
         },
         ["ru"] = new()
         {
@@ -86,7 +86,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
             ["ListItemPrefix"] = "- {0}",
             ["AndMoreLabel"] = "...и ещё {0}.",
             ["TotalFramesFormat"] = "{0}: {1}",
-            ["ConcatTotalFramesLabel"] = "Кадры всего (сумма по всем источникам concat)",
+            ["ConcatTotalFramesLabel"] = "Кадры всего после конкатенации",
         },
     };
 

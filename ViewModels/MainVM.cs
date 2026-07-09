@@ -120,7 +120,6 @@ namespace OneColumnEncoder.ViewModels
         public ButtonGroupVM InspBypsEncChkButtons { get; } // InspectEncPreProblems & BypassEncChecklist
         public ButtonGroupVM EncStartButtons { get; }
         private bool _importedToolZonesSubscribed;
-        private bool _promptScriptGenAfterAnalysis;
         // Checklist Card UIs
         public ToolsImportCardVM ToolsImportCard { get; }
         public SourceCheckCardVM SrcValidationCard { get; } = new();
@@ -1689,13 +1688,13 @@ namespace OneColumnEncoder.ViewModels
             return issue == null ? null : FormatScriptImportIssues([issue]);
         }
 
-        private void OnVideoSourceImported(ToolItemCardVM item, SourceFileKind kind, string filePath, bool wasReplaced)
+        private void OnVideoSourceImported(ToolItemCardVM item, SourceFileKind kind, string filePath, bool _)
         {
             OnSourceImported(item, kind, filePath);
 
-            if (kind == SourceFileKind.Video && wasReplaced)
+            if (kind == SourceFileKind.Video)
             {
-                PromptRunSourceAnalysisAfterReplace();
+                AnalyzeSrcVideo.Execute(null);
             }
         }
 
@@ -1730,42 +1729,6 @@ namespace OneColumnEncoder.ViewModels
         {
             ToolsImportCard.SetCompleteSourceAnalysisStatus(isSuccess);
             UpdateFilterScbButtonsState();
-
-            if (!isSuccess)
-            {
-                _promptScriptGenAfterAnalysis = false;
-                return;
-            }
-            if (_promptScriptGenAfterAnalysis)
-            {
-                _promptScriptGenAfterAnalysis = false;
-                PromptScriptGenerationAfterReplace();
-            }
-        }
-
-        private void PromptRunSourceAnalysisAfterReplace(bool promptScriptGenAfterAnalysis = true)
-        {
-            if (!AnalyzeSrcVideo.CanExecute(null)) return;
-
-            ConfirmationModal window = new();
-            CloseModalCmd cancelCmd = new(window.Close);
-            ConfirmationVM vm = ConfirmationVM.CreateInfo(
-                UILangProviderM.SrcAnalysisWindowTitle,
-                UILangProviderM.Current["SrcAnalysis.RunAfterReplace"],
-                cancelCmd,
-                new ActionCmd(_ =>
-                {
-                    window.DialogResult = true;
-                    window.Close();
-                    _promptScriptGenAfterAnalysis = promptScriptGenAfterAnalysis;
-                    if (AnalyzeSrcVideo.CanExecute(null))
-                        AnalyzeSrcVideo.Execute(null);
-                }));
-            window.DataContext = vm;
-            window.Owner = Application.Current.MainWindow;
-            window.Closed += (_, _) => _modalNavS.Close();
-            _modalNavS.CurrentModalVM = vm;
-            window.ShowDialog();
         }
 
         private void OnSourceCleared(SourceFileKind kind)
@@ -1797,7 +1760,10 @@ namespace OneColumnEncoder.ViewModels
             RefreshSelectedSourceStatus(resetAnalysis: true);
             RefreshDurationFilterStatus();
             if (filePaths.Length > 0)
-                PromptRunSourceAnalysisAfterReplace(promptScriptGenAfterAnalysis: false);
+            {
+                if (AnalyzeSrcVideo.CanExecute(null))
+                    AnalyzeSrcVideo.Execute(null);
+            }
         }
 
         private void OnSourceQueueCleared(ToolItemCardVM item)
@@ -1829,7 +1795,10 @@ namespace OneColumnEncoder.ViewModels
             _appDataM.Save();
             RefreshSelectedSourceStatus(resetAnalysis: true);
             if (filePaths.Length > 0)
-                PromptRunSourceAnalysisAfterReplace(promptScriptGenAfterAnalysis: false);
+            {
+                if (AnalyzeSrcVideo.CanExecute(null))
+                    AnalyzeSrcVideo.Execute(null);
+            }
         }
 
         private void OnSourceConcatCleared()
