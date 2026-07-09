@@ -85,7 +85,7 @@ public static class UICaptionProviderM
     public static class Hints
     {
         public static string SVFIClipDisabled => UILangProviderM.Current["Hint.SVFIClipDisabled"];
-        public static string AnalyzeNeedsSource => UILangProviderM.Current["Hint.AnalyzeNeedsSource"];
+        public static string AnalyzeNeedsSource => UILangProviderM.Current["Hint.AnalyzeRunConditionDuration"];
         public static string NumaCpuCheckTrigger => UILangProviderM.Current["Hint.NumaCpuCheckTrigger"];
         public static string AppConfNotificationPolicy => UILangProviderM.Current["Hint.AppConfNotificationPolicy"];
         public static string QueueRouteSampleClipDisabled => UILangProviderM.Current["Hint.QueueRouteSampleClipDisabled"];
