@@ -46,9 +46,7 @@ public static class UICaptionProviderM
         public static string BitDepthP1Text => UILangProviderM.Current["SrcInspect.BitDepthP1Text"];
         public static string FramerateP1Text => UILangProviderM.Current["SrcInspect.FramerateP1Text"];
         public static string AspectRatioP1Text => UILangProviderM.Current["SrcInspect.AspectRatioP1Text"];
-        public static string ColorMatrixP1Text => UILangProviderM.Current["SrcInspect.ColorMatrixP1Text"];
-        public static string TransferCharsP1Text => UILangProviderM.Current["SrcInspect.TransferCharsP1Text"];
-        public static string ColorPrimariesP1Text => UILangProviderM.Current["SrcInspect.ColorPrimariesP1Text"];
+        public static string ColorMetadataP1Text => UILangProviderM.Current["SrcInspect.ColorMetadataP1Text"];
         public static string ChromaSubsamplingP1Text => UILangProviderM.Current["SrcInspect.ChromaSubsamplingP1Text"];
     }
 
@@ -108,8 +106,8 @@ public static class UICaptionProviderM
 
         public static class BypassLabels
         {
-            public static string SrcValidationGroup => Lang["Setting.Bypass.SrcValidationGroup"];
-            public static string EncTermsValidationGroup => Lang["Setting.Bypass.EncTermsValidationGroup"];
+            public static string SrcValidationGroup => Lang["Setting.Bypass.SrcValGroup"];
+            public static string EncTermsValidationGroup => Lang["Setting.Bypass.EncTermsValGroup"];
         }
 
         public static class Buttons

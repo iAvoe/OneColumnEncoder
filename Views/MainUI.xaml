@@ -753,7 +753,7 @@
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
 
-            <comps:ValidationActionGroup DataContext="{Binding SrcValidationGroup}"
+            <comps:ValidationActionGroup DataContext="{Binding SrcValGroup}"
                                          CardMargin="5 5 5 0"
                                          ButtonsMargin="10 15 10 0" />
 
@@ -910,7 +910,7 @@
                             Style="{StaticResource SectionHeaderToggleButton}" />
                 </comps:SectionHeader.HeaderExtra>
             </comps:SectionHeader>
-            <comps:ValidationActionGroup DataContext="{Binding EncTermsValidationGroup}"
+            <comps:ValidationActionGroup DataContext="{Binding EncTermsValGroup}"
                                          CardMargin="5 10 5 0"
                                          ButtonsMargin="10 10 10 0">
                 <comps:ValidationActionGroup.MiddleContent>

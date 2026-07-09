@@ -69,13 +69,10 @@ namespace OneColumnEncoder.ViewModels.Cards
                     ? StatusType.Success : StatusType.Warning);
                 SetChecklist2(1, result.HasSquarePixels
                     ? StatusType.Success : StatusType.Warning);
-                SetChecklist2(2, result.HasColorSpace
+                bool hasCompleteColorMetadata = result.HasColorSpace && result.HasColorTransfer && result.HasColorPrimaries;
+                SetChecklist2(2, hasCompleteColorMetadata
                     ? StatusType.Success : StatusType.Warning);
-                SetChecklist2(3, result.HasColorTransfer
-                    ? StatusType.Success : StatusType.Warning);
-                SetChecklist2(4, result.HasColorPrimaries
-                    ? StatusType.Success : StatusType.Warning);
-                SetChecklist2(5, result.HasSupportedChroma
+                SetChecklist2(3, result.HasSupportedChroma
                     ? StatusType.Success : StatusType.Warning);
             }
             catch
@@ -169,10 +166,8 @@ namespace OneColumnEncoder.ViewModels.Cards
         {
             0 => UICaptionProviderM.SourceInspect.FramerateP1Text,
             1 => UICaptionProviderM.SourceInspect.AspectRatioP1Text,
-            2 => UICaptionProviderM.SourceInspect.ColorMatrixP1Text,
-            3 => UICaptionProviderM.SourceInspect.TransferCharsP1Text,
-            4 => UICaptionProviderM.SourceInspect.ColorPrimariesP1Text,
-            5 => UICaptionProviderM.SourceInspect.ChromaSubsamplingP1Text,
+            2 => UICaptionProviderM.SourceInspect.ColorMetadataP1Text,
+            3 => UICaptionProviderM.SourceInspect.ChromaSubsamplingP1Text,
             _ => null,
         };
 

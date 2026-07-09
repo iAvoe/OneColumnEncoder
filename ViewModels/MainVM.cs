@@ -113,15 +113,15 @@ namespace OneColumnEncoder.ViewModels
         public ButtonGroupVM FilterScbButtons { get; } // OneClickScriptGen & OpenFilterScribe
         public ButtonGroupVM AnalyzeSrcButtons { get; } // AnalyzeSrcVideo & CopyRawAnalysis
         public ButtonGroupVM EncStartButtons { get; }
-        public ValidationActionGroupVM SrcValidationGroup { get; private set; } = null!;
-        public ValidationActionGroupVM EncTermsValidationGroup { get; private set; } = null!;
+        public ValidationActionGroupVM SrcValGroup { get; private set; } = null!;
+        public ValidationActionGroupVM EncTermsValGroup { get; private set; } = null!;
         private bool _importedToolZonesSubscribed;
         // Checklist Card UIs
         public ToolsImportCardVM ToolsImportCard { get; }
-        public SourceCheckCardVM SrcValidationCard { get; } = new();
+        public SourceCheckCardVM SrcValCard { get; } = new(); // SrcValGroup
+        public EncTermsCardVM EncTermsValCard { get; } = new(); // EncTermsValGroup
         public QueueSrcFilterCardVM QueueSrcFilterCard { get; } = new();
         public ConcatCheckCardVM ConcatCheckCard { get; } = new();
-        public EncTermsCardVM EncTermsCard { get; } = new();
         public BestPracsSelfCheckCardVM BestPracticesCard { get; } = new();
         private SourceCheckCardVM _activeSrcValidationCard = null!;
         public SourceCheckCardVM ActiveSrcValidationCard
@@ -130,8 +130,8 @@ namespace OneColumnEncoder.ViewModels
             private set
             {
                 if (!SetProperty(ref _activeSrcValidationCard, value)) return;
-                if (SrcValidationGroup != null)
-                    SrcValidationGroup.Card = value;
+                if (SrcValGroup != null)
+                    SrcValGroup.Card = value;
             }
         }
 
@@ -487,7 +487,7 @@ namespace OneColumnEncoder.ViewModels
                 OnPropertyChanged(nameof(ToggleMiniStartEncodingZoneText));
             });
             #endregion
-            ActiveSrcValidationCard = SrcValidationCard;
+            ActiveSrcValidationCard = SrcValCard;
 
             // Create static card zones, then restore imported tools and cached sources.
             ToolsImportCard = new ToolsImportCardVM(modalNavS);
@@ -620,7 +620,7 @@ namespace OneColumnEncoder.ViewModels
             EncStartButtons.B3_3Icon = SvgIconProvider.GamePlay;
             ButtonGroupVM inspBypsChkButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProviderM.Buttons.InspectSrcProbelms, UICaptionProviderM.Buttons.BypassSrcChecklist, InspectSrcProblems, BypassSrcChecklist);
-            SrcValidationGroup = new ValidationActionGroupVM(
+            SrcValGroup = new ValidationActionGroupVM(
                 ActiveSrcValidationCard,
                 inspBypsChkButtons,
                 _appDataM.IsMiniSrcValidationCard ?? false,
@@ -630,12 +630,12 @@ namespace OneColumnEncoder.ViewModels
                     _appDataM.Save();
                 });
 
-            InspectEncProblems = new InspectEncProblemsCmd(EncTermsCard, modalNavS);
-            BypassEncChecklist = new BypassEncChecklistCmd(EncTermsCard, UpdateEncStartButtonsState);
+            InspectEncProblems = new InspectEncProblemsCmd(EncTermsValCard, modalNavS);
+            BypassEncChecklist = new BypassEncChecklistCmd(EncTermsValCard, UpdateEncStartButtonsState);
             ButtonGroupVM inspBypsEncChkButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProviderM.Buttons.InspectEncPreProblems, UICaptionProviderM.Buttons.BypassEncChecklist, InspectEncProblems, BypassEncChecklist);
-            EncTermsValidationGroup = new ValidationActionGroupVM(
-                EncTermsCard,
+            EncTermsValGroup = new ValidationActionGroupVM(
+                EncTermsValCard,
                 inspBypsEncChkButtons,
                 _appDataM.IsMiniEncTermsCard ?? false,
                 isMini =>
@@ -653,32 +653,32 @@ namespace OneColumnEncoder.ViewModels
             ToolsImportCard.ImportDropdown.SelectedItem = ToolsImportCard.ImportDropdown.Items[0];
 
             // Configure validation cards and deferred getters used by checks and encoding requests.
-            SrcValidationCard.Name = UICaptionProviderM.Cards.SourceValidation;
-            SrcValidationCard.P1Name = UICaptionProviderM.Cards.SourceIncompatOrCorrupted;
-            SrcValidationCard.P3Name = UICaptionProviderM.Cards.SrcQualityIssues;
+            SrcValCard.Name = UICaptionProviderM.Cards.SourceValidation;
+            SrcValCard.P1Name = UICaptionProviderM.Cards.SourceIncompatOrCorrupted;
+            SrcValCard.P3Name = UICaptionProviderM.Cards.SrcQualityIssues;
             QueueSrcFilterCard.RefreshLanguage();
             ConcatCheckCard.RefreshLanguage();
-            EncTermsCard.Name = UICaptionProviderM.Cards.EncPrerequisites;
-            EncTermsCard.P1Name = UICaptionProviderM.Cards.EncHardware;
-            EncTermsCard.P3Name = UICaptionProviderM.Cards.EncSoftware;
+            EncTermsValCard.Name = UICaptionProviderM.Cards.EncPrerequisites;
+            EncTermsValCard.P1Name = UICaptionProviderM.Cards.EncHardware;
+            EncTermsValCard.P3Name = UICaptionProviderM.Cards.EncSoftware;
             BestPracticesCard.Name = UICaptionProviderM.Cards.BestPractices;
             BestPracticesCard.P1Name = UICaptionProviderM.Cards.BestHardware;
             BestPracticesCard.P3Name = UICaptionProviderM.Cards.BestSoftware;
             BestPracticesCard.Subtitle = UICaptionProviderM.Cards.BestPracticesSubtitle;
 
-            SrcValidationCard.IsSvtav1SelectedFunc = () =>
+            SrcValCard.IsSvtav1SelectedFunc = () =>
                 EncodersZone.Any(t => t.IsSelected
                     && ToolDefinitionProviderM.IsImportedTool(t.Name, "svtav1encapp.exe"));
-            QueueSrcFilterCard.IsSvtav1SelectedFunc = SrcValidationCard.IsSvtav1SelectedFunc;
-            ConcatCheckCard.IsSvtav1SelectedFunc = SrcValidationCard.IsSvtav1SelectedFunc;
+            QueueSrcFilterCard.IsSvtav1SelectedFunc = SrcValCard.IsSvtav1SelectedFunc;
+            ConcatCheckCard.IsSvtav1SelectedFunc = SrcValCard.IsSvtav1SelectedFunc;
 
-            EncTermsCard.GetOutputDirectoryFunc = () =>
+            EncTermsValCard.GetOutputDirectoryFunc = () =>
             {
                 ToolItemCardVM? output = EncodingConfZone.FirstOrDefault(t =>
                     t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
                 return output?.P2TextData ?? string.Empty;
             };
-            EncTermsCard.GetOutputFilePathFunc = () =>
+            EncTermsValCard.GetOutputFilePathFunc = () =>
             {
                 ToolItemCardVM? output = EncodingConfZone.FirstOrDefault(t =>
                     t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
@@ -687,23 +687,23 @@ namespace OneColumnEncoder.ViewModels
 
                 return Path.Combine(output.P2TextData, output.P1TextData);
             };
-            EncTermsCard.IsAvs2yuvSelectedFunc = () =>
+            EncTermsValCard.IsAvs2yuvSelectedFunc = () =>
                 UpstreamsZone.Any(t => t.IsSelected
                     && ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2yuv.exe"));
-            EncTermsCard.GetAviSynthDllPathFunc = () =>
+            EncTermsValCard.GetAviSynthDllPathFunc = () =>
             {
                 string programFilesX86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
                 return string.IsNullOrWhiteSpace(programFilesX86)
                     ? string.Empty
                     : Path.Combine(programFilesX86, "AviSynth+", "plugins64+");
             };
-            EncTermsCard.GetSourceVideoFilePathFunc = () =>
+            EncTermsValCard.GetSourceVideoFilePathFunc = () =>
             {
                 return GetSelectedVideoSourcePath();
             };
 
             // Run final state refreshes after all cards, commands, and subscriptions are ready.
-            EncTermsCard.RunAllChecks();
+            EncTermsValCard.RunAllChecks();
             SyncOutputFilenameWithVideoSource();
             SubToImportedToolZones();
             AnalyticsZone.CollectionChanged += OnAnalyticsZoneCollectionChanged;
@@ -851,7 +851,7 @@ namespace OneColumnEncoder.ViewModels
                 autoSelected = ApplyDefaultImportedToolSelection(zone);
 
             if (sender == EncodersZone)
-                SrcValidationCard.RefreshSvtav1BitDepthStatus();
+                SrcValCard.RefreshSvtav1BitDepthStatus();
 
             if (sender == UpstreamsZone)
                 RefreshEncTermsState();
@@ -946,8 +946,8 @@ namespace OneColumnEncoder.ViewModels
             bool isAvs2yuvSelected = UpstreamsZone.Any(t => t.IsSelected
                 && ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2yuv.exe"));
 
-            EncTermsCard.SetLsmashCheckEnabled(isAvs2yuvSelected);
-            EncTermsCard.RunAllChecks();
+            EncTermsValCard.SetLsmashCheckEnabled(isAvs2yuvSelected);
+            EncTermsValCard.RunAllChecks();
         }
 
         private void RefreshEncSettingsState()
@@ -995,9 +995,9 @@ namespace OneColumnEncoder.ViewModels
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
             foreach (ChecklistEntryVM entry in ToolsImportCard.Checklist2)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
-            foreach (ChecklistEntryVM entry in SrcValidationCard.Checklist1)
+            foreach (ChecklistEntryVM entry in SrcValCard.Checklist1)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
-            foreach (ChecklistEntryVM entry in SrcValidationCard.Checklist2)
+            foreach (ChecklistEntryVM entry in SrcValCard.Checklist2)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
             foreach (ChecklistEntryVM entry in QueueSrcFilterCard.Checklist1)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
@@ -1007,9 +1007,9 @@ namespace OneColumnEncoder.ViewModels
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
             foreach (ChecklistEntryVM entry in ConcatCheckCard.Checklist2)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
-            foreach (ChecklistEntryVM entry in EncTermsCard.Checklist1)
+            foreach (ChecklistEntryVM entry in EncTermsValCard.Checklist1)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
-            foreach (ChecklistEntryVM entry in EncTermsCard.Checklist2)
+            foreach (ChecklistEntryVM entry in EncTermsValCard.Checklist2)
                 entry.PropertyChanged += OnChecklistEntryPropertyChanged;
             UpdateEncStartButtonsState();
         }
@@ -1019,9 +1019,9 @@ namespace OneColumnEncoder.ViewModels
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
             foreach (ChecklistEntryVM entry in ToolsImportCard.Checklist2)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
-            foreach (ChecklistEntryVM entry in SrcValidationCard.Checklist1)
+            foreach (ChecklistEntryVM entry in SrcValCard.Checklist1)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
-            foreach (ChecklistEntryVM entry in SrcValidationCard.Checklist2)
+            foreach (ChecklistEntryVM entry in SrcValCard.Checklist2)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
             foreach (ChecklistEntryVM entry in QueueSrcFilterCard.Checklist1)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
@@ -1031,9 +1031,9 @@ namespace OneColumnEncoder.ViewModels
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
             foreach (ChecklistEntryVM entry in ConcatCheckCard.Checklist2)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
-            foreach (ChecklistEntryVM entry in EncTermsCard.Checklist1)
+            foreach (ChecklistEntryVM entry in EncTermsValCard.Checklist1)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
-            foreach (ChecklistEntryVM entry in EncTermsCard.Checklist2)
+            foreach (ChecklistEntryVM entry in EncTermsValCard.Checklist2)
                 entry.PropertyChanged -= OnChecklistEntryPropertyChanged;
         }
         private void OnChecklistEntryPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -1081,7 +1081,7 @@ namespace OneColumnEncoder.ViewModels
         private void ApplyBypassSettings()
         {
             ActiveSrcValidationCard.SetBypassed(_appConfM.Bypass.BypassSrcValidationGroup);
-            EncTermsCard.SetBypassed(_appConfM.Bypass.BypassEncTermsValidationGroup);
+            EncTermsValCard.SetBypassed(_appConfM.Bypass.BypassEncTermsValidationGroup);
         }
         public void UpdateEncStartButtonsState()
         {
@@ -1107,9 +1107,9 @@ namespace OneColumnEncoder.ViewModels
                                  activeSrcCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
             bool sourceValidationReady = activeSrcCard.IsBypassed || (hasRawJson && allSrcSuccess);
 
-            bool allEncSuccess = EncTermsCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
-                                 EncTermsCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
-            bool encodeTermsReady = EncTermsCard.IsBypassed || allEncSuccess;
+            bool allEncSuccess = EncTermsValCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
+                                 EncTermsValCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
+            bool encodeTermsReady = EncTermsValCard.IsBypassed || allEncSuccess;
             // Cache cards for avs2pipemod / avisynth.dll dependency check
             ToolItemCardVM? avs2pipemodItem = UpstreamsZone.FirstOrDefault(
                 t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe"));
@@ -1119,15 +1119,15 @@ namespace OneColumnEncoder.ViewModels
             bool aviSelected = avisynthItem?.IsSelected ?? false;
             bool dependencyReady = avsSelected == aviSelected;
 
-            if (SrcValidationGroup != null)
+            if (SrcValGroup != null)
             {
-                SrcValidationGroup.Buttons.B2_2Highlight = hasRawJson && !activeSrcCard.IsBypassed && !allSrcSuccess;
-                SrcValidationGroup.Buttons.B2_2Strikethrough = activeSrcCard.IsBypassed;
+                SrcValGroup.Buttons.B2_2Highlight = hasRawJson && !activeSrcCard.IsBypassed && !allSrcSuccess;
+                SrcValGroup.Buttons.B2_2Strikethrough = activeSrcCard.IsBypassed;
             }
-            if (EncTermsValidationGroup != null)
+            if (EncTermsValGroup != null)
             {
-                EncTermsValidationGroup.Buttons.B2_2Highlight = !EncTermsCard.IsBypassed && !allEncSuccess;
-                EncTermsValidationGroup.Buttons.B2_2Strikethrough = EncTermsCard.IsBypassed;
+                EncTermsValGroup.Buttons.B2_2Highlight = !EncTermsValCard.IsBypassed && !allEncSuccess;
+                EncTermsValGroup.Buttons.B2_2Strikethrough = EncTermsValCard.IsBypassed;
             }
 
             // SVFI currently doesn't support clipping, and its not really built with basic editing in design principle,
@@ -1154,13 +1154,13 @@ namespace OneColumnEncoder.ViewModels
 
         private void ReEvaluateAllChecks()
         {
-            EncTermsCard.RunAllChecks();
+            EncTermsValCard.RunAllChecks();
             UpdateEncStartButtonsState();
         }
 
         public void RefreshNumaCpuCheck()
         {
-            EncTermsCard.RunAllChecks();
+            EncTermsValCard.RunAllChecks();
             UpdateEncStartButtonsState();
         }
         #endregion
@@ -1503,7 +1503,7 @@ namespace OneColumnEncoder.ViewModels
 
             _appDataM.Encoding.OutputDirectory = NormalizeOutputDirectory(outputSetting.P2TextData);
             _appDataM.Save();
-            EncTermsCard.RunAllChecks();
+            EncTermsValCard.RunAllChecks();
             UpdateEncStartButtonsState();
         }
         private void OnEncoderItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -1511,7 +1511,7 @@ namespace OneColumnEncoder.ViewModels
             if (sender is not ToolItemCardVM) return;
             if (e.PropertyName == nameof(ToolItemCardVM.IsSelected))
             {
-                SrcValidationCard.RefreshSvtav1BitDepthStatus();
+                SrcValCard.RefreshSvtav1BitDepthStatus();
                 QueueSrcFilterCard.RefreshSvtav1BitDepthStatus();
                 ConcatCheckCard.RefreshSvtav1BitDepthStatus();
                 UpdateEncStartButtonsState();
@@ -1949,34 +1949,34 @@ namespace OneColumnEncoder.ViewModels
         }
         public void UpdateInspBypsChkButtonsState()
         {
-            if (SrcValidationGroup == null) return;
+            if (SrcValGroup == null) return;
 
             bool hasRawJson = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
             if (!hasRawJson && ActiveSrcValidationCard.IsBypassed)
                 ActiveSrcValidationCard.SetBypassed(false);
 
-            SrcValidationGroup.Buttons.B2_1IsEnabled = hasRawJson;
-            SrcValidationGroup.Buttons.B2_2IsEnabled = hasRawJson;
+            SrcValGroup.Buttons.B2_1IsEnabled = hasRawJson;
+            SrcValGroup.Buttons.B2_2IsEnabled = hasRawJson;
 
             bool srcAllSuccess = ActiveSrcValidationCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
                                  ActiveSrcValidationCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
-            SrcValidationGroup.Buttons.B2_2Highlight = hasRawJson && !ActiveSrcValidationCard.IsBypassed && !srcAllSuccess;
-            SrcValidationGroup.Buttons.B2_2Strikethrough = ActiveSrcValidationCard.IsBypassed;
+            SrcValGroup.Buttons.B2_2Highlight = hasRawJson && !ActiveSrcValidationCard.IsBypassed && !srcAllSuccess;
+            SrcValGroup.Buttons.B2_2Strikethrough = ActiveSrcValidationCard.IsBypassed;
 
             InspectSrcProblems.OnCanExecuteChanged();
             BypassSrcChecklist.OnCanExecuteChanged();
         }
         public void UpdateInspBypsEncChkButtonsState()
         {
-            if (EncTermsValidationGroup == null) return;
+            if (EncTermsValGroup == null) return;
 
-            EncTermsValidationGroup.Buttons.B2_1IsEnabled = true;
-            EncTermsValidationGroup.Buttons.B2_2IsEnabled = true;
+            EncTermsValGroup.Buttons.B2_1IsEnabled = true;
+            EncTermsValGroup.Buttons.B2_2IsEnabled = true;
 
-            bool encAllSuccess = EncTermsCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
-                                 EncTermsCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
-            EncTermsValidationGroup.Buttons.B2_2Highlight = !EncTermsCard.IsBypassed && !encAllSuccess;
-            EncTermsValidationGroup.Buttons.B2_2Strikethrough = EncTermsCard.IsBypassed;
+            bool encAllSuccess = EncTermsValCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
+                                 EncTermsValCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
+            EncTermsValGroup.Buttons.B2_2Highlight = !EncTermsValCard.IsBypassed && !encAllSuccess;
+            EncTermsValGroup.Buttons.B2_2Strikethrough = EncTermsValCard.IsBypassed;
 
             InspectEncProblems.OnCanExecuteChanged();
             BypassEncChecklist.OnCanExecuteChanged();
@@ -1997,7 +1997,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 SourceRouteKind.Queue => QueueSrcFilterCard,
                 SourceRouteKind.Concat => ConcatCheckCard,
-                _ => SrcValidationCard
+                _ => SrcValCard
             };
             ActiveSrcValidationCard.SetBypassed(_appConfM.Bypass.BypassSrcValidationGroup);
             ActiveScriptSrcImportZone = route == SourceRouteKind.Queue
@@ -2776,8 +2776,8 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(ToggleMiniVideoSrcImportZoneText));
             OnPropertyChanged(nameof(ToggleMiniScriptSrcImportZoneText));
             OnPropertyChanged(nameof(ToggleMiniEncodingConfZoneText));
-            SrcValidationGroup.RefreshLanguage();
-            EncTermsValidationGroup.RefreshLanguage();
+            SrcValGroup.RefreshLanguage();
+            EncTermsValGroup.RefreshLanguage();
             OnPropertyChanged(nameof(ToggleMiniBestPracticesCardText));
             OnPropertyChanged(nameof(ToggleMiniToolsImportCardText));
             OnPropertyChanged(nameof(ToggleMiniStartEncodingZoneText));
@@ -2786,27 +2786,27 @@ namespace OneColumnEncoder.ViewModels
             EncStartButtons.B3_3Text = UICaptionProviderM.Buttons.StartEncode;
             AnalyzeSrcButtons.B2_1Text = UICaptionProviderM.Buttons.CopyRawAnalysis;
             AnalyzeSrcButtons.B2_2Text = UICaptionProviderM.Buttons.AnalyzeSrcVideo;
-            SrcValidationGroup.Buttons.B2_1Text = UICaptionProviderM.Buttons.InspectSrcProbelms;
-            SrcValidationGroup.Buttons.B2_2Text = UICaptionProviderM.Buttons.BypassSrcChecklist;
-            EncTermsValidationGroup.Buttons.B2_1Text = UICaptionProviderM.Buttons.InspectEncPreProblems;
-            EncTermsValidationGroup.Buttons.B2_2Text = UICaptionProviderM.Buttons.BypassEncChecklist;
+            SrcValGroup.Buttons.B2_1Text = UICaptionProviderM.Buttons.InspectSrcProbelms;
+            SrcValGroup.Buttons.B2_2Text = UICaptionProviderM.Buttons.BypassSrcChecklist;
+            EncTermsValGroup.Buttons.B2_1Text = UICaptionProviderM.Buttons.InspectEncPreProblems;
+            EncTermsValGroup.Buttons.B2_2Text = UICaptionProviderM.Buttons.BypassEncChecklist;
         }
         private void RefreshCardsLanguage()
         {
             ToolsImportCard.Name = UICaptionProviderM.Cards.ToolsImport;
             ToolsImportCard.RefreshLanguage();
 
-            SrcValidationCard.Name = UICaptionProviderM.Cards.SourceValidation;
-            SrcValidationCard.P1Name = UICaptionProviderM.Cards.SourceIncompatOrCorrupted;
-            SrcValidationCard.P3Name = UICaptionProviderM.Cards.SrcQualityIssues;
-            SrcValidationCard.RefreshLanguage();
+            SrcValCard.Name = UICaptionProviderM.Cards.SourceValidation;
+            SrcValCard.P1Name = UICaptionProviderM.Cards.SourceIncompatOrCorrupted;
+            SrcValCard.P3Name = UICaptionProviderM.Cards.SrcQualityIssues;
+            SrcValCard.RefreshLanguage();
             QueueSrcFilterCard.RefreshLanguage();
             ConcatCheckCard.RefreshLanguage();
 
-            EncTermsCard.Name = UICaptionProviderM.Cards.EncPrerequisites;
-            EncTermsCard.P1Name = UICaptionProviderM.Cards.EncHardware;
-            EncTermsCard.P3Name = UICaptionProviderM.Cards.EncSoftware;
-            EncTermsCard.RefreshLanguage();
+            EncTermsValCard.Name = UICaptionProviderM.Cards.EncPrerequisites;
+            EncTermsValCard.P1Name = UICaptionProviderM.Cards.EncHardware;
+            EncTermsValCard.P3Name = UICaptionProviderM.Cards.EncSoftware;
+            EncTermsValCard.RefreshLanguage();
 
             BestPracticesCard.Name = UICaptionProviderM.Cards.BestPractices;
             BestPracticesCard.P1Name = UICaptionProviderM.Cards.BestHardware;

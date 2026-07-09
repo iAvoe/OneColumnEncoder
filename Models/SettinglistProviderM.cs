@@ -50,11 +50,11 @@ namespace OneColumnEncoder.Models
         public static List<SettingItemDefinitionM> GetBypassSettings() =>
         [
             new(UICaptionProviderM.AppConf.Groups.Bypass,
-                Lang["Setting.Bypass.SrcValidationGroup"],
+                Lang["Setting.Bypass.SrcValGroup"],
                 SettingControlType.CheckBox,
                 nameof(AppConfM.BypassSettings.BypassSrcValidationGroup)),
             new(UICaptionProviderM.AppConf.Groups.Bypass,
-                Lang["Setting.Bypass.EncTermsValidationGroup"],
+                Lang["Setting.Bypass.EncTermsValGroup"],
                 SettingControlType.CheckBox,
                 nameof(AppConfM.BypassSettings.BypassEncTermsValidationGroup))
         ];
