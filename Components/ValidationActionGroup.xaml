@@ -60,6 +60,7 @@
                               Button1IsEnabled="{Binding B2_1IsEnabled}"
                               Button2IsEnabled="{Binding B2_2IsEnabled}"
                               Button2Highlight="{Binding B2_2Highlight}"
+                              Button2Strikethrough="{Binding B2_2Strikethrough}"
                               Margin="{Binding ButtonsMargin, RelativeSource={RelativeSource AncestorType={x:Type local:ValidationActionGroup}}}" />
     </StackPanel>
 </UserControl>

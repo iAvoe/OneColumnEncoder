@@ -24,6 +24,9 @@ namespace OneColumnEncoder.Components
         public static readonly DependencyProperty Button2HighlightProperty =
             DependencyProperty.Register(nameof(Button2Highlight), typeof(bool), typeof(TwoButtonGroup), new PropertyMetadata(false));
 
+        public static readonly DependencyProperty Button2StrikethroughProperty =
+            DependencyProperty.Register(nameof(Button2Strikethrough), typeof(bool), typeof(TwoButtonGroup), new PropertyMetadata(false));
+
         public ICommand Button1Command
         {
             get => (ICommand)GetValue(Button1CommandProperty);
@@ -58,6 +61,12 @@ namespace OneColumnEncoder.Components
         {
             get => (bool)GetValue(Button2HighlightProperty);
             set => SetValue(Button2HighlightProperty, value);
+        }
+
+        public bool Button2Strikethrough
+        {
+            get => (bool)GetValue(Button2StrikethroughProperty);
+            set => SetValue(Button2StrikethroughProperty, value);
         }
 
         public TwoButtonGroup()

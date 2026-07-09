@@ -29,6 +29,16 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="Button2TextStyle"
+               TargetType="TextBlock">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Button2Strikethrough, RelativeSource={RelativeSource AncestorType=local:TwoButtonGroup}}"
+                             Value="True">
+                    <Setter Property="TextDecorations"
+                            Value="Strikethrough" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -103,6 +113,7 @@
                     </Rectangle.Style>
                 </Rectangle>
                 <TextBlock Text="{Binding B2_2Text}"
+                           Style="{StaticResource Button2TextStyle}"
                            VerticalAlignment="Center" />
             </StackPanel>
         </Button>

@@ -68,6 +68,12 @@ namespace OneColumnEncoder.ViewModels
             get => _b2_2Highlight;
             set => SetProperty(ref _b2_2Highlight, value);
         }
+        private bool _b2_2Strikethrough;
+        public bool B2_2Strikethrough
+        {
+            get => _b2_2Strikethrough;
+            set => SetProperty(ref _b2_2Strikethrough, value);
+        }
         private bool _b3_1IsEnabled = true;
         public bool B3_1IsEnabled
         {

@@ -1114,9 +1114,15 @@ namespace OneColumnEncoder.ViewModels
             bool dependencyReady = avsSelected == aviSelected;
 
             if (SrcValidationGroup != null)
+            {
                 SrcValidationGroup.Buttons.B2_2Highlight = hasRawJson && !activeSrcCard.IsBypassed && !allSrcSuccess;
+                SrcValidationGroup.Buttons.B2_2Strikethrough = activeSrcCard.IsBypassed;
+            }
             if (EncTermsValidationGroup != null)
+            {
                 EncTermsValidationGroup.Buttons.B2_2Highlight = !EncTermsCard.IsBypassed && !allEncSuccess;
+                EncTermsValidationGroup.Buttons.B2_2Strikethrough = EncTermsCard.IsBypassed;
+            }
 
             // SVFI currently doesn't support clipping, and its not really built with basic editing in design principle,
             // disable clip sampling if SVFI is selected as upstream to avoid confusion
@@ -1949,6 +1955,7 @@ namespace OneColumnEncoder.ViewModels
             bool srcAllSuccess = ActiveSrcValidationCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
                                  ActiveSrcValidationCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
             SrcValidationGroup.Buttons.B2_2Highlight = hasRawJson && !ActiveSrcValidationCard.IsBypassed && !srcAllSuccess;
+            SrcValidationGroup.Buttons.B2_2Strikethrough = ActiveSrcValidationCard.IsBypassed;
 
             InspectSrcProblems.OnCanExecuteChanged();
             BypassSrcChecklist.OnCanExecuteChanged();
@@ -1963,6 +1970,7 @@ namespace OneColumnEncoder.ViewModels
             bool encAllSuccess = EncTermsCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
                                  EncTermsCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
             EncTermsValidationGroup.Buttons.B2_2Highlight = !EncTermsCard.IsBypassed && !encAllSuccess;
+            EncTermsValidationGroup.Buttons.B2_2Strikethrough = EncTermsCard.IsBypassed;
 
             InspectEncProblems.OnCanExecuteChanged();
             BypassEncChecklist.OnCanExecuteChanged();
