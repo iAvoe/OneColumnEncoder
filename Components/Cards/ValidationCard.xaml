@@ -35,7 +35,7 @@
                 CornerRadius="18"
                 IsHitTestVisible="False"
                 SnapsToDevicePixels="True"
-                Background="Transparent">
+                Background="White">
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="Background"

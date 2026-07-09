@@ -102,6 +102,13 @@ public static class UICaptionProviderM
             public static string Overwrite => UILangProviderM.Current["AppConf.Overwrite"];
             public static string Language => UILangProviderM.Current["AppConf.Language"];
             public static string InitMode => UILangProviderM.Current["AppConf.InitMode"];
+            public static string Bypass => UILangProviderM.Current["AppConf.Bypass"];
+        }
+
+        public static class BypassLabels
+        {
+            public static string SrcValidationGroup => UILangProviderM.Current["Setting.Bypass.SrcValidationGroup"];
+            public static string EncTermsValidationGroup => UILangProviderM.Current["Setting.Bypass.EncTermsValidationGroup"];
         }
 
         public static class Buttons

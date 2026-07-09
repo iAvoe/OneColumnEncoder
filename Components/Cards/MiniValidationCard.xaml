@@ -134,12 +134,12 @@
     </UserControl.Resources>
 
     <Grid>
-        <!-- Shadow layer: transparent background, no hit-test, carries only the effect. -->
+        <!-- Shadow layer: no hit-test, carries only the effect. -->
         <Border BorderThickness="1.5"
                 CornerRadius="13"
                 IsHitTestVisible="False"
                 SnapsToDevicePixels="True"
-                Background="Transparent">
+                Background="White">
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="BorderBrush"
@@ -154,24 +154,11 @@
                                               Color="Black" />
                         </Setter.Value>
                     </Setter>
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver"
-                                 Value="True">
-                            <Setter Property="Effect">
-                                <Setter.Value>
-                                    <DropShadowEffect BlurRadius="10"
-                                                      ShadowDepth="2"
-                                                      Opacity="0.4"
-                                                      Color="Black" />
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                    </Style.Triggers>
                 </Style>
             </Border.Style>
         </Border>
 
-        <!-- Content layer: holds the actual card layout with no Effect so text stays sharp. -->
+        <!-- Content layer: actual card layout with no Effect so text stays sharp. -->
         <Border BorderThickness="1.5"
                 CornerRadius="13"
                 Padding="14 15"
@@ -189,7 +176,7 @@
                         <Trigger Property="IsMouseOver"
                                  Value="True">
                             <Setter Property="Opacity"
-                                    Value="0.65" />
+                                    Value="0.99" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>

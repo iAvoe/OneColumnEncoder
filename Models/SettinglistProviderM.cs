@@ -6,7 +6,8 @@ namespace OneColumnEncoder.Models
         [
             .. GetOverwriteSettings(),
             .. GetLanguageSettings(),
-            .. GetInitModeSettings()
+            .. GetInitModeSettings(),
+            .. GetBypassSettings()
         ];
 
         public static List<SettingItemDefinitionM> GetOverwriteSettings() =>
@@ -42,6 +43,18 @@ namespace OneColumnEncoder.Models
                 UILangProviderM.Current["Setting.InitMode.IsFirstLaunch"],
                 SettingControlType.CheckBox,
                 nameof(AppConfM.IsFirstLaunch))
+        ];
+
+        public static List<SettingItemDefinitionM> GetBypassSettings() =>
+        [
+            new(UICaptionProviderM.AppConf.Groups.Bypass,
+                UILangProviderM.Current["Setting.Bypass.SrcValidationGroup"],
+                SettingControlType.CheckBox,
+                nameof(AppConfM.BypassSettings.BypassSrcValidationGroup)),
+            new(UICaptionProviderM.AppConf.Groups.Bypass,
+                UILangProviderM.Current["Setting.Bypass.EncTermsValidationGroup"],
+                SettingControlType.CheckBox,
+                nameof(AppConfM.BypassSettings.BypassEncTermsValidationGroup))
         ];
     }
 }

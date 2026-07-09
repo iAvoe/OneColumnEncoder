@@ -716,6 +716,7 @@ namespace OneColumnEncoder.ViewModels
             UpdateAnalyzeSrcButtonsState();
             UpdateInspBypsChkButtonsState();
             UpdateInspBypsEncChkButtonsState();
+            ApplyBypassSettings();
             _modalNavS.CurrentViewModelChanged += OnModalStateChanged;
             IsOverlayVisible = _modalNavS.IsOpen;
             UILangProviderM.CurrentChanged += OnLanguageChanged;
@@ -1076,6 +1077,11 @@ namespace OneColumnEncoder.ViewModels
             }
 
             OneClickScriptGen.OnCanExecuteChanged();
+        }
+        private void ApplyBypassSettings()
+        {
+            ActiveSrcValidationCard.SetBypassed(_appConfM.Bypass.BypassSrcValidationGroup);
+            EncTermsCard.SetBypassed(_appConfM.Bypass.BypassEncTermsValidationGroup);
         }
         public void UpdateEncStartButtonsState()
         {
@@ -1993,6 +1999,7 @@ namespace OneColumnEncoder.ViewModels
                 SourceRouteKind.Concat => ConcatCheckCard,
                 _ => SrcValidationCard
             };
+            ActiveSrcValidationCard.SetBypassed(_appConfM.Bypass.BypassSrcValidationGroup);
             ActiveScriptSrcImportZone = route == SourceRouteKind.Queue
                 ? QueueScriptSrcImportZone
                 : ScriptSrcImportZone;
@@ -2711,6 +2718,7 @@ namespace OneColumnEncoder.ViewModels
         private void OnModalStateChanged()
         {
             IsOverlayVisible = _modalNavS.IsOpen;
+            if (!_modalNavS.IsOpen) ApplyBypassSettings();
             // These modal views should hide the main window while they are open.
             // The flag also prevents the window from being shown twice during modal transitions.
             bool shouldHideMainWindow =

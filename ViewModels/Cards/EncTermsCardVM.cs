@@ -38,7 +38,7 @@ namespace OneColumnEncoder.ViewModels.Cards
         public void SetBypassed(bool isBypassed)
         {
             IsBypassed = isBypassed;
-            CardOpacity = isBypassed ? 0.45 : 1.0;
+            CardOpacity = isBypassed ? 0.5 : 1.0;
         }
 
         public void RunAllChecks()

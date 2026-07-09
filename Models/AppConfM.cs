@@ -11,6 +11,7 @@ namespace OneColumnEncoder.Models
         public bool IsFirstLaunch { get; set; } = true;
         public OverwriteSettings Overwrite { get; set; } = new OverwriteSettings();
         public Language Lang { get; set; } = new Language();
+        public BypassSettings Bypass { get; set; } = new BypassSettings();
 
         #region Setting items
         public class OverwriteSettings
@@ -22,6 +23,11 @@ namespace OneColumnEncoder.Models
         public class Language
         {
             public string LanguageCode { get; set; } = "en";
+        }
+        public class BypassSettings
+        {
+            public bool BypassSrcValidationGroup { get; set; } = true;
+            public bool BypassEncTermsValidationGroup { get; set; } = true;
         }
         #endregion
     }
