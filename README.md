@@ -10,7 +10,7 @@ OneColumnEncoder 提供了相对硬核，同时简洁直观的 UI/UX 流程，�
 
 <p align="center"><img src="WireframeMockups/logo.png" alt="Logo" width="250"></p>
 
-This project supports has two language versions | 本项目支持两种语言
+This project has two language versions | 本项目支持两种语言
 
 Detailed project description with screenshots and basic usages | 项目描述、截图和基本使用方法：
 
@@ -18,7 +18,7 @@ Detailed project description with screenshots and basic usages | 项目描述、
 - [README-ZH-CN.md](./Docs/README-ZH-CN.md)
 - [README-ZH-TW.md](./Docs/README-ZH-TW.md)
 
-Detailed explanation of the concept and design of this project | 项目概念和设计详情：
+Detailed explanation of the concept & design | 概念与设计详情：
 
 - [ConceptsAndFeatures-EN.md](./Docs/ConceptsAndFeatures-EN.md)
 - [ConceptsAndFeatures-ZH-CN.md](./Docs/ConceptsAndFeatures-ZH-CN.md)
