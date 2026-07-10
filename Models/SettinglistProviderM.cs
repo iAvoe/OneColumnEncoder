@@ -6,8 +6,7 @@ namespace OneColumnEncoder.Models
         [
             .. GetOverwriteSettings(),
             .. GetLanguageSettings(),
-            .. GetInitModeSettings(),
-            .. GetBypassSettings()
+            .. GetInitModeSettings()
         ];
 
         private static AppConfLangProviderM Lang => AppConfLangProviderM.Current;
@@ -47,16 +46,6 @@ namespace OneColumnEncoder.Models
                 nameof(AppConfM.IsFirstLaunch))
         ];
 
-        public static List<SettingItemDefinitionM> GetBypassSettings() =>
-        [
-            new(UICaptionProviderM.AppConf.Groups.Bypass,
-                Lang["Setting.Bypass.SrcValGroup"],
-                SettingControlType.CheckBox,
-                nameof(AppConfM.BypassSettings.BypassSrcValidationGroup)),
-            new(UICaptionProviderM.AppConf.Groups.Bypass,
-                Lang["Setting.Bypass.EncTermsValGroup"],
-                SettingControlType.CheckBox,
-                nameof(AppConfM.BypassSettings.BypassEncTermsValidationGroup))
-        ];
+
     }
 }

@@ -223,7 +223,7 @@ namespace OneColumnEncoder.Commands
             List<QueueSourceRawAnalysis> rawAnalyses = [];
             int supplementedCount = 0;
 
-            bool shouldFilterQueue = !queueCard.IsBypassed;
+            bool shouldFilterQueue = true;
             QueueFilterMode filterMode = shouldFilterQueue && queueFilePaths.Length > 1
                 ? PromptQueueFilterMode()
                 : QueueFilterMode.FirstStream;

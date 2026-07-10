@@ -45,7 +45,7 @@ namespace OneColumnEncoder.Commands
             }
 
             // Extract file names for both short card display and long tooltip display
-            string[] fileNames = filePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!).ToArray();
+            string[] fileNames = [.. filePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!)];
 
             _item.P2TextData = folderPath;
             _item.P1TextData = FormatQueueP1Text(fileNames);

@@ -1,17 +1,12 @@
 ﻿using OneColumnEncoder.FFmpeg;
 using OneColumnEncoder.Models;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace OneColumnEncoder.ViewModels.Cards
 {
     public class SourceCheckCardVM : ValidationCardBaseVM
     {
-        private bool _isBypassed;
-        public bool IsBypassed
-        {
-            get => _isBypassed;
-            private set => SetProperty(ref _isBypassed, value);
-        }
-
         public Func<bool>? IsSvtav1SelectedFunc { get; set; }
 
         private string? _lastAnalysisJson;
@@ -27,16 +22,9 @@ namespace OneColumnEncoder.ViewModels.Cards
             FillCollection(Checklist2, ChecklistProviderM.GetSourceChecklist2());
         }
 
-        #region TwoButtonGroup commands
-        public void SetBypassed(bool isBypassed)
-        {
-            IsBypassed = isBypassed;
-            CardOpacity = isBypassed ? 0.45 : 1.0;
-        }
         public void ResetAnalysisStatus()
         {
             _lastAnalysisJson = null;
-            SetBypassed(false);
 
             for (int i = 0; i < Checklist1.Count; i++)
                 SetChecklist1(i, StatusType.Waiting);
@@ -44,7 +32,6 @@ namespace OneColumnEncoder.ViewModels.Cards
             for (int i = 0; i < Checklist2.Count; i++)
                 SetChecklist2(i, StatusType.Waiting);
         }
-        #endregion
 
         #region FFprobe Analysis
 
@@ -127,10 +114,22 @@ namespace OneColumnEncoder.ViewModels.Cards
             RefreshChecklist(Checklist2, ChecklistProviderM.GetSourceChecklist2());
         }
 
-        #region Issue Formatting (for ConfirmationModal)
+        #region Issue Formatting (for ConfirmationModal and column clicks)
 
         public string SevereIssuesFormatted => FormatIssues(StatusType.Error);
         public string ModerateIssuesFormatted => FormatIssues(StatusType.Warning);
+
+        public string Checklist1IssuesFormatted => FormatColumnIssues(Checklist1, GetChecklist1IssueDescription);
+        public string Checklist2IssuesFormatted => FormatColumnIssues(Checklist2, GetChecklist2IssueDescription);
+
+        private static string FormatColumnIssues(ObservableCollection<ChecklistEntryVM> column, Func<int, string?> getDescription)
+        {
+            var items = column
+                .Select((entry, index) => (entry, description: getDescription(index)))
+                .Where(e => e.entry.IsEnabled && e.entry.Status != StatusType.Success && e.entry.Status != StatusType.Waiting)
+                .Select(e => FormatIssue(e.entry.Text, e.description));
+            return string.Join(Environment.NewLine + Environment.NewLine, items);
+        }
 
         private string FormatIssues(StatusType status)
         {

@@ -36,7 +36,7 @@
         <!-- Shadow stays on a separate layer so text and buttons remain sharp. -->
         <Border BorderBrush="{StaticResource GlobalPrimary}"
                 BorderThickness="1.5"
-                CornerRadius="20"
+                CornerRadius="18"
                 IsHitTestVisible="False"
                 SnapsToDevicePixels="True"
                 Background="Transparent">
@@ -48,7 +48,7 @@
                         <Setter.Value>
                             <DropShadowEffect BlurRadius="13"
                                               ShadowDepth="3"
-                                              Opacity="0.3"
+                                              Opacity="0.4"
                                               Color="Black" />
                         </Setter.Value>
                     </Setter>
@@ -57,12 +57,27 @@
         </Border>
 
         <!-- Content layer keeps the original card layout and state styling. -->
-        <Border BorderBrush="{StaticResource GlobalPrimary}"
-                BorderThickness="1.5"
-                SnapsToDevicePixels="True"
-                CornerRadius="20"
+        <Border CornerRadius="18"
                 Padding="17.5 20"
+                SnapsToDevicePixels="True"
                 Background="{StaticResource Background}">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="BorderBrush"
+                            Value="{StaticResource GlobalPrimary}" />
+                    <Setter Property="BorderThickness"
+                            Value="1.5" />
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter Property="Opacity"
+                                    Value="0.85" />
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource GlobalTertiary}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />

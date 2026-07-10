@@ -22,23 +22,10 @@ namespace OneColumnEncoder.ViewModels.Cards
         public Func<string>? GetAviSynthDllPathFunc { get; set; }
         public Func<string>? GetSourceVideoFilePathFunc { get; set; }
 
-        private bool _isBypassed;
-        public bool IsBypassed
-        {
-            get => _isBypassed;
-            private set => SetProperty(ref _isBypassed, value);
-        }
-
         public EncTermsCardVM()
         {
             FillCollection(Checklist1, ChecklistProviderM.GetEncodeChecklist1());
             FillCollection(Checklist2, ChecklistProviderM.GetEncodeChecklist2());
-        }
-
-        public void SetBypassed(bool isBypassed)
-        {
-            IsBypassed = isBypassed;
-            CardOpacity = isBypassed ? 0.5 : 1.0;
         }
 
         public void RunAllChecks()
@@ -166,6 +153,38 @@ namespace OneColumnEncoder.ViewModels.Cards
                     if (!string.IsNullOrEmpty(title))
                         lines.Add($"{title}\n{text}");
                 }
+                for (int i = 0; i < Checklist2.Count && i < 3; i++)
+                {
+                    string title = GetChecklist2Title(i);
+                    string text = GetChecklist2Description(i);
+                    if (!string.IsNullOrEmpty(title))
+                        lines.Add($"{title}\n{text}");
+                }
+                return string.Join(Environment.NewLine + Environment.NewLine, lines);
+            }
+        }
+
+        public string Checklist1InspectFormatted
+        {
+            get
+            {
+                var lines = new System.Collections.Generic.List<string>();
+                for (int i = 0; i < Checklist1.Count && i < 3; i++)
+                {
+                    string title = GetChecklist1Title(i);
+                    string text = GetChecklist1Description(i);
+                    if (!string.IsNullOrEmpty(title))
+                        lines.Add($"{title}\n{text}");
+                }
+                return string.Join(Environment.NewLine + Environment.NewLine, lines);
+            }
+        }
+
+        public string Checklist2InspectFormatted
+        {
+            get
+            {
+                var lines = new System.Collections.Generic.List<string>();
                 for (int i = 0; i < Checklist2.Count && i < 3; i++)
                 {
                     string title = GetChecklist2Title(i);

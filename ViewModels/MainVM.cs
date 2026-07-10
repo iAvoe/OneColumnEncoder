@@ -102,10 +102,6 @@ namespace OneColumnEncoder.ViewModels
         public OpenFilterScribeCmd OpenFilterScribe { get; }
         public CopyRawAnalysisCmd CopyRawAnalysis { get; } // Copy (ffprobe JSON) to clipboard
         public AnalyzeSrcVideoCmd AnalyzeSrcVideo { get; } // Maybe add mediaInfo analysis in future, but ffprobe alone will do
-        public InspectSrcProblemsCmd InspectSrcProblems { get; }
-        public BypsSrcChecklistCmd BypassSrcChecklist { get; }
-        public InspectEncProblemsCmd InspectEncProblems { get; }
-        public BypassEncChecklistCmd BypassEncChecklist { get; }
         public OpenSampleClipCmd SampleClip { get; }
         public StartEncCmd StartEncode { get; }
         public SelectToolCmd SelectTool { get; } // ItemCard select on click
@@ -579,12 +575,6 @@ namespace OneColumnEncoder.ViewModels
                 },
                 IsConcatRouteActive,
                 GetConcatFilePaths);
-            InspectSrcProblems = new InspectSrcProblemsCmd(
-                _srcVideoAnalysis, () => ActiveSrcValidationCard, modalNavS);
-            BypassSrcChecklist = new BypsSrcChecklistCmd(
-                () => ActiveSrcValidationCard,
-                () => !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson),
-                UpdateEncStartButtonsState);
             SampleClip = new OpenSampleClipCmd(
                 modalNavS,
                 BuildEncodingPipelineRequest,
@@ -618,11 +608,8 @@ namespace OneColumnEncoder.ViewModels
             EncStartButtons.B3_1Icon = SvgIconProvider.GameRefresh;
             EncStartButtons.B3_2Icon = SvgIconProvider.GameLocation;
             EncStartButtons.B3_3Icon = SvgIconProvider.GamePlay;
-            ButtonGroupVM inspBypsChkButtons = ButtonGroupVM.CreateTwoButton(
-                UICaptionProviderM.Buttons.InspectSrcProbelms, UICaptionProviderM.Buttons.BypassSrcChecklist, InspectSrcProblems, BypassSrcChecklist);
             SrcValGroup = new ValidationActionGroupVM(
                 ActiveSrcValidationCard,
-                inspBypsChkButtons,
                 _appDataM.IsMiniSrcValidationCard ?? false,
                 isMini =>
                 {
@@ -630,19 +617,74 @@ namespace OneColumnEncoder.ViewModels
                     _appDataM.Save();
                 });
 
-            InspectEncProblems = new InspectEncProblemsCmd(EncTermsValCard, modalNavS);
-            BypassEncChecklist = new BypassEncChecklistCmd(EncTermsValCard, UpdateEncStartButtonsState);
-            ButtonGroupVM inspBypsEncChkButtons = ButtonGroupVM.CreateTwoButton(
-                UICaptionProviderM.Buttons.InspectEncPreProblems, UICaptionProviderM.Buttons.BypassEncChecklist, InspectEncProblems, BypassEncChecklist);
             EncTermsValGroup = new ValidationActionGroupVM(
                 EncTermsValCard,
-                inspBypsEncChkButtons,
                 _appDataM.IsMiniEncTermsCard ?? false,
                 isMini =>
                 {
                     _appDataM.IsMiniEncTermsCard = isMini;
                     _appDataM.Save();
                 });
+
+            // Column-inspect commands for source validation card
+            ActiveSrcValidationCard.InspectColumn1Cmd = new ActionCmd(_ =>
+            {
+                if (string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson))
+                {
+                    ShowSourceAnalysisRequiredModal();
+                    return;
+                }
+
+                string text = ActiveSrcValidationCard.Checklist1IssuesFormatted;
+                if (string.IsNullOrWhiteSpace(text))
+                    new OpenSuccModalCmd(modalNavS,
+                        UICaptionProviderM.SourceInspect.InfoTitle,
+                        UICaptionProviderM.SourceInspect.InfoMsg).Execute(null);
+                else
+                    new OpenErrModalCmd(modalNavS,
+                        UICaptionProviderM.SourceInspect.ErrorTitle, text).Execute(null);
+            });
+            ActiveSrcValidationCard.InspectColumn2Cmd = new ActionCmd(_ =>
+            {
+                if (string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson))
+                {
+                    ShowSourceAnalysisRequiredModal();
+                    return;
+                }
+
+                string text = ActiveSrcValidationCard.Checklist2IssuesFormatted;
+                if (string.IsNullOrWhiteSpace(text))
+                    new OpenSuccModalCmd(modalNavS,
+                        UICaptionProviderM.SourceInspect.InfoTitle,
+                        UICaptionProviderM.SourceInspect.InfoMsg).Execute(null);
+                else
+                    new OpenWarnModalCmd(modalNavS,
+                        UICaptionProviderM.SourceInspect.WarnTitle, text).Execute(null);
+            });
+
+            // Column-inspect commands for encoder terms card
+            EncTermsValCard.InspectColumn1Cmd = new ActionCmd(_ =>
+            {
+                string text = EncTermsValCard.Checklist1InspectFormatted;
+                if (string.IsNullOrWhiteSpace(text))
+                    new OpenSuccModalCmd(modalNavS,
+                        UICaptionProviderM.EncInspect.InfoTitle,
+                        UICaptionProviderM.EncInspect.InfoMsg).Execute(null);
+                else
+                    new OpenInfoModalCmd(modalNavS,
+                        UICaptionProviderM.EncInspect.InfoTitle, text).Execute(null);
+            });
+            EncTermsValCard.InspectColumn2Cmd = new ActionCmd(_ =>
+            {
+                string text = EncTermsValCard.Checklist2InspectFormatted;
+                if (string.IsNullOrWhiteSpace(text))
+                    new OpenSuccModalCmd(modalNavS,
+                        UICaptionProviderM.EncInspect.InfoTitle,
+                        UICaptionProviderM.EncInspect.InfoMsg).Execute(null);
+                else
+                    new OpenInfoModalCmd(modalNavS,
+                        UICaptionProviderM.EncInspect.InfoTitle, text).Execute(null);
+            });
 
             // Import dropdown menu and behavior
             ToolsImportCard.ToolImported += OnToolImported;
@@ -714,9 +756,7 @@ namespace OneColumnEncoder.ViewModels
             UpdateFilterScbButtonsState(); // Initial state of script scribe buttons
             RefreshSelectedSourceStatus();
             UpdateAnalyzeSrcButtonsState();
-            UpdateInspBypsChkButtonsState();
-            UpdateInspBypsEncChkButtonsState();
-            ApplyBypassSettings();
+
             _modalNavS.CurrentViewModelChanged += OnModalStateChanged;
             IsOverlayVisible = _modalNavS.IsOpen;
             UILangProviderM.CurrentChanged += OnLanguageChanged;
@@ -839,7 +879,6 @@ namespace OneColumnEncoder.ViewModels
         private void OnAnalyticsZoneCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             UpdateAnalyzeSrcButtonsState();
-            UpdateInspBypsChkButtonsState();
         }
 
         // When tools are added or removed in imported zones, re-apply default selection logic,
@@ -1078,11 +1117,6 @@ namespace OneColumnEncoder.ViewModels
 
             OneClickScriptGen.OnCanExecuteChanged();
         }
-        private void ApplyBypassSettings()
-        {
-            ActiveSrcValidationCard.SetBypassed(_appConfM.Bypass.BypassSrcValidationGroup);
-            EncTermsValCard.SetBypassed(_appConfM.Bypass.BypassEncTermsValidationGroup);
-        }
         public void UpdateEncStartButtonsState()
         {
             if (EncStartButtons == null) return;
@@ -1099,17 +1133,15 @@ namespace OneColumnEncoder.ViewModels
 
             bool hasRawJson = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
 
-            // Checklist:
-            // 1. Selected 
-            // SVT-AV1 may eventually have 12bit support, but for now keep encoding start button disabled
+            // Warning status does not block start; only Error blocks.
             SourceCheckCardVM activeSrcCard = ActiveSrcValidationCard;
-            bool allSrcSuccess = activeSrcCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
-                                 activeSrcCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
-            bool sourceValidationReady = activeSrcCard.IsBypassed || (hasRawJson && allSrcSuccess);
+            bool allSrcSuccess = activeSrcCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status != StatusType.Error) &&
+                                 activeSrcCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status != StatusType.Error);
+            bool sourceValidationReady = hasRawJson && allSrcSuccess;
 
-            bool allEncSuccess = EncTermsValCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
-                                 EncTermsValCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
-            bool encodeTermsReady = EncTermsValCard.IsBypassed || allEncSuccess;
+            bool allEncSuccess = EncTermsValCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status != StatusType.Error) &&
+                                 EncTermsValCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status != StatusType.Error);
+            bool encodeTermsReady = allEncSuccess;
             // Cache cards for avs2pipemod / avisynth.dll dependency check
             ToolItemCardVM? avs2pipemodItem = UpstreamsZone.FirstOrDefault(
                 t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe"));
@@ -1118,17 +1150,6 @@ namespace OneColumnEncoder.ViewModels
             bool avsSelected = avs2pipemodItem?.IsSelected ?? false;
             bool aviSelected = avisynthItem?.IsSelected ?? false;
             bool dependencyReady = avsSelected == aviSelected;
-
-            if (SrcValGroup != null)
-            {
-                SrcValGroup.Buttons.B2_2Highlight = hasRawJson && !activeSrcCard.IsBypassed && !allSrcSuccess;
-                SrcValGroup.Buttons.B2_2Strikethrough = activeSrcCard.IsBypassed;
-            }
-            if (EncTermsValGroup != null)
-            {
-                EncTermsValGroup.Buttons.B2_2Highlight = !EncTermsValCard.IsBypassed && !allEncSuccess;
-                EncTermsValGroup.Buttons.B2_2Strikethrough = EncTermsValCard.IsBypassed;
-            }
 
             // SVFI currently doesn't support clipping, and its not really built with basic editing in design principle,
             // disable clip sampling if SVFI is selected as upstream to avoid confusion
@@ -1535,7 +1556,6 @@ namespace OneColumnEncoder.ViewModels
             {
                 ResetAnalysisIfStale();
                 UpdateAnalyzeSrcButtonsState();
-                UpdateInspBypsChkButtonsState();
                 UpdateEncStartButtonsState();
             }
         }
@@ -1945,41 +1965,6 @@ namespace OneColumnEncoder.ViewModels
             AnalyzeSrcButtons.B2_1IsEnabled = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
             CopyRawAnalysis.OnCanExecuteChanged();
             AnalyzeSrcVideo.OnCanExecuteChanged();
-            UpdateInspBypsChkButtonsState();
-        }
-        public void UpdateInspBypsChkButtonsState()
-        {
-            if (SrcValGroup == null) return;
-
-            bool hasRawJson = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
-            if (!hasRawJson && ActiveSrcValidationCard.IsBypassed)
-                ActiveSrcValidationCard.SetBypassed(false);
-
-            SrcValGroup.Buttons.B2_1IsEnabled = hasRawJson;
-            SrcValGroup.Buttons.B2_2IsEnabled = hasRawJson;
-
-            bool srcAllSuccess = ActiveSrcValidationCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
-                                 ActiveSrcValidationCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
-            SrcValGroup.Buttons.B2_2Highlight = hasRawJson && !ActiveSrcValidationCard.IsBypassed && !srcAllSuccess;
-            SrcValGroup.Buttons.B2_2Strikethrough = ActiveSrcValidationCard.IsBypassed;
-
-            InspectSrcProblems.OnCanExecuteChanged();
-            BypassSrcChecklist.OnCanExecuteChanged();
-        }
-        public void UpdateInspBypsEncChkButtonsState()
-        {
-            if (EncTermsValGroup == null) return;
-
-            EncTermsValGroup.Buttons.B2_1IsEnabled = true;
-            EncTermsValGroup.Buttons.B2_2IsEnabled = true;
-
-            bool encAllSuccess = EncTermsValCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success) &&
-                                 EncTermsValCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status == StatusType.Success);
-            EncTermsValGroup.Buttons.B2_2Highlight = !EncTermsValCard.IsBypassed && !encAllSuccess;
-            EncTermsValGroup.Buttons.B2_2Strikethrough = EncTermsValCard.IsBypassed;
-
-            InspectEncProblems.OnCanExecuteChanged();
-            BypassEncChecklist.OnCanExecuteChanged();
         }
         private void ResetAnalysisIfStale()
         {
@@ -1999,7 +1984,6 @@ namespace OneColumnEncoder.ViewModels
                 SourceRouteKind.Concat => ConcatCheckCard,
                 _ => SrcValCard
             };
-            ActiveSrcValidationCard.SetBypassed(_appConfM.Bypass.BypassSrcValidationGroup);
             ActiveScriptSrcImportZone = route == SourceRouteKind.Queue
                 ? QueueScriptSrcImportZone
                 : ScriptSrcImportZone;
@@ -2718,7 +2702,6 @@ namespace OneColumnEncoder.ViewModels
         private void OnModalStateChanged()
         {
             IsOverlayVisible = _modalNavS.IsOpen;
-            if (!_modalNavS.IsOpen) ApplyBypassSettings();
             // These modal views should hide the main window while they are open.
             // The flag also prevents the window from being shown twice during modal transitions.
             bool shouldHideMainWindow =
@@ -2744,6 +2727,14 @@ namespace OneColumnEncoder.ViewModels
                 if (Application.Current.MainWindow is { Visibility: Visibility.Hidden } mw)
                     mw.Show();
             }
+        }
+
+        private void ShowSourceAnalysisRequiredModal()
+        {
+            new OpenErrModalCmd(
+                _modalNavS,
+                UICaptionProviderM.SourceInspect.ErrorTitle,
+                UILangProviderM.Current["ReviseSourceResolution.NoFfprobeJson"]).Execute(null);
         }
 
         #region Language Switching
@@ -2786,10 +2777,6 @@ namespace OneColumnEncoder.ViewModels
             EncStartButtons.B3_3Text = UICaptionProviderM.Buttons.StartEncode;
             AnalyzeSrcButtons.B2_1Text = UICaptionProviderM.Buttons.CopyRawAnalysis;
             AnalyzeSrcButtons.B2_2Text = UICaptionProviderM.Buttons.AnalyzeSrcVideo;
-            SrcValGroup.Buttons.B2_1Text = UICaptionProviderM.Buttons.InspectSrcProbelms;
-            SrcValGroup.Buttons.B2_2Text = UICaptionProviderM.Buttons.BypassSrcChecklist;
-            EncTermsValGroup.Buttons.B2_1Text = UICaptionProviderM.Buttons.InspectEncPreProblems;
-            EncTermsValGroup.Buttons.B2_2Text = UICaptionProviderM.Buttons.BypassEncChecklist;
         }
         private void RefreshCardsLanguage()
         {

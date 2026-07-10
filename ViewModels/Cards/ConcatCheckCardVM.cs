@@ -9,10 +9,6 @@ namespace OneColumnEncoder.ViewModels.Cards
         public void ApplyConcatAnalysis(string[] filePaths, bool allValid)
         {
             ConcatFilePaths = filePaths;
-            if (allValid)
-            {
-                SetBypassed(false);
-            }
         }
 
         public new void RefreshLanguage()

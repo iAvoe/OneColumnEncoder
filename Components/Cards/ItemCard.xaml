@@ -222,6 +222,7 @@
                             <Setter Property="TextElement.Foreground"
                                     Value="{StaticResource GlobalSecondary}" />
                         </DataTrigger>
+                        <!-- Hover effect -->
                         <Trigger Property="IsMouseOver"
                                  Value="True">
                             <Setter Property="Opacity"

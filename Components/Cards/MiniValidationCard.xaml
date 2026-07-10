@@ -162,21 +162,20 @@
         <Border BorderThickness="1.5"
                 CornerRadius="13"
                 Padding="14 15"
-                SnapsToDevicePixels="True"
-                Opacity="{Binding CardOpacity}">
+                SnapsToDevicePixels="True">
             <Border.Style>
                 <Style TargetType="Border">
                     <Setter Property="BorderBrush"
                             Value="{StaticResource GlobalPrimary}" />
-                    <Setter Property="Background"
-                            Value="{StaticResource Background}" />
                     <Setter Property="TextElement.Foreground"
                             Value="{StaticResource GlobalPrimary}" />
                     <Style.Triggers>
                         <Trigger Property="IsMouseOver"
                                  Value="True">
                             <Setter Property="Opacity"
-                                    Value="0.99" />
+                                    Value="0.85" />
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource GlobalTertiary}" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>
@@ -214,33 +213,47 @@
                 <UniformGrid Grid.Row="1"
                              Columns="2"
                              Margin="0 5 0 0">
-                    <StackPanel Margin="0 0 10 0">
-                        <TextBlock Text="{Binding P1Name}"
-                                   Style="{StaticResource MiniValidationSectionHeader}" />
-                        <comps:ChecklistContainer ItemsSource="{Binding Checklist1}">
-                            <comps:ChecklistContainer.ItemTemplate>
-                                <DataTemplate>
-                                    <comps:ChecklistItem Text="{Binding Text}"
-                                                         Status="{Binding Status}"
-                                                         Margin="0 5 0 0" />
-                                </DataTemplate>
-                            </comps:ChecklistContainer.ItemTemplate>
-                        </comps:ChecklistContainer>
-                    </StackPanel>
+                    <Border Style="{StaticResource ClickableColumn}"
+                            Margin="0 0 10 0">
+                        <Border.InputBindings>
+                            <MouseBinding Gesture="LeftClick"
+                                          Command="{Binding InspectColumn1Cmd}" />
+                        </Border.InputBindings>
+                        <StackPanel>
+                            <TextBlock Text="{Binding P1Name}"
+                                       Style="{StaticResource MiniValidationSectionHeader}" />
+                            <comps:ChecklistContainer ItemsSource="{Binding Checklist1}">
+                                <comps:ChecklistContainer.ItemTemplate>
+                                    <DataTemplate>
+                                        <comps:ChecklistItem Text="{Binding Text}"
+                                                             Status="{Binding Status}"
+                                                             Margin="0 5 0 0" />
+                                    </DataTemplate>
+                                </comps:ChecklistContainer.ItemTemplate>
+                            </comps:ChecklistContainer>
+                        </StackPanel>
+                    </Border>
 
-                    <StackPanel Margin="10 0 0 0">
-                        <TextBlock Text="{Binding P3Name}"
-                                   Style="{StaticResource MiniValidationSectionHeader}" />
-                        <comps:ChecklistContainer ItemsSource="{Binding Checklist2}">
-                            <comps:ChecklistContainer.ItemTemplate>
-                                <DataTemplate>
-                                    <comps:ChecklistItem Text="{Binding Text}"
-                                                         Status="{Binding Status}"
-                                                         Margin="0 5 0 0" />
-                                </DataTemplate>
-                            </comps:ChecklistContainer.ItemTemplate>
-                        </comps:ChecklistContainer>
-                    </StackPanel>
+                    <Border Style="{StaticResource ClickableColumn}"
+                            Margin="10 0 0 0">
+                        <Border.InputBindings>
+                            <MouseBinding Gesture="LeftClick"
+                                          Command="{Binding InspectColumn2Cmd}" />
+                        </Border.InputBindings>
+                        <StackPanel>
+                            <TextBlock Text="{Binding P3Name}"
+                                       Style="{StaticResource MiniValidationSectionHeader}" />
+                            <comps:ChecklistContainer ItemsSource="{Binding Checklist2}">
+                                <comps:ChecklistContainer.ItemTemplate>
+                                    <DataTemplate>
+                                        <comps:ChecklistItem Text="{Binding Text}"
+                                                             Status="{Binding Status}"
+                                                             Margin="0 5 0 0" />
+                                    </DataTemplate>
+                                </comps:ChecklistContainer.ItemTemplate>
+                            </comps:ChecklistContainer>
+                        </StackPanel>
+                    </Border>
                 </UniformGrid>
             </Grid>
         </Border>

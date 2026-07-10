@@ -37,7 +37,7 @@
                                    ToggleCommand="{Binding DataContext.ToggleMiniToolsImportCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                    ToggleTag="{Binding DataContext.IsMiniToolsImportCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                    ToggleToolTip="{Binding DataContext.ToggleMiniToolsImportCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
-                                   Margin="5 2.5">
+                                    Margin="5 2.5">
                 <comps:ToolsImportCard.Style>
                     <Style TargetType="comps:ToolsImportCard">
                         <Setter Property="Visibility"
@@ -754,8 +754,7 @@
                              VerticalAlignment="Center" />
 
             <comps:ValidationActionGroup DataContext="{Binding SrcValGroup}"
-                                         CardMargin="5 5 5 0"
-                                         ButtonsMargin="10 15 10 0" />
+                                         CardMargin="5 5 5 0" />
 
             <!-- Encoding Settings -->
             <comps:SectionHeader HeaderText="{Binding SectionTexts[EncodingConfigs]}"
@@ -911,8 +910,7 @@
                 </comps:SectionHeader.HeaderExtra>
             </comps:SectionHeader>
             <comps:ValidationActionGroup DataContext="{Binding EncTermsValGroup}"
-                                         CardMargin="5 10 5 0"
-                                         ButtonsMargin="10 10 10 0">
+                                         CardMargin="5 10 5 0">
                 <comps:ValidationActionGroup.MiddleContent>
                     <comps:HintPanel Text="{Binding DataContext.NumaCpuCheckHintText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                      RefreshTextOnLanguageChanged="True"

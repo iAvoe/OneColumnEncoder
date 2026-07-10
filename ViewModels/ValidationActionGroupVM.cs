@@ -12,12 +12,10 @@ namespace OneColumnEncoder.ViewModels
 
         public ValidationActionGroupVM(
             ValidationCardBaseVM card,
-            ButtonGroupVM buttons,
             bool isMini,
             Action<bool> saveMiniState)
         {
             _card = card;
-            Buttons = buttons;
             _isMini = isMini;
             _saveMiniState = saveMiniState;
             ToggleMiniCommand = new ActionCmd(_ =>
@@ -32,8 +30,6 @@ namespace OneColumnEncoder.ViewModels
             get => _card;
             set => SetProperty(ref _card, value);
         }
-
-        public ButtonGroupVM Buttons { get; }
 
         public ActionCmd ToggleMiniCommand { get; }
 

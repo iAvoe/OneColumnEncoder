@@ -12,20 +12,6 @@ namespace OneColumnEncoder.Components
                 typeof(ValidationActionGroup),
                 new PropertyMetadata(new Thickness(5, 5, 5, 0)));
 
-        public static readonly DependencyProperty ButtonsMarginProperty =
-            DependencyProperty.Register(
-                nameof(ButtonsMargin),
-                typeof(Thickness),
-                typeof(ValidationActionGroup),
-                new PropertyMetadata(new Thickness(10, 10, 10, 0)));
-
-        public static readonly DependencyProperty ButtonHeightProperty =
-            DependencyProperty.Register(
-                nameof(ButtonHeight),
-                typeof(double),
-                typeof(ValidationActionGroup),
-                new PropertyMetadata(30.0));
-
         public static readonly DependencyProperty MiddleContentProperty =
             DependencyProperty.Register(
                 nameof(MiddleContent),
@@ -37,18 +23,6 @@ namespace OneColumnEncoder.Components
         {
             get => (Thickness)GetValue(CardMarginProperty);
             set => SetValue(CardMarginProperty, value);
-        }
-
-        public Thickness ButtonsMargin
-        {
-            get => (Thickness)GetValue(ButtonsMarginProperty);
-            set => SetValue(ButtonsMarginProperty, value);
-        }
-
-        public double ButtonHeight
-        {
-            get => (double)GetValue(ButtonHeightProperty);
-            set => SetValue(ButtonHeightProperty, value);
         }
 
         public object? MiddleContent

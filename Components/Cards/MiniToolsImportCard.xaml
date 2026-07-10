@@ -165,7 +165,9 @@
                         <Trigger Property="IsMouseOver"
                                  Value="True">
                             <Setter Property="Opacity"
-                                    Value="0.65" />
+                                    Value="0.85" />
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource GlobalTertiary}" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>
