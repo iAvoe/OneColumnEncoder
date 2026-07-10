@@ -116,7 +116,8 @@
                                         RelativeSource={RelativeSource FindAncestor,
                                                                        AncestorType={x:Type ScrollViewer}},
                                         Converter={StaticResource WidthToColumnCount}}">
-                    <Border Style="{StaticResource ClickableColumn}">
+                    <Border Style="{StaticResource ClickableColumn}"
+                            Margin="0 0 10 0">
                         <Border.InputBindings>
                             <MouseBinding Gesture="LeftClick" Command="{Binding InspectColumn1Cmd}" />
                         </Border.InputBindings>
@@ -137,7 +138,8 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Style="{StaticResource ClickableColumn}">
+                    <Border Style="{StaticResource ClickableColumn}"
+                            Margin="10 0 0 0">
                         <Border.InputBindings>
                             <MouseBinding Gesture="LeftClick" Command="{Binding InspectColumn2Cmd}" />
                         </Border.InputBindings>
