@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace OneColumnEncoder.Json;
 
@@ -81,5 +82,25 @@ internal static class JsonElementHelper
         return double.TryParse(property.GetString(), NumberStyles.Float, CultureInfo.InvariantCulture, out value)
             ? value
             : null;
+    }
+
+    public static int? GetInt(JsonNode? node)
+    {
+        if (node is not JsonValue value) return null;
+        if (value.TryGetValue<int>(out int intValue)) return intValue;
+        if (value.TryGetValue<long>(out long longValue)
+            && longValue >= int.MinValue
+            && longValue <= int.MaxValue)
+            return (int)longValue;
+        if (value.TryGetValue<string>(out string? stringValue)
+            && int.TryParse(stringValue, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsed))
+            return parsed;
+        return null;
+    }
+
+    public static string? GetString(JsonNode? node)
+    {
+        if (node is not JsonValue value) return null;
+        return value.TryGetValue<string>(out string? stringValue) ? stringValue : null;
     }
 }

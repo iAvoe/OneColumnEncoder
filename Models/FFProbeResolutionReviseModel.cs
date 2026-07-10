@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using OneColumnEncoder.FFmpeg;
+using OneColumnEncoder.Json;
 
 namespace OneColumnEncoder.Models;
 
@@ -82,7 +83,7 @@ public static class FFProbeResolutionReviseModel
         if (root is not JsonObject obj || obj["Entries"] is not JsonArray entries)
             return null;
 
-        string? referencePath = GetString(obj["ReferenceFilePath"]);
+        string? referencePath = JsonElementHelper.GetString(obj["ReferenceFilePath"]);
         JsonNode? fallback = null;
 
         foreach (JsonNode? child in entries)
@@ -91,7 +92,7 @@ public static class FFProbeResolutionReviseModel
                 continue;
 
             fallback ??= ffprobe;
-            string? filePath = GetString(entry["FilePath"]);
+            string? filePath = JsonElementHelper.GetString(entry["FilePath"]);
 
             if (!string.IsNullOrWhiteSpace(referencePath)
                 && string.Equals(referencePath, filePath, StringComparison.OrdinalIgnoreCase))
@@ -108,6 +109,5 @@ public static class FFProbeResolutionReviseModel
             : throw new InvalidOperationException("JSON root is not an object.");
     }
 
-    private static string? GetString(JsonNode? node) =>
-        node is JsonValue value && value.TryGetValue<string>(out string? s) ? s : null;
+
 }

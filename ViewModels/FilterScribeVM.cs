@@ -139,7 +139,7 @@ namespace OneColumnEncoder.ViewModels
                 {
                     OnPropertyChanged(nameof(HasSource));
                     OnPropertyChanged(nameof(IsScaleApplicable));
-                    OnPropertyChanged(nameof(AviSynthSubtitleFilter));
+                    OnPropertyChanged(nameof(AviSynthAssRenderFilter));
                     RecomputeTarget();
                 }
             }
@@ -155,7 +155,7 @@ namespace OneColumnEncoder.ViewModels
                 {
                     OnPropertyChanged(nameof(HasSource));
                     OnPropertyChanged(nameof(IsScaleApplicable));
-                    OnPropertyChanged(nameof(AviSynthSubtitleFilter));
+                    OnPropertyChanged(nameof(AviSynthAssRenderFilter));
                     RecomputeTarget();
                 }
             }
@@ -201,6 +201,10 @@ namespace OneColumnEncoder.ViewModels
         public int TargetHeight => _targetHeight;
 
         public string TargetDisplay => !HasSource ? "--" : $"{TargetWidth}x{TargetHeight}";
+
+        private FFProbeAspectRatio _sourceAspectRatio = FFProbeAspectRatioResolver.Resolve((string?)null);
+        private string SourceDar => _sourceAspectRatio.Dar.ToString();
+        private string SourceSar => _sourceAspectRatio.Sar.ToString();
 
         private bool HasScaleFilter => IsScaleApplicable && (TargetWidth != SourceWidth || TargetHeight != SourceHeight);
 
@@ -248,12 +252,14 @@ namespace OneColumnEncoder.ViewModels
         public static string VapourSynthHqdn3dDenoiseFilter => "src = hqdn3d.Hqdn3d(src)";
         public static string AviSynthHqdn3dDenoiseFilter => "hqdn3d(src)";
         public static string FfmpegHqdn3dDenoiseFilter => "-filter:v \"hqdn3d\"";
-        public string AviSynthSubtitleFilter =>
+        public string AviSynthAssRenderFilter =>
             "SupTitle(src, \"x:\\path\\to\\DVD_BDMV.sup\", forcedOnly=false)\r\n" +
             "assrender(src, \"x:\\path\\to\\subtitle.ass\", scale=1.0, frame_width=" +
-            FormatAviSynthSubtitleDimension(SourceWidth, "width") +
+            FormatAviSynthAssRenderDimension(SourceWidth, "width") +
             ", frame_height=" +
-            FormatAviSynthSubtitleDimension(SourceHeight, "height") +
+            FormatAviSynthAssRenderDimension(SourceHeight, "height") +
+            ", dar=" + SourceDar +
+            ", sar=" + SourceSar +
             ")";
         public static string VapourSynthSubtitleFilter =>
             "src = core.sub.ImageFile(src, file=r\"X:\\path\\to\\DVD_BDMV.sup\", gray=False)\r\n" +
@@ -261,7 +267,7 @@ namespace OneColumnEncoder.ViewModels
         public static string FfmpegSubtitleFilter =>
             "-filter_complex \"ass='X\\:/path/to/subtitle.ass':fontsdir='Y\\:/dir/of/fonts'\"";
 
-        private static string FormatAviSynthSubtitleDimension(int value, string name) =>
+        private static string FormatAviSynthAssRenderDimension(int value, string name) =>
             value > 0 ? value.ToString() : $"<ffprobe {name}>";
 
         public string FfmpegFpsScaleFilter =>
@@ -605,12 +611,14 @@ namespace OneColumnEncoder.ViewModels
 
         private void ParseSourceResolution(string? sourceFfprobeJson)
         {
+            _sourceAspectRatio = FFProbeAspectRatioResolver.Resolve(sourceFfprobeJson);
             var resolution = FFProbeSourceResolution.Read(sourceFfprobeJson);
             if (resolution.HasValue)
             {
                 SourceWidth = resolution.Value.width;
                 SourceHeight = resolution.Value.height;
             }
+            OnPropertyChanged(nameof(AviSynthAssRenderFilter));
         }
 
         private void ParseFrameRateInfo(string? sourceFfprobeJson)

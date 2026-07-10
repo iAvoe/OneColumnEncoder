@@ -146,7 +146,7 @@ namespace OneColumnEncoder.ViewModels
             EncoderDropdown.Items.Add(new DropdownItemM("libx264") { Tag = PreviewEncoder.X264 });
             EncoderDropdown.Items.Add(new DropdownItemM("libx265") { Tag = PreviewEncoder.X265 });
             EncoderDropdown.Items.Add(new DropdownItemM("libsvtav1") { Tag = PreviewEncoder.SvtAv1 });
-            EncoderDropdown.Items.Add(new DropdownItemM("libvvenc (Preview Only)") { Tag = PreviewEncoder.Vvenc });
+            EncoderDropdown.Items.Add(new DropdownItemM("libvvenc (Preview)") { Tag = PreviewEncoder.Vvenc });
             EncoderDropdown.SelectedItem = EncoderDropdown.Items[0];
             EncoderDropdown.SelectionChangedCommand = new ActionCmd(_ => RefreshSelectedEncodedImage());
             DisplayModeButtons = ButtonGroupVM.CreateFiveButton(

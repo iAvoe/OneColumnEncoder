@@ -286,6 +286,12 @@ public class UILangProviderM
             ["ReviseSourceResolution.NoFfprobeJson"] = "No ffprobe JSON is available for the current source. Run source analysis first.",
             ["ReviseSourceResolution.UpdateFailed"] = "Failed to update ffprobe JSON: {0}",
 
+            // FFProbeJsonUpdateResolver
+            ["FFProbeJsonUpdate.JsonEmpty"] = "ffprobe JSON is empty.",
+            ["FFProbeJsonUpdate.DimensionsNotPositive"] = "Resolution dimensions must be positive.",
+            ["FFProbeJsonUpdate.RootNotObject"] = "ffprobe JSON root is not an object.",
+            ["FFProbeJsonUpdate.NoVideoStream"] = "No video stream found in ffprobe JSON.",
+
             // FilenameScribeModal
             ["FilenameScribe.MiniHeader"] = "File Name",
             ["FilenameScribe.Placeholder"] = "Type or paste output file name here",
@@ -517,7 +523,7 @@ public class UILangProviderM
             ["Checklist.Source1.BitDepth2"] = "位深小于 16bit",
 
             ["Checklist.Source2.Framerate"] = "帧率是否恒定/非可变帧率（VFR）",
-            ["Checklist.Source2.AspectRatio"] = "是否为方形像素变宽比 / 1:1 SAR",
+            ["Checklist.Source2.AspectRatio"] = "是否以方形像素编码 / 1:1 SAR（变宽比）",
             ["Checklist.Source2.ColorMetadata"] = "色彩矩阵、传输特性与原色色系信息正常",
             ["Checklist.Source2.ChromaSubsampling"] = "无色度采样或朝向 \u2190/\u2196 点位（SVT-AV1 要求）",
 
@@ -618,6 +624,12 @@ public class UILangProviderM
             ["ReviseSourceResolution.EvenResolutionHint"] = "分辨率的宽度和高度必须是偶数。",
             ["ReviseSourceResolution.NoFfprobeJson"] = "当前视频源没有可用的 ffprobe JSON。请先运行视频源分析。",
             ["ReviseSourceResolution.UpdateFailed"] = "更新 ffprobe JSON 失败：{0}",
+
+            // FFProbeJsonUpdateResolver
+            ["FFProbeJsonUpdate.JsonEmpty"] = "ffprobe JSON 为空。",
+            ["FFProbeJsonUpdate.DimensionsNotPositive"] = "分辨率尺寸必须为正值。",
+            ["FFProbeJsonUpdate.RootNotObject"] = "ffprobe JSON 根节点不是对象。",
+            ["FFProbeJsonUpdate.NoVideoStream"] = "ffprobe JSON 中未找到视频流。",
 
             // FilenameScribeModal
             ["FilenameScribe.MiniHeader"] = "文件名",
@@ -847,7 +859,7 @@ public class UILangProviderM
             ["Checklist.Source1.BitDepth2"] = "位深小於 16bit",
 
             ["Checklist.Source2.Framerate"] = "幀率是否恆定/非可變幀率（VFR）",
-            ["Checklist.Source2.AspectRatio"] = "是否為方形象素變寬比 / 1:1 SAR",
+            ["Checklist.Source2.AspectRatio"] = "是否以方形象素編碼 / 1:1 SAR（變寬比）",
             ["Checklist.Source2.ColorMetadata"] = "色彩矩陣、傳輸特性與原色色系資訊正常",
             ["Checklist.Source2.ChromaSubsampling"] = "無色度採樣或朝向 \u2190/\u2196 點位（SVT-AV1 要求）",
 
@@ -948,6 +960,12 @@ public class UILangProviderM
             ["ReviseSourceResolution.EvenResolutionHint"] = "分辨率的寬度和高度必須是偶數。",
             ["ReviseSourceResolution.NoFfprobeJson"] = "目前影片源沒有可用的 ffprobe JSON。請先執行影片源分析。",
             ["ReviseSourceResolution.UpdateFailed"] = "更新 ffprobe JSON 失敗：{0}",
+
+            // FFProbeJsonUpdateResolver
+            ["FFProbeJsonUpdate.JsonEmpty"] = "ffprobe JSON 為空。",
+            ["FFProbeJsonUpdate.DimensionsNotPositive"] = "解析度尺寸必須為正值。",
+            ["FFProbeJsonUpdate.RootNotObject"] = "ffprobe JSON 根節點不是物件。",
+            ["FFProbeJsonUpdate.NoVideoStream"] = "ffprobe JSON 中找不到視訊串流。",
 
             // FilenameScribeModal
             ["FilenameScribe.MiniHeader"] = "檔案名",
@@ -1332,7 +1350,12 @@ public class UILangProviderM
         ["ReviseSourceResolution.InvalidInput"] = "La résolution doit utiliser des dimensions entières de 1 à 65535.",
         ["ReviseSourceResolution.EvenResolutionHint"] = "La largeur et la hauteur de la résolution doivent être des nombres pairs.",
         ["ReviseSourceResolution.NoFfprobeJson"] = "Aucun JSON ffprobe n'est disponible pour la source actuelle. Lancez d'abord l'analyse de la source.",
-        ["ReviseSourceResolution.UpdateFailed"] = "Échec de la mise à jour du JSON ffprobe : {0}"
+        ["ReviseSourceResolution.UpdateFailed"] = "Échec de la mise à jour du JSON ffprobe : {0}",
+
+        ["FFProbeJsonUpdate.JsonEmpty"] = "Le JSON ffprobe est vide.",
+        ["FFProbeJsonUpdate.DimensionsNotPositive"] = "Les dimensions de résolution doivent être positives.",
+        ["FFProbeJsonUpdate.RootNotObject"] = "La racine du JSON ffprobe n'est pas un objet.",
+        ["FFProbeJsonUpdate.NoVideoStream"] = "Aucun flux vidéo trouvé dans le JSON ffprobe."
     };
 
     private static void AddSpanish() => Data["es"] = new(Data["en"])
@@ -1632,7 +1655,12 @@ public class UILangProviderM
         ["ReviseSourceResolution.InvalidInput"] = "La resolución debe usar dimensiones enteras de 1 a 65535.",
         ["ReviseSourceResolution.EvenResolutionHint"] = "El ancho y el alto de la resolución deben ser números pares.",
         ["ReviseSourceResolution.NoFfprobeJson"] = "No hay JSON de ffprobe disponible para la fuente actual. Ejecute primero el análisis de fuente.",
-        ["ReviseSourceResolution.UpdateFailed"] = "Error al actualizar JSON de ffprobe: {0}"
+        ["ReviseSourceResolution.UpdateFailed"] = "Error al actualizar JSON de ffprobe: {0}",
+
+        ["FFProbeJsonUpdate.JsonEmpty"] = "El JSON de ffprobe está vacío.",
+        ["FFProbeJsonUpdate.DimensionsNotPositive"] = "Las dimensiones de resolución deben ser positivas.",
+        ["FFProbeJsonUpdate.RootNotObject"] = "La raíz del JSON de ffprobe no es un objeto.",
+        ["FFProbeJsonUpdate.NoVideoStream"] = "No se encontró flujo de video en el JSON de ffprobe."
     };
 
     private static void AddJapanese() => Data["ja"] = new(Data["en"])
@@ -1932,7 +1960,12 @@ public class UILangProviderM
         ["ReviseSourceResolution.InvalidInput"] = "解像度は 1 から 65535 までの整数の幅と高さで指定してください。",
         ["ReviseSourceResolution.EvenResolutionHint"] = "解像度の幅と高さは偶数である必要があります。",
         ["ReviseSourceResolution.NoFfprobeJson"] = "現在のソースに利用可能な ffprobe JSON がありません。先にソース解析を実行してください。",
-        ["ReviseSourceResolution.UpdateFailed"] = "ffprobe JSON の更新に失敗しました: {0}"
+        ["ReviseSourceResolution.UpdateFailed"] = "ffprobe JSON の更新に失敗しました: {0}",
+
+        ["FFProbeJsonUpdate.JsonEmpty"] = "ffprobe JSON が空です。",
+        ["FFProbeJsonUpdate.DimensionsNotPositive"] = "解像度の値は正の数でなければなりません。",
+        ["FFProbeJsonUpdate.RootNotObject"] = "ffprobe JSON のルートがオブジェクトではありません。",
+        ["FFProbeJsonUpdate.NoVideoStream"] = "ffprobe JSON に映像ストリームが見つかりません。"
     };
 
     private static void AddRussian() => Data["ru"] = new(Data["en"])
@@ -2232,7 +2265,12 @@ public class UILangProviderM
         ["ReviseSourceResolution.InvalidInput"] = "Разрешение должно состоять из целых размеров от 1 до 65535.",
         ["ReviseSourceResolution.EvenResolutionHint"] = "Ширина и высота разрешения должны быть четными числами.",
         ["ReviseSourceResolution.NoFfprobeJson"] = "Для текущего источника нет доступного JSON ffprobe. Сначала запустите анализ источника.",
-        ["ReviseSourceResolution.UpdateFailed"] = "Не удалось обновить JSON ffprobe: {0}"
+        ["ReviseSourceResolution.UpdateFailed"] = "Не удалось обновить JSON ffprobe: {0}",
+
+        ["FFProbeJsonUpdate.JsonEmpty"] = "JSON ffprobe пуст.",
+        ["FFProbeJsonUpdate.DimensionsNotPositive"] = "Размеры разрешения должны быть положительными.",
+        ["FFProbeJsonUpdate.RootNotObject"] = "Корень JSON ffprobe не является объектом.",
+        ["FFProbeJsonUpdate.NoVideoStream"] = "Видеопоток не найден в JSON ffprobe."
     };
 
     private readonly Dictionary<string, string> _d;

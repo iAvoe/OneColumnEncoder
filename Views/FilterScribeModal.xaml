@@ -651,7 +651,7 @@
                                Foreground="{StaticResource GlobalSecondary}"
                                VerticalAlignment="Center" />
                     <TextBox Grid.Column="1"
-                             Text="{Binding AviSynthSubtitleFilter, Mode=OneWay}"
+                              Text="{Binding AviSynthAssRenderFilter, Mode=OneWay}"
                              IsReadOnly="True"
                              BorderThickness="0"
                              Background="{StaticResource Background}"

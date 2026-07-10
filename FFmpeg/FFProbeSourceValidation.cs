@@ -72,23 +72,9 @@ public static class FFProbeSourceValidation
             && string.Equals(avg, r, StringComparison.OrdinalIgnoreCase);
     }
 
-    // For non square pixel source warning. First try read ffprobe SAR related fields, then try calculate, if all fails, assume suqare pixels
     private static bool HasSquarePixels(JsonElement stream)
     {
-        string? sar = JsonElementHelper.TryGetString(stream, "sample_aspect_ratio");
-        if (!string.IsNullOrWhiteSpace(sar))
-            return string.Equals(sar, "1:1", StringComparison.OrdinalIgnoreCase)
-                || string.Equals(sar, "0:1", StringComparison.OrdinalIgnoreCase);
-
-        if (JsonElementHelper.TryGetInt(stream, "width", out int width) &&
-            JsonElementHelper.TryGetInt(stream, "coded_width", out int codedWidth))
-            return width == codedWidth;
-
-        return true; // Mordern video are usually square pixels, it is safe to assume 1:1
-
-        // SAR does not involve height
-        // JsonElementHelper.TryGetInt(stream, "height", out int height);
-        // JsonElementHelper.TryGetInt(stream, "coded_height", out int codedHeight);
+        return FFProbeAspectRatioResolver.HasSquarePixels(stream);
     }
 
     private static bool HasKnownMetadata(JsonElement stream, string propertyName)
