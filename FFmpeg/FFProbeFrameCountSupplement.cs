@@ -51,7 +51,7 @@ internal static class FFProbeFrameCountSupplement
         string? avgFrameRate = JsonElementHelper.TryGetString(stream, "avg_frame_rate");
 
         if (duration is not > 0
-            || !TryParseFrameRate(avgFrameRate, out double fps)
+            || !FrameRate.TryParseFrameRate(avgFrameRate, out double fps)
             || fps <= 0d)
             return false;
 
@@ -62,23 +62,6 @@ internal static class FFProbeFrameCountSupplement
         return frameCount > 0;
     }
 
-    private static bool TryParseFrameRate(string? value, out double fps)
-    {
-        fps = 0d;
-        if (string.IsNullOrWhiteSpace(value)) return false;
-
-        string[] parts = value.Split('/');
-        if (parts.Length == 2
-            && double.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double numerator)
-            && double.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double denominator)
-            && denominator != 0d)
-        {
-            fps = numerator / denominator;
-            return true;
-        }
-
-        return double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out fps);
-    }
 }
 
 internal sealed record FFProbeFrameCountSupplementResult(string RawJson, int SupplementedCount, bool IsNbFramesCalculated);

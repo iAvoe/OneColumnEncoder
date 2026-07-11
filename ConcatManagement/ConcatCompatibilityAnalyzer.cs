@@ -89,7 +89,7 @@ namespace OneColumnEncoder.ConcatManagement
 
                     rawAnalyses.Add(new(filePath, Path.GetFileName(filePath), rawElement));
 
-                    if (TryGetFirstVideoStream(rawElement, out JsonElement videoStream))
+                    if (FrameRate.TryGetFirstVideoStream(rawElement, out JsonElement videoStream))
                     {
                         long? fragmentFrames = JsonElementHelper.TryGetFrameCount(videoStream);
                         if (fragmentFrames > 0) concatTotalFrames += fragmentFrames.Value;
@@ -136,7 +136,7 @@ namespace OneColumnEncoder.ConcatManagement
 
         private static bool? IsVariableFrameRate(JsonElement rawElement)
         {
-            if (!TryGetFirstVideoStream(rawElement, out JsonElement stream)) return null;
+            if (!FrameRate.TryGetFirstVideoStream(rawElement, out JsonElement stream)) return null;
             return FrameRate.IsVariableFrameRate(stream);
         }
 
@@ -183,7 +183,7 @@ namespace OneColumnEncoder.ConcatManagement
 
             public static ConcatSourceSignature? From(SourceCheckSignature checkSignature, JsonElement rawElement)
             {
-                if (!TryGetFirstVideoStream(rawElement, out JsonElement stream)) return null;
+                if (!FrameRate.TryGetFirstVideoStream(rawElement, out JsonElement stream)) return null;
                 if (!JsonElementHelper.TryGetInt(stream, "width", out int width)) return null;
                 if (!JsonElementHelper.TryGetInt(stream, "height", out int height)) return null;
 
@@ -193,60 +193,9 @@ namespace OneColumnEncoder.ConcatManagement
                     height,
                     JsonElementHelper.TryGetString(stream, "pix_fmt") ?? string.Empty,
                     JsonElementHelper.TryGetString(stream, "codec_name") ?? string.Empty,
-                    NormalizeFrameRate(JsonElementHelper.TryGetString(stream, "avg_frame_rate")),
-                    NormalizeFrameRate(JsonElementHelper.TryGetString(stream, "r_frame_rate")));
+                    FrameRate.NormalizeFrameRate(JsonElementHelper.TryGetString(stream, "avg_frame_rate")),
+                    FrameRate.NormalizeFrameRate(JsonElementHelper.TryGetString(stream, "r_frame_rate")));
             }
-        }
-
-        private static bool TryGetFirstVideoStream(JsonElement root, out JsonElement stream)
-        {
-            stream = default;
-            if (!root.TryGetProperty("streams", out JsonElement streams) || streams.ValueKind != JsonValueKind.Array)
-                return false;
-
-            foreach (JsonElement item in streams.EnumerateArray())
-            {
-                string? codecType = JsonElementHelper.TryGetString(item, "codec_type");
-                if (codecType is null || codecType.Equals("video", StringComparison.OrdinalIgnoreCase))
-                {
-                    stream = item;
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private static string NormalizeFrameRate(string? value)
-        {
-            if (string.IsNullOrWhiteSpace(value) || value.Equals("0/0", StringComparison.OrdinalIgnoreCase))
-                return string.Empty;
-
-            string[] parts = value.Split('/');
-            if (parts.Length == 2
-                && long.TryParse(parts[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out long numerator)
-                && long.TryParse(parts[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out long denominator)
-                && denominator != 0)
-            {
-                long gcd = GreatestCommonDivisor(Math.Abs(numerator), Math.Abs(denominator));
-                return string.Create(
-                    CultureInfo.InvariantCulture,
-                    $"{numerator / gcd}/{denominator / gcd}");
-            }
-
-            return value.Trim();
-        }
-
-        private static long GreatestCommonDivisor(long a, long b)
-        {
-            while (b != 0)
-            {
-                long t = a % b;
-                a = b;
-                b = t;
-            }
-
-            return a == 0 ? 1 : a;
         }
     }
 

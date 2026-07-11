@@ -1,4 +1,6 @@
+using OneColumnEncoder.Converters;
 using OneColumnEncoder.Json;
+using System.Globalization;
 using System.Text.Json;
 
 namespace OneColumnEncoder.FFmpeg;
@@ -21,6 +23,33 @@ public static class FrameRate
     public static bool IsUsable(string? value) =>
         !string.IsNullOrWhiteSpace(value)
         && !value.Equals("0/0", StringComparison.OrdinalIgnoreCase);
+
+    public static bool TryParseFrameRate(string? value, out double frameRate)
+    {
+        frameRate = 0d;
+        if (string.IsNullOrWhiteSpace(value)) return false;
+
+        string text = value.Trim();
+        if (text.Equals("0", StringComparison.OrdinalIgnoreCase)
+            || text.Equals("0/0", StringComparison.OrdinalIgnoreCase)
+            || text.Equals("N/A", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        string[] parts = text.Split('/');
+        if (parts.Length == 2)
+        {
+            if (!double.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double numerator)
+                || !double.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double denominator)
+                || denominator == 0d)
+                return false;
+
+            frameRate = numerator / denominator;
+            return frameRate > 0d;
+        }
+
+        return double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out frameRate)
+            && frameRate > 0d;
+    }
 
     public static (int num, int den)? GetRFrameRate(string rawJson) =>
         GetFrameRate(rawJson, "r_frame_rate");
@@ -110,5 +139,24 @@ public static class FrameRate
             }
         }
         return false;
+    }
+
+    public static string NormalizeFrameRate(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value.Equals("0/0", StringComparison.OrdinalIgnoreCase))
+            return string.Empty;
+
+        string text = value.Trim();
+        string[] parts = text.Split('/');
+        if (parts.Length == 2
+            && long.TryParse(parts[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out long numerator)
+            && long.TryParse(parts[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out long denominator)
+            && denominator != 0)
+        {
+            long gcd = MathUtilities.GreatestCommonDivisor(Math.Abs(numerator), Math.Abs(denominator));
+            return string.Create(CultureInfo.InvariantCulture, $"{numerator / gcd}/{denominator / gcd}");
+        }
+
+        return text;
     }
 }

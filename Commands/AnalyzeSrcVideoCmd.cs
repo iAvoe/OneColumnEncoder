@@ -389,7 +389,7 @@ namespace OneColumnEncoder.Commands
         // Longer / higher-frame-count files get more influence in the weighted-vote reference selection
         private static double CalculateQueueVoteWeight(JsonElement rawElement)
         {
-            if (!TryGetFirstVideoStream(rawElement, out JsonElement stream)) return 1d;
+            if (!FrameRate.TryGetFirstVideoStream(rawElement, out JsonElement stream)) return 1d;
 
             double? duration = TryGetDuration(rawElement, stream);
             double? fps = TryGetFramesPerSecond(stream);
@@ -421,50 +421,11 @@ namespace OneColumnEncoder.Commands
         // Tries avg_frame_rate first, then r_frame_rate as a fallback.
         private static double? TryGetFramesPerSecond(JsonElement stream)
         {
-            if (TryParseFrameRate(JsonElementHelper.TryGetString(stream, "avg_frame_rate"), out double avg) && avg > 0d)
+            if (FrameRate.TryParseFrameRate(JsonElementHelper.TryGetString(stream, "avg_frame_rate"), out double avg) && avg > 0d)
                 return avg;
-            return TryParseFrameRate(JsonElementHelper.TryGetString(stream, "r_frame_rate"), out double r) && r > 0d
+            return FrameRate.TryParseFrameRate(JsonElementHelper.TryGetString(stream, "r_frame_rate"), out double r) && r > 0d
                 ? r
                 : null;
-        }
-
-        // Parses ffprobe frame rate strings like "30000/1001" or "29.97" into a double.
-        private static bool TryParseFrameRate(string? value, out double fps)
-        {
-            fps = 0d;
-            if (string.IsNullOrWhiteSpace(value) || value.Equals("0/0", StringComparison.OrdinalIgnoreCase)) return false;
-
-            string[] parts = value.Split('/');
-            if (parts.Length == 2
-                && double.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double numerator)
-                && double.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double denominator)
-                && denominator != 0d)
-            {
-                fps = numerator / denominator;
-                return true;
-            }
-
-            return double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out fps);
-        }
-
-        // Iterates ffprobe stream array and returns the first video stream (codec_type == null or "video").
-        private static bool TryGetFirstVideoStream(JsonElement root, out JsonElement stream)
-        {
-            stream = default;
-            if (!root.TryGetProperty("streams", out JsonElement streams) || streams.ValueKind != JsonValueKind.Array)
-                return false;
-
-            foreach (JsonElement item in streams.EnumerateArray())
-            {
-                string? codecType = JsonElementHelper.TryGetString(item, "codec_type");
-                if (codecType is null || codecType.Equals("video", StringComparison.OrdinalIgnoreCase))
-                {
-                    stream = item;
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         // Parses total frame count from the first stream of the raw ffprobe JSON.
@@ -599,46 +560,14 @@ namespace OneColumnEncoder.Commands
                 string avgFrameRate = string.Empty;
                 string rFrameRate = string.Empty;
 
-                if (TryGetFirstVideoStream(rawElement, out JsonElement stream))
+                if (FrameRate.TryGetFirstVideoStream(rawElement, out JsonElement stream))
                 {
                     if (JsonElementHelper.TryGetInt(stream, "width", out int parsedWidth)) width = parsedWidth;
-                    avgFrameRate = NormalizeFrameRate(JsonElementHelper.TryGetString(stream, "avg_frame_rate"));
-                    rFrameRate = NormalizeFrameRate(JsonElementHelper.TryGetString(stream, "r_frame_rate"));
+                    avgFrameRate = FrameRate.NormalizeFrameRate(JsonElementHelper.TryGetString(stream, "avg_frame_rate"));
+                    rFrameRate = FrameRate.NormalizeFrameRate(JsonElementHelper.TryGetString(stream, "r_frame_rate"));
                 }
 
                 return new(checkSignature, width, avgFrameRate, rFrameRate);
-            }
-
-            public static string NormalizeFrameRate(string? value)
-            {
-                if (string.IsNullOrWhiteSpace(value) || value.Equals("0/0", StringComparison.OrdinalIgnoreCase))
-                    return string.Empty;
-
-                string[] parts = value.Split('/');
-                if (parts.Length == 2
-                    && long.TryParse(parts[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out long numerator)
-                    && long.TryParse(parts[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out long denominator)
-                    && denominator > 0)
-                {
-                    long gcd = GreatestCommonDivisor(Math.Abs(numerator), Math.Abs(denominator));
-                    return string.Create(
-                        CultureInfo.InvariantCulture,
-                        $"{numerator / gcd}/{denominator / gcd}");
-                }
-
-                return value.Trim();
-            }
-
-            private static long GreatestCommonDivisor(long a, long b)
-            {
-                while (b != 0)
-                {
-                    long t = a % b;
-                    a = b;
-                    b = t;
-                }
-
-                return a == 0 ? 1 : a;
             }
         }
 

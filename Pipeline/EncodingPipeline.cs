@@ -1,4 +1,5 @@
 using OneColumnEncoder.CPU;
+using OneColumnEncoder.FFmpeg;
 using OneColumnEncoder.Json;
 using OneColumnEncoder.Models;
 using System.Globalization;
@@ -460,7 +461,7 @@ public static partial class EncodingPipeline
         try
         {
             using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
-            if (!TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return null;
+            if (!FrameRate.TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return null;
 
             long? frameCount = JsonElementHelper.TryGetFrameCount(stream);
 
@@ -469,7 +470,7 @@ public static partial class EncodingPipeline
             double? duration = JsonElementHelper.TryGetDouble(stream, "duration")
                 ?? (document.RootElement.TryGetProperty("format", out JsonElement format) ? JsonElementHelper.TryGetDouble(format, "duration") : null);
             string? fpsString = TryGetFrameRateString(stream);
-            if (duration is > 0 && TryParseFrameRate(fpsString, out double fps))
+            if (duration is > 0 && FrameRate.TryParseFrameRate(fpsString, out double fps))
             {
                 long estimated = (long)Math.Round(duration.Value * fps);
                 return estimated > 0 ? estimated : null;
@@ -519,7 +520,7 @@ public static partial class EncodingPipeline
         if (string.IsNullOrWhiteSpace(request.SourceFfprobeJson)) return string.Empty;
 
         using JsonDocument document = JsonDocument.Parse(request.SourceFfprobeJson);
-        if (!TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return string.Empty;
+        if (!FrameRate.TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return string.Empty;
 
         string encoder = request.EncoderExeName.ToLowerInvariant();
         bool isX264 = encoder == "x264.exe";
@@ -565,7 +566,7 @@ public static partial class EncodingPipeline
 
     private static string GetRateControlLookahead(string? fpsString, int bframes)
     {
-        if (!TryParseFrameRate(fpsString, out double fps)) return string.Empty;
+        if (!FrameRate.TryParseFrameRate(fpsString, out double fps)) return string.Empty;
         int frames = Math.Max((int)Math.Round(fps * 1.8d), bframes + 1);
         return $"--rc-lookahead {frames}";
     }
@@ -589,7 +590,7 @@ public static partial class EncodingPipeline
 
     private static string GetX265SubmotionEstimation(string? fpsString)
     {
-        if (!TryParseFrameRate(fpsString, out double fps)) return string.Empty;
+        if (!FrameRate.TryParseFrameRate(fpsString, out double fps)) return string.Empty;
         int subme = fps < 25 ? 3 : fps < 49 ? 4 : fps < 61 ? 5 : 6;
         return $"--subme {subme}";
     }
@@ -783,24 +784,6 @@ public static partial class EncodingPipeline
         _ => 1
     };
 
-    private static bool TryGetFirstVideoStream(JsonElement root, out JsonElement stream)
-    {
-        stream = default;
-        if (!root.TryGetProperty("streams", out JsonElement streams) || streams.ValueKind != JsonValueKind.Array)
-            return false;
-
-        foreach (JsonElement item in streams.EnumerateArray())
-        {
-            if (JsonElementHelper.TryGetString(item, "codec_type") is null or "video")
-            {
-                stream = item;
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private static string? TryGetFrameRateString(JsonElement stream)
     {
         string? fps = JsonElementHelper.TryGetString(stream, "avg_frame_rate");
@@ -814,28 +797,6 @@ public static partial class EncodingPipeline
         !string.IsNullOrWhiteSpace(value)
         && !value.Equals("0/0", StringComparison.OrdinalIgnoreCase)
         && !value.Equals("N/A", StringComparison.OrdinalIgnoreCase);
-
-    private static bool TryParseFrameRate(string? value, out double frameRate)
-    {
-        frameRate = 0d;
-        if (!IsUsableFrameRate(value)) return false;
-
-        string fps = value!.Trim();
-        string[] fraction = fps.Split('/');
-        if (fraction.Length == 2)
-        {
-            if (!double.TryParse(fraction[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double numerator)
-                || !double.TryParse(fraction[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double denominator)
-                || denominator == 0d)
-                return false;
-
-            frameRate = numerator / denominator;
-            return frameRate > 0d;
-        }
-
-        return double.TryParse(fps, NumberStyles.Float, CultureInfo.InvariantCulture, out frameRate)
-            && frameRate > 0d;
-    }
 
     private static int? TryGetIntegerArg(string args, string name)
     {
@@ -921,9 +882,9 @@ public static partial class EncodingPipeline
         try
         {
             using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
-            if (!TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return string.Empty;
+            if (!FrameRate.TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return string.Empty;
             string? frameRate = TryGetFrameRateString(stream);
-            return TestFrameRateValid(frameRate) ? frameRate! : string.Empty;
+            return FrameRate.TryParseFrameRate(frameRate, out _) ? frameRate! : string.Empty;
         }
         catch { return string.Empty; }
     }
@@ -939,7 +900,7 @@ public static partial class EncodingPipeline
         try
         {
             using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
-            if (!TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return fallbackTimescale;
+            if (!FrameRate.TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return fallbackTimescale;
 
             string? timeBase = JsonElementHelper.TryGetString(stream, "time_base");
             if (string.IsNullOrWhiteSpace(timeBase)) return fallbackTimescale;
@@ -952,23 +913,6 @@ public static partial class EncodingPipeline
                 : fallbackTimescale;
         }
         catch { return fallbackTimescale; }
-    }
-
-    private static bool TestFrameRateValid(string? frameRate)
-    {
-        if (string.IsNullOrWhiteSpace(frameRate)) return false;
-        string value = frameRate.Trim();
-        if (value.Equals("0", StringComparison.OrdinalIgnoreCase) || value.Equals("0/0", StringComparison.OrdinalIgnoreCase)) return false;
-        if (value.Contains('/', StringComparison.Ordinal))
-        {
-            string[] parts = value.Split('/');
-            return parts.Length == 2 &&
-                   long.TryParse(parts[0], NumberStyles.None, CultureInfo.InvariantCulture, out long numerator) &&
-                   long.TryParse(parts[1], NumberStyles.None, CultureInfo.InvariantCulture, out long denominator) &&
-                   numerator > 0 && denominator > 0;
-        }
-
-        return double.TryParse(value, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out double parsed) && parsed > 0;
     }
 
     private static string BuildEncoderOutputArgs(string encoderExeName, string outputPath) =>
