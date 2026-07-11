@@ -2459,7 +2459,6 @@ namespace OneColumnEncoder.ViewModels
             public string FilePath { get; set; } = string.Empty;
             public JsonElement FfprobeJson { get; set; }
         }
-
         #endregion
 
         #region Zone Helpers
