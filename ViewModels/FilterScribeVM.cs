@@ -540,6 +540,12 @@ namespace OneColumnEncoder.ViewModels
                 if (item is not ConcatSourceItemVM sourceItem) return;
                 if (ConcatSources.MoveItemDown(sourceItem)) ApplyConcatSources();
             });
+            ConcatSources.RestoreOriginalQueueCommand = new ActionCmd(_ =>
+            {
+                if (!ConcatSources.RestoreOriginalQueue()) return;
+                RefreshConcatSourceLanguage();
+                ApplyConcatSources();
+            });
             ConcatSources.LoadItems(_getConcatFilePaths?.Invoke() ?? []);
             RefreshConcatSourceLanguage();
         }

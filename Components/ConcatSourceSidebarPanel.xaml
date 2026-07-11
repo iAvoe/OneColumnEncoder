@@ -19,6 +19,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <TextBlock Text="{Binding OrderingTitle}"
@@ -64,6 +65,16 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+
+            <StackPanel Grid.Row="2"
+                        Margin="0 5 0 14">
+                <Button Content="{Binding RestoreOriginalQueueText}"
+                        Command="{Binding RestoreOriginalQueueCommand}"
+                        IsEnabled="{Binding HasOriginalQueueChanges}"
+                        Height="30"
+                        HorizontalAlignment="Stretch"
+                        Style="{StaticResource PrimaryButton}" />
+            </StackPanel>
         </Grid>
     </Border>
 </UserControl>

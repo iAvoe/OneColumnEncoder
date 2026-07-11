@@ -1826,11 +1826,21 @@ namespace OneColumnEncoder.ViewModels
 
         private void ApplyConcatFilePathsFromFilterScribe(string[] filePaths)
         {
-            bool changed = !_videoSourceConcat.CurrentFilePaths.SequenceEqual(
-                filePaths,
-                StringComparer.OrdinalIgnoreCase);
+            string[] currentPaths = _videoSourceConcat.CurrentFilePaths;
+            bool sameSet = currentPaths.Length == filePaths.Length
+                && new HashSet<string>(currentPaths, StringComparer.OrdinalIgnoreCase)
+                    .SetEquals(filePaths);
+
             _videoSourceConcat.ReplaceFilePaths(filePaths);
-            RefreshSelectedSourceStatus(resetAnalysis: changed);
+
+            if (sameSet)
+            {
+                RefreshSelectedSourceStatus(resetAnalysis: false);
+            }
+            else
+            {
+                RefreshSelectedSourceStatus(resetAnalysis: true);
+            }
         }
 
         private void OnSourceScriptQueueImported(ToolItemCardVM item, SourceFileKind kind, string _, string[] filePaths)

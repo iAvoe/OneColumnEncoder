@@ -7,6 +7,7 @@ namespace OneColumnEncoder.ViewModels
     {
         private bool _canMoveUp;
         private bool _canMoveDown;
+        private bool _canRemove = true;
         private bool _isSelected;
         private string _name = "";
         private string _pathText = "";
@@ -56,7 +57,7 @@ namespace OneColumnEncoder.ViewModels
             get => _r3Text;
             set => SetProperty(ref _r3Text, value);
         }
-        public bool R1IsEnabled => true;
+        public bool R1IsEnabled => _canRemove;
         public bool R2IsEnabled => _canMoveUp;
         public bool R3IsEnabled => _canMoveDown;
 
@@ -92,6 +93,18 @@ namespace OneColumnEncoder.ViewModels
                 if (SetProperty(ref _canMoveDown, value))
                 {
                     OnPropertyChanged(nameof(R3IsEnabled));
+                }
+            }
+        }
+
+        public bool CanRemove
+        {
+            get => _canRemove;
+            set
+            {
+                if (SetProperty(ref _canRemove, value))
+                {
+                    OnPropertyChanged(nameof(R1IsEnabled));
                 }
             }
         }
