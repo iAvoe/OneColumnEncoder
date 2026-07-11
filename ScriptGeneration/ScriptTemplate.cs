@@ -116,5 +116,18 @@
                 : $"\r\n{vpyPrefix2}\r\n{userInput}\r\n{vpySuffix}";
             return $"{BuildConcatVpySourceHeader(filePaths, fpsnum, fpsden)}{content}";
         }
+
+        public static string BuildVpyPreviewScript(string sourcePath, string userInput, int fpsnum = 0, int fpsden = 0)
+        {
+            string header = BuildVpySourceHeader(sourcePath, fpsnum, fpsden);
+            string previewInsert = "\r\nref = src\r\nsrc.set_output(0)";
+            string suffix = "\r\n# ...force src as the B preview output, so A/B preview can display output 1...\r\nsrc.set_output(1)";
+
+            string content = string.IsNullOrWhiteSpace(userInput)
+                ? $"{previewInsert}\r\n# (no user filters)\r\n{suffix}"
+                : $"{previewInsert}\r\n{userInput.Trim()}\r\n{suffix}";
+
+            return $"{header}{content}";
+        }
     }
 }

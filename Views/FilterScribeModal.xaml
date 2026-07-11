@@ -187,6 +187,37 @@
                               Margin="0 2.5 0 0"
                               FontWeight="Normal"
                               Foreground="{StaticResource GlobalSecondary}" />
+                    <Button Grid.Row="2"
+                            Command="{Binding OpenVpyPreviewCommand}"
+                            IsEnabled="{Binding CanOpenVpyPreview}"
+                            Height="30"
+                            Width="180"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            Margin="0 0 7.5 7.5"
+                            Panel.ZIndex="1"
+                            Style="{StaticResource PrimaryButton}"
+                            Background="Black">
+                        <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+                            <Rectangle Width="14"
+                                       Height="14"
+                                       VerticalAlignment="Center"
+                                       Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                <Rectangle.OpacityMask>
+                                    <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GamePlay}"
+                                                Stretch="Uniform"
+                                                AlignmentX="Center"
+                                                AlignmentY="Center" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <TextBlock Text="A/B Preview"
+                                       VerticalAlignment="Center"
+                                       FontWeight="Normal"
+                                       Margin="5 0 0 0" />
+                        </StackPanel>
+                    </Button>
                 </Grid>
             </TabItem>
 
