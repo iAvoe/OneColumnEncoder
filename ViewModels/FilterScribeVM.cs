@@ -479,6 +479,7 @@ namespace OneColumnEncoder.ViewModels
         public ButtonGroupVM ScriptExportButtons { get; private set; } = null!;
         public ButtonGroupVM FinishScribeButtons { get; private set; } = null!;
         public ActionCmd OpenVpyPreviewCommand { get; }
+        public bool CanOpenVpyPreview => !IsConcatMode;
 
         public FilterScribeVM(
             ModalNavS modalNavS,
@@ -527,7 +528,7 @@ namespace OneColumnEncoder.ViewModels
             _ffmpegPath = ffmpegPath;
             _vspipeY4mArg = vspipeY4mArg;
             _getTotalFrames = getTotalFrames;
-            OpenVpyPreviewCommand = new ActionCmd(_ => OpenVpyPreview());
+            OpenVpyPreviewCommand = new ActionCmd(_ => OpenVpyPreview(), _ => CanOpenVpyPreview);
             ConfigureConcatSources();
             ParseColorSpaceInfo(sourceFfprobeJson);
             ParseSourceResolution(sourceFfprobeJson);
@@ -1220,6 +1221,8 @@ namespace OneColumnEncoder.ViewModels
         #region VapourSynth Preview
         private void OpenVpyPreview()
         {
+            if (!CanOpenVpyPreview) return;
+
             if (string.IsNullOrWhiteSpace(_vspipePath) || !File.Exists(_vspipePath))
             {
                 new Commands.OpenClose.OpenErrModalCmd(
@@ -1267,7 +1270,7 @@ namespace OneColumnEncoder.ViewModels
             }
             else
             {
-                string sourcePath = _getSourcePath();
+                string sourcePath = GetVpyPreviewSourcePath();
                 if (string.IsNullOrWhiteSpace(sourcePath))
                 {
                     new Commands.OpenClose.OpenErrModalCmd(
@@ -1302,6 +1305,14 @@ namespace OneColumnEncoder.ViewModels
 
             Views.VpyPreviewDialog window = new(previewVm, _modalNavS);
             window.Show();
+        }
+
+        private string GetVpyPreviewSourcePath()
+        {
+            if (_isQueueRoute?.Invoke() == true)
+                return _getQueueFilePaths?.Invoke().FirstOrDefault() ?? string.Empty;
+
+            return _getSourcePath();
         }
 
         private static string GetPreviewVideoFilename(string sourcePath)
@@ -1403,6 +1414,8 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(AvsEnableFpsParamsLabel));
             OnPropertyChanged(nameof(VpyEnableFpsParamsLabel));
             OnPropertyChanged(nameof(IsConcatMode));
+            OnPropertyChanged(nameof(CanOpenVpyPreview));
+            OpenVpyPreviewCommand.OnCanExecuteChanged();
             RefreshConcatSourceLanguage();
 
             BuildButtonGroups();

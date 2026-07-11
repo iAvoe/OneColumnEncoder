@@ -5,10 +5,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
-              xmlns:ui="clr-namespace:OneColumnEncoder.UI"
-              d:DataContext="{d:DesignInstance Type=vms:VspipePreviewVM}"
-              mc:Ignorable="d"
-              Loaded="OnLoaded">
+             xmlns:ui="clr-namespace:OneColumnEncoder.UI"
+             d:DataContext="{d:DesignInstance Type=vms:VspipePreviewVM}"
+             mc:Ignorable="d"
+             Loaded="OnLoaded">
     <UserControl.Resources>
         <Style x:Key="PreviewFilenameText"
                TargetType="TextBlock">
@@ -37,8 +37,8 @@
         <!-- Row 0: Frame + Zoom controls -->
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="150" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
@@ -55,6 +55,7 @@
                        Foreground="{StaticResource GlobalSecondary}"
                        TextWrapping="Wrap"
                        VerticalAlignment="Center"
+                       HorizontalAlignment="Right"
                        Margin="0 0 5 0" />
 
             <StackPanel Grid.Column="2"
@@ -144,9 +145,9 @@
 
         <!-- Row 1: A/B split viewer -->
         <comps:ImgABPvViewer Grid.Row="1"
-                                     x:Name="PreviewViewer"
-                                     RightWatermarkText="FILTER"
-                                     Margin="0 10 0 10" />
+                             x:Name="PreviewViewer"
+                             RightWatermarkText="FILTER"
+                             Margin="0 10 0 10" />
 
         <!-- Row 2: Frame slider (matches EncoderPreviewPanel Row 2) -->
         <Grid Grid.Row="2"
@@ -168,7 +169,7 @@
                                  TickCount="5"
                                  LabelWidth="0"
                                  HorizontalAlignment="Stretch"
-                                  IsEnabled="{Binding IsIdle}" />
+                                 IsEnabled="{Binding IsIdle}" />
         </Grid>
 
         <!-- Row 3: Legend -->

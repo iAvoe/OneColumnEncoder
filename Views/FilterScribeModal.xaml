@@ -170,10 +170,9 @@
                              PreviewMouseWheel="UserInput_PreviewMouseWheel"
                              Margin="0 2.5 0 0"
                              FontWeight="Normal" />
-                    <!-- Enable: BorderBrush="{StaticResource BorderGreen}" Foreground="{StaticResource BorderGreen}" -->
-                    <!-- Hide: IsEnabled="False" BorderBrush="Transparent" Foreground="Transparent"Background="Transparent" -->
                     <Button Grid.Row="2"
                             Command="{Binding OpenVpyPreviewCommand}"
+                            IsEnabled="{Binding CanOpenVpyPreview}"
                             Height="35"
                             Width="120"
                             HorizontalAlignment="Right"
