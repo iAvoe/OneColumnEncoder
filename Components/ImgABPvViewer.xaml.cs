@@ -21,25 +21,6 @@ namespace OneColumnEncoder.Components
         private ImgABPvVM? _subscribedVm;
         private bool _isFitQueued;
 
-        public static readonly DependencyProperty LeftWatermarkTextProperty =
-            DependencyProperty.Register(nameof(LeftWatermarkText), typeof(string), typeof(ImgABPvViewer),
-                new PropertyMetadata("SOURCE"));
-        public static readonly DependencyProperty RightWatermarkTextProperty =
-            DependencyProperty.Register(nameof(RightWatermarkText), typeof(string), typeof(ImgABPvViewer),
-                new PropertyMetadata("ENCODE"));
-
-        public string LeftWatermarkText
-        {
-            get => (string)GetValue(LeftWatermarkTextProperty);
-            set => SetValue(LeftWatermarkTextProperty, value);
-        }
-
-        public string RightWatermarkText
-        {
-            get => (string)GetValue(RightWatermarkTextProperty);
-            set => SetValue(RightWatermarkTextProperty, value);
-        }
-
         public ImgABPvViewer()
         {
             InitializeComponent();

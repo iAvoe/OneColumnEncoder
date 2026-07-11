@@ -40,10 +40,6 @@ namespace OneColumnEncoder.ViewModels
         private readonly Func<bool>? _isConcatRoute;
         private readonly Func<string[]>? _getConcatFilePaths;
         private readonly Action<string[]>? _applyConcatFilePaths;
-        private readonly string? _vspipePath;
-        private readonly string? _ffmpegPath;
-        private readonly string? _vspipeY4mArg;
-        private readonly Func<long>? _getTotalFrames;
         private const int DisplayConcatPathMaxLength = 90;
         private ColorSpaceAnalysisM _colorSpaceAnalysis = ColorSpaceConverter.Analyze(null);
         private bool _hasSourceAnalysis;
@@ -478,8 +474,6 @@ namespace OneColumnEncoder.ViewModels
 
         public ButtonGroupVM ScriptExportButtons { get; private set; } = null!;
         public ButtonGroupVM FinishScribeButtons { get; private set; } = null!;
-        public ActionCmd OpenVpyPreviewCommand { get; }
-        public bool CanOpenVpyPreview => !IsConcatMode;
 
         public FilterScribeVM(
             ModalNavS modalNavS,
@@ -498,11 +492,7 @@ namespace OneColumnEncoder.ViewModels
             Func<string[]>? getQueueFilePaths = null,
             Func<bool>? isConcatRoute = null,
             Func<string[]>? getConcatFilePaths = null,
-            Action<string[]>? applyConcatFilePaths = null,
-            string? vspipePath = null,
-            string? ffmpegPath = null,
-            string? vspipeY4mArg = null,
-            Func<long>? getTotalFrames = null)
+            Action<string[]>? applyConcatFilePaths = null)
         {
             _modalNavS = modalNavS;
             _closeAction = closeAction;
@@ -524,11 +514,6 @@ namespace OneColumnEncoder.ViewModels
             _baseAvsPrefix = UILangProviderM.Current["SrcScribe.AvsPrefix"];
             _baseVpyPrefix = UILangProviderM.Current["SrcScribe.VpyPrefix"];
             _hasSourceAnalysis = !string.IsNullOrWhiteSpace(sourceFfprobeJson);
-            _vspipePath = vspipePath;
-            _ffmpegPath = ffmpegPath;
-            _vspipeY4mArg = vspipeY4mArg;
-            _getTotalFrames = getTotalFrames;
-            OpenVpyPreviewCommand = new ActionCmd(_ => OpenVpyPreview(), _ => CanOpenVpyPreview);
             ConfigureConcatSources();
             ParseColorSpaceInfo(sourceFfprobeJson);
             ParseSourceResolution(sourceFfprobeJson);
@@ -1218,120 +1203,6 @@ namespace OneColumnEncoder.ViewModels
                 string.Format(UILangProviderM.Current["SrcScribe.ScriptSaved"], path)).Execute(null);
         }
 
-        #region VapourSynth Preview
-        private void OpenVpyPreview()
-        {
-            if (!CanOpenVpyPreview) return;
-
-            if (string.IsNullOrWhiteSpace(_vspipePath) || !File.Exists(_vspipePath))
-            {
-                new Commands.OpenClose.OpenErrModalCmd(
-                    _modalNavS,
-                    "VapourSynth Preview",
-                    "vspipe.exe is not imported or missing. Please import vspipe first.").Execute(null);
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(_ffmpegPath) || !File.Exists(_ffmpegPath))
-            {
-                new Commands.OpenClose.OpenErrModalCmd(
-                    _modalNavS,
-                    "VapourSynth Preview",
-                    "ffmpeg.exe is not available.").Execute(null);
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(_vspipeY4mArg))
-            {
-                new Commands.OpenClose.OpenErrModalCmd(
-                    _modalNavS,
-                    "VapourSynth Preview",
-                    "vspipe Y4M argument not detected. Please re-import vspipe.").Execute(null);
-                return;
-            }
-
-            int fpsnum = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateNum : 0;
-            int fpsden = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateDen : 0;
-
-            string script;
-            string videoFilename;
-            if (IsConcatMode)
-            {
-                string[] concatPaths = GetCurrentConcatFilePaths();
-                if (!EnsureConcatSourceCount(concatPaths)) return;
-                videoFilename = GetPreviewVideoFilename(concatPaths);
-                string concatHeader = ScriptTemplate.BuildConcatVpySourceHeader(concatPaths, fpsnum, fpsden);
-                string previewInsert = "\r\nref = src\r\nsrc.set_output(0)";
-                string suffix = "\r\n# ...force src as the B preview output...\r\nsrc.set_output(1)";
-                string content = string.IsNullOrWhiteSpace(VpyUserInput)
-                    ? $"{previewInsert}\r\n# (no user filters)\r\n{suffix}"
-                    : $"{previewInsert}\r\n{VpyUserInput.Trim()}\r\n{suffix}";
-                script = $"{concatHeader}{content}";
-            }
-            else
-            {
-                string sourcePath = GetVpyPreviewSourcePath();
-                if (string.IsNullOrWhiteSpace(sourcePath))
-                {
-                    new Commands.OpenClose.OpenErrModalCmd(
-                        _modalNavS,
-                        "VapourSynth Preview",
-                        "No source video path available.").Execute(null);
-                    return;
-                }
-                script = ScriptTemplate.BuildVpyPreviewScript(sourcePath, VpyUserInput, fpsnum, fpsden);
-                videoFilename = GetPreviewVideoFilename(sourcePath);
-            }
-
-            long total = (_getTotalFrames?.Invoke() ?? 0);
-            int frameCount = (int)Math.Min(total > 0 ? total : 1, int.MaxValue);
-            var previewVm = new VspipePreviewVM(
-                _vspipePath,
-                _ffmpegPath,
-                _vspipeY4mArg,
-                script,
-                videoFilename,
-                frameCount);
-
-            var existingWindow = System.Windows.Application.Current.Windows
-                .OfType<Views.VpyPreviewDialog>()
-                .FirstOrDefault();
-
-            if (existingWindow != null)
-            {
-                existingWindow.Activate();
-                return;
-            }
-
-            Views.VpyPreviewDialog window = new(previewVm, _modalNavS);
-            window.Show();
-        }
-
-        private string GetVpyPreviewSourcePath()
-        {
-            if (_isQueueRoute?.Invoke() == true)
-                return _getQueueFilePaths?.Invoke().FirstOrDefault() ?? string.Empty;
-
-            return _getSourcePath();
-        }
-
-        private static string GetPreviewVideoFilename(string sourcePath)
-        {
-            string filename = Path.GetFileName(sourcePath);
-            return string.IsNullOrWhiteSpace(filename) ? sourcePath : filename;
-        }
-
-        private static string GetPreviewVideoFilename(string[] sourcePaths)
-        {
-            if (sourcePaths.Length == 0) return string.Empty;
-
-            string firstFilename = GetPreviewVideoFilename(sourcePaths[0]);
-            return sourcePaths.Length == 1
-                ? firstFilename
-                : $"{firstFilename} (+{sourcePaths.Length - 1})";
-        }
-        #endregion
-
         #region Script Text Queries
         private string GetCurrentFullScript()
         {
@@ -1414,8 +1285,6 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(AvsEnableFpsParamsLabel));
             OnPropertyChanged(nameof(VpyEnableFpsParamsLabel));
             OnPropertyChanged(nameof(IsConcatMode));
-            OnPropertyChanged(nameof(CanOpenVpyPreview));
-            OpenVpyPreviewCommand.OnCanExecuteChanged();
             RefreshConcatSourceLanguage();
 
             BuildButtonGroups();

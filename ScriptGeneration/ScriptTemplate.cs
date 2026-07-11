@@ -116,28 +116,5 @@
                 : $"\r\n{vpyPrefix2}\r\n{userInput}\r\n{vpySuffix}";
             return $"{BuildConcatVpySourceHeader(filePaths, fpsnum, fpsden)}{content}";
         }
-
-        /// <summary>
-        /// Builds a dual-output VPY script for A/B preview:
-        ///   output 0 = source (A), output 1 = filtered (B).
-        /// The user's filter code in <paramref name="userInput"/> must
-        /// produce the final result in variable <c>src</c>.
-        /// </summary>
-        public static string BuildVpyPreviewScript(string sourcePath, string userInput, int fpsnum = 0, int fpsden = 0)
-        {
-            string header = fpsnum > 0 && fpsden > 0
-                ? $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"{sourcePath}\", fpsnum={fpsnum}, fpsden={fpsden})"
-                : $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"{sourcePath}\")";
-
-            string previewInsert = "\r\nref = src\r\nsrc.set_output(0)";
-
-            string suffix = "\r\n# ...force src as the B preview output, so A/B preview can display output 1...\r\nsrc.set_output(1)";
-
-            string content = string.IsNullOrWhiteSpace(userInput)
-                ? $"{previewInsert}\r\n# (no user filters)\r\n{suffix}"
-                : $"{previewInsert}\r\n{userInput.Trim()}\r\n{suffix}";
-
-            return $"{header}{content}";
-        }
     }
 }

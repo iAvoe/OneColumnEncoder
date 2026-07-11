@@ -25,11 +25,7 @@ namespace OneColumnEncoder.Commands.OpenClose
         Func<string[]>? getQueueFilePaths = null,
         Func<bool>? isConcatRoute = null,
         Func<string[]>? getConcatFilePaths = null,
-        Action<string[]>? applyConcatFilePaths = null,
-        string? vspipePath = null,
-        string? ffmpegPath = null,
-        string? vspipeY4mArg = null,
-        Func<long>? getTotalFrames = null) : BaseCmd
+        Action<string[]>? applyConcatFilePaths = null) : BaseCmd
     {
         private readonly ModalNavS _modalNavS = modalNavS;
         public override void Execute(object? parameter)
@@ -82,11 +78,7 @@ namespace OneColumnEncoder.Commands.OpenClose
                 getQueueFilePaths,
                 isConcatRoute,
                 getConcatFilePaths,
-                applyConcatFilePaths,
-                vspipePath,
-                ffmpegPath,
-                vspipeY4mArg,
-                getTotalFrames);
+                applyConcatFilePaths);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();

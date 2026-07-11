@@ -30,9 +30,9 @@
         </Grid.RowDefinitions>
 
         <comps:ConcatSidebarPanel Grid.Column="0"
-                                  Grid.RowSpan="6"
-                                  DataContext="{Binding ConcatSources}"
-                                  Margin="0 0 10 0">
+                                        Grid.RowSpan="6"
+                                        DataContext="{Binding ConcatSources}"
+                                        Margin="0 0 10 0">
             <comps:ConcatSidebarPanel.Style>
                 <Style TargetType="comps:ConcatSidebarPanel">
                     <Setter Property="Visibility"
@@ -170,39 +170,6 @@
                              PreviewMouseWheel="UserInput_PreviewMouseWheel"
                              Margin="0 2.5 0 0"
                              FontWeight="Normal" />
-                    <Button Grid.Row="2"
-                            Command="{Binding OpenVpyPreviewCommand}"
-                            IsEnabled="{Binding CanOpenVpyPreview}"
-                            Height="35"
-                            Width="120"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Margin="0 2.5 0 0"
-                            Panel.ZIndex="1"
-                            Style="{StaticResource PrimaryButton}"
-                            BorderBrush="{StaticResource BorderGreen}"
-                            Foreground="{StaticResource BorderGreen}"
-                            Background="Transparent">
-                        <StackPanel Orientation="Horizontal"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Center">
-                            <Rectangle Width="14"
-                                       Height="14"
-                                       VerticalAlignment="Center"
-                                       Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                                <Rectangle.OpacityMask>
-                                    <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GamePlay}"
-                                                Stretch="Uniform"
-                                                AlignmentX="Center"
-                                                AlignmentY="Center" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                            <TextBlock Text="A/B Preview"
-                                       VerticalAlignment="Center"
-                                       FontWeight="Normal"
-                                       Margin="5 0 0 0" />
-                        </StackPanel>
-                    </Button>
                     <TextBox Grid.Row="3"
                              Text="{Binding VpySuffix, Mode=OneWay}"
                              IsReadOnly="True"
@@ -288,11 +255,12 @@
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
 
         <StackPanel Grid.Row="3"
-                    Grid.Column="1">
+                    Grid.Column="1"
+                    Margin="0 15 0 0">
             <StackPanel Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
                 <TextBlock Text="{Binding FrameRateConvertTitle}"
                            Style="{StaticResource H3}"
-                           Margin="0 15 0 0" />
+                           Margin="0 0 0 0" />
                 <Grid Margin="0 2.5 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="49" />
@@ -424,7 +392,7 @@
             <StackPanel>
                 <TextBlock Text="{Binding DenoiseTitle}"
                            Style="{StaticResource H3}"
-                           Margin="0 15 0 0" />
+                           Margin="0 10 0 0" />
                 <Grid Margin="0 5 0 0"
                       Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
                     <Grid.ColumnDefinitions>
@@ -683,7 +651,7 @@
                                Foreground="{StaticResource GlobalSecondary}"
                                VerticalAlignment="Center" />
                     <TextBox Grid.Column="1"
-                             Text="{Binding AviSynthAssRenderFilter, Mode=OneWay}"
+                              Text="{Binding AviSynthAssRenderFilter, Mode=OneWay}"
                              IsReadOnly="True"
                              BorderThickness="0"
                              Background="{StaticResource Background}"

@@ -90,9 +90,9 @@
 
                     <Canvas x:Name="SourceLayer"
                             Background="{StaticResource SourceCheckerBrush}"
-                              ClipToBounds="True"
-                              Canvas.Left="0"
-                              Canvas.Top="0">
+                             ClipToBounds="True"
+                             Canvas.Left="0"
+                             Canvas.Top="0">
                         <Image x:Name="SourceImage"
                                Source="{Binding SourceImage}"
                                Stretch="Fill"
@@ -109,7 +109,7 @@
                             MouseMove="SplitHandle_MouseMove" />
                 </Canvas>
 
-                <TextBlock Text="{Binding LeftWatermarkText, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                <TextBlock Text="SOURCE"
                            FontSize="80"
                            Foreground="{StaticResource GlobalSecondary}"
                            Opacity="0.75"
@@ -132,7 +132,7 @@
                     </TextBlock.Style>
                 </TextBlock>
 
-                <TextBlock Text="{Binding RightWatermarkText, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                <TextBlock Text="ENCODE"
                            FontSize="80"
                            Foreground="{StaticResource GlobalSecondary}"
                            Opacity="0.75"
