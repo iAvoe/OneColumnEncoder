@@ -299,4 +299,120 @@ public static partial class PreviewPipeline
         bitmap.Freeze();
         return bitmap;
     }
+
+    public static string Quote(string value) =>
+        $"\"{value.Replace("\"", "\\\"", StringComparison.Ordinal)}\"";
+
+    /// <summary>
+    /// Builds the vspipe arguments to extract a single frame from a given output index.
+    /// </summary>
+    public static string[] BuildVspipeExtractArgs(string vspipePath, string scriptPath,
+        int outputIndex, int frameNumber, string vspipeY4mArg, string outputPngPath)
+    {
+        // vspipe script.vpy -o N -s F -e F --y4m - | ffmpeg -i - -vframes 1 -c:v png out.png
+        return
+        [
+            "-hide_banner", "-y",
+            "-i", "-",
+            "-vframes", "1",
+            "-c:v", "png",
+            outputPngPath
+        ];
+    }
+
+    /// <summary>
+    /// Runs a vspipe → ffmpeg pipe to extract a single frame from a specific output index.
+    /// </summary>
+    public static async Task RunVspipePipeAsync(string vspipePath, string ffmpegPath,
+        string workDirectory, string scriptPath, int outputIndex, int frameNumber,
+        string vspipeY4mArg, string outputPngPath, CancellationToken token)
+    {
+        // vspipe side
+        ProcessStartInfo vspipePsi = new()
+        {
+            FileName = vspipePath,
+            WorkingDirectory = workDirectory,
+            UseShellExecute = false,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            StandardOutputEncoding = Encoding.UTF8,
+            StandardErrorEncoding = Encoding.UTF8,
+            CreateNoWindow = true
+        };
+        vspipePsi.ArgumentList.Add(scriptPath);
+        vspipePsi.ArgumentList.Add("-o");
+        vspipePsi.ArgumentList.Add(outputIndex.ToString(CultureInfo.InvariantCulture));
+        vspipePsi.ArgumentList.Add("-s");
+        vspipePsi.ArgumentList.Add(frameNumber.ToString(CultureInfo.InvariantCulture));
+        vspipePsi.ArgumentList.Add("-e");
+        vspipePsi.ArgumentList.Add(frameNumber.ToString(CultureInfo.InvariantCulture));
+
+        // Pass --y4m arg as separate tokens (could be "-c y4m", "--container y4m", or "--y4m")
+        foreach (string t in SplitArgs(vspipeY4mArg))
+            vspipePsi.ArgumentList.Add(t);
+
+        vspipePsi.ArgumentList.Add("-");
+
+        using Process vspipeProcess = new() { StartInfo = vspipePsi, EnableRaisingEvents = true };
+
+        // ffmpeg side
+        ProcessStartInfo ffmpegPsi = new()
+        {
+            FileName = ffmpegPath,
+            WorkingDirectory = workDirectory,
+            UseShellExecute = false,
+            RedirectStandardInput = true,
+            RedirectStandardError = true,
+            StandardErrorEncoding = Encoding.UTF8,
+            CreateNoWindow = true
+        };
+        ffmpegPsi.ArgumentList.Add("-hide_banner");
+        ffmpegPsi.ArgumentList.Add("-y");
+        ffmpegPsi.ArgumentList.Add("-i");
+        ffmpegPsi.ArgumentList.Add("-");
+        ffmpegPsi.ArgumentList.Add("-vframes");
+        ffmpegPsi.ArgumentList.Add("1");
+        ffmpegPsi.ArgumentList.Add("-c:v");
+        ffmpegPsi.ArgumentList.Add("png");
+        ffmpegPsi.ArgumentList.Add(outputPngPath);
+
+        using Process ffmpegProcess = new() { StartInfo = ffmpegPsi, EnableRaisingEvents = true };
+
+        try
+        {
+            vspipeProcess.Start();
+            ffmpegProcess.Start();
+
+            // Pipe vspipe stdout → ffmpeg stdin
+            Task pipeTask = vspipeProcess.StandardOutput.BaseStream.CopyToAsync(
+                ffmpegProcess.StandardInput.BaseStream, 81920, token);
+
+            string vspipeStderr = await vspipeProcess.StandardError.ReadToEndAsync();
+            string ffmpegStderr = await ffmpegProcess.StandardError.ReadToEndAsync();
+
+            await Task.WhenAll(vspipeProcess.WaitForExitAsync(token), pipeTask).ConfigureAwait(false);
+            ffmpegProcess.StandardInput.Close();
+
+            await ffmpegProcess.WaitForExitAsync(token).ConfigureAwait(false);
+
+            if (vspipeProcess.ExitCode != 0)
+            {
+                string msg = string.IsNullOrWhiteSpace(vspipeStderr) ? $"vspipe exit code {vspipeProcess.ExitCode}" : TrimProcessMessage(vspipeStderr);
+                throw new InvalidOperationException(msg);
+            }
+
+            if (ffmpegProcess.ExitCode != 0)
+            {
+                string msg = string.IsNullOrWhiteSpace(ffmpegStderr) ? $"ffmpeg exit code {ffmpegProcess.ExitCode}" : TrimProcessMessage(ffmpegStderr);
+                throw new InvalidOperationException(msg);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            TryKillProcess(vspipeProcess);
+            TryKillProcess(ffmpegProcess);
+            throw;
+        }
+    }
+
 }

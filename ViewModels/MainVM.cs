@@ -555,7 +555,11 @@ namespace OneColumnEncoder.ViewModels
                 GetCurrentQueueFilePaths,
                 IsConcatRouteActive,
                 GetConcatFilePaths,
-                ApplyConcatFilePathsFromFilterScribe);
+                ApplyConcatFilePathsFromFilterScribe,
+                _appDataM.Tools.VspipePath,
+                _appDataM.Tools.FfmpegPath,
+                _appDataM.Tools.VspipeY4mArg,
+                () => EncodingPipeline.GetSourceTotalFrames(_srcVideoAnalysis.RawJson) ?? 0);
             CopyRawAnalysis = new CopyRawAnalysisCmd(
                 _srcVideoAnalysis, modalNavS, IsQueueRouteActive, IsConcatRouteActive);
             AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(
