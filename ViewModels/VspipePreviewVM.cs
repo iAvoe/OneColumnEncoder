@@ -8,6 +8,18 @@ using System.Windows.Media;
 
 namespace OneColumnEncoder.ViewModels
 {
+    public class PreviewSourceItem
+    {
+        public string FullPath { get; }
+        public string VideoFilename { get; }
+        public string Title => VideoFilename;
+        public PreviewSourceItem(string fullPath)
+        {
+            FullPath = fullPath;
+            VideoFilename = Path.GetFileName(fullPath);
+        }
+    }
+
     public class VspipePreviewVM : BaseVM
     {
         private readonly string _vspipePath;
@@ -15,8 +27,28 @@ namespace OneColumnEncoder.ViewModels
         private readonly string _workDirectory;
         private readonly int _totalFrames;
         private readonly string _scriptPath;
+        private readonly Func<string, string>? _buildPreviewScript;
+        private bool _suppressSwitch;
 
-        public string VideoFilename { get; }
+        private string _videoFilename;
+        public string VideoFilename
+        {
+            get => _videoFilename;
+            private set => SetProperty(ref _videoFilename, value);
+        }
+
+        public ObservableCollection<PreviewSourceItem> PreviewSources { get; } = [];
+
+        private PreviewSourceItem? _selectedPreviewSource;
+        public PreviewSourceItem? SelectedPreviewSource
+        {
+            get => _selectedPreviewSource;
+            set
+            {
+                if (SetProperty(ref _selectedPreviewSource, value) && value != null && !_suppressSwitch)
+                    SwitchSource(value.FullPath);
+            }
+        }
 
         private CancellationTokenSource? _previewCts;
         private Process? _currentVspipeProcess;
@@ -106,12 +138,15 @@ namespace OneColumnEncoder.ViewModels
             string vspipePath,
             string vspipeY4mArg,
             string scriptContent,
-            string videoFilename,
-            int totalFrames)
+            string sourcePath,
+            int totalFrames,
+            Func<string, string>? buildPreviewScript = null,
+            IEnumerable<string>? queueFilePaths = null)
         {
             _vspipePath = vspipePath;
             _vspipeY4mArg = vspipeY4mArg;
-            VideoFilename = videoFilename;
+            _buildPreviewScript = buildPreviewScript;
+            _videoFilename = Path.GetFileName(sourcePath);
             _totalFrames = totalFrames > 0 ? totalFrames : 1;
             _currentFrame = 0;
             MaxPositionSeconds = _totalFrames - 1;
@@ -124,6 +159,20 @@ namespace OneColumnEncoder.ViewModels
 
             _scriptPath = Path.Combine(_workDirectory, "preview.vpy");
             File.WriteAllText(_scriptPath, scriptContent);
+
+            _suppressSwitch = true;
+            if (queueFilePaths != null)
+            {
+                foreach (string path in queueFilePaths)
+                    PreviewSources.Add(new PreviewSourceItem(path));
+                SelectedPreviewSource = PreviewSources.FirstOrDefault();
+            }
+            else
+            {
+                PreviewSources.Add(new PreviewSourceItem(sourcePath));
+                SelectedPreviewSource = PreviewSources[0];
+            }
+            _suppressSwitch = false;
 
             StatusText = "Ready";
             PreviewCommand = new ActionCmd(_ => PreviewOrCancel());
@@ -256,6 +305,32 @@ namespace OneColumnEncoder.ViewModels
         {
             if (!File.Exists(path))
                 throw new FileNotFoundException("Preview frame file missing", path);
+        }
+
+        private void SwitchSource(string newPath)
+        {
+            CancelPreview();
+            IsBusy = false;
+            SourceImage = null;
+            EncodedImage = null;
+            CurrentFrame = 0;
+            VideoFilename = Path.GetFileName(newPath);
+
+            if (_buildPreviewScript != null)
+            {
+                try
+                {
+                    string script = _buildPreviewScript(newPath);
+                    File.WriteAllText(_scriptPath, script);
+                }
+                catch (Exception ex)
+                {
+                    StatusText = $"Script error: {ex.Message}";
+                    return;
+                }
+            }
+
+            StatusText = "Ready";
         }
 
         private void CancelPreview()

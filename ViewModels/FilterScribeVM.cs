@@ -1251,16 +1251,26 @@ namespace OneColumnEncoder.ViewModels
             int fpsnum = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateNum : 0;
             int fpsden = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateDen : 0;
             string script = ScriptTemplate.BuildVpyPreviewScript(sourcePath, VpyUserInput, fpsnum, fpsden);
-            string videoFilename = GetPreviewVideoFilename(sourcePath);
 
             long total = _getTotalFrames?.Invoke() ?? 0;
             int frameCount = (int)Math.Min(total > 0 ? total : 1, int.MaxValue);
+
+            Func<string, string>? buildScript = null;
+            string[]? queuePaths = null;
+            if (_isQueueRoute?.Invoke() == true)
+            {
+                queuePaths = _getQueueFilePaths?.Invoke();
+                buildScript = (path) => ScriptTemplate.BuildVpyPreviewScript(path, VpyUserInput, fpsnum, fpsden);
+            }
+
             var previewVm = new VspipePreviewVM(
                 _vspipePath,
                 _vspipeY4mArg,
                 script,
-                videoFilename,
-                frameCount);
+                sourcePath,
+                frameCount,
+                buildPreviewScript: buildScript,
+                queueFilePaths: queuePaths);
 
             var existingWindow = Application.Current.Windows
                 .OfType<VpyPreviewDialog>()
@@ -1284,11 +1294,6 @@ namespace OneColumnEncoder.ViewModels
             return _getSourcePath();
         }
 
-        private static string GetPreviewVideoFilename(string sourcePath)
-        {
-            string filename = Path.GetFileName(sourcePath);
-            return string.IsNullOrWhiteSpace(filename) ? sourcePath : filename;
-        }
         #endregion
 
         #region Script Text Queries

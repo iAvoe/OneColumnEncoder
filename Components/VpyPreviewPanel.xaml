@@ -41,11 +41,15 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0"
-                       Text="{Binding VideoFilename}"
-                       ToolTip="{Binding VideoFilename}"
-                       Style="{StaticResource PreviewFilenameText}"
-                       Margin="0 0 10 0" />
+            <ComboBox Grid.Column="0"
+                      ItemsSource="{Binding PreviewSources}"
+                      SelectedItem="{Binding SelectedPreviewSource, Mode=TwoWay}"
+                      DisplayMemberPath="Title"
+                      Style="{StaticResource RoundedDropdownMenu}"
+                      ToolTip="{Binding SelectedItem.FullPath, RelativeSource={RelativeSource Self}}"
+                      MinWidth="150"
+                      VerticalAlignment="Center"
+                      Margin="0 0 10 0" />
 
             <TextBlock Grid.Column="1"
                        Text="{Binding StatusText}"
