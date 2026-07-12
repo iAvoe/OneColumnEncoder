@@ -45,7 +45,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly string? _vspipeY4mArg;
         private readonly Func<long>? _getTotalFrames;
         private const int DisplayConcatPathMaxLength = 90;
-        private const double VpyPreviewWindowGap = 5;
+        // private const double VpyPreviewWindowGap = 0;
         private ColorSpaceAnalysisM _colorSpaceAnalysis = ColorSpaceConverter.Analyze(null);
         private bool _hasSourceAnalysis;
         public CloseModalCmd CloseCmd { get; }
@@ -1312,7 +1312,7 @@ namespace OneColumnEncoder.ViewModels
             Rect workArea = SystemParameters.WorkArea;
             double ownerWidth = GetWindowWidth(ownerWindow);
             double previewWidth = GetWindowWidth(previewWindow);
-            double previewLeft = workArea.Left + ownerWidth + VpyPreviewWindowGap;
+            double previewLeft = workArea.Left + ownerWidth;
             double availablePreviewWidth = workArea.Right - previewLeft;
 
             ownerWindow.Left = workArea.Left;

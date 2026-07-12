@@ -35,8 +35,8 @@
 
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
@@ -47,7 +47,6 @@
                       Style="{StaticResource RoundedDropdownMenu}"
                       ToolTip="{Binding SelectedItem.FullPath, RelativeSource={RelativeSource Self}}"
                       MinWidth="150"
-                      MaxWidth="200"
                       HorizontalAlignment="Left"
                       VerticalAlignment="Center"
                       Margin="2.5 0 10 0" />
