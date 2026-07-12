@@ -247,6 +247,27 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            <Style x:Key="TealButton"
+                   TargetType="Button"
+                   BasedOn="{StaticResource BaseButton}">
+                <Setter Property="Background"
+                        Value="{StaticResource BackgroundGreen}" />
+                <Setter Property="Foreground"
+                        Value="{StaticResource BorderGreen}" />
+                <Setter Property="BorderBrush"
+                        Value="{StaticResource BorderGreen}" />
+                <Setter Property="BorderThickness"
+                        Value="1.5" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver"
+                             Value="True">
+                        <Setter Property="Background"
+                                Value="{StaticResource BorderGreen}" />
+                        <Setter Property="Foreground"
+                                Value="{StaticResource BackgroundGreen}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
             
             <!-- Dropdown Menu Combobox, not items in dropdown -->
             <Style x:Key="DropdownToggleButton"

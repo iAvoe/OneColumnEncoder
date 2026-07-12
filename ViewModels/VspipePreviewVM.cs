@@ -179,15 +179,13 @@ namespace OneColumnEncoder.ViewModels
                 SourceImage = Y4mFrameReader.LoadFirstFrame(sourcePath);
                 EncodedImage = Y4mFrameReader.LoadFirstFrame(filteredPath);
 
-                StatusText = $"Frame {CurrentFrame} ready - A: original / B: filtered";
+                StatusText = $"Frame {CurrentFrame} rendered";
             }
             catch (OperationCanceledException)
             {
                 if (!_isDisposed) StatusText = "Cancelled";
             }
-            catch (ObjectDisposedException) when (_isDisposed)
-            {
-            }
+            catch (ObjectDisposedException) when (_isDisposed) {}
             catch (Exception ex)
             {
                 if (!_isDisposed) StatusText = ex.Message;
@@ -199,10 +197,8 @@ namespace OneColumnEncoder.ViewModels
                     _previewCts = null;
                 cts.Dispose();
 
-                if (_isDisposed)
-                    DeleteWorkDirectory();
-                else
-                    IsBusy = false;
+                if (_isDisposed) DeleteWorkDirectory();
+                else IsBusy = false;
             }
         }
 
@@ -236,7 +232,7 @@ namespace OneColumnEncoder.ViewModels
             try
             {
                 vspipeProcess.Start();
-                Task<string> vspipeStderrTask = vspipeProcess.StandardError.ReadToEndAsync();
+                Task<string> vspipeStderrTask = vspipeProcess.StandardError.ReadToEndAsync(token);
 
                 await vspipeProcess.WaitForExitAsync(token).ConfigureAwait(false);
                 string vspipeStderr = await vspipeStderrTask.ConfigureAwait(false);
@@ -282,7 +278,7 @@ namespace OneColumnEncoder.ViewModels
                 if (Directory.Exists(_workDirectory))
                     Directory.Delete(_workDirectory, recursive: true);
             }
-            catch { }
+            catch {}
         }
 
         public override void Dispose()
@@ -294,6 +290,7 @@ namespace OneColumnEncoder.ViewModels
             if (!IsBusy) DeleteWorkDirectory();
 
             base.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }
