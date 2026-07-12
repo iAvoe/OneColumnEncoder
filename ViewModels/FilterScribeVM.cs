@@ -2,6 +2,7 @@
 using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.FFmpeg;
+using OneColumnEncoder.Hardware;
 using OneColumnEncoder.Pipeline;
 using OneColumnEncoder.UI;
 using OneColumnEncoder.ScriptGeneration;
@@ -272,6 +273,9 @@ namespace OneColumnEncoder.ViewModels
         {
             get
             {
+                if (!OpenCLDetector.IsOpenCLAvailable())
+                    return "N/A (!OpenCL)";
+
                 string dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "x64-AVS-VS-plugins\\vszipcl.dll");
                 return $"core.std.LoadPlugin(r\"{dllPath}\")\r\n" +
                     "src = core.vszipcl.Deband(src, dither_algo=0, device_id=0, num_streams=2)\r\n" +
