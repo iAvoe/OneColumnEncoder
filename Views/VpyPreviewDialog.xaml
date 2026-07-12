@@ -9,11 +9,11 @@
                    d:DataContext="{d:DesignInstance Type=vms:VspipePreviewVM}"
                    mc:Ignorable="d"
                    Title="VapourSynth A/B Preview"
-                   Width="1920"
-                   Height="1080"
+                   Width="1600"
+                   Height="900"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
-    <Grid Margin="10">
+    <Grid Margin="10 10 10 15">
         <comps:VpyPreviewPanel DataContext="{Binding}" />
     </Grid>
 </ui:AdaptiveWindow>
