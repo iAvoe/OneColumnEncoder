@@ -62,12 +62,14 @@ namespace OneColumnEncoder.ViewModels
                     OnPropertyChanged(nameof(IsAvsTabSelected));
                     OnPropertyChanged(nameof(IsVpyTabSelected));
                     OnPropertyChanged(nameof(IsFfmpegTabSelected));
+                    OnPropertyChanged(nameof(IsDenoiseSectionVisible));
                 }
             }
         }
         public bool IsAvsTabSelected => _selectedTabIndex == 0;
         public bool IsVpyTabSelected => _selectedTabIndex == 1;
         public bool IsFfmpegTabSelected => _selectedTabIndex == 2;
+        public bool IsDenoiseSectionVisible => IsFfmpegTabSelected || IsAvsTabSelected;
 
         // Avs/VpyPrefix becomes instance property to support dynamic fpsnum/fpsden
         // Avs/VpyPrefix2 is a guidance comment to keep
@@ -252,7 +254,6 @@ namespace OneColumnEncoder.ViewModels
                 ? "-filter:v \"libplacebo=reset_sar=1\""
                 : "N/A";
 
-        public static string VapourSynthHqdn3dDenoiseFilter => "src = hqdn3d.Hqdn3d(src)";
         public static string AviSynthHqdn3dDenoiseFilter => "hqdn3d(src)";
         public static string FfmpegHqdn3dDenoiseFilter => "-filter:v \"hqdn3d\"";
         public string AviSynthAssRenderFilter =>
@@ -472,7 +473,6 @@ namespace OneColumnEncoder.ViewModels
         public static string HdrToSdrColorFilterLabel => "HDR→SDR";
         public static string HighHdrToLowSdrColorFilterLabel => "H&W→SDR";
         public static string ColorSpacePeakNitsHint => UILangProviderM.Current["SrcScribe.ColorSpacePeakNitsHint"];
-        public static string VSInstallHqdn3dHint => UILangProviderM.Current["SrcScribe.VSInstallHqdn3dHint"];
         #endregion
 
         public ButtonGroupVM ScriptExportButtons { get; private set; } = null!;
@@ -1365,7 +1365,6 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(HdrToSdrColorFilterLabel));
             OnPropertyChanged(nameof(HighHdrToLowSdrColorFilterLabel));
             OnPropertyChanged(nameof(ColorSpacePeakNitsHint));
-            OnPropertyChanged(nameof(VSInstallHqdn3dHint));
             OnPropertyChanged(nameof(FfmpegLowToHighColorFilter));
             OnPropertyChanged(nameof(FfmpegHighToLowColorFilter));
             OnPropertyChanged(nameof(FfmpegHdrToSdrColorFilter));

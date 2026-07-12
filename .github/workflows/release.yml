@@ -83,7 +83,7 @@ jobs:
             # 完整拷贝 x64-CloudinarySSIMULACRA2.1 文件夹及其子文件
             Copy-Item -Path ".\cicd\x64-CloudinarySSIMULACRA2.1" -Destination ".\publish\x64\" -Recurse -Force
             Copy-Item -Path ".\cicd\x64-GoogleButteraugli" -Destination ".\publish\x64\" -Recurse -Force
-            Copy-Item -Path ".\cicd\x64-AVS-VS-plugins" -Destination ".\publish\x64\" -Recurse -Force
+            # Copy-Item -Path ".\cicd\x64-AVS-VS-plugins" -Destination ".\publish\x64\" -Recurse -Force
             Write-Host "✅ Tools copied to both publish folders."
           } else {
             throw "[MISSING] No 'cicd' folder found, cannot continue."

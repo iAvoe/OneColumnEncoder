@@ -286,12 +286,11 @@
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
 
         <StackPanel Grid.Row="3"
-                    Grid.Column="1"
-                    Margin="0 15 0 0">
+                    Grid.Column="1">
             <StackPanel Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
                 <TextBlock Text="{Binding FrameRateConvertTitle}"
                            Style="{StaticResource H3}"
-                           Margin="0 0 0 0" />
+                           Margin="0 15 0 0" />
                 <Grid Margin="0 2.5 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="49" />
@@ -315,7 +314,7 @@
             <StackPanel Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
                 <TextBlock Text="{Binding SarRepairTitle}"
                            Style="{StaticResource H3}"
-                           Margin="0 10 0 0" />
+                           Margin="0 15 0 0" />
                 <Grid Margin="0 5 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="49" />
@@ -339,7 +338,7 @@
             <StackPanel Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
                 <TextBlock Text="{Binding ColorSpaceConvertTitle}"
                            Style="{StaticResource H3}"
-                           Margin="0 10 0 0" />
+                           Margin="0 15 0 0" />
                 <StackPanel Margin="0 2.5 0 0">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -420,10 +419,10 @@
                              Text="{Binding ColorSpacePeakNitsHint}"
                              Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}" />
 
-            <StackPanel>
+            <StackPanel Visibility="{Binding IsDenoiseSectionVisible, Converter={StaticResource BoolToVisibility}}">
                 <TextBlock Text="{Binding DenoiseTitle}"
                            Style="{StaticResource H3}"
-                           Margin="0 10 0 0" />
+                           Margin="0 15 0 0" />
                 <Grid Margin="0 5 0 0"
                       Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
                     <Grid.ColumnDefinitions>
@@ -437,25 +436,6 @@
                                VerticalAlignment="Center" />
                     <TextBox Grid.Column="1"
                              Text="{Binding FfmpegHqdn3dDenoiseFilter, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             FontSize="11" />
-                </Grid>
-                <Grid Margin="0 5 0 0"
-                      Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="49" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding VapourSynthText}"
-                               FontSize="11"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1"
-                             Text="{Binding VapourSynthHqdn3dDenoiseFilter, Mode=OneWay}"
                              IsReadOnly="True"
                              BorderThickness="0"
                              Background="{StaticResource Background}"
@@ -483,14 +463,10 @@
                 </Grid>
             </StackPanel>
 
-            <comps:HintPanel Margin="0 2.5 0 0"
-                             Text="{Binding VSInstallHqdn3dHint}"
-                             Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}" />
-
             <StackPanel>
                 <TextBlock Text="{Binding ResolutionScaleTitle}"
                            Style="{StaticResource H3}"
-                           Margin="0 10 0 0" />
+                           Margin="0 15 0 0" />
 
                 <Grid Margin="0 2.5 0 0">
                     <Grid.ColumnDefinitions>
@@ -631,7 +607,7 @@
             <StackPanel>
                 <TextBlock Text="{Binding SubtitleBurnTitle}"
                            Style="{StaticResource H3}"
-                           Margin="0 10 0 0" />
+                           Margin="0 15 0 0" />
                 <Grid Margin="0 2.5 0 0"
                       Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
                     <Grid.ColumnDefinitions>
@@ -696,7 +672,7 @@
             <StackPanel Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
                 <TextBlock Text="{Binding MultiFilterAssemblyTitle}"
                            Style="{StaticResource H3}"
-                           Margin="0 10 0 0" />
+                           Margin="0 15 0 0" />
                 <TextBox Margin="0 2.5 0 0"
                          IsReadOnly="True"
                          BorderThickness="0"

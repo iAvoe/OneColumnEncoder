@@ -249,7 +249,6 @@ public class UILangProviderM
 
             ["SrcScribe.ColorSpaceConvertTitle"] = "Convert colorspace to Bt.709 (Experimental, FFMPEG only)",
             ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> requires manual input; please check filename/metadata for it",
-            ["SrcScribe.VSInstallHqdn3dHint"] = "Get this filter for VapourSynth: In CMD, run `where vsrepo`, then run `python \"<last command output>\" install hqdn3d`",
 
             ["SrcScribe.ColorSpace.DefaultNullValue"] = "not specified",
             ["SrcScribe.ColorSpace.DescribeColorMeta"] = "primaries={0} transfer={1} matrix={2} chroma_location={3} pixel_format={4}",
@@ -589,7 +588,6 @@ public class UILangProviderM
 
             ["SrcScribe.ColorSpaceConvertTitle"] = "转换色彩空间到 Bt.709（实验性，仅 FFMPEG）",
             ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> 需手动填写；请检查文件名/元数据",
-            ["SrcScribe.VSInstallHqdn3dHint"] = "安装该滤镜到 VapourSynth：CMD 运行 `where vsrepo`，再运行 `python \"<先前命令输出>\" install hqdn3d`",
 
             ["SrcScribe.ColorSpace.DefaultNullValue"] = "未指定",
             ["SrcScribe.ColorSpace.DescribeColorMeta"] = "原色={0} 传输={1} 矩阵={2} 色度位置={3} 像素格式={4}",
@@ -926,7 +924,6 @@ public class UILangProviderM
 
             ["SrcScribe.ColorSpaceConvertTitle"] = "轉換色彩空間到 Bt.709（實驗性，僅 FFMPEG）",
             ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> 需手動填寫；請檢查檔案名/元數據",
-            ["SrcScribe.VSInstallHqdn3dHint"] = "安裝該濾鏡到 VapourSynth：CMD 運行 `where vsrepo`，再運行 `python \"<先前命令輸出>\" install hqdn3d`",
 
             ["SrcScribe.ColorSpace.DefaultNullValue"] = "未指定",
             ["SrcScribe.ColorSpace.DescribeColorMeta"] = "原色={0} 傳輸={1} 矩陣={2} 色度位置={3} 像素格式={4}",
@@ -1320,7 +1317,6 @@ public class UILangProviderM
         ["SrcScribe.TabFfmpeg"] = "Filtre ffmpeg",
         ["SrcScribe.ColorSpaceConvertTitle"] = "Convertir l'espace colorimétrique en Bt.709 (expérimental, FFMPEG uniquement)",
         ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> nécessite une saisie manuelle; vérifiez le nom du fichier/les métadonnées",
-        ["SrcScribe.VSInstallHqdn3dHint"] = "Obtenez ce filtre pour VapourSynth : Dans CMD, exécutez `where vsrepo`, puis `python \"<sortie de la commande précédente>\" install hqdn3d`",
         ["SrcScribe.ColorSpace.DefaultNullValue"] = "non spécifié",
         ["SrcScribe.ColorSpace.DescribeColorMeta"] = "primaires={0} transfert={1} matrice={2} chroma_location={3} pixel_format={4}",
         ["SrcScribe.ColorSpace.DisplayNativeBt709"] = "N/A - Déjà bt709",
@@ -1626,7 +1622,6 @@ public class UILangProviderM
         ["ScriptGen.ScriptsSaved"] = "Scripts guardados:\n{0}",
         ["SrcScribe.ColorSpaceConvertTitle"] = "Convertir espacio de color a Bt.709 (experimental, solo FFMPEG)",
         ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> requiere entrada manual; compruebe el nombre del archivo/los metadatos",
-        ["SrcScribe.VSInstallHqdn3dHint"] = "Obtenga este filtro para VapourSynth: En CMD, ejecute `where vsrepo`, luego `python \"<salida del comando anterior>\" install hqdn3d`",
         ["SrcScribe.ColorSpace.DefaultNullValue"] = "no especificado",
         ["SrcScribe.ColorSpace.DescribeColorMeta"] = "primarios={0} transferencia={1} matriz={2} chroma_location={3} pixel_format={4}",
         ["SrcScribe.ColorSpace.DisplayNativeBt709"] = "N/A - Ya es bt709",
@@ -1932,7 +1927,6 @@ public class UILangProviderM
         ["ScriptGen.ScriptsSaved"] = "スクリプトを保存しました：\n{0}",
         ["SrcScribe.ColorSpaceConvertTitle"] = "色空間を Bt.709 に変換（実験的、FFMPEG のみ）",
         ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> は手動入力が必要です。ファイル名/メタデータを確認してください",
-        ["SrcScribe.VSInstallHqdn3dHint"] = "VapourSynth用フィルタの導入方法：CMD で `where vsrepo` を実行し、続けて `python \"<前のコマンドの出力>\" install hqdn3d` を実行",
         ["SrcScribe.ColorSpace.DefaultNullValue"] = "未指定",
         ["SrcScribe.ColorSpace.DescribeColorMeta"] = "原色={0} 転送={1} 行列={2} クロマ位置={3} ピクセル形式={4}",
         ["SrcScribe.ColorSpace.DisplayNativeBt709"] = "N/A - 既に bt709",
@@ -2238,7 +2232,6 @@ public class UILangProviderM
         ["ScriptGen.ScriptsSaved"] = "Скрипты сохранены:\n{0}",
         ["SrcScribe.ColorSpaceConvertTitle"] = "Преобразование цветового пространства в Bt.709 (экспериментально, только FFMPEG)",
         ["SrcScribe.ColorSpacePeakNitsHint"] = "Tonemap peak <nits> требует ручного ввода; проверьте имя файла/метаданные",
-        ["SrcScribe.VSInstallHqdn3dHint"] = "Фильтр для VapourSynth: в CMD выполните `where vsrepo`, затем `python \"<вывод предыдущей команды>\" install hqdn3d`",
         ["SrcScribe.ColorSpace.DefaultNullValue"] = "не указано",
         ["SrcScribe.ColorSpace.DescribeColorMeta"] = "основные цвета={0} передача={1} матрица={2} chroma_location={3} pixel_format={4}",
         ["SrcScribe.ColorSpace.DisplayNativeBt709"] = "Н/Д - уже bt709",
