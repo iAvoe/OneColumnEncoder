@@ -213,6 +213,7 @@ namespace OneColumnEncoder.ViewModels
 
             try
             {
+                RefreshPreviewScript();
                 IsBusy = true;
                 string sourcePath = Path.Combine(_workDirectory, "output-0.y4m");
                 string filteredPath = Path.Combine(_workDirectory, "output-1.y4m");
@@ -331,6 +332,19 @@ namespace OneColumnEncoder.ViewModels
             }
 
             StatusText = "Ready";
+        }
+
+        private void RefreshPreviewScript()
+        {
+            if (_buildPreviewScript == null)
+                return;
+
+            string? sourcePath = SelectedPreviewSource?.FullPath;
+            if (string.IsNullOrWhiteSpace(sourcePath))
+                return;
+
+            string script = _buildPreviewScript(sourcePath);
+            File.WriteAllText(_scriptPath, script);
         }
 
         private void CancelPreview()

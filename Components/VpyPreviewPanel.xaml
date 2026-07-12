@@ -35,7 +35,6 @@
 
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
@@ -48,19 +47,12 @@
                       Style="{StaticResource RoundedDropdownMenu}"
                       ToolTip="{Binding SelectedItem.FullPath, RelativeSource={RelativeSource Self}}"
                       MinWidth="150"
+                      MaxWidth="200"
+                      HorizontalAlignment="Left"
                       VerticalAlignment="Center"
-                      Margin="0 0 10 0" />
+                      Margin="2.5 0 10 0" />
 
-            <TextBlock Grid.Column="1"
-                       Text="{Binding StatusText}"
-                       FontSize="12"
-                       Foreground="{StaticResource GlobalSecondary}"
-                       TextWrapping="Wrap"
-                       VerticalAlignment="Center"
-                       HorizontalAlignment="Right"
-                       Margin="0 0 5 0" />
-
-            <StackPanel Grid.Column="2"
+            <StackPanel Grid.Column="1"
                         Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
@@ -117,13 +109,14 @@
                         Click="Zoom200_Click" />
             </StackPanel>
 
-            <Button Grid.Column="3"
+            <Button Grid.Column="2"
                     Command="{Binding PreviewCommand}"
                     Content="{Binding PreviewButtonText}"
                     Height="30"
                     Width="100"
                     Style="{StaticResource PrimaryButton}"
-                    Background="Black" />
+                    Background="Black"
+                    Margin="0 0 2.5 0"/>
         </Grid>
 
         <comps:ImgABPvViewer Grid.Row="1"

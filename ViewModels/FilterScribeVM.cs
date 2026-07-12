@@ -268,11 +268,11 @@ namespace OneColumnEncoder.ViewModels
         public static string VapourSynthSubtitleFilter =>
             "src = core.sub.ImageFile(src, file=r\"X:\\path\\to\\DVD_BDMV.sup\", gray=False)\r\n" +
             "src = core.sub.TextFile(src, file=r\"X:\\path\\to\\subtitle.ass\", fontdir=r\"Y:\\dir\\of\\fonts\")";
-        public string VapourSynthVszipclFilter
+        public static string VapourSynthVszipclFilter
         {
             get
             {
-                string dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "vszipcl.dll");
+                string dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "x64-AVS-VS-plugins\\vszipcl.dll");
                 return $"core.std.LoadPlugin(r\"{dllPath}\")\r\n" +
                     "src = core.vszipcl.Deband(src, dither_algo=0, device_id=0, num_streams=2)\r\n" +
                     "src = core.vszipcl.NLMeans(src, d=1, a=2, s=4, h=1.2, wmode=0, wref=1.0, device_id=0, num_streams=2)\r\n" +
@@ -1270,7 +1270,7 @@ namespace OneColumnEncoder.ViewModels
             int frameCount = (int)Math.Min(total > 0 ? total : 1, int.MaxValue);
 
             string[] previewSourcePaths = GetVpyPreviewSourcePaths();
-            Func<string, string> buildScript = path => ScriptTemplate.BuildVpyPreviewScript(path, VpyUserInput, fpsnum, fpsden);
+            string buildScript(string path) => ScriptTemplate.BuildVpyPreviewScript(path, VpyUserInput, fpsnum, fpsden);
 
             var previewVm = new VspipePreviewVM(
                 _vspipePath,
@@ -1291,7 +1291,26 @@ namespace OneColumnEncoder.ViewModels
                 return;
             }
 
-            VpyPreviewDialog window = new(previewVm, _modalNavS);
+            var ownerWindow = Application.Current.Windows
+                .OfType<FilterScribeModal>()
+                .FirstOrDefault(w => ReferenceEquals(w.DataContext, this));
+            VpyPreviewDialog window = new(previewVm, _modalNavS, ownerWindow);
+
+            if (ownerWindow != null)
+            {
+                ownerWindow.Left = 0;
+                double gap = 5;
+                double previewLeft = ownerWindow.Width + gap;
+                double screenWidth = SystemParameters.WorkArea.Width;
+
+                if (previewLeft + window.Width <= screenWidth)
+                {
+                    window.Left = previewLeft;
+                    window.Top = ownerWindow.Top;
+                    window.WindowStartupLocation = WindowStartupLocation.Manual;
+                }
+            }
+
             window.Show();
         }
 

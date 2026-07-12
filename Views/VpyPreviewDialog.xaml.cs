@@ -7,11 +7,11 @@ namespace OneColumnEncoder.Views
 {
     public partial class VpyPreviewDialog : AdaptiveWindow
     {
-        public VpyPreviewDialog(VspipePreviewVM vm, ModalNavS modalNavS)
+        public VpyPreviewDialog(VspipePreviewVM vm, ModalNavS modalNavS, Window? owner = null)
         {
             InitializeComponent();
             DataContext = vm;
-            Owner = Application.Current.MainWindow;
+            Owner = owner ?? Application.Current.MainWindow;
 
             Closed += (_, _) =>
             {
