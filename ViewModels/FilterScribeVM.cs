@@ -268,6 +268,20 @@ namespace OneColumnEncoder.ViewModels
         public static string VapourSynthSubtitleFilter =>
             "src = core.sub.ImageFile(src, file=r\"X:\\path\\to\\DVD_BDMV.sup\", gray=False)\r\n" +
             "src = core.sub.TextFile(src, file=r\"X:\\path\\to\\subtitle.ass\", fontdir=r\"Y:\\dir\\of\\fonts\")";
+        public string VapourSynthVszipclFilter
+        {
+            get
+            {
+                string dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "vszipcl.dll");
+                return $"core.std.LoadPlugin(r\"{dllPath}\")\r\n" +
+                    "src = core.vszipcl.Deband(src, dither_algo=0, device_id=0, num_streams=2)\r\n" +
+                    "src = core.vszipcl.NLMeans(src, d=1, a=2, s=4, h=1.2, wmode=0, wref=1.0, device_id=0, num_streams=2)\r\n" +
+                    "src = core.vszipcl.GaussBlur(src, device_id=0, num_streams=2)";
+            }
+        }
+        public static string VapourSynthVszipclTitle => UILangProviderM.Current["SrcScribe.VszipclTitle"];
+        public static string VapourSynthVszipclPreviewHint => UILangProviderM.Current["SrcScribe.VszipclPreviewHint"];
+        public static string VapourSynthVszipclDeviceHint => UILangProviderM.Current["SrcScribe.VszipclDeviceHint"];
         public static string FfmpegSubtitleFilter =>
             "-filter_complex \"ass='X\\:/path/to/subtitle.ass':fontsdir='Y\\:/dir/of/fonts'\"";
 
@@ -1363,6 +1377,9 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
             OnPropertyChanged(nameof(FfmpegFullChainFilter));
             OnPropertyChanged(nameof(VapourSynthText));
+            OnPropertyChanged(nameof(VapourSynthVszipclTitle));
+            OnPropertyChanged(nameof(VapourSynthVszipclPreviewHint));
+            OnPropertyChanged(nameof(VapourSynthVszipclDeviceHint));
             OnPropertyChanged(nameof(AviSynthText));
             OnPropertyChanged(nameof(FrameRateConvertTitle));
             OnPropertyChanged(nameof(ColorSpaceConvertTitle));

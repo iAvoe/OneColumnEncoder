@@ -682,6 +682,28 @@
                          VerticalAlignment="Center"
                          Text="ffmpeg::: -filter:v &quot;fps=30000/1001,zscale=matrix=bt709:primaries=bt709:transfer=bt709,scale=1280:720&quot;&#x0a;ffmpeg:::: -filter:v &quot;fps=30000/1001,libplacebo=reset_sar=1,zscale=matrix=bt709:primaries=bt709:transfer=bt709,scale=1280:720&quot;&#x0a;ffmpeg::::: -filter:v &quot;hqdn3d,fps=30000/1001,libplacebo=reset_sar=1,zscale=matrix=bt709:primaries=bt709:transfer=bt709,scale=1280:720&quot;" />
             </StackPanel>
+
+            <!-- VS-zipcl GPU OpenCL filter example (VapourSynth only) -->
+            <StackPanel Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}">
+                <TextBlock Text="{Binding VapourSynthVszipclTitle}"
+                           Style="{StaticResource H3}"
+                           Margin="0 15 0 0" />
+                <TextBox Margin="0 2.5 0 0"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         Background="{StaticResource Background}"
+                         Foreground="{StaticResource ButtonTertiary}"
+                         TextWrapping="NoWrap"
+                         AcceptsReturn="True"
+                         Padding="2.5"
+                         FontSize="11"
+                         FontWeight="Normal"
+                         Text="{Binding VapourSynthVszipclFilter, Mode=OneWay}" />
+                <comps:HintPanel Margin="0 2.5 0 0"
+                                 Text="{Binding VapourSynthVszipclPreviewHint}" />
+                <comps:HintPanel Margin="0 2.5 0 0"
+                                 Text="{Binding VapourSynthVszipclDeviceHint}" />
+            </StackPanel>
         </StackPanel>
 
         <comps:ThreeButtonGroup Grid.Row="4"

@@ -270,8 +270,12 @@ public class UILangProviderM
             ["SrcScribe.ColorSpace.NoVideoStream"] = "No video stream found.",
             ["SrcScribe.ColorSpace.FailedToParse"] = "Failed to parse ffprobe JSON.",
 
+            ["SrcScribe.VszipclTitle"] = "VS-zipcl (GPU OpenCL, Import/Deband/Denoise/Blur)",
+            ["SrcScribe.VszipclPreviewHint"] = "Use A/B Preview to tune filters, or avoid them entirely. Parameters: https://github.com/dnjulek/vapoursynth-zipcl/wiki",
+            ["SrcScribe.VszipclDeviceHint"] = "Use A/B Preview + Task Manager to monitor GPU usage, and assign filters to a capable device_id",
+
             ["ReviseSourceResolution.Title"] = "1cenc Source Resolution",
-            ["ReviseSourceResolution.Description"] = "Set the actual post-filter resolution to write into ffprobe JSON. The default value is copied from Filter Scribe's resolution shrink generator.",
+            ["ReviseSourceResolution.Description"] = "Set the actual post-filter resolution to write into ffprobe JSON. The default value is copied from Filter Scribe's resolution shrink generator",
             ["ReviseSourceResolution.SettingsHeader"] = "New Resolution",
             ["ReviseSourceResolution.WidthLabel"] = "Width",
             ["ReviseSourceResolution.HeightLabel"] = "Height",
@@ -609,6 +613,10 @@ public class UILangProviderM
             ["SrcScribe.ColorSpace.NoVideoStream"] = "No video stream found.",
             ["SrcScribe.ColorSpace.FailedToParse"] = "Failed to parse ffprobe JSON.",
 
+            ["SrcScribe.VszipclTitle"] = "VS-zipcl（GPU OpenCL，导入/去色带/降噪/模糊）",
+            ["SrcScribe.VszipclPreviewHint"] = "建议打开 A/B 预览器调试这些滤镜，否则不用。参数说明见 https://github.com/dnjulek/vapoursynth-zipcl/wiki",
+            ["SrcScribe.VszipclDeviceHint"] = "建议多 GPU 系统需要打开 A/B 预览器和任务管理器查看占用，按需分配到算力充足的 device_id",
+
             ["ReviseSourceResolution.Title"] = "1cenc 修订源分辨率",
             ["ReviseSourceResolution.Description"] = "填写滤镜处理后的实际分辨率并写入 ffprobe JSON。默认值来自滤镜编辑器的分辨率缩小值生成器。",
             ["ReviseSourceResolution.SettingsHeader"] = "新分辨率",
@@ -944,6 +952,10 @@ public class UILangProviderM
             ["SrcScribe.ColorSpace.FilterLine"] = "\n濾鏡: {0}",
             ["SrcScribe.ColorSpace.NoVideoStream"] = "找不到視訊串流。",
             ["SrcScribe.ColorSpace.FailedToParse"] = "無法解析 ffprobe JSON。",
+
+            ["SrcScribe.VszipclTitle"] = "VS-zipcl（GPU OpenCL，導入/去色帶/降噪/模糊）",
+            ["SrcScribe.VszipclPreviewHint"] = "建議打開 A/B 預覽器調試這些濾鏡，否則不用。參數說明見 https://github.com/dnjulek/vapoursynth-zipcl/wiki",
+            ["SrcScribe.VszipclDeviceHint"] = "建議多 GPU 系統需要打開 A/B 預覽器和任務管理器查看占用，按需分配到算力充足的 device_id",
 
             ["ReviseSourceResolution.Title"] = "1cenc 修訂源分辨率",
             ["ReviseSourceResolution.Description"] = "填寫濾鏡處理後的實際分辨率並寫入 ffprobe JSON。預設值來自濾鏡編輯器的分辨率縮小值生成器。",
