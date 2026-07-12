@@ -152,10 +152,7 @@ namespace OneColumnEncoder.ViewModels
             MaxPositionSeconds = _totalFrames - 1;
             BuildPositionTickLabels(MaxPositionSeconds);
 
-            _workDirectory = Path.Combine(
-                Path.GetTempPath(),
-                "1cenc-vpy-preview-" + Guid.NewGuid().ToString("N"));
-            Directory.CreateDirectory(_workDirectory);
+            _workDirectory = PreviewPipeline.CreateWorkDirectory("1cenc-vpy-preview-");
 
             _scriptPath = Path.Combine(_workDirectory, "preview.vpy");
             File.WriteAllText(_scriptPath, scriptContent);
@@ -220,11 +217,11 @@ namespace OneColumnEncoder.ViewModels
 
                 StatusText = "Extracting frame from output 0 (original)...";
                 await RunVspipeY4mAsync(0, sourcePath, token);
-                EnsureFileExists(sourcePath);
+                PreviewPipeline.EnsureFileExists(sourcePath, "Preview frame file missing");
 
                 StatusText = "Extracting frame from output 1 (filtered)...";
                 await RunVspipeY4mAsync(1, filteredPath, token);
-                EnsureFileExists(filteredPath);
+                PreviewPipeline.EnsureFileExists(filteredPath, "Preview frame file missing");
 
                 SourceImage = Y4mFrameReader.LoadFirstFrame(sourcePath);
                 EncodedImage = Y4mFrameReader.LoadFirstFrame(filteredPath);
@@ -263,18 +260,13 @@ namespace OneColumnEncoder.ViewModels
                 StandardErrorEncoding = System.Text.Encoding.UTF8,
                 CreateNoWindow = true
             };
-            vspipePsi.ArgumentList.Add(_scriptPath);
-            vspipePsi.ArgumentList.Add("-o");
-            vspipePsi.ArgumentList.Add(outputIndex.ToString(CultureInfo.InvariantCulture));
-            vspipePsi.ArgumentList.Add("-s");
-            vspipePsi.ArgumentList.Add(CurrentFrame.ToString(CultureInfo.InvariantCulture));
-            vspipePsi.ArgumentList.Add("-e");
-            vspipePsi.ArgumentList.Add(CurrentFrame.ToString(CultureInfo.InvariantCulture));
-
-            foreach (string arg in PreviewPipeline.SplitArgs(_vspipeY4mArg))
+            foreach (string arg in PreviewPipeline.BuildVspipeY4mArgs(
+                _scriptPath,
+                outputIndex,
+                CurrentFrame,
+                _vspipeY4mArg,
+                outputY4mPath))
                 vspipePsi.ArgumentList.Add(arg);
-
-            vspipePsi.ArgumentList.Add(outputY4mPath);
 
             using Process vspipeProcess = new() { StartInfo = vspipePsi, EnableRaisingEvents = true };
             _currentVspipeProcess = vspipeProcess;
@@ -300,12 +292,6 @@ namespace OneColumnEncoder.ViewModels
                 PreviewPipeline.TryKillProcess(vspipeProcess);
                 throw;
             }
-        }
-
-        private static void EnsureFileExists(string path)
-        {
-            if (!File.Exists(path))
-                throw new FileNotFoundException("Preview frame file missing", path);
         }
 
         private void SwitchSource(string newPath)
@@ -362,12 +348,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void DeleteWorkDirectory()
         {
-            try
-            {
-                if (Directory.Exists(_workDirectory))
-                    Directory.Delete(_workDirectory, recursive: true);
-            }
-            catch {}
+            PreviewPipeline.DeleteDirectoryQuietly(_workDirectory);
         }
 
         public override void Dispose()

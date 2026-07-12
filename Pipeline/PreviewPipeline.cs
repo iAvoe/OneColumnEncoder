@@ -2,6 +2,7 @@ using OneColumnEncoder.FFmpeg;
 using OneColumnEncoder.Models;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Text;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -14,6 +15,29 @@ public enum PreviewDisplayMode { Raw, LowToBt709, WcgToBt709, HdrToSdr, HighHdrT
 
 public static partial class PreviewPipeline
 {
+    public static string CreateWorkDirectory(string namePrefix)
+    {
+        string directory = Path.Combine(Path.GetTempPath(), namePrefix + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(directory);
+        return directory;
+    }
+
+    public static void DeleteDirectoryQuietly(string directory)
+    {
+        try
+        {
+            if (Directory.Exists(directory))
+                Directory.Delete(directory, recursive: true);
+        }
+        catch { }
+    }
+
+    public static void EnsureFileExists(string path, string message)
+    {
+        if (!File.Exists(path))
+            throw new FileNotFoundException(message, path);
+    }
+
     public static string[] BuildSourceArgs(string sourceVideoPath, int previewPositionSeconds, string outputPath, string? displayFilter = null)
     {
         List<string> args =
@@ -118,6 +142,29 @@ public static partial class PreviewPipeline
             "png",
             outputPath
         ];
+        return [.. args];
+    }
+
+    public static string[] BuildVspipeY4mArgs(
+        string scriptPath,
+        int outputIndex,
+        int frame,
+        string vspipeY4mArg,
+        string outputY4mPath)
+    {
+        List<string> args =
+        [
+            scriptPath,
+            "-o",
+            outputIndex.ToString(CultureInfo.InvariantCulture),
+            "-s",
+            frame.ToString(CultureInfo.InvariantCulture),
+            "-e",
+            frame.ToString(CultureInfo.InvariantCulture)
+        ];
+
+        args.AddRange(SplitArgs(vspipeY4mArg));
+        args.Add(outputY4mPath);
         return [.. args];
     }
 

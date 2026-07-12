@@ -138,8 +138,7 @@ namespace OneColumnEncoder.ViewModels
             _modalNavS = modalNavS;
             _ffmpegPath = ffmpegPath;
             _sourceVideoPath = sourceVideoPath;
-            _workDirectory = Path.Combine(Path.GetTempPath(), "1cenc-image-preview-" + Guid.NewGuid().ToString("N"));
-            Directory.CreateDirectory(_workDirectory);
+            _workDirectory = PreviewPipeline.CreateWorkDirectory("1cenc-image-preview-");
 
             ZoomPresetButtons = ButtonGroupVM.CreateThreeButton(Lang.FitButtonText, "100%", "200%");
 
@@ -239,14 +238,14 @@ namespace OneColumnEncoder.ViewModels
 
                 StatusText = Lang.StatusExtracting;
                 await RunFfmpegAsync(PreviewPipeline.BuildSourceArgs(_sourceVideoPath!, PreviewPositionSeconds, rawSourcePath), token);
-                EnsureFileExists(rawSourcePath, "!SOURCE");
+                PreviewPipeline.EnsureFileExists(rawSourcePath, "!SOURCE");
 
                 if (!string.IsNullOrWhiteSpace(displayFilter))
                 {
                     StatusText = string.Format(Lang.StatusConverting, GetDisplayModeTitle(_displayMode));
                     await RunFfmpegAsync(PreviewPipeline.BuildSourceArgs(_sourceVideoPath!, PreviewPositionSeconds, sourcePath, displayFilter), token);
                 }
-                EnsureFileExists(sourcePath, "!SOURCE");
+                PreviewPipeline.EnsureFileExists(sourcePath, "!SOURCE");
                 SourceImage = PreviewPipeline.LoadBitmap(sourcePath);
 
                 StatusText = string.Format(Lang.StatusEncoding, PreviewPipeline.GetEncoderTitle(encoder));
@@ -254,7 +253,7 @@ namespace OneColumnEncoder.ViewModels
 
                 StatusText = Lang.StatusDecoding;
                 await RunFfmpegAsync(PreviewPipeline.BuildDecodeArgs(encodedPath, decodedPath), token);
-                EnsureFileExists(decodedPath, "!ENCODE");
+                PreviewPipeline.EnsureFileExists(decodedPath, "!ENCODE");
                 EncodedImage = PreviewPipeline.LoadBitmap(decodedPath);
 
                 StatusText = Lang.StatusComputingScores;
@@ -413,12 +412,6 @@ namespace OneColumnEncoder.ViewModels
                 _ = GeneratePreviewAsync();
         }
 
-        private static void EnsureFileExists(string path, string message)
-        {
-            if (!File.Exists(path))
-                throw new FileNotFoundException(message, path);
-        }
-
         private void TryKillCurrentProcess()
         {
             if (_currentProcess != null)
@@ -482,12 +475,7 @@ namespace OneColumnEncoder.ViewModels
             _previewCts?.Dispose();
             _encoderConfVM.SetPreviewBusy(false);
 
-            try
-            {
-                if (Directory.Exists(_workDirectory))
-                    Directory.Delete(_workDirectory, recursive: true);
-            }
-            catch { }
+            PreviewPipeline.DeleteDirectoryQuietly(_workDirectory);
 
             base.Dispose();
         }

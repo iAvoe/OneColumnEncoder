@@ -1,6 +1,5 @@
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace OneColumnEncoder.Components
 {
@@ -9,18 +8,6 @@ namespace OneColumnEncoder.Components
         public VpyPreviewPanel()
         {
             InitializeComponent();
-        }
-
-        private void IntegerTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            e.Handled = !e.Text.All(char.IsDigit);
-        }
-
-        private void IntegerTextBox_Pasting(object sender, DataObjectPastingEventArgs e)
-        {
-            string? pastedText = e.DataObject.GetData(DataFormats.Text) as string;
-            if (!string.IsNullOrEmpty(pastedText) && !pastedText.All(char.IsDigit))
-                e.CancelCommand();
         }
 
         private void ZoomFineOut_Click(object sender, RoutedEventArgs e) => PreviewViewer.ZoomFineOut();

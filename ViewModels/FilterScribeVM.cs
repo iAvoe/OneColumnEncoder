@@ -45,6 +45,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly string? _vspipeY4mArg;
         private readonly Func<long>? _getTotalFrames;
         private const int DisplayConcatPathMaxLength = 90;
+        private const double VpyPreviewWindowGap = 5;
         private ColorSpaceAnalysisM _colorSpaceAnalysis = ColorSpaceConverter.Analyze(null);
         private bool _hasSourceAnalysis;
         public CloseModalCmd CloseCmd { get; }
@@ -1238,6 +1239,16 @@ namespace OneColumnEncoder.ViewModels
         {
             if (!CanOpenVpyPreview) return;
 
+            var existingWindow = Application.Current.Windows
+                .OfType<VpyPreviewDialog>()
+                .FirstOrDefault();
+
+            if (existingWindow != null)
+            {
+                existingWindow.Activate();
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(_vspipePath) || !File.Exists(_vspipePath))
             {
                 new OpenErrModalCmd(
@@ -1285,38 +1296,39 @@ namespace OneColumnEncoder.ViewModels
                 buildPreviewScript: buildScript,
                 queueFilePaths: previewSourcePaths);
 
-            var existingWindow = Application.Current.Windows
-                .OfType<VpyPreviewDialog>()
-                .FirstOrDefault();
-
-            if (existingWindow != null)
-            {
-                existingWindow.Activate();
-                return;
-            }
-
             var ownerWindow = Application.Current.Windows
                 .OfType<FilterScribeModal>()
                 .FirstOrDefault(w => ReferenceEquals(w.DataContext, this));
             VpyPreviewDialog window = new(previewVm, _modalNavS, ownerWindow);
 
             if (ownerWindow != null)
-            {
-                ownerWindow.Left = 0;
-                double gap = 5;
-                double previewLeft = ownerWindow.Width + gap;
-                double screenWidth = SystemParameters.WorkArea.Width;
-
-                if (previewLeft + window.Width <= screenWidth)
-                {
-                    window.Left = previewLeft;
-                    window.Top = ownerWindow.Top;
-                    window.WindowStartupLocation = WindowStartupLocation.Manual;
-                }
-            }
+                PositionVpyPreviewWindow(ownerWindow, window);
 
             window.Show();
         }
+
+        private static void PositionVpyPreviewWindow(Window ownerWindow, Window previewWindow)
+        {
+            Rect workArea = SystemParameters.WorkArea;
+            double ownerWidth = GetWindowWidth(ownerWindow);
+            double previewWidth = GetWindowWidth(previewWindow);
+            double previewLeft = workArea.Left + ownerWidth + VpyPreviewWindowGap;
+            double availablePreviewWidth = workArea.Right - previewLeft;
+
+            ownerWindow.Left = workArea.Left;
+
+            if (availablePreviewWidth > 0 && previewWidth > availablePreviewWidth)
+                previewWindow.Width = availablePreviewWidth;
+
+            previewWindow.Left = previewLeft;
+            previewWindow.Top = Math.Max(workArea.Top, ownerWindow.Top);
+            previewWindow.WindowStartupLocation = WindowStartupLocation.Manual;
+        }
+
+        private static double GetWindowWidth(Window window) =>
+            !double.IsNaN(window.Width) && window.Width > 0
+                ? window.Width
+                : window.ActualWidth;
 
         private string GetVpyPreviewSourcePath()
         {

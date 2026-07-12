@@ -9,8 +9,8 @@
                    d:DataContext="{d:DesignInstance Type=vms:VspipePreviewVM}"
                    mc:Ignorable="d"
                    Title="VapourSynth A/B Preview"
-                   Width="1600"
-                   Height="900"
+                   Width="1550"
+                   Height="990"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
     <Grid Margin="10 10 10 15">
