@@ -478,7 +478,7 @@ namespace OneColumnEncoder.ViewModels
         public ButtonGroupVM ScriptExportButtons { get; private set; } = null!;
         public ButtonGroupVM FinishScribeButtons { get; private set; } = null!;
         public ActionCmd OpenVpyPreviewCommand { get; }
-        public bool CanOpenVpyPreview => !IsConcatMode;
+        public bool CanOpenVpyPreview => GetVpyPreviewSourcePaths().Length > 0;
 
         public FilterScribeVM(
             ModalNavS modalNavS,
@@ -1255,13 +1255,8 @@ namespace OneColumnEncoder.ViewModels
             long total = _getTotalFrames?.Invoke() ?? 0;
             int frameCount = (int)Math.Min(total > 0 ? total : 1, int.MaxValue);
 
-            Func<string, string>? buildScript = null;
-            string[]? queuePaths = null;
-            if (_isQueueRoute?.Invoke() == true)
-            {
-                queuePaths = _getQueueFilePaths?.Invoke();
-                buildScript = (path) => ScriptTemplate.BuildVpyPreviewScript(path, VpyUserInput, fpsnum, fpsden);
-            }
+            string[] previewSourcePaths = GetVpyPreviewSourcePaths();
+            Func<string, string> buildScript = path => ScriptTemplate.BuildVpyPreviewScript(path, VpyUserInput, fpsnum, fpsden);
 
             var previewVm = new VspipePreviewVM(
                 _vspipePath,
@@ -1270,7 +1265,7 @@ namespace OneColumnEncoder.ViewModels
                 sourcePath,
                 frameCount,
                 buildPreviewScript: buildScript,
-                queueFilePaths: queuePaths);
+                queueFilePaths: previewSourcePaths);
 
             var existingWindow = Application.Current.Windows
                 .OfType<VpyPreviewDialog>()
@@ -1288,10 +1283,19 @@ namespace OneColumnEncoder.ViewModels
 
         private string GetVpyPreviewSourcePath()
         {
-            if (_isQueueRoute?.Invoke() == true)
-                return _getQueueFilePaths?.Invoke().FirstOrDefault() ?? string.Empty;
+            return GetVpyPreviewSourcePaths().FirstOrDefault() ?? string.Empty;
+        }
 
-            return _getSourcePath();
+        private string[] GetVpyPreviewSourcePaths()
+        {
+            if (_isQueueRoute?.Invoke() == true)
+                return [.. (_getQueueFilePaths?.Invoke() ?? []).Where(path => !string.IsNullOrWhiteSpace(path))];
+
+            if (IsConcatMode)
+                return [.. GetCurrentConcatFilePaths().Where(path => !string.IsNullOrWhiteSpace(path))];
+
+            string sourcePath = _getSourcePath();
+            return string.IsNullOrWhiteSpace(sourcePath) ? [] : [sourcePath];
         }
 
         #endregion
