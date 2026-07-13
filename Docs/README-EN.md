@@ -217,21 +217,23 @@ The Overwrite setting will append an overwrite confirmation pop-up if the output
 
 #### Queue Mode
 
-Implemented and passed all tests, usability confirmed
+Implemented and verified, usability confirmed
+
+#### Concat Mode
+
+Implemented and verified, usability confirmed
 
 ---
 
 ### Unverified
 
-#### Concat Mode
+#### Filter Scribe (Script Editor) Extended Features
 
-- [x] Implement import logic and import rejection logic
-- [x] Implement ffmpeg-VS-AVS merge command construction
-- [x] Implement filter editor support extension for merge mode (front-end and back-end)
-- [x] Implement editable-queue styled concat item ordering
-- [x] Verify that the concatenate commandline/script-line runs normally
-- [x] Test and validaitons (ffmpeg-VS-AVS → x264-x265-SVTAV1)
-- [x] Complete all localized text
+- [x] OpenCL detecttion
+- [x] VapourSynth-zipcl integrated, providing some automatically generated import, noise reduction, desaturation, and blur filter examples
+- [x] VapourSynth previewer implemented, interface being consistent with compression previewer
+- [ ] List OpenCL devices using NuGet package plugins?
+- [ ] Verify compression results using extended filters in queue and merge modes.
 
 ---
 
