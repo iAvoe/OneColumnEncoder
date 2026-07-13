@@ -230,10 +230,10 @@ Implemented and verified, usability confirmed
 #### Filter Scribe (Script Editor) Extended Features
 
 - [x] OpenCL detecttion
-- [x] VapourSynth-zipcl integrated, providing some automatically generated import, noise reduction, desaturation, and blur filter examples
+- [x] VapourSynth-zipcl integrated, providing some automatically generated import, denoise, deband, and blur filter examples
 - [x] VapourSynth previewer implemented, interface being consistent with compression previewer
 - [ ] List OpenCL devices using NuGet package plugins?
-- [ ] Verify compression results using extended filters in queue and merge modes.
+- [ ] Verify compression results using extended filters in queue and merge modes
 
 ---
 

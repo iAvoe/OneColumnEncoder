@@ -16,6 +16,24 @@ public readonly record struct FFProbeSourceValidationResult(
 
 public static class FFProbeSourceValidation
 {
+    public static int ReadBitDepthFromJson(string? rawJson)
+    {
+        if (string.IsNullOrWhiteSpace(rawJson)) return 0;
+
+        try
+        {
+            using JsonDocument document = JsonDocument.Parse(rawJson);
+            if (!FrameRate.TryGetFirstVideoStream(document.RootElement, out JsonElement stream))
+                return 0;
+
+            return GetBitDepth(stream);
+        }
+        catch
+        {
+            return 0;
+        }
+    }
+
     public static FFProbeSourceValidationResult Analyze(string rawJson)
     {
         using JsonDocument document = JsonDocument.Parse(rawJson);

@@ -47,6 +47,7 @@ namespace OneColumnEncoder.ViewModels
         private const int DisplayConcatPathMaxLength = 90;
         // private const double VpyPreviewWindowGap = 0;
         private ColorSpaceAnalysisM _colorSpaceAnalysis = ColorSpaceConverter.Analyze(null);
+        private int _sourceBitDepth;
         private bool _hasSourceAnalysis;
         public CloseModalCmd CloseCmd { get; }
         public ConcatSourceListVM ConcatSources { get; } = new();
@@ -270,16 +271,19 @@ namespace OneColumnEncoder.ViewModels
         public static string VapourSynthSubtitleFilter =>
             "src = core.sub.ImageFile(src, file=r\"X:\\path\\to\\DVD_BDMV.sup\", gray=False)\r\n" +
             "src = core.sub.TextFile(src, file=r\"X:\\path\\to\\subtitle.ass\", fontdir=r\"Y:\\dir\\of\\fonts\")";
-        public static string VapourSynthVszipclFilter
+        public string VapourSynthVszipclFilter
         {
             get
             {
                 if (!OpenCLDetector.IsOpenCLAvailable())
                     return "N/A (!OpenCL)";
 
+                string deband = _sourceBitDepth > 0 && _sourceBitDepth <= 8 ?
+                    "src = core.vszipcl.Deband(src, dither_algo=0, device_id=0, num_streams=2)" : "N/A (bitdepth > 8)";
+
                 string dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "x64-AVS-VS-plugins\\vszipcl.dll");
                 return $"core.std.LoadPlugin(r\"{dllPath}\")\r\n" +
-                    "src = core.vszipcl.Deband(src, dither_algo=0, device_id=0, num_streams=2)\r\n" +
+                    deband + "\r\n" +
                     "src = core.vszipcl.NLMeans(src, d=1, a=2, s=4, h=1.2, wmode=0, wref=1.0, device_id=0, num_streams=2)\r\n" +
                     "src = core.vszipcl.GaussBlur(src, device_id=0, num_streams=2)";
             }
@@ -629,6 +633,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void ParseColorSpaceInfo(string? sourceFfprobeJson)
         {
+            _sourceBitDepth = FFProbeSourceValidation.ReadBitDepthFromJson(sourceFfprobeJson);
             _colorSpaceAnalysis = ColorSpaceConverter.Analyze(sourceFfprobeJson);
             OnPropertyChanged(nameof(FfmpegLowToHighColorFilter));
             OnPropertyChanged(nameof(FfmpegHighToLowColorFilter));
