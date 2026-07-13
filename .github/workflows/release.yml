@@ -104,12 +104,6 @@ jobs:
 
           $body = "Commit# | 提交序号 / SHA`n"
           $body += "- https://github.com/iAvoe/OneColumnEncoder/commit/$($env:GITHUB_SHA)`n`n"
-          $body += "> [!NOTE]`n"
-          $body += "> The newly introduced automatic pipe buffer size calculation can boost high resolution encoding speed in theory, but verification could not validate it (and disabled by default due to this reason). Consider it as an Alpha-Beta feature.`n"
-          $body += "> 新增的自动计算管道缓冲区大小理论上能够在高分辨率上提速，但测试时看不出有什么差距（也因此默认关闭），请将其视为 A 测/B 测功能`n`n"
-          $body += "> [!CAUTION]`n"
-          $body += "> Concat encoding (join a queue of imported video sources) is now implemented and validated, but it may need further UI/UX improvements to make sense. Consider it as an Alpha-Beta feature.`n"
-          $body += "> 合并压制模式（拼合一系列导入的视频源）已经实现并验证，但可能需要额外的 UI/UX 操作流程改进，请将其视为 A 测/B 测功能`n`n"
           $body += "Follow this tutorial to get tools (pipe upstream / filtering tools & video encoders) tailored for your use case | 你可以根据此教程来获取合适的工具（管道上游程序/滤镜工具与视频编码器）:`n"
           $body += "- [Encoding Tools Download Tutorial](https://github.com/iAvoe/encoding-tools-download-tutorial)`n`n"
           $body += "Or, TLDR; and use tools provided in downloaded package (not recommended but its an option) | 或者着急要用的话，也可以无视上述教程，下载并直接使用附带的工具（不推荐但可以）"
