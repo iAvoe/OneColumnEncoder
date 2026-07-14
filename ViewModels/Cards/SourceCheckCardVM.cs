@@ -1,4 +1,4 @@
-﻿using OneColumnEncoder.FFmpeg;
+using OneColumnEncoder.FFmpeg;
 using OneColumnEncoder.Models;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -155,18 +155,18 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         private static string? GetChecklist1IssueDescription(int index) => index switch
         {
-            MetadataChecklistIdx => UICaptionProviderM.SourceInspect.MetadataP1Text,
-            ProgressiveChecklistIdx => UICaptionProviderM.SourceInspect.ProgressiveP1Text,
-            Svtav1BitDepthChecklistIdx => UICaptionProviderM.SourceInspect.BitDepthP1Text,
+            MetadataChecklistIdx => UICaptionProvider.SourceInspect.MetadataP1Text,
+            ProgressiveChecklistIdx => UICaptionProvider.SourceInspect.ProgressiveP1Text,
+            Svtav1BitDepthChecklistIdx => UICaptionProvider.SourceInspect.BitDepthP1Text,
             _ => null,
         };
 
         private static string? GetChecklist2IssueDescription(int index) => index switch
         {
-            0 => UICaptionProviderM.SourceInspect.FramerateP1Text,
-            1 => UICaptionProviderM.SourceInspect.AspectRatioP1Text,
-            2 => UICaptionProviderM.SourceInspect.ColorMetadataP1Text,
-            3 => UICaptionProviderM.SourceInspect.ChromaSubsamplingP1Text,
+            0 => UICaptionProvider.SourceInspect.FramerateP1Text,
+            1 => UICaptionProvider.SourceInspect.AspectRatioP1Text,
+            2 => UICaptionProvider.SourceInspect.ColorMetadataP1Text,
+            3 => UICaptionProvider.SourceInspect.ChromaSubsamplingP1Text,
             _ => null,
         };
 

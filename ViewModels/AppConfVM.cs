@@ -55,9 +55,9 @@ namespace OneColumnEncoder.ViewModels
             LoadCmd = new LoadAppConfCmd(appConfS);
             ClearOldQueueJsonCmd = new ClearOldQueueJsonCmd();
             FinishSettingButtons = ButtonGroupVM.CreateThreeButton(
-                UICaptionProviderM.AppConf.Buttons.Cancel,
-                UICaptionProviderM.AppConf.Buttons.ClearOldQueueJson,
-                UICaptionProviderM.AppConf.Buttons.Save,
+                UICaptionProvider.AppConf.Buttons.Cancel,
+                UICaptionProvider.AppConf.Buttons.ClearOldQueueJson,
+                UICaptionProvider.AppConf.Buttons.Save,
                 CloseCmd,
                 ClearOldQueueJsonCmd,
                 SaveCmd);
@@ -73,9 +73,9 @@ namespace OneColumnEncoder.ViewModels
         {
             Dictionary<string, object> sourceMap = new()
             {
-                [UICaptionProviderM.AppConf.Groups.Overwrite] = _appConfM.Overwrite,
-                [UICaptionProviderM.AppConf.Groups.Language] = _appConfM.Lang,
-                [UICaptionProviderM.AppConf.Groups.InitMode] = _appConfM
+                [UICaptionProvider.AppConf.Groups.Overwrite] = _appConfM.Overwrite,
+                [UICaptionProvider.AppConf.Groups.Language] = _appConfM.Lang,
+                [UICaptionProvider.AppConf.Groups.InitMode] = _appConfM
             };
 
             foreach (IGrouping<string, SettingItemDefinitionM> group
@@ -100,7 +100,7 @@ namespace OneColumnEncoder.ViewModels
                             break;
                         case SettingControlType.Dropdown:
                             AddDropdownItem(container, setting.Label, source, setting.PropertyName,
-                                UICaptionProviderM.AppConf.LanguageOptions.Codes);
+                                UICaptionProvider.AppConf.LanguageOptions.Codes);
                             break;
                     }
                 }
@@ -239,7 +239,7 @@ namespace OneColumnEncoder.ViewModels
         {
             string currentValue = source.GetType().GetProperty(propertyPath)?.GetValue(source) as string ?? options[0];
             List<DropdownItemM> items = [.. options.Select(o => new DropdownItemM(
-                UICaptionProviderM.AppConf.LanguageOptions.GetDisplayName(o)) { Tag = o })];
+                UICaptionProvider.AppConf.LanguageOptions.GetDisplayName(o)) { Tag = o })];
 
             DropdownMenuVM dropdownVM = new();
             foreach (DropdownItemM item in items) dropdownVM.Items.Add(item);
@@ -275,9 +275,9 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(HeaderText));
             OnPropertyChanged(nameof(NotificationPolicyHint));
 
-            FinishSettingButtons.B3_1Text = UICaptionProviderM.AppConf.Buttons.Cancel;
-            FinishSettingButtons.B3_2Text = UICaptionProviderM.AppConf.Buttons.ClearOldQueueJson;
-            FinishSettingButtons.B3_3Text = UICaptionProviderM.AppConf.Buttons.Save;
+            FinishSettingButtons.B3_1Text = UICaptionProvider.AppConf.Buttons.Cancel;
+            FinishSettingButtons.B3_2Text = UICaptionProvider.AppConf.Buttons.ClearOldQueueJson;
+            FinishSettingButtons.B3_3Text = UICaptionProvider.AppConf.Buttons.Save;
 
             SettingsListing.Clear();
             BuildSettingsListing();

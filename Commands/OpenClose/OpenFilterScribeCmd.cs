@@ -40,8 +40,8 @@ namespace OneColumnEncoder.Commands.OpenClose
                 ConfirmationModal warnWindow = new();
                 CloseModalCmd closeCmd = new(warnWindow.Close);
                 ConfirmationVM warnVm = ConfirmationVM.CreateWarning(
-                    UICaptionProviderM.Buttons.OpenScribeSrcScribe,
-                    UICaptionProviderM.Hints.FilterScribeDisabled,
+                    UICaptionProvider.Buttons.OpenScribeSrcScribe,
+                    UICaptionProvider.Hints.FilterScribeDisabled,
                     closeCmd, closeCmd);
 
                 warnWindow.DataContext = warnVm;

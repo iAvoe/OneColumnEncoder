@@ -20,8 +20,8 @@ namespace OneColumnEncoder.Commands.OpenClose
             {
                 new OpenWarnModalCmd(
                     _modalNavS,
-                    UICaptionProviderM.SourceInspect.WarnTitle,
-                    UICaptionProviderM.Hints.QueueRouteSampleClipDisabled).Execute(null);
+                    UICaptionProvider.SourceInspect.WarnTitle,
+                    UICaptionProvider.Hints.QueueRouteSampleClipDisabled).Execute(null);
                 return;
             }
 

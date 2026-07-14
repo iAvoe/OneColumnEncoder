@@ -1,4 +1,4 @@
-﻿using OneColumnEncoder.Validation;
+using OneColumnEncoder.Validation;
 using OneColumnEncoder.Models;
 
 namespace OneColumnEncoder.ViewModels.Cards
@@ -111,33 +111,33 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         private static string GetChecklist1Description(int index) => index switch
         {
-            OffGridChecklistIdx => UICaptionProviderM.EncInspect.P1Text,
-            DiskSpaceChecklistIdx => UICaptionProviderM.EncInspect.P2Text,
-            NumaCpuLoadChecklistIdx => UICaptionProviderM.EncInspect.P6Text,
-            _ => UICaptionProviderM.EncInspect.InfoMsg,
+            OffGridChecklistIdx => UICaptionProvider.EncInspect.P1Text,
+            DiskSpaceChecklistIdx => UICaptionProvider.EncInspect.P2Text,
+            NumaCpuLoadChecklistIdx => UICaptionProvider.EncInspect.P6Text,
+            _ => UICaptionProvider.EncInspect.InfoMsg,
         };
 
         private static string GetChecklist1Title(int index) => index switch
         {
-            OffGridChecklistIdx => UICaptionProviderM.EncInspect.P1Title,
-            DiskSpaceChecklistIdx => UICaptionProviderM.EncInspect.P2Title,
-            NumaCpuLoadChecklistIdx => UICaptionProviderM.EncInspect.P6Title,
+            OffGridChecklistIdx => UICaptionProvider.EncInspect.P1Title,
+            DiskSpaceChecklistIdx => UICaptionProvider.EncInspect.P2Title,
+            NumaCpuLoadChecklistIdx => UICaptionProvider.EncInspect.P6Title,
             _ => "",
         };
 
         private static string GetChecklist2Description(int index) => index switch
         {
-            WritePermissionChecklistIdx => UICaptionProviderM.EncInspect.P3Text,
-            OverwriteChecklistIdx => UICaptionProviderM.EncInspect.P4Text,
-            LsmashChecklistIdx => UICaptionProviderM.EncInspect.P5Text,
-            _ => UICaptionProviderM.EncInspect.InfoMsg,
+            WritePermissionChecklistIdx => UICaptionProvider.EncInspect.P3Text,
+            OverwriteChecklistIdx => UICaptionProvider.EncInspect.P4Text,
+            LsmashChecklistIdx => UICaptionProvider.EncInspect.P5Text,
+            _ => UICaptionProvider.EncInspect.InfoMsg,
         };
 
         private static string GetChecklist2Title(int index) => index switch
         {
-            WritePermissionChecklistIdx => UICaptionProviderM.EncInspect.P3Title,
-            OverwriteChecklistIdx => UICaptionProviderM.EncInspect.P4Title,
-            LsmashChecklistIdx => UICaptionProviderM.EncInspect.P5Title,
+            WritePermissionChecklistIdx => UICaptionProvider.EncInspect.P3Title,
+            OverwriteChecklistIdx => UICaptionProvider.EncInspect.P4Title,
+            LsmashChecklistIdx => UICaptionProvider.EncInspect.P5Title,
             _ => "",
         };
 

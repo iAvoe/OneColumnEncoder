@@ -50,7 +50,7 @@ namespace OneColumnEncoder.Commands
             {
                 new OpenErrModalCmd(
                     _modalNavS,
-                    UICaptionProviderM.SourceInspect.WarnTitle,
+                    UICaptionProvider.SourceInspect.WarnTitle,
                     unsupportedExtensionError).Execute(null);
                 Application.Current.MainWindow?.Activate();
                 return;
@@ -73,7 +73,7 @@ namespace OneColumnEncoder.Commands
             {
                 new OpenErrModalCmd(
                     _modalNavS,
-                    UICaptionProviderM.SourceInspect.WarnTitle,
+                    UICaptionProvider.SourceInspect.WarnTitle,
                     extensionError).Execute(null);
                 Application.Current.MainWindow?.Activate();
                 return;
@@ -92,7 +92,7 @@ namespace OneColumnEncoder.Commands
             {
                 new OpenErrModalCmd(
                     _modalNavS,
-                    UICaptionProviderM.SourceInspect.WarnTitle,
+                    UICaptionProvider.SourceInspect.WarnTitle,
                     ex.Message).Execute(null);
                 Application.Current.MainWindow?.Activate();
                 return;
@@ -102,7 +102,7 @@ namespace OneColumnEncoder.Commands
             {
                 new OpenErrModalCmd(
                     _modalNavS,
-                    UICaptionProviderM.SourceInspect.ErrorTitle,
+                    UICaptionProvider.SourceInspect.ErrorTitle,
                     analysisResult.ResolutionMismatchMessage ?? string.Empty).Execute(null);
                 Application.Current.MainWindow?.Activate();
                 return;
@@ -115,7 +115,7 @@ namespace OneColumnEncoder.Commands
                     analysisResult.VariableFrameRateWarnings);
                 new OpenWarnModalCmd(
                     _modalNavS,
-                    UICaptionProviderM.SourceInspect.WarnTitle,
+                    UICaptionProvider.SourceInspect.WarnTitle,
                     warningMessage).Execute(null);
                 Application.Current.MainWindow?.Activate();
             }

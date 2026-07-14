@@ -38,7 +38,7 @@ namespace OneColumnEncoder.Commands
             {
                 new OpenWarnModalCmd(
                     _modalNavS,
-                    UICaptionProviderM.SourceInspect.WarnTitle,
+                    UICaptionProvider.SourceInspect.WarnTitle,
                     new VideoSourceQueueLangProvider(UILangProvider.Current.LanguageCode)["SourceQueue.EmptyFolderWarnMessage"])
                     .Execute(null);
                 return;

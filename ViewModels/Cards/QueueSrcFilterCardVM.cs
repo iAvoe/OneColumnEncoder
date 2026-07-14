@@ -22,8 +22,8 @@ namespace OneColumnEncoder.ViewModels.Cards
             base.RefreshLanguage();
             Name = UILangProvider.Current["Cards.QueueSourceFilter"];
             Subtitle = UILangProvider.Current["Cards.QueueSourceFilterSubtitle"];
-            P1Name = UICaptionProviderM.Cards.SourceIncompatOrCorrupted;
-            P3Name = UICaptionProviderM.Cards.SrcQualityIssues;
+            P1Name = UICaptionProvider.Cards.SourceIncompatOrCorrupted;
+            P3Name = UICaptionProvider.Cards.SrcQualityIssues;
         }
     }
 }

@@ -16,8 +16,8 @@ namespace OneColumnEncoder.ViewModels.Cards
             base.RefreshLanguage();
             Name = UILangProvider.Current["Cards.ConcatSourceFilter"];
             Subtitle = UILangProvider.Current["Cards.ConcatSourceFilterSubtitle"];
-            P1Name = UICaptionProviderM.Cards.SourceIncompatOrCorrupted;
-            P3Name = UICaptionProviderM.Cards.SrcQualityIssues;
+            P1Name = UICaptionProvider.Cards.SourceIncompatOrCorrupted;
+            P3Name = UICaptionProvider.Cards.SrcQualityIssues;
         }
     }
 }

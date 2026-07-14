@@ -68,7 +68,7 @@ namespace OneColumnEncoder
             {
                 "zh-cn" or "zh-sg" or "zh-hans" => "zh-cn",
                 "zh-tw" or "zh-hk" or "zh-mo" or "zh-hant" => "zh-tw",
-                _ when UICaptionProviderM.AppConf.LanguageOptions.Codes.Contains(twoLetterName) => twoLetterName,
+                _ when UICaptionProvider.AppConf.LanguageOptions.Codes.Contains(twoLetterName) => twoLetterName,
                 _ => "en"
             };
         }

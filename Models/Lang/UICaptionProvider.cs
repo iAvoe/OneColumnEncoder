@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models;
 
-public static class UICaptionProviderM
+public static class UICaptionProvider
 {
     public static class Cards
     {

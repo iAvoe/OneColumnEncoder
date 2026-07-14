@@ -13,17 +13,17 @@ namespace OneColumnEncoder.Models
 
         public static List<SettingItemDefinitionM> GetOverwriteSettings() =>
         [
-            new(UICaptionProviderM.AppConf.Groups.Overwrite,
+            new(UICaptionProvider.AppConf.Groups.Overwrite,
                 Lang["Setting.Overwrite.LongPressDivisor"],
                 SettingControlType.TextBox,
                 nameof(AppConfM.OverwriteSettings.LongPressMegabyteDivisor),
                 MinValue: 1),
-            new(UICaptionProviderM.AppConf.Groups.Overwrite,
+            new(UICaptionProvider.AppConf.Groups.Overwrite,
                 Lang["Setting.Overwrite.MinLongPress"],
                 SettingControlType.TextBox,
                 nameof(AppConfM.OverwriteSettings.MinLongPressMs),
                 MinValue: 0),
-            new(UICaptionProviderM.AppConf.Groups.Overwrite,
+            new(UICaptionProvider.AppConf.Groups.Overwrite,
                 Lang["Setting.Overwrite.MaxLongPress"],
                 SettingControlType.TextBox,
                 nameof(AppConfM.OverwriteSettings.MaxLongPressMs),
@@ -32,7 +32,7 @@ namespace OneColumnEncoder.Models
 
         public static List<SettingItemDefinitionM> GetLanguageSettings() =>
         [
-            new(UICaptionProviderM.AppConf.Groups.Language,
+            new(UICaptionProvider.AppConf.Groups.Language,
                 Lang["Setting.Language.Select"],
                 SettingControlType.Dropdown,
                 nameof(AppConfM.Language.LanguageCode))
@@ -40,7 +40,7 @@ namespace OneColumnEncoder.Models
 
         public static List<SettingItemDefinitionM> GetInitModeSettings() =>
         [
-            new(UICaptionProviderM.AppConf.Groups.InitMode,
+            new(UICaptionProvider.AppConf.Groups.InitMode,
                 Lang["Setting.InitMode.IsFirstLaunch"],
                 SettingControlType.CheckBox,
                 nameof(AppConfM.IsFirstLaunch))

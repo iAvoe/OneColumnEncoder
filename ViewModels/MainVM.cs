@@ -134,20 +134,20 @@ namespace OneColumnEncoder.ViewModels
         // SectionHeader refreshes this dynamic lookup when the global language changes.
         private readonly LocalizedTextLookup _sectionTexts = new(new Dictionary<string, Func<string>>
         {
-            ["SelectUpstream"] = () => UICaptionProviderM.Sections.SelectUpstream,
-            ["SelectEncoder"] = () => UICaptionProviderM.Sections.SelectEncoder,
-            ["SelectAnalytics"] = () => UICaptionProviderM.Sections.SelectAnalytics,
-            ["SelectDependencies"] = () => UICaptionProviderM.Sections.SelectDependencies,
-            ["ImportSource"] = () => UICaptionProviderM.Sections.ImportSource,
-            ["EncodingConfigs"] = () => UICaptionProviderM.Sections.EncodingConfigs,
-            ["StartEncoding"] = () => UICaptionProviderM.Sections.StartEncoding
+            ["SelectUpstream"] = () => UICaptionProvider.Sections.SelectUpstream,
+            ["SelectEncoder"] = () => UICaptionProvider.Sections.SelectEncoder,
+            ["SelectAnalytics"] = () => UICaptionProvider.Sections.SelectAnalytics,
+            ["SelectDependencies"] = () => UICaptionProvider.Sections.SelectDependencies,
+            ["ImportSource"] = () => UICaptionProvider.Sections.ImportSource,
+            ["EncodingConfigs"] = () => UICaptionProvider.Sections.EncodingConfigs,
+            ["StartEncoding"] = () => UICaptionProvider.Sections.StartEncoding
         });
 
         public LocalizedTextLookup SectionTexts => _sectionTexts;
 
-        public static string SVFIClipDisabledHintText => UICaptionProviderM.Hints.SVFIClipDisabled;
-        public static string AnalyzeNeedsSourceText => UICaptionProviderM.Hints.AnalyzeNeedsSource;
-        public static string NumaCpuCheckHintText => UICaptionProviderM.Hints.NumaCpuCheckTrigger;
+        public static string SVFIClipDisabledHintText => UICaptionProvider.Hints.SVFIClipDisabled;
+        public static string AnalyzeNeedsSourceText => UICaptionProvider.Hints.AnalyzeNeedsSource;
+        public static string NumaCpuCheckHintText => UICaptionProvider.Hints.NumaCpuCheckTrigger;
         private string _minDurationFilterText = "";
         public string MinDurationFilterText
         {
@@ -598,15 +598,15 @@ namespace OneColumnEncoder.ViewModels
 
             // Build button groups after commands so initial CanExecute refreshes have valid targets.
             OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
-                UICaptionProviderM.Buttons.UsageAndCompliance, UICaptionProviderM.Buttons.Settings, OpenUsages, OpenAppConf);
+                UICaptionProvider.Buttons.UsageAndCompliance, UICaptionProvider.Buttons.Settings, OpenUsages, OpenAppConf);
             OpenAppConfButtons.B2_1Icon = SvgIconProvider.GamePhone;
             OpenAppConfButtons.B2_2Icon = SvgIconProvider.GameSetting;
             FilterScbButtons = ButtonGroupVM.CreateTwoButton( // UpdateFilterScbButtonsState()
-                UICaptionProviderM.Buttons.OneClickScriptGen, UICaptionProviderM.Buttons.OpenScribeSrcScribe, OneClickScriptGen, OpenFilterScribe);
+                UICaptionProvider.Buttons.OneClickScriptGen, UICaptionProvider.Buttons.OpenScribeSrcScribe, OneClickScriptGen, OpenFilterScribe);
             AnalyzeSrcButtons = ButtonGroupVM.CreateTwoButton(
-                UICaptionProviderM.Buttons.CopyRawAnalysis, UICaptionProviderM.Buttons.AnalyzeSrcVideo, CopyRawAnalysis, AnalyzeSrcVideo);
+                UICaptionProvider.Buttons.CopyRawAnalysis, UICaptionProvider.Buttons.AnalyzeSrcVideo, CopyRawAnalysis, AnalyzeSrcVideo);
             EncStartButtons = ButtonGroupVM.CreateThreeButton( // UpdateEncStartButtonsState()
-                UICaptionProviderM.Buttons.ReEvaluate, UICaptionProviderM.Buttons.RunSample, UICaptionProviderM.Buttons.StartEncode,
+                UICaptionProvider.Buttons.ReEvaluate, UICaptionProvider.Buttons.RunSample, UICaptionProvider.Buttons.StartEncode,
                 new ActionCmd(_ => ReEvaluateAllChecks()), SampleClip, StartEncode);
             EncStartButtons.B3_1Icon = SvgIconProvider.GameRefresh;
             EncStartButtons.B3_2Icon = SvgIconProvider.GameLocation;
@@ -641,11 +641,11 @@ namespace OneColumnEncoder.ViewModels
                 string text = ActiveSrcValidationCard.Checklist1IssuesFormatted;
                 if (string.IsNullOrWhiteSpace(text))
                     new OpenSuccModalCmd(modalNavS,
-                        UICaptionProviderM.SourceInspect.InfoTitle,
-                        UICaptionProviderM.SourceInspect.InfoMsg).Execute(null);
+                        UICaptionProvider.SourceInspect.InfoTitle,
+                        UICaptionProvider.SourceInspect.InfoMsg).Execute(null);
                 else
                     new OpenErrModalCmd(modalNavS,
-                        UICaptionProviderM.SourceInspect.ErrorTitle, text).Execute(null);
+                        UICaptionProvider.SourceInspect.ErrorTitle, text).Execute(null);
             });
             ActiveSrcValidationCard.InspectColumn2Cmd = new ActionCmd(_ =>
             {
@@ -658,11 +658,11 @@ namespace OneColumnEncoder.ViewModels
                 string text = ActiveSrcValidationCard.Checklist2IssuesFormatted;
                 if (string.IsNullOrWhiteSpace(text))
                     new OpenSuccModalCmd(modalNavS,
-                        UICaptionProviderM.SourceInspect.InfoTitle,
-                        UICaptionProviderM.SourceInspect.InfoMsg).Execute(null);
+                        UICaptionProvider.SourceInspect.InfoTitle,
+                        UICaptionProvider.SourceInspect.InfoMsg).Execute(null);
                 else
                     new OpenWarnModalCmd(modalNavS,
-                        UICaptionProviderM.SourceInspect.WarnTitle, text).Execute(null);
+                        UICaptionProvider.SourceInspect.WarnTitle, text).Execute(null);
             });
 
             // Column-inspect commands for encoder terms card
@@ -671,45 +671,45 @@ namespace OneColumnEncoder.ViewModels
                 string text = EncTermsValCard.Checklist1InspectFormatted;
                 if (string.IsNullOrWhiteSpace(text))
                     new OpenSuccModalCmd(modalNavS,
-                        UICaptionProviderM.EncInspect.InfoTitle,
-                        UICaptionProviderM.EncInspect.InfoMsg).Execute(null);
+                        UICaptionProvider.EncInspect.InfoTitle,
+                        UICaptionProvider.EncInspect.InfoMsg).Execute(null);
                 else
                     new OpenInfoModalCmd(modalNavS,
-                        UICaptionProviderM.EncInspect.InfoTitle, text).Execute(null);
+                        UICaptionProvider.EncInspect.InfoTitle, text).Execute(null);
             });
             EncTermsValCard.InspectColumn2Cmd = new ActionCmd(_ =>
             {
                 string text = EncTermsValCard.Checklist2InspectFormatted;
                 if (string.IsNullOrWhiteSpace(text))
                     new OpenSuccModalCmd(modalNavS,
-                        UICaptionProviderM.EncInspect.InfoTitle,
-                        UICaptionProviderM.EncInspect.InfoMsg).Execute(null);
+                        UICaptionProvider.EncInspect.InfoTitle,
+                        UICaptionProvider.EncInspect.InfoMsg).Execute(null);
                 else
                     new OpenInfoModalCmd(modalNavS,
-                        UICaptionProviderM.EncInspect.InfoTitle, text).Execute(null);
+                        UICaptionProvider.EncInspect.InfoTitle, text).Execute(null);
             });
 
             // Import dropdown menu and behavior
             ToolsImportCard.ToolImported += OnToolImported;
-            ToolsImportCard.Name = UICaptionProviderM.Cards.ToolsImport;
+            ToolsImportCard.Name = UICaptionProvider.Cards.ToolsImport;
 
             foreach (DropdownItemM item in ToolCatalogProviderM.GetImportDropdownItems())
                 ToolsImportCard.ImportDropdown.Items.Add(item);
             ToolsImportCard.ImportDropdown.SelectedItem = ToolsImportCard.ImportDropdown.Items[0];
 
             // Configure validation cards and deferred getters used by checks and encoding requests.
-            SrcValCard.Name = UICaptionProviderM.Cards.SourceValidation;
-            SrcValCard.P1Name = UICaptionProviderM.Cards.SourceIncompatOrCorrupted;
-            SrcValCard.P3Name = UICaptionProviderM.Cards.SrcQualityIssues;
+            SrcValCard.Name = UICaptionProvider.Cards.SourceValidation;
+            SrcValCard.P1Name = UICaptionProvider.Cards.SourceIncompatOrCorrupted;
+            SrcValCard.P3Name = UICaptionProvider.Cards.SrcQualityIssues;
             QueueSrcFilterCard.RefreshLanguage();
             ConcatCheckCard.RefreshLanguage();
-            EncTermsValCard.Name = UICaptionProviderM.Cards.EncPrerequisites;
-            EncTermsValCard.P1Name = UICaptionProviderM.Cards.EncHardware;
-            EncTermsValCard.P3Name = UICaptionProviderM.Cards.EncSoftware;
-            BestPracticesCard.Name = UICaptionProviderM.Cards.BestPractices;
-            BestPracticesCard.P1Name = UICaptionProviderM.Cards.BestHardware;
-            BestPracticesCard.P3Name = UICaptionProviderM.Cards.BestSoftware;
-            BestPracticesCard.Subtitle = UICaptionProviderM.Cards.BestPracticesSubtitle;
+            EncTermsValCard.Name = UICaptionProvider.Cards.EncPrerequisites;
+            EncTermsValCard.P1Name = UICaptionProvider.Cards.EncHardware;
+            EncTermsValCard.P3Name = UICaptionProvider.Cards.EncSoftware;
+            BestPracticesCard.Name = UICaptionProvider.Cards.BestPractices;
+            BestPracticesCard.P1Name = UICaptionProvider.Cards.BestHardware;
+            BestPracticesCard.P3Name = UICaptionProvider.Cards.BestSoftware;
+            BestPracticesCard.Subtitle = UICaptionProvider.Cards.BestPracticesSubtitle;
 
             SrcValCard.IsSvtav1SelectedFunc = () =>
                 EncodersZone.Any(t => t.IsSelected
@@ -2442,12 +2442,12 @@ namespace OneColumnEncoder.ViewModels
             }
             else if (remaining == 0)
             {
-                DurationFilterStatusText = UICaptionProviderM.Hints.DurationFilterAllFiltered;
+                DurationFilterStatusText = UICaptionProvider.Hints.DurationFilterAllFiltered;
                 IsDurationFilterStatusVisible = true;
             }
             else
             {
-                DurationFilterStatusText = string.Format(UICaptionProviderM.Hints.DurationFilterCount, removed, total);
+                DurationFilterStatusText = string.Format(UICaptionProvider.Hints.DurationFilterCount, removed, total);
                 IsDurationFilterStatusVisible = true;
             }
         }
@@ -2745,7 +2745,7 @@ namespace OneColumnEncoder.ViewModels
         {
             new OpenErrModalCmd(
                 _modalNavS,
-                UICaptionProviderM.SourceInspect.ErrorTitle,
+                UICaptionProvider.SourceInspect.ErrorTitle,
                 ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.NoFfprobeJson"]).Execute(null);
         }
 
@@ -2763,15 +2763,15 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(SVFIClipDisabledHintText));
             OnPropertyChanged(nameof(AnalyzeNeedsSourceText));
             OnPropertyChanged(nameof(NumaCpuCheckHintText));
-            MinDurationFilterText = UICaptionProviderM.Hints.MinDurationFilter;
+            MinDurationFilterText = UICaptionProvider.Hints.MinDurationFilter;
             RefreshDurationFilterStatus();
         }
         private void RefreshButtonCaptions()
         {
-            OpenAppConfButtons.B2_1Text = UICaptionProviderM.Buttons.UsageAndCompliance;
-            OpenAppConfButtons.B2_2Text = UICaptionProviderM.Buttons.Settings;
-            FilterScbButtons.B2_1Text = UICaptionProviderM.Buttons.OneClickScriptGen;
-            FilterScbButtons.B2_2Text = UICaptionProviderM.Buttons.OpenScribeSrcScribe;
+            OpenAppConfButtons.B2_1Text = UICaptionProvider.Buttons.UsageAndCompliance;
+            OpenAppConfButtons.B2_2Text = UICaptionProvider.Buttons.Settings;
+            FilterScbButtons.B2_1Text = UICaptionProvider.Buttons.OneClickScriptGen;
+            FilterScbButtons.B2_2Text = UICaptionProvider.Buttons.OpenScribeSrcScribe;
             OnPropertyChanged(nameof(ToggleMiniUpstreamsZoneText));
             OnPropertyChanged(nameof(ToggleMiniEncodersZoneText));
             OnPropertyChanged(nameof(ToggleMiniAnalyticsZoneText));
@@ -2784,33 +2784,33 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(ToggleMiniBestPracticesCardText));
             OnPropertyChanged(nameof(ToggleMiniToolsImportCardText));
             OnPropertyChanged(nameof(ToggleMiniStartEncodingZoneText));
-            EncStartButtons.B3_1Text = UICaptionProviderM.Buttons.ReEvaluate;
-            EncStartButtons.B3_2Text = UICaptionProviderM.Buttons.RunSample;
-            EncStartButtons.B3_3Text = UICaptionProviderM.Buttons.StartEncode;
-            AnalyzeSrcButtons.B2_1Text = UICaptionProviderM.Buttons.CopyRawAnalysis;
-            AnalyzeSrcButtons.B2_2Text = UICaptionProviderM.Buttons.AnalyzeSrcVideo;
+            EncStartButtons.B3_1Text = UICaptionProvider.Buttons.ReEvaluate;
+            EncStartButtons.B3_2Text = UICaptionProvider.Buttons.RunSample;
+            EncStartButtons.B3_3Text = UICaptionProvider.Buttons.StartEncode;
+            AnalyzeSrcButtons.B2_1Text = UICaptionProvider.Buttons.CopyRawAnalysis;
+            AnalyzeSrcButtons.B2_2Text = UICaptionProvider.Buttons.AnalyzeSrcVideo;
         }
         private void RefreshCardsLanguage()
         {
-            ToolsImportCard.Name = UICaptionProviderM.Cards.ToolsImport;
+            ToolsImportCard.Name = UICaptionProvider.Cards.ToolsImport;
             ToolsImportCard.RefreshLanguage();
 
-            SrcValCard.Name = UICaptionProviderM.Cards.SourceValidation;
-            SrcValCard.P1Name = UICaptionProviderM.Cards.SourceIncompatOrCorrupted;
-            SrcValCard.P3Name = UICaptionProviderM.Cards.SrcQualityIssues;
+            SrcValCard.Name = UICaptionProvider.Cards.SourceValidation;
+            SrcValCard.P1Name = UICaptionProvider.Cards.SourceIncompatOrCorrupted;
+            SrcValCard.P3Name = UICaptionProvider.Cards.SrcQualityIssues;
             SrcValCard.RefreshLanguage();
             QueueSrcFilterCard.RefreshLanguage();
             ConcatCheckCard.RefreshLanguage();
 
-            EncTermsValCard.Name = UICaptionProviderM.Cards.EncPrerequisites;
-            EncTermsValCard.P1Name = UICaptionProviderM.Cards.EncHardware;
-            EncTermsValCard.P3Name = UICaptionProviderM.Cards.EncSoftware;
+            EncTermsValCard.Name = UICaptionProvider.Cards.EncPrerequisites;
+            EncTermsValCard.P1Name = UICaptionProvider.Cards.EncHardware;
+            EncTermsValCard.P3Name = UICaptionProvider.Cards.EncSoftware;
             EncTermsValCard.RefreshLanguage();
 
-            BestPracticesCard.Name = UICaptionProviderM.Cards.BestPractices;
-            BestPracticesCard.P1Name = UICaptionProviderM.Cards.BestHardware;
-            BestPracticesCard.P3Name = UICaptionProviderM.Cards.BestSoftware;
-            BestPracticesCard.Subtitle = UICaptionProviderM.Cards.BestPracticesSubtitle;
+            BestPracticesCard.Name = UICaptionProvider.Cards.BestPractices;
+            BestPracticesCard.P1Name = UICaptionProvider.Cards.BestHardware;
+            BestPracticesCard.P3Name = UICaptionProvider.Cards.BestSoftware;
+            BestPracticesCard.Subtitle = UICaptionProvider.Cards.BestPracticesSubtitle;
             BestPracticesCard.RefreshLanguage();
         }
         private void RefreshZoneLanguage()

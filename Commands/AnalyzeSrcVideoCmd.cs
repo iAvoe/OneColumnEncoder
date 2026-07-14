@@ -174,7 +174,7 @@ namespace OneColumnEncoder.Commands
                     result.Warnings);
                 new OpenWarnModalCmd(
                     _modalNavS,
-                    UICaptionProviderM.SourceInspect.WarnTitle,
+                    UICaptionProvider.SourceInspect.WarnTitle,
                     warningMessage).Execute(null);
             }
 
