@@ -1,4 +1,4 @@
-using OneColumnEncoder.Json;
+using static OneColumnEncoder.Json.JsonElementHelper;
 using System.Text.Json;
 
 namespace OneColumnEncoder.FFmpeg;
@@ -26,7 +26,7 @@ public static class FFProbeSourceValidation
             if (!FrameRate.TryGetFirstVideoStream(document.RootElement, out JsonElement stream))
                 return 0;
 
-            return GetBitDepth(stream);
+            return FFProbePixelFormatRules.GetBitDepth(stream);
         }
         catch
         {
@@ -49,14 +49,14 @@ public static class FFProbeSourceValidation
             HasKnownMetadata(stream, "color_space"),
             HasKnownMetadata(stream, "color_transfer"),
             HasKnownMetadata(stream, "color_primaries"),
-            HasSupportedChroma(stream));
+            FFProbePixelFormatRules.HasSupportedChroma(stream));
     }
 
     public static bool IsSvtAv1BitDepthSupported(string rawJson) => Analyze(rawJson).IsSvtAv1BitDepthSupported;
 
     private static bool IsProgressive(JsonElement stream)
     {
-        string? fieldOrder = JsonElementHelper.TryGetString(stream, "field_order");
+        string? fieldOrder = TryGetString(stream, "field_order");
         return string.IsNullOrWhiteSpace(fieldOrder)
             || fieldOrder.Equals("progressive", StringComparison.OrdinalIgnoreCase)
             || fieldOrder.Equals("unknown", StringComparison.OrdinalIgnoreCase);
@@ -64,27 +64,14 @@ public static class FFProbeSourceValidation
 
     private static bool IsSupportedBitDepth(JsonElement stream, int max)
     {
-        int bitDepth = GetBitDepth(stream);
+        int bitDepth = FFProbePixelFormatRules.GetBitDepth(stream);
         return bitDepth == 8 || bitDepth == 10 || bitDepth == max;
-    }
-
-    private static int GetBitDepth(JsonElement stream)
-    {
-        if (JsonElementHelper.TryGetInt(stream, "bits_per_raw_sample", out int rawBits)) return rawBits;
-        if (JsonElementHelper.TryGetInt(stream, "bits_per_sample", out int sampleBits)) return sampleBits;
-
-        string pixFmt = JsonElementHelper.TryGetString(stream, "pix_fmt") ?? string.Empty;
-        if (pixFmt.Contains("10", StringComparison.OrdinalIgnoreCase)) return 10;
-        if (pixFmt.Contains("12", StringComparison.OrdinalIgnoreCase)) return 12;
-        if (pixFmt.Contains("14", StringComparison.OrdinalIgnoreCase)) return 14;
-        if (pixFmt.Contains("16", StringComparison.OrdinalIgnoreCase)) return 16;
-        return string.IsNullOrWhiteSpace(pixFmt) ? 0 : 8;
     }
 
     private static bool HasConstantFrameRate(JsonElement stream)
     {
-        string? avg = JsonElementHelper.TryGetString(stream, "avg_frame_rate");
-        string? r = JsonElementHelper.TryGetString(stream, "r_frame_rate");
+        string? avg = TryGetString(stream, "avg_frame_rate");
+        string? r = TryGetString(stream, "r_frame_rate");
         return !string.IsNullOrWhiteSpace(avg)
             && !avg.Equals("0/0", StringComparison.OrdinalIgnoreCase)
             && string.Equals(avg, r, StringComparison.OrdinalIgnoreCase);
@@ -97,26 +84,11 @@ public static class FFProbeSourceValidation
 
     private static bool HasKnownMetadata(JsonElement stream, string propertyName)
     {
-        string? value = JsonElementHelper.TryGetString(stream, propertyName);
+        string? value = TryGetString(stream, propertyName);
         return !string.IsNullOrWhiteSpace(value)
             && !value.Equals("unknown", StringComparison.OrdinalIgnoreCase)
             && !value.Equals("unspecified", StringComparison.OrdinalIgnoreCase)
             && !value.Equals("reserved", StringComparison.OrdinalIgnoreCase);
     }
 
-    private static bool HasSupportedChroma(JsonElement stream)
-    {
-        string pixFmt = JsonElementHelper.TryGetString(stream, "pix_fmt") ?? string.Empty;
-        if (string.IsNullOrWhiteSpace(pixFmt)) return false;
-        if (pixFmt.Contains("444", StringComparison.OrdinalIgnoreCase)
-            || pixFmt.Contains("rgb", StringComparison.OrdinalIgnoreCase)
-            || pixFmt.Contains("gbr", StringComparison.OrdinalIgnoreCase)
-            || pixFmt.Contains("gray", StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        string? chromaLocation = JsonElementHelper.TryGetString(stream, "chroma_location");
-        return pixFmt.Contains("yuv", StringComparison.OrdinalIgnoreCase)
-            && (chromaLocation?.Equals("left", StringComparison.OrdinalIgnoreCase) == true
-                || chromaLocation?.Equals("topleft", StringComparison.OrdinalIgnoreCase) == true);
-    }
 }

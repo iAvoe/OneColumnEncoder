@@ -1,5 +1,5 @@
 using OneColumnEncoder.Converters;
-using OneColumnEncoder.Json;
+using static OneColumnEncoder.Json.JsonElementHelper;
 using System.Globalization;
 using System.Text.Json;
 
@@ -65,7 +65,7 @@ public static class FrameRate
             using JsonDocument doc = JsonDocument.Parse(rawJson);
             if (!TryGetFirstVideoStream(doc.RootElement, out JsonElement stream))
                 return null;
-            string? val = JsonElementHelper.TryGetString(stream, propertyName);
+            string? val = TryGetString(stream, propertyName);
             return IsUsable(val) ? ParseFraction(val) : null;
         }
         catch
@@ -104,13 +104,13 @@ public static class FrameRate
 
     public static (int num, int den)? GetRFrameRate(JsonElement stream)
     {
-        string? val = JsonElementHelper.TryGetString(stream, "r_frame_rate");
+        string? val = TryGetString(stream, "r_frame_rate");
         return IsUsable(val) ? ParseFraction(val) : null;
     }
 
     public static (int num, int den)? GetAvgFrameRate(JsonElement stream)
     {
-        string? val = JsonElementHelper.TryGetString(stream, "avg_frame_rate");
+        string? val = TryGetString(stream, "avg_frame_rate");
         return IsUsable(val) ? ParseFraction(val) : null;
     }
 

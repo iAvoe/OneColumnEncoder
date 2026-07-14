@@ -1,4 +1,4 @@
-using OneColumnEncoder.Json;
+using static OneColumnEncoder.Json.JsonElementHelper;
 using System.Globalization;
 using System.Text.Json;
 using System.Windows.Data;
@@ -44,15 +44,15 @@ namespace OneColumnEncoder.Converters
 
                 foreach (JsonElement item in streams.EnumerateArray())
                 {
-                    string? codecType = JsonElementHelper.TryGetString(item, "codec_type");
+                    string? codecType = TryGetString(item, "codec_type");
                     if (codecType is not (null or "video"))
                         continue;
 
-                    if (!JsonElementHelper.TryGetInt(item, "width", out int width) || width < 1
-                        || !JsonElementHelper.TryGetInt(item, "height", out int height) || height < 1)
+                    if (!TryGetInt(item, "width", out int width) || width < 1
+                        || !TryGetInt(item, "height", out int height) || height < 1)
                         return DefaultPipeBufferSizeKb;
 
-                    string? pixelFormat = JsonElementHelper.TryGetString(item, "pix_fmt");
+                    string? pixelFormat = TryGetString(item, "pix_fmt");
                     double bpp = GetBytesPerPixel(pixelFormat);
                     double frameBytes = width * height * bpp;
                     double bufferRaw = frameBytes * 0.1;

@@ -1,5 +1,5 @@
 using System.Globalization;
-using OneColumnEncoder.Json;
+using static OneColumnEncoder.Json.JsonElementHelper;
 using System.Text.Json;
 
 namespace OneColumnEncoder.FFmpeg;
@@ -28,15 +28,15 @@ public static class FFProbeSourceStatsReader
             if (!FrameRate.TryGetFirstVideoStream(root, out JsonElement stream))
                 return CreateFallback();
 
-            double duration = JsonElementHelper.TryGetDouble(stream, "duration")
-                ?? (root.TryGetProperty("format", out JsonElement format) ? JsonElementHelper.TryGetDouble(format, "duration") : null)
+            double duration = TryGetDouble(stream, "duration")
+                ?? (root.TryGetProperty("format", out JsonElement format) ? TryGetDouble(format, "duration") : null)
                 ?? FallbackDuration;
 
-            double frameRate = ParseFrameRate(JsonElementHelper.TryGetString(stream, "avg_frame_rate"))
-                ?? ParseFrameRate(JsonElementHelper.TryGetString(stream, "r_frame_rate"))
+            double frameRate = ParseFrameRate(TryGetString(stream, "avg_frame_rate"))
+                ?? ParseFrameRate(TryGetString(stream, "r_frame_rate"))
                 ?? FallbackFrameRate;
 
-            long totalFrames = JsonElementHelper.TryGetFrameCount(stream)
+            long totalFrames = TryGetFrameCount(stream)
                 ?? Math.Max(0L, (long)Math.Round(duration * frameRate));
 
             return new FFProbeSourceStats(
@@ -57,7 +57,7 @@ public static class FFProbeSourceStatsReader
 
     private static string GetFieldOrderKind(JsonElement stream)
     {
-        string? fieldOrder = JsonElementHelper.TryGetString(stream, "field_order");
+        string? fieldOrder = TryGetString(stream, "field_order");
         if (string.IsNullOrWhiteSpace(fieldOrder) || fieldOrder.Equals("unknown", StringComparison.OrdinalIgnoreCase))
             return "unknown";
         return fieldOrder.Equals("progressive", StringComparison.OrdinalIgnoreCase)
@@ -67,8 +67,8 @@ public static class FFProbeSourceStatsReader
 
     private static string GetFrameRateKind(JsonElement stream)
     {
-        string? avg = JsonElementHelper.TryGetString(stream, "avg_frame_rate");
-        string? r = JsonElementHelper.TryGetString(stream, "r_frame_rate");
+        string? avg = TryGetString(stream, "avg_frame_rate");
+        string? r = TryGetString(stream, "r_frame_rate");
         return !string.IsNullOrWhiteSpace(avg) && !avg.Equals("0/0", StringComparison.OrdinalIgnoreCase)
             ? string.Equals(avg, r, StringComparison.OrdinalIgnoreCase) ? "constant" : "variable"
             : "unknown";

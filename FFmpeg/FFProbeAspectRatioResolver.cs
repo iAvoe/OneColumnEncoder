@@ -3,6 +3,7 @@ using OneColumnEncoder.Json;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.FFmpeg;
 
@@ -87,17 +88,17 @@ public static class FFProbeAspectRatioResolver
     private static FFProbeAspectRatio Default() => new(Square, Square, Square);
 
     private static AspectRatioFraction? TryReadMetadata(JsonElement stream, string firstProperty, string secondProperty) =>
-        TryParseMetadata(JsonElementHelper.TryGetString(stream, firstProperty))
-        ?? TryParseMetadata(JsonElementHelper.TryGetString(stream, secondProperty));
+        TryParseMetadata(TryGetString(stream, firstProperty))
+        ?? TryParseMetadata(TryGetString(stream, secondProperty));
 
     private static AspectRatioFraction? TryReadMetadata(JsonObject stream, string firstProperty, string secondProperty) =>
-        TryParseMetadata(JsonElementHelper.GetString(stream[firstProperty]))
-        ?? TryParseMetadata(JsonElementHelper.GetString(stream[secondProperty]));
+        TryParseMetadata(GetString(stream[firstProperty]))
+        ?? TryParseMetadata(GetString(stream[secondProperty]));
 
     private static AspectRatioFraction? TryReadCalculated(JsonElement stream, string numeratorProperty, string denominatorProperty)
     {
-        return JsonElementHelper.TryGetInt(stream, numeratorProperty, out int numerator)
-            && JsonElementHelper.TryGetInt(stream, denominatorProperty, out int denominator)
+        return TryGetInt(stream, numeratorProperty, out int numerator)
+            && TryGetInt(stream, denominatorProperty, out int denominator)
             && numerator >= 0
             && denominator > 0
                 ? AspectRatioFraction.Simplify(numerator, denominator)
@@ -106,8 +107,8 @@ public static class FFProbeAspectRatioResolver
 
     private static AspectRatioFraction? TryReadCalculated(JsonObject stream, string numeratorProperty, string denominatorProperty)
     {
-        int? numerator = JsonElementHelper.GetInt(stream[numeratorProperty]);
-        int? denominator = JsonElementHelper.GetInt(stream[denominatorProperty]);
+        int? numerator = GetInt(stream[numeratorProperty]);
+        int? denominator = GetInt(stream[denominatorProperty]);
         return numerator >= 0 && denominator > 0
             ? AspectRatioFraction.Simplify(numerator.Value, denominator.Value)
             : null;

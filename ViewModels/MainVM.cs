@@ -1,6 +1,6 @@
 ﻿using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Json;
+using static OneColumnEncoder.Json.JsonElementHelper;
 using OneColumnEncoder.Commands.SaveLoad;
 using OneColumnEncoder.FileManagement;
 using OneColumnEncoder.Models;
@@ -2398,11 +2398,11 @@ namespace OneColumnEncoder.ViewModels
                     streams.ValueKind == JsonValueKind.Array &&
                     streams.GetArrayLength() > 0)
                 {
-                    double? fromStream = JsonElementHelper.TryGetDouble(streams[0], "duration");
+                    double? fromStream = TryGetDouble(streams[0], "duration");
                     if (fromStream is > 0) return fromStream;
                 }
                 if (root.TryGetProperty("format", out JsonElement format))
-                    return JsonElementHelper.TryGetDouble(format, "duration");
+                    return TryGetDouble(format, "duration");
                 return null;
             }
             catch { return null; }

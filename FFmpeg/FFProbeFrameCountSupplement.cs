@@ -1,5 +1,5 @@
 using System.Globalization;
-using OneColumnEncoder.Json;
+using static OneColumnEncoder.Json.JsonElementHelper;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -41,14 +41,14 @@ internal static class FFProbeFrameCountSupplement
     }
 
     private static bool HasUsableFrameCount(JsonElement stream) =>
-        JsonElementHelper.TryGetFrameCount(stream) is > 0;
+        TryGetFrameCount(stream) is > 0;
 
     private static bool TryEstimateFrameCount(JsonElement root, JsonElement stream, out long frameCount)
     {
         frameCount = 0;
-        double? duration = JsonElementHelper.TryGetDouble(stream, "duration")
-            ?? (root.TryGetProperty("format", out JsonElement format) ? JsonElementHelper.TryGetDouble(format, "duration") : null);
-        string? avgFrameRate = JsonElementHelper.TryGetString(stream, "avg_frame_rate");
+        double? duration = TryGetDouble(stream, "duration")
+            ?? (root.TryGetProperty("format", out JsonElement format) ? TryGetDouble(format, "duration") : null);
+        string? avgFrameRate = TryGetString(stream, "avg_frame_rate");
 
         if (duration is not > 0
             || !FrameRate.TryParseFrameRate(avgFrameRate, out double fps)

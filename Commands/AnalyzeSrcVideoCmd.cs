@@ -13,6 +13,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.Commands
 {
@@ -393,7 +394,7 @@ namespace OneColumnEncoder.Commands
 
             double? duration = TryGetDuration(rawElement, stream);
             double? fps = TryGetFramesPerSecond(stream);
-            long? frameCount = JsonElementHelper.TryGetFrameCount(stream);
+            long? frameCount = TryGetFrameCount(stream);
 
             if (duration is not > 0 && frameCount is > 0 && fps is > 0)
                 duration = frameCount.Value / fps.Value;
@@ -410,20 +411,20 @@ namespace OneColumnEncoder.Commands
         // Attempts to extract duration from a stream property; falls back to the format-level duration if the stream value is missing/invalid.
         private static double? TryGetDuration(JsonElement root, JsonElement stream)
         {
-            double? streamDuration = JsonElementHelper.TryGetDouble(stream, "duration");
+            double? streamDuration = TryGetDouble(stream, "duration");
             if (streamDuration is > 0) return streamDuration;
 
             return root.TryGetProperty("format", out JsonElement format)
-                ? JsonElementHelper.TryGetDouble(format, "duration")
+                ? TryGetDouble(format, "duration")
                 : null;
         }
 
         // Tries avg_frame_rate first, then r_frame_rate as a fallback.
         private static double? TryGetFramesPerSecond(JsonElement stream)
         {
-            if (FrameRate.TryParseFrameRate(JsonElementHelper.TryGetString(stream, "avg_frame_rate"), out double avg) && avg > 0d)
+            if (FrameRate.TryParseFrameRate(TryGetString(stream, "avg_frame_rate"), out double avg) && avg > 0d)
                 return avg;
-            return FrameRate.TryParseFrameRate(JsonElementHelper.TryGetString(stream, "r_frame_rate"), out double r) && r > 0d
+            return FrameRate.TryParseFrameRate(TryGetString(stream, "r_frame_rate"), out double r) && r > 0d
                 ? r
                 : null;
         }
@@ -437,7 +438,7 @@ namespace OneColumnEncoder.Commands
             {
                 using JsonDocument document = JsonDocument.Parse(rawJson);
                 JsonElement stream = document.RootElement.GetProperty("streams")[0];
-                long? parsedTotalFrames = JsonElementHelper.TryGetFrameCount(stream);
+                long? parsedTotalFrames = TryGetFrameCount(stream);
                 if (parsedTotalFrames is null)
                     return false;
 
@@ -562,9 +563,9 @@ namespace OneColumnEncoder.Commands
 
                 if (FrameRate.TryGetFirstVideoStream(rawElement, out JsonElement stream))
                 {
-                    if (JsonElementHelper.TryGetInt(stream, "width", out int parsedWidth)) width = parsedWidth;
-                    avgFrameRate = FrameRate.NormalizeFrameRate(JsonElementHelper.TryGetString(stream, "avg_frame_rate"));
-                    rFrameRate = FrameRate.NormalizeFrameRate(JsonElementHelper.TryGetString(stream, "r_frame_rate"));
+                    if (TryGetInt(stream, "width", out int parsedWidth)) width = parsedWidth;
+                    avgFrameRate = FrameRate.NormalizeFrameRate(TryGetString(stream, "avg_frame_rate"));
+                    rFrameRate = FrameRate.NormalizeFrameRate(TryGetString(stream, "r_frame_rate"));
                 }
 
                 return new(checkSignature, width, avgFrameRate, rFrameRate);

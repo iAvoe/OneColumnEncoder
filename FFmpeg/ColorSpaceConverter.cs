@@ -1,4 +1,4 @@
-using OneColumnEncoder.Json;
+using static OneColumnEncoder.Json.JsonElementHelper;
 using System.Text.Json;
 using OneColumnEncoder.Models;
 
@@ -94,11 +94,11 @@ public static class ColorSpaceConverter
 
     public static ColorSpaceAnalysisM Analyze(JsonElement stream)
     {
-        string? primaries = Normalize(JsonElementHelper.TryGetString(stream, "color_primaries"));
-        string? transfer = Normalize(JsonElementHelper.TryGetString(stream, "color_transfer"));
-        string? matrix = Normalize(JsonElementHelper.TryGetString(stream, "color_space"));
-        string? chromaLocation = Normalize(JsonElementHelper.TryGetString(stream, "chroma_location"));
-        string? pixelFormat = Normalize(JsonElementHelper.TryGetString(stream, "pix_fmt"));
+        string? primaries = Normalize(TryGetString(stream, "color_primaries"));
+        string? transfer = Normalize(TryGetString(stream, "color_transfer"));
+        string? matrix = Normalize(TryGetString(stream, "color_space"));
+        string? chromaLocation = Normalize(TryGetString(stream, "chroma_location"));
+        string? pixelFormat = Normalize(TryGetString(stream, "pix_fmt"));
 
         ColorSpaceStrategy strategy = Classify(primaries, transfer);
 
@@ -195,7 +195,7 @@ public static class ColorSpaceConverter
     private static string? BuildInputCorrection(string? matrix, string? chromaLocation, string? primaries, string? pixelFormat)
     {
         if (string.IsNullOrWhiteSpace(matrix)) return null;
-        if (HasNoChromaSubsampling(pixelFormat))
+        if (FFProbePixelFormatRules.GetChromaSubsamplingDepth(pixelFormat) == 0)
             return string.IsNullOrWhiteSpace(primaries)
                 ? null
                 : $"zscale=min={matrix}:pin={primaries}";
@@ -229,13 +229,6 @@ public static class ColorSpaceConverter
 
     private static bool IsWideGamut(string? primaries) =>
         primaries is "bt2020" or "smpte431" or "smpte432" or "smpte428";
-
-    private static bool HasNoChromaSubsampling(string? pixelFormat) =>
-        pixelFormat != null
-        && (pixelFormat.Contains("444", StringComparison.OrdinalIgnoreCase)
-            || pixelFormat.Contains("rgb", StringComparison.OrdinalIgnoreCase)
-            || pixelFormat.Contains("gbr", StringComparison.OrdinalIgnoreCase)
-            || pixelFormat.Contains("gray", StringComparison.OrdinalIgnoreCase));
 
     private static string GetDisplayName(ColorSpaceStrategy strategy) => strategy switch
     {

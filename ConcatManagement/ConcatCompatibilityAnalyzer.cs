@@ -1,5 +1,5 @@
 using OneColumnEncoder.FFmpeg;
-using OneColumnEncoder.Json;
+using static OneColumnEncoder.Json.JsonElementHelper;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.ViewModels.Cards;
 using System.Globalization;
@@ -91,7 +91,7 @@ namespace OneColumnEncoder.ConcatManagement
 
                     if (FrameRate.TryGetFirstVideoStream(rawElement, out JsonElement videoStream))
                     {
-                        long? fragmentFrames = JsonElementHelper.TryGetFrameCount(videoStream);
+                        long? fragmentFrames = TryGetFrameCount(videoStream);
                         if (fragmentFrames > 0) concatTotalFrames += fragmentFrames.Value;
                     }
                 }
@@ -184,17 +184,17 @@ namespace OneColumnEncoder.ConcatManagement
             public static ConcatSourceSignature? From(SourceCheckSignature checkSignature, JsonElement rawElement)
             {
                 if (!FrameRate.TryGetFirstVideoStream(rawElement, out JsonElement stream)) return null;
-                if (!JsonElementHelper.TryGetInt(stream, "width", out int width)) return null;
-                if (!JsonElementHelper.TryGetInt(stream, "height", out int height)) return null;
+                if (!TryGetInt(stream, "width", out int width)) return null;
+                if (!TryGetInt(stream, "height", out int height)) return null;
 
                 return new(
                     checkSignature,
                     width,
                     height,
-                    JsonElementHelper.TryGetString(stream, "pix_fmt") ?? string.Empty,
-                    JsonElementHelper.TryGetString(stream, "codec_name") ?? string.Empty,
-                    FrameRate.NormalizeFrameRate(JsonElementHelper.TryGetString(stream, "avg_frame_rate")),
-                    FrameRate.NormalizeFrameRate(JsonElementHelper.TryGetString(stream, "r_frame_rate")));
+                    TryGetString(stream, "pix_fmt") ?? string.Empty,
+                    TryGetString(stream, "codec_name") ?? string.Empty,
+                    FrameRate.NormalizeFrameRate(TryGetString(stream, "avg_frame_rate")),
+                    FrameRate.NormalizeFrameRate(TryGetString(stream, "r_frame_rate")));
             }
         }
     }

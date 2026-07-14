@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Globalization;
-using OneColumnEncoder.Json;
+using static OneColumnEncoder.Json.JsonElementHelper;
 using OneColumnEncoder.Models;
 
 namespace OneColumnEncoder.FFmpeg;
@@ -81,7 +81,7 @@ internal static class FFProbeJsonUpdateResolver
         foreach (JsonNode? node in streamNodes)
         {
             if (node is not JsonObject stream) continue;
-            string? codecType = JsonElementHelper.GetString(stream["codec_type"]);
+            string? codecType = GetString(stream["codec_type"]);
             if (codecType == null || codecType.Equals("video", StringComparison.OrdinalIgnoreCase))
                 return stream;
         }
@@ -98,7 +98,7 @@ internal static class FFProbeJsonUpdateResolver
             return true;
         }
 
-        int? oldValue = JsonElementHelper.GetInt(oldNode);
+        int? oldValue = GetInt(oldNode);
         if (oldValue == value) return false;
 
         target[propertyName] = value;
@@ -114,7 +114,7 @@ internal static class FFProbeJsonUpdateResolver
             return true;
         }
 
-        string? oldValue = JsonElementHelper.GetString(oldNode);
+        string? oldValue = GetString(oldNode);
         if (string.Equals(oldValue, value, StringComparison.Ordinal)) return false;
 
         target[propertyName] = value;

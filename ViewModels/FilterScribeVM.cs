@@ -278,7 +278,7 @@ namespace OneColumnEncoder.ViewModels
                 if (!OpenCLDetector.IsOpenCLAvailable()) return "N/A (!OpenCL)";
 
                 // isSrcYuvRGBOrGray
-                if (!IsSupportedVszipclPixelFormat(_colorSpaceAnalysis.PixelFormat))
+                if (!FFProbePixelFormatRules.IsYuvRgbOrGray(_colorSpaceAnalysis.PixelFormat))
                     return "N/A (!YUV/RGB/Gray Colorspace)";
 
                 // vszipcl only supports 8 (int), 16 (int, half), 32 (float)
@@ -309,16 +309,6 @@ namespace OneColumnEncoder.ViewModels
 
                 return $"{loadPlugins}\r\n{convIn}{vszipclCalls}\r\n{convOut}".TrimEnd();
             }
-        }
-
-        private static bool IsSupportedVszipclPixelFormat(string? pixelFormat)
-        {
-            if (string.IsNullOrWhiteSpace(pixelFormat)) return false;
-
-            return pixelFormat.Contains("yuv", StringComparison.OrdinalIgnoreCase)
-                || pixelFormat.Contains("rgb", StringComparison.OrdinalIgnoreCase)
-                || pixelFormat.Contains("gbr", StringComparison.OrdinalIgnoreCase)
-                || pixelFormat.Contains("gray", StringComparison.OrdinalIgnoreCase);
         }
 
         public static string VapourSynthVszipclTitle => UILangProviderM.Current["SrcScribe.VszipclTitle"];
