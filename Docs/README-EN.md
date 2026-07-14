@@ -5,25 +5,40 @@ A next-gen smart video encoding utility based on .NET 9/WPF, revolves around “
 <p align="center"><img src="../WireframeMockups/logo.png" alt="Logo" width="200"></p>
 
 ## Featuring:
-- Source Validation:
-  - Validate source video from ffprobe readings
-  - Providing source checklist with Success, Warning & Error status types
-  - Providing bypass feature to continue on error
-- Encode Settings:
-  - Customize via UI controls including tabs, sliders, dropdown menus, etc.
-  - Perform A/B comparison to check impacts as you go
-- Advanced Parallelism:
-  - Physical Core & NUMA Binding on top of Thread limiting
-- Automation & Customization:
-  - Auto-generate basic AviSynth & VapourSynth scripts
-  - Generate VFR→CFR, HDR→SDR (& WCG) conversion, resize & SAR repair filter for FFMPEG-VS-AVS
-  - FFMPEG-VS-AVS parameter/script text editor available
-  - Auto-generate video and audio encoding commandlines
-  - Providing queued encoding with editable queue
-- Clip Sampling: Time/Frame# selection with FFMPEG-VS-AVS commandline generation
-- Advanced Monitoring: Monitor RAM usage per-app, separated view of upstream & downstream (encoder) logs
-- Interrupt Control: Either interrupt upstream or downstream program (encoder) to consistently exit an encoding session
-- Overwrite Protection: Fool-proof Start-Encode cooldown based on file size to be overwritten
+**Source & Environment Validation**
+- Validate source video integrity from ffprobe readings
+- Verify current environment & configuration correctness
+- Providing source checklist with Success, Warning & Error status types
+- Providing bypass feature to continue on error
+**Advanced Parallelism**
+- Physical Core & NUMA Binding on top of Thread limiting
+**Encode Parameter Setting**
+- Customize via tuned UI controls for customized parameter configurations
+- Providing A/B comparison previewer
+**Video Filtering**
+- Providing FFMPEG-VS-AVS filter editor
+- Auto-generating basic AviSynth & VapourSynth scripts (Decode→Y4M)
+- Auto-generating filters for FFMPEG-VS-AVS:
+  - VFR→CFR
+  - HDR→SDR (WCG)
+  - Color space conversion
+  - SAR restoration
+  - Resize
+- Providing additional OpenCL denoise, deband, and blur filters for VapourSynth
+- Providing VapourSynth A/B comparison previewer
+**Managed Automation**
+- Auto-generating video & audio encoding commandlines
+- Providing queued encoding with dynamically editable queue
+- Providing concat encoding mode with editable concatenation queue
+**Clip Sampling**
+- Providing FFMPEG-VS-AVS sampling
+- Providing GUI to clip Time or Frame# range easily
+**Encode Monitoring**
+- Monitor memory usage details of along with encode ongoing
+- View upstream & downstream (encoder) logs separately
+- Selectively interrupt upsteam or downstream (encoder) processes
+**Overwrite Protection**
+- Fool-proof Start-Encode cooldown based on file size to be overwritten
 
 ## Gallery
 

@@ -51,6 +51,7 @@ namespace OneColumnEncoder.ViewModels
         private const long BytesPerMb = 1024L * 1024L;
         private const long BytesPerGb = 1024L * 1024L * 1024L;
         private const uint TH32CS_SNAPPROCESS = 0x00000002;
+        private static readonly TimeSpan ReducedUiUpdateInterval = TimeSpan.FromSeconds(3);
         private static readonly IntPtr InvalidHandleValue = new(-1);
         private const string PlaceholderGb = "XX.X GB";
         private const string PlaceholderCount = "XX,XXX";
@@ -977,7 +978,7 @@ namespace OneColumnEncoder.ViewModels
 
         /// <summary>
         /// Timer callback (fires every 500ms). Drains log queue, updates progress/footer
-        /// every 1 second, and samples memory at the configured interval.
+        /// every 3 seconds, and samples memory at the configured interval.
         /// Skips all UI updates when frozen to reduce CPU usage.
         /// </summary>
         private void OnTimerTick(object? sender, EventArgs e)
@@ -987,8 +988,8 @@ namespace OneColumnEncoder.ViewModels
             {
                 FlushLogsToProperties();
                 DateTime now = DateTime.Now;
-                // Update progress and footer times once per second
-                if ((now - _lastStatsUpdate).TotalSeconds >= 1d)
+                // Update progress details and footer times on a slower cadence
+                if (now - _lastStatsUpdate >= ReducedUiUpdateInterval)
                 {
                     _lastStatsUpdate = now;
                     UpdateProgressDetails();
