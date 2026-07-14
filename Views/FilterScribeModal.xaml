@@ -703,6 +703,9 @@
                                  Text="{Binding VapourSynthVszipclPreviewHint}" />
                 <comps:HintPanel Margin="0 2.5 0 0"
                                  Text="{Binding VapourSynthVszipclDeviceHint}" />
+                <comps:HintPanel Margin="0 2.5 0 0"
+                                 Visibility="{Binding VapourSynthVszipclHasFmtconv, Converter={StaticResource BoolToVisibility}}"
+                                 Text="{Binding VapourSynthVszipclFmtconvHint}" />
             </StackPanel>
         </StackPanel>
 

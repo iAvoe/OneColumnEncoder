@@ -275,22 +275,57 @@ namespace OneColumnEncoder.ViewModels
         {
             get
             {
-                if (!OpenCLDetector.IsOpenCLAvailable())
-                    return "N/A (!OpenCL)";
+                if (!OpenCLDetector.IsOpenCLAvailable()) return "N/A (!OpenCL)";
 
-                string deband = _sourceBitDepth > 0 && _sourceBitDepth <= 8 ?
-                    "src = core.vszipcl.Deband(src, dither_algo=0, device_id=0, num_streams=2)" : "N/A (bitdepth > 8)";
+                // isSrcYuvRGBOrGray
+                if (!IsSupportedVszipclPixelFormat(_colorSpaceAnalysis.PixelFormat))
+                    return "N/A (!YUV/RGB/Gray Colorspace)";
 
-                string dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "x64-AVS-VS-plugins\\vszipcl.dll");
-                return $"core.std.LoadPlugin(r\"{dllPath}\")\r\n" +
-                    deband + "\r\n" +
+                // vszipcl only supports 8 (int), 16 (int, half), 32 (float)
+                int targetBpp = _sourceBitDepth switch
+                {
+                    8 or 16 or 32 => 0,
+                    > 0 and < 8 => 8,
+                    > 8 and < 16 => 16,
+                    > 16 => 32,
+                    _ => 0
+                };
+
+                string vszipclDllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "x64-AVS-VS-plugins\\vszipcl.dll");
+                string fmtconvDllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "x64-AVS-VS-plugins\\fmtconv.dll");
+
+                string loadPlugins = $"core.std.LoadPlugin(r\"{vszipclDllPath}\")";
+                string vszipclCalls =
+                    "src = core.vszipcl.Deband(src, dither_algo=0, device_id=0, num_streams=2)\r\n" +
                     "src = core.vszipcl.NLMeans(src, d=1, a=2, s=4, h=1.2, wmode=0, wref=1.0, device_id=0, num_streams=2)\r\n" +
                     "src = core.vszipcl.GaussBlur(src, device_id=0, num_streams=2)";
+                string convIn = targetBpp == 0
+                    ? ""
+                    : $"core.std.LoadPlugin(r\"{fmtconvDllPath}\")\r\n" +
+                    $"src = core.fmtc.bitdepth(src, bits={targetBpp})\r\n";
+                string convOut = targetBpp == 0
+                    ? ""
+                    : $"src = core.fmtc.bitdepth(src, bits={_sourceBitDepth})\r\n";
+
+                return $"{loadPlugins}\r\n{convIn}{vszipclCalls}\r\n{convOut}".TrimEnd();
             }
         }
+
+        private static bool IsSupportedVszipclPixelFormat(string? pixelFormat)
+        {
+            if (string.IsNullOrWhiteSpace(pixelFormat)) return false;
+
+            return pixelFormat.Contains("yuv", StringComparison.OrdinalIgnoreCase)
+                || pixelFormat.Contains("rgb", StringComparison.OrdinalIgnoreCase)
+                || pixelFormat.Contains("gbr", StringComparison.OrdinalIgnoreCase)
+                || pixelFormat.Contains("gray", StringComparison.OrdinalIgnoreCase);
+        }
+
         public static string VapourSynthVszipclTitle => UILangProviderM.Current["SrcScribe.VszipclTitle"];
         public static string VapourSynthVszipclPreviewHint => UILangProviderM.Current["SrcScribe.VszipclPreviewHint"];
         public static string VapourSynthVszipclDeviceHint => UILangProviderM.Current["SrcScribe.VszipclDeviceHint"];
+        public bool VapourSynthVszipclHasFmtconv => _sourceBitDepth != 8 && _sourceBitDepth != 16 && _sourceBitDepth != 32;
+        public string VapourSynthVszipclFmtconvHint => string.Format(UILangProviderM.Current["SrcScribe.VszipclFmtconvHint"], _sourceBitDepth);
         public static string FfmpegSubtitleFilter =>
             "-filter_complex \"ass='X\\:/path/to/subtitle.ass':fontsdir='Y\\:/dir/of/fonts'\"";
 
@@ -641,6 +676,9 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(FfmpegHighHdrToLowSdrColorFilter));
             OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
             OnPropertyChanged(nameof(FfmpegFullChainFilter));
+            OnPropertyChanged(nameof(VapourSynthVszipclFilter));
+            OnPropertyChanged(nameof(VapourSynthVszipclHasFmtconv));
+            OnPropertyChanged(nameof(VapourSynthVszipclFmtconvHint));
         }
 
         public void RefreshGeneratedFfmpegFilters()
@@ -1420,6 +1458,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(VapourSynthVszipclTitle));
             OnPropertyChanged(nameof(VapourSynthVszipclPreviewHint));
             OnPropertyChanged(nameof(VapourSynthVszipclDeviceHint));
+            OnPropertyChanged(nameof(VapourSynthVszipclFmtconvHint));
             OnPropertyChanged(nameof(AviSynthText));
             OnPropertyChanged(nameof(FrameRateConvertTitle));
             OnPropertyChanged(nameof(ColorSpaceConvertTitle));
