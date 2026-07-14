@@ -1,4 +1,4 @@
-﻿using OneColumnEncoder.Commands.OpenClose;
+using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using System.Windows;
@@ -28,14 +28,14 @@ namespace OneColumnEncoder.Commands
                 Clipboard.SetText(GetRawJson());
                 new OpenSuccModalCmd(
                     _modalNavS,
-                    UILangProviderM.SrcAnalysisWindowTitle,
-                    UILangProviderM.Current["SrcAnalysis.Copied"]).Execute(null);
+                    UILangProvider.SrcAnalysisWindowTitle,
+                    UILangProvider.Current["SrcAnalysis.Copied"]).Execute(null);
             }
             catch (Exception ex)
             {
                 new OpenErrModalCmd(
                     _modalNavS,
-                    UILangProviderM.SrcAnalysisWindowTitle,
+                    UILangProvider.SrcAnalysisWindowTitle,
                     ex.Message).Execute(null);
             }
         }

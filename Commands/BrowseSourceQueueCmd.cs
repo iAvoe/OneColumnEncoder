@@ -22,7 +22,7 @@ namespace OneColumnEncoder.Commands
         {
             OpenFolderDialog dialog = new()
             {
-                Title = UILangProviderM.Current["SourceQueue.SelectFolderTitle"],
+                Title = UILangProvider.Current["SourceQueue.SelectFolderTitle"],
                 InitialDirectory = OutputPath.GetInitialDirectory(_item.P2TextData)
             };
 
@@ -39,7 +39,7 @@ namespace OneColumnEncoder.Commands
                 new OpenWarnModalCmd(
                     _modalNavS,
                     UICaptionProviderM.SourceInspect.WarnTitle,
-                    new VideoSourceQueueLangProviderM(UILangProviderM.Current.LanguageCode)["SourceQueue.EmptyFolderWarnMessage"])
+                    new VideoSourceQueueLangProvider(UILangProvider.Current.LanguageCode)["SourceQueue.EmptyFolderWarnMessage"])
                     .Execute(null);
                 return;
             }

@@ -1,4 +1,4 @@
-﻿using OneColumnEncoder.Commands.OpenClose;
+using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
@@ -34,7 +34,7 @@ namespace OneColumnEncoder
                 };
 
                 ApplyStartupLanguageOnce();
-                _ = new UILangProviderM(_appConfM.Lang.LanguageCode);
+                _ = new UILangProvider(_appConfM.Lang.LanguageCode);
                 OpenAppConfCmd openAppConf = new(_modalNavM, _appConfM);
                 OpenUsagesCmd openUsages = new(_modalNavM, _appConfM);
 

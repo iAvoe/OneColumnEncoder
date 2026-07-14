@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 
 namespace OneColumnEncoder.Models;
 
@@ -7,74 +7,74 @@ public static class ToolCatalogProviderM
     // Video Source Import zone (3 items)
     public static List<ToolDefinitionM> GetVideoSrcImportDefs() =>
     [
-        new(UILangProviderM.Current["Tool.Source.VideoSource"],
-            UILangProviderM.Current["Buttons.Replace"],
-            UILangProviderM.Current["Buttons.Clear"],
-            UILangProviderM.Current["ToolField.Name"],
-            UILangProviderM.Current["ToolField.Path"]),
-        new(UILangProviderM.Current["Tool.Source.VideoSrcQueue"],
-            UILangProviderM.Current["Buttons.Import"],
-            UILangProviderM.Current["Buttons.Clear"],
-            UILangProviderM.Current["SourceQueue.Sequence"],
-            UILangProviderM.Current["ToolField.Path"]),
-        new(UILangProviderM.Current["Tool.Source.VideoSrcConcat"],
-            UILangProviderM.Current["Buttons.Import"],
-            UILangProviderM.Current["Buttons.Clear"],
-            UILangProviderM.Current["SourceQueue.Sequence"],
-            UILangProviderM.Current["ToolField.Path"]),
+        new(UILangProvider.Current["Tool.Source.VideoSource"],
+            UILangProvider.Current["Buttons.Replace"],
+            UILangProvider.Current["Buttons.Clear"],
+            UILangProvider.Current["ToolField.Name"],
+            UILangProvider.Current["ToolField.Path"]),
+        new(UILangProvider.Current["Tool.Source.VideoSrcQueue"],
+            UILangProvider.Current["Buttons.Import"],
+            UILangProvider.Current["Buttons.Clear"],
+            UILangProvider.Current["SourceQueue.Sequence"],
+            UILangProvider.Current["ToolField.Path"]),
+        new(UILangProvider.Current["Tool.Source.VideoSrcConcat"],
+            UILangProvider.Current["Buttons.Import"],
+            UILangProvider.Current["Buttons.Clear"],
+            UILangProvider.Current["SourceQueue.Sequence"],
+            UILangProvider.Current["ToolField.Path"]),
     ];
     // Script Source Import zone (3 items)
     public static List<ToolDefinitionM> GetScriptSrcImportDefs() =>
     [
-        new(UILangProviderM.Current["Tool.Source.AviSynth"],
-            UILangProviderM.Current["Buttons.Replace"],
-            UILangProviderM.Current["Buttons.Clear"],
-            UILangProviderM.Current["ToolField.Mode"],
-            UILangProviderM.Current["ToolField.Path"]),
-        new(UILangProviderM.Current["Tool.Source.VapourSynth"],
-            UILangProviderM.Current["Buttons.Replace"],
-            UILangProviderM.Current["Buttons.Clear"],
-            UILangProviderM.Current["ToolField.Mode"],
-            UILangProviderM.Current["ToolField.Path"]),
-        new(UILangProviderM.Current["Tool.Source.Svfi"],
-            UILangProviderM.Current["Buttons.Replace"],
-            UILangProviderM.Current["Buttons.Clear"],
-            UILangProviderM.Current["ToolField.Mode"],
-            UILangProviderM.Current["ToolField.Path"]),
+        new(UILangProvider.Current["Tool.Source.AviSynth"],
+            UILangProvider.Current["Buttons.Replace"],
+            UILangProvider.Current["Buttons.Clear"],
+            UILangProvider.Current["ToolField.Mode"],
+            UILangProvider.Current["ToolField.Path"]),
+        new(UILangProvider.Current["Tool.Source.VapourSynth"],
+            UILangProvider.Current["Buttons.Replace"],
+            UILangProvider.Current["Buttons.Clear"],
+            UILangProvider.Current["ToolField.Mode"],
+            UILangProvider.Current["ToolField.Path"]),
+        new(UILangProvider.Current["Tool.Source.Svfi"],
+            UILangProvider.Current["Buttons.Replace"],
+            UILangProvider.Current["Buttons.Clear"],
+            UILangProvider.Current["ToolField.Mode"],
+            UILangProvider.Current["ToolField.Path"]),
     ];
     // Script Source Import Queue zone (3 items, distinct labels)
     public static List<ToolDefinitionM> GetScriptSrcImportQueueDefs() =>
     [
-        new(UILangProviderM.Current["Tool.Source.AviSynthQueue"],
-            UILangProviderM.Current["Buttons.Import"],
-            UILangProviderM.Current["Buttons.Clear"],
-            UILangProviderM.Current["SourceQueue.Sequence"],
-            UILangProviderM.Current["ToolField.Path"]),
-        new(UILangProviderM.Current["Tool.Source.VapourSynthQueue"],
-            UILangProviderM.Current["Buttons.Import"],
-            UILangProviderM.Current["Buttons.Clear"],
-            UILangProviderM.Current["SourceQueue.Sequence"],
-            UILangProviderM.Current["ToolField.Path"]),
+        new(UILangProvider.Current["Tool.Source.AviSynthQueue"],
+            UILangProvider.Current["Buttons.Import"],
+            UILangProvider.Current["Buttons.Clear"],
+            UILangProvider.Current["SourceQueue.Sequence"],
+            UILangProvider.Current["ToolField.Path"]),
+        new(UILangProvider.Current["Tool.Source.VapourSynthQueue"],
+            UILangProvider.Current["Buttons.Import"],
+            UILangProvider.Current["Buttons.Clear"],
+            UILangProvider.Current["SourceQueue.Sequence"],
+            UILangProvider.Current["ToolField.Path"]),
     ];
 
     // Enc Settings zone (3 items)
     public static List<ToolDefinitionM> GetEncSettingsDefinitions() =>
     [
-        new(UILangProviderM.Current["Tool.Enc.OutputSetting"],
-            UILangProviderM.Current["Buttons.Edit"],
-            UILangProviderM.Current["Buttons.Clear"],
-            UILangProviderM.Current["ToolField.FileName"],
-            UILangProviderM.Current["ToolField.Path"]),
-        new(UILangProviderM.Current["Tool.Enc.Parallelism"],
-            UILangProviderM.Current["Buttons.Edit"],
-            UILangProviderM.Current["Buttons.Clear"],
-            UILangProviderM.Current["ToolField.NumaNodes"],
-            UILangProviderM.Current["ToolField.Threads"]),
-        new(UILangProviderM.Current["Tool.Enc.EncParams"],
-            UILangProviderM.Current["Buttons.Edit"],
-            UILangProviderM.Current["Buttons.Clear"],
-            UILangProviderM.Current["ToolField.Strategy"],
-            UILangProviderM.Current["ToolField.MaxKeyframeGap"]),
+        new(UILangProvider.Current["Tool.Enc.OutputSetting"],
+            UILangProvider.Current["Buttons.Edit"],
+            UILangProvider.Current["Buttons.Clear"],
+            UILangProvider.Current["ToolField.FileName"],
+            UILangProvider.Current["ToolField.Path"]),
+        new(UILangProvider.Current["Tool.Enc.Parallelism"],
+            UILangProvider.Current["Buttons.Edit"],
+            UILangProvider.Current["Buttons.Clear"],
+            UILangProvider.Current["ToolField.NumaNodes"],
+            UILangProvider.Current["ToolField.Threads"]),
+        new(UILangProvider.Current["Tool.Enc.EncParams"],
+            UILangProvider.Current["Buttons.Edit"],
+            UILangProvider.Current["Buttons.Clear"],
+            UILangProvider.Current["ToolField.Strategy"],
+            UILangProvider.Current["ToolField.MaxKeyframeGap"]),
     ];
 
     public static List<ToolDefinitionM> GetAllStaticDefinitions() =>
@@ -241,7 +241,7 @@ public static class ToolCatalogProviderM
     {
         var items = new List<DropdownItemM>
         {
-            new(UILangProviderM.Current["Import.NoSelection"], isPlaceholder: true),
+            new(UILangProvider.Current["Import.NoSelection"], isPlaceholder: true),
             new("", true)
         };
 

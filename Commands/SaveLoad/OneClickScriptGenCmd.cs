@@ -44,8 +44,8 @@ namespace OneColumnEncoder.Commands.SaveLoad
             {
                 new OpenWarnModalCmd(
                     _modalNavS,
-                    UILangProviderM.FltScribeWindowTitle,
-                    UILangProviderM.Current["SrcScribe.NoVidSrcWarning"]).Execute(null);
+                    FilterScribeModalLangProvider.WindowTitle,
+                    FilterScribeModalLangProvider.Current["SrcScribe.NoVidSrcWarning"]).Execute(null);
                 return;
             }
 
@@ -73,7 +73,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
 
             SaveFileDialog dialog = new()
             {
-                Title = UILangProviderM.Current["SrcScribe.SavingWindowTitle"],
+                Title = FilterScribeModalLangProvider.Current["SrcScribe.SavingWindowTitle"],
                 Filter = "AviSynth Script (*.avs)|*.avs", // Script files (*.avs, *.vpy)|*.avs;*.vpy
                 FileName = Path.GetFileNameWithoutExtension(sourcePath) + ".avs"
             };
@@ -95,8 +95,8 @@ namespace OneColumnEncoder.Commands.SaveLoad
             {
                 new OpenErrModalCmd(
                     _modalNavS,
-                    UILangProviderM.FltScribeWindowTitle,
-                    string.Format(UILangProviderM.Current["SrcScribe.FailedToSave"], ex.Message)).Execute(null);
+                    FilterScribeModalLangProvider.WindowTitle,
+                    string.Format(FilterScribeModalLangProvider.Current["SrcScribe.FailedToSave"], ex.Message)).Execute(null);
                 return;
             }
 
@@ -110,8 +110,8 @@ namespace OneColumnEncoder.Commands.SaveLoad
 
             new OpenSuccModalCmd(
                 _modalNavS,
-                UILangProviderM.FltScribeWindowTitle,
-                string.Format(UILangProviderM.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, [avsPath, vpyPath]))).Execute(null);
+                FilterScribeModalLangProvider.WindowTitle,
+                string.Format(UILangProvider.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, [avsPath, vpyPath]))).Execute(null);
         }
 
         private bool IsQueueRoute() => _isQueueRoute?.Invoke() == true;
@@ -124,8 +124,8 @@ namespace OneColumnEncoder.Commands.SaveLoad
             {
                 new OpenErrModalCmd(
                     _modalNavS,
-                    UILangProviderM.Current["SrcScribe.ConcatNeedMultipleSourcesTitle"],
-                    UILangProviderM.Current["SrcScribe.ConcatNeedMultipleSources"]).Execute(null);
+                    FilterScribeModalLangProvider.Current["SrcScribe.ConcatNeedMultipleSourcesTitle"],
+                    FilterScribeModalLangProvider.Current["SrcScribe.ConcatNeedMultipleSources"]).Execute(null);
                 return;
             }
 
@@ -141,7 +141,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
 
             SaveFileDialog dialog = new()
             {
-                Title = UILangProviderM.Current["SrcScribe.SavingWindowTitle"],
+                Title = FilterScribeModalLangProvider.Current["SrcScribe.SavingWindowTitle"],
                 Filter = "AviSynth Script (*.avs)|*.avs",
                 FileName = baseName + "_concat.avs"
             };
@@ -161,8 +161,8 @@ namespace OneColumnEncoder.Commands.SaveLoad
             {
                 new OpenErrModalCmd(
                     _modalNavS,
-                    UILangProviderM.FltScribeWindowTitle,
-                    string.Format(UILangProviderM.Current["SrcScribe.FailedToSave"], ex.Message)).Execute(null);
+                    FilterScribeModalLangProvider.WindowTitle,
+                    string.Format(FilterScribeModalLangProvider.Current["SrcScribe.FailedToSave"], ex.Message)).Execute(null);
                 return;
             }
 
@@ -177,8 +177,8 @@ namespace OneColumnEncoder.Commands.SaveLoad
 
             new OpenSuccModalCmd(
                 _modalNavS,
-                UILangProviderM.FltScribeWindowTitle,
-                string.Format(UILangProviderM.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, [avsPath, vpyPath]))).Execute(null);
+                FilterScribeModalLangProvider.WindowTitle,
+                string.Format(UILangProvider.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, [avsPath, vpyPath]))).Execute(null);
         }
 
         private void ExecuteQueueScriptGen()
@@ -188,7 +188,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
 
             OpenFolderDialog dialog = new()
             {
-                Title = UILangProviderM.Current["SrcScribe.SavingWindowTitle"]
+                Title = FilterScribeModalLangProvider.Current["SrcScribe.SavingWindowTitle"]
             };
 
             if (dialog.ShowDialog() != true) return;
@@ -220,8 +220,8 @@ namespace OneColumnEncoder.Commands.SaveLoad
             {
                 new OpenErrModalCmd(
                     _modalNavS,
-                    UILangProviderM.FltScribeWindowTitle,
-                    string.Format(UILangProviderM.Current["SrcScribe.FailedToSave"], ex.Message)).Execute(null);
+                    FilterScribeModalLangProvider.WindowTitle,
+                    string.Format(FilterScribeModalLangProvider.Current["SrcScribe.FailedToSave"], ex.Message)).Execute(null);
                 return;
             }
 
@@ -243,8 +243,8 @@ namespace OneColumnEncoder.Commands.SaveLoad
 
             new OpenSuccModalCmd(
                 _modalNavS,
-                UILangProviderM.FltScribeWindowTitle,
-                string.Format(UILangProviderM.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, savedPaths))).Execute(null);
+                FilterScribeModalLangProvider.WindowTitle,
+                string.Format(UILangProvider.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, savedPaths))).Execute(null);
         }
 
         private void ApplyUpstreamScriptSelection(ToolItemCardVM avsItem, ToolItemCardVM vpyItem)

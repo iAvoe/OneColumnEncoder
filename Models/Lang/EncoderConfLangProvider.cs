@@ -1,8 +1,8 @@
 namespace OneColumnEncoder.Models;
 
-public class EncoderConfLangProviderM
+public class EncoderConfLangProvider
 {
-    public static EncoderConfLangProviderM Current { get; private set; } = null!;
+    public static EncoderConfLangProvider Current { get; private set; } = null!;
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
         ["en"] = new()
@@ -154,7 +154,7 @@ public class EncoderConfLangProviderM
         }
     };
 
-    static EncoderConfLangProviderM()
+    static EncoderConfLangProvider()
     {
         Data["fr"] = new(Data["en"])
         {
@@ -373,7 +373,7 @@ public class EncoderConfLangProviderM
 
     public string this[string key] => _d.TryGetValue(key, out var v) ? v : key;
 
-    public EncoderConfLangProviderM(string languageCode)
+    public EncoderConfLangProvider(string languageCode)
     {
         LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
         _d = Data[LanguageCode];

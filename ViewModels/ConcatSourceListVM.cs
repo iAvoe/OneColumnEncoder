@@ -12,8 +12,8 @@ namespace OneColumnEncoder.ViewModels
 
         public ObservableCollection<ConcatSourceItemVM> Items { get; } = [];
 
-        public string OrderingTitle => UILangProviderM.Current["SourceConcat.OrderingTitle"];
-        public string RestoreOriginalQueueText => UILangProviderM.Current["SourceConcat.RestoreOriginalQueue"];
+        public string OrderingTitle => UILangProvider.Current["SourceConcat.OrderingTitle"];
+        public string RestoreOriginalQueueText => UILangProvider.Current["SourceConcat.RestoreOriginalQueue"];
 
         public bool HasOriginalQueueChanges
         {

@@ -24,17 +24,17 @@ namespace OneColumnEncoder.ViewModels
         private readonly long _totalFrames;
         private readonly string _fieldOrderKind = "unknown";
         private readonly string _frameRateKind = "unknown";
-        private ClipRangeSelectorLangProviderM _lang = null!;
+        private ClipRangeSelectorLangProvider _lang = null!;
         private bool _isDraggingSelection;
 
         private bool _isSyncing;
 
-        public ClipRangeSelectorLangProviderM Lang
+        public ClipRangeSelectorLangProvider Lang
         {
             get => _lang;
             private set => SetProperty(ref _lang, value);
         }
-        public static string WindowTitle => ClipRangeSelectorLangProviderM.WindowTitle;
+        public static string WindowTitle => ClipRangeSelectorLangProvider.WindowTitle;
         public string TimelineSectionTitle => Lang.TimelineSectionTitle;
         public string SelectionHintText => Lang.SelectionHintText;
         public string DurationSectionTitle => Lang.DurationSectionTitle;
@@ -161,21 +161,21 @@ namespace OneColumnEncoder.ViewModels
             _fieldOrderKind = sourceStats.FieldOrderKind;
             _frameRateKind = sourceStats.FrameRateKind;
 
-            Lang = new ClipRangeSelectorLangProviderM(UILangProviderM.Current.LanguageCode);
+            Lang = new ClipRangeSelectorLangProvider(UILangProvider.Current.LanguageCode);
 
             BuildSummary();
             BuildAxisLabels();
 
             CloseCmd = new CloseModalCmd(closeAction);
             RunSampleCmd = new ActionCmd(_ => RunSample());
-            Lang = new ClipRangeSelectorLangProviderM(UILangProviderM.Current.LanguageCode);
+            Lang = new ClipRangeSelectorLangProvider(UILangProvider.Current.LanguageCode);
             FinishButtons = ButtonGroupVM.CreateTwoButton(Lang.CancelButtonText, Lang.ConfirmButtonText, CloseCmd, RunSampleCmd);
 
             int initialLength = (int)Math.Round(Math.Min(30d, Math.Max(10d, _totalSeconds * 0.04d)));
             _clipLengthSeconds = initialLength;
             ApplyClipLengthToSelection();
             SyncFromSelection(updateClipLength: false);
-            UILangProviderM.CurrentChanged += OnLanguageChanged;
+            UILangProvider.CurrentChanged += OnLanguageChanged;
         }
 
         private void BuildSummary()
@@ -453,7 +453,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void OnLanguageChanged()
         {
-            Lang = new ClipRangeSelectorLangProviderM(UILangProviderM.Current.LanguageCode);
+            Lang = new ClipRangeSelectorLangProvider(UILangProvider.Current.LanguageCode);
             FinishButtons.B2_1Text = Lang.CancelButtonText;
             FinishButtons.B2_2Text = Lang.ConfirmButtonText;
             OnPropertyChanged(nameof(WindowTitle));
@@ -478,7 +478,7 @@ namespace OneColumnEncoder.ViewModels
         public override void Dispose()
         {
             // Unsubscribe from the global language change event to avoid keeping this modal alive.
-            UILangProviderM.CurrentChanged -= OnLanguageChanged;
+            UILangProvider.CurrentChanged -= OnLanguageChanged;
             base.Dispose();
             GC.SuppressFinalize(this);
         }

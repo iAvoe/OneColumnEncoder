@@ -30,8 +30,8 @@ namespace OneColumnEncoder.ViewModels
         private string? _lastFfmpegStderr;
         private bool _isFitMode = true;
         private PreviewDisplayMode _displayMode = PreviewDisplayMode.Raw;
-        private ImgABPvLangProviderM _lang = new(UILangProviderM.Current.LanguageCode);
-        public ImgABPvLangProviderM Lang
+        private ImgABPvLangProvider _lang = new(UILangProvider.Current.LanguageCode);
+        public ImgABPvLangProvider Lang
         {
             get => _lang;
             private set => SetProperty(ref _lang, value);
@@ -174,7 +174,7 @@ namespace OneColumnEncoder.ViewModels
             PreviewCommand = new ActionCmd(_ => PreviewOrCancel());
             RefreshSsimulacra2Status();
             RefreshButteraugliStatus();
-            UILangProviderM.CurrentChanged += OnLanguageChanged;
+            UILangProvider.CurrentChanged += OnLanguageChanged;
         }
 
         public void SetZoomPercent(int percent) => ZoomPercent = Math.Max(1, percent);
@@ -446,7 +446,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void OnLanguageChanged()
         {
-            Lang = new ImgABPvLangProviderM(UILangProviderM.Current.LanguageCode);
+            Lang = new ImgABPvLangProvider(UILangProvider.Current.LanguageCode);
             ZoomPresetButtons.B3_1Text = Lang.FitButtonText;
             DisplayModeButtons.B5_1Text = Lang.RawButtonText;
             if (!IsBusy)
@@ -466,7 +466,7 @@ namespace OneColumnEncoder.ViewModels
 
         public override void Dispose()
         {
-            UILangProviderM.CurrentChanged -= OnLanguageChanged;
+            UILangProvider.CurrentChanged -= OnLanguageChanged;
             GC.SuppressFinalize(this);
             // Order: cancel first so in-flight ffmpeg knows to stop,
             // then kill the process, then release CTS resources.

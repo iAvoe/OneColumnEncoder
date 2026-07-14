@@ -1,4 +1,4 @@
-﻿using OneColumnEncoder.Models;
+using OneColumnEncoder.Models;
 using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Stores;
@@ -10,7 +10,7 @@ namespace OneColumnEncoder.ViewModels.Cards
     public class ToolItemCardVM(EncItemM baseModel) : BaseVM
     {
         public static string SeparatorText =>
-            UILangProviderM.Current["ItemCard.Separator"];
+            UILangProvider.Current["ItemCard.Separator"];
 
         private readonly EncItemM _baseModel = baseModel;
 
@@ -106,8 +106,8 @@ namespace OneColumnEncoder.ViewModels.Cards
         public string DisplayR1Text =>
             UseAutoAddReplaceText
                 ? string.IsNullOrWhiteSpace(P2TextData)
-                    ? UILangProviderM.Current["Buttons.Add"]
-                    : UILangProviderM.Current["Buttons.Replace"]
+                    ? UILangProvider.Current["Buttons.Add"]
+                    : UILangProvider.Current["Buttons.Replace"]
                 : R1Text;
 
         private string _r2Text = "";

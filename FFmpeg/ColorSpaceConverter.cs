@@ -82,13 +82,13 @@ public static class ColorSpaceConverter
         {
             using JsonDocument doc = JsonDocument.Parse(ffprobeJson);
             if (!FrameRate.TryGetFirstVideoStream(doc.RootElement, out JsonElement stream))
-                return CreateResult(null, null, null, null, null, ColorSpaceStrategy.Unknown, UILangProviderM.Current["SrcScribe.ColorSpace.NoVideoStream"]);
+                return CreateResult(null, null, null, null, null, ColorSpaceStrategy.Unknown, FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.NoVideoStream"]);
 
             return Analyze(stream);
         }
         catch
         {
-            return CreateResult(null, null, null, null, null, ColorSpaceStrategy.Unknown, UILangProviderM.Current["SrcScribe.ColorSpace.FailedToParse"]);
+            return CreateResult(null, null, null, null, null, ColorSpaceStrategy.Unknown, FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.FailedToParse"]);
         }
     }
 
@@ -232,19 +232,19 @@ public static class ColorSpaceConverter
 
     private static string GetDisplayName(ColorSpaceStrategy strategy) => strategy switch
     {
-        ColorSpaceStrategy.NativeBt709 => UILangProviderM.Current["SrcScribe.ColorSpace.DisplayNativeBt709"],
-        ColorSpaceStrategy.LowToHigh => UILangProviderM.Current["SrcScribe.ColorSpace.DisplayLowToHigh"],
-        ColorSpaceStrategy.HighToLow => UILangProviderM.Current["SrcScribe.ColorSpace.DisplayHighToLow"],
-        ColorSpaceStrategy.HdrToSdr => UILangProviderM.Current["SrcScribe.ColorSpace.DisplayHdrToSdr"],
-        ColorSpaceStrategy.HighHdrToSdr => UILangProviderM.Current["SrcScribe.ColorSpace.DisplayHighHdrToSdr"],
-        _ => UILangProviderM.Current["SrcScribe.ColorSpace.DisplayUnknown"]
+        ColorSpaceStrategy.NativeBt709 => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DisplayNativeBt709"],
+        ColorSpaceStrategy.LowToHigh => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DisplayLowToHigh"],
+        ColorSpaceStrategy.HighToLow => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DisplayHighToLow"],
+        ColorSpaceStrategy.HdrToSdr => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DisplayHdrToSdr"],
+        ColorSpaceStrategy.HighHdrToSdr => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DisplayHighHdrToSdr"],
+        _ => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DisplayUnknown"]
     };
 
     private static string BuildDescription(
         ColorSpaceStrategy strategy,
         string? primaries, string? transfer, string? matrix, string? chromaLocation, string? pixelFormat)
     {
-        string def = UILangProviderM.Current["SrcScribe.ColorSpace.DefaultNullValue"];
+        string def = FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DefaultNullValue"];
         string pStr = primaries ?? def;
         string tStr = transfer ?? def;
         string mStr = matrix ?? def;
@@ -255,29 +255,29 @@ public static class ColorSpaceConverter
 
         string classification = strategy switch
         {
-            ColorSpaceStrategy.NativeBt709 => UILangProviderM.Current["SrcScribe.ColorSpace.DescNativeBt709"],
-            ColorSpaceStrategy.LowToHigh => string.Format(UILangProviderM.Current["SrcScribe.ColorSpace.DescLowToHigh"], colorMeta),
-            ColorSpaceStrategy.HighToLow => string.Format(UILangProviderM.Current["SrcScribe.ColorSpace.DescHighToLow"], colorMeta),
-            ColorSpaceStrategy.HdrToSdr => string.Format(UILangProviderM.Current["SrcScribe.ColorSpace.DescHdrToSdr"], colorMeta),
-            ColorSpaceStrategy.HighHdrToSdr => string.Format(UILangProviderM.Current["SrcScribe.ColorSpace.DescHighHdrToSdr"], colorMeta),
-            _ => UILangProviderM.Current["SrcScribe.ColorSpace.DescUnknown"]
+            ColorSpaceStrategy.NativeBt709 => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DescNativeBt709"],
+            ColorSpaceStrategy.LowToHigh => string.Format(FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DescLowToHigh"], colorMeta),
+            ColorSpaceStrategy.HighToLow => string.Format(FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DescHighToLow"], colorMeta),
+            ColorSpaceStrategy.HdrToSdr => string.Format(FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DescHdrToSdr"], colorMeta),
+            ColorSpaceStrategy.HighHdrToSdr => string.Format(FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DescHighHdrToSdr"], colorMeta),
+            _ => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DescUnknown"]
         };
 
         string? filter = strategy switch
         {
             ColorSpaceStrategy.NativeBt709 => string.Empty,
-            ColorSpaceStrategy.Unknown => UILangProviderM.Current["SrcScribe.ColorSpace.UnknownFilterHint"],
+            ColorSpaceStrategy.Unknown => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.UnknownFilterHint"],
             _ => BuildFfmpegFilter(strategy, matrix, chromaLocation, primaries, pixelFormat)
         };
 
         if (string.IsNullOrEmpty(filter))
             return classification;
 
-        string filterLine = string.Format(UILangProviderM.Current["SrcScribe.ColorSpace.FilterLine"], filter);
+        string filterLine = string.Format(FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.FilterLine"], filter);
 
         if (strategy is ColorSpaceStrategy.HdrToSdr or ColorSpaceStrategy.HighHdrToSdr)
         {
-            string hdrHint = UILangProviderM.Current["SrcScribe.ColorSpace.HdrHint"];
+            string hdrHint = FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.HdrHint"];
             return $"{classification}\n{hdrHint}{filterLine}";
         }
 
@@ -285,7 +285,7 @@ public static class ColorSpaceConverter
     }
 
     private static string DescribeColorMeta(string primaries, string transfer, string matrix, string chromaLocation, string pixelFormat) =>
-        string.Format(UILangProviderM.Current["SrcScribe.ColorSpace.DescribeColorMeta"], primaries, transfer, matrix, chromaLocation, pixelFormat);
+        string.Format(FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DescribeColorMeta"], primaries, transfer, matrix, chromaLocation, pixelFormat);
 
     #endregion
 }

@@ -7,9 +7,9 @@ namespace OneColumnEncoder.ViewModels
 {
     public class EncoderConfVM : BaseVM
     {
-        private EncoderConfLangProviderM _lang =
-            new(UILangProviderM.Current.LanguageCode);
-        public EncoderConfLangProviderM Lang
+        private EncoderConfLangProvider _lang =
+            new(UILangProvider.Current.LanguageCode);
+        public EncoderConfLangProvider Lang
         {
             get => _lang;
             private set => SetProperty(ref _lang, value);
@@ -41,8 +41,8 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _selectedTabIndex, value);
         }
 
-        public static string WindowTitle => EncoderConfLangProviderM.WindowTitle;
-        public static string TitleText => EncoderConfLangProviderM.TitleText;
+        public static string WindowTitle => EncoderConfLangProvider.WindowTitle;
+        public static string TitleText => EncoderConfLangProvider.TitleText;
         public string RateControlTitle => Lang.RateControlTitle;
         public string CustomParamsTitle => Lang.CustomParamsTitle;
         public string CrfModeText => Lang.CrfModeText;
@@ -274,7 +274,7 @@ namespace OneColumnEncoder.ViewModels
             PopulateDropdowns();
             LoadModelToUi();
             PreviewVM = new ImgABPvVM(this, modalNavS, ffmpegPath, sourceVideoPath, sourceFfprobeJson);
-            UILangProviderM.CurrentChanged += OnLanguageChanged;
+            UILangProvider.CurrentChanged += OnLanguageChanged;
         }
 
         #region Dropdown initialization
@@ -423,7 +423,7 @@ model.SvtAv1Dl2 = SvtAv1Dl2;
         #region Language/Localization
         private void OnLanguageChanged()
         {
-            Lang = new EncoderConfLangProviderM(UILangProviderM.Current.LanguageCode);
+            Lang = new EncoderConfLangProvider(UILangProvider.Current.LanguageCode);
             RefreshDropdownTitles();
             OnPropertyChanged(nameof(WindowTitle));
             OnPropertyChanged(nameof(TitleText));
@@ -494,7 +494,7 @@ model.SvtAv1Dl2 = SvtAv1Dl2;
 
         public override void Dispose()
         {
-            UILangProviderM.CurrentChanged -= OnLanguageChanged;
+            UILangProvider.CurrentChanged -= OnLanguageChanged;
             PreviewVM.Dispose();
             base.Dispose();
             GC.SuppressFinalize(this);

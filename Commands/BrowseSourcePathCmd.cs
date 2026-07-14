@@ -24,7 +24,7 @@ namespace OneColumnEncoder.Commands
         {
             bool wasReplaced = !string.IsNullOrWhiteSpace(_item.P2TextData);
             string dialogTitle =
-                string.Format(UILangProviderM.Current["Dialog.SelectTitle"], _item.Name);
+                string.Format(UILangProvider.Current["Dialog.SelectTitle"], _item.Name);
 
             string? foundPath = _fileKind == SourceFileKind.SvfiIni && !string.IsNullOrWhiteSpace(_appDataM.Tools.OneLineShotArgsPath)
                 ? Path.Combine(Path.GetDirectoryName(_appDataM.Tools.OneLineShotArgsPath) ?? "", "Configs")

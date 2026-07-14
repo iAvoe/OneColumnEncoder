@@ -1,4 +1,4 @@
-﻿using OneColumnEncoder.Models;
+using OneColumnEncoder.Models;
 
 namespace OneColumnEncoder.Commands.SaveLoad
 {
@@ -11,7 +11,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
             AppConfM loadedConfig = AppConfM.Load();
             _appConfStore.Overwrite = loadedConfig.Overwrite;
             _appConfStore.Lang = loadedConfig.Lang;
-            UILangProviderM.SetLanguage(_appConfStore.Lang.LanguageCode);
+            UILangProvider.SetLanguage(_appConfStore.Lang.LanguageCode);
             await Task.CompletedTask;
         }
     }

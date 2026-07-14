@@ -29,9 +29,9 @@ namespace OneColumnEncoder.Commands
             // Use the shared video source filter so concat import only presents supported media files.
             OpenFileDialog dialog = new()
             {
-                Title = UILangProviderM.Current["SourceConcat.SelectFilesTitle"],
+                Title = UILangProvider.Current["SourceConcat.SelectFilesTitle"],
                 Multiselect = true,
-                Filter = new SourceFilePickerLangProviderM(UILangProviderM.Current.LanguageCode).VideoFilter,
+                Filter = new SourceFilePickerLangProvider(UILangProvider.Current.LanguageCode).VideoFilter,
                 InitialDirectory = OutputPath.GetInitialDirectory(_item.P2TextData)
             };
 
@@ -61,8 +61,8 @@ namespace OneColumnEncoder.Commands
             {
                 new OpenErrModalCmd(
                     _modalNavS,
-                    UILangProviderM.Current["SrcScribe.ConcatNeedMultipleSourcesTitle"],
-                    UILangProviderM.Current["SrcScribe.ConcatNeedMultipleSources"]).Execute(null);
+                    FilterScribeModalLangProvider.Current["SrcScribe.ConcatNeedMultipleSourcesTitle"],
+                    FilterScribeModalLangProvider.Current["SrcScribe.ConcatNeedMultipleSources"]).Execute(null);
                 Application.Current.MainWindow?.Activate();
                 return;
             }
@@ -148,13 +148,13 @@ namespace OneColumnEncoder.Commands
             string mismatchedList = string.Join(
                 Environment.NewLine,
                 mismatched.Select(path => $"- {Path.GetFileName(path)} ({FormatExtension(Path.GetExtension(path) ?? string.Empty)})"));
-            return string.Format(UILangProviderM.Current["SourceConcat.ExtensionMismatch"], expectedLabel, mismatchedList);
+            return string.Format(UILangProvider.Current["SourceConcat.ExtensionMismatch"], expectedLabel, mismatchedList);
         }
 
         private static string? GetUnsupportedExtensionMessage(string[] filePaths)
         {
             // Normalize picker patterns like "*.mkv" to extensions like ".mkv" for lookup.
-            HashSet<string> videoExtensions = [.. SourceFilePickerLangProviderM.VideoExtensions
+            HashSet<string> videoExtensions = [.. SourceFilePickerLangProvider.VideoExtensions
                 .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                 .Select(extension => extension.TrimStart('*').ToLowerInvariant())];
 
@@ -165,7 +165,7 @@ namespace OneColumnEncoder.Commands
             string unsupportedList = string.Join(
                 Environment.NewLine,
                 unsupported.Select(path => $"- {Path.GetFileName(path)} ({FormatExtension(Path.GetExtension(path) ?? string.Empty)})"));
-            return string.Format(UILangProviderM.Current["SourceConcat.ExtensionMismatch"], SourceFilePickerLangProviderM.VideoExtensions, unsupportedList);
+            return string.Format(UILangProvider.Current["SourceConcat.ExtensionMismatch"], SourceFilePickerLangProvider.VideoExtensions, unsupportedList);
         }
 
         private static string FormatExtension(string extension) =>

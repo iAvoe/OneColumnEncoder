@@ -22,7 +22,7 @@ namespace OneColumnEncoder.Commands
         {
             OpenFolderDialog dialog = new()
             {
-                Title = UILangProviderM.Current["SourceQueue.SelectFolderTitle"],
+                Title = UILangProvider.Current["SourceQueue.SelectFolderTitle"],
                 InitialDirectory = OutputPath.GetInitialDirectory(_getInitialPath?.Invoke() ?? _item.P2TextData)
             };
 

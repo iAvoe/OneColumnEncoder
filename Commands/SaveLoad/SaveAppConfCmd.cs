@@ -1,4 +1,4 @@
-﻿using OneColumnEncoder.Models;
+using OneColumnEncoder.Models;
 
 namespace OneColumnEncoder.Commands.SaveLoad
 {
@@ -8,7 +8,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
 
         protected override async Task ExecuteAsync(object? parameter)
         {
-            UILangProviderM.SetLanguage(_appConfStore.Lang.LanguageCode);
+            UILangProvider.SetLanguage(_appConfStore.Lang.LanguageCode);
             _appConfStore.Save();
             await Task.CompletedTask;
             closeAction();

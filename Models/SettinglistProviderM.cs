@@ -9,7 +9,7 @@ namespace OneColumnEncoder.Models
             .. GetInitModeSettings()
         ];
 
-        private static AppConfLangProviderM Lang => AppConfLangProviderM.Current;
+        private static AppConfLangProvider Lang => AppConfLangProvider.Current;
 
         public static List<SettingItemDefinitionM> GetOverwriteSettings() =>
         [

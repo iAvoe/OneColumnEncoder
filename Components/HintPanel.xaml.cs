@@ -57,7 +57,7 @@ namespace OneColumnEncoder.Components
 
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
-            UILangProviderM.CurrentChanged -= OnLanguageChanged;
+            UILangProvider.CurrentChanged -= OnLanguageChanged;
         }
 
         private static void OnRefreshTextOnLanguageChangedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -69,9 +69,9 @@ namespace OneColumnEncoder.Components
         // Keep the language subscription aligned with the opt-in flag.
         private void SyncLanguageChangedSubscription()
         {
-            UILangProviderM.CurrentChanged -= OnLanguageChanged;
+            UILangProvider.CurrentChanged -= OnLanguageChanged;
             if (RefreshTextOnLanguageChanged)
-                UILangProviderM.CurrentChanged += OnLanguageChanged;
+                UILangProvider.CurrentChanged += OnLanguageChanged;
         }
 
         // Rebind the text so the localized value is pulled again.

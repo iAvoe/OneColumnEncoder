@@ -45,7 +45,7 @@ namespace OneColumnEncoder.Commands
         private readonly Func<bool>? _isConcatRoute = isConcatRoute;
         private readonly Func<string[]>? _getConcatFilePaths = getConcatFilePaths;
 
-        private static AnalyzeSrcVideoCmdLangProviderM Lang => new(UILangProviderM.Current.LanguageCode);
+        private static AnalyzeSrcVideoCmdLangProvider Lang => new(UILangProvider.Current.LanguageCode);
         private static readonly JsonSerializerOptions CachedJsonOptions = CreateJsonSerializerOptions();
 
         private static JsonSerializerOptions CreateJsonSerializerOptions()
@@ -106,7 +106,7 @@ namespace OneColumnEncoder.Commands
                     if (supplementResult.IsNbFramesCalculated)
                         ShowFrameCountSupplementedModal(FormatFrameCountSupplementMessage(rawJson, supplementResult.SupplementedCount));
                     else
-                        ShowSourceAnalysisCompletedModal(UILangProviderM.Current["SrcAnalysis.Completed"]);
+                        ShowSourceAnalysisCompletedModal(UILangProvider.Current["SrcAnalysis.Completed"]);
                 }
                 catch (Exception ex)
                 {
@@ -120,7 +120,7 @@ namespace OneColumnEncoder.Commands
                 _getActiveSrcValidationCard().SetAnalysisFailedStatus();
                 new OpenErrModalCmd(
                     _modalNavS,
-                    UILangProviderM.SrcAnalysisWindowTitle,
+                    UILangProvider.SrcAnalysisWindowTitle,
                     ex.Message).Execute(null);
             }
             finally
@@ -138,7 +138,7 @@ namespace OneColumnEncoder.Commands
             string ffprobePath = _getFfprobePath();
             string[] concatFilePaths = _getConcatFilePaths?.Invoke() ?? [];
             if (concatFilePaths.Length < 2)
-                throw new InvalidOperationException(UILangProviderM.Current["SrcScribe.ConcatNeedMultipleSources"]);
+                throw new InvalidOperationException(FilterScribeModalLangProvider.Current["SrcScribe.ConcatNeedMultipleSources"]);
 
             ConcatCheckCardVM concatCard = _getActiveSrcValidationCard() as ConcatCheckCardVM
                 ?? throw new InvalidOperationException("Concat source check card is not active.");
@@ -162,7 +162,7 @@ namespace OneColumnEncoder.Commands
             concatCard.ApplyFfprobeAnalysisJson(result.ReferenceRawJson);
             concatCard.ApplyConcatAnalysis(concatFilePaths, allValid: true);
 
-            string message = string.Format(UILangProviderM.Current["SourceConcat.Analyzed"], concatFilePaths.Length);
+            string message = string.Format(UILangProvider.Current["SourceConcat.Analyzed"], concatFilePaths.Length);
             if (result.SupplementedCount > 0)
                 message = FormatQueueFrameCountSupplementMessage(message, result.SupplementedCount);
             ShowSourceAnalysisCompletedModal(message);
@@ -180,7 +180,7 @@ namespace OneColumnEncoder.Commands
 
             if (result.ConcatTotalFrames > 0)
             {
-                string totalFramesLabel = new ClipRangeSelectorLangProviderM(UILangProviderM.Current.LanguageCode).SummaryTotalFramesLabel;
+                string totalFramesLabel = new ClipRangeSelectorLangProvider(UILangProvider.Current.LanguageCode).SummaryTotalFramesLabel;
                 new OpenDebugModalCmd(
                     _modalNavS,
                     $"Concat {totalFramesLabel}",
@@ -195,8 +195,8 @@ namespace OneColumnEncoder.Commands
         {
             OpenInfoModalCmd cmd = new(
                 _modalNavS,
-                UILangProviderM.Current["SourceQueue.FilterModeTitle"],
-                UILangProviderM.Current["SourceQueue.FilterModeMessage"]);
+                UILangProvider.Current["SourceQueue.FilterModeTitle"],
+                UILangProvider.Current["SourceQueue.FilterModeMessage"]);
             cmd.Execute(null);
             return cmd.DialogResult == true
                 ? QueueFilterMode.FirstStream
@@ -271,7 +271,7 @@ namespace OneColumnEncoder.Commands
                         willSkipAndContinue: true);
                     new OpenErrModalCmd(
                         _modalNavS,
-                        UILangProviderM.SrcAnalysisWindowTitle,
+                        UILangProvider.SrcAnalysisWindowTitle,
                         failureMessage).Execute(null);
                     skipped.Add(new(filePath, Path.GetFileName(filePath), ex.Message));
                 }
@@ -324,9 +324,9 @@ namespace OneColumnEncoder.Commands
 
             // Step 7
             string message = string.IsNullOrWhiteSpace(excludedJsonPath)
-                ? string.Format(UILangProviderM.Current["SourceQueue.AnalyzedNoEx"], queueJsonPath)
+                ? string.Format(UILangProvider.Current["SourceQueue.AnalyzedNoEx"], queueJsonPath)
                 : string.Format(
-                    UILangProviderM.Current["SourceQueue.Analyzed"],
+                    UILangProvider.Current["SourceQueue.Analyzed"],
                     excluded.Count,
                     queueJsonPath,
                     excludedJsonPath);
@@ -344,11 +344,11 @@ namespace OneColumnEncoder.Commands
         // Builds a message indicating analysis completed and (if available) total frame count + number of supplemented streams
         private static string FormatFrameCountSupplementMessage(string rawJson, int supplementedCount)
         {
-            List<string> lines = [UILangProviderM.Current["SrcAnalysis.Completed"]];
+            List<string> lines = [UILangProvider.Current["SrcAnalysis.Completed"]];
             if (TryGetTotalFrameCount(rawJson, out long totalFrameCount))
-                lines.Add(string.Format(Lang.TotalFramesFormat, new ClipRangeSelectorLangProviderM(UILangProviderM.Current.LanguageCode).SummaryTotalFramesLabel, totalFrameCount));
+                lines.Add(string.Format(Lang.TotalFramesFormat, new ClipRangeSelectorLangProvider(UILangProvider.Current.LanguageCode).SummaryTotalFramesLabel, totalFrameCount));
 
-            lines.Add(string.Format(UILangProviderM.Current["SrcAnalysis.FrameCountSupplemented"], supplementedCount));
+            lines.Add(string.Format(UILangProvider.Current["SrcAnalysis.FrameCountSupplemented"], supplementedCount));
             return string.Join(Environment.NewLine + Environment.NewLine, lines);
         }
 
@@ -455,7 +455,7 @@ namespace OneColumnEncoder.Commands
             message
             + Environment.NewLine
             + Environment.NewLine
-            + string.Format(UILangProviderM.Current["SrcAnalysis.FrameCountSupplemented"], supplementedCount);
+            + string.Format(UILangProvider.Current["SrcAnalysis.FrameCountSupplemented"], supplementedCount);
 
         // Formats an error message with optional queue progress (e.g., "3/10") and a skip-notice suffix for queue mode.
         private static string FormatAnalysisFailureMessage(
@@ -505,7 +505,7 @@ namespace OneColumnEncoder.Commands
         {
             new OpenInfoModalCmd(
                 _modalNavS,
-                UILangProviderM.SrcAnalysisWindowTitle,
+                UILangProvider.SrcAnalysisWindowTitle,
                 message).Execute(null);
         }
 
@@ -513,7 +513,7 @@ namespace OneColumnEncoder.Commands
         {
             new OpenSuccModalCmd(
                 _modalNavS,
-                UILangProviderM.SrcAnalysisWindowTitle,
+                UILangProvider.SrcAnalysisWindowTitle,
                 message).Execute(null);
         }
 

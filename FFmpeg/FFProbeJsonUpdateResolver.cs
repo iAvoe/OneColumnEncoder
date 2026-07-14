@@ -34,13 +34,13 @@ internal static class FFProbeJsonUpdateResolver
     public static string UpdateResolution(string originalJson, int newWidth, int newHeight)
     {
         if (string.IsNullOrWhiteSpace(originalJson))
-            throw new ArgumentException(UILangProviderM.Current["FFProbeJsonUpdate.JsonEmpty"], nameof(originalJson));
+            throw new ArgumentException(UILangProvider.Current["FFProbeJsonUpdate.JsonEmpty"], nameof(originalJson));
         if (newWidth <= 0 || newHeight <= 0)
-            throw new ArgumentOutOfRangeException(nameof(newWidth), UILangProviderM.Current["FFProbeJsonUpdate.DimensionsNotPositive"]);
+            throw new ArgumentOutOfRangeException(nameof(newWidth), UILangProvider.Current["FFProbeJsonUpdate.DimensionsNotPositive"]);
 
         JsonNode? rootNode = JsonNode.Parse(originalJson);
         if (rootNode is not JsonObject rootObject)
-            throw new InvalidOperationException(UILangProviderM.Current["FFProbeJsonUpdate.RootNotObject"]);
+            throw new InvalidOperationException(UILangProvider.Current["FFProbeJsonUpdate.RootNotObject"]);
 
         JsonObject firstStream = GetFirstVideoStream(rootObject);
 
@@ -76,7 +76,7 @@ internal static class FFProbeJsonUpdateResolver
     private static JsonObject GetFirstVideoStream(JsonObject rootObject)
     {
         if (rootObject["streams"] is not JsonArray streamNodes || streamNodes.Count < 1)
-            throw new InvalidOperationException(UILangProviderM.Current["FFProbeJsonUpdate.NoVideoStream"]);
+            throw new InvalidOperationException(UILangProvider.Current["FFProbeJsonUpdate.NoVideoStream"]);
 
         foreach (JsonNode? node in streamNodes)
         {
@@ -86,7 +86,7 @@ internal static class FFProbeJsonUpdateResolver
                 return stream;
         }
 
-        throw new InvalidOperationException(UILangProviderM.Current["FFProbeJsonUpdate.NoVideoStream"]);
+        throw new InvalidOperationException(UILangProvider.Current["FFProbeJsonUpdate.NoVideoStream"]);
     }
 
     private static bool SetIntProperty(JsonObject target, string propertyName, int value, bool addIfMissing)

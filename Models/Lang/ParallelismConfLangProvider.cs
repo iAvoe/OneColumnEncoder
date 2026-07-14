@@ -1,6 +1,6 @@
 ﻿namespace OneColumnEncoder.Models;
 
-public class ParallelismConfLangProviderM
+public class ParallelismConfLangProvider
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -212,7 +212,7 @@ public class ParallelismConfLangProviderM
 
     public string this[string key] => _d.TryGetValue(key, out var v) ? v : key;
 
-    public ParallelismConfLangProviderM(string languageCode)
+    public ParallelismConfLangProvider(string languageCode)
     {
         LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
         _d = Data[LanguageCode];

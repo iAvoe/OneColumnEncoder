@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models;
 
-public class AppUsageLangProviderM
+public class AppUsageLangProvider
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -129,7 +129,7 @@ public class AppUsageLangProviderM
         }
     };
 
-    static AppUsageLangProviderM()
+    static AppUsageLangProvider()
     {
         Data["fr"] = new(Data["en"])
         {
@@ -338,7 +338,7 @@ public class AppUsageLangProviderM
     public string ManualExtIntro { get; }
     public string CloseButtonText { get; }
 
-    public AppUsageLangProviderM(string languageCode)
+    public AppUsageLangProvider(string languageCode)
     {
         var d = Data.TryGetValue(languageCode, out var lang) ? lang : Data["en"];
         HowToUse = d["HowToUse"];

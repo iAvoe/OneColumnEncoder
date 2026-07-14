@@ -18,7 +18,7 @@ namespace OneColumnEncoder.ConcatManagement
         public VideoSourceConcatState(IEnumerable<ToolItemCardVM> videoSrcImportZone)
         {
             _videoSourceConcatCard = videoSrcImportZone.FirstOrDefault(item =>
-                item.Name.Equals(UILangProviderM.Current["Tool.Source.VideoSrcConcat"], StringComparison.OrdinalIgnoreCase));
+                item.Name.Equals(UILangProvider.Current["Tool.Source.VideoSrcConcat"], StringComparison.OrdinalIgnoreCase));
             if (_videoSourceConcatCard != null)
                 _videoSourceConcatCard.UseAutoAddReplaceText = false;
         }
@@ -93,9 +93,9 @@ namespace OneColumnEncoder.ConcatManagement
             if (_videoSourceConcatCard == null) return;
             if (_filePaths.Length > 0)
                 _videoSourceConcatCard.Name = string.Format(
-                    UILangProviderM.Current["Tool.Source.VideoSrcConcatWithCount"], _filePaths.Length);
+                    UILangProvider.Current["Tool.Source.VideoSrcConcatWithCount"], _filePaths.Length);
             else
-                _videoSourceConcatCard.Name = UILangProviderM.Current["Tool.Source.VideoSrcConcat"];
+                _videoSourceConcatCard.Name = UILangProvider.Current["Tool.Source.VideoSrcConcat"];
         }
 
         public void RefreshLanguage()

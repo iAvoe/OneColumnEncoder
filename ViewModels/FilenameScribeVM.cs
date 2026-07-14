@@ -43,23 +43,23 @@ namespace OneColumnEncoder.ViewModels
             private set => SetProperty(ref _videoFilenameFontSize, value);
         }
 
-        public static string WindowTitle => UILangProviderM.FilenameScribeWindowTitle;
-        public static string MiniHeader => UILangProviderM.Current["FilenameScribe.MiniHeader"];
-        public static string PlaceholderText => UILangProviderM.Current["FilenameScribe.Placeholder"];
+        public static string WindowTitle => FilenameScribeModalLangProvider.WindowTitle;
+        public static string MiniHeader => FilenameScribeModalLangProvider.Current["FilenameScribe.MiniHeader"];
+        public static string PlaceholderText => FilenameScribeModalLangProvider.Current["FilenameScribe.Placeholder"];
         public static string ExtensionText => PossibleExtensions;
-        public static string PreviewHeader => UILangProviderM.Current["FilenameScribe.PreviewHeader"];
-        public static string Preview30Label => UILangProviderM.Current["FilenameScribe.Preview30Label"];
-        public static string Preview25Label => UILangProviderM.Current["FilenameScribe.Preview25Label"];
-        public static string Preview20Label => UILangProviderM.Current["FilenameScribe.Preview20Label"];
-        public static string Preview15Label => UILangProviderM.Current["FilenameScribe.Preview15Label"];
-        public static string FormatCheckHeader => UILangProviderM.Current["FilenameScribe.FormatCheckHeader"];
-        public static string SevereIssueHeader => UILangProviderM.Current["FilenameScribe.SevereIssueHeader"];
-        public static string GeneralIssueHeader => UILangProviderM.Current["FilenameScribe.GeneralIssueHeader"];
-        public static string SelfCheckHeader => UILangProviderM.Current["FilenameScribe.SelfCheckHeader"];
-        public static string SelfCheckDate => UILangProviderM.Current["FilenameScribe.SelfCheck1"];
-        public static string SelfCheckSeason => UILangProviderM.Current["FilenameScribe.SelfCheck2"];
-        public static string SelfCheckVersion => UILangProviderM.Current["FilenameScribe.SelfCheck3"];
-        public static string FooterHint => UILangProviderM.Current["FilenameScribe.FooterHint"];
+        public static string PreviewHeader => FilenameScribeModalLangProvider.Current["FilenameScribe.PreviewHeader"];
+        public static string Preview30Label => FilenameScribeModalLangProvider.Current["FilenameScribe.Preview30Label"];
+        public static string Preview25Label => FilenameScribeModalLangProvider.Current["FilenameScribe.Preview25Label"];
+        public static string Preview20Label => FilenameScribeModalLangProvider.Current["FilenameScribe.Preview20Label"];
+        public static string Preview15Label => FilenameScribeModalLangProvider.Current["FilenameScribe.Preview15Label"];
+        public static string FormatCheckHeader => FilenameScribeModalLangProvider.Current["FilenameScribe.FormatCheckHeader"];
+        public static string SevereIssueHeader => FilenameScribeModalLangProvider.Current["FilenameScribe.SevereIssueHeader"];
+        public static string GeneralIssueHeader => FilenameScribeModalLangProvider.Current["FilenameScribe.GeneralIssueHeader"];
+        public static string SelfCheckHeader => FilenameScribeModalLangProvider.Current["FilenameScribe.SelfCheckHeader"];
+        public static string SelfCheckDate => FilenameScribeModalLangProvider.Current["FilenameScribe.SelfCheck1"];
+        public static string SelfCheckSeason => FilenameScribeModalLangProvider.Current["FilenameScribe.SelfCheck2"];
+        public static string SelfCheckVersion => FilenameScribeModalLangProvider.Current["FilenameScribe.SelfCheck3"];
+        public static string FooterHint => FilenameScribeModalLangProvider.Current["FilenameScribe.FooterHint"];
 
         public FilenameScribeVM(Action closeAction, ToolItemCardVM outputSettingItem)
         {
@@ -71,7 +71,7 @@ namespace OneColumnEncoder.ViewModels
             BuildChecklist();
             BuildButtonGroup();
             ValidateFilename();
-            UILangProviderM.CurrentChanged += OnLanguageChanged;
+            UILangProvider.CurrentChanged += OnLanguageChanged;
         }
 
         private void BuildChecklist()
@@ -96,21 +96,21 @@ namespace OneColumnEncoder.ViewModels
         {
             checklist.Clear();
             foreach (var key in keys)
-                checklist.Add(new ChecklistEntryVM { Text = UILangProviderM.Current[key] });
+                checklist.Add(new ChecklistEntryVM { Text = UILangProvider.Current[key] });
         }
 
         private void BuildButtonGroup()
         {
             FilenameActionButtons = ButtonGroupVM.CreateTwoButton(
-                UILangProviderM.Current["FilenameScribe.PasteFromClipboard"],
-                UILangProviderM.Current["FilenameScribe.RotateFontSize"],
+                FilenameScribeModalLangProvider.Current["FilenameScribe.PasteFromClipboard"],
+                FilenameScribeModalLangProvider.Current["FilenameScribe.RotateFontSize"],
                 new ActionCmd(_ => PasteFromClipboard()),
                 RotateFontSizeCmd);
             FilenameActionButtons.B2_1Icon = SvgIconProvider.GamePaste;
 
             FilenameFinishButtons = ButtonGroupVM.CreateTwoButton(
-                UILangProviderM.Current["FilenameScribe.Cancel"],
-                UILangProviderM.Current["FilenameScribe.Confirm"],
+                FilenameScribeModalLangProvider.Current["FilenameScribe.Cancel"],
+                FilenameScribeModalLangProvider.Current["FilenameScribe.Confirm"],
                 CloseCmd,
                 new ActionCmd(_ => Confirm(), _ => FilenameFinishButtons.B2_2IsEnabled));
         }
@@ -214,7 +214,7 @@ namespace OneColumnEncoder.ViewModels
 
         public override void Dispose()
         {
-            UILangProviderM.CurrentChanged -= OnLanguageChanged;
+            UILangProvider.CurrentChanged -= OnLanguageChanged;
             base.Dispose();
             GC.SuppressFinalize(this);
         }

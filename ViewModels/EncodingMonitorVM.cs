@@ -56,13 +56,13 @@ namespace OneColumnEncoder.ViewModels
         private const string PlaceholderGb = "XX.X GB";
         private const string PlaceholderCount = "XX,XXX";
         private const string PlaceholderPercent = "XXX%";
-        private EncodingMonitorModalLangProviderM _lang = new(UILangProviderM.Current.LanguageCode);
-        public EncodingMonitorModalLangProviderM Lang
+        private EncodingMonitorModalLangProvider _lang = new(UILangProvider.Current.LanguageCode);
+        public EncodingMonitorModalLangProvider Lang
         {
             get => _lang;
             private set => SetProperty(ref _lang, value);
         }
-        private CpuSetsLangProviderM _cpuSetsLang = new(UILangProviderM.Current.LanguageCode);
+        private CpuSetsLangProvider _cpuSetsLang = new(UILangProvider.Current.LanguageCode);
         private readonly ModalNavS _modalNavS;
         private readonly Action _closeAction;
         private EncodingPipelineRequest _request;
@@ -106,7 +106,7 @@ namespace OneColumnEncoder.ViewModels
         private Stream? _upstreamStdoutStream;
         private Stream? _encoderStdinStream;
 
-        public string WindowTitle => _isSample ? EncodingMonitorModalLangProviderM.WindowTitleSampleMode : EncodingMonitorModalLangProviderM.WindowTitle;
+        public string WindowTitle => _isSample ? EncodingMonitorModalLangProvider.WindowTitleSampleMode : EncodingMonitorModalLangProvider.WindowTitle;
         public string ProgressTitle => Lang.ProgressTitle;
         public string MemoryTitle => Lang.MemoryTitle;
 
@@ -344,7 +344,7 @@ namespace OneColumnEncoder.ViewModels
             BuildFooter();
             BuildMemoryRangeBlocks();
             _timer.Tick += OnTimerTick;
-            UILangProviderM.CurrentChanged += OnLanguageChanged;
+            UILangProvider.CurrentChanged += OnLanguageChanged;
         }
 
         /// <summary>
@@ -2176,8 +2176,8 @@ namespace OneColumnEncoder.ViewModels
 
         private void RefreshLanguageState()
         {
-            Lang = new EncodingMonitorModalLangProviderM(UILangProviderM.Current.LanguageCode);
-            _cpuSetsLang = new CpuSetsLangProviderM(UILangProviderM.Current.LanguageCode);
+            Lang = new EncodingMonitorModalLangProvider(UILangProvider.Current.LanguageCode);
+            _cpuSetsLang = new CpuSetsLangProvider(UILangProvider.Current.LanguageCode);
             SampleIntervalTickLabels.Clear();
             foreach (string label in Lang.SampleIntervalTickLabels)
                 SampleIntervalTickLabels.Add(label);
@@ -2192,8 +2192,8 @@ namespace OneColumnEncoder.ViewModels
         /// </summary>
         private void RefreshLanguageBindings()
         {
-            Lang = new EncodingMonitorModalLangProviderM(UILangProviderM.Current.LanguageCode);
-            _cpuSetsLang = new CpuSetsLangProviderM(UILangProviderM.Current.LanguageCode);
+            Lang = new EncodingMonitorModalLangProvider(UILangProvider.Current.LanguageCode);
+            _cpuSetsLang = new CpuSetsLangProvider(UILangProvider.Current.LanguageCode);
             FreezeOrContinueText = _isFrozen
                 ? Lang.ContinueMonitoringText
                 : Lang.FreezeContinueText;
@@ -2263,7 +2263,7 @@ namespace OneColumnEncoder.ViewModels
             TryKillProcess(_upstreamProcess);
             _timer.Stop();
             _timer.Tick -= OnTimerTick;
-            UILangProviderM.CurrentChanged -= OnLanguageChanged;
+            UILangProvider.CurrentChanged -= OnLanguageChanged;
             QueueSidebar.PropertyChanged -= OnQueueSidebarPropertyChanged;
             _cts?.Dispose();
             _cts = null;

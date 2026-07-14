@@ -41,7 +41,7 @@ public static partial class CpuSets
         bool physicalOnly,
         int? maxCpuSets,
         int pipeBufferSizeKb,
-        CpuSetsLangProviderM lang,
+        CpuSetsLangProvider lang,
         out string message)
     {
         message = string.Empty;

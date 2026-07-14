@@ -1,4 +1,4 @@
-﻿namespace OneColumnEncoder.Models
+namespace OneColumnEncoder.Models
 {
     public static class ToolDefinitionProviderM
     {
@@ -6,10 +6,10 @@
 
         private static Dictionary<string, ToolDefinitionM> BuildToolDefinitions()
         {
-            string replace = UILangProviderM.Current["Buttons.Replace"];
-            string deleteText = UILangProviderM.Current["Buttons.Delete"];
-            string version = UILangProviderM.Current["ToolField.Version"];
-            string path = UILangProviderM.Current["ToolField.Path"];
+            string replace = UILangProvider.Current["Buttons.Replace"];
+            string deleteText = UILangProvider.Current["Buttons.Delete"];
+            string version = UILangProvider.Current["ToolField.Version"];
+            string path = UILangProvider.Current["ToolField.Path"];
 
             return new()
             {

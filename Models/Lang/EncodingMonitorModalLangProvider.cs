@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models;
 
-public class EncodingMonitorModalLangProviderM
+public class EncodingMonitorModalLangProvider
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -234,7 +234,7 @@ public class EncodingMonitorModalLangProviderM
         }
     };
 
-    static EncodingMonitorModalLangProviderM()
+    static EncodingMonitorModalLangProvider()
     {
         Data["fr"] = new(Data["en"])
         {
@@ -605,7 +605,7 @@ public class EncodingMonitorModalLangProviderM
                 ? fallback
                 : key;
 
-    public EncodingMonitorModalLangProviderM(string languageCode)
+    public EncodingMonitorModalLangProvider(string languageCode)
     {
         LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
         _d = Data[LanguageCode];

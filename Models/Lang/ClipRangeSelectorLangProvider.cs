@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models;
 
-public class ClipRangeSelectorLangProviderM
+public class ClipRangeSelectorLangProvider
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -93,7 +93,7 @@ public class ClipRangeSelectorLangProviderM
         }
     };
 
-    static ClipRangeSelectorLangProviderM()
+    static ClipRangeSelectorLangProvider()
     {
         Data["fr"] = new(Data["en"])
         {
@@ -238,7 +238,7 @@ public class ClipRangeSelectorLangProviderM
     public string SummaryVariableFrameRate { get; }
     public string SummaryFrameRateUnknown { get; }
 
-    public ClipRangeSelectorLangProviderM(string languageCode)
+    public ClipRangeSelectorLangProvider(string languageCode)
     {
         LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
         _d = Data[LanguageCode];

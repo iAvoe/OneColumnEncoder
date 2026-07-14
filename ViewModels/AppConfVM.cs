@@ -1,4 +1,4 @@
-﻿using OneColumnEncoder.Commands.OpenClose;
+using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Commands.SaveLoad;
 using OneColumnEncoder.Components;
 using OneColumnEncoder.UI;
@@ -15,9 +15,9 @@ namespace OneColumnEncoder.ViewModels
     public class AppConfVM : BaseVM
     {
         private readonly AppConfM _appConfM;
-        private AppConfLangProviderM _lang = AppConfLangProviderM.Current;
+        private AppConfLangProvider _lang = AppConfLangProvider.Current;
 
-        public AppConfLangProviderM Lang
+        public AppConfLangProvider Lang
         {
             get => _lang;
             private set => SetProperty(ref _lang, value);
@@ -64,7 +64,7 @@ namespace OneColumnEncoder.ViewModels
             FinishSettingButtons.B3_2Icon = SvgIconProvider.GameDelete;
             FinishSettingButtons.B3_3Icon = SvgIconProvider.GameSave;
             BuildSettingsListing();
-            UILangProviderM.CurrentChanged += OnLanguageChanged;
+            UILangProvider.CurrentChanged += OnLanguageChanged;
         }
 
         #endregion
@@ -183,8 +183,8 @@ namespace OneColumnEncoder.ViewModels
                 e.CancelCommand();
                 textBox.Dispatcher.InvokeAsync(() =>
                     System.Windows.MessageBox.Show(
-                        AppConfLangProviderM.Current["AppConf.Validation.InvalidNumericInput"],
-                        AppConfLangProviderM.Current["AppConf.Validation.InvalidNumericInputTitle"],
+                        AppConfLangProvider.Current["AppConf.Validation.InvalidNumericInput"],
+                        AppConfLangProvider.Current["AppConf.Validation.InvalidNumericInputTitle"],
                     MessageBoxButton.OK, MessageBoxImage.Warning));
             }
         }
@@ -204,21 +204,21 @@ namespace OneColumnEncoder.ViewModels
                 if (string.IsNullOrWhiteSpace(text))
                 {
                     return new ValidationResult(false, string.Format(
-                        AppConfLangProviderM.Current["AppConf.Validation.Required"],
+                        AppConfLangProvider.Current["AppConf.Validation.Required"],
                         FieldName));
                 }
 
                 if (!int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsed))
                 {
                     return new ValidationResult(false, string.Format(
-                        AppConfLangProviderM.Current["AppConf.Validation.IntegerOnly"],
+                        AppConfLangProvider.Current["AppConf.Validation.IntegerOnly"],
                         FieldName));
                 }
 
                 if (MinValue.HasValue && parsed < MinValue.Value)
                 {
                     return new ValidationResult(false, string.Format(
-                        AppConfLangProviderM.Current["AppConf.Validation.Min"],
+                        AppConfLangProvider.Current["AppConf.Validation.Min"],
                         FieldName,
                         MinValue.Value));
                 }
@@ -226,7 +226,7 @@ namespace OneColumnEncoder.ViewModels
                 if (MaxValue.HasValue && parsed > MaxValue.Value)
                 {
                     return new ValidationResult(false, string.Format(
-                        AppConfLangProviderM.Current["AppConf.Validation.Max"],
+                        AppConfLangProvider.Current["AppConf.Validation.Max"],
                         FieldName,
                         MaxValue.Value));
                 }
@@ -270,7 +270,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void OnLanguageChanged()
         {
-            Lang = AppConfLangProviderM.Current;
+            Lang = AppConfLangProvider.Current;
             OnPropertyChanged(nameof(WindowTitle));
             OnPropertyChanged(nameof(HeaderText));
             OnPropertyChanged(nameof(NotificationPolicyHint));
@@ -289,7 +289,7 @@ namespace OneColumnEncoder.ViewModels
 
         public override void Dispose()
         {
-            UILangProviderM.CurrentChanged -= OnLanguageChanged;
+            UILangProvider.CurrentChanged -= OnLanguageChanged;
             base.Dispose();
         }
 

@@ -16,8 +16,8 @@ namespace OneColumnEncoder.FileManagement
 
     public static class SourceFilePicker
     {
-        private static SourceFilePickerLangProviderM Lang =>
-            new(UILangProviderM.Current.LanguageCode);
+        private static SourceFilePickerLangProvider Lang =>
+            new(UILangProvider.Current.LanguageCode);
 
         public static string? GetSource(
             SourceFileKind fileKind,
@@ -43,7 +43,7 @@ namespace OneColumnEncoder.FileManagement
             if (string.IsNullOrWhiteSpace(folderPath) || !Directory.Exists(folderPath))
                 return [];
 
-            string[] extensions = SourceFilePickerLangProviderM.VideoExtensions
+            string[] extensions = SourceFilePickerLangProvider.VideoExtensions
                 .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
                 .Select(extension => extension.TrimStart('*').ToLowerInvariant())
                 .ToArray();
@@ -141,7 +141,7 @@ namespace OneColumnEncoder.FileManagement
 
         private static string GetFilter(SourceFileKind fileKind)
         {
-            SourceFilePickerLangProviderM lang = Lang;
+            SourceFilePickerLangProvider lang = Lang;
 
             return fileKind switch
             {

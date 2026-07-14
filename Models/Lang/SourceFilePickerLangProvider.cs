@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models;
 
-public class SourceFilePickerLangProviderM
+public class SourceFilePickerLangProvider
 {
     public const string VideoExtensions = "*.mkv;*.mp4;*.mov;*.avi;*.m2ts;*.ts;*.webm;*.mxf;*.vob;*.wmv;*.flv;*.f4v;*.asf;*.rm;*.rmvb;*.divx;*.xvid;*.3gp;*.3g2;*.ogv;*.ogg;*.mpg;*.mpeg;*.m1v;*.m2v;*.mp2;*.mpe;*.mpv;*.m4v;*.m4p;*.mp4v;*.dv;*.mts;*.m2t;*.trp;*.tp;*.evo;*.ifo;*.vro;*.bup;*.swf;*.wtv;*.dvr-ms;*.rec;*.yuv;*.y4m;*.hevc;*.h264;*.h265;*.264;*.265;*.vc1;*.avs2;*.avs3;*.ivf;*.drc;*.mj2;*.mjpeg;*.mjpg;*.amv;*.nsv;*.svi;*.viv;*.f4p;*.f4a;*.f4b;*.roq;*.mng;*.gifv;*.qt;*.hdmov;*.mod;*.tod;*.moi;*.pva;*.nsr;*.nut;*.fli;*.flc;*.flic;*.dsm;*.dsv;*.dsa;*.dss;*.ask;*.dat";
 
@@ -35,7 +35,7 @@ public class SourceFilePickerLangProviderM
         }
     };
 
-    static SourceFilePickerLangProviderM()
+    static SourceFilePickerLangProvider()
     {
         Data["fr"] = new(Data["en"])
         {
@@ -87,7 +87,7 @@ public class SourceFilePickerLangProviderM
     public string AllFilesFilter { get; }
     public string CustomScriptModeText { get; }
 
-    public SourceFilePickerLangProviderM(string languageCode)
+    public SourceFilePickerLangProvider(string languageCode)
     {
         LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
         _d = Data[LanguageCode];

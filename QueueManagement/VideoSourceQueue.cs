@@ -13,7 +13,7 @@ namespace OneColumnEncoder.QueueManagement
         public VideoSourceQueueState(IEnumerable<ToolItemCardVM> videoSrcImportZone)
         {
             _videoSourceQueueCard = videoSrcImportZone.FirstOrDefault(item =>
-                item.Name.Equals(UILangProviderM.Current["Tool.Source.VideoSrcQueue"], StringComparison.OrdinalIgnoreCase));
+                item.Name.Equals(UILangProvider.Current["Tool.Source.VideoSrcQueue"], StringComparison.OrdinalIgnoreCase));
             if (_videoSourceQueueCard != null)
                 _videoSourceQueueCard.UseAutoAddReplaceText = false;
         }
@@ -67,8 +67,8 @@ namespace OneColumnEncoder.QueueManagement
 
     public static class VideoSourceQueue
     {
-        private static VideoSourceQueueLangProviderM Lang =>
-            new(UILangProviderM.Current.LanguageCode);
+        private static VideoSourceQueueLangProvider Lang =>
+            new(UILangProvider.Current.LanguageCode);
 
         public static bool IsQueueRouteActive(ToolItemCardVM? videoSourceQueueCard) =>
             videoSourceQueueCard != null && videoSourceQueueCard.IsSelected;
@@ -95,8 +95,8 @@ namespace OneColumnEncoder.QueueManagement
             if (item == null) return;
 
             item.Name = queueCount > 0
-                ? string.Format(UILangProviderM.Current["Tool.Source.VideoSrcQueueWithCount"], queueCount)
-                : UILangProviderM.Current["Tool.Source.VideoSrcQueue"];
+                ? string.Format(UILangProvider.Current["Tool.Source.VideoSrcQueueWithCount"], queueCount)
+                : UILangProvider.Current["Tool.Source.VideoSrcQueue"];
         }
 
         public static string GetQueueP1Text(string[] fileNames) =>

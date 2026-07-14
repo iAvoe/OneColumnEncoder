@@ -136,14 +136,14 @@ namespace OneColumnEncoder.ToolManagement
             string queueKey)
         {
             bool hasPrimary = scriptSrcImportZone.Any(t => t.Name.Equals(
-                UILangProviderM.Current[primaryKey], StringComparison.OrdinalIgnoreCase));
+                UILangProvider.Current[primaryKey], StringComparison.OrdinalIgnoreCase));
             if (hasPrimary)
-                return UILangProviderM.Current[primaryKey];
+                return UILangProvider.Current[primaryKey];
 
             bool hasQueue = scriptSrcImportZone.Any(t => t.Name.Equals(
-                UILangProviderM.Current[queueKey], StringComparison.OrdinalIgnoreCase));
+                UILangProvider.Current[queueKey], StringComparison.OrdinalIgnoreCase));
             if (hasQueue)
-                return UILangProviderM.Current[queueKey];
+                return UILangProvider.Current[queueKey];
 
             return null;
         }

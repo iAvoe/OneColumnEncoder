@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models;
 
-public class FFProbeVideoAnalysisLangProviderM
+public class FFProbeVideoAnalysisLangProvider
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -72,7 +72,7 @@ public class FFProbeVideoAnalysisLangProviderM
 
     public string this[string key] => _d.TryGetValue(key, out var v) ? v : key;
 
-    public FFProbeVideoAnalysisLangProviderM(string languageCode)
+    public FFProbeVideoAnalysisLangProvider(string languageCode)
     {
         LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
         _d = Data[LanguageCode];

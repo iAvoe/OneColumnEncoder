@@ -8,7 +8,7 @@ namespace OneColumnEncoder.FFmpeg
 {
     public static class FFProbeVideoAnalysis
     {
-        private static FFProbeVideoAnalysisLangProviderM Lang => new(UILangProviderM.Current.LanguageCode);
+        private static FFProbeVideoAnalysisLangProvider Lang => new(UILangProvider.Current.LanguageCode);
 
         public static async Task<string> AnalyzeAsync(string ffprobePath, string videoSource, string showEntries = "stream")
         {

@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models;
 
-public class ImgABPvLangProviderM
+public class ImgABPvLangProvider
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -120,7 +120,7 @@ public class ImgABPvLangProviderM
         },
     };
 
-    static ImgABPvLangProviderM()
+    static ImgABPvLangProvider()
     {
         Data["fr"] = new(Data["en"])
         {
@@ -316,7 +316,7 @@ public class ImgABPvLangProviderM
     public string ButteraugliToolPresent { get; }
     public string ButteraugliScoreHint { get; }
 
-    public ImgABPvLangProviderM(string languageCode)
+    public ImgABPvLangProvider(string languageCode)
     {
         LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
         _d = Data[LanguageCode];

@@ -23,7 +23,7 @@ namespace OneColumnEncoder.Commands.OpenClose
             ConfirmationModal window = new();
             CloseModalCmd closeCmd = new(window.Close);
             ConfirmationVM vm = ConfirmationVM.CreateSuccess(
-                UILangProviderM.SrcAnalysisWindowTitle,
+                UILangProvider.SrcAnalysisWindowTitle,
                 _message,
                 closeCmd,
                 closeCmd);
@@ -42,10 +42,10 @@ namespace OneColumnEncoder.Commands.OpenClose
         private static void AddJsonActions(ConfirmationVM vm, string jsonPath, string openTextKey, string copyTextKey)
         {
             vm.ContextMenuItems.Add(new(
-                UILangProviderM.Current[openTextKey],
+                UILangProvider.Current[openTextKey],
                 new ActionCmd(_ => OpenJsonPath(jsonPath))));
             vm.ContextMenuItems.Add(new(
-                UILangProviderM.Current[copyTextKey],
+                UILangProvider.Current[copyTextKey],
                 new ActionCmd(_ => Clipboard.SetText(jsonPath))));
         }
 

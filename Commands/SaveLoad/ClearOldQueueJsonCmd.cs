@@ -8,7 +8,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
     {
         public override void Execute(object? parameter)
         {
-            AppConfLangProviderM lang = AppConfLangProviderM.Current;
+            AppConfLangProvider lang = AppConfLangProvider.Current;
             string directory = SaveLoadBase<AppConfM>.GetConfigDirectory();
             if (!Directory.Exists(directory))
             {

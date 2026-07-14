@@ -17,14 +17,14 @@ namespace OneColumnEncoder.ViewModels
         private readonly int _suggestedWidth;
         private readonly int _suggestedHeight;
 
-        public string WindowTitle => UILangProviderM.Current["ReviseSourceResolution.Title"];
-        public string Description => UILangProviderM.Current["ReviseSourceResolution.Description"];
-        public string SettingsHeader => UILangProviderM.Current["ReviseSourceResolution.SettingsHeader"];
-        public string WidthLabel => UILangProviderM.Current["ReviseSourceResolution.WidthLabel"];
-        public string HeightLabel => UILangProviderM.Current["ReviseSourceResolution.HeightLabel"];
-        public string CurrentResolutionLabel => UILangProviderM.Current["ReviseSourceResolution.CurrentLabel"];
-        public string SuggestedResolutionLabel => UILangProviderM.Current["ReviseSourceResolution.SuggestedLabel"];
-        public string EvenResolutionHint => UILangProviderM.Current["ReviseSourceResolution.EvenResolutionHint"];
+        public string WindowTitle => ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.Title"];
+        public string Description => ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.Description"];
+        public string SettingsHeader => ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.SettingsHeader"];
+        public string WidthLabel => ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.WidthLabel"];
+        public string HeightLabel => ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.HeightLabel"];
+        public string CurrentResolutionLabel => ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.CurrentLabel"];
+        public string SuggestedResolutionLabel => ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.SuggestedLabel"];
+        public string EvenResolutionHint => ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.EvenResolutionHint"];
         public string CurrentResolutionText => FormatResolution(_currentWidth, _currentHeight);
         public string SuggestedResolutionText => FormatResolution(_suggestedWidth, _suggestedHeight);
 
@@ -74,19 +74,19 @@ namespace OneColumnEncoder.ViewModels
             UseSuggestedResolutionCommand = new ActionCmd(_ => SetResolutionText(_suggestedWidth, _suggestedHeight), _ => _suggestedWidth > 0 && _suggestedHeight > 0);
 
             FinishButtons = ButtonGroupVM.CreateTwoButton(
-                UILangProviderM.Current["ReviseSourceResolution.Cancel"],
-                UILangProviderM.Current["ReviseSourceResolution.Confirm"],
+                ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.Cancel"],
+                ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.Confirm"],
                 new CloseModalCmd(closeAction),
                 new ActionCmd(_ => Confirm()));
 
-            UILangProviderM.CurrentChanged += OnLanguageChanged;
+            UILangProvider.CurrentChanged += OnLanguageChanged;
         }
 
         private void Confirm()
         {
             if (!TryParseResolution(out int width, out int height))
             {
-                ShowError(UILangProviderM.Current["ReviseSourceResolution.InvalidInput"]);
+                ShowError(ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.InvalidInput"]);
                 return;
             }
 
@@ -125,8 +125,8 @@ namespace OneColumnEncoder.ViewModels
 
         private static string FormatResolution(int width, int height) =>
             width > 0 && height > 0
-                ? string.Format(UILangProviderM.Current["ReviseSourceResolution.ResolutionFormat"], width, height)
-                : UILangProviderM.Current["ReviseSourceResolution.UnknownResolution"];
+                ? string.Format(ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.ResolutionFormat"], width, height)
+                : ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.UnknownResolution"];
         #endregion
 
         private void ShowError(string message)
@@ -147,13 +147,13 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(CurrentResolutionText));
             OnPropertyChanged(nameof(SuggestedResolutionText));
 
-            FinishButtons.B2_1Text = UILangProviderM.Current["ReviseSourceResolution.Cancel"];
-            FinishButtons.B2_2Text = UILangProviderM.Current["ReviseSourceResolution.Confirm"];
+            FinishButtons.B2_1Text = ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.Cancel"];
+            FinishButtons.B2_2Text = ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.Confirm"];
         }
 
         public override void Dispose()
         {
-            UILangProviderM.CurrentChanged -= OnLanguageChanged;
+            UILangProvider.CurrentChanged -= OnLanguageChanged;
             base.Dispose();
         }
     }

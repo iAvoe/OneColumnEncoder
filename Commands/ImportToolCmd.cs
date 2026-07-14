@@ -1,4 +1,4 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.ToolManagement;
 using OneColumnEncoder.Models;
@@ -66,8 +66,8 @@ namespace OneColumnEncoder.Commands
         {
             new OpenErrModalCmd(
                 _modalNavS,
-                UILangProviderM.Current["Import.VersionDetectTimeoutTitle"],
-                string.Format(UILangProviderM.Current["Import.VersionDetectTimeoutMessage"], toolName)).Execute(null);
+                UILangProvider.Current["Import.VersionDetectTimeoutTitle"],
+                string.Format(UILangProvider.Current["Import.VersionDetectTimeoutMessage"], toolName)).Execute(null);
         }
 
         internal static bool ShouldSkipFileNameValidation(string toolName) =>
@@ -123,13 +123,13 @@ namespace OneColumnEncoder.Commands
             string toolName, string dialogTitleFormat, ModalNavS modalNavS)
         {
             string filter = toolName.Equals("AviSynth.dll", StringComparison.OrdinalIgnoreCase)
-                ? UILangProviderM.Current["Dialog.Filter.Dll"]
-                : UILangProviderM.Current["Dialog.Filter.Exe"];
+                ? UILangProvider.Current["Dialog.Filter.Dll"]
+                : UILangProvider.Current["Dialog.Filter.Exe"];
 
             OpenFileDialog dialog = new()
             {
                 Filter = filter,
-                Title = string.Format(UILangProviderM.Current[dialogTitleFormat], toolName),
+                Title = string.Format(UILangProvider.Current[dialogTitleFormat], toolName),
                 CheckFileExists = true,
                 CheckPathExists = true
             };

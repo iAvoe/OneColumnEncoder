@@ -1,14 +1,14 @@
-﻿using OneColumnEncoder.Commands.OpenClose;
+using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Models;
 
 namespace OneColumnEncoder.ViewModels
 {
     public class AppUsageVM : BaseVM
     {
-        public string WindowTitle => AppUsageLangProviderM.WindowTitle;
+        public string WindowTitle => AppUsageLangProvider.WindowTitle;
         public CloseModalCmd? CloseCmd { get; }
-        private AppUsageLangProviderM _lang;
-        public AppUsageLangProviderM Lang
+        private AppUsageLangProvider _lang;
+        public AppUsageLangProvider Lang
         {
             get => _lang;
             private set => SetProperty(ref _lang, value);
@@ -16,16 +16,16 @@ namespace OneColumnEncoder.ViewModels
         public AppUsageVM(AppConfM appConfM, Action closeAction)
         {
             CloseCmd = new CloseModalCmd(closeAction);
-            _lang = new AppUsageLangProviderM(appConfM.Lang.LanguageCode);
-            UILangProviderM.CurrentChanged += OnLanguageChanged;
+            _lang = new AppUsageLangProvider(appConfM.Lang.LanguageCode);
+            UILangProvider.CurrentChanged += OnLanguageChanged;
         }
 
         private void OnLanguageChanged() =>
-            Lang = new AppUsageLangProviderM(UILangProviderM.Current.LanguageCode);
+            Lang = new AppUsageLangProvider(UILangProvider.Current.LanguageCode);
 
         public override void Dispose()
         {
-            UILangProviderM.CurrentChanged -= OnLanguageChanged;
+            UILangProvider.CurrentChanged -= OnLanguageChanged;
             base.Dispose();
         }
     }

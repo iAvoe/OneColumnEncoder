@@ -20,8 +20,8 @@ namespace OneColumnEncoder.ViewModels.Cards
         public new void RefreshLanguage()
         {
             base.RefreshLanguage();
-            Name = UILangProviderM.Current["Cards.QueueSourceFilter"];
-            Subtitle = UILangProviderM.Current["Cards.QueueSourceFilterSubtitle"];
+            Name = UILangProvider.Current["Cards.QueueSourceFilter"];
+            Subtitle = UILangProvider.Current["Cards.QueueSourceFilterSubtitle"];
             P1Name = UICaptionProviderM.Cards.SourceIncompatOrCorrupted;
             P3Name = UICaptionProviderM.Cards.SrcQualityIssues;
         }

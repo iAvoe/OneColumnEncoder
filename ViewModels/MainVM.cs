@@ -1,4 +1,4 @@
-﻿using OneColumnEncoder.Commands;
+using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
 using static OneColumnEncoder.Json.JsonElementHelper;
 using OneColumnEncoder.Commands.SaveLoad;
@@ -192,8 +192,8 @@ namespace OneColumnEncoder.ViewModels
 
         public string ToggleMiniUpstreamsZoneText =>
             IsMiniUpstreamsZone
-                ? UILangProviderM.Current["Expand"]
-                : UILangProviderM.Current["Collapse"];
+                ? UILangProvider.Current["Expand"]
+                : UILangProvider.Current["Collapse"];
 
         public bool IsMiniEncodersZone
         {
@@ -251,48 +251,48 @@ namespace OneColumnEncoder.ViewModels
 
         public string ToggleMiniEncodersZoneText =>
             IsMiniEncodersZone
-                ? UILangProviderM.Current["Expand"]
-                : UILangProviderM.Current["Collapse"];
+                ? UILangProvider.Current["Expand"]
+                : UILangProvider.Current["Collapse"];
 
         public string ToggleMiniAnalyticsZoneText =>
             IsMiniAnalyticsZone
-                ? UILangProviderM.Current["Expand"]
-                : UILangProviderM.Current["Collapse"];
+                ? UILangProvider.Current["Expand"]
+                : UILangProvider.Current["Collapse"];
 
         public string ToggleMiniDependenciesZoneText =>
             IsMiniDependenciesZone
-                ? UILangProviderM.Current["Expand"]
-                : UILangProviderM.Current["Collapse"];
+                ? UILangProvider.Current["Expand"]
+                : UILangProvider.Current["Collapse"];
 
         public string ToggleMiniVideoSrcImportZoneText =>
             IsMiniVideoSrcImportZone
-                ? UILangProviderM.Current["Expand"]
-                : UILangProviderM.Current["Collapse"];
+                ? UILangProvider.Current["Expand"]
+                : UILangProvider.Current["Collapse"];
 
         public string ToggleMiniScriptSrcImportZoneText =>
             IsMiniScriptSrcImportZone
-                ? UILangProviderM.Current["Expand"]
-                : UILangProviderM.Current["Collapse"];
+                ? UILangProvider.Current["Expand"]
+                : UILangProvider.Current["Collapse"];
 
         public string ToggleMiniEncodingConfZoneText =>
             IsMiniEncodingConfZone
-                ? UILangProviderM.Current["Expand"]
-                : UILangProviderM.Current["Collapse"];
+                ? UILangProvider.Current["Expand"]
+                : UILangProvider.Current["Collapse"];
 
         public string ToggleMiniBestPracticesCardText =>
             IsMiniBestPracticesCard
-                ? UILangProviderM.Current["Expand"]
-                : UILangProviderM.Current["Collapse"];
+                ? UILangProvider.Current["Expand"]
+                : UILangProvider.Current["Collapse"];
 
         public string ToggleMiniToolsImportCardText =>
             IsMiniToolsImportCard
-                ? UILangProviderM.Current["Expand"]
-                : UILangProviderM.Current["Collapse"];
+                ? UILangProvider.Current["Expand"]
+                : UILangProvider.Current["Collapse"];
 
         public string ToggleMiniStartEncodingZoneText =>
             IsMiniStartEncodingZone
-                ? UILangProviderM.Current["Expand"]
-                : UILangProviderM.Current["Collapse"];
+                ? UILangProvider.Current["Expand"]
+                : UILangProvider.Current["Collapse"];
 
         public bool IsDurationFilterEnabled
         {
@@ -504,7 +504,7 @@ namespace OneColumnEncoder.ViewModels
 
             // Restore encoding cards after source import so output defaults can sync with source state.
             ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t => t.Name.Equals(
-                UILangProviderM.Current["Tool.Enc.OutputSetting"],
+                UILangProvider.Current["Tool.Enc.OutputSetting"],
                 StringComparison.OrdinalIgnoreCase));
             _outputSettingCard = outputSetting;
 
@@ -518,7 +518,7 @@ namespace OneColumnEncoder.ViewModels
 
             // Load saved parallelism settings onto the card
             ToolItemCardVM? parallelismCard = EncodingConfZone.FirstOrDefault(t => t.Name.Equals(
-                UILangProviderM.Current["Tool.Enc.Parallelism"],
+                UILangProvider.Current["Tool.Enc.Parallelism"],
                 StringComparison.OrdinalIgnoreCase));
             if (parallelismCard != null)
                 ParallelismConfVM.ApplySavedSettingsToCard(parallelismCard);
@@ -720,13 +720,13 @@ namespace OneColumnEncoder.ViewModels
             EncTermsValCard.GetOutputDirectoryFunc = () =>
             {
                 ToolItemCardVM? output = EncodingConfZone.FirstOrDefault(t =>
-                    t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+                    t.Name.Equals(UILangProvider.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
                 return output?.P2TextData ?? string.Empty;
             };
             EncTermsValCard.GetOutputFilePathFunc = () =>
             {
                 ToolItemCardVM? output = EncodingConfZone.FirstOrDefault(t =>
-                    t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+                    t.Name.Equals(UILangProvider.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
                 if (output is null || string.IsNullOrWhiteSpace(output.P2TextData) || string.IsNullOrWhiteSpace(output.P1TextData))
                     return string.Empty;
 
@@ -762,7 +762,7 @@ namespace OneColumnEncoder.ViewModels
 
             _modalNavS.CurrentViewModelChanged += OnModalStateChanged;
             IsOverlayVisible = _modalNavS.IsOpen;
-            UILangProviderM.CurrentChanged += OnLanguageChanged;
+            UILangProvider.CurrentChanged += OnLanguageChanged;
             RefreshLanguage();
             SubToAllZoneItemChanges();
             RefreshAllZoneSelectedPaths();
@@ -784,8 +784,8 @@ namespace OneColumnEncoder.ViewModels
                 if (candidates.Count == 0)
                 {
                     ShowAutoImportInfo(
-                        UILangProviderM.Current["AutoImport.Title"],
-                        UILangProviderM.Current["AutoImport.NotFoundMessage"]);
+                        UILangProvider.Current["AutoImport.Title"],
+                        UILangProvider.Current["AutoImport.NotFoundMessage"]);
                     return;
                 }
 
@@ -806,15 +806,15 @@ namespace OneColumnEncoder.ViewModels
         private bool ShowAutoImportConfirmation(IReadOnlyList<AutoToolImport.Candidate> candidates)
         {
             string itemText = string.Join(Environment.NewLine, candidates.Select(candidate => string.Format(
-                UILangProviderM.Current["AutoImport.ItemFormat"],
+                UILangProvider.Current["AutoImport.ItemFormat"],
                 candidate.ExeName,
                 candidate.Version,
                 candidate.FilePath)));
-            string message = string.Format(UILangProviderM.Current["AutoImport.FoundMessage"], itemText);
+            string message = string.Format(UILangProvider.Current["AutoImport.FoundMessage"], itemText);
 
             ConfirmationModal window = new();
             ConfirmationVM vm = ConfirmationVM.CreateInfo(
-                UILangProviderM.Current["AutoImport.Title"],
+                UILangProvider.Current["AutoImport.Title"],
                 message,
                 new ActionCmd(_ => { window.DialogResult = false; window.Close(); }),
                 new ActionCmd(_ => { window.DialogResult = true; window.Close(); }));
@@ -1016,7 +1016,7 @@ namespace OneColumnEncoder.ViewModels
         private void SyncOutputFilenameWithVideoSource(string? filePath = null)
         {
             ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t =>
-                t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+                t.Name.Equals(UILangProvider.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
             if (outputSetting == null) return;
 
             string? sourcePath = filePath;
@@ -1493,13 +1493,13 @@ namespace OneColumnEncoder.ViewModels
                 EncodingConfZone[1].R1Command = new OpenParallelismConfCmd(_modalNavS, EncodingConfZone[1]);
 
             ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t =>
-                t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+                t.Name.Equals(UILangProvider.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
 
             if (outputSetting != null)
                 RefreshOutputSettingCommand(outputSetting);
 
             ToolItemCardVM? compressionParams = EncodingConfZone.FirstOrDefault(t =>
-                t.Name.Equals(UILangProviderM.Current["Tool.Enc.EncParams"], StringComparison.OrdinalIgnoreCase));
+                t.Name.Equals(UILangProvider.Current["Tool.Enc.EncParams"], StringComparison.OrdinalIgnoreCase));
 
             if (compressionParams != null)
             {
@@ -1664,7 +1664,7 @@ namespace OneColumnEncoder.ViewModels
                         ClearSourceItem(item);
                         SaveSourcePath(kind, string.Empty);
                         _appDataM.Save();
-                        new OpenErrModalCmd(_modalNavS, UILangProviderM.Current["Warn.SourceCheck"], error).Execute(null);
+                        new OpenErrModalCmd(_modalNavS, UILangProvider.Current["Warn.SourceCheck"], error).Execute(null);
                         RefreshSelectedSourceStatus(resetAnalysis: false);
                         return;
                     }
@@ -1726,8 +1726,8 @@ namespace OneColumnEncoder.ViewModels
             ConfirmationModal window = new();
             CloseModalCmd cancelCmd = new(window.Close);
             ConfirmationVM vm = ConfirmationVM.CreateInfo(
-                UILangProviderM.ScriptGenWindowTitle,
-                UILangProviderM.Current["ScriptGen.RunAfterReplace"],
+                UILangProvider.ScriptGenWindowTitle,
+                UILangProvider.Current["ScriptGen.RunAfterReplace"],
                 cancelCmd,
                 new ActionCmd(_ =>
                 {
@@ -1852,7 +1852,7 @@ namespace OneColumnEncoder.ViewModels
             if (error != null)
             {
                 ClearSourceItem(item);
-                new OpenErrModalCmd(_modalNavS, UILangProviderM.Current["Warn.SourceCheck"], error).Execute(null);
+                new OpenErrModalCmd(_modalNavS, UILangProvider.Current["Warn.SourceCheck"], error).Execute(null);
                 RefreshSelectedSourceStatus(resetAnalysis: false);
                 return;
             }
@@ -1890,13 +1890,13 @@ namespace OneColumnEncoder.ViewModels
                 string detail = issue.Kind switch
                 {
                     ScriptSourceValidationIssueKind.NoMatchingVideoSource =>
-                        string.Format(UILangProviderM.Current["ScriptQueueImport.DetailNoMatch"], fileName),
+                        string.Format(UILangProvider.Current["ScriptQueueImport.DetailNoMatch"], fileName),
                     ScriptSourceValidationIssueKind.NoMatchingScriptFile =>
-                        string.Format(UILangProviderM.Current["ScriptQueueImport.DetailNoScript"], fileName),
+                        string.Format(UILangProvider.Current["ScriptQueueImport.DetailNoScript"], fileName),
                     ScriptSourceValidationIssueKind.UnreadableScript =>
-                        string.Format(UILangProviderM.Current["ScriptQueueImport.DetailUnreadable"], fileName),
+                        string.Format(UILangProvider.Current["ScriptQueueImport.DetailUnreadable"], fileName),
                     _ => string.Format(
-                        UILangProviderM.Current["ScriptQueueImport.DetailMismatch"],
+                        UILangProvider.Current["ScriptQueueImport.DetailMismatch"],
                         fileName,
                         issue.EmbeddedPath ?? string.Empty,
                         issue.ExpectedPath ?? string.Empty)
@@ -1905,9 +1905,9 @@ namespace OneColumnEncoder.ViewModels
             }
 
             int omitted = issues.Count - Math.Min(issues.Count, maxDetails);
-            string msg = string.Format(UILangProviderM.Current["ScriptQueueImport.RejectedPrefix"], noVideoSrcCount + noScriptCount, mismatchCount);
-            msg += "\n\n" + UILangProviderM.Current["ScriptQueueImport.DetailsHeader"] + "\n" + string.Join("\n", details);
-            if (omitted > 0) msg += "\n" + string.Format(UILangProviderM.Current["ScriptQueueImport.MoreCount"], omitted);
+            string msg = string.Format(UILangProvider.Current["ScriptQueueImport.RejectedPrefix"], noVideoSrcCount + noScriptCount, mismatchCount);
+            msg += "\n\n" + UILangProvider.Current["ScriptQueueImport.DetailsHeader"] + "\n" + string.Join("\n", details);
+            if (omitted > 0) msg += "\n" + string.Format(UILangProvider.Current["ScriptQueueImport.MoreCount"], omitted);
             return msg;
         }
 
@@ -2050,7 +2050,7 @@ namespace OneColumnEncoder.ViewModels
             ToolItemCardVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected && t.IsEnabled && !string.IsNullOrWhiteSpace(t.P2TextData));
             ToolItemCardVM? encoder = EncodersZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
             ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t =>
-                t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+                t.Name.Equals(UILangProvider.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
 
             if (upstream == null || encoder == null || outputSetting == null) return null;
 
@@ -2102,7 +2102,7 @@ namespace OneColumnEncoder.ViewModels
             ToolItemCardVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected && t.IsEnabled && !string.IsNullOrWhiteSpace(t.P2TextData));
             ToolItemCardVM? encoder = EncodersZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
             ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t =>
-                t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+                t.Name.Equals(UILangProvider.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
 
             if (upstream == null || encoder == null || outputSetting == null) return null;
 
@@ -2232,7 +2232,7 @@ namespace OneColumnEncoder.ViewModels
             ToolItemCardVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected && t.IsEnabled && !string.IsNullOrWhiteSpace(t.P2TextData));
             ToolItemCardVM? encoder = EncodersZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
             ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t =>
-                t.Name.Equals(UILangProviderM.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+                t.Name.Equals(UILangProvider.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
 
             if (upstream == null || encoder == null || outputSetting == null) return null;
 
@@ -2294,10 +2294,10 @@ namespace OneColumnEncoder.ViewModels
         private string? TryReviseSourceResolution(int width, int height)
         {
             if (width <= 0 || height <= 0 || width > MaxResolutionDimension || height > MaxResolutionDimension)
-                return UILangProviderM.Current["ReviseSourceResolution.InvalidInput"];
+                return ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.InvalidInput"];
 
             if (string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson))
-                return UILangProviderM.Current["ReviseSourceResolution.NoFfprobeJson"];
+                return ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.NoFfprobeJson"];
 
             try
             {
@@ -2306,7 +2306,7 @@ namespace OneColumnEncoder.ViewModels
                 {
                     string queueJsonPath = GetCurrentQueueJsonPath();
                     if (string.IsNullOrWhiteSpace(queueJsonPath) || !File.Exists(queueJsonPath))
-                        return UILangProviderM.Current["ReviseSourceResolution.NoFfprobeJson"];
+                        return ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.NoFfprobeJson"];
 
                     ReviseQueueSourceResolution(queueJsonPath, width, height);
                 }
@@ -2327,7 +2327,7 @@ namespace OneColumnEncoder.ViewModels
             }
             catch (Exception ex)
             {
-                return string.Format(UILangProviderM.Current["ReviseSourceResolution.UpdateFailed"], ex.Message);
+                return string.Format(ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.UpdateFailed"], ex.Message);
             }
         }
 
@@ -2746,7 +2746,7 @@ namespace OneColumnEncoder.ViewModels
             new OpenErrModalCmd(
                 _modalNavS,
                 UICaptionProviderM.SourceInspect.ErrorTitle,
-                UILangProviderM.Current["ReviseSourceResolution.NoFfprobeJson"]).Execute(null);
+                ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.NoFfprobeJson"]).Execute(null);
         }
 
         #region Language Switching
@@ -2927,7 +2927,7 @@ namespace OneColumnEncoder.ViewModels
         public override void Dispose()
         {
             // Release retained event handlers and command references so the VM can be collected.
-            UILangProviderM.CurrentChanged -= OnLanguageChanged;
+            UILangProvider.CurrentChanged -= OnLanguageChanged;
             _modalNavS.CurrentViewModelChanged -= OnModalStateChanged;
             ToolsImportCard.ToolImported -= OnToolImported;
             AnalyticsZone.CollectionChanged -= OnAnalyticsZoneCollectionChanged;

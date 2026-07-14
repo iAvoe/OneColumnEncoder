@@ -1,4 +1,4 @@
-﻿using Microsoft.Win32;
+using Microsoft.Win32;
 using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.FFmpeg;
@@ -96,14 +96,14 @@ namespace OneColumnEncoder.ViewModels
                 return _baseAvsPrefix;
             }
         }
-        public static string AvsPrefix2 => UILangProviderM.Current["SrcScribe.AvsPrefix2"];
+        public static string AvsPrefix2 => FilterScribeModalLangProvider.Current["SrcScribe.AvsPrefix2"];
         private string _avsUserInput = "";
         public string AvsUserInput
         {
             get => _avsUserInput;
             set => SetProperty(ref _avsUserInput, value);
         }
-        public static string AvsSuffix => UILangProviderM.Current["SrcScribe.AvsSuffix"];
+        public static string AvsSuffix => FilterScribeModalLangProvider.Current["SrcScribe.AvsSuffix"];
 
         private string _baseVpyPrefix;
         public string VpyPrefix
@@ -130,8 +130,8 @@ namespace OneColumnEncoder.ViewModels
             get => _vpyUserInput;
             set => SetProperty(ref _vpyUserInput, value);
         }
-        public static string VpyPrefix2 => UILangProviderM.Current["SrcScribe.VpyPrefix2"];
-        public static string VpySuffix => UILangProviderM.Current["SrcScribe.VpySuffix"];
+        public static string VpyPrefix2 => FilterScribeModalLangProvider.Current["SrcScribe.VpyPrefix2"];
+        public static string VpySuffix => FilterScribeModalLangProvider.Current["SrcScribe.VpySuffix"];
         #endregion
 
         #region Resolution scaling
@@ -174,8 +174,8 @@ namespace OneColumnEncoder.ViewModels
 
         public string ScaleNotApplicableText =>
             !HasSource
-                ? UILangProviderM.Current["SrcScribe.NoVidSrcWarning"]
-                : string.Format(UILangProviderM.Current["SrcScribe.ScaleNotApplicable"], 16);
+                ? FilterScribeModalLangProvider.Current["SrcScribe.NoVidSrcWarning"]
+                : string.Format(FilterScribeModalLangProvider.Current["SrcScribe.ScaleNotApplicable"], 16);
 
         private int _scalePercent = 100;
         public int ScalePercent
@@ -311,11 +311,11 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        public static string VapourSynthVszipclTitle => UILangProviderM.Current["SrcScribe.VszipclTitle"];
-        public static string VapourSynthVszipclPreviewHint => UILangProviderM.Current["SrcScribe.VszipclPreviewHint"];
-        public static string VapourSynthVszipclDeviceHint => UILangProviderM.Current["SrcScribe.VszipclDeviceHint"];
+        public static string VapourSynthVszipclTitle => FilterScribeModalLangProvider.Current["SrcScribe.VszipclTitle"];
+        public static string VapourSynthVszipclPreviewHint => FilterScribeModalLangProvider.Current["SrcScribe.VszipclPreviewHint"];
+        public static string VapourSynthVszipclDeviceHint => FilterScribeModalLangProvider.Current["SrcScribe.VszipclDeviceHint"];
         public bool VapourSynthVszipclHasFmtconv => _sourceBitDepth != 8 && _sourceBitDepth != 16 && _sourceBitDepth != 32;
-        public string VapourSynthVszipclFmtconvHint => string.Format(UILangProviderM.Current["SrcScribe.VszipclFmtconvHint"], _sourceBitDepth);
+        public string VapourSynthVszipclFmtconvHint => string.Format(FilterScribeModalLangProvider.Current["SrcScribe.VszipclFmtconvHint"], _sourceBitDepth);
         public static string FfmpegSubtitleFilter =>
             "-filter_complex \"ass='X\\:/path/to/subtitle.ass':fontsdir='Y\\:/dir/of/fonts'\"";
 
@@ -501,26 +501,26 @@ namespace OneColumnEncoder.ViewModels
         public static string FfmpegText => "ffmpeg";
         public static string VapourSynthText => "VS";
         public static string AviSynthText => "AVS(+)";
-        public static string WindowTitle => UILangProviderM.FltScribeWindowTitle;
-        public static string ScribeDescription => UILangProviderM.Current["SrcScribe.Description"];
-        public static string NoteText => UILangProviderM.Current["SrcScribe.NoteText"];
-        public static string TabAvs => UILangProviderM.Current["SrcScribe.TabAvs"];
-        public static string TabVpy => UILangProviderM.Current["SrcScribe.TabVpy"];
-        public static string TabFfmpeg => UILangProviderM.Current["SrcScribe.TabFfmpeg"];
-        public static string ResolutionScaleTitle => UILangProviderM.Current["SrcScribe.ResolutionScaleTitle"];
-        public static string ScalePercentLabel => UILangProviderM.Current["SrcScribe.ScalePercentLabel"];
-        public static string FfmpegFreeTextHint => UILangProviderM.Current["SrcScribe.FfmpegFreeTextHint"];
-        public static string SarRepairTitle => UILangProviderM.Current["SrcScribe.SarRepairTitle"];
-        public static string FrameRateConvertTitle => UILangProviderM.Current["SrcScribe.FrameRateConvertTitle"];
-        public static string ColorSpaceConvertTitle => UILangProviderM.Current["SrcScribe.ColorSpaceConvertTitle"];
-        public static string DenoiseTitle => UILangProviderM.Current["SrcScribe.DenoiseTitle"];
-        public static string SubtitleBurnTitle => UILangProviderM.Current["SrcScribe.SubtitleBurnTitle"];
-        public static string MultiFilterAssemblyTitle => UILangProviderM.Current["SrcScribe.MultiFilterAssemblyTitle"];
+        public static string WindowTitle => FilterScribeModalLangProvider.WindowTitle;
+        public static string ScribeDescription => FilterScribeModalLangProvider.Current["SrcScribe.Description"];
+        public static string NoteText => FilterScribeModalLangProvider.Current["SrcScribe.NoteText"];
+        public static string TabAvs => FilterScribeModalLangProvider.Current["SrcScribe.TabAvs"];
+        public static string TabVpy => FilterScribeModalLangProvider.Current["SrcScribe.TabVpy"];
+        public static string TabFfmpeg => FilterScribeModalLangProvider.Current["SrcScribe.TabFfmpeg"];
+        public static string ResolutionScaleTitle => FilterScribeModalLangProvider.Current["SrcScribe.ResolutionScaleTitle"];
+        public static string ScalePercentLabel => FilterScribeModalLangProvider.Current["SrcScribe.ScalePercentLabel"];
+        public static string FfmpegFreeTextHint => FilterScribeModalLangProvider.Current["SrcScribe.FfmpegFreeTextHint"];
+        public static string SarRepairTitle => FilterScribeModalLangProvider.Current["SrcScribe.SarRepairTitle"];
+        public static string FrameRateConvertTitle => FilterScribeModalLangProvider.Current["SrcScribe.FrameRateConvertTitle"];
+        public static string ColorSpaceConvertTitle => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpaceConvertTitle"];
+        public static string DenoiseTitle => FilterScribeModalLangProvider.Current["SrcScribe.DenoiseTitle"];
+        public static string SubtitleBurnTitle => FilterScribeModalLangProvider.Current["SrcScribe.SubtitleBurnTitle"];
+        public static string MultiFilterAssemblyTitle => FilterScribeModalLangProvider.Current["SrcScribe.MultiFilterAssemblyTitle"];
         public static string LowToHighColorFilterLabel => "NCG";
         public static string HighToLowColorFilterLabel => "WCG";
         public static string HdrToSdrColorFilterLabel => "HDR→SDR";
         public static string HighHdrToLowSdrColorFilterLabel => "H&W→SDR";
-        public static string ColorSpacePeakNitsHint => UILangProviderM.Current["SrcScribe.ColorSpacePeakNitsHint"];
+        public static string ColorSpacePeakNitsHint => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpacePeakNitsHint"];
         #endregion
 
         public ButtonGroupVM ScriptExportButtons { get; private set; } = null!;
@@ -570,8 +570,8 @@ namespace OneColumnEncoder.ViewModels
             _vspipePath = vspipePath;
             _vspipeY4mArg = vspipeY4mArg;
             _getTotalFrames = getTotalFrames;
-            _baseAvsPrefix = UILangProviderM.Current["SrcScribe.AvsPrefix"];
-            _baseVpyPrefix = UILangProviderM.Current["SrcScribe.VpyPrefix"];
+            _baseAvsPrefix = FilterScribeModalLangProvider.Current["SrcScribe.AvsPrefix"];
+            _baseVpyPrefix = FilterScribeModalLangProvider.Current["SrcScribe.VpyPrefix"];
             _hasSourceAnalysis = !string.IsNullOrWhiteSpace(sourceFfprobeJson);
             OpenVpyPreviewCommand = new ActionCmd(_ => OpenVpyPreview(), _ => CanOpenVpyPreview);
             ConfigureConcatSources();
@@ -579,7 +579,7 @@ namespace OneColumnEncoder.ViewModels
             ParseSourceResolution(sourceFfprobeJson);
             ParseFrameRateInfo(sourceFfprobeJson);
             BuildButtonGroups();
-            UILangProviderM.CurrentChanged += OnLanguageChanged;
+            UILangProvider.CurrentChanged += OnLanguageChanged;
         }
 
         private void ConfigureConcatSources()
@@ -649,7 +649,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void RefreshConcatSourceLanguage()
         {
-            EncodingMonitorModalLangProviderM lang = new(UILangProviderM.Current.LanguageCode);
+            EncodingMonitorModalLangProvider lang = new(UILangProvider.Current.LanguageCode);
             ConcatSources.RefreshLanguage(
                 lang.QueueItemRemoveText,
                 lang.QueueItemMoveUpText,
@@ -716,18 +716,18 @@ namespace OneColumnEncoder.ViewModels
         private void BuildButtonGroups()
         {
             ScriptExportButtons = ButtonGroupVM.CreateThreeButton(
-                UILangProviderM.Current["SrcScribe.CopyFull"],
-                UILangProviderM.Current["SrcScribe.CopyInOut"],
-                UILangProviderM.Current["SrcScribe.SaveAsFile"],
+                FilterScribeModalLangProvider.Current["SrcScribe.CopyFull"],
+                FilterScribeModalLangProvider.Current["SrcScribe.CopyInOut"],
+                FilterScribeModalLangProvider.Current["SrcScribe.SaveAsFile"],
                 new ActionCmd(_ => CopyFullScript()),
                 new ActionCmd(_ => CopyInOutSection()),
                 new ActionCmd(_ => SaveAsFile()));
             ScriptExportButtons.B3_3Icon = SvgIconProvider.GameSave;
 
             FinishScribeButtons = ButtonGroupVM.CreateThreeButton(
-                UILangProviderM.Current["SrcScribe.Cancel"],
-                UILangProviderM.Current["SrcScribe.ApplyFfmpegOnly"],
-                UILangProviderM.Current["SrcScribe.Confirm"],
+                FilterScribeModalLangProvider.Current["SrcScribe.Cancel"],
+                FilterScribeModalLangProvider.Current["SrcScribe.ApplyFfmpegOnly"],
+                FilterScribeModalLangProvider.Current["SrcScribe.Confirm"],
                 CloseCmd,
                 new ActionCmd(_ => ApplyFfmpegFilterArgsOnly()),
                 new ActionCmd(_ => SaveAndImportAll()));
@@ -757,8 +757,8 @@ namespace OneColumnEncoder.ViewModels
             Clipboard.SetText(GetCurrentFullScript());
             new OpenSuccModalCmd(
                 _modalNavS,
-                UILangProviderM.FltScribeWindowTitle,
-                UILangProviderM.Current["SrcScribe.CopiedFull"]).Execute(null);
+                FilterScribeModalLangProvider.WindowTitle,
+                FilterScribeModalLangProvider.Current["SrcScribe.CopiedFull"]).Execute(null);
         }
         private void CopyInOutSection()
         {
@@ -781,8 +781,8 @@ namespace OneColumnEncoder.ViewModels
                 Clipboard.SetText(concatInOutText);
                 new OpenSuccModalCmd(
                     _modalNavS,
-                    UILangProviderM.FltScribeWindowTitle,
-                    UILangProviderM.Current["SrcScribe.CopiedSection"]).Execute(null);
+                    FilterScribeModalLangProvider.WindowTitle,
+                    FilterScribeModalLangProvider.Current["SrcScribe.CopiedSection"]).Execute(null);
                 return;
             }
 
@@ -799,8 +799,8 @@ namespace OneColumnEncoder.ViewModels
             Clipboard.SetText(inOutText);
             new OpenSuccModalCmd(
                 _modalNavS,
-                UILangProviderM.FltScribeWindowTitle,
-                UILangProviderM.Current["SrcScribe.CopiedSection"]).Execute(null);
+                FilterScribeModalLangProvider.WindowTitle,
+                FilterScribeModalLangProvider.Current["SrcScribe.CopiedSection"]).Execute(null);
         }
         private void SaveAsFile()
         {
@@ -832,8 +832,8 @@ namespace OneColumnEncoder.ViewModels
 
             string filter = SelectedTabIndex switch
             {
-                0 => UILangProviderM.Current["SrcScribe.FilterAvs"],
-                1 => UILangProviderM.Current["SrcScribe.FilterVpy"],
+                0 => FilterScribeModalLangProvider.Current["SrcScribe.FilterAvs"],
+                1 => FilterScribeModalLangProvider.Current["SrcScribe.FilterVpy"],
                 _ => "Text files (*.txt)|*.txt"
             };
 
@@ -846,7 +846,7 @@ namespace OneColumnEncoder.ViewModels
 
             SaveFileDialog dialog = new()
             {
-                Title = UILangProviderM.Current["SrcScribe.SavingWindowTitle"],
+                Title = FilterScribeModalLangProvider.Current["SrcScribe.SavingWindowTitle"],
                 Filter = filter,
                 FileName = GetScriptFileName(sourcePath, extension)
             };
@@ -864,7 +864,7 @@ namespace OneColumnEncoder.ViewModels
 
             OpenFolderDialog dialog = new()
             {
-                Title = UILangProviderM.Current["SrcScribe.SavingWindowTitle"]
+                Title = FilterScribeModalLangProvider.Current["SrcScribe.SavingWindowTitle"]
             };
 
             if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
@@ -894,8 +894,8 @@ namespace OneColumnEncoder.ViewModels
 
             new OpenSuccModalCmd(
                 _modalNavS,
-                UILangProviderM.FltScribeWindowTitle,
-                string.Format(UILangProviderM.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, savedPaths))).Execute(null);
+                FilterScribeModalLangProvider.WindowTitle,
+                string.Format(UILangProvider.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, savedPaths))).Execute(null);
         }
 
         private void ExecuteConcatSaveAsFile()
@@ -916,8 +916,8 @@ namespace OneColumnEncoder.ViewModels
 
             string filter = SelectedTabIndex switch
             {
-                0 => UILangProviderM.Current["SrcScribe.FilterAvs"],
-                1 => UILangProviderM.Current["SrcScribe.FilterVpy"],
+                0 => FilterScribeModalLangProvider.Current["SrcScribe.FilterAvs"],
+                1 => FilterScribeModalLangProvider.Current["SrcScribe.FilterVpy"],
                 _ => "Text files (*.txt)|*.txt"
             };
 
@@ -930,7 +930,7 @@ namespace OneColumnEncoder.ViewModels
 
             SaveFileDialog dialog = new()
             {
-                Title = UILangProviderM.Current["SrcScribe.SavingWindowTitle"],
+                Title = FilterScribeModalLangProvider.Current["SrcScribe.SavingWindowTitle"],
                 Filter = filter,
                 FileName = BrowseSourceQueueCmd.FormatConcatFileName(concatPaths) + "_concat" + extension
             };
@@ -949,7 +949,7 @@ namespace OneColumnEncoder.ViewModels
 
             OpenFolderDialog dialog = new()
             {
-                Title = UILangProviderM.SavingScriptWindowTitle
+                Title = FilterScribeModalLangProvider.SavingScriptWindowTitle
             };
 
             if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
@@ -999,8 +999,8 @@ namespace OneColumnEncoder.ViewModels
 
             new OpenSuccModalCmd(
                 _modalNavS,
-                UILangProviderM.FltScribeWindowTitle,
-                string.Format(UILangProviderM.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, savedPaths))).Execute(null);
+                FilterScribeModalLangProvider.WindowTitle,
+                string.Format(UILangProvider.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, savedPaths))).Execute(null);
             _closeAction();
         }
 
@@ -1032,8 +1032,8 @@ namespace OneColumnEncoder.ViewModels
 
             SaveFileDialog dialog = new()
             {
-                Title = UILangProviderM.SavingScriptWindowTitle,
-                Filter = UILangProviderM.Current["SrcScribe.FilterAvs"],
+                Title = FilterScribeModalLangProvider.SavingScriptWindowTitle,
+                Filter = FilterScribeModalLangProvider.Current["SrcScribe.FilterAvs"],
                 FileName = GetScriptFileName(sourcePath, ".avs")
             };
 
@@ -1063,8 +1063,8 @@ namespace OneColumnEncoder.ViewModels
             SelectPreferredScriptItem();
             new OpenSuccModalCmd(
                 _modalNavS,
-                UILangProviderM.FltScribeWindowTitle,
-                string.Format(UILangProviderM.Current["ScriptGen.ScriptsSaved"], $"{avsPath}\n{vpyPath}")).Execute(null);
+                FilterScribeModalLangProvider.WindowTitle,
+                string.Format(UILangProvider.Current["ScriptGen.ScriptsSaved"], $"{avsPath}\n{vpyPath}")).Execute(null);
             _closeAction();
         }
 
@@ -1094,8 +1094,8 @@ namespace OneColumnEncoder.ViewModels
 
             SaveFileDialog dialog = new()
             {
-                Title = UILangProviderM.SavingScriptWindowTitle,
-                Filter = UILangProviderM.Current["SrcScribe.FilterAvs"],
+                Title = FilterScribeModalLangProvider.SavingScriptWindowTitle,
+                Filter = FilterScribeModalLangProvider.Current["SrcScribe.FilterAvs"],
                 FileName = BrowseSourceQueueCmd.FormatConcatFileName(concatPaths) + "_concat.avs"
             };
 
@@ -1127,8 +1127,8 @@ namespace OneColumnEncoder.ViewModels
             SelectPreferredScriptItem();
             new OpenSuccModalCmd(
                 _modalNavS,
-                UILangProviderM.FltScribeWindowTitle,
-                string.Format(UILangProviderM.Current["ScriptGen.ScriptsSaved"], $"{avsPath}\n{vpyPath}")).Execute(null);
+                FilterScribeModalLangProvider.WindowTitle,
+                string.Format(UILangProvider.Current["ScriptGen.ScriptsSaved"], $"{avsPath}\n{vpyPath}")).Execute(null);
             _closeAction();
         }
 
@@ -1138,8 +1138,8 @@ namespace OneColumnEncoder.ViewModels
 
             new OpenErrModalCmd(
                 _modalNavS,
-                UILangProviderM.Current["SrcScribe.ConcatNeedMultipleSourcesTitle"],
-                UILangProviderM.Current["SrcScribe.ConcatNeedMultipleSources"]).Execute(null);
+                FilterScribeModalLangProvider.Current["SrcScribe.ConcatNeedMultipleSourcesTitle"],
+                FilterScribeModalLangProvider.Current["SrcScribe.ConcatNeedMultipleSources"]).Execute(null);
             return false;
         }
 
@@ -1255,16 +1255,16 @@ namespace OneColumnEncoder.ViewModels
         {
             new OpenErrModalCmd(
                 _modalNavS,
-                UILangProviderM.FltScribeWindowTitle,
-                string.Format(UILangProviderM.Current["SrcScribe.FailedToSave"], ex.Message)).Execute(null);
+                FilterScribeModalLangProvider.WindowTitle,
+                string.Format(FilterScribeModalLangProvider.Current["SrcScribe.FailedToSave"], ex.Message)).Execute(null);
         }
 
         private void ShowSavedMessage(string path)
         {
             new OpenSuccModalCmd(
                 _modalNavS,
-                UILangProviderM.FltScribeWindowTitle,
-                string.Format(UILangProviderM.Current["SrcScribe.ScriptSaved"], path)).Execute(null);
+                FilterScribeModalLangProvider.WindowTitle,
+                string.Format(FilterScribeModalLangProvider.Current["SrcScribe.ScriptSaved"], path)).Execute(null);
         }
 
         #region VapourSynth Preview
@@ -1416,8 +1416,8 @@ namespace OneColumnEncoder.ViewModels
         #region Language switching
         private void OnLanguageChanged()
         {
-            _baseAvsPrefix = UILangProviderM.Current["SrcScribe.AvsPrefix"];
-            _baseVpyPrefix = UILangProviderM.Current["SrcScribe.VpyPrefix"];
+            _baseAvsPrefix = FilterScribeModalLangProvider.Current["SrcScribe.AvsPrefix"];
+            _baseVpyPrefix = FilterScribeModalLangProvider.Current["SrcScribe.VpyPrefix"];
 
             OnPropertyChanged(nameof(WindowTitle));
             OnPropertyChanged(nameof(ScribeDescription));
@@ -1479,7 +1479,7 @@ namespace OneColumnEncoder.ViewModels
 
         public override void Dispose()
         {
-            UILangProviderM.CurrentChanged -= OnLanguageChanged;
+            UILangProvider.CurrentChanged -= OnLanguageChanged;
             base.Dispose();
             GC.SuppressFinalize(this);
         }

@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models;
 
-public class AnalyzeSrcVideoCmdLangProviderM
+public class AnalyzeSrcVideoCmdLangProvider
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -104,7 +104,7 @@ public class AnalyzeSrcVideoCmdLangProviderM
 
     public string this[string key] => _d.TryGetValue(key, out var v) ? v : key;
 
-    public AnalyzeSrcVideoCmdLangProviderM(string languageCode)
+    public AnalyzeSrcVideoCmdLangProvider(string languageCode)
     {
         LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
         _d = Data[LanguageCode];

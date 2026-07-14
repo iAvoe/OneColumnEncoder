@@ -10,8 +10,8 @@ namespace OneColumnEncoder.ViewModels
 {
     public class ParallelismConfVM : BaseVM
     {
-        private ParallelismConfLangProviderM _lang = new(UILangProviderM.Current.LanguageCode);
-        public ParallelismConfLangProviderM Lang
+        private ParallelismConfLangProvider _lang = new(UILangProvider.Current.LanguageCode);
+        public ParallelismConfLangProvider Lang
         {
             get => _lang;
             private set => SetProperty(ref _lang, value);
@@ -79,7 +79,7 @@ namespace OneColumnEncoder.ViewModels
             set => SetProperty(ref _optimizePipeBufferSize, value);
         }
 
-        public static string WindowTitle => ParallelismConfLangProviderM.WindowTitle;
+        public static string WindowTitle => ParallelismConfLangProvider.WindowTitle;
         public string IntroText => Lang.IntroText;
         public string PriorityText => Lang.PriorityText;
         public string CacheGroupTitle => Lang.CacheGroupTitle;
@@ -105,7 +105,7 @@ namespace OneColumnEncoder.ViewModels
         {
             _model = ParallelismConfM.LoadEffective();
             _targetItem = targetItem;
-            Lang = new ParallelismConfLangProviderM(UILangProviderM.Current.LanguageCode);
+            Lang = new ParallelismConfLangProvider(UILangProvider.Current.LanguageCode);
             CloseCmd = new CloseModalCmd(closeAction);
             ConfirmCmd = new ActionCmd(_ =>
             {
@@ -124,7 +124,7 @@ namespace OneColumnEncoder.ViewModels
             BuildNodesFromTopology(UpstreamNodes, SelectUpstreamNodeCmd);
             BuildNodesFromTopology(DownstreamNodes, SelectDownstreamNodeCmd);
             LoadModelToUi();
-            UILangProviderM.CurrentChanged += OnLanguageChanged;
+            UILangProvider.CurrentChanged += OnLanguageChanged;
         }
 
         private static void BuildNodesFromTopology(ObservableCollection<CPUNodeCardVM> nodes, ICommand selectCommand)
@@ -266,7 +266,7 @@ namespace OneColumnEncoder.ViewModels
 
         private static string BuildCacheGroupHint()
         {
-            ParallelismConfLangProviderM lang = new(UILangProviderM.Current.LanguageCode);
+            ParallelismConfLangProvider lang = new(UILangProvider.Current.LanguageCode);
             CpuTopology.CacheGroupInfo? cacheTopology = CpuTopology.GetCacheTopology();
             if (cacheTopology == null)
             {
@@ -302,7 +302,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void OnLanguageChanged()
         {
-            Lang = new ParallelismConfLangProviderM(UILangProviderM.Current.LanguageCode);
+            Lang = new ParallelismConfLangProvider(UILangProvider.Current.LanguageCode);
             OnPropertyChanged(nameof(WindowTitle));
             OnPropertyChanged(nameof(IntroText));
             OnPropertyChanged(nameof(PriorityText));
@@ -362,7 +362,7 @@ namespace OneColumnEncoder.ViewModels
 
         public override void Dispose()
         {
-            UILangProviderM.CurrentChanged -= OnLanguageChanged;
+            UILangProvider.CurrentChanged -= OnLanguageChanged;
             base.Dispose();
         }
     }

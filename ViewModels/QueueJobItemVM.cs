@@ -11,7 +11,7 @@ namespace OneColumnEncoder.ViewModels
     {
         private readonly EncodingPipelineRequest? _request = DeserializeRequest(model.SerializedRequest);
         private readonly QueueJobItemM _model = model;
-        private readonly EncodingMonitorModalLangProviderM _queueLang = new(UILangProviderM.Current.LanguageCode);
+        private readonly EncodingMonitorModalLangProvider _queueLang = new(UILangProvider.Current.LanguageCode);
         private bool _isSidebarSelected;
         private bool _canMoveUp;
         private bool _canMoveDown;
@@ -201,7 +201,7 @@ namespace OneColumnEncoder.ViewModels
                 : null;
 
             if (frameCount is > 0)
-                return $"{new ClipRangeSelectorLangProviderM(UILangProviderM.Current.LanguageCode).SummaryTotalFramesLabel}: {frameCount:N0}";
+                return $"{new ClipRangeSelectorLangProvider(UILangProvider.Current.LanguageCode).SummaryTotalFramesLabel}: {frameCount:N0}";
 
             return "N/A";
         }

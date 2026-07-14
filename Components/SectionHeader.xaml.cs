@@ -1,4 +1,4 @@
-﻿using OneColumnEncoder.Models;
+using OneColumnEncoder.Models;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -45,13 +45,13 @@ namespace OneColumnEncoder.Components
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            UILangProviderM.CurrentChanged -= OnLanguageChanged;
-            UILangProviderM.CurrentChanged += OnLanguageChanged;
+            UILangProvider.CurrentChanged -= OnLanguageChanged;
+            UILangProvider.CurrentChanged += OnLanguageChanged;
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
-            UILangProviderM.CurrentChanged -= OnLanguageChanged;
+            UILangProvider.CurrentChanged -= OnLanguageChanged;
         }
 
         private void OnLanguageChanged()

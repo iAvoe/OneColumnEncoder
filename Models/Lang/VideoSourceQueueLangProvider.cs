@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models;
 
-public class VideoSourceQueueLangProviderM
+public class VideoSourceQueueLangProvider
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -54,7 +54,7 @@ public class VideoSourceQueueLangProviderM
         }
     };
 
-    static VideoSourceQueueLangProviderM()
+    static VideoSourceQueueLangProvider()
     {
         Data["fr"] = new(Data["en"])
         {
@@ -140,7 +140,7 @@ public class VideoSourceQueueLangProviderM
     public string SourceQueueOpenQueueJson { get; }
     public string SourceQueueOpenExcludedJson { get; }
 
-    public VideoSourceQueueLangProviderM(string languageCode)
+    public VideoSourceQueueLangProvider(string languageCode)
     {
         LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
         _d = Data[LanguageCode];

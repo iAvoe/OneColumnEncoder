@@ -31,8 +31,8 @@ namespace OneColumnEncoder.Commands
             {
                 new OpenErrModalCmd(
                     _modalNavS,
-                    UILangProviderM.Current["Import.VersionDetectTimeoutTitle"],
-                    string.Format(UILangProviderM.Current["Import.VersionDetectTimeoutMessage"], def.ExeName)).Execute(null);
+                    UILangProvider.Current["Import.VersionDetectTimeoutTitle"],
+                    string.Format(UILangProvider.Current["Import.VersionDetectTimeoutMessage"], def.ExeName)).Execute(null);
                 return;
             }
 

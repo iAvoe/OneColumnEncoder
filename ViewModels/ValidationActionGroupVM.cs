@@ -44,8 +44,8 @@ namespace OneColumnEncoder.ViewModels
         }
 
         public string ToggleMiniText => IsMini
-            ? UILangProviderM.Current["Expand"]
-            : UILangProviderM.Current["Collapse"];
+            ? UILangProvider.Current["Expand"]
+            : UILangProvider.Current["Collapse"];
 
         public void RefreshLanguage() => OnPropertyChanged(nameof(ToggleMiniText));
     }

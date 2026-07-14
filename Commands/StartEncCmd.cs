@@ -1,4 +1,4 @@
-﻿using OneColumnEncoder.Commands.OpenClose;
+using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Pipeline;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
@@ -37,7 +37,7 @@ namespace OneColumnEncoder.Commands
         private readonly Func<bool>? _isConcatRoute = isConcatRoute;
         private readonly Func<EncodingPipelineRequest?>? _buildConcatRequest = buildConcatRequest;
         private readonly Func<bool>? _isConcatRouteSupported = isConcatRouteSupported;
-        private static StartEncCmdLangProviderM Lang => new(UILangProviderM.Current.LanguageCode);
+        private static StartEncCmdLangProvider Lang => new(UILangProvider.Current.LanguageCode);
 
         public override void Execute(object? parameter)
         {
