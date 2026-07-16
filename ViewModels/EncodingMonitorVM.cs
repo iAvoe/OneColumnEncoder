@@ -7,6 +7,7 @@ using OneColumnEncoder.CPU;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.Views;
+using OneColumnEncoder.UI;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -332,6 +333,7 @@ namespace OneColumnEncoder.ViewModels
                 new ActionCmd(_ => TryInterruptUpstream()),
                 new ActionCmd(_ => TryInterruptEncoder()),
                 CloseCmd);
+            FinishButtons.B5_2Icon = SvgIconProvider.GameDoc;
             FinishButtons.B5_5IsEnabled = false;
 
             QueueSidebar = new QueueSidebarVM(enableQueueSidebar);
