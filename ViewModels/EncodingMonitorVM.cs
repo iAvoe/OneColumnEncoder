@@ -320,12 +320,16 @@ namespace OneColumnEncoder.ViewModels
                 FreezeOrContinueCmd,
                 ResetStatsCmd);
             MonitorButtons.B2_1Icon = SvgIconProvider.GamePause;
+            MonitorButtons.B2_2Icon = SvgIconProvider.GameRefresh;
 
             ReportButtons = ButtonGroupVM.CreateThreeButton(
                 Lang.SaveUpstreamStderrText, Lang.SaveDownstreamStderrText, Lang.RotateLogFontSizeText,
                 new ActionCmd(_ => SaveTextAndShowPath(UpstreamReportText, "upstream-stderr.txt")),
                 new ActionCmd(_ => SaveTextAndShowPath(DownstreamReportText, "downstream-stderr.txt")),
                 new ActionCmd(_ => RotateLogFontSize()));
+            ReportButtons.B3_1Icon = SvgIconProvider.GameSave;
+            ReportButtons.B3_2Icon = SvgIconProvider.GameSave;
+            ReportButtons.B3_3Icon = SvgIconProvider.GameReplace;
 
             FinishButtons = ButtonGroupVM.CreateFiveButton(
                 Lang.OpenOutputDirectoryText, Lang.ViewEncodingCommandText, Lang.InterruptUpstreamText, Lang.InterruptEncoderText, Lang.CloseAfterDoneText,
@@ -334,7 +338,10 @@ namespace OneColumnEncoder.ViewModels
                 new ActionCmd(_ => TryInterruptUpstream()),
                 new ActionCmd(_ => TryInterruptEncoder()),
                 CloseCmd);
+            FinishButtons.B5_1Icon = SvgIconProvider.GameLocation;
             FinishButtons.B5_2Icon = SvgIconProvider.GameDoc;
+            FinishButtons.B5_3Icon = SvgIconProvider.GameXMark;
+            FinishButtons.B5_4Icon = SvgIconProvider.GameXMark;
             FinishButtons.B5_5IsEnabled = false;
 
             QueueSidebar = new QueueSidebarVM(enableQueueSidebar);
