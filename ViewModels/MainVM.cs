@@ -606,6 +606,8 @@ namespace OneColumnEncoder.ViewModels
             FilterScbButtons.B2_2Icon = SvgIconProvider.GameFilter;
             AnalyzeSrcButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProvider.Buttons.CopyRawAnalysis, UICaptionProvider.Buttons.AnalyzeSrcVideo, CopyRawAnalysis, AnalyzeSrcVideo);
+            AnalyzeSrcButtons.B2_1Icon = SvgIconProvider.GameDoc;
+            AnalyzeSrcButtons.B2_2Icon = SvgIconProvider.GameScan;
             EncStartButtons = ButtonGroupVM.CreateThreeButton( // UpdateEncStartButtonsState()
                 UICaptionProvider.Buttons.ReEvaluate, UICaptionProvider.Buttons.RunSample, UICaptionProvider.Buttons.StartEncode,
                 new ActionCmd(_ => ReEvaluateAllChecks()), SampleClip, StartEncode);

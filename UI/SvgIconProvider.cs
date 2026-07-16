@@ -28,6 +28,8 @@ internal static class SvgIconProvider
     public static ImageSource GamePlay { get; }
     public static ImageSource GameRefresh { get; }
     public static ImageSource GameFilter { get; }
+    public static ImageSource GameScan { get; }
+    public static ImageSource GameDoc { get; }
 
     private static SolidColorBrush Brush(string hex) =>
         new((Color)ColorConverter.ConvertFromString(hex)!);
@@ -337,6 +339,16 @@ internal static class SvgIconProvider
         Add(gameFilter, new EllipseGeometry(new Point(6.55, 6.375), 1.15, 1.15), filterStroke);
         SetBounds(gameFilter);
         GameFilter = new DrawingImage(gameFilter);
+
+        DrawingGroup gameScan = new();
+        Add(gameScan, "M2.35 6.1a.45.45 0 0 1 .45.45c0 .233 0 .35.047.438a.4.4 0 0 0 .165.165c.088.047.205.047.438.047a.45.45 0 0 1 0 .9h-.46c-.46 0-.69 0-.85-.12a.6.6 0 0 1-.12-.12c-.12-.16-.12-.39-.12-.85v-.46a.45.45 0 0 1 .45-.45m5.3 0a.45.45 0 0 1 .45.45v.46c0 .46 0 .69-.12.85a.6.6 0 0 1-.12.12c-.16.12-.39.12-.85.12h-.46a.45.45 0 0 1 0-.9c.234 0 .35 0 .439-.047a.4.4 0 0 0 .164-.165C7.2 6.9 7.2 6.783 7.2 6.55a.45.45 0 0 1 .45-.45m.05-1.45a.35.35 0 0 1 0 .7H2.3a.35.35 0 1 1 0-.7zM3.45 1.9a.45.45 0 0 1 0 .9c-.233 0-.35 0-.438.047a.4.4 0 0 0-.165.165C2.8 3.1 2.8 3.217 2.8 3.45a.45.45 0 0 1-.9 0v-.46c0-.46 0-.69.12-.85a.6.6 0 0 1 .12-.12c.16-.12.39-.12.85-.12zm3.56 0c.46 0 .69 0 .85.12a.6.6 0 0 1 .12.12c.12.16.12.39.12.85v.46a.45.45 0 1 1-.9 0c0-.233 0-.35-.047-.438a.4.4 0 0 0-.164-.165C6.9 2.8 6.784 2.8 6.55 2.8a.45.45 0 0 1 0-.9z", white);
+        SetBounds(gameScan);
+        GameScan = new DrawingImage(gameScan);
+
+        DrawingGroup gameDoc = new();
+        Add(gameDoc, "M5.3 1.948c.349 0 .524 0 .685.056q.034.013.07.028c.155.068.283.188.54.426l.35.326c.282.263.423.395.505.563l.032.075c.067.174.068.367.068.753v2.357c0 .678 0 1.017-.192 1.241a1 1 0 0 1-.089.088c-.225.192-.564.192-1.241.19l-2.06-.001c-.676-.001-1.014-.002-1.238-.194a1 1 0 0 1-.089-.087c-.191-.225-.191-.564-.191-1.24V3.468c0-.677 0-1.015.192-1.24a1 1 0 0 1 .089-.088c.224-.192.563-.192 1.24-.192zM3.75 6.4a.401.401 0 0 0 0 .801h1.5a.4.4 0 0 0 0-.8zM3.75 5a.4.4 0 0 0 0 .8h2a.4.4 0 0 0 0-.8zm1.658-2.432a.4.4 0 0 0-.21.086c-.148.12-.148.428-.148 1.043 0 .283 0 .425.069.527a.4.4 0 0 0 .107.107c.102.069.244.07.527.07.615 0 .922-.001 1.042-.15a.4.4 0 0 0 .087-.208c.02-.19-.197-.408-.632-.843-.434-.435-.652-.652-.842-.632", white);
+        SetBounds(gameDoc);
+        GameDoc = new DrawingImage(gameDoc);
 
     }
 
