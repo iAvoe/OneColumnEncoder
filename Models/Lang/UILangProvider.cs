@@ -1,4 +1,4 @@
-namespace OneColumnEncoder.Models;
+namespace OneColumnEncoder.Models.Lang;
 
 public class UILangProvider
 {
@@ -1338,7 +1338,7 @@ public class UILangProvider
         ["Cards.BestSoftware"] = "Программное (самопроверка)",
         ["Cards.BestPracticesSubtitle"] = "Рекомендация — не блокирует",
         ["Buttons.UsageAndCompliance"] = "Исп. и соблюд.",
-        ["Buttons.Settings"] = "Настр.",
+        ["Buttons.Settings"] = "Настройки",
         ["Buttons.OneClickScriptGen"] = "Генерация скриптов",
         ["Buttons.OpenScribeSrcScribe"] = "Редактор фильтров",
         ["Buttons.CopyRawAnalysis"] = "Копир. JSON",

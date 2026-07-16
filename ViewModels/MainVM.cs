@@ -603,6 +603,7 @@ namespace OneColumnEncoder.ViewModels
             OpenAppConfButtons.B2_2Icon = SvgIconProvider.GameSetting;
             FilterScbButtons = ButtonGroupVM.CreateTwoButton( // UpdateFilterScbButtonsState()
                 UICaptionProvider.Buttons.OneClickScriptGen, UICaptionProvider.Buttons.OpenScribeSrcScribe, OneClickScriptGen, OpenFilterScribe);
+            FilterScbButtons.B2_2Icon = SvgIconProvider.GameFilter;
             AnalyzeSrcButtons = ButtonGroupVM.CreateTwoButton(
                 UICaptionProvider.Buttons.CopyRawAnalysis, UICaptionProvider.Buttons.AnalyzeSrcVideo, CopyRawAnalysis, AnalyzeSrcVideo);
             EncStartButtons = ButtonGroupVM.CreateThreeButton( // UpdateEncStartButtonsState()

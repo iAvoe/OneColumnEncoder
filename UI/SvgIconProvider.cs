@@ -27,6 +27,7 @@ internal static class SvgIconProvider
     public static ImageSource GamePhone { get; }
     public static ImageSource GamePlay { get; }
     public static ImageSource GameRefresh { get; }
+    public static ImageSource GameFilter { get; }
 
     private static SolidColorBrush Brush(string hex) =>
         new((Color)ColorConverter.ConvertFromString(hex)!);
@@ -321,6 +322,21 @@ internal static class SvgIconProvider
         Add(gameRefreshGroup, replaceRefreshGeo, white);
         SetBounds(gameRefreshGroup);
         GameRefresh = new DrawingImage(gameRefreshGroup);
+
+        Pen filterStroke = new(white, 0.6)
+        {
+            LineJoin = PenLineJoin.Round,
+            StartLineCap = PenLineCap.Round,
+            EndLineCap = PenLineCap.Round
+        };
+        filterStroke.Freeze();
+
+        DrawingGroup gameFilter = new();
+        Add(gameFilter, new EllipseGeometry(new Point(5, 3.625), 1.15, 1.15), filterStroke);
+        Add(gameFilter, new EllipseGeometry(new Point(3.45, 6.375), 1.15, 1.15), filterStroke);
+        Add(gameFilter, new EllipseGeometry(new Point(6.55, 6.375), 1.15, 1.15), filterStroke);
+        SetBounds(gameFilter);
+        GameFilter = new DrawingImage(gameFilter);
 
     }
 
