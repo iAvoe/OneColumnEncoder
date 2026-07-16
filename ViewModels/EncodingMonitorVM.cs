@@ -319,6 +319,7 @@ namespace OneColumnEncoder.ViewModels
                 Lang.UpdateUsageText,
                 FreezeOrContinueCmd,
                 ResetStatsCmd);
+            MonitorButtons.B2_1Icon = SvgIconProvider.GamePause;
 
             ReportButtons = ButtonGroupVM.CreateThreeButton(
                 Lang.SaveUpstreamStderrText, Lang.SaveDownstreamStderrText, Lang.RotateLogFontSizeText,

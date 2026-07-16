@@ -26,6 +26,7 @@ internal static class SvgIconProvider
     public static ImageSource GameLocation { get; }
     public static ImageSource GamePhone { get; }
     public static ImageSource GamePlay { get; }
+    public static ImageSource GamePause { get; }
     public static ImageSource GameRefresh { get; }
     public static ImageSource GameFilter { get; }
     public static ImageSource GameScan { get; }
@@ -320,6 +321,11 @@ internal static class SvgIconProvider
         Add(gamePlayGroup, "M6.25925 3.6287C7.05468 4.22127 7.4524 4.51756 7.48962 4.91637C7.49481 4.972 7.49481 5.028 7.48962 5.08363C7.4524 5.48244 7.05468 5.77873 6.25925 6.3713L5.77501 6.73205C5.01262 7.3 4.63143 7.58398 4.31216 7.57055C4.05461 7.55971 3.81407 7.43895 3.65151 7.23889C3.45001 6.99089 3.45001 6.51554 3.45001 5.56486V5V4.43514C3.45001 3.48446 3.45001 3.00911 3.65151 2.76111C3.81407 2.56105 4.05461 2.44029 4.31216 2.42945C4.63143 2.41602 5.01262 2.7 5.77501 3.26795L6.25925 3.6287Z", white);
         SetBounds(gamePlayGroup);
         GamePlay = new DrawingImage(gamePlayGroup);
+
+        DrawingGroup gamePauseGroup = new();
+        Add(gamePauseGroup, "M3.6 2.3a.7.7 0 0 1 .7.7v4a.7.7 0 0 1-1.4 0V3a.7.7 0 0 1 .7-.7m2.8 0a.7.7 0 0 1 .7.7v4a.7.7 0 1 1-1.4 0V3a.7.7 0 0 1 .7-.7", white);
+        SetBounds(gamePauseGroup);
+        GamePause = new DrawingImage(gamePauseGroup);
 
         DrawingGroup gameRefreshGroup = new();
         Add(gameRefreshGroup, replaceRefreshGeo, white);
