@@ -10,11 +10,14 @@ A next-gen smart video encoding utility based on .NET 9/WPF, revolves around “
 - Verify current environment & configuration correctness
 - Providing source checklist with Success, Warning & Error status types
 - Providing bypass feature to continue on error
+
 **Advanced Parallelism**
 - Physical Core & NUMA Binding on top of Thread limiting
+
 **Encode Parameter Setting**
 - Customize via tuned UI controls for customized parameter configurations
 - Providing A/B comparison previewer
+
 **Video Filtering**
 - Providing FFMPEG-VS-AVS filter editor
 - Auto-generating basic AviSynth & VapourSynth scripts (Decode→Y4M)
@@ -26,17 +29,21 @@ A next-gen smart video encoding utility based on .NET 9/WPF, revolves around “
   - Resize
 - Providing additional OpenCL denoise, deband, and blur filters for VapourSynth
 - Providing VapourSynth A/B comparison previewer
+
 **Managed Automation**
 - Auto-generating video & audio encoding commandlines
 - Providing queued encoding with dynamically editable queue
 - Providing concat encoding mode with editable concatenation queue
+
 **Clip Sampling**
 - Providing FFMPEG-VS-AVS sampling
 - Providing GUI to clip Time or Frame# range easily
+
 **Encode Monitoring**
 - Monitor memory usage details of along with encode ongoing
 - View upstream & downstream (encoder) logs separately
 - Selectively interrupt upsteam or downstream (encoder) processes
+
 **Overwrite Protection**
 - Fool-proof Start-Encode cooldown based on file size to be overwritten
 
