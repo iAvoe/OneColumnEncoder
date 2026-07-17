@@ -291,6 +291,7 @@ namespace OneColumnEncoder.ViewModels
         {
             UILangProvider.CurrentChanged -= OnLanguageChanged;
             base.Dispose();
+            GC.SuppressFinalize(this);
         }
 
         #endregion
