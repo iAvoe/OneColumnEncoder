@@ -16,7 +16,7 @@ A next-gen smart video encoding utility based on .NET 9/WPF, revolves around “
 
 **Encode Parameter Setting**
 - Customize via tuned UI controls for customized parameter configurations
-- Providing A/B comparison previewer
+- Providing encoder A/B comparison previewer
 
 **Video Filtering**
 - Providing FFMPEG-VS-AVS filter editor
@@ -27,7 +27,10 @@ A next-gen smart video encoding utility based on .NET 9/WPF, revolves around “
   - Color space conversion
   - SAR restoration
   - Resize
-- Providing additional OpenCL denoise, deband, and blur filters for VapourSynth
+- Providing additional OpenCL filters for VapourSynth
+  - Denoise
+  - Deband
+  - Gaussian Blur
 - Providing VapourSynth A/B comparison previewer
 
 **Managed Automation**
@@ -86,7 +89,7 @@ Or, TLDR; and use tools provided in this package (not recommended but its an opt
 - x265 v4.2 or newer
 - SVT-AV1 v4.1 or newer
 
-> Choose only the latest version of encoders to get the best performance (speed, quality, compression), plus less likely to trigger memory leaks
+> Choose only the latest version of encoders to get the best performance (speed, quality, compression), plus less chances of memory leaks
 
 ## Icon usage
 
