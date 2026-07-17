@@ -9,8 +9,7 @@
                    d:DataContext="{d:DesignInstance Type=vms:SourceReviserVM}"
                    mc:Ignorable="d"
                    Title="{Binding WindowTitle}"
-                   Width="680"
-                   MaxHeight="700"
+                   Width="580"
                    SizeToContent="Height"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
@@ -21,147 +20,162 @@
         </Grid.RowDefinitions>
 
         <ScrollViewer Grid.Row="0"
-                      VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Disabled">
-            <Grid Margin="0 0 0 15">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+                      VerticalScrollBarVisibility="Auto">
+            <Grid Margin="0 0 0 5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0"
-                   Text="{Binding Description}"
-                   FontSize="13"
-                   TextWrapping="Wrap"
-                   Foreground="{StaticResource GlobalPrimary}" />
+                <TextBlock Grid.Row="0"
+                           Text="{Binding Description}"
+                           FontSize="13"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource GlobalPrimary}" />
 
-        <Grid Grid.Row="1"
-              Margin="0 12 0 0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0"
-                        Orientation="Horizontal">
-                <TextBlock Text="{Binding CurrentResolutionLabel}"
-                           Style="{StaticResource H3}"
-                           VerticalAlignment="Center" />
-                <Button Content="{Binding CurrentResolutionText}"
-                        Command="{Binding UseCurrentResolutionCommand}"
-                        Margin="5 0 0 0"
-                        Width="105"
-                        Height="30"
-                        VerticalAlignment="Center"
-                        Style="{StaticResource NormalButton}" />
-            </StackPanel>
-            <StackPanel Grid.Column="1"
-                        Orientation="Horizontal">
-                <TextBlock Text="{Binding SuggestedResolutionLabel}"
-                           Style="{StaticResource H3}"
-                           VerticalAlignment="Center"
-                           Margin="10 0 0 0" />
-                <Button Content="{Binding SuggestedResolutionText}"
-                        Command="{Binding UseSuggestedResolutionCommand}"
-                        Margin="5 0 0 0"
-                        Width="105"
-                        Height="30"
-                        VerticalAlignment="Center"
-                        Style="{StaticResource NormalButton}" />
-            </StackPanel>
-        </Grid>
-
-        <comps:AppConfContainer Grid.Row="2"
-                                Header="{Binding SettingsHeader}"
-                                Margin="0 12 0 0">
-            <comps:AppConfItem Text="{Binding WidthLabel}">
-                <TextBox Width="120"
-                         Text="{Binding ResolutionWidthText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         HorizontalAlignment="Left"
-                         PreviewTextInput="NumericTextBox_PreviewTextInput"
-                         DataObject.Pasting="NumericTextBox_Pasting" />
-            </comps:AppConfItem>
-            <comps:AppConfItem Text="{Binding HeightLabel}">
-                <TextBox Width="120"
-                         Text="{Binding ResolutionHeightText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         HorizontalAlignment="Left"
-                         PreviewTextInput="NumericTextBox_PreviewTextInput"
-                         DataObject.Pasting="NumericTextBox_Pasting" />
-            </comps:AppConfItem>
-        </comps:AppConfContainer>
-
-        <comps:HintPanel Grid.Row="3"
-                         Text="{Binding EvenResolutionHint}" />
-
-        <comps:AppConfContainer Grid.Row="4"
-                                Header="{Binding OutputFpsLabel}"
-                                Margin="0 15 0 0">
-            <comps:AppConfItem Text="{Binding InputFpsLabel}">
-                <TextBlock Foreground="{StaticResource GlobalSecondary}">
-                    <Run Text="{Binding CurrentFrameRateText, Mode=OneWay}" />
-                    <Run Text="→" />
-                    <Run Text="{Binding OutputFrameRateText, Mode=OneWay}" />
-                </TextBlock>
-            </comps:AppConfItem>
-            <comps:AppConfItem Text="{Binding OutputFpsNumeratorLabel}">
-                <TextBox Width="120"
-                         Text="{Binding OutputFrameRateNumeratorText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         PreviewTextInput="NumericTextBox_PreviewTextInput"
-                         DataObject.Pasting="NumericTextBox_Pasting" />
-            </comps:AppConfItem>
-            <comps:AppConfItem Text="{Binding OutputFpsDenominatorLabel}">
-                <TextBox Width="120"
-                         Text="{Binding OutputFrameRateDenominatorText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                         PreviewTextInput="NumericTextBox_PreviewTextInput"
-                         DataObject.Pasting="NumericTextBox_Pasting" />
-            </comps:AppConfItem>
-        </comps:AppConfContainer>
-
-        <comps:AppConfContainer Grid.Row="5"
-                                Header="{Binding PatternLabel}"
-                                Margin="0 15 0 0">
-            <comps:AppConfItem Text="{Binding OutputFramesLabel}">
-                <Grid>
+                <Grid Grid.Row="1"
+                      Margin="0 10 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <comps:DropdownMenu Grid.Column="0"
-                                        Margin="0 0 10 0"
-                                        DataContext="{Binding PatternDropdown}" />
-                    <TextBlock Grid.Column="1"
-                               Text="{Binding OutputFrameCountText}"
-                               VerticalAlignment="Center"
-                               Foreground="{StaticResource GlobalSecondary}" />
-                    </Grid>
-                </comps:AppConfItem>
-            <comps:HintPanel Text="{Binding SelectedDescription}"
-                             Margin="0 5 0 0" />
-        </comps:AppConfContainer>
+                    <StackPanel Grid.Column="0"
+                                Orientation="Horizontal">
+                        <TextBlock Text="{Binding CurrentResolutionLabel}"
+                                   Style="{StaticResource H3}"
+                                   VerticalAlignment="Center" />
+                        <Button Content="{Binding CurrentResolutionText}"
+                                Command="{Binding UseCurrentResolutionCommand}"
+                                Margin="5 0 0 0"
+                                Width="105"
+                                Height="25"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource NormalButton}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1"
+                                Orientation="Horizontal">
+                        <TextBlock Text="{Binding SuggestedResolutionLabel}"
+                                   Style="{StaticResource H3}"
+                                   VerticalAlignment="Center" />
+                        <Button Content="{Binding SuggestedResolutionText}"
+                                Command="{Binding UseSuggestedResolutionCommand}"
+                                Margin="5 0 0 0"
+                                Width="105"
+                                Height="25"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource NormalButton}" />
+                    </StackPanel>
+                </Grid>
 
-        <StackPanel Grid.Row="6"
-                    Margin="0 5 0 0"
-                    Visibility="{Binding HasWarning, Converter={StaticResource BoolToVisibility}}">
-            <TextBlock Text="{Binding WarningLabel}"
-                       FontWeight="Bold"
-                       Foreground="{StaticResource GlobalSecondary}" />
-            <TextBlock Text="{Binding WarningText}"
-                       TextWrapping="Wrap"
-                       Foreground="{StaticResource GlobalSecondary}" />
-        </StackPanel>
+                <StackPanel Grid.Row="2">
+                    <comps:AppConfContainer Header="{Binding SettingsHeader}"
+                                            Margin="0 15 0 0">
+                        <comps:AppConfItem Text="{Binding WidthLabel}">
+                            <TextBox Width="120"
+                                     Text="{Binding ResolutionWidthText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     HorizontalAlignment="Left"
+                                     PreviewTextInput="NumericTextBox_PreviewTextInput"
+                                     DataObject.Pasting="NumericTextBox_Pasting" />
+                        </comps:AppConfItem>
+                        <comps:AppConfItem Text="{Binding HeightLabel}">
+                            <TextBox Width="120"
+                                     Text="{Binding ResolutionHeightText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     HorizontalAlignment="Left"
+                                     PreviewTextInput="NumericTextBox_PreviewTextInput"
+                                     DataObject.Pasting="NumericTextBox_Pasting" />
+                        </comps:AppConfItem>
+                    </comps:AppConfContainer>
+                </StackPanel>
+
+                <comps:HintPanel Grid.Row="3"
+                                 Text="{Binding EvenResolutionHint}" />
+
+                <comps:AppConfContainer Grid.Row="4"
+                                        Header="{Binding PatternLabel}"
+                                        Margin="0 15 0 0">
+                    <comps:AppConfItem Text="{Binding OutputFramesLabel}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <comps:DropdownMenu Grid.Column="0"
+                                                Margin="0 0 10 0"
+                                                DataContext="{Binding PatternDropdown}" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding OutputFrameCountText}"
+                                       VerticalAlignment="Center"
+                                       Foreground="{StaticResource GlobalSecondary}" />
+                        </Grid>
+                    </comps:AppConfItem>
+                    <comps:HintPanel Text="{Binding SelectedDescription}" />
+                </comps:AppConfContainer>
+
+                <Grid Grid.Row="5"
+                      Margin="0 15 0 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding InputFpsLabel}"
+                                   Style="{StaticResource H3}"
+                                   VerticalAlignment="Center" />
+                        <Button Grid.Column="1"
+                                Content="{Binding CurrentFrameRateText}"
+                                Command="{Binding UseCurrentFrameRateCommand}"
+                                Margin="5 0 0 0"
+                                Width="105"
+                                Height="25"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource NormalButton}" />
+                    </Grid>
+
+                    <comps:AppConfItem Grid.Row="1"
+                                       Text="{Binding OutputFpsNumeratorLabel}">
+                        <TextBox Width="120"
+                                 Text="{Binding OutputFrameRateNumeratorText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 PreviewTextInput="NumericTextBox_PreviewTextInput"
+                                 DataObject.Pasting="NumericTextBox_Pasting" />
+                    </comps:AppConfItem>
+                    <comps:AppConfItem Grid.Row="2"
+                                       Text="{Binding OutputFpsDenominatorLabel}">
+                        <TextBox Width="120"
+                                 Text="{Binding OutputFrameRateDenominatorText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 PreviewTextInput="NumericTextBox_PreviewTextInput"
+                                 DataObject.Pasting="NumericTextBox_Pasting" />
+                    </comps:AppConfItem>
+                </Grid>
+
+                <StackPanel Grid.Row="6"
+                            Margin="0 5 0 0"
+                            Visibility="{Binding HasWarning, Converter={StaticResource BoolToVisibility}}">
+                    <TextBlock Text="{Binding WarningLabel}"
+                               FontWeight="Bold"
+                               Foreground="{StaticResource GlobalSecondary}" />
+                    <TextBlock Text="{Binding WarningText}"
+                               TextWrapping="Wrap"
+                               Foreground="{StaticResource GlobalSecondary}" />
+                </StackPanel>
 
             </Grid>
         </ScrollViewer>
 
         <comps:TwoButtonGroup Grid.Row="1"
                               ButtonHeight="30"
-                              Margin="0 0 0 0"
                               DataContext="{Binding FinishButtons}"
                               Button1Command="{Binding Cmd1}"
                               Button2Command="{Binding Cmd2}"

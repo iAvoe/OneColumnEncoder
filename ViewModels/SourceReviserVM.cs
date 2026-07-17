@@ -62,6 +62,9 @@ public class SourceReviserVM : BaseVM
         UseSuggestedResolutionCommand = new ActionCmd(
             _ => SetResolutionText(_suggestedWidth, _suggestedHeight),
             _ => _suggestedWidth > 0 && _suggestedHeight > 0);
+        UseCurrentFrameRateCommand = new ActionCmd(
+            _ => SetFrameRateText(_sourceFrameRate),
+            _ => _sourceFrameRate.HasValue);
         PatternDropdown.SelectionChangedCommand = new ActionCmd(_ => OnPatternSelectionChanged());
         BuildPatternListing();
         SelectedHypothesis = _hypotheses.Count > 0 ? _hypotheses[0] : null;
@@ -192,6 +195,7 @@ public class SourceReviserVM : BaseVM
     public int ResolutionHeight { get; private set; }
     public ActionCmd UseCurrentResolutionCommand { get; }
     public ActionCmd UseSuggestedResolutionCommand { get; }
+    public ActionCmd UseCurrentFrameRateCommand { get; }
     public ButtonGroupVM FinishButtons { get; }
 
     private void Confirm()
@@ -300,6 +304,15 @@ public class SourceReviserVM : BaseVM
     {
         ResolutionWidthText = width.ToString(CultureInfo.InvariantCulture);
         ResolutionHeightText = height.ToString(CultureInfo.InvariantCulture);
+    }
+
+    private void SetFrameRateText((int numerator, int denominator)? frameRate)
+    {
+        if (!frameRate.HasValue)
+            return;
+
+        OutputFrameRateNumeratorText = frameRate.Value.numerator.ToString(CultureInfo.InvariantCulture);
+        OutputFrameRateDenominatorText = frameRate.Value.denominator.ToString(CultureInfo.InvariantCulture);
     }
 
     private bool TryParseResolution(out int width, out int height)
