@@ -62,13 +62,20 @@ public static class FFProbeFPSReviser
             outputFrames = sourceFrames;
             frameCountKind = VideoAnalysisFrameCountKind.Exact;
         }
-        else if (kind is VideoAnalysisHypothesisKind.FourField2224
+        else if (kind is VideoAnalysisHypothesisKind.Telecine3232
+            or VideoAnalysisHypothesisKind.Telecine2323
+            or VideoAnalysisHypothesisKind.Telecine3223
+            or VideoAnalysisHypothesisKind.Telecine2332
+            or VideoAnalysisHypothesisKind.Telecine3322
+            or VideoAnalysisHypothesisKind.FourField2224
             or VideoAnalysisHypothesisKind.FourField2242
             or VideoAnalysisHypothesisKind.FourField2422
             or VideoAnalysisHypothesisKind.FourField4222)
         {
-            outputFrames = null;
-            frameCountKind = VideoAnalysisFrameCountKind.Unknown;
+            outputFrames = CalculateCadenceFrameCount(sourceFrames, kind);
+            frameCountKind = outputFrames.HasValue
+                ? VideoAnalysisFrameCountKind.Exact
+                : VideoAnalysisFrameCountKind.Unknown;
         }
         else
         {
@@ -150,6 +157,7 @@ public static class FFProbeFPSReviser
             or VideoAnalysisHypothesisKind.Telecine2323
             or VideoAnalysisHypothesisKind.Telecine3223
             or VideoAnalysisHypothesisKind.Telecine2332
+            or VideoAnalysisHypothesisKind.Telecine3322
             or VideoAnalysisHypothesisKind.FourField2224
             or VideoAnalysisHypothesisKind.FourField2242
             or VideoAnalysisHypothesisKind.FourField2422
@@ -164,6 +172,37 @@ public static class FFProbeFPSReviser
             return (24, 1);
 
         return source ?? (30, 1);
+    }
+
+    private static long? CalculateCadenceFrameCount(long? sourceFrames, VideoAnalysisHypothesisKind kind)
+    {
+        if (sourceFrames is not > 0)
+            return null;
+
+        (int offset, int k) = kind switch
+        {
+            VideoAnalysisHypothesisKind.Telecine3232 => (3, 4),
+            VideoAnalysisHypothesisKind.Telecine2323 => (4, 5),
+            VideoAnalysisHypothesisKind.Telecine3223 => (4, 5),
+            VideoAnalysisHypothesisKind.Telecine2332 => (3, 4),
+            VideoAnalysisHypothesisKind.Telecine3322 => (2, 3),
+            VideoAnalysisHypothesisKind.FourField2224 => (4, 5),
+            VideoAnalysisHypothesisKind.FourField2242 => (3, 4),
+            VideoAnalysisHypothesisKind.FourField2422 => (2, 3),
+            VideoAnalysisHypothesisKind.FourField4222 => (1, 2),
+            _ => throw new ArgumentOutOfRangeException(nameof(kind))
+        };
+
+        long adjusted = sourceFrames.Value - offset;
+        if (adjusted < 0)
+            return null;
+
+        long fullCycles = adjusted / 5;
+        long remainder = adjusted % 5;
+
+        long remainderValid = remainder < k ? remainder : remainder - 1;
+
+        return fullCycles * 4 + remainderValid;
     }
 
     private static long? EstimateOutputFrameCount(
