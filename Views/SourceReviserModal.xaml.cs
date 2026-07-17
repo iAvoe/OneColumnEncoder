@@ -5,9 +5,9 @@ using System.Windows.Input;
 
 namespace OneColumnEncoder.Views
 {
-    public partial class ReviseSourceResolutionModal : AdaptiveWindow
+    public partial class SourceReviserModal : AdaptiveWindow
     {
-        public ReviseSourceResolutionModal()
+        public SourceReviserModal()
         {
             InitializeComponent();
         }

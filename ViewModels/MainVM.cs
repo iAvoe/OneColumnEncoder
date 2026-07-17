@@ -547,7 +547,7 @@ namespace OneColumnEncoder.ViewModels
                 () => ActiveSrcValidationCard.Checklist2.Count > 1
                     && ActiveSrcValidationCard.Checklist2[1].Status == StatusType.Warning,
                 () => _srcVideoAnalysis.RawJson,
-                TryReviseSourceResolution,
+                TrySourceReviser,
                 () => UpstreamsZone.Any(
                     t => t.IsSelected &&
                     ToolDefinitionProviderM.IsImportedTool(t.Name, "one_line_shot_args.exe")),
@@ -2294,13 +2294,13 @@ namespace OneColumnEncoder.ViewModels
                 ConcatTotalFrames: _srcVideoAnalysis.ConcatTotalFrames);
         }
 
-        private string? TryReviseSourceResolution(int width, int height)
+        private string? TrySourceReviser(int width, int height)
         {
             if (width <= 0 || height <= 0 || width > MaxResolutionDimension || height > MaxResolutionDimension)
-                return ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.InvalidInput"];
+                return SourceReviserLangProvider.Current["SourceReviser.InvalidInput"];
 
             if (string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson))
-                return ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.NoFfprobeJson"];
+                return SourceReviserLangProvider.Current["SourceReviser.NoFfprobeJson"];
 
             try
             {
@@ -2309,7 +2309,7 @@ namespace OneColumnEncoder.ViewModels
                 {
                     string queueJsonPath = GetCurrentQueueJsonPath();
                     if (string.IsNullOrWhiteSpace(queueJsonPath) || !File.Exists(queueJsonPath))
-                        return ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.NoFfprobeJson"];
+                        return SourceReviserLangProvider.Current["SourceReviser.NoFfprobeJson"];
 
                     ReviseQueueSourceResolution(queueJsonPath, width, height);
                 }
@@ -2330,7 +2330,7 @@ namespace OneColumnEncoder.ViewModels
             }
             catch (Exception ex)
             {
-                return string.Format(ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.UpdateFailed"], ex.Message);
+                return string.Format(SourceReviserLangProvider.Current["SourceReviser.UpdateFailed"], ex.Message);
             }
         }
 
@@ -2727,7 +2727,7 @@ namespace OneColumnEncoder.ViewModels
                 _modalNavS.HasModal<FilenameScribeVM>() ||
                 _modalNavS.HasModal<AppConfVM>() ||
                 _modalNavS.HasModal<AppUsageVM>() ||
-                _modalNavS.HasModal<ReviseSourceResolutionVM>();
+                _modalNavS.HasModal<SourceReviserVM>();
 
             if (shouldHideMainWindow && !_isEncoding)
             {
@@ -2749,7 +2749,7 @@ namespace OneColumnEncoder.ViewModels
             new OpenErrModalCmd(
                 _modalNavS,
                 UICaptionProvider.SourceInspect.ErrorTitle,
-                ReviseSourceResolutionModalLangProvider.Current["ReviseSourceResolution.NoFfprobeJson"]).Execute(null);
+                SourceReviserLangProvider.Current["SourceReviser.NoFfprobeJson"]).Execute(null);
         }
 
         #region Language Switching

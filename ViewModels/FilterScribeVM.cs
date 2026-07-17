@@ -33,7 +33,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly Func<SourceFileKind?> _getPreferredScriptSourceKind;
         private readonly Action<ToolItemCardVM, SourceFileKind, string> _afterImport;
         private readonly Action<string?> _applyFfmpegFilterArgs;
-        private readonly Func<int, int, string?> _reviseSourceResolution;
+        private readonly Func<int, int, string?> _sourceReviser;
         private readonly Func<bool> _hasSourceValidationError;
         private readonly Func<bool> _hasSarRepairWarning;
         private readonly Func<bool>? _isQueueRoute;
@@ -559,7 +559,7 @@ namespace OneColumnEncoder.ViewModels
             _getPreferredScriptSourceKind = getPreferredScriptSourceKind;
             _afterImport = afterImport;
             _applyFfmpegFilterArgs = applyFfmpegFilterArgs;
-            _reviseSourceResolution = reviseSourceResolution ?? ((_, _) => null);
+            _sourceReviser = reviseSourceResolution ?? ((_, _) => null);
             _hasSourceValidationError = hasSourceValidationError;
             _hasSarRepairWarning = hasSarRepairWarning;
             _isQueueRoute = isQueueRoute;
@@ -1006,7 +1006,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void SaveAndImportAll()
         {
-            if (!ShowReviseSourceResolutionModal()) return;
+            if (!ShowSourceReviserModal()) return;
 
             ApplyFfmpegFilterArgs();
 
@@ -1145,7 +1145,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void ApplyFfmpegFilterArgsOnly()
         {
-            if (!ShowReviseSourceResolutionModal()) return;
+            if (!ShowSourceReviserModal()) return;
 
             ApplyFfmpegFilterArgs();
             _closeAction();
@@ -1156,16 +1156,16 @@ namespace OneColumnEncoder.ViewModels
             _applyFfmpegFilterArgs(FfmpegFreeText.Trim());
         }
 
-        private bool ShowReviseSourceResolutionModal()
+        private bool ShowSourceReviserModal()
         {
             var (suggestedWidth, suggestedHeight) = GetSuggestedOutputResolution();
 
-            ReviseSourceResolutionModal window = new();
-            ReviseSourceResolutionVM vm = new(
+            SourceReviserModal window = new();
+            SourceReviserVM vm = new(
                 _modalNavS,
                 window.Close,
                 result => window.DialogResult = result,
-                _reviseSourceResolution,
+                _sourceReviser,
                 SourceWidth,
                 SourceHeight,
                 suggestedWidth,
