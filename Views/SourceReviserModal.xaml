@@ -139,12 +139,10 @@
                                Text="{Binding OutputFrameCountText}"
                                VerticalAlignment="Center"
                                Foreground="{StaticResource GlobalSecondary}" />
-                </Grid>
-            </comps:AppConfItem>
-            <TextBlock Text="{Binding SelectedDescription}"
-                       TextWrapping="Wrap"
-                       Foreground="{StaticResource GlobalSecondary}"
-                       Margin="0 5 0 0" />
+                    </Grid>
+                </comps:AppConfItem>
+            <comps:HintPanel Text="{Binding SelectedDescription}"
+                             Margin="0 5 0 0" />
         </comps:AppConfContainer>
 
         <StackPanel Grid.Row="6"

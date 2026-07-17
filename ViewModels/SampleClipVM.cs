@@ -47,7 +47,6 @@ namespace OneColumnEncoder.ViewModels
         public string ClipFrameCountLabel => Lang.ClipFrameCountLabel;
         public string EndFrameLabel => Lang.EndFrameLabel;
         public string FrameFormatText => Lang.FrameFormatText;
-        public string Note1Text => Lang.Note1Text;
         public string Note2Text => Lang.Note2Text;
         public ObservableCollection<ColumnTextItemM> SummaryColumns { get; } = [];
         public ObservableCollection<string> AxisLabels { get; } = [];
@@ -469,7 +468,6 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(ClipFrameCountLabel));
             OnPropertyChanged(nameof(EndFrameLabel));
             OnPropertyChanged(nameof(FrameFormatText));
-            OnPropertyChanged(nameof(Note1Text));
             OnPropertyChanged(nameof(Note2Text));
             OnPropertyChanged(nameof(ClipLengthTickLabels));
             BuildSummary();

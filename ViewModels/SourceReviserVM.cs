@@ -64,7 +64,7 @@ public class SourceReviserVM : BaseVM
             _ => _suggestedWidth > 0 && _suggestedHeight > 0);
         PatternDropdown.SelectionChangedCommand = new ActionCmd(_ => OnPatternSelectionChanged());
         BuildPatternListing();
-        SelectedHypothesis = _hypotheses.FirstOrDefault();
+        SelectedHypothesis = _hypotheses.Count > 0 ? _hypotheses[0] : null;
 
         FinishButtons = ButtonGroupVM.CreateTwoButton(
             SourceReviserLangProvider.Current["SourceReviser.Cancel"],
@@ -75,21 +75,21 @@ public class SourceReviserVM : BaseVM
         UILangProvider.CurrentChanged += OnLanguageChanged;
     }
 
-    public string WindowTitle => SourceReviserLangProvider.Current["SourceReviser.Title"];
-    public string Description => SourceReviserLangProvider.Current["SourceReviser.Description"];
-    public string SettingsHeader => SourceReviserLangProvider.Current["SourceReviser.SettingsHeader"];
-    public string WidthLabel => SourceReviserLangProvider.Current["SourceReviser.WidthLabel"];
-    public string HeightLabel => SourceReviserLangProvider.Current["SourceReviser.HeightLabel"];
-    public string CurrentResolutionLabel => SourceReviserLangProvider.Current["SourceReviser.CurrentLabel"];
-    public string SuggestedResolutionLabel => SourceReviserLangProvider.Current["SourceReviser.SuggestedLabel"];
-    public string EvenResolutionHint => SourceReviserLangProvider.Current["SourceReviser.EvenResolutionHint"];
-    public string PatternLabel => SourceReviserLangProvider.Current["SourceReviser.PatternLabel"];
-    public string InputFpsLabel => SourceReviserLangProvider.Current["SourceReviser.InputFpsLabel"];
-    public string OutputFpsLabel => SourceReviserLangProvider.Current["SourceReviser.OutputFpsLabel"];
-    public string OutputFpsNumeratorLabel => SourceReviserLangProvider.Current["SourceReviser.OutputFpsNumeratorLabel"];
-    public string OutputFpsDenominatorLabel => SourceReviserLangProvider.Current["SourceReviser.OutputFpsDenominatorLabel"];
-    public string OutputFramesLabel => SourceReviserLangProvider.Current["SourceReviser.OutputFramesLabel"];
-    public string WarningLabel => SourceReviserLangProvider.Current["SourceReviser.WarningLabel"];
+    public static string WindowTitle => "1cenc Source Reviser";
+    public static string Description => SourceReviserLangProvider.Current["SourceReviser.Description"];
+    public static string SettingsHeader => SourceReviserLangProvider.Current["SourceReviser.SettingsHeader"];
+    public static string WidthLabel => SourceReviserLangProvider.Current["SourceReviser.WidthLabel"];
+    public static string HeightLabel => SourceReviserLangProvider.Current["SourceReviser.HeightLabel"];
+    public static string CurrentResolutionLabel => SourceReviserLangProvider.Current["SourceReviser.CurrentLabel"];
+    public static string SuggestedResolutionLabel => SourceReviserLangProvider.Current["SourceReviser.SuggestedLabel"];
+    public static string EvenResolutionHint => SourceReviserLangProvider.Current["SourceReviser.EvenResolutionHint"];
+    public static string PatternLabel => SourceReviserLangProvider.Current["SourceReviser.PatternLabel"];
+    public static string InputFpsLabel => SourceReviserLangProvider.Current["SourceReviser.InputFpsLabel"];
+    public static string OutputFpsLabel => SourceReviserLangProvider.Current["SourceReviser.OutputFpsLabel"];
+    public static string OutputFpsNumeratorLabel => SourceReviserLangProvider.Current["SourceReviser.OutputFpsNumeratorLabel"];
+    public static string OutputFpsDenominatorLabel => SourceReviserLangProvider.Current["SourceReviser.OutputFpsDenominatorLabel"];
+    public static string OutputFramesLabel => SourceReviserLangProvider.Current["SourceReviser.OutputFramesLabel"];
+    public static string WarningLabel => SourceReviserLangProvider.Current["SourceReviser.WarningLabel"];
     public string CurrentResolutionText => FormatResolution(_currentWidth, _currentHeight);
     public string SuggestedResolutionText => FormatResolution(_suggestedWidth, _suggestedHeight);
     public string CurrentFrameRateText => FormatFrameRate(_sourceFrameRate);
@@ -253,9 +253,19 @@ public class SourceReviserVM : BaseVM
 
     private void SyncPatternDropdownSelection(VideoAnalysisHypothesisOption selectedHypothesis)
     {
-        DropdownItemM? selectedItem = PatternDropdown.Items
-            .FirstOrDefault(item => item.Tag is VideoAnalysisHypothesisOption option && option.Id == selectedHypothesis.Id)
-            ?? PatternDropdown.Items.FirstOrDefault();
+        DropdownItemM? selectedItem = null;
+        for (int i = 0; i < PatternDropdown.Items.Count; i++)
+        {
+            DropdownItemM item = PatternDropdown.Items[i];
+            if (item.Tag is VideoAnalysisHypothesisOption option && option.Id == selectedHypothesis.Id)
+            {
+                selectedItem = item;
+                break;
+            }
+        }
+
+        if (selectedItem == null && PatternDropdown.Items.Count > 0)
+            selectedItem = PatternDropdown.Items[0];
 
         if (!ReferenceEquals(PatternDropdown.SelectedItem, selectedItem))
             PatternDropdown.SelectedItem = selectedItem;
@@ -338,8 +348,18 @@ public class SourceReviserVM : BaseVM
         string numerator = OutputFrameRateNumeratorText;
         string denominator = OutputFrameRateDenominatorText;
         BuildPatternListing();
-        SelectedHypothesis = Hypotheses.FirstOrDefault(option => option.Id == selectedId)
-            ?? Hypotheses.FirstOrDefault();
+        SelectedHypothesis = null;
+        for (int i = 0; i < Hypotheses.Count; i++)
+        {
+            if (Hypotheses[i].Id == selectedId)
+            {
+                SelectedHypothesis = Hypotheses[i];
+                break;
+            }
+        }
+
+        if (SelectedHypothesis == null && Hypotheses.Count > 0)
+            SelectedHypothesis = Hypotheses[0];
         OutputFrameRateNumeratorText = numerator;
         OutputFrameRateDenominatorText = denominator;
 
@@ -372,5 +392,6 @@ public class SourceReviserVM : BaseVM
     {
         UILangProvider.CurrentChanged -= OnLanguageChanged;
         base.Dispose();
+        GC.SuppressFinalize(this);
     }
 }
