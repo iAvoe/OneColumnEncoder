@@ -65,6 +65,7 @@ public class SourceReviserLangProvider
             ["SourceReviser.PatternDescription.EuroPulldown"] = "Restore film timing; audio may need speed correction",
             ["SourceReviser.PatternDescription.MixedPip"] = "Mixed cadence by region; one global JSON is unsafe",
             ["SourceReviser.PatternDescription.Spliced"] = "Mixed cadence by segment; split source first",
+            ["SourceReviser.DropdownSeparator.Incompatible"] = "Incompatible",
         },
         ["zh-cn"] = new()
         {
@@ -127,6 +128,7 @@ public class SourceReviserLangProvider
             ["SourceReviser.PatternDescription.EuroPulldown"] = "恢复电影时间；音频可能需同步修正。",
             ["SourceReviser.PatternDescription.MixedPip"] = "分区 cadence 不同，不能写入单一 JSON。",
             ["SourceReviser.PatternDescription.Spliced"] = "分段 cadence 不同，请先拆分源。",
+            ["SourceReviser.DropdownSeparator.Incompatible"] = "不兼容",
         },
         ["zh-tw"] = new()
         {
@@ -189,6 +191,7 @@ public class SourceReviserLangProvider
             ["SourceReviser.PatternDescription.EuroPulldown"] = "恢復電影時間；音訊可能需同步修正。",
             ["SourceReviser.PatternDescription.MixedPip"] = "分區 cadence 不同，不能寫入單一 JSON。",
             ["SourceReviser.PatternDescription.Spliced"] = "分段 cadence 不同，請先拆分源。",
+            ["SourceReviser.DropdownSeparator.Incompatible"] = "不相容",
         },
     };
 
@@ -255,6 +258,7 @@ public class SourceReviserLangProvider
             ["SourceReviser.PatternDescription.EuroPulldown"] = "Restaure le timing film ; l'audio peut nécessiter une correction de vitesse",
             ["SourceReviser.PatternDescription.MixedPip"] = "Cadence différente par zone ; un seul JSON global est risqué",
             ["SourceReviser.PatternDescription.Spliced"] = "Cadence différente par segment ; scindez d'abord la source",
+            ["SourceReviser.DropdownSeparator.Incompatible"] = "Incompatible",
         };
         Data["es"] = new(Data["en"])
         {
@@ -317,6 +321,7 @@ public class SourceReviserLangProvider
             ["SourceReviser.PatternDescription.EuroPulldown"] = "Restaura el tiempo de cine; el audio puede necesitar corrección de velocidad",
             ["SourceReviser.PatternDescription.MixedPip"] = "Cadencia mixta por región; un JSON global no es seguro",
             ["SourceReviser.PatternDescription.Spliced"] = "Cadencia mixta por segmento; divida la fuente primero",
+            ["SourceReviser.DropdownSeparator.Incompatible"] = "Incompatible",
         };
         Data["ja"] = new(Data["en"])
         {
@@ -379,6 +384,7 @@ public class SourceReviserLangProvider
             ["SourceReviser.PatternDescription.EuroPulldown"] = "フィルムタイミングを復元します。音声の速度補正が必要な場合があります。",
             ["SourceReviser.PatternDescription.MixedPip"] = "領域ごとに cadence が異なるため、単一のグローバル JSON は安全ではありません。",
             ["SourceReviser.PatternDescription.Spliced"] = "区間ごとに cadence が異なるため、先にソースを分割してください。",
+            ["SourceReviser.DropdownSeparator.Incompatible"] = "非互換",
         };
         Data["ru"] = new(Data["en"])
         {
@@ -403,7 +409,7 @@ public class SourceReviserLangProvider
             ["SourceReviser.OutputFpsDenominatorLabel"] = "Знаменатель",
             ["SourceReviser.OutputFramesLabel"] = "Всего кадров (нов.)",
             ["SourceReviser.OutputFramesExact"] = "Точное",
-            ["SourceReviser.OutputFramesEstimated"] = "Приблизительное",
+            ["SourceReviser.OutputFramesEstimated"] = "Прибл.",
             ["SourceReviser.OutputFramesUnknown"] = "Неизвестно",
             ["SourceReviser.UnknownFrameRate"] = "Неизвестно",
             ["SourceReviser.WarningLabel"] = "Предупреждение",
@@ -423,9 +429,9 @@ public class SourceReviserLangProvider
             ["SourceReviser.Option.FourField2242"] = "2:2:4:2 / 24d",
             ["SourceReviser.Option.FourField2422"] = "2:4:2:2 / 24d",
             ["SourceReviser.Option.FourField4222"] = "4:2:2:2 / 24d",
-            ["SourceReviser.Option.EuroPulldown"] = "Euro-pulldown / коррекция скорости PAL",
-            ["SourceReviser.Option.MixedPip"] = "Смешанные PIP pulldown (нельзя продолжить)",
-            ["SourceReviser.Option.Spliced"] = "Склеенные pulldown (нельзя продолжить)",
+            ["SourceReviser.Option.EuroPulldown"] = "Euro-pulldown / PAL-коррекция",
+            ["SourceReviser.Option.MixedPip"] = "Смешанный PIP-pulldown (блок)",
+            ["SourceReviser.Option.Spliced"] = "Склеенный pulldown (блок)",
             ["SourceReviser.PatternDescription.ProgressiveSource"] = "Источник уже прогрессивный",
             ["SourceReviser.PatternDescription.NativeDeinterlace"] = "Прогрессивный вывод, 1 кадр вывода на 1 кадр ввода",
             ["SourceReviser.PatternDescription.Pal22"] = "Нативный чересстрочный PAL, FPS источника сохраняется",
@@ -441,11 +447,13 @@ public class SourceReviserLangProvider
             ["SourceReviser.PatternDescription.EuroPulldown"] = "Восстанавливает кинотайминг; аудио может потребовать коррекции скорости",
             ["SourceReviser.PatternDescription.MixedPip"] = "Каденс отличается по областям; один глобальный JSON небезопасен",
             ["SourceReviser.PatternDescription.Spliced"] = "Каденс отличается по сегментам; сначала разделите источник",
+            ["SourceReviser.DropdownSeparator.Incompatible"] = "Несовместимо",
         };
     }
+    // Grid: native (progressive, only-interlaced, 2:2 PAL), 24t, 24d, Euro, Incompatible
+    public static string[] DropdownSeparators => ["24t", "24d", "Euro-pulldown", Current["SourceReviser.DropdownSeparator.Incompatible"]];
 
     private readonly Dictionary<string, string> _d;
-
     public static SourceReviserLangProvider Current => new(UILangProvider.Current.LanguageCode);
     public string LanguageCode { get; }
     public string this[string key] => _d.TryGetValue(key, out var value) ? value : key;

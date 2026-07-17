@@ -132,7 +132,7 @@ public class SourceReviserVM : BaseVM
         }
     }
 
-    public string SelectedDescription => SelectedHypothesis?.Description ?? string.Empty;
+    public string SelectedDescription => SelectedHypothesis == null ? string.Empty : FormatSelectedDescription(SelectedHypothesis);
 
     public string OutputFrameRateNumeratorText
     {
@@ -240,13 +240,29 @@ public class SourceReviserVM : BaseVM
         Hypotheses = _hypotheses;
         PatternDropdown.Items.Clear();
 
-        foreach (VideoAnalysisHypothesisOption option in _hypotheses)
-        {
-            PatternDropdown.Items.Add(new DropdownItemM(option.DisplayName)
-            {
-                Tag = option
-            });
-        }
+        AddPatternOption(VideoAnalysisHypothesisKind.ProgressiveSource);
+        AddPatternOption(VideoAnalysisHypothesisKind.NativeDeinterlace);
+        AddPatternOption(VideoAnalysisHypothesisKind.Pal22);
+
+        AddPatternGroupSeparator(0);
+        AddPatternOption(VideoAnalysisHypothesisKind.Telecine3232);
+        AddPatternOption(VideoAnalysisHypothesisKind.Telecine2323);
+        AddPatternOption(VideoAnalysisHypothesisKind.Telecine3223);
+        AddPatternOption(VideoAnalysisHypothesisKind.Telecine2332);
+        AddPatternOption(VideoAnalysisHypothesisKind.Telecine3322);
+
+        AddPatternGroupSeparator(1);
+        AddPatternOption(VideoAnalysisHypothesisKind.FourField2224);
+        AddPatternOption(VideoAnalysisHypothesisKind.FourField2242);
+        AddPatternOption(VideoAnalysisHypothesisKind.FourField2422);
+        AddPatternOption(VideoAnalysisHypothesisKind.FourField4222);
+
+        AddPatternGroupSeparator(2);
+        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown);
+
+        AddPatternGroupSeparator(3);
+        AddPatternOption(VideoAnalysisHypothesisKind.MixedPip);
+        AddPatternOption(VideoAnalysisHypothesisKind.Spliced);
     }
 
     private void OnPatternSelectionChanged()
@@ -273,6 +289,48 @@ public class SourceReviserVM : BaseVM
 
         if (!ReferenceEquals(PatternDropdown.SelectedItem, selectedItem))
             PatternDropdown.SelectedItem = selectedItem;
+    }
+
+    private void AddPatternOption(VideoAnalysisHypothesisKind kind)
+    {
+        VideoAnalysisHypothesisOption option = _hypotheses.First(h => h.Kind == kind);
+        PatternDropdown.Items.Add(new DropdownItemM(option.DisplayName)
+        {
+            Tag = option
+        });
+    }
+
+    private void AddPatternGroupSeparator(int index)
+    {
+        PatternDropdown.Items.Add(new DropdownItemM(SourceReviserLangProvider.DropdownSeparators[index], true));
+    }
+
+    private static string FormatSelectedDescription(VideoAnalysisHypothesisOption hypothesis) => hypothesis.Kind switch
+    {
+        VideoAnalysisHypothesisKind.Telecine3232 or
+        VideoAnalysisHypothesisKind.Telecine2323 or
+        VideoAnalysisHypothesisKind.Telecine3223 or
+        VideoAnalysisHypothesisKind.Telecine2332 or
+        VideoAnalysisHypothesisKind.Telecine3322 or
+        VideoAnalysisHypothesisKind.FourField2224 or
+        VideoAnalysisHypothesisKind.FourField2242 or
+        VideoAnalysisHypothesisKind.FourField2422 or
+        VideoAnalysisHypothesisKind.FourField4222 => CompactParenthesizedDetail(hypothesis.Description),
+        _ => hypothesis.Description
+    };
+
+    private static string CompactParenthesizedDetail(string text)
+    {
+        int openIndex = text.IndexOf('(');
+        int closeIndex = openIndex >= 0 ? text.IndexOf(')', openIndex + 1) : -1;
+        if (openIndex >= 0 && closeIndex > openIndex)
+            return text.Substring(openIndex + 1, closeIndex - openIndex - 1).Trim();
+
+        openIndex = text.IndexOf('（');
+        closeIndex = openIndex >= 0 ? text.IndexOf('）', openIndex + 1) : -1;
+        return openIndex >= 0 && closeIndex > openIndex
+            ? text.Substring(openIndex + 1, closeIndex - openIndex - 1).Trim()
+            : text;
     }
 
     private FPSReviserResult? GetPreviewResult()

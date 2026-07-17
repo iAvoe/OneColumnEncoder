@@ -9,7 +9,7 @@
                    d:DataContext="{d:DesignInstance Type=vms:SourceReviserVM}"
                    mc:Ignorable="d"
                    Title="{Binding WindowTitle}"
-                   Width="580"
+                   Width="560"
                    SizeToContent="Height"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
@@ -40,43 +40,42 @@
                            TextWrapping="Wrap"
                            Foreground="{StaticResource GlobalPrimary}" />
 
-                <Grid Grid.Row="1"
-                      Margin="0 10 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <StackPanel Grid.Column="0"
-                                Orientation="Horizontal">
-                        <TextBlock Text="{Binding CurrentResolutionLabel}"
-                                   Style="{StaticResource H3}"
-                                   VerticalAlignment="Center" />
-                        <Button Content="{Binding CurrentResolutionText}"
-                                Command="{Binding UseCurrentResolutionCommand}"
-                                Margin="5 0 0 0"
-                                Width="105"
-                                Height="25"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource NormalButton}" />
-                    </StackPanel>
-                    <StackPanel Grid.Column="1"
-                                Orientation="Horizontal">
-                        <TextBlock Text="{Binding SuggestedResolutionLabel}"
-                                   Style="{StaticResource H3}"
-                                   VerticalAlignment="Center" />
-                        <Button Content="{Binding SuggestedResolutionText}"
-                                Command="{Binding UseSuggestedResolutionCommand}"
-                                Margin="5 0 0 0"
-                                Width="105"
-                                Height="25"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource NormalButton}" />
-                    </StackPanel>
-                </Grid>
-
                 <StackPanel Grid.Row="2">
                     <comps:AppConfContainer Header="{Binding SettingsHeader}"
                                             Margin="0 15 0 0">
+                        <Grid Margin="0 5 0 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0"
+                                        Orientation="Horizontal">
+                                <TextBlock Text="{Binding CurrentResolutionLabel}"
+                                           Style="{StaticResource H4}"
+                                           VerticalAlignment="Center" />
+                                <Button Content="{Binding CurrentResolutionText}"
+                                        Command="{Binding UseCurrentResolutionCommand}"
+                                        Margin="5 0 0 0"
+                                        Width="125"
+                                        Height="25"
+                                        VerticalAlignment="Center"
+                                        Style="{StaticResource NormalButton}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1"
+                                        Orientation="Horizontal">
+                                <TextBlock Text="{Binding SuggestedResolutionLabel}"
+                                           Style="{StaticResource H4}"
+                                           VerticalAlignment="Center" />
+                                <Button Content="{Binding SuggestedResolutionText}"
+                                        Command="{Binding UseSuggestedResolutionCommand}"
+                                        Margin="5 0 0 0"
+                                        Width="125"
+                                        Height="25"
+                                        VerticalAlignment="Center"
+                                        Style="{StaticResource NormalButton}" />
+                            </StackPanel>
+                        </Grid>
+                        
                         <comps:AppConfItem Text="{Binding WidthLabel}">
                             <TextBox Width="120"
                                      Text="{Binding ResolutionWidthText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -124,34 +123,44 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
+                    
+                    <TextBlock Grid.Row="0"
+                               Text="{Binding InputFpsLabel}"
+                               Style="{StaticResource H3}"
+                               VerticalAlignment="Center" />
 
-                    <Grid Grid.Row="0">
+                    <Grid Grid.Row="1"
+                          Margin="0 10 0 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding InputFpsLabel}"
-                                   Style="{StaticResource H3}"
-                                   VerticalAlignment="Center" />
-                        <Button Grid.Column="1"
-                                Content="{Binding CurrentFrameRateText}"
-                                Command="{Binding UseCurrentFrameRateCommand}"
-                                Margin="5 0 0 0"
-                                Width="105"
-                                Height="25"
-                                VerticalAlignment="Center"
-                                Style="{StaticResource NormalButton}" />
+                        <StackPanel Grid.Column="0"
+                                    Orientation="Horizontal">
+                            <TextBlock Text="{Binding CurrentResolutionLabel}"
+                                       Style="{StaticResource H4}"
+                                       VerticalAlignment="Center" />
+                            <Button Content="{Binding CurrentFrameRateText}"
+                                    Command="{Binding UseCurrentFrameRateCommand}"
+                                    Margin="5 0 0 0"
+                                    MinWidth="125"
+                                    Height="25"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource NormalButton}" />
+                        </StackPanel>
                     </Grid>
 
-                    <comps:AppConfItem Grid.Row="1"
-                                       Text="{Binding OutputFpsNumeratorLabel}">
+                    <comps:AppConfItem Grid.Row="2"
+                                       Text="{Binding OutputFpsNumeratorLabel}"
+                                       Margin="0 5 0 0">
                         <TextBox Width="120"
                                  Text="{Binding OutputFrameRateNumeratorText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                  PreviewTextInput="NumericTextBox_PreviewTextInput"
                                  DataObject.Pasting="NumericTextBox_Pasting" />
                     </comps:AppConfItem>
-                    <comps:AppConfItem Grid.Row="2"
+                    <comps:AppConfItem Grid.Row="3"
                                        Text="{Binding OutputFpsDenominatorLabel}">
                         <TextBox Width="120"
                                  Text="{Binding OutputFrameRateDenominatorText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
