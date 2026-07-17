@@ -97,8 +97,7 @@
         </comps:AppConfContainer>
 
         <comps:HintPanel Grid.Row="3"
-                         Text="{Binding EvenResolutionHint}"
-                         Margin="0 3 0 0" />
+                         Text="{Binding EvenResolutionHint}" />
 
         <comps:AppConfContainer Grid.Row="4"
                                 Header="{Binding OutputFpsLabel}"
@@ -126,9 +125,9 @@
 
         <comps:AppConfContainer Grid.Row="5"
                                 Header="{Binding PatternLabel}"
-                                Margin="0 12 0 0">
+                                Margin="0 15 0 0">
             <comps:AppConfItem Text="{Binding OutputFramesLabel}">
-                <Grid Width="500">
+                <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
