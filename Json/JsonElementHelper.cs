@@ -47,6 +47,8 @@ internal static class JsonElementHelper
 
     public static long? TryGetFrameCount(JsonElement stream)
     {
+        if (IsFrameCountUnknown(stream)) return null;
+
         long? frameCount = TryGetLong(stream, "nb_frames");
         if (frameCount is > 0) return frameCount;
 
@@ -61,6 +63,9 @@ internal static class JsonElementHelper
 
         return null;
     }
+
+    public static bool IsFrameCountUnknown(JsonElement stream) =>
+        string.Equals(TryGetString(stream, "nb_frames_by_1cenc"), "unknown", StringComparison.OrdinalIgnoreCase);
 
     private static bool IsFrameCountTagName(string name) =>
         name.Equals("NUMBER_OF_FRAMES", StringComparison.OrdinalIgnoreCase) ||

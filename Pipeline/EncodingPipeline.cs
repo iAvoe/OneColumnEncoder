@@ -455,6 +455,7 @@ public static partial class EncodingPipeline
 
     public static long? GetSourceTotalFrames(string? sourceFfprobeJson, long? concatTotalFrames = null)
     {
+        if (concatTotalFrames < 0) return null;
         if (concatTotalFrames > 0) return concatTotalFrames.Value;
 
         if (string.IsNullOrWhiteSpace(sourceFfprobeJson)) return null;
@@ -463,6 +464,8 @@ public static partial class EncodingPipeline
         {
             using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
             if (!FrameRate.TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return null;
+
+            if (IsFrameCountUnknown(stream)) return null;
 
             long? frameCount = TryGetFrameCount(stream);
 

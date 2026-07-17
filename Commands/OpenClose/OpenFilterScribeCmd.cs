@@ -19,7 +19,7 @@ namespace OneColumnEncoder.Commands.OpenClose
         Func<bool> hasSourceValidationError,
         Func<bool> hasSarRepairWarning,
         Func<string?> getSourceFfprobeJson,
-        Func<int, int, string?> sourceReviser,
+        Func<SourceRevisionRequest, string?> sourceReviser,
         Func<bool> isOneLineShotSelected,
         Func<bool>? isQueueRoute = null,
         Func<string[]>? getQueueFilePaths = null,

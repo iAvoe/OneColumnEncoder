@@ -558,7 +558,9 @@ namespace OneColumnEncoder.ViewModels
                 ApplyConcatFilePathsFromFilterScribe,
                 _appDataM.Tools.VspipePath,
                 _appDataM.Tools.VspipeY4mArg,
-                () => EncodingPipeline.GetSourceTotalFrames(_srcVideoAnalysis.RawJson) ?? 0);
+                () => EncodingPipeline.GetSourceTotalFrames(
+                    _srcVideoAnalysis.RawJson,
+                    _srcVideoAnalysis.ConcatTotalFrames) ?? 0);
             CopyRawAnalysis = new CopyRawAnalysisCmd(
                 _srcVideoAnalysis, modalNavS, IsQueueRouteActive, IsConcatRouteActive);
             AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(
@@ -2294,10 +2296,15 @@ namespace OneColumnEncoder.ViewModels
                 ConcatTotalFrames: _srcVideoAnalysis.ConcatTotalFrames);
         }
 
-        private string? TrySourceReviser(int width, int height)
+        private string? TrySourceReviser(SourceRevisionRequest request)
         {
-            if (width <= 0 || height <= 0 || width > MaxResolutionDimension || height > MaxResolutionDimension)
+            if (request.Width <= 0 || request.Height <= 0
+                || request.Width > MaxResolutionDimension || request.Height > MaxResolutionDimension)
                 return SourceReviserLangProvider.Current["SourceReviser.InvalidInput"];
+
+            if (request.FrameRate.OutputFrameRateNumerator <= 0
+                || request.FrameRate.OutputFrameRateDenominator <= 0)
+                return SourceReviserLangProvider.Current["SourceReviser.InvalidFps"];
 
             if (string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson))
                 return SourceReviserLangProvider.Current["SourceReviser.NoFfprobeJson"];
@@ -2311,15 +2318,15 @@ namespace OneColumnEncoder.ViewModels
                     if (string.IsNullOrWhiteSpace(queueJsonPath) || !File.Exists(queueJsonPath))
                         return SourceReviserLangProvider.Current["SourceReviser.NoFfprobeJson"];
 
-                    ReviseQueueSourceResolution(queueJsonPath, width, height);
+                    ReviseQueueSource(queueJsonPath, request);
                 }
                 else if (route == SourceRouteKind.Concat)
                 {
-                    ReviseConcatSourceResolution(width, height);
+                    ReviseConcatSource(request);
                 }
                 else
                 {
-                    ReviseSingleSourceResolution(width, height);
+                    ReviseSingleSource(request);
                 }
 
                 ActiveSrcValidationCard.ApplyFfprobeAnalysisJson(_srcVideoAnalysis.RawJson);
@@ -2334,23 +2341,32 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        private void ReviseSingleSourceResolution(int width, int height)
+        private void ReviseSingleSource(SourceRevisionRequest request)
         {
-            _srcVideoAnalysis.RawJson = FFProbeResolutionReviseModel.UpdateSingleSourceJson(_srcVideoAnalysis.RawJson, width, height);
+            _srcVideoAnalysis.RawJson = FFProbeSourceReviseModel.UpdateSingleSourceJson(
+                _srcVideoAnalysis.RawJson,
+                request);
         }
 
-        private void ReviseQueueSourceResolution(string queueJsonPath, int width, int height)
+        private void ReviseQueueSource(string queueJsonPath, SourceRevisionRequest request)
         {
             (_srcVideoAnalysis.RawJson, _srcVideoAnalysis.QueueRawJson) =
-                FFProbeResolutionReviseModel.UpdateQueueSourceJson(
-                    queueJsonPath, _srcVideoAnalysis.RawJson, _srcVideoAnalysis.QueueRawJson, width, height);
+                FFProbeSourceReviseModel.UpdateQueueSourceJson(
+                    queueJsonPath,
+                    _srcVideoAnalysis.RawJson,
+                    _srcVideoAnalysis.QueueRawJson,
+                    request);
         }
 
-        private void ReviseConcatSourceResolution(int width, int height)
+        private void ReviseConcatSource(SourceRevisionRequest request)
         {
             (_srcVideoAnalysis.RawJson, _srcVideoAnalysis.QueueRawJson) =
-                FFProbeResolutionReviseModel.UpdateConcatSourceJson(
-                    _srcVideoAnalysis.RawJson, _srcVideoAnalysis.QueueRawJson, width, height);
+                FFProbeSourceReviseModel.UpdateConcatSourceJson(
+                    _srcVideoAnalysis.RawJson,
+                    _srcVideoAnalysis.QueueRawJson,
+                    request);
+            _srcVideoAnalysis.ConcatTotalFrames = FFProbeSourceReviseModel.CalculateTotalFrames(
+                _srcVideoAnalysis.QueueRawJson);
         }
 
         private Dictionary<string, string> LoadQueueFfprobeJsonByPath()

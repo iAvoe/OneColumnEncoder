@@ -33,7 +33,8 @@ namespace OneColumnEncoder.ViewModels
         private readonly Func<SourceFileKind?> _getPreferredScriptSourceKind;
         private readonly Action<ToolItemCardVM, SourceFileKind, string> _afterImport;
         private readonly Action<string?> _applyFfmpegFilterArgs;
-        private readonly Func<int, int, string?> _sourceReviser;
+        private readonly Func<SourceRevisionRequest, string?> _sourceReviser;
+        private readonly string _sourceFfprobeJson;
         private readonly Func<bool> _hasSourceValidationError;
         private readonly Func<bool> _hasSarRepairWarning;
         private readonly Func<bool>? _isQueueRoute;
@@ -540,7 +541,7 @@ namespace OneColumnEncoder.ViewModels
             Func<bool> hasSourceValidationError,
             Func<bool> hasSarRepairWarning,
             string? sourceFfprobeJson = null,
-            Func<int, int, string?>? reviseSourceResolution = null,
+            Func<SourceRevisionRequest, string?>? reviseSource = null,
             Func<bool>? isQueueRoute = null,
             Func<string[]>? getQueueFilePaths = null,
             Func<bool>? isConcatRoute = null,
@@ -559,7 +560,8 @@ namespace OneColumnEncoder.ViewModels
             _getPreferredScriptSourceKind = getPreferredScriptSourceKind;
             _afterImport = afterImport;
             _applyFfmpegFilterArgs = applyFfmpegFilterArgs;
-            _sourceReviser = reviseSourceResolution ?? ((_, _) => null);
+            _sourceReviser = reviseSource ?? (_ => null);
+            _sourceFfprobeJson = sourceFfprobeJson ?? string.Empty;
             _hasSourceValidationError = hasSourceValidationError;
             _hasSarRepairWarning = hasSarRepairWarning;
             _isQueueRoute = isQueueRoute;
@@ -1166,6 +1168,7 @@ namespace OneColumnEncoder.ViewModels
                 window.Close,
                 result => window.DialogResult = result,
                 _sourceReviser,
+                _sourceFfprobeJson,
                 SourceWidth,
                 SourceHeight,
                 suggestedWidth,
