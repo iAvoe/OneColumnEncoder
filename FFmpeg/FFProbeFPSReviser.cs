@@ -77,6 +77,13 @@ public static class FFProbeFPSReviser
                 ? VideoAnalysisFrameCountKind.Exact
                 : VideoAnalysisFrameCountKind.Unknown;
         }
+        else if (IsEuroPulldown(kind))
+        {
+            outputFrames = CalculateEuroPulldownFrameCount(sourceFrames, GetEuroPulldownThreePosition(kind));
+            frameCountKind = outputFrames.HasValue
+                ? VideoAnalysisFrameCountKind.Exact
+                : VideoAnalysisFrameCountKind.Unknown;
+        }
         else
         {
             outputFrames = EstimateOutputFrameCount(
@@ -168,10 +175,45 @@ public static class FFProbeFPSReviser
                 : (24, 1);
         }
 
-        if (kind == VideoAnalysisHypothesisKind.EuroPulldown)
+        if (IsEuroPulldown(kind))
             return (24, 1);
 
         return source ?? (30, 1);
+    }
+
+    private static int GetEuroPulldownThreePosition(VideoAnalysisHypothesisKind kind)
+    {
+        int index = (int)kind - (int)VideoAnalysisHypothesisKind.EuroPulldown001;
+        return 12 - index;
+    }
+
+    private static bool IsEuroPulldown(VideoAnalysisHypothesisKind kind) =>
+        kind is >= VideoAnalysisHypothesisKind.EuroPulldown001 and <= VideoAnalysisHypothesisKind.EuroPulldown012;
+
+    private static long? CalculateEuroPulldownFrameCount(long? sourceFrames, int threePosition)
+    {
+        if (sourceFrames is not > 0)
+            return null;
+
+        long totalFields = sourceFrames.Value * 2;
+        long fullCycles = totalFields / 25;
+        long remainingFields = totalFields % 25;
+
+        long result = fullCycles * 12;
+
+        for (int i = 1; i <= 12 && remainingFields > 0; i++)
+        {
+            int fieldsForThisFrame = i == threePosition ? 3 : 2;
+            if (remainingFields >= fieldsForThisFrame)
+            {
+                remainingFields -= fieldsForThisFrame;
+                result++;
+            }
+            else
+                break;
+        }
+
+        return result;
     }
 
     private static long? CalculateCadenceFrameCount(long? sourceFrames, VideoAnalysisHypothesisKind kind)

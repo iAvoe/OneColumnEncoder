@@ -182,7 +182,7 @@ public class SourceReviserVM : BaseVM
         get
         {
             FPSReviserResult? result = GetPreviewResult();
-            if (result?.Kind == VideoAnalysisHypothesisKind.EuroPulldown)
+            if (result?.Kind is >= VideoAnalysisHypothesisKind.EuroPulldown001 and <= VideoAnalysisHypothesisKind.EuroPulldown012)
                 return SourceReviserLangProvider.Current["SourceReviser.AudioSpeedWarning"];
             return result?.FrameCountKind == VideoAnalysisFrameCountKind.Unknown
                 ? SourceReviserLangProvider.Current["SourceReviser.UnknownFramesWarning"]
@@ -236,11 +236,12 @@ public class SourceReviserVM : BaseVM
 
     private void BuildPatternListing()
     {
-        _hypotheses = VideoAnalysisHypothesisCatalog.GetOptions();
+        _hypotheses = VideoAnalysisHypothesisCatalog.GetOptions()
+            .Where(h => h.Kind != VideoAnalysisHypothesisKind.ProgressiveSource)
+            .ToArray();
         Hypotheses = _hypotheses;
         PatternDropdown.Items.Clear();
 
-        AddPatternOption(VideoAnalysisHypothesisKind.ProgressiveSource);
         AddPatternOption(VideoAnalysisHypothesisKind.NativeDeinterlace);
         AddPatternOption(VideoAnalysisHypothesisKind.Pal22);
 
@@ -258,7 +259,18 @@ public class SourceReviserVM : BaseVM
         AddPatternOption(VideoAnalysisHypothesisKind.FourField4222);
 
         AddPatternGroupSeparator(2);
-        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown);
+        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown001);
+        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown002);
+        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown003);
+        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown004);
+        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown005);
+        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown006);
+        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown007);
+        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown008);
+        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown009);
+        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown010);
+        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown011);
+        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown012);
 
         AddPatternGroupSeparator(3);
         AddPatternOption(VideoAnalysisHypothesisKind.MixedPip);
@@ -316,6 +328,7 @@ public class SourceReviserVM : BaseVM
         VideoAnalysisHypothesisKind.FourField2242 or
         VideoAnalysisHypothesisKind.FourField2422 or
         VideoAnalysisHypothesisKind.FourField4222 => CompactParenthesizedDetail(hypothesis.Description),
+        >= VideoAnalysisHypothesisKind.EuroPulldown001 and <= VideoAnalysisHypothesisKind.EuroPulldown012 => CompactParenthesizedDetail(hypothesis.Description),
         _ => hypothesis.Description
     };
 

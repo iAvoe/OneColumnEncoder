@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using OneColumnEncoder.Models.Lang;
 
 namespace OneColumnEncoder.Models;
@@ -16,7 +17,18 @@ public enum VideoAnalysisHypothesisKind
     FourField2242,
     FourField2422,
     FourField4222,
-    EuroPulldown,
+    EuroPulldown001,
+    EuroPulldown002,
+    EuroPulldown003,
+    EuroPulldown004,
+    EuroPulldown005,
+    EuroPulldown006,
+    EuroPulldown007,
+    EuroPulldown008,
+    EuroPulldown009,
+    EuroPulldown010,
+    EuroPulldown011,
+    EuroPulldown012,
     MixedPip,
     Spliced
 }
@@ -59,8 +71,8 @@ public static class VideoAnalysisHypothesisCatalog
     public static IReadOnlyList<VideoAnalysisHypothesisOption> GetOptions()
     {
         SourceReviserLangProvider lang = SourceReviserLangProvider.Current;
-        return
-        [
+        var result = new List<VideoAnalysisHypothesisOption>
+        {
             Create(lang, "ProgressiveSource", VideoAnalysisHypothesisKind.ProgressiveSource),
             Create(lang, "NativeDeinterlace", VideoAnalysisHypothesisKind.NativeDeinterlace),
             Create(lang, "Pal22", VideoAnalysisHypothesisKind.Pal22),
@@ -73,10 +85,31 @@ public static class VideoAnalysisHypothesisCatalog
             Create(lang, "FourField2242", VideoAnalysisHypothesisKind.FourField2242),
             Create(lang, "FourField2422", VideoAnalysisHypothesisKind.FourField2422),
             Create(lang, "FourField4222", VideoAnalysisHypothesisKind.FourField4222),
-            Create(lang, "EuroPulldown", VideoAnalysisHypothesisKind.EuroPulldown),
-            Create(lang, "MixedPip", VideoAnalysisHypothesisKind.MixedPip, unsupported: true),
-            Create(lang, "Spliced", VideoAnalysisHypothesisKind.Spliced, unsupported: true)
-        ];
+        };
+
+        for (int i = 0; i < 12; i++)
+        {
+            VideoAnalysisHypothesisKind kind = VideoAnalysisHypothesisKind.EuroPulldown001 + i;
+            string pattern = GetEuroPulldownPattern(i);
+            result.Add(new VideoAnalysisHypothesisOption(
+                KindToId(kind),
+                string.Format(lang["SourceReviser.Option.EuroPulldown"], pattern),
+                string.Format(lang["SourceReviser.PatternDescription.EuroPulldown"], pattern),
+                kind));
+        }
+
+        result.Add(Create(lang, "MixedPip", VideoAnalysisHypothesisKind.MixedPip, unsupported: true));
+        result.Add(Create(lang, "Spliced", VideoAnalysisHypothesisKind.Spliced, unsupported: true));
+        return result.AsReadOnly();
+    }
+
+    private static string GetEuroPulldownPattern(int variantIndex)
+    {
+        int threePos = 12 - variantIndex;
+        var parts = new string[12];
+        for (int i = 1; i <= 12; i++)
+            parts[i - 1] = i == threePos ? "3" : "2";
+        return string.Join(":", parts);
     }
 
     public static VideoAnalysisHypothesisKind ParseKind(string hypothesisId) => hypothesisId switch
@@ -93,7 +126,18 @@ public static class VideoAnalysisHypothesisCatalog
         "four-field-2242" => VideoAnalysisHypothesisKind.FourField2242,
         "four-field-2422" => VideoAnalysisHypothesisKind.FourField2422,
         "four-field-4222" => VideoAnalysisHypothesisKind.FourField4222,
-        "euro-pulldown" => VideoAnalysisHypothesisKind.EuroPulldown,
+        "euro-pulldown-001" => VideoAnalysisHypothesisKind.EuroPulldown001,
+        "euro-pulldown-002" => VideoAnalysisHypothesisKind.EuroPulldown002,
+        "euro-pulldown-003" => VideoAnalysisHypothesisKind.EuroPulldown003,
+        "euro-pulldown-004" => VideoAnalysisHypothesisKind.EuroPulldown004,
+        "euro-pulldown-005" => VideoAnalysisHypothesisKind.EuroPulldown005,
+        "euro-pulldown-006" => VideoAnalysisHypothesisKind.EuroPulldown006,
+        "euro-pulldown-007" => VideoAnalysisHypothesisKind.EuroPulldown007,
+        "euro-pulldown-008" => VideoAnalysisHypothesisKind.EuroPulldown008,
+        "euro-pulldown-009" => VideoAnalysisHypothesisKind.EuroPulldown009,
+        "euro-pulldown-010" => VideoAnalysisHypothesisKind.EuroPulldown010,
+        "euro-pulldown-011" => VideoAnalysisHypothesisKind.EuroPulldown011,
+        "euro-pulldown-012" => VideoAnalysisHypothesisKind.EuroPulldown012,
         "mixed-pip" => VideoAnalysisHypothesisKind.MixedPip,
         "spliced" => VideoAnalysisHypothesisKind.Spliced,
         _ => throw new ArgumentException("Unknown video analysis hypothesis.", nameof(hypothesisId))
@@ -125,7 +169,18 @@ public static class VideoAnalysisHypothesisCatalog
         VideoAnalysisHypothesisKind.FourField2242 => "four-field-2242",
         VideoAnalysisHypothesisKind.FourField2422 => "four-field-2422",
         VideoAnalysisHypothesisKind.FourField4222 => "four-field-4222",
-        VideoAnalysisHypothesisKind.EuroPulldown => "euro-pulldown",
+        VideoAnalysisHypothesisKind.EuroPulldown001 => "euro-pulldown-001",
+        VideoAnalysisHypothesisKind.EuroPulldown002 => "euro-pulldown-002",
+        VideoAnalysisHypothesisKind.EuroPulldown003 => "euro-pulldown-003",
+        VideoAnalysisHypothesisKind.EuroPulldown004 => "euro-pulldown-004",
+        VideoAnalysisHypothesisKind.EuroPulldown005 => "euro-pulldown-005",
+        VideoAnalysisHypothesisKind.EuroPulldown006 => "euro-pulldown-006",
+        VideoAnalysisHypothesisKind.EuroPulldown007 => "euro-pulldown-007",
+        VideoAnalysisHypothesisKind.EuroPulldown008 => "euro-pulldown-008",
+        VideoAnalysisHypothesisKind.EuroPulldown009 => "euro-pulldown-009",
+        VideoAnalysisHypothesisKind.EuroPulldown010 => "euro-pulldown-010",
+        VideoAnalysisHypothesisKind.EuroPulldown011 => "euro-pulldown-011",
+        VideoAnalysisHypothesisKind.EuroPulldown012 => "euro-pulldown-012",
         VideoAnalysisHypothesisKind.MixedPip => "mixed-pip",
         VideoAnalysisHypothesisKind.Spliced => "spliced",
         _ => throw new ArgumentOutOfRangeException(nameof(kind))
