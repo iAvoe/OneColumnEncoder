@@ -21,8 +21,8 @@ namespace OneColumnEncoder.ConcatManagement
             string? referencePath = null;
             ConcatSourceSignature? referenceSignature = null;
             List<ConcatSourceRawAnalysis> rawAnalyses = [];
-            int supplementedCount = 0;
             long concatTotalFrames = 0;
+            bool hasCompleteFrameCounts = true;
             List<string> warnings = [];
             List<string> variableFrameRateWarnings = [];
             bool hasResolutionMismatch = false;
@@ -39,9 +39,6 @@ namespace OneColumnEncoder.ConcatManagement
                 try
                 {
                     string rawJson = await FFProbeVideoAnalysis.AnalyzeAsync(ffprobePath, filePath);
-                    FFProbeFrameCountSupplementResult supplementResult = FFProbeFrameCountSupplement.Supplement(rawJson);
-                    rawJson = supplementResult.RawJson;
-                    supplementedCount += supplementResult.SupplementedCount;
                     probeCard.ApplyFfprobeAnalysisJson(rawJson);
 
                     using JsonDocument rawDocument = JsonDocument.Parse(rawJson);
@@ -93,7 +90,10 @@ namespace OneColumnEncoder.ConcatManagement
                     {
                         long? fragmentFrames = TryGetFrameCount(videoStream);
                         if (fragmentFrames > 0) concatTotalFrames += fragmentFrames.Value;
+                        else hasCompleteFrameCounts = false;
                     }
+                    else
+                        hasCompleteFrameCounts = false;
                 }
                 catch (Exception ex)
                 {
@@ -110,8 +110,7 @@ namespace OneColumnEncoder.ConcatManagement
                 referenceRawJson,
                 referencePath,
                 rawAnalyses,
-                supplementedCount,
-                concatTotalFrames,
+                hasCompleteFrameCounts ? concatTotalFrames : -1,
                 warnings,
                 variableFrameRateWarnings,
                 hasResolutionMismatch,
@@ -203,7 +202,6 @@ namespace OneColumnEncoder.ConcatManagement
         string ReferenceRawJson,
         string ReferencePath,
         IReadOnlyList<ConcatSourceRawAnalysis> RawAnalyses,
-        int SupplementedCount,
         long ConcatTotalFrames,
         IReadOnlyList<string> Warnings,
         IReadOnlyList<string> VariableFrameRateWarnings,

@@ -87,26 +87,20 @@ namespace OneColumnEncoder.Commands
                     return;
                 }
 
-                // Single-file analysis: run ffprobe, supplement frame count, apply results to the validation card.
+                // Single-file analysis: run ffprobe and apply results to the validation card.
                 string ffprobePath = _getFfprobePath();
                 string sourcePath = _getSourcePath();
                 try
                 {
                     string rawJson =
                         await FFProbeVideoAnalysis.AnalyzeAsync(ffprobePath, sourcePath);
-                    FFProbeFrameCountSupplementResult supplementResult =
-                        FFProbeFrameCountSupplement.Supplement(rawJson);
-                    rawJson = supplementResult.RawJson;
 
                     _analysis.FfprobePath = ffprobePath;
                     _analysis.SourcePath = sourcePath;
                     _analysis.RawJson = rawJson;
                     _getActiveSrcValidationCard().ApplyFfprobeAnalysisJson(rawJson);
 
-                    if (supplementResult.IsNbFramesCalculated)
-                        ShowFrameCountSupplementedModal(FormatFrameCountSupplementMessage(rawJson, supplementResult.SupplementedCount));
-                    else
-                        ShowSourceAnalysisCompletedModal(UILangProvider.Current["SrcAnalysis.Completed"]);
+                    ShowSourceAnalysisCompletedModal(UILangProvider.Current["SrcAnalysis.Completed"]);
                 }
                 catch (Exception ex)
                 {
@@ -163,8 +157,6 @@ namespace OneColumnEncoder.Commands
             concatCard.ApplyConcatAnalysis(concatFilePaths, allValid: true);
 
             string message = string.Format(UILangProvider.Current["SourceConcat.Analyzed"], concatFilePaths.Length);
-            if (result.SupplementedCount > 0)
-                message = FormatQueueFrameCountSupplementMessage(message, result.SupplementedCount);
             ShowSourceAnalysisCompletedModal(message);
 
             if (result.Warnings.Count > 0)
@@ -204,7 +196,7 @@ namespace OneColumnEncoder.Commands
         }
 
         // Step 1: Initialize ffprobe path and queue file list. Abort if empty
-        // Step 2: For each file, run ffprobe analysis, supplement frame count, build a candidate signature + vote weight.
+        // Step 2: For each file, run ffprobe analysis and build a candidate signature + vote weight.
         // Step 3: Select a reference candidate (first-stream or weighted-vote-then-first-stream)
         // Step 4: Filter candidates: accepted if signature matches reference, otherwise excluded
         // Step 5: Serialize accepted/excluded lists to JSON files in config directory
@@ -222,8 +214,6 @@ namespace OneColumnEncoder.Commands
             List<QueueSourceCandidate> candidates = [];
             List<QueueSourceFailure> skipped = [];
             List<QueueSourceRawAnalysis> rawAnalyses = [];
-            int supplementedCount = 0;
-
             bool shouldFilterQueue = true;
             QueueFilterMode filterMode = shouldFilterQueue && queueFilePaths.Length > 1
                 ? PromptQueueFilterMode()
@@ -241,9 +231,6 @@ namespace OneColumnEncoder.Commands
                 try
                 {
                     string rawJson = await FFProbeVideoAnalysis.AnalyzeAsync(ffprobePath, filePath);
-                    FFProbeFrameCountSupplementResult supplementResult = FFProbeFrameCountSupplement.Supplement(rawJson);
-                    rawJson = supplementResult.RawJson;
-                    supplementedCount += supplementResult.SupplementedCount;
                     probeCard.ApplyFfprobeAnalysisJson(rawJson);
                     SourceCheckSignature signature = probeCard.GetSignature();
                     using JsonDocument rawDocument = JsonDocument.Parse(rawJson);
@@ -330,8 +317,6 @@ namespace OneColumnEncoder.Commands
                     excluded.Count,
                     queueJsonPath,
                     excludedJsonPath);
-            if (supplementedCount > 0)
-                message = FormatQueueFrameCountSupplementMessage(message, supplementedCount);
             if (skipped.Count > 0)
                 message = FormatQueueSkippedMessage(message, skipped);
             new OpenQueueAnalysisCompletedModalCmd(
@@ -339,17 +324,6 @@ namespace OneColumnEncoder.Commands
                 message,
                 queueJsonPath,
                 excludedJsonPath).Execute(null);
-        }
-
-        // Builds a message indicating analysis completed and (if available) total frame count + number of supplemented streams
-        private static string FormatFrameCountSupplementMessage(string rawJson, int supplementedCount)
-        {
-            List<string> lines = [UILangProvider.Current["SrcAnalysis.Completed"]];
-            if (TryGetTotalFrameCount(rawJson, out long totalFrameCount))
-                lines.Add(string.Format(Lang.TotalFramesFormat, new ClipRangeSelectorLangProvider(UILangProvider.Current.LanguageCode).SummaryTotalFramesLabel, totalFrameCount));
-
-            lines.Add(string.Format(UILangProvider.Current["SrcAnalysis.FrameCountSupplemented"], supplementedCount));
-            return string.Join(Environment.NewLine + Environment.NewLine, lines);
         }
 
         // Delegates reference selection based on filter mode: first-stream or weighted-vote-then-first-stream
@@ -429,34 +403,6 @@ namespace OneColumnEncoder.Commands
                 : null;
         }
 
-        // Parses total frame count from the first stream of the raw ffprobe JSON.
-        private static bool TryGetTotalFrameCount(string rawJson, out long totalFrameCount)
-        {
-            totalFrameCount = 0;
-
-            try
-            {
-                using JsonDocument document = JsonDocument.Parse(rawJson);
-                JsonElement stream = document.RootElement.GetProperty("streams")[0];
-                long? parsedTotalFrames = TryGetFrameCount(stream);
-                if (parsedTotalFrames is null)
-                    return false;
-
-                totalFrameCount = parsedTotalFrames.Value;
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        private static string FormatQueueFrameCountSupplementMessage(string message, int supplementedCount) =>
-            message
-            + Environment.NewLine
-            + Environment.NewLine
-            + string.Format(UILangProvider.Current["SrcAnalysis.FrameCountSupplemented"], supplementedCount);
-
         // Formats an error message with optional queue progress (e.g., "3/10") and a skip-notice suffix for queue mode.
         private static string FormatAnalysisFailureMessage(
             string sourcePath,
@@ -499,14 +445,6 @@ namespace OneColumnEncoder.Commands
                 + Environment.NewLine
                 + Environment.NewLine
                 + string.Join(Environment.NewLine, skippedLines);
-        }
-
-        private void ShowFrameCountSupplementedModal(string message)
-        {
-            new OpenInfoModalCmd(
-                _modalNavS,
-                UILangProvider.SrcAnalysisWindowTitle,
-                message).Execute(null);
         }
 
         private void ShowSourceAnalysisCompletedModal(string message)

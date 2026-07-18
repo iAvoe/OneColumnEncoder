@@ -78,6 +78,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly ConcurrentQueue<ProcessLogEntry> _logQueue = new();
         private readonly Dictionary<string, EncodingLogSnapshot> _logSnapshotsByJobId = [];
         private long? _totalFrames;
+        private bool _hasKnownTotalFrames;
         private readonly IReadOnlyList<(EncodingPipelineRequest Request, EncodingPipelineCommand Command)>? _queueItems;
         private string? _activeLogJobId;
         private QueueJobItemVM? _activeJobVM;
@@ -109,6 +110,7 @@ namespace OneColumnEncoder.ViewModels
 
         public string WindowTitle => _isSample ? EncodingMonitorModalLangProvider.WindowTitleSampleMode : EncodingMonitorModalLangProvider.WindowTitle;
         public string ProgressTitle => Lang.ProgressTitle;
+        public Visibility ProgressSectionVisibility => _hasKnownTotalFrames ? Visibility.Visible : Visibility.Collapsed;
         public string MemoryTitle => Lang.MemoryTitle;
 
         public string DragLogReportHint => Lang.DragLogReportHint;
@@ -300,7 +302,7 @@ namespace OneColumnEncoder.ViewModels
             _request = request;
             _command = command;
             _isSample = isSample;
-            _totalFrames = EncodingPipeline.GetSourceTotalFrames(_request.SourceFfprobeJson, _request.ConcatTotalFrames);
+            ApplySourceTotalFrames(EncodingPipeline.GetSourceTotalFrames(_request.SourceFfprobeJson, _request.ConcatTotalFrames));
             _enableMux = CanMux && !string.Equals(_request.EncoderExeName, "x264.exe", StringComparison.OrdinalIgnoreCase);
 
             RefreshLanguageState();
@@ -684,7 +686,7 @@ namespace OneColumnEncoder.ViewModels
                     EnableCloseButton();
                 }
 
-                ProgressValue = _success ? 100 : ProgressValue;
+                ProgressValue = _hasKnownTotalFrames && _success ? 100 : ProgressValue;
                 UpdateProgressDetails();
                 if (_queueItems == null)
                     StatusText = _success
@@ -743,7 +745,7 @@ namespace OneColumnEncoder.ViewModels
 
                 _request = request;
                 _command = command;
-                _totalFrames = EncodingPipeline.GetSourceTotalFrames(request.SourceFfprobeJson, request.ConcatTotalFrames);
+                ApplySourceTotalFrames(EncodingPipeline.GetSourceTotalFrames(request.SourceFfprobeJson, request.ConcatTotalFrames));
                 OnPropertyChanged(nameof(OpusAudioCommandHint));
                 EnableMux = command.MuxCommand != null
                     && !string.Equals(request.EncoderExeName, "x264.exe", StringComparison.OrdinalIgnoreCase);
@@ -1122,20 +1124,21 @@ namespace OneColumnEncoder.ViewModels
         }
 
         /// <summary>
-        /// Extracts progress info from a single log line.
-        /// For downstream lines: parses percentage progress and frame counts to update ProgressValue.
-        /// Also extracts written frame count for estimated size calculations.
+        /// Extracts progress info from a single log line when total frames are known.
+        /// Parses percentage progress and frame counts to update ProgressValue and size estimates.
         /// </summary>
         private void UpdateProgressFromLogLine(string line, bool updateMainProgress)
         {
+            if (!_hasKnownTotalFrames) return;
+
             string trimmed = NormalizeLogLineForProgress(line);
             if (string.IsNullOrWhiteSpace(trimmed) || IsIndexProgressLine(trimmed)) return;
 
             bool isProgressLine = IsProgressLine(trimmed);
-            // Parse percentage-based progress (e.g. "56.3%") from log text
+            // Parse percentage-based progress (e.g. "56.3%") from log text.
             if (isProgressLine && updateMainProgress)
                 ProgressValue = InferProgress(ProgressValue, trimmed);
-            // Try to extract frame count for frame-based progress and output size estimation
+            // Try to extract frame count for frame-based progress and output size estimation.
             if (TryParseEncoderFrame(trimmed) is int frame)
             {
                 UpdateWrittenFrames(frame);
@@ -1444,6 +1447,13 @@ namespace OneColumnEncoder.ViewModels
         {
             TimeSpan elapsed = _stopwatch.Elapsed;
             FooterColumns[1].MainText = elapsed.ToString("hh\\:mm\\:ss", CultureInfo.InvariantCulture);
+            if (!_hasKnownTotalFrames)
+            {
+                FooterColumns[2].MainText = "--:--:--";
+                FooterColumns[3].MainText = "--:--:--";
+                return;
+            }
+
             if (ProgressValue > 0 && !final)
             {
                 // Linear extrapolation: total = elapsed / (progress/100)
@@ -1540,6 +1550,8 @@ namespace OneColumnEncoder.ViewModels
         /// </summary>
         private double GetProgressRatio()
         {
+            if (!_hasKnownTotalFrames) return 0d;
+
             if (_totalFrames is > 0 && _writtenFrames > 0)
                 return Math.Clamp(_writtenFrames / (double)_totalFrames.Value, 0d, 1d);
 
@@ -1548,12 +1560,23 @@ namespace OneColumnEncoder.ViewModels
 
         private string GetWrittenFramesText()
         {
+            if (!_hasKnownTotalFrames) return Lang.NotAvailableText;
+
             if (_totalFrames is > 0)
                 return $"{_writtenFrames.ToString("N0", CultureInfo.InvariantCulture)} / {_totalFrames.Value.ToString("N0", CultureInfo.InvariantCulture)}";
 
             return _writtenFrames > 0 ? _writtenFrames.ToString("N0", CultureInfo.InvariantCulture) : Lang.NotAvailableText;
         }
         #endregion
+
+        private void ApplySourceTotalFrames(long? totalFrames)
+        {
+            _totalFrames = totalFrames;
+            _hasKnownTotalFrames = totalFrames is > 0;
+            OnPropertyChanged(nameof(ProgressSectionVisibility));
+            OnPropertyChanged(nameof(WrittenFramesLabel));
+            OnPropertyChanged(nameof(EstimatedSizeLabel));
+        }
 
         #region Process Metric Queries
         private static long GetWorkingSetBytes(Process? process, Dictionary<int, List<int>>? childMap = null)

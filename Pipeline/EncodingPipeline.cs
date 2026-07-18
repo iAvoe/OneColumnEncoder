@@ -465,22 +465,8 @@ public static partial class EncodingPipeline
             using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
             if (!FrameRate.TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return null;
 
-            if (IsFrameCountUnknown(stream)) return null;
-
             long? frameCount = TryGetFrameCount(stream);
-
-            if (frameCount is > 0) return frameCount;
-
-            double? duration = TryGetDouble(stream, "duration")
-                ?? (document.RootElement.TryGetProperty("format", out JsonElement format) ? TryGetDouble(format, "duration") : null);
-            string? fpsString = TryGetFrameRateString(stream);
-            if (duration is > 0 && FrameRate.TryParseFrameRate(fpsString, out double fps))
-            {
-                long estimated = (long)Math.Round(duration.Value * fps);
-                return estimated > 0 ? estimated : null;
-            }
-
-            return null;
+            return frameCount is > 0 ? frameCount : null;
         }
         catch { return null; }
     }

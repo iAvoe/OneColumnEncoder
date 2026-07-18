@@ -23,7 +23,7 @@
                       HorizontalScrollBarVisibility="Disabled">
             <StackPanel>
 
-                <Grid>
+                <Grid Visibility="{Binding ProgressSectionVisibility}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
