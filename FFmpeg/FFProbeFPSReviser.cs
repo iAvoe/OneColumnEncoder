@@ -109,21 +109,6 @@ public static class FFProbeFPSReviser
         videoStream["avg_frame_rate"] = fps;
         videoStream["r_frame_rate"] = fps;
         videoStream["time_base"] = $"{request.OutputFrameRateDenominator}/{request.OutputFrameRateNumerator}";
-        RemoveFrameCountTags(videoStream);
-
-        if (outputFrames.HasValue)
-        {
-            videoStream["nb_frames"] = outputFrames.Value.ToString(CultureInfo.InvariantCulture);
-            videoStream["nb_frames_by_1cenc"] = frameCountKind == VideoAnalysisFrameCountKind.Exact
-                ? "exact"
-                : "estimated";
-        }
-        else
-        {
-            videoStream.Remove("nb_frames");
-            RemoveFrameCountTags(videoStream);
-            videoStream["nb_frames_by_1cenc"] = "unknown";
-        }
 
         return new(
             rootObject.ToJsonString(FFProbeJsonFormatting.Options),
@@ -287,14 +272,4 @@ public static class FFProbeFPSReviser
         throw new InvalidOperationException("No video stream found in ffprobe JSON.");
     }
 
-    private static void RemoveFrameCountTags(JsonObject stream)
-    {
-        if (stream["tags"] is not JsonObject tags) return;
-        foreach (string name in tags.Select(property => property.Key).Where(IsFrameCountTagName).ToArray())
-            tags.Remove(name);
-    }
-
-    private static bool IsFrameCountTagName(string name) =>
-        name.Equals("NUMBER_OF_FRAMES", StringComparison.OrdinalIgnoreCase)
-        || name.StartsWith("NUMBER_OF_FRAMES-", StringComparison.OrdinalIgnoreCase);
 }
