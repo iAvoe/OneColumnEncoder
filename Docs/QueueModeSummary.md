@@ -23,7 +23,7 @@ After import:
 Script queue imports are validated against the current video queue before they are accepted. `MainVM.ValidateScriptQueueImport()` checks basename matches and embedded source paths so queue scripts stay aligned with the selected source list.
 
 ## 3. Queue Source Analysis
-When `AnalyzeSrcVideoCmd` runs in queue mode, it analyzes each file with ffprobe, supplements frame counts, and builds a signature for consistency checks. If queue filtering is enabled, the user chooses one of two reference strategies:
+When `AnalyzeSrcVideoCmd` runs in queue mode, it analyzes each file with ffprobe, keeps frame counts unknown when ffprobe does not provide them, and builds a signature for consistency checks. If queue filtering is enabled, the user chooses one of two reference strategies:
 - `FirstStream`
 - `WeightedVoteThenFirstStream`
 

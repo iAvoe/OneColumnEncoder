@@ -180,13 +180,9 @@ The trade-off is that adapting new encoders is more complex. Each new encoder re
 
 The project does not expose every parameter as a UI control. Commonly used parameters are surfaced as sliders, presets, and toggles; more advanced or unstable options are left to the custom parameters text box.
 
-#### Total Frame Count Auto-Repair
+#### Frame Count Policy
 
-When total frame count is missing from video metadata, 1cenc supplements it using $ \lfloor T \cdot R_{\text{avg}} + 0.5 \rfloor $ and writes it into the ffprobe analysis JSON.
-
-- T: Duration
-- $R_{\text{avg}}$: Average frame rate
-- $\lfloor$ $\rfloor$: Floor function
+When total frame count is missing from video metadata, 1cenc leaves it unknown instead of synthesizing a value from duration and average frame rate. That avoids feeding guessed counts into encoder frame limits or the encoding monitor's progress display. In that case, frame-based progress is omitted.
 
 ### Output and Auto-Muxing
 
@@ -303,11 +299,11 @@ Monitor features include:
 - Log folding to avoid repeated line flooding.
 - Save upstream / downstream stderr.
 - View encoding command.
-- Progress percentage.
-- Written frame count.
+- Progress percentage when a reliable total frame count exists.
+- Written frame count when a reliable total frame count exists.
 - Current output size.
-- Estimated output size.
-- Elapsed time, remaining time, estimated completion time.
+- Estimated output size when progress tracking is available.
+- Elapsed time, remaining time, estimated completion time when progress tracking is available.
 - Upstream / downstream memory usage.
 - Working set peak, Page Fault, memory pressure.
 - Manually interrupt upstream or encoder.

@@ -179,7 +179,7 @@ Its not esay to develop these tools. If this software helped, please consider sp
 #### Encoding Command Generation and Startup
 
 - Y4M pipeline command generation, supporting output from various upstream tools to x264/x265/SVT-AV1
-- Command generation automatically supplements parameters such as frame number, color, range, chroma, and lookahead based on ffprobe information
+- Command generation derives parameters such as color, range, chroma, and lookahead from ffprobe information; frame count is only used when it is already reliable
 - A parameter confirmation window pops up before starting encoding; after confirmation, the encoding monitoring window appears
 
 #### Sampling Clips
@@ -192,7 +192,7 @@ Its not esay to develop these tools. If this software helped, please consider sp
 
 - Supports starting upstream and encoder processes and passing upstream stdout pipes to encoder stdin
 - Supports reading upstream/downstream stderr, log folding, saving logs, viewing encoding commands, and adjusting log fontsize
-- Supports encoding progress, number of written frames, current/estimated output size, time elapsed, remaining time, and completion time estimation
+- Supports encoding progress when a reliable total frame count exists, written frame count, current/estimated output size, time elapsed, remaining time, and completion time estimation
 - Supports memory usage, working set peak, Page Fault, memory pressure, and memory range statistics
 - Supports interrupting upstream or encoder processes; the window can only be closed after encoding is complete
 

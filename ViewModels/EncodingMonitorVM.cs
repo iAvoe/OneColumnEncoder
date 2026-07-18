@@ -110,7 +110,7 @@ namespace OneColumnEncoder.ViewModels
 
         public string WindowTitle => _isSample ? EncodingMonitorModalLangProvider.WindowTitleSampleMode : EncodingMonitorModalLangProvider.WindowTitle;
         public string ProgressTitle => Lang.ProgressTitle;
-        public Visibility ProgressSectionVisibility => _hasKnownTotalFrames ? Visibility.Visible : Visibility.Collapsed;
+        public bool IsProgressTrackingAvailable => _hasKnownTotalFrames;
         public string MemoryTitle => Lang.MemoryTitle;
 
         public string DragLogReportHint => Lang.DragLogReportHint;
@@ -1573,7 +1573,8 @@ namespace OneColumnEncoder.ViewModels
         {
             _totalFrames = totalFrames;
             _hasKnownTotalFrames = totalFrames is > 0;
-            OnPropertyChanged(nameof(ProgressSectionVisibility));
+            OnPropertyChanged(nameof(IsProgressTrackingAvailable));
+            OnPropertyChanged(nameof(ProgressText));
             OnPropertyChanged(nameof(WrittenFramesLabel));
             OnPropertyChanged(nameof(EstimatedSizeLabel));
         }
