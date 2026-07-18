@@ -4,6 +4,7 @@ using OneColumnEncoder.FFmpeg;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using System.Globalization;
+using System.Text.Json;
 
 namespace OneColumnEncoder.ViewModels;
 
@@ -19,6 +20,9 @@ public class SourceReviserVM : BaseVM
     private readonly int _suggestedWidth;
     private readonly int _suggestedHeight;
     private readonly (int numerator, int denominator)? _sourceFrameRate;
+    private readonly bool _isVfr;
+    private readonly int _vfrFrameRateNum;
+    private readonly int _vfrFrameRateDen;
     private IReadOnlyList<VideoAnalysisHypothesisOption> _hypotheses = [];
     private VideoAnalysisHypothesisOption? _selectedHypothesis;
     private string _resolutionWidthText;
@@ -35,7 +39,8 @@ public class SourceReviserVM : BaseVM
         int currentWidth,
         int currentHeight,
         int suggestedWidth,
-        int suggestedHeight)
+        int suggestedHeight,
+        bool isVfr = false)
     {
         _modalNavS = modalNavS;
         _finishAction = finishAction;
@@ -46,6 +51,7 @@ public class SourceReviserVM : BaseVM
         _suggestedWidth = suggestedWidth;
         _suggestedHeight = suggestedHeight;
         _sourceFrameRate = FFProbeFPSReviser.ReadSourceFrameRate(rawJson);
+        _isVfr = isVfr;
 
         ResolutionWidth = suggestedWidth;
         ResolutionHeight = suggestedHeight;
@@ -56,6 +62,22 @@ public class SourceReviserVM : BaseVM
             ? suggestedHeight.ToString(CultureInfo.InvariantCulture)
             : string.Empty;
 
+        if (_isVfr)
+        {
+            (int num, int den)? rRate = null;
+            try
+            {
+                using JsonDocument doc = JsonDocument.Parse(rawJson);
+                if (FrameRate.TryGetFirstVideoStream(doc.RootElement, out JsonElement stream))
+                    rRate = FrameRate.GetRFrameRate(stream);
+            }
+            catch { }
+            _vfrFrameRateNum = rRate?.num ?? _sourceFrameRate?.numerator ?? 0;
+            _vfrFrameRateDen = rRate?.den ?? _sourceFrameRate?.denominator ?? 1;
+            _outputFrameRateNumeratorText = _vfrFrameRateNum.ToString(CultureInfo.InvariantCulture);
+            _outputFrameRateDenominatorText = _vfrFrameRateDen.ToString(CultureInfo.InvariantCulture);
+        }
+
         UseCurrentResolutionCommand = new ActionCmd(
             _ => SetResolutionText(_currentWidth, _currentHeight),
             _ => _currentWidth > 0 && _currentHeight > 0);
@@ -64,7 +86,7 @@ public class SourceReviserVM : BaseVM
             _ => _suggestedWidth > 0 && _suggestedHeight > 0);
         UseCurrentFrameRateCommand = new ActionCmd(
             _ => SetFrameRateText(_sourceFrameRate),
-            _ => _sourceFrameRate.HasValue);
+            _ => !_isVfr && _sourceFrameRate.HasValue);
         PatternDropdown.SelectionChangedCommand = new ActionCmd(_ => OnPatternSelectionChanged());
         BuildPatternListing();
         SelectedHypothesis = _hypotheses.Count > 0 ? _hypotheses[0] : null;
@@ -177,10 +199,16 @@ public class SourceReviserVM : BaseVM
         }
     }
 
+    public bool IsFpsSectionEnabled => !_isVfr;
+
+    public bool IsVfrWarningVisible => _isVfr;
+
     public string WarningText
     {
         get
         {
+            if (_isVfr)
+                return SourceReviserLangProvider.Current["SourceReviser.VfrWarning"];
             FPSReviserResult? result = GetPreviewResult();
             if (result?.Kind is >= VideoAnalysisHypothesisKind.EuroPulldown001 and <= VideoAnalysisHypothesisKind.EuroPulldown012)
                 return SourceReviserLangProvider.Current["SourceReviser.AudioSpeedWarning"];
@@ -190,7 +218,7 @@ public class SourceReviserVM : BaseVM
         }
     }
 
-    public bool HasWarning => !string.IsNullOrWhiteSpace(WarningText);
+    public bool HasWarning => _isVfr || !string.IsNullOrWhiteSpace(WarningText);
     public int ResolutionWidth { get; private set; }
     public int ResolutionHeight { get; private set; }
     public ActionCmd UseCurrentResolutionCommand { get; }
@@ -203,6 +231,23 @@ public class SourceReviserVM : BaseVM
         if (!TryParseResolution(out int width, out int height))
         {
             ShowError(SourceReviserLangProvider.Current["SourceReviser.InvalidInput"]);
+            return;
+        }
+
+        if (_isVfr)
+        {
+            SourceRevisionRequest vfrRequest = new(
+                width, height,
+                new("progressive-source", _vfrFrameRateNum, _vfrFrameRateDen));
+            string? vfrError = _reviseSource(vfrRequest);
+            if (!string.IsNullOrWhiteSpace(vfrError))
+            {
+                ShowError(vfrError);
+                return;
+            }
+            ResolutionWidth = width;
+            ResolutionHeight = height;
+            _finishAction(true);
             return;
         }
 
@@ -369,6 +414,8 @@ public class SourceReviserVM : BaseVM
         OnPropertyChanged(nameof(OutputFrameCountText));
         OnPropertyChanged(nameof(WarningText));
         OnPropertyChanged(nameof(HasWarning));
+        OnPropertyChanged(nameof(IsFpsSectionEnabled));
+        OnPropertyChanged(nameof(IsVfrWarningVisible));
     }
 
     private void SetResolutionText(int width, int height)

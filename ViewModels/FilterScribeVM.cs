@@ -1161,6 +1161,7 @@ namespace OneColumnEncoder.ViewModels
         private bool ShowSourceReviserModal()
         {
             var (suggestedWidth, suggestedHeight) = GetSuggestedOutputResolution();
+            bool isVfr = FrameRate.IsVariableFrameRate(_sourceFfprobeJson) == true;
 
             SourceReviserModal window = new();
             SourceReviserVM vm = new(
@@ -1172,7 +1173,8 @@ namespace OneColumnEncoder.ViewModels
                 SourceWidth,
                 SourceHeight,
                 suggestedWidth,
-                suggestedHeight);
+                suggestedHeight,
+                isVfr);
 
             window.DataContext = vm;
             window.Owner = Application.Current.Windows

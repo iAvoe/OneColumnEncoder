@@ -98,7 +98,8 @@
 
                 <comps:AppConfContainer Grid.Row="4"
                                         Header="{Binding PatternLabel}"
-                                        Margin="0 15 0 0">
+                                        Margin="0 15 0 0"
+                                        IsEnabled="{Binding IsFpsSectionEnabled}">
                     <comps:AppConfItem Text="{Binding OutputFramesLabel}">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -118,7 +119,8 @@
                 </comps:AppConfContainer>
 
                 <Grid Grid.Row="5"
-                      Margin="0 15 0 0">
+                      Margin="0 15 0 0"
+                      IsEnabled="{Binding IsFpsSectionEnabled}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -130,7 +132,7 @@
                                Text="{Binding InputFpsLabel}"
                                Style="{StaticResource H3}"
                                VerticalAlignment="Center" />
-
+ 
                     <Grid Grid.Row="1"
                           Margin="0 10 0 0">
                         <Grid.ColumnDefinitions>
