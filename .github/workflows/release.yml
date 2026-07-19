@@ -106,13 +106,16 @@ jobs:
           $body += "- https://github.com/iAvoe/OneColumnEncoder/commit/$($env:GITHUB_SHA)`n`n"
           $body += "Follow this tutorial to get tools (pipe upstream / filtering tools & video encoders) tailored for your use case | 你可以根据此教程来获取合适的工具（管道上游程序/滤镜工具与视频编码器）:`n"
           $body += "- [Encoding Tools Download Tutorial](https://github.com/iAvoe/encoding-tools-download-tutorial)`n`n"
-          $body += "Or, TLDR; and use tools provided in downloaded package (not recommended but its an option) | 或者着急要用的话，也可以无视上述教程，下载并直接使用附带的工具（不推荐但可以）"
+          $body += "Or, TLDR; and use tools provided in downloaded package (not recommended but it works) | 或者着急要用的话，也可以无视上述教程，下载并直接使用附带的工具（不推荐但可以）"
           $body += "`n`n"
           $body += "> [!NOTE]`n"
-          $body += "> The post-IVTC total frame count & FPS revising mechanic lacks testing and should noe be trusted; despite not really making significant impacts, referencing is not advsied | IVTC 后的总帧数与帧率计算机制缺乏测试，因而不可轻信；这些功能暂无大用，但也不建议作为参考`n"
+          $body += "> The post-IVTC total frame count & FPS revising mechanic lacks of testing,despite not really making significant impacts, referencing is not advsied | IVTC 后的总帧数与帧率计算机制缺乏测试；该功能暂无大用，但也不建议作为参考"
           $body += "`n`n"
           $body += "> [!TIP]`n"
-          $body += "> This version resolved an unripe encoding termination behavior (on edge cases) due to total frame metadata replenish on missing. Now this feature is removed and progress bar becomes barber pole animation | 此版本修复了视频帧不足时停止压制的异常行为，原因在于尝试补充缺失的总帧数元数据。此版本中该功能已被移除，且进度条将在无法统计进度时显示理发店旋转灯柱动画"
+          $body += "> This version resolved an unripe encoding termination behavior (on edge cases) due to total frame metadata replenish-on-missing mechanic. Now this feature is removed and progress bar becomes barber pole animation | 此版本修复了视频帧不足时停止压制的异常行为，原因在于尝试补充缺失的总帧数元数据。此版本中该功能已被移除，且进度条将在无法统计进度时显示理发店旋转灯柱动画"
+          $body += "`n`n"
+          $body += "> [!NOTE]`n"
+          $body += "> x86 Release has limited tool-let integration since 32bit compiling was unsupported and unfixable | x86 发布版本缺少一些小工具的集成，因为 32bit 编译缺少支持且修正不了"
 
           echo "RELEASE_TITLE=$title" >> $env:GITHUB_ENV
           $body | Out-File -FilePath .\release-notes.md -Encoding utf8
