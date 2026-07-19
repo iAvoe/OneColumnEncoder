@@ -65,8 +65,6 @@
                     Value="{StaticResource MemoryRangeEmpty}" />
             <Setter Property="Foreground"
                     Value="{StaticResource GlobalSecondary}" />
-            <Setter Property="IsIndeterminate"
-                    Value="True" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ProgressBar">
@@ -167,7 +165,8 @@
                     <Grid Grid.Column="1"
                           Margin="10 0 14 0"
                           Style="{StaticResource ProgressUnavailableVisibilityStyle}">
-                        <ProgressBar Style="{StaticResource UnavailableProgressBarStyle}" />
+                        <ProgressBar Style="{StaticResource UnavailableProgressBarStyle}"
+                                     IsIndeterminate="{Binding IsEncodingActive}" />
                     </Grid>
                     <TextBlock Grid.Column="2"
                                Text="{Binding ProgressText}"

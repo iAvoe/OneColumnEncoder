@@ -221,6 +221,13 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
+        private bool _isEncodingActive;
+        public bool IsEncodingActive
+        {
+            get => _isEncodingActive;
+            private set => SetProperty(ref _isEncodingActive, value);
+        }
+
         private string _freezeOrContinueText = string.Empty;
         public string FreezeOrContinueText
         {
@@ -546,6 +553,7 @@ namespace OneColumnEncoder.ViewModels
         private async Task RunEncodingAsync(CancellationToken cancellationToken)
         {
             _success = false;
+            IsEncodingActive = true;
 
             try
             {
@@ -697,6 +705,7 @@ namespace OneColumnEncoder.ViewModels
                 FlushLogsToProperties();
                 UpdateFooterTimes(final: _queueItems == null);
                 IsMonitoringEnabled = false;
+                IsEncodingActive = false;
                 _upstreamStdoutStream = null;
                 _encoderStdinStream = null;
             }
