@@ -23,6 +23,36 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="AvailableProgressBarStyle"
+               TargetType="ProgressBar">
+            <Setter Property="Height"
+                    Value="20" />
+            <Setter Property="Minimum"
+                    Value="0" />
+            <Setter Property="Maximum"
+                    Value="100" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="2"
+                                ClipToBounds="True">
+                            <Border Margin="1"
+                                    CornerRadius="2">
+                                <Grid>
+                                    <Border Background="{TemplateBinding Background}" />
+                                    <Border x:Name="PART_Track" />
+                                    <Border x:Name="PART_Indicator"
+                                            HorizontalAlignment="Left"
+                                            CornerRadius="2"
+                                            Background="{TemplateBinding Foreground}" />
+                                </Grid>
+                            </Border>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <Style x:Key="UnavailableProgressBarStyle"
                TargetType="ProgressBar">
             <Setter Property="Height"
@@ -35,22 +65,16 @@
                     Value="{StaticResource MemoryRangeEmpty}" />
             <Setter Property="Foreground"
                     Value="{StaticResource GlobalSecondary}" />
-            <Setter Property="BorderBrush"
-                    Value="{StaticResource GlobalTertiary}" />
-            <Setter Property="BorderThickness"
-                    Value="1" />
             <Setter Property="IsIndeterminate"
                     Value="True" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ProgressBar">
                         <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="6"
+                                CornerRadius="2"
                                 ClipToBounds="True">
                             <Border Margin="1"
-                                    CornerRadius="5"
+                                    CornerRadius="2"
                                     Opacity="0.9">
                                 <Border.Background>
                                     <DrawingBrush Viewport="0,0,24,24"
@@ -135,13 +159,10 @@
                     <Grid Grid.Column="1"
                           Margin="10 0 14 0"
                           Style="{StaticResource ProgressAvailableVisibilityStyle}">
-                        <ProgressBar Height="20"
-                                     Minimum="0"
-                                     Maximum="100"
+                        <ProgressBar Style="{StaticResource AvailableProgressBarStyle}"
                                      Value="{Binding ProgressValue}"
                                      Foreground="{StaticResource ProgressGreen}"
-                                     Background="{StaticResource MemoryRangeEmpty}"
-                                     BorderThickness="0" />
+                                     Background="{StaticResource MemoryRangeEmpty}" />
                     </Grid>
                     <Grid Grid.Column="1"
                           Margin="10 0 14 0"
