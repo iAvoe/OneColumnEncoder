@@ -13,19 +13,11 @@
   </PropertyGroup>
 
   <Target Name="AppendGitCommitCount" AfterTargets="CoreGenerateAssemblyInfo" BeforeTargets="CoreCompile">
-    <Exec Command="git rev-list --count HEAD"
-          ConsoleToMSBuild="true"
-          IgnoreExitCode="true"
-          StandardOutputImportance="low"
-          Condition="'$(GitCommitCount)' == ''">
+    <Exec Command="git rev-list --count HEAD" ConsoleToMSBuild="true" IgnoreExitCode="true" StandardOutputImportance="low" Condition="'$(GitCommitCount)' == ''">
       <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitCount" />
     </Exec>
 
-    <Exec Command="git rev-parse --short=8 HEAD"
-          ConsoleToMSBuild="true"
-          IgnoreExitCode="true"
-          StandardOutputImportance="low"
-          Condition="'$(GitCommitShortHash)' == ''">
+    <Exec Command="git rev-parse --short=8 HEAD" ConsoleToMSBuild="true" IgnoreExitCode="true" StandardOutputImportance="low" Condition="'$(GitCommitShortHash)' == ''">
       <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitShortHash" />
     </Exec>
 
@@ -34,12 +26,8 @@
       <GitCommitShortHash Condition="'$(GitCommitShortHash)' == ''">unknown</GitCommitShortHash>
     </PropertyGroup>
 
-    <WriteLinesToFile File="$(GeneratedAssemblyInfoFile)"
-                      Lines="[assembly: System.Reflection.AssemblyMetadataAttribute(&quot;GitCommitCount&quot;, &quot;$(GitCommitCount)&quot;)]"
-                      Overwrite="false" />
-    <WriteLinesToFile File="$(GeneratedAssemblyInfoFile)"
-                      Lines="[assembly: System.Reflection.AssemblyMetadataAttribute(&quot;GitCommitShortHash&quot;, &quot;$(GitCommitShortHash)&quot;)]"
-                      Overwrite="false" />
+    <WriteLinesToFile File="$(GeneratedAssemblyInfoFile)" Lines="[assembly: System.Reflection.AssemblyMetadataAttribute(&quot;GitCommitCount&quot;, &quot;$(GitCommitCount)&quot;)]" Overwrite="false" />
+    <WriteLinesToFile File="$(GeneratedAssemblyInfoFile)" Lines="[assembly: System.Reflection.AssemblyMetadataAttribute(&quot;GitCommitShortHash&quot;, &quot;$(GitCommitShortHash)&quot;)]" Overwrite="false" />
   </Target>
 
   <ItemGroup>

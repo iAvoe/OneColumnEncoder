@@ -11,127 +11,6 @@
              mc:Ignorable="d">
     <UserControl.Resources>
         <conv:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
-        <Style x:Key="ProgressAvailableVisibilityStyle"
-               TargetType="Grid">
-            <Setter Property="Visibility"
-                    Value="Collapsed" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsProgressTrackingAvailable}"
-                             Value="True">
-                    <Setter Property="Visibility"
-                            Value="Visible" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key="AvailableProgressBarStyle"
-               TargetType="ProgressBar">
-            <Setter Property="Height"
-                    Value="20" />
-            <Setter Property="Minimum"
-                    Value="0" />
-            <Setter Property="Maximum"
-                    Value="100" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ProgressBar">
-                        <Border Background="{TemplateBinding Background}"
-                                CornerRadius="2"
-                                ClipToBounds="True">
-                            <Border Margin="1"
-                                    CornerRadius="2">
-                                <Grid>
-                                    <Border Background="{TemplateBinding Background}" />
-                                    <Border x:Name="PART_Track" />
-                                    <Border x:Name="PART_Indicator"
-                                            HorizontalAlignment="Left"
-                                            CornerRadius="2"
-                                            Background="{TemplateBinding Foreground}" />
-                                </Grid>
-                            </Border>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="UnavailableProgressBarStyle"
-               TargetType="ProgressBar">
-            <Setter Property="Height"
-                    Value="20" />
-            <Setter Property="Minimum"
-                    Value="0" />
-            <Setter Property="Maximum"
-                    Value="100" />
-            <Setter Property="Background"
-                    Value="{StaticResource MemoryRangeEmpty}" />
-            <Setter Property="Foreground"
-                    Value="{StaticResource GlobalSecondary}" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ProgressBar">
-                        <Border Background="{TemplateBinding Background}"
-                                CornerRadius="2"
-                                ClipToBounds="True">
-                            <Border Margin="1"
-                                    CornerRadius="2"
-                                    Opacity="0.9">
-                                <Border.Background>
-                                    <DrawingBrush Viewport="0,0,24,24"
-                                                  ViewportUnits="Absolute"
-                                                  TileMode="Tile"
-                                                  Stretch="None">
-                                        <DrawingBrush.Transform>
-                                            <TransformGroup>
-                                                <TranslateTransform x:Name="StripeOffset"
-                                                                    X="0" />
-                                                <RotateTransform Angle="35"
-                                                                 CenterX="12"
-                                                                 CenterY="12" />
-                                            </TransformGroup>
-                                        </DrawingBrush.Transform>
-                                        <DrawingBrush.Drawing>
-                                            <DrawingGroup>
-                                                <GeometryDrawing Brush="#006C767D"
-                                                                 Geometry="M 0,0 L 24,0 24,24 0,24 Z" />
-                                                <GeometryDrawing Brush="#5A6C767D"
-                                                                 Geometry="M 0,0 L 12,0 12,24 0,24 Z" />
-                                            </DrawingGroup>
-                                        </DrawingBrush.Drawing>
-                                    </DrawingBrush>
-                                </Border.Background>
-                            </Border>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsIndeterminate"
-                                     Value="True">
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard RepeatBehavior="Forever">
-                                            <DoubleAnimation Storyboard.TargetName="StripeOffset"
-                                                              Storyboard.TargetProperty="X"
-                                                              By="24"
-                                                              Duration="0:0:8"
-                                                              IsCumulative="True" />
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </Trigger.EnterActions>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="ProgressUnavailableVisibilityStyle"
-               TargetType="Grid">
-            <Setter Property="Visibility"
-                    Value="Collapsed" />
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding IsProgressTrackingAvailable}"
-                             Value="False">
-                    <Setter Property="Visibility"
-                            Value="Visible" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
     </UserControl.Resources>
     <Grid Margin="15 10 15 15">
         <Grid.RowDefinitions>
@@ -144,50 +23,11 @@
                       HorizontalScrollBarVisibility="Disabled">
             <StackPanel>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding ProgressTitle}"
-                               Style="{StaticResource H3}"
-                               VerticalAlignment="Center" />
-                    <Grid Grid.Column="1"
-                          Margin="10 0 14 0"
-                          Style="{StaticResource ProgressAvailableVisibilityStyle}">
-                        <ProgressBar Style="{StaticResource AvailableProgressBarStyle}"
-                                     Value="{Binding ProgressValue}"
-                                     Foreground="{StaticResource ProgressGreen}"
-                                     Background="{StaticResource MemoryRangeEmpty}" />
-                    </Grid>
-                    <Grid Grid.Column="1"
-                          Margin="10 0 14 0"
-                          Style="{StaticResource ProgressUnavailableVisibilityStyle}">
-                        <ProgressBar Style="{StaticResource UnavailableProgressBarStyle}"
-                                     IsIndeterminate="{Binding IsEncodingActive}" />
-                    </Grid>
-                    <TextBlock Grid.Column="2"
-                               Text="{Binding ProgressText}"
-                               FontSize="13"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               VerticalAlignment="Center">
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Visibility"
-                                        Value="Visible" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsProgressTrackingAvailable}"
-                                                 Value="False">
-                                        <Setter Property="Visibility"
-                                                Value="Collapsed" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                </Grid>
+                <comps:EncoderProgressBar ProgressTitle="{Binding ProgressTitle}"
+                                           ProgressValue="{Binding ProgressValue}"
+                                           ProgressText="{Binding ProgressText}"
+                                           IsProgressTrackingAvailable="{Binding IsProgressTrackingAvailable}"
+                                           IsEncodingActive="{Binding IsEncodingActive}" />
 
                 <Grid Margin="0 15 0 0">
                     <Grid.RowDefinitions>
