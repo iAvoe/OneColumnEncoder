@@ -112,6 +112,17 @@
                 <Paragraph Margin="0 10 0 0"
                            FontSize="15"
                            FontWeight="Bold">
+                    <Run Text="{Binding Lang.UpdateTitle, Mode=OneWay}" />
+                </Paragraph>
+                <Paragraph Margin="0 10 0 0"
+                           FontSize="13"
+                           Foreground="{StaticResource GlobalPrimary}">
+                    <Run Text="{Binding Lang.UpdateDesc, Mode=OneWay}" />
+                </Paragraph>
+
+                <Paragraph Margin="0 10 0 0"
+                           FontSize="15"
+                           FontWeight="Bold">
                     <Run Text="{Binding Lang.ComplianceTitle, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="0 10 0 0"

@@ -7,6 +7,8 @@ public class AppUsageLangProvider
         ["en"] = new()
         {
             ["HowToUse"] = "How to use this program",
+            ["UpdateTitle"] = "How to Update This Application",
+            ["UpdateDesc"] = "Keep the 1cenc folder and replace OneColumnEncoder.exe. All your configurations and data will be preserved.",
             ["Description"] = "This program stictly follows a top\u2192down, left\u2192right operation sequence——all 'next' buttons are on the right side.",
             ["CopyHint"] = "Tip: This window supports text selection and Ctrl+C to copy texts",
             ["GettingStarted"] = "The simplest way to get started is to:",
@@ -48,6 +50,8 @@ public class AppUsageLangProvider
         ["zh-cn"] = new()
         {
             ["HowToUse"] = "如何使用本程序",
+            ["UpdateTitle"] = "如何更新本应用",
+            ["UpdateDesc"] = "保留 1cenc 文件夹，替换 OneColumnEncoder.exe 即可。所有配置和数据将保留。",
             ["Description"] = "本程序严格遵循自上而下、从左到右的操作顺序——确认按钮皆位于右侧。",
             ["CopyHint"] = "提示：本窗口支持拖选与 Ctrl+C 复制",
             ["GettingStarted"] = "开始使用的最简单方法是：",
@@ -89,6 +93,8 @@ public class AppUsageLangProvider
         ["zh-tw"] = new()
         {
             ["HowToUse"] = "如何使用本程式",
+            ["UpdateTitle"] = "如何更新本應用",
+            ["UpdateDesc"] = "保留 1cenc 資料夾，替換 OneColumnEncoder.exe 即可。所有配置和資料將保留。",
             ["Description"] = "本程式嚴格遵循自上而下、由左至右的操作順序—確認按鈕皆位於右側。",
             ["CopyHint"] = "提示：本視窗支援拖選與 Ctrl+C 複製",
             ["GettingStarted"] = "開始使用的最簡單方法是：",
@@ -134,6 +140,8 @@ public class AppUsageLangProvider
         Data["fr"] = new(Data["en"])
         {
             ["HowToUse"] = "Comment utiliser ce programme",
+            ["UpdateTitle"] = "Comment mettre à jour",
+            ["UpdateDesc"] = "Conservez le dossier 1cenc et remplacez OneColumnEncoder.exe. Toutes vos configurations et données seront préservées.",
             ["Description"] = "Ce programme suit strictement l'ordre haut→bas, gauche→droite; les boutons « suivant » sont à droite.",
             ["CopyHint"] = "Astuce : sélection de texte et Ctrl+C sont pris en charge",
             ["GettingStarted"] = "La méthode la plus simple :",
@@ -175,6 +183,8 @@ public class AppUsageLangProvider
         Data["es"] = new(Data["en"])
         {
             ["HowToUse"] = "Cómo usar este programa",
+            ["UpdateTitle"] = "Cómo actualizar esta aplicación",
+            ["UpdateDesc"] = "Conserve la carpeta 1cenc y reemplace OneColumnEncoder.exe. Toda su configuración y datos se conservarán.",
             ["Description"] = "El programa sigue un orden estricto de arriba→abajo e izquierda→derecha; los botones siguientes están a la derecha.",
             ["CopyHint"] = "Consejo: esta ventana permite seleccionar texto y copiar con Ctrl+C",
             ["GettingStarted"] = "La forma más simple de empezar:",
@@ -216,6 +226,8 @@ public class AppUsageLangProvider
         Data["ja"] = new(Data["en"])
         {
             ["HowToUse"] = "このプログラムの使い方",
+            ["UpdateTitle"] = "このアプリケーションの更新方法",
+            ["UpdateDesc"] = "1cenc フォルダを保持し、OneColumnEncoder.exe を置き換えてください。設定とデータはすべて保持されます。",
             ["Description"] = "操作順は上→下、左→右です。次へ進むボタンは右側にあります。",
             ["CopyHint"] = "ヒント: このウィンドウは文字選択と Ctrl+C コピーに対応しています",
             ["GettingStarted"] = "最も簡単な開始手順:",
@@ -257,6 +269,8 @@ public class AppUsageLangProvider
         Data["ru"] = new(Data["en"])
         {
             ["HowToUse"] = "Как пользоваться программой",
+            ["UpdateTitle"] = "Как обновить приложение",
+            ["UpdateDesc"] = "Сохраните папку 1cenc и замените OneColumnEncoder.exe. Все ваши настройки и данные будут сохранены.",
             ["Description"] = "Программа строго идет сверху вниз и слева направо; все кнопки «далее» находятся справа.",
             ["CopyHint"] = "Совет: здесь можно выделять текст и копировать Ctrl+C",
             ["GettingStarted"] = "Самый простой старт:",
@@ -313,6 +327,8 @@ public class AppUsageLangProvider
     public string WhyDisabled3 { get; }
     public string ToolDownloadTitle { get; }
     public string ToolDownloadLink { get; } = "\u00B7 https://github.com/iAvoe/encoding-tools-download-tutorial";
+    public string UpdateTitle { get; }
+    public string UpdateDesc { get; }
     public string ComplianceTitle { get; }
     public string ComplianceDesc { get; }
     public string LicenseFfmpeg { get; }
@@ -355,6 +371,8 @@ public class AppUsageLangProvider
         WhyDisabled2 = d["WhyDisabled2"];
         WhyDisabled3 = d["WhyDisabled3"];
         ToolDownloadTitle = d["ToolDownloadTitle"];
+        UpdateTitle = d["UpdateTitle"];
+        UpdateDesc = d["UpdateDesc"];
         ComplianceTitle = d["ComplianceTitle"];
         ComplianceDesc = d["ComplianceDesc"];
         LicenseFfmpeg = d["LicenseFfmpeg"];
