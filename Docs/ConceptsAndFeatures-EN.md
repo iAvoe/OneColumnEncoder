@@ -4,13 +4,9 @@
 
 ### Motivation
 
-Video encoding is fundamentally an optimization problem constrained by the impossible triangle of visual quality, encoding speed, and file size. Most users can only build experience through trial and error, while even advanced users frequently encounter mistakes involving parameters, file paths, text selection misses, or compatibility requirements between tools. Avoiding these pitfalls often requires tedious, self-disciplined verification, where a single oversight can waste hours of processing time and computing resources.
+Video encoding is an optimization problem constrained by the impossible triangle of visual quality, encoding speed, and file size——There is no optimal solution. Beginners and novices can only build experience through trial-&-error, while even advanced users frequently make mistakes involving typos, file paths, text copy (selection) errors, or spec-compatibility failures between tools, which leads to the tedious, disciplinary verification step, otherwise, a slight oversight can force a start-over, wasting hours of time & computing resources. Regardless, these issues are not only troublesome, but also ruins the speed advantage brought by high-end hardware.
 
-The video encoding ecosystem is highly fragmented. Each tool defines its own syntax, I/O formats, and workflow, making knowledge difficult to transfer between applications. As a result, the learning curve is steep for beginners, while experienced users must still spend significant time adapting to new tools.
-
-Preparing an encoding job is often time-consuming, reducing productivity, killing the speed benefits from high-performance hardware, and consuming the user's free time.
-
-Many video encoding apps also suffer from poor UI/UX, including inefficient layouts, puzzled workflow, too-much-or-lacking status feedback. Users may need to frequently switch windows, deal with unintuitive controls, and combat with unreasonable defaults. As a result, pure command-line/terminal operation became a more efficient, more user-friendly approach than using the GUI.
+The video encoding ecosystem is splintered. Some tools are over-simplified, some be like nuclear power control panels, some are non-general solutions for specific problems, and some retain lots of outdated features due to decades of updates. Furthermore, there are UI/UX issues, such as requiring back-&-forth window switching, outdated defaults, and sometimes lack of visual feedbacks. These problems require users among all levels to spend a while on familiarizing. Conversely, a command-line interface with consistent interaction logic is often more efficient and user-friendly.
 
 ### Core Positioning
 
