@@ -1,6 +1,6 @@
 # Button Management
 
-This document describes how to create, style, and wire up buttons in the OneColumnEncoder WPF application.
+This document describes how to create, style, and wire up buttons in OneColumnEncoder.
 
 ---
 
