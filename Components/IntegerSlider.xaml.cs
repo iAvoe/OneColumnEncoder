@@ -56,6 +56,9 @@ namespace OneColumnEncoder.Components
         public static readonly DependencyProperty LabelWidthProperty = DependencyProperty.Register(
             nameof(LabelWidth), typeof(double), typeof(IntegerSlider), new PropertyMetadata(double.NaN));
 
+        public static readonly DependencyProperty ZeroTextProperty = DependencyProperty.Register(
+            nameof(ZeroText), typeof(string), typeof(IntegerSlider), new PropertyMetadata("0"));
+
         public string Label { get => (string)GetValue(LabelProperty); set => SetValue(LabelProperty, value); }
         public int Minimum { get => (int)GetValue(MinimumProperty); set => SetValue(MinimumProperty, value); }
         public int Maximum { get => (int)GetValue(MaximumProperty); set => SetValue(MaximumProperty, value); }
@@ -67,6 +70,7 @@ namespace OneColumnEncoder.Components
         public int Step { get => (int)GetValue(StepProperty); set => SetValue(StepProperty, value); }
         public double SliderMaxWidth { get => (double)GetValue(SliderMaxWidthProperty); set => SetValue(SliderMaxWidthProperty, value); }
         public double LabelWidth { get => (double)GetValue(LabelWidthProperty); set => SetValue(LabelWidthProperty, value); }
+        public string ZeroText { get => (string)GetValue(ZeroTextProperty); set => SetValue(ZeroTextProperty, value); }
 
         internal double MeasuredLabelWidth => LabelTextBlock.ActualWidth;
 

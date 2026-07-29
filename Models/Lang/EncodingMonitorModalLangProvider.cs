@@ -30,10 +30,8 @@ public class EncodingMonitorModalLangProvider
             ["DistributionCacheLabel"] = "System cache",
             ["DistributionAvailableLabel"] = "Available Space",
             ["MemoryRangeLegendTitle"] = "Range legend",
-            ["SampleIntervalTickLabels"] = "0 (Real Time)|60S|120S|180S|240",
-            ["ContinueMonitoringText"] = "Continue monitoring",
-            ["FreezeContinueText"] = "Freeze / Continue",
-            ["UpdateUsageText"] = "Update now",
+            ["SampleIntervalTickLabels"] = "Stop|60S|120S|180S|240",
+            ["SampleIntervalZeroText"] = "Stop",
             ["RotateLogFontSizeText"] = "Rotate log fontsize",
             ["SaveUpstreamStderrText"] = "Save upstream log",
             ["SaveDownstreamStderrText"] = "Save downstream log",
@@ -106,10 +104,8 @@ public class EncodingMonitorModalLangProvider
             ["DistributionCacheLabel"] = "系统缓存",
             ["DistributionAvailableLabel"] = "可用空间",
             ["MemoryRangeLegendTitle"] = "范围图例",
-            ["SampleIntervalTickLabels"] = "0（实时）|60秒|120秒|180秒|240秒",
-            ["ContinueMonitoringText"] = "继续监测",
-            ["FreezeContinueText"] = "冻结 / 继续监测",
-            ["UpdateUsageText"] = "立即检查",
+            ["SampleIntervalTickLabels"] = "停|60秒|120秒|180秒|240秒",
+            ["SampleIntervalZeroText"] = "停",
             ["RotateLogFontSizeText"] = "轮换日志字号",
             ["SaveUpstreamStderrText"] = "保存上游日志",
             ["SaveDownstreamStderrText"] = "保存下游日志",
@@ -182,10 +178,8 @@ public class EncodingMonitorModalLangProvider
             ["DistributionCacheLabel"] = "系統快取",
             ["DistributionAvailableLabel"] = "可用空間",
             ["MemoryRangeLegendTitle"] = "範圍圖例",
-            ["SampleIntervalTickLabels"] = "0（即時）|60秒|120秒|180秒|240秒",
-            ["ContinueMonitoringText"] = "繼續監測",
-            ["FreezeContinueText"] = "凍結 / 繼續監測",
-            ["UpdateUsageText"] = "立即檢查",
+            ["SampleIntervalTickLabels"] = "停|60秒|120秒|180秒|240秒",
+            ["SampleIntervalZeroText"] = "停",
             ["RotateLogFontSizeText"] = "輪換日誌字型大小",
             ["SaveUpstreamStderrText"] = "保存上游日誌",
             ["SaveDownstreamStderrText"] = "保存下游日誌",
@@ -261,10 +255,8 @@ public class EncodingMonitorModalLangProvider
             ["DistributionCacheLabel"] = "Cache système",
             ["DistributionAvailableLabel"] = "Espace libre",
             ["MemoryRangeLegendTitle"] = "Légende",
-            ["SampleIntervalTickLabels"] = "0 (temps réel)|60 s|120 s|180 s|240 s",
-            ["ContinueMonitoringText"] = "Continuer le suivi",
-            ["FreezeContinueText"] = "Figer / Continuer",
-            ["UpdateUsageText"] = "Mettre à jour",
+            ["SampleIntervalTickLabels"] = "Arrêt|60 s|120 s|180 s|240 s",
+            ["SampleIntervalZeroText"] = "Arrêt",
             ["RotateLogFontSizeText"] = "Changer taille police log",
             ["SaveUpstreamStderrText"] = "Sauver log amont",
             ["SaveDownstreamStderrText"] = "Sauver log aval",
@@ -330,10 +322,8 @@ public class EncodingMonitorModalLangProvider
             ["DistributionCacheLabel"] = "Caché del sistema",
             ["DistributionAvailableLabel"] = "Espacio libre",
             ["MemoryRangeLegendTitle"] = "Leyenda",
-            ["SampleIntervalTickLabels"] = "0 (tiempo real)|60 s|120 s|180 s|240 s",
-            ["ContinueMonitoringText"] = "Seguir monitorizando",
-            ["FreezeContinueText"] = "Congelar / seguir",
-            ["UpdateUsageText"] = "Actualizar",
+            ["SampleIntervalTickLabels"] = "Detener|60 s|120 s|180 s|240 s",
+            ["SampleIntervalZeroText"] = "Detener",
             ["RotateLogFontSizeText"] = "Cambiar tamaño del log",
             ["SaveUpstreamStderrText"] = "Guardar log aguas arriba",
             ["SaveDownstreamStderrText"] = "Guardar log aguas abajo",
@@ -399,10 +389,8 @@ public class EncodingMonitorModalLangProvider
             ["DistributionCacheLabel"] = "システムキャッシュ",
             ["DistributionAvailableLabel"] = "空き容量",
             ["MemoryRangeLegendTitle"] = "範囲凡例",
-            ["SampleIntervalTickLabels"] = "0 (リアルタイム)|60秒|120秒|180秒|240秒",
-            ["ContinueMonitoringText"] = "監視を続行",
-            ["FreezeContinueText"] = "停止 / 続行",
-            ["UpdateUsageText"] = "今すぐ更新",
+            ["SampleIntervalTickLabels"] = "停止|60秒|120秒|180秒|240秒",
+            ["SampleIntervalZeroText"] = "停止",
             ["RotateLogFontSizeText"] = "ログ文字サイズ変更",
             ["SaveUpstreamStderrText"] = "上流ログ保存",
             ["SaveDownstreamStderrText"] = "下流ログ保存",
@@ -468,10 +456,8 @@ public class EncodingMonitorModalLangProvider
             ["DistributionCacheLabel"] = "Системный кэш",
             ["DistributionAvailableLabel"] = "Свободно",
             ["MemoryRangeLegendTitle"] = "Легенда",
-            ["SampleIntervalTickLabels"] = "0 (реал. время)|60 с|120 с|180 с|240 с",
-            ["ContinueMonitoringText"] = "Продолжить мониторинг",
-            ["FreezeContinueText"] = "Пауза / продолжить",
-            ["UpdateUsageText"] = "Обновить",
+            ["SampleIntervalTickLabels"] = "Стоп|60 с|120 с|180 с|240 с",
+            ["SampleIntervalZeroText"] = "Стоп",
             ["RotateLogFontSizeText"] = "Сменить размер шрифта лога",
             ["SaveUpstreamStderrText"] = "Сохранить лог апстрима",
             ["SaveDownstreamStderrText"] = "Сохранить лог даунстрима",
@@ -542,9 +528,7 @@ public class EncodingMonitorModalLangProvider
     public string DistributionAvailableLabel { get; }
     public string MemoryRangeLegendTitle { get; }
     public string[] SampleIntervalTickLabels { get; }
-    public string ContinueMonitoringText { get; }
-    public string FreezeContinueText { get; }
-    public string UpdateUsageText { get; }
+    public string SampleIntervalZeroText { get; }
     public string RotateLogFontSizeText { get; }
     public string SaveUpstreamStderrText { get; }
     public string SaveDownstreamStderrText { get; }
@@ -636,9 +620,7 @@ public class EncodingMonitorModalLangProvider
         DistributionAvailableLabel = _d["DistributionAvailableLabel"];
         MemoryRangeLegendTitle = _d["MemoryRangeLegendTitle"];
         SampleIntervalTickLabels = _d["SampleIntervalTickLabels"].Split('|');
-        ContinueMonitoringText = _d["ContinueMonitoringText"];
-        FreezeContinueText = _d["FreezeContinueText"];
-        UpdateUsageText = _d["UpdateUsageText"];
+        SampleIntervalZeroText = _d["SampleIntervalZeroText"];
         RotateLogFontSizeText = _d["RotateLogFontSizeText"];
         SaveUpstreamStderrText = _d["SaveUpstreamStderrText"];
         SaveDownstreamStderrText = _d["SaveDownstreamStderrText"];

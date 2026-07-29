@@ -118,6 +118,7 @@ namespace OneColumnEncoder.ViewModels
         public string EstimatedSizeLabel => $"{Lang.EstimatedSizeLabel}: {GetEstimatedOutputSizeText()}";
         public string WrittenFramesLabel => $"{Lang.WrittenFramesLabel}: {GetWrittenFramesText()}";
         public string SampleIntervalLabel => Lang.SampleIntervalLabel;
+        public string SampleIntervalZeroText => Lang.SampleIntervalZeroText;
         public string StartedAtLabel => Lang.StartedAtLabel;
         public string ElapsedLabel => Lang.ElapsedLabel;
         public string RemainingLabel => Lang.RemainingLabel;
@@ -148,11 +149,9 @@ namespace OneColumnEncoder.ViewModels
         public ObservableCollection<ColumnTextItemM> FooterColumns { get; } = [];
         public ObservableCollection<MemoryRangeBlockM> MemoryRangeBlocks { get; } = [];
         public ObservableCollection<string> SampleIntervalTickLabels { get; } = [];
-        public ButtonGroupVM MonitorButtons { get; }
         public ButtonGroupVM ReportButtons { get; }
         public ButtonGroupVM FinishButtons { get; }
         public ActionCmd CancelAllQueueCommand { get; }
-        public ActionCmd FreezeOrContinueCmd { get; }
         public ActionCmd ResetStatsCmd { get; }
         public CloseModalCmd CloseCmd { get; }
         public QueueSidebarVM QueueSidebar { get; }
@@ -190,18 +189,6 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
-        private bool _isFrozen;
-        public bool IsFrozen
-        {
-            get => _isFrozen;
-            set
-            {
-                if (!SetProperty(ref _isFrozen, value)) return;
-                FreezeOrContinueText = _isFrozen ? Lang.ContinueMonitoringText : Lang.FreezeContinueText;
-                MonitorButtons.B2_1Text = FreezeOrContinueText;
-            }
-        }
-
         private bool _enableMux;
         public bool EnableMux
         {
@@ -213,12 +200,7 @@ namespace OneColumnEncoder.ViewModels
         public bool IsMonitoringEnabled
         {
             get => _isMonitoringEnabled;
-            set
-            {
-                if (!SetProperty(ref _isMonitoringEnabled, value)) return;
-                MonitorButtons.B2_1IsEnabled = value;
-                MonitorButtons.B2_2IsEnabled = value;
-            }
+            set => SetProperty(ref _isMonitoringEnabled, value);
         }
 
         private bool _isEncodingActive;
@@ -226,13 +208,6 @@ namespace OneColumnEncoder.ViewModels
         {
             get => _isEncodingActive;
             private set => SetProperty(ref _isEncodingActive, value);
-        }
-
-        private string _freezeOrContinueText = string.Empty;
-        public string FreezeOrContinueText
-        {
-            get => _freezeOrContinueText;
-            private set => SetProperty(ref _freezeOrContinueText, value);
         }
 
         private string _statusText = string.Empty;
@@ -314,7 +289,6 @@ namespace OneColumnEncoder.ViewModels
 
             RefreshLanguageState();
 
-            FreezeOrContinueCmd = new ActionCmd(_ => IsFrozen = !IsFrozen);
             ResetStatsCmd = new ActionCmd(_ => ResetStats());
             CancelAllQueueCommand = new ActionCmd(_ => CancelAllQueue());
             CloseCmd = new CloseModalCmd(() =>
@@ -322,14 +296,6 @@ namespace OneColumnEncoder.ViewModels
                 if (!_finishEnabledAfterClose) return;
                 _closeAction();
             });
-
-            MonitorButtons = ButtonGroupVM.CreateTwoButton(
-                FreezeOrContinueText,
-                Lang.UpdateUsageText,
-                FreezeOrContinueCmd,
-                ResetStatsCmd);
-            MonitorButtons.B2_1Icon = SvgIconProvider.GamePause;
-            MonitorButtons.B2_2Icon = SvgIconProvider.GameRefresh;
 
             ReportButtons = ButtonGroupVM.CreateThreeButton(
                 Lang.SaveUpstreamStderrText, Lang.SaveDownstreamStderrText, Lang.RotateLogFontSizeText,
@@ -988,7 +954,6 @@ namespace OneColumnEncoder.ViewModels
         private void FlushLogsToProperties()
         {
             ProcessQueuedLogs();
-            if (IsFrozen) return;
             lock (_logLock)
             {
                 UpdateActiveLogSnapshot();
@@ -1000,37 +965,32 @@ namespace OneColumnEncoder.ViewModels
         /// <summary>
         /// Timer callback (fires every 500ms). Drains log queue, updates progress/footer
         /// every 3 seconds, and samples memory at the configured interval.
-        /// Skips all UI updates when frozen to reduce CPU usage.
         /// </summary>
         private void OnTimerTick(object? sender, EventArgs e)
         {
             ProcessQueuedLogs();
-            if (!IsFrozen)
+            FlushLogsToProperties();
+            DateTime now = DateTime.Now;
+            // Update progress details and footer times on a slower cadence
+            if (now - _lastStatsUpdate >= ReducedUiUpdateInterval)
             {
-                FlushLogsToProperties();
-                DateTime now = DateTime.Now;
-                // Update progress details and footer times on a slower cadence
-                if (now - _lastStatsUpdate >= ReducedUiUpdateInterval)
-                {
-                    _lastStatsUpdate = now;
-                    UpdateProgressDetails();
-                    UpdateFooterTimes(final: false);
-                }
+                _lastStatsUpdate = now;
+                UpdateProgressDetails();
+                UpdateFooterTimes(final: false);
+            }
 
-                // Sample memory usage at user-configured intervals
-                if (IsMemorySampleDue(now))
-                {
-                    _lastMemoryStatsUpdate = now;
-                    UpdateMetrics();
-                    UpdateMemoryRangeBlocks();
-                }
+            // Sample memory usage at user-configured intervals
+            if (IsMemorySampleDue(now))
+            {
+                _lastMemoryStatsUpdate = now;
+                UpdateMetrics();
+                UpdateMemoryRangeBlocks();
             }
         }
 
         /// <summary>
         /// Drains the concurrent log queue into the upstream/downstream StringBuilder buffers.
         /// Duplicate lines are folded with a (xN) repeat count to keep logs compact.
-        /// Only flushes to bound properties if not frozen (UI update optimization).
         /// </summary>
         private void ProcessQueuedLogs()
         {
@@ -1061,7 +1021,7 @@ namespace OneColumnEncoder.ViewModels
                 }
             }
 
-            if (changed && !IsFrozen)
+            if (changed)
             {
                 lock (_logLock)
                 {
@@ -1069,11 +1029,6 @@ namespace OneColumnEncoder.ViewModels
                     if (IsActiveLogSelected())
                         SetDisplayedLogs(_upstreamStderrBuilder.ToString(), _downstreamStderrBuilder.ToString());
                 }
-            }
-            else if (changed)
-            {
-                lock (_logLock)
-                    UpdateActiveLogSnapshot();
             }
         }
 
@@ -1338,7 +1293,7 @@ namespace OneColumnEncoder.ViewModels
         private bool IsMemorySampleDue(DateTime now)
         {
             int intervalSeconds = SampleIntervalSeconds;
-            if (intervalSeconds <= 0) return true;
+            if (intervalSeconds <= 0) return false;
             return (now - _lastMemoryStatsUpdate).TotalSeconds >= intervalSeconds;
         }
         #endregion
@@ -2224,7 +2179,6 @@ namespace OneColumnEncoder.ViewModels
             SampleIntervalTickLabels.Clear();
             foreach (string label in Lang.SampleIntervalTickLabels)
                 SampleIntervalTickLabels.Add(label);
-            FreezeOrContinueText = _isFrozen ? Lang.ContinueMonitoringText : Lang.FreezeContinueText;
             StatusText = Lang.ReadyToStartText;
         }
 
@@ -2237,11 +2191,6 @@ namespace OneColumnEncoder.ViewModels
         {
             Lang = new EncodingMonitorModalLangProvider(UILangProvider.Current.LanguageCode);
             _cpuSetsLang = new CpuSetsLangProvider(UILangProvider.Current.LanguageCode);
-            FreezeOrContinueText = _isFrozen
-                ? Lang.ContinueMonitoringText
-                : Lang.FreezeContinueText;
-            MonitorButtons.B2_1Text = FreezeOrContinueText;
-            MonitorButtons.B2_2Text = Lang.UpdateUsageText;
             ReportButtons.B3_1Text = Lang.SaveUpstreamStderrText;
             ReportButtons.B3_2Text = Lang.SaveDownstreamStderrText;
             ReportButtons.B3_3Text = Lang.RotateLogFontSizeText;
@@ -2269,6 +2218,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(EstimatedSizeLabel));
             OnPropertyChanged(nameof(WrittenFramesLabel));
             OnPropertyChanged(nameof(SampleIntervalLabel));
+            OnPropertyChanged(nameof(SampleIntervalZeroText));
             OnPropertyChanged(nameof(StartedAtLabel));
             OnPropertyChanged(nameof(ElapsedLabel));
             OnPropertyChanged(nameof(RemainingLabel));

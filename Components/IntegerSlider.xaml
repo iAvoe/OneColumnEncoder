@@ -12,6 +12,7 @@
         <conv:SliderTrackPositionConverter x:Key="SliderTrackPositionConverter" />
         <conv:SliderValuePopupPositionConverter x:Key="SliderValuePopupPositionConverter" />
         <conv:TickLabelPositionConverter x:Key="TickLabelPositionConverter" />
+        <conv:SliderZeroDisplayConverter x:Key="SliderZeroDisplayConverter" />
     </UserControl.Resources>
     <Grid VerticalAlignment="Center">
         <Grid.ColumnDefinitions>
@@ -112,10 +113,16 @@
                                          Path="IsLogarithmic" />
                             </MultiBinding>
                         </Canvas.Left>
-                        <TextBlock Text="{Binding Value, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                   FontSize="9"
+                        <TextBlock FontSize="9"
                                    Foreground="{StaticResource ButtonPrimary}"
-                                   HorizontalAlignment="Center" />
+                                   HorizontalAlignment="Center">
+                            <TextBlock.Text>
+                                <MultiBinding Converter="{StaticResource SliderZeroDisplayConverter}">
+                                    <Binding Path="Value" RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                    <Binding Path="ZeroText" RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
                     </Border>
                 </Canvas>
             </Grid>
