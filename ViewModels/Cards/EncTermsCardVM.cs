@@ -21,6 +21,7 @@ namespace OneColumnEncoder.ViewModels.Cards
         public Func<bool>? IsAvs2yuvSelectedFunc { get; set; }
         public Func<string>? GetAviSynthDllPathFunc { get; set; }
         public Func<string>? GetSourceVideoFilePathFunc { get; set; }
+        public Func<int>? GetEncoderNodeIdFunc { get; set; }
 
         public EncTermsCardVM()
         {
@@ -56,7 +57,8 @@ namespace OneColumnEncoder.ViewModels.Cards
             string? sourcePath = GetSourceVideoFilePathFunc?.Invoke();
             SetChecklist1(DiskSpaceChecklistIdx, EvaluateDiskSpace(outputDir, sourcePath));
 
-            SetChecklist1(NumaCpuLoadChecklistIdx, EncTermsCheck.EvaluateNumaNodeCpuUsage());
+            SetChecklist1(NumaCpuLoadChecklistIdx,
+                EncTermsCheck.EvaluateNumaNodeCpuUsage(GetEncoderNodeIdFunc?.Invoke() ?? -1));
         }
 
         private static StatusType EvaluateDiskSpace(string? outputDir, string? sourcePath)

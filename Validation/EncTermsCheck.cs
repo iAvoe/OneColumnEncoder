@@ -1,3 +1,4 @@
+using OneColumnEncoder.CPU;
 using OneColumnEncoder.Models;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -13,6 +14,12 @@ public static partial class EncTermsCheck
     private static ulong _lastKernelTicks;
     private static ulong _lastUserTicks;
 
+    private static int _lastNumaNodeId = -1;
+    private static StatusType _lastNumaNodeCpuStatus = StatusType.Waiting;
+    private static ulong[] _lastNodeIdleTicks = [];
+    private static ulong[] _lastNodeKernelTicks = [];
+    private static ulong[] _lastNodeUserTicks = [];
+
     #region Win32 P/Invoke
     [LibraryImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
@@ -21,6 +28,30 @@ public static partial class EncTermsCheck
     [LibraryImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool GetSystemTimes(out ulong lpIdleTime, out ulong lpKernelTime, out ulong lpUserTime);
+
+    [LibraryImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool GetSystemProcessorPerformanceInformation(
+        ushort processorGroup,
+        IntPtr processorInformation,
+        uint byteLength,
+        out uint returnedLength);
+
+    [LibraryImport("kernel32.dll")]
+    private static partial uint GetActiveProcessorCount(ushort groupNumber);
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct PROCESSOR_POWER_INFORMATION
+    {
+        public uint CurrentFrequency;
+        public uint ThermalLimitFrequency;
+        public ulong IdleTime;
+        public ulong KernelTime;
+        public ulong UserTime;
+        public ulong DpcTime;
+        public ulong InterruptTime;
+        public uint IsIdle;
+    }
 
     [StructLayout(LayoutKind.Sequential)]
     private struct SYSTEM_POWER_STATUS
@@ -76,6 +107,115 @@ public static partial class EncTermsCheck
             ? StatusType.Warning
             : StatusType.Success;
         return _lastNumaCpuStatus;
+    }
+
+    #endregion
+
+    #region Per-node CPU usage check (delta between successive calls)
+
+    /// <summary>
+    /// Evaluates recent CPU usage of the given NUMA node by sampling per-core
+    /// idle/kernel/user counters on the first call and computing the delta on
+    /// subsequent calls. Falls back to the system-wide measurement when the
+    /// per-core counters are unavailable (e.g. non-Windows or legacy OS).
+    /// </summary>
+    public static StatusType EvaluateNumaNodeCpuUsage(int nodeId)
+    {
+        if (!OperatingSystem.IsWindows())
+            return StatusType.Success;
+
+        if (!NumaTopology.TryGetNodeGroupMask(nodeId, out int group, out ulong mask))
+            return EvaluateNumaNodeCpuUsage();
+
+        if (!TryReadGroupProcessorCounters((ushort)group, out ulong[] idle, out ulong[] kernel, out ulong[] user))
+            return EvaluateNumaNodeCpuUsage();
+
+        if (_lastNumaNodeId != nodeId || _lastNodeIdleTicks.Length == 0)
+        {
+            _lastNumaNodeId = nodeId;
+            _lastNodeIdleTicks = idle;
+            _lastNodeKernelTicks = kernel;
+            _lastNodeUserTicks = user;
+            return StatusType.Waiting;
+        }
+
+        double busySum = 0;
+        int counted = 0;
+
+        for (int bit = 0; bit < 64; bit++)
+        {
+            if ((mask & (1UL << bit)) == 0) continue;
+            if (bit >= idle.Length || bit >= _lastNodeIdleTicks.Length) continue;
+
+            ulong idleDelta = idle[bit] - _lastNodeIdleTicks[bit];
+            ulong kernelDelta = kernel[bit] - _lastNodeKernelTicks[bit];
+            ulong userDelta = user[bit] - _lastNodeUserTicks[bit];
+            ulong coreTotal = kernelDelta + userDelta;
+            if (coreTotal == 0) continue;
+
+            double busy = Math.Clamp(1.0 - (double)idleDelta / coreTotal, 0, 1);
+            busySum += busy;
+            counted++;
+        }
+
+        _lastNodeIdleTicks = idle;
+        _lastNodeKernelTicks = kernel;
+        _lastNodeUserTicks = user;
+
+        if (counted == 0)
+            return _lastNumaNodeCpuStatus;
+
+        double usage = busySum / counted;
+
+        _lastNumaNodeCpuStatus = usage > NumaCpuUsageHighThreshold
+            ? StatusType.Warning
+            : StatusType.Success;
+        return _lastNumaNodeCpuStatus;
+    }
+
+    private static bool TryReadGroupProcessorCounters(ushort group, out ulong[] idle, out ulong[] kernel, out ulong[] user)
+    {
+        idle = [];
+        kernel = [];
+        user = [];
+        if (!OperatingSystem.IsWindows()) return false;
+
+        try
+        {
+            uint processorCount = GetActiveProcessorCount(group);
+            if (processorCount == 0) return false;
+
+            int structSize = Marshal.SizeOf<PROCESSOR_POWER_INFORMATION>();
+            uint byteLength = processorCount * (uint)structSize;
+
+            IntPtr buffer = Marshal.AllocHGlobal((int)byteLength);
+            try
+            {
+                if (!GetSystemProcessorPerformanceInformation(group, buffer, byteLength, out _))
+                    return false;
+
+                idle = new ulong[processorCount];
+                kernel = new ulong[processorCount];
+                user = new ulong[processorCount];
+                for (int i = 0; i < processorCount; i++)
+                {
+                    PROCESSOR_POWER_INFORMATION info =
+                        Marshal.PtrToStructure<PROCESSOR_POWER_INFORMATION>(buffer + i * structSize);
+                    idle[i] = info.IdleTime;
+                    kernel[i] = info.KernelTime;
+                    user[i] = info.UserTime;
+                }
+                return true;
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(buffer);
+            }
+        }
+        catch (Exception ex) when (ex is EntryPointNotFoundException or DllNotFoundException)
+        {
+            return false;
+        }
     }
 
     #endregion

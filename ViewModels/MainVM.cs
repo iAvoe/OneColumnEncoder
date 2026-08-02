@@ -751,6 +751,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 return GetSelectedVideoSourcePath();
             };
+            EncTermsValCard.GetEncoderNodeIdFunc = () => ParallelismConfM.LoadEffective().DownstreamNodeId;
 
             // Run final state refreshes after all cards, commands, and subscriptions are ready.
             EncTermsValCard.RunAllChecks();

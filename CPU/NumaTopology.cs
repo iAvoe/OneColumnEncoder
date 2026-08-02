@@ -52,6 +52,24 @@ public static partial class NumaTopology
     }
 
     /// <summary>
+    /// Resolves the processor group and affinity mask for a given NUMA node.
+    /// Returns false when the node does not exist or has no processors.
+    /// </summary>
+    public static bool TryGetNodeGroupMask(int nodeId, out int group, out ulong mask)
+    {
+        if (GetNumaNodeProcessorMaskEx((ushort)nodeId, out GROUP_AFFINITY groupMask) && groupMask.Mask != 0)
+        {
+            group = groupMask.Group;
+            mask = groupMask.Mask;
+            return true;
+        }
+
+        group = 0;
+        mask = 0;
+        return false;
+    }
+
+    /// <summary>
     /// Enumerates all NUMA nodes in the system.
     /// Thread ranges are derived from the GROUP_AFFINITY mask bit positions
     /// plus group offset, giving correct global logical-processor IDs.
