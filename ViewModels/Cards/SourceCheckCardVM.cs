@@ -44,7 +44,7 @@ namespace OneColumnEncoder.ViewModels.Cards
 
                 SetChecklist1(MetadataChecklistIdx, StatusType.Success);
                 SetChecklist1(ProgressiveChecklistIdx, result.IsProgressive
-                    ? StatusType.Success : StatusType.Error);
+                    ? StatusType.Success : StatusType.Warning); // Now 1cenc indirectly supports interlaced source conversion, getting error generally is a bad experience
                 SetChecklist1(Svtav1BitDepthChecklistIdx, result.IsSvtAv1BitDepthSupported
                     ? StatusType.Success
                     : IsSelectingSvtav1()
