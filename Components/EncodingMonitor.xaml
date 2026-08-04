@@ -44,11 +44,13 @@
                                    Text="{Binding MemoryTitle}"
                                    Style="{StaticResource H3}"
                                    VerticalAlignment="Center" />
-                        <ScrollViewer Grid.Column="1"
+                        <ScrollViewer x:Name="MemoryRangeScrollViewer"
+                                      Grid.Column="1"
                                       Margin="5 0 5 0"
                                       HorizontalScrollBarVisibility="Auto"
                                       VerticalScrollBarVisibility="Disabled">
                             <comps:MemoryRangeBar Items="{Binding MemoryRangeBlocks}"
+                                                  Width="{Binding ActualWidth, ElementName=MemoryRangeScrollViewer}"
                                                   HorizontalAlignment="Stretch"
                                                   VerticalAlignment="Center" />
                         </ScrollViewer>

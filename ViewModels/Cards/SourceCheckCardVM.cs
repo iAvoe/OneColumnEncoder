@@ -33,7 +33,6 @@ namespace OneColumnEncoder.ViewModels.Cards
         }
 
         #region FFprobe Analysis
-
         public void ApplyFfprobeAnalysisJson(string rawJson)
         {
             _lastAnalysisJson = rawJson;

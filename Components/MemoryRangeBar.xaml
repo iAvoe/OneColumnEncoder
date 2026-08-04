@@ -20,7 +20,7 @@
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
             <DataTemplate>
-                <Border Width="5.25"
+                <Border Width="{Binding BlockWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
                         Height="20"
                         Margin="0.68 0"
                         CornerRadius="1"
