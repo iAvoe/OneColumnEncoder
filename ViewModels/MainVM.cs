@@ -2518,10 +2518,6 @@ namespace OneColumnEncoder.ViewModels
                 || request.Width > MaxResolutionDimension || request.Height > MaxResolutionDimension)
                 return SourceReviserLangProvider.Current["SourceReviser.InvalidInput"];
 
-            if (request.FrameRate.OutputFrameRateNumerator <= 0
-                || request.FrameRate.OutputFrameRateDenominator <= 0)
-                return SourceReviserLangProvider.Current["SourceReviser.InvalidFps"];
-
             if (string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson))
                 return SourceReviserLangProvider.Current["SourceReviser.NoFfprobeJson"];
 

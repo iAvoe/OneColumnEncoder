@@ -9,7 +9,7 @@
                    d:DataContext="{d:DesignInstance Type=vms:SourceReviserVM}"
                    mc:Ignorable="d"
                    Title="{Binding WindowTitle}"
-                   Width="560"
+                   Width="520"
                    SizeToContent="Height"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
@@ -17,18 +17,12 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <ScrollViewer Grid.Row="0"
                       VerticalScrollBarVisibility="Auto">
             <Grid Margin="0 0 0 5">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -40,7 +34,7 @@
                            TextWrapping="Wrap"
                            Foreground="{StaticResource GlobalPrimary}" />
 
-                <StackPanel Grid.Row="2">
+                <StackPanel Grid.Row="1">
                     <comps:AppConfContainer Header="{Binding SettingsHeader}"
                                             Margin="0 15 0 0">
                         <Grid Margin="0 5 0 0">
@@ -93,83 +87,8 @@
                     </comps:AppConfContainer>
                 </StackPanel>
 
-                <comps:HintPanel Grid.Row="3"
+                <comps:HintPanel Grid.Row="2"
                                  Text="{Binding EvenResolutionHint}" />
-
-                <comps:AppConfContainer Grid.Row="4"
-                                        Header="{Binding PatternLabel}"
-                                        Margin="0 15 0 0"
-                                        IsEnabled="{Binding IsFpsSectionEnabled}">
-                    <comps:AppConfItem Text="{Binding OutputFramesLabel}">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <comps:DropdownMenu Grid.Column="0"
-                                                Margin="0 0 10 0"
-                                                DataContext="{Binding PatternDropdown}" />
-                            <TextBlock Grid.Column="1"
-                                       Text="{Binding OutputFrameCountText}"
-                                       VerticalAlignment="Center"
-                                       Foreground="{StaticResource GlobalSecondary}" />
-                        </Grid>
-                    </comps:AppConfItem>
-                    <comps:HintPanel Text="{Binding SelectedDescription}" />
-                </comps:AppConfContainer>
-
-                <Grid Grid.Row="5"
-                      Margin="0 15 0 0"
-                      IsEnabled="{Binding IsFpsSectionEnabled}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Row="0"
-                               Text="{Binding InputFpsLabel}"
-                               Style="{StaticResource H3}"
-                               VerticalAlignment="Center" />
-
-                    <Grid Grid.Row="1"
-                          Margin="0 10 0 0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0"
-                                    Orientation="Horizontal">
-                            <TextBlock Text="{Binding CurrentResolutionLabel}"
-                                       Style="{StaticResource H4}"
-                                       VerticalAlignment="Center" />
-                            <Button Content="{Binding CurrentFrameRateText}"
-                                    Command="{Binding UseCurrentFrameRateCommand}"
-                                    Margin="5 0 0 0"
-                                    MinWidth="125"
-                                    Height="25"
-                                    VerticalAlignment="Center"
-                                    Style="{StaticResource NormalButton}" />
-                        </StackPanel>
-                    </Grid>
-
-                    <comps:AppConfItem Grid.Row="2"
-                                       Text="{Binding OutputFpsNumeratorLabel}"
-                                       Margin="0 5 0 0">
-                        <TextBox Width="120"
-                                 Text="{Binding OutputFrameRateNumeratorText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 PreviewTextInput="NumericTextBox_PreviewTextInput"
-                                 DataObject.Pasting="NumericTextBox_Pasting" />
-                    </comps:AppConfItem>
-                    <comps:AppConfItem Grid.Row="3"
-                                       Text="{Binding OutputFpsDenominatorLabel}">
-                        <TextBox Width="120"
-                                 Text="{Binding OutputFrameRateDenominatorText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                 PreviewTextInput="NumericTextBox_PreviewTextInput"
-                                 DataObject.Pasting="NumericTextBox_Pasting" />
-                    </comps:AppConfItem>
-                </Grid>
             </Grid>
         </ScrollViewer>
 
@@ -181,9 +100,5 @@
                               Button1IsEnabled="{Binding B2_1IsEnabled}"
                               Button2IsEnabled="{Binding B2_2IsEnabled}" />
 
-        <comps:HintPanel Grid.Row="2"
-                         Margin="0 2.5 0 0"
-                         Text="{Binding WarningText}"
-                         Visibility="{Binding HasWarning, Converter={StaticResource BoolToVisibility}}" />
     </Grid>
 </ui:AdaptiveWindow>

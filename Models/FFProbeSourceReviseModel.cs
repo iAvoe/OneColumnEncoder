@@ -75,13 +75,10 @@ public static class FFProbeSourceReviseModel
     }
 
     private static string ApplyRevision(string rawJson, SourceRevisionRequest request)
-    {
-        string revisedResolution = FFProbeJsonUpdateResolver.UpdateResolution(
+        => FFProbeJsonUpdateResolver.UpdateResolution(
             rawJson,
             request.Width,
             request.Height);
-        return FFProbeFPSReviser.Apply(revisedResolution, request.FrameRate).EffectiveJson;
-    }
 
     private static string UpdateQueueRawJsonString(string queueRawJson, SourceRevisionRequest request)
     {

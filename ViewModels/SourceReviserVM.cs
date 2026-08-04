@@ -1,10 +1,8 @@
 using OneColumnEncoder.Commands;
 using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.FFmpeg;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using System.Globalization;
-using System.Text.Json;
 
 namespace OneColumnEncoder.ViewModels;
 
@@ -14,44 +12,30 @@ public class SourceReviserVM : BaseVM
     private readonly ModalNavS _modalNavS;
     private readonly Action<bool> _finishAction;
     private readonly Func<SourceRevisionRequest, string?> _reviseSource;
-    private readonly string _rawJson;
     private readonly int _currentWidth;
     private readonly int _currentHeight;
     private readonly int _suggestedWidth;
     private readonly int _suggestedHeight;
-    private readonly (int numerator, int denominator)? _sourceFrameRate;
-    private readonly bool _isVfr;
-    private readonly int _vfrFrameRateNum;
-    private readonly int _vfrFrameRateDen;
-    private IReadOnlyList<VideoAnalysisHypothesisOption> _hypotheses = [];
-    private VideoAnalysisHypothesisOption? _selectedHypothesis;
     private string _resolutionWidthText;
     private string _resolutionHeightText;
-    private string _outputFrameRateNumeratorText = string.Empty;
-    private string _outputFrameRateDenominatorText = string.Empty;
 
     public SourceReviserVM(
         ModalNavS modalNavS,
         Action closeAction,
         Action<bool> finishAction,
         Func<SourceRevisionRequest, string?> reviseSource,
-        string rawJson,
         int currentWidth,
         int currentHeight,
         int suggestedWidth,
-        int suggestedHeight,
-        bool isVfr = false)
+        int suggestedHeight)
     {
         _modalNavS = modalNavS;
         _finishAction = finishAction;
         _reviseSource = reviseSource;
-        _rawJson = rawJson;
         _currentWidth = currentWidth;
         _currentHeight = currentHeight;
         _suggestedWidth = suggestedWidth;
         _suggestedHeight = suggestedHeight;
-        _sourceFrameRate = FFProbeFPSReviser.ReadSourceFrameRate(rawJson);
-        _isVfr = isVfr;
 
         ResolutionWidth = suggestedWidth;
         ResolutionHeight = suggestedHeight;
@@ -62,34 +46,12 @@ public class SourceReviserVM : BaseVM
             ? suggestedHeight.ToString(CultureInfo.InvariantCulture)
             : string.Empty;
 
-        if (_isVfr)
-        {
-            (int num, int den)? rRate = null;
-            try
-            {
-                using JsonDocument doc = JsonDocument.Parse(rawJson);
-                if (FrameRate.TryGetFirstVideoStream(doc.RootElement, out JsonElement stream))
-                    rRate = FrameRate.GetRFrameRate(stream);
-            }
-            catch { }
-            _vfrFrameRateNum = rRate?.num ?? _sourceFrameRate?.numerator ?? 0;
-            _vfrFrameRateDen = rRate?.den ?? _sourceFrameRate?.denominator ?? 1;
-            _outputFrameRateNumeratorText = _vfrFrameRateNum.ToString(CultureInfo.InvariantCulture);
-            _outputFrameRateDenominatorText = _vfrFrameRateDen.ToString(CultureInfo.InvariantCulture);
-        }
-
         UseCurrentResolutionCommand = new ActionCmd(
             _ => SetResolutionText(_currentWidth, _currentHeight),
             _ => _currentWidth > 0 && _currentHeight > 0);
         UseSuggestedResolutionCommand = new ActionCmd(
             _ => SetResolutionText(_suggestedWidth, _suggestedHeight),
             _ => _suggestedWidth > 0 && _suggestedHeight > 0);
-        UseCurrentFrameRateCommand = new ActionCmd(
-            _ => SetFrameRateText(_sourceFrameRate),
-            _ => !_isVfr && _sourceFrameRate.HasValue);
-        PatternDropdown.SelectionChangedCommand = new ActionCmd(_ => OnPatternSelectionChanged());
-        BuildPatternListing();
-        SelectedHypothesis = _hypotheses.Count > 0 ? _hypotheses[0] : null;
 
         FinishButtons = ButtonGroupVM.CreateTwoButton(
             SourceReviserLangProvider.Current["SourceReviser.Cancel"],
@@ -108,17 +70,8 @@ public class SourceReviserVM : BaseVM
     public static string CurrentResolutionLabel => SourceReviserLangProvider.Current["SourceReviser.CurrentLabel"];
     public static string SuggestedResolutionLabel => SourceReviserLangProvider.Current["SourceReviser.SuggestedLabel"];
     public static string EvenResolutionHint => SourceReviserLangProvider.Current["SourceReviser.EvenResolutionHint"];
-    public static string PatternLabel => SourceReviserLangProvider.Current["SourceReviser.PatternLabel"];
-    public static string InputFpsLabel => SourceReviserLangProvider.Current["SourceReviser.InputFpsLabel"];
-    public static string OutputFpsLabel => SourceReviserLangProvider.Current["SourceReviser.OutputFpsLabel"];
-    public static string OutputFpsNumeratorLabel => SourceReviserLangProvider.Current["SourceReviser.OutputFpsNumeratorLabel"];
-    public static string OutputFpsDenominatorLabel => SourceReviserLangProvider.Current["SourceReviser.OutputFpsDenominatorLabel"];
-    public static string OutputFramesLabel => SourceReviserLangProvider.Current["SourceReviser.OutputFramesLabel"];
-    public static string WarningLabel => SourceReviserLangProvider.Current["SourceReviser.WarningLabel"];
     public string CurrentResolutionText => FormatResolution(_currentWidth, _currentHeight);
     public string SuggestedResolutionText => FormatResolution(_suggestedWidth, _suggestedHeight);
-    public string CurrentFrameRateText => FormatFrameRate(_sourceFrameRate);
-    public DropdownMenuVM PatternDropdown { get; } = new();
 
     public string ResolutionWidthText
     {
@@ -132,98 +85,10 @@ public class SourceReviserVM : BaseVM
         set => SetProperty(ref _resolutionHeightText, value);
     }
 
-    public IReadOnlyList<VideoAnalysisHypothesisOption> Hypotheses
-    {
-        get => _hypotheses;
-        private set => SetProperty(ref _hypotheses, value);
-    }
-
-    public VideoAnalysisHypothesisOption? SelectedHypothesis
-    {
-        get => _selectedHypothesis;
-        set
-        {
-            if (!SetProperty(ref _selectedHypothesis, value) || value == null) return;
-
-            SyncPatternDropdownSelection(value);
-            (int numerator, int denominator) = FFProbeFPSReviser.GetDefaultOutputFrameRate(_rawJson, value.Kind);
-            OutputFrameRateNumeratorText = numerator.ToString(CultureInfo.InvariantCulture);
-            OutputFrameRateDenominatorText = denominator.ToString(CultureInfo.InvariantCulture);
-            OnPropertyChanged(nameof(SelectedDescription));
-            RefreshPreview();
-        }
-    }
-
-    public string SelectedDescription => SelectedHypothesis == null ? string.Empty : FormatSelectedDescription(SelectedHypothesis);
-
-    public string OutputFrameRateNumeratorText
-    {
-        get => _outputFrameRateNumeratorText;
-        set
-        {
-            if (!SetProperty(ref _outputFrameRateNumeratorText, value)) return;
-            RefreshPreview();
-        }
-    }
-
-    public string OutputFrameRateDenominatorText
-    {
-        get => _outputFrameRateDenominatorText;
-        set
-        {
-            if (!SetProperty(ref _outputFrameRateDenominatorText, value)) return;
-            RefreshPreview();
-        }
-    }
-
-    public string OutputFrameRateText =>
-        TryParseFrameRate(out int numerator, out int denominator)
-            ? $"{numerator}/{denominator}"
-            : "?";
-
-    public string OutputFrameCountText
-    {
-        get
-        {
-            FPSReviserResult? result = GetPreviewResult();
-            if (result?.OutputFrameCount is not > 0)
-                return SourceReviserLangProvider.Current["SourceReviser.OutputFramesUnknown"];
-
-            string kind = result.FrameCountKind switch
-            {
-                VideoAnalysisFrameCountKind.Exact => SourceReviserLangProvider.Current["SourceReviser.OutputFramesExact"],
-                VideoAnalysisFrameCountKind.Estimated => SourceReviserLangProvider.Current["SourceReviser.OutputFramesEstimated"],
-                _ => SourceReviserLangProvider.Current["SourceReviser.OutputFramesUnknown"]
-            };
-            return $"{result.OutputFrameCount.Value.ToString("N0", CultureInfo.InvariantCulture)} ({kind})";
-        }
-    }
-
-    public bool IsFpsSectionEnabled => !_isVfr;
-
-    public bool IsVfrWarningVisible => _isVfr;
-
-    public string WarningText
-    {
-        get
-        {
-            if (_isVfr)
-                return SourceReviserLangProvider.Current["SourceReviser.VfrWarning"];
-            FPSReviserResult? result = GetPreviewResult();
-            if (result?.Kind is >= VideoAnalysisHypothesisKind.EuroPulldown001 and <= VideoAnalysisHypothesisKind.EuroPulldown012)
-                return SourceReviserLangProvider.Current["SourceReviser.AudioSpeedWarning"];
-            return result?.FrameCountKind == VideoAnalysisFrameCountKind.Unknown
-                ? SourceReviserLangProvider.Current["SourceReviser.UnknownFramesWarning"]
-                : string.Empty;
-        }
-    }
-
-    public bool HasWarning => _isVfr || !string.IsNullOrWhiteSpace(WarningText);
     public int ResolutionWidth { get; private set; }
     public int ResolutionHeight { get; private set; }
     public ActionCmd UseCurrentResolutionCommand { get; }
     public ActionCmd UseSuggestedResolutionCommand { get; }
-    public ActionCmd UseCurrentFrameRateCommand { get; }
     public ButtonGroupVM FinishButtons { get; }
 
     private void Confirm()
@@ -234,40 +99,7 @@ public class SourceReviserVM : BaseVM
             return;
         }
 
-        if (_isVfr)
-        {
-            SourceRevisionRequest vfrRequest = new(
-                width, height,
-                new("progressive-source", _vfrFrameRateNum, _vfrFrameRateDen));
-            string? vfrError = _reviseSource(vfrRequest);
-            if (!string.IsNullOrWhiteSpace(vfrError))
-            {
-                ShowError(vfrError);
-                return;
-            }
-            ResolutionWidth = width;
-            ResolutionHeight = height;
-            _finishAction(true);
-            return;
-        }
-
-        if (SelectedHypothesis == null || !TryParseFrameRate(out int numerator, out int denominator))
-        {
-            ShowError(SourceReviserLangProvider.Current["SourceReviser.InvalidFps"]);
-            return;
-        }
-
-        if (SelectedHypothesis.IsUnsupported)
-        {
-            ShowError(SourceReviserLangProvider.Current["SourceReviser.UnsupportedPattern"]);
-            return;
-        }
-
-        SourceRevisionRequest request = new(
-            width,
-            height,
-            new(SelectedHypothesis.Id, numerator, denominator));
-        string? error = _reviseSource(request);
+        string? error = _reviseSource(new SourceRevisionRequest(width, height));
         if (!string.IsNullOrWhiteSpace(error))
         {
             ShowError(error);
@@ -279,158 +111,10 @@ public class SourceReviserVM : BaseVM
         _finishAction(true);
     }
 
-    private void BuildPatternListing()
-    {
-        _hypotheses = VideoAnalysisHypothesisCatalog.GetOptions()
-            .Where(h => h.Kind != VideoAnalysisHypothesisKind.ProgressiveSource)
-            .ToArray();
-        Hypotheses = _hypotheses;
-        PatternDropdown.Items.Clear();
-
-        AddPatternOption(VideoAnalysisHypothesisKind.NativeDeinterlace);
-        AddPatternOption(VideoAnalysisHypothesisKind.Pal22);
-
-        AddPatternGroupSeparator(0);
-        AddPatternOption(VideoAnalysisHypothesisKind.Telecine3232);
-        AddPatternOption(VideoAnalysisHypothesisKind.Telecine2323);
-        AddPatternOption(VideoAnalysisHypothesisKind.Telecine3223);
-        AddPatternOption(VideoAnalysisHypothesisKind.Telecine2332);
-        AddPatternOption(VideoAnalysisHypothesisKind.Telecine3322);
-
-        AddPatternGroupSeparator(1);
-        AddPatternOption(VideoAnalysisHypothesisKind.FourField2224);
-        AddPatternOption(VideoAnalysisHypothesisKind.FourField2242);
-        AddPatternOption(VideoAnalysisHypothesisKind.FourField2422);
-        AddPatternOption(VideoAnalysisHypothesisKind.FourField4222);
-
-        AddPatternGroupSeparator(2);
-        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown001);
-        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown002);
-        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown003);
-        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown004);
-        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown005);
-        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown006);
-        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown007);
-        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown008);
-        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown009);
-        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown010);
-        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown011);
-        AddPatternOption(VideoAnalysisHypothesisKind.EuroPulldown012);
-
-        AddPatternGroupSeparator(3);
-        AddPatternOption(VideoAnalysisHypothesisKind.MixedPip);
-        AddPatternOption(VideoAnalysisHypothesisKind.Spliced);
-    }
-
-    private void OnPatternSelectionChanged()
-    {
-        if (PatternDropdown.SelectedItem?.Tag is VideoAnalysisHypothesisOption selectedHypothesis)
-            SelectedHypothesis = selectedHypothesis;
-    }
-
-    private void SyncPatternDropdownSelection(VideoAnalysisHypothesisOption selectedHypothesis)
-    {
-        DropdownItemM? selectedItem = null;
-        for (int i = 0; i < PatternDropdown.Items.Count; i++)
-        {
-            DropdownItemM item = PatternDropdown.Items[i];
-            if (item.Tag is VideoAnalysisHypothesisOption option && option.Id == selectedHypothesis.Id)
-            {
-                selectedItem = item;
-                break;
-            }
-        }
-
-        if (selectedItem == null && PatternDropdown.Items.Count > 0)
-            selectedItem = PatternDropdown.Items[0];
-
-        if (!ReferenceEquals(PatternDropdown.SelectedItem, selectedItem))
-            PatternDropdown.SelectedItem = selectedItem;
-    }
-
-    private void AddPatternOption(VideoAnalysisHypothesisKind kind)
-    {
-        VideoAnalysisHypothesisOption option = _hypotheses.First(h => h.Kind == kind);
-        PatternDropdown.Items.Add(new DropdownItemM(option.DisplayName)
-        {
-            Tag = option
-        });
-    }
-
-    private void AddPatternGroupSeparator(int index)
-    {
-        PatternDropdown.Items.Add(new DropdownItemM(SourceReviserLangProvider.DropdownSeparators[index], true));
-    }
-
-    private static string FormatSelectedDescription(VideoAnalysisHypothesisOption hypothesis) => hypothesis.Kind switch
-    {
-        VideoAnalysisHypothesisKind.Telecine3232 or
-        VideoAnalysisHypothesisKind.Telecine2323 or
-        VideoAnalysisHypothesisKind.Telecine3223 or
-        VideoAnalysisHypothesisKind.Telecine2332 or
-        VideoAnalysisHypothesisKind.Telecine3322 or
-        VideoAnalysisHypothesisKind.FourField2224 or
-        VideoAnalysisHypothesisKind.FourField2242 or
-        VideoAnalysisHypothesisKind.FourField2422 or
-        VideoAnalysisHypothesisKind.FourField4222 => CompactParenthesizedDetail(hypothesis.Description),
-        >= VideoAnalysisHypothesisKind.EuroPulldown001 and <= VideoAnalysisHypothesisKind.EuroPulldown012 => CompactParenthesizedDetail(hypothesis.Description),
-        _ => hypothesis.Description
-    };
-
-    private static string CompactParenthesizedDetail(string text)
-    {
-        int openIndex = text.IndexOf('(');
-        int closeIndex = openIndex >= 0 ? text.IndexOf(')', openIndex + 1) : -1;
-        if (openIndex >= 0 && closeIndex > openIndex)
-            return text.Substring(openIndex + 1, closeIndex - openIndex - 1).Trim();
-
-        openIndex = text.IndexOf('（');
-        closeIndex = openIndex >= 0 ? text.IndexOf('）', openIndex + 1) : -1;
-        return openIndex >= 0 && closeIndex > openIndex
-            ? text.Substring(openIndex + 1, closeIndex - openIndex - 1).Trim()
-            : text;
-    }
-
-    private FPSReviserResult? GetPreviewResult()
-    {
-        if (SelectedHypothesis == null || !TryParseFrameRate(out int numerator, out int denominator))
-            return null;
-
-        try
-        {
-            return FFProbeFPSReviser.Apply(
-                _rawJson,
-                new(SelectedHypothesis.Id, numerator, denominator));
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    private void RefreshPreview()
-    {
-        OnPropertyChanged(nameof(OutputFrameRateText));
-        OnPropertyChanged(nameof(OutputFrameCountText));
-        OnPropertyChanged(nameof(WarningText));
-        OnPropertyChanged(nameof(HasWarning));
-        OnPropertyChanged(nameof(IsFpsSectionEnabled));
-        OnPropertyChanged(nameof(IsVfrWarningVisible));
-    }
-
     private void SetResolutionText(int width, int height)
     {
         ResolutionWidthText = width.ToString(CultureInfo.InvariantCulture);
         ResolutionHeightText = height.ToString(CultureInfo.InvariantCulture);
-    }
-
-    private void SetFrameRateText((int numerator, int denominator)? frameRate)
-    {
-        if (!frameRate.HasValue)
-            return;
-
-        OutputFrameRateNumeratorText = frameRate.Value.numerator.ToString(CultureInfo.InvariantCulture);
-        OutputFrameRateDenominatorText = frameRate.Value.denominator.ToString(CultureInfo.InvariantCulture);
     }
 
     private bool TryParseResolution(out int width, out int height)
@@ -445,55 +129,16 @@ public class SourceReviserVM : BaseVM
         && value > 0
         && value <= MaxResolutionDimension;
 
-    private bool TryParseFrameRate(out int numerator, out int denominator)
-    {
-        bool hasNumerator = int.TryParse(
-            OutputFrameRateNumeratorText,
-            NumberStyles.None,
-            CultureInfo.InvariantCulture,
-            out numerator);
-        bool hasDenominator = int.TryParse(
-            OutputFrameRateDenominatorText,
-            NumberStyles.None,
-            CultureInfo.InvariantCulture,
-            out denominator);
-        return hasNumerator && hasDenominator && numerator > 0 && denominator > 0;
-    }
-
     private static string FormatResolution(int width, int height) =>
         width > 0 && height > 0
             ? string.Format(SourceReviserLangProvider.Current["SourceReviser.ResolutionFormat"], width, height)
             : SourceReviserLangProvider.Current["SourceReviser.UnknownResolution"];
-
-    private static string FormatFrameRate((int numerator, int denominator)? frameRate) =>
-        frameRate.HasValue
-            ? $"{frameRate.Value.numerator}/{frameRate.Value.denominator}"
-            : SourceReviserLangProvider.Current["SourceReviser.UnknownFrameRate"];
 
     private void ShowError(string message) =>
         new OpenErrModalCmd(_modalNavS, WindowTitle, message).Execute(null);
 
     private void OnLanguageChanged()
     {
-        string? selectedId = SelectedHypothesis?.Id;
-        string numerator = OutputFrameRateNumeratorText;
-        string denominator = OutputFrameRateDenominatorText;
-        BuildPatternListing();
-        SelectedHypothesis = null;
-        for (int i = 0; i < Hypotheses.Count; i++)
-        {
-            if (Hypotheses[i].Id == selectedId)
-            {
-                SelectedHypothesis = Hypotheses[i];
-                break;
-            }
-        }
-
-        if (SelectedHypothesis == null && Hypotheses.Count > 0)
-            SelectedHypothesis = Hypotheses[0];
-        OutputFrameRateNumeratorText = numerator;
-        OutputFrameRateDenominatorText = denominator;
-
         OnPropertyChanged(nameof(WindowTitle));
         OnPropertyChanged(nameof(Description));
         OnPropertyChanged(nameof(SettingsHeader));
@@ -502,18 +147,8 @@ public class SourceReviserVM : BaseVM
         OnPropertyChanged(nameof(CurrentResolutionLabel));
         OnPropertyChanged(nameof(SuggestedResolutionLabel));
         OnPropertyChanged(nameof(EvenResolutionHint));
-        OnPropertyChanged(nameof(PatternLabel));
-        OnPropertyChanged(nameof(InputFpsLabel));
-        OnPropertyChanged(nameof(OutputFpsLabel));
-        OnPropertyChanged(nameof(OutputFpsNumeratorLabel));
-        OnPropertyChanged(nameof(OutputFpsDenominatorLabel));
-        OnPropertyChanged(nameof(OutputFramesLabel));
-        OnPropertyChanged(nameof(WarningLabel));
         OnPropertyChanged(nameof(CurrentResolutionText));
         OnPropertyChanged(nameof(SuggestedResolutionText));
-        OnPropertyChanged(nameof(CurrentFrameRateText));
-        OnPropertyChanged(nameof(SelectedDescription));
-        RefreshPreview();
 
         FinishButtons.B2_1Text = SourceReviserLangProvider.Current["SourceReviser.Cancel"];
         FinishButtons.B2_2Text = SourceReviserLangProvider.Current["SourceReviser.Confirm"];
