@@ -48,6 +48,7 @@
         <StackPanel Grid.Row="1" Margin="0 10 0 10">
             <TextBlock Text="{Binding SummaryText}" FontWeight="SemiBold" Foreground="{StaticResource GlobalPrimary}" />
             <comps:HintPanel Text="{Binding StatusText}" HintBrush="{StaticResource GlobalSecondary}" Margin="0 5 0 0" />
+            <comps:HintPanel Text="{Binding FrameChangingFiltersWarning}" HintBrush="{StaticResource GlobalSecondary}" Margin="0 5 0 0" />
         </StackPanel>
 
         <Grid Grid.Row="2" IsEnabled="{Binding CanEdit}">

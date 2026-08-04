@@ -81,6 +81,7 @@ public sealed class RepartConfVM : BaseVM
     public string ApplyEditText => RepartLangProvider.Current["ApplyEdit"];
     public string DeleteEpisodeText => RepartLangProvider.Current["DeleteEpisode"];
     public string MergeEpisodesText => RepartLangProvider.Current["MergeEpisodes"];
+    public string FrameChangingFiltersWarning => RepartLangProvider.Current["FrameChangingFiltersWarning"];
     public string ApplyText => RepartLangProvider.Current["Apply"];
     public string CancelText => RepartLangProvider.Current["Cancel"];
 
@@ -217,7 +218,7 @@ public sealed class RepartConfVM : BaseVM
             {
                 AnalyzeSourcesResult refreshed = await AnalyzeAndReplaceSourcesAsync(
                     currentPlan.Sources.Select(source => source.FilePath).ToArray(),
-                    []);
+                    currentPlan.Outputs);
                 if (refreshed == AnalyzeSourcesResult.Failed && _analysis == null) _closeAction();
                 return;
             }
@@ -267,7 +268,7 @@ public sealed class RepartConfVM : BaseVM
             return;
         }
 
-        await AnalyzeAndReplaceSourcesAsync(paths, []);
+        await AnalyzeAndReplaceSourcesAsync(paths, Outputs.Select(output => output.Model).ToList());
     }
 
     private async Task AppendFilesAsync()
@@ -282,14 +283,14 @@ public sealed class RepartConfVM : BaseVM
         string[] existing = Sources.Select(source => source.FilePath).ToArray();
         string[] paths = [.. existing.Concat(dialog.FileNames).Distinct(StringComparer.OrdinalIgnoreCase)];
         if (!ConfirmSourceMutation()) return;
-        await AnalyzeAndReplaceSourcesAsync(paths, []);
+        await AnalyzeAndReplaceSourcesAsync(paths, Outputs.Select(output => output.Model).ToList());
     }
 
     private async Task RemoveSourceAsync(RepartSourceItemVM? item)
     {
         if (item == null || Sources.Count <= 1 || !ConfirmSourceMutation()) return;
         string[] paths = Sources.Where(source => !ReferenceEquals(source, item)).Select(source => source.FilePath).ToArray();
-        await AnalyzeAndReplaceSourcesAsync(paths, []);
+        await AnalyzeAndReplaceSourcesAsync(paths, Outputs.Select(output => output.Model).ToList());
     }
 
     private async Task MoveSourceAsync(RepartSourceItemVM? item, int direction)
@@ -300,7 +301,7 @@ public sealed class RepartConfVM : BaseVM
         if (index < 0 || target < 0 || target >= Sources.Count || !ConfirmSourceMutation()) return;
         List<string> paths = Sources.Select(source => source.FilePath).ToList();
         (paths[index], paths[target]) = (paths[target], paths[index]);
-        await AnalyzeAndReplaceSourcesAsync([.. paths], []);
+        await AnalyzeAndReplaceSourcesAsync([.. paths], Outputs.Select(output => output.Model).ToList());
     }
 
     private async Task<AnalyzeSourcesResult> AnalyzeAndReplaceSourcesAsync(
@@ -319,10 +320,10 @@ public sealed class RepartConfVM : BaseVM
                 _getFfprobePath(),
                 paths,
                 _analysisCancellation.Token);
-            analyzed.Outputs.AddRange(outputs);
+            List<RepartOutputSegmentM> reconciledOutputs = ReconcileOutputs(_analysis, analyzed, outputs);
             _analysis = analyzed;
             LoadSources();
-            ReplaceOutputs(outputs);
+            ReplaceOutputs(reconciledOutputs);
             StatusText = RepartLangProvider.Current["Ready"];
             PrepareNextDraft();
             return AnalyzeSourcesResult.Succeeded;
@@ -342,6 +343,86 @@ public sealed class RepartConfVM : BaseVM
             IsBusy = false;
             RefreshAnalysisProperties();
         }
+    }
+
+    private static List<RepartOutputSegmentM> ReconcileOutputs(
+        RepartPlanM? oldAnalysis,
+        RepartPlanM newAnalysis,
+        IReadOnlyList<RepartOutputSegmentM> outputs)
+    {
+        if (oldAnalysis == null || outputs.Count == 0) return [.. outputs];
+
+        Dictionary<string, int> newSourceIndexByPath = new(StringComparer.OrdinalIgnoreCase);
+        for (int i = 0; i < newAnalysis.Sources.Count; i++)
+            newSourceIndexByPath[newAnalysis.Sources[i].FilePath] = i;
+
+        List<RepartOutputSegmentM> reconciled = [];
+        foreach (RepartOutputSegmentM output in outputs)
+        {
+            int oldStartIndex = FindSourceIndex(oldAnalysis.Sources, output.FirstFrame);
+            int oldEndIndex = FindSourceIndex(oldAnalysis.Sources, output.LastFrame);
+            if (oldStartIndex < 0 || oldEndIndex < oldStartIndex) continue;
+            if (TryMapOutputToNewSources(
+                oldAnalysis,
+                newAnalysis,
+                newSourceIndexByPath,
+                oldStartIndex,
+                oldEndIndex,
+                output,
+                out RepartOutputSegmentM mapped))
+            {
+                reconciled.Add(mapped);
+            }
+        }
+
+        return reconciled.OrderBy(output => output.FirstFrame).ToList();
+    }
+
+    private static int FindSourceIndex(IReadOnlyList<RepartSourceM> sources, long frame)
+    {
+        for (int i = 0; i < sources.Count; i++)
+        {
+            RepartSourceM source = sources[i];
+            if (frame >= source.FirstFrame && frame <= source.LastFrame) return i;
+        }
+        return -1;
+    }
+
+    private static bool TryMapOutputToNewSources(
+        RepartPlanM oldAnalysis,
+        RepartPlanM newAnalysis,
+        Dictionary<string, int> newSourceIndexByPath,
+        int oldStartIndex,
+        int oldEndIndex,
+        RepartOutputSegmentM output,
+        out RepartOutputSegmentM mapped)
+    {
+        mapped = output;
+        int previousNewIndex = -1;
+        int newStartIndex = -1;
+        int newEndIndex = -1;
+
+        for (int i = oldStartIndex; i <= oldEndIndex; i++)
+        {
+            if (!newSourceIndexByPath.TryGetValue(oldAnalysis.Sources[i].FilePath, out int newIndex)) return false;
+            if (newIndex <= previousNewIndex) return false;
+            if (i == oldStartIndex) newStartIndex = newIndex;
+            if (i == oldEndIndex) newEndIndex = newIndex;
+            previousNewIndex = newIndex;
+        }
+
+        if (newStartIndex < 0 || newEndIndex < 0) return false;
+        RepartSourceM oldStartSource = oldAnalysis.Sources[oldStartIndex];
+        RepartSourceM newStartSource = newAnalysis.Sources[newStartIndex];
+        RepartSourceM oldEndSource = oldAnalysis.Sources[oldEndIndex];
+        RepartSourceM newEndSource = newAnalysis.Sources[newEndIndex];
+
+        long newFirst = newStartSource.FirstFrame + output.FirstFrame - oldStartSource.FirstFrame;
+        long newLast = newEndSource.FirstFrame + output.LastFrame - oldEndSource.FirstFrame;
+        if (newLast < newFirst || newLast - newFirst != output.LastFrame - output.FirstFrame) return false;
+
+        mapped = output with { FirstFrame = newFirst, LastFrame = newLast };
+        return true;
     }
 
     private enum AnalyzeSourcesResult
@@ -661,7 +742,8 @@ public sealed class RepartConfVM : BaseVM
             nameof(ImportFolderText), nameof(AppendFilesText), nameof(ImportChaptersText), nameof(ImportMplsText),
             nameof(UnavailableText), nameof(OutputNameLabel), nameof(StartTimeLabel), nameof(EndTimeLabel),
             nameof(FirstFrameLabel), nameof(LastFrameLabel), nameof(AddEpisodeText), nameof(ApplyEditText),
-            nameof(DeleteEpisodeText), nameof(MergeEpisodesText), nameof(ApplyText), nameof(CancelText)
+            nameof(DeleteEpisodeText), nameof(MergeEpisodesText), nameof(FrameChangingFiltersWarning),
+            nameof(ApplyText), nameof(CancelText)
         }) OnPropertyChanged(property);
         OnPropertyChanged(nameof(SummaryText));
         RefreshTimeline();
