@@ -11,7 +11,7 @@ using System.Windows;
 
 namespace OneColumnEncoder.ViewModels
 {
-    public class SampleClipVM : BaseVM
+    public class SampleClipVM : BaseVM, IClipRangeSelectorDragAware
     {
         private const int MinClipLengthSeconds = 10;
         private const int MaxClipLengthSeconds = 600;
@@ -239,7 +239,7 @@ namespace OneColumnEncoder.ViewModels
             SyncFromSelection(updateClipLength: false);
         }
 
-        internal void SetDraggingSelection(bool isDraggingSelection)
+        public void SetDraggingSelection(bool isDraggingSelection)
         {
             _isDraggingSelection = isDraggingSelection;
         }

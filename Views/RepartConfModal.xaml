@@ -19,56 +19,12 @@
     <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Border Grid.Column="0"
-                    Padding="12"
-                    Margin="0 0 5 0"
-                    Background="{StaticResource RemixedBackground2}"
-                    BorderBrush="{StaticResource RemixedBorder2}"
-                    BorderThickness="1"
-                    CornerRadius="5">
-                <StackPanel>
-                    <TextBlock Text="{Binding InputSourcesTitle}"
-                               Style="{StaticResource H3}" />
-                </StackPanel>
-            </Border>
-            <Border Grid.Column="1"
-                    Padding="12"
-                    Margin="5 0 0 0"
-                    Background="{StaticResource RemixedBackground3}"
-                    BorderBrush="{StaticResource RemixedBorder3}"
-                    BorderThickness="1"
-                    CornerRadius="5"
-                    Opacity="0.55">
-                <StackPanel>
-                    <TextBlock Text="{Binding ImportChaptersText}"
-                               Style="{StaticResource H3}" />
-                    <StackPanel Orientation="Horizontal"
-                                Margin="0 7.5 0 0">
-                        <Button Content="{Binding ImportMplsText}"
-                                IsEnabled="False"
-                                Style="{StaticResource SecondaryButton}"
-                                MinWidth="120" />
-                        <TextBlock Text="{Binding UnavailableText}"
-                                   Margin="10 0 0 0"
-                                   VerticalAlignment="Center"
-                                   Foreground="{StaticResource GlobalSecondary}" />
-                    </StackPanel>
-                </StackPanel>
-            </Border>
-        </Grid>
-
-        <StackPanel Grid.Row="1"
-                    Margin="0 10 0 10">
+        <StackPanel Grid.Row="0"
+                    Margin="0 0 0 10">
             <TextBlock Text="{Binding SummaryText}"
                        FontWeight="SemiBold"
                        Foreground="{StaticResource GlobalPrimary}" />
@@ -80,12 +36,13 @@
                              Margin="0 5 0 0" />
         </StackPanel>
 
-        <Grid Grid.Row="2"
+        <Grid Grid.Row="1"
               IsEnabled="{Binding CanEdit}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*"
-                               MaxHeight="80"/>
+                                MaxHeight="80"/>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
@@ -162,7 +119,13 @@
                 </ItemsControl>
             </Border>
 
-            <Grid Grid.Row="2"
+            <comps:ClipRangeSelector Grid.Row="2"
+                                     AxisLabels="{Binding AxisLabels}"
+                                     SelectionStart="{Binding SelectionStart, Mode=TwoWay}"
+                                     SelectionEnd="{Binding SelectionEnd, Mode=TwoWay}"
+                                     Margin="0 0 0 10" />
+
+            <Grid Grid.Row="3"
                   Margin="0 0 0 0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="310" />
@@ -173,27 +136,24 @@
                 </Grid.ColumnDefinitions>
 
                 <Border Grid.Column="0"
-                        Background="{StaticResource RemixedBackground}"
-                        BorderBrush="{StaticResource RemixedBorder}"
+                        Background="#BAC8D3"
+                        BorderBrush="#536C80"
                         BorderThickness="1"
                         CornerRadius="5"
                         Padding="10"
                         VerticalAlignment="Top"
                         MinHeight="300">
                     <DockPanel>
-                        <StackPanel DockPanel.Dock="Bottom"
-                                    Orientation="Horizontal"
-                                    Margin="0 7.5 0 0">
-                            <Button Content="{Binding ImportFolderText}"
-                                    Command="{Binding ImportFolderCommand}"
-                                    Style="{StaticResource PrimaryButton}"
-                                    MinWidth="120"
-                                    Margin="0 0 5 0" />
-                            <Button Content="{Binding AppendFilesText}"
-                                    Command="{Binding AppendFilesCommand}"
-                                    Style="{StaticResource SecondaryButton}"
-                                    MinWidth="120" />
-                        </StackPanel>
+                        <comps:ThreeButtonGroup DockPanel.Dock="Bottom"
+                                                DataContext="{Binding InputSourceButtons}"
+                                                ButtonHeight="40"
+                                                Button1Command="{Binding Cmd1}"
+                                                Button2Command="{Binding Cmd2}"
+                                                Button3Command="{Binding Cmd3}"
+                                                Button1IsEnabled="{Binding B3_1IsEnabled}"
+                                                Button2IsEnabled="{Binding B3_2IsEnabled}"
+                                                Button3IsEnabled="{Binding B3_3IsEnabled}"
+                                                Margin="0 7.5 0 0" />
                         <comps:SectionHeader DockPanel.Dock="Top"
                                              HeaderText="{Binding InputSourcesTitle}" />
                         <ListBox ItemsSource="{Binding Sources}"
@@ -242,23 +202,49 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0"
-                                    Margin="0 0 5 0">
-                            <TextBlock Text="{Binding StartTimeLabel}"
-                                       Style="{StaticResource H3}" />
-                            <TextBox Text="{Binding StartTimeText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                                     Padding="6"
-                                     Margin="0 5 0 0" />
-                        </StackPanel>
-                        <StackPanel Grid.Column="1"
-                                    Margin="5 0 0 0">
-                            <TextBlock Text="{Binding EndTimeLabel}"
-                                       Style="{StaticResource H3}" />
-                            <TextBox Text="{Binding EndTimeText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                                     Padding="6"
-                                     Margin="0 5 0 0" />
-                        </StackPanel>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="0"
+                                   Text="{Binding StartTimeLabel}"
+                                   Style="{StaticResource H3}" />
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="1"
+                                   Text="{Binding SegmentDurationLabel}"
+                                   Style="{StaticResource H3}"
+                                   Margin="10 0 0 0" />
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="2"
+                                   Text="{Binding EndTimeLabel}"
+                                   Style="{StaticResource H3}"
+                                   Margin="10 0 0 0" />
+                        <TextBox Grid.Row="1"
+                                 Grid.Column="0"
+                                 Text="{Binding StartTimeText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                 Padding="6"
+                                 Margin="0 5 0 0" />
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="1"
+                                   Text="{Binding SegmentDurationText}"
+                                   Padding="6"
+                                   Margin="10 5 0 0"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1"
+                                 Grid.Column="2"
+                                 Text="{Binding EndTimeText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                 Padding="6"
+                                 Margin="10 5 0 0" />
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="3"
+                                   Text="{Binding TimeFormatText}"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center"
+                                   Margin="10 5 0 0" />
                     </Grid>
 
                     <Grid Grid.Row="2"
@@ -266,49 +252,70 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0"
-                                    Margin="0 0 5 0">
-                            <TextBlock Text="{Binding FirstFrameLabel}"
-                                       Style="{StaticResource H3}" />
-                            <TextBox Text="{Binding FirstFrameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                                     Padding="6"
-                                     Margin="0 5 0 0" />
-                        </StackPanel>
-                        <StackPanel Grid.Column="1"
-                                    Margin="5 0 0 0">
-                            <TextBlock Text="{Binding LastFrameLabel}"
-                                       Style="{StaticResource H3}" />
-                            <TextBox Text="{Binding LastFrameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                                     Padding="6"
-                                     Margin="0 5 0 0" />
-                        </StackPanel>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="0"
+                                   Text="{Binding FirstFrameLabel}"
+                                   Style="{StaticResource H3}" />
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="1"
+                                   Text="{Binding FrameCountLabel}"
+                                   Style="{StaticResource H3}"
+                                   Margin="10 0 0 0" />
+                        <TextBlock Grid.Row="0"
+                                   Grid.Column="2"
+                                   Text="{Binding LastFrameLabel}"
+                                   Style="{StaticResource H3}"
+                                   Margin="10 0 0 0" />
+                        <TextBox Grid.Row="1"
+                                 Grid.Column="0"
+                                 Text="{Binding FirstFrameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                 Padding="6"
+                                 Margin="0 5 0 0" />
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="1"
+                                   Text="{Binding FrameCountText}"
+                                   Padding="6"
+                                   Margin="10 5 0 0"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Row="1"
+                                 Grid.Column="2"
+                                 Text="{Binding LastFrameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                 Padding="6"
+                                 Margin="10 5 0 0" />
+                        <TextBlock Grid.Row="1"
+                                   Grid.Column="3"
+                                   Text="{Binding FrameFormatText}"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center"
+                                   Margin="10 5 0 0" />
                     </Grid>
 
-                    <WrapPanel Grid.Row="3"
-                               Margin="0 10 0 0"
-                               VerticalAlignment="Top">
-                        <Button Content="{Binding ApplyEditText}"
-                                Command="{Binding ApplyEditCommand}"
-                                Style="{StaticResource SecondaryButton}"
-                                MinWidth="105"
-                                Margin="0 0 5 5" />
-                        <Button Content="{Binding DeleteEpisodeText}"
-                                Command="{Binding DeleteEpisodeCommand}"
-                                Style="{StaticResource SecondaryButton}"
-                                MinWidth="80"
-                                Margin="0 0 5 5" />
-                        <Button Content="{Binding MergeEpisodesText}"
-                                Command="{Binding MergeEpisodesCommand}"
-                                Style="{StaticResource SecondaryButton}"
-                                MinWidth="125"
-                                Margin="0 0 5 5" />
-                    </WrapPanel>
+                    <comps:FiveButtonGroup Grid.Row="3"
+                                           DataContext="{Binding EpisodeEditButtons}"
+                                           ButtonHeight="40"
+                                           Button1Command="{Binding Cmd1}"
+                                           Button2Command="{Binding Cmd2}"
+                                           Button3Command="{Binding Cmd3}"
+                                           Button4Command="{Binding Cmd4}"
+                                           Button5Command="{Binding Cmd5}"
+                                           Button1IsEnabled="{Binding B5_1IsEnabled}"
+                                           Button2IsEnabled="{Binding B5_2IsEnabled}"
+                                           Button3IsEnabled="{Binding B5_3IsEnabled}"
+                                           Button4IsEnabled="{Binding B5_4IsEnabled}"
+                                           Button5IsEnabled="{Binding B5_5IsEnabled}"
+                                           Margin="0 10 0 0" />
                 </Grid>
 
                 <Border Grid.Column="4"
-                        Background="{StaticResource RemixedBackground}"
-                        BorderBrush="{StaticResource RemixedBorder}"
+                        Background="#F1E6D8"
+                        BorderBrush="#BBAC9C"
                         BorderThickness="1"
                         CornerRadius="5"
                         Padding="10"
@@ -320,8 +327,8 @@
                                 Command="{Binding AddEpisodeCommand}"
                                 IsEnabled="{Binding CanAddEpisode}"
                                 Style="{StaticResource PrimaryButton}"
-                                MinWidth="105"
                                 HorizontalAlignment="Stretch"
+                                Height="40"
                                 Margin="0 7.5 0 0" />
                         <comps:SectionHeader DockPanel.Dock="Top"
                                              HeaderText="{Binding OutputEpisodesTitle}" />
@@ -348,7 +355,7 @@
             </Grid>
         </Grid>
 
-        <Grid Grid.Row="3"
+        <Grid Grid.Row="2"
               Margin="0 15 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />

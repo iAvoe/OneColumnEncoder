@@ -15,7 +15,7 @@ using System.Windows.Input;
 
 namespace OneColumnEncoder.ViewModels;
 
-public sealed class RepartConfVM : BaseVM
+public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 {
     private readonly ModalNavS _modalNavS;
     private readonly Action _closeAction;
@@ -29,7 +29,11 @@ public sealed class RepartConfVM : BaseVM
     private string _endTimeText = "00:00:00.000";
     private string _firstFrameText = "0";
     private string _lastFrameText = "0";
+    private string _segmentDurationText = "00:00:00.000";
+    private string _frameCountText = "0";
     private string _statusText = string.Empty;
+    private double _selectionStart;
+    private double _selectionEnd = 1d;
     private bool _isBusy;
     private bool _syncingRange;
     private bool _lastRangeInputWasTime;
@@ -54,10 +58,34 @@ public sealed class RepartConfVM : BaseVM
         AddEpisodeCommand = new ActionCmd(_ => AddEpisode());
         ApplyEditCommand = new ActionCmd(_ => ApplyEdit());
         DeleteEpisodeCommand = new ActionCmd(_ => DeleteSelectedOutputs());
-        MergeEpisodesCommand = new ActionCmd(_ => MergeSelectedOutputs());
+        MergeLeftCommand = new ActionCmd(_ => MergeAdjacentSelected(-1));
+        MergeRightCommand = new ActionCmd(_ => MergeAdjacentSelected(1));
+        ResetDraftCommand = new ActionCmd(_ => ResetDraft());
         SelectTimelineSliceCommand = new ActionCmd(SelectTimelineSlice);
         ApplyCommand = new ActionCmd(_ => ApplyAndClose());
         CancelCommand = new CloseModalCmd(closeAction);
+
+        InputSourceButtons = ButtonGroupVM.CreateThreeButton(
+            ImportMplsText,
+            AppendFilesText,
+            ImportFolderText,
+            null,
+            AppendFilesCommand,
+            ImportFolderCommand);
+        InputSourceButtons.B3_1IsEnabled = false;
+        EpisodeEditButtons = ButtonGroupVM.CreateFiveButton(
+            MergeLeftText,
+            MergeRightText,
+            DeleteEpisodeText,
+            ResetEditText,
+            ApplyEditText,
+            MergeLeftCommand,
+            MergeRightCommand,
+            DeleteEpisodeCommand,
+            ResetDraftCommand,
+            ApplyEditCommand);
+        RefreshDraftAvailability();
+
         UILangProvider.CurrentChanged += OnLanguageChanged;
     }
 
@@ -74,13 +102,19 @@ public sealed class RepartConfVM : BaseVM
     public string UnavailableText => RepartLangProvider.Current["Unavailable"];
     public string OutputNameLabel => RepartLangProvider.Current["OutputName"];
     public string StartTimeLabel => RepartLangProvider.Current["StartTime"];
+    public string SegmentDurationLabel => RepartLangProvider.Current["SegmentDuration"];
     public string EndTimeLabel => RepartLangProvider.Current["EndTime"];
     public string FirstFrameLabel => RepartLangProvider.Current["FirstFrame"];
+    public string FrameCountLabel => RepartLangProvider.Current["FrameCount"];
     public string LastFrameLabel => RepartLangProvider.Current["LastFrame"];
+    public string TimeFormatText => RepartLangProvider.Current["TimeFormat"];
+    public string FrameFormatText => RepartLangProvider.Current["FrameFormat"];
     public string AddEpisodeText => RepartLangProvider.Current["AddEpisode"];
     public string ApplyEditText => RepartLangProvider.Current["ApplyEdit"];
     public string DeleteEpisodeText => RepartLangProvider.Current["DeleteEpisode"];
-    public string MergeEpisodesText => RepartLangProvider.Current["MergeEpisodes"];
+    public string MergeLeftText => RepartLangProvider.Current["MergeLeft"];
+    public string MergeRightText => RepartLangProvider.Current["MergeRight"];
+    public string ResetEditText => RepartLangProvider.Current["ResetEdit"];
     public string FrameChangingFiltersWarning => RepartLangProvider.Current["FrameChangingFiltersWarning"];
     public string ApplyText => RepartLangProvider.Current["Apply"];
     public string CancelText => RepartLangProvider.Current["Cancel"];
@@ -88,6 +122,9 @@ public sealed class RepartConfVM : BaseVM
     public ObservableCollection<RepartSourceItemVM> Sources { get; } = [];
     public ObservableCollection<RepartOutputItemVM> Outputs { get; } = [];
     public ObservableCollection<RepartTimelineSliceVM> TimelineSlices { get; } = [];
+    public ObservableCollection<string> AxisLabels { get; } = [];
+    public ButtonGroupVM InputSourceButtons { get; }
+    public ButtonGroupVM EpisodeEditButtons { get; }
     public ICommand ImportFolderCommand { get; }
     public ICommand AppendFilesCommand { get; }
     public ICommand RemoveSourceCommand { get; }
@@ -96,7 +133,9 @@ public sealed class RepartConfVM : BaseVM
     public ICommand AddEpisodeCommand { get; }
     public ICommand ApplyEditCommand { get; }
     public ICommand DeleteEpisodeCommand { get; }
-    public ICommand MergeEpisodesCommand { get; }
+    public ICommand MergeLeftCommand { get; }
+    public ICommand MergeRightCommand { get; }
+    public ICommand ResetDraftCommand { get; }
     public ICommand SelectTimelineSliceCommand { get; }
     public ICommand ApplyCommand { get; }
     public ICommand CancelCommand { get; }
@@ -126,6 +165,20 @@ public sealed class RepartConfVM : BaseVM
                 && !Outputs.Any(output => output.Model.Overlaps(segment));
         }
     }
+    public bool CanMergeLeft => CanMergeAdjacent(-1);
+    public bool CanMergeRight => CanMergeAdjacent(1);
+    public bool CanDeleteEpisode => CanEdit && (_selectedOutputs.Count > 0 || SelectedOutput != null);
+    public bool CanResetDraft => CanEdit;
+    public bool CanApplyEdit
+    {
+        get
+        {
+            if (!CanEdit || SelectedOutput == null) return false;
+            return TryBuildDraft(out RepartOutputSegmentM? draft, excludeSelectedName: true, showErrors: false)
+                && draft != null
+                && !Outputs.Where(output => output.Model.Id != SelectedOutput.Model.Id).Any(output => output.Model.Overlaps(draft));
+        }
+    }
     public string SummaryText => _analysis == null
         ? string.Empty
         : string.Format(
@@ -147,8 +200,9 @@ public sealed class RepartConfVM : BaseVM
         get => _selectedOutput;
         set
         {
-            if (!SetProperty(ref _selectedOutput, value) || value == null) return;
-            LoadDraft(value.Model);
+            if (!SetProperty(ref _selectedOutput, value)) return;
+            if (value != null) LoadDraft(value.Model);
+            RefreshDraftAvailability();
         }
     }
 
@@ -172,6 +226,12 @@ public sealed class RepartConfVM : BaseVM
             SyncFramesFromTimes();
             RefreshDraftAvailability();
         }
+    }
+
+    public string SegmentDurationText
+    {
+        get => _segmentDurationText;
+        private set => SetProperty(ref _segmentDurationText, value);
     }
 
     public string EndTimeText
@@ -198,6 +258,12 @@ public sealed class RepartConfVM : BaseVM
         }
     }
 
+    public string FrameCountText
+    {
+        get => _frameCountText;
+        private set => SetProperty(ref _frameCountText, value);
+    }
+
     public string LastFrameText
     {
         get => _lastFrameText;
@@ -207,6 +273,26 @@ public sealed class RepartConfVM : BaseVM
             _lastRangeInputWasTime = false;
             SyncTimesFromFrames();
             RefreshDraftAvailability();
+        }
+    }
+
+    public double SelectionStart
+    {
+        get => _selectionStart;
+        set
+        {
+            if (!SetProperty(ref _selectionStart, value) || _syncingRange) return;
+            SyncDraftFromSelection();
+        }
+    }
+
+    public double SelectionEnd
+    {
+        get => _selectionEnd;
+        set
+        {
+            if (!SetProperty(ref _selectionEnd, value) || _syncingRange) return;
+            SyncDraftFromSelection();
         }
     }
 
@@ -224,6 +310,7 @@ public sealed class RepartConfVM : BaseVM
             }
             _analysis = currentPlan.Clone();
             LoadSources();
+            BuildAxisLabels();
             ReplaceOutputs(currentPlan.Outputs);
             StatusText = RepartLangProvider.Current["Ready"];
             PrepareNextDraft();
@@ -240,6 +327,10 @@ public sealed class RepartConfVM : BaseVM
         foreach (RepartOutputItemVM output in Outputs)
             output.IsSelected = _selectedOutputs.Contains(output);
         SelectedOutput = _selectedOutputs.LastOrDefault();
+    }
+
+    public void SetDraggingSelection(bool isDraggingSelection)
+    {
     }
 
     private async Task ImportFolderAsync()
@@ -324,6 +415,7 @@ public sealed class RepartConfVM : BaseVM
             List<RepartOutputSegmentM> reconciledOutputs = ReconcileOutputs(_analysis, analyzed, outputs);
             _analysis = analyzed;
             LoadSources();
+            BuildAxisLabels();
             ReplaceOutputs(reconciledOutputs);
             StatusText = FormatReadyStatus(paths.Length, analyzed.Sources.Count);
             PrepareNextDraft();
@@ -489,30 +581,27 @@ public sealed class RepartConfVM : BaseVM
         PrepareNextDraft();
     }
 
-    private void MergeSelectedOutputs()
+    private void MergeAdjacentSelected(int direction)
     {
-        List<RepartOutputSegmentM> selected = _selectedOutputs.Select(output => output.Model).OrderBy(output => output.FirstFrame).ToList();
-        if (selected.Count < 2)
-        {
-            ShowError(RepartLangProvider.Current["SelectMerge"]);
-            return;
-        }
-        for (int i = 1; i < selected.Count; i++)
-        {
-            if (!selected[i - 1].IsAdjacentTo(selected[i]))
-            {
-                ShowError(RepartLangProvider.Current["AdjacentRequired"]);
-                return;
-            }
-        }
-        HashSet<Guid> selectedIds = selected.Select(output => output.Id).ToHashSet();
+        if (SelectedOutput == null || !TryGetAdjacentOutput(direction, out RepartOutputItemVM? adjacent) || adjacent == null) return;
+        RepartOutputItemVM left = direction < 0 ? adjacent : SelectedOutput;
+        RepartOutputItemVM right = direction < 0 ? SelectedOutput : adjacent;
+        if (!left.Model.IsAdjacentTo(right.Model)) return;
+
         RepartOutputSegmentM merged = new(
-            selected[0].Id,
-            selected[0].BaseName,
-            selected[0].FirstFrame,
-            selected[^1].LastFrame);
-        ReplaceOutputs(Outputs.Where(output => !selectedIds.Contains(output.Model.Id)).Select(output => output.Model).Append(merged));
+            left.Model.Id,
+            left.Model.BaseName,
+            left.Model.FirstFrame,
+            right.Model.LastFrame);
+        HashSet<Guid> mergedIds = [left.Model.Id, right.Model.Id];
+        ReplaceOutputs(Outputs.Where(output => !mergedIds.Contains(output.Model.Id)).Select(output => output.Model).Append(merged));
         SelectedOutput = Outputs.FirstOrDefault(output => output.Model.Id == merged.Id);
+    }
+
+    private void ResetDraft()
+    {
+        if (SelectedOutput != null) LoadDraft(SelectedOutput.Model);
+        else PrepareNextDraft();
     }
 
     private bool TryBuildDraft(out RepartOutputSegmentM? segment, bool excludeSelectedName, bool showErrors)
@@ -559,6 +648,25 @@ public sealed class RepartConfVM : BaseVM
         }
 
         segment = new RepartOutputSegmentM(Guid.NewGuid(), baseName, first, last);
+        return true;
+    }
+
+    private bool CanMergeAdjacent(int direction) =>
+        CanEdit
+        && SelectedOutput != null
+        && TryGetAdjacentOutput(direction, out RepartOutputItemVM? adjacent)
+        && adjacent != null
+        && SelectedOutput.Model.IsAdjacentTo(adjacent.Model);
+
+    private bool TryGetAdjacentOutput(int direction, out RepartOutputItemVM? adjacent)
+    {
+        adjacent = null;
+        if (SelectedOutput == null) return false;
+        List<RepartOutputItemVM> ordered = Outputs.OrderBy(output => output.Model.FirstFrame).ToList();
+        int index = ordered.IndexOf(SelectedOutput);
+        int adjacentIndex = index + Math.Sign(direction);
+        if (index < 0 || adjacentIndex < 0 || adjacentIndex >= ordered.Count) return false;
+        adjacent = ordered[adjacentIndex];
         return true;
     }
 
@@ -610,6 +718,17 @@ public sealed class RepartConfVM : BaseVM
         }
     }
 
+    private void BuildAxisLabels()
+    {
+        AxisLabels.Clear();
+        if (_analysis == null || _analysis.TotalSeconds <= 0d) return;
+        for (int i = 0; i <= 4; i++)
+        {
+            double seconds = _analysis.TotalSeconds * i / 4d;
+            AxisLabels.Add(SampleClip.FormatAxisTimestamp(seconds));
+        }
+    }
+
     private void SelectTimelineSlice(object? parameter)
     {
         if (parameter is not RepartTimelineSliceVM slice) return;
@@ -656,6 +775,8 @@ public sealed class RepartConfVM : BaseVM
         OnPropertyChanged(nameof(FirstFrameText));
         OnPropertyChanged(nameof(LastFrameText));
         SetTimeTexts(first, last);
+        UpdateSelectionFromFrames(first, last);
+        UpdateRangeDerivedTexts(first, last);
         _syncingRange = false;
         RefreshDraftAvailability();
     }
@@ -672,6 +793,8 @@ public sealed class RepartConfVM : BaseVM
             _lastFrameText = last.ToString(CultureInfo.InvariantCulture);
             OnPropertyChanged(nameof(FirstFrameText));
             OnPropertyChanged(nameof(LastFrameText));
+            UpdateSelectionFromFrames(first, last);
+            UpdateRangeDerivedTexts(first, last);
         }
         catch { }
         finally { _syncingRange = false; }
@@ -682,9 +805,13 @@ public sealed class RepartConfVM : BaseVM
     {
         if (_analysis == null
             || !long.TryParse(FirstFrameText, NumberStyles.Integer, CultureInfo.InvariantCulture, out long first)
-            || !long.TryParse(LastFrameText, NumberStyles.Integer, CultureInfo.InvariantCulture, out long last)) return;
+            || !long.TryParse(LastFrameText, NumberStyles.Integer, CultureInfo.InvariantCulture, out long last)
+            || first < 0
+            || last < first) return;
         _syncingRange = true;
         SetTimeTexts(first, last);
+        UpdateSelectionFromFrames(first, last);
+        UpdateRangeDerivedTexts(first, last);
         _syncingRange = false;
         RefreshDraftAvailability();
     }
@@ -697,6 +824,56 @@ public sealed class RepartConfVM : BaseVM
         OnPropertyChanged(nameof(StartTimeText));
         OnPropertyChanged(nameof(EndTimeText));
     }
+
+    private void SyncDraftFromSelection()
+    {
+        if (_analysis == null || _analysis.TotalFrames <= 0 || _syncingRange) return;
+
+        double start = Clamp(SelectionStart, 0d, 1d);
+        double end = Clamp(SelectionEnd, 0d, 1d);
+        if (end < start) (start, end) = (end, start);
+        if (end <= start) end = Math.Min(1d, start + (1d / _analysis.TotalFrames));
+
+        long first = Math.Min(_analysis.TotalFrames - 1, Math.Max(0, (long)Math.Floor(start * _analysis.TotalFrames)));
+        long last = Math.Min(_analysis.TotalFrames - 1, Math.Max(first, (long)Math.Ceiling(end * _analysis.TotalFrames) - 1));
+
+        _syncingRange = true;
+        _lastRangeInputWasTime = false;
+        _firstFrameText = first.ToString(CultureInfo.InvariantCulture);
+        _lastFrameText = last.ToString(CultureInfo.InvariantCulture);
+        OnPropertyChanged(nameof(FirstFrameText));
+        OnPropertyChanged(nameof(LastFrameText));
+        SetTimeTexts(first, last);
+        UpdateRangeDerivedTexts(first, last);
+        _syncingRange = false;
+        RefreshDraftAvailability();
+    }
+
+    private void UpdateSelectionFromFrames(long first, long last)
+    {
+        if (_analysis == null || _analysis.TotalFrames <= 0) return;
+        long clampedFirst = Math.Min(_analysis.TotalFrames - 1, Math.Max(0, first));
+        long clampedLast = Math.Min(_analysis.TotalFrames - 1, Math.Max(clampedFirst, last));
+        SelectionStart = (double)clampedFirst / _analysis.TotalFrames;
+        SelectionEnd = (double)(clampedLast + 1) / _analysis.TotalFrames;
+    }
+
+    private void UpdateRangeDerivedTexts(long first, long last)
+    {
+        if (_analysis == null || first < 0 || last < first)
+        {
+            SegmentDurationText = "00:00:00.000";
+            FrameCountText = "0";
+            return;
+        }
+
+        long frameCount = last - first + 1;
+        SegmentDurationText = EncodingPipeline.FormatTimestamp(TimeSpan.FromSeconds(frameCount / _analysis.FrameRate));
+        FrameCountText = frameCount.ToString(CultureInfo.InvariantCulture);
+    }
+
+    private static double Clamp(double value, double min, double max) =>
+        Math.Max(min, Math.Min(max, value));
 
     private void ApplyAndClose()
     {
@@ -728,7 +905,7 @@ public sealed class RepartConfVM : BaseVM
         OnPropertyChanged(nameof(SummaryText));
         OnPropertyChanged(nameof(CanEdit));
         OnPropertyChanged(nameof(CanApply));
-        OnPropertyChanged(nameof(CanAddEpisode));
+        RefreshDraftAvailability();
     }
 
     private static string FormatReadyStatus(int requestedSourceCount, int acceptedSourceCount) =>
@@ -749,7 +926,20 @@ public sealed class RepartConfVM : BaseVM
         return cmd.DialogResult == true;
     }
 
-    private void RefreshDraftAvailability() => OnPropertyChanged(nameof(CanAddEpisode));
+    private void RefreshDraftAvailability()
+    {
+        OnPropertyChanged(nameof(CanAddEpisode));
+        OnPropertyChanged(nameof(CanMergeLeft));
+        OnPropertyChanged(nameof(CanMergeRight));
+        OnPropertyChanged(nameof(CanDeleteEpisode));
+        OnPropertyChanged(nameof(CanResetDraft));
+        OnPropertyChanged(nameof(CanApplyEdit));
+        EpisodeEditButtons.B5_1IsEnabled = CanMergeLeft;
+        EpisodeEditButtons.B5_2IsEnabled = CanMergeRight;
+        EpisodeEditButtons.B5_3IsEnabled = CanDeleteEpisode;
+        EpisodeEditButtons.B5_4IsEnabled = CanResetDraft;
+        EpisodeEditButtons.B5_5IsEnabled = CanApplyEdit;
+    }
 
     private void ShowError(string message) =>
         new OpenErrModalCmd(_modalNavS, WindowTitleText, message).Execute(null);
@@ -760,11 +950,21 @@ public sealed class RepartConfVM : BaseVM
         {
             nameof(InputSourcesTitle), nameof(OutputEpisodesTitle), nameof(TimelineTitle),
             nameof(ImportFolderText), nameof(AppendFilesText), nameof(ImportChaptersText), nameof(ImportMplsText),
-            nameof(UnavailableText), nameof(OutputNameLabel), nameof(StartTimeLabel), nameof(EndTimeLabel),
-            nameof(FirstFrameLabel), nameof(LastFrameLabel), nameof(AddEpisodeText), nameof(ApplyEditText),
-            nameof(DeleteEpisodeText), nameof(MergeEpisodesText), nameof(FrameChangingFiltersWarning),
+            nameof(UnavailableText), nameof(OutputNameLabel), nameof(StartTimeLabel), nameof(SegmentDurationLabel),
+            nameof(EndTimeLabel), nameof(TimeFormatText), nameof(FirstFrameLabel), nameof(FrameCountLabel),
+            nameof(LastFrameLabel), nameof(FrameFormatText), nameof(AddEpisodeText), nameof(ApplyEditText),
+            nameof(DeleteEpisodeText), nameof(MergeLeftText), nameof(MergeRightText), nameof(ResetEditText),
+            nameof(FrameChangingFiltersWarning),
             nameof(ApplyText), nameof(CancelText)
         }) OnPropertyChanged(property);
+        InputSourceButtons.B3_1Text = ImportMplsText;
+        InputSourceButtons.B3_2Text = AppendFilesText;
+        InputSourceButtons.B3_3Text = ImportFolderText;
+        EpisodeEditButtons.B5_1Text = MergeLeftText;
+        EpisodeEditButtons.B5_2Text = MergeRightText;
+        EpisodeEditButtons.B5_3Text = DeleteEpisodeText;
+        EpisodeEditButtons.B5_4Text = ResetEditText;
+        EpisodeEditButtons.B5_5Text = ApplyEditText;
         OnPropertyChanged(nameof(SummaryText));
         RefreshTimeline();
     }

@@ -278,14 +278,14 @@ namespace OneColumnEncoder.Components
         private void Thumb_DragStarted(object sender, DragStartedEventArgs e)
         {
             _isDraggingSelection = true;
-            (DataContext as SampleClipVM)?.SetDraggingSelection(true);
+            (DataContext as IClipRangeSelectorDragAware)?.SetDraggingSelection(true);
             UpdateLayoutMetrics();
         }
 
         private void Thumb_DragCompleted(object sender, DragCompletedEventArgs e)
         {
             _isDraggingSelection = false;
-            (DataContext as SampleClipVM)?.SetDraggingSelection(false);
+            (DataContext as IClipRangeSelectorDragAware)?.SetDraggingSelection(false);
             UpdateSelectionVisuals();
         }
 
