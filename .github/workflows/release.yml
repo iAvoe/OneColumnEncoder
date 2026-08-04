@@ -110,8 +110,8 @@ jobs:
           $body += "Or, TLDR; and use tools provided in downloaded package (not recommended but it works) | 或者着急要用的话，也可以无视上述教程，下载并直接使用附带的工具（不推荐但可以）"
 
           $body += "`n`n"
-          $body += "> [!WARNING]`n"
-          $body += "> The Video Source Repart mode is unfinished and does not work, this release is meant for handling changes and bug fixes | 视频源重分集功能尚未完成，且无法使用，此发布是为了调整行为和修复异常"
+          $body += "> [!CAUTION]`n"
+          $body += "> The Video Source Repart mode is unfinished and does not work, this release is meant to adjust some handlings and fix bugs | 视频源重分集功能尚未完成，且无法使用，此发布是为了调整行为和修复异常"
           $body += "`n`n"
           $body += "> [!NOTE]`n"
           $body += "> The post-IVTC total frame count & FPS revising mechanic lacks of testing, despite unimportant, referencing is not advsied | IVTC 后的总帧数与帧率计算机制缺乏测试；该功能暂无大用，但也不建议作为参考"

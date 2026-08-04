@@ -219,7 +219,7 @@ public sealed class RepartConfVM : BaseVM
                 AnalyzeSourcesResult refreshed = await AnalyzeAndReplaceSourcesAsync(
                     currentPlan.Sources.Select(source => source.FilePath).ToArray(),
                     currentPlan.Outputs);
-                if (refreshed == AnalyzeSourcesResult.Failed && _analysis == null) _closeAction();
+                if (refreshed != AnalyzeSourcesResult.Succeeded && _analysis == null) _closeAction();
                 return;
             }
             _analysis = currentPlan.Clone();
@@ -231,7 +231,7 @@ public sealed class RepartConfVM : BaseVM
             return;
         }
         AnalyzeSourcesResult initialized = await AnalyzeAndReplaceSourcesAsync(filePaths, []);
-        if (initialized == AnalyzeSourcesResult.Failed && _analysis == null) _closeAction();
+        if (initialized != AnalyzeSourcesResult.Succeeded && _analysis == null) _closeAction();
     }
 
     public void SetSelectedOutputs(IEnumerable<RepartOutputItemVM> items)
@@ -319,17 +319,19 @@ public sealed class RepartConfVM : BaseVM
             RepartPlanM analyzed = await RepartCompatibilityAnalyzer.AnalyzeAsync(
                 _getFfprobePath(),
                 paths,
+                ConfirmDiscardInterlacedSource,
                 _analysisCancellation.Token);
             List<RepartOutputSegmentM> reconciledOutputs = ReconcileOutputs(_analysis, analyzed, outputs);
             _analysis = analyzed;
             LoadSources();
             ReplaceOutputs(reconciledOutputs);
-            StatusText = RepartLangProvider.Current["Ready"];
+            StatusText = FormatReadyStatus(paths.Length, analyzed.Sources.Count);
             PrepareNextDraft();
             return AnalyzeSourcesResult.Succeeded;
         }
         catch (OperationCanceledException)
         {
+            StatusText = _analysis == null ? string.Empty : RepartLangProvider.Current["Ready"];
             return AnalyzeSourcesResult.Canceled;
         }
         catch (Exception ex)
@@ -727,6 +729,24 @@ public sealed class RepartConfVM : BaseVM
         OnPropertyChanged(nameof(CanEdit));
         OnPropertyChanged(nameof(CanApply));
         OnPropertyChanged(nameof(CanAddEpisode));
+    }
+
+    private static string FormatReadyStatus(int requestedSourceCount, int acceptedSourceCount) =>
+        acceptedSourceCount < requestedSourceCount
+            ? string.Format(RepartLangProvider.Current["ReadyWithExcluded"], requestedSourceCount - acceptedSourceCount)
+            : RepartLangProvider.Current["Ready"];
+
+    private bool ConfirmDiscardInterlacedSource(RepartInterlacedSourceInfo source)
+    {
+        OpenWarnModalCmd cmd = new(
+            _modalNavS,
+            WindowTitleText,
+            string.Format(
+                RepartLangProvider.Current["InterlacedSourcePrompt"],
+                source.DisplayName,
+                source.FieldOrder));
+        cmd.Execute(null);
+        return cmd.DialogResult == true;
     }
 
     private void RefreshDraftAvailability() => OnPropertyChanged(nameof(CanAddEpisode));

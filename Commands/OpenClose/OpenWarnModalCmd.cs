@@ -1,4 +1,5 @@
-﻿using OneColumnEncoder.Stores;
+﻿using OneColumnEncoder.Commands;
+using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.Views;
 using System.Windows;
@@ -10,6 +11,7 @@ namespace OneColumnEncoder.Commands.OpenClose
         private readonly ModalNavS _modalNavS = modalNavS;
         private readonly string _windowTitle = windowTitle;
         private readonly string _description = description;
+        public bool? DialogResult { get; private set; }
 
         public override void Execute(object? parameter)
         {
@@ -25,13 +27,28 @@ namespace OneColumnEncoder.Commands.OpenClose
             }
 
             ConfirmationModal window = new();
-            CloseModalCmd closeCmd = new(window.Close);
+            ActionCmd cancelCmd = new(_ =>
+            {
+                DialogResult = false;
+                window.DialogResult = false;
+                window.Close();
+            });
+            ActionCmd confirmCmd = new(_ =>
+            {
+                DialogResult = true;
+                window.DialogResult = true;
+                window.Close();
+            });
             ConfirmationVM vm =
-                ConfirmationVM.CreateWarning(_windowTitle, _description, closeCmd, closeCmd);
+                ConfirmationVM.CreateWarning(_windowTitle, _description, cancelCmd, confirmCmd);
 
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
-            window.Closed += (_, _) => _modalNavS.Close();
+            window.Closed += (_, _) =>
+            {
+                DialogResult ??= window.DialogResult == true;
+                _modalNavS.Close();
+            };
             _modalNavS.CurrentModalVM = vm;
             window.ShowDialog();
         }
