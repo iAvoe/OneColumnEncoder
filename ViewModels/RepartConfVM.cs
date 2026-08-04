@@ -115,6 +115,16 @@ public sealed class RepartConfVM : BaseVM
 
     public bool CanEdit => !IsBusy && _analysis != null;
     public bool CanApply => CanEdit && Outputs.Count > 0;
+    public bool CanAddEpisode
+    {
+        get
+        {
+            if (!CanEdit || _analysis == null) return false;
+            return TryBuildDraft(out RepartOutputSegmentM? segment, excludeSelectedName: false, showErrors: false)
+                && segment != null
+                && !Outputs.Any(output => output.Model.Overlaps(segment));
+        }
+    }
     public string SummaryText => _analysis == null
         ? string.Empty
         : string.Format(
@@ -144,7 +154,11 @@ public sealed class RepartConfVM : BaseVM
     public string OutputNameText
     {
         get => _outputNameText;
-        set => SetProperty(ref _outputNameText, value);
+        set
+        {
+            if (SetProperty(ref _outputNameText, value))
+                RefreshDraftAvailability();
+        }
     }
 
     public string StartTimeText
@@ -155,6 +169,7 @@ public sealed class RepartConfVM : BaseVM
             if (!SetProperty(ref _startTimeText, value) || _syncingRange) return;
             _lastRangeInputWasTime = true;
             SyncFramesFromTimes();
+            RefreshDraftAvailability();
         }
     }
 
@@ -166,6 +181,7 @@ public sealed class RepartConfVM : BaseVM
             if (!SetProperty(ref _endTimeText, value) || _syncingRange) return;
             _lastRangeInputWasTime = true;
             SyncFramesFromTimes();
+            RefreshDraftAvailability();
         }
     }
 
@@ -177,6 +193,7 @@ public sealed class RepartConfVM : BaseVM
             if (!SetProperty(ref _firstFrameText, value) || _syncingRange) return;
             _lastRangeInputWasTime = false;
             SyncTimesFromFrames();
+            RefreshDraftAvailability();
         }
     }
 
@@ -188,6 +205,7 @@ public sealed class RepartConfVM : BaseVM
             if (!SetProperty(ref _lastFrameText, value) || _syncingRange) return;
             _lastRangeInputWasTime = false;
             SyncTimesFromFrames();
+            RefreshDraftAvailability();
         }
     }
 
@@ -356,7 +374,7 @@ public sealed class RepartConfVM : BaseVM
 
     private void AddEpisode()
     {
-        if (!TryBuildDraft(out RepartOutputSegmentM? segment, excludeSelectedName: false) || segment == null) return;
+        if (!TryBuildDraft(out RepartOutputSegmentM? segment, excludeSelectedName: false, showErrors: true) || segment == null) return;
         if (Outputs.Any(output => output.Model.Overlaps(segment)))
         {
             ShowError(RepartLangProvider.Current["Overlap"]);
@@ -369,7 +387,7 @@ public sealed class RepartConfVM : BaseVM
 
     private void ApplyEdit()
     {
-        if (SelectedOutput == null || !TryBuildDraft(out RepartOutputSegmentM? draft, excludeSelectedName: true) || draft == null) return;
+        if (SelectedOutput == null || !TryBuildDraft(out RepartOutputSegmentM? draft, excludeSelectedName: true, showErrors: true) || draft == null) return;
         RepartOutputSegmentM replacement = draft with { Id = SelectedOutput.Model.Id };
         if (Outputs.Where(output => output.Model.Id != replacement.Id).Any(output => output.Model.Overlaps(replacement)))
         {
@@ -414,7 +432,7 @@ public sealed class RepartConfVM : BaseVM
         SelectedOutput = Outputs.FirstOrDefault(output => output.Model.Id == merged.Id);
     }
 
-    private bool TryBuildDraft(out RepartOutputSegmentM? segment, bool excludeSelectedName)
+    private bool TryBuildDraft(out RepartOutputSegmentM? segment, bool excludeSelectedName, bool showErrors)
     {
         segment = null;
         long first;
@@ -434,14 +452,14 @@ public sealed class RepartConfVM : BaseVM
         }
         catch
         {
-            ShowError(RepartLangProvider.Current["InvalidRange"]);
+            if (showErrors) ShowError(RepartLangProvider.Current["InvalidRange"]);
             return false;
         }
 
         if (_analysis == null
             || first < 0 || last < first || last >= _analysis.TotalFrames)
         {
-            ShowError(RepartLangProvider.Current["InvalidRange"]);
+            if (showErrors) ShowError(RepartLangProvider.Current["InvalidRange"]);
             return false;
         }
 
@@ -453,7 +471,7 @@ public sealed class RepartConfVM : BaseVM
             || Outputs.Any(output => (!excludeSelectedName || output.Model.Id != SelectedOutput?.Model.Id)
                 && output.Model.BaseName.Equals(baseName, StringComparison.OrdinalIgnoreCase)))
         {
-            ShowError(RepartLangProvider.Current["UniqueName"]);
+            if (showErrors) ShowError(RepartLangProvider.Current["UniqueName"]);
             return false;
         }
 
@@ -473,6 +491,7 @@ public sealed class RepartConfVM : BaseVM
         SelectedOutput = null;
         RefreshTimeline();
         OnPropertyChanged(nameof(CanApply));
+        RefreshDraftAvailability();
     }
 
     private void RefreshTimeline()
@@ -555,6 +574,7 @@ public sealed class RepartConfVM : BaseVM
         OnPropertyChanged(nameof(LastFrameText));
         SetTimeTexts(first, last);
         _syncingRange = false;
+        RefreshDraftAvailability();
     }
 
     private void SyncFramesFromTimes()
@@ -572,6 +592,7 @@ public sealed class RepartConfVM : BaseVM
         }
         catch { }
         finally { _syncingRange = false; }
+        RefreshDraftAvailability();
     }
 
     private void SyncTimesFromFrames()
@@ -582,6 +603,7 @@ public sealed class RepartConfVM : BaseVM
         _syncingRange = true;
         SetTimeTexts(first, last);
         _syncingRange = false;
+        RefreshDraftAvailability();
     }
 
     private void SetTimeTexts(long first, long last)
@@ -623,7 +645,10 @@ public sealed class RepartConfVM : BaseVM
         OnPropertyChanged(nameof(SummaryText));
         OnPropertyChanged(nameof(CanEdit));
         OnPropertyChanged(nameof(CanApply));
+        OnPropertyChanged(nameof(CanAddEpisode));
     }
+
+    private void RefreshDraftAvailability() => OnPropertyChanged(nameof(CanAddEpisode));
 
     private void ShowError(string message) =>
         new OpenErrModalCmd(_modalNavS, WindowTitleText, message).Execute(null);
