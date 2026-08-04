@@ -12,8 +12,6 @@
                    Title="{Binding WindowTitle}"
                    Width="1320"
                    SizeToContent="Height"
-                   MinWidth="980"
-                   MinHeight="640"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
     <Grid Margin="15">
@@ -41,7 +39,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*"
-                                MaxHeight="80"/>
+                               MaxHeight="50"/>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
@@ -141,8 +139,7 @@
                         BorderThickness="1"
                         CornerRadius="5"
                         Padding="10"
-                        VerticalAlignment="Top"
-                        MinHeight="300">
+                        VerticalAlignment="Top">
                     <DockPanel>
                         <comps:ThreeButtonGroup DockPanel.Dock="Bottom"
                                                 DataContext="{Binding InputSourceButtons}"
@@ -160,6 +157,7 @@
                                  BorderThickness="0"
                                  Background="Transparent"
                                  HorizontalContentAlignment="Stretch"
+                                 MaxHeight="360"
                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
@@ -339,6 +337,7 @@
                                  BorderThickness="0"
                                  Background="Transparent"
                                  HorizontalContentAlignment="Stretch"
+                                 MaxHeight="360"
                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>

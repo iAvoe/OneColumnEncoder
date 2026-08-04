@@ -1,7 +1,5 @@
 using OneColumnEncoder.FFmpeg;
 using OneColumnEncoder.Models;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -128,28 +126,17 @@ public static class RepartCompatibilityAnalyzer
         if (!IsProgressiveFieldOrder(fieldOrder))
             throw new InterlacedSourceException(path, fieldOrder);
 
-        (int num, int den)? averageRate = FrameRate.GetAvgFrameRate(stream);
-        (int num, int den)? realRate = FrameRate.GetRFrameRate(stream);
-        // Collect the authoritative frame-rate declarations to validate as CFR candidates.
-        List<(int num, int den)> candidateRates = [];
-        if (averageRate != null) candidateRates.Add(averageRate.Value);
-        if (realRate != null && !candidateRates.Contains(realRate.Value)) candidateRates.Add(realRate.Value);
-        if (candidateRates.Count == 0)
+        if (!TryResolveCfrFrameRate(stream, out (int num, int den) frameRate))
             throw new InvalidOperationException(string.Format(RepartLangProvider.Current.CfrRequired, Path.GetFileName(path)));
 
-        FrameScanResult frameScan = await ScanFramesAsync(
+        long frameCount = await CountFramesAsync(
             ffprobePath,
             path,
-            candidateRates,
-            FrameRate.ParseFraction(Get(stream, "time_base")),
             cancellationToken);
-        if (!frameScan.IsConstant || frameScan.FrameCount <= 0)
-            throw new InvalidOperationException(string.Format(RepartLangProvider.Current.CfrRequired, Path.GetFileName(path)));
-        long frameCount = frameScan.FrameCount;
         if (frameCount <= 0)
             throw new InvalidOperationException(string.Format(RepartLangProvider.Current.FrameCountRequired, Path.GetFileName(path)));
 
-        RepartVideoFormatSignature signature = BuildSignature(stream, frameScan.FrameRateNumerator, frameScan.FrameRateDenominator);
+        RepartVideoFormatSignature signature = BuildSignature(stream, frameRate.num, frameRate.den);
         FileInfo file = new(path);
         file.Refresh();
         if (file.Length != initialLength || file.LastWriteTimeUtc.Ticks != initialWriteTicks)
@@ -160,8 +147,8 @@ public static class RepartCompatibilityAnalyzer
             frameCount,
             file.Length,
             file.LastWriteTimeUtc.Ticks,
-            frameScan.FrameRateNumerator,
-            frameScan.FrameRateDenominator,
+            frameRate.num,
+            frameRate.den,
             signature);
     }
 
@@ -189,77 +176,51 @@ public static class RepartCompatibilityAnalyzer
         return result.Stdout;
     }
 
-    private static async Task<FrameScanResult> ScanFramesAsync(
+    private static async Task<long> CountFramesAsync(
         string ffprobePath,
         string sourcePath,
-        IReadOnlyList<(int num, int den)> candidateRates,
-        (int num, int den)? timeBase,
         CancellationToken cancellationToken)
     {
         string[] arguments =
         [
-            "-v", "error", "-hide_banner", "-select_streams", "v:0",
-            "-show_entries", "frame=best_effort_timestamp_time", "-of", "csv=p=0", sourcePath
+            "-v", "error", "-hide_banner", "-count_frames", "-select_streams", "v:0",
+            "-show_entries", "stream=nb_read_frames,nb_frames", "-of", "json", sourcePath
         ];
 
-        ProcessStartInfo startInfo = FFprobeProcessRunner.CreateStartInfo(ffprobePath, arguments);
-        using Process process = new() { StartInfo = startInfo };
-        process.Start();
-        Task<string> stderrTask = process.StandardError.ReadToEndAsync(cancellationToken);
-        double? firstTimestamp = null;
-        long frameCount = 0;
-        bool[] constantCandidates = Enumerable.Repeat(true, candidateRates.Count).ToArray();
-        bool rejectedAsNonConstant = false;
-        double timeBaseTick = timeBase is { den: > 0 }
-            ? (double)timeBase.Value.num / timeBase.Value.den
-            : 0d;
-        double tolerance = Math.Max(0.000001d, timeBaseTick * 1.5d);
+        FFprobeProcessResult result = await FFprobeProcessRunner.RunAsync(
+            ffprobePath,
+            arguments,
+            TimeSpan.FromMinutes(30),
+            cancellationToken);
+        if (result.ExitCode != 0 || string.IsNullOrWhiteSpace(result.Stdout))
+            throw new InvalidOperationException(string.IsNullOrWhiteSpace(result.Stderr)
+                ? RepartLangProvider.Current.ProbeFailed
+                : result.Stderr.Trim());
 
-        try
-        {
-            while (await process.StandardOutput.ReadLineAsync(cancellationToken) is string line)
-            {
-                string timestampText = line.Split(',')[0].Trim();
-                if (!double.TryParse(timestampText, NumberStyles.Float, CultureInfo.InvariantCulture, out double timestamp))
-                {
-                    Array.Fill(constantCandidates, false);
-                    continue;
-                }
-
-                firstTimestamp ??= timestamp;
-                // For each candidate rate, verify the observed timestamp matches the
-                // expected position assuming a constant frame interval. A mismatch on any
-                // frame disqualifies that rate (i.e. the source is not CFR at it).
-                for (int i = 0; i < candidateRates.Count; i++)
-                {
-                    (int num, int den) = candidateRates[i];
-                    double expected = firstTimestamp.Value + (double)frameCount * den / num;
-                    if (Math.Abs(timestamp - expected) > tolerance) constantCandidates[i] = false;
-                }
-                frameCount++;
-                if (constantCandidates.All(value => !value))
-                {
-                    rejectedAsNonConstant = true;
-                    FFprobeProcessRunner.TryKill(process);
-                    break;
-                }
-            }
-            await process.WaitForExitAsync(cancellationToken);
-        }
-        catch
-        {
-            FFprobeProcessRunner.TryKill(process);
-            throw;
-        }
-        string stderr = await stderrTask;
-        if (!rejectedAsNonConstant && process.ExitCode != 0)
-            throw new InvalidOperationException(string.IsNullOrWhiteSpace(stderr) ? RepartLangProvider.Current.ProbeFailed : stderr.Trim());
-        int selectedRateIndex = Array.FindIndex(constantCandidates, value => value);
-        (int num, int den) selectedRate = selectedRateIndex >= 0
-            ? candidateRates[selectedRateIndex]
-            : candidateRates[0];
-        return new FrameScanResult(frameCount, selectedRateIndex >= 0, selectedRate.num, selectedRate.den);
+        using JsonDocument document = JsonDocument.Parse(result.Stdout);
+        if (!FrameRate.TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return 0;
+        long? readFrames = TryGetLong(stream, "nb_read_frames");
+        if (readFrames is > 0) return readFrames.Value;
+        return TryGetFrameCount(stream) ?? 0;
     }
+
+    private static bool TryResolveCfrFrameRate(JsonElement stream, out (int num, int den) frameRate)
+    {
+        frameRate = default;
+        (int num, int den)? averageRate = FrameRate.GetAvgFrameRate(stream);
+        (int num, int den)? realRate = FrameRate.GetRFrameRate(stream);
+
+        if (averageRate != null && realRate != null && !SameRate(averageRate.Value, realRate.Value))
+            return false;
+
+        (int num, int den)? selected = averageRate ?? realRate;
+        if (selected == null) return false;
+        frameRate = selected.Value;
+        return true;
+    }
+
+    private static bool SameRate((int num, int den) left, (int num, int den) right) =>
+        (long)left.num * right.den == (long)right.num * left.den;
 
     private static RepartVideoFormatSignature BuildSignature(JsonElement stream, int frameRateNumerator, int frameRateDenominator)
     {
@@ -302,12 +263,6 @@ public static class RepartCompatibilityAnalyzer
     private static string Hash(string value) => string.IsNullOrWhiteSpace(value)
         ? string.Empty
         : Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(value)));
-
-    private readonly record struct FrameScanResult(
-        long FrameCount,
-        bool IsConstant,
-        int FrameRateNumerator,
-        int FrameRateDenominator);
 
     private readonly record struct SourceAnalysisResult(
         string RawJson,
