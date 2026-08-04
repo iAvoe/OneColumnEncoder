@@ -1,13 +1,13 @@
-# Encoding Mode Implementation: Single, Queue, and Concat
+# Encoding Mode Implementation: Single, Queue, Concat, and Repart
 
-> For a high-level overview of the three encoding modes, see [Encoding Modes](ConceptsAndFeatures-EN.md#encoding-modes). This document covers runtime implementation details for each route.
+> For a high-level overview of the four encoding modes, see [Encoding Modes](ConceptsAndFeatures-EN.md#encoding-modes). This document covers runtime implementation details for each route.
 
 ## 1. Route Activation
 
 `FileManagement/SourceRouteKind.cs` defines the route enum:
 
 ```csharp
-public enum SourceRouteKind { Single, Queue, Concat }
+public enum SourceRouteKind { Single, Queue, Concat, Repart }
 ```
 
 `MainVM.GetActiveSourceRoute()` is the central route resolver:
@@ -17,23 +17,25 @@ private SourceRouteKind GetActiveSourceRoute()
 {
     if (_videoSourceQueue.IsActive) return SourceRouteKind.Queue;
     if (_videoSourceConcat.IsActive) return SourceRouteKind.Concat;
+    if (_videoSourceRepart.IsActive) return SourceRouteKind.Repart;
     return SourceRouteKind.Single;
 }
 ```
 
-`VideoSourceQueueState` lives in `QueueManagement/VideoSourceQueue.cs`; `VideoSourceConcatState` lives in `ConcatManagement/VideoSourceConcat.cs`.
+`VideoSourceQueueState` lives in `QueueManagement/VideoSourceQueue.cs`; `VideoSourceConcatState` lives in `ConcatManagement/VideoSourceConcat.cs`; `VideoSourceRepartState` lives in `RepartManagement/VideoSourceRepartState.cs`.
 
 ## 2. Import Zone Layout
 
-`ToolCatalogProviderM.GetVideoSrcImportDefs()` returns three video source cards:
+`ToolCatalogProviderM.GetVideoSrcImportDefs()` returns four video source cards:
 
 | Index | Route | Card | R1 | R2 | State Owner |
 |-------|-------|------|----|----|-------------|
 | 0 | Single | `Tool.Source.VideoSource` | Replace | Clear | `AppDataM.Tools.VideoSourcePath` |
 | 1 | Queue | `Tool.Source.VideoSrcQueue` | Import | Clear | `VideoSourceQueueState` |
 | 2 | Concat | `Tool.Source.VideoSrcConcat` | Import | Clear | `VideoSourceConcatState` |
+| 3 | Repart | `Video Source Repart` | Import | Clear | `VideoSourceRepartState` |
 
-`ToolCompatibility.RefreshVideoSourceSelectionState()` expects all three cards. When `one_line_shot_args.exe` is selected, both Queue and Concat cards are deselected and disabled.
+When `one_line_shot_args.exe` is selected, Queue, Concat, and Repart are deselected and disabled.
 
 ## 3. Active UI Routing
 
@@ -247,12 +249,15 @@ The monitor does not fabricate `nb_frames` or guess a total frame count from `du
 | Single | `SourceVideoPath` |
 | Queue | Each request's individual `SourceVideoPath` |
 | Concat | Concat filelist (`source_concat_filelist.txt`) as second ffmpeg input |
+| Repart | No source-stream input; only the encoded video is muxed into MKV. |
 
 Concat never muxes audio from `SourceVideoPath` (set to `null`). After video encoding, the mux command uses:
 ```text
 -i encoded_video -f concat -safe 0 -i source_concat_filelist.txt -map 0:v:0 -map 1:a? -c:v copy -c:a copy ... output
 ```
 Audio is intentionally not loaded by AVS/VPY concat scripts. For VFR sources or complex boundary fragments, audio duration may exceed video duration — post-processing check is recommended.
+
+Repart uses `EncodingMuxMode.VideoOnly`. The mux step maps only the encoded video stream; source audio, subtitles, chapters, attachments, and metadata are intentionally excluded.
 
 ## 9. Path Resolution Summary
 
@@ -276,11 +281,32 @@ Audio is intentionally not loaded by AVS/VPY concat scripts. For VFR sources or 
 | Import method | Single file | Folder | Multi-select files |
 | Output cardinality | One output | Many outputs | One output |
 
+Repart-specific constraints:
+
+- One or more input files produce one or more independently named outputs.
+- CFR and complete frame timestamps are required.
+- Video stream format fields must match exactly; container, audio, and subtitle layouts are not part of the signature.
+- Chapter and MPLS reading are not implemented; episode boundaries are manual.
+- Source Reviser and Filter Scribe are disabled for an active plan because they could invalidate frame offsets.
+- ffmpeg is required for the final video-only MKV even when the upstream is vspipe or AviSynth.
+
+### Repart Runtime Implementation
+
+Clicking `Video Source Repart` imports a naturally sorted folder and opens `RepartConfModal`. The modal contains an editable input queue, a disabled chapter/MPLS placeholder, a proportional partition map, synchronized time/frame fields, and an output queue. Output ranges use inclusive first/last frames; ranges cannot overlap, gaps are allowed, and merge accepts only directly adjacent outputs.
+
+`RepartCompatibilityAnalyzer` performs a full ffprobe frame timestamp scan for each source. It requires CFR, derives the actual frame count, compares a strict first-video-stream signature, and records source size/modification-time fingerprints. A plan is rejected if a source changes during analysis or before encoding.
+
+Each encoding start creates execution-specific ffconcat and private AVS/VPY paths. Script upstreams use a generated virtual-source script, so a stale or reordered external script cannot invalidate planned frame offsets. The ffmpeg route opens every source separately, maps only `v:0`, joins the streams with the video concat filter, and applies frame-based `trim` plus a regenerated CFR PTS sequence. Audio and subtitle layouts therefore do not participate in compatibility.
+
+One `EncodingPipelineRequest` is created per output. Requests share the virtual source but carry distinct `EncodingClipRequest` ranges, output paths, and clip frame totals. `EncodingMonitorVM` executes them through the existing sequential batch engine with a non-persistent `RepartOutputSidebarPanel`; mux is locked on and writes a video-only MKV for each output.
+
 ## 11. End-to-End Flows
 
 **Queue:** `Video Src. Queue` selected → import folder → analyze queue → accept filtered files → write queue JSON → press `Start Encode` → load queue JSON → build per-file requests → confirm overwrite → open monitor → run the batch one job at a time.
 
 **Concat:** `Video Src. Concat` selected → import multiple files → extension and compatibility precheck → write filelist → analyze all fragments (sum concat total frame count and store all raw JSON) → optionally reorder/remove in FilterScribe → regenerate filelist and clear stale analysis if list changed → rerun analysis if needed → save/import concat script if needed → press `Start Encode` → build one concat request with `ConcatTotalFrames` → confirm command/overwrite → encode one output (progress uses summed frame count) → mux audio from filelist.
+
+**Repart:** `Video Source Repart` selected → import a folder → open `RepartConfModal` → strictly analyze and order sources → manually allocate output frame ranges → optionally leave unallocated gaps or merge adjacent outputs → apply the plan → select output directory and encoding settings → press `Start Encode` → create an execution-specific virtual source → build one Clip request per output → confirm overwrite targets → run sequentially with `RepartOutputSidebarPanel` → mux each encoded video into a video-only MKV.
 
 ## Key Files
 
@@ -289,6 +315,11 @@ Audio is intentionally not loaded by AVS/VPY concat scripts. For VFR sources or 
 - `ConcatManagement/VideoSourceConcat.cs` — Concat state
 - `ConcatManagement/ConcatFileListGenerator.cs` — Filelist generation
 - `ConcatManagement/ConcatCompatibilityAnalyzer.cs` — Per-fragment analysis
+- `RepartManagement/RepartCompatibilityAnalyzer.cs` — Strict CFR and frame-timeline analysis
+- `RepartManagement/VideoSourceRepartState.cs` — Committed Repart plan state
+- `Models/RepartPlanM.cs` — Repart sources, stream signature, and output ranges
+- `Views/RepartConfModal.xaml` / `ViewModels/RepartConfVM.cs` — Partition-style configuration window
+- `Components/RepartOutputSidebarPanel.xaml` — Repart monitor sidebar
 - `Commands/BrowseSourcePathCmd.cs` — Single source import
 - `Commands/BrowseSourceQueueCmd.cs` — Queue folder import
 - `Commands/BrowseSourceConcatCmd.cs` — Concat multi-select import

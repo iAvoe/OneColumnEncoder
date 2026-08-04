@@ -277,14 +277,15 @@ namespace OneColumnEncoder.ViewModels
             EncodingPipelineRequest request,
             EncodingPipelineCommand command,
             bool isSample,
-            bool enableQueueSidebar = false)
+            bool enableQueueSidebar = false,
+            bool persistQueueSidebar = true)
         {
             _modalNavS = modalNavS;
             _closeAction = closeAction;
             _request = request;
             _command = command;
             _isSample = isSample;
-            ApplySourceTotalFrames(EncodingPipeline.GetSourceTotalFrames(_request.SourceFfprobeJson, _request.ConcatTotalFrames));
+            ApplySourceTotalFrames(EncodingPipeline.GetExpectedOutputFrames(_request));
             _enableMux = CanMux && !string.Equals(_request.EncoderExeName, "x264.exe", StringComparison.OrdinalIgnoreCase);
 
             RefreshLanguageState();
@@ -319,7 +320,7 @@ namespace OneColumnEncoder.ViewModels
             FinishButtons.B5_4Icon = SvgIconProvider.GameXMark;
             FinishButtons.B5_5IsEnabled = false;
 
-            QueueSidebar = new QueueSidebarVM(enableQueueSidebar);
+            QueueSidebar = new QueueSidebarVM(enableQueueSidebar && persistQueueSidebar);
             QueueSidebar.PropertyChanged += OnQueueSidebarPropertyChanged;
             if (!enableQueueSidebar)
             {
@@ -339,11 +340,20 @@ namespace OneColumnEncoder.ViewModels
         public EncodingMonitorVM(
             ModalNavS modalNavS,
             Action closeAction,
-            IReadOnlyList<(EncodingPipelineRequest Request, EncodingPipelineCommand Command)> queueItems)
-            : this(modalNavS, closeAction, queueItems[0].Request, queueItems[0].Command, false, true)
+            IReadOnlyList<(EncodingPipelineRequest Request, EncodingPipelineCommand Command)> queueItems,
+            bool isRepartBatch = false)
+            : this(modalNavS, closeAction, queueItems[0].Request, queueItems[0].Command, false, true, !isRepartBatch)
         {
             _queueItems = queueItems;
+            IsRepartBatch = isRepartBatch;
+            if (isRepartBatch) _enableMux = true;
         }
+
+        public bool IsRepartBatch { get; }
+        public bool IsQueueSidebarVisible => QueueSidebar.IsVisible && !IsRepartBatch;
+        public bool IsRepartSidebarVisible => QueueSidebar.IsVisible && IsRepartBatch;
+        public bool IsMuxToggleEnabled => CanMux && !IsRepartBatch;
+        public string RepartOutputSidebarTitle => RepartLangProvider.Current["OutputEpisodes"];
 
         private double _logFontSize = 11;
         public double LogFontSize
@@ -451,6 +461,11 @@ namespace OneColumnEncoder.ViewModels
 
         private void OnQueueSidebarPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
+            if (e.PropertyName == nameof(QueueSidebarVM.IsVisible))
+            {
+                OnPropertyChanged(nameof(IsQueueSidebarVisible));
+                OnPropertyChanged(nameof(IsRepartSidebarVisible));
+            }
             if (e.PropertyName != nameof(QueueSidebarVM.SelectedJob)) return;
 
             lock (_logLock)
@@ -720,10 +735,10 @@ namespace OneColumnEncoder.ViewModels
 
                 _request = request;
                 _command = command;
-                ApplySourceTotalFrames(EncodingPipeline.GetSourceTotalFrames(request.SourceFfprobeJson, request.ConcatTotalFrames));
+                ApplySourceTotalFrames(EncodingPipeline.GetExpectedOutputFrames(request));
                 OnPropertyChanged(nameof(OpusAudioCommandHint));
                 EnableMux = command.MuxCommand != null
-                    && !string.Equals(request.EncoderExeName, "x264.exe", StringComparison.OrdinalIgnoreCase);
+                    && (IsRepartBatch || !string.Equals(request.EncoderExeName, "x264.exe", StringComparison.OrdinalIgnoreCase));
                 _writtenFrames = 0;
                 _currentOutputSizeBytes = 0;
                 _upstreamWorkingSetPeakBytes = 0;
@@ -2211,6 +2226,7 @@ namespace OneColumnEncoder.ViewModels
             }
 
             OnPropertyChanged(nameof(WindowTitle));
+            OnPropertyChanged(nameof(RepartOutputSidebarTitle));
             OnPropertyChanged(nameof(ProgressTitle));
             OnPropertyChanged(nameof(MemoryTitle));
             OnPropertyChanged(nameof(DragLogReportHint));

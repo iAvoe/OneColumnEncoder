@@ -94,6 +94,7 @@ namespace OneColumnEncoder.ToolManagement
             ToolItemCardVM singleVideoCard = videoSrcImportZone[0];
             ToolItemCardVM queueCard = videoSrcImportZone[1];
             ToolItemCardVM concatCard = videoSrcImportZone[2];
+            ToolItemCardVM? repartCard = videoSrcImportZone.Count > 3 ? videoSrcImportZone[3] : null;
 
             if (!hasFfprobe)
             {
@@ -122,11 +123,17 @@ namespace OneColumnEncoder.ToolManagement
                 queueCard.IsEnabled = false;
                 concatCard.IsSelected = false;
                 concatCard.IsEnabled = false;
+                if (repartCard != null)
+                {
+                    repartCard.IsSelected = false;
+                    repartCard.IsEnabled = false;
+                }
             }
             else
             {
                 queueCard.IsEnabled = true;
                 concatCard.IsEnabled = true;
+                if (repartCard != null) repartCard.IsEnabled = true;
             }
         }
 

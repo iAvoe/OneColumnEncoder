@@ -29,7 +29,17 @@ public record EncodingPipelineRequest(
     string? FfmpegFilterArgs = null,
     bool? IsConcatMode = null,
     string? ConcatFileListPath = null,
-    long? ConcatTotalFrames = null);
+    long? ConcatTotalFrames = null,
+    EncodingMuxMode MuxMode = EncodingMuxMode.Auto,
+    string[]? ConcatVideoSourcePaths = null);
+
+public enum EncodingMuxMode
+{
+    Auto,
+    Disabled,
+    VideoOnly,
+    SourceStreams
+}
 
 // For clip sampler
 public record EncodingClipRequest(
@@ -37,7 +47,9 @@ public record EncodingClipRequest(
     string? EndTime = null,
     long? FirstFrame = null,
     long? LastFrame = null,
-    double? FrameRate = null);
+    double? FrameRate = null,
+    int? FrameRateNumerator = null,
+    int? FrameRateDenominator = null);
 
 public record EncodingPipelineCommand(
     string CommandLine,
@@ -88,13 +100,17 @@ public static partial class EncodingPipeline
 
     private static EncodingMuxCommand? BuildMuxCommand(EncodingPipelineRequest request)
     {
+        if (request.MuxMode == EncodingMuxMode.Disabled) return null;
+        if (request.MuxMode == EncodingMuxMode.VideoOnly) return BuildVideoOnlyMuxCommand(request);
         if (request.Clip != null) return null;
         if (string.IsNullOrWhiteSpace(request.FfmpegPath)) return null;
         if (!request.IsConcatMode.GetValueOrDefault() && string.IsNullOrWhiteSpace(request.SourceVideoPath)) return null;
 
         string encodedVideoPath = ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath);
         string outputPath = ResolveMuxOutputPath(request.OutputPath);
-        string framerateValue = GetMuxFramerateValue(request.SourceFfprobeJson, request.FfmpegFilterArgs);
+        string framerateValue = request.Clip?.FrameRateNumerator is > 0 && request.Clip.FrameRateDenominator is > 0
+            ? $"{request.Clip.FrameRateNumerator.Value}/{request.Clip.FrameRateDenominator.Value}"
+            : GetMuxFramerateValue(request.SourceFfprobeJson, request.FfmpegFilterArgs);
         string videoTimescaleArgs = GetMuxVideoTrackTimescaleArgs(request.SourceFfprobeJson);
         string streamMapArgs = BuildStreamMapArgs(request.SourceFfprobeJson);
         string? inputFormatArgs = GetMuxInputFormatArgs(request.EncoderExeName, framerateValue);
@@ -153,13 +169,25 @@ public static partial class EncodingPipeline
     private static string BuildUpstreamArgs(EncodingPipelineRequest request)
     {
         string input = Quote(request.UpstreamInputPath);
-        string clipArgs = BuildUpstreamClipArgs(request.UpstreamExeName, request.Clip);
         bool isConcat = request.IsConcatMode == true && request.ConcatFileListPath != null;
+        bool isFrameExactRepart = isConcat
+            && request.MuxMode == EncodingMuxMode.VideoOnly
+            && request.Clip?.FirstFrame is long
+            && request.Clip.LastFrame is long;
+        bool isFfmpeg = request.UpstreamExeName.Equals("ffmpeg.exe", StringComparison.OrdinalIgnoreCase);
+        string clipArgs = isFrameExactRepart && isFfmpeg
+            ? string.Empty
+            : BuildUpstreamClipArgs(request.UpstreamExeName, request.Clip);
+        string? ffmpegFilterArgs = isFrameExactRepart && isFfmpeg
+            ? BuildFrameExactRepartFilter(request)
+            : request.FfmpegFilterArgs;
+        if (isFrameExactRepart && isFfmpeg && request.ConcatVideoSourcePaths is { Length: > 0 })
+            return BuildFfmpegRepartArgs(request);
         return request.UpstreamExeName.ToLowerInvariant() switch
         {
             "ffmpeg.exe" => isConcat
-                ? JoinArgs("-hide_banner", "-f concat -safe 0", $"-i {Quote(request.ConcatFileListPath!)}", clipArgs, request.FfmpegFilterArgs, "-f yuv4mpegpipe -an -strict unofficial -")
-                : JoinArgs($"-hide_banner", clipArgs, $"-i {input}", request.FfmpegFilterArgs, "-f yuv4mpegpipe -an -strict unofficial -"), // unofficial allows 10bit pipe
+                ? JoinArgs("-hide_banner", "-f concat -safe 0", $"-i {Quote(request.ConcatFileListPath!)}", clipArgs, ffmpegFilterArgs, "-f yuv4mpegpipe -an -strict unofficial -")
+                : JoinArgs($"-hide_banner", clipArgs, $"-i {input}", ffmpegFilterArgs, "-f yuv4mpegpipe -an -strict unofficial -"), // unofficial allows 10bit pipe
             "vspipe.exe" => JoinArgs(input, clipArgs, NormalizeRequired(request.VspipeY4mArg, "vspipe Y4M argument"), "-"),
             "avs2yuv.exe" => JoinArgs(input, clipArgs, "-"),
             "avs2pipemod.exe" => JoinArgs(input, clipArgs, "-y4mp"),
@@ -170,6 +198,56 @@ public static partial class EncodingPipeline
                 "--pipe-out"),
             _ => throw new InvalidOperationException($"Unsupported upstream tool: {request.UpstreamExeName}")
         };
+    }
+
+    private static string BuildFfmpegRepartArgs(EncodingPipelineRequest request)
+    {
+        string[] paths = request.ConcatVideoSourcePaths!;
+        string inputs = string.Join(" ", paths.Select(path => $"-i {Quote(path)}"));
+        EncodingClipRequest clip = request.Clip!;
+        string setPts = BuildRepartSetPts(request);
+        if (paths.Length == 1)
+        {
+            string filter = $"trim=start_frame={clip.FirstFrame!.Value}:end_frame={clip.LastFrame!.Value + 1},setpts={setPts}";
+            return JoinArgs(
+                "-hide_banner",
+                inputs,
+                $"-vf \"{filter}\" -fps_mode passthrough",
+                "-f yuv4mpegpipe -an -strict unofficial -");
+        }
+
+        string resetInputs = string.Join(";", Enumerable.Range(0, paths.Length)
+            .Select(index => $"[{index}:v:0]setpts=PTS-STARTPTS[rv{index}]"));
+        string concatInputs = string.Concat(Enumerable.Range(0, paths.Length).Select(index => $"[rv{index}]"));
+        string filterComplex =
+            $"{resetInputs};{concatInputs}concat=n={paths.Length}:v=1:a=0," +
+            $"trim=start_frame={clip.FirstFrame!.Value}:end_frame={clip.LastFrame!.Value + 1}," +
+            $"setpts={setPts}[repartv]";
+        return JoinArgs(
+            "-hide_banner",
+            inputs,
+            $"-filter_complex \"{filterComplex}\" -map \"[repartv]\" -fps_mode passthrough",
+            "-f yuv4mpegpipe -an -strict unofficial -");
+    }
+
+    private static string BuildFrameExactRepartFilter(EncodingPipelineRequest request)
+    {
+        EncodingClipRequest clip = request.Clip!;
+        string setPts = BuildRepartSetPts(request);
+        return $"-vf \"trim=start_frame={clip.FirstFrame!.Value}:end_frame={clip.LastFrame!.Value + 1},setpts={setPts}\" -fps_mode passthrough";
+    }
+
+    private static string BuildRepartSetPts(EncodingPipelineRequest request)
+    {
+        EncodingClipRequest clip = request.Clip!;
+        (int num, int den)? rate = clip.FrameRateNumerator is > 0 && clip.FrameRateDenominator is > 0
+            ? (clip.FrameRateNumerator.Value, clip.FrameRateDenominator.Value)
+            : string.IsNullOrWhiteSpace(request.SourceFfprobeJson)
+                ? null
+                : FrameRate.GetRFrameRate(request.SourceFfprobeJson!);
+        return rate is { num: > 0, den: > 0 }
+            ? $"N*{rate.Value.den}/({rate.Value.num}*TB)"
+            : "N/FRAME_RATE/TB";
     }
 
     public static string BuildUpstreamClipArgs(string upstreamExeName, EncodingClipRequest? clip)
@@ -469,6 +547,14 @@ public static partial class EncodingPipeline
             return frameCount is > 0 ? frameCount : null;
         }
         catch { return null; }
+    }
+
+    public static long? GetExpectedOutputFrames(EncodingPipelineRequest request)
+    {
+        long? clipFrames = GetClipFrameCount(request.Clip);
+        return clipFrames is > 0
+            ? clipFrames
+            : GetSourceTotalFrames(request.SourceFfprobeJson, request.ConcatTotalFrames);
     }
 
     private static string BuildX264Params(EncoderConfM model, bool useAbr)
@@ -791,12 +877,13 @@ public static partial class EncodingPipeline
 
     public static EncodingMuxCommand? BuildVideoOnlyMuxCommand(EncodingPipelineRequest request)
     {
-        if (request.Clip != null) return null;
         if (string.IsNullOrWhiteSpace(request.FfmpegPath)) return null;
 
         string encodedVideoPath = ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath);
         string outputPath = ResolveMuxOutputPath(request.OutputPath);
-        string framerateValue = GetMuxFramerateValue(request.SourceFfprobeJson, request.FfmpegFilterArgs);
+        string framerateValue = request.Clip?.FrameRateNumerator is > 0 && request.Clip.FrameRateDenominator is > 0
+            ? $"{request.Clip.FrameRateNumerator.Value}/{request.Clip.FrameRateDenominator.Value}"
+            : GetMuxFramerateValue(request.SourceFfprobeJson, request.FfmpegFilterArgs);
         string videoTimescaleArgs = GetMuxVideoTrackTimescaleArgs(request.SourceFfprobeJson);
         string? inputFormatArgs = GetMuxInputFormatArgs(request.EncoderExeName, framerateValue);
 

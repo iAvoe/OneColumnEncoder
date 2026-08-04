@@ -22,7 +22,13 @@ namespace OneColumnEncoder.ViewModels
         public EncodingPipelineRequest? Request => _request;
         public EncodingPipelineCommand? Command => DeserializeCommand(_model.SerializedCommand);
         public string JobId => _model.JobId;
-        public string Name => Path.GetFileName(_model.SourcePath) ?? _model.SourcePath;
+        public bool IsRepartOutput =>
+            _request?.MuxMode == EncodingMuxMode.VideoOnly &&
+            _request.Clip != null &&
+            _request.IsConcatMode == true;
+        public string Name => IsRepartOutput
+            ? Path.GetFileName(_model.OutputPath) ?? _model.OutputPath
+            : Path.GetFileName(_model.SourcePath) ?? _model.SourcePath;
         public string P1Text
         {
             get => GetFrameCountText();
@@ -197,8 +203,17 @@ namespace OneColumnEncoder.ViewModels
         private string GetFrameCountText()
         {
             long? frameCount = _request?.SourceFfprobeJson is { Length: > 0 }
-                ? EncodingPipeline.GetSourceTotalFrames(_request.SourceFfprobeJson, _request.ConcatTotalFrames)
+                ? EncodingPipeline.GetExpectedOutputFrames(_request)
                 : null;
+
+            if (IsRepartOutput && _request?.Clip is EncodingClipRequest clip)
+            {
+                string start = clip.StartTime ?? clip.FirstFrame?.ToString() ?? "?";
+                string end = clip.EndTime ?? clip.LastFrame?.ToString() ?? "?";
+                return frameCount is > 0
+                    ? $"{start} - {end} | {frameCount:N0}f"
+                    : $"{start} - {end}";
+            }
 
             if (frameCount is > 0)
                 return $"{new ClipRangeSelectorLangProvider(UILangProvider.Current.LanguageCode).SummaryTotalFramesLabel}: {frameCount:N0}";

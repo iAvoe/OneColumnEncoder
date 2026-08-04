@@ -4,6 +4,7 @@ namespace OneColumnEncoder.FileManagement
     {
         Single,
         Queue,
-        Concat
+        Concat,
+        Repart
     }
 }

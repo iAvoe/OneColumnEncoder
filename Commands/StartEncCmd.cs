@@ -23,7 +23,10 @@ namespace OneColumnEncoder.Commands
         Func<string[], string[]>? filterSourcePaths = null,
         Func<bool>? isConcatRoute = null,
         Func<EncodingPipelineRequest?>? buildConcatRequest = null,
-        Func<bool>? isConcatRouteSupported = null) : BaseCmd
+        Func<bool>? isConcatRouteSupported = null,
+        Func<bool>? isRepartRoute = null,
+        Func<EncodingPipelineRequest[]?>? buildRepartRequests = null,
+        Func<bool>? isRepartRouteSupported = null) : BaseCmd
     {
         private const int MaxListedOverwriteTargets = 50;
         private readonly Func<EncodingPipelineRequest?> _buildRequest = buildRequest;
@@ -37,10 +40,19 @@ namespace OneColumnEncoder.Commands
         private readonly Func<bool>? _isConcatRoute = isConcatRoute;
         private readonly Func<EncodingPipelineRequest?>? _buildConcatRequest = buildConcatRequest;
         private readonly Func<bool>? _isConcatRouteSupported = isConcatRouteSupported;
+        private readonly Func<bool>? _isRepartRoute = isRepartRoute;
+        private readonly Func<EncodingPipelineRequest[]?>? _buildRepartRequests = buildRepartRequests;
+        private readonly Func<bool>? _isRepartRouteSupported = isRepartRouteSupported;
         private static StartEncCmdLangProvider Lang => new(UILangProvider.Current.LanguageCode);
 
         public override void Execute(object? parameter)
         {
+            if (IsRepartRoute())
+            {
+                ExecuteRepartRoute();
+                return;
+            }
+
             if (IsConcatRoute())
             {
                 ExecuteConcatRoute();
@@ -70,6 +82,45 @@ namespace OneColumnEncoder.Commands
 
         private bool IsQueueRoute() => _isQueueRoute?.Invoke() == true;
         private bool IsConcatRoute() => _isConcatRoute?.Invoke() == true;
+        private bool IsRepartRoute() => _isRepartRoute?.Invoke() == true;
+
+        private void ExecuteRepartRoute()
+        {
+            if (_isRepartRouteSupported?.Invoke() == false)
+            {
+                new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, Lang.QueueUnsupportedRouteMsg).Execute(null);
+                return;
+            }
+
+            QueueEncodingItem[]? items;
+            try
+            {
+                EncodingPipelineRequest[]? requests = _buildRepartRequests?.Invoke();
+                items = requests == null
+                    ? null
+                    : [.. requests.Select(request => new QueueEncodingItem(request, EncodingPipeline.BuildY4mCommand(request)))];
+            }
+            catch (Exception ex)
+            {
+                new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, ex.Message).Execute(null);
+                return;
+            }
+
+            if (items == null || items.Length == 0)
+            {
+                new OpenWarnModalCmd(_modalNavS, Lang.WarnTitle, Lang.MissingUpstreamMsg).Execute(null);
+                return;
+            }
+
+            string? validationError = GetQueueValidationError(items);
+            if (!string.IsNullOrWhiteSpace(validationError))
+            {
+                new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, validationError).Execute(null);
+                return;
+            }
+
+            OpenQueueOverwriteConfirmationOrStart(items, isRepart: true);
+        }
 
         private void ExecuteConcatRoute()
         {
@@ -226,10 +277,10 @@ namespace OneColumnEncoder.Commands
             OpenOverwriteConfirmationOrStart(overwriteTargets, () => StartEncoding(request, command));
         }
 
-        private void OpenQueueOverwriteConfirmationOrStart(QueueEncodingItem[] queueItems)
+        private void OpenQueueOverwriteConfirmationOrStart(QueueEncodingItem[] queueItems, bool isRepart = false)
         {
             OverwriteTarget[] overwriteTargets = GetExistingOverwriteTargets(queueItems);
-            OpenOverwriteConfirmationOrStart(overwriteTargets, () => StartQueueEncoding(queueItems));
+            OpenOverwriteConfirmationOrStart(overwriteTargets, () => StartQueueEncoding(queueItems, isRepart));
         }
 
         private void OpenOverwriteConfirmationOrStart(OverwriteTarget[] overwriteTargets, Action startAction)
@@ -352,7 +403,7 @@ namespace OneColumnEncoder.Commands
             new OpenEncodingMonitorCmd(_modalNavS, request, command).Execute(null);
         }
 
-        private void StartQueueEncoding(QueueEncodingItem[] queueItems)
+        private void StartQueueEncoding(QueueEncodingItem[] queueItems, bool isRepart = false)
         {
             var pairs = queueItems.Select(item => (item.Request, item.Command)).ToArray();
 
@@ -369,7 +420,7 @@ namespace OneColumnEncoder.Commands
                 _modalNavS.Close();
 
             EncodingMonitorModal window = new();
-            EncodingMonitorVM vm = new(_modalNavS, window.Close, pairs);
+            EncodingMonitorVM vm = new(_modalNavS, window.Close, pairs, isRepart);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();

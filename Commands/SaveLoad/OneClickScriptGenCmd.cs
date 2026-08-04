@@ -19,7 +19,9 @@ namespace OneColumnEncoder.Commands.SaveLoad
         Func<bool>? isQueueRoute = null,
         Func<string[]>? getQueueFilePaths = null,
         Func<bool>? isConcatRoute = null,
-        Func<string[]>? getConcatFilePaths = null) : BaseCmd
+        Func<string[]>? getConcatFilePaths = null,
+        Func<bool>? isRepartRoute = null,
+        Func<string[]>? getRepartFilePaths = null) : BaseCmd
     {
         private readonly Func<string> _getSourcePath = getSourcePath;
         private readonly Func<ToolItemCardVM> _getAvsItem = getAvsItem;
@@ -30,12 +32,16 @@ namespace OneColumnEncoder.Commands.SaveLoad
         private readonly Func<string[]>? _getQueueFilePaths = getQueueFilePaths;
         private readonly Func<bool>? _isConcatRoute = isConcatRoute;
         private readonly Func<string[]>? _getConcatFilePaths = getConcatFilePaths;
+        private readonly Func<bool>? _isRepartRoute = isRepartRoute;
+        private readonly Func<string[]>? _getRepartFilePaths = getRepartFilePaths;
 
         public override bool CanExecute(object? parameter) =>
             IsQueueRoute()
                 ? (_getQueueFilePaths?.Invoke().Length ?? 0) > 0
                 : IsConcatRoute()
                     ? (_getConcatFilePaths?.Invoke().Length ?? 0) > 1
+                : IsRepartRoute()
+                    ? (_getRepartFilePaths?.Invoke().Length ?? 0) > 0
                 : !string.IsNullOrWhiteSpace(_getSourcePath());
 
         public override void Execute(object? parameter)
@@ -58,6 +64,12 @@ namespace OneColumnEncoder.Commands.SaveLoad
             if (IsConcatRoute())
             {
                 ExecuteConcatScriptGen();
+                return;
+            }
+
+            if (IsRepartRoute())
+            {
+                ExecuteVirtualSourceScriptGen(_getRepartFilePaths?.Invoke() ?? [], "_repart");
                 return;
             }
 
@@ -116,6 +128,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
 
         private bool IsQueueRoute() => _isQueueRoute?.Invoke() == true;
         private bool IsConcatRoute() => _isConcatRoute?.Invoke() == true;
+        private bool IsRepartRoute() => _isRepartRoute?.Invoke() == true;
 
         private void ExecuteConcatScriptGen()
         {
@@ -129,21 +142,26 @@ namespace OneColumnEncoder.Commands.SaveLoad
                 return;
             }
 
+            ExecuteVirtualSourceScriptGen(sourcePaths, "_concat");
+        }
+
+        private void ExecuteVirtualSourceScriptGen(string[] sourcePaths, string suffix)
+        {
+            if (sourcePaths.Length == 0) return;
+
             string baseName = BrowseSourceQueueCmd.FormatConcatFileName(sourcePaths);
-            string avsScript = ScriptTemplate.BuildConcatAvsExportScript(
-                sourcePaths,
-                FilterScribeVM.AvsPrefix2,
-                FilterScribeVM.AvsSuffix);
-            string vpyScript = ScriptTemplate.BuildConcatVpyExportScript(
-                sourcePaths,
-                FilterScribeVM.VpyPrefix2,
-                FilterScribeVM.VpySuffix);
+            string avsScript = sourcePaths.Length == 1
+                ? ScriptTemplate.BuildAvsExportScript(sourcePaths[0], FilterScribeVM.AvsPrefix2, FilterScribeVM.AvsSuffix)
+                : ScriptTemplate.BuildConcatAvsExportScript(sourcePaths, FilterScribeVM.AvsPrefix2, FilterScribeVM.AvsSuffix);
+            string vpyScript = sourcePaths.Length == 1
+                ? ScriptTemplate.BuildVpyExportScript(sourcePaths[0], FilterScribeVM.VpyPrefix2, FilterScribeVM.VpySuffix)
+                : ScriptTemplate.BuildConcatVpyExportScript(sourcePaths, FilterScribeVM.VpyPrefix2, FilterScribeVM.VpySuffix);
 
             SaveFileDialog dialog = new()
             {
                 Title = FilterScribeModalLangProvider.Current["SrcScribe.SavingWindowTitle"],
                 Filter = "AviSynth Script (*.avs)|*.avs",
-                FileName = baseName + "_concat.avs"
+                FileName = baseName + suffix + ".avs"
             };
 
             if (dialog.ShowDialog() != true) return;

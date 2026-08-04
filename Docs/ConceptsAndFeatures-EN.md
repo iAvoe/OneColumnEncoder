@@ -83,7 +83,7 @@ The final command is shown before starting an encode, and can be reviewed again 
 
 ## Encoding Modes
 
-1cenc supports three main source routes: single mode, queue mode, and concat mode.
+1cenc supports four main source routes: single mode, queue mode, concat mode, and Repart mode.
 
 ### Single Source Mode
 
@@ -136,6 +136,12 @@ Concat mode performs basic compatibility checks on import:
 Concat mode generates the `ffmpeg concat demuxer` filelist and can produce concat `.avs` / `.vpy` scripts. The filter editor also allows reordering, removing fragments, and regenerating the filelist.
 
 Audio handling in concat mode is a muxing step outside the video pipeline: generated AVS/VPY scripts handle video only; after encoding, ffmpeg attempts to copy audio streams from the concat filelist sources into the final MKV. For VFR sources or complex boundary fragments, audio duration may exceed video duration — it is recommended to check and handle audio after concat encoding.
+
+### Repart Mode
+
+Repart mode treats an ordered set of strictly matching CFR video streams as one virtual frame timeline, then manually repartitions that timeline into independent episode outputs. It handles both joined sources containing several episodes and fragmented sources where one episode spans several files.
+
+The dedicated partition-style window provides input and output sidebars, a proportional allocation map, synchronized time/frame fields, unallocated gaps, and adjacent-output merging. The first implementation does not read chapters or MPLS and does not copy source audio, subtitles, chapters, or metadata. Every output is encoded independently and muxed as a video-only MKV.
 
 ---
 
@@ -384,7 +390,8 @@ When saving logs in the encoding monitor, the following files are written to the
 - Windows only. The project depends on WPF, CPU Sets, NUMA, process and memory-related Windows APIs.
 - Currently supports x264, x265, and SVT-AV1 as formal encoders.
 - SVT-AV1 does not support 12-bit input.
-- Queue mode and concat mode do not support clip sampling.
-- `OneLineShotArgs` / SVFI route does not support queue or concat mode.
+- Queue, concat, and Repart modes do not support clip sampling.
+- `OneLineShotArgs` / SVFI route does not support queue, concat, or Repart mode.
+- Repart mode currently requires CFR, reliable per-frame timestamps, identical video-stream formats, manual output boundaries, and ffmpeg for video-only MKV output.
 - Concat mode audio muxing is available, but complex VFR or boundary-abnormal sources may still require post-processing.
 - The project currently has no comprehensive automated tests — it relies on functional validation and real long-queue testing.

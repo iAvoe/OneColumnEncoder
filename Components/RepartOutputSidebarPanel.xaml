@@ -1,0 +1,54 @@
+<UserControl x:Class="OneColumnEncoder.Components.RepartOutputSidebarPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:cards="clr-namespace:OneColumnEncoder.Components.Cards"
+             xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+             Width="310"
+             PreviewMouseWheel="Sidebar_PreviewMouseWheel">
+    <UserControl.Resources>
+        <DataTemplate x:Key="RepartOutputItemTemplate">
+            <cards:MiniItemCard DataContext="{Binding}"
+                                IsSelected="{Binding IsSelected}"
+                                IsCancel="{Binding IsCancel}"
+                                ShowActionButtons="False"
+                                HorizontalAlignment="Stretch"
+                                Margin="0 5" />
+        </DataTemplate>
+        <Style x:Key="RepartOutputList" TargetType="ListBox">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
+            <Setter Property="ItemTemplate" Value="{StaticResource RepartOutputItemTemplate}" />
+        </Style>
+    </UserControl.Resources>
+    <Border Background="{StaticResource RemixedBackground2}" BorderBrush="{StaticResource RemixedBorder2}" BorderThickness="0 0 1 0" Padding="7 10 7 14">
+        <Grid>
+            <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+            <comps:SectionHeader HeaderText="{Binding RepartOutputSidebarTitle}" Margin="0 0 0 6" />
+            <ScrollViewer x:Name="SidebarScrollViewer" Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarRunningHeaderText}" Margin="0 4" />
+                    <Border Visibility="{Binding QueueSidebar.HasRunningJob, Converter={StaticResource BoolToVisibility}}">
+                        <cards:MiniItemCard DataContext="{Binding QueueSidebar.RunningJob}" IsSelected="{Binding IsSelected}" IsCancel="{Binding IsCancel}" ShowActionButtons="False" Margin="0 5">
+                            <cards:MiniItemCard.InputBindings>
+                                <MouseBinding MouseAction="LeftClick" Command="{Binding DataContext.QueueSidebar.SelectJobCommand, RelativeSource={RelativeSource AncestorType=comps:RepartOutputSidebarPanel}}" CommandParameter="{Binding}" />
+                            </cards:MiniItemCard.InputBindings>
+                        </cards:MiniItemCard>
+                    </Border>
+                    <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarWaitingHeaderText}" Margin="0 5" />
+                    <ListBox ItemsSource="{Binding QueueSidebar.WaitingJobs}" SelectedItem="{Binding QueueSidebar.SelectedWaitingJob, Mode=OneWayToSource}" Style="{StaticResource RepartOutputList}" />
+                    <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarUnfinishedHeaderText}" Margin="0 5" />
+                    <ListBox ItemsSource="{Binding QueueSidebar.UnfinishedJobs}" SelectedItem="{Binding QueueSidebar.SelectedUnfinishedJob, Mode=OneWayToSource}" Style="{StaticResource RepartOutputList}" />
+                    <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarCompletedHeaderText}" Margin="0 5" />
+                    <ListBox ItemsSource="{Binding QueueSidebar.CompletedJobs}" SelectedItem="{Binding QueueSidebar.SelectedCompletedJob, Mode=OneWayToSource}" Style="{StaticResource RepartOutputList}" />
+                </StackPanel>
+            </ScrollViewer>
+            <StackPanel Grid.Row="2">
+                <Button Content="{Binding Lang.QueueSidebarCancelAllText}" Command="{Binding CancelAllQueueCommand}" IsEnabled="{Binding IsCancelAllEnabled}" Height="30" Style="{StaticResource PrimaryButton}" />
+                <TextBlock Text="{Binding QueueSidebar.StatsText}" FontSize="10" Margin="0 3 0 0" Foreground="{StaticResource GlobalSecondary}" TextWrapping="Wrap" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

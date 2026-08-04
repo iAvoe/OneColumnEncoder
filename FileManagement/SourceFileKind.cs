@@ -9,7 +9,8 @@ namespace OneColumnEncoder.FileManagement
         {
             if (displayName.Equals(UILangProvider.Current["Tool.Source.VideoSource"], StringComparison.OrdinalIgnoreCase) ||
                 displayName.Equals(UILangProvider.Current["Tool.Source.VideoSrcQueue"], StringComparison.OrdinalIgnoreCase) ||
-                displayName.Equals(UILangProvider.Current["Tool.Source.VideoSrcConcat"], StringComparison.OrdinalIgnoreCase))
+                displayName.Equals(UILangProvider.Current["Tool.Source.VideoSrcConcat"], StringComparison.OrdinalIgnoreCase) ||
+                displayName.Equals(RepartLangProvider.Current.ToolSourceVideoSrcRepart, StringComparison.OrdinalIgnoreCase))
                 return SourceFileKind.Video;
             if (displayName.Equals(UILangProvider.Current["Tool.Source.AviSynth"], StringComparison.OrdinalIgnoreCase) ||
                 displayName.Equals(UILangProvider.Current["Tool.Source.AviSynthQueue"], StringComparison.OrdinalIgnoreCase))
@@ -52,5 +53,8 @@ namespace OneColumnEncoder.FileManagement
             upstreamExeName?.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase) == true ||
             upstreamExeName?.Equals("avs2yuv.exe", StringComparison.OrdinalIgnoreCase) == true ||
             upstreamExeName?.Equals("avs2pipemod.exe", StringComparison.OrdinalIgnoreCase) == true;
+
+        public static bool IsRepartRouteSupportedUpstream(string? upstreamExeName) =>
+            IsConcatRouteSupportedUpstream(upstreamExeName);
     }
 }

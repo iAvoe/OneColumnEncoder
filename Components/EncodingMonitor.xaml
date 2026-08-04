@@ -194,7 +194,7 @@
                         Margin="0 15 0 0">
                 <CheckBox Content="{Binding EnableMuxText}"
                           IsChecked="{Binding EnableMux, Mode=TwoWay}"
-                          IsEnabled="{Binding CanMux}"
+                           IsEnabled="{Binding IsMuxToggleEnabled}"
                           VerticalAlignment="Center" />
                 <CheckBox Content="{Binding RichTextModeText}"
                           IsChecked="{Binding LogRichTextMode, Mode=TwoWay}"

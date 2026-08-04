@@ -21,7 +21,10 @@
         </Grid.ColumnDefinitions>
 
         <comps:QueueSidebarPanel Grid.Column="0"
-                                 Visibility="{Binding QueueSidebar.IsVisible, Converter={StaticResource BoolToVisibility}}" />
+                                  Visibility="{Binding IsQueueSidebarVisible, Converter={StaticResource BoolToVisibility}}" />
+
+        <comps:RepartOutputSidebarPanel Grid.Column="0"
+                                        Visibility="{Binding IsRepartSidebarVisible, Converter={StaticResource BoolToVisibility}}" />
 
         <GridSplitter Grid.Column="1"
                       Width="2"

@@ -1,6 +1,4 @@
-using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Text.Json;
 using OneColumnEncoder.Models;
 
@@ -17,55 +15,32 @@ namespace OneColumnEncoder.FFmpeg
             if (string.IsNullOrWhiteSpace(videoSource) || !File.Exists(videoSource))
                 throw new FileNotFoundException(string.Format(Lang.InputVideoNotFound, videoSource));
 
-            ProcessStartInfo psi = new()
+            string[] arguments =
+            [
+                "-v", "quiet", "-hide_banner", "-select_streams", "v:0",
+                "-show_entries", showEntries, "-show_format", "-of", "json", videoSource
+            ];
+
+            FFprobeProcessResult result;
+            try
             {
-                FileName = ffprobePath,
-                WorkingDirectory = Path.GetDirectoryName(ffprobePath),
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                StandardOutputEncoding = Encoding.UTF8,
-                StandardErrorEncoding = Encoding.UTF8,
-                CreateNoWindow = true
-            };
-
-            psi.ArgumentList.Add("-v");
-            psi.ArgumentList.Add("quiet");
-            psi.ArgumentList.Add("-hide_banner");
-            psi.ArgumentList.Add("-select_streams");
-            psi.ArgumentList.Add("v:0");
-            psi.ArgumentList.Add("-show_entries");
-            psi.ArgumentList.Add(showEntries);
-            psi.ArgumentList.Add("-show_format");
-            psi.ArgumentList.Add("-of");
-            psi.ArgumentList.Add("json");
-            psi.ArgumentList.Add(videoSource);
-
-            using Process process = new() { StartInfo = psi };
-            process.Start();
-
-            Task<string> stdoutTask = process.StandardOutput.ReadToEndAsync();
-            Task<string> stderrTask = process.StandardError.ReadToEndAsync();
-
-            using CancellationTokenSource cts = new(TimeSpan.FromSeconds(30));
-            try { await process.WaitForExitAsync(cts.Token); }
+                result = await FFprobeProcessRunner.RunAsync(
+                    ffprobePath,
+                    arguments,
+                    TimeSpan.FromSeconds(30));
+            }
             catch (OperationCanceledException)
             {
-                try { if (!process.HasExited) process.Kill(true); }
-                catch { }
                 throw new TimeoutException(Lang.FfprobeTimedOut);
             }
 
-            string json = await stdoutTask;
-            string stderr = await stderrTask;
-
-            if (process.ExitCode != 0 || string.IsNullOrWhiteSpace(json))
-                throw new InvalidOperationException(string.IsNullOrWhiteSpace(stderr)
+            if (result.ExitCode != 0 || string.IsNullOrWhiteSpace(result.Stdout))
+                throw new InvalidOperationException(string.IsNullOrWhiteSpace(result.Stderr)
                     ? Lang.FfprobeFailedOrEmpty
-                    : stderr.Trim());
+                    : result.Stderr.Trim());
 
-            ValidateJson(json);
-            return FFProbeJsonFormatting.Normalize(json);
+            ValidateJson(result.Stdout);
+            return FFProbeJsonFormatting.Normalize(result.Stdout);
         }
 
         private static void ValidateJson(string json)
