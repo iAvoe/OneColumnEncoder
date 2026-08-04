@@ -2,6 +2,7 @@ using Microsoft.Win32;
 using OneColumnEncoder.Commands;
 using OneColumnEncoder.FileManagement;
 using OneColumnEncoder.Models;
+using OneColumnEncoder.RepartManagement;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.Views;
@@ -25,7 +26,7 @@ public sealed class OpenRepartConfCmd(
         }
 
         RepartPlanM? currentPlan = getCurrentPlan();
-        string[] initialPaths = [];
+        RepartPlanM? initialPlan = currentPlan;
         if (currentPlan == null)
         {
             OpenFolderDialog dialog = new()
@@ -43,10 +44,44 @@ public sealed class OpenRepartConfCmd(
 
             try
             {
-                initialPaths = await AnalyzeSrcVideoCmd.AnalyzeAndFilterQueueFilePathsForImportAsync(
+                // Run the full Repart Mode check & filter pass before the window opens:
+                // every rejected source is reported here (between the per-source ffprobe
+                // failure modal and the completion summary) instead of being silently
+                // dropped after the window opens. The resulting plan is pre-loaded.
+                RepartAnalysisResult result = await RepartCompatibilityAnalyzer.AnalyzeAndFilterAsync(
                     getFfprobePath(),
                     folderPaths,
-                    modalNavS);
+                    source => RepartInterlacedPrompt.Confirm(modalNavS, RepartConfVM.WindowTitleText, source));
+
+                foreach (RepartExcludedSourceInfo excluded in result.Excluded)
+                {
+                    new OpenErrModalCmd(
+                        modalNavS,
+                        RepartConfVM.WindowTitleText,
+                        RepartExclusionMessages.FormatExcludedMessage(excluded)).Execute(null);
+                }
+
+                if (result.Plan == null)
+                {
+                    new OpenErrModalCmd(
+                        modalNavS,
+                        RepartConfVM.WindowTitleText,
+                        result.FatalMessage ?? RepartLangProvider.Current.SourceRequired).Execute(null);
+                    return;
+                }
+
+                new OpenSuccModalCmd(
+                    modalNavS,
+                    RepartConfVM.WindowTitleText,
+                    string.Format(
+                        RepartLangProvider.Current["ImportSummary"],
+                        result.Plan.Sources.Count,
+                        result.Excluded.Count)).Execute(null);
+                initialPlan = result.Plan;
+            }
+            catch (OperationCanceledException)
+            {
+                return;
             }
             catch (Exception ex)
             {
@@ -63,6 +98,6 @@ public sealed class OpenRepartConfCmd(
         window.Closed += (_, _) => modalNavS.Close();
         modalNavS.CurrentModalVM = vm;
         window.Show();
-        _ = vm.InitializeAsync(initialPaths, currentPlan);
+        _ = vm.InitializeAsync([], initialPlan);
     }
 }

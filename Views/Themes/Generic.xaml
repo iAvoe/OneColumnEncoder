@@ -86,6 +86,10 @@
                       x:Key="TimelineTrackBackground" />
     <SolidColorBrush Color="#9673A6"
                       x:Key="TimelineTrackBorder" />
+    <SolidColorBrush Color="#664281"
+                     x:Key="TimelineTrackBackgroundDark" />
+    <SolidColorBrush Color="#4E3858"
+                     x:Key="TimelineTrackBorderDark" />
     <SolidColorBrush Color="#F5E6A4"
                       x:Key="TimelineThumbBackground" />
     <SolidColorBrush Color="#D2B45A"

@@ -183,25 +183,6 @@ namespace OneColumnEncoder.Commands
             }
         }
 
-        internal static async Task<string[]> AnalyzeAndFilterQueueFilePathsForImportAsync(
-            string ffprobePath,
-            IReadOnlyList<string> queueFilePaths,
-            ModalNavS modalNavS)
-        {
-            if (queueFilePaths.Count == 0) return [];
-            QueueFilterMode filterMode = queueFilePaths.Count > 1
-                ? PromptQueueFilterMode(modalNavS)
-                : QueueFilterMode.FirstStream;
-            QueueSourceFilterResult result = await AnalyzeAndFilterQueueSourcesAsync(
-                ffprobePath,
-                queueFilePaths,
-                modalNavS,
-                () => new SourceCheckCardVM(),
-                filterMode,
-                shouldFilterQueue: true);
-            return [.. result.Accepted.Select(entry => entry.FilePath)];
-        }
-
         private static QueueFilterMode PromptQueueFilterMode(ModalNavS modalNavS)
         {
             OpenInfoModalCmd cmd = new(

@@ -345,21 +345,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         }
         if (!ConfirmSourceMutation()) return;
 
-        string[] paths;
-        try
-        {
-            paths = await AnalyzeSrcVideoCmd.AnalyzeAndFilterQueueFilePathsForImportAsync(
-                _getFfprobePath(),
-                folderPaths,
-                _modalNavS);
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex.Message);
-            return;
-        }
-
-        await AnalyzeAndReplaceSourcesAsync(paths, Outputs.Select(output => output.Model).ToList());
+        await AnalyzeAndReplaceSourcesAsync(folderPaths, Outputs.Select(output => output.Model).ToList());
     }
 
     private async Task AppendFilesAsync()
@@ -913,18 +899,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             ? string.Format(RepartLangProvider.Current["ReadyWithExcluded"], requestedSourceCount - acceptedSourceCount)
             : RepartLangProvider.Current["Ready"];
 
-    private bool ConfirmDiscardInterlacedSource(RepartInterlacedSourceInfo source)
-    {
-        OpenWarnModalCmd cmd = new(
-            _modalNavS,
-            WindowTitleText,
-            string.Format(
-                RepartLangProvider.Current["InterlacedSourcePrompt"],
-                source.DisplayName,
-                source.FieldOrder));
-        cmd.Execute(null);
-        return cmd.DialogResult == true;
-    }
+    private bool ConfirmDiscardInterlacedSource(RepartInterlacedSourceInfo source) =>
+        RepartInterlacedPrompt.Confirm(_modalNavS, WindowTitleText, source);
 
     private void RefreshDraftAvailability()
     {

@@ -49,8 +49,8 @@
             <Border Grid.Row="1"
                     Margin="0 5 0 10"
                     Padding="3"
-                    Background="{StaticResource TimelineTrackBackground}"
-                    BorderBrush="{StaticResource TimelineTrackBorder}"
+                    Background="{StaticResource TimelineTrackBackgroundDark}"
+                    BorderBrush="{StaticResource TimelineTrackBorderDark}"
                     BorderThickness="1"
                     CornerRadius="4">
                 <ItemsControl ItemsSource="{Binding TimelineSlices}">

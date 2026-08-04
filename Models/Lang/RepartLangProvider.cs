@@ -56,7 +56,9 @@ public sealed class RepartLangProvider(string languageCode)
             ["NoVideoStream"] = "No video stream was found in {0}.",
             ["CfrRequired"] = "Repart Mode requires scan-stable CFR video: {0}",
             ["FrameCountRequired"] = "Repart Mode could not scan a reliable frame count: {0}",
+            ["NoDimensions"] = "Repart Mode requires a video stream with non-zero dimensions: {0}",
             ["FormatMismatch"] = "Source #{0} ({1}) does not exactly match the first video stream.\nExpected: {2}\nActual: {3}",
+            ["SignatureMismatch"] = "Source {0} does not exactly match the reference video stream format.",
             ["ProbeFailed"] = "ffprobe failed or returned no data.",
             ["InvalidRange"] = "Enter a valid frame or time range inside the virtual timeline.",
             ["Overlap"] = "Output episodes cannot overlap.",
@@ -67,7 +69,10 @@ public sealed class RepartLangProvider(string languageCode)
             ["RevisionDisabled"] = "Source Reviser is disabled for an active Repart plan. Re-import the sources to change source metadata.",
             ["FrameChangingFiltersWarning"] = "Repart outputs are frame-exact. Avoid filters that change frame count or timing, such as IVTC, decimation, interpolation, or CFR/VFR conversion.",
             ["SourceChangeWarning"] = "Changing sources will remap unaffected output episodes and remove affected ones. Continue?",
-            ["SourceChangeTitle"] = "Reset Repart Outputs"
+            ["SourceChangeTitle"] = "Reset Repart Outputs",
+            ["SourceLabel"] = "Source: {0}",
+            ["WillExcludeSource"] = "This source item will be excluded. Close this dialog to continue importing.",
+            ["ImportSummary"] = "Repart import completed: {0} source(s) accepted, {1} source item(s) excluded."
         },
         ["zh-cn"] = new()
         {
@@ -121,7 +126,9 @@ public sealed class RepartLangProvider(string languageCode)
             ["NoVideoStream"] = "未在 {0} 中找到视频流。",
             ["CfrRequired"] = "重分集模式要求可稳定扫描的 CFR 视频：{0}",
             ["FrameCountRequired"] = "重分集模式无法可靠扫描视频帧数：{0}",
+            ["NoDimensions"] = "重分集模式要求视频流具有非零分辨率：{0}",
             ["FormatMismatch"] = "第 {0} 个源（{1}）与首个视频流格式不完全一致。\n预期：{2}\n实际：{3}",
+            ["SignatureMismatch"] = "视频源 {0} 与参考视频流格式不完全一致。",
             ["ProbeFailed"] = "ffprobe 执行失败或没有返回数据。",
             ["InvalidRange"] = "请输入位于虚拟时间轴内的有效时间或帧范围。",
             ["Overlap"] = "输出分集不能相互重叠。",
@@ -132,7 +139,10 @@ public sealed class RepartLangProvider(string languageCode)
             ["RevisionDisabled"] = "重分集计划不允许使用视频源修订；如需修改源信息，请重新导入视频源。",
             ["FrameChangingFiltersWarning"] = "重分集输出按源帧号精确切分。请避免使用会改变帧数或帧时序的滤镜，例如 IVTC、抽帧、补帧、CFR/VFR 转换。",
             ["SourceChangeWarning"] = "修改视频源会重映射不受影响的输出分集，并删除受影响的分集，是否继续？",
-            ["SourceChangeTitle"] = "重置重分集输出"
+            ["SourceChangeTitle"] = "重置重分集输出",
+            ["SourceLabel"] = "视频源：{0}",
+            ["WillExcludeSource"] = "将排除此视频源，关闭对话框后继续处理其余项目。",
+            ["ImportSummary"] = "重分集导入完成：已接受 {0} 个视频源，已排除 {1} 个源项目。"
         }
     };
 
