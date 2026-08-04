@@ -28,7 +28,6 @@ namespace OneColumnEncoder.ViewModels.Cards
 
             for (int i = 0; i < Checklist1.Count; i++)
                 SetChecklist1(i, StatusType.Waiting);
-
             for (int i = 0; i < Checklist2.Count; i++)
                 SetChecklist2(i, StatusType.Waiting);
         }

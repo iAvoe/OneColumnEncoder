@@ -644,8 +644,8 @@ namespace OneColumnEncoder.ViewModels
                     _appDataM.Save();
                 });
 
-            // Column-inspect commands for source validation card
-            ActiveSrcValidationCard.InspectColumn1Cmd = new ActionCmd(_ =>
+            // Column-inspect commands for source validation cards
+            ActionCmd sourceInspectColumn1Cmd = new(_ =>
             {
                 if (string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson))
                 {
@@ -662,7 +662,7 @@ namespace OneColumnEncoder.ViewModels
                     new OpenErrModalCmd(modalNavS,
                         UICaptionProvider.SourceInspect.ErrorTitle, text).Execute(null);
             });
-            ActiveSrcValidationCard.InspectColumn2Cmd = new ActionCmd(_ =>
+            ActionCmd sourceInspectColumn2Cmd = new(_ =>
             {
                 if (string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson))
                 {
@@ -679,6 +679,18 @@ namespace OneColumnEncoder.ViewModels
                     new OpenWarnModalCmd(modalNavS,
                         UICaptionProvider.SourceInspect.WarnTitle, text).Execute(null);
             });
+
+            foreach (SourceCheckCardVM sourceCard in new SourceCheckCardVM[]
+            {
+                SrcValCard,
+                QueueSrcFilterCard,
+                ConcatCheckCard,
+                RepartCheckCard
+            })
+            {
+                sourceCard.InspectColumn1Cmd = sourceInspectColumn1Cmd;
+                sourceCard.InspectColumn2Cmd = sourceInspectColumn2Cmd;
+            }
 
             // Column-inspect commands for encoder terms card
             EncTermsValCard.InspectColumn1Cmd = new ActionCmd(_ =>
