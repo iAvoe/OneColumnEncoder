@@ -82,7 +82,7 @@ public static class RepartCompatibilityAnalyzer
             {
                 throw new InvalidOperationException(string.Format(
                     RepartLangProvider.Current.FormatMismatch,
-                    i + 1,
+                    sources.Count + 1,
                     Path.GetFileName(path),
                     referenceSignature.Display,
                     signature.Display));

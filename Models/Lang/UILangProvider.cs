@@ -162,7 +162,7 @@ public class UILangProvider
 
             // Checklist - Source Validation 1 (Severe)
             ["Checklist.Source1.Metadata"] = "Metadata and SEI data are readable",
-            ["Checklist.Source1.Progressive"] = "Progressive video frame / not interlaced (SVT-AV1 req.)",
+            ["Checklist.Source1.Progressive"] = "Progressive video frame / not interlaced",
             ["Checklist.Source1.BitDepth"] = "Bit-depth is less than 12 (8 or 10, SVT-AV1 req.)",
             ["Checklist.Source1.BitDepth2"] = "Bit-depth is less than 16",
 
@@ -399,7 +399,7 @@ public class UILangProvider
             ["Checklist.Tools.VideoSourcePicked"] = "选中视频源或队列",
             ["Checklist.Tools.ScriptSourcePicked"] = "选中 VS/AVS/SVFI 上游时点选脚本源",
             ["Checklist.Source1.Metadata"] = "元数据与 SEI 数据可读",
-            ["Checklist.Source1.Progressive"] = "逐行扫描视频帧 / 非隔行（SVT-AV1 要求）",
+            ["Checklist.Source1.Progressive"] = "逐行扫描视频帧 / 非隔行",
             ["Checklist.Source1.BitDepth"] = "位深小于 12bit（8 或 10，SVT-AV1 要求）",
             ["Checklist.Source1.BitDepth2"] = "位深小于 16bit",
 
@@ -627,7 +627,7 @@ public class UILangProvider
             ["Checklist.Tools.VideoSourcePicked"] = "點選視訊來源或隊列",
             ["Checklist.Tools.ScriptSourcePicked"] = "選中 VS/AVS/SVFI 上游時點選腳本源",
             ["Checklist.Source1.Metadata"] = "元數據與 SEI 數據可讀",
-            ["Checklist.Source1.Progressive"] = "逐行掃描影片幀 / 非隔行（SVT-AV1 要求）",
+            ["Checklist.Source1.Progressive"] = "逐行掃描影片幀 / 非隔行",
             ["Checklist.Source1.BitDepth"] = "位深小於 12bit（8 或 10，SVT-AV1 要求）",
             ["Checklist.Source1.BitDepth2"] = "位深小於 16bit",
 
@@ -859,7 +859,7 @@ public class UILangProvider
         ["Checklist.Tools.VideoSourcePicked"] = "Sélectionner la source vidéo ou la file d'attente",
         ["Checklist.Tools.ScriptSourcePicked"] = "Sélectionner un script source (amont VS/AVS/SVFI)",
         ["Checklist.Source1.Metadata"] = "Métadonnées et SEI lisibles",
-        ["Checklist.Source1.Progressive"] = "Image progressive / non entrelacée (SVT-AV1)",
+        ["Checklist.Source1.Progressive"] = "Image progressive / non entrelacée",
         ["Checklist.Source1.BitDepth"] = "Profondeur < 12 bits (8 ou 10, SVT-AV1)",
         ["Checklist.Source1.BitDepth2"] = "Profondeur < 16 bits",
         ["Checklist.Source2.Framerate"] = "Cadence constante / non variable",
@@ -1238,7 +1238,7 @@ public class UILangProvider
         ["Checklist.Tools.VideoSourcePicked"] = "ビデオソースまたはキューを選択",
         ["Checklist.Tools.ScriptSourcePicked"] = "VS/AVS/SVFI 上流のスクリプトソースを選択",
         ["Checklist.Source1.Metadata"] = "メタデータと SEI が読取可能",
-        ["Checklist.Source1.Progressive"] = "プログレッシブ / 非インタレ（SVT-AV1）",
+        ["Checklist.Source1.Progressive"] = "プログレッシブ / 非インタレ",
         ["Checklist.Source1.BitDepth"] = "ビット深度が 12 未満（8 または 10、SVT-AV1 要件）",
         ["Checklist.Source1.BitDepth2"] = "ビット深度が 16 未満",
         ["Checklist.Source2.Framerate"] = "固定フレームレート",

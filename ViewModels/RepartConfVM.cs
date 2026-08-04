@@ -61,7 +61,9 @@ public sealed class RepartConfVM : BaseVM
         UILangProvider.CurrentChanged += OnLanguageChanged;
     }
 
-    public string WindowTitle => RepartLangProvider.Current["WindowTitle"];
+    public const string WindowTitleText = "1cenc Episode Repartition";
+
+    public string WindowTitle => WindowTitleText;
     public string InputSourcesTitle => RepartLangProvider.Current["InputSources"];
     public string OutputEpisodesTitle => RepartLangProvider.Current["OutputEpisodes"];
     public string TimelineTitle => RepartLangProvider.Current["Timeline"];
@@ -195,9 +197,10 @@ public sealed class RepartConfVM : BaseVM
         {
             if (currentPlan.Sources.Any(source => !source.MatchesCurrentFile()))
             {
-                await AnalyzeAndReplaceSourcesAsync(
+                AnalyzeSourcesResult refreshed = await AnalyzeAndReplaceSourcesAsync(
                     currentPlan.Sources.Select(source => source.FilePath).ToArray(),
                     []);
+                if (refreshed == AnalyzeSourcesResult.Failed && _analysis == null) _closeAction();
                 return;
             }
             _analysis = currentPlan.Clone();
@@ -208,7 +211,8 @@ public sealed class RepartConfVM : BaseVM
             RefreshAnalysisProperties();
             return;
         }
-        await AnalyzeAndReplaceSourcesAsync(filePaths, []);
+        AnalyzeSourcesResult initialized = await AnalyzeAndReplaceSourcesAsync(filePaths, []);
+        if (initialized == AnalyzeSourcesResult.Failed && _analysis == null) _closeAction();
     }
 
     public void SetSelectedOutputs(IEnumerable<RepartOutputItemVM> items)
@@ -223,13 +227,28 @@ public sealed class RepartConfVM : BaseVM
     {
         OpenFolderDialog dialog = new() { Title = RepartLangProvider.Current["SelectFolder"], Multiselect = false };
         if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
-        string[] paths = SourceFilePicker.GetVideoFilesInFolder(dialog.FolderName);
-        if (paths.Length == 0)
+        string[] folderPaths = SourceFilePicker.GetVideoFilesInFolder(dialog.FolderName);
+        if (folderPaths.Length == 0)
         {
             ShowError(RepartLangProvider.Current.SourceRequired);
             return;
         }
         if (!ConfirmSourceMutation()) return;
+
+        string[] paths;
+        try
+        {
+            paths = await AnalyzeSrcVideoCmd.AnalyzeAndFilterQueueFilePathsForImportAsync(
+                _getFfprobePath(),
+                folderPaths,
+                _modalNavS);
+        }
+        catch (Exception ex)
+        {
+            ShowError(ex.Message);
+            return;
+        }
+
         await AnalyzeAndReplaceSourcesAsync(paths, []);
     }
 
@@ -266,9 +285,11 @@ public sealed class RepartConfVM : BaseVM
         await AnalyzeAndReplaceSourcesAsync([.. paths], []);
     }
 
-    private async Task AnalyzeAndReplaceSourcesAsync(string[] paths, IReadOnlyList<RepartOutputSegmentM> outputs)
+    private async Task<AnalyzeSourcesResult> AnalyzeAndReplaceSourcesAsync(
+        string[] paths,
+        IReadOnlyList<RepartOutputSegmentM> outputs)
     {
-        if (IsBusy) return;
+        if (IsBusy) return AnalyzeSourcesResult.Canceled;
         _analysisCancellation?.Cancel();
         _analysisCancellation?.Dispose();
         _analysisCancellation = new CancellationTokenSource();
@@ -286,21 +307,30 @@ public sealed class RepartConfVM : BaseVM
             ReplaceOutputs(outputs);
             StatusText = RepartLangProvider.Current["Ready"];
             PrepareNextDraft();
+            return AnalyzeSourcesResult.Succeeded;
         }
         catch (OperationCanceledException)
         {
-            return;
+            return AnalyzeSourcesResult.Canceled;
         }
         catch (Exception ex)
         {
             StatusText = ex.Message;
             ShowError(ex.Message);
+            return AnalyzeSourcesResult.Failed;
         }
         finally
         {
             IsBusy = false;
             RefreshAnalysisProperties();
         }
+    }
+
+    private enum AnalyzeSourcesResult
+    {
+        Succeeded,
+        Failed,
+        Canceled
     }
 
     private void LoadSources()
@@ -596,13 +626,13 @@ public sealed class RepartConfVM : BaseVM
     }
 
     private void ShowError(string message) =>
-        new OpenErrModalCmd(_modalNavS, RepartLangProvider.Current["WindowTitle"], message).Execute(null);
+        new OpenErrModalCmd(_modalNavS, WindowTitleText, message).Execute(null);
 
     private void OnLanguageChanged()
     {
         foreach (string property in new[]
         {
-            nameof(WindowTitle), nameof(InputSourcesTitle), nameof(OutputEpisodesTitle), nameof(TimelineTitle),
+            nameof(InputSourcesTitle), nameof(OutputEpisodesTitle), nameof(TimelineTitle),
             nameof(ImportFolderText), nameof(AppendFilesText), nameof(ImportChaptersText), nameof(ImportMplsText),
             nameof(UnavailableText), nameof(OutputNameLabel), nameof(StartTimeLabel), nameof(EndTimeLabel),
             nameof(FirstFrameLabel), nameof(LastFrameLabel), nameof(AddEpisodeText), nameof(ApplyEditText),

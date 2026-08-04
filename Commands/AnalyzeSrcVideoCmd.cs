@@ -183,10 +183,29 @@ namespace OneColumnEncoder.Commands
             }
         }
 
-        private QueueFilterMode PromptQueueFilterMode()
+        internal static async Task<string[]> AnalyzeAndFilterQueueFilePathsForImportAsync(
+            string ffprobePath,
+            IReadOnlyList<string> queueFilePaths,
+            ModalNavS modalNavS)
+        {
+            if (queueFilePaths.Count == 0) return [];
+            QueueFilterMode filterMode = queueFilePaths.Count > 1
+                ? PromptQueueFilterMode(modalNavS)
+                : QueueFilterMode.FirstStream;
+            QueueSourceFilterResult result = await AnalyzeAndFilterQueueSourcesAsync(
+                ffprobePath,
+                queueFilePaths,
+                modalNavS,
+                () => new SourceCheckCardVM(),
+                filterMode,
+                shouldFilterQueue: true);
+            return [.. result.Accepted.Select(entry => entry.FilePath)];
+        }
+
+        private static QueueFilterMode PromptQueueFilterMode(ModalNavS modalNavS)
         {
             OpenInfoModalCmd cmd = new(
-                _modalNavS,
+                modalNavS,
                 UILangProvider.Current["SourceQueue.FilterModeTitle"],
                 UILangProvider.Current["SourceQueue.FilterModeMessage"]);
             cmd.Execute(null);
@@ -211,22 +230,81 @@ namespace OneColumnEncoder.Commands
             QueueSrcFilterCardVM queueCard = _getActiveSrcValidationCard() as QueueSrcFilterCardVM
                 ?? throw new InvalidOperationException("Queue source filter card is not active.");
 
+            bool shouldFilterQueue = true;
+            QueueFilterMode filterMode = shouldFilterQueue && queueFilePaths.Length > 1
+                ? PromptQueueFilterMode(_modalNavS)
+                : QueueFilterMode.FirstStream;
+
+            QueueSourceFilterResult result = await AnalyzeAndFilterQueueSourcesAsync(
+                ffprobePath,
+                queueFilePaths,
+                _modalNavS,
+                () => new SourceCheckCardVM { IsSvtav1SelectedFunc = queueCard.IsSvtav1SelectedFunc },
+                filterMode,
+                shouldFilterQueue);
+            QueueSourceCandidate referenceCandidate = result.ReferenceCandidate;
+            List<QueueSourceEntry> accepted = result.Accepted;
+            List<QueueSourceEntry> excluded = result.Excluded;
+
+            // Step 5
+            string referenceRawJson = referenceCandidate.RawJson;
+            string referencePath = referenceCandidate.Entry.FilePath;
+            queueCard.ApplyFfprobeAnalysisJson(referenceRawJson);
+
+            string directory = SaveLoadBase<SaveLoadPlaceholder>.GetConfigDirectory();
+            Directory.CreateDirectory(directory);
+            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            string queueJsonPath = Path.Combine(directory, $"source_queue_{timestamp}.json");
+            string? excludedJsonPath = excluded.Count > 0
+                ? Path.Combine(directory, $"source_queue_excluded_{timestamp}.json")
+                : null;
+
+            UTF8Encoding utf8NoBom = new(false);
+            File.WriteAllText(queueJsonPath, JsonSerializer.Serialize(new QueueSourceData(referencePath, accepted), CachedJsonOptions), utf8NoBom);
+            if (!string.IsNullOrWhiteSpace(excludedJsonPath))
+                File.WriteAllText(excludedJsonPath, JsonSerializer.Serialize(new QueueSourceData(referencePath, excluded), CachedJsonOptions), utf8NoBom);
+
+            // Step 6
+            _analysis.FfprobePath = ffprobePath;
+            _analysis.SourcePath = referencePath;
+            _analysis.RawJson = referenceRawJson;
+            _analysis.QueueRawJson = JsonSerializer.Serialize(new QueueRawAnalysisData(result.RawAnalyses), CachedJsonOptions);
+            queueCard.ApplyQueueResult(accepted.Count, excluded.Count, queueJsonPath, excludedJsonPath ?? string.Empty);
+            _onQueueAccepted?.Invoke([.. accepted.Select(entry => entry.FilePath)], queueJsonPath);
+
+            // Step 7
+            string message = string.IsNullOrWhiteSpace(excludedJsonPath)
+                ? string.Format(UILangProvider.Current["SourceQueue.AnalyzedNoEx"], queueJsonPath)
+                : string.Format(
+                    UILangProvider.Current["SourceQueue.Analyzed"],
+                    excluded.Count,
+                    queueJsonPath,
+                    excludedJsonPath);
+            if (result.Skipped.Count > 0)
+                message = FormatQueueSkippedMessage(message, result.Skipped);
+            new OpenQueueAnalysisCompletedModalCmd(
+                _modalNavS,
+                message,
+                queueJsonPath,
+                excludedJsonPath).Execute(null);
+        }
+
+        private static async Task<QueueSourceFilterResult> AnalyzeAndFilterQueueSourcesAsync(
+            string ffprobePath,
+            IReadOnlyList<string> queueFilePaths,
+            ModalNavS modalNavS,
+            Func<SourceCheckCardVM> createProbeCard,
+            QueueFilterMode filterMode,
+            bool shouldFilterQueue)
+        {
             List<QueueSourceCandidate> candidates = [];
             List<QueueSourceFailure> skipped = [];
             List<QueueSourceRawAnalysis> rawAnalyses = [];
-            bool shouldFilterQueue = true;
-            QueueFilterMode filterMode = shouldFilterQueue && queueFilePaths.Length > 1
-                ? PromptQueueFilterMode()
-                : QueueFilterMode.FirstStream;
 
-            // Step 2
-            for (int i = 0; i < queueFilePaths.Length; i++)
+            for (int i = 0; i < queueFilePaths.Count; i++)
             {
                 string filePath = queueFilePaths[i];
-                SourceCheckCardVM probeCard = new()
-                {
-                    IsSvtav1SelectedFunc = queueCard.IsSvtav1SelectedFunc
-                };
+                SourceCheckCardVM probeCard = createProbeCard();
 
                 try
                 {
@@ -254,10 +332,10 @@ namespace OneColumnEncoder.Commands
                         filePath,
                         ex.Message,
                         i + 1,
-                        queueFilePaths.Length,
+                        queueFilePaths.Count,
                         willSkipAndContinue: true);
                     new OpenErrModalCmd(
-                        _modalNavS,
+                        modalNavS,
                         UILangProvider.SrcAnalysisWindowTitle,
                         failureMessage).Execute(null);
                     skipped.Add(new(filePath, Path.GetFileName(filePath), ex.Message));
@@ -265,14 +343,12 @@ namespace OneColumnEncoder.Commands
             }
 
             if (candidates.Count == 0)
-                throw new InvalidOperationException(FormatAllQueueItemsFailedMessage(queueFilePaths.Length));
+                throw new InvalidOperationException(FormatAllQueueItemsFailedMessage(queueFilePaths.Count));
 
-            // Step 3
             QueueSourceCandidate referenceCandidate = shouldFilterQueue
                 ? SelectReferenceCandidate(candidates, filterMode)
                 : candidates[0];
 
-            // Step 4
             List<QueueSourceEntry> accepted = [];
             List<QueueSourceEntry> excluded = [];
             foreach (QueueSourceCandidate candidate in candidates)
@@ -283,47 +359,7 @@ namespace OneColumnEncoder.Commands
                     excluded.Add(candidate.Entry);
             }
 
-            // Step 5
-            string referenceRawJson = referenceCandidate.RawJson;
-            string referencePath = referenceCandidate.Entry.FilePath;
-            queueCard.ApplyFfprobeAnalysisJson(referenceRawJson);
-
-            string directory = SaveLoadBase<SaveLoadPlaceholder>.GetConfigDirectory();
-            Directory.CreateDirectory(directory);
-            string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            string queueJsonPath = Path.Combine(directory, $"source_queue_{timestamp}.json");
-            string? excludedJsonPath = excluded.Count > 0
-                ? Path.Combine(directory, $"source_queue_excluded_{timestamp}.json")
-                : null;
-
-            UTF8Encoding utf8NoBom = new(false);
-            File.WriteAllText(queueJsonPath, JsonSerializer.Serialize(new QueueSourceData(referencePath, accepted), CachedJsonOptions), utf8NoBom);
-            if (!string.IsNullOrWhiteSpace(excludedJsonPath))
-                File.WriteAllText(excludedJsonPath, JsonSerializer.Serialize(new QueueSourceData(referencePath, excluded), CachedJsonOptions), utf8NoBom);
-
-            // Step 6
-            _analysis.FfprobePath = ffprobePath;
-            _analysis.SourcePath = referencePath;
-            _analysis.RawJson = referenceRawJson;
-            _analysis.QueueRawJson = JsonSerializer.Serialize(new QueueRawAnalysisData(rawAnalyses), CachedJsonOptions);
-            queueCard.ApplyQueueResult(accepted.Count, excluded.Count, queueJsonPath, excludedJsonPath ?? string.Empty);
-            _onQueueAccepted?.Invoke([.. accepted.Select(entry => entry.FilePath)], queueJsonPath);
-
-            // Step 7
-            string message = string.IsNullOrWhiteSpace(excludedJsonPath)
-                ? string.Format(UILangProvider.Current["SourceQueue.AnalyzedNoEx"], queueJsonPath)
-                : string.Format(
-                    UILangProvider.Current["SourceQueue.Analyzed"],
-                    excluded.Count,
-                    queueJsonPath,
-                    excludedJsonPath);
-            if (skipped.Count > 0)
-                message = FormatQueueSkippedMessage(message, skipped);
-            new OpenQueueAnalysisCompletedModalCmd(
-                _modalNavS,
-                message,
-                queueJsonPath,
-                excludedJsonPath).Execute(null);
+            return new(referenceCandidate, accepted, excluded, skipped, rawAnalyses);
         }
 
         // Delegates reference selection based on filter mode: first-stream or weighted-vote-then-first-stream
@@ -525,6 +561,13 @@ namespace OneColumnEncoder.Commands
 
         // Records a file that was skipped during queue analysis due to an error.
         private sealed record QueueSourceFailure(string FilePath, string DisplayName, string ErrorMessage);
+
+        private sealed record QueueSourceFilterResult(
+            QueueSourceCandidate ReferenceCandidate,
+            List<QueueSourceEntry> Accepted,
+            List<QueueSourceEntry> Excluded,
+            List<QueueSourceFailure> Skipped,
+            List<QueueSourceRawAnalysis> RawAnalyses);
 
         // Holds the severe and moderate check-list items from the validation card.
         private sealed record QueueSourceCheckResult(

@@ -1,4 +1,5 @@
 using Microsoft.Win32;
+using OneColumnEncoder.Commands;
 using OneColumnEncoder.FileManagement;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
@@ -14,7 +15,7 @@ public sealed class OpenRepartConfCmd(
     Func<RepartPlanM?> getCurrentPlan,
     Action<RepartPlanM> applyPlan) : BaseCmd
 {
-    public override void Execute(object? parameter)
+    public override async void Execute(object? parameter)
     {
         RepartConfModal? existing = Application.Current.Windows.OfType<RepartConfModal>().FirstOrDefault();
         if (existing != null)
@@ -33,10 +34,23 @@ public sealed class OpenRepartConfCmd(
                 Multiselect = false
             };
             if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
-            initialPaths = SourceFilePicker.GetVideoFilesInFolder(dialog.FolderName);
-            if (initialPaths.Length == 0)
+            string[] folderPaths = SourceFilePicker.GetVideoFilesInFolder(dialog.FolderName);
+            if (folderPaths.Length == 0)
             {
-                new OpenErrModalCmd(modalNavS, RepartLangProvider.Current["WindowTitle"], RepartLangProvider.Current.SourceRequired).Execute(null);
+                new OpenErrModalCmd(modalNavS, RepartConfVM.WindowTitleText, RepartLangProvider.Current.SourceRequired).Execute(null);
+                return;
+            }
+
+            try
+            {
+                initialPaths = await AnalyzeSrcVideoCmd.AnalyzeAndFilterQueueFilePathsForImportAsync(
+                    getFfprobePath(),
+                    folderPaths,
+                    modalNavS);
+            }
+            catch (Exception ex)
+            {
+                new OpenErrModalCmd(modalNavS, RepartConfVM.WindowTitleText, ex.Message).Execute(null);
                 return;
             }
         }

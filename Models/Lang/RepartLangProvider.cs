@@ -8,7 +8,7 @@ public sealed class RepartLangProvider
         {
             ["Tool"] = "Video Source Repart",
             ["ToolCount"] = "Video Source Repart ({0} -> {1})",
-            ["WindowTitle"] = "Repart Mode",
+            ["WindowTitle"] = "1cenc Episode Repartition",
             ["SelectFolder"] = "Select Repart video source folder",
             ["AppendFiles"] = "Append Files",
             ["ImportFolder"] = "Import Folder",
@@ -62,7 +62,7 @@ public sealed class RepartLangProvider
         {
             ["Tool"] = "视频源重分集",
             ["ToolCount"] = "视频源重分集 ({0} → {1})",
-            ["WindowTitle"] = "重分集模式",
+            ["WindowTitle"] = "1cenc Episode Repartition",
             ["SelectFolder"] = "选择重分集视频源文件夹",
             ["AppendFiles"] = "追加文件",
             ["ImportFolder"] = "导入文件夹",
@@ -120,7 +120,7 @@ public sealed class RepartLangProvider
         {
             ["Tool"] = "影片來源重分集",
             ["ToolCount"] = "影片來源重分集 ({0} → {1})",
-            ["WindowTitle"] = "重分集模式",
+            ["WindowTitle"] = "1cenc Episode Repartition",
             ["InputSources"] = "輸入影片來源",
             ["OutputEpisodes"] = "輸出分集"
         };
@@ -130,7 +130,7 @@ public sealed class RepartLangProvider
         {
             ["Tool"] = "映像ソース再分割",
             ["ToolCount"] = "映像ソース再分割 ({0} -> {1})",
-            ["WindowTitle"] = "再分割モード",
+            ["WindowTitle"] = "1cenc Episode Repartition",
             ["ValidationTitle"] = "再分割ソース検証",
             ["OutputEpisodes"] = "再分割出力"
         };
@@ -138,7 +138,7 @@ public sealed class RepartLangProvider
         {
             ["Tool"] = "Репарт видеоисточника",
             ["ToolCount"] = "Репарт видеоисточника ({0} -> {1})",
-            ["WindowTitle"] = "Режим Репарт",
+            ["WindowTitle"] = "1cenc Episode Repartition",
             ["ValidationTitle"] = "Проверка источника Репарт",
             ["OutputEpisodes"] = "Выходы Репарт"
         };
