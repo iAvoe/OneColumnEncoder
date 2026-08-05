@@ -32,6 +32,28 @@ public sealed class RepartOutputItemVM : BaseVM
     }
 }
 
+public sealed class RepartDividerItemVM : BaseVM
+{
+    private bool _isSelected;
+
+    public RepartDividerItemVM(RepartDividerM model, long totalFrames)
+    {
+        Model = model;
+        Position = totalFrames > 0 ? (double)(model.Frame + 1) / totalFrames : 0d;
+    }
+
+    public RepartDividerM Model { get; }
+    public long Frame => Model.Frame;
+    public bool IsLocked => Model.IsLocked;
+    public double Position { get; }
+
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set => SetProperty(ref _isSelected, value);
+    }
+}
+
 public sealed class RepartTimelineSliceVM(
     Guid? outputId,
     string label,

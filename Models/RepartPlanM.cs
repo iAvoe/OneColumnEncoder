@@ -72,6 +72,11 @@ public sealed record RepartOutputSegmentM(
         LastFrame + 1 == other.FirstFrame || other.LastFrame + 1 == FirstFrame;
 }
 
+public sealed record RepartDividerM(
+    Guid Id,
+    long Frame,
+    bool IsLocked);
+
 public sealed record RepartTimelineRangeM(
     Guid? OutputId,
     string BaseName,
@@ -93,6 +98,7 @@ public sealed class RepartPlanM
     public long TotalFrames { get; init; }
     public List<RepartSourceM> Sources { get; init; } = [];
     public List<RepartOutputSegmentM> Outputs { get; init; } = [];
+    public List<RepartDividerM> Dividers { get; init; } = [];
 
     public bool IsConfigured =>
         Sources.Count > 0 && Outputs.Count > 0 && TotalFrames > 0 &&
@@ -116,7 +122,8 @@ public sealed class RepartPlanM
         FrameRateDenominator = FrameRateDenominator,
         TotalFrames = TotalFrames,
         Sources = [.. Sources],
-        Outputs = [.. Outputs]
+        Outputs = [.. Outputs],
+        Dividers = [.. Dividers]
     };
 
     public IReadOnlyList<RepartTimelineRangeM> BuildTimelineRanges(

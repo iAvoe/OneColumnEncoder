@@ -6,7 +6,7 @@
              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
              xmlns:viewmodels="clr-namespace:OneColumnEncoder.ViewModels"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-              d:DataContext="{d:DesignInstance Type=viewmodels:EncodingMonitorVM}"
+             d:DataContext="{d:DesignInstance Type=viewmodels:EncodingMonitorVM}"
              mc:Ignorable="d"
              Width="310"
              PreviewMouseWheel="Sidebar_PreviewMouseWheel">
@@ -54,7 +54,7 @@
                           VerticalScrollBarVisibility="Auto">
                 <StackPanel>
                     <comps:SectionHeader HeaderText="{Binding QueueSidebarLang.QueueSidebarRunningHeaderText}"
-                                          Margin="0 4" />
+                                         Margin="0 5" />
                     <Border Visibility="{Binding QueueSidebar.HasRunningJob, Converter={StaticResource BoolToVisibility}}">
                         <cards:MiniItemCard DataContext="{Binding QueueSidebar.RunningJob}"
                                             IsSelected="{Binding IsSelected}"
@@ -69,17 +69,17 @@
                         </cards:MiniItemCard>
                     </Border>
                     <comps:SectionHeader HeaderText="{Binding QueueSidebarLang.QueueSidebarWaitingHeaderText}"
-                                          Margin="0 5" />
+                                         Margin="0 5" />
                     <ListBox ItemsSource="{Binding QueueSidebar.WaitingJobs}"
                              SelectedItem="{Binding QueueSidebar.SelectedWaitingJob, Mode=OneWayToSource}"
                              Style="{StaticResource RepartOutputList}" />
                     <comps:SectionHeader HeaderText="{Binding QueueSidebarLang.QueueSidebarUnfinishedHeaderText}"
-                                          Margin="0 5" />
+                                         Margin="0 5" />
                     <ListBox ItemsSource="{Binding QueueSidebar.UnfinishedJobs}"
                              SelectedItem="{Binding QueueSidebar.SelectedUnfinishedJob, Mode=OneWayToSource}"
                              Style="{StaticResource RepartOutputList}" />
                     <comps:SectionHeader HeaderText="{Binding QueueSidebarLang.QueueSidebarCompletedHeaderText}"
-                                          Margin="0 5" />
+                                         Margin="0 5" />
                     <ListBox ItemsSource="{Binding QueueSidebar.CompletedJobs}"
                              SelectedItem="{Binding QueueSidebar.SelectedCompletedJob, Mode=OneWayToSource}"
                              Style="{StaticResource RepartOutputList}" />
