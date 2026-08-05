@@ -69,7 +69,8 @@ public sealed record RepartSourceProbe(
     int FrameRateDenominator,
     RepartVideoFormatSignature Signature,
     long InitialLength,
-    long InitialWriteTicks);
+    long InitialWriteTicks,
+    long? FrameCount);
 
 // Outcome of the expensive frame-count scan. When rejected, the source must not
 // be used in the plan.
@@ -198,7 +199,8 @@ public static class RepartSourceValidator
                     frameRate.den,
                     signature,
                     probe.InitialLength,
-                    probe.InitialWriteTicks));
+                    probe.InitialWriteTicks,
+                    TryGetFrameCount(stream)));
         }
         catch (Exception ex)
         {
@@ -217,7 +219,9 @@ public static class RepartSourceValidator
         long frameCount;
         try
         {
-            frameCount = await CountFramesAsync(ffprobePath, filePath, cancellationToken);
+            frameCount = probe.FrameCount is > 0
+                ? probe.FrameCount.Value
+                : await CountFramesAsync(ffprobePath, filePath, cancellationToken);
         }
         catch (OperationCanceledException)
         {
@@ -405,13 +409,14 @@ public static class RepartInterlacedPrompt
 {
     public static bool Confirm(ModalNavS modalNavS, string windowTitle, RepartInterlacedSourceInfo source)
     {
-        OpenWarnModalCmd cmd = new(
-            modalNavS,
-            windowTitle,
-            string.Format(
-                RepartLangProvider.Current["InterlacedSourcePrompt"],
-                source.DisplayName,
-                source.FieldOrder));
+        RepartLangProvider lang = RepartLangProvider.Current;
+        string message = string.Join(
+            Environment.NewLine,
+            string.Format(lang["SourceLabel"], source.FilePath),
+            string.Format(lang["InterlacedSourceRejected"], source.DisplayName, source.FieldOrder),
+            string.Empty,
+            lang["InterlacedSourcePrompt"]);
+        OpenWarnModalCmd cmd = new(modalNavS, windowTitle, message);
         cmd.Execute(null);
         return cmd.DialogResult == true;
     }

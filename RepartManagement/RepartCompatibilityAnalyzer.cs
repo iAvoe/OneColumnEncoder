@@ -162,6 +162,12 @@ public static class RepartCompatibilityAnalyzer
         {
             if (analysis.RejectionReason != null)
             {
+                RepartExcludedSourceInfo excludedInfo = new(
+                    sourceFile.FilePath,
+                    sourceFile.DisplayName,
+                    analysis.RejectionReason.Value,
+                    analysis.Detail);
+
                 if (analysis.RejectionReason == RepartExclusionReason.Interlaced)
                 {
                     bool shouldDiscard = confirmDiscardInterlacedSource?.Invoke(new(
@@ -175,12 +181,11 @@ public static class RepartCompatibilityAnalyzer
                                 sourceFile.DisplayName,
                                 analysis.Detail ?? string.Empty),
                             cancellationToken);
+                    excluded.Add(excludedInfo);
+                    continue;
                 }
-                Exclude(new RepartExcludedSourceInfo(
-                    sourceFile.FilePath,
-                    sourceFile.DisplayName,
-                    analysis.RejectionReason.Value,
-                    analysis.Detail));
+
+                Exclude(excludedInfo);
                 continue;
             }
 
@@ -211,16 +216,32 @@ public static class RepartCompatibilityAnalyzer
         // 5. Build the plan that will be loaded into RepartConfModal. Only sources
         // that survived every earlier filter reach the expensive frame-count scan.
         // The modal opens only after exclusions are reported.
-        for (int i = 0; i < candidates.Count; i++)
+        async Task<(string Path, string DisplayName, string RawJson, RepartScanOutcome Scan)> ScanCandidateAsync(
+            string path,
+            string displayName,
+            RepartSourceProbe sourceProbe,
+            int index)
         {
-            (string path, string displayName, RepartSourceProbe sourceProbe) = candidates[i];
-            onFileProgress?.Invoke(i + 1, candidates.Count, displayName);
-
+            onFileProgress?.Invoke(index + 1, candidates.Count, displayName);
             RepartScanOutcome scan = await RepartSourceValidator.ScanFramesAsync(
                 ffprobePath,
                 path,
                 sourceProbe,
                 cancellationToken);
+            return (path, displayName, sourceProbe.RawJson, scan);
+        }
+
+        Task<(string Path, string DisplayName, string RawJson, RepartScanOutcome Scan)>[] scanTasks = candidates
+            .Select((candidate, index) => ScanCandidateAsync(
+                candidate.Path,
+                candidate.DisplayName,
+                candidate.Probe,
+                index))
+            .ToArray();
+
+        (string Path, string DisplayName, string RawJson, RepartScanOutcome Scan)[] scanResults = await Task.WhenAll(scanTasks);
+        foreach ((string path, string displayName, string rawJson, RepartScanOutcome scan) in scanResults)
+        {
             if (scan.RejectionReason != null)
             {
                 Exclude(new RepartExcludedSourceInfo(
@@ -235,7 +256,7 @@ public static class RepartCompatibilityAnalyzer
             checked { cumulativeFrames += scan.FrameCount; }
             sources.Add(new RepartSourceM(
                 path,
-                sourceProbe.RawJson,
+                rawJson,
                 scan.FrameCount,
                 firstFrame,
                 cumulativeFrames - 1,

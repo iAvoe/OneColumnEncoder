@@ -28,6 +28,7 @@
             <Setter Property="ItemTemplate" Value="{StaticResource RepartOutputItemTemplate}" />
         </Style>
     </UserControl.Resources>
+    
     <Border Background="{StaticResource RemixedBackground2}" BorderBrush="{StaticResource RemixedBorder2}" BorderThickness="0 0 1 0" Padding="7 10 7 14">
         <Grid>
             <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
