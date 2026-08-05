@@ -18,6 +18,8 @@ public sealed class RepartOutputItemVM : BaseVM
     public RepartOutputSegmentM Model { get; }
     public string Name => Model.BaseName;
     public string P1Text { get; }
+    public string FrameRangeText => $"{Model.FirstFrame:N0} - {Model.LastFrame:N0}";
+    public string FrameCountText => $"{Model.FrameCount:N0} {RepartLangProvider.Current["FrameFormat"]}";
     public string DisplayR1Text => string.Empty;
     public string R2Text => string.Empty;
     public string R3Text => string.Empty;
