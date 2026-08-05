@@ -34,12 +34,13 @@
                              Margin="0 5 0 0" />
         </StackPanel>
 
-        <Grid Grid.Row="1"
-              IsEnabled="{Binding CanEdit}">
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+        <Grid IsEnabled="{Binding CanEdit}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="*"
-                               MaxHeight="50"/>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
@@ -48,6 +49,7 @@
                                  HeaderText="{Binding TimelineTitle}" />
             <Border Grid.Row="1"
                     Margin="0 5 0 10"
+                    MaxHeight="50"
                     Padding="3"
                     Background="{StaticResource TimelineTrackBackgroundDark}"
                     BorderBrush="{StaticResource TimelineTrackBorderDark}"
@@ -353,6 +355,7 @@
                 </Border>
             </Grid>
         </Grid>
+        </ScrollViewer>
 
         <Grid Grid.Row="2"
               Margin="0 15 0 0">

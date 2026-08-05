@@ -6,6 +6,7 @@ using OneColumnEncoder.RepartManagement;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.Views;
+using System.Threading;
 using System.Windows;
 
 namespace OneColumnEncoder.Commands.OpenClose;
@@ -44,14 +45,39 @@ public sealed class OpenRepartConfCmd(
 
             try
             {
-                // Run the full Repart Mode check & filter pass before the window opens:
-                // every rejected source is reported here (between the per-source ffprobe
-                // failure modal and the completion summary) instead of being silently
-                // dropped after the window opens. The resulting plan is pre-loaded.
-                RepartAnalysisResult result = await RepartCompatibilityAnalyzer.AnalyzeAndFilterAsync(
+                // Run the full Repart Mode check & filter pass before the window opens,
+                // showing per-file progress and a cancel button: the expensive frame-count
+                // scans can take a long time, so the import must stay cancellable and
+                // visibly in progress instead of appearing stuck. Every rejected source is
+                // reported after the pass (between the per-source ffprobe failure modal and
+                // the completion summary), and the resulting plan is pre-loaded.
+                using CancellationTokenSource cancellation = new();
+                ProgressModal progressWindow = new();
+                ProgressVM progressVM = new(
+                    RepartConfVM.WindowTitleText,
+                    string.Format(RepartLangProvider.Current["AnalyzingProgress"], 0, folderPaths.Length, string.Empty).Trim(),
+                    new ActionCmd(_ => cancellation.Cancel()));
+                progressWindow.DataContext = progressVM;
+                progressWindow.Owner = Application.Current.MainWindow;
+                progressWindow.Closed += (_, _) =>
+                {
+                    cancellation.Cancel();
+                    modalNavS.Close();
+                };
+                modalNavS.CurrentModalVM = progressVM;
+
+                Task<RepartAnalysisResult> analysisTask = RepartCompatibilityAnalyzer.AnalyzeAndFilterAsync(
                     getFfprobePath(),
                     folderPaths,
-                    source => RepartInterlacedPrompt.Confirm(modalNavS, RepartConfVM.WindowTitleText, source));
+                    source => RepartInterlacedPrompt.Confirm(modalNavS, RepartConfVM.WindowTitleText, source),
+                    (index, total, name) => progressVM.P1Text =
+                        string.Format(RepartLangProvider.Current["AnalyzingProgress"], index, total, name),
+                    cancellation.Token);
+
+                _ = CloseWhenCompletedAsync(analysisTask, progressWindow);
+                progressWindow.ShowDialog();
+
+                RepartAnalysisResult result = await analysisTask;
 
                 foreach (RepartExcludedSourceInfo excluded in result.Excluded)
                 {
@@ -99,5 +125,17 @@ public sealed class OpenRepartConfCmd(
         modalNavS.CurrentModalVM = vm;
         window.Show();
         _ = vm.InitializeAsync([], initialPlan);
+    }
+
+    private static async Task CloseWhenCompletedAsync(Task task, ProgressModal modal)
+    {
+        try
+        {
+            await task;
+        }
+        catch
+        {
+        }
+        if (modal.IsVisible) modal.Close();
     }
 }

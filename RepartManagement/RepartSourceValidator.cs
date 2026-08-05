@@ -34,24 +34,55 @@ public sealed record RepartInterlacedSourceInfo(
     string DisplayName,
     string FieldOrder);
 
-// Outcome of one per-file Repart Mode check pass. When rejected, the reason tells
-// the caller why the source was excluded so it can be reported or filtered.
-public sealed record RepartSourceValidation(
-    bool IsAccepted,
-    RepartExclusionReason? ExclusionReason,
-    string? Detail,
-    string RawJson = "",
-    long FrameCount = 0,
-    int FrameRateNumerator = 0,
-    int FrameRateDenominator = 0,
-    long FileLength = 0,
-    long LastWriteUtcTicks = 0,
-    RepartVideoFormatSignature? Signature = null);
+public sealed record RepartSourceFile(
+    string FilePath,
+    string DisplayName,
+    long InitialLength,
+    long InitialWriteTicks);
 
-// Modular per-file source checks for Repart Mode. Every check is an independent,
-// reusable unit producing a structured rejection or acceptance outcome, so that
-// any entry point (pre-open import, in-window re-import) applies the exact same
-// validation and can report or filter exclusions consistently.
+public sealed record RepartSourceFileOutcome(
+    RepartExclusionReason? RejectionReason,
+    string? Detail,
+    RepartSourceFile? SourceFile);
+
+public sealed record RepartRawProbe(
+    string RawJson,
+    long InitialLength,
+    long InitialWriteTicks);
+
+public sealed record RepartRawProbeOutcome(
+    RepartExclusionReason? RejectionReason,
+    string? Detail,
+    RepartRawProbe? Probe);
+
+// Outcome of checks based on already-collected ffprobe data. When rejected, the
+// reason tells the caller why the source was excluded so it can be reported.
+public sealed record RepartProbeOutcome(
+    RepartExclusionReason? RejectionReason,
+    string? Detail,
+    RepartSourceProbe? Probe);
+
+// Data collected from the probe stage, needed for the expensive frame-count scan.
+public sealed record RepartSourceProbe(
+    string RawJson,
+    int FrameRateNumerator,
+    int FrameRateDenominator,
+    RepartVideoFormatSignature Signature,
+    long InitialLength,
+    long InitialWriteTicks);
+
+// Outcome of the expensive frame-count scan. When rejected, the source must not
+// be used in the plan.
+public sealed record RepartScanOutcome(
+    RepartExclusionReason? RejectionReason,
+    string? Detail,
+    long FrameCount,
+    long FileLength,
+    long LastWriteUtcTicks);
+
+// Modular per-file source checks for Repart Mode. The import pipeline runs in the
+// same order everywhere: no-ffprobe filtering, simple ffprobe analyzability
+// filtering, ffprobe-data analysis, analysis-based filtering, then frame scanning.
 public static class RepartSourceValidator
 {
     private const string ShowEntries =
@@ -60,22 +91,36 @@ public static class RepartSourceValidator
         "time_base,color_range,color_space,color_transfer,color_primaries,chroma_location," +
         "nb_frames,nb_read_frames,duration,extradata:format=duration";
 
-    public static async Task<RepartSourceValidation> ValidateAsync(
+    // Stage 1: filters that do not need ffprobe.
+    public static RepartSourceFileOutcome CheckWithoutFfprobe(string filePath)
+    {
+        string fullPath = Path.GetFullPath(filePath);
+        string displayName = Path.GetFileName(fullPath);
+        if (!File.Exists(fullPath))
+            return RejectedFile(RepartExclusionReason.SourceMissing);
+
+        FileInfo file = new(fullPath);
+        return new RepartSourceFileOutcome(
+            null,
+            null,
+            new RepartSourceFile(
+                fullPath,
+                displayName,
+                file.Length,
+                file.LastWriteTimeUtc.Ticks));
+    }
+
+    // Stage 2: simple ffprobe filtering. This only proves the file can be
+    // analyzed and has a video stream; rule-based exclusions happen later.
+    public static async Task<RepartRawProbeOutcome> ProbeCanAnalyzeAsync(
         string ffprobePath,
-        string filePath,
+        RepartSourceFile sourceFile,
         CancellationToken cancellationToken = default)
     {
-        if (!File.Exists(filePath))
-            return Rejected(RepartExclusionReason.SourceMissing, filePath);
-
-        FileInfo beforeAnalysis = new(filePath);
-        long initialLength = beforeAnalysis.Length;
-        long initialWriteTicks = beforeAnalysis.LastWriteTimeUtc.Ticks;
-
         string rawJson;
         try
         {
-            rawJson = await ProbeAsync(ffprobePath, filePath, cancellationToken);
+            rawJson = await ProbeAsync(ffprobePath, sourceFile.FilePath, cancellationToken);
         }
         catch (OperationCanceledException)
         {
@@ -83,59 +128,22 @@ public static class RepartSourceValidator
         }
         catch (Exception ex)
         {
-            return Rejected(RepartExclusionReason.ProbeFailed, filePath, ex.Message);
+            return RejectedRaw(RepartExclusionReason.ProbeFailed, ex.Message);
         }
 
         try
         {
             using JsonDocument document = JsonDocument.Parse(rawJson);
             if (!FrameRate.TryGetFirstVideoStream(document.RootElement, out JsonElement stream))
-                return Rejected(RepartExclusionReason.NoVideoStream, filePath);
+                return RejectedRaw(RepartExclusionReason.NoVideoStream);
 
-            string fieldOrder = Get(stream, "field_order");
-            if (!IsProgressiveFieldOrder(fieldOrder))
-                return Rejected(RepartExclusionReason.Interlaced, filePath, fieldOrder);
-
-            if (GetInt(stream, "width") <= 0 || GetInt(stream, "height") <= 0)
-                return Rejected(RepartExclusionReason.NoDimensions, filePath);
-
-            if (!TryResolveCfrFrameRate(stream, out (int num, int den) frameRate))
-                return Rejected(RepartExclusionReason.NotCfr, filePath);
-
-            long frameCount;
-            try
-            {
-                frameCount = await CountFramesAsync(ffprobePath, filePath, cancellationToken);
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch
-            {
-                return Rejected(RepartExclusionReason.FrameCountUnavailable, filePath);
-            }
-            if (frameCount <= 0)
-                return Rejected(RepartExclusionReason.FrameCountUnavailable, filePath);
-
-            RepartVideoFormatSignature signature = BuildSignature(stream, frameRate.num, frameRate.den);
-
-            FileInfo file = new(filePath);
-            file.Refresh();
-            if (file.Length != initialLength || file.LastWriteTimeUtc.Ticks != initialWriteTicks)
-                return Rejected(RepartExclusionReason.SourceChanged, filePath);
-
-            return new RepartSourceValidation(
-                IsAccepted: true,
-                ExclusionReason: null,
-                Detail: null,
-                RawJson: rawJson,
-                FrameCount: frameCount,
-                FrameRateNumerator: frameRate.num,
-                FrameRateDenominator: frameRate.den,
-                FileLength: file.Length,
-                LastWriteUtcTicks: file.LastWriteTimeUtc.Ticks,
-                Signature: signature);
+            return new RepartRawProbeOutcome(
+                null,
+                null,
+                new RepartRawProbe(
+                    rawJson,
+                    sourceFile.InitialLength,
+                    sourceFile.InitialWriteTicks));
         }
         catch (OperationCanceledException)
         {
@@ -143,15 +151,92 @@ public static class RepartSourceValidator
         }
         catch (Exception ex)
         {
-            return Rejected(RepartExclusionReason.ProbeFailed, filePath, ex.Message);
+            return RejectedRaw(RepartExclusionReason.ProbeFailed, ex.Message);
         }
     }
 
-    private static RepartSourceValidation Rejected(
-        RepartExclusionReason reason,
+    // Stage 3: analyze already-collected ffprobe data. This method does not run
+    // ffprobe; it only converts raw JSON into Repart-specific facts.
+    public static RepartProbeOutcome AnalyzeProbe(RepartRawProbe probe)
+    {
+        try
+        {
+            using JsonDocument document = JsonDocument.Parse(probe.RawJson);
+            if (!FrameRate.TryGetFirstVideoStream(document.RootElement, out JsonElement stream))
+                return Rejected(RepartExclusionReason.NoVideoStream);
+
+            string fieldOrder = Get(stream, "field_order");
+            if (!IsProgressiveFieldOrder(fieldOrder))
+                return Rejected(RepartExclusionReason.Interlaced, fieldOrder);
+
+            if (GetInt(stream, "width") <= 0 || GetInt(stream, "height") <= 0)
+                return Rejected(RepartExclusionReason.NoDimensions);
+
+            if (!TryResolveCfrFrameRate(stream, out (int num, int den) frameRate))
+                return Rejected(RepartExclusionReason.NotCfr);
+
+            RepartVideoFormatSignature signature = BuildSignature(stream, frameRate.num, frameRate.den);
+
+            return new RepartProbeOutcome(
+                null,
+                null,
+                new RepartSourceProbe(
+                    probe.RawJson,
+                    frameRate.num,
+                    frameRate.den,
+                    signature,
+                    probe.InitialLength,
+                    probe.InitialWriteTicks));
+        }
+        catch (Exception ex)
+        {
+            return Rejected(RepartExclusionReason.ProbeFailed, ex.Message);
+        }
+    }
+
+    // Stage 2: expensive full-file frame-count scan plus file-stability check.
+    // Only call this for files that passed stage 1 AND matched the reference.
+    public static async Task<RepartScanOutcome> ScanFramesAsync(
+        string ffprobePath,
         string filePath,
-        string? detail = null) =>
-        new(false, reason, detail);
+        RepartSourceProbe probe,
+        CancellationToken cancellationToken = default)
+    {
+        long frameCount;
+        try
+        {
+            frameCount = await CountFramesAsync(ffprobePath, filePath, cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch
+        {
+            return RejectedScan(RepartExclusionReason.FrameCountUnavailable);
+        }
+        if (frameCount <= 0)
+            return RejectedScan(RepartExclusionReason.FrameCountUnavailable);
+
+        FileInfo file = new(filePath);
+        file.Refresh();
+        if (file.Length != probe.InitialLength || file.LastWriteTimeUtc.Ticks != probe.InitialWriteTicks)
+            return RejectedScan(RepartExclusionReason.SourceChanged);
+
+        return new RepartScanOutcome(null, null, frameCount, file.Length, file.LastWriteTimeUtc.Ticks);
+    }
+
+    private static RepartProbeOutcome Rejected(RepartExclusionReason reason, string? detail = null) =>
+        new(reason, detail, null);
+
+    private static RepartSourceFileOutcome RejectedFile(RepartExclusionReason reason, string? detail = null) =>
+        new(reason, detail, null);
+
+    private static RepartRawProbeOutcome RejectedRaw(RepartExclusionReason reason, string? detail = null) =>
+        new(reason, detail, null);
+
+    private static RepartScanOutcome RejectedScan(RepartExclusionReason reason) =>
+        new(reason, null, 0, 0, 0);
 
     private static async Task<string> ProbeAsync(
         string ffprobePath,
