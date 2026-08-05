@@ -32,7 +32,6 @@
 
             <ScrollViewer x:Name="SourceScrollViewer"
                           Grid.Row="1"
-                          MaxHeight="360"
                           HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Auto">
                 <ListBox x:Name="SourceListBox"

@@ -27,14 +27,13 @@
             <Grid IsEnabled="{Binding CanEdit}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
                 <Grid Grid.Row="0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
                     <comps:SectionHeader Grid.Row="0"
@@ -42,11 +41,10 @@
                     <Border Grid.Row="1"
                             Margin="0 5 0 10"
                             MaxHeight="50"
-                            Padding="5"
                             Background="{StaticResource TimelineTrackBackgroundDark}"
                             BorderBrush="{StaticResource TimelineTrackBorderDark}"
                             BorderThickness="1"
-                            CornerRadius="4">
+                            CornerRadius="5">
                         <Grid>
                             <ItemsControl ItemsSource="{Binding TimelineSlices}">
                                 <ItemsControl.ItemsPanel>
@@ -177,8 +175,7 @@
                     </Border>
                 </Grid>
 
-                <Grid Grid.Row="2"
-                      Margin="0 0 0 0">
+                <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="310" />
                         <ColumnDefinition Width="10" />
@@ -188,7 +185,7 @@
                     </Grid.ColumnDefinitions>
 
                     <comps:RepartSourceSidebarPanel Grid.Column="0"
-                                                    VerticalAlignment="Top" />
+                                                    VerticalAlignment="Stretch" />
 
                     <Grid Grid.Column="2">
                         <Grid.RowDefinitions>
@@ -206,59 +203,55 @@
                         <comps:SectionHeader Grid.Row="0"
                                              HeaderText="{Binding TimelineControlTitle}" />
                         <Grid Grid.Row="1"
-                              Margin="0 7.5 0 0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="170" />
-                                <ColumnDefinition Width="12" />
-                                <ColumnDefinition Width="170" />
-                                <ColumnDefinition Width="12" />
-                                <ColumnDefinition Width="170" />
-                            </Grid.ColumnDefinitions>
+                              Margin="0 10 0 0">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="160" />
+                                <ColumnDefinition Width="160" />
+                                <ColumnDefinition Width="160" />
+                            </Grid.ColumnDefinitions>
                             <TextBlock Grid.Row="0"
                                        Grid.Column="0"
                                        Text="{Binding StartTimeLabel}"
-                                       Style="{StaticResource H3}" />
+                                       Style="{StaticResource H3}"
+                                       Margin="5 0 0 0" />
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="1"
+                                       Text="{Binding SegmentDurationLabel}"
+                                       Style="{StaticResource H3}"
+                                       Margin="5 0 0 0" />
                             <TextBlock Grid.Row="0"
                                        Grid.Column="2"
-                                       Text="{Binding SegmentDurationLabel}"
-                                       Style="{StaticResource H3}" />
-                            <TextBlock Grid.Row="0"
-                                       Grid.Column="4"
                                        Text="{Binding EndTimeLabel}"
-                                       Style="{StaticResource H3}" />
+                                       Style="{StaticResource H3}"
+                                       Margin="5 0 0 0" />
                             <TextBox Grid.Row="1"
                                      Grid.Column="0"
-                                     Width="170"
                                      Text="{Binding StartTimeText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                                     Padding="6"
-                                     Margin="0 5 0 0" />
+                                     Padding="5"
+                                     Margin="5 5 0 0" />
                             <TextBlock Grid.Row="1"
-                                       Grid.Column="2"
-                                       Width="170"
+                                       Grid.Column="1"
                                        Text="{Binding SegmentDurationText}"
-                                       Padding="6"
-                                       Margin="0 5 0 0"
+                                       Padding="5"
+                                       Margin="5 5 0 0"
                                        VerticalAlignment="Center" />
                             <TextBox Grid.Row="1"
-                                     Grid.Column="4"
-                                     Width="170"
+                                     Grid.Column="2"
                                      Text="{Binding EndTimeText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                                     Padding="6"
-                                     Margin="0 5 0 0" />
+                                     Padding="5"
+                                     Margin="5 5 0 0" />
                         </Grid>
 
                         <Grid Grid.Row="2"
-                              Margin="0 7.5 0 0">
+                              Margin="0 10 0 0">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="170" />
-                                <ColumnDefinition Width="12" />
-                                <ColumnDefinition Width="110" />
-                                <ColumnDefinition Width="12" />
-                                <ColumnDefinition Width="170" />
+                                <ColumnDefinition Width="160" />
+                                <ColumnDefinition Width="160" />
+                                <ColumnDefinition Width="160" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
@@ -267,72 +260,68 @@
                             <TextBlock Grid.Row="0"
                                        Grid.Column="0"
                                        Text="{Binding FirstFrameLabel}"
-                                       Style="{StaticResource H3}" />
+                                       Style="{StaticResource H3}"
+                                       Margin="5 0 0 0" />
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="1"
+                                       Text="{Binding FrameCountLabel}"
+                                       Style="{StaticResource H3}"
+                                       Margin="5 0 0 0" />
                             <TextBlock Grid.Row="0"
                                        Grid.Column="2"
-                                       Text="{Binding FrameCountLabel}"
-                                       Style="{StaticResource H3}" />
-                            <TextBlock Grid.Row="0"
-                                       Grid.Column="4"
                                        Text="{Binding LastFrameLabel}"
-                                       Style="{StaticResource H3}" />
+                                       Style="{StaticResource H3}"
+                                       Margin="5 0 0 0" />
                             <TextBox Grid.Row="1"
                                      Grid.Column="0"
-                                     Width="170"
                                      Text="{Binding FirstFrameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                                     Padding="6"
-                                     Margin="0 5 0 0" />
+                                     Padding="5"
+                                     Margin="5 5 0 0" />
                             <TextBlock Grid.Row="1"
-                                       Grid.Column="2"
-                                       Width="110"
+                                       Grid.Column="1"
                                        Text="{Binding FrameCountText}"
-                                       Padding="6"
-                                       Margin="0 5 0 0"
+                                       Padding="5"
+                                       Margin="5 5 0 0"
                                        VerticalAlignment="Center" />
                             <TextBox Grid.Row="1"
-                                     Grid.Column="4"
-                                     Width="170"
+                                     Grid.Column="2"
                                      Text="{Binding LastFrameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                                     Padding="6"
-                                     Margin="0 5 0 0" />
+                                     Padding="5"
+                                     Margin="5 5 0 0" />
                         </Grid>
 
                         <comps:SectionHeader Grid.Row="3"
-                                             Margin="0 10 0 0"
+                                             Margin="0 15 0 0"
                                              HeaderText="{Binding DividerControlTitle}" />
                         <Grid Grid.Row="4"
-                              Margin="0 7.5 0 0">
+                              Margin="0 10 0 0">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="12" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="12" />
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="160" />
+                                <ColumnDefinition Width="150" />
+                                <ColumnDefinition Width="*"
+                                                  MaxWidth="210"/>
                             </Grid.ColumnDefinitions>
 
-                            <StackPanel Grid.Column="0"
-                                        Width="170">
+                            <StackPanel Grid.Column="0">
                                 <TextBlock Text="{Binding DividerTimestampLabel}"
-                                           Style="{StaticResource H3}" />
+                                           Style="{StaticResource H3}"
+                                           Margin="5 0 0 0" />
                                 <TextBox Text="{Binding DividerTimestampText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
                                          IsEnabled="{Binding CanNudgeDivider}"
-                                         Padding="6"
-                                         Margin="0 5 0 0"
-                                         Width="170" />
+                                         Padding="5"
+                                         Margin="5 5 0 0" />
                             </StackPanel>
-                            <StackPanel Grid.Column="2"
-                                        Width="110">
+                            <StackPanel Grid.Column="1">
                                 <TextBlock Text="{Binding DividerFrameLabel}"
                                            Style="{StaticResource H3}" />
                                 <TextBox Text="{Binding DividerFrameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
                                          IsEnabled="{Binding CanNudgeDivider}"
-                                         Padding="6"
-                                         Margin="0 5 0 0"
-                                         Width="110" />
+                                         Padding="5"
+                                         Margin="5 5 0 0" />
                             </StackPanel>
-                            <comps:ThreeButtonGroup Grid.Column="4"
+                            <comps:ThreeButtonGroup Grid.Column="2"
                                                     DataContext="{Binding DividerControlButtons}"
-                                                    ButtonHeight="30"
+                                                    ButtonHeight="25"
                                                     HorizontalAlignment="Stretch"
                                                     Button1Command="{Binding Cmd1}"
                                                     Button2Command="{Binding Cmd2}"
@@ -340,7 +329,7 @@
                                                     Button1IsEnabled="{Binding B3_1IsEnabled}"
                                                     Button2IsEnabled="{Binding B3_2IsEnabled}"
                                                     Button3IsEnabled="{Binding B3_3IsEnabled}"
-                                                    Margin="0 20 0 0" />
+                                                    Margin="5 20 0 0" />
                         </Grid>
 
                         <Button Grid.Row="5"
@@ -348,8 +337,8 @@
                                 Command="{Binding AddEpisodeCommand}"
                                 IsEnabled="{Binding CanAddEpisode}"
                                 Style="{StaticResource PrimaryButton}"
-                                Width="140"
-                                Height="30"
+                                Width="500"
+                                Height="40"
                                 Margin="0 10 0 0" />
 
                         <comps:ThreeButtonGroup Grid.Row="6"
@@ -393,8 +382,7 @@
                             BorderThickness="1"
                             CornerRadius="5"
                             Padding="10"
-                            VerticalAlignment="Top"
-                            MinHeight="300">
+                            VerticalAlignment="Stretch">
                         <DockPanel>
                             <comps:SectionHeader DockPanel.Dock="Top"
                                                  HeaderText="{Binding OutputEpisodesTitle}" />
@@ -414,7 +402,6 @@
                                      BorderThickness="0"
                                      Background="Transparent"
                                      HorizontalContentAlignment="Stretch"
-                                     MaxHeight="360"
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>

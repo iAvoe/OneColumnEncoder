@@ -1163,7 +1163,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     }
 
     private static string FormatEpisodeName(int index, string? timestamp = null) =>
-        $"1cenc_repart_E{index:00}_{timestamp ?? DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture)}";
+        $"1cenc_rp_E{index:00}_{timestamp ?? DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture)}";
 
     private void LoadDraft(RepartOutputSegmentM model) => SetDraft(model.BaseName, model.FirstFrame, model.LastFrame);
 

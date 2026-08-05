@@ -2453,7 +2453,7 @@ namespace OneColumnEncoder.ViewModels
             string inputPath;
             if (upstreamExeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase))
             {
-                inputPath = Path.Combine(configDirectory, $"source_repart_{plan.PlanId:N}_{executionId:N}.vpy");
+                inputPath = Path.Combine(configDirectory, $"source_rp_{plan.PlanId:N}_{executionId:N}.vpy");
                 string script = sourcePaths.Length == 1
                     ? ScriptTemplate.BuildVpyExportScript(sourcePaths[0], FilterScribeVM.VpyPrefix2, FilterScribeVM.VpySuffix)
                     : ScriptTemplate.BuildConcatVpyExportScript(sourcePaths, FilterScribeVM.VpyPrefix2, FilterScribeVM.VpySuffix);
@@ -2462,7 +2462,7 @@ namespace OneColumnEncoder.ViewModels
             else if (upstreamExeName.Equals("avs2yuv.exe", StringComparison.OrdinalIgnoreCase)
                      || upstreamExeName.Equals("avs2pipemod.exe", StringComparison.OrdinalIgnoreCase))
             {
-                inputPath = Path.Combine(configDirectory, $"source_repart_{plan.PlanId:N}_{executionId:N}.avs");
+                inputPath = Path.Combine(configDirectory, $"source_rp_{plan.PlanId:N}_{executionId:N}.avs");
                 string script = sourcePaths.Length == 1
                     ? ScriptTemplate.BuildAvsExportScript(sourcePaths[0], FilterScribeVM.AvsPrefix2, FilterScribeVM.AvsSuffix)
                     : ScriptTemplate.BuildConcatAvsExportScript(sourcePaths, FilterScribeVM.AvsPrefix2, FilterScribeVM.AvsSuffix);

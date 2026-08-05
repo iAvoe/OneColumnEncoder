@@ -28,7 +28,7 @@ public sealed class VideoSourceRepartState
         if (_plan == null) return string.Empty;
         string path = Path.Combine(
             SaveLoadBase<RepartFileListPathPlaceholder>.GetConfigDirectory(),
-            $"source_repart_{_plan.PlanId:N}_{executionId:N}.txt");
+            $"source_rp_{_plan.PlanId:N}_{executionId:N}.txt");
         return ConcatFileListGenerator.GenerateFileList(CurrentFilePaths, path);
     }
 
