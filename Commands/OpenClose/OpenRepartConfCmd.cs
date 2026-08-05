@@ -45,12 +45,10 @@ public sealed class OpenRepartConfCmd(
 
             try
             {
-                // Run the full Repart Mode check & filter pass before the window opens,
-                // showing per-file progress and a cancel button: the expensive frame-count
-                // scans can take a long time, so the import must stay cancellable and
-                // visibly in progress instead of appearing stuck. Every rejected source is
-                // reported after the pass (between the per-source ffprobe failure modal and
-                // the completion summary), and the resulting plan is pre-loaded.
+                // Run the Repart Mode check & filter pass before the window opens.
+                // Excluded sources are reported immediately, matching queue-mode
+                // behavior: once a source fails a filtering stage, it is skipped and
+                // never reaches the later ffprobe analysis or frame-count scan.
                 using CancellationTokenSource cancellation = new();
                 ProgressModal progressWindow = new();
                 ProgressVM progressVM = new(
@@ -67,25 +65,21 @@ public sealed class OpenRepartConfCmd(
                 modalNavS.CurrentModalVM = progressVM;
 
                 Task<RepartAnalysisResult> analysisTask = RepartCompatibilityAnalyzer.AnalyzeAndFilterAsync(
-                    getFfprobePath(),
-                    folderPaths,
-                    source => RepartInterlacedPrompt.Confirm(modalNavS, RepartConfVM.WindowTitleText, source),
-                    (index, total, name) => progressVM.P1Text =
+                    ffprobePath: getFfprobePath(),
+                    filePaths: folderPaths,
+                    confirmDiscardInterlacedSource: source => RepartInterlacedPrompt.Confirm(modalNavS, RepartConfVM.WindowTitleText, source),
+                    onFileProgress: (index, total, name) => progressVM.P1Text =
                         string.Format(RepartLangProvider.Current["AnalyzingProgress"], index, total, name),
-                    cancellation.Token);
+                    onExcluded: excluded => new OpenErrModalCmd(
+                        modalNavS,
+                        RepartConfVM.WindowTitleText,
+                        RepartExclusionMessages.FormatExcludedMessage(excluded)).Execute(null),
+                    cancellationToken: cancellation.Token);
 
                 _ = CloseWhenCompletedAsync(analysisTask, progressWindow);
                 progressWindow.ShowDialog();
 
                 RepartAnalysisResult result = await analysisTask;
-
-                foreach (RepartExcludedSourceInfo excluded in result.Excluded)
-                {
-                    new OpenErrModalCmd(
-                        modalNavS,
-                        RepartConfVM.WindowTitleText,
-                        RepartExclusionMessages.FormatExcludedMessage(excluded)).Execute(null);
-                }
 
                 if (result.Plan == null)
                 {

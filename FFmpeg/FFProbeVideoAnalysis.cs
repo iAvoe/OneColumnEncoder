@@ -8,7 +8,11 @@ namespace OneColumnEncoder.FFmpeg
     {
         private static FFProbeVideoAnalysisLangProvider Lang => new(UILangProvider.Current.LanguageCode);
 
-        public static async Task<string> AnalyzeAsync(string ffprobePath, string videoSource, string showEntries = "stream")
+        public static async Task<string> AnalyzeAsync(
+            string ffprobePath,
+            string videoSource,
+            string showEntries = "stream",
+            CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(ffprobePath) || !File.Exists(ffprobePath))
                 throw new FileNotFoundException(string.Format(Lang.FfprobeNotFound, ffprobePath));
@@ -27,10 +31,12 @@ namespace OneColumnEncoder.FFmpeg
                 result = await FFprobeProcessRunner.RunAsync(
                     ffprobePath,
                     arguments,
-                    TimeSpan.FromSeconds(30));
+                    TimeSpan.FromSeconds(30),
+                    cancellationToken);
             }
             catch (OperationCanceledException)
             {
+                if (cancellationToken.IsCancellationRequested) throw;
                 throw new TimeoutException(Lang.FfprobeTimedOut);
             }
 

@@ -110,9 +110,36 @@ public static class RepartSourceValidator
                 file.LastWriteTimeUtc.Ticks));
     }
 
-    // Stage 2: simple ffprobe filtering. This only proves the file can be
-    // analyzed and has a video stream; rule-based exclusions happen later.
-    public static async Task<RepartRawProbeOutcome> ProbeCanAnalyzeAsync(
+    // Stage 2: simple ffprobe filtering. This mirrors queue-mode behavior: run a
+    // short metadata-only probe and exclude sources ffprobe cannot analyze before
+    // the heavier Repart-specific ffprobe analysis is attempted.
+    public static async Task<RepartSourceFileOutcome> ProbeCanAnalyzeAsync(
+        string ffprobePath,
+        RepartSourceFile sourceFile,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await FFProbeVideoAnalysis.AnalyzeAsync(
+                ffprobePath,
+                sourceFile.FilePath,
+                cancellationToken: cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception ex)
+        {
+            return RejectedFile(RepartExclusionReason.ProbeFailed, ex.Message);
+        }
+
+        return new RepartSourceFileOutcome(null, null, sourceFile);
+    }
+
+    // Stage 3: Repart-specific ffprobe analysis. Only sources that passed the
+    // simple probe can reach this point.
+    public static async Task<RepartRawProbeOutcome> AnalyzeWithFfprobeAsync(
         string ffprobePath,
         RepartSourceFile sourceFile,
         CancellationToken cancellationToken = default)
@@ -121,22 +148,6 @@ public static class RepartSourceValidator
         try
         {
             rawJson = await ProbeAsync(ffprobePath, sourceFile.FilePath, cancellationToken);
-        }
-        catch (OperationCanceledException)
-        {
-            throw;
-        }
-        catch (Exception ex)
-        {
-            return RejectedRaw(RepartExclusionReason.ProbeFailed, ex.Message);
-        }
-
-        try
-        {
-            using JsonDocument document = JsonDocument.Parse(rawJson);
-            if (!FrameRate.TryGetFirstVideoStream(document.RootElement, out JsonElement stream))
-                return RejectedRaw(RepartExclusionReason.NoVideoStream);
-
             return new RepartRawProbeOutcome(
                 null,
                 null,
@@ -155,8 +166,9 @@ public static class RepartSourceValidator
         }
     }
 
-    // Stage 3: analyze already-collected ffprobe data. This method does not run
-    // ffprobe; it only converts raw JSON into Repart-specific facts.
+    // Stage 4 helper: analyze already-collected ffprobe data. This method does
+    // not run ffprobe; it only converts raw JSON into Repart-specific facts used
+    // by the analysis-based filters.
     public static RepartProbeOutcome AnalyzeProbe(RepartRawProbe probe)
     {
         try
