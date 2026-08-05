@@ -16,348 +16,300 @@
                    Background="{StaticResource Background}">
     <Grid Margin="15">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0"
-                    Margin="0 0 0 10">
-            <TextBlock Text="{Binding SummaryText}"
-                       FontWeight="SemiBold"
-                       Foreground="{StaticResource GlobalPrimary}" />
-            <comps:HintPanel Text="{Binding StatusText}"
-                             HintBrush="{StaticResource GlobalSecondary}"
-                             Margin="0 5 0 0" />
-            <comps:HintPanel Text="{Binding FrameChangingFiltersWarning}"
-                             HintBrush="{StaticResource GlobalSecondary}"
-                             Margin="0 5 0 0" />
-        </StackPanel>
-
-        <ScrollViewer Grid.Row="1"
+        <ScrollViewer Grid.Row="0"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled">
-        <Grid IsEnabled="{Binding CanEdit}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+            <Grid IsEnabled="{Binding CanEdit}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-            <comps:SectionHeader Grid.Row="0"
-                                 HeaderText="{Binding TimelineTitle}" />
-            <Border Grid.Row="1"
-                    Margin="0 5 0 10"
-                    MaxHeight="50"
-                    Padding="3"
-                    Background="{StaticResource TimelineTrackBackgroundDark}"
-                    BorderBrush="{StaticResource TimelineTrackBorderDark}"
-                    BorderThickness="1"
-                    CornerRadius="4">
-                <ItemsControl ItemsSource="{Binding TimelineSlices}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <comps:RepartTimelinePanel />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemContainerStyle>
-                        <Style TargetType="ContentPresenter">
-                            <Setter Property="comps:RepartTimelinePanel.Weight"
-                                    Value="{Binding Weight}" />
-                        </Style>
-                    </ItemsControl.ItemContainerStyle>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Button Content="{Binding Label}"
-                                    ToolTip="{Binding Tooltip}"
-                                    Command="{Binding DataContext.SelectTimelineSliceCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                    CommandParameter="{Binding}"
-                                    Padding="4"
-                                    Margin="2.5"
-                                    HorizontalContentAlignment="Center">
-                                <Button.Style>
-                                    <Style TargetType="Button"
-                                           BasedOn="{StaticResource BaseButton}">
-                                        <Setter Property="Background"
-                                                Value="{StaticResource TimelineThumbBackground}" />
-                                        <Setter Property="BorderBrush"
-                                                Value="{StaticResource TimelineThumbBorder}" />
-                                        <Setter Property="Foreground"
-                                                Value="{StaticResource GlobalPrimary}" />
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsUnallocated}"
-                                                         Value="True">
-                                                <Setter Property="Background"
-                                                        Value="{StaticResource RemixedBackground4}" />
-                                                <Setter Property="BorderBrush"
-                                                        Value="{StaticResource RemixedBorder4}" />
-                                                <Setter Property="Foreground"
-                                                        Value="{StaticResource GlobalSecondary}" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding PaletteIndex}"
-                                                         Value="1">
-                                                <Setter Property="Background"
-                                                        Value="{StaticResource BackgroundGreen}" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding PaletteIndex}"
-                                                         Value="2">
-                                                <Setter Property="Background"
-                                                        Value="{StaticResource BackgroundAmber}" />
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding PaletteIndex}"
-                                                         Value="3">
-                                                <Setter Property="Background"
-                                                        Value="{StaticResource RemixedBackground3}" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-                            </Button>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Border>
-
-            <comps:ClipRangeSelector Grid.Row="2"
-                                     AxisLabels="{Binding AxisLabels}"
-                                     SelectionStart="{Binding SelectionStart, Mode=TwoWay}"
-                                     SelectionEnd="{Binding SelectionEnd, Mode=TwoWay}"
-                                     Margin="0 0 0 10" />
-
-            <Grid Grid.Row="3"
-                  Margin="0 0 0 0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="310" />
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="310" />
-                </Grid.ColumnDefinitions>
-
-                <Border Grid.Column="0"
-                        Background="#BAC8D3"
-                        BorderBrush="#536C80"
+                <comps:SectionHeader Grid.Row="0"
+                                     HeaderText="{Binding TimelineTitle}" />
+                <Border Grid.Row="1"
+                        Margin="0 5 0 10"
+                        MaxHeight="50"
+                        Padding="3"
+                        Background="{StaticResource TimelineTrackBackgroundDark}"
+                        BorderBrush="{StaticResource TimelineTrackBorderDark}"
                         BorderThickness="1"
-                        CornerRadius="5"
-                        Padding="10"
-                        VerticalAlignment="Top">
-                    <DockPanel>
-                        <comps:ThreeButtonGroup DockPanel.Dock="Bottom"
-                                                DataContext="{Binding InputSourceButtons}"
-                                                ButtonHeight="40"
-                                                Button1Command="{Binding Cmd1}"
-                                                Button2Command="{Binding Cmd2}"
-                                                Button3Command="{Binding Cmd3}"
-                                                Button1IsEnabled="{Binding B3_1IsEnabled}"
-                                                Button2IsEnabled="{Binding B3_2IsEnabled}"
-                                                Button3IsEnabled="{Binding B3_3IsEnabled}"
-                                                Margin="0 7.5 0 0" />
-                        <comps:SectionHeader DockPanel.Dock="Top"
-                                             HeaderText="{Binding InputSourcesTitle}" />
-                        <ListBox ItemsSource="{Binding Sources}"
-                                 BorderThickness="0"
-                                 Background="Transparent"
-                                 HorizontalContentAlignment="Stretch"
-                                 MaxHeight="360"
-                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <cards:MiniItemCard DataContext="{Binding}"
-                                                        IsSelected="{Binding IsSelected}"
-                                                        HorizontalAlignment="Stretch"
-                                                        Margin="0 5" />
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </DockPanel>
+                        CornerRadius="4">
+                    <ItemsControl ItemsSource="{Binding TimelineSlices}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <comps:RepartTimelinePanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="ContentPresenter">
+                                <Setter Property="comps:RepartTimelinePanel.Weight"
+                                        Value="{Binding Weight}" />
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Content="{Binding Label}"
+                                        ToolTip="{Binding Tooltip}"
+                                        Command="{Binding DataContext.SelectTimelineSliceCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding}"
+                                        Padding="4"
+                                        Margin="2.5"
+                                        HorizontalContentAlignment="Center">
+                                    <Button.Style>
+                                        <Style TargetType="Button"
+                                               BasedOn="{StaticResource BaseButton}">
+                                            <Setter Property="Background"
+                                                    Value="{StaticResource TimelineThumbBackground}" />
+                                            <Setter Property="BorderBrush"
+                                                    Value="{StaticResource TimelineThumbBorder}" />
+                                            <Setter Property="Foreground"
+                                                    Value="{StaticResource GlobalPrimary}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsUnallocated}"
+                                                             Value="True">
+                                                    <Setter Property="Background"
+                                                            Value="{StaticResource RemixedBackground4}" />
+                                                    <Setter Property="BorderBrush"
+                                                            Value="{StaticResource RemixedBorder4}" />
+                                                    <Setter Property="Foreground"
+                                                            Value="{StaticResource GlobalSecondary}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding PaletteIndex}"
+                                                             Value="1">
+                                                    <Setter Property="Background"
+                                                            Value="{StaticResource BackgroundGreen}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding PaletteIndex}"
+                                                             Value="2">
+                                                    <Setter Property="Background"
+                                                            Value="{StaticResource BackgroundAmber}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding PaletteIndex}"
+                                                             Value="3">
+                                                    <Setter Property="Background"
+                                                            Value="{StaticResource RemixedBackground3}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </Border>
 
-                <Grid Grid.Column="2">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+                <comps:ClipRangeSelector Grid.Row="2"
+                                         AxisLabels="{Binding AxisLabels}"
+                                         SelectionStart="{Binding SelectionStart, Mode=TwoWay}"
+                                         SelectionEnd="{Binding SelectionEnd, Mode=TwoWay}"
+                                         Margin="0 0 0 10" />
 
-                    <Grid Grid.Row="0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0"
-                                    Margin="0 0 5 0">
-                            <TextBlock Text="{Binding OutputNameLabel}"
+                <Grid Grid.Row="3"
+                      Margin="0 0 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="310" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="310" />
+                    </Grid.ColumnDefinitions>
+
+                    <comps:RepartSourceSidebarPanel Grid.Column="0"
+                                                    VerticalAlignment="Top" />
+
+                    <Grid Grid.Column="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0"
+                                        Margin="0 0 5 0">
+                                <TextBlock Text="{Binding OutputNameLabel}"
+                                           Style="{StaticResource H3}" />
+                                <TextBox Text="{Binding OutputNameText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         Padding="6"
+                                         Margin="0 5 0 0" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Grid.Row="1"
+                              Margin="0 7.5 0 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="0"
+                                       Text="{Binding StartTimeLabel}"
                                        Style="{StaticResource H3}" />
-                            <TextBox Text="{Binding OutputNameText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="1"
+                                       Text="{Binding SegmentDurationLabel}"
+                                       Style="{StaticResource H3}"
+                                       Margin="10 0 0 0" />
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="2"
+                                       Text="{Binding EndTimeLabel}"
+                                       Style="{StaticResource H3}"
+                                       Margin="10 0 0 0" />
+                            <TextBox Grid.Row="1"
+                                     Grid.Column="0"
+                                     Text="{Binding StartTimeText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
                                      Padding="6"
                                      Margin="0 5 0 0" />
-                        </StackPanel>
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="1"
+                                       Text="{Binding SegmentDurationText}"
+                                       Padding="6"
+                                       Margin="10 5 0 0"
+                                       VerticalAlignment="Center" />
+                            <TextBox Grid.Row="1"
+                                     Grid.Column="2"
+                                     Text="{Binding EndTimeText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                     Padding="6"
+                                     Margin="10 5 0 0" />
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="3"
+                                       Text="{Binding TimeFormatText}"
+                                       Foreground="{StaticResource GlobalSecondary}"
+                                       VerticalAlignment="Center"
+                                       Margin="10 5 0 0" />
+                        </Grid>
+
+                        <Grid Grid.Row="2"
+                              Margin="0 7.5 0 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="0"
+                                       Text="{Binding FirstFrameLabel}"
+                                       Style="{StaticResource H3}" />
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="1"
+                                       Text="{Binding FrameCountLabel}"
+                                       Style="{StaticResource H3}"
+                                       Margin="10 0 0 0" />
+                            <TextBlock Grid.Row="0"
+                                       Grid.Column="2"
+                                       Text="{Binding LastFrameLabel}"
+                                       Style="{StaticResource H3}"
+                                       Margin="10 0 0 0" />
+                            <TextBox Grid.Row="1"
+                                     Grid.Column="0"
+                                     Text="{Binding FirstFrameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                     Padding="6"
+                                     Margin="0 5 0 0" />
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="1"
+                                       Text="{Binding FrameCountText}"
+                                       Padding="6"
+                                       Margin="10 5 0 0"
+                                       VerticalAlignment="Center" />
+                            <TextBox Grid.Row="1"
+                                     Grid.Column="2"
+                                     Text="{Binding LastFrameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                                     Padding="6"
+                                     Margin="10 5 0 0" />
+                            <TextBlock Grid.Row="1"
+                                       Grid.Column="3"
+                                       Text="{Binding FrameFormatText}"
+                                       Foreground="{StaticResource GlobalSecondary}"
+                                       VerticalAlignment="Center"
+                                       Margin="10 5 0 0" />
+                        </Grid>
+
+                        <comps:FiveButtonGroup Grid.Row="3"
+                                               DataContext="{Binding EpisodeEditButtons}"
+                                               ButtonHeight="30"
+                                               Button1Command="{Binding Cmd1}"
+                                               Button2Command="{Binding Cmd2}"
+                                               Button3Command="{Binding Cmd3}"
+                                               Button4Command="{Binding Cmd4}"
+                                               Button5Command="{Binding Cmd5}"
+                                               Button1IsEnabled="{Binding B5_1IsEnabled}"
+                                               Button2IsEnabled="{Binding B5_2IsEnabled}"
+                                               Button3IsEnabled="{Binding B5_3IsEnabled}"
+                                               Button4IsEnabled="{Binding B5_4IsEnabled}"
+                                               Button5IsEnabled="{Binding B5_5IsEnabled}"
+                                               Margin="0 10 0 0" />
                     </Grid>
 
-                    <Grid Grid.Row="1"
-                          Margin="0 7.5 0 0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0"
-                                   Grid.Column="0"
-                                   Text="{Binding StartTimeLabel}"
-                                   Style="{StaticResource H3}" />
-                        <TextBlock Grid.Row="0"
-                                   Grid.Column="1"
-                                   Text="{Binding SegmentDurationLabel}"
-                                   Style="{StaticResource H3}"
-                                   Margin="10 0 0 0" />
-                        <TextBlock Grid.Row="0"
-                                   Grid.Column="2"
-                                   Text="{Binding EndTimeLabel}"
-                                   Style="{StaticResource H3}"
-                                   Margin="10 0 0 0" />
-                        <TextBox Grid.Row="1"
-                                 Grid.Column="0"
-                                 Text="{Binding StartTimeText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                                 Padding="6"
-                                 Margin="0 5 0 0" />
-                        <TextBlock Grid.Row="1"
-                                   Grid.Column="1"
-                                   Text="{Binding SegmentDurationText}"
-                                   Padding="6"
-                                   Margin="10 5 0 0"
-                                   VerticalAlignment="Center" />
-                        <TextBox Grid.Row="1"
-                                 Grid.Column="2"
-                                 Text="{Binding EndTimeText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                                 Padding="6"
-                                 Margin="10 5 0 0" />
-                        <TextBlock Grid.Row="1"
-                                   Grid.Column="3"
-                                   Text="{Binding TimeFormatText}"
-                                   Foreground="{StaticResource GlobalSecondary}"
-                                   VerticalAlignment="Center"
-                                   Margin="10 5 0 0" />
-                    </Grid>
-
-                    <Grid Grid.Row="2"
-                          Margin="0 7.5 0 0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0"
-                                   Grid.Column="0"
-                                   Text="{Binding FirstFrameLabel}"
-                                   Style="{StaticResource H3}" />
-                        <TextBlock Grid.Row="0"
-                                   Grid.Column="1"
-                                   Text="{Binding FrameCountLabel}"
-                                   Style="{StaticResource H3}"
-                                   Margin="10 0 0 0" />
-                        <TextBlock Grid.Row="0"
-                                   Grid.Column="2"
-                                   Text="{Binding LastFrameLabel}"
-                                   Style="{StaticResource H3}"
-                                   Margin="10 0 0 0" />
-                        <TextBox Grid.Row="1"
-                                 Grid.Column="0"
-                                 Text="{Binding FirstFrameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                                 Padding="6"
-                                 Margin="0 5 0 0" />
-                        <TextBlock Grid.Row="1"
-                                   Grid.Column="1"
-                                   Text="{Binding FrameCountText}"
-                                   Padding="6"
-                                   Margin="10 5 0 0"
-                                   VerticalAlignment="Center" />
-                        <TextBox Grid.Row="1"
-                                 Grid.Column="2"
-                                 Text="{Binding LastFrameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                                 Padding="6"
-                                 Margin="10 5 0 0" />
-                        <TextBlock Grid.Row="1"
-                                   Grid.Column="3"
-                                   Text="{Binding FrameFormatText}"
-                                   Foreground="{StaticResource GlobalSecondary}"
-                                   VerticalAlignment="Center"
-                                   Margin="10 5 0 0" />
-                    </Grid>
-
-                    <comps:FiveButtonGroup Grid.Row="3"
-                                           DataContext="{Binding EpisodeEditButtons}"
-                                           ButtonHeight="40"
-                                           Button1Command="{Binding Cmd1}"
-                                           Button2Command="{Binding Cmd2}"
-                                           Button3Command="{Binding Cmd3}"
-                                           Button4Command="{Binding Cmd4}"
-                                           Button5Command="{Binding Cmd5}"
-                                           Button1IsEnabled="{Binding B5_1IsEnabled}"
-                                           Button2IsEnabled="{Binding B5_2IsEnabled}"
-                                           Button3IsEnabled="{Binding B5_3IsEnabled}"
-                                           Button4IsEnabled="{Binding B5_4IsEnabled}"
-                                           Button5IsEnabled="{Binding B5_5IsEnabled}"
-                                           Margin="0 10 0 0" />
+                    <Border Grid.Column="4"
+                            Background="#F1E6D8"
+                            BorderBrush="#BBAC9C"
+                            BorderThickness="1"
+                            CornerRadius="5"
+                            Padding="10"
+                            VerticalAlignment="Top"
+                            MinHeight="300">
+                        <DockPanel>
+                            <Button DockPanel.Dock="Bottom"
+                                    Content="{Binding AddEpisodeText}"
+                                    Command="{Binding AddEpisodeCommand}"
+                                    IsEnabled="{Binding CanAddEpisode}"
+                                    Style="{StaticResource PrimaryButton}"
+                                    HorizontalAlignment="Stretch"
+                                    Height="35"
+                                    Margin="0 7.5 0 0" />
+                            <comps:SectionHeader DockPanel.Dock="Top"
+                                                 HeaderText="{Binding OutputEpisodesTitle}" />
+                            <ListBox x:Name="OutputListBox"
+                                     ItemsSource="{Binding Outputs}"
+                                     SelectionMode="Extended"
+                                     SelectionChanged="OutputListBox_SelectionChanged"
+                                     BorderThickness="0"
+                                     Background="Transparent"
+                                     HorizontalContentAlignment="Stretch"
+                                     MaxHeight="360"
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <cards:MiniItemCard DataContext="{Binding}"
+                                                            IsSelected="{Binding IsSelected}"
+                                                            ShowActionButtons="False"
+                                                            HorizontalAlignment="Stretch"
+                                                            Margin="0 5" />
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </DockPanel>
+                    </Border>
                 </Grid>
-
-                <Border Grid.Column="4"
-                        Background="#F1E6D8"
-                        BorderBrush="#BBAC9C"
-                        BorderThickness="1"
-                        CornerRadius="5"
-                        Padding="10"
-                        VerticalAlignment="Top"
-                        MinHeight="300">
-                    <DockPanel>
-                        <Button DockPanel.Dock="Bottom"
-                                Content="{Binding AddEpisodeText}"
-                                Command="{Binding AddEpisodeCommand}"
-                                IsEnabled="{Binding CanAddEpisode}"
-                                Style="{StaticResource PrimaryButton}"
-                                HorizontalAlignment="Stretch"
-                                Height="40"
-                                Margin="0 7.5 0 0" />
-                        <comps:SectionHeader DockPanel.Dock="Top"
-                                             HeaderText="{Binding OutputEpisodesTitle}" />
-                        <ListBox x:Name="OutputListBox"
-                                 ItemsSource="{Binding Outputs}"
-                                 SelectionMode="Extended"
-                                 SelectionChanged="OutputListBox_SelectionChanged"
-                                 BorderThickness="0"
-                                 Background="Transparent"
-                                 HorizontalContentAlignment="Stretch"
-                                 MaxHeight="360"
-                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <cards:MiniItemCard DataContext="{Binding}"
-                                                        IsSelected="{Binding IsSelected}"
-                                                        ShowActionButtons="False"
-                                                        HorizontalAlignment="Stretch"
-                                                        Margin="0 5" />
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </DockPanel>
-                </Border>
             </Grid>
-        </Grid>
         </ScrollViewer>
 
-        <Grid Grid.Row="2"
+        <Grid Grid.Row="1"
               Margin="0 15 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -369,20 +321,34 @@
                          IsIndeterminate="True"
                          Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}"
                          VerticalAlignment="Center" />
+            <!-- TODO: Replace to TwoButtonGroup -->
             <Button Grid.Column="1"
                     Content="{Binding CancelText}"
                     Command="{Binding CancelCommand}"
                     Style="{StaticResource SecondaryButton}"
                     Width="110"
-                    Height="32"
+                    Height="30"
                     Margin="0 0 7.5 0" />
             <Button Grid.Column="2"
                     Content="{Binding ApplyText}"
                     Command="{Binding ApplyCommand}"
                     Style="{StaticResource PrimaryButton}"
                     Width="110"
-                    Height="32"
+                    Height="30"
                     IsEnabled="{Binding CanApply}" />
         </Grid>
+
+        <StackPanel Grid.Row="2"
+                    Margin="0 0 0 10">
+            <TextBlock Text="{Binding SummaryText}"
+                       FontWeight="SemiBold"
+                       Foreground="{StaticResource GlobalPrimary}" />
+            <comps:HintPanel Text="{Binding StatusText}"
+                             HintBrush="{StaticResource GlobalSecondary}"
+                             Margin="0 5 0 0" />
+            <comps:HintPanel Text="{Binding FrameChangingFiltersWarning}"
+                             HintBrush="{StaticResource GlobalSecondary}"
+                             Margin="0 5 0 0" />
+        </StackPanel>
     </Grid>
 </ui:AdaptiveWindow>

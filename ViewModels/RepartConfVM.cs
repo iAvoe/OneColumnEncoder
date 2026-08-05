@@ -118,6 +118,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public string FrameChangingFiltersWarning => RepartLangProvider.Current["FrameChangingFiltersWarning"];
     public string ApplyText => RepartLangProvider.Current["Apply"];
     public string CancelText => RepartLangProvider.Current["Cancel"];
+    public string SourceStatsText => string.Format(RepartLangProvider.Current["SourceStats"], Sources.Count);
 
     public ObservableCollection<RepartSourceItemVM> Sources { get; } = [];
     public ObservableCollection<RepartOutputItemVM> Outputs { get; } = [];
@@ -515,7 +516,11 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private void LoadSources()
     {
         Sources.Clear();
-        if (_analysis == null) return;
+        if (_analysis == null)
+        {
+            OnPropertyChanged(nameof(SourceStatsText));
+            return;
+        }
         for (int i = 0; i < _analysis.Sources.Count; i++)
         {
             RepartSourceM source = _analysis.Sources[i];
@@ -531,6 +536,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
                 R3IsEnabled = i < _analysis.Sources.Count - 1
             });
         }
+        OnPropertyChanged(nameof(SourceStatsText));
     }
 
     private void AddEpisode()
@@ -930,12 +936,14 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             nameof(EndTimeLabel), nameof(TimeFormatText), nameof(FirstFrameLabel), nameof(FrameCountLabel),
             nameof(LastFrameLabel), nameof(FrameFormatText), nameof(AddEpisodeText), nameof(ApplyEditText),
             nameof(DeleteEpisodeText), nameof(MergeLeftText), nameof(MergeRightText), nameof(ResetEditText),
-            nameof(FrameChangingFiltersWarning),
+            nameof(SourceStatsText), nameof(FrameChangingFiltersWarning),
             nameof(ApplyText), nameof(CancelText)
         }) OnPropertyChanged(property);
         InputSourceButtons.B3_1Text = ImportMplsText;
         InputSourceButtons.B3_2Text = AppendFilesText;
         InputSourceButtons.B3_3Text = ImportFolderText;
+        foreach (RepartSourceItemVM source in Sources)
+            source.RefreshLanguage();
         EpisodeEditButtons.B5_1Text = MergeLeftText;
         EpisodeEditButtons.B5_2Text = MergeRightText;
         EpisodeEditButtons.B5_3Text = DeleteEpisodeText;

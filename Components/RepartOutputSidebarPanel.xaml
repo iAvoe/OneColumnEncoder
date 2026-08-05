@@ -3,6 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:cards="clr-namespace:OneColumnEncoder.Components.Cards"
              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+             xmlns:viewmodels="clr-namespace:OneColumnEncoder.ViewModels"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             d:DataContext="{d:DesignInstance Type=viewmodels:RepartConfVM}"
              Width="310"
              PreviewMouseWheel="Sidebar_PreviewMouseWheel">
     <UserControl.Resources>

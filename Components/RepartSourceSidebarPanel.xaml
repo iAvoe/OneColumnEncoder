@@ -1,0 +1,104 @@
+<UserControl x:Class="OneColumnEncoder.Components.RepartSourceSidebarPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:cards="clr-namespace:OneColumnEncoder.Components.Cards"
+             xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+             xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
+             d:DataContext="{d:DesignInstance Type=vms:RepartConfVM}"
+             mc:Ignorable="d"
+             Width="310"
+             PreviewMouseWheel="RepartSourceSidebarPanel_PreviewMouseWheel">
+    <UserControl.Resources>
+        <Thickness x:Key="RepartSourceSidebarContentPadding">10</Thickness>
+        <Thickness x:Key="RepartSourceSidebarItemMargin">0 5</Thickness>
+    </UserControl.Resources>
+
+    <Border Background="#BAC8D3"
+            BorderBrush="#536C80"
+            BorderThickness="1"
+            CornerRadius="5"
+            Padding="{StaticResource RepartSourceSidebarContentPadding}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <comps:SectionHeader HeaderText="{Binding InputSourcesTitle}"
+                                 Margin="0 0 0 5" />
+
+            <ScrollViewer x:Name="SourceScrollViewer"
+                          Grid.Row="1"
+                          MaxHeight="360"
+                          HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto">
+                <ListBox x:Name="SourceListBox"
+                         ItemsSource="{Binding Sources}"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         HorizontalContentAlignment="Stretch"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Padding"
+                                    Value="0" />
+                            <Setter Property="Margin"
+                                    Value="0" />
+                            <Setter Property="BorderThickness"
+                                    Value="0" />
+                            <Setter Property="Background"
+                                    Value="Transparent" />
+                            <Setter Property="HorizontalContentAlignment"
+                                    Value="Stretch" />
+                            <Setter Property="FocusVisualStyle"
+                                    Value="{x:Null}" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <ContentPresenter Margin="{TemplateBinding Padding}"
+                                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="{StaticResource RepartSourceSidebarItemMargin}"
+                                    HorizontalAlignment="Stretch">
+                                <cards:MiniItemCard DataContext="{Binding}"
+                                                    IsSelected="{Binding IsSelected}"
+                                                    IsRecentlyMoved="{Binding IsRecentlyMoved}"
+                                                    HorizontalAlignment="Stretch" />
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </ScrollViewer>
+
+            <StackPanel Grid.Row="2"
+                        Margin="0 7.5 0 0">
+                <comps:ThreeButtonGroup DataContext="{Binding InputSourceButtons}"
+                                        ButtonHeight="30"
+                                        Button1Command="{Binding Cmd1}"
+                                        Button2Command="{Binding Cmd2}"
+                                        Button3Command="{Binding Cmd3}"
+                                        Button1IsEnabled="{Binding B3_1IsEnabled}"
+                                        Button2IsEnabled="{Binding B3_2IsEnabled}"
+                                        Button3IsEnabled="{Binding B3_3IsEnabled}" />
+                <TextBlock Text="{Binding SourceStatsText}"
+                           FontSize="10"
+                           Height="12.5"
+                           Margin="0 2.5 0 0"
+                           Foreground="{StaticResource GlobalSecondary}"
+                           TextWrapping="Wrap" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

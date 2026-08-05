@@ -62,6 +62,16 @@ public static class RepartCompatibilityAnalyzer
             onExcluded?.Invoke(info);
         }
 
+        RepartAnalysisResult? CreateInsufficientSourcesResult(int remainingSourceCount)
+        {
+            if (remainingSourceCount >= 2) return null;
+
+            string fatalMessage = remainingSourceCount == 0 && excluded.Count > 0
+                ? RepartExclusionMessages.FormatReason(excluded[0])
+                : RepartLangProvider.Current["MinSourcesRequired"];
+            return new(null, excluded, fatalMessage);
+        }
+
         // 1. No-ffprobe filters. These checks must run before any ffprobe process
         // starts, so missing or otherwise invalid file paths are excluded cheaply.
         for (int i = 0; i < filePaths.Count; i++)
@@ -83,6 +93,9 @@ public static class RepartCompatibilityAnalyzer
 
             sourceFiles.Add(fileCheck.SourceFile!);
         }
+
+        if (CreateInsufficientSourcesResult(sourceFiles.Count) is RepartAnalysisResult insufficientAfterFileFilter)
+            return insufficientAfterFileFilter;
 
         // 2. Simple ffprobe filters. Run only the lightweight metadata probe here;
         // files that ffprobe cannot analyze are excluded before any heavier analysis.
@@ -108,11 +121,8 @@ public static class RepartCompatibilityAnalyzer
             probeableSources.Add(probeable.SourceFile!);
         }
 
-        if (probeableSources.Count == 0)
-        {
-            RepartExcludedSourceInfo first = excluded[0];
-            return new(null, excluded, RepartExclusionMessages.FormatReason(first));
-        }
+        if (CreateInsufficientSourcesResult(probeableSources.Count) is RepartAnalysisResult insufficientAfterSimpleProbe)
+            return insufficientAfterSimpleProbe;
 
         // 3. ffprobe analysis. Only sources that survived the simple probe reach
         // this Repart-specific probe; failures here are excluded immediately.
@@ -138,11 +148,8 @@ public static class RepartCompatibilityAnalyzer
             rawProbes.Add((sourceFile, rawProbe.Probe!));
         }
 
-        if (rawProbes.Count == 0)
-        {
-            RepartExcludedSourceInfo first = excluded[0];
-            return new(null, excluded, RepartExclusionMessages.FormatReason(first));
-        }
+        if (CreateInsufficientSourcesResult(rawProbes.Count) is RepartAnalysisResult insufficientAfterFfprobeAnalysis)
+            return insufficientAfterFfprobeAnalysis;
 
         // 4. Filters based on ffprobe analysis. Parse the Repart-specific raw
         // JSON and reject interlaced/non-CFR/etc. before frame counting.
@@ -198,11 +205,8 @@ public static class RepartCompatibilityAnalyzer
             candidates.Add((sourceFile.FilePath, sourceFile.DisplayName, sourceProbe));
         }
 
-        if (candidates.Count == 0)
-        {
-            RepartExcludedSourceInfo first = excluded[0];
-            return new(null, excluded, RepartExclusionMessages.FormatReason(first));
-        }
+        if (CreateInsufficientSourcesResult(candidates.Count) is RepartAnalysisResult insufficientAfterAnalysisFilters)
+            return insufficientAfterAnalysisFilters;
 
         // 5. Build the plan that will be loaded into RepartConfModal. Only sources
         // that survived every earlier filter reach the expensive frame-count scan.
@@ -239,11 +243,8 @@ public static class RepartCompatibilityAnalyzer
                 scan.LastWriteUtcTicks));
         }
 
-        if (sources.Count == 0)
-        {
-            RepartExcludedSourceInfo first = excluded[0];
-            return new(null, excluded, RepartExclusionMessages.FormatReason(first));
-        }
+        if (CreateInsufficientSourcesResult(sources.Count) is RepartAnalysisResult insufficientAfterFrameScan)
+            return insufficientAfterFrameScan;
 
         RepartPlanM plan = new()
         {

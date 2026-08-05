@@ -50,4 +50,11 @@ public sealed class RepartSourceItemVM : BaseVM
         get => _isRecentlyMoved;
         set => SetProperty(ref _isRecentlyMoved, value);
     }
+
+    public void RefreshLanguage()
+    {
+        OnPropertyChanged(nameof(DisplayR1Text));
+        OnPropertyChanged(nameof(R2Text));
+        OnPropertyChanged(nameof(R3Text));
+    }
 }
