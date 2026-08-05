@@ -26,6 +26,25 @@ public partial class RepartConfModal : AdaptiveWindow
             vm.SelectDividerForInteraction(item);
     }
 
+    private void DividerThumb_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (DataContext is RepartConfVM vm && sender is FrameworkElement { DataContext: RepartDividerItemVM item })
+            vm.SelectDividerForInteraction(item);
+    }
+
+    private void TimelineTrack_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ClickCount != 2 || sender is not FrameworkElement track || DataContext is not RepartConfVM vm || !vm.CanAddEpisode)
+            return;
+
+        if (track.ActualWidth <= 0d)
+            return;
+
+        double position = Math.Max(0d, Math.Min(1d, e.GetPosition(track).X / track.ActualWidth));
+        vm.AddDividerAtPosition(position);
+        e.Handled = true;
+    }
+
     private void DividerThumb_DragStarted(object sender, DragStartedEventArgs e)
     {
         _dividerDragPointerOffset = 0d;

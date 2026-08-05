@@ -140,6 +140,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public static string DeleteLeftDividerText => RepartLangProvider.Current["DeleteLeftDivider"];
     public static string DeleteRightDividerText => RepartLangProvider.Current["DeleteRightDivider"];
     public static string ClearDividersText => RepartLangProvider.Current["ClearDividers"];
+    public static string TimelineHintText => RepartLangProvider.Current["TimelineHint"];
     public string OutputCountText => string.Format(RepartLangProvider.Current["OutputCount"], Outputs.Count);
     public static string TimelineStartText => "00:00:00.000";
     public string TimelineEndText => _analysis == null
@@ -459,6 +460,19 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         double clampedPosition = Clamp(position, 0d, 1d);
         long frame = (long)Math.Ceiling(clampedPosition * _analysis.TotalFrames) - 1;
         MoveDivider(item.Model.Id, frame);
+    }
+
+    public void AddDividerAtPosition(double position)
+    {
+        if (_analysis == null || !CanAddEpisode) return;
+
+        double clampedPosition = Clamp(position, 0d, 1d);
+        long frame = (long)Math.Ceiling(clampedPosition * _analysis.TotalFrames) - 1;
+        frame = Math.Min(_analysis.TotalFrames - 2, Math.Max(0, frame));
+
+        SetNewDividerFrame(frame);
+        SetNewDividerTimestamp(frame);
+        AddDivider();
     }
 
     private static List<RepartDividerM> GetPlanDividers(RepartPlanM plan)

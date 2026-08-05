@@ -80,7 +80,8 @@ public sealed class RepartLangProvider(string languageCode)
             ["FrameChangingFiltersWarning"] = "Repart outputs are frame-exact. Avoid filters that change frame count or timing, such as IVTC, decimation, interpolation, or CFR/VFR conversion.",
             ["SourceLabel"] = "Source: {0}",
             ["WillExcludeSource"] = "This source item will be excluded. Close this dialog to proceed importing.",
-            ["ImportSummary"] = "Repart import completed: {0} source(s) accepted, {1} source item(s) excluded."
+            ["ImportSummary"] = "Repart import completed: {0} source(s) accepted, {1} source item(s) excluded.",
+            ["TimelineHint"] = "Double-click an empty spot on the timeline to add a divider at the cursor; right-click a divider to delete it, the divider on its left, the divider on its right, or clear all dividers."
         },
         ["zh-cn"] = new()
         {
@@ -158,7 +159,8 @@ public sealed class RepartLangProvider(string languageCode)
             ["FrameChangingFiltersWarning"] = "重分集输出按源帧号精确切分。请避免使用会改变帧数或帧时序的滤镜，例如 IVTC、抽帧、补帧、CFR/VFR 转换。",
             ["SourceLabel"] = "视频源：{0}",
             ["WillExcludeSource"] = "将排除此视频源，关闭对话框后继续处理其余项目。",
-            ["ImportSummary"] = "重分集导入完成：已接受 {0} 个视频源，已排除 {1} 个源项目。"
+            ["ImportSummary"] = "重分集导入完成：已接受 {0} 个视频源，已排除 {1} 个源项目。",
+            ["TimelineHint"] = "双击时间轴空白处可在鼠标位置添加分割线；右键分割线可直接删除当前分割线、左侧分割线、右侧分割线或清空全部分割线。"
         }
     };
 
@@ -240,7 +242,8 @@ public sealed class RepartLangProvider(string languageCode)
             ["RevisionDisabled"] = "重分集計畫不允許使用影片來源修訂；如需修改來源資訊，請重新匯入影片來源。",
             ["SourceLabel"] = "影片來源：{0}",
             ["WillExcludeSource"] = "將排除此影片來源，關閉對話方塊後繼續處理其餘項目。",
-            ["ImportSummary"] = "重分集匯入完成：已接受 {0} 個影片來源，已排除 {1} 個來源項目。"
+            ["ImportSummary"] = "重分集匯入完成：已接受 {0} 個影片來源，已排除 {1} 個來源項目。",
+            ["TimelineHint"] = "在時間軸空白處按兩下，即可在滑鼠位置新增分割線；在分割線上按右鍵，可直接刪除目前分割線、左側分割線、右側分割線，或刪除全部分割線。"
         };
         Data["fr"] = new(Data["en"])
         {
@@ -318,7 +321,8 @@ public sealed class RepartLangProvider(string languageCode)
             ["FrameChangingFiltersWarning"] = "Les sorties Répartition sont découpées exactement sur les images source. Évitez les filtres qui modifient le nombre d'images ou le timing, comme IVTC, la décimation, l'interpolation ou la conversion CFR/VFR.",
             ["SourceLabel"] = "Source : {0}",
             ["WillExcludeSource"] = "Cet élément source sera exclu. Fermez cette boîte de dialogue pour continuer l'importation.",
-            ["ImportSummary"] = "Importation Répartition terminée : {0} source(s) acceptée(s), {1} élément(s) de source exclu(s)."
+            ["ImportSummary"] = "Importation Répartition terminée : {0} source(s) acceptée(s), {1} élément(s) de source exclu(s).",
+            ["TimelineHint"] = "Double-cliquez sur un emplacement vide de la chronologie pour ajouter une limite à la position du curseur ; cliquez avec le bouton droit sur une limite pour la supprimer, supprimer celle de gauche, celle de droite, ou tout effacer."
         };
         Data["es"] = new(Data["en"])
         {
@@ -396,7 +400,8 @@ public sealed class RepartLangProvider(string languageCode)
             ["AddNewDivider"] = "Añadir nueva división",
             ["ManageDividers"] = "Operaciones por lotes",
             ["OutputCount"] = "{0} salida(s)",
-            ["ClearDividers"] = "Borrar todo"
+            ["ClearDividers"] = "Borrar todo",
+            ["TimelineHint"] = "Haz doble clic en un espacio vacío de la línea temporal para añadir una división en la posición del cursor; haz clic con el botón derecho en una división para eliminarla, eliminar la de la izquierda, la de la derecha o borrarlas todas."
         };
         Data["ja"] = new(Data["en"])
         {
@@ -474,7 +479,8 @@ public sealed class RepartLangProvider(string languageCode)
             ["AddNewDivider"] = "新しい境界を追加",
             ["ManageDividers"] = "一括操作",
             ["OutputCount"] = "{0} 出力",
-            ["ClearDividers"] = "すべてクリア"
+            ["ClearDividers"] = "すべてクリア",
+            ["TimelineHint"] = "タイムラインの空白部分をダブルクリックすると、カーソル位置に境界を追加できます。境界を右クリックすると、現在の境界、左側の境界、右側の境界の削除、またはすべて削除を実行できます。"
         };
         Data["ru"] = new(Data["en"])
         {
@@ -552,7 +558,8 @@ public sealed class RepartLangProvider(string languageCode)
             ["AddNewDivider"] = "Добавить новый разделитель",
             ["ManageDividers"] = "Пакетные операции",
             ["OutputCount"] = "{0} выходов",
-            ["ClearDividers"] = "Очистить всё"
+            ["ClearDividers"] = "Очистить всё",
+            ["TimelineHint"] = "Дважды щёлкните по пустому месту на шкале времени, чтобы добавить разделитель в позиции курсора; щёлкните правой кнопкой по разделителю, чтобы удалить его, разделитель слева, справа или все разделители."
         };
     }
 
