@@ -55,23 +55,3 @@ public sealed class RepartDividerItemVM : BaseVM
         set => SetProperty(ref _isSelected, value);
     }
 }
-
-public sealed class RepartTimelineSliceVM(
-    Guid? outputId,
-    string label,
-    string tooltip,
-    long firstFrame,
-    long lastFrame,
-    bool isUnallocated,
-    int paletteIndex)
-{
-    public Guid? OutputId { get; } = outputId;
-    public string Label { get; } = label;
-    public string Tooltip { get; } = tooltip;
-    public long FirstFrame { get; } = firstFrame;
-    public long LastFrame { get; } = lastFrame;
-    public long FrameCount => LastFrame >= FirstFrame ? LastFrame - FirstFrame + 1 : 0;
-    public double Weight => Math.Max(1d, FrameCount);
-    public bool IsUnallocated { get; } = isUnallocated;
-    public int PaletteIndex { get; } = paletteIndex;
-}

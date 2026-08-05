@@ -73,34 +73,6 @@
                     BorderThickness="1"
                     CornerRadius="5">
                 <Grid>
-                    <ItemsControl ItemsSource="{Binding TimelineSlices}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <comps:RepartTimelinePanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemContainerStyle>
-                            <Style TargetType="ContentPresenter">
-                                <Setter Property="comps:RepartTimelinePanel.Weight"
-                                        Value="{Binding Weight}" />
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Border Margin="2.5"
-                                        Padding="5"
-                                        Background="{StaticResource TimelineThumbBackground}"
-                                        BorderBrush="{StaticResource TimelineThumbBorder}"
-                                        BorderThickness="1">
-                                    <TextBlock Text="{Binding Label}"
-                                               TextTrimming="CharacterEllipsis"
-                                               HorizontalAlignment="Center"
-                                               VerticalAlignment="Center" />
-                                </Border>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-
                     <ItemsControl ItemsSource="{Binding DividerItems}"
                                   Panel.ZIndex="1">
                         <ItemsControl.ItemsPanel>

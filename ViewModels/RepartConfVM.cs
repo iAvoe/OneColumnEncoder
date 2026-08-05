@@ -73,7 +73,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         MergeLeftCommand = new ActionCmd(_ => MergeAdjacentSelected(-1));
         MergeRightCommand = new ActionCmd(_ => MergeAdjacentSelected(1));
         ResetDraftCommand = new ActionCmd(_ => ResetDraft());
-        SelectTimelineSliceCommand = new ActionCmd(SelectTimelineSlice);
         ApplyCommand = new ActionCmd(_ => ApplyAndClose());
         CancelCommand = new CloseModalCmd(closeAction);
         SelectDividerCommand = new ActionCmd(SelectDivider);
@@ -186,7 +185,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
     public ObservableCollection<RepartSourceItemVM> Sources { get; } = [];
     public ObservableCollection<RepartOutputItemVM> Outputs { get; } = [];
-    public ObservableCollection<RepartTimelineSliceVM> TimelineSlices { get; } = [];
     public ObservableCollection<RepartDividerItemVM> DividerItems { get; } = [];
     public ObservableCollection<string> AxisLabels { get; } = [];
     public ButtonGroupVM InputSourceButtons { get; }
@@ -206,7 +204,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public ICommand MergeLeftCommand { get; }
     public ICommand MergeRightCommand { get; }
     public ICommand ResetDraftCommand { get; }
-    public ICommand SelectTimelineSliceCommand { get; }
     public ICommand ApplyCommand { get; }
     public ICommand CancelCommand { get; }
     public ICommand SelectDividerCommand { get; }
@@ -1075,36 +1072,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
     private void RefreshTimeline()
     {
-        TimelineSlices.Clear();
         DividerItems.Clear();
         if (_analysis == null || _analysis.TotalFrames <= 0) return;
-        int palette = 0;
-        foreach (RepartTimelineRangeM range in _analysis.BuildTimelineRanges(
-            Outputs.Select(output => output.Model),
-            _analysis.TotalFrames))
-        {
-            if (range.IsUnallocated)
-            {
-                TimelineSlices.Add(new RepartTimelineSliceVM(
-                    null,
-                    RepartLangProvider.Current["Unallocated"],
-                    $"{range.FirstFrame:N0} - {range.LastFrame:N0}",
-                    range.FirstFrame,
-                    range.LastFrame,
-                    true,
-                    0));
-                continue;
-            }
-            RepartOutputItemVM output = Outputs.First(item => item.Model.Id == range.OutputId);
-            TimelineSlices.Add(new RepartTimelineSliceVM(
-                output.Model.Id,
-                output.Model.BaseName,
-                output.P1Text,
-                output.Model.FirstFrame,
-                output.Model.LastFrame,
-                false,
-                palette++ % 4));
-        }
         Guid? selectedId = _selectedDivider?.Model.Id;
         foreach (RepartDividerM divider in _dividers.OrderBy(divider => divider.Frame))
         {
@@ -1131,27 +1100,13 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         }
     }
 
-    private void SelectTimelineSlice(object? parameter)
-    {
-        if (parameter is not RepartTimelineSliceVM slice) return;
-        if (slice.OutputId is Guid outputId)
-        {
-            RepartOutputItemVM? output = Outputs.FirstOrDefault(item => item.Model.Id == outputId);
-            _selectedOutputs = output == null ? [] : [output];
-            foreach (RepartOutputItemVM item in Outputs) item.IsSelected = ReferenceEquals(item, output);
-            SelectedOutput = output;
-            return;
-        }
-        _selectedOutputs = [];
-        foreach (RepartOutputItemVM item in Outputs) item.IsSelected = false;
-        SelectedOutput = null;
-        SetDraft(NewEpisodeName(), slice.FirstFrame, slice.LastFrame);
-    }
-
     private void PrepareNextDraft()
     {
         if (_analysis == null) return;
-        RepartTimelineSliceVM? gap = TimelineSlices.FirstOrDefault(slice => slice.IsUnallocated);
+        RepartTimelineRangeM? gap = _analysis.BuildTimelineRanges(
+            Outputs.Select(output => output.Model),
+            _analysis.TotalFrames)
+            .FirstOrDefault(slice => slice.IsUnallocated);
         if (gap != null) SetDraft(NewEpisodeName(), gap.FirstFrame, gap.LastFrame);
         else SetDraft(NewEpisodeName(), 0, Math.Max(0, _analysis.TotalFrames - 1));
     }
