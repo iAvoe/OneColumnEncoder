@@ -63,7 +63,7 @@ public sealed class RepartLangProvider(string languageCode)
             ["ExcludedCount"] = "{0} incompatible source(s) excluded",
             ["Ready"] = "Sources are compatible.",
             ["ReadyWithExcluded"] = "Sources are compatible. {0} incompatible source item(s) were excluded.",
-            ["InterlacedSourcePrompt"] = "Repart Mode requires progressive, scan-stable CFR sources for frame-exact output.\n\nConfirm: discard this source and continue importing.\nCancel: cancel this import.",
+            ["InterlacedSourcePrompt"] = "Repart Mode requires progressive, scan-stable CFR sources for frame-exact output.\n\nConfirm: discard this source and proceed importing.\nCancel: cancel this import.",
             ["InterlacedSourceRejected"] = "Interlaced source is not supported in Repart Mode: {0} (field_order={1}).",
             ["Summary"] = "{0} sources | {1:N0} frames | {2}/{3} fps | {4}",
             ["FfprobeRequired"] = "Repart Mode requires ffprobe.",
@@ -88,7 +88,7 @@ public sealed class RepartLangProvider(string languageCode)
             ["SourceChangeWarning"] = "Changing sources will remap unaffected output episodes and remove affected ones. Continue?",
             ["SourceChangeTitle"] = "Reset Repart Outputs",
             ["SourceLabel"] = "Source: {0}",
-            ["WillExcludeSource"] = "This source item will be excluded. Close this dialog to continue importing.",
+            ["WillExcludeSource"] = "This source item will be excluded. Close this dialog to proceed importing.",
             ["ImportSummary"] = "Repart import completed: {0} source(s) accepted, {1} source item(s) excluded."
         },
         ["zh-cn"] = new()

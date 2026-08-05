@@ -125,52 +125,52 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
     public const string WindowTitleText = "1cenc Episode Repartition";
 
-    public string WindowTitle => WindowTitleText;
-    public string InputSourcesTitle => RepartLangProvider.Current["InputSources"];
-    public string OutputEpisodesTitle => RepartLangProvider.Current["OutputEpisodes"];
-    public string TimelineTitle => RepartLangProvider.Current["Timeline"];
-    public string TimelineControlTitle => RepartLangProvider.Current["TimelineControl"];
-    public string DividerControlTitle => RepartLangProvider.Current["DividerControl"];
-    public string AddNewDividerTitle => RepartLangProvider.Current["AddNewDivider"];
-    public string DividerOpsTitle => RepartLangProvider.Current["ManageDividers"];
-    public string ImportFolderText => RepartLangProvider.Current["ImportFolder"];
-    public string AppendFilesText => RepartLangProvider.Current["AppendFiles"];
-    public string ImportChaptersText => RepartLangProvider.Current["ImportChapters"];
-    public string ImportMplsText => RepartLangProvider.Current["ImportMpls"];
-    public string UnavailableText => RepartLangProvider.Current["Unavailable"];
-    public string OutputNameLabel => RepartLangProvider.Current["OutputName"];
-    public string StartTimeLabel => RepartLangProvider.Current["StartTime"];
-    public string SegmentDurationLabel => RepartLangProvider.Current["SegmentDuration"];
-    public string EndTimeLabel => RepartLangProvider.Current["EndTime"];
-    public string FirstFrameLabel => RepartLangProvider.Current["FirstFrame"];
-    public string FrameCountLabel => RepartLangProvider.Current["FrameCount"];
-    public string LastFrameLabel => RepartLangProvider.Current["LastFrame"];
-    public string TimeFormatText => RepartLangProvider.Current["TimeFormat"];
-    public string FrameFormatText => RepartLangProvider.Current["FrameFormat"];
-    public string AddEpisodeText => RepartLangProvider.Current["AddDivider"];
-    public string ApplyEditText => RepartLangProvider.Current["ApplyEdit"];
-    public string DeleteEpisodeText => RepartLangProvider.Current["DeleteDivider"];
-    public string MergeLeftText => RepartLangProvider.Current["MergeLeft"];
-    public string MergeRightText => RepartLangProvider.Current["MergeRight"];
-    public string ResetEditText => RepartLangProvider.Current["ResetEdit"];
-    public string FrameChangingFiltersWarning => RepartLangProvider.Current["FrameChangingFiltersWarning"];
-    public string ApplyText => RepartLangProvider.Current["Confirm"];
-    public string CancelText => RepartLangProvider.Current["Cancel"];
-    public string AddDividerText => RepartLangProvider.Current["AddDivider"];
-    public string DividerPreviousFrameText => RepartLangProvider.Current["DividerPreviousFrame"];
-    public string DividerNextFrameText => RepartLangProvider.Current["DividerNextFrame"];
-    public string DividerTimestampLabel => RepartLangProvider.Current["DividerTimestampLabel"];
-    public string DividerFrameLabel => RepartLangProvider.Current["DividerFrameLabel"];
+    public static string WindowTitle => WindowTitleText;
+    public static string InputSourcesTitle => RepartLangProvider.Current["InputSources"];
+    public static string OutputEpisodesTitle => RepartLangProvider.Current["OutputEpisodes"];
+    public static string TimelineTitle => RepartLangProvider.Current["Timeline"];
+    public static string TimelineControlTitle => RepartLangProvider.Current["TimelineControl"];
+    public static string DividerControlTitle => RepartLangProvider.Current["DividerControl"];
+    public static string AddNewDividerTitle => RepartLangProvider.Current["AddNewDivider"];
+    public static string DividerOpsTitle => RepartLangProvider.Current["ManageDividers"];
+    public static string ImportFolderText => RepartLangProvider.Current["ImportFolder"];
+    public static string AppendFilesText => RepartLangProvider.Current["AppendFiles"];
+    public static string ImportChaptersText => RepartLangProvider.Current["ImportChapters"];
+    public static string ImportMplsText => RepartLangProvider.Current["ImportMpls"];
+    public static string UnavailableText => RepartLangProvider.Current["Unavailable"];
+    public static string OutputNameLabel => RepartLangProvider.Current["OutputName"];
+    public static string StartTimeLabel => RepartLangProvider.Current["StartTime"];
+    public static string SegmentDurationLabel => RepartLangProvider.Current["SegmentDuration"];
+    public static string EndTimeLabel => RepartLangProvider.Current["EndTime"];
+    public static string FirstFrameLabel => RepartLangProvider.Current["FirstFrame"];
+    public static string FrameCountLabel => RepartLangProvider.Current["FrameCount"];
+    public static string LastFrameLabel => RepartLangProvider.Current["LastFrame"];
+    public static string TimeFormatText => RepartLangProvider.Current["TimeFormat"];
+    public static string FrameFormatText => RepartLangProvider.Current["FrameFormat"];
+    public static string AddEpisodeText => RepartLangProvider.Current["AddDivider"];
+    public static string ApplyEditText => RepartLangProvider.Current["ApplyEdit"];
+    public static string DeleteEpisodeText => RepartLangProvider.Current["DeleteDivider"];
+    public static string MergeLeftText => RepartLangProvider.Current["MergeLeft"];
+    public static string MergeRightText => RepartLangProvider.Current["MergeRight"];
+    public static string ResetEditText => RepartLangProvider.Current["ResetEdit"];
+    public static string FrameChangingFiltersWarning => RepartLangProvider.Current["FrameChangingFiltersWarning"];
+    public static string ApplyText => RepartLangProvider.Current["Confirm"];
+    public static string CancelText => RepartLangProvider.Current["Cancel"];
+    public static string AddDividerText => RepartLangProvider.Current["AddDivider"];
+    public static string DividerPreviousFrameText => RepartLangProvider.Current["DividerPreviousFrame"];
+    public static string DividerNextFrameText => RepartLangProvider.Current["DividerNextFrame"];
+    public static string DividerTimestampLabel => RepartLangProvider.Current["DividerTimestampLabel"];
+    public static string DividerFrameLabel => RepartLangProvider.Current["DividerFrameLabel"];
     public string LockDividerText => SelectedDivider?.IsLocked == true
         ? RepartLangProvider.Current["UnlockDivider"]
         : RepartLangProvider.Current["LockDivider"];
-    public string DeleteSelectedDividerText => RepartLangProvider.Current["DeleteSelectedDivider"];
-    public string DeleteLeftDividerText => RepartLangProvider.Current["DeleteLeftDivider"];
-    public string DeleteRightDividerText => RepartLangProvider.Current["DeleteRightDivider"];
-    public string ClearDividersText => RepartLangProvider.Current["ClearDividers"];
+    public static string DeleteSelectedDividerText => RepartLangProvider.Current["DeleteSelectedDivider"];
+    public static string DeleteLeftDividerText => RepartLangProvider.Current["DeleteLeftDivider"];
+    public static string DeleteRightDividerText => RepartLangProvider.Current["DeleteRightDivider"];
+    public static string ClearDividersText => RepartLangProvider.Current["ClearDividers"];
     public string SourceStatsText => string.Format(RepartLangProvider.Current["SourceStats"], Sources.Count);
     public string OutputCountText => string.Format(RepartLangProvider.Current["OutputCount"], Outputs.Count);
-    public string TimelineStartText => "00:00:00.000";
+    public static string TimelineStartText => "00:00:00.000";
     public string TimelineEndText => _analysis == null
         ? "00:00:00.000"
         : EncodingPipeline.FormatTimestamp(TimeSpan.FromSeconds(_analysis.TotalSeconds));
@@ -444,7 +444,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             if (currentPlan.Sources.Any(source => !source.MatchesCurrentFile()))
             {
                 AnalyzeSourcesResult refreshed = await AnalyzeAndReplaceSourcesAsync(
-                    currentPlan.Sources.Select(source => source.FilePath).ToArray(),
+                    [.. currentPlan.Sources.Select(source => source.FilePath)],
                     currentPlan.Outputs,
                     GetPlanDividers(currentPlan));
                 if (refreshed != AnalyzeSourcesResult.Succeeded && _analysis == null) _closeAction();
@@ -467,7 +467,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
     public void SetSelectedOutputs(IEnumerable<RepartOutputItemVM> items)
     {
-        _selectedOutputs = items.OrderBy(item => item.Model.FirstFrame).ToList();
+        _selectedOutputs = [.. items.OrderBy(item => item.Model.FirstFrame)];
         foreach (RepartOutputItemVM output in Outputs)
             output.IsSelected = _selectedOutputs.Contains(output);
         SelectedOutput = _selectedOutputs.LastOrDefault();
@@ -504,7 +504,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         }
         if (!ConfirmSourceMutation()) return;
 
-        await AnalyzeAndReplaceSourcesAsync(folderPaths, Outputs.Select(output => output.Model).ToList(), _dividers);
+        await AnalyzeAndReplaceSourcesAsync(folderPaths, [.. Outputs.Select(output => output.Model)], _dividers);
     }
 
     private async Task AppendFilesAsync()
@@ -516,17 +516,17 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             Multiselect = true
         };
         if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
-        string[] existing = Sources.Select(source => source.FilePath).ToArray();
+        string[] existing = [.. Sources.Select(source => source.FilePath)];
         string[] paths = [.. existing.Concat(dialog.FileNames).Distinct(StringComparer.OrdinalIgnoreCase)];
         if (!ConfirmSourceMutation()) return;
-        await AnalyzeAndReplaceSourcesAsync(paths, Outputs.Select(output => output.Model).ToList(), _dividers);
+        await AnalyzeAndReplaceSourcesAsync(paths, [.. Outputs.Select(output => output.Model)], _dividers);
     }
 
     private async Task RemoveSourceAsync(RepartSourceItemVM? item)
     {
         if (item == null || Sources.Count <= 1 || !ConfirmSourceMutation()) return;
-        string[] paths = Sources.Where(source => !ReferenceEquals(source, item)).Select(source => source.FilePath).ToArray();
-        await AnalyzeAndReplaceSourcesAsync(paths, Outputs.Select(output => output.Model).ToList(), _dividers);
+        string[] paths = [.. Sources.Where(source => !ReferenceEquals(source, item)).Select(source => source.FilePath)];
+        await AnalyzeAndReplaceSourcesAsync(paths, [.. Outputs.Select(output => output.Model)], _dividers);
     }
 
     private async Task MoveSourceAsync(RepartSourceItemVM? item, int direction)
@@ -535,9 +535,9 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         int index = Sources.IndexOf(item);
         int target = index + direction;
         if (index < 0 || target < 0 || target >= Sources.Count || !ConfirmSourceMutation()) return;
-        List<string> paths = Sources.Select(source => source.FilePath).ToList();
+        List<string> paths = [.. Sources.Select(source => source.FilePath)];
         (paths[index], paths[target]) = (paths[target], paths[index]);
-        await AnalyzeAndReplaceSourcesAsync([.. paths], Outputs.Select(output => output.Model).ToList(), _dividers);
+        await AnalyzeAndReplaceSourcesAsync([.. paths], [.. Outputs.Select(output => output.Model)], _dividers);
     }
 
     private async Task<AnalyzeSourcesResult> AnalyzeAndReplaceSourcesAsync(
@@ -619,10 +619,10 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             }
         }
 
-        return reconciled.OrderBy(output => output.FirstFrame).ToList();
+        return [.. reconciled.OrderBy(output => output.FirstFrame)];
     }
 
-    private static int FindSourceIndex(IReadOnlyList<RepartSourceM> sources, long frame)
+    private static int FindSourceIndex(List<RepartSourceM> sources, long frame)
     {
         for (int i = 0; i < sources.Count; i++)
         {
@@ -823,10 +823,9 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private void DeleteSelectedDividers()
     {
         if (!CanEdit) return;
-        HashSet<Guid> ids = _selectedDividers
+        HashSet<Guid> ids = [.. _selectedDividers
             .Where(item => !item.IsLocked)
-            .Select(item => item.Model.Id)
-            .ToHashSet();
+            .Select(item => item.Model.Id)];
         if (ids.Count == 0) return;
         _dividers = [.. _dividers.Where(divider => !ids.Contains(divider.Id))];
         ReplaceOutputs(BuildDividerOutputs());
@@ -877,6 +876,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         _dividers = [.. _dividers.OrderBy(divider => divider.Frame)];
         ReplaceOutputs(BuildDividerOutputs(), refreshTimeline: false);
         RefreshDividerItem(updated);
+        SetDividerTexts(updated.Frame);
         SetSuggestedNewDividerTexts();
         SelectOnlyDivider(updated.Id);
     }
@@ -1068,7 +1068,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     {
         adjacent = null;
         if (SelectedOutput == null) return false;
-        List<RepartOutputItemVM> ordered = Outputs.OrderBy(output => output.Model.FirstFrame).ToList();
+        List<RepartOutputItemVM> ordered = [.. Outputs.OrderBy(output => output.Model.FirstFrame)];
         int index = ordered.IndexOf(SelectedOutput);
         int adjacentIndex = index + Math.Sign(direction);
         if (index < 0 || adjacentIndex < 0 || adjacentIndex >= ordered.Count) return false;

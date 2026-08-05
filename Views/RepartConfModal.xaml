@@ -9,7 +9,7 @@
                    d:DataContext="{d:DesignInstance Type=vms:RepartConfVM}"
                    mc:Ignorable="d"
                    Title="{Binding WindowTitle}"
-                   Width="960"
+                   Width="900"
                     Height="760"
                     WindowStartupLocation="CenterOwner"
                     Background="{StaticResource Background}">
@@ -103,7 +103,7 @@
                                             <Setter Property="BorderThickness"
                                                     Value="0" />
                                             <Setter Property="Foreground"
-                                                    Value="{StaticResource GlobalPrimary}" />
+                                                    Value="{StaticResource ButtonTertiary}" />
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate TargetType="Thumb">
@@ -116,7 +116,7 @@
                                                 <DataTrigger Binding="{Binding IsSelected}"
                                                              Value="True">
                                                     <Setter Property="Foreground"
-                                                            Value="{StaticResource BorderGreen}" />
+                                                            Value="{StaticResource BorderAmber}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -267,11 +267,29 @@
                   Margin="15 0 0 0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <comps:SectionHeader HeaderText="{Binding DividerOpsTitle}" />
-                <Grid Grid.Row="1"
-                      Margin="5 20 0 0">
+                <StackPanel Grid.Row="1"
+                            Margin="5 15 0 0"
+                            IsEnabled="{Binding CanNudgeDivider}">
+                    <TextBlock Text="{Binding DividerTimestampLabel}"
+                               Style="{StaticResource H3}"
+                               Margin="0 0 0 2.5" />
+                    <TextBox Text="{Binding DividerTimestampText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                             Padding="5"
+                             Margin="0 0 0 10" />
+                    <TextBlock Text="{Binding DividerFrameLabel}"
+                               Style="{StaticResource H3}"
+                               Margin="0 0 0 2.5" />
+                    <TextBox Text="{Binding DividerFrameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                             Padding="5"
+                             Margin="0" />
+                </StackPanel>
+
+                <Grid Grid.Row="2"
+                       Margin="5 20 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
