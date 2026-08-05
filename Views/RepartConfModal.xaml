@@ -230,7 +230,6 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-
                 <comps:SectionHeader Grid.Row="0"
                                      HeaderText="{Binding AddNewDividerTitle}" />
                 <StackPanel Grid.Row="1"
@@ -257,7 +256,7 @@
                         Style="{StaticResource PrimaryButton}"
                         Height="40"
                         HorizontalAlignment="Stretch"
-                        Margin="2.5 12.5 0 0"
+                        Margin="2.5 10 0 0"
                         Tag="{x:Static ui:SvgIconProvider.GamePlus}"
                         ContentTemplate="{StaticResource IconTextButtonTemplate}" />
             </Grid>

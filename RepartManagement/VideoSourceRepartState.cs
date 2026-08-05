@@ -38,7 +38,7 @@ public sealed class VideoSourceRepartState
         if (_card == null) return;
 
         string[] names = [.. plan.Sources.Select(source => source.DisplayName)];
-        _card.P1TextData = $"{plan.Sources.Count} -> {plan.Outputs.Count}";
+        _card.P1TextData = $"{plan.Sources.Count} → {plan.Outputs.Count}";
         _card.P1TooltipText = string.Join(", ", names);
         _card.P2TextData = plan.Sources.Count > 0
             ? Path.GetDirectoryName(plan.Sources[0].FilePath) ?? string.Empty
@@ -66,12 +66,7 @@ public sealed class VideoSourceRepartState
     private void RefreshTitle()
     {
         if (_card == null) return;
-        _card.Name = _plan == null
-            ? RepartLangProvider.Current.ToolSourceVideoSrcRepart
-            : string.Format(
-                RepartLangProvider.Current.ToolSourceVideoSrcRepartWithCount,
-                _plan.Sources.Count,
-                _plan.Outputs.Count);
+        _card.Name = RepartLangProvider.Current.ToolSourceVideoSrcRepart;
     }
 
     private sealed class RepartFileListPathPlaceholder : SaveLoadBase<RepartFileListPathPlaceholder>
