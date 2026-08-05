@@ -2,9 +2,11 @@ using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.FFmpeg;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
+using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Text.Json;
 using static OneColumnEncoder.Json.JsonElementHelper;
 
@@ -70,6 +72,8 @@ public sealed record RepartSourceProbe(
     RepartVideoFormatSignature Signature,
     long InitialLength,
     long InitialWriteTicks,
+    double? DurationSeconds,
+    double StartTimeSeconds,
     long? FrameCount);
 
 // Outcome of the expensive frame-count scan. When rejected, the source must not
@@ -90,7 +94,8 @@ public static class RepartSourceValidator
         "stream=codec_name,profile,codec_tag_string,level,width,height,coded_width,coded_height," +
         "pix_fmt,bits_per_raw_sample,field_order,sample_aspect_ratio,avg_frame_rate,r_frame_rate," +
         "time_base,color_range,color_space,color_transfer,color_primaries,chroma_location," +
-        "nb_frames,nb_read_frames,duration,extradata:format=duration";
+        "nb_frames,nb_read_frames,duration,start_time,extradata:format=duration,start_time";
+    private const int MaxMetadataProbeAdjustmentFrames = 300;
 
     // Stage 1: filters that do not need ffprobe.
     public static RepartSourceFileOutcome CheckWithoutFfprobe(string filePath)
@@ -200,6 +205,8 @@ public static class RepartSourceValidator
                     signature,
                     probe.InitialLength,
                     probe.InitialWriteTicks,
+                    TryGetDurationSeconds(document.RootElement, stream),
+                    TryGetStartTimeSeconds(document.RootElement, stream),
                     TryGetFrameCount(stream)));
         }
         catch (Exception ex)
@@ -208,10 +215,11 @@ public static class RepartSourceValidator
         }
     }
 
-    // Stage 2: expensive full-file frame-count scan plus file-stability check.
-    // Only call this for files that passed stage 1 AND matched the reference.
+    // Stage 2: frame-count acquisition plus file-stability check.
+    // Prefer cached nb_frames, then ffmpeg's fast null remux, then duration-based estimation.
     public static async Task<RepartScanOutcome> ScanFramesAsync(
         string ffprobePath,
+        string? ffmpegPath,
         string filePath,
         RepartSourceProbe probe,
         CancellationToken cancellationToken = default)
@@ -221,7 +229,7 @@ public static class RepartSourceValidator
         {
             frameCount = probe.FrameCount is > 0
                 ? probe.FrameCount.Value
-                : await CountFramesAsync(ffprobePath, filePath, cancellationToken);
+                : await CountFramesAsync(ffprobePath, ffmpegPath, probe, filePath, cancellationToken);
         }
         catch (OperationCanceledException)
         {
@@ -280,31 +288,220 @@ public static class RepartSourceValidator
 
     private static async Task<long> CountFramesAsync(
         string ffprobePath,
+        string? ffmpegPath,
+        RepartSourceProbe probe,
+        string sourcePath,
+        CancellationToken cancellationToken)
+    {
+        if (!string.IsNullOrWhiteSpace(ffmpegPath) && File.Exists(ffmpegPath))
+        {
+            try
+            {
+                long? fastCount = await CountFramesWithFfmpegAsync(ffmpegPath, sourcePath, cancellationToken);
+                if (fastCount is > 0)
+                    return fastCount.Value;
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch
+            {
+            }
+        }
+
+        long? estimatedCount = EstimateFrameCount(probe.DurationSeconds, probe.FrameRateNumerator, probe.FrameRateDenominator);
+        if (estimatedCount is not > 0)
+            return 0;
+
+        long? metadataCount = await TryResolveEstimatedFrameCountWithFfprobeAsync(
+            ffprobePath,
+            sourcePath,
+            probe,
+            estimatedCount.Value,
+            cancellationToken);
+        return metadataCount ?? estimatedCount.Value;
+    }
+
+    private static async Task<long?> CountFramesWithFfmpegAsync(
+        string ffmpegPath,
         string sourcePath,
         CancellationToken cancellationToken)
     {
         string[] arguments =
         [
-            "-v", "error", "-hide_banner", "-count_frames", "-select_streams", "v:0",
-            "-show_entries", "stream=nb_read_frames,nb_frames", "-of", "json", sourcePath
+            "-hide_banner",
+            "-i", sourcePath,
+            "-map", "0:v:0",
+            "-c", "copy",
+            "-f", "null",
+            "-"
+        ];
+
+        FFmpegProcessResult result = await FFmpegProcessRunner.RunAsync(
+            ffmpegPath,
+            arguments,
+            TimeSpan.FromMinutes(30),
+            cancellationToken);
+
+        if (result.ExitCode != 0)
+            return null;
+
+        return TryParseFfmpegFrameCount(result.Stderr);
+    }
+
+    private static long? TryParseFfmpegFrameCount(string stderr)
+    {
+        if (string.IsNullOrWhiteSpace(stderr)) return null;
+
+        MatchCollection matches = Regex.Matches(
+            stderr,
+            @"frame=\s*(\d+)",
+            RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+        if (matches.Count == 0) return null;
+
+        string text = matches[^1].Groups[1].Value;
+        return long.TryParse(text, out long value) && value > 0 ? value : null;
+    }
+
+    private static async Task<long?> TryResolveEstimatedFrameCountWithFfprobeAsync(
+        string ffprobePath,
+        string sourcePath,
+        RepartSourceProbe probe,
+        long estimatedCount,
+        CancellationToken cancellationToken)
+    {
+        if (estimatedCount <= 0
+            || probe.FrameRateNumerator <= 0
+            || probe.FrameRateDenominator <= 0)
+            return null;
+
+        bool? estimatedNextFrameExists = await ProbeFrameExistsAsync(
+            ffprobePath,
+            sourcePath,
+            probe,
+            estimatedCount,
+            cancellationToken);
+        if (estimatedNextFrameExists == null)
+            return null;
+
+        return estimatedNextFrameExists.Value
+            ? await ProbeForwardForFrameCountAsync(ffprobePath, sourcePath, probe, estimatedCount + 1, cancellationToken)
+            : await ProbeBackwardForFrameCountAsync(ffprobePath, sourcePath, probe, estimatedCount - 1, cancellationToken);
+    }
+
+    private static async Task<long?> ProbeForwardForFrameCountAsync(
+        string ffprobePath,
+        string sourcePath,
+        RepartSourceProbe probe,
+        long firstCandidateIndex,
+        CancellationToken cancellationToken)
+    {
+        long limit = firstCandidateIndex + MaxMetadataProbeAdjustmentFrames;
+        for (long index = firstCandidateIndex; index <= limit; index++)
+        {
+            bool? exists = await ProbeFrameExistsAsync(ffprobePath, sourcePath, probe, index, cancellationToken);
+            if (exists == null) return null;
+            if (!exists.Value) return index;
+        }
+
+        return null;
+    }
+
+    private static async Task<long?> ProbeBackwardForFrameCountAsync(
+        string ffprobePath,
+        string sourcePath,
+        RepartSourceProbe probe,
+        long firstCandidateIndex,
+        CancellationToken cancellationToken)
+    {
+        long limit = Math.Max(0, firstCandidateIndex - MaxMetadataProbeAdjustmentFrames);
+        for (long index = firstCandidateIndex; index >= limit; index--)
+        {
+            bool? exists = await ProbeFrameExistsAsync(ffprobePath, sourcePath, probe, index, cancellationToken);
+            if (exists == null) return null;
+            if (exists.Value) return index + 1;
+        }
+
+        return null;
+    }
+
+    private static async Task<bool?> ProbeFrameExistsAsync(
+        string ffprobePath,
+        string sourcePath,
+        RepartSourceProbe probe,
+        long frameIndex,
+        CancellationToken cancellationToken)
+    {
+        if (frameIndex < 0) return false;
+
+        double frameDuration = (double)probe.FrameRateDenominator / probe.FrameRateNumerator;
+        double targetSeconds = probe.StartTimeSeconds + frameIndex * frameDuration;
+        double startSeconds = Math.Max(0d, targetSeconds - frameDuration * 2d);
+        double endSeconds = Math.Max(startSeconds + frameDuration, targetSeconds + frameDuration * 2d);
+        string interval = string.Create(
+            CultureInfo.InvariantCulture,
+            $"{startSeconds:0.#########}%{endSeconds:0.#########}");
+
+        string[] arguments =
+        [
+            "-v", "error", "-hide_banner",
+            "-select_streams", "v:0",
+            "-read_intervals", interval,
+            "-show_frames",
+            "-show_entries", "frame=best_effort_timestamp_time,pts_time,pkt_pts_time,pkt_dts_time",
+            "-of", "json",
+            sourcePath
         ];
 
         FFprobeProcessResult result = await FFprobeProcessRunner.RunAsync(
             ffprobePath,
             arguments,
-            TimeSpan.FromMinutes(30),
+            TimeSpan.FromSeconds(15),
             cancellationToken);
         if (result.ExitCode != 0 || string.IsNullOrWhiteSpace(result.Stdout))
-            throw new InvalidOperationException(string.IsNullOrWhiteSpace(result.Stderr)
-                ? RepartLangProvider.Current.ProbeFailed
-                : result.Stderr.Trim());
+            return null;
 
-        using JsonDocument document = JsonDocument.Parse(result.Stdout);
-        if (!FrameRate.TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return 0;
-        long? readFrames = TryGetLong(stream, "nb_read_frames");
-        if (readFrames is > 0) return readFrames.Value;
-        return TryGetFrameCount(stream) ?? 0;
+        return FfprobeFrameOutputContainsIndex(result.Stdout, probe, frameIndex);
     }
+
+    private static bool? FfprobeFrameOutputContainsIndex(string stdout, RepartSourceProbe probe, long targetFrameIndex)
+    {
+        try
+        {
+            using JsonDocument document = JsonDocument.Parse(stdout);
+            if (!document.RootElement.TryGetProperty("frames", out JsonElement frames)
+                || frames.ValueKind != JsonValueKind.Array)
+                return false;
+
+            bool hasTimestamp = false;
+            double fps = (double)probe.FrameRateNumerator / probe.FrameRateDenominator;
+            foreach (JsonElement frame in frames.EnumerateArray())
+            {
+                double? timestamp = TryGetFrameTimestampSeconds(frame);
+                if (timestamp == null) continue;
+                hasTimestamp = true;
+
+                long frameIndex = (long)Math.Round(
+                    (timestamp.Value - probe.StartTimeSeconds) * fps,
+                    MidpointRounding.AwayFromZero);
+                if (frameIndex == targetFrameIndex)
+                    return true;
+            }
+
+            return hasTimestamp ? false : null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static double? TryGetFrameTimestampSeconds(JsonElement frame) =>
+        TryGetDouble(frame, "best_effort_timestamp_time")
+        ?? TryGetDouble(frame, "pts_time")
+        ?? TryGetDouble(frame, "pkt_pts_time")
+        ?? TryGetDouble(frame, "pkt_dts_time");
 
     private static bool TryResolveCfrFrameRate(JsonElement stream, out (int num, int den) frameRate)
     {
@@ -356,6 +553,44 @@ public static class RepartSourceValidator
 
     private static int GetInt(JsonElement element, string propertyName) =>
         TryGetInt(element, propertyName, out int value) ? value : 0;
+
+    private static double? TryGetDurationSeconds(JsonElement root, JsonElement stream)
+    {
+        double? streamDuration = TryGetDouble(stream, "duration");
+        if (streamDuration is > 0) return streamDuration;
+
+        return root.TryGetProperty("format", out JsonElement format)
+            ? TryGetDouble(format, "duration")
+            : null;
+    }
+
+    private static double TryGetStartTimeSeconds(JsonElement root, JsonElement stream)
+    {
+        double? streamStart = TryGetDouble(stream, "start_time");
+        if (streamStart != null) return streamStart.Value;
+
+        return root.TryGetProperty("format", out JsonElement format)
+            ? TryGetDouble(format, "start_time") ?? 0d
+            : 0d;
+    }
+
+    private static long? EstimateFrameCount(double? durationSeconds, int frameRateNumerator, int frameRateDenominator)
+    {
+        if (durationSeconds is not > 0
+            || frameRateNumerator <= 0
+            || frameRateDenominator <= 0)
+            return null;
+
+        double fps = (double)frameRateNumerator / frameRateDenominator;
+        if (!(fps > 0d) || double.IsNaN(fps) || double.IsInfinity(fps))
+            return null;
+
+        double exactFrames = durationSeconds.Value * fps;
+        if (!(exactFrames > 0d) || double.IsNaN(exactFrames) || double.IsInfinity(exactFrames))
+            return null;
+
+        return Math.Max(1L, (long)Math.Round(exactFrames, MidpointRounding.AwayFromZero));
+    }
 
     private static bool IsProgressiveFieldOrder(string fieldOrder) =>
         string.IsNullOrWhiteSpace(fieldOrder)

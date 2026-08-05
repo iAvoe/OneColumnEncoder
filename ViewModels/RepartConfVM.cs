@@ -20,6 +20,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private readonly ModalNavS _modalNavS;
     private readonly Action _closeAction;
     private readonly Func<string> _getFfprobePath;
+    private readonly Func<string?>? _getFfmpegPath;
     private readonly Action<RepartPlanM> _applyPlan;
     private RepartPlanM? _analysis;
     private RepartOutputItemVM? _selectedOutput;
@@ -43,11 +44,13 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         ModalNavS modalNavS,
         Action closeAction,
         Func<string> getFfprobePath,
+        Func<string?>? getFfmpegPath,
         Action<RepartPlanM> applyPlan)
     {
         _modalNavS = modalNavS;
         _closeAction = closeAction;
         _getFfprobePath = getFfprobePath;
+        _getFfmpegPath = getFfmpegPath;
         _applyPlan = applyPlan;
 
         ImportFolderCommand = new ActionCmd(async _ => await ImportFolderAsync());
@@ -396,6 +399,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         {
             RepartPlanM analyzed = await RepartCompatibilityAnalyzer.AnalyzeAsync(
                 _getFfprobePath(),
+                _getFfmpegPath?.Invoke(),
                 paths,
                 ConfirmDiscardInterlacedSource,
                 _analysisCancellation.Token);

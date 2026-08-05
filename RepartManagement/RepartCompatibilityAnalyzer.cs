@@ -9,12 +9,14 @@ public static class RepartCompatibilityAnalyzer
     // (in-window re-imports); analysis itself is shared with AnalyzeAndFilterAsync.
     public static async Task<RepartPlanM> AnalyzeAsync(
         string ffprobePath,
+        string? ffmpegPath,
         IReadOnlyList<string> filePaths,
         Func<RepartInterlacedSourceInfo, bool>? confirmDiscardInterlacedSource = null,
         CancellationToken cancellationToken = default)
     {
         RepartAnalysisResult result = await AnalyzeAndFilterAsync(
             ffprobePath,
+            ffmpegPath,
             filePaths,
             confirmDiscardInterlacedSource,
             onFileProgress: null,
@@ -32,6 +34,7 @@ public static class RepartCompatibilityAnalyzer
     // probe checks AND matched the reference signature.
     public static async Task<RepartAnalysisResult> AnalyzeAndFilterAsync(
         string ffprobePath,
+        string? ffmpegPath,
         IReadOnlyList<string> filePaths,
         Func<RepartInterlacedSourceInfo, bool>? confirmDiscardInterlacedSource = null,
         Action<int, int, string>? onFileProgress = null,
@@ -225,6 +228,7 @@ public static class RepartCompatibilityAnalyzer
             onFileProgress?.Invoke(index + 1, candidates.Count, displayName);
             RepartScanOutcome scan = await RepartSourceValidator.ScanFramesAsync(
                 ffprobePath,
+                ffmpegPath,
                 path,
                 sourceProbe,
                 cancellationToken);

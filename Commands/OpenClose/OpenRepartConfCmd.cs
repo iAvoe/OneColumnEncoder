@@ -14,6 +14,7 @@ namespace OneColumnEncoder.Commands.OpenClose;
 public sealed class OpenRepartConfCmd(
     ModalNavS modalNavS,
     Func<string> getFfprobePath,
+    Func<string?>? getFfmpegPath,
     Func<RepartPlanM?> getCurrentPlan,
     Action<RepartPlanM> applyPlan) : BaseCmd
 {
@@ -66,6 +67,7 @@ public sealed class OpenRepartConfCmd(
 
                 Task<RepartAnalysisResult> analysisTask = RepartCompatibilityAnalyzer.AnalyzeAndFilterAsync(
                     ffprobePath: getFfprobePath(),
+                    ffmpegPath: getFfmpegPath?.Invoke(),
                     filePaths: folderPaths,
                     confirmDiscardInterlacedSource: source => RepartInterlacedPrompt.Confirm(modalNavS, RepartConfVM.WindowTitleText, source),
                     onFileProgress: (index, total, name) => progressVM.P1Text =
@@ -112,7 +114,7 @@ public sealed class OpenRepartConfCmd(
 
         if (modalNavS.IsOpen) modalNavS.Close();
         RepartConfModal window = new();
-        RepartConfVM vm = new(modalNavS, window.Close, getFfprobePath, applyPlan);
+        RepartConfVM vm = new(modalNavS, window.Close, getFfprobePath, getFfmpegPath, applyPlan);
         window.DataContext = vm;
         window.Owner = Application.Current.MainWindow;
         window.Closed += (_, _) => modalNavS.Close();

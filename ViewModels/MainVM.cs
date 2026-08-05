@@ -1535,6 +1535,7 @@ namespace OneColumnEncoder.ViewModels
                 item.R1Command = new OpenRepartConfCmd(
                     _modalNavS,
                     GetSelectedFfprobePath,
+                    () => _appDataM.Tools.FfmpegPath,
                     GetRepartPlan,
                     ApplyRepartPlan);
                 item.R2Command = new ClearToolItemCmd(item, OnSourceRepartCleared);
