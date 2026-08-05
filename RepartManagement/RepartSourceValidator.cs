@@ -235,9 +235,9 @@ public static class RepartSourceValidator
         {
             throw;
         }
-        catch
+        catch (Exception ex)
         {
-            return RejectedScan(RepartExclusionReason.FrameCountUnavailable);
+            return RejectedScan(RepartExclusionReason.FrameCountUnavailable, ex.Message);
         }
         if (frameCount <= 0)
             return RejectedScan(RepartExclusionReason.FrameCountUnavailable);
@@ -259,8 +259,8 @@ public static class RepartSourceValidator
     private static RepartRawProbeOutcome RejectedRaw(RepartExclusionReason reason, string? detail = null) =>
         new(reason, detail, null);
 
-    private static RepartScanOutcome RejectedScan(RepartExclusionReason reason) =>
-        new(reason, null, 0, 0, 0);
+    private static RepartScanOutcome RejectedScan(RepartExclusionReason reason, string? detail = null) =>
+        new(reason, detail, 0, 0, 0);
 
     private static async Task<string> ProbeAsync(
         string ffprobePath,
@@ -376,51 +376,75 @@ public static class RepartSourceValidator
             || probe.FrameRateDenominator <= 0)
             return null;
 
-        bool? estimatedNextFrameExists = await ProbeFrameExistsAsync(
+        bool? leftExists = await ProbeFrameExistsAsync(
+            ffprobePath,
+            sourcePath,
+            probe,
+            estimatedCount - 1,
+            cancellationToken);
+        bool? centerExists = await ProbeFrameExistsAsync(
             ffprobePath,
             sourcePath,
             probe,
             estimatedCount,
             cancellationToken);
-        if (estimatedNextFrameExists == null)
+        bool? rightExists = await ProbeFrameExistsAsync(
+            ffprobePath,
+            sourcePath,
+            probe,
+            estimatedCount + 1,
+            cancellationToken);
+        if (leftExists == null || centerExists == null || rightExists == null)
             return null;
 
-        return estimatedNextFrameExists.Value
-            ? await ProbeForwardForFrameCountAsync(ffprobePath, sourcePath, probe, estimatedCount + 1, cancellationToken)
-            : await ProbeBackwardForFrameCountAsync(ffprobePath, sourcePath, probe, estimatedCount - 1, cancellationToken);
+        if (leftExists.Value && !centerExists.Value && !rightExists.Value)
+            return estimatedCount;
+        if (leftExists.Value && centerExists.Value && !rightExists.Value)
+            return estimatedCount + 1;
+
+        if (!leftExists.Value && !centerExists.Value && !rightExists.Value)
+            return await ProbeInDirectionForFrameCountAsync(ffprobePath, sourcePath, probe, estimatedCount - 2, -1, cancellationToken);
+        if (leftExists.Value && centerExists.Value && rightExists.Value)
+            return await ProbeInDirectionForFrameCountAsync(ffprobePath, sourcePath, probe, estimatedCount + 2, 1, cancellationToken);
+
+        throw new InvalidOperationException(FormatUnexpectedFrameProbePattern(
+            estimatedCount,
+            leftExists.Value,
+            centerExists.Value,
+            rightExists.Value));
     }
 
-    private static async Task<long?> ProbeForwardForFrameCountAsync(
+    private static string FormatUnexpectedFrameProbePattern(
+        long estimatedCount,
+        bool leftExists,
+        bool centerExists,
+        bool rightExists) =>
+        "Unexpected ffprobe frame metadata pattern around estimated frame count " +
+        $"{estimatedCount}: [{Bit(leftExists)}, {Bit(centerExists)}, {Bit(rightExists)}].";
+
+    private static string Bit(bool value) => value ? "1" : "0";
+
+    private static async Task<long?> ProbeInDirectionForFrameCountAsync(
         string ffprobePath,
         string sourcePath,
         RepartSourceProbe probe,
         long firstCandidateIndex,
+        int step,
         CancellationToken cancellationToken)
     {
-        long limit = firstCandidateIndex + MaxMetadataProbeAdjustmentFrames;
-        for (long index = firstCandidateIndex; index <= limit; index++)
+        if (step != -1 && step != 1) return null;
+
+        long limit = step < 0
+            ? Math.Max(0, firstCandidateIndex - MaxMetadataProbeAdjustmentFrames)
+            : firstCandidateIndex + MaxMetadataProbeAdjustmentFrames;
+        for (long index = firstCandidateIndex;
+             step < 0 ? index >= limit : index <= limit;
+             index += step)
         {
             bool? exists = await ProbeFrameExistsAsync(ffprobePath, sourcePath, probe, index, cancellationToken);
             if (exists == null) return null;
-            if (!exists.Value) return index;
-        }
-
-        return null;
-    }
-
-    private static async Task<long?> ProbeBackwardForFrameCountAsync(
-        string ffprobePath,
-        string sourcePath,
-        RepartSourceProbe probe,
-        long firstCandidateIndex,
-        CancellationToken cancellationToken)
-    {
-        long limit = Math.Max(0, firstCandidateIndex - MaxMetadataProbeAdjustmentFrames);
-        for (long index = firstCandidateIndex; index >= limit; index--)
-        {
-            bool? exists = await ProbeFrameExistsAsync(ffprobePath, sourcePath, probe, index, cancellationToken);
-            if (exists == null) return null;
-            if (exists.Value) return index + 1;
+            if (step < 0 && exists.Value) return index + 1;
+            if (step > 0 && !exists.Value) return index;
         }
 
         return null;
@@ -622,7 +646,12 @@ public static class RepartExclusionMessages
                 info.DisplayName,
                 info.Detail ?? string.Empty),
             RepartExclusionReason.NotCfr => string.Format(lang.CfrRequired, info.DisplayName),
-            RepartExclusionReason.FrameCountUnavailable => string.Format(lang.FrameCountRequired, info.DisplayName),
+            RepartExclusionReason.FrameCountUnavailable => string.IsNullOrWhiteSpace(info.Detail)
+                ? string.Format(lang.FrameCountRequired, info.DisplayName)
+                : string.Join(
+                    Environment.NewLine,
+                    string.Format(lang.FrameCountRequired, info.DisplayName),
+                    info.Detail.Trim()),
             RepartExclusionReason.SourceChanged => string.Format(lang.SourceChangedDuringAnalysis, info.FilePath),
             RepartExclusionReason.SignatureMismatch => string.Format(lang["SignatureMismatch"], info.DisplayName),
             _ => info.DisplayName
