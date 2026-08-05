@@ -244,8 +244,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         }
     }
     public bool CanDeleteSelectedDivider => CanEdit && _selectedDividers.Any(item => !item.IsLocked);
-    public bool CanDeleteLeftDivider => CanEdit && GetDividerForDeletion(-1) is { IsLocked: false };
-    public bool CanDeleteRightDivider => CanEdit && GetDividerForDeletion(1) is { IsLocked: false };
+    public bool CanDeleteLeftDivider => CanEdit && GetAdjacentDivider(-1) is { IsLocked: false };
+    public bool CanDeleteRightDivider => CanEdit && GetAdjacentDivider(1) is { IsLocked: false };
     public bool CanNudgeDivider => CanEdit && SelectedDivider is { IsLocked: false };
     public bool CanToggleDividerLock => CanEdit && SelectedDivider != null;
     public bool CanClearOutputs => CanEdit && _dividers.Count > 0;
@@ -817,9 +817,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         return index >= 0 && target >= 0 && target < ordered.Count ? ordered[target] : null;
     }
 
-    private RepartDividerItemVM? GetDividerForDeletion(int direction) =>
-        GetAdjacentDivider(direction) ?? SelectedDivider;
-
     private void DeleteSelectedDividers()
     {
         if (!CanEdit) return;
@@ -836,7 +833,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
     private void DeleteAdjacentDivider(int direction)
     {
-        RepartDividerItemVM? divider = GetDividerForDeletion(direction);
+        RepartDividerItemVM? divider = GetAdjacentDivider(direction);
         if (divider is not { IsLocked: false }) return;
         _dividers = [.. _dividers.Where(item => item.Id != divider.Model.Id)];
         ReplaceOutputs(BuildDividerOutputs());
