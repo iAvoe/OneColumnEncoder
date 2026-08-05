@@ -132,7 +132,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public string TimelineControlTitle => RepartLangProvider.Current["TimelineControl"];
     public string DividerControlTitle => RepartLangProvider.Current["DividerControl"];
     public string AddNewDividerTitle => RepartLangProvider.Current["AddNewDivider"];
-    public string BatchOperationsTitle => RepartLangProvider.Current["BatchOperations"];
+    public string DividerOpsTitle => RepartLangProvider.Current["ManageDividers"];
     public string ImportFolderText => RepartLangProvider.Current["ImportFolder"];
     public string AppendFilesText => RepartLangProvider.Current["AppendFiles"];
     public string ImportChaptersText => RepartLangProvider.Current["ImportChapters"];
@@ -1303,7 +1303,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         foreach (string property in new[]
         {
             nameof(InputSourcesTitle), nameof(OutputEpisodesTitle), nameof(TimelineTitle),
-            nameof(TimelineControlTitle), nameof(DividerControlTitle), nameof(AddNewDividerTitle), nameof(BatchOperationsTitle),
+            nameof(TimelineControlTitle), nameof(DividerControlTitle), nameof(AddNewDividerTitle), nameof(DividerOpsTitle),
             nameof(ImportFolderText), nameof(AppendFilesText), nameof(ImportChaptersText), nameof(ImportMplsText),
             nameof(UnavailableText), nameof(OutputNameLabel), nameof(StartTimeLabel), nameof(SegmentDurationLabel),
             nameof(EndTimeLabel), nameof(TimeFormatText), nameof(FirstFrameLabel), nameof(FrameCountLabel),

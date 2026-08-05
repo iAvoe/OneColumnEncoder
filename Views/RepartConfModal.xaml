@@ -233,7 +233,7 @@
                 <comps:SectionHeader Grid.Row="0"
                                      HeaderText="{Binding AddNewDividerTitle}" />
                 <StackPanel Grid.Row="1"
-                            Margin="5 10 0 0">
+                            Margin="5 15 0 0">
                     <TextBlock Text="{Binding DividerTimestampLabel}"
                                Style="{StaticResource H3}"
                                Margin="0 0 0 2.5" />
@@ -261,16 +261,16 @@
                         ContentTemplate="{StaticResource IconTextButtonTemplate}" />
             </Grid>
 
-            <!-- Batch ops buttons (deletes) -->
+            <!-- Ops buttons (deletes) -->
             <Grid Grid.Column="2"
                   Margin="15 0 0 0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <comps:SectionHeader HeaderText="{Binding BatchOperationsTitle}" />
+                <comps:SectionHeader HeaderText="{Binding DividerOpsTitle}" />
                 <Grid Grid.Row="1"
-                      Margin="5 25 0 0">
+                      Margin="5 20 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
