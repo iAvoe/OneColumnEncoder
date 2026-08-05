@@ -1305,12 +1305,12 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private bool ConfirmSourceMutation()
     {
         if (Outputs.Count == 0) return true;
-        MessageBoxResult result = MessageBox.Show(
-            RepartLangProvider.Current["SourceChangeWarning"],
+        OpenWarnModalCmd cmd = new(
+            _modalNavS,
             RepartLangProvider.Current["SourceChangeTitle"],
-            MessageBoxButton.OKCancel,
-            MessageBoxImage.Warning);
-        return result == MessageBoxResult.OK;
+            RepartLangProvider.Current["SourceChangeWarning"]);
+        cmd.Execute(null);
+        return cmd.DialogResult == true;
     }
 
     private void RefreshAnalysisProperties()
