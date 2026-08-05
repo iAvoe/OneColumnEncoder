@@ -25,7 +25,6 @@ public sealed class RepartLangProvider(string languageCode)
             ["OutputCount"] = "{0} output(s)",
             ["ValidationTitle"] = "Repart Source Validation",
             ["ValidationSubtitle"] = "Requires identical CFR video streams with scan-stable frame counts",
-            ["Unallocated"] = "Unallocated",
             ["OutputName"] = "Output name",
             ["StartTime"] = "Start time",
             ["SegmentDuration"] = "Segment duration",
@@ -47,9 +46,7 @@ public sealed class RepartLangProvider(string languageCode)
             ["DeleteSelectedDivider"] = "Delete Selected",
             ["DeleteLeftDivider"] = "<- Delete",
             ["DeleteRightDivider"] = "Delete ->",
-            ["ClearOutputs"] = "Clear Episodes",
             ["ClearDividers"] = "Clear All Dividers",
-            ["UpdateOutputs"] = "Update Episodes",
             ["MergeLeft"] = "←Merge",
             ["MergeRight"] = "Merge→",
             ["ResetEdit"] = "Reset",
@@ -82,7 +79,6 @@ public sealed class RepartLangProvider(string languageCode)
             ["CfrRequired"] = "Repart Mode requires scan-stable CFR video: {0}",
             ["FrameCountRequired"] = "Repart Mode could not scan a reliable frame count: {0}",
             ["NoDimensions"] = "Repart Mode requires a video stream with non-zero dimensions: {0}",
-            ["FormatMismatch"] = "Source #{0} ({1}) does not exactly match the first video stream.\nExpected: {2}\nActual: {3}",
             ["SignatureMismatch"] = "Source {0} does not exactly match the reference video stream format.",
             ["ProbeFailed"] = "ffprobe failed or returned no data.",
             ["InvalidRange"] = "Enter a valid frame or time range inside the virtual timeline.",
@@ -118,7 +114,6 @@ public sealed class RepartLangProvider(string languageCode)
             ["OutputCount"] = "{0} 段",
             ["ValidationTitle"] = "重分集视频源验证",
             ["ValidationSubtitle"] = "要求视频流格式完全一致、为 CFR，且可稳定扫描帧数",
-            ["Unallocated"] = "未分配",
             ["OutputName"] = "输出名称",
             ["StartTime"] = "开始时间",
             ["SegmentDuration"] = "片段时长",
@@ -140,9 +135,7 @@ public sealed class RepartLangProvider(string languageCode)
             ["DeleteSelectedDivider"] = "删除所选",
             ["DeleteLeftDivider"] = "←删除",
             ["DeleteRightDivider"] = "删除→",
-            ["ClearOutputs"] = "清除分集",
-            ["ClearDividers"] = "清除全部分割线",
-            ["UpdateOutputs"] = "更新分集",
+            ["ClearDividers"] = "清除全部",
             ["MergeLeft"] = "←合并",
             ["MergeRight"] = "合并→",
             ["ResetEdit"] = "重置",
@@ -175,7 +168,6 @@ public sealed class RepartLangProvider(string languageCode)
             ["CfrRequired"] = "重分集模式要求可稳定扫描的 CFR 视频：{0}",
             ["FrameCountRequired"] = "重分集模式无法可靠扫描视频帧数：{0}",
             ["NoDimensions"] = "重分集模式要求视频流具有非零分辨率：{0}",
-            ["FormatMismatch"] = "第 {0} 个源（{1}）与首个视频流格式不完全一致。\n预期：{2}\n实际：{3}",
             ["SignatureMismatch"] = "视频源 {0} 与参考视频流格式不完全一致。",
             ["ProbeFailed"] = "ffprobe 执行失败或没有返回数据。",
             ["InvalidRange"] = "请输入位于虚拟时间轴内的有效时间或帧范围。",
@@ -230,8 +222,10 @@ public sealed class RepartLangProvider(string languageCode)
             ["Timeline"] = "虛擬影片時間軸",
             ["TimelineControl"] = "虛擬時間軸控制",
             ["DividerControl"] = "分割線控制",
+            ["AddNewDivider"] = "添加新分割線",
+            ["BatchOperations"] = "批次操作",
+            ["OutputCount"] = "{0} 段",
             ["ValidationTitle"] = "重分集影片來源驗證",
-            ["Unallocated"] = "未分配",
             ["OutputName"] = "輸出名稱",
             ["StartTime"] = "開始時間",
             ["EndTime"] = "結束時間",
@@ -248,8 +242,7 @@ public sealed class RepartLangProvider(string languageCode)
             ["DeleteSelectedDivider"] = "刪除所選",
             ["DeleteLeftDivider"] = "←刪除",
             ["DeleteRightDivider"] = "刪除→",
-            ["ClearOutputs"] = "清除分集",
-            ["UpdateOutputs"] = "更新分集",
+            ["ClearDividers"] = "清除全部",
             ["Remove"] = "移除",
             ["MoveUp"] = "上移",
             ["MoveDown"] = "下移",
@@ -270,7 +263,6 @@ public sealed class RepartLangProvider(string languageCode)
             ["SourceChanged"] = "影片來源在分析過程中發生了變化：{0}",
             ["NoVideoStream"] = "未在 {0} 中找到影片串流。",
             ["NoDimensions"] = "重分集模式要求影片串流具有非零解析度：{0}",
-            ["FormatMismatch"] = "第 {0} 個來源（{1}）與首個影片串流格式不完全一致。\n預期：{2}\n實際：{3}",
             ["SignatureMismatch"] = "影片來源 {0} 與參考影片串流格式不完全一致。",
             ["ProbeFailed"] = "ffprobe 執行失敗或沒有傳回資料。",
             ["InvalidRange"] = "請輸入位於虛擬時間軸內的有效時間或幀範圍。",
@@ -299,7 +291,6 @@ public sealed class RepartLangProvider(string languageCode)
             ["Timeline"] = "Chronologie vidéo virtuelle",
             ["ValidationTitle"] = "Validation de la source Répartition",
             ["ValidationSubtitle"] = "Nécessite des flux vidéo CFR identiques avec des comptes d'images stables à l'analyse",
-            ["Unallocated"] = "Non alloué",
             ["OutputName"] = "Nom de sortie",
             ["StartTime"] = "Heure de début",
             ["SegmentDuration"] = "Durée du segment",
@@ -341,7 +332,6 @@ public sealed class RepartLangProvider(string languageCode)
             ["NoVideoStream"] = "Aucun flux vidéo trouvé dans {0}.",
             ["CfrRequired"] = "Le mode Répartition nécessite une vidéo CFR stable à l'analyse : {0}",
             ["FrameCountRequired"] = "Le mode Répartition n'a pas pu analyser un nombre d'images fiable : {0}",
-            ["FormatMismatch"] = "La source #{0} ({1}) ne correspond pas exactement au premier flux vidéo.\nAttendu : {2}\nRéel : {3}",
             ["ProbeFailed"] = "ffprobe a échoué ou n'a renvoyé aucune donnée.",
             ["InvalidRange"] = "Saisissez un intervalle valide de cadres ou de temps dans la chronologie virtuelle.",
             ["Overlap"] = "Les épisodes de sortie ne peuvent pas se chevaucher.",
@@ -363,14 +353,16 @@ public sealed class RepartLangProvider(string languageCode)
             ["DeleteSelectedDivider"] = "Supprimer la sélection",
             ["DeleteLeftDivider"] = "<- Supprimer",
             ["DeleteRightDivider"] = "Supprimer ->",
-            ["ClearOutputs"] = "Effacer les épisodes",
-            ["UpdateOutputs"] = "Mettre à jour les épisodes",
             ["MinSourcesRequired"] = "Le mode Répartition nécessite au moins deux sources vidéo utilisables après filtrage.",
             ["NoDimensions"] = "Le mode Répartition nécessite un flux vidéo avec des dimensions non nulles : {0}",
             ["SignatureMismatch"] = "La source {0} ne correspond pas exactement au format du flux vidéo de référence.",
             ["SourceLabel"] = "Source : {0}",
             ["WillExcludeSource"] = "Cet élément source sera exclu. Fermez cette boîte de dialogue pour continuer l'importation.",
-            ["ImportSummary"] = "Importation Répartition terminée : {0} source(s) acceptée(s), {1} élément(s) de source exclu(s)."
+            ["ImportSummary"] = "Importation Répartition terminée : {0} source(s) acceptée(s), {1} élément(s) de source exclu(s).",
+            ["AddNewDivider"] = "Ajouter une nouvelle limite",
+            ["BatchOperations"] = "Opérations par lot",
+            ["OutputCount"] = "{0} sortie(s)",
+            ["ClearDividers"] = "Tout effacer"
         };
         Data["es"] = new(Data["en"])
         {
@@ -388,7 +380,6 @@ public sealed class RepartLangProvider(string languageCode)
             ["Timeline"] = "Línea temporal de vídeo virtual",
             ["ValidationTitle"] = "Validación de fuente Repart",
             ["ValidationSubtitle"] = "Requiere flujos de vídeo CFR idénticos con recuentos de fotogramas estables al analizar",
-            ["Unallocated"] = "Sin asignar",
             ["OutputName"] = "Nombre de salida",
             ["StartTime"] = "Hora de inicio",
             ["SegmentDuration"] = "Duración del segmento",
@@ -430,7 +421,6 @@ public sealed class RepartLangProvider(string languageCode)
             ["NoVideoStream"] = "No se encontró ningún flujo de vídeo en {0}.",
             ["CfrRequired"] = "El modo Repart requiere vídeo CFR estable al analizar: {0}",
             ["FrameCountRequired"] = "El modo Repart no pudo analizar un recuento de fotogramas fiable: {0}",
-            ["FormatMismatch"] = "La fuente #{0} ({1}) no coincide exactamente con el primer flujo de vídeo.\nEsperado: {2}\nReal: {3}",
             ["ProbeFailed"] = "ffprobe falló o no devolvió datos.",
             ["InvalidRange"] = "Introduce un intervalo válido de fotogramas o tiempo dentro de la línea temporal virtual.",
             ["Overlap"] = "Los episodios de salida no pueden solaparse.",
@@ -452,14 +442,16 @@ public sealed class RepartLangProvider(string languageCode)
             ["DeleteSelectedDivider"] = "Eliminar selección",
             ["DeleteLeftDivider"] = "<- Eliminar",
             ["DeleteRightDivider"] = "Eliminar ->",
-            ["ClearOutputs"] = "Borrar episodios",
-            ["UpdateOutputs"] = "Actualizar episodios",
             ["MinSourcesRequired"] = "El modo Repart requiere al menos dos fuentes de vídeo utilizables tras el filtrado.",
             ["NoDimensions"] = "El modo Repart requiere un flujo de vídeo con dimensiones distintas de cero: {0}",
             ["SignatureMismatch"] = "La fuente {0} no coincide exactamente con el formato del flujo de vídeo de referencia.",
             ["SourceLabel"] = "Fuente: {0}",
             ["WillExcludeSource"] = "Este elemento de fuente será excluido. Cierra este diálogo para continuar con la importación.",
-            ["ImportSummary"] = "Importación Repart completada: {0} fuente(s) aceptada(s), {1} elemento(s) de fuente excluido(s)."
+            ["ImportSummary"] = "Importación Repart completada: {0} fuente(s) aceptada(s), {1} elemento(s) de fuente excluido(s).",
+            ["AddNewDivider"] = "Añadir nueva división",
+            ["BatchOperations"] = "Operaciones por lotes",
+            ["OutputCount"] = "{0} salida(s)",
+            ["ClearDividers"] = "Borrar todo"
         };
         Data["ja"] = new(Data["en"])
         {
@@ -477,7 +469,6 @@ public sealed class RepartLangProvider(string languageCode)
             ["Timeline"] = "仮想映像タイムライン",
             ["ValidationTitle"] = "再分割ソース検証",
             ["ValidationSubtitle"] = "同一の CFR 映像ストリームで、解析時に安定してフレーム数を取得できる必要があります",
-            ["Unallocated"] = "未割り当て",
             ["OutputName"] = "出力名",
             ["StartTime"] = "開始時刻",
             ["SegmentDuration"] = "区間長",
@@ -519,7 +510,6 @@ public sealed class RepartLangProvider(string languageCode)
             ["NoVideoStream"] = "{0} に映像ストリームが見つかりません。",
             ["CfrRequired"] = "再分割モードでは、解析時に安定してフレーム数を取得できる CFR 映像が必要です: {0}",
             ["FrameCountRequired"] = "再分割モードで信頼できるフレーム数を取得できませんでした: {0}",
-            ["FormatMismatch"] = "ソース #{0} ({1}) は最初の映像ストリームと完全に一致しません。\n期待値: {2}\n実際: {3}",
             ["ProbeFailed"] = "ffprobe が失敗したか、データを返しませんでした。",
             ["InvalidRange"] = "仮想タイムライン内の有効なフレームまたは時間の範囲を入力してください。",
             ["Overlap"] = "出力エピソードを重複させることはできません。",
@@ -541,14 +531,16 @@ public sealed class RepartLangProvider(string languageCode)
             ["DeleteSelectedDivider"] = "選択を削除",
             ["DeleteLeftDivider"] = "←削除",
             ["DeleteRightDivider"] = "削除→",
-            ["ClearOutputs"] = "エピソードをクリア",
-            ["UpdateOutputs"] = "エピソードを更新",
             ["MinSourcesRequired"] = "再分割モードでは、フィルタリング後に少なくとも 2 つの使用可能な映像ソースが必要です。",
             ["NoDimensions"] = "再分割モードでは、0 以外の解像度を持つ映像ストリームが必要です: {0}",
             ["SignatureMismatch"] = "ソース {0} は参照映像ストリームの形式と完全に一致しません。",
             ["SourceLabel"] = "ソース: {0}",
             ["WillExcludeSource"] = "このソース項目は除外されます。ダイアログを閉じてインポートを続行してください。",
-            ["ImportSummary"] = "再分割インポート完了: {0} ソース受け入れ、{1} ソース項目を除外しました。"
+            ["ImportSummary"] = "再分割インポート完了: {0} ソース受け入れ、{1} ソース項目を除外しました。",
+            ["AddNewDivider"] = "新しい境界を追加",
+            ["BatchOperations"] = "一括操作",
+            ["OutputCount"] = "{0} 出力",
+            ["ClearDividers"] = "すべてクリア"
         };
         Data["ru"] = new(Data["en"])
         {
@@ -566,7 +558,6 @@ public sealed class RepartLangProvider(string languageCode)
             ["Timeline"] = "Виртуальная видео-шкала времени",
             ["ValidationTitle"] = "Проверка источника Repart",
             ["ValidationSubtitle"] = "Требуются идентичные CFR-видеопотоки, для которых анализ стабильно получает число кадров",
-            ["Unallocated"] = "Не распределено",
             ["OutputName"] = "Имя вывода",
             ["StartTime"] = "Время начала",
             ["SegmentDuration"] = "Длина отрезка",
@@ -608,7 +599,6 @@ public sealed class RepartLangProvider(string languageCode)
             ["NoVideoStream"] = "В {0} не найден видеопоток.",
             ["CfrRequired"] = "Режим Repart требует CFR-видео со стабильным анализом: {0}",
             ["FrameCountRequired"] = "Режим Repart не смог получить надёжное число кадров: {0}",
-            ["FormatMismatch"] = "Источник #{0} ({1}) не совпадает точно с первым видеопотоком.\nОжидалось: {2}\nФактически: {3}",
             ["ProbeFailed"] = "ffprobe не сработал или не вернул данные.",
             ["InvalidRange"] = "Введите корректный диапазон кадров или времени в пределах виртуальной шкалы.",
             ["Overlap"] = "Выходные эпизоды не могут пересекаться.",
@@ -630,14 +620,16 @@ public sealed class RepartLangProvider(string languageCode)
             ["DeleteSelectedDivider"] = "Удалить выбранное",
             ["DeleteLeftDivider"] = "←удалить",
             ["DeleteRightDivider"] = "удалить→",
-            ["ClearOutputs"] = "Очистить эпизоды",
-            ["UpdateOutputs"] = "Обновить эпизоды",
             ["MinSourcesRequired"] = "Режим Repart требует минимум два пригодных видеоисточника после фильтрации.",
             ["NoDimensions"] = "Режим Repart требует видеопоток с ненулевым разрешением: {0}",
             ["SignatureMismatch"] = "Источник {0} не совпадает точно с эталонным форматом видеопотока.",
             ["SourceLabel"] = "Источник: {0}",
             ["WillExcludeSource"] = "Этот элемент источника будет исключён. Закройте этот диалог, чтобы продолжить импорт.",
-            ["ImportSummary"] = "Импорт Repart завершён: принято источников: {0}, исключено элементов: {1}."
+            ["ImportSummary"] = "Импорт Repart завершён: принято источников: {0}, исключено элементов: {1}.",
+            ["AddNewDivider"] = "Добавить новый разделитель",
+            ["BatchOperations"] = "Пакетные операции",
+            ["OutputCount"] = "{0} выходов",
+            ["ClearDividers"] = "Очистить всё"
         };
     }
 
@@ -656,6 +648,5 @@ public sealed class RepartLangProvider(string languageCode)
     public string NoVideoStream => this["NoVideoStream"];
     public string CfrRequired => this["CfrRequired"];
     public string FrameCountRequired => this["FrameCountRequired"];
-    public string FormatMismatch => this["FormatMismatch"];
     public string ProbeFailed => this["ProbeFailed"];
 }

@@ -140,15 +140,16 @@
               IsEnabled="{Binding CanEdit}"
               Margin="0 15 0 0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="300" />
-                <ColumnDefinition Width="340" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="25*" />
+                <ColumnDefinition Width="25*" />
+                <ColumnDefinition Width="50*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
+            <!-- Leftmost column under timeline -->
             <Grid Grid.Column="0"
                   Grid.RowSpan="2">
                 <Grid.RowDefinitions>
@@ -156,10 +157,12 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
+                
+                <!-- Import Source Control -->
                 <comps:SectionHeader HeaderText="{Binding InputSourcesTitle}" />
                 <ListBox Grid.Row="1"
                          ItemsSource="{Binding Sources}"
-                         Margin="0 5"
+                         Margin="0 15 0 0"
                          BorderThickness="0"
                          Background="Transparent"
                          HorizontalContentAlignment="Stretch"
@@ -182,53 +185,51 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <Grid Grid.Row="2">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Button Content="{Binding ImportMplsText}"
-                            IsEnabled="False"
-                            Style="{StaticResource NormalButton}"
-                            Height="35"
-                            HorizontalAlignment="Stretch"
-                            Margin="0 2.5">
-                        <Button.ToolTip>
-                            <TextBlock Text="{Binding ImportMplsText}" />
-                        </Button.ToolTip>
-                    </Button>
-                    <Button Grid.Row="1"
-                            Content="{Binding AppendFilesText}"
-                            Command="{Binding AppendFilesCommand}"
-                            Style="{StaticResource NormalButton}"
-                            Height="35"
-                            HorizontalAlignment="Stretch"
-                            Margin="0 2.5"
-                            Tag="{x:Static ui:SvgIconProvider.GamePaste}"
-                            ContentTemplate="{StaticResource IconTextButtonTemplate}" />
-                    <Button Grid.Row="2"
-                            Content="{Binding ImportFolderText}"
-                            Command="{Binding ImportFolderCommand}"
-                            Style="{StaticResource NormalButton}"
-                            Height="35"
-                            HorizontalAlignment="Stretch"
-                            Margin="0 2.5"
-                            Tag="{x:Static ui:SvgIconProvider.GameImport}"
-                            ContentTemplate="{StaticResource IconTextButtonTemplate}" />
+                
+                <!-- Import buttons-->
+                <Grid Grid.Row="2"
+                      Margin="0 5 0 0">
+                    <StackPanel>
+                        <Button Content="{Binding ImportMplsText}"
+                                IsEnabled="False"
+                                Style="{StaticResource NormalButton}"
+                                Height="35"
+                                HorizontalAlignment="Stretch"
+                                Tag="{x:Static ui:SvgIconProvider.GamePlay}"
+                                Margin="0 2.5">
+                            <Button.ToolTip>
+                                <TextBlock Text="{Binding ImportMplsText}" />
+                            </Button.ToolTip>
+                        </Button>
+                        <Button Content="{Binding AppendFilesText}"
+                                Command="{Binding AppendFilesCommand}"
+                                Style="{StaticResource NormalButton}"
+                                Height="35"
+                                HorizontalAlignment="Stretch"
+                                Margin="0 2.5"
+                                Tag="{x:Static ui:SvgIconProvider.GamePaste}"
+                                ContentTemplate="{StaticResource IconTextButtonTemplate}" />
+                        <Button Content="{Binding ImportFolderText}"
+                                Command="{Binding ImportFolderCommand}"
+                                Style="{StaticResource NormalButton}"
+                                Height="35"
+                                HorizontalAlignment="Stretch"
+                                Margin="0 2.5"
+                                Tag="{x:Static ui:SvgIconProvider.GameImport}"
+                                ContentTemplate="{StaticResource IconTextButtonTemplate}" />
+                    </StackPanel>
                 </Grid>
             </Grid>
 
-            <Grid Grid.Column="1">
+            <!-- Add new divider controls -->
+            <Grid Grid.Column="1"
+                  Margin="15 0 0 0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="250" />
-                </Grid.ColumnDefinitions>
-                
+
                 <comps:SectionHeader Grid.Row="0"
                                      HeaderText="{Binding AddNewDividerTitle}" />
                 <StackPanel Grid.Row="1"
@@ -246,6 +247,8 @@
                              Padding="5"
                              Margin="0" />
                 </StackPanel>
+                
+                <!-- Add new divider -->
                 <Button Grid.Row="2"
                         Content="{Binding AddDividerText}"
                         Command="{Binding AddEpisodeCommand}"
@@ -258,7 +261,9 @@
                         ContentTemplate="{StaticResource IconTextButtonTemplate}" />
             </Grid>
 
-            <Grid Grid.Column="2">
+            <!-- Batch ops buttons (deletes) -->
+            <Grid Grid.Column="2"
+                  Margin="15 0 0 0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
@@ -321,7 +326,7 @@
             <Grid Grid.Row="1"
                   Grid.Column="1"
                   Grid.ColumnSpan="2"
-                  Margin="0 15 0 0">
+                  Margin="15 15 0 0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
@@ -372,13 +377,12 @@
                Margin="0 15 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto"
+                                  MinWidth="400"/>
             </Grid.ColumnDefinitions>
             <!-- Progress bar and status -->
-            <StackPanel VerticalAlignment="Center">
-                <ProgressBar Width="220"
-                             Height="5"
+            <StackPanel Grid.Column="0">
+                <ProgressBar Height="5"
                              IsIndeterminate="True"
                              Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
                 <TextBlock Text="{Binding StatusText}"
@@ -388,7 +392,6 @@
             </StackPanel>
             <!-- Master cancel confirm buttons -->
             <comps:TwoButtonGroup Grid.Column="1"
-                                  Grid.ColumnSpan="2"
                                   ButtonHeight="30"
                                   DataContext="{Binding FinishButtons}"
                                   Button1Command="{Binding Cmd1}"

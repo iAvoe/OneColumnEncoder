@@ -83,7 +83,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         DeleteLeftDividerCommand = new ActionCmd(_ => DeleteAdjacentDivider(-1));
         DeleteRightDividerCommand = new ActionCmd(_ => DeleteAdjacentDivider(1));
         ClearOutputsCommand = new ActionCmd(_ => ClearOutputs());
-        UpdateOutputsCommand = new ActionCmd(_ => UpdateOutputs());
 
         InputSourceButtons = ButtonGroupVM.CreateThreeButton(
             ImportMplsText,
@@ -107,12 +106,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             DeleteSelectedDividerCommand,
             DeleteLeftDividerCommand,
             DeleteRightDividerCommand);
-        OutputGenerationButtons = ButtonGroupVM.CreateTwoButton(
-            ClearOutputsText,
-            UpdateOutputsText,
-            ClearOutputsCommand,
-            UpdateOutputsCommand);
-        FinishButtons = ButtonGroupVM.CreateTwoButton(CancelText, ApplyText, CancelCommand, ApplyCommand);
+         FinishButtons = ButtonGroupVM.CreateTwoButton(CancelText, ApplyText, CancelCommand, ApplyCommand);
         EpisodeEditButtons = ButtonGroupVM.CreateFiveButton(
             MergeLeftText,
             MergeRightText,
@@ -173,9 +167,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public string DeleteSelectedDividerText => RepartLangProvider.Current["DeleteSelectedDivider"];
     public string DeleteLeftDividerText => RepartLangProvider.Current["DeleteLeftDivider"];
     public string DeleteRightDividerText => RepartLangProvider.Current["DeleteRightDivider"];
-    public string ClearOutputsText => RepartLangProvider.Current["ClearOutputs"];
     public string ClearDividersText => RepartLangProvider.Current["ClearDividers"];
-    public string UpdateOutputsText => RepartLangProvider.Current["UpdateOutputs"];
     public string SourceStatsText => string.Format(RepartLangProvider.Current["SourceStats"], Sources.Count);
     public string OutputCountText => string.Format(RepartLangProvider.Current["OutputCount"], Outputs.Count);
     public string TimelineStartText => "00:00:00.000";
@@ -191,7 +183,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public ButtonGroupVM EpisodeEditButtons { get; }
     public ButtonGroupVM DividerControlButtons { get; }
     public ButtonGroupVM DividerDeleteButtons { get; }
-    public ButtonGroupVM OutputGenerationButtons { get; }
     public ButtonGroupVM FinishButtons { get; }
     public ICommand ImportFolderCommand { get; }
     public ICommand AppendFilesCommand { get; }
@@ -214,7 +205,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public ICommand DeleteLeftDividerCommand { get; }
     public ICommand DeleteRightDividerCommand { get; }
     public ICommand ClearOutputsCommand { get; }
-    public ICommand UpdateOutputsCommand { get; }
 
     public bool IsBusy
     {
@@ -259,7 +249,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public bool CanNudgeDivider => CanEdit && SelectedDivider is { IsLocked: false };
     public bool CanToggleDividerLock => CanEdit && SelectedDivider != null;
     public bool CanClearOutputs => CanEdit && _dividers.Count > 0;
-    public bool CanUpdateOutputs => CanEdit;
     public string SummaryText => _analysis == null
         ? string.Empty
         : string.Format(
@@ -933,13 +922,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         SelectOnlyDivider(null);
     }
 
-    private void UpdateOutputs()
-    {
-        if (!CanUpdateOutputs) return;
-        ReplaceOutputs(BuildDividerOutputs());
-        SelectedOutput = Outputs.FirstOrDefault();
-    }
-
     private void MergeAdjacentSelected(int direction)
     {
         if (SelectedOutput == null || !TryGetAdjacentOutput(direction, out RepartOutputItemVM? adjacent) || adjacent == null) return;
@@ -1300,7 +1282,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         foreach (string property in new[]
         {
             nameof(CanDeleteSelectedDivider), nameof(CanDeleteLeftDivider), nameof(CanDeleteRightDivider), nameof(CanNudgeDivider),
-            nameof(CanToggleDividerLock), nameof(CanClearOutputs), nameof(CanUpdateOutputs)
+            nameof(CanToggleDividerLock), nameof(CanClearOutputs)
         }) OnPropertyChanged(property);
 
         DividerControlButtons.B3_1IsEnabled = CanNudgeDivider;
@@ -1310,8 +1292,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         DividerDeleteButtons.B3_1IsEnabled = CanDeleteSelectedDivider;
         DividerDeleteButtons.B3_2IsEnabled = CanDeleteLeftDivider;
         DividerDeleteButtons.B3_3IsEnabled = CanDeleteRightDivider;
-        OutputGenerationButtons.B2_1IsEnabled = CanClearOutputs;
-        OutputGenerationButtons.B2_2IsEnabled = CanUpdateOutputs;
         FinishButtons.B2_2IsEnabled = CanApply;
     }
 
@@ -1334,8 +1314,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             nameof(DividerPreviousFrameText), nameof(DividerNextFrameText), nameof(DividerTimestampLabel),
             nameof(DividerFrameLabel), nameof(LockDividerText),
             nameof(DeleteSelectedDividerText),
-            nameof(DeleteLeftDividerText), nameof(DeleteRightDividerText), nameof(ClearOutputsText),
-            nameof(UpdateOutputsText), nameof(ClearDividersText), nameof(OutputCountText)
+            nameof(DeleteLeftDividerText), nameof(DeleteRightDividerText),
+            nameof(ClearDividersText), nameof(OutputCountText)
         }) OnPropertyChanged(property);
         InputSourceButtons.B3_1Text = ImportMplsText;
         InputSourceButtons.B3_2Text = AppendFilesText;
@@ -1353,8 +1333,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         DividerDeleteButtons.B3_1Text = DeleteEpisodeText;
         DividerDeleteButtons.B3_2Text = DeleteLeftDividerText;
         DividerDeleteButtons.B3_3Text = DeleteRightDividerText;
-        OutputGenerationButtons.B2_1Text = ClearOutputsText;
-        OutputGenerationButtons.B2_2Text = UpdateOutputsText;
         FinishButtons.B2_1Text = CancelText;
         FinishButtons.B2_2Text = ApplyText;
         OnPropertyChanged(nameof(SummaryText));
