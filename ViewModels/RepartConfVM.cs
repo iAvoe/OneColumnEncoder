@@ -166,7 +166,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public string MergeRightText => RepartLangProvider.Current["MergeRight"];
     public string ResetEditText => RepartLangProvider.Current["ResetEdit"];
     public string FrameChangingFiltersWarning => RepartLangProvider.Current["FrameChangingFiltersWarning"];
-    public string ApplyText => RepartLangProvider.Current["Apply"];
+    public string ApplyText => RepartLangProvider.Current["Confirm"];
     public string CancelText => RepartLangProvider.Current["Cancel"];
     public string AddDividerText => RepartLangProvider.Current["AddDivider"];
     public string DividerPreviousFrameText => RepartLangProvider.Current["DividerPreviousFrame"];

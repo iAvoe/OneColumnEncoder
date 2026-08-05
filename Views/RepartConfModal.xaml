@@ -397,7 +397,7 @@
                             MinHeight="300">
                         <DockPanel>
                             <comps:SectionHeader DockPanel.Dock="Top"
-                                                  HeaderText="{Binding OutputEpisodesTitle}" />
+                                                 HeaderText="{Binding OutputEpisodesTitle}" />
                             <comps:TwoButtonGroup DockPanel.Dock="Bottom"
                                                   DataContext="{Binding FinishButtons}"
                                                   ButtonHeight="30"
