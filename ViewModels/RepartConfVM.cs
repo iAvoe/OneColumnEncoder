@@ -80,9 +80,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         NudgeDividerLeftCommand = new ActionCmd(_ => NudgeSelectedDivider(-1));
         NudgeDividerRightCommand = new ActionCmd(_ => NudgeSelectedDivider(1));
         ToggleDividerLockCommand = new ActionCmd(_ => ToggleSelectedDividerLock());
-        InvertDividerSelectionCommand = new ActionCmd(_ => InvertDividerSelection());
-        SelectLeftDividerCommand = new ActionCmd(_ => SelectAdjacentDivider(-1));
-        SelectRightDividerCommand = new ActionCmd(_ => SelectAdjacentDivider(1));
         DeleteSelectedDividerCommand = new ActionCmd(_ => DeleteSelectedDividers());
         DeleteLeftDividerCommand = new ActionCmd(_ => DeleteAdjacentDivider(-1));
         DeleteRightDividerCommand = new ActionCmd(_ => DeleteAdjacentDivider(1));
@@ -104,13 +101,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             NudgeDividerLeftCommand,
             NudgeDividerRightCommand,
             ToggleDividerLockCommand);
-        DividerSelectionButtons = ButtonGroupVM.CreateThreeButton(
-            InvertSelectionText,
-            SelectLeftDividerText,
-            SelectRightDividerText,
-            InvertDividerSelectionCommand,
-            SelectLeftDividerCommand,
-            SelectRightDividerCommand);
         DividerDeleteButtons = ButtonGroupVM.CreateThreeButton(
             DeleteEpisodeText,
             DeleteLeftDividerText,
@@ -148,6 +138,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public string TimelineTitle => RepartLangProvider.Current["Timeline"];
     public string TimelineControlTitle => RepartLangProvider.Current["TimelineControl"];
     public string DividerControlTitle => RepartLangProvider.Current["DividerControl"];
+    public string AddNewDividerTitle => RepartLangProvider.Current["AddNewDivider"];
     public string BatchOperationsTitle => RepartLangProvider.Current["BatchOperations"];
     public string ImportFolderText => RepartLangProvider.Current["ImportFolder"];
     public string AppendFilesText => RepartLangProvider.Current["AppendFiles"];
@@ -180,9 +171,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public string LockDividerText => SelectedDivider?.IsLocked == true
         ? RepartLangProvider.Current["UnlockDivider"]
         : RepartLangProvider.Current["LockDivider"];
-    public string InvertSelectionText => RepartLangProvider.Current["InvertSelection"];
-    public string SelectLeftDividerText => RepartLangProvider.Current["SelectLeftDivider"];
-    public string SelectRightDividerText => RepartLangProvider.Current["SelectRightDivider"];
+    public string DeleteSelectedDividerText => RepartLangProvider.Current["DeleteSelectedDivider"];
     public string DeleteLeftDividerText => RepartLangProvider.Current["DeleteLeftDivider"];
     public string DeleteRightDividerText => RepartLangProvider.Current["DeleteRightDivider"];
     public string ClearOutputsText => RepartLangProvider.Current["ClearOutputs"];
@@ -203,7 +192,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public ButtonGroupVM InputSourceButtons { get; }
     public ButtonGroupVM EpisodeEditButtons { get; }
     public ButtonGroupVM DividerControlButtons { get; }
-    public ButtonGroupVM DividerSelectionButtons { get; }
     public ButtonGroupVM DividerDeleteButtons { get; }
     public ButtonGroupVM OutputGenerationButtons { get; }
     public ButtonGroupVM FinishButtons { get; }
@@ -225,9 +213,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public ICommand NudgeDividerLeftCommand { get; }
     public ICommand NudgeDividerRightCommand { get; }
     public ICommand ToggleDividerLockCommand { get; }
-    public ICommand InvertDividerSelectionCommand { get; }
-    public ICommand SelectLeftDividerCommand { get; }
-    public ICommand SelectRightDividerCommand { get; }
     public ICommand DeleteSelectedDividerCommand { get; }
     public ICommand DeleteLeftDividerCommand { get; }
     public ICommand DeleteRightDividerCommand { get; }
@@ -271,14 +256,11 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
                 && !Outputs.Where(output => output.Model.Id != SelectedOutput.Model.Id).Any(output => output.Model.Overlaps(draft));
         }
     }
-    public bool CanSelectLeftDivider => CanEdit && GetAdjacentDivider(-1) != null;
-    public bool CanSelectRightDivider => CanEdit && GetAdjacentDivider(1) != null;
     public bool CanDeleteSelectedDivider => CanEdit && _selectedDividers.Any(item => !item.IsLocked);
     public bool CanDeleteLeftDivider => CanEdit && GetDividerForDeletion(-1) is { IsLocked: false };
     public bool CanDeleteRightDivider => CanEdit && GetDividerForDeletion(1) is { IsLocked: false };
     public bool CanNudgeDivider => CanEdit && SelectedDivider is { IsLocked: false };
     public bool CanToggleDividerLock => CanEdit && SelectedDivider != null;
-    public bool CanInvertDividerSelection => CanEdit && DividerItems.Count > 0;
     public bool CanClearOutputs => CanEdit && _dividers.Count > 0;
     public bool CanUpdateOutputs => CanEdit;
     public string SummaryText => _analysis == null
@@ -834,21 +816,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private RepartDividerItemVM? GetDividerForDeletion(int direction) =>
         GetAdjacentDivider(direction) ?? SelectedDivider;
 
-    private void SelectAdjacentDivider(int direction)
-    {
-        RepartDividerItemVM? adjacent = GetAdjacentDivider(direction);
-        if (adjacent != null) SelectOnlyDivider(adjacent.Model.Id);
-    }
-
-    private void InvertDividerSelection()
-    {
-        if (!CanEdit) return;
-        foreach (RepartDividerItemVM item in DividerItems)
-            item.IsSelected = !item.IsSelected;
-        _selectedDividers = [.. DividerItems.Where(item => item.IsSelected)];
-        SelectedDivider = _selectedDividers.LastOrDefault();
-    }
-
     private void DeleteSelectedDividers()
     {
         if (!CanEdit) return;
@@ -1377,19 +1344,14 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     {
         foreach (string property in new[]
         {
-            nameof(CanSelectLeftDivider), nameof(CanSelectRightDivider), nameof(CanDeleteSelectedDivider),
-            nameof(CanDeleteLeftDivider), nameof(CanDeleteRightDivider), nameof(CanNudgeDivider),
-            nameof(CanToggleDividerLock), nameof(CanInvertDividerSelection), nameof(CanClearOutputs),
-            nameof(CanUpdateOutputs)
+            nameof(CanDeleteSelectedDivider), nameof(CanDeleteLeftDivider), nameof(CanDeleteRightDivider), nameof(CanNudgeDivider),
+            nameof(CanToggleDividerLock), nameof(CanClearOutputs), nameof(CanUpdateOutputs)
         }) OnPropertyChanged(property);
 
         DividerControlButtons.B3_1IsEnabled = CanNudgeDivider;
         DividerControlButtons.B3_2IsEnabled = CanNudgeDivider;
         DividerControlButtons.B3_3IsEnabled = CanToggleDividerLock;
         DividerControlButtons.B3_3Text = LockDividerText;
-        DividerSelectionButtons.B3_1IsEnabled = CanInvertDividerSelection;
-        DividerSelectionButtons.B3_2IsEnabled = CanSelectLeftDivider;
-        DividerSelectionButtons.B3_3IsEnabled = CanSelectRightDivider;
         DividerDeleteButtons.B3_1IsEnabled = CanDeleteSelectedDivider;
         DividerDeleteButtons.B3_2IsEnabled = CanDeleteLeftDivider;
         DividerDeleteButtons.B3_3IsEnabled = CanDeleteRightDivider;
@@ -1406,7 +1368,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         foreach (string property in new[]
         {
             nameof(InputSourcesTitle), nameof(OutputEpisodesTitle), nameof(TimelineTitle),
-            nameof(TimelineControlTitle), nameof(DividerControlTitle), nameof(BatchOperationsTitle),
+            nameof(TimelineControlTitle), nameof(DividerControlTitle), nameof(AddNewDividerTitle), nameof(BatchOperationsTitle),
             nameof(ImportFolderText), nameof(AppendFilesText), nameof(ImportChaptersText), nameof(ImportMplsText),
             nameof(UnavailableText), nameof(OutputNameLabel), nameof(StartTimeLabel), nameof(SegmentDurationLabel),
             nameof(EndTimeLabel), nameof(TimeFormatText), nameof(FirstFrameLabel), nameof(FrameCountLabel),
@@ -1416,7 +1378,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             nameof(ApplyText), nameof(CancelText), nameof(AddDividerText),
             nameof(DividerPreviousFrameText), nameof(DividerNextFrameText), nameof(DividerTimestampLabel),
             nameof(DividerFrameLabel), nameof(LockDividerText),
-            nameof(InvertSelectionText), nameof(SelectLeftDividerText), nameof(SelectRightDividerText),
+            nameof(DeleteSelectedDividerText),
             nameof(DeleteLeftDividerText), nameof(DeleteRightDividerText), nameof(ClearOutputsText),
             nameof(UpdateOutputsText), nameof(ClearDividersText), nameof(OutputCountText)
         }) OnPropertyChanged(property);
@@ -1433,9 +1395,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         DividerControlButtons.B3_1Text = DividerPreviousFrameText;
         DividerControlButtons.B3_2Text = DividerNextFrameText;
         DividerControlButtons.B3_3Text = LockDividerText;
-        DividerSelectionButtons.B3_1Text = InvertSelectionText;
-        DividerSelectionButtons.B3_2Text = SelectLeftDividerText;
-        DividerSelectionButtons.B3_3Text = SelectRightDividerText;
         DividerDeleteButtons.B3_1Text = DeleteEpisodeText;
         DividerDeleteButtons.B3_2Text = DeleteLeftDividerText;
         DividerDeleteButtons.B3_3Text = DeleteRightDividerText;

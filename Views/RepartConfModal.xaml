@@ -9,22 +9,49 @@
                    d:DataContext="{d:DesignInstance Type=vms:RepartConfVM}"
                    mc:Ignorable="d"
                    Title="{Binding WindowTitle}"
-                   Width="1180"
-                   Height="760"
-                   MinWidth="900"
-                   MinHeight="620"
-                   WindowStartupLocation="CenterOwner"
-                   Background="{StaticResource Background}">
-    <Grid Margin="20">
+                   Width="960"
+                    Height="760"
+                    WindowStartupLocation="CenterOwner"
+                    Background="{StaticResource Background}">
+    <ui:AdaptiveWindow.Resources>
+        <DataTemplate x:Key="IconTextButtonTemplate">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                <Rectangle Width="16"
+                           Height="16"
+                           Margin="0 0 5 0"
+                           VerticalAlignment="Center"
+                           Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                    <Rectangle.OpacityMask>
+                        <ImageBrush ImageSource="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Tag}"
+                                    Stretch="Uniform" />
+                    </Rectangle.OpacityMask>
+                    <Rectangle.Style>
+                        <Style TargetType="Rectangle">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Tag}"
+                                             Value="{x:Null}">
+                                    <Setter Property="Visibility"
+                                            Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Rectangle.Style>
+                </Rectangle>
+                <TextBlock Text="{Binding}"
+                           VerticalAlignment="Center" />
+            </StackPanel>
+        </DataTemplate>
+    </ui:AdaptiveWindow.Resources>
+    <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="150" />
-            <RowDefinition Height="20" />
+            <RowDefinition Height="100" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid>
+        <Grid Grid.Row="0">
             <TextBlock Text="{Binding TimelineTitle}"
                        Style="{StaticResource H2}" />
             <TextBlock Text="{Binding SummaryText}"
@@ -33,8 +60,9 @@
                        Foreground="{StaticResource GlobalSecondary}" />
         </Grid>
 
+        <!-- Timeline -->
         <Grid Grid.Row="1"
-              Margin="0 8 0 0"
+              Margin="0 5 0 0"
               IsEnabled="{Binding CanEdit}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -59,8 +87,8 @@
                         </ItemsControl.ItemContainerStyle>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Margin="2"
-                                        Padding="6"
+                                <Border Margin="2.5"
+                                        Padding="5"
                                         Background="{StaticResource TimelineThumbBackground}"
                                         BorderBrush="{StaticResource TimelineThumbBorder}"
                                         BorderThickness="1">
@@ -136,13 +164,12 @@
             </Grid>
         </Grid>
 
-        <Grid Grid.Row="3"
-              IsEnabled="{Binding CanEdit}">
+        <Grid Grid.Row="2"
+              IsEnabled="{Binding CanEdit}"
+              Margin="0 15 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="300" />
-                <ColumnDefinition Width="28" />
                 <ColumnDefinition Width="340" />
-                <ColumnDefinition Width="28" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -160,15 +187,15 @@
                 <comps:SectionHeader HeaderText="{Binding InputSourcesTitle}" />
                 <ListBox Grid.Row="1"
                          ItemsSource="{Binding Sources}"
-                         Margin="0 8 0 8"
+                         Margin="0 5"
                          BorderThickness="0"
                          Background="Transparent"
                          HorizontalContentAlignment="Stretch"
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Border Margin="0 3"
-                                    Padding="8"
+                            <Border Margin="0 2.5"
+                                    Padding="5"
                                     BorderBrush="{StaticResource GlobalSecondary}"
                                     BorderThickness="1"
                                     CornerRadius="4">
@@ -191,8 +218,10 @@
                     </Grid.RowDefinitions>
                     <Button Content="{Binding ImportMplsText}"
                             IsEnabled="False"
-                            Height="32"
-                            Margin="0 2">
+                            Style="{StaticResource NormalButton}"
+                            Height="35"
+                            HorizontalAlignment="Stretch"
+                            Margin="0 2.5">
                         <Button.ToolTip>
                             <TextBlock Text="{Binding ImportMplsText}" />
                         </Button.ToolTip>
@@ -200,77 +229,71 @@
                     <Button Grid.Row="1"
                             Content="{Binding AppendFilesText}"
                             Command="{Binding AppendFilesCommand}"
-                            Height="32"
-                            Margin="0 2">
-                        <Button.ContentTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Source="{x:Static ui:SvgIconProvider.GamePaste}"
-                                           Width="16"
-                                           Height="16"
-                                           Margin="0 0 6 0" />
-                                    <TextBlock Text="{Binding}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </Button.ContentTemplate>
-                    </Button>
+                            Style="{StaticResource NormalButton}"
+                            Height="35"
+                            HorizontalAlignment="Stretch"
+                            Margin="0 2.5"
+                            Tag="{x:Static ui:SvgIconProvider.GamePaste}"
+                            ContentTemplate="{StaticResource IconTextButtonTemplate}" />
                     <Button Grid.Row="2"
                             Content="{Binding ImportFolderText}"
                             Command="{Binding ImportFolderCommand}"
-                            Height="32"
-                            Margin="0 2">
-                        <Button.ContentTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Source="{x:Static ui:SvgIconProvider.GameImport}"
-                                           Width="16"
-                                           Height="16"
-                                           Margin="0 0 6 0" />
-                                    <TextBlock Text="{Binding}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </Button.ContentTemplate>
-                    </Button>
+                            Style="{StaticResource NormalButton}"
+                            Height="35"
+                            HorizontalAlignment="Stretch"
+                            Margin="0 2.5"
+                            Tag="{x:Static ui:SvgIconProvider.GameImport}"
+                            ContentTemplate="{StaticResource IconTextButtonTemplate}" />
                 </Grid>
             </Grid>
 
-            <Grid Grid.Column="2">
+            <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <comps:SectionHeader HeaderText="{Binding BatchOperationsTitle}" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="250" />
+                </Grid.ColumnDefinitions>
+                
+                <comps:SectionHeader Grid.Row="0"
+                                     HeaderText="{Binding AddNewDividerTitle}" />
                 <StackPanel Grid.Row="1"
-                            Margin="0 10 0 0">
+                            Margin="5 10 0 0">
                     <TextBlock Text="{Binding DividerTimestampLabel}"
-                               Style="{StaticResource H3}" />
+                               Style="{StaticResource H3}"
+                               Margin="0 0 0 2.5" />
                     <TextBox Text="{Binding NewDividerTimestampText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                             Padding="6"
-                             Margin="0 4 0 8" />
+                             Padding="5"
+                             Margin="0 0 0 10" />
                     <TextBlock Text="{Binding DividerFrameLabel}"
-                               Style="{StaticResource H3}" />
+                               Style="{StaticResource H3}"
+                               Margin="0 0 0 2.5" />
                     <TextBox Text="{Binding NewDividerFrameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-                             Padding="6"
-                             Margin="0 4 0 0" />
+                             Padding="5"
+                             Margin="0" />
                 </StackPanel>
                 <Button Grid.Row="2"
                         Content="{Binding AddDividerText}"
                         Command="{Binding AddEpisodeCommand}"
                         IsEnabled="{Binding CanAddEpisode}"
                         Style="{StaticResource PrimaryButton}"
-                        Height="38"
-                        Margin="0 12 0 0" />
+                        Height="40"
+                        HorizontalAlignment="Stretch"
+                        Margin="2.5 12.5 0 0"
+                        Tag="{x:Static ui:SvgIconProvider.GamePlus}"
+                        ContentTemplate="{StaticResource IconTextButtonTemplate}" />
             </Grid>
 
-            <Grid Grid.Column="4">
+            <Grid Grid.Column="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <comps:SectionHeader HeaderText="{Binding DividerControlTitle}" />
+                <comps:SectionHeader HeaderText="{Binding BatchOperationsTitle}" />
                 <Grid Grid.Row="1"
-                      Margin="0 10 0 0">
+                      Margin="5 25 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
@@ -279,37 +302,54 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <Button Content="{Binding InvertSelectionText}"
-                            Command="{Binding InvertDividerSelectionCommand}"
-                            IsEnabled="{Binding CanInvertDividerSelection}"
-                            Margin="0 0 6 6"
-                            Height="34" />
+                    <Button Content="{Binding DeleteSelectedDividerText}"
+                            Command="{Binding DeleteSelectedDividerCommand}"
+                            IsEnabled="{Binding CanDeleteSelectedDivider}"
+                            Style="{StaticResource NormalButton}"
+                            HorizontalAlignment="Stretch"
+                            Margin="0 0 5 5"
+                            Height="35"
+                            Tag="{x:Static ui:SvgIconProvider.GameDelete}"
+                            ContentTemplate="{StaticResource IconTextButtonTemplate}" />
                     <Button Grid.Column="1"
                             Content="{Binding ClearDividersText}"
                             Command="{Binding ClearOutputsCommand}"
                             IsEnabled="{Binding CanClearOutputs}"
-                            Margin="6 0 0 6"
-                            Height="34" />
+                            Style="{StaticResource NormalButton}"
+                            HorizontalAlignment="Stretch"
+                            Margin="0 0 0 5"
+                            Height="35"
+                            Tag="{x:Static ui:SvgIconProvider.GameDelete}"
+                            ContentTemplate="{StaticResource IconTextButtonTemplate}" />
                     <Button Grid.Row="1"
                             Content="{Binding DeleteLeftDividerText}"
                             Command="{Binding DeleteLeftDividerCommand}"
                             IsEnabled="{Binding CanDeleteLeftDivider}"
-                            Margin="0 6 6 0"
-                            Height="34" />
+                            Style="{StaticResource NormalButton}"
+                            HorizontalAlignment="Stretch"
+                            Margin="0 5 5 0"
+                            Height="35"
+                            Tag="{x:Static ui:SvgIconProvider.GameDelete}"
+                            ContentTemplate="{StaticResource IconTextButtonTemplate}" />
                     <Button Grid.Row="1"
                             Grid.Column="1"
                             Content="{Binding DeleteRightDividerText}"
                             Command="{Binding DeleteRightDividerCommand}"
                             IsEnabled="{Binding CanDeleteRightDivider}"
-                            Margin="6 6 0 0"
-                            Height="34" />
+                            Style="{StaticResource NormalButton}"
+                            HorizontalAlignment="Stretch"
+                            Margin="0 5 0 0"
+                            Height="35"
+                            Tag="{x:Static ui:SvgIconProvider.GameDelete}"
+                            ContentTemplate="{StaticResource IconTextButtonTemplate}" />
                 </Grid>
             </Grid>
 
+            <!-- Output episode repartition list/queue -->
             <Grid Grid.Row="1"
-                  Grid.Column="2"
-                  Grid.ColumnSpan="3"
-                  Margin="0 25 0 0">
+                  Grid.Column="1"
+                  Grid.ColumnSpan="2"
+                  Margin="0 15 0 0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
@@ -321,17 +361,17 @@
                                Foreground="{StaticResource GlobalSecondary}" />
                 </Grid>
                 <ScrollViewer Grid.Row="1"
-                              Margin="0 8 0 0"
+                              Margin="5 5 0 0"
                               VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled">
                     <ItemsControl ItemsSource="{Binding Outputs}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Margin="0 3"
-                                        Padding="8"
+                                <Border Margin="0 5 0 0"
+                                        Padding="5"
                                         BorderBrush="{StaticResource GlobalSecondary}"
                                         BorderThickness="1"
-                                        CornerRadius="4">
+                                        CornerRadius="5">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
@@ -339,7 +379,7 @@
                                         </Grid.ColumnDefinitions>
                                         <StackPanel>
                                             <TextBlock Text="{Binding Name}"
-                                                       FontWeight="SemiBold" />
+                                                       FontWeight="Bold" />
                                             <TextBlock Text="{Binding FrameRangeText}"
                                                        Foreground="{StaticResource GlobalSecondary}" />
                                         </StackPanel>
@@ -356,16 +396,17 @@
             </Grid>
         </Grid>
 
-        <Grid Grid.Row="4"
-              Margin="0 15 0 0">
+        <Grid Grid.Row="3"
+               Margin="0 15 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
+            <!-- Progress bar and status -->
             <StackPanel VerticalAlignment="Center">
                 <ProgressBar Width="220"
-                             Height="4"
+                             Height="5"
                              IsIndeterminate="True"
                              Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
                 <TextBlock Text="{Binding StatusText}"
@@ -373,44 +414,15 @@
                            Foreground="{StaticResource GlobalSecondary}"
                            TextWrapping="Wrap" />
             </StackPanel>
-            <Button Grid.Column="1"
-                    Content="{Binding CancelText}"
-                    Command="{Binding CancelCommand}"
-                    Height="38"
-                    MinWidth="160"
-                    Margin="10 0 0 0">
-                <Button.ContentTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="{x:Static ui:SvgIconProvider.GameXMark}"
-                                   Width="16"
-                                   Height="16"
-                                   Margin="0 0 6 0" />
-                            <TextBlock Text="{Binding}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </Button.ContentTemplate>
-            </Button>
-            <Button Grid.Column="2"
-                    Content="{Binding ApplyText}"
-                    Command="{Binding ApplyCommand}"
-                    IsEnabled="{Binding CanApply}"
-                    Style="{StaticResource PrimaryButton}"
-                    Height="38"
-                    MinWidth="180"
-                    Margin="10 0 0 0">
-                <Button.ContentTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="{x:Static ui:SvgIconProvider.GameSave}"
-                                   Width="16"
-                                   Height="16"
-                                   Margin="0 0 6 0" />
-                            <TextBlock Text="{Binding}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </Button.ContentTemplate>
-            </Button>
+            <!-- Master cancel confirm buttons -->
+            <comps:TwoButtonGroup Grid.Column="1"
+                                  Grid.ColumnSpan="2"
+                                  ButtonHeight="30"
+                                  DataContext="{Binding FinishButtons}"
+                                  Button1Command="{Binding Cmd1}"
+                                  Button2Command="{Binding Cmd2}"
+                                  Button1IsEnabled="{Binding B2_1IsEnabled}"
+                                  Button2IsEnabled="{Binding B2_2IsEnabled}" />
         </Grid>
     </Grid>
 </ui:AdaptiveWindow>
