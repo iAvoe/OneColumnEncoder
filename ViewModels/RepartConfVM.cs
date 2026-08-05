@@ -477,6 +477,21 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     {
     }
 
+    public void SelectDividerForInteraction(RepartDividerItemVM? item)
+    {
+        if (item == null) return;
+        SelectOnlyDivider(item.Model.Id);
+        SelectedOutput = null;
+    }
+
+    public void MoveDividerToPosition(RepartDividerItemVM? item, double position)
+    {
+        if (item == null || _analysis == null || _analysis.TotalFrames < 2) return;
+        double clampedPosition = Clamp(position, 0d, 1d);
+        long frame = (long)Math.Ceiling(clampedPosition * _analysis.TotalFrames) - 1;
+        MoveDivider(item.Model.Id, frame);
+    }
+
     private async Task ImportFolderAsync()
     {
         OpenFolderDialog dialog = new() { Title = RepartLangProvider.Current["SelectFolder"], Multiselect = false };
@@ -839,10 +854,17 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
     private void MoveSelectedDivider(long requestedFrame)
     {
-        if (_analysis == null || SelectedDivider is not { IsLocked: false } selected) return;
-        int index = _dividers.FindIndex(divider => divider.Id == selected.Model.Id);
-        if (index < 0) return;
+        if (SelectedDivider is not { IsLocked: false } selected) return;
+        MoveDivider(selected.Model.Id, requestedFrame);
+    }
 
+    private void MoveDivider(Guid id, long requestedFrame)
+    {
+        if (_analysis == null) return;
+        int index = _dividers.FindIndex(divider => divider.Id == id);
+        if (index < 0 || _dividers[index].IsLocked) return;
+
+        RepartDividerM selected = _dividers[index];
         long minimum = index == 0 ? 0 : _dividers[index - 1].Frame + 1;
         long maximum = index == _dividers.Count - 1
             ? _analysis.TotalFrames - 2
@@ -850,11 +872,13 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         long frame = Math.Max(minimum, Math.Min(maximum, requestedFrame));
         if (frame == selected.Frame) return;
 
-        _dividers[index] = selected.Model with { Frame = frame };
+        RepartDividerM updated = selected with { Frame = frame };
+        _dividers[index] = updated;
         _dividers = [.. _dividers.OrderBy(divider => divider.Frame)];
-        ReplaceOutputs(BuildDividerOutputs());
+        ReplaceOutputs(BuildDividerOutputs(), refreshTimeline: false);
+        RefreshDividerItem(updated);
         SetSuggestedNewDividerTexts();
-        SelectOnlyDivider(selected.Model.Id);
+        SelectOnlyDivider(updated.Id);
     }
 
     private void ToggleSelectedDividerLock()
@@ -1052,7 +1076,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         return true;
     }
 
-    private void ReplaceOutputs(IEnumerable<RepartOutputSegmentM> models, bool syncDividers = false)
+    private void ReplaceOutputs(IEnumerable<RepartOutputSegmentM> models, bool refreshTimeline = true)
     {
         Outputs.Clear();
         List<RepartOutputSegmentM> orderedModels = [.. models.OrderBy(model => model.FirstFrame)];
@@ -1063,7 +1087,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         }
         _selectedOutputs = [];
         SelectedOutput = null;
-        RefreshTimeline();
+        if (refreshTimeline) RefreshTimeline();
         OnPropertyChanged(nameof(CanApply));
         OnPropertyChanged(nameof(OutputCountText));
         RefreshDraftAvailability();
@@ -1110,6 +1134,13 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         OnPropertyChanged(nameof(SelectedDivider));
         OnPropertyChanged(nameof(LockDividerText));
         SetDividerTexts(_selectedDivider?.Frame);
+    }
+
+    private void RefreshDividerItem(RepartDividerM divider)
+    {
+        if (_analysis == null) return;
+        RepartDividerItemVM? item = DividerItems.FirstOrDefault(item => item.Model.Id == divider.Id);
+        item?.Update(divider, _analysis.TotalFrames);
     }
 
     private void BuildAxisLabels()

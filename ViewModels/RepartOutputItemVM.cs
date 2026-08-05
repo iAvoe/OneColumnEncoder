@@ -37,21 +37,39 @@ public sealed class RepartOutputItemVM : BaseVM
 public sealed class RepartDividerItemVM : BaseVM
 {
     private bool _isSelected;
+    private RepartDividerM _model;
+    private double _position;
 
     public RepartDividerItemVM(RepartDividerM model, long totalFrames)
     {
-        Model = model;
-        Position = totalFrames > 0 ? (double)(model.Frame + 1) / totalFrames : 0d;
+        _model = model;
+        _position = GetPosition(model, totalFrames);
     }
 
-    public RepartDividerM Model { get; }
-    public long Frame => Model.Frame;
-    public bool IsLocked => Model.IsLocked;
-    public double Position { get; }
+    public RepartDividerM Model => _model;
+    public long Frame => _model.Frame;
+    public bool IsLocked => _model.IsLocked;
+    public double Position
+    {
+        get => _position;
+        private set => SetProperty(ref _position, value);
+    }
 
     public bool IsSelected
     {
         get => _isSelected;
         set => SetProperty(ref _isSelected, value);
     }
+
+    public void Update(RepartDividerM model, long totalFrames)
+    {
+        _model = model;
+        Position = GetPosition(model, totalFrames);
+        OnPropertyChanged(nameof(Model));
+        OnPropertyChanged(nameof(Frame));
+        OnPropertyChanged(nameof(IsLocked));
+    }
+
+    private static double GetPosition(RepartDividerM model, long totalFrames) =>
+        totalFrames > 0 ? (double)(model.Frame + 1) / totalFrames : 0d;
 }

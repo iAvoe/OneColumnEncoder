@@ -88,15 +88,16 @@
                         </ItemsControl.ItemContainerStyle>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Button Width="20"
-                                        Height="70"
-                                        Padding="0"
-                                        ToolTip="{Binding Frame}"
-                                        Command="{Binding DataContext.SelectDividerCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                        CommandParameter="{Binding}">
-                                    <Button.Style>
-                                        <Style TargetType="Button"
-                                               BasedOn="{StaticResource BaseButton}">
+                                <Thumb Width="20"
+                                       Height="70"
+                                       ToolTip="{Binding Frame}"
+                                       Cursor="SizeWE"
+                                       MouseLeftButtonDown="DividerThumb_MouseLeftButtonDown"
+                                       DragStarted="DividerThumb_DragStarted"
+                                       DragDelta="DividerThumb_DragDelta"
+                                       DragCompleted="DividerThumb_DragCompleted">
+                                    <Thumb.Style>
+                                        <Style TargetType="Thumb">
                                             <Setter Property="Background"
                                                     Value="Transparent" />
                                             <Setter Property="BorderThickness"
@@ -105,7 +106,7 @@
                                                     Value="{StaticResource GlobalPrimary}" />
                                             <Setter Property="Template">
                                                 <Setter.Value>
-                                                    <ControlTemplate TargetType="Button">
+                                                    <ControlTemplate TargetType="Thumb">
                                                         <Border Width="2"
                                                                 Background="{TemplateBinding Foreground}" />
                                                     </ControlTemplate>
@@ -119,8 +120,8 @@
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
-                                    </Button.Style>
-                                </Button>
+                                    </Thumb.Style>
+                                </Thumb>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
