@@ -11,7 +11,6 @@ namespace OneColumnEncoder.ViewModels
     {
         private readonly EncodingPipelineRequest? _request = DeserializeRequest(model.SerializedRequest);
         private readonly QueueJobItemM _model = model;
-        private readonly EncodingMonitorModalLangProvider _queueLang = new(UILangProvider.Current.LanguageCode);
         private bool _isSidebarSelected;
         private bool _canMoveUp;
         private bool _canMoveDown;
@@ -36,9 +35,9 @@ namespace OneColumnEncoder.ViewModels
 
         public string P1TooltipText => _model.ErrorMessage ?? P1Text;
 
-        public string DisplayR1Text => _queueLang.QueueItemRemoveText;
-        public string R2Text => _queueLang.QueueItemMoveUpText;
-        public string R3Text => _queueLang.QueueItemMoveDownText;
+        public string DisplayR1Text => QueueSidebarLangProvider.Current.QueueItemRemoveText;
+        public string R2Text => QueueSidebarLangProvider.Current.QueueItemMoveUpText;
+        public string R3Text => QueueSidebarLangProvider.Current.QueueItemMoveDownText;
         public bool R1IsEnabled => _model.Status == "Pending";
         public bool R2IsEnabled => _model.Status == "Pending" && _canMoveUp;
         public bool R3IsEnabled => _model.Status == "Pending" && _canMoveDown;

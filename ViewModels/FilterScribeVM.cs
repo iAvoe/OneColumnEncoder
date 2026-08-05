@@ -651,11 +651,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void RefreshConcatSourceLanguage()
         {
-            EncodingMonitorModalLangProvider lang = new(UILangProvider.Current.LanguageCode);
-            ConcatSources.RefreshLanguage(
-                lang.QueueItemRemoveText,
-                lang.QueueItemMoveUpText,
-                lang.QueueItemMoveDownText);
+            ConcatSources.RefreshLanguage();
         }
 
         private void ParseColorSpaceInfo(string? sourceFfprobeJson)

@@ -1,7 +1,17 @@
 using OneColumnEncoder.Models;
 using System.IO;
+using System.Threading;
 
 namespace OneColumnEncoder.RepartManagement;
+
+public enum RepartAnalysisStage
+{
+    CheckFiles,
+    ProbeFiles,
+    AnalyzeStreams,
+    ValidateStreams,
+    ScanFrames
+}
 
 public static class RepartCompatibilityAnalyzer
 {
@@ -37,7 +47,7 @@ public static class RepartCompatibilityAnalyzer
         string? ffmpegPath,
         IReadOnlyList<string> filePaths,
         Func<RepartInterlacedSourceInfo, bool>? confirmDiscardInterlacedSource = null,
-        Action<int, int, string>? onFileProgress = null,
+        Action<RepartAnalysisStage, int, int, string>? onFileProgress = null,
         Action<RepartExcludedSourceInfo>? onExcluded = null,
         CancellationToken cancellationToken = default)
     {
@@ -81,7 +91,7 @@ public static class RepartCompatibilityAnalyzer
         {
             string path = Path.GetFullPath(filePaths[i]);
             string displayName = Path.GetFileName(path);
-            onFileProgress?.Invoke(i + 1, filePaths.Count, displayName);
+            onFileProgress?.Invoke(RepartAnalysisStage.CheckFiles, i + 1, filePaths.Count, displayName);
 
             RepartSourceFileOutcome fileCheck = RepartSourceValidator.CheckWithoutFfprobe(path);
             if (fileCheck.RejectionReason != null)
@@ -105,7 +115,7 @@ public static class RepartCompatibilityAnalyzer
         for (int i = 0; i < sourceFiles.Count; i++)
         {
             RepartSourceFile sourceFile = sourceFiles[i];
-            onFileProgress?.Invoke(i + 1, sourceFiles.Count, sourceFile.DisplayName);
+            onFileProgress?.Invoke(RepartAnalysisStage.ProbeFiles, i + 1, sourceFiles.Count, sourceFile.DisplayName);
 
             RepartSourceFileOutcome probeable = await RepartSourceValidator.ProbeCanAnalyzeAsync(
                 ffprobePath,
@@ -132,7 +142,7 @@ public static class RepartCompatibilityAnalyzer
         for (int i = 0; i < probeableSources.Count; i++)
         {
             RepartSourceFile sourceFile = probeableSources[i];
-            onFileProgress?.Invoke(i + 1, probeableSources.Count, sourceFile.DisplayName);
+            onFileProgress?.Invoke(RepartAnalysisStage.AnalyzeStreams, i + 1, probeableSources.Count, sourceFile.DisplayName);
 
             RepartRawProbeOutcome rawProbe = await RepartSourceValidator.AnalyzeWithFfprobeAsync(
                 ffprobePath,
@@ -161,8 +171,11 @@ public static class RepartCompatibilityAnalyzer
             analyzedProbes.Add((sourceFile, RepartSourceValidator.AnalyzeProbe(rawProbe)));
         }
 
-        foreach ((RepartSourceFile sourceFile, RepartProbeOutcome analysis) in analyzedProbes)
+        for (int i = 0; i < analyzedProbes.Count; i++)
         {
+            (RepartSourceFile sourceFile, RepartProbeOutcome analysis) = analyzedProbes[i];
+            onFileProgress?.Invoke(RepartAnalysisStage.ValidateStreams, i + 1, analyzedProbes.Count, sourceFile.DisplayName);
+
             if (analysis.RejectionReason != null)
             {
                 RepartExcludedSourceInfo excludedInfo = new(
@@ -219,28 +232,28 @@ public static class RepartCompatibilityAnalyzer
         // 5. Build the plan that will be loaded into RepartConfModal. Only sources
         // that survived every earlier filter reach the expensive frame-count scan.
         // The modal opens only after exclusions are reported.
+        int completedScans = 0;
         async Task<(string Path, string DisplayName, string RawJson, RepartScanOutcome Scan)> ScanCandidateAsync(
             string path,
             string displayName,
-            RepartSourceProbe sourceProbe,
-            int index)
+            RepartSourceProbe sourceProbe)
         {
-            onFileProgress?.Invoke(index + 1, candidates.Count, displayName);
             RepartScanOutcome scan = await RepartSourceValidator.ScanFramesAsync(
                 ffprobePath,
                 ffmpegPath,
                 path,
                 sourceProbe,
                 cancellationToken);
+            int completed = Interlocked.Increment(ref completedScans);
+            onFileProgress?.Invoke(RepartAnalysisStage.ScanFrames, completed, candidates.Count, displayName);
             return (path, displayName, sourceProbe.RawJson, scan);
         }
 
         Task<(string Path, string DisplayName, string RawJson, RepartScanOutcome Scan)>[] scanTasks = candidates
-            .Select((candidate, index) => ScanCandidateAsync(
+            .Select(candidate => ScanCandidateAsync(
                 candidate.Path,
                 candidate.DisplayName,
-                candidate.Probe,
-                index))
+                candidate.Probe))
             .ToArray();
 
         (string Path, string DisplayName, string RawJson, RepartScanOutcome Scan)[] scanResults = await Task.WhenAll(scanTasks);

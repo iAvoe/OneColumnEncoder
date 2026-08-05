@@ -133,6 +133,12 @@ namespace OneColumnEncoder.ViewModels
             _store.Save();
         }
 
+        public void RefreshLanguage()
+        {
+            foreach (QueueJobItemVM job in EnumerateJobVMs().Distinct())
+                job.RefreshBindings();
+        }
+
         public void AddJob(QueueJobItemM job)
         {
             _store.Jobs.Add(job);

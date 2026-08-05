@@ -29,8 +29,8 @@
                           HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Auto">
                 <StackPanel>
-                    <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarRunningHeaderText}"
-                                         Margin="0 0 0 5" />
+                    <comps:SectionHeader HeaderText="{Binding QueueSidebarLang.QueueSidebarRunningHeaderText}"
+                                          Margin="0 0 0 5" />
                     <Border Margin="{StaticResource QueueSidebarItemMargin}"
                             HorizontalAlignment="Stretch"
                             Visibility="{Binding QueueSidebar.HasRunningJob, Converter={StaticResource BoolToVisibility}}">
@@ -48,8 +48,8 @@
                         </cards:MiniItemCard>
                     </Border>
 
-                    <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarWaitingHeaderText}"
-                                         Margin="0 5" />
+                    <comps:SectionHeader HeaderText="{Binding QueueSidebarLang.QueueSidebarWaitingHeaderText}"
+                                          Margin="0 5" />
                     <ListBox x:Name="WaitingListBox"
                              ItemsSource="{Binding QueueSidebar.WaitingJobs}"
                              SelectedItem="{Binding QueueSidebar.SelectedWaitingJob, Mode=OneWayToSource}"
@@ -98,8 +98,8 @@
                         </ListBox.ItemTemplate>
                     </ListBox>
 
-                    <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarUnfinishedHeaderText}"
-                                         Margin="0 5" />
+                    <comps:SectionHeader HeaderText="{Binding QueueSidebarLang.QueueSidebarUnfinishedHeaderText}"
+                                          Margin="0 5" />
                     <ListBox x:Name="UnfinishedListBox"
                              ItemsSource="{Binding QueueSidebar.UnfinishedJobs}"
                              SelectedItem="{Binding QueueSidebar.SelectedUnfinishedJob, Mode=OneWayToSource}"
@@ -148,8 +148,8 @@
                         </ListBox.ItemTemplate>
                     </ListBox>
 
-                    <comps:SectionHeader HeaderText="{Binding Lang.QueueSidebarCompletedHeaderText}"
-                                         Margin="0 5" />
+                    <comps:SectionHeader HeaderText="{Binding QueueSidebarLang.QueueSidebarCompletedHeaderText}"
+                                          Margin="0 5" />
                     <ListBox x:Name="CompletedListBox"
                              ItemsSource="{Binding QueueSidebar.CompletedJobs}"
                              SelectedItem="{Binding QueueSidebar.SelectedCompletedJob, Mode=OneWayToSource}"
@@ -201,7 +201,7 @@
             </ScrollViewer>
 
             <StackPanel Grid.Row="2">
-                <Button Content="{Binding Lang.QueueSidebarCancelAllText}"
+                <Button Content="{Binding QueueSidebarLang.QueueSidebarCancelAllText}"
                         Command="{Binding CancelAllQueueCommand}"
                         IsEnabled="{Binding IsCancelAllEnabled}"
                         Height="30"

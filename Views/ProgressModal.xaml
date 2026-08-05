@@ -18,10 +18,24 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TextBlock FontSize="14"
-                   Text="{Binding P1Text}"
-                   TextWrapping="WrapWithOverflow"
-                   VerticalAlignment="Center" />
+        <StackPanel Grid.Row="0">
+            <TextBlock FontSize="14"
+                       Text="{Binding P1Text}"
+                       TextWrapping="WrapWithOverflow"
+                       VerticalAlignment="Center" />
+            <TextBlock Margin="0 6 0 0"
+                       FontSize="13"
+                       Foreground="{StaticResource GlobalSecondary}"
+                       Text="{Binding P2Text}"
+                       TextWrapping="WrapWithOverflow"
+                       VerticalAlignment="Center" />
+            <TextBlock Margin="0 6 0 0"
+                       FontSize="13"
+                       Foreground="{StaticResource GlobalSecondary}"
+                       Text="{Binding P3Text}"
+                       TextWrapping="WrapWithOverflow"
+                       VerticalAlignment="Center" />
+        </StackPanel>
 
         <Button Grid.Row="1"
                 Margin="0 15 0 0"

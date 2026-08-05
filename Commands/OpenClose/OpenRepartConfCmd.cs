@@ -38,9 +38,9 @@ public sealed class OpenRepartConfCmd(
             };
             if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
             string[] folderPaths = SourceFilePicker.GetVideoFilesInFolder(dialog.FolderName);
-            if (folderPaths.Length == 0)
+            if (folderPaths.Length < 2)
             {
-                new OpenErrModalCmd(modalNavS, RepartConfVM.WindowTitleText, RepartLangProvider.Current.SourceRequired).Execute(null);
+                new OpenErrModalCmd(modalNavS, RepartConfVM.WindowTitleText, RepartLangProvider.Current.MinFolderSources).Execute(null);
                 return;
             }
 
@@ -54,7 +54,7 @@ public sealed class OpenRepartConfCmd(
                 ProgressModal progressWindow = new();
                 ProgressVM progressVM = new(
                     RepartConfVM.WindowTitleText,
-                    string.Format(RepartLangProvider.Current["AnalyzingProgress"], 0, folderPaths.Length, string.Empty).Trim(),
+                    RepartLangProvider.Current["StageCheckFiles"],
                     new ActionCmd(_ => cancellation.Cancel()));
                 progressWindow.DataContext = progressVM;
                 progressWindow.Owner = Application.Current.MainWindow;
@@ -65,17 +65,26 @@ public sealed class OpenRepartConfCmd(
                 };
                 modalNavS.CurrentModalVM = progressVM;
 
+                int excludedCount = 0;
                 Task<RepartAnalysisResult> analysisTask = RepartCompatibilityAnalyzer.AnalyzeAndFilterAsync(
                     ffprobePath: getFfprobePath(),
                     ffmpegPath: getFfmpegPath?.Invoke(),
                     filePaths: folderPaths,
                     confirmDiscardInterlacedSource: source => RepartInterlacedPrompt.Confirm(modalNavS, RepartConfVM.WindowTitleText, source),
-                    onFileProgress: (index, total, name) => progressVM.P1Text =
-                        string.Format(RepartLangProvider.Current["AnalyzingProgress"], index, total, name),
-                    onExcluded: excluded => new OpenErrModalCmd(
-                        modalNavS,
-                        RepartConfVM.WindowTitleText,
-                        RepartExclusionMessages.FormatExcludedMessage(excluded)).Execute(null),
+                    onFileProgress: (stage, index, total, name) =>
+                    {
+                        progressVM.P1Text = RepartLangProvider.Current[StageKey(stage)];
+                        progressVM.P2Text = string.Format(RepartLangProvider.Current["ProcessingFile"], index, total, name);
+                    },
+                    onExcluded: excluded =>
+                    {
+                        excludedCount++;
+                        progressVM.P3Text = string.Format(RepartLangProvider.Current["ExcludedCount"], excludedCount);
+                        new OpenErrModalCmd(
+                            modalNavS,
+                            RepartConfVM.WindowTitleText,
+                            RepartExclusionMessages.FormatExcludedMessage(excluded)).Execute(null);
+                    },
                     cancellationToken: cancellation.Token);
 
                 _ = CloseWhenCompletedAsync(analysisTask, progressWindow);
@@ -134,4 +143,14 @@ public sealed class OpenRepartConfCmd(
         }
         if (modal.IsVisible) modal.Close();
     }
+
+    private static string StageKey(RepartAnalysisStage stage) => stage switch
+    {
+        RepartAnalysisStage.CheckFiles => "StageCheckFiles",
+        RepartAnalysisStage.ProbeFiles => "StageProbeFiles",
+        RepartAnalysisStage.AnalyzeStreams => "StageAnalyzeStreams",
+        RepartAnalysisStage.ValidateStreams => "StageValidateStreams",
+        RepartAnalysisStage.ScanFrames => "StageScanFrames",
+        _ => "StageCheckFiles"
+    };
 }

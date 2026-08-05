@@ -14,6 +14,20 @@ public sealed class ProgressVM(string windowTitle, string initialText, ICommand 
         set => SetProperty(ref _p1Text, value);
     }
 
+    private string _p2Text = string.Empty;
+    public string P2Text
+    {
+        get => _p2Text;
+        set => SetProperty(ref _p2Text, value);
+    }
+
+    private string _p3Text = string.Empty;
+    public string P3Text
+    {
+        get => _p3Text;
+        set => SetProperty(ref _p3Text, value);
+    }
+
     public string CancelText => RepartLangProvider.Current["Cancel"];
     public ICommand CancelCommand { get; } = cancelCommand;
 }

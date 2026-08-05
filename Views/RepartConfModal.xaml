@@ -29,15 +29,36 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <comps:SectionHeader Grid.Row="0"
-                                     HeaderText="{Binding TimelineTitle}" />
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <comps:SectionHeader HeaderText="{Binding TimelineTitle}" />
+                    <Button Grid.Column="1"
+                            Content="{Binding DeleteEpisodeText}"
+                            Command="{Binding DeleteEpisodeCommand}"
+                            IsEnabled="{Binding CanDeleteEpisode}"
+                            Style="{StaticResource SecondaryButton}"
+                            Width="110"
+                            Height="30"
+                            Margin="0 0 7.5 0" />
+                    <Button Grid.Column="2"
+                            Content="{Binding AddEpisodeText}"
+                            Command="{Binding AddEpisodeCommand}"
+                            IsEnabled="{Binding CanAddEpisode}"
+                            Style="{StaticResource PrimaryButton}"
+                            Width="110"
+                            Height="30" />
+                </Grid>
                 <Border Grid.Row="1"
                         Margin="0 5 0 10"
                         MaxHeight="50"
-                        Padding="3"
+                        Padding="5"
                         Background="{StaticResource TimelineTrackBackgroundDark}"
                         BorderBrush="{StaticResource TimelineTrackBorderDark}"
                         BorderThickness="1"
@@ -106,13 +127,7 @@
                     </ItemsControl>
                 </Border>
 
-                <comps:ClipRangeSelector Grid.Row="2"
-                                         AxisLabels="{Binding AxisLabels}"
-                                         SelectionStart="{Binding SelectionStart, Mode=TwoWay}"
-                                         SelectionEnd="{Binding SelectionEnd, Mode=TwoWay}"
-                                         Margin="0 0 0 10" />
-
-                <Grid Grid.Row="3"
+                <Grid Grid.Row="2"
                       Margin="0 0 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="310" />
@@ -274,14 +289,6 @@
                             VerticalAlignment="Top"
                             MinHeight="300">
                         <DockPanel>
-                            <Button DockPanel.Dock="Bottom"
-                                    Content="{Binding AddEpisodeText}"
-                                    Command="{Binding AddEpisodeCommand}"
-                                    IsEnabled="{Binding CanAddEpisode}"
-                                    Style="{StaticResource PrimaryButton}"
-                                    HorizontalAlignment="Stretch"
-                                    Height="35"
-                                    Margin="0 7.5 0 0" />
                             <comps:SectionHeader DockPanel.Dock="Top"
                                                  HeaderText="{Binding OutputEpisodesTitle}" />
                             <ListBox x:Name="OutputListBox"

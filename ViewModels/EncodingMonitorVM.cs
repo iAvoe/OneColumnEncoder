@@ -63,6 +63,12 @@ namespace OneColumnEncoder.ViewModels
             get => _lang;
             private set => SetProperty(ref _lang, value);
         }
+        private QueueSidebarLangProvider _queueSidebarLang = new(UILangProvider.Current.LanguageCode);
+        public QueueSidebarLangProvider QueueSidebarLang
+        {
+            get => _queueSidebarLang;
+            private set => SetProperty(ref _queueSidebarLang, value);
+        }
         private CpuSetsLangProvider _cpuSetsLang = new(UILangProvider.Current.LanguageCode);
         private readonly ModalNavS _modalNavS;
         private readonly Action _closeAction;
@@ -2190,6 +2196,7 @@ namespace OneColumnEncoder.ViewModels
         private void RefreshLanguageState()
         {
             Lang = new EncodingMonitorModalLangProvider(UILangProvider.Current.LanguageCode);
+            QueueSidebarLang = QueueSidebarLangProvider.Current;
             _cpuSetsLang = new CpuSetsLangProvider(UILangProvider.Current.LanguageCode);
             SampleIntervalTickLabels.Clear();
             foreach (string label in Lang.SampleIntervalTickLabels)
@@ -2205,6 +2212,7 @@ namespace OneColumnEncoder.ViewModels
         private void RefreshLanguageBindings()
         {
             Lang = new EncodingMonitorModalLangProvider(UILangProvider.Current.LanguageCode);
+            QueueSidebarLang = QueueSidebarLangProvider.Current;
             _cpuSetsLang = new CpuSetsLangProvider(UILangProvider.Current.LanguageCode);
             ReportButtons.B3_1Text = Lang.SaveUpstreamStderrText;
             ReportButtons.B3_2Text = Lang.SaveDownstreamStderrText;
@@ -2251,9 +2259,11 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(DistributionCacheLabel));
             OnPropertyChanged(nameof(DistributionAvailableLabel));
             OnPropertyChanged(nameof(MemoryRangeLegendTitle));
+            OnPropertyChanged(nameof(QueueSidebarLang));
 
             OnPropertyChanged(nameof(StderrTitle));
             OnPropertyChanged(nameof(SampleIntervalTickLabels));
+            QueueSidebar.RefreshLanguage();
         }
 
         /// <summary>

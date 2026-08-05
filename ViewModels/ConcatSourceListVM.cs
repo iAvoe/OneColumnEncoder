@@ -77,15 +77,16 @@ namespace OneColumnEncoder.ViewModels
         public string[] GetCurrentFilePaths() =>
             Items.Select(i => i.FilePath).ToArray();
 
-        public void RefreshLanguage(string removeText, string moveUpText, string moveDownText)
+        public void RefreshLanguage()
         {
+            QueueSidebarLangProvider lang = QueueSidebarLangProvider.Current;
             OnPropertyChanged(nameof(OrderingTitle));
             OnPropertyChanged(nameof(RestoreOriginalQueueText));
             foreach (var item in Items)
             {
-                item.DisplayR1Text = removeText;
-                item.R2Text = moveUpText;
-                item.R3Text = moveDownText;
+                item.DisplayR1Text = lang.QueueItemRemoveText;
+                item.R2Text = lang.QueueItemMoveUpText;
+                item.R3Text = lang.QueueItemMoveDownText;
             }
         }
 

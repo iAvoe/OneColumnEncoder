@@ -1,0 +1,101 @@
+namespace OneColumnEncoder.Models.Lang;
+
+public sealed class QueueSidebarLangProvider
+{
+    private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
+    {
+        ["en"] = new()
+        {
+            ["QueueSidebarCancelAllText"] = "Cancel all",
+            ["QueueSidebarRunningHeaderText"] = "Running",
+            ["QueueSidebarWaitingHeaderText"] = "Pending",
+            ["QueueSidebarUnfinishedHeaderText"] = "Unfinished",
+            ["QueueSidebarCompletedHeaderText"] = "Completed",
+        },
+        ["zh-cn"] = new()
+        {
+            ["QueueSidebarCancelAllText"] = "取消全部",
+            ["QueueSidebarRunningHeaderText"] = "当前运行",
+            ["QueueSidebarWaitingHeaderText"] = "待运行",
+            ["QueueSidebarUnfinishedHeaderText"] = "未完成",
+            ["QueueSidebarCompletedHeaderText"] = "已完成",
+        },
+        ["zh-tw"] = new()
+        {
+            ["QueueSidebarCancelAllText"] = "取消全部",
+            ["QueueSidebarRunningHeaderText"] = "目前執行",
+            ["QueueSidebarWaitingHeaderText"] = "待執行",
+            ["QueueSidebarUnfinishedHeaderText"] = "未完成",
+            ["QueueSidebarCompletedHeaderText"] = "已完成",
+        }
+    };
+
+    static QueueSidebarLangProvider()
+    {
+        Data["fr"] = new(Data["en"])
+        {
+            ["QueueSidebarCancelAllText"] = "Tout annuler",
+            ["QueueSidebarRunningHeaderText"] = "En cours",
+            ["QueueSidebarWaitingHeaderText"] = "En attente",
+            ["QueueSidebarUnfinishedHeaderText"] = "Inachevé",
+            ["QueueSidebarCompletedHeaderText"] = "Terminé",
+        };
+        Data["es"] = new(Data["en"])
+        {
+            ["QueueSidebarCancelAllText"] = "Cancelar todo",
+            ["QueueSidebarRunningHeaderText"] = "En ejecución",
+            ["QueueSidebarWaitingHeaderText"] = "Pendiente",
+            ["QueueSidebarUnfinishedHeaderText"] = "Sin finalizar",
+            ["QueueSidebarCompletedHeaderText"] = "Completado",
+        };
+        Data["ja"] = new(Data["en"])
+        {
+            ["QueueSidebarCancelAllText"] = "すべてキャンセル",
+            ["QueueSidebarRunningHeaderText"] = "実行中",
+            ["QueueSidebarWaitingHeaderText"] = "待機中",
+            ["QueueSidebarUnfinishedHeaderText"] = "未完了",
+            ["QueueSidebarCompletedHeaderText"] = "完了",
+        };
+        Data["ru"] = new(Data["en"])
+        {
+            ["QueueSidebarCancelAllText"] = "Отменить всё",
+            ["QueueSidebarRunningHeaderText"] = "Выполняется",
+            ["QueueSidebarWaitingHeaderText"] = "В ожидании",
+            ["QueueSidebarUnfinishedHeaderText"] = "Незавершённые",
+            ["QueueSidebarCompletedHeaderText"] = "Завершённые",
+        };
+    }
+
+    public static QueueSidebarLangProvider Current => new(UILangProvider.Current.LanguageCode);
+
+    public string LanguageCode { get; }
+    private readonly Dictionary<string, string> _d;
+
+    public string this[string key] =>
+        _d.TryGetValue(key, out string? value)
+            ? value
+            : Data["en"].TryGetValue(key, out string? fallback)
+                ? fallback
+                : key;
+
+    public string QueueSidebarCancelAllText { get; }
+    public string QueueSidebarRunningHeaderText { get; }
+    public string QueueSidebarWaitingHeaderText { get; }
+    public string QueueSidebarUnfinishedHeaderText { get; }
+    public string QueueSidebarCompletedHeaderText { get; }
+    public string QueueItemRemoveText => "🗙";
+    public string QueueItemMoveUpText => "↑↑";
+    public string QueueItemMoveDownText => "↓↓";
+
+    public QueueSidebarLangProvider(string languageCode)
+    {
+        LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
+        _d = Data[LanguageCode];
+
+        QueueSidebarCancelAllText = this["QueueSidebarCancelAllText"];
+        QueueSidebarRunningHeaderText = this["QueueSidebarRunningHeaderText"];
+        QueueSidebarWaitingHeaderText = this["QueueSidebarWaitingHeaderText"];
+        QueueSidebarUnfinishedHeaderText = this["QueueSidebarUnfinishedHeaderText"];
+        QueueSidebarCompletedHeaderText = this["QueueSidebarCompletedHeaderText"];
+    }
+}

@@ -69,12 +69,6 @@ public class EncodingMonitorModalLangProvider
             ["InterruptingEncoderText"] = "Interrupting encoder",
             ["ModeText"] = "mode",
 
-            ["QueueSidebarCancelAllText"] = "Cancel all",
-            ["QueueSidebarRunningHeaderText"] = "Running",
-            ["QueueSidebarWaitingHeaderText"] = "Pending",
-            ["QueueSidebarUnfinishedHeaderText"] = "Unfinished",
-            ["QueueSidebarCompletedHeaderText"] = "Completed",
-
             ["StopQueueConfirmTitle"] = "Stop queue",
             ["StopQueueConfirmMessage"] = "The current job has been interrupted. Stop the entire queue?",
         },
@@ -143,12 +137,6 @@ public class EncodingMonitorModalLangProvider
             ["InterruptingEncoderText"] = "正在中断编码器",
             ["ModeText"] = "模式",
 
-            ["QueueSidebarCancelAllText"] = "取消全部",
-            ["QueueSidebarRunningHeaderText"] = "当前运行",
-            ["QueueSidebarWaitingHeaderText"] = "待运行",
-            ["QueueSidebarUnfinishedHeaderText"] = "未完成",
-            ["QueueSidebarCompletedHeaderText"] = "已完成",
-
             ["StopQueueConfirmTitle"] = "停止队列",
             ["StopQueueConfirmMessage"] = "当前任务已中断。是否停止整个队列？",
         },
@@ -216,12 +204,6 @@ public class EncodingMonitorModalLangProvider
             ["InterruptingUpstreamText"] = "正在中斷上游程式",
             ["InterruptingEncoderText"] = "正在中斷編碼器",
             ["ModeText"] = "模式",
-
-            ["QueueSidebarCancelAllText"] = "取消全部",
-            ["QueueSidebarRunningHeaderText"] = "目前執行",
-            ["QueueSidebarWaitingHeaderText"] = "待執行",
-            ["QueueSidebarUnfinishedHeaderText"] = "未完成",
-            ["QueueSidebarCompletedHeaderText"] = "已完成",
 
             ["StopQueueConfirmTitle"] = "停止隊列",
             ["StopQueueConfirmMessage"] = "當前任務已中斷。是否停止整個隊列？",
@@ -292,8 +274,6 @@ public class EncodingMonitorModalLangProvider
             ["InterruptingUpstreamText"] = "Interruption amont",
             ["InterruptingEncoderText"] = "Interruption encodeur",
             ["ModeText"] = "mode",
-            ["QueueSidebarCancelAllText"] = "Tout annuler",
-
             ["StopQueueConfirmTitle"] = "Arrêter la file",
             ["StopQueueConfirmMessage"] = "La tâche actuelle a été interrompue. Arrêter toute la file d'attente ?"
         };
@@ -359,8 +339,6 @@ public class EncodingMonitorModalLangProvider
             ["InterruptingUpstreamText"] = "Interrumpiendo upstream",
             ["InterruptingEncoderText"] = "Interrumpiendo codificador",
             ["ModeText"] = "modo",
-            ["QueueSidebarCancelAllText"] = "Cancelar todo",
-
             ["StopQueueConfirmTitle"] = "Detener cola",
             ["StopQueueConfirmMessage"] = "La tarea actual ha sido interrumpida. ¿Detener toda la cola?"
         };
@@ -426,8 +404,6 @@ public class EncodingMonitorModalLangProvider
             ["InterruptingUpstreamText"] = "上流を中断中",
             ["InterruptingEncoderText"] = "エンコーダを中断中",
             ["ModeText"] = "モード",
-            ["QueueSidebarCancelAllText"] = "すべてキャンセル",
-
             ["StopQueueConfirmTitle"] = "キューを停止",
             ["StopQueueConfirmMessage"] = "現在のジョブが中断されました。キュー全体を停止しますか？"
         };
@@ -493,8 +469,6 @@ public class EncodingMonitorModalLangProvider
             ["InterruptingUpstreamText"] = "Прерывание upstream",
             ["InterruptingEncoderText"] = "Прерывание кодера",
             ["ModeText"] = "режим",
-            ["QueueSidebarCancelAllText"] = "Отменить всё",
-
             ["StopQueueConfirmTitle"] = "Остановить очередь",
             ["StopQueueConfirmMessage"] = "Текущая задача прервана. Остановить всю очередь?"
         };
@@ -568,14 +542,6 @@ public class EncodingMonitorModalLangProvider
     public string ABRText { get; }
     public string CRFText { get; }
 
-    public string QueueSidebarCancelAllText { get; }
-    public string QueueSidebarRunningHeaderText { get; }
-    public string QueueSidebarWaitingHeaderText { get; }
-    public string QueueSidebarUnfinishedHeaderText { get; }
-    public string QueueSidebarCompletedHeaderText { get; }
-    public string QueueItemRemoveText { get; }
-    public string QueueItemMoveUpText { get; }
-    public string QueueItemMoveDownText { get; }
     public string StopQueueConfirmTitle { get; }
     public string StopQueueConfirmMessage { get; }
 
@@ -660,14 +626,6 @@ public class EncodingMonitorModalLangProvider
         ABRText = "ABR";
         CRFText = "CRF";
 
-        QueueSidebarCancelAllText = this["QueueSidebarCancelAllText"];
-        QueueSidebarRunningHeaderText = this["QueueSidebarRunningHeaderText"];
-        QueueSidebarWaitingHeaderText = this["QueueSidebarWaitingHeaderText"];
-        QueueSidebarUnfinishedHeaderText = this["QueueSidebarUnfinishedHeaderText"];
-        QueueSidebarCompletedHeaderText = this["QueueSidebarCompletedHeaderText"];
-        QueueItemRemoveText = "🗙";
-        QueueItemMoveUpText = "↑↑";
-        QueueItemMoveDownText = "↓↓";
         StopQueueConfirmTitle = this["StopQueueConfirmTitle"];
         StopQueueConfirmMessage = this["StopQueueConfirmMessage"];
     }

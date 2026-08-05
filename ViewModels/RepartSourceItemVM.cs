@@ -12,7 +12,7 @@ public sealed class RepartSourceItemVM : BaseVM
         string filePath,
         long firstFrame,
         long lastFrame,
-        ICommand removeCommand,
+        ICommand? removeCommand,
         ICommand moveUpCommand,
         ICommand moveDownCommand)
     {
@@ -32,10 +32,10 @@ public sealed class RepartSourceItemVM : BaseVM
     public string DisplayR1Text => RepartLangProvider.Current["Remove"];
     public string R2Text => RepartLangProvider.Current["MoveUp"];
     public string R3Text => RepartLangProvider.Current["MoveDown"];
-    public bool R1IsEnabled => true;
+    public bool R1IsEnabled => false;
     public bool R2IsEnabled { get; set; }
     public bool R3IsEnabled { get; set; }
-    public ICommand R1Command { get; }
+    public ICommand? R1Command { get; }
     public ICommand R2Command { get; }
     public ICommand R3Command { get; }
 

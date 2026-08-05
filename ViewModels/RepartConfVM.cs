@@ -35,6 +35,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private string _statusText = string.Empty;
     private double _selectionStart;
     private double _selectionEnd = 1d;
+    private List<long> _dividerFrames = [];
     private bool _isBusy;
     private bool _syncingRange;
     private bool _lastRangeInputWasTime;
@@ -58,9 +59,9 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         RemoveSourceCommand = new ActionCmd(async item => await RemoveSourceAsync(item as RepartSourceItemVM));
         MoveSourceUpCommand = new ActionCmd(async item => await MoveSourceAsync(item as RepartSourceItemVM, -1));
         MoveSourceDownCommand = new ActionCmd(async item => await MoveSourceAsync(item as RepartSourceItemVM, 1));
-        AddEpisodeCommand = new ActionCmd(_ => AddEpisode());
+        AddEpisodeCommand = new ActionCmd(_ => AddDivider());
         ApplyEditCommand = new ActionCmd(_ => ApplyEdit());
-        DeleteEpisodeCommand = new ActionCmd(_ => DeleteSelectedOutputs());
+        DeleteEpisodeCommand = new ActionCmd(_ => DeleteDivider());
         MergeLeftCommand = new ActionCmd(_ => MergeAdjacentSelected(-1));
         MergeRightCommand = new ActionCmd(_ => MergeAdjacentSelected(1));
         ResetDraftCommand = new ActionCmd(_ => ResetDraft());
@@ -112,9 +113,9 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public string LastFrameLabel => RepartLangProvider.Current["LastFrame"];
     public string TimeFormatText => RepartLangProvider.Current["TimeFormat"];
     public string FrameFormatText => RepartLangProvider.Current["FrameFormat"];
-    public string AddEpisodeText => RepartLangProvider.Current["AddEpisode"];
+    public string AddEpisodeText => RepartLangProvider.Current["AddDivider"];
     public string ApplyEditText => RepartLangProvider.Current["ApplyEdit"];
-    public string DeleteEpisodeText => RepartLangProvider.Current["DeleteEpisode"];
+    public string DeleteEpisodeText => RepartLangProvider.Current["DeleteDivider"];
     public string MergeLeftText => RepartLangProvider.Current["MergeLeft"];
     public string MergeRightText => RepartLangProvider.Current["MergeRight"];
     public string ResetEditText => RepartLangProvider.Current["ResetEdit"];
@@ -163,15 +164,14 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     {
         get
         {
-            if (!CanEdit || _analysis == null) return false;
-            return TryBuildDraft(out RepartOutputSegmentM? segment, excludeSelectedName: false, showErrors: false)
-                && segment != null
-                && !Outputs.Any(output => output.Model.Overlaps(segment));
+            if (!CanEdit || _analysis == null || _analysis.TotalFrames < 2) return false;
+            long totalLastFrame = _analysis.TotalFrames - 1;
+            return _dividerFrames.Count == 0 || _dividerFrames[^1] < totalLastFrame - 1;
         }
     }
     public bool CanMergeLeft => CanMergeAdjacent(-1);
     public bool CanMergeRight => CanMergeAdjacent(1);
-    public bool CanDeleteEpisode => CanEdit && (_selectedOutputs.Count > 0 || SelectedOutput != null);
+    public bool CanDeleteEpisode => CanEdit && _dividerFrames.Count > 0;
     public bool CanResetDraft => CanEdit;
     public bool CanApplyEdit
     {
@@ -342,9 +342,9 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         OpenFolderDialog dialog = new() { Title = RepartLangProvider.Current["SelectFolder"], Multiselect = false };
         if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
         string[] folderPaths = SourceFilePicker.GetVideoFilesInFolder(dialog.FolderName);
-        if (folderPaths.Length == 0)
+        if (folderPaths.Length < 2)
         {
-            ShowError(RepartLangProvider.Current.SourceRequired);
+            ShowError(RepartLangProvider.Current.MinFolderSources);
             return;
         }
         if (!ConfirmSourceMutation()) return;
@@ -532,7 +532,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
                 source.FilePath,
                 source.FirstFrame,
                 source.LastFrame,
-                RemoveSourceCommand,
+                null,
                 MoveSourceUpCommand,
                 MoveSourceDownCommand)
             {
@@ -543,17 +543,20 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         OnPropertyChanged(nameof(SourceStatsText));
     }
 
-    private void AddEpisode()
+    private void AddDivider()
     {
-        if (!TryBuildDraft(out RepartOutputSegmentM? segment, excludeSelectedName: false, showErrors: true) || segment == null) return;
-        if (Outputs.Any(output => output.Model.Overlaps(segment)))
-        {
-            ShowError(RepartLangProvider.Current["Overlap"]);
-            return;
-        }
-        List<RepartOutputSegmentM> models = Outputs.Select(output => output.Model).Append(segment).OrderBy(output => output.FirstFrame).ToList();
-        ReplaceOutputs(models);
-        PrepareNextDraft();
+        if (_analysis == null || !CanAddEpisode) return;
+
+        long totalLastFrame = _analysis.TotalFrames - 1;
+        long baseFrame = _dividerFrames.Count > 0 ? _dividerFrames[^1] : 0;
+        long nextDivider = baseFrame + (totalLastFrame - baseFrame) / 2;
+        if (_dividerFrames.Count > 0 && nextDivider <= baseFrame) return;
+        if (nextDivider >= totalLastFrame) return;
+
+        _dividerFrames.Add(nextDivider);
+        _dividerFrames = [.. _dividerFrames.Distinct().OrderBy(frame => frame)];
+        ReplaceOutputs(BuildDividerOutputs(), syncDividers: false);
+        SelectedOutput = Outputs.FirstOrDefault(output => output.Model.LastFrame == nextDivider);
     }
 
     private void ApplyEdit()
@@ -569,12 +572,16 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         SelectedOutput = Outputs.FirstOrDefault(output => output.Model.Id == replacement.Id);
     }
 
-    private void DeleteSelectedOutputs()
+    private void DeleteDivider()
     {
-        HashSet<Guid> selectedIds = _selectedOutputs.Select(output => output.Model.Id).ToHashSet();
-        if (selectedIds.Count == 0 && SelectedOutput != null) selectedIds.Add(SelectedOutput.Model.Id);
-        ReplaceOutputs(Outputs.Where(output => !selectedIds.Contains(output.Model.Id)).Select(output => output.Model));
-        PrepareNextDraft();
+        if (_analysis == null || _dividerFrames.Count == 0) return;
+
+        long? selectedDivider = GetSelectedDividerFrame();
+        long divider = selectedDivider ?? _dividerFrames[^1];
+        _dividerFrames.Remove(divider);
+        ReplaceOutputs(BuildDividerOutputs(), syncDividers: false);
+        SelectedOutput = Outputs.FirstOrDefault(output => output.Model.FirstFrame > divider)
+            ?? Outputs.LastOrDefault();
     }
 
     private void MergeAdjacentSelected(int direction)
@@ -666,12 +673,16 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         return true;
     }
 
-    private void ReplaceOutputs(IEnumerable<RepartOutputSegmentM> models)
+    private void ReplaceOutputs(IEnumerable<RepartOutputSegmentM> models, bool syncDividers = true)
     {
         Outputs.Clear();
+        List<RepartOutputSegmentM> orderedModels = [.. models.OrderBy(model => model.FirstFrame)];
         if (_analysis != null)
         {
-            foreach (RepartOutputSegmentM model in models.OrderBy(model => model.FirstFrame))
+            if (syncDividers)
+                SyncDividersFromOutputs(orderedModels);
+
+            foreach (RepartOutputSegmentM model in orderedModels)
                 Outputs.Add(new RepartOutputItemVM(model, _analysis.FrameRateNumerator, _analysis.FrameRateDenominator));
         }
         _selectedOutputs = [];
@@ -679,6 +690,54 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         RefreshTimeline();
         OnPropertyChanged(nameof(CanApply));
         RefreshDraftAvailability();
+    }
+
+    private List<RepartOutputSegmentM> BuildDividerOutputs()
+    {
+        List<RepartOutputSegmentM> outputs = [];
+        if (_analysis == null || _analysis.TotalFrames <= 0) return outputs;
+
+        long first = 0;
+        int index = 1;
+        foreach (long divider in _dividerFrames.Where(frame => frame >= 0 && frame < _analysis.TotalFrames - 1).Distinct().OrderBy(frame => frame))
+        {
+            if (divider >= first)
+            {
+                outputs.Add(new RepartOutputSegmentM(Guid.NewGuid(), FormatEpisodeName(index++), first, divider));
+                first = divider + 1;
+            }
+        }
+
+        if (first < _analysis.TotalFrames)
+            outputs.Add(new RepartOutputSegmentM(Guid.NewGuid(), FormatEpisodeName(index), first, _analysis.TotalFrames - 1));
+
+        return outputs;
+    }
+
+    private void SyncDividersFromOutputs(IReadOnlyList<RepartOutputSegmentM> models)
+    {
+        if (_analysis == null || _analysis.TotalFrames <= 0)
+        {
+            _dividerFrames = [];
+            return;
+        }
+
+        long totalLastFrame = _analysis.TotalFrames - 1;
+        _dividerFrames = [.. models
+            .Select(model => model.LastFrame)
+            .Where(frame => frame >= 0 && frame < totalLastFrame)
+            .Distinct()
+            .OrderBy(frame => frame)];
+    }
+
+    private long? GetSelectedDividerFrame()
+    {
+        RepartOutputItemVM? selected = _selectedOutputs.LastOrDefault() ?? SelectedOutput;
+        if (selected == null) return null;
+        long rightDivider = selected.Model.LastFrame;
+        if (_dividerFrames.Contains(rightDivider)) return rightDivider;
+        long leftDivider = selected.Model.FirstFrame - 1;
+        return _dividerFrames.Contains(leftDivider) ? leftDivider : null;
     }
 
     private void RefreshTimeline()
@@ -754,10 +813,12 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     {
         int index = 1;
         string name;
-        do { name = $"EP{index:00}"; index++; }
+        do { name = FormatEpisodeName(index++); }
         while (Outputs.Any(output => output.Model.BaseName.Equals(name, StringComparison.OrdinalIgnoreCase)));
         return name;
     }
+
+    private static string FormatEpisodeName(int index) => $"EP{index:00}";
 
     private void LoadDraft(RepartOutputSegmentM model) => SetDraft(model.BaseName, model.FirstFrame, model.LastFrame);
 
