@@ -292,7 +292,7 @@ Repart-specific constraints:
 
 ### Repart Runtime Implementation
 
-Clicking `Video Source Repart` imports a naturally sorted folder and opens `RepartConfModal`. The modal contains an editable input queue, a disabled chapter/MPLS placeholder, a proportional partition map, synchronized time/frame fields, and an output queue. Output ranges use inclusive first/last frames; ranges cannot overlap, gaps are allowed, and merge accepts only directly adjacent outputs.
+Clicking `Video Source Repart` imports a naturally sorted folder and opens `RepartConfModal`. The modal contains a read-only source queue, a disabled chapter/MPLS placeholder, a proportional partition map, synchronized time/frame fields, and an output queue. Source changes are handled by clearing and re-importing the Repart source, so the modal remains focused on repartition editing. Output ranges use inclusive first/last frames; ranges cannot overlap, gaps are allowed, and merge accepts only directly adjacent outputs.
 
 `RepartCompatibilityAnalyzer` performs a full ffprobe frame timestamp scan for each source. It requires CFR, derives the actual frame count, compares a strict first-video-stream signature, and records source size/modification-time fingerprints. A plan is rejected if a source changes during analysis or before encoding.
 
@@ -306,7 +306,7 @@ One `EncodingPipelineRequest` is created per output. Requests share the virtual 
 
 **Concat:** `Video Src. Concat` selected → import multiple files → extension and compatibility precheck → write filelist → analyze all fragments (sum concat total frame count and store all raw JSON) → optionally reorder/remove in FilterScribe → regenerate filelist and clear stale analysis if list changed → rerun analysis if needed → save/import concat script if needed → press `Start Encode` → build one concat request with `ConcatTotalFrames` → confirm command/overwrite → encode one output (progress uses summed frame count) → mux audio from filelist.
 
-**Repart:** `Video Source Repart` selected → import a folder → open `RepartConfModal` → strictly analyze and order sources → manually allocate output frame ranges → optionally leave unallocated gaps or merge adjacent outputs → apply the plan → select output directory and encoding settings → press `Start Encode` → create an execution-specific virtual source → build one Clip request per output → confirm overwrite targets → run sequentially with `RepartOutputSidebarPanel` → mux each encoded video into a video-only MKV.
+**Repart:** `Video Source Repart` selected → import a folder → strictly analyze and order sources → open `RepartConfModal` → manually allocate output frame ranges → optionally leave unallocated gaps or merge adjacent outputs → apply the plan → select output directory and encoding settings → press `Start Encode` → create an execution-specific virtual source → build one Clip request per output → confirm overwrite targets → run sequentially with `RepartOutputSidebarPanel` → mux each encoded video into a video-only MKV.
 
 ## Key Files
 

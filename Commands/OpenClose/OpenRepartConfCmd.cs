@@ -123,13 +123,13 @@ public sealed class OpenRepartConfCmd(
 
         if (modalNavS.IsOpen) modalNavS.Close();
         RepartConfModal window = new();
-        RepartConfVM vm = new(modalNavS, window.Close, getFfprobePath, getFfmpegPath, applyPlan);
+        RepartConfVM vm = new(modalNavS, window.Close, applyPlan);
         window.DataContext = vm;
         window.Owner = Application.Current.MainWindow;
         window.Closed += (_, _) => modalNavS.Close();
         modalNavS.CurrentModalVM = vm;
         window.Show();
-        _ = vm.InitializeAsync([], initialPlan);
+        _ = vm.InitializeAsync(initialPlan);
     }
 
     private static async Task CloseWhenCompletedAsync(Task task, ProgressModal modal)

@@ -202,22 +202,6 @@
                                 <TextBlock Text="{Binding ImportMplsText}" />
                             </Button.ToolTip>
                         </Button>
-                        <Button Content="{Binding AppendFilesText}"
-                                Command="{Binding AppendFilesCommand}"
-                                Style="{StaticResource NormalButton}"
-                                Height="35"
-                                HorizontalAlignment="Stretch"
-                                Margin="0 2.5"
-                                Tag="{x:Static ui:SvgIconProvider.GamePaste}"
-                                ContentTemplate="{StaticResource IconTextButtonTemplate}" />
-                        <Button Content="{Binding ImportFolderText}"
-                                Command="{Binding ImportFolderCommand}"
-                                Style="{StaticResource NormalButton}"
-                                Height="35"
-                                HorizontalAlignment="Stretch"
-                                Margin="0 2.5"
-                                Tag="{x:Static ui:SvgIconProvider.GameImport}"
-                                ContentTemplate="{StaticResource IconTextButtonTemplate}" />
                     </StackPanel>
                 </Grid>
             </Grid>
