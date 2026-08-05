@@ -225,8 +225,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     {
         get
         {
-            if (!CanEdit || _analysis == null || _analysis.TotalFrames < 2) return false;
-            return _dividers.Count < _analysis.TotalFrames - 1;
+            if (!CanEdit || _analysis == null) return false;
+            return TryGetSuggestedNewDividerFrame(out _);
         }
     }
     public bool CanMergeLeft => CanMergeAdjacent(-1);
@@ -330,7 +330,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             if (!SetProperty(ref _newDividerTimestampText, value) || _syncingNewDivider || _analysis == null) return;
             try
             {
-                SetNewDividerFrame(EncodingPipeline.TimestampToFirstFrame(value, _analysis.FrameRate));
+                SetNewDividerFrame(EncodingPipeline.TimestampToLastFrame(value, _analysis.FrameRate));
             }
             catch { }
         }
@@ -457,6 +457,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             ReplaceOutputs(BuildDividerOutputs());
             StatusText = RepartLangProvider.Current["Ready"];
             PrepareNextDraft();
+            SetSuggestedNewDividerTexts();
             RefreshAnalysisProperties();
             return;
         }
@@ -552,6 +553,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             ReplaceOutputs(BuildDividerOutputs());
             StatusText = FormatReadyStatus(paths.Length, analyzed.Sources.Count);
             PrepareNextDraft();
+            SetSuggestedNewDividerTexts();
             return AnalyzeSourcesResult.Succeeded;
         }
         catch (OperationCanceledException)
@@ -752,6 +754,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
         _dividers = [.. _dividers.Append(new RepartDividerM(Guid.NewGuid(), nextDivider, false)).OrderBy(divider => divider.Frame)];
         ReplaceOutputs(BuildDividerOutputs());
+        SetSuggestedNewDividerTexts();
         SelectOnlyDivider(_dividers.First(divider => divider.Frame == nextDivider).Id);
         RefreshDividerAvailability();
     }
@@ -812,6 +815,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         if (ids.Count == 0) return;
         _dividers = [.. _dividers.Where(divider => !ids.Contains(divider.Id))];
         ReplaceOutputs(BuildDividerOutputs());
+        SetSuggestedNewDividerTexts();
         SelectOnlyDivider(null);
         RefreshDividerAvailability();
     }
@@ -822,6 +826,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         if (divider is not { IsLocked: false }) return;
         _dividers = [.. _dividers.Where(item => item.Id != divider.Model.Id)];
         ReplaceOutputs(BuildDividerOutputs());
+        SetSuggestedNewDividerTexts();
         SelectOnlyDivider(null);
         RefreshDividerAvailability();
     }
@@ -848,6 +853,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         _dividers[index] = selected.Model with { Frame = frame };
         _dividers = [.. _dividers.OrderBy(divider => divider.Frame)];
         ReplaceOutputs(BuildDividerOutputs());
+        SetSuggestedNewDividerTexts();
         SelectOnlyDivider(selected.Model.Id);
     }
 
@@ -877,6 +883,40 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         return true;
     }
 
+    private bool TryGetSuggestedNewDividerFrame(out long frame)
+    {
+        frame = 0;
+        if (_analysis == null) return false;
+
+        long lastDividerFrame = _dividers.Count == 0 ? -1 : _dividers.Max(divider => divider.Frame);
+        long remainingFrames = _analysis.TotalFrames - lastDividerFrame - 1;
+        if (remainingFrames < 2) return false;
+
+        frame = lastDividerFrame + (remainingFrames / 2);
+        return frame >= 0 && frame < _analysis.TotalFrames - 1;
+    }
+
+    private void SetSuggestedNewDividerTexts()
+    {
+        if (!TryGetSuggestedNewDividerFrame(out long frame))
+        {
+            SetNewDividerTexts(string.Empty, string.Empty);
+            return;
+        }
+        SetNewDividerFrame(frame);
+        SetNewDividerTimestamp(frame);
+    }
+
+    private void SetNewDividerTexts(string frameText, string timestampText)
+    {
+        _syncingNewDivider = true;
+        _newDividerFrameText = frameText;
+        _newDividerTimestampText = timestampText;
+        OnPropertyChanged(nameof(NewDividerFrameText));
+        OnPropertyChanged(nameof(NewDividerTimestampText));
+        _syncingNewDivider = false;
+    }
+
     private void SetNewDividerFrame(long frame)
     {
         _syncingNewDivider = true;
@@ -890,7 +930,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         if (_analysis == null) return;
         _syncingNewDivider = true;
         _newDividerTimestampText = EncodingPipeline.FormatTimestamp(
-            TimeSpan.FromSeconds((double)frame / _analysis.FrameRate));
+            TimeSpan.FromSeconds((double)(frame + 1) / _analysis.FrameRate));
         OnPropertyChanged(nameof(NewDividerTimestampText));
         _syncingNewDivider = false;
     }
@@ -919,6 +959,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         if (!CanEdit) return;
         _dividers = [];
         ReplaceOutputs(BuildDividerOutputs());
+        SetSuggestedNewDividerTexts();
         SelectOnlyDivider(null);
     }
 
