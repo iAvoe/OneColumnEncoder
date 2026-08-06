@@ -138,3 +138,14 @@ jobs:
             1cenc-win-x86.7z 1cenc-win-x64.7z
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete old Commit releases (Everything 5 commits ago)
+        shell: pwsh
+        run: |
+          $count = git rev-list --count HEAD
+          if ($count -gt 5) {
+            $oldTag = "Commit$($count - 5)"
+            gh release delete "$oldTag" -y || true
+          }
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
