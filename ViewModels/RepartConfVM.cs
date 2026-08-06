@@ -849,13 +849,23 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         {
             if (divider.Frame >= first)
             {
-                outputs.Add(new RepartOutputSegmentM(Guid.NewGuid(), FormatEpisodeName(index++), first, divider.Frame));
+                outputs.Add(new RepartOutputSegmentM(Guid.NewGuid(), BuildEpisodeName(index++), first, divider.Frame));
                 first = divider.Frame + 1;
             }
         }
 
         if (first < _analysis.TotalFrames)
-            outputs.Add(new RepartOutputSegmentM(Guid.NewGuid(), FormatEpisodeName(index), first, _analysis.TotalFrames - 1));
+            outputs.Add(new RepartOutputSegmentM(Guid.NewGuid(), BuildEpisodeName(index), first, _analysis.TotalFrames - 1));
+
+        if (_analysis.Outputs.Count == outputs.Count)
+        {
+            for (int i = 0; i < outputs.Count; i++)
+            {
+                string baseName = _analysis.Outputs[i].BaseName;
+                if (!string.IsNullOrWhiteSpace(baseName))
+                    outputs[i] = outputs[i] with { BaseName = baseName };
+            }
+        }
 
         return outputs;
     }
@@ -912,15 +922,19 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     {
         int index = 1;
         string name;
-        do { name = FormatEpisodeName(index++); }
+        do { name = BuildEpisodeName(index++); }
         while (Outputs.Any(output => output.Model.BaseName.Equals(name, StringComparison.OrdinalIgnoreCase)));
         return name;
     }
 
-    private static string FormatEpisodeName(int index)
+    public static string BuildEpisodeName(int index, string? chapterName = null)
     {
         string rawName = $"1cenc_rp_E{index:00}_{DateTime.Now:yyyy-MM-dd}";
-        return FilenameValidation.ToCompatibleFileName(rawName);
+        string name = FilenameValidation.ToCompatibleFileName(rawName);
+        if (string.IsNullOrWhiteSpace(chapterName)) return name;
+
+        string chapterSuffix = FilenameValidation.ToCompatibleFileName(chapterName);
+        return string.IsNullOrWhiteSpace(chapterSuffix) ? name : $"{name}_{chapterSuffix}";
     }
 
     private void LoadDraft(RepartOutputSegmentM model) => SetDraft(model.BaseName, model.FirstFrame, model.LastFrame);

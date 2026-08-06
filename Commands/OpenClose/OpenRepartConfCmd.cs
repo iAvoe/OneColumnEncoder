@@ -206,14 +206,42 @@ public sealed class OpenRepartConfCmd(
     {
         if (plan.FrameRate <= 0d || plan.TotalFrames <= 0) return;
 
-        List<long> frames = chapters.Chapters
+        List<(long Frame, string Name)> chapterMarkers = chapters.Chapters
             .Where(chapter => !chapter.IsSeparator)
-            .Select(chapter => (long)Math.Round(chapter.StartTime.TotalSeconds * plan.FrameRate))
-            .Distinct()
-            .Where(frame => frame > 0 && frame < plan.TotalFrames - 1)
+            .Select(chapter => (
+                Frame: (long)Math.Round(chapter.StartTime.TotalSeconds * plan.FrameRate),
+                Name: chapter.Name))
+            .Where(marker => marker.Frame >= 0 && marker.Frame < plan.TotalFrames)
+            .DistinctBy(marker => marker.Frame)
+            .OrderBy(marker => marker.Frame)
             .ToList();
 
-        plan.Dividers.AddRange(frames.Select(frame => new RepartDividerM(Guid.NewGuid(), frame, false)));
+        if (chapterMarkers.Count == 0) return;
+
+        List<RepartOutputSegmentM> outputs = [];
+        long first = 0;
+        for (int i = 0; i < chapterMarkers.Count; i++)
+        {
+            long nextFirst = i + 1 < chapterMarkers.Count ? chapterMarkers[i + 1].Frame : plan.TotalFrames;
+            long last = nextFirst - 1;
+            if (last < first)
+            {
+                first = nextFirst;
+                continue;
+            }
+
+            outputs.Add(new RepartOutputSegmentM(
+                Guid.NewGuid(),
+                RepartConfVM.BuildEpisodeName(i + 1, chapterMarkers[i].Name),
+                first,
+                last));
+            first = nextFirst;
+        }
+
+        plan.Outputs.Clear();
+        plan.Outputs.AddRange(outputs);
+        plan.Dividers.Clear();
+        plan.Dividers.AddRange(outputs.Take(outputs.Count - 1).Select(output => new RepartDividerM(Guid.NewGuid(), output.LastFrame, false)));
     }
 
     private static async Task CloseWhenCompletedAsync(Task task, ProgressModal modal)
