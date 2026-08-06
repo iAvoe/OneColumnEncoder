@@ -757,6 +757,7 @@ namespace OneColumnEncoder.ViewModels
 
                 _activeLogJobId = jobVM.JobId;
                 _activeJobVM = jobVM;
+                ResetInterruptButtonState();
                 ResetActiveEncodingState();
                 ResetActiveLogState(jobVM.JobId);
                 QueueSidebar.MarkJobEncoding(jobVM);
@@ -811,6 +812,16 @@ namespace OneColumnEncoder.ViewModels
                 FooterColumns[4].MainText = GetRateControlText();
                 FooterColumns[5].MainText = GetPresetText();
             }
+        }
+
+        private void ResetInterruptButtonState()
+        {
+            _upstreamInterruptButtonClicked = false;
+            _encoderInterruptButtonClicked = false;
+            FinishButtons.B5_3IsEnabled = true;
+            FinishButtons.B5_4IsEnabled = true;
+            FinishButtons.B5_3Text = Lang.InterruptUpstreamText;
+            FinishButtons.B5_4Text = Lang.InterruptEncoderText;
         }
 
         /// <summary>
