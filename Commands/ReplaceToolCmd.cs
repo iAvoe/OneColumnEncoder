@@ -18,8 +18,10 @@ namespace OneColumnEncoder.Commands
             ToolDefinitionM? def = ToolDefinitionProviderM.GetByDisplayName(_item.Name);
             if (def?.ExeName == null) return;
 
+            string browseKey = BrowseHistoryKeys.ForTool(def.ExeName);
             string? filePath = ImportToolCmd.SelectAndValidateToolPath(
-                def.ExeName, "Dialog.ReplaceTitle", _modalNavS);
+                def.ExeName, "Dialog.ReplaceTitle", _modalNavS,
+                BrowseHistory.GetDirectory(_appDataM, browseKey));
             if (string.IsNullOrEmpty(filePath)) return;
 
             string? version;
@@ -49,6 +51,7 @@ namespace OneColumnEncoder.Commands
             _item.P2TextData = filePath;
             _item.P1TextData = version ?? string.Empty;
             _item.IsCancel = false;
+            BrowseHistory.Remember(_appDataM, browseKey, filePath);
             _appDataM.Save();
             _afterReplace?.Invoke();
         }

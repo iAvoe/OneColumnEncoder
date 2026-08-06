@@ -7,7 +7,9 @@ using OneColumnEncoder.Validation;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Threading;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace OneColumnEncoder.ViewModels;
 
@@ -16,6 +18,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private readonly ModalNavS _modalNavS;
     private readonly Action _closeAction;
     private readonly Action<RepartPlanM> _applyPlan;
+    private readonly string? _ffmpegPath;
+    private readonly string _previewWorkDirectory;
     private RepartPlanM? _analysis;
     private RepartOutputItemVM? _selectedOutput;
     private List<RepartOutputItemVM> _selectedOutputs = [];
@@ -36,6 +40,9 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private string _dividerFrameText = string.Empty;
     private string _newDividerTimestampText = "00:00:00.000";
     private string _newDividerFrameText = "0";
+    private CancellationTokenSource? _dividerPreviewCts;
+    private readonly ObservableCollection<DividerPreviewFrameVM> _dividerPreviewFrames = [];
+    private string _dividerPreviewStatusText = "选择一个分割线以显示预览";
     private bool _syncingNewDivider;
     private bool _isBusy;
     private bool _syncingRange;
@@ -45,11 +52,14 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public RepartConfVM(
         ModalNavS modalNavS,
         Action closeAction,
-        Action<RepartPlanM> applyPlan)
+        Action<RepartPlanM> applyPlan,
+        string? ffmpegPath)
     {
         _modalNavS = modalNavS;
         _closeAction = closeAction;
         _applyPlan = applyPlan;
+        _ffmpegPath = ffmpegPath;
+        _previewWorkDirectory = PreviewPipeline.CreateWorkDirectory("1cenc-repart-preview-");
 
         AddEpisodeCommand = new ActionCmd(_ => AddDivider());
         ApplyEditCommand = new ActionCmd(_ => ApplyEdit());
@@ -139,7 +149,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public static string DeleteLeftDividerText => RepartLangProvider.Current["DeleteLeftDivider"];
     public static string DeleteRightDividerText => RepartLangProvider.Current["DeleteRightDivider"];
     public static string ClearDividersText => RepartLangProvider.Current["ClearDividers"];
-    public static string TimelineHintText => RepartLangProvider.Current["TimelineHint"];
+    public static string TimelineHintText => RepartLangProvider.Current["TimelineHintDetailed"];
     public string OutputCountText => string.Format(RepartLangProvider.Current["OutputCount"], Outputs.Count);
     public static string TimelineStartText => "00:00:00.000";
     public string TimelineEndText => _analysis == null
@@ -150,6 +160,15 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public ObservableCollection<RepartOutputItemVM> Outputs { get; } = [];
     public ObservableCollection<RepartDividerItemVM> DividerItems { get; } = [];
     public ObservableCollection<string> AxisLabels { get; } = [];
+    public ObservableCollection<DividerPreviewFrameVM> DividerPreviewFrames
+    {
+        get => _dividerPreviewFrames;
+    }
+    public string DividerPreviewStatusText
+    {
+        get => _dividerPreviewStatusText;
+        private set => SetProperty(ref _dividerPreviewStatusText, value);
+    }
     public ButtonGroupVM EpisodeEditButtons { get; }
     public ButtonGroupVM DividerControlButtons { get; }
     public ButtonGroupVM DividerDeleteButtons { get; }
@@ -258,6 +277,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             OnPropertyChanged(nameof(LockDividerText));
             SetDividerTexts(value?.Model.Frame);
             RefreshDividerAvailability();
+            RefreshDividerPreview();
         }
     }
 
@@ -887,6 +907,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         OnPropertyChanged(nameof(SelectedDivider));
         OnPropertyChanged(nameof(LockDividerText));
         SetDividerTexts(_selectedDivider?.Frame);
+        RefreshDividerPreview();
     }
 
     private void RefreshDividerItem(RepartDividerM divider)
@@ -1075,6 +1096,116 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         RefreshDividerAvailability();
     }
 
+    private void RefreshDividerPreview()
+    {
+        CancellationTokenSource? previous = _dividerPreviewCts;
+        CancellationTokenSource cts = new();
+        _dividerPreviewCts = cts;
+        previous?.Cancel();
+        previous?.Dispose();
+
+        if (_analysis == null || SelectedDivider == null)
+        {
+            DividerPreviewFrames.Clear();
+            DividerPreviewStatusText = "选择一个分割线以显示预览";
+            cts.Dispose();
+            _dividerPreviewCts = null;
+            return;
+        }
+
+        _ = RefreshDividerPreviewAsync(cts);
+    }
+
+    private async Task RefreshDividerPreviewAsync(CancellationTokenSource cts)
+    {
+        try
+        {
+            RepartDividerItemVM? divider = SelectedDivider;
+
+            if (string.IsNullOrWhiteSpace(_ffmpegPath) || !File.Exists(_ffmpegPath))
+            {
+                DividerPreviewFrames.Clear();
+                DividerPreviewStatusText = "ffmpeg 不可用，无法生成预览";
+                return;
+            }
+
+            if (_analysis == null || divider == null)
+                return;
+
+            RepartSourceM? source = _analysis.Sources.FirstOrDefault(item =>
+                divider.Frame >= item.FirstFrame && divider.Frame <= item.LastFrame);
+            if (source == null || !File.Exists(source.FilePath))
+            {
+                DividerPreviewFrames.Clear();
+                DividerPreviewStatusText = "未找到对应视频源";
+                return;
+            }
+
+            long selectedFrame = divider.Frame;
+            long sourceFrameCount = source.LastFrame - source.FirstFrame + 1;
+            long firstFrame = Math.Max(source.FirstFrame, selectedFrame - 3);
+            if (sourceFrameCount >= 7)
+                firstFrame = Math.Min(firstFrame, source.LastFrame - 6);
+            long lastFrame = Math.Min(source.LastFrame, firstFrame + 6);
+            string previewPattern = Path.Combine(_previewWorkDirectory, "divider-preview-%02d.png");
+            DividerPreviewFrames.Clear();
+            DividerPreviewStatusText = $"正在读取 {selectedFrame:N0} 帧的 7 帧窗口...";
+
+            foreach (string file in Directory.GetFiles(_previewWorkDirectory, "divider-preview-*.png"))
+            {
+                try { File.Delete(file); }
+                catch { }
+            }
+
+            await PreviewPipeline.RunFfmpegAsync(
+                _ffmpegPath,
+                _previewWorkDirectory,
+                PreviewPipeline.BuildSourceFrameArgs(
+                    source.FilePath,
+                    firstFrame - source.FirstFrame,
+                    lastFrame - source.FirstFrame,
+                    previewPattern),
+                cts.Token);
+
+            if (cts.IsCancellationRequested) return;
+
+            string[] files = Directory.GetFiles(_previewWorkDirectory, "divider-preview-*.png")
+                .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+
+            if (files.Length == 0)
+                throw new InvalidOperationException("Divider preview frame file missing.");
+
+            DividerPreviewFrames.Clear();
+            for (int i = 0; i < files.Length; i++)
+            {
+                long frameNumber = firstFrame + i;
+                DividerPreviewFrames.Add(new DividerPreviewFrameVM(
+                    frameNumber,
+                    PreviewPipeline.LoadBitmap(files[i]),
+                    frameNumber == selectedFrame));
+            }
+
+            DividerPreviewStatusText = $"{source.DisplayName} | {selectedFrame:N0} 帧 | 7 帧预览";
+        }
+        catch (OperationCanceledException)
+        {
+            if (!cts.IsCancellationRequested)
+                DividerPreviewStatusText = "预览已取消";
+        }
+        catch (Exception ex)
+        {
+            DividerPreviewFrames.Clear();
+            DividerPreviewStatusText = ex.Message;
+        }
+        finally
+        {
+            if (ReferenceEquals(_dividerPreviewCts, cts))
+                _dividerPreviewCts = null;
+            cts.Dispose();
+        }
+    }
+
     private void RefreshDraftAvailability()
     {
         OnPropertyChanged(nameof(CanAddEpisode));
@@ -1127,7 +1258,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             nameof(DividerFrameLabel), nameof(LockDividerText),
             nameof(DeleteSelectedDividerText),
             nameof(DeleteLeftDividerText), nameof(DeleteRightDividerText),
-            nameof(ClearDividersText), nameof(OutputCountText)
+            nameof(ClearDividersText), nameof(OutputCountText), nameof(TimelineHintText)
         }) OnPropertyChanged(property);
         EpisodeEditButtons.B5_1Text = MergeLeftText;
         EpisodeEditButtons.B5_2Text = MergeRightText;
@@ -1149,6 +1280,24 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public override void Dispose()
     {
         UILangProvider.CurrentChanged -= OnLanguageChanged;
+        try { _dividerPreviewCts?.Cancel(); }
+        catch { }
+        PreviewPipeline.DeleteDirectoryQuietly(_previewWorkDirectory);
         base.Dispose();
     }
+}
+
+public sealed class DividerPreviewFrameVM
+{
+    public DividerPreviewFrameVM(long frame, ImageSource frameImage, bool isSelected)
+    {
+        Frame = frame;
+        FrameImage = frameImage;
+        IsSelected = isSelected;
+    }
+
+    public long Frame { get; }
+    public ImageSource FrameImage { get; }
+    public bool IsSelected { get; }
+    public string FrameText => $"{Frame:N0}";
 }

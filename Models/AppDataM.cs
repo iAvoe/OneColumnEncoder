@@ -1,4 +1,5 @@
 using OneColumnEncoder.Persistence;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Serialization;
 
@@ -12,6 +13,10 @@ namespace OneColumnEncoder.Models
 
         public Importables Tools { get; set; } = new Importables();
         public EncodingSettings Encoding { get; set; } = new EncodingSettings();
+
+        // Per-card last-browse directory history, keyed by BrowseHistoryKeys.
+        // Sources and tools keep separate keys so browsing one never moves another card's dialog.
+        public Dictionary<string, string> BrowseHistory { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public bool? IsMiniUpstreamsZone { get; set; }
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

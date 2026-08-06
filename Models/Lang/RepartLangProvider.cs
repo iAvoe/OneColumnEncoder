@@ -89,7 +89,8 @@ public sealed class RepartLangProvider(string languageCode)
             ["SourceLabel"] = "Source: {0}",
             ["WillExcludeSource"] = "This source item will be excluded. Close this dialog to proceed importing",
             ["ImportSummary"] = "Repart import completed: {0} source(s) accepted, {1} source item(s) excluded",
-            ["TimelineHint"] = "Double-click on timeline to add new divider; right-click a divider to show its context menu"
+            ["TimelineHint"] = "Double-click on timeline to add new divider; right-click a divider to show its context menu",
+            ["TimelineHintDetailed"] = "Use this mode for conjoined discs and under-/over-segmented sets, or for sources whose divider frames are simply wrong. It still needs manual inspection. Chapter-based import will also draw OP, ED, guide, small-theater, and other special segments as dividers; delete those dividers instead of keeping them."
         },
         ["zh-cn"] = new()
         {
@@ -176,7 +177,8 @@ public sealed class RepartLangProvider(string languageCode)
             ["SourceLabel"] = "视频源：{0}",
             ["WillExcludeSource"] = "将排除此视频源，关闭对话框后继续处理其余项目",
             ["ImportSummary"] = "重分集导入完成：已接受 {0} 个视频源，已排除 {1} 个源项目",
-            ["TimelineHint"] = "双击时间轴以添加分割线；右键分割线可打开其上下文菜单"
+            ["TimelineHint"] = "双击时间轴以添加分割线；右键分割线可打开其上下文菜单",
+            ["TimelineHintDetailed"] = "此模式用于处理连体盘和肉酱盘（欠分集与过分集），或仅仅是分集帧位置错误的源，仍需要人工检查。使用章节读取导入时，OP、ED、导览、小剧场等特殊段落也会被画成分割线，这些分割线应当删除，不要保留。"
         }
     };
 
@@ -264,7 +266,8 @@ public sealed class RepartLangProvider(string languageCode)
             ["SourceLabel"] = "影片來源：{0}",
             ["WillExcludeSource"] = "將排除此影片來源，關閉對話方塊後繼續處理其餘項目",
             ["ImportSummary"] = "重分集匯入完成：已接受 {0} 個影片來源，已排除 {1} 個來源項目",
-            ["TimelineHint"] = "雙擊時間軸以添加分割線；右鍵分割線可打開其上下文菜單"
+            ["TimelineHint"] = "雙擊時間軸以添加分割線；右鍵分割線可打開其上下文菜單",
+            ["TimelineHintDetailed"] = "此模式用於處理連體盤和肉醬盤（欠分集與過分集），或只是分集影格位置錯誤的來源，仍需要人工檢查。使用章節讀取匯入時，OP、ED、導覽、小劇場等特殊段落也會被畫成分割線，這些分割線應該刪除，不要保留。"
         };
         Data["fr"] = new(Data["en"])
         {
@@ -348,7 +351,8 @@ public sealed class RepartLangProvider(string languageCode)
             ["SourceLabel"] = "Source : {0}",
             ["WillExcludeSource"] = "Cet élément source sera exclu. Fermez cette boîte de dialogue pour continuer l'importation",
             ["ImportSummary"] = "Importation Répartition terminée : {0} source(s) acceptée(s), {1} élément(s) de source exclu(s)",
-            ["TimelineHint"] = "Double-cliquez sur la ligne de temps pour ajouter un nouveau séparateur ; faites un clic droit sur un séparateur pour afficher son menu contextuel"
+            ["TimelineHint"] = "Double-cliquez sur la ligne de temps pour ajouter un nouveau séparateur ; faites un clic droit sur un séparateur pour afficher son menu contextuel",
+            ["TimelineHintDetailed"] = "Ce mode sert aux disques collés et aux ensembles sous- ou sur-segmentés, ou aux sources dont les positions des séparateurs sont simplement fausses. Une vérification manuelle reste nécessaire. Lors d'un import par chapitres, les segments spéciaux comme OP, ED, guide, petit théâtre, etc. sont aussi tracés comme séparateurs ; il faut les supprimer et ne pas les conserver."
         };
         Data["es"] = new(Data["en"])
         {
@@ -432,7 +436,8 @@ public sealed class RepartLangProvider(string languageCode)
             ["ManageDividers"] = "Operaciones por lotes",
             ["OutputCount"] = "{0} salida(s)",
             ["ClearDividers"] = "Borrar todo",
-            ["TimelineHint"] = "Haga doble clic en la línea de tiempo para agregar un nuevo divisor; haga clic derecho en un divisor para mostrar su menú contextual"
+            ["TimelineHint"] = "Haga doble clic en la línea de tiempo para agregar un nuevo divisor; haga clic derecho en un divisor para mostrar su menú contextual",
+            ["TimelineHintDetailed"] = "Este modo se usa para discos unidos y conjuntos con subsegmentación o sobredesglose, o para fuentes cuyos fotogramas de división están simplemente mal ubicados. Aun así requiere revisión manual. Al importar desde capítulos, también se dibujan como divisores segmentos especiales como OP, ED, guía, pequeño teatro y otros; esos divisores deben borrarse y no conservarse."
         };
         Data["ja"] = new(Data["en"])
         {
@@ -517,7 +522,8 @@ public sealed class RepartLangProvider(string languageCode)
             ["ManageDividers"] = "一括操作",
             ["OutputCount"] = "{0} 出力",
             ["ClearDividers"] = "すべてクリア",
-            ["TimelineHint"] = "タイムラインをダブルクリックして新しい区切り線を追加します。区切り線を右クリックするとコンテキストメニューが表示されます"
+            ["TimelineHint"] = "タイムラインをダブルクリックして新しい区切り線を追加します。区切り線を右クリックするとコンテキストメニューが表示されます",
+            ["TimelineHintDetailed"] = "このモードは、連結ディスクや過少・過剰分集のソース、または区切り位置が単純に間違っているソース向けです。最終的な手動確認は必要です。チャプター読み込みでは、OP、ED、案内、小劇場などの特殊区間も区切り線として描画されるため、それらの区切り線は保持せず削除してください。"
         };
         Data["ru"] = new(Data["en"])
         {
@@ -601,7 +607,8 @@ public sealed class RepartLangProvider(string languageCode)
             ["ManageDividers"] = "Пакетные операции",
             ["OutputCount"] = "{0} выходов",
             ["ClearDividers"] = "Очистить всё",
-            ["TimelineHint"] = "Дважды щелкните по шкале времени, чтобы добавить новый разделитель; щелкните правой кнопкой мыши по разделителю, чтобы открыть его контекстное меню"
+            ["TimelineHint"] = "Дважды щелкните по шкале времени, чтобы добавить новый разделитель; щелкните правой кнопкой мыши по разделителю, чтобы открыть его контекстное меню",
+            ["TimelineHintDetailed"] = "Этот режим предназначен для составных дисков и наборов с недо- или пере-разбиением, а также для источников, где позиции разделителей просто указаны неверно. Он всё равно требует ручной проверки. При импорте по главам также будут нарисованы как разделители OP, ED, вставки-справки, короткие сценки и другие специальные сегменты; такие разделители нужно удалять, а не оставлять."
         };
     }
 

@@ -16,23 +16,31 @@ namespace OneColumnEncoder.Commands
         ModalNavS modalNavS,
         Func<string> getFfprobePath,
         Func<bool>? isSvtav1SelectedFunc = null, // SVT-AV1 does not support 12bit, check needed
+        AppDataM? appDataM = null,
+        string? browseKey = null,
         Action<ToolItemCardVM, string[]>? afterImport = null) : BaseCmd
     {
         private readonly ToolItemCardVM _item = item;
         private readonly ModalNavS _modalNavS = modalNavS;
         private readonly Func<string> _getFfprobePath = getFfprobePath;
         private readonly Func<bool>? _isSvtav1SelectedFunc = isSvtav1SelectedFunc;
+        private readonly AppDataM? _appDataM = appDataM;
+        private readonly string? _browseKey = browseKey;
         private readonly Action<ToolItemCardVM, string[]>? _afterImport = afterImport;
 
         public override async void Execute(object? parameter)
         {
             // Use the shared video source filter so concat import only presents supported media files.
+            string initialDirectory = _browseKey != null && _appDataM != null
+                ? BrowseHistory.ResolveInitialDirectory(_appDataM, _browseKey, _item.P2TextData)
+                : OutputPath.GetInitialDirectory(_item.P2TextData);
+
             OpenFileDialog dialog = new()
             {
                 Title = UILangProvider.Current["SourceConcat.SelectFilesTitle"],
                 Multiselect = true,
                 Filter = new SourceFilePickerLangProvider(UILangProvider.Current.LanguageCode).VideoFilter,
-                InitialDirectory = OutputPath.GetInitialDirectory(_item.P2TextData)
+                InitialDirectory = initialDirectory
             };
 
             Window? owner = Application.Current.MainWindow;
@@ -127,6 +135,8 @@ namespace OneColumnEncoder.Commands
             _item.P2TextData = parentDir;
             _item.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(fileNames);
             _item.P1TooltipText = BrowseSourceQueueCmd.FormatQueueP1TooltipText(fileNames);
+            if (_browseKey != null && _appDataM != null)
+                BrowseHistory.Remember(_appDataM, _browseKey, filePaths[0]);
             _afterImport?.Invoke(_item, filePaths);
             Application.Current.MainWindow?.Activate();
         }

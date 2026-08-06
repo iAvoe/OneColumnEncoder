@@ -8,9 +8,9 @@
                    xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
                    d:DataContext="{d:DesignInstance Type=vms:RepartConfVM}"
                    mc:Ignorable="d"
-                   Title="{Binding WindowTitle}"
-                   Width="900"
-                    Height="760"
+                    Title="{Binding WindowTitle}"
+                    Width="1080"
+                     Height="760"
                     WindowStartupLocation="CenterOwner"
                     Background="{StaticResource Background}">
     <ui:AdaptiveWindow.Resources>
@@ -165,9 +165,10 @@
               IsEnabled="{Binding CanEdit}"
               Margin="0 15 0 0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="25*" />
-                <ColumnDefinition Width="25*" />
-                <ColumnDefinition Width="50*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="3*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -328,6 +329,82 @@
                             Tag="{x:Static ui:SvgIconProvider.GameDelete}"
                             ContentTemplate="{StaticResource IconTextButtonTemplate}" />
                 </Grid>
+            </Grid>
+
+            <Grid Grid.Column="3"
+                  Grid.RowSpan="2"
+                  Margin="15 0 0 0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <comps:SectionHeader HeaderText="预览" />
+
+                <Border Grid.Row="1"
+                        Margin="5 15 0 0"
+                        BorderBrush="{StaticResource GlobalSecondary}"
+                        BorderThickness="1"
+                        CornerRadius="5"
+                        Background="White"
+                        MinHeight="180">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+                        <ItemsControl ItemsSource="{Binding DividerPreviewFrames}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="4 4 4 6"
+                                            BorderThickness="1"
+                                            CornerRadius="4"
+                                            BorderBrush="{StaticResource GlobalSecondary}">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsSelected}"
+                                                                 Value="True">
+                                                        <Setter Property="BorderBrush"
+                                                                Value="{StaticResource BorderAmber}" />
+                                                        <Setter Property="BorderThickness"
+                                                                Value="2" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="{Binding FrameText}"
+                                                       Margin="6 4 6 2"
+                                                       Foreground="{StaticResource GlobalSecondary}"
+                                                       FontSize="11" />
+                                            <Image Grid.Row="1"
+                                                   Source="{Binding FrameImage}"
+                                                   Height="72"
+                                                   Stretch="Uniform"
+                                                   SnapsToDevicePixels="True"
+                                                   RenderOptions.BitmapScalingMode="NearestNeighbor"
+                                                   Margin="4 0 4 4" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Border>
+
+                <TextBlock Grid.Row="2"
+                           Text="{Binding DividerPreviewStatusText}"
+                           Margin="5 8 0 0"
+                           Foreground="{StaticResource GlobalSecondary}"
+                           TextWrapping="Wrap" />
             </Grid>
 
             <!-- Output episode repartition list/queue -->

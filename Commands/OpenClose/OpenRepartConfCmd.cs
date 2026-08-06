@@ -41,7 +41,7 @@ public sealed class OpenRepartConfCmd(
 
         if (modalNavS.IsOpen) modalNavS.Close();
         RepartConfModal window = new();
-        RepartConfVM vm = new(modalNavS, window.Close, applyPlan);
+        RepartConfVM vm = new(modalNavS, window.Close, applyPlan, getFfmpegPath?.Invoke());
         window.DataContext = vm;
         window.Owner = Application.Current.MainWindow;
         window.Closed += (_, _) => modalNavS.Close();

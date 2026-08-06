@@ -12,10 +12,14 @@ namespace OneColumnEncoder.Commands
     public class BrowseSourceQueueCmd(
         ToolItemCardVM item,
         ModalNavS modalNavS,
+        AppDataM appDataM,
+        string browseKey,
         Action<ToolItemCardVM, string, string[]>? afterImport = null) : BaseCmd
     {
         private readonly ToolItemCardVM _item = item;
         private readonly ModalNavS _modalNavS = modalNavS;
+        private readonly AppDataM _appDataM = appDataM;
+        private readonly string _browseKey = browseKey;
         private readonly Action<ToolItemCardVM, string, string[]>? _afterImport = afterImport;
 
         public override void Execute(object? parameter)
@@ -23,7 +27,7 @@ namespace OneColumnEncoder.Commands
             OpenFolderDialog dialog = new()
             {
                 Title = UILangProvider.Current["SourceQueue.SelectFolderTitle"],
-                InitialDirectory = OutputPath.GetInitialDirectory(_item.P2TextData)
+                InitialDirectory = BrowseHistory.ResolveInitialDirectory(_appDataM, _browseKey, _item.P2TextData)
             };
 
             Window? owner = Application.Current.MainWindow;
@@ -50,6 +54,7 @@ namespace OneColumnEncoder.Commands
             _item.P2TextData = folderPath;
             _item.P1TextData = FormatQueueP1Text(fileNames);
             _item.P1TooltipText = FormatQueueP1TooltipText(fileNames);
+            BrowseHistory.Remember(_appDataM, _browseKey, folderPath);
             _afterImport?.Invoke(_item, folderPath, filePaths);
             Application.Current.MainWindow?.Activate();
         }

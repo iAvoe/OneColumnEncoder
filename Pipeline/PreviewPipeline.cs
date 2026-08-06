@@ -59,6 +59,32 @@ public static partial class PreviewPipeline
         return [.. args];
     }
 
+    public static string[] BuildSourceFrameArgs(string sourceVideoPath, long firstFrame, long lastFrame, string outputPattern)
+    {
+        long safeFirstFrame = Math.Max(0, firstFrame);
+        long safeLastFrame = Math.Max(safeFirstFrame, lastFrame);
+        return
+        [
+            "-hide_banner",
+            "-y",
+            "-strict",
+            "unofficial",
+            "-i",
+            sourceVideoPath,
+            "-vf",
+            $"select=between(n\\,{safeFirstFrame}\\,{safeLastFrame})",
+            "-vsync",
+            "0",
+            "-start_number",
+            "0",
+            "-frames:v",
+            "7",
+            "-c:v",
+            "png",
+            outputPattern
+        ];
+    }
+
     private static string[] BuildVvencEncodeArgs(EncoderConfM model, string sourcePath, string outputPath)
     {
         return

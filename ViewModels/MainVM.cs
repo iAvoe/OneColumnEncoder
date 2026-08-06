@@ -492,7 +492,8 @@ namespace OneColumnEncoder.ViewModels
             ActiveSrcValidationCard = SrcValCard;
 
             // Create static card zones, then restore imported tools and cached sources.
-            ToolsImportCard = new ToolsImportCardVM(modalNavS);
+            ToolsImportCard = new ToolsImportCardVM(modalNavS,
+                exeName => BrowseHistory.GetDirectory(_appDataM, BrowseHistoryKeys.ForTool(exeName)));
             VideoSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetVideoSrcImportDefs(), true, false);
             _videoSourceQueue = new(VideoSrcImportZone);
             _videoSourceConcat = new(VideoSrcImportZone);
@@ -1526,7 +1527,7 @@ namespace OneColumnEncoder.ViewModels
         {
             if (IsVideoSourceQueueItem(item))
             {
-                item.R1Command = new BrowseSourceQueueCmd(item, _modalNavS, OnSourceQueueImported);
+                item.R1Command = new BrowseSourceQueueCmd(item, _modalNavS, _appDataM, BrowseHistoryKeys.VideoSourceQueue, OnSourceQueueImported);
                 item.R2Command = new ClearToolItemCmd(item, () => OnSourceQueueCleared(item));
                 item.PropertyChanged += OnVideoSrcItemPropertyChanged;
                 return;
@@ -1539,6 +1540,8 @@ namespace OneColumnEncoder.ViewModels
                     _modalNavS,
                     GetSelectedFfprobePath,
                     ConcatCheckCard.IsSvtav1SelectedFunc,
+                    _appDataM,
+                    BrowseHistoryKeys.VideoSourceConcat,
                     OnSourceConcatImported);
                 item.R2Command = new ClearToolItemCmd(item, OnSourceConcatCleared);
                 item.PropertyChanged += OnVideoSrcItemPropertyChanged;
@@ -1561,14 +1564,13 @@ namespace OneColumnEncoder.ViewModels
             SourceFileKind kind = SourceFileKindResolver.ResolveSourceFileKind(item.Name);
             if (QueueScriptSrcImportZone.Contains(item))
             {
-                item.R1Command = new BrowseSourceScriptQueueCmd(item, kind, OnSourceScriptQueueImported, GetCurrentSourceImportPath);
+                item.R1Command = new BrowseSourceScriptQueueCmd(item, kind, _appDataM, BrowseHistoryKeys.ForScriptQueue(kind), OnSourceScriptQueueImported, GetCurrentSourceImportPath);
                 item.R2Command = new ClearToolItemCmd(item, () => OnSourceScriptQueueCleared(item));
             }
             else
             {
-                item.R1Command = kind == SourceFileKind.Video
-                    ? new BrowseSourcePathCmd(item, kind, _appDataM, _modalNavS, OnVideoSourceImported)
-                    : new BrowseSourcePathCmd(item, kind, _appDataM, _modalNavS, OnVideoSourceImported, GetCurrentSourceImportPath);
+                item.R1Command = new BrowseSourcePathCmd(item, kind, _appDataM, _modalNavS, BrowseHistoryKeys.ForSingleSource(kind), OnVideoSourceImported,
+                    kind == SourceFileKind.Video ? null : GetCurrentSourceImportPath);
                 item.R2Command = new ClearToolItemCmd(item, () => OnSourceCleared(kind));
             }
             item.PropertyChanged += OnVideoSrcItemPropertyChanged;
@@ -2903,6 +2905,7 @@ namespace OneColumnEncoder.ViewModels
             ToolCatalogProviderM.TrySetPath(exeName, _appDataM.Tools, filePath);
             ToolCatalogProviderM.TrySetVersion(exeName, _appDataM.Tools, version ?? string.Empty);
             ToolCatalogProviderM.TrySetSize(exeName, _appDataM.Tools, fileSize);
+            BrowseHistory.Remember(_appDataM, BrowseHistoryKeys.ForTool(exeName), filePath);
 
             if (exeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase))
             {

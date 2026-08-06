@@ -41,7 +41,7 @@ namespace OneColumnEncoder.ViewModels.Cards
 
         private readonly PropertyChangedEventHandler _onDropdownPropertyChanged;
 
-        public ToolsImportCardVM(ModalNavS modalNavS)
+        public ToolsImportCardVM(ModalNavS modalNavS, Func<string, string?>? getBrowseInitialDirectory = null)
         {
             ImportCommand =
                 new ImportToolCmd(ImportDropdown,
@@ -51,7 +51,8 @@ namespace OneColumnEncoder.ViewModels.Cards
                                   {
                                       if (ToolImported != null)
                                           await ToolImported(toolName, filePath, version);
-                                  });
+                                  },
+                                  getBrowseInitialDirectory);
             _onDropdownPropertyChanged = (s, e) =>
             {
                 if (e.PropertyName == nameof(ImportDropdown.SelectedItem))

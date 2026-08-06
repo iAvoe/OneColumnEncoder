@@ -185,11 +185,29 @@ public static class ToolCatalogProviderM
         ],
     };
 
+    private static IEnumerable<string> GetBaseDirectoryUpstreamSearchPaths()
+    {
+        string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
+        if (Environment.Is64BitProcess)
+        {
+            yield return Path.Combine(baseDirectory, "x64-upstreams-encoders");
+        }
+        else
+        {
+            yield return Path.Combine(baseDirectory, "x86-upstreams-encoders");
+        }
+    }
+
     public static string? TryFindToolDirectory(string exeName)
     {
-        if (!ToolExtraSearchPaths.TryGetValue(exeName, out var directories))
-            return null;
-        foreach (var dir in directories)
+        List<string> directories = [];
+        if (ToolExtraSearchPaths.TryGetValue(exeName, out var extraDirectories))
+            directories.AddRange(extraDirectories);
+
+        directories.AddRange(GetBaseDirectoryUpstreamSearchPaths());
+
+        foreach (string dir in directories)
         {
             if (Directory.Exists(dir))
             {

@@ -15,12 +15,14 @@ namespace OneColumnEncoder.Commands
     public class ImportToolCmd(DropdownMenuVM dropdownVM,
                                ObservableCollection<ChecklistEntryVM> knownTools,
                                ModalNavS modalNavS,
-                               Func<string, string, string?, Task>? onSuccess = null) : AsyncBaseCmd
+                               Func<string, string, string?, Task>? onSuccess = null,
+                               Func<string, string?>? getBrowseInitialDirectory = null) : AsyncBaseCmd
     {
         private readonly DropdownMenuVM _dropdownVm = dropdownVM;
         private readonly ObservableCollection<ChecklistEntryVM> _knownTools = knownTools;
         private readonly ModalNavS _modalNavS = modalNavS;
         private readonly Func<string, string, string?, Task>? _onSuccess = onSuccess;
+        private readonly Func<string, string?>? _getBrowseInitialDirectory = getBrowseInitialDirectory;
 
         public override bool CanExecute(object? parameter)
         {
@@ -36,7 +38,7 @@ namespace OneColumnEncoder.Commands
             if (string.IsNullOrEmpty(toolToImport)) return;
 
             string? filePath = SelectAndValidateToolPath(
-                toolToImport, "Dialog.SelectTitle", _modalNavS);
+                toolToImport, "Dialog.SelectTitle", _modalNavS, _getBrowseInitialDirectory?.Invoke(toolToImport));
             if (string.IsNullOrEmpty(filePath)) return;
 
             string? version;
@@ -120,7 +122,7 @@ namespace OneColumnEncoder.Commands
         }
 
         internal static string? SelectAndValidateToolPath(
-            string toolName, string dialogTitleFormat, ModalNavS modalNavS)
+            string toolName, string dialogTitleFormat, ModalNavS modalNavS, string? initialDirectory = null)
         {
             string filter = toolName.Equals("AviSynth.dll", StringComparison.OrdinalIgnoreCase)
                 ? UILangProvider.Current["Dialog.Filter.Dll"]
@@ -135,7 +137,9 @@ namespace OneColumnEncoder.Commands
             };
 
             string? detectedDir = ToolCatalogProviderM.TryFindToolDirectory(toolName);
-            if (detectedDir != null)
+            if (!string.IsNullOrWhiteSpace(initialDirectory) && Directory.Exists(initialDirectory))
+                dialog.InitialDirectory = initialDirectory;
+            else if (detectedDir != null)
                 dialog.InitialDirectory = detectedDir;
 
             if (dialog.ShowDialog() != true) return null;
