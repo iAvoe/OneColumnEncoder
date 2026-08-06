@@ -289,7 +289,7 @@ Repart-specific constraints:
 
 - One or more input files produce one or more independently named outputs.
 - CFR and complete frame timestamps are required.
-- Video stream format fields must match exactly; container, audio, and subtitle layouts are not part of the signature.
+- Video stream format fields must match exactly; container, audio, and subtitle layouts are not part of the signature. Per-stream `time_base` is a container detail and is likewise excluded (see `time_base` handling below).
 - Chapter and MPLS reading are not implemented; episode boundaries are manual.
 - Source Reviser remains disabled for an active plan because changing source metadata could invalidate frame offsets. Filter Scribe is available through the Repart-specific concat-style workflow. Imported sources are never modified.
 - ffmpeg is required for the final video-only MKV even when the upstream is vspipe or AviSynth.
@@ -299,6 +299,8 @@ Repart-specific constraints:
 Clicking `Video Source Repart` imports a naturally sorted folder and opens `RepartConfModal`. The modal contains a read-only source queue, a disabled chapter/MPLS placeholder, a proportional partition map, synchronized time/frame fields, and an output queue. Source changes are handled by clearing and re-importing the Repart source, so the modal remains focused on repartition editing. Output ranges use inclusive first/last frames; ranges cannot overlap, gaps are allowed, and merge accepts only directly adjacent outputs.
 
 `RepartCompatibilityAnalyzer` performs a full ffprobe frame timestamp scan for each source. It requires CFR, derives the actual frame count, compares a strict first-video-stream signature, and records source size/modification-time fingerprints. A plan is rejected if a source changes during analysis or before encoding.
+
+**`time_base` handling.** The per-source signature deliberately omits `time_base`. It is the container's tick resolution (e.g. `1/24000` vs `1/96000` for the same 24000/1001 fps), a muxing detail rather than a video property, and identical encode batches can mux episodes at different tick resolutions. Sources that differ only in `time_base` are therefore accepted as one virtual timeline. Every downstream stage normalizes it: ffmpeg resets each input's PTS with `setpts=PTS-STARTPTS` and rebuilds a CFR PTS sequence with `setpts=N*den/(num*TB)` — TB is ffmpeg's internal output timebase, independent of the source's — VapourSynth/AviSynth splice frame-accurately by frames, and the video-only mux writes `-video_track_timescale` from the reference source's `time_base` denominator uniformly across every output.
 
 Each encoding start creates execution-specific ffconcat and private AVS/VPY paths. `BuildRepartEncodingPipelineRequests()` emits one `EncodingPipelineRequest` per committed output (`RepartPlanM.Outputs`); every request carries an `EncodingClipRequest` with both time (`StartTime`/`EndTime`) and frame (`FirstFrame`/`LastFrame`) ranges plus the plan frame rate, `ConcatFileListPath`, `ConcatVideoSourcePaths`, `ConcatTotalFrames: plan.TotalFrames`, and `MuxMode: EncodingMuxMode.VideoOnly`.
 

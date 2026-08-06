@@ -706,7 +706,6 @@ public static class RepartSourceValidator
         Get(stream, "sample_aspect_ratio"),
         normalizedRate,
         normalizedRate,
-        Get(stream, "time_base"),
         Get(stream, "color_range"),
         Get(stream, "color_space"),
         Get(stream, "color_transfer"),

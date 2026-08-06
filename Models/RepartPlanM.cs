@@ -18,7 +18,6 @@ public sealed record RepartVideoFormatSignature(
     string SampleAspectRatio,
     string AverageFrameRate,
     string RealFrameRate,
-    string TimeBase,
     string ColorRange,
     string ColorSpace,
     string ColorTransfer,
@@ -30,8 +29,7 @@ public sealed record RepartVideoFormatSignature(
         $"{CodecName}/{Profile}",
         $"{Width}x{Height}",
         PixelFormat,
-        $"fps={AverageFrameRate}",
-        $"time_base={TimeBase}");
+        $"fps={AverageFrameRate}");
 }
 
 public sealed record RepartSourceM(

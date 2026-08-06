@@ -143,6 +143,8 @@ Repart mode treats an ordered set of strictly matching CFR video streams as one 
 
 The dedicated partition-style window provides input and output sidebars, a proportional allocation map, synchronized time/frame fields, unallocated gaps, and adjacent-output merging. The first implementation does not read chapters or MPLS and does not copy source audio, subtitles, chapters, or metadata. Every output is encoded independently and muxed as a video-only MKV.
 
+**Container-level timing granularity is normalized, not part of the format signature.** Repart's strict source signature compares actual video format fields (codec, profile, level, dimensions, pixel format, color metadata, frame rate, extradata) but deliberately excludes the per-stream `time_base` — the muxer's tick resolution, e.g. `1/24000` vs `1/96000` at the same 24000/1001 fps. That is a container detail rather than a video format property, so an encode batch that muxed identical episodes at different tick resolutions still forms one virtual timeline. This is safe because every upstream normalizes timing: ffmpeg resets each input's PTS and rebuilds a CFR PTS sequence from the plan frame rate, VapourSynth/AviSynth splice by frames, and the final video-only MKV uses `-video_track_timescale` derived from the reference source.
+
 #### Concat Then Split
 
 Repart mode lands the "concatenate into one virtual frame timeline, then split per output range" commands per upstream tool as follows:
