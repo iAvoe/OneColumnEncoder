@@ -575,6 +575,7 @@ namespace OneColumnEncoder.ViewModels
                     _repartAvsFilterInput = avs ?? string.Empty;
                     _repartVpyFilterInput = vpy ?? string.Empty;
                 },
+                ApplyRepartFilePathsFromFilterScribe,
                 _appDataM.Tools.VspipePath,
                 _appDataM.Tools.VspipeY4mArg,
                 () => EncodingPipeline.GetSourceTotalFrames(
@@ -1968,6 +1969,23 @@ namespace OneColumnEncoder.ViewModels
         {
             _videoSourceRepart.Clear();
             RefreshSelectedSourceStatus(resetAnalysis: true);
+        }
+
+        private void ApplyRepartFilePathsFromFilterScribe(string[] filePaths)
+        {
+            if (!_videoSourceRepart.ReorderSources(filePaths)) return;
+
+            RepartPlanM? plan = _videoSourceRepart.CurrentPlan;
+            if (plan == null) return;
+
+            _srcVideoAnalysis.SourcePath = plan.Sources[0].FilePath;
+            _srcVideoAnalysis.QueueRawJson = JsonSerializer.Serialize(plan.Sources.Select(source => new
+            {
+                source.FilePath,
+                source.RawJson,
+                source.TotalFrames
+            }));
+            _appDataM.Save();
         }
 
         private void ApplyConcatFilePathsFromFilterScribe(string[] filePaths)

@@ -9,10 +9,13 @@ namespace OneColumnEncoder.ViewModels
     {
         private string[] _originalFilePaths = [];
         private bool _hasOriginalQueueChanges;
+        private bool _isRepartMode;
 
         public ObservableCollection<ConcatSourceItemVM> Items { get; } = [];
 
-        public string OrderingTitle => UILangProvider.Current["SourceConcat.OrderingTitle"];
+        public string OrderingTitle => _isRepartMode
+            ? RepartLangProvider.Current["SourceOrdering"]
+            : UILangProvider.Current["SourceConcat.OrderingTitle"];
         public string RestoreOriginalQueueText => UILangProvider.Current["SourceConcat.RestoreOriginalQueue"];
 
         public bool HasOriginalQueueChanges
@@ -90,6 +93,19 @@ namespace OneColumnEncoder.ViewModels
             }
         }
 
+        public bool IsRepartMode
+        {
+            get => _isRepartMode;
+            set
+            {
+                if (SetProperty(ref _isRepartMode, value))
+                {
+                    OnPropertyChanged(nameof(OrderingTitle));
+                    RefreshItemStates();
+                }
+            }
+        }
+
         private void ReplaceItems(string[] filePaths)
         {
             DisposeItems();
@@ -110,7 +126,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void RefreshItemStates()
         {
-            bool canRemove = Items.Count > 2;
+            bool canRemove = !_isRepartMode && Items.Count > 2;
             for (int i = 0; i < Items.Count; i++)
             {
                 Items[i].CanMoveUp = i > 0;

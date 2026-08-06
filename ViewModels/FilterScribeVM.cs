@@ -44,6 +44,7 @@ namespace OneColumnEncoder.ViewModels
         private readonly Action<string[]>? _applyConcatFilePaths;
         private readonly Func<bool>? _isRepartRoute;
         private readonly Action<string?, string?>? _applyScriptFilters;
+        private readonly Action<string[]>? _applyRepartFilePaths;
         private readonly string? _vspipePath;
         private readonly string? _vspipeY4mArg;
         private readonly Func<long>? _getTotalFrames;
@@ -56,7 +57,7 @@ namespace OneColumnEncoder.ViewModels
         public ConcatSourceListVM ConcatSources { get; } = new();
         public bool IsConcatMode => _isConcatRoute?.Invoke() == true || IsRepartMode;
         public bool IsRepartMode => _isRepartRoute?.Invoke() == true;
-        public bool CanEditConcatSources => !IsRepartMode;
+        public bool CanEditConcatSources => true;
         public bool HasSourceAnalysis => _hasSourceAnalysis;
         // 0: AVS, 1: VPY, 2: ffmpeg
         private int _selectedTabIndex;
@@ -553,6 +554,7 @@ namespace OneColumnEncoder.ViewModels
             Action<string[]>? applyConcatFilePaths = null,
             Func<bool>? isRepartRoute = null,
             Action<string?, string?>? applyScriptFilters = null,
+            Action<string[]>? applyRepartFilePaths = null,
             string? vspipePath = null,
             string? vspipeY4mArg = null,
             Func<long>? getTotalFrames = null)
@@ -577,12 +579,14 @@ namespace OneColumnEncoder.ViewModels
             _applyConcatFilePaths = applyConcatFilePaths;
             _isRepartRoute = isRepartRoute;
             _applyScriptFilters = applyScriptFilters;
+            _applyRepartFilePaths = applyRepartFilePaths;
             _vspipePath = vspipePath;
             _vspipeY4mArg = vspipeY4mArg;
             _getTotalFrames = getTotalFrames;
             _baseAvsPrefix = FilterScribeModalLangProvider.Current["SrcScribe.AvsPrefix"];
             _baseVpyPrefix = FilterScribeModalLangProvider.Current["SrcScribe.VpyPrefix"];
             _hasSourceAnalysis = !string.IsNullOrWhiteSpace(sourceFfprobeJson);
+            ConcatSources.IsRepartMode = IsRepartMode;
             OpenVpyPreviewCommand = new ActionCmd(_ => OpenVpyPreview(), _ => CanOpenVpyPreview);
             ConfigureConcatSources();
             ParseColorSpaceInfo(sourceFfprobeJson);
@@ -622,7 +626,9 @@ namespace OneColumnEncoder.ViewModels
 
         private void ApplyConcatSources()
         {
-            if (CanEditConcatSources)
+            if (IsRepartMode)
+                _applyRepartFilePaths?.Invoke(ConcatSources.GetCurrentFilePaths());
+            else if (CanEditConcatSources)
                 _applyConcatFilePaths?.Invoke(ConcatSources.GetCurrentFilePaths());
             RefreshConcatGeneratedText();
         }
@@ -1013,7 +1019,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void SaveAndImportAll()
         {
-            if (!ShowSourceReviserModal()) return;
+            if (!IsRepartMode && !ShowSourceReviserModal()) return;
 
             ApplyFfmpegFilterArgs();
 
@@ -1155,7 +1161,7 @@ namespace OneColumnEncoder.ViewModels
 
         private void ApplyFfmpegFilterArgsOnly()
         {
-            if (!ShowSourceReviserModal()) return;
+            if (!IsRepartMode && !ShowSourceReviserModal()) return;
 
             ApplyFfmpegFilterArgs();
             _closeAction();

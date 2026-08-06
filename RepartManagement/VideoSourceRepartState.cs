@@ -46,6 +46,35 @@ public sealed class VideoSourceRepartState
         RefreshTitle();
     }
 
+    public bool ReorderSources(string[] filePaths)
+    {
+        if (_plan == null || filePaths.Length != _plan.Sources.Count)
+            return false;
+
+        Dictionary<string, RepartSourceM> sourcesByPath = _plan.Sources.ToDictionary(
+            source => Path.GetFullPath(source.FilePath),
+            StringComparer.OrdinalIgnoreCase);
+        if (filePaths.Any(path => !sourcesByPath.ContainsKey(Path.GetFullPath(path)))
+            || filePaths.Distinct(StringComparer.OrdinalIgnoreCase).Count() != filePaths.Length)
+            return false;
+
+        RepartPlanM reordered = new()
+        {
+            PlanId = _plan.PlanId,
+            FfprobePath = _plan.FfprobePath,
+            ReferenceRawJson = _plan.ReferenceRawJson,
+            FormatSignature = _plan.FormatSignature,
+            FrameRateNumerator = _plan.FrameRateNumerator,
+            FrameRateDenominator = _plan.FrameRateDenominator,
+            TotalFrames = _plan.TotalFrames,
+            Sources = [.. filePaths.Select(path => sourcesByPath[Path.GetFullPath(path)])],
+            Outputs = [.. _plan.Outputs],
+            Dividers = [.. _plan.Dividers]
+        };
+        ApplyPlan(reordered);
+        return true;
+    }
+
     public void Clear()
     {
         _plan = null;

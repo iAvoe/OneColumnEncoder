@@ -155,7 +155,7 @@ Slicing is based on the measured original frame numbers from the analysis stage,
 
 #### Filters Use the Repart Stream Without Rewriting Sources
 
-Repart mode has a hard constraint: **imported video sources are never modified.** Filter Scribe works on the temporary Repart stream in a concat-style workflow; it does not rewrite the imported files or the committed source order and frame plan. The reasons are:
+Repart mode has a hard constraint: **imported video sources are never modified.** Filter Scribe works on the temporary Repart stream in a concat-style workflow; its Repart source queue may be reordered, while the imported files and committed frame boundaries remain unchanged. The reasons are:
 
 - The analysis stage builds the virtual timeline from each imported source's original frame rate, resolution, and per-frame timestamps.
 - If any source is rewritten independently, the sources can no longer be joined reliably and already-planned output ranges may shift as a whole.
@@ -262,7 +262,7 @@ The filter editor is an auxiliary module in 1cenc. It supports:
 
 For script sources, the project validates that the video path embedded in the script matches the current video source. Queue scripts are checked per file name and embedded path to prevent misalignment. Concat mode skips single-source path matching (since scripts naturally contain multiple source paths) and instead relies on concat import and analysis to ensure correctness.
 
-Filter Scribe is available in Repart mode through a Repart-specific concat-style workflow. It uses the ordered Repart source list to build the temporary AVS/VPY source or ffmpeg input, then applies the selected filters without modifying the imported files or the committed Repart source order and frame plan. Source Reviser remains unavailable because changing source metadata would invalidate the frame offsets.
+Filter Scribe is available in Repart mode through a Repart-specific concat-style workflow. It uses the current Repart source queue to build the temporary AVS/VPY source or ffmpeg input, then applies the selected filters without modifying the imported files or committed frame boundaries. Source Reviser remains unavailable because changing source metadata would invalidate the frame offsets.
 
 ---
 
