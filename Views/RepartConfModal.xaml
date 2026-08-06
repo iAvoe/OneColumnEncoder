@@ -359,10 +359,8 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Margin="4 4 4 6"
-                                            BorderThickness="1"
-                                            CornerRadius="4"
-                                            BorderBrush="{StaticResource GlobalSecondary}">
+                                    <Border Margin="0"
+                                            BorderThickness="0 1">
                                         <Border.Style>
                                             <Style TargetType="Border">
                                                 <Style.Triggers>
@@ -370,8 +368,6 @@
                                                                  Value="True">
                                                         <Setter Property="BorderBrush"
                                                                 Value="{StaticResource BorderAmber}" />
-                                                        <Setter Property="BorderThickness"
-                                                                Value="2" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -381,17 +377,17 @@
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
-                                            <TextBlock Text="{Binding FrameText}"
-                                                       Margin="6 4 6 2"
+                                            <TextBlock Grid.Row="0"
+                                                       Text="{Binding FrameText}"
+                                                       TextAlignment="Right"
                                                        Foreground="{StaticResource GlobalSecondary}"
                                                        FontSize="11" />
-                                            <Image Grid.Row="1"
+                                            <Image Grid.Row="0"
                                                    Source="{Binding FrameImage}"
-                                                   Height="72"
                                                    Stretch="Uniform"
                                                    SnapsToDevicePixels="True"
                                                    RenderOptions.BitmapScalingMode="NearestNeighbor"
-                                                   Margin="4 0 4 4" />
+                                                   Margin="0 15 0 0" />
                                         </Grid>
                                     </Border>
                                 </DataTemplate>

@@ -43,6 +43,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private CancellationTokenSource? _dividerPreviewCts;
     private readonly ObservableCollection<DividerPreviewFrameVM> _dividerPreviewFrames = [];
     private string _dividerPreviewStatusText = "选择一个分割线以显示预览";
+    private bool _suppressDividerPreviewRefresh;
     private bool _syncingNewDivider;
     private bool _isBusy;
     private bool _syncingRange;
@@ -277,7 +278,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             OnPropertyChanged(nameof(LockDividerText));
             SetDividerTexts(value?.Model.Frame);
             RefreshDividerAvailability();
-            RefreshDividerPreview();
+            if (!_suppressDividerPreviewRefresh)
+                RefreshDividerPreview();
         }
     }
 
@@ -534,11 +536,21 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             return;
         }
 
-        _dividers = [.. _dividers.Append(new RepartDividerM(Guid.NewGuid(), nextDivider, false)).OrderBy(divider => divider.Frame)];
-        ReplaceOutputs(BuildDividerOutputs());
-        SetSuggestedNewDividerTexts();
-        SelectOnlyDivider(_dividers.First(divider => divider.Frame == nextDivider).Id);
-        RefreshDividerAvailability();
+        _suppressDividerPreviewRefresh = true;
+        try
+        {
+            _dividers = [.. _dividers.Append(new RepartDividerM(Guid.NewGuid(), nextDivider, false)).OrderBy(divider => divider.Frame)];
+            ReplaceOutputs(BuildDividerOutputs());
+            SetSuggestedNewDividerTexts();
+            SelectOnlyDivider(_dividers.First(divider => divider.Frame == nextDivider).Id);
+            RefreshDividerAvailability();
+        }
+        finally
+        {
+            _suppressDividerPreviewRefresh = false;
+        }
+
+        RefreshDividerPreview();
     }
 
     private void ApplyEdit()
@@ -907,7 +919,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         OnPropertyChanged(nameof(SelectedDivider));
         OnPropertyChanged(nameof(LockDividerText));
         SetDividerTexts(_selectedDivider?.Frame);
-        RefreshDividerPreview();
+        if (!_suppressDividerPreviewRefresh)
+            RefreshDividerPreview();
     }
 
     private void RefreshDividerItem(RepartDividerM divider)
@@ -1132,22 +1145,11 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             if (_analysis == null || divider == null)
                 return;
 
-            RepartSourceM? source = _analysis.Sources.FirstOrDefault(item =>
-                divider.Frame >= item.FirstFrame && divider.Frame <= item.LastFrame);
-            if (source == null || !File.Exists(source.FilePath))
-            {
-                DividerPreviewFrames.Clear();
-                DividerPreviewStatusText = "未找到对应视频源";
-                return;
-            }
-
             long selectedFrame = divider.Frame;
-            long sourceFrameCount = source.LastFrame - source.FirstFrame + 1;
-            long firstFrame = Math.Max(source.FirstFrame, selectedFrame - 3);
-            if (sourceFrameCount >= 7)
-                firstFrame = Math.Min(firstFrame, source.LastFrame - 6);
-            long lastFrame = Math.Min(source.LastFrame, firstFrame + 6);
-            string previewPattern = Path.Combine(_previewWorkDirectory, "divider-preview-%02d.png");
+            long windowFirst = Math.Max(0, selectedFrame - 3);
+            long windowLast = Math.Min(_analysis.TotalFrames - 1, selectedFrame + 3);
+
+            string runId = Guid.NewGuid().ToString("N");
             DividerPreviewFrames.Clear();
             DividerPreviewStatusText = $"正在读取 {selectedFrame:N0} 帧的 7 帧窗口...";
 
@@ -1157,36 +1159,52 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
                 catch { }
             }
 
-            await PreviewPipeline.RunFfmpegAsync(
-                _ffmpegPath,
-                _previewWorkDirectory,
-                PreviewPipeline.BuildSourceFrameArgs(
-                    source.FilePath,
-                    firstFrame - source.FirstFrame,
-                    lastFrame - source.FirstFrame,
-                    previewPattern),
-                cts.Token);
+            List<RepartSourceM> overlapping = [.. _analysis.Sources
+                .Where(source => source.LastFrame >= windowFirst && source.FirstFrame <= windowLast)
+                .OrderBy(source => source.FirstFrame)];
 
-            if (cts.IsCancellationRequested) return;
-
-            string[] files = Directory.GetFiles(_previewWorkDirectory, "divider-preview-*.png")
-                .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
-                .ToArray();
-
-            if (files.Length == 0)
-                throw new InvalidOperationException("Divider preview frame file missing.");
-
-            DividerPreviewFrames.Clear();
-            for (int i = 0; i < files.Length; i++)
+            foreach (RepartSourceM source in overlapping)
             {
-                long frameNumber = firstFrame + i;
-                DividerPreviewFrames.Add(new DividerPreviewFrameVM(
-                    frameNumber,
-                    PreviewPipeline.LoadBitmap(files[i]),
-                    frameNumber == selectedFrame));
+                if (cts.IsCancellationRequested) return;
+                if (!File.Exists(source.FilePath)) continue;
+
+                long relFirst = Math.Max(0, Math.Max(windowFirst, source.FirstFrame) - source.FirstFrame);
+                long relLast = Math.Max(relFirst, Math.Min(source.LastFrame, windowLast) - source.FirstFrame);
+
+                string patternPrefix = $"divider-preview-{runId}-{source.FirstFrame}";
+                string pattern = Path.Combine(_previewWorkDirectory, patternPrefix + "-%02d.png");
+
+                await PreviewPipeline.RunFfmpegAsync(
+                    _ffmpegPath,
+                    _previewWorkDirectory,
+                    PreviewPipeline.BuildSourceFrameArgs(source.FilePath, relFirst, relLast, pattern),
+                    cts.Token);
+
+                if (cts.IsCancellationRequested) return;
+
+                string[] files = Directory.GetFiles(_previewWorkDirectory, patternPrefix + "-*.png")
+                    .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+                    .ToArray();
+
+                for (int i = 0; i < files.Length; i++)
+                {
+                    long frameNumber = source.FirstFrame + relFirst + i;
+                    if (frameNumber < windowFirst || frameNumber > windowLast) continue;
+                    DividerPreviewFrames.Add(new DividerPreviewFrameVM(
+                        frameNumber,
+                        PreviewPipeline.LoadBitmap(files[i]),
+                        frameNumber == selectedFrame));
+                }
             }
 
-            DividerPreviewStatusText = $"{source.DisplayName} | {selectedFrame:N0} 帧 | 7 帧预览";
+            if (DividerPreviewFrames.Count == 0)
+                throw new InvalidOperationException("Divider preview frame file missing.");
+
+            string sourceName = _analysis.Sources
+                .Where(source => selectedFrame >= source.FirstFrame && selectedFrame <= source.LastFrame)
+                .Select(source => source.DisplayName)
+                .FirstOrDefault() ?? "?";
+            DividerPreviewStatusText = $"{sourceName} | {selectedFrame:N0} 帧 | {DividerPreviewFrames.Count} 帧预览";
         }
         catch (OperationCanceledException)
         {
