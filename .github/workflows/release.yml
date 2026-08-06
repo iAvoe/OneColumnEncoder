@@ -142,10 +142,34 @@ jobs:
       - name: Delete old Commit releases (Everything 5 commits ago)
         shell: pwsh
         run: |
-          $count = git rev-list --count HEAD
-          if ($count -gt 5) {
-            $oldTag = "Commit$($count - 5)"
-            gh release delete "$oldTag" -y || true
+          $repo = "${{ github.repository }}"
+          $count = [int](git rev-list --count HEAD)
+          if ($count -le 5) {
+            Write-Host "[SKIP] Not enough commits to delete older Commit releases."
+            exit 0
+          }
+
+          $threshold = $count - 5
+
+          try {
+            $releases = gh release list --repo $repo --limit 1000 --json tagName,publishedAt | ConvertFrom-Json
+          } catch {
+            Write-Host "[SKIP] Unable to list releases for $repo."
+            exit 0
+          }
+
+          $targets = $releases |
+            Where-Object {
+              $_.tagName -match '^Commit\d+$' -and ([int]($_.tagName -replace '^Commit', '')) -le $threshold
+            } |
+            Sort-Object @{ Expression = { [int]($_.tagName -replace '^Commit', '') } } -Descending
+
+          if ($targets.Count -gt 0) {
+            foreach ($target in $targets) {
+              gh release delete $target.tagName --repo $repo -y || true
+            }
+          } else {
+            Write-Host "[SKIP] No old Commit releases found to delete."
           }
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
