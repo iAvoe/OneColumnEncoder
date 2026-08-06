@@ -7,18 +7,24 @@
              xmlns:viewmodels="clr-namespace:OneColumnEncoder.ViewModels"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              d:DataContext="{d:DesignInstance Type=viewmodels:EncodingMonitorVM}"
-             mc:Ignorable="d"
-             Width="310"
-             PreviewMouseWheel="Sidebar_PreviewMouseWheel">
+              mc:Ignorable="d"
+              Width="310"
+              PreviewMouseWheel="Sidebar_PreviewMouseWheel">
     <UserControl.Resources>
+        <Thickness x:Key="RepartOutputSidebarContentPadding">7 10 7 14</Thickness>
+        <Thickness x:Key="RepartOutputSidebarItemMargin">0 5</Thickness>
+
         <DataTemplate x:Key="RepartOutputItemTemplate">
-            <cards:MiniItemCard DataContext="{Binding}"
-                                IsSelected="{Binding IsSelected}"
-                                IsCancel="{Binding IsCancel}"
-                                ShowActionButtons="False"
-                                HorizontalAlignment="Stretch"
-                                Margin="0 5" />
+            <Border Margin="{StaticResource RepartOutputSidebarItemMargin}"
+                    HorizontalAlignment="Stretch">
+                <cards:MiniItemCard DataContext="{Binding}"
+                                    IsSelected="{Binding IsSelected}"
+                                    IsCancel="{Binding IsCancel}"
+                                    ShowActionButtons="False"
+                                    HorizontalAlignment="Stretch" />
+            </Border>
         </DataTemplate>
+
         <Style x:Key="RepartOutputList"
                TargetType="ListBox">
             <Setter Property="BorderThickness"
@@ -36,10 +42,8 @@
         </Style>
     </UserControl.Resources>
 
-    <Border Background="{StaticResource RemixedBackground2}"
-            BorderBrush="{StaticResource RemixedBorder2}"
-            BorderThickness="0 0 1 0"
-            Padding="5 10 5 15">
+    <Border Background="{StaticResource Background}"
+            Padding="{StaticResource RepartOutputSidebarContentPadding}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -54,13 +58,15 @@
                           VerticalScrollBarVisibility="Auto">
                 <StackPanel>
                     <comps:SectionHeader HeaderText="{Binding QueueSidebarLang.QueueSidebarRunningHeaderText}"
-                                         Margin="0 5" />
-                    <Border Visibility="{Binding QueueSidebar.HasRunningJob, Converter={StaticResource BoolToVisibility}}">
+                                         Margin="0 0 0 5" />
+                    <Border Margin="0 5"
+                            HorizontalAlignment="Stretch"
+                            Visibility="{Binding QueueSidebar.HasRunningJob, Converter={StaticResource BoolToVisibility}}">
                         <cards:MiniItemCard DataContext="{Binding QueueSidebar.RunningJob}"
                                             IsSelected="{Binding IsSelected}"
                                             IsCancel="{Binding IsCancel}"
                                             ShowActionButtons="False"
-                                            Margin="0 5">
+                                            HorizontalAlignment="Stretch">
                             <cards:MiniItemCard.InputBindings>
                                 <MouseBinding MouseAction="LeftClick"
                                               Command="{Binding DataContext.QueueSidebar.SelectJobCommand, RelativeSource={RelativeSource AncestorType=comps:RepartOutputSidebarPanel}}"
@@ -70,23 +76,25 @@
                     </Border>
                     <comps:SectionHeader HeaderText="{Binding QueueSidebarLang.QueueSidebarWaitingHeaderText}"
                                          Margin="0 5" />
-                    <ListBox ItemsSource="{Binding QueueSidebar.WaitingJobs}"
+                    <ListBox x:Name="WaitingListBox"
+                             ItemsSource="{Binding QueueSidebar.WaitingJobs}"
                              SelectedItem="{Binding QueueSidebar.SelectedWaitingJob, Mode=OneWayToSource}"
                              Style="{StaticResource RepartOutputList}" />
                     <comps:SectionHeader HeaderText="{Binding QueueSidebarLang.QueueSidebarUnfinishedHeaderText}"
                                          Margin="0 5" />
-                    <ListBox ItemsSource="{Binding QueueSidebar.UnfinishedJobs}"
+                    <ListBox x:Name="UnfinishedListBox"
+                             ItemsSource="{Binding QueueSidebar.UnfinishedJobs}"
                              SelectedItem="{Binding QueueSidebar.SelectedUnfinishedJob, Mode=OneWayToSource}"
                              Style="{StaticResource RepartOutputList}" />
                     <comps:SectionHeader HeaderText="{Binding QueueSidebarLang.QueueSidebarCompletedHeaderText}"
                                          Margin="0 5" />
-                    <ListBox ItemsSource="{Binding QueueSidebar.CompletedJobs}"
+                    <ListBox x:Name="CompletedListBox"
+                             ItemsSource="{Binding QueueSidebar.CompletedJobs}"
                              SelectedItem="{Binding QueueSidebar.SelectedCompletedJob, Mode=OneWayToSource}"
                              Style="{StaticResource RepartOutputList}" />
                 </StackPanel>
             </ScrollViewer>
-            <StackPanel Grid.Row="2"
-                        Margin="2.5 0">
+            <StackPanel Grid.Row="2">
                 <Button Content="{Binding QueueSidebarLang.QueueSidebarCancelAllText}"
                         Command="{Binding CancelAllQueueCommand}"
                         IsEnabled="{Binding IsCancelAllEnabled}"
@@ -95,7 +103,7 @@
                         Style="{StaticResource PrimaryButton}" />
                 <TextBlock Text="{Binding QueueSidebar.StatsText}"
                            FontSize="10"
-                           Margin="0 3 0 0"
+                           Margin="0 2.5 0 0"
                            Foreground="{StaticResource GlobalSecondary}"
                            TextWrapping="Wrap" />
             </StackPanel>
