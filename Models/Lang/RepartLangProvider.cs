@@ -6,8 +6,7 @@ public sealed class RepartLangProvider(string languageCode)
     {
         ["en"] = new()
         {
-            ["Tool"] = "Video Source Repart",
-            ["ToolCount"] = "Video Source Repart ({0} → {1})",
+            ["Tool"] = "📁 Video Src. Repart",
             ["SelectFolder"] = "Select Repart video source folder",
             ["ImportMpls"] = "Read MPLS",
             ["InputSources"] = "Input Sources",
@@ -85,8 +84,7 @@ public sealed class RepartLangProvider(string languageCode)
         },
         ["zh-cn"] = new()
         {
-            ["Tool"] = "视频源重分集",
-            ["ToolCount"] = "视频源重分集 ({0} → {1})",
+            ["Tool"] = "📁 视频源重分集",
             ["SelectFolder"] = "选择重分集视频源文件夹",
             ["ImportMpls"] = "读取 MPLS",
             ["InputSources"] = "输入视频源",
@@ -168,8 +166,7 @@ public sealed class RepartLangProvider(string languageCode)
     {
         Data["zh-tw"] = new(Data["zh-cn"])
         {
-            ["Tool"] = "影片來源重分集",
-            ["ToolCount"] = "影片來源重分集 ({0} → {1})",
+            ["Tool"] = "📁 影片來源重分集",
             ["InputSources"] = "輸入影片來源",
             ["OutputEpisodes"] = "輸出分集",
             ["SegmentDuration"] = "片段時長",
@@ -247,8 +244,7 @@ public sealed class RepartLangProvider(string languageCode)
         };
         Data["fr"] = new(Data["en"])
         {
-            ["Tool"] = "Répartition de source vidéo",
-            ["ToolCount"] = "Répartition de source vidéo ({0} → {1})",
+            ["Tool"] = "📁 Répart. vidéo",
             ["SelectFolder"] = "Sélectionner le dossier des sources vidéo",
             ["ImportMpls"] = "Lire les MPLS",
             ["InputSources"] = "Sources d'entrée",
@@ -326,9 +322,8 @@ public sealed class RepartLangProvider(string languageCode)
         };
         Data["es"] = new(Data["en"])
         {
-            ["Tool"] = "Reparto de fuente de vídeo",
-            ["ToolCount"] = "Reparto de fuente de vídeo ({0} → {1})",
-            ["SelectFolder"] = "Seleccionar carpeta de fuentes de vídeo",
+            ["Tool"] = "📁 Repart. vídeo",
+            ["SelectFolder"] = "Seleccionar carpeta de f. de víd.",
             ["ImportMpls"] = "Leer MPLS",
             ["InputSources"] = "Fuentes de entrada",
             ["OutputEpisodes"] = "Episodios de salida",
@@ -405,7 +400,7 @@ public sealed class RepartLangProvider(string languageCode)
         };
         Data["ja"] = new(Data["en"])
         {
-            ["Tool"] = "映像ソース再分割",
+            ["Tool"] = "📁 映像ソース再分割",
             ["ToolCount"] = "映像ソース再分割 ({0} → {1})",
             ["SelectFolder"] = "再分割の映像ソースフォルダーを選択",
             ["ImportMpls"] = "MPLS を読み取り",
@@ -484,8 +479,7 @@ public sealed class RepartLangProvider(string languageCode)
         };
         Data["ru"] = new(Data["en"])
         {
-            ["Tool"] = "Репарт видеоисточника",
-            ["ToolCount"] = "Репарт видеоисточника ({0}→ {1})",
+            ["Tool"] = "📁 Репарт видео",
             ["SelectFolder"] = "Выберите папку с исходными видео",
             ["ImportMpls"] = "Читать MPLS",
             ["InputSources"] = "Входные источники",
@@ -568,7 +562,6 @@ public sealed class RepartLangProvider(string languageCode)
     public string this[string key] => _data.TryGetValue(key, out string? value) ? value : key;
 
     public string ToolSourceVideoSrcRepart => this["Tool"];
-    public string ToolSourceVideoSrcRepartWithCount => this["ToolCount"];
     public string FfprobeRequired => this["FfprobeRequired"];
     public string FfmpegRequired => this["FfmpegRequired"];
     public string SourceRequired => this["SourceRequired"];
