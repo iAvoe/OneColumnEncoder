@@ -6,30 +6,28 @@ namespace OneColumnEncoder.Pipeline;
 
 public sealed class KeyframeIndex
 {
-    private readonly long[] _frames;
     private readonly double[] _times;
 
-    private KeyframeIndex(long[] frames, double[] times)
+    private KeyframeIndex(double[] times)
     {
-        _frames = frames;
         _times = times;
     }
 
-    public int Count => _frames.Length;
+    public int Count => _times.Length;
+    public double FirstTime => _times[0];
 
-    public bool TryFindNearestBefore(long targetFrame, out long keyframeFrame, out double keyframeTime)
+    public bool TryFindNearestBefore(double targetTime, out double keyframeTime)
     {
-        keyframeFrame = 0;
         keyframeTime = 0d;
-        if (_frames.Length == 0) return false;
+        if (_times.Length == 0) return false;
 
         int lo = 0;
-        int hi = _frames.Length - 1;
+        int hi = _times.Length - 1;
         int best = -1;
         while (lo <= hi)
         {
             int mid = (lo + hi) / 2;
-            if (_frames[mid] <= targetFrame)
+            if (_times[mid] <= targetTime)
             {
                 best = mid;
                 lo = mid + 1;
@@ -41,7 +39,6 @@ public sealed class KeyframeIndex
         }
 
         if (best < 0) return false;
-        keyframeFrame = _frames[best];
         keyframeTime = _times[best];
         return true;
     }
@@ -68,43 +65,34 @@ public sealed class KeyframeIndex
         using Process process = new() { StartInfo = psi, EnableRaisingEvents = true };
         process.Start();
 
-        List<long> frames = [];
         List<double> times = [];
-        long frameCount = 0;
 
         string? line;
         while ((line = await process.StandardOutput.ReadLineAsync(token).ConfigureAwait(false)) != null)
         {
             if (string.IsNullOrWhiteSpace(line)) continue;
 
-            string[] parts = line.Split(',');
-            bool isKey = parts.Length >= 2 && parts[1].Contains('K', StringComparison.Ordinal);
-            if (isKey)
-            {
-                if (double.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double ptsTime))
-                {
-                    frames.Add(frameCount);
-                    times.Add(ptsTime);
-                }
-            }
-            frameCount++;
+            string value = line.Split(',', 2)[0].Trim();
+            if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out double ptsTime))
+                times.Add(ptsTime);
         }
 
         await process.WaitForExitAsync(token).ConfigureAwait(false);
         string stderr = await process.StandardError.ReadToEndAsync(token).ConfigureAwait(false);
-        if (process.ExitCode != 0 || frames.Count == 0)
+        if (process.ExitCode != 0 || times.Count == 0)
             throw new InvalidOperationException(
                 string.IsNullOrWhiteSpace(stderr) ? "ffprobe keyframe scan failed." : stderr.Trim());
 
-        return new KeyframeIndex([.. frames], [.. times]);
+        return new KeyframeIndex([.. times]);
     }
 
     private static string[] BuildArgs(string filePath) =>
         [
             "-v", "error",
+            "-skip_frame", "nokey",
             "-select_streams", "v:0",
-            "-show_packets",
-            "-show_entries", "packet=pts_time,flags",
+            "-show_frames",
+            "-show_entries", "frame=pts_time",
             "-of", "csv=p=0",
             filePath
         ];

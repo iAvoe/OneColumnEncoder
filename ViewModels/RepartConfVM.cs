@@ -7,6 +7,7 @@ using OneColumnEncoder.Validation;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Text.Json;
 using System.Threading;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -21,7 +22,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private readonly string? _ffmpegPath;
     private readonly string? _ffprobePath;
     private readonly string _previewWorkDirectory;
-    private readonly Dictionary<string, KeyframeIndex> _keyframeCache = new(StringComparer.OrdinalIgnoreCase);
     private RepartPlanM? _analysis;
     private RepartOutputItemVM? _selectedOutput;
     private List<RepartOutputItemVM> _selectedOutputs = [];
@@ -457,6 +457,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         PrepareNextDraft();
         SetSuggestedNewDividerTexts();
         RefreshAnalysisProperties();
+
         return Task.CompletedTask;
     }
 
@@ -1174,25 +1175,34 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
                 long relFirst = Math.Max(0, Math.Max(windowFirst, source.FirstFrame) - source.FirstFrame);
                 long relLast = Math.Max(relFirst, Math.Min(source.LastFrame, windowLast) - source.FirstFrame);
-                long frameCount = relLast - relFirst + 1;
 
-                KeyframeIndex? index = await GetOrBuildKeyframeIndexAsync(source, cts);
+                KeyframeIndex? index = await BuildKeyframeIndexAsync(source, cts);
                 if (cts.IsCancellationRequested) return;
 
-                long keyframeFrame = 0;
+                double frameDuration = (double)_analysis.FrameRateDenominator / _analysis.FrameRateNumerator;
+                double sourceStartTime = index == null
+                    ? 0d
+                    : TryGetSourceStartTime(source.RawJson) ?? index.FirstTime;
+                double targetTime = sourceStartTime + relFirst * frameDuration;
                 double keyframeTime = 0d;
-                index?.TryFindNearestBefore(relFirst, out keyframeFrame, out keyframeTime);
+                bool canSeek = index != null
+                    && index.TryFindNearestBefore(targetTime, out keyframeTime);
+                long keyframeFrame = canSeek
+                    ? Math.Max(0, (long)Math.Round(
+                        (keyframeTime - sourceStartTime) / frameDuration,
+                        MidpointRounding.AwayFromZero))
+                    : 0;
 
                 string patternPrefix = $"divider-preview-{runId}-{source.FirstFrame}";
                 string pattern = Path.Combine(_previewWorkDirectory, patternPrefix + "-%02d.png");
 
-                string[] args = index == null
+                string[] args = !canSeek
                     ? PreviewPipeline.BuildSourceFrameArgs(source.FilePath, relFirst, relLast, pattern)
                     : PreviewPipeline.BuildSourceFrameSeekArgs(
                         source.FilePath,
                         keyframeTime,
                         relFirst - keyframeFrame,
-                        frameCount,
+                        relLast - keyframeFrame,
                         pattern);
 
                 await PreviewPipeline.RunFfmpegAsync(_ffmpegPath, _previewWorkDirectory, args, cts.Token);
@@ -1241,18 +1251,48 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         }
     }
 
-    private async Task<KeyframeIndex?> GetOrBuildKeyframeIndexAsync(RepartSourceM source, CancellationTokenSource cts)
+    private async Task<KeyframeIndex?> BuildKeyframeIndexAsync(RepartSourceM source, CancellationTokenSource cts)
     {
-        if (_keyframeCache.TryGetValue(source.FilePath, out KeyframeIndex? cached))
-            return cached;
-
         if (string.IsNullOrWhiteSpace(_ffprobePath) || !File.Exists(_ffprobePath))
             return null;
 
         DividerPreviewStatusText = $"正在建立 {source.DisplayName} 的关键帧索引...";
         KeyframeIndex index = await KeyframeIndex.BuildAsync(_ffprobePath, source.FilePath, cts.Token);
-        _keyframeCache[source.FilePath] = index;
         return index;
+    }
+
+    private static double? TryGetSourceStartTime(string rawJson)
+    {
+        if (string.IsNullOrWhiteSpace(rawJson)) return null;
+
+        try
+        {
+            using JsonDocument document = JsonDocument.Parse(rawJson);
+            if (document.RootElement.TryGetProperty("streams", out JsonElement streams)
+                && streams.ValueKind == JsonValueKind.Array
+                && streams.GetArrayLength() > 0)
+            {
+                double? streamStart = TryGetJsonDouble(streams[0], "start_time");
+                if (streamStart != null) return streamStart;
+            }
+
+            if (document.RootElement.TryGetProperty("format", out JsonElement format))
+                return TryGetJsonDouble(format, "start_time");
+        }
+        catch (JsonException) { }
+
+        return null;
+    }
+
+    private static double? TryGetJsonDouble(JsonElement element, string propertyName)
+    {
+        if (!element.TryGetProperty(propertyName, out JsonElement value)) return null;
+        if (value.ValueKind == JsonValueKind.Number && value.TryGetDouble(out double number))
+            return number;
+        if (value.ValueKind == JsonValueKind.String
+            && double.TryParse(value.GetString(), NumberStyles.Float, CultureInfo.InvariantCulture, out double text))
+            return text;
+        return null;
     }
 
     private void RefreshDraftAvailability()

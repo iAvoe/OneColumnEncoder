@@ -93,17 +93,17 @@ public static partial class PreviewPipeline
 
     public static string[] BuildSourceFrameSeekArgs(
         string sourceVideoPath,
-        double seekTime,
-        long offsetFrame,
-        long frameCount,
+        double keyframeTime,
+        long firstOffsetFrame,
+        long lastOffsetFrame,
         string outputPattern,
         int targetHeight = 480,
         string scaleFlags = "lanczos")
     {
-        long safeOffset = Math.Max(0, offsetFrame);
-        long safeCount = Math.Max(1, frameCount);
-        long endFrame = safeOffset + safeCount - 1;
-        string time = EncodingPipeline.FormatTimestamp(TimeSpan.FromSeconds(Math.Max(0d, seekTime)));
+        long safeFirstOffset = Math.Max(0, firstOffsetFrame);
+        long safeLastOffset = Math.Max(safeFirstOffset, lastOffsetFrame);
+        long frameCount = safeLastOffset - safeFirstOffset + 1;
+        string keyframeTimestamp = FormatSeekSeconds(keyframeTime);
         return
         [
             "-hide_banner",
@@ -111,22 +111,27 @@ public static partial class PreviewPipeline
             "-strict",
             "unofficial",
             "-ss",
-            time,
+            keyframeTimestamp,
+            "-seek_timestamp",
+            "1",
             "-i",
             sourceVideoPath,
             "-vf",
-            $"select=between(n\\,{safeOffset}\\,{endFrame}),scale=-2:{Math.Max(1, targetHeight)}:flags={scaleFlags}",
+            $"select=between(n\\,{safeFirstOffset}\\,{safeLastOffset}),scale=-2:{Math.Max(1, targetHeight)}:flags={scaleFlags}",
             "-vsync",
             "0",
             "-start_number",
             "0",
             "-frames:v",
-            safeCount.ToString(CultureInfo.InvariantCulture),
+            frameCount.ToString(CultureInfo.InvariantCulture),
             "-c:v",
             "png",
             outputPattern
         ];
     }
+
+    private static string FormatSeekSeconds(double seconds) =>
+        Math.Max(0d, seconds).ToString("0.######", CultureInfo.InvariantCulture);
 
     private static string[] BuildVvencEncodeArgs(EncoderConfM model, string sourcePath, string outputPath)
     {
