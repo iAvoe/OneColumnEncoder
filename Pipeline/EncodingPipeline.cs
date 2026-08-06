@@ -206,9 +206,13 @@ public static partial class EncodingPipeline
         string inputs = string.Join(" ", paths.Select(path => $"-i {Quote(path)}"));
         EncodingClipRequest clip = request.Clip!;
         string setPts = BuildRepartSetPts(request);
+        string? extraFilter = ExtractVideoFilter(request.FfmpegFilterArgs);
         if (paths.Length == 1)
         {
-            string filter = $"trim=start_frame={clip.FirstFrame!.Value}:end_frame={clip.LastFrame!.Value + 1},setpts={setPts}";
+            string filter = JoinFilterChain(
+                $"trim=start_frame={clip.FirstFrame!.Value}:end_frame={clip.LastFrame!.Value + 1}",
+                $"setpts={setPts}",
+                extraFilter);
             return JoinArgs(
                 "-hide_banner",
                 inputs,
@@ -222,12 +226,34 @@ public static partial class EncodingPipeline
         string filterComplex =
             $"{resetInputs};{concatInputs}concat=n={paths.Length}:v=1:a=0," +
             $"trim=start_frame={clip.FirstFrame!.Value}:end_frame={clip.LastFrame!.Value + 1}," +
-            $"setpts={setPts}[repartv]";
+            $"setpts={setPts}" +
+            (string.IsNullOrWhiteSpace(extraFilter) ? string.Empty : $",{extraFilter}") +
+            "[repartv]";
         return JoinArgs(
             "-hide_banner",
             inputs,
             $"-filter_complex \"{filterComplex}\" -map \"[repartv]\" -fps_mode passthrough",
             "-f yuv4mpegpipe -an -strict unofficial -");
+    }
+
+    private static string JoinFilterChain(params string?[] filters) =>
+        string.Join(",", filters.Where(filter => !string.IsNullOrWhiteSpace(filter)));
+
+    private static string? ExtractVideoFilter(string? filterArgs)
+    {
+        if (string.IsNullOrWhiteSpace(filterArgs)) return null;
+
+        Match match = Regex.Match(
+            filterArgs,
+            "(?:-filter(?::v)?|-vf)\\s+(?:\"(?<quoted>[^\"]+)\"|'(?<single>[^']+)'|(?<plain>\\S+))",
+            RegexOptions.IgnoreCase);
+        if (!match.Success) return null;
+
+        return match.Groups["quoted"].Success
+            ? match.Groups["quoted"].Value
+            : match.Groups["single"].Success
+                ? match.Groups["single"].Value
+                : match.Groups["plain"].Value;
     }
 
     private static string BuildFrameExactRepartFilter(EncodingPipelineRequest request)

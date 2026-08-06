@@ -43,6 +43,11 @@
                             <Setter Property="Visibility"
                                     Value="Visible" />
                         </DataTrigger>
+                        <DataTrigger Binding="{Binding DataContext.CanEditConcatSources, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
+                                     Value="False">
+                            <Setter Property="IsEnabled"
+                                    Value="False" />
+                        </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </comps:ConcatSidebarPanel.Style>

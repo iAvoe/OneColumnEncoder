@@ -26,6 +26,8 @@ namespace OneColumnEncoder.Commands.OpenClose
         Func<bool>? isConcatRoute = null,
         Func<string[]>? getConcatFilePaths = null,
         Action<string[]>? applyConcatFilePaths = null,
+        Func<bool>? isRepartRoute = null,
+        Action<string?, string?>? applyScriptFilters = null,
         string? vspipePath = null,
         string? vspipeY4mArg = null,
         Func<long>? getTotalFrames = null) : BaseCmd
@@ -82,6 +84,8 @@ namespace OneColumnEncoder.Commands.OpenClose
                 isConcatRoute,
                 getConcatFilePaths,
                 applyConcatFilePaths,
+                isRepartRoute,
+                applyScriptFilters,
                 vspipePath,
                 vspipeY4mArg,
                 getTotalFrames);

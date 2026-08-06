@@ -153,13 +153,13 @@ Repart mode lands the "concatenate into one virtual frame timeline, then split p
 
 Slicing is based on the measured original frame numbers from the analysis stage, accumulated into global frame indices across sources, so output boundaries stay exact after concatenation. Each encoding start creates execution-specific concat filelists and virtual-source scripts, so a stale or reordered external script cannot invalidate the planned frame offsets.
 
-#### Filters Apply Only to the New Trimmed Output
+#### Filters Use the Repart Stream Without Rewriting Sources
 
-Repart mode has a hard constraint: **imported video sources are never modified.** Every filter (scaling, frame-rate / VFR→CFR repair, denoise, color conversion, etc.) may only act on the new source after it has been trimmed to an output range. The reasons:
+Repart mode has a hard constraint: **imported video sources are never modified.** Filter Scribe works on the temporary Repart stream in a concat-style workflow; it does not rewrite the imported files or the committed source order and frame plan. The reasons are:
 
 - The analysis stage builds the virtual timeline from each imported source's original frame rate, resolution, and per-frame timestamps.
-- If any source changes its frame rate or resolution before concatenation, the sources can no longer be joined reliably and already-planned output ranges shift as a whole.
-- Therefore Source Reviser and Filter Scribe are unavailable for an active Repart plan; one-click script generation only emits the "concat + trim" skeleton and never rewrites the imported sources.
+- If any source is rewritten independently, the sources can no longer be joined reliably and already-planned output ranges may shift as a whole.
+- Therefore Source Reviser remains unavailable for an active Repart plan, but Filter Scribe is available through the Repart-specific concat-style workflow. It applies the selected filters to the Repart video stream while leaving the imported source files and committed frame plan unchanged.
 
 ---
 
@@ -262,7 +262,7 @@ The filter editor is an auxiliary module in 1cenc. It supports:
 
 For script sources, the project validates that the video path embedded in the script matches the current video source. Queue scripts are checked per file name and embedded path to prevent misalignment. Concat mode skips single-source path matching (since scripts naturally contain multiple source paths) and instead relies on concat import and analysis to ensure correctness.
 
-Filter Scribe is unavailable in Repart mode: episode boundaries depend on the imported sources' original frame numbers, and any filter that changes a source's frame rate or resolution before trimming would break the virtual timeline. If filters are wanted, they may only act on the trimmed output range (see "Repart Mode / Filters Apply Only to the New Trimmed Output").
+Filter Scribe is available in Repart mode through a Repart-specific concat-style workflow. It uses the ordered Repart source list to build the temporary AVS/VPY source or ffmpeg input, then applies the selected filters without modifying the imported files or the committed Repart source order and frame plan. Source Reviser remains unavailable because changing source metadata would invalidate the frame offsets.
 
 ---
 

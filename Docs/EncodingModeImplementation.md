@@ -167,6 +167,7 @@ When total frame count is missing from video metadata, the system leaves it unkn
 | Single | Writes one AVS and one VPY script for the selected source. | Saves/imports one AVS and one VPY script. |
 | Queue | Writes one AVS and one VPY per queue file into a folder. | Saves/imports per-file scripts into a folder. |
 | Concat | Writes one AVS and one VPY script containing all fragments. | Saves/imports one concat AVS and one concat VPY script. |
+| Repart | Writes execution-specific concat-and-trim sources for each output. | Uses the Repart source list and applies filters without modifying the committed source plan. |
 
 ### 6.2 Concat-Specific Flow
 
@@ -290,7 +291,7 @@ Repart-specific constraints:
 - CFR and complete frame timestamps are required.
 - Video stream format fields must match exactly; container, audio, and subtitle layouts are not part of the signature.
 - Chapter and MPLS reading are not implemented; episode boundaries are manual.
-- Source Reviser and Filter Scribe are disabled for an active plan because they could invalidate frame offsets. Imported sources are never modified; filters may only ever act on the trimmed output range (see the filter placement rule below).
+- Source Reviser remains disabled for an active plan because changing source metadata could invalidate frame offsets. Filter Scribe is available through the Repart-specific concat-style workflow. Imported sources are never modified.
 - ffmpeg is required for the final video-only MKV even when the upstream is vspipe or AviSynth.
 
 ### Repart Runtime Implementation
@@ -307,7 +308,7 @@ Each encoding start creates execution-specific ffconcat and private AVS/VPY path
 - **vspipe** — writes a private `.vpy` whose source header splices all sources via `core.std.Splice` (`ScriptTemplate.BuildConcatVpySourceHeader`), then slices with `-s {first} -e {last}`.
 - **avs2yuv / avs2pipemod** — writes a private `.avs` whose source header joins all sources with AviSynth `++` UnalignedSplice (`ScriptTemplate.BuildConcatAvsSourceHeader`), then slices with `-seek {first} -frames {count}` (avs2yuv) or `-trim={first},{last}` (avs2pipemod).
 
-**Filter placement rule.** Imported sources are never modified. Every filter (scaling, frame-rate / VFR→CFR repair, denoise, color conversion) may only act on the new source after it has been trimmed to an output range. Applying a filter to a source before concatenation would change its frame rate or resolution, breaking the concatenation and shifting every already-planned output range. Consequently Filter Scribe (`OpenFilterScribeCmd`) and Source Reviser are disabled while a Repart plan is active, and the generated "concat + trim" skeleton never rewrites the imported sources; `FfmpegFilterArgs` is currently not applied to ffmpeg Repart requests because `BuildFfmpegRepartArgs` owns the whole filter graph.
+**Filter placement rule.** Imported sources are never modified. Repart Filter Scribe uses the ordered source list to build a temporary concat-style source and applies the selected filters to the Repart stream; it does not rewrite the imported files or the committed source order and frame boundaries. Source Reviser remains disabled while a Repart plan is active because changing source metadata requires rebuilding the plan. Repart ffmpeg requests retain `FfmpegFilterArgs`, while AVS/VPY execution scripts include the saved Filter Scribe body.
 
 `EncodingMonitorVM` executes the requests through the existing sequential batch engine with a non-persistent `RepartOutputSidebarPanel`; mux is locked on and writes a video-only MKV for each output. Requests share the virtual source but carry distinct `EncodingClipRequest` ranges, output paths, and clip frame totals.
 

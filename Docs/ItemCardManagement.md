@@ -225,7 +225,7 @@ When an upstream tool is selected, certain source cards are disabled to prevent 
 ### 7.3 FilterScribe Disabling
 
 When `one_line_shot_args.exe` is selected in `UpstreamsZone`:
-- **FilterScbButtons** (One-Click Script Gen. & Open Filter Scribe) are disabled via `UpdateFilterScbButtonsState()` in `MainVM.cs:632`. Both `B2_1IsEnabled` and `B2_2IsEnabled` are set to `false`.
+- **FilterScbButtons** (One-Click Script Gen. & Open Filter Scribe) are disabled via `UpdateFilterScbButtonsState()` in `MainVM.cs` when OneLineShotArgs is selected. Repart mode keeps Filter Scribe available and uses its Repart-specific concat-style workflow.
 - **OpenFilterScribeCmd** (`Commands/OpenClose/OpenFilterScribeCmd.cs:28`) checks the `isOneLineShotSelected` delegate before opening the modal. If `true`, it shows a `ConfirmationModal` warning (localized `"Hint.FilterScribeDisabled"`) and returns without opening FilterScribe.
 - The FilterScribe modal's `ScriptExportButtons` (B3_1, B3_2, B3_3) are also disabled when OneLineShotArgs is active.
 

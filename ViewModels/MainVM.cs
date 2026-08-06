@@ -36,6 +36,8 @@ namespace OneColumnEncoder.ViewModels
         private readonly VideoSourceRepartState _videoSourceRepart;
         private const int MaxResolutionDimension = 65535;
         private string _scriptScribeFfmpegFilterArgs = string.Empty;
+        private string _repartAvsFilterInput = string.Empty;
+        private string _repartVpyFilterInput = string.Empty;
         private bool _isDurationFilterEnabled;
         private int _minVideoDurationSeconds = 30;
         #region MiniItemCard state
@@ -560,9 +562,19 @@ namespace OneColumnEncoder.ViewModels
                     ToolDefinitionProviderM.IsImportedTool(t.Name, "one_line_shot_args.exe")),
                 IsQueueRouteActive,
                 GetCurrentQueueFilePaths,
-                IsConcatRouteActive,
-                GetConcatFilePaths,
-                ApplyConcatFilePathsFromFilterScribe,
+                () => IsConcatRouteActive() || IsRepartRouteActive(),
+                () => IsConcatRouteActive() ? GetConcatFilePaths() : GetRepartFilePaths(),
+                filePaths =>
+                {
+                    if (IsConcatRouteActive())
+                        ApplyConcatFilePathsFromFilterScribe(filePaths);
+                },
+                IsRepartRouteActive,
+                (avs, vpy) =>
+                {
+                    _repartAvsFilterInput = avs ?? string.Empty;
+                    _repartVpyFilterInput = vpy ?? string.Empty;
+                },
                 _appDataM.Tools.VspipePath,
                 _appDataM.Tools.VspipeY4mArg,
                 () => EncodingPipeline.GetSourceTotalFrames(
@@ -1145,7 +1157,7 @@ namespace OneColumnEncoder.ViewModels
             else
             {
                 FilterScbButtons.B2_1IsEnabled = true;
-                FilterScbButtons.B2_2IsEnabled = hasVideoSrc && hasRawJson && !IsRepartRouteActive();
+                FilterScbButtons.B2_2IsEnabled = hasVideoSrc && hasRawJson;
             }
 
             if (_modalNavS.GetModal<FilterScribeVM>() is FilterScribeVM modal)
@@ -1922,7 +1934,6 @@ namespace OneColumnEncoder.ViewModels
         private void ApplyRepartPlan(RepartPlanM plan)
         {
             _videoSourceRepart.ApplyPlan(plan);
-            _scriptScribeFfmpegFilterArgs = string.Empty;
 
             foreach (ToolItemCardVM source in VideoSrcImportZone)
                 source.IsSelected = false;
@@ -2455,8 +2466,8 @@ namespace OneColumnEncoder.ViewModels
             {
                 inputPath = Path.Combine(configDirectory, $"source_rp_{plan.PlanId:N}_{executionId:N}.vpy");
                 string script = sourcePaths.Length == 1
-                    ? ScriptTemplate.BuildVpyExportScript(sourcePaths[0], FilterScribeVM.VpyPrefix2, FilterScribeVM.VpySuffix)
-                    : ScriptTemplate.BuildConcatVpyExportScript(sourcePaths, FilterScribeVM.VpyPrefix2, FilterScribeVM.VpySuffix);
+                    ? ScriptTemplate.BuildVpyExportScript(sourcePaths[0], FilterScribeVM.VpyPrefix2, FilterScribeVM.VpySuffix, _repartVpyFilterInput)
+                    : ScriptTemplate.BuildConcatVpyExportScript(sourcePaths, FilterScribeVM.VpyPrefix2, FilterScribeVM.VpySuffix, _repartVpyFilterInput);
                 File.WriteAllText(inputPath, script);
             }
             else if (upstreamExeName.Equals("avs2yuv.exe", StringComparison.OrdinalIgnoreCase)
@@ -2464,8 +2475,8 @@ namespace OneColumnEncoder.ViewModels
             {
                 inputPath = Path.Combine(configDirectory, $"source_rp_{plan.PlanId:N}_{executionId:N}.avs");
                 string script = sourcePaths.Length == 1
-                    ? ScriptTemplate.BuildAvsExportScript(sourcePaths[0], FilterScribeVM.AvsPrefix2, FilterScribeVM.AvsSuffix)
-                    : ScriptTemplate.BuildConcatAvsExportScript(sourcePaths, FilterScribeVM.AvsPrefix2, FilterScribeVM.AvsSuffix);
+                    ? ScriptTemplate.BuildAvsExportScript(sourcePaths[0], FilterScribeVM.AvsPrefix2, FilterScribeVM.AvsSuffix, _repartAvsFilterInput)
+                    : ScriptTemplate.BuildConcatAvsExportScript(sourcePaths, FilterScribeVM.AvsPrefix2, FilterScribeVM.AvsSuffix, _repartAvsFilterInput);
                 File.WriteAllText(inputPath, script);
             }
             else

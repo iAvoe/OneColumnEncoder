@@ -42,6 +42,8 @@ namespace OneColumnEncoder.ViewModels
         private readonly Func<bool>? _isConcatRoute;
         private readonly Func<string[]>? _getConcatFilePaths;
         private readonly Action<string[]>? _applyConcatFilePaths;
+        private readonly Func<bool>? _isRepartRoute;
+        private readonly Action<string?, string?>? _applyScriptFilters;
         private readonly string? _vspipePath;
         private readonly string? _vspipeY4mArg;
         private readonly Func<long>? _getTotalFrames;
@@ -52,7 +54,9 @@ namespace OneColumnEncoder.ViewModels
         private bool _hasSourceAnalysis;
         public CloseModalCmd CloseCmd { get; }
         public ConcatSourceListVM ConcatSources { get; } = new();
-        public bool IsConcatMode => _isConcatRoute?.Invoke() == true;
+        public bool IsConcatMode => _isConcatRoute?.Invoke() == true || IsRepartMode;
+        public bool IsRepartMode => _isRepartRoute?.Invoke() == true;
+        public bool CanEditConcatSources => !IsRepartMode;
         public bool HasSourceAnalysis => _hasSourceAnalysis;
         // 0: AVS, 1: VPY, 2: ffmpeg
         private int _selectedTabIndex;
@@ -547,6 +551,8 @@ namespace OneColumnEncoder.ViewModels
             Func<bool>? isConcatRoute = null,
             Func<string[]>? getConcatFilePaths = null,
             Action<string[]>? applyConcatFilePaths = null,
+            Func<bool>? isRepartRoute = null,
+            Action<string?, string?>? applyScriptFilters = null,
             string? vspipePath = null,
             string? vspipeY4mArg = null,
             Func<long>? getTotalFrames = null)
@@ -569,6 +575,8 @@ namespace OneColumnEncoder.ViewModels
             _isConcatRoute = isConcatRoute;
             _getConcatFilePaths = getConcatFilePaths;
             _applyConcatFilePaths = applyConcatFilePaths;
+            _isRepartRoute = isRepartRoute;
+            _applyScriptFilters = applyScriptFilters;
             _vspipePath = vspipePath;
             _vspipeY4mArg = vspipeY4mArg;
             _getTotalFrames = getTotalFrames;
@@ -614,7 +622,8 @@ namespace OneColumnEncoder.ViewModels
 
         private void ApplyConcatSources()
         {
-            _applyConcatFilePaths?.Invoke(ConcatSources.GetCurrentFilePaths());
+            if (CanEditConcatSources)
+                _applyConcatFilePaths?.Invoke(ConcatSources.GetCurrentFilePaths());
             RefreshConcatGeneratedText();
         }
 
@@ -1007,6 +1016,9 @@ namespace OneColumnEncoder.ViewModels
             if (!ShowSourceReviserModal()) return;
 
             ApplyFfmpegFilterArgs();
+
+            if (IsRepartMode)
+                _applyScriptFilters?.Invoke(AvsUserInput, VpyUserInput);
 
             if (_isQueueRoute?.Invoke() == true)
             {
