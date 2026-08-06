@@ -26,6 +26,44 @@ namespace OneColumnEncoder.Validation
                 && !filename.EndsWith('.')
                 && !filename.EndsWith(' ');
 
+        public static string ToCompatibleFileName(string filename, int maxLength = 50)
+        {
+            if (string.IsNullOrWhiteSpace(filename))
+                return "file";
+
+            StringBuilder builder = new(filename.Length);
+            foreach (char c in filename)
+            {
+                if (Array.IndexOf(InvalidFileNameChars, c) >= 0)
+                    continue;
+                if (char.IsControl(c) || c == '&')
+                    continue;
+                builder.Append(c);
+            }
+
+            string value = builder
+                .ToString()
+                .Trim()
+                .TrimEnd('.', ' ');
+
+            if (string.IsNullOrWhiteSpace(value))
+                value = "file";
+
+            if (!IsNotReservedName(value))
+                value = "_" + value;
+
+            if (value.Length > maxLength)
+                value = value[..maxLength].TrimEnd('.', ' ');
+
+            if (string.IsNullOrWhiteSpace(value))
+                value = "file";
+
+            if (!IsNotReservedName(value))
+                value = "_" + value;
+
+            return value;
+        }
+
         // No CJK text over BMP, Emoji or other extended characters
         public static bool HasNoExtendedChars(string filename)
         {

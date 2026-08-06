@@ -845,18 +845,17 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
         long first = 0;
         int index = 1;
-        string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture);
         foreach (RepartDividerM divider in _dividers.Where(divider => divider.Frame >= 0 && divider.Frame < _analysis.TotalFrames - 1).OrderBy(divider => divider.Frame))
         {
             if (divider.Frame >= first)
             {
-                outputs.Add(new RepartOutputSegmentM(Guid.NewGuid(), FormatEpisodeName(index++, timestamp), first, divider.Frame));
+                outputs.Add(new RepartOutputSegmentM(Guid.NewGuid(), FormatEpisodeName(index++), first, divider.Frame));
                 first = divider.Frame + 1;
             }
         }
 
         if (first < _analysis.TotalFrames)
-            outputs.Add(new RepartOutputSegmentM(Guid.NewGuid(), FormatEpisodeName(index, timestamp), first, _analysis.TotalFrames - 1));
+            outputs.Add(new RepartOutputSegmentM(Guid.NewGuid(), FormatEpisodeName(index), first, _analysis.TotalFrames - 1));
 
         return outputs;
     }
@@ -918,8 +917,11 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         return name;
     }
 
-    private static string FormatEpisodeName(int index, string? timestamp = null) =>
-        $"1cenc_rp_E{index:00}_{timestamp ?? DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss", CultureInfo.InvariantCulture)}";
+    private static string FormatEpisodeName(int index)
+    {
+        string rawName = $"1cenc_rp_E{index:00}_{DateTime.Now:yyyy-MM-dd}";
+        return FilenameValidation.ToCompatibleFileName(rawName);
+    }
 
     private void LoadDraft(RepartOutputSegmentM model) => SetDraft(model.BaseName, model.FirstFrame, model.LastFrame);
 
