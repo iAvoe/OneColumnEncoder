@@ -22,6 +22,7 @@ public sealed class RepartLangProvider(string languageCode)
             ["DividerControl"] = "Divider Control",
             ["AddNewDivider"] = "Add New Divider",
             ["ManageDividers"] = "Manage Divider(s)",
+            ["Preview"] = "Preview",
             ["OutputCount"] = "{0} output(s)",
             ["ValidationTitle"] = "Repart Source Validation",
             ["ValidationSubtitle"] = "Requires identical CFR video streams with scan-stable frame counts",
@@ -90,7 +91,7 @@ public sealed class RepartLangProvider(string languageCode)
             ["WillExcludeSource"] = "This source item will be excluded. Close this dialog to proceed importing",
             ["ImportSummary"] = "Repart import completed: {0} source(s) accepted, {1} source item(s) excluded",
             ["TimelineHint"] = "Double-click on timeline to add new divider; right-click a divider to show its context menu",
-            ["TimelineHintDetailed"] = "Use this mode for conjoined discs and under-/over-segmented sets, or for sources whose divider frames are simply wrong. It still needs manual inspection. Chapter-based import will also draw OP, ED, guide, small-theater, and other special segments as dividers; delete those dividers instead of keeping them.",
+            ["TimelineHintDetailed"] = "This mode is for conjoined discs (under/over-segmented), or for sources with missed episode divisions. This mode needs manual inspection. Chapter-mode import will create excess dividers for OP, ED, mini-show, etc.; delete them to fully correct episode partitions",
             ["DividerPreviewSelectDivider"] = "Select a divider to show the preview",
             ["DividerPreviewFfmpegUnavailable"] = "ffmpeg is unavailable, so preview cannot be generated",
             ["DividerPreviewReadingWindow"] = "Reading a 7-frame window around frame {0:N0}...",
@@ -116,6 +117,7 @@ public sealed class RepartLangProvider(string languageCode)
             ["DividerControl"] = "分割线控制",
             ["AddNewDivider"] = "添加新分割线",
             ["ManageDividers"] = "处理分割线",
+            ["Preview"] = "预览",
             ["OutputCount"] = "{0} 段",
             ["ValidationTitle"] = "重分集视频源验证",
             ["ValidationSubtitle"] = "要求视频流格式完全一致、为 CFR，且可稳定扫描帧数",
@@ -184,7 +186,7 @@ public sealed class RepartLangProvider(string languageCode)
             ["WillExcludeSource"] = "将排除此视频源，关闭对话框后继续处理其余项目",
             ["ImportSummary"] = "重分集导入完成：已接受 {0} 个视频源，已排除 {1} 个源项目",
             ["TimelineHint"] = "双击时间轴以添加分割线；右键分割线可打开其上下文菜单",
-            ["TimelineHintDetailed"] = "此模式用于处理连体盘和肉酱盘（欠分集与过分集），或仅仅是分集帧位置错误的源，仍需要人工检查。使用章节读取导入时，OP、ED、导览、小剧场等特殊段落也会被画成分割线，这些分割线应当删除，不要保留。",
+            ["TimelineHintDetailed"] = "此模式用于处理连体盘和肉酱盘（欠分集、过分集），或是分集切歪的源。本模式需要人工操作。使用章节读取导入时，OP、ED、小剧场等章节也会被自动加入分割线，删除它们以正确分集",
             ["DividerPreviewSelectDivider"] = "选择一个分割线以显示预览",
             ["DividerPreviewFfmpegUnavailable"] = "ffmpeg 不可用，无法生成预览",
             ["DividerPreviewReadingWindow"] = "正在读取 {0:N0} 帧的 7 帧窗口...",
@@ -230,6 +232,7 @@ public sealed class RepartLangProvider(string languageCode)
             ["DividerControl"] = "分割線控制",
             ["AddNewDivider"] = "添加新分割線",
             ["ManageDividers"] = "處理分割線",
+            ["Preview"] = "預覽",
             ["OutputCount"] = "{0} 段",
             ["ValidationTitle"] = "重分集影片來源驗證",
             ["OutputName"] = "輸出名稱",
@@ -279,7 +282,7 @@ public sealed class RepartLangProvider(string languageCode)
             ["WillExcludeSource"] = "將排除此影片來源，關閉對話方塊後繼續處理其餘項目",
             ["ImportSummary"] = "重分集匯入完成：已接受 {0} 個影片來源，已排除 {1} 個來源項目",
             ["TimelineHint"] = "雙擊時間軸以添加分割線；右鍵分割線可打開其上下文菜單",
-            ["TimelineHintDetailed"] = "此模式用於處理連體盤和肉醬盤（欠分集與過分集），或只是分集影格位置錯誤的來源，仍需要人工檢查。使用章節讀取匯入時，OP、ED、導覽、小劇場等特殊段落也會被畫成分割線，這些分割線應該刪除，不要保留。"
+            ["TimelineHintDetailed"] = "此模式用於處理連體盤和肉醬盤（欠分集、過分集），或是分集切歪的源。本模式需要人工操作。使用章節讀取導入時，OP、ED、小劇場等章節也會被自動加入分割線，刪除它們以正確分集"
         };
         Data["fr"] = new(Data["en"])
         {
@@ -296,6 +299,7 @@ public sealed class RepartLangProvider(string languageCode)
             ["DividerControl"] = "Contrôle des séparateurs",
             ["AddNewDivider"] = "Ajouter une nouvelle limite",
             ["ManageDividers"] = "Gérer les séparateurs",
+            ["Preview"] = "Aperçu",
             ["OutputCount"] = "{0} sortie(s)",
             ["ValidationTitle"] = "Validation de la source Répartition",
             ["ValidationSubtitle"] = "Nécessite des flux vidéo CFR identiques avec des comptes d'images stables à l'analyse",
@@ -364,7 +368,7 @@ public sealed class RepartLangProvider(string languageCode)
             ["WillExcludeSource"] = "Cet élément source sera exclu. Fermez cette boîte de dialogue pour continuer l'importation",
             ["ImportSummary"] = "Importation Répartition terminée : {0} source(s) acceptée(s), {1} élément(s) de source exclu(s)",
             ["TimelineHint"] = "Double-cliquez sur la ligne de temps pour ajouter un nouveau séparateur ; faites un clic droit sur un séparateur pour afficher son menu contextuel",
-            ["TimelineHintDetailed"] = "Ce mode sert aux disques collés et aux ensembles sous- ou sur-segmentés, ou aux sources dont les positions des séparateurs sont simplement fausses. Une vérification manuelle reste nécessaire. Lors d'un import par chapitres, les segments spéciaux comme OP, ED, guide, petit théâtre, etc. sont aussi tracés comme séparateurs ; il faut les supprimer et ne pas les conserver."
+            ["TimelineHintDetailed"] = "Ce mode traite les disques joints (sous/sur-segmentés) ou les épisodes mal découpés. Inspection manuelle requise. L'import par chapitres crée des séparateurs en trop (OP, ED, bonus) : supprimez-les pour ajuster le découpage"
         };
         Data["es"] = new(Data["en"])
         {
@@ -446,10 +450,11 @@ public sealed class RepartLangProvider(string languageCode)
             ["ImportSummary"] = "Importación Repart completada: {0} fuente(s) aceptada(s), {1} elemento(s) de fuente excluido(s)",
             ["AddNewDivider"] = "Añadir nueva división",
             ["ManageDividers"] = "Operaciones por lotes",
+            ["Preview"] = "Vista previa",
             ["OutputCount"] = "{0} salida(s)",
             ["ClearDividers"] = "Borrar todo",
             ["TimelineHint"] = "Haga doble clic en la línea de tiempo para agregar un nuevo divisor; haga clic derecho en un divisor para mostrar su menú contextual",
-            ["TimelineHintDetailed"] = "Este modo se usa para discos unidos y conjuntos con subsegmentación o sobredesglose, o para fuentes cuyos fotogramas de división están simplemente mal ubicados. Aun así requiere revisión manual. Al importar desde capítulos, también se dibujan como divisores segmentos especiales como OP, ED, guía, pequeño teatro y otros; esos divisores deben borrarse y no conservarse."
+            ["TimelineHintDetailed"] = "Este modo es para discos unidos (sub/sobresegmentados) o cortes de episodios erróneos. Requiere revisión manual. La importación por capítulos crea divisores innecesarios (OP, ED, extras): elimínelos para corregir la partición"
         };
         Data["ja"] = new(Data["en"])
         {
@@ -532,10 +537,11 @@ public sealed class RepartLangProvider(string languageCode)
             ["ImportSummary"] = "再分割インポート完了: {0} ソース受け入れ、{1} ソース項目を除外しました",
             ["AddNewDivider"] = "新しい境界を追加",
             ["ManageDividers"] = "一括操作",
+            ["Preview"] = "プレビュー",
             ["OutputCount"] = "{0} 出力",
             ["ClearDividers"] = "すべてクリア",
             ["TimelineHint"] = "タイムラインをダブルクリックして新しい区切り線を追加します。区切り線を右クリックするとコンテキストメニューが表示されます",
-            ["TimelineHintDetailed"] = "このモードは、連結ディスクや過少・過剰分集のソース、または区切り位置が単純に間違っているソース向けです。最終的な手動確認は必要です。チャプター読み込みでは、OP、ED、案内、小劇場などの特殊区間も区切り線として描画されるため、それらの区切り線は保持せず削除してください。"
+            ["TimelineHintDetailed"] = "このモードは、連結ディスク（過少・過剰分割）やエピソード分割がズレているソース用です。手動確認が必要です。チャプター読み込みではOP、ED、小劇場などの余分な区切り線も作成されるため、それらを削除して正しい分割に修正してください"
         };
         Data["ru"] = new(Data["en"])
         {
@@ -617,10 +623,11 @@ public sealed class RepartLangProvider(string languageCode)
             ["ImportSummary"] = "Импорт Repart завершён: принято источников: {0}, исключено элементов: {1}",
             ["AddNewDivider"] = "Добавить новый разделитель",
             ["ManageDividers"] = "Пакетные операции",
+            ["Preview"] = "Предпросмотр",
             ["OutputCount"] = "{0} выходов",
             ["ClearDividers"] = "Очистить всё",
             ["TimelineHint"] = "Дважды щелкните по шкале времени, чтобы добавить новый разделитель; щелкните правой кнопкой мыши по разделителю, чтобы открыть его контекстное меню",
-            ["TimelineHintDetailed"] = "Этот режим предназначен для составных дисков и наборов с недо- или пере-разбиением, а также для источников, где позиции разделителей просто указаны неверно. Он всё равно требует ручной проверки. При импорте по главам также будут нарисованы как разделители OP, ED, вставки-справки, короткие сценки и другие специальные сегменты; такие разделители нужно удалять, а не оставлять."
+            ["TimelineHintDetailed"] = "Режим для объединенных дисков (недо-/пере-сегментация) и ошибок разбивки. Требует ручной проверки. Импорт по главам создает лишние разделители (OP, ED, бонусы) — удалите их для точной разметки"
         };
     }
 

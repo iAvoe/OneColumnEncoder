@@ -129,6 +129,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public static string DividerControlTitle => RepartLangProvider.Current["DividerControl"];
     public static string AddNewDividerTitle => RepartLangProvider.Current["AddNewDivider"];
     public static string DividerOpsTitle => RepartLangProvider.Current["ManageDividers"];
+    public static string PreviewTitle => RepartLangProvider.Current["Preview"];
     public static string OutputNameLabel => RepartLangProvider.Current["OutputName"];
     public static string StartTimeLabel => RepartLangProvider.Current["StartTime"];
     public static string SegmentDurationLabel => RepartLangProvider.Current["SegmentDuration"];

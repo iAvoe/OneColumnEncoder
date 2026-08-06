@@ -370,7 +370,7 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <comps:SectionHeader HeaderText="预览" />
+                <comps:SectionHeader HeaderText="{Binding PreviewTitle}" />
 
                 <Border Grid.Row="1"
                         Margin="5 15 0 0"
