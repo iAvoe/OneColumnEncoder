@@ -1,4 +1,5 @@
 using System.IO;
+using ChapterTool.Core.Editing;
 using ChapterTool.Core.Importing;
 using ChapterTool.Core.Models;
 
@@ -67,9 +68,13 @@ namespace OneColumnEncoder.ChapterTool
                 }
             }
 
+            // Prefer the playlist that maps to the most distinct media files:
+            // that is the strongest signal of a genuine multi-source episode set.
+            // A looping playlist that repeats one file can otherwise win on raw
+            // duration even though it only references a single source.
             return candidates
-                .OrderByDescending(result => result.Duration)
-                .ThenByDescending(result => result.ReferencedFilePaths.Count)
+                .OrderByDescending(result => result.ReferencedFilePaths.Count)
+                .ThenByDescending(result => result.Duration)
                 .ThenByDescending(result => result.Chapters.Count)
                 .FirstOrDefault()
                 ?? DiscChapterReadResult.Failed(
@@ -97,35 +102,68 @@ namespace OneColumnEncoder.ChapterTool
                         : $"{item.DisplayCode}: {item.Message}")
                     .ToList();
 
-                (ChapterImportEntry? entry, ChapterSet? chapterSet) = PickDefaultChapterSet(result);
-                if (entry == null || chapterSet == null)
+                // Prefer a source group that maps to multiple media files (a
+                // multi-section playlist). Combine its chapter sets so chapter
+                // times stay relative to the start of the whole source, and
+                // collect the media files referenced by every entry.
+                foreach (ChapterImportSource source in result.Groups)
                 {
-                    diagnostics.Insert(0, "No chapter set was discovered in the source.");
-                    return DiscChapterReadResult.Failed(diagnostics);
+                    if (source.Entries.Count == 0)
+                        continue;
+
+                    ChapterSet? chapterSet;
+                    List<ReferencedMediaFile> mediaFiles = [];
+
+                    if (source.Entries.Count > 1 && source.Entries.Any(entry => entry.CanCombine))
+                    {
+                        ChapterEditResult combined = ChapterSegmentService.Combine(source);
+                        chapterSet = combined.ChapterSet;
+                        foreach (ChapterImportEntry entry in source.Entries)
+                        {
+                            if (entry.ReferencedMediaFiles != null)
+                                mediaFiles.AddRange(entry.ReferencedMediaFiles);
+                        }
+                    }
+                    else
+                    {
+                        int index = Math.Clamp(source.DefaultEntryIndex, 0, source.Entries.Count - 1);
+                        ChapterImportEntry entry = source.Entries[index];
+                        chapterSet = entry.ChapterSet;
+                        if (entry.ReferencedMediaFiles != null)
+                            mediaFiles.AddRange(entry.ReferencedMediaFiles);
+                    }
+
+                    if (chapterSet == null)
+                        continue;
+
+                    IReadOnlyList<string> referencedFilePaths = ResolveReferencedPaths(mediaFiles, filePath);
+                    if (referencedFilePaths.Count == 0)
+                        continue;
+
+                    var markers = chapterSet.Chapters
+                        .Select(chapter => new DiscChapterMarker(
+                            chapter.DisplayNumber,
+                            chapter.StartTime,
+                            chapter.EndTime,
+                            chapter.Name,
+                            chapter.IsSeparator))
+                        .ToList();
+
+                    return new DiscChapterReadResult(
+                        result.Success,
+                        result.IsPartial,
+                        chapterSet.SourceName,
+                        chapterSet.Title,
+                        chapterSet.Duration,
+                        chapterSet.FramesPerSecond,
+                        ChapterImportFormats.Code(chapterSet.ImportFormat),
+                        markers,
+                        referencedFilePaths,
+                        diagnostics);
                 }
 
-                var markers = chapterSet.Chapters
-                    .Select(chapter => new DiscChapterMarker(
-                        chapter.DisplayNumber,
-                        chapter.StartTime,
-                        chapter.EndTime,
-                        chapter.Name,
-                        chapter.IsSeparator))
-                    .ToList();
-
-                IReadOnlyList<string> referencedFilePaths = ResolveReferencedPaths(entry, filePath);
-
-                return new DiscChapterReadResult(
-                    result.Success,
-                    result.IsPartial,
-                    chapterSet.SourceName,
-                    chapterSet.Title,
-                    chapterSet.Duration,
-                    chapterSet.FramesPerSecond,
-                    ChapterImportFormats.Code(chapterSet.ImportFormat),
-                    markers,
-                    referencedFilePaths,
-                    diagnostics);
+                diagnostics.Insert(0, "No chapter set was discovered in the source.");
+                return DiscChapterReadResult.Failed(diagnostics);
             }
             catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or NotSupportedException)
             {
@@ -133,26 +171,13 @@ namespace OneColumnEncoder.ChapterTool
             }
         }
 
-        private static (ChapterImportEntry? Entry, ChapterSet? ChapterSet) PickDefaultChapterSet(ChapterImportResult result)
-        {
-            foreach (ChapterImportSource source in result.Groups)
-            {
-                if (source.Entries.Count == 0)
-                    continue;
-
-                int index = Math.Clamp(source.DefaultEntryIndex, 0, source.Entries.Count - 1);
-                ChapterImportEntry entry = source.Entries[index];
-                return (entry, entry.ChapterSet);
-            }
-
-            return (null, null);
-        }
-
-        private static IReadOnlyList<string> ResolveReferencedPaths(ChapterImportEntry entry, string chapterFilePath)
+        private static IReadOnlyList<string> ResolveReferencedPaths(
+            IEnumerable<ReferencedMediaFile> mediaFiles,
+            string chapterFilePath)
         {
             string? directory = Path.GetDirectoryName(Path.GetFullPath(chapterFilePath));
             List<string> paths = [];
-            foreach (ReferencedMediaFile media in entry.ReferencedMediaFiles ?? [])
+            foreach (ReferencedMediaFile media in mediaFiles)
             {
                 string? candidate = null;
                 if (!string.IsNullOrWhiteSpace(media.AbsolutePath) && File.Exists(media.AbsolutePath))

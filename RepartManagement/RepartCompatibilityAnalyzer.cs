@@ -178,6 +178,7 @@ public static class RepartCompatibilityAnalyzer
             analyzedProbes.Add((sourceFile, RepartSourceValidator.AnalyzeProbe(rawProbe)));
         }
 
+        List<(RepartSourceFile SourceFile, RepartSourceProbe Probe)> acceptedProbes = [];
         for (int i = 0; i < analyzedProbes.Count; i++)
         {
             (RepartSourceFile sourceFile, RepartProbeOutcome analysis) = analyzedProbes[i];
@@ -212,15 +213,31 @@ public static class RepartCompatibilityAnalyzer
                 continue;
             }
 
-            RepartSourceProbe sourceProbe = analysis.Probe!;
-            if (referenceSignature == null)
-            {
-                referenceSignature = sourceProbe.Signature;
-                referenceJson = sourceProbe.RawJson;
-                frameRateNumerator = sourceProbe.FrameRateNumerator;
-                frameRateDenominator = sourceProbe.FrameRateDenominator;
-            }
-            else if (referenceSignature != sourceProbe.Signature)
+            acceptedProbes.Add((sourceFile, analysis.Probe!));
+        }
+
+        if (CreateInsufficientSourcesResult(acceptedProbes.Count) is RepartAnalysisResult insufficientAfterAnalysisFilters)
+            return insufficientAfterAnalysisFilters;
+
+        // The reference format is the signature shared by the largest total
+        // amount of footage (aggregate source size), falling back to the largest
+        // matching group. A plain "first file wins" reference is unreliable when
+        // the folder mixes the main feature with menus/trailers of other formats,
+        // which would otherwise cause the episodic set to be filtered out.
+        var referenceGroup = acceptedProbes
+            .GroupBy(probe => probe.Probe.Signature)
+            .OrderByDescending(group => group.Sum(probe => probe.Probe.InitialLength))
+            .ThenByDescending(group => group.Count())
+            .First();
+        RepartSourceProbe reference = referenceGroup.First().Probe;
+        referenceSignature = reference.Signature;
+        referenceJson = reference.RawJson;
+        frameRateNumerator = reference.FrameRateNumerator;
+        frameRateDenominator = reference.FrameRateDenominator;
+
+        foreach ((RepartSourceFile sourceFile, RepartSourceProbe sourceProbe) in acceptedProbes)
+        {
+            if (sourceProbe.Signature != referenceSignature)
             {
                 Exclude(new RepartExcludedSourceInfo(
                     sourceFile.FilePath,
@@ -233,8 +250,8 @@ public static class RepartCompatibilityAnalyzer
             candidates.Add((sourceFile.FilePath, sourceFile.DisplayName, sourceProbe));
         }
 
-        if (CreateInsufficientSourcesResult(candidates.Count) is RepartAnalysisResult insufficientAfterAnalysisFilters)
-            return insufficientAfterAnalysisFilters;
+        if (CreateInsufficientSourcesResult(candidates.Count) is RepartAnalysisResult insufficientAfterReferenceMatch)
+            return insufficientAfterReferenceMatch;
 
         // 5. Build the plan that will be loaded into RepartConfModal. Only sources
         // that survived every earlier filter reach the expensive frame-count scan.
