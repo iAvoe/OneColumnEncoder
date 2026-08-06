@@ -201,11 +201,12 @@ VPY uses `core.std.Splice` to combine clips, assigning the result to `src` befor
 ### 7.1 Request Routing
 
 `StartEncCmd` branches before queue handling:
-1. Concat route: one request from `BuildConcatEncodingPipelineRequest()`.
-2. Queue route: load queue JSON, build one request per accepted source.
-3. Single route: one request from `BuildEncodingPipelineRequest()`.
+1. Repart route: one request per output from `BuildRepartEncodingPipelineRequests()`.
+2. Concat route: one request from `BuildConcatEncodingPipelineRequest()`.
+3. Queue route: load queue JSON, build one request per accepted source.
+4. Single route: one request from `BuildEncodingPipelineRequest()`.
 
-Concat requests set `IsConcatMode: true`, `ConcatFileListPath`, and `ConcatTotalFrames`.
+Concat requests set `IsConcatMode: true`, `ConcatFileListPath`, and `ConcatTotalFrames`. Repart requests additionally set `ConcatVideoSourcePaths`, a per-output `Clip` (time + frame range), `MuxMode: VideoOnly`, and `ConcatTotalFrames: plan.TotalFrames`.
 
 Concat encoding is supported for `ffmpeg.exe`, `vspipe.exe`, `avs2yuv.exe`, `avs2pipemod.exe`. `one_line_shot_args.exe` is rejected (concat has multiple source files and no SVFI concat route). Queue encoding uses the same supported set and also rejects `one_line_shot_args.exe`.
 
@@ -216,8 +217,9 @@ Concat encoding is supported for `ffmpeg.exe`, `vspipe.exe`, `avs2yuv.exe`, `avs
 | Single | Source path | Single script path |
 | Queue | Per-file source path | Per-file script path (validated against source) |
 | Concat | `-f concat -safe 0 -i source_concat_filelist.txt -f yuv4mpegpipe -an -strict unofficial -` | Concat script path |
+| Repart | `BuildFfmpegRepartArgs` — `-i src1 -i src2 ...` + `-filter_complex` concat filter + frame-exact `trim` + regenerated CFR `setpts`, mapped `[repartv]`, `-f yuv4mpegpipe -an -strict unofficial -` (single source omits concat and uses `-vf "trim=...,setpts=..."`) | Execution-specific virtual source concat script, sliced per output range (`-s/-e` for vspipe, `-seek/-frames` for avs2yuv, `-trim=` for avs2pipemod) |
 
-During auto encoder parameter generation, concat requests pass `ConcatTotalFrames` into `GetFrameCount()` so x264/x265/SVT-AV1 receive the sum of all fragments rather than only the first fragment's `nb_frames`.
+During auto encoder parameter generation, concat requests pass `ConcatTotalFrames` into `GetFrameCount()` so x264/x265/SVT-AV1 receive the sum of all fragments rather than only the first fragment's `nb_frames`. Repart requests do the same via `ConcatTotalFrames: plan.TotalFrames`.
 
 ### 7.3 Queue Batch Execution
 
@@ -261,25 +263,26 @@ Repart uses `EncodingMuxMode.VideoOnly`. The mux step maps only the encoded vide
 
 ## 9. Path Resolution Summary
 
-| Method | Single | Queue | Concat |
-|--------|--------|-------|--------|
-| `GetCurrentVideoSourcePath()` | Selected single source path | Non-queue/non-concat path only | Non-queue/non-concat path only |
-| `GetSelectedVideoSourcePath()` | Selected single source path | Same helper, usually empty | Same helper, usually empty |
-| `GetCurrentSourceImportPath()` | Current single source path | Queue folder path | Concat first-file parent folder |
-| `GetPreviewSourceVideoPath()` | Single source path | First queue file | First concat file |
-| `GetCurrentQueueFilePaths()` | Not used | Accepted queue files | Not used |
-| `GetConcatFilePaths()` | Not used | Not used | Ordered concat fragment paths |
+| Method | Single | Queue | Concat | Repart |
+|--------|--------|-------|--------|--------|
+| `GetCurrentVideoSourcePath()` | Selected single source path | Non-queue/non-concat/non-repart path only | Non-queue/non-concat/non-repart path only | Non-queue/non-concat/non-repart path only |
+| `GetSelectedVideoSourcePath()` | Selected single source path | Same helper, usually empty | Same helper, usually empty | Same helper, usually empty |
+| `GetCurrentSourceImportPath()` | Current single source path | Queue folder path | Concat first-file parent folder | Repart first-source path |
+| `GetPreviewSourceVideoPath()` | Single source path | First queue file | First concat file | First Repart source |
+| `GetCurrentQueueFilePaths()` | Not used | Accepted queue files | Not used | Not used |
+| `GetConcatFilePaths()` | Not used | Not used | Ordered concat fragment paths | Not used |
+| `GetRepartFilePaths()` | Not used | Not used | Not used | Committed plan source paths |
 
 ## 10. Route-Specific Constraints
 
-| Constraint | Single | Queue | Concat |
-|------------|--------|-------|--------|
-| `one_line_shot_args.exe` | Supported | Rejected | Rejected |
-| Sample Clip | Supported | Disabled | Disabled |
-| Duration filter | Not shown | Supported | Not shown |
-| Partial source acceptance | N/A | Yes, after queue filtering | No |
-| Import method | Single file | Folder | Multi-select files |
-| Output cardinality | One output | Many outputs | One output |
+| Constraint | Single | Queue | Concat | Repart |
+|------------|--------|-------|--------|--------|
+| `one_line_shot_args.exe` | Supported | Rejected | Rejected | Rejected |
+| Sample Clip | Supported | Disabled | Disabled | Disabled |
+| Duration filter | Not shown | Supported | Not shown | Not shown |
+| Partial source acceptance | N/A | Yes, after queue filtering | No | No (source excluded by strict filters) |
+| Import method | Single file | Folder | Multi-select files | Folder |
+| Output cardinality | One output | Many outputs | One output | Many outputs |
 
 Repart-specific constraints:
 
@@ -287,7 +290,7 @@ Repart-specific constraints:
 - CFR and complete frame timestamps are required.
 - Video stream format fields must match exactly; container, audio, and subtitle layouts are not part of the signature.
 - Chapter and MPLS reading are not implemented; episode boundaries are manual.
-- Source Reviser and Filter Scribe are disabled for an active plan because they could invalidate frame offsets.
+- Source Reviser and Filter Scribe are disabled for an active plan because they could invalidate frame offsets. Imported sources are never modified; filters may only ever act on the trimmed output range (see the filter placement rule below).
 - ffmpeg is required for the final video-only MKV even when the upstream is vspipe or AviSynth.
 
 ### Repart Runtime Implementation
@@ -296,9 +299,17 @@ Clicking `Video Source Repart` imports a naturally sorted folder and opens `Repa
 
 `RepartCompatibilityAnalyzer` performs a full ffprobe frame timestamp scan for each source. It requires CFR, derives the actual frame count, compares a strict first-video-stream signature, and records source size/modification-time fingerprints. A plan is rejected if a source changes during analysis or before encoding.
 
-Each encoding start creates execution-specific ffconcat and private AVS/VPY paths. Script upstreams use a generated virtual-source script, so a stale or reordered external script cannot invalidate planned frame offsets. The ffmpeg route opens every source separately, maps only `v:0`, joins the streams with the video concat filter, and applies frame-based `trim` plus a regenerated CFR PTS sequence. Audio and subtitle layouts therefore do not participate in compatibility.
+Each encoding start creates execution-specific ffconcat and private AVS/VPY paths. `BuildRepartEncodingPipelineRequests()` emits one `EncodingPipelineRequest` per committed output (`RepartPlanM.Outputs`); every request carries an `EncodingClipRequest` with both time (`StartTime`/`EndTime`) and frame (`FirstFrame`/`LastFrame`) ranges plus the plan frame rate, `ConcatFileListPath`, `ConcatVideoSourcePaths`, `ConcatTotalFrames: plan.TotalFrames`, and `MuxMode: EncodingMuxMode.VideoOnly`.
 
-One `EncodingPipelineRequest` is created per output. Requests share the virtual source but carry distinct `EncodingClipRequest` ranges, output paths, and clip frame totals. `EncodingMonitorVM` executes them through the existing sequential batch engine with a non-persistent `RepartOutputSidebarPanel`; mux is locked on and writes a video-only MKV for each output.
+**Concat-then-split commands per upstream** (frame ranges are global indices over the concatenated virtual timeline):
+
+- **ffmpeg** — `EncodingPipeline.BuildFfmpegRepartArgs()` opens every source with its own `-i`, maps each source's `v:0` only, chains `[i:v:0]setpts=PTS-STARTPTS[rv i]`, joins the segments in import order with `concat=n=N:v=1:a=0`, crops with frame-exact `trim=start_frame={first}:end_frame={last+1}`, regenerates the CFR PTS sequence with `setpts=N*den/(num*TB)`, then pipes `-map "[repartv]" -f yuv4mpegpipe -an -strict unofficial -`. A single source omits the concat stage and uses `-vf "trim=...,setpts=..."` directly. Audio is intentionally absent (`a=0`, `-an`); Repart output is video-only.
+- **vspipe** — writes a private `.vpy` whose source header splices all sources via `core.std.Splice` (`ScriptTemplate.BuildConcatVpySourceHeader`), then slices with `-s {first} -e {last}`.
+- **avs2yuv / avs2pipemod** — writes a private `.avs` whose source header joins all sources with AviSynth `++` UnalignedSplice (`ScriptTemplate.BuildConcatAvsSourceHeader`), then slices with `-seek {first} -frames {count}` (avs2yuv) or `-trim={first},{last}` (avs2pipemod).
+
+**Filter placement rule.** Imported sources are never modified. Every filter (scaling, frame-rate / VFR→CFR repair, denoise, color conversion) may only act on the new source after it has been trimmed to an output range. Applying a filter to a source before concatenation would change its frame rate or resolution, breaking the concatenation and shifting every already-planned output range. Consequently Filter Scribe (`OpenFilterScribeCmd`) and Source Reviser are disabled while a Repart plan is active, and the generated "concat + trim" skeleton never rewrites the imported sources; `FfmpegFilterArgs` is currently not applied to ffmpeg Repart requests because `BuildFfmpegRepartArgs` owns the whole filter graph.
+
+`EncodingMonitorVM` executes the requests through the existing sequential batch engine with a non-persistent `RepartOutputSidebarPanel`; mux is locked on and writes a video-only MKV for each output. Requests share the virtual source but carry distinct `EncodingClipRequest` ranges, output paths, and clip frame totals.
 
 ## 11. End-to-End Flows
 

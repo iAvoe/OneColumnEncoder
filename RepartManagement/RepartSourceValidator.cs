@@ -36,6 +36,14 @@ public sealed record RepartInterlacedSourceInfo(
     string DisplayName,
     string FieldOrder);
 
+// Info passed to the frame-count fallback prompt. Raised when no exact frame
+// count could be obtained (no ffmpeg) and the duration-based estimate failed to
+// verify, so the user can decide whether to keep searching.
+public sealed record RepartFrameCountFallbackInfo(
+    string FilePath,
+    string DisplayName,
+    long EstimatedCount);
+
 public sealed record RepartSourceFile(
     string FilePath,
     string DisplayName,
@@ -216,12 +224,15 @@ public static class RepartSourceValidator
     }
 
     // Stage 2: frame-count acquisition plus file-stability check.
-    // Prefer cached nb_frames, then ffmpeg's fast null remux, then duration-based estimation.
+    // Prefer cached nb_frames, then duration-based estimation verified by seek-probing,
+    // with ffmpeg's exact null remux as a last resort.
     public static async Task<RepartScanOutcome> ScanFramesAsync(
         string ffprobePath,
         string? ffmpegPath,
         string filePath,
         RepartSourceProbe probe,
+        string displayName,
+        Func<RepartFrameCountFallbackInfo, bool>? confirmExpandFrameCountSearch = null,
         CancellationToken cancellationToken = default)
     {
         long frameCount;
@@ -229,7 +240,14 @@ public static class RepartSourceValidator
         {
             frameCount = probe.FrameCount is > 0
                 ? probe.FrameCount.Value
-                : await CountFramesAsync(ffprobePath, ffmpegPath, probe, filePath, cancellationToken);
+                : await CountFramesAsync(
+                    ffprobePath,
+                    ffmpegPath,
+                    probe,
+                    filePath,
+                    displayName,
+                    confirmExpandFrameCountSearch,
+                    cancellationToken);
         }
         catch (OperationCanceledException)
         {
@@ -291,15 +309,32 @@ public static class RepartSourceValidator
         string? ffmpegPath,
         RepartSourceProbe probe,
         string sourcePath,
+        string displayName,
+        Func<RepartFrameCountFallbackInfo, bool>? confirmExpandFrameCountSearch,
         CancellationToken cancellationToken)
     {
-        if (!string.IsNullOrWhiteSpace(ffmpegPath) && File.Exists(ffmpegPath))
+        long? estimatedCount = EstimateFrameCount(probe.DurationSeconds, probe.FrameRateNumerator, probe.FrameRateDenominator);
+
+        if (estimatedCount is > 0)
+        {
+            long? metadataCount = await TryResolveEstimatedFrameCountWithFfprobeAsync(
+                ffprobePath,
+                sourcePath,
+                probe,
+                estimatedCount.Value,
+                cancellationToken);
+            if (metadataCount is > 0)
+                return metadataCount.Value;
+        }
+
+        bool ffmpegAvailable = !string.IsNullOrWhiteSpace(ffmpegPath) && File.Exists(ffmpegPath);
+        if (ffmpegAvailable)
         {
             try
             {
-                long? fastCount = await CountFramesWithFfmpegAsync(ffmpegPath, sourcePath, cancellationToken);
-                if (fastCount is > 0)
-                    return fastCount.Value;
+                long? exactCount = await CountFramesWithFfmpegAsync(ffmpegPath!, sourcePath, cancellationToken);
+                if (exactCount is > 0)
+                    return exactCount.Value;
             }
             catch (OperationCanceledException)
             {
@@ -310,17 +345,125 @@ public static class RepartSourceValidator
             }
         }
 
-        long? estimatedCount = EstimateFrameCount(probe.DurationSeconds, probe.FrameRateNumerator, probe.FrameRateDenominator);
-        if (estimatedCount is not > 0)
-            return 0;
+        // No exact count (no ffmpeg) and the duration-based estimate could not be
+        // verified. Ask the user whether to run an extended search that expands the
+        // frame-count range by 10x per step to locate the real boundary, or to
+        // cancel the import. Without a prompt callback the raw estimate is kept.
+        if (estimatedCount is > 0 && !ffmpegAvailable && confirmExpandFrameCountSearch != null)
+        {
+            bool retry = confirmExpandFrameCountSearch(new(
+                sourcePath,
+                displayName,
+                estimatedCount.Value));
+            if (!retry)
+                throw new OperationCanceledException(
+                    string.Format(
+                        RepartLangProvider.Current["FrameCountFallbackCancelled"],
+                        displayName),
+                    cancellationToken);
 
-        long? metadataCount = await TryResolveEstimatedFrameCountWithFfprobeAsync(
+            long? expandedCount = await SearchFrameCountWithExpansionAsync(
+                ffprobePath,
+                sourcePath,
+                probe,
+                estimatedCount.Value,
+                cancellationToken);
+            if (expandedCount is > 0)
+                return expandedCount.Value;
+        }
+
+        return estimatedCount is > 0 ? estimatedCount.Value : 0;
+    }
+
+    // Brackets the real frame count by probing at frame indices that grow by 10x
+    // each step, then narrows the boundary with a binary search. Used only when
+    // ffmpeg is unavailable and the estimate-based probe walk (±300 frames) could
+    // not find the end of the video.
+    private static async Task<long?> SearchFrameCountWithExpansionAsync(
+        string ffprobePath,
+        string sourcePath,
+        RepartSourceProbe probe,
+        long estimatedCount,
+        CancellationToken cancellationToken)
+    {
+        if (estimatedCount <= 0
+            || probe.FrameRateNumerator <= 0
+            || probe.FrameRateDenominator <= 0)
+            return null;
+
+        bool? estimateExists = await ProbeFrameExistsAsync(
             ffprobePath,
             sourcePath,
             probe,
-            estimatedCount.Value,
+            estimatedCount,
             cancellationToken);
-        return metadataCount ?? estimatedCount.Value;
+        if (estimateExists == null)
+            return null;
+
+        long lo;
+        long hi;
+        if (estimateExists.Value)
+        {
+            // Real count is above the estimate: expand upward by x10 until a probe
+            // past the end brackets the true boundary. lo stays an existing index,
+            // hi becomes the first non-existing one.
+            lo = estimatedCount;
+            hi = estimatedCount;
+            while (true)
+            {
+                if (hi > long.MaxValue / 10)
+                    return null;
+                hi *= 10;
+                bool? exists = await ProbeFrameExistsAsync(ffprobePath, sourcePath, probe, hi, cancellationToken);
+                if (exists == null)
+                    return null;
+                if (!exists.Value)
+                    break;
+                lo = hi;
+            }
+        }
+        else
+        {
+            // Real count is at or below the estimate: expand downward by x10 until
+            // a probe inside the video brackets the true boundary.
+            hi = estimatedCount;
+            lo = Math.Max(0, hi / 10);
+            while (lo > 0)
+            {
+                bool? exists = await ProbeFrameExistsAsync(ffprobePath, sourcePath, probe, lo, cancellationToken);
+                if (exists == null)
+                    return null;
+                if (exists.Value)
+                    break;
+                hi = lo;
+                lo = Math.Max(0, hi / 10);
+            }
+            if (lo <= 0)
+            {
+                bool? first = await ProbeFrameExistsAsync(ffprobePath, sourcePath, probe, 0, cancellationToken);
+                if (first == null)
+                    return null;
+                if (!first.Value)
+                    return 0L;
+                lo = 0;
+            }
+        }
+
+        // lo is an existing frame index, hi is a non-existing one; binary search
+        // the boundary. The frame count is the last existing index plus one.
+        while (hi - lo > 1)
+        {
+            long mid = lo + (hi - lo) / 2;
+            bool? exists = await ProbeFrameExistsAsync(ffprobePath, sourcePath, probe, mid, cancellationToken);
+            if (exists == null)
+                return null;
+            if (exists.Value)
+                lo = mid;
+            else
+                hi = mid;
+        }
+
+        return lo + 1;
     }
 
     private static async Task<long?> CountFramesWithFfmpegAsync(
@@ -680,6 +823,26 @@ public static class RepartInterlacedPrompt
             string.Format(lang["InterlacedSourceRejected"], source.DisplayName, source.FieldOrder),
             string.Empty,
             lang["InterlacedSourcePrompt"]);
+        OpenWarnModalCmd cmd = new(modalNavS, windowTitle, message);
+        cmd.Execute(null);
+        return cmd.DialogResult == true;
+    }
+}
+
+// Shared confirm prompt shown when no exact frame count is available (ffmpeg is
+// missing) and the duration-based estimate could not be verified. Confirm keeps
+// searching with a 10x-expanding frame range; cancel aborts the whole import.
+public static class RepartFrameCountPrompt
+{
+    public static bool Confirm(ModalNavS modalNavS, string windowTitle, RepartFrameCountFallbackInfo source)
+    {
+        RepartLangProvider lang = RepartLangProvider.Current;
+        string message = string.Join(
+            Environment.NewLine,
+            string.Format(lang["SourceLabel"], source.FilePath),
+            string.Format(lang["FrameCountFallbackPrompt"], source.DisplayName, source.EstimatedCount),
+            string.Empty,
+            lang["FrameCountFallbackPromptChoices"]);
         OpenWarnModalCmd cmd = new(modalNavS, windowTitle, message);
         cmd.Execute(null);
         return cmd.DialogResult == true;

@@ -143,6 +143,24 @@ Repart mode treats an ordered set of strictly matching CFR video streams as one 
 
 The dedicated partition-style window provides input and output sidebars, a proportional allocation map, synchronized time/frame fields, unallocated gaps, and adjacent-output merging. The first implementation does not read chapters or MPLS and does not copy source audio, subtitles, chapters, or metadata. Every output is encoded independently and muxed as a video-only MKV.
 
+#### Concat Then Split
+
+Repart mode lands the "concatenate into one virtual frame timeline, then split per output range" commands per upstream tool as follows:
+
+- **ffmpeg**: opens every source separately (`-i source1 -i source2 ...`), maps each source's `v:0` only, joins the streams in import order with the `concat` filter, then crops the current output range with frame-exact `trim=start_frame=first:end_frame=last+1` and regenerates a CFR PTS sequence from zero with `setpts`. For a single source the concat stage is omitted and the frame-exact `trim` is applied directly.
+- **vspipe**: generates a splice script containing all sources (`core.std.Splice`) and slices with `-s {first} -e {last}` at the vspipe command line.
+- **avs2yuv / avs2pipemod**: generates a splice script containing all sources (AviSynth `++` UnalignedSplice); avs2yuv slices with `-seek {first} -frames {count}`, avs2pipemod with `-trim={first},{last}`.
+
+Slicing is based on the measured original frame numbers from the analysis stage, accumulated into global frame indices across sources, so output boundaries stay exact after concatenation. Each encoding start creates execution-specific concat filelists and virtual-source scripts, so a stale or reordered external script cannot invalidate the planned frame offsets.
+
+#### Filters Apply Only to the New Trimmed Output
+
+Repart mode has a hard constraint: **imported video sources are never modified.** Every filter (scaling, frame-rate / VFR→CFR repair, denoise, color conversion, etc.) may only act on the new source after it has been trimmed to an output range. The reasons:
+
+- The analysis stage builds the virtual timeline from each imported source's original frame rate, resolution, and per-frame timestamps.
+- If any source changes its frame rate or resolution before concatenation, the sources can no longer be joined reliably and already-planned output ranges shift as a whole.
+- Therefore Source Reviser and Filter Scribe are unavailable for an active Repart plan; one-click script generation only emits the "concat + trim" skeleton and never rewrites the imported sources.
+
 ---
 
 ## Encoding Pipeline
@@ -243,6 +261,8 @@ The filter editor is an auxiliary module in 1cenc. It supports:
 - Custom AviSynth(+), VapourSynth filter script lines.
 
 For script sources, the project validates that the video path embedded in the script matches the current video source. Queue scripts are checked per file name and embedded path to prevent misalignment. Concat mode skips single-source path matching (since scripts naturally contain multiple source paths) and instead relies on concat import and analysis to ensure correctness.
+
+Filter Scribe is unavailable in Repart mode: episode boundaries depend on the imported sources' original frame numbers, and any filter that changes a source's frame rate or resolution before trimming would break the virtual timeline. If filters are wanted, they may only act on the trimmed output range (see "Repart Mode / Filters Apply Only to the New Trimmed Output").
 
 ---
 

@@ -22,6 +22,7 @@ public static class RepartCompatibilityAnalyzer
         string? ffmpegPath,
         IReadOnlyList<string> filePaths,
         Func<RepartInterlacedSourceInfo, bool>? confirmDiscardInterlacedSource = null,
+        Func<RepartFrameCountFallbackInfo, bool>? confirmExpandFrameCountSearch = null,
         CancellationToken cancellationToken = default)
     {
         RepartAnalysisResult result = await AnalyzeAndFilterAsync(
@@ -29,6 +30,7 @@ public static class RepartCompatibilityAnalyzer
             ffmpegPath,
             filePaths,
             confirmDiscardInterlacedSource,
+            confirmExpandFrameCountSearch,
             onFileProgress: null,
             onExcluded: null,
             cancellationToken);
@@ -47,6 +49,7 @@ public static class RepartCompatibilityAnalyzer
         string? ffmpegPath,
         IReadOnlyList<string> filePaths,
         Func<RepartInterlacedSourceInfo, bool>? confirmDiscardInterlacedSource = null,
+        Func<RepartFrameCountFallbackInfo, bool>? confirmExpandFrameCountSearch = null,
         Action<RepartAnalysisStage, int, int, string>? onFileProgress = null,
         Action<RepartExcludedSourceInfo>? onExcluded = null,
         CancellationToken cancellationToken = default)
@@ -243,6 +246,8 @@ public static class RepartCompatibilityAnalyzer
                 ffmpegPath,
                 path,
                 sourceProbe,
+                displayName,
+                confirmExpandFrameCountSearch,
                 cancellationToken);
             int completed = Interlocked.Increment(ref completedScans);
             onFileProgress?.Invoke(RepartAnalysisStage.ScanFrames, completed, candidates.Count, displayName);

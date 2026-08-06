@@ -71,6 +71,7 @@ public sealed class OpenRepartConfCmd(
                     ffmpegPath: getFfmpegPath?.Invoke(),
                     filePaths: folderPaths,
                     confirmDiscardInterlacedSource: source => RepartInterlacedPrompt.Confirm(modalNavS, RepartConfVM.WindowTitleText, source),
+                    confirmExpandFrameCountSearch: source => RepartFrameCountPrompt.Confirm(modalNavS, RepartConfVM.WindowTitleText, source),
                     onFileProgress: (stage, index, total, name) =>
                     {
                         progressVM.P1Text = RepartLangProvider.Current[StageKey(stage)];
