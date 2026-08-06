@@ -78,7 +78,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         MergeRightCommand = new ActionCmd(_ => MergeAdjacentSelected(1));
         ResetDraftCommand = new ActionCmd(_ => ResetDraft());
         ApplyCommand = new ActionCmd(_ => ApplyAndClose());
-        CancelCommand = new CloseModalCmd(closeAction);
+        CancelCommand = new ActionCmd(_ => CancelAndClose());
         SelectDividerCommand = new ActionCmd(SelectDivider);
         NudgeDividerLeftCommand = new ActionCmd(_ => NudgeSelectedDivider(-1));
         NudgeDividerRightCommand = new ActionCmd(_ => NudgeSelectedDivider(1));
@@ -490,6 +490,12 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         if (item == null) return;
         SelectOnlyDivider(item.Model.Id);
         SelectedOutput = null;
+    }
+
+    public void RefreshSelectedDividerPreview()
+    {
+        if (SelectedDivider != null)
+            RefreshDividerPreview();
     }
 
     public void MoveDividerToPosition(RepartDividerItemVM? item, double position)
@@ -1165,8 +1171,25 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         committed.Outputs.AddRange(Outputs.Select(output => output.Model).OrderBy(output => output.FirstFrame));
         committed.Dividers.Clear();
         committed.Dividers.AddRange(_dividers.OrderBy(divider => divider.Frame));
+        InterruptWindowWork();
         _applyPlan(committed);
         _closeAction();
+    }
+
+    private void CancelAndClose()
+    {
+        InterruptWindowWork();
+        _closeAction();
+    }
+
+    public void InterruptWindowWork()
+    {
+        try { _dividerPreviewCts?.Cancel(); }
+        catch { }
+        try { _keyframeWarmupCts?.Cancel(); }
+        catch { }
+        try { _keyframeIndexLifetimeCts.Cancel(); }
+        catch { }
     }
 
     private void RefreshAnalysisProperties()
@@ -1324,23 +1347,50 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
     private async Task WarmKeyframeIndexesAsync(RepartPlanM analysis, CancellationToken token)
     {
+        SemaphoreSlim warmupGate = new(2, 2);
         try
         {
+            List<Task> warmupTasks = [];
             foreach (RepartSourceM source in analysis.Sources)
             {
-                if (token.IsCancellationRequested) return;
-                try
-                {
-                    await BuildKeyframeIndexAsync(source, token);
-                }
-                catch (OperationCanceledException) when (token.IsCancellationRequested)
-                {
-                    return;
-                }
-                catch { }
+                warmupTasks.Add(WarmKeyframeIndexAsync(source, token, warmupGate));
             }
+
+            await Task.WhenAll(warmupTasks);
         }
         catch (OperationCanceledException) when (token.IsCancellationRequested) { }
+        finally
+        {
+            warmupGate.Dispose();
+        }
+    }
+
+    private async Task WarmKeyframeIndexAsync(
+        RepartSourceM source,
+        CancellationToken token,
+        SemaphoreSlim warmupGate)
+    {
+        bool acquired = false;
+        try
+        {
+            await warmupGate.WaitAsync(token);
+            acquired = true;
+            try
+            {
+                KeyframeIndex? index = await BuildKeyframeIndexAsync(source, token);
+                if (index != null && !token.IsCancellationRequested)
+                    await index.Completion.WaitAsync(token);
+            }
+            catch (OperationCanceledException) when (token.IsCancellationRequested)
+            {
+            }
+            catch { }
+        }
+        finally
+        {
+            if (acquired)
+                warmupGate.Release();
+        }
     }
 
     private async Task<KeyframeIndex?> BuildKeyframeIndexAsync(

@@ -94,9 +94,9 @@
                                        Height="70"
                                        ToolTip="{Binding Frame}"
                                        Cursor="SizeWE"
-                                       MouseLeftButtonDown="DividerThumb_MouseLeftButtonDown"
-                                       PreviewMouseRightButtonDown="DividerThumb_PreviewMouseRightButtonDown"
-                                       DragStarted="DividerThumb_DragStarted"
+                                        MouseLeftButtonUp="DividerThumb_MouseLeftButtonUp"
+                                        PreviewMouseRightButtonDown="DividerThumb_PreviewMouseRightButtonDown"
+                                        DragStarted="DividerThumb_DragStarted"
                                        DragDelta="DividerThumb_DragDelta"
                                        DragCompleted="DividerThumb_DragCompleted">
                                     <Thumb.Tag>

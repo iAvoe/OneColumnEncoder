@@ -1,5 +1,6 @@
 using OneColumnEncoder.UI;
 using OneColumnEncoder.ViewModels;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -12,7 +13,17 @@ public partial class RepartConfModal : AdaptiveWindow
 {
     private double _dividerDragPointerOffset;
 
-    public RepartConfModal() => InitializeComponent();
+    public RepartConfModal()
+    {
+        InitializeComponent();
+        Closing += OnClosing;
+    }
+
+    private void OnClosing(object? sender, CancelEventArgs e)
+    {
+        if (DataContext is RepartConfVM vm)
+            vm.InterruptWindowWork();
+    }
 
     private void OutputListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -20,10 +31,13 @@ public partial class RepartConfModal : AdaptiveWindow
             vm.SetSelectedOutputs(listBox.SelectedItems.Cast<RepartOutputItemVM>());
     }
 
-    private void DividerThumb_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    private void DividerThumb_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
         if (DataContext is RepartConfVM vm && sender is FrameworkElement { DataContext: RepartDividerItemVM item })
+        {
             vm.SelectDividerForInteraction(item);
+            vm.RefreshSelectedDividerPreview();
+        }
     }
 
     private void DividerThumb_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
