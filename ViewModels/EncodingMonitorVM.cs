@@ -8,6 +8,7 @@ using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.Views;
 using OneColumnEncoder.UI;
+using OneColumnEncoder.Persistence;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -2170,8 +2171,7 @@ namespace OneColumnEncoder.ViewModels
 
             try
             {
-                string directory = Path.GetDirectoryName(_request.OutputPath)
-                    ?? Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                string directory = SaveLoadBase<AppConfM>.GetConfigDirectory();
                 Directory.CreateDirectory(directory);
                 SaveLogFile(UpstreamReportText, directory, "upstream-stderr", _appConfM.Logs.MaxUpstreamLogFiles);
                 SaveLogFile(DownstreamReportText, directory, "downstream-stderr", _appConfM.Logs.MaxDownstreamLogFiles);
