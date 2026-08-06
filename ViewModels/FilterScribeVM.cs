@@ -44,7 +44,8 @@ namespace OneColumnEncoder.ViewModels
         private readonly Action<string[]>? _applyConcatFilePaths;
         private readonly Func<bool>? _isRepartRoute;
         private readonly Action<string?, string?>? _applyScriptFilters;
-        private readonly Action<string[]>? _applyRepartFilePaths;
+        private readonly Func<RepartPlanM?>? _getRepartPlan;
+        private readonly Action<Guid[]>? _applyRepartOutputOrder;
         private readonly string? _vspipePath;
         private readonly string? _vspipeY4mArg;
         private readonly Func<long>? _getTotalFrames;
@@ -55,6 +56,7 @@ namespace OneColumnEncoder.ViewModels
         private bool _hasSourceAnalysis;
         public CloseModalCmd CloseCmd { get; }
         public ConcatSourceListVM ConcatSources { get; } = new();
+        public RepartFilterScribeOutputQueueVM RepartOutputs { get; } = new();
         public bool IsConcatMode => _isConcatRoute?.Invoke() == true || IsRepartMode;
         public bool IsRepartMode => _isRepartRoute?.Invoke() == true;
         public bool CanEditConcatSources => true;
@@ -554,7 +556,8 @@ namespace OneColumnEncoder.ViewModels
             Action<string[]>? applyConcatFilePaths = null,
             Func<bool>? isRepartRoute = null,
             Action<string?, string?>? applyScriptFilters = null,
-            Action<string[]>? applyRepartFilePaths = null,
+            Func<RepartPlanM?>? getRepartPlan = null,
+            Action<Guid[]>? applyRepartOutputOrder = null,
             string? vspipePath = null,
             string? vspipeY4mArg = null,
             Func<long>? getTotalFrames = null)
@@ -579,7 +582,8 @@ namespace OneColumnEncoder.ViewModels
             _applyConcatFilePaths = applyConcatFilePaths;
             _isRepartRoute = isRepartRoute;
             _applyScriptFilters = applyScriptFilters;
-            _applyRepartFilePaths = applyRepartFilePaths;
+            _getRepartPlan = getRepartPlan;
+            _applyRepartOutputOrder = applyRepartOutputOrder;
             _vspipePath = vspipePath;
             _vspipeY4mArg = vspipeY4mArg;
             _getTotalFrames = getTotalFrames;
@@ -589,6 +593,7 @@ namespace OneColumnEncoder.ViewModels
             ConcatSources.IsRepartMode = IsRepartMode;
             OpenVpyPreviewCommand = new ActionCmd(_ => OpenVpyPreview(), _ => CanOpenVpyPreview);
             ConfigureConcatSources();
+            ConfigureRepartOutputs();
             ParseColorSpaceInfo(sourceFfprobeJson);
             ParseSourceResolution(sourceFfprobeJson);
             ParseFrameRateInfo(sourceFfprobeJson);
@@ -624,11 +629,34 @@ namespace OneColumnEncoder.ViewModels
             RefreshConcatSourceLanguage();
         }
 
+        private void ConfigureRepartOutputs()
+        {
+            RepartOutputs.MoveItemUpCommand = new ActionCmd(item =>
+            {
+                if (item is RepartFilterScribeOutputItemVM output
+                    && RepartOutputs.MoveItemUp(output))
+                    _applyRepartOutputOrder?.Invoke(RepartOutputs.GetCurrentOutputIds());
+            });
+            RepartOutputs.MoveItemDownCommand = new ActionCmd(item =>
+            {
+                if (item is RepartFilterScribeOutputItemVM output
+                    && RepartOutputs.MoveItemDown(output))
+                    _applyRepartOutputOrder?.Invoke(RepartOutputs.GetCurrentOutputIds());
+            });
+            RepartOutputs.RestoreOriginalQueueCommand = new ActionCmd(_ =>
+            {
+                if (RepartOutputs.RestoreOriginalQueue())
+                    _applyRepartOutputOrder?.Invoke(RepartOutputs.GetCurrentOutputIds());
+            });
+
+            RepartPlanM? plan = _getRepartPlan?.Invoke();
+            if (plan != null)
+                RepartOutputs.LoadItems(plan.Outputs, plan.FrameRateNumerator, plan.FrameRateDenominator);
+        }
+
         private void ApplyConcatSources()
         {
-            if (IsRepartMode)
-                _applyRepartFilePaths?.Invoke(ConcatSources.GetCurrentFilePaths());
-            else if (CanEditConcatSources)
+            if (!IsRepartMode && CanEditConcatSources)
                 _applyConcatFilePaths?.Invoke(ConcatSources.GetCurrentFilePaths());
             RefreshConcatGeneratedText();
         }
@@ -1486,6 +1514,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(CanOpenVpyPreview));
             OpenVpyPreviewCommand.OnCanExecuteChanged();
             RefreshConcatSourceLanguage();
+            RepartOutputs.RefreshLanguage();
 
             BuildButtonGroups();
             OnPropertyChanged(nameof(ScriptExportButtons));
@@ -1496,6 +1525,7 @@ namespace OneColumnEncoder.ViewModels
         public override void Dispose()
         {
             UILangProvider.CurrentChanged -= OnLanguageChanged;
+            RepartOutputs.Dispose();
             base.Dispose();
             GC.SuppressFinalize(this);
         }

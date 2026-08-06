@@ -262,7 +262,7 @@ The filter editor is an auxiliary module in 1cenc. It supports:
 
 For script sources, the project validates that the video path embedded in the script matches the current video source. Queue scripts are checked per file name and embedded path to prevent misalignment. Concat mode skips single-source path matching (since scripts naturally contain multiple source paths) and instead relies on concat import and analysis to ensure correctness.
 
-Filter Scribe is available in Repart mode through a Repart-specific concat-style workflow. It uses the current Repart source queue to build the temporary AVS/VPY source or ffmpeg input, then applies the selected filters without modifying the imported files or committed frame boundaries. Source Reviser remains unavailable because changing source metadata would invalidate the frame offsets.
+Filter Scribe is available in Repart mode through a Repart-specific concat-style workflow. Its sidebar lists the output episodes created by the Repart plan, while the temporary AVS/VPY source or ffmpeg input is built internally from the Repart source list. Selected filters are applied without modifying the imported files or committed frame boundaries. Source Reviser remains unavailable because changing source metadata would invalidate the frame offsets.
 
 ---
 

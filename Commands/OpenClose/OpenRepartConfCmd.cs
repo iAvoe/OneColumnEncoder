@@ -47,9 +47,8 @@ public sealed class OpenRepartConfCmd(
             try
             {
                 // Run the Repart Mode check & filter pass before the window opens.
-                // Excluded sources are reported immediately, matching queue-mode
-                // behavior: once a source fails a filtering stage, it is skipped and
-                // never reaches the later ffprobe analysis or frame-count scan.
+                // Excluded sources are collected during analysis and reported once,
+                // after filtering completes, so the user sees a single summary.
                 using CancellationTokenSource cancellation = new();
                 ProgressModal progressWindow = new();
                 ProgressVM progressVM = new(
@@ -66,6 +65,7 @@ public sealed class OpenRepartConfCmd(
                 modalNavS.CurrentModalVM = progressVM;
 
                 int excludedCount = 0;
+                List<RepartExcludedSourceInfo> excludedItems = [];
                 Task<RepartAnalysisResult> analysisTask = RepartCompatibilityAnalyzer.AnalyzeAndFilterAsync(
                     ffprobePath: getFfprobePath(),
                     ffmpegPath: getFfmpegPath?.Invoke(),
@@ -80,11 +80,8 @@ public sealed class OpenRepartConfCmd(
                     onExcluded: excluded =>
                     {
                         excludedCount++;
+                        excludedItems.Add(excluded);
                         progressVM.P3Text = string.Format(RepartLangProvider.Current["ExcludedCount"], excludedCount);
-                        new OpenErrModalCmd(
-                            modalNavS,
-                            RepartConfVM.WindowTitleText,
-                            RepartExclusionMessages.FormatExcludedMessage(excluded)).Execute(null);
                     },
                     cancellationToken: cancellation.Token);
 
@@ -93,12 +90,23 @@ public sealed class OpenRepartConfCmd(
 
                 RepartAnalysisResult result = await analysisTask;
 
-                if (result.Plan == null)
+                if (excludedItems.Count > 0)
+                {
+                    new OpenErrModalCmd(
+                        modalNavS,
+                        RepartConfVM.WindowTitleText,
+                        BuildExcludedSummary(excludedItems, result.FatalMessage)).Execute(null);
+                }
+                else if (result.Plan == null)
                 {
                     new OpenErrModalCmd(
                         modalNavS,
                         RepartConfVM.WindowTitleText,
                         result.FatalMessage ?? RepartLangProvider.Current.SourceRequired).Execute(null);
+                }
+
+                if (result.Plan == null)
+                {
                     return;
                 }
 
@@ -154,4 +162,21 @@ public sealed class OpenRepartConfCmd(
         RepartAnalysisStage.ScanFrames => "StageScanFrames",
         _ => "StageCheckFiles"
     };
+
+    private static string BuildExcludedSummary(
+        IReadOnlyList<RepartExcludedSourceInfo> excludedItems,
+        string? fatalMessage)
+    {
+        List<string> sections = [];
+        if (excludedItems.Count > 0)
+        {
+            sections.Add(string.Format(RepartLangProvider.Current["ExcludedCount"], excludedItems.Count));
+            sections.AddRange(excludedItems.Select(RepartExclusionMessages.FormatExcludedMessage));
+        }
+
+        if (!string.IsNullOrWhiteSpace(fatalMessage))
+            sections.Add(fatalMessage.Trim());
+
+        return string.Join(Environment.NewLine + Environment.NewLine, sections);
+    }
 }

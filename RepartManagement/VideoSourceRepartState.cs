@@ -46,16 +46,14 @@ public sealed class VideoSourceRepartState
         RefreshTitle();
     }
 
-    public bool ReorderSources(string[] filePaths)
+    public bool ReorderOutputs(Guid[] outputIds)
     {
-        if (_plan == null || filePaths.Length != _plan.Sources.Count)
+        if (_plan == null || outputIds.Length != _plan.Outputs.Count)
             return false;
 
-        Dictionary<string, RepartSourceM> sourcesByPath = _plan.Sources.ToDictionary(
-            source => Path.GetFullPath(source.FilePath),
-            StringComparer.OrdinalIgnoreCase);
-        if (filePaths.Any(path => !sourcesByPath.ContainsKey(Path.GetFullPath(path)))
-            || filePaths.Distinct(StringComparer.OrdinalIgnoreCase).Count() != filePaths.Length)
+        Dictionary<Guid, RepartOutputSegmentM> outputsById = _plan.Outputs.ToDictionary(output => output.Id);
+        if (outputIds.Any(id => !outputsById.ContainsKey(id))
+            || outputIds.Distinct().Count() != outputIds.Length)
             return false;
 
         RepartPlanM reordered = new()
@@ -67,8 +65,8 @@ public sealed class VideoSourceRepartState
             FrameRateNumerator = _plan.FrameRateNumerator,
             FrameRateDenominator = _plan.FrameRateDenominator,
             TotalFrames = _plan.TotalFrames,
-            Sources = [.. filePaths.Select(path => sourcesByPath[Path.GetFullPath(path)])],
-            Outputs = [.. _plan.Outputs],
+            Sources = [.. _plan.Sources],
+            Outputs = [.. outputIds.Select(id => outputsById[id])],
             Dividers = [.. _plan.Dividers]
         };
         ApplyPlan(reordered);

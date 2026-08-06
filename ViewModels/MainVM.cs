@@ -575,7 +575,8 @@ namespace OneColumnEncoder.ViewModels
                     _repartAvsFilterInput = avs ?? string.Empty;
                     _repartVpyFilterInput = vpy ?? string.Empty;
                 },
-                ApplyRepartFilePathsFromFilterScribe,
+                GetRepartPlan,
+                ApplyRepartOutputOrderFromFilterScribe,
                 _appDataM.Tools.VspipePath,
                 _appDataM.Tools.VspipeY4mArg,
                 () => EncodingPipeline.GetSourceTotalFrames(
@@ -1971,20 +1972,14 @@ namespace OneColumnEncoder.ViewModels
             RefreshSelectedSourceStatus(resetAnalysis: true);
         }
 
-        private void ApplyRepartFilePathsFromFilterScribe(string[] filePaths)
+        private void ApplyRepartOutputOrderFromFilterScribe(Guid[] outputIds)
         {
-            if (!_videoSourceRepart.ReorderSources(filePaths)) return;
+            if (!_videoSourceRepart.ReorderOutputs(outputIds)) return;
 
             RepartPlanM? plan = _videoSourceRepart.CurrentPlan;
             if (plan == null) return;
 
-            _srcVideoAnalysis.SourcePath = plan.Sources[0].FilePath;
-            _srcVideoAnalysis.QueueRawJson = JsonSerializer.Serialize(plan.Sources.Select(source => new
-            {
-                source.FilePath,
-                source.RawJson,
-                source.TotalFrames
-            }));
+            RepartCheckCard.ApplyRepartPlan(plan);
             _appDataM.Save();
         }
 
@@ -2506,7 +2501,7 @@ namespace OneColumnEncoder.ViewModels
             ParallelismConfM parallelismConf = ParallelismConfM.LoadEffective();
             string outputDirectory = outputSetting.P2TextData;
 
-            return [.. plan.Outputs.OrderBy(output => output.FirstFrame).Select(output =>
+            return [.. plan.Outputs.Select(output =>
             {
                 double startSeconds = (double)output.FirstFrame * plan.FrameRateDenominator / plan.FrameRateNumerator;
                 double endSeconds = (double)(output.LastFrame + 1) * plan.FrameRateDenominator / plan.FrameRateNumerator;
