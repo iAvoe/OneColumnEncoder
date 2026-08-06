@@ -75,7 +75,8 @@ namespace OneColumnEncoder.ViewModels
             {
                 [UICaptionProvider.AppConf.Groups.Overwrite] = _appConfM.Overwrite,
                 [UICaptionProvider.AppConf.Groups.Language] = _appConfM.Lang,
-                [UICaptionProvider.AppConf.Groups.InitMode] = _appConfM
+                [UICaptionProvider.AppConf.Groups.InitMode] = _appConfM,
+                [UICaptionProvider.AppConf.Groups.Logs] = _appConfM.Logs
             };
 
             foreach (IGrouping<string, SettingItemDefinitionM> group

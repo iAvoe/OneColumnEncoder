@@ -72,6 +72,7 @@ namespace OneColumnEncoder.ViewModels
         private CpuSetsLangProvider _cpuSetsLang = new(UILangProvider.Current.LanguageCode);
         private readonly ModalNavS _modalNavS;
         private readonly Action _closeAction;
+        private readonly AppConfM _appConfM;
         private EncodingPipelineRequest _request;
         private EncodingPipelineCommand _command;
         private readonly bool _isSample;
@@ -280,6 +281,7 @@ namespace OneColumnEncoder.ViewModels
         public EncodingMonitorVM(
             ModalNavS modalNavS,
             Action closeAction,
+            AppConfM appConfM,
             EncodingPipelineRequest request,
             EncodingPipelineCommand command,
             bool isSample,
@@ -288,6 +290,8 @@ namespace OneColumnEncoder.ViewModels
         {
             _modalNavS = modalNavS;
             _closeAction = closeAction;
+            _appConfM = appConfM;
+            _saveLogs = appConfM.Logs.SaveLogsDefaultChecked;
             _request = request;
             _command = command;
             _isSample = isSample;
@@ -305,12 +309,12 @@ namespace OneColumnEncoder.ViewModels
             });
 
             ReportButtons = ButtonGroupVM.CreateThreeButton(
-                Lang.SaveUpstreamStderrText, Lang.SaveDownstreamStderrText, Lang.RotateLogFontSizeText,
-                new ActionCmd(_ => SaveTextAndShowPath(UpstreamReportText, "upstream-stderr.txt")),
-                new ActionCmd(_ => SaveTextAndShowPath(DownstreamReportText, "downstream-stderr.txt")),
+                Lang.CopyUpstreamLogText, Lang.CopyDownstreamLogText, Lang.RotateLogFontSizeText,
+                new ActionCmd(_ => CopyLogToClipboard(UpstreamReportText)),
+                new ActionCmd(_ => CopyLogToClipboard(DownstreamReportText)),
                 new ActionCmd(_ => RotateLogFontSize()));
-            ReportButtons.B3_1Icon = SvgIconProvider.GameSave;
-            ReportButtons.B3_2Icon = SvgIconProvider.GameSave;
+            ReportButtons.B3_1Icon = SvgIconProvider.GameCopy;
+            ReportButtons.B3_2Icon = SvgIconProvider.GameCopy;
             ReportButtons.B3_3Icon = SvgIconProvider.GameReplace;
 
             FinishButtons = ButtonGroupVM.CreateFiveButton(
@@ -346,9 +350,10 @@ namespace OneColumnEncoder.ViewModels
         public EncodingMonitorVM(
             ModalNavS modalNavS,
             Action closeAction,
+            AppConfM appConfM,
             IReadOnlyList<(EncodingPipelineRequest Request, EncodingPipelineCommand Command)> queueItems,
             bool isRepartBatch = false)
-            : this(modalNavS, closeAction, queueItems[0].Request, queueItems[0].Command, false, true, !isRepartBatch)
+            : this(modalNavS, closeAction, appConfM, queueItems[0].Request, queueItems[0].Command, false, true, !isRepartBatch)
         {
             _queueItems = queueItems;
             IsRepartBatch = isRepartBatch;
@@ -690,12 +695,22 @@ namespace OneColumnEncoder.ViewModels
                             ? Lang.InterruptedText
                             : StatusText == Lang.EncodingText || StatusText == Lang.MuxingText ? Lang.FailedText : StatusText;
                 FlushLogsToProperties();
+                SaveLogsToFilesIfEnabled();
                 UpdateFooterTimes(final: _queueItems == null);
                 IsMonitoringEnabled = false;
                 IsEncodingActive = false;
                 _upstreamStdoutStream = null;
                 _encoderStdinStream = null;
             }
+        }
+
+        public string SaveLogsText => Lang.SaveLogsText;
+
+        private bool _saveLogs;
+        public bool SaveLogs
+        {
+            get => _saveLogs;
+            set => SetProperty(ref _saveLogs, value);
         }
 
         /// <summary>
@@ -2143,18 +2158,45 @@ namespace OneColumnEncoder.ViewModels
             return result ?? false;
         }
 
-        /// <summary>
-        /// Saves log text to a file in the output directory.
-        /// </summary>
-        private void SaveTextAndShowPath(string text, string fileName)
+        private static void CopyLogToClipboard(string text)
+        {
+            if (!string.IsNullOrEmpty(text))
+                Clipboard.SetText(text);
+        }
+
+        private void SaveLogsToFilesIfEnabled()
+        {
+            if (!SaveLogs) return;
+
+            try
+            {
+                string directory = Path.GetDirectoryName(_request.OutputPath)
+                    ?? Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                Directory.CreateDirectory(directory);
+                SaveLogFile(UpstreamReportText, directory, "upstream-stderr", _appConfM.Logs.MaxUpstreamLogFiles);
+                SaveLogFile(DownstreamReportText, directory, "downstream-stderr", _appConfM.Logs.MaxDownstreamLogFiles);
+            }
+            catch
+            {
+                // Log persistence must not change the encoding result.
+            }
+        }
+
+        private static void SaveLogFile(string text, string directory, string filePrefix, int maxFileCount)
         {
             if (string.IsNullOrEmpty(text)) return;
-            string directory = Path.GetDirectoryName(_request.OutputPath) ?? Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            Directory.CreateDirectory(directory);
-            string path = Path.Combine(directory, fileName);
+
+            int limit = Math.Max(1, maxFileCount);
+            string timestamp = DateTime.Now.ToString("yyyyMMdd-HHmmss-fff", CultureInfo.InvariantCulture);
+            string path = Path.Combine(directory, $"{filePrefix}-{timestamp}-{Guid.NewGuid():N}.txt");
             File.WriteAllText(path, text, Encoding.UTF8);
-            string fullPath = Path.GetFullPath(path);
-            new OpenSavedTextModalCmd(_modalNavS, string.Empty, fullPath, Lang.OpenTxtText, fullPath).Execute(null);
+
+            FileInfo[] files = Directory.EnumerateFiles(directory, $"{filePrefix}-*.txt")
+                .Select(path => new FileInfo(path))
+                .OrderByDescending(file => file.LastWriteTimeUtc)
+                .ToArray();
+            foreach (FileInfo file in files.Skip(limit))
+                file.Delete();
         }
 
         /// <summary>
@@ -2225,8 +2267,8 @@ namespace OneColumnEncoder.ViewModels
             Lang = new EncodingMonitorModalLangProvider(UILangProvider.Current.LanguageCode);
             QueueSidebarLang = QueueSidebarLangProvider.Current;
             _cpuSetsLang = new CpuSetsLangProvider(UILangProvider.Current.LanguageCode);
-            ReportButtons.B3_1Text = Lang.SaveUpstreamStderrText;
-            ReportButtons.B3_2Text = Lang.SaveDownstreamStderrText;
+            ReportButtons.B3_1Text = Lang.CopyUpstreamLogText;
+            ReportButtons.B3_2Text = Lang.CopyDownstreamLogText;
             ReportButtons.B3_3Text = Lang.RotateLogFontSizeText;
             FinishButtons.B5_1Text = Lang.OpenOutputDirectoryText;
             FinishButtons.B5_2Text = Lang.ViewEncodingCommandText;
@@ -2262,6 +2304,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(SmallNoteText));
             OnPropertyChanged(nameof(EnableMuxText));
             OnPropertyChanged(nameof(RichTextModeText));
+            OnPropertyChanged(nameof(SaveLogsText));
             OnPropertyChanged(nameof(MuxTimebaseHint));
             OnPropertyChanged(nameof(OpusAudioCommandHint));
             OnPropertyChanged(nameof(OpusAudioBitrateHint));

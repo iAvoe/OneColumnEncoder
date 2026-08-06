@@ -11,6 +11,7 @@ namespace OneColumnEncoder.Commands.SaveLoad
             AppConfM loadedConfig = AppConfM.Load();
             _appConfStore.Overwrite = loadedConfig.Overwrite;
             _appConfStore.Lang = loadedConfig.Lang;
+            _appConfStore.Logs = loadedConfig.Logs;
             UILangProvider.SetLanguage(_appConfStore.Lang.LanguageCode);
             await Task.CompletedTask;
         }

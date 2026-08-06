@@ -6,7 +6,8 @@ namespace OneColumnEncoder.Models
         [
             .. GetOverwriteSettings(),
             .. GetLanguageSettings(),
-            .. GetInitModeSettings()
+            .. GetInitModeSettings(),
+            .. GetLogSettings()
         ];
 
         private static AppConfLangProvider Lang => AppConfLangProvider.Current;
@@ -44,6 +45,24 @@ namespace OneColumnEncoder.Models
                 Lang["Setting.InitMode.IsFirstLaunch"],
                 SettingControlType.CheckBox,
                 nameof(AppConfM.IsFirstLaunch))
+        ];
+
+        public static List<SettingItemDefinitionM> GetLogSettings() =>
+        [
+            new(UICaptionProvider.AppConf.Groups.Logs,
+                Lang["Setting.Logs.SaveDefault"],
+                SettingControlType.CheckBox,
+                nameof(AppConfM.LogSettings.SaveLogsDefaultChecked)),
+            new(UICaptionProvider.AppConf.Groups.Logs,
+                Lang["Setting.Logs.MaxUpstream"],
+                SettingControlType.TextBox,
+                nameof(AppConfM.LogSettings.MaxUpstreamLogFiles),
+                MinValue: 1),
+            new(UICaptionProvider.AppConf.Groups.Logs,
+                Lang["Setting.Logs.MaxDownstream"],
+                SettingControlType.TextBox,
+                nameof(AppConfM.LogSettings.MaxDownstreamLogFiles),
+                MinValue: 1)
         ];
 
 

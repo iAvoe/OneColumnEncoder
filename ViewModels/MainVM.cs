@@ -603,6 +603,7 @@ namespace OneColumnEncoder.ViewModels
                 GetConcatFilePaths);
             SampleClip = new OpenSampleClipCmd(
                 modalNavS,
+                appConfM,
                 BuildEncodingPipelineRequest,
                 _srcVideoAnalysis,
                 () => GetActiveSourceRoute() != SourceRouteKind.Single);

@@ -202,6 +202,10 @@
                           IsChecked="{Binding LogRichTextMode, Mode=TwoWay}"
                           Margin="10 0 0 0"
                           VerticalAlignment="Center" />
+                <CheckBox Content="{Binding SaveLogsText}"
+                          IsChecked="{Binding SaveLogs, Mode=TwoWay}"
+                          Margin="10 0 0 0"
+                          VerticalAlignment="Center" />
             </StackPanel>
             <comps:HintPanel Text="{Binding MuxTimebaseHint}"
                              HintBrush="{StaticResource GlobalSecondary}"

@@ -1,4 +1,5 @@
 using OneColumnEncoder.Pipeline;
+using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.Views;
@@ -8,11 +9,13 @@ namespace OneColumnEncoder.Commands.OpenClose
 {
     public class OpenEncodingMonitorCmd(
         ModalNavS modalNavS,
+        AppConfM appConfM,
         EncodingPipelineRequest request,
         EncodingPipelineCommand command,
         bool isSample = false) : BaseCmd
     {
         private readonly ModalNavS _modalNavS = modalNavS;
+        private readonly AppConfM _appConfM = appConfM;
         private readonly EncodingPipelineRequest _request = request;
         private readonly EncodingPipelineCommand _command = command;
         private readonly bool _isSample = isSample;
@@ -33,7 +36,7 @@ namespace OneColumnEncoder.Commands.OpenClose
                 _modalNavS.Close();
 
             EncodingMonitorModal window = new();
-            EncodingMonitorVM vm = new(_modalNavS, window.Close, _request, _command, _isSample);
+            EncodingMonitorVM vm = new(_modalNavS, window.Close, _appConfM, _request, _command, _isSample);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();

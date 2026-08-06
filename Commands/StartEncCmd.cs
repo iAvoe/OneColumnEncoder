@@ -400,7 +400,7 @@ namespace OneColumnEncoder.Commands
 
         private void StartEncoding(EncodingPipelineRequest request, EncodingPipelineCommand command)
         {
-            new OpenEncodingMonitorCmd(_modalNavS, request, command).Execute(null);
+            new OpenEncodingMonitorCmd(_modalNavS, _appConfM, request, command).Execute(null);
         }
 
         private void StartQueueEncoding(QueueEncodingItem[] queueItems, bool isRepart = false)
@@ -420,7 +420,7 @@ namespace OneColumnEncoder.Commands
                 _modalNavS.Close();
 
             EncodingMonitorModal window = new();
-            EncodingMonitorVM vm = new(_modalNavS, window.Close, pairs, isRepart);
+            EncodingMonitorVM vm = new(_modalNavS, window.Close, _appConfM, pairs, isRepart);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();

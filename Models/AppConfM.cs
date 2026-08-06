@@ -11,6 +11,7 @@ namespace OneColumnEncoder.Models
         public bool IsFirstLaunch { get; set; } = true;
         public OverwriteSettings Overwrite { get; set; } = new OverwriteSettings();
         public Language Lang { get; set; } = new Language();
+        public LogSettings Logs { get; set; } = new LogSettings();
         #region Setting items
         public class OverwriteSettings
         {
@@ -21,6 +22,12 @@ namespace OneColumnEncoder.Models
         public class Language
         {
             public string LanguageCode { get; set; } = "en";
+        }
+        public class LogSettings
+        {
+            public bool SaveLogsDefaultChecked { get; set; } = true;
+            public int MaxUpstreamLogFiles { get; set; } = 30;
+            public int MaxDownstreamLogFiles { get; set; } = 30;
         }
         #endregion
     }

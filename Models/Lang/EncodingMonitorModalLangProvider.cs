@@ -33,8 +33,9 @@ public class EncodingMonitorModalLangProvider
             ["SampleIntervalTickLabels"] = "Stop|60S|120S|180S|240",
             ["SampleIntervalZeroText"] = "Stop",
             ["RotateLogFontSizeText"] = "Rotate log fontsize",
-            ["SaveUpstreamStderrText"] = "Save upstream log",
-            ["SaveDownstreamStderrText"] = "Save downstream log",
+            ["CopyUpstreamLogText"] = "Copy upstream log",
+            ["CopyDownstreamLogText"] = "Copy downstream log",
+            ["SaveLogsText"] = "Save logs",
             ["OpenTxtText"] = "Open TXT",
 
             ["OpenOutputDirectoryText"] = "Open output folder",
@@ -101,8 +102,9 @@ public class EncodingMonitorModalLangProvider
             ["SampleIntervalTickLabels"] = "停|60秒|120秒|180秒|240秒",
             ["SampleIntervalZeroText"] = "停",
             ["RotateLogFontSizeText"] = "轮换日志字号",
-            ["SaveUpstreamStderrText"] = "保存上游日志",
-            ["SaveDownstreamStderrText"] = "保存下游日志",
+            ["CopyUpstreamLogText"] = "复制上游日志",
+            ["CopyDownstreamLogText"] = "复制下游日志",
+            ["SaveLogsText"] = "保存日志",
             ["OpenTxtText"] = "打开 TXT",
 
             ["OpenOutputDirectoryText"] = "打开输出目录",
@@ -169,8 +171,9 @@ public class EncodingMonitorModalLangProvider
             ["SampleIntervalTickLabels"] = "停|60秒|120秒|180秒|240秒",
             ["SampleIntervalZeroText"] = "停",
             ["RotateLogFontSizeText"] = "輪換日誌字型大小",
-            ["SaveUpstreamStderrText"] = "保存上游日誌",
-            ["SaveDownstreamStderrText"] = "保存下游日誌",
+            ["CopyUpstreamLogText"] = "複製上游日誌",
+            ["CopyDownstreamLogText"] = "複製下游日誌",
+            ["SaveLogsText"] = "保存日誌",
             ["OpenTxtText"] = "開啟 TXT",
 
             ["OpenOutputDirectoryText"] = "開啟輸出資料夾",
@@ -240,8 +243,9 @@ public class EncodingMonitorModalLangProvider
             ["SampleIntervalTickLabels"] = "Arrêt|60 s|120 s|180 s|240 s",
             ["SampleIntervalZeroText"] = "Arrêt",
             ["RotateLogFontSizeText"] = "Changer taille police log",
-            ["SaveUpstreamStderrText"] = "Sauver log amont",
-            ["SaveDownstreamStderrText"] = "Sauver log aval",
+            ["CopyUpstreamLogText"] = "Copier log amont",
+            ["CopyDownstreamLogText"] = "Copier log aval",
+            ["SaveLogsText"] = "Sauver les logs",
             ["OpenTxtText"] = "Ouvrir TXT",
             ["OpenOutputDirectoryText"] = "Ouvrir dossier sortie",
             ["ViewEncodingCommandText"] = "Revoir la commande",
@@ -305,8 +309,9 @@ public class EncodingMonitorModalLangProvider
             ["SampleIntervalTickLabels"] = "Detener|60 s|120 s|180 s|240 s",
             ["SampleIntervalZeroText"] = "Detener",
             ["RotateLogFontSizeText"] = "Cambiar tamaño del log",
-            ["SaveUpstreamStderrText"] = "Guardar log aguas arriba",
-            ["SaveDownstreamStderrText"] = "Guardar log aguas abajo",
+            ["CopyUpstreamLogText"] = "Copiar log aguas arriba",
+            ["CopyDownstreamLogText"] = "Copiar log aguas abajo",
+            ["SaveLogsText"] = "Guardar logs",
             ["OpenTxtText"] = "Abrir TXT",
             ["OpenOutputDirectoryText"] = "Abrir carpeta de salida",
             ["ViewEncodingCommandText"] = "Ver comando",
@@ -370,8 +375,9 @@ public class EncodingMonitorModalLangProvider
             ["SampleIntervalTickLabels"] = "停止|60秒|120秒|180秒|240秒",
             ["SampleIntervalZeroText"] = "停止",
             ["RotateLogFontSizeText"] = "ログ文字サイズ変更",
-            ["SaveUpstreamStderrText"] = "上流ログ保存",
-            ["SaveDownstreamStderrText"] = "下流ログ保存",
+            ["CopyUpstreamLogText"] = "上流ログをコピー",
+            ["CopyDownstreamLogText"] = "下流ログをコピー",
+            ["SaveLogsText"] = "ログを保存",
             ["OpenTxtText"] = "TXTを開く",
             ["OpenOutputDirectoryText"] = "出力フォルダを開く",
             ["ViewEncodingCommandText"] = "コマンド再表示",
@@ -435,8 +441,9 @@ public class EncodingMonitorModalLangProvider
             ["SampleIntervalTickLabels"] = "Стоп|60 с|120 с|180 с|240 с",
             ["SampleIntervalZeroText"] = "Стоп",
             ["RotateLogFontSizeText"] = "Сменить размер шрифта лога",
-            ["SaveUpstreamStderrText"] = "Сохранить лог апстрима",
-            ["SaveDownstreamStderrText"] = "Сохранить лог даунстрима",
+            ["CopyUpstreamLogText"] = "Копировать лог апстрима",
+            ["CopyDownstreamLogText"] = "Копировать лог даунстрима",
+            ["SaveLogsText"] = "Сохранять логи",
             ["OpenTxtText"] = "Открыть TXT",
             ["OpenOutputDirectoryText"] = "Открыть папку вывода",
             ["ViewEncodingCommandText"] = "Показать команду",
@@ -504,8 +511,9 @@ public class EncodingMonitorModalLangProvider
     public string[] SampleIntervalTickLabels { get; }
     public string SampleIntervalZeroText { get; }
     public string RotateLogFontSizeText { get; }
-    public string SaveUpstreamStderrText { get; }
-    public string SaveDownstreamStderrText { get; }
+    public string CopyUpstreamLogText { get; }
+    public string CopyDownstreamLogText { get; }
+    public string SaveLogsText { get; }
     public string OpenTxtText { get; }
     public string OpenOutputDirectoryText { get; }
     public string ViewEncodingCommandText { get; }
@@ -588,8 +596,9 @@ public class EncodingMonitorModalLangProvider
         SampleIntervalTickLabels = _d["SampleIntervalTickLabels"].Split('|');
         SampleIntervalZeroText = _d["SampleIntervalZeroText"];
         RotateLogFontSizeText = _d["RotateLogFontSizeText"];
-        SaveUpstreamStderrText = _d["SaveUpstreamStderrText"];
-        SaveDownstreamStderrText = _d["SaveDownstreamStderrText"];
+        CopyUpstreamLogText = _d["CopyUpstreamLogText"];
+        CopyDownstreamLogText = _d["CopyDownstreamLogText"];
+        SaveLogsText = _d["SaveLogsText"];
         OpenTxtText = _d["OpenTxtText"];
         OpenOutputDirectoryText = _d["OpenOutputDirectoryText"];
         ViewEncodingCommandText = _d["ViewEncodingCommandText"];

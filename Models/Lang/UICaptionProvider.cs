@@ -97,6 +97,7 @@ public static class UICaptionProvider
             public static string Overwrite => Lang["AppConf.Overwrite"];
             public static string Language => Lang["AppConf.Language"];
             public static string InitMode => Lang["AppConf.InitMode"];
+            public static string Logs => Lang["AppConf.Logs"];
         }
 
         public static class Buttons

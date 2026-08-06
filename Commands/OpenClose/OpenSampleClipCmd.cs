@@ -7,9 +7,10 @@ using System.Windows;
 
 namespace OneColumnEncoder.Commands.OpenClose
 {
-    public class OpenSampleClipCmd(ModalNavS modalNavS, Func<EncodingPipelineRequest?> buildRequest, VideoAnalysisM srcVideoAnalysis, Func<bool> isMultiSourceRouteActive) : BaseCmd
+    public class OpenSampleClipCmd(ModalNavS modalNavS, AppConfM appConfM, Func<EncodingPipelineRequest?> buildRequest, VideoAnalysisM srcVideoAnalysis, Func<bool> isMultiSourceRouteActive) : BaseCmd
     {
         private readonly ModalNavS _modalNavS = modalNavS;
+        private readonly AppConfM _appConfM = appConfM;
         private readonly Func<EncodingPipelineRequest?> _buildRequest = buildRequest;
         private readonly VideoAnalysisM _srcVideoAnalysis = srcVideoAnalysis;
         private readonly Func<bool> _isMultiSourceRouteActive = isMultiSourceRouteActive;
@@ -39,7 +40,7 @@ namespace OneColumnEncoder.Commands.OpenClose
                 _modalNavS.Close();
 
             SampleClipModal window = new();
-            SampleClipVM vm = new(_modalNavS, window.Close, _buildRequest, _srcVideoAnalysis);
+            SampleClipVM vm = new(_modalNavS, window.Close, _appConfM, _buildRequest, _srcVideoAnalysis);
             window.DataContext = vm;
             window.Owner = Application.Current.MainWindow;
             window.Closed += (_, _) => _modalNavS.Close();
