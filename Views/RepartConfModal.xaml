@@ -360,7 +360,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Border Margin="0"
-                                            BorderThickness="0 1">
+                                            BorderThickness="0 0 0 2" >
                                         <Border.Style>
                                             <Style TargetType="Border">
                                                 <Style.Triggers>

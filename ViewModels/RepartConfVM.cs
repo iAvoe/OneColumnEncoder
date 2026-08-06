@@ -19,7 +19,9 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private readonly Action _closeAction;
     private readonly Action<RepartPlanM> _applyPlan;
     private readonly string? _ffmpegPath;
+    private readonly string? _ffprobePath;
     private readonly string _previewWorkDirectory;
+    private readonly Dictionary<string, KeyframeIndex> _keyframeCache = new(StringComparer.OrdinalIgnoreCase);
     private RepartPlanM? _analysis;
     private RepartOutputItemVM? _selectedOutput;
     private List<RepartOutputItemVM> _selectedOutputs = [];
@@ -54,12 +56,14 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         ModalNavS modalNavS,
         Action closeAction,
         Action<RepartPlanM> applyPlan,
-        string? ffmpegPath)
+        string? ffmpegPath,
+        string? ffprobePath)
     {
         _modalNavS = modalNavS;
         _closeAction = closeAction;
         _applyPlan = applyPlan;
         _ffmpegPath = ffmpegPath;
+        _ffprobePath = ffprobePath;
         _previewWorkDirectory = PreviewPipeline.CreateWorkDirectory("1cenc-repart-preview-");
 
         AddEpisodeCommand = new ActionCmd(_ => AddDivider());
@@ -1170,15 +1174,28 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
                 long relFirst = Math.Max(0, Math.Max(windowFirst, source.FirstFrame) - source.FirstFrame);
                 long relLast = Math.Max(relFirst, Math.Min(source.LastFrame, windowLast) - source.FirstFrame);
+                long frameCount = relLast - relFirst + 1;
+
+                KeyframeIndex? index = await GetOrBuildKeyframeIndexAsync(source, cts);
+                if (cts.IsCancellationRequested) return;
+
+                long keyframeFrame = 0;
+                double keyframeTime = 0d;
+                index?.TryFindNearestBefore(relFirst, out keyframeFrame, out keyframeTime);
 
                 string patternPrefix = $"divider-preview-{runId}-{source.FirstFrame}";
                 string pattern = Path.Combine(_previewWorkDirectory, patternPrefix + "-%02d.png");
 
-                await PreviewPipeline.RunFfmpegAsync(
-                    _ffmpegPath,
-                    _previewWorkDirectory,
-                    PreviewPipeline.BuildSourceFrameArgs(source.FilePath, relFirst, relLast, pattern),
-                    cts.Token);
+                string[] args = index == null
+                    ? PreviewPipeline.BuildSourceFrameArgs(source.FilePath, relFirst, relLast, pattern)
+                    : PreviewPipeline.BuildSourceFrameSeekArgs(
+                        source.FilePath,
+                        keyframeTime,
+                        relFirst - keyframeFrame,
+                        frameCount,
+                        pattern);
+
+                await PreviewPipeline.RunFfmpegAsync(_ffmpegPath, _previewWorkDirectory, args, cts.Token);
 
                 if (cts.IsCancellationRequested) return;
 
@@ -1222,6 +1239,20 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
                 _dividerPreviewCts = null;
             cts.Dispose();
         }
+    }
+
+    private async Task<KeyframeIndex?> GetOrBuildKeyframeIndexAsync(RepartSourceM source, CancellationTokenSource cts)
+    {
+        if (_keyframeCache.TryGetValue(source.FilePath, out KeyframeIndex? cached))
+            return cached;
+
+        if (string.IsNullOrWhiteSpace(_ffprobePath) || !File.Exists(_ffprobePath))
+            return null;
+
+        DividerPreviewStatusText = $"正在建立 {source.DisplayName} 的关键帧索引...";
+        KeyframeIndex index = await KeyframeIndex.BuildAsync(_ffprobePath, source.FilePath, cts.Token);
+        _keyframeCache[source.FilePath] = index;
+        return index;
     }
 
     private void RefreshDraftAvailability()

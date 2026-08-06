@@ -59,7 +59,13 @@ public static partial class PreviewPipeline
         return [.. args];
     }
 
-    public static string[] BuildSourceFrameArgs(string sourceVideoPath, long firstFrame, long lastFrame, string outputPattern)
+    public static string[] BuildSourceFrameArgs(
+        string sourceVideoPath,
+        long firstFrame,
+        long lastFrame,
+        string outputPattern,
+        int targetHeight = 480,
+        string scaleFlags = "lanczos")
     {
         long safeFirstFrame = Math.Max(0, firstFrame);
         long safeLastFrame = Math.Max(safeFirstFrame, lastFrame);
@@ -72,13 +78,50 @@ public static partial class PreviewPipeline
             "-i",
             sourceVideoPath,
             "-vf",
-            $"select=between(n\\,{safeFirstFrame}\\,{safeLastFrame})",
+            $"select=between(n\\,{safeFirstFrame}\\,{safeLastFrame}),scale=-2:{Math.Max(1, targetHeight)}:flags={scaleFlags}",
             "-vsync",
             "0",
             "-start_number",
             "0",
             "-frames:v",
-            "7",
+            (safeLastFrame - safeFirstFrame + 1).ToString(CultureInfo.InvariantCulture),
+            "-c:v",
+            "png",
+            outputPattern
+        ];
+    }
+
+    public static string[] BuildSourceFrameSeekArgs(
+        string sourceVideoPath,
+        double seekTime,
+        long offsetFrame,
+        long frameCount,
+        string outputPattern,
+        int targetHeight = 480,
+        string scaleFlags = "lanczos")
+    {
+        long safeOffset = Math.Max(0, offsetFrame);
+        long safeCount = Math.Max(1, frameCount);
+        long endFrame = safeOffset + safeCount - 1;
+        string time = EncodingPipeline.FormatTimestamp(TimeSpan.FromSeconds(Math.Max(0d, seekTime)));
+        return
+        [
+            "-hide_banner",
+            "-y",
+            "-strict",
+            "unofficial",
+            "-ss",
+            time,
+            "-i",
+            sourceVideoPath,
+            "-vf",
+            $"select=between(n\\,{safeOffset}\\,{endFrame}),scale=-2:{Math.Max(1, targetHeight)}:flags={scaleFlags}",
+            "-vsync",
+            "0",
+            "-start_number",
+            "0",
+            "-frames:v",
+            safeCount.ToString(CultureInfo.InvariantCulture),
             "-c:v",
             "png",
             outputPattern
