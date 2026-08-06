@@ -52,7 +52,8 @@ public static class RepartCompatibilityAnalyzer
         Func<RepartFrameCountFallbackInfo, bool>? confirmExpandFrameCountSearch = null,
         Action<RepartAnalysisStage, int, int, string>? onFileProgress = null,
         Action<RepartExcludedSourceInfo>? onExcluded = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        bool requireMultipleSources = true)
     {
         if (string.IsNullOrWhiteSpace(ffprobePath) || !File.Exists(ffprobePath))
             throw new FileNotFoundException(RepartLangProvider.Current.FfprobeRequired, ffprobePath);
@@ -71,6 +72,7 @@ public static class RepartCompatibilityAnalyzer
         int frameRateNumerator = 0;
         int frameRateDenominator = 0;
         long cumulativeFrames = 0;
+        int minimumSourceCount = requireMultipleSources ? 2 : 1;
 
         void Exclude(RepartExcludedSourceInfo info)
         {
@@ -80,11 +82,13 @@ public static class RepartCompatibilityAnalyzer
 
         RepartAnalysisResult? CreateInsufficientSourcesResult(int remainingSourceCount)
         {
-            if (remainingSourceCount >= 2) return null;
+            if (remainingSourceCount >= minimumSourceCount) return null;
 
             string fatalMessage = remainingSourceCount == 0 && excluded.Count > 0
                 ? RepartExclusionMessages.FormatReason(excluded[0])
-                : RepartLangProvider.Current["MinSourcesRequired"];
+                : minimumSourceCount == 1
+                    ? RepartLangProvider.Current.SourceRequired
+                    : RepartLangProvider.Current["MinSourcesRequired"];
             return new(null, excluded, fatalMessage);
         }
 

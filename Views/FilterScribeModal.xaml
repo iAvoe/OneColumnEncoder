@@ -64,11 +64,13 @@
                                               Margin="0 0 10 0">
             <comps:RepartFilterScribeSidebarPanel.Style>
                 <Style TargetType="comps:RepartFilterScribeSidebarPanel">
-                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Setter Property="Visibility"
+                            Value="Collapsed" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding DataContext.IsRepartMode, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
                                      Value="True">
-                            <Setter Property="Visibility" Value="Visible" />
+                            <Setter Property="Visibility"
+                                    Value="Visible" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -224,7 +226,7 @@
                             Margin="0 2.5 0 0"
                             Panel.ZIndex="1"
                             Style="{StaticResource TealButton}"
-                            BorderThickness="0" >
+                            BorderThickness="0">
                         <StackPanel Orientation="Horizontal"
                                     VerticalAlignment="Center"
                                     HorizontalAlignment="Center">
@@ -685,7 +687,7 @@
                                Foreground="{StaticResource GlobalSecondary}"
                                VerticalAlignment="Center" />
                     <TextBox Grid.Column="1"
-                              Text="{Binding AviSynthAssRenderFilter, Mode=OneWay}"
+                             Text="{Binding AviSynthAssRenderFilter, Mode=OneWay}"
                              IsReadOnly="True"
                              BorderThickness="0"
                              Background="{StaticResource Background}"

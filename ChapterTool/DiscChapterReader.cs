@@ -34,6 +34,50 @@ namespace OneColumnEncoder.ChapterTool
         public static bool IsSupportedExtension(string filePath) =>
             SupportedExtensions.Contains(Path.GetExtension(filePath), StringComparer.OrdinalIgnoreCase);
 
+        public static async Task<DiscChapterReadResult> TryReadDirectoryAsync(
+            string directoryPath,
+            CancellationToken cancellationToken = default)
+        {
+            if (!Directory.Exists(directoryPath))
+                return DiscChapterReadResult.Failed([$"Chapter source folder does not exist: {directoryPath}"]);
+
+            string[] sourcePaths = Directory.EnumerateFiles(directoryPath, "*", SearchOption.AllDirectories)
+                .Where(IsSupportedExtension)
+                .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+            if (sourcePaths.Length == 0)
+                return DiscChapterReadResult.Failed(["No supported chapter files were found in the selected folder."]);
+
+            List<DiscChapterReadResult> candidates = [];
+            List<string> diagnostics = [];
+            foreach (string sourcePath in sourcePaths)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                DiscChapterReadResult result = await TryReadAsync(sourcePath, cancellationToken);
+                if (result.Chapters.Count > 0
+                    && result.ReferencedFilePaths.Count > 0
+                    && (result.Success || result.IsPartial))
+                {
+                    candidates.Add(result);
+                }
+                else
+                {
+                    diagnostics.AddRange(result.Diagnostics.Select(message =>
+                        $"{Path.GetFileName(sourcePath)}: {message}"));
+                }
+            }
+
+            return candidates
+                .OrderByDescending(result => result.Duration)
+                .ThenByDescending(result => result.ReferencedFilePaths.Count)
+                .ThenByDescending(result => result.Chapters.Count)
+                .FirstOrDefault()
+                ?? DiscChapterReadResult.Failed(
+                    diagnostics.Count > 0
+                        ? diagnostics
+                        : ["No usable chapter playlist with at least two source videos was found."]);
+        }
+
         public static async Task<DiscChapterReadResult> TryReadAsync(
             string filePath,
             CancellationToken cancellationToken = default)

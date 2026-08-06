@@ -7,9 +7,9 @@
              xmlns:viewmodels="clr-namespace:OneColumnEncoder.ViewModels"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              d:DataContext="{d:DesignInstance Type=viewmodels:EncodingMonitorVM}"
-              mc:Ignorable="d"
-              Width="310"
-              PreviewMouseWheel="Sidebar_PreviewMouseWheel">
+             mc:Ignorable="d"
+             Width="310"
+             PreviewMouseWheel="Sidebar_PreviewMouseWheel">
     <UserControl.Resources>
         <Thickness x:Key="RepartOutputSidebarContentPadding">7 10 7 14</Thickness>
         <Thickness x:Key="RepartOutputSidebarItemMargin">0 5</Thickness>

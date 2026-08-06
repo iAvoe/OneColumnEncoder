@@ -7,7 +7,6 @@ using OneColumnEncoder.RepartManagement;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels;
 using OneColumnEncoder.Views;
-using System.IO;
 using System.Threading;
 using System.Windows;
 
@@ -35,7 +34,7 @@ public sealed class OpenRepartConfCmd(
         {
             bool importAsChapterFile = RepartChapterImportPrompt.Confirm(modalNavS);
             initialPlan = importAsChapterFile
-                ? await ImportChapterFileAsync()
+                ? await ImportChapterFolderAsync()
                 : await ImportFolderAsync();
             if (initialPlan == null) return;
         }
@@ -79,34 +78,33 @@ public sealed class OpenRepartConfCmd(
         return result.Plan;
     }
 
-    private async Task<RepartPlanM?> ImportChapterFileAsync()
+    private async Task<RepartPlanM?> ImportChapterFolderAsync()
     {
-        OpenFileDialog dialog = new()
+        OpenFolderDialog dialog = new()
         {
-            Title = RepartLangProvider.Current["SelectChapterFile"],
-            Filter = "Chapter files (*.mpls;*.ifo;*.xpl)|*.mpls;*.ifo;*.xpl|All files (*.*)|*.*",
+            Title = RepartLangProvider.Current["SelectChapterFolder"],
             Multiselect = false
         };
         if (dialog.ShowDialog(Application.Current.MainWindow) != true) return null;
 
-        DiscChapterReadResult chapterResult = await DiscChapterReader.TryReadAsync(dialog.FileName);
-        if (!chapterResult.Success || chapterResult.Chapters.Count == 0)
+        DiscChapterReadResult chapterResult = await DiscChapterReader.TryReadDirectoryAsync(dialog.FolderName);
+        if ((!chapterResult.Success && !chapterResult.IsPartial) || chapterResult.Chapters.Count == 0)
         {
             new OpenErrModalCmd(
                 modalNavS,
                 RepartConfVM.WindowTitleText,
-                string.Format(RepartLangProvider.Current["ChapterImportFailed"], Path.GetFileName(dialog.FileName))).Execute(null);
+                string.Format(RepartLangProvider.Current["ChapterImportFailed"], dialog.FolderName)).Execute(null);
             return null;
         }
 
         string[] sourcePaths = chapterResult.ReferencedFilePaths.ToArray();
-        if (sourcePaths.Length < 2)
+        if (sourcePaths.Length == 0)
         {
             new OpenErrModalCmd(modalNavS, RepartConfVM.WindowTitleText, RepartLangProvider.Current["ChapterSourcesMissing"]).Execute(null);
             return null;
         }
 
-        RepartAnalysisResult? result = await RunAnalysisAsync(sourcePaths);
+        RepartAnalysisResult? result = await RunAnalysisAsync(sourcePaths, requireMultipleSources: false);
         if (result?.Plan == null) return null;
 
         ApplyChapterDividers(result.Plan, chapterResult);
@@ -120,7 +118,9 @@ public sealed class OpenRepartConfCmd(
         return result.Plan;
     }
 
-    private async Task<RepartAnalysisResult?> RunAnalysisAsync(IReadOnlyList<string> filePaths)
+    private async Task<RepartAnalysisResult?> RunAnalysisAsync(
+        IReadOnlyList<string> filePaths,
+        bool requireMultipleSources = true)
     {
         // Run the Repart Mode check & filter pass before the window opens.
         // Excluded sources are collected during analysis and reported once,
@@ -159,7 +159,8 @@ public sealed class OpenRepartConfCmd(
                 excludedItems.Add(excluded);
                 progressVM.P3Text = string.Format(RepartLangProvider.Current["ExcludedCount"], excludedCount);
             },
-            cancellationToken: cancellation.Token);
+            cancellationToken: cancellation.Token,
+            requireMultipleSources: requireMultipleSources);
 
         _ = CloseWhenCompletedAsync(analysisTask, progressWindow);
         progressWindow.ShowDialog();
