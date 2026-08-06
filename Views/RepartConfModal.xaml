@@ -180,7 +180,6 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 
                 <!-- Import Source Control -->
@@ -211,23 +210,6 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
                 
-                <!-- Import buttons-->
-                <Grid Grid.Row="2"
-                      Margin="0 5 0 0">
-                    <StackPanel>
-                        <Button Content="{Binding ImportMplsText}"
-                                IsEnabled="False"
-                                Style="{StaticResource NormalButton}"
-                                Height="35"
-                                HorizontalAlignment="Stretch"
-                                Tag="{x:Static ui:SvgIconProvider.GamePlay}"
-                                Margin="0 2.5">
-                            <Button.ToolTip>
-                                <TextBlock Text="{Binding ImportMplsText}" />
-                            </Button.ToolTip>
-                        </Button>
-                    </StackPanel>
-                </Grid>
             </Grid>
 
             <!-- Add new divider controls -->

@@ -109,7 +109,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public static string DividerControlTitle => RepartLangProvider.Current["DividerControl"];
     public static string AddNewDividerTitle => RepartLangProvider.Current["AddNewDivider"];
     public static string DividerOpsTitle => RepartLangProvider.Current["ManageDividers"];
-    public static string ImportMplsText => RepartLangProvider.Current["ImportMpls"];
     public static string OutputNameLabel => RepartLangProvider.Current["OutputName"];
     public static string StartTimeLabel => RepartLangProvider.Current["StartTime"];
     public static string SegmentDurationLabel => RepartLangProvider.Current["SegmentDuration"];
@@ -1102,7 +1101,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         {
             nameof(InputSourcesTitle), nameof(OutputEpisodesTitle), nameof(TimelineTitle),
             nameof(TimelineControlTitle), nameof(DividerControlTitle), nameof(AddNewDividerTitle), nameof(DividerOpsTitle),
-            nameof(ImportMplsText), nameof(OutputNameLabel), nameof(StartTimeLabel), nameof(SegmentDurationLabel),
+            nameof(OutputNameLabel), nameof(StartTimeLabel), nameof(SegmentDurationLabel),
             nameof(EndTimeLabel), nameof(TimeFormatText), nameof(FirstFrameLabel), nameof(FrameCountLabel),
             nameof(LastFrameLabel), nameof(FrameFormatText), nameof(AddEpisodeText), nameof(ApplyEditText),
             nameof(DeleteEpisodeText), nameof(MergeLeftText), nameof(MergeRightText), nameof(ResetEditText),

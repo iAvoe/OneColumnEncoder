@@ -34,4 +34,8 @@
     <Resource Include="favicon.ico" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="ChapterTool.Core" Version="23.3.0" />
+  </ItemGroup>
+
 </Project>
