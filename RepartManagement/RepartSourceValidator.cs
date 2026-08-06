@@ -104,6 +104,7 @@ public static class RepartSourceValidator
         "time_base,color_range,color_space,color_transfer,color_primaries,chroma_location," +
         "nb_frames,nb_read_frames,duration,start_time,extradata:format=duration,start_time";
     private const int MaxMetadataProbeAdjustmentFrames = 300;
+    private const double FrameProbeSeekMarginSeconds = 2d;
 
     // Stage 1: filters that do not need ffprobe.
     public static RepartSourceFileOutcome CheckWithoutFfprobe(string filePath)
@@ -225,7 +226,8 @@ public static class RepartSourceValidator
 
     // Stage 2: frame-count acquisition plus file-stability check.
     // Prefer cached nb_frames, then duration-based estimation verified by seek-probing,
-    // with ffmpeg's exact null remux as a last resort.
+    // with ffmpeg's exact null remux as a fallback and a full ffprobe count as the
+    // final fallback. This order is shared by folder and chapter imports.
     public static async Task<RepartScanOutcome> ScanFramesAsync(
         string ffprobePath,
         string? ffmpegPath,
@@ -345,6 +347,26 @@ public static class RepartSourceValidator
             }
         }
 
+        // Full frame counting is the slowest fallback. It is deliberately kept
+        // after the ffmpeg attempt so normal imports remain on the estimate or
+        // ffmpeg paths.
+        try
+        {
+            long? probedCount = await CountFramesWithFfprobeAsync(
+                ffprobePath,
+                sourcePath,
+                cancellationToken);
+            if (probedCount is > 0)
+                return probedCount.Value;
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch
+        {
+        }
+
         // No exact count (no ffmpeg) and the duration-based estimate could not be
         // verified. Ask the user whether to run an extended search that expands the
         // frame-count range by 10x per step to locate the real boundary, or to
@@ -373,6 +395,40 @@ public static class RepartSourceValidator
         }
 
         return estimatedCount is > 0 ? estimatedCount.Value : 0;
+    }
+
+    private static async Task<long?> CountFramesWithFfprobeAsync(
+        string ffprobePath,
+        string sourcePath,
+        CancellationToken cancellationToken)
+    {
+        string[] arguments =
+        [
+            "-v", "error",
+            "-hide_banner",
+            "-count_frames",
+            "-select_streams", "v:0",
+            "-show_entries", "stream=nb_read_frames,nb_frames",
+            "-of", "json",
+            sourcePath
+        ];
+
+        FFprobeProcessResult result = await FFprobeProcessRunner.RunAsync(
+            ffprobePath,
+            arguments,
+            TimeSpan.FromMinutes(30),
+            cancellationToken);
+        if (result.ExitCode != 0 || string.IsNullOrWhiteSpace(result.Stdout))
+            return null;
+
+        using JsonDocument document = JsonDocument.Parse(result.Stdout);
+        if (!FrameRate.TryGetFirstVideoStream(document.RootElement, out JsonElement stream))
+            return null;
+
+        long? readFrames = TryGetLong(stream, "nb_read_frames");
+        return readFrames is > 0
+            ? readFrames.Value
+            : TryGetFrameCount(stream);
     }
 
     // Brackets the real frame count by probing at frame indices that grow by 10x
@@ -604,8 +660,9 @@ public static class RepartSourceValidator
 
         double frameDuration = (double)probe.FrameRateDenominator / probe.FrameRateNumerator;
         double targetSeconds = probe.StartTimeSeconds + frameIndex * frameDuration;
-        double startSeconds = Math.Max(0d, targetSeconds - frameDuration * 2d);
-        double endSeconds = Math.Max(startSeconds + frameDuration, targetSeconds + frameDuration * 2d);
+        double seekMargin = Math.Max(frameDuration * 2d, FrameProbeSeekMarginSeconds);
+        double startSeconds = Math.Max(0d, targetSeconds - seekMargin);
+        double endSeconds = Math.Max(startSeconds + frameDuration, targetSeconds + seekMargin);
         string interval = string.Create(
             CultureInfo.InvariantCulture,
             $"{startSeconds:0.#########}%{endSeconds:0.#########}");

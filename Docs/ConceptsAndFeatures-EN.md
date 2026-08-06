@@ -266,6 +266,8 @@ For script sources, the project validates that the video path embedded in the sc
 
 Filter Scribe is available in Repart mode through a Repart-specific concat-style workflow. Its sidebar lists the output episodes created by the Repart plan, while the temporary AVS/VPY source or ffmpeg input is built internally from the Repart source list. Selected filters are applied without modifying the imported files or committed frame boundaries. Source Reviser remains unavailable because changing source metadata would invalidate the frame offsets.
 
+Rare edge case: some long-GOP BDMV titles can make the short seek-based frame verification miss the last frame near the tail of the title. In that case the implementation widens the seek window first, then falls back to ffmpeg, and only uses full `ffprobe -count_frames` as the slowest last resort.
+
 ---
 
 ## Encoder Parameters & Preview

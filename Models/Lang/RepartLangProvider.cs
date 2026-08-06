@@ -8,7 +8,7 @@ public sealed class RepartLangProvider(string languageCode)
         {
             ["Tool"] = "📁 Video Src. Repart",
             ["SelectFolder"] = "Select Repart video source folder",
-            ["ChapterFileImportPrompt"] = "Import Repart from a chapter folder?\n\nConfirm: pick a folder containing the chapter playlist files (.mpls / .ifo / .xpl) to read episode boundaries.\nCancel: import a video source folder as usual",
+            ["ChapterFileImportPrompt"] = "Import Repart from a chapter folder?\n\nConfirm: pick a folder containing the chapter playlist files (.mpls / .ifo / .xpl). Only m2ts files referenced by the selected playlist are imported, and episode boundaries are read from its chapters.\nCancel: import a video source folder as usual. All compatible video files in the folder are considered, so unrelated trailers or featurettes with a matching stream format and plausible size may be included; this cannot always be avoided automatically",
             ["SelectChapterFolder"] = "Select a chapter folder containing playlist files",
             ["ChapterSourcesMissing"] = "The chapter folder did not resolve an existing video source file. Make sure the media files (m2ts) referenced by the playlist are present",
             ["ChapterImportFailed"] = "Failed to read chapters from: {0}",
@@ -95,7 +95,7 @@ public sealed class RepartLangProvider(string languageCode)
         {
             ["Tool"] = "📁 视频源重分集",
             ["SelectFolder"] = "选择重分集视频源文件夹",
-            ["ChapterFileImportPrompt"] = "是否以章节文件夹形式导入？\n\n确认：选择包含章节播放列表文件（.mpls / .ifo / .xpl）的文件夹读取分集边界。\n取消：按常规方式导入视频源文件夹",
+            ["ChapterFileImportPrompt"] = "是否以章节文件夹形式导入？\n\n确认：选择包含章节播放列表文件（.mpls / .ifo / .xpl）的文件夹。仅导入所选播放列表引用的 m2ts，并使用其中的章节读取分集边界。\n取消：按常规方式导入视频源文件夹。文件夹内所有通过兼容性过滤的视频文件都会被纳入候选，因此流格式正确且文件大小合理的片花可能被误判为正片；此类误判无法完全自动避免",
             ["SelectChapterFolder"] = "选择包含章节播放列表的文件夹",
             ["ChapterSourcesMissing"] = "章节文件夹未能解析出存在的视频源文件。请确认播放列表引用的媒体文件（m2ts）存在",
             ["ChapterImportFailed"] = "读取章节失败：{0}",
@@ -207,7 +207,7 @@ public sealed class RepartLangProvider(string languageCode)
             ["FrameCountRequired"] = "重分集模式無法可靠掃描影片影格數：{0}",
             ["FrameChangingFiltersWarning"] = "重分集輸出按來源影格號精確切分。請避免使用會改變影格數或影格時序的濾鏡，例如 IVTC、抽幀、補幀、CFR/VFR 轉換",
             ["SelectFolder"] = "選擇重分集影片來源資料夾",
-            ["ChapterFileImportPrompt"] = "是否以章節檔案夾形式匯入？\n\n確認：選擇包含章節播放清單檔案（.mpls / .ifo / .xpl）的資料夾讀取分集邊界。\n取消：按常規方式匯入影片來源資料夾",
+            ["ChapterFileImportPrompt"] = "是否以章節檔案夾形式匯入？\n\n確認：選擇包含章節播放清單檔案（.mpls / .ifo / .xpl）的資料夾。僅匯入所選播放清單引用的 m2ts，並使用其中的章節讀取分集邊界。\n取消：按常規方式匯入影片來源資料夾。資料夾內所有通過相容性篩選的影片檔案都會納入候選，因此串流格式正確且檔案大小合理的片花可能被誤判為正片；此類誤判無法完全自動避免",
             ["SelectChapterFolder"] = "選擇包含章節播放清單的資料夾",
             ["ChapterSourcesMissing"] = "章節檔案夾未能解析出存在的影片來源檔案。請確認播放清單引用的媒體檔案（m2ts）存在",
             ["ChapterImportFailed"] = "讀取章節失敗：{0}",
@@ -270,7 +270,7 @@ public sealed class RepartLangProvider(string languageCode)
         {
             ["Tool"] = "📁 Répart. vidéo",
             ["SelectFolder"] = "Sélectionner le dossier des sources vidéo",
-            ["ChapterFileImportPrompt"] = "Importer la répartition depuis un dossier de chapitres ?\n\nConfirmer : choisir un dossier contenant les listes de lecture (.mpls / .ifo / .xpl) pour lire les limites d'épisodes.\nAnnuler : importer un dossier de sources vidéo comme d'habitude",
+            ["ChapterFileImportPrompt"] = "Importer la répartition depuis un dossier de chapitres ?\n\nConfirmer : choisir un dossier contenant les listes de lecture (.mpls / .ifo / .xpl). Seuls les fichiers m2ts référencés par la liste sélectionnée sont importés et les limites d'épisodes sont lues depuis ses chapitres.\nAnnuler : importer un dossier de sources vidéo comme d'habitude. Tous les fichiers vidéo compatibles du dossier sont considérés ; des bandes-annonces ou bonus au format et à la taille plausibles peuvent être inclus, ce qui ne peut pas toujours être évité automatiquement",
             ["SelectChapterFolder"] = "Sélectionner un dossier de listes de lecture de chapitres",
             ["ChapterSourcesMissing"] = "Le dossier de chapitres n'a pas résolu de fichier source vidéo existant. Vérifiez que les fichiers média référencés (m2ts) sont présents",
             ["ChapterImportFailed"] = "Échec de la lecture des chapitres : {0}",
@@ -354,7 +354,7 @@ public sealed class RepartLangProvider(string languageCode)
         {
             ["Tool"] = "📁 Repart. vídeo",
             ["SelectFolder"] = "Seleccionar carpeta de f. de víd.",
-            ["ChapterFileImportPrompt"] = "¿Importar Repart desde una carpeta de capítulos?\n\nConfirmar: elegir una carpeta con listas de reproducción (.mpls / .ifo / .xpl) para leer los límites de episodios.\nCancelar: importar una carpeta de fuentes de vídeo como siempre",
+            ["ChapterFileImportPrompt"] = "¿Importar Repart desde una carpeta de capítulos?\n\nConfirmar: elegir una carpeta con listas de reproducción (.mpls / .ifo / .xpl). Solo se importan los archivos m2ts referenciados por la lista seleccionada y sus capítulos proporcionan los límites de los episodios.\nCancelar: importar una carpeta de fuentes de vídeo como siempre. Se consideran todos los archivos compatibles de la carpeta, por lo que pueden incluirse tráileres o extras con formato y tamaño plausibles; esto no siempre puede evitarse automáticamente",
             ["SelectChapterFolder"] = "Seleccionar carpeta de listas de reproducción de capítulos",
             ["ChapterSourcesMissing"] = "La carpeta de capítulos no resolvió ningún archivo de fuente de vídeo existente. Asegúrate de que los archivos multimedia referenciados (m2ts) estén presentes",
             ["ChapterImportFailed"] = "No se pudieron leer los capítulos: {0}",
@@ -439,7 +439,7 @@ public sealed class RepartLangProvider(string languageCode)
             ["Tool"] = "📁 映像ソース再分割",
             ["ToolCount"] = "映像ソース再分割 ({0} → {1})",
             ["SelectFolder"] = "再分割の映像ソースフォルダーを選択",
-            ["ChapterFileImportPrompt"] = "チャプターフォルダーから再分割をインポートしますか？\n\n確認: チャプタープレイリスト（.mpls / .ifo / .xpl）が入ったフォルダーを選択してエピソード境界を読み取ります。\nキャンセル: 通常どおり映像ソースフォルダーをインポートします",
+            ["ChapterFileImportPrompt"] = "チャプターフォルダーから再分割をインポートしますか？\n\n確認: チャプタープレイリスト（.mpls / .ifo / .xpl）が入ったフォルダーを選択します。選択したプレイリストが参照する m2ts だけを読み込み、チャプターからエピソード境界を取得します。\nキャンセル: 通常どおり映像ソースフォルダーをインポートします。フォルダー内の互換性のある映像ファイルをすべて候補にするため、形式とサイズが妥当な予告編や特典映像が含まれる場合があり、自動判別できないことがあります",
             ["SelectChapterFolder"] = "チャプタープレイリストのフォルダーを選択",
             ["ChapterSourcesMissing"] = "チャプターフォルダーから既存の映像ソースファイルを解決できませんでした。参照メディアファイル（m2ts）が存在することを確認してください",
             ["ChapterImportFailed"] = "チャプターの読み取りに失敗しました: {0}",
@@ -523,7 +523,7 @@ public sealed class RepartLangProvider(string languageCode)
         {
             ["Tool"] = "📁 Репарт видео",
             ["SelectFolder"] = "Выберите папку с исходными видео",
-            ["ChapterFileImportPrompt"] = "Импортировать разбивку из папки с файлами глав?\n\nПодтвердить: выбрать папку со списками воспроизведения (.mpls / .ifo / .xpl), чтобы прочитать границы эпизодов.\nОтмена: импортировать папку с исходными видео как обычно",
+            ["ChapterFileImportPrompt"] = "Импортировать разбивку из папки с файлами глав?\n\nПодтвердить: выбрать папку со списками воспроизведения (.mpls / .ifo / .xpl). Импортируются только m2ts, на которые ссылается выбранный список, а границы эпизодов берутся из его глав.\nОтмена: импортировать папку с исходными видео как обычно. Рассматриваются все совместимые видеофайлы в папке, поэтому в импорт могут попасть трейлеры или бонусные ролики с подходящим форматом потока и правдоподобным размером; автоматически исключить их удаётся не всегда",
             ["SelectChapterFolder"] = "Выберите папку со списками воспроизведения глав",
             ["ChapterSourcesMissing"] = "Папка глав не дала существующих файлов исходного видео. Убедитесь, что ссылки на медиафайлы (m2ts) доступны",
             ["ChapterImportFailed"] = "Не удалось прочитать главы: {0}",
