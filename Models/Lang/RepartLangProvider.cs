@@ -90,7 +90,13 @@ public sealed class RepartLangProvider(string languageCode)
             ["WillExcludeSource"] = "This source item will be excluded. Close this dialog to proceed importing",
             ["ImportSummary"] = "Repart import completed: {0} source(s) accepted, {1} source item(s) excluded",
             ["TimelineHint"] = "Double-click on timeline to add new divider; right-click a divider to show its context menu",
-            ["TimelineHintDetailed"] = "Use this mode for conjoined discs and under-/over-segmented sets, or for sources whose divider frames are simply wrong. It still needs manual inspection. Chapter-based import will also draw OP, ED, guide, small-theater, and other special segments as dividers; delete those dividers instead of keeping them."
+            ["TimelineHintDetailed"] = "Use this mode for conjoined discs and under-/over-segmented sets, or for sources whose divider frames are simply wrong. It still needs manual inspection. Chapter-based import will also draw OP, ED, guide, small-theater, and other special segments as dividers; delete those dividers instead of keeping them.",
+            ["DividerPreviewSelectDivider"] = "Select a divider to show the preview",
+            ["DividerPreviewFfmpegUnavailable"] = "ffmpeg is unavailable, so preview cannot be generated",
+            ["DividerPreviewReadingWindow"] = "Reading a 7-frame window around frame {0:N0}...",
+            ["DividerPreviewSummary"] = "{0} | {1:N0} frames | {2} frame preview",
+            ["DividerPreviewCancelled"] = "Preview cancelled",
+            ["DividerPreviewBuildingIndex"] = "Building a keyframe index for {0}..."
         },
         ["zh-cn"] = new()
         {
@@ -178,7 +184,13 @@ public sealed class RepartLangProvider(string languageCode)
             ["WillExcludeSource"] = "将排除此视频源，关闭对话框后继续处理其余项目",
             ["ImportSummary"] = "重分集导入完成：已接受 {0} 个视频源，已排除 {1} 个源项目",
             ["TimelineHint"] = "双击时间轴以添加分割线；右键分割线可打开其上下文菜单",
-            ["TimelineHintDetailed"] = "此模式用于处理连体盘和肉酱盘（欠分集与过分集），或仅仅是分集帧位置错误的源，仍需要人工检查。使用章节读取导入时，OP、ED、导览、小剧场等特殊段落也会被画成分割线，这些分割线应当删除，不要保留。"
+            ["TimelineHintDetailed"] = "此模式用于处理连体盘和肉酱盘（欠分集与过分集），或仅仅是分集帧位置错误的源，仍需要人工检查。使用章节读取导入时，OP、ED、导览、小剧场等特殊段落也会被画成分割线，这些分割线应当删除，不要保留。",
+            ["DividerPreviewSelectDivider"] = "选择一个分割线以显示预览",
+            ["DividerPreviewFfmpegUnavailable"] = "ffmpeg 不可用，无法生成预览",
+            ["DividerPreviewReadingWindow"] = "正在读取 {0:N0} 帧的 7 帧窗口...",
+            ["DividerPreviewSummary"] = "{0} | {1:N0} 帧 | {2} 帧预览",
+            ["DividerPreviewCancelled"] = "预览已取消",
+            ["DividerPreviewBuildingIndex"] = "正在建立 {0} 的关键帧索引..."
         }
     };
 

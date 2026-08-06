@@ -38,6 +38,7 @@ public static class AutoToolImport
             if (!NeedsImport(exeName, tools)) continue;
 
             Candidate? candidate = await FindTopLevelCandidateAsync(exeName)
+                ?? await FindUpstreamTreeCandidateAsync(exeName)
                 ?? await FindInstalledCandidateAsync(exeName);
             if (candidate != null) candidates.Add(candidate);
         }
@@ -94,6 +95,44 @@ public static class AutoToolImport
         }
 
         return null;
+    }
+
+    private static async Task<Candidate?> FindUpstreamTreeCandidateAsync(string exeName)
+    {
+        string? rootDirectory = GetMatchingUpstreamEncodersDirectory();
+        if (string.IsNullOrWhiteSpace(rootDirectory) || !Directory.Exists(rootDirectory)) return null;
+
+        IEnumerable<FileInfo> matches;
+        try
+        {
+            matches = Directory.EnumerateFiles(rootDirectory, "*.exe", SearchOption.AllDirectories)
+                .Where(path => IsCandidateFileNameMatch(exeName, path))
+                .Select(path => new FileInfo(path))
+                .OrderByDescending(file => file.Name.Equals(exeName, StringComparison.OrdinalIgnoreCase))
+                .ThenBy(file => file.FullName.Length)
+                .ThenByDescending(file => file.LastWriteTimeUtc)
+                .ToArray();
+        }
+        catch
+        {
+            return null;
+        }
+
+        foreach (FileInfo file in matches)
+        {
+            Candidate? candidate = await TryBuildCandidateAsync(exeName, file.FullName);
+            if (candidate != null) return candidate;
+        }
+
+        return null;
+    }
+
+    private static string? GetMatchingUpstreamEncodersDirectory()
+    {
+        string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        return Environment.Is64BitProcess
+            ? Path.Combine(baseDirectory, "x64-upstreams-encoders")
+            : Path.Combine(baseDirectory, "x86-upstreams-encoders");
     }
 
     private static async Task<Candidate?> FindInstalledCandidateAsync(string exeName)

@@ -12,6 +12,8 @@ public sealed class KeyframeIndex : IDisposable
     private readonly List<double> _times = [];
     private readonly TaskCompletionSource<bool> _firstTimeReady = new(
         TaskCreationOptions.RunContinuationsAsynchronously);
+    private readonly TaskCompletionSource<bool> _completed = new(
+        TaskCreationOptions.RunContinuationsAsynchronously);
     private bool _disposed;
 
     private KeyframeIndex(Process process, CancellationToken scanToken)
@@ -27,6 +29,8 @@ public sealed class KeyframeIndex : IDisposable
             lock (_sync) return _times.Count;
         }
     }
+
+    public Task Completion => _completed.Task;
 
     public double FirstTime
     {
@@ -134,24 +138,29 @@ public sealed class KeyframeIndex : IDisposable
             bool hasTimes = Count > 0;
             if (_process.ExitCode != 0 || !hasTimes)
             {
-                _firstTimeReady.TrySetException(new InvalidOperationException(
+                InvalidOperationException ex = new(
                     string.IsNullOrWhiteSpace(stderr)
                         ? "ffprobe keyframe scan failed."
-                        : stderr.Trim()));
+                        : stderr.Trim());
+                _firstTimeReady.TrySetException(ex);
+                _completed.TrySetException(ex);
             }
             else
             {
                 _firstTimeReady.TrySetResult(true);
+                _completed.TrySetResult(true);
             }
         }
         catch (OperationCanceledException)
         {
             _firstTimeReady.TrySetCanceled(_scanToken);
+            _completed.TrySetCanceled(_scanToken);
             TryKillProcess();
         }
         catch (Exception ex)
         {
             _firstTimeReady.TrySetException(ex);
+            _completed.TrySetException(ex);
         }
         finally
         {
@@ -190,5 +199,6 @@ public sealed class KeyframeIndex : IDisposable
 
         TryKillProcess();
         _firstTimeReady.TrySetCanceled();
+        _completed.TrySetCanceled();
     }
 }

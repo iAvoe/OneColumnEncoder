@@ -10,6 +10,7 @@ using System.IO;
 using System.Text.Json;
 using System.Threading;
 using System.Windows.Input;
+using System.Windows;
 using System.Windows.Media;
 
 namespace OneColumnEncoder.ViewModels;
@@ -22,8 +23,10 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private readonly string? _ffmpegPath;
     private readonly string? _ffprobePath;
     private readonly string _previewWorkDirectory;
+    private readonly object _keyframeIndexCacheSync = new();
     private readonly Dictionary<string, KeyframeIndex> _keyframeIndexCache = new(StringComparer.OrdinalIgnoreCase);
     private readonly CancellationTokenSource _keyframeIndexLifetimeCts = new();
+    private CancellationTokenSource? _keyframeWarmupCts;
     private RepartPlanM? _analysis;
     private RepartOutputItemVM? _selectedOutput;
     private List<RepartOutputItemVM> _selectedOutputs = [];
@@ -46,7 +49,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private string _newDividerFrameText = "0";
     private CancellationTokenSource? _dividerPreviewCts;
     private readonly ObservableCollection<DividerPreviewFrameVM> _dividerPreviewFrames = [];
-    private string _dividerPreviewStatusText = "选择一个分割线以显示预览";
+    private string _dividerPreviewStatusText = RepartLangProvider.Current["DividerPreviewSelectDivider"];
     private bool _suppressDividerPreviewRefresh;
     private bool _syncingNewDivider;
     private bool _isBusy;
@@ -451,6 +454,10 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         }
 
         _analysis = currentPlan.Clone();
+        _keyframeWarmupCts?.Cancel();
+        _keyframeWarmupCts?.Dispose();
+        _keyframeWarmupCts = new CancellationTokenSource();
+        DisposeKeyframeIndexCache();
         LoadSources();
         BuildAxisLabels();
         _dividers = GetPlanDividers(currentPlan);
@@ -459,6 +466,9 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         PrepareNextDraft();
         SetSuggestedNewDividerTexts();
         RefreshAnalysisProperties();
+
+        if (!string.IsNullOrWhiteSpace(_ffprobePath) && File.Exists(_ffprobePath))
+            _ = WarmKeyframeIndexesAsync(_analysis, _keyframeWarmupCts.Token);
 
         return Task.CompletedTask;
     }
@@ -526,6 +536,59 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
                 source.FirstFrame,
                 source.LastFrame));
         }
+    }
+
+    private void SetSourceIndexState(string filePath, RepartSourceIndexState state)
+    {
+        void Apply()
+        {
+            RepartSourceItemVM? item = Sources.FirstOrDefault(source =>
+                string.Equals(source.FilePath, filePath, StringComparison.OrdinalIgnoreCase));
+            item?.SetIndexState(state);
+        }
+
+        if (Application.Current?.Dispatcher?.CheckAccess() == true)
+            Apply();
+        else
+            Application.Current?.Dispatcher.InvokeAsync(Apply);
+    }
+
+    private bool IsCachedKeyframeIndex(string filePath, KeyframeIndex index)
+    {
+        lock (_keyframeIndexCacheSync)
+        {
+            return _keyframeIndexCache.TryGetValue(filePath, out KeyframeIndex? cached)
+                && ReferenceEquals(cached, index);
+        }
+    }
+
+    private bool RemoveCachedKeyframeIndex(string filePath, KeyframeIndex index)
+    {
+        lock (_keyframeIndexCacheSync)
+        {
+            if (!_keyframeIndexCache.TryGetValue(filePath, out KeyframeIndex? cached)
+                || !ReferenceEquals(cached, index))
+                return false;
+
+            _keyframeIndexCache.Remove(filePath);
+            return true;
+        }
+    }
+
+    private KeyframeIndex[] ClearKeyframeIndexCache()
+    {
+        lock (_keyframeIndexCacheSync)
+        {
+            KeyframeIndex[] indexes = [.. _keyframeIndexCache.Values];
+            _keyframeIndexCache.Clear();
+            return indexes;
+        }
+    }
+
+    private void DisposeKeyframeIndexCache()
+    {
+        foreach (KeyframeIndex index in ClearKeyframeIndexCache())
+            index.Dispose();
     }
 
     private void AddDivider()
@@ -1127,7 +1190,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         if (_analysis == null || SelectedDivider == null)
         {
             DividerPreviewFrames.Clear();
-            DividerPreviewStatusText = "选择一个分割线以显示预览";
+            DividerPreviewStatusText = RepartLangProvider.Current["DividerPreviewSelectDivider"];
             cts.Dispose();
             _dividerPreviewCts = null;
             return;
@@ -1145,7 +1208,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             if (string.IsNullOrWhiteSpace(_ffmpegPath) || !File.Exists(_ffmpegPath))
             {
                 DividerPreviewFrames.Clear();
-                DividerPreviewStatusText = "ffmpeg 不可用，无法生成预览";
+                DividerPreviewStatusText = RepartLangProvider.Current["DividerPreviewFfmpegUnavailable"];
                 return;
             }
 
@@ -1158,7 +1221,9 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
             string runId = Guid.NewGuid().ToString("N");
             DividerPreviewFrames.Clear();
-            DividerPreviewStatusText = $"正在读取 {selectedFrame:N0} 帧的 7 帧窗口...";
+            DividerPreviewStatusText = string.Format(
+                RepartLangProvider.Current["DividerPreviewReadingWindow"],
+                selectedFrame);
 
             foreach (string file in Directory.GetFiles(_previewWorkDirectory, "divider-preview-*.jpg"))
             {
@@ -1233,12 +1298,16 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
                 .Where(source => selectedFrame >= source.FirstFrame && selectedFrame <= source.LastFrame)
                 .Select(source => source.DisplayName)
                 .FirstOrDefault() ?? "?";
-            DividerPreviewStatusText = $"{sourceName} | {selectedFrame:N0} 帧 | {DividerPreviewFrames.Count} 帧预览";
+            DividerPreviewStatusText = string.Format(
+                RepartLangProvider.Current["DividerPreviewSummary"],
+                sourceName,
+                selectedFrame,
+                DividerPreviewFrames.Count);
         }
         catch (OperationCanceledException)
         {
             if (!cts.IsCancellationRequested)
-                DividerPreviewStatusText = "预览已取消";
+                DividerPreviewStatusText = RepartLangProvider.Current["DividerPreviewCancelled"];
         }
         catch (Exception ex)
         {
@@ -1253,22 +1322,96 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         }
     }
 
+    private async Task WarmKeyframeIndexesAsync(RepartPlanM analysis, CancellationToken token)
+    {
+        try
+        {
+            foreach (RepartSourceM source in analysis.Sources)
+            {
+                if (token.IsCancellationRequested) return;
+                try
+                {
+                    await BuildKeyframeIndexAsync(source, token);
+                }
+                catch (OperationCanceledException) when (token.IsCancellationRequested)
+                {
+                    return;
+                }
+                catch { }
+            }
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested) { }
+    }
+
     private async Task<KeyframeIndex?> BuildKeyframeIndexAsync(
         RepartSourceM source,
         CancellationToken token)
     {
-        if (_keyframeIndexCache.TryGetValue(source.FilePath, out KeyframeIndex? cached))
+        KeyframeIndex? cached;
+        lock (_keyframeIndexCacheSync)
+            _keyframeIndexCache.TryGetValue(source.FilePath, out cached);
+
+        if (cached != null)
+        {
+            if (cached.Count == 0)
+                await cached.WaitForFirstAsync(token);
             return cached;
+        }
 
         if (string.IsNullOrWhiteSpace(_ffprobePath) || !File.Exists(_ffprobePath))
             return null;
 
-        DividerPreviewStatusText = $"正在建立 {source.DisplayName} 的关键帧索引...";
-        KeyframeIndex index = KeyframeIndex.Start(
-            _ffprobePath,
-            source.FilePath,
-            _keyframeIndexLifetimeCts.Token);
-        _keyframeIndexCache[source.FilePath] = index;
+        SetSourceIndexState(source.FilePath, RepartSourceIndexState.Loading);
+        DividerPreviewStatusText = string.Format(
+            RepartLangProvider.Current["DividerPreviewBuildingIndex"],
+            source.DisplayName);
+        KeyframeIndex index;
+        try
+        {
+            index = KeyframeIndex.Start(
+                _ffprobePath,
+                source.FilePath,
+                _keyframeIndexLifetimeCts.Token);
+        }
+        catch
+        {
+            SetSourceIndexState(source.FilePath, RepartSourceIndexState.Failed);
+            throw;
+        }
+
+        lock (_keyframeIndexCacheSync)
+        {
+            if (_keyframeIndexCache.TryGetValue(source.FilePath, out cached))
+            {
+                index.Dispose();
+                index = cached;
+            }
+            else
+            {
+                _keyframeIndexCache[source.FilePath] = index;
+            }
+        }
+
+        if (!ReferenceEquals(index, cached))
+        {
+            _ = index.Completion.ContinueWith(task =>
+            {
+                if (task.IsCanceled)
+                {
+                    RemoveCachedKeyframeIndex(source.FilePath, index);
+                }
+                else if (task.IsFaulted)
+                {
+                    if (RemoveCachedKeyframeIndex(source.FilePath, index))
+                        SetSourceIndexState(source.FilePath, RepartSourceIndexState.Failed);
+                    index.Dispose();
+                }
+                else if (IsCachedKeyframeIndex(source.FilePath, index))
+                {
+                    SetSourceIndexState(source.FilePath, RepartSourceIndexState.Ready);
+                }
+            }, TaskScheduler.Default);
+        }
 
         try
         {
@@ -1282,7 +1425,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         }
         catch
         {
-            _keyframeIndexCache.Remove(source.FilePath);
+            if (RemoveCachedKeyframeIndex(source.FilePath, index))
+                SetSourceIndexState(source.FilePath, RepartSourceIndexState.Failed);
             index.Dispose();
             throw;
         }
@@ -1398,10 +1542,11 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         UILangProvider.CurrentChanged -= OnLanguageChanged;
         try { _dividerPreviewCts?.Cancel(); }
         catch { }
+        try { _keyframeWarmupCts?.Cancel(); }
+        catch { }
         _keyframeIndexLifetimeCts.Cancel();
-        foreach (KeyframeIndex index in _keyframeIndexCache.Values)
-            index.Dispose();
-        _keyframeIndexCache.Clear();
+        DisposeKeyframeIndexCache();
+        _keyframeWarmupCts?.Dispose();
         _keyframeIndexLifetimeCts.Dispose();
         PreviewPipeline.DeleteDirectoryQuietly(_previewWorkDirectory);
         base.Dispose();

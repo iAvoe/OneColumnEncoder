@@ -196,9 +196,39 @@
                         <DataTemplate>
                             <Border Margin="0 2.5"
                                     Padding="5"
-                                    BorderBrush="{StaticResource GlobalSecondary}"
                                     BorderThickness="1"
                                     CornerRadius="4">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background"
+                                                Value="Transparent" />
+                                        <Setter Property="BorderBrush"
+                                                Value="{StaticResource GlobalSecondary}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IndexState}"
+                                                         Value="{x:Static vms:RepartSourceIndexState.Loading}">
+                                                <Setter Property="Background"
+                                                        Value="{StaticResource BackgroundAmber}" />
+                                                <Setter Property="BorderBrush"
+                                                        Value="{StaticResource BorderAmber}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IndexState}"
+                                                         Value="{x:Static vms:RepartSourceIndexState.Ready}">
+                                                <Setter Property="Background"
+                                                        Value="{StaticResource BackgroundGreen}" />
+                                                <Setter Property="BorderBrush"
+                                                        Value="{StaticResource BorderGreen}" />
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IndexState}"
+                                                         Value="{x:Static vms:RepartSourceIndexState.Failed}">
+                                                <Setter Property="Background"
+                                                        Value="{StaticResource BackgroundRed}" />
+                                                <Setter Property="BorderBrush"
+                                                        Value="{StaticResource BorderRed}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
                                 <StackPanel>
                                     <TextBlock Text="{Binding Name}"
                                                FontWeight="SemiBold"
