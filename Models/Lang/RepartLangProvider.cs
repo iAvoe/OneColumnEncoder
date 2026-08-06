@@ -13,8 +13,6 @@ public sealed class RepartLangProvider(string languageCode)
             ["SourceOrdering"] = "Repart Source Queue Ordering",
             ["FilterScribeOutputOrdering"] = "Repart Output Queue",
             ["FilterScribeRestoreOutputQueue"] = "Restore Repart Output Queue",
-            ["MoveOutputUp"] = "Move output up",
-            ["MoveOutputDown"] = "Move output down",
             ["OutputEpisodes"] = "Output Episodes",
             ["Timeline"] = "Virtual Video Timeline",
             ["TimelineControl"] = "Virtual Timeline Control",
@@ -99,8 +97,6 @@ public sealed class RepartLangProvider(string languageCode)
             ["SourceOrdering"] = "重分集源队列排序",
             ["FilterScribeOutputOrdering"] = "重分集输出队列",
             ["FilterScribeRestoreOutputQueue"] = "恢复重分集输出队列",
-            ["MoveOutputUp"] = "上移输出分集",
-            ["MoveOutputDown"] = "下移输出分集",
             ["OutputEpisodes"] = "输出分集",
             ["Timeline"] = "虚拟视频时间轴",
             ["TimelineControl"] = "虚拟时间轴控制",
@@ -603,4 +599,7 @@ public sealed class RepartLangProvider(string languageCode)
     public string CfrRequired => this["CfrRequired"];
     public string FrameCountRequired => this["FrameCountRequired"];
     public string ProbeFailed => this["ProbeFailed"];
+
+    public static string MoveUp => "↑↑";
+    public static string MoveDown => "↓↓";
 }

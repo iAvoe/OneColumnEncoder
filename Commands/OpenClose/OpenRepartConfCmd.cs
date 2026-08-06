@@ -171,7 +171,7 @@ public sealed class OpenRepartConfCmd(
         if (excludedItems.Count > 0)
         {
             sections.Add(string.Format(RepartLangProvider.Current["ExcludedCount"], excludedItems.Count));
-            sections.AddRange(excludedItems.Select(RepartExclusionMessages.FormatExcludedMessage));
+            sections.AddRange(excludedItems.Select(FormatExcludedSummaryLine));
         }
 
         if (!string.IsNullOrWhiteSpace(fatalMessage))
@@ -179,4 +179,10 @@ public sealed class OpenRepartConfCmd(
 
         return string.Join(Environment.NewLine + Environment.NewLine, sections);
     }
+
+    private static string FormatExcludedSummaryLine(RepartExcludedSourceInfo info) =>
+        string.Join(
+            Environment.NewLine,
+            info.DisplayName,
+            RepartExclusionMessages.FormatReason(info));
 }

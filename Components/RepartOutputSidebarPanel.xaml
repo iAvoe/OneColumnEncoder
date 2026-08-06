@@ -85,11 +85,13 @@
                              Style="{StaticResource RepartOutputList}" />
                 </StackPanel>
             </ScrollViewer>
-            <StackPanel Grid.Row="2">
+            <StackPanel Grid.Row="2"
+                        Margin="2.5 0">
                 <Button Content="{Binding QueueSidebarLang.QueueSidebarCancelAllText}"
                         Command="{Binding CancelAllQueueCommand}"
                         IsEnabled="{Binding IsCancelAllEnabled}"
                         Height="30"
+                        HorizontalAlignment="Stretch"
                         Style="{StaticResource PrimaryButton}" />
                 <TextBlock Text="{Binding QueueSidebar.StatsText}"
                            FontSize="10"

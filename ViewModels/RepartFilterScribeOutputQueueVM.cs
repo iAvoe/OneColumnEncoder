@@ -13,8 +13,8 @@ public sealed class RepartFilterScribeOutputQueueVM : BaseVM
 
     public ObservableCollection<RepartFilterScribeOutputItemVM> Items { get; } = [];
 
-    public string OrderingTitle => RepartLangProvider.Current["FilterScribeOutputOrdering"];
-    public string RestoreOriginalQueueText => RepartLangProvider.Current["FilterScribeRestoreOutputQueue"];
+    public static string OrderingTitle => RepartLangProvider.Current["FilterScribeOutputOrdering"];
+    public static string RestoreOriginalQueueText => RepartLangProvider.Current["FilterScribeRestoreOutputQueue"];
     public bool HasOriginalQueueChanges
     {
         get => _hasOriginalQueueChanges;
@@ -142,13 +142,13 @@ public sealed class RepartFilterScribeOutputItemVM : BaseVM
     public int FrameRateDenominator { get; }
     public string Name { get; }
     public string P1Text { get; }
-    public string DisplayR1Text => string.Empty;
-    public string R2Text => RepartLangProvider.Current["MoveOutputUp"];
-    public string R3Text => RepartLangProvider.Current["MoveOutputDown"];
-    public bool R1IsEnabled => false;
+    public static string DisplayR1Text => string.Empty;
+    public static string R2Text => RepartLangProvider.MoveUp;
+    public static string R3Text => RepartLangProvider.MoveDown;
+    public static bool R1IsEnabled => false;
     public bool R2IsEnabled => _canMoveUp;
     public bool R3IsEnabled => _canMoveDown;
-    public ICommand? R1Command => null;
+    public static ICommand? R1Command => null;
     public ICommand? R2Command { get; }
     public ICommand? R3Command { get; }
 
