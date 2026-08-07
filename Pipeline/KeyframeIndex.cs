@@ -16,10 +16,26 @@ public sealed class KeyframeIndex : IDisposable
         TaskCreationOptions.RunContinuationsAsynchronously);
     private bool _disposed;
 
-    private KeyframeIndex(Process process, CancellationToken scanToken)
+    private KeyframeIndex(Process process, CancellationToken scanToken, double? intervalStartSec, double? intervalEndSec)
     {
         _process = process;
         _scanToken = scanToken;
+        IntervalStartSec = intervalStartSec;
+        IntervalEndSec = intervalEndSec;
+    }
+
+    // When the scan was restricted with -read_intervals, these are the absolute
+    // seconds the probe was asked to read. A full-file scan reports null.
+    public double? IntervalStartSec { get; }
+    public double? IntervalEndSec { get; }
+
+    // True when this index's scanned window covers the requested [start, end]
+    // range (with a tolerance), or when it was a full-file scan (no interval).
+    public bool CoversRange(double rangeStart, double rangeEnd, double toleranceSeconds = 0d)
+    {
+        double start = IntervalStartSec ?? double.NegativeInfinity;
+        double end = IntervalEndSec ?? double.PositiveInfinity;
+        return rangeStart >= start - toleranceSeconds && rangeEnd <= end + toleranceSeconds;
     }
 
     public int Count
@@ -78,7 +94,9 @@ public sealed class KeyframeIndex : IDisposable
     public static KeyframeIndex Start(
         string ffprobePath,
         string filePath,
-        CancellationToken scanToken)
+        CancellationToken scanToken,
+        double? intervalStartSec = null,
+        double? intervalEndSec = null)
     {
         ProcessStartInfo psi = new()
         {
@@ -91,13 +109,13 @@ public sealed class KeyframeIndex : IDisposable
             CreateNoWindow = true
         };
 
-        foreach (string arg in BuildArgs(filePath))
+        foreach (string arg in BuildArgs(filePath, intervalStartSec, intervalEndSec))
             psi.ArgumentList.Add(arg);
 
         Process process = new() { StartInfo = psi, EnableRaisingEvents = true };
         process.Start();
 
-        KeyframeIndex index = new(process, scanToken);
+        KeyframeIndex index = new(process, scanToken, intervalStartSec, intervalEndSec);
         _ = index.ReadOutputAsync();
         return index;
     }
@@ -136,8 +154,7 @@ public sealed class KeyframeIndex : IDisposable
 
             await _process.WaitForExitAsync(_scanToken).ConfigureAwait(false);
             string stderr = await stderrTask.ConfigureAwait(false);
-            bool hasTimes = Count > 0;
-            if (_process.ExitCode != 0 || !hasTimes)
+            if (_process.ExitCode != 0)
             {
                 InvalidOperationException ex = new(
                     string.IsNullOrWhiteSpace(stderr)
@@ -179,16 +196,32 @@ public sealed class KeyframeIndex : IDisposable
         catch { }
     }
 
-    private static string[] BuildArgs(string filePath) =>
+    private static string[] BuildArgs(string filePath, double? intervalStartSec, double? intervalEndSec)
+    {
+        List<string> args =
         [
             "-v", "error",
             "-skip_frame", "nokey",
             "-select_streams", "v:0",
             "-show_frames",
             "-show_entries", "frame=pts_time",
-            "-of", "csv=p=0",
-            filePath
+            "-of", "csv=p=0"
         ];
+
+        if (intervalStartSec.HasValue
+            && intervalEndSec.HasValue
+            && intervalEndSec > intervalStartSec)
+        {
+            string interval = string.Create(
+                CultureInfo.InvariantCulture,
+                $"{intervalStartSec.Value:0.#########}%{intervalEndSec.Value:0.#########}");
+            args.Add("-read_intervals");
+            args.Add(interval);
+        }
+
+        args.Add(filePath);
+        return [.. args];
+    }
 
     public void Dispose()
     {

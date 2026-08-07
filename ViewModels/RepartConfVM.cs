@@ -23,10 +23,11 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private readonly string? _ffmpegPath;
     private readonly string? _ffprobePath;
     private readonly string _previewWorkDirectory;
+    private const double KeyframeIndexWindowMarginSeconds = 30d;
+    private const double KeyframeIndexCacheReuseToleranceSeconds = 1d;
     private readonly object _keyframeIndexCacheSync = new();
     private readonly Dictionary<string, KeyframeIndex> _keyframeIndexCache = new(StringComparer.OrdinalIgnoreCase);
     private readonly CancellationTokenSource _keyframeIndexLifetimeCts = new();
-    private CancellationTokenSource? _keyframeWarmupCts;
     private RepartPlanM? _analysis;
     private RepartOutputItemVM? _selectedOutput;
     private List<RepartOutputItemVM> _selectedOutputs = [];
@@ -455,9 +456,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         }
 
         _analysis = currentPlan.Clone();
-        _keyframeWarmupCts?.Cancel();
-        _keyframeWarmupCts?.Dispose();
-        _keyframeWarmupCts = new CancellationTokenSource();
         DisposeKeyframeIndexCache();
         LoadSources();
         BuildAxisLabels();
@@ -467,9 +465,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         PrepareNextDraft();
         SetSuggestedNewDividerTexts();
         RefreshAnalysisProperties();
-
-        if (!string.IsNullOrWhiteSpace(_ffprobePath) && File.Exists(_ffprobePath))
-            _ = WarmKeyframeIndexesAsync(_analysis, _keyframeWarmupCts.Token);
 
         return Task.CompletedTask;
     }
@@ -1186,14 +1181,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public void InterruptWindowWork()
     {
         CancellationTokenSource? dividerPreviewCts = Interlocked.Exchange(ref _dividerPreviewCts, null);
-        CancellationTokenSource? keyframeWarmupCts = Interlocked.Exchange(ref _keyframeWarmupCts, null);
 
         try { dividerPreviewCts?.Cancel(); }
-        catch { }
-        try { keyframeWarmupCts?.Cancel(); }
-        catch { }
-
-        try { keyframeWarmupCts?.Dispose(); }
         catch { }
 
         try { _keyframeIndexLifetimeCts.Cancel(); }
@@ -1274,14 +1263,13 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
                 long relFirst = Math.Max(0, Math.Max(windowFirst, source.FirstFrame) - source.FirstFrame);
                 long relLast = Math.Max(relFirst, Math.Min(source.LastFrame, windowLast) - source.FirstFrame);
 
-                KeyframeIndex? index = await BuildKeyframeIndexAsync(source, cts.Token);
+                double frameDuration = (double)_analysis.FrameRateDenominator / _analysis.FrameRateNumerator;
+                double sourceStartTime = TryGetSourceStartTime(source.RawJson) ?? 0d;
+                double targetTime = sourceStartTime + relFirst * frameDuration;
+
+                KeyframeIndex? index = await BuildKeyframeIndexAsync(source, targetTime, cts.Token);
                 if (cts.IsCancellationRequested) return;
 
-                double frameDuration = (double)_analysis.FrameRateDenominator / _analysis.FrameRateNumerator;
-                double sourceStartTime = index == null
-                    ? 0d
-                    : TryGetSourceStartTime(source.RawJson) ?? index.FirstTime;
-                double targetTime = sourceStartTime + relFirst * frameDuration;
                 double keyframeTime = 0d;
                 bool canSeek = index != null
                     && index.TryFindNearestBefore(targetTime, out keyframeTime);
@@ -1353,71 +1341,35 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         }
     }
 
-    private async Task WarmKeyframeIndexesAsync(RepartPlanM analysis, CancellationToken token)
-    {
-        SemaphoreSlim warmupGate = new(2, 2);
-        try
-        {
-            List<Task> warmupTasks = [];
-            foreach (RepartSourceM source in analysis.Sources)
-            {
-                warmupTasks.Add(WarmKeyframeIndexAsync(source, token, warmupGate));
-            }
-
-            await Task.WhenAll(warmupTasks);
-        }
-        catch (OperationCanceledException) when (token.IsCancellationRequested) { }
-        finally
-        {
-            warmupGate.Dispose();
-        }
-    }
-
-    private async Task WarmKeyframeIndexAsync(
-        RepartSourceM source,
-        CancellationToken token,
-        SemaphoreSlim warmupGate)
-    {
-        bool acquired = false;
-        try
-        {
-            await warmupGate.WaitAsync(token);
-            acquired = true;
-            try
-            {
-                KeyframeIndex? index = await BuildKeyframeIndexAsync(source, token);
-                if (index != null && !token.IsCancellationRequested)
-                    await index.Completion.WaitAsync(token);
-            }
-            catch (OperationCanceledException) when (token.IsCancellationRequested)
-            {
-            }
-            catch { }
-        }
-        finally
-        {
-            if (acquired)
-                warmupGate.Release();
-        }
-    }
-
     private async Task<KeyframeIndex?> BuildKeyframeIndexAsync(
         RepartSourceM source,
-        CancellationToken token)
+        double targetTime,
+        CancellationToken token,
+        bool widenWindow = false)
     {
+        double margin = widenWindow ? KeyframeIndexWindowMarginSeconds * 2d : KeyframeIndexWindowMarginSeconds;
+        double windowStart = Math.Max(0d, targetTime - margin);
+        double windowEnd = targetTime;
+
         KeyframeIndex? cached;
         lock (_keyframeIndexCacheSync)
             _keyframeIndexCache.TryGetValue(source.FilePath, out cached);
 
-        if (cached != null)
+        if (cached != null && cached.CoversRange(windowStart, windowEnd, KeyframeIndexCacheReuseToleranceSeconds))
         {
-            if (cached.Count == 0)
-                await cached.WaitForFirstAsync(token);
-            return cached;
+            await cached.Completion.WaitAsync(token);
+            return cached.Count > 0 ? cached : null;
         }
 
         if (string.IsNullOrWhiteSpace(_ffprobePath) || !File.Exists(_ffprobePath))
             return null;
+
+        // The cached window no longer covers the request; replace it.
+        if (cached != null)
+        {
+            if (RemoveCachedKeyframeIndex(source.FilePath, cached))
+                cached.Dispose();
+        }
 
         SetSourceIndexState(source.FilePath, RepartSourceIndexState.Loading);
         DividerPreviewStatusText = string.Format(
@@ -1426,10 +1378,13 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         KeyframeIndex index;
         try
         {
+            await WarmSourceWindowCacheAsync(source, targetTime, margin, token);
             index = KeyframeIndex.Start(
                 _ffprobePath,
                 source.FilePath,
-                _keyframeIndexLifetimeCts.Token);
+                _keyframeIndexLifetimeCts.Token,
+                windowStart,
+                windowEnd);
         }
         catch
         {
@@ -1473,7 +1428,21 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
         try
         {
-            await index.WaitForFirstAsync(token);
+            await index.Completion.WaitAsync(token);
+
+            if (index.Count == 0)
+            {
+                // No keyframe before the target inside the window. Long-GOP
+                // content: widen once; otherwise fall back to a non-seek decode.
+                if (RemoveCachedKeyframeIndex(source.FilePath, index))
+                    index.Dispose();
+
+                if (!widenWindow && windowStart > 0d)
+                    return await BuildKeyframeIndexAsync(source, targetTime, token, widenWindow: true);
+
+                return null;
+            }
+
             return index;
         }
         catch (OperationCanceledException) when (token.IsCancellationRequested)
@@ -1487,6 +1456,57 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
                 SetSourceIndexState(source.FilePath, RepartSourceIndexState.Failed);
             index.Dispose();
             throw;
+        }
+    }
+
+    // Best-effort sequential read of the estimated byte range covering the
+    // divider window, so the OS page cache serves the subsequent ffprobe/ffmpeg
+    // reads from memory instead of the hard disk.
+    private async Task WarmSourceWindowCacheAsync(
+        RepartSourceM source,
+        double targetTime,
+        double margin,
+        CancellationToken token)
+    {
+        try
+        {
+            long fileLength = source.FileLength;
+            if (fileLength <= 0 || _analysis == null || _analysis.FrameRate <= 0d) return;
+
+            double duration = source.FrameCount / _analysis.FrameRate;
+            if (!(duration > 0d)) return;
+
+            double startSec = Math.Max(0d, targetTime - margin);
+            double endSec = Math.Min(duration, targetTime + 1d);
+            if (endSec <= startSec) return;
+
+            long startByte = (long)(startSec / duration * fileLength);
+            long endByte = Math.Min(fileLength, (long)(endSec / duration * fileLength));
+            if (endByte <= startByte) return;
+
+            using FileStream stream = new(
+                source.FilePath,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.ReadWrite,
+                1 << 20,
+                FileOptions.SequentialScan);
+            if (startByte > 0) stream.Seek(startByte, SeekOrigin.Begin);
+
+            long remaining = endByte - startByte;
+            byte[] buffer = new byte[1 << 20];
+            while (remaining > 0)
+            {
+                token.ThrowIfCancellationRequested();
+                int read = await stream.ReadAsync(
+                    buffer.AsMemory(0, (int)Math.Min(buffer.Length, remaining)),
+                    token);
+                if (read <= 0) break;
+                remaining -= read;
+            }
+        }
+        catch
+        {
         }
     }
 
