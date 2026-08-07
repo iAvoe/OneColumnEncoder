@@ -54,13 +54,24 @@
 
 本软件支持多语言，但为减少图片数量而在此统一用了英语文本截图。图片中可能会有一些过时的 UI 元素或文本，但整体布局和功能区域划分仍然适用。请以实际使用版本为准。
 
-<p align="center"><img src="../WireframeMockups/1-Main-Page.png" alt="Main Window" width="600"><br>
-<img src="../WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window" width="500"><br>
-<img src="../WireframeMockups/3-Encoder-Settings.png" alt="Encoder Setting Window" width="900"><br>
-<img src="../WireframeMockups/4-Parallelism-Setting.png" alt="Parallelism Setting Window" width="400"><br>
-<img src="../WireframeMockups/5-Clip-Sampler.png" alt="Clip Sampler Window" width="400"><br>
-<img src="../WireframeMockups/6-Encoding-Monitor.png" alt="Encoding Monitor Window" width="650"><br>
-<img src="../WireframeMockups/7-Warning-Modal-OW-Guard.png" alt="Warning Modal & Overwrite Protection" width="350"><br></p>
+<p align="center"><img src="../WireframeMockups/1-Main-Page.png" alt="Main Window" width="600"></br>
+<sup><i>主页</i></sup></br>
+<img src="../WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window" width="500"></br>
+<sup><i>滤镜编辑器</i></sup></br>
+<img src="../WireframeMockups/3-Encoder-Settings.png" alt="Encoder Setting Window" width="900"></br>
+<sup><i>编码器/压制设置</i></sup></br>
+<img src="../WireframeMockups/4-Parallelism-Setting.png" alt="Parallelism Setting Window" width="400"></br>
+<sup><i>并行计算设置</i></sup></br>
+<img src="../WireframeMockups/5-Clip-Sampler.png" alt="Clip Sampler Window" width="400"></br>
+<sup><i>取段打样器</i></sup></br>
+<img src="../WireframeMockups/6-Encoding-Monitor.png" alt="Encoding Monitor Window" width="650"></br>
+<sup><i>压制监视器</i></sup></br>
+<img src="../WireframeMockups/7-Warning-Modal-OW-Guard.png" alt="Warning Modal & Overwrite Protection" width="350"></br>
+<sup><i>报错窗口与覆写保护功能</i></sup></br>
+<img src="../WireframeMockups/8-BD-Playlist-Selector.png" alt="Blu-Ray Playlist Selector" width="500"></br>
+<sup><i>蓝光播放列表选择器</i></sup></br>
+<img src="../WireframeMockups/9-Episode-Repartition-Editor.png" alt="Repartition Configurator" width="650"></br>
+<sup><i>重分集编辑器</i></sup></br></p>
 
 ## 运行要求
 
@@ -96,6 +107,10 @@
 
 - Azure icons: [azureicons.com](https://www.azureicons.com)
 - 单色小图标 by NiewBie: [GitHub/Niewbie](https://github.com/Nieobie/Game-Icon-Pack)
+
+## NuGet 包使用
+
+- 蓝光播放列表解析器 by [tautcony](https://github.com/tautcony): [ChapterTool Core](https://github.com/tautcony/ChapterTool/pkgs/nuget/ChapterTool.Core)
 
 ---
 
