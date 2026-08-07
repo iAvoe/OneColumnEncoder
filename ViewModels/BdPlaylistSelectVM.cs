@@ -1,6 +1,7 @@
 using OneColumnEncoder.Commands;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Models.Lang;
+using OneColumnEncoder.UI;
 using System.Collections.ObjectModel;
 
 namespace OneColumnEncoder.ViewModels;
@@ -12,7 +13,6 @@ public sealed class BdPlaylistSelectVM : BaseVM
     private readonly Action _cancelAction;
     private readonly Action _confirmAction;
     private readonly ButtonGroupVM _playlistButtons;
-    private readonly ButtonGroupVM _finalPlaylistButtons;
     private readonly ButtonGroupVM _finalPlaylistButtons1;
     private readonly ButtonGroupVM _finalPlaylistButtons2;
     private BdPlaylistClusterM? _selectedCluster;
@@ -31,24 +31,8 @@ public sealed class BdPlaylistSelectVM : BaseVM
             AddToFinalText,
             new ActionCmd(_ => _cancelAction()),
             new ActionCmd(_ => AddToFinal()));
-        _playlistButtons.B2_2IsEnabled = false;
-
-        _finalPlaylistButtons = ButtonGroupVM.CreateFiveButton(
-            RemoveFromFinalText,
-            MoveUpText,
-            MoveDownText,
-            ClearAllText,
-            ConfirmText,
-            new ActionCmd(_ => RemoveFromFinal()),
-            new ActionCmd(_ => Move(-1)),
-            new ActionCmd(_ => Move(+1)),
-            new ActionCmd(_ => ClearAll()),
-            new ActionCmd(_ => Confirm()));
-        _finalPlaylistButtons.B5_1IsEnabled = false;
-        _finalPlaylistButtons.B5_2IsEnabled = false;
-        _finalPlaylistButtons.B5_3IsEnabled = false;
-        _finalPlaylistButtons.B5_4IsEnabled = false;
-        _finalPlaylistButtons.B5_5IsEnabled = false;
+        _playlistButtons.B2_1Icon = SvgIconProvider.GameXMark;
+        _playlistButtons.B2_2Icon = SvgIconProvider.GamePlus;
 
         _finalPlaylistButtons1 = ButtonGroupVM.CreateTwoButton(
             MoveUpText,
@@ -63,14 +47,21 @@ public sealed class BdPlaylistSelectVM : BaseVM
             new ActionCmd(_ => RemoveFromFinal()),
             new ActionCmd(_ => ClearAll()),
             new ActionCmd(_ => Confirm()));
+        _finalPlaylistButtons2.B3_1Icon = SvgIconProvider.GameDelete;
+        _finalPlaylistButtons2.B3_2Icon = SvgIconProvider.GameXMark;
+        _finalPlaylistButtons2.B3_3Icon = SvgIconProvider.GameCorrectMark;
 
         foreach (BdPlaylistClusterM cluster in scan.Clusters)
             Clusters.Add(cluster);
+
+        FinalPlaylists.CollectionChanged += (_, _) => RefreshFinalPlaylistState();
 
         SummaryText = string.Format(PlaylistSummaryFormat, scan.Clusters.Count, scan.Clusters.Sum(cluster => cluster.PlaylistCount));
 
         if (Clusters.Count > 0)
             SelectedCluster = Clusters[0];
+
+        RefreshFinalPlaylistState();
     }
 
     public static string ClustersTitle => RepartLangProvider.Current["PlaylistClusters"];
@@ -101,7 +92,6 @@ public sealed class BdPlaylistSelectVM : BaseVM
     public ObservableCollection<BdPlaylistM> Playlists { get; } = [];
     public ObservableCollection<BdPlaylistM> FinalPlaylists { get; } = [];
     public ButtonGroupVM PlaylistButtons => _playlistButtons;
-    public ButtonGroupVM FinalPlaylistButtons => _finalPlaylistButtons;
     public ButtonGroupVM FinalPlaylistButtons1 => _finalPlaylistButtons1;
     public ButtonGroupVM FinalPlaylistButtons2 => _finalPlaylistButtons2;
 
@@ -133,7 +123,7 @@ public sealed class BdPlaylistSelectVM : BaseVM
             if (SetProperty(ref _selectedPlaylist, value))
             {
                 OnPropertyChanged(nameof(SelectedPlaylistSummaryText));
-                _playlistButtons.B2_2IsEnabled = CanAddToFinal;
+                RefreshFinalPlaylistState();
             }
         }
     }
@@ -146,14 +136,7 @@ public sealed class BdPlaylistSelectVM : BaseVM
             if (SetProperty(ref _selectedFinalPlaylist, value))
             {
                 OnPropertyChanged(nameof(SelectedFinalPlaylistSummaryText));
-                _finalPlaylistButtons.B5_1IsEnabled = CanRemoveFromFinal;
-                _finalPlaylistButtons.B5_2IsEnabled = CanMoveUp;
-                _finalPlaylistButtons.B5_3IsEnabled = CanMoveDown;
-
-                _finalPlaylistButtons1.B2_1IsEnabled = CanMoveUp;
-                _finalPlaylistButtons1.B2_2IsEnabled = CanMoveDown;
-
-                _finalPlaylistButtons2.B1_1IsEnabled = CanRemoveFromFinal;
+                RefreshFinalPlaylistState();
             }
         }
     }
@@ -184,7 +167,6 @@ public sealed class BdPlaylistSelectVM : BaseVM
 
         FinalPlaylists.Add(SelectedPlaylist!);
         SelectedFinalPlaylist = SelectedPlaylist;
-        RefreshFinalPlaylistState();
     }
 
     private void RemoveFromFinal()
@@ -195,7 +177,6 @@ public sealed class BdPlaylistSelectVM : BaseVM
         int index = FinalPlaylists.IndexOf(SelectedFinalPlaylist);
         FinalPlaylists.Remove(SelectedFinalPlaylist);
         SelectedFinalPlaylist = index < FinalPlaylists.Count ? FinalPlaylists[index] : (FinalPlaylists.Count > 0 ? FinalPlaylists[^1] : null);
-        RefreshFinalPlaylistState();
     }
 
     private void Move(int delta)
@@ -209,18 +190,13 @@ public sealed class BdPlaylistSelectVM : BaseVM
             return;
 
         FinalPlaylists.Move(index, target);
-        _finalPlaylistButtons.B5_2IsEnabled = CanMoveUp;
-        _finalPlaylistButtons.B5_3IsEnabled = CanMoveDown;
-
-        _finalPlaylistButtons1.B2_1IsEnabled = CanMoveUp;
-        _finalPlaylistButtons1.B2_2IsEnabled = CanMoveDown;
+        RefreshFinalPlaylistState();
     }
 
     private void ClearAll()
     {
         FinalPlaylists.Clear();
         SelectedFinalPlaylist = null;
-        RefreshFinalPlaylistState();
     }
 
     private void RefreshFinalPlaylistState()
@@ -228,19 +204,12 @@ public sealed class BdPlaylistSelectVM : BaseVM
         OnPropertyChanged(nameof(FinalPlaylistSummaryText));
         _playlistButtons.B2_2IsEnabled = CanAddToFinal;
 
-        _finalPlaylistButtons.B5_1IsEnabled = CanRemoveFromFinal;
-        _finalPlaylistButtons.B5_2IsEnabled = CanMoveUp;
-        _finalPlaylistButtons.B5_3IsEnabled = CanMoveDown;
-        _finalPlaylistButtons.B5_4IsEnabled = FinalPlaylists.Count > 0;
-        _finalPlaylistButtons.B5_5IsEnabled = FinalPlaylists.Count > 0;
-
         _finalPlaylistButtons1.B2_1IsEnabled = CanMoveUp;
         _finalPlaylistButtons1.B2_2IsEnabled = CanMoveDown;
 
         _finalPlaylistButtons2.B3_1IsEnabled = CanRemoveFromFinal;
         _finalPlaylistButtons2.B3_2IsEnabled = FinalPlaylists.Count > 0;
         _finalPlaylistButtons2.B3_3IsEnabled = FinalPlaylists.Count > 0;
-
     }
 
     private void Confirm()
