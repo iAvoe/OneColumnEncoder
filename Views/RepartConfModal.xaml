@@ -43,7 +43,7 @@
             </StackPanel>
         </DataTemplate>
     </ui:AdaptiveWindow.Resources>
-    <Grid Margin="15">
+    <Grid Margin="15 12.5 15 15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="100" />
