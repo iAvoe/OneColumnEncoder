@@ -83,6 +83,71 @@ namespace OneColumnEncoder.ChapterTool
                         : ["No usable chapter playlist with at least two source videos was found."]);
         }
 
+        public static async Task<DiscChapterReadResult> TryReadCombinedAsync(
+            IReadOnlyList<string> filePaths,
+            CancellationToken cancellationToken = default)
+        {
+            if (filePaths.Count == 0)
+                return DiscChapterReadResult.Failed(["No playlist files were provided."]);
+
+            List<DiscChapterReadResult> results = [];
+            List<string> diagnostics = [];
+            foreach (string filePath in filePaths)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                DiscChapterReadResult result = await TryReadAsync(filePath, cancellationToken);
+                if (result.Chapters.Count == 0 || result.ReferencedFilePaths.Count == 0)
+                {
+                    diagnostics.AddRange(result.Diagnostics);
+                    continue;
+                }
+                results.Add(result);
+            }
+
+            if (results.Count == 0)
+                return DiscChapterReadResult.Failed(
+                    diagnostics.Count > 0 ? diagnostics : ["None of the selected playlists resolved usable chapters."]);
+
+            DiscChapterReadResult first = results[0];
+            TimeSpan totalDuration = TimeSpan.Zero;
+            List<DiscChapterMarker> markers = [];
+            List<string> referencedPaths = [];
+            int displayNumber = 1;
+
+            foreach (DiscChapterReadResult result in results)
+            {
+                foreach (DiscChapterMarker marker in result.Chapters)
+                {
+                    markers.Add(new DiscChapterMarker(
+                        displayNumber++,
+                        marker.StartTime + totalDuration,
+                        marker.EndTime.HasValue ? marker.EndTime + totalDuration : null,
+                        marker.Name,
+                        marker.IsSeparator));
+                }
+
+                foreach (string path in result.ReferencedFilePaths)
+                {
+                    if (!referencedPaths.Contains(path, StringComparer.OrdinalIgnoreCase))
+                        referencedPaths.Add(path);
+                }
+
+                totalDuration += result.Duration;
+            }
+
+            return new DiscChapterReadResult(
+                results.All(result => result.Success),
+                results.Any(result => result.IsPartial),
+                first.SourceName,
+                first.Title,
+                totalDuration,
+                first.FramesPerSecond,
+                first.ImportFormatCode,
+                markers,
+                referencedPaths,
+                diagnostics);
+        }
+
         public static async Task<DiscChapterReadResult> TryReadAsync(
             string filePath,
             CancellationToken cancellationToken = default)

@@ -54,16 +54,16 @@ public static class PlaylistImportService
 
         while (true)
         {
-            string? selectedPlaylistPath = SelectPlaylistPath(modalNavS, playlistScan);
-            if (selectedPlaylistPath == null) return null;
+            IReadOnlyList<string>? selectedPlaylistPaths = SelectPlaylistPaths(modalNavS, playlistScan);
+            if (selectedPlaylistPaths == null || selectedPlaylistPaths.Count == 0) return null;
 
-            DiscChapterReadResult chapterResult = await DiscChapterReader.TryReadAsync(selectedPlaylistPath, cancellationToken);
+            DiscChapterReadResult chapterResult = await DiscChapterReader.TryReadCombinedAsync(selectedPlaylistPaths, cancellationToken);
             if ((!chapterResult.Success && !chapterResult.IsPartial) || chapterResult.Chapters.Count == 0)
             {
                 new OpenErrModalCmd(
                     modalNavS,
                     strings.ErrorWindowTitle,
-                    strings.ChapterImportFailedFormatter(Path.GetFileName(selectedPlaylistPath))).Execute(null);
+                    strings.ChapterImportFailedFormatter(string.Join(", ", selectedPlaylistPaths.Select(Path.GetFileName)))).Execute(null);
                 continue;
             }
 
@@ -81,18 +81,18 @@ public static class PlaylistImportService
         }
     }
 
-    public static string? SelectPlaylistPath(ModalNavS modalNavS, BdPlaylistScanResult scan)
+    public static IReadOnlyList<string>? SelectPlaylistPaths(ModalNavS modalNavS, BdPlaylistScanResult scan)
     {
         BdPlaylistSelectModal window = new();
-        string? selectedPath = null;
+        IReadOnlyList<string>? selectedPaths = null;
         BdPlaylistSelectVM? vm = null;
         vm = new BdPlaylistSelectVM(
             scan,
             cancelAction: () => window.Close(),
             confirmAction: () =>
             {
-                selectedPath = vm?.SelectedPlaylistPath;
-                if (!string.IsNullOrWhiteSpace(selectedPath))
+                selectedPaths = vm?.FinalPlaylistPaths;
+                if (selectedPaths is { Count: > 0 })
                     window.Close();
             });
 
@@ -101,6 +101,6 @@ public static class PlaylistImportService
         window.Closed += (_, _) => modalNavS.Close();
         modalNavS.CurrentModalVM = vm;
         window.ShowDialog();
-        return selectedPath;
+        return selectedPaths;
     }
 }

@@ -16,119 +16,199 @@
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
     <Grid Margin="15 10 15 15">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="30*" />
+            <ColumnDefinition Width="34*" />
+            <ColumnDefinition Width="36*" />
+        </Grid.ColumnDefinitions>
 
-        <Grid Grid.Row="0"
-              Grid.Column="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="3*" />
-            </Grid.ColumnDefinitions>
+        <!-- Cluster -->
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-            <Grid Grid.Column="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-
-                <comps:SectionHeader HeaderText="{Binding ClustersTitle}" />
-                <ListBox Grid.Row="1"
-                         ItemsSource="{Binding Clusters}"
-                         SelectedItem="{Binding SelectedCluster, Mode=TwoWay}"
-                         Margin="0 15 0 0"
-                         BorderThickness="0"
-                         Background="Transparent"
-                         HorizontalContentAlignment="Stretch"
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Border Margin="0 0 0 2.5"
-                                    Padding="7.5"
-                                    BorderThickness="1"
-                                    CornerRadius="5"
-                                    BorderBrush="{StaticResource GlobalSecondary}">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding PlaylistCount, StringFormat={}{0} playlist(s)}"
-                                               FontWeight="SemiBold" />
-                                    <TextBlock Text="{Binding DurationText, StringFormat=Duration: {0}}"
-                                               Foreground="{StaticResource GlobalSecondary}" />
-                                    <TextBlock Text="{Binding ClipSequenceText}"
-                                               Foreground="{StaticResource GlobalSecondary}"
-                                               TextTrimming="CharacterEllipsis" />
-                                    <TextBlock Text="{Binding SamplePlaylistIdsText, StringFormat=Playlists: {0}}"
-                                               Foreground="{StaticResource GlobalSecondary}" />
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <comps:SectionHeader Grid.Column="0"
+                                     HeaderText="{Binding ClustersTitle}" />
+                <TextBlock Grid.Column="1"
+                           Text="{Binding SummaryText}"
+                           VerticalAlignment="Center"
+                           TextAlignment="Right"
+                           Foreground="{StaticResource GlobalSecondary}"
+                           Background="Transparent" />
             </Grid>
 
-            <Grid Grid.Column="1">
+            <ListBox Grid.Row="1"
+                     ItemsSource="{Binding Clusters}"
+                     SelectedItem="{Binding SelectedCluster, Mode=TwoWay}"
+                     Margin="0 10 0 0"
+                     BorderThickness="0"
+                     Background="Transparent"
+                     HorizontalContentAlignment="Stretch"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="0 0 0 2.5"
+                                Padding="7.5"
+                                BorderThickness="1"
+                                CornerRadius="5"
+                                BorderBrush="{StaticResource GlobalSecondary}">
+                            <StackPanel>
+                                <TextBlock Text="{Binding PlaylistCount, StringFormat={}{0} playlist(s)}"
+                                           FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding DurationText, StringFormat=Duration: {0}}"
+                                           Foreground="{StaticResource GlobalSecondary}" />
+                                <TextBlock Text="{Binding ClipSequenceText}"
+                                           Foreground="{StaticResource GlobalSecondary}"
+                                           TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{Binding SamplePlaylistIdsText, StringFormat=Playlists: {0}}"
+                                           Foreground="{StaticResource GlobalSecondary}" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+        <!-- Playlist -->
+        <Grid Grid.Column="1"
+              Margin="10 0 0 0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <comps:SectionHeader Grid.Column="0"
+                                     HeaderText="{Binding PlaylistsTitle}" />
+                <TextBlock Grid.Column="1"
+                           Text="{Binding FinalPlaylistSummaryText}"
+                           VerticalAlignment="Center"
+                           TextAlignment="Right"
+                           Foreground="{StaticResource GlobalSecondary}"
+                           Background="Transparent" />
+            </Grid>
+
+            <ListBox Grid.Row="1"
+                     ItemsSource="{Binding Playlists}"
+                     SelectedItem="{Binding SelectedPlaylist, Mode=TwoWay}"
+                     Margin="0 10 0 0"
+                     BorderThickness="0"
+                     Background="Transparent"
+                     HorizontalContentAlignment="Stretch"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="0 0 0 2.5"
+                                Padding="7.5"
+                                BorderThickness="1"
+                                CornerRadius="5"
+                                BorderBrush="{StaticResource GlobalSecondary}">
+                            <StackPanel>
+                                <TextBlock Text="{Binding TitleText}"
+                                           FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding DurationText, StringFormat=Duration: {0}}"
+                                           Foreground="{StaticResource GlobalSecondary}" />
+                                <TextBlock Text="{Binding ChapterCount, StringFormat={}{0} chapters}"
+                                           Foreground="{StaticResource GlobalSecondary}" />
+                                <TextBlock Text="{Binding ClipSequenceText}"
+                                           Foreground="{StaticResource GlobalSecondary}"
+                                           TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <comps:TwoButtonGroup Grid.Row="2"
+                                  ButtonHeight="30"
+                                  DataContext="{Binding PlaylistButtons}"
+                                  Button1Command="{Binding Cmd1}"
+                                  Button2Command="{Binding Cmd2}"
+                                  Button1IsEnabled="{Binding B2_1IsEnabled}"
+                                  Button2IsEnabled="{Binding B2_2IsEnabled}"
+                                  Margin="0 10 0 0" />
+        </Grid>
+
+        <!-- Final Playlist -->
+        <Grid Grid.Column="2"
+              Margin="10 0 0 0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <comps:SectionHeader Grid.Row="0"
+                                 HeaderText="{Binding FinalPlaylistsTitle}" />
+
+            <ListBox Grid.Row="1"
+                     ItemsSource="{Binding FinalPlaylists}"
+                     SelectedItem="{Binding SelectedFinalPlaylist, Mode=TwoWay}"
+                     Margin="0 10 0 0"
+                     BorderThickness="0"
+                     Background="Transparent"
+                     HorizontalContentAlignment="Stretch"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border Margin="0 0 0 2.5"
+                                Padding="7.5"
+                                BorderThickness="1"
+                                CornerRadius="5"
+                                BorderBrush="{StaticResource GlobalSecondary}">
+                            <StackPanel>
+                                <TextBlock Text="{Binding TitleText}"
+                                           FontWeight="SemiBold" />
+                                <TextBlock Text="{Binding DurationText, StringFormat=Duration: {0}}"
+                                           Foreground="{StaticResource GlobalSecondary}" />
+                                <TextBlock Text="{Binding ChapterCount, StringFormat={}{0} chapters}"
+                                           Foreground="{StaticResource GlobalSecondary}" />
+                                <TextBlock Text="{Binding ClipSequenceText}"
+                                           Foreground="{StaticResource GlobalSecondary}"
+                                           TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <Grid Grid.Row="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
+                <comps:TwoButtonGroup Grid.Row="0"
+                                      ButtonHeight="30"
+                                      DataContext="{Binding FinalPlaylistButtons1}"
+                                      Button1Command="{Binding Cmd1}"
+                                      Button2Command="{Binding Cmd2}"
+                                      Button1IsEnabled="{Binding B2_1IsEnabled}"
+                                      Button2IsEnabled="{Binding B2_2IsEnabled}"
+                                      Margin="0 10 0 0" />
 
-                <comps:SectionHeader Grid.Row="0"
-                                     HeaderText="{Binding PlaylistsTitle}" />
-                
-                <ListBox Grid.Row="1"
-                         ItemsSource="{Binding Playlists}"
-                         SelectedItem="{Binding SelectedPlaylist, Mode=TwoWay}"
-                         Margin="0 15 0 0"
-                         BorderThickness="0"
-                         Background="Transparent"
-                         HorizontalContentAlignment="Stretch"
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Border Margin="0 0 0 2.5"
-                                    Padding="7.5"
-                                    BorderThickness="1"
-                                    CornerRadius="5"
-                                    BorderBrush="{StaticResource GlobalSecondary}">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding TitleText}"
-                                               FontWeight="SemiBold" />
-                                    <TextBlock Text="{Binding DurationText, StringFormat=Duration: {0}}"
-                                               Foreground="{StaticResource GlobalSecondary}" />
-                                    <TextBlock Text="{Binding ChapterCount, StringFormat={}{0} chapters}"
-                                               Foreground="{StaticResource GlobalSecondary}" />
-                                    <TextBlock Text="{Binding ClipSequenceText}"
-                                               Foreground="{StaticResource GlobalSecondary}"
-                                               TextTrimming="CharacterEllipsis" />
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-
-                <Grid Grid.Row="2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding SummaryText}"
-                               VerticalAlignment="Center"
-                               TextAlignment="Right"
-                               LineHeight="1"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               Background="Transparent" />
-                    <comps:TwoButtonGroup Grid.Column="1"
-                                          ButtonHeight="30"
-                                          DataContext="{Binding FooterButtons}"
-                                          Button1Command="{Binding Cmd1}"
-                                          Button2Command="{Binding Cmd2}"
-                                          Button1IsEnabled="{Binding B2_1IsEnabled}"
-                                          Button2IsEnabled="{Binding B2_2IsEnabled}"
-                                          Margin="15 2.5 0 0" />
-                </Grid>
+                <comps:ThreeButtonGroup Grid.Row="1"
+                                        ButtonHeight="30"
+                                        DataContext="{Binding FinalPlaylistButtons2}"
+                                        Button1Command="{Binding Cmd1}"
+                                        Button2Command="{Binding Cmd2}"
+                                        Button3Command="{Binding Cmd3}"
+                                        Button1IsEnabled="{Binding B3_1IsEnabled}"
+                                        Button2IsEnabled="{Binding B3_2IsEnabled}"
+                                        Button3IsEnabled="{Binding B3_3IsEnabled}"
+                                        Margin="0 10 0 0" />
             </Grid>
         </Grid>
     </Grid>
