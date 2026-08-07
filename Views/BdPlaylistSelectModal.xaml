@@ -11,28 +11,18 @@
                    Title="{Binding WindowTitle}"
                    Width="980"
                    MinHeight="500"
-                   MaxHeight="800"
+                   MaxHeight="700"
                    SizeToContent="Height"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
     <Grid Margin="15 10 15 15">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
-            <TextBlock Text="{Binding WindowTitle}"
-                       Style="{StaticResource H2}" />
-            <TextBlock Text="{Binding SummaryText}"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Center"
-                       Foreground="{StaticResource GlobalSecondary}" />
-        </Grid>
-
-        <Grid Grid.Row="1"
-              Margin="0 15 0 0">
+        <Grid Grid.Row="0"
+              Grid.Column="0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*" />
                 <ColumnDefinition Width="3*" />
@@ -81,9 +71,12 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <comps:SectionHeader HeaderText="{Binding PlaylistsTitle}" />
+                <comps:SectionHeader Grid.Row="0"
+                                     HeaderText="{Binding PlaylistsTitle}" />
+                
                 <ListBox Grid.Row="1"
                          ItemsSource="{Binding Playlists}"
                          SelectedItem="{Binding SelectedPlaylist, Mode=TwoWay}"
@@ -114,16 +107,29 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
+
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding SummaryText}"
+                               VerticalAlignment="Center"
+                               TextAlignment="Right"
+                               LineHeight="1"
+                               Foreground="{StaticResource GlobalSecondary}"
+                               Background="Transparent" />
+                    <comps:TwoButtonGroup Grid.Column="1"
+                                          ButtonHeight="30"
+                                          DataContext="{Binding FooterButtons}"
+                                          Button1Command="{Binding Cmd1}"
+                                          Button2Command="{Binding Cmd2}"
+                                          Button1IsEnabled="{Binding B2_1IsEnabled}"
+                                          Button2IsEnabled="{Binding B2_2IsEnabled}"
+                                          Margin="15 2.5 0 0" />
+                </Grid>
             </Grid>
         </Grid>
-
-        <comps:TwoButtonGroup Grid.Row="2"
-                              ButtonHeight="30"
-                              DataContext="{Binding FooterButtons}"
-                              Button1Command="{Binding Cmd1}"
-                              Button2Command="{Binding Cmd2}"
-                              Button1IsEnabled="{Binding B2_1IsEnabled}"
-                              Button2IsEnabled="{Binding B2_2IsEnabled}"
-                              Margin="0 2.5 0 0" />
     </Grid>
 </ui:AdaptiveWindow>
