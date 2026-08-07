@@ -24,6 +24,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private readonly string? _ffprobePath;
     private readonly string _previewWorkDirectory;
     private const double KeyframeIndexWindowMarginSeconds = 30d;
+    private const double KeyframeIndexWindowLeadSeconds = 0.25d;
     private const double KeyframeIndexCacheReuseToleranceSeconds = 1d;
     private readonly object _keyframeIndexCacheSync = new();
     private readonly Dictionary<string, KeyframeIndex> _keyframeIndexCache = new(StringComparer.OrdinalIgnoreCase);
@@ -1349,7 +1350,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     {
         double margin = widenWindow ? KeyframeIndexWindowMarginSeconds * 2d : KeyframeIndexWindowMarginSeconds;
         double windowStart = Math.Max(0d, targetTime - margin);
-        double windowEnd = targetTime;
+        double windowEnd = targetTime + KeyframeIndexWindowLeadSeconds;
 
         KeyframeIndex? cached;
         lock (_keyframeIndexCacheSync)
