@@ -8,6 +8,8 @@ namespace OneColumnEncoder.ViewModels;
 
 public sealed class BdPlaylistSelectVM : BaseVM
 {
+    public const string WindowTitleText = "1cenc BD Playlist Selector";
+
     private readonly Action _cancelAction;
     private readonly Action _confirmAction;
     private readonly ButtonGroupVM _footerButtons;
@@ -37,7 +39,6 @@ public sealed class BdPlaylistSelectVM : BaseVM
             SelectedCluster = Clusters[0];
     }
 
-    public static string WindowTitleText => RepartLangProvider.Current["PlaylistSelectWindowTitle"];
     public static string ClustersTitle => RepartLangProvider.Current["PlaylistClusters"];
     public static string PlaylistsTitle => RepartLangProvider.Current["PlaylistPlaylists"];
     public static string CancelText => RepartLangProvider.Current["Cancel"];
@@ -64,8 +65,7 @@ public sealed class BdPlaylistSelectVM : BaseVM
                         Playlists.Add(playlist);
                 }
 
-                SelectedPlaylist = null;
-                _footerButtons.B2_2IsEnabled = false;
+                SelectedPlaylist = value?.Playlists.Count == 1 ? value.Playlists[0] : null;
                 OnPropertyChanged(nameof(SelectedClusterSummaryText));
             }
         }
