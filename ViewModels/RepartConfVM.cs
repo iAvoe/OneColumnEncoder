@@ -53,6 +53,9 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private readonly ObservableCollection<DividerPreviewFrameVM> _dividerPreviewFrames = [];
     private string _dividerPreviewStatusText = RepartLangProvider.Current["DividerPreviewSelectDivider"];
     private bool _suppressDividerPreviewRefresh;
+    private bool _isDraggingDivider;
+    private long? _dividerPreviewRenderedFrame;
+    private long? _dividerPreviewTargetFrame;
     private bool _syncingNewDivider;
     private bool _isBusy;
     private bool _syncingRange;
@@ -480,6 +483,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
     public void SetDraggingSelection(bool isDraggingSelection)
     {
+        _isDraggingDivider = isDraggingSelection;
+        _suppressDividerPreviewRefresh = isDraggingSelection;
     }
 
     public void SelectDividerForInteraction(RepartDividerItemVM? item)
@@ -487,12 +492,23 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         if (item == null) return;
         SelectOnlyDivider(item.Model.Id);
         SelectedOutput = null;
+        EnsureDividerPreviewUpToDate();
     }
 
-    public void RefreshSelectedDividerPreview()
+    public void EnsureDividerPreviewUpToDate()
     {
-        if (SelectedDivider != null)
+        if (_isDraggingDivider) return;
+        if (_analysis == null || SelectedDivider == null) return;
+        if (IsRenderInFlightForCurrentFrame()) return;
+
+        if (DividerPreviewFrames.Count == 0 || _dividerPreviewRenderedFrame != SelectedDivider.Frame)
             RefreshDividerPreview();
+    }
+
+    private bool IsRenderInFlightForCurrentFrame()
+    {
+        return _dividerPreviewCts != null
+            && _dividerPreviewTargetFrame == SelectedDivider?.Frame;
     }
 
     public void MoveDividerToPosition(RepartDividerItemVM? item, double position)
@@ -728,6 +744,13 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         SetDividerTexts(updated.Frame);
         SetSuggestedNewDividerTexts();
         SelectOnlyDivider(updated.Id);
+        RequestDividerPreviewRefresh();
+    }
+
+    private void RequestDividerPreviewRefresh()
+    {
+        if (_isDraggingDivider || SelectedDivider == null) return;
+        RefreshDividerPreview();
     }
 
     private void ToggleSelectedDividerLock()
@@ -1210,6 +1233,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
         if (_analysis == null || SelectedDivider == null)
         {
+            _dividerPreviewTargetFrame = null;
+            _dividerPreviewRenderedFrame = null;
             DividerPreviewFrames.Clear();
             DividerPreviewStatusText = RepartLangProvider.Current["DividerPreviewSelectDivider"];
             cts.Dispose();
@@ -1217,6 +1242,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             return;
         }
 
+        _dividerPreviewTargetFrame = SelectedDivider.Frame;
         _ = RefreshDividerPreviewAsync(cts);
     }
 
@@ -1224,6 +1250,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     {
         try
         {
+            _dividerPreviewRenderedFrame = null;
             RepartDividerItemVM? divider = SelectedDivider;
 
             if (string.IsNullOrWhiteSpace(_ffmpegPath) || !File.Exists(_ffmpegPath))
@@ -1318,6 +1345,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
                 .Where(source => selectedFrame >= source.FirstFrame && selectedFrame <= source.LastFrame)
                 .Select(source => source.DisplayName)
                 .FirstOrDefault() ?? "?";
+            _dividerPreviewRenderedFrame = selectedFrame;
             DividerPreviewStatusText = string.Format(
                 RepartLangProvider.Current["DividerPreviewSummary"],
                 sourceName,

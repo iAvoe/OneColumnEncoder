@@ -34,10 +34,7 @@ public partial class RepartConfModal : AdaptiveWindow
     private void DividerThumb_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
         if (DataContext is RepartConfVM vm && sender is FrameworkElement { DataContext: RepartDividerItemVM item })
-        {
             vm.SelectDividerForInteraction(item);
-            vm.RefreshSelectedDividerPreview();
-        }
     }
 
     private void DividerThumb_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -69,6 +66,7 @@ public partial class RepartConfModal : AdaptiveWindow
             return;
         }
 
+        vm.SetDraggingSelection(true);
         vm.SelectDividerForInteraction(item);
         double dividerX = item.Position * host.ActualWidth;
         _dividerDragPointerOffset = Mouse.GetPosition(host).X - dividerX;
@@ -91,6 +89,9 @@ public partial class RepartConfModal : AdaptiveWindow
     private void DividerThumb_DragCompleted(object sender, DragCompletedEventArgs e)
     {
         _dividerDragPointerOffset = 0d;
+        if (DataContext is not RepartConfVM vm) return;
+        vm.SetDraggingSelection(false);
+        vm.EnsureDividerPreviewUpToDate();
     }
 
     private static T? FindAncestor<T>(DependencyObject element) where T : DependencyObject
