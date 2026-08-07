@@ -81,82 +81,29 @@ public sealed class OpenRepartConfCmd(
 
     private async Task<RepartPlanM?> ImportChapterFolderAsync()
     {
-        OpenFolderDialog dialog = new()
-        {
-            Title = RepartLangProvider.Current["SelectPlaylistFolder"],
-            Multiselect = false
-        };
-        if (dialog.ShowDialog(Application.Current.MainWindow) != true) return null;
-
-        BdPlaylistScanResult playlistScan = await BdPlaylistScanner.ScanAsync(dialog.FolderName);
-        if (playlistScan.Clusters.Count == 0)
-        {
-            new OpenErrModalCmd(
-                modalNavS,
+        PlaylistImportResult? import = await PlaylistImportService.ImportAsync(
+            modalNavS,
+            new PlaylistImportStrings(
+                RepartLangProvider.Current["SelectPlaylistFolder"],
                 RepartConfVM.WindowTitleText,
-                BuildPlaylistScanFailureMessage(dialog.FolderName, playlistScan.Diagnostics)).Execute(null);
+                BuildPlaylistScanFailureMessage,
+                fileName => string.Format(RepartLangProvider.Current["ChapterImportFailed"], fileName),
+                RepartLangProvider.Current["ChapterSourcesMissing"]));
+        if (import == null) return null;
+
+        RepartAnalysisResult? result = await RunAnalysisAsync(import.SourcePaths, requireMultipleSources: false);
+        if (result?.Plan == null)
             return null;
-        }
 
-        while (true)
-        {
-            string? selectedPlaylistPath = SelectPlaylistPath(playlistScan);
-            if (selectedPlaylistPath == null) return null;
-
-            DiscChapterReadResult chapterResult = await DiscChapterReader.TryReadAsync(selectedPlaylistPath);
-            if ((!chapterResult.Success && !chapterResult.IsPartial) || chapterResult.Chapters.Count == 0)
-            {
-                new OpenErrModalCmd(
-                    modalNavS,
-                    RepartConfVM.WindowTitleText,
-                    string.Format(RepartLangProvider.Current["ChapterImportFailed"], Path.GetFileName(selectedPlaylistPath))).Execute(null);
-                continue;
-            }
-
-            string[] sourcePaths = chapterResult.ReferencedFilePaths.ToArray();
-            if (sourcePaths.Length == 0)
-            {
-                new OpenErrModalCmd(modalNavS, RepartConfVM.WindowTitleText, RepartLangProvider.Current["ChapterSourcesMissing"]).Execute(null);
-                continue;
-            }
-
-            RepartAnalysisResult? result = await RunAnalysisAsync(sourcePaths, requireMultipleSources: false);
-            if (result?.Plan == null)
-                continue;
-
-            ApplyChapterDividers(result.Plan, chapterResult);
-            new OpenSuccModalCmd(
-                modalNavS,
-                RepartConfVM.WindowTitleText,
-                string.Format(
-                    RepartLangProvider.Current["ImportSummary"],
-                    result.Plan.Sources.Count,
-                    result.Excluded.Count)).Execute(null);
-            return result.Plan;
-        }
-    }
-
-    private string? SelectPlaylistPath(BdPlaylistScanResult scan)
-    {
-        BdPlaylistSelectModal window = new();
-        string? selectedPath = null;
-        BdPlaylistSelectVM? vm = null;
-        vm = new BdPlaylistSelectVM(
-            scan,
-            cancelAction: () => window.Close(),
-            confirmAction: () =>
-            {
-                selectedPath = vm?.SelectedPlaylistPath;
-                if (!string.IsNullOrWhiteSpace(selectedPath))
-                    window.Close();
-            });
-
-        window.DataContext = vm;
-        window.Owner = Application.Current.MainWindow;
-        window.Closed += (_, _) => modalNavS.Close();
-        modalNavS.CurrentModalVM = vm;
-        window.ShowDialog();
-        return selectedPath;
+        ApplyChapterDividers(result.Plan, import.Chapter);
+        new OpenSuccModalCmd(
+            modalNavS,
+            RepartConfVM.WindowTitleText,
+            string.Format(
+                RepartLangProvider.Current["ImportSummary"],
+                result.Plan.Sources.Count,
+                result.Excluded.Count)).Execute(null);
+        return result.Plan;
     }
 
     private static string BuildPlaylistScanFailureMessage(string folderPath, IReadOnlyList<string> diagnostics)

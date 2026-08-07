@@ -1,7 +1,9 @@
 using Microsoft.Win32;
+using OneColumnEncoder.ChapterTool;
 using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.FileManagement;
 using OneColumnEncoder.Models;
+using OneColumnEncoder.Models.Lang;
 using OneColumnEncoder.Stores;
 using OneColumnEncoder.ViewModels.Cards;
 using System.IO;
@@ -22,30 +24,54 @@ namespace OneColumnEncoder.Commands
         private readonly string _browseKey = browseKey;
         private readonly Action<ToolItemCardVM, string, string[]>? _afterImport = afterImport;
 
-        public override void Execute(object? parameter)
+        public override async void Execute(object? parameter)
         {
-            OpenFolderDialog dialog = new()
-            {
-                Title = UILangProvider.Current["SourceQueue.SelectFolderTitle"],
-                InitialDirectory = BrowseHistory.ResolveInitialDirectory(_appDataM, _browseKey, _item.P2TextData)
-            };
+            // Ask how the user wants to import: confirm = resolve a BluRay playlist
+            // (MPLS), cancel = pick a folder of all video sources.
+            bool importAsPlaylist = QueueChapterImportPrompt.Confirm(_modalNavS);
 
-            Window? owner = Application.Current.MainWindow;
-            bool? result = owner is null
-                ? dialog.ShowDialog()
-                : dialog.ShowDialog(owner);
-            if (result != true) return;
-
-            string folderPath = dialog.FolderName;
-            string[] filePaths = SourceFilePicker.GetVideoFilesInFolder(folderPath);
-            if (filePaths.Length == 0)
+            string folderPath;
+            string[] filePaths;
+            if (importAsPlaylist)
             {
-                new OpenWarnModalCmd(
+                PlaylistImportResult? import = await PlaylistImportService.ImportAsync(
                     _modalNavS,
-                    UICaptionProvider.SourceInspect.WarnTitle,
-                    new VideoSourceQueueLangProvider(UILangProvider.Current.LanguageCode)["SourceQueue.EmptyFolderWarnMessage"])
-                    .Execute(null);
-                return;
+                    new PlaylistImportStrings(
+                        UILangProvider.Current["SourceQueue.SelectPlaylistFolder"],
+                        UILangProvider.Current["SourceQueue.ImportTitle"],
+                        BuildPlaylistScanFailureMessage,
+                        fileName => string.Format(UILangProvider.Current["SourceQueue.ChapterImportFailed"], fileName),
+                        UILangProvider.Current["SourceQueue.ChapterSourcesMissing"]));
+                if (import == null) return;
+
+                folderPath = import.PlaylistFolderPath;
+                filePaths = import.SourcePaths;
+            }
+            else
+            {
+                OpenFolderDialog dialog = new()
+                {
+                    Title = UILangProvider.Current["SourceQueue.SelectFolderTitle"],
+                    InitialDirectory = BrowseHistory.ResolveInitialDirectory(_appDataM, _browseKey, _item.P2TextData)
+                };
+
+                Window? owner = Application.Current.MainWindow;
+                bool? result = owner is null
+                    ? dialog.ShowDialog()
+                    : dialog.ShowDialog(owner);
+                if (result != true) return;
+
+                folderPath = dialog.FolderName;
+                filePaths = SourceFilePicker.GetVideoFilesInFolder(folderPath);
+                if (filePaths.Length == 0)
+                {
+                    new OpenWarnModalCmd(
+                        _modalNavS,
+                        UICaptionProvider.SourceInspect.WarnTitle,
+                        new VideoSourceQueueLangProvider(UILangProvider.Current.LanguageCode)["SourceQueue.EmptyFolderWarnMessage"])
+                        .Execute(null);
+                    return;
+                }
             }
 
             // Extract file names for both short card display and long tooltip display
@@ -57,6 +83,13 @@ namespace OneColumnEncoder.Commands
             BrowseHistory.Remember(_appDataM, _browseKey, folderPath);
             _afterImport?.Invoke(_item, folderPath, filePaths);
             Application.Current.MainWindow?.Activate();
+        }
+
+        private static string BuildPlaylistScanFailureMessage(string folderPath, IReadOnlyList<string> diagnostics)
+        {
+            List<string> lines = [$"No usable MPLS playlists were found in: {folderPath}"];
+            lines.AddRange(diagnostics.Take(8));
+            return string.Join(Environment.NewLine, lines);
         }
 
         public static string FormatQueueP1Text(IEnumerable<string> fileNames)
