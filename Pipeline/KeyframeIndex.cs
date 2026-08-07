@@ -109,6 +109,7 @@ public sealed class KeyframeIndex : IDisposable
 
     private async Task ReadOutputAsync()
     {
+        using CancellationTokenRegistration killRegistration = _scanToken.Register(TryKillProcess);
         Task<string> stderrTask = _process.StandardError.ReadToEndAsync(_scanToken);
 
         try

@@ -324,29 +324,30 @@ namespace OneColumnEncoder.ViewModels
 
             using Process process = new() { StartInfo = psi, EnableRaisingEvents = true };
             _currentProcess = process;
-            process.Start();
-            Task<string> stdoutTask = process.StandardOutput.ReadToEndAsync(token);
-            Task<string> stderrTask = process.StandardError.ReadToEndAsync(token);
-
+            using CancellationTokenRegistration killRegistration = token.Register(() => PreviewPipeline.TryKillProcess(process));
             try
             {
+                process.Start();
+                Task<string> stdoutTask = process.StandardOutput.ReadToEndAsync(token);
+                Task<string> stderrTask = process.StandardError.ReadToEndAsync(token);
+
                 await process.WaitForExitAsync(token);
+
+                string stdout = await stdoutTask;
+                string stderr = await stderrTask;
+                if (process.ExitCode != 0)
+                {
+                    _lastFfmpegStderr = stderr;
+                    string diagnostic = string.IsNullOrWhiteSpace(stderr) ? stdout : stderr;
+                    throw new InvalidOperationException(
+                        $"ffmpeg exited with code {process.ExitCode}. " +
+                        PreviewPipeline.TrimProcessMessage(diagnostic));
+                }
             }
-            catch (OperationCanceledException)
+            catch
             {
                 PreviewPipeline.TryKillProcess(process);
                 throw;
-            }
-
-            string stdout = await stdoutTask;
-            string stderr = await stderrTask;
-            if (process.ExitCode != 0)
-            {
-                _lastFfmpegStderr = stderr;
-                string diagnostic = string.IsNullOrWhiteSpace(stderr) ? stdout : stderr;
-                throw new InvalidOperationException(
-                    $"ffmpeg exited with code {process.ExitCode}. " +
-                    PreviewPipeline.TrimProcessMessage(diagnostic));
             }
         }
 

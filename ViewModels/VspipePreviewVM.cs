@@ -271,6 +271,7 @@ namespace OneColumnEncoder.ViewModels
             using Process vspipeProcess = new() { StartInfo = vspipePsi, EnableRaisingEvents = true };
             _currentVspipeProcess = vspipeProcess;
 
+            using CancellationTokenRegistration killRegistration = token.Register(() => PreviewPipeline.TryKillProcess(vspipeProcess));
             try
             {
                 vspipeProcess.Start();

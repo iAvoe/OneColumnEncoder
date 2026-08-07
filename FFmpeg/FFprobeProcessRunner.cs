@@ -14,24 +14,25 @@ public static class FFprobeProcessRunner
     {
         ProcessStartInfo startInfo = CreateStartInfo(ffprobePath, arguments);
         using Process process = new() { StartInfo = startInfo };
-        process.Start();
-
-        Task<string> stdoutTask = process.StandardOutput.ReadToEndAsync(cancellationToken);
-        Task<string> stderrTask = process.StandardError.ReadToEndAsync(cancellationToken);
-
-        using CancellationTokenSource timeoutSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        timeoutSource.CancelAfter(timeout);
+        using CancellationTokenRegistration killRegistration = cancellationToken.Register(() => TryKill(process));
         try
         {
+            process.Start();
+
+            Task<string> stdoutTask = process.StandardOutput.ReadToEndAsync(cancellationToken);
+            Task<string> stderrTask = process.StandardError.ReadToEndAsync(cancellationToken);
+
+            using CancellationTokenSource timeoutSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            timeoutSource.CancelAfter(timeout);
             await process.WaitForExitAsync(timeoutSource.Token);
+
+            return new FFprobeProcessResult(await stdoutTask, await stderrTask, process.ExitCode);
         }
         catch
         {
             TryKill(process);
             throw;
         }
-
-        return new FFprobeProcessResult(await stdoutTask, await stderrTask, process.ExitCode);
     }
 
     public static ProcessStartInfo CreateStartInfo(string ffprobePath, IReadOnlyList<string> arguments)

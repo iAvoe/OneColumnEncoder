@@ -1185,10 +1185,17 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
     public void InterruptWindowWork()
     {
-        try { _dividerPreviewCts?.Cancel(); }
+        CancellationTokenSource? dividerPreviewCts = Interlocked.Exchange(ref _dividerPreviewCts, null);
+        CancellationTokenSource? keyframeWarmupCts = Interlocked.Exchange(ref _keyframeWarmupCts, null);
+
+        try { dividerPreviewCts?.Cancel(); }
         catch { }
-        try { _keyframeWarmupCts?.Cancel(); }
+        try { keyframeWarmupCts?.Cancel(); }
         catch { }
+
+        try { keyframeWarmupCts?.Dispose(); }
+        catch { }
+
         try { _keyframeIndexLifetimeCts.Cancel(); }
         catch { }
     }
@@ -1591,13 +1598,9 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public override void Dispose()
     {
         UILangProvider.CurrentChanged -= OnLanguageChanged;
-        try { _dividerPreviewCts?.Cancel(); }
-        catch { }
-        try { _keyframeWarmupCts?.Cancel(); }
-        catch { }
+        InterruptWindowWork();
         _keyframeIndexLifetimeCts.Cancel();
         DisposeKeyframeIndexCache();
-        _keyframeWarmupCts?.Dispose();
         _keyframeIndexLifetimeCts.Dispose();
         PreviewPipeline.DeleteDirectoryQuietly(_previewWorkDirectory);
         base.Dispose();

@@ -380,26 +380,27 @@ public static partial class PreviewPipeline
             psi.ArgumentList.Add(arg);
 
         using Process process = new() { StartInfo = psi, EnableRaisingEvents = true };
-        process.Start();
-        Task<string> stdoutTask = process.StandardOutput.ReadToEndAsync(token);
-        Task<string> stderrTask = process.StandardError.ReadToEndAsync(token);
-
+        using CancellationTokenRegistration killRegistration = token.Register(() => TryKillProcess(process));
         try
         {
+            process.Start();
+            Task<string> stdoutTask = process.StandardOutput.ReadToEndAsync(token);
+            Task<string> stderrTask = process.StandardError.ReadToEndAsync(token);
+
             await process.WaitForExitAsync(token);
+
+            string stdout = await stdoutTask;
+            string stderr = await stderrTask;
+            if (process.ExitCode != 0)
+            {
+                string message = string.IsNullOrWhiteSpace(stderr) ? stdout : stderr;
+                throw new InvalidOperationException(TrimProcessMessage(message));
+            }
         }
-        catch (OperationCanceledException)
+        catch
         {
             TryKillProcess(process);
             throw;
-        }
-
-        string stdout = await stdoutTask;
-        string stderr = await stderrTask;
-        if (process.ExitCode != 0)
-        {
-            string message = string.IsNullOrWhiteSpace(stderr) ? stdout : stderr;
-            throw new InvalidOperationException(TrimProcessMessage(message));
         }
     }
 
