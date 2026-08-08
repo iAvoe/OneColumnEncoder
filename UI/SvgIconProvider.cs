@@ -33,6 +33,7 @@ internal static class SvgIconProvider
     public static ImageSource GameDoc { get; }
     public static ImageSource GameCopy { get; }
     public static ImageSource GamePlus { get; }
+    public static ImageSource GameLightning { get; }
 
     private static SolidColorBrush Brush(string hex) =>
         new((Color)ColorConverter.ConvertFromString(hex)!);
@@ -366,6 +367,11 @@ internal static class SvgIconProvider
         Add(gamePlus, "M5 2.3a.7.7 0 0 1 .7.7v.345c0 .428 0 .641.123.783a1 1 0 0 0 .05.05c.14.122.354.122.782.122H7a.7.7 0 0 1 0 1.4h-.345c-.428 0-.642 0-.783.123a1 1 0 0 0-.05.05c-.122.14-.122.354-.122.782V7a.7.7 0 0 1-1.4 0v-.345c0-.428 0-.642-.123-.783a1 1 0 0 0-.05-.05c-.14-.122-.354-.122-.782-.122H3a.7.7 0 0 1 0-1.4h.345c.428 0 .641 0 .783-.123a1 1 0 0 0 .05-.05c.122-.14.122-.354.122-.782V3a.7.7 0 0 1 .7-.7", white);
         SetBounds(gamePlus);
         GamePlus = new DrawingImage(gamePlus);
+
+        DrawingGroup gameLightning = new();
+        Add(gameLightning, "m6.332 4.042-.061-.003c-.204-.01-.306-.016-.384-.047a.5.5 0 0 1-.303-.37c-.016-.083-.001-.184.028-.385.086-.585.13-.878.082-.993a.45.45 0 0 0-.6-.238c-.114.05-.283.293-.622.777L3.19 4.614c-.194.277-.29.415-.302.532a.45.45 0 0 0 .208.426c.1.063.269.071.606.088.239.012.358.018.448.061a.5.5 0 0 1 .268.32c.026.096.01.217-.02.458-.11.847-.163 1.271-.067 1.412a.45.45 0 0 0 .495.18c.164-.047.39-.4.839-1.107l1.207-1.897c.186-.292.28-.439.283-.562a.45.45 0 0 0-.201-.39c-.103-.067-.276-.076-.622-.093", white);
+        SetBounds(gameLightning);
+        GameLightning = new DrawingImage(gameLightning);
 
     }
 
