@@ -1,5 +1,4 @@
 using OneColumnEncoder.CPU;
-using System.Collections.ObjectModel;
 
 namespace OneColumnEncoder.ViewModels
 {

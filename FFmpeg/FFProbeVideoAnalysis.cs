@@ -1,5 +1,4 @@
 using System.IO;
-using System.Text.Json;
 
 namespace OneColumnEncoder.FFmpeg
 {

@@ -1,5 +1,3 @@
-using System.ComponentModel;
-
 namespace OneColumnEncoder.Models
 {
     public class ColumnTextItemM : INotifyPropertyChanged

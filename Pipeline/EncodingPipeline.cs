@@ -1,8 +1,6 @@
 using OneColumnEncoder.CPU;
 using OneColumnEncoder.Json;
-using System.Globalization;
 using System.IO;
-using System.Text.Json;
 using static OneColumnEncoder.Json.JsonElementHelper;
 using System.Text.RegularExpressions;
 

@@ -12,6 +12,14 @@ global using OneColumnEncoder.Pipeline;
 global using OneColumnEncoder.FFmpeg;
 global using OneColumnEncoder.Persistence;
 
+global using System.ComponentModel;
+global using System.Collections.ObjectModel;
+global using System.Diagnostics;
+global using System.Globalization;
+global using System.Text;
+global using System.Text.Json;
+global using Microsoft.Win32;
+
 global using System.Windows;
 global using System.Windows.Controls;
 global using System.Windows.Input;

@@ -1,4 +1,3 @@
-using Microsoft.Win32;
 using OneColumnEncoder.Hardware;
 using OneColumnEncoder.ScriptGeneration;
 using System.IO;

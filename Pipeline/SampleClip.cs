@@ -1,5 +1,3 @@
-using System.Globalization;
-
 namespace OneColumnEncoder.Pipeline;
 
 public static class SampleClip

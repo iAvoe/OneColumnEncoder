@@ -1,5 +1,3 @@
-using System.Globalization;
-
 namespace OneColumnEncoder.Converters
 {
     public class SliderValuePopupPositionConverter : IMultiValueConverter

@@ -1,5 +1,3 @@
-using Microsoft.Win32;
-
 namespace OneColumnEncoder.Commands
 {
     public class BrowseOutputDirectoryCmd(ToolItemCardVM item) : BaseCmd

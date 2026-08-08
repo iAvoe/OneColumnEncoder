@@ -2,14 +2,8 @@ using OneColumnEncoder.Converters;
 using OneColumnEncoder.Json;
 using OneColumnEncoder.CPU;
 using System.Collections.Concurrent;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Windows.Threading;
 

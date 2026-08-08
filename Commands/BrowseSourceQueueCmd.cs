@@ -1,4 +1,3 @@
-using Microsoft.Win32;
 using OneColumnEncoder.ChapterTool;
 using System.IO;
 

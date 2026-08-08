@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using System.Windows.Threading;
 
 namespace OneColumnEncoder.ViewModels;

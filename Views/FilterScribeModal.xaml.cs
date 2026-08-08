@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace OneColumnEncoder.Views
+﻿namespace OneColumnEncoder.Views
 {
     public partial class FilterScribeModal : AdaptiveWindow
     {

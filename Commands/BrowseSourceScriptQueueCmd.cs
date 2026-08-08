@@ -1,4 +1,3 @@
-using Microsoft.Win32;
 using System.IO;
 
 namespace OneColumnEncoder.Commands

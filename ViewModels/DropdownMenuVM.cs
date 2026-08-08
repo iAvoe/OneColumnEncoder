@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-namespace OneColumnEncoder.ViewModels
+﻿namespace OneColumnEncoder.ViewModels
 {
     public class DropdownMenuVM : BaseVM
     {

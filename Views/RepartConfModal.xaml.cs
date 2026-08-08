@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using System.Windows.Controls.Primitives;
 
 namespace OneColumnEncoder.Views;

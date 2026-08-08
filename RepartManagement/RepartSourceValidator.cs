@@ -1,9 +1,6 @@
-using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Text.Json;
 using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.RepartManagement;

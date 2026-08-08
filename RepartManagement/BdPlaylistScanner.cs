@@ -2,7 +2,6 @@ using ChapterTool.Core.Editing;
 using ChapterTool.Core.Importing;
 using ChapterTool.Core.Importing.Disc;
 using ChapterTool.Core.Models;
-using System.Globalization;
 using System.IO;
 
 namespace OneColumnEncoder.RepartManagement;

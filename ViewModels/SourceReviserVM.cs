@@ -1,5 +1,3 @@
-using System.Globalization;
-
 namespace OneColumnEncoder.ViewModels;
 
 public class SourceReviserVM : BaseVM

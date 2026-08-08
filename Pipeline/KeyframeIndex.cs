@@ -1,7 +1,3 @@
-using System.Diagnostics;
-using System.Globalization;
-using System.Text;
-
 namespace OneColumnEncoder.Pipeline;
 
 public sealed class KeyframeIndex : IDisposable

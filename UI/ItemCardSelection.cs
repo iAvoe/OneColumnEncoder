@@ -1,5 +1,4 @@
 using OneColumnEncoder.ToolManagement;
-using System.Collections.ObjectModel;
 
 namespace OneColumnEncoder.UI
 {

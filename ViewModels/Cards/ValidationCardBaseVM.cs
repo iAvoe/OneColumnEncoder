@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-namespace OneColumnEncoder.ViewModels.Cards
+﻿namespace OneColumnEncoder.ViewModels.Cards
 {
     public class ValidationCardBaseVM : BaseVM
     {

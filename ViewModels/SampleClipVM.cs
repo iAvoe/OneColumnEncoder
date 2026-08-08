@@ -1,6 +1,3 @@
-using System.Collections.ObjectModel;
-using System.Globalization;
-
 namespace OneColumnEncoder.ViewModels
 {
     public class SampleClipVM : BaseVM, IClipRangeSelectorDragAware

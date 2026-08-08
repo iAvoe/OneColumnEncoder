@@ -1,6 +1,4 @@
-using Microsoft.Win32;
 using OneColumnEncoder.ToolManagement;
-using System.Collections.ObjectModel;
 using System.IO;
 using static OneColumnEncoder.Models.ConfirmationProviderM;
 

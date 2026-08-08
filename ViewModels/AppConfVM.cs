@@ -1,7 +1,5 @@
 using OneColumnEncoder.Commands.SaveLoad;
 using OneColumnEncoder.Components;
-using System.Collections.ObjectModel;
-using System.Globalization;
 
 namespace OneColumnEncoder.ViewModels
 {

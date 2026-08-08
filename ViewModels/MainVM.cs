@@ -6,11 +6,8 @@ using OneColumnEncoder.ConcatManagement;
 using OneColumnEncoder.RepartManagement;
 using OneColumnEncoder.ToolManagement;
 using OneColumnEncoder.Validation;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.IO;
-using System.Text.Json;
 
 namespace OneColumnEncoder.ViewModels
 {

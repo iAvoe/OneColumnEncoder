@@ -1,5 +1,3 @@
-using System.Collections.ObjectModel;
-
 namespace OneColumnEncoder.Commands
 {
     public class DeleteToolCmd(ToolItemCardVM item, ObservableCollection<ToolItemCardVM> zone, AppDataM appDataM) : BaseCmd

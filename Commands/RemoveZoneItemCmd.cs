@@ -1,5 +1,3 @@
-using System.Collections.ObjectModel;
-
 namespace OneColumnEncoder.Commands
 {
     public class RemoveZoneItemCmd(ToolItemCardVM item, ObservableCollection<ToolItemCardVM> zone) : BaseCmd

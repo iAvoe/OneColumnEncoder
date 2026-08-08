@@ -1,5 +1,3 @@
-using System.Globalization;
-
 namespace OneColumnEncoder.UI;
 
 internal static class SvgIconProvider

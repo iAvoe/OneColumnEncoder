@@ -1,5 +1,3 @@
-using System.Collections.ObjectModel;
-
 namespace OneColumnEncoder.Components
 {
     public partial class ColumnTextGrid : UserControl

@@ -1,6 +1,4 @@
-using Microsoft.Win32;
 using OneColumnEncoder.Validation;
-using System.Collections.ObjectModel;
 
 namespace OneColumnEncoder.ViewModels
 {

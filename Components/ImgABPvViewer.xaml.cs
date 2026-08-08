@@ -1,5 +1,4 @@
 using System.Windows.Media.Imaging;
-using System.ComponentModel;
 using System.Windows.Threading;
 
 namespace OneColumnEncoder.Components

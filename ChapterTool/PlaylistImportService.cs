@@ -1,4 +1,3 @@
-using Microsoft.Win32;
 using OneColumnEncoder.RepartManagement;
 using System.IO;
 using System.Threading;

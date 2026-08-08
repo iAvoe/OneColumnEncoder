@@ -1,7 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-
-namespace OneColumnEncoder.ViewModels.Cards
+﻿namespace OneColumnEncoder.ViewModels.Cards
 {
     public class ToolsImportCardVM : BaseVM
     {

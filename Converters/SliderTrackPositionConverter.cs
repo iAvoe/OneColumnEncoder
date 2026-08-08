@@ -1,5 +1,3 @@
-using System.Globalization;
-
 namespace OneColumnEncoder.Converters
 {
     public class SliderTrackPositionConverter : IMultiValueConverter

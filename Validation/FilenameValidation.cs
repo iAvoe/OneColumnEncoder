@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-using System.IO;
-using System.Text;
+﻿using System.IO;
 using System.Text.RegularExpressions;
 
 namespace OneColumnEncoder.Validation

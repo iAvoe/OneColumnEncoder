@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace OneColumnEncoder.Commands.OpenClose
 {
     public class OpenSavedTextModalCmd(

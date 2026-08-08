@@ -1,5 +1,3 @@
-using System.Collections.ObjectModel;
-
 namespace OneColumnEncoder.ViewModels;
 
 public class ConfirmationVM(string windowTitle, string message, ImageSource image, ICommand cancelCmd, ICommand confirmCmd) : BaseVM
