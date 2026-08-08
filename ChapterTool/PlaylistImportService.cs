@@ -84,16 +84,21 @@ public static class PlaylistImportService
     public static IReadOnlyList<string>? SelectPlaylistPaths(ModalNavS modalNavS, BdPlaylistScanResult scan)
     {
         BdPlaylistSelectModal window = new();
-        IReadOnlyList<string>? selectedPaths = null;
         BdPlaylistSelectVM? vm = null;
         vm = new BdPlaylistSelectVM(
             scan,
-            cancelAction: () => window.Close(),
+            cancelAction: () =>
+            {
+                window.DialogResult = false;
+                window.Close();
+            },
             confirmAction: () =>
             {
-                selectedPaths = vm?.FinalPlaylistPaths;
-                if (selectedPaths is { Count: > 0 })
+                if (vm?.FinalPlaylistPaths is { Count: > 0 })
+                {
+                    window.DialogResult = true;
                     window.Close();
+                }
             });
 
         window.DataContext = vm;
@@ -101,6 +106,6 @@ public static class PlaylistImportService
         window.Closed += (_, _) => modalNavS.Close();
         modalNavS.CurrentModalVM = vm;
         window.ShowDialog();
-        return selectedPaths;
+        return window.DialogResult == true ? vm?.FinalPlaylistPaths : null;
     }
 }

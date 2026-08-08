@@ -3,6 +3,7 @@ using OneColumnEncoder.Models;
 using OneColumnEncoder.Models.Lang;
 using OneColumnEncoder.UI;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 namespace OneColumnEncoder.ViewModels;
 
@@ -15,6 +16,10 @@ public sealed class BdPlaylistSelectVM : BaseVM
     private readonly ButtonGroupVM _playlistButtons;
     private readonly ButtonGroupVM _finalPlaylistButtons1;
     private readonly ButtonGroupVM _finalPlaylistButtons2;
+    private readonly ObservableCollection<BdPlaylistClusterM> _clusters = [];
+    private readonly ObservableCollection<BdPlaylistM> _playlists = [];
+    private readonly ObservableCollection<BdPlaylistM> _finalPlaylists = [];
+    private readonly NotifyCollectionChangedEventHandler _finalPlaylistsChangedHandler;
     private BdPlaylistClusterM? _selectedCluster;
     private BdPlaylistM? _selectedPlaylist;
     private BdPlaylistM? _selectedFinalPlaylist;
@@ -51,10 +56,15 @@ public sealed class BdPlaylistSelectVM : BaseVM
         _finalPlaylistButtons2.B3_2Icon = SvgIconProvider.GameXMark;
         _finalPlaylistButtons2.B3_3Icon = SvgIconProvider.GameCorrectMark;
 
-        foreach (BdPlaylistClusterM cluster in scan.Clusters)
-            Clusters.Add(cluster);
+        Clusters = new ReadOnlyObservableCollection<BdPlaylistClusterM>(_clusters);
+        Playlists = new ReadOnlyObservableCollection<BdPlaylistM>(_playlists);
+        FinalPlaylists = new ReadOnlyObservableCollection<BdPlaylistM>(_finalPlaylists);
 
-        FinalPlaylists.CollectionChanged += (_, _) => RefreshFinalPlaylistState();
+        foreach (BdPlaylistClusterM cluster in scan.Clusters)
+            _clusters.Add(cluster);
+
+        _finalPlaylistsChangedHandler = (_, _) => RefreshFinalPlaylistState();
+        _finalPlaylists.CollectionChanged += _finalPlaylistsChangedHandler;
 
         SummaryText = string.Format(PlaylistSummaryFormat, scan.Clusters.Count, scan.Clusters.Sum(cluster => cluster.PlaylistCount));
 
@@ -88,9 +98,9 @@ public sealed class BdPlaylistSelectVM : BaseVM
             FinalPlaylistSummaryFormat,
             FinalPlaylists.Count,
             FormatTimeSpan(FinalPlaylists.Aggregate(TimeSpan.Zero, (sum, playlist) => sum + playlist.Duration)));
-    public ObservableCollection<BdPlaylistClusterM> Clusters { get; } = [];
-    public ObservableCollection<BdPlaylistM> Playlists { get; } = [];
-    public ObservableCollection<BdPlaylistM> FinalPlaylists { get; } = [];
+    public ReadOnlyObservableCollection<BdPlaylistClusterM> Clusters { get; }
+    public ReadOnlyObservableCollection<BdPlaylistM> Playlists { get; }
+    public ReadOnlyObservableCollection<BdPlaylistM> FinalPlaylists { get; }
     public ButtonGroupVM PlaylistButtons => _playlistButtons;
     public ButtonGroupVM FinalPlaylistButtons1 => _finalPlaylistButtons1;
     public ButtonGroupVM FinalPlaylistButtons2 => _finalPlaylistButtons2;
@@ -102,12 +112,7 @@ public sealed class BdPlaylistSelectVM : BaseVM
         {
             if (SetProperty(ref _selectedCluster, value))
             {
-                Playlists.Clear();
-                if (value != null)
-                {
-                    foreach (BdPlaylistM playlist in value.Playlists)
-                        Playlists.Add(playlist);
-                }
+                PopulatePlaylists(value);
 
                 SelectedPlaylist = value?.Playlists.Count == 1 ? value.Playlists[0] : null;
                 OnPropertyChanged(nameof(SelectedClusterSummaryText));
@@ -165,7 +170,7 @@ public sealed class BdPlaylistSelectVM : BaseVM
         if (!CanAddToFinal)
             return;
 
-        FinalPlaylists.Add(SelectedPlaylist!);
+        _finalPlaylists.Add(SelectedPlaylist!);
         SelectedFinalPlaylist = SelectedPlaylist;
     }
 
@@ -174,9 +179,9 @@ public sealed class BdPlaylistSelectVM : BaseVM
         if (SelectedFinalPlaylist == null)
             return;
 
-        int index = FinalPlaylists.IndexOf(SelectedFinalPlaylist);
-        FinalPlaylists.Remove(SelectedFinalPlaylist);
-        SelectedFinalPlaylist = index < FinalPlaylists.Count ? FinalPlaylists[index] : (FinalPlaylists.Count > 0 ? FinalPlaylists[^1] : null);
+        int index = _finalPlaylists.IndexOf(SelectedFinalPlaylist);
+        _finalPlaylists.Remove(SelectedFinalPlaylist);
+        SelectedFinalPlaylist = index < _finalPlaylists.Count ? _finalPlaylists[index] : (_finalPlaylists.Count > 0 ? _finalPlaylists[^1] : null);
     }
 
     private void Move(int delta)
@@ -184,24 +189,29 @@ public sealed class BdPlaylistSelectVM : BaseVM
         if (SelectedFinalPlaylist == null)
             return;
 
-        int index = FinalPlaylists.IndexOf(SelectedFinalPlaylist);
+        int index = _finalPlaylists.IndexOf(SelectedFinalPlaylist);
         int target = index + delta;
-        if (target < 0 || target >= FinalPlaylists.Count)
+        if (target < 0 || target >= _finalPlaylists.Count)
             return;
 
-        FinalPlaylists.Move(index, target);
+        _finalPlaylists.Move(index, target);
         RefreshFinalPlaylistState();
     }
 
     private void ClearAll()
     {
-        FinalPlaylists.Clear();
+        _finalPlaylists.Clear();
         SelectedFinalPlaylist = null;
     }
 
     private void RefreshFinalPlaylistState()
     {
         OnPropertyChanged(nameof(FinalPlaylistSummaryText));
+        OnPropertyChanged(nameof(FinalPlaylistPaths));
+        OnPropertyChanged(nameof(CanAddToFinal));
+        OnPropertyChanged(nameof(CanRemoveFromFinal));
+        OnPropertyChanged(nameof(CanMoveUp));
+        OnPropertyChanged(nameof(CanMoveDown));
         _playlistButtons.B2_2IsEnabled = CanAddToFinal;
 
         _finalPlaylistButtons1.B2_1IsEnabled = CanMoveUp;
@@ -218,6 +228,22 @@ public sealed class BdPlaylistSelectVM : BaseVM
             return;
 
         _confirmAction();
+    }
+
+    private void PopulatePlaylists(BdPlaylistClusterM? cluster)
+    {
+        _playlists.Clear();
+        if (cluster == null)
+            return;
+
+        foreach (BdPlaylistM playlist in cluster.Playlists)
+            _playlists.Add(playlist);
+    }
+
+    public override void Dispose()
+    {
+        _finalPlaylists.CollectionChanged -= _finalPlaylistsChangedHandler;
+        base.Dispose();
     }
 
     private static string FormatTimeSpan(TimeSpan value) => value.ToString(@"hh\:mm\:ss\.fff");

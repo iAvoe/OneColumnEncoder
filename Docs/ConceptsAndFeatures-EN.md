@@ -143,6 +143,20 @@ Repart mode treats an ordered set of strictly matching CFR video streams as one 
 
 The dedicated partition-style window provides input and output sidebars, a proportional allocation map, synchronized time/frame fields, unallocated gaps, and adjacent-output merging. Chapter-folder import is supported for disc playlists: multi-entry MPLS sources are combined into one virtual source, and mixed STREAM folders resolve to the dominant matching episode group instead of the first file. Repart still does not copy source audio, subtitles, chapters, or metadata; every output is encoded independently and muxed as a video-only MKV.
 
+#### BD Playlist Selector Modal
+
+The BD Playlist Selector modal is the playlist-picking step used by chapter-folder import. `BdPlaylistScanner` builds clustered playlist candidates first, then `BdPlaylistSelectModal` lets the user choose which playlists to keep and in what order before chapter import continues.
+
+Its UI is intentionally narrow in scope: clusters are shown on the left, playlists from the selected cluster in the middle, and the final ordered playlist list on the right. The ViewModel owns the selection state, the final ordered playlist list, and the button state for add, remove, reorder, clear, cancel, and confirm. The view only binds to that state; it does not perform scan, chapter read, or file resolution work.
+
+This keeps the import flow reusable: the same selection modal can be opened from Repart-related import paths, and the confirmed result is just the ordered playlist path list that gets passed to the chapter reader.
+
+Playlist structure matters here:
+
+- Normal: one playlist contains all episodes. For both movies and TV shows, the playlist with the longest duration is usually the correct choice.
+- Separated: one playlist contains one episode. For TV shows, the matching playlists usually have similar durations.
+- The third column exists for the separated case. Choosing a single playlist there means importing only one episode, not the whole title set.
+
 **Container-level timing granularity is normalized, not part of the format signature.** Repart's strict source signature compares actual video format fields (codec, profile, level, dimensions, pixel format, color metadata, frame rate, extradata) but deliberately excludes the per-stream `time_base` — the muxer's tick resolution, e.g. `1/24000` vs `1/96000` at the same 24000/1001 fps. That is a container detail rather than a video format property, so an encode batch that muxed identical episodes at different tick resolutions still forms one virtual timeline. This is safe because every upstream normalizes timing: ffmpeg resets each input's PTS and rebuilds a CFR PTS sequence from the plan frame rate, VapourSynth/AviSynth splice by frames, and the final video-only MKV uses `-video_track_timescale` derived from the reference source.
 
 #### Concat Then Split
