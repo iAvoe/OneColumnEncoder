@@ -1,7 +1,7 @@
-using System.IO;
 using ChapterTool.Core.Editing;
 using ChapterTool.Core.Importing;
 using ChapterTool.Core.Models;
+using System.IO;
 
 namespace OneColumnEncoder.ChapterTool
 {

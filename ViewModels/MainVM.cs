@@ -1,13 +1,13 @@
-using static OneColumnEncoder.Json.JsonElementHelper;
 using OneColumnEncoder.Commands.SaveLoad;
-using OneColumnEncoder.ScriptGeneration;
-using OneColumnEncoder.QueueManagement;
 using OneColumnEncoder.ConcatManagement;
+using OneColumnEncoder.QueueManagement;
 using OneColumnEncoder.RepartManagement;
+using OneColumnEncoder.ScriptGeneration;
 using OneColumnEncoder.ToolManagement;
 using OneColumnEncoder.Validation;
 using System.Collections.Specialized;
 using System.IO;
+using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.ViewModels
 {

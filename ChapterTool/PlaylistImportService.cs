@@ -1,6 +1,5 @@
 using OneColumnEncoder.RepartManagement;
 using System.IO;
-using System.Threading;
 
 namespace OneColumnEncoder.ChapterTool;
 

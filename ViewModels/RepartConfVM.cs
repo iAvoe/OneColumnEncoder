@@ -1,6 +1,5 @@
 using OneColumnEncoder.Validation;
 using System.IO;
-using System.Threading;
 
 namespace OneColumnEncoder.ViewModels;
 
@@ -96,7 +95,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             DeleteSelectedDividerCommand,
             DeleteLeftDividerCommand,
             DeleteRightDividerCommand);
-         FinishButtons = ButtonGroupVM.CreateTwoButton(CancelText, ApplyText, CancelCommand, ApplyCommand);
+        FinishButtons = ButtonGroupVM.CreateTwoButton(CancelText, ApplyText, CancelCommand, ApplyCommand);
         EpisodeEditButtons = ButtonGroupVM.CreateFiveButton(
             MergeLeftText,
             MergeRightText,

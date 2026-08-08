@@ -1,8 +1,7 @@
 using OneColumnEncoder.CPU;
-using OneColumnEncoder.Json;
 using System.IO;
-using static OneColumnEncoder.Json.JsonElementHelper;
 using System.Text.RegularExpressions;
+using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.Pipeline;
 

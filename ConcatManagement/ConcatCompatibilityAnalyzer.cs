@@ -1,5 +1,5 @@
-using static OneColumnEncoder.Json.JsonElementHelper;
 using System.IO;
+using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.ConcatManagement
 {

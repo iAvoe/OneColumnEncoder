@@ -345,7 +345,7 @@ namespace OneColumnEncoder.ViewModels
             _model.Save();
         }
 
-public EncoderConfM CreatePreviewModel()
+        public EncoderConfM CreatePreviewModel()
         {
             EncoderConfM previewModel = new();
             FillModelFromUi(previewModel, forceCrfMode: true);
@@ -374,7 +374,7 @@ public EncoderConfM CreatePreviewModel()
             model.X265Aq = X265Aq;
             model.X265Dark = X265Dark;
             model.X265Texture = X265Texture;
-model.SvtAv1Dl2 = SvtAv1Dl2;
+            model.SvtAv1Dl2 = SvtAv1Dl2;
             model.SvtAv1AutoTile = SvtAv1AutoTile;
             model.VvencQp = VvencQp;
             model.VvencMode = VvencModeDropdown.SelectedItem?.Tag is int vvencMode ? vvencMode : 0;

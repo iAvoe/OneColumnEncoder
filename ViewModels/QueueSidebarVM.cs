@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace OneColumnEncoder.ViewModels
 {
     public class QueueSidebarVM : BaseVM

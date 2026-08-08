@@ -1,5 +1,3 @@
-using System.Linq;
-
 namespace OneColumnEncoder.ViewModels.Cards
 {
     public class SourceCheckCardVM : ValidationCardBaseVM

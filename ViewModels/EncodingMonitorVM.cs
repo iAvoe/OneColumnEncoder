@@ -1,5 +1,4 @@
 using OneColumnEncoder.Converters;
-using OneColumnEncoder.Json;
 using OneColumnEncoder.CPU;
 using System.Collections.Concurrent;
 using System.IO;
@@ -850,17 +849,17 @@ namespace OneColumnEncoder.ViewModels
 
             using Process mux = new()
             {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = _request.FfmpegPath,
-                        Arguments = muxCommand.Arguments,
-                        UseShellExecute = false,
-                        CreateNoWindow = true,
-                        RedirectStandardError = true,
-                        RedirectStandardOutput = true,
-                        StandardOutputEncoding = Encoding.UTF8,
-                        StandardErrorEncoding = Encoding.UTF8
-                    },
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = _request.FfmpegPath,
+                    Arguments = muxCommand.Arguments,
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                    StandardOutputEncoding = Encoding.UTF8,
+                    StandardErrorEncoding = Encoding.UTF8
+                },
                 EnableRaisingEvents = true
             };
 

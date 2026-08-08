@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace OneColumnEncoder.QueueManagement
 {
     public sealed class VideoSourceQueueState

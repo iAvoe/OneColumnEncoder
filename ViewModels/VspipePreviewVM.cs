@@ -226,7 +226,7 @@ namespace OneColumnEncoder.ViewModels
             {
                 if (!_isDisposed) StatusText = "Cancelled";
             }
-            catch (ObjectDisposedException) when (_isDisposed) {}
+            catch (ObjectDisposedException) when (_isDisposed) { }
             catch (Exception ex)
             {
                 if (!_isDisposed) StatusText = ex.Message;
