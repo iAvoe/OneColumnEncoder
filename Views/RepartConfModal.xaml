@@ -389,35 +389,45 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Margin="0"
-                                            BorderThickness="0 0 0 2" >
-                                        <Border.Style>
-                                            <Style TargetType="Border">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsSelected}"
-                                                                 Value="True">
-                                                        <Setter Property="BorderBrush"
-                                                                Value="{StaticResource BorderAmber}" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>
+                                    <Border CornerRadius="5"
+                                            ClipToBounds="True"
+                                            BorderThickness="0" >
                                         <Grid>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
-                                            <TextBlock Grid.Row="0"
+
+                                            <Grid Grid.Row="0">
+                                                <Image Source="{Binding FrameImage}"
+                                                       Stretch="Uniform"
+                                                       SnapsToDevicePixels="True"
+                                                       RenderOptions.BitmapScalingMode="NearestNeighbor" />
+
+                                                <Border Height="2"
+                                                        VerticalAlignment="Bottom">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Setter Property="Background"
+                                                                    Value="{StaticResource TimelineTrackBackgroundDark}" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsSelected}"
+                                                                             Value="True">
+                                                                    <Setter Property="Background"
+                                                                            Value="{StaticResource BorderAmber}" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                </Border>
+                                            </Grid>
+
+                                            <TextBlock Grid.Row="1"
                                                        Text="{Binding FrameText}"
-                                                       TextAlignment="Right"
-                                                       Foreground="{StaticResource GlobalSecondary}"
-                                                       FontSize="11" />
-                                            <Image Grid.Row="0"
-                                                   Source="{Binding FrameImage}"
-                                                   Stretch="Uniform"
-                                                   SnapsToDevicePixels="True"
-                                                   RenderOptions.BitmapScalingMode="NearestNeighbor"
-                                                   Margin="0 15 0 0" />
+                                                       TextAlignment="Center"
+                                                       Foreground="{StaticResource GlobalPrimary}"
+                                                       FontSize="11"
+                                                       Margin="0 0 0 1" />
                                         </Grid>
                                     </Border>
                                 </DataTemplate>

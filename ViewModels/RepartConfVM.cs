@@ -1319,10 +1319,12 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
                 {
                     long frameNumber = source.FirstFrame + relFirst + i;
                     if (frameNumber < windowFirst || frameNumber > windowLast) continue;
+                    bool isDivider = frameNumber == selectedFrame;
                     DividerPreviewFrames.Add(new DividerPreviewFrameVM(
                         frameNumber,
                         PreviewPipeline.LoadBitmap(files[i]),
-                        frameNumber == selectedFrame));
+                        isDivider,
+                        !isDivider));
                 }
             }
 
@@ -1646,15 +1648,17 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
 public sealed class DividerPreviewFrameVM
 {
-    public DividerPreviewFrameVM(long frame, ImageSource frameImage, bool isSelected)
+    public DividerPreviewFrameVM(long frame, ImageSource frameImage, bool isSelected, bool isNeighbor)
     {
         Frame = frame;
         FrameImage = frameImage;
         IsSelected = isSelected;
+        IsNeighbor = isNeighbor;
     }
 
     public long Frame { get; }
     public ImageSource FrameImage { get; }
     public bool IsSelected { get; }
+    public bool IsNeighbor { get; }
     public string FrameText => $"{Frame:N0}";
 }

@@ -62,6 +62,8 @@
                      x:Key="ErrorRed" />
     <SolidColorBrush Color="#D4A017"
                      x:Key="BorderAmber" />
+    <SolidColorBrush Color="#9673A6"
+                     x:Key="BorderPurple" />
     <SolidColorBrush Color="#FFF8E1"
                      x:Key="BackgroundAmber" />
     <SolidColorBrush Color="#343A40"
