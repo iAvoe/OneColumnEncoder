@@ -1,6 +1,4 @@
-﻿using OneColumnEncoder.Models;
-
-namespace OneColumnEncoder.ViewModels
+﻿namespace OneColumnEncoder.ViewModels
 {
     public class ChecklistEntryVM : BaseVM
     {

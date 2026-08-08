@@ -1,7 +1,4 @@
-using OneColumnEncoder.Models;
-using OneColumnEncoder.ViewModels.Cards;
 using OneColumnEncoder.ConcatManagement;
-using OneColumnEncoder.Persistence;
 using System.IO;
 
 namespace OneColumnEncoder.RepartManagement;

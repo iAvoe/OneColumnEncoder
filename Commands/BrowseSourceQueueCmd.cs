@@ -1,13 +1,6 @@
 using Microsoft.Win32;
 using OneColumnEncoder.ChapterTool;
-using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.FileManagement;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Models.Lang;
-using OneColumnEncoder.Stores;
-using OneColumnEncoder.ViewModels.Cards;
 using System.IO;
-using System.Windows;
 
 namespace OneColumnEncoder.Commands
 {

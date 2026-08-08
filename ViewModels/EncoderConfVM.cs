@@ -1,8 +1,3 @@
-using OneColumnEncoder.Commands;
-using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.ViewModels.Cards;
-
 namespace OneColumnEncoder.ViewModels
 {
     public class EncoderConfVM : BaseVM

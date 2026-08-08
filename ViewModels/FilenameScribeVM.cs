@@ -1,13 +1,6 @@
 using Microsoft.Win32;
-using OneColumnEncoder.Commands;
-using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.FileManagement;
-using OneColumnEncoder.UI;
 using OneColumnEncoder.Validation;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.ViewModels.Cards;
 using System.Collections.ObjectModel;
-using System.Windows;
 
 namespace OneColumnEncoder.ViewModels
 {

@@ -1,7 +1,3 @@
-using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.FFmpeg;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Stores;
 using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;

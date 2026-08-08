@@ -1,6 +1,4 @@
-﻿using System.Windows.Controls;
-
-namespace OneColumnEncoder.Views
+﻿namespace OneColumnEncoder.Views
 {
     /// <summary>
     /// Interaction logic for MainUI.xaml

@@ -1,11 +1,3 @@
-using OneColumnEncoder.FileManagement;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Stores;
-using OneColumnEncoder.ViewModels;
-using OneColumnEncoder.ViewModels.Cards;
-using OneColumnEncoder.Views;
-using System.Windows;
-
 namespace OneColumnEncoder.Commands.OpenClose
 {
     public class OpenFilterScribeCmd(

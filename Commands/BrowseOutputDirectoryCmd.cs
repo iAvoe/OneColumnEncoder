@@ -1,8 +1,4 @@
 using Microsoft.Win32;
-using OneColumnEncoder.FileManagement;
-using OneColumnEncoder.ViewModels;
-using OneColumnEncoder.ViewModels.Cards;
-using System.Windows;
 
 namespace OneColumnEncoder.Commands
 {

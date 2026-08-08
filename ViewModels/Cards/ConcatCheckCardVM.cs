@@ -1,5 +1,3 @@
-using OneColumnEncoder.Models;
-
 namespace OneColumnEncoder.ViewModels.Cards
 {
     public class ConcatCheckCardVM : SourceCheckCardVM

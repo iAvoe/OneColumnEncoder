@@ -1,13 +1,9 @@
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Persistence;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Markup;
-using System.Windows.Media;
 
 namespace OneColumnEncoder.UI
 {

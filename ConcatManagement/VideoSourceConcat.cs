@@ -1,7 +1,3 @@
-using OneColumnEncoder.Commands;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Persistence;
-using OneColumnEncoder.ViewModels.Cards;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;

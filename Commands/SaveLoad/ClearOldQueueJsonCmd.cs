@@ -1,5 +1,3 @@
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Persistence;
 using System.IO;
 
 namespace OneColumnEncoder.Commands.SaveLoad

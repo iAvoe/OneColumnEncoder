@@ -1,8 +1,3 @@
-using OneColumnEncoder.Commands;
-using OneColumnEncoder.ViewModels;
-using System.Windows;
-using System.Windows.Controls;
-
 namespace OneColumnEncoder.Components
 {
     public partial class EncoderPreviewPanel : UserControl

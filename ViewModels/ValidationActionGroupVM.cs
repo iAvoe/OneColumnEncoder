@@ -1,7 +1,3 @@
-using OneColumnEncoder.Commands;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.ViewModels.Cards;
-
 namespace OneColumnEncoder.ViewModels
 {
     public class ValidationActionGroupVM : BaseVM

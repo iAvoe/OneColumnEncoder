@@ -1,8 +1,4 @@
-﻿using OneColumnEncoder.Models;
-using System.Windows;
-using System.Windows.Controls;
-
-namespace OneColumnEncoder.Components
+﻿namespace OneColumnEncoder.Components
 {
     /// <summary>
     /// Provide dependency properties:

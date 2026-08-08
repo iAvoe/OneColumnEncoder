@@ -1,13 +1,5 @@
-using OneColumnEncoder.Commands;
-using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.FFmpeg;
-using OneColumnEncoder.Pipeline;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Stores;
-using OneColumnEncoder.Views;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Windows;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -187,7 +179,6 @@ namespace OneColumnEncoder.ViewModels
                 "interlaced" => Lang.SummaryInterlaced,
                 _ => Lang.SummaryUnknown,
             };
-
 
             SummaryColumns.Clear();
             // Total duration seconds

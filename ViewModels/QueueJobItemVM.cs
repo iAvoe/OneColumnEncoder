@@ -1,8 +1,5 @@
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Pipeline;
 using System.IO;
 using System.Text.Json;
-using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace OneColumnEncoder.ViewModels

@@ -1,8 +1,4 @@
-using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.ToolManagement;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Stores;
-using OneColumnEncoder.ViewModels.Cards;
 
 namespace OneColumnEncoder.Commands
 {

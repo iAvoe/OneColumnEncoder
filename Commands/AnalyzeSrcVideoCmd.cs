@@ -1,12 +1,5 @@
-using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.ConcatManagement;
-using OneColumnEncoder.FFmpeg;
-using OneColumnEncoder.Persistence;
 using OneColumnEncoder.Json;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Stores;
-using OneColumnEncoder.ViewModels;
-using OneColumnEncoder.ViewModels.Cards;
 using System.Globalization;
 using System.IO;
 using System.Text;

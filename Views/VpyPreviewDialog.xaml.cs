@@ -1,8 +1,3 @@
-using OneColumnEncoder.Stores;
-using OneColumnEncoder.UI;
-using OneColumnEncoder.ViewModels;
-using System.Windows;
-
 namespace OneColumnEncoder.Views
 {
     public partial class VpyPreviewDialog : AdaptiveWindow

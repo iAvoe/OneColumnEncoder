@@ -1,5 +1,3 @@
-using OneColumnEncoder.ViewModels.Cards;
-
 namespace OneColumnEncoder.Commands
 {
     public class ClearToolItemCmd(ToolItemCardVM item, Action? afterClear = null) : BaseCmd

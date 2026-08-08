@@ -1,8 +1,3 @@
-using OneColumnEncoder.Stores;
-using OneColumnEncoder.ViewModels;
-using OneColumnEncoder.Views;
-using System.Windows;
-
 namespace OneColumnEncoder.Commands.OpenClose
 {
     public class OpenSuccModalCmd(ModalNavS modalNavS, string windowTitle, string description) : BaseCmd

@@ -1,6 +1,4 @@
-﻿using OneColumnEncoder.ViewModels;
-
-namespace OneColumnEncoder.Stores
+﻿namespace OneColumnEncoder.Stores
 {
     /// <summary>
     /// Centralized window navigator

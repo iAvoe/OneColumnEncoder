@@ -1,8 +1,5 @@
-using OneColumnEncoder.UI;
-using OneColumnEncoder.ViewModels;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using System.Windows;
 using System.Windows.Interop;
 
 namespace OneColumnEncoder.Views

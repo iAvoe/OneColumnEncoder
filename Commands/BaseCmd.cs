@@ -1,6 +1,4 @@
-﻿using System.Windows.Input;
-
-namespace OneColumnEncoder.Commands
+﻿namespace OneColumnEncoder.Commands
 {
     public abstract class BaseCmd : ICommand
     {

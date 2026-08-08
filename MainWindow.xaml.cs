@@ -1,8 +1,5 @@
-﻿using OneColumnEncoder.UI;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Reflection;
-using System.Windows;
-using System.Windows.Input;
 
 namespace OneColumnEncoder
 {

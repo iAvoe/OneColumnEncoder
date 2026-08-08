@@ -1,7 +1,4 @@
-﻿using OneColumnEncoder.ViewModels;
-using OneColumnEncoder.ViewModels.Cards;
-
-namespace OneColumnEncoder.Commands
+﻿namespace OneColumnEncoder.Commands
 {
     public class SelectToolCmd(MainVM mainVM) : BaseCmd
     {

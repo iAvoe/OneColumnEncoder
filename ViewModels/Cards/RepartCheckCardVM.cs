@@ -1,5 +1,3 @@
-using OneColumnEncoder.Models;
-
 namespace OneColumnEncoder.ViewModels.Cards;
 
 public sealed class RepartCheckCardVM : SourceCheckCardVM

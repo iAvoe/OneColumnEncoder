@@ -1,4 +1,3 @@
-using OneColumnEncoder.FileManagement;
 using System.IO;
 using System.Text.RegularExpressions;
 

@@ -1,4 +1,3 @@
-using OneColumnEncoder.Persistence;
 using OneColumnEncoder.CPU;
 using System.IO;
 

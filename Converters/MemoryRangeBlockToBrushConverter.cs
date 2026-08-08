@@ -1,8 +1,4 @@
-using OneColumnEncoder.Models;
 using System.Globalization;
-using System.Windows;
-using System.Windows.Data;
-using System.Windows.Media;
 
 namespace OneColumnEncoder.Converters
 {

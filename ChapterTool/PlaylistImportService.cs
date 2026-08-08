@@ -1,13 +1,7 @@
 using Microsoft.Win32;
-using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Models;
 using OneColumnEncoder.RepartManagement;
-using OneColumnEncoder.Stores;
-using OneColumnEncoder.ViewModels;
-using OneColumnEncoder.Views;
 using System.IO;
 using System.Threading;
-using System.Windows;
 
 namespace OneColumnEncoder.ChapterTool;
 

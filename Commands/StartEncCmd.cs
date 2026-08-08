@@ -1,13 +1,6 @@
-using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Pipeline;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Stores;
-using OneColumnEncoder.ViewModels;
-using OneColumnEncoder.Views;
 using System.Globalization;
 using System.IO;
 using System.Text.Json;
-using System.Windows;
 using System.Windows.Threading;
 
 namespace OneColumnEncoder.Commands

@@ -1,5 +1,3 @@
-using OneColumnEncoder.Models;
-using OneColumnEncoder.ViewModels.Cards;
 using System.Collections.ObjectModel;
 
 namespace OneColumnEncoder.Commands

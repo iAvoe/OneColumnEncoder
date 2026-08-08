@@ -1,7 +1,4 @@
-using OneColumnEncoder.Models;
 using System.Collections.ObjectModel;
-using System.Windows;
-using System.Windows.Controls;
 
 namespace OneColumnEncoder.Components
 {

@@ -1,1 +1,19 @@
 global using OneColumnEncoder.Models.Lang;
+global using OneColumnEncoder.Models;
+global using OneColumnEncoder.Stores;
+global using OneColumnEncoder.ViewModels;
+global using OneColumnEncoder.ViewModels.Cards;
+global using OneColumnEncoder.UI;
+global using OneColumnEncoder.Commands;
+global using OneColumnEncoder.Commands.OpenClose;
+global using OneColumnEncoder.Views;
+global using OneColumnEncoder.FileManagement;
+global using OneColumnEncoder.Pipeline;
+global using OneColumnEncoder.FFmpeg;
+global using OneColumnEncoder.Persistence;
+
+global using System.Windows;
+global using System.Windows.Controls;
+global using System.Windows.Input;
+global using System.Windows.Media;
+global using System.Windows.Data;

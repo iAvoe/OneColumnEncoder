@@ -1,10 +1,3 @@
-using OneColumnEncoder.Models;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Media;
-
 namespace OneColumnEncoder.Components
 {
     public partial class HintPanel : UserControl

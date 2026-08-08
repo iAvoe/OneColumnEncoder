@@ -1,6 +1,3 @@
-using OneColumnEncoder.Models;
-using OneColumnEncoder.ViewModels.Cards;
-using OneColumnEncoder.Commands;
 using System.Collections.Generic;
 
 namespace OneColumnEncoder.QueueManagement

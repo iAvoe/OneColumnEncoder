@@ -1,6 +1,3 @@
-using System.Windows;
-using System.Windows.Controls;
-
 namespace OneColumnEncoder.Components;
 
 public sealed class RepartDividerPanel : Panel

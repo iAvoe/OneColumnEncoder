@@ -1,6 +1,3 @@
-using OneColumnEncoder.Models;
-using OneColumnEncoder.ViewModels.Cards;
-
 namespace OneColumnEncoder.ToolManagement
 {
     public static class ToolCompatibility

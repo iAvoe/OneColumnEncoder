@@ -1,6 +1,3 @@
-using OneColumnEncoder.Models;
-using OneColumnEncoder.ViewModels.Cards;
-
 namespace OneColumnEncoder.FileManagement
 {
     public static class SourceFileKindResolver

@@ -1,7 +1,5 @@
 using OneColumnEncoder.CPU;
-using OneColumnEncoder.FFmpeg;
 using OneColumnEncoder.Json;
-using OneColumnEncoder.Models;
 using System.Globalization;
 using System.IO;
 using System.Text.Json;
@@ -372,7 +370,6 @@ public static partial class EncodingPipeline
 
         return new(startTime, endTime, firstFrame, lastFrame);
     }
-
 
     public static long TimestampToFirstFrame(string timestamp, double frameRate)
     {
@@ -890,12 +887,6 @@ public static partial class EncodingPipeline
             ? value
             : null;
     }
-
-
-
-
-
-
 
     private static string? NormalizeMetadata(string? value) =>
         string.IsNullOrWhiteSpace(value) ? null : value.Trim().ToLowerInvariant();

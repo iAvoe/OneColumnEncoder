@@ -1,9 +1,4 @@
-﻿using OneColumnEncoder.UI;
-using OneColumnEncoder.ViewModels;
-using System.Windows;
-using System.Windows.Input;
-
-namespace OneColumnEncoder.Views
+﻿namespace OneColumnEncoder.Views
 {
     /// <summary>
     /// Interaction logic for WarnErrModal.xaml

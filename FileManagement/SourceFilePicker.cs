@@ -1,8 +1,6 @@
 using Microsoft.Win32;
-using OneColumnEncoder.Models;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Windows;
 
 namespace OneColumnEncoder.FileManagement
 {

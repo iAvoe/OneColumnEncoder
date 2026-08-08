@@ -1,9 +1,4 @@
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Commands;
-using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Stores;
 using System.IO;
-using System.Windows.Input;
 
 namespace OneColumnEncoder.ViewModels.Cards
 {

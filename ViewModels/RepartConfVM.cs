@@ -1,17 +1,9 @@
-using OneColumnEncoder.Commands;
-using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Pipeline;
-using OneColumnEncoder.Stores;
 using OneColumnEncoder.Validation;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Text.Json;
 using System.Threading;
-using System.Windows.Input;
-using System.Windows;
-using System.Windows.Media;
 
 namespace OneColumnEncoder.ViewModels;
 

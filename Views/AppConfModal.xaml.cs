@@ -1,5 +1,3 @@
-using OneColumnEncoder.UI;
-
 namespace OneColumnEncoder.Views
 {
     public partial class AppConfModal : AdaptiveWindow

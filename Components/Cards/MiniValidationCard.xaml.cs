@@ -1,7 +1,3 @@
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-
 namespace OneColumnEncoder.Components.Cards
 {
     public partial class MiniValidationCard : UserControl

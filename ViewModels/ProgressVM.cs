@@ -1,6 +1,3 @@
-using OneColumnEncoder.Models;
-using System.Windows.Input;
-
 namespace OneColumnEncoder.ViewModels;
 
 public sealed class ProgressVM(string windowTitle, string initialText, ICommand cancelCommand) : BaseVM

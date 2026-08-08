@@ -1,10 +1,4 @@
-using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Stores;
-using OneColumnEncoder.UI;
-using OneColumnEncoder.ViewModels;
 using System.Globalization;
-using System.Windows;
 
 namespace OneColumnEncoder
 {

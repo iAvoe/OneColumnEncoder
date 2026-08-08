@@ -1,6 +1,3 @@
-using OneColumnEncoder.Models;
-using OneColumnEncoder.UI;
-
 namespace OneColumnEncoder.Commands.SaveLoad
 {
     public class LoadAppConfCmd(AppConfM appConfS) : AsyncBaseCmd

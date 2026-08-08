@@ -1,15 +1,7 @@
-using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Commands.SaveLoad;
 using OneColumnEncoder.Components;
-using OneColumnEncoder.UI;
-using OneColumnEncoder.Models;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Media;
 
 namespace OneColumnEncoder.ViewModels
 {

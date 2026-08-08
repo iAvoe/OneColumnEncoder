@@ -1,7 +1,6 @@
 using static OneColumnEncoder.Json.JsonElementHelper;
 using System.Globalization;
 using System.Text.Json;
-using System.Windows.Data;
 
 namespace OneColumnEncoder.Converters
 {

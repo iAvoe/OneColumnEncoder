@@ -1,26 +1,16 @@
-using OneColumnEncoder.Commands;
-using OneColumnEncoder.Commands.OpenClose;
 using static OneColumnEncoder.Json.JsonElementHelper;
 using OneColumnEncoder.Commands.SaveLoad;
-using OneColumnEncoder.FileManagement;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Pipeline;
 using OneColumnEncoder.ScriptGeneration;
 using OneColumnEncoder.QueueManagement;
 using OneColumnEncoder.ConcatManagement;
 using OneColumnEncoder.RepartManagement;
-using OneColumnEncoder.Stores;
 using OneColumnEncoder.ToolManagement;
-using OneColumnEncoder.UI;
 using OneColumnEncoder.Validation;
-using OneColumnEncoder.ViewModels.Cards;
-using OneColumnEncoder.Views;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Text.Json;
-using System.Windows;
 
 namespace OneColumnEncoder.ViewModels
 {

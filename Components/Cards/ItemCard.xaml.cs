@@ -1,7 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-
-namespace OneColumnEncoder.Components
+﻿namespace OneColumnEncoder.Components
 {
     /// <summary>
     /// Interaction logic for ItemCard.xaml

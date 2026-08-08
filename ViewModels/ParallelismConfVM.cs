@@ -1,10 +1,5 @@
-using OneColumnEncoder.Commands;
-using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.CPU;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.ViewModels.Cards;
 using System.Collections.ObjectModel;
-using System.Windows.Input;
 
 namespace OneColumnEncoder.ViewModels
 {

@@ -1,6 +1,3 @@
-using System.Windows;
-using System.Windows.Controls;
-
 namespace OneColumnEncoder.Components
 {
     public partial class VpyPreviewPanel : UserControl

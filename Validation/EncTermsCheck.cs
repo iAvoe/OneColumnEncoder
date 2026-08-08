@@ -1,5 +1,4 @@
 using OneColumnEncoder.CPU;
-using OneColumnEncoder.Models;
 using System.IO;
 using System.Runtime.InteropServices;
 

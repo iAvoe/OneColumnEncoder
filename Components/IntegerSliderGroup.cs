@@ -1,4 +1,3 @@
-using System.Windows.Controls;
 using System.Windows.Threading;
 
 namespace OneColumnEncoder.Components

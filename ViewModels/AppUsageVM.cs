@@ -1,6 +1,3 @@
-using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Models;
-
 namespace OneColumnEncoder.ViewModels
 {
     public class AppUsageVM : BaseVM

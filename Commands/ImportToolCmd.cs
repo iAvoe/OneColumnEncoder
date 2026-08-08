@@ -1,13 +1,7 @@
 using Microsoft.Win32;
-using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.ToolManagement;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Stores;
-using OneColumnEncoder.ViewModels;
-using OneColumnEncoder.Views;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Windows;
 using static OneColumnEncoder.Models.ConfirmationProviderM;
 
 namespace OneColumnEncoder.Commands

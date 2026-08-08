@@ -1,6 +1,3 @@
-using OneColumnEncoder.UI;
-using System.Windows;
-
 namespace OneColumnEncoder.Views
 {
     public partial class AppUsageModal : AdaptiveWindow

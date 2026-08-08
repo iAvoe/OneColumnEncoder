@@ -1,7 +1,3 @@
-using OneColumnEncoder.Commands;
-using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Stores;
 using System.Globalization;
 
 namespace OneColumnEncoder.ViewModels;

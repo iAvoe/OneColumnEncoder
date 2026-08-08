@@ -1,18 +1,7 @@
 using Microsoft.Win32;
-using OneColumnEncoder.Commands;
-using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.FFmpeg;
 using OneColumnEncoder.Hardware;
-using OneColumnEncoder.Pipeline;
-using OneColumnEncoder.UI;
 using OneColumnEncoder.ScriptGeneration;
-using OneColumnEncoder.FileManagement;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Stores;
-using OneColumnEncoder.ViewModels.Cards;
-using OneColumnEncoder.Views;
 using System.IO;
-using System.Windows;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -487,8 +476,6 @@ namespace OneColumnEncoder.ViewModels
 
         public static string AvsEnableFpsParamsLabel => "LWLibavVideoSource VFR\u2192CFR";
         public static string VpyEnableFpsParamsLabel => "LWLibavSource VFR\u2192CFR";
-
-
 
         #endregion
 

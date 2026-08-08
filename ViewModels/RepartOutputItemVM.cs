@@ -1,6 +1,3 @@
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Pipeline;
-
 namespace OneColumnEncoder.ViewModels;
 
 public sealed class RepartOutputItemVM : BaseVM

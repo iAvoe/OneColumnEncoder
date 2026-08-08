@@ -1,9 +1,4 @@
-﻿using OneColumnEncoder.UI;
-using OneColumnEncoder.ViewModels;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace OneColumnEncoder.Views
 {

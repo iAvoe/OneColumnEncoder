@@ -1,10 +1,3 @@
-using OneColumnEncoder.Commands;
-using OneColumnEncoder.Models.Lang;
-using OneColumnEncoder.Stores;
-using OneColumnEncoder.ViewModels;
-using OneColumnEncoder.Views;
-using System.Windows;
-
 namespace OneColumnEncoder.ChapterTool;
 
 public static class QueueChapterImportPrompt

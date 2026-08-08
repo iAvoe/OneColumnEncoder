@@ -1,17 +1,8 @@
-using OneColumnEncoder.Commands;
-using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Converters;
 using OneColumnEncoder.Json;
-using OneColumnEncoder.Pipeline;
 using OneColumnEncoder.CPU;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Stores;
-using OneColumnEncoder.Views;
-using OneColumnEncoder.UI;
-using OneColumnEncoder.Persistence;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
-using System.Windows;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -463,7 +454,6 @@ namespace OneColumnEncoder.ViewModels
             return selectedJob == null || selectedJob.JobId == _activeLogJobId;
         }
         #endregion
-
 
         private void SetDisplayedLogs(string upstreamText, string downstreamText)
         {

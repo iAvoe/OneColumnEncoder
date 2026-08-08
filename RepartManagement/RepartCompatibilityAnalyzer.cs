@@ -1,4 +1,3 @@
-using OneColumnEncoder.Models;
 using System.IO;
 using System.Threading;
 

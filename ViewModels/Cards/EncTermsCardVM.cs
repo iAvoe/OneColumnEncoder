@@ -1,5 +1,4 @@
 using OneColumnEncoder.Validation;
-using OneColumnEncoder.Models;
 
 namespace OneColumnEncoder.ViewModels.Cards
 {

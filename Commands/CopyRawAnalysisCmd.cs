@@ -1,8 +1,3 @@
-using OneColumnEncoder.Commands.OpenClose;
-using OneColumnEncoder.FFmpeg;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Stores;
-using System.Windows;
 using System.Text.Json.Nodes;
 
 namespace OneColumnEncoder.Commands

@@ -1,8 +1,6 @@
 using System.Runtime.InteropServices;
-using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Interop;
-using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace OneColumnEncoder.UI

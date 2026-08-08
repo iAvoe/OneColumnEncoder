@@ -1,4 +1,3 @@
-using OneColumnEncoder.Persistence;
 using System.IO;
 
 namespace OneColumnEncoder.Models

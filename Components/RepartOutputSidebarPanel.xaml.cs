@@ -1,6 +1,3 @@
-using System.Windows.Controls;
-using System.Windows.Input;
-
 namespace OneColumnEncoder.Components;
 
 public partial class RepartOutputSidebarPanel : UserControl

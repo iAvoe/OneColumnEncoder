@@ -1,6 +1,4 @@
-﻿using System.Windows.Input;
-
-namespace OneColumnEncoder.ViewModels.Cards
+﻿namespace OneColumnEncoder.ViewModels.Cards
 {
     public class CPUNodeCardVM : BaseVM
     {

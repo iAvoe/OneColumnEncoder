@@ -1,9 +1,4 @@
-﻿using OneColumnEncoder.Stores;
-using OneColumnEncoder.ViewModels;
-using OneColumnEncoder.Views;
-using System.Windows;
-
-namespace OneColumnEncoder.Commands.OpenClose
+﻿namespace OneColumnEncoder.Commands.OpenClose
 {
     public class OpenErrModalCmd(ModalNavS modalNavS, string windowTitle, string description) : BaseCmd
     {

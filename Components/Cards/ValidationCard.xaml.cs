@@ -1,8 +1,4 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-
-namespace OneColumnEncoder.Components
+﻿namespace OneColumnEncoder.Components
 {
     /// <summary>
     /// Interaction logic for ValidationCard.xaml

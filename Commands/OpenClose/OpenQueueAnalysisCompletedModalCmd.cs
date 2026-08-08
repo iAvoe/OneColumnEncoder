@@ -1,9 +1,4 @@
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Stores;
-using OneColumnEncoder.ViewModels;
-using OneColumnEncoder.Views;
 using System.Diagnostics;
-using System.Windows;
 
 namespace OneColumnEncoder.Commands.OpenClose
 {

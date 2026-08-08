@@ -1,7 +1,3 @@
-using OneColumnEncoder.Commands;
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Models.Lang;
-using OneColumnEncoder.UI;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 

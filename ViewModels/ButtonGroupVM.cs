@@ -1,7 +1,4 @@
-﻿using System.Windows.Input;
-using System.Windows.Media;
-
-namespace OneColumnEncoder.ViewModels
+﻿namespace OneColumnEncoder.ViewModels
 {
     /// <summary>
     /// Centralized ViewModel for button groups in modals, to reduce code duplication.
