@@ -370,10 +370,8 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <comps:SectionHeader HeaderText="{Binding PreviewTitle}" />
-
                 <Border Grid.Row="1"
-                        Margin="5 15 0 0"
+                        Margin="5 -5 0 0"
                         BorderBrush="{StaticResource GlobalSecondary}"
                         BorderThickness="1"
                         CornerRadius="5"
@@ -390,8 +388,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Border CornerRadius="5"
-                                            ClipToBounds="True"
-                                            BorderThickness="0" >
+                                            BorderThickness="0">
                                         <Grid>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
@@ -399,27 +396,40 @@
                                             </Grid.RowDefinitions>
 
                                             <Grid Grid.Row="0">
-                                                <Image Source="{Binding FrameImage}"
-                                                       Stretch="Uniform"
-                                                       SnapsToDevicePixels="True"
-                                                       RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                                                <Border x:Name="PreviewFrameMask"
+                                                        CornerRadius="5"
+                                                        Background="Black"
+                                                        Panel.ZIndex="0" />
 
-                                                <Border Height="2"
-                                                        VerticalAlignment="Bottom">
-                                                    <Border.Style>
-                                                        <Style TargetType="Border">
-                                                            <Setter Property="Background"
-                                                                    Value="{StaticResource TimelineTrackBackgroundDark}" />
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding IsSelected}"
-                                                                             Value="True">
-                                                                    <Setter Property="Background"
-                                                                            Value="{StaticResource BorderAmber}" />
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Border.Style>
-                                                </Border>
+                                                <Grid ClipToBounds="True"
+                                                      Panel.ZIndex="1">
+                                                    <Grid.OpacityMask>
+                                                        <VisualBrush Visual="{Binding ElementName=PreviewFrameMask}" />
+                                                    </Grid.OpacityMask>
+                                                    
+                                                    <Image Source="{Binding FrameImage}"
+                                                           Stretch="Uniform"
+                                                           SnapsToDevicePixels="True"
+                                                           RenderOptions.BitmapScalingMode="NearestNeighbor" />
+
+                                                    <Border Height="2"
+                                                            VerticalAlignment="Bottom"
+                                                            MaxWidth="250">
+                                                        <Border.Style>
+                                                            <Style TargetType="Border">
+                                                                <Setter Property="Background"
+                                                                        Value="{StaticResource TimelineTrackBackgroundDark}" />
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding IsSelected}"
+                                                                                 Value="True">
+                                                                        <Setter Property="Background"
+                                                                                Value="{StaticResource BorderAmber}" />
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                    </Border>
+                                                </Grid>
                                             </Grid>
 
                                             <TextBlock Grid.Row="1"
@@ -438,7 +448,8 @@
 
                 <TextBlock Grid.Row="2"
                            Text="{Binding DividerPreviewStatusText}"
-                           Margin="5 8 0 0"
+                           Margin="5 2.5 0 0"
+                           TextAlignment="Center"
                            Foreground="{StaticResource GlobalSecondary}"
                            TextWrapping="Wrap" />
             </Grid>
