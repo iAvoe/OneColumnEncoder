@@ -1,37 +1,36 @@
-﻿namespace OneColumnEncoder.Commands.OpenClose
+﻿namespace OneColumnEncoder.Commands.OpenClose;
+
+public class OpenAppConfCmd(ModalNavS modalNavS, AppConfM appConfS) : BaseCmd
 {
-    public class OpenAppConfCmd(ModalNavS modalNavS, AppConfM appConfS) : BaseCmd
+    private readonly ModalNavS _modalNavS = modalNavS;
+    private readonly AppConfM _appConfS = appConfS;
+
+    public Action? OnAfterClose { get; set; }
+
+    public override void Execute(object? parameter)
     {
-        private readonly ModalNavS _modalNavS = modalNavS;
-        private readonly AppConfM _appConfS = appConfS;
+        var existingWindow = Application.Current.Windows
+            .OfType<AppConfModal>()
+            .FirstOrDefault();
 
-        public Action? OnAfterClose { get; set; }
-
-        public override void Execute(object? parameter)
+        if (existingWindow != null)
         {
-            var existingWindow = Application.Current.Windows
-                .OfType<AppConfModal>()
-                .FirstOrDefault();
-
-            if (existingWindow != null)
-            {
-                existingWindow.Activate();
-                return;
-            }
-
-            if (_modalNavS.IsOpen) _modalNavS.Close();
-
-            AppConfModal window = new();
-            var vm = new AppConfVM(_appConfS, window.Close);
-            window.DataContext = vm;
-            window.Owner = Application.Current.MainWindow;
-            window.Closed += (_, _) =>
-            {
-                _modalNavS.Close();
-                OnAfterClose?.Invoke();
-            };
-            _modalNavS.CurrentModalVM = vm;
-            window.Show();
+            existingWindow.Activate();
+            return;
         }
+
+        if (_modalNavS.IsOpen) _modalNavS.Close();
+
+        AppConfModal window = new();
+        var vm = new AppConfVM(_appConfS, window.Close);
+        window.DataContext = vm;
+        window.Owner = Application.Current.MainWindow;
+        window.Closed += (_, _) =>
+        {
+            _modalNavS.Close();
+            OnAfterClose?.Invoke();
+        };
+        _modalNavS.CurrentModalVM = vm;
+        window.Show();
     }
-}
+}

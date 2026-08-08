@@ -1,10 +1,9 @@
-namespace OneColumnEncoder.Models
+namespace OneColumnEncoder.Models;
+
+public enum MemoryCategory
 {
-    public enum MemoryCategory
-    {
-        Empty = 0,
-        Upstream = 1,
-        Downstream = 2,
-        Cache = 3
-    }
-}
+    Empty = 0,
+    Upstream = 1,
+    Downstream = 2,
+    Cache = 3
+}

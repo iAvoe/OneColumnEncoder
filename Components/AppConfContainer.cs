@@ -1,12 +1,11 @@
-﻿namespace OneColumnEncoder.Components
+﻿namespace OneColumnEncoder.Components;
+
+public class AppConfContainer : HeaderedItemsControl
 {
-    public class AppConfContainer : HeaderedItemsControl
+    static AppConfContainer()
     {
-        static AppConfContainer()
-        {
-            DefaultStyleKeyProperty.OverrideMetadata(
-                typeof(AppConfContainer),
-                new FrameworkPropertyMetadata(typeof(AppConfContainer)));
-        }
+        DefaultStyleKeyProperty.OverrideMetadata(
+            typeof(AppConfContainer),
+            new FrameworkPropertyMetadata(typeof(AppConfContainer)));
     }
-}
+}

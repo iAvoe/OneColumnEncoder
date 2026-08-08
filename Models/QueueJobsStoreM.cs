@@ -1,14 +1,13 @@
 using System.IO;
 
-namespace OneColumnEncoder.Models
-{
-    public class QueueJobsStoreM : SaveLoadBase<QueueJobsStoreM>
-    {
-        public List<QueueJobItemM> Jobs { get; set; } = [];
-        public bool IsBatchActive { get; set; }
-        public int MaxConcurrent { get; set; } = 1;
+namespace OneColumnEncoder.Models;
 
-        protected override string FilePath =>
-            Path.Combine(GetConfigDirectory(), "queue-store.json");
-    }
-}
+public class QueueJobsStoreM : SaveLoadBase<QueueJobsStoreM>
+{
+    public List<QueueJobItemM> Jobs { get; set; } = [];
+    public bool IsBatchActive { get; set; }
+    public int MaxConcurrent { get; set; } = 1;
+
+    protected override string FilePath =>
+        Path.Combine(GetConfigDirectory(), "queue-store.json");
+}

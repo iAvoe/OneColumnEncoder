@@ -1,150 +1,149 @@
 using System.Windows.Threading;
 
-namespace OneColumnEncoder.ViewModels
+namespace OneColumnEncoder.ViewModels;
+
+public class ConcatSourceItemVM : BaseVM
 {
-    public class ConcatSourceItemVM : BaseVM
+    private bool _canMoveUp;
+    private bool _canMoveDown;
+    private bool _canRemove = true;
+    private bool _isSelected;
+    private string _name = "";
+    private string _pathText = "";
+    private string _displayR1Text = "";
+    private string _r2Text = "";
+    private string _r3Text = "";
+    private bool _isRecentlyMoved;
+    private DispatcherTimer? _moveFlashTimer;
+
+    public ConcatSourceItemVM(string filePath, int index, ICommand? removeCmd, ICommand? moveUpCmd, ICommand? moveDownCmd)
     {
-        private bool _canMoveUp;
-        private bool _canMoveDown;
-        private bool _canRemove = true;
-        private bool _isSelected;
-        private string _name = "";
-        private string _pathText = "";
-        private string _displayR1Text = "";
-        private string _r2Text = "";
-        private string _r3Text = "";
-        private bool _isRecentlyMoved;
-        private DispatcherTimer? _moveFlashTimer;
+        FilePath = filePath;
+        UpdateDisplay(index);
+        R1Command = removeCmd;
+        R2Command = moveUpCmd;
+        R3Command = moveDownCmd;
+    }
 
-        public ConcatSourceItemVM(string filePath, int index, ICommand? removeCmd, ICommand? moveUpCmd, ICommand? moveDownCmd)
+    public string FilePath { get; }
+
+    public string Name
+    {
+        get => _name;
+        set => SetProperty(ref _name, value);
+    }
+
+    public string P1Text
+    {
+        get => _pathText;
+        set => SetProperty(ref _pathText, value);
+    }
+
+    public string DisplayR1Text
+    {
+        get => _displayR1Text;
+        set => SetProperty(ref _displayR1Text, value);
+    }
+
+    public string R2Text
+    {
+        get => _r2Text;
+        set => SetProperty(ref _r2Text, value);
+    }
+
+    public string R3Text
+    {
+        get => _r3Text;
+        set => SetProperty(ref _r3Text, value);
+    }
+    public bool R1IsEnabled => _canRemove;
+    public bool R2IsEnabled => _canMoveUp;
+    public bool R3IsEnabled => _canMoveDown;
+
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set => SetProperty(ref _isSelected, value);
+    }
+
+    public bool IsRecentlyMoved
+    {
+        get => _isRecentlyMoved;
+        private set => SetProperty(ref _isRecentlyMoved, value);
+    }
+
+    public bool CanMoveUp
+    {
+        get => _canMoveUp;
+        set
         {
-            FilePath = filePath;
-            UpdateDisplay(index);
-            R1Command = removeCmd;
-            R2Command = moveUpCmd;
-            R3Command = moveDownCmd;
-        }
-
-        public string FilePath { get; }
-
-        public string Name
-        {
-            get => _name;
-            set => SetProperty(ref _name, value);
-        }
-
-        public string P1Text
-        {
-            get => _pathText;
-            set => SetProperty(ref _pathText, value);
-        }
-
-        public string DisplayR1Text
-        {
-            get => _displayR1Text;
-            set => SetProperty(ref _displayR1Text, value);
-        }
-
-        public string R2Text
-        {
-            get => _r2Text;
-            set => SetProperty(ref _r2Text, value);
-        }
-
-        public string R3Text
-        {
-            get => _r3Text;
-            set => SetProperty(ref _r3Text, value);
-        }
-        public bool R1IsEnabled => _canRemove;
-        public bool R2IsEnabled => _canMoveUp;
-        public bool R3IsEnabled => _canMoveDown;
-
-        public bool IsSelected
-        {
-            get => _isSelected;
-            set => SetProperty(ref _isSelected, value);
-        }
-
-        public bool IsRecentlyMoved
-        {
-            get => _isRecentlyMoved;
-            private set => SetProperty(ref _isRecentlyMoved, value);
-        }
-
-        public bool CanMoveUp
-        {
-            get => _canMoveUp;
-            set
+            if (SetProperty(ref _canMoveUp, value))
             {
-                if (SetProperty(ref _canMoveUp, value))
-                {
-                    OnPropertyChanged(nameof(R2IsEnabled));
-                }
+                OnPropertyChanged(nameof(R2IsEnabled));
             }
-        }
-
-        public bool CanMoveDown
-        {
-            get => _canMoveDown;
-            set
-            {
-                if (SetProperty(ref _canMoveDown, value))
-                {
-                    OnPropertyChanged(nameof(R3IsEnabled));
-                }
-            }
-        }
-
-        public bool CanRemove
-        {
-            get => _canRemove;
-            set
-            {
-                if (SetProperty(ref _canRemove, value))
-                {
-                    OnPropertyChanged(nameof(R1IsEnabled));
-                }
-            }
-        }
-
-        public ICommand? R1Command { get; }
-        public ICommand? R2Command { get; }
-        public ICommand? R3Command { get; }
-
-        public void UpdateDisplay(int index)
-        {
-            Name = System.IO.Path.GetFileName(FilePath);
-            P1Text = FilePath;
-        }
-
-        public void FlashMovedHighlight()
-        {
-            IsRecentlyMoved = true;
-            StopMoveFlashTimer();
-            _moveFlashTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(600), DispatcherPriority.Normal, OnMoveFlashTimerTick, Dispatcher.CurrentDispatcher);
-            _moveFlashTimer.Start();
-        }
-
-        private void OnMoveFlashTimerTick(object? sender, EventArgs e)
-        {
-            IsRecentlyMoved = false;
-            StopMoveFlashTimer();
-        }
-
-        private void StopMoveFlashTimer()
-        {
-            if (_moveFlashTimer == null) return;
-
-            _moveFlashTimer.Stop();
-            _moveFlashTimer.Tick -= OnMoveFlashTimerTick;
-            _moveFlashTimer = null;
-        }
-
-        public override void Dispose()
-        {
-            StopMoveFlashTimer();
-            base.Dispose();
         }
     }
-}
+
+    public bool CanMoveDown
+    {
+        get => _canMoveDown;
+        set
+        {
+            if (SetProperty(ref _canMoveDown, value))
+            {
+                OnPropertyChanged(nameof(R3IsEnabled));
+            }
+        }
+    }
+
+    public bool CanRemove
+    {
+        get => _canRemove;
+        set
+        {
+            if (SetProperty(ref _canRemove, value))
+            {
+                OnPropertyChanged(nameof(R1IsEnabled));
+            }
+        }
+    }
+
+    public ICommand? R1Command { get; }
+    public ICommand? R2Command { get; }
+    public ICommand? R3Command { get; }
+
+    public void UpdateDisplay(int index)
+    {
+        Name = System.IO.Path.GetFileName(FilePath);
+        P1Text = FilePath;
+    }
+
+    public void FlashMovedHighlight()
+    {
+        IsRecentlyMoved = true;
+        StopMoveFlashTimer();
+        _moveFlashTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(600), DispatcherPriority.Normal, OnMoveFlashTimerTick, Dispatcher.CurrentDispatcher);
+        _moveFlashTimer.Start();
+    }
+
+    private void OnMoveFlashTimerTick(object? sender, EventArgs e)
+    {
+        IsRecentlyMoved = false;
+        StopMoveFlashTimer();
+    }
+
+    private void StopMoveFlashTimer()
+    {
+        if (_moveFlashTimer == null) return;
+
+        _moveFlashTimer.Stop();
+        _moveFlashTimer.Tick -= OnMoveFlashTimerTick;
+        _moveFlashTimer = null;
+    }
+
+    public override void Dispose()
+    {
+        StopMoveFlashTimer();
+        base.Dispose();
+    }
+}

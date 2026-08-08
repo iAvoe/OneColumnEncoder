@@ -1,10 +1,9 @@
-namespace OneColumnEncoder.FileManagement
+namespace OneColumnEncoder.FileManagement;
+
+public enum SourceRouteKind
 {
-    public enum SourceRouteKind
-    {
-        Single,
-        Queue,
-        Concat,
-        Repart
-    }
-}
+    Single,
+    Queue,
+    Concat,
+    Repart
+}

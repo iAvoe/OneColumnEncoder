@@ -1,52 +1,51 @@
-﻿namespace OneColumnEncoder.Components
+﻿namespace OneColumnEncoder.Components;
+
+/// <summary>
+/// Interaction logic for ValidationCard.xaml
+/// </summary>
+public partial class ValidationCard : UserControl
 {
-    /// <summary>
-    /// Interaction logic for ValidationCard.xaml
-    /// </summary>
-    public partial class ValidationCard : UserControl
+    public ValidationCard()
     {
-        public ValidationCard()
-        {
-            InitializeComponent();
-        }
-
-        public static readonly DependencyProperty ToggleCommandProperty =
-            DependencyProperty.Register(
-                nameof(ToggleCommand),
-                typeof(ICommand),
-                typeof(ValidationCard),
-                new PropertyMetadata(null));
-
-        public ICommand? ToggleCommand
-        {
-            get => (ICommand?)GetValue(ToggleCommandProperty);
-            set => SetValue(ToggleCommandProperty, value);
-        }
-
-        public static readonly DependencyProperty ToggleTagProperty =
-            DependencyProperty.Register(
-                nameof(ToggleTag),
-                typeof(bool),
-                typeof(ValidationCard),
-                new PropertyMetadata(false));
-
-        public bool ToggleTag
-        {
-            get => (bool)GetValue(ToggleTagProperty);
-            set => SetValue(ToggleTagProperty, value);
-        }
-
-        public static readonly DependencyProperty ToggleToolTipProperty =
-            DependencyProperty.Register(
-                nameof(ToggleToolTip),
-                typeof(object),
-                typeof(ValidationCard),
-                new PropertyMetadata(null));
-
-        public object? ToggleToolTip
-        {
-            get => GetValue(ToggleToolTipProperty);
-            set => SetValue(ToggleToolTipProperty, value);
-        }
+        InitializeComponent();
     }
-}
+
+    public static readonly DependencyProperty ToggleCommandProperty =
+        DependencyProperty.Register(
+            nameof(ToggleCommand),
+            typeof(ICommand),
+            typeof(ValidationCard),
+            new PropertyMetadata(null));
+
+    public ICommand? ToggleCommand
+    {
+        get => (ICommand?)GetValue(ToggleCommandProperty);
+        set => SetValue(ToggleCommandProperty, value);
+    }
+
+    public static readonly DependencyProperty ToggleTagProperty =
+        DependencyProperty.Register(
+            nameof(ToggleTag),
+            typeof(bool),
+            typeof(ValidationCard),
+            new PropertyMetadata(false));
+
+    public bool ToggleTag
+    {
+        get => (bool)GetValue(ToggleTagProperty);
+        set => SetValue(ToggleTagProperty, value);
+    }
+
+    public static readonly DependencyProperty ToggleToolTipProperty =
+        DependencyProperty.Register(
+            nameof(ToggleToolTip),
+            typeof(object),
+            typeof(ValidationCard),
+            new PropertyMetadata(null));
+
+    public object? ToggleToolTip
+    {
+        get => GetValue(ToggleToolTipProperty);
+        set => SetValue(ToggleToolTipProperty, value);
+    }
+}

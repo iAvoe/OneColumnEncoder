@@ -1,20 +1,19 @@
-namespace OneColumnEncoder.Models
-{
-    public class VideoAnalysisM
-    {
-        public string SourcePath { get; set; } = string.Empty;
-        public string FfprobePath { get; set; } = string.Empty;
-        public string RawJson { get; set; } = string.Empty;
-        public string QueueRawJson { get; set; } = string.Empty;
-        public long ConcatTotalFrames { get; set; }
+namespace OneColumnEncoder.Models;
 
-        public void Clear()
-        {
-            SourcePath = string.Empty;
-            FfprobePath = string.Empty;
-            RawJson = string.Empty;
-            QueueRawJson = string.Empty;
-            ConcatTotalFrames = 0;
-        }
+public class VideoAnalysisM
+{
+    public string SourcePath { get; set; } = string.Empty;
+    public string FfprobePath { get; set; } = string.Empty;
+    public string RawJson { get; set; } = string.Empty;
+    public string QueueRawJson { get; set; } = string.Empty;
+    public long ConcatTotalFrames { get; set; }
+
+    public void Clear()
+    {
+        SourcePath = string.Empty;
+        FfprobePath = string.Empty;
+        RawJson = string.Empty;
+        QueueRawJson = string.Empty;
+        ConcatTotalFrames = 0;
     }
-}
+}

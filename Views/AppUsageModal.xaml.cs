@@ -1,12 +1,11 @@
-namespace OneColumnEncoder.Views
-{
-    public partial class AppUsageModal : AdaptiveWindow
-    {
-        public AppUsageModal()
-        {
-            InitializeComponent();
-        }
+namespace OneColumnEncoder.Views;
 
-        private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
+public partial class AppUsageModal : AdaptiveWindow
+{
+    public AppUsageModal()
+    {
+        InitializeComponent();
     }
-}
+
+    private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
+}

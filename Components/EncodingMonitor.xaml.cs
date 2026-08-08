@@ -1,10 +1,9 @@
-namespace OneColumnEncoder.Components
+namespace OneColumnEncoder.Components;
+
+public partial class EncodingMonitor : UserControl
 {
-    public partial class EncodingMonitor : UserControl
+    public EncodingMonitor()
     {
-        public EncodingMonitor()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
-}
+}

@@ -1,494 +1,493 @@
 using System.IO;
 using System.Windows.Threading;
 
-namespace OneColumnEncoder.Commands
+namespace OneColumnEncoder.Commands;
+
+public class StartEncCmd(
+    Func<EncodingPipelineRequest?> buildRequest,
+    ModalNavS modalNavS,
+    AppConfM appConfM,
+    Func<bool>? isQueueRoute = null,
+    Func<string>? getQueueJsonPath = null,
+    Func<string[], EncodingPipelineRequest[]?>? buildQueueRequests = null,
+    Func<bool>? isQueueRouteSupported = null,
+    Func<string[], string[]>? filterSourcePaths = null,
+    Func<bool>? isConcatRoute = null,
+    Func<EncodingPipelineRequest?>? buildConcatRequest = null,
+    Func<bool>? isConcatRouteSupported = null,
+    Func<bool>? isRepartRoute = null,
+    Func<EncodingPipelineRequest[]?>? buildRepartRequests = null,
+    Func<bool>? isRepartRouteSupported = null) : BaseCmd
 {
-    public class StartEncCmd(
-        Func<EncodingPipelineRequest?> buildRequest,
-        ModalNavS modalNavS,
-        AppConfM appConfM,
-        Func<bool>? isQueueRoute = null,
-        Func<string>? getQueueJsonPath = null,
-        Func<string[], EncodingPipelineRequest[]?>? buildQueueRequests = null,
-        Func<bool>? isQueueRouteSupported = null,
-        Func<string[], string[]>? filterSourcePaths = null,
-        Func<bool>? isConcatRoute = null,
-        Func<EncodingPipelineRequest?>? buildConcatRequest = null,
-        Func<bool>? isConcatRouteSupported = null,
-        Func<bool>? isRepartRoute = null,
-        Func<EncodingPipelineRequest[]?>? buildRepartRequests = null,
-        Func<bool>? isRepartRouteSupported = null) : BaseCmd
+    private const int MaxListedOverwriteTargets = 50;
+    private readonly Func<EncodingPipelineRequest?> _buildRequest = buildRequest;
+    private readonly ModalNavS _modalNavS = modalNavS;
+    private readonly AppConfM _appConfM = appConfM;
+    private readonly Func<bool>? _isQueueRoute = isQueueRoute;
+    private readonly Func<string>? _getQueueJsonPath = getQueueJsonPath;
+    private readonly Func<string[], EncodingPipelineRequest[]?>? _buildQueueRequests = buildQueueRequests;
+    private readonly Func<bool>? _isQueueRouteSupported = isQueueRouteSupported;
+    private readonly Func<string[], string[]>? _filterSourcePaths = filterSourcePaths;
+    private readonly Func<bool>? _isConcatRoute = isConcatRoute;
+    private readonly Func<EncodingPipelineRequest?>? _buildConcatRequest = buildConcatRequest;
+    private readonly Func<bool>? _isConcatRouteSupported = isConcatRouteSupported;
+    private readonly Func<bool>? _isRepartRoute = isRepartRoute;
+    private readonly Func<EncodingPipelineRequest[]?>? _buildRepartRequests = buildRepartRequests;
+    private readonly Func<bool>? _isRepartRouteSupported = isRepartRouteSupported;
+    private static StartEncCmdLangProvider Lang => new(UILangProvider.Current.LanguageCode);
+
+    public override void Execute(object? parameter)
     {
-        private const int MaxListedOverwriteTargets = 50;
-        private readonly Func<EncodingPipelineRequest?> _buildRequest = buildRequest;
-        private readonly ModalNavS _modalNavS = modalNavS;
-        private readonly AppConfM _appConfM = appConfM;
-        private readonly Func<bool>? _isQueueRoute = isQueueRoute;
-        private readonly Func<string>? _getQueueJsonPath = getQueueJsonPath;
-        private readonly Func<string[], EncodingPipelineRequest[]?>? _buildQueueRequests = buildQueueRequests;
-        private readonly Func<bool>? _isQueueRouteSupported = isQueueRouteSupported;
-        private readonly Func<string[], string[]>? _filterSourcePaths = filterSourcePaths;
-        private readonly Func<bool>? _isConcatRoute = isConcatRoute;
-        private readonly Func<EncodingPipelineRequest?>? _buildConcatRequest = buildConcatRequest;
-        private readonly Func<bool>? _isConcatRouteSupported = isConcatRouteSupported;
-        private readonly Func<bool>? _isRepartRoute = isRepartRoute;
-        private readonly Func<EncodingPipelineRequest[]?>? _buildRepartRequests = buildRepartRequests;
-        private readonly Func<bool>? _isRepartRouteSupported = isRepartRouteSupported;
-        private static StartEncCmdLangProvider Lang => new(UILangProvider.Current.LanguageCode);
-
-        public override void Execute(object? parameter)
+        if (IsRepartRoute())
         {
-            if (IsRepartRoute())
-            {
-                ExecuteRepartRoute();
-                return;
-            }
-
-            if (IsConcatRoute())
-            {
-                ExecuteConcatRoute();
-                return;
-            }
-
-            if (IsQueueRoute())
-            {
-                ExecuteQueueRoute();
-                return;
-            }
-
-            EncodingPipelineRequest? request = _buildRequest();
-            if (request == null)
-            {
-                new OpenWarnModalCmd(
-                    _modalNavS,
-                    Lang.WarnTitle,
-                    Lang.MissingUpstreamMsg).Execute(null);
-                return;
-            }
-
-            EncodingPipelineCommand command = EncodingPipeline.BuildY4mCommand(request);
-
-            OpenDebugConfirmation(request, command);
+            ExecuteRepartRoute();
+            return;
         }
 
-        private bool IsQueueRoute() => _isQueueRoute?.Invoke() == true;
-        private bool IsConcatRoute() => _isConcatRoute?.Invoke() == true;
-        private bool IsRepartRoute() => _isRepartRoute?.Invoke() == true;
-
-        private void ExecuteRepartRoute()
+        if (IsConcatRoute())
         {
-            if (_isRepartRouteSupported?.Invoke() == false)
-            {
-                new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, Lang.QueueUnsupportedRouteMsg).Execute(null);
-                return;
-            }
-
-            QueueEncodingItem[]? items;
-            try
-            {
-                EncodingPipelineRequest[]? requests = _buildRepartRequests?.Invoke();
-                items = requests == null
-                    ? null
-                    : [.. requests.Select(request => new QueueEncodingItem(request, EncodingPipeline.BuildY4mCommand(request)))];
-            }
-            catch (Exception ex)
-            {
-                new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, ex.Message).Execute(null);
-                return;
-            }
-
-            if (items == null || items.Length == 0)
-            {
-                new OpenWarnModalCmd(_modalNavS, Lang.WarnTitle, Lang.MissingUpstreamMsg).Execute(null);
-                return;
-            }
-
-            string? validationError = GetQueueValidationError(items);
-            if (!string.IsNullOrWhiteSpace(validationError))
-            {
-                new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, validationError).Execute(null);
-                return;
-            }
-
-            OpenQueueOverwriteConfirmationOrStart(items, isRepart: true);
+            ExecuteConcatRoute();
+            return;
         }
 
-        private void ExecuteConcatRoute()
+        if (IsQueueRoute())
         {
-            if (_isConcatRouteSupported?.Invoke() == false)
-            {
-                new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, Lang.QueueUnsupportedRouteMsg).Execute(null);
-                return;
-            }
-
-            EncodingPipelineRequest? request = _buildConcatRequest?.Invoke();
-            if (request == null)
-            {
-                new OpenWarnModalCmd(
-                    _modalNavS,
-                    Lang.WarnTitle,
-                    Lang.MissingUpstreamMsg).Execute(null);
-                return;
-            }
-
-            EncodingPipelineCommand command = EncodingPipeline.BuildY4mCommand(request);
-            OpenDebugConfirmation(request, command);
+            ExecuteQueueRoute();
+            return;
         }
 
-        private void OpenDebugConfirmation(EncodingPipelineRequest request, EncodingPipelineCommand command)
+        EncodingPipelineRequest? request = _buildRequest();
+        if (request == null)
         {
-            ConfirmationModal? existing = Application.Current.Windows
-                .OfType<ConfirmationModal>()
-                .FirstOrDefault(w => w.DataContext is ConfirmationVM &&
-                                w.Owner == Application.Current.MainWindow);
-            if (existing != null)
-            {
-                existing.Activate();
-                return;
-            }
-
-            ConfirmationModal window = new();
-            CloseModalCmd closeCmd = new(window.Close);
-            ConfirmationVM vm = ConfirmationVM.CreateDebug(
-                Lang.ConfirmTitle, command.DisplayCommandLine,
-                closeCmd,
-                new ActionCmd(_ =>
-                {
-                    window.DialogResult = true;
-                    window.Close();
-                    OpenOverwriteConfirmationOrStart(request, command);
-                }));
-
-            window.DataContext = vm;
-            window.Owner = Application.Current.MainWindow;
-            window.Closed += (_, _) => _modalNavS.Close();
-            _modalNavS.CurrentModalVM = vm;
-            window.ShowDialog();
+            new OpenWarnModalCmd(
+                _modalNavS,
+                Lang.WarnTitle,
+                Lang.MissingUpstreamMsg).Execute(null);
+            return;
         }
 
-        private void ExecuteQueueRoute()
+        EncodingPipelineCommand command = EncodingPipeline.BuildY4mCommand(request);
+
+        OpenDebugConfirmation(request, command);
+    }
+
+    private bool IsQueueRoute() => _isQueueRoute?.Invoke() == true;
+    private bool IsConcatRoute() => _isConcatRoute?.Invoke() == true;
+    private bool IsRepartRoute() => _isRepartRoute?.Invoke() == true;
+
+    private void ExecuteRepartRoute()
+    {
+        if (_isRepartRouteSupported?.Invoke() == false)
         {
-            if (_isQueueRouteSupported?.Invoke() == false)
+            new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, Lang.QueueUnsupportedRouteMsg).Execute(null);
+            return;
+        }
+
+        QueueEncodingItem[]? items;
+        try
+        {
+            EncodingPipelineRequest[]? requests = _buildRepartRequests?.Invoke();
+            items = requests == null
+                ? null
+                : [.. requests.Select(request => new QueueEncodingItem(request, EncodingPipeline.BuildY4mCommand(request)))];
+        }
+        catch (Exception ex)
+        {
+            new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, ex.Message).Execute(null);
+            return;
+        }
+
+        if (items == null || items.Length == 0)
+        {
+            new OpenWarnModalCmd(_modalNavS, Lang.WarnTitle, Lang.MissingUpstreamMsg).Execute(null);
+            return;
+        }
+
+        string? validationError = GetQueueValidationError(items);
+        if (!string.IsNullOrWhiteSpace(validationError))
+        {
+            new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, validationError).Execute(null);
+            return;
+        }
+
+        OpenQueueOverwriteConfirmationOrStart(items, isRepart: true);
+    }
+
+    private void ExecuteConcatRoute()
+    {
+        if (_isConcatRouteSupported?.Invoke() == false)
+        {
+            new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, Lang.QueueUnsupportedRouteMsg).Execute(null);
+            return;
+        }
+
+        EncodingPipelineRequest? request = _buildConcatRequest?.Invoke();
+        if (request == null)
+        {
+            new OpenWarnModalCmd(
+                _modalNavS,
+                Lang.WarnTitle,
+                Lang.MissingUpstreamMsg).Execute(null);
+            return;
+        }
+
+        EncodingPipelineCommand command = EncodingPipeline.BuildY4mCommand(request);
+        OpenDebugConfirmation(request, command);
+    }
+
+    private void OpenDebugConfirmation(EncodingPipelineRequest request, EncodingPipelineCommand command)
+    {
+        ConfirmationModal? existing = Application.Current.Windows
+            .OfType<ConfirmationModal>()
+            .FirstOrDefault(w => w.DataContext is ConfirmationVM &&
+                            w.Owner == Application.Current.MainWindow);
+        if (existing != null)
+        {
+            existing.Activate();
+            return;
+        }
+
+        ConfirmationModal window = new();
+        CloseModalCmd closeCmd = new(window.Close);
+        ConfirmationVM vm = ConfirmationVM.CreateDebug(
+            Lang.ConfirmTitle, command.DisplayCommandLine,
+            closeCmd,
+            new ActionCmd(_ =>
             {
-                new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, Lang.QueueUnsupportedRouteMsg).Execute(null);
-                return;
-            }
+                window.DialogResult = true;
+                window.Close();
+                OpenOverwriteConfirmationOrStart(request, command);
+            }));
 
-            string[]? sourcePaths = LoadQueueSourcePaths();
-            if (sourcePaths == null) return;
+        window.DataContext = vm;
+        window.Owner = Application.Current.MainWindow;
+        window.Closed += (_, _) => _modalNavS.Close();
+        _modalNavS.CurrentModalVM = vm;
+        window.ShowDialog();
+    }
 
-            if (_filterSourcePaths != null)
-                sourcePaths = _filterSourcePaths(sourcePaths);
+    private void ExecuteQueueRoute()
+    {
+        if (_isQueueRouteSupported?.Invoke() == false)
+        {
+            new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, Lang.QueueUnsupportedRouteMsg).Execute(null);
+            return;
+        }
+
+        string[]? sourcePaths = LoadQueueSourcePaths();
+        if (sourcePaths == null) return;
+
+        if (_filterSourcePaths != null)
+            sourcePaths = _filterSourcePaths(sourcePaths);
+        if (sourcePaths.Length == 0)
+        {
+            new OpenWarnModalCmd(
+                _modalNavS,
+                Lang.WarnTitle,
+                Lang.AllFilteredOutMsg).Execute(null);
+            return;
+        }
+
+        QueueEncodingItem[]? queueItems;
+        try
+        {
+            queueItems = BuildQueueEncodingItems(sourcePaths);
+        }
+        catch (Exception ex)
+        {
+            new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, ex.Message).Execute(null);
+            return;
+        }
+
+        if (queueItems == null || queueItems.Length == 0)
+        {
+            new OpenWarnModalCmd(
+                _modalNavS,
+                Lang.WarnTitle,
+                Lang.MissingUpstreamMsg).Execute(null);
+            return;
+        }
+
+        string? queueError = GetQueueValidationError(queueItems);
+        if (!string.IsNullOrWhiteSpace(queueError))
+        {
+            new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, queueError).Execute(null);
+            return;
+        }
+
+        OpenQueueOverwriteConfirmationOrStart(queueItems);
+    }
+
+    private string[]? LoadQueueSourcePaths()
+    {
+        string queueJsonPath = _getQueueJsonPath?.Invoke() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(queueJsonPath) || !File.Exists(queueJsonPath))
+        {
+            new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, Lang.QueueJsonMissingMsg).Execute(null);
+            return null;
+        }
+
+        try
+        {
+            string json = File.ReadAllText(queueJsonPath);
+            QueueSourceData? queueSourceData = JsonSerializer.Deserialize<QueueSourceData>(json);
+            string[] sourcePaths = queueSourceData?.Entries?
+                .Select(entry => entry.FilePath)
+                .Where(path => !string.IsNullOrWhiteSpace(path))
+                .Select(path => path!)
+                .ToArray() ?? [];
+
             if (sourcePaths.Length == 0)
             {
-                new OpenWarnModalCmd(
-                    _modalNavS,
-                    Lang.WarnTitle,
-                    Lang.AllFilteredOutMsg).Execute(null);
-                return;
-            }
-
-            QueueEncodingItem[]? queueItems;
-            try
-            {
-                queueItems = BuildQueueEncodingItems(sourcePaths);
-            }
-            catch (Exception ex)
-            {
-                new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, ex.Message).Execute(null);
-                return;
-            }
-
-            if (queueItems == null || queueItems.Length == 0)
-            {
-                new OpenWarnModalCmd(
-                    _modalNavS,
-                    Lang.WarnTitle,
-                    Lang.MissingUpstreamMsg).Execute(null);
-                return;
-            }
-
-            string? queueError = GetQueueValidationError(queueItems);
-            if (!string.IsNullOrWhiteSpace(queueError))
-            {
-                new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, queueError).Execute(null);
-                return;
-            }
-
-            OpenQueueOverwriteConfirmationOrStart(queueItems);
-        }
-
-        private string[]? LoadQueueSourcePaths()
-        {
-            string queueJsonPath = _getQueueJsonPath?.Invoke() ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(queueJsonPath) || !File.Exists(queueJsonPath))
-            {
-                new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, Lang.QueueJsonMissingMsg).Execute(null);
+                new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, Lang.QueueJsonNoEntriesMsg).Execute(null);
                 return null;
             }
 
-            try
-            {
-                string json = File.ReadAllText(queueJsonPath);
-                QueueSourceData? queueSourceData = JsonSerializer.Deserialize<QueueSourceData>(json);
-                string[] sourcePaths = queueSourceData?.Entries?
-                    .Select(entry => entry.FilePath)
-                    .Where(path => !string.IsNullOrWhiteSpace(path))
-                    .Select(path => path!)
-                    .ToArray() ?? [];
-
-                if (sourcePaths.Length == 0)
-                {
-                    new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, Lang.QueueJsonNoEntriesMsg).Execute(null);
-                    return null;
-                }
-
-                return sourcePaths;
-            }
-            catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException)
-            {
-                new OpenErrModalCmd(
-                    _modalNavS,
-                    Lang.WarnTitle,
-                    string.Format(Lang.QueueJsonInvalidMsg, ex.Message)).Execute(null);
-                return null;
-            }
+            return sourcePaths;
         }
-
-        private QueueEncodingItem[]? BuildQueueEncodingItems(string[] sourcePaths)
+        catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException)
         {
-            EncodingPipelineRequest[]? requests = _buildQueueRequests?.Invoke(sourcePaths);
-            if (requests == null || requests.Length == 0) return null;
-            return [.. requests.Select(request => new QueueEncodingItem(request, EncodingPipeline.BuildY4mCommand(request)))];
-        }
-
-        private void OpenOverwriteConfirmationOrStart(EncodingPipelineRequest request, EncodingPipelineCommand command)
-        {
-            OverwriteTarget[] overwriteTargets = GetExistingOverwriteTargets(request, command);
-            OpenOverwriteConfirmationOrStart(overwriteTargets, () => StartEncoding(request, command));
-        }
-
-        private void OpenQueueOverwriteConfirmationOrStart(QueueEncodingItem[] queueItems, bool isRepart = false)
-        {
-            OverwriteTarget[] overwriteTargets = GetExistingOverwriteTargets(queueItems);
-            OpenOverwriteConfirmationOrStart(overwriteTargets, () => StartQueueEncoding(queueItems, isRepart));
-        }
-
-        private void OpenOverwriteConfirmationOrStart(OverwriteTarget[] overwriteTargets, Action startAction)
-        {
-            if (overwriteTargets.Length == 0)
-            {
-                startAction();
-                return;
-            }
-
-            long maxOutputLengthBytes = overwriteTargets.Max(t => t.LengthBytes);
-            int confirmDelayMs = CalculateOverwriteConfirmDelayMs(maxOutputLengthBytes);
-
-            ConfirmationModal window = new();
-            CloseModalCmd closeCmd = new(window.Close);
-            ConfirmationVM vm = ConfirmationVM.CreateWarning(
-                Lang.OverwriteTitle,
-                BuildOverwriteWarningMessage(overwriteTargets, maxOutputLengthBytes, confirmDelayMs),
-                closeCmd,
-                new ActionCmd(_ =>
-                {
-                    window.DialogResult = true;
-                    window.Close();
-                    startAction();
-                }));
-
-            DispatcherTimer? timer = null;
-            if (confirmDelayMs > 0)
-            {
-                vm.FinishWarnErrButtons.B2_2IsEnabled = false;
-                timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(confirmDelayMs) };
-                timer.Tick += (_, _) =>
-                {
-                    timer.Stop();
-                    vm.FinishWarnErrButtons.B2_2IsEnabled = true;
-                };
-            }
-
-            window.DataContext = vm;
-            window.Owner = Application.Current.MainWindow;
-            window.Closed += (_, _) =>
-            {
-                timer?.Stop();
-                _modalNavS.Close();
-            };
-            _modalNavS.CurrentModalVM = vm;
-            timer?.Start();
-            window.ShowDialog();
-        }
-
-        private OverwriteTarget[] GetExistingOverwriteTargets(EncodingPipelineRequest request, EncodingPipelineCommand command)
-        {
-            return GetOverwriteCandidates(request, command)
-                .Where(t => File.Exists(t.Path))
-                .Select(t => t with { LengthBytes = GetFileLengthBytes(t.Path) })
-                .ToArray();
-        }
-
-        private OverwriteTarget[] GetExistingOverwriteTargets(QueueEncodingItem[] queueItems)
-        {
-            return [.. queueItems
-                .SelectMany(item => GetOverwriteCandidates(item.Request, item.Command, GetQueueSourceLabel(item.Request)))
-                .Where(t => File.Exists(t.Path))
-                .Select(t => t with { LengthBytes = GetFileLengthBytes(t.Path) })];
-        }
-
-        private OverwriteTarget[] GetOverwriteCandidates(EncodingPipelineRequest request, EncodingPipelineCommand command, string? sourceLabel = null)
-        {
-            string Label(string label) => string.IsNullOrWhiteSpace(sourceLabel)
-                ? label
-                : $"{sourceLabel} - {label}";
-
-            return command.MuxCommand == null
-                ? new[]
-                {
-                    new OverwriteTarget(
-                        Label(Lang.EncodedOutputLabel),
-                        EncodingPipeline.ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath),
-                        0L)
-                }
-                : new[]
-                {
-                    new OverwriteTarget(Label(Lang.EncodedOutputLabel), command.MuxCommand.EncodedVideoPath, 0L),
-                    new OverwriteTarget(Label(Lang.MuxOutputLabel), command.MuxCommand.OutputPath, 0L)
-                };
-        }
-
-        private string? GetQueueValidationError(QueueEncodingItem[] queueItems)
-        {
-            string[] missingSourcePaths = [.. queueItems
-                .Select(item => item.Request.UpstreamInputPath)
-                .Where(path => string.IsNullOrWhiteSpace(path) || !File.Exists(path))];
-            if (missingSourcePaths.Length > 0)
-                return BuildPathListMessage(Lang.QueueSourceMissingMsg, missingSourcePaths);
-
-            string[] duplicateOutputPaths = [.. queueItems
-                .SelectMany(item => GetOverwriteCandidates(item.Request, item.Command))
-                .GroupBy(target => target.Path, StringComparer.OrdinalIgnoreCase)
-                .Where(group => group.Count() > 1)
-                .Select(group => group.Key)];
-            return duplicateOutputPaths.Length > 0
-                ? BuildPathListMessage(Lang.QueueDuplicateOutputMsg, duplicateOutputPaths)
-                : null;
-        }
-
-        private string BuildPathListMessage(string header, string[] paths)
-        {
-            IEnumerable<string> listedPaths = paths
-                .Take(MaxListedOverwriteTargets)
-                .Select(path => $"- {path}");
-            string omittedLine = paths.Length > MaxListedOverwriteTargets
-                ? Environment.NewLine + string.Format(Lang.AdditionalOverwriteTargetsLabel, paths.Length - MaxListedOverwriteTargets)
-                : string.Empty;
-
-            return string.Join(Environment.NewLine, new[] { header }.Concat(listedPaths)) + omittedLine;
-        }
-
-        private void StartEncoding(EncodingPipelineRequest request, EncodingPipelineCommand command)
-        {
-            new OpenEncodingMonitorCmd(_modalNavS, _appConfM, request, command).Execute(null);
-        }
-
-        private void StartQueueEncoding(QueueEncodingItem[] queueItems, bool isRepart = false)
-        {
-            var pairs = queueItems.Select(item => (item.Request, item.Command)).ToArray();
-
-            EncodingMonitorModal? existingWindow = Application.Current.Windows
-                .OfType<EncodingMonitorModal>()
-                .FirstOrDefault();
-            if (existingWindow != null)
-            {
-                existingWindow.Activate();
-                return;
-            }
-
-            if (_modalNavS.IsOpen)
-                _modalNavS.Close();
-
-            EncodingMonitorModal window = new();
-            EncodingMonitorVM vm = new(_modalNavS, window.Close, _appConfM, pairs, isRepart);
-            window.DataContext = vm;
-            window.Owner = Application.Current.MainWindow;
-            window.Closed += (_, _) => _modalNavS.Close();
-            _modalNavS.CurrentModalVM = vm;
-            window.Show();
-        }
-
-        private int CalculateOverwriteConfirmDelayMs(long fileLengthBytes)
-        {
-            int divisor = Math.Max(1, _appConfM.Overwrite.LongPressMegabyteDivisor);
-            int minMs = Math.Max(0, _appConfM.Overwrite.MinLongPressMs);
-            int maxMs = Math.Max(minMs, _appConfM.Overwrite.MaxLongPressMs);
-            double megabytes = fileLengthBytes / (1024d * 1024d);
-            double delayMs = megabytes / divisor * 1000d;
-
-            return (int)Math.Round(Math.Clamp(delayMs, minMs, maxMs));
-        }
-
-        private static long GetFileLengthBytes(string path)
-        {
-            try { return Math.Max(0L, new FileInfo(path).Length); }
-            catch { return 0L; }
-        }
-
-        private string BuildOverwriteWarningMessage(OverwriteTarget[] targets, long maxFileLengthBytes, int confirmDelayMs)
-        {
-            double seconds = confirmDelayMs / 1000d;
-            string[] targetLines = targets
-                .Take(MaxListedOverwriteTargets)
-                .Select(t => string.Format(Lang.OverwriteTargetLabel, t.Label, t.Path, FormatFileSize(t.LengthBytes)))
-                .ToArray();
-            string omittedLine = targets.Length > MaxListedOverwriteTargets
-                ? string.Format(Lang.AdditionalOverwriteTargetsLabel, targets.Length - MaxListedOverwriteTargets)
-                : string.Empty;
-
-            string[] messageParts =
-            [
-                Lang.OverwriteMsg,
-                string.Join(Environment.NewLine, targetLines),
-                omittedLine,
-                string.Format(Lang.LargestExistingSizeLabel, FormatFileSize(maxFileLengthBytes)),
-                string.Format(Lang.ConfirmDelayLabel, seconds.ToString("0.0", CultureInfo.InvariantCulture))
-            ];
-
-            return string.Join(Environment.NewLine, messageParts.Where(part => !string.IsNullOrWhiteSpace(part)));
-        }
-
-        private static string GetQueueSourceLabel(EncodingPipelineRequest request)
-        {
-            string sourcePath = !string.IsNullOrWhiteSpace(request.SourceVideoPath)
-                ? request.SourceVideoPath
-                : request.UpstreamInputPath;
-            return Path.GetFileNameWithoutExtension(sourcePath) ?? sourcePath;
-        }
-
-        private string FormatFileSize(long bytes)
-        {
-            const long bytesPerMb = 1024L * 1024L;
-            const long bytesPerGb = 1024L * 1024L * 1024L;
-
-            if (bytes >= bytesPerGb)
-                return $"{bytes / (double)bytesPerGb:0.0}{Lang.GbSuffix}";
-            return $"{bytes / (double)bytesPerMb:0.0}{Lang.MbSuffix}";
-        }
-
-        private readonly record struct OverwriteTarget(string Label, string Path, long LengthBytes);
-
-        private readonly record struct QueueEncodingItem(EncodingPipelineRequest Request, EncodingPipelineCommand Command);
-
-        private sealed class QueueSourceData
-        {
-            public List<QueueSourceEntry> Entries { get; set; } = [];
-        }
-
-        private sealed class QueueSourceEntry
-        {
-            public string FilePath { get; set; } = string.Empty;
+            new OpenErrModalCmd(
+                _modalNavS,
+                Lang.WarnTitle,
+                string.Format(Lang.QueueJsonInvalidMsg, ex.Message)).Execute(null);
+            return null;
         }
     }
-}
+
+    private QueueEncodingItem[]? BuildQueueEncodingItems(string[] sourcePaths)
+    {
+        EncodingPipelineRequest[]? requests = _buildQueueRequests?.Invoke(sourcePaths);
+        if (requests == null || requests.Length == 0) return null;
+        return [.. requests.Select(request => new QueueEncodingItem(request, EncodingPipeline.BuildY4mCommand(request)))];
+    }
+
+    private void OpenOverwriteConfirmationOrStart(EncodingPipelineRequest request, EncodingPipelineCommand command)
+    {
+        OverwriteTarget[] overwriteTargets = GetExistingOverwriteTargets(request, command);
+        OpenOverwriteConfirmationOrStart(overwriteTargets, () => StartEncoding(request, command));
+    }
+
+    private void OpenQueueOverwriteConfirmationOrStart(QueueEncodingItem[] queueItems, bool isRepart = false)
+    {
+        OverwriteTarget[] overwriteTargets = GetExistingOverwriteTargets(queueItems);
+        OpenOverwriteConfirmationOrStart(overwriteTargets, () => StartQueueEncoding(queueItems, isRepart));
+    }
+
+    private void OpenOverwriteConfirmationOrStart(OverwriteTarget[] overwriteTargets, Action startAction)
+    {
+        if (overwriteTargets.Length == 0)
+        {
+            startAction();
+            return;
+        }
+
+        long maxOutputLengthBytes = overwriteTargets.Max(t => t.LengthBytes);
+        int confirmDelayMs = CalculateOverwriteConfirmDelayMs(maxOutputLengthBytes);
+
+        ConfirmationModal window = new();
+        CloseModalCmd closeCmd = new(window.Close);
+        ConfirmationVM vm = ConfirmationVM.CreateWarning(
+            Lang.OverwriteTitle,
+            BuildOverwriteWarningMessage(overwriteTargets, maxOutputLengthBytes, confirmDelayMs),
+            closeCmd,
+            new ActionCmd(_ =>
+            {
+                window.DialogResult = true;
+                window.Close();
+                startAction();
+            }));
+
+        DispatcherTimer? timer = null;
+        if (confirmDelayMs > 0)
+        {
+            vm.FinishWarnErrButtons.B2_2IsEnabled = false;
+            timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(confirmDelayMs) };
+            timer.Tick += (_, _) =>
+            {
+                timer.Stop();
+                vm.FinishWarnErrButtons.B2_2IsEnabled = true;
+            };
+        }
+
+        window.DataContext = vm;
+        window.Owner = Application.Current.MainWindow;
+        window.Closed += (_, _) =>
+        {
+            timer?.Stop();
+            _modalNavS.Close();
+        };
+        _modalNavS.CurrentModalVM = vm;
+        timer?.Start();
+        window.ShowDialog();
+    }
+
+    private OverwriteTarget[] GetExistingOverwriteTargets(EncodingPipelineRequest request, EncodingPipelineCommand command)
+    {
+        return GetOverwriteCandidates(request, command)
+            .Where(t => File.Exists(t.Path))
+            .Select(t => t with { LengthBytes = GetFileLengthBytes(t.Path) })
+            .ToArray();
+    }
+
+    private OverwriteTarget[] GetExistingOverwriteTargets(QueueEncodingItem[] queueItems)
+    {
+        return [.. queueItems
+            .SelectMany(item => GetOverwriteCandidates(item.Request, item.Command, GetQueueSourceLabel(item.Request)))
+            .Where(t => File.Exists(t.Path))
+            .Select(t => t with { LengthBytes = GetFileLengthBytes(t.Path) })];
+    }
+
+    private OverwriteTarget[] GetOverwriteCandidates(EncodingPipelineRequest request, EncodingPipelineCommand command, string? sourceLabel = null)
+    {
+        string Label(string label) => string.IsNullOrWhiteSpace(sourceLabel)
+            ? label
+            : $"{sourceLabel} - {label}";
+
+        return command.MuxCommand == null
+            ? new[]
+            {
+                new OverwriteTarget(
+                    Label(Lang.EncodedOutputLabel),
+                    EncodingPipeline.ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath),
+                    0L)
+            }
+            : new[]
+            {
+                new OverwriteTarget(Label(Lang.EncodedOutputLabel), command.MuxCommand.EncodedVideoPath, 0L),
+                new OverwriteTarget(Label(Lang.MuxOutputLabel), command.MuxCommand.OutputPath, 0L)
+            };
+    }
+
+    private string? GetQueueValidationError(QueueEncodingItem[] queueItems)
+    {
+        string[] missingSourcePaths = [.. queueItems
+            .Select(item => item.Request.UpstreamInputPath)
+            .Where(path => string.IsNullOrWhiteSpace(path) || !File.Exists(path))];
+        if (missingSourcePaths.Length > 0)
+            return BuildPathListMessage(Lang.QueueSourceMissingMsg, missingSourcePaths);
+
+        string[] duplicateOutputPaths = [.. queueItems
+            .SelectMany(item => GetOverwriteCandidates(item.Request, item.Command))
+            .GroupBy(target => target.Path, StringComparer.OrdinalIgnoreCase)
+            .Where(group => group.Count() > 1)
+            .Select(group => group.Key)];
+        return duplicateOutputPaths.Length > 0
+            ? BuildPathListMessage(Lang.QueueDuplicateOutputMsg, duplicateOutputPaths)
+            : null;
+    }
+
+    private string BuildPathListMessage(string header, string[] paths)
+    {
+        IEnumerable<string> listedPaths = paths
+            .Take(MaxListedOverwriteTargets)
+            .Select(path => $"- {path}");
+        string omittedLine = paths.Length > MaxListedOverwriteTargets
+            ? Environment.NewLine + string.Format(Lang.AdditionalOverwriteTargetsLabel, paths.Length - MaxListedOverwriteTargets)
+            : string.Empty;
+
+        return string.Join(Environment.NewLine, new[] { header }.Concat(listedPaths)) + omittedLine;
+    }
+
+    private void StartEncoding(EncodingPipelineRequest request, EncodingPipelineCommand command)
+    {
+        new OpenEncodingMonitorCmd(_modalNavS, _appConfM, request, command).Execute(null);
+    }
+
+    private void StartQueueEncoding(QueueEncodingItem[] queueItems, bool isRepart = false)
+    {
+        var pairs = queueItems.Select(item => (item.Request, item.Command)).ToArray();
+
+        EncodingMonitorModal? existingWindow = Application.Current.Windows
+            .OfType<EncodingMonitorModal>()
+            .FirstOrDefault();
+        if (existingWindow != null)
+        {
+            existingWindow.Activate();
+            return;
+        }
+
+        if (_modalNavS.IsOpen)
+            _modalNavS.Close();
+
+        EncodingMonitorModal window = new();
+        EncodingMonitorVM vm = new(_modalNavS, window.Close, _appConfM, pairs, isRepart);
+        window.DataContext = vm;
+        window.Owner = Application.Current.MainWindow;
+        window.Closed += (_, _) => _modalNavS.Close();
+        _modalNavS.CurrentModalVM = vm;
+        window.Show();
+    }
+
+    private int CalculateOverwriteConfirmDelayMs(long fileLengthBytes)
+    {
+        int divisor = Math.Max(1, _appConfM.Overwrite.LongPressMegabyteDivisor);
+        int minMs = Math.Max(0, _appConfM.Overwrite.MinLongPressMs);
+        int maxMs = Math.Max(minMs, _appConfM.Overwrite.MaxLongPressMs);
+        double megabytes = fileLengthBytes / (1024d * 1024d);
+        double delayMs = megabytes / divisor * 1000d;
+
+        return (int)Math.Round(Math.Clamp(delayMs, minMs, maxMs));
+    }
+
+    private static long GetFileLengthBytes(string path)
+    {
+        try { return Math.Max(0L, new FileInfo(path).Length); }
+        catch { return 0L; }
+    }
+
+    private string BuildOverwriteWarningMessage(OverwriteTarget[] targets, long maxFileLengthBytes, int confirmDelayMs)
+    {
+        double seconds = confirmDelayMs / 1000d;
+        string[] targetLines = targets
+            .Take(MaxListedOverwriteTargets)
+            .Select(t => string.Format(Lang.OverwriteTargetLabel, t.Label, t.Path, FormatFileSize(t.LengthBytes)))
+            .ToArray();
+        string omittedLine = targets.Length > MaxListedOverwriteTargets
+            ? string.Format(Lang.AdditionalOverwriteTargetsLabel, targets.Length - MaxListedOverwriteTargets)
+            : string.Empty;
+
+        string[] messageParts =
+        [
+            Lang.OverwriteMsg,
+            string.Join(Environment.NewLine, targetLines),
+            omittedLine,
+            string.Format(Lang.LargestExistingSizeLabel, FormatFileSize(maxFileLengthBytes)),
+            string.Format(Lang.ConfirmDelayLabel, seconds.ToString("0.0", CultureInfo.InvariantCulture))
+        ];
+
+        return string.Join(Environment.NewLine, messageParts.Where(part => !string.IsNullOrWhiteSpace(part)));
+    }
+
+    private static string GetQueueSourceLabel(EncodingPipelineRequest request)
+    {
+        string sourcePath = !string.IsNullOrWhiteSpace(request.SourceVideoPath)
+            ? request.SourceVideoPath
+            : request.UpstreamInputPath;
+        return Path.GetFileNameWithoutExtension(sourcePath) ?? sourcePath;
+    }
+
+    private string FormatFileSize(long bytes)
+    {
+        const long bytesPerMb = 1024L * 1024L;
+        const long bytesPerGb = 1024L * 1024L * 1024L;
+
+        if (bytes >= bytesPerGb)
+            return $"{bytes / (double)bytesPerGb:0.0}{Lang.GbSuffix}";
+        return $"{bytes / (double)bytesPerMb:0.0}{Lang.MbSuffix}";
+    }
+
+    private readonly record struct OverwriteTarget(string Label, string Path, long LengthBytes);
+
+    private readonly record struct QueueEncodingItem(EncodingPipelineRequest Request, EncodingPipelineCommand Command);
+
+    private sealed class QueueSourceData
+    {
+        public List<QueueSourceEntry> Entries { get; set; } = [];
+    }
+
+    private sealed class QueueSourceEntry
+    {
+        public string FilePath { get; set; } = string.Empty;
+    }
+}

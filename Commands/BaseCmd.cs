@@ -1,13 +1,12 @@
-﻿namespace OneColumnEncoder.Commands
+﻿namespace OneColumnEncoder.Commands;
+
+public abstract class BaseCmd : ICommand
 {
-    public abstract class BaseCmd : ICommand
+    public event EventHandler? CanExecuteChanged;
+    public virtual bool CanExecute(object? parameter) => true;
+    public abstract void Execute(object? parameter);
+    public virtual void OnCanExecuteChanged()
     {
-        public event EventHandler? CanExecuteChanged;
-        public virtual bool CanExecute(object? parameter) => true;
-        public abstract void Execute(object? parameter);
-        public virtual void OnCanExecuteChanged()
-        {
-            CanExecuteChanged?.Invoke(this, new EventArgs());
-        }
+        CanExecuteChanged?.Invoke(this, new EventArgs());
     }
-}
+}

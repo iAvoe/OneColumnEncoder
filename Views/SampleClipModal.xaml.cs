@@ -1,10 +1,9 @@
-namespace OneColumnEncoder.Views
+namespace OneColumnEncoder.Views;
+
+public partial class SampleClipModal : AdaptiveWindow
 {
-    public partial class SampleClipModal : AdaptiveWindow
+    public SampleClipModal()
     {
-        public SampleClipModal()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
-}
+}

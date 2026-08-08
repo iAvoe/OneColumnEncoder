@@ -1,10 +1,9 @@
-namespace OneColumnEncoder.Components
+namespace OneColumnEncoder.Components;
+
+public partial class EncoderRateControlPanel : UserControl
 {
-    public partial class EncoderRateControlPanel : UserControl
+    public EncoderRateControlPanel()
     {
-        public EncoderRateControlPanel()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
-}
+}

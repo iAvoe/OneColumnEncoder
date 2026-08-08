@@ -1,10 +1,9 @@
-namespace OneColumnEncoder.Components
+namespace OneColumnEncoder.Components;
+
+public partial class EncoderCustomParamsPanel : UserControl
 {
-    public partial class EncoderCustomParamsPanel : UserControl
+    public EncoderCustomParamsPanel()
     {
-        public EncoderCustomParamsPanel()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
-}
+}

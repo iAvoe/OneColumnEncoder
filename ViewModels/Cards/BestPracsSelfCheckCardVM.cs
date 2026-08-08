@@ -1,17 +1,16 @@
-namespace OneColumnEncoder.ViewModels.Cards
-{
-    public class BestPracsSelfCheckCardVM : ValidationCardBaseVM
-    {
-        public BestPracsSelfCheckCardVM()
-        {
-            FillCollection(Checklist1, ChecklistProviderM.GetBestPracticeChecklist1());
-            FillCollection(Checklist2, ChecklistProviderM.GetBestPracticeChecklist2());
-        }
+namespace OneColumnEncoder.ViewModels.Cards;
 
-        public void RefreshLanguage()
-        {
-            RefreshChecklist(Checklist1, ChecklistProviderM.GetBestPracticeChecklist1());
-            RefreshChecklist(Checklist2, ChecklistProviderM.GetBestPracticeChecklist2());
-        }
+public class BestPracsSelfCheckCardVM : ValidationCardBaseVM
+{
+    public BestPracsSelfCheckCardVM()
+    {
+        FillCollection(Checklist1, ChecklistProviderM.GetBestPracticeChecklist1());
+        FillCollection(Checklist2, ChecklistProviderM.GetBestPracticeChecklist2());
     }
-}
+
+    public void RefreshLanguage()
+    {
+        RefreshChecklist(Checklist1, ChecklistProviderM.GetBestPracticeChecklist1());
+        RefreshChecklist(Checklist2, ChecklistProviderM.GetBestPracticeChecklist2());
+    }
+}

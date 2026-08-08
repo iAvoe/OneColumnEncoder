@@ -1,10 +1,9 @@
-﻿namespace OneColumnEncoder.Models
+﻿namespace OneColumnEncoder.Models;
+
+public class DropdownItemM(string title, bool isSeparator = false, bool isPlaceholder = false)
 {
-    public class DropdownItemM(string title, bool isSeparator = false, bool isPlaceholder = false)
-    {
-        public string Title { get; set; } = title;
-        public bool IsSeparator { get; set; } = isSeparator;
-        public bool IsPlaceholder { get; set; } = isPlaceholder;
-        public object? Tag { get; set; }
-    }
-}
+    public string Title { get; set; } = title;
+    public bool IsSeparator { get; set; } = isSeparator;
+    public bool IsPlaceholder { get; set; } = isPlaceholder;
+    public object? Tag { get; set; }
+}

@@ -1,10 +1,9 @@
-namespace OneColumnEncoder.Views
+namespace OneColumnEncoder.Views;
+
+public partial class AppConfModal : AdaptiveWindow
 {
-    public partial class AppConfModal : AdaptiveWindow
+    public AppConfModal()
     {
-        public AppConfModal()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
-}
+}

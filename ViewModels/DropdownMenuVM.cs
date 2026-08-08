@@ -1,18 +1,17 @@
-﻿namespace OneColumnEncoder.ViewModels
+﻿namespace OneColumnEncoder.ViewModels;
+
+public class DropdownMenuVM : BaseVM
 {
-    public class DropdownMenuVM : BaseVM
+    public ObservableCollection<DropdownItemM> Items { get; } = [];
+    private DropdownItemM? _selectedItem;
+    public DropdownItemM? SelectedItem
     {
-        public ObservableCollection<DropdownItemM> Items { get; } = [];
-        private DropdownItemM? _selectedItem;
-        public DropdownItemM? SelectedItem
+        get => _selectedItem;
+        set
         {
-            get => _selectedItem;
-            set
-            {
-                if (!SetProperty(ref _selectedItem, value)) return;
-                SelectionChangedCommand?.Execute(value);
-            }
+            if (!SetProperty(ref _selectedItem, value)) return;
+            SelectionChangedCommand?.Execute(value);
         }
-        public ICommand? SelectionChangedCommand { get; set; }
     }
-}
+    public ICommand? SelectionChangedCommand { get; set; }
+}

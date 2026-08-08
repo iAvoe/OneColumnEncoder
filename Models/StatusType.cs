@@ -1,10 +1,9 @@
-﻿namespace OneColumnEncoder.Models
+﻿namespace OneColumnEncoder.Models;
+
+public enum StatusType
 {
-    public enum StatusType
-    {
-        Waiting,
-        Success,
-        Warning,
-        Error
-    }
-}
+    Waiting,
+    Success,
+    Warning,
+    Error
+}

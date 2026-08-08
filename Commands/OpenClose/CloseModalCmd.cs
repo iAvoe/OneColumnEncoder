@@ -1,10 +1,9 @@
-namespace OneColumnEncoder.Commands.OpenClose
+namespace OneColumnEncoder.Commands.OpenClose;
+
+public class CloseModalCmd(Action closeAction) : BaseCmd
 {
-    public class CloseModalCmd(Action closeAction) : BaseCmd
+    public override void Execute(object? parameter)
     {
-        public override void Execute(object? parameter)
-        {
-            closeAction();
-        }
+        closeAction();
     }
-}
+}

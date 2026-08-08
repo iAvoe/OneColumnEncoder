@@ -1,12 +1,11 @@
-﻿namespace OneColumnEncoder.Components
+﻿namespace OneColumnEncoder.Components;
+
+public class ChecklistContainer : HeaderedItemsControl
 {
-    public class ChecklistContainer : HeaderedItemsControl
+    static ChecklistContainer()
     {
-        static ChecklistContainer()
-        {
-            DefaultStyleKeyProperty.OverrideMetadata(
-                typeof(ChecklistContainer),
-                new FrameworkPropertyMetadata(typeof(ChecklistContainer)));
-        }
+        DefaultStyleKeyProperty.OverrideMetadata(
+            typeof(ChecklistContainer),
+            new FrameworkPropertyMetadata(typeof(ChecklistContainer)));
     }
-}
+}

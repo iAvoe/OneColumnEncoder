@@ -1,10 +1,9 @@
-namespace OneColumnEncoder.Views
+namespace OneColumnEncoder.Views;
+
+public partial class ParallelismConfModal : AdaptiveWindow
 {
-    public partial class ParallelismConfModal : AdaptiveWindow
+    public ParallelismConfModal()
     {
-        public ParallelismConfModal()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
-}
+}
