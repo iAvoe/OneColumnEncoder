@@ -54,24 +54,28 @@
 
 本軟體支持多語言，但為減少圖片數量而在此統一用了英語文本截圖。圖片中可能會有一些過時的 UI 元素或文本，但整體布局和功能區域劃分仍然適用。請以實際使用版本為準。
 
-<p align="center"><img src="../WireframeMockups/1-Main-Page.png" alt="Main Window" width="600"></br>
+<p align="center">
+<img src="../WireframeMockups/1-Main-Page-v4.png" alt="Main Window" width="600" /></br>
 <sup><i>首頁</i></sup></br>
-<img src="../WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window" width="500"></br>
+<img src="../WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window" width="500" /></br>
 <sup><i>濾鏡編輯器</i></sup></br>
-<img src="../WireframeMockups/3-Encoder-Settings.png" alt="Encoder Setting Window" width="900"></br>
+<img src="../WireframeMockups/3-Encoder-Settings.png" alt="Encoder Setting Window" width="900" /></br>
 <sup><i>編碼器/壓制設置</i></sup></br>
-<img src="../WireframeMockups/4-Parallelism-Setting.png" alt="Parallelism Setting Window" width="400"></br>
+<img src="../WireframeMockups/4-Parallelism-Setting.png" alt="Parallelism Setting Window" width="400" /></br>
 <sup><i>平行計算設置</i></sup></br>
-<img src="../WireframeMockups/5-Clip-Sampler.png" alt="Clip Sampler Window" width="400"></br>
+<img src="../WireframeMockups/5-Clip-Sampler.png" alt="Clip Sampler Window" width="400" /></br>
 <sup><i>取段打樣器</i></sup></br>
-<img src="../WireframeMockups/6-Encoding-Monitor.png" alt="Encoding Monitor Window" width="650"></br>
+<img src="../WireframeMockups/6-Encoding-Monitor.png" alt="Encoding Monitor Window" width="650" /></br>
 <sup><i>壓制監視器</i></sup></br>
-<img src="../WireframeMockups/7-Warning-Modal-OW-Guard.png" alt="Warning Modal & Overwrite Protection" width="350"></br>
+<img src="../WireframeMockups/7-Warning-Modal-OW-Guard.png" alt="Warning Modal & Overwrite Protection" width="350" /></br>
 <sup><i>報錯窗口與覆防寫功能</i></sup></br>
-<img src="../WireframeMockups/8-BD-Playlist-Selector.png" alt="Blu-Ray Playlist Selector" width="500"></br>
+<img src="../WireframeMockups/8-BD-Playlist-Selector-v2.png" alt="Blu-Ray Playlist Selector" width="500" /></br>
 <sup><i>藍光播放列表選擇器</i></sup></br>
-<img src="../WireframeMockups/9-Episode-Repartition-Editor.png" alt="Repartition Configurator" width="650"></br>
-<sup><i>重分集編輯器</i></sup></br></p>
+<img src="../WireframeMockups/9-Episode-Repartition-Editor.png" alt="Repartition Configurator" width="650" /></br>
+<sup><i>重分集編輯器</i></sup></br>
+<img src="../WireframeMockups/10-Settings.png" alt="Settings" width="400" /></br>
+<sup><i>程序設定</i></sup></br>
+</p>
 
 ## 運行要求
 

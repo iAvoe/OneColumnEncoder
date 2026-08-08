@@ -54,24 +54,28 @@ A next-gen smart video encoding utility based on .NET 9/WPF, revolves around “
 
 This software supports multiple languages, but English text screenshots are used here to reduce the number of images. Some UI elements or text in the images may be outdated, but the overall layout and functional area divisions remain applicable. Please refer to the actual version you are using.
 
-<p align="center"><img src="../WireframeMockups/1-Main-Page.png" alt="Main Window" width="600"></br>
+<p align="center">
+<img src="../WireframeMockups/1-Main-Page-v4.png" alt="Main Window" width="600"/></br>
 <sup><i>Main Page</i></sup></br>
-<img src="../WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window" width="500"></br>
+<img src="../WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window" width="500" /></br>
 <sup><i>Script Scribe (Editor)</i></sup></br>
-<img src="../WireframeMockups/3-Encoder-Settings.png" alt="Encoder Setting Window" width="900"></br>
+<img src="../WireframeMockups/3-Encoder-Settings.png" alt="Encoder Setting Window" width="900" /></br>
 <sup><i>Encoding Settings</i></sup></br>
-<img src="../WireframeMockups/4-Parallelism-Setting.png" alt="Parallelism Setting Window" width="400"></br>
+<img src="../WireframeMockups/4-Parallelism-Setting.png" alt="Parallelism Setting Window" width="400" /></br>
 <sup><i>Parallelism Settings</i></sup></br>
-<img src="../WireframeMockups/5-Clip-Sampler.png" alt="Clip Sampler Window" width="400"></br>
+<img src="../WireframeMockups/5-Clip-Sampler.png" alt="Clip Sampler Window" width="400" /></br>
 <sup><i>Clip Sampler</i></sup></br>
-<img src="../WireframeMockups/6-Encoding-Monitor.png" alt="Encoding Monitor Window" width="650"></br>
+<img src="../WireframeMockups/6-Encoding-Monitor.png" alt="Encoding Monitor Window" width="650" /></br>
 <sup><i>Encoding Monitor</i></sup></br>
-<img src="../WireframeMockups/7-Warning-Modal-OW-Guard.png" alt="Warning Modal & Overwrite Protection" width="350"></br>
+<img src="../WireframeMockups/7-Warning-Modal-OW-Guard.png" alt="Warning Modal & Overwrite Protection" width="350" /></br>
 <sup><i>Warning Modal & Overwrite Protection</i></sup></br>
-<img src="../WireframeMockups/8-BD-Playlist-Selector.png" alt="Blu-Ray Playlist Selector" width="500"></br>
+<img src="../WireframeMockups/8-BD-Playlist-Selector-v2.png" alt="Blu-Ray Playlist Selector" width="500" /></br>
 <sup><i>Blu-Ray Playlist Selector</i></sup></br>
-<img src="../WireframeMockups/9-Episode-Repartition-Editor.png" alt="Repartition Configurator" width="650"></br>
-<sup><i>Episode Repartition Configurator</i></sup></br></p>
+<img src="../WireframeMockups/9-Episode-Repartition-Editor.png" alt="Repartition Configurator" width="650" /></br>
+<sup><i>Episode Repartition Configurator</i></sup></br>
+<img src="../WireframeMockups/10-Settings.png" alt="Settings" width="400" /></br>
+<sup><i>Program Settings</i></sup></br>
+</p>
 
 ## System Requirements
 

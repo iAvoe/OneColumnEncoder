@@ -8,7 +8,7 @@ OneColumnEncoder's rather hardcore, meanwhile simple and intuitive UI/UX flow, a
 
 OneColumnEncoder 提供了相对硬核，同时简洁直观的 UI/UX 流程，将重复操作自动化，让压制任务完成得又快又好。
 
-<p align="center"><img src="WireframeMockups/logo.png" alt="Logo" width="250"></p>
+<p align="center"><img src="./WireframeMockups/1-Main-Page-v4.png" alt="Main Window" width="600"/></p>
 
 This project has two language versions | 本项目支持两种语言
 
