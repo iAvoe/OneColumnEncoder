@@ -8,11 +8,11 @@
                    xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
                    d:DataContext="{d:DesignInstance Type=vms:RepartConfVM}"
                    mc:Ignorable="d"
-                    Title="{Binding WindowTitle}"
-                    Width="1080"
-                     Height="760"
-                    WindowStartupLocation="CenterOwner"
-                    Background="{StaticResource Background}">
+                   Title="{Binding WindowTitle}"
+                   Width="1080"
+                   Height="760"
+                   WindowStartupLocation="CenterOwner"
+                   Background="{StaticResource Background}">
     <ui:AdaptiveWindow.Resources>
         <DataTemplate x:Key="IconTextButtonTemplate">
             <StackPanel Orientation="Horizontal"
@@ -94,9 +94,9 @@
                                        Height="70"
                                        ToolTip="{Binding Frame}"
                                        Cursor="SizeWE"
-                                        MouseLeftButtonUp="DividerThumb_MouseLeftButtonUp"
-                                        PreviewMouseRightButtonDown="DividerThumb_PreviewMouseRightButtonDown"
-                                        DragStarted="DividerThumb_DragStarted"
+                                       MouseLeftButtonUp="DividerThumb_MouseLeftButtonUp"
+                                       PreviewMouseRightButtonDown="DividerThumb_PreviewMouseRightButtonDown"
+                                       DragStarted="DividerThumb_DragStarted"
                                        DragDelta="DividerThumb_DragDelta"
                                        DragCompleted="DividerThumb_DragCompleted">
                                     <Thumb.Tag>
@@ -182,7 +182,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                
+
                 <!-- Import Source Control -->
                 <comps:SectionHeader HeaderText="{Binding InputSourcesTitle}" />
                 <ListBox Grid.Row="1"
@@ -240,7 +240,7 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                
+
             </Grid>
 
             <!-- Add new divider controls -->
@@ -268,7 +268,7 @@
                              Padding="5"
                              Margin="0" />
                 </StackPanel>
-                
+
                 <!-- Add new divider -->
                 <Button Grid.Row="2"
                         Content="{Binding AddDividerText}"
@@ -309,7 +309,7 @@
                 </StackPanel>
 
                 <Grid Grid.Row="2"
-                       Margin="5 20 0 0">
+                      Margin="5 20 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
@@ -371,7 +371,7 @@
                 </Grid.RowDefinitions>
 
                 <Border Grid.Row="1"
-                        Margin="5 -5 0 0"
+                        Margin="5 -7.5 0 0"
                         BorderBrush="{StaticResource GlobalSecondary}"
                         BorderThickness="1"
                         CornerRadius="5"
@@ -406,7 +406,7 @@
                                                     <Grid.OpacityMask>
                                                         <VisualBrush Visual="{Binding ElementName=PreviewFrameMask}" />
                                                     </Grid.OpacityMask>
-                                                    
+
                                                     <Image Source="{Binding FrameImage}"
                                                            Stretch="Uniform"
                                                            SnapsToDevicePixels="True"
@@ -506,19 +506,15 @@
         </Grid>
 
         <Grid Grid.Row="3"
-               Margin="0 15 0 0">
+              Margin="0 10 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto"
-                                  MinWidth="400"/>
+                                  MinWidth="400" />
             </Grid.ColumnDefinitions>
             <!-- Progress bar and status -->
             <StackPanel Grid.Column="0">
-                <ProgressBar Height="5"
-                             IsIndeterminate="True"
-                             Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
                 <TextBlock Text="{Binding StatusText}"
-                           Margin="0 5 0 0"
                            Foreground="{StaticResource GlobalSecondary}"
                            TextWrapping="Wrap" />
             </StackPanel>
@@ -533,7 +529,7 @@
         </Grid>
 
         <comps:HintPanel Grid.Row="4"
-                         Margin="0 10 0 0"
+                         Margin="0 5 0 0"
                          Text="{Binding TimelineHintText}"
                          RefreshTextOnLanguageChanged="True" />
     </Grid>

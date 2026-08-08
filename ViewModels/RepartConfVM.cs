@@ -5,18 +5,26 @@ namespace OneColumnEncoder.ViewModels;
 
 public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 {
+    // Modal navigation, close callback, and plan commit callback
     private readonly ModalNavS _modalNavS;
     private readonly Action _closeAction;
     private readonly Action<RepartPlanM> _applyPlan;
+
+    // External tool paths for ffmpeg/ffprobe and temp directory for preview thumbnails
     private readonly string? _ffmpegPath;
     private readonly string? _ffprobePath;
     private readonly string _previewWorkDirectory;
+
+    // Keyframe index window: 30s margin for long-GOP safety, 0.25s lead for seek overshoot
     private const double KeyframeIndexWindowMarginSeconds = 30d;
     private const double KeyframeIndexWindowLeadSeconds = 0.25d;
     private const double KeyframeIndexCacheReuseToleranceSeconds = 1d;
+
+    // Cache infrastructure: sync root, file->index map, lifetime CTS (distinct from per-preview CTS)
     private readonly object _keyframeIndexCacheSync = new();
     private readonly Dictionary<string, KeyframeIndex> _keyframeIndexCache = new(StringComparer.OrdinalIgnoreCase);
     private readonly CancellationTokenSource _keyframeIndexLifetimeCts = new();
+
     private RepartPlanM? _analysis;
     private RepartOutputItemVM? _selectedOutput;
     private List<RepartOutputItemVM> _selectedOutputs = [];
@@ -44,6 +52,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private bool _isDraggingDivider;
     private long? _dividerPreviewRenderedFrame;
     private long? _dividerPreviewTargetFrame;
+
+    // Reentrancy guards: prevent cascading property-change loops during time<->frame sync
     private bool _syncingNewDivider;
     private bool _isBusy;
     private bool _syncingRange;
@@ -81,6 +91,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         DeleteRightDividerCommand = new ActionCmd(_ => DeleteAdjacentDivider(1));
         ClearOutputsCommand = new ActionCmd(_ => ClearOutputs());
 
+        // Button groups: B3 = 3-button group, B5 = 5-button group, B2 = 2-button group
+        // Position mapping: B3_1 = position 1, B3_2 = position 2, etc.
         DividerControlButtons = ButtonGroupVM.CreateThreeButton(
             DividerPreviousFrameText,
             DividerNextFrameText,
@@ -252,6 +264,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         private set => SetProperty(ref _statusText, value);
     }
 
+    // Output/Divider selection are mutually exclusive: selecting an output deselects all dividers,
+    // and selecting a divider deselects all outputs (via SelectDividerForInteraction).
     public RepartOutputItemVM? SelectedOutput
     {
         get => _selectedOutput;
@@ -346,6 +360,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         }
     }
 
+    // Bidirectional sync group: time <-> frame <-> selection.
+    // _syncingRange prevents infinite loops. _lastRangeInputWasTime chooses authoritative direction.
     public string StartTimeText
     {
         get => _startTimeText;
@@ -426,6 +442,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         }
     }
 
+    // Entry point: bootstrap VM from a RepartPlanM. Stale sources are fatal (plan references changed files).
     public Task InitializeAsync(RepartPlanM? currentPlan)
     {
         if (currentPlan == null)
@@ -435,6 +452,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             return Task.CompletedTask;
         }
 
+        // Stale source check: if any source file has changed since plan creation, abort
         if (currentPlan.Sources.Any(source => !source.MatchesCurrentFile()))
         {
             OpenWarnModalCmd cmd = new(
@@ -498,6 +516,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             && _dividerPreviewTargetFrame == SelectedDivider?.Frame;
     }
 
+    // Convert normalized 0..1 position to frame number. -1 offset because dividers cannot be placed at the very last frame.
     public void MoveDividerToPosition(RepartDividerItemVM? item, double position)
     {
         if (item == null || _analysis == null || _analysis.TotalFrames < 2) return;
@@ -506,6 +525,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         MoveDivider(item.Model.Id, frame);
     }
 
+    // Convert normalized 0..1 position to frame number for new divider.
+    // Clamped to [0, TotalFrames-2] because last valid divider is one frame before end.
     public void AddDividerAtPosition(double position)
     {
         if (_analysis == null || !CanAddEpisode) return;
@@ -519,6 +540,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         AddDivider();
     }
 
+    // Get dividers from plan, or synthesize from output boundaries (legacy compat path).
+    // Filters out dividers at last frame (meaningless for empty trailing segment).
     private static List<RepartDividerM> GetPlanDividers(RepartPlanM plan)
     {
         if (plan.Dividers.Count > 0)
@@ -597,6 +620,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             index.Dispose();
     }
 
+    // Add a divider at the suggested position. Deduplication: select existing if frame matches.
     private void AddDivider()
     {
         if (_analysis == null || !CanAddEpisode) return;
@@ -606,12 +630,14 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             ShowError(RepartLangProvider.Current["InvalidRange"]);
             return;
         }
+        // Deduplication: if a divider already exists at this frame, select it instead of adding a duplicate
         if (_dividers.Any(divider => divider.Frame == nextDivider))
         {
             SelectOnlyDivider(_dividers.First(divider => divider.Frame == nextDivider).Id);
             return;
         }
 
+        // Suppress preview refresh during batch update (ReplaceOutputs -> RefreshTimeline would fire redundant render)
         _suppressDividerPreviewRefresh = true;
         try
         {
@@ -654,6 +680,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         SelectedOutput = null;
     }
 
+    // Select a single divider by ID. _selectedDividers (plural) holds batch operations set,
+    // SelectedDivider (singular) holds the "primary" for text display.
     private void SelectOnlyDivider(Guid? id)
     {
         foreach (RepartDividerItemVM item in DividerItems)
@@ -709,6 +737,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         MoveDivider(selected.Model.Id, requestedFrame);
     }
 
+    // Move a divider to requested frame, clamped to [prev+1, next-1] to prevent overlap.
+    // Domain invariant: dividers cannot touch the timeline edges (TotalFrames-2 is max).
     private void MoveDivider(Guid id, long requestedFrame)
     {
         if (_analysis == null) return;
@@ -718,7 +748,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         RepartDividerM selected = _dividers[index];
         long minimum = index == 0 ? 0 : _dividers[index - 1].Frame + 1;
         long maximum = index == _dividers.Count - 1
-            ? _analysis.TotalFrames - 2
+            ? _analysis.TotalFrames - 2  // Last valid divider is one frame before end
             : _dividers[index + 1].Frame - 1;
         long frame = Math.Max(minimum, Math.Min(maximum, requestedFrame));
         if (frame == selected.Frame) return;
@@ -869,6 +899,9 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         else PrepareNextDraft();
     }
 
+    // Validate and build a draft output segment from current editor state.
+    // _lastRangeInputWasTime determines parse direction (time vs frame input).
+    // excludeSelectedName: when editing, validate name against *other* outputs only.
     private bool TryBuildDraft(out RepartOutputSegmentM? segment, bool excludeSelectedName, bool showErrors)
     {
         segment = null;
@@ -953,6 +986,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         RefreshDividerAvailability();
     }
 
+    // Build output segments from dividers. When count matches original plan,
+    // preserve original base names to maintain user naming across re-partition.
     private List<RepartOutputSegmentM> BuildDividerOutputs()
     {
         List<RepartOutputSegmentM> outputs = [];
@@ -985,6 +1020,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         return outputs;
     }
 
+    // Rebuild timeline UI from divider models, preserving selection state.
     private void RefreshTimeline()
     {
         DividerItems.Clear();
@@ -1024,6 +1060,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         }
     }
 
+    // Pre-fill draft editor with first unallocated gap, or select everything if no gap exists.
     private void PrepareNextDraft()
     {
         if (_analysis == null) return;
@@ -1116,6 +1153,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         OnPropertyChanged(nameof(EndTimeText));
     }
 
+    // Sync draft from timeline selection. Handles right-to-left drag (swap on line 1128)
+    // and ensures minimum segment size of 1 frame (line 1129).
     private void SyncDraftFromSelection()
     {
         if (_analysis == null || _analysis.TotalFrames <= 0 || _syncingRange) return;
@@ -1189,6 +1228,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         _closeAction();
     }
 
+    // Atomically cancel in-flight preview work. Interlocked.Exchange prevents race conditions
+    // where two threads cancel the same CTS. Bare catch blocks handle expected ObjectDisposedException during shutdown.
     public void InterruptWindowWork()
     {
         CancellationTokenSource? dividerPreviewCts = Interlocked.Exchange(ref _dividerPreviewCts, null);
@@ -1210,6 +1251,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         RefreshDividerAvailability();
     }
 
+    // "Latest wins" cancellation pattern: cancel previous, create new, dispose after taking reference.
+    // Prevents use-after-dispose race condition.
     private void RefreshDividerPreview()
     {
         CancellationTokenSource? previous = _dividerPreviewCts;
@@ -1233,6 +1276,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         _ = RefreshDividerPreviewAsync(cts);
     }
 
+    // Render a 7-frame preview strip around the selected divider using ffmpeg.
+    // Window is +/-3 frames for UX context. Handles source boundary spanning and seek optimization.
     private async Task RefreshDividerPreviewAsync(CancellationTokenSource cts)
     {
         try
@@ -1359,6 +1404,9 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         }
     }
 
+    // Build or reuse a keyframe index for seek optimization. Uses cache with 30s window margin
+    // for long-GOP safety. WidenWindow retry handles content with keyframes >30s apart.
+    // Returns partial index on cancellation for reuse by next interaction.
     private async Task<KeyframeIndex?> BuildKeyframeIndexAsync(
         RepartSourceM source,
         double targetTime,
@@ -1528,6 +1576,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         }
     }
 
+    // Extract container-level start_time from ffprobe JSON. Needed because some containers
+    // (e.g., MPEG-TS) have non-zero start times that shift frame-to-time calculations.
     private static double? TryGetSourceStartTime(string rawJson)
     {
         if (string.IsNullOrWhiteSpace(rawJson)) return null;
@@ -1562,6 +1612,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         return null;
     }
 
+    // Manually refresh button enable states. ButtonGroupVM does not auto-bind to
+    // ICommand.CanExecute (by design) to avoid tight coupling.
     private void RefreshDraftAvailability()
     {
         OnPropertyChanged(nameof(CanAddEpisode));
@@ -1633,6 +1685,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         RefreshTimeline();
     }
 
+    // Dispose order matters: cancel lifetime CTS after disposing cache (which may reference it),
+    // delete preview work directory last.
     public override void Dispose()
     {
         UILangProvider.CurrentChanged -= OnLanguageChanged;
