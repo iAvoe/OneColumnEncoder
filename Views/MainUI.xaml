@@ -37,7 +37,7 @@
                                    ToggleCommand="{Binding DataContext.ToggleMiniToolsImportCardCmd, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                    ToggleTag="{Binding DataContext.IsMiniToolsImportCard, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
                                    ToggleToolTip="{Binding DataContext.ToggleMiniToolsImportCardText, RelativeSource={RelativeSource AncestorType=views:MainUI}}"
-                                    Margin="5 2.5">
+                                   Margin="5 2.5">
                 <comps:ToolsImportCard.Style>
                     <Style TargetType="comps:ToolsImportCard">
                         <Setter Property="Visibility"
@@ -80,6 +80,13 @@
                                   Button1IsEnabled="{Binding B2_1IsEnabled}"
                                   Button2IsEnabled="{Binding B2_2IsEnabled}"
                                   Margin="10 10 10 0" />
+
+            <!-- Hint: FFmpeg is optional, but needed for video frame previewing -->
+            <comps:HintPanel Text="{Binding FfmpegOptionalHintText}"
+                             RefreshTextOnLanguageChanged="True"
+                             Margin="10 2.5 5 0"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center" />
 
             <!-- Select Upstream Tools -->
             <comps:SectionHeader HeaderText="{Binding SectionTexts[SelectUpstream]}"
@@ -430,7 +437,7 @@
                 </ItemsControl.Style>
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-<UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=3:190}" />
+                        <UniformGrid Columns="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ScrollViewer}}, Converter={StaticResource WidthToColumnCount}, ConverterParameter=3:190}" />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>

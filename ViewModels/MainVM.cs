@@ -154,6 +154,7 @@ namespace OneColumnEncoder.ViewModels
         public static string SVFIClipDisabledHintText => UICaptionProvider.Hints.SVFIClipDisabled;
         public static string AnalyzeNeedsSourceText => UICaptionProvider.Hints.AnalyzeNeedsSource;
         public static string NumaCpuCheckHintText => UICaptionProvider.Hints.NumaCpuCheckTrigger;
+        public static string FfmpegOptionalHintText => UICaptionProvider.Hints.FfmpegOptional;
         private string _minDurationFilterText = "";
         public string MinDurationFilterText
         {
@@ -3026,6 +3027,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(SVFIClipDisabledHintText));
             OnPropertyChanged(nameof(AnalyzeNeedsSourceText));
             OnPropertyChanged(nameof(NumaCpuCheckHintText));
+            OnPropertyChanged(nameof(FfmpegOptionalHintText));
             MinDurationFilterText = UICaptionProvider.Hints.MinDurationFilter;
             RefreshDurationFilterStatus();
         }

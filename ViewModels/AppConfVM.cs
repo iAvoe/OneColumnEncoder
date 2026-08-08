@@ -25,7 +25,6 @@ namespace OneColumnEncoder.ViewModels
         }
 
         #region Properties & Commands
-
         public string WindowTitle => Lang["AppConfModal.Title"];
         public string HeaderText =>
             Lang["AppConfModal.Header"];
