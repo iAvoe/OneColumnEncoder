@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace OneColumnEncoder.ViewModels
 {
@@ -30,6 +31,8 @@ namespace OneColumnEncoder.ViewModels
             Lang["AppConfModal.Header"];
         public string NotificationPolicyHint =>
             Lang["Hint.AppConfNotificationPolicy"];
+        public string ClearOldQueueJsonHint =>
+            Lang["Hint.AppConfClearOldQueueJson"];
 
         public CloseModalCmd CloseCmd { get; }
         public SaveAppConfCmd SaveCmd { get; }
@@ -63,6 +66,7 @@ namespace OneColumnEncoder.ViewModels
                 SaveCmd);
             FinishSettingButtons.B3_2Icon = SvgIconProvider.GameDelete;
             FinishSettingButtons.B3_3Icon = SvgIconProvider.GameSave;
+            AppFontProvider.Refresh();
             BuildSettingsListing();
             UILangProvider.CurrentChanged += OnLanguageChanged;
         }
@@ -76,6 +80,7 @@ namespace OneColumnEncoder.ViewModels
                 [UICaptionProvider.AppConf.Groups.Overwrite] = _appConfM.Overwrite,
                 [UICaptionProvider.AppConf.Groups.Language] = _appConfM.Lang,
                 [UICaptionProvider.AppConf.Groups.InitMode] = _appConfM,
+                [UICaptionProvider.AppConf.Groups.Fonts] = _appConfM.Font,
                 [UICaptionProvider.AppConf.Groups.Logs] = _appConfM.Logs
             };
 
@@ -102,6 +107,9 @@ namespace OneColumnEncoder.ViewModels
                         case SettingControlType.Dropdown:
                             AddDropdownItem(container, setting.Label, source, setting.PropertyName,
                                 UICaptionProvider.AppConf.LanguageOptions.Codes);
+                            break;
+                        case SettingControlType.Font:
+                            AddFontItem(container, setting.Label, source, setting.PropertyName);
                             break;
                     }
                 }
@@ -265,6 +273,25 @@ namespace OneColumnEncoder.ViewModels
             };
             container.Items.Add(new AppConfItem { Text = text, Content = dropdown });
         }
+
+        private static void AddFontItem(AppConfContainer container, string text, object source, string propertyPath)
+        {
+            IEnumerable<FontFamily> families = propertyPath == nameof(AppConfM.FontSettings.CodeFontFamily)
+                ? AppFontProvider.CodeFonts
+                : AppFontProvider.UiFonts;
+
+            FontPickerDropdown picker = new()
+            {
+                Width = 200,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                Families = families
+            };
+            picker.SetBinding(
+                FontPickerDropdown.SelectedFontFamilyProperty,
+                new Binding(propertyPath) { Source = source, Mode = BindingMode.TwoWay });
+
+            container.Items.Add(new AppConfItem { Text = text, Content = picker });
+        }
         #endregion
 
         #region Language Switching
@@ -275,6 +302,7 @@ namespace OneColumnEncoder.ViewModels
             OnPropertyChanged(nameof(WindowTitle));
             OnPropertyChanged(nameof(HeaderText));
             OnPropertyChanged(nameof(NotificationPolicyHint));
+            OnPropertyChanged(nameof(ClearOldQueueJsonHint));
 
             FinishSettingButtons.B3_1Text = UICaptionProvider.AppConf.Buttons.Cancel;
             FinishSettingButtons.B3_2Text = UICaptionProvider.AppConf.Buttons.ClearOldQueueJson;

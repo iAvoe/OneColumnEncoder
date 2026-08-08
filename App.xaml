@@ -12,6 +12,10 @@
             
             <!-- DropdownMenu.xaml: IsSeparator -->
             <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+
+            <!-- Fonts: resolved at runtime by AppFontProvider -->
+            <FontFamily x:Key="UiFont">Segoe UI</FontFamily>
+            <FontFamily x:Key="CodeFont">Consolas</FontFamily>
             
             <!-- Buttons -->
             <Style x:Key="LinkButton"

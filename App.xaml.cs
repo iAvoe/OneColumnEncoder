@@ -1,6 +1,7 @@
 using OneColumnEncoder.Commands.OpenClose;
 using OneColumnEncoder.Models;
 using OneColumnEncoder.Stores;
+using OneColumnEncoder.UI;
 using OneColumnEncoder.ViewModels;
 using System.Globalization;
 using System.Windows;
@@ -35,6 +36,8 @@ namespace OneColumnEncoder
 
                 ApplyStartupLanguageOnce();
                 _ = new UILangProvider(_appConfM.Lang.LanguageCode);
+                AppFontProvider.Refresh();
+                AppFontProvider.ApplyFrom(_appConfM);
                 OpenAppConfCmd openAppConf = new(_modalNavM, _appConfM);
                 OpenUsagesCmd openUsages = new(_modalNavM, _appConfM);
 

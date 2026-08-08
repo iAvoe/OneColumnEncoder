@@ -236,7 +236,7 @@
                      FontWeight="Bold">
                 <TextBox Text="{Binding FreeTextParamsX264, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Height="40"
-                         FontFamily="Consolas"
+                         FontFamily="{DynamicResource CodeFont}"
                          FontSize="11"
                          TextWrapping="Wrap"
                          AcceptsReturn="True"
@@ -247,7 +247,7 @@
                      FontWeight="Bold">
                 <TextBox Text="{Binding FreeTextParamsX265, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Height="40"
-                         FontFamily="Consolas"
+                         FontFamily="{DynamicResource CodeFont}"
                          FontSize="11"
                          TextWrapping="Wrap"
                          AcceptsReturn="True"
@@ -258,7 +258,7 @@
                      FontWeight="Bold">
                 <TextBox Text="{Binding FreeTextParamsSvtAv1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Height="40"
-                         FontFamily="Consolas"
+                         FontFamily="{DynamicResource CodeFont}"
                          FontSize="11"
                          TextWrapping="Wrap"
                          AcceptsReturn="True"
@@ -275,7 +275,7 @@
                      FontWeight="Bold">
                 <TextBox Text="{Binding PreviewFreeTextParamsX264, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Height="40"
-                         FontFamily="Consolas"
+                         FontFamily="{DynamicResource CodeFont}"
                          FontSize="11"
                          TextWrapping="Wrap"
                          AcceptsReturn="True"
@@ -286,7 +286,7 @@
                      FontWeight="Bold">
                 <TextBox Text="{Binding PreviewFreeTextParamsX265, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Height="40"
-                         FontFamily="Consolas"
+                         FontFamily="{DynamicResource CodeFont}"
                          FontSize="11"
                          TextWrapping="Wrap"
                          AcceptsReturn="True"
@@ -297,7 +297,7 @@
                      FontWeight="Bold">
                 <TextBox Text="{Binding PreviewFreeTextParamsSvtAv1, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Height="40"
-                         FontFamily="Consolas"
+                         FontFamily="{DynamicResource CodeFont}"
                          FontSize="11"
                          TextWrapping="Wrap"
                          AcceptsReturn="True"

@@ -7,6 +7,7 @@ namespace OneColumnEncoder.Models
             .. GetOverwriteSettings(),
             .. GetLanguageSettings(),
             .. GetInitModeSettings(),
+            .. GetFontSettings(),
             .. GetLogSettings()
         ];
 
@@ -45,6 +46,18 @@ namespace OneColumnEncoder.Models
                 Lang["Setting.InitMode.IsFirstLaunch"],
                 SettingControlType.CheckBox,
                 nameof(AppConfM.IsFirstLaunch))
+        ];
+
+        public static List<SettingItemDefinitionM> GetFontSettings() =>
+        [
+            new(UICaptionProvider.AppConf.Groups.Fonts,
+                Lang["Setting.Font.Ui"],
+                SettingControlType.Font,
+                nameof(AppConfM.FontSettings.UiFontFamily)),
+            new(UICaptionProvider.AppConf.Groups.Fonts,
+                Lang["Setting.Font.Code"],
+                SettingControlType.Font,
+                nameof(AppConfM.FontSettings.CodeFontFamily))
         ];
 
         public static List<SettingItemDefinitionM> GetLogSettings() =>

@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Media;
+using OneColumnEncoder.UI;
 
 namespace OneColumnEncoder.Components.Cards
 {
@@ -262,7 +263,7 @@ namespace OneColumnEncoder.Components.Cards
             document.PagePadding = new Thickness(0);
             document.PageWidth = 100_000;
             document.ColumnWidth = double.PositiveInfinity;
-            document.FontFamily = new FontFamily("Consolas");
+            document.FontFamily = AppFontProvider.CodeFont;
             document.FontSize = richTextBox.FontSize;
             document.Foreground = richTextBox.Foreground;
             document.Background = Brushes.Transparent;

@@ -11,6 +11,7 @@ namespace OneColumnEncoder.Models
         public bool IsFirstLaunch { get; set; } = true;
         public OverwriteSettings Overwrite { get; set; } = new OverwriteSettings();
         public Language Lang { get; set; } = new Language();
+        public FontSettings Font { get; set; } = new FontSettings();
         public LogSettings Logs { get; set; } = new LogSettings();
         #region Setting items
         public class OverwriteSettings
@@ -22,6 +23,11 @@ namespace OneColumnEncoder.Models
         public class Language
         {
             public string LanguageCode { get; set; } = "en";
+        }
+        public class FontSettings
+        {
+            public string UiFontFamily { get; set; } = string.Empty;
+            public string CodeFontFamily { get; set; } = string.Empty;
         }
         public class LogSettings
         {

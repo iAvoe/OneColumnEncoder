@@ -26,7 +26,7 @@
                                   VerticalScrollBarVisibility="Auto"
                                   Margin="0"
                                   Padding="15 10 5 0">
-            <FlowDocument FontFamily="Segoe UI"
+            <FlowDocument FontFamily="{DynamicResource UiFont}"
                           PagePadding="0"
                           ColumnWidth="Infinity"
                           TextAlignment="Left">

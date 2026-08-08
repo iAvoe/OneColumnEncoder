@@ -5,6 +5,7 @@
         TextBox,
         CheckBox,
         Dropdown, // Language selection
+        Font, // Font family selection
     }
     public record SettingItemDefinitionM(
         string GroupName,
