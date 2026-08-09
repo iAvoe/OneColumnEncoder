@@ -220,7 +220,9 @@ public sealed class OpenRepartConfCmd(
         long first = 0;
         for (int i = 0; i < chapterMarkers.Count; i++)
         {
-            long nextFirst = i + 1 < chapterMarkers.Count ? chapterMarkers[i + 1].Frame : plan.TotalFrames;
+            long nextFirst = i + 1 < chapterMarkers.Count
+                ? chapterMarkers[i + 1].Frame
+                : plan.TotalFrames;
             long last = nextFirst - 1;
             if (last < first)
             {
@@ -239,7 +241,8 @@ public sealed class OpenRepartConfCmd(
         plan.Outputs.Clear();
         plan.Outputs.AddRange(outputs);
         plan.Dividers.Clear();
-        plan.Dividers.AddRange(outputs.Take(outputs.Count - 1).Select(output => new RepartDividerM(Guid.NewGuid(), output.LastFrame, false)));
+        plan.Dividers.AddRange(outputs.Take(outputs.Count - 1)
+            .Select(output => new RepartDividerM(Guid.NewGuid(), output.LastFrame, false)));
     }
 
     /// <summary>

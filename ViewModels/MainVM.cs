@@ -2976,7 +2976,8 @@ public class MainVM : BaseVM
             _modalNavS.HasModal<AppConfVM>() ||
             _modalNavS.HasModal<AppUsageVM>() ||
             _modalNavS.HasModal<SourceReviserVM>() ||
-            _modalNavS.HasModal<RepartConfVM>();
+            _modalNavS.HasModal<RepartConfVM>() ||
+            _modalNavS.HasModal<BdPlaylistSelectVM>();
 
         if (shouldHideMainWindow && !_isEncoding)
         {
