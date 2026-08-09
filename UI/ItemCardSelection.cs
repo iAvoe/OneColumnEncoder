@@ -75,9 +75,9 @@ public static class ItemCardSelection
 
         ToolCompatibility.RefreshDependencySelectionState(
             upstreamsZone, dependenciesZone, updateEncStartButtonsState);
-        ToolCompatibility.RefreshSourceSelectionState(
+        ToolCompatibility.RefreshSrcSelectState(
             upstreamsZone, scriptSrcImportZone, refreshSelectedSourceStatus);
-        ToolCompatibility.RefreshVideoSourceSelectionState(
+        ToolCompatibility.RefreshVideoSrcSelectState(
             upstreamsZone, videoSrcImportZone, hasFfprobe);
     }
 

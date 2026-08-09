@@ -154,7 +154,7 @@ public class ImgABPvVM : BaseVM
 
         bool hasSourceStats = !string.IsNullOrWhiteSpace(sourceFfprobeJson);
         _colorSpaceAnalysis = ColorSpaceConverter.Analyze(sourceFfprobeJson);
-        FFProbeSourceStats sourceStats = FFProbeSourceStatsReader.Read(sourceFfprobeJson ?? string.Empty);
+        FFProbeSrcStats sourceStats = FFProbeSourceStatsReader.Read(sourceFfprobeJson ?? string.Empty);
         MaxPositionSeconds = Math.Max(1, (int)Math.Floor(Math.Min(int.MaxValue, sourceStats.DurationSeconds)) - 1);
         PreviewPositionSeconds = hasSourceStats
             ? Math.Min(MaxPositionSeconds, Math.Max(0, MaxPositionSeconds / 2))
@@ -221,27 +221,27 @@ public class ImgABPvVM : BaseVM
             }
 
             string displayFilter = PreviewPipeline.BuildDisplayFilter(_displayMode, _colorSpaceAnalysis) ?? string.Empty;
-            string rawSourcePath = GetWorkPath("source-raw.png");
-            string sourcePath = string.IsNullOrWhiteSpace(displayFilter)
-                ? rawSourcePath
+            string rawsrcPath = GetWorkPath("source-raw.png");
+            string srcPath = string.IsNullOrWhiteSpace(displayFilter)
+                ? rawsrcPath
                 : GetWorkPath($"source-{PreviewPipeline.GetDisplayModeFileSuffix(_displayMode)}.png");
             string encodedPath = GetEncodedPath(encoder);
             string decodedPath = GetDecodedPath(encoder);
 
             StatusText = Lang.StatusExtracting;
-            await RunFfmpegAsync(PreviewPipeline.BuildSourceArgs(_sourceVideoPath!, PreviewPositionSeconds, rawSourcePath), token);
-            PreviewPipeline.EnsureFileExists(rawSourcePath, "!SOURCE");
+            await RunFfmpegAsync(PreviewPipeline.BuildSourceArgs(_sourceVideoPath!, PreviewPositionSeconds, rawsrcPath), token);
+            PreviewPipeline.EnsureFileExists(rawsrcPath, "!SOURCE");
 
             if (!string.IsNullOrWhiteSpace(displayFilter))
             {
                 StatusText = string.Format(Lang.StatusConverting, GetDisplayModeTitle(_displayMode));
-                await RunFfmpegAsync(PreviewPipeline.BuildSourceArgs(_sourceVideoPath!, PreviewPositionSeconds, sourcePath, displayFilter), token);
+                await RunFfmpegAsync(PreviewPipeline.BuildSourceArgs(_sourceVideoPath!, PreviewPositionSeconds, srcPath, displayFilter), token);
             }
-            PreviewPipeline.EnsureFileExists(sourcePath, "!SOURCE");
-            SourceImage = PreviewPipeline.LoadBitmap(sourcePath);
+            PreviewPipeline.EnsureFileExists(srcPath, "!SOURCE");
+            SourceImage = PreviewPipeline.LoadBitmap(srcPath);
 
             StatusText = string.Format(Lang.StatusEncoding, PreviewPipeline.GetEncoderTitle(encoder));
-            await RunFfmpegAsync(PreviewPipeline.BuildEncodeArgs(encoder, model, sourcePath, encodedPath), token);
+            await RunFfmpegAsync(PreviewPipeline.BuildEncodeArgs(encoder, model, srcPath, encodedPath), token);
 
             StatusText = Lang.StatusDecoding;
             await RunFfmpegAsync(PreviewPipeline.BuildDecodeArgs(encodedPath, decodedPath), token);
@@ -256,7 +256,7 @@ public class ImgABPvVM : BaseVM
             if (Ssimulacra2.IsSsimU2Present)
             {
                 Ssimulacra2StatusText = Lang.Ssimulacra2ToolPresent;
-                var (score, error) = await Ssimulacra2.RunScoreAsync(sourcePath, decodedPath);
+                var (score, error) = await Ssimulacra2.RunScoreAsync(srcPath, decodedPath);
                 Ssimulacra2StatusText = score.HasValue
                     ? $"SSIMULACRA2.1: {score.Value:F2}"
                     : $"SSIMULACRA2.1: {error}";
@@ -265,7 +265,7 @@ public class ImgABPvVM : BaseVM
             if (Butteraugli.IsPresent)
             {
                 ButteraugliStatusText = Lang.ButteraugliToolPresent;
-                var (score, error) = await Butteraugli.RunScoreAsync(sourcePath, decodedPath);
+                var (score, error) = await Butteraugli.RunScoreAsync(srcPath, decodedPath);
                 ButteraugliStatusText = score.HasValue
                     ? $"Butteraugli: {score.Value:F4}"
                     : $"Butteraugli: {error}";

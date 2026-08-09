@@ -2,34 +2,34 @@ using System.IO;
 
 namespace OneColumnEncoder.ConcatManagement;
 
-public sealed class VideoSourceConcatState
+public sealed class VideoSrcConcatState
 {
-    private readonly ToolItemCardVM? _videoSourceConcatCard;
+    private readonly ToolItemCardVM? _videoSrcConcatCard;
     private string[] _filePaths = [];
     private static readonly string DefaultFileListPath =
         Path.Combine(SaveLoadBase<ConcatFileListPathPlaceholder>.GetConfigDirectory(), "source_concat_filelist.txt");
 
-    public VideoSourceConcatState(IEnumerable<ToolItemCardVM> videoSrcImportZone)
+    public VideoSrcConcatState(IEnumerable<ToolItemCardVM> videoSrcImportZone)
     {
-        _videoSourceConcatCard = videoSrcImportZone.FirstOrDefault(item =>
+        _videoSrcConcatCard = videoSrcImportZone.FirstOrDefault(item =>
             item.Name.Equals(UILangProvider.Current["Tool.Source.VideoSrcConcat"], StringComparison.OrdinalIgnoreCase));
-        if (_videoSourceConcatCard != null)
-            _videoSourceConcatCard.UseAutoAddReplaceText = false;
+        if (_videoSrcConcatCard != null)
+            _videoSrcConcatCard.UseAutoAddReplaceText = false;
     }
 
-    public bool IsActive => _videoSourceConcatCard != null && _videoSourceConcatCard.IsSelected;
+    public bool IsActive => _videoSrcConcatCard != null && _videoSrcConcatCard.IsSelected;
 
     public string[] CurrentFilePaths => _filePaths;
 
-    public string FileListPath => DefaultFileListPath;
+    public static string FileListPath => DefaultFileListPath;
 
     public bool IsConcatItem(ToolItemCardVM item) =>
-        item != null && ReferenceEquals(item, _videoSourceConcatCard);
+        item != null && ReferenceEquals(item, _videoSrcConcatCard);
 
     public void ApplyImportedFiles(string[] filePaths)
     {
         _filePaths = filePaths ?? [];
-        if (_videoSourceConcatCard == null) return;
+        if (_videoSrcConcatCard == null) return;
         RefreshCardSummary();
         RegenerateFileList();
         RefreshTitle();
@@ -49,53 +49,53 @@ public sealed class VideoSourceConcatState
     public void Clear()
     {
         _filePaths = [];
-        if (_videoSourceConcatCard == null) return;
-        _videoSourceConcatCard.P1TextData = string.Empty;
-        _videoSourceConcatCard.P1TooltipText = null;
-        _videoSourceConcatCard.P2TextData = string.Empty;
+        if (_videoSrcConcatCard == null) return;
+        _videoSrcConcatCard.P1TextData = string.Empty;
+        _videoSrcConcatCard.P1TooltipText = null;
+        _videoSrcConcatCard.P2TextData = string.Empty;
         TryDeleteFileList();
         RefreshTitle();
     }
 
     private void RefreshCardSummary()
     {
-        if (_videoSourceConcatCard == null) return;
+        if (_videoSrcConcatCard == null) return;
 
         string[] fileNames = [.. _filePaths
             .Select(Path.GetFileName)
             .Where(name => !string.IsNullOrWhiteSpace(name))
             .Select(name => name!)];
 
-        _videoSourceConcatCard.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(fileNames);
-        _videoSourceConcatCard.P1TooltipText = BrowseSourceQueueCmd.FormatQueueP1TooltipText(fileNames);
-        _videoSourceConcatCard.P2TextData = _filePaths.Length > 0
+        _videoSrcConcatCard.P1TextData = BrowseSrcQueueCmd.FormatQueueP1Text(fileNames);
+        _videoSrcConcatCard.P1TooltipText = BrowseSrcQueueCmd.FormatQueueP1TooltipText(fileNames);
+        _videoSrcConcatCard.P2TextData = _filePaths.Length > 0
             ? Path.GetDirectoryName(_filePaths[0]) ?? string.Empty
             : string.Empty;
     }
 
-    private void TryDeleteFileList()
+    private static void TryDeleteFileList()
     {
         try
         {
             if (File.Exists(FileListPath)) File.Delete(FileListPath);
         }
-        catch { }
+        catch {}
     }
 
     private void RefreshTitle()
     {
-        if (_videoSourceConcatCard == null) return;
+        if (_videoSrcConcatCard == null) return;
         if (_filePaths.Length > 0)
-            _videoSourceConcatCard.Name = string.Format(
+            _videoSrcConcatCard.Name = string.Format(
                 UILangProvider.Current["Tool.Source.VideoSrcConcatWithCount"], _filePaths.Length);
         else
-            _videoSourceConcatCard.Name = UILangProvider.Current["Tool.Source.VideoSrcConcat"];
+            _videoSrcConcatCard.Name = UILangProvider.Current["Tool.Source.VideoSrcConcat"];
     }
 
     public void RefreshLanguage()
     {
-        if (_videoSourceConcatCard == null) return;
-        _videoSourceConcatCard.UseAutoAddReplaceText = false;
+        if (_videoSrcConcatCard == null) return;
+        _videoSrcConcatCard.UseAutoAddReplaceText = false;
         RefreshTitle();
     }
 

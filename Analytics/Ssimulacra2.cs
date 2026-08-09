@@ -24,7 +24,7 @@ public static class Ssimulacra2
     /// On failure: returns (null, errorMessage).
     /// </summary>
     public static async Task<(double? score, string? error)> RunScoreAsync(
-        string sourcePath, string distortedPath)
+        string srcPath, string distortedPath)
     {
         string? exe = ToolExePath;
         if (exe == null || !File.Exists(exe))
@@ -41,7 +41,7 @@ public static class Ssimulacra2
             StandardErrorEncoding = System.Text.Encoding.UTF8,
             CreateNoWindow = true,
         };
-        psi.ArgumentList.Add(sourcePath);
+        psi.ArgumentList.Add(srcPath);
         psi.ArgumentList.Add(distortedPath);
 
         using Process process = new() { StartInfo = psi };

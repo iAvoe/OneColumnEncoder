@@ -26,7 +26,7 @@ public static class ConcatCompatibilityAnalyzer
         for (int i = 0; i < filePaths.Length; i++)
         {
             string filePath = filePaths[i];
-            SourceCheckCardVM probeCard = new()
+            SrcCheckCardVM probeCard = new()
             {
                 IsSvtav1SelectedFunc = isSvtav1SelectedFunc
             };
@@ -113,7 +113,7 @@ public static class ConcatCompatibilityAnalyzer
     }
 
     private static string FormatAnalysisFailureMessage(
-        string sourcePath,
+        string srcPath,
         string detail,
         int queueIndex,
         int queueTotal)
@@ -121,7 +121,7 @@ public static class ConcatCompatibilityAnalyzer
         return string.Join(
             Environment.NewLine,
             string.Format(Lang.QueueItemProgress, queueIndex, queueTotal),
-            string.Format(Lang.SourceFilePath, sourcePath),
+            string.Format(Lang.SourceFilePath, srcPath),
             detail);
     }
 

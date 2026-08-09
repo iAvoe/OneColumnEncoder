@@ -5,6 +5,7 @@ using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.RepartManagement;
 
+// These are videos that cannot be added to repart mode queue, because repartition involves video concatenation.
 public enum RepartExclusionReason
 {
     SourceMissing,
@@ -13,18 +14,18 @@ public enum RepartExclusionReason
     NoDimensions,
     Interlaced,
     NotCfr,
-    FrameCountUnavailable,
+    NoFrameCount,
     SourceChanged,
     SignatureMismatch
 }
 
-public sealed record RepartExcludedSourceInfo(
+public sealed record RepartExcludedSrcInfo(
     string FilePath,
     string DisplayName,
     RepartExclusionReason Reason,
     string? Detail);
 
-public sealed record RepartInterlacedSourceInfo(
+public sealed record RepartInterlacedSrcInfo(
     string FilePath,
     string DisplayName,
     string FieldOrder);
@@ -37,16 +38,16 @@ public sealed record RepartFrameCountFallbackInfo(
     string DisplayName,
     long EstimatedCount);
 
-public sealed record RepartSourceFile(
+public sealed record RepartSrcFile(
     string FilePath,
     string DisplayName,
     long InitialLength,
     long InitialWriteTicks);
 
-public sealed record RepartSourceFileOutcome(
+public sealed record RepartSrcFileOutcome(
     RepartExclusionReason? RejectionReason,
     string? Detail,
-    RepartSourceFile? SourceFile);
+    RepartSrcFile? SrcFile);
 
 public sealed record RepartRawProbe(
     string RawJson,
@@ -63,10 +64,10 @@ public sealed record RepartRawProbeOutcome(
 public sealed record RepartProbeOutcome(
     RepartExclusionReason? RejectionReason,
     string? Detail,
-    RepartSourceProbe? Probe);
+    RepartSrcProbe? Probe);
 
 // Data collected from the probe stage, needed for the expensive frame-count scan.
-public sealed record RepartSourceProbe(
+public sealed record RepartSrcProbe(
     string RawJson,
     int FrameRateNumerator,
     int FrameRateDenominator,
@@ -89,7 +90,7 @@ public sealed record RepartScanOutcome(
 // Modular per-file source checks for Repart Mode. The import pipeline runs in the
 // same order everywhere: no-ffprobe filtering, simple ffprobe analyzability
 // filtering, ffprobe-data analysis, analysis-based filtering, then frame scanning.
-public static class RepartSourceValidator
+public static partial class RepartSrcValidator
 {
     private const string ShowEntries =
         "stream=codec_name,profile,codec_tag_string,level,width,height,coded_width,coded_height," +
@@ -100,7 +101,7 @@ public static class RepartSourceValidator
     private const double FrameProbeSeekMarginSeconds = 2d;
 
     // Stage 1: filters that do not need ffprobe.
-    public static RepartSourceFileOutcome CheckWithoutFfprobe(string filePath)
+    public static RepartSrcFileOutcome CheckWithoutFfprobe(string filePath)
     {
         string fullPath = Path.GetFullPath(filePath);
         string displayName = Path.GetFileName(fullPath);
@@ -108,10 +109,10 @@ public static class RepartSourceValidator
             return RejectedFile(RepartExclusionReason.SourceMissing);
 
         FileInfo file = new(fullPath);
-        return new RepartSourceFileOutcome(
+        return new RepartSrcFileOutcome(
             null,
             null,
-            new RepartSourceFile(
+            new RepartSrcFile(
                 fullPath,
                 displayName,
                 file.Length,
@@ -121,16 +122,16 @@ public static class RepartSourceValidator
     // Stage 2: simple ffprobe filtering. This mirrors queue-mode behavior: run a
     // short metadata-only probe and exclude sources ffprobe cannot analyze before
     // the heavier Repart-specific ffprobe analysis is attempted.
-    public static async Task<RepartSourceFileOutcome> ProbeCanAnalyzeAsync(
+    public static async Task<RepartSrcFileOutcome> ProbeCanAnalyzeAsync(
         string ffprobePath,
-        RepartSourceFile sourceFile,
+        RepartSrcFile srcFile,
         CancellationToken cancellationToken = default)
     {
         try
         {
             await FFProbeVideoAnalysis.AnalyzeAsync(
                 ffprobePath,
-                sourceFile.FilePath,
+                srcFile.FilePath,
                 cancellationToken: cancellationToken);
         }
         catch (OperationCanceledException)
@@ -142,32 +143,29 @@ public static class RepartSourceValidator
             return RejectedFile(RepartExclusionReason.ProbeFailed, ex.Message);
         }
 
-        return new RepartSourceFileOutcome(null, null, sourceFile);
+        return new RepartSrcFileOutcome(null, null, srcFile);
     }
 
     // Stage 3: Repart-specific ffprobe analysis. Only sources that passed the
     // simple probe can reach this point.
     public static async Task<RepartRawProbeOutcome> AnalyzeWithFfprobeAsync(
         string ffprobePath,
-        RepartSourceFile sourceFile,
+        RepartSrcFile srcFile,
         CancellationToken cancellationToken = default)
     {
         string rawJson;
         try
         {
-            rawJson = await ProbeAsync(ffprobePath, sourceFile.FilePath, cancellationToken);
+            rawJson = await ProbeAsync(ffprobePath, srcFile.FilePath, cancellationToken);
             return new RepartRawProbeOutcome(
                 null,
                 null,
                 new RepartRawProbe(
                     rawJson,
-                    sourceFile.InitialLength,
-                    sourceFile.InitialWriteTicks));
+                    srcFile.InitialLength,
+                    srcFile.InitialWriteTicks));
         }
-        catch (OperationCanceledException)
-        {
-            throw;
-        }
+        catch (OperationCanceledException) { throw; }
         catch (Exception ex)
         {
             return RejectedRaw(RepartExclusionReason.ProbeFailed, ex.Message);
@@ -200,7 +198,7 @@ public static class RepartSourceValidator
             return new RepartProbeOutcome(
                 null,
                 null,
-                new RepartSourceProbe(
+                new RepartSrcProbe(
                     probe.RawJson,
                     frameRate.num,
                     frameRate.den,
@@ -225,7 +223,7 @@ public static class RepartSourceValidator
         string ffprobePath,
         string? ffmpegPath,
         string filePath,
-        RepartSourceProbe probe,
+        RepartSrcProbe probe,
         string displayName,
         Func<RepartFrameCountFallbackInfo, bool>? confirmExpandFrameCountSearch = null,
         CancellationToken cancellationToken = default)
@@ -250,10 +248,10 @@ public static class RepartSourceValidator
         }
         catch (Exception ex)
         {
-            return RejectedScan(RepartExclusionReason.FrameCountUnavailable, ex.Message);
+            return RejectedScan(RepartExclusionReason.NoFrameCount, ex.Message);
         }
         if (frameCount <= 0)
-            return RejectedScan(RepartExclusionReason.FrameCountUnavailable);
+            return RejectedScan(RepartExclusionReason.NoFrameCount);
 
         FileInfo file = new(filePath);
         file.Refresh();
@@ -266,7 +264,7 @@ public static class RepartSourceValidator
     private static RepartProbeOutcome Rejected(RepartExclusionReason reason, string? detail = null) =>
         new(reason, detail, null);
 
-    private static RepartSourceFileOutcome RejectedFile(RepartExclusionReason reason, string? detail = null) =>
+    private static RepartSrcFileOutcome RejectedFile(RepartExclusionReason reason, string? detail = null) =>
         new(reason, detail, null);
 
     private static RepartRawProbeOutcome RejectedRaw(RepartExclusionReason reason, string? detail = null) =>
@@ -277,13 +275,13 @@ public static class RepartSourceValidator
 
     private static async Task<string> ProbeAsync(
         string ffprobePath,
-        string sourcePath,
+        string srcPath,
         CancellationToken cancellationToken)
     {
         string[] arguments =
         [
             "-v", "error", "-hide_banner", "-select_streams", "v:0",
-            "-show_data", "-show_entries", ShowEntries, "-of", "json", sourcePath
+            "-show_data", "-show_entries", ShowEntries, "-of", "json", srcPath
         ];
 
         FFprobeProcessResult result = await FFprobeProcessRunner.RunAsync(
@@ -302,8 +300,8 @@ public static class RepartSourceValidator
     private static async Task<long> CountFramesAsync(
         string ffprobePath,
         string? ffmpegPath,
-        RepartSourceProbe probe,
-        string sourcePath,
+        RepartSrcProbe probe,
+        string srcPath,
         string displayName,
         Func<RepartFrameCountFallbackInfo, bool>? confirmExpandFrameCountSearch,
         CancellationToken cancellationToken)
@@ -314,7 +312,7 @@ public static class RepartSourceValidator
         {
             long? metadataCount = await TryResolveEstimatedFrameCountWithFfprobeAsync(
                 ffprobePath,
-                sourcePath,
+                srcPath,
                 probe,
                 estimatedCount.Value,
                 cancellationToken);
@@ -327,7 +325,7 @@ public static class RepartSourceValidator
         {
             try
             {
-                long? exactCount = await CountFramesWithFfmpegAsync(ffmpegPath!, sourcePath, cancellationToken);
+                long? exactCount = await CountFramesWithFfmpegAsync(ffmpegPath!, srcPath, cancellationToken);
                 if (exactCount is > 0)
                     return exactCount.Value;
             }
@@ -347,7 +345,7 @@ public static class RepartSourceValidator
         {
             long? probedCount = await CountFramesWithFfprobeAsync(
                 ffprobePath,
-                sourcePath,
+                srcPath,
                 cancellationToken);
             if (probedCount is > 0)
                 return probedCount.Value;
@@ -367,7 +365,7 @@ public static class RepartSourceValidator
         if (estimatedCount is > 0 && !ffmpegAvailable && confirmExpandFrameCountSearch != null)
         {
             bool retry = confirmExpandFrameCountSearch(new(
-                sourcePath,
+                srcPath,
                 displayName,
                 estimatedCount.Value));
             if (!retry)
@@ -379,7 +377,7 @@ public static class RepartSourceValidator
 
             long? expandedCount = await SearchFrameCountWithExpansionAsync(
                 ffprobePath,
-                sourcePath,
+                srcPath,
                 probe,
                 estimatedCount.Value,
                 cancellationToken);
@@ -392,7 +390,7 @@ public static class RepartSourceValidator
 
     private static async Task<long?> CountFramesWithFfprobeAsync(
         string ffprobePath,
-        string sourcePath,
+        string srcPath,
         CancellationToken cancellationToken)
     {
         string[] arguments =
@@ -403,7 +401,7 @@ public static class RepartSourceValidator
             "-select_streams", "v:0",
             "-show_entries", "stream=nb_read_frames,nb_frames",
             "-of", "json",
-            sourcePath
+            srcPath
         ];
 
         FFprobeProcessResult result = await FFprobeProcessRunner.RunAsync(
@@ -430,8 +428,8 @@ public static class RepartSourceValidator
     // not find the end of the video.
     private static async Task<long?> SearchFrameCountWithExpansionAsync(
         string ffprobePath,
-        string sourcePath,
-        RepartSourceProbe probe,
+        string srcPath,
+        RepartSrcProbe probe,
         long estimatedCount,
         CancellationToken cancellationToken)
     {
@@ -442,7 +440,7 @@ public static class RepartSourceValidator
 
         bool? estimateExists = await ProbeFrameExistsAsync(
             ffprobePath,
-            sourcePath,
+            srcPath,
             probe,
             estimatedCount,
             cancellationToken);
@@ -463,7 +461,7 @@ public static class RepartSourceValidator
                 if (hi > long.MaxValue / 10)
                     return null;
                 hi *= 10;
-                bool? exists = await ProbeFrameExistsAsync(ffprobePath, sourcePath, probe, hi, cancellationToken);
+                bool? exists = await ProbeFrameExistsAsync(ffprobePath, srcPath, probe, hi, cancellationToken);
                 if (exists == null)
                     return null;
                 if (!exists.Value)
@@ -479,7 +477,7 @@ public static class RepartSourceValidator
             lo = Math.Max(0, hi / 10);
             while (lo > 0)
             {
-                bool? exists = await ProbeFrameExistsAsync(ffprobePath, sourcePath, probe, lo, cancellationToken);
+                bool? exists = await ProbeFrameExistsAsync(ffprobePath, srcPath, probe, lo, cancellationToken);
                 if (exists == null)
                     return null;
                 if (exists.Value)
@@ -489,7 +487,7 @@ public static class RepartSourceValidator
             }
             if (lo <= 0)
             {
-                bool? first = await ProbeFrameExistsAsync(ffprobePath, sourcePath, probe, 0, cancellationToken);
+                bool? first = await ProbeFrameExistsAsync(ffprobePath, srcPath, probe, 0, cancellationToken);
                 if (first == null)
                     return null;
                 if (!first.Value)
@@ -503,7 +501,7 @@ public static class RepartSourceValidator
         while (hi - lo > 1)
         {
             long mid = lo + (hi - lo) / 2;
-            bool? exists = await ProbeFrameExistsAsync(ffprobePath, sourcePath, probe, mid, cancellationToken);
+            bool? exists = await ProbeFrameExistsAsync(ffprobePath, srcPath, probe, mid, cancellationToken);
             if (exists == null)
                 return null;
             if (exists.Value)
@@ -517,13 +515,13 @@ public static class RepartSourceValidator
 
     private static async Task<long?> CountFramesWithFfmpegAsync(
         string ffmpegPath,
-        string sourcePath,
+        string srcPath,
         CancellationToken cancellationToken)
     {
         string[] arguments =
         [
             "-hide_banner",
-            "-i", sourcePath,
+            "-i", srcPath,
             "-map", "0:v:0",
             "-c", "copy",
             "-f", "null",
@@ -546,10 +544,7 @@ public static class RepartSourceValidator
     {
         if (string.IsNullOrWhiteSpace(stderr)) return null;
 
-        MatchCollection matches = Regex.Matches(
-            stderr,
-            @"frame=\s*(\d+)",
-            RegexOptions.CultureInvariant | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+        MatchCollection matches = FFmpegTotalFramesMatcher().Matches(stderr);
         if (matches.Count == 0) return null;
 
         string text = matches[^1].Groups[1].Value;
@@ -558,8 +553,8 @@ public static class RepartSourceValidator
 
     private static async Task<long?> TryResolveEstimatedFrameCountWithFfprobeAsync(
         string ffprobePath,
-        string sourcePath,
-        RepartSourceProbe probe,
+        string srcPath,
+        RepartSrcProbe probe,
         long estimatedCount,
         CancellationToken cancellationToken)
     {
@@ -570,19 +565,19 @@ public static class RepartSourceValidator
 
         bool? leftExists = await ProbeFrameExistsAsync(
             ffprobePath,
-            sourcePath,
+            srcPath,
             probe,
             estimatedCount - 1,
             cancellationToken);
         bool? centerExists = await ProbeFrameExistsAsync(
             ffprobePath,
-            sourcePath,
+            srcPath,
             probe,
             estimatedCount,
             cancellationToken);
         bool? rightExists = await ProbeFrameExistsAsync(
             ffprobePath,
-            sourcePath,
+            srcPath,
             probe,
             estimatedCount + 1,
             cancellationToken);
@@ -595,9 +590,9 @@ public static class RepartSourceValidator
             return estimatedCount + 1;
 
         if (!leftExists.Value && !centerExists.Value && !rightExists.Value)
-            return await ProbeInDirectionForFrameCountAsync(ffprobePath, sourcePath, probe, estimatedCount - 2, -1, cancellationToken);
+            return await ProbeInDirectionForFrameCountAsync(ffprobePath, srcPath, probe, estimatedCount - 2, -1, cancellationToken);
         if (leftExists.Value && centerExists.Value && rightExists.Value)
-            return await ProbeInDirectionForFrameCountAsync(ffprobePath, sourcePath, probe, estimatedCount + 2, 1, cancellationToken);
+            return await ProbeInDirectionForFrameCountAsync(ffprobePath, srcPath, probe, estimatedCount + 2, 1, cancellationToken);
 
         throw new InvalidOperationException(FormatUnexpectedFrameProbePattern(
             estimatedCount,
@@ -618,8 +613,8 @@ public static class RepartSourceValidator
 
     private static async Task<long?> ProbeInDirectionForFrameCountAsync(
         string ffprobePath,
-        string sourcePath,
-        RepartSourceProbe probe,
+        string srcPath,
+        RepartSrcProbe probe,
         long firstCandidateIndex,
         int step,
         CancellationToken cancellationToken)
@@ -633,7 +628,7 @@ public static class RepartSourceValidator
              step < 0 ? index >= limit : index <= limit;
              index += step)
         {
-            bool? exists = await ProbeFrameExistsAsync(ffprobePath, sourcePath, probe, index, cancellationToken);
+            bool? exists = await ProbeFrameExistsAsync(ffprobePath, srcPath, probe, index, cancellationToken);
             if (exists == null) return null;
             if (step < 0 && exists.Value) return index + 1;
             if (step > 0 && !exists.Value) return index;
@@ -644,8 +639,8 @@ public static class RepartSourceValidator
 
     private static async Task<bool?> ProbeFrameExistsAsync(
         string ffprobePath,
-        string sourcePath,
-        RepartSourceProbe probe,
+        string srcPath,
+        RepartSrcProbe probe,
         long frameIndex,
         CancellationToken cancellationToken)
     {
@@ -668,7 +663,7 @@ public static class RepartSourceValidator
             "-show_frames",
             "-show_entries", "frame=best_effort_timestamp_time,pts_time,pkt_pts_time,pkt_dts_time",
             "-of", "json",
-            sourcePath
+            srcPath
         ];
 
         FFprobeProcessResult result = await FFprobeProcessRunner.RunAsync(
@@ -682,7 +677,7 @@ public static class RepartSourceValidator
         return FfprobeFrameOutputContainsIndex(result.Stdout, probe, frameIndex);
     }
 
-    private static bool? FfprobeFrameOutputContainsIndex(string stdout, RepartSourceProbe probe, long targetFrameIndex)
+    private static bool? FfprobeFrameOutputContainsIndex(string stdout, RepartSrcProbe probe, long targetFrameIndex)
     {
         try
         {
@@ -813,13 +808,15 @@ public static class RepartSourceValidator
     private static string Hash(string value) => string.IsNullOrWhiteSpace(value)
         ? string.Empty
         : Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(value)));
+    [GeneratedRegex(@"frame=\s*(\d+)", RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant)]
+    private static partial Regex FFmpegTotalFramesMatcher();
 }
 
 // Formats an exclusion into either a bare reason line or a full per-source dialog
 // message (source path + reason + will-exclude notice).
 public static class RepartExclusionMessages
 {
-    public static string FormatReason(RepartExcludedSourceInfo info)
+    public static string FormatReason(RepartExcludedSrcInfo info)
     {
         RepartLangProvider lang = RepartLangProvider.Current;
         return info.Reason switch
@@ -831,11 +828,11 @@ public static class RepartExclusionMessages
             RepartExclusionReason.NoVideoStream => string.Format(lang.NoVideoStream, info.DisplayName),
             RepartExclusionReason.NoDimensions => string.Format(lang["NoDimensions"], info.DisplayName),
             RepartExclusionReason.Interlaced => string.Format(
-                lang["InterlacedSourceRejected"],
+                lang["InterlacedSrcRejected"],
                 info.DisplayName,
                 info.Detail ?? string.Empty),
             RepartExclusionReason.NotCfr => string.Format(lang.CfrRequired, info.DisplayName),
-            RepartExclusionReason.FrameCountUnavailable => string.IsNullOrWhiteSpace(info.Detail)
+            RepartExclusionReason.NoFrameCount => string.IsNullOrWhiteSpace(info.Detail)
                 ? string.Format(lang.FrameCountRequired, info.DisplayName)
                 : string.Join(
                     Environment.NewLine,
@@ -847,10 +844,10 @@ public static class RepartExclusionMessages
         };
     }
 
-    public static string FormatExcludedMessage(RepartExcludedSourceInfo info) =>
+    public static string FormatExcludedMessage(RepartExcludedSrcInfo info) =>
         string.Join(
             Environment.NewLine,
-            string.Format(RepartLangProvider.Current["SourceLabel"], info.FilePath),
+            string.Format(RepartLangProvider.Current["SrcLabel"], info.FilePath),
             FormatReason(info),
             string.Empty,
             RepartLangProvider.Current["WillExcludeSource"]);
@@ -860,13 +857,13 @@ public static class RepartExclusionMessages
 // entry point (pre-open import and in-window re-import).
 public static class RepartInterlacedPrompt
 {
-    public static bool Confirm(ModalNavS modalNavS, string windowTitle, RepartInterlacedSourceInfo source)
+    public static bool Confirm(ModalNavS modalNavS, string windowTitle, RepartInterlacedSrcInfo source)
     {
         RepartLangProvider lang = RepartLangProvider.Current;
         string message = string.Join(
             Environment.NewLine,
-            string.Format(lang["SourceLabel"], source.FilePath),
-            string.Format(lang["InterlacedSourceRejected"], source.DisplayName, source.FieldOrder),
+            string.Format(lang["SrcLabel"], source.FilePath),
+            string.Format(lang["InterlacedSrcRejected"], source.DisplayName, source.FieldOrder),
             string.Empty,
             lang["InterlacedSourcePrompt"]);
         OpenWarnModalCmd cmd = new(modalNavS, windowTitle, message);
@@ -885,7 +882,7 @@ public static class RepartFrameCountPrompt
         RepartLangProvider lang = RepartLangProvider.Current;
         string message = string.Join(
             Environment.NewLine,
-            string.Format(lang["SourceLabel"], source.FilePath),
+            string.Format(lang["SrcLabel"], source.FilePath),
             string.Format(lang["FrameCountFallbackPrompt"], source.DisplayName, source.EstimatedCount),
             string.Empty,
             lang["FrameCountFallbackPromptChoices"]);

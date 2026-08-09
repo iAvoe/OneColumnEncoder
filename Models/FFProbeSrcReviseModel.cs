@@ -4,16 +4,16 @@ using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.Models;
 
-public static class FFProbeSourceReviseModel
+public static class FFProbeSrcReviseModel
 {
-    public static string UpdateSingleSourceJson(string rawJson, SourceRevisionRequest request) =>
+    public static string UpdateSingleSourceJson(string rawJson, SrcRevisionRequest request) =>
         ApplyRevision(rawJson, request);
 
     public static (string rawJson, string queueRawJson) UpdateQueueSourceJson(
         string queueFilePath,
         string rawJson,
         string queueRawJson,
-        SourceRevisionRequest request)
+        SrcRevisionRequest request)
     {
         JsonNode queueRoot = ParseJsonObject(File.ReadAllText(queueFilePath));
         int updated = UpdateFfprobeJsonEntries(queueRoot, request);
@@ -36,7 +36,7 @@ public static class FFProbeSourceReviseModel
     public static (string rawJson, string queueRawJson) UpdateConcatSourceJson(
         string rawJson,
         string queueRawJson,
-        SourceRevisionRequest request)
+        SrcRevisionRequest request)
     {
         string newRawJson = ApplyRevision(rawJson, request);
         string newQueueRawJson = string.IsNullOrWhiteSpace(queueRawJson)
@@ -71,13 +71,13 @@ public static class FFProbeSourceReviseModel
         return count > 0 ? total : -1;
     }
 
-    private static string ApplyRevision(string rawJson, SourceRevisionRequest request)
+    private static string ApplyRevision(string rawJson, SrcRevisionRequest request)
         => FFProbeJsonUpdateResolver.UpdateResolution(
             rawJson,
             request.Width,
             request.Height);
 
-    private static string UpdateQueueRawJsonString(string queueRawJson, SourceRevisionRequest request)
+    private static string UpdateQueueRawJsonString(string queueRawJson, SrcRevisionRequest request)
     {
         JsonNode root = ParseJsonObject(queueRawJson);
         int updated = UpdateFfprobeJsonEntries(root, request);
@@ -86,7 +86,7 @@ public static class FFProbeSourceReviseModel
         return root.ToJsonString(FFProbeJsonFormatting.Options);
     }
 
-    private static int UpdateFfprobeJsonEntries(JsonNode root, SourceRevisionRequest request)
+    private static int UpdateFfprobeJsonEntries(JsonNode root, SrcRevisionRequest request)
     {
         if (root["Entries"] is not JsonArray entries)
             throw new InvalidOperationException("JSON root is missing 'Entries' array.");
@@ -129,7 +129,7 @@ public static class FFProbeSourceReviseModel
         return fallback?.ToJsonString(FFProbeJsonFormatting.Options);
     }
 
-    private static JsonNode ParseJsonObject(string json) =>
+    private static JsonObject ParseJsonObject(string json) =>
         JsonNode.Parse(json) is JsonObject obj
             ? obj
             : throw new InvalidOperationException("JSON root is not an object.");

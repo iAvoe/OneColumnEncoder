@@ -29,12 +29,12 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <comps:ConcatSidebarPanel Grid.Column="0"
+        <comps:ConcatSrcSidebarPanel Grid.Column="0"
                                   Grid.RowSpan="6"
                                   DataContext="{Binding ConcatSources}"
                                   Margin="0 0 10 0">
-            <comps:ConcatSidebarPanel.Style>
-                <Style TargetType="comps:ConcatSidebarPanel">
+            <comps:ConcatSrcSidebarPanel.Style>
+                <Style TargetType="comps:ConcatSrcSidebarPanel">
                     <Setter Property="Visibility"
                             Value="Collapsed" />
                     <Style.Triggers>
@@ -55,8 +55,8 @@
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-            </comps:ConcatSidebarPanel.Style>
-        </comps:ConcatSidebarPanel>
+            </comps:ConcatSrcSidebarPanel.Style>
+        </comps:ConcatSrcSidebarPanel>
 
         <comps:RepartFilterScribeSidebarPanel Grid.Column="0"
                                               Grid.RowSpan="6"

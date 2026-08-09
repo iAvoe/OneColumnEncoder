@@ -2,7 +2,7 @@ namespace OneColumnEncoder.Models;
 
 public class VideoAnalysisM
 {
-    public string SourcePath { get; set; } = string.Empty;
+    public string srcPath { get; set; } = string.Empty;
     public string FfprobePath { get; set; } = string.Empty;
     public string RawJson { get; set; } = string.Empty;
     public string QueueRawJson { get; set; } = string.Empty;
@@ -10,7 +10,7 @@ public class VideoAnalysisM
 
     public void Clear()
     {
-        SourcePath = string.Empty;
+        srcPath = string.Empty;
         FfprobePath = string.Empty;
         RawJson = string.Empty;
         QueueRawJson = string.Empty;

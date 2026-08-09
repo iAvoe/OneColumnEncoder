@@ -2,49 +2,49 @@
 
 public static class ScriptTemplate
 {
-    public static string BuildAvsSourceLine(string sourcePath, int fpsnum = 0, int fpsden = 0)
+    public static string BuildAvsSourceLine(string srcPath, int fpsnum = 0, int fpsden = 0)
     {
-        string line = $"LWLibavVideoSource(\"{sourcePath}\")";
+        string line = $"LWLibavVideoSource(\"{srcPath}\")";
         if (fpsnum > 0 && fpsden > 0)
-            line = $"LWLibavVideoSource(\"{sourcePath}\", fpsnum={fpsnum}, fpsden={fpsden})";
+            line = $"LWLibavVideoSource(\"{srcPath}\", fpsnum={fpsnum}, fpsden={fpsden})";
         return line;
     }
 
-    public static string BuildVpySourceHeader(string sourcePath, int fpsnum = 0, int fpsden = 0)
+    public static string BuildVpySourceHeader(string srcPath, int fpsnum = 0, int fpsden = 0)
     {
-        string header = $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"{sourcePath}\")";
+        string header = $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"{srcPath}\")";
         if (fpsnum > 0 && fpsden > 0)
-            header = $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"{sourcePath}\", fpsnum={fpsnum}, fpsden={fpsden})";
+            header = $"import vapoursynth as vs\r\ncore = vs.core\r\nsrc = core.lsmas.LWLibavSource(source=r\"{srcPath}\", fpsnum={fpsnum}, fpsden={fpsden})";
         return header;
     }
 
-    public static string BuildAvsExportScript(string sourcePath, string avsPrefix2, string avsSuffix, string userInput = "", int fpsnum = 0, int fpsden = 0)
+    public static string BuildAvsExportScript(string srcPath, string avsPrefix2, string avsSuffix, string userInput = "", int fpsnum = 0, int fpsden = 0)
     {
         string content = string.IsNullOrEmpty(userInput)
             ? $"{avsPrefix2}\r\n\r\n{avsSuffix}"
             : $"{avsPrefix2}\r\n{userInput}\r\n{avsSuffix}";
-        return $"{BuildAvsSourceLine(sourcePath, fpsnum, fpsden)}\r\n{content}";
+        return $"{BuildAvsSourceLine(srcPath, fpsnum, fpsden)}\r\n{content}";
     }
 
-    public static string BuildVpyExportScript(string sourcePath, string vpyPrefix2, string vpySuffix, string userInput = "", int fpsnum = 0, int fpsden = 0)
+    public static string BuildVpyExportScript(string srcPath, string vpyPrefix2, string vpySuffix, string userInput = "", int fpsnum = 0, int fpsden = 0)
     {
         string content = string.IsNullOrEmpty(userInput)
             ? $"\r\n{vpyPrefix2}\r\n\r\n{vpySuffix}"
             : $"\r\n{vpyPrefix2}\r\n{userInput}\r\n{vpySuffix}";
-        return $"{BuildVpySourceHeader(sourcePath, fpsnum, fpsden)}{content}";
+        return $"{BuildVpySourceHeader(srcPath, fpsnum, fpsden)}{content}";
     }
 
-    public static string BuildAvsInOutSection(string sourcePath, string avsPrefix2, string avsSuffix, int fpsnum = 0, int fpsden = 0)
-        => $"{BuildAvsSourceLine(sourcePath, fpsnum, fpsden)}\r\n{avsPrefix2}\r\n\r\n{avsSuffix}";
+    public static string BuildAvsInOutSection(string srcPath, string avsPrefix2, string avsSuffix, int fpsnum = 0, int fpsden = 0)
+        => $"{BuildAvsSourceLine(srcPath, fpsnum, fpsden)}\r\n{avsPrefix2}\r\n\r\n{avsSuffix}";
 
-    public static string BuildVpyInOutSection(string sourcePath, string vpyPrefix2, string vpySuffix, int fpsnum = 0, int fpsden = 0)
-        => $"{BuildVpySourceHeader(sourcePath, fpsnum, fpsden)}\r\n{vpyPrefix2}\r\n\r\n{vpySuffix}";
+    public static string BuildVpyInOutSection(string srcPath, string vpyPrefix2, string vpySuffix, int fpsnum = 0, int fpsden = 0)
+        => $"{BuildVpySourceHeader(srcPath, fpsnum, fpsden)}\r\n{vpyPrefix2}\r\n\r\n{vpySuffix}";
 
-    public static string BuildAvsEditorScript(string sourcePath, string avsPrefix2, string userInput, int fpsnum = 0, int fpsden = 0)
-        => $"{BuildAvsSourceLine(sourcePath, fpsnum, fpsden)}\r\n{avsPrefix2}\r\n{userInput}";
+    public static string BuildAvsEditorScript(string srcPath, string avsPrefix2, string userInput, int fpsnum = 0, int fpsden = 0)
+        => $"{BuildAvsSourceLine(srcPath, fpsnum, fpsden)}\r\n{avsPrefix2}\r\n{userInput}";
 
-    public static string BuildVpyEditorScript(string sourcePath, string vpyPrefix2, string vpySuffix, string userInput, int fpsnum = 0, int fpsden = 0)
-        => $"{BuildVpySourceHeader(sourcePath, fpsnum, fpsden)}\r\n{vpyPrefix2}\r\n{userInput}\r\n{vpySuffix}";
+    public static string BuildVpyEditorScript(string srcPath, string vpyPrefix2, string vpySuffix, string userInput, int fpsnum = 0, int fpsden = 0)
+        => $"{BuildVpySourceHeader(srcPath, fpsnum, fpsden)}\r\n{vpyPrefix2}\r\n{userInput}\r\n{vpySuffix}";
 
     public static string BuildConcatAvsSourceHeader(string[] filePaths, int fpsnum = 0, int fpsden = 0)
     {
@@ -117,9 +117,9 @@ public static class ScriptTemplate
         return $"{BuildConcatVpySourceHeader(filePaths, fpsnum, fpsden)}{content}";
     }
 
-    public static string BuildVpyPreviewScript(string sourcePath, string userInput, int fpsnum = 0, int fpsden = 0)
+    public static string BuildVpyPreviewScript(string srcPath, string userInput, int fpsnum = 0, int fpsden = 0)
     {
-        string header = BuildVpySourceHeader(sourcePath, fpsnum, fpsden);
+        string header = BuildVpySourceHeader(srcPath, fpsnum, fpsden);
         string previewInsert = "\r\nref = src\r\nsrc.set_output(0)";
         string suffix = "\r\n# ...force src as the B preview output, so A/B preview can display output 1...\r\nsrc.set_output(1)";
 

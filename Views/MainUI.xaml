@@ -749,7 +749,7 @@
                                   Margin="10 10 10 0" />
 
             <!-- Hint: OneLineShotArgs upstream does not support clipping -->
-            <comps:HintPanel Text="{Binding AnalyzeNeedsSourceText}"
+            <comps:HintPanel Text="{Binding AnalyzeNeedsSrcText}"
                              RefreshTextOnLanguageChanged="True"
                              Margin="10 2.5 5 0"
                              HorizontalAlignment="Left"

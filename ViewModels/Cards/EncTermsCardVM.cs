@@ -53,20 +53,20 @@ public class EncTermsCardVM : ValidationCardBaseVM
                 : StatusType.Warning);
 
         string? outputDir = GetOutputDirectoryFunc?.Invoke();
-        string? sourcePath = GetSourceVideoFilePathFunc?.Invoke();
-        SetChecklist1(DiskSpaceChecklistIdx, EvaluateDiskSpace(outputDir, sourcePath));
+        string? srcPath = GetSourceVideoFilePathFunc?.Invoke();
+        SetChecklist1(DiskSpaceChecklistIdx, EvaluateDiskSpace(outputDir, srcPath));
 
         SetChecklist1(NumaCpuLoadChecklistIdx,
             EncTermsCheck.EvaluateNumaNodeCpuUsage(GetEncoderNodeIdFunc?.Invoke() ?? -1));
     }
 
-    private static StatusType EvaluateDiskSpace(string? outputDir, string? sourcePath)
+    private static StatusType EvaluateDiskSpace(string? outputDir, string? srcPath)
     {
         long availBytes = EncTermsCheck.GetAvailableDiskSpaceBytes(outputDir);
         if (availBytes < 0) return StatusType.Waiting;
 
         long requiredBytes;
-        long sourceSize = EncTermsCheck.GetSourceVideoFileSize(sourcePath);
+        long sourceSize = EncTermsCheck.GetSourceVideoFileSize(srcPath);
 
         if (sourceSize > 0)
             requiredBytes = (long)(sourceSize * DiskSpaceSafetyMultiplier);

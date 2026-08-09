@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace OneColumnEncoder.FileManagement;
 
-public enum SourceFileKind
+public enum SrcFileKind
 {
     Video,
     AviSynthScript,
@@ -11,26 +11,26 @@ public enum SourceFileKind
     SvfiIni
 }
 
-public static class SourceFilePicker
+public static partial class SrcFilePicker
 {
-    private static SourceFilePickerLangProvider Lang =>
+    private static SrcFilePickerLangProvider Lang =>
         new(UILangProvider.Current.LanguageCode);
 
     public static string? GetSource(
-        SourceFileKind fileKind,
+        SrcFileKind fileKind,
         string windowTitle,
         string? foundPath = null,
         string? currentPath = null)
     {
-        string initialDirectory = ResolveInitialDirectory(fileKind, foundPath, currentPath);
+        string initialDirectory = ResolveInitialDirectory(foundPath, currentPath);
         string filter = GetFilter(fileKind);
 
         return SelectFile(windowTitle, filter, initialDirectory);
     }
 
-    public static string GetPrimaryText(SourceFileKind fileKind, string filePath)
+    public static string GetPrimaryText(SrcFileKind fileKind, string filePath)
     {
-        return fileKind == SourceFileKind.Video
+        return fileKind == SrcFileKind.Video
             ? Path.GetFileName(filePath)
             : GetCustomScriptModeText();
     }
@@ -40,19 +40,18 @@ public static class SourceFilePicker
         if (string.IsNullOrWhiteSpace(folderPath) || !Directory.Exists(folderPath))
             return [];
 
-        string[] extensions = SourceFilePickerLangProvider.VideoExtensions
+        string[] extensions = [.. SrcFilePickerLangProvider.VideoExtensions
             .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-            .Select(extension => extension.TrimStart('*').ToLowerInvariant())
-            .ToArray();
+            .Select(extension => extension.TrimStart('*').ToLowerInvariant())];
 
         return [.. Directory.EnumerateFiles(folderPath)
             .Where(filePath => extensions.Contains(Path.GetExtension(filePath).ToLowerInvariant()))
             .OrderBy(filePath => filePath, NaturalFilePathComparer.Instance)];
     }
 
-    public static string[] GetSourceFilesInFolder(string folderPath, SourceFileKind fileKind)
+    public static string[] GetSourceFilesInFolder(string folderPath, SrcFileKind fileKind)
     {
-        if (fileKind == SourceFileKind.Video)
+        if (fileKind == SrcFileKind.Video)
             return GetVideoFilesInFolder(folderPath);
 
         if (string.IsNullOrWhiteSpace(folderPath) || !Directory.Exists(folderPath))
@@ -60,9 +59,9 @@ public static class SourceFilePicker
 
         string extension = fileKind switch
         {
-            SourceFileKind.AviSynthScript => ".avs",
-            SourceFileKind.VapourSynthScript => ".vpy",
-            SourceFileKind.SvfiIni => ".ini",
+            SrcFileKind.AviSynthScript => ".avs",
+            SrcFileKind.VapourSynthScript => ".vpy",
+            SrcFileKind.SvfiIni => ".ini",
             _ => string.Empty
         };
 
@@ -73,7 +72,7 @@ public static class SourceFilePicker
             .OrderBy(filePath => filePath, NaturalFilePathComparer.Instance)];
     }
 
-    private sealed class NaturalFilePathComparer : IComparer<string>
+    private sealed partial class NaturalFilePathComparer : IComparer<string>
     {
         public static NaturalFilePathComparer Instance { get; } = new();
 
@@ -87,8 +86,8 @@ public static class SourceFilePicker
                 : StringComparer.OrdinalIgnoreCase.Compare(x, y);
         }
 
-        [DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
-        private static extern int StrCmpLogicalW(string x, string y);
+        [LibraryImport("shlwapi.dll", StringMarshalling = StringMarshalling.Utf16)]
+        private static partial int StrCmpLogicalW(string x, string y);
     }
 
     private static string? SelectFile(string title, string filter, string? initialDirectory)
@@ -108,7 +107,8 @@ public static class SourceFilePicker
             : null;
     }
 
-    private static string ResolveInitialDirectory(SourceFileKind fileKind, string? foundPath, string? currentPath)
+    // Note: SrcFileKind fileKind, is nolonger used
+    private static string ResolveInitialDirectory(string? foundPath, string? currentPath)
     {
         if (!string.IsNullOrWhiteSpace(currentPath))
             return currentPath;
@@ -136,16 +136,16 @@ public static class SourceFilePicker
         return Directory.Exists(initialDirectory) ? initialDirectory : fallbackDirectory;
     }
 
-    private static string GetFilter(SourceFileKind fileKind)
+    private static string GetFilter(SrcFileKind fileKind)
     {
-        SourceFilePickerLangProvider lang = Lang;
+        SrcFilePickerLangProvider lang = Lang;
 
         return fileKind switch
         {
-            SourceFileKind.Video => lang.VideoFilter,
-            SourceFileKind.AviSynthScript => lang.AviSynthScriptFilter,
-            SourceFileKind.VapourSynthScript => lang.VapourSynthScriptFilter,
-            SourceFileKind.SvfiIni => lang.SvfiIniFilter,
+            SrcFileKind.Video => lang.VideoFilter,
+            SrcFileKind.AviSynthScript => lang.AviSynthScriptFilter,
+            SrcFileKind.VapourSynthScript => lang.VapourSynthScriptFilter,
+            SrcFileKind.SvfiIni => lang.SvfiIniFilter,
             _ => lang.AllFilesFilter
         };
     }

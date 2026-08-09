@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.ViewModels.Cards;
 
-public class SourceCheckCardVM : ValidationCardBaseVM
+public class SrcCheckCardVM : ValidationCardBaseVM
 {
     public Func<bool>? IsSvtav1SelectedFunc { get; set; }
 
@@ -11,10 +11,10 @@ public class SourceCheckCardVM : ValidationCardBaseVM
     protected const int Svtav1BitDepthChecklistIdx = 2;
     protected const int MaxBitDepthChecklistIdx = 3;
 
-    public SourceCheckCardVM()
+    public SrcCheckCardVM()
     {
-        FillCollection(Checklist1, ChecklistProviderM.GetSourceChecklist1());
-        FillCollection(Checklist2, ChecklistProviderM.GetSourceChecklist2());
+        FillCollection(Checklist1, ChecklistProviderM.GetSrcChecklist1());
+        FillCollection(Checklist2, ChecklistProviderM.GetSrcChecklist2());
     }
 
     public void ResetAnalysisStatus()
@@ -33,7 +33,7 @@ public class SourceCheckCardVM : ValidationCardBaseVM
         _lastAnalysisJson = rawJson;
         try
         {
-            FFProbeSourceValidationResult result = FFProbeSourceValidation.Analyze(rawJson);
+            FFProbeSrcValResult result = FFProbeSrcVal.Analyze(rawJson);
 
             SetChecklist1(MetadataChecklistIdx, StatusType.Success);
             SetChecklist1(ProgressiveChecklistIdx, result.IsProgressive
@@ -73,7 +73,7 @@ public class SourceCheckCardVM : ValidationCardBaseVM
 
         try
         {
-            SetChecklist1(Svtav1BitDepthChecklistIdx, FFProbeSourceValidation.IsSvtAv1BitDepthSupported(_lastAnalysisJson)
+            SetChecklist1(Svtav1BitDepthChecklistIdx, FFProbeSrcVal.IsSvtAv1BitDepthSupported(_lastAnalysisJson)
                 ? StatusType.Success
                 : IsSelectingSvtav1()
                     ? StatusType.Error
@@ -103,8 +103,8 @@ public class SourceCheckCardVM : ValidationCardBaseVM
 
     public void RefreshLanguage()
     {
-        RefreshChecklist(Checklist1, ChecklistProviderM.GetSourceChecklist1());
-        RefreshChecklist(Checklist2, ChecklistProviderM.GetSourceChecklist2());
+        RefreshChecklist(Checklist1, ChecklistProviderM.GetSrcChecklist1());
+        RefreshChecklist(Checklist2, ChecklistProviderM.GetSrcChecklist2());
     }
 
     #region Issue Formatting (for ConfirmationModal and column clicks)

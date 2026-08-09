@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.ViewModels.Cards;
 
-public class ConcatCheckCardVM : SourceCheckCardVM
+public class ConcatCheckCardVM : SrcCheckCardVM
 {
     public string[] ConcatFilePaths { get; private set; } = [];
 

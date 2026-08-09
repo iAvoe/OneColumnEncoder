@@ -1,8 +1,8 @@
 namespace OneColumnEncoder.Views;
 
-public partial class SourceReviserModal : AdaptiveWindow
+public partial class SrcReviserModal : AdaptiveWindow
 {
-    public SourceReviserModal()
+    public SrcReviserModal()
     {
         InitializeComponent();
     }

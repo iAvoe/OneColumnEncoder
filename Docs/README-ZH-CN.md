@@ -336,7 +336,7 @@
 - 编码监控里的“查看编码命令”：`ViewModels/EncodingMonitorVM.cs`
 - 脚本生成后的复制/保存结果提示：`ViewModels/ScriptScribeVM.cs`、`Commands/SaveLoad/OneClickScriptGenCmd.cs`
 - 源分析和检查结果提示：`Commands/AnalyzeSrcVideoCmd.cs`、`Commands/CopyRawAnalysisCmd.cs`、`Commands/InspectEncProblemsCmd.cs`、`Commands/InspectSrcProblemsCmd.cs`
-- 工具导入/文件选择时的二次确认：`Commands/ImportToolCmd.cs`、`Helpers/SourceFilePickerH.cs`
+- 工具导入/文件选择时的二次确认：`Commands/ImportToolCmd.cs`、`Helpers/SrcFilePickerH.cs`
 
 ## 设置数据存储位置
 

@@ -2,7 +2,7 @@ using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.FFmpeg;
 
-public readonly record struct FFProbeSourceValidationResult(
+public readonly record struct FFProbeSrcValResult(
     bool IsProgressive,
     bool IsSvtAv1BitDepthSupported,
     bool IsMaxBitDepthSupported,
@@ -13,7 +13,7 @@ public readonly record struct FFProbeSourceValidationResult(
     bool HasColorPrimaries,
     bool HasSupportedChroma);
 
-public static class FFProbeSourceValidation
+public static class FFProbeSrcVal
 {
     public static int ReadBitDepthFromJson(string? rawJson)
     {
@@ -33,13 +33,13 @@ public static class FFProbeSourceValidation
         }
     }
 
-    public static FFProbeSourceValidationResult Analyze(string rawJson)
+    public static FFProbeSrcValResult Analyze(string rawJson)
     {
         using JsonDocument document = JsonDocument.Parse(rawJson);
         if (!FrameRate.TryGetFirstVideoStream(document.RootElement, out JsonElement stream))
             return default;
 
-        return new FFProbeSourceValidationResult(
+        return new FFProbeSrcValResult(
             IsProgressive(stream),
             IsSupportedBitDepth(stream, 10),
             IsSupportedBitDepth(stream, 12),

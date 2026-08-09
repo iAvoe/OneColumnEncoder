@@ -288,12 +288,12 @@ public static partial class EncTermsCheck
     /// <summary>
     /// Returns the size of the source video file in bytes. Returns -1 if unavailable.
     /// </summary>
-    public static long GetSourceVideoFileSize(string? sourcePath)
+    public static long GetSourceVideoFileSize(string? srcPath)
     {
-        if (string.IsNullOrWhiteSpace(sourcePath) || !File.Exists(sourcePath))
+        if (string.IsNullOrWhiteSpace(srcPath) || !File.Exists(srcPath))
             return -1;
 
-        try { return new FileInfo(sourcePath).Length; }
+        try { return new FileInfo(srcPath).Length; }
         catch { return -1; }
     }
 

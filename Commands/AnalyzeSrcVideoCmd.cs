@@ -9,9 +9,9 @@ namespace OneColumnEncoder.Commands;
 // Command that analyzes source video files via ffprobe, supports both single-file and queue (batch) analysis.
 public class AnalyzeSrcVideoCmd(
     Func<string> getFfprobePath,
-    Func<string> getSourcePath,
+    Func<string> getsrcPath,
     VideoAnalysisM analysis,
-    Func<SourceCheckCardVM> getActiveSrcValidationCard,
+    Func<SrcCheckCardVM> getActiveSrcValidationCard,
     ModalNavS modalNavS,
     Func<bool>? isQueueRoute = null,
     Func<string[]>? getQueueFilePaths = null,
@@ -22,9 +22,9 @@ public class AnalyzeSrcVideoCmd(
     Func<string[]>? getConcatFilePaths = null) : AsyncBaseCmd
 {
     private readonly Func<string> _getFfprobePath = getFfprobePath;
-    private readonly Func<string> _getSourcePath = getSourcePath;
+    private readonly Func<string> _getsrcPath = getsrcPath;
     private readonly VideoAnalysisM _analysis = analysis;
-    private readonly Func<SourceCheckCardVM> _getActiveSrcValidationCard = getActiveSrcValidationCard;
+    private readonly Func<SrcCheckCardVM> _getActiveSrcValidationCard = getActiveSrcValidationCard;
     private readonly ModalNavS _modalNavS = modalNavS;
     private readonly Func<bool>? _isQueueRoute = isQueueRoute;
     private readonly Func<string[]>? _getQueueFilePaths = getQueueFilePaths;
@@ -54,7 +54,7 @@ public class AnalyzeSrcVideoCmd(
             ? (_getQueueFilePaths?.Invoke().Length ?? 0) > 0
             : IsConcatRoute()
                 ? (_getConcatFilePaths?.Invoke().Length ?? 0) > 1
-            : !string.IsNullOrWhiteSpace(_getSourcePath()));
+            : !string.IsNullOrWhiteSpace(_getsrcPath()));
 
     // Main entry: route to queue analysis or single-file analysis, then show result or error modal.
     protected override async Task ExecuteAsync(object? parameter)
@@ -78,14 +78,14 @@ public class AnalyzeSrcVideoCmd(
 
             // Single-file analysis: run ffprobe and apply results to the validation card.
             string ffprobePath = _getFfprobePath();
-            string sourcePath = _getSourcePath();
+            string srcPath = _getsrcPath();
             try
             {
                 string rawJson =
-                    await FFProbeVideoAnalysis.AnalyzeAsync(ffprobePath, sourcePath);
+                    await FFProbeVideoAnalysis.AnalyzeAsync(ffprobePath, srcPath);
 
                 _analysis.FfprobePath = ffprobePath;
-                _analysis.SourcePath = sourcePath;
+                _analysis.srcPath = srcPath;
                 _analysis.RawJson = rawJson;
                 _getActiveSrcValidationCard().ApplyFfprobeAnalysisJson(rawJson);
 
@@ -94,7 +94,7 @@ public class AnalyzeSrcVideoCmd(
             catch (Exception ex)
             {
                 throw new InvalidOperationException(
-                    FormatAnalysisFailureMessage(sourcePath, ex.Message),
+                    FormatAnalysisFailureMessage(srcPath, ex.Message),
                     ex);
             }
         }
@@ -135,7 +135,7 @@ public class AnalyzeSrcVideoCmd(
             throw new InvalidOperationException(result.ResolutionMismatchMessage ?? string.Empty);
 
         _analysis.FfprobePath = ffprobePath;
-        _analysis.SourcePath = result.ReferencePath;
+        _analysis.srcPath = result.ReferencePath;
         _analysis.RawJson = result.ReferenceRawJson;
         _analysis.ConcatTotalFrames = result.ConcatTotalFrames;
         _analysis.QueueRawJson = JsonSerializer.Serialize(
@@ -209,12 +209,12 @@ public class AnalyzeSrcVideoCmd(
             ffprobePath,
             queueFilePaths,
             _modalNavS,
-            () => new SourceCheckCardVM { IsSvtav1SelectedFunc = queueCard.IsSvtav1SelectedFunc },
+            () => new SrcCheckCardVM { IsSvtav1SelectedFunc = queueCard.IsSvtav1SelectedFunc },
             filterMode,
             shouldFilterQueue);
         QueueSourceCandidate referenceCandidate = result.ReferenceCandidate;
-        List<QueueSourceEntry> accepted = result.Accepted;
-        List<QueueSourceEntry> excluded = result.Excluded;
+        List<QueueSrcEntry> accepted = result.Accepted;
+        List<QueueSrcEntry> excluded = result.Excluded;
 
         // Step 5
         string referenceRawJson = referenceCandidate.RawJson;
@@ -230,13 +230,13 @@ public class AnalyzeSrcVideoCmd(
             : null;
 
         UTF8Encoding utf8NoBom = new(false);
-        File.WriteAllText(queueJsonPath, JsonSerializer.Serialize(new QueueSourceData(referencePath, accepted), CachedJsonOptions), utf8NoBom);
+        File.WriteAllText(queueJsonPath, JsonSerializer.Serialize(new QueueSrcData(referencePath, accepted), CachedJsonOptions), utf8NoBom);
         if (!string.IsNullOrWhiteSpace(excludedJsonPath))
-            File.WriteAllText(excludedJsonPath, JsonSerializer.Serialize(new QueueSourceData(referencePath, excluded), CachedJsonOptions), utf8NoBom);
+            File.WriteAllText(excludedJsonPath, JsonSerializer.Serialize(new QueueSrcData(referencePath, excluded), CachedJsonOptions), utf8NoBom);
 
         // Step 6
         _analysis.FfprobePath = ffprobePath;
-        _analysis.SourcePath = referencePath;
+        _analysis.srcPath = referencePath;
         _analysis.RawJson = referenceRawJson;
         _analysis.QueueRawJson = JsonSerializer.Serialize(new QueueRawAnalysisData(result.RawAnalyses), CachedJsonOptions);
         queueCard.ApplyQueueResult(accepted.Count, excluded.Count, queueJsonPath, excludedJsonPath ?? string.Empty);
@@ -263,7 +263,7 @@ public class AnalyzeSrcVideoCmd(
         string ffprobePath,
         IReadOnlyList<string> queueFilePaths,
         ModalNavS modalNavS,
-        Func<SourceCheckCardVM> createProbeCard,
+        Func<SrcCheckCardVM> createProbeCard,
         QueueFilterMode filterMode,
         bool shouldFilterQueue)
     {
@@ -274,7 +274,7 @@ public class AnalyzeSrcVideoCmd(
         for (int i = 0; i < queueFilePaths.Count; i++)
         {
             string filePath = queueFilePaths[i];
-            SourceCheckCardVM probeCard = createProbeCard();
+            SrcCheckCardVM probeCard = createProbeCard();
 
             try
             {
@@ -283,7 +283,7 @@ public class AnalyzeSrcVideoCmd(
                 SourceCheckSignature signature = probeCard.GetSignature();
                 using JsonDocument rawDocument = JsonDocument.Parse(rawJson);
                 JsonElement rawElement = rawDocument.RootElement.Clone();
-                QueueSourceEntry entry = new(
+                QueueSrcEntry entry = new(
                     filePath,
                     Path.GetFileName(filePath),
                     QueueSourceCheckResult.FromCard(probeCard),
@@ -319,8 +319,8 @@ public class AnalyzeSrcVideoCmd(
             ? SelectReferenceCandidate(candidates, filterMode)
             : candidates[0];
 
-        List<QueueSourceEntry> accepted = [];
-        List<QueueSourceEntry> excluded = [];
+        List<QueueSrcEntry> accepted = [];
+        List<QueueSrcEntry> excluded = [];
         foreach (QueueSourceCandidate candidate in candidates)
         {
             if (!shouldFilterQueue || candidate.GroupSignature.Matches(referenceCandidate.GroupSignature))
@@ -411,7 +411,7 @@ public class AnalyzeSrcVideoCmd(
 
     // Formats an error message with optional queue progress (e.g., "3/10") and a skip-notice suffix for queue mode.
     private static string FormatAnalysisFailureMessage(
-        string sourcePath,
+        string srcPath,
         string detail,
         int? queueIndex = null,
         int? queueTotal = null,
@@ -421,7 +421,7 @@ public class AnalyzeSrcVideoCmd(
         if (queueIndex.HasValue && queueTotal.HasValue)
             lines.Add(string.Format(Lang.QueueItemProgress, queueIndex.Value, queueTotal.Value));
 
-        lines.Add(string.Format(Lang.SourceFilePath, sourcePath));
+        lines.Add(string.Format(Lang.SourceFilePath, srcPath));
         lines.Add(detail);
         if (willSkipAndContinue)
         {
@@ -477,7 +477,7 @@ public class AnalyzeSrcVideoCmd(
     // A candidate in queue analysis: carries its position (Sequence), analysis result, signature, raw JSON, and vote weight.
     private sealed record QueueSourceCandidate(
         int Sequence,
-        QueueSourceEntry Entry,
+        QueueSrcEntry Entry,
         QueueSourceGroupSignature GroupSignature,
         string RawJson,
         double VoteWeight);
@@ -517,7 +517,7 @@ public class AnalyzeSrcVideoCmd(
     }
 
     // A single queue entry: file path, display name, check-list results, and the raw ffprobe JSON tree.
-    private sealed record QueueSourceEntry(
+    private sealed record QueueSrcEntry(
         string FilePath,
         string DisplayName,
         QueueSourceCheckResult CheckResult,
@@ -534,8 +534,8 @@ public class AnalyzeSrcVideoCmd(
 
     private sealed record QueueSourceFilterResult(
         QueueSourceCandidate ReferenceCandidate,
-        List<QueueSourceEntry> Accepted,
-        List<QueueSourceEntry> Excluded,
+        List<QueueSrcEntry> Accepted,
+        List<QueueSrcEntry> Excluded,
         List<QueueSourceFailure> Skipped,
         List<QueueSourceRawAnalysis> RawAnalyses);
 
@@ -544,7 +544,7 @@ public class AnalyzeSrcVideoCmd(
         IReadOnlyList<QueueSourceCheckItem> Severe,
         IReadOnlyList<QueueSourceCheckItem> Moderate)
     {
-        public static QueueSourceCheckResult FromCard(SourceCheckCardVM card) =>
+        public static QueueSourceCheckResult FromCard(SrcCheckCardVM card) =>
             new(
                 [.. card.Checklist1.Select(QueueSourceCheckItem.FromEntry)],
                 [.. card.Checklist2.Select(QueueSourceCheckItem.FromEntry)]);
@@ -558,7 +558,7 @@ public class AnalyzeSrcVideoCmd(
     }
 
     // Top-level container for serialized queue data: reference file path + list of entries.
-    private sealed record QueueSourceData(string ReferenceFilePath, IReadOnlyList<QueueSourceEntry> Entries);
+    private sealed record QueueSrcData(string ReferenceFilePath, IReadOnlyList<QueueSrcEntry> Entries);
 
     // Container for all raw ffprobe analyses in the queue (used for later re-inspection).
     private sealed record QueueRawAnalysisData(IReadOnlyList<QueueSourceRawAnalysis> Entries);

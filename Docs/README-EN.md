@@ -331,7 +331,7 @@ Implementation failed due to excessive complexity and encoding time addition
 - View encoding commands in the encoding monitor:`ViewModels/EncodingMonitorVM.cs`
 - Copy/save results after script generation:`ViewModels/ScriptScribeVM.cs`、`Commands/SaveLoad/OneClickScriptGenCmd.cs`
 - Source analysis and check results:`Commands/AnalyzeSrcVideoCmd.cs`、`Commands/CopyRawAnalysisCmd.cs`、`Commands/InspectEncProblemsCmd.cs`、`Commands/InspectSrcProblemsCmd.cs`
-- Secondary confirmation when importing tools/selecting files:`Commands/ImportToolCmd.cs`、`Helpers/SourceFilePickerH.cs`
+- Secondary confirmation when importing tools/selecting files:`Commands/ImportToolCmd.cs`、`Helpers/SrcFilePickerH.cs`
 
 ## Settings Storage Location
 

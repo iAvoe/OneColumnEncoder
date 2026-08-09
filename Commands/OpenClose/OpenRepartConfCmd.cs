@@ -52,7 +52,7 @@ public sealed class OpenRepartConfCmd(
             Multiselect = false
         };
         if (dialog.ShowDialog(Application.Current.MainWindow) != true) return null;
-        string[] folderPaths = SourceFilePicker.GetVideoFilesInFolder(dialog.FolderName);
+        string[] folderPaths = SrcFilePicker.GetVideoFilesInFolder(dialog.FolderName);
         if (folderPaths.Length < 2)
         {
             new OpenErrModalCmd(ModalNavS, RepartConfVM.WindowTitleText, RepartLangProvider.Current.MinFolderSources).Execute(null);
@@ -88,7 +88,7 @@ public sealed class OpenRepartConfCmd(
                 RepartLangProvider.Current["ChapterSourcesMissing"]));
         if (import == null) return null;
 
-        RepartAnalysisResult? result = await RunAnalysisAsync(import.SourcePaths, requireMultipleSources: false);
+        RepartAnalysisResult? result = await RunAnalysisAsync(import.srcPaths, requireMultipleSources: false);
         if (result?.Plan == null)
             return null;
 
@@ -136,7 +136,7 @@ public sealed class OpenRepartConfCmd(
         AttachModal(progressWindow, progressVM, onClosed: () => cancellation.Cancel());
 
         int excludedCount = 0;
-        List<RepartExcludedSourceInfo> excludedItems = [];
+        List<RepartExcludedSrcInfo> excludedItems = [];
         Task<RepartAnalysisResult> analysisTask = RepartCompatibilityAnalyzer.AnalyzeAndFilterAsync(
             ffprobePath: getFfprobePath(),
             ffmpegPath: getFfmpegPath?.Invoke(),
@@ -271,7 +271,7 @@ public sealed class OpenRepartConfCmd(
     /// Builds the no-plan error message, combining the excluded sources summary with any fatal message.
     /// </summary>
     private static string BuildExcludedSummary(
-        IReadOnlyList<RepartExcludedSourceInfo> excludedItems,
+        IReadOnlyList<RepartExcludedSrcInfo> excludedItems,
         string? fatalMessage)
     {
         List<string> sections = [];
@@ -290,7 +290,7 @@ public sealed class OpenRepartConfCmd(
     /// <summary>
     /// Formats an excluded source as its display name plus the localized exclusion reason.
     /// </summary>
-    private static string FormatExcludedSummaryLine(RepartExcludedSourceInfo info) =>
+    private static string FormatExcludedSummaryLine(RepartExcludedSrcInfo info) =>
         string.Join(
             Environment.NewLine,
             info.DisplayName,

@@ -1,8 +1,8 @@
 namespace OneColumnEncoder.Components;
 
-public partial class ConcatSidebarPanel : UserControl
+public partial class ConcatSrcSidebarPanel : UserControl
 {
-    public ConcatSidebarPanel()
+    public ConcatSrcSidebarPanel()
     {
         InitializeComponent();
     }

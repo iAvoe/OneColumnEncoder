@@ -3,7 +3,7 @@ using System.IO;
 
 namespace OneColumnEncoder.Commands;
 
-public class BrowseSourceConcatCmd(
+public class BrowseSrcConcatCmd(
     ToolItemCardVM item,
     ModalNavS modalNavS,
     Func<string> getFfprobePath,
@@ -31,7 +31,7 @@ public class BrowseSourceConcatCmd(
         {
             Title = UILangProvider.Current["SourceConcat.SelectFilesTitle"],
             Multiselect = true,
-            Filter = new SourceFilePickerLangProvider(UILangProvider.Current.LanguageCode).VideoFilter,
+            Filter = new SrcFilePickerLangProvider(UILangProvider.Current.LanguageCode).VideoFilter,
             InitialDirectory = initialDirectory
         };
 
@@ -125,8 +125,8 @@ public class BrowseSourceConcatCmd(
         string[] fileNames = [.. filePaths.Select(Path.GetFileName).Where(n => !string.IsNullOrWhiteSpace(n)).Select(n => n!)];
 
         _item.P2TextData = parentDir;
-        _item.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(fileNames);
-        _item.P1TooltipText = BrowseSourceQueueCmd.FormatQueueP1TooltipText(fileNames);
+        _item.P1TextData = BrowseSrcQueueCmd.FormatQueueP1Text(fileNames);
+        _item.P1TooltipText = BrowseSrcQueueCmd.FormatQueueP1TooltipText(fileNames);
         if (_browseKey != null && _appDataM != null)
             BrowseHistory.Remember(_appDataM, _browseKey, filePaths[0]);
         _afterImport?.Invoke(_item, filePaths);
@@ -156,7 +156,7 @@ public class BrowseSourceConcatCmd(
     private static string? GetUnsupportedExtensionMessage(string[] filePaths)
     {
         // Normalize picker patterns like "*.mkv" to extensions like ".mkv" for lookup.
-        HashSet<string> videoExtensions = [.. SourceFilePickerLangProvider.VideoExtensions
+        HashSet<string> videoExtensions = [.. SrcFilePickerLangProvider.VideoExtensions
             .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
             .Select(extension => extension.TrimStart('*').ToLowerInvariant())];
 
@@ -167,7 +167,7 @@ public class BrowseSourceConcatCmd(
         string unsupportedList = string.Join(
             Environment.NewLine,
             unsupported.Select(path => $"- {Path.GetFileName(path)} ({FormatExtension(Path.GetExtension(path) ?? string.Empty)})"));
-        return string.Format(UILangProvider.Current["SourceConcat.ExtensionMismatch"], SourceFilePickerLangProvider.VideoExtensions, unsupportedList);
+        return string.Format(UILangProvider.Current["SourceConcat.ExtensionMismatch"], SrcFilePickerLangProvider.VideoExtensions, unsupportedList);
     }
 
     private static string FormatExtension(string extension) =>

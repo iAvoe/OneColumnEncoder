@@ -2,7 +2,7 @@ using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.FFmpeg;
 
-public readonly record struct FFProbeSourceStats(
+public readonly record struct FFProbeSrcStats(
     double DurationSeconds,
     double FrameRate,
     long TotalFrames,
@@ -14,7 +14,7 @@ public static class FFProbeSourceStatsReader
     private const double FallbackDuration = 600d;
     private const double FallbackFrameRate = 30d;
 
-    public static FFProbeSourceStats Read(string rawJson)
+    public static FFProbeSrcStats Read(string rawJson)
     {
         if (string.IsNullOrWhiteSpace(rawJson))
             return CreateFallback();
@@ -37,7 +37,7 @@ public static class FFProbeSourceStatsReader
             long totalFrames = TryGetFrameCount(stream)
                 ?? Math.Max(0L, (long)Math.Round(duration * frameRate));
 
-            return new FFProbeSourceStats(
+            return new FFProbeSrcStats(
                 duration,
                 frameRate,
                 totalFrames,
@@ -50,7 +50,7 @@ public static class FFProbeSourceStatsReader
         }
     }
 
-    private static FFProbeSourceStats CreateFallback() =>
+    private static FFProbeSrcStats CreateFallback() =>
         new(FallbackDuration, FallbackFrameRate, (long)(FallbackDuration * FallbackFrameRate), "unknown", "unknown");
 
     private static string GetFieldOrderKind(JsonElement stream)

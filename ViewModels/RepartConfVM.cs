@@ -171,7 +171,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         ? "00:00:00.000"
         : EncodingPipeline.FormatTimestamp(TimeSpan.FromSeconds(_analysis.TotalSeconds));
 
-    public ObservableCollection<RepartSourceItemVM> Sources { get; } = [];
+    public ObservableCollection<RepartSrcItemVM> Sources { get; } = [];
     public ObservableCollection<RepartOutputItemVM> Outputs { get; } = [];
     public ObservableCollection<RepartDividerItemVM> DividerItems { get; } = [];
     public ObservableCollection<string> AxisLabels { get; } = [];
@@ -560,7 +560,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         for (int i = 0; i < _analysis.Sources.Count; i++)
         {
             RepartSourceM source = _analysis.Sources[i];
-            Sources.Add(new RepartSourceItemVM(
+            Sources.Add(new RepartSrcItemVM(
                 source.FilePath,
                 source.FirstFrame,
                 source.LastFrame));
@@ -571,7 +571,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     {
         void Apply()
         {
-            RepartSourceItemVM? item = Sources.FirstOrDefault(source =>
+            RepartSrcItemVM? item = Sources.FirstOrDefault(source =>
                 string.Equals(source.FilePath, filePath, StringComparison.OrdinalIgnoreCase));
             item?.SetIndexState(state);
         }

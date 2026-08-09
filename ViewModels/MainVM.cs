@@ -18,9 +18,9 @@ public class MainVM : BaseVM
     private readonly ModalNavS _modalNavS;
     private readonly VideoAnalysisM _srcVideoAnalysis = new();
     private readonly ToolItemCardVM? _outputSettingCard;
-    private readonly VideoSourceQueueState _videoSourceQueue;
-    private readonly VideoSourceConcatState _videoSourceConcat;
-    private readonly VideoSourceRepartState _videoSourceRepart;
+    private readonly VideoSrcQueueState _videoSrcQueue;
+    private readonly VideoSrcConcatState _videoSrcConcat;
+    private readonly VideoSrcRepartState _videoSrcRepart;
     private const int MaxResolutionDimension = 65535;
     private string _scriptScribeFfmpegFilterArgs = string.Empty;
     private string _repartAvsFilterInput = string.Empty;
@@ -106,14 +106,14 @@ public class MainVM : BaseVM
     private bool _importedToolZonesSubscribed;
     // Checklist Card UIs
     public ToolsImportCardVM ToolsImportCard { get; }
-    public SourceCheckCardVM SrcValCard { get; } = new(); // SrcValGroup
+    public SrcCheckCardVM SrcValCard { get; } = new(); // SrcValGroup
     public EncTermsCardVM EncTermsValCard { get; } = new(); // EncTermsValGroup
     public QueueSrcFilterCardVM QueueSrcFilterCard { get; } = new();
     public ConcatCheckCardVM ConcatCheckCard { get; } = new();
     public RepartCheckCardVM RepartCheckCard { get; } = new();
     public BestPracsSelfCheckCardVM BestPracticesCard { get; } = new();
-    private SourceCheckCardVM _activeSrcValidationCard = null!;
-    public SourceCheckCardVM ActiveSrcValidationCard
+    private SrcCheckCardVM _activeSrcValidationCard = null!;
+    public SrcCheckCardVM ActiveSrcValidationCard
     {
         get => _activeSrcValidationCard;
         private set
@@ -131,7 +131,7 @@ public class MainVM : BaseVM
         ["SelectEncoder"] = () => UICaptionProvider.Sections.SelectEncoder,
         ["SelectAnalytics"] = () => UICaptionProvider.Sections.SelectAnalytics,
         ["SelectDependencies"] = () => UICaptionProvider.Sections.SelectDependencies,
-        ["ImportSource"] = () => UICaptionProvider.Sections.ImportSource,
+        ["ImportSrc"] = () => UICaptionProvider.Sections.ImportSource,
         ["EncodingConfigs"] = () => UICaptionProvider.Sections.EncodingConfigs,
         ["StartEncoding"] = () => UICaptionProvider.Sections.StartEncoding
     });
@@ -139,7 +139,7 @@ public class MainVM : BaseVM
     public LocalizedTextLookup SectionTexts => _sectionTexts;
 
     public static string SVFIClipDisabledHintText => UICaptionProvider.Hints.SVFIClipDisabled;
-    public static string AnalyzeNeedsSourceText => UICaptionProvider.Hints.AnalyzeNeedsSource;
+    public static string AnalyzeNeedsSrcText => UICaptionProvider.Hints.AnalyzeNeedsSource;
     public static string NumaCpuCheckHintText => UICaptionProvider.Hints.NumaCpuCheckTrigger;
     public static string FfmpegOptionalHintText => UICaptionProvider.Hints.FfmpegOptional;
     private string _minDurationFilterText = "";
@@ -316,7 +316,7 @@ public class MainVM : BaseVM
         }
     }
 
-    public bool IsDurationFilterVisible => GetActiveSourceRoute() == SourceRouteKind.Queue;
+    public bool IsDurationFilterVisible => GetActiveSrcRoute() == SrcRouteKind.Queue;
 
     public static string[] DurationTickLabels => ["10s", "70s", "130s", "190s", "250s", "310s"];
 
@@ -483,9 +483,9 @@ public class MainVM : BaseVM
         ToolsImportCard = new ToolsImportCardVM(modalNavS,
             exeName => BrowseHistory.GetDirectory(_appDataM, BrowseHistoryKeys.ForTool(exeName)));
         VideoSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetVideoSrcImportDefs(), true, false);
-        _videoSourceQueue = new(VideoSrcImportZone);
-        _videoSourceConcat = new(VideoSrcImportZone);
-        _videoSourceRepart = new(VideoSrcImportZone);
+        _videoSrcQueue = new(VideoSrcImportZone);
+        _videoSrcConcat = new(VideoSrcImportZone);
+        _videoSrcRepart = new(VideoSrcImportZone);
         ScriptSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetScriptSrcImportDefs(), true, false);
         QueueScriptSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetScriptSrcImportQueueDefs(), false, false);
         ActiveScriptSrcImportZone = ScriptSrcImportZone;
@@ -495,7 +495,7 @@ public class MainVM : BaseVM
         AnalyticsZone = [];
         DependenciesZone = [];
         LoadToolsFromAppDataM();
-        LoadSourcesFromAppDataM();
+        LoadSrcsFromAppDataM();
         WireUpZoneDeleteCmds();
 
         // Restore encoding cards after source import so output defaults can sync with source state.
@@ -521,7 +521,7 @@ public class MainVM : BaseVM
 
         // Build workflow commands after zones exist so delegates can resolve current selections lazily.
         OneClickScriptGen = new OneClickScriptGenCmd(
-            () => GetCurrentVideoSourcePath(),
+            () => GetCurrentVideoSrcPath(),
             () => ActiveScriptSrcImportZone[0],
             () => ActiveScriptSrcImportZone[1],
             UpstreamsZone,
@@ -534,18 +534,18 @@ public class MainVM : BaseVM
             GetRepartFilePaths);
         OpenFilterScribe = new OpenFilterScribeCmd(
             modalNavS,
-            () => GetCurrentVideoSourcePath(),
+            () => GetCurrentVideoSrcPath(),
             () => ActiveScriptSrcImportZone[0],
             () => ActiveScriptSrcImportZone[1],
-            () => SourceFileKindResolver.GetPreferredScriptSourceKind(UpstreamsZone),
-            OnSourceImported,
+            () => SrcFileKindResolver.GetPreferredScriptSrcKind(UpstreamsZone),
+            OnSrcImported,
             args => _scriptScribeFfmpegFilterArgs = args ?? string.Empty,
             () => ActiveSrcValidationCard.Checklist1.Any(
                 e => e.IsEnabled && e.Status == StatusType.Error),
             () => ActiveSrcValidationCard.Checklist2.Count > 1
                 && ActiveSrcValidationCard.Checklist2[1].Status == StatusType.Warning,
             () => _srcVideoAnalysis.RawJson,
-            TrySourceReviser,
+            TrySrcReviser,
             () => UpstreamsZone.Any(
                 t => t.IsSelected &&
                 ToolDefinitionProviderM.IsImportedTool(t.Name, "one_line_shot_args.exe")),
@@ -575,14 +575,14 @@ public class MainVM : BaseVM
             _srcVideoAnalysis, modalNavS, IsQueueRouteActive, () => IsConcatRouteActive() || IsRepartRouteActive());
         AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(
             GetSelectedFfprobePath,
-            GetSelectedVideoSourcePath,
+            GetSelectedVideoSrcPath,
             _srcVideoAnalysis,
             () => ActiveSrcValidationCard,
             modalNavS,
             IsQueueRouteActive,
             GetCurrentQueueFilePaths,
-            OnSourceQueueAccepted,
-            OnSourceAnalysisCompleted,
+            OnSrcQueueAccepted,
+            OnSrcAnalysisCompleted,
             () =>
             { // On source analysis complete
                 UpdateAnalyzeSrcButtonsState();
@@ -595,7 +595,7 @@ public class MainVM : BaseVM
             appConfM,
             BuildEncodingPipelineRequest,
             _srcVideoAnalysis,
-            () => GetActiveSourceRoute() != SourceRouteKind.Single);
+            () => GetActiveSrcRoute() != SrcRouteKind.Single);
         StartEncode = new StartEncCmd(
             BuildEncodingPipelineRequest,
             modalNavS,
@@ -604,7 +604,7 @@ public class MainVM : BaseVM
             GetCurrentQueueJsonPath,
             BuildQueueEncodingPipelineRequests,
             IsQueueRouteSupported,
-            FilterSourcePathsByDuration,
+            FilterSrcPathsByDuration,
             IsConcatRouteActive,
             BuildConcatEncodingPipelineRequest,
             IsConcatRouteSupported,
@@ -654,7 +654,7 @@ public class MainVM : BaseVM
         {
             if (string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson))
             {
-                ShowSourceAnalysisRequiredModal();
+                ShowSrcAnalysisRequiredModal();
                 return;
             }
 
@@ -671,7 +671,7 @@ public class MainVM : BaseVM
         {
             if (string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson))
             {
-                ShowSourceAnalysisRequiredModal();
+                ShowSrcAnalysisRequiredModal();
                 return;
             }
 
@@ -685,7 +685,7 @@ public class MainVM : BaseVM
                     UICaptionProvider.SourceInspect.WarnTitle, text).Execute(null);
         });
 
-        foreach (SourceCheckCardVM sourceCard in new SourceCheckCardVM[]
+        foreach (SrcCheckCardVM sourceCard in new SrcCheckCardVM[]
         {
             SrcValCard,
             QueueSrcFilterCard,
@@ -778,13 +778,13 @@ public class MainVM : BaseVM
         };
         EncTermsValCard.GetSourceVideoFilePathFunc = () =>
         {
-            return GetSelectedVideoSourcePath();
+            return GetSelectedVideoSrcPath();
         };
         EncTermsValCard.GetEncoderNodeIdFunc = () => ParallelismConfM.LoadEffective().DownstreamNodeId;
 
         // Run final state refreshes after all cards, commands, and subscriptions are ready.
         EncTermsValCard.RunAllChecks();
-        SyncOutputFilenameWithVideoSource();
+        SyncOutputFilenameWithVideoSrc();
         SubToImportedToolZones();
         AnalyticsZone.CollectionChanged += OnAnalyticsZoneCollectionChanged;
         RefreshImportedToolStates(); // initial state after loading
@@ -792,7 +792,7 @@ public class MainVM : BaseVM
         RevertCancelledAutoSelection(DependenciesZone);
         SubToToolsChecklist();
         UpdateFilterScbButtonsState(); // Initial state of script scribe buttons
-        RefreshSelectedSourceStatus();
+        RefreshSelectedSrcStatus();
         UpdateAnalyzeSrcButtonsState();
 
         _modalNavS.CurrentViewModelChanged += OnModalStateChanged;
@@ -939,9 +939,9 @@ public class MainVM : BaseVM
         // Only mark IsCancel for auto-selected items, user manual selection won't be reverted
         ToolCompatibility.RefreshDependencySelectionState(
             UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
-        ToolCompatibility.RefreshSourceSelectionState(
-            UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
-        ToolCompatibility.RefreshVideoSourceSelectionState(
+        ToolCompatibility.RefreshSrcSelectState(
+            UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSrcStatus());
+        ToolCompatibility.RefreshVideoSrcSelectState(
             UpstreamsZone, VideoSrcImportZone, HasImportedFfprobe());
 
         // Revert the selection for IsCancel caused by "Auto Selection".
@@ -977,9 +977,9 @@ public class MainVM : BaseVM
         RefreshImportedToolPickedStatus(zone);
         ToolCompatibility.RefreshDependencySelectionState(
             UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
-        ToolCompatibility.RefreshSourceSelectionState(
-            UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
-        ToolCompatibility.RefreshVideoSourceSelectionState(
+        ToolCompatibility.RefreshSrcSelectState(
+            UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSrcStatus());
+        ToolCompatibility.RefreshVideoSrcSelectState(
             UpstreamsZone, VideoSrcImportZone, HasImportedFfprobe());
     }
 
@@ -1012,9 +1012,9 @@ public class MainVM : BaseVM
         RefreshEncTermsState();
         ToolCompatibility.RefreshDependencySelectionState(
             UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
-        ToolCompatibility.RefreshSourceSelectionState(
-            UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSourceStatus());
-        ToolCompatibility.RefreshVideoSourceSelectionState(
+        ToolCompatibility.RefreshSrcSelectState(
+            UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSrcStatus());
+        ToolCompatibility.RefreshVideoSrcSelectState(
             UpstreamsZone, VideoSrcImportZone, HasImportedFfprobe());
     }
 
@@ -1029,17 +1029,17 @@ public class MainVM : BaseVM
 
     private void RefreshEncSettingsState()
     {
-        bool hasAnySource = BothSourceSelected();
+        bool hasAnySource = BothSrcSelected();
         foreach (ToolItemCardVM item in EncodingConfZone)
             item.IsEnabled = hasAnySource;
     }
 
     private void RefreshScriptSourceEnabledState()
     {
-        if (GetActiveSourceRoute() != SourceRouteKind.Single) return;
+        if (GetActiveSrcRoute() != SrcRouteKind.Single) return;
 
-        bool hasVideoSource = !string.IsNullOrWhiteSpace(GetCurrentVideoSourcePath());
-        if (hasVideoSource) return;
+        bool hasVideoSrc = !string.IsNullOrWhiteSpace(GetCurrentVideoSrcPath());
+        if (hasVideoSrc) return;
 
         foreach (ToolItemCardVM item in ScriptSrcImportZone)
         {
@@ -1048,19 +1048,19 @@ public class MainVM : BaseVM
         }
     }
 
-    private void SyncOutputFilenameWithVideoSource(string? filePath = null)
+    private void SyncOutputFilenameWithVideoSrc(string? filePath = null)
     {
         ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t =>
             t.Name.Equals(UILangProvider.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
         if (outputSetting == null) return;
 
-        string? sourcePath = filePath;
-        if (string.IsNullOrWhiteSpace(sourcePath))
-            sourcePath = GetSelectedVideoSourcePath();
+        string? srcPath = filePath;
+        if (string.IsNullOrWhiteSpace(srcPath))
+            srcPath = GetSelectedVideoSrcPath();
 
-        if (string.IsNullOrWhiteSpace(sourcePath)) return;
+        if (string.IsNullOrWhiteSpace(srcPath)) return;
 
-        outputSetting.RefreshOutputSetting(false, _modalNavS, sourcePath);
+        outputSetting.RefreshOutputSetting(false, _modalNavS, srcPath);
     }
 
     #endregion
@@ -1139,7 +1139,7 @@ public class MainVM : BaseVM
             t => t.IsSelected &&
             ToolDefinitionProviderM.IsImportedTool(t.Name, "one_line_shot_args.exe"));
 
-        bool hasVideoSrc = HasSelectedVideoSource();
+        bool hasVideoSrc = HasSelectedVideoSrc();
         bool hasRawJson = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
 
         if (oneLineShotSelected)
@@ -1180,7 +1180,7 @@ public class MainVM : BaseVM
         bool hasRawJson = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
 
         // Warning status does not block start; only Error blocks.
-        SourceCheckCardVM activeSrcCard = ActiveSrcValidationCard;
+        SrcCheckCardVM activeSrcCard = ActiveSrcValidationCard;
         bool allSrcSuccess = activeSrcCard.Checklist1.Where(e => e.IsEnabled).All(e => e.Status != StatusType.Error) &&
                              activeSrcCard.Checklist2.Where(e => e.IsEnabled).All(e => e.Status != StatusType.Error);
         bool sourceValidationReady = hasRawJson && allSrcSuccess;
@@ -1203,22 +1203,22 @@ public class MainVM : BaseVM
             t => t.IsSelected &&
             ToolDefinitionProviderM.IsImportedTool(t.Name, "one_line_shot_args.exe"));
 
-        bool repartMuxReady = GetActiveSourceRoute() != SourceRouteKind.Repart
+        bool repartMuxReady = GetActiveSrcRoute() != SrcRouteKind.Repart
             || (!string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath) && File.Exists(_appDataM.Tools.FfmpegPath));
         bool allReady = toolsReady && toolsChecklistReady && sourceValidationReady && encodeTermsReady && dependencyReady && repartMuxReady;
-        EncStartButtons.B3_2IsEnabled = allReady && !oneLineShotSelected && GetActiveSourceRoute() == SourceRouteKind.Single;
+        EncStartButtons.B3_2IsEnabled = allReady && !oneLineShotSelected && GetActiveSrcRoute() == SrcRouteKind.Single;
         EncStartButtons.B3_3IsEnabled = allReady;
         SVFIClipDisabledHintVisible = oneLineShotSelected;
     }
 
-    private void RefreshToolSourceChecklistStatus()
+    private void RefreshToolSrcChecklistStatus()
     {
-        bool hasVideoSource = HasSelectedVideoSource();
-        ToolsImportCard.SetVideoSourcePickedStatus(hasVideoSource);
+        bool hasVideoSrc = HasSelectedVideoSrc();
+        ToolsImportCard.SetVideoSrcPickedStatus(hasVideoSrc);
 
-        SourceFileKind? expectedKind = GetExpectedScriptSourceKindForSelectedUpstream();
+        SrcFileKind? expectedKind = GetExpectedScriptSrcKindForSelectedUpstream();
         bool scriptSourcePicked = expectedKind == null
-            || GetActiveSourceRoute() == SourceRouteKind.Repart
+            || GetActiveSrcRoute() == SrcRouteKind.Repart
             || IsScriptSourceSelected(expectedKind.Value);
         ToolsImportCard.SetScriptSourcePickedStatus(expectedKind != null, scriptSourcePicked);
     }
@@ -1237,71 +1237,71 @@ public class MainVM : BaseVM
     #endregion
 
     #region Source State Queries
-    private string GetCurrentVideoSourcePath()
+    private string GetCurrentVideoSrcPath()
     {
         ToolItemCardVM? videoSrc = VideoSrcImportZone.FirstOrDefault(t =>
-            !IsVideoSourceQueueItem(t) &&
-            !IsVideoSourceConcatItem(t) &&
-            !IsVideoSourceRepartItem(t) &&
+            !IsVideoSrcQueueItem(t) &&
+            !IsVideoSrcConcatItem(t) &&
+            !IsVideoSrcRepartItem(t) &&
             !string.IsNullOrWhiteSpace(t.P2TextData));
         return videoSrc?.P2TextData ?? string.Empty;
     }
 
-    private string GetCurrentSourceImportPath()
+    private string GetCurrentSrcImportPath()
     {
-        SourceRouteKind route = GetActiveSourceRoute();
+        SrcRouteKind route = GetActiveSrcRoute();
 
-        if (route == SourceRouteKind.Queue)
+        if (route == SrcRouteKind.Queue)
         {
-            ToolItemCardVM? queueSrc = VideoSrcImportZone.FirstOrDefault(t => IsVideoSourceQueueItem(t) && !string.IsNullOrWhiteSpace(t.P2TextData));
+            ToolItemCardVM? queueSrc = VideoSrcImportZone.FirstOrDefault(t => IsVideoSrcQueueItem(t) && !string.IsNullOrWhiteSpace(t.P2TextData));
             return queueSrc?.P2TextData ?? string.Empty;
         }
 
-        if (route == SourceRouteKind.Concat)
+        if (route == SrcRouteKind.Concat)
         {
-            ToolItemCardVM? concatSrc = VideoSrcImportZone.FirstOrDefault(t => IsVideoSourceConcatItem(t) && !string.IsNullOrWhiteSpace(t.P2TextData));
+            ToolItemCardVM? concatSrc = VideoSrcImportZone.FirstOrDefault(t => IsVideoSrcConcatItem(t) && !string.IsNullOrWhiteSpace(t.P2TextData));
             return concatSrc?.P2TextData ?? string.Empty;
         }
 
-        if (route == SourceRouteKind.Repart)
+        if (route == SrcRouteKind.Repart)
         {
-            ToolItemCardVM? repartSrc = VideoSrcImportZone.FirstOrDefault(t => IsVideoSourceRepartItem(t) && !string.IsNullOrWhiteSpace(t.P2TextData));
+            ToolItemCardVM? repartSrc = VideoSrcImportZone.FirstOrDefault(t => IsVideoSrcRepartItem(t) && !string.IsNullOrWhiteSpace(t.P2TextData));
             return repartSrc?.P2TextData ?? string.Empty;
         }
 
-        return GetCurrentVideoSourcePath();
+        return GetCurrentVideoSrcPath();
     }
 
-    private bool CanRunSourceAnalysis() =>
-        HasSelectedVideoSource() &&
-        GetActiveSourceRoute() != SourceRouteKind.Repart &&
-        (GetActiveSourceRoute() != SourceRouteKind.Concat || GetConcatFilePaths().Length > 1) &&
+    private bool CanRunSrcAnalysis() =>
+        HasSelectedVideoSrc() &&
+        GetActiveSrcRoute() != SrcRouteKind.Repart &&
+        (GetActiveSrcRoute() != SrcRouteKind.Concat || GetConcatFilePaths().Length > 1) &&
         AnalyticsZone.Any(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
 
-    private bool IsCurrentAnalysisFor(string sourcePath, string ffprobePath) =>
+    private bool IsCurrentAnalysisFor(string srcPath, string ffprobePath) =>
         !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson) &&
-        string.Equals(_srcVideoAnalysis.SourcePath, sourcePath, StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(_srcVideoAnalysis.srcPath, srcPath, StringComparison.OrdinalIgnoreCase) &&
         string.Equals(_srcVideoAnalysis.FfprobePath, ffprobePath, StringComparison.OrdinalIgnoreCase);
 
-    private SourceRouteKind GetActiveSourceRoute()
+    private SrcRouteKind GetActiveSrcRoute()
     {
-        if (_videoSourceQueue.IsActive) return SourceRouteKind.Queue;
-        if (_videoSourceConcat.IsActive) return SourceRouteKind.Concat;
-        if (_videoSourceRepart.IsActive) return SourceRouteKind.Repart;
-        return SourceRouteKind.Single;
+        if (_videoSrcQueue.IsActive) return SrcRouteKind.Queue;
+        if (_videoSrcConcat.IsActive) return SrcRouteKind.Concat;
+        if (_videoSrcRepart.IsActive) return SrcRouteKind.Repart;
+        return SrcRouteKind.Single;
     }
 
     private bool IsQueueRouteActive() =>
-        _videoSourceQueue.IsActive;
+        _videoSrcQueue.IsActive;
 
     private bool IsConcatRouteActive() =>
-        _videoSourceConcat.IsActive;
+        _videoSrcConcat.IsActive;
 
     private bool IsRepartRouteActive() =>
-        _videoSourceRepart.IsActive;
+        _videoSrcRepart.IsActive;
 
     private string[] GetCurrentQueueFilePaths() =>
-        _videoSourceQueue.CurrentFilePaths;
+        _videoSrcQueue.CurrentFilePaths;
 
     private string GetCurrentQueueJsonPath() =>
         QueueSrcFilterCard.QueueJsonPath;
@@ -1312,7 +1312,7 @@ public class MainVM : BaseVM
         string? upstreamExeName = upstream == null
             ? null
             : ToolCatalogProviderM.ResolveExeFromDisplayName(upstream.Name);
-        return SourceFileKindResolver.IsQueueRouteSupportedUpstream(upstreamExeName);
+        return SrcFileKindResolver.IsQueueRouteSupportedUpstream(upstreamExeName);
     }
 
     private bool IsConcatRouteSupported()
@@ -1321,7 +1321,7 @@ public class MainVM : BaseVM
         string? upstreamExeName = upstream == null
             ? null
             : ToolCatalogProviderM.ResolveExeFromDisplayName(upstream.Name);
-        return SourceFileKindResolver.IsConcatRouteSupportedUpstream(upstreamExeName);
+        return SrcFileKindResolver.IsConcatRouteSupportedUpstream(upstreamExeName);
     }
 
     private bool IsRepartRouteSupported()
@@ -1330,68 +1330,68 @@ public class MainVM : BaseVM
         string? upstreamExeName = upstream == null
             ? null
             : ToolCatalogProviderM.ResolveExeFromDisplayName(upstream.Name);
-        return SourceFileKindResolver.IsRepartRouteSupportedUpstream(upstreamExeName)
+        return SrcFileKindResolver.IsRepartRouteSupportedUpstream(upstreamExeName)
             && !string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath);
     }
 
     private string[] GetConcatFilePaths() =>
-        _videoSourceConcat.CurrentFilePaths;
+        _videoSrcConcat.CurrentFilePaths;
 
     private string[] GetRepartFilePaths() =>
-        _videoSourceRepart.CurrentFilePaths;
+        _videoSrcRepart.CurrentFilePaths;
 
     private RepartPlanM? GetRepartPlan() =>
-        _videoSourceRepart.CurrentPlan;
+        _videoSrcRepart.CurrentPlan;
 
     private string GetConcatOutputBaseName() =>
-        BrowseSourceQueueCmd.FormatConcatFileName(GetConcatFilePaths());
+        BrowseSrcQueueCmd.FormatConcatFileName(GetConcatFilePaths());
 
-    private string GetSelectedVideoSourcePath()
+    private string GetSelectedVideoSrcPath()
     {
-        ToolItemCardVM? videoSrc = GetSelectedSingleVideoSource();
+        ToolItemCardVM? videoSrc = GetSelectedSingleVideoSrc();
         return videoSrc?.P2TextData ?? string.Empty;
     }
 
-    private ToolItemCardVM? GetSelectedSingleVideoSource() =>
+    private ToolItemCardVM? GetSelectedSingleVideoSrc() =>
         VideoSrcImportZone.FirstOrDefault(t =>
-            !IsVideoSourceQueueItem(t) &&
-            !IsVideoSourceConcatItem(t) &&
-            !IsVideoSourceRepartItem(t) &&
+            !IsVideoSrcQueueItem(t) &&
+            !IsVideoSrcConcatItem(t) &&
+            !IsVideoSrcRepartItem(t) &&
             t.IsSelected &&
             !string.IsNullOrWhiteSpace(t.P2TextData));
 
-    private bool HasSelectedVideoSource()
+    private bool HasSelectedVideoSrc()
     {
-        SourceRouteKind route = GetActiveSourceRoute();
+        SrcRouteKind route = GetActiveSrcRoute();
         return route switch
         {
-            SourceRouteKind.Queue => GetCurrentQueueFilePaths().Length > 0,
-            SourceRouteKind.Concat => GetConcatFilePaths().Length > 0,
-            SourceRouteKind.Repart => GetRepartPlan()?.IsConfigured == true,
-            _ => GetSelectedSingleVideoSource() != null
+            SrcRouteKind.Queue => GetCurrentQueueFilePaths().Length > 0,
+            SrcRouteKind.Concat => GetConcatFilePaths().Length > 0,
+            SrcRouteKind.Repart => GetRepartPlan()?.IsConfigured == true,
+            _ => GetSelectedSingleVideoSrc() != null
         };
     }
 
-    private bool BothSourceSelected() =>
-        HasSelectedVideoSource() &&
-        (GetActiveSourceRoute() != SourceRouteKind.Concat || GetConcatFilePaths().Length > 1) &&
+    private bool BothSrcSelected() =>
+        HasSelectedVideoSrc() &&
+        (GetActiveSrcRoute() != SrcRouteKind.Concat || GetConcatFilePaths().Length > 1) &&
         HasRequiredScriptSourceSelected();
 
     private bool HasRequiredScriptSourceSelected()
     {
-        SourceFileKind? expectedKind = GetExpectedScriptSourceKindForSelectedUpstream();
+        SrcFileKind? expectedKind = GetExpectedScriptSrcKindForSelectedUpstream();
         return expectedKind == null
-            || GetActiveSourceRoute() == SourceRouteKind.Repart
+            || GetActiveSrcRoute() == SrcRouteKind.Repart
             || IsScriptSourceSelected(expectedKind.Value);
     }
 
-    private bool IsScriptSourceSelected(SourceFileKind expectedKind) =>
+    private bool IsScriptSourceSelected(SrcFileKind expectedKind) =>
         ActiveScriptSrcImportZone.Any(t =>
             t.IsSelected &&
             !string.IsNullOrWhiteSpace(t.P2TextData) &&
-            SourceFileKindResolver.ResolveSourceFileKind(t.Name) == expectedKind);
+            SrcFileKindResolver.ResolveSrcFileKind(t.Name) == expectedKind);
 
-    private SourceFileKind? GetExpectedScriptSourceKindForSelectedUpstream()
+    private SrcFileKind? GetExpectedScriptSrcKindForSelectedUpstream()
     {
         ToolItemCardVM? selectedUpstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected);
         string? exe = selectedUpstream == null
@@ -1400,9 +1400,9 @@ public class MainVM : BaseVM
 
         return exe switch
         {
-            "vspipe.exe" => SourceFileKind.VapourSynthScript,
-            "avs2yuv.exe" or "avs2pipemod.exe" => SourceFileKind.AviSynthScript,
-            "one_line_shot_args.exe" => SourceFileKind.SvfiIni,
+            "vspipe.exe" => SrcFileKind.VapourSynthScript,
+            "avs2yuv.exe" or "avs2pipemod.exe" => SrcFileKind.AviSynthScript,
+            "one_line_shot_args.exe" => SrcFileKind.SvfiIni,
             _ => null
         };
     }
@@ -1415,13 +1415,13 @@ public class MainVM : BaseVM
 
     private string GetPreviewSourceVideoPath()
     {
-        SourceRouteKind route = GetActiveSourceRoute();
+        SrcRouteKind route = GetActiveSrcRoute();
         return route switch
         {
-            SourceRouteKind.Queue => GetCurrentQueueFilePaths().FirstOrDefault() ?? string.Empty,
-            SourceRouteKind.Concat => GetConcatFilePaths().FirstOrDefault() ?? string.Empty,
-            SourceRouteKind.Repart => GetRepartFilePaths().FirstOrDefault() ?? string.Empty,
-            _ => GetSelectedVideoSourcePath()
+            SrcRouteKind.Queue => GetCurrentQueueFilePaths().FirstOrDefault() ?? string.Empty,
+            SrcRouteKind.Concat => GetConcatFilePaths().FirstOrDefault() ?? string.Empty,
+            SrcRouteKind.Repart => GetRepartFilePaths().FirstOrDefault() ?? string.Empty,
+            _ => GetSelectedVideoSrcPath()
         };
     }
 
@@ -1429,7 +1429,7 @@ public class MainVM : BaseVM
     {
         ToolItemCardVM? svfiIni = ActiveScriptSrcImportZone.FirstOrDefault(t =>
             t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData) &&
-            SourceFileKindResolver.ResolveSourceFileKind(t.Name) == SourceFileKind.SvfiIni);
+            SrcFileKindResolver.ResolveSrcFileKind(t.Name) == SrcFileKind.SvfiIni);
         return svfiIni?.P2TextData ?? string.Empty;
     }
 
@@ -1437,25 +1437,25 @@ public class MainVM : BaseVM
     {
         if (upstreamExeName.Equals("ffmpeg.exe", StringComparison.OrdinalIgnoreCase) ||
             upstreamExeName.Equals("one_line_shot_args.exe", StringComparison.OrdinalIgnoreCase))
-            return GetSelectedVideoSourcePath();
+            return GetSelectedVideoSrcPath();
 
-        SourceFileKind kind = upstreamExeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase)
-            ? SourceFileKind.VapourSynthScript
-            : SourceFileKind.AviSynthScript;
+        SrcFileKind kind = upstreamExeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase)
+            ? SrcFileKind.VapourSynthScript
+            : SrcFileKind.AviSynthScript;
 
         ToolItemCardVM? source = ActiveScriptSrcImportZone.FirstOrDefault(t =>
-            SourceFileKindResolver.ResolveSourceFileKind(t.Name) == kind && !string.IsNullOrWhiteSpace(t.P2TextData));
+            SrcFileKindResolver.ResolveSrcFileKind(t.Name) == kind && !string.IsNullOrWhiteSpace(t.P2TextData));
         return source?.P2TextData ?? string.Empty;
     }
 
-    private bool IsVideoSourceQueueItem(ToolItemCardVM item) =>
-        _videoSourceQueue.IsQueueItem(item);
+    private bool IsVideoSrcQueueItem(ToolItemCardVM item) =>
+        _videoSrcQueue.IsQueueItem(item);
 
-    private bool IsVideoSourceConcatItem(ToolItemCardVM item) =>
-        _videoSourceConcat.IsConcatItem(item);
+    private bool IsVideoSrcConcatItem(ToolItemCardVM item) =>
+        _videoSrcConcat.IsConcatItem(item);
 
-    private bool IsVideoSourceRepartItem(ToolItemCardVM item) =>
-        _videoSourceRepart.IsRepartItem(item);
+    private bool IsVideoSrcRepartItem(ToolItemCardVM item) =>
+        _videoSrcRepart.IsRepartItem(item);
 
     private bool HasImportedFfprobe() =>
         AnalyticsZone.Any(t =>
@@ -1465,9 +1465,9 @@ public class MainVM : BaseVM
     private bool HasImportedAviSynthDll() =>
         !string.IsNullOrWhiteSpace(_appDataM.Tools.AviSynthDllPath);
 
-    private bool ShouldSelectImportedScriptSource(SourceFileKind kind)
+    private bool ShouldSelectImportedScriptSource(SrcFileKind kind)
     {
-        SourceFileKind? preferredKind = SourceFileKindResolver.GetPreferredScriptSourceKind(UpstreamsZone);
+        SrcFileKind? preferredKind = SrcFileKindResolver.GetPreferredScriptSrcKind(UpstreamsZone);
         return preferredKind == null || kind == preferredKind.Value;
     }
 
@@ -1514,30 +1514,30 @@ public class MainVM : BaseVM
     }
     private void WireUpSourceCmd(ToolItemCardVM item)
     {
-        if (IsVideoSourceQueueItem(item))
+        if (IsVideoSrcQueueItem(item))
         {
-            item.R1Command = new BrowseSourceQueueCmd(item, _modalNavS, _appDataM, BrowseHistoryKeys.VideoSourceQueue, OnSourceQueueImported);
-            item.R2Command = new ClearToolItemCmd(item, () => OnSourceQueueCleared(item));
+            item.R1Command = new BrowseSrcQueueCmd(item, _modalNavS, _appDataM, BrowseHistoryKeys.VideoSrcQueue, OnSrcQueueImported);
+            item.R2Command = new ClearToolItemCmd(item, () => OnSrcQueueCleared(item));
             item.PropertyChanged += OnVideoSrcItemPropertyChanged;
             return;
         }
 
-        if (IsVideoSourceConcatItem(item))
+        if (IsVideoSrcConcatItem(item))
         {
-            item.R1Command = new BrowseSourceConcatCmd(
+            item.R1Command = new BrowseSrcConcatCmd(
                 item,
                 _modalNavS,
                 GetSelectedFfprobePath,
                 ConcatCheckCard.IsSvtav1SelectedFunc,
                 _appDataM,
-                BrowseHistoryKeys.VideoSourceConcat,
-                OnSourceConcatImported);
-            item.R2Command = new ClearToolItemCmd(item, OnSourceConcatCleared);
+                BrowseHistoryKeys.VideoSrcConcat,
+                OnSrcConcatImported);
+            item.R2Command = new ClearToolItemCmd(item, OnSrcConcatCleared);
             item.PropertyChanged += OnVideoSrcItemPropertyChanged;
             return;
         }
 
-        if (IsVideoSourceRepartItem(item))
+        if (IsVideoSrcRepartItem(item))
         {
             item.R1Command = new OpenRepartConfCmd(
                 _modalNavS,
@@ -1545,22 +1545,22 @@ public class MainVM : BaseVM
                 () => _appDataM.Tools.FfmpegPath,
                 GetRepartPlan,
                 ApplyRepartPlan);
-            item.R2Command = new ClearToolItemCmd(item, OnSourceRepartCleared);
+            item.R2Command = new ClearToolItemCmd(item, OnSrcRepartCleared);
             item.PropertyChanged += OnVideoSrcItemPropertyChanged;
             return;
         }
 
-        SourceFileKind kind = SourceFileKindResolver.ResolveSourceFileKind(item.Name);
+        SrcFileKind kind = SrcFileKindResolver.ResolveSrcFileKind(item.Name);
         if (QueueScriptSrcImportZone.Contains(item))
         {
-            item.R1Command = new BrowseSourceScriptQueueCmd(item, kind, _appDataM, BrowseHistoryKeys.ForScriptQueue(kind), OnSourceScriptQueueImported, GetCurrentSourceImportPath);
-            item.R2Command = new ClearToolItemCmd(item, () => OnSourceScriptQueueCleared(item));
+            item.R1Command = new BrowseSrcScriptQueueCmd(item, kind, _appDataM, BrowseHistoryKeys.ForScriptQueue(kind), OnSrcScriptQueueImported, GetCurrentSrcImportPath);
+            item.R2Command = new ClearToolItemCmd(item, () => OnSrcScriptQueueCleared(item));
         }
         else
         {
-            item.R1Command = new BrowseSourcePathCmd(item, kind, _appDataM, _modalNavS, BrowseHistoryKeys.ForSingleSource(kind), OnVideoSourceImported,
-                kind == SourceFileKind.Video ? null : GetCurrentSourceImportPath);
-            item.R2Command = new ClearToolItemCmd(item, () => OnSourceCleared(kind));
+            item.R1Command = new BrowseSrcPathCmd(item, kind, _appDataM, _modalNavS, BrowseHistoryKeys.ForSingleSource(kind), OnVideoSrcImported,
+                kind == SrcFileKind.Video ? null : GetCurrentSrcImportPath);
+            item.R2Command = new ClearToolItemCmd(item, () => OnSrcCleared(kind));
         }
         item.PropertyChanged += OnVideoSrcItemPropertyChanged;
     }
@@ -1572,8 +1572,8 @@ public class MainVM : BaseVM
         outputSetting ??= _outputSettingCard;
         if (outputSetting == null) return;
 
-        SourceRouteKind route = GetActiveSourceRoute();
-        if (route is SourceRouteKind.Queue or SourceRouteKind.Repart)
+        SrcRouteKind route = GetActiveSrcRoute();
+        if (route is SrcRouteKind.Queue or SrcRouteKind.Repart)
         {
             outputSetting.RefreshOutputSetting(true, _modalNavS);
             return;
@@ -1581,7 +1581,7 @@ public class MainVM : BaseVM
         outputSetting.RefreshOutputSetting(
             false,
             _modalNavS,
-            route == SourceRouteKind.Single ? GetSelectedVideoSourcePath() : null);
+            route == SrcRouteKind.Single ? GetSelectedVideoSrcPath() : null);
     }
 
     private void WireUpEncSettingsCmds()
@@ -1614,7 +1614,7 @@ public class MainVM : BaseVM
     {
         if (sender is not ToolItemCardVM) return;
         if (e.PropertyName is nameof(ToolItemCardVM.P2TextData) or nameof(ToolItemCardVM.IsSelected))
-            RefreshSelectedSourceStatus(resetAnalysis: false);
+            RefreshSelectedSrcStatus(resetAnalysis: false);
     }
 
     private void OnOutputSettingPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -1645,7 +1645,7 @@ public class MainVM : BaseVM
         if (sender is not ToolItemCardVM) return;
         if (e.PropertyName == nameof(ToolItemCardVM.IsSelected))
         {
-            RefreshToolSourceChecklistStatus();
+            RefreshToolSrcChecklistStatus();
             RefreshEncTermsState();
         }
     }
@@ -1676,9 +1676,9 @@ public class MainVM : BaseVM
             UpstreamsZone, EncodersZone, AnalyticsZone, DependenciesZone,
             VideoSrcImportZone, ActiveScriptSrcImportZone,
             ToolsImportCard,
-            RefreshSelectedSourceStatusAfterSourceSelection,
+            RefreshSelectedSrcStatusAfterSrcSelection,
             UpdateEncStartButtonsState,
-            () => RefreshSelectedSourceStatus(),
+            () => RefreshSelectedSrcStatus(),
             HasImportedFfprobe());
 
         // Keep avs2pipemod <-> avisynth.dll selection in lockstep.
@@ -1745,9 +1745,9 @@ public class MainVM : BaseVM
     #endregion
 
     // File save & ItemCard saving: Try save, then write back after FilterScribeModal completes
-    private void OnSourceImported(ToolItemCardVM item, SourceFileKind kind, string filePath)
+    private void OnSrcImported(ToolItemCardVM item, SrcFileKind kind, string filePath)
     {
-        if (kind != SourceFileKind.Video)
+        if (kind != SrcFileKind.Video)
         {
             // The source-check modal is designed for the single-source workflow:
             // one script file is compared against one active video path.
@@ -1759,30 +1759,30 @@ public class MainVM : BaseVM
                 string? error = ValidateSingleScriptImport(kind, filePath);
                 if (error != null)
                 {
-                    ClearSourceItem(item);
-                    SaveSourcePath(kind, string.Empty);
+                    ClearSrcItem(item);
+                    SaveSrcPath(kind, string.Empty);
                     _appDataM.Save();
                     new OpenErrModalCmd(_modalNavS, UILangProvider.Current["Warn.SourceCheck"], error).Execute(null);
-                    RefreshSelectedSourceStatus(resetAnalysis: false);
+                    RefreshSelectedSrcStatus(resetAnalysis: false);
                     return;
                 }
             }
         }
 
-        SaveSourcePath(kind, filePath);
+        SaveSrcPath(kind, filePath);
 
-        if (kind == SourceFileKind.Video)
+        if (kind == SrcFileKind.Video)
         {
-            SyncOutputFilenameWithVideoSource(filePath);
+            SyncOutputFilenameWithVideoSrc(filePath);
 
             foreach (ToolItemCardVM source in VideoSrcImportZone)
                 source.IsSelected = false;
 
-            ClearScriptSourceZone(ScriptSrcImportZone);
-            ClearScriptSourceZone(QueueScriptSrcImportZone);
-            SaveSourcePath(SourceFileKind.AviSynthScript, string.Empty);
-            SaveSourcePath(SourceFileKind.VapourSynthScript, string.Empty);
-            SaveSourcePath(SourceFileKind.SvfiIni, string.Empty);
+            ClearScriptSrcZone(ScriptSrcImportZone);
+            ClearScriptSrcZone(QueueScriptSrcImportZone);
+            SaveSrcPath(SrcFileKind.AviSynthScript, string.Empty);
+            SaveSrcPath(SrcFileKind.VapourSynthScript, string.Empty);
+            SaveSrcPath(SrcFileKind.SvfiIni, string.Empty);
         }
         else
         {
@@ -1793,24 +1793,24 @@ public class MainVM : BaseVM
             }
         }
 
-        bool shouldSelectImportedSource = kind == SourceFileKind.Video || ShouldSelectImportedScriptSource(kind);
+        bool shouldSelectImportedSource = kind == SrcFileKind.Video || ShouldSelectImportedScriptSource(kind);
         if (item.IsEnabled && shouldSelectImportedSource) item.IsSelected = true;
         _appDataM.Save();
-        RefreshSelectedSourceStatus(resetAnalysis: kind == SourceFileKind.Video);
+        RefreshSelectedSrcStatus(resetAnalysis: kind == SrcFileKind.Video);
     }
 
-    private string? ValidateSingleScriptImport(SourceFileKind kind, string filePath)
+    private string? ValidateSingleScriptImport(SrcFileKind kind, string filePath)
     {
-        string videoPath = GetCurrentVideoSourcePath();
-        ScriptSourceValidationIssue? issue = ScriptSourceValidation.ValidateSingle(kind, filePath, videoPath);
+        string videoPath = GetCurrentVideoSrcPath();
+        ScriptSrcValIssue? issue = ScriptSrcValidator.ValidateSingle(kind, filePath, videoPath);
         return issue == null ? null : FormatScriptImportIssues([issue]);
     }
 
-    private void OnVideoSourceImported(ToolItemCardVM item, SourceFileKind kind, string filePath, bool _)
+    private void OnVideoSrcImported(ToolItemCardVM item, SrcFileKind kind, string filePath, bool _)
     {
-        OnSourceImported(item, kind, filePath);
+        OnSrcImported(item, kind, filePath);
 
-        if (kind == SourceFileKind.Video && AnalyzeSrcVideo.CanExecute(null))
+        if (kind == SrcFileKind.Video && AnalyzeSrcVideo.CanExecute(null))
         {
             AnalyzeSrcVideo.Execute(null);
         }
@@ -1843,39 +1843,39 @@ public class MainVM : BaseVM
         window.ShowDialog();
     }
 
-    private void OnSourceAnalysisCompleted(bool isSuccess)
+    private void OnSrcAnalysisCompleted(bool isSuccess)
     {
         ToolsImportCard.SetCompleteSourceAnalysisStatus(isSuccess);
         UpdateFilterScbButtonsState();
     }
 
-    private void OnSourceCleared(SourceFileKind kind)
+    private void OnSrcCleared(SrcFileKind kind)
     {
-        SaveSourcePath(kind, string.Empty);
+        SaveSrcPath(kind, string.Empty);
         _appDataM.Save();
-        RefreshSelectedSourceStatus(
-            resetAnalysis: kind == SourceFileKind.Video || !HasSelectedVideoSource());
+        RefreshSelectedSrcStatus(
+            resetAnalysis: kind == SrcFileKind.Video || !HasSelectedVideoSrc());
     }
 
-    private void OnSourceQueueImported(ToolItemCardVM item, string _, string[] filePaths)
+    private void OnSrcQueueImported(ToolItemCardVM item, string _, string[] filePaths)
     {
-        _videoSourceQueue.ApplyImportedFiles(item, filePaths);
+        _videoSrcQueue.ApplyImportedFiles(item, filePaths);
 
         foreach (ToolItemCardVM source in VideoSrcImportZone)
             source.IsSelected = false;
 
-        ClearScriptSourceZone(ScriptSrcImportZone);
-        ClearScriptSourceZone(QueueScriptSrcImportZone);
+        ClearScriptSrcZone(ScriptSrcImportZone);
+        ClearScriptSrcZone(QueueScriptSrcImportZone);
 
-        SaveSourcePath(SourceFileKind.Video, string.Empty);
-        SaveSourcePath(SourceFileKind.AviSynthScript, string.Empty);
-        SaveSourcePath(SourceFileKind.VapourSynthScript, string.Empty);
-        SaveSourcePath(SourceFileKind.SvfiIni, string.Empty);
+        SaveSrcPath(SrcFileKind.Video, string.Empty);
+        SaveSrcPath(SrcFileKind.AviSynthScript, string.Empty);
+        SaveSrcPath(SrcFileKind.VapourSynthScript, string.Empty);
+        SaveSrcPath(SrcFileKind.SvfiIni, string.Empty);
 
         if (filePaths.Length > 0)
             item.IsSelected = true;
         _appDataM.Save();
-        RefreshSelectedSourceStatus(resetAnalysis: true);
+        RefreshSelectedSrcStatus(resetAnalysis: true);
         RefreshDurationFilterStatus();
         if (filePaths.Length > 0)
         {
@@ -1884,34 +1884,34 @@ public class MainVM : BaseVM
         }
     }
 
-    private void OnSourceQueueCleared(ToolItemCardVM item)
+    private void OnSrcQueueCleared(ToolItemCardVM item)
     {
-        // The queue card label is restored by VideoSourceQueueState.
+        // The queue card label is restored by VideoSrcQueueState.
         // This handler only clears the stored files and refreshes selection state.
-        _videoSourceQueue.Clear(item);
-        RefreshSelectedSourceStatus(resetAnalysis: !HasSelectedVideoSource());
+        _videoSrcQueue.Clear(item);
+        RefreshSelectedSrcStatus(resetAnalysis: !HasSelectedVideoSrc());
         RefreshDurationFilterStatus();
     }
 
-    private void OnSourceConcatImported(ToolItemCardVM item, string[] filePaths)
+    private void OnSrcConcatImported(ToolItemCardVM item, string[] filePaths)
     {
-        _videoSourceConcat.ApplyImportedFiles(filePaths);
+        _videoSrcConcat.ApplyImportedFiles(filePaths);
 
         foreach (ToolItemCardVM source in VideoSrcImportZone)
             source.IsSelected = false;
 
-        ClearScriptSourceZone(ScriptSrcImportZone);
-        ClearScriptSourceZone(QueueScriptSrcImportZone);
+        ClearScriptSrcZone(ScriptSrcImportZone);
+        ClearScriptSrcZone(QueueScriptSrcImportZone);
 
-        SaveSourcePath(SourceFileKind.Video, string.Empty);
-        SaveSourcePath(SourceFileKind.AviSynthScript, string.Empty);
-        SaveSourcePath(SourceFileKind.VapourSynthScript, string.Empty);
-        SaveSourcePath(SourceFileKind.SvfiIni, string.Empty);
+        SaveSrcPath(SrcFileKind.Video, string.Empty);
+        SaveSrcPath(SrcFileKind.AviSynthScript, string.Empty);
+        SaveSrcPath(SrcFileKind.VapourSynthScript, string.Empty);
+        SaveSrcPath(SrcFileKind.SvfiIni, string.Empty);
 
         if (filePaths.Length > 0)
             item.IsSelected = true;
         _appDataM.Save();
-        RefreshSelectedSourceStatus(resetAnalysis: true);
+        RefreshSelectedSrcStatus(resetAnalysis: true);
         if (filePaths.Length > 0)
         {
             if (AnalyzeSrcVideo.CanExecute(null))
@@ -1919,30 +1919,30 @@ public class MainVM : BaseVM
         }
     }
 
-    private void OnSourceConcatCleared()
+    private void OnSrcConcatCleared()
     {
-        _videoSourceConcat.Clear();
-        RefreshSelectedSourceStatus(resetAnalysis: !HasSelectedVideoSource());
+        _videoSrcConcat.Clear();
+        RefreshSelectedSrcStatus(resetAnalysis: !HasSelectedVideoSrc());
     }
 
     private void ApplyRepartPlan(RepartPlanM plan)
     {
-        _videoSourceRepart.ApplyPlan(plan);
+        _videoSrcRepart.ApplyPlan(plan);
 
         foreach (ToolItemCardVM source in VideoSrcImportZone)
             source.IsSelected = false;
 
-        ClearScriptSourceZone(ScriptSrcImportZone);
-        ClearScriptSourceZone(QueueScriptSrcImportZone);
-        SaveSourcePath(SourceFileKind.Video, string.Empty);
-        SaveSourcePath(SourceFileKind.AviSynthScript, string.Empty);
-        SaveSourcePath(SourceFileKind.VapourSynthScript, string.Empty);
-        SaveSourcePath(SourceFileKind.SvfiIni, string.Empty);
+        ClearScriptSrcZone(ScriptSrcImportZone);
+        ClearScriptSrcZone(QueueScriptSrcImportZone);
+        SaveSrcPath(SrcFileKind.Video, string.Empty);
+        SaveSrcPath(SrcFileKind.AviSynthScript, string.Empty);
+        SaveSrcPath(SrcFileKind.VapourSynthScript, string.Empty);
+        SaveSrcPath(SrcFileKind.SvfiIni, string.Empty);
 
-        ToolItemCardVM? repartItem = VideoSrcImportZone.FirstOrDefault(IsVideoSourceRepartItem);
+        ToolItemCardVM? repartItem = VideoSrcImportZone.FirstOrDefault(IsVideoSrcRepartItem);
         if (repartItem != null) repartItem.IsSelected = true;
 
-        _srcVideoAnalysis.SourcePath = plan.Sources[0].FilePath;
+        _srcVideoAnalysis.srcPath = plan.Sources[0].FilePath;
         _srcVideoAnalysis.FfprobePath = plan.FfprobePath;
         _srcVideoAnalysis.RawJson = plan.ReferenceRawJson;
         _srcVideoAnalysis.QueueRawJson = JsonSerializer.Serialize(plan.Sources.Select(source => new
@@ -1953,22 +1953,22 @@ public class MainVM : BaseVM
         }));
         _srcVideoAnalysis.ConcatTotalFrames = plan.TotalFrames;
         RepartCheckCard.ApplyRepartPlan(plan);
-        OnSourceAnalysisCompleted(true);
-        RefreshSelectedSourceStatus(resetAnalysis: false);
+        OnSrcAnalysisCompleted(true);
+        RefreshSelectedSrcStatus(resetAnalysis: false);
         _appDataM.Save();
     }
 
-    private void OnSourceRepartCleared()
+    private void OnSrcRepartCleared()
     {
-        _videoSourceRepart.Clear();
-        RefreshSelectedSourceStatus(resetAnalysis: true);
+        _videoSrcRepart.Clear();
+        RefreshSelectedSrcStatus(resetAnalysis: true);
     }
 
     private void ApplyRepartOutputOrderFromFilterScribe(Guid[] outputIds)
     {
-        if (!_videoSourceRepart.ReorderOutputs(outputIds)) return;
+        if (!_videoSrcRepart.ReorderOutputs(outputIds)) return;
 
-        RepartPlanM? plan = _videoSourceRepart.CurrentPlan;
+        RepartPlanM? plan = _videoSrcRepart.CurrentPlan;
         if (plan == null) return;
 
         RepartCheckCard.ApplyRepartPlan(plan);
@@ -1977,31 +1977,31 @@ public class MainVM : BaseVM
 
     private void ApplyConcatFilePathsFromFilterScribe(string[] filePaths)
     {
-        string[] currentPaths = _videoSourceConcat.CurrentFilePaths;
+        string[] currentPaths = _videoSrcConcat.CurrentFilePaths;
         bool sameSet = currentPaths.Length == filePaths.Length
             && new HashSet<string>(currentPaths, StringComparer.OrdinalIgnoreCase)
                 .SetEquals(filePaths);
 
-        _videoSourceConcat.ReplaceFilePaths(filePaths);
+        _videoSrcConcat.ReplaceFilePaths(filePaths);
 
         if (sameSet)
         {
-            RefreshSelectedSourceStatus(resetAnalysis: false);
+            RefreshSelectedSrcStatus(resetAnalysis: false);
         }
         else
         {
-            RefreshSelectedSourceStatus(resetAnalysis: true);
+            RefreshSelectedSrcStatus(resetAnalysis: true);
         }
     }
 
-    private void OnSourceScriptQueueImported(ToolItemCardVM item, SourceFileKind kind, string _, string[] filePaths)
+    private void OnSrcScriptQueueImported(ToolItemCardVM item, SrcFileKind kind, string _, string[] filePaths)
     {
         string? error = ValidateScriptQueueImport(kind, filePaths);
         if (error != null)
         {
-            ClearSourceItem(item);
+            ClearSrcItem(item);
             new OpenErrModalCmd(_modalNavS, UILangProvider.Current["Warn.SourceCheck"], error).Execute(null);
-            RefreshSelectedSourceStatus(resetAnalysis: false);
+            RefreshSelectedSrcStatus(resetAnalysis: false);
             return;
         }
 
@@ -2011,37 +2011,37 @@ public class MainVM : BaseVM
         if (filePaths.Length > 0)
             item.IsSelected = true;
 
-        RefreshSelectedSourceStatus(resetAnalysis: false);
+        RefreshSelectedSrcStatus(resetAnalysis: false);
     }
 
-    private string? ValidateScriptQueueImport(SourceFileKind kind, string[] filePaths)
+    private string? ValidateScriptQueueImport(SrcFileKind kind, string[] filePaths)
     {
         string[] videoPaths = GetCurrentQueueFilePaths();
         if (videoPaths.Length == 0) return null;
 
-        IReadOnlyList<ScriptSourceValidationIssue> issues =
-            ScriptSourceValidation.ValidateQueue(kind, filePaths, videoPaths);
+        IReadOnlyList<ScriptSrcValIssue> issues =
+            ScriptSrcValidator.ValidateQueue(kind, filePaths, videoPaths);
         return issues.Count == 0 ? null : FormatScriptImportIssues(issues);
     }
 
-    private static string FormatScriptImportIssues(IReadOnlyList<ScriptSourceValidationIssue> issues)
+    private static string FormatScriptImportIssues(IReadOnlyList<ScriptSrcValIssue> issues)
     {
         const int maxDetails = 5;
         List<string> details = [];
-        int noVideoSrcCount = issues.Count(issue => issue.Kind == ScriptSourceValidationIssueKind.NoMatchingVideoSource);
-        int noScriptCount = issues.Count(issue => issue.Kind == ScriptSourceValidationIssueKind.NoMatchingScriptFile);
+        int noVideoSrcCount = issues.Count(issue => issue.Kind == ScriptSrcValIssueKind.NoMatchingVideoSrc);
+        int noScriptCount = issues.Count(issue => issue.Kind == ScriptSrcValIssueKind.NoMatchingScriptFile);
         int mismatchCount = issues.Count - noVideoSrcCount - noScriptCount;
 
-        foreach (ScriptSourceValidationIssue issue in issues.Take(maxDetails))
+        foreach (ScriptSrcValIssue issue in issues.Take(maxDetails))
         {
             string fileName = Path.GetFileName(issue.ScriptPath);
             string detail = issue.Kind switch
             {
-                ScriptSourceValidationIssueKind.NoMatchingVideoSource =>
+                ScriptSrcValIssueKind.NoMatchingVideoSrc =>
                     string.Format(UILangProvider.Current["ScriptQueueImport.DetailNoMatch"], fileName),
-                ScriptSourceValidationIssueKind.NoMatchingScriptFile =>
+                ScriptSrcValIssueKind.NoMatchingScriptFile =>
                     string.Format(UILangProvider.Current["ScriptQueueImport.DetailNoScript"], fileName),
-                ScriptSourceValidationIssueKind.UnreadableScript =>
+                ScriptSrcValIssueKind.UnreadableScript =>
                     string.Format(UILangProvider.Current["ScriptQueueImport.DetailUnreadable"], fileName),
                 _ => string.Format(
                     UILangProvider.Current["ScriptQueueImport.DetailMismatch"],
@@ -2059,19 +2059,19 @@ public class MainVM : BaseVM
         return msg;
     }
 
-    private void OnSourceScriptQueueCleared(ToolItemCardVM item)
+    private void OnSrcScriptQueueCleared(ToolItemCardVM item)
     {
         item.IsSelected = false;
-        RefreshSelectedSourceStatus(resetAnalysis: !HasSelectedVideoSource());
+        RefreshSelectedSrcStatus(resetAnalysis: !HasSelectedVideoSrc());
     }
 
-    private static void ClearScriptSourceZone(IEnumerable<ToolItemCardVM> zone)
+    private static void ClearScriptSrcZone(IEnumerable<ToolItemCardVM> zone)
     {
         foreach (ToolItemCardVM script in zone)
-            ClearSourceItem(script);
+            ClearSrcItem(script);
     }
 
-    private static void ClearSourceItem(ToolItemCardVM item)
+    private static void ClearSrcItem(ToolItemCardVM item)
     {
         item.P2TextData = string.Empty;
         item.P1TextData = string.Empty;
@@ -2079,82 +2079,82 @@ public class MainVM : BaseVM
         item.IsSelected = false;
     }
 
-    private void OnSourceQueueAccepted(string[] acceptedFilePaths, string _)
+    private void OnSrcQueueAccepted(string[] acceptedFilePaths, string _)
     {
-        _videoSourceQueue.ApplyAcceptedFiles(acceptedFilePaths);
-        RefreshSelectedSourceStatus(resetAnalysis: false);
+        _videoSrcQueue.ApplyAcceptedFiles(acceptedFilePaths);
+        RefreshSelectedSrcStatus(resetAnalysis: false);
         RefreshDurationFilterStatus();
     }
 
-    private void SaveSourcePath(SourceFileKind kind, string filePath)
+    private void SaveSrcPath(SrcFileKind kind, string filePath)
     {
-        if (kind == SourceFileKind.Video)
+        if (kind == SrcFileKind.Video)
             _appDataM.Tools.VideoSourcePath = filePath;
     }
-    public void RefreshSelectedSourceStatus(bool resetAnalysis = false)
+    public void RefreshSelectedSrcStatus(bool resetAnalysis = false)
     {
-        RefreshActiveSourceRoute();
-        SelectMatchingScriptSourceForSelectedUpstream();
+        RefreshActiveSrcRoute();
+        SelectMatchingScriptSrcForSelectedUpstream();
         if (resetAnalysis)
         {
             _srcVideoAnalysis.Clear();
             ActiveSrcValidationCard.ResetAnalysisStatus();
-            ToolsImportCard.ResetCompleteSourceAnalysisStatus();
+            ToolsImportCard.ResetCompleteSrcAnalysisStatus();
         }
 
         // Keep import-zone HintPanel paths in sync after any source change
         RefreshAllZoneSelectedPaths();
-        RefreshToolSourceChecklistStatus();
+        RefreshToolSrcChecklistStatus();
         UpdateFilterScbButtonsState();
         UpdateAnalyzeSrcButtonsState();
         UpdateEncStartButtonsState();
     }
 
-    public void RefreshSelectedSourceStatusAfterSourceSelection()
+    public void RefreshSelectedSrcStatusAfterSrcSelection()
     {
         ResetAnalysisIfStale();
-        RefreshSelectedSourceStatus();
+        RefreshSelectedSrcStatus();
     }
     public void UpdateAnalyzeSrcButtonsState()
     {
         if (AnalyzeSrcButtons == null) return;
 
-        bool hasVideoSource = CanRunSourceAnalysis();
+        bool hasVideoSrc = CanRunSrcAnalysis();
 
         RefreshEncSettingsState();
-        AnalyzeSrcButtons.B2_2IsEnabled = hasVideoSource;
+        AnalyzeSrcButtons.B2_2IsEnabled = hasVideoSrc;
         AnalyzeSrcButtons.B2_1IsEnabled = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
         CopyRawAnalysis.OnCanExecuteChanged();
         AnalyzeSrcVideo.OnCanExecuteChanged();
     }
     private void ResetAnalysisIfStale()
     {
-        if (GetActiveSourceRoute() == SourceRouteKind.Repart && GetRepartPlan()?.IsConfigured == true)
+        if (GetActiveSrcRoute() == SrcRouteKind.Repart && GetRepartPlan()?.IsConfigured == true)
             return;
-        if (IsCurrentAnalysisFor(GetSelectedVideoSourcePath(), GetSelectedFfprobePath())) return;
+        if (IsCurrentAnalysisFor(GetSelectedVideoSrcPath(), GetSelectedFfprobePath())) return;
 
         _srcVideoAnalysis.Clear();
         ActiveSrcValidationCard.ResetAnalysisStatus();
-        ToolsImportCard.ResetCompleteSourceAnalysisStatus();
+        ToolsImportCard.ResetCompleteSrcAnalysisStatus();
     }
 
-    private void RefreshActiveSourceRoute()
+    private void RefreshActiveSrcRoute()
     {
-        SourceRouteKind route = GetActiveSourceRoute();
+        SrcRouteKind route = GetActiveSrcRoute();
         ActiveSrcValidationCard = route switch
         {
-            SourceRouteKind.Queue => QueueSrcFilterCard,
-            SourceRouteKind.Concat => ConcatCheckCard,
-            SourceRouteKind.Repart => RepartCheckCard,
+            SrcRouteKind.Queue => QueueSrcFilterCard,
+            SrcRouteKind.Concat => ConcatCheckCard,
+            SrcRouteKind.Repart => RepartCheckCard,
             _ => SrcValCard
         };
-        ActiveScriptSrcImportZone = route == SourceRouteKind.Queue
+        ActiveScriptSrcImportZone = route == SrcRouteKind.Queue
             ? QueueScriptSrcImportZone
             : ScriptSrcImportZone;
-        ToolCompatibility.RefreshSourceSelectionState(
+        ToolCompatibility.RefreshSrcSelectState(
             UpstreamsZone, ActiveScriptSrcImportZone, () => { });
         RefreshScriptSourceEnabledState();
-        ToolCompatibility.RefreshVideoSourceSelectionState(
+        ToolCompatibility.RefreshVideoSrcSelectState(
             UpstreamsZone, VideoSrcImportZone, HasImportedFfprobe());
         RefreshOutputSettingCommand();
 
@@ -2162,28 +2162,28 @@ public class MainVM : BaseVM
 
         if (_outputSettingCard != null)
         {
-            if (route is SourceRouteKind.Queue or SourceRouteKind.Repart)
+            if (route is SrcRouteKind.Queue or SrcRouteKind.Repart)
             {
                 _outputSettingCard.RefreshOutputSetting(true, _modalNavS);
             }
-            else if (route == SourceRouteKind.Concat)
+            else if (route == SrcRouteKind.Concat)
             {
                 _outputSettingCard.P1TextData = GetConcatOutputBaseName();
                 _outputSettingCard.RefreshOutputSetting(false, _modalNavS);
             }
-            else { SyncOutputFilenameWithVideoSource(); }
+            else { SyncOutputFilenameWithVideoSrc(); }
         }
     }
 
-    private void SelectMatchingScriptSourceForSelectedUpstream()
+    private void SelectMatchingScriptSrcForSelectedUpstream()
     {
-        SourceFileKind? expectedKind = GetExpectedScriptSourceKindForSelectedUpstream();
+        SrcFileKind? expectedKind = GetExpectedScriptSrcKindForSelectedUpstream();
         if (expectedKind == null) return;
 
         ToolItemCardVM? target = ActiveScriptSrcImportZone.FirstOrDefault(t =>
             t.IsEnabled &&
             !string.IsNullOrWhiteSpace(t.P2TextData) &&
-            SourceFileKindResolver.ResolveSourceFileKind(t.Name) == expectedKind.Value);
+            SrcFileKindResolver.ResolveSrcFileKind(t.Name) == expectedKind.Value);
         if (target == null) return;
 
         foreach (ToolItemCardVM source in ActiveScriptSrcImportZone)
@@ -2196,7 +2196,7 @@ public class MainVM : BaseVM
 
     private EncodingPipelineRequest? BuildEncodingPipelineRequest()
     {
-        if (!BothSourceSelected()) return null;
+        if (!BothSrcSelected()) return null;
 
         ToolItemCardVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected && t.IsEnabled && !string.IsNullOrWhiteSpace(t.P2TextData));
         ToolItemCardVM? encoder = EncodersZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
@@ -2210,7 +2210,7 @@ public class MainVM : BaseVM
         if (string.IsNullOrWhiteSpace(upstreamExeName) || string.IsNullOrWhiteSpace(encoderExeName)) return null;
 
         string upstreamInputPath = GetUpstreamInputPath(upstreamExeName);
-        string sourceVideoPath = GetSelectedVideoSourcePath();
+        string sourceVideoPath = GetSelectedVideoSrcPath();
         string? svfiIniPath = null;
         string? svfiTaskId = null;
 
@@ -2246,9 +2246,9 @@ public class MainVM : BaseVM
             FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs);
     }
 
-    private EncodingPipelineRequest[]? BuildQueueEncodingPipelineRequests(string[] sourcePaths)
+    private EncodingPipelineRequest[]? BuildQueueEncodingPipelineRequests(string[] srcPaths)
     {
-        if (!BothSourceSelected()) return null;
+        if (!BothSrcSelected()) return null;
 
         ToolItemCardVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected && t.IsEnabled && !string.IsNullOrWhiteSpace(t.P2TextData));
         ToolItemCardVM? encoder = EncodersZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
@@ -2265,43 +2265,43 @@ public class MainVM : BaseVM
         EncoderConfM encoderConf = EncoderConfM.Load();
         ParallelismConfM parallelismConf = ParallelismConfM.LoadEffective();
         string outputDirectory = outputSetting.P2TextData;
-        Dictionary<string, string> queueFfprobeJsonByPath = LoadQueueFfprobeJsonByPath();
-        string GetSourceFfprobeJson(string sourcePath) =>
-            queueFfprobeJsonByPath.TryGetValue(sourcePath, out string? rawJson)
+        Dictionary<string, string> queueFfprobeJsonByPath = LoadQueueFFprobeJsonByPath();
+        string GetSrcFFprobeJson(string srcPath) =>
+            queueFfprobeJsonByPath.TryGetValue(srcPath, out string? rawJson)
                 ? rawJson
                 : _srcVideoAnalysis.RawJson;
 
         string? scriptDir = null;
-        SourceFileKind scriptKind = SourceFileKind.Video;
+        SrcFileKind scriptKind = SrcFileKind.Video;
         if (upstreamExeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase))
         {
-            scriptKind = SourceFileKind.VapourSynthScript;
+            scriptKind = SrcFileKind.VapourSynthScript;
             ToolItemCardVM? vpyItem = ActiveScriptSrcImportZone.FirstOrDefault(t =>
-                t.IsSelected && SourceFileKindResolver.ResolveSourceFileKind(t.Name) == scriptKind && !string.IsNullOrWhiteSpace(t.P2TextData));
+                t.IsSelected && SrcFileKindResolver.ResolveSrcFileKind(t.Name) == scriptKind && !string.IsNullOrWhiteSpace(t.P2TextData));
             if (vpyItem == null) return null;
             scriptDir = vpyItem.P2TextData;
         }
         else if (upstreamExeName.Equals("avs2yuv.exe", StringComparison.OrdinalIgnoreCase) ||
                  upstreamExeName.Equals("avs2pipemod.exe", StringComparison.OrdinalIgnoreCase))
         {
-            scriptKind = SourceFileKind.AviSynthScript;
+            scriptKind = SrcFileKind.AviSynthScript;
             ToolItemCardVM? avsItem = ActiveScriptSrcImportZone.FirstOrDefault(t =>
-                t.IsSelected && SourceFileKindResolver.ResolveSourceFileKind(t.Name) == scriptKind && !string.IsNullOrWhiteSpace(t.P2TextData));
+                t.IsSelected && SrcFileKindResolver.ResolveSrcFileKind(t.Name) == scriptKind && !string.IsNullOrWhiteSpace(t.P2TextData));
             if (avsItem == null) return null;
             scriptDir = avsItem.P2TextData;
         }
 
         if (scriptDir != null)
         {
-            string ext = scriptKind == SourceFileKind.VapourSynthScript ? ".vpy" : ".avs";
+            string ext = scriptKind == SrcFileKind.VapourSynthScript ? ".vpy" : ".avs";
             const int maxListed = 5;
             int missingCount = 0;
             List<string> missingFiles = [];
             int mismatchCount = 0;
             List<string> mismatchFiles = [];
-            foreach (string sourcePath in sourcePaths)
+            foreach (string srcPath in srcPaths)
             {
-                string scriptPath = Path.Combine(scriptDir, Path.GetFileNameWithoutExtension(sourcePath) + ext);
+                string scriptPath = Path.Combine(scriptDir, Path.GetFileNameWithoutExtension(srcPath) + ext);
                 if (!File.Exists(scriptPath))
                 {
                     missingCount++;
@@ -2310,7 +2310,7 @@ public class MainVM : BaseVM
                 }
                 else
                 {
-                    string? embeddedPath = ScriptSourceValidation.ExtractScriptSourcePath(scriptPath, ext);
+                    string? embeddedPath = ScriptSrcValidator.ExtractScriptSrcPath(scriptPath, ext);
                     if (embeddedPath == null)
                     {
                         mismatchCount++;
@@ -2320,12 +2320,12 @@ public class MainVM : BaseVM
                     else
                     {
                         string normalizedEmbedded = Path.GetFullPath(embeddedPath);
-                        string normalizedSource = Path.GetFullPath(sourcePath);
+                        string normalizedSource = Path.GetFullPath(srcPath);
                         if (!string.Equals(normalizedEmbedded, normalizedSource, StringComparison.OrdinalIgnoreCase))
                         {
                             mismatchCount++;
                             if (mismatchFiles.Count < maxListed)
-                                mismatchFiles.Add($"{Path.GetFileName(scriptPath)} (refers \"{embeddedPath}\", paired \"{sourcePath}\")");
+                                mismatchFiles.Add($"{Path.GetFileName(scriptPath)} (refers \"{embeddedPath}\", paired \"{srcPath}\")");
                         }
                     }
                 }
@@ -2337,7 +2337,7 @@ public class MainVM : BaseVM
                     ? $" ({missingCount - maxListed} more)"
                     : string.Empty;
                 throw new InvalidOperationException(
-                    $"Script count mismatch: {missingCount} of {sourcePaths.Length} scripts are missing for the selected upstream. Missing: {missingList}{omitted}");
+                    $"Script count mismatch: {missingCount} of {srcPaths.Length} scripts are missing for the selected upstream. Missing: {missingList}{omitted}");
             }
             if (mismatchCount > 0)
             {
@@ -2350,13 +2350,13 @@ public class MainVM : BaseVM
             }
         }
 
-        return [.. sourcePaths.Select(sourcePath =>
+        return [.. srcPaths.Select(srcPath =>
         {
-            string inputPath = sourcePath;
+            string inputPath = srcPath;
             if (scriptDir != null)
             {
-                string ext = scriptKind == SourceFileKind.VapourSynthScript ? ".vpy" : ".avs";
-                inputPath = Path.Combine(scriptDir, Path.GetFileNameWithoutExtension(sourcePath) + ext);
+                string ext = scriptKind == SrcFileKind.VapourSynthScript ? ".vpy" : ".avs";
+                inputPath = Path.Combine(scriptDir, Path.GetFileNameWithoutExtension(srcPath) + ext);
             }
 
             return new EncodingPipelineRequest(
@@ -2366,11 +2366,11 @@ public class MainVM : BaseVM
                 encoderExeName,
                 encoder.P2TextData,
                 _appDataM.Tools.FfmpegPath,
-                sourcePath,
-                Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(sourcePath)),
+                srcPath,
+                Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(srcPath)),
                 encoderConf,
                 _appDataM.Tools.VspipeY4mArg,
-                SourceFfprobeJson: GetSourceFfprobeJson(sourcePath),
+                SourceFfprobeJson: GetSrcFFprobeJson(srcPath),
                 ParallelismConf: parallelismConf,
                 FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs);
         })];
@@ -2378,7 +2378,7 @@ public class MainVM : BaseVM
 
     private EncodingPipelineRequest? BuildConcatEncodingPipelineRequest()
     {
-        if (!HasSelectedVideoSource()) return null;
+        if (!HasSelectedVideoSrc()) return null;
 
         ToolItemCardVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected && t.IsEnabled && !string.IsNullOrWhiteSpace(t.P2TextData));
         ToolItemCardVM? encoder = EncodersZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
@@ -2406,7 +2406,7 @@ public class MainVM : BaseVM
         if (upstreamExeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase))
         {
             ToolItemCardVM? vpyItem = ActiveScriptSrcImportZone.FirstOrDefault(t =>
-                t.IsSelected && SourceFileKindResolver.ResolveSourceFileKind(t.Name) == SourceFileKind.VapourSynthScript && !string.IsNullOrWhiteSpace(t.P2TextData));
+                t.IsSelected && SrcFileKindResolver.ResolveSrcFileKind(t.Name) == SrcFileKind.VapourSynthScript && !string.IsNullOrWhiteSpace(t.P2TextData));
             if (vpyItem == null) return null;
             inputPath = vpyItem.P2TextData;
         }
@@ -2414,7 +2414,7 @@ public class MainVM : BaseVM
                  upstreamExeName.Equals("avs2pipemod.exe", StringComparison.OrdinalIgnoreCase))
         {
             ToolItemCardVM? avsItem = ActiveScriptSrcImportZone.FirstOrDefault(t =>
-                t.IsSelected && SourceFileKindResolver.ResolveSourceFileKind(t.Name) == SourceFileKind.AviSynthScript && !string.IsNullOrWhiteSpace(t.P2TextData));
+                t.IsSelected && SrcFileKindResolver.ResolveSrcFileKind(t.Name) == SrcFileKind.AviSynthScript && !string.IsNullOrWhiteSpace(t.P2TextData));
             if (avsItem == null) return null;
             inputPath = avsItem.P2TextData;
         }
@@ -2434,11 +2434,11 @@ public class MainVM : BaseVM
             Path.Combine(outputDirectory, outputBaseName),
             encoderConf,
             _appDataM.Tools.VspipeY4mArg,
-            SourceFfprobeJson: _srcVideoAnalysis.RawJson,
+                SourceFfprobeJson: _srcVideoAnalysis.RawJson,
             ParallelismConf: parallelismConf,
             FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs,
             IsConcatMode: true,
-            ConcatFileListPath: _videoSourceConcat.RegenerateFileList(),
+            ConcatFileListPath: _videoSrcConcat.RegenerateFileList(),
             ConcatTotalFrames: _srcVideoAnalysis.ConcatTotalFrames);
     }
 
@@ -2463,25 +2463,25 @@ public class MainVM : BaseVM
             throw new FileNotFoundException(RepartLangProvider.Current.FfmpegRequired, _appDataM.Tools.FfmpegPath);
 
         Guid executionId = Guid.NewGuid();
-        string fileListPath = _videoSourceRepart.RegenerateFileList(executionId);
+        string fileListPath = _videoSrcRepart.RegenerateFileList(executionId);
         string configDirectory = Path.GetDirectoryName(fileListPath) ?? AppContext.BaseDirectory;
-        string[] sourcePaths = [.. plan.Sources.Select(source => source.FilePath)];
+        string[] srcPaths = [.. plan.Sources.Select(source => source.FilePath)];
         string inputPath;
         if (upstreamExeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase))
         {
             inputPath = Path.Combine(configDirectory, $"source_rp_{plan.PlanId:N}_{executionId:N}.vpy");
-            string script = sourcePaths.Length == 1
-                ? ScriptTemplate.BuildVpyExportScript(sourcePaths[0], FilterScribeVM.VpyPrefix2, FilterScribeVM.VpySuffix, _repartVpyFilterInput)
-                : ScriptTemplate.BuildConcatVpyExportScript(sourcePaths, FilterScribeVM.VpyPrefix2, FilterScribeVM.VpySuffix, _repartVpyFilterInput);
+            string script = srcPaths.Length == 1
+                ? ScriptTemplate.BuildVpyExportScript(srcPaths[0], FilterScribeVM.VpyPrefix2, FilterScribeVM.VpySuffix, _repartVpyFilterInput)
+                : ScriptTemplate.BuildConcatVpyExportScript(srcPaths, FilterScribeVM.VpyPrefix2, FilterScribeVM.VpySuffix, _repartVpyFilterInput);
             File.WriteAllText(inputPath, script);
         }
         else if (upstreamExeName.Equals("avs2yuv.exe", StringComparison.OrdinalIgnoreCase)
                  || upstreamExeName.Equals("avs2pipemod.exe", StringComparison.OrdinalIgnoreCase))
         {
             inputPath = Path.Combine(configDirectory, $"source_rp_{plan.PlanId:N}_{executionId:N}.avs");
-            string script = sourcePaths.Length == 1
-                ? ScriptTemplate.BuildAvsExportScript(sourcePaths[0], FilterScribeVM.AvsPrefix2, FilterScribeVM.AvsSuffix, _repartAvsFilterInput)
-                : ScriptTemplate.BuildConcatAvsExportScript(sourcePaths, FilterScribeVM.AvsPrefix2, FilterScribeVM.AvsSuffix, _repartAvsFilterInput);
+            string script = srcPaths.Length == 1
+                ? ScriptTemplate.BuildAvsExportScript(srcPaths[0], FilterScribeVM.AvsPrefix2, FilterScribeVM.AvsSuffix, _repartAvsFilterInput)
+                : ScriptTemplate.BuildConcatAvsExportScript(srcPaths, FilterScribeVM.AvsPrefix2, FilterScribeVM.AvsSuffix, _repartAvsFilterInput);
             File.WriteAllText(inputPath, script);
         }
         else
@@ -2525,33 +2525,33 @@ public class MainVM : BaseVM
                 ConcatFileListPath: fileListPath,
                 ConcatTotalFrames: plan.TotalFrames,
                 MuxMode: EncodingMuxMode.VideoOnly,
-                ConcatVideoSourcePaths: sourcePaths);
+                ConcatVideoSourcePaths: srcPaths);
         })];
     }
 
-    private string? TrySourceReviser(SourceRevisionRequest request)
+    private string? TrySrcReviser(SrcRevisionRequest request)
     {
         if (request.Width <= 0 || request.Height <= 0
             || request.Width > MaxResolutionDimension || request.Height > MaxResolutionDimension)
-            return SourceReviserLangProvider.Current["SourceReviser.InvalidInput"];
+            return SrcReviserLangProvider.Current["SrcReviser.InvalidInput"];
 
         if (string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson))
-            return SourceReviserLangProvider.Current["SourceReviser.NoFfprobeJson"];
+            return SrcReviserLangProvider.Current["SrcReviser.NoFfprobeJson"];
 
         try
         {
-            SourceRouteKind route = GetActiveSourceRoute();
-            if (route == SourceRouteKind.Repart)
+            SrcRouteKind route = GetActiveSrcRoute();
+            if (route == SrcRouteKind.Repart)
                 return RepartLangProvider.Current["RevisionDisabled"];
-            if (route == SourceRouteKind.Queue)
+            if (route == SrcRouteKind.Queue)
             {
                 string queueJsonPath = GetCurrentQueueJsonPath();
                 if (string.IsNullOrWhiteSpace(queueJsonPath) || !File.Exists(queueJsonPath))
-                    return SourceReviserLangProvider.Current["SourceReviser.NoFfprobeJson"];
+                    return SrcReviserLangProvider.Current["SrcReviser.NoFfprobeJson"];
 
                 ReviseQueueSource(queueJsonPath, request);
             }
-            else if (route == SourceRouteKind.Concat)
+            else if (route == SrcRouteKind.Concat)
             {
                 ReviseConcatSource(request);
             }
@@ -2568,39 +2568,39 @@ public class MainVM : BaseVM
         }
         catch (Exception ex)
         {
-            return string.Format(SourceReviserLangProvider.Current["SourceReviser.UpdateFailed"], ex.Message);
+            return string.Format(SrcReviserLangProvider.Current["SrcReviser.UpdateFailed"], ex.Message);
         }
     }
 
-    private void ReviseSingleSource(SourceRevisionRequest request)
+    private void ReviseSingleSource(SrcRevisionRequest request)
     {
-        _srcVideoAnalysis.RawJson = FFProbeSourceReviseModel.UpdateSingleSourceJson(
+        _srcVideoAnalysis.RawJson = FFProbeSrcReviseModel.UpdateSingleSourceJson(
             _srcVideoAnalysis.RawJson,
             request);
     }
 
-    private void ReviseQueueSource(string queueJsonPath, SourceRevisionRequest request)
+    private void ReviseQueueSource(string queueJsonPath, SrcRevisionRequest request)
     {
         (_srcVideoAnalysis.RawJson, _srcVideoAnalysis.QueueRawJson) =
-            FFProbeSourceReviseModel.UpdateQueueSourceJson(
+            FFProbeSrcReviseModel.UpdateQueueSourceJson(
                 queueJsonPath,
                 _srcVideoAnalysis.RawJson,
                 _srcVideoAnalysis.QueueRawJson,
                 request);
     }
 
-    private void ReviseConcatSource(SourceRevisionRequest request)
+    private void ReviseConcatSource(SrcRevisionRequest request)
     {
         (_srcVideoAnalysis.RawJson, _srcVideoAnalysis.QueueRawJson) =
-            FFProbeSourceReviseModel.UpdateConcatSourceJson(
+            FFProbeSrcReviseModel.UpdateConcatSourceJson(
                 _srcVideoAnalysis.RawJson,
                 _srcVideoAnalysis.QueueRawJson,
                 request);
-        _srcVideoAnalysis.ConcatTotalFrames = FFProbeSourceReviseModel.CalculateTotalFrames(
+        _srcVideoAnalysis.ConcatTotalFrames = FFProbeSrcReviseModel.CalculateTotalFrames(
             _srcVideoAnalysis.QueueRawJson);
     }
 
-    private Dictionary<string, string> LoadQueueFfprobeJsonByPath()
+    private Dictionary<string, string> LoadQueueFFprobeJsonByPath()
     {
         string queueJsonPath = GetCurrentQueueJsonPath();
         if (string.IsNullOrWhiteSpace(queueJsonPath) || !File.Exists(queueJsonPath)) return [];
@@ -2608,7 +2608,7 @@ public class MainVM : BaseVM
         try
         {
             string json = File.ReadAllText(queueJsonPath);
-            QueueSourceData? data = JsonSerializer.Deserialize<QueueSourceData>(json);
+            QueueSrcData? data = JsonSerializer.Deserialize<QueueSrcData>(json);
             return data?.Entries
                 .Where(entry => !string.IsNullOrWhiteSpace(entry.FilePath) && entry.FfprobeJson.ValueKind != JsonValueKind.Undefined)
                 .GroupBy(entry => entry.FilePath, StringComparer.OrdinalIgnoreCase)
@@ -2617,18 +2617,15 @@ public class MainVM : BaseVM
                     group => group.First().FfprobeJson.GetRawText(),
                     StringComparer.OrdinalIgnoreCase) ?? [];
         }
-        catch
-        {
-            return [];
-        }
+        catch { return []; }
     }
 
-    private string[] FilterSourcePathsByDuration(string[] sourcePaths)
+    private string[] FilterSrcPathsByDuration(string[] srcPaths)
     {
-        if (!IsDurationFilterEnabled) return sourcePaths;
+        if (!IsDurationFilterEnabled) return srcPaths;
 
-        Dictionary<string, string> ffprobeByPath = LoadQueueFfprobeJsonByPath();
-        return [.. sourcePaths.Where(path =>
+        Dictionary<string, string> ffprobeByPath = LoadQueueFFprobeJsonByPath();
+        return [.. srcPaths.Where(path =>
         {
             if (!ffprobeByPath.TryGetValue(path, out string? json)) return true;
             double? duration = ParseDurationFromFfprobeJson(json);
@@ -2665,7 +2662,7 @@ public class MainVM : BaseVM
         if (total == 0) return (0, 0, 0);
         if (!IsDurationFilterEnabled) return (total, 0, total);
 
-        Dictionary<string, string> ffprobeByPath = LoadQueueFfprobeJsonByPath();
+        Dictionary<string, string> ffprobeByPath = LoadQueueFFprobeJsonByPath();
         int remaining = 0, removed = 0;
         foreach (string path in paths)
         {
@@ -2702,12 +2699,12 @@ public class MainVM : BaseVM
         }
     }
 
-    private sealed class QueueSourceData
+    private sealed class QueueSrcData
     {
-        public List<QueueSourceEntry> Entries { get; set; } = [];
+        public List<QueueSrcEntry> Entries { get; set; } = [];
     }
 
-    private sealed class QueueSourceEntry
+    private sealed class QueueSrcEntry
     {
         public string FilePath { get; set; } = string.Empty;
         public JsonElement FfprobeJson { get; set; }
@@ -2788,8 +2785,8 @@ public class MainVM : BaseVM
         DependenciesZoneSelectedPath = GetZoneSelectedPath(DependenciesZone);
         EncodingConfZoneSelectedPath = GetOutputSettingPath();
         // Import zones don't require selection — show the first item that has a path
-        VideoSrcImportZoneSelectedPath = GetFirstSourcePath(VideoSrcImportZone);
-        ActiveScriptSrcImportZoneSelectedPath = GetFirstSourcePath(ActiveScriptSrcImportZone);
+        VideoSrcImportZoneSelectedPath = GetFirstSrcPath(VideoSrcImportZone);
+        ActiveScriptSrcImportZoneSelectedPath = GetFirstSrcPath(ActiveScriptSrcImportZone);
     }
 
     private static string GetZoneSelectedPath(ObservableCollection<ToolItemCardVM>? zone)
@@ -2808,7 +2805,7 @@ public class MainVM : BaseVM
         return outputSetting?.P2TextData ?? "!Path";
     }
 
-    private static string GetFirstSourcePath(ObservableCollection<ToolItemCardVM>? zone)
+    private static string GetFirstSrcPath(ObservableCollection<ToolItemCardVM>? zone)
     {
         ToolItemCardVM? first = zone?.FirstOrDefault(t => !string.IsNullOrWhiteSpace(t.P2TextData));
         return first?.P2TextData ?? "!Path";
@@ -2908,13 +2905,13 @@ public class MainVM : BaseVM
         AddOrUpdateTool(defKey, filePath, version, fileSize);
     }
 
-    private void LoadSourcesFromAppDataM()
+    private void LoadSrcsFromAppDataM()
     {
-        bool hasVideoSource = LoadSourceItem(VideoSrcImportZone[0], SourceFileKind.Video, _appDataM.Tools.VideoSourcePath);
-        VideoSrcImportZone[0].IsSelected = hasVideoSource;
+        bool hasVideoSrc = LoadSrcItem(VideoSrcImportZone[0], SrcFileKind.Video, _appDataM.Tools.VideoSourcePath);
+        VideoSrcImportZone[0].IsSelected = hasVideoSrc;
         // Use non-selection lookup so the path shows even before an explicit selection occurs
-        VideoSrcImportZoneSelectedPath = GetFirstSourcePath(VideoSrcImportZone);
-        if (!hasVideoSource && !string.IsNullOrWhiteSpace(_appDataM.Tools.VideoSourcePath))
+        VideoSrcImportZoneSelectedPath = GetFirstSrcPath(VideoSrcImportZone);
+        if (!hasVideoSrc && !string.IsNullOrWhiteSpace(_appDataM.Tools.VideoSourcePath))
         {
             _appDataM.Tools.VideoSourcePath = string.Empty;
             _appDataM.Save();
@@ -2952,12 +2949,12 @@ public class MainVM : BaseVM
             ? directory
             : fallbackDirectory;
     }
-    private static bool LoadSourceItem(ToolItemCardVM item, SourceFileKind kind, string? path)
+    private static bool LoadSrcItem(ToolItemCardVM item, SrcFileKind kind, string? path)
     {
         if (string.IsNullOrWhiteSpace(path) || !File.Exists(path)) return false;
 
         item.P2TextData = path;
-        item.P1TextData = SourceFilePicker.GetPrimaryText(kind, path);
+        item.P1TextData = SrcFilePicker.GetPrimaryText(kind, path);
         return true;
     }
     #endregion
@@ -2975,7 +2972,7 @@ public class MainVM : BaseVM
             _modalNavS.HasModal<FilenameScribeVM>() ||
             _modalNavS.HasModal<AppConfVM>() ||
             _modalNavS.HasModal<AppUsageVM>() ||
-            _modalNavS.HasModal<SourceReviserVM>() ||
+            _modalNavS.HasModal<SrcReviserVM>() ||
             _modalNavS.HasModal<RepartConfVM>() ||
             _modalNavS.HasModal<BdPlaylistSelectVM>();
 
@@ -2994,12 +2991,12 @@ public class MainVM : BaseVM
         }
     }
 
-    private void ShowSourceAnalysisRequiredModal()
+    private void ShowSrcAnalysisRequiredModal()
     {
         new OpenErrModalCmd(
             _modalNavS,
             UICaptionProvider.SourceInspect.ErrorTitle,
-            SourceReviserLangProvider.Current["SourceReviser.NoFfprobeJson"]).Execute(null);
+            SrcReviserLangProvider.Current["SrcReviser.NoFfprobeJson"]).Execute(null);
     }
 
     #region Language Switching
@@ -3014,7 +3011,7 @@ public class MainVM : BaseVM
     private void RefreshSectionHeaders()
     {
         OnPropertyChanged(nameof(SVFIClipDisabledHintText));
-        OnPropertyChanged(nameof(AnalyzeNeedsSourceText));
+        OnPropertyChanged(nameof(AnalyzeNeedsSrcText));
         OnPropertyChanged(nameof(NumaCpuCheckHintText));
         OnPropertyChanged(nameof(FfmpegOptionalHintText));
         MinDurationFilterText = UICaptionProvider.Hints.MinDurationFilter;
@@ -3096,9 +3093,9 @@ public class MainVM : BaseVM
             _appDataM.Tools.VspipePath,
             _appDataM.Tools.VspipeY4mArg);
     }
-    private void RefreshSourceQueueLanguage() => _videoSourceQueue.RefreshLanguage();
-    private void RefreshSourceConcatLanguage() => _videoSourceConcat.RefreshLanguage();
-    private void RefreshSourceRepartLanguage() => _videoSourceRepart.RefreshLanguage();
+    private void RefreshSourceQueueLanguage() => _videoSrcQueue.RefreshLanguage();
+    private void RefreshSourceConcatLanguage() => _videoSrcConcat.RefreshLanguage();
+    private void RefreshSourceRepartLanguage() => _videoSrcRepart.RefreshLanguage();
 
     private void RefreshSourceZonePrimaryText(ObservableCollection<ToolItemCardVM> zone)
     {
@@ -3109,12 +3106,12 @@ public class MainVM : BaseVM
             if (item == null) continue;
             if (string.IsNullOrWhiteSpace(item.P2TextData)) continue;
 
-            if (IsVideoSourceQueueItem(item)) continue;
-            if (IsVideoSourceConcatItem(item)) continue;
-            if (IsVideoSourceRepartItem(item)) continue;
+            if (IsVideoSrcQueueItem(item)) continue;
+            if (IsVideoSrcConcatItem(item)) continue;
+            if (IsVideoSrcRepartItem(item)) continue;
 
-            SourceFileKind fileKind = SourceFileKindResolver.ResolveSourceFileKind(item.Name);
-            item.P1TextData = SourceFilePicker.GetPrimaryText(fileKind, item.P2TextData);
+            SrcFileKind fileKind = SrcFileKindResolver.ResolveSrcFileKind(item.Name);
+            item.P1TextData = SrcFilePicker.GetPrimaryText(fileKind, item.P2TextData);
         }
     }
 
@@ -3126,9 +3123,9 @@ public class MainVM : BaseVM
         {
             if (item == null) continue;
             if (string.IsNullOrWhiteSpace(item.P2TextData)) continue;
-            SourceFileKind fileKind = SourceFileKindResolver.ResolveSourceFileKind(item.Name);
-            string[] filePaths = SourceFilePicker.GetSourceFilesInFolder(item.P2TextData, fileKind);
-            item.P1TextData = VideoSourceQueue.GetQueueP1Text(
+            SrcFileKind fileKind = SrcFileKindResolver.ResolveSrcFileKind(item.Name);
+            string[] filePaths = SrcFilePicker.GetSourceFilesInFolder(item.P2TextData, fileKind);
+            item.P1TextData = VideoSrcQueue.GetQueueP1Text(
                 [.. filePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!)]);
         }
     }

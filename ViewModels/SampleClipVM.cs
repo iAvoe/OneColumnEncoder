@@ -144,7 +144,7 @@ public class SampleClipVM : BaseVM, IClipRangeSelectorDragAware
         _appConfM = appConfM;
         _closeAction = closeAction;
         _buildRequest = buildRequest;
-        FFProbeSourceStats sourceStats = FFProbeSourceStatsReader.Read(srcVideoAnalysis.RawJson);
+        FFProbeSrcStats sourceStats = FFProbeSourceStatsReader.Read(srcVideoAnalysis.RawJson);
         _totalSeconds = sourceStats.DurationSeconds;
         _frameRate = sourceStats.FrameRate;
         _totalFrames = Math.Max(1L, sourceStats.TotalFrames);

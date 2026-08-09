@@ -35,7 +35,7 @@ public static class ToolCompatibility
         updateEncodingStartButtons();
     }
 
-    public static void RefreshSourceSelectionState(
+    public static void RefreshSrcSelectState(
         IEnumerable<ToolItemCardVM> upstreamsZone,
         IEnumerable<ToolItemCardVM> scriptSrcImportZone,
         Action refreshSelectedSourceStatus)
@@ -81,7 +81,7 @@ public static class ToolCompatibility
         refreshSelectedSourceStatus();
     }
 
-    public static void RefreshVideoSourceSelectionState(
+    public static void RefreshVideoSrcSelectState(
         IEnumerable<ToolItemCardVM> upstreamsZone,
         IList<ToolItemCardVM> videoSrcImportZone,
         bool hasFfprobe)

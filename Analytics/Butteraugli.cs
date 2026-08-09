@@ -19,7 +19,7 @@ public static class Butteraugli
         ToolExePath != null && File.Exists(ToolExePath);
 
     public static async Task<(double? score, string? error)> RunScoreAsync(
-        string sourcePath, string distortedPath)
+        string srcPath, string distortedPath)
     {
         string? exe = ToolExePath;
         if (exe == null || !File.Exists(exe))
@@ -36,7 +36,7 @@ public static class Butteraugli
             StandardErrorEncoding = System.Text.Encoding.UTF8,
             CreateNoWindow = true,
         };
-        psi.ArgumentList.Add(sourcePath);
+        psi.ArgumentList.Add(srcPath);
         psi.ArgumentList.Add(distortedPath);
 
         using Process process = new() { StartInfo = psi };

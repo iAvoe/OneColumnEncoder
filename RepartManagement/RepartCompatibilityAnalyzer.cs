@@ -19,7 +19,7 @@ public static class RepartCompatibilityAnalyzer
         string ffprobePath,
         string? ffmpegPath,
         IReadOnlyList<string> filePaths,
-        Func<RepartInterlacedSourceInfo, bool>? confirmDiscardInterlacedSource = null,
+        Func<RepartInterlacedSrcInfo, bool>? confirmDiscardInterlacedSource = null,
         Func<RepartFrameCountFallbackInfo, bool>? confirmExpandFrameCountSearch = null,
         CancellationToken cancellationToken = default)
     {
@@ -46,10 +46,10 @@ public static class RepartCompatibilityAnalyzer
         string ffprobePath,
         string? ffmpegPath,
         IReadOnlyList<string> filePaths,
-        Func<RepartInterlacedSourceInfo, bool>? confirmDiscardInterlacedSource = null,
+        Func<RepartInterlacedSrcInfo, bool>? confirmDiscardInterlacedSource = null,
         Func<RepartFrameCountFallbackInfo, bool>? confirmExpandFrameCountSearch = null,
         Action<RepartAnalysisStage, int, int, string>? onFileProgress = null,
-        Action<RepartExcludedSourceInfo>? onExcluded = null,
+        Action<RepartExcludedSrcInfo>? onExcluded = null,
         CancellationToken cancellationToken = default,
         bool requireMultipleSources = true)
     {
@@ -58,13 +58,13 @@ public static class RepartCompatibilityAnalyzer
         if (filePaths.Count == 0)
             throw new InvalidOperationException(RepartLangProvider.Current.SourceRequired);
 
-        List<RepartSourceFile> sourceFiles = [];
-        List<RepartSourceFile> probeableSources = [];
-        List<(RepartSourceFile SourceFile, RepartRawProbe Probe)> rawProbes = [];
-        List<(RepartSourceFile SourceFile, RepartProbeOutcome Analysis)> analyzedProbes = [];
-        List<(string Path, string DisplayName, RepartSourceProbe Probe)> candidates = [];
+        List<RepartSrcFile> sourceFiles = [];
+        List<RepartSrcFile> probeableSources = [];
+        List<(RepartSrcFile SourceFile, RepartRawProbe Probe)> rawProbes = [];
+        List<(RepartSrcFile SourceFile, RepartProbeOutcome Analysis)> analyzedProbes = [];
+        List<(string Path, string DisplayName, RepartSrcProbe Probe)> candidates = [];
         List<RepartSourceM> sources = [];
-        List<RepartExcludedSourceInfo> excluded = [];
+        List<RepartExcludedSrcInfo> excluded = [];
         RepartVideoFormatSignature? referenceSignature = null;
         string referenceJson = string.Empty;
         int frameRateNumerator = 0;
@@ -72,7 +72,7 @@ public static class RepartCompatibilityAnalyzer
         long cumulativeFrames = 0;
         int minimumSourceCount = requireMultipleSources ? 2 : 1;
 
-        void Exclude(RepartExcludedSourceInfo info)
+        void Exclude(RepartExcludedSrcInfo info)
         {
             excluded.Add(info);
             onExcluded?.Invoke(info);
@@ -98,10 +98,10 @@ public static class RepartCompatibilityAnalyzer
             string displayName = Path.GetFileName(path);
             onFileProgress?.Invoke(RepartAnalysisStage.CheckFiles, i + 1, filePaths.Count, displayName);
 
-            RepartSourceFileOutcome fileCheck = RepartSourceValidator.CheckWithoutFfprobe(path);
+            RepartSrcFileOutcome fileCheck = RepartSrcValidator.CheckWithoutFfprobe(path);
             if (fileCheck.RejectionReason != null)
             {
-                Exclude(new RepartExcludedSourceInfo(
+                Exclude(new RepartExcludedSrcInfo(
                     path,
                     displayName,
                     fileCheck.RejectionReason.Value,
@@ -109,7 +109,7 @@ public static class RepartCompatibilityAnalyzer
                 continue;
             }
 
-            sourceFiles.Add(fileCheck.SourceFile!);
+            sourceFiles.Add(fileCheck.SrcFile!);
         }
 
         if (CreateInsufficientSourcesResult(sourceFiles.Count) is RepartAnalysisResult insufficientAfterFileFilter)
@@ -119,16 +119,16 @@ public static class RepartCompatibilityAnalyzer
         // files that ffprobe cannot analyze are excluded before any heavier analysis.
         for (int i = 0; i < sourceFiles.Count; i++)
         {
-            RepartSourceFile sourceFile = sourceFiles[i];
+            RepartSrcFile sourceFile = sourceFiles[i];
             onFileProgress?.Invoke(RepartAnalysisStage.ProbeFiles, i + 1, sourceFiles.Count, sourceFile.DisplayName);
 
-            RepartSourceFileOutcome probeable = await RepartSourceValidator.ProbeCanAnalyzeAsync(
+            RepartSrcFileOutcome probeable = await RepartSrcValidator.ProbeCanAnalyzeAsync(
                 ffprobePath,
                 sourceFile,
                 cancellationToken);
             if (probeable.RejectionReason != null)
             {
-                Exclude(new RepartExcludedSourceInfo(
+                Exclude(new RepartExcludedSrcInfo(
                     sourceFile.FilePath,
                     sourceFile.DisplayName,
                     probeable.RejectionReason.Value,
@@ -136,7 +136,7 @@ public static class RepartCompatibilityAnalyzer
                 continue;
             }
 
-            probeableSources.Add(probeable.SourceFile!);
+            probeableSources.Add(probeable.SrcFile!);
         }
 
         if (CreateInsufficientSourcesResult(probeableSources.Count) is RepartAnalysisResult insufficientAfterSimpleProbe)
@@ -146,16 +146,16 @@ public static class RepartCompatibilityAnalyzer
         // this Repart-specific probe; failures here are excluded immediately.
         for (int i = 0; i < probeableSources.Count; i++)
         {
-            RepartSourceFile sourceFile = probeableSources[i];
+            RepartSrcFile sourceFile = probeableSources[i];
             onFileProgress?.Invoke(RepartAnalysisStage.AnalyzeStreams, i + 1, probeableSources.Count, sourceFile.DisplayName);
 
-            RepartRawProbeOutcome rawProbe = await RepartSourceValidator.AnalyzeWithFfprobeAsync(
+            RepartRawProbeOutcome rawProbe = await RepartSrcValidator.AnalyzeWithFfprobeAsync(
                 ffprobePath,
                 sourceFile,
                 cancellationToken);
             if (rawProbe.RejectionReason != null)
             {
-                Exclude(new RepartExcludedSourceInfo(
+                Exclude(new RepartExcludedSrcInfo(
                     sourceFile.FilePath,
                     sourceFile.DisplayName,
                     rawProbe.RejectionReason.Value,
@@ -171,20 +171,20 @@ public static class RepartCompatibilityAnalyzer
 
         // 4. Filters based on ffprobe analysis. Parse the Repart-specific raw
         // JSON and reject interlaced/non-CFR/etc. before frame counting.
-        foreach ((RepartSourceFile sourceFile, RepartRawProbe rawProbe) in rawProbes)
+        foreach ((RepartSrcFile sourceFile, RepartRawProbe rawProbe) in rawProbes)
         {
-            analyzedProbes.Add((sourceFile, RepartSourceValidator.AnalyzeProbe(rawProbe)));
+            analyzedProbes.Add((sourceFile, RepartSrcValidator.AnalyzeProbe(rawProbe)));
         }
 
-        List<(RepartSourceFile SourceFile, RepartSourceProbe Probe)> acceptedProbes = [];
+        List<(RepartSrcFile SourceFile, RepartSrcProbe Probe)> acceptedProbes = [];
         for (int i = 0; i < analyzedProbes.Count; i++)
         {
-            (RepartSourceFile sourceFile, RepartProbeOutcome analysis) = analyzedProbes[i];
+            (RepartSrcFile sourceFile, RepartProbeOutcome analysis) = analyzedProbes[i];
             onFileProgress?.Invoke(RepartAnalysisStage.ValidateStreams, i + 1, analyzedProbes.Count, sourceFile.DisplayName);
 
             if (analysis.RejectionReason != null)
             {
-                RepartExcludedSourceInfo excludedInfo = new(
+                RepartExcludedSrcInfo excludedInfo = new(
                     sourceFile.FilePath,
                     sourceFile.DisplayName,
                     analysis.RejectionReason.Value,
@@ -199,7 +199,7 @@ public static class RepartCompatibilityAnalyzer
                     if (!shouldDiscard)
                         throw new OperationCanceledException(
                             string.Format(
-                                RepartLangProvider.Current["InterlacedSourceRejected"],
+                                RepartLangProvider.Current["InterlacedSrcRejected"],
                                 sourceFile.DisplayName,
                                 analysis.Detail ?? string.Empty),
                             cancellationToken);
@@ -227,17 +227,17 @@ public static class RepartCompatibilityAnalyzer
             .OrderByDescending(group => group.Sum(probe => probe.Probe.InitialLength))
             .ThenByDescending(group => group.Count())
             .First();
-        RepartSourceProbe reference = referenceGroup.First().Probe;
+        RepartSrcProbe reference = referenceGroup.First().Probe;
         referenceSignature = reference.Signature;
         referenceJson = reference.RawJson;
         frameRateNumerator = reference.FrameRateNumerator;
         frameRateDenominator = reference.FrameRateDenominator;
 
-        foreach ((RepartSourceFile sourceFile, RepartSourceProbe sourceProbe) in acceptedProbes)
+        foreach ((RepartSrcFile sourceFile, RepartSrcProbe sourceProbe) in acceptedProbes)
         {
             if (sourceProbe.Signature != referenceSignature)
             {
-                Exclude(new RepartExcludedSourceInfo(
+                Exclude(new RepartExcludedSrcInfo(
                     sourceFile.FilePath,
                     sourceFile.DisplayName,
                     RepartExclusionReason.SignatureMismatch,
@@ -258,9 +258,9 @@ public static class RepartCompatibilityAnalyzer
         async Task<(string Path, string DisplayName, string RawJson, RepartScanOutcome Scan)> ScanCandidateAsync(
             string path,
             string displayName,
-            RepartSourceProbe sourceProbe)
+            RepartSrcProbe sourceProbe)
         {
-            RepartScanOutcome scan = await RepartSourceValidator.ScanFramesAsync(
+            RepartScanOutcome scan = await RepartSrcValidator.ScanFramesAsync(
                 ffprobePath,
                 ffmpegPath,
                 path,
@@ -285,7 +285,7 @@ public static class RepartCompatibilityAnalyzer
         {
             if (scan.RejectionReason != null)
             {
-                Exclude(new RepartExcludedSourceInfo(
+                Exclude(new RepartExcludedSrcInfo(
                     path,
                     displayName,
                     scan.RejectionReason.Value,
@@ -324,5 +324,5 @@ public static class RepartCompatibilityAnalyzer
 
 public sealed record RepartAnalysisResult(
     RepartPlanM? Plan,
-    IReadOnlyList<RepartExcludedSourceInfo> Excluded,
+    IReadOnlyList<RepartExcludedSrcInfo> Excluded,
     string? FatalMessage);

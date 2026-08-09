@@ -3,24 +3,24 @@ using System.Text.RegularExpressions;
 
 namespace OneColumnEncoder.Validation;
 
-public enum ScriptSourceValidationIssueKind
+public enum ScriptSrcValIssueKind
 {
-    NoMatchingVideoSource,
+    NoMatchingVideoSrc,
     NoMatchingScriptFile,
     UnreadableScript,
-    SourcePathMismatch
+    srcPathMismatch
 }
 
-public sealed record ScriptSourceValidationIssue(
-    ScriptSourceValidationIssueKind Kind,
+public sealed record ScriptSrcValIssue(
+    ScriptSrcValIssueKind Kind,
     string ScriptPath,
     string? EmbeddedPath = null,
     string? ExpectedPath = null);
 
-public static class ScriptSourceValidation
+public static class ScriptSrcValidator
 {
-    public static IReadOnlyList<ScriptSourceValidationIssue> ValidateQueue(
-        SourceFileKind kind,
+    public static IReadOnlyList<ScriptSrcValIssue> ValidateQueue(
+        SrcFileKind kind,
         IEnumerable<string> scriptPaths,
         IEnumerable<string> videoPaths)
     {
@@ -31,7 +31,7 @@ public static class ScriptSourceValidation
         foreach (string videoPath in videoPaths)
             videoByBasename[Path.GetFileNameWithoutExtension(videoPath)] = videoPath;
 
-        List<ScriptSourceValidationIssue> issues = [];
+        List<ScriptSrcValIssue> issues = [];
 
         HashSet<string> scriptBasenames = new(StringComparer.OrdinalIgnoreCase);
         foreach (string scriptPath in scriptPaths)
@@ -41,7 +41,7 @@ public static class ScriptSourceValidation
 
             if (!videoByBasename.TryGetValue(scriptBasename, out string? videoPath))
             {
-                issues.Add(new(ScriptSourceValidationIssueKind.NoMatchingVideoSource, scriptPath));
+                issues.Add(new(ScriptSrcValIssueKind.NoMatchingVideoSrc, scriptPath));
                 continue;
             }
 
@@ -52,26 +52,26 @@ public static class ScriptSourceValidation
         {
             string videoBasename = Path.GetFileNameWithoutExtension(videoPath);
             if (!scriptBasenames.Contains(videoBasename))
-                issues.Add(new(ScriptSourceValidationIssueKind.NoMatchingScriptFile, videoPath));
+                issues.Add(new(ScriptSrcValIssueKind.NoMatchingScriptFile, videoPath));
         }
 
         return issues;
     }
 
-    public static ScriptSourceValidationIssue? ValidateSingle(
-        SourceFileKind kind,
+    public static ScriptSrcValIssue? ValidateSingle(
+        SrcFileKind kind,
         string scriptPath,
         string videoPath)
     {
         string ext = GetSupportedScriptExtension(kind);
         if (string.IsNullOrEmpty(ext) || string.IsNullOrWhiteSpace(videoPath)) return null;
 
-        List<ScriptSourceValidationIssue> issues = [];
+        List<ScriptSrcValIssue> issues = [];
         AddMismatchIssueIfNeeded(issues, scriptPath, ext, videoPath);
         return issues.FirstOrDefault();
     }
 
-    public static string? ExtractScriptSourcePath(string scriptFilePath, string ext)
+    public static string? ExtractScriptSrcPath(string scriptFilePath, string ext)
     {
         if (!File.Exists(scriptFilePath)) return null;
 
@@ -100,28 +100,28 @@ public static class ScriptSourceValidation
     }
 
     private static void AddMismatchIssueIfNeeded(
-        ICollection<ScriptSourceValidationIssue> issues,
+        List<ScriptSrcValIssue> issues,
         string scriptPath,
         string ext,
         string expectedVideoPath)
     {
-        string? embeddedPath = ExtractScriptSourcePath(scriptPath, ext);
+        string? embeddedPath = ExtractScriptSrcPath(scriptPath, ext);
         if (embeddedPath == null)
         {
-            issues.Add(new(ScriptSourceValidationIssueKind.UnreadableScript, scriptPath));
+            issues.Add(new(ScriptSrcValIssueKind.UnreadableScript, scriptPath));
             return;
         }
 
         string normalizedEmbedded = Path.GetFullPath(embeddedPath);
         string normalizedExpected = Path.GetFullPath(expectedVideoPath);
         if (!string.Equals(normalizedEmbedded, normalizedExpected, StringComparison.OrdinalIgnoreCase))
-            issues.Add(new(ScriptSourceValidationIssueKind.SourcePathMismatch, scriptPath, embeddedPath, expectedVideoPath));
+            issues.Add(new(ScriptSrcValIssueKind.srcPathMismatch, scriptPath, embeddedPath, expectedVideoPath));
     }
 
-    private static string GetSupportedScriptExtension(SourceFileKind kind) => kind switch
+    private static string GetSupportedScriptExtension(SrcFileKind kind) => kind switch
     {
-        SourceFileKind.VapourSynthScript => ".vpy",
-        SourceFileKind.AviSynthScript => ".avs",
+        SrcFileKind.VapourSynthScript => ".vpy",
+        SrcFileKind.AviSynthScript => ".avs",
         _ => string.Empty
     };
 }

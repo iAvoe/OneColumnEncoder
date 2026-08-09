@@ -8,20 +8,20 @@ namespace OneColumnEncoder.ViewModels;
 /// Note:
 /// Users must manually copy/enter the desired filters into the free text box in the ffmpeg tab to be accepted.
 /// 
-/// File save & ItemCard write back logic created by MainVM as OnSourceImported,
+/// File save & ItemCard write back logic created by MainVM as OnSrcImported,
 /// passed in via OpenFilterScribeCmd constructor as Action<>
 /// </summary>
 public class FilterScribeVM : BaseVM
 {
     private readonly ModalNavS _modalNavS;
-    private readonly Func<string> _getSourcePath;
+    private readonly Func<string> _getsrcPath;
     private readonly Action _closeAction;
     private readonly ToolItemCardVM _avsItem;
     private readonly ToolItemCardVM _vpyItem;
-    private readonly Func<SourceFileKind?> _getPreferredScriptSourceKind;
-    private readonly Action<ToolItemCardVM, SourceFileKind, string> _afterImport;
+    private readonly Func<SrcFileKind?> _getPreferredScriptSrcKind;
+    private readonly Action<ToolItemCardVM, SrcFileKind, string> _afterImport;
     private readonly Action<string?> _applyFfmpegFilterArgs;
-    private readonly Func<SourceRevisionRequest, string?> _sourceReviser;
+    private readonly Func<SrcRevisionRequest, string?> _sourceReviser;
     private readonly string _sourceFfprobeJson;
     private readonly Func<bool> _hasSourceValidationError;
     private readonly Func<bool> _hasSarRepairWarning;
@@ -43,11 +43,11 @@ public class FilterScribeVM : BaseVM
     private int _sourceBitDepth;
     private bool _hasSourceAnalysis;
     public CloseModalCmd CloseCmd { get; }
-    public ConcatSourceListVM ConcatSources { get; } = new();
+    public ConcatSrcListVM ConcatSources { get; } = new();
     public RepartFilterScribeOutputQueueVM RepartOutputs { get; } = new();
     public bool IsConcatMode => _isConcatRoute?.Invoke() == true || IsRepartMode;
     public bool IsRepartMode => _isRepartRoute?.Invoke() == true;
-    public bool CanEditConcatSources => true;
+    public static bool CanEditConcatSources => true;
     public bool HasSourceAnalysis => _hasSourceAnalysis;
     // 0: AVS, 1: VPY, 2: ffmpeg
     private int _selectedTabIndex;
@@ -520,21 +520,21 @@ public class FilterScribeVM : BaseVM
     public ButtonGroupVM ScriptExportButtons { get; private set; } = null!;
     public ButtonGroupVM FinishScribeButtons { get; private set; } = null!;
     public ActionCmd OpenVpyPreviewCommand { get; }
-    public bool CanOpenVpyPreview => GetVpyPreviewSourcePaths().Length > 0;
+    public bool CanOpenVpyPreview => GetVpyPreviewsrcPaths().Length > 0;
 
     public FilterScribeVM(
         ModalNavS modalNavS,
         Action closeAction,
-        Func<string> getSourcePath,
+        Func<string> getsrcPath,
         ToolItemCardVM avsItem,
         ToolItemCardVM vpyItem,
-        Func<SourceFileKind?> getPreferredScriptSourceKind,
-        Action<ToolItemCardVM, SourceFileKind, string> afterImport,
+        Func<SrcFileKind?> getPreferredScriptSrcKind,
+        Action<ToolItemCardVM, SrcFileKind, string> afterImport,
         Action<string?> applyFfmpegFilterArgs,
         Func<bool> hasSourceValidationError,
         Func<bool> hasSarRepairWarning,
         string? sourceFfprobeJson = null,
-        Func<SourceRevisionRequest, string?>? reviseSource = null,
+        Func<SrcRevisionRequest, string?>? reviseSource = null,
         Func<bool>? isQueueRoute = null,
         Func<string[]>? getQueueFilePaths = null,
         Func<bool>? isConcatRoute = null,
@@ -551,10 +551,10 @@ public class FilterScribeVM : BaseVM
         _modalNavS = modalNavS;
         _closeAction = closeAction;
         CloseCmd = new CloseModalCmd(closeAction);
-        _getSourcePath = getSourcePath;
+        _getsrcPath = getsrcPath;
         _avsItem = avsItem;
         _vpyItem = vpyItem;
-        _getPreferredScriptSourceKind = getPreferredScriptSourceKind;
+        _getPreferredScriptSrcKind = getPreferredScriptSrcKind;
         _afterImport = afterImport;
         _applyFfmpegFilterArgs = applyFfmpegFilterArgs;
         _sourceReviser = reviseSource ?? (_ => null);
@@ -591,18 +591,18 @@ public class FilterScribeVM : BaseVM
     {
         ConcatSources.RemoveItemCommand = new ActionCmd(item =>
         {
-            if (item is not ConcatSourceItemVM sourceItem) return;
+            if (item is not ConcatSrcItemVM sourceItem) return;
             ConcatSources.RemoveItem(sourceItem);
             ApplyConcatSources();
         });
         ConcatSources.MoveItemUpCommand = new ActionCmd(item =>
         {
-            if (item is not ConcatSourceItemVM sourceItem) return;
+            if (item is not ConcatSrcItemVM sourceItem) return;
             if (ConcatSources.MoveItemUp(sourceItem)) ApplyConcatSources();
         });
         ConcatSources.MoveItemDownCommand = new ActionCmd(item =>
         {
-            if (item is not ConcatSourceItemVM sourceItem) return;
+            if (item is not ConcatSrcItemVM sourceItem) return;
             if (ConcatSources.MoveItemDown(sourceItem)) ApplyConcatSources();
         });
         ConcatSources.RestoreOriginalQueueCommand = new ActionCmd(_ =>
@@ -685,7 +685,7 @@ public class FilterScribeVM : BaseVM
 
     private void ParseColorSpaceInfo(string? sourceFfprobeJson)
     {
-        _sourceBitDepth = FFProbeSourceValidation.ReadBitDepthFromJson(sourceFfprobeJson);
+        _sourceBitDepth = FFProbeSrcVal.ReadBitDepthFromJson(sourceFfprobeJson);
         _colorSpaceAnalysis = ColorSpaceConverter.Analyze(sourceFfprobeJson);
         OnPropertyChanged(nameof(FfmpegLowToHighColorFilter));
         OnPropertyChanged(nameof(FfmpegHighToLowColorFilter));
@@ -709,7 +709,7 @@ public class FilterScribeVM : BaseVM
     private void ParseSourceResolution(string? sourceFfprobeJson)
     {
         _sourceAspectRatio = FFProbeAspectRatioResolver.Resolve(sourceFfprobeJson);
-        var resolution = FFProbeSourceResolution.Read(sourceFfprobeJson);
+        var resolution = FFProbeSrcResolution.Read(sourceFfprobeJson);
         if (resolution.HasValue)
         {
             SourceWidth = resolution.Value.width;
@@ -813,12 +813,12 @@ public class FilterScribeVM : BaseVM
             return;
         }
 
-        string sourcePath = _getSourcePath();
+        string srcPath = _getsrcPath();
         string inOutText = SelectedTabIndex switch
         {
-            0 => ScriptTemplate.BuildAvsInOutSection(sourcePath, AvsPrefix2, AvsSuffix,
+            0 => ScriptTemplate.BuildAvsInOutSection(srcPath, AvsPrefix2, AvsSuffix,
                 _avsEnableFpsParams ? _frameRateNum : 0, _avsEnableFpsParams ? _frameRateDen : 0),
-            1 => ScriptTemplate.BuildVpyInOutSection(sourcePath, VpyPrefix2, VpySuffix,
+            1 => ScriptTemplate.BuildVpyInOutSection(srcPath, VpyPrefix2, VpySuffix,
                 _vpyEnableFpsParams ? _frameRateNum : 0, _vpyEnableFpsParams ? _frameRateDen : 0),
             _ => string.Empty
         };
@@ -843,7 +843,7 @@ public class FilterScribeVM : BaseVM
             return;
         }
 
-        string sourcePath = _getSourcePath();
+        string srcPath = _getsrcPath();
         int avsFpsnum = _avsEnableFpsParams ? _frameRateNum : 0;
         int avsFpsden = _avsEnableFpsParams ? _frameRateDen : 0;
         int vpyFpsnum = _vpyEnableFpsParams ? _frameRateNum : 0;
@@ -851,9 +851,9 @@ public class FilterScribeVM : BaseVM
         string script = SelectedTabIndex switch
         {
             0 => ScriptTemplate.BuildAvsExportScript(
-                sourcePath, AvsPrefix2, AvsSuffix, AvsUserInput, avsFpsnum, avsFpsden),
+                srcPath, AvsPrefix2, AvsSuffix, AvsUserInput, avsFpsnum, avsFpsden),
             1 => ScriptTemplate.BuildVpyExportScript(
-                sourcePath, VpyPrefix2, VpySuffix, VpyUserInput, vpyFpsnum, vpyFpsden),
+                srcPath, VpyPrefix2, VpySuffix, VpyUserInput, vpyFpsnum, vpyFpsden),
             _ => FfmpegFreeText
         };
 
@@ -873,9 +873,9 @@ public class FilterScribeVM : BaseVM
 
         SaveFileDialog dialog = new()
         {
-            Title = FilterScribeModalLangProvider.Current["SrcScribe.SavingWindowTitle"],
+            Title = FilterScribeModalLangProvider.SavingScriptWindowTitle,
             Filter = filter,
-            FileName = GetScriptFileName(sourcePath, extension)
+            FileName = GetScriptFileName(srcPath, extension)
         };
 
         if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
@@ -886,12 +886,12 @@ public class FilterScribeVM : BaseVM
 
     private void ExecuteQueueSaveAsFile()
     {
-        string[] sourcePaths = _getQueueFilePaths?.Invoke() ?? [];
-        if (sourcePaths.Length == 0) return;
+        string[] srcPaths = _getQueueFilePaths?.Invoke() ?? [];
+        if (srcPaths.Length == 0) return;
 
         OpenFolderDialog dialog = new()
         {
-            Title = FilterScribeModalLangProvider.Current["SrcScribe.SavingWindowTitle"]
+            Title = FilterScribeModalLangProvider.SavingScriptWindowTitle
         };
 
         if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
@@ -903,17 +903,17 @@ public class FilterScribeVM : BaseVM
         int vpyFpsden = _vpyEnableFpsParams ? _frameRateDen : 0;
         List<string> savedPaths = [];
 
-        foreach (string sourcePath in sourcePaths)
+        foreach (string srcPath in srcPaths)
         {
-            string baseName = Path.GetFileNameWithoutExtension(sourcePath);
+            string baseName = Path.GetFileNameWithoutExtension(srcPath);
             string avsPath = Path.Combine(directory, baseName + ".avs");
             string vpyPath = Path.Combine(directory, baseName + ".vpy");
 
             if (!TryWriteScript(avsPath, ScriptTemplate.BuildAvsExportScript(
-                    sourcePath, AvsPrefix2, AvsSuffix, AvsUserInput, avsFpsnum, avsFpsden)))
+                    srcPath, AvsPrefix2, AvsSuffix, AvsUserInput, avsFpsnum, avsFpsden)))
                 return;
             if (!TryWriteScript(vpyPath, ScriptTemplate.BuildVpyExportScript(
-                    sourcePath, VpyPrefix2, VpySuffix, VpyUserInput, vpyFpsnum, vpyFpsden)))
+                    srcPath, VpyPrefix2, VpySuffix, VpyUserInput, vpyFpsnum, vpyFpsden)))
                 return;
             savedPaths.Add(avsPath);
             savedPaths.Add(vpyPath);
@@ -957,9 +957,9 @@ public class FilterScribeVM : BaseVM
 
         SaveFileDialog dialog = new()
         {
-            Title = FilterScribeModalLangProvider.Current["SrcScribe.SavingWindowTitle"],
+            Title = FilterScribeModalLangProvider.SavingScriptWindowTitle,
             Filter = filter,
-            FileName = BrowseSourceQueueCmd.FormatConcatFileName(concatPaths) + "_concat" + extension
+            FileName = BrowseSrcQueueCmd.FormatConcatFileName(concatPaths) + "_concat" + extension
         };
 
         if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
@@ -971,8 +971,8 @@ public class FilterScribeVM : BaseVM
 
     private void ExecuteQueueSaveAndImport()
     {
-        string[] sourcePaths = _getQueueFilePaths?.Invoke() ?? [];
-        if (sourcePaths.Length == 0) return;
+        string[] srcPaths = _getQueueFilePaths?.Invoke() ?? [];
+        if (srcPaths.Length == 0) return;
 
         OpenFolderDialog dialog = new()
         {
@@ -990,16 +990,16 @@ public class FilterScribeVM : BaseVM
 
         try
         {
-            foreach (string sourcePath in sourcePaths)
+            foreach (string srcPath in srcPaths)
             {
-                string baseName = Path.GetFileNameWithoutExtension(sourcePath);
+                string baseName = Path.GetFileNameWithoutExtension(srcPath);
                 string avsPath = Path.Combine(directory, baseName + ".avs");
                 string vpyPath = Path.Combine(directory, baseName + ".vpy");
 
                 File.WriteAllText(avsPath, ScriptTemplate.BuildAvsExportScript(
-                    sourcePath, AvsPrefix2, AvsSuffix, AvsUserInput, avsFpsnum, avsFpsden));
+                    srcPath, AvsPrefix2, AvsSuffix, AvsUserInput, avsFpsnum, avsFpsden));
                 File.WriteAllText(vpyPath, ScriptTemplate.BuildVpyExportScript(
-                    sourcePath, VpyPrefix2, VpySuffix, VpyUserInput, vpyFpsnum, vpyFpsden));
+                    srcPath, VpyPrefix2, VpySuffix, VpyUserInput, vpyFpsnum, vpyFpsden));
                 savedPaths.Add(avsPath);
                 savedPaths.Add(vpyPath);
             }
@@ -1016,11 +1016,11 @@ public class FilterScribeVM : BaseVM
         string[] vpyFileNames = [.. savedPaths.Where(path => path.EndsWith(".vpy", StringComparison.OrdinalIgnoreCase))
             .Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!)];
         _avsItem.P2TextData = directory;
-        _avsItem.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(avsFileNames);
-        _avsItem.P1TooltipText = BrowseSourceQueueCmd.FormatQueueP1TooltipText(avsFileNames);
+        _avsItem.P1TextData = BrowseSrcQueueCmd.FormatQueueP1Text(avsFileNames);
+        _avsItem.P1TooltipText = BrowseSrcQueueCmd.FormatQueueP1TooltipText(avsFileNames);
         _vpyItem.P2TextData = directory;
-        _vpyItem.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(vpyFileNames);
-        _vpyItem.P1TooltipText = BrowseSourceQueueCmd.FormatQueueP1TooltipText(vpyFileNames);
+        _vpyItem.P1TextData = BrowseSrcQueueCmd.FormatQueueP1Text(vpyFileNames);
+        _vpyItem.P1TooltipText = BrowseSrcQueueCmd.FormatQueueP1TooltipText(vpyFileNames);
 
         SelectPreferredScriptItem();
 
@@ -1052,19 +1052,19 @@ public class FilterScribeVM : BaseVM
             return;
         }
 
-        string sourcePath = _getSourcePath();
+        string srcPath = _getsrcPath();
         string avsScript = ScriptTemplate.BuildAvsExportScript(
-            sourcePath, AvsPrefix2, AvsSuffix, AvsUserInput,
+            srcPath, AvsPrefix2, AvsSuffix, AvsUserInput,
             _avsEnableFpsParams ? _frameRateNum : 0, _avsEnableFpsParams ? _frameRateDen : 0);
         string vpyScript = ScriptTemplate.BuildVpyExportScript(
-            sourcePath, VpyPrefix2, VpySuffix, VpyUserInput,
+            srcPath, VpyPrefix2, VpySuffix, VpyUserInput,
             _vpyEnableFpsParams ? _frameRateNum : 0, _vpyEnableFpsParams ? _frameRateDen : 0);
 
         SaveFileDialog dialog = new()
         {
             Title = FilterScribeModalLangProvider.SavingScriptWindowTitle,
             Filter = FilterScribeModalLangProvider.Current["SrcScribe.FilterAvs"],
-            FileName = GetScriptFileName(sourcePath, ".avs")
+            FileName = GetScriptFileName(srcPath, ".avs")
         };
 
         if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
@@ -1075,19 +1075,19 @@ public class FilterScribeVM : BaseVM
 
         if (!TryWriteScripts(avsPath, avsScript, vpyPath, vpyScript)) return;
 
-        SourceFileKind? preferredKind = _getPreferredScriptSourceKind();
-        if (preferredKind == SourceFileKind.AviSynthScript)
+        SrcFileKind? preferredKind = _getPreferredScriptSrcKind();
+        if (preferredKind == SrcFileKind.AviSynthScript)
         {
-            ImportScript(_avsItem, SourceFileKind.AviSynthScript, avsPath);
+            ImportScript(_avsItem, SrcFileKind.AviSynthScript, avsPath);
         }
-        else if (preferredKind == SourceFileKind.VapourSynthScript)
+        else if (preferredKind == SrcFileKind.VapourSynthScript)
         {
-            ImportScript(_vpyItem, SourceFileKind.VapourSynthScript, vpyPath);
+            ImportScript(_vpyItem, SrcFileKind.VapourSynthScript, vpyPath);
         }
         else
         {
-            ImportScript(_avsItem, SourceFileKind.AviSynthScript, avsPath);
-            ImportScript(_vpyItem, SourceFileKind.VapourSynthScript, vpyPath);
+            ImportScript(_avsItem, SrcFileKind.AviSynthScript, avsPath);
+            ImportScript(_vpyItem, SrcFileKind.VapourSynthScript, vpyPath);
         }
 
         SelectPreferredScriptItem();
@@ -1126,7 +1126,7 @@ public class FilterScribeVM : BaseVM
         {
             Title = FilterScribeModalLangProvider.SavingScriptWindowTitle,
             Filter = FilterScribeModalLangProvider.Current["SrcScribe.FilterAvs"],
-            FileName = BrowseSourceQueueCmd.FormatConcatFileName(concatPaths) + "_concat.avs"
+            FileName = BrowseSrcQueueCmd.FormatConcatFileName(concatPaths) + "_concat.avs"
         };
 
         if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
@@ -1139,19 +1139,19 @@ public class FilterScribeVM : BaseVM
 
         ApplyConcatSources();
 
-        SourceFileKind? preferredKind = _getPreferredScriptSourceKind();
-        if (preferredKind == SourceFileKind.AviSynthScript)
+        SrcFileKind? preferredKind = _getPreferredScriptSrcKind();
+        if (preferredKind == SrcFileKind.AviSynthScript)
         {
-            ImportScript(_avsItem, SourceFileKind.AviSynthScript, avsPath);
+            ImportScript(_avsItem, SrcFileKind.AviSynthScript, avsPath);
         }
-        else if (preferredKind == SourceFileKind.VapourSynthScript)
+        else if (preferredKind == SrcFileKind.VapourSynthScript)
         {
-            ImportScript(_vpyItem, SourceFileKind.VapourSynthScript, vpyPath);
+            ImportScript(_vpyItem, SrcFileKind.VapourSynthScript, vpyPath);
         }
         else
         {
-            ImportScript(_avsItem, SourceFileKind.AviSynthScript, avsPath);
-            ImportScript(_vpyItem, SourceFileKind.VapourSynthScript, vpyPath);
+            ImportScript(_avsItem, SrcFileKind.AviSynthScript, avsPath);
+            ImportScript(_vpyItem, SrcFileKind.VapourSynthScript, vpyPath);
         }
 
         SelectPreferredScriptItem();
@@ -1190,8 +1190,8 @@ public class FilterScribeVM : BaseVM
     {
         var (suggestedWidth, suggestedHeight) = GetSuggestedOutputResolution();
 
-        SourceReviserModal window = new();
-        SourceReviserVM vm = new(
+        SrcReviserModal window = new();
+        SrcReviserVM vm = new(
             _modalNavS,
             window.Close,
             result => window.DialogResult = result,
@@ -1227,8 +1227,8 @@ public class FilterScribeVM : BaseVM
         return HasSource ? (SourceWidth, SourceHeight) : (0, 0);
     }
 
-    private static string GetScriptFileName(string sourcePath, string extension) =>
-        Path.GetFileNameWithoutExtension(sourcePath) + extension;
+    private static string GetScriptFileName(string srcPath, string extension) =>
+        Path.GetFileNameWithoutExtension(srcPath) + extension;
     #endregion
 
     private bool TryWriteScript(string path, string script)
@@ -1260,19 +1260,19 @@ public class FilterScribeVM : BaseVM
         }
     }
 
-    private void ImportScript(ToolItemCardVM item, SourceFileKind kind, string path)
+    private void ImportScript(ToolItemCardVM item, SrcFileKind kind, string path)
     {
         item.P2TextData = path;
-        item.P1TextData = SourceFilePicker.GetPrimaryText(kind, path);
+        item.P1TextData = SrcFilePicker.GetPrimaryText(kind, path);
         _afterImport(item, kind, path);
     }
 
     private void SelectPreferredScriptItem()
     {
-        SourceFileKind? preferredKind = _getPreferredScriptSourceKind();
+        SrcFileKind? preferredKind = _getPreferredScriptSrcKind();
         if (preferredKind == null) return;
 
-        ToolItemCardVM target = preferredKind == SourceFileKind.AviSynthScript ? _avsItem : _vpyItem;
+        ToolItemCardVM target = preferredKind == SrcFileKind.AviSynthScript ? _avsItem : _vpyItem;
         if (target == _avsItem)
             _vpyItem.IsSelected = false;
         else
@@ -1330,8 +1330,8 @@ public class FilterScribeVM : BaseVM
             return;
         }
 
-        string sourcePath = GetVpyPreviewSourcePath();
-        if (string.IsNullOrWhiteSpace(sourcePath))
+        string srcPath = GetVpyPreviewsrcPath();
+        if (string.IsNullOrWhiteSpace(srcPath))
         {
             new OpenErrModalCmd(
                 _modalNavS,
@@ -1342,22 +1342,22 @@ public class FilterScribeVM : BaseVM
 
         int fpsnum = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateNum : 0;
         int fpsden = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateDen : 0;
-        string script = ScriptTemplate.BuildVpyPreviewScript(sourcePath, VpyUserInput, fpsnum, fpsden);
+        string script = ScriptTemplate.BuildVpyPreviewScript(srcPath, VpyUserInput, fpsnum, fpsden);
 
         long total = _getTotalFrames?.Invoke() ?? 0;
         int frameCount = (int)Math.Min(total > 0 ? total : 1, int.MaxValue);
 
-        string[] previewSourcePaths = GetVpyPreviewSourcePaths();
+        string[] previewsrcPaths = GetVpyPreviewsrcPaths();
         string buildScript(string path) => ScriptTemplate.BuildVpyPreviewScript(path, VpyUserInput, fpsnum, fpsden);
 
         var previewVm = new VspipePreviewVM(
             _vspipePath,
             _vspipeY4mArg,
             script,
-            sourcePath,
+            srcPath,
             frameCount,
             buildPreviewScript: buildScript,
-            queueFilePaths: previewSourcePaths);
+            queueFilePaths: previewsrcPaths);
 
         var ownerWindow = Application.Current.Windows
             .OfType<FilterScribeModal>()
@@ -1393,12 +1393,12 @@ public class FilterScribeVM : BaseVM
             ? window.Width
             : window.ActualWidth;
 
-    private string GetVpyPreviewSourcePath()
+    private string GetVpyPreviewsrcPath()
     {
-        return GetVpyPreviewSourcePaths().FirstOrDefault() ?? string.Empty;
+        return GetVpyPreviewsrcPaths().FirstOrDefault() ?? string.Empty;
     }
 
-    private string[] GetVpyPreviewSourcePaths()
+    private string[] GetVpyPreviewsrcPaths()
     {
         if (_isQueueRoute?.Invoke() == true)
             return [.. (_getQueueFilePaths?.Invoke() ?? []).Where(path => !string.IsNullOrWhiteSpace(path))];
@@ -1406,8 +1406,8 @@ public class FilterScribeVM : BaseVM
         if (IsConcatMode)
             return [.. GetCurrentConcatFilePaths().Where(path => !string.IsNullOrWhiteSpace(path))];
 
-        string sourcePath = _getSourcePath();
-        return string.IsNullOrWhiteSpace(sourcePath) ? [] : [sourcePath];
+        string srcPath = _getsrcPath();
+        return string.IsNullOrWhiteSpace(srcPath) ? [] : [srcPath];
     }
 
     #endregion
@@ -1430,12 +1430,12 @@ public class FilterScribeVM : BaseVM
             };
         }
 
-        string sourcePath = _getSourcePath();
+        string srcPath = _getsrcPath();
         return SelectedTabIndex switch
         {
-            0 => ScriptTemplate.BuildAvsEditorScript(sourcePath, AvsPrefix2, AvsUserInput,
+            0 => ScriptTemplate.BuildAvsEditorScript(srcPath, AvsPrefix2, AvsUserInput,
                 _avsEnableFpsParams ? _frameRateNum : 0, _avsEnableFpsParams ? _frameRateDen : 0),
-            1 => ScriptTemplate.BuildVpyEditorScript(sourcePath, VpyPrefix2, VpySuffix, VpyUserInput,
+            1 => ScriptTemplate.BuildVpyEditorScript(srcPath, VpyPrefix2, VpySuffix, VpyUserInput,
                 _vpyEnableFpsParams ? _frameRateNum : 0, _vpyEnableFpsParams ? _frameRateDen : 0),
             _ => FfmpegFreeText
         };

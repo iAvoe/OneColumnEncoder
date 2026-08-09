@@ -92,9 +92,9 @@ Otherwise:
   ActiveSrcValidationCard   = SrcValidationCard
 ```
 
-The routing is controlled by `_videoSourceQueue.IsActive` which checks `VideoSrcImportZone[1].IsSelected`. This means all downstream operations (script generation, encoding) automatically use the correct zone.
+The routing is controlled by `_videoSrcQueue.IsActive` which checks `VideoSrcImportZone[1].IsSelected`. This means all downstream operations (script generation, encoding) automatically use the correct zone.
 
-The `_videoSourceQueue` state (`VideoSourceQueueState`) maintains a `Dictionary<ToolItemCardVM, string[]>` mapping queue items to their file paths. Key methods:
+The `_videoSrcQueue` state (`VideoSourceQueueState`) maintains a `Dictionary<ToolItemCardVM, string[]>` mapping queue items to their file paths. Key methods:
 
 | Method | When Called | Effect |
 |--------|-------------|--------|
@@ -112,11 +112,11 @@ After zones are initialized in the constructor, commands are wired up:
 2. **`WireUpSourceCmd(item)`** — Sets commands on source import cards:
    - Queue video source → `BrowseSourceQueueCmd` + `ClearToolItemCmd`
    - Queue script source → `BrowseSourceScriptQueueCmd` + `ClearToolItemCmd`
-   - Single-file source → `BrowseSourcePathCmd` + `ClearToolItemCmd`
+   - Single-file source → `BrowsesrcPathCmd` + `ClearToolItemCmd`
 
 3. **`WireUpEncSettingsCmds()`** — Sets commands on encoder settings cards (e.g. `OpenParallelismConfCmd`, `OpenFilenameScribeCmd`, `OpenEncoderConfCmd`).
 
-4. **`WireUpSourceCmd` is called per-item** during `LoadSourcesFromAppDataM()` and `OnToolsImported`.
+4. **`WireUpSourceCmd` is called per-item** during `LoadSrcsFromAppDataM()` and `OnToolsImported`.
 
 ---
 
@@ -154,7 +154,7 @@ After zones are initialized in the constructor, commands are wired up:
 | Location | Context |
 |----------|---------|
 | `ClearToolItemCmd.Execute()` | Generic clear command for all items |
-| `MainVM.ClearScriptSourceZone()` | When switching between queue and non-queue modes |
+| `MainVM.ClearScriptSrcZone()` | When switching between queue and non-queue modes |
 
 ---
 
@@ -162,7 +162,7 @@ After zones are initialized in the constructor, commands are wired up:
 
 | Command | Used By | P1TextData | P2TextData | P1TooltipText |
 |---------|---------|-----------|-----------|--------------|
-| `BrowseSourcePathCmd` | Single-file sources | `GetPrimaryText()` (filename or "Custom Script") | Full file path | Not set (falls back) |
+| `BrowsesrcPathCmd` | Single-file sources | `GetPrimaryText()` (filename or "Custom Script") | Full file path | Not set (falls back) |
 | `BrowseSourceQueueCmd` | Queue video source | `FormatQueueP1Text()` (short summary) | Folder path | `FormatQueueP1TooltipText()` (full list) |
 | `BrowseSourceScriptQueueCmd` | Queue script sources | `FormatQueueP1Text()` (short summary) | Folder path | `FormatQueueP1TooltipText()` (full list) |
 | `ClearToolItemCmd` | All clear buttons | `""` | `""` | `null` |
@@ -205,7 +205,7 @@ P2Name: P2Text           ← always shows the full path / folder path
 
 When an upstream tool is selected, certain source cards are disabled to prevent incompatible configurations. The rules are applied in `ToolCompatibilityH`:
 
-### 7.1 Script Source Disabling (`RefreshSourceSelectionState`)
+### 7.1 Script Source Disabling (`RefreshSrcSelectionState`)
 
 | Selected Upstream | Effect on `ScriptSrcImportZone` / `ActiveScriptSrcImportZone` |
 |---|---|
@@ -215,7 +215,7 @@ When an upstream tool is selected, certain source cards are disabled to prevent 
 | **one_line_shot_args.exe** | Only "SVFI" (or "SVFI Queue") remains enabled — uses SVFI's own ini-based source resolution |
 | none / other | All script source cards are enabled |
 
-### 7.2 Video Source Queue Disabling (`RefreshVideoSourceSelectionState`)
+### 7.2 Video Source Queue Disabling (`RefreshVideoSrcSelectionState`)
 
 | Selected Upstream | Effect on `VideoSrcImportZone[1]` (Video Src. Queue) |
 |---|---|---|
@@ -247,7 +247,7 @@ When `avs2pipemod.exe` is selected in `UpstreamsZone`, the `DependenciesZone` ca
 
 ```
 User clicks "Browse" on "Video Source" card
-  → BrowseSourcePathCmd.Execute()
+  → BrowsesrcPathCmd.Execute()
     → P2TextData = "C:\videos\video.mkv"
     → P1TextData = "video.mkv"                     (from GetPrimaryText)
     → P1TooltipText = null                          (falls back to "video.mkv")

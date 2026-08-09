@@ -24,7 +24,7 @@ public partial class EncodingMonitorModal : AdaptiveWindow
     {
         InitializeComponent();
         Loaded += OnLoaded;
-        SourceInitialized += OnSourceInitialized;
+        SourceInitialized += OnSrcInitialized;
         Closing += OnClosing;
         Closed += OnClosed;
     }
@@ -60,7 +60,7 @@ public partial class EncodingMonitorModal : AdaptiveWindow
         }
     }
 
-    private void OnSourceInitialized(object? sender, EventArgs e)
+    private void OnSrcInitialized(object? sender, EventArgs e)
     {
         if (DataContext is EncodingMonitorVM vm)
             UpdateSystemCloseButton(vm.IsWindowCloseEnabled);
@@ -94,7 +94,7 @@ public partial class EncodingMonitorModal : AdaptiveWindow
     {
         DetachViewModelEvents();
         Loaded -= OnLoaded;
-        SourceInitialized -= OnSourceInitialized;
+        SourceInitialized -= OnSrcInitialized;
         Closing -= OnClosing;
         Closed -= OnClosed;
     }

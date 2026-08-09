@@ -85,7 +85,7 @@ public class ToolsImportCardVM : BaseVM
         Checklist1[index].Status = isPicked ? StatusType.Success : StatusType.Error;
     }
 
-    public void SetVideoSourcePickedStatus(bool isPicked)
+    public void SetVideoSrcPickedStatus(bool isPicked)
     {
         UpdateChecklistStatus(Checklist2, VideoSourcePickedChecklistIdx, isPicked);
     }
@@ -108,7 +108,7 @@ public class ToolsImportCardVM : BaseVM
         UpdateChecklistStatus(Checklist2, CompleteSourceAnalysisChecklistIdx, isSuccess);
     }
 
-    public void ResetCompleteSourceAnalysisStatus()
+    public void ResetCompleteSrcAnalysisStatus()
     {
         if (CompleteSourceAnalysisChecklistIdx >= 0 && CompleteSourceAnalysisChecklistIdx < Checklist2.Count)
             Checklist2[CompleteSourceAnalysisChecklistIdx].Status = StatusType.Error;

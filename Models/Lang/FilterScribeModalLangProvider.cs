@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models.Lang;
 
-public class FilterScribeModalLangProvider : LangProviderBase
+public class FilterScribeModalLangProvider(string languageCode) : LangProviderBase(languageCode, Data)
 {
     public const string WindowTitle = "1cenc Filter Scribe";
     public const string SavingScriptWindowTitle = "Saving all scripts (AVS & VPY)...";
@@ -462,8 +462,4 @@ public class FilterScribeModalLangProvider : LangProviderBase
     }
 
     public static FilterScribeModalLangProvider Current => new(UILangProvider.Current.LanguageCode);
-
-    public FilterScribeModalLangProvider(string languageCode) : base(languageCode, Data)
-    {
-    }
 }

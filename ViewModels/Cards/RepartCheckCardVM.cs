@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.ViewModels.Cards;
 
-public sealed class RepartCheckCardVM : SourceCheckCardVM
+public sealed class RepartCheckCardVM : SrcCheckCardVM
 {
     public int SourceCount { get; private set; }
     public int OutputCount { get; private set; }

@@ -6,7 +6,7 @@ namespace OneColumnEncoder.ChapterTool;
 public sealed record PlaylistImportResult(
     DiscChapterReadResult Chapter,
     string PlaylistFolderPath,
-    string[] SourcePaths);
+    string[] srcPaths);
 
 public sealed record PlaylistImportStrings(
     string FolderDialogTitle,
@@ -59,8 +59,8 @@ public static class PlaylistImportService
                 continue;
             }
 
-            string[] sourcePaths = chapterResult.ReferencedFilePaths.ToArray();
-            if (sourcePaths.Length == 0)
+            string[] srcPaths = chapterResult.ReferencedFilePaths.ToArray();
+            if (srcPaths.Length == 0)
             {
                 new OpenErrModalCmd(
                     modalNavS,
@@ -69,7 +69,7 @@ public static class PlaylistImportService
                 continue;
             }
 
-            return new PlaylistImportResult(chapterResult, folderPath, sourcePaths);
+            return new PlaylistImportResult(chapterResult, folderPath, srcPaths);
         }
     }
 

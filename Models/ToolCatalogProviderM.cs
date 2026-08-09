@@ -7,7 +7,7 @@ public static class ToolCatalogProviderM
     // Video Source Import zone (4 items)
     public static List<ToolDefinitionM> GetVideoSrcImportDefs() =>
     [
-        new(UILangProvider.Current["Tool.Source.VideoSource"],
+        new(UILangProvider.Current["Tool.Source.VideoSrc"],
             UILangProvider.Current["Buttons.Replace"],
             UILangProvider.Current["Buttons.Clear"],
             UILangProvider.Current["ToolField.Name"],

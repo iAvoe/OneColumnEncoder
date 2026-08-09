@@ -249,7 +249,7 @@ public class ToolItemCardVM(EncItemM baseModel) : BaseVM
             P1TextData = DefaultOutputSettingText;
     }
 
-    public void RefreshOutputSetting(bool queueRouteActive, ModalNavS modalNavS, string? sourcePath = null)
+    public void RefreshOutputSetting(bool queueRouteActive, ModalNavS modalNavS, string? srcPath = null)
     {
         R1Command = queueRouteActive
             ? new BrowseOutputDirectoryCmd(this)
@@ -262,8 +262,8 @@ public class ToolItemCardVM(EncItemM baseModel) : BaseVM
             return;
         }
 
-        if (!string.IsNullOrWhiteSpace(sourcePath))
-            P1TextData = Path.GetFileNameWithoutExtension(sourcePath);
+        if (!string.IsNullOrWhiteSpace(srcPath))
+            P1TextData = Path.GetFileNameWithoutExtension(srcPath);
     }
     #endregion
 }

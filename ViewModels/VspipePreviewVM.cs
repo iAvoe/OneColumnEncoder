@@ -132,7 +132,7 @@ public class VspipePreviewVM : BaseVM
         string vspipePath,
         string vspipeY4mArg,
         string scriptContent,
-        string sourcePath,
+        string srcPath,
         int totalFrames,
         Func<string, string>? buildPreviewScript = null,
         IEnumerable<string>? queueFilePaths = null)
@@ -140,7 +140,7 @@ public class VspipePreviewVM : BaseVM
         _vspipePath = vspipePath;
         _vspipeY4mArg = vspipeY4mArg;
         _buildPreviewScript = buildPreviewScript;
-        _videoFilename = Path.GetFileName(sourcePath);
+        _videoFilename = Path.GetFileName(srcPath);
         _totalFrames = totalFrames > 0 ? totalFrames : 1;
         _currentFrame = 0;
         MaxPositionSeconds = _totalFrames - 1;
@@ -160,7 +160,7 @@ public class VspipePreviewVM : BaseVM
         }
         else
         {
-            PreviewSources.Add(new PreviewSourceItem(sourcePath));
+            PreviewSources.Add(new PreviewSourceItem(srcPath));
             SelectedPreviewSource = PreviewSources[0];
         }
         _suppressSwitch = false;
@@ -206,18 +206,18 @@ public class VspipePreviewVM : BaseVM
         {
             RefreshPreviewScript();
             IsBusy = true;
-            string sourcePath = Path.Combine(_workDirectory, "output-0.y4m");
+            string srcPath = Path.Combine(_workDirectory, "output-0.y4m");
             string filteredPath = Path.Combine(_workDirectory, "output-1.y4m");
 
             StatusText = "Extracting frame from output 0 (original)...";
-            await RunVspipeY4mAsync(0, sourcePath, token);
-            PreviewPipeline.EnsureFileExists(sourcePath, "Preview frame file missing");
+            await RunVspipeY4mAsync(0, srcPath, token);
+            PreviewPipeline.EnsureFileExists(srcPath, "Preview frame file missing");
 
             StatusText = "Extracting frame from output 1 (filtered)...";
             await RunVspipeY4mAsync(1, filteredPath, token);
             PreviewPipeline.EnsureFileExists(filteredPath, "Preview frame file missing");
 
-            SourceImage = Y4mFrameReader.LoadFirstFrame(sourcePath);
+            SourceImage = Y4mFrameReader.LoadFirstFrame(srcPath);
             EncodedImage = Y4mFrameReader.LoadFirstFrame(filteredPath);
 
             StatusText = $"Frame {CurrentFrame} rendered";
@@ -320,11 +320,11 @@ public class VspipePreviewVM : BaseVM
         if (_buildPreviewScript == null)
             return;
 
-        string? sourcePath = SelectedPreviewSource?.FullPath;
-        if (string.IsNullOrWhiteSpace(sourcePath))
+        string? srcPath = SelectedPreviewSource?.FullPath;
+        if (string.IsNullOrWhiteSpace(srcPath))
             return;
 
-        string script = _buildPreviewScript(sourcePath);
+        string script = _buildPreviewScript(srcPath);
         File.WriteAllText(_scriptPath, script);
     }
 

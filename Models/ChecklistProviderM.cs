@@ -27,7 +27,7 @@ public class ChecklistProviderM
         new(UILangProvider.Current["Checklist.Tools.CompleteSourceAnalysis"], StatusType.Error),
     ];
 
-    public static List<ChecklistItemDefinitionM> GetSourceChecklist1() =>
+    public static List<ChecklistItemDefinitionM> GetSrcChecklist1() =>
     [
         new(UILangProvider.Current["Checklist.Source1.Metadata"]),
         new(UILangProvider.Current["Checklist.Source1.Progressive"]),
@@ -35,7 +35,7 @@ public class ChecklistProviderM
         new(UILangProvider.Current["Checklist.Source1.BitDepth2"]),
     ];
 
-    public static List<ChecklistItemDefinitionM> GetSourceChecklist2() =>
+    public static List<ChecklistItemDefinitionM> GetSrcChecklist2() =>
     [
         new(UILangProvider.Current["Checklist.Source2.Framerate"]),
         new(UILangProvider.Current["Checklist.Source2.AspectRatio"]),

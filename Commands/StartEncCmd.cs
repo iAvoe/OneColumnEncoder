@@ -11,7 +11,7 @@ public class StartEncCmd(
     Func<string>? getQueueJsonPath = null,
     Func<string[], EncodingPipelineRequest[]?>? buildQueueRequests = null,
     Func<bool>? isQueueRouteSupported = null,
-    Func<string[], string[]>? filterSourcePaths = null,
+    Func<string[], string[]>? filtersrcPaths = null,
     Func<bool>? isConcatRoute = null,
     Func<EncodingPipelineRequest?>? buildConcatRequest = null,
     Func<bool>? isConcatRouteSupported = null,
@@ -27,7 +27,7 @@ public class StartEncCmd(
     private readonly Func<string>? _getQueueJsonPath = getQueueJsonPath;
     private readonly Func<string[], EncodingPipelineRequest[]?>? _buildQueueRequests = buildQueueRequests;
     private readonly Func<bool>? _isQueueRouteSupported = isQueueRouteSupported;
-    private readonly Func<string[], string[]>? _filterSourcePaths = filterSourcePaths;
+    private readonly Func<string[], string[]>? _filtersrcPaths = filtersrcPaths;
     private readonly Func<bool>? _isConcatRoute = isConcatRoute;
     private readonly Func<EncodingPipelineRequest?>? _buildConcatRequest = buildConcatRequest;
     private readonly Func<bool>? _isConcatRouteSupported = isConcatRouteSupported;
@@ -174,12 +174,12 @@ public class StartEncCmd(
             return;
         }
 
-        string[]? sourcePaths = LoadQueueSourcePaths();
-        if (sourcePaths == null) return;
+        string[]? srcPaths = LoadQueuesrcPaths();
+        if (srcPaths == null) return;
 
-        if (_filterSourcePaths != null)
-            sourcePaths = _filterSourcePaths(sourcePaths);
-        if (sourcePaths.Length == 0)
+        if (_filtersrcPaths != null)
+            srcPaths = _filtersrcPaths(srcPaths);
+        if (srcPaths.Length == 0)
         {
             new OpenWarnModalCmd(
                 _modalNavS,
@@ -191,7 +191,7 @@ public class StartEncCmd(
         QueueEncodingItem[]? queueItems;
         try
         {
-            queueItems = BuildQueueEncodingItems(sourcePaths);
+            queueItems = BuildQueueEncodingItems(srcPaths);
         }
         catch (Exception ex)
         {
@@ -218,7 +218,7 @@ public class StartEncCmd(
         OpenQueueOverwriteConfirmationOrStart(queueItems);
     }
 
-    private string[]? LoadQueueSourcePaths()
+    private string[]? LoadQueuesrcPaths()
     {
         string queueJsonPath = _getQueueJsonPath?.Invoke() ?? string.Empty;
         if (string.IsNullOrWhiteSpace(queueJsonPath) || !File.Exists(queueJsonPath))
@@ -230,20 +230,20 @@ public class StartEncCmd(
         try
         {
             string json = File.ReadAllText(queueJsonPath);
-            QueueSourceData? queueSourceData = JsonSerializer.Deserialize<QueueSourceData>(json);
-            string[] sourcePaths = queueSourceData?.Entries?
+            QueueSrcData? QueueSrcData = JsonSerializer.Deserialize<QueueSrcData>(json);
+            string[] srcPaths = QueueSrcData?.Entries?
                 .Select(entry => entry.FilePath)
                 .Where(path => !string.IsNullOrWhiteSpace(path))
                 .Select(path => path!)
                 .ToArray() ?? [];
 
-            if (sourcePaths.Length == 0)
+            if (srcPaths.Length == 0)
             {
                 new OpenErrModalCmd(_modalNavS, Lang.WarnTitle, Lang.QueueJsonNoEntriesMsg).Execute(null);
                 return null;
             }
 
-            return sourcePaths;
+            return srcPaths;
         }
         catch (Exception ex) when (ex is JsonException or IOException or UnauthorizedAccessException)
         {
@@ -255,9 +255,9 @@ public class StartEncCmd(
         }
     }
 
-    private QueueEncodingItem[]? BuildQueueEncodingItems(string[] sourcePaths)
+    private QueueEncodingItem[]? BuildQueueEncodingItems(string[] srcPaths)
     {
-        EncodingPipelineRequest[]? requests = _buildQueueRequests?.Invoke(sourcePaths);
+        EncodingPipelineRequest[]? requests = _buildQueueRequests?.Invoke(srcPaths);
         if (requests == null || requests.Length == 0) return null;
         return [.. requests.Select(request => new QueueEncodingItem(request, EncodingPipeline.BuildY4mCommand(request)))];
     }
@@ -361,11 +361,11 @@ public class StartEncCmd(
 
     private string? GetQueueValidationError(QueueEncodingItem[] queueItems)
     {
-        string[] missingSourcePaths = [.. queueItems
+        string[] missingsrcPaths = [.. queueItems
             .Select(item => item.Request.UpstreamInputPath)
             .Where(path => string.IsNullOrWhiteSpace(path) || !File.Exists(path))];
-        if (missingSourcePaths.Length > 0)
-            return BuildPathListMessage(Lang.QueueSourceMissingMsg, missingSourcePaths);
+        if (missingsrcPaths.Length > 0)
+            return BuildPathListMessage(Lang.QueueSourceMissingMsg, missingsrcPaths);
 
         string[] duplicateOutputPaths = [.. queueItems
             .SelectMany(item => GetOverwriteCandidates(item.Request, item.Command))
@@ -461,10 +461,10 @@ public class StartEncCmd(
 
     private static string GetQueueSourceLabel(EncodingPipelineRequest request)
     {
-        string sourcePath = !string.IsNullOrWhiteSpace(request.SourceVideoPath)
+        string srcPath = !string.IsNullOrWhiteSpace(request.SourceVideoPath)
             ? request.SourceVideoPath
             : request.UpstreamInputPath;
-        return Path.GetFileNameWithoutExtension(sourcePath) ?? sourcePath;
+        return Path.GetFileNameWithoutExtension(srcPath) ?? srcPath;
     }
 
     private string FormatFileSize(long bytes)
@@ -481,12 +481,12 @@ public class StartEncCmd(
 
     private readonly record struct QueueEncodingItem(EncodingPipelineRequest Request, EncodingPipelineCommand Command);
 
-    private sealed class QueueSourceData
+    private sealed class QueueSrcData
     {
-        public List<QueueSourceEntry> Entries { get; set; } = [];
+        public List<QueueSrcEntry> Entries { get; set; } = [];
     }
 
-    private sealed class QueueSourceEntry
+    private sealed class QueueSrcEntry
     {
         public string FilePath { get; set; } = string.Empty;
     }

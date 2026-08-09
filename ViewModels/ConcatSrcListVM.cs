@@ -1,17 +1,17 @@
 namespace OneColumnEncoder.ViewModels;
 
-public class ConcatSourceListVM : BaseVM
+public class ConcatSrcListVM : BaseVM
 {
     private string[] _originalFilePaths = [];
     private bool _hasOriginalQueueChanges;
     private bool _isRepartMode;
 
-    public ObservableCollection<ConcatSourceItemVM> Items { get; } = [];
+    public ObservableCollection<ConcatSrcItemVM> Items { get; } = [];
 
     public string OrderingTitle => _isRepartMode
         ? RepartLangProvider.Current["SourceOrdering"]
         : UILangProvider.Current["SourceConcat.OrderingTitle"];
-    public string RestoreOriginalQueueText => UILangProvider.Current["SourceConcat.RestoreOriginalQueue"];
+    public static string RestoreOriginalQueueText => UILangProvider.Current["SourceConcat.RestoreOriginalQueue"];
 
     public bool HasOriginalQueueChanges
     {
@@ -31,7 +31,7 @@ public class ConcatSourceListVM : BaseVM
         RefreshChangeState();
     }
 
-    public void RemoveItem(ConcatSourceItemVM item)
+    public void RemoveItem(ConcatSrcItemVM item)
     {
         int index = Items.IndexOf(item);
         if (index < 0) return;
@@ -41,7 +41,7 @@ public class ConcatSourceListVM : BaseVM
         RefreshChangeState();
     }
 
-    public bool MoveItemUp(ConcatSourceItemVM item)
+    public bool MoveItemUp(ConcatSrcItemVM item)
     {
         int index = Items.IndexOf(item);
         if (index <= 0) return false;
@@ -52,7 +52,7 @@ public class ConcatSourceListVM : BaseVM
         return true;
     }
 
-    public bool MoveItemDown(ConcatSourceItemVM item)
+    public bool MoveItemDown(ConcatSrcItemVM item)
     {
         int index = Items.IndexOf(item);
         if (index < 0 || index >= Items.Count - 1) return false;
@@ -73,7 +73,7 @@ public class ConcatSourceListVM : BaseVM
     }
 
     public string[] GetCurrentFilePaths() =>
-        Items.Select(i => i.FilePath).ToArray();
+        [.. Items.Select(i => i.FilePath)];
 
     public void RefreshLanguage()
     {
@@ -107,8 +107,7 @@ public class ConcatSourceListVM : BaseVM
         Items.Clear();
         for (int i = 0; i < filePaths.Length; i++)
         {
-            var item = new ConcatSourceItemVM(filePaths[i], i,
-                RemoveItemCommand, MoveItemUpCommand, MoveItemDownCommand);
+            var item = new ConcatSrcItemVM(filePaths[i], RemoveItemCommand, MoveItemUpCommand, MoveItemDownCommand);
             Items.Add(item);
         }
         RefreshItemStates();
@@ -132,7 +131,7 @@ public class ConcatSourceListVM : BaseVM
 
     private void DisposeItems()
     {
-        foreach (ConcatSourceItemVM item in Items)
+        foreach (ConcatSrcItemVM item in Items)
             item.Dispose();
     }
 
@@ -140,5 +139,6 @@ public class ConcatSourceListVM : BaseVM
     {
         DisposeItems();
         base.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

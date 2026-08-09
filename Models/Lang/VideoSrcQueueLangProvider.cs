@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models.Lang;
 
-public class VideoSourceQueueLangProvider : LangProviderBase
+public class VideoSrcQueueLangProvider : LangProviderBase
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -54,7 +54,7 @@ public class VideoSourceQueueLangProvider : LangProviderBase
         }
     };
 
-    static VideoSourceQueueLangProvider()
+    static VideoSrcQueueLangProvider()
     {
         Data["fr"] = new(Data["en"])
         {
@@ -135,7 +135,7 @@ public class VideoSourceQueueLangProvider : LangProviderBase
     public string SourceQueueOpenQueueJson { get; }
     public string SourceQueueOpenExcludedJson { get; }
 
-    public VideoSourceQueueLangProvider(string languageCode) : base(languageCode, Data)
+    public VideoSrcQueueLangProvider(string languageCode) : base(languageCode, Data)
     {
         ToolSourceVideoSrcQueueWithCount = this["Tool.Source.VideoSrcQueueWithCount"];
         ToolSourceVideoSrcQueue = this["Tool.Source.VideoSrcQueue"];

@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.FileManagement;
 
-public enum SourceRouteKind
+public enum SrcRouteKind
 {
     Single,
     Queue,

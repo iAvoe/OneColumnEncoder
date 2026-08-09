@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.FFmpeg;
 
-public static class FFProbeSourceResolution
+public static class FFProbeSrcResolution
 {
     public static (int width, int height)? Read(string? rawJson)
     {

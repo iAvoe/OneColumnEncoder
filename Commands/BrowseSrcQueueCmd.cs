@@ -3,7 +3,7 @@ using System.IO;
 
 namespace OneColumnEncoder.Commands;
 
-public class BrowseSourceQueueCmd(
+public class BrowseSrcQueueCmd(
     ToolItemCardVM item,
     ModalNavS modalNavS,
     AppDataM appDataM,
@@ -37,7 +37,7 @@ public class BrowseSourceQueueCmd(
             if (import == null) return;
 
             folderPath = import.PlaylistFolderPath;
-            filePaths = import.SourcePaths;
+            filePaths = import.srcPaths;
         }
         else
         {
@@ -54,13 +54,13 @@ public class BrowseSourceQueueCmd(
             if (result != true) return;
 
             folderPath = dialog.FolderName;
-            filePaths = SourceFilePicker.GetVideoFilesInFolder(folderPath);
+            filePaths = SrcFilePicker.GetVideoFilesInFolder(folderPath);
             if (filePaths.Length == 0)
             {
                 new OpenWarnModalCmd(
                     _modalNavS,
                     UICaptionProvider.SourceInspect.WarnTitle,
-                    new VideoSourceQueueLangProvider(UILangProvider.Current.LanguageCode)["SourceQueue.EmptyFolderWarnMessage"])
+                    new VideoSrcQueueLangProvider(UILangProvider.Current.LanguageCode)["SourceQueue.EmptyFolderWarnMessage"])
                     .Execute(null);
                 return;
             }

@@ -2,7 +2,7 @@ using System.Windows.Threading;
 
 namespace OneColumnEncoder.ViewModels;
 
-public class ConcatSourceItemVM : BaseVM
+public class ConcatSrcItemVM : BaseVM
 {
     private bool _canMoveUp;
     private bool _canMoveDown;
@@ -16,10 +16,11 @@ public class ConcatSourceItemVM : BaseVM
     private bool _isRecentlyMoved;
     private DispatcherTimer? _moveFlashTimer;
 
-    public ConcatSourceItemVM(string filePath, int index, ICommand? removeCmd, ICommand? moveUpCmd, ICommand? moveDownCmd)
+    // Compiler rec: Remove unused parameter 'index' if it is not part of a shipped public API
+    public ConcatSrcItemVM(string filePath, ICommand? removeCmd, ICommand? moveUpCmd, ICommand? moveDownCmd)
     {
         FilePath = filePath;
-        UpdateDisplay(index);
+        UpdateDisplay(); // index parameter removed according to compiler, this should be fine...
         R1Command = removeCmd;
         R2Command = moveUpCmd;
         R3Command = moveDownCmd;
@@ -112,7 +113,8 @@ public class ConcatSourceItemVM : BaseVM
     public ICommand? R2Command { get; }
     public ICommand? R3Command { get; }
 
-    public void UpdateDisplay(int index)
+    // Compiler rec: Remove unused parameter 'index' if it is not part of a shipped public API
+    public void UpdateDisplay()
     {
         Name = System.IO.Path.GetFileName(FilePath);
         P1Text = FilePath;
@@ -145,5 +147,6 @@ public class ConcatSourceItemVM : BaseVM
     {
         StopMoveFlashTimer();
         base.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

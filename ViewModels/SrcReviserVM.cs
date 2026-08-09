@@ -1,11 +1,11 @@
 namespace OneColumnEncoder.ViewModels;
 
-public class SourceReviserVM : BaseVM
+public class SrcReviserVM : BaseVM
 {
     private const int MaxResolutionDimension = 65535;
     private readonly ModalNavS _modalNavS;
     private readonly Action<bool> _finishAction;
-    private readonly Func<SourceRevisionRequest, string?> _reviseSource;
+    private readonly Func<SrcRevisionRequest, string?> _reviseSource;
     private readonly int _currentWidth;
     private readonly int _currentHeight;
     private readonly int _suggestedWidth;
@@ -13,11 +13,11 @@ public class SourceReviserVM : BaseVM
     private string _resolutionWidthText;
     private string _resolutionHeightText;
 
-    public SourceReviserVM(
+    public SrcReviserVM(
         ModalNavS modalNavS,
         Action closeAction,
         Action<bool> finishAction,
-        Func<SourceRevisionRequest, string?> reviseSource,
+        Func<SrcRevisionRequest, string?> reviseSource,
         int currentWidth,
         int currentHeight,
         int suggestedWidth,
@@ -48,8 +48,8 @@ public class SourceReviserVM : BaseVM
             _ => _suggestedWidth > 0 && _suggestedHeight > 0);
 
         FinishButtons = ButtonGroupVM.CreateTwoButton(
-            SourceReviserLangProvider.Current["SourceReviser.Cancel"],
-            SourceReviserLangProvider.Current["SourceReviser.Confirm"],
+            SrcReviserLangProvider.Current["SrcReviser.Cancel"],
+            SrcReviserLangProvider.Current["SrcReviser.Confirm"],
             new CloseModalCmd(closeAction),
             new ActionCmd(_ => Confirm()));
 
@@ -57,13 +57,13 @@ public class SourceReviserVM : BaseVM
     }
 
     public static string WindowTitle => "1cenc Source Reviser";
-    public static string Description => SourceReviserLangProvider.Current["SourceReviser.Description"];
-    public static string SettingsHeader => SourceReviserLangProvider.Current["SourceReviser.SettingsHeader"];
-    public static string WidthLabel => SourceReviserLangProvider.Current["SourceReviser.WidthLabel"];
-    public static string HeightLabel => SourceReviserLangProvider.Current["SourceReviser.HeightLabel"];
-    public static string CurrentResolutionLabel => SourceReviserLangProvider.Current["SourceReviser.CurrentLabel"];
-    public static string SuggestedResolutionLabel => SourceReviserLangProvider.Current["SourceReviser.SuggestedLabel"];
-    public static string EvenResolutionHint => SourceReviserLangProvider.Current["SourceReviser.EvenResolutionHint"];
+    public static string Description => SrcReviserLangProvider.Current["SrcReviser.Description"];
+    public static string SettingsHeader => SrcReviserLangProvider.Current["SrcReviser.SettingsHeader"];
+    public static string WidthLabel => SrcReviserLangProvider.Current["SrcReviser.WidthLabel"];
+    public static string HeightLabel => SrcReviserLangProvider.Current["SrcReviser.HeightLabel"];
+    public static string CurrentResolutionLabel => SrcReviserLangProvider.Current["SrcReviser.CurrentLabel"];
+    public static string SuggestedResolutionLabel => SrcReviserLangProvider.Current["SrcReviser.SuggestedLabel"];
+    public static string EvenResolutionHint => SrcReviserLangProvider.Current["SrcReviser.EvenResolutionHint"];
     public string CurrentResolutionText => FormatResolution(_currentWidth, _currentHeight);
     public string SuggestedResolutionText => FormatResolution(_suggestedWidth, _suggestedHeight);
 
@@ -89,11 +89,11 @@ public class SourceReviserVM : BaseVM
     {
         if (!TryParseResolution(out int width, out int height))
         {
-            ShowError(SourceReviserLangProvider.Current["SourceReviser.InvalidInput"]);
+            ShowError(SrcReviserLangProvider.Current["SrcReviser.InvalidInput"]);
             return;
         }
 
-        string? error = _reviseSource(new SourceRevisionRequest(width, height));
+        string? error = _reviseSource(new SrcRevisionRequest(width, height));
         if (!string.IsNullOrWhiteSpace(error))
         {
             ShowError(error);
@@ -125,8 +125,8 @@ public class SourceReviserVM : BaseVM
 
     private static string FormatResolution(int width, int height) =>
         width > 0 && height > 0
-            ? string.Format(SourceReviserLangProvider.Current["SourceReviser.ResolutionFormat"], width, height)
-            : SourceReviserLangProvider.Current["SourceReviser.UnknownResolution"];
+            ? string.Format(SrcReviserLangProvider.Current["SrcReviser.ResolutionFormat"], width, height)
+            : SrcReviserLangProvider.Current["SrcReviser.UnknownResolution"];
 
     private void ShowError(string message) =>
         new OpenErrModalCmd(_modalNavS, WindowTitle, message).Execute(null);
@@ -144,8 +144,8 @@ public class SourceReviserVM : BaseVM
         OnPropertyChanged(nameof(CurrentResolutionText));
         OnPropertyChanged(nameof(SuggestedResolutionText));
 
-        FinishButtons.B2_1Text = SourceReviserLangProvider.Current["SourceReviser.Cancel"];
-        FinishButtons.B2_2Text = SourceReviserLangProvider.Current["SourceReviser.Confirm"];
+        FinishButtons.B2_1Text = SrcReviserLangProvider.Current["SrcReviser.Cancel"];
+        FinishButtons.B2_2Text = SrcReviserLangProvider.Current["SrcReviser.Confirm"];
     }
 
     public override void Dispose()

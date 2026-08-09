@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.ViewModels.Cards;
 
-public class QueueSrcFilterCardVM : SourceCheckCardVM
+public class QueueSrcFilterCardVM : SrcCheckCardVM
 {
     public int IncludedCount { get; private set; }
     public int ExcludedCount { get; private set; }

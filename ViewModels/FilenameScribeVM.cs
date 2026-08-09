@@ -87,7 +87,7 @@ public partial class FilenameScribeVM : BaseVM
     {
         checklist.Clear();
         foreach (var key in keys)
-            checklist.Add(new ChecklistEntryVM { Text = UILangProvider.Current[key] });
+            checklist.Add(new ChecklistEntryVM { Text = FilenameScribeModalLangProvider.Current[key] });
     }
 
     private void BuildButtonGroup()

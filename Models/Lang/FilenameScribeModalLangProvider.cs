@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models.Lang;
 
-public class FilenameScribeModalLangProvider : LangProviderBase
+public class FilenameScribeModalLangProvider(string languageCode) : LangProviderBase(languageCode, Data)
 {
     public const string WindowTitle = "1cenc Filename";
 
@@ -223,8 +223,4 @@ public class FilenameScribeModalLangProvider : LangProviderBase
     }
 
     public static FilenameScribeModalLangProvider Current => new(UILangProvider.Current.LanguageCode);
-
-    public FilenameScribeModalLangProvider(string languageCode) : base(languageCode, Data)
-    {
-    }
 }

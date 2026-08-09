@@ -70,7 +70,7 @@ public static class UICaptionProvider
         public static string SelectEncoder => UILangProvider.Current["Section.SelectEncoder"];
         public static string SelectAnalytics => UILangProvider.Current["Section.SelectAnalytics"];
         public static string SelectDependencies => UILangProvider.Current["Section.SelectDependencies"];
-        public static string ImportSource => UILangProvider.Current["Section.ImportSource"];
+        public static string ImportSource => UILangProvider.Current["Section.ImportSrc"];
         public static string AnalysisResults => UILangProvider.Current["Section.AnalysisResults"];
         public static string EncodingConfigs => UILangProvider.Current["Section.EncodingConfigs"];
         public static string StartEncoding => UILangProvider.Current["Section.StartEncoding"];

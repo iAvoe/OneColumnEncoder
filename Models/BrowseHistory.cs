@@ -7,30 +7,30 @@ namespace OneColumnEncoder.Models;
 public static class BrowseHistoryKeys
 {
     // Video / script single-file source cards
-    public const string VideoSource = "source.video.single";
+    public const string VideoSrc = "source.video.single";
     public const string AviSynthScript = "source.script.avs";
     public const string VapourSynthScript = "source.script.vpy";
     public const string SvfiIni = "source.script.svfi";
     // Video / script queue source cards
-    public const string VideoSourceQueue = "source.video.queue";
-    public const string VideoSourceConcat = "source.video.concat";
+    public const string VideoSrcQueue = "source.video.queue";
+    public const string VideoSrcConcat = "source.video.concat";
     public const string AviSynthScriptQueue = "source.script.avs.queue";
     public const string VapourSynthScriptQueue = "source.script.vpy.queue";
 
-    public static string ForSingleSource(SourceFileKind kind) => kind switch
+    public static string ForSingleSource(SrcFileKind kind) => kind switch
     {
-        SourceFileKind.Video => VideoSource,
-        SourceFileKind.AviSynthScript => AviSynthScript,
-        SourceFileKind.VapourSynthScript => VapourSynthScript,
-        SourceFileKind.SvfiIni => SvfiIni,
-        _ => VideoSource
+        SrcFileKind.Video => VideoSrc,
+        SrcFileKind.AviSynthScript => AviSynthScript,
+        SrcFileKind.VapourSynthScript => VapourSynthScript,
+        SrcFileKind.SvfiIni => SvfiIni,
+        _ => VideoSrc
     };
 
-    public static string ForScriptQueue(SourceFileKind kind) => kind switch
+    public static string ForScriptQueue(SrcFileKind kind) => kind switch
     {
-        SourceFileKind.AviSynthScript => AviSynthScriptQueue,
-        SourceFileKind.VapourSynthScript => VapourSynthScriptQueue,
-        _ => VideoSourceQueue
+        SrcFileKind.AviSynthScript => AviSynthScriptQueue,
+        SrcFileKind.VapourSynthScript => VapourSynthScriptQueue,
+        _ => VideoSrcQueue
     };
 
     public static string ForTool(string exeName) => $"tool.{exeName}";

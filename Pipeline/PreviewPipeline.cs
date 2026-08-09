@@ -127,7 +127,7 @@ public static partial class PreviewPipeline
     private static string FormatSeekSeconds(double seconds) =>
         Math.Max(0d, seconds).ToString("0.######", CultureInfo.InvariantCulture);
 
-    private static string[] BuildVvencEncodeArgs(EncoderConfM model, string sourcePath, string outputPath)
+    private static string[] BuildVvencEncodeArgs(EncoderConfM model, string srcPath, string outputPath)
     {
         return
         [
@@ -136,7 +136,7 @@ public static partial class PreviewPipeline
             "-strict",
             "unofficial",
             "-i",
-            sourcePath,
+            srcPath,
             "-vf",
             "format=yuv420p10le",
             "-c:v",
@@ -163,10 +163,10 @@ public static partial class PreviewPipeline
         _ => "medium"
     };
 
-    public static string[] BuildEncodeArgs(PreviewEncoder encoder, EncoderConfM model, string sourcePath, string outputPath)
+    public static string[] BuildEncodeArgs(PreviewEncoder encoder, EncoderConfM model, string srcPath, string outputPath)
     {
         if (encoder == PreviewEncoder.Vvenc)
-            return BuildVvencEncodeArgs(model, sourcePath, outputPath);
+            return BuildVvencEncodeArgs(model, srcPath, outputPath);
 
         List<string> args =
         [
@@ -175,7 +175,7 @@ public static partial class PreviewPipeline
             "-strict",
             "unofficial",
             "-i",
-            sourcePath,
+            srcPath,
             "-c:v",
             GetFfmpegEncoderName(encoder),
             "-crf",

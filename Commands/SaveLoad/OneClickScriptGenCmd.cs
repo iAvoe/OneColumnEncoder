@@ -4,7 +4,7 @@ using System.IO;
 namespace OneColumnEncoder.Commands.SaveLoad;
 
 public class OneClickScriptGenCmd(
-    Func<string> getSourcePath,
+    Func<string> getsrcPath,
     Func<ToolItemCardVM> getAvsItem,
     Func<ToolItemCardVM> getVpyItem,
     IEnumerable<ToolItemCardVM> upstreamsZone,
@@ -16,7 +16,7 @@ public class OneClickScriptGenCmd(
     Func<bool>? isRepartRoute = null,
     Func<string[]>? getRepartFilePaths = null) : BaseCmd
 {
-    private readonly Func<string> _getSourcePath = getSourcePath;
+    private readonly Func<string> _getsrcPath = getsrcPath;
     private readonly Func<ToolItemCardVM> _getAvsItem = getAvsItem;
     private readonly Func<ToolItemCardVM> _getVpyItem = getVpyItem;
     private readonly IEnumerable<ToolItemCardVM> _upstreamsZone = upstreamsZone; // For making auto selection
@@ -35,7 +35,7 @@ public class OneClickScriptGenCmd(
                 ? (_getConcatFilePaths?.Invoke().Length ?? 0) > 1
             : IsRepartRoute()
                 ? (_getRepartFilePaths?.Invoke().Length ?? 0) > 0
-            : !string.IsNullOrWhiteSpace(_getSourcePath());
+            : !string.IsNullOrWhiteSpace(_getsrcPath());
 
     public override void Execute(object? parameter)
     {
@@ -66,21 +66,21 @@ public class OneClickScriptGenCmd(
             return;
         }
 
-        string sourcePath = _getSourcePath();
+        string srcPath = _getsrcPath();
         string avsScript = ScriptTemplate.BuildAvsExportScript(
-            sourcePath,
+            srcPath,
             FilterScribeVM.AvsPrefix2,
             FilterScribeVM.AvsSuffix); // No user input (extra filter lines) in one click gen
         string vpyScript = ScriptTemplate.BuildVpyExportScript(
-            sourcePath,
+            srcPath,
             FilterScribeVM.VpyPrefix2,
             FilterScribeVM.VpySuffix);
 
         SaveFileDialog dialog = new()
         {
-            Title = FilterScribeModalLangProvider.Current["SrcScribe.SavingWindowTitle"],
+            Title = FilterScribeModalLangProvider.SavingScriptWindowTitle,
             Filter = "AviSynth Script (*.avs)|*.avs", // Script files (*.avs, *.vpy)|*.avs;*.vpy
-            FileName = Path.GetFileNameWithoutExtension(sourcePath) + ".avs"
+            FileName = Path.GetFileNameWithoutExtension(srcPath) + ".avs"
         };
 
         if (dialog.ShowDialog() != true) return;
@@ -106,10 +106,10 @@ public class OneClickScriptGenCmd(
         }
 
         avsItem.P2TextData = avsPath;
-        avsItem.P1TextData = SourceFilePicker.GetPrimaryText(SourceFileKind.AviSynthScript, avsPath);
+        avsItem.P1TextData = SrcFilePicker.GetPrimaryText(SrcFileKind.AviSynthScript, avsPath);
 
         vpyItem.P2TextData = vpyPath;
-        vpyItem.P1TextData = SourceFilePicker.GetPrimaryText(SourceFileKind.VapourSynthScript, vpyPath);
+        vpyItem.P1TextData = SrcFilePicker.GetPrimaryText(SrcFileKind.VapourSynthScript, vpyPath);
 
         ApplyUpstreamScriptSelection(avsItem, vpyItem);
 
@@ -125,8 +125,8 @@ public class OneClickScriptGenCmd(
 
     private void ExecuteConcatScriptGen()
     {
-        string[] sourcePaths = _getConcatFilePaths?.Invoke() ?? [];
-        if (sourcePaths.Length < 2)
+        string[] srcPaths = _getConcatFilePaths?.Invoke() ?? [];
+        if (srcPaths.Length < 2)
         {
             new OpenErrModalCmd(
                 _modalNavS,
@@ -135,24 +135,24 @@ public class OneClickScriptGenCmd(
             return;
         }
 
-        ExecuteVirtualSourceScriptGen(sourcePaths, "_concat");
+        ExecuteVirtualSourceScriptGen(srcPaths, "_concat");
     }
 
-    private void ExecuteVirtualSourceScriptGen(string[] sourcePaths, string suffix)
+    private void ExecuteVirtualSourceScriptGen(string[] srcPaths, string suffix)
     {
-        if (sourcePaths.Length == 0) return;
+        if (srcPaths.Length == 0) return;
 
-        string baseName = BrowseSourceQueueCmd.FormatConcatFileName(sourcePaths);
-        string avsScript = sourcePaths.Length == 1
-            ? ScriptTemplate.BuildAvsExportScript(sourcePaths[0], FilterScribeVM.AvsPrefix2, FilterScribeVM.AvsSuffix)
-            : ScriptTemplate.BuildConcatAvsExportScript(sourcePaths, FilterScribeVM.AvsPrefix2, FilterScribeVM.AvsSuffix);
-        string vpyScript = sourcePaths.Length == 1
-            ? ScriptTemplate.BuildVpyExportScript(sourcePaths[0], FilterScribeVM.VpyPrefix2, FilterScribeVM.VpySuffix)
-            : ScriptTemplate.BuildConcatVpyExportScript(sourcePaths, FilterScribeVM.VpyPrefix2, FilterScribeVM.VpySuffix);
+        string baseName = BrowseSrcQueueCmd.FormatConcatFileName(srcPaths);
+        string avsScript = srcPaths.Length == 1
+            ? ScriptTemplate.BuildAvsExportScript(srcPaths[0], FilterScribeVM.AvsPrefix2, FilterScribeVM.AvsSuffix)
+            : ScriptTemplate.BuildConcatAvsExportScript(srcPaths, FilterScribeVM.AvsPrefix2, FilterScribeVM.AvsSuffix);
+        string vpyScript = srcPaths.Length == 1
+            ? ScriptTemplate.BuildVpyExportScript(srcPaths[0], FilterScribeVM.VpyPrefix2, FilterScribeVM.VpySuffix)
+            : ScriptTemplate.BuildConcatVpyExportScript(srcPaths, FilterScribeVM.VpyPrefix2, FilterScribeVM.VpySuffix);
 
         SaveFileDialog dialog = new()
         {
-            Title = FilterScribeModalLangProvider.Current["SrcScribe.SavingWindowTitle"],
+            Title = FilterScribeModalLangProvider.SavingScriptWindowTitle,
             Filter = "AviSynth Script (*.avs)|*.avs",
             FileName = baseName + suffix + ".avs"
         };
@@ -180,9 +180,9 @@ public class OneClickScriptGenCmd(
         ToolItemCardVM avsItem = _getAvsItem();
         ToolItemCardVM vpyItem = _getVpyItem();
         avsItem.P2TextData = avsPath;
-        avsItem.P1TextData = SourceFilePicker.GetPrimaryText(SourceFileKind.AviSynthScript, avsPath);
+        avsItem.P1TextData = SrcFilePicker.GetPrimaryText(SrcFileKind.AviSynthScript, avsPath);
         vpyItem.P2TextData = vpyPath;
-        vpyItem.P1TextData = SourceFilePicker.GetPrimaryText(SourceFileKind.VapourSynthScript, vpyPath);
+        vpyItem.P1TextData = SrcFilePicker.GetPrimaryText(SrcFileKind.VapourSynthScript, vpyPath);
 
         ApplyUpstreamScriptSelection(avsItem, vpyItem);
 
@@ -194,12 +194,12 @@ public class OneClickScriptGenCmd(
 
     private void ExecuteQueueScriptGen()
     {
-        string[] sourcePaths = _getQueueFilePaths?.Invoke() ?? [];
-        if (sourcePaths.Length == 0) return;
+        string[] srcPaths = _getQueueFilePaths?.Invoke() ?? [];
+        if (srcPaths.Length == 0) return;
 
         OpenFolderDialog dialog = new()
         {
-            Title = FilterScribeModalLangProvider.Current["SrcScribe.SavingWindowTitle"]
+            Title = FilterScribeModalLangProvider.SavingScriptWindowTitle
         };
 
         if (dialog.ShowDialog() != true) return;
@@ -209,18 +209,18 @@ public class OneClickScriptGenCmd(
 
         try
         {
-            foreach (string sourcePath in sourcePaths)
+            foreach (string srcPath in srcPaths)
             {
-                string baseName = Path.GetFileNameWithoutExtension(sourcePath);
+                string baseName = Path.GetFileNameWithoutExtension(srcPath);
                 string avsPath = Path.Combine(directory, baseName + ".avs");
                 string vpyPath = Path.Combine(directory, baseName + ".vpy");
 
                 File.WriteAllText(avsPath, ScriptTemplate.BuildAvsExportScript(
-                    sourcePath,
+                    srcPath,
                     FilterScribeVM.AvsPrefix2,
                     FilterScribeVM.AvsSuffix));
                 File.WriteAllText(vpyPath, ScriptTemplate.BuildVpyExportScript(
-                    sourcePath,
+                    srcPath,
                     FilterScribeVM.VpyPrefix2,
                     FilterScribeVM.VpySuffix));
                 savedPaths.Add(avsPath);
@@ -239,16 +239,16 @@ public class OneClickScriptGenCmd(
         ToolItemCardVM avsItem = _getAvsItem();
         ToolItemCardVM vpyItem = _getVpyItem();
         // Extract saved script file names for card display and hover tooltip
-        string[] avsFileNames = savedPaths.Where(path => path.EndsWith(".avs", StringComparison.OrdinalIgnoreCase))
-            .Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!).ToArray();
-        string[] vpyFileNames = savedPaths.Where(path => path.EndsWith(".vpy", StringComparison.OrdinalIgnoreCase))
-            .Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!).ToArray();
+        string[] avsFileNames = [.. savedPaths.Where(path => path.EndsWith(".avs", StringComparison.OrdinalIgnoreCase))
+            .Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!)];
+        string[] vpyFileNames = [.. savedPaths.Where(path => path.EndsWith(".vpy", StringComparison.OrdinalIgnoreCase))
+            .Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!)];
         avsItem.P2TextData = directory;
-        avsItem.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(avsFileNames);
-        avsItem.P1TooltipText = BrowseSourceQueueCmd.FormatQueueP1TooltipText(avsFileNames);
+        avsItem.P1TextData = BrowseSrcQueueCmd.FormatQueueP1Text(avsFileNames);
+        avsItem.P1TooltipText = BrowseSrcQueueCmd.FormatQueueP1TooltipText(avsFileNames);
         vpyItem.P2TextData = directory;
-        vpyItem.P1TextData = BrowseSourceQueueCmd.FormatQueueP1Text(vpyFileNames);
-        vpyItem.P1TooltipText = BrowseSourceQueueCmd.FormatQueueP1TooltipText(vpyFileNames);
+        vpyItem.P1TextData = BrowseSrcQueueCmd.FormatQueueP1Text(vpyFileNames);
+        vpyItem.P1TooltipText = BrowseSrcQueueCmd.FormatQueueP1TooltipText(vpyFileNames);
 
         ApplyUpstreamScriptSelection(avsItem, vpyItem);
 

@@ -3,12 +3,12 @@ using System.IO;
 
 namespace OneColumnEncoder.RepartManagement;
 
-public sealed class VideoSourceRepartState
+public sealed class VideoSrcRepartState
 {
     private readonly ToolItemCardVM? _card;
     private RepartPlanM? _plan;
 
-    public VideoSourceRepartState(IEnumerable<ToolItemCardVM> videoSourceZone)
+    public VideoSrcRepartState(IEnumerable<ToolItemCardVM> videoSourceZone)
     {
         _card = videoSourceZone.FirstOrDefault(item =>
             item.Name.Equals(RepartLangProvider.Current.ToolSourceVideoSrcRepart, StringComparison.OrdinalIgnoreCase));

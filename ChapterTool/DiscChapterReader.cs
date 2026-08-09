@@ -42,19 +42,19 @@ public static class DiscChapterReader
         if (!Directory.Exists(directoryPath))
             return DiscChapterReadResult.Failed([$"Chapter source folder does not exist: {directoryPath}"]);
 
-        string[] sourcePaths = Directory.EnumerateFiles(directoryPath, "*", SearchOption.AllDirectories)
+        string[] srcPaths = Directory.EnumerateFiles(directoryPath, "*", SearchOption.AllDirectories)
             .Where(IsSupportedExtension)
             .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
             .ToArray();
-        if (sourcePaths.Length == 0)
+        if (srcPaths.Length == 0)
             return DiscChapterReadResult.Failed(["No supported chapter files were found in the selected folder."]);
 
         List<DiscChapterReadResult> candidates = [];
         List<string> diagnostics = [];
-        foreach (string sourcePath in sourcePaths)
+        foreach (string srcPath in srcPaths)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            DiscChapterReadResult result = await TryReadAsync(sourcePath, cancellationToken);
+            DiscChapterReadResult result = await TryReadAsync(srcPath, cancellationToken);
             if (result.Chapters.Count > 0
                 && result.ReferencedFilePaths.Count > 0
                 && (result.Success || result.IsPartial))
@@ -64,7 +64,7 @@ public static class DiscChapterReader
             else
             {
                 diagnostics.AddRange(result.Diagnostics.Select(message =>
-                    $"{Path.GetFileName(sourcePath)}: {message}"));
+                    $"{Path.GetFileName(srcPath)}: {message}"));
             }
         }
 
