@@ -297,7 +297,6 @@ public class ParallelismConfVM : BaseVM
     private void OnLanguageChanged()
     {
         Lang = new ParallelismConfLangProvider(UILangProvider.Current.LanguageCode);
-        OnPropertyChanged(nameof(WindowTitle));
         OnPropertyChanged(nameof(IntroText));
         OnPropertyChanged(nameof(PriorityText));
         OnPropertyChanged(nameof(CacheGroupTitle));

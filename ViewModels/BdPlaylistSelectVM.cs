@@ -4,7 +4,7 @@ namespace OneColumnEncoder.ViewModels;
 
 public sealed class BdPlaylistSelectVM : BaseVM
 {
-    public const string WindowTitleText = "1cenc BD Playlist Selector";
+    public const string WindowTitleText = RepartLangProvider.BdPlaylistSelectWindowTitle;
 
     private readonly Action _cancelAction;
     private readonly Action _confirmAction;

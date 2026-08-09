@@ -6,8 +6,9 @@
                         xmlns:local="clr-namespace:OneColumnEncoder"
                         xmlns:ui="clr-namespace:OneColumnEncoder.UI"
                         xmlns:views="clr-namespace:OneColumnEncoder.Views"
+                        xmlns:lang="clr-namespace:OneColumnEncoder.Models.Lang"
                         mc:Ignorable="d"
-                        Title="1cenc"
+                        Title="{x:Static lang:UILangProvider.MainWindowTitle}"
                         Width="800"
                         Height="1220"
                         WindowStartupLocation="CenterScreen">

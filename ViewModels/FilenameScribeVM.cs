@@ -180,7 +180,6 @@ public partial class FilenameScribeVM : BaseVM
 
     private void OnLanguageChanged()
     {
-        OnPropertyChanged(nameof(WindowTitle));
         OnPropertyChanged(nameof(PlaceholderText));
         OnPropertyChanged(nameof(PreviewHeader));
         OnPropertyChanged(nameof(Preview30Label));

@@ -4,6 +4,7 @@ public class FilterScribeModalLangProvider(string languageCode) : LangProviderBa
 {
     public const string WindowTitle = "1cenc Filter Scribe";
     public const string SavingScriptWindowTitle = "Saving all scripts (AVS & VPY)...";
+    public const string VpyPreviewWindowTitle = "VapourSynth A/B Preview";
 
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {

@@ -2,6 +2,7 @@ namespace OneColumnEncoder.Models.Lang;
 
 public class SrcReviserLangProvider(string languageCode) : LangProviderBase(languageCode, Data)
 {
+    public const string WindowTitle = "1cenc Source Reviser";
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
         ["en"] = new()

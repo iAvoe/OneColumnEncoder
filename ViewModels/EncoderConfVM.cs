@@ -420,7 +420,6 @@ public class EncoderConfVM : BaseVM
     {
         Lang = new EncoderConfLangProvider(UILangProvider.Current.LanguageCode);
         RefreshDropdownTitles();
-        OnPropertyChanged(nameof(WindowTitle));
         OnPropertyChanged(nameof(TitleText));
         OnPropertyChanged(nameof(RateControlTitle));
         OnPropertyChanged(nameof(CustomParamsTitle));

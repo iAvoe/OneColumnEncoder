@@ -6,6 +6,7 @@ public class UILangProvider : LangProviderBase
     public static event Action? CurrentChanged;
     public const string SrcAnalysisWindowTitle = "1cenc Source Analysis";
     public const string ScriptGenWindowTitle = "1cenc Script Generation";
+    public const string MainWindowTitle = "1cenc";
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
         ["en"] = new()

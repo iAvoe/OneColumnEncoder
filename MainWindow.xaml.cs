@@ -10,7 +10,7 @@ public partial class MainWindow : AdaptiveWindow
     public MainWindow()
     {
         InitializeComponent();
-        Title = $"1cenc (Beta—Commit {GetGitCommitCount()} {GetGitCommitShortHash()})";
+        Title = $"{Models.Lang.UILangProvider.MainWindowTitle} (Beta—Commit {GetGitCommitCount()} {GetGitCommitShortHash()})";
         Closing += OnClosing;
         Closed += OnClosed;
         PreviewMouseDown += OnPreviewMouseDown;

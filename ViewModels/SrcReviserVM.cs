@@ -56,7 +56,7 @@ public class SrcReviserVM : BaseVM
         UILangProvider.CurrentChanged += OnLanguageChanged;
     }
 
-    public static string WindowTitle => "1cenc Source Reviser";
+    public static string WindowTitle => SrcReviserLangProvider.WindowTitle;
     public static string Description => SrcReviserLangProvider.Current["SrcReviser.Description"];
     public static string SettingsHeader => SrcReviserLangProvider.Current["SrcReviser.SettingsHeader"];
     public static string WidthLabel => SrcReviserLangProvider.Current["SrcReviser.WidthLabel"];
@@ -133,7 +133,6 @@ public class SrcReviserVM : BaseVM
 
     private void OnLanguageChanged()
     {
-        OnPropertyChanged(nameof(WindowTitle));
         OnPropertyChanged(nameof(Description));
         OnPropertyChanged(nameof(SettingsHeader));
         OnPropertyChanged(nameof(WidthLabel));

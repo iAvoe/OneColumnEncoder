@@ -1449,7 +1449,6 @@ public class FilterScribeVM : BaseVM
         _baseAvsPrefix = FilterScribeModalLangProvider.Current["SrcScribe.AvsPrefix"];
         _baseVpyPrefix = FilterScribeModalLangProvider.Current["SrcScribe.VpyPrefix"];
 
-        OnPropertyChanged(nameof(WindowTitle));
         OnPropertyChanged(nameof(ScribeDescription));
         OnPropertyChanged(nameof(NoteText));
         OnPropertyChanged(nameof(TabAvs));

@@ -124,7 +124,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         UILangProvider.CurrentChanged += OnLanguageChanged;
     }
 
-    public const string WindowTitleText = "1cenc Episode Repartition";
+    public const string WindowTitleText = RepartLangProvider.WindowTitle;
 
     public static string WindowTitle => WindowTitleText;
     public static string InputSourcesTitle => RepartLangProvider.Current["InputSources"];

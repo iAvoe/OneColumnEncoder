@@ -2,6 +2,8 @@
 
 public sealed class RepartLangProvider(string languageCode) : LangProviderBase(languageCode, Data)
 {
+    public const string WindowTitle = "1cenc Episode Repartition";
+    public const string BdPlaylistSelectWindowTitle = "1cenc BD Playlist Selector";
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
         ["en"] = new()
@@ -11,7 +13,6 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["ChapterFileImportPrompt"] = "Import BluRay playlist?\n\nConfirm: locate PLAYLIST folder containing .mpls/ifo/xpl, the system will auto-add divider lines.\nCancel: locate folder containing all video sources, where all compatible streams will be listed as candidates (featurettes with plausible format & size may also be included).\n\nIf over-added, temporarily move unneeded source videos away, then re-import to resolve.\n\nIf you're not sure which cluster to select, use Repart mode or a player preview to confirm",
             ["SelectChapterFolder"] = "Select a chapter folder containing playlist files",
             ["SelectPlaylistFolder"] = "Select the BDMV PLAYLIST folder",
-            ["PlaylistSelectWindowTitle"] = "Select Blu-ray playlist",
             ["PlaylistClusters"] = "Clusters",
             ["PlaylistPlaylists"] = "Playlists",
             ["PlaylistFinalPlaylists"] = "Final Playlist",
@@ -115,7 +116,6 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["ChapterFileImportPrompt"] = "导入蓝光播放列表？\n\n确认：定位含 .mpls/ifo/xpl 文件夹（PLAYLIST），系统将自动添加分割线。\n取消：定位包含所有视频源的文件夹，其中所有的相容流都会被纳入候选（格式与大小合理的花絮也可能被包括）；\n\n如添加过多，将不需要源视频临时移走，然后重新导入即可。\n\n如果不确定要选哪个簇/cluster，就用重分集模式或播放器预览确认",
             ["SelectChapterFolder"] = "选择包含章节播放清单的资料夹",
             ["SelectPlaylistFolder"] = "选择 BDMV PLAYLIST 资料夹",
-            ["PlaylistSelectWindowTitle"] = "选择蓝光播放清单",
             ["PlaylistClusters"] = "簇",
             ["PlaylistPlaylists"] = "播放清单",
             ["PlaylistFinalPlaylists"] = "最终播放清单",
@@ -223,7 +223,6 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["ChapterFileImportPrompt"] = "導入藍光播放列表？\n\n確認：定位含 .mpls/ifo/xpl 文件夾（PLAYLIST），系統將自動添加分割線。\n取消：定位包含所有影片源的文件夾，其中所有的相容流都會被納入候選（格式與大小合理的花絮也可能被包括）；\n\n如添加過多，將不需要源影片臨時移走，然後重新導入即可。\n\n如果不確定要選哪個簇/cluster，就用重分集模式或播放器預覽確認",
             ["SelectChapterFolder"] = "選擇包含章節播放清單的資料夾",
             ["SelectPlaylistFolder"] = "選擇 BDMV PLAYLIST 資料夾",
-            ["PlaylistSelectWindowTitle"] = "選擇藍光播放清單",
             ["PlaylistClusters"] = "簇",
             ["PlaylistPlaylists"] = "播放清單",
             ["PlaylistFinalPlaylists"] = "最終播放清單",
@@ -327,7 +326,6 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["ChapterFileImportPrompt"] = "Importer la playlist Blu-Ray ?\n\nConfirmer : cibler le dossier PLAYLIST (.mpls/ifo/xpl), le système ajoutera des séparateurs.\nAnnuler : cibler le dossier avec toutes les sources vidéo, tous les flux compatibles seront sélectionnés (bonus au format/taille corrects inclus).\n\nEn cas de surajout, déplacer les vidéos inutiles puis réimporter.\n\nSi vous n'êtes pas sûr du cluster à sélectionner, utilisez le mode Repart ou un aperçu du lecteur pour confirmer",
             ["SelectChapterFolder"] = "Sélectionner un dossier de listes de lecture de chapitres",
             ["SelectPlaylistFolder"] = "Sélectionner le dossier PLAYLIST de BDMV",
-            ["PlaylistSelectWindowTitle"] = "Sélectionner une playlist Blu-ray",
             ["PlaylistClusters"] = "Clusters",
             ["PlaylistPlaylists"] = "Playlists",
             ["PlaylistFinalPlaylists"] = "Liste de lecture finale",
@@ -431,7 +429,6 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["ChapterFileImportPrompt"] = "¿Importar lista Blu-Ray?\n\nConfirmar: ubicar carpeta PLAYLIST (.mpls/ifo/xpl), el sistema añadirá divisores.\nCancelar: ubicar carpeta con todas las fuentes de video, todos los flujos compatibles serán candidatos (bonus con formato/tamaño válidos incluidos).\n\nSi añade de más, mueva los videos innecesarios y reimporte.\n\nSi no está seguro de qué clúster seleccionar, use el modo Repart o una vista previa del reproductor para confirmar",
             ["SelectChapterFolder"] = "Seleccionar carpeta de listas de reproducción de capítulos",
             ["SelectPlaylistFolder"] = "Seleccionar carpeta PLAYLIST de BDMV",
-            ["PlaylistSelectWindowTitle"] = "Seleccionar lista de reproducción Blu-ray",
             ["PlaylistClusters"] = "Clústeres",
             ["PlaylistPlaylists"] = "Listas de reproducción",
             ["PlaylistFinalPlaylists"] = "Lista de reproducción final",
@@ -535,7 +532,6 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["ChapterFileImportPrompt"] = "BDプレイリストをインポート？\n\n確認：.mpls/ifo/xplを含むPLAYLISTフォルダを指定、区切り線を自動追加。\n取消：全動画ソースのフォルダを指定、互換ストリームを候補化（適正な特典映像含む）。\n\n多すぎる場合、不要動画を移動して再インポート。\n\nどのクラスターを選べばいいか分からない場合、重分集モードまたはプレイヤープレビューで確認してください",
             ["SelectChapterFolder"] = "チャプタープレイリストのフォルダーを選択",
             ["SelectPlaylistFolder"] = "BDMV PLAYLIST フォルダーを選択",
-            ["PlaylistSelectWindowTitle"] = "Blu-ray プレイリストを選択",
             ["PlaylistClusters"] = "クラスター",
             ["PlaylistPlaylists"] = "プレイリスト",
             ["PlaylistFinalPlaylists"] = "最終プレイリスト",
@@ -639,7 +635,6 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["ChapterFileImportPrompt"] = "Импорт плейлиста Blu-Ray?\n\nПодтвердить: папку PLAYLIST с .mpls/ifo/xpl, система добавит разделители.\nОтмена: папку со всеми видеоисточниками, все совместимые потоки станут кандидатами (бонусы подходящего формата/размера могут войти).\n\nПри избытке переместите лишние видео и переимпортируйте.\n\nЕсли не уверены, какой кластер выбрать, используйте режим Repart или предпросмотр плеера для подтверждения",
             ["SelectChapterFolder"] = "Выберите папку со списками воспроизведения глав",
             ["SelectPlaylistFolder"] = "Выберите папку PLAYLIST BDMV",
-            ["PlaylistSelectWindowTitle"] = "Выберите плейлист Blu-ray",
             ["PlaylistClusters"] = "Кластеры",
             ["PlaylistPlaylists"] = "Плейлисты",
             ["PlaylistFinalPlaylists"] = "Итоговый плейлист",

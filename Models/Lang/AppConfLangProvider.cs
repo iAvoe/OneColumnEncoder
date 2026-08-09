@@ -2,6 +2,7 @@ namespace OneColumnEncoder.Models.Lang;
 
 public class AppConfLangProvider : LangProviderBase
 {
+    public const string WindowTitle = "1cenc Settings";
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
         ["en"] = new()
@@ -22,7 +23,6 @@ public class AppConfLangProvider : LangProviderBase
             ["AppConf.ClearOldQueueJsonResult"] = "Deleted {0} old queue file(s).",
             ["AppConf.NoOldQueueJson"] = "No queue JSON found.",
             ["Hint.AppConfClearOldQueueJson"] = "“Del. Old JSON”Deletes source_queue_*.json in config directory that were last modified 7 days+ ago.",
-            ["AppConfModal.Title"] = "1cenc Settings",
             ["AppConfModal.Header"] = "Settings",
             ["Setting.Overwrite.LongPressDivisor"] = "Long Press Dur. MB Divisor (MBtoOW÷Div=mm:ss)",
             ["Setting.Overwrite.MinLongPress"] = "Minimum Long Press Duration (ms)",
@@ -57,7 +57,6 @@ public class AppConfLangProvider : LangProviderBase
             ["AppConf.ClearOldQueueJsonResult"] = "已删除 {0} 个旧队列文件。",
             ["AppConf.NoOldQueueJson"] = "未找到队列数据。",
             ["Hint.AppConfClearOldQueueJson"] = "“清除旧队列 JSON”删除配置目录中最后修改时间早于 7 天的 source_queue_*.json 旧文件。",
-            ["AppConfModal.Title"] = "1cenc 设置",
             ["AppConfModal.Header"] = "设置",
             ["Setting.Overwrite.LongPressDivisor"] = "长按兆字节除数（被覆盖文件大小/?MB = 时长）",
             ["Setting.Overwrite.MinLongPress"] = "最小长按持续时间（毫秒）",
@@ -92,7 +91,6 @@ public class AppConfLangProvider : LangProviderBase
             ["AppConf.ClearOldQueueJsonResult"] = "已刪除 {0} 個舊隊列檔案。",
             ["AppConf.NoOldQueueJson"] = "未找到隊列資料。",
             ["Hint.AppConfClearOldQueueJson"] = "“清除舊隊列 JSON”只會刪除設定目錄中最後修改時間早於 7 天的 source_queue_*.json 舊檔。",
-            ["AppConfModal.Title"] = "1cenc 設置",
             ["AppConfModal.Header"] = "設置",
             ["Setting.Overwrite.LongPressDivisor"] = "長按百萬位元組除數（被覆蓋檔案大小/?MB = 時長）",
             ["Setting.Overwrite.MinLongPress"] = "最小長按持續時間（毫秒）",
@@ -128,7 +126,6 @@ public class AppConfLangProvider : LangProviderBase
             ["AppConf.NoOldQueueJson"] = "Aucune donnée de file trouvée.",
             ["Hint.AppConfClearOldQueueJson"] = "« Nettoyer anc. JSON » supprimera les fichiers source_queue_*.json du dossier de configuration qui n’ont pas été modifiés depuis 7 jours ou plus",
             ["Hint.AppConfNotificationPolicy"] = "Les notifications ne sont pas fournies volontairement : des données suggèrent qu'elles peuvent réduire l'activité neuronale liée au contrôle cognitif. Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725",
-            ["AppConfModal.Title"] = "Paramètres 1cenc",
             ["AppConfModal.Header"] = "Paramètres",
             ["Setting.Overwrite.LongPressDivisor"] = "Diviseur appui long MB (MB÷Div=mm:ss)",
             ["Setting.Overwrite.MinLongPress"] = "Durée min. appui long (ms)",
@@ -163,7 +160,6 @@ public class AppConfLangProvider : LangProviderBase
             ["AppConf.NoOldQueueJson"] = "No se encontraron datos de JSON",
             ["Hint.AppConfClearOldQueueJson"] = "“Limpiar ant. JSON” Elimina los archivos source_queue_*.json del directorio de configuración que no se han modificado en más de 7 días",
             ["Hint.AppConfNotificationPolicy"] = "Las notificaciones se omiten deliberadamente: hay evidencia de que pueden reducir actividad neuronal asociada al control cognitivo. Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725",
-            ["AppConfModal.Title"] = "Ajustes de 1cenc",
             ["AppConfModal.Header"] = "Ajustes",
             ["Setting.Overwrite.LongPressDivisor"] = "Divisor MB pulsación larga (MBtoOW÷Div=mm:ss)",
             ["Setting.Overwrite.MinLongPress"] = "Duración mín. pulsación larga (ms)",
@@ -198,7 +194,6 @@ public class AppConfLangProvider : LangProviderBase
             ["AppConf.NoOldQueueJson"] = "キューデータが見つかりません。",
             ["Hint.AppConfClearOldQueueJson"] = "“旧キュー JSON 削除”は、設定ディレクトリ内の `source_queue_*.json` のうち、最終更新から 7 日を超えた古いファイルだけを削除します。",
             ["Hint.AppConfNotificationPolicy"] = "通知機能は意図的に提供していません。スマートフォン通知は認知制御に関連する神経活動を低下させる可能性が示唆されています: Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725",
-            ["AppConfModal.Title"] = "1cenc 設定",
             ["AppConfModal.Header"] = "設定",
             ["Setting.Overwrite.LongPressDivisor"] = "長押し MB 除数 (MBtoOW÷Div=mm:ss)",
             ["Setting.Overwrite.MinLongPress"] = "最小長押し時間 (ms)",
@@ -233,7 +228,6 @@ public class AppConfLangProvider : LangProviderBase
             ["AppConf.NoOldQueueJson"] = "Старые данные очереди не найдены.",
             ["Hint.AppConfClearOldQueueJson"] = "“Сброс ст. JSON” Удаляет файлы `source_queue_*.json` в каталоге конфигурации, если они не изменялись более 7 дней.",
             ["Hint.AppConfNotificationPolicy"] = "Уведомления намеренно не предоставляются: данные показывают, что они могут снижать нейронную активность, связанную с когнитивным контролем. Upshaw, J.D., Shields, G.S., Judah, M.R., & Zabelina, D.L. (2023). Electrophysiological Effects of Smartphone Notifications on Cognitive Control following a Brief Mindfulness Induction. Biological psychology, 108725",
-            ["AppConfModal.Title"] = "Настройки 1cenc",
             ["AppConfModal.Header"] = "Настройки",
             ["Setting.Overwrite.LongPressDivisor"] = "Делитель MB длит. нажатия (MBtoOW÷Div=mm:ss)",
             ["Setting.Overwrite.MinLongPress"] = "Мин. длительность нажатия (мс)",

@@ -15,7 +15,7 @@ public class AppConfVM : BaseVM
     }
 
     #region Properties & Commands
-    public string WindowTitle => Lang["AppConfModal.Title"];
+    public string WindowTitle => AppConfLangProvider.WindowTitle;
     public string HeaderText =>
         Lang["AppConfModal.Header"];
     public string NotificationPolicyHint =>
@@ -288,7 +288,6 @@ public class AppConfVM : BaseVM
     private void OnLanguageChanged()
     {
         Lang = AppConfLangProvider.Current;
-        OnPropertyChanged(nameof(WindowTitle));
         OnPropertyChanged(nameof(HeaderText));
         OnPropertyChanged(nameof(NotificationPolicyHint));
         OnPropertyChanged(nameof(ClearOldQueueJsonHint));

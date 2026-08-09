@@ -445,7 +445,6 @@ public class SampleClipVM : BaseVM, IClipRangeSelectorDragAware
         Lang = new ClipRangeSelectorLangProvider(UILangProvider.Current.LanguageCode);
         FinishButtons.B2_1Text = Lang.CancelButtonText;
         FinishButtons.B2_2Text = Lang.ConfirmButtonText;
-        OnPropertyChanged(nameof(WindowTitle));
         OnPropertyChanged(nameof(TimelineSectionTitle));
         OnPropertyChanged(nameof(SelectionHintText));
         OnPropertyChanged(nameof(DurationSectionTitle));
