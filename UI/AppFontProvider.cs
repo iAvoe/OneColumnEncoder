@@ -98,12 +98,11 @@ public static class AppFontProvider
     }
 
     /// <summary>
-    /// Order in which a font's localized family names are preferred when building
-    /// display titles. Chinese titles come first so Chinese fonts display their
-    /// Chinese name (e.g. 微软雅黑 instead of "Microsoft YaHei"); when the UI is
-    /// Chinese its own variant wins, otherwise Simplified Chinese is preferred,
-    /// then Traditional, then the current UI language, then English as the
-    /// portable fallback for the remaining fonts.
+    /// Order in which a font's localized family names are preferred when building display titles.
+    /// Single-component character titles come first, i.e., Chinese fonts → Chinese name
+    /// (微软雅黑 instead of "Microsoft YaHei");
+    /// When the UI is Chinese its own variant wins, otherwise ZH-CN → ZH-TW → others → current UI lang,
+    /// English is used as the portable fallback for the remaining fonts.
     /// </summary>
     private static readonly XmlLanguage[] PreferredFontNameLanguages =
         BuildPreferredFontNameLanguages();
@@ -127,8 +126,7 @@ public static class AppFontProvider
         if (!string.IsNullOrWhiteSpace(currentCulture) && !names.Contains(currentCulture))
             names.Add(currentCulture);
 
-        names.Add("en-us");
-        names.Add("en");
+        names.AddRange("en-us", "en");
         return [.. names.Select(XmlLanguage.GetLanguage)];
     }
 
@@ -146,15 +144,9 @@ public static class AppFontProvider
     }
 
     private static FontFamily ResolveFont(string? name, Dictionary<string, FontFamily> families, FontFamily fallback)
-    {
-        if (!string.IsNullOrWhiteSpace(name)
-            && families.TryGetValue(Normalize(name), out FontFamily? family))
-        {
-            return family;
-        }
-
-        return fallback;
-    }
+        => !string.IsNullOrWhiteSpace(name) && families.TryGetValue(Normalize(name), out var family)
+            ? family
+            : fallback;
 
     private static FontFamily? TryGetResource(string key) =>
         Application.Current?.Resources[key] as FontFamily;
@@ -195,20 +187,19 @@ public static class AppFontProvider
                 if (string.IsNullOrWhiteSpace(displayName)) continue;
                 target[Normalize(displayName)] = family;
             }
-            catch
-            {
-                // Skip unreadable font files.
-            }
+            catch {} // Skip unreadable font files.
         }
     }
 
     private static string? GetTypefaceName(GlyphTypeface typeface)
     {
-        string currentCulture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+        string currentCulture =
+            CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
 
         foreach (KeyValuePair<CultureInfo, string> pair in typeface.FamilyNames)
         {
-            if (pair.Key.TwoLetterISOLanguageName.Equals("en", StringComparison.OrdinalIgnoreCase))
+            if (pair.Key.TwoLetterISOLanguageName.Equals(
+                "en", StringComparison.OrdinalIgnoreCase))
                 return pair.Value;
         }
 
@@ -218,7 +209,8 @@ public static class AppFontProvider
         string? fallback = null;
         foreach (KeyValuePair<CultureInfo, string> pair in typeface.FamilyNames)
         {
-            if (pair.Key.TwoLetterISOLanguageName.Equals(currentCulture, StringComparison.OrdinalIgnoreCase))
+            if (pair.Key.TwoLetterISOLanguageName.Equals(
+                currentCulture, StringComparison.OrdinalIgnoreCase))
                 return pair.Value;
             fallback ??= pair.Value;
         }

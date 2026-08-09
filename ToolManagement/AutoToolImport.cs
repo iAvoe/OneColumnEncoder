@@ -29,6 +29,10 @@ public static class AutoToolImport
         "svtav1encapp.exe"
     };
 
+    /// <summary>
+    /// Scans each known tool: skips already-configured ones, then searches for the executable in the app dir,
+    /// the upstream tree, and finally the system PATH. Returns everything that was found with a version.
+    /// </summary>
     public static async Task<IReadOnlyList<Candidate>> FindImportableToolsAsync(AppDataM.Importables tools)
     {
         List<Candidate> candidates = [];
@@ -45,6 +49,9 @@ public static class AutoToolImport
         return candidates;
     }
 
+    /// <summary>
+    /// A tool needs importing when its configured path is empty or no longer points to an existing file.
+    /// </summary>
     private static bool NeedsImport(string exeName, AppDataM.Importables tools)
     {
         string? path = exeName.ToLowerInvariant() switch
@@ -64,6 +71,10 @@ public static class AutoToolImport
         return string.IsNullOrWhiteSpace(path) || !File.Exists(path);
     }
 
+    /// <summary>
+    /// Looks up top-level tools (ffmpeg, ffprobe, x264, ...) directly in the app directory.
+    /// Results are ranked: exact-name match first, then shorter file names, then most recently modified.
+    /// </summary>
     private static async Task<Candidate?> FindTopLevelCandidateAsync(string exeName)
     {
         if (!TopLevelScanTools.Contains(exeName)) return null;
@@ -92,6 +103,10 @@ public static class AutoToolImport
         return null;
     }
 
+    /// <summary>
+    /// Recursively scans the bundled upstream encoder tree (x64/x86 based on process bitness).
+    /// Results are ranked: exact-name match first, then shorter full paths, then most recently modified.
+    /// </summary>
     private static async Task<Candidate?> FindUpstreamTreeCandidateAsync(string exeName)
     {
         string? rootDirectory = GetMatchingUpstreamEncodersDirectory();
@@ -126,6 +141,10 @@ public static class AutoToolImport
             : Path.Combine(baseDirectory, "x86-upstreams-encoders");
     }
 
+    /// <summary>
+    /// Falls back to an already-known install directory from the tool catalog, then scans every
+    /// directory on the PATH for the executable.
+    /// </summary>
     private static async Task<Candidate?> FindInstalledCandidateAsync(string exeName)
     {
         string? directory = ToolCatalogProviderM.TryFindToolDirectory(exeName);
@@ -144,6 +163,9 @@ public static class AutoToolImport
         return null;
     }
 
+    /// <summary>
+    /// Yields each directory on PATH that exists, de-duplicating entries case-insensitively.
+    /// </summary>
     private static IEnumerable<string> GetPathDirectories()
     {
         string? path = Environment.GetEnvironmentVariable("PATH");
@@ -157,6 +179,10 @@ public static class AutoToolImport
         }
     }
 
+    /// <summary>
+    /// A file counts as a match if its name contains the expected token as a whole word
+    /// (e.g. "x264-r3107" matches "x264"; svt-av1 has a more lenient custom pattern).
+    /// </summary>
     private static bool IsCandidateFileNameMatch(string exeName, string filePath)
     {
         string name = Path.GetFileNameWithoutExtension(filePath).ToLowerInvariant();
@@ -170,6 +196,9 @@ public static class AutoToolImport
         return Regex.IsMatch(name, pattern, RegexOptions.IgnoreCase);
     }
 
+    /// <summary>
+    /// Probes the executable for its version; timeouts (and failed probes) mean the file is not usable.
+    /// </summary>
     private static async Task<Candidate?> TryBuildCandidateAsync(string exeName, string filePath)
     {
         string? version;
@@ -177,10 +206,7 @@ public static class AutoToolImport
         {
             version = await ToolVersionDetect.TryDetectAsync(exeName, filePath);
         }
-        catch (ToolVersionDetectTimeoutException)
-        {
-            return null;
-        }
+        catch (ToolVersionDetectTimeoutException) { return null; }
 
         return string.IsNullOrWhiteSpace(version)
             ? null

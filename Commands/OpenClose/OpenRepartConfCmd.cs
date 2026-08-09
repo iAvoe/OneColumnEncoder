@@ -231,13 +231,7 @@ public sealed class OpenRepartConfCmd(
 
     private static async Task CloseWhenCompletedAsync(Task task, ProgressModal modal)
     {
-        try
-        {
-            await task;
-        }
-        catch
-        {
-        }
+        try { await task; } catch {}
         if (modal.IsVisible) modal.Close();
     }
 
