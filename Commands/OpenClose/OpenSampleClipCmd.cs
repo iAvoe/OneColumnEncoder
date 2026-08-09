@@ -1,8 +1,7 @@
 namespace OneColumnEncoder.Commands.OpenClose;
 
-public class OpenSampleClipCmd(ModalNavS modalNavS, AppConfM appConfM, Func<EncodingPipelineRequest?> buildRequest, VideoAnalysisM srcVideoAnalysis, Func<bool> isMultiSourceRouteActive) : BaseCmd
+public class OpenSampleClipCmd(ModalNavS modalNavS, AppConfM appConfM, Func<EncodingPipelineRequest?> buildRequest, VideoAnalysisM srcVideoAnalysis, Func<bool> isMultiSourceRouteActive) : OpenCloseBase(modalNavS)
 {
-    private readonly ModalNavS _modalNavS = modalNavS;
     private readonly AppConfM _appConfM = appConfM;
     private readonly Func<EncodingPipelineRequest?> _buildRequest = buildRequest;
     private readonly VideoAnalysisM _srcVideoAnalysis = srcVideoAnalysis;
@@ -13,31 +12,17 @@ public class OpenSampleClipCmd(ModalNavS modalNavS, AppConfM appConfM, Func<Enco
         if (_isMultiSourceRouteActive())
         {
             new OpenWarnModalCmd(
-                _modalNavS,
+                ModalNavS,
                 UICaptionProvider.SourceInspect.WarnTitle,
                 UICaptionProvider.Hints.QueueRouteSampleClipDisabled).Execute(null);
             return;
         }
 
-        SampleClipModal? existingWindow = Application.Current.Windows
-            .OfType<SampleClipModal>()
-            .FirstOrDefault();
-
-        if (existingWindow != null)
-        {
-            existingWindow.Activate();
+        if (TryActivateExistingWindow<SampleClipModal>())
             return;
-        }
-
-        if (_modalNavS.IsOpen)
-            _modalNavS.Close();
 
         SampleClipModal window = new();
-        SampleClipVM vm = new(_modalNavS, window.Close, _appConfM, _buildRequest, _srcVideoAnalysis);
-        window.DataContext = vm;
-        window.Owner = Application.Current.MainWindow;
-        window.Closed += (_, _) => _modalNavS.Close();
-        _modalNavS.CurrentModalVM = vm;
-        window.Show();
+        SampleClipVM vm = new(ModalNavS, window.Close, _appConfM, _buildRequest, _srcVideoAnalysis);
+        ShowModal(window, vm, closeOpenStack: true);
     }
-}
+}

@@ -24,15 +24,12 @@ public class OpenFilterScribeCmd(
     Action<Guid[]>? applyRepartOutputOrder = null,
     string? vspipePath = null,
     string? vspipeY4mArg = null,
-    Func<long>? getTotalFrames = null) : BaseCmd
+    Func<long>? getTotalFrames = null) : OpenCloseBase(modalNavS)
 {
-    private readonly ModalNavS _modalNavS = modalNavS;
     public override void Execute(object? parameter)
     {
         if (isOneLineShotSelected())
         {
-            if (_modalNavS.IsOpen) _modalNavS.Close();
-
             ConfirmationModal warnWindow = new();
             CloseModalCmd closeCmd = new(warnWindow.Close);
             ConfirmationVM warnVm = ConfirmationVM.CreateWarning(
@@ -40,29 +37,16 @@ public class OpenFilterScribeCmd(
                 UICaptionProvider.Hints.FilterScribeDisabled,
                 closeCmd, closeCmd);
 
-            warnWindow.DataContext = warnVm;
-            warnWindow.Owner = Application.Current.MainWindow;
-            warnWindow.Closed += (_, _) => _modalNavS.Close();
-            _modalNavS.CurrentModalVM = warnVm;
-            warnWindow.ShowDialog();
+            ShowModal(warnWindow, warnVm, showDialog: true, closeOpenStack: true);
             return;
         }
 
-        var existingWindow = Application.Current.Windows
-            .OfType<FilterScribeModal>()
-            .FirstOrDefault();
-
-        if (existingWindow != null)
-        {
-            existingWindow.Activate();
+        if (TryActivateExistingWindow<FilterScribeModal>())
             return;
-        }
-
-        if (_modalNavS.IsOpen) _modalNavS.Close();
 
         FilterScribeModal window = new();
         FilterScribeVM vm = new(
-            _modalNavS,
+            ModalNavS,
             window.Close,
             getSourcePath,
             getAvsItem(), getVpyItem(),
@@ -85,10 +69,6 @@ public class OpenFilterScribeCmd(
             vspipePath,
             vspipeY4mArg,
             getTotalFrames);
-        window.DataContext = vm;
-        window.Owner = Application.Current.MainWindow;
-        window.Closed += (_, _) => _modalNavS.Close();
-        window.Show();
-        _modalNavS.CurrentModalVM = vm;
+        ShowModal(window, vm, closeOpenStack: true);
     }
-}
+}

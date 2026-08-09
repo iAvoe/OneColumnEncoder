@@ -1,30 +1,15 @@
 ﻿namespace OneColumnEncoder.Commands.OpenClose;
 
-public class OpenUsagesCmd(ModalNavS modelNavS, AppConfM appConfM) : BaseCmd
+public class OpenUsagesCmd(ModalNavS modelNavS, AppConfM appConfM) : OpenCloseBase(modelNavS)
 {
-    private readonly ModalNavS _modelNavS = modelNavS;
     private readonly AppConfM _appConfM = appConfM;
     public override void Execute(object? parameter)
     {
-        var existingWindow = Application.Current.Windows
-            .OfType<AppUsageModal>()
-            .FirstOrDefault();
-
-        if (existingWindow != null)
-        {
-            existingWindow.Activate();
+        if (TryActivateExistingWindow<AppUsageModal>())
             return;
-        }
-
-        if (_modelNavS.IsOpen)
-            _modelNavS.Close();
 
         var window = new AppUsageModal();
         var vm = new AppUsageVM(_appConfM, window.Close);
-        window.DataContext = vm;
-        window.Owner = Application.Current.MainWindow;
-        window.Closed += (_, _) => _modelNavS.Close();
-        _modelNavS.CurrentModalVM = vm;
-        window.Show();
+        ShowModal(window, vm, closeOpenStack: true);
     }
-}
+}

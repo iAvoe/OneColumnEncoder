@@ -8,36 +8,27 @@ public sealed class OpenRepartConfCmd(
     Func<string> getFfprobePath,
     Func<string?>? getFfmpegPath,
     Func<RepartPlanM?> getCurrentPlan,
-    Action<RepartPlanM> applyPlan) : BaseCmd
+    Action<RepartPlanM> applyPlan) : OpenCloseBase(modalNavS)
 {
     public override async void Execute(object? parameter)
     {
-        RepartConfModal? existing = Application.Current.Windows.OfType<RepartConfModal>().FirstOrDefault();
-        if (existing != null)
-        {
-            existing.Activate();
+        if (TryActivateExistingWindow<RepartConfModal>())
             return;
-        }
 
         RepartPlanM? currentPlan = getCurrentPlan();
         RepartPlanM? initialPlan = currentPlan;
         if (currentPlan == null)
         {
-            bool importAsChapterFile = RepartChapterImportPrompt.Confirm(modalNavS);
+            bool importAsChapterFile = RepartChapterImportPrompt.Confirm(ModalNavS);
             initialPlan = importAsChapterFile
                 ? await ImportChapterFolderAsync()
                 : await ImportFolderAsync();
             if (initialPlan == null) return;
         }
 
-        if (modalNavS.IsOpen) modalNavS.Close();
         RepartConfModal window = new();
-        RepartConfVM vm = new(modalNavS, window.Close, applyPlan, getFfmpegPath?.Invoke(), getFfprobePath());
-        window.DataContext = vm;
-        window.Owner = Application.Current.MainWindow;
-        window.Closed += (_, _) => modalNavS.Close();
-        modalNavS.CurrentModalVM = vm;
-        window.Show();
+        RepartConfVM vm = new(ModalNavS, window.Close, applyPlan, getFfmpegPath?.Invoke(), getFfprobePath());
+        ShowModal(window, vm, closeOpenStack: true);
         _ = vm.InitializeAsync(initialPlan);
     }
 
@@ -52,7 +43,7 @@ public sealed class OpenRepartConfCmd(
         string[] folderPaths = SourceFilePicker.GetVideoFilesInFolder(dialog.FolderName);
         if (folderPaths.Length < 2)
         {
-            new OpenErrModalCmd(modalNavS, RepartConfVM.WindowTitleText, RepartLangProvider.Current.MinFolderSources).Execute(null);
+            new OpenErrModalCmd(ModalNavS, RepartConfVM.WindowTitleText, RepartLangProvider.Current.MinFolderSources).Execute(null);
             return null;
         }
 
@@ -60,7 +51,7 @@ public sealed class OpenRepartConfCmd(
         if (result?.Plan == null) return null;
 
         new OpenSuccModalCmd(
-            modalNavS,
+            ModalNavS,
             RepartConfVM.WindowTitleText,
             string.Format(
                 RepartLangProvider.Current["ImportSummary"],
@@ -72,7 +63,7 @@ public sealed class OpenRepartConfCmd(
     private async Task<RepartPlanM?> ImportChapterFolderAsync()
     {
         PlaylistImportResult? import = await PlaylistImportService.ImportAsync(
-            modalNavS,
+            ModalNavS,
             new PlaylistImportStrings(
                 RepartLangProvider.Current["SelectPlaylistFolder"],
                 RepartConfVM.WindowTitleText,
@@ -87,7 +78,7 @@ public sealed class OpenRepartConfCmd(
 
         ApplyChapterDividers(result.Plan, import.Chapter);
         new OpenSuccModalCmd(
-            modalNavS,
+            ModalNavS,
             RepartConfVM.WindowTitleText,
             string.Format(
                 RepartLangProvider.Current["ImportSummary"],
@@ -116,14 +107,7 @@ public sealed class OpenRepartConfCmd(
             RepartConfVM.WindowTitleText,
             RepartLangProvider.Current["StageCheckFiles"],
             new ActionCmd(_ => cancellation.Cancel()));
-        progressWindow.DataContext = progressVM;
-        progressWindow.Owner = Application.Current.MainWindow;
-        progressWindow.Closed += (_, _) =>
-        {
-            cancellation.Cancel();
-            modalNavS.Close();
-        };
-        modalNavS.CurrentModalVM = progressVM;
+        AttachModal(progressWindow, progressVM, onClosed: () => cancellation.Cancel());
 
         int excludedCount = 0;
         List<RepartExcludedSourceInfo> excludedItems = [];
@@ -131,8 +115,8 @@ public sealed class OpenRepartConfCmd(
             ffprobePath: getFfprobePath(),
             ffmpegPath: getFfmpegPath?.Invoke(),
             filePaths: filePaths,
-            confirmDiscardInterlacedSource: source => RepartInterlacedPrompt.Confirm(modalNavS, RepartConfVM.WindowTitleText, source),
-            confirmExpandFrameCountSearch: source => RepartFrameCountPrompt.Confirm(modalNavS, RepartConfVM.WindowTitleText, source),
+            confirmDiscardInterlacedSource: source => RepartInterlacedPrompt.Confirm(ModalNavS, RepartConfVM.WindowTitleText, source),
+            confirmExpandFrameCountSearch: source => RepartFrameCountPrompt.Confirm(ModalNavS, RepartConfVM.WindowTitleText, source),
             onFileProgress: (stage, index, total, name) =>
             {
                 progressVM.P1Text = RepartLangProvider.Current[StageKey(stage)];
@@ -161,7 +145,7 @@ public sealed class OpenRepartConfCmd(
         }
         catch (Exception ex)
         {
-            new OpenErrModalCmd(modalNavS, RepartConfVM.WindowTitleText, ex.Message).Execute(null);
+            new OpenErrModalCmd(ModalNavS, RepartConfVM.WindowTitleText, ex.Message).Execute(null);
             return null;
         }
 
@@ -170,14 +154,14 @@ public sealed class OpenRepartConfCmd(
             if (excludedItems.Count > 0)
             {
                 new OpenErrModalCmd(
-                    modalNavS,
+                    ModalNavS,
                     RepartConfVM.WindowTitleText,
                     BuildExcludedSummary(excludedItems, result.FatalMessage)).Execute(null);
             }
             else
             {
                 new OpenErrModalCmd(
-                    modalNavS,
+                    ModalNavS,
                     RepartConfVM.WindowTitleText,
                     result.FatalMessage ?? RepartLangProvider.Current.SourceRequired).Execute(null);
             }

@@ -1,6 +1,7 @@
 global using Microsoft.Win32;
 global using OneColumnEncoder.Commands;
 global using OneColumnEncoder.Commands.OpenClose;
+global using OneColumnEncoder.Commands.OpenClose.Confirmations;
 global using OneColumnEncoder.FFmpeg;
 global using OneColumnEncoder.FileManagement;
 global using OneColumnEncoder.Models;

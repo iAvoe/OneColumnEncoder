@@ -5,9 +5,8 @@ public class OpenEncodingMonitorCmd(
     AppConfM appConfM,
     EncodingPipelineRequest request,
     EncodingPipelineCommand command,
-    bool isSample = false) : BaseCmd
+    bool isSample = false) : OpenCloseBase(modalNavS)
 {
-    private readonly ModalNavS _modalNavS = modalNavS;
     private readonly AppConfM _appConfM = appConfM;
     private readonly EncodingPipelineRequest _request = request;
     private readonly EncodingPipelineCommand _command = command;
@@ -15,25 +14,11 @@ public class OpenEncodingMonitorCmd(
 
     public override void Execute(object? parameter)
     {
-        EncodingMonitorModal? existingWindow = Application.Current.Windows
-            .OfType<EncodingMonitorModal>()
-            .FirstOrDefault();
-
-        if (existingWindow != null)
-        {
-            existingWindow.Activate();
+        if (TryActivateExistingWindow<EncodingMonitorModal>())
             return;
-        }
-
-        if (_modalNavS.IsOpen)
-            _modalNavS.Close();
 
         EncodingMonitorModal window = new();
-        EncodingMonitorVM vm = new(_modalNavS, window.Close, _appConfM, _request, _command, _isSample);
-        window.DataContext = vm;
-        window.Owner = Application.Current.MainWindow;
-        window.Closed += (_, _) => _modalNavS.Close();
-        _modalNavS.CurrentModalVM = vm;
-        window.Show();
+        EncodingMonitorVM vm = new(ModalNavS, window.Close, _appConfM, _request, _command, _isSample);
+        ShowModal(window, vm, closeOpenStack: true);
     }
-}
+}

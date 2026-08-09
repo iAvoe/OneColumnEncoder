@@ -215,7 +215,7 @@ public class ImgABPvVM : BaseVM
             if (encoder == PreviewEncoder.SvtAv1 && PreviewPipeline.IsSource12Bit(_colorSpaceAnalysis))
             {
                 _modalNavS.Close();
-                new Commands.OpenClose.OpenErrModalCmd(_modalNavS, Lang.EncoderLabel, Lang.WarnSvtAv1No12Bit).Execute(null);
+                new Commands.OpenClose.Confirmations.OpenErrModalCmd(_modalNavS, Lang.EncoderLabel, Lang.WarnSvtAv1No12Bit).Execute(null);
                 IsBusy = false;
                 return;
             }
@@ -283,7 +283,7 @@ public class ImgABPvVM : BaseVM
             if (!string.IsNullOrWhiteSpace(_lastFfmpegStderr))
             {
                 _modalNavS.Close();
-                new Commands.OpenClose.OpenErrModalCmd(
+                new Commands.OpenClose.Confirmations.OpenErrModalCmd(
                     _modalNavS,
                     Lang.EncoderLabel,
                     _lastFfmpegStderr).Execute(null);

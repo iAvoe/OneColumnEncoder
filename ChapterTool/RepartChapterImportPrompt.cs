@@ -18,11 +18,7 @@ public static class RepartChapterImportPrompt
             cancelCmd,
             confirmCmd);
 
-        window.DataContext = vm;
-        window.Owner = Application.Current.MainWindow;
-        window.Closed += (_, _) => modalNavS.Close();
-        modalNavS.CurrentModalVM = vm;
-        window.ShowDialog();
+        OpenCloseBase.ShowModal(modalNavS, window, vm, showDialog: true);
         return confirmed;
     }
 }

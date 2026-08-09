@@ -4,9 +4,8 @@ public class OpenQueueAnalysisCompletedModalCmd(
     ModalNavS modalNavS,
     string message,
     string queueJsonPath,
-    string? excludedJsonPath) : BaseCmd
+    string? excludedJsonPath) : OpenCloseBase(modalNavS)
 {
-    private readonly ModalNavS _modalNavS = modalNavS;
     private readonly string _message = message;
     private readonly string _queueJsonPath = queueJsonPath;
     private readonly string? _excludedJsonPath = excludedJsonPath;
@@ -25,11 +24,7 @@ public class OpenQueueAnalysisCompletedModalCmd(
         if (!string.IsNullOrWhiteSpace(_excludedJsonPath))
             AddJsonActions(vm, _excludedJsonPath, "SourceQueue.OpenExcludedJson", "SourceQueue.CopyExcludedJsonPath");
 
-        window.DataContext = vm;
-        window.Owner = Application.Current.MainWindow;
-        window.Closed += (_, _) => _modalNavS.Close();
-        _modalNavS.CurrentModalVM = vm;
-        window.ShowDialog();
+        ShowModal(window, vm, showDialog: true);
     }
 
     private static void AddJsonActions(ConfirmationVM vm, string jsonPath, string openTextKey, string copyTextKey)
