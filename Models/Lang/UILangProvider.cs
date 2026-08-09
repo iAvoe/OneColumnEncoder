@@ -1564,6 +1564,24 @@ public class UILangProvider
 
     public string this[string key] => _d.TryGetValue(key, out var v) ? v : key;
 
+    public void ValidateMissingTranslations()
+        => ValidateMissingTranslations(LanguageCode);
+
+    public static void ValidateMissingTranslations(string languageCode)
+    {
+        Dictionary<string, string> baseline = Data["en"];
+        string resolvedLanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
+        if (string.Equals(resolvedLanguageCode, "en", StringComparison.OrdinalIgnoreCase)) return;
+
+        Dictionary<string, string> target = Data[resolvedLanguageCode];
+
+        foreach (string key in baseline.Keys)
+        {
+            if (!target.TryGetValue(key, out string? value) || string.IsNullOrWhiteSpace(value))
+                throw new MissingTranslationException(nameof(UILangProvider), resolvedLanguageCode, key);
+        }
+    }
+
     public UILangProvider(string languageCode)
     {
         LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
