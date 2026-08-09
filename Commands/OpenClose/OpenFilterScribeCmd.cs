@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.Commands.OpenClose;
 
+/// <summary>
+/// Opens the filter script scribe modal for editing AVS/Vpy filter scripts.
+/// </summary>
 public class OpenFilterScribeCmd(
     ModalNavS modalNavS,
     Func<string> getSourcePath,
@@ -26,6 +29,10 @@ public class OpenFilterScribeCmd(
     string? vspipeY4mArg = null,
     Func<long>? getTotalFrames = null) : OpenCloseBase(modalNavS)
 {
+    /// <summary>
+    /// Shows a warning if a one-line shot is selected; otherwise brings an existing
+    /// window to the front or shows the filter scribe modal.
+    /// </summary>
     public override void Execute(object? parameter)
     {
         if (isOneLineShotSelected())
