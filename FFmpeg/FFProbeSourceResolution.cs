@@ -16,10 +16,7 @@ public static class FFProbeSourceResolution
                 && stream.TryGetProperty("height", out JsonElement h) && h.TryGetInt32(out int height))
                 return (width, height);
         }
-        catch
-        {
-            return null;
-        }
+        catch { return null; }
 
         return null;
     }

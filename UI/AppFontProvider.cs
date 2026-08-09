@@ -22,8 +22,8 @@ public static class AppFontProvider
     private static readonly FontFamily DefaultUiFont = new("Segoe UI");
     private static readonly FontFamily DefaultCodeFont = new("Consolas");
 
-    private static readonly Dictionary<string, FontFamily> _uiFonts = new();
-    private static readonly Dictionary<string, FontFamily> _codeFonts = new();
+    private static readonly Dictionary<string, FontFamily> _uiFonts = [];
+    private static readonly Dictionary<string, FontFamily> _codeFonts = [];
 
     public static IReadOnlyList<FontFamily> UiFonts => [.. _uiFonts.Values];
     public static IReadOnlyList<FontFamily> CodeFonts => [.. _codeFonts.Values];
@@ -80,24 +80,69 @@ public static class AppFontProvider
     {
         try
         {
-            if (family.FamilyNames.TryGetValue(XmlLanguage.GetLanguage("en-us"), out string? enUs)
-                && !string.IsNullOrWhiteSpace(enUs))
+            foreach (XmlLanguage language in PreferredFontNameLanguages)
             {
-                return enUs;
-            }
-
-            if (family.FamilyNames.TryGetValue(XmlLanguage.GetLanguage("en"), out string? en)
-                && !string.IsNullOrWhiteSpace(en))
-            {
-                return en;
+                if (family.FamilyNames.TryGetValue(language, out string? name)
+                    && !string.IsNullOrWhiteSpace(name))
+                {
+                    return name;
+                }
             }
         }
         catch
         {
-            // Fall through to Source.
+            // Fall through to ExtractReadableSource.
         }
 
-        return family.Source;
+        return ExtractReadableSource(family.Source);
+    }
+
+    /// <summary>
+    /// Order in which a font's localized family names are preferred when building
+    /// display titles. Chinese titles come first so Chinese fonts display their
+    /// Chinese name (e.g. 微软雅黑 instead of "Microsoft YaHei"); when the UI is
+    /// Chinese its own variant wins, otherwise Simplified Chinese is preferred,
+    /// then Traditional, then the current UI language, then English as the
+    /// portable fallback for the remaining fonts.
+    /// </summary>
+    private static readonly XmlLanguage[] PreferredFontNameLanguages =
+        BuildPreferredFontNameLanguages();
+
+    private static XmlLanguage[] BuildPreferredFontNameLanguages()
+    {
+        string[] chineseCultures = ["zh-cn", "zh-tw", "zh-hk", "zh-mo", "zh-sg", "zh"];
+        CultureInfo culture = CultureInfo.CurrentUICulture;
+        string currentCulture = culture.Name.ToLowerInvariant();
+        bool isChineseUi = culture.TwoLetterISOLanguageName.Equals("zh", StringComparison.OrdinalIgnoreCase);
+
+        List<string> names = [];
+        if (isChineseUi && !string.IsNullOrWhiteSpace(currentCulture))
+            names.Add(currentCulture);
+
+        foreach (string zhCulture in chineseCultures)
+        {
+            if (!names.Contains(zhCulture)) names.Add(zhCulture);
+        }
+
+        if (!string.IsNullOrWhiteSpace(currentCulture) && !names.Contains(currentCulture))
+            names.Add(currentCulture);
+
+        names.Add("en-us");
+        names.Add("en");
+        return [.. names.Select(XmlLanguage.GetLanguage)];
+    }
+
+    /// <summary>
+    /// Strips the composite URI form ("file:///...#FamilyName") used for custom
+    /// fonts so only the readable family name remains.
+    /// </summary>
+    private static string ExtractReadableSource(string source)
+    {
+        if (string.IsNullOrWhiteSpace(source)) return source;
+        int hashIndex = source.LastIndexOf('#');
+        return hashIndex >= 0 && hashIndex < source.Length - 1
+            ? source[(hashIndex + 1)..]
+            : source;
     }
 
     private static FontFamily ResolveFont(string? name, Dictionary<string, FontFamily> families, FontFamily fallback)
@@ -128,23 +173,27 @@ public static class AppFontProvider
     {
         if (!Directory.Exists(folderPath)) return;
 
-        string[] files = Directory.GetFiles(folderPath, "*.*")
+        string[] files = [.. Directory.GetFiles(folderPath, "*.*")
             .Where(f => f.EndsWith(".ttf", System.StringComparison.OrdinalIgnoreCase)
                      || f.EndsWith(".otf", System.StringComparison.OrdinalIgnoreCase)
-                     || f.EndsWith(".ttc", System.StringComparison.OrdinalIgnoreCase))
-            .ToArray();
+                     || f.EndsWith(".ttc", System.StringComparison.OrdinalIgnoreCase))];
 
         foreach (string file in files)
         {
             try
             {
                 GlyphTypeface typeface = new(new Uri(file));
-                string? name = GetTypefaceName(typeface);
-                if (string.IsNullOrWhiteSpace(name)) continue;
+                string? fragmentName = GetTypefaceName(typeface);
+                if (string.IsNullOrWhiteSpace(fragmentName)) continue;
                 // Composite URI form ("file:///...#FamilyName") pins the custom file,
                 // unlike the (baseUri, name) constructor which falls back to a
-                // same-named system font.
-                target[Normalize(name)] = new FontFamily(new Uri(file).AbsoluteUri + "#" + name);
+                // same-named system font. The dictionary key is the display title
+                // (GetFontDisplayName) so it matches both what the picker stores and
+                // what ResolveFont looks up.
+                FontFamily family = new(new Uri(file).AbsoluteUri + "#" + fragmentName);
+                string displayName = GetFontDisplayName(family);
+                if (string.IsNullOrWhiteSpace(displayName)) continue;
+                target[Normalize(displayName)] = family;
             }
             catch
             {
@@ -155,13 +204,26 @@ public static class AppFontProvider
 
     private static string? GetTypefaceName(GlyphTypeface typeface)
     {
+        string currentCulture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+
         foreach (KeyValuePair<CultureInfo, string> pair in typeface.FamilyNames)
         {
             if (pair.Key.TwoLetterISOLanguageName.Equals("en", StringComparison.OrdinalIgnoreCase))
                 return pair.Value;
         }
 
-        return null;
+        // No English name (e.g. Chinese-only fonts): fall back to the current UI
+        // language name, then to any available localized name so the font is not
+        // silently dropped from the picker.
+        string? fallback = null;
+        foreach (KeyValuePair<CultureInfo, string> pair in typeface.FamilyNames)
+        {
+            if (pair.Key.TwoLetterISOLanguageName.Equals(currentCulture, StringComparison.OrdinalIgnoreCase))
+                return pair.Value;
+            fallback ??= pair.Value;
+        }
+
+        return fallback;
     }
 
     private static string Normalize(string name) => name.Trim().ToLowerInvariant();

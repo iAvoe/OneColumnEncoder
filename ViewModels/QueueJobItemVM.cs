@@ -175,10 +175,7 @@ public class QueueJobItemVM(QueueJobItemM model) : BaseVM
         {
             return JsonSerializer.Deserialize<EncodingPipelineRequest>(serializedRequest);
         }
-        catch
-        {
-            return null;
-        }
+        catch { return null; }
     }
 
     private static EncodingPipelineCommand? DeserializeCommand(string serializedCommand)
@@ -188,10 +185,7 @@ public class QueueJobItemVM(QueueJobItemM model) : BaseVM
         {
             return JsonSerializer.Deserialize<EncodingPipelineCommand>(serializedCommand);
         }
-        catch
-        {
-            return null;
-        }
+        catch { return null; }
     }
 
     #region Job Display Queries
@@ -223,4 +217,5 @@ public class QueueJobItemVM(QueueJobItemM model) : BaseVM
         base.Dispose();
         GC.SuppressFinalize(this);
     }
-}
+}
+

@@ -708,10 +708,7 @@ public static class RepartSourceValidator
 
             return hasTimestamp ? false : null;
         }
-        catch
-        {
-            return null;
-        }
+        catch { return null; }
     }
 
     private static double? TryGetFrameTimestampSeconds(JsonElement frame) =>

@@ -74,18 +74,14 @@ public static class AutoToolImport
         IEnumerable<FileInfo> matches;
         try
         {
-            matches = Directory.EnumerateFiles(baseDirectory, "*.exe", SearchOption.TopDirectoryOnly)
+            matches = [.. Directory.EnumerateFiles(baseDirectory, "*.exe", SearchOption.TopDirectoryOnly)
                 .Where(path => IsCandidateFileNameMatch(exeName, path))
                 .Select(path => new FileInfo(path))
                 .OrderByDescending(file => file.Name.Equals(exeName, StringComparison.OrdinalIgnoreCase))
                 .ThenBy(file => Path.GetFileNameWithoutExtension(file.Name).Length)
-                .ThenByDescending(file => file.LastWriteTimeUtc)
-                .ToArray();
+                .ThenByDescending(file => file.LastWriteTimeUtc)];
         }
-        catch
-        {
-            return null;
-        }
+        catch { return null; }
 
         foreach (FileInfo file in matches)
         {
@@ -104,18 +100,14 @@ public static class AutoToolImport
         IEnumerable<FileInfo> matches;
         try
         {
-            matches = Directory.EnumerateFiles(rootDirectory, "*.exe", SearchOption.AllDirectories)
+            matches = [.. Directory.EnumerateFiles(rootDirectory, "*.exe", SearchOption.AllDirectories)
                 .Where(path => IsCandidateFileNameMatch(exeName, path))
                 .Select(path => new FileInfo(path))
                 .OrderByDescending(file => file.Name.Equals(exeName, StringComparison.OrdinalIgnoreCase))
                 .ThenBy(file => file.FullName.Length)
-                .ThenByDescending(file => file.LastWriteTimeUtc)
-                .ToArray();
+                .ThenByDescending(file => file.LastWriteTimeUtc)];
         }
-        catch
-        {
-            return null;
-        }
+        catch { return null; }
 
         foreach (FileInfo file in matches)
         {

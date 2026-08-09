@@ -66,10 +66,7 @@ public static class FrameRate
             string? val = TryGetString(stream, propertyName);
             return IsUsable(val) ? ParseFraction(val) : null;
         }
-        catch
-        {
-            return null;
-        }
+        catch { return null; }
     }
 
     public static bool? IsVariableFrameRate(string rawJson)
@@ -94,10 +91,7 @@ public static class FrameRate
             (int num, int den)? rate = isVariable ? GetRFrameRate(stream) : null;
             return (isVariable, rate?.num ?? 0, rate?.den ?? 0);
         }
-        catch
-        {
-            return null;
-        }
+        catch { return null; }
     }
 
     public static (int num, int den)? GetRFrameRate(JsonElement stream)
