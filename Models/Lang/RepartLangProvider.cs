@@ -1,6 +1,6 @@
 ﻿namespace OneColumnEncoder.Models.Lang;
 
-public sealed class RepartLangProvider(string languageCode)
+public sealed class RepartLangProvider(string languageCode) : LangProviderBase(languageCode, Data)
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -738,9 +738,7 @@ public sealed class RepartLangProvider(string languageCode)
         };
     }
 
-    private readonly Dictionary<string, string> _data = Data.TryGetValue(languageCode, out Dictionary<string, string>? data) ? data : Data["en"];
     public static RepartLangProvider Current => new(UILangProvider.Current.LanguageCode);
-    public string this[string key] => _data.TryGetValue(key, out string? value) ? value : key;
 
     public string ToolSourceVideoSrcRepart => this["Tool"];
     public string FfprobeRequired => this["FfprobeRequired"];

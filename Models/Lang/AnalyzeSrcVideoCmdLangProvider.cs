@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models.Lang;
 
-public class AnalyzeSrcVideoCmdLangProvider
+public class AnalyzeSrcVideoCmdLangProvider : LangProviderBase
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -99,23 +99,16 @@ public class AnalyzeSrcVideoCmdLangProvider
     public string AndMoreLabel { get; }
     public string TotalFramesFormat { get; }
     public string ConcatTotalFramesLabel { get; }
-    public string LanguageCode { get; }
-    private readonly Dictionary<string, string> _d;
-
-    public string this[string key] => _d.TryGetValue(key, out var v) ? v : key;
-
-    public AnalyzeSrcVideoCmdLangProvider(string languageCode)
+    public AnalyzeSrcVideoCmdLangProvider(string languageCode) : base(languageCode, Data)
     {
-        LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
-        _d = Data[LanguageCode];
-        QueueItemProgress = _d["QueueItemProgress"];
-        SourceFilePath = _d["SourceFilePath"];
-        QueueItemSkipMsg = _d["QueueItemSkipMsg"];
-        AllQueueItemsFailed = _d["AllQueueItemsFailed"];
-        SkippedItemsLabel = _d["SkippedItemsLabel"];
-        ListItemPrefix = _d["ListItemPrefix"];
-        AndMoreLabel = _d["AndMoreLabel"];
-        TotalFramesFormat = _d["TotalFramesFormat"];
-        ConcatTotalFramesLabel = _d["ConcatTotalFramesLabel"];
+        QueueItemProgress = this["QueueItemProgress"];
+        SourceFilePath = this["SourceFilePath"];
+        QueueItemSkipMsg = this["QueueItemSkipMsg"];
+        AllQueueItemsFailed = this["AllQueueItemsFailed"];
+        SkippedItemsLabel = this["SkippedItemsLabel"];
+        ListItemPrefix = this["ListItemPrefix"];
+        AndMoreLabel = this["AndMoreLabel"];
+        TotalFramesFormat = this["TotalFramesFormat"];
+        ConcatTotalFramesLabel = this["ConcatTotalFramesLabel"];
     }
 }

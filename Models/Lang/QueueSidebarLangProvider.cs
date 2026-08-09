@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models.Lang;
 
-public sealed class QueueSidebarLangProvider
+public sealed class QueueSidebarLangProvider : LangProviderBase
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -68,16 +68,6 @@ public sealed class QueueSidebarLangProvider
 
     public static QueueSidebarLangProvider Current => new(UILangProvider.Current.LanguageCode);
 
-    public string LanguageCode { get; }
-    private readonly Dictionary<string, string> _d;
-
-    public string this[string key] =>
-        _d.TryGetValue(key, out string? value)
-            ? value
-            : Data["en"].TryGetValue(key, out string? fallback)
-                ? fallback
-                : key;
-
     public string QueueSidebarCancelAllText { get; }
     public string QueueSidebarRunningHeaderText { get; }
     public string QueueSidebarWaitingHeaderText { get; }
@@ -87,11 +77,8 @@ public sealed class QueueSidebarLangProvider
     public string QueueItemMoveUpText => "↑↑";
     public string QueueItemMoveDownText => "↓↓";
 
-    public QueueSidebarLangProvider(string languageCode)
+    public QueueSidebarLangProvider(string languageCode) : base(languageCode, Data)
     {
-        LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
-        _d = Data[LanguageCode];
-
         QueueSidebarCancelAllText = this["QueueSidebarCancelAllText"];
         QueueSidebarRunningHeaderText = this["QueueSidebarRunningHeaderText"];
         QueueSidebarWaitingHeaderText = this["QueueSidebarWaitingHeaderText"];

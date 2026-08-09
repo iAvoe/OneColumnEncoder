@@ -1,6 +1,6 @@
 ﻿namespace OneColumnEncoder.Models.Lang;
 
-public class ParallelismConfLangProvider
+public class ParallelismConfLangProvider : LangProviderBase
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -207,32 +207,25 @@ public class ParallelismConfLangProvider
     public string CancelButtonText { get; }
     public string ConfirmButtonText { get; }
     public string EncoderThreadCountText { get; }
-    public string LanguageCode { get; }
-    private readonly Dictionary<string, string> _d;
-
-    public string this[string key] => _d.TryGetValue(key, out var v) ? v : key;
-
-    public ParallelismConfLangProvider(string languageCode)
+    public ParallelismConfLangProvider(string languageCode) : base(languageCode, Data)
     {
-        LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
-        _d = Data[LanguageCode];
-        IntroText = _d["IntroText"];
-        PriorityText = _d["PriorityText"];
-        CacheGroupTitle = _d["CacheGroupTitle"];
-        NumaTopologyHintText = _d["NumaTopologyHintText"];
-        UpstreamNumaTitle = _d["UpstreamNumaTitle"];
-        DownstreamNumaTitle = _d["DownstreamNumaTitle"];
-        NumaGuidanceText = _d["NumaGuidanceText"];
-        ThreadStrategyTitle = _d["ThreadStrategyTitle"];
-        PreferUpstreamPhysCoresText = _d["PreferUpstreamPhysCoresText"];
-        PreferDownstreamPhysCoresText = _d["PreferDownstreamPhysCoresText"];
-        PipeBufferStrategyTitle = _d["PipeBufferStrategyTitle"];
-        PipeBufferStrategyText = _d["PipeBufferStrategyText"];
-        PipeBufferHintText = _d["PipeBufferHintText"];
-        MemoryStrategyTitle = _d["MemoryStrategyTitle"];
-        LargePagesUnavailableHintText = _d["LargePagesUnavailableHintText"];
-        CancelButtonText = _d["CancelButtonText"];
-        ConfirmButtonText = _d["ConfirmButtonText"];
-        EncoderThreadCountText = _d["EncoderThreadCountText"];
+        IntroText = this["IntroText"];
+        PriorityText = this["PriorityText"];
+        CacheGroupTitle = this["CacheGroupTitle"];
+        NumaTopologyHintText = this["NumaTopologyHintText"];
+        UpstreamNumaTitle = this["UpstreamNumaTitle"];
+        DownstreamNumaTitle = this["DownstreamNumaTitle"];
+        NumaGuidanceText = this["NumaGuidanceText"];
+        ThreadStrategyTitle = this["ThreadStrategyTitle"];
+        PreferUpstreamPhysCoresText = this["PreferUpstreamPhysCoresText"];
+        PreferDownstreamPhysCoresText = this["PreferDownstreamPhysCoresText"];
+        PipeBufferStrategyTitle = this["PipeBufferStrategyTitle"];
+        PipeBufferStrategyText = this["PipeBufferStrategyText"];
+        PipeBufferHintText = this["PipeBufferHintText"];
+        MemoryStrategyTitle = this["MemoryStrategyTitle"];
+        LargePagesUnavailableHintText = this["LargePagesUnavailableHintText"];
+        CancelButtonText = this["CancelButtonText"];
+        ConfirmButtonText = this["ConfirmButtonText"];
+        EncoderThreadCountText = this["EncoderThreadCountText"];
     }
 }

@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models.Lang;
 
-public class ClipRangeSelectorLangProvider
+public class ClipRangeSelectorLangProvider : LangProviderBase
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -198,11 +198,6 @@ public class ClipRangeSelectorLangProvider
         };
     }
 
-    public string LanguageCode { get; }
-    private readonly Dictionary<string, string> _d;
-
-    public string this[string key] => _d.TryGetValue(key, out var v) ? v : key;
-
     public const string WindowTitle = "1cenc Sample Clip";
     public string TimelineSectionTitle { get; }
     public string SelectionHintText { get; }
@@ -230,35 +225,32 @@ public class ClipRangeSelectorLangProvider
     public string SummaryVariableFrameRate { get; }
     public string SummaryFrameRateUnknown { get; }
 
-    public ClipRangeSelectorLangProvider(string languageCode)
+    public ClipRangeSelectorLangProvider(string languageCode) : base(languageCode, Data)
     {
-        LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
-        _d = Data[LanguageCode];
-
-        TimelineSectionTitle = _d["TimelineSectionTitle"];
-        SelectionHintText = _d["SelectionHintText"];
-        DurationSectionTitle = _d["DurationSectionTitle"];
-        ClipLengthLabel = _d["ClipLengthLabel"];
-        StartTimeLabel = _d["StartTimeLabel"];
-        ClipDurationLabel = _d["ClipDurationLabel"];
-        EndTimeLabel = _d["EndTimeLabel"];
-        TimeFormatText = _d["TimeFormatText"];
-        StartFrameLabel = _d["StartFrameLabel"];
-        ClipFrameCountLabel = _d["ClipFrameCountLabel"];
-        EndFrameLabel = _d["EndFrameLabel"];
-        FrameFormatText = _d["FrameFormatText"];
-        Note2Text = _d["Note2Text"];
-        CancelButtonText = _d["CancelButtonText"];
-        ConfirmButtonText = _d["ConfirmButtonText"];
-        SummaryDurationLabel = _d["SummaryDurationLabel"];
-        SummaryTotalFramesLabel = _d["SummaryTotalFramesLabel"];
-        SummaryFrameRateLabel = _d["SummaryFrameRateLabel"];
-        SummarySecondsUnit = _d["SummarySecondsUnit"];
-        SummaryProgressive = _d["SummaryProgressive"];
-        SummaryInterlaced = _d["SummaryInterlaced"];
-        SummaryUnknown = _d["SummaryUnknown"];
-        SummaryConstantFrameRate = _d["SummaryConstantFrameRate"];
-        SummaryVariableFrameRate = _d["SummaryVariableFrameRate"];
-        SummaryFrameRateUnknown = _d["SummaryFrameRateUnknown"];
+        TimelineSectionTitle = this["TimelineSectionTitle"];
+        SelectionHintText = this["SelectionHintText"];
+        DurationSectionTitle = this["DurationSectionTitle"];
+        ClipLengthLabel = this["ClipLengthLabel"];
+        StartTimeLabel = this["StartTimeLabel"];
+        ClipDurationLabel = this["ClipDurationLabel"];
+        EndTimeLabel = this["EndTimeLabel"];
+        TimeFormatText = this["TimeFormatText"];
+        StartFrameLabel = this["StartFrameLabel"];
+        ClipFrameCountLabel = this["ClipFrameCountLabel"];
+        EndFrameLabel = this["EndFrameLabel"];
+        FrameFormatText = this["FrameFormatText"];
+        Note2Text = this["Note2Text"];
+        CancelButtonText = this["CancelButtonText"];
+        ConfirmButtonText = this["ConfirmButtonText"];
+        SummaryDurationLabel = this["SummaryDurationLabel"];
+        SummaryTotalFramesLabel = this["SummaryTotalFramesLabel"];
+        SummaryFrameRateLabel = this["SummaryFrameRateLabel"];
+        SummarySecondsUnit = this["SummarySecondsUnit"];
+        SummaryProgressive = this["SummaryProgressive"];
+        SummaryInterlaced = this["SummaryInterlaced"];
+        SummaryUnknown = this["SummaryUnknown"];
+        SummaryConstantFrameRate = this["SummaryConstantFrameRate"];
+        SummaryVariableFrameRate = this["SummaryVariableFrameRate"];
+        SummaryFrameRateUnknown = this["SummaryFrameRateUnknown"];
     }
 }

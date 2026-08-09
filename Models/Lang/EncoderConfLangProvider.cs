@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models.Lang;
 
-public class EncoderConfLangProvider
+public class EncoderConfLangProvider : LangProviderBase
 {
     public static EncoderConfLangProvider Current { get; private set; } = null!;
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
@@ -368,62 +368,55 @@ public class EncoderConfLangProvider
     public string CancelButtonText { get; }
     public string ConfirmButtonText { get; }
 
-    public string LanguageCode { get; }
-    private readonly Dictionary<string, string> _d;
-
-    public string this[string key] => _d.TryGetValue(key, out var v) ? v : key;
-
-    public EncoderConfLangProvider(string languageCode)
+    public EncoderConfLangProvider(string languageCode) : base(languageCode, Data)
     {
-        LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
-        _d = Data[LanguageCode];
-        RateControlTitle = _d["RateControlTitle"];
-        CustomParamsTitle = _d["CustomParamsTitle"];
-        CrfModeText = _d["CrfModeText"];
-        AbrModeText = _d["AbrModeText"];
-        X264Text = _d["X264Text"];
-        X265Text = _d["X265Text"];
-        SvtAv1Text = _d["SvtAv1Text"];
-        X264DefaultText = _d["X264DefaultText"];
-        X265DefaultText = _d["X265DefaultText"];
-        SvtAv1DefaultText = _d["SvtAv1DefaultText"];
-        X264AbrValueText = _d["X264AbrValueText"];
-        X265AbrValueText = _d["X265AbrValueText"];
-        SvtAv1AbrValueText = _d["SvtAv1AbrValueText"];
-        BasicParamsText = _d["BasicParamsText"];
-        KeyframeSecondsText = _d["KeyframeSecondsText"];
-        ThirdPartyParamsText = _d["ThirdPartyParamsText"];
-        FreeTextControlTitle = _d["FreeTextControlTitle"];
-        PreviewFreeTextControlTitle = _d["PreviewFreeTextControlTitle"];
-        PreviewFreeTextHint = _d["PreviewFreeTextHint"];
-        X264ModText = _d["X264ModText"];
-        X265JpsdrAqText = _d["X265JpsdrAqText"];
-        X265JpsdrDarkText = _d["X265JpsdrDarkText"];
-        X265JpsdrTextureText = _d["X265JpsdrTextureText"];
-        SvtAv1EssentialDl2Text = _d["SvtAv1EssentialDl2Text"];
-        SvtAv1EssentialAutoTileText = _d["SvtAv1EssentialAutoTileText"];
-        CrfHintText = _d["CrfHintText"];
-        AbrHintText = _d["AbrHintText"];
-        KeyframeHintText1 = _d["KeyframeHintText1"];
-        KeyframeHintText2 = _d["KeyframeHintText2"];
-        ThirdPartyHintText1 = _d["ThirdPartyHintText1"];
-        ThirdPartyHintText2 = _d["ThirdPartyHintText2"];
-        ThirdPartyHintText3 = _d["ThirdPartyHintText3"];
-        ThirdPartyHintText4 = _d["ThirdPartyHintText4"];
-        GeneralPurposeText = _d["GeneralPurposeText"];
-        StockFootageText = _d["StockFootageText"];
-        FilmIRLText = _d["FilmIRLText"];
-        AnimeText = _d["AnimeText"];
-        StressTestText = _d["StressTestText"];
-        PeakQualityText = _d["PeakQualityText"];
-        CompressionOptText = _d["CompressionOptText"];
-        SpeedOptimizedText = _d["SpeedOptimizedText"];
-        BlankPresetText = _d["BlankPresetText"];
-        BlankPresetHint = _d["BlankPresetHint"];
+        RateControlTitle = this["RateControlTitle"];
+        CustomParamsTitle = this["CustomParamsTitle"];
+        CrfModeText = this["CrfModeText"];
+        AbrModeText = this["AbrModeText"];
+        X264Text = this["X264Text"];
+        X265Text = this["X265Text"];
+        SvtAv1Text = this["SvtAv1Text"];
+        X264DefaultText = this["X264DefaultText"];
+        X265DefaultText = this["X265DefaultText"];
+        SvtAv1DefaultText = this["SvtAv1DefaultText"];
+        X264AbrValueText = this["X264AbrValueText"];
+        X265AbrValueText = this["X265AbrValueText"];
+        SvtAv1AbrValueText = this["SvtAv1AbrValueText"];
+        BasicParamsText = this["BasicParamsText"];
+        KeyframeSecondsText = this["KeyframeSecondsText"];
+        ThirdPartyParamsText = this["ThirdPartyParamsText"];
+        FreeTextControlTitle = this["FreeTextControlTitle"];
+        PreviewFreeTextControlTitle = this["PreviewFreeTextControlTitle"];
+        PreviewFreeTextHint = this["PreviewFreeTextHint"];
+        X264ModText = this["X264ModText"];
+        X265JpsdrAqText = this["X265JpsdrAqText"];
+        X265JpsdrDarkText = this["X265JpsdrDarkText"];
+        X265JpsdrTextureText = this["X265JpsdrTextureText"];
+        SvtAv1EssentialDl2Text = this["SvtAv1EssentialDl2Text"];
+        SvtAv1EssentialAutoTileText = this["SvtAv1EssentialAutoTileText"];
+        CrfHintText = this["CrfHintText"];
+        AbrHintText = this["AbrHintText"];
+        KeyframeHintText1 = this["KeyframeHintText1"];
+        KeyframeHintText2 = this["KeyframeHintText2"];
+        ThirdPartyHintText1 = this["ThirdPartyHintText1"];
+        ThirdPartyHintText2 = this["ThirdPartyHintText2"];
+        ThirdPartyHintText3 = this["ThirdPartyHintText3"];
+        ThirdPartyHintText4 = this["ThirdPartyHintText4"];
+        GeneralPurposeText = this["GeneralPurposeText"];
+        StockFootageText = this["StockFootageText"];
+        FilmIRLText = this["FilmIRLText"];
+        AnimeText = this["AnimeText"];
+        StressTestText = this["StressTestText"];
+        PeakQualityText = this["PeakQualityText"];
+        CompressionOptText = this["CompressionOptText"];
+        SpeedOptimizedText = this["SpeedOptimizedText"];
+        BlankPresetText = this["BlankPresetText"];
+        BlankPresetHint = this["BlankPresetHint"];
         VvencText = "VVenC (PV)";
-        VvencHintText = _d["VvencHintText"];
-        CancelButtonText = _d["CancelButtonText"];
-        ConfirmButtonText = _d["ConfirmButtonText"];
+        VvencHintText = this["VvencHintText"];
+        CancelButtonText = this["CancelButtonText"];
+        ConfirmButtonText = this["ConfirmButtonText"];
         Current = this;
     }
 }

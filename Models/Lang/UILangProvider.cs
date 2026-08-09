@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models.Lang;
 
-public class UILangProvider
+public class UILangProvider : LangProviderBase
 {
     public static UILangProvider Current { get; private set; } = null!;
     public static event Action? CurrentChanged;
@@ -1559,11 +1559,6 @@ public class UILangProvider
         ["FFProbeJsonUpdate.NoVideoStream"] = "Видеопоток не найден в JSON ffprobe."
     };
 
-    private readonly Dictionary<string, string> _d;
-    public string LanguageCode { get; }
-
-    public string this[string key] => _d.TryGetValue(key, out var v) ? v : key;
-
     public void ValidateMissingTranslations()
         => ValidateMissingTranslations(LanguageCode);
 
@@ -1582,11 +1577,8 @@ public class UILangProvider
         }
     }
 
-    public UILangProvider(string languageCode)
+    public UILangProvider(string languageCode) : base(languageCode, Data)
     {
-        LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
-        _d = Data[LanguageCode];
-
         bool hasChanged = Current is null ||
             !string.Equals(Current.LanguageCode, LanguageCode, StringComparison.OrdinalIgnoreCase);
         Current = this;

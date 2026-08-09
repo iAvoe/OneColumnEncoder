@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models.Lang;
 
-public class FilterScribeModalLangProvider
+public class FilterScribeModalLangProvider : LangProviderBase
 {
     public const string WindowTitle = "1cenc Filter Scribe";
     public const string SavingScriptWindowTitle = "Saving all scripts (AVS & VPY)...";
@@ -461,15 +461,9 @@ public class FilterScribeModalLangProvider
         };
     }
 
-    private readonly Dictionary<string, string> _d;
-
     public static FilterScribeModalLangProvider Current => new(UILangProvider.Current.LanguageCode);
-    public string LanguageCode { get; }
-    public string this[string key] => _d.TryGetValue(key, out var value) ? value : key;
 
-    public FilterScribeModalLangProvider(string languageCode)
+    public FilterScribeModalLangProvider(string languageCode) : base(languageCode, Data)
     {
-        LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
-        _d = Data[LanguageCode];
     }
 }

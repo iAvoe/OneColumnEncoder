@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models.Lang;
 
-public class StartEncCmdLangProvider
+public class StartEncCmdLangProvider : LangProviderBase
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -199,35 +199,28 @@ public class StartEncCmdLangProvider
     public string AllFilteredOutMsg { get; }
     public string GbSuffix { get; }
     public string MbSuffix { get; }
-    public string LanguageCode { get; }
-    private readonly Dictionary<string, string> _d;
-
-    public string this[string key] => _d.TryGetValue(key, out var v) ? v : key;
-
-    public StartEncCmdLangProvider(string languageCode)
+    public StartEncCmdLangProvider(string languageCode) : base(languageCode, Data)
     {
-        LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
-        _d = Data[LanguageCode];
-        WarnTitle = _d["WarnTitle"];
-        MissingUpstreamMsg = _d["MissingUpstreamMsg"];
-        ConfirmTitle = _d["ConfirmTitle"];
-        OverwriteTitle = _d["OverwriteTitle"];
-        OverwriteMsg = _d["OverwriteMsg"];
-        EncodedOutputLabel = _d["EncodedOutputLabel"];
-        MuxOutputLabel = _d["MuxOutputLabel"];
-        OverwriteTargetLabel = _d["OverwriteTargetLabel"];
-        LargestExistingSizeLabel = _d["LargestExistingSizeLabel"];
-        ConfirmDelayLabel = _d["ConfirmDelayLabel"];
-        AdditionalOverwriteTargetsLabel = _d["AdditionalOverwriteTargetsLabel"];
-        QueueJsonMissingMsg = _d["QueueJsonMissingMsg"];
-        QueueJsonInvalidMsg = _d["QueueJsonInvalidMsg"];
-        QueueJsonNoEntriesMsg = _d["QueueJsonNoEntriesMsg"];
-        QueueUnsupportedRouteMsg = _d["QueueUnsupportedRouteMsg"];
-        QueueSourceMissingMsg = _d["QueueSourceMissingMsg"];
-        QueueDuplicateOutputMsg = _d["QueueDuplicateOutputMsg"];
-        QueueEncodingPendingMsg = _d["QueueEncodingPendingMsg"];
-        AllFilteredOutMsg = _d["AllFilteredOutMsg"];
-        GbSuffix = _d["GbSuffix"];
-        MbSuffix = _d["MbSuffix"];
+        WarnTitle = this["WarnTitle"];
+        MissingUpstreamMsg = this["MissingUpstreamMsg"];
+        ConfirmTitle = this["ConfirmTitle"];
+        OverwriteTitle = this["OverwriteTitle"];
+        OverwriteMsg = this["OverwriteMsg"];
+        EncodedOutputLabel = this["EncodedOutputLabel"];
+        MuxOutputLabel = this["MuxOutputLabel"];
+        OverwriteTargetLabel = this["OverwriteTargetLabel"];
+        LargestExistingSizeLabel = this["LargestExistingSizeLabel"];
+        ConfirmDelayLabel = this["ConfirmDelayLabel"];
+        AdditionalOverwriteTargetsLabel = this["AdditionalOverwriteTargetsLabel"];
+        QueueJsonMissingMsg = this["QueueJsonMissingMsg"];
+        QueueJsonInvalidMsg = this["QueueJsonInvalidMsg"];
+        QueueJsonNoEntriesMsg = this["QueueJsonNoEntriesMsg"];
+        QueueUnsupportedRouteMsg = this["QueueUnsupportedRouteMsg"];
+        QueueSourceMissingMsg = this["QueueSourceMissingMsg"];
+        QueueDuplicateOutputMsg = this["QueueDuplicateOutputMsg"];
+        QueueEncodingPendingMsg = this["QueueEncodingPendingMsg"];
+        AllFilteredOutMsg = this["AllFilteredOutMsg"];
+        GbSuffix = this["GbSuffix"];
+        MbSuffix = this["MbSuffix"];
     }
 }

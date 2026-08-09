@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models.Lang;
 
-public class VideoSourceQueueLangProvider
+public class VideoSourceQueueLangProvider : LangProviderBase
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -122,11 +122,6 @@ public class VideoSourceQueueLangProvider
         };
     }
 
-    private readonly Dictionary<string, string> _d;
-
-    public string LanguageCode { get; }
-    public string this[string key] => _d.TryGetValue(key, out var value) ? value : key;
-
     public string ToolSourceVideoSrcQueueWithCount { get; }
     public string ToolSourceVideoSrcQueue { get; }
     public string ButtonsImport { get; }
@@ -140,22 +135,19 @@ public class VideoSourceQueueLangProvider
     public string SourceQueueOpenQueueJson { get; }
     public string SourceQueueOpenExcludedJson { get; }
 
-    public VideoSourceQueueLangProvider(string languageCode)
+    public VideoSourceQueueLangProvider(string languageCode) : base(languageCode, Data)
     {
-        LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
-        _d = Data[LanguageCode];
-
-        ToolSourceVideoSrcQueueWithCount = _d["Tool.Source.VideoSrcQueueWithCount"];
-        ToolSourceVideoSrcQueue = _d["Tool.Source.VideoSrcQueue"];
-        ButtonsImport = _d["Buttons.Import"];
-        SourceQueueSequence = _d["SourceQueue.Sequence"];
-        ToolFieldPath = _d["ToolField.Path"];
-        SourceQueueSelectFolderTitle = _d["SourceQueue.SelectFolderTitle"];
-        SourceQueueAnalysisCompleted = _d["SourceQueue.Analyzed"];
-        SourceQueueAnalysisCompletedNoExcluded = _d["SourceQueue.AnalyzedNoEx"];
-        SourceQueueCopyQueueJsonPath = _d["SourceQueue.CopyQueueJsonPath"];
-        SourceQueueCopyExcludedJsonPath = _d["SourceQueue.CopyExcludedJsonPath"];
-        SourceQueueOpenQueueJson = _d["SourceQueue.OpenQueueJson"];
-        SourceQueueOpenExcludedJson = _d["SourceQueue.OpenExcludedJson"];
+        ToolSourceVideoSrcQueueWithCount = this["Tool.Source.VideoSrcQueueWithCount"];
+        ToolSourceVideoSrcQueue = this["Tool.Source.VideoSrcQueue"];
+        ButtonsImport = this["Buttons.Import"];
+        SourceQueueSequence = this["SourceQueue.Sequence"];
+        ToolFieldPath = this["ToolField.Path"];
+        SourceQueueSelectFolderTitle = this["SourceQueue.SelectFolderTitle"];
+        SourceQueueAnalysisCompleted = this["SourceQueue.Analyzed"];
+        SourceQueueAnalysisCompletedNoExcluded = this["SourceQueue.AnalyzedNoEx"];
+        SourceQueueCopyQueueJsonPath = this["SourceQueue.CopyQueueJsonPath"];
+        SourceQueueCopyExcludedJsonPath = this["SourceQueue.CopyExcludedJsonPath"];
+        SourceQueueOpenQueueJson = this["SourceQueue.OpenQueueJson"];
+        SourceQueueOpenExcludedJson = this["SourceQueue.OpenExcludedJson"];
     }
 }

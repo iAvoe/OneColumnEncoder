@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models.Lang;
 
-public class SourceFilePickerLangProvider
+public class SourceFilePickerLangProvider : LangProviderBase
 {
     public const string VideoExtensions = "*.mkv;*.mp4;*.mov;*.avi;*.m2ts;*.ts;*.webm;*.mxf;*.vob;*.wmv;*.flv;*.f4v;*.asf;*.rm;*.rmvb;*.divx;*.xvid;*.3gp;*.3g2;*.ogv;*.ogg;*.mpg;*.mpeg;*.m1v;*.m2v;*.mp2;*.mpe;*.mpv;*.m4v;*.m4p;*.mp4v;*.dv;*.mts;*.m2t;*.trp;*.tp;*.evo;*.ifo;*.vro;*.bup;*.swf;*.wtv;*.dvr-ms;*.rec;*.yuv;*.y4m;*.hevc;*.h264;*.h265;*.264;*.265;*.vc1;*.avs2;*.avs3;*.ivf;*.drc;*.mj2;*.mjpeg;*.mjpg;*.amv;*.nsv;*.svi;*.viv;*.f4p;*.f4a;*.f4b;*.roq;*.mng;*.gifv;*.qt;*.hdmov;*.mod;*.tod;*.moi;*.pva;*.nsr;*.nut;*.fli;*.flc;*.flic;*.dsm;*.dsv;*.dsa;*.dss;*.ask;*.dat";
 
@@ -75,11 +75,6 @@ public class SourceFilePickerLangProvider
         };
     }
 
-    private readonly Dictionary<string, string> _d;
-
-    public string LanguageCode { get; }
-    public string this[string key] => _d.TryGetValue(key, out var value) ? value : key;
-
     public string VideoFilter { get; }
     public string AviSynthScriptFilter { get; }
     public string VapourSynthScriptFilter { get; }
@@ -87,16 +82,13 @@ public class SourceFilePickerLangProvider
     public string AllFilesFilter { get; }
     public string CustomScriptModeText { get; }
 
-    public SourceFilePickerLangProvider(string languageCode)
+    public SourceFilePickerLangProvider(string languageCode) : base(languageCode, Data)
     {
-        LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
-        _d = Data[LanguageCode];
-
-        VideoFilter = _d["Filter.Video"];
-        AviSynthScriptFilter = _d["Filter.AviSynthScript"];
-        VapourSynthScriptFilter = _d["Filter.VapourSynthScript"];
-        SvfiIniFilter = _d["Filter.SvfiIni"];
-        AllFilesFilter = _d["Filter.AllFiles"];
-        CustomScriptModeText = _d["CustomScriptModeText"];
+        VideoFilter = this["Filter.Video"];
+        AviSynthScriptFilter = this["Filter.AviSynthScript"];
+        VapourSynthScriptFilter = this["Filter.VapourSynthScript"];
+        SvfiIniFilter = this["Filter.SvfiIni"];
+        AllFilesFilter = this["Filter.AllFiles"];
+        CustomScriptModeText = this["CustomScriptModeText"];
     }
 }

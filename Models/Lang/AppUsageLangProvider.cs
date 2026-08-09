@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models.Lang;
 
-public class AppUsageLangProvider
+public class AppUsageLangProvider : LangProviderBase
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -354,48 +354,47 @@ public class AppUsageLangProvider
     public string ManualExtIntro { get; }
     public string CloseButtonText { get; }
 
-    public AppUsageLangProvider(string languageCode)
+    public AppUsageLangProvider(string languageCode) : base(languageCode, Data)
     {
-        var d = Data.TryGetValue(languageCode, out var lang) ? lang : Data["en"];
-        HowToUse = d["HowToUse"];
-        Description = d["Description"];
-        CopyHint = d["CopyHint"];
-        GettingStarted = d["GettingStarted"];
-        Step1 = d["Step1"];
-        Step2 = d["Step2"];
-        Step3 = d["Step3"];
-        Step4 = d["Step4"];
-        Step5 = d["Step5"];
-        WhyDisabledTitle = d["WhyDisabledTitle"];
-        WhyDisabled1 = d["WhyDisabled1"];
-        WhyDisabled2 = d["WhyDisabled2"];
-        WhyDisabled3 = d["WhyDisabled3"];
-        ToolDownloadTitle = d["ToolDownloadTitle"];
-        UpdateTitle = d["UpdateTitle"];
-        UpdateDesc = d["UpdateDesc"];
-        ComplianceTitle = d["ComplianceTitle"];
-        ComplianceDesc = d["ComplianceDesc"];
-        LicenseFfmpeg = d["LicenseFfmpeg"];
-        LicenseVapourSynth = d["LicenseVapourSynth"];
-        LicenseAvs2yuv = d["LicenseAvs2yuv"];
-        LicenseAvs2pipemod = d["LicenseAvs2pipemod"];
-        LicenseSvfi = d["LicenseSvfi"];
-        LicenseX264 = d["LicenseX264"];
-        LicenseX265 = d["LicenseX265"];
-        LicenseSvtAv1 = d["LicenseSvtAv1"];
-        ComplianceFooter = d["ComplianceFooter"];
-        ComplianceDisclaimer = d["ComplianceDisclaimer"];
-        ParamConfigTitle = d["ParamConfigTitle"];
-        ParamConfigIntro = d["ParamConfigIntro"];
-        AutoParamTitle = d["AutoParamTitle"];
-        AutoParamBase = d["AutoParamBase"];
-        AutoParamEncode = d["AutoParamEncode"];
-        AutoParamFooter = d["AutoParamFooter"];
-        ManualBaseTitle = d["ManualBaseTitle"];
-        ManualBaseList = d["ManualBaseList"];
-        ManualBaseFooter = d["ManualBaseFooter"];
-        ManualExtTitle = d["ManualExtTitle"];
-        ManualExtIntro = d["ManualExtIntro"];
-        CloseButtonText = d["CloseButtonText"];
+        HowToUse = this["HowToUse"];
+        Description = this["Description"];
+        CopyHint = this["CopyHint"];
+        GettingStarted = this["GettingStarted"];
+        Step1 = this["Step1"];
+        Step2 = this["Step2"];
+        Step3 = this["Step3"];
+        Step4 = this["Step4"];
+        Step5 = this["Step5"];
+        WhyDisabledTitle = this["WhyDisabledTitle"];
+        WhyDisabled1 = this["WhyDisabled1"];
+        WhyDisabled2 = this["WhyDisabled2"];
+        WhyDisabled3 = this["WhyDisabled3"];
+        ToolDownloadTitle = this["ToolDownloadTitle"];
+        UpdateTitle = this["UpdateTitle"];
+        UpdateDesc = this["UpdateDesc"];
+        ComplianceTitle = this["ComplianceTitle"];
+        ComplianceDesc = this["ComplianceDesc"];
+        LicenseFfmpeg = this["LicenseFfmpeg"];
+        LicenseVapourSynth = this["LicenseVapourSynth"];
+        LicenseAvs2yuv = this["LicenseAvs2yuv"];
+        LicenseAvs2pipemod = this["LicenseAvs2pipemod"];
+        LicenseSvfi = this["LicenseSvfi"];
+        LicenseX264 = this["LicenseX264"];
+        LicenseX265 = this["LicenseX265"];
+        LicenseSvtAv1 = this["LicenseSvtAv1"];
+        ComplianceFooter = this["ComplianceFooter"];
+        ComplianceDisclaimer = this["ComplianceDisclaimer"];
+        ParamConfigTitle = this["ParamConfigTitle"];
+        ParamConfigIntro = this["ParamConfigIntro"];
+        AutoParamTitle = this["AutoParamTitle"];
+        AutoParamBase = this["AutoParamBase"];
+        AutoParamEncode = this["AutoParamEncode"];
+        AutoParamFooter = this["AutoParamFooter"];
+        ManualBaseTitle = this["ManualBaseTitle"];
+        ManualBaseList = this["ManualBaseList"];
+        ManualBaseFooter = this["ManualBaseFooter"];
+        ManualExtTitle = this["ManualExtTitle"];
+        ManualExtIntro = this["ManualExtIntro"];
+        CloseButtonText = this["CloseButtonText"];
     }
 }

@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models.Lang;
 
-public class ImgABPvLangProvider
+public class ImgABPvLangProvider : LangProviderBase
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -276,10 +276,6 @@ public class ImgABPvLangProvider
         };
     }
 
-    public string LanguageCode { get; }
-    private readonly Dictionary<string, string> _d;
-    public string this[string key] => _d.TryGetValue(key, out var v) ? v : key;
-
     public string EncoderLabel { get; }
     public string DisplayModeLabel { get; }
     public string ZoomLabel { get; }
@@ -316,44 +312,42 @@ public class ImgABPvLangProvider
     public string ButteraugliToolPresent { get; }
     public string ButteraugliScoreHint { get; }
 
-    public ImgABPvLangProvider(string languageCode)
+    public ImgABPvLangProvider(string languageCode) : base(languageCode, Data)
     {
-        LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
-        _d = Data[LanguageCode];
-        EncoderLabel = _d["EncoderLabel"];
-        DisplayModeLabel = _d["DisplayModeLabel"];
-        ZoomLabel = _d["ZoomLabel"];
-        PositionLabel = _d["PositionLabel"];
-        FitButtonText = _d["FitButtonText"];
-        RawButtonText = _d["RawButtonText"];
-        Hint1Text = _d["Hint1Text"];
-        Hint2Text = _d["Hint2Text"];
-        Hint3Text = _d["Hint3Text"];
-        PreviewButtonText = _d["PreviewButtonText"];
-        CancelButtonText = _d["CancelButtonText"];
-        StatusReady = _d["StatusReady"];
-        StatusExtracting = _d["StatusExtracting"];
-        StatusConverting = _d["StatusConverting"];
-        StatusEncoding = _d["StatusEncoding"];
-        StatusDecoding = _d["StatusDecoding"];
-        StatusPreviewReady = _d["StatusPreviewReady"];
-        StatusComputingScores = _d["StatusComputingScores"];
-        StatusCancelled = _d["StatusCancelled"];
-        StatusNoFfmpeg = _d["StatusNoFfmpeg"];
-        StatusNoSource = _d["StatusNoSource"];
-        StatusDisplayModeBlocked = _d["StatusDisplayModeBlocked"];
-        StatusDisplayModeSet = _d["StatusDisplayModeSet"];
-        DisplayModeRaw = _d["DisplayModeRaw"];
-        DisplayModeLowToBt709 = _d["DisplayModeLowToBt709"];
-        DisplayModeWcgToBt709 = _d["DisplayModeWcgToBt709"];
-        DisplayModeHdrToSdr = _d["DisplayModeHdrToSdr"];
-        DisplayModeHighHdrToSdr = _d["DisplayModeHighHdrToSdr"];
-        WarnSvtAv1No12Bit = _d["WarnSvtAv1No12Bit"];
-        Ssimulacra2ToolMissing = _d["Ssimulacra2ToolMissing"];
-        Ssimulacra2ToolPresent = _d["Ssimulacra2ToolPresent"];
-        SsimulacraScoreHint = _d["SsimulacraScoreHint"];
-        ButteraugliToolMissing = _d["ButteraugliToolMissing"];
-        ButteraugliToolPresent = _d["ButteraugliToolPresent"];
-        ButteraugliScoreHint = _d["ButteraugliScoreHint"];
+        EncoderLabel = this["EncoderLabel"];
+        DisplayModeLabel = this["DisplayModeLabel"];
+        ZoomLabel = this["ZoomLabel"];
+        PositionLabel = this["PositionLabel"];
+        FitButtonText = this["FitButtonText"];
+        RawButtonText = this["RawButtonText"];
+        Hint1Text = this["Hint1Text"];
+        Hint2Text = this["Hint2Text"];
+        Hint3Text = this["Hint3Text"];
+        PreviewButtonText = this["PreviewButtonText"];
+        CancelButtonText = this["CancelButtonText"];
+        StatusReady = this["StatusReady"];
+        StatusExtracting = this["StatusExtracting"];
+        StatusConverting = this["StatusConverting"];
+        StatusEncoding = this["StatusEncoding"];
+        StatusDecoding = this["StatusDecoding"];
+        StatusPreviewReady = this["StatusPreviewReady"];
+        StatusComputingScores = this["StatusComputingScores"];
+        StatusCancelled = this["StatusCancelled"];
+        StatusNoFfmpeg = this["StatusNoFfmpeg"];
+        StatusNoSource = this["StatusNoSource"];
+        StatusDisplayModeBlocked = this["StatusDisplayModeBlocked"];
+        StatusDisplayModeSet = this["StatusDisplayModeSet"];
+        DisplayModeRaw = this["DisplayModeRaw"];
+        DisplayModeLowToBt709 = this["DisplayModeLowToBt709"];
+        DisplayModeWcgToBt709 = this["DisplayModeWcgToBt709"];
+        DisplayModeHdrToSdr = this["DisplayModeHdrToSdr"];
+        DisplayModeHighHdrToSdr = this["DisplayModeHighHdrToSdr"];
+        WarnSvtAv1No12Bit = this["WarnSvtAv1No12Bit"];
+        Ssimulacra2ToolMissing = this["Ssimulacra2ToolMissing"];
+        Ssimulacra2ToolPresent = this["Ssimulacra2ToolPresent"];
+        SsimulacraScoreHint = this["SsimulacraScoreHint"];
+        ButteraugliToolMissing = this["ButteraugliToolMissing"];
+        ButteraugliToolPresent = this["ButteraugliToolPresent"];
+        ButteraugliScoreHint = this["ButteraugliScoreHint"];
     }
 }

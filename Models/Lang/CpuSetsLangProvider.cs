@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models.Lang;
 
-public class CpuSetsLangProvider
+public class CpuSetsLangProvider : LangProviderBase
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -80,20 +80,13 @@ public class CpuSetsLangProvider
     public string BoundSuccess { get; }
     public string BindingFailed { get; }
     public string SkippedPrefix { get; }
-    public string LanguageCode { get; }
-    private readonly Dictionary<string, string> _d;
-
-    public string this[string key] => _d.TryGetValue(key, out var v) ? v : key;
-
-    public CpuSetsLangProvider(string languageCode)
+    public CpuSetsLangProvider(string languageCode) : base(languageCode, Data)
     {
-        LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
-        _d = Data[LanguageCode];
-        UnavailableOnNonWindows = _d["UnavailableOnNonWindows"];
-        NoCpuSetsFound = _d["NoCpuSetsFound"];
-        SetProcessDefaultCpuSetsFailed = _d["SetProcessDefaultCpuSetsFailed"];
-        BoundSuccess = _d["BoundSuccess"];
-        BindingFailed = _d["BindingFailed"];
-        SkippedPrefix = _d["SkippedPrefix"];
+        UnavailableOnNonWindows = this["UnavailableOnNonWindows"];
+        NoCpuSetsFound = this["NoCpuSetsFound"];
+        SetProcessDefaultCpuSetsFailed = this["SetProcessDefaultCpuSetsFailed"];
+        BoundSuccess = this["BoundSuccess"];
+        BindingFailed = this["BindingFailed"];
+        SkippedPrefix = this["SkippedPrefix"];
     }
 }

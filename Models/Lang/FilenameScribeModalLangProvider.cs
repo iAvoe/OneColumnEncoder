@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models.Lang;
 
-public class FilenameScribeModalLangProvider
+public class FilenameScribeModalLangProvider : LangProviderBase
 {
     public const string WindowTitle = "1cenc Filename";
 
@@ -222,15 +222,9 @@ public class FilenameScribeModalLangProvider
         };
     }
 
-    private readonly Dictionary<string, string> _d;
-
     public static FilenameScribeModalLangProvider Current => new(UILangProvider.Current.LanguageCode);
-    public string LanguageCode { get; }
-    public string this[string key] => _d.TryGetValue(key, out var value) ? value : key;
 
-    public FilenameScribeModalLangProvider(string languageCode)
+    public FilenameScribeModalLangProvider(string languageCode) : base(languageCode, Data)
     {
-        LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
-        _d = Data[LanguageCode];
     }
 }

@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models.Lang;
 
-public class SourceReviserLangProvider
+public class SourceReviserLangProvider : LangProviderBase
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -121,16 +121,9 @@ public class SourceReviserLangProvider
         };
     }
 
-    private readonly Dictionary<string, string> _d;
     public static SourceReviserLangProvider Current => new(UILangProvider.Current.LanguageCode);
-    public string LanguageCode { get; }
-    public string this[string key] => _d.TryGetValue(key, out var value)
-        ? value
-        : Data["en"].TryGetValue(key, out var enVal) ? enVal : key;
 
-    public SourceReviserLangProvider(string languageCode)
+    public SourceReviserLangProvider(string languageCode) : base(languageCode, Data)
     {
-        LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
-        _d = Data[LanguageCode];
     }
 }

@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models.Lang;
 
-public class FFProbeVideoAnalysisLangProvider
+public class FFProbeVideoAnalysisLangProvider : LangProviderBase
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -67,19 +67,12 @@ public class FFProbeVideoAnalysisLangProvider
     public string FfprobeTimedOut { get; }
     public string FfprobeFailedOrEmpty { get; }
     public string NoVideoStreamInfo { get; }
-    public string LanguageCode { get; }
-    private readonly Dictionary<string, string> _d;
-
-    public string this[string key] => _d.TryGetValue(key, out var v) ? v : key;
-
-    public FFProbeVideoAnalysisLangProvider(string languageCode)
+    public FFProbeVideoAnalysisLangProvider(string languageCode) : base(languageCode, Data)
     {
-        LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
-        _d = Data[LanguageCode];
-        FfprobeNotFound = _d["FfprobeNotFound"];
-        InputVideoNotFound = _d["InputVideoNotFound"];
-        FfprobeTimedOut = _d["FfprobeTimedOut"];
-        FfprobeFailedOrEmpty = _d["FfprobeFailedOrEmpty"];
-        NoVideoStreamInfo = _d["NoVideoStreamInfo"];
+        FfprobeNotFound = this["FfprobeNotFound"];
+        InputVideoNotFound = this["InputVideoNotFound"];
+        FfprobeTimedOut = this["FfprobeTimedOut"];
+        FfprobeFailedOrEmpty = this["FfprobeFailedOrEmpty"];
+        NoVideoStreamInfo = this["NoVideoStreamInfo"];
     }
 }

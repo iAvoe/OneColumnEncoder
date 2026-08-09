@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models.Lang;
 
-public class EncodingMonitorModalLangProvider
+public class EncodingMonitorModalLangProvider : LangProviderBase
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -553,84 +553,71 @@ public class EncodingMonitorModalLangProvider
     public string StopQueueConfirmTitle { get; }
     public string StopQueueConfirmMessage { get; }
 
-    public string LanguageCode { get; }
-    private readonly Dictionary<string, string> _d;
-
-    public string this[string key] =>
-        _d.TryGetValue(key, out string? value)
-            ? value
-            : Data["en"].TryGetValue(key, out string? fallback)
-                ? fallback
-                : key;
-
-    public EncodingMonitorModalLangProvider(string languageCode)
+    public EncodingMonitorModalLangProvider(string languageCode) : base(languageCode, Data)
     {
-        LanguageCode = Data.ContainsKey(languageCode) ? languageCode : "en";
-        _d = Data[LanguageCode];
-
-        ProgressTitle = _d["ProgressTitle"];
-        ProgressReportTitle = _d["ProgressReportTitle"];
-        MemoryTitle = _d["MemoryTitle"];
-        StderrTitle = _d["StderrTitle"];
-        DragLogReportHint = _d["DragLogReportHint"];
-        CurrentSizeLabel = _d["CurrentSizeLabel"];
-        EstimatedSizeLabel = _d["EstimatedSizeLabel"];
-        WrittenFramesLabel = _d["WrittenFramesLabel"];
-        SampleIntervalLabel = _d["SampleIntervalLabel"];
-        StartedAtLabel = _d["StartedAtLabel"];
-        ElapsedLabel = _d["ElapsedLabel"];
-        RemainingLabel = _d["RemainingLabel"];
-        CompleteAtLabel = _d["CompleteAtLabel"];
-        ArgsLabel = _d["ArgsLabel"];
-        SmallNoteText = _d["SmallNoteText"];
-        EnableMuxText = _d["EnableMuxText"];
-        RichTextModeText = _d["RichTextModeText"];
-        MuxTimebaseHint = _d["MuxTimebaseHint"];
+        ProgressTitle = this["ProgressTitle"];
+        ProgressReportTitle = this["ProgressReportTitle"];
+        MemoryTitle = this["MemoryTitle"];
+        StderrTitle = this["StderrTitle"];
+        DragLogReportHint = this["DragLogReportHint"];
+        CurrentSizeLabel = this["CurrentSizeLabel"];
+        EstimatedSizeLabel = this["EstimatedSizeLabel"];
+        WrittenFramesLabel = this["WrittenFramesLabel"];
+        SampleIntervalLabel = this["SampleIntervalLabel"];
+        StartedAtLabel = this["StartedAtLabel"];
+        ElapsedLabel = this["ElapsedLabel"];
+        RemainingLabel = this["RemainingLabel"];
+        CompleteAtLabel = this["CompleteAtLabel"];
+        ArgsLabel = this["ArgsLabel"];
+        SmallNoteText = this["SmallNoteText"];
+        EnableMuxText = this["EnableMuxText"];
+        RichTextModeText = this["RichTextModeText"];
+        MuxTimebaseHint = this["MuxTimebaseHint"];
         OpusAudioCommandHintFormat = "♫Opus 320Kbps: {0}";
         OpusAudioBitrateHint = "-b:a 128|192|256|320 Kbps: 128000→320000";
-        DistributionUpstreamLabel = _d["DistributionUpstreamLabel"];
-        DistributionDownstreamLabel = _d["DistributionDownstreamLabel"];
-        DistributionCacheLabel = _d["DistributionCacheLabel"];
-        DistributionAvailableLabel = _d["DistributionAvailableLabel"];
-        MemoryRangeLegendTitle = _d["MemoryRangeLegendTitle"];
-        SampleIntervalTickLabels = _d["SampleIntervalTickLabels"].Split('|');
-        SampleIntervalZeroText = _d["SampleIntervalZeroText"];
-        RotateLogFontSizeText = _d["RotateLogFontSizeText"];
-        CopyUpstreamLogText = _d["CopyUpstreamLogText"];
-        CopyDownstreamLogText = _d["CopyDownstreamLogText"];
-        SaveLogsText = _d["SaveLogsText"];
-        OpenTxtText = _d["OpenTxtText"];
-        OpenOutputDirectoryText = _d["OpenOutputDirectoryText"];
-        ViewEncodingCommandText = _d["ViewEncodingCommandText"];
-        InterruptUpstreamText = _d["InterruptUpstreamText"];
-        InterruptEncoderText = _d["InterruptEncoderText"];
-        CloseAfterDoneText = _d["CloseAfterDoneText"];
-        EncodingCommandTitle = _d["EncodingCommandTitle"];
-        PhysicalMemoryTopText = _d["PhysicalMemoryTopText"];
-        PhysicalMemoryBottomText = _d["PhysicalMemoryBottomText"];
-        CommittedMemoryTopText = _d["CommittedMemoryTopText"];
-        CommittedMemoryBottomText = _d["CommittedMemoryBottomText"];
-        WorkingSetPeakTopText = _d["WorkingSetPeakTopText"];
-        WorkingSetPeakBottomText = _d["WorkingSetPeakBottomText"];
-        PageFileTopText = _d["PageFileTopText"];
-        PageFileBottomText = _d["PageFileBottomText"];
-        PageFaultTopText = _d["PageFaultTopText"];
-        PageFaultBottomText = _d["PageFaultBottomText"];
-        RAMStressTopText = _d["RAMStressTopText"];
-        RAMStressMediumText = _d["RAMStressMediumText"];
-        RAMStressHighText = _d["RAMStressHighText"];
-        BlockTooltipFormat = _d["BlockTooltipFormat"];
-        PipeErrorPrefix = _d["PipeErrorPrefix"];
-        ReadyToStartText = _d["ReadyToStartText"];
-        EncodingText = _d["EncodingText"];
-        MuxingText = _d["MuxingText"];
-        InterruptedText = _d["InterruptedText"];
-        FailedText = _d["FailedText"];
-        CompletedText = _d["CompletedText"];
-        ResetUsageStatusText = _d["ResetUsageStatusText"];
-        InterruptingUpstreamText = _d["InterruptingUpstreamText"];
-        InterruptingEncoderText = _d["InterruptingEncoderText"];
-        ModeText = _d["ModeText"];
+        DistributionUpstreamLabel = this["DistributionUpstreamLabel"];
+        DistributionDownstreamLabel = this["DistributionDownstreamLabel"];
+        DistributionCacheLabel = this["DistributionCacheLabel"];
+        DistributionAvailableLabel = this["DistributionAvailableLabel"];
+        MemoryRangeLegendTitle = this["MemoryRangeLegendTitle"];
+        SampleIntervalTickLabels = this["SampleIntervalTickLabels"].Split('|');
+        SampleIntervalZeroText = this["SampleIntervalZeroText"];
+        RotateLogFontSizeText = this["RotateLogFontSizeText"];
+        CopyUpstreamLogText = this["CopyUpstreamLogText"];
+        CopyDownstreamLogText = this["CopyDownstreamLogText"];
+        SaveLogsText = this["SaveLogsText"];
+        OpenTxtText = this["OpenTxtText"];
+        OpenOutputDirectoryText = this["OpenOutputDirectoryText"];
+        ViewEncodingCommandText = this["ViewEncodingCommandText"];
+        InterruptUpstreamText = this["InterruptUpstreamText"];
+        InterruptEncoderText = this["InterruptEncoderText"];
+        CloseAfterDoneText = this["CloseAfterDoneText"];
+        EncodingCommandTitle = this["EncodingCommandTitle"];
+        PhysicalMemoryTopText = this["PhysicalMemoryTopText"];
+        PhysicalMemoryBottomText = this["PhysicalMemoryBottomText"];
+        CommittedMemoryTopText = this["CommittedMemoryTopText"];
+        CommittedMemoryBottomText = this["CommittedMemoryBottomText"];
+        WorkingSetPeakTopText = this["WorkingSetPeakTopText"];
+        WorkingSetPeakBottomText = this["WorkingSetPeakBottomText"];
+        PageFileTopText = this["PageFileTopText"];
+        PageFileBottomText = this["PageFileBottomText"];
+        PageFaultTopText = this["PageFaultTopText"];
+        PageFaultBottomText = this["PageFaultBottomText"];
+        RAMStressTopText = this["RAMStressTopText"];
+        RAMStressMediumText = this["RAMStressMediumText"];
+        RAMStressHighText = this["RAMStressHighText"];
+        BlockTooltipFormat = this["BlockTooltipFormat"];
+        PipeErrorPrefix = this["PipeErrorPrefix"];
+        ReadyToStartText = this["ReadyToStartText"];
+        EncodingText = this["EncodingText"];
+        MuxingText = this["MuxingText"];
+        InterruptedText = this["InterruptedText"];
+        FailedText = this["FailedText"];
+        CompletedText = this["CompletedText"];
+        ResetUsageStatusText = this["ResetUsageStatusText"];
+        InterruptingUpstreamText = this["InterruptingUpstreamText"];
+        InterruptingEncoderText = this["InterruptingEncoderText"];
+        ModeText = this["ModeText"];
         NotAvailableText = "N/A";
         ABRText = "ABR";
         CRFText = "CRF";
