@@ -7,6 +7,8 @@ namespace OneColumnEncoder.Validation;
 public static partial class EncTermsCheck
 {
     private const double NumaCpuUsageHighThreshold = 0.5;
+    private static readonly Lazy<GetSystemProcessorPerformanceInformationDelegate?> _getSystemProcessorPerformanceInformation =
+        new(LoadGetSystemProcessorPerformanceInformation);
     private static DateTime _lastNumaCpuCheck = DateTime.MinValue;
     private static StatusType _lastNumaCpuStatus = StatusType.Waiting;
     private static ulong _lastIdleTicks;
@@ -38,6 +40,13 @@ public static partial class EncTermsCheck
 
     [LibraryImport("kernel32.dll")]
     private static partial uint GetActiveProcessorCount(ushort groupNumber);
+
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    private delegate bool GetSystemProcessorPerformanceInformationDelegate(
+        ushort processorGroup,
+        IntPtr processorInformation,
+        uint byteLength,
+        out uint returnedLength);
 
     [StructLayout(LayoutKind.Sequential)]
     private struct PROCESSOR_POWER_INFORMATION
@@ -181,6 +190,10 @@ public static partial class EncTermsCheck
 
         try
         {
+            GetSystemProcessorPerformanceInformationDelegate? getSystemProcessorPerformanceInformation = _getSystemProcessorPerformanceInformation.Value;
+            if (getSystemProcessorPerformanceInformation == null)
+                return false;
+
             uint processorCount = GetActiveProcessorCount(group);
             if (processorCount == 0) return false;
 
@@ -190,7 +203,7 @@ public static partial class EncTermsCheck
             IntPtr buffer = Marshal.AllocHGlobal((int)byteLength);
             try
             {
-                if (!GetSystemProcessorPerformanceInformation(group, buffer, byteLength, out _))
+                if (!getSystemProcessorPerformanceInformation(group, buffer, byteLength, out _))
                     return false;
 
                 idle = new ulong[processorCount];
@@ -214,6 +227,25 @@ public static partial class EncTermsCheck
         catch (Exception ex) when (ex is EntryPointNotFoundException or DllNotFoundException)
         {
             return false;
+        }
+    }
+
+    private static GetSystemProcessorPerformanceInformationDelegate? LoadGetSystemProcessorPerformanceInformation()
+    {
+        if (!OperatingSystem.IsWindows())
+            return null;
+
+        try
+        {
+            IntPtr kernel32 = NativeLibrary.Load("kernel32.dll");
+            if (!NativeLibrary.TryGetExport(kernel32, "GetSystemProcessorPerformanceInformation", out IntPtr proc))
+                return null;
+
+            return Marshal.GetDelegateForFunctionPointer<GetSystemProcessorPerformanceInformationDelegate>(proc);
+        }
+        catch
+        {
+            return null;
         }
     }
 
