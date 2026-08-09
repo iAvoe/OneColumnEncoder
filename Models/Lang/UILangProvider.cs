@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace OneColumnEncoder.Models.Lang;
 
 public class UILangProvider : LangProviderBase
@@ -1560,9 +1562,11 @@ public class UILangProvider : LangProviderBase
         ["FFProbeJsonUpdate.NoVideoStream"] = "Видеопоток не найден в JSON ffprobe."
     };
 
+    [Conditional("DEBUG")]
     public void ValidateMissingTranslations()
         => ValidateMissingTranslations(LanguageCode);
 
+    [Conditional("DEBUG")]
     public static void ValidateMissingTranslations(string languageCode)
     {
         Dictionary<string, string> baseline = Data["en"];

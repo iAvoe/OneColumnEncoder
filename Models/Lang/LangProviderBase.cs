@@ -14,8 +14,17 @@ public abstract class LangProviderBase
 
     public string LanguageCode { get; }
 
-    public string this[string key] =>
-        _d.TryGetValue(key, out string? value)
-            ? value
-            : throw new MissingTranslationException(GetType().Name, LanguageCode, key);
+    public string this[string key]
+    {
+        get
+        {
+            if (_d.TryGetValue(key, out string? value)) return value;
+
+#if DEBUG
+            throw new MissingTranslationException(GetType().Name, LanguageCode, key);
+#else
+            return "!NO TEXT!";
+#endif
+        }
+    }
 }
