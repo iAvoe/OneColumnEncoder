@@ -8,7 +8,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
     {
         ["en"] = new()
         {
-            ["Tool"] = "📁 Video Src. Repart",
+            ["Tool.Source.VideoSrcRepart"] = "📁 Video Src. Repart",
             ["SelectFolder"] = "Select Repart video source folder",
             ["ChapterFileImportPrompt"] = "Import BluRay playlist?\n\nConfirm: locate PLAYLIST folder containing .mpls/ifo/xpl, the system will auto-add divider lines.\nCancel: locate folder containing all video sources, where all compatible streams will be listed as candidates (featurettes with plausible format & size may also be included).\n\nIf over-added, temporarily move unneeded source videos away, then re-import to resolve.\n\nIf you're not sure which cluster to select, use Repart mode or a player preview to confirm",
             ["SelectChapterFolder"] = "Select a chapter folder containing playlist files",
@@ -111,7 +111,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
         },
         ["zh-cn"] = new()
         {
-            ["Tool"] = "📁 视频来源重分集",
+            ["Tool.Source.VideoSrcRepart"] = "📁 视频来源重分集",
             ["SelectFolder"] = "选择重分集视频来源资料夹",
             ["ChapterFileImportPrompt"] = "导入蓝光播放列表？\n\n确认：定位含 .mpls/ifo/xpl 文件夹（PLAYLIST），系统将自动添加分割线。\n取消：定位包含所有视频源的文件夹，其中所有的相容流都会被纳入候选（格式与大小合理的花絮也可能被包括）；\n\n如添加过多，将不需要源视频临时移走，然后重新导入即可。\n\n如果不确定要选哪个簇/cluster，就用重分集模式或播放器预览确认",
             ["SelectChapterFolder"] = "选择包含章节播放清单的资料夹",
@@ -218,7 +218,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
     {
         Data["zh-tw"] = new(Data["zh-cn"])
         {
-            ["Tool"] = "📁 影片來源重分集",
+            ["Tool.Source.VideoSrcRepart"] = "📁 影片來源重分集",
             ["SelectFolder"] = "選擇重分集影片來源資料夾",
             ["ChapterFileImportPrompt"] = "導入藍光播放列表？\n\n確認：定位含 .mpls/ifo/xpl 文件夾（PLAYLIST），系統將自動添加分割線。\n取消：定位包含所有影片源的文件夾，其中所有的相容流都會被納入候選（格式與大小合理的花絮也可能被包括）；\n\n如添加過多，將不需要源影片臨時移走，然後重新導入即可。\n\n如果不確定要選哪個簇/cluster，就用重分集模式或播放器預覽確認",
             ["SelectChapterFolder"] = "選擇包含章節播放清單的資料夾",
@@ -321,7 +321,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
         };
         Data["fr"] = new(Data["en"])
         {
-            ["Tool"] = "📁 Répart. vidéo",
+            ["Tool.Source.VideoSrcRepart"] = "📁 Répart. vidéo",
             ["SelectFolder"] = "Sélectionner le dossier des sources vidéo",
             ["ChapterFileImportPrompt"] = "Importer la playlist Blu-Ray ?\n\nConfirmer : cibler le dossier PLAYLIST (.mpls/ifo/xpl), le système ajoutera des séparateurs.\nAnnuler : cibler le dossier avec toutes les sources vidéo, tous les flux compatibles seront sélectionnés (bonus au format/taille corrects inclus).\n\nEn cas de surajout, déplacer les vidéos inutiles puis réimporter.\n\nSi vous n'êtes pas sûr du cluster à sélectionner, utilisez le mode Repart ou un aperçu du lecteur pour confirmer",
             ["SelectChapterFolder"] = "Sélectionner un dossier de listes de lecture de chapitres",
@@ -424,7 +424,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
         };
         Data["es"] = new(Data["en"])
         {
-            ["Tool"] = "📁 Repart. vídeo",
+            ["Tool.Source.VideoSrcRepart"] = "📁 Repart. vídeo",
             ["SelectFolder"] = "Seleccionar carpeta de f. de víd.",
             ["ChapterFileImportPrompt"] = "¿Importar lista Blu-Ray?\n\nConfirmar: ubicar carpeta PLAYLIST (.mpls/ifo/xpl), el sistema añadirá divisores.\nCancelar: ubicar carpeta con todas las fuentes de video, todos los flujos compatibles serán candidatos (bonus con formato/tamaño válidos incluidos).\n\nSi añade de más, mueva los videos innecesarios y reimporte.\n\nSi no está seguro de qué clúster seleccionar, use el modo Repart o una vista previa del reproductor para confirmar",
             ["SelectChapterFolder"] = "Seleccionar carpeta de listas de reproducción de capítulos",
@@ -527,7 +527,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
         };
         Data["ja"] = new(Data["en"])
         {
-            ["Tool"] = "📁 映像ソース再分割",
+            ["Tool.Source.VideoSrcRepart"] = "📁 映像ソース再分割",
             ["SelectFolder"] = "再分割の映像ソースフォルダーを選択",
             ["ChapterFileImportPrompt"] = "BDプレイリストをインポート？\n\n確認：.mpls/ifo/xplを含むPLAYLISTフォルダを指定、区切り線を自動追加。\n取消：全動画ソースのフォルダを指定、互換ストリームを候補化（適正な特典映像含む）。\n\n多すぎる場合、不要動画を移動して再インポート。\n\nどのクラスターを選べばいいか分からない場合、重分集モードまたはプレイヤープレビューで確認してください",
             ["SelectChapterFolder"] = "チャプタープレイリストのフォルダーを選択",
@@ -630,7 +630,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
         };
         Data["ru"] = new(Data["en"])
         {
-            ["Tool"] = "📁 Репарт видео",
+            ["Tool.Source.VideoSrcRepart"] = "📁 Репарт видео",
             ["SelectFolder"] = "Выберите папку с исходными видео",
             ["ChapterFileImportPrompt"] = "Импорт плейлиста Blu-Ray?\n\nПодтвердить: папку PLAYLIST с .mpls/ifo/xpl, система добавит разделители.\nОтмена: папку со всеми видеоисточниками, все совместимые потоки станут кандидатами (бонусы подходящего формата/размера могут войти).\n\nПри избытке переместите лишние видео и переимпортируйте.\n\nЕсли не уверены, какой кластер выбрать, используйте режим Repart или предпросмотр плеера для подтверждения",
             ["SelectChapterFolder"] = "Выберите папку со списками воспроизведения глав",
@@ -735,7 +735,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
 
     public static RepartLangProvider Current => new(UILangProvider.Current.LanguageCode);
 
-    public string ToolSourceVideoSrcRepart => this["Tool"];
+    public string ToolSourceVideoSrcRepart => this["Tool.Source.VideoSrcRepart"];
     public string FfprobeRequired => this["FfprobeRequired"];
     public string FfmpegRequired => this["FfmpegRequired"];
     public string SourceRequired => this["SourceRequired"];

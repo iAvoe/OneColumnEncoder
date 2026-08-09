@@ -69,7 +69,7 @@ public class UILangProvider : LangProviderBase
             ["Section.SelectEncoder"] = "2. Select Encoder",
             ["Section.SelectDependencies"] = "3. Select Dependencies",
             ["Section.ImportSrc"] = "4. Import or Create Source File",
-            ["Section.SelectAnalytics"] = "5. Select Video Analyzer",
+            ["Section.SelectAnalytics"] = "5. Select Video Analyzer; Run Analysis",
             ["Section.EncodingConfigs"] = "6. Encoding Configurations",
             ["Section.StartEncoding"] = "7. Start Encoding",
 
@@ -323,7 +323,7 @@ public class UILangProvider : LangProviderBase
             ["Section.SelectEncoder"] = "2. 选择下游程序 / 编码器",
             ["Section.SelectDependencies"] = "3. 选择依赖文件",
             ["Section.ImportSrc"] = "4. 导入或创建源文件",
-            ["Section.SelectAnalytics"] = "5. 选择视频分析工具",
+            ["Section.SelectAnalytics"] = "5. 选择视频分析工具；运行分析",
             ["Section.EncodingConfigs"] = "6. 配置编码选项",
             ["Section.StartEncoding"] = "7. 开始压制选项",
 
@@ -559,7 +559,7 @@ public class UILangProvider : LangProviderBase
             ["Section.SelectEncoder"] = "2. 選擇下遊程序 / 編碼器",
             ["Section.SelectDependencies"] = "3. 選擇依賴文件",
             ["Section.ImportSrc"] = "4. 導入或創建源文件",
-            ["Section.SelectAnalytics"] = "5. 選擇影片分析工具",
+            ["Section.SelectAnalytics"] = "5. 選擇影片分析工具；運行分析",
             ["Section.EncodingConfigs"] = "6. 配置編碼選項",
             ["Section.StartEncoding"] = "7. 開始壓制選項",
 
