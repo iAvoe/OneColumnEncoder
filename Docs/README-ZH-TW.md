@@ -140,7 +140,7 @@
 - **支持範圍** 英語、簡體、繁體
 - **未在地化** 法語、西班牙語、日語、俄語
   - 僅機器翻譯 + 部分基本檢查，可能有錯誤
-- 如需提供翻譯，請 fork 此倉庫，在 `Models/XxxLangProviderM` 中添加新的語言條目，並提交 pull request。
+- 如需提供翻譯，請 fork 此倉庫，在 `Models/Lang/XxxLangProvider` 中添加新的語言條目，並提交 pull request。
   - README 的翻譯並非強制要求
 
 ---
@@ -243,7 +243,7 @@
 
 #### 編碼參數配置細節
 
-- `EncoderConfM.CustomParams` 會被保存，且已經被 `EncodingPipelineH` 拼入最終編碼命令
+- `EncoderConfM.CustomParams` 會被保存，且已經被 `EncodingPipeline` 拼入最終編碼命令
 - "自訂參數"區域不再是第三方開關匯總，而是直接讀寫一個自由文本參數實現
 - x264 / x265 / SVT-AV1 的參數覆蓋範圍仍有限，但已堪用
 
@@ -314,7 +314,13 @@
 ### 主要原始碼位置
 
 - `Commands/`：用戶操作命令、模態窗打開關閉、保存載入和編碼啟動入口
-- `Helpers/`：編碼管線、ffprobe 分析、工具檢測、腳本模板、檔案名校驗、CPU / NUMA / 權限等輔助邏輯
+- `Pipeline/`：編碼命令行構建、幀數和混流
+- `FFmpeg/`：ffprobe 分析和 FFmpeg 進程/參數輔助
+- `ToolManagement/`：工具註冊、版本檢測和兼容性規則
+- `ScriptGeneration/`：AVS/VPY 腳本模板
+- `CPU/` / `Hardware/`：CPU / NUMA 拓撲、執行緒集和 OpenCL 偵測
+- `Persistence/`：JSON 保存/載入基類
+- `FileManagement/`：來源路徑路由、檔案選擇器和輸出路徑輔助
 - `Models/`：配置模型、工具定義、語言資源、檢查清單和數據 DTO
 - `ViewModels/`：主界面、模態窗和卡片狀態管理
 - `Views/`：WPF 窗口和界面 XAML
@@ -336,7 +342,7 @@
 - 編碼監控裡的“查看編碼命令”：`ViewModels/EncodingMonitorVM.cs`
 - 腳本生成後的複製/保存結果提示：`ViewModels/ScriptScribeVM.cs`、`Commands/SaveLoad/OneClickScriptGenCmd.cs`
 - 源分析和檢查結果提示：`Commands/AnalyzeSrcVideoCmd.cs`、`Commands/CopyRawAnalysisCmd.cs`、`Commands/InspectEncProblemsCmd.cs`、`Commands/InspectSrcProblemsCmd.cs`
-- 工具導入/文件選擇時的二次確認：`Commands/ImportToolCmd.cs`、`Helpers/SrcFilePickerH.cs`
+- 工具導入/文件選擇時的二次確認：`Commands/ImportToolCmd.cs`、`FileManagement/SrcFilePicker.cs`
 
 ## 設定資料儲存位置
 
@@ -349,7 +355,7 @@
 | `encodingconfig.json` | 編碼器參數（CRF/ABR、關鍵幀、預設、x264/x265/SVT-AV1 自訂參數） |
 | `parallelismconfig.json` | 並行設定（NUMA 節點 ID、CPU 偏好、執行緒數） |
 
-**持久化基類：**`Helpers\SaveLoadBaseH.cs` 的設定模型繼承自 `SaveLoadBaseH<T>`，透過 `Save()` / `Load()` 提供 JSON 序列化/反序列化。
+**持久化基類：**`Persistence\SaveLoadBase.cs` 的設定模型繼承自 `SaveLoadBase<T>`，透過 `Save()` / `Load()` 提供 JSON 序列化/反序列化。
 
 **其他持久化資料（使用者選擇路徑，不在 `\1cenc\` 中）：**
 - 生成的腳本檔案（`.avs` / `.vpy` / `.txt`）經由 `ViewModels\FilterScribeVM.cs` 和 `Commands\SaveLoad\OneClickScriptGenCmd.cs`

@@ -117,7 +117,7 @@ MyCommand = new ActionCmd(_ => ExecuteAction(), _ => CanExecuteAction());
 
 ## 4. Button Icons (SVG)
 
-SVG icons are provided by the `SvgIconProviderH` static class (`Helpers/SvgIconProviderH.cs`), which exposes `ImageSource` properties (e.g., `GamePlay`, `GameImport`, `GameSave`, `GameRefresh`, etc.).
+SVG icons are provided by the `SvgIconProvider` static class (`UI/SvgIconProvider.cs`, namespace `OneColumnEncoder.UI`), which exposes `ImageSource` properties (e.g., `GamePlay`, `GameImport`, `GameSave`, `GameRefresh`, etc.).
 
 ### 4.1 Available Icons
 
@@ -147,10 +147,10 @@ SVG icons are provided by the `SvgIconProviderH` static class (`Helpers/SvgIconP
 
 ### 4.2 Icon Pattern (x:Static)
 
-Used when the icon is fixed in XAML (not data-bound). Requires `xmlns:helpers` namespace:
+Used when the icon is fixed in XAML (not data-bound). Requires `xmlns:ui` namespace:
 
 ```xml
-<UserControl xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers" ...>
+<UserControl xmlns:ui="clr-namespace:OneColumnEncoder.UI" ...>
 ```
 
 ```xml
@@ -159,7 +159,7 @@ Used when the icon is fixed in XAML (not data-bound). Requires `xmlns:helpers` n
            VerticalAlignment="Center"
            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
     <Rectangle.OpacityMask>
-        <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GamePlay}"
+        <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GamePlay}"
                     Stretch="Uniform"
                     AlignmentX="Center"
                     AlignmentY="Center" />
@@ -201,8 +201,8 @@ The `DataTrigger` hides the icon Rectangle when the bound `ImageSource` is `null
 ### 4.4 Setting Icons from ViewModel
 
 ```csharp
-myButtonGroup.B2_1Icon = SvgIconProviderH.GamePaste;
-myButtonGroup.B3_3Icon = SvgIconProviderH.GamePlay;
+myButtonGroup.B2_1Icon = SvgIconProvider.GamePaste;
+myButtonGroup.B3_3Icon = SvgIconProvider.GamePlay;
 ```
 
 ---
@@ -311,7 +311,7 @@ Parameter format: `"{buttonCount},{gapSpacing}"` — e.g., `"3,5"` means 3 butto
     <Rectangle Width="14" Height="14"
                Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
         <Rectangle.OpacityMask>
-            <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GamePlay}"
+            <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GamePlay}"
                         Stretch="Uniform" />
         </Rectangle.OpacityMask>
     </Rectangle>
@@ -334,7 +334,7 @@ Parameter format: `"{buttonCount},{gapSpacing}"` — e.g., `"3,5"` means 3 butto
                    VerticalAlignment="Center"
                    Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
             <Rectangle.OpacityMask>
-                <ImageBrush ImageSource="{x:Static helpers:SvgIconProviderH.GamePlay}"
+        <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GamePlay}"
                             Stretch="Uniform" />
             </Rectangle.OpacityMask>
         </Rectangle>
@@ -349,7 +349,7 @@ Key points:
 - Remove the `Content` attribute when using explicit inner content.
 - Center both icon and text via `StackPanel` alignment.
 - Bind `Rectangle.Fill` to `Button.Foreground` for automatic color matching.
-- Namespace `xmlns:helpers="clr-namespace:OneColumnEncoder.Helpers"` must be declared on the root element.
+- Namespace `xmlns:ui="clr-namespace:OneColumnEncoder.UI"` must be declared on the root element.
 
 ### 6.4 Button with Click Event (Code-Behind)
 
@@ -375,8 +375,8 @@ OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
     UICaptionProviderM.Buttons.Settings,
     OpenUsages,          // ICommand
     OpenAppConf);        // ICommand
-OpenAppConfButtons.B2_1Icon = SvgIconProviderH.GamePhone;
-OpenAppConfButtons.B2_2Icon = SvgIconProviderH.GameSetting;
+OpenAppConfButtons.B2_1Icon = SvgIconProvider.GamePhone;
+OpenAppConfButtons.B2_2Icon = SvgIconProvider.GameSetting;
 ```
 
 ### 7.2 Three Button Group with Icons
@@ -390,9 +390,9 @@ EncStartButtons = ButtonGroupVM.CreateThreeButton(
     new ActionCmd(_ => ReEvaluateAllChecks()),
     SampleClip,    // ICommand
     StartEncode);  // ICommand
-EncStartButtons.B3_1Icon = SvgIconProviderH.GameRefresh;
-EncStartButtons.B3_2Icon = SvgIconProviderH.GameLocation;
-EncStartButtons.B3_3Icon = SvgIconProviderH.GamePlay;
+EncStartButtons.B3_1Icon = SvgIconProvider.GameRefresh;
+EncStartButtons.B3_2Icon = SvgIconProvider.GameLocation;
+EncStartButtons.B3_3Icon = SvgIconProvider.GamePlay;
 ```
 
 ### 7.3 Standalone Button with Dynamic Text
@@ -416,11 +416,11 @@ public bool IsBusy
 
 ```csharp
 ScriptExportButtons = ButtonGroupVM.CreateFiveButton(
-    UILangProviderM.Current["SrcScribe.CopyFull"],
-    UILangProviderM.Current["SrcScribe.CopyInOut"],
-    UILangProviderM.Current["SrcScribe.SaveAsFile"],
+    UILangProvider.Current["SrcScribe.CopyFull"],
+    UILangProvider.Current["SrcScribe.CopyInOut"],
+    UILangProvider.Current["SrcScribe.SaveAsFile"],
     /* ... */);
-ScriptExportButtons.B3_3Icon = SvgIconProviderH.GameSave;
+ScriptExportButtons.B3_3Icon = SvgIconProvider.GameSave;
 ```
 
 ---
@@ -431,5 +431,5 @@ ScriptExportButtons.B3_3Icon = SvgIconProviderH.GameSave;
 2. **Set text:** Use `Content` attribute or `<StackPanel>` + `<TextBlock>`.
 3. **Wire command:** Bind `Command` to an `ICommand` property.
 4. **Add icon (optional):** Use `Rectangle` + `OpacityMask` + `ImageBrush` pattern.
-5. **Add `xmlns:helpers`** if using `{x:Static helpers:SvgIconProviderH...}`.
+5. **Add `xmlns:ui`** if using `{x:Static ui:SvgIconProvider...}`.
 6. **Create ViewModel property** for text/icon/command as needed.

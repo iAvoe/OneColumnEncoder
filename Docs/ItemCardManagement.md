@@ -94,7 +94,7 @@ Otherwise:
 
 The routing is controlled by `_videoSrcQueue.IsActive` which checks `VideoSrcImportZone[1].IsSelected`. This means all downstream operations (script generation, encoding) automatically use the correct zone.
 
-The `_videoSrcQueue` state (`VideoSourceQueueState`) maintains a `Dictionary<ToolItemCardVM, string[]>` mapping queue items to their file paths. Key methods:
+The `_videoSrcQueue` state (`VideoSrcQueueState`) maintains a `Dictionary<ToolItemCardVM, string[]>` mapping queue items to their file paths. Key methods:
 
 | Method | When Called | Effect |
 |--------|-------------|--------|
@@ -110,9 +110,9 @@ After zones are initialized in the constructor, commands are wired up:
 1. **`WireUpZoneDeleteCmds()`** — Replaces the initial `RemoveZoneItemCmd` on dynamically-populated zones (`UpstreamsZone`, `EncodersZone`, `AnalyticsZone`, `DependenciesZone`) with `DeleteToolCmd`.
 
 2. **`WireUpSourceCmd(item)`** — Sets commands on source import cards:
-   - Queue video source → `BrowseSourceQueueCmd` + `ClearToolItemCmd`
-   - Queue script source → `BrowseSourceScriptQueueCmd` + `ClearToolItemCmd`
-   - Single-file source → `BrowsesrcPathCmd` + `ClearToolItemCmd`
+   - Queue video source → `BrowseSrcQueueCmd` + `ClearToolItemCmd`
+   - Queue script source → `BrowseSrcScriptQueueCmd` + `ClearToolItemCmd`
+   - Single-file source → `BrowseSrcPathCmd` + `ClearToolItemCmd`
 
 3. **`WireUpEncSettingsCmds()`** — Sets commands on encoder settings cards (e.g. `OpenParallelismConfCmd`, `OpenFilenameScribeCmd`, `OpenEncoderConfCmd`).
 
@@ -124,7 +124,7 @@ After zones are initialized in the constructor, commands are wired up:
 
 ### 3.1 Short Text (P1TextData)
 
-`BrowseSourceQueueCmd.FormatQueueP1Text()` produces the compact card display:
+`BrowseSrcQueueCmd.FormatQueueP1Text()` produces the compact card display:
 
 - 0 files → `""`
 - 1 file → first 12 characters of the filename (without extension)
@@ -132,7 +132,7 @@ After zones are initialized in the constructor, commands are wired up:
 
 ### 3.2 Long Text (P1TooltipText)
 
-`BrowseSourceQueueCmd.FormatQueueP1TooltipText()` produces the hover tooltip content:
+`BrowseSrcQueueCmd.FormatQueueP1TooltipText()` produces the hover tooltip content:
 
 - Comma-separated list of full file names (with extensions)
 - Truncated with `"..."` when exceeding 512 characters
@@ -142,10 +142,10 @@ After zones are initialized in the constructor, commands are wired up:
 
 | Location | Context |
 |----------|---------|
-| `BrowseSourceQueueCmd.Execute()` | After browsing a video queue folder |
-| `BrowseSourceScriptQueueCmd.Execute()` | After browsing a script queue folder |
-| `VideoSourceQueueState.ApplyAcceptedFiles()` | After queue analysis accepts files |
-| `VideoSourceQueueState.RefreshLanguage()` | After language change |
+| `BrowseSrcQueueCmd.Execute()` | After browsing a video queue folder |
+| `BrowseSrcScriptQueueCmd.Execute()` | After browsing a script queue folder |
+| `VideoSrcQueueState.ApplyAcceptedFiles()` | After queue analysis accepts files |
+| `VideoSrcQueueState.RefreshLanguage()` | After language change |
 | `FilterScribeVM.ExecuteQueueSaveAndImport()` | After saving queue scripts via Filter Scribe |
 | `OneClickScriptGenCmd.Execute()` (queue mode) | After one-click script generation |
 
@@ -162,9 +162,9 @@ After zones are initialized in the constructor, commands are wired up:
 
 | Command | Used By | P1TextData | P2TextData | P1TooltipText |
 |---------|---------|-----------|-----------|--------------|
-| `BrowsesrcPathCmd` | Single-file sources | `GetPrimaryText()` (filename or "Custom Script") | Full file path | Not set (falls back) |
-| `BrowseSourceQueueCmd` | Queue video source | `FormatQueueP1Text()` (short summary) | Folder path | `FormatQueueP1TooltipText()` (full list) |
-| `BrowseSourceScriptQueueCmd` | Queue script sources | `FormatQueueP1Text()` (short summary) | Folder path | `FormatQueueP1TooltipText()` (full list) |
+| `BrowseSrcPathCmd` | Single-file sources | `GetPrimaryText()` (filename or "Custom Script") | Full file path | Not set (falls back) |
+| `BrowseSrcQueueCmd` | Queue video source | `FormatQueueP1Text()` (short summary) | Folder path | `FormatQueueP1TooltipText()` (full list) |
+| `BrowseSrcScriptQueueCmd` | Queue script sources | `FormatQueueP1Text()` (short summary) | Folder path | `FormatQueueP1TooltipText()` (full list) |
 | `ClearToolItemCmd` | All clear buttons | `""` | `""` | `null` |
 | `RemoveZoneItemCmd` | Dynamic zones (initial) | — | — | — |
 | `DeleteToolCmd` | Dynamic zones (rewired) | — | — | — |
@@ -203,9 +203,9 @@ P2Name: P2Text           ← always shows the full path / folder path
 
 ## 7. Upstream Compatibility Rules
 
-When an upstream tool is selected, certain source cards are disabled to prevent incompatible configurations. The rules are applied in `ToolCompatibilityH`:
+When an upstream tool is selected, certain source cards are disabled to prevent incompatible configurations. The rules are applied in `ToolCompatibility`:
 
-### 7.1 Script Source Disabling (`RefreshSrcSelectionState`)
+### 7.1 Script Source Disabling (`RefreshSrcSelectState`)
 
 | Selected Upstream | Effect on `ScriptSrcImportZone` / `ActiveScriptSrcImportZone` |
 |---|---|
@@ -215,7 +215,7 @@ When an upstream tool is selected, certain source cards are disabled to prevent 
 | **one_line_shot_args.exe** | Only "SVFI" (or "SVFI Queue") remains enabled — uses SVFI's own ini-based source resolution |
 | none / other | All script source cards are enabled |
 
-### 7.2 Video Source Queue Disabling (`RefreshVideoSrcSelectionState`)
+### 7.2 Video Source Queue Disabling (`RefreshVideoSrcSelectState`)
 
 | Selected Upstream | Effect on `VideoSrcImportZone[1]` (Video Src. Queue) |
 |---|---|---|
@@ -247,7 +247,7 @@ When `avs2pipemod.exe` is selected in `UpstreamsZone`, the `DependenciesZone` ca
 
 ```
 User clicks "Browse" on "Video Source" card
-  → BrowsesrcPathCmd.Execute()
+  → BrowseSrcPathCmd.Execute()
     → P2TextData = "C:\videos\video.mkv"
     → P1TextData = "video.mkv"                     (from GetPrimaryText)
     → P1TooltipText = null                          (falls back to "video.mkv")
@@ -258,7 +258,7 @@ User clicks "Browse" on "Video Source" card
 
 ```
 User clicks "Import" on "Video Src. Queue" card
-  → BrowseSourceQueueCmd.Execute()
+  → BrowseSrcQueueCmd.Execute()
     → P2TextData = "C:\videos\"
     → P1TextData = "myvideo..15 - episode"          (short summary)
     → P1TooltipText = "myvideo.mkv, 15 - episode.mkv, 16 - episode.mkv, ..."  (full list)

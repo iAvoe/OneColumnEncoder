@@ -2,7 +2,7 @@
 
 Order of files to modify when adding / deleting checklist items (arranged by dependency)
 
-### 1. `Models/UILangProviderM.cs` Add multilingual string keys (en / zh-cn / zh-tw three copies) for new entries.
+### 1. `Models/Lang/UILangProvider.cs` Add multilingual string keys (en / zh-cn / zh-tw three copies) for new entries.
 
 ### 2. `Models/ChecklistProviderM.cs` Add or remove `ChecklistItemDefinitionM` in the corresponding method (e.g., `GetToolsChecklist()`).
 
@@ -36,7 +36,7 @@ Add a new `<comps:ValidationCard>` or `<comps:ChecklistContainer>` and bind it t
 
 增删 Checklist 需要修改的文件顺序（按依赖关系排列）：
 
-### 1. `Models/UILangProviderM.cs`
+### 1. `Models/Lang/UILangProvider.cs`
 为新的条目添加多语言字符串 key（en / zh-cn / zh-tw 三份）
 
 ### 2. `Models/ChecklistProviderM.cs`

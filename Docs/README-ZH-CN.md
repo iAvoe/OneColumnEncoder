@@ -140,7 +140,7 @@
 - **支持范围** 英语、简体、繁体
 - **未本地化** 法语、西班牙语、日语、俄语
   - 仅机器翻译 + 部分基本检查，可能有错误
-- 如需提供翻译，请 fork 此仓库，在 `Models/XxxLangProviderM` 中添加新的语言条目，并提交 pull request。
+- 如需提供翻译，请 fork 此仓库，在 `Models/Lang/XxxLangProvider` 中添加新的语言条目，并提交 pull request。
   - README 的翻译并非强制要求
 
 ---
@@ -243,7 +243,7 @@
 
 #### 编码参数配置细节
 
-- `EncoderConfM.CustomParams` 会被保存，且已经被 `EncodingPipelineH` 拼入最终编码命令
+- `EncoderConfM.CustomParams` 会被保存，且已经被 `EncodingPipeline` 拼入最终编码命令
 - "自定义参数"区域不再是第三方开关汇总，而是直接读写一个自由文本参数实现
 - x264 / x265 / SVT-AV1 的参数覆盖范围仍有限，但已堪用
 
@@ -314,7 +314,13 @@
 ### 主要源码位置
 
 - `Commands/`：用户操作命令、模态窗打开关闭、保存加载和编码启动入口
-- `Helpers/`：编码管线、ffprobe 分析、工具检测、脚本模板、文件名校验、CPU / NUMA / 权限等辅助逻辑
+- `Pipeline/`：编码命令行构建、帧数和混流
+- `FFmpeg/`：ffprobe 分析和 FFmpeg 进程/参数辅助
+- `ToolManagement/`：工具注册、版本检测和兼容性规则
+- `ScriptGeneration/`：AVS/VPY 脚本模板
+- `CPU/` / `Hardware/`：CPU / NUMA 拓扑、线程集和 OpenCL 检测
+- `Persistence/`：JSON 保存/加载基类
+- `FileManagement/`：源路径路由、文件选择器和输出路径辅助
 - `Models/`：配置模型、工具定义、语言资源、检查清单和数据 DTO
 - `ViewModels/`：主界面、模态窗和卡片状态管理
 - `Views/`：WPF 窗口和界面 XAML
@@ -336,7 +342,7 @@
 - 编码监控里的“查看编码命令”：`ViewModels/EncodingMonitorVM.cs`
 - 脚本生成后的复制/保存结果提示：`ViewModels/ScriptScribeVM.cs`、`Commands/SaveLoad/OneClickScriptGenCmd.cs`
 - 源分析和检查结果提示：`Commands/AnalyzeSrcVideoCmd.cs`、`Commands/CopyRawAnalysisCmd.cs`、`Commands/InspectEncProblemsCmd.cs`、`Commands/InspectSrcProblemsCmd.cs`
-- 工具导入/文件选择时的二次确认：`Commands/ImportToolCmd.cs`、`Helpers/SrcFilePickerH.cs`
+- 工具导入/文件选择时的二次确认：`Commands/ImportToolCmd.cs`、`FileManagement/SrcFilePicker.cs`
 
 ## 设置数据存储位置
 
@@ -349,7 +355,7 @@
 | `encodingconfig.json` | 编码器参数（CRF/ABR、关键帧、预设、x264/x265/SVT-AV1 自定义参数） |
 | `parallelismconfig.json` | 并行设置（NUMA 节点 ID、CPU 偏好、线程数） |
 
-**持久化基类：**`Helpers\SaveLoadBaseH.cs` 的配置模型继承自 `SaveLoadBaseH<T>`，通过 `Save()` / `Load()` 提供 JSON 序列化/反序列化。
+**持久化基类：**`Persistence\SaveLoadBase.cs` 的配置模型继承自 `SaveLoadBase<T>`，通过 `Save()` / `Load()` 提供 JSON 序列化/反序列化。
 
 **其他持久化数据（用户选择路径，不在 `\1cenc\` 中）：**
 - 生成的脚本文件（`.avs` / `.vpy` / `.txt`）经由 `ViewModels\FilterScribeVM.cs` 和 `Commands\SaveLoad\OneClickScriptGenCmd.cs`

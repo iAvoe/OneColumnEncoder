@@ -4,25 +4,25 @@
 
 ## 1. Route Activation
 
-`FileManagement/SourceRouteKind.cs` defines the route enum:
+`FileManagement/SrcRouteKind.cs` defines the route enum:
 
 ```csharp
-public enum SourceRouteKind { Single, Queue, Concat, Repart }
+public enum SrcRouteKind { Single, Queue, Concat, Repart }
 ```
 
 `MainVM.GetActiveSrcRoute()` is the central route resolver:
 
 ```csharp
-private SourceRouteKind GetActiveSrcRoute()
+private SrcRouteKind GetActiveSrcRoute()
 {
-    if (_videoSrcQueue.IsActive) return SourceRouteKind.Queue;
-    if (_videoSrcConcat.IsActive) return SourceRouteKind.Concat;
-    if (_videoSrcRepart.IsActive) return SourceRouteKind.Repart;
-    return SourceRouteKind.Single;
+    if (_videoSrcQueue.IsActive) return SrcRouteKind.Queue;
+    if (_videoSrcConcat.IsActive) return SrcRouteKind.Concat;
+    if (_videoSrcRepart.IsActive) return SrcRouteKind.Repart;
+    return SrcRouteKind.Single;
 }
 ```
 
-`VideoSourceQueueState` lives in `QueueManagement/VideoSourceQueue.cs`; `VideoSourceConcatState` lives in `ConcatManagement/VideoSourceConcat.cs`; `VideoSourceRepartState` lives in `RepartManagement/VideoSourceRepartState.cs`.
+`VideoSrcQueueState` lives in `QueueManagement/VideoSrcQueue.cs`; `VideoSrcConcatState` lives in `ConcatManagement/VideoSrcConcat.cs`; `VideoSrcRepartState` lives in `RepartManagement/VideoSrcRepartState.cs`.
 
 ## 2. Import Zone Layout
 
@@ -30,10 +30,10 @@ private SourceRouteKind GetActiveSrcRoute()
 
 | Index | Route | Card | R1 | R2 | State Owner |
 |-------|-------|------|----|----|-------------|
-| 0 | Single | `Tool.Source.VideoSrc` | Replace | Clear | `AppDataM.Tools.VideosrcPath` |
-| 1 | Queue | `Tool.Source.VideoSrcQueue` | Import | Clear | `VideoSourceQueueState` |
-| 2 | Concat | `Tool.Source.VideoSrcConcat` | Import | Clear | `VideoSourceConcatState` |
-| 3 | Repart | `Tool.Source.VideoSrcRepart` | Import | Clear | `VideoSourceRepartState` |
+| 0 | Single | `Tool.Source.VideoSrc` | Replace | Clear | `AppDataM.Tools.VideoSourcePath` |
+| 1 | Queue | `Tool.Source.VideoSrcQueue` | Import | Clear | `VideoSrcQueueState` |
+| 2 | Concat | `Tool.Source.VideoSrcConcat` | Import | Clear | `VideoSrcConcatState` |
+| 3 | Repart | `Tool.Source.VideoSrcRepart` | Import | Clear | `VideoSrcRepartState` |
 
 When `one_line_shot_args.exe` is selected, Queue, Concat, and Repart are deselected and disabled.
 
@@ -56,24 +56,24 @@ When `one_line_shot_args.exe` is selected, Queue, Concat, and Repart are deselec
 
 ### 4.1 Single
 
-`BrowsesrcPathCmd` imports one source path. `OnVideoSourceImported()` clears competing source selections and stores the selected path in app data.
+`BrowseSrcPathCmd` imports one source path. `OnSrcImported()` clears competing source selections and stores the selected path in app data.
 
 ### 4.2 Queue
 
-`BrowseSourceQueueCmd` imports a folder of video files. `BrowseSourceScriptQueueCmd` imports a folder of matching script files for the selected script kind.
+`BrowseSrcQueueCmd` imports a folder of video files. `BrowseSrcScriptQueueCmd` imports a folder of matching script files for the selected script kind.
 
 After import:
 - `P2TextData` stores the folder path.
 - `P1TextData` stores a compact label such as `firstFile..lastFile`.
 - `P1TooltipText` stores the full comma-separated file list for hover text (truncated at 512 chars).
 
-`VideoSourceQueueState` keeps the accepted file paths in a `Dictionary<ToolItemCardVM, string[]>` keyed by the queue card. `ApplyAcceptedFiles()` replaces that list after analysis and refreshes the queue label.
+`VideoSrcQueueState` keeps the accepted file paths in a `Dictionary<ToolItemCardVM, string[]>` keyed by the queue card. `ApplyAcceptedFiles()` replaces that list after analysis and refreshes the queue label.
 
 Script queue imports are validated against the current video queue before they are accepted. `MainVM.ValidateScriptQueueImport()` checks basename matches and embedded source paths so queue scripts stay aligned with the selected source list.
 
 ### 4.3 Concat
 
-`BrowseSourceConcatCmd` opens a multi-select `OpenFileDialog` (minimum two files). Before accepting the selection, it checks that all selected files use supported video extensions and have the **same extension**. If any selected file differs, import aborts and opens `OpenErrModalCmd` with the expected extension and mismatched files.
+`BrowseSrcConcatCmd` opens a multi-select `OpenFileDialog` (minimum two files). Before accepting the selection, it checks that all selected files use supported video extensions and have the **same extension**. If any selected file differs, import aborts and opens `OpenErrModalCmd` with the expected extension and mismatched files.
 
 The import command also runs a compatibility pre-analysis with ffprobe before accepting the files. This pre-analysis is an import gate only: it can reject or warn about the selection, but the accepted result is not stored into `_srcVideoAnalysis`. After import, the normal source-analysis flow still runs.
 
@@ -81,7 +81,7 @@ After import:
 - `P2TextData` stores the first file's parent directory.
 - `P1TextData` stores a compact label such as `firstFile..lastFile`.
 - `P1TooltipText` stores the full selected file list for hover text.
-- `VideoSourceConcatState` stores the ordered full file paths.
+- `VideoSrcConcatState` stores the ordered full file paths.
 - `source_concat_filelist.txt` is generated under the app config directory (`1cenc`), using ffmpeg concat-demuxer syntax with absolute paths:
 
 ```text
@@ -176,11 +176,11 @@ When total frame count is missing from video metadata, the system leaves it unkn
 - `getConcatFilePaths`
 - `applyConcatFilePaths`
 
-In concat mode, `FilterScribeVM` loads `ConcatSourceListVM`, and `FilterScribeModal` displays `ConcatSidebarPanel` on the left with support for:
+In concat mode, `FilterScribeVM` loads `ConcatSrcListVM`, and `FilterScribeModal` displays `ConcatSrcSidebarPanel` on the left with support for:
 - Remove fragment
 - Move fragment up / down
 
-Every reorder/remove operation updates `VideoSourceConcatState` and regenerates `source_concat_filelist.txt` via `applyConcatFilePaths`. When the list changes, `MainVM` clears previous source analysis so stale representative JSON and `ConcatTotalFrames` cannot be used for encoding.
+Every reorder/remove operation updates `VideoSrcConcatState` and regenerates `source_concat_filelist.txt` via `applyConcatFilePaths`. When the list changes, `MainVM` clears previous source analysis so stale representative JSON and `ConcatTotalFrames` cannot be used for encoding.
 
 The concat VFR→CFR switch works over a list of sources: when enabled, generated concat scripts pass `fpsnum` and `fpsden` to every `LWLibavVideoSource` / `LWLibavSource` call.
 
@@ -207,7 +207,7 @@ VPY uses `core.std.Splice` to combine clips, assigning the result to `src` befor
 3. Queue route: load queue JSON, build one request per accepted source.
 4. Single route: one request from `BuildEncodingPipelineRequest()`.
 
-Concat requests set `IsConcatMode: true`, `ConcatFileListPath`, and `ConcatTotalFrames`. Repart requests additionally set `ConcatVideosrcPaths`, a per-output `Clip` (time + frame range), `MuxMode: VideoOnly`, and `ConcatTotalFrames: plan.TotalFrames`.
+Concat requests set `IsConcatMode: true`, `ConcatFileListPath`, and `ConcatTotalFrames`. Repart requests additionally set `ConcatVideoSourcePaths`, a per-output `Clip` (time + frame range), `MuxMode: VideoOnly`, and `ConcatTotalFrames: plan.TotalFrames`.
 
 Concat encoding is supported for `ffmpeg.exe`, `vspipe.exe`, `avs2yuv.exe`, `avs2pipemod.exe`. `one_line_shot_args.exe` is rejected (concat has multiple source files and no SVFI concat route). Queue encoding uses the same supported set and also rejects `one_line_shot_args.exe`.
 
@@ -266,8 +266,8 @@ Repart uses `EncodingMuxMode.VideoOnly`. The mux step maps only the encoded vide
 
 | Method | Single | Queue | Concat | Repart |
 |--------|--------|-------|--------|--------|
-| `GetCurrentVideosrcPath()` | Selected single source path | Non-queue/non-concat/non-repart path only | Non-queue/non-concat/non-repart path only | Non-queue/non-concat/non-repart path only |
-| `GetSelectedVideosrcPath()` | Selected single source path | Same helper, usually empty | Same helper, usually empty | Same helper, usually empty |
+| `GetCurrentVideoSrcPath()` | Selected single source path | Non-queue/non-concat/non-repart path only | Non-queue/non-concat/non-repart path only | Non-queue/non-concat/non-repart path only |
+| `GetSelectedVideoSrcPath()` | Selected single source path | Same helper, usually empty | Same helper, usually empty | Same helper, usually empty |
 | `GetCurrentSrcImportPath()` | Current single source path | Queue folder path | Concat first-file parent folder | Repart first-source path |
 | `GetPreviewSourceVideoPath()` | Single source path | First queue file | First concat file | First Repart source |
 | `GetCurrentQueueFilePaths()` | Not used | Accepted queue files | Not used | Not used |
@@ -304,7 +304,7 @@ Rare edge case: some long-GOP BDMV titles can make the short seek-based frame ve
 
 **`time_base` handling.** The per-source signature deliberately omits `time_base`. It is the container's tick resolution (e.g. `1/24000` vs `1/96000` for the same 24000/1001 fps), a muxing detail rather than a video property, and identical encode batches can mux episodes at different tick resolutions. Sources that differ only in `time_base` are therefore accepted as one virtual timeline. Every downstream stage normalizes it: ffmpeg resets each input's PTS with `setpts=PTS-STARTPTS` and rebuilds a CFR PTS sequence with `setpts=N*den/(num*TB)` — TB is ffmpeg's internal output timebase, independent of the source's — VapourSynth/AviSynth splice frame-accurately by frames, and the video-only mux writes `-video_track_timescale` from the reference source's `time_base` denominator uniformly across every output.
 
-Each encoding start creates execution-specific ffconcat and private AVS/VPY paths. `BuildRepartEncodingPipelineRequests()` emits one `EncodingPipelineRequest` per committed output (`RepartPlanM.Outputs`); every request carries an `EncodingClipRequest` with both time (`StartTime`/`EndTime`) and frame (`FirstFrame`/`LastFrame`) ranges plus the plan frame rate, `ConcatFileListPath`, `ConcatVideosrcPaths`, `ConcatTotalFrames: plan.TotalFrames`, and `MuxMode: EncodingMuxMode.VideoOnly`.
+Each encoding start creates execution-specific ffconcat and private AVS/VPY paths. `BuildRepartEncodingPipelineRequests()` emits one `EncodingPipelineRequest` per committed output (`RepartPlanM.Outputs`); every request carries an `EncodingClipRequest` with both time (`StartTime`/`EndTime`) and frame (`FirstFrame`/`LastFrame`) ranges plus the plan frame rate, `ConcatFileListPath`, `ConcatVideoSourcePaths`, `ConcatTotalFrames: plan.TotalFrames`, and `MuxMode: EncodingMuxMode.VideoOnly`.
 
 **Concat-then-split commands per upstream** (frame ranges are global indices over the concatenated virtual timeline):
 
@@ -326,20 +326,20 @@ Each encoding start creates execution-specific ffconcat and private AVS/VPY path
 
 ## Key Files
 
-- `FileManagement/SourceRouteKind.cs` — Route enum
-- `QueueManagement/VideoSourceQueue.cs` — Queue state
-- `ConcatManagement/VideoSourceConcat.cs` — Concat state
+- `FileManagement/SrcRouteKind.cs` — Route enum
+- `QueueManagement/VideoSrcQueue.cs` — Queue state
+- `ConcatManagement/VideoSrcConcat.cs` — Concat state
 - `ConcatManagement/ConcatFileListGenerator.cs` — Filelist generation
 - `ConcatManagement/ConcatCompatibilityAnalyzer.cs` — Per-fragment analysis
 - `RepartManagement/RepartCompatibilityAnalyzer.cs` — Strict CFR and frame-timeline analysis
-- `RepartManagement/VideoSourceRepartState.cs` — Committed Repart plan state
+- `RepartManagement/VideoSrcRepartState.cs` — Committed Repart plan state
 - `Models/RepartPlanM.cs` — Repart sources, stream signature, and output ranges
 - `Views/RepartConfModal.xaml` / `ViewModels/RepartConfVM.cs` — Partition-style configuration window
 - `Components/RepartOutputSidebarPanel.xaml` — Repart monitor sidebar
-- `Commands/BrowsesrcPathCmd.cs` — Single source import
-- `Commands/BrowseSourceQueueCmd.cs` — Queue folder import
-- `Commands/BrowseSourceConcatCmd.cs` — Concat multi-select import
-- `Commands/BrowseSourceScriptQueueCmd.cs` — Queue script import
+- `Commands/BrowseSrcPathCmd.cs` — Single source import
+- `Commands/BrowseSrcQueueCmd.cs` — Queue folder import
+- `Commands/BrowseSrcConcatCmd.cs` — Concat multi-select import
+- `Commands/BrowseSrcScriptQueueCmd.cs` — Queue script import
 - `Commands/AnalyzeSrcVideoCmd.cs` — Source analysis (all routes)
 - `Commands/StartEncCmd.cs` — Encoding startup (all routes)
 - `Commands/CopyRawAnalysisCmd.cs` — Raw JSON copy
@@ -349,7 +349,7 @@ Each encoding start creates execution-specific ffconcat and private AVS/VPY path
 - `ViewModels/FilterScribeVM.cs` — Filter editor
 - `ViewModels/EncodingMonitorVM.cs` — Encoding monitor
 - `ViewModels/QueueJobItemVM.cs` — Queue job item
-- `Components/ConcatSidebarPanel.xaml` — Concat reorder sidebar
+- `Components/ConcatSrcSidebarPanel.xaml` — Concat reorder sidebar
 - `Pipeline/EncodingPipeline.cs` — Command building, upstream args, frame count, mux
 - `Models/VideoAnalysisM.cs` — Source analysis model
 - `ScriptGeneration/ScriptTemplate.cs` — AVS/VPY script templates

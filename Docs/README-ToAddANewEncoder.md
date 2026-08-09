@@ -6,8 +6,8 @@
 - `ToolDefinitionProviderM` is the source of truth for encoder registration and import labels.
 - `EncoderConfM`, `EncoderConfVM`, and `EncoderConfModal.xaml` hold encoder-specific CRF, ABR, preset, keyframe, and toggle UI.
 - `EncoderPresetsM` contains the preset tables and third-party toggle definitions.
-- `EncodingPipelineH` builds the command line, applies `ffprobe`-based auto params, and adds parallelism settings.
-- `ToolVersionDetectH` handles version detection for importable tools.
+- `EncodingPipeline` builds the command line, applies `ffprobe`-based auto params, and adds parallelism settings.
+- `ToolVersionDetect` handles version detection for importable tools.
 - `ParallelismConfM` and `ParallelismConfVM` control NUMA/thread settings for the downstream encoder.
 
 ## How a new encoder is wired
@@ -16,9 +16,9 @@
 2. Add persistent settings to `Models/EncoderConfM.cs`.
 3. Add preset rows to `Models/EncoderPresetsM.cs`.
 4. Update `ViewModels/EncoderConfVM.cs` and `Views/EncoderConfModal.xaml` for the UI.
-5. Extend `Helpers/EncodingPipelineH.cs` for base params, auto params, custom params, and parallelism params.
-6. Add version parsing in `Helpers/ToolVersionDetectH.cs`.
-7. Update localization text in `Models/EncoderConfLangProviderM.cs` and related language providers.
+5. Extend `Pipeline/EncodingPipeline.cs` for base params, auto params, custom params, and parallelism params.
+6. Add version parsing in `ToolManagement/ToolVersionDetect.cs`.
+7. Update localization text in `Models/Lang/EncoderConfLangProvider.cs` and related language providers.
 
 ### Exceptions
 
@@ -27,8 +27,8 @@ If there is no Keyframe interval / max GOP size, CRF control or anything that br
 ### Parallelism
 
 - Thread count and NUMA affinity must be derived from `ParallelismConfM.DownstreamNodeId` / `.EncoderThreadCount` / `.PreferPhysicalCores`.
-- Use `CpuSetsH.ClampThreadCountForNode()` to get the effective thread cap for the selected node.
-- Add the resulting flags in `EncodingPipelineH.BuildParallelismEncoderParams()` via a new switch branch.
+- Use `CpuSets.ClampThreadCountForNode()` to get the effective thread cap for the selected node.
+- Add the resulting flags in `EncodingPipeline.BuildParallelismEncoderParams()` via a new switch branch.
 - If the encoder does not support thread/affinity control, leave the existing scaffolding returning `string.Empty`.
 
 ## Current pipeline
@@ -100,8 +100,8 @@ Integer slider has a logrithm mode, use it to combat inconsistent parameter valu
 - [ ] Persistent settings added to `EncoderConfM`
 - [ ] Presets added to `EncoderPresetsM`
 - [ ] UI bindings done in `EncoderConfVM` / `EncoderConfModal.xaml`
-- [ ] Command generation extended in `EncodingPipelineH` (base, auto, custom, parallelism)
-- [ ] Version parsing added to `ToolVersionDetectH`
+- [ ] Command generation extended in `EncodingPipeline` (base, auto, custom, parallelism)
+- [ ] Version parsing added to `ToolVersionDetect`
 - [ ] Localized text added for encoder name, presets, hints
 - [ ] CRF slider mapped against arbitrary VQA quality tiers
 - [ ] Parallelism flags derived from `ParallelismConfM` and added to command

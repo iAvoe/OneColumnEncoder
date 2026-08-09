@@ -26,11 +26,10 @@ Detailed explanation of the concept & design | 概念与设计详情：
 
 Other related documents | 其他相关文档（仅英文）：
 
-- Button deisng and layout: [ButtonManagement.md](./Docs/ButtonManagement.md)
-- Concatenation mode summary: [ConcatModeSummary.md](./Docs/ConcatModeSummary.md)
-- Queue mode summary: [QueueModeSummary.md](./Docs/QueueModeSummary.md)
+- Designs of the buttons: [ButtonManagement.md](./Docs/ButtonManagement.md)
+- The 4 encoding modes: [EncodingModeImplementation.md](./Docs/EncodingModeImplementation.md)
 - Checklist editing: [EditingChecklist.md](./Docs/EditingChecklist.md)
-- Encoding mode routing design: [EncodingModeRouting.md](./Docs/EncodingModeRouting.md)
-- Encoding progress detection and monitoring: [EncodingProgressDetection.md](./Docs/EncodingProgressDetection.md)
+- Routing of encoding mode: [EncodingModeImplementation.md](./Docs/EncodingModeImplementation.md)
+- The encoding monitor: [EncodingModeImplementation.md](./Docs/EncodingModeImplementation.md)
 - Image A/B preview design: [ImgABPvVMPreviewGeneration.md](./Docs/ImgABPvVMPreviewGeneration.md)
 - ItemCard element: [ItemCardManagement.md](./Docs/ItemCardManagement.md)

@@ -139,7 +139,7 @@ Or, TLDR; and use tools provided in this package (not recommended but its an opt
 - **Supported:** English, Simplified Chinese, Traditional Chinese
 - **Not Localized:** French, Spanish, Japanese, Russian
   - MTL with basic checks only, might have errors
-- To provide a translation, please fork this repository, add a new language entry in `Models/XxxLangProviderM`, and submit a pull request
+- To provide a translation, please fork this repository, add a new language entry in `Models/Lang/XxxLangProvider`, and submit a pull request
   - Translation of the README is not required, but it would be great if you can do that
 
 ---
@@ -238,7 +238,7 @@ Its not esay to develop these tools. If this software helped, please consider sp
 
 #### Encoding Parameter Configuration Details
 
-- `EncoderConfM.CustomParams` will be saved and appended to the final encoding command by `EncodingPipelineH`
+- `EncoderConfM.CustomParams` will be saved and appended to the final encoding command by `EncodingPipeline`
 - The "Custom Parameters" area is no longer a summary of third-party switches, but instead directly reads and writes a free text parameter
 - The parameter coverage for x264/x265/STV-AV1 is still limited, but it is usable
 
@@ -309,7 +309,13 @@ Implementation failed due to excessive complexity and encoding time addition
 ## Main Source Code Locations
 
 - `Commands/`: User operation commands, modal window opening and closing, save loading, and encoding startup entry point
-- `Helpers/`: Encoding pipeline, ffprobe analysis, tool detection, script templates, filename validation, CPU/NUMA/permissions, and other auxiliary logic
+- `Pipeline/`: Encoding command-line building, frame counts, and muxing
+- `FFmpeg/`: ffprobe analysis and FFmpeg process/argument helpers
+- `ToolManagement/`: Tool registration, version detection, and compatibility rules
+- `ScriptGeneration/`: AVS/VPY script templates
+- `CPU/` / `Hardware/`: CPU/NUMA topology, thread sets, and OpenCL detection
+- `Persistence/`: JSON save/load base classes
+- `FileManagement/`: Source path routing, file pickers, and output path helpers
 - `Models/`: Configuration models, tool definitions, language resources, checklists, and data DTOs
 - `ViewModels/`: Main interface, modal window, and card state management
 - `Views/`: WPF windows and interface XAML
@@ -331,7 +337,7 @@ Implementation failed due to excessive complexity and encoding time addition
 - View encoding commands in the encoding monitor:`ViewModels/EncodingMonitorVM.cs`
 - Copy/save results after script generation:`ViewModels/ScriptScribeVM.cs`、`Commands/SaveLoad/OneClickScriptGenCmd.cs`
 - Source analysis and check results:`Commands/AnalyzeSrcVideoCmd.cs`、`Commands/CopyRawAnalysisCmd.cs`、`Commands/InspectEncProblemsCmd.cs`、`Commands/InspectSrcProblemsCmd.cs`
-- Secondary confirmation when importing tools/selecting files:`Commands/ImportToolCmd.cs`、`Helpers/SrcFilePickerH.cs`
+- Secondary confirmation when importing tools/selecting files:`Commands/ImportToolCmd.cs`、`FileManagement/SrcFilePicker.cs`
 
 ## Settings Storage Location
 
@@ -344,7 +350,7 @@ All persistent configuration data is stored as **JSON files** under `{Applicatio
 | `encodingconfig.json` | Encoder parameters (CRF/ABR, keyframe, presets, custom params for x264/x265/SVT-AV1) |
 | `parallelismconfig.json` | Parallelism settings (NUMA node IDs, CPU preferences, thread count) |
 
-**Persistence base class:** `Helpers\SaveLoadBaseH.cs` — all configuration models inherit from `SaveLoadBaseH<T>` which provides JSON serialization/deserialization via `Save()` / `Load()`.
+**Persistence base class:** `Persistence\SaveLoadBase.cs` — all configuration models inherit from `SaveLoadBase<T>` which provides JSON serialization/deserialization via `Save()` / `Load()`.
 
 **Other persisted data (user-selected paths, not in `\1cenc\`):**
 - Generated script files (`.avs` / `.vpy` / `.txt`) via `ViewModels\FilterScribeVM.cs` and `Commands\SaveLoad\OneClickScriptGenCmd.cs`
