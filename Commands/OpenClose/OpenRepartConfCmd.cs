@@ -3,6 +3,10 @@ using OneColumnEncoder.RepartManagement;
 
 namespace OneColumnEncoder.Commands.OpenClose;
 
+/// <summary>
+/// Opens the Repart configuration modal. If a plan already exists, it is shown directly;
+/// otherwise the sources are imported, analyzed, and passed to the modal for editing.
+/// </summary>
 public sealed class OpenRepartConfCmd(
     ModalNavS modalNavS,
     Func<string> getFfprobePath,
@@ -10,6 +14,10 @@ public sealed class OpenRepartConfCmd(
     Func<RepartPlanM?> getCurrentPlan,
     Action<RepartPlanM> applyPlan) : OpenCloseBase(modalNavS)
 {
+    /// <summary>
+    /// Brings an already-open window to the front; otherwise imports and analyzes sources,
+    /// then shows the configuration modal with the plan.
+    /// </summary>
     public override async void Execute(object? parameter)
     {
         if (TryActivateExistingWindow<RepartConfModal>())
@@ -32,6 +40,10 @@ public sealed class OpenRepartConfCmd(
         _ = vm.InitializeAsync(initialPlan);
     }
 
+    /// <summary>
+    /// Lets the user pick a source folder, runs compatibility analysis, and shows an import summary.
+    /// </summary>
+    /// <returns>The analyzed plan, or null if cancelled or no plan could be produced.</returns>
     private async Task<RepartPlanM?> ImportFolderAsync()
     {
         OpenFolderDialog dialog = new()
@@ -60,6 +72,10 @@ public sealed class OpenRepartConfCmd(
         return result.Plan;
     }
 
+    /// <summary>
+    /// Imports a disc chapter/playlist folder and builds output segments and dividers from chapter markers.
+    /// </summary>
+    /// <returns>The analyzed plan with chapter-based segments, or null if cancelled or no plan was produced.</returns>
     private async Task<RepartPlanM?> ImportChapterFolderAsync()
     {
         PlaylistImportResult? import = await PlaylistImportService.ImportAsync(
@@ -87,6 +103,9 @@ public sealed class OpenRepartConfCmd(
         return result.Plan;
     }
 
+    /// <summary>
+    /// Builds an error message for a scan with no usable MPLS playlists, listing the folder and diagnostics.
+    /// </summary>
     private static string BuildPlaylistScanFailureMessage(string folderPath, IReadOnlyList<string> diagnostics)
     {
         List<string> lines = [$"No usable MPLS playlists were found in: {folderPath}"];
@@ -94,6 +113,13 @@ public sealed class OpenRepartConfCmd(
         return string.Join(Environment.NewLine, lines);
     }
 
+    /// <summary>
+    /// Runs compatibility checks and filtering on the given files before the window opens,
+    /// showing a cancellable progress modal and reporting excluded sources in a single summary.
+    /// </summary>
+    /// <param name="filePaths">The video files to analyze.</param>
+    /// <param name="requireMultipleSources">If true, at least two sources must pass.</param>
+    /// <returns>The analysis result, or null if cancelled, errored, or no plan could be formed.</returns>
     private async Task<RepartAnalysisResult?> RunAnalysisAsync(
         IReadOnlyList<string> filePaths,
         bool requireMultipleSources = true)
@@ -171,19 +197,22 @@ public sealed class OpenRepartConfCmd(
         return result;
     }
 
+    /// <summary>
+    /// Replaces the plan's segments and dividers with chapter-derived segments,
+    /// converting chapter start times to frames using the plan's frame rate.
+    /// </summary>
     private static void ApplyChapterDividers(RepartPlanM plan, DiscChapterReadResult chapters)
     {
         if (plan.FrameRate <= 0d || plan.TotalFrames <= 0) return;
 
-        List<(long Frame, string Name)> chapterMarkers = chapters.Chapters
+        List<(long Frame, string Name)> chapterMarkers = [.. chapters.Chapters
             .Where(chapter => !chapter.IsSeparator)
             .Select(chapter => (
                 Frame: (long)Math.Round(chapter.StartTime.TotalSeconds * plan.FrameRate),
-                Name: chapter.Name))
+                chapter.Name))
             .Where(marker => marker.Frame >= 0 && marker.Frame < plan.TotalFrames)
             .DistinctBy(marker => marker.Frame)
-            .OrderBy(marker => marker.Frame)
-            .ToList();
+            .OrderBy(marker => marker.Frame)];
 
         if (chapterMarkers.Count == 0) return;
 
@@ -213,12 +242,18 @@ public sealed class OpenRepartConfCmd(
         plan.Dividers.AddRange(outputs.Take(outputs.Count - 1).Select(output => new RepartDividerM(Guid.NewGuid(), output.LastFrame, false)));
     }
 
+    /// <summary>
+    /// Closes the progress modal once the task completes, regardless of its outcome.
+    /// </summary>
     private static async Task CloseWhenCompletedAsync(Task task, ProgressModal modal)
     {
         try { await task; } catch {}
         if (modal.IsVisible) modal.Close();
     }
 
+    /// <summary>
+    /// Maps an analysis stage to its localized progress label key.
+    /// </summary>
     private static string StageKey(RepartAnalysisStage stage) => stage switch
     {
         RepartAnalysisStage.CheckFiles => "StageCheckFiles",
@@ -229,6 +264,9 @@ public sealed class OpenRepartConfCmd(
         _ => "StageCheckFiles"
     };
 
+    /// <summary>
+    /// Builds the no-plan error message, combining the excluded sources summary with any fatal message.
+    /// </summary>
     private static string BuildExcludedSummary(
         IReadOnlyList<RepartExcludedSourceInfo> excludedItems,
         string? fatalMessage)
@@ -246,6 +284,9 @@ public sealed class OpenRepartConfCmd(
         return string.Join(Environment.NewLine + Environment.NewLine, sections);
     }
 
+    /// <summary>
+    /// Formats an excluded source as its display name plus the localized exclusion reason.
+    /// </summary>
     private static string FormatExcludedSummaryLine(RepartExcludedSourceInfo info) =>
         string.Join(
             Environment.NewLine,
