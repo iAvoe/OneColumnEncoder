@@ -240,7 +240,6 @@ public class AnalyzeSrcVideoCmd(
         _analysis.RawJson = referenceRawJson;
         _analysis.QueueRawJson = JsonSerializer.Serialize(new QueueRawAnalysisData(result.RawAnalyses), CachedJsonOptions);
         queueCard.ApplyQueueResult(accepted.Count, excluded.Count, queueJsonPath, excludedJsonPath ?? string.Empty);
-        _onQueueAccepted?.Invoke([.. accepted.Select(entry => entry.FilePath)], queueJsonPath);
 
         // Step 7
         string message = string.IsNullOrWhiteSpace(excludedJsonPath)
@@ -257,6 +256,9 @@ public class AnalyzeSrcVideoCmd(
             message,
             queueJsonPath,
             excludedJsonPath).Execute(null);
+
+        // ShowDialog returns only after the completion message closes.
+        _onQueueAccepted?.Invoke([.. accepted.Select(entry => entry.FilePath)], queueJsonPath);
     }
 
     private static async Task<QueueSourceFilterResult> AnalyzeAndFilterQueueSourcesAsync(
