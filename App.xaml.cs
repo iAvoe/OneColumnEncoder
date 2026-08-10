@@ -1,7 +1,9 @@
 namespace OneColumnEncoder;
 
 /// <summary>
-/// Interaction logic for App.xaml
+/// Application entry point: loads persisted app settings and data, wires up
+/// unhandled-exception and startup-language handling, and hosts the main
+/// window with its top-level ViewModel.
 /// </summary>
 public partial class App : Application
 {

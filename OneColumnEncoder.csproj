@@ -12,6 +12,7 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <!-- Get current commit # -->
   <Target Name="AppendGitCommitCount" AfterTargets="CoreGenerateAssemblyInfo" BeforeTargets="CoreCompile">
     <Exec Command="git rev-list --count HEAD" ConsoleToMSBuild="true" IgnoreExitCode="true" StandardOutputImportance="low" Condition="'$(GitCommitCount)' == ''">
       <Output TaskParameter="ConsoleOutput" PropertyName="GitCommitCount" />
@@ -30,6 +31,7 @@
     <WriteLinesToFile File="$(GeneratedAssemblyInfoFile)" Lines="[assembly: System.Reflection.AssemblyMetadataAttribute(&quot;GitCommitShortHash&quot;, &quot;$(GitCommitShortHash)&quot;)]" Overwrite="false" />
   </Target>
 
+  <!-- App icon and BluRay MPLS parser -->
   <ItemGroup>
     <Resource Include="favicon.ico" />
   </ItemGroup>

@@ -1,7 +1,15 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 
 namespace OneColumnEncoder;
 
+/// <summary>
+/// Main app window:
+/// - builds title from git metadata,
+/// - throttles NUMA/CPU refresh on mouse/key input,
+/// - coordinates child-window closing,
+/// - coordinates ViewModel disposal during shutdown.
+/// </summary>
 public partial class MainWindow : AdaptiveWindow
 {
     private DateTime _lastNumaCpuTrigger = DateTime.MinValue;
@@ -10,13 +18,14 @@ public partial class MainWindow : AdaptiveWindow
     public MainWindow()
     {
         InitializeComponent();
-        Title = $"{Models.Lang.UILangProvider.MainWindowTitle} (Beta—Commit {GetGitCommitCount()} {GetGitCommitShortHash()})";
+        Title = $"{Models.Lang.UILangProvider.MainWindowTitle} · PID {Process.GetCurrentProcess().Id} · Commit {GetGitCommitCount()} {GetGitCommitShortHash()}";
         Closing += OnClosing;
         Closed += OnClosed;
         PreviewMouseDown += OnPreviewMouseDown;
         PreviewKeyDown += OnPreviewKeyDown;
     }
 
+    // 2 Pieces of Get info needed
     private static string GetGitCommitCount()
     {
         return Assembly.GetExecutingAssembly()
@@ -24,7 +33,6 @@ public partial class MainWindow : AdaptiveWindow
             .FirstOrDefault(attribute => attribute.Key == "GitCommitCount")
             ?.Value ?? "0";
     }
-
     private static string GetGitCommitShortHash()
     {
         return Assembly.GetExecutingAssembly()
@@ -63,7 +71,7 @@ public partial class MainWindow : AdaptiveWindow
             return;
         }
 
-        // Clear modal navigation state so no stale VM lingers
+        // Clear modal nav state
         if (Application.Current is App app) app._modalNavM.CloseAll();
     }
 
@@ -77,4 +85,5 @@ public partial class MainWindow : AdaptiveWindow
         PreviewMouseDown -= OnPreviewMouseDown;
         PreviewKeyDown -= OnPreviewKeyDown;
     }
-}
+}
+
