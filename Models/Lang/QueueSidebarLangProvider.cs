@@ -11,7 +11,6 @@ public sealed class QueueSidebarLangProvider : LangProviderBase
             ["QueueSidebarWaitingHeaderText"] = "Pending",
             ["QueueSidebarUnfinishedHeaderText"] = "Unfinished",
             ["QueueSidebarCompletedHeaderText"] = "Completed",
-            ["QueueEditorTitleText"] = "Edit Queue",
         },
         ["zh-cn"] = new()
         {
@@ -20,7 +19,6 @@ public sealed class QueueSidebarLangProvider : LangProviderBase
             ["QueueSidebarWaitingHeaderText"] = "待运行",
             ["QueueSidebarUnfinishedHeaderText"] = "未完成",
             ["QueueSidebarCompletedHeaderText"] = "已完成",
-            ["QueueEditorTitleText"] = "调整队列",
         },
         ["zh-tw"] = new()
         {
@@ -29,7 +27,6 @@ public sealed class QueueSidebarLangProvider : LangProviderBase
             ["QueueSidebarWaitingHeaderText"] = "待執行",
             ["QueueSidebarUnfinishedHeaderText"] = "未完成",
             ["QueueSidebarCompletedHeaderText"] = "已完成",
-            ["QueueEditorTitleText"] = "調整隊列",
         }
     };
 
@@ -42,7 +39,6 @@ public sealed class QueueSidebarLangProvider : LangProviderBase
             ["QueueSidebarWaitingHeaderText"] = "En attente",
             ["QueueSidebarUnfinishedHeaderText"] = "Inachevé",
             ["QueueSidebarCompletedHeaderText"] = "Terminé",
-            ["QueueEditorTitleText"] = "Modifier la file",
         };
         Data["es"] = new(Data["en"])
         {
@@ -51,7 +47,6 @@ public sealed class QueueSidebarLangProvider : LangProviderBase
             ["QueueSidebarWaitingHeaderText"] = "Pendiente",
             ["QueueSidebarUnfinishedHeaderText"] = "Sin finalizar",
             ["QueueSidebarCompletedHeaderText"] = "Completado",
-            ["QueueEditorTitleText"] = "Editar cola",
         };
         Data["ja"] = new(Data["en"])
         {
@@ -60,7 +55,6 @@ public sealed class QueueSidebarLangProvider : LangProviderBase
             ["QueueSidebarWaitingHeaderText"] = "待機中",
             ["QueueSidebarUnfinishedHeaderText"] = "未完了",
             ["QueueSidebarCompletedHeaderText"] = "完了",
-            ["QueueEditorTitleText"] = "キューを編集",
         };
         Data["ru"] = new(Data["en"])
         {
@@ -69,7 +63,6 @@ public sealed class QueueSidebarLangProvider : LangProviderBase
             ["QueueSidebarWaitingHeaderText"] = "В ожидании",
             ["QueueSidebarUnfinishedHeaderText"] = "Незавершённые",
             ["QueueSidebarCompletedHeaderText"] = "Завершённые",
-            ["QueueEditorTitleText"] = "Редактировать очередь",
         };
     }
 
@@ -83,7 +76,6 @@ public sealed class QueueSidebarLangProvider : LangProviderBase
     public string QueueItemRemoveText => "🗙";
     public string QueueItemMoveUpText => "↑↑";
     public string QueueItemMoveDownText => "↓↓";
-    public string QueueEditorTitleText { get; }
 
     public QueueSidebarLangProvider(string languageCode) : base(languageCode, Data)
     {
@@ -92,6 +84,5 @@ public sealed class QueueSidebarLangProvider : LangProviderBase
         QueueSidebarWaitingHeaderText = this["QueueSidebarWaitingHeaderText"];
         QueueSidebarUnfinishedHeaderText = this["QueueSidebarUnfinishedHeaderText"];
         QueueSidebarCompletedHeaderText = this["QueueSidebarCompletedHeaderText"];
-        QueueEditorTitleText = this["QueueEditorTitleText"];
     }
 }

@@ -7,7 +7,6 @@ using OneColumnEncoder.ToolManagement;
 using OneColumnEncoder.Validation;
 using System.Collections.Specialized;
 using System.IO;
-using System.Text.Json.Nodes;
 using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.ViewModels;
@@ -2095,50 +2094,11 @@ public class MainVM : BaseVM
     {
         if (editedFilePaths.Length == 0) return;
 
+        if (!QueueSourceJsonEditor.TryApplyFileOrder(GetCurrentQueueJsonPath(), editedFilePaths)) return;
+
         _videoSrcQueue.ApplyAcceptedFiles(editedFilePaths);
-        RewriteQueueJsonOrder(editedFilePaths);
         RefreshSelectedSrcStatus(resetAnalysis: false);
         RefreshDurationFilterStatus();
-    }
-
-    /// <summary>
-    /// Reorders and prunes the analyzed queue entries to match the editor result.
-    /// </summary>
-    private void RewriteQueueJsonOrder(string[] orderedFilePaths)
-    {
-        string queueJsonPath = GetCurrentQueueJsonPath();
-        if (string.IsNullOrWhiteSpace(queueJsonPath) || !File.Exists(queueJsonPath)) return;
-
-        try
-        {
-            JsonNode? root = JsonNode.Parse(File.ReadAllText(queueJsonPath));
-            if (root is not JsonObject rootObject || rootObject["Entries"] is not JsonArray entries)
-                return;
-
-            Dictionary<string, JsonNode> entriesByPath = new(StringComparer.OrdinalIgnoreCase);
-            foreach (JsonNode? child in entries)
-            {
-                if (child is not JsonObject entry
-                    || entry["FilePath"]?.GetValue<string>() is not string path
-                    || string.IsNullOrWhiteSpace(path))
-                    continue;
-                entriesByPath[path] = child;
-            }
-
-            JsonArray newEntries = [];
-            foreach (string filePath in orderedFilePaths)
-            {
-                if (entriesByPath.TryGetValue(filePath, out JsonNode? node))
-                    newEntries.Add(node);
-            }
-
-            rootObject["Entries"] = newEntries;
-            File.WriteAllText(queueJsonPath, rootObject.ToJsonString(FFProbeJsonFormatting.Options), new UTF8Encoding(false));
-        }
-        catch
-        {
-            // Leave the analyzed queue untouched if it cannot be rewritten.
-        }
     }
 
     private void SaveSrcPath(SrcFileKind kind, string filePath)

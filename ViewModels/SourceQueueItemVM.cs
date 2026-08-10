@@ -2,7 +2,7 @@ using System.Windows.Threading;
 
 namespace OneColumnEncoder.ViewModels;
 
-public class ConcatSrcItemVM : BaseVM
+public sealed class SourceQueueItemVM : BaseVM
 {
     private bool _canMoveUp;
     private bool _canMoveDown;
@@ -16,14 +16,15 @@ public class ConcatSrcItemVM : BaseVM
     private bool _isRecentlyMoved;
     private DispatcherTimer? _moveFlashTimer;
 
-    // Compiler rec: Remove unused parameter 'index' if it is not part of a shipped public API
-    public ConcatSrcItemVM(string filePath, ICommand? removeCmd, ICommand? moveUpCmd, ICommand? moveDownCmd)
+    public SourceQueueItemVM(string filePath, ICommand? removeCmd, ICommand? moveUpCmd, ICommand? moveDownCmd)
     {
         FilePath = filePath;
-        UpdateDisplay(); // index parameter removed according to compiler, this should be fine...
+        Name = System.IO.Path.GetFileName(filePath);
+        P1Text = filePath;
         R1Command = removeCmd;
         R2Command = moveUpCmd;
         R3Command = moveDownCmd;
+        RefreshLanguage();
     }
 
     public string FilePath { get; }
@@ -60,6 +61,7 @@ public class ConcatSrcItemVM : BaseVM
     public bool R1IsEnabled => _canRemove;
     public bool R2IsEnabled => _canMoveUp;
     public bool R3IsEnabled => _canMoveDown;
+    public static bool IsCancel => false;
 
     public bool IsSelected
     {
@@ -113,11 +115,12 @@ public class ConcatSrcItemVM : BaseVM
     public ICommand? R2Command { get; }
     public ICommand? R3Command { get; }
 
-    // Compiler rec: Remove unused parameter 'index' if it is not part of a shipped public API
-    public void UpdateDisplay()
+    public void RefreshLanguage()
     {
-        Name = System.IO.Path.GetFileName(FilePath);
-        P1Text = FilePath;
+        QueueSidebarLangProvider lang = QueueSidebarLangProvider.Current;
+        DisplayR1Text = lang.QueueItemRemoveText;
+        R2Text = lang.QueueItemMoveUpText;
+        R3Text = lang.QueueItemMoveDownText;
     }
 
     public void FlashMovedHighlight()

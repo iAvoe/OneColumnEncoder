@@ -591,18 +591,18 @@ public class FilterScribeVM : BaseVM
     {
         ConcatSources.RemoveItemCommand = new ActionCmd(item =>
         {
-            if (item is not ConcatSrcItemVM sourceItem) return;
+            if (item is not SourceQueueItemVM sourceItem) return;
             ConcatSources.RemoveItem(sourceItem);
             ApplyConcatSources();
         });
         ConcatSources.MoveItemUpCommand = new ActionCmd(item =>
         {
-            if (item is not ConcatSrcItemVM sourceItem) return;
+            if (item is not SourceQueueItemVM sourceItem) return;
             if (ConcatSources.MoveItemUp(sourceItem)) ApplyConcatSources();
         });
         ConcatSources.MoveItemDownCommand = new ActionCmd(item =>
         {
-            if (item is not ConcatSrcItemVM sourceItem) return;
+            if (item is not SourceQueueItemVM sourceItem) return;
             if (ConcatSources.MoveItemDown(sourceItem)) ApplyConcatSources();
         });
         ConcatSources.RestoreOriginalQueueCommand = new ActionCmd(_ =>
