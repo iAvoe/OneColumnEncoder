@@ -78,6 +78,9 @@ namespace OneColumnEncoder.Models.Lang;
 public abstract class LangProviderBase
 {
     protected readonly Dictionary<string, string> _d;
+    public static string RemoveText => "🗙";
+    public static string MoveUpText => "↑↑";
+    public static string MoveDownText => "↓↓";
     private static readonly Dictionary<string, Dictionary<string, string>> CommonData = new()
     {
         ["en"] = new()

@@ -75,8 +75,8 @@ public sealed class BdPlaylistSelectVM : BaseVM
     public static string AddToFinalText => RepartLangProvider.Current["PlaylistAddToFinal"];
     public static string RemoveFromFinalText => RepartLangProvider.Current["PlaylistRemoveFromFinal"];
     public static string ClearAllText => RepartLangProvider.Current["PlaylistClearAll"];
-    public static string MoveUpText => RepartLangProvider.MoveUp;
-    public static string MoveDownText => RepartLangProvider.MoveDown;
+    public static string MoveUpText => LangProviderBase.MoveUpText;
+    public static string MoveDownText => LangProviderBase.MoveDownText;
     public static string CancelText => RepartLangProvider.Current["Cancel"];
     public static string ConfirmText => RepartLangProvider.Current["PlaylistConfirm"];
     public static string PlaylistSummaryFormat => "{0} cluster(s) / {1} playlist(s)";

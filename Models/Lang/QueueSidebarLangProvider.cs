@@ -97,9 +97,6 @@ public sealed class QueueSidebarLangProvider : LangProviderBase
     public string QueueSidebarWaitingHeaderText { get; }
     public string QueueSidebarUnfinishedHeaderText { get; }
     public string QueueSidebarCompletedHeaderText { get; }
-    public static string QueueItemRemoveText => "🗙";
-    public static string QueueItemMoveUpText => "↑↑";
-    public static string QueueItemMoveDownText => "↓↓";
 
     public QueueSidebarLangProvider(string languageCode) : base(languageCode, Data)
     {

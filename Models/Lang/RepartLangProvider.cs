@@ -1045,6 +1045,4 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
     public string CfrRequired => this["CfrRequired"];
     public string FrameCountRequired => this["FrameCountRequired"];
     public string ProbeFailed => this["ProbeFailed"];
-    public static string MoveUp => "↑↑";
-    public static string MoveDown => "↓↓";
 }

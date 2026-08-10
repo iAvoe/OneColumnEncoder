@@ -139,8 +139,8 @@ public sealed class RepartFilterScribeOutputItemVM : BaseVM
     public string Name { get; }
     public string P1Text { get; }
     public static string DisplayR1Text => string.Empty;
-    public static string R2Text => RepartLangProvider.MoveUp;
-    public static string R3Text => RepartLangProvider.MoveDown;
+    public static string R2Text => LangProviderBase.MoveUpText;
+    public static string R3Text => LangProviderBase.MoveDownText;
     public static bool R1IsEnabled => false;
     public bool R2IsEnabled => _canMoveUp;
     public bool R3IsEnabled => _canMoveDown;

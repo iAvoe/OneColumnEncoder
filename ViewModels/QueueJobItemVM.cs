@@ -31,9 +31,9 @@ public class QueueJobItemVM(QueueJobItemM model) : BaseVM
 
     public string P1TooltipText => _model.ErrorMessage ?? P1Text;
 
-    public static string DisplayR1Text => QueueSidebarLangProvider.QueueItemRemoveText;
-    public static string R2Text => QueueSidebarLangProvider.QueueItemMoveUpText;
-    public static string R3Text => QueueSidebarLangProvider.QueueItemMoveDownText;
+    public static string DisplayR1Text => LangProviderBase.RemoveText;
+    public static string R2Text => LangProviderBase.MoveUpText;
+    public static string R3Text => LangProviderBase.MoveDownText;
     public bool R1IsEnabled => _model.Status == "Pending";
     public bool R2IsEnabled => _model.Status == "Pending" && _canMoveUp;
     public bool R3IsEnabled => _model.Status == "Pending" && _canMoveDown;
