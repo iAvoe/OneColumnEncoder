@@ -1,5 +1,49 @@
 namespace OneColumnEncoder.Models.Lang;
 
+/// <summary>
+/// Base class for language providers, including shared short operation words and fallback lookup for reusable UI labels.
+/// </summary>
+/// <remarks>
+/// Translation guidelines:
+///
+/// User profile:
+/// - 100%: understand computer basics
+/// - 50%: pro PC users ("live on their PC")
+/// - 30%: developers, programmers, experienced IT & networking people
+/// - ±5%: familiar with video encoding
+///
+/// Core principles:
+/// - Avoid explaining to absolute beginners.
+/// - Preserve key words and technical meaning; do not turn UI text into tutorials.
+/// - Prefer the shortest natural and technically unambiguous wording.
+///
+/// Button & compact-control text:
+/// - Stay close to or shorter than the English length; avoid exceeding it by 5+ letters where practical.
+/// - Prefer standard abbreviations over dropping meaningful words.
+/// - Keep the action and object recognizable.
+/// - Never sacrifice grammatical correctness just to match English length.
+/// - Take advantage noun as verb, verb as noun rules to compress where natural, i.e., "Export a sample clip" → "Clip sampling".
+/// - Use concise wording where natural, e.g. "Operations" → "Ops.".
+/// - Window size may increase (and can be the top pick); shortening is not the only option.
+/// - If an ambiguous control lacks its expected HintPanel, report it to the project owner instead of forcing the translation to compensate.
+///
+/// Terminology:
+/// - Prefer established technical terms over beginner-oriented paraphrases.
+/// - Keep the same concept consistently translated across the UI.
+/// - Keep common operation words consistent; do not vary them stylistically (e.g. choose "Add" or "Append", not both for the same operation).
+/// - Use the most specific natural term when context requires it, e.g. "source" → "video source" / "audio source".
+///
+/// Context & explanations:
+/// - Use the surrounding UI, button icons, group heading, and especially HintPanel to resolve ambiguity before adding words.
+/// - Do not repeat information already conveyed elsewhere in the UI.
+/// - Do not add definitions, parenthetical explanations, or "101" wording
+///   for common computer/UI operations or terms clear from context.
+/// - Encoding-specific concepts that may be unfamiliar belong in the HintPanel, not in an unnecessarily long control label.
+///
+/// Button icons:
+/// - Despite testing shows button icons (from UI/SvgIconProvider) are very effective for conveying operations,
+///   but this does not mean to cut the verb part of the button text away
+/// </remarks>
 public abstract class LangProviderBase
 {
     protected readonly Dictionary<string, string> _d;
