@@ -332,7 +332,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["PlaylistAddToFinal"] = "Ajouter →",
             ["PlaylistRemoveFromFinal"] = "Retirer",
             ["PlaylistClearAll"] = "Tout effacer",
-            ["PlaylistConfirm"] = "Cconfirmer",
+            ["PlaylistConfirm"] = "Confirmer",
             ["ChapterSourcesMissing"] = "Le dossier de chapitres n'a pas résolu de fichier source vidéo existant. Vérifiez que les fichiers média référencés (m2ts) sont présents",
             ["ChapterImportFailed"] = "Échec de la lecture des chapitres : {0}",
             ["InputSources"] = "Sources d'entrée",

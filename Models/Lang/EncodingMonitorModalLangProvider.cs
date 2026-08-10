@@ -146,7 +146,7 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
         {
             ["ProgressTitle"] = "進度",
             ["ProgressReportTitle"] = "進度流",
-            ["MemoryTitle"] = "記憶占用",
+            ["MemoryTitle"] = "記憶體占用",
 
             ["StderrTitle"] = "進程日誌",
             ["DragLogReportHint"] = "拖曳視窗邊緣以調整日誌顯示面積；拖曳日誌分界線以調整寬度",
