@@ -221,6 +221,11 @@ Its not esay to develop these tools. If this software helped, please consider sp
 - Parallel settings can be saved and applied to the upstream/encoder processes started by encoding monitoring
   - The encoder thread count is passed to the x264/x265 parameter; SVT-AV1 currently does not generate thread parameters
 
+#### Multiple Instances (Run multiple instances)
+
+- A single 1cenc instance can only bind the downstream encoder threads to one NUMA node at a time. If you have more encode jobs than one instance can handle and the machine still has spare NUMA nodes, start as many program instances as available NUMA nodes, then let each instance take a portion of the queue so every node stays busy.
+- The instances are easy to tell apart: just look at the `PID xxxxx` text in the title bar or taskbar button. A PID is the process's temporary identifier, unique while it is running and not reused across instances.
+
 #### Application Configuration and Persistence
 
 - The basic logic for saving/loading JSON for application configuration, tool path, source path, encoding parameters, and parallel parameters has been implemented
