@@ -21,6 +21,7 @@ OneColumnEncoder 提供了相对硬核，同时简洁直观的 UI/UX 流程，�
 - Русский
 - Deutsch
 - 한국어
+- Português (Brasil)
 
 Detailed project description with screenshots and basic usages | 项目描述、截图和基本使用方法：
 
