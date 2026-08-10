@@ -58,7 +58,15 @@ public class FFProbeVideoAnalysisLangProvider : LangProviderBase
             ["InputVideoNotFound"] = "Входное видео не найдено: {0}",
             ["FfprobeTimedOut"] = "ffprobe превысил время ожидания при анализе исходного видео",
             ["FfprobeFailedOrEmpty"] = "ffprobe завершился ошибкой или не вернул допустимых данных",
-            ["NoVideoStreamInfo"] = "ffprobe не вернул информацию о видеопотоке",
+            ["NoVideoStreamInfo"] = "ffprobe не вернул информацию о видеопотоке"
+        },
+        ["de"] = new()
+        {
+            ["FfprobeNotFound"] = "ffprobe.exe existiert nicht: {0}",
+            ["InputVideoNotFound"] = "Eingabevideo existiert nicht: {0}",
+            ["FfprobeTimedOut"] = "ffprobe beim Analysieren des Quellvideos zeitüberschritten",
+            ["FfprobeFailedOrEmpty"] = "ffprobe fehlgeschlagen oder keine gültigen Daten zurückgegeben",
+            ["NoVideoStreamInfo"] = "ffprobe hat keine Videostream-Informationen zurückgegeben",
         },
     };
 

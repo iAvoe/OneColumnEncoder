@@ -211,7 +211,36 @@ public class FilenameScribeModalLangProvider(string languageCode) : LangProvider
             ["FilenameScribe.PasteFromClipboard"] = "Вставить из буфера обмена",
             ["FilenameScribe.RotateFontSize"] = "Переключить размер шрифта",
             ["FilenameScribe.Confirm"] = "Готово → задать вывод",
-            ["FilenameScribe.FooterHint"] = "Расширение определяется выбранным кодером и не редактируется здесь",
+            ["FilenameScribe.FooterHint"] = "Расширение определяется выбранным кодером и не редактируется здесь"
+        };
+        Data["de"] = new(Data["en"])
+        {
+            ["FilenameScribe.MiniHeader"] = "Dateiname",
+            ["FilenameScribe.Placeholder"] = "Ausgabedateiname eingeben oder einfügen",
+            ["FilenameScribe.PreviewHeader"] = "Vorschau",
+            ["FilenameScribe.Preview30Label"] = "PC- & Tablet-Dateiliste (30 Vollbreitenzeichen)",
+            ["FilenameScribe.Preview25Label"] = "Player-Titelleiste (25 Vollbreitenzeichen)",
+            ["FilenameScribe.Preview20Label"] = "Player-Seitenleiste / Playlist (20 Vollbreitenzeichen)",
+            ["FilenameScribe.Preview15Label"] = "Kleines Telefon-Display (15 Vollbreitenzeichen)",
+            ["FilenameScribe.FormatCheckHeader"] = "Formatprüfung",
+            ["FilenameScribe.SevereIssueHeader"] = "Schwere Probleme",
+            ["FilenameScribe.GeneralIssueHeader"] = "Allgemeine Probleme",
+            ["FilenameScribe.CheckEmpty"] = "Nicht leer",
+            ["FilenameScribe.CheckLength"] = "50 Zeichen oder weniger",
+            ["FilenameScribe.CheckReserved"] = "Kein OS-reservierter Name",
+            ["FilenameScribe.CheckInvalidChars"] = "Keine Anführungszeichen oder Steuerzeichen (\" ' ` < > | * ? \\ / : &)",
+            ["FilenameScribe.CheckExtendedChars"] = "Keine Zeichen außerhalb des BMP-Bereichs (Emoji etc.)",
+            ["FilenameScribe.CheckSpaces"] = "Keine Leerzeichen (stattdessen _ oder -)",
+            ["FilenameScribe.CheckCombiningMarks"] = "Keine Unicode-Kombinationszeichen",
+            ["FilenameScribe.CheckSpecialSpaceVariants"] = "Keine speziellen Leerzeichenvarianten",
+            ["FilenameScribe.SelfCheckHeader"] = "Selbstprüfung: Media-Scraper-Kompatibilität",
+            ["FilenameScribe.SelfCheck1"] = "Datumformat yyyy-mm-dd konsistent verwenden",
+            ["FilenameScribe.SelfCheck2"] = "Sortierung: Zweistellige und höhere fortlaufende #s mit 0 auffüllen",
+            ["FilenameScribe.SelfCheck3"] = "Bei übersetztem Seriennamen sicherstellen, dass dieser Alias in TMDB existiert",
+            ["FilenameScribe.PasteFromClipboard"] = "Aus Zwischenablage einfügen",
+            ["FilenameScribe.RotateFontSize"] = "Schriftgröße wechseln",
+            ["FilenameScribe.Confirm"] = "Fertig → Ausgabepfad setzen",
+            ["FilenameScribe.FooterHint"] = "Dateierweiterung wird durch gewählten Encoder festgelegt und kann hier nicht bearbeitet werden"
         };
     }
 

@@ -189,6 +189,31 @@ public class ClipRangeSelectorLangProvider : LangProviderBase
             ["SummaryVariableFrameRate"] = "Переменная",
             ["SummaryFrameRateUnknown"] = "Неизвестна"
         };
+        Data["de"] = new(Data["en"])
+        {
+            ["TimelineSectionTitle"] = "Zeitachsenausschnitt",
+            ["SelectionHintText"] = "Ziehen Sie den Griff, um die Position zu wählen",
+            ["DurationSectionTitle"] = "Dauereinstellung",
+            ["ClipLengthLabel"] = "Dauer (s)",
+            ["StartTimeLabel"] = "Startzeit",
+            ["ClipDurationLabel"] = "Ausschnittsdauer",
+            ["EndTimeLabel"] = "Endzeit",
+            ["StartFrameLabel"] = "Start Frame/Feld",
+            ["ClipFrameCountLabel"] = "Frame/Feld-Dauer",
+            ["EndFrameLabel"] = "End Frame/Feld",
+            ["Note2Text"] = "Unterschiedliche Dauern oder Time-Bases verhindern Ausrichtung; Qualitätsmetriken nicht anwendbar.",
+            ["ConfirmButtonText"] = "Probe kodieren",
+            ["SummaryDurationLabel"] = "Dauer",
+            ["SummaryTotalFramesLabel"] = "Gesamtframes",
+            ["SummaryFrameRateLabel"] = "Bildrate",
+            ["SummarySecondsUnit"] = "s",
+            ["SummaryProgressive"] = "Progressiv",
+            ["SummaryInterlaced"] = "Interlaced",
+            ["SummaryUnknown"] = "Unbekannt",
+            ["SummaryConstantFrameRate"] = "Konstant",
+            ["SummaryVariableFrameRate"] = "Variabel",
+            ["SummaryFrameRateUnknown"] = "Unbekannt"
+        };
     }
 
     public const string WindowTitle = "1cenc Sample Clip";

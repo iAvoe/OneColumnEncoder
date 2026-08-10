@@ -302,6 +302,49 @@ public class AppUsageLangProvider : LangProviderBase
             ["ManualExtTitle"] = "Ручные сторонние расширения",
             ["ManualExtIntro"] = "Модифицированные кодеры могут иметь функции, которых нет в официальных версиях; проверьте параметры перед включением."
         };
+        Data["de"] = new(Data["en"])
+        {
+            ["HowToUse"] = "Verwendung des Programms",
+            ["UpdateTitle"] = "Anwendung aktualisieren",
+            ["UpdateDesc"] = "1cenc-Ordner behalten und OneColumnEncoder.exe ersetzen. Alle Einstellungen und Daten bleiben erhalten.",
+            ["Description"] = "Dieses Programm folgt streng der Reihenfolge oben→unten, links→rechts — alle Weiter-Schaltflächen sind rechts.",
+            ["CopyHint"] = "Tipp: Textauswahl und Ctrl+C werden unterstützt",
+            ["GettingStarted"] = "Einfachster Einstieg:",
+            ["Step1"] = "1. Upstream-Tool importieren & auswählen (ffmpeg, vspipe, avs2yuv etc.)",
+            ["Step2"] = "2. Encoder / Downstream-Tool importieren & auswählen (x264, x265 etc.)",
+            ["Step3"] = "3. Quellvideodatei importieren",
+            ["Step4"] = "4. Einstellungen wählen (Kompatibilität und Status werden geprüft)",
+            ["Step5"] = "5. Checkliste abarbeiten und starten",
+            ["WhyDisabledTitle"] = "Warum ist die Start-Schaltfläche deaktiviert",
+            ["WhyDisabled1"] = "1. Bypass unter einer fehlerhaften Checkliste klicken",
+            ["WhyDisabled2"] = "2. Schlechte Eingabe, schlechte Ausgabe (meist blockiert es nicht)",
+            ["WhyDisabled3"] = "3. Kodierung beschädigter Videos kann selten BSOD verursachen",
+            ["ToolDownloadTitle"] = "Videokodierungstools herunterladen",
+            ["ComplianceTitle"] = "Kommerzielle Nutzung — Compliance",
+            ["ComplianceDesc"] = "Dieses Programm steht unter Apache License 2.0. Für kommerzielle Nutzung beachten Sie die Anforderungen der importierten Programme.",
+            ["LicenseFfmpeg"] = "· FFmpeg / FFprobe Recht & Lizenz: https://ffmpeg.org/legal.html",
+            ["LicenseVapourSynth"] = "· VapourSynth-Lizenz: https://github.com/vapoursynth/vapoursynth/blob/master/COPYING",
+            ["LicenseAvs2yuv"] = "· Avs2YUV-Lizenz: https://github.com/FFMS/ffms2/blob/master/COPYING.GPLv3",
+            ["LicenseAvs2pipemod"] = "· Avs2Pipemod-Lizenz: https://github.com/pinterf/AvsPmod",
+            ["LicenseSvfi"] = "· SVFI-Lizenz: https://github.com/Justin62628/Squirrel-RIFE/blob/master/LICENSE",
+            ["LicenseX264"] = "· x264-Lizenz & AVC-Patente: https://x264.org/licensing/",
+            ["LicenseX265"] = "· x265-Lizenz & HEVC-Patente: https://www.videolan.org/developers/x265.html",
+            ["LicenseSvtAv1"] = "· SVT-AV1 / AV1-Lizenz: https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/LICENSE.md",
+            ["ComplianceFooter"] = "...einschließlich Video-Container, Audio-Codecs und vor allem Schriftarten für kommerzielle Nutzung.",
+            ["ComplianceDisclaimer"] = "Nutzer sind für die Einhaltung von Softwarelizenzen, Codec-Patenten, Medienformaten und Schriftlizenzen in ihrer Region verantwortlich.",
+            ["ParamConfigTitle"] = "Beschreibung der Parameterkonfiguration",
+            ["ParamConfigIntro"] = "Das Programm richtet Parameter an der Quelle aus und lässt dem Encoder genug Freiraum.",
+            ["AutoParamTitle"] = "Automatisch oder via Y4M bereitgestellte Parameter",
+            ["AutoParamBase"] = "· Basis: Bildrate, Auflösung, Gesamtframes, Farbmatrix, Übertragung, Primärfarben",
+            ["AutoParamEncode"] = "· Kodierung: Lookahead, Suchradius, Subpixel-Suchstärke",
+            ["AutoParamFooter"] = "...außer Encoder, die diese automatisch konfigurieren können",
+            ["ManualBaseTitle"] = "Manuell — Basisparameter",
+            ["ManualBaseList"] = "· x264: Allgemein, Stock Footage\n· x265: Allgemein, Film, Stock Footage, Anime, Stresstest\n· SVT-AV1: Ultra HQ, hohe Kompression, schnell",
+            ["ManualBaseFooter"] = "...abhängig von CPU-Leistung und CLI-Optionen; beeinflusst Bitgenauigkeit.",
+            ["ManualExtTitle"] = "Manuell — Drittanbieter-Erweiterungen",
+            ["ManualExtIntro"] = "Modded Encoder bieten Funktionen, die offizielle Versionen nicht haben; Existenz prüfen vor Aktivierung.",
+            ["CloseButtonText"] = "Schließen"
+        };
     }
 
     public const string WindowTitle = "1cenc Usage & Compliance";

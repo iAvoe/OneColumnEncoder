@@ -73,6 +73,15 @@ public class SrcFilePickerLangProvider : LangProviderBase
             ["Filter.AllFiles"] = "Все файлы (*.*)|*.*",
             ["CustomScriptModeText"] = "Импорт своего скрипта"
         };
+        Data["de"] = new(Data["en"])
+        {
+            ["Filter.Video"] = $"Videodateien ({VideoExtensions})|{VideoExtensions}|Alle Dateien (*.*)|*.*",
+            ["Filter.AviSynthScript"] = "AviSynth-Skripte (*.avs)|*.avs",
+            ["Filter.VapourSynthScript"] = "VapourSynth-Skripte (*.vpy)|*.vpy",
+            ["Filter.SvfiIni"] = "SVFI-Konfigurationsdateien (*.ini)|*.ini",
+            ["Filter.AllFiles"] = "Alle Dateien (*.*)|*.*",
+            ["CustomScriptModeText"] = "Benutzerskript importieren"
+        };
     }
 
     public string VideoFilter { get; }

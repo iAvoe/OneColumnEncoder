@@ -72,6 +72,15 @@ public class CpuSetsLangProvider : LangProviderBase
             ["BindingFailed"] = "Сбой привязки CPU Sets: {0}",
             ["SkippedPrefix"] = "Привязка CPU Sets пропущена. "
         };
+        Data["de"] = new(Data["en"])
+        {
+            ["UnavailableOnNonWindows"] = "CPU Sets sind nur unter Windows verfügbar.",
+            ["NoCpuSetsFound"] = "Keine CPU Sets für NUMA-Knoten {0} gefunden.",
+            ["SetProcessDefaultCpuSetsFailed"] = "SetProcessDefaultCpuSets fehlgeschlagen: {0}.",
+            ["BoundSuccess"] = "PID {0} an NUMA-Knoten {1} mit {2} CPU Set(s) gebunden;\n{3} vorhandene Threads aktualisiert. Puffergröße: {4}KB.",
+            ["BindingFailed"] = "CPU Sets-Bindung fehlgeschlagen: {0}",
+            ["SkippedPrefix"] = "CPU Sets-Bindung übersprungen. "
+        };
     }
 
     public string UnavailableOnNonWindows { get; }

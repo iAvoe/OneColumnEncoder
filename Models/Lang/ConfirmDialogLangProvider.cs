@@ -68,7 +68,7 @@ public class ConfirmDialogLangProvider : LangProviderBase
             ["ConfirmDialog.CopyHint"] = "テキストを右クリックしてコピー",
             ["ConfirmDialog.DebugPrefix"] = "デバッグ: ",
         };
-        Data["ru"] = new(Data["en"])
+Data["ru"] = new(Data["en"])
         {
             ["ConfirmDialog.CopyText"] = "Копировать сообщение",
             ["ConfirmDialog.WarningPrefix"] = "Предупреждение: ",
@@ -77,6 +77,16 @@ public class ConfirmDialogLangProvider : LangProviderBase
             ["ConfirmDialog.SuccessPrefix"] = "Успех: ",
             ["ConfirmDialog.CopyHint"] = "Щёлкните текст правой кнопкой, чтобы скопировать",
             ["ConfirmDialog.DebugPrefix"] = "Отладка: ",
+        };
+        Data["de"] = new(Data["en"])
+        {
+            ["ConfirmDialog.CopyText"] = "Nachricht kopieren",
+            ["ConfirmDialog.CopyHint"] = "Rechtsklick auf Text zum Kopieren",
+            ["ConfirmDialog.WarningPrefix"] = "Warnung: ",
+            ["ConfirmDialog.ErrorPrefix"] = "Fehler: ",
+            ["ConfirmDialog.DebugPrefix"] = "Debug: ",
+            ["ConfirmDialog.InfoPrefix"] = "Info: ",
+            ["ConfirmDialog.SuccessPrefix"] = "Erfolg: ",
         };
     }
 

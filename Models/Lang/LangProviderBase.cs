@@ -182,6 +182,25 @@ public abstract class LangProviderBase
             ["Reset"] = "Сброс",
             ["Stop"] = "Стоп",
         },
+        ["de"] = new()
+        {
+            ["Confirm"] = "Bestätigen",
+            ["Cancel"] = "Abbrechen",
+            ["Add"] = "Hinzufügen",
+            ["Delete"] = "Löschen",
+            ["Clear"] = "Leeren",
+            ["Clear All"] = "Alles leeren",
+            ["Edit"] = "Bearbeiten",
+            ["Replace"] = "Ersetzen",
+            ["Import"] = "Importieren",
+            ["Save"] = "Speichern",
+            ["Close"] = "Schließen",
+            ["Preview"] = "Vorschau",
+            ["Fit"] = "Anpassen",
+            ["Remove"] = "Entfernen",
+            ["Reset"] = "Zurücksetzen",
+            ["Stop"] = "Stopp",
+        },
     };
 
     protected LangProviderBase(

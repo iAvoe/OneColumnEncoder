@@ -113,6 +113,19 @@ public class SrcReviserLangProvider(string languageCode) : LangProviderBase(lang
             ["SrcReviser.NoFfprobeJson"] = "Для текущего источника нет доступного JSON ffprobe. Сначала запустите анализ источника",
             ["SrcReviser.UpdateFailed"] = "Не удалось обновить JSON ffprobe: {0}",
         };
+        Data["de"] = new(Data["en"])
+        {
+            ["SrcReviser.Description"] = "Tatsächliche Auflösung nach Filtern eingeben, um ffprobe-Analyse zu überschreiben",
+            ["SrcReviser.SettingsHeader"] = "Neue Auflösung",
+            ["SrcReviser.WidthLabel"] = "Breite",
+            ["SrcReviser.HeightLabel"] = "Höhe",
+            ["SrcReviser.CurrentLabel"] = "Aktuelle Analyse",
+            ["SrcReviser.SuggestedLabel"] = "Verkleinerungs-Schieberegler",
+            ["SrcReviser.InvalidInput"] = "Auflösung muss ganzzahlige Abmessungen von 1 bis 65535 verwenden",
+            ["SrcReviser.EvenResolutionHint"] = "Breite und Höhe der Auflösung müssen gerade Zahlen sein",
+            ["SrcReviser.NoFfprobeJson"] = "Kein ffprobe-JSON für die aktuelle Quelle verfügbar. Zuerst Quellanalyse ausführen",
+            ["SrcReviser.UpdateFailed"] = "ffprobe-JSON-Update fehlgeschlagen: {0}",
+        };
     }
 
     public static SrcReviserLangProvider Current => new(UILangProvider.Current.LanguageCode);

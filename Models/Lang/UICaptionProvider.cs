@@ -111,7 +111,7 @@ public static class UICaptionProvider
 
         public static class LanguageOptions
         {
-            public static readonly string[] Codes = ["en", "zh-cn", "zh-tw", "fr", "es", "ja", "ru"];
+            public static readonly string[] Codes = ["en", "zh-cn", "zh-tw", "fr", "es", "ja", "ru", "de"];
 
             public static string GetDisplayName(string code) => code switch
             {
@@ -119,6 +119,7 @@ public static class UICaptionProvider
                 "es" => "es (!Localized)",
                 "ja" => "ja (!Localized)",
                 "ru" => "ru (!Localized)",
+                "de" => "de (!Localized)",
                 _ => code
             };
         }

@@ -113,6 +113,22 @@ public class VideoSrcQueueLangProvider : LangProviderBase
             ["SourceQueue.OpenQueueJson"] = "Открыть JSON очереди",
             ["SourceQueue.OpenExcludedJson"] = "Открыть JSON исключений",
         };
+        Data["de"] = new(Data["en"])
+        {
+            ["Tool.Source.VideoSrcQueueWithCount"] = "Videoquellen-Warteschlange ({0})",
+            ["Tool.Source.VideoSrcQueue"] = "Videoquellen-Warteschlange",
+            ["Buttons.Import"] = "Importieren",
+            ["SourceQueue.Sequence"] = "Sequenz",
+            ["ToolField.Path"] = "Pfad",
+            ["SourceQueue.SelectFolderTitle"] = "Videoquellen-Warteschlangenordner wählen",
+            ["SourceQueue.EmptyFolderWarnMessage"] = "Keine Videodateien im gewählten Ordner. Bitte einen Ordner mit mindestens einem Video wählen.",
+            ["SourceQueue.Analyzed"] = "Warteschlangenanalyse abgeschlossen. {0} Video(s) wegen übermäßiger Unterschiede gefiltert.\n\nJSON-Daten:\n{1}\n\nAusschlussliste:\n{2}",
+            ["SourceQueue.AnalyzedNoEx"] = "Warteschlangenanalyse abgeschlossen. Keine Videos gefiltert.\n\nJSON-Daten:\n{0}",
+            ["SourceQueue.CopyQueueJsonPath"] = "JSON-Pfad kopieren",
+            ["SourceQueue.CopyExcludedJsonPath"] = "Ausschluss-JSON-Pfad kopieren",
+            ["SourceQueue.OpenQueueJson"] = "JSON öffnen",
+            ["SourceQueue.OpenExcludedJson"] = "Ausschluss-JSON öffnen",
+        };
     }
 
     public string ToolSourceVideoSrcQueueWithCount { get; }

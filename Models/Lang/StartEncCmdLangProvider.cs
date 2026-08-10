@@ -176,6 +176,30 @@ public class StartEncCmdLangProvider : LangProviderBase
             ["GbSuffix"] = " ГБ",
             ["MbSuffix"] = " МБ"
         };
+        Data["de"] = new(Data["en"])
+        {
+            ["WarnTitle"] = "Kodierung",
+            ["MissingUpstreamMsg"] = "Kein Upstream-Eingabepfad. Wählen Sie eine Videoquelle oder ein Skript für das gewählte Upstream-Tool.",
+            ["ConfirmTitle"] = "Kodierungsbefehl",
+            ["OverwriteTitle"] = "Ausgabe überschreiben",
+            ["OverwriteMsg"] = "Existierende Dateien werden überschrieben",
+            ["EncodedOutputLabel"] = "Encoder-Ausgabe",
+            ["MuxOutputLabel"] = "Mux-Ausgabe",
+            ["OverwriteTargetLabel"] = "{0}: {1} ({2})",
+            ["LargestExistingSizeLabel"] = "Größte vorhandene Größe: {0}",
+            ["ConfirmDelayLabel"] = "Bestätigung-Schaltfläche wird in {0} s freigeschaltet.",
+            ["AdditionalOverwriteTargetsLabel"] = "...und {0} weitere Ziele.",
+            ["QueueJsonMissingMsg"] = "Warteschlangen-JSON fehlt. Führen Sie die Quellen-Warteschlangenanalyse aus.",
+            ["QueueJsonInvalidMsg"] = "Warteschlangen-JSON kann nicht gelesen/verarbeitet werden: {0}",
+            ["QueueJsonNoEntriesMsg"] = "Warteschlangen-JSON enthält keine akzeptierten Quelleinträge.",
+            ["QueueUnsupportedRouteMsg"] = "Warteschlangenkodierung unterstützt das gewählte Upstream-Tool nicht.",
+            ["QueueSourceMissingMsg"] = "Warteschlangen-Quelldateien fehlen. Kodierung nicht möglich:",
+            ["QueueDuplicateOutputMsg"] = "Warteschlangen-Ausgabepfade kollidieren. Kodierung nicht möglich:",
+            ["QueueEncodingPendingMsg"] = "Überschreibschutz abgeschlossen. Wartenschlangenausführung noch nicht implementiert.",
+            ["AllFilteredOutMsg"] = "Alle Videos wurden durch den Dauerfilter gefiltert.",
+            ["GbSuffix"] = " GB",
+            ["MbSuffix"] = " MB"
+        };
     }
 
     public string WarnTitle { get; }

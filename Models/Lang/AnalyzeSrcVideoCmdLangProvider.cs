@@ -88,6 +88,18 @@ public class AnalyzeSrcVideoCmdLangProvider : LangProviderBase
             ["TotalFramesFormat"] = "{0}: {1}",
             ["ConcatTotalFramesLabel"] = "Кадры всего после конкатенации",
         },
+        ["de"] = new()
+        {
+            ["QueueItemProgress"] = "Element {0}/{1}",
+            ["SourceFilePath"] = "Quelle: {0}",
+            ["QueueItemSkipMsg"] = "Dieses Quellelement wird übersprungen. Schließen Sie diesen Dialog, um fortzufahren.",
+            ["AllQueueItemsFailed"] = "Analyse der Warteschlange fehlgeschlagen: Alle {0} Elemente wurden übersprungen, da sie nicht analysiert werden konnten.",
+            ["SkippedItemsLabel"] = "Übersprungene Elemente: {0}",
+            ["ListItemPrefix"] = "- {0}",
+            ["AndMoreLabel"] = "...und {0} weitere.",
+            ["TotalFramesFormat"] = "{0}: {1}",
+            ["ConcatTotalFramesLabel"] = "Gesamtframeanzahl nach Konkatenation",
+        },
     };
 
     public string QueueItemProgress { get; }

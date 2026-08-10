@@ -302,6 +302,44 @@ public class EncoderConfLangProvider : LangProviderBase
             ["VvencHintText"] = "VVenC используется только для предпросмотра одного кадра, не для основного кодирования",
             ["BlankPresetHint"] = "Нет: настройки кодера по умолчанию / полная настройка ниже"
         };
+        Data["de"] = new(Data["en"])
+        {
+            ["RateControlTitle"] = "Ratensteuerung",
+            ["CustomParamsTitle"] = "Benutzerparameter",
+            ["CrfModeText"] = "CRF-Modus (konstanter Qualitätsfaktor)",
+            ["AbrModeText"] = "ABR-Modus (durchschnittliche Bitrate)",
+            ["BasicParamsText"] = "Basisparameter",
+            ["KeyframeSecondsText"] = "Keyframe-Intervall (Sekunden)",
+            ["ThirdPartyParamsText"] = "Drittanbieter-Erweiterungsparameter",
+            ["FreeTextControlTitle"] = "Zusätzliche Encoder-Parameter (CLI-Format)",
+            ["PreviewFreeTextControlTitle"] = "Zusätzliche Encoder-Parameter (Vorschau/FFmpeg-Format)",
+            ["PreviewFreeTextHint"] = "FFmpeg-API-Format verwenden: -x264-params, -x265-params, -svtav1-params",
+            ["X264ModText"] = "x264 Mod: Filmkorn-RD-Optimierung (FGO-RD)",
+            ["X265JpsdrAqText"] = "x265 jpsdr Mod: AQ-Hysterese",
+            ["X265JpsdrDarkText"] = "x265 jpsdr Mod: ↑AQ-Stärke für dunkle Szenen",
+            ["X265JpsdrTextureText"] = "x265 jpsdr Mod: ↑AQ-Stärke für Kanten",
+            ["SvtAv1EssentialDl2Text"] = "SVT-AV1-Essential: Präzises Deblocking (DLF2)",
+            ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential: Automatische Tile-Größe",
+            ["CrfHintText"] = "CRF-Skala — Verlustfrei | UHQ | HQ | Streaming",
+            ["AbrHintText"] = "ABR-Skala (2K60) — Fast verlustfrei | Fast verlustfrei→HQ | UHQ→Streaming | HQ→Streaming",
+            ["KeyframeHintText1"] = "Keyint-Skala (Dekodierschwierigkeit):\nEco./Multi-Track-Bearbeitung | Mittel | Schwer & mittlere Kompression | Extrem & hohe Kompression",
+            ["KeyframeHintText2"] = "↑Auflösung=↑Dekodierschwierigkeit; Keyint-Änderung ↓Dekodier-Index-Schwierigkeit oder ↑Kompression",
+            ["ThirdPartyHintText1"] = "\"Filmkorn-Optimierung\" begünstigt Schärfe, nicht Kompression",
+            ["ThirdPartyHintText2"] = "\"AQ-Hysterese\" verhindert, dass Schnitte/Montagen AQ-Strategie stören",
+            ["ThirdPartyHintText3"] = "\"Präzises Deblocking\" kann Unschärfe reduzieren",
+            ["ThirdPartyHintText4"] = "\"Auto Tile\" kann Bitverteilung besser ausbalancieren",
+            ["GeneralPurposeText"] = "Allgemein",
+            ["StockFootageText"] = "Archivmaterial",
+            ["FilmIRLText"] = "Film / Reale Aufnahmen",
+            ["AnimeText"] = "Anime",
+            ["StressTestText"] = "Stresstest",
+            ["PeakQualityText"] = "Maximale Qualität",
+            ["CompressionOptText"] = "Hohe Kompression",
+            ["SpeedOptimizedText"] = "Schnell",
+            ["BlankPresetText"] = "Keine",
+            ["VvencHintText"] = "VVenC ist nur für Einzelbildvorschau, nicht für Hauptkodierung",
+            ["BlankPresetHint"] = "Keine: Encoder-Standard / vollständige Anpassung über Zusatzparameter"
+        };
     }
 
     public const string WindowTitle = "1cenc Encoding Settings";

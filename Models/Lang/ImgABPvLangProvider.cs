@@ -251,7 +251,44 @@ public class ImgABPvLangProvider : LangProviderBase
             ["SsimulacraScoreHint"] = "Оценка SSIMULACRA: 100 Мате. без потерь | 90 Визуально без потерь | 85 Незначительные потери | 80 Заметные | 70 Видимые | 50 Значительные | 30 Критические",
             ["ButteraugliToolMissing"] = "Инструмент Butteraugli не найден. Поместите x64-GoogleButteraugli рядом с исполняемым файлом и перезапустите.",
             ["ButteraugliToolPresent"] = "Метрика качества Butteraugli готова.",
-            ["ButteraugliScoreHint"] = "Оценка Butteraugli (эвристическая): <1 Теоретически без потерь | 1-2 Визуально без потерь | 2-4 Небольшая потеря | 4-6 Заметная потеря | 6-8 Значительная потеря | >8 Критическая потеря",
+            ["ButteraugliScoreHint"] = "Оценка Butteraugli (эвристическая): <1 Теоретически без потерь | 1-2 Визуально без потерь | 2-4 Небольшая потеря | 4-6 Заметная потеря | 6-8 Значительная потеря | >8 Критическая потеря"
+        };
+        Data["de"] = new(Data["en"])
+        {
+            ["EncoderLabel"] = "Encoder",
+            ["DisplayModeLabel"] = "Anzeige",
+            ["ZoomLabel"] = "Zoom",
+            ["PositionLabel"] = "Bildposition",
+            ["FitButtonText"] = "Anpassen",
+            ["RawButtonText"] = "Roh",
+            ["Hint1Text"] = "Komprimierung erfolgt erst nach Klick auf Vorschau aufgrund der Langsamkeit mancher Encoder",
+            ["Hint2Text"] = "Vorschau nur via ffmpeg, um Nutzbarkeit ohne importierten Encoder sicherzustellen",
+            ["Hint3Text"] = "Trennlinie zum Vergleich ziehen; beachten Sie, dass Sie \"angehalten\" und nicht \"Bewegung\" vergleichen",
+            ["PreviewButtonText"] = "Vorschau",
+            ["StatusReady"] = "Bereit",
+            ["StatusExtracting"] = "Quellframe wird extrahiert...",
+            ["StatusConverting"] = "Quellframe wird konvertiert ({0})...",
+            ["StatusEncoding"] = "Kodierung mit {0}...",
+            ["StatusDecoding"] = "Vorschauframe wird dekodiert...",
+            ["StatusPreviewReady"] = "Vorschau bereit: {0}, CRF/QP {1}",
+            ["StatusComputingScores"] = "Qualitätsmetriken werden berechnet...",
+            ["StatusCancelled"] = "Vorschau abgebrochen",
+            ["StatusNoFfmpeg"] = "ffmpeg.exe nicht importiert",
+            ["StatusNoSource"] = "Keine gültige Videoquelle ausgewählt",
+            ["StatusDisplayModeBlocked"] = "Anzeigemodus kann während Vorschau nicht geändert werden",
+            ["StatusDisplayModeSet"] = "Anzeigemodus: {0}",
+            ["DisplayModeRaw"] = "Roh",
+            ["DisplayModeLowToBt709"] = "Enger Farbraum → BT.709",
+            ["DisplayModeWcgToBt709"] = "WCG → BT.709",
+            ["DisplayModeHdrToSdr"] = "HDR → SDR",
+            ["DisplayModeHighHdrToSdr"] = "Hoher HDR → SDR",
+            ["WarnSvtAv1No12Bit"] = "libsvtav1 unterstützt keine 12-Bit-Quellvorschau.\nBitte libx265 verwenden oder eine andere Quelle wählen.",
+            ["Ssimulacra2ToolMissing"] = "SSIMULACRA2.1-Tool nicht gefunden. x64-CloudinarySSIMULACRA2.1 neben dem Executable platzieren und neu starten.",
+            ["Ssimulacra2ToolPresent"] = "SSIMULACRA2.1-Qualitätsmetrik bereit.",
+            ["SsimulacraScoreHint"] = "SSIMULACRA-Punktzahl: 100 Mathematisch verlustfrei | 90 Visuell verlustfrei | 85 Minimaler Verlust | 80 Sichtbar | 70 Deutlich | 50 Erheblich | 30 Gravierend",
+            ["ButteraugliToolMissing"] = "Butteraugli-Tool nicht gefunden. x64-GoogleButteraugli neben dem Executable platzieren und neu starten.",
+            ["ButteraugliToolPresent"] = "Butteraugli-Qualitätsmetrik bereit.",
+            ["ButteraugliScoreHint"] = "Butteraugli-Punktzahl (heuristisch): <1 Theoretisch verlustfrei | 1-2 Visuell verlustfrei | 2-4 Leichter Verlust | 4-6 Deutlicher Verlust | 6-8 Schwerer Verlust | >8 Gravierender Verlust"
         };
     }
 

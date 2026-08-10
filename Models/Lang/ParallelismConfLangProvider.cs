@@ -171,6 +171,30 @@ public class ParallelismConfLangProvider : LangProviderBase
             ["CorePerGroup1alt"] = " ядер (",
             ["CorePerGroup1alt1"] = " потоков) напрямую связаны с ",
             ["CorePerGroup2"] = " MB L3",
+        },
+        ["de"] = new()
+        {
+            ["IntroText"] = "Dieses Programm ignoriert verschiedene Parallelisierungen zwischen Tools und verwendet:\n· CPU Sets zur Thread-Affinitätsvorschlag (temporäre Thread-Knoten-Verschiebung erlaubt)\n· Versuch, RAM auf dem NUMA-Knoten der Kodierungsthreads zuzuordnen",
+            ["PriorityText"] = "Dieses Programm erhöht nicht die Aufgabenpriorität und deklariert Kodierung nicht als latenzempfindlich, um zu verhindern, dass nicht reagierende Aufgaben das OS blockieren.",
+            ["CacheGroupTitle"] = "Erkannte L3-Cache-Gruppen (↑ Übergänge, ↓ Treffer)",
+            ["NumaTopologyHintText"] = "Bei mehreren NUMA-Knoten pro CPU belegt der Encoder nur 1 → nur ein Teil der CPU-Ressourcen kann zugewiesen werden.",
+            ["UpstreamNumaTitle"] = "NUMA-Soft-Binding: Upstream-Pipeline",
+            ["DownstreamNumaTitle"] = "NUMA-Soft-Binding: Downstream-Pipeline (Encoder)",
+            ["NumaGuidanceText"] = "Encoder einem anderen Knoten zuzuweisen kann bei langsamen Upstream-Filtern schneller sein; sonst kann geteilter Knoten schneller sein — Rechenleistung vs Latenz.",
+            ["ThreadStrategyTitle"] = "Prozessorplanung",
+            ["EncoderThreadCountText"] = "Encoder-Threads",
+            ["PreferUpstreamPhysCoresText"] = "Upstream-Threads auf physische Kerne beschränken",
+            ["PreferDownstreamPhysCoresText"] = "Encoder-Threads auf physische Kerne beschränken",
+            ["PipeBufferStrategyTitle"] = "Pufferpuffer",
+            ["PipeBufferStrategyText"] = "Puffergröße optimieren auf min(max(w×h×bpp(Y,U,V)÷10MB, 80KB), 16MB)",
+            ["PipeBufferHintText"] = "Kann I/O-Anfragen reduzieren und Übertragungsrate verbessern",
+            ["MemoryStrategyTitle"] = "Erweiterte RAM-Zuordnung",
+            ["LargePagesUnavailableHintText"] = "Kein Tool bietet Large-Page-RAM-Zuordnung, daher kann HD-Kodierungsleistung nicht auf diese Weise verbessert werden.",
+            ["CorePerGroup"] = "· Alle ",
+            ["CorePerGroup1"] = " Kerne sind direkt mit ",
+            ["CorePerGroup1alt"] = " Kerne (",
+            ["CorePerGroup1alt1"] = " Threads) sind direkt mit ",
+            ["CorePerGroup2"] = " MB L3 verbunden",
         }
     };
 
