@@ -200,6 +200,30 @@ public class StartEncCmdLangProvider : LangProviderBase
             ["GbSuffix"] = " GB",
             ["MbSuffix"] = " MB"
         };
+        Data["ko"] = new(Data["en"])
+        {
+            ["WarnTitle"] = "인코딩",
+            ["MissingUpstreamMsg"] = "업스트림 입력 경로가 없습니다. 선택한 업스트림 도구에 비디오 소스 또는 스크립트 소스를 지정했는지 확인하세요.",
+            ["ConfirmTitle"] = "인코딩 명령",
+            ["OverwriteTitle"] = "출력 덮어쓰기",
+            ["OverwriteMsg"] = "이미 존재하는 파일이 덮어써집니다",
+            ["EncodedOutputLabel"] = "인코더 출력",
+            ["MuxOutputLabel"] = "먹스 출력",
+            ["OverwriteTargetLabel"] = "{0}: {1} ({2})",
+            ["LargestExistingSizeLabel"] = "가장 큰 기존 크기: {0}",
+            ["ConfirmDelayLabel"] = "확인 버튼은 {0}초 후에 활성화됩니다.",
+            ["AdditionalOverwriteTargetsLabel"] = "...외 {0}개 대상.",
+            ["QueueJsonMissingMsg"] = "대기열 JSON이 없습니다. 대기열 인코딩을 시작하기 전에 소스 대기열 분석을 실행하세요.",
+            ["QueueJsonInvalidMsg"] = "대기열 JSON을 읽거나 구문 분석할 수 없습니다: {0}",
+            ["QueueJsonNoEntriesMsg"] = "대기열 JSON에 수락된 소스 항목이 없습니다.",
+            ["QueueUnsupportedRouteMsg"] = "대기열 인코딩은 선택한 업스트림 도구를 지원하지 않습니다.",
+            ["QueueSourceMissingMsg"] = "대기열 소스 파일이 없습니다. 인코딩을 계속할 수 없습니다:",
+            ["QueueDuplicateOutputMsg"] = "대기열 출력 경로가 충돌합니다. 인코딩을 계속할 수 없습니다:",
+            ["QueueEncodingPendingMsg"] = "대기열 덮어쓰기 보호가 완료되었습니다. 대기열 실행은 아직 연결되지 않았습니다.",
+            ["AllFilteredOutMsg"] = "길이 필터로 모든 동영상이 걸러졌습니다.",
+            ["GbSuffix"] = " GB",
+            ["MbSuffix"] = " MB",
+        };
     }
 
     public string WarnTitle { get; }

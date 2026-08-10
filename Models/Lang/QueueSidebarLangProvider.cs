@@ -72,6 +72,14 @@ public sealed class QueueSidebarLangProvider : LangProviderBase
             ["QueueSidebarUnfinishedHeaderText"] = "Unvollständig",
             ["QueueSidebarCompletedHeaderText"] = "Abgeschlossen",
         };
+        Data["ko"] = new(Data["en"])
+        {
+            ["QueueSidebarCancelAllText"] = "모두 취소",
+            ["QueueSidebarRunningHeaderText"] = "실행 중",
+            ["QueueSidebarWaitingHeaderText"] = "대기 중",
+            ["QueueSidebarUnfinishedHeaderText"] = "미완료",
+            ["QueueSidebarCompletedHeaderText"] = "완료",
+        };
     }
 
     public static QueueSidebarLangProvider Current => new(UILangProvider.Current.LanguageCode);

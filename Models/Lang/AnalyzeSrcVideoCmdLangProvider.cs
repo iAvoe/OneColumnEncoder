@@ -100,6 +100,18 @@ public class AnalyzeSrcVideoCmdLangProvider : LangProviderBase
             ["TotalFramesFormat"] = "{0}: {1}",
             ["ConcatTotalFramesLabel"] = "Gesamtframeanzahl nach Konkatenation",
         },
+        ["ko"] = new()
+        {
+            ["QueueItemProgress"] = "큐 항목 {0}/{1}",
+            ["SourceFilePath"] = "소스: {0}",
+            ["QueueItemSkipMsg"] = "이 소스 항목을 건너뜁니다. 계속하려면 이 대화 상자를 닫으세요.",
+            ["AllQueueItemsFailed"] = "소스 대기열 분석 실패: {0}개의 큐 항목을 모두 분석할 수 없어 건너뛰었습니다.",
+            ["SkippedItemsLabel"] = "건너뛴 실패 큐 항목: {0}",
+            ["ListItemPrefix"] = "- {0}",
+            ["AndMoreLabel"] = "...외 {0}개.",
+            ["TotalFramesFormat"] = "{0}: {1}",
+            ["ConcatTotalFramesLabel"] = "연결 후 총 프레임 수",
+        },
     };
 
     public string QueueItemProgress { get; }

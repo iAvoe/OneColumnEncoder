@@ -126,6 +126,22 @@ public class SrcReviserLangProvider(string languageCode) : LangProviderBase(lang
             ["SrcReviser.NoFfprobeJson"] = "Kein ffprobe-JSON für die aktuelle Quelle verfügbar. Zuerst Quellanalyse ausführen",
             ["SrcReviser.UpdateFailed"] = "ffprobe-JSON-Update fehlgeschlagen: {0}",
         };
+        Data["ko"] = new(Data["en"])
+        {
+            ["SrcReviser.Description"] = "ffprobe 분석에 덮어쓸 필터 적용 후의 실제 해상도를 설정합니다",
+            ["SrcReviser.SettingsHeader"] = "새 해상도",
+            ["SrcReviser.WidthLabel"] = "너비",
+            ["SrcReviser.HeightLabel"] = "높이",
+            ["SrcReviser.CurrentLabel"] = "현재 분석 값",
+            ["SrcReviser.SuggestedLabel"] = "해상도 축소 슬라이더",
+            ["SrcReviser.UnknownResolution"] = "알 수 없음",
+            ["SrcReviser.ResolutionFormat"] = "{0}x{1}",
+            ["SrcReviser.Confirm"] = "ffprobe JSON 업데이트",
+            ["SrcReviser.InvalidInput"] = "해상도는 1~65535 사이의 정수 치수여야 합니다",
+            ["SrcReviser.EvenResolutionHint"] = "해상도의 너비와 높이는 짝수여야 합니다",
+            ["SrcReviser.NoFfprobeJson"] = "현재 소스에 사용할 수 있는 ffprobe JSON이 없습니다. 먼저 소스 분석을 실행하세요",
+            ["SrcReviser.UpdateFailed"] = "ffprobe JSON 업데이트 실패: {0}",
+        };
     }
 
     public static SrcReviserLangProvider Current => new(UILangProvider.Current.LanguageCode);

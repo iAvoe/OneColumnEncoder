@@ -82,6 +82,15 @@ public class SrcFilePickerLangProvider : LangProviderBase
             ["Filter.AllFiles"] = "Alle Dateien (*.*)|*.*",
             ["CustomScriptModeText"] = "Benutzerskript importieren"
         };
+        Data["ko"] = new(Data["en"])
+        {
+            ["Filter.Video"] = $"비디오 파일 ({VideoExtensions})|{VideoExtensions}|모든 파일 (*.*)|*.*",
+            ["Filter.AviSynthScript"] = "AviSynth 스크립트 파일 (*.avs)|*.avs",
+            ["Filter.VapourSynthScript"] = "VapourSynth 스크립트 파일 (*.vpy)|*.vpy",
+            ["Filter.SvfiIni"] = "SVFI 구성 파일 (*.ini)|*.ini",
+            ["Filter.AllFiles"] = "모든 파일 (*.*)|*.*",
+            ["CustomScriptModeText"] = "사용자 정의 스크립트 가져오기"
+        };
     }
 
     public string VideoFilter { get; }

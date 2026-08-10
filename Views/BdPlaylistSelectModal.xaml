@@ -9,7 +9,7 @@
                    d:DataContext="{d:DesignInstance Type=vms:BdPlaylistSelectVM}"
                    mc:Ignorable="d"
                    Title="{Binding WindowTitle}"
-                   Width="980"
+                   Width="1000"
                    MinHeight="500"
                    MaxHeight="700"
                    SizeToContent="Height"
@@ -72,8 +72,8 @@
     <Grid Margin="15 10 15 15">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="30*" />
-            <ColumnDefinition Width="34*" />
-            <ColumnDefinition Width="36*" />
+            <ColumnDefinition Width="33*" />
+            <ColumnDefinition Width="37*" />
         </Grid.ColumnDefinitions>
 
         <!-- Cluster -->
@@ -134,7 +134,7 @@
 
         <!-- Playlist -->
         <Grid Grid.Column="1"
-              Margin="5 0 0 0">
+              Margin="7.5 0 0 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -201,7 +201,7 @@
 
         <!-- Final Playlist -->
         <Grid Grid.Column="2"
-              Margin="10 0 0 0">
+              Margin="7.5 0 0 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />

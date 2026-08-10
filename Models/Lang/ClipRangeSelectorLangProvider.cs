@@ -214,6 +214,33 @@ public class ClipRangeSelectorLangProvider : LangProviderBase
             ["SummaryVariableFrameRate"] = "Variabel",
             ["SummaryFrameRateUnknown"] = "Unbekannt"
         };
+        Data["ko"] = new(Data["en"])
+        {
+            ["TimelineSectionTitle"] = "시간 축 구간",
+            ["SelectionHintText"] = "핸들을 드래그하여 구간 위치를 선택",
+            ["DurationSectionTitle"] = "길이 설정",
+            ["ClipLengthLabel"] = "길이 (초)",
+            ["StartTimeLabel"] = "시작 시간",
+            ["ClipDurationLabel"] = "구간 길이",
+            ["EndTimeLabel"] = "종료 시간",
+            ["TimeFormatText"] = "hh:mm:ss.sss",
+            ["StartFrameLabel"] = "시작 프레임/필드",
+            ["ClipFrameCountLabel"] = "프레임/필드 길이",
+            ["EndFrameLabel"] = "종료 프레임/필드",
+            ["FrameFormatText"] = "frames|fields",
+            ["Note2Text"] = "구간 길이나 시간 기준이 일치하지 않으면 정렬이 불가하여 품질 지표 비교가 불가합니다",
+            ["ConfirmButtonText"] = "샘플 인코딩",
+            ["SummaryDurationLabel"] = "길이",
+            ["SummaryTotalFramesLabel"] = "총 프레임",
+            ["SummaryFrameRateLabel"] = "프레임레이트",
+            ["SummarySecondsUnit"] = "초",
+            ["SummaryProgressive"] = "프로그레시브",
+            ["SummaryInterlaced"] = "인터레이스",
+            ["SummaryUnknown"] = "알 수 없음",
+            ["SummaryConstantFrameRate"] = "고정",
+            ["SummaryVariableFrameRate"] = "가변",
+            ["SummaryFrameRateUnknown"] = "알 수 없음"
+        };
     }
 
     public const string WindowTitle = "1cenc Sample Clip";

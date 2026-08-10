@@ -2,9 +2,40 @@ namespace OneColumnEncoder.Models.Lang;
 
 /// <summary>
 /// Base class for language providers, including shared short operation words and fallback lookup for reusable UI labels.
+/// 
+/// To add a new language, follow the following table:
+/// | File | Keys Translated |
+/// |------|----------------|
+/// | `LangProviderBase.cs` (this file) | 16 common UI terms(Confirm, Cancel, Add, Delete, Clear, etc.) |
+/// | `AnalyzeSrcVideoCmdLangProvider.cs` | 9 keys |
+/// | `AppUsageLangProvider.cs` | 38 keys |
+/// | `AppConfLangProvider.cs` | 31 keys |
+/// | `ConfirmDialogLangProvider.cs` | 7 keys |
+/// | `ClipRangeSelectorLangProvider.cs` | 22 keys |
+/// | `CpuSetsLangProvider.cs` | 6 keys |
+/// | `VideoSrcQueueLangProvider.cs` | 12 keys |
+/// | `UILangProvider.cs` | ~100 keys(full UI) |
+/// | `StartEncCmdLangProvider.cs` | 21 keys |
+/// | `SrcReviserLangProvider.cs` | 11 keys |
+/// | `SrcFilePickerLangProvider.cs` | 6 keys |
+/// | `RepartLangProvider.cs` | 80 keys |
+/// | `QueueSidebarLangProvider.cs` | 5 keys |
+/// | `QueueEditorLangProvider.cs` | 1 key |
+/// | `ParallelismConfLangProvider.cs` | 23 keys |
+/// | `ImgABPvLangProvider.cs` | 38 keys |
+/// | `FilterScribeModalLangProvider.cs` | 68 keys |
+/// | `FilenameScribeModalLangProvider.cs` | 25 keys |
+/// | `FFProbeVideoAnalysisLangProvider.cs` | 5 keys |
+/// | `EncodingMonitorModalLangProvider.cs` | 65 keys |
+/// | `EncoderConfLangProvider.cs` | 42 keys |
+/// | `UICaptionProvider.cs` | Add language code |
 /// </summary>
 /// <remarks>
 /// Translation guidelines:
+/// 
+/// ! DO NOT TRANSLATE WINDOW TITLE, THEY MUST BE HARDCODED IN ENGLISH !
+/// - The window title helps debugging, logging, lowering user support difficulty, and web searching for solutions
+/// - Changing window title breaks simplicity and will give everyone a hard time
 ///
 /// User profile:
 /// - 100%: understand computer basics
@@ -200,6 +231,25 @@ public abstract class LangProviderBase
             ["Remove"] = "Entfernen",
             ["Reset"] = "Zurücksetzen",
             ["Stop"] = "Stopp",
+        },
+        ["ko"] = new()
+        {
+            ["Confirm"] = "확인",
+            ["Cancel"] = "취소",
+            ["Add"] = "추가",
+            ["Delete"] = "삭제",
+            ["Clear"] = "지우기",
+            ["Clear All"] = "모두 지우기",
+            ["Edit"] = "편집",
+            ["Replace"] = "바꾸기",
+            ["Import"] = "가져오기",
+            ["Save"] = "저장",
+            ["Close"] = "닫기",
+            ["Preview"] = "미리보기",
+            ["Fit"] = "맞추기",
+            ["Remove"] = "제거",
+            ["Reset"] = "초기화",
+            ["Stop"] = "중지",
         },
     };
 

@@ -129,6 +129,22 @@ public class VideoSrcQueueLangProvider : LangProviderBase
             ["SourceQueue.OpenQueueJson"] = "JSON öffnen",
             ["SourceQueue.OpenExcludedJson"] = "Ausschluss-JSON öffnen",
         };
+        Data["ko"] = new(Data["en"])
+        {
+            ["Tool.Source.VideoSrcQueueWithCount"] = "비디오 소스 대기열 ({0})",
+            ["Tool.Source.VideoSrcQueue"] = "비디오 소스 대기열",
+            ["Buttons.Import"] = "가져오기",
+            ["SourceQueue.Sequence"] = "순번",
+            ["ToolField.Path"] = "경로",
+            ["SourceQueue.SelectFolderTitle"] = "비디오 소스 대기열 폴더 선택",
+            ["SourceQueue.EmptyFolderWarnMessage"] = "선택한 폴더에서 동영상 파일을 찾을 수 없습니다. 동영상이 하나 이상 포함된 폴더를 선택하세요.",
+            ["SourceQueue.Analyzed"] = "대기열 소스 분석 완료. 차이가 너무 커서 동영상 {0}개를 걸러냈습니다.\n\n대기열 데이터 JSON:\n{1}\n\n제외 목록:\n{2}",
+            ["SourceQueue.AnalyzedNoEx"] = "대기열 소스 분석 완료. 걸러낸 동영상이 없습니다.\n\n대기열 데이터 JSON:\n{0}",
+            ["SourceQueue.CopyQueueJsonPath"] = "대기열 JSON 경로 복사",
+            ["SourceQueue.CopyExcludedJsonPath"] = "제외 JSON 경로 복사",
+            ["SourceQueue.OpenQueueJson"] = "대기열 JSON 열기",
+            ["SourceQueue.OpenExcludedJson"] = "제외 JSON 열기",
+        };
     }
 
     public string ToolSourceVideoSrcQueueWithCount { get; }

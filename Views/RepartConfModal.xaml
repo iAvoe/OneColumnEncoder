@@ -9,7 +9,7 @@
                    d:DataContext="{d:DesignInstance Type=vms:RepartConfVM}"
                    mc:Ignorable="d"
                    Title="{Binding WindowTitle}"
-                   Width="1080"
+                   Width="1180"
                    Height="760"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">

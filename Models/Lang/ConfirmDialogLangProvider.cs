@@ -88,6 +88,16 @@ Data["ru"] = new(Data["en"])
             ["ConfirmDialog.InfoPrefix"] = "Info: ",
             ["ConfirmDialog.SuccessPrefix"] = "Erfolg: ",
         };
+        Data["ko"] = new(Data["en"])
+        {
+            ["ConfirmDialog.CopyText"] = "메시지 복사",
+            ["ConfirmDialog.CopyHint"] = "텍스트를 마우스 오른쪽 버튼으로 클릭하여 복사",
+            ["ConfirmDialog.WarningPrefix"] = "경고: ",
+            ["ConfirmDialog.ErrorPrefix"] = "오류: ",
+            ["ConfirmDialog.DebugPrefix"] = "디버그: ",
+            ["ConfirmDialog.InfoPrefix"] = "정보: ",
+            ["ConfirmDialog.SuccessPrefix"] = "성공: ",
+        };
     }
 
     public static ConfirmDialogLangProvider Current => new(UILangProvider.Current.LanguageCode);

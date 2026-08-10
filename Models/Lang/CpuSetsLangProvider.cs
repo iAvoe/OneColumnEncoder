@@ -81,6 +81,15 @@ public class CpuSetsLangProvider : LangProviderBase
             ["BindingFailed"] = "CPU Sets-Bindung fehlgeschlagen: {0}",
             ["SkippedPrefix"] = "CPU Sets-Bindung übersprungen. "
         };
+        Data["ko"] = new(Data["en"])
+        {
+            ["UnavailableOnNonWindows"] = "CPU Sets는 Windows에서만 사용할 수 있습니다.",
+            ["NoCpuSetsFound"] = "NUMA 노드 {0}의 CPU Sets를 찾을 수 없습니다.",
+            ["SetProcessDefaultCpuSetsFailed"] = "SetProcessDefaultCpuSets 실패: {0}.",
+            ["BoundSuccess"] = "PID {0}을(를) NUMA 노드 {1}에 {2} CPU Set으로 바인딩했습니다.\n기존 스레드 {3}개를 업데이트했습니다. 파이프 버퍼 크기: {4}KB.",
+            ["BindingFailed"] = "CPU Sets 바인딩 실패: {0}",
+            ["SkippedPrefix"] = "CPU Sets 바인딩을 건너뜁니다. "
+        };
     }
 
     public string UnavailableOnNonWindows { get; }

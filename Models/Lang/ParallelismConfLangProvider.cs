@@ -195,6 +195,30 @@ public class ParallelismConfLangProvider : LangProviderBase
             ["CorePerGroup1alt"] = " Kerne (",
             ["CorePerGroup1alt1"] = " Threads) sind direkt mit ",
             ["CorePerGroup2"] = " MB L3 verbunden",
+        },
+        ["ko"] = new()
+        {
+            ["IntroText"] = "이 프로그램은 도구 간 다양한 병렬 구현을 무시하고 다음을 사용합니다:\n· CPU Sets로 스레드 친화성 제안 (임시 스레드 노드 이동 허용)\n· 인코딩 스레드의 NUMA 노드에 RAM 할당 시도",
+            ["PriorityText"] = "이 프로그램은 작업 우선순위를 높이지 않으며 인코딩 작업을 지연에 민감한 유형으로 선언하지 않습니다.\n그로 인해 응답하지 않는 작업이 OS를 무기한 정지시키는 것을 방지합니다.",
+            ["CacheGroupTitle"] = "감지된 L3 캐시 그룹 (↑ 경계 초과, ↓ 캐시 적중)",
+            ["NumaTopologyHintText"] = "CPU에 NUMA 노드가 여러 개 포함된 경우 인코더는 1개만 점유합니다 → CPU 리소스의 일부만 할당할 수 있습니다.",
+            ["UpstreamNumaTitle"] = "NUMA 소프트 바인딩: 파이프 업스트림",
+            ["DownstreamNumaTitle"] = "NUMA 소프트 바인딩: 파이프 다운스트림 (인코더)",
+            ["NumaGuidanceText"] = "업스트림 도구에 느린 필터가 있는 경우 인코더를 다른 노드에 할당하는 것이 더 빠를 수 있습니다.\n그렇지 않으면 동일한 노드를 공유하는 것이 더 빠를 수 있습니다—계산 vs 대기 시간 병목",
+            ["ThreadStrategyTitle"] = "프로세서 스케줄링",
+            ["EncoderThreadCountText"] = "인코더 스레드 수",
+            ["PreferUpstreamPhysCoresText"] = "업스트림 도구 스레드를 물리적 코어에 매핑",
+            ["PreferDownstreamPhysCoresText"] = "인코더 스레드를 물리적 코어에 매핑",
+            ["PipeBufferStrategyTitle"] = "파이프 버퍼",
+            ["PipeBufferStrategyText"] = "파이프 버퍼 크기를 min(max(w×h×bpp(Y,U,V)÷10MB, 80KB), 16MB)로 최적화",
+            ["PipeBufferHintText"] = "I/O 요청 횟수를 줄여 전송 속도를 개선할 수 있습니다",
+            ["MemoryStrategyTitle"] = "고급 RAM 할당",
+            ["LargePagesUnavailableHintText"] = "대형 페이지 RAM 할당 설정을 제공하는 도구가 없으므로 이 방법으로 고해상도 인코딩 성능을 향상시킬 수 없습니다.",
+            ["CorePerGroup"] = "· 모든 ",
+            ["CorePerGroup1"] = " 코어는 ",
+            ["CorePerGroup1alt"] = " 코어 (",
+            ["CorePerGroup1alt1"] = " 스레드)는 ",
+            ["CorePerGroup2"] = " MB L3에 직접 연결",
         }
     };
 

@@ -36,6 +36,10 @@ public sealed class QueueEditorLangProvider : LangProviderBase
         {
             ["QueueEditor.Title"] = "Warteschlange bearbeiten",
         },
+        ["ko"] = new()
+        {
+            ["QueueEditor.Title"] = "큐 편집",
+        },
     };
 
     public static QueueEditorLangProvider Current => new(UILangProvider.Current.LanguageCode);
