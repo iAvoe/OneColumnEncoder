@@ -45,7 +45,6 @@ public class AppUsageLangProvider : LangProviderBase
             ["ManualBaseFooter"] = "...determined by current CPU perf. & settings exposed to commandline (dev's intent), affecting the precision of bit allocation (% of bits to be losslessly compressed)",
             ["ManualExtTitle"] = "Manually Specified - 3rd-party Extended Parameters",
             ["ManualExtIntro"] = "Modded video encoders may provide extended features (unlike official / other modified versions), check their existence before checking the checkboxes.",
-            ["CloseButtonText"] = "Close"
         },
         ["zh-cn"] = new()
         {
@@ -88,7 +87,6 @@ public class AppUsageLangProvider : LangProviderBase
             ["ManualBaseFooter"] = "「手动指定」参数由当下的处理器性能与下放到命令行的参数（即开发者意图）而定，这些参数会影响码率分配的精度，即无损压缩机制的压缩率。",
             ["ManualExtTitle"] = "手动指定—第三方扩展参数",
             ["ManualExtIntro"] = "非官方版的视频编码器提供了扩展功能（官方和其它修改版并不支持），勾选使用前应检查参数是否存在。",
-            ["CloseButtonText"] = "关闭"
         },
         ["zh-tw"] = new()
         {
@@ -130,8 +128,7 @@ public class AppUsageLangProvider : LangProviderBase
             ["ManualBaseList"] = "· x264：通用、剪輯素材\n· x265：通用、錄像、剪輯素材、動漫、壓力測試\n· SVT-AV1：極致畫質、壓縮優先、速度優先",
             ["ManualBaseFooter"] = "「手動指定」參數當下的處理器效能與下放到命令列的參數（即開發者意圖）而定，這些參數會影響碼率分配的精度，即無損壓縮機制的壓縮率。",
             ["ManualExtTitle"] = "手動指定—第三方擴展參數",
-            ["ManualExtIntro"] = "非官方版的影片編碼器提供了擴展功能（官方和其它修改版並不支持），勾選使用前應檢查參數是否存在。",
-            ["CloseButtonText"] = "關閉"
+            ["ManualExtIntro"] = "非官方版的影片編碼器提供了擴展功能（官方和其它修改版並不支持），勾選使用前應檢查參數是否存在。"
         }
     };
 
@@ -177,8 +174,7 @@ public class AppUsageLangProvider : LangProviderBase
             ["ManualBaseList"] = "· x264 : général, stock footage\n· x265 : général, film, stock footage, anime, stress test\n· SVT-AV1 : ultra HQ, haute compression, rapide",
             ["ManualBaseFooter"] = "...dépend des performances CPU et des options exposées en ligne de commande; affecte la précision d'allocation des bits.",
             ["ManualExtTitle"] = "Spécifié manuellement - paramètres étendus tiers",
-            ["ManualExtIntro"] = "Les encodeurs modifiés peuvent fournir des fonctions absentes des versions officielles; vérifiez l'existence des paramètres avant de cocher.",
-            ["CloseButtonText"] = "Fermer"
+            ["ManualExtIntro"] = "Les encodeurs modifiés peuvent fournir des fonctions absentes des versions officielles; vérifiez l'existence des paramètres avant de cocher."
         };
         Data["es"] = new(Data["en"])
         {
@@ -220,8 +216,7 @@ public class AppUsageLangProvider : LangProviderBase
             ["ManualBaseList"] = "· x264: general, stock footage\n· x265: general, cine, stock footage, anime, stress test\n· SVT-AV1: ultra HQ, alta compresión, rápido",
             ["ManualBaseFooter"] = "...depende de CPU y opciones expuestas a línea de comandos; afecta la precisión de asignación de bits.",
             ["ManualExtTitle"] = "Manual - parámetros extendidos de terceros",
-            ["ManualExtIntro"] = "Codificadores modificados pueden exponer funciones no oficiales; confirme que el parámetro existe antes de marcar.",
-            ["CloseButtonText"] = "Cerrar"
+            ["ManualExtIntro"] = "Codificadores modificados pueden exponer funciones no oficiales; confirme que el parámetro existe antes de marcar."
         };
         Data["ja"] = new(Data["en"])
         {
@@ -263,8 +258,7 @@ public class AppUsageLangProvider : LangProviderBase
             ["ManualBaseList"] = "· x264: 汎用、素材映像\n· x265: 汎用、映画、素材映像、アニメ、ストレステスト\n· SVT-AV1: ultra HQ、高圧縮、高速",
             ["ManualBaseFooter"] = "...CPU 性能とコマンドラインに出す設定に依存し、ビット配分精度に影響します。",
             ["ManualExtTitle"] = "手動指定 - サードパーティ拡張",
-            ["ManualExtIntro"] = "改造版エンコーダの拡張機能は公式版や他改造版で未対応の場合があります。チェック前に存在を確認してください。",
-            ["CloseButtonText"] = "閉じる"
+            ["ManualExtIntro"] = "改造版エンコーダの拡張機能は公式版や他改造版で未対応の場合があります。チェック前に存在を確認してください。"
         };
         Data["ru"] = new(Data["en"])
         {
@@ -306,8 +300,7 @@ public class AppUsageLangProvider : LangProviderBase
             ["ManualBaseList"] = "· x264: общее, stock footage\n· x265: общее, фильм, stock footage, anime, stress test\n· SVT-AV1: ultra HQ, высокое сжатие, быстро",
             ["ManualBaseFooter"] = "...зависит от CPU и параметров CLI; влияет на точность распределения битов.",
             ["ManualExtTitle"] = "Ручные сторонние расширения",
-            ["ManualExtIntro"] = "Модифицированные кодеры могут иметь функции, которых нет в официальных версиях; проверьте параметры перед включением.",
-            ["CloseButtonText"] = "Закрыть"
+            ["ManualExtIntro"] = "Модифицированные кодеры могут иметь функции, которых нет в официальных версиях; проверьте параметры перед включением."
         };
     }
 

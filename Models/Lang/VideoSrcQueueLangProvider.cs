@@ -8,7 +8,6 @@ public class VideoSrcQueueLangProvider : LangProviderBase
         {
             ["Tool.Source.VideoSrcQueueWithCount"] = "Video Source Queue ({0})",
             ["Tool.Source.VideoSrcQueue"] = "Video Source Queue",
-            ["Buttons.Import"] = "Import",
             ["SourceQueue.Sequence"] = "Sequence",
             ["ToolField.Path"] = "Path",
             ["SourceQueue.SelectFolderTitle"] = "Select video source queue folder",
@@ -24,7 +23,6 @@ public class VideoSrcQueueLangProvider : LangProviderBase
         {
             ["Tool.Source.VideoSrcQueueWithCount"] = "视频源队列 ({0})",
             ["Tool.Source.VideoSrcQueue"] = "视频源队列",
-            ["Buttons.Import"] = "导入",
             ["SourceQueue.Sequence"] = "序列",
             ["ToolField.Path"] = "路径",
             ["SourceQueue.SelectFolderTitle"] = "选择视频源队列文件夹",
@@ -40,7 +38,6 @@ public class VideoSrcQueueLangProvider : LangProviderBase
         {
             ["Tool.Source.VideoSrcQueueWithCount"] = "影片來源隊列 ({0})",
             ["Tool.Source.VideoSrcQueue"] = "影片來源隊列",
-            ["Buttons.Import"] = "導入",
             ["SourceQueue.Sequence"] = "序列",
             ["ToolField.Path"] = "路徑",
             ["SourceQueue.SelectFolderTitle"] = "選擇視訊來源序列資料夾",
@@ -60,7 +57,6 @@ public class VideoSrcQueueLangProvider : LangProviderBase
         {
             ["Tool.Source.VideoSrcQueueWithCount"] = "File source vidéo ({0})",
             ["Tool.Source.VideoSrcQueue"] = "File source vidéo",
-            ["Buttons.Import"] = "Importer",
             ["SourceQueue.Sequence"] = "Séquence",
             ["ToolField.Path"] = "Chemin",
             ["SourceQueue.SelectFolderTitle"] = "Sélectionner le dossier de la file d'attente",
@@ -76,7 +72,6 @@ public class VideoSrcQueueLangProvider : LangProviderBase
         {
             ["Tool.Source.VideoSrcQueueWithCount"] = "Cola de fuentes de vídeo ({0})",
             ["Tool.Source.VideoSrcQueue"] = "Cola de fuentes de vídeo",
-            ["Buttons.Import"] = "Importar",
             ["SourceQueue.Sequence"] = "Secuencia",
             ["ToolField.Path"] = "Ruta",
             ["SourceQueue.SelectFolderTitle"] = "Seleccionar carpeta de cola de fuente de vídeo",
@@ -92,7 +87,6 @@ public class VideoSrcQueueLangProvider : LangProviderBase
         {
             ["Tool.Source.VideoSrcQueueWithCount"] = "ビデオソースキュー ({0})",
             ["Tool.Source.VideoSrcQueue"] = "ビデオソースキュー",
-            ["Buttons.Import"] = "インポート",
             ["SourceQueue.Sequence"] = "シーケンス",
             ["ToolField.Path"] = "パス",
             ["SourceQueue.SelectFolderTitle"] = "ビデオソースキューのフォルダを選択",
@@ -108,7 +102,6 @@ public class VideoSrcQueueLangProvider : LangProviderBase
         {
             ["Tool.Source.VideoSrcQueueWithCount"] = "Очередь видеоисточников ({0})",
             ["Tool.Source.VideoSrcQueue"] = "Очередь видеоисточников",
-            ["Buttons.Import"] = "Импортировать",
             ["SourceQueue.Sequence"] = "Последовательность",
             ["ToolField.Path"] = "Путь",
             ["SourceQueue.SelectFolderTitle"] = "Выберите папку очереди видеоисточников",
