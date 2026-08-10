@@ -51,8 +51,6 @@ public class EncoderConfLangProvider : LangProviderBase
             ["BlankPresetText"] = "None",
             ["VvencHintText"] = "VVenC is only for single-image preview, not used in main encoding",
             ["BlankPresetHint"] = "None: use encoder default / fully customize via additional parameter textbox",
-            ["CancelButtonText"] = "Cancel",
-            ["ConfirmButtonText"] = "Confirm",
         },
         ["zh-cn"] = new()
         {
@@ -100,8 +98,6 @@ public class EncoderConfLangProvider : LangProviderBase
             ["BlankPresetText"] = "留空",
             ["VvencHintText"] = "VVenC 仅用于单帧预览，不参与主编码流程",
             ["BlankPresetHint"] = "留空：使用编码器默认或底部附加编码器参数文本框写入",
-            ["CancelButtonText"] = "取消",
-            ["ConfirmButtonText"] = "确认",
         },
         ["zh-tw"] = new()
         {
@@ -149,8 +145,6 @@ public class EncoderConfLangProvider : LangProviderBase
             ["BlankPresetText"] = "留空",
             ["VvencHintText"] = "VVenC 僅用於單幀預覽，不參與主編碼流程",
             ["BlankPresetHint"] = "留空：使用編碼器默認或底部附加編碼器參數文本框寫入",
-            ["CancelButtonText"] = "取消",
-            ["ConfirmButtonText"] = "確認",
         }
     };
 
@@ -192,9 +186,7 @@ public class EncoderConfLangProvider : LangProviderBase
             ["SpeedOptimizedText"] = "Rapide",
             ["BlankPresetText"] = "Aucun",
             ["VvencHintText"] = "VVenC est réservé à l'aperçu d'une seule image, pas utilisé pour l'encodage principal",
-            ["BlankPresetHint"] = "Aucun : défaut encodeur / personnalisation par paramètres additionnels",
-            ["CancelButtonText"] = "Annuler",
-            ["ConfirmButtonText"] = "Confirmer"
+            ["BlankPresetHint"] = "Aucun : défaut encodeur / personnalisation par paramètres additionnels"
         };
         Data["es"] = new(Data["en"])
         {
@@ -232,9 +224,7 @@ public class EncoderConfLangProvider : LangProviderBase
             ["SpeedOptimizedText"] = "Rápido",
             ["BlankPresetText"] = "Ninguno",
             ["VvencHintText"] = "VVenC es solo para vista previa de imagen única, no se usa en codificación principal",
-            ["BlankPresetHint"] = "Ninguno: usar defecto del codificador / personalizar abajo",
-            ["CancelButtonText"] = "Cancelar",
-            ["ConfirmButtonText"] = "Confirmar"
+            ["BlankPresetHint"] = "Ninguno: usar defecto del codificador / personalizar abajo"
         };
         Data["ja"] = new(Data["en"])
         {
@@ -272,9 +262,7 @@ public class EncoderConfLangProvider : LangProviderBase
             ["SpeedOptimizedText"] = "高速",
             ["BlankPresetText"] = "なし",
             ["VvencHintText"] = "VVenC は単一画像プレビューのみで使用、本エンコードでは使用しません",
-            ["BlankPresetHint"] = "なし: エンコーダ既定値 / 下の追加パラメータで完全指定",
-            ["CancelButtonText"] = "キャンセル",
-            ["ConfirmButtonText"] = "確認"
+            ["BlankPresetHint"] = "なし: エンコーダ既定値 / 下の追加パラメータで完全指定"
         };
         Data["ru"] = new(Data["en"])
         {
@@ -312,9 +300,7 @@ public class EncoderConfLangProvider : LangProviderBase
             ["SpeedOptimizedText"] = "Быстро",
             ["BlankPresetText"] = "Нет",
             ["VvencHintText"] = "VVenC используется только для предпросмотра одного кадра, не для основного кодирования",
-            ["BlankPresetHint"] = "Нет: настройки кодера по умолчанию / полная настройка ниже",
-            ["CancelButtonText"] = "Отмена",
-            ["ConfirmButtonText"] = "Подтвердить"
+            ["BlankPresetHint"] = "Нет: настройки кодера по умолчанию / полная настройка ниже"
         };
     }
 

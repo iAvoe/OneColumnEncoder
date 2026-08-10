@@ -6,8 +6,6 @@ public class ConfirmDialogLangProvider : LangProviderBase
     {
         ["en"] = new()
         {
-            ["ConfirmDialog.Cancel"] = "Cancel",
-            ["ConfirmDialog.Confirm"] = "Confirm",
             ["ConfirmDialog.CopyText"] = "Copy Message",
             ["ConfirmDialog.CopyHint"] = "Right-click on text to copy",
             ["ConfirmDialog.WarningPrefix"] = "Warning: ",
@@ -18,8 +16,6 @@ public class ConfirmDialogLangProvider : LangProviderBase
         },
         ["zh-cn"] = new()
         {
-            ["ConfirmDialog.Cancel"] = "取消",
-            ["ConfirmDialog.Confirm"] = "确认",
             ["ConfirmDialog.CopyText"] = "复制文本",
             ["ConfirmDialog.CopyHint"] = "右键单击文本以复制",
             ["ConfirmDialog.WarningPrefix"] = "警告：",
@@ -30,8 +26,6 @@ public class ConfirmDialogLangProvider : LangProviderBase
         },
         ["zh-tw"] = new()
         {
-            ["ConfirmDialog.Cancel"] = "取消",
-            ["ConfirmDialog.Confirm"] = "確認",
             ["ConfirmDialog.CopyText"] = "複製文字",
             ["ConfirmDialog.CopyHint"] = "右鍵點擊文字以複製",
             ["ConfirmDialog.WarningPrefix"] = "警告：",
@@ -46,8 +40,6 @@ public class ConfirmDialogLangProvider : LangProviderBase
     {
         Data["fr"] = new(Data["en"])
         {
-            ["ConfirmDialog.Cancel"] = "Annuler",
-            ["ConfirmDialog.Confirm"] = "Confirmer",
             ["ConfirmDialog.CopyText"] = "Copier message",
             ["ConfirmDialog.CopyHint"] = "Clic droit sur le texte pour copier",
             ["ConfirmDialog.WarningPrefix"] = "Avertissement : ",
@@ -58,8 +50,6 @@ public class ConfirmDialogLangProvider : LangProviderBase
         };
         Data["es"] = new(Data["en"])
         {
-            ["ConfirmDialog.Cancel"] = "Cancelar",
-            ["ConfirmDialog.Confirm"] = "Confirmar",
             ["ConfirmDialog.CopyText"] = "Copiar mensaje",
             ["ConfirmDialog.CopyHint"] = "Clic derecho sobre texto para copiar",
             ["ConfirmDialog.WarningPrefix"] = "Aviso: ",
@@ -70,8 +60,6 @@ public class ConfirmDialogLangProvider : LangProviderBase
         };
         Data["ja"] = new(Data["en"])
         {
-            ["ConfirmDialog.Cancel"] = "キャンセル",
-            ["ConfirmDialog.Confirm"] = "確認",
             ["ConfirmDialog.CopyText"] = "メッセージコピー",
             ["ConfirmDialog.WarningPrefix"] = "警告: ",
             ["ConfirmDialog.ErrorPrefix"] = "エラー: ",
@@ -82,8 +70,6 @@ public class ConfirmDialogLangProvider : LangProviderBase
         };
         Data["ru"] = new(Data["en"])
         {
-            ["ConfirmDialog.Cancel"] = "Отмена",
-            ["ConfirmDialog.Confirm"] = "Подтвердить",
             ["ConfirmDialog.CopyText"] = "Копировать сообщение",
             ["ConfirmDialog.WarningPrefix"] = "Предупреждение: ",
             ["ConfirmDialog.ErrorPrefix"] = "Ошибка: ",

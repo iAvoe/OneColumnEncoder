@@ -32,7 +32,6 @@ public class FilenameScribeModalLangProvider(string languageCode) : LangProvider
             ["FilenameScribe.SelfCheck3"] = "If the filename is a translated show name, ensure this alias is on TMDB",
             ["FilenameScribe.PasteFromClipboard"] = "Paste from Clipboard",
             ["FilenameScribe.RotateFontSize"] = "Rotate fontsize",
-            ["FilenameScribe.Cancel"] = "Cancel",
             ["FilenameScribe.Confirm"] = "Done → Set Export Path",
             ["FilenameScribe.FooterHint"] = "File extension is set by selected encoder and cannot be edited here",
         },
@@ -62,7 +61,6 @@ public class FilenameScribeModalLangProvider(string languageCode) : LangProvider
             ["FilenameScribe.SelfCheck3"] = "若使用影视作品的译名命名，则确保该译名存在于 TMDB 中",
             ["FilenameScribe.PasteFromClipboard"] = "从剪贴板粘贴",
             ["FilenameScribe.RotateFontSize"] = "轮换字体大小",
-            ["FilenameScribe.Cancel"] = "取消",
             ["FilenameScribe.Confirm"] = "确认并定位输出路径",
             ["FilenameScribe.FooterHint"] = "后缀名由选择的编码器程序决定，无法编辑",
         },
@@ -92,7 +90,6 @@ public class FilenameScribeModalLangProvider(string languageCode) : LangProvider
             ["FilenameScribe.SelfCheck3"] = "若使用影視作品的譯名命名，則確保該譯名存在於 TMDB 中",
             ["FilenameScribe.PasteFromClipboard"] = "從剪貼簿貼上",
             ["FilenameScribe.RotateFontSize"] = "輪換字體大小",
-            ["FilenameScribe.Cancel"] = "取消",
             ["FilenameScribe.Confirm"] = "確認並定位輸出路徑",
             ["FilenameScribe.FooterHint"] = "副檔名由選擇的編碼器程式決定，無法編輯",
         },
@@ -126,7 +123,6 @@ public class FilenameScribeModalLangProvider(string languageCode) : LangProvider
             ["FilenameScribe.SelfCheck3"] = "Si titre traduit, vérifier l'alias dans TMDB",
             ["FilenameScribe.PasteFromClipboard"] = "Coller du presse-papiers",
             ["FilenameScribe.RotateFontSize"] = "Changer taille police",
-            ["FilenameScribe.Cancel"] = "Annuler",
             ["FilenameScribe.Confirm"] = "Terminé → définir sortie",
             ["FilenameScribe.FooterHint"] = "L'extension vient de l'encodeur choisi et n'est pas éditable",
         };
@@ -156,7 +152,6 @@ public class FilenameScribeModalLangProvider(string languageCode) : LangProvider
             ["FilenameScribe.SelfCheck3"] = "Si el nombre es un título traducido, verificar que el alias exista en TMDB",
             ["FilenameScribe.PasteFromClipboard"] = "Pegar desde el portapapeles",
             ["FilenameScribe.RotateFontSize"] = "Rotar tamaño de fuente",
-            ["FilenameScribe.Cancel"] = "Cancelar",
             ["FilenameScribe.Confirm"] = "Hecho → definir salida",
             ["FilenameScribe.FooterHint"] = "La extensión viene del codificador elegido y no es editable",
         };
@@ -186,7 +181,6 @@ public class FilenameScribeModalLangProvider(string languageCode) : LangProvider
             ["FilenameScribe.SelfCheck3"] = "翻訳された番組名の場合、そのエイリアスがTMDBに存在することを確認",
             ["FilenameScribe.PasteFromClipboard"] = "クリップボードから貼付",
             ["FilenameScribe.RotateFontSize"] = "フォントサイズ切替",
-            ["FilenameScribe.Cancel"] = "キャンセル",
             ["FilenameScribe.Confirm"] = "完了 → 出力先設定",
             ["FilenameScribe.FooterHint"] = "拡張子は選択したエンコーダーにより設定され、ここでは編集できません",
         };
@@ -216,7 +210,6 @@ public class FilenameScribeModalLangProvider(string languageCode) : LangProvider
             ["FilenameScribe.SelfCheck3"] = "Если имя — переведённое название шоу, убедиться что этот алиас есть в TMDB",
             ["FilenameScribe.PasteFromClipboard"] = "Вставить из буфера обмена",
             ["FilenameScribe.RotateFontSize"] = "Переключить размер шрифта",
-            ["FilenameScribe.Cancel"] = "Отмена",
             ["FilenameScribe.Confirm"] = "Готово → задать вывод",
             ["FilenameScribe.FooterHint"] = "Расширение определяется выбранным кодером и не редактируется здесь",
         };
