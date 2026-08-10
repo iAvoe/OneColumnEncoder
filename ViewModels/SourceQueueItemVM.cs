@@ -117,10 +117,9 @@ public sealed class SourceQueueItemVM : BaseVM
 
     public void RefreshLanguage()
     {
-        QueueSidebarLangProvider lang = QueueSidebarLangProvider.Current;
-        DisplayR1Text = lang.QueueItemRemoveText;
-        R2Text = lang.QueueItemMoveUpText;
-        R3Text = lang.QueueItemMoveDownText;
+        DisplayR1Text = QueueSidebarLangProvider.QueueItemRemoveText;
+        R2Text = QueueSidebarLangProvider.QueueItemMoveUpText;
+        R3Text = QueueSidebarLangProvider.QueueItemMoveDownText;
     }
 
     public void FlashMovedHighlight()
