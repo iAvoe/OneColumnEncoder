@@ -224,6 +224,30 @@ public class StartEncCmdLangProvider : LangProviderBase
             ["GbSuffix"] = " GB",
             ["MbSuffix"] = " MB",
         };
+        Data["pt-br"] = new(Data["en"])
+        {
+            ["WarnTitle"] = "Codificação",
+            ["MissingUpstreamMsg"] = "Falta o caminho de entrada upstream. Certifique-se de que uma fonte de vídeo ou script está selecionada para a ferramenta upstream escolhida.",
+            ["ConfirmTitle"] = "Comando de codificação",
+            ["OverwriteTitle"] = "Sobrescrever saída",
+            ["OverwriteMsg"] = "Arquivos já existentes serão sobrescritos",
+            ["EncodedOutputLabel"] = "Saída do codificador",
+            ["MuxOutputLabel"] = "Saída mux",
+            ["OverwriteTargetLabel"] = "{0}: {1} ({2})",
+            ["LargestExistingSizeLabel"] = "Maior tamanho existente: {0}",
+            ["ConfirmDelayLabel"] = "O botão de confirmação será desbloqueado após {0} segundos.",
+            ["AdditionalOverwriteTargetsLabel"] = "...e {0} outro(s) destino(s).",
+            ["QueueJsonMissingMsg"] = "JSON da fila ausente. Execute a análise da fila de fonte antes de iniciar a codificação da fila.",
+            ["QueueJsonInvalidMsg"] = "Não é possível ler ou analisar o JSON da fila: {0}",
+            ["QueueJsonNoEntriesMsg"] = "O JSON da fila não contém entradas de fonte aceitas.",
+            ["QueueUnsupportedRouteMsg"] = "A codificação em fila não suporta a ferramenta upstream selecionada.",
+            ["QueueSourceMissingMsg"] = "Arquivo(s) de fonte da fila ausente(s). A codificação não pode continuar:",
+            ["QueueDuplicateOutputMsg"] = "Os caminhos de saída da fila colidem. A codificação não pode continuar:",
+            ["QueueEncodingPendingMsg"] = "Proteção contra sobrescrita da fila concluída. A execução da fila ainda não está conectada.",
+            ["AllFilteredOutMsg"] = "Todos os vídeos foram filtrados pelo filtro de duração.",
+            ["GbSuffix"] = " GB",
+            ["MbSuffix"] = " MB"
+        };
     }
 
     public string WarnTitle { get; }

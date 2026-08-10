@@ -112,6 +112,18 @@ public class AnalyzeSrcVideoCmdLangProvider : LangProviderBase
             ["TotalFramesFormat"] = "{0}: {1}",
             ["ConcatTotalFramesLabel"] = "연결 후 총 프레임 수",
         },
+        ["pt-br"] = new()
+        {
+            ["QueueItemProgress"] = "Item da fila {0}/{1}",
+            ["SourceFilePath"] = "Fonte: {0}",
+            ["QueueItemSkipMsg"] = "Este item fonte será ignorado. Feche este diálogo para continuar",
+            ["AllQueueItemsFailed"] = "Falha na análise da fila: todos os {0} itens da fila foram ignorados por não poderem ser analisados.",
+            ["SkippedItemsLabel"] = "Itens da fila com falha ignorados: {0}",
+            ["ListItemPrefix"] = "- {0}",
+            ["AndMoreLabel"] = "...e {0} mais.",
+            ["TotalFramesFormat"] = "{0}: {1}",
+            ["ConcatTotalFramesLabel"] = "Total de quadros após concatenação",
+        },
     };
 
     public string QueueItemProgress { get; }

@@ -90,6 +90,15 @@ public class CpuSetsLangProvider : LangProviderBase
             ["BindingFailed"] = "CPU Sets 바인딩 실패: {0}",
             ["SkippedPrefix"] = "CPU Sets 바인딩을 건너뜁니다. "
         };
+        Data["pt-br"] = new(Data["en"])
+        {
+            ["UnavailableOnNonWindows"] = "CPU Sets estão disponíveis apenas no Windows.",
+            ["NoCpuSetsFound"] = "Nenhum CPU Set encontrado para o nó NUMA {0}.",
+            ["SetProcessDefaultCpuSetsFailed"] = "Falha em SetProcessDefaultCpuSets: {0}.",
+            ["BoundSuccess"] = "PID {0} vinculado ao nó NUMA {1} com {2} CPU Set(s);\n{3} thread(s) existente(s) atualizada(s). Tamanho do buffer do pipe: {4}KB.",
+            ["BindingFailed"] = "Falha na vinculação de CPU Sets: {0}",
+            ["SkippedPrefix"] = "Vinculação de CPU Sets ignorada. "
+        };
     }
 
     public string UnavailableOnNonWindows { get; }

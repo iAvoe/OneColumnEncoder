@@ -98,6 +98,16 @@ Data["ru"] = new(Data["en"])
             ["ConfirmDialog.InfoPrefix"] = "정보: ",
             ["ConfirmDialog.SuccessPrefix"] = "성공: ",
         };
+        Data["pt-br"] = new(Data["en"])
+        {
+            ["ConfirmDialog.CopyText"] = "Copiar mensagem",
+            ["ConfirmDialog.CopyHint"] = "Clique com o botão direito no texto para copiar",
+            ["ConfirmDialog.WarningPrefix"] = "Aviso: ",
+            ["ConfirmDialog.ErrorPrefix"] = "Erro: ",
+            ["ConfirmDialog.DebugPrefix"] = "Depuração: ",
+            ["ConfirmDialog.InfoPrefix"] = "Info: ",
+            ["ConfirmDialog.SuccessPrefix"] = "Sucesso: ",
+        };
     }
 
     public static ConfirmDialogLangProvider Current => new(UILangProvider.Current.LanguageCode);

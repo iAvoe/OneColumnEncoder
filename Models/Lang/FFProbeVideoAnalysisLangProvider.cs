@@ -76,6 +76,14 @@ public class FFProbeVideoAnalysisLangProvider : LangProviderBase
             ["FfprobeFailedOrEmpty"] = "ffprobe가 실패했거나 유효한 데이터를 반환하지 않았습니다",
             ["NoVideoStreamInfo"] = "ffprobe가 비디오 스트림 정보를 반환하지 않았습니다",
         },
+        ["pt-br"] = new()
+        {
+            ["FfprobeNotFound"] = "ffprobe.exe não existe: {0}",
+            ["InputVideoNotFound"] = "Vídeo de entrada não existe: {0}",
+            ["FfprobeTimedOut"] = "ffprobe esgotou o tempo ao analisar o vídeo fonte",
+            ["FfprobeFailedOrEmpty"] = "ffprobe falhou ou não retornou dados válidos",
+            ["NoVideoStreamInfo"] = "ffprobe não retornou informações de stream de vídeo",
+        },
     };
 
     public string FfprobeNotFound { get; }

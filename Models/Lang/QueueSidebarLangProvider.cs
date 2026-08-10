@@ -80,6 +80,14 @@ public sealed class QueueSidebarLangProvider : LangProviderBase
             ["QueueSidebarUnfinishedHeaderText"] = "미완료",
             ["QueueSidebarCompletedHeaderText"] = "완료",
         };
+        Data["pt-br"] = new(Data["en"])
+        {
+            ["QueueSidebarCancelAllText"] = "Cancelar tudo",
+            ["QueueSidebarRunningHeaderText"] = "Em execução",
+            ["QueueSidebarWaitingHeaderText"] = "Pendente",
+            ["QueueSidebarUnfinishedHeaderText"] = "Inacabado",
+            ["QueueSidebarCompletedHeaderText"] = "Concluído",
+        };
     }
 
     public static QueueSidebarLangProvider Current => new(UILangProvider.Current.LanguageCode);
@@ -89,9 +97,9 @@ public sealed class QueueSidebarLangProvider : LangProviderBase
     public string QueueSidebarWaitingHeaderText { get; }
     public string QueueSidebarUnfinishedHeaderText { get; }
     public string QueueSidebarCompletedHeaderText { get; }
-    public string QueueItemRemoveText => "🗙";
-    public string QueueItemMoveUpText => "↑↑";
-    public string QueueItemMoveDownText => "↓↓";
+    public static string QueueItemRemoveText => "🗙";
+    public static string QueueItemMoveUpText => "↑↑";
+    public static string QueueItemMoveDownText => "↓↓";
 
     public QueueSidebarLangProvider(string languageCode) : base(languageCode, Data)
     {

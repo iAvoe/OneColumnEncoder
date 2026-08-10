@@ -134,14 +134,6 @@ Or, TLDR; and use tools provided in this package (not recommended but its an opt
 **Long Queue Validation**
 - 30+ 4k videos and x265 encoding was successful (3 days uninterrupted)
 
-## Localization Status
-
-- **Supported:** English, Simplified Chinese, Traditional Chinese
-- **Not Localized:** French, Spanish, Japanese, Russian
-  - MTL with basic checks only, might have errors
-- To provide a translation, please fork this repository, add a new language entry in `Models/Lang/XxxLangProvider`, and submit a pull request
-  - Translation of the README is not required, but it would be great if you can do that
-
 ---
 
 ## Support me

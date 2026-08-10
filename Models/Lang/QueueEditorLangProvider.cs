@@ -1,6 +1,6 @@
 namespace OneColumnEncoder.Models.Lang;
 
-public sealed class QueueEditorLangProvider : LangProviderBase
+public sealed class QueueEditorLangProvider(string languageCode) : LangProviderBase(languageCode, Data)
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -40,11 +40,11 @@ public sealed class QueueEditorLangProvider : LangProviderBase
         {
             ["QueueEditor.Title"] = "큐 편집",
         },
+        ["pt-br"] = new()
+        {
+            ["QueueEditor.Title"] = "Editar fila",
+        },
     };
 
     public static QueueEditorLangProvider Current => new(UILangProvider.Current.LanguageCode);
-
-    public QueueEditorLangProvider(string languageCode) : base(languageCode, Data)
-    {
-    }
 }

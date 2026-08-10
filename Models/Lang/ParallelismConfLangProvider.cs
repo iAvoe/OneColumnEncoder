@@ -219,7 +219,31 @@ public class ParallelismConfLangProvider : LangProviderBase
             ["CorePerGroup1alt"] = " 코어 (",
             ["CorePerGroup1alt1"] = " 스레드)는 ",
             ["CorePerGroup2"] = " MB L3에 직접 연결",
-        }
+        },
+        ["pt-br"] = new()
+        {
+            ["IntroText"] = "Este programa ignora as várias implementações paralelas entre ferramentas e usa:\n· CPU Sets para sugerir afinidade de threads (permitindo deslocamento temporário de thread-nó)\n· Tenta alocar RAM para threads de codificação no seu nó NUMA",
+            ["PriorityText"] = "Este programa evita aumentar a prioridade da tarefa ou declarar tarefas de codificação como sensíveis a latência,\nimpedindo assim que tarefas sem resposta travem o SO indefinidamente",
+            ["CacheGroupTitle"] = "Grupos de cache L3 detectados (↑ travessias, ↓ acertos de cache)",
+            ["NumaTopologyHintText"] = "Quando uma CPU contém múltiplos nós NUMA, o codificador ocupa apenas 1 → apenas uma parte dos recursos da CPU pode ser alocada",
+            ["UpstreamNumaTitle"] = "Vinculação NUMA suave: Pipe Upstream",
+            ["DownstreamNumaTitle"] = "Vinculação NUMA suave: Pipe Downstream (codificador)",
+            ["NumaGuidanceText"] = "Atribuir o codificador a outros nós pode ser mais rápido quando a ferramenta upstream tem filtros lentos;\ncaso contrário, compartilhar o mesmo nó pode ser mais rápido — gargalo de computação vs. latência",
+            ["ThreadStrategyTitle"] = "Agendamento do processador",
+            ["EncoderThreadCountText"] = "Threads do codificador",
+            ["PreferUpstreamPhysCoresText"] = "Mapear threads da ferramenta upstream para núcleos físicos",
+            ["PreferDownstreamPhysCoresText"] = "Mapear threads do codificador para núcleos físicos",
+            ["PipeBufferStrategyTitle"] = "Buffer de pipe",
+            ["PipeBufferStrategyText"] = "Otimizar o tamanho do buffer de pipe para min(max(w×h×bpp(Y,U,V)÷10MB, 80KB), 16MB)",
+            ["PipeBufferHintText"] = "Pode reduzir a quantidade de requisições de E/S, melhorando a taxa de transferência",
+            ["MemoryStrategyTitle"] = "Alocação avançada de RAM",
+            ["LargePagesUnavailableHintText"] = "Nenhuma ferramenta fornece configuração de alocação de RAM de páginas grandes, portanto não é possível melhorar o desempenho de codificação de alta resolução.",
+            ["CorePerGroup"] = "· A cada ",
+            ["CorePerGroup1"] = " núcleos estão diretamente conectados a ",
+            ["CorePerGroup1alt"] = " núcleos (",
+            ["CorePerGroup1alt1"] = " threads) estão diretamente conectados a ",
+            ["CorePerGroup2"] = " MB L3",
+        },
     };
 
     public const string WindowTitle = "1cenc Parallelism Settings";

@@ -242,6 +242,35 @@ public class FilenameScribeModalLangProvider(string languageCode) : LangProvider
             ["FilenameScribe.Confirm"] = "Fertig → Ausgabepfad setzen",
             ["FilenameScribe.FooterHint"] = "Dateierweiterung wird durch gewählten Encoder festgelegt und kann hier nicht bearbeitet werden"
         };
+        Data["pt-br"] = new(Data["en"])
+        {
+            ["FilenameScribe.MiniHeader"] = "Nome do arquivo",
+            ["FilenameScribe.Placeholder"] = "Digite ou cole o nome do arquivo de saída aqui",
+            ["FilenameScribe.PreviewHeader"] = "Visualização",
+            ["FilenameScribe.Preview30Label"] = "Lista de arquivos PC & Tablet (30 caracteres de largura total)",
+            ["FilenameScribe.Preview25Label"] = "Barra de título do player (25 caracteres de largura total)",
+            ["FilenameScribe.Preview20Label"] = "Barra lateral / playlist do player (20 caracteres de largura total)",
+            ["FilenameScribe.Preview15Label"] = "Tela pequena de celular (15 caracteres de largura total)",
+            ["FilenameScribe.FormatCheckHeader"] = "Verificação de formato",
+            ["FilenameScribe.SevereIssueHeader"] = "Problemas graves",
+            ["FilenameScribe.GeneralIssueHeader"] = "Problemas gerais",
+            ["FilenameScribe.CheckEmpty"] = "Não vazio",
+            ["FilenameScribe.CheckLength"] = "50 caracteres ou menos",
+            ["FilenameScribe.CheckReserved"] = "Não é um nome reservado do SO",
+            ["FilenameScribe.CheckInvalidChars"] = "Sem aspas ou marcas de controle (\" ' ` < > | * ? \\ / : &)",
+            ["FilenameScribe.CheckExtendedChars"] = "Sem caracteres fora do intervalo BMP (Emojis, etc.)",
+            ["FilenameScribe.CheckSpaces"] = "Sem espaços (use _ ou -)",
+            ["FilenameScribe.CheckCombiningMarks"] = "Sem marcas de combinação Unicode",
+            ["FilenameScribe.CheckSpecialSpaceVariants"] = "Sem variantes especiais de espaço",
+            ["FilenameScribe.SelfCheckHeader"] = "Auto-verificação: compatibilidade com scrapers de mídia",
+            ["FilenameScribe.SelfCheck1"] = "Use o formato de data yyyy-mm-dd consistentemente",
+            ["FilenameScribe.SelfCheck2"] = "Ordenação: preencha com 0s números consecutivos de dois ou mais dígitos",
+            ["FilenameScribe.SelfCheck3"] = "Se o nome do arquivo for um título traduzido, verifique se este alias existe no TMDB",
+            ["FilenameScribe.PasteFromClipboard"] = "Colar da área de transferência",
+            ["FilenameScribe.RotateFontSize"] = "Alternar tamanho da fonte",
+            ["FilenameScribe.Confirm"] = "Concluído → Definir caminho de exportação",
+            ["FilenameScribe.FooterHint"] = "A extensão do arquivo é definida pelo codificador selecionado e não pode ser editada aqui",
+        };
     }
 
     public static FilenameScribeModalLangProvider Current => new(UILangProvider.Current.LanguageCode);

@@ -145,6 +145,21 @@ public class VideoSrcQueueLangProvider : LangProviderBase
             ["SourceQueue.OpenQueueJson"] = "대기열 JSON 열기",
             ["SourceQueue.OpenExcludedJson"] = "제외 JSON 열기",
         };
+        Data["pt-br"] = new(Data["en"])
+        {
+            ["Tool.Source.VideoSrcQueueWithCount"] = "Fila de fontes de vídeo ({0})",
+            ["Tool.Source.VideoSrcQueue"] = "Fila de fontes de vídeo",
+            ["SourceQueue.Sequence"] = "Sequência",
+            ["ToolField.Path"] = "Caminho",
+            ["SourceQueue.SelectFolderTitle"] = "Selecionar pasta da fila de fontes de vídeo",
+            ["SourceQueue.EmptyFolderWarnMessage"] = "Nenhum arquivo de vídeo foi encontrado na pasta selecionada. Escolha uma pasta que contenha pelo menos um vídeo.",
+            ["SourceQueue.Analyzed"] = "Análise da fila concluída. {0} vídeo(s) filtrado(s) por diferenças excessivas.\n\nJSON de dados da fila:\n{1}\n\nLista de exclusão:\n{2}",
+            ["SourceQueue.AnalyzedNoEx"] = "Análise da fila concluída. Nenhum vídeo foi filtrado.\n\nJSON de dados da fila:\n{0}",
+            ["SourceQueue.CopyQueueJsonPath"] = "Copiar caminho do JSON da fila",
+            ["SourceQueue.CopyExcludedJsonPath"] = "Copiar caminho do JSON de exclusão",
+            ["SourceQueue.OpenQueueJson"] = "Abrir JSON da fila",
+            ["SourceQueue.OpenExcludedJson"] = "Abrir JSON de exclusão",
+        };
     }
 
     public string ToolSourceVideoSrcQueueWithCount { get; }

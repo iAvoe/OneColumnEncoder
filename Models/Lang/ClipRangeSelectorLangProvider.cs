@@ -241,6 +241,31 @@ public class ClipRangeSelectorLangProvider : LangProviderBase
             ["SummaryVariableFrameRate"] = "가변",
             ["SummaryFrameRateUnknown"] = "알 수 없음"
         };
+        Data["pt-br"] = new(Data["en"])
+        {
+            ["TimelineSectionTitle"] = "Segmento do eixo temporal",
+            ["SelectionHintText"] = "Arraste o controle para escolher a posição",
+            ["DurationSectionTitle"] = "Duração",
+            ["ClipLengthLabel"] = "Duração (s)",
+            ["StartTimeLabel"] = "Início",
+            ["ClipDurationLabel"] = "Duração do segmento",
+            ["EndTimeLabel"] = "Fim",
+            ["StartFrameLabel"] = "Quadro/campo inicial",
+            ["ClipFrameCountLabel"] = "Duração em quadros/campos",
+            ["EndFrameLabel"] = "Quadro/campo final",
+            ["Note2Text"] = "Durações ou bases de tempo diferentes impedem o alinhamento; métricas de qualidade não são aplicáveis.",
+            ["ConfirmButtonText"] = "Codificar amostra",
+            ["SummaryDurationLabel"] = "Duração",
+            ["SummaryTotalFramesLabel"] = "Total de quadros",
+            ["SummaryFrameRateLabel"] = "Taxa de quadros",
+            ["SummarySecondsUnit"] = "s",
+            ["SummaryProgressive"] = "Progressivo",
+            ["SummaryInterlaced"] = "Entrelaçado",
+            ["SummaryUnknown"] = "Desconhecido",
+            ["SummaryConstantFrameRate"] = "Constante",
+            ["SummaryVariableFrameRate"] = "Variável",
+            ["SummaryFrameRateUnknown"] = "Desconhecido"
+        };
     }
 
     public const string WindowTitle = "1cenc Sample Clip";

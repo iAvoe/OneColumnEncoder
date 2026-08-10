@@ -345,6 +345,48 @@ public class AppUsageLangProvider : LangProviderBase
             ["ManualExtIntro"] = "Modded Encoder bieten Funktionen, die offizielle Versionen nicht haben; Existenz prüfen vor Aktivierung.",
             ["CloseButtonText"] = "Schließen"
         };
+        Data["pt-br"] = new(Data["en"])
+        {
+            ["HowToUse"] = "Como usar este programa",
+            ["UpdateTitle"] = "Como atualizar este aplicativo",
+            ["UpdateDesc"] = "Mantenha a pasta 1cenc e substitua o OneColumnEncoder.exe. Todas as suas configurações e dados serão preservados.",
+            ["Description"] = "Este programa segue rigorosamente uma sequência de operação de cima→baixo, esquerda→direita — todos os botões \"próximo\" estão à direita.",
+            ["CopyHint"] = "Dica: esta janela suporta seleção de texto e Ctrl+C para copiar",
+            ["GettingStarted"] = "A maneira mais simples de começar:",
+            ["Step1"] = "1. Importe e selecione uma ferramenta upstream (ffmpeg, vspipe, avs2yuv, etc.)",
+            ["Step2"] = "2. Importe e selecione um codificador / ferramenta downstream (x264, x265, etc.)",
+            ["Step3"] = "3. Importe o arquivo de vídeo fonte",
+            ["Step4"] = "4. Selecione as configurações de codificação (validadas como compatíveis e saudáveis)",
+            ["Step5"] = "5. Limpe a lista de verificação e inicie",
+            ["WhyDisabledTitle"] = "Por que meu botão Iniciar Codificação está desabilitado",
+            ["WhyDisabled1"] = "1. Clique no botão Bypass abaixo de uma lista de verificação que detectou erro",
+            ["WhyDisabled2"] = "2. Entrada ruim, saída ruim (a maioria não bloqueia)",
+            ["WhyDisabled3"] = "3. Codificar vídeo corrompido pode travar o PC (BSOD) em casos raros",
+            ["ToolDownloadTitle"] = "Download de ferramentas de codificação de vídeo",
+            ["ComplianceTitle"] = "Conformidade para uso comercial",
+            ["ComplianceDesc"] = "Este programa é licenciado sob Apache License 2.0. Para uso comercial, consulte os requisitos de conformidade dos programas importados.",
+            ["LicenseFfmpeg"] = "· FFmpeg / FFprobe Legal & Licença: https://ffmpeg.org/legal.html",
+            ["LicenseVapourSynth"] = "· Licença VapourSynth: https://github.com/vapoursynth/vapoursynth/blob/master/COPYING",
+            ["LicenseAvs2yuv"] = "· Licença Avs2YUV: https://github.com/FFMS/ffms2/blob/master/COPYING.GPLv3",
+            ["LicenseAvs2pipemod"] = "· Licença Avs2Pipemod: https://github.com/pinterf/AvsPmod",
+            ["LicenseSvfi"] = "· Licença SVFI: https://github.com/Justin62628/Squirrel-RIFE/blob/master/LICENSE",
+            ["LicenseX264"] = "· Licença x264 & Info de Patentes AVC: https://x264.org/licensing/",
+            ["LicenseX265"] = "· Licença x265 & Info de Patentes HEVC: https://www.videolan.org/developers/x265.html",
+            ["LicenseSvtAv1"] = "· Licença SVT-AV1 / AV1: https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/LICENSE.md",
+            ["ComplianceFooter"] = "...Incluindo formatos de contêiner de vídeo, codecs de audio e, mais importante, os tipos de fonte envolvidos para uso comercial.",
+            ["ComplianceDisclaimer"] = "Os usuários são responsáveis por garantir a conformidade com licenças de software, patentes de codecs, formatos de mídia e licenças de fonte em sua região.",
+            ["ParamConfigTitle"] = "Descrição do recurso de configuração de parâmetros",
+            ["ParamConfigIntro"] = "Este programa usa uma estratégia de alinhamento com a fonte para configuração de parâmetros, tentando deixar espaço suficiente para o codificador trabalhar.",
+            ["AutoParamTitle"] = "Parâmetros auto-especificados ou fornecidos via Y4M",
+            ["AutoParamBase"] = "· Parâmetros básicos: taxa de quadros, resolução, total de quadros, matriz de cor, características de transferência, primárias de cor",
+            ["AutoParamEncode"] = "· Parâmetros de codificação: distância lookahead, raio de estimação de movimento, força de estimação de movimento subpixel",
+            ["AutoParamFooter"] = "...exceto codificadores que podem auto-configurar os parâmetros acima",
+            ["ManualBaseTitle"] = "Especificado manualmente - Parâmetros básicos",
+            ["ManualBaseList"] = "· x264: propósito geral, material de arquivo\n· x265: propósito geral, filme, material de arquivo, anime, teste de estresse\n· SVT-AV1: ultra HQ, alta compressão, rápido",
+            ["ManualBaseFooter"] = "...determinado pelo desempenho atual da CPU e configurações expostas na linha de comando (intenção do dev), afetando a precisão da alocação de bits (% de bits a serem comprimidos sem perda).",
+            ["ManualExtTitle"] = "Especificado manualmente - Parâmetros estendidos de terceiros",
+            ["ManualExtIntro"] = "Codificadores de vídeo modificados podem fornecer recursos estendidos (diferente das versões oficiais / outras versões modificadas); verifique a existência deles antes de marcar."
+        };
     }
 
     public const string WindowTitle = "1cenc Usage & Compliance";

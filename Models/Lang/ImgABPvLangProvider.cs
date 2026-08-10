@@ -290,6 +290,41 @@ public class ImgABPvLangProvider : LangProviderBase
             ["ButteraugliToolPresent"] = "Butteraugli-Qualitätsmetrik bereit.",
             ["ButteraugliScoreHint"] = "Butteraugli-Punktzahl (heuristisch): <1 Theoretisch verlustfrei | 1-2 Visuell verlustfrei | 2-4 Leichter Verlust | 4-6 Deutlicher Verlust | 6-8 Schwerer Verlust | >8 Gravierender Verlust"
         };
+        Data["pt-br"] = new(Data["en"])
+        {
+            ["EncoderLabel"] = "Codificador",
+            ["DisplayModeLabel"] = "Exibição",
+            ["ZoomLabel"] = "Zoom",
+            ["PositionLabel"] = "Posição da imagem",
+            ["RawButtonText"] = "Bruto",
+            ["Hint1Text"] = "A compressão só é realizada após clicar em Visualizar devido à lentidão de alguns codificadores",
+            ["Hint2Text"] = "A visualização é apenas via ffmpeg para garantir usabilidade quando nenhum codificador está importado",
+            ["Hint3Text"] = "Arraste a linha separadora para comparar; observe que você está comparando qualidade de imagem \"pausada\", não \"em movimento\"",
+            ["StatusReady"] = "Pronto",
+            ["StatusExtracting"] = "Extraindo quadro fonte...",
+            ["StatusConverting"] = "Convertendo quadro fonte ({0})...",
+            ["StatusEncoding"] = "Codificando com {0}...",
+            ["StatusDecoding"] = "Decodificando quadro de visualização...",
+            ["StatusPreviewReady"] = "Visualização pronta: {0}, CRF/QP {1}",
+            ["StatusComputingScores"] = "Calculando métricas de qualidade...",
+            ["StatusCancelled"] = "Visualização cancelada",
+            ["StatusNoFfmpeg"] = "ffmpeg.exe não está importado",
+            ["StatusNoSource"] = "Nenhuma fonte de vídeo válida selecionada",
+            ["StatusDisplayModeBlocked"] = "O modo de exibição não pode ser alterado durante a visualização",
+            ["StatusDisplayModeSet"] = "Modo de exibição: {0}",
+            ["DisplayModeRaw"] = "Bruto",
+            ["DisplayModeLowToBt709"] = "Gamut baixo → BT.709",
+            ["DisplayModeWcgToBt709"] = "WCG → BT.709",
+            ["DisplayModeHdrToSdr"] = "HDR → SDR",
+            ["DisplayModeHighHdrToSdr"] = "HDR alto → SDR",
+            ["WarnSvtAv1No12Bit"] = "libsvtav1 não suporta visualização de fontes de 12 bits.\nUse libx265 ou selecione uma fonte diferente.",
+            ["Ssimulacra2ToolMissing"] = "Ferramenta SSIMULACRA2.1 não encontrada. Coloque x64-CloudinarySSIMULACRA2.1 ao lado do executável e reinicie.",
+            ["Ssimulacra2ToolPresent"] = "Métrica de qualidade SSIMULACRA2.1 está pronta.",
+            ["SsimulacraScoreHint"] = "Pontuação SSIMULACRA: 100 Sem perda (matemático) | 90 Sem perda visual | 85 Perda mínima | 80 Reveladora | 70 Visível | 50 Substancial | 30 Grave",
+            ["ButteraugliToolMissing"] = "Ferramenta Butteraugli não encontrada. Coloque x64-GoogleButteraugli ao lado do executável e reinicie.",
+            ["ButteraugliToolPresent"] = "Métrica de qualidade Butteraugli está pronta.",
+            ["ButteraugliScoreHint"] = "Pontuação Butteraugli (heurística): <1 Teoricamente sem perda | 1-2 Visualmente sem perda | 2-4 Perda leve | 4-6 Perda perceptível | 6-8 Perda pesada | >8 Perda severa",
+        };
     }
 
     public string EncoderLabel { get; }

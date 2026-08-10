@@ -251,6 +251,25 @@ public abstract class LangProviderBase
             ["Reset"] = "초기화",
             ["Stop"] = "중지",
         },
+        ["pt-br"] = new()
+        {
+            ["Confirm"] = "Confirmar",
+            ["Cancel"] = "Cancelar",
+            ["Add"] = "Adicionar",
+            ["Delete"] = "Excluir",
+            ["Clear"] = "Limpar",
+            ["Clear All"] = "Limpar tudo",
+            ["Edit"] = "Editar",
+            ["Replace"] = "Substituir",
+            ["Import"] = "Importar",
+            ["Save"] = "Salvar",
+            ["Close"] = "Fechar",
+            ["Preview"] = "Visualizar",
+            ["Fit"] = "Ajustar",
+            ["Remove"] = "Remover",
+            ["Reset"] = "Redefinir",
+            ["Stop"] = "Parar",
+        },
     };
 
     protected LangProviderBase(

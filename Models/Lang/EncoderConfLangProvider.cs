@@ -340,6 +340,44 @@ public class EncoderConfLangProvider : LangProviderBase
             ["VvencHintText"] = "VVenC ist nur für Einzelbildvorschau, nicht für Hauptkodierung",
             ["BlankPresetHint"] = "Keine: Encoder-Standard / vollständige Anpassung über Zusatzparameter"
         };
+        Data["pt-br"] = new(Data["en"])
+        {
+            ["RateControlTitle"] = "Mecanismo de controle de taxa",
+            ["CustomParamsTitle"] = "Parâmetros personalizados",
+            ["CrfModeText"] = "Modo CRF (fator de taxa constante)",
+            ["AbrModeText"] = "Modo ABR (taxa de bits média)",
+            ["BasicParamsText"] = "Parâmetros básicos",
+            ["KeyframeSecondsText"] = "Intervalo de quadros-chave (segundos)",
+            ["ThirdPartyParamsText"] = "Parâmetros estendidos de terceiros",
+            ["FreeTextControlTitle"] = "Parâmetros adicionais do codificador (formato CLI)",
+            ["PreviewFreeTextControlTitle"] = "Parâmetros adicionais do codificador (formato Visualização/FFmpeg)",
+            ["PreviewFreeTextHint"] = "Use o formato da API FFmpeg: -x264-params, -x265-params, -svtav1-params",
+            ["X264ModText"] = "x264 Mod: Otimização R-D de granulação de filme (FGO-RD)",
+            ["X265JpsdrAqText"] = "x265 jpsdr Mod: Histerese de quantização adaptativa (AQ)",
+            ["X265JpsdrDarkText"] = "x265 jpsdr Mod: ↑Força AQ para cenas escuras",
+            ["X265JpsdrTextureText"] = "x265 jpsdr Mod: ↑Força AQ para texturas",
+            ["SvtAv1EssentialDl2Text"] = "SVT-AV1-Essential: Filtro deblocking preciso (DLF2)",
+            ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential: Tamanho de tile automático",
+            ["CrfHintText"] = "Marcas do CRF — Sem perda | UHQ | HQ | Streaming",
+            ["AbrHintText"] = "Marcas do ABR (2K60) — Quase sem perda | Quase sem perda→HQ | UHQ→Streaming | HQ→Streaming",
+            ["KeyframeHintText1"] = "Marcas do Keyint (dificuldade de decodificação):\nEco./Edição multi-track | Médio | Difícil e compressão média | Extrema e alta compressão",
+            ["KeyframeHintText2"] = "↑Resolução=↑dificuldade de decodificação; alterar dist. keyint ajuda ↓dificuldade de decodificação-indexação ou ↑compressão",
+            ["ThirdPartyHintText1"] = "\"Otimização de granulação\" tende fortemente à nitidez, não à compressão",
+            ["ThirdPartyHintText2"] = "\"Histerese AQ\" evita que flashcuts/montagens perturbem a estratégia AQ atual",
+            ["ThirdPartyHintText3"] = "\"Deblocking de alta precisão\" pode reduzir a desfocagem",
+            ["ThirdPartyHintText4"] = "\"Auto Tile\" pode equilibrar melhor a distribuição da taxa de bits",
+            ["GeneralPurposeText"] = "Propósito geral",
+            ["StockFootageText"] = "Material de arquivo",
+            ["FilmIRLText"] = "Filmagem / Cena real",
+            ["AnimeText"] = "Anime",
+            ["StressTestText"] = "Teste de estresse",
+            ["PeakQualityText"] = "Qualidade máxima",
+            ["CompressionOptText"] = "Alta compressão",
+            ["SpeedOptimizedText"] = "Rápido",
+            ["BlankPresetText"] = "Nenhum",
+            ["VvencHintText"] = "VVenC é apenas para visualização de imagem única, não usado na codificação principal",
+            ["BlankPresetHint"] = "Nenhum: usar padrão do codificar / personalizar totalmente via caixa de texto de parâmetros adicionais"
+        };
     }
 
     public const string WindowTitle = "1cenc Encoding Settings";
