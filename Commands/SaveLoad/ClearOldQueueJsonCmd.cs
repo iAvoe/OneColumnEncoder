@@ -8,6 +8,7 @@ public class ClearOldQueueJsonCmd : BaseCmd
     {
         AppConfLangProvider lang = AppConfLangProvider.Current;
         string directory = SaveLoadBase<AppConfM>.GetConfigDirectory();
+        // TODO: Use OpenInfoModalCmd instead of MessageBox
         if (!Directory.Exists(directory))
         {
             System.Windows.MessageBox.Show(

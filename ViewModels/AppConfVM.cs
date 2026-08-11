@@ -179,6 +179,7 @@ public class AppConfVM : BaseVM
         if (!string.IsNullOrEmpty(pastedText) && !ContainsOnlyDigits(pastedText))
         {
             e.CancelCommand();
+            // TODO: Repace MessageBox with OpenWarnModalCmd
             textBox.Dispatcher.InvokeAsync(() =>
                 System.Windows.MessageBox.Show(
                     AppConfLangProvider.Current["AppConf.Validation.InvalidNumericInput"],

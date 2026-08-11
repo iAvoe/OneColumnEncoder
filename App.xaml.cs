@@ -22,6 +22,7 @@ public partial class App : Application
     {
         try
         {
+            // TODO: Use OpenErrModalCmd instead of MessageBox
             DispatcherUnhandledException += (_, ex) =>
             {
                 MessageBox.Show(ex.Exception.ToString(), "Unhandled UI Exception", MessageBoxButton.OK, MessageBoxImage.Error);
