@@ -1,4 +1,4 @@
-namespace OneColumnEncoder.Models;
+namespace OneColumnEncoder.Models.Analysis;
 
 public enum ColorSpaceStrategy
 {

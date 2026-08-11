@@ -1,3 +1,4 @@
+using OneColumnEncoder.Models.Analysis;
 using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.FFmpeg;

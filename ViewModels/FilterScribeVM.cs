@@ -1,4 +1,5 @@
 using OneColumnEncoder.Hardware;
+using OneColumnEncoder.Models.Analysis;
 using OneColumnEncoder.ScriptGeneration;
 using System.IO;
 

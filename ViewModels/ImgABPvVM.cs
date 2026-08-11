@@ -1,4 +1,5 @@
 using OneColumnEncoder.Analytics;
+using OneColumnEncoder.Models.Analysis;
 using System.IO;
 
 namespace OneColumnEncoder.ViewModels;
