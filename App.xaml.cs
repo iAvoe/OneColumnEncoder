@@ -22,10 +22,9 @@ public partial class App : Application
     {
         try
         {
-            // TODO: Use OpenErrModalCmd instead of MessageBox
             DispatcherUnhandledException += (_, ex) =>
             {
-                MessageBox.Show(ex.Exception.ToString(), "Unhandled UI Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                new OpenErrModalCmd(_modalNavM, "Unhandled UI Exception", ex.Exception.ToString()).Execute(null);
                 ex.Handled = true;
             };
 
@@ -45,7 +44,7 @@ public partial class App : Application
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ex.ToString(), "Startup Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            new OpenErrModalCmd(_modalNavM, "Startup Exception", ex.ToString()).Execute(null);
             Shutdown(-1);
         }
     }

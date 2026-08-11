@@ -4,18 +4,21 @@ namespace OneColumnEncoder.Commands.SaveLoad;
 
 public class ClearOldQueueJsonCmd : BaseCmd
 {
+    private readonly ModalNavS _modalNavS;
+
+    public ClearOldQueueJsonCmd(ModalNavS modalNavS)
+    {
+        _modalNavS = modalNavS;
+    }
+
     public override void Execute(object? parameter)
     {
         AppConfLangProvider lang = AppConfLangProvider.Current;
         string directory = SaveLoadBase<AppConfM>.GetConfigDirectory();
-        // TODO: Use OpenInfoModalCmd instead of MessageBox
         if (!Directory.Exists(directory))
         {
-            System.Windows.MessageBox.Show(
-                lang["AppConf.NoOldQueueJson"],
-                lang["AppConf.ClearOldQueueJsonTitle"],
-                System.Windows.MessageBoxButton.OK,
-                System.Windows.MessageBoxImage.Information);
+            new OpenInfoModalCmd(_modalNavS, lang["AppConf.ClearOldQueueJsonTitle"], lang["AppConf.NoOldQueueJson"])
+                .Execute(null);
             return;
         }
 
@@ -39,10 +42,8 @@ public class ClearOldQueueJsonCmd : BaseCmd
             }
         }
 
-        System.Windows.MessageBox.Show(
-            string.Format(lang["AppConf.ClearOldQueueJsonResult"], deletedCount),
-            lang["AppConf.ClearOldQueueJsonTitle"],
-            System.Windows.MessageBoxButton.OK,
-            System.Windows.MessageBoxImage.Information);
+        new OpenInfoModalCmd(_modalNavS, lang["AppConf.ClearOldQueueJsonTitle"],
+                string.Format(lang["AppConf.ClearOldQueueJsonResult"], deletedCount))
+            .Execute(null);
     }
-}
+}

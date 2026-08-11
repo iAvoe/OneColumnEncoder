@@ -21,7 +21,7 @@ public class OpenAppConfCmd(ModalNavS modalNavS, AppConfM appConfS) : OpenCloseB
             return;
 
         AppConfModal window = new();
-        var vm = new AppConfVM(_appConfS, window.Close);
+        var vm = new AppConfVM(_appConfS, ModalNavS, window.Close);
         ShowModal(window, vm, closeOpenStack: true, onClosed: () => OnAfterClose?.Invoke());
     }
 }

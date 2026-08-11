@@ -6,6 +6,7 @@ namespace OneColumnEncoder.ViewModels;
 public class AppConfVM : BaseVM
 {
     private readonly AppConfM _appConfM;
+    private readonly ModalNavS _modalNavS;
     private AppConfLangProvider _lang = AppConfLangProvider.Current;
 
     public AppConfLangProvider Lang
@@ -39,13 +40,14 @@ public class AppConfVM : BaseVM
 
     #region Constructor
 
-    public AppConfVM(AppConfM appConfS, Action closeAction)
+    public AppConfVM(AppConfM appConfS, ModalNavS modalNavS, Action closeAction)
     {
         _appConfM = appConfS;
+        _modalNavS = modalNavS;
         CloseCmd = new CloseModalCmd(closeAction);
         SaveCmd = new SaveAppConfCmd(appConfS, closeAction);
         LoadCmd = new LoadAppConfCmd(appConfS);
-        ClearOldQueueJsonCmd = new ClearOldQueueJsonCmd();
+        ClearOldQueueJsonCmd = new ClearOldQueueJsonCmd(modalNavS);
         FinishSettingButtons = ButtonGroupVM.CreateThreeButton(
             UICaptionProvider.AppConf.Buttons.Cancel,
             UICaptionProvider.AppConf.Buttons.ClearOldQueueJson,
@@ -117,7 +119,7 @@ public class AppConfVM : BaseVM
             new AppConfItem { Text = text, Content = cb });
     }
 
-    private static void AddTextboxItem(AppConfContainer container, string text, object source, string propertyPath,
+    private void AddTextboxItem(AppConfContainer container, string text, object source, string propertyPath,
         int? minValue = null, int? maxValue = null)
     {
         TextBox tb = new()
@@ -171,7 +173,7 @@ public class AppConfVM : BaseVM
         e.Handled = !ContainsOnlyDigits(e.Text);
     }
 
-    private static void OnNumericTextBoxPasting(object sender, DataObjectPastingEventArgs e)
+    private void OnNumericTextBoxPasting(object sender, DataObjectPastingEventArgs e)
     {
         if (sender is not TextBox textBox) return;
 
@@ -179,12 +181,12 @@ public class AppConfVM : BaseVM
         if (!string.IsNullOrEmpty(pastedText) && !ContainsOnlyDigits(pastedText))
         {
             e.CancelCommand();
-            // TODO: Repace MessageBox with OpenWarnModalCmd
             textBox.Dispatcher.InvokeAsync(() =>
-                System.Windows.MessageBox.Show(
-                    AppConfLangProvider.Current["AppConf.Validation.InvalidNumericInput"],
+                new OpenWarnModalCmd(
+                    _modalNavS,
                     AppConfLangProvider.Current["AppConf.Validation.InvalidNumericInputTitle"],
-                MessageBoxButton.OK, MessageBoxImage.Warning));
+                    AppConfLangProvider.Current["AppConf.Validation.InvalidNumericInput"])
+                    .Execute(null));
         }
     }
 
@@ -197,6 +199,10 @@ public class AppConfVM : BaseVM
         public int? MaxValue { get; set; }
         public string FieldName { get; set; } = "Value";
 
+        // Invoked by the WPF binding engine at runtime when a bound numeric TextBox
+        // (added via BuildTextBinding) loses focus and its value must be validated.
+        // Static reference counts report 0 because the call comes through the binding infrastructure,
+        // not direct code. Several settings rely on it.
         public override ValidationResult Validate(object? value, CultureInfo cultureInfo)
         {
             string text = value?.ToString() ?? string.Empty;
