@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.Models;
 
+/// <summary>
+/// Builds checklist items for validation and best-practice checks.
+/// </summary>
 public class ChecklistProviderM
 {
     public static List<ChecklistItemDefinitionM> GetToolsChecklist() =>

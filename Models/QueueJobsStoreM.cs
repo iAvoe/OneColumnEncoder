@@ -2,6 +2,9 @@ using System.IO;
 
 namespace OneColumnEncoder.Models;
 
+/// <summary>
+/// Persisted queue job list and queue state.
+/// </summary>
 public class QueueJobsStoreM : SaveLoadBase<QueueJobsStoreM>
 {
     public List<QueueJobItemM> Jobs { get; set; } = [];

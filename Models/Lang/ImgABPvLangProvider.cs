@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.Models.Lang;
 
+/// <summary>
+/// Localized strings for the image A/B preview.
+/// </summary>
 public class ImgABPvLangProvider : LangProviderBase
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()

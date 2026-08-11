@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.Models;
 
+/// <summary>
+/// One encoder preset item.
+/// </summary>
 public class EncoderPresetItem(int key, string nameKey, string param)
 {
     public int Key { get; } = key;
@@ -7,6 +10,9 @@ public class EncoderPresetItem(int key, string nameKey, string param)
     public string Params { get; } = param;
 }
 
+/// <summary>
+/// One third-party parameter toggle mapping.
+/// </summary>
 public class ThirdPartyParamDef(string propertyName, string paramOn, string paramOff)
 {
     public string PropertyName { get; } = propertyName;
@@ -14,6 +20,9 @@ public class ThirdPartyParamDef(string propertyName, string paramOn, string para
     public string ParamOff { get; } = paramOff;
 }
 
+/// <summary>
+/// Built-in encoder presets and shared parameter helpers.
+/// </summary>
 public static class EncoderPresetsM
 {
     // Key -1 is reserved for the UI-only blank preset. It intentionally has no

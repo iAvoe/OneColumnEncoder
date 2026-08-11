@@ -1,5 +1,8 @@
 ﻿namespace OneColumnEncoder.Models.Lang;
 
+/// <summary>
+/// Localized strings for parallelism settings.
+/// </summary>
 public class ParallelismConfLangProvider : LangProviderBase
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()

@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.Models.Lang;
 
+/// <summary>
+/// Localized strings for CPU set controls.
+/// </summary>
 public class CpuSetsLangProvider : LangProviderBase
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()

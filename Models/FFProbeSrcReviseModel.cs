@@ -5,6 +5,9 @@ using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.Models;
 
+/// <summary>
+/// Updates stored ffprobe JSON after a source revision.
+/// </summary>
 public static class FFProbeSrcReviseModel
 {
     public static string UpdateSingleSourceJson(string rawJson, SrcRevisionRequest request) =>

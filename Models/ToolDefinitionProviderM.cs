@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.Models;
 
+/// <summary>
+/// Registry of imported tool definitions.
+/// </summary>
 public static class ToolDefinitionProviderM
 {
     public static Dictionary<string, ToolDefinitionM> ToolDefs => BuildToolDefinitions();

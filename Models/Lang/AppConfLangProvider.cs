@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.Models.Lang;
 
+/// <summary>
+/// Localized strings for application settings.
+/// </summary>
 public class AppConfLangProvider : LangProviderBase
 {
     public const string WindowTitle = "1cenc Settings";

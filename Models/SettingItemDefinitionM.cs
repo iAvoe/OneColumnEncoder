@@ -1,5 +1,8 @@
 ﻿namespace OneColumnEncoder.Models;
 
+/// <summary>
+/// Setting control type.
+/// </summary>
 public enum SettingControlType
 {
     TextBox,
@@ -7,6 +10,10 @@ public enum SettingControlType
     Dropdown, // Language selection
     Font, // Font family selection
 }
+
+/// <summary>
+/// Definition of one configurable setting field.
+/// </summary>
 public record SettingItemDefinitionM(
     string GroupName,
     string Label,

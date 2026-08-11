@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.Models.Analysis;
 
+/// <summary>
+/// Color-space strategy used for source conversion.
+/// </summary>
 public enum ColorSpaceStrategy
 {
     Unknown,
@@ -10,6 +13,9 @@ public enum ColorSpaceStrategy
     HighHdrToSdr
 }
 
+/// <summary>
+/// Resolved color-space analysis and conversion metadata.
+/// </summary>
 public class ColorSpaceAnalysisM
 {
     public string? ColorPrimaries { get; init; }

@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.Models.Lang;
 
+/// <summary>
+/// Localized strings for filter script generation.
+/// </summary>
 public class FilterScribeModalLangProvider(string languageCode) : LangProviderBase(languageCode, Data)
 {
     public const string WindowTitle = "1cenc Filter Scribe";

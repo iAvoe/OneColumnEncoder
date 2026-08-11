@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.Models.Lang;
 
+/// <summary>
+/// Localized strings for the clip range selector.
+/// </summary>
 public class ClipRangeSelectorLangProvider : LangProviderBase
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()

@@ -3,6 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace OneColumnEncoder.Models;
 
+/// <summary>
+/// Application data persisted across launches.
+/// </summary>
 public class AppDataM : SaveLoadBase<AppDataM>
 {
     private static readonly string ConfigFilePath =

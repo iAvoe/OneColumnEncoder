@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.Models;
 
+/// <summary>
+/// Represents one memory usage block in the progress view.
+/// </summary>
 public class MemoryRangeBlockM : INotifyPropertyChanged
 {
     private int _fillLevel;

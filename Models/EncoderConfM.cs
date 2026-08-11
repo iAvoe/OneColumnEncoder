@@ -3,6 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace OneColumnEncoder.Models;
 
+/// <summary>
+/// Encoder configuration persisted across launches.
+/// </summary>
 public class EncoderConfM : SaveLoadBase<EncoderConfM>
 {
     private static readonly string ConfigFilePath =

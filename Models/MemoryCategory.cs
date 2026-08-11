@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.Models;
 
+/// <summary>
+/// Memory block category for the progress display.
+/// </summary>
 public enum MemoryCategory
 {
     Empty = 0,

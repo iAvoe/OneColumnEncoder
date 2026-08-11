@@ -1,5 +1,8 @@
 ﻿namespace OneColumnEncoder.Models;
 
+/// <summary>
+/// Imported tool item with display name and optional path.
+/// </summary>
 public class EncItemM(string name)
 {
     public Guid Id = Guid.NewGuid();

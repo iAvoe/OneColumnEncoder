@@ -2,6 +2,9 @@ using System.Diagnostics;
 
 namespace OneColumnEncoder.Models.Lang;
 
+/// <summary>
+/// Localized strings for the main UI.
+/// </summary>
 public class UILangProvider : LangProviderBase
 {
     public static UILangProvider Current { get; private set; } = null!;

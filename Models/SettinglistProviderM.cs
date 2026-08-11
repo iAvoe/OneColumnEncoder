@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.Models;
 
+/// <summary>
+/// Builds configuration UI setting definitions.
+/// </summary>
 public static class SettinglistProviderM
 {
     public static List<SettingItemDefinitionM> GetAllSettings() =>

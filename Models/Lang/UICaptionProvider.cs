@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.Models.Lang;
 
+/// <summary>
+/// Typed accessors for common UI captions.
+/// </summary>
 public static class UICaptionProvider
 {
     public static class Cards

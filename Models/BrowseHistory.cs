@@ -4,6 +4,9 @@ namespace OneColumnEncoder.Models;
 
 // Stable per-card keys for the last-browse directory history stored in AppDataM.BrowseHistory.
 // Keys must stay independent of localized display names so history survives language switches.
+/// <summary>
+/// Browse-history keys and lookup helpers.
+/// </summary>
 public static class BrowseHistoryKeys
 {
     // Video / script single-file source cards
@@ -36,6 +39,9 @@ public static class BrowseHistoryKeys
     public static string ForTool(string exeName) => $"tool.{exeName}";
 }
 
+/// <summary>
+/// Resolves and stores last-used browse directories.
+/// </summary>
 public static class BrowseHistory
 {
     public static string? GetDirectory(AppDataM appData, string key)

@@ -1,5 +1,8 @@
 ﻿namespace OneColumnEncoder.Models.Lang;
 
+/// <summary>
+/// Localized strings for repart planning.
+/// </summary>
 public sealed class RepartLangProvider(string languageCode) : LangProviderBase(languageCode, Data)
 {
     public const string WindowTitle = "1cenc Episode Repartition";

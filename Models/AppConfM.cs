@@ -2,6 +2,9 @@ using System.IO;
 
 namespace OneColumnEncoder.Models;
 
+/// <summary>
+/// Application configuration persisted across launches.
+/// </summary>
 public class AppConfM : SaveLoadBase<AppConfM>
 {
     private static readonly string ConfigFilePath =

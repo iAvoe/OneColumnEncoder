@@ -2,6 +2,9 @@ using System.IO;
 
 namespace OneColumnEncoder.Models;
 
+/// <summary>
+/// Signature of the source format used by repart planning.
+/// </summary>
 public sealed record RepartVideoFormatSignature(
     string CodecName,
     string Profile,
@@ -31,6 +34,9 @@ public sealed record RepartVideoFormatSignature(
         $"fps={AverageFrameRate}");
 }
 
+/// <summary>
+/// One source file tracked by a repart plan.
+/// </summary>
 public sealed record RepartSourceM(
     string FilePath,
     string RawJson,
@@ -54,6 +60,9 @@ public sealed record RepartSourceM(
     }
 }
 
+/// <summary>
+/// One output segment in a repart plan.
+/// </summary>
 public sealed record RepartOutputSegmentM(
     Guid Id,
     string BaseName,
@@ -69,11 +78,17 @@ public sealed record RepartOutputSegmentM(
         LastFrame + 1 == other.FirstFrame || other.LastFrame + 1 == FirstFrame;
 }
 
+/// <summary>
+/// One locked or movable divider on the repart timeline.
+/// </summary>
 public sealed record RepartDividerM(
     Guid Id,
     long Frame,
     bool IsLocked);
 
+/// <summary>
+/// One rendered timeline range for repart output.
+/// </summary>
 public sealed record RepartTimelineRangeM(
     Guid? OutputId,
     string BaseName,
@@ -84,6 +99,9 @@ public sealed record RepartTimelineRangeM(
     public long FrameCount => LastFrame >= FirstFrame ? LastFrame - FirstFrame + 1 : 0;
 }
 
+/// <summary>
+/// Editable repart split plan and its derived ranges.
+/// </summary>
 public sealed class RepartPlanM
 {
     public Guid PlanId { get; init; } = Guid.NewGuid();

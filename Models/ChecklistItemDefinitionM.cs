@@ -1,3 +1,6 @@
 ﻿namespace OneColumnEncoder.Models;
 
-public record ChecklistItemDefinitionM(string Text, StatusType InitialStatus = StatusType.Waiting);
+/// <summary>
+/// One checklist entry and its initial status.
+/// </summary>
+public record ChecklistItemDefinitionM(string Text, StatusType InitialStatus = StatusType.Waiting);

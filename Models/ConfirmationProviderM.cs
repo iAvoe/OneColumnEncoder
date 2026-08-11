@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.Models;
 
+/// <summary>
+/// Localized confirmation dialog text helpers.
+/// </summary>
 public static class ConfirmationProviderM
 {
     public static class ConfirmForceImport

@@ -2,6 +2,9 @@ using System.IO;
 
 namespace OneColumnEncoder.Models;
 
+/// <summary>
+/// BDMV playlist scan result for one playlist.
+/// </summary>
 public sealed record BdPlaylistM(
     string Id,
     string FilePath,
@@ -20,6 +23,9 @@ public sealed record BdPlaylistM(
     private static string FormatTimeSpan(TimeSpan value) => value.ToString(@"hh\:mm\:ss\.fff");
 }
 
+/// <summary>
+/// Playlist cluster with shared clip sequence.
+/// </summary>
 public sealed record BdPlaylistClusterM(
     string Key,
     TimeSpan Duration,
@@ -48,6 +54,9 @@ public sealed record BdPlaylistClusterM(
     private static string FormatTimeSpan(TimeSpan value) => value.ToString(@"hh\:mm\:ss\.fff");
 }
 
+/// <summary>
+/// Result of a BDMV playlist scan.
+/// </summary>
 public sealed record BdPlaylistScanResult(
     bool Success,
     IReadOnlyList<BdPlaylistClusterM> Clusters,

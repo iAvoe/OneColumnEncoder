@@ -1,10 +1,15 @@
 ﻿namespace OneColumnEncoder.Models;
 
+/// <summary>
+/// Tool zone grouping.
+/// </summary>
 public enum ToolZone { Upstream, Encoder, Analytics, Dependencies }
 
 // For file size fingerprint values, see AppDataM.cs→Importables
 
-// For SrcImportZone / EncodingConfZone items that have unique per-item labels
+/// <summary>
+/// Display metadata for one tool entry.
+/// </summary>
 public record ToolDefinitionM(
     string DisplayName,
     string R1Text,

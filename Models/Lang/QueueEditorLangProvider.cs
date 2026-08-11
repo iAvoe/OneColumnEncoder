@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.Models.Lang;
 
+/// <summary>
+/// Localized strings for the queue editor.
+/// </summary>
 public sealed class QueueEditorLangProvider(string languageCode) : LangProviderBase(languageCode, Data)
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()

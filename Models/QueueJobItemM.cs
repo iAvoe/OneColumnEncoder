@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.Models;
 
+/// <summary>
+/// Single queued encoding job record.
+/// </summary>
 public class QueueJobItemM
 {
     public string JobId { get; set; } = Guid.NewGuid().ToString();

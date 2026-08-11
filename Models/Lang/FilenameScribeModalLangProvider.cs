@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.Models.Lang;
 
+/// <summary>
+/// Localized strings for filename generation.
+/// </summary>
 public class FilenameScribeModalLangProvider(string languageCode) : LangProviderBase(languageCode, Data)
 {
     public const string WindowTitle = "1cenc Filename";

@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.Models.Lang;
 
+/// <summary>
+/// Localized strings for encoder configuration.
+/// </summary>
 public class EncoderConfLangProvider : LangProviderBase
 {
     public static EncoderConfLangProvider Current { get; private set; } = null!;

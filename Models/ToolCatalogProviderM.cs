@@ -2,6 +2,9 @@ using System.IO;
 
 namespace OneColumnEncoder.Models;
 
+/// <summary>
+/// Catalog of tool card definitions and lookup helpers.
+/// </summary>
 public static class ToolCatalogProviderM
 {
     // Video Source Import zone (4 items)

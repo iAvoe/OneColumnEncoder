@@ -14,7 +14,9 @@ namespace OneColumnEncoder.Models.Analysis;
 /// </summary>
 public class VideoAnalysisM
 {
-    /// <summary>Route that produced the current analysis. Null when no analysis has been recorded.</summary>
+    /// <summary>
+    /// Route that produced the current analysis. Null when no analysis has been recorded.
+    /// </summary>
     public SrcRouteKind? Route { get; set; }
 
     /// <summary>
@@ -44,7 +46,9 @@ public class VideoAnalysisM
     /// </summary>
     public string BatchRawJson { get; set; } = string.Empty;
 
-    /// <summary>Aggregate frame count over the whole batch. Pre-req of Concat and Repart mode; 0 when unknown.</summary>
+    /// <summary>
+    /// Aggregate frame count over the whole batch. Pre-req of Concat and Repart mode; 0 when unknown.
+    /// </summary>
     public long ConcatTotalFrames { get; set; }
 
     public bool IsEmpty => string.IsNullOrWhiteSpace(RawJson);

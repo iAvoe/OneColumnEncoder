@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.Models;
 
+/// <summary>
+/// Three-line text item used by compact displays.
+/// </summary>
 public class ColumnTextItemM : INotifyPropertyChanged
 {
     private string _topText = string.Empty;

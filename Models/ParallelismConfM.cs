@@ -3,6 +3,9 @@ using System.IO;
 
 namespace OneColumnEncoder.Models;
 
+/// <summary>
+/// CPU and NUMA parallelism settings for encoding.
+/// </summary>
 public class ParallelismConfM : SaveLoadBase<ParallelismConfM>
 {
     private static readonly string ConfigFilePath =

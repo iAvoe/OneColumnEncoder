@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.Models.Lang;
 
+/// <summary>
+/// Localized strings for source revision.
+/// </summary>
 public class SrcReviserLangProvider(string languageCode) : LangProviderBase(languageCode, Data)
 {
     public const string WindowTitle = "1cenc Source Reviser";
