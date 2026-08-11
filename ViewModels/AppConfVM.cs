@@ -16,7 +16,7 @@ public class AppConfVM : BaseVM
     }
 
     #region Properties & Commands
-    public string WindowTitle => AppConfLangProvider.WindowTitle;
+    public static string WindowTitle => AppConfLangProvider.WindowTitle;
     public string HeaderText =>
         Lang["AppConfModal.Header"];
     public string NotificationPolicyHint =>

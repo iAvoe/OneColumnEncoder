@@ -84,8 +84,8 @@ public class AnalyzeSrcVideoCmd(
                 string rawJson =
                     await FFProbeVideoAnalysis.AnalyzeAsync(ffprobePath, srcPath);
 
-                _analysis.FfprobePath = ffprobePath;
-                _analysis.srcPath = srcPath;
+                _analysis.FFprobePath = ffprobePath;
+                _analysis.SrcPath = srcPath;
                 _analysis.RawJson = rawJson;
                 _getActiveSrcValidationCard().ApplyFfprobeAnalysisJson(rawJson);
 
@@ -134,8 +134,8 @@ public class AnalyzeSrcVideoCmd(
         if (result.HasResolutionMismatch)
             throw new InvalidOperationException(result.ResolutionMismatchMessage ?? string.Empty);
 
-        _analysis.FfprobePath = ffprobePath;
-        _analysis.srcPath = result.ReferencePath;
+        _analysis.FFprobePath = ffprobePath;
+        _analysis.SrcPath = result.ReferencePath;
         _analysis.RawJson = result.ReferenceRawJson;
         _analysis.ConcatTotalFrames = result.ConcatTotalFrames;
         _analysis.QueueRawJson = JsonSerializer.Serialize(
@@ -235,8 +235,8 @@ public class AnalyzeSrcVideoCmd(
             File.WriteAllText(excludedJsonPath, JsonSerializer.Serialize(new QueueSrcData(referencePath, excluded), CachedJsonOptions), utf8NoBom);
 
         // Step 6
-        _analysis.FfprobePath = ffprobePath;
-        _analysis.srcPath = referencePath;
+        _analysis.FFprobePath = ffprobePath;
+        _analysis.SrcPath = referencePath;
         _analysis.RawJson = referenceRawJson;
         _analysis.QueueRawJson = JsonSerializer.Serialize(new QueueRawAnalysisData(result.RawAnalyses), CachedJsonOptions);
         queueCard.ApplyQueueResult(accepted.Count, excluded.Count, queueJsonPath, excludedJsonPath ?? string.Empty);

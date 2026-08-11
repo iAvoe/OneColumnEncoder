@@ -1280,8 +1280,8 @@ public class MainVM : BaseVM
 
     private bool IsCurrentAnalysisFor(string srcPath, string ffprobePath) =>
         !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson) &&
-        string.Equals(_srcVideoAnalysis.srcPath, srcPath, StringComparison.OrdinalIgnoreCase) &&
-        string.Equals(_srcVideoAnalysis.FfprobePath, ffprobePath, StringComparison.OrdinalIgnoreCase);
+        string.Equals(_srcVideoAnalysis.SrcPath, srcPath, StringComparison.OrdinalIgnoreCase) &&
+        string.Equals(_srcVideoAnalysis.FFprobePath, ffprobePath, StringComparison.OrdinalIgnoreCase);
 
     private SrcRouteKind GetActiveSrcRoute()
     {
@@ -1942,8 +1942,8 @@ public class MainVM : BaseVM
         ToolItemCardVM? repartItem = VideoSrcImportZone.FirstOrDefault(IsVideoSrcRepartItem);
         if (repartItem != null) repartItem.IsSelected = true;
 
-        _srcVideoAnalysis.srcPath = plan.Sources[0].FilePath;
-        _srcVideoAnalysis.FfprobePath = plan.FfprobePath;
+        _srcVideoAnalysis.SrcPath = plan.Sources[0].FilePath;
+        _srcVideoAnalysis.FFprobePath = plan.FfprobePath;
         _srcVideoAnalysis.RawJson = plan.ReferenceRawJson;
         _srcVideoAnalysis.QueueRawJson = JsonSerializer.Serialize(plan.Sources.Select(source => new
         {

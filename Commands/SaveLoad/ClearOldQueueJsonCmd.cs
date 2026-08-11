@@ -2,15 +2,19 @@ using System.IO;
 
 namespace OneColumnEncoder.Commands.SaveLoad;
 
-public class ClearOldQueueJsonCmd : BaseCmd
+/// <summary>
+/// Old JSON cleanup command
+/// </summary>
+/// <param name="modalNavS">Navigation modal service</param>
+public class ClearOldQueueJsonCmd(ModalNavS modalNavS) : BaseCmd
 {
-    private readonly ModalNavS _modalNavS;
+    private readonly ModalNavS _modalNavS = modalNavS;
 
-    public ClearOldQueueJsonCmd(ModalNavS modalNavS)
-    {
-        _modalNavS = modalNavS;
-    }
-
+    /// <summary>
+    /// Try to delete all the source_queue_*.json files in the config (/1cenc) folder older than 7 days
+    /// If no config folder exists, show a info modal to user
+    /// </summary>
+    /// <param name="parameter">No parameters are used, actually</param>
     public override void Execute(object? parameter)
     {
         AppConfLangProvider lang = AppConfLangProvider.Current;
@@ -37,13 +41,10 @@ public class ClearOldQueueJsonCmd : BaseCmd
                     deletedCount++;
                 }
             }
-            catch
-            {
-            }
+            catch {} // Probably disk IO fails, which does not really matter
         }
 
-        new OpenInfoModalCmd(_modalNavS, lang["AppConf.ClearOldQueueJsonTitle"],
-                string.Format(lang["AppConf.ClearOldQueueJsonResult"], deletedCount))
+        new OpenInfoModalCmd(_modalNavS, lang["AppConf.ClearOldQueueJsonTitle"], string.Format(lang["AppConf.ClearOldQueueJsonResult"], deletedCount))
             .Execute(null);
     }
 }
