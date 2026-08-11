@@ -1,3 +1,5 @@
+using OneColumnEncoder.Models.Analysis;
+
 namespace OneColumnEncoder.ViewModels;
 
 public class SampleClipVM : BaseVM, IClipRangeSelectorDragAware

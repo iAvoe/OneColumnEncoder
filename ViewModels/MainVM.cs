@@ -1,5 +1,6 @@
 using OneColumnEncoder.Commands.SaveLoad;
 using OneColumnEncoder.ConcatManagement;
+using OneColumnEncoder.Models.Analysis;
 using OneColumnEncoder.QueueManagement;
 using OneColumnEncoder.RepartManagement;
 using OneColumnEncoder.ScriptGeneration;
@@ -572,7 +573,7 @@ public class MainVM : BaseVM
                 _srcVideoAnalysis.RawJson,
                 _srcVideoAnalysis.ConcatTotalFrames) ?? 0);
         CopyRawAnalysis = new CopyRawAnalysisCmd(
-            _srcVideoAnalysis, modalNavS, IsQueueRouteActive, () => IsConcatRouteActive() || IsRepartRouteActive());
+            _srcVideoAnalysis, modalNavS);
         AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(
             GetSelectedFfprobePath,
             GetSelectedVideoSrcPath,
@@ -1279,7 +1280,8 @@ public class MainVM : BaseVM
         AnalyticsZone.Any(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
 
     private bool IsCurrentAnalysisFor(string srcPath, string ffprobePath) =>
-        !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson) &&
+        _srcVideoAnalysis.IsCompleteFor(GetActiveSrcRoute()) &&
+        _srcVideoAnalysis.Route == GetActiveSrcRoute() &&
         string.Equals(_srcVideoAnalysis.SrcPath, srcPath, StringComparison.OrdinalIgnoreCase) &&
         string.Equals(_srcVideoAnalysis.FFprobePath, ffprobePath, StringComparison.OrdinalIgnoreCase);
 
@@ -1942,15 +1944,20 @@ public class MainVM : BaseVM
         ToolItemCardVM? repartItem = VideoSrcImportZone.FirstOrDefault(IsVideoSrcRepartItem);
         if (repartItem != null) repartItem.IsSelected = true;
 
+        _srcVideoAnalysis.Route = SrcRouteKind.Repart;
         _srcVideoAnalysis.SrcPath = plan.Sources[0].FilePath;
         _srcVideoAnalysis.FFprobePath = plan.FfprobePath;
         _srcVideoAnalysis.RawJson = plan.ReferenceRawJson;
-        _srcVideoAnalysis.QueueRawJson = JsonSerializer.Serialize(plan.Sources.Select(source => new
-        {
-            source.FilePath,
-            source.RawJson,
-            source.TotalFrames
-        }));
+        _srcVideoAnalysis.BatchRawJson = JsonSerializer.Serialize(
+            new RawAnalysisBatchM(
+                plan.Sources
+                    .Where(source => !string.IsNullOrWhiteSpace(source.RawJson))
+                    .Select(source => new SourceRawAnalysisM(
+                        source.FilePath,
+                        source.DisplayName,
+                        JsonDocument.Parse(source.RawJson).RootElement.Clone()))
+                    .ToList()),
+            FFProbeJsonFormatting.Options);
         _srcVideoAnalysis.ConcatTotalFrames = plan.TotalFrames;
         RepartCheckCard.ApplyRepartPlan(plan);
         OnSrcAnalysisCompleted(true);
@@ -2596,23 +2603,22 @@ public class MainVM : BaseVM
 
     private void ReviseQueueSource(string queueJsonPath, SrcRevisionRequest request)
     {
-        (_srcVideoAnalysis.RawJson, _srcVideoAnalysis.QueueRawJson) =
+        (_srcVideoAnalysis.RawJson, _srcVideoAnalysis.BatchRawJson) =
             FFProbeSrcReviseModel.UpdateQueueSourceJson(
                 queueJsonPath,
                 _srcVideoAnalysis.RawJson,
-                _srcVideoAnalysis.QueueRawJson,
+                _srcVideoAnalysis.BatchRawJson,
                 request);
     }
 
     private void ReviseConcatSource(SrcRevisionRequest request)
     {
-        (_srcVideoAnalysis.RawJson, _srcVideoAnalysis.QueueRawJson) =
+        (_srcVideoAnalysis.RawJson, _srcVideoAnalysis.BatchRawJson) =
             FFProbeSrcReviseModel.UpdateConcatSourceJson(
                 _srcVideoAnalysis.RawJson,
-                _srcVideoAnalysis.QueueRawJson,
+                _srcVideoAnalysis.BatchRawJson,
                 request);
-        _srcVideoAnalysis.ConcatTotalFrames = FFProbeSrcReviseModel.CalculateTotalFrames(
-            _srcVideoAnalysis.QueueRawJson);
+        _srcVideoAnalysis.UpdateConcatTotalFramesFromQueueJson();
     }
 
     private Dictionary<string, string> LoadQueueFFprobeJsonByPath()

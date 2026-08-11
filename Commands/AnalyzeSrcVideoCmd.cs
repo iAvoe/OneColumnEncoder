@@ -1,4 +1,5 @@
 using OneColumnEncoder.ConcatManagement;
+using OneColumnEncoder.Models.Analysis;
 using System.IO;
 using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
@@ -84,6 +85,7 @@ public class AnalyzeSrcVideoCmd(
                 string rawJson =
                     await FFProbeVideoAnalysis.AnalyzeAsync(ffprobePath, srcPath);
 
+                _analysis.Route = SrcRouteKind.Single;
                 _analysis.FFprobePath = ffprobePath;
                 _analysis.SrcPath = srcPath;
                 _analysis.RawJson = rawJson;
@@ -134,13 +136,14 @@ public class AnalyzeSrcVideoCmd(
         if (result.HasResolutionMismatch)
             throw new InvalidOperationException(result.ResolutionMismatchMessage ?? string.Empty);
 
+        _analysis.Route = SrcRouteKind.Concat;
         _analysis.FFprobePath = ffprobePath;
         _analysis.SrcPath = result.ReferencePath;
         _analysis.RawJson = result.ReferenceRawJson;
         _analysis.ConcatTotalFrames = result.ConcatTotalFrames;
-        _analysis.QueueRawJson = JsonSerializer.Serialize(
-            new QueueRawAnalysisData([.. result.RawAnalyses.Select(entry =>
-                new QueueSourceRawAnalysis(entry.FilePath, entry.DisplayName, entry.FfprobeJson))]),
+        _analysis.BatchRawJson = JsonSerializer.Serialize(
+            new RawAnalysisBatchM([.. result.RawAnalyses.Select(entry =>
+                new SourceRawAnalysisM(entry.FilePath, entry.DisplayName, entry.FfprobeJson))]),
             CachedJsonOptions);
         concatCard.ApplyFfprobeAnalysisJson(result.ReferenceRawJson);
         concatCard.ApplyConcatAnalysis(concatFilePaths, allValid: true);
@@ -235,10 +238,11 @@ public class AnalyzeSrcVideoCmd(
             File.WriteAllText(excludedJsonPath, JsonSerializer.Serialize(new QueueSrcData(referencePath, excluded), CachedJsonOptions), utf8NoBom);
 
         // Step 6
+        _analysis.Route = SrcRouteKind.Queue;
         _analysis.FFprobePath = ffprobePath;
         _analysis.SrcPath = referencePath;
         _analysis.RawJson = referenceRawJson;
-        _analysis.QueueRawJson = JsonSerializer.Serialize(new QueueRawAnalysisData(result.RawAnalyses), CachedJsonOptions);
+        _analysis.BatchRawJson = JsonSerializer.Serialize(new RawAnalysisBatchM(result.RawAnalyses), CachedJsonOptions);
         queueCard.ApplyQueueResult(accepted.Count, excluded.Count, queueJsonPath, excludedJsonPath ?? string.Empty);
 
         // Step 7
@@ -271,7 +275,7 @@ public class AnalyzeSrcVideoCmd(
     {
         List<QueueSourceCandidate> candidates = [];
         List<QueueSourceFailure> skipped = [];
-        List<QueueSourceRawAnalysis> rawAnalyses = [];
+        List<SourceRawAnalysisM> rawAnalyses = [];
 
         for (int i = 0; i < queueFilePaths.Count; i++)
         {
@@ -525,11 +529,8 @@ public class AnalyzeSrcVideoCmd(
         QueueSourceCheckResult CheckResult,
         JsonElement FfprobeJson);
 
-    // Lightweight record for raw analysis data (used in the queue-raw-json snapshot).
-    private sealed record QueueSourceRawAnalysis(
-        string FilePath,
-        string DisplayName,
-        JsonElement FfprobeJson);
+    // Lightweight record for raw analysis data (used in the batch-raw-json snapshot).
+    // Moved to Models/RawAnalysisBatchM.cs as SourceRawAnalysisM / RawAnalysisBatchM.
 
     // Records a file that was skipped during queue analysis due to an error.
     private sealed record QueueSourceFailure(string FilePath, string DisplayName, string ErrorMessage);
@@ -539,7 +540,7 @@ public class AnalyzeSrcVideoCmd(
         List<QueueSrcEntry> Accepted,
         List<QueueSrcEntry> Excluded,
         List<QueueSourceFailure> Skipped,
-        List<QueueSourceRawAnalysis> RawAnalyses);
+        List<SourceRawAnalysisM> RawAnalyses);
 
     // Holds the severe and moderate check-list items from the validation card.
     private sealed record QueueSourceCheckResult(
@@ -561,7 +562,4 @@ public class AnalyzeSrcVideoCmd(
 
     // Top-level container for serialized queue data: reference file path + list of entries.
     private sealed record QueueSrcData(string ReferenceFilePath, IReadOnlyList<QueueSrcEntry> Entries);
-
-    // Container for all raw ffprobe analyses in the queue (used for later re-inspection).
-    private sealed record QueueRawAnalysisData(IReadOnlyList<QueueSourceRawAnalysis> Entries);
 }

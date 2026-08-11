@@ -1,3 +1,4 @@
+using OneColumnEncoder.Models.Analysis;
 using System.IO;
 using System.Text.Json.Nodes;
 using static OneColumnEncoder.Json.JsonElementHelper;
@@ -9,10 +10,10 @@ public static class FFProbeSrcReviseModel
     public static string UpdateSingleSourceJson(string rawJson, SrcRevisionRequest request) =>
         ApplyRevision(rawJson, request);
 
-    public static (string rawJson, string queueRawJson) UpdateQueueSourceJson(
+    public static (string rawJson, string batchRawJson) UpdateQueueSourceJson(
         string queueFilePath,
         string rawJson,
-        string queueRawJson,
+        string batchRawJson,
         SrcRevisionRequest request)
     {
         JsonNode queueRoot = ParseJsonObject(File.ReadAllText(queueFilePath));
@@ -22,44 +23,42 @@ public static class FFProbeSrcReviseModel
 
         string newRawJson = ExtractReferenceFfprobeJson(queueRoot)
             ?? ApplyRevision(rawJson, request);
-        string newQueueRawJson = string.IsNullOrWhiteSpace(queueRawJson)
-            ? queueRawJson
-            : UpdateQueueRawJsonString(queueRawJson, request);
+        string newBatchRawJson = string.IsNullOrWhiteSpace(batchRawJson)
+            ? batchRawJson
+            : UpdateBatchRawJsonString(batchRawJson, request);
 
         File.WriteAllText(
             queueFilePath,
             queueRoot.ToJsonString(FFProbeJsonFormatting.Options),
             new UTF8Encoding(false));
-        return (newRawJson, newQueueRawJson);
+        return (newRawJson, newBatchRawJson);
     }
 
-    public static (string rawJson, string queueRawJson) UpdateConcatSourceJson(
+    public static (string rawJson, string batchRawJson) UpdateConcatSourceJson(
         string rawJson,
-        string queueRawJson,
+        string batchRawJson,
         SrcRevisionRequest request)
     {
         string newRawJson = ApplyRevision(rawJson, request);
-        string newQueueRawJson = string.IsNullOrWhiteSpace(queueRawJson)
-            ? queueRawJson
-            : UpdateQueueRawJsonString(queueRawJson, request);
-        return (newRawJson, newQueueRawJson);
+        string newBatchRawJson = string.IsNullOrWhiteSpace(batchRawJson)
+            ? batchRawJson
+            : UpdateBatchRawJsonString(batchRawJson, request);
+        return (newRawJson, newBatchRawJson);
     }
 
-    public static long CalculateTotalFrames(string queueRawJson)
+    public static long CalculateTotalFrames(string batchRawJson)
     {
-        if (string.IsNullOrWhiteSpace(queueRawJson)) return 0;
+        if (string.IsNullOrWhiteSpace(batchRawJson)) return 0;
 
-        using JsonDocument document = JsonDocument.Parse(queueRawJson);
-        if (!document.RootElement.TryGetProperty("Entries", out JsonElement entries)
-            || entries.ValueKind != JsonValueKind.Array)
-            return 0;
+        RawAnalysisBatchM data = JsonSerializer.Deserialize<RawAnalysisBatchM>(batchRawJson)
+            ?? throw new InvalidOperationException("Failed to parse BatchRawJson.");
+        if (data.Entries.Count == 0) return -1;
 
         long total = 0;
         int count = 0;
-        foreach (JsonElement entry in entries.EnumerateArray())
+        foreach (SourceRawAnalysisM entry in data.Entries)
         {
-            if (!entry.TryGetProperty("FfprobeJson", out JsonElement ffprobe)
-                || !FrameRate.TryGetFirstVideoStream(ffprobe, out JsonElement stream))
+            if (!FrameRate.TryGetFirstVideoStream(entry.FfprobeJson, out JsonElement stream))
                 continue;
 
             long? frames = TryGetFrameCount(stream);
@@ -77,13 +76,20 @@ public static class FFProbeSrcReviseModel
             request.Width,
             request.Height);
 
-    private static string UpdateQueueRawJsonString(string queueRawJson, SrcRevisionRequest request)
+    private static string UpdateBatchRawJsonString(string batchRawJson, SrcRevisionRequest request)
     {
-        JsonNode root = ParseJsonObject(queueRawJson);
-        int updated = UpdateFfprobeJsonEntries(root, request);
-        if (updated == 0)
-            throw new InvalidOperationException("No ffprobe JSON entries found in QueueRawJson.");
-        return root.ToJsonString(FFProbeJsonFormatting.Options);
+        RawAnalysisBatchM data = JsonSerializer.Deserialize<RawAnalysisBatchM>(batchRawJson)
+            ?? throw new InvalidOperationException("Failed to parse BatchRawJson.");
+
+        List<SourceRawAnalysisM> entries = [.. data.Entries
+            .Select(entry => entry with
+            {
+                FfprobeJson = JsonDocument.Parse(
+                    ApplyRevision(entry.FfprobeJson.GetRawText(), request)).RootElement.Clone()
+            })];
+        if (entries.Count == 0)
+            throw new InvalidOperationException("No ffprobe JSON entries found in BatchRawJson.");
+        return JsonSerializer.Serialize(new RawAnalysisBatchM(entries), FFProbeJsonFormatting.Options);
     }
 
     private static int UpdateFfprobeJsonEntries(JsonNode root, SrcRevisionRequest request)
