@@ -238,10 +238,7 @@ public static partial class EncodingPipeline
     {
         if (string.IsNullOrWhiteSpace(filterArgs)) return null;
 
-        Match match = Regex.Match(
-            filterArgs,
-            "(?:-filter(?::v)?|-vf)\\s+(?:\"(?<quoted>[^\"]+)\"|'(?<single>[^']+)'|(?<plain>\\S+))",
-            RegexOptions.IgnoreCase);
+        Match match = FFmpegFilterVScaleRegex().Match(filterArgs);
         if (!match.Success) return null;
 
         return match.Groups["quoted"].Success
@@ -1046,4 +1043,6 @@ public static partial class EncodingPipeline
 
     [GeneratedRegex(@"fps=(\d+/\d+)")]
     private static partial Regex FpsRegex();
+    [GeneratedRegex("(?:-filter(?::v)?|-vf)\\s+(?:\"(?<quoted>[^\"]+)\"|'(?<single>[^']+)'|(?<plain>\\S+))", RegexOptions.IgnoreCase, "zh-CN")]
+    private static partial Regex FFmpegFilterVScaleRegex();
 }
