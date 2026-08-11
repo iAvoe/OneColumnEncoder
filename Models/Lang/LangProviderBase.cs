@@ -291,7 +291,6 @@ public abstract class LangProviderBase
         {
             if (_d.TryGetValue(key, out string? value)) return value;
             if (TryGetCommonValue(key, out value)) return value;
-
 #if DEBUG
             throw new MissingTranslationException(GetType().Name, LanguageCode, key);
 #else
