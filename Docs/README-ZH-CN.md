@@ -66,7 +66,7 @@
 <sup><i>滤镜编辑器</i></sup></br>
 <img src="../WireframeMockups/3-Encoder-Settings.png" alt="Encoder Setting Window" width="900" /></br>
 <sup><i>编码器/压制设置</i></sup></br>
-<img src="../WireframeMockups/4-Parallelism-Setting.png" alt="Parallelism Setting Window" width="400" /></br>
+<img src="../WireframeMockups/4-Parallelism-Setting-v4.png" alt="Parallelism Setting Window" width="400" /></br>
 <sup><i>并行计算设置</i></sup></br>
 <img src="../WireframeMockups/5-Clip-Sampler.png" alt="Clip Sampler Window" width="400" /></br>
 <sup><i>取段打样器</i></sup></br>
