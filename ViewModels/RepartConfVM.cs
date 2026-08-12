@@ -40,6 +40,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private bool _isDraggingDivider;
     private long? _dividerPreviewRenderedFrame;
     private long _dividerPreviewRequestVersion;
+    private int _dividerPreviewRefreshPending;
 
     // Undo/Redo: bounded snapshot history of committed divider states (max depth 24).
     // Records are immutable, so snapshots are cheap deep-by-reference list copies.
@@ -1083,6 +1084,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public void InterruptWindowWork()
     {
         CancellationTokenSource? dividerPreviewCts = Interlocked.Exchange(ref _dividerPreviewCts, null);
+        Interlocked.Exchange(ref _dividerPreviewRefreshPending, 0);
 
         try { dividerPreviewCts?.Cancel(); }
         catch { }
@@ -1101,23 +1103,30 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
     private void RefreshDividerPreview()
     {
-        CancellationTokenSource? previous = _dividerPreviewCts;
-        CancellationTokenSource cts = new();
-        _dividerPreviewCts = cts;
-        try { previous?.Cancel(); }
-        catch (ObjectDisposedException) { }
-        previous?.Dispose();
+        long requestVersion = Interlocked.Increment(ref _dividerPreviewRequestVersion);
 
         if (_analysis == null || SelectedDivider == null)
         {
-            DividerPreviewFrames.Clear();
-            DividerPreviewStatusText = RepartLangProvider.Current["DividerPreviewSelectDivider"];
-            cts.Dispose();
-            _dividerPreviewCts = null;
+            if (_dividerPreviewCts != null)
+                Interlocked.Exchange(ref _dividerPreviewRefreshPending, 1);
+            else
+            {
+                Interlocked.Exchange(ref _dividerPreviewRefreshPending, 0);
+                DividerPreviewFrames.Clear();
+                DividerPreviewStatusText = RepartLangProvider.Current["DividerPreviewSelectDivider"];
+            }
             return;
         }
 
-        long requestVersion = Interlocked.Increment(ref _dividerPreviewRequestVersion);
+        if (_dividerPreviewCts != null)
+        {
+            Interlocked.Exchange(ref _dividerPreviewRefreshPending, 1);
+            return;
+        }
+
+        Interlocked.Exchange(ref _dividerPreviewRefreshPending, 0);
+        CancellationTokenSource cts = new();
+        _dividerPreviewCts = cts;
         _ = RefreshDividerPreviewAsync(cts, requestVersion);
     }
 
@@ -1178,6 +1187,9 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             if (ReferenceEquals(_dividerPreviewCts, cts))
                 _dividerPreviewCts = null;
             cts.Dispose();
+
+            if (Interlocked.Exchange(ref _dividerPreviewRefreshPending, 0) == 1)
+                RefreshDividerPreview();
         }
     }
     private void RunOnUi(Action action)

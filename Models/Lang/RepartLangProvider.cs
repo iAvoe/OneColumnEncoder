@@ -109,6 +109,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["DividerPreviewReadingWindow"] = "Reading a 7-frame window around frame {0:N0}...",
             ["DividerPreviewSummary"] = "{0} | {1:N0} frames | {2} frame preview",
             ["DividerPreviewCancelled"] = "Preview cancelled",
+            ["DividerPreviewPending"] = "Preview update queued",
             ["DividerPreviewBuildingIndex"] = "Building a keyframe index for {0}..."
         },
         ["zh-cn"] = new()
@@ -211,6 +212,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["DividerPreviewReadingWindow"] = "正在读取帧号 {0:N0} 附近的 7 帧窗口……",
             ["DividerPreviewSummary"] = "{0} | {1:N0} 帧 | {2} 帧预览",
             ["DividerPreviewCancelled"] = "预览已取消",
+            ["DividerPreviewPending"] = "预览更新已排队",
             ["DividerPreviewBuildingIndex"] = "正在为 {0} 建立关键帧索引……",
         }
     };
@@ -317,6 +319,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["DividerPreviewReadingWindow"] = "正在讀取幀號 {0:N0} 附近的 7 幀窗口……",
             ["DividerPreviewSummary"] = "{0} | {1:N0} 幀 | {2} 幀預覽",
             ["DividerPreviewCancelled"] = "預覽已取消",
+            ["DividerPreviewPending"] = "預覽更新已排隊",
             ["DividerPreviewBuildingIndex"] = "正在為 {0} 建立關鍵幀索引……",
         };
         Data["fr"] = new(Data["en"])
