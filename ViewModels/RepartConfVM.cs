@@ -53,6 +53,14 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private long? _dividerPreviewRenderedFrame;
     private long? _dividerPreviewTargetFrame;
 
+    // Undo/Redo: bounded snapshot history of committed divider states (max depth 24).
+    // Records are immutable, so snapshots are cheap deep-by-reference list copies.
+    // A state is recorded AFTER each committed edit; _editCursor points at the current state.
+    private const int MaxUndoDepth = 24;
+    private readonly List<DividerEditSnapshot> _editHistory = [];
+    private int _editCursor = -1;
+    private bool _dragEditPending;
+
     // Reentrancy guards: prevent cascading property-change loops during time<->frame sync
     private bool _syncingNewDivider;
     private bool _isBusy;
@@ -80,6 +88,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         DeleteLeftDividerCommand = new ActionCmd(_ => DeleteAdjacentDivider(-1));
         DeleteRightDividerCommand = new ActionCmd(_ => DeleteAdjacentDivider(1));
         ClearOutputsCommand = new ActionCmd(_ => ClearOutputs());
+        UndoEditCommand = new ActionCmd(_ => UndoEdit());
+        RedoEditCommand = new ActionCmd(_ => RedoEdit());
 
         // Button groups: B3 = 3-button group, B2 = 2-button group
         DividerDeleteButtons = ButtonGroupVM.CreateThreeButton(
@@ -126,6 +136,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public static string DeleteLeftDividerText => RepartLangProvider.Current["DeleteLeftDivider"];
     public static string DeleteRightDividerText => RepartLangProvider.Current["DeleteRightDivider"];
     public static string ClearDividersText => RepartLangProvider.Current["ClearDividers"];
+    public static string UndoEditText => RepartLangProvider.Current["Undo"];
+    public static string RedoEditText => RepartLangProvider.Current["Redo"];
     public static string TimelineHintText => RepartLangProvider.Current["TimelineHintDetailed"];
     public string OutputCountText => string.Format(RepartLangProvider.Current["OutputCount"], Outputs.Count);
     public static string TimelineStartText => "00:00:00.000";
@@ -155,6 +167,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public ICommand DeleteLeftDividerCommand { get; }
     public ICommand DeleteRightDividerCommand { get; }
     public ICommand ClearOutputsCommand { get; }
+    public ICommand UndoEditCommand { get; }
+    public ICommand RedoEditCommand { get; }
 
     public bool IsBusy
     {
@@ -180,10 +194,14 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         }
     }
     public bool CanDeleteSelectedDivider => CanEdit && _selectedDividers.Any(item => !item.IsLocked);
-    public bool CanDeleteLeftDivider => CanEdit && GetAdjacentDivider(-1) is { IsLocked: false };
-    public bool CanDeleteRightDivider => CanEdit && GetAdjacentDivider(1) is { IsLocked: false };
+    public bool CanDeleteLeftDivider => CanEdit && SelectedDivider != null
+        && _dividers.Any(divider => divider.Frame < SelectedDivider.Frame && !divider.IsLocked);
+    public bool CanDeleteRightDivider => CanEdit && SelectedDivider != null
+        && _dividers.Any(divider => divider.Frame > SelectedDivider.Frame && !divider.IsLocked);
     public bool CanNudgeDivider => CanEdit && SelectedDivider is { IsLocked: false };
     public bool CanClearOutputs => CanEdit && _dividers.Count > 0;
+    public bool CanUndo => _editCursor > 0;
+    public bool CanRedo => _editCursor < _editHistory.Count - 1;
     public string SummaryText => _analysis == null
         ? string.Empty
         : string.Format(
@@ -399,8 +417,9 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         DisposeKeyframeIndexCache();
         LoadSources();
         BuildAxisLabels();
-        _dividers = GetPlanDividers(currentPlan);
+_dividers = GetPlanDividers(currentPlan);
         ReplaceOutputs(BuildDividerOutputs());
+        ResetEditHistory();
         StatusText = RepartLangProvider.Current["Ready"];
         PrepareNextDraft();
         SetSuggestedNewDividerTexts();
@@ -421,6 +440,15 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     {
         _isDraggingDivider = isDraggingSelection;
         _suppressDividerPreviewRefresh = isDraggingSelection;
+        if (isDraggingSelection)
+        {
+            _dragEditPending = false;
+        }
+        else if (_dragEditPending)
+        {
+            // Commit the coalesced drag as a single undo step at gesture end.
+            PushEditState();
+        }
     }
 
     public void SelectDividerForInteraction(RepartDividerItemVM? item)
@@ -583,6 +611,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             _suppressDividerPreviewRefresh = false;
         }
 
+        PushEditState();
         RefreshDividerPreview();
     }
 
@@ -597,15 +626,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         SelectedDivider = _selectedDividers.LastOrDefault();
     }
 
-    private RepartDividerItemVM? GetAdjacentDivider(int direction)
-    {
-        if (SelectedDivider == null) return null;
-        List<RepartDividerItemVM> ordered = [.. DividerItems.OrderBy(item => item.Frame)];
-        int index = ordered.IndexOf(SelectedDivider);
-        int target = index + Math.Sign(direction);
-        return index >= 0 && target >= 0 && target < ordered.Count ? ordered[target] : null;
-    }
-
     private void DeleteSelectedDividers()
     {
         if (!CanEdit) return;
@@ -613,22 +633,50 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             .Where(item => !item.IsLocked)
             .Select(item => item.Model.Id)];
         if (ids.Count == 0) return;
-        _dividers = [.. _dividers.Where(divider => !ids.Contains(divider.Id))];
-        ReplaceOutputs(BuildDividerOutputs());
-        SetSuggestedNewDividerTexts();
-        SelectOnlyDivider(null);
-        RefreshDividerAvailability();
+        _suppressDividerPreviewRefresh = true;
+        try
+        {
+            _dividers = [.. _dividers.Where(divider => !ids.Contains(divider.Id))];
+            ReplaceOutputs(BuildDividerOutputs());
+            SetSuggestedNewDividerTexts();
+            SelectOnlyDivider(null);
+            RefreshDividerAvailability();
+        }
+        finally
+        {
+            _suppressDividerPreviewRefresh = false;
+        }
+        PushEditState();
+        RefreshDividerPreview();
     }
 
+    // Delete every unlocked divider on the requested side of the selected divider,
+    // keeping the selected one as the anchor boundary.
     private void DeleteAdjacentDivider(int direction)
     {
-        RepartDividerItemVM? divider = GetAdjacentDivider(direction);
-        if (divider is not { IsLocked: false }) return;
-        _dividers = [.. _dividers.Where(item => item.Id != divider.Model.Id)];
-        ReplaceOutputs(BuildDividerOutputs());
-        SetSuggestedNewDividerTexts();
-        SelectOnlyDivider(null);
-        RefreshDividerAvailability();
+        if (SelectedDivider == null) return;
+        long anchorFrame = SelectedDivider.Frame;
+        Guid anchorId = SelectedDivider.Model.Id;
+        HashSet<Guid> ids = [.. _dividers
+            .Where(divider => !divider.IsLocked
+                && (direction < 0 ? divider.Frame < anchorFrame : divider.Frame > anchorFrame))
+            .Select(divider => divider.Id)];
+        if (ids.Count == 0) return;
+        _suppressDividerPreviewRefresh = true;
+        try
+        {
+            _dividers = [.. _dividers.Where(divider => !ids.Contains(divider.Id))];
+            ReplaceOutputs(BuildDividerOutputs());
+            SetSuggestedNewDividerTexts();
+            SelectOnlyDivider(anchorId);
+            RefreshDividerAvailability();
+        }
+        finally
+        {
+            _suppressDividerPreviewRefresh = false;
+        }
+        PushEditState();
+        EnsureDividerPreviewUpToDate();
     }
 
     private void MoveSelectedDivider(long requestedFrame)
@@ -661,6 +709,14 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         SetDividerTexts(updated.Frame);
         SetSuggestedNewDividerTexts();
         SelectOnlyDivider(updated.Id);
+
+        // Record the post-move state. A drag gesture is coalesced into a single
+        // snapshot committed when the drag ends; text-edit moves push per commit.
+        if (_isDraggingDivider)
+            _dragEditPending = true;
+        else
+            PushEditState();
+
         RequestDividerPreviewRefresh();
     }
 
@@ -758,12 +814,91 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
     private void ClearOutputs()
     {
-        if (!CanEdit) return;
-        _dividers = [];
-        ReplaceOutputs(BuildDividerOutputs());
-        SetSuggestedNewDividerTexts();
-        SelectOnlyDivider(null);
+        if (!CanEdit || _dividers.Count == 0) return;
+        _suppressDividerPreviewRefresh = true;
+        try
+        {
+            _dividers = [];
+            ReplaceOutputs(BuildDividerOutputs());
+            SetSuggestedNewDividerTexts();
+            SelectOnlyDivider(null);
+        }
+        finally
+        {
+            _suppressDividerPreviewRefresh = false;
+        }
+        PushEditState();
+        RefreshDividerPreview();
     }
+
+    // Seed history with the initial plan dividers so undo can never exceed the baseline.
+    private void ResetEditHistory()
+    {
+        _editHistory.Clear();
+        _editHistory.Add(new DividerEditSnapshot([.. _dividers], null));
+        _editCursor = 0;
+        OnPropertyChanged(nameof(CanUndo));
+        OnPropertyChanged(nameof(CanRedo));
+    }
+
+    // Record the current divider state after a committed edit. Truncates any redo tail,
+    // then bounds history depth to MaxUndoDepth by dropping the oldest snapshot.
+    private void PushEditState()
+    {
+        if (_editCursor < _editHistory.Count - 1)
+            _editHistory.RemoveRange(_editCursor + 1, _editHistory.Count - _editCursor - 1);
+
+        _editHistory.Add(new DividerEditSnapshot([.. _dividers], _selectedDivider?.Model.Id));
+        if (_editHistory.Count > MaxUndoDepth)
+            _editHistory.RemoveAt(0);
+
+        _editCursor = _editHistory.Count - 1;
+        OnPropertyChanged(nameof(CanUndo));
+        OnPropertyChanged(nameof(CanRedo));
+    }
+
+    private void UndoEdit()
+    {
+        if (!CanUndo) return;
+        _editCursor--;
+        ApplySnapshot(_editHistory[_editCursor]);
+    }
+
+    private void RedoEdit()
+    {
+        if (!CanRedo) return;
+        _editCursor++;
+        ApplySnapshot(_editHistory[_editCursor]);
+    }
+
+    // Restore a saved divider state: rebuild outputs/timeline and restore selection.
+    // Preview is only refreshed if the restored frame is not already shown, so rapid
+    // undo/redo never churns ffmpeg/ffprobe spawns (and their cancellation races).
+    private void ApplySnapshot(DividerEditSnapshot snapshot)
+    {
+        _suppressDividerPreviewRefresh = true;
+        try
+        {
+            _dividers = [.. snapshot.Dividers];
+            ReplaceOutputs(BuildDividerOutputs());
+            SetSuggestedNewDividerTexts();
+            SelectOnlyDivider(snapshot.SelectedId);
+            RefreshDividerAvailability();
+        }
+        finally
+        {
+            _suppressDividerPreviewRefresh = false;
+        }
+
+        OnPropertyChanged(nameof(CanUndo));
+        OnPropertyChanged(nameof(CanRedo));
+        if (SelectedDivider == null)
+            RefreshDividerPreview();
+        else
+            EnsureDividerPreviewUpToDate();
+    }
+
+    private readonly record struct DividerEditSnapshot(List<RepartDividerM> Dividers, Guid? SelectedId);
 
     private void ReplaceOutputs(IEnumerable<RepartOutputSegmentM> models, bool refreshTimeline = true)
     {
@@ -1052,7 +1187,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         CancellationTokenSource? previous = _dividerPreviewCts;
         CancellationTokenSource cts = new();
         _dividerPreviewCts = cts;
-        previous?.Cancel();
+        try { previous?.Cancel(); }
+        catch (ObjectDisposedException) { }
         previous?.Dispose();
 
         if (_analysis == null || SelectedDivider == null)
@@ -1417,7 +1553,9 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             nameof(CanDeleteLeftDivider),
             nameof(CanDeleteRightDivider),
             nameof(CanNudgeDivider),
-            nameof(CanClearOutputs)
+            nameof(CanClearOutputs),
+            nameof(CanUndo),
+            nameof(CanRedo)
         }) OnPropertyChanged(property);
 
         DividerDeleteButtons.B3_1IsEnabled = CanDeleteSelectedDivider;
@@ -1445,7 +1583,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             nameof(DividerFrameLabel),
             nameof(DeleteSelectedDividerText),
             nameof(DeleteLeftDividerText), nameof(DeleteRightDividerText),
-            nameof(ClearDividersText), nameof(OutputCountText), nameof(TimelineHintText)
+            nameof(ClearDividersText), nameof(UndoEditText), nameof(RedoEditText),
+            nameof(OutputCountText), nameof(TimelineHintText)
         }) OnPropertyChanged(property);
         DividerDeleteButtons.B3_1Text = DeleteEpisodeText;
         DividerDeleteButtons.B3_2Text = DeleteLeftDividerText;

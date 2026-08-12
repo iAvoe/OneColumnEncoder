@@ -101,6 +101,8 @@ public abstract class LangProviderBase
             ["Remove"] = "Remove",
             ["Reset"] = "Reset",
             ["Stop"] = "Stop",
+            ["Undo"] = "Undo",
+            ["Redo"] = "Redo",
         },
         ["zh-cn"] = new()
         {
@@ -120,6 +122,8 @@ public abstract class LangProviderBase
             ["Remove"] = "移除",
             ["Reset"] = "重置",
             ["Stop"] = "停",
+            ["Undo"] = "撤销",
+            ["Redo"] = "重做",
         },
         ["zh-tw"] = new()
         {
@@ -139,6 +143,8 @@ public abstract class LangProviderBase
             ["Remove"] = "移除",
             ["Reset"] = "重置",
             ["Stop"] = "停",
+            ["Undo"] = "撤銷",
+            ["Redo"] = "重做",
         },
         ["fr"] = new()
         {
@@ -158,6 +164,8 @@ public abstract class LangProviderBase
             ["Remove"] = "Retirer",
             ["Reset"] = "Réinitialiser",
             ["Stop"] = "Arrêt",
+            ["Undo"] = "Annuler",
+            ["Redo"] = "Rétablir",
         },
         ["es"] = new()
         {
@@ -177,6 +185,8 @@ public abstract class LangProviderBase
             ["Remove"] = "Quitar",
             ["Reset"] = "Restablecer",
             ["Stop"] = "Detener",
+            ["Undo"] = "Deshacer",
+            ["Redo"] = "Rehacer",
         },
         ["ja"] = new()
         {
@@ -196,6 +206,8 @@ public abstract class LangProviderBase
             ["Remove"] = "削除",
             ["Reset"] = "リセット",
             ["Stop"] = "停止",
+            ["Undo"] = "元に戻す",
+            ["Redo"] = "やり直す",
         },
         ["ru"] = new()
         {
@@ -215,6 +227,8 @@ public abstract class LangProviderBase
             ["Remove"] = "Удалить",
             ["Reset"] = "Сброс",
             ["Stop"] = "Стоп",
+            ["Undo"] = "Отменить",
+            ["Redo"] = "Вернуть",
         },
         ["de"] = new()
         {
@@ -234,6 +248,8 @@ public abstract class LangProviderBase
             ["Remove"] = "Entfernen",
             ["Reset"] = "Zurücksetzen",
             ["Stop"] = "Stopp",
+            ["Undo"] = "Zurück",
+            ["Redo"] = "Wiederh.",
         },
         ["ko"] = new()
         {
@@ -253,6 +269,8 @@ public abstract class LangProviderBase
             ["Remove"] = "제거",
             ["Reset"] = "초기화",
             ["Stop"] = "중지",
+            ["Undo"] = "실행취소",
+            ["Redo"] = "다시실행",
         },
         ["pt-br"] = new()
         {
@@ -272,6 +290,8 @@ public abstract class LangProviderBase
             ["Remove"] = "Remover",
             ["Reset"] = "Redefinir",
             ["Stop"] = "Parar",
+            ["Undo"] = "Desfazer",
+            ["Redo"] = "Refazer",
         },
     };
 

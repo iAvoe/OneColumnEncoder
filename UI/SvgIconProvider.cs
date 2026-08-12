@@ -30,6 +30,8 @@ internal static class SvgIconProvider
     public static ImageSource GameCopy { get; }
     public static ImageSource GamePlus { get; }
     public static ImageSource GameLightning { get; }
+    public static ImageSource GameUndo { get; }
+    public static ImageSource GameRedo { get; }
 
     private static SolidColorBrush Brush(string hex) =>
         new((Color)ColorConverter.ConvertFromString(hex)!);
@@ -368,6 +370,16 @@ internal static class SvgIconProvider
         Add(gameLightning, "m6.332 4.042-.061-.003c-.204-.01-.306-.016-.384-.047a.5.5 0 0 1-.303-.37c-.016-.083-.001-.184.028-.385.086-.585.13-.878.082-.993a.45.45 0 0 0-.6-.238c-.114.05-.283.293-.622.777L3.19 4.614c-.194.277-.29.415-.302.532a.45.45 0 0 0 .208.426c.1.063.269.071.606.088.239.012.358.018.448.061a.5.5 0 0 1 .268.32c.026.096.01.217-.02.458-.11.847-.163 1.271-.067 1.412a.45.45 0 0 0 .495.18c.164-.047.39-.4.839-1.107l1.207-1.897c.186-.292.28-.439.283-.562a.45.45 0 0 0-.201-.39c-.103-.067-.276-.076-.622-.093", white);
         SetBounds(gameLightning);
         GameLightning = new DrawingImage(gameLightning);
+
+        DrawingGroup gameUndo = new();
+        Add(gameUndo, "M2.72 3.865c-.24.1-.32.45-.477 1.151l-.07.317c-.14.62-.21.93-.056 1.12q.032.038.071.07c.188.154.499.084 1.119-.055l.317-.071c.7-.158 1.052-.236 1.15-.477a.5.5 0 0 0 .03-.103.43.43 0 0 0-.071-.298c-.147-.25-.22-.374-.197-.488l.014-.047c.042-.108.121-.148.28-.227a1.83 1.83 0 0 1 1.592-.02 1.83 1.83 0 0 1 1 1.24c.074.316.302.608.625.638s.616-.209.583-.532a3 3 0 0 0-4.662-2.182c-.2.136-.301.204-.378.21l-.033.002c-.077-.001-.2-.072-.446-.213a.42.42 0 0 0-.288-.065.5.5 0 0 0-.103.03", white);
+        SetBounds(gameUndo);
+        GameUndo = new DrawingImage(gameUndo);
+
+        DrawingGroup gameRedo = new();
+        Add(gameRedo, "M7.612 3.865c.241.1.32.45.477 1.151l.071.317c.14.62.21.93.056 1.12a.5.5 0 0 1-.072.07c-.188.154-.498.084-1.118-.055l-.317-.071c-.701-.158-1.052-.236-1.151-.477a.5.5 0 0 1-.03-.103.43.43 0 0 1 .072-.298c.147-.25.22-.374.197-.488l-.014-.047c-.042-.108-.122-.148-.281-.227a1.83 1.83 0 0 0-1.592-.02 1.83 1.83 0 0 0-1 1.24c-.073.316-.302.608-.625.638s-.616-.209-.583-.532a3 3 0 0 1 4.662-2.182c.201.136.302.204.378.21l.034.002c.076-.001.2-.072.446-.213a.42.42 0 0 1 .288-.065q.053.01.102.03", white);
+        SetBounds(gameRedo);
+        GameRedo = new DrawingImage(gameRedo);
 
     }
 

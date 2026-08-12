@@ -282,7 +282,7 @@
                         ContentTemplate="{StaticResource IconTextButtonTemplate}" />
             </Grid>
 
-            <!-- Ops buttons (deletes) -->
+            <!-- Ops buttons (move and deletes) -->
             <Grid Grid.Column="2"
                   Margin="15 0 0 0">
                 <Grid.RowDefinitions>
@@ -291,22 +291,68 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <comps:SectionHeader HeaderText="{Binding DividerOpsTitle}" />
-                <StackPanel Grid.Row="1"
-                            Margin="5 15 0 0"
-                            IsEnabled="{Binding CanNudgeDivider}">
-                    <TextBlock Text="{Binding DividerTimestampLabel}"
+                <Grid Grid.Row="1"
+                      Margin="5 15 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="65*" />
+                        <ColumnDefinition Width="35*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0"
+                               Grid.ColumnSpan="2"
+                               Text="{Binding DividerTimestampLabel}"
                                Style="{StaticResource H3}"
                                Margin="0 0 0 2.5" />
-                    <TextBox Text="{Binding DividerTimestampText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                    <TextBox Grid.Row="1"
+                             Grid.Column="0"
+                             Text="{Binding DividerTimestampText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                             IsEnabled="{Binding CanNudgeDivider}"
                              Padding="5"
                              Margin="0 0 0 10" />
-                    <TextBlock Text="{Binding DividerFrameLabel}"
+
+                    <Button Grid.Row="1"
+                            Grid.Column="1"
+                            Content="{Binding UndoEditText}"
+                            Command="{Binding UndoEditCommand}"
+                            IsEnabled="{Binding CanUndo}"
+                            Style="{StaticResource SecondaryButton}"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Top"
+                            Margin="5 0 0 2.5"
+                            Height="30"
+                            Tag="{x:Static ui:SvgIconProvider.GameUndo}"
+                            ContentTemplate="{StaticResource IconTextButtonTemplate}" />
+
+                    <TextBlock Grid.Row="2"
+                               Grid.ColumnSpan="2"
+                               Text="{Binding DividerFrameLabel}"
                                Style="{StaticResource H3}"
                                Margin="0 0 0 2.5" />
-                    <TextBox Text="{Binding DividerFrameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                    <TextBox Grid.Row="3"
+                             Grid.Column="0"
+                             Text="{Binding DividerFrameText, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+                             IsEnabled="{Binding CanNudgeDivider}"
                              Padding="5"
-                             Margin="0" />
-                </StackPanel>
+                             Margin="0 0 0 10" />
+
+                    <Button Grid.Row="3"
+                            Grid.Column="1"
+                            Content="{Binding RedoEditText}"
+                            Command="{Binding RedoEditCommand}"
+                            IsEnabled="{Binding CanRedo}"
+                            Style="{StaticResource SecondaryButton}"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Top"
+                            Margin="5 0 0 2.5"
+                            Height="30"
+                            Tag="{x:Static ui:SvgIconProvider.GameRedo}"
+                            ContentTemplate="{StaticResource IconTextButtonTemplate}" />
+                </Grid>
 
                 <Grid Grid.Row="2"
                       Margin="5 20 0 0">
