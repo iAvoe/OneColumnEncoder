@@ -269,6 +269,10 @@ Implemented and verified, usability confirmed
 
 Implemented and verified, usability confirmed
 
+#### Repart Mode
+
+Implemented and verified, usability confirmed
+
 ---
 
 ### Unverified
