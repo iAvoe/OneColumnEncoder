@@ -46,12 +46,14 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private string _newDividerTimestampText = "00:00:00.000";
     private string _newDividerFrameText = "0";
     private CancellationTokenSource? _dividerPreviewCts;
+    private readonly SemaphoreSlim _dividerPreviewRenderGate = new(1, 1);
     private readonly ObservableCollection<DividerPreviewFrameVM> _dividerPreviewFrames = [];
     private string _dividerPreviewStatusText = RepartLangProvider.Current["DividerPreviewSelectDivider"];
     private bool _suppressDividerPreviewRefresh;
     private bool _isDraggingDivider;
     private long? _dividerPreviewRenderedFrame;
     private long? _dividerPreviewTargetFrame;
+    private long _dividerPreviewRequestVersion;
 
     // Undo/Redo: bounded snapshot history of committed divider states (max depth 24).
     // Records are immutable, so snapshots are cheap deep-by-reference list copies.
@@ -835,7 +837,7 @@ _dividers = GetPlanDividers(currentPlan);
     private void ResetEditHistory()
     {
         _editHistory.Clear();
-        _editHistory.Add(new DividerEditSnapshot([.. _dividers], null));
+        _editHistory.Add(new DividerEditSnapshot([.. _dividers]));
         _editCursor = 0;
         OnPropertyChanged(nameof(CanUndo));
         OnPropertyChanged(nameof(CanRedo));
@@ -848,7 +850,7 @@ _dividers = GetPlanDividers(currentPlan);
         if (_editCursor < _editHistory.Count - 1)
             _editHistory.RemoveRange(_editCursor + 1, _editHistory.Count - _editCursor - 1);
 
-        _editHistory.Add(new DividerEditSnapshot([.. _dividers], _selectedDivider?.Model.Id));
+        _editHistory.Add(new DividerEditSnapshot([.. _dividers]));
         if (_editHistory.Count > MaxUndoDepth)
             _editHistory.RemoveAt(0);
 
@@ -871,9 +873,8 @@ _dividers = GetPlanDividers(currentPlan);
         ApplySnapshot(_editHistory[_editCursor]);
     }
 
-    // Restore a saved divider state: rebuild outputs/timeline and restore selection.
-    // Preview is only refreshed if the restored frame is not already shown, so rapid
-    // undo/redo never churns ffmpeg/ffprobe spawns (and their cancellation races).
+    // Restore a saved divider state: rebuild outputs/timeline without carrying selection.
+    // Undo/redo should not change the active divider selection or refresh preview.
     private void ApplySnapshot(DividerEditSnapshot snapshot)
     {
         _suppressDividerPreviewRefresh = true;
@@ -882,7 +883,7 @@ _dividers = GetPlanDividers(currentPlan);
             _dividers = [.. snapshot.Dividers];
             ReplaceOutputs(BuildDividerOutputs());
             SetSuggestedNewDividerTexts();
-            SelectOnlyDivider(snapshot.SelectedId);
+            SelectOnlyDivider(null);
             RefreshDividerAvailability();
         }
         finally
@@ -892,13 +893,9 @@ _dividers = GetPlanDividers(currentPlan);
 
         OnPropertyChanged(nameof(CanUndo));
         OnPropertyChanged(nameof(CanRedo));
-        if (SelectedDivider == null)
-            RefreshDividerPreview();
-        else
-            EnsureDividerPreviewUpToDate();
     }
 
-    private readonly record struct DividerEditSnapshot(List<RepartDividerM> Dividers, Guid? SelectedId);
+    private readonly record struct DividerEditSnapshot(List<RepartDividerM> Dividers);
 
     private void ReplaceOutputs(IEnumerable<RepartOutputSegmentM> models, bool refreshTimeline = true)
     {
@@ -1203,13 +1200,15 @@ _dividers = GetPlanDividers(currentPlan);
         }
 
         _dividerPreviewTargetFrame = SelectedDivider.Frame;
-        _ = RefreshDividerPreviewAsync(cts);
+        long requestVersion = Interlocked.Increment(ref _dividerPreviewRequestVersion);
+        _ = RefreshDividerPreviewAsync(cts, requestVersion);
     }
 
     // Render a 7-frame preview strip around the selected divider using ffmpeg.
     // Window is +/-3 frames for UX context. Handles source boundary spanning and seek optimization.
-    private async Task RefreshDividerPreviewAsync(CancellationTokenSource cts)
+    private async Task RefreshDividerPreviewAsync(CancellationTokenSource cts, long requestVersion)
     {
+        bool gateHeld = false;
         try
         {
             _dividerPreviewRenderedFrame = null;
@@ -1217,12 +1216,21 @@ _dividers = GetPlanDividers(currentPlan);
 
             if (string.IsNullOrWhiteSpace(_ffmpegPath) || !File.Exists(_ffmpegPath))
             {
-                DividerPreviewFrames.Clear();
-                DividerPreviewStatusText = RepartLangProvider.Current["DividerPreviewFfmpegUnavailable"];
+                RunOnUi(() =>
+                {
+                    DividerPreviewFrames.Clear();
+                    DividerPreviewStatusText = RepartLangProvider.Current["DividerPreviewFfmpegUnavailable"];
+                });
                 return;
             }
 
             if (_analysis == null || divider == null)
+                return;
+
+            await _dividerPreviewRenderGate.WaitAsync(cts.Token).ConfigureAwait(false);
+            gateHeld = true;
+
+            if (requestVersion != Volatile.Read(ref _dividerPreviewRequestVersion))
                 return;
 
             long selectedFrame = divider.Frame;
@@ -1230,106 +1238,149 @@ _dividers = GetPlanDividers(currentPlan);
             long windowLast = Math.Min(_analysis.TotalFrames - 1, selectedFrame + 3);
 
             string runId = Guid.NewGuid().ToString("N");
-            DividerPreviewFrames.Clear();
-            DividerPreviewStatusText = string.Format(
-                RepartLangProvider.Current["DividerPreviewReadingWindow"],
-                selectedFrame);
-
-            foreach (string file in Directory.GetFiles(_previewWorkDirectory, "divider-preview-*.jpg"))
+            RunOnUi(() =>
             {
-                try { File.Delete(file); }
-                catch { }
-            }
+                DividerPreviewFrames.Clear();
+                DividerPreviewStatusText = string.Format(
+                    RepartLangProvider.Current["DividerPreviewReadingWindow"],
+                    selectedFrame);
+            });
 
-            List<RepartSourceM> overlapping = [.. _analysis.Sources
-                .Where(source => source.LastFrame >= windowFirst && source.FirstFrame <= windowLast)
-                .OrderBy(source => source.FirstFrame)];
+            DividerPreviewBuildResult result = await Task
+                .Run(async () => await BuildDividerPreviewAsync(selectedFrame, windowFirst, windowLast, runId, cts.Token), cts.Token)
+                .ConfigureAwait(false);
 
-            foreach (RepartSourceM source in overlapping)
+            if (cts.IsCancellationRequested) return;
+            if (requestVersion != Volatile.Read(ref _dividerPreviewRequestVersion)) return;
+
+            RunOnUi(() =>
             {
-                if (cts.IsCancellationRequested) return;
-                if (!File.Exists(source.FilePath)) continue;
-
-                long relFirst = Math.Max(0, Math.Max(windowFirst, source.FirstFrame) - source.FirstFrame);
-                long relLast = Math.Max(relFirst, Math.Min(source.LastFrame, windowLast) - source.FirstFrame);
-
-                double frameDuration = (double)_analysis.FrameRateDenominator / _analysis.FrameRateNumerator;
-                double sourceStartTime = TryGetSourceStartTime(source.RawJson) ?? 0d;
-                double targetTime = sourceStartTime + relFirst * frameDuration;
-
-                KeyframeIndex? index = await BuildKeyframeIndexAsync(source, targetTime, cts.Token);
-                if (cts.IsCancellationRequested) return;
-
-                double keyframeTime = 0d;
-                bool canSeek = index != null
-                    && index.TryFindNearestBefore(targetTime, out keyframeTime);
-                long keyframeFrame = canSeek
-                    ? Math.Max(0, (long)Math.Round(
-                        (keyframeTime - sourceStartTime) / frameDuration,
-                        MidpointRounding.AwayFromZero))
-                    : 0;
-
-                string patternPrefix = $"divider-preview-{runId}-{source.FirstFrame}";
-                string pattern = Path.Combine(_previewWorkDirectory, patternPrefix + "-%02d.png");
-
-                string[] args = !canSeek
-                    ? PreviewPipeline.BuildSourceFrameArgs(source.FilePath, relFirst, relLast, pattern)
-                    : PreviewPipeline.BuildSourceFrameSeekArgs(
-                        source.FilePath,
-                        keyframeTime,
-                        relFirst - keyframeFrame,
-                        relLast - keyframeFrame,
-                        pattern);
-
-                await PreviewPipeline.RunFfmpegAsync(_ffmpegPath, _previewWorkDirectory, args, cts.Token);
-
-                if (cts.IsCancellationRequested) return;
-
-                string[] files = [.. Directory.GetFiles(_previewWorkDirectory, patternPrefix + "-*.png").OrderBy(path => path, StringComparer.OrdinalIgnoreCase)];
-
-                for (int i = 0; i < files.Length; i++)
-                {
-                    long frameNumber = source.FirstFrame + relFirst + i;
-                    if (frameNumber < windowFirst || frameNumber > windowLast) continue;
-                    bool isDivider = frameNumber == selectedFrame;
-                    DividerPreviewFrames.Add(new DividerPreviewFrameVM(
-                        frameNumber,
-                        PreviewPipeline.LoadBitmap(files[i]),
-                        isDivider,
-                        !isDivider));
-                }
-            }
-
-            if (DividerPreviewFrames.Count == 0)
-                throw new InvalidOperationException("Divider preview frame file missing.");
-
-            string sourceName = _analysis.Sources
-                .Where(source => selectedFrame >= source.FirstFrame && selectedFrame <= source.LastFrame)
-                .Select(source => source.DisplayName)
-                .FirstOrDefault() ?? "?";
-            _dividerPreviewRenderedFrame = selectedFrame;
-            DividerPreviewStatusText = string.Format(
-                RepartLangProvider.Current["DividerPreviewSummary"],
-                sourceName,
-                selectedFrame,
-                DividerPreviewFrames.Count);
+                if (requestVersion != Volatile.Read(ref _dividerPreviewRequestVersion))
+                    return;
+                DividerPreviewFrames.Clear();
+                foreach (DividerPreviewFrameVM frame in result.Frames)
+                    DividerPreviewFrames.Add(frame);
+                _dividerPreviewRenderedFrame = selectedFrame;
+                DividerPreviewStatusText = result.StatusText;
+            });
         }
         catch (OperationCanceledException)
         {
-            if (!cts.IsCancellationRequested)
-                DividerPreviewStatusText = RepartLangProvider.Current["DividerPreviewCancelled"];
+            if (!cts.IsCancellationRequested && requestVersion == Volatile.Read(ref _dividerPreviewRequestVersion))
+                RunOnUi(() => DividerPreviewStatusText = RepartLangProvider.Current["DividerPreviewCancelled"]);
         }
         catch (Exception ex)
         {
-            DividerPreviewFrames.Clear();
-            DividerPreviewStatusText = ex.Message;
+            if (requestVersion == Volatile.Read(ref _dividerPreviewRequestVersion))
+            {
+                RunOnUi(() =>
+                {
+                    DividerPreviewFrames.Clear();
+                    DividerPreviewStatusText = ex.Message;
+                });
+            }
         }
         finally
         {
+            if (gateHeld)
+                _dividerPreviewRenderGate.Release();
+
             if (ReferenceEquals(_dividerPreviewCts, cts))
                 _dividerPreviewCts = null;
             cts.Dispose();
         }
+    }
+
+    private async Task<DividerPreviewBuildResult> BuildDividerPreviewAsync(
+        long selectedFrame,
+        long windowFirst,
+        long windowLast,
+        string runId,
+        CancellationToken token)
+    {
+        if (_analysis == null)
+            throw new InvalidOperationException("Divider preview source data missing.");
+
+        foreach (string file in Directory.GetFiles(_previewWorkDirectory, "divider-preview-*.jpg"))
+        {
+            try { File.Delete(file); }
+            catch { }
+        }
+
+        List<DividerPreviewFrameVM> frames = [];
+        List<RepartSourceM> overlapping = [.. _analysis.Sources
+            .Where(source => source.LastFrame >= windowFirst && source.FirstFrame <= windowLast)
+            .OrderBy(source => source.FirstFrame)];
+
+        foreach (RepartSourceM source in overlapping)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!File.Exists(source.FilePath)) continue;
+
+            long relFirst = Math.Max(0, Math.Max(windowFirst, source.FirstFrame) - source.FirstFrame);
+            long relLast = Math.Max(relFirst, Math.Min(source.LastFrame, windowLast) - source.FirstFrame);
+
+            double frameDuration = (double)_analysis.FrameRateDenominator / _analysis.FrameRateNumerator;
+            double sourceStartTime = TryGetSourceStartTime(source.RawJson) ?? 0d;
+            double targetTime = sourceStartTime + relFirst * frameDuration;
+
+            KeyframeIndex? index = await BuildKeyframeIndexAsync(source, targetTime, token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+
+            double keyframeTime = 0d;
+            bool canSeek = index != null
+                && index.TryFindNearestBefore(targetTime, out keyframeTime);
+            long keyframeFrame = canSeek
+                ? Math.Max(0, (long)Math.Round(
+                    (keyframeTime - sourceStartTime) / frameDuration,
+                    MidpointRounding.AwayFromZero))
+                : 0;
+
+            string patternPrefix = $"divider-preview-{runId}-{source.FirstFrame}";
+            string pattern = Path.Combine(_previewWorkDirectory, patternPrefix + "-%02d.png");
+
+            string[] args = !canSeek
+                ? PreviewPipeline.BuildSourceFrameArgs(source.FilePath, relFirst, relLast, pattern)
+                : PreviewPipeline.BuildSourceFrameSeekArgs(
+                    source.FilePath,
+                    keyframeTime,
+                    relFirst - keyframeFrame,
+                    relLast - keyframeFrame,
+                    pattern);
+
+            await PreviewPipeline.RunFfmpegAsync(_ffmpegPath!, _previewWorkDirectory, args, token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+
+            string[] files = [.. Directory.GetFiles(_previewWorkDirectory, patternPrefix + "-*.png").OrderBy(path => path, StringComparer.OrdinalIgnoreCase)];
+
+            for (int i = 0; i < files.Length; i++)
+            {
+                long frameNumber = source.FirstFrame + relFirst + i;
+                if (frameNumber < windowFirst || frameNumber > windowLast) continue;
+                bool isDivider = frameNumber == selectedFrame;
+                frames.Add(new DividerPreviewFrameVM(
+                    frameNumber,
+                    PreviewPipeline.LoadBitmap(files[i]),
+                    isDivider,
+                    !isDivider));
+            }
+        }
+
+        if (frames.Count == 0)
+            throw new InvalidOperationException("Divider preview frame file missing.");
+
+        string sourceName = _analysis.Sources
+            .Where(source => selectedFrame >= source.FirstFrame && selectedFrame <= source.LastFrame)
+            .Select(source => source.DisplayName)
+            .FirstOrDefault() ?? "?";
+
+        return new DividerPreviewBuildResult(
+            frames,
+            string.Format(
+                RepartLangProvider.Current["DividerPreviewSummary"],
+                sourceName,
+                selectedFrame,
+                frames.Count));
     }
 
     // Build or reuse a keyframe index for seek optimization. Uses cache with 30s window margin
@@ -1366,9 +1417,12 @@ _dividers = GetPlanDividers(currentPlan);
         }
 
         SetSourceIndexState(source.FilePath, RepartSourceIndexState.Loading);
-        DividerPreviewStatusText = string.Format(
-            RepartLangProvider.Current["DividerPreviewBuildingIndex"],
-            source.DisplayName);
+        RunOnUi(() =>
+        {
+            DividerPreviewStatusText = string.Format(
+                RepartLangProvider.Current["DividerPreviewBuildingIndex"],
+                source.DisplayName);
+        });
         KeyframeIndex index;
         try
         {
@@ -1452,6 +1506,25 @@ _dividers = GetPlanDividers(currentPlan);
             throw;
         }
     }
+
+    private void RunOnUi(Action action)
+    {
+        System.Windows.Threading.Dispatcher? dispatcher = Application.Current?.Dispatcher;
+        if (dispatcher == null)
+        {
+            action();
+            return;
+        }
+
+        if (dispatcher.CheckAccess())
+            action();
+        else
+            dispatcher.Invoke(action);
+    }
+
+    private readonly record struct DividerPreviewBuildResult(
+        List<DividerPreviewFrameVM> Frames,
+        string StatusText);
 
     // Best-effort sequential read of the estimated byte range covering the
     // divider window, so the OS page cache serves the subsequent ffprobe/ffmpeg
