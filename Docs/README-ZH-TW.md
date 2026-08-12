@@ -82,16 +82,16 @@
 - Windows 10/11 x64
   - 推薦 1809 / 21H2（LTSC）或更高版本，最低 1607
 
+### 下載軟體本體
+
+- [GitHub 發布頁](https://github.com/iAvoe/OneColumnEncoder/releases)
+
 ### 下載編碼相關工具
 
 你可以根據此教學來尋得合適的工具：
 - [Encoding Tools Download Tutorial](https://github.com/iAvoe/encoding-tools-download-tutorial)
 
-或者著急要用的話，也可以無視上述教學並使用這個壓縮包的工具（不推薦但可以）
-- [Google Drive / ffmepg-ffprobe-x264-x265-SVTAV1 Pkg.](https://drive.google.com/file/d/1DNrVBoJtmYka0LiorjuWDgeGxfnq62PM/view?usp=sharing)
-- [Baidu Netdisk / ffmpeg-ffprobe-x264-x265-SVTAV1 Pkg.](https://pan.baidu.com/s/1I-WsIBdr2syvHmkhdLGdHA?pwd=ya32)提取碼：ya32
-
-> 最少只需一個上遊程序 + 一個下遊程序
+若需急用之，也可直接下載並直接使用附帶的工具（不推薦但可以）
 
 **支持的管道上遊程序（解碼與濾鏡工具）**
 - ffmpeg

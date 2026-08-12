@@ -82,15 +82,16 @@ This software supports multiple languages, but English text screenshots are used
 - Windows 10/11 x64
   - Recommended version: 1809/21H2 (LTSC) or higher; minimum: 1607
 
+### Download OneColumnEncoder
+
+- [GitHub Releases](https://github.com/iAvoe/OneColumnEncoder/releases)
+
 ### Download Encoding Tools
 
 Follow this tutorial to get tool tailored for your use case:
 - [Encoding Tools Download Tutorial](https://github.com/iAvoe/encoding-tools-download-tutorial)
 
-Or, TLDR; and use tools provided in this package (not recommended but its an option)
-- [Google Drive / ffmepg-ffprobe-x264-x265-SVTAV1 Pkg.](https://drive.google.com/file/d/1DNrVBoJtmYka0LiorjuWDgeGxfnq62PM/view?usp=sharing)
-
-> Minimum requirement is one upstream program + one downstream program
+If must TLDR; you may also use the tools included in download package (Not recommended but it works)
 
 **Supported pipe upstream programs (decoding and filtering tools)**:
 - ffmpeg
