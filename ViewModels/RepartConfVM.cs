@@ -35,7 +35,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private string _newDividerFrameText = "0";
     private CancellationTokenSource? _dividerPreviewCts;
     private readonly ObservableCollection<RepartDividerPreviewFrame> _dividerPreviewFrames = [];
-    private string _dividerPreviewStatusText = RepartLangProvider.Current["DividerPreviewSelectDivider"];
     private bool _suppressDividerPreviewRefresh;
     private bool _isDraggingDivider;
     private long? _dividerPreviewRenderedFrame;
@@ -139,11 +138,6 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public ObservableCollection<RepartDividerPreviewFrame> DividerPreviewFrames
     {
         get => _dividerPreviewFrames;
-    }
-    public string DividerPreviewStatusText
-    {
-        get => _dividerPreviewStatusText;
-        private set => SetProperty(ref _dividerPreviewStatusText, value);
     }
     public ButtonGroupVM DividerDeleteButtons { get; }
     public ButtonGroupVM FinishButtons { get; }
@@ -1113,7 +1107,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             {
                 Interlocked.Exchange(ref _dividerPreviewRefreshPending, 0);
                 DividerPreviewFrames.Clear();
-                DividerPreviewStatusText = RepartLangProvider.Current["DividerPreviewSelectDivider"];
+                StatusText = RepartLangProvider.Current["DividerPreviewSelectDivider"];
             }
             return;
         }
@@ -1140,10 +1134,10 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             if (analysis == null || divider == null)
                 return;
 
-            RunOnUi(() =>
+        RunOnUi(() =>
             {
                 DividerPreviewFrames.Clear();
-                DividerPreviewStatusText = string.Format(
+                StatusText = string.Format(
                     RepartLangProvider.Current["DividerPreviewReadingWindow"],
                     divider.Frame);
             });
@@ -1163,13 +1157,13 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
                 foreach (RepartDividerPreviewFrame frame in result.Frames)
                     DividerPreviewFrames.Add(frame);
                 _dividerPreviewRenderedFrame = divider.Frame;
-                DividerPreviewStatusText = result.StatusText;
+                StatusText = result.StatusText;
             });
         }
         catch (OperationCanceledException)
         {
             if (!cts.IsCancellationRequested && requestVersion == Volatile.Read(ref _dividerPreviewRequestVersion))
-                RunOnUi(() => DividerPreviewStatusText = RepartLangProvider.Current["DividerPreviewCancelled"]);
+                RunOnUi(() => StatusText = RepartLangProvider.Current["DividerPreviewCancelled"]);
         }
         catch (Exception ex)
         {
@@ -1178,7 +1172,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
                 RunOnUi(() =>
                 {
                     DividerPreviewFrames.Clear();
-                    DividerPreviewStatusText = ex.Message;
+                    StatusText = ex.Message;
                 });
             }
         }

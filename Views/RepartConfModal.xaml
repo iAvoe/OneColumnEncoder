@@ -9,8 +9,8 @@
                    d:DataContext="{d:DesignInstance Type=vms:RepartConfVM}"
                    mc:Ignorable="d"
                    Title="{Binding WindowTitle}"
-                   Width="1180"
-                   Height="760"
+                   Width="1080"
+                   Height="800"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
     <ui:AdaptiveWindow.Resources>
@@ -165,10 +165,10 @@
               IsEnabled="{Binding CanEdit}"
               Margin="0 15 0 0">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -492,12 +492,6 @@
                     </ScrollViewer>
                 </Border>
 
-                <TextBlock Grid.Row="2"
-                           Text="{Binding DividerPreviewStatusText}"
-                           Margin="5 2.5 0 0"
-                           TextAlignment="Center"
-                           Foreground="{StaticResource GlobalSecondary}"
-                           TextWrapping="Wrap" />
             </Grid>
 
             <!-- Output episode repartition list/queue -->
@@ -558,12 +552,14 @@
                 <ColumnDefinition Width="Auto"
                                   MinWidth="400" />
             </Grid.ColumnDefinitions>
-            <!-- Progress bar and status -->
-            <StackPanel Grid.Column="0">
-                <TextBlock Text="{Binding StatusText}"
-                           Foreground="{StaticResource GlobalSecondary}"
-                           TextWrapping="Wrap" />
-            </StackPanel>
+            <!-- Load Status -->
+            <TextBlock Grid.Column="0"
+                       Text="{Binding StatusText}"
+                       Height="Auto"
+                       TextAlignment="Left"
+                       VerticalAlignment="Bottom"
+                       Foreground="{StaticResource GlobalSecondary}"
+                       TextWrapping="Wrap" />
             <!-- Master cancel confirm buttons -->
             <comps:TwoButtonGroup Grid.Column="1"
                                   ButtonHeight="30"
