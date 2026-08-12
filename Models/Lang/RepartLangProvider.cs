@@ -110,7 +110,9 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["DividerPreviewSummary"] = "{0} | {1:N0} frames | {2} frame preview",
             ["DividerPreviewCancelled"] = "Preview cancelled",
             ["DividerPreviewPending"] = "Preview update queued",
-            ["DividerPreviewBuildingIndex"] = "Building a keyframe index for {0}..."
+            ["DividerPreviewBuildingIndex"] = "Building a keyframe index for {0}...",
+            ["DividerPreviewSourceDataMissing"] = "Divider preview source data missing",
+            ["DividerPreviewFrameFileMissing"] = "Divider preview frame file missing"
         },
         ["zh-cn"] = new()
         {
@@ -214,6 +216,8 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["DividerPreviewCancelled"] = "预览已取消",
             ["DividerPreviewPending"] = "预览更新已排队",
             ["DividerPreviewBuildingIndex"] = "正在为 {0} 建立关键帧索引……",
+            ["DividerPreviewSourceDataMissing"] = "分割线预览源数据缺失",
+            ["DividerPreviewFrameFileMissing"] = "分割线预览帧文件缺失",
         }
     };
 
@@ -321,6 +325,8 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["DividerPreviewCancelled"] = "預覽已取消",
             ["DividerPreviewPending"] = "預覽更新已排隊",
             ["DividerPreviewBuildingIndex"] = "正在為 {0} 建立關鍵幀索引……",
+            ["DividerPreviewSourceDataMissing"] = "分割線預覽源數據缺失",
+            ["DividerPreviewFrameFileMissing"] = "分割線預覽幀文件缺失",
         };
         Data["fr"] = new(Data["en"])
         {
@@ -423,6 +429,8 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["DividerPreviewSummary"] = "{0} | {1:N0} images | aperçu de {2} images",
             ["DividerPreviewCancelled"] = "Aperçu annulé",
             ["DividerPreviewBuildingIndex"] = "Création d'un index des images clés pour {0}...",
+            ["DividerPreviewSourceDataMissing"] = "Données source de l'aperçu du séparateur manquantes",
+            ["DividerPreviewFrameFileMissing"] = "Fichier de trame de l'aperçu du séparateur manquant"
         };
         Data["es"] = new(Data["en"])
         {
@@ -525,6 +533,8 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["DividerPreviewSummary"] = "{0} | {1:N0} fotogramas | vista previa de {2} fotogramas",
             ["DividerPreviewCancelled"] = "Vista previa cancelada",
             ["DividerPreviewBuildingIndex"] = "Creando un índice de fotogramas clave para {0}...",
+            ["DividerPreviewSourceDataMissing"] = "Faltan los datos de origen de la vista previa del divisor",
+            ["DividerPreviewFrameFileMissing"] = "Falta el archivo de fotograma de la vista previa del divisor"
         };
         Data["ja"] = new(Data["en"])
         {
@@ -627,6 +637,8 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["DividerPreviewSummary"] = "{0} | {1:N0} フレーム | {2} フレームのプレビュー",
             ["DividerPreviewCancelled"] = "プレビューをキャンセルしました",
             ["DividerPreviewBuildingIndex"] = "{0} のキーフレームインデックスを作成中...",
+            ["DividerPreviewSourceDataMissing"] = "ディバイダープレビューのソースデータが不足しています",
+            ["DividerPreviewFrameFileMissing"] = "ディバイダープレビューのフレームファイルが不足しています"
         };
         Data["ru"] = new(Data["en"])
         {
@@ -729,6 +741,8 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["DividerPreviewSummary"] = "{0} | {1:N0} кадров | предпросмотр {2} кадров",
             ["DividerPreviewCancelled"] = "Предпросмотр отменён",
             ["DividerPreviewBuildingIndex"] = "Создание индекса ключевых кадров для {0}...",
+            ["DividerPreviewSourceDataMissing"] = "Отсутствуют исходные данные предварительного просмотра разделителя",
+            ["DividerPreviewFrameFileMissing"] = "Отсутствует файл кадра предварительного просмотра разделителя"
         };
         Data["de"] = new(Data["en"])
         {
@@ -830,7 +844,9 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["DividerPreviewReadingWindow"] = "Lese 7-Fenster um Frame {0:N0}...",
             ["DividerPreviewSummary"] = "{0} | {1:N0} Frames | {2} Frames Vorschau",
             ["DividerPreviewCancelled"] = "Vorschau abgebrochen",
-            ["DividerPreviewBuildingIndex"] = "Erstelle Keyframe-Index für {0}..."
+            ["DividerPreviewBuildingIndex"] = "Erstelle Keyframe-Index für {0}...",
+            ["DividerPreviewSourceDataMissing"] = "Quelldaten der Trennlinien-Vorschau fehlen",
+            ["DividerPreviewFrameFileMissing"] = "Frame-Datei der Trennlinien-Vorschau fehlt"
         };
         Data["ko"] = new(Data["en"])
         {
@@ -933,6 +949,8 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["DividerPreviewSummary"] = "{0} | {1:N0} 프레임 | {2}프레임 미리보기",
             ["DividerPreviewCancelled"] = "미리보기가 취소되었습니다",
             ["DividerPreviewBuildingIndex"] = "{0}의 키프레임 인덱스를 만드는 중...",
+            ["DividerPreviewSourceDataMissing"] = "구분선 미리보기 소스 데이터가 없습니다",
+            ["DividerPreviewFrameFileMissing"] = "구분선 미리보기 프레임 파일이 없습니다"
         };
         Data["pt-br"] = new(Data["en"])
         {
@@ -1035,6 +1053,8 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["DividerPreviewSummary"] = "{0} | {1:N0} quadros | visualização de {2} quadros",
             ["DividerPreviewCancelled"] = "Visualização cancelada",
             ["DividerPreviewBuildingIndex"] = "Construindo um índice de quadros-chave para {0}...",
+            ["DividerPreviewSourceDataMissing"] = "Dados de origem da visualização do divisor ausentes",
+            ["DividerPreviewFrameFileMissing"] = "Arquivo de quadro da visualização do divisor ausente"
         };
     }
 

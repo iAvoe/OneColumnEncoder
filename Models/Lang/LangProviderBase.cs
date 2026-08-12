@@ -299,7 +299,9 @@ public abstract class LangProviderBase
         string languageCode,
         Dictionary<string, Dictionary<string, string>> data)
     {
-        LanguageCode = data.ContainsKey(languageCode) ? languageCode : "en";
+        LanguageCode = string.IsNullOrWhiteSpace(languageCode) || !data.ContainsKey(languageCode)
+            ? "en"
+            : languageCode;
         _d = data[LanguageCode];
     }
 

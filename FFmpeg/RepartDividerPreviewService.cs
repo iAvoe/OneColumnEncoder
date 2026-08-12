@@ -24,6 +24,10 @@ public sealed class RepartDividerPreviewService(string? ffmpegPath, string? ffpr
     private const double KeyframeIndexWindowLeadSeconds = 0.25d;
     private const double KeyframeIndexCacheReuseToleranceSeconds = 1d;
 
+    // Reserved toggle. The pipe-to-memory route is now the only active route; the
+    // disk answer route is commented out as a backup below. Flip to false if restored.
+    internal static bool UsePipeFramesInMemory = true;
+
     private readonly string? _ffmpegPath = ffmpegPath;
     private readonly string? _ffprobePath = ffprobePath;
     private readonly string _workDirectory = CreateWorkDirectory("1cenc-repart-preview-");
@@ -62,22 +66,23 @@ public sealed class RepartDividerPreviewService(string? ffmpegPath, string? ffpr
     }
 
     /// <summary>
-    /// 
+    /// Renders a 7-frame preview strip around the selected divider frame.
     /// </summary>
-    /// <param name="analysis"></param>
-    /// <param name="selectedFrame"></param>
-    /// <param name="token"></param>
-    /// <returns></returns>
+    /// <param name="analysis">Active repart plan</param>
+    /// <param name="selectedFrame">Selected divider frame</param>
+    /// <param name="token">Cancel token</param>
+    /// <returns>Rendered preview frames and status text</returns>
     /// <exception cref="InvalidOperationException"></exception>
     private async Task<RepartDividerPreviewResult> RenderRequestAsync(RepartPlanM analysis, long selectedFrame, CancellationToken token)
     {
         if (analysis.TotalFrames <= 0)
-            throw new InvalidOperationException("Divider preview source data missing."); // TODO: localize to RepartLangProvider.Current["DividerPreviewSourceDataMissing"]
+            throw new InvalidOperationException(RepartLangProvider.Current["DividerPreviewSourceDataMissing"]);
 
+        // Initialize frame window
         long windowFirst = Math.Max(0, selectedFrame - 3);
         long windowLast = Math.Min(analysis.TotalFrames - 1, selectedFrame + 3);
         double frameRate = (double)analysis.FrameRateNumerator / analysis.FrameRateDenominator;
-
+        double frameDuration = (double)analysis.FrameRateDenominator / analysis.FrameRateNumerator;
         CleanupPreviewFiles();
 
         // The 7 preview frames: L3, L2, L1, selected, R1, R2, R3
@@ -92,68 +97,24 @@ public sealed class RepartDividerPreviewService(string? ffmpegPath, string? ffpr
             token.ThrowIfCancellationRequested();
             if (!File.Exists(src.FilePath)) continue;
 
-            long relFirst = Math.Max(0, Math.Max(windowFirst, src.FirstFrame) - src.FirstFrame);
-            long relLast = Math.Max(relFirst, Math.Min(src.LastFrame, windowLast) - src.FirstFrame);
-
-            double frameDuration = (double)analysis.FrameRateDenominator / analysis.FrameRateNumerator;
-            double sourceStartTime = TryGetSourceStartTime(src.RawJson) ?? 0d;
-            double targetTime = sourceStartTime + relFirst * frameDuration;
-
-            KeyframeIndex? index = await BuildKeyframeIndexAsync(src, targetTime, frameRate, token).ConfigureAwait(false);
-            token.ThrowIfCancellationRequested();
-
-            double keyframeTime = 0d;
-            bool canSeek = index != null
-                && index.TryFindNearestBefore(targetTime, out keyframeTime);
-            long keyframeFrame = canSeek
-                ? Math.Max(0, (long)Math.Round(
-                    (keyframeTime - sourceStartTime) / frameDuration,
-                    MidpointRounding.AwayFromZero))
-                : 0;
-
-            // Output image file name builder
-            string patternPrefix = $"divider-preview-{Guid.NewGuid():N}-{src.FirstFrame}";
-            string pattern = Path.Combine(_workDirectory, patternPrefix + "-%02d.png");
-            // FFmpeg CMD builder
-            string[] args = !canSeek
-                ? BuildSourceFrameArgs(src.FilePath, relFirst, relLast, pattern)
-                : BuildSourceFrameSeekArgs(
-                    src.FilePath,
-                    keyframeTime,
-                    relFirst - keyframeFrame,
-                    relLast - keyframeFrame,
-                    pattern);
-
-            // Ideally "await" should be avoided here, but FFmpegProcessorRunner.RunAsync has to be waited for getting the output files
-            // Maybe just write bitmap to RAM, and access the RAM for pixel values to Previewer? So await hang can be avoided
-            await FFmpegProcessRunner.RunAsync(_ffmpegPath!, args, TimeSpan.FromMinutes(1), token).ConfigureAwait(false);
-            token.ThrowIfCancellationRequested();
-
-            // Collect the files and build preview frames
-            string[] files = [.. Directory
-                .GetFiles(_workDirectory, patternPrefix + "-*.png")
-                .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)];
-
-            for (int i = 0; i < files.Length; i++)
-            {
-                long frameNumber = src.FirstFrame + relFirst + i;
-                if (frameNumber < windowFirst || frameNumber > windowLast) continue;
-                bool isDivider = frameNumber == selectedFrame;
-                frames.Add(new RepartDividerPreviewFrame(
-                    frameNumber,
-                    LoadBitmap(files[i]),
-                    isDivider,
-                    !isDivider));
-            }
+            await AddSourceFramesAsync(
+                src,
+                windowFirst,
+                windowLast,
+                selectedFrame,
+                frameRate,
+                frameDuration,
+                frames,
+                token).ConfigureAwait(false);
         }
 
         if (frames.Count == 0)
-            throw new InvalidOperationException("Divider preview frame file missing.");
+            throw new InvalidOperationException(RepartLangProvider.Current["DividerPreviewFrameFileMissing"]);
 
-            string sourceName = analysis.Sources
-                .Where(source => selectedFrame >= source.FirstFrame && selectedFrame <= source.LastFrame)
-                .Select(source => source.DisplayName)
-                .FirstOrDefault() ?? "?";
+        string sourceName = analysis.Sources
+            .Where(source => selectedFrame >= source.FirstFrame && selectedFrame <= source.LastFrame)
+            .Select(source => source.DisplayName)
+            .FirstOrDefault() ?? "?";
 
         return new RepartDividerPreviewResult(
             frames,
@@ -162,6 +123,142 @@ public sealed class RepartDividerPreviewService(string? ffmpegPath, string? ffpr
                 sourceName,
                 selectedFrame,
                 frames.Count));
+    }
+
+    private async Task AddSourceFramesAsync(
+        RepartSourceM src,
+        long windowFirst,
+        long windowLast,
+        long selectedFrame,
+        double frameRate,
+        double frameDuration,
+        List<RepartDividerPreviewFrame> frames,
+        CancellationToken token)
+    {
+        long relFirst = Math.Max(0, Math.Max(windowFirst, src.FirstFrame) - src.FirstFrame);
+        long relLast = Math.Max(relFirst, Math.Min(src.LastFrame, windowLast) - src.FirstFrame);
+
+        double sourceStartTime = TryGetSourceStartTime(src.RawJson) ?? 0d;
+        double targetTime = sourceStartTime + relFirst * frameDuration;
+
+        KeyframeIndex? index = await BuildKeyframeIndexAsync(src, targetTime, frameRate, token).ConfigureAwait(false);
+        token.ThrowIfCancellationRequested();
+
+        double keyframeTime = 0d;
+        bool canSeek = index != null
+            && index.TryFindNearestBefore(targetTime, out keyframeTime);
+        long keyframeFrame = canSeek
+            ? Math.Max(0, (long)Math.Round(
+                (keyframeTime - sourceStartTime) / frameDuration,
+                MidpointRounding.AwayFromZero))
+            : 0;
+
+        await AddSourceFramesFromPipeAsync(
+            src,
+            relFirst,
+            relLast,
+            selectedFrame,
+            windowFirst,
+            windowLast,
+            canSeek,
+            keyframeTime,
+            keyframeFrame,
+            frames,
+            token).ConfigureAwait(false);
+
+        // Backup route (write PNGs to disk then reload). Reserved; uncomment to restore.
+        // if (UsePipeFramesInMemory)
+        //     await AddSourceFramesFromPipeAsync(...);
+        // else
+        //     await AddSourceFramesFromFilesAsync(...);
+    }
+
+    // Backup route: write PNGs to disk then reload. Reserved; uncomment to restore.
+    /*
+    private async Task AddSourceFramesFromFilesAsync(
+        RepartSourceM src,
+        long relFirst,
+        long relLast,
+        long selectedFrame,
+        long windowFirst,
+        long windowLast,
+        bool canSeek,
+        double keyframeTime,
+        long keyframeFrame,
+        List<RepartDividerPreviewFrame> frames,
+        CancellationToken token)
+    {
+        string patternPrefix = $"divider-preview-{Guid.NewGuid():N}-{src.FirstFrame}";
+        string pattern = Path.Combine(_workDirectory, patternPrefix + "-%02d.png");
+        string[] args = !canSeek
+            ? BuildSourceFrameArgs(src.FilePath, relFirst, relLast, pattern)
+            : BuildSourceFrameSeekArgs(
+                src.FilePath,
+                keyframeTime,
+                relFirst - keyframeFrame,
+                relLast - keyframeFrame,
+                pattern);
+
+        await FFmpegProcessRunner.RunAsync(_ffmpegPath!, args, TimeSpan.FromMinutes(1), token).ConfigureAwait(false);
+        token.ThrowIfCancellationRequested();
+
+        string[] files = [.. Directory
+            .GetFiles(_workDirectory, patternPrefix + "-*.png")
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)];
+
+        for (int i = 0; i < files.Length; i++)
+        {
+            long frameNumber = src.FirstFrame + relFirst + i;
+            if (frameNumber < windowFirst || frameNumber > windowLast) continue;
+            bool isDivider = frameNumber == selectedFrame;
+            frames.Add(new RepartDividerPreviewFrame(
+                frameNumber,
+                LoadBitmap(files[i]),
+                isDivider,
+                !isDivider));
+        }
+    }
+    */
+
+    private async Task AddSourceFramesFromPipeAsync(
+        RepartSourceM src,
+        long relFirst,
+        long relLast,
+        long selectedFrame,
+        long windowFirst,
+        long windowLast,
+        bool canSeek,
+        double keyframeTime,
+        long keyframeFrame,
+        List<RepartDividerPreviewFrame> frames,
+        CancellationToken token)
+    {
+        string[] args = !canSeek
+            ? BuildSourceFramePipeArgs(src.FilePath, relFirst, relLast)
+            : BuildSourceFramePipeSeekArgs(
+                src.FilePath,
+                keyframeTime,
+                relFirst - keyframeFrame,
+                relLast - keyframeFrame);
+
+        FFmpegProcessResultWithOutput result = await FFmpegProcessRunner
+            .RunAsyncWithOutput(_ffmpegPath!, args, TimeSpan.FromMinutes(1), token)
+            .ConfigureAwait(false);
+        token.ThrowIfCancellationRequested();
+
+        using MemoryStream output = result.Output;
+        List<byte[]> bmpFrames = SplitBmpFrames(output);
+        for (int i = 0; i < bmpFrames.Count; i++)
+        {
+            long frameNumber = src.FirstFrame + relFirst + i;
+            if (frameNumber < windowFirst || frameNumber > windowLast) continue;
+            bool isDivider = frameNumber == selectedFrame;
+            frames.Add(new RepartDividerPreviewFrame(
+                frameNumber,
+                DecodeBmpFrame(bmpFrames[i]),
+                isDivider,
+                !isDivider));
+        }
     }
 
     /// <summary>
@@ -411,6 +508,8 @@ public sealed class RepartDividerPreviewService(string? ffmpegPath, string? ffpr
         return null;
     }
 
+// Backup route arg builders (write to disk). Reserved; uncomment to restore.
+    /*
     private static string[] BuildSourceFrameArgs(
         string sourceVideoPath,
         long firstFrame,
@@ -481,10 +580,82 @@ public sealed class RepartDividerPreviewService(string? ffmpegPath, string? ffpr
             outputPattern
         ];
     }
+    */
+
+    private static string[] BuildSourceFramePipeArgs(
+        string sourceVideoPath,
+        long firstFrame,
+        long lastFrame,
+        int targetHeight = 480,
+        string scaleFlags = "lanczos")
+    {
+        long safeFirstFrame = Math.Max(0, firstFrame);
+        long safeLastFrame = Math.Max(safeFirstFrame, lastFrame);
+        return
+        [
+            "-hide_banner",
+            "-y",
+            "-strict",
+            "unofficial",
+            "-i",
+            sourceVideoPath,
+            "-vf",
+            $"select=between(n\\,{safeFirstFrame}\\,{safeLastFrame}),scale=-2:{Math.Max(1, targetHeight)}:flags={scaleFlags}",
+            "-vsync",
+            "0",
+            "-frames:v",
+            (safeLastFrame - safeFirstFrame + 1).ToString(CultureInfo.InvariantCulture),
+            "-f",
+            "image2pipe",
+            "-c:v",
+            "bmp",
+            "pipe:1"
+        ];
+    }
+
+    private static string[] BuildSourceFramePipeSeekArgs(
+        string sourceVideoPath,
+        double keyframeTime,
+        long firstOffsetFrame,
+        long lastOffsetFrame,
+        int targetHeight = 480,
+        string scaleFlags = "lanczos")
+    {
+        long safeFirstOffset = Math.Max(0, firstOffsetFrame);
+        long safeLastOffset = Math.Max(safeFirstOffset, lastOffsetFrame);
+        long frameCount = safeLastOffset - safeFirstOffset + 1;
+        string keyframeTimestamp = FormatSeekSeconds(keyframeTime);
+        return
+        [
+            "-hide_banner",
+            "-y",
+            "-strict",
+            "unofficial",
+            "-ss",
+            keyframeTimestamp,
+            "-seek_timestamp",
+            "1",
+            "-i",
+            sourceVideoPath,
+            "-vf",
+            $"select=between(n\\,{safeFirstOffset}\\,{safeLastOffset}),scale=-2:{Math.Max(1, targetHeight)}:flags={scaleFlags}",
+            "-vsync",
+            "0",
+            "-frames:v",
+            frameCount.ToString(CultureInfo.InvariantCulture),
+            "-f",
+            "image2pipe",
+            "-c:v",
+            "bmp",
+            "pipe:1"
+        ];
+    }
 
     private static string FormatSeekSeconds(double seconds) =>
         Math.Max(0d, seconds).ToString("0.######", CultureInfo.InvariantCulture);
 
+// Backup route bitmap loader. Reserved; uncomment to restore.
+    /*
     private static BitmapImage LoadBitmap(string path)
     {
         BitmapImage bitmap = new();
@@ -492,6 +663,50 @@ public sealed class RepartDividerPreviewService(string? ffmpegPath, string? ffpr
         bitmap.CacheOption = BitmapCacheOption.OnLoad;
         bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
         bitmap.UriSource = new Uri(path, UriKind.Absolute);
+        bitmap.EndInit();
+        bitmap.Freeze();
+        return bitmap;
+    }
+    */
+
+    private static List<byte[]> SplitBmpFrames(MemoryStream stream)
+    {
+        byte[] buffer = stream.ToArray();
+        List<byte[]> frames = [];
+        int offset = 0;
+        while (TryReadBmp(buffer, ref offset, out byte[] frame))
+            frames.Add(frame);
+        return frames;
+    }
+
+    private static bool TryReadBmp(byte[] buffer, ref int offset, out byte[] frame)
+    {
+        frame = [];
+        if (offset + 6 > buffer.Length
+            || buffer[offset] != (byte)'B'
+            || buffer[offset + 1] != (byte)'M')
+            return false;
+
+        uint fileSize = ReadLittleEndianUInt32(buffer, offset + 2);
+        if (fileSize < 54 || offset + fileSize > buffer.Length)
+            return false;
+
+        int cursor = offset + (int)fileSize;
+        frame = buffer[offset..cursor];
+        offset = cursor;
+        return true;
+    }
+
+    private static uint ReadLittleEndianUInt32(byte[] buffer, int offset) =>
+        (uint)(buffer[offset] | (buffer[offset + 1] << 8) | (buffer[offset + 2] << 16) | (buffer[offset + 3] << 24));
+
+    private static BitmapImage DecodeBmpFrame(byte[] frame)
+    {
+        using MemoryStream stream = new(frame);
+        BitmapImage bitmap = new();
+        bitmap.BeginInit();
+        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+        bitmap.StreamSource = stream;
         bitmap.EndInit();
         bitmap.Freeze();
         return bitmap;
