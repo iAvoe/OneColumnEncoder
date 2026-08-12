@@ -16,6 +16,7 @@ public class PreviewSourceItem
 
 public class VspipePreviewVM : BaseVM
 {
+    private readonly ModalNavS _modalNavS;
     private readonly string _vspipePath;
     private readonly string _vspipeY4mArg;
     private readonly string _workDirectory;
@@ -23,6 +24,7 @@ public class VspipePreviewVM : BaseVM
     private readonly string _scriptPath;
     private readonly Func<string, string>? _buildPreviewScript;
     private bool _suppressSwitch;
+    private readonly string _scriptContent;
 
     private string _videoFilename;
     public string VideoFilename
@@ -127,8 +129,10 @@ public class VspipePreviewVM : BaseVM
     public ObservableCollection<string> PositionTickLabels { get; } = [];
 
     public ActionCmd PreviewCommand { get; }
+    public ActionCmd InspectFrameDataCommand { get; }
 
     public VspipePreviewVM(
+        ModalNavS modalNavS,
         string vspipePath,
         string vspipeY4mArg,
         string scriptContent,
@@ -137,9 +141,11 @@ public class VspipePreviewVM : BaseVM
         Func<string, string>? buildPreviewScript = null,
         IEnumerable<string>? queueFilePaths = null)
     {
+        _modalNavS = modalNavS;
         _vspipePath = vspipePath;
         _vspipeY4mArg = vspipeY4mArg;
         _buildPreviewScript = buildPreviewScript;
+        _scriptContent = scriptContent;
         _videoFilename = Path.GetFileName(srcPath);
         _totalFrames = totalFrames > 0 ? totalFrames : 1;
         _currentFrame = 0;
@@ -167,6 +173,7 @@ public class VspipePreviewVM : BaseVM
 
         StatusText = "Ready";
         PreviewCommand = new ActionCmd(_ => PreviewOrCancel());
+        InspectFrameDataCommand = new ActionCmd(_ => ShowFrameDataDebug());
     }
 
     private void BuildPositionTickLabels(int maxFrame)
@@ -333,6 +340,21 @@ public class VspipePreviewVM : BaseVM
         try { _previewCts?.Cancel(); }
         catch (ObjectDisposedException) { }
         TryKillCurrentProcess();
+    }
+
+    private void ShowFrameDataDebug()
+    {
+        StringBuilder sb = new();
+        sb.AppendLine($"Source video: {SelectedPreviewSource?.FullPath ?? "<none>"}");
+        sb.AppendLine($"vspipe path: {_vspipePath}");
+        sb.AppendLine($"vspipe y4m arg: {_vspipeY4mArg}");
+        sb.AppendLine($"TotalFrames: {TotalFrames}");
+        sb.AppendLine($"MaxPositionSeconds: {MaxPositionSeconds}");
+        sb.AppendLine();
+        sb.AppendLine("Preview script:");
+        sb.AppendLine(_scriptContent);
+
+        new OpenDebugModalCmd(_modalNavS, "VapourSynth Preview frame data", sb.ToString()).Execute(null);
     }
 
     private void TryKillCurrentProcess()

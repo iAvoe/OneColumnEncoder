@@ -1,10 +1,10 @@
 <UserControl x:Class="OneColumnEncoder.Components.ImgABPvViewer"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:viewmodels="clr-namespace:OneColumnEncoder.ViewModels"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d"
+              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:viewmodels="clr-namespace:OneColumnEncoder.ViewModels"
+              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=viewmodels:ImgABPvVM}"
              ClipToBounds="True"
              Focusable="True"
@@ -53,11 +53,11 @@
         </DrawingBrush>
     </UserControl.Resources>
 
-    <Grid>
-        <Grid.Resources>
-            <Border x:Key="MaskSource"
-                    Background="Black"
-                    CornerRadius="8"
+        <Grid>
+            <Grid.Resources>
+                <Border x:Key="MaskSource"
+                        Background="Black"
+                        CornerRadius="8"
                     Width="{Binding ActualWidth, ElementName=MaskBorder}"
                     Height="{Binding ActualHeight, ElementName=MaskBorder}" />
         </Grid.Resources>
@@ -76,8 +76,8 @@
                 <VisualBrush Visual="{StaticResource MaskSource}" />
             </Border.OpacityMask>
 
-            <Grid x:Name="Viewport"
-                  Background="{StaticResource ViewportCheckerBrush}">
+                <Grid x:Name="Viewport"
+                      Background="{StaticResource ViewportCheckerBrush}">
                 <Canvas x:Name="ImageCanvas"
                         ClipToBounds="True"
                         Width="{Binding ActualWidth, ElementName=Viewport}"
@@ -154,6 +154,7 @@
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
+
             </Grid>
         </Border>
     </Grid>

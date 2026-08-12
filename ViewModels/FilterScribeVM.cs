@@ -1352,6 +1352,7 @@ public class FilterScribeVM : BaseVM
         string buildScript(string path) => ScriptTemplate.BuildVpyPreviewScript(path, VpyUserInput, fpsnum, fpsden);
 
         var previewVm = new VspipePreviewVM(
+            _modalNavS,
             _vspipePath,
             _vspipeY4mArg,
             script,

@@ -561,7 +561,22 @@ public static partial class EncodingPipeline
             if (!FrameRate.TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return null;
 
             long? frameCount = TryGetFrameCount(stream);
-            return frameCount is > 0 ? frameCount : null;
+            if (frameCount is > 0) return frameCount.Value;
+
+            double? durationSeconds = TryGetDouble(stream, "duration")
+                ?? (document.RootElement.TryGetProperty("format", out JsonElement format)
+                    ? TryGetDouble(format, "duration")
+                    : null);
+            if (durationSeconds is null || durationSeconds <= 0d) return null;
+
+            double? frameRate = null;
+            if (FrameRate.TryParseFrameRate(TryGetString(stream, "avg_frame_rate"), out double avgFrameRate))
+                frameRate = avgFrameRate;
+            else if (FrameRate.TryParseFrameRate(TryGetString(stream, "r_frame_rate"), out double rFrameRate))
+                frameRate = rFrameRate;
+
+            if (frameRate is null || frameRate <= 0d) return null;
+            return Math.Max(0L, (long)Math.Round(durationSeconds.Value * frameRate.Value));
         }
         catch { return null; }
     }
