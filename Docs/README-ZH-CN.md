@@ -62,7 +62,7 @@
 <p align="center">
 <img src="../WireframeMockups/1-Main-Page-v4.png" alt="Main Window" width="600" /></br>
 <sup><i>主页</i></sup></br>
-<img src="../WireframeMockups/2-Script-Scribe.png" alt="Script Scribe Window" width="500" /></br>
+<img src="../WireframeMockups/2-Script-Scribe-v3.png" alt="Script Scribe Window" width="1200" /></br>
 <sup><i>滤镜编辑器</i></sup></br>
 <img src="../WireframeMockups/3-Encoder-Settings.png" alt="Encoder Setting Window" width="900" /></br>
 <sup><i>编码器/压制设置</i></sup></br>
