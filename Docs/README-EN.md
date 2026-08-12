@@ -71,7 +71,7 @@ This software supports multiple languages, but English text screenshots are used
 <sup><i>Warning Modal & Overwrite Protection</i></sup></br>
 <img src="../WireframeMockups/8-BD-Playlist-Selector-v2.png" alt="Blu-Ray Playlist Selector" width="500" /></br>
 <sup><i>Blu-Ray Playlist Selector</i></sup></br>
-<img src="../WireframeMockups/9-Episode-Repartition-Editor.png" alt="Repartition Configurator" width="650" /></br>
+<img src="../WireframeMockups/9-Episode-Repartition-Editor-v3.png" alt="Repartition Configurator" width="650" /></br>
 <sup><i>Episode Repartition Configurator</i></sup></br>
 <img src="../WireframeMockups/10-Settings.png" alt="Settings" width="400" /></br>
 <sup><i>Program Settings</i></sup></br>

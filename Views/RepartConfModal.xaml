@@ -43,7 +43,7 @@
             </StackPanel>
         </DataTemplate>
     </ui:AdaptiveWindow.Resources>
-    <Grid Margin="15 12.5 15 15">
+    <Grid Margin="12.5 12.5 12.5 15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="100" />
@@ -184,10 +184,11 @@
                 </Grid.RowDefinitions>
 
                 <!-- Import Source Control -->
-                <comps:SectionHeader HeaderText="{Binding InputSourcesTitle}" />
+                <comps:SectionHeader Grid.Row="0"
+                                     HeaderText="{Binding InputSourcesTitle}" />
                 <ListBox Grid.Row="1"
                          ItemsSource="{Binding Sources}"
-                         Margin="0 15 0 0"
+                         Margin="-1 15 0 0"
                          BorderThickness="0"
                          Background="Transparent"
                          HorizontalContentAlignment="Stretch"
@@ -245,7 +246,7 @@
 
             <!-- Add new divider controls -->
             <Grid Grid.Column="1"
-                  Margin="15 0 0 0">
+                  Margin="10 0 0 0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -268,7 +269,6 @@
                              Padding="5"
                              Margin="0" />
                 </StackPanel>
-
                 <!-- Add new divider -->
                 <Button Grid.Row="2"
                         Content="{Binding AddDividerText}"
@@ -355,7 +355,7 @@
                 </Grid>
 
                 <Grid Grid.Row="2"
-                      Margin="5 20 0 0">
+                      Margin="5 10 0 0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
@@ -417,7 +417,7 @@
                 </Grid.RowDefinitions>
 
                 <Border Grid.Row="1"
-                        Margin="5 -7.5 0 0"
+                        Margin="0 -7.5 0 2.5"
                         BorderBrush="{StaticResource GlobalSecondary}"
                         BorderThickness="1"
                         CornerRadius="5"
