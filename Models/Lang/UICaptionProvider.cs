@@ -84,7 +84,7 @@ public static class UICaptionProvider
         public static string SVFIClipDisabled => UILangProvider.Current["Hint.SVFIClipDisabled"];
         public static string AnalyzeNeedsSource => UILangProvider.Current["Hint.AnalyzeRunConditionDuration"];
         public static string NumaCpuCheckTrigger => UILangProvider.Current["Hint.NumaCpuCheckTrigger"];
-        public static string FfmpegOptional => UILangProvider.Current["Hint.FfmpegOptional"];
+        public static string FfmpegOptional => UILangProvider.Current["Hint.FFmpegOptionalBut"];
         public static string QueueRouteSampleClipDisabled => UILangProvider.Current["Hint.QueueRouteSampleClipDisabled"];
         public static string FilterScribeDisabled => UILangProvider.Current["Hint.FilterScribeDisabled"];
         public static string MinDurationFilter => UILangProvider.Current["Hint.MinDurationFilter"];

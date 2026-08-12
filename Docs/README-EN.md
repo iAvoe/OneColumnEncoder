@@ -5,6 +5,7 @@ A next-gen smart video encoding utility based on .NET 9/WPF, revolves around “
 <p align="center"><img src="../WireframeMockups/logo.png" alt="Logo" width="200"></p>
 
 ## Featuring:
+
 **Source & Environment Validation**
 - Validate source video integrity from ffprobe readings
 - Verify current environment & configuration correctness
@@ -35,8 +36,14 @@ A next-gen smart video encoding utility based on .NET 9/WPF, revolves around “
 
 **Managed Automation**
 - Auto-generating video & audio encoding commandlines
-- Providing queued encoding with dynamically editable queue
-- Providing concat encoding mode with editable concatenation queue
+- Advanced encoding modes supported:
+  - **Queue Mode**: Encoding and filtering for a list of video sources
+  - **Concat Mode**: Concatenating and filtering a group of video sources
+  - **Repart Mode**: Re-slicing, filtering and encoding of a group video sources to correct episode partition structure
+
+**Editable Blu-Ray Chapter Import**
+- Parse and build your list from PLAYLIST folder of the BDMV structure
+- Wired to Queue Mode and Repart Mode
 
 **Clip Sampling**
 - Providing FFMPEG-VS-AVS sampling

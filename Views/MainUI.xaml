@@ -81,7 +81,7 @@
                                   Button2IsEnabled="{Binding B2_2IsEnabled}"
                                   Margin="10 10 10 0" />
 
-            <!-- Hint: FFmpeg is optional, but needed for video frame previewing -->
+            <!-- Hint: FFmpeg is optional, but ... -->
             <comps:HintPanel Text="{Binding FfmpegOptionalHintText}"
                              RefreshTextOnLanguageChanged="True"
                              Margin="10 2.5 5 0"

@@ -1950,13 +1950,12 @@ public class MainVM : BaseVM
         _srcVideoAnalysis.RawJson = plan.ReferenceRawJson;
         _srcVideoAnalysis.BatchRawJson = JsonSerializer.Serialize(
             new RawAnalysisBatchM(
-                plan.Sources
+                [.. plan.Sources
                     .Where(source => !string.IsNullOrWhiteSpace(source.RawJson))
                     .Select(source => new SourceRawAnalysisM(
                         source.FilePath,
                         source.DisplayName,
-                        JsonDocument.Parse(source.RawJson).RootElement.Clone()))
-                    .ToList()),
+                        JsonDocument.Parse(source.RawJson).RootElement.Clone()))]),
             FFProbeJsonFormatting.Options);
         _srcVideoAnalysis.ConcatTotalFrames = plan.TotalFrames;
         RepartCheckCard.ApplyRepartPlan(plan);

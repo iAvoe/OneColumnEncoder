@@ -203,11 +203,6 @@ public class UILangProvider : LangProviderBase
 
             // FilterScribeModal
 
-
-
-
-
-
             // FFProbeJsonUpdateResolver
             ["FFProbeJsonUpdate.JsonEmpty"] = "ffprobe JSON is empty.",
             ["FFProbeJsonUpdate.DimensionsNotPositive"] = "Resolution dimensions must be positive.",
@@ -220,7 +215,7 @@ public class UILangProvider : LangProviderBase
             ["Hint.SVFIClipDisabled"] = "OneLineShotArgs does not support sample clipping, disabling Run Sample.",
             ["Hint.AnalyzeRunConditionDuration"] = "Analysis will start upon source import (roughly 70～100 ms/src)",
             ["Hint.NumaCpuCheckTrigger"] = "NUMA node CPU usage updates on mouse click or keyboard input event",
-            ["Hint.FfmpegOptional"] = "FFmpeg is optional, but needed for video frame previewing",
+            ["Hint.FFmpegOptionalBut"] = "FFmpeg is optional, but needed for video frame previewing and auto MKV muxing",
             ["ScriptQueueImport.RejectedPrefix"] = "Import rejected: {0} unmatched basename(s), {1} path mismatch(es).",
             ["ScriptQueueImport.DetailsHeader"] = "Details:",
             ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — no matching video source by basename",
@@ -434,12 +429,6 @@ public class UILangProvider : LangProviderBase
             ["Checklist.Best2.FAT32"] = "不写入 FAT32 分区",
             ["Checklist.Best2.DiskCompression"] = "输出文件夹禁用文件系统磁盘压缩",
 
-
-
-
-
-
-
             // FFProbeJsonUpdateResolver
             ["FFProbeJsonUpdate.JsonEmpty"] = "ffprobe JSON 为空。",
             ["FFProbeJsonUpdate.DimensionsNotPositive"] = "分辨率尺寸必须为正值。",
@@ -452,7 +441,7 @@ public class UILangProvider : LangProviderBase
             ["Hint.SVFIClipDisabled"] = "OneLineShotArgs 上游不支持取段打样，已禁用取段打样按钮。",
             ["Hint.AnalyzeRunConditionDuration"] = "导入视频后会自动运行分析（约 70～100 ms/源）",
             ["Hint.NumaCpuCheckTrigger"] = "NUMA 节点 CPU 占用检测会在鼠标点击或键盘输入事件时更新。",
-            ["Hint.FfmpegOptional"] = "FFmpeg 可选，但视频帧预览需要它",
+            ["Hint.FFmpegOptionalBut"] = "FFmpeg 可选，但视频帧预览和自动 MKV 封装功能需要它",
             ["ScriptQueueImport.RejectedPrefix"] = "导入已拒绝：{0} 个基名不匹配，{1} 个路径不匹配。",
             ["ScriptQueueImport.DetailsHeader"] = "详情：",
             ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — 按基名找不到匹配的视频源",
@@ -663,12 +652,6 @@ public class UILangProvider : LangProviderBase
             ["Checklist.Best2.FAT32"] = "不寫入 FAT32 分區",
             ["Checklist.Best2.DiskCompression"] = "輸出文件夾禁用文件系統磁碟壓縮",
 
-
-
-
-
-
-
             // FFProbeJsonUpdateResolver
             ["FFProbeJsonUpdate.JsonEmpty"] = "ffprobe JSON 為空。",
             ["FFProbeJsonUpdate.DimensionsNotPositive"] = "解析度尺寸必須為正值。",
@@ -681,7 +664,7 @@ public class UILangProvider : LangProviderBase
             ["Hint.SVFIClipDisabled"] = "OneLineShotArgs 上游不支援取段打樣，已禁用取段打樣按鈕。",
             ["Hint.AnalyzeRunConditionDuration"] = "匯入影片後會自動執行分析（約 70～100 ms/源）",
             ["Hint.NumaCpuCheckTrigger"] = "NUMA 節點 CPU 占用檢測會在滑鼠點擊或鍵盤輸入事件時更新。",
-            ["Hint.FfmpegOptional"] = "FFmpeg 為可選，但影片幀預覽需要它",
+            ["Hint.FFmpegOptionalBut"] = "FFmpeg 可選，但影片幀預覽和自動 MKV 封裝功能需要它",
             ["ScriptQueueImport.RejectedPrefix"] = "導入已拒絕：{0} 個基名不符，{1} 個路徑不符。",
             ["ScriptQueueImport.DetailsHeader"] = "詳細資料：",
             ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — 依基名找不到對應的影片來源",
@@ -953,7 +936,7 @@ public class UILangProvider : LangProviderBase
         ["Hint.SVFIClipDisabled"] = "OneLineShotArgs ne prend pas en charge l'échantillonnage; bouton Échantillon désactivé.",
         ["Hint.AnalyzeRunConditionDuration"] = "L'analyse se lance automatiquement après l'importation de la vidéo (environ 70～100 ms/src)",
         ["Hint.NumaCpuCheckTrigger"] = "La charge CPU du noeud NUMA se met à jour au clic souris ou à la saisie clavier.",
-        ["Hint.FfmpegOptional"] = "FFmpeg est facultatif, mais nécessaire pour l'aperçu des images vidéo",
+        ["Hint.FFmpegOptionalBut"] = "FFmpeg est facultatif, mais nécessaire pour l'aperçu des images vidéo et le multiplexage automatique MKV",
         // Script queue import
         ["ScriptQueueImport.RejectedPrefix"] = "Import rejeté : {0} nom(s) de base sans correspondance, {1} chemin(s) incorrect(s).",
         ["ScriptQueueImport.DetailsHeader"] = "Détails :",
@@ -1156,7 +1139,7 @@ public class UILangProvider : LangProviderBase
         ["Hint.SVFIClipDisabled"] = "OneLineShotArgs no admite recorte de muestra; botón Muestra desactivado.",
         ["Hint.AnalyzeRunConditionDuration"] = "El análisis se ejecuta automáticamente al importar el video (aprox. 70～100 ms/fuente)",
         ["Hint.NumaCpuCheckTrigger"] = "El uso de CPU del nodo NUMA se actualiza con clic de ratón o entrada de teclado.",
-        ["Hint.FfmpegOptional"] = "FFmpeg es opcional, pero se necesita para previsualizar fotogramas de video",
+        ["Hint.FFmpegOptionalBut"] = "FFmpeg es opcional, pero se necesita para previsualizar fotogramas de video y el multiplexado automático MKV",
         // Script queue import
         ["ScriptQueueImport.RejectedPrefix"] = "Importación rechazada: {0} nombre(s) base sin coincidencia, {1} ruta(s) con discrepancia.",
         ["ScriptQueueImport.DetailsHeader"] = "Detalles:",
@@ -1354,7 +1337,7 @@ public class UILangProvider : LangProviderBase
         ["Hint.SVFIClipDisabled"] = "OneLineShotArgs はサンプル切り出し非対応のため、サンプル実行を無効化しました。",
         ["Hint.AnalyzeRunConditionDuration"] = "動画をインポートすると、自動的に分析が実行されます（約70～100 ms/ソース）",
         ["Hint.NumaCpuCheckTrigger"] = "NUMA ノード CPU 使用率は、マウスクリックまたはキー入力時に更新されます。",
-        ["Hint.FfmpegOptional"] = "FFmpeg は任意ですが、動画フレームのプレビューには必要です",
+        ["Hint.FFmpegOptionalBut"] = "FFmpeg は任意ですが、動画フレームのプレビューと自動 MKV マージングには必要です",
         // Script queue import
         ["ScriptQueueImport.RejectedPrefix"] = "取込を拒否しました: ベース名不一致 {0} 件、パス不一致 {1} 件。",
         ["ScriptQueueImport.DetailsHeader"] = "詳細:",
@@ -1557,7 +1540,7 @@ public class UILangProvider : LangProviderBase
         ["Hint.SVFIClipDisabled"] = "OneLineShotArgs не поддерживает пробный отрезок; кнопка пробы отключена.",
         ["Hint.AnalyzeRunConditionDuration"] = "При импорте видео автоматически запускается анализ (около 70–100 мс/источник)",
         ["Hint.NumaCpuCheckTrigger"] = "Загрузка CPU NUMA-узла обновляется при клике мыши или вводе с клавиатуры.",
-        ["Hint.FfmpegOptional"] = "FFmpeg необязателен, но нужен для предпросмотра кадров видео",
+        ["Hint.FFmpegOptionalBut"] = "FFmpeg необязателен, но нужен для предпросмотра кадров видео и автоматического мультиплексирования MKV",
         // Script queue import
         ["ScriptQueueImport.RejectedPrefix"] = "Импорт отклонён: {0} несовпадений по базовому имени, {1} несовпадений пути.",
         ["ScriptQueueImport.DetailsHeader"] = "Детали:",
@@ -1760,7 +1743,7 @@ public class UILangProvider : LangProviderBase
         ["Hint.SVFIClipDisabled"] = "OneLineShotArgs unterstützt keine Probenentnahme; Probe-Schaltfläche deaktiviert.",
         ["Hint.AnalyzeRunConditionDuration"] = "Analyse startet automatisch nach Videoimport (ca. 70–100 ms/Quelle)",
         ["Hint.NumaCpuCheckTrigger"] = "NUMA-Knutzen-CPU-Auslastung wird bei Mausklick oder Tastatureingabe aktualisiert.",
-        ["Hint.FfmpegOptional"] = "FFmpeg ist optional, aber für Videobildvorschau benötigt",
+        ["Hint.FFmpegOptionalBut"] = "FFmpeg ist optional, aber für Videobildvorschau und automatisches MKV-Muxing benötigt",
         // Script queue import
         ["ScriptQueueImport.RejectedPrefix"] = "Import abgelehnt: {0} Basisname(n) ohne Treffer, {1} Pfad(e) inkorrekt.",
         ["ScriptQueueImport.DetailsHeader"] = "Details:",
@@ -1962,7 +1945,7 @@ public class UILangProvider : LangProviderBase
         ["Hint.SVFIClipDisabled"] = "OneLineShotArgs não suporta clipping de amostra; botão Executar Amostra desabilitado.",
         ["Hint.AnalyzeRunConditionDuration"] = "A análise será iniciada após a importação da fonte (cerca de 70～100 ms/src)",
         ["Hint.NumaCpuCheckTrigger"] = "O uso da CPU do nó NUMA é atualizado em eventos de clique do mouse ou entrada do teclado.",
-        ["Hint.FfmpegOptional"] = "FFmpeg é opcional, mas necessário para visualização de quadros de vídeo",
+        ["Hint.FFmpegOptionalBut"] = "FFmpeg é opcional, mas necessário para visualização de quadros de vídeo e muxing automático de MKV",
         ["ScriptQueueImport.RejectedPrefix"] = "Importação rejeitada: {0} nome(s) base sem correspondência, {1} caminho(s) incompatível(is).",
         ["ScriptQueueImport.DetailsHeader"] = "Detalhes:",
         ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — nenhuma fonte de vídeo correspondente pelo nome base",
