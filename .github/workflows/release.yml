@@ -108,10 +108,6 @@ jobs:
           $body += "Follow this tutorial to get tools (pipe upstream / filtering tools & video encoders) tailored for your use case | 你可以根据此教程来获取合适的工具（管道上游程序/滤镜工具与视频编码器）:`n"
           $body += "- [Encoding Tools Download Tutorial](https://github.com/iAvoe/encoding-tools-download-tutorial)`n`n"
           $body += "Or, TLDR; and use tools provided in downloaded package (not recommended but it works) | 或者着急要用的话，也可以无视上述教程，下载并直接使用附带的工具（不推荐但可以）"
-
-          $body += "`n`n"
-          $body += "> [!CAUTION]`n"
-          $body += "> The Video Source Repart mode has just been implemented, please consider it as an unreliable alpha feature for now | 视频源重分集功能方才实现，请暂时将其当做不可靠的 Alpha 功能"
           $body += "`n`n"
           $body += "> [!NOTE]`n"
           $body += "> The post-IVTC total frame count & FPS revising mechanic lacks of testing, despite unimportant, referencing is not advsied | IVTC 后的总帧数与帧率计算机制缺乏测试；该功能暂无大用，但也不建议作为参考"
