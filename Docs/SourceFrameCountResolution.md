@@ -8,17 +8,26 @@ This document describes how Repart Mode resolves the exact frame count of each s
 
 The frame-count resolver must:
 
-1. prefer an authoritative count when the metadata already contains one,
-2. fall back to a duration × FPS estimate when `nb_frames` is missing,
-3. verify that estimate by probing ffprobe at the predicted frame boundary,
-4. escalate to heavier counting methods only when the cheap paths fail,
-5. reject the source if no count can be produced.
+1. prefer metadata count when there is one already,
+2. have a few fall back alternatives,
+3. take advantage of the default must-have tool——ffprobe,
+4. reject the source if no count can be produced.
+5. be ASAP if possible
 
 ## Main entry points
 
 - `RepartCompatibilityAnalyzer.AnalyzeAndFilterAsync()` runs `ScanFramesAsync()` per accepted candidate in parallel and sums the results into `RepartPlanM.TotalFrames`.
 - `RepartSrcValidator.ScanFramesAsync()` is the shared per-file entry point, also used by chapter imports.
 - `RepartConfVM` reads the resolved count from `_analysis.TotalFrames` for all divider and output math.
+
+## Related consumers
+
+Some preview surfaces depend on the same source analysis inputs, but not all of them use the resolved frame count directly:
+
+- `FilterScribeVM` builds `VspipePreviewVM` and passes a `frameCount` derived from `EncodingPipeline.GetSourceTotalFrames()`.
+- `EncodingPipeline.GetSourceTotalFrames()` prefers `concatTotalFrames` when present, otherwise reads the source ffprobe JSON and falls back to `nb_frames`, then `duration × fps`.
+- `VpyPreviewPanel` is only the view shell for `VspipePreviewVM`; `VspipePreviewVM` clamps `CurrentFrame` and `MaxPositionSeconds` with the supplied total frame count.
+- `ImgABPvViewer` is a display control only. The preview logic sits in `ImgABPvVM`, which uses `FFProbeSourceStatsReader.Read()` to set preview duration and the initial preview position from ffprobe metadata.
 
 ## Resolution order
 
@@ -40,17 +49,19 @@ frameCount = probe.FrameCount is > 0
 
 If the final count is not positive, the source is rejected with `NoFrameCount`.
 
-### 1. Estimate and verify with seek-probing
+### 1. Estimate and verify with fast seek-probing
 
-`EstimateFrameCount()` computes the estimate as:
+First, use `EstimateFrameCount()` to compute the estimate:
 
 ```
 exactFrames = durationSeconds * (frameRateNumerator / frameRateDenominator)
 ```
 
-The duration comes from the stream `duration` entry, falling back to the format `duration`. The frame rate is the `avg_frame_rate` fraction (CFR is validated earlier in `AnalyzeProbe()`). The estimate is rounded to the nearest long with `MidpointRounding.AwayFromZero`.
+1. The duration comes from the stream `duration` entry, falling back to the format `duration`.
+2. The frame rate is the `avg_frame_rate` fraction (CFR is validated earlier in `AnalyzeProbe()`).
+3. The estimate is rounded to the nearest long with `MidpointRounding.AwayFromZero`.
 
-`TryResolveEstimatedFrameCountWithFfprobeAsync()` then verifies the boundary by probing three frames near the estimate:
+`TryResolveFrameCountWithFFprobeAsync()` then verifies the boundary by probing three frames near the estimate:
 
 - `estimatedCount - 1`
 - `estimatedCount`
@@ -64,6 +75,8 @@ ffprobe -v error -hide_banner -select_streams v:0
   -show_entries frame=best_effort_timestamp_time,pts_time,pkt_pts_time,pkt_dts_time
   -of json <src>
 ```
+
+> This should work fine with any libraries or EXEs that can do decoding, not just ffprobe
 
 The interval is centered on the target frame's predicted timestamp with a seek margin, so a short window is read instead of the whole file.
 
@@ -149,5 +162,9 @@ In `RepartCompatibilityAnalyzer.AnalyzeAndFilterAsync()`, every accepted candida
 - the plan's `TotalFrames` is the sum of every accepted source.
 
 `RepartConfVM` consumes `_analysis.TotalFrames` for divider positions, output segment ranges, and selection clamping, so the whole modal stays consistent with the resolved count.
+
+`VpyPreviewPanel` does not recompute frame counts itself. It renders `VspipePreviewVM`, which receives a precomputed total frame count from the caller and uses it to clamp the frame slider and preview index.
+
+`ImgABPvViewer` also does not perform any frame-count resolution. It reacts to `ImgABPvVM` image updates and only handles zoom/pan/split display behavior. The image preview VM reads ffprobe-derived duration and frame-rate metadata to choose the preview timestamp, but it does not participate in the Repart frame-count scan.
 
 **Important:** The resolution order is intentionally conservative — cheap metadata checks run first, and full-file counting is reserved for sources whose cheap results could not be verified. Normal imports therefore stay on the estimate or ffmpeg paths, while `-count_frames` and the expanded search remain last resorts.

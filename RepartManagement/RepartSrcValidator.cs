@@ -5,7 +5,7 @@ using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.RepartManagement;
 
-// These are videos that cannot be added to repart mode queue, because repartition involves video concatenation.
+// Reasons the videos that cannot be added to Repart mode queue, because repartition involves video concatenation.
 public enum RepartExclusionReason
 {
     SourceMissing,
@@ -310,14 +310,13 @@ public static partial class RepartSrcValidator
 
         if (estimatedCount is > 0)
         {
-            long? metadataCount = await TryResolveEstimatedFrameCountWithFfprobeAsync(
+            long? metadataCount = await TryResolveFrameCountWithFFprobeAsync(
                 ffprobePath,
                 srcPath,
                 probe,
                 estimatedCount.Value,
                 cancellationToken);
-            if (metadataCount is > 0)
-                return metadataCount.Value;
+            if (metadataCount is > 0) return metadataCount.Value;
         }
 
         bool ffmpegAvailable = !string.IsNullOrWhiteSpace(ffmpegPath) && File.Exists(ffmpegPath);
@@ -329,13 +328,8 @@ public static partial class RepartSrcValidator
                 if (exactCount is > 0)
                     return exactCount.Value;
             }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch
-            {
-            }
+            catch (OperationCanceledException) { throw; }
+            catch {}
         }
 
         // Full frame counting is the slowest fallback. It is deliberately kept
@@ -350,13 +344,8 @@ public static partial class RepartSrcValidator
             if (probedCount is > 0)
                 return probedCount.Value;
         }
-        catch (OperationCanceledException)
-        {
-            throw;
-        }
-        catch
-        {
-        }
+        catch (OperationCanceledException) { throw; }
+        catch {}
 
         // No exact count (no ffmpeg) and the duration-based estimate could not be
         // verified. Ask the user whether to run an extended search that expands the
@@ -458,14 +447,11 @@ public static partial class RepartSrcValidator
             hi = estimatedCount;
             while (true)
             {
-                if (hi > long.MaxValue / 10)
-                    return null;
+                if (hi > long.MaxValue / 10) return null;
                 hi *= 10;
                 bool? exists = await ProbeFrameExistsAsync(ffprobePath, srcPath, probe, hi, cancellationToken);
-                if (exists == null)
-                    return null;
-                if (!exists.Value)
-                    break;
+                if (exists == null) return null;
+                if (!exists.Value) break;
                 lo = hi;
             }
         }
@@ -478,20 +464,16 @@ public static partial class RepartSrcValidator
             while (lo > 0)
             {
                 bool? exists = await ProbeFrameExistsAsync(ffprobePath, srcPath, probe, lo, cancellationToken);
-                if (exists == null)
-                    return null;
-                if (exists.Value)
-                    break;
+                if (exists == null) return null;
+                if (exists.Value) break;
                 hi = lo;
                 lo = Math.Max(0, hi / 10);
             }
             if (lo <= 0)
             {
                 bool? first = await ProbeFrameExistsAsync(ffprobePath, srcPath, probe, 0, cancellationToken);
-                if (first == null)
-                    return null;
-                if (!first.Value)
-                    return 0L;
+                if (first == null) return null;
+                if (!first.Value) return 0L;
                 lo = 0;
             }
         }
@@ -502,14 +484,10 @@ public static partial class RepartSrcValidator
         {
             long mid = lo + (hi - lo) / 2;
             bool? exists = await ProbeFrameExistsAsync(ffprobePath, srcPath, probe, mid, cancellationToken);
-            if (exists == null)
-                return null;
-            if (exists.Value)
-                lo = mid;
-            else
-                hi = mid;
+            if (exists == null) return null;
+            if (exists.Value) lo = mid;
+            else hi = mid;
         }
-
         return lo + 1;
     }
 
@@ -519,14 +497,7 @@ public static partial class RepartSrcValidator
         CancellationToken cancellationToken)
     {
         string[] arguments =
-        [
-            "-hide_banner",
-            "-i", srcPath,
-            "-map", "0:v:0",
-            "-c", "copy",
-            "-f", "null",
-            "-"
-        ];
+            ["-hide_banner", "-i", srcPath, "-map", "0:v:0", "-c", "copy", "-f", "null", "-"];
 
         FFmpegProcessResult result = await FFmpegProcessRunner.RunAsync(
             ffmpegPath,
@@ -534,9 +505,7 @@ public static partial class RepartSrcValidator
             TimeSpan.FromMinutes(30),
             cancellationToken);
 
-        if (result.ExitCode != 0)
-            return null;
-
+        if (result.ExitCode != 0) return null;
         return TryParseFfmpegFrameCount(result.Stderr);
     }
 
@@ -551,7 +520,7 @@ public static partial class RepartSrcValidator
         return long.TryParse(text, out long value) && value > 0 ? value : null;
     }
 
-    private static async Task<long?> TryResolveEstimatedFrameCountWithFfprobeAsync(
+    private static async Task<long?> TryResolveFrameCountWithFFprobeAsync(
         string ffprobePath,
         string srcPath,
         RepartSrcProbe probe,
@@ -563,42 +532,24 @@ public static partial class RepartSrcValidator
             || probe.FrameRateDenominator <= 0)
             return null;
 
-        bool? leftExists = await ProbeFrameExistsAsync(
-            ffprobePath,
-            srcPath,
-            probe,
-            estimatedCount - 1,
-            cancellationToken);
-        bool? centerExists = await ProbeFrameExistsAsync(
-            ffprobePath,
-            srcPath,
-            probe,
-            estimatedCount,
-            cancellationToken);
-        bool? rightExists = await ProbeFrameExistsAsync(
-            ffprobePath,
-            srcPath,
-            probe,
-            estimatedCount + 1,
-            cancellationToken);
-        if (leftExists == null || centerExists == null || rightExists == null)
+        bool? lExists = await ProbeFrameExistsAsync(ffprobePath, srcPath, probe, estimatedCount - 1, cancellationToken);
+        bool? cExists = await ProbeFrameExistsAsync(ffprobePath, srcPath, probe, estimatedCount, cancellationToken);
+        bool? rExists = await ProbeFrameExistsAsync(ffprobePath, srcPath, probe, estimatedCount + 1, cancellationToken);
+        if (lExists == null || cExists == null || rExists == null)
             return null;
 
-        if (leftExists.Value && !centerExists.Value && !rightExists.Value)
+        if (lExists.Value && !cExists.Value && !rExists.Value)
             return estimatedCount;
-        if (leftExists.Value && centerExists.Value && !rightExists.Value)
+        if (lExists.Value && cExists.Value && !rExists.Value)
             return estimatedCount + 1;
 
-        if (!leftExists.Value && !centerExists.Value && !rightExists.Value)
+        if (!lExists.Value && !cExists.Value && !rExists.Value)
             return await ProbeInDirectionForFrameCountAsync(ffprobePath, srcPath, probe, estimatedCount - 2, -1, cancellationToken);
-        if (leftExists.Value && centerExists.Value && rightExists.Value)
+        if (lExists.Value && cExists.Value && rExists.Value)
             return await ProbeInDirectionForFrameCountAsync(ffprobePath, srcPath, probe, estimatedCount + 2, 1, cancellationToken);
 
-        throw new InvalidOperationException(FormatUnexpectedFrameProbePattern(
-            estimatedCount,
-            leftExists.Value,
-            centerExists.Value,
-            rightExists.Value));
+        throw new InvalidOperationException(
+            FormatUnexpectedFrameProbePattern(estimatedCount, lExists.Value, cExists.Value, rExists.Value));
     }
 
     private static string FormatUnexpectedFrameProbePattern(
@@ -633,7 +584,6 @@ public static partial class RepartSrcValidator
             if (step < 0 && exists.Value) return index + 1;
             if (step > 0 && !exists.Value) return index;
         }
-
         return null;
     }
 
@@ -657,10 +607,8 @@ public static partial class RepartSrcValidator
 
         string[] arguments =
         [
-            "-v", "error", "-hide_banner",
-            "-select_streams", "v:0",
-            "-read_intervals", interval,
-            "-show_frames",
+            "-v", "error", "-hide_banner", "-select_streams", "v:0",
+            "-read_intervals", interval, "-show_frames",
             "-show_entries", "frame=best_effort_timestamp_time,pts_time,pkt_pts_time,pkt_dts_time",
             "-of", "json",
             srcPath
