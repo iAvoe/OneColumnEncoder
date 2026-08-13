@@ -4,6 +4,11 @@ using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.FFmpeg;
 
+/// <summary>
+/// Represents an aspect ratio fraction
+/// </summary>
+/// <param name="Numerator">Ratio numerator.</param>
+/// <param name="Denominator">Ratio denominator.</param>
 public readonly record struct AspectRatioFraction(long Numerator, long Denominator)
 {
     public override string ToString() => string.Create(
@@ -20,6 +25,12 @@ public readonly record struct AspectRatioFraction(long Numerator, long Denominat
     }
 }
 
+/// <summary>
+/// Holds the stream, sample, and display aspect ratios for ffprobe data
+/// </summary>
+/// <param name="StAR">Stream aspect ratio.</param>
+/// <param name="Sar">Sample aspect ratio.</param>
+/// <param name="Dar">Display aspect ratio.</param>
 public readonly record struct FFProbeAspectRatio(
     AspectRatioFraction StAR,
     AspectRatioFraction Sar,
@@ -28,6 +39,7 @@ public readonly record struct FFProbeAspectRatio(
     public bool HasSquarePixels => Sar == FFProbeAspectRatioResolver.Square;
 }
 
+/// <summary>Resolves aspect ratios from ffprobe stream metadata.</summary>
 public static class FFProbeAspectRatioResolver
 {
     public static readonly AspectRatioFraction Square = new(1, 1);

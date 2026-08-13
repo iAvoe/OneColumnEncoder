@@ -2,6 +2,16 @@ using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.FFmpeg;
 
+/// <summary>Represents the ffprobe validation flags for a source video.</summary>
+/// <param name="IsProgressive">Source is progressive or unknown.</param>
+/// <param name="IsSvtAv1BitDepthSupported">Source supports SVT-AV1 bit depth.</param>
+/// <param name="IsMaxBitDepthSupported">Source supports the max target bit depth.</param>
+/// <param name="HasConstantFrameRate">Source uses constant frame rate.</param>
+/// <param name="HasSquarePixels">Source uses square pixels.</param>
+/// <param name="HasColorSpace">Source has known color space metadata.</param>
+/// <param name="HasColorTransfer">Source has known transfer metadata.</param>
+/// <param name="HasColorPrimaries">Source has known primaries metadata.</param>
+/// <param name="HasSupportedChroma">Source chroma format is supported.</param>
 public readonly record struct FFProbeSrcValResult(
     bool IsProgressive,
     bool IsSvtAv1BitDepthSupported,
@@ -13,6 +23,12 @@ public readonly record struct FFProbeSrcValResult(
     bool HasColorPrimaries,
     bool HasSupportedChroma);
 
+/// <summary>
+/// Evaluates ffprobe metadata for codec, chroma, and frame-rate support checks
+/// </summary>
+/// <remarks>
+/// The biggest problem of the methods are non-standard writing, hopefully ffprobe does not change them...
+/// </remarks>
 public static class FFProbeSrcVal
 {
     public static int ReadBitDepthFromJson(string? rawJson)
@@ -27,10 +43,7 @@ public static class FFProbeSrcVal
 
             return FFProbePixelFormatRules.GetBitDepth(stream);
         }
-        catch
-        {
-            return 0;
-        }
+        catch { return 0; }
     }
 
     public static FFProbeSrcValResult Analyze(string rawJson)
@@ -56,6 +69,7 @@ public static class FFProbeSrcVal
     private static bool IsProgressive(JsonElement stream)
     {
         string? fieldOrder = TryGetString(stream, "field_order");
+        // Maybe just match letter p in the JSON field is enough... or not
         return string.IsNullOrWhiteSpace(fieldOrder)
             || fieldOrder.Equals("progressive", StringComparison.OrdinalIgnoreCase)
             || fieldOrder.Equals("unknown", StringComparison.OrdinalIgnoreCase);
@@ -89,5 +103,4 @@ public static class FFProbeSrcVal
             && !value.Equals("unspecified", StringComparison.OrdinalIgnoreCase)
             && !value.Equals("reserved", StringComparison.OrdinalIgnoreCase);
     }
-
 }

@@ -3,6 +3,9 @@ using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.FFmpeg;
 
+/// <summary>
+/// Maps ffprobe color metadata to color space analysis and ffmpeg filters
+/// </summary>
 public static class ColorSpaceConverter
 {
     #region H.273 mapping tables

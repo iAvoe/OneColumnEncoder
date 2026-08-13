@@ -2,6 +2,9 @@ using System.IO;
 
 namespace OneColumnEncoder.FFmpeg;
 
+/// <summary>
+/// Starts ffmpeg and captures either text output or piped binary frames
+/// </summary>
 public static class FFmpegProcessRunner
 {
     public static async Task<FFmpegProcessResult> RunAsync(
@@ -33,9 +36,7 @@ public static class FFmpegProcessRunner
         }
     }
 
-    /// <summary>
-    /// Runs ffmpeg while buffering binary stdout (e.g. piped image frames) into memory.
-    /// </summary>
+    /// <summary>Runs ffmpeg while buffering binary stdout (e.g. piped image frames) into memory.</summary>
     public static async Task<FFmpegProcessResultWithOutput> RunAsyncWithOutput(
         string ffmpegPath,
         IReadOnlyList<string> arguments,
@@ -114,6 +115,14 @@ public static class FFmpegProcessRunner
     }
 }
 
+/// <summary>Captures ffmpeg stdout, stderr, and exit status.</summary>
+/// <param name="Stdout">Standard output text.</param>
+/// <param name="Stderr">Standard error text.</param>
+/// <param name="ExitCode">Process exit code.</param>
 public readonly record struct FFmpegProcessResult(string Stdout, string Stderr, int ExitCode);
 
+/// <summary>Captures ffmpeg binary stdout, stderr, and exit status.</summary>
+/// <param name="Output">Buffered standard output stream.</param>
+/// <param name="Stderr">Standard error text.</param>
+/// <param name="ExitCode">Process exit code.</param>
 public readonly record struct FFmpegProcessResultWithOutput(MemoryStream Output, string Stderr, int ExitCode);

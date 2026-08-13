@@ -2,6 +2,9 @@ using System.IO;
 
 namespace OneColumnEncoder.FFmpeg;
 
+/// <summary>
+/// Starts ffprobe and collects stdout, stderr, and exit status
+/// </summary>
 public static class FFprobeProcessRunner
 {
     public static async Task<FFprobeProcessResult> RunAsync(
@@ -33,6 +36,13 @@ public static class FFprobeProcessRunner
         }
     }
 
+    /// <summary>
+    /// Creates a <see cref="ProcessStartInfo"/> for launching <c>ffprobe</c>
+    /// with the specified arguments and redirected UTF-8 output streams
+    /// </summary>
+    /// <param name="ffprobePath">The full path to the <c>ffprobe</c> executable</param>
+    /// <param name="arguments">The command-line arguments to pass to <c>ffprobe</c></param>
+    /// <returns>A configured <see cref="ProcessStartInfo"/> instance</returns>
     public static ProcessStartInfo CreateStartInfo(string ffprobePath, IReadOnlyList<string> arguments)
     {
         ProcessStartInfo startInfo = new()
@@ -53,8 +63,7 @@ public static class FFprobeProcessRunner
 
     public static void TryKill(Process process)
     {
-        try { if (!process.HasExited) process.Kill(true); }
-        catch { }
+        try { if (!process.HasExited) process.Kill(true); } catch {}
     }
 }
 

@@ -3,6 +3,9 @@ using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.FFmpeg;
 
+/// <summary>
+/// Updates ffprobe JSON with resolved dimensions and aspect ratio data
+/// </summary>
 internal static class FFProbeJsonUpdateResolver
 {
     public static string? UpdateResolution(string? originalJson, string? frameFfprobeJson)

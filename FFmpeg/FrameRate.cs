@@ -3,6 +3,7 @@ using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.FFmpeg;
 
+/// <summary>Parses, normalizes, and compares ffprobe frame-rate values.</summary>
 public static class FrameRate
 {
     public static (int num, int den)? ParseFraction(string? value)

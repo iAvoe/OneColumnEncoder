@@ -2,6 +2,9 @@ using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.FFmpeg;
 
+/// <summary>
+/// Applies pixel-format rules used by ffprobe-based validation and filtering
+/// </summary>
 public static class FFProbePixelFormatRules
 {
     public static bool IsYuvRgbOrGray(string? pixelFormat)

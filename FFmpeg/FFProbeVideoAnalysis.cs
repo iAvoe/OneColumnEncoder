@@ -2,10 +2,34 @@ using System.IO;
 
 namespace OneColumnEncoder.FFmpeg;
 
+/// <summary>
+/// Runs ffprobe for a video source and returns normalized analysis JSON
+/// </summary>
 public static class FFProbeVideoAnalysis
 {
-    private static FFProbeVideoAnalysisLangProvider Lang => new(UILangProvider.Current.LanguageCode);
+    private static FFProbeVideoAnalysisLangProvider Lang =>
+        new(UILangProvider.Current.LanguageCode);
 
+    /// <summary>
+    /// Analyze source by ffprobe video, returns normalized JSON containing the requested entries
+    /// </summary>
+    /// <param name="ffprobePath">Path to ffprobe</param>
+    /// <param name="videoSource">Path to video source</param>
+    /// <param name="showEntries">
+    /// The ffprobe entries to include in the output. Defaults to <c>"stream"</c>.
+    /// </param>
+    /// <param name="cancellationToken">A token to cancel the operation</param>
+    /// <returns>
+    /// A Task that represents the async operation,
+    /// Task result contains the normalized JSON output produced by ffprobe
+    /// </returns>
+    /// <exception cref="FileNotFoundException">
+    /// Either <paramref name="ffprobePath"/> or <paramref name="videoSource"/> is null/empty/moved
+    /// </exception>
+    /// <exception cref="TimeoutException">FFprobe timed out, somehow</exception>
+    /// <exception cref="InvalidOperationException">
+    /// FFprobe fails or returns invalid JSON. Usually because of bad source video (especially BluRay m2ts')
+    /// </exception>
     public static async Task<string> AnalyzeAsync(
         string ffprobePath,
         string videoSource,
@@ -47,6 +71,7 @@ public static class FFProbeVideoAnalysis
         return FFProbeJsonFormatting.Normalize(result.Stdout);
     }
 
+    // Check if source video metadata corrupted, or ffprobe was mad (unlikely)
     private static void ValidateJson(string json)
     {
         using JsonDocument document = JsonDocument.Parse(json);

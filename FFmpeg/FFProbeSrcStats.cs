@@ -2,6 +2,14 @@ using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.FFmpeg;
 
+/// <summary>
+/// Extracts source duration, frame count, and frame-rate metadata from ffprobe JSON.
+/// </summary>
+/// <param name="DurationSeconds">Source video duration</param>
+/// <param name="FrameRate">Source FPS</param>
+/// <param name="TotalFrames">Source total frames (usually nb_frames)</param>
+/// <param name="FieldOrderKind">Progressive / interlaced</param>
+/// <param name="FrameRateKind">Constant / variable FPS</param>
 public readonly record struct FFProbeSrcStats(
     double DurationSeconds,
     double FrameRate,
@@ -9,10 +17,21 @@ public readonly record struct FFProbeSrcStats(
     string FieldOrderKind,
     string FrameRateKind);
 
+/// <summary>
+/// Gets source stats by parsing ffprobe JSON output, and write to FFProbeSrcStats record
+/// </summary>
+/// <remarks>
+/// Fallback values are used if fields are missing, i.e.:
+/// - Duration: 600
+///     - Making sure all frames are perserved in most cases, there is no good value
+/// - FPS: 30
+///     - 24000/1001 could be a better value for anime, but even with Japanese anime, some of them are actually 30fps
+///     - The FFmpeg/FrameRate.cs does the heavy liftings
+/// </remarks>
 public static class FFProbeSourceStatsReader
 {
     private const double FallbackDuration = 600d;
-    private const double FallbackFrameRate = 30d;
+    private const double FallbackFrameRate = 30d; 
 
     public static FFProbeSrcStats Read(string rawJson)
     {

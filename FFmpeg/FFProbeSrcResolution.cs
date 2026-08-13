@@ -1,7 +1,18 @@
 namespace OneColumnEncoder.FFmpeg;
 
+/// <summary>
+/// Reads the first video stream resolution from ffprobe JSON
+/// </summary>
 public static class FFProbeSrcResolution
 {
+    /// <summary>
+    /// Reads the first video stream resolution from ffprobe JSON
+    /// </summary>
+    /// <param name="rawJson">The raw JSON output produced by ffprobe.</param>
+    /// <returns>
+    /// The width and height of the first video stream, or <see langword="null"/>
+    /// if no valid video stream or resolution is found.
+    /// </returns>
     public static (int width, int height)? Read(string? rawJson)
     {
         if (string.IsNullOrWhiteSpace(rawJson)) return null;
@@ -17,7 +28,6 @@ public static class FFProbeSrcResolution
                 return (width, height);
         }
         catch { return null; }
-
         return null;
     }
 }

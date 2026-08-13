@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.FFmpeg;
 
+/// <summary>
+/// Builds ffmpeg filter argument strings from resolved color adjustments
+/// </summary>
 public static class FFMpegFilterArgs
 {
     public static string Build(bool includeSwsFlags, bool includeCsp709Flags, string? pixelFormat, params string?[] filters)
