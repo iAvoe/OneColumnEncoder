@@ -20,6 +20,7 @@ public class SrcCheckCardVM : ValidationCardBaseVM
     public void ResetAnalysisStatus()
     {
         _lastAnalysisJson = null;
+        Subtitle = string.Empty;
 
         for (int i = 0; i < Checklist1.Count; i++)
             SetChecklist1(i, StatusType.Waiting);
@@ -33,6 +34,7 @@ public class SrcCheckCardVM : ValidationCardBaseVM
         _lastAnalysisJson = rawJson;
         try
         {
+            Subtitle = FFProbeHdrInfoReader.Read(rawJson).Summary ?? string.Empty;
             FFProbeSrcValResult result = FFProbeSrcVal.Analyze(rawJson);
 
             SetChecklist1(MetadataChecklistIdx, StatusType.Success);
@@ -88,6 +90,7 @@ public class SrcCheckCardVM : ValidationCardBaseVM
     public void SetAnalysisFailedStatus()
     {
         _lastAnalysisJson = null;
+        Subtitle = string.Empty;
         SetChecklist1(MetadataChecklistIdx, StatusType.Error);
         SetChecklist1(ProgressiveChecklistIdx, StatusType.Waiting);
         SetChecklist1(Svtav1BitDepthChecklistIdx, StatusType.Waiting);

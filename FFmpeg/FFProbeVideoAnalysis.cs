@@ -16,7 +16,7 @@ public static class FFProbeVideoAnalysis
     /// <param name="ffprobePath">Path to ffprobe</param>
     /// <param name="videoSource">Path to video source</param>
     /// <param name="showEntries">
-    /// The ffprobe entries to include in the output. Defaults to <c>"stream"</c>.
+    /// The ffprobe entries to include in the output. Defaults to <c>"stream:frame:stream_side_data:frame_side_data"</c>.
     /// </param>
     /// <param name="cancellationToken">A token to cancel the operation</param>
     /// <returns>
@@ -33,7 +33,7 @@ public static class FFProbeVideoAnalysis
     public static async Task<string> AnalyzeAsync(
         string ffprobePath,
         string videoSource,
-        string showEntries = "stream",
+        string showEntries = "stream:frame:stream_side_data:frame_side_data",
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(ffprobePath) || !File.Exists(ffprobePath))
@@ -44,7 +44,8 @@ public static class FFProbeVideoAnalysis
         string[] arguments =
         [
             "-v", "quiet", "-hide_banner", "-select_streams", "v:0",
-            "-show_entries", showEntries, "-show_format", "-of", "json", videoSource
+            "-show_entries", showEntries, "-show_frames", "-read_intervals", "%+#1",
+            "-show_format", "-of", "json", videoSource
         ];
 
         FFprobeProcessResult result;

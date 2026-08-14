@@ -57,6 +57,9 @@ public class EncoderConfVM : BaseVM
     public string FreeTextControlTitle => Lang.FreeTextControlTitle;
     public string PreviewFreeTextControlTitle => Lang.PreviewFreeTextControlTitle;
     public string PreviewFreeTextHint => Lang.PreviewFreeTextHint;
+    public string AutoFfprobeHintX264 => Lang.AutoFfprobeHintX264;
+    public string AutoFfprobeHintX265 => Lang.AutoFfprobeHintX265;
+    public string AutoFfprobeHintSvtAv1 => Lang.AutoFfprobeHintSvtAv1;
     public string X264ModText => Lang.X264ModText;
     public string X265JpsdrAqText => Lang.X265JpsdrAqText;
     public string X265JpsdrDarkText => Lang.X265JpsdrDarkText;
@@ -437,6 +440,9 @@ public class EncoderConfVM : BaseVM
         OnPropertyChanged(nameof(FreeTextControlTitle));
         OnPropertyChanged(nameof(PreviewFreeTextControlTitle));
         OnPropertyChanged(nameof(PreviewFreeTextHint));
+        OnPropertyChanged(nameof(AutoFfprobeHintX264));
+        OnPropertyChanged(nameof(AutoFfprobeHintX265));
+        OnPropertyChanged(nameof(AutoFfprobeHintSvtAv1));
         OnPropertyChanged(nameof(X264ModText));
         OnPropertyChanged(nameof(X265JpsdrAqText));
         OnPropertyChanged(nameof(X265JpsdrDarkText));

@@ -29,6 +29,9 @@ public class EncoderConfLangProvider : LangProviderBase
             ["FreeTextControlTitle"] = "Additional Encoder Parameters (CLI Format)",
             ["PreviewFreeTextControlTitle"] = "Additional Encoder Parameters (Preview/FFmpeg Format)",
             ["PreviewFreeTextHint"] = "Use FFmpeg API format: -x264-params, -x265-params, -svtav1-params",
+            ["AutoFfprobeHintX264"] = "Auto-filled params: --rc-lookahead --colormatrix --transfer --colorprim --fullrange --chromaloc --mastering-display --cll",
+            ["AutoFfprobeHintX265"] = "Auto-filled params: --rc-lookahead --merange --subme --colormatrix --transfer --colorprim --range full/limited --chromaloc --master-display --max-cll",
+            ["AutoFfprobeHintSvtAv1"] = "Auto-filled params: --matrix-coefficients --transfer-characteristics --color-primaries --color-range --chroma-sample-position --mastering-display --content-light",
             ["X264ModText"] = "x264 Mod：Film Grain Rate Distortion Optimization (FGO-RD)",
             ["X265JpsdrAqText"] = "x265 jpsdr Mod: Adaptive Quantization (AQ) Hysteresis",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod: ↑AQ Strength for Dark Scenes",
@@ -76,6 +79,9 @@ public class EncoderConfLangProvider : LangProviderBase
             ["FreeTextControlTitle"] = "附加编码器参数（CLI 格式）",
             ["PreviewFreeTextControlTitle"] = "附加编码器参数（预览/FFmpeg 格式）",
             ["PreviewFreeTextHint"] = "使用 FFmpeg API 格式：-x264-params, -x265-params, -svtav1-params",
+            ["AutoFfprobeHintX264"] = "自动补齐参数：--rc-lookahead --colormatrix --transfer --colorprim --fullrange --chromaloc --mastering-display --cll",
+            ["AutoFfprobeHintX265"] = "自动补齐参数：--rc-lookahead --merange --subme --colormatrix --transfer --colorprim --range full/limited --chromaloc --master-display --max-cll",
+            ["AutoFfprobeHintSvtAv1"] = "自动补齐参数：--matrix-coefficients --transfer-characteristics --color-primaries --color-range --chroma-sample-position --mastering-display --content-light",
             ["X264ModText"] = "x264 Mod：基于高频信息的率失真优化（FGO-RD）",
             ["X265JpsdrAqText"] = "x265 jpsdr Mod：自适应量化迟滞（AQ Hysteresis）",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod：对暗场提高自适应量化强度",
@@ -123,6 +129,9 @@ public class EncoderConfLangProvider : LangProviderBase
             ["FreeTextControlTitle"] = "附加編碼器參數（CLI 格式）",
             ["PreviewFreeTextControlTitle"] = "附加編碼器參數（預覽/FFmpeg 格式）",
             ["PreviewFreeTextHint"] = "使用 FFmpeg API 格式：-x264-params, -x265-params, -svtav1-params",
+            ["AutoFfprobeHintX264"] = "自動補齊參數：--rc-lookahead --colormatrix --transfer --colorprim --fullrange --chromaloc --mastering-display --cll",
+            ["AutoFfprobeHintX265"] = "自動補齊參數：--rc-lookahead --merange --subme --colormatrix --transfer --colorprim --range full/limited --chromaloc --master-display --max-cll",
+            ["AutoFfprobeHintSvtAv1"] = "自動補齊參數：--matrix-coefficients --transfer-characteristics --color-primaries --color-range --chroma-sample-position --mastering-display --content-light",
             ["X264ModText"] = "x264 Mod：基於高頻信息的率失真優化（FGO-RD）",
             ["X265JpsdrAqText"] = "x265 jpsdr Mod：自適應量化遲滯（AQ Hysteresis）",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod：對暗場提高自適應量化強度",
@@ -165,6 +174,9 @@ public class EncoderConfLangProvider : LangProviderBase
             ["FreeTextControlTitle"] = "Paramètres encodeur additionnels (format CLI)",
             ["PreviewFreeTextControlTitle"] = "Paramètres encodeur additionnels (format prévisualisation/FFmpeg)",
             ["PreviewFreeTextHint"] = "Utilisez le format API FFmpeg : -x264-params, -x265-params, -svtav1-params",
+            ["AutoFfprobeHintX264"] = "Paramètres auto-renseignés : --rc-lookahead --colormatrix --transfer --colorprim --fullrange --chromaloc --mastering-display --cll",
+            ["AutoFfprobeHintX265"] = "Paramètres auto-renseignés : --rc-lookahead --merange --subme --colormatrix --transfer --colorprim --range full/limited --chromaloc --master-display --max-cll",
+            ["AutoFfprobeHintSvtAv1"] = "Paramètres auto-renseignés : --matrix-coefficients --transfer-characteristics --color-primaries --color-range --chroma-sample-position --mastering-display --content-light",
             ["X264ModText"] = "x264 Mod : optimisation R-D grain film (FGO-RD)",
             ["X265JpsdrAqText"] = "x265 jpsdr Mod : hystérésis AQ",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod : ↑AQ scènes sombres",
@@ -203,6 +215,9 @@ public class EncoderConfLangProvider : LangProviderBase
             ["FreeTextControlTitle"] = "Parámetros extra del codificador (formato CLI)",
             ["PreviewFreeTextControlTitle"] = "Parámetros extra del codificador (formato previsualización/FFmpeg)",
             ["PreviewFreeTextHint"] = "Use formato API FFmpeg: -x264-params, -x265-params, -svtav1-params",
+            ["AutoFfprobeHintX264"] = "Parámetros auto-completados: --rc-lookahead --colormatrix --transfer --colorprim --fullrange --chromaloc --mastering-display --cll",
+            ["AutoFfprobeHintX265"] = "Parámetros auto-completados: --rc-lookahead --merange --subme --colormatrix --transfer --colorprim --range full/limited --chromaloc --master-display --max-cll",
+            ["AutoFfprobeHintSvtAv1"] = "Parámetros auto-completados: --matrix-coefficients --transfer-characteristics --color-primaries --color-range --chroma-sample-position --mastering-display --content-light",
             ["X264ModText"] = "x264 Mod: optimización R-D de grano (FGO-RD)",
             ["X265JpsdrAqText"] = "x265 jpsdr Mod: histéresis AQ",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod: ↑AQ en escenas oscuras",
@@ -241,6 +256,9 @@ public class EncoderConfLangProvider : LangProviderBase
             ["FreeTextControlTitle"] = "追加エンコーダパラメータ（CLI 形式）",
             ["PreviewFreeTextControlTitle"] = "追加エンコーダパラメータ（プレビュー/FFmpeg 形式）",
             ["PreviewFreeTextHint"] = "FFmpeg API 形式を使用: -x264-params, -x265-params, -svtav1-params",
+            ["AutoFfprobeHintX264"] = "自動入力されたパラメータ: --rc-lookahead --colormatrix --transfer --colorprim --fullrange --chromaloc --mastering-display --cll",
+            ["AutoFfprobeHintX265"] = "自動入力されたパラメータ: --rc-lookahead --merange --subme --colormatrix --transfer --colorprim --range full/limited --chromaloc --master-display --max-cll",
+            ["AutoFfprobeHintSvtAv1"] = "自動入力されたパラメータ: --matrix-coefficients --transfer-characteristics --color-primaries --color-range --chroma-sample-position --mastering-display --content-light",
             ["X264ModText"] = "x264 Mod: フィルム粒子 R-D 最適化 (FGO-RD)",
             ["X265JpsdrAqText"] = "x265 jpsdr Mod: AQ ヒステリシス",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod: 暗部の AQ 強度↑",
@@ -279,6 +297,9 @@ public class EncoderConfLangProvider : LangProviderBase
             ["FreeTextControlTitle"] = "Доп. параметры кодера (CLI формат)",
             ["PreviewFreeTextControlTitle"] = "Доп. параметры кодера (предпросмотр/FFmpeg формат)",
             ["PreviewFreeTextHint"] = "Используйте формат FFmpeg API: -x264-params, -x265-params, -svtav1-params",
+            ["AutoFfprobeHintX264"] = "Автозаполняемые параметры: --rc-lookahead --colormatrix --transfer --colorprim --fullrange --chromaloc --mastering-display --cll",
+            ["AutoFfprobeHintX265"] = "Автозаполняемые параметры: --rc-lookahead --merange --subme --colormatrix --transfer --colorprim --range full/limited --chromaloc --master-display --max-cll",
+            ["AutoFfprobeHintSvtAv1"] = "Автозаполняемые параметры: --matrix-coefficients --transfer-characteristics --color-primaries --color-range --chroma-sample-position --mastering-display --content-light",
             ["X264ModText"] = "x264 Mod: R-D оптимизация зерна (FGO-RD)",
             ["X265JpsdrAqText"] = "x265 jpsdr Mod: гистерезис AQ",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod: ↑AQ для темных сцен",
@@ -317,6 +338,9 @@ public class EncoderConfLangProvider : LangProviderBase
             ["FreeTextControlTitle"] = "Zusätzliche Encoder-Parameter (CLI-Format)",
             ["PreviewFreeTextControlTitle"] = "Zusätzliche Encoder-Parameter (Vorschau/FFmpeg-Format)",
             ["PreviewFreeTextHint"] = "FFmpeg-API-Format verwenden: -x264-params, -x265-params, -svtav1-params",
+            ["AutoFfprobeHintX264"] = "Automatisch ausgefüllte Parameter: --rc-lookahead --colormatrix --transfer --colorprim --fullrange --chromaloc --mastering-display --cll",
+            ["AutoFfprobeHintX265"] = "Automatisch ausgefüllte Parameter: --rc-lookahead --merange --subme --colormatrix --transfer --colorprim --range full/limited --chromaloc --master-display --max-cll",
+            ["AutoFfprobeHintSvtAv1"] = "Automatisch ausgefüllte Parameter: --matrix-coefficients --transfer-characteristics --color-primaries --color-range --chroma-sample-position --mastering-display --content-light",
             ["X264ModText"] = "x264 Mod: Filmkorn-RD-Optimierung (FGO-RD)",
             ["X265JpsdrAqText"] = "x265 jpsdr Mod: AQ-Hysterese",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod: ↑AQ-Stärke für dunkle Szenen",
@@ -355,6 +379,9 @@ public class EncoderConfLangProvider : LangProviderBase
             ["FreeTextControlTitle"] = "Parâmetros adicionais do codificador (formato CLI)",
             ["PreviewFreeTextControlTitle"] = "Parâmetros adicionais do codificador (formato Visualização/FFmpeg)",
             ["PreviewFreeTextHint"] = "Use o formato da API FFmpeg: -x264-params, -x265-params, -svtav1-params",
+            ["AutoFfprobeHintX264"] = "Parâmetros auto-preenchidos: --rc-lookahead --colormatrix --transfer --colorprim --fullrange --chromaloc --mastering-display --cll",
+            ["AutoFfprobeHintX265"] = "Parâmetros auto-preenchidos: --rc-lookahead --merange --subme --colormatrix --transfer --colorprim --range full/limited --chromaloc --master-display --max-cll",
+            ["AutoFfprobeHintSvtAv1"] = "Parâmetros auto-preenchidos: --matrix-coefficients --transfer-characteristics --color-primaries --color-range --chroma-sample-position --mastering-display --content-light",
             ["X264ModText"] = "x264 Mod: Otimização R-D de granulação de filme (FGO-RD)",
             ["X265JpsdrAqText"] = "x265 jpsdr Mod: Histerese de quantização adaptativa (AQ)",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod: ↑Força AQ para cenas escuras",
@@ -404,6 +431,9 @@ public class EncoderConfLangProvider : LangProviderBase
     public string FreeTextControlTitle { get; }
     public string PreviewFreeTextControlTitle { get; }
     public string PreviewFreeTextHint { get; }
+    public string AutoFfprobeHintX264 { get; }
+    public string AutoFfprobeHintX265 { get; }
+    public string AutoFfprobeHintSvtAv1 { get; }
     public string X264ModText { get; }
     public string X265JpsdrAqText { get; }
     public string X265JpsdrDarkText { get; }
@@ -454,6 +484,9 @@ public class EncoderConfLangProvider : LangProviderBase
         FreeTextControlTitle = this["FreeTextControlTitle"];
         PreviewFreeTextControlTitle = this["PreviewFreeTextControlTitle"];
         PreviewFreeTextHint = this["PreviewFreeTextHint"];
+        AutoFfprobeHintX264 = this["AutoFfprobeHintX264"];
+        AutoFfprobeHintX265 = this["AutoFfprobeHintX265"];
+        AutoFfprobeHintSvtAv1 = this["AutoFfprobeHintSvtAv1"];
         X264ModText = this["X264ModText"];
         X265JpsdrAqText = this["X265JpsdrAqText"];
         X265JpsdrDarkText = this["X265JpsdrDarkText"];
