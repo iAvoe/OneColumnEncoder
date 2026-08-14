@@ -11,65 +11,32 @@
         <TextBlock Text="{Binding CustomParamsTitle}"
                    Style="{StaticResource H2}" />
 
-        <TextBlock Text="{Binding BasicParamsText}"
-                   Style="{StaticResource H3}"
-                   Margin="0 10 0 0" />
+        <comps:AppConfContainer Header="{Binding BasicParamsText, Mode=OneWay}"
+                                Margin="0 10 0 0">
+            <comps:AppConfItem Text="{Binding X264Text, Mode=OneWay}">
+                <comps:DropdownMenu MinWidth="150"
+                                    Height="25"
+                                    DataContext="{Binding X264ModeDropdown}" />
+            </comps:AppConfItem>
 
-        <Grid Margin="0 10 0 0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <TextBlock Text="{Binding X264Text}"
-                       FontSize="13"
-                       VerticalAlignment="Center" />
-            <comps:DropdownMenu Grid.Column="1"
-                                MinWidth="150"
-                                Height="25"
-                                DataContext="{Binding X264ModeDropdown}" />
-        </Grid>
+            <comps:AppConfItem Text="{Binding X265Text, Mode=OneWay}">
+                <comps:DropdownMenu MinWidth="150"
+                                    Height="25"
+                                    DataContext="{Binding X265ModeDropdown}" />
+            </comps:AppConfItem>
 
-        <Grid Margin="0 10 0 0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <TextBlock Text="{Binding X265Text}"
-                       FontSize="13"
-                       VerticalAlignment="Center" />
-            <comps:DropdownMenu Grid.Column="1"
-                                MinWidth="150"
-                                Height="25"
-                                DataContext="{Binding X265ModeDropdown}" />
-        </Grid>
+            <comps:AppConfItem Text="{Binding SvtAv1Text, Mode=OneWay}">
+                <comps:DropdownMenu MinWidth="150"
+                                    Height="25"
+                                    DataContext="{Binding SvtAv1ModeDropdown}" />
+            </comps:AppConfItem>
 
-        <Grid Margin="0 10 0 0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <TextBlock Text="{Binding SvtAv1Text}"
-                       FontSize="13"
-                       VerticalAlignment="Center" />
-            <comps:DropdownMenu Grid.Column="1"
-                                MinWidth="150"
-                                Height="25"
-                                DataContext="{Binding SvtAv1ModeDropdown}" />
-        </Grid>
-
-        <Grid Margin="0 10 0 0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <TextBlock Text="{Binding VvencText}"
-                       FontSize="13"
-                       VerticalAlignment="Center" />
-            <comps:DropdownMenu Grid.Column="1"
-                                MinWidth="150"
-                                Height="25"
-                                DataContext="{Binding VvencModeDropdown}" />
-        </Grid>
+            <comps:AppConfItem Text="{Binding VvencText, Mode=OneWay}">
+                <comps:DropdownMenu MinWidth="150"
+                                    Height="25"
+                                    DataContext="{Binding VvencModeDropdown}" />
+            </comps:AppConfItem>
+        </comps:AppConfContainer>
 
         <comps:HintPanel Text="{Binding VvencHintText, Mode=OneWay}"
                          FontSize="10"
