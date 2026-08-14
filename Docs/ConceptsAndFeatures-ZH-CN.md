@@ -210,6 +210,7 @@ ffmpeg 自带视频编码器，但 1cenc 的正式压制流程故意不以 ffmpe
 - 色彩矩阵（color matrix）、传输特质（transfer）、原色色系（primaries）。
 - 亮度色度范围（color range）。
 - 色度采样点位（chroma location）。
+- HDR mastering display 与 content light level：在源文件元数据中可用时自动补充到 x264 / x265 / SVT-AV1 的对应参数。
 - x264/x265 的 lookahead。
 - x265 的 `merange`、`subme`。
 - 合并模式下使用所有片段总帧数，而不是只使用第一个片段帧数。
@@ -251,6 +252,7 @@ ffmpeg 自带视频编码器，但 1cenc 的正式压制流程故意不以 ffmpe
 - 色彩矩阵缺失。
 - transfer 缺失。
 - primaries 缺失。
+- HDR / Dolby Vision 源信息会在源检查卡副标题中显示，便于快速确认源是否带有 HDR10 基带、HLG，或仅有 Dolby Vision 配置；本项目不提供 Dolby Vision 编码输出。
 - 色度采样 / chroma subsampling / chroma location 可能不适合当前编码器。
 
 硬性问题一般阻止开始压制；软性问题会提示用户使用滤镜编辑器或自行确认后绕过。

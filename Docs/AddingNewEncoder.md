@@ -35,10 +35,11 @@ If there is no Keyframe interval / max GOP size, CRF control or anything that br
 
 - The app uses Y4M piping into the encoder, then muxes when needed.
 - `ffprobe` JSON is used for source analysis and auto-parameter generation.
-- Auto params currently cover frame count and color metadata for all supported encoders.
+- Auto params currently cover frame count, color metadata, range, chroma, lookahead, and HDR metadata for all supported encoders.
+- HDR10 mastering display / content light level are read from stream side data when available, otherwise from the first decoded frame side data (`-show_frames -read_intervals "%+#1"`).
 - `x264` also gets `--rc-lookahead` and `--threads`.
 - `x265` also gets `--rc-lookahead`, `--merange`, `--subme`, and `--pools`.
-- `svtav1encapp` currently gets frame count plus color metadata and chroma location handling.
+- `svtav1encapp` currently gets frame count plus color metadata, chroma location handling, and HDR mastering-display / content-light metadata.
 - Custom third-party toggles are filtered per encoder before command generation.
 
 ### Plan a new pipeline

@@ -180,7 +180,7 @@ Its not esay to develop these tools. If this software helped, please consider sp
 #### ffprobe Source Analysis and Inspection
 
 - JSON analysis of `ffprobe` has been implemented, and the original analysis results can be copied
-- The source inspection card has parsed and displayed progressive, bit depth, frame rate, SAR, color metadata, chroma, and other inspection items
+- The source inspection card has parsed and displayed progressive, bit depth, frame rate, SAR, color metadata, chroma, HDR / Dolby Vision source info, and other inspection items
 - Viewing source inspection issues, refreshing the checklist status, and manually bypassing them have been integrated into the main workflow
 
 #### Pre-coding Inspection
@@ -194,6 +194,7 @@ Its not esay to develop these tools. If this software helped, please consider sp
 - Encoding presets, keyframe intervals, and some third-party parameter switches have been implemented and persisted
 - The encoding settings card displays a summary of the current encoding parameters
 - The encoding pipeline generates corresponding encoder parameters based on the current configuration
+- ffprobe-derived auto parameters now also cover HDR mastering display and content light level metadata when present, and the source inspection subtitle surfaces HDR / Dolby Vision source info
 
 #### Encoding Command Generation and Startup
 

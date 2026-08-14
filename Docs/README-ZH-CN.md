@@ -181,7 +181,7 @@
 #### ffprobe 源分析与源检查
 
 - `ffprobe` JSON 分析已经实现，并可复制原始分析结果
-- 源检查卡已经解析并展示 progressive、位深、帧率、SAR、色彩元数据、chroma 等检查项
+- 源检查卡已经解析并展示 progressive、位深、帧率、SAR、色彩元数据、chroma、HDR / Dolby Vision 源信息等检查项
 - 源检查问题查看、检查清单状态刷新和手动绕过已经接入主流程
 
 #### 编码前置检查
@@ -196,11 +196,12 @@
 - 编码预设、关键帧间隔和部分第三方参数开关已经实现并持久化
 - 编码设置卡片会显示当前编码参数摘要
 - 编码管线会根据当前配置生成对应编码器参数
+- ffprobe 自动参数现在也会在元数据存在时补充 HDR mastering display 与 content light level；源检查副标题会直接显示 HDR / Dolby Vision 源信息
 
 #### 编码命令生成与启动
 
 - Y4M 管线命令生成已经实现，支持多种上游工具输出到 x264 / x265 / SVT-AV1
-- 命令生成会结合 ffprobe 信息生成色彩、range、chroma、lookahead 等参数；帧数只有在原始元数据里本来就可靠时才会使用
+- 命令生成会结合 ffprobe 信息生成色彩、range、chroma、lookahead、HDR mastering display、content light level 等参数；帧数只有在原始元数据里本来就可靠时才会使用
 - 启动编码前会弹出命令确认窗口，确认后进入编码监控窗口
 
 #### 采样片段
