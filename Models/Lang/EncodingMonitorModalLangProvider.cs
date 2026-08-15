@@ -515,7 +515,7 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["SaveLogsText"] = "Logs speichern",
             ["OpenTxtText"] = "TXT öffnen",
             ["OpenOutputDirectoryText"] = "Ausgabeordner öffnen",
-            ["ViewEncodingCommandText"] = "Kommandozeile erneut anzeigen",
+            ["ViewEncodingCommandText"] = "Cmd. erneut anzeigen",
             ["InterruptUpstreamText"] = "Upstream unterbrechen",
             ["InterruptEncoderText"] = "Encoder unterbrechen",
             ["CloseAfterDoneText"] = "Schließen",

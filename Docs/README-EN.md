@@ -64,7 +64,7 @@ This software supports multiple languages, but English text screenshots are used
 <p align="center">
 <img src="../WireframeMockups/1-Main-Page-v4.png" alt="Main Window" width="600"/></br>
 <sup><i>Main Page</i></sup></br>
-<img src="../WireframeMockups/2-Script-Scribe-v3.png" alt="Script Scribe Window" width="1200" /></br>
+<img src="../WireframeMockups/2-Script-Scribe-v4.png" alt="Script Scribe Window" width="1200" /></br>
 <sup><i>Script Scribe (Editor)</i></sup></br>
 <img src="../WireframeMockups/3-Encoder-Settings.png" alt="Encoder Setting Window" width="900" /></br>
 <sup><i>Encoding Settings</i></sup></br>

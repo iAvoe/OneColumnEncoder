@@ -125,8 +125,8 @@ public class SrcReviserVM : BaseVM
 
     private static string FormatResolution(int width, int height) =>
         width > 0 && height > 0
-            ? string.Format(SrcReviserLangProvider.Current["SrcReviser.ResolutionFormat"], width, height)
-            : SrcReviserLangProvider.Current["SrcReviser.UnknownResolution"];
+            ? string.Format(SrcReviserLangProvider.ResolutionFormat, width, height)
+            : SrcReviserLangProvider.UnknownResolution;
 
     private void ShowError(string message) =>
         new OpenErrModalCmd(_modalNavS, WindowTitle, message).Execute(null);

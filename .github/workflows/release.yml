@@ -78,11 +78,13 @@ jobs:
         shell: pwsh
         run: |
           if (Test-Path ".\cicd") {
+            # 编码器
             Copy-Item -Path ".\cicd\x64-upstreams-encoders.7z" -Destination ".\publish\x64\" -Force
             Copy-Item -Path ".\cicd\x86-upstreams-encoders.7z" -Destination ".\publish\x86\" -Force
-            # 完整拷贝 x64-CloudinarySSIMULACRA2.1 文件夹及其子文件
+            # 单图画质跑分算法
             Copy-Item -Path ".\cicd\x64-CloudinarySSIMULACRA2.1" -Destination ".\publish\x64\" -Recurse -Force
             Copy-Item -Path ".\cicd\x64-GoogleButteraugli" -Destination ".\publish\x64\" -Recurse -Force
+            # 附带的滤镜
             Copy-Item -Path ".\cicd\x64-AVS-VS-plugins" -Destination ".\publish\x64\" -Recurse -Force
             Write-Host "✅ Tools copied to both publish folders."
           } else {

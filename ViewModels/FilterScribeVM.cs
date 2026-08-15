@@ -145,6 +145,8 @@ public class FilterScribeVM : BaseVM
                 OnPropertyChanged(nameof(HasSource));
                 OnPropertyChanged(nameof(IsScaleApplicable));
                 OnPropertyChanged(nameof(AviSynthAssRenderFilter));
+                OnPropertyChanged(nameof(AviSynthDescaleFilter));
+                OnPropertyChanged(nameof(VapourSynthDescaleFilter));
                 RecomputeTarget();
             }
         }
@@ -161,6 +163,8 @@ public class FilterScribeVM : BaseVM
                 OnPropertyChanged(nameof(HasSource));
                 OnPropertyChanged(nameof(IsScaleApplicable));
                 OnPropertyChanged(nameof(AviSynthAssRenderFilter));
+                OnPropertyChanged(nameof(AviSynthDescaleFilter));
+                OnPropertyChanged(nameof(VapourSynthDescaleFilter));
                 RecomputeTarget();
             }
         }
@@ -195,6 +199,8 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
         OnPropertyChanged(nameof(FfmpegFullChainFilter));
         OnPropertyChanged(nameof(FfmpegHqdn3dFullChainFilter));
+        OnPropertyChanged(nameof(AviSynthDescaleFilter));
+        OnPropertyChanged(nameof(VapourSynthDescaleFilter));
         OnPropertyChanged(nameof(VapourSynthResizeFilter));
         OnPropertyChanged(nameof(AviSynthResizeFilter));
     }
@@ -256,6 +262,119 @@ public class FilterScribeVM : BaseVM
 
     public static string AviSynthHqdn3dDenoiseFilter => "hqdn3d(src)";
     public static string FfmpegHqdn3dDenoiseFilter => "-filter:v \"hqdn3d\"";
+    private const string DescalePluginFolder = "x64-AVS-VS-plugins";
+    private const string DescalePluginDll = "x64-AVS-VS-plugins\\libdescale.dll";
+    private static string DescalePluginPath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DescalePluginDll);
+    private static string DescalePluginDirectory => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DescalePluginFolder);
+
+    public DropdownMenuVM DescaleKernelDropdown { get; } = new();
+
+    private string _selectedDescaleKernel = "Spline36";
+    public string SelectedDescaleKernel
+    {
+        get => _selectedDescaleKernel;
+        set
+        {
+            if (SetProperty(ref _selectedDescaleKernel, value))
+            {
+                OnPropertyChanged(nameof(IsDescaleBicubic));
+                OnPropertyChanged(nameof(IsDescaleLanczos));
+                OnPropertyChanged(nameof(AviSynthDescaleFilter));
+                OnPropertyChanged(nameof(VapourSynthDescaleFilter));
+                SyncDescaleKernelDropdownSelection();
+            }
+        }
+    }
+
+    public bool IsDescaleBicubic => string.Equals(_selectedDescaleKernel, "Bicubic", StringComparison.OrdinalIgnoreCase);
+    public bool IsDescaleLanczos => string.Equals(_selectedDescaleKernel, "Lanczos", StringComparison.OrdinalIgnoreCase);
+
+    private bool _useDescalePythonWrapper = true;
+    public bool UseDescalePythonWrapper
+    {
+        get => _useDescalePythonWrapper;
+        set
+        {
+            if (SetProperty(ref _useDescalePythonWrapper, value))
+                OnPropertyChanged(nameof(VapourSynthDescaleFilter));
+        }
+    }
+
+    private bool CanGenerateDescale =>
+        HasSource && TargetWidth > 0 && TargetHeight > 0
+        && (TargetWidth != SourceWidth || TargetHeight != SourceHeight);
+
+    private void ConfigureDescaleKernelDropdown()
+    {
+        DescaleKernelDropdown.Items.Add(new DropdownItemM("Bilinear") { Tag = "Bilinear" });
+        DescaleKernelDropdown.Items.Add(new DropdownItemM("Bicubic") { Tag = "Bicubic" });
+        DescaleKernelDropdown.Items.Add(new DropdownItemM("Lanczos") { Tag = "Lanczos" });
+        DescaleKernelDropdown.Items.Add(new DropdownItemM("Spline16") { Tag = "Spline16" });
+        DescaleKernelDropdown.Items.Add(new DropdownItemM("Spline36") { Tag = "Spline36" });
+        DescaleKernelDropdown.Items.Add(new DropdownItemM("Spline64") { Tag = "Spline64" });
+        DescaleKernelDropdown.SelectionChangedCommand = new ActionCmd(item =>
+        {
+            if (item is not DropdownItemM dropdownItem || dropdownItem.Tag is not string kernel)
+                return;
+
+            SelectedDescaleKernel = kernel;
+        });
+        SyncDescaleKernelDropdownSelection();
+    }
+
+    private void SyncDescaleKernelDropdownSelection()
+    {
+        DropdownItemM? item = DescaleKernelDropdown.Items.FirstOrDefault(i => i.Tag is string kernel && string.Equals(kernel, SelectedDescaleKernel, StringComparison.OrdinalIgnoreCase));
+        if (item != null && !ReferenceEquals(DescaleKernelDropdown.SelectedItem, item))
+            DescaleKernelDropdown.SelectedItem = item;
+    }
+
+    private static string GetDescaleFunctionName(string kernel) => kernel switch
+    {
+        "Bilinear" => "Debilinear",
+        "Bicubic" => "Debicubic",
+        "Lanczos" => "Delanczos",
+        "Spline16" => "Despline16",
+        "Spline36" => "Despline36",
+        "Spline64" => "Despline64",
+        _ => "Descale"
+    };
+
+    private string GetDescaleKernelArgs() => SelectedDescaleKernel switch
+    {
+        "Bicubic" => ", 0.0, 0.5",
+        "Lanczos" => ", 3",
+        _ => string.Empty
+    };
+
+    private string BuildAviSynthDescaleFilter()
+    {
+        if (!CanGenerateDescale) return "N/A";
+
+        string loadPlugin = $"LoadPlugin(\"{DescalePluginPath}\")";
+        string call = $"{GetDescaleFunctionName(SelectedDescaleKernel)}({TargetWidth}, {TargetHeight}{GetDescaleKernelArgs()})";
+        return $"{loadPlugin}\r\n{call}";
+    }
+
+    private string BuildVapourSynthDescaleFilter()
+    {
+        if (!CanGenerateDescale) return "N/A";
+
+        string loadPlugin = $"core.std.LoadPlugin(r\"{DescalePluginPath}\")";
+        string call = UseDescalePythonWrapper
+            ? $"src = descale.{GetDescaleFunctionName(SelectedDescaleKernel)}(src, {TargetWidth}, {TargetHeight}{GetDescaleKernelArgs()})"
+            : $"src = core.descale.{GetDescaleFunctionName(SelectedDescaleKernel)}(src, {TargetWidth}, {TargetHeight}{GetDescaleKernelArgs()})";
+
+        if (!UseDescalePythonWrapper)
+            return $"{loadPlugin}\r\n{call}";
+
+        string wrapperImport = $"import sys\r\nsys.path.insert(0, r\"{DescalePluginDirectory}\")\r\nimport descale";
+        return $"{loadPlugin}\r\n{wrapperImport}\r\n{call}";
+    }
+
+    public string AviSynthDescaleFilter => BuildAviSynthDescaleFilter();
+    public string VapourSynthDescaleFilter => BuildVapourSynthDescaleFilter();
+
     public string AviSynthAssRenderFilter =>
         "SupTitle(src, \"x:\\path\\to\\DVD_BDMV.sup\", forcedOnly=false)\r\n" +
         "assrender(src, \"x:\\path\\to\\subtitle.ass\", scale=1.0, frame_width=" +
@@ -431,6 +550,8 @@ public class FilterScribeVM : BaseVM
             OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
             OnPropertyChanged(nameof(FfmpegFullChainFilter));
             OnPropertyChanged(nameof(FfmpegHqdn3dFullChainFilter));
+            OnPropertyChanged(nameof(AviSynthDescaleFilter));
+            OnPropertyChanged(nameof(VapourSynthDescaleFilter));
             OnPropertyChanged(nameof(VapourSynthResizeFilter));
             OnPropertyChanged(nameof(AviSynthResizeFilter));
         }
@@ -509,6 +630,12 @@ public class FilterScribeVM : BaseVM
     public static string FrameRateConvertTitle => FilterScribeModalLangProvider.Current["SrcScribe.FrameRateConvertTitle"];
     public static string ColorSpaceConvertTitle => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpaceConvertTitle"];
     public static string DenoiseTitle => FilterScribeModalLangProvider.Current["SrcScribe.DenoiseTitle"];
+    public static string ScaleTabLabel => FilterScribeModalLangProvider.Current["SrcScribe.ScaleTabLabel"];
+    public static string ScaleHint => FilterScribeModalLangProvider.Current["SrcScribe.ScaleHint"];
+    public static string DescaleTabLabel => FilterScribeModalLangProvider.Current["SrcScribe.DescaleTabLabel"];
+    public static string DescaleKernelLabel => FilterScribeModalLangProvider.Current["SrcScribe.DescaleKernelLabel"];
+    public static string DescaleWrapperLabel => FilterScribeModalLangProvider.Current["SrcScribe.DescaleWrapperLabel"];
+    public static string DescaleHint => FilterScribeModalLangProvider.Current["SrcScribe.DescaleHint"];
     public static string SubtitleBurnTitle => FilterScribeModalLangProvider.Current["SrcScribe.SubtitleBurnTitle"];
     public static string MultiFilterAssemblyTitle => FilterScribeModalLangProvider.Current["SrcScribe.MultiFilterAssemblyTitle"];
     public static string LowToHighColorFilterLabel => "NCG";
@@ -584,6 +711,7 @@ public class FilterScribeVM : BaseVM
         ParseColorSpaceInfo(sourceFfprobeJson);
         ParseSourceResolution(sourceFfprobeJson);
         ParseFrameRateInfo(sourceFfprobeJson);
+        ConfigureDescaleKernelDropdown();
         BuildButtonGroups();
         UILangProvider.CurrentChanged += OnLanguageChanged;
     }
@@ -1484,6 +1612,12 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(FrameRateConvertTitle));
         OnPropertyChanged(nameof(ColorSpaceConvertTitle));
         OnPropertyChanged(nameof(DenoiseTitle));
+        OnPropertyChanged(nameof(ScaleTabLabel));
+        OnPropertyChanged(nameof(ScaleHint));
+        OnPropertyChanged(nameof(DescaleTabLabel));
+        OnPropertyChanged(nameof(DescaleKernelLabel));
+        OnPropertyChanged(nameof(DescaleWrapperLabel));
+        OnPropertyChanged(nameof(DescaleHint));
         OnPropertyChanged(nameof(SubtitleBurnTitle));
         OnPropertyChanged(nameof(MultiFilterAssemblyTitle));
         OnPropertyChanged(nameof(LowToHighColorFilterLabel));

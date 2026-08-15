@@ -2,14 +2,6 @@
 
 ## Design Philosophy
 
-### Motivation
-
-Video encoding is an optimization problem constrained by the impossible triangle of visual quality, encoding speed, and file size——There is no optimal solution. Beginners and novices can only build experience through trial-&-error, while even advanced users frequently make mistakes involving typos, file paths, text copy (selection) errors, or spec-compatibility failures between tools, which leads to the tedious, disciplinary verification step, otherwise, a slight oversight can force a start-over, wasting hours of time & computing resources. Regardless, these issues are not only troublesome, but also ruins the speed advantage brought by high-end hardware.
-
-The video encoding ecosystem is splintered. Some tools are over-simplified, some be like nuclear power control panels, some are non-general solutions for specific problems, and some retain lots of outdated features due to decades of updates. Furthermore, there are UI/UX issues, such as requiring back-&-forth window switching, outdated defaults, and sometimes lack of visual feedbacks. These problems require users among all levels to spend a while on familiarizing. Conversely, a command-line interface with consistent interaction logic is often more efficient and user-friendly.
-
-### Core Positioning
-
 1cenc (OneColumnEncoder) is a Windows video encoding assistant built on .NET 9 / WPF. It does not attempt to dumb down video encoding into a black box. Instead, it automates common, repetitive, and error-prone steps while retaining full customization of external tools, scripts, encoder parameters, and command lines.
 
 1cenc's design balances hardcore workflows with an intuitive UI — letting users quickly start encodes while still being able to inspect and intervene in the underlying logic when needed.
