@@ -28,6 +28,7 @@ A next-gen smart video encoding utility based on .NET 9/WPF, revolves around “
   - Color space conversion
   - SAR restoration
   - Resize
+  - Descale
 - Providing additional OpenCL filters for VapourSynth
   - Denoise
   - Deband
@@ -253,7 +254,7 @@ Its not esay to develop these tools. If this software helped, please consider sp
 - The scriptwriter window, AVS/VPY editing area, copying complete scripts, and copying input/output fragments
 - "Save As" is implemented
 - "Confirm" has implemented script saving and backfilling
-  - To simplify code, it saves both AVS & VPY scripts simultaneously, same as the one-click generate button
+  - To simplify, it saves both AVS & VPY scripts simultaneously, same as the one-click generate button
 
 #### Main Interface Best Practices Checklist
 
