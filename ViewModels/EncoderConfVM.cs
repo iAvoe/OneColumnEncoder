@@ -1,3 +1,5 @@
+using OneColumnEncoder.Models.Encoding;
+
 namespace OneColumnEncoder.ViewModels;
 
 public class EncoderConfVM : BaseVM

@@ -1,4 +1,5 @@
 using OneColumnEncoder.Models.Analysis;
+using OneColumnEncoder.Models.Encoding;
 using System.IO;
 using System.Windows.Media.Imaging;
 

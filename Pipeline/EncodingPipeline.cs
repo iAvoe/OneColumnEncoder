@@ -1,4 +1,5 @@
 using OneColumnEncoder.CPU;
+using OneColumnEncoder.Models.Encoding;
 using System.IO;
 using System.Text.RegularExpressions;
 using static OneColumnEncoder.Json.JsonElementHelper;

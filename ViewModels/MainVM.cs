@@ -1,6 +1,7 @@
 using OneColumnEncoder.Commands.SaveLoad;
 using OneColumnEncoder.ConcatManagement;
 using OneColumnEncoder.Models.Analysis;
+using OneColumnEncoder.Models.Encoding;
 using OneColumnEncoder.QueueManagement;
 using OneColumnEncoder.RepartManagement;
 using OneColumnEncoder.ScriptGeneration;
