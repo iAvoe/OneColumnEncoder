@@ -228,9 +228,6 @@
             <comps:HintPanel Text="{Binding SmallNoteText}"
                              HintBrush="{StaticResource GlobalSecondary}"
                              Margin="0 2.5 0 0" />
-            <comps:HintPanel Text="{Binding MuxTimebaseHint}"
-                             HintBrush="{StaticResource GlobalSecondary}"
-                             Margin="0 2.5 0 0" />
         </StackPanel>
     </Grid>
 </UserControl>

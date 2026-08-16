@@ -24,10 +24,9 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["RemainingLabel"] = "Remaining",
             ["CompleteAtLabel"] = "ETA",
             ["ArgsLabel"] = "Other preset name",
-            ["SmallNoteText"] = "This program does not support progress save-load; interrupting will discard task progress.",
+            ["SmallNoteText"] = "This program does not support progress save-load; interrupting will discard task progress",
             ["EnableMuxText"] = "Multiplex after encoding (the 2nd part of commandline, ffmpeg required)",
             ["RichTextModeText"] = "Parse rich text",
-            ["MuxTimebaseHint"] = "Muxed output inherits timebase from source, so quality metrics can align frames correctly, w/out manually calculating GCD of fractions",
             ["DistributionUpstreamLabel"] = "Upstream program",
             ["DistributionDownstreamLabel"] = "Downstream program",
             ["DistributionCacheLabel"] = "System cache",
@@ -93,10 +92,9 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["RemainingLabel"] = "预计剩余",
             ["CompleteAtLabel"] = "预计完成（24h）",
             ["ArgsLabel"] = "其他参数预设名",
-            ["SmallNoteText"] = "本程序不支持进度存取；中断将丢弃任务进度。",
+            ["SmallNoteText"] = "本程序不支持进度存取；中断将丢弃任务进度",
             ["EnableMuxText"] = "压制完成后封装视频流（先前命令行的第二部分，需导入 ffmpeg）",
             ["RichTextModeText"] = "富文本解析",
-            ["MuxTimebaseHint"] = "自动封装会使用与源视频相同的时间基，以便画质指标跑分时正确对齐帧，而无需计算两个分数的最大公约数。",
             ["DistributionUpstreamLabel"] = "上游程序",
             ["DistributionDownstreamLabel"] = "下游程序",
             ["DistributionCacheLabel"] = "系统缓存",
@@ -162,10 +160,9 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["RemainingLabel"] = "預計剩餘",
             ["CompleteAtLabel"] = "預計完成（24h）",
             ["ArgsLabel"] = "其他參數預設名",
-            ["SmallNoteText"] = "本程式不支援進度存取；中斷將丟棄任務進度。",
+            ["SmallNoteText"] = "本程式不支援進度存取；中斷將丟棄任務進度",
             ["EnableMuxText"] = "壓製完成後封裝影片串流（先前命令行的第二部分，需導入 ffmpeg）",
             ["RichTextModeText"] = "富文本解析",
-            ["MuxTimebaseHint"] = "自動封裝會使用與源影片相同的時間基，以便畫質指標跑分時正確對齊幀，而無需計算兩個分數的最大公約數。",
             ["DistributionUpstreamLabel"] = "上游程式",
             ["DistributionDownstreamLabel"] = "下游程式",
             ["DistributionCacheLabel"] = "系統快取",
@@ -234,10 +231,9 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["RemainingLabel"] = "Restant",
             ["CompleteAtLabel"] = "ETA",
             ["ArgsLabel"] = "Nom d'autre préréglage",
-            ["SmallNoteText"] = "Ce programme ne prend pas en charge la sauvegarde de progression; interrompre supprimera l'avancement.",
+            ["SmallNoteText"] = "Ce programme ne prend pas en charge la sauvegarde de progression; interrompre supprimera l'avancement",
             ["EnableMuxText"] = "Multiplexer après encodage (2e partie de commande, ffmpeg requis)",
             ["RichTextModeText"] = "Analyse de texte enrichi",
-            ["MuxTimebaseHint"] = "La sortie muxée hérite du timebase source; les métriques qualité s'alignent sans calcul manuel de PGCD.",
             ["DistributionUpstreamLabel"] = "Programme amont",
             ["DistributionDownstreamLabel"] = "Programme aval",
             ["DistributionCacheLabel"] = "Cache système",
@@ -300,10 +296,9 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["RemainingLabel"] = "Restante",
             ["CompleteAtLabel"] = "ETA",
             ["ArgsLabel"] = "Nombre de otro preajuste",
-            ["SmallNoteText"] = "Este programa no soporta guardar/cargar progreso; interrumpir descartará el avance.",
+            ["SmallNoteText"] = "Este programa no soporta guardar/cargar progreso; interrumpir descartará el avance",
             ["EnableMuxText"] = "Multiplexar tras codificar (2a parte de comando; requiere ffmpeg)",
             ["RichTextModeText"] = "Análisis de texto enriquecido",
-            ["MuxTimebaseHint"] = "La salida mux hereda el timebase de la fuente para alinear métricas sin calcular MCD.",
             ["DistributionUpstreamLabel"] = "Programa aguas arriba",
             ["DistributionDownstreamLabel"] = "Programa aguas abajo",
             ["DistributionCacheLabel"] = "Caché del sistema",
@@ -366,10 +361,9 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["RemainingLabel"] = "残り",
             ["CompleteAtLabel"] = "ETA",
             ["ArgsLabel"] = "その他のプリセット名",
-            ["SmallNoteText"] = "このプログラムは進捗の保存・読み込みに対応していません。中断すると進捗は失われます。",
+            ["SmallNoteText"] = "このプログラムは進捗の保存・読み込みに対応していません。中断すると進捗は失われます",
             ["EnableMuxText"] = "エンコード後に多重化 (コマンド第2部、ffmpeg 必須)",
             ["RichTextModeText"] = "リッチテキスト解析",
-            ["MuxTimebaseHint"] = "Mux 出力はソース timebase を継承し、品質指標のフレーム照合を容易にします。",
             ["DistributionUpstreamLabel"] = "上流プログラム",
             ["DistributionDownstreamLabel"] = "下流プログラム",
             ["DistributionCacheLabel"] = "システムキャッシュ",
@@ -432,10 +426,9 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["RemainingLabel"] = "Осталось",
             ["CompleteAtLabel"] = "ETA",
             ["ArgsLabel"] = "Имя другого набора настроек",
-            ["SmallNoteText"] = "Программа не поддерживает сохранение прогресса; прерывание приведёт к потере хода задачи.",
+            ["SmallNoteText"] = "Программа не поддерживает сохранение прогресса; прерывание приведёт к потере хода задачи",
             ["EnableMuxText"] = "Mux после кодирования (2-я часть команды, нужен ffmpeg)",
             ["RichTextModeText"] = "Анализ форматированного текста",
-            ["MuxTimebaseHint"] = "Mux-вывод наследует timebase источника, чтобы метрики качества точно совпадали по кадрам.",
             ["DistributionUpstreamLabel"] = "Апстрим",
             ["DistributionDownstreamLabel"] = "Даунстрим",
             ["DistributionCacheLabel"] = "Системный кэш",
@@ -498,10 +491,9 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["RemainingLabel"] = "Verbleibend",
             ["CompleteAtLabel"] = "ETA",
             ["ArgsLabel"] = "Anderer Preset-Name",
-            ["SmallNoteText"] = "Dieses Programm unterstützt kein Fortschrittsspeichern; Unterbrechung verwirfort den Fortschritt.",
+            ["SmallNoteText"] = "Dieses Programm unterstützt kein Fortschrittsspeichern; Unterbrechung verwirfort den Fortschritt",
             ["EnableMuxText"] = "Nach Kodierung multiplexen (2. Teil der Kommandozeile, ffmpeg erforderlich)",
             ["RichTextModeText"] = "Rich-Text parsen",
-            ["MuxTimebaseHint"] = "Mux-Ausgabe erbt Timebase von der Quelle, sodass Qualitätsmetriken Frames korrekt ausrichten können ohne manuelle GCD-Berechnung",
             ["DistributionUpstreamLabel"] = "Upstream-Programm",
             ["DistributionDownstreamLabel"] = "Downstream-Programm",
             ["DistributionCacheLabel"] = "System-Cache",
@@ -564,10 +556,9 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["RemainingLabel"] = "Restante",
             ["CompleteAtLabel"] = "ETA",
             ["ArgsLabel"] = "Nome de outra predefinição",
-            ["SmallNoteText"] = "Este programa não suporta salvar-carregar progresso; interrir descartará o progresso da tarefa.",
+            ["SmallNoteText"] = "Este programa não suporta salvar-carregar progresso; interrir descartará o progresso da tarefa",
             ["EnableMuxText"] = "Multiplexar após codificação (2ª parte da linha de comando, ffmpeg necessário)",
             ["RichTextModeText"] = "Analisar rich text",
-            ["MuxTimebaseHint"] = "A saída muxada herda o timebase da fonte, para que as métricas de qualidade alinhem os quadros corretamente, sem calcular manualmente o MDC das frações",
             ["DistributionUpstreamLabel"] = "Programa upstream",
             ["DistributionDownstreamLabel"] = "Programa downstream",
             ["DistributionCacheLabel"] = "Cache do sistema",
@@ -635,7 +626,6 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
     public string SmallNoteText { get; }
     public string EnableMuxText { get; }
     public string RichTextModeText { get; }
-    public string MuxTimebaseHint { get; }
     public string OpusAudioCommandHintFormat { get; }
     public string DistributionUpstreamLabel { get; }
     public string DistributionDownstreamLabel { get; }
@@ -706,7 +696,6 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
         SmallNoteText = this["SmallNoteText"];
         EnableMuxText = this["EnableMuxText"];
         RichTextModeText = this["RichTextModeText"];
-        MuxTimebaseHint = this["MuxTimebaseHint"];
         OpusAudioCommandHintFormat = "♫Opus 320Kbps: {0}";
         DistributionUpstreamLabel = this["DistributionUpstreamLabel"];
         DistributionDownstreamLabel = this["DistributionDownstreamLabel"];

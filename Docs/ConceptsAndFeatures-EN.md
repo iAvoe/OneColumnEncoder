@@ -224,6 +224,8 @@ If ffmpeg has been imported, the project generates a mux command to combine the 
 
 Muxing is a controllable step — the mux command and status are visible in the encoding monitor window. For raw stream outputs like x265 / SVT-AV1, muxing makes it easier to add new streams or convert to other container formats, so it is checked by default.
 
+The auto-mux feature helps video quality metric usages by inheriting the timebase from the source, so the video-based quality metrics (e.g. XPSNR, VMAF) can align without manually calculating the GCD of timebase fractions.
+
 ## Source Analysis and Checklists
 
 1cenc relies on ffprobe to read source video metadata. Source checks fall into two categories:
