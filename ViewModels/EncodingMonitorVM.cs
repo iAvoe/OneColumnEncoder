@@ -1,5 +1,6 @@
 using OneColumnEncoder.Converters;
 using OneColumnEncoder.CPU;
+using OneColumnEncoder.Models.Encoding;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -348,7 +349,7 @@ public partial class EncodingMonitorVM : BaseVM
     public bool IsQueueSidebarVisible => QueueSidebar.IsVisible && !IsRepartBatch;
     public bool IsRepartSidebarVisible => QueueSidebar.IsVisible && IsRepartBatch;
     public bool IsMuxToggleEnabled => CanMux && !IsRepartBatch;
-    public string RepartOutputSidebarTitle => RepartLangProvider.Current["OutputEpisodes"];
+    public static string RepartOutputSidebarTitle => RepartLangProvider.Current["OutputEpisodes"];
 
     private double _logFontSize = 11;
     public double LogFontSize
@@ -405,7 +406,7 @@ public partial class EncodingMonitorVM : BaseVM
             QueueSidebar.MarkJobFailed(jobVM, StatusText);
     }
 
-    private QueueJobItemM CreateSidebarJob(EncodingPipelineRequest request, EncodingPipelineCommand command, string status)
+    private static QueueJobItemM CreateSidebarJob(EncodingPipelineRequest request, EncodingPipelineCommand command, string status)
     {
         return new QueueJobItemM
         {
@@ -2173,10 +2174,9 @@ public partial class EncodingMonitorVM : BaseVM
         string path = Path.Combine(directory, $"{filePrefix}-{timestamp}-{Guid.NewGuid():N}.txt");
         File.WriteAllText(path, text, Encoding.UTF8);
 
-        FileInfo[] files = Directory.EnumerateFiles(directory, $"{filePrefix}-*.txt")
+        FileInfo[] files = [.. Directory.EnumerateFiles(directory, $"{filePrefix}-*.txt")
             .Select(path => new FileInfo(path))
-            .OrderByDescending(file => file.LastWriteTimeUtc)
-            .ToArray();
+            .OrderByDescending(file => file.LastWriteTimeUtc)];
         foreach (FileInfo file in files.Skip(limit))
             file.Delete();
     }
@@ -2328,6 +2328,7 @@ public partial class EncodingMonitorVM : BaseVM
         _upstreamStdoutStream = null;
         QueueSidebar.Dispose();
         base.Dispose();
+        GC.SuppressFinalize(this);
     }
 
     private void OnLanguageChanged()

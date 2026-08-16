@@ -40,9 +40,9 @@
 
         <comps:HintPanel Text="{Binding VvencHintText, Mode=OneWay}"
                          FontSize="10"
-                         Margin="5 2 5 0" />
+                         Margin="5 2.5 5 0" />
         <comps:HintPanel Text="{Binding BlankPresetHint, Mode=OneWay}"
-                         Margin="5 5 5 0"
+                         Margin="5 2.5 5 0"
                          HorizontalAlignment="Left"
                          VerticalAlignment="Center" />
 
@@ -76,11 +76,11 @@
         </comps:IntegerSliderGroup>
 
         <comps:HintPanel Text="{Binding KeyframeHintText1, Mode=OneWay}"
-                         Margin="5 10 5 0"
+                         Margin="5 2.5 5 0"
                          HorizontalAlignment="Left"
                          VerticalAlignment="Center" />
         <comps:HintPanel Text="{Binding KeyframeHintText2, Mode=OneWay}"
-                         Margin="5 10 5 0"
+                         Margin="5 2.5 5 0"
                          HorizontalAlignment="Left"
                          VerticalAlignment="Center" />
 
@@ -109,19 +109,19 @@
         </comps:AppConfContainer>
 
         <comps:HintPanel Text="{Binding ThirdPartyHintText1, Mode=OneWay}"
-                         Margin="5 10 5 0"
+                         Margin="5 2.5 5 0"
                          HorizontalAlignment="Left"
                          VerticalAlignment="Center" />
         <comps:HintPanel Text="{Binding ThirdPartyHintText2, Mode=OneWay}"
-                         Margin="5 10 5 0"
+                         Margin="5 2.5 5 0"
                          HorizontalAlignment="Left"
                          VerticalAlignment="Center" />
         <comps:HintPanel Text="{Binding ThirdPartyHintText3, Mode=OneWay}"
-                         Margin="5 10 5 0"
+                         Margin="5 2.5 5 0"
                          HorizontalAlignment="Left"
                          VerticalAlignment="Center" />
         <comps:HintPanel Text="{Binding ThirdPartyHintText4, Mode=OneWay}"
-                         Margin="5 10 5 0"
+                         Margin="5 2.5 5 0"
                          HorizontalAlignment="Left"
                          VerticalAlignment="Center" />
 

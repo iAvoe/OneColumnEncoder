@@ -1,7 +1,7 @@
 using System.IO;
 using System.Text.Json.Serialization;
 
-namespace OneColumnEncoder.Models;
+namespace OneColumnEncoder.Models.Encoding;
 
 /// <summary>
 /// Encoder configuration persisted across launches.

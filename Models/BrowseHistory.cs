@@ -2,11 +2,14 @@ using System.IO;
 
 namespace OneColumnEncoder.Models;
 
-// Stable per-card keys for the last-browse directory history stored in AppDataM.BrowseHistory.
-// Keys must stay independent of localized display names so history survives language switches.
 /// <summary>
-/// Browse-history keys and lookup helpers.
+/// Browse-history keys and lookup helpers. For per-ItemCard last open history
+/// (previously last open history relies on Windows File Explorer, history shared across all ItemCards)
 /// </summary>
+/// <remarks>
+/// Stable per-card keys for the last-browse directory history stored in AppDataM.BrowseHistory.
+/// Keys must stay independent of localized display names so history survives language switches.
+/// </remarks>
 public static class BrowseHistoryKeys
 {
     // Video / script single-file source cards
@@ -61,7 +64,8 @@ public static class BrowseHistory
 
     public static void Remember(AppDataM appData, string key, string fileOrFolderPath)
     {
-        if (appData == null || string.IsNullOrEmpty(key) || string.IsNullOrWhiteSpace(fileOrFolderPath)) return;
+        if (appData == null || string.IsNullOrEmpty(key)
+            || string.IsNullOrWhiteSpace(fileOrFolderPath)) return;
 
         string? directory = Directory.Exists(fileOrFolderPath)
             ? fileOrFolderPath

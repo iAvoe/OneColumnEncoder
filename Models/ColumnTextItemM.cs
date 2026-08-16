@@ -2,6 +2,7 @@ namespace OneColumnEncoder.Models;
 
 /// <summary>
 /// Three-line text item used by compact displays.
+/// Mostly used on RAM usage details for EncodingMonitor
 /// </summary>
 public class ColumnTextItemM : INotifyPropertyChanged
 {

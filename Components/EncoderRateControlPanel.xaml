@@ -26,79 +26,105 @@
             <TabItem Header="{Binding CrfModeText}"
                      Padding="15 7.5"
                      FontWeight="Bold">
-                <comps:IntegerSliderGroup Margin="10 5 0 5">
-                    <comps:IntegerSlider Label="x264"
-                                         Minimum="0"
-                                         Maximum="25"
-                                         Value="{Binding X264Crf, Mode=TwoWay}"
-                                         TickLabels="{Binding X264CrfLabels}"
-                                         TickCount="5"
-                                         HorizontalAlignment="Stretch" />
-                    <comps:IntegerSlider Label="x265"
-                                         Minimum="0"
-                                         Maximum="30"
-                                         Value="{Binding X265Crf, Mode=TwoWay}"
-                                         TickLabels="{Binding X265CrfLabels}"
-                                         TickCount="5"
-                                         HorizontalAlignment="Stretch" />
-                    <comps:IntegerSlider Label="SVT-AV1"
-                                         Minimum="0"
-                                         Maximum="43"
-                                         Value="{Binding SvtAv1Crf, Mode=TwoWay}"
-                                         TickLabels="{Binding SvtAv1CrfLabels}"
-                                         TickCount="5"
-                                         HorizontalAlignment="Stretch" />
-                    <comps:IntegerSlider Label="VVenC (PV QP)"
-                                         Minimum="0"
-                                         Maximum="63"
-                                         Value="{Binding VvencQp, Mode=TwoWay}"
-                                         TickLabels="{Binding VvencQpLabels}"
-                                         TickCount="5"
-                                         HorizontalAlignment="Stretch" />
-                </comps:IntegerSliderGroup>
+                <Grid Margin="10 5 0 5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <comps:IntegerSliderGroup Grid.Row="0">
+                        <comps:IntegerSlider Label="x264"
+                                             Minimum="0"
+                                             Maximum="25"
+                                             Value="{Binding X264Crf, Mode=TwoWay}"
+                                             TickLabels="{Binding X264CrfLabels}"
+                                             TickCount="5"
+                                             HorizontalAlignment="Stretch"
+                                             Margin="0 2.5"
+                                             FontWeight="Normal" />
+                        <comps:IntegerSlider Label="x265"
+                                             Minimum="0"
+                                             Maximum="30"
+                                             Value="{Binding X265Crf, Mode=TwoWay}"
+                                             TickLabels="{Binding X265CrfLabels}"
+                                             TickCount="5"
+                                             HorizontalAlignment="Stretch"
+                                             Margin="0 2.5"
+                                             FontWeight="Normal" />
+                        <comps:IntegerSlider Label="SVT-AV1"
+                                             Minimum="0"
+                                             Maximum="43"
+                                             Value="{Binding SvtAv1Crf, Mode=TwoWay}"
+                                             TickLabels="{Binding SvtAv1CrfLabels}"
+                                             TickCount="5"
+                                             HorizontalAlignment="Stretch"
+                                             Margin="0 2.5"
+                                             FontWeight="Normal" />
+                        <comps:IntegerSlider Label="VVenC (PV QP)"
+                                             Minimum="0"
+                                             Maximum="63"
+                                             Value="{Binding VvencQp, Mode=TwoWay}"
+                                             TickLabels="{Binding VvencQpLabels}"
+                                             TickCount="5"
+                                             HorizontalAlignment="Stretch"
+                                             Margin="0 2.5"
+                                             FontWeight="Normal" />
+                    </comps:IntegerSliderGroup>
+                    <comps:HintPanel Grid.Row="1"
+                                     Text="{Binding CrfHintText, Mode=OneWay}"
+                                     FontWeight="Normal"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Center" />
+                </Grid>
+
             </TabItem>
 
             <TabItem Header="{Binding AbrModeText}"
                      Padding="15 7.5"
                      FontWeight="Bold">
-                <comps:IntegerSliderGroup Margin="10 5 0 5">
-                    <comps:IntegerSlider Label="x264"
-                                         Minimum="10"
-                                         Maximum="500"
-                                         Value="{Binding X264Abr, Mode=TwoWay}"
-                                         TickLabels="{Binding X264AbrLabels}"
-                                         TickCount="4"
-                                         Step="10"
-                                         HorizontalAlignment="Stretch" />
-                    <comps:IntegerSlider Label="x265"
-                                         Minimum="10"
-                                         Maximum="500"
-                                         Value="{Binding X265Abr, Mode=TwoWay}"
-                                         TickLabels="{Binding X265AbrLabels}"
-                                         TickCount="4"
-                                         Step="10"
-                                         HorizontalAlignment="Stretch" />
-                    <comps:IntegerSlider Label="SVT-AV1"
-                                         Minimum="10"
-                                         Maximum="500"
-                                         Value="{Binding SvtAv1Abr, Mode=TwoWay}"
-                                         TickLabels="{Binding SvtAv1AbrLabels}"
-                                         TickCount="4"
-                                         Step="10"
-                                         HorizontalAlignment="Stretch" />
-                </comps:IntegerSliderGroup>
+                <Grid Margin="10 5 0 5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <comps:IntegerSliderGroup Grid.Row="0">
+                        <comps:IntegerSlider Label="x264"
+                                             Minimum="10"
+                                             Maximum="500"
+                                             Value="{Binding X264Abr, Mode=TwoWay}"
+                                             TickLabels="{Binding X264AbrLabels}"
+                                             TickCount="4"
+                                             Step="10"
+                                             HorizontalAlignment="Stretch"
+                                             Margin="0 2.5"
+                                             FontWeight="Normal" />
+                        <comps:IntegerSlider Label="x265"
+                                             Minimum="10"
+                                             Maximum="500"
+                                             Value="{Binding X265Abr, Mode=TwoWay}"
+                                             TickLabels="{Binding X265AbrLabels}"
+                                             TickCount="4"
+                                             Step="10"
+                                             HorizontalAlignment="Stretch"
+                                             Margin="0 2.5"
+                                             FontWeight="Normal" />
+                        <comps:IntegerSlider Label="SVT-AV1"
+                                             Minimum="10"
+                                             Maximum="500"
+                                             Value="{Binding SvtAv1Abr, Mode=TwoWay}"
+                                             TickLabels="{Binding SvtAv1AbrLabels}"
+                                             TickCount="4"
+                                             Step="10"
+                                             HorizontalAlignment="Stretch"
+                                             Margin="0 2.5"
+                                             FontWeight="Normal" />
+                    </comps:IntegerSliderGroup>
+                    <comps:HintPanel Grid.Row="1"
+                                     Text="{Binding AbrHintText, Mode=OneWay}"
+                                     FontWeight="Normal"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Center" />
+                </Grid>
             </TabItem>
         </TabControl>
-
-        <comps:HintPanel Grid.Row="2"
-                         Text="{Binding CrfHintText, Mode=OneWay}"
-                         Margin="5 5 5 0"
-                         HorizontalAlignment="Left"
-                         VerticalAlignment="Center" />
-        <comps:HintPanel Grid.Row="3"
-                         Text="{Binding AbrHintText, Mode=OneWay}"
-                         Margin="5 5 5 0"
-                         HorizontalAlignment="Left"
-                         VerticalAlignment="Center" />
     </Grid>
 </UserControl>
