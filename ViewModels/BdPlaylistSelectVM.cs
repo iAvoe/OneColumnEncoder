@@ -34,22 +34,22 @@ public sealed class BdPlaylistSelectVM : BaseVM
         _playlistButtons.B2_1Icon = SvgIconProvider.GameXMark;
         _playlistButtons.B2_2Icon = SvgIconProvider.GamePlus;
 
-        _finalPlaylistButtons1 = ButtonGroupVM.CreateTwoButton(
+        _finalPlaylistButtons1 = ButtonGroupVM.CreateThreeButton(
             MoveUpText,
             MoveDownText,
-            new ActionCmd(_ => Move(-1)),
-            new ActionCmd(_ => Move(+1)));
-
-        _finalPlaylistButtons2 = ButtonGroupVM.CreateThreeButton(
             RemoveFromFinalText,
+            new ActionCmd(_ => Move(-1)),
+            new ActionCmd(_ => Move(+1)),
+            new ActionCmd(_ => RemoveFromFinal()));
+        _finalPlaylistButtons1.B3_3Icon = SvgIconProvider.GameDelete;
+
+        _finalPlaylistButtons2 = ButtonGroupVM.CreateTwoButton(
             ClearAllText,
             ConfirmText,
-            new ActionCmd(_ => RemoveFromFinal()),
             new ActionCmd(_ => ClearAll()),
             new ActionCmd(_ => Confirm()));
-        _finalPlaylistButtons2.B3_1Icon = SvgIconProvider.GameDelete;
-        _finalPlaylistButtons2.B3_2Icon = SvgIconProvider.GameXMark;
-        _finalPlaylistButtons2.B3_3Icon = SvgIconProvider.GameCorrectMark;
+        _finalPlaylistButtons2.B2_1Icon = SvgIconProvider.GameXMark;
+        _finalPlaylistButtons2.B2_2Icon = SvgIconProvider.GameCorrectMark;
 
         Clusters = new ReadOnlyObservableCollection<BdPlaylistClusterM>(_clusters);
         Playlists = new ReadOnlyObservableCollection<BdPlaylistM>(_playlists);
@@ -73,7 +73,7 @@ public sealed class BdPlaylistSelectVM : BaseVM
     public static string PlaylistsTitle => RepartLangProvider.Current["PlaylistPlaylists"];
     public static string FinalPlaylistsTitle => RepartLangProvider.Current["PlaylistFinalPlaylists"];
     public static string AddToFinalText => RepartLangProvider.Current["PlaylistAddToFinal"];
-    public static string RemoveFromFinalText => RepartLangProvider.Current["PlaylistRemoveFromFinal"];
+    public static string RemoveFromFinalText => RepartLangProvider.Current["Remove"];
     public static string ClearAllText => RepartLangProvider.Current["PlaylistClearAll"];
     public static string MoveUpText => LangProviderBase.MoveUpText;
     public static string MoveDownText => LangProviderBase.MoveDownText;
@@ -209,12 +209,12 @@ public sealed class BdPlaylistSelectVM : BaseVM
         OnPropertyChanged(nameof(CanMoveDown));
         _playlistButtons.B2_2IsEnabled = CanAddToFinal;
 
-        _finalPlaylistButtons1.B2_1IsEnabled = CanMoveUp;
-        _finalPlaylistButtons1.B2_2IsEnabled = CanMoveDown;
+        _finalPlaylistButtons1.B3_1IsEnabled = CanMoveUp;
+        _finalPlaylistButtons1.B3_2IsEnabled = CanMoveDown;
+        _finalPlaylistButtons1.B3_3IsEnabled = CanRemoveFromFinal;
 
-        _finalPlaylistButtons2.B3_1IsEnabled = CanRemoveFromFinal;
-        _finalPlaylistButtons2.B3_2IsEnabled = FinalPlaylists.Count > 0;
-        _finalPlaylistButtons2.B3_3IsEnabled = FinalPlaylists.Count > 0;
+        _finalPlaylistButtons2.B2_1IsEnabled = FinalPlaylists.Count > 0;
+        _finalPlaylistButtons2.B2_2IsEnabled = FinalPlaylists.Count > 0;
     }
 
     private void Confirm()
