@@ -345,8 +345,7 @@ public class AppUsageLangProvider : LangProviderBase
             ["ManualBaseList"] = "· x264: Allgemein, Stock Footage\n· x265: Allgemein, Film, Stock Footage, Anime, Stresstest\n· SVT-AV1: Ultra HQ, hohe Kompression, schnell",
             ["ManualBaseFooter"] = "...abhängig von CPU-Leistung und CLI-Optionen; beeinflusst Bitgenauigkeit.",
             ["ManualExtTitle"] = "Manuell — Drittanbieter-Erweiterungen",
-            ["ManualExtIntro"] = "Modded Encoder bieten Funktionen, die offizielle Versionen nicht haben; Existenz prüfen vor Aktivierung.",
-            ["CloseButtonText"] = "Schließen"
+            ["ManualExtIntro"] = "Modded Encoder bieten Funktionen, die offizielle Versionen nicht haben; Existenz prüfen vor Aktivierung."
         };
         Data["pt-br"] = new(Data["en"])
         {
@@ -433,7 +432,6 @@ public class AppUsageLangProvider : LangProviderBase
     public string ManualBaseFooter { get; }
     public string ManualExtTitle { get; }
     public string ManualExtIntro { get; }
-    public string CloseButtonText { get; }
 
     public AppUsageLangProvider(string languageCode) : base(languageCode, Data)
     {
@@ -476,6 +474,5 @@ public class AppUsageLangProvider : LangProviderBase
         ManualBaseFooter = this["ManualBaseFooter"];
         ManualExtTitle = this["ManualExtTitle"];
         ManualExtIntro = this["ManualExtIntro"];
-        CloseButtonText = this["CloseButtonText"];
     }
 }

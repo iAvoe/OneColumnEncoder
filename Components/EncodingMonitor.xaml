@@ -207,9 +207,6 @@
                           Margin="10 0 0 0"
                           VerticalAlignment="Center" />
             </StackPanel>
-            <comps:HintPanel Text="{Binding MuxTimebaseHint}"
-                             HintBrush="{StaticResource GlobalSecondary}"
-                             Margin="0 2.5 0 0" />
             <comps:FiveButtonGroup Margin="0 10 0 0"
                                    DataContext="{Binding FinishButtons}"
                                    ButtonHeight="30"
@@ -227,11 +224,11 @@
                 <comps:HintPanel Text="{Binding OpusAudioCommandHint}"
                                  HintBrush="{StaticResource GlobalSecondary}"
                                  Margin="0 2.5 0 0" />
-                <comps:HintPanel Text="{Binding OpusAudioBitrateHint}"
-                                 HintBrush="{StaticResource GlobalSecondary}"
-                                 Margin="0 2.5 0 0" />
             </StackPanel>
             <comps:HintPanel Text="{Binding SmallNoteText}"
+                             HintBrush="{StaticResource GlobalSecondary}"
+                             Margin="0 2.5 0 0" />
+            <comps:HintPanel Text="{Binding MuxTimebaseHint}"
                              HintBrush="{StaticResource GlobalSecondary}"
                              Margin="0 2.5 0 0" />
         </StackPanel>

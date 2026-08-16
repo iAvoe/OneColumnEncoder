@@ -133,7 +133,7 @@ public class ImgABPvVM : BaseVM
         _sourceVideoPath = sourceVideoPath;
         _workDirectory = PreviewPipeline.CreateWorkDirectory("1cenc-image-preview-");
 
-        ZoomPresetButtons = ButtonGroupVM.CreateThreeButton(Lang.FitButtonText, "100%", "200%");
+        ZoomPresetButtons = ButtonGroupVM.CreateThreeButton(Lang["Fit"], "100%", "200%");
 
         EncoderDropdown.Items.Add(new DropdownItemM("libx264") { Tag = PreviewEncoder.X264 });
         EncoderDropdown.Items.Add(new DropdownItemM("libx265") { Tag = PreviewEncoder.X265 });
@@ -441,7 +441,7 @@ public class ImgABPvVM : BaseVM
     private void OnLanguageChanged()
     {
         Lang = new ImgABPvLangProvider(UILangProvider.Current.LanguageCode);
-        ZoomPresetButtons.B3_1Text = Lang.FitButtonText;
+        ZoomPresetButtons.B3_1Text = Lang["Fit"]; // Use LangProviderBase extension
         DisplayModeButtons.B5_1Text = Lang.RawButtonText;
         if (!IsBusy)
             PreviewButtonText = Lang.PreviewButtonText;

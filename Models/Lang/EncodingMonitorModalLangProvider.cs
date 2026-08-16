@@ -637,7 +637,6 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
     public string RichTextModeText { get; }
     public string MuxTimebaseHint { get; }
     public string OpusAudioCommandHintFormat { get; }
-    public string OpusAudioBitrateHint { get; }
     public string DistributionUpstreamLabel { get; }
     public string DistributionDownstreamLabel { get; }
     public string DistributionCacheLabel { get; }
@@ -709,7 +708,6 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
         RichTextModeText = this["RichTextModeText"];
         MuxTimebaseHint = this["MuxTimebaseHint"];
         OpusAudioCommandHintFormat = "♫Opus 320Kbps: {0}";
-        OpusAudioBitrateHint = "-b:a 128|192|256|320 Kbps: 128000→320000";
         DistributionUpstreamLabel = this["DistributionUpstreamLabel"];
         DistributionDownstreamLabel = this["DistributionDownstreamLabel"];
         DistributionCacheLabel = this["DistributionCacheLabel"];

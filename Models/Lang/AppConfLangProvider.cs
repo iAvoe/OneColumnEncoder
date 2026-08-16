@@ -3,7 +3,7 @@ namespace OneColumnEncoder.Models.Lang;
 /// <summary>
 /// Localized strings for application settings.
 /// </summary>
-public class AppConfLangProvider : LangProviderBase
+public class AppConfLangProvider(string languageCode) : LangProviderBase(languageCode, Data)
 {
     public const string WindowTitle = "1cenc Settings";
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
@@ -243,8 +243,6 @@ public class AppConfLangProvider : LangProviderBase
             ["Setting.Font.Ui"] = "Oberflächenschrift",
             ["Setting.Font.Code"] = "Codefont",
             ["Setting.Font.Default"] = "Standard",
-            ["AppConf.Cancel"] = "Abbrechen",
-            ["AppConf.Save"] = "Speichern",
             ["AppConf.ClearOldQueueJson"] = "Alte JSON löschen",
             ["AppConf.ClearOldQueueJsonTitle"] = "Alte JSON löschen",
             ["AppConf.ClearOldQueueJsonResult"] = "{0} alte Warteschlangendateien gelöscht.",
@@ -277,8 +275,6 @@ public class AppConfLangProvider : LangProviderBase
             ["Setting.Font.Ui"] = "인터페이스 글꼴",
             ["Setting.Font.Code"] = "코드 글꼴",
             ["Setting.Font.Default"] = "기본값",
-            ["AppConf.Cancel"] = "취소",
-            ["AppConf.Save"] = "저장",
             ["AppConf.ClearOldQueueJson"] = "이전 JSON 삭제",
             ["AppConf.ClearOldQueueJsonTitle"] = "이전 JSON 삭제",
             ["AppConf.ClearOldQueueJsonResult"] = "이전 큐 파일 {0}개를 삭제했습니다.",
@@ -335,8 +331,4 @@ public class AppConfLangProvider : LangProviderBase
     };
 
     public static AppConfLangProvider Current => new(UILangProvider.Current.LanguageCode);
-
-    public AppConfLangProvider(string languageCode) : base(languageCode, Data)
-    {
-    }
 }

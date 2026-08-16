@@ -10,9 +10,9 @@ public class ParallelismConfLangProvider : LangProviderBase
         ["en"] = new()
         {
             ["IntroText"] = "This program ignores the various parallel-impls among tools, and uses:\n· CPU Sets to suggest thread affinity (Allowing temp. thread-node disloc.)\n· Try allocate RAM to encoding thread ranged on the their NUMA node",
-            ["PriorityText"] = "This program avoids raising task priority, nor declare encoding tasks as latency-sens.,\nthereby preventing unresponsive tasks hanging the OS indefinitely",
+            ["PriorityText"] = "This program keeps priority normal, so a frozen encoder won\'t hang the OS",
             ["CacheGroupTitle"] = "Detected L3 cache groups (↑crossings, ↓cache hits)",
-            ["NumaTopologyHintText"] = "When a CPU contains multiple NUMA nodes, the encoder will only occupy 1 → only a portion of CPU resources can be allocated",
+            ["NumaTopologyHintText"] = "When a CPU has multiple NUMA nodes, the encoder will only occupy the first",
             ["UpstreamNumaTitle"] = "NUMA Soft Binding: Pipe Upstream",
             ["DownstreamNumaTitle"] = "NUMA Soft Binding: Pipe Downstream (encoder)",
             ["NumaGuidanceText"] = "Assign encoder to other nodes might be faster when upstream tool has slow filters\notherwise, sharing same node might be faster—compute vs. latency bottleneck",
@@ -34,9 +34,9 @@ public class ParallelismConfLangProvider : LangProviderBase
         ["zh-cn"] = new()
         {
             ["IntroText"] = "本程序会忽略不同工具中各异的并行实现，并使用以下控制策略：\n· CPU Sets—引荐线程活动范围（允许系统临时外迁线程）\n· 尝试优先在指定 NUMA 节点分配部分内存",
-            ["PriorityText"] = "本程序不调整进程优先级，或设置声明编码任务为延时敏感类型，以避免系统无限等待无响应编码器的问题",
+            ["PriorityText"] = "本程序只创建常规优先级进程，以便保持编码器卡死时的系统响应",
             ["CacheGroupTitle"] = "检测到的核心缓存分组（跨组越多，缓存命中率越低）",
-            ["NumaTopologyHintText"] = "单 CPU 内含多个 NUMA 节点时，编码器只会占用一个，此时只能分配部分 CPU 资源运行压制",
+            ["NumaTopologyHintText"] = "单 CPU 内含多个 NUMA 节点时，编码器只会占用其中首个",
             ["UpstreamNumaTitle"] = "NUMA 软绑定：管道上游程序",
             ["DownstreamNumaTitle"] = "NUMA 软绑定：管道下游程序（编码器）",
             ["NumaGuidanceText"] = "若上游程序使用了高占用滤镜且视频源内容复杂，则上下游各占一节点的速度大概更快（算力瓶颈），\n否则共用节点的速度大概更快（通信瓶颈）",
@@ -58,9 +58,9 @@ public class ParallelismConfLangProvider : LangProviderBase
         ["zh-tw"] = new()
         {
             ["IntroText"] = "本程式會忽略不同工具中各異的平行實現，並使用以下控制策略：\n· CPU Sets—引薦執行緒活動範圍（允許系統臨時外遷執行緒）\n· 嘗試優先在指定 NUMA 節點分配部分記憶體",
-            ["PriorityText"] = "本程式不調整進程優先度，或設置聲明編碼任務為延時敏感類型，以避免系統無限等待無響應編碼器的問題",
+            ["PriorityText"] = "本程式只創建常規優先度進程，以便保持編碼器卡死時的系統響應",
             ["CacheGroupTitle"] = "檢測到的核心快取分組（跨組越多，快取命中率越低）",
-            ["NumaTopologyHintText"] = "單 CPU 內含多個 NUMA 節點時，編碼器只會占用一個，此時只能分配部分 CPU 資源運行壓制",
+            ["NumaTopologyHintText"] = "CPU 內含多個 NUMA 節點時，編碼器只會占用其中首個",
             ["UpstreamNumaTitle"] = "NUMA 軟綁定：管道上游程式",
             ["DownstreamNumaTitle"] = "NUMA 軟綁定：管道下游程式（編碼器）",
             ["NumaGuidanceText"] = "若上遊程序使用了高占用濾鏡且影片源內容複雜，則上下游各占一節點的速度大概更快（算力瓶頸），\n否則共用節點的速度大概更快（通信瓶頸）",
@@ -82,9 +82,9 @@ public class ParallelismConfLangProvider : LangProviderBase
         ["fr"] = new()
         {
             ["IntroText"] = "Ce programme ignore les diverses implémentations parallèles entre outils et utilise :\n· CPU Sets pour suggérer l'affinité des threads (migration temporaire autorisée)\n· Tente d'allouer la RAM sur le nœud NUMA des threads d'encodage",
-            ["PriorityText"] = "Ce programme n'élève pas la priorité des tâches et ne déclare pas l'encodage comme sensible à la latence,\nempêchant ainsi les tâches sans réponse de bloquer l'OS indéfiniment.",
+            ["PriorityText"] = "Ce programme utilise une priorité normale pour éviter qu’un encodeur bloqué ne fige l\'OS",
             ["CacheGroupTitle"] = "Groupes de cache L3 détectés (↑ franchissements, ↓ hits)",
-            ["NumaTopologyHintText"] = "Lorsqu'un CPU contient plusieurs nœuds NUMA, l'encodeur n'en occupe qu'un → seule une partie des ressources CPU peut être allouée.",
+            ["NumaTopologyHintText"] = "Si un CPU possède plusieurs nœuds NUMA, l’encodeur n’occupera que le premier",
             ["UpstreamNumaTitle"] = "Liaison NUMA logicielle : amont du pipeline",
             ["DownstreamNumaTitle"] = "Liaison NUMA logicielle : aval du pipeline (encodeur)",
             ["NumaGuidanceText"] = "Attribuer l'encodeur à un autre nœud peut être plus rapide si l'outil amont a des filtres lents ;\nsinon, partager le même nœud peut être plus rapide—goulot calcul vs latence.",
@@ -106,9 +106,9 @@ public class ParallelismConfLangProvider : LangProviderBase
         ["es"] = new()
         {
             ["IntroText"] = "Este programa ignora las diversas implementaciones paralelas entre herramientas y usa:\n· CPU Sets para sugerir afinidad de hilos (se permite migración temporal)\n· Intenta asignar RAM en el nodo NUMA de los hilos de codificación",
-            ["PriorityText"] = "Este programa no eleva la prioridad de tareas ni declara la codificación como sensible a latencia,\nevita así que tareas sin respuesta bloqueen el SO indefinidamente.",
+            ["PriorityText"] = "Este programa usa prioridad normal para evitar que un codificador bloqueado congele el OS",
             ["CacheGroupTitle"] = "Grupos de caché L3 detectados (↑ cruces, ↓ aciertos)",
-            ["NumaTopologyHintText"] = "Cuando una CPU contiene varios nodos NUMA, el codificador solo ocupa 1 → solo se puede asignar una parte de los recursos de CPU.",
+            ["NumaTopologyHintText"] = "Si una CPU tiene varios nodos NUMA, el codificador solo ocupará el primero",
             ["UpstreamNumaTitle"] = "Enlace NUMA suave: aguas arriba del pipeline",
             ["DownstreamNumaTitle"] = "Enlace NUMA suave: aguas abajo del pipeline (codificador)",
             ["NumaGuidanceText"] = "Asignar el codificador a otro nodo puede ser más rápido si la herramienta aguas arriba tiene filtros lentos;\nsi no, compartir el mismo nodo puede ser más rápido—cuello de botella cómputo vs latencia.",
@@ -130,9 +130,9 @@ public class ParallelismConfLangProvider : LangProviderBase
         ["ja"] = new()
         {
             ["IntroText"] = "このプログラムはツール間の様々な並列実装を無視し、以下を使用します:\n· CPU Sets によるスレッド親和性の提案（一時的なスレッド・ノード移動は許可）\n· エンコードスレッドの NUMA ノード上の RAM 割り当てを試行",
-            ["PriorityText"] = "このプログラムはタスク優先度を上げず、エンコードタスクをレイテンシ重視とも宣言しません。\nそれにより、無応答タスクが OS を長時間停止させる事態を防ぎます。",
+            ["PriorityText"] = "エンコーダー停止時もOSの応答性を保つため、本プログラムは通常優先度のみ使用します",
             ["CacheGroupTitle"] = "検出された L3 キャッシュグループ（↑グループ越境、↓キャッシュヒット）",
-            ["NumaTopologyHintText"] = "CPU に複数の NUMA ノードが含まれる場合、エンコーダーは 1 つのノードのみ占有します → CPU リソースの一部のみ割り当て可能です。",
+            ["NumaTopologyHintText"] = "CPU内に複数のNUMAノードがある場合、エンコーダーは最初の1つだけを使用します",
             ["UpstreamNumaTitle"] = "NUMA ソフトバインディング: パイプライン上流",
             ["DownstreamNumaTitle"] = "NUMA ソフトバインディング: パイプライン下流（エンコーダー）",
             ["NumaGuidanceText"] = "上流ツールのフィルターが遅い場合、エンコーダーを別のノードに割り当てる方が高速なことがあります。\nそれ以外では、同じノードを共有する方が高速なことがあります—計算 vs レイテンシボトルネック。",
@@ -154,9 +154,9 @@ public class ParallelismConfLangProvider : LangProviderBase
         ["ru"] = new()
         {
             ["IntroText"] = "Эта программа игнорирует различные реализации параллелизма между инструментами и использует:\n· CPU Sets для предложения привязки потоков (разрешена временная миграция)\n· Пытается выделить RAM на NUMA-узле потоков кодирования",
-            ["PriorityText"] = "Эта программа не повышает приоритет задач и не объявляет кодирование чувствительным к задержке, предотвращая зависание ОС из-за неотвечающих задач.",
+            ["PriorityText"] = "Программа использует обычный приоритет, чтобы зависший кодировщик не подвешивал ОС",
             ["CacheGroupTitle"] = "Группы L3-кэша (↑ переходы, ↓ попадания)",
-            ["NumaTopologyHintText"] = "Если CPU содержит несколько NUMA-узлов, кодер занимает только 1 → можно выделить лишь часть ресурсов CPU.",
+            ["NumaTopologyHintText"] = "Если CPU имеет несколько NUMA-узлов, кодировщик будет использовать только первый",
             ["UpstreamNumaTitle"] = "NUMA-привязка: апстрим",
             ["DownstreamNumaTitle"] = "NUMA-привязка: даунстрим (кодер)",
             ["NumaGuidanceText"] = "Назначение кодера на другой узел может быть быстрее, если апстрим-инструмент использует медленные фильтры; в противном случае общий узел может быть быстрее — вычисления vs задержка.",
@@ -178,9 +178,9 @@ public class ParallelismConfLangProvider : LangProviderBase
         ["de"] = new()
         {
             ["IntroText"] = "Dieses Programm ignoriert verschiedene Parallelisierungen zwischen Tools und verwendet:\n· CPU Sets zur Thread-Affinitätsvorschlag (temporäre Thread-Knoten-Verschiebung erlaubt)\n· Versuch, RAM auf dem NUMA-Knoten der Kodierungsthreads zuzuordnen",
-            ["PriorityText"] = "Dieses Programm erhöht nicht die Aufgabenpriorität und deklariert Kodierung nicht als latenzempfindlich, um zu verhindern, dass nicht reagierende Aufgaben das OS blockieren.",
+            ["PriorityText"] = "Dieses Programm nutzt normale Priorität, damit ein hängender Encoder das OS nicht lahmlegt",
             ["CacheGroupTitle"] = "Erkannte L3-Cache-Gruppen (↑ Übergänge, ↓ Treffer)",
-            ["NumaTopologyHintText"] = "Bei mehreren NUMA-Knoten pro CPU belegt der Encoder nur 1 → nur ein Teil der CPU-Ressourcen kann zugewiesen werden.",
+            ["NumaTopologyHintText"] = "Bei mehreren NUMA-Knoten einer CPU nutzt der Encoder nur den ersten",
             ["UpstreamNumaTitle"] = "NUMA-Soft-Binding: Upstream-Pipeline",
             ["DownstreamNumaTitle"] = "NUMA-Soft-Binding: Downstream-Pipeline (Encoder)",
             ["NumaGuidanceText"] = "Encoder einem anderen Knoten zuzuweisen kann bei langsamen Upstream-Filtern schneller sein; sonst kann geteilter Knoten schneller sein — Rechenleistung vs Latenz.",
@@ -202,9 +202,9 @@ public class ParallelismConfLangProvider : LangProviderBase
         ["ko"] = new()
         {
             ["IntroText"] = "이 프로그램은 도구 간 다양한 병렬 구현을 무시하고 다음을 사용합니다:\n· CPU Sets로 스레드 친화성 제안 (임시 스레드 노드 이동 허용)\n· 인코딩 스레드의 NUMA 노드에 RAM 할당 시도",
-            ["PriorityText"] = "이 프로그램은 작업 우선순위를 높이지 않으며 인코딩 작업을 지연에 민감한 유형으로 선언하지 않습니다.\n그로 인해 응답하지 않는 작업이 OS를 무기한 정지시키는 것을 방지합니다.",
+            ["PriorityText"] = "인코더가 멈춰도 OS가 멈추지 않도록 이 프로그램은 보통 우선순위만 사용합니다",
             ["CacheGroupTitle"] = "감지된 L3 캐시 그룹 (↑ 경계 초과, ↓ 캐시 적중)",
-            ["NumaTopologyHintText"] = "CPU에 NUMA 노드가 여러 개 포함된 경우 인코더는 1개만 점유합니다 → CPU 리소스의 일부만 할당할 수 있습니다.",
+            ["NumaTopologyHintText"] = "CPU 에 여러 NUMA 노드가 있으면 인코더는 첫 번째만 사용합니다",
             ["UpstreamNumaTitle"] = "NUMA 소프트 바인딩: 파이프 업스트림",
             ["DownstreamNumaTitle"] = "NUMA 소프트 바인딩: 파이프 다운스트림 (인코더)",
             ["NumaGuidanceText"] = "업스트림 도구에 느린 필터가 있는 경우 인코더를 다른 노드에 할당하는 것이 더 빠를 수 있습니다.\n그렇지 않으면 동일한 노드를 공유하는 것이 더 빠를 수 있습니다—계산 vs 대기 시간 병목",
@@ -226,9 +226,9 @@ public class ParallelismConfLangProvider : LangProviderBase
         ["pt-br"] = new()
         {
             ["IntroText"] = "Este programa ignora as várias implementações paralelas entre ferramentas e usa:\n· CPU Sets para sugerir afinidade de threads (permitindo deslocamento temporário de thread-nó)\n· Tenta alocar RAM para threads de codificação no seu nó NUMA",
-            ["PriorityText"] = "Este programa evita aumentar a prioridade da tarefa ou declarar tarefas de codificação como sensíveis a latência,\nimpedindo assim que tarefas sem resposta travem o SO indefinidamente",
+            ["PriorityText"] = "Este programa usa prioridade normal para evitar que um codificador travado congele o OS",
             ["CacheGroupTitle"] = "Grupos de cache L3 detectados (↑ travessias, ↓ acertos de cache)",
-            ["NumaTopologyHintText"] = "Quando uma CPU contém múltiplos nós NUMA, o codificador ocupa apenas 1 → apenas uma parte dos recursos da CPU pode ser alocada",
+            ["NumaTopologyHintText"] = "Se uma CPU tiver vários nós NUMA, o codificador usará apenas o primeiro",
             ["UpstreamNumaTitle"] = "Vinculação NUMA suave: Pipe Upstream",
             ["DownstreamNumaTitle"] = "Vinculação NUMA suave: Pipe Downstream (codificador)",
             ["NumaGuidanceText"] = "Atribuir o codificador a outros nós pode ser mais rápido quando a ferramenta upstream tem filtros lentos;\ncaso contrário, compartilhar o mesmo nó pode ser mais rápido — gargalo de computação vs. latência",

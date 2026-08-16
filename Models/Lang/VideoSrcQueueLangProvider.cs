@@ -120,7 +120,6 @@ public class VideoSrcQueueLangProvider : LangProviderBase
         {
             ["Tool.Source.VideoSrcQueueWithCount"] = "Videoquellen-Warteschlange ({0})",
             ["Tool.Source.VideoSrcQueue"] = "Videoquellen-Warteschlange",
-            ["Buttons.Import"] = "Importieren",
             ["SourceQueue.Sequence"] = "Sequenz",
             ["ToolField.Path"] = "Pfad",
             ["SourceQueue.SelectFolderTitle"] = "Videoquellen-Warteschlangenordner wählen",
@@ -136,7 +135,6 @@ public class VideoSrcQueueLangProvider : LangProviderBase
         {
             ["Tool.Source.VideoSrcQueueWithCount"] = "비디오 소스 대기열 ({0})",
             ["Tool.Source.VideoSrcQueue"] = "비디오 소스 대기열",
-            ["Buttons.Import"] = "가져오기",
             ["SourceQueue.Sequence"] = "순번",
             ["ToolField.Path"] = "경로",
             ["SourceQueue.SelectFolderTitle"] = "비디오 소스 대기열 폴더 선택",
@@ -167,7 +165,6 @@ public class VideoSrcQueueLangProvider : LangProviderBase
 
     public string ToolSourceVideoSrcQueueWithCount { get; }
     public string ToolSourceVideoSrcQueue { get; }
-    public string ButtonsImport { get; }
     public string SourceQueueSequence { get; }
     public string ToolFieldPath { get; }
     public string SourceQueueSelectFolderTitle { get; }
@@ -182,7 +179,6 @@ public class VideoSrcQueueLangProvider : LangProviderBase
     {
         ToolSourceVideoSrcQueueWithCount = this["Tool.Source.VideoSrcQueueWithCount"];
         ToolSourceVideoSrcQueue = this["Tool.Source.VideoSrcQueue"];
-        ButtonsImport = this["Buttons.Import"];
         SourceQueueSequence = this["SourceQueue.Sequence"];
         ToolFieldPath = this["ToolField.Path"];
         SourceQueueSelectFolderTitle = this["SourceQueue.SelectFolderTitle"];

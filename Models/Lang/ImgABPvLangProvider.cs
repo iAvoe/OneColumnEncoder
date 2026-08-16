@@ -262,12 +262,10 @@ public class ImgABPvLangProvider : LangProviderBase
             ["DisplayModeLabel"] = "Anzeige",
             ["ZoomLabel"] = "Zoom",
             ["PositionLabel"] = "Bildposition",
-            ["FitButtonText"] = "Anpassen",
             ["RawButtonText"] = "Roh",
             ["Hint1Text"] = "Komprimierung erfolgt erst nach Klick auf Vorschau aufgrund der Langsamkeit mancher Encoder",
             ["Hint2Text"] = "Vorschau nur via ffmpeg, um Nutzbarkeit ohne importierten Encoder sicherzustellen",
             ["Hint3Text"] = "Trennlinie zum Vergleich ziehen; beachten Sie, dass Sie \"angehalten\" und nicht \"Bewegung\" vergleichen",
-            ["PreviewButtonText"] = "Vorschau",
             ["StatusReady"] = "Bereit",
             ["StatusExtracting"] = "Quellframe wird extrahiert...",
             ["StatusConverting"] = "Quellframe wird konvertiert ({0})...",
@@ -334,7 +332,6 @@ public class ImgABPvLangProvider : LangProviderBase
     public string DisplayModeLabel { get; }
     public string ZoomLabel { get; }
     public string PositionLabel { get; }
-    public string FitButtonText { get; }
     public string RawButtonText { get; }
     public string Hint1Text { get; }
     public string Hint2Text { get; }
@@ -372,7 +369,6 @@ public class ImgABPvLangProvider : LangProviderBase
         DisplayModeLabel = this["DisplayModeLabel"];
         ZoomLabel = this["ZoomLabel"];
         PositionLabel = this["PositionLabel"];
-        FitButtonText = this["FitButtonText"];
         RawButtonText = this["RawButtonText"];
         Hint1Text = this["Hint1Text"];
         Hint2Text = this["Hint2Text"];

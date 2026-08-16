@@ -122,7 +122,6 @@ public partial class EncodingMonitorVM : BaseVM
     public string RichTextModeText => Lang.RichTextModeText;
     public string MuxTimebaseHint => Lang.MuxTimebaseHint;
     public string OpusAudioCommandHint => BuildOpusAudioCommandHint();
-    public string OpusAudioBitrateHint => Lang.OpusAudioBitrateHint;
     public bool CanMux => !_isSample && _command.MuxCommand != null;
     public bool IsWindowCloseEnabled
     {
@@ -2290,7 +2289,6 @@ public partial class EncodingMonitorVM : BaseVM
         OnPropertyChanged(nameof(SaveLogsText));
         OnPropertyChanged(nameof(MuxTimebaseHint));
         OnPropertyChanged(nameof(OpusAudioCommandHint));
-        OnPropertyChanged(nameof(OpusAudioBitrateHint));
         OnPropertyChanged(nameof(DistributionUpstreamLabel));
         OnPropertyChanged(nameof(DistributionDownstreamLabel));
         OnPropertyChanged(nameof(DistributionCacheLabel));

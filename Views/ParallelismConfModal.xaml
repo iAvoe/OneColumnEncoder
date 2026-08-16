@@ -18,21 +18,17 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <ScrollViewer Grid.Row="0"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled">
             <StackPanel Margin="0 0 0 15">
-                <comps:HintPanel Text="{Binding Lang.IntroText}"
-                                 Margin="5 0 5 0" />
-
-                <comps:HintPanel Text="{Binding Lang.PriorityText}"
-                                 Margin="5 10 5 0" />
 
                 <TextBlock Text="{Binding Lang.CacheGroupTitle}"
                            Style="{StaticResource H3}"
-                           Margin="0 15 0 0"
                            Foreground="{StaticResource GlobalPrimary}" />
 
                 <TextBlock Text="{Binding CacheGroupHint}"
@@ -107,5 +103,13 @@
                               Button2Command="{Binding Cmd2}"
                               Button1IsEnabled="{Binding B2_1IsEnabled}"
                               Button2IsEnabled="{Binding B2_2IsEnabled}" />
+
+        <comps:HintPanel Grid.Row="2"
+                         Text="{Binding Lang.IntroText}"
+                         Margin="0 2.5 0 0" />
+
+        <comps:HintPanel Grid.Row="3"
+                         Text="{Binding Lang.PriorityText}"
+                         Margin="0 5 0 0" />
     </Grid>
 </ui:AdaptiveWindow>

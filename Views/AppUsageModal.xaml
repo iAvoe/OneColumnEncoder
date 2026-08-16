@@ -9,23 +9,14 @@
         d:DataContext="{d:DesignInstance Type=viewmodels:AppUsageVM}"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
-        Width="800"
+        Width="990"
         SizeToContent="Height"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource Background}">
-    
-    <Grid Margin="0">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-
-        <FlowDocumentScrollViewer Grid.Row="0"
-                                  HorizontalAlignment="Stretch"
+    <Grid Margin="15 10 15 15">
+        <FlowDocumentScrollViewer HorizontalAlignment="Stretch"
                                   HorizontalContentAlignment="Stretch"
-                                  VerticalScrollBarVisibility="Auto"
-                                  Margin="0"
-                                  Padding="15 10 5 0">
+                                  VerticalScrollBarVisibility="Auto">
             <FlowDocument FontFamily="{DynamicResource UiFont}"
                           PagePadding="0"
                           ColumnWidth="Infinity"
@@ -238,14 +229,5 @@
                 </Paragraph>
             </FlowDocument>
         </FlowDocumentScrollViewer>
-
-        <Button Grid.Row="1"
-                Margin="10 5 10 10"
-                Height="40"
-                Content="{Binding Lang.CloseButtonText, Mode=OneWay}"
-                Command="{Binding CloseCmd}"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Stretch"
-                Style="{StaticResource PrimaryButton}" />
     </Grid>
 </ui:AdaptiveWindow>

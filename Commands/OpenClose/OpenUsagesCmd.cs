@@ -16,7 +16,7 @@ public class OpenUsagesCmd(ModalNavS modelNavS, AppConfM appConfM) : OpenCloseBa
             return;
 
         var window = new AppUsageModal();
-        var vm = new AppUsageVM(_appConfM, window.Close);
+        var vm = new AppUsageVM(_appConfM);
         ShowModal(window, vm, closeOpenStack: true);
     }
 }

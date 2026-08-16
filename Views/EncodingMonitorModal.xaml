@@ -20,12 +20,13 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
+        <!-- 0 or 1 of the sidebar may be revealed, never both -->
         <comps:QueueSidebarPanel Grid.Column="0"
-                                  Visibility="{Binding IsQueueSidebarVisible, Converter={StaticResource BoolToVisibility}}" />
-
+                                 Visibility="{Binding IsQueueSidebarVisible, Converter={StaticResource BoolToVisibility}}" />
         <comps:RepartOutputSidebarPanel Grid.Column="0"
                                         Visibility="{Binding IsRepartSidebarVisible, Converter={StaticResource BoolToVisibility}}" />
 
+        <!-- Splitter bar -->
         <GridSplitter Grid.Column="1"
                       Width="2"
                       ResizeBehavior="PreviousAndNext"
@@ -33,6 +34,7 @@
                       IsEnabled="{Binding QueueSidebar.IsVisible}"
                       Visibility="{Binding QueueSidebar.IsVisible, Converter={StaticResource BoolToVisibility}}" />
 
+        <!-- Actual EncodingMonitor GUI -->
         <ContentControl Grid.Column="2"
                         Content="{Binding QueueSidebar.SelectedJob}">
             <ContentControl.ContentTemplate>

@@ -107,8 +107,8 @@ public static class UICaptionProvider
 
         public static class Buttons
         {
-            public static string Cancel => Lang["AppConf.Cancel"];
-            public static string Save => Lang["AppConf.Save"];
+            public static string Cancel => Lang["Cancel"];
+            public static string Save => Lang["Save"];
             public static string ClearOldQueueJson => Lang["AppConf.ClearOldQueueJson"];
         }
 
@@ -124,7 +124,7 @@ public static class UICaptionProvider
                 "ru" => "ru (!Localized)",
                 "de" => "de (!Localized)",
                 "ko" => "ko (!Localized)",
-                "pt-br" => "pt-br (!Localized)",
+                "pt-br" => "pt-br (!Local)",
                 _ => code
             };
         }
