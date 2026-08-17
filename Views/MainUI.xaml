@@ -170,6 +170,7 @@
                         <cards:MiniItemCard DataContext="{Binding}"
                                             IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                             IsCancel="{Binding IsCancel}"
+                                            IsReal="{Binding IsReal}"
                                             ShowActionButtons="False"
                                             Margin="5 2.5">
                             <cards:MiniItemCard.InputBindings>
@@ -272,6 +273,7 @@
                         <cards:MiniItemCard DataContext="{Binding}"
                                             IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                             IsCancel="{Binding IsCancel}"
+                                            IsReal="{Binding IsReal}"
                                             ShowActionButtons="False"
                                             Margin="5 2.5">
                             <cards:MiniItemCard.InputBindings>
@@ -374,6 +376,7 @@
                         <cards:MiniItemCard DataContext="{Binding}"
                                             IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                             IsCancel="{Binding IsCancel}"
+                                            IsReal="{Binding IsReal}"
                                             ShowActionButtons="False"
                                             Margin="5 2.5">
                             <cards:MiniItemCard.InputBindings>
@@ -489,6 +492,8 @@
                         <cards:MiniItemCard DataContext="{Binding}"
                                             IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                             IsCancel="{Binding IsCancel}"
+                                            IsReal="{Binding IsReal}"
+                                            EnableRealCheck="False"
                                             IsEnabled="{Binding IsEnabled}"
                                             ShowActionButtons="False"
                                             PaletteIndex="1"
@@ -611,6 +616,8 @@
                         <cards:MiniItemCard DataContext="{Binding}"
                                             IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                             IsCancel="{Binding IsCancel}"
+                                            IsReal="{Binding IsReal}"
+                                            EnableRealCheck="False"
                                             IsEnabled="{Binding IsEnabled}"
                                             ShowActionButtons="False"
                                             PaletteIndex="1"
@@ -723,6 +730,7 @@
                         <cards:MiniItemCard DataContext="{Binding}"
                                             IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                             IsCancel="{Binding IsCancel}"
+                                            IsReal="{Binding IsReal}"
                                             ShowActionButtons="False"
                                             Margin="5 2.5">
                             <cards:MiniItemCard.InputBindings>
@@ -846,6 +854,8 @@
                         <cards:MiniItemCard DataContext="{Binding}"
                                             IsSelected="{Binding IsSelected, Mode=TwoWay}"
                                             IsCancel="{Binding IsCancel}"
+                                            IsReal="{Binding IsReal}"
+                                            EnableRealCheck="False"
                                             IsEnabled="{Binding IsEnabled}"
                                             PaletteIndex="2"
                                             ShowActionButtons="False"

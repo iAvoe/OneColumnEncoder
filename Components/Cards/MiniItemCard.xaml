@@ -198,13 +198,18 @@
                             <Setter Property="Background"
                                     Value="{StaticResource RemixedBackground4}" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                     Value="True">
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="True" />
+                                <Condition Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="False" />
+                            </MultiDataTrigger.Conditions>
                             <Setter Property="BorderBrush"
                                     Value="{StaticResource BorderGreen}" />
                             <Setter Property="Background"
                                     Value="{StaticResource BackgroundGreen}" />
-                        </DataTrigger>
+                        </MultiDataTrigger>
                         <DataTrigger Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      Value="True">
                             <Setter Property="BorderBrush"
@@ -212,6 +217,18 @@
                             <Setter Property="Background"
                                     Value="{StaticResource BackgroundRed}" />
                         </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding EnableRealCheck, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="True" />
+                                <Condition Binding="{Binding IsReal, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource BorderRed}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource BackgroundRed}" />
+                        </MultiDataTrigger>
                         <!-- Strengthen the shadow on hover for a subtle lift feedback. -->
                         <Trigger Property="IsMouseOver"
                                  Value="True">
@@ -279,13 +296,18 @@
                             <Setter Property="TextElement.Foreground"
                                     Value="{StaticResource RemixedForeground4}" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                     Value="True">
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="True" />
+                                <Condition Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="False" />
+                            </MultiDataTrigger.Conditions>
                             <Setter Property="BorderBrush"
                                     Value="{StaticResource BorderGreen}" />
                             <Setter Property="Background"
                                     Value="{StaticResource BackgroundGreen}" />
-                        </DataTrigger>
+                        </MultiDataTrigger>
                         <DataTrigger Binding="{Binding IsCancel, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      Value="True">
                             <Setter Property="BorderBrush"
@@ -293,6 +315,18 @@
                             <Setter Property="Background"
                                     Value="{StaticResource BackgroundRed}" />
                         </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding EnableRealCheck, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="True" />
+                                <Condition Binding="{Binding IsReal, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                           Value="False" />
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource BorderRed}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource BackgroundRed}" />
+                        </MultiDataTrigger>
                         <DataTrigger Binding="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                      Value="False">
                             <Setter Property="BorderBrush"
