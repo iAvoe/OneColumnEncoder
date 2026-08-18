@@ -1,59 +1,86 @@
+
+    .
+    ├── ①
+    ├── OneColumnEncoder.exe
+    ├── OneColumnEncoder.pdb
+    │   └── x64-upstreams-encoders
+    │        └── ②
+    └── 1cenc
+         ├── ③
+         ├── x64-upstreams-encoders
+         │   └── ④
+         ├── x64-AVS-VS-plugins
+         │   └── ...
+         ├── x64-CloudinarySSIMULACRA2.1
+         │   └── ...
+         └── x64-GoogleButteraugli
+              └── ...
+
+
 EN
 
 Due to GitHub's file size limitations, upstream programs and encoders can only be distributed as .7z compressed files. Therefore, before opening 1cenc.exe, you need to extract either "x64-upstreams-encoders.7z" or "x86-upstreams-encoders.7z" to have all tools automatically imported.
 You can extract the programs directly to the directory where 1cenc.exe is located, or extract them to a file structure of "x64-upstreams-encoders/xxx.exe" or "x86-upstreams-encoders/xxx.exe".
 Alternatively, you can re-enable the automatic import function in "Settings - Init Mode" (and reopen 1cenc.exe) to rerun the automatic import process.
+The auto search ranges are listed above.
 
 ZH
 
 由于 GitHub 的文件大小限制，上游程序和编码器只能被压缩为 .7z 文件发布，因此在打开 1cenc.exe 前，应该将“x64-upstreams-encoders.7z”或“x86-upstreams-encoders.7z”解压才能自动导入所有工具。
 你可以将其中的程序直接解压到 1cenc.exe 所在目录，或者解压为“x64-upstreams-encoders/xxx.exe”或“x86-upstreams-encoders/xxx.exe”的文件结构。
 此外，你还能重新启用“设置——初始化模式”中的自动导入功能（并重开 1cenc.exe）来重跑自动导入。
-
-ZH
+自动导入的搜索范围见上表。
 
 由於 GitHub 的檔案大小限制，上遊程序和編碼器只能被壓縮為 .7z 文件發布，因此在打開 1cenc.exe 前，應該將“x64-upstreams-encoders.7z”或“x86-upstreams-encoders.7z”解壓才能自動導入所有工具。
 你可以將其中的程序直接解壓到 1cenc.exe 所在目錄，或者解壓為“x64-upstreams-encoders/xxx.exe”或“x86-upstreams-encoders/xxx.exe”的文件結構。
 此外，你還能重新啟用“設置——初始化模式”中的自動導入功能（並重開 1cenc.exe）來重跑自動導入。
+自動導入的搜索範圍見上表。
 
 FR
 
 En raison des limitations de taille de fichier de GitHub, les programmes en amont et les encodeurs ne peuvent être distribués que sous forme de fichiers compressés .7z. Par conséquent, avant d'ouvrir 1cenc.exe, vous devez extraire soit x64-upstreams-encoders.7z, soit x86-upstreams-encoders.7z pour que tous les outils soient automatiquement importés.
 Vous pouvez extraire les programmes directement dans le répertoire où se trouve 1cenc.exe, ou les extraire selon une structure de fichiers telle que x64-upstreams-encoders/xxx.exe ou x86-upstreams-encoders/xxx.exe.
 Vous pouvez également réactiver la fonction d'importation automatique dans « Paramètres — Mode d'initialisation » (et rouvrir 1cenc.exe) pour relancer le processus d'importation automatique.
+Les plages de recherche automatique sont indiquées dans le tableau ci-dessus.
 
 ES
 
 Debido a las limitaciones de tamaño de archivo de GitHub, los programas ascendentes (upstream) y los codificadores solo se pueden distribuir como archivos comprimidos .7z. Por lo tanto, antes de abrir 1cenc.exe, debe extraer x64-upstreams-encoders.7z o x86-upstreams-encoders.7z para que todas las herramientas se importen automáticamente.
 Puede extraer los programas directamente en el directorio donde se encuentra 1cenc.exe, o extraerlos en una estructura de archivos como x64-upstreams-encoders/xxx.exe o x86-upstreams-encoders/xxx.exe.
 Como alternativa, puede volver a habilitar la función de importación automática en « Configuración — Modo de inicio » (y reabrir 1cenc.exe) para volver a ejecutar el proceso de importación automática.
+Los rangos de búsqueda automática se indican en la tabla anterior.
 
 JA
 
 GitHub のファイルサイズ制限により、アップストリームプログラムおよびエンコーダーは.7z 圧縮ファイルとしてのみ配布されています。そのため、1cenc.exe を開く前に、x64-upstreams-encoders.7z または x86-upstreams-encoders.7z を解凍して、すべてのツールが自動的にインポートされるようにする必要があります。
 プログラムは 1cenc.exe があるディレクトリに直接解凍するか、x64-upstreams-encoders/xxx.exe または x86-upstreams-encoders/xxx.exe というファイル構造で解凍することができます。
 あるいは、「設定 — 初期化モード」で自動インポート機能を再度有効にし（1cenc.exe を再度開く）、自動インポートプロセスを再実行することもできます。
+自動インポートの検索範囲は上記の表をご参照ください。
 
 RU
 
 Из-за ограничений на размер файлов на GitHub, вышестоящие программы (upstream) и кодеки могут распространяться только в виде сжатых файлов .7z. Поэтому перед открытием 1cenc.exe вам необходимо извлечь либо x64-upstreams-encoders.7z, либо x86-upstreams-encoders.7z, чтобы все инструменты были автоматически импортированы.
 Вы можете извлечь программы непосредственно в каталог, где находится 1cenc.exe, или извлечь их в структуру папок, например x64-upstreams-encoders/xxx.exe или x86-upstreams-encoders/xxx.exe.
 Кроме того, вы можете повторно включить функцию автоматического импорта в «Настройках — Режим инициализации» (и снова открыть 1cenc.exe), чтобы запустить процесс автоматического импорта заново.
+Диапазоны автоматического поиска указаны в таблице выше.
 
 KO
 
 GitHub 의 파일 크기 제한으로 인해 업스트림 프로그램과 인코더는 .7z 압축 파일로만 배포될 수 있습니다. 따라서 1cenc.exe 를 열기 전에 x64-upstreams-encoders.7z 또는 x86-upstreams-encoders.7z 를 추출하여 모든 도구가 자동으로 가져와지도록 해야 합니다.
 프로그램을 1cenc.exe 가 있는 디렉터리에 직접 추출하거나, x64-upstreams-encoders/xxx.exe 또는 x86-upstreams-encoders/xxx.exe 파일 구조로 추출할 수 있습니다.
 또는 '설정 — 초기화 모드'에서 자동 가져오기 기능을 다시 활성화하고 (1cenc.exe 를 다시 열어) 자동 가져오기 프로세스를 다시 실행할 수 있습니다.
+자동 가져오기 검색 범위는 위의 표를 참조하십시오.
 
 DE
 
 Aufgrund der Dateigrößenbeschränkungen von GitHub können Upstream-Programme und Encoder nur als .7z-komprimierte Dateien vertrieben werden. Daher müssen Sie, bevor Sie 1cenc.exe öffnen, entweder x64-upstreams-encoders.7z oder x86-upstreams-encoders.7z entpacken, damit alle Tools automatisch importiert werden.
 Sie können die Programme direkt in das Verzeichnis entpacken, in dem sich 1cenc.exe befindet, oder sie in eine Dateistruktur wie x64-upstreams-encoders/xxx.exe oder x86-upstreams-encoders/xxx.exe entpacken.
 Alternativ können Sie die automatische Importfunktion in „Einstellungen — Init-Modus“ wieder aktivieren (und 1cenc.exe erneut öffnen), um den automatischen Importprozess erneut auszuführen.
+Die Bereiche für die automatische Suche sind in der obigen Tabelle aufgeführt.
 
 PT
 
 Devido às limitações de tamanho de arquivo do GitHub, os programas upstream e os codificadores só podem ser distribuídos como arquivos compactados .7z. Portanto, antes de abrir o 1cenc.exe, você precisa extrair o x64-upstreams-encoders.7z ou o x86-upstreams-encoders.7z para que todas as ferramentas sejam importadas automaticamente.
 Você pode extrair os programas diretamente no diretório onde o 1cenc.exe está localizado, ou extraí-los em uma estrutura de arquivos como x64-upstreams-encoders/xxx.exe ou x86-upstreams-encoders/xxx.exe.
 Como alternativa, você pode reativar a função de importação automática em "Configurações — Modo de inicialização" (e reabrir o 1cenc.exe) para executar novamente o processo de importação automática.
+Os intervalos de busca automática estão listados na tabela acima.
