@@ -1608,7 +1608,10 @@ public class MainVM : BaseVM
                 compressionParams,
                 () => _appDataM.Tools.FfmpegPath,
                 GetPreviewSourceVideoPath,
-                () => _srcVideoAnalysis.RawJson);
+                () => _srcVideoAnalysis.RawJson,
+                () => EncodingPipeline.GetSourceTotalFrames(
+                    _srcVideoAnalysis.RawJson,
+                    _srcVideoAnalysis.ConcatTotalFrames) ?? 0);
             EncoderConfVM.ApplySavedSettingsToCard(compressionParams);
         }
     }

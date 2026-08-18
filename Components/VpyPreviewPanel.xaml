@@ -164,8 +164,7 @@
         </Grid>
 
         <comps:HintPanel Grid.Row="3"
-                         Text="{Binding StatusText}"
-                         HintBrush="{StaticResource GlobalSecondary}"
-                         FontSize="10" />
+                         Text="{Binding VspipeLogText}"
+                         HintBrush="{StaticResource GlobalSecondary}" />
     </Grid>
 </UserControl>

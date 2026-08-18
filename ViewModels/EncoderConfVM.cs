@@ -258,7 +258,8 @@ public class EncoderConfVM : BaseVM
         Stores.ModalNavS modalNavS,
         string? ffmpegPath,
         string? sourceVideoPath,
-        string? sourceFfprobeJson)
+        string? sourceFfprobeJson,
+        Func<long>? getTotalFrames = null)
     {
         _model = EncoderConfM.Load();
         _targetItem = targetItem;
@@ -273,7 +274,7 @@ public class EncoderConfVM : BaseVM
             CancelButtonText, ConfirmButtonText, CloseCmd, ConfirmCmd);
         PopulateDropdowns();
         LoadModelToUi();
-        PreviewVM = new ImgABPvVM(this, modalNavS, ffmpegPath, sourceVideoPath, sourceFfprobeJson);
+        PreviewVM = new ImgABPvVM(this, modalNavS, ffmpegPath, sourceVideoPath, sourceFfprobeJson, getTotalFrames);
         UILangProvider.CurrentChanged += OnLanguageChanged;
     }
 

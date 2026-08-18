@@ -1,6 +1,7 @@
 using OneColumnEncoder.Analytics;
 using OneColumnEncoder.Models.Analysis;
 using OneColumnEncoder.Models.Encoding;
+using OneColumnEncoder.Pipeline;
 using System.IO;
 
 namespace OneColumnEncoder.ViewModels;
@@ -126,7 +127,13 @@ public class ImgABPvVM : BaseVM
         private set => SetProperty(ref _butteraugliStatusText, value);
     }
 
-    public ImgABPvVM(EncoderConfVM encoderConfVM, Stores.ModalNavS modalNavS, string? ffmpegPath, string? sourceVideoPath, string? sourceFfprobeJson)
+    public ImgABPvVM(
+        EncoderConfVM encoderConfVM,
+        Stores.ModalNavS modalNavS,
+        string? ffmpegPath,
+        string? sourceVideoPath,
+        string? sourceFfprobeJson,
+        Func<long>? getTotalFrames = null)
     {
         _encoderConfVM = encoderConfVM;
         _modalNavS = modalNavS;
@@ -157,11 +164,15 @@ public class ImgABPvVM : BaseVM
         bool hasSourceStats = !string.IsNullOrWhiteSpace(sourceFfprobeJson);
         _colorSpaceAnalysis = ColorSpaceConverter.Analyze(sourceFfprobeJson);
         FFProbeSrcStats sourceStats = FFProbeSourceStatsReader.Read(sourceFfprobeJson ?? string.Empty);
-        MaxPositionSeconds = Math.Max(1, (int)Math.Floor(Math.Min(int.MaxValue, sourceStats.DurationSeconds)) - 1);
+        long totalFrames = getTotalFrames?.Invoke() ?? EncodingPipeline.GetSourceTotalFrames(sourceFfprobeJson) ?? 0;
+        double previewDurationSeconds = totalFrames > 0 && sourceStats.FrameRate > 0d
+            ? totalFrames / sourceStats.FrameRate
+            : sourceStats.DurationSeconds;
+        MaxPositionSeconds = Math.Max(1, (int)Math.Floor(Math.Min(int.MaxValue, previewDurationSeconds)) - 1);
         PreviewPositionSeconds = hasSourceStats
             ? Math.Min(MaxPositionSeconds, Math.Max(0, MaxPositionSeconds / 2))
             : 0;
-        BuildPositionTickLabels(sourceStats.DurationSeconds);
+        BuildPositionTickLabels(previewDurationSeconds);
 
         StatusText = Lang.StatusReady;
         PreviewButtonText = Lang.PreviewButtonText;

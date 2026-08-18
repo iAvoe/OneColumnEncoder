@@ -99,6 +99,13 @@ public class VspipePreviewVM : BaseVM
         private set => SetProperty(ref _statusText, value);
     }
 
+    private string _vspipeLogText = "";
+    public string VspipeLogText
+    {
+        get => _vspipeLogText;
+        private set => SetProperty(ref _vspipeLogText, value);
+    }
+
     private string _previewButtonText = "Preview";
     public string PreviewButtonText
     {
@@ -147,9 +154,9 @@ public class VspipePreviewVM : BaseVM
         _buildPreviewScript = buildPreviewScript;
         _scriptContent = scriptContent;
         _videoFilename = Path.GetFileName(srcPath);
-        _totalFrames = totalFrames > 0 ? totalFrames : 1;
-        _currentFrame = 0;
+_totalFrames = totalFrames > 0 ? totalFrames : 1;
         MaxPositionSeconds = _totalFrames - 1;
+        _currentFrame = Math.Min(MaxPositionSeconds, Math.Max(0, MaxPositionSeconds / 2));
         BuildPositionTickLabels(MaxPositionSeconds);
 
         _workDirectory = PreviewPipeline.CreateWorkDirectory("1cenc-vpy-preview-");
@@ -172,6 +179,7 @@ public class VspipePreviewVM : BaseVM
         _suppressSwitch = false;
 
         StatusText = "Ready";
+        VspipeLogText = "Ready";
         PreviewCommand = new ActionCmd(_ => PreviewOrCancel());
         InspectFrameDataCommand = new ActionCmd(_ => ShowFrameDataDebug());
     }
@@ -213,6 +221,7 @@ public class VspipePreviewVM : BaseVM
         {
             RefreshPreviewScript();
             IsBusy = true;
+            VspipeLogText = "Starting vspipe preview...";
             string srcPath = Path.Combine(_workDirectory, "output-0.y4m");
             string filteredPath = Path.Combine(_workDirectory, "output-1.y4m");
 
@@ -231,12 +240,20 @@ public class VspipePreviewVM : BaseVM
         }
         catch (OperationCanceledException)
         {
-            if (!_isDisposed) StatusText = "Cancelled";
+            if (!_isDisposed)
+            {
+                StatusText = "Cancelled";
+                AppendVspipeLog("Cancelled");
+            }
         }
         catch (ObjectDisposedException) when (_isDisposed) { }
         catch (Exception ex)
         {
-            if (!_isDisposed) StatusText = ex.Message;
+            if (!_isDisposed)
+            {
+                StatusText = ex.Message;
+                AppendVspipeLog($"Error: {ex.Message}");
+            }
         }
         finally
         {
@@ -257,7 +274,9 @@ public class VspipePreviewVM : BaseVM
             FileName = _vspipePath,
             WorkingDirectory = _workDirectory,
             UseShellExecute = false,
+            RedirectStandardOutput = true,
             RedirectStandardError = true,
+            StandardOutputEncoding = System.Text.Encoding.UTF8,
             StandardErrorEncoding = System.Text.Encoding.UTF8,
             CreateNoWindow = true
         };
@@ -276,15 +295,21 @@ public class VspipePreviewVM : BaseVM
         try
         {
             vspipeProcess.Start();
+            Task<string> vspipeStdoutTask = vspipeProcess.StandardOutput.ReadToEndAsync(token);
             Task<string> vspipeStderrTask = vspipeProcess.StandardError.ReadToEndAsync(token);
 
-            await vspipeProcess.WaitForExitAsync(token).ConfigureAwait(false);
-            string vspipeStderr = await vspipeStderrTask.ConfigureAwait(false);
+            await vspipeProcess.WaitForExitAsync(token);
+            string vspipeStdout = await vspipeStdoutTask;
+            string vspipeStderr = await vspipeStderrTask;
+
+            AppendVspipeLog(BuildVspipeLogBlock(outputIndex, vspipeStdout, vspipeStderr, vspipeProcess.ExitCode));
 
             if (vspipeProcess.ExitCode != 0)
             {
                 string msg = string.IsNullOrWhiteSpace(vspipeStderr)
-                    ? $"vspipe exit code {vspipeProcess.ExitCode}"
+                    ? string.IsNullOrWhiteSpace(vspipeStdout)
+                        ? $"vspipe exit code {vspipeProcess.ExitCode}"
+                        : PreviewPipeline.TrimProcessMessage(vspipeStdout)
                     : PreviewPipeline.TrimProcessMessage(vspipeStderr);
                 throw new InvalidOperationException(msg);
             }
@@ -294,6 +319,46 @@ public class VspipePreviewVM : BaseVM
             PreviewPipeline.TryKillProcess(vspipeProcess);
             throw;
         }
+    }
+
+    private void AppendVspipeLog(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return;
+
+        string next = string.IsNullOrWhiteSpace(VspipeLogText)
+            ? text.TrimEnd()
+            : $"{VspipeLogText}{Environment.NewLine}{Environment.NewLine}{text.TrimEnd()}";
+        VspipeLogText = next;
+    }
+
+    private static string BuildVspipeLogBlock(int outputIndex, string stdout, string stderr, int exitCode)
+    {
+        StringBuilder sb = new();
+        sb.AppendLine($"vspipe output {outputIndex}");
+
+        if (!string.IsNullOrWhiteSpace(stdout))
+        {
+            sb.AppendLine("[stdout]");
+            sb.AppendLine(stdout.TrimEnd());
+        }
+
+        if (!string.IsNullOrWhiteSpace(stderr))
+        {
+            if (sb.Length > 0) sb.AppendLine();
+            sb.AppendLine("[stderr]");
+            sb.AppendLine(stderr.TrimEnd());
+        }
+
+        if (string.IsNullOrWhiteSpace(stdout) && string.IsNullOrWhiteSpace(stderr))
+            sb.AppendLine("(no output)");
+
+        if (exitCode != 0)
+        {
+            sb.AppendLine();
+            sb.AppendLine($"Exit code: {exitCode}");
+        }
+
+        return sb.ToString().TrimEnd();
     }
 
     private void SwitchSource(string newPath)
@@ -315,11 +380,13 @@ public class VspipePreviewVM : BaseVM
             catch (Exception ex)
             {
                 StatusText = $"Script error: {ex.Message}";
+                AppendVspipeLog($"Error: Script error: {ex.Message}");
                 return;
             }
         }
 
         StatusText = "Ready";
+        VspipeLogText = "Ready";
     }
 
     private void RefreshPreviewScript()
