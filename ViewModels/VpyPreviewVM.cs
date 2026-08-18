@@ -11,6 +11,17 @@ public class PreviewSourceItem(string fullPath)
 
 public class VpyPreviewVM : BaseVM
 {
+    private enum PreviewTextState
+    {
+        Ready,
+        ExtractingSource,
+        ExtractingFiltered,
+        FrameRendered,
+        Cancelled,
+        ScriptError,
+        Custom,
+    }
+
     private readonly ModalNavS _modalNavS;
     private readonly string _vspipePath;
     private readonly string _vspipeY4mArg;
@@ -20,6 +31,12 @@ public class VpyPreviewVM : BaseVM
     private readonly Func<string, string>? _buildPreviewScript;
     private static bool _suppressSwitch;
     private readonly string _scriptContent;
+    private VpyPreviewLangProvider _lang = new(UILangProvider.Current.LanguageCode);
+    public VpyPreviewLangProvider Lang
+    {
+        get => _lang;
+        private set => SetProperty(ref _lang, value);
+    }
 
     private string _videoFilename;
     public string VideoFilename
@@ -83,7 +100,7 @@ public class VpyPreviewVM : BaseVM
         {
             if (!SetProperty(ref _isBusy, value)) return;
             OnPropertyChanged(nameof(IsIdle));
-            PreviewButtonText = value ? "Cancel" : "Preview";
+            UpdatePreviewButtonText();
         }
     }
 
@@ -103,7 +120,7 @@ public class VpyPreviewVM : BaseVM
         private set => SetProperty(ref _vspipeLogText, value);
     }
 
-    private string _previewButtonText = "Preview";
+    private string _previewButtonText = "";
     public string PreviewButtonText
     {
         get => _previewButtonText;
@@ -130,6 +147,10 @@ public class VpyPreviewVM : BaseVM
         private set => SetProperty(ref _maxPositionSeconds, value);
     }
 
+    private PreviewTextState _statusState = PreviewTextState.Ready;
+    private string? _statusDetail;
+    private bool _vspipeLogIsReadyState;
+
     public ObservableCollection<string> PositionTickLabels { get; } = [];
 
     public ActionCmd PreviewCommand { get; }
@@ -151,7 +172,7 @@ public class VpyPreviewVM : BaseVM
         _buildPreviewScript = buildPreviewScript;
         _scriptContent = scriptContent;
         _videoFilename = Path.GetFileName(srcPath);
-_totalFrames = totalFrames > 0 ? totalFrames : 1;
+        _totalFrames = totalFrames > 0 ? totalFrames : 1;
         MaxPositionSeconds = _totalFrames - 1;
         _currentFrame = Math.Min(MaxPositionSeconds, Math.Max(0, MaxPositionSeconds / 2));
         BuildPositionTickLabels(MaxPositionSeconds);
@@ -175,10 +196,10 @@ _totalFrames = totalFrames > 0 ? totalFrames : 1;
         }
         _suppressSwitch = false;
 
-        StatusText = "Ready";
-        VspipeLogText = "Ready";
+        SetReadyTexts();
         PreviewCommand = new ActionCmd(_ => PreviewOrCancel());
         InspectFrameDataCommand = new ActionCmd(_ => ShowFrameDataDebug());
+        UILangProvider.CurrentChanged += OnLanguageChanged;
     }
 
     private void BuildPositionTickLabels(int maxFrame)
@@ -222,25 +243,25 @@ _totalFrames = totalFrames > 0 ? totalFrames : 1;
             string srcPath = Path.Combine(_workDirectory, "output-0.y4m");
             string filteredPath = Path.Combine(_workDirectory, "output-1.y4m");
 
-            StatusText = "Extracting frame from output 0 (original)...";
+            SetExtractingSourceStatus();
             await RunVspipeY4mAsync(0, srcPath, token);
-            PreviewPipeline.EnsureFileExists(srcPath, "Preview frame file missing");
+            PreviewPipeline.EnsureFileExists(srcPath, Lang.PreviewFrameFileMissing);
 
-            StatusText = "Extracting frame from output 1 (filtered)...";
+            SetExtractingFilteredStatus();
             await RunVspipeY4mAsync(1, filteredPath, token);
-            PreviewPipeline.EnsureFileExists(filteredPath, "Preview frame file missing");
+            PreviewPipeline.EnsureFileExists(filteredPath, Lang.PreviewFrameFileMissing);
 
             SourceImage = Y4mFrameReader.LoadFirstFrame(srcPath);
             EncodedImage = Y4mFrameReader.LoadFirstFrame(filteredPath);
 
-            StatusText = $"Frame {CurrentFrame} rendered";
+            SetFrameRenderedStatus();
         }
         catch (OperationCanceledException)
         {
             if (!_isDisposed)
             {
-                StatusText = "Cancelled";
-                AppendVspipeLogLine("Cancelled");
+                SetCancelledStatus();
+                AppendVspipeLogLine(Lang.StatusCancelled);
             }
         }
         catch (ObjectDisposedException) when (_isDisposed) { }
@@ -248,8 +269,8 @@ _totalFrames = totalFrames > 0 ? totalFrames : 1;
         {
             if (!_isDisposed)
             {
-                StatusText = ex.Message;
-                AppendVspipeLogLine($"Error: {ex.Message}");
+                SetCustomStatus(ex.Message);
+                AppendVspipeLogLine($"{Lang.LogErrorPrefix}{ex.Message}");
             }
         }
         finally
@@ -291,7 +312,7 @@ _totalFrames = totalFrames > 0 ? totalFrames : 1;
         using CancellationTokenRegistration killRegistration = token.Register(() => PreviewPipeline.TryKillProcess(vspipeProcess));
         try
         {
-            AppendVspipeLogLine($"vspipe output {outputIndex}");
+            AppendVspipeLogLine(string.Format(CultureInfo.CurrentCulture, Lang.LogVspipeOutput, outputIndex));
             vspipeProcess.Start();
             Task stdoutTask = ReadVspipeStreamAsync(vspipeProcess.StandardOutput, token);
             Task stderrTask = ReadVspipeStreamAsync(vspipeProcess.StandardError, token);
@@ -301,7 +322,7 @@ _totalFrames = totalFrames > 0 ? totalFrames : 1;
 
             if (vspipeProcess.ExitCode != 0)
             {
-                string msg = $"vspipe exit code {vspipeProcess.ExitCode}";
+                string msg = string.Format(CultureInfo.CurrentCulture, Lang.LogVspipeExitCode, vspipeProcess.ExitCode);
                 AppendVspipeLogLine(msg);
                 throw new InvalidOperationException(msg);
             }
@@ -320,6 +341,7 @@ _totalFrames = totalFrames > 0 ? totalFrames : 1;
             _vspipeLogLines.Clear();
         }
 
+        _vspipeLogIsReadyState = false;
         RunOnUi(() => VspipeLogText = string.Empty);
     }
 
@@ -340,6 +362,7 @@ _totalFrames = totalFrames > 0 ? totalFrames : 1;
             snapshot = string.Join(Environment.NewLine, _vspipeLogLines);
         }
 
+        _vspipeLogIsReadyState = false;
         RunOnUi(() => VspipeLogText = snapshot);
     }
 
@@ -433,14 +456,13 @@ _totalFrames = totalFrames > 0 ? totalFrames : 1;
             }
             catch (Exception ex)
             {
-                StatusText = $"Script error: {ex.Message}";
-                AppendVspipeLogLine($"Error: Script error: {ex.Message}");
+                SetScriptErrorStatus(ex.Message);
+                AppendVspipeLogLine($"{Lang.LogErrorPrefix}{string.Format(CultureInfo.CurrentCulture, Lang.StatusScriptError, ex.Message)}");
                 return;
             }
         }
 
-        StatusText = "Ready";
-        VspipeLogText = "Ready";
+        SetReadyTexts();
     }
 
     private void RefreshPreviewScript()
@@ -466,16 +488,16 @@ _totalFrames = totalFrames > 0 ? totalFrames : 1;
     private void ShowFrameDataDebug()
     {
         StringBuilder sb = new();
-        sb.AppendLine($"Source video: {SelectedPreviewSource?.FullPath ?? "<none>"}");
-        sb.AppendLine($"vspipe path: {_vspipePath}");
-        sb.AppendLine($"vspipe y4m arg: {_vspipeY4mArg}");
-        sb.AppendLine($"TotalFrames: {TotalFrames}");
-        sb.AppendLine($"MaxPositionSeconds: {MaxPositionSeconds}");
+        sb.AppendLine(string.Format(CultureInfo.CurrentCulture, Lang.DebugSourceVideo, SelectedPreviewSource?.FullPath ?? Lang.NoneText));
+        sb.AppendLine(string.Format(CultureInfo.CurrentCulture, Lang.DebugVspipePath, _vspipePath));
+        sb.AppendLine(string.Format(CultureInfo.CurrentCulture, Lang.DebugVspipeY4mArg, _vspipeY4mArg));
+        sb.AppendLine(string.Format(CultureInfo.CurrentCulture, Lang.DebugTotalFrames, TotalFrames));
+        sb.AppendLine(string.Format(CultureInfo.CurrentCulture, Lang.DebugMaxPositionSeconds, MaxPositionSeconds));
         sb.AppendLine();
-        sb.AppendLine("Preview script:");
+        sb.AppendLine(Lang.DebugPreviewScript);
         sb.AppendLine(_scriptContent);
 
-        new OpenDebugModalCmd(_modalNavS, "VapourSynth Preview frame data", sb.ToString()).Execute(null);
+        new OpenDebugModalCmd(_modalNavS, VpyPreviewLangProvider.DebugWindowTitle, sb.ToString()).Execute(null);
     }
 
     private void TryKillCurrentProcess()
@@ -494,10 +516,67 @@ _totalFrames = totalFrames > 0 ? totalFrames : 1;
         if (_isDisposed) return;
 
         _isDisposed = true;
+        UILangProvider.CurrentChanged -= OnLanguageChanged;
         CancelPreview();
         if (!IsBusy) DeleteWorkDirectory();
 
         base.Dispose();
         GC.SuppressFinalize(this);
     }
-}
+
+    private void SetReadyTexts()
+    {
+        SetStatus(PreviewTextState.Ready);
+        _vspipeLogIsReadyState = true;
+        RunOnUi(() => VspipeLogText = Lang.StatusReady);
+        UpdatePreviewButtonText();
+    }
+
+    private void SetExtractingSourceStatus() => SetStatus(PreviewTextState.ExtractingSource);
+    private void SetExtractingFilteredStatus() => SetStatus(PreviewTextState.ExtractingFiltered);
+    private void SetFrameRenderedStatus() => SetStatus(PreviewTextState.FrameRendered);
+    private void SetCancelledStatus() => SetStatus(PreviewTextState.Cancelled);
+
+    private void SetScriptErrorStatus(string message) => SetStatus(PreviewTextState.ScriptError, message);
+
+    private void SetCustomStatus(string message) => SetStatus(PreviewTextState.Custom, message);
+
+    private void SetStatus(PreviewTextState state, string? detail = null)
+    {
+        _statusState = state;
+        _statusDetail = detail;
+        RunOnUi(() => StatusText = BuildStatusText());
+    }
+
+    private string BuildStatusText()
+    {
+        return _statusState switch
+        {
+            PreviewTextState.Ready => Lang.StatusReady,
+            PreviewTextState.ExtractingSource => Lang.StatusExtractingSource,
+            PreviewTextState.ExtractingFiltered => Lang.StatusExtractingFiltered,
+            PreviewTextState.FrameRendered => string.Format(CultureInfo.CurrentCulture, Lang.StatusFrameRendered, CurrentFrame),
+            PreviewTextState.Cancelled => Lang.StatusCancelled,
+            PreviewTextState.ScriptError => string.Format(CultureInfo.CurrentCulture, Lang.StatusScriptError, _statusDetail ?? string.Empty),
+            PreviewTextState.Custom => _statusDetail ?? string.Empty,
+            _ => Lang.StatusReady,
+        };
+    }
+
+    private void UpdatePreviewButtonText()
+    {
+        PreviewButtonText = IsBusy ? Lang["Cancel"] : Lang["Preview"];
+    }
+
+    private void OnLanguageChanged()
+    {
+        Lang = new VpyPreviewLangProvider(UILangProvider.Current.LanguageCode);
+        UpdatePreviewButtonText();
+        RunOnUi(() =>
+        {
+            StatusText = BuildStatusText();
+            if (_vspipeLogIsReadyState)
+                VspipeLogText = Lang.StatusReady;
+        });
+    }
+}

@@ -9,7 +9,7 @@
                     xmlns:lang="clr-namespace:OneColumnEncoder.Models.Lang"
                     d:DataContext="{d:DesignInstance Type=vms:VpyPreviewVM}"
                     mc:Ignorable="d"
-                    Title="{x:Static lang:FilterScribeModalLangProvider.VpyPreviewWindowTitle}"
+                    Title="{x:Static lang:VpyPreviewLangProvider.WindowTitle}"
                    Width="1550"
                    Height="990"
                    WindowStartupLocation="CenterOwner"

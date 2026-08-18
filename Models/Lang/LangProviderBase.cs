@@ -23,6 +23,7 @@ namespace OneColumnEncoder.Models.Lang;
 /// | `QueueEditorLangProvider.cs` | 1 key |
 /// | `ParallelismConfLangProvider.cs` | 23 keys |
 /// | `ImgABPvLangProvider.cs` | 38 keys |
+/// | `VpyPreviewLangProvider.cs` | 18 keys |
 /// | `FilterScribeModalLangProvider.cs` | 74 keys |
 /// | `FilenameScribeModalLangProvider.cs` | 25 keys |
 /// | `FFProbeVideoAnalysisLangProvider.cs` | 5 keys |
