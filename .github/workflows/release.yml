@@ -108,6 +108,18 @@ jobs:
           $body += "- [Encoding Tools Download Tutorial](https://github.com/iAvoe/encoding-tools-download-tutorial)`n`n"
           $body += "Or, TLDR; and use tools provided in downloaded package (not recommended but it works) | 或者着急要用的话，也可以无视上述教程，下载并直接使用附带的工具（不推荐但可以）"
           $body += "`n`n"
+          $body += '> [!TIP]'
+          $body += "`n"
+          $body += '> Auto-import of encoding tools checks 4 locations | 自动导入编码程序会检查 4 种位置:'
+          $body += "`n"
+          $body += '> app root | 程序根目录'
+          $body += "`n"
+          $body += '> `1cenc/`'
+          $body += "`n"
+          $body += '> `x64|x86-upstreams-encoders/`'
+          $body += "`n"
+          $body += '> `1cenc/x64|x86-upstreams-encoders/`'
+          $body += "`n"
           $body += "> [!NOTE]`n"
           $body += "> x86 release (32bit) has limited integration since many of tools and libraries lacks this support, provided as-is | x86 发布版本缺少多种工具集成，大多因为 32bit 编译缺少支持，或者依赖的静态库不支持 32bit 且修正不了，请将就使用"
           $body += "`n`n"
@@ -132,7 +144,7 @@ jobs:
           $body += "> New (cleaner root dir) | 新（根目录更干净）:`n"
           $body += ">"
           $body += ">     .`n"
-          $body += ">     ├── ... upstreams & encoder executables ...`n"
+          $body += ">     ├── ... upstreams & encoder executables ... (or inside 1cenc folder)`n"
           $body += ">     ├── OneColumnEncoder.exe`n"
           $body += ">     ├── OneColumnEncoder.pdb`n"
           $body += ">     └── 1cenc`n"

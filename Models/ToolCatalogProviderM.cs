@@ -188,18 +188,23 @@ public static class ToolCatalogProviderM
         ],
     };
 
-    private static IEnumerable<string> GetBaseDirectoryUpstreamSearchPaths()
+private static IEnumerable<string> GetBaseDirectoryUpstreamSearchPaths()
     {
         string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        string configDirectory = SaveLoadBase<AppConfM>.GetConfigDirectory();
 
         if (Environment.Is64BitProcess)
         {
+            yield return Path.Combine(configDirectory, "x64-upstreams-encoders");
             yield return Path.Combine(baseDirectory, "x64-upstreams-encoders");
         }
         else
         {
+            yield return Path.Combine(configDirectory, "x86-upstreams-encoders");
             yield return Path.Combine(baseDirectory, "x86-upstreams-encoders");
         }
+
+        yield return configDirectory;
     }
 
     public static string? TryFindToolDirectory(string exeName)

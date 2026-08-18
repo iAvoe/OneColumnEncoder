@@ -72,73 +72,84 @@ public static class AutoToolImport
     }
 
     /// <summary>
-    /// Looks up top-level tools (ffmpeg, ffprobe, x264, ...) directly in the app directory.
-    /// Results are ranked: exact-name match first, then shorter file names, then most recently modified.
+    /// Looks up top-level tools (ffmpeg, ffprobe, x264, ...) directly in the app directory
+    /// and the config directory (1cenc). Results are ranked: exact-name match first,
+    /// then shorter file names, then most recently modified.
     /// </summary>
     private static async Task<Candidate?> FindTopLevelCandidateAsync(string exeName)
     {
         if (!TopLevelScanTools.Contains(exeName)) return null;
 
-        string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        if (!Directory.Exists(baseDirectory)) return null;
-
-        IEnumerable<FileInfo> matches;
-        try
+        foreach (string directory in GetTopLevelScanDirectories())
         {
-            matches = [.. Directory.EnumerateFiles(baseDirectory, "*.exe", SearchOption.TopDirectoryOnly)
-                .Where(path => IsCandidateFileNameMatch(exeName, path))
-                .Select(path => new FileInfo(path))
-                .OrderByDescending(file => file.Name.Equals(exeName, StringComparison.OrdinalIgnoreCase))
-                .ThenBy(file => Path.GetFileNameWithoutExtension(file.Name).Length)
-                .ThenByDescending(file => file.LastWriteTimeUtc)];
-        }
-        catch { return null; }
+            if (!Directory.Exists(directory)) continue;
 
-        foreach (FileInfo file in matches)
-        {
-            Candidate? candidate = await TryBuildCandidateAsync(exeName, file.FullName);
-            if (candidate != null) return candidate;
+            IEnumerable<FileInfo> matches;
+            try
+            {
+                matches = [.. Directory.EnumerateFiles(directory, "*.exe", SearchOption.TopDirectoryOnly)
+                    .Where(path => IsCandidateFileNameMatch(exeName, path))
+                    .Select(path => new FileInfo(path))
+                    .OrderByDescending(file => file.Name.Equals(exeName, StringComparison.OrdinalIgnoreCase))
+                    .ThenBy(file => Path.GetFileNameWithoutExtension(file.Name).Length)
+                    .ThenByDescending(file => file.LastWriteTimeUtc)];
+            }
+            catch { continue; }
+
+            foreach (FileInfo file in matches)
+            {
+                Candidate? candidate = await TryBuildCandidateAsync(exeName, file.FullName);
+                if (candidate != null) return candidate;
+            }
         }
 
         return null;
     }
 
+    private static IEnumerable<string> GetTopLevelScanDirectories()
+    {
+        yield return AppDomain.CurrentDomain.BaseDirectory;
+        yield return SaveLoadBase<AppConfM>.GetConfigDirectory();
+    }
+
     /// <summary>
-    /// Recursively scans the bundled upstream encoder tree (x64/x86 based on process bitness).
+    /// Recursively scans the bundled upstream encoder tree (x64/x86 based on process bitness)
+    /// in the app directory and the config directory (1cenc).
     /// Results are ranked: exact-name match first, then shorter full paths, then most recently modified.
     /// </summary>
     private static async Task<Candidate?> FindUpstreamTreeCandidateAsync(string exeName)
     {
-        string? rootDirectory = GetMatchingUpstreamEncodersDirectory();
-        if (string.IsNullOrWhiteSpace(rootDirectory) || !Directory.Exists(rootDirectory)) return null;
-
-        IEnumerable<FileInfo> matches;
-        try
+        foreach (string rootDirectory in GetUpstreamTreeScanDirectories())
         {
-            matches = [.. Directory.EnumerateFiles(rootDirectory, "*.exe", SearchOption.AllDirectories)
-                .Where(path => IsCandidateFileNameMatch(exeName, path))
-                .Select(path => new FileInfo(path))
-                .OrderByDescending(file => file.Name.Equals(exeName, StringComparison.OrdinalIgnoreCase))
-                .ThenBy(file => file.FullName.Length)
-                .ThenByDescending(file => file.LastWriteTimeUtc)];
-        }
-        catch { return null; }
+            if (string.IsNullOrWhiteSpace(rootDirectory) || !Directory.Exists(rootDirectory)) continue;
 
-        foreach (FileInfo file in matches)
-        {
-            Candidate? candidate = await TryBuildCandidateAsync(exeName, file.FullName);
-            if (candidate != null) return candidate;
+            IEnumerable<FileInfo> matches;
+            try
+            {
+                matches = [.. Directory.EnumerateFiles(rootDirectory, "*.exe", SearchOption.AllDirectories)
+                    .Where(path => IsCandidateFileNameMatch(exeName, path))
+                    .Select(path => new FileInfo(path))
+                    .OrderByDescending(file => file.Name.Equals(exeName, StringComparison.OrdinalIgnoreCase))
+                    .ThenBy(file => file.FullName.Length)
+                    .ThenByDescending(file => file.LastWriteTimeUtc)];
+            }
+            catch { continue; }
+
+            foreach (FileInfo file in matches)
+            {
+                Candidate? candidate = await TryBuildCandidateAsync(exeName, file.FullName);
+                if (candidate != null) return candidate;
+            }
         }
 
         return null;
     }
 
-    private static string? GetMatchingUpstreamEncodersDirectory()
+    private static IEnumerable<string> GetUpstreamTreeScanDirectories()
     {
-        string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        return Environment.Is64BitProcess
-            ? Path.Combine(baseDirectory, "x64-upstreams-encoders")
-            : Path.Combine(baseDirectory, "x86-upstreams-encoders");
+        string folderName = Environment.Is64BitProcess ? "x64-upstreams-encoders" : "x86-upstreams-encoders";
+        yield return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, folderName);
+        yield return Path.Combine(SaveLoadBase<AppConfM>.GetConfigDirectory(), folderName);
     }
 
     /// <summary>
