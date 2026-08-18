@@ -6,7 +6,7 @@
               xmlns:comps="clr-namespace:OneColumnEncoder.Components"
               xmlns:ui="clr-namespace:OneColumnEncoder.UI"
               xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
-              d:DataContext="{d:DesignInstance Type=vms:VspipePreviewVM}"
+              d:DataContext="{d:DesignInstance Type=vms:VpyPreviewVM}"
               mc:Ignorable="d">
     <UserControl.Resources>
         <Style x:Key="PreviewFilenameText"

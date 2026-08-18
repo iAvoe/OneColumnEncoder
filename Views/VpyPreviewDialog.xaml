@@ -7,7 +7,7 @@
                     xmlns:ui="clr-namespace:OneColumnEncoder.UI"
                     xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
                     xmlns:lang="clr-namespace:OneColumnEncoder.Models.Lang"
-                    d:DataContext="{d:DesignInstance Type=vms:VspipePreviewVM}"
+                    d:DataContext="{d:DesignInstance Type=vms:VpyPreviewVM}"
                     mc:Ignorable="d"
                     Title="{x:Static lang:FilterScribeModalLangProvider.VpyPreviewWindowTitle}"
                    Width="1550"

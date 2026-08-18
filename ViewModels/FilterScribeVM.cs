@@ -1480,7 +1480,7 @@ public class FilterScribeVM : BaseVM
         string[] previewsrcPaths = GetVpyPreviewsrcPaths();
         string buildScript(string path) => ScriptTemplate.BuildVpyPreviewScript(path, VpyUserInput, fpsnum, fpsden);
 
-        var previewVm = new VspipePreviewVM(
+        var previewVm = new VpyPreviewVM(
             _modalNavS,
             _vspipePath,
             _vspipeY4mArg,

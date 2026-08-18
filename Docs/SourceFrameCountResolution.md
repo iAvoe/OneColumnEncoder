@@ -24,9 +24,9 @@ The frame-count resolver must:
 
 Some preview surfaces depend on the same source analysis inputs, but not all of them use the resolved frame count directly:
 
-- `FilterScribeVM` builds `VspipePreviewVM` and passes a `frameCount` derived from `EncodingPipeline.GetSourceTotalFrames()`.
+- `FilterScribeVM` builds `VpyPreviewVM` and passes a `frameCount` derived from `EncodingPipeline.GetSourceTotalFrames()`.
 - `EncodingPipeline.GetSourceTotalFrames()` prefers `concatTotalFrames` when present, otherwise reads the source ffprobe JSON and falls back to `nb_frames`, then `duration × fps`.
-- `VpyPreviewPanel` is only the view shell for `VspipePreviewVM`; `VspipePreviewVM` clamps `CurrentFrame` and `MaxPositionSeconds` with the supplied total frame count.
+- `VpyPreviewPanel` is only the view shell for `VpyPreviewVM`; `VpyPreviewVM` clamps `CurrentFrame` and `MaxPositionSeconds` with the supplied total frame count.
 - `ImgABPvViewer` is a display control only. The preview logic sits in `ImgABPvVM`, which uses `FFProbeSourceStatsReader.Read()` to set preview duration and the initial preview position from ffprobe metadata.
 
 ## Resolution order
@@ -163,7 +163,7 @@ In `RepartCompatibilityAnalyzer.AnalyzeAndFilterAsync()`, every accepted candida
 
 `RepartConfVM` consumes `_analysis.TotalFrames` for divider positions, output segment ranges, and selection clamping, so the whole modal stays consistent with the resolved count.
 
-`VpyPreviewPanel` does not recompute frame counts itself. It renders `VspipePreviewVM`, which receives a precomputed total frame count from the caller and uses it to clamp the frame slider and preview index.
+`VpyPreviewPanel` does not recompute frame counts itself. It renders `VpyPreviewVM`, which receives a precomputed total frame count from the caller and uses it to clamp the frame slider and preview index.
 
 `ImgABPvViewer` also does not perform any frame-count resolution. It reacts to `ImgABPvVM` image updates and only handles zoom/pan/split display behavior. The image preview VM reads ffprobe-derived duration and frame-rate metadata to choose the preview timestamp, but it does not participate in the Repart frame-count scan.
 

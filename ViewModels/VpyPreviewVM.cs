@@ -2,19 +2,14 @@ using System.IO;
 
 namespace OneColumnEncoder.ViewModels;
 
-public class PreviewSourceItem
+public class PreviewSourceItem(string fullPath)
 {
-    public string FullPath { get; }
-    public string VideoFilename { get; }
+    public string FullPath { get; } = fullPath;
+    public string VideoFilename { get; } = Path.GetFileName(fullPath);
     public string Title => VideoFilename;
-    public PreviewSourceItem(string fullPath)
-    {
-        FullPath = fullPath;
-        VideoFilename = Path.GetFileName(fullPath);
-    }
 }
 
-public class VspipePreviewVM : BaseVM
+public class VpyPreviewVM : BaseVM
 {
     private readonly ModalNavS _modalNavS;
     private readonly string _vspipePath;
@@ -23,7 +18,7 @@ public class VspipePreviewVM : BaseVM
     private readonly int _totalFrames;
     private readonly string _scriptPath;
     private readonly Func<string, string>? _buildPreviewScript;
-    private bool _suppressSwitch;
+    private static bool _suppressSwitch;
     private readonly string _scriptContent;
 
     private string _videoFilename;
@@ -49,7 +44,7 @@ public class VspipePreviewVM : BaseVM
     private CancellationTokenSource? _previewCts;
     private Process? _currentVspipeProcess;
     private bool _isDisposed;
-    private readonly object _vspipeLogLock = new();
+    private readonly Lock _vspipeLogLock = new();
     private readonly List<string> _vspipeLogLines = [];
 
     private ImageSource? _sourceImage;
@@ -140,7 +135,7 @@ public class VspipePreviewVM : BaseVM
     public ActionCmd PreviewCommand { get; }
     public ActionCmd InspectFrameDataCommand { get; }
 
-    public VspipePreviewVM(
+    public VpyPreviewVM(
         ModalNavS modalNavS,
         string vspipePath,
         string vspipeY4mArg,
