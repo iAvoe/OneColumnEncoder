@@ -112,10 +112,7 @@ jobs:
           $body += "Or, TLDR; and use tools provided in downloaded package (not recommended but it works) | 或者着急要用的话，也可以无视上述教程，下载并直接使用附带的工具（不推荐但可以）"
           $body += "`n`n"
           $body += "> [!NOTE]`n"
-          $body += "> The post-IVTC total frame count & FPS revising mechanic lacks of testing, despite unimportant, referencing is not advsied | IVTC 后的总帧数与帧率计算机制缺乏测试；该功能暂无大用，但也不建议作为参考"
-          $body += "`n`n"
-          $body += "> [!NOTE]`n"
-          $body += "> x86 release (32bit) has limited integration since many of tools and libraries lacks this support (fixing attempts were unsuccessful), this verion is expected to be harder to use and requires higher software IT skills | x86 发布版本缺少多种工具集成，因为 32bit 编译缺少支持且修正不了，或许仍有修复机会"
+          $body += "> x86 release (32bit) has limited integration since many of tools and libraries lacks this support, provided as-is | x86 发布版本缺少多种工具集成，大多因为 32bit 编译缺少支持，或者依赖的静态库不支持 32bit 且修正不了，请将就使用"
 
           echo "RELEASE_TITLE=$title" >> $env:GITHUB_ENV
           $body | Out-File -FilePath .\release-notes.md -Encoding utf8
