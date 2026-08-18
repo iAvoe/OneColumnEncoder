@@ -10,7 +10,7 @@ public static class Ssimulacra2
     public static bool Is64Bit => Environment.Is64BitProcess;
 
     public static string? ToolDirPath =>
-        Is64Bit ? Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ToolDirName) : null;
+        Is64Bit ? BundledToolPathResolver.ResolveFolder(ToolDirName) : null;
 
     public static string? ToolExePath =>
         ToolDirPath != null ? Path.Combine(ToolDirPath, ExeName) : null;

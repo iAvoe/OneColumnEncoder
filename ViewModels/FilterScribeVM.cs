@@ -263,9 +263,9 @@ public class FilterScribeVM : BaseVM
     public static string AviSynthHqdn3dDenoiseFilter => "hqdn3d(src)";
     public static string FfmpegHqdn3dDenoiseFilter => "-filter:v \"hqdn3d\"";
     private const string DescalePluginFolder = "x64-AVS-VS-plugins";
-    private const string DescalePluginDll = "x64-AVS-VS-plugins\\libdescale.dll";
-    private static string DescalePluginPath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DescalePluginDll);
-    private static string DescalePluginDirectory => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DescalePluginFolder);
+    private const string DescalePluginDll = "libdescale.dll";
+    private static string DescalePluginPath => Path.Combine(BundledToolPathResolver.ResolveFolder(DescalePluginFolder), DescalePluginDll);
+    private static string DescalePluginDirectory => BundledToolPathResolver.ResolveFolder(DescalePluginFolder);
 
     public DropdownMenuVM DescaleKernelDropdown { get; } = new();
 
@@ -407,8 +407,9 @@ public class FilterScribeVM : BaseVM
                 _ => 0
             };
 
-            string vszipclDllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "x64-AVS-VS-plugins\\vszipcl.dll");
-            string fmtconvDllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "x64-AVS-VS-plugins\\fmtconv.dll");
+            string pluginsDirectory = BundledToolPathResolver.ResolveFolder(DescalePluginFolder);
+            string vszipclDllPath = Path.Combine(pluginsDirectory, "vszipcl.dll");
+            string fmtconvDllPath = Path.Combine(pluginsDirectory, "fmtconv.dll");
 
             string loadPlugins = $"core.std.LoadPlugin(r\"{vszipclDllPath}\")";
             string vszipclCalls =
