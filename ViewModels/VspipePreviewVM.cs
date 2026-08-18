@@ -49,6 +49,8 @@ public class VspipePreviewVM : BaseVM
     private CancellationTokenSource? _previewCts;
     private Process? _currentVspipeProcess;
     private bool _isDisposed;
+    private readonly object _vspipeLogLock = new();
+    private readonly List<string> _vspipeLogLines = [];
 
     private ImageSource? _sourceImage;
     public ImageSource? SourceImage
@@ -221,7 +223,7 @@ _totalFrames = totalFrames > 0 ? totalFrames : 1;
         {
             RefreshPreviewScript();
             IsBusy = true;
-            VspipeLogText = "Starting vspipe preview...";
+            ResetVspipeLog();
             string srcPath = Path.Combine(_workDirectory, "output-0.y4m");
             string filteredPath = Path.Combine(_workDirectory, "output-1.y4m");
 
@@ -243,7 +245,7 @@ _totalFrames = totalFrames > 0 ? totalFrames : 1;
             if (!_isDisposed)
             {
                 StatusText = "Cancelled";
-                AppendVspipeLog("Cancelled");
+                AppendVspipeLogLine("Cancelled");
             }
         }
         catch (ObjectDisposedException) when (_isDisposed) { }
@@ -252,7 +254,7 @@ _totalFrames = totalFrames > 0 ? totalFrames : 1;
             if (!_isDisposed)
             {
                 StatusText = ex.Message;
-                AppendVspipeLog($"Error: {ex.Message}");
+                AppendVspipeLogLine($"Error: {ex.Message}");
             }
         }
         finally
@@ -294,23 +296,18 @@ _totalFrames = totalFrames > 0 ? totalFrames : 1;
         using CancellationTokenRegistration killRegistration = token.Register(() => PreviewPipeline.TryKillProcess(vspipeProcess));
         try
         {
+            AppendVspipeLogLine($"vspipe output {outputIndex}");
             vspipeProcess.Start();
-            Task<string> vspipeStdoutTask = vspipeProcess.StandardOutput.ReadToEndAsync(token);
-            Task<string> vspipeStderrTask = vspipeProcess.StandardError.ReadToEndAsync(token);
+            Task stdoutTask = ReadVspipeStreamAsync(vspipeProcess.StandardOutput, token);
+            Task stderrTask = ReadVspipeStreamAsync(vspipeProcess.StandardError, token);
 
             await vspipeProcess.WaitForExitAsync(token);
-            string vspipeStdout = await vspipeStdoutTask;
-            string vspipeStderr = await vspipeStderrTask;
-
-            AppendVspipeLog(BuildVspipeLogBlock(outputIndex, vspipeStdout, vspipeStderr, vspipeProcess.ExitCode));
+            await Task.WhenAll(stdoutTask, stderrTask);
 
             if (vspipeProcess.ExitCode != 0)
             {
-                string msg = string.IsNullOrWhiteSpace(vspipeStderr)
-                    ? string.IsNullOrWhiteSpace(vspipeStdout)
-                        ? $"vspipe exit code {vspipeProcess.ExitCode}"
-                        : PreviewPipeline.TrimProcessMessage(vspipeStdout)
-                    : PreviewPipeline.TrimProcessMessage(vspipeStderr);
+                string msg = $"vspipe exit code {vspipeProcess.ExitCode}";
+                AppendVspipeLogLine(msg);
                 throw new InvalidOperationException(msg);
             }
         }
@@ -321,44 +318,106 @@ _totalFrames = totalFrames > 0 ? totalFrames : 1;
         }
     }
 
-    private void AppendVspipeLog(string text)
+    private void ResetVspipeLog()
     {
-        if (string.IsNullOrWhiteSpace(text)) return;
+        lock (_vspipeLogLock)
+        {
+            _vspipeLogLines.Clear();
+        }
 
-        string next = string.IsNullOrWhiteSpace(VspipeLogText)
-            ? text.TrimEnd()
-            : $"{VspipeLogText}{Environment.NewLine}{Environment.NewLine}{text.TrimEnd()}";
-        VspipeLogText = next;
+        RunOnUi(() => VspipeLogText = string.Empty);
     }
 
-    private static string BuildVspipeLogBlock(int outputIndex, string stdout, string stderr, int exitCode)
+    private void AppendVspipeLogLine(string? line, bool overwritePreviousLine = false)
     {
-        StringBuilder sb = new();
-        sb.AppendLine($"vspipe output {outputIndex}");
+        if (string.IsNullOrWhiteSpace(line)) return;
 
-        if (!string.IsNullOrWhiteSpace(stdout))
+        string normalized = line.Replace("\0", string.Empty, StringComparison.Ordinal).TrimEnd();
+        if (string.IsNullOrWhiteSpace(normalized)) return;
+
+        string snapshot;
+        lock (_vspipeLogLock)
         {
-            sb.AppendLine("[stdout]");
-            sb.AppendLine(stdout.TrimEnd());
+            if (overwritePreviousLine && _vspipeLogLines.Count > 0)
+                _vspipeLogLines.RemoveAt(_vspipeLogLines.Count - 1);
+
+            _vspipeLogLines.Add(normalized);
+            snapshot = string.Join(Environment.NewLine, _vspipeLogLines);
         }
 
-        if (!string.IsNullOrWhiteSpace(stderr))
+        RunOnUi(() => VspipeLogText = snapshot);
+    }
+
+    private async Task ReadVspipeStreamAsync(StreamReader reader, CancellationToken token)
+    {
+        try
         {
-            if (sb.Length > 0) sb.AppendLine();
-            sb.AppendLine("[stderr]");
-            sb.AppendLine(stderr.TrimEnd());
+            char[] buffer = new char[4096];
+            StringBuilder lineBuilder = new();
+            string? pendingCarriageReturnLine = null;
+            bool previousWasCarriageReturnUpdate = false;
+
+            while (!token.IsCancellationRequested)
+            {
+                int charsRead = await reader.ReadAsync(buffer.AsMemory(0, buffer.Length), token);
+                if (charsRead == 0) break;
+
+                for (int i = 0; i < charsRead; i++)
+                {
+                    char ch = buffer[i];
+                    if (pendingCarriageReturnLine != null)
+                    {
+                        if (ch == '\n')
+                        {
+                            AppendVspipeLogLine(pendingCarriageReturnLine, overwritePreviousLine: false);
+                            pendingCarriageReturnLine = null;
+                            previousWasCarriageReturnUpdate = false;
+                            continue;
+                        }
+
+                        AppendVspipeLogLine(pendingCarriageReturnLine, overwritePreviousLine: previousWasCarriageReturnUpdate);
+                        pendingCarriageReturnLine = null;
+                        previousWasCarriageReturnUpdate = true;
+                    }
+
+                    if (ch == '\r')
+                    {
+                        pendingCarriageReturnLine = lineBuilder.ToString();
+                        lineBuilder.Clear();
+                        continue;
+                    }
+
+                    if (ch == '\n')
+                    {
+                        AppendVspipeLogLine(lineBuilder.ToString(), overwritePreviousLine: false);
+                        lineBuilder.Clear();
+                        previousWasCarriageReturnUpdate = false;
+                        continue;
+                    }
+
+                    lineBuilder.Append(ch);
+                }
+            }
+
+            if (pendingCarriageReturnLine != null)
+                AppendVspipeLogLine(pendingCarriageReturnLine, overwritePreviousLine: previousWasCarriageReturnUpdate);
+            if (lineBuilder.Length > 0)
+                AppendVspipeLogLine(lineBuilder.ToString(), overwritePreviousLine: false);
+        }
+        catch (OperationCanceledException) { }
+        catch (IOException) { }
+    }
+
+    private static void RunOnUi(Action action)
+    {
+        System.Windows.Threading.Dispatcher? dispatcher = Application.Current?.Dispatcher;
+        if (dispatcher == null || dispatcher.CheckAccess())
+        {
+            action();
+            return;
         }
 
-        if (string.IsNullOrWhiteSpace(stdout) && string.IsNullOrWhiteSpace(stderr))
-            sb.AppendLine("(no output)");
-
-        if (exitCode != 0)
-        {
-            sb.AppendLine();
-            sb.AppendLine($"Exit code: {exitCode}");
-        }
-
-        return sb.ToString().TrimEnd();
+        _ = dispatcher.InvokeAsync(action);
     }
 
     private void SwitchSource(string newPath)
@@ -380,7 +439,7 @@ _totalFrames = totalFrames > 0 ? totalFrames : 1;
             catch (Exception ex)
             {
                 StatusText = $"Script error: {ex.Message}";
-                AppendVspipeLog($"Error: Script error: {ex.Message}");
+                AppendVspipeLogLine($"Error: Script error: {ex.Message}");
                 return;
             }
         }
