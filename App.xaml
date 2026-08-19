@@ -352,7 +352,7 @@
                     </DataTrigger>
                 </Style.Triggers>
                 <Setter Property="Background"
-                        Value="White" />
+                        Value="{StaticResource Background}" />
                 <Setter Property="Foreground"
                         Value="{StaticResource GlobalPrimary}" />
                 <Setter Property="Margin"

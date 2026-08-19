@@ -7,8 +7,8 @@ namespace OneColumnEncoder.UI;
 /// <summary>
 /// Central source of UI and code fonts.
 /// System-installed fonts come from <see cref="Fonts.SystemFontFamilies"/>.
-/// Custom fonts are loaded only from the "CustomFont/Default" and "CustomFont/Code"
-/// folders under the settings storage directory (no other locations are searched).
+/// Custom fonts are loaded recursively from the "CustomFont/Default" and
+/// "CustomFont/Code" folders under the settings storage directory.
 /// </summary>
 public static class AppFontProvider
 {
@@ -22,12 +22,48 @@ public static class AppFontProvider
     private static readonly FontFamily DefaultUiFont = new("Segoe UI");
     private static readonly FontFamily DefaultCodeFont = new("Consolas");
 
-    private static readonly Dictionary<string, FontFamily> _uiFonts = [];
-    private static readonly Dictionary<string, FontFamily> _codeFonts = [];
+    private static readonly Dictionary<string, FontFamily> _uiSystemFonts = [];
+    private static readonly Dictionary<string, FontFamily> _uiCustomFonts = [];
+    private static readonly Dictionary<string, FontFamily> _codeSystemFonts = [];
+    private static readonly Dictionary<string, FontFamily> _codeCustomFonts = [];
 
-    public static IReadOnlyList<FontFamily> UiFonts => [.. _uiFonts.Values];
-    public static IReadOnlyList<FontFamily> CodeFonts => [.. _codeFonts.Values];
+    public static bool HasCustomFontLoadIssues { get; private set; }
 
+    public static IReadOnlyList<FontFamily> UiFonts =>
+        [.. UiCustomFonts, .. UiSystemFonts];
+
+    public static IReadOnlyList<FontFamily> UiSystemFonts =>
+        BuildVisibleFamilies(_uiSystemFonts, _uiCustomFonts);
+
+    public static IReadOnlyList<FontFamily> UiCustomFonts =>
+        BuildVisibleFamilies(_uiCustomFonts);
+
+    public static IReadOnlyList<FontFamily> CodeFonts =>
+        [.. CodeCustomFonts, .. CodeSystemFonts];
+
+    public static IReadOnlyList<FontFamily> CodeSystemFonts =>
+        BuildVisibleFamilies(_codeSystemFonts, _codeCustomFonts);
+
+    public static IReadOnlyList<FontFamily> CodeCustomFonts =>
+        BuildVisibleFamilies(_codeCustomFonts);
+
+    /// <summary>
+    /// Catch unusable font families by using them, this is only needed to enhance robustness
+    /// </summary>
+    /// <param name="family">A group of font files belongs to one, in Regular, Bold, Italic files</param>
+    /// <returns>true: font is valid</returns>
+    private static bool IsValidFontFamily(FontFamily family)
+    {
+        if (family == null || string.IsNullOrWhiteSpace(family.Source))
+            return false;
+        try
+        {
+            var typeface = new Typeface(
+                family, FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+            return typeface.TryGetGlyphTypeface(out _);
+        }
+        catch { return false; }
+    }
     public static FontFamily UiFont =>
         TryGetResource(UiFontKey) ?? DefaultUiFont;
 
@@ -41,8 +77,11 @@ public static class AppFontProvider
     /// </summary>
     public static void Refresh()
     {
-        _uiFonts.Clear();
-        _codeFonts.Clear();
+        _uiSystemFonts.Clear();
+        _uiCustomFonts.Clear();
+        _codeSystemFonts.Clear();
+        _codeCustomFonts.Clear();
+        HasCustomFontLoadIssues = false;
 
         string configDir = SaveLoadBase<AppConfM>.GetConfigDirectory();
         string uiFolder = Path.Combine(configDir, CustomFontRoot, DefaultFolderName);
@@ -51,10 +90,10 @@ public static class AppFontProvider
         Directory.CreateDirectory(uiFolder);
         Directory.CreateDirectory(codeFolder);
 
-        AddSystemFamilies(_uiFonts);
-        AddSystemFamilies(_codeFonts);
-        AddFolderFamilies(_uiFonts, uiFolder);
-        AddFolderFamilies(_codeFonts, codeFolder);
+        AddSystemFamilies(_uiSystemFonts);
+        AddSystemFamilies(_codeSystemFonts);
+        AddFolderFamilies(_uiCustomFonts, uiFolder);
+        AddFolderFamilies(_codeCustomFonts, codeFolder);
     }
 
     /// <summary>
@@ -72,29 +111,51 @@ public static class AppFontProvider
             TextElement.SetFontFamily(window, UiFont);
     }
 
-    public static FontFamily ResolveUiFont(string? name) => ResolveFont(name, _uiFonts, DefaultUiFont);
+    public static FontFamily ResolveUiFont(string? name) =>
+        ResolveFont(name, _uiSystemFonts, _uiCustomFonts, DefaultUiFont);
 
-    public static FontFamily ResolveCodeFont(string? name) => ResolveFont(name, _codeFonts, DefaultCodeFont);
+    public static FontFamily ResolveCodeFont(string? name) =>
+        ResolveFont(name, _codeSystemFonts, _codeCustomFonts, DefaultCodeFont);
 
+    /// <summary>
+    /// Show font names to UI (A dropdown menu)
+    /// </summary>
+    /// <param name="family">A group of font files belongs to one, in Regular, Bold, Italic files</param>
+    /// <returns>Name string to display</returns>
     public static string GetFontDisplayName(FontFamily family)
     {
+        // family.FamilyNames is null does not mean count is 0... somehow
+        if (family == null || family.FamilyNames == null)
+            return string.Empty;
+
         try
         {
             foreach (XmlLanguage language in PreferredFontNameLanguages)
             {
                 if (family.FamilyNames.TryGetValue(language, out string? name)
                     && !string.IsNullOrWhiteSpace(name))
-                {
                     return name;
-                }
             }
-        }
-        catch
-        {
-            // Fall through to ExtractReadableSource.
-        }
 
-        return ExtractReadableSource(family.Source);
+            // Use the first one available to display if no primary language exists
+            if (family.FamilyNames.Count > 0)
+            {
+                var firstNameUsable = family.FamilyNames.FirstOrDefault();
+                if (!string.IsNullOrWhiteSpace(firstNameUsable.Value))
+                    return firstNameUsable.Value;
+            }
+
+            // Extract from source (last resort)
+            string extractedName = ExtractReadableSource(family.Source);
+            return string.IsNullOrWhiteSpace(extractedName)
+                ? "!NAME OF FONT"
+                : extractedName;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"GetFontDisplayName: {ex.Message}");
+            return ExtractReadableSource(family.Source);
+        }
     }
 
     /// <summary>
@@ -119,9 +180,7 @@ public static class AppFontProvider
             names.Add(currentCulture);
 
         foreach (string zhCulture in chineseCultures)
-        {
             if (!names.Contains(zhCulture)) names.Add(zhCulture);
-        }
 
         if (!string.IsNullOrWhiteSpace(currentCulture) && !names.Contains(currentCulture))
             names.Add(currentCulture);
@@ -143,10 +202,22 @@ public static class AppFontProvider
             : source;
     }
 
-    private static FontFamily ResolveFont(string? name, Dictionary<string, FontFamily> families, FontFamily fallback)
-        => !string.IsNullOrWhiteSpace(name) && families.TryGetValue(Normalize(name), out var family)
-            ? family
-            : fallback;
+    private static FontFamily ResolveFont(
+        string? name,
+        Dictionary<string, FontFamily> primary,
+        Dictionary<string, FontFamily> secondary,
+        FontFamily fallback)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return fallback;
+
+        string normalized = Normalize(name);
+        return secondary.TryGetValue(normalized, out FontFamily? customFamily)
+            ? customFamily
+            : primary.TryGetValue(normalized, out FontFamily? systemFamily)
+                ? systemFamily
+                : fallback;
+    }
 
     private static FontFamily? TryGetResource(string key) =>
         Application.Current?.Resources[key] as FontFamily;
@@ -161,34 +232,86 @@ public static class AppFontProvider
         }
     }
 
+    /// <summary>
+    /// Scan for supported font files, and adds their font families to the specified dictionary
+    /// </summary>
+    /// <param name="target">The directionay to edit</param>
+    /// <param name="folderPath">Folder to scan for font files</param>
     private static void AddFolderFamilies(Dictionary<string, FontFamily> target, string folderPath)
     {
         if (!Directory.Exists(folderPath)) return;
 
-        string[] files = [.. Directory.GetFiles(folderPath, "*.*")
-            .Where(f => f.EndsWith(".ttf", System.StringComparison.OrdinalIgnoreCase)
-                     || f.EndsWith(".otf", System.StringComparison.OrdinalIgnoreCase)
-                     || f.EndsWith(".ttc", System.StringComparison.OrdinalIgnoreCase))];
-
-        foreach (string file in files)
+        foreach (string file in Directory.EnumerateFiles(folderPath, "*", SearchOption.AllDirectories)
+                     .Where(IsSupportedFontFile))
         {
             try
             {
-                GlyphTypeface typeface = new(new Uri(file));
+                Uri fileUri = new(file);
+                GlyphTypeface typeface = new(fileUri);
                 string? fragmentName = GetTypefaceName(typeface);
-                if (string.IsNullOrWhiteSpace(fragmentName)) continue;
-                // Composite URI form ("file:///...#FamilyName") pins the custom file,
-                // unlike the (baseUri, name) constructor which falls back to a
-                // same-named system font. The dictionary key is the display title
-                // (GetFontDisplayName) so it matches both what the picker stores and
-                // what ResolveFont looks up.
-                FontFamily family = new(new Uri(file).AbsoluteUri + "#" + fragmentName);
+
+                FontFamily family = new(fileUri.AbsoluteUri + "#" + fragmentName);
                 string displayName = GetFontDisplayName(family);
-                if (string.IsNullOrWhiteSpace(displayName)) continue;
+
+                // Invalid font are written to debug log
+                if (string.IsNullOrWhiteSpace(displayName) ||
+                    string.IsNullOrWhiteSpace(family.Source))
+                {
+                    HasCustomFontLoadIssues = true;
+                    Debug.WriteLine($"Skipping bad font: {file}");
+                    continue;
+                }
+
+                // Validate FontFamily (this might be slow
+                try
+                {
+                    var testTypeface = new Typeface(family, FontStyles.Normal,
+                        FontWeights.Normal, FontStretches.Normal);
+                    if (!testTypeface.TryGetGlyphTypeface(out _))
+                    {
+                        HasCustomFontLoadIssues = true;
+                        Debug.WriteLine($"Font not usable: {displayName}");
+                        continue;
+                    }
+                }
+                catch
+                {
+                    HasCustomFontLoadIssues = true;
+                    Debug.WriteLine($"Font validation failed: {displayName}");
+                    continue;
+                }
+
                 target[Normalize(displayName)] = family;
             }
-            catch {} // Skip unreadable font files.
+            catch (Exception ex)
+            {
+                HasCustomFontLoadIssues = true;
+                Debug.WriteLine($"Possibly corrupted font {file}: {ex.Message}");
+            }
         }
+    }
+
+    private static bool IsSupportedFontFile(string file)
+    {
+        string extension = Path.GetExtension(file);
+        return extension.Equals(".ttf", StringComparison.OrdinalIgnoreCase)
+            || extension.Equals(".otf", StringComparison.OrdinalIgnoreCase)
+            || extension.Equals(".ttc", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static IReadOnlyList<FontFamily> BuildVisibleFamilies(
+        Dictionary<string, FontFamily> source,
+        Dictionary<string, FontFamily>? excluded = null)
+        => [.. source.Values.Where(f => IsValidFontFamily(f) && !IsHiddenByExcludedFamilies(f, excluded))];
+
+    private static bool IsHiddenByExcludedFamilies(
+        FontFamily family,
+        Dictionary<string, FontFamily>? excluded)
+    {
+        if (excluded is null) return false;
+
+        string name = GetFontDisplayName(family);
+        return !string.IsNullOrWhiteSpace(name) && excluded.ContainsKey(Normalize(name));
     }
 
     private static string? GetTypefaceName(GlyphTypeface typeface)

@@ -59,6 +59,15 @@ public class AppConfVM : BaseVM
         FinishSettingButtons.B3_3Icon = SvgIconProvider.GameSave;
         AppFontProvider.Refresh();
         BuildSettingsListing();
+        if (AppFontProvider.HasCustomFontLoadIssues)
+        {
+            Application.Current?.Dispatcher.InvokeAsync(() =>
+                new OpenWarnModalCmd(
+                    _modalNavS,
+                    AppConfLangProvider.WindowTitle,
+                    AppConfLangProvider.Current["AppConf.Font.UnusableWarning"])
+                    .Execute(null));
+        }
         UILangProvider.CurrentChanged += OnLanguageChanged;
     }
 
@@ -272,15 +281,20 @@ public class AppConfVM : BaseVM
 
     private static void AddFontItem(AppConfContainer container, string text, object source, string propertyPath)
     {
-        IEnumerable<FontFamily> families = propertyPath == nameof(AppConfM.FontSettings.CodeFontFamily)
-            ? AppFontProvider.CodeFonts
-            : AppFontProvider.UiFonts;
+        bool isCodeFont = propertyPath == nameof(AppConfM.FontSettings.CodeFontFamily);
+        IEnumerable<FontFamily> systemFamilies = isCodeFont
+            ? AppFontProvider.CodeSystemFonts
+            : AppFontProvider.UiSystemFonts;
+        IEnumerable<FontFamily> customFamilies = isCodeFont
+            ? AppFontProvider.CodeCustomFonts
+            : AppFontProvider.UiCustomFonts;
 
         FontPickerDropdown picker = new()
         {
             Width = 200,
             HorizontalAlignment = HorizontalAlignment.Right,
-            Families = families
+            SystemFamilies = systemFamilies,
+            CustomFamilies = customFamilies
         };
         picker.SetBinding(
             FontPickerDropdown.SelectedFontFamilyProperty,

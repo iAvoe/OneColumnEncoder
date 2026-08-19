@@ -6,14 +6,92 @@
              mc:Ignorable="d"
              d:DesignHeight="30"
              d:DesignWidth="200">
+    <UserControl.Resources>
+        <Style x:Key="FontPickerDropdownMenu"
+               TargetType="ComboBox"
+               BasedOn="{StaticResource RoundedDropdownMenu}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton Style="{StaticResource DropdownToggleButton}"
+                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                          Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=SelectedItem.Title}"
+                                          ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
+                                          Width="{TemplateBinding Width}"
+                                          Height="{TemplateBinding Height}" />
+                            <Popup x:Name="PART_Popup"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   Placement="Bottom"
+                                   PopupAnimation="Fade">
+                                <Border x:Name="DropDownBorder"
+                                        Width="{Binding DropDownWidth, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        Background="{StaticResource Background}"
+                                        CornerRadius="10"
+                                        BorderThickness="2"
+                                        BorderBrush="{StaticResource GlobalSecondary}"
+                                        ClipToBounds="True">
+                                    <ScrollViewer ClipToBounds="True">
+                                        <ItemsPresenter />
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
     <ComboBox x:Name="FontComboBox"
               SelectionChanged="OnSelectionChanged"
-              Style="{StaticResource RoundedDropdownMenu}"
+              Style="{StaticResource FontPickerDropdownMenu}"
               HorizontalAlignment="Stretch">
+        <ComboBox.ItemContainerStyle>
+            <Style TargetType="ComboBoxItem"
+                   BasedOn="{StaticResource DropdownComboBoxItem}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsSeparator}"
+                                 Value="True">
+                        <Setter Property="IsEnabled"
+                                Value="False" />
+                        <Setter Property="Focusable"
+                                Value="False" />
+                        <Setter Property="IsHitTestVisible"
+                                Value="False" />
+                        <Setter Property="Padding"
+                                Value="0" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ComboBox.ItemContainerStyle>
         <ComboBox.ItemTemplate>
             <DataTemplate>
-                <TextBlock Text="{Binding Title}"
-                           FontFamily="{Binding Tag}" />
+                <Grid>
+                    <TextBlock Text="{Binding Title}"
+                               FontFamily="{Binding Tag}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSeparator}"
+                                                 Value="True">
+                                        <Setter Property="Visibility"
+                                                Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <Border Height="1.5"
+                            VerticalAlignment="Center"
+                            SnapsToDevicePixels="True"
+                            Background="{StaticResource GlobalSecondary}"
+                            Visibility="{Binding IsSeparator, Converter={StaticResource BoolToVisibility}}" />
+                </Grid>
             </DataTemplate>
         </ComboBox.ItemTemplate>
     </ComboBox>
