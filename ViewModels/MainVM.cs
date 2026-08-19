@@ -133,7 +133,7 @@ public class MainVM : BaseVM
         ["SelectEncoder"] = () => UICaptionProvider.Sections.SelectEncoder,
         ["SelectAnalytics"] = () => UICaptionProvider.Sections.SelectAnalytics,
         ["SelectDependencies"] = () => UICaptionProvider.Sections.SelectDependencies,
-        ["ImportSrc"] = () => UICaptionProvider.Sections.ImportSource,
+        ["ImportSource"] = () => UICaptionProvider.Sections.ImportSource,
         ["EncodingConfigs"] = () => UICaptionProvider.Sections.EncodingConfigs,
         ["StartEncoding"] = () => UICaptionProvider.Sections.StartEncoding
     });
