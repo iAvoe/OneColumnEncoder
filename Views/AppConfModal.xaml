@@ -14,8 +14,9 @@
                    SizeToContent="Height"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
-    <Grid Margin="15">
+    <Grid Margin="15 12.5 15 15">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -35,13 +36,20 @@
 
         <comps:HintPanel Grid.Row="2"
                          Margin="0 5 0 0"
-                         Text="{Binding NotificationPolicyHint}"
+                         Text="{Binding AudioMuxHint}"
                          VerticalAlignment="Center"
                          HintBrush="{StaticResource GlobalSecondary}" />
 
         <comps:HintPanel Grid.Row="3"
                          Margin="0 2.5 0 0"
+                         Text="{Binding AudioMuxHint2}"
+                         VerticalAlignment="Center"
+                         HintBrush="{StaticResource GlobalSecondary}" />
+
+        <comps:HintPanel Grid.Row="4"
+                         Margin="0 2.5 0 0"
                          Text="{Binding ClearOldQueueJsonHint}"
                          HintBrush="{StaticResource GlobalSecondary}" />
+
     </Grid>
 </ui:AdaptiveWindow>

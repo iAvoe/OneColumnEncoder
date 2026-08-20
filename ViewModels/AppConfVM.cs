@@ -19,10 +19,12 @@ public class AppConfVM : BaseVM
     public static string WindowTitle => AppConfLangProvider.WindowTitle;
     public string HeaderText =>
         Lang["AppConfModal.Header"];
-    public string NotificationPolicyHint =>
-        Lang["Hint.AppConfNotificationPolicy"];
     public string ClearOldQueueJsonHint =>
         Lang["Hint.AppConfClearOldQueueJson"];
+    public string AudioMuxHint =>
+        Lang["Hint.AudioMux"];
+    public string AudioMuxHint2 =>
+        Lang["Hint.AudioMux2"];
 
     public CloseModalCmd CloseCmd { get; }
     public SaveAppConfCmd SaveCmd { get; }
@@ -319,8 +321,9 @@ public class AppConfVM : BaseVM
     {
         Lang = AppConfLangProvider.Current;
         OnPropertyChanged(nameof(HeaderText));
-        OnPropertyChanged(nameof(NotificationPolicyHint));
         OnPropertyChanged(nameof(ClearOldQueueJsonHint));
+        OnPropertyChanged(nameof(AudioMuxHint));
+        OnPropertyChanged(nameof(AudioMuxHint2));
 
         FinishSettingButtons.B3_1Text = UICaptionProvider.AppConf.Buttons.Cancel;
         FinishSettingButtons.B3_2Text = UICaptionProvider.AppConf.Buttons.ClearOldQueueJson;
