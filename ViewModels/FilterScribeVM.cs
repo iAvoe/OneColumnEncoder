@@ -63,6 +63,7 @@ public class FilterScribeVM : BaseVM
                 OnPropertyChanged(nameof(IsVpyTabSelected));
                 OnPropertyChanged(nameof(IsFfmpegTabSelected));
                 OnPropertyChanged(nameof(IsDenoiseSectionVisible));
+                OnPropertyChanged(nameof(IsDescaleTabVisible));
             }
         }
     }
@@ -70,6 +71,7 @@ public class FilterScribeVM : BaseVM
     public bool IsVpyTabSelected => _selectedTabIndex == 1;
     public bool IsFfmpegTabSelected => _selectedTabIndex == 2;
     public bool IsDenoiseSectionVisible => IsFfmpegTabSelected || IsAvsTabSelected;
+    public bool IsDescaleTabVisible => !IsFfmpegTabSelected;
 
     // Avs/VpyPrefix becomes instance property to support dynamic fpsnum/fpsden
     // Avs/VpyPrefix2 is a guidance comment to keep
