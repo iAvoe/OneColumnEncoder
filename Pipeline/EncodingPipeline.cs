@@ -88,7 +88,30 @@ public static class EncodingAudioMuxResolver
                 ? EncodingAudioMuxMode.ReEncodeAAC320
                 : EncodingAudioMuxMode.Copy;
     }
+
+    /// <summary>
+    /// Returns true when the audio mode re-encodes the source audio instead of copying or dropping it.
+    /// </summary>
+    public static bool IsReEncodeMode(EncodingAudioMuxMode mode) =>
+        mode is EncodingAudioMuxMode.ReEncodeAAC320
+            or EncodingAudioMuxMode.ReEncodeAAC256
+            or EncodingAudioMuxMode.ReEncodeAAC128
+            or EncodingAudioMuxMode.ReEncodeOpus320
+            or EncodingAudioMuxMode.ReEncodeOpus256
+            or EncodingAudioMuxMode.ReEncodeOpus128;
 }
+
+/// <summary>
+/// A standalone audio-encoding stage that concatenates source audio streams into a temp file,
+/// used as the input for a later mux stage when the selected audio mux mode re-encodes.
+/// </summary>
+/// <param name="CommandLine">Full display command (ffmpeg path + arguments).</param>
+/// <param name="Arguments">Arguments only, used to launch the ffmpeg process.</param>
+/// <param name="OutputPath">Temp audio file produced by this stage.</param>
+public record EncodingAudioCommand(
+    string CommandLine,
+    string Arguments,
+    string OutputPath);
 
 // For clip sampler
 public record EncodingClipRequest(
@@ -106,16 +129,26 @@ public record EncodingPipelineCommand(
     string EncoderArgs,
     EncodingMuxCommand? MuxCommand = null)
 {
-    public string DisplayCommandLine => MuxCommand == null
-        ? CommandLine
-        : $"{CommandLine}{Environment.NewLine}{Environment.NewLine}{MuxCommand.CommandLine}";
+    public string DisplayCommandLine
+    {
+        get
+        {
+            string text = CommandLine;
+            if (MuxCommand?.AudioCommand != null)
+                text += $"{Environment.NewLine}{Environment.NewLine}{MuxCommand.AudioCommand.CommandLine}";
+            if (MuxCommand != null)
+                text += $"{Environment.NewLine}{Environment.NewLine}{MuxCommand.CommandLine}";
+            return text;
+        }
+    }
 }
 
 public record EncodingMuxCommand(
     string CommandLine,
     string Arguments,
     string EncodedVideoPath,
-    string OutputPath);
+    string OutputPath,
+    EncodingAudioCommand? AudioCommand = null);
 
 public static partial class EncodingPipeline
 {

@@ -2,6 +2,10 @@ using System.IO;
 
 namespace OneColumnEncoder.ViewModels.Cards;
 
+/// <summary>
+/// The ItemCard view model, the building block of MainUI
+/// </summary>
+/// <param name="baseModel">A model with ID, Name, Path</param>
 public class ToolItemCardVM(EncItemM baseModel) : BaseVM
 {
     public static string SeparatorText =>

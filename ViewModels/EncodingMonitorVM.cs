@@ -841,17 +841,52 @@ public partial class EncodingMonitorVM : BaseVM
             return false;
         }
 
-        StatusText = Lang.MuxingText;
-        EnqueueProcessLine(
-            ProcessLogKind.UpstreamStderr,
-            "\nMux command: " + muxCommand.CommandLine);
+        if (muxCommand.AudioCommand != null)
+        {
+            bool audioOk = await RunFfmpegStageAsync(
+                Lang.AudioEncodingText,
+                muxCommand.AudioCommand.CommandLine,
+                muxCommand.AudioCommand.Arguments,
+                cancellationToken);
+            if (!audioOk) return false;
+            if (!File.Exists(muxCommand.AudioCommand.OutputPath))
+            {
+                EnqueueProcessLine(
+                    ProcessLogKind.UpstreamStderr,
+                    "\nMux failed: encoded audio stream does not exist: " + muxCommand.AudioCommand.OutputPath);
+                return false;
+            }
+        }
 
-        using Process mux = new()
+        bool muxOk = await RunFfmpegStageAsync(
+            Lang.MuxingText,
+            muxCommand.CommandLine,
+            muxCommand.Arguments,
+            cancellationToken);
+        if (muxOk && muxCommand.AudioCommand != null)
+            TryDeleteFile(muxCommand.AudioCommand.OutputPath);
+        return muxOk;
+    }
+
+    /// <summary>
+    /// Runs a single ffmpeg mux/audio stage, logging its command to the upstream log.
+    /// Returns true on success, false on failure.
+    /// </summary>
+    private async Task<bool> RunFfmpegStageAsync(
+        string title,
+        string commandLine,
+        string arguments,
+        CancellationToken cancellationToken)
+    {
+        StatusText = title;
+        EnqueueProcessLine(ProcessLogKind.UpstreamStderr, "\n" + commandLine);
+
+        using Process process = new()
         {
             StartInfo = new ProcessStartInfo
             {
                 FileName = _request.FfmpegPath,
-                Arguments = muxCommand.Arguments,
+                Arguments = arguments,
                 UseShellExecute = false,
                 CreateNoWindow = true,
                 RedirectStandardError = true,
@@ -862,18 +897,16 @@ public partial class EncodingMonitorVM : BaseVM
             EnableRaisingEvents = true
         };
 
-        _muxProcess = mux;
-        mux.Start();
-        // Show mux stderr in upstream log since its more intuitive
-        Task muxStderrTask = ReadStreamAsync(mux.StandardError, ProcessLogKind.UpstreamStderr, cancellationToken);
-        Task muxStdoutTask = ReadStreamAsync(mux.StandardOutput, ProcessLogKind.UpstreamStderr, cancellationToken);
-        await mux.WaitForExitAsync(cancellationToken);
-        await Task.WhenAll(muxStderrTask, muxStdoutTask);
-        _exitCode = mux.ExitCode;
+        _muxProcess = process;
+        process.Start();
+        Task stderrTask = ReadStreamAsync(process.StandardError, ProcessLogKind.UpstreamStderr, cancellationToken);
+        Task stdoutTask = ReadStreamAsync(process.StandardOutput, ProcessLogKind.UpstreamStderr, cancellationToken);
+        await process.WaitForExitAsync(cancellationToken);
+        await Task.WhenAll(stderrTask, stdoutTask);
         _muxProcess = null;
 
-        if (mux.ExitCode == 0) return true;
-        EnqueueProcessLine(ProcessLogKind.UpstreamStderr, $"Mux failed with exit code {mux.ExitCode}. See ffmpeg output above for details.");
+        if (process.ExitCode == 0) return true;
+        EnqueueProcessLine(ProcessLogKind.UpstreamStderr, $"{title} failed with exit code {process.ExitCode}. See ffmpeg output above for details.");
         return false;
     }
 
@@ -2046,6 +2079,18 @@ public partial class EncodingMonitorVM : BaseVM
         {
             if (process is { HasExited: false })
                 process.Kill();
+        }
+        catch
+        {
+        }
+    }
+
+    private static void TryDeleteFile(string? path)
+    {
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
+                File.Delete(path);
         }
         catch
         {

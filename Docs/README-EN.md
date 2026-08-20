@@ -274,6 +274,8 @@ Implemented and verified, usability confirmed
 
 Implemented and verified, usability confirmed
 
+When audio re-encoding is selected in Concat mode, the workflow splits audio into a dedicated ffmpeg encode step and a final mux step, so the command list shows video encode, audio encode, then mux.
+
 #### Filter Scribe (Script Editor) Extended Features
 
 Implemented and verified, usability confirmed

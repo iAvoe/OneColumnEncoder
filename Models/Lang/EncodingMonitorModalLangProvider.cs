@@ -63,6 +63,7 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["PipeErrorPrefix"] = "Pipe error: ",
             ["ReadyToStartText"] = "Ready to start",
             ["EncodingText"] = "Encoding",
+            ["AudioEncodingText"] = "Encoding audio",
             ["MuxingText"] = "Muxing",
             ["InterruptedText"] = "Interrupted",
             ["FailedText"] = "Encoding failed",
@@ -131,6 +132,7 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["PipeErrorPrefix"] = "管道错误：",
             ["ReadyToStartText"] = "准备启动",
             ["EncodingText"] = "正在压制",
+            ["AudioEncodingText"] = "正在压制音频",
             ["MuxingText"] = "正在封装",
             ["InterruptedText"] = "已中断",
             ["FailedText"] = "压制失败",
@@ -199,6 +201,7 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["PipeErrorPrefix"] = "管道錯誤：",
             ["ReadyToStartText"] = "準備啟動",
             ["EncodingText"] = "正在壓制",
+            ["AudioEncodingText"] = "正在壓制音訊",
             ["MuxingText"] = "正在封裝",
             ["InterruptedText"] = "已中斷",
             ["FailedText"] = "壓制失敗",
@@ -269,6 +272,7 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["PipeErrorPrefix"] = "Erreur pipe : ",
             ["ReadyToStartText"] = "Prêt",
             ["EncodingText"] = "Encodage",
+            ["AudioEncodingText"] = "Encodage audio",
             ["MuxingText"] = "Multiplexage",
             ["InterruptedText"] = "Interrompu",
             ["FailedText"] = "Échec encodage",
@@ -334,6 +338,7 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["PipeErrorPrefix"] = "Error de pipe: ",
             ["ReadyToStartText"] = "Listo",
             ["EncodingText"] = "Codificando",
+            ["AudioEncodingText"] = "Codificando audio",
             ["MuxingText"] = "Multiplexando",
             ["InterruptedText"] = "Interrumpido",
             ["FailedText"] = "Codificación fallida",
@@ -399,6 +404,7 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["PipeErrorPrefix"] = "パイプエラー: ",
             ["ReadyToStartText"] = "開始準備完了",
             ["EncodingText"] = "エンコード中",
+            ["AudioEncodingText"] = "音声エンコード中",
             ["MuxingText"] = "Mux 中",
             ["InterruptedText"] = "中断済み",
             ["FailedText"] = "エンコード失敗",
@@ -464,6 +470,7 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["PipeErrorPrefix"] = "Ошибка pipe: ",
             ["ReadyToStartText"] = "Готово к старту",
             ["EncodingText"] = "Кодирование",
+            ["AudioEncodingText"] = "Кодирование аудио",
             ["MuxingText"] = "Мультиплексирование",
             ["InterruptedText"] = "Прервано",
             ["FailedText"] = "Кодирование не удалось",
@@ -529,6 +536,7 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["PipeErrorPrefix"] = "Pipe-Fehler: ",
             ["ReadyToStartText"] = "Bereit zum Start",
             ["EncodingText"] = "Kodierung",
+            ["AudioEncodingText"] = "Audio-Kodierung",
             ["MuxingText"] = "Multiplexing",
             ["InterruptedText"] = "Unterbrochen",
             ["FailedText"] = "Kodierung fehlgeschlagen",
@@ -594,6 +602,7 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["PipeErrorPrefix"] = "Erro de pipe: ",
             ["ReadyToStartText"] = "Pronto para iniciar",
             ["EncodingText"] = "Codificando",
+            ["AudioEncodingText"] = "Codificando áudio",
             ["MuxingText"] = "Multiplexando",
             ["InterruptedText"] = "Interrompido",
             ["FailedText"] = "Falha na codificação",
@@ -661,8 +670,9 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
     public string BlockTooltipFormat { get; }
     public string PipeErrorPrefix { get; }
     public string ReadyToStartText { get; }
-    public string EncodingText { get; }
-    public string MuxingText { get; }
+    public string EncodingText { get; } // Used in queue/concat/repart mode
+    public string AudioEncodingText { get; } // Used in queue/concat/repart mode
+    public string MuxingText { get; } // Used in queue/concat/repart mode
     public string InterruptedText { get; }
     public string FailedText { get; }
     public string CompletedText { get; }
@@ -732,6 +742,7 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
         PipeErrorPrefix = this["PipeErrorPrefix"];
         ReadyToStartText = this["ReadyToStartText"];
         EncodingText = this["EncodingText"];
+        AudioEncodingText = this["AudioEncodingText"];
         MuxingText = this["MuxingText"];
         InterruptedText = this["InterruptedText"];
         FailedText = this["FailedText"];

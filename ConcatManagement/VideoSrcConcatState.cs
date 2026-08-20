@@ -2,27 +2,37 @@ using System.IO;
 
 namespace OneColumnEncoder.ConcatManagement;
 
+/// <summary>
+/// Manage Concat ItemCard states and sync file lists (backend)
+/// </summary>
 public sealed class VideoSrcConcatState
 {
+    // ItemCard View, path for each source, and filelist write path
     private readonly ToolItemCardVM? _videoSrcConcatCard;
     private string[] _filePaths = [];
     private static readonly string DefaultFileListPath =
-        Path.Combine(SaveLoadBase<ConcatFileListPathPlaceholder>.GetConfigDirectory(), "source_concat_filelist.txt");
+        Path.Combine(SaveLoadBase<ConcatFileListPathPlaceholder>.GetConfigDirectory(),
+            "source_concat_filelist.txt");
 
+    // Constructor: bind state, set R1Text as Add or Replace
     public VideoSrcConcatState(IEnumerable<ToolItemCardVM> videoSrcImportZone)
     {
         _videoSrcConcatCard = videoSrcImportZone.FirstOrDefault(item =>
-            item.Name.Equals(UILangProvider.Current["Tool.Source.VideoSrcConcatState"], StringComparison.OrdinalIgnoreCase));
+            item.Name.Equals(UILangProvider.Current["Tool.Source.VideoSrcConcatState"],
+            StringComparison.OrdinalIgnoreCase));
         if (_videoSrcConcatCard != null)
             _videoSrcConcatCard.UseAutoAddReplaceText = false;
     }
 
     public bool IsActive => _videoSrcConcatCard != null && _videoSrcConcatCard.IsSelected;
-
     public string[] CurrentFilePaths => _filePaths;
-
     public static string FileListPath => DefaultFileListPath;
 
+    /// <summary>
+    /// Helping find source method in MainVM to distingulish mode
+    /// </summary>
+    /// <param name="item">ItemCard view model</param>
+    /// <returns>true if requested item is a concat item</returns>
     public bool IsConcatItem(ToolItemCardVM item) =>
         item != null && ReferenceEquals(item, _videoSrcConcatCard);
 

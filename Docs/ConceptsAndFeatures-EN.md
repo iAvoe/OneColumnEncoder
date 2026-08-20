@@ -125,9 +125,9 @@ Concat mode performs basic compatibility checks on import:
 - Differences in codec, pixel format, validation checklist signature, and frame rate produce warnings.
 - VFR and frame-rate signature differences are treated as warnings, directing users to apply VFR→CFR repair in the filter editor.
 
-Concat mode generates the `ffmpeg concat demuxer` filelist for script export and audio muxing, and can produce concat `.avs` / `.vpy` scripts. ffmpeg video encoding now opens each fragment separately and stitches the decoded frames with the `concat` filter, which avoids sharing one decoder context across mixed source variants. The filter editor also allows reordering, removing fragments, and regenerating the filelist.
+Concat mode generates the `ffmpeg concat demuxer` filelist for script export and audio muxing, and can produce concat `.avs` / `.vpy` scripts. ffmpeg video encoding opens each fragment separately and stitches the decoded frames with the `concat` filter, which avoids sharing one decoder context across mixed source variants. The filter editor also allows reordering, removing fragments, and regenerating the filelist.
 
-Audio handling in concat mode is a muxing step outside the video pipeline: generated AVS/VPY scripts handle video only; after encoding, ffmpeg reads audio from the concat filelist sources according to the selected audio mux mode. `Disable` produces video-only output, `Copy` maps only the first audio track, and AAC/Opus re-encode modes map all audio tracks. For VFR sources or complex boundary fragments, audio duration may exceed video duration, so it is recommended to check and handle audio after concat encoding.
+Audio handling in concat mode is split by mode: generated AVS/VPY scripts handle video only; `Disable` stays video-only, `Copy` maps audio directly from the concat timeline, and AAC/Opus re-encode modes first write a temp audio file and then mux that temp track with the encoded video. For VFR sources or complex boundary fragments, audio duration may exceed video duration, so it is recommended to check and handle audio after concat encoding.
 
 ### Repart Mode
 
@@ -220,7 +220,7 @@ The encoder first outputs the corresponding raw video stream:
 - x265: `.hevc`
 - SVT-AV1: `.ivf`
 
-If ffmpeg has been imported, the project generates a mux command to combine the encoded video stream with selected source streams into an MKV. Single source and queue mode copy non-video streams from the original video; concat and Repart mode read audio from the concat filelist timeline, with `Copy` limited to the first audio track and re-encode modes mapping all audio tracks.
+If ffmpeg has been imported, the project generates a mux command to combine the encoded video stream with selected source streams into an MKV. Single source and queue mode copy non-video streams from the original video; concat and Repart mode read audio from the concat filelist timeline, with `Copy` limited to the first audio track and re-encode modes either muxing directly from the timeline or, for concat re-encode, writing a temp audio file first and then muxing it with the encoded video.
 
 Muxing is a controllable step — the mux command and status are visible in the encoding monitor window. For raw stream outputs like x265 / SVT-AV1, muxing makes it easier to add new streams or convert to other container formats, so it is checked by default.
 
