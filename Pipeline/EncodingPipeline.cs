@@ -156,7 +156,9 @@ public static partial class EncodingPipeline
         return request.UpstreamExeName.ToLowerInvariant() switch
         {
             "ffmpeg.exe" => isConcat
-                ? JoinArgs("-hide_banner", "-f concat -safe 0", $"-i {Quote(request.ConcatFileListPath!)}", clipArgs, ffmpegFilterArgs, "-f yuv4mpegpipe -an -strict unofficial -")
+                ? request.ConcatVideoSourcePaths is { Length: > 0 }
+                    ? BuildFfmpegConcatArgs(request)
+                    : JoinArgs("-hide_banner", "-f concat -safe 0", $"-i {Quote(request.ConcatFileListPath!)}", clipArgs, ffmpegFilterArgs, "-f yuv4mpegpipe -an -strict unofficial -")
                 : JoinArgs($"-hide_banner", clipArgs, $"-i {input}", ffmpegFilterArgs, "-f yuv4mpegpipe -an -strict unofficial -"), // unofficial allows 10bit pipe
             "vspipe.exe" => JoinArgs(input, clipArgs, NormalizeRequired(request.VspipeY4mArg, "vspipe Y4M argument"), "-"),
             "avs2yuv.exe" => JoinArgs(input, clipArgs, "-"),
@@ -209,6 +211,25 @@ public static partial class EncodingPipeline
             "-hide_banner",
             inputs,
             $"-filter_complex \"{filterComplex}\" -map \"[repartv]\" -fps_mode passthrough",
+            "-f yuv4mpegpipe -an -strict unofficial -");
+    }
+
+    private static string BuildFfmpegConcatArgs(EncodingPipelineRequest request)
+    {
+        string[] paths = request.ConcatVideoSourcePaths!;
+        string inputs = string.Join(" ", paths.Select(path => $"-i {Quote(path)}"));
+        string resetInputs = string.Join(";", Enumerable.Range(0, paths.Length)
+            .Select(index => $"[{index}:v:0]setpts=PTS-STARTPTS[rv{index}]"));
+        string concatInputs = string.Concat(Enumerable.Range(0, paths.Length).Select(index => $"[rv{index}]"));
+        string? extraFilter = ExtractVideoFilter(request.FfmpegFilterArgs);
+        string filterComplex =
+            $"{resetInputs};{concatInputs}concat=n={paths.Length}:v=1:a=0" +
+            (string.IsNullOrWhiteSpace(extraFilter) ? string.Empty : $",{extraFilter}") +
+            "[catv]";
+        return JoinArgs(
+            "-hide_banner",
+            inputs,
+            $"-filter_complex \"{filterComplex}\" -map \"[catv]\" -fps_mode passthrough",
             "-f yuv4mpegpipe -an -strict unofficial -");
     }
 

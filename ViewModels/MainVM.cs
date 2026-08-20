@@ -2466,6 +2466,7 @@ public class MainVM : BaseVM
             FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs,
             IsConcatMode: true,
             ConcatFileListPath: _videoSrcConcat.RegenerateFileList(),
+            ConcatVideoSourcePaths: concatPaths,
             ConcatTotalFrames: _srcVideoAnalysis.ConcatTotalFrames,
             AudioMuxMode: EncodingAudioMuxResolver.ParseMode(_appConfM.AudioMux.ConcatMode));
     }
