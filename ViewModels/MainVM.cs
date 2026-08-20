@@ -2269,7 +2269,8 @@ public class MainVM : BaseVM
             SvfiIniPath: svfiIniPath,
             SvfiTaskId: svfiTaskId,
             FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs,
-            AudioMuxMode: EncodingAudioMuxResolver.ParseMode(_appConfM.AudioMux.SingleMode));
+            AudioMuxMode: EncodingAudioMuxResolver.ParseMode(_appConfM.AudioMux.SingleMode),
+            AutoMuxEnabled: EncodingAutoMuxResolver.IsAutoMuxEnabled(_appConfM.AutoMux, encoderExeName, EncodingMuxRouteMode.Single));
     }
 
     private EncodingPipelineRequest[]? BuildQueueEncodingPipelineRequests(string[] srcPaths)
@@ -2399,7 +2400,8 @@ public class MainVM : BaseVM
                 SourceFfprobeJson: GetSrcFFprobeJson(srcPath),
                 ParallelismConf: parallelismConf,
                 FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs,
-                AudioMuxMode: EncodingAudioMuxResolver.ParseMode(_appConfM.AudioMux.QueueMode));
+                AudioMuxMode: EncodingAudioMuxResolver.ParseMode(_appConfM.AudioMux.QueueMode),
+                AutoMuxEnabled: EncodingAutoMuxResolver.IsAutoMuxEnabled(_appConfM.AutoMux, encoderExeName, EncodingMuxRouteMode.Queue));
         })];
     }
 
@@ -2468,7 +2470,8 @@ public class MainVM : BaseVM
             ConcatFileListPath: _videoSrcConcat.RegenerateFileList(),
             ConcatVideoSourcePaths: concatPaths,
             ConcatTotalFrames: _srcVideoAnalysis.ConcatTotalFrames,
-            AudioMuxMode: EncodingAudioMuxResolver.ParseMode(_appConfM.AudioMux.ConcatMode));
+            AudioMuxMode: EncodingAudioMuxResolver.ParseMode(_appConfM.AudioMux.ConcatMode),
+            AutoMuxEnabled: EncodingAutoMuxResolver.IsAutoMuxEnabled(_appConfM.AutoMux, encoderExeName, EncodingMuxRouteMode.Concat));
     }
 
     private EncodingPipelineRequest[]? BuildRepartEncodingPipelineRequests()
@@ -2556,7 +2559,8 @@ public class MainVM : BaseVM
                 MuxMode: EncodingMuxMode.VideoOnly,
                 ConcatVideoSourcePaths: srcPaths,
                 IsRepartMode: true,
-                AudioMuxMode: EncodingAudioMuxResolver.ParseMode(_appConfM.AudioMux.RepartMode));
+                AudioMuxMode: EncodingAudioMuxResolver.ParseMode(_appConfM.AudioMux.RepartMode),
+                AutoMuxEnabled: EncodingAutoMuxResolver.IsAutoMuxEnabled(_appConfM.AutoMux, encoderExeName, EncodingMuxRouteMode.Repart));
         })];
     }
 

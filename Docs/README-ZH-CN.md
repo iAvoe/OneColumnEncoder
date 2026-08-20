@@ -81,7 +81,7 @@
 <sup><i>蓝光播放列表选择器</i></sup></br>
 <img src="../WireframeMockups/9-Episode-Repartition-Editor-v3.png" alt="Repartition Configurator" width="650" /></br>
 <sup><i>重分集编辑器</i></sup></br>
-<img src="../WireframeMockups/10-Settings.png" alt="Settings" width="400" /></br>
+<img src="../WireframeMockups/10-Settings-v3.png" alt="Settings" width="400" /></br>
 <sup><i>程序设置</i></sup></br>
 </p>
 

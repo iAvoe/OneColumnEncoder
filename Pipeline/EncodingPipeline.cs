@@ -29,7 +29,8 @@ public record EncodingPipelineRequest(
     EncodingMuxMode MuxMode = EncodingMuxMode.Auto,
     string[]? ConcatVideoSourcePaths = null,
     bool? IsRepartMode = null,
-    EncodingAudioMuxMode AudioMuxMode = EncodingAudioMuxMode.Auto);
+    EncodingAudioMuxMode AudioMuxMode = EncodingAudioMuxMode.Auto,
+    bool AutoMuxEnabled = true);
 
 public enum EncodingMuxMode
 {

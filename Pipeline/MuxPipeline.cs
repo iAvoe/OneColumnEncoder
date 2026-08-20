@@ -26,6 +26,7 @@ public static partial class MuxPipeline
     public static EncodingMuxCommand? BuildMuxCommand(EncodingPipelineRequest request)
     {
         if (request == null
+            || !request.AutoMuxEnabled
             || request.MuxMode == EncodingMuxMode.Disabled
             || string.IsNullOrWhiteSpace(request.FfmpegPath)) return null;
         if (request.MuxMode == EncodingMuxMode.VideoOnly)
@@ -155,7 +156,7 @@ public static partial class MuxPipeline
     /// <returns>Video-only mux command, or null when muxing is unavailable.</returns>
     public static EncodingMuxCommand? BuildVideoOnlyMuxCommand(EncodingPipelineRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.FfmpegPath)) return null;
+        if (!request.AutoMuxEnabled || string.IsNullOrWhiteSpace(request.FfmpegPath)) return null;
 
         MuxContext context = BuildMuxContext(request);
         string videoTimescaleArgs = $"-video_track_timescale {context.VideoTimescale}";
