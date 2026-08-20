@@ -44,6 +44,8 @@ public class ChecklistProviderM
         new(UILangProvider.Current["Checklist.Source2.AspectRatio"]),
         new(UILangProvider.Current["Checklist.Source2.ColorMetadata"]),
         new(UILangProvider.Current["Checklist.Source2.ChromaSubsampling"]),
+        // Temporary SVT-AV1 4.2 gate. Remove once over-YUV420 support lands.
+        new("Temp: Colorspace is YUV420 (SVT-AV1 4.2 req.)"),
     ];
 
     public static List<ChecklistItemDefinitionM> GetEncodeChecklist1() =>

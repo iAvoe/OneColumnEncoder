@@ -12,6 +12,7 @@ namespace OneColumnEncoder.FFmpeg;
 /// <param name="HasColorTransfer">Source has known transfer metadata.</param>
 /// <param name="HasColorPrimaries">Source has known primaries metadata.</param>
 /// <param name="HasSupportedChroma">Source chroma format is supported.</param>
+/// <param name="IsYuv420">Source pixel format is YUV420.</param>
 public readonly record struct FFProbeSrcValResult(
     bool IsProgressive,
     bool IsSvtAv1BitDepthSupported,
@@ -21,7 +22,8 @@ public readonly record struct FFProbeSrcValResult(
     bool HasColorSpace,
     bool HasColorTransfer,
     bool HasColorPrimaries,
-    bool HasSupportedChroma);
+    bool HasSupportedChroma,
+    bool IsYuv420);
 
 /// <summary>
 /// Evaluates ffprobe metadata for codec, chroma, and frame-rate support checks
@@ -61,10 +63,18 @@ public static class FFProbeSrcVal
             HasKnownMetadata(stream, "color_space"),
             HasKnownMetadata(stream, "color_transfer"),
             HasKnownMetadata(stream, "color_primaries"),
-            FFProbePixelFormatRules.HasSupportedChroma(stream));
+            FFProbePixelFormatRules.HasSupportedChroma(stream),
+            IsYuv420(stream));
     }
 
     public static bool IsSvtAv1BitDepthSupported(string rawJson) => Analyze(rawJson).IsSvtAv1BitDepthSupported;
+
+    private static bool IsYuv420(JsonElement stream)
+    {
+        string? pixelFormat = TryGetString(stream, "pix_fmt");
+        return !string.IsNullOrWhiteSpace(pixelFormat)
+            && pixelFormat.Contains("420", StringComparison.OrdinalIgnoreCase);
+    }
 
     private static bool IsProgressive(JsonElement stream)
     {

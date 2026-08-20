@@ -10,6 +10,7 @@ public class SrcCheckCardVM : ValidationCardBaseVM
     protected const int ProgressiveChecklistIdx = 1;
     protected const int Svtav1BitDepthChecklistIdx = 2;
     protected const int MaxBitDepthChecklistIdx = 3;
+    protected const int TempYuv420ChecklistIdx = 4;
 
     public SrcCheckCardVM()
     {
@@ -56,6 +57,8 @@ public class SrcCheckCardVM : ValidationCardBaseVM
                 ? StatusType.Success : StatusType.Warning);
             SetChecklist2(3, result.HasSupportedChroma
                 ? StatusType.Success : StatusType.Warning);
+            if (Checklist2.Count > TempYuv420ChecklistIdx)
+                SetChecklist2(TempYuv420ChecklistIdx, result.IsYuv420 ? StatusType.Warning : StatusType.Success);
         }
         catch
         {
@@ -94,6 +97,7 @@ public class SrcCheckCardVM : ValidationCardBaseVM
         SetChecklist1(MetadataChecklistIdx, StatusType.Error);
         SetChecklist1(ProgressiveChecklistIdx, StatusType.Waiting);
         SetChecklist1(Svtav1BitDepthChecklistIdx, StatusType.Waiting);
+        SetChecklist2(TempYuv420ChecklistIdx, StatusType.Waiting);
 
         for (int i = 0; i < Checklist2.Count; i++) SetChecklist2(i, StatusType.Waiting);
     }
