@@ -127,13 +127,13 @@ Concat mode performs basic compatibility checks on import:
 
 Concat mode generates the `ffmpeg concat demuxer` filelist and can produce concat `.avs` / `.vpy` scripts. The filter editor also allows reordering, removing fragments, and regenerating the filelist.
 
-Audio handling in concat mode is a muxing step outside the video pipeline: generated AVS/VPY scripts handle video only; after encoding, ffmpeg attempts to copy audio streams from the concat filelist sources into the final MKV. For VFR sources or complex boundary fragments, audio duration may exceed video duration — it is recommended to check and handle audio after concat encoding.
+Audio handling in concat mode is a muxing step outside the video pipeline: generated AVS/VPY scripts handle video only; after encoding, ffmpeg reads audio from the concat filelist sources according to the selected audio mux mode. `Disable` produces video-only output, `Copy` maps only the first audio track, and AAC/Opus re-encode modes map all audio tracks. For VFR sources or complex boundary fragments, audio duration may exceed video duration, so it is recommended to check and handle audio after concat encoding.
 
 ### Repart Mode
 
 Repart mode treats an ordered set of strictly matching CFR video streams as one virtual frame timeline, then manually repartitions that timeline into independent episode outputs. It handles both joined sources containing several episodes and fragmented sources where one episode spans several files.
 
-The dedicated partition-style window provides input and output sidebars, a proportional allocation map, synchronized time/frame fields, unallocated gaps, and adjacent-output merging. Chapter-folder import is supported for disc playlists: multi-entry MPLS sources are combined into one virtual source, and mixed STREAM folders resolve to the dominant matching episode group instead of the first file. Repart still does not copy source audio, subtitles, chapters, or metadata; every output is encoded independently and muxed as a video-only MKV.
+The dedicated partition-style window provides input and output sidebars, a proportional allocation map, synchronized time/frame fields, unallocated gaps, and adjacent-output merging. Chapter-folder import is supported for disc playlists: multi-entry MPLS sources are combined into one virtual source, and mixed STREAM folders resolve to the dominant matching episode group instead of the first file. Each output is encoded independently; Repart can mux clipped source-timeline audio according to the selected audio mux mode, while source subtitles, chapters, and metadata remain excluded.
 
 #### BD Playlist Selector Modal
 
@@ -149,7 +149,7 @@ Playlist structure matters here:
 - Separated: one playlist contains one episode. For TV shows, the matching playlists usually have similar durations.
 - The third column exists for the separated case. Choosing a single playlist there means importing only one episode, not the whole title set.
 
-**Container-level timing granularity is normalized, not part of the format signature.** Repart's strict source signature compares actual video format fields (codec, profile, level, dimensions, pixel format, color metadata, frame rate, extradata) but deliberately excludes the per-stream `time_base` — the muxer's tick resolution, e.g. `1/24000` vs `1/96000` at the same 24000/1001 fps. That is a container detail rather than a video format property, so an encode batch that muxed identical episodes at different tick resolutions still forms one virtual timeline. This is safe because every upstream normalizes timing: ffmpeg resets each input's PTS and rebuilds a CFR PTS sequence from the plan frame rate, VapourSynth/AviSynth splice by frames, and the final video-only MKV uses `-video_track_timescale` derived from the reference source.
+**Container-level timing granularity is normalized, not part of the format signature.** Repart's strict source signature compares actual video format fields (codec, profile, level, dimensions, pixel format, color metadata, frame rate, extradata) but deliberately excludes the per-stream `time_base` — the muxer's tick resolution, e.g. `1/24000` vs `1/96000` at the same 24000/1001 fps. That is a container detail rather than a video format property, so an encode batch that muxed identical episodes at different tick resolutions still forms one virtual timeline. This is safe because every upstream normalizes timing: ffmpeg resets each input's PTS and rebuilds a CFR PTS sequence from the plan frame rate, VapourSynth/AviSynth splice by frames, and the final MKV uses `-video_track_timescale` derived from the reference source.
 
 #### Concat Then Split
 
@@ -220,7 +220,7 @@ The encoder first outputs the corresponding raw video stream:
 - x265: `.hevc`
 - SVT-AV1: `.ivf`
 
-If ffmpeg has been imported, the project generates a mux command to combine the encoded video stream with audio, subtitles, chapters, and metadata from the source into an MKV. Single source and queue mode copy non-video streams from the original video; concat mode copies audio streams from the concat filelist.
+If ffmpeg has been imported, the project generates a mux command to combine the encoded video stream with selected source streams into an MKV. Single source and queue mode copy non-video streams from the original video; concat and Repart mode read audio from the concat filelist timeline, with `Copy` limited to the first audio track and re-encode modes mapping all audio tracks.
 
 Muxing is a controllable step — the mux command and status are visible in the encoding monitor window. For raw stream outputs like x265 / SVT-AV1, muxing makes it easier to add new streams or convert to other container formats, so it is checked by default.
 
@@ -424,6 +424,6 @@ When saving logs in the encoding monitor, the following files are written to the
 - SVT-AV1 does not support 12-bit input.
 - Queue, concat, and Repart modes do not support clip sampling.
 - `OneLineShotArgs` / SVFI route does not support queue, concat, or Repart mode.
-- Repart mode currently requires CFR, reliable per-frame timestamps, identical video-stream formats, manual output boundaries, and ffmpeg for video-only MKV output.
+- Repart mode currently requires CFR, reliable per-frame timestamps, identical video-stream formats, manual output boundaries, and ffmpeg for final MKV muxing.
 - Concat mode audio muxing is available, but complex VFR or boundary-abnormal sources may still require post-processing.
 - The project currently has no comprehensive automated tests — it relies on functional validation and real long-queue testing.

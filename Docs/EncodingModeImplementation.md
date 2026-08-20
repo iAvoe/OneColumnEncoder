@@ -207,7 +207,7 @@ VPY uses `core.std.Splice` to combine clips, assigning the result to `src` befor
 3. Queue route: load queue JSON, build one request per accepted source.
 4. Single route: one request from `BuildEncodingPipelineRequest()`.
 
-Concat requests set `IsConcatMode: true`, `ConcatFileListPath`, and `ConcatTotalFrames`. Repart requests additionally set `ConcatVideoSourcePaths`, a per-output `Clip` (time + frame range), `MuxMode: VideoOnly`, and `ConcatTotalFrames: plan.TotalFrames`.
+Concat requests set `IsConcatMode: true`, `ConcatFileListPath`, `ConcatTotalFrames`, and the configured concat `AudioMuxMode`. Repart requests additionally set `ConcatVideoSourcePaths`, a per-output `Clip` (time + frame range), `MuxMode: VideoOnly`, `IsRepartMode: true`, `ConcatTotalFrames: plan.TotalFrames`, and the configured repart `AudioMuxMode`.
 
 Concat encoding is supported for `ffmpeg.exe`, `vspipe.exe`, `avs2yuv.exe`, `avs2pipemod.exe`. `one_line_shot_args.exe` is rejected (concat has multiple source files and no SVFI concat route). Queue encoding uses the same supported set and also rejects `one_line_shot_args.exe`.
 
@@ -252,15 +252,23 @@ The monitor does not fabricate `nb_frames` or guess a total frame count from `du
 | Single | `SourceVideoPath` |
 | Queue | Each request's individual `SourceVideoPath` |
 | Concat | Concat filelist (`source_concat_filelist.txt`) as second ffmpeg input |
-| Repart | No source-stream input; only the encoded video is muxed into MKV. |
+| Repart | Concat filelist as second ffmpeg input, clipped to the output time range when audio muxing is enabled. |
 
 Concat never muxes audio from `SourceVideoPath` (set to `null`). After video encoding, the mux command uses:
 ```text
--i encoded_video -f concat -safe 0 -i source_concat_filelist.txt -map 0:v:0 -map 1:a? -c:v copy -c:a copy ... output
+-i encoded_video -f concat -safe 0 -i source_concat_filelist.txt -map 0:v:0 {audio-map-and-codec} -c:v copy ... output
 ```
-Audio is intentionally not loaded by AVS/VPY concat scripts. For VFR sources or complex boundary fragments, audio duration may exceed video duration — post-processing check is recommended.
+Audio is intentionally not loaded by AVS/VPY concat scripts. `EncodingAudioMuxMode` controls `{audio-map-and-codec}` for concat and repart source timelines:
 
-Repart uses `EncodingMuxMode.VideoOnly`. The mux step maps only the encoded video stream; source audio, subtitles, chapters, attachments, and metadata are intentionally excluded.
+| `EncodingAudioMuxMode` | Concat/Repart audio args |
+|------------------------|--------------------------|
+| `Disable` | `-an` |
+| `Copy` | `-map 1:a:0? -c:a copy` |
+| AAC/Opus re-encode modes | `-map 1:a?` plus the selected codec and bitrate args |
+
+This means multi-audio concat/repart sources keep only the first audio track in `Copy` mode, but keep all audio tracks when re-encoding. For VFR sources or complex boundary fragments, audio duration may exceed video duration — post-processing check is recommended.
+
+Repart still uses `EncodingMuxMode.VideoOnly` for request routing and for fallback behavior. When `AudioMuxMode` is `Disable`, or when a clip time range is unavailable, the fallback mux maps only the encoded video stream. Otherwise the repart mux step opens the concat filelist with `-ss`/`-to`, maps audio according to `EncodingAudioMuxMode`, and intentionally excludes source subtitles, chapters, attachments, and metadata.
 
 ## 9. Path Resolution Summary
 
@@ -292,7 +300,7 @@ Repart-specific constraints:
 - Video stream format fields must match exactly; container, audio, and subtitle layouts are not part of the signature. Per-stream `time_base` is a container detail and is likewise excluded (see `time_base` handling below).
 - Chapter-folder import is implemented for disc playlists. Multi-entry MPLS sources are combined into one virtual source, and mixed STREAM folders resolve to the dominant matching episode group instead of the first file.
 - Source Reviser remains disabled for an active plan because changing source metadata could invalidate frame offsets. Filter Scribe is available through the Repart-specific concat-style workflow. Imported sources are never modified.
-- ffmpeg is required for the final video-only MKV even when the upstream is vspipe or AviSynth.
+- ffmpeg is required for the final MKV mux step even when the upstream is vspipe or AviSynth.
 
 ### Repart Runtime Implementation
 
@@ -302,19 +310,19 @@ Clicking `Tool.Source.VideoSrcRepart` opens an import flow that can read either 
 
 Rare edge case: some long-GOP BDMV titles can make the short seek-based frame verification miss the last frame near the tail of the title. When that happens, the implementation widens the seek window first, then falls back to ffmpeg, and only uses full `ffprobe -count_frames` as the slowest last resort.
 
-**`time_base` handling.** The per-source signature deliberately omits `time_base`. It is the container's tick resolution (e.g. `1/24000` vs `1/96000` for the same 24000/1001 fps), a muxing detail rather than a video property, and identical encode batches can mux episodes at different tick resolutions. Sources that differ only in `time_base` are therefore accepted as one virtual timeline. Every downstream stage normalizes it: ffmpeg resets each input's PTS with `setpts=PTS-STARTPTS` and rebuilds a CFR PTS sequence with `setpts=N*den/(num*TB)` — TB is ffmpeg's internal output timebase, independent of the source's — VapourSynth/AviSynth splice frame-accurately by frames, and the video-only mux writes `-video_track_timescale` from the reference source's `time_base` denominator uniformly across every output.
+**`time_base` handling.** The per-source signature deliberately omits `time_base`. It is the container's tick resolution (e.g. `1/24000` vs `1/96000` for the same 24000/1001 fps), a muxing detail rather than a video property, and identical encode batches can mux episodes at different tick resolutions. Sources that differ only in `time_base` are therefore accepted as one virtual timeline. Every downstream stage normalizes it: ffmpeg resets each input's PTS with `setpts=PTS-STARTPTS` and rebuilds a CFR PTS sequence with `setpts=N*den/(num*TB)` — TB is ffmpeg's internal output timebase, independent of the source's — VapourSynth/AviSynth splice frame-accurately by frames, and the final mux writes `-video_track_timescale` from the reference source's `time_base` denominator uniformly across every output.
 
 Each encoding start creates execution-specific ffconcat and private AVS/VPY paths. `BuildRepartEncodingPipelineRequests()` emits one `EncodingPipelineRequest` per committed output (`RepartPlanM.Outputs`); every request carries an `EncodingClipRequest` with both time (`StartTime`/`EndTime`) and frame (`FirstFrame`/`LastFrame`) ranges plus the plan frame rate, `ConcatFileListPath`, `ConcatVideoSourcePaths`, `ConcatTotalFrames: plan.TotalFrames`, and `MuxMode: EncodingMuxMode.VideoOnly`.
 
 **Concat-then-split commands per upstream** (frame ranges are global indices over the concatenated virtual timeline):
 
-- **ffmpeg** — `EncodingPipeline.BuildFfmpegRepartArgs()` opens every source with its own `-i`, maps each source's `v:0` only, chains `[i:v:0]setpts=PTS-STARTPTS[rv i]`, joins the segments in import order with `concat=n=N:v=1:a=0`, crops with frame-exact `trim=start_frame={first}:end_frame={last+1}`, regenerates the CFR PTS sequence with `setpts=N*den/(num*TB)`, then pipes `-map "[repartv]" -f yuv4mpegpipe -an -strict unofficial -`. A single source omits the concat stage and uses `-vf "trim=...,setpts=..."` directly. Audio is intentionally absent (`a=0`, `-an`); Repart output is video-only.
+- **ffmpeg** — `EncodingPipeline.BuildFfmpegRepartArgs()` opens every source with its own `-i`, maps each source's `v:0` only, chains `[i:v:0]setpts=PTS-STARTPTS[rv i]`, joins the segments in import order with `concat=n=N:v=1:a=0`, crops with frame-exact `trim=start_frame={first}:end_frame={last+1}`, regenerates the CFR PTS sequence with `setpts=N*den/(num*TB)`, then pipes `-map "[repartv]" -f yuv4mpegpipe -an -strict unofficial -`. A single source omits the concat stage and uses `-vf "trim=...,setpts=..."` directly. Audio is intentionally absent from the upstream video pipe; the later mux step handles audio from the concat filelist when `AudioMuxMode` is not `Disable`.
 - **vspipe** — writes a private `.vpy` whose source header splices all sources via `core.std.Splice` (`ScriptTemplate.BuildConcatVpySourceHeader`), then slices with `-s {first} -e {last}`.
 - **avs2yuv / avs2pipemod** — writes a private `.avs` whose source header joins all sources with AviSynth `++` UnalignedSplice (`ScriptTemplate.BuildConcatAvsSourceHeader`), then slices with `-seek {first} -frames {count}` (avs2yuv) or `-trim={first},{last}` (avs2pipemod).
 
 **Filter placement rule.** Imported sources are never modified. Repart Filter Scribe shows and orders the output episodes generated by the Repart plan, while using the Repart source list internally to build a temporary concat-style source and apply the selected filters. Source Reviser remains disabled while a Repart plan is active because changing source metadata requires rebuilding the plan. Repart ffmpeg requests retain `FfmpegFilterArgs`, while AVS/VPY execution scripts include the saved Filter Scribe body.
 
-`EncodingMonitorVM` executes the requests through the existing sequential batch engine with a non-persistent `RepartOutputSidebarPanel`; mux is locked on and writes a video-only MKV for each output. Requests share the virtual source but carry distinct `EncodingClipRequest` ranges, output paths, and clip frame totals.
+`EncodingMonitorVM` executes the requests through the existing sequential batch engine with a non-persistent `RepartOutputSidebarPanel`; mux is locked on and writes the final MKV for each output. Requests share the virtual source but carry distinct `EncodingClipRequest` ranges, output paths, clip frame totals, and repart audio mux mode.
 
 ## 11. End-to-End Flows
 
@@ -322,7 +330,7 @@ Each encoding start creates execution-specific ffconcat and private AVS/VPY path
 
 **Concat:** `Video Src. Concat` selected → import multiple files → extension and compatibility precheck → write filelist → analyze all fragments (sum concat total frame count and store all raw JSON) → optionally reorder/remove in FilterScribe → regenerate filelist and clear stale analysis if list changed → rerun analysis if needed → save/import concat script if needed → press `Start Encode` → build one concat request with `ConcatTotalFrames` → confirm command/overwrite → encode one output (progress uses summed frame count) → mux audio from filelist.
 
-**Repart:** `Tool.Source.VideoSrcRepart` selected → import a folder → strictly analyze and order sources → open `RepartConfModal` → manually allocate output frame ranges → optionally leave unallocated gaps or merge adjacent outputs → apply the plan → select output directory and encoding settings → press `Start Encode` → create an execution-specific virtual source → build one Clip request per output → confirm overwrite targets → run sequentially with `RepartOutputSidebarPanel` → mux each encoded video into a video-only MKV.
+**Repart:** `Tool.Source.VideoSrcRepart` selected → import a folder → strictly analyze and order sources → open `RepartConfModal` → manually allocate output frame ranges → optionally leave unallocated gaps or merge adjacent outputs → apply the plan → select output directory and encoding settings → press `Start Encode` → create an execution-specific virtual source → build one Clip request per output → confirm overwrite targets → run sequentially with `RepartOutputSidebarPanel` → mux each encoded video into the final MKV, with audio handled by the configured repart `AudioMuxMode`.
 
 ## Key Files
 

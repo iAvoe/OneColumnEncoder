@@ -50,9 +50,7 @@ public static partial class MuxPipeline
         // Concat mux only maps audio from the concat list; normal mux copies the source's non-video streams.
         string? audioMuxArgs = BuildAudioMuxArgs(audioMode);
         string nonVideoMapAndCodecArgs = isConcatMux
-            ? audioMode == EncodingAudioMuxMode.Disable
-                ? "-an"
-                : $"-map 1:a? {audioMuxArgs}"
+            ? BuildConcatAudioMuxMapArgs(audioMode)
             : $"{streamMapArgs} -map_metadata 1 -map_chapters 1 {(audioMode == EncodingAudioMuxMode.Disable ? "-an" : audioMuxArgs)} -c:s copy";
 
         string args = JoinArgs(
@@ -84,14 +82,15 @@ public static partial class MuxPipeline
 
         MuxContext context = BuildMuxContext(request);
         string? inputFormatArgs = GetMuxInputFormatArgs(request.EncoderExeName, context.FramerateValue);
-        string audioMuxArgs = BuildAudioMuxArgs(audioMode)!;
+        string audioMapArgs = BuildConcatAudioMuxMapArgs(audioMode);
+        if (audioMapArgs == "-an") return null;
 
         string args = JoinArgs(
             "-hide_banner -y",
             inputFormatArgs,
             $"-i {Quote(context.EncodedVideoPath)}",
             $"-f concat -safe 0 -ss {range.Value.startTime} -to {range.Value.endTime} -i {Quote(request.ConcatFileListPath!)}",
-            $"-map 0:v:0 -map 1:a? -c:v copy -bsf:v setts=pts=N*DURATION -video_track_timescale {context.VideoTimescale} {audioMuxArgs}",
+            $"-map 0:v:0 {audioMapArgs} -c:v copy -bsf:v setts=pts=N*DURATION -video_track_timescale {context.VideoTimescale}",
             Quote(context.OutputPath));
 
         return new($"{Quote(request.FfmpegPath)} {args}", args, context.EncodedVideoPath, context.OutputPath);
@@ -189,6 +188,17 @@ public static partial class MuxPipeline
         EncodingAudioMuxMode.ReEncodeOpus128 => "-c:a libopus -b:a 128k -vbr on -compression_level 10 -frame_duration 100",
         _ => null
     };
+
+    private static string BuildConcatAudioMuxMapArgs(EncodingAudioMuxMode mode)
+    {
+        string? audioMuxArgs = BuildAudioMuxArgs(mode);
+        if (audioMuxArgs == null) return "-an";
+
+        string audioMapArgs = mode == EncodingAudioMuxMode.Copy
+            ? "-map 1:a:0?"
+            : "-map 1:a?";
+        return $"{audioMapArgs} {audioMuxArgs}";
+    }
 
     /// <summary>
     /// Resolves the normalized start/end timestamps for a repart clip, preferring explicit times
