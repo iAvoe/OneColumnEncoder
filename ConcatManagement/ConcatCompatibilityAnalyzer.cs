@@ -1,4 +1,6 @@
 using System.IO;
+using OneColumnEncoder.FFmpeg;
+using OneColumnEncoder.Models;
 using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.ConcatManagement;
@@ -147,15 +149,25 @@ public static class ConcatCompatibilityAnalyzer
         string PixelFormat,
         string Codec,
         string AvgFrameRate,
-        string RFrameRate)
+        string RFrameRate,
+        string ColorRange,
+        string ColorSpace,
+        string ColorTransfer,
+        string ColorPrimaries,
+        string HdrSummary)
     {
-        public string Display => string.Join(
-            ", ",
-            $"{Width}x{Height}",
-            string.IsNullOrWhiteSpace(PixelFormat) ? "pix_fmt=?" : $"pix_fmt={PixelFormat}",
-            string.IsNullOrWhiteSpace(Codec) ? "codec=?" : $"codec={Codec}",
-            string.IsNullOrWhiteSpace(AvgFrameRate) ? "avg_fps=?" : $"avg_fps={AvgFrameRate}",
-            string.IsNullOrWhiteSpace(RFrameRate) ? "r_fps=?" : $"r_fps={RFrameRate}");
+        public string Display => JoinDisplayParts(
+                $"{Width}x{Height}",
+                FormatField("pix_fmt", PixelFormat),
+                FormatField("codec", Codec),
+                FormatField("avg_fps", AvgFrameRate),
+                FormatField("r_fps", RFrameRate),
+                FormatField("color_range", ColorRange),
+                FormatField("color_space", ColorSpace),
+                FormatField("color_trc", ColorTransfer),
+                FormatField("color_primaries", ColorPrimaries),
+                string.IsNullOrWhiteSpace(HdrSummary) ? null : $"hdr={HdrSummary}",
+                $"checks=[{FormatChecklist(CheckSignature)}]");
 
         public bool Matches(ConcatSourceSignature other) =>
             CheckSignature.Matches(other.CheckSignature) &&
@@ -181,6 +193,8 @@ public static class ConcatCompatibilityAnalyzer
             if (!TryGetInt(stream, "width", out int width)) return null;
             if (!TryGetInt(stream, "height", out int height)) return null;
 
+            FFProbeHdrInfo hdrInfo = FFProbeHdrInfoReader.Read(rawElement);
+
             return new(
                 checkSignature,
                 width,
@@ -188,8 +202,36 @@ public static class ConcatCompatibilityAnalyzer
                 TryGetString(stream, "pix_fmt") ?? string.Empty,
                 TryGetString(stream, "codec_name") ?? string.Empty,
                 FrameRate.NormalizeFrameRate(TryGetString(stream, "avg_frame_rate")),
-                FrameRate.NormalizeFrameRate(TryGetString(stream, "r_frame_rate")));
+                FrameRate.NormalizeFrameRate(TryGetString(stream, "r_frame_rate")),
+                TryGetString(stream, "color_range") ?? string.Empty,
+                TryGetString(stream, "color_space") ?? string.Empty,
+                TryGetString(stream, "color_transfer") ?? string.Empty,
+                TryGetString(stream, "color_primaries") ?? string.Empty,
+                hdrInfo.Summary ?? string.Empty);
         }
+
+        private static string JoinDisplayParts(params string?[] parts) =>
+            string.Join(", ", parts.Where(part => !string.IsNullOrWhiteSpace(part)).Select(part => part!));
+
+        private static string FormatField(string name, string value) =>
+            string.IsNullOrWhiteSpace(value) ? $"{name}=?" : $"{name}={value}";
+
+        private static string FormatChecklist(SourceCheckSignature signature)
+        {
+            List<string> parts = [];
+            ChecklistItemDefinitionM[] checklist1 = [.. ChecklistProviderM.GetSrcChecklist1()];
+            ChecklistItemDefinitionM[] checklist2 = [.. ChecklistProviderM.GetSrcChecklist2()];
+
+            for (int i = 0; i < Math.Min(signature.Checklist1.Length, checklist1.Length); i++)
+                parts.Add($"{checklist1[i].Text}={FormatStatus(signature.Checklist1[i])}");
+
+            for (int i = 0; i < Math.Min(signature.Checklist2.Length, checklist2.Length); i++)
+                parts.Add($"{checklist2[i].Text}={FormatStatus(signature.Checklist2[i])}");
+
+            return string.Join(", ", parts);
+        }
+
+        private static string FormatStatus(StatusType status) => status.ToString().ToLowerInvariant();
     }
 }
 

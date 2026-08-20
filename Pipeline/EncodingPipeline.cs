@@ -808,8 +808,7 @@ public static partial class EncodingPipeline
         List<string> result = [];
         if (range is "tv" or "pc")
         {
-            if (isX264 && range == "pc") result.Add("--fullrange");
-            else if (isX265) result.Add(range == "pc" ? "--range full" : "--range limited");
+            if (isX265) result.Add(range == "pc" ? "--range full" : "--range limited");
             else if (isSvtAv1) result.Add(range == "pc" ? "--color-range 1" : "--color-range 0");
         }
 

@@ -101,7 +101,7 @@ public class UILangProvider : LangProviderBase
             ["Tool.Source.VapourSynthQueue"] = "📁 VPY Script Queue",
             ["Tool.Source.SvfiQueue"] = "📁 SVFI Script Queue",
 
-            ["Tool.Enc.OutputSetting"] = "Output Setting",
+            ["Tool.Enc.OutputSetting"] = "Output Filename & Path",
             ["Tool.Enc.Parallelism"] = "Parallelism Control",
             ["Tool.Enc.EncParams"] = "Encode Settings",
 
@@ -341,7 +341,7 @@ public class UILangProvider : LangProviderBase
             ["Tool.Source.VapourSynthQueue"] = "📁 VPY 脚本队列",
             ["Tool.Source.SvfiQueue"] = "📁 SVFI 脚本队列",
 
-            ["Tool.Enc.OutputSetting"] = "输出设置",
+            ["Tool.Enc.OutputSetting"] = "输出文件名与路径",
             ["Tool.Enc.Parallelism"] = "并行计算调度",
             ["Tool.Enc.EncParams"] = "压缩参数配置",
 
@@ -565,7 +565,7 @@ public class UILangProvider : LangProviderBase
             ["Tool.Source.VapourSynthQueue"] = "📁 VPY 腳本隊列",
             ["Tool.Source.SvfiQueue"] = "📁 SVFI 腳本隊列",
 
-            ["Tool.Enc.OutputSetting"] = "輸出設定",
+            ["Tool.Enc.OutputSetting"] = "輸出檔案名與路徑",
             ["Tool.Enc.Parallelism"] = "平行計算調度",
             ["Tool.Enc.EncParams"] = "壓縮參數配置",
 
@@ -802,7 +802,7 @@ public class UILangProvider : LangProviderBase
         ["Tool.Source.AviSynthQueue"] = "📁 File d'attente AVS",
         ["Tool.Source.VapourSynthQueue"] = "📁 File d'attente VPY",
         ["Tool.Source.SvfiQueue"] = "📁 File d'attente SVFI",
-        ["Tool.Enc.OutputSetting"] = "Sortie",
+        ["Tool.Enc.OutputSetting"] = "Nom/Chemin fichier sortie",
         ["Tool.Enc.Parallelism"] = "Parallélisme",
         ["Tool.Enc.EncParams"] = "Réglages encodeur",
         // Source queue card
@@ -1004,7 +1004,7 @@ public class UILangProvider : LangProviderBase
         ["Tool.Source.AviSynthQueue"] = "📁 Cola AVS",
         ["Tool.Source.VapourSynthQueue"] = "📁 Cola VPY",
         ["Tool.Source.SvfiQueue"] = "📁 Cola SVFI",
-        ["Tool.Enc.OutputSetting"] = "Salida",
+        ["Tool.Enc.OutputSetting"] = "Nom. y ruta archivo salida",
         ["Tool.Enc.Parallelism"] = "Paralelismo",
         ["Tool.Enc.EncParams"] = "Ajustes del codificador",
         // Source queue card
@@ -1193,7 +1193,7 @@ public class UILangProvider : LangProviderBase
         ["Tool.Source.VideoSrcQueueWithCount"] = "📁 動画ソースキュー ({0})",
         ["Tool.Source.VideoSrcConcat"] = "∪ 動画ソース連結",
         ["Tool.Source.VideoSrcConcatWithCount"] = "∪ 動画ソース連結 ({0})",
-        ["Tool.Enc.OutputSetting"] = "出力設定",
+        ["Tool.Enc.OutputSetting"] = "出力ファイル名とパス",
         ["Tool.Enc.Parallelism"] = "並列スケジューリング",
         ["Tool.Enc.EncParams"] = "エンコード設定",
         // Source queue card
@@ -1395,7 +1395,7 @@ public class UILangProvider : LangProviderBase
         ["Tool.Source.VideoSrcQueueWithCount"] = "📁 Очередь видеоисточника ({0})",
         ["Tool.Source.VideoSrcConcat"] = "∪ Конкатенация видео",
         ["Tool.Source.VideoSrcConcatWithCount"] = "∪ Конкатенация видео ({0})",
-        ["Tool.Enc.OutputSetting"] = "Вывод",
+        ["Tool.Enc.OutputSetting"] = "Имя и путь файла вывода",
         ["Tool.Enc.Parallelism"] = "Параллелизм",
         ["Tool.Enc.EncParams"] = "Параметры кодера",
         // Source queue card
@@ -1605,7 +1605,7 @@ public class UILangProvider : LangProviderBase
         ["Tool.Source.AviSynthQueue"] = "📁 AVS-Skript-Wart.",
         ["Tool.Source.VapourSynthQueue"] = "📁 VPY-Skript-Wart.",
         ["Tool.Source.SvfiQueue"] = "📁 SVFI-Skript-Wart.",
-        ["Tool.Enc.OutputSetting"] = "Ausgabe",
+        ["Tool.Enc.OutputSetting"] = "Ausgabedatei Name & Pfad",
         ["Tool.Enc.Parallelism"] = "Parallelismus",
         ["Tool.Enc.EncParams"] = "Encoder-Einstellungen",
         // Source queue card
@@ -1784,7 +1784,7 @@ public class UILangProvider : LangProviderBase
         ["Tool.Source.AviSynthQueue"] = "📁 AVS 스크립트 큐",
         ["Tool.Source.VapourSynthQueue"] = "📁 VPY 스크립트 큐",
         ["Tool.Source.SvfiQueue"] = "📁 SVFI 스크립트 큐",
-        ["Tool.Enc.OutputSetting"] = "출력 설정",
+        ["Tool.Enc.OutputSetting"] = "출력 파일명 및 경로",
         ["Tool.Enc.Parallelism"] = "병렬 처리 제어",
         ["Tool.Enc.EncParams"] = "인코딩 설정",
         ["SourceQueue.Sequence"] = "순번",
@@ -1982,7 +1982,7 @@ public class UILangProvider : LangProviderBase
         ["Tool.Source.AviSynthQueue"] = "📁 Fila de scripts AVS",
         ["Tool.Source.VapourSynthQueue"] = "📁 Fila de scripts VPY",
         ["Tool.Source.SvfiQueue"] = "📁 Fila de scripts SVFI",
-        ["Tool.Enc.OutputSetting"] = "Configuração de saída",
+        ["Tool.Enc.OutputSetting"] = "Nome & caminho arquivo saída",
         ["Tool.Enc.Parallelism"] = "Controle de paralelismo",
         ["Tool.Enc.EncParams"] = "Configurações de codificação",
         ["SourceQueue.Sequence"] = "Seq.",
