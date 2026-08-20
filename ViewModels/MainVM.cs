@@ -2268,7 +2268,8 @@ public class MainVM : BaseVM
             ParallelismConf: ParallelismConfM.LoadEffective(),
             SvfiIniPath: svfiIniPath,
             SvfiTaskId: svfiTaskId,
-            FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs);
+            FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs,
+            AudioMuxMode: EncodingAudioMuxResolver.ParseMode(_appConfM.AudioMux.SingleMode));
     }
 
     private EncodingPipelineRequest[]? BuildQueueEncodingPipelineRequests(string[] srcPaths)
@@ -2397,7 +2398,8 @@ public class MainVM : BaseVM
                 _appDataM.Tools.VspipeY4mArg,
                 SourceFfprobeJson: GetSrcFFprobeJson(srcPath),
                 ParallelismConf: parallelismConf,
-                FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs);
+                FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs,
+                AudioMuxMode: EncodingAudioMuxResolver.ParseMode(_appConfM.AudioMux.QueueMode));
         })];
     }
 
@@ -2464,7 +2466,8 @@ public class MainVM : BaseVM
             FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs,
             IsConcatMode: true,
             ConcatFileListPath: _videoSrcConcat.RegenerateFileList(),
-            ConcatTotalFrames: _srcVideoAnalysis.ConcatTotalFrames);
+            ConcatTotalFrames: _srcVideoAnalysis.ConcatTotalFrames,
+            AudioMuxMode: EncodingAudioMuxResolver.ParseMode(_appConfM.AudioMux.ConcatMode));
     }
 
     private EncodingPipelineRequest[]? BuildRepartEncodingPipelineRequests()
@@ -2550,7 +2553,9 @@ public class MainVM : BaseVM
                 ConcatFileListPath: fileListPath,
                 ConcatTotalFrames: plan.TotalFrames,
                 MuxMode: EncodingMuxMode.VideoOnly,
-                ConcatVideoSourcePaths: srcPaths);
+                ConcatVideoSourcePaths: srcPaths,
+                IsRepartMode: true,
+                AudioMuxMode: EncodingAudioMuxResolver.ParseMode(_appConfM.AudioMux.RepartMode));
         })];
     }
 

@@ -15,6 +15,7 @@ public class AppConfM : SaveLoadBase<AppConfM>
     public Language Lang { get; set; } = new Language();
     public FontSettings Font { get; set; } = new FontSettings();
     public LogSettings Logs { get; set; } = new LogSettings();
+    public AudioMuxSettings AudioMux { get; set; } = new AudioMuxSettings();
     #region Setting items
     public class OverwriteSettings
     {
@@ -36,6 +37,13 @@ public class AppConfM : SaveLoadBase<AppConfM>
         public bool SaveLogsDefaultChecked { get; set; } = true;
         public int MaxUpstreamLogFiles { get; set; } = 30;
         public int MaxDownstreamLogFiles { get; set; } = 30;
+    }
+    public class AudioMuxSettings
+    {
+        public string SingleMode { get; set; } = "Copy";
+        public string QueueMode { get; set; } = "Copy";
+        public string ConcatMode { get; set; } = "ReEncodeAAC320";
+        public string RepartMode { get; set; } = "ReEncodeAAC320";
     }
     #endregion
 }

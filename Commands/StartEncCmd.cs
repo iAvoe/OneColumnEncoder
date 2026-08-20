@@ -349,7 +349,7 @@ public class StartEncCmd(
             {
                 new OverwriteTarget(
                     Label(Lang.EncodedOutputLabel),
-                    EncodingPipeline.ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath),
+                    MuxPipeline.ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath),
                     0L)
             }
             : new[]

@@ -39,5 +39,6 @@ public abstract class AppConfCmdBase(AppConfM appConfStore) : AsyncBaseCmd
         _appConfStore.Lang = loadedConfig.Lang;
         _appConfStore.Font = loadedConfig.Font;
         _appConfStore.Logs = loadedConfig.Logs;
+        _appConfStore.AudioMux = loadedConfig.AudioMux;
     }
 }

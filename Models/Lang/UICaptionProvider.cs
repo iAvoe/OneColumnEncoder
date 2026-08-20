@@ -103,6 +103,7 @@ public static class UICaptionProvider
             public static string InitMode => Lang["AppConf.InitMode"];
             public static string Fonts => Lang["AppConf.Fonts"];
             public static string Logs => Lang["AppConf.Logs"];
+            public static string AudioMux => Lang["AppConf.AudioMux"];
         }
 
         public static class Buttons
@@ -110,6 +111,34 @@ public static class UICaptionProvider
             public static string Cancel => Lang["Cancel"];
             public static string Save => Lang["Save"];
             public static string ClearOldQueueJson => Lang["AppConf.ClearOldQueueJson"];
+        }
+
+        public static class AudioMuxOptions
+        {
+            public static readonly string[] Codes =
+            [
+                nameof(EncodingAudioMuxMode.Disable),
+                nameof(EncodingAudioMuxMode.Copy),
+                nameof(EncodingAudioMuxMode.ReEncodeAAC320),
+                nameof(EncodingAudioMuxMode.ReEncodeAAC256),
+                nameof(EncodingAudioMuxMode.ReEncodeAAC128),
+                nameof(EncodingAudioMuxMode.ReEncodeOpus320),
+                nameof(EncodingAudioMuxMode.ReEncodeOpus256),
+                nameof(EncodingAudioMuxMode.ReEncodeOpus128)
+            ];
+
+            public static string GetDisplayName(string code) => code switch
+            {
+                nameof(EncodingAudioMuxMode.Disable) => Lang["AudioMux.Option.Disable"],
+                nameof(EncodingAudioMuxMode.Copy) => Lang["AudioMux.Option.Copy"],
+                nameof(EncodingAudioMuxMode.ReEncodeAAC320) => Lang["AudioMux.Option.AAC320"],
+                nameof(EncodingAudioMuxMode.ReEncodeAAC256) => Lang["AudioMux.Option.AAC256"],
+                nameof(EncodingAudioMuxMode.ReEncodeAAC128) => Lang["AudioMux.Option.AAC128"],
+                nameof(EncodingAudioMuxMode.ReEncodeOpus320) => Lang["AudioMux.Option.OGG320"],
+                nameof(EncodingAudioMuxMode.ReEncodeOpus256) => Lang["AudioMux.Option.OGG256"],
+                nameof(EncodingAudioMuxMode.ReEncodeOpus128) => Lang["AudioMux.Option.OGG128"],
+                _ => code
+            };
         }
 
         public static class LanguageOptions

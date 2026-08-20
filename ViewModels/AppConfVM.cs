@@ -81,7 +81,8 @@ public class AppConfVM : BaseVM
             [UICaptionProvider.AppConf.Groups.Language] = _appConfM.Lang,
             [UICaptionProvider.AppConf.Groups.InitMode] = _appConfM,
             [UICaptionProvider.AppConf.Groups.Fonts] = _appConfM.Font,
-            [UICaptionProvider.AppConf.Groups.Logs] = _appConfM.Logs
+            [UICaptionProvider.AppConf.Groups.Logs] = _appConfM.Logs,
+            [UICaptionProvider.AppConf.Groups.AudioMux] = _appConfM.AudioMux
         };
 
         foreach (IGrouping<string, SettingItemDefinitionM> group
@@ -106,7 +107,10 @@ public class AppConfVM : BaseVM
                         break;
                     case SettingControlType.Dropdown:
                         AddDropdownItem(container, setting.Label, source, setting.PropertyName,
-                            UICaptionProvider.AppConf.LanguageOptions.Codes);
+                            UICaptionProvider.AppConf.LanguageOptions.Codes,
+                            source is AppConfM.AudioMuxSettings
+                                ? UICaptionProvider.AppConf.AudioMuxOptions.GetDisplayName
+                                : UICaptionProvider.AppConf.LanguageOptions.GetDisplayName);
                         break;
                     case SettingControlType.Font:
                         AddFontItem(container, setting.Label, source, setting.PropertyName);
@@ -249,11 +253,12 @@ public class AppConfVM : BaseVM
         }
     }
 
-    private static void AddDropdownItem(AppConfContainer container, string text, object source, string propertyPath, string[] options)
+    private static void AddDropdownItem(AppConfContainer container, string text, object source, string propertyPath,
+        string[] options, Func<string, string>? displayNameResolver = null)
     {
         string currentValue = source.GetType().GetProperty(propertyPath)?.GetValue(source) as string ?? options[0];
         List<DropdownItemM> items = [.. options.Select(o => new DropdownItemM(
-            UICaptionProvider.AppConf.LanguageOptions.GetDisplayName(o)) { Tag = o })];
+            displayNameResolver?.Invoke(o) ?? o) { Tag = o })];
 
         DropdownMenuVM dropdownVM = new();
         foreach (DropdownItemM item in items) dropdownVM.Items.Add(item);

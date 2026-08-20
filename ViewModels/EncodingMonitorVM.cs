@@ -829,7 +829,7 @@ public partial class EncodingMonitorVM : BaseVM
     private async Task<bool> RunMuxAsync(CancellationToken cancellationToken)
     {
         EncodingMuxCommand? muxCommand = _userInterruptRequested
-            ? EncodingPipeline.BuildVideoOnlyMuxCommand(_request)
+            ? MuxPipeline.BuildVideoOnlyMuxCommand(_request)
             : _command.MuxCommand;
         if (!EnableMux || muxCommand == null) return true;
 
@@ -1492,7 +1492,7 @@ public partial class EncodingMonitorVM : BaseVM
         {
             string resolvedPath = _success && _command.MuxCommand != null
                 ? _command.MuxCommand.OutputPath
-                : EncodingPipeline.ResolveOutputPathWithExtension(_request.EncoderExeName, _request.OutputPath);
+                : MuxPipeline.ResolveOutputPathWithExtension(_request.EncoderExeName, _request.OutputPath);
             if (!File.Exists(resolvedPath)) return 0L;
             return new FileInfo(resolvedPath).Length;
         }

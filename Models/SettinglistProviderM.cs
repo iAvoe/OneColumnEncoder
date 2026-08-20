@@ -11,7 +11,8 @@ public static class SettinglistProviderM
         .. GetLanguageSettings(),
         .. GetInitModeSettings(),
         .. GetFontSettings(),
-        .. GetLogSettings()
+        .. GetLogSettings(),
+        .. GetAudioMuxSettings()
     ];
 
     private static AppConfLangProvider Lang => AppConfLangProvider.Current;
@@ -79,6 +80,26 @@ public static class SettinglistProviderM
             SettingControlType.TextBox,
             nameof(AppConfM.LogSettings.MaxDownstreamLogFiles),
             MinValue: 1)
+    ];
+
+    public static List<SettingItemDefinitionM> GetAudioMuxSettings() =>
+    [
+        new(UICaptionProvider.AppConf.Groups.AudioMux,
+            Lang["Setting.AudioMux.Single"],
+            SettingControlType.Dropdown,
+            nameof(AppConfM.AudioMuxSettings.SingleMode)),
+        new(UICaptionProvider.AppConf.Groups.AudioMux,
+            Lang["Setting.AudioMux.Queue"],
+            SettingControlType.Dropdown,
+            nameof(AppConfM.AudioMuxSettings.QueueMode)),
+        new(UICaptionProvider.AppConf.Groups.AudioMux,
+            Lang["Setting.AudioMux.Concat"],
+            SettingControlType.Dropdown,
+            nameof(AppConfM.AudioMuxSettings.ConcatMode)),
+        new(UICaptionProvider.AppConf.Groups.AudioMux,
+            Lang["Setting.AudioMux.Repart"],
+            SettingControlType.Dropdown,
+            nameof(AppConfM.AudioMuxSettings.RepartMode))
     ];
 
 

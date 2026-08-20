@@ -27,7 +27,9 @@ public record EncodingPipelineRequest(
     string? ConcatFileListPath = null,
     long? ConcatTotalFrames = null,
     EncodingMuxMode MuxMode = EncodingMuxMode.Auto,
-    string[]? ConcatVideoSourcePaths = null);
+    string[]? ConcatVideoSourcePaths = null,
+    bool? IsRepartMode = null,
+    EncodingAudioMuxMode AudioMuxMode = EncodingAudioMuxMode.Auto);
 
 public enum EncodingMuxMode
 {
@@ -35,6 +37,57 @@ public enum EncodingMuxMode
     Disabled,
     VideoOnly,
     SourceStreams
+}
+
+/// <summary>
+/// Controls how the mux stage handles audio from the source.
+/// </summary>
+public enum EncodingAudioMuxMode
+{
+    /// <summary>Resolved from the per-pipeline-type setting; fallback: Copy for single/queue, ReEncodeAAC320 for concat/repart.</summary>
+    Auto,
+    /// <summary>-an</summary>
+    Disable,
+    /// <summary>-c:a copy</summary>
+    Copy,
+    ReEncodeAAC320,
+    ReEncodeAAC256,
+    ReEncodeAAC128,
+    ReEncodeOpus320,
+    ReEncodeOpus256,
+    ReEncodeOpus128
+}
+
+/// <summary>
+/// Resolves the concrete audio mux mode from settings strings and pipeline context.
+/// </summary>
+public static class EncodingAudioMuxResolver
+{
+    /// <summary>
+    /// Parses a persisted setting string (e.g. "ReEncodeAAC320") into an enum value.
+    /// Unknown or empty values fall back to Copy.
+    /// </summary>
+    public static EncodingAudioMuxMode ParseMode(string? value)
+    {
+        if (Enum.TryParse(value, ignoreCase: true, out EncodingAudioMuxMode parsed)
+            && parsed != EncodingAudioMuxMode.Auto)
+            return parsed;
+        return EncodingAudioMuxMode.Copy;
+    }
+
+    /// <summary>
+    /// Resolves the effective audio mode for a request, honoring Auto with a built-in fallback
+    /// so deserialized legacy requests still behave sensibly.
+    /// </summary>
+    public static EncodingAudioMuxMode ResolveAudioMuxMode(EncodingPipelineRequest request)
+    {
+        EncodingAudioMuxMode mode = request.AudioMuxMode;
+        if (mode != EncodingAudioMuxMode.Auto) return mode;
+        return request.IsRepartMode.GetValueOrDefault()
+            || request.IsConcatMode.GetValueOrDefault()
+                ? EncodingAudioMuxMode.ReEncodeAAC320
+                : EncodingAudioMuxMode.Copy;
+    }
 }
 
 // For clip sampler
@@ -71,99 +124,20 @@ public static partial class EncodingPipeline
         string upstreamArgs = BuildUpstreamArgs(request);
         string encoderArgs = BuildEncoderArgs(request);
         string commandLine = $"{Quote(request.UpstreamPath)} {upstreamArgs} | {Quote(request.EncoderPath)} {encoderArgs}";
-        return new(commandLine, upstreamArgs, encoderArgs, BuildMuxCommand(request));
+        return new(commandLine, upstreamArgs, encoderArgs, MuxPipeline.BuildMuxCommand(request));
     }
 
-    private static string? GetMuxInputFormatArgs(string encoderExeName, string? framerateValue)
-    {
-        string? fmt = encoderExeName.ToLowerInvariant() switch
-        {
-            "x264.exe" => null,
-            "x265.exe" => "hevc",
-            "svtav1encapp.exe" => "ivf",
-            _ => null
-        };
+    
 
-        if (!string.IsNullOrWhiteSpace(framerateValue))
-        {
-            if (fmt == "hevc") return $"-f hevc -framerate {framerateValue}";
-            if (fmt != null) return $"-f {fmt}";
-            return null;
-        }
-
-        return fmt != null ? $"-f {fmt}" : null;
-    }
-
-    private static EncodingMuxCommand? BuildMuxCommand(EncodingPipelineRequest request)
-    {
-        if (request.MuxMode == EncodingMuxMode.Disabled) return null;
-        if (request.MuxMode == EncodingMuxMode.VideoOnly) return BuildVideoOnlyMuxCommand(request);
-        if (request.Clip != null) return null;
-        if (string.IsNullOrWhiteSpace(request.FfmpegPath)) return null;
-        if (!request.IsConcatMode.GetValueOrDefault() && string.IsNullOrWhiteSpace(request.SourceVideoPath)) return null;
-
-        string encodedVideoPath = ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath);
-        string outputPath = ResolveMuxOutputPath(request.OutputPath);
-        string framerateValue = request.Clip?.FrameRateNumerator is > 0 && request.Clip.FrameRateDenominator is > 0
-            ? $"{request.Clip.FrameRateNumerator.Value}/{request.Clip.FrameRateDenominator.Value}"
-            : GetMuxFramerateValue(request.SourceFfprobeJson, request.FfmpegFilterArgs);
-        string videoTimescaleArgs = GetMuxVideoTrackTimescaleArgs(request.SourceFfprobeJson);
-        string streamMapArgs = BuildStreamMapArgs(request.SourceFfprobeJson);
-        string? inputFormatArgs = GetMuxInputFormatArgs(request.EncoderExeName, framerateValue);
-
-        bool isConcatMux = request.IsConcatMode.GetValueOrDefault() && request.ConcatFileListPath != null;
-        string secondInput = isConcatMux
-            ? $"-f concat -safe 0 -i {Quote(request.ConcatFileListPath!)}"
-            : $"-i {Quote(request.SourceVideoPath!)}";
-        string nonVideoMapAndCodecArgs = isConcatMux
-            ? "-map 1:a? -c:a copy"
-            : $"{streamMapArgs} -map_metadata 1 -map_chapters 1 -c:a copy -c:s copy";
-
-        string args = JoinArgs(
-            "-hide_banner -y",
-            inputFormatArgs,
-            $"-i {Quote(encodedVideoPath)}",
-            secondInput,
-            $"-map 0:v:0 {nonVideoMapAndCodecArgs} -c:v copy -bsf:v setts=pts=N*DURATION {videoTimescaleArgs}",
-            Quote(outputPath));
-
-        return new($"{Quote(request.FfmpegPath)} {args}", args, encodedVideoPath, outputPath);
-    }
-
-    private static string BuildStreamMapArgs(string? sourceFfprobeJson)
-    {
-        if (string.IsNullOrWhiteSpace(sourceFfprobeJson))
-            return "-map 1:a? -map 1:s?";
-
-        try
-        {
-            using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
-            if (!document.RootElement.TryGetProperty("streams", out JsonElement streams) || streams.ValueKind != JsonValueKind.Array)
-                return "-map 1:a? -map 1:s?";
-
-            var nonVideoStreams = new List<string>();
-            foreach (JsonElement stream in streams.EnumerateArray())
-            {
-                string? codecType = TryGetString(stream, "codec_type");
-                if (string.IsNullOrWhiteSpace(codecType)) continue;
-                if (codecType.Equals("video", StringComparison.OrdinalIgnoreCase)) continue;
-                if (codecType.Equals("attachment", StringComparison.OrdinalIgnoreCase)) continue;
-                if (codecType.Equals("data", StringComparison.OrdinalIgnoreCase)) continue;
-
-                if (!TryGetInt(stream, "index", out int streamIndex)) continue;
-                nonVideoStreams.Add($"-map 1:{streamIndex}");
-            }
-
-            if (nonVideoStreams.Count > 0)
-                return string.Join(" ", nonVideoStreams);
-
-            return "-map 1:a? -map 1:s?";
-        }
-        catch { return "-map 1:a? -map 1:s?"; }
-    }
-
+    /// <summary>
+    /// Builds the upstream decode command that feeds the encoder with Y4M video only.
+    /// </summary>
+    /// <param name="request">Encoding request with source, clip, and upstream tool settings.</param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     private static string BuildUpstreamArgs(EncodingPipelineRequest request)
     {
+        // Audio is intentionally excluded here; it is preserved later by the mux stage.
         string input = Quote(request.UpstreamInputPath);
         bool isConcat = request.IsConcatMode == true && request.ConcatFileListPath != null;
         bool isFrameExactRepart = isConcat
@@ -196,8 +170,14 @@ public static partial class EncodingPipeline
         };
     }
 
+    /// <summary>
+    /// Builds the ffmpeg replay path used for exact-frame repart extraction into Y4M.
+    /// </summary>
+    /// <param name="request">Repart encoding request with concat sources and clip range.</param>
+    /// <returns></returns>
     private static string BuildFfmpegRepartArgs(EncodingPipelineRequest request)
     {
+        // This path reconstructs the clipped video frames only; audio is left for muxing.
         string[] paths = request.ConcatVideoSourcePaths!;
         string inputs = string.Join(" ", paths.Select(path => $"-i {Quote(path)}"));
         EncodingClipRequest clip = request.Clip!;
@@ -722,7 +702,7 @@ public static partial class EncodingPipeline
 
         return JoinArgs(hdrDisplay, hdrCll);
 
-        string BuildHdrDisplayParam(string optionName, string value) =>
+        static string BuildHdrDisplayParam(string optionName, string value) =>
             $"{optionName} \"{value}\"";
     }
 
@@ -953,112 +933,14 @@ public static partial class EncodingPipeline
         string.IsNullOrWhiteSpace(value) ? null : value.Trim().ToLowerInvariant();
     #endregion
 
-    public static EncodingMuxCommand? BuildVideoOnlyMuxCommand(EncodingPipelineRequest request)
-    {
-        if (string.IsNullOrWhiteSpace(request.FfmpegPath)) return null;
-
-        string encodedVideoPath = ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath);
-        string outputPath = ResolveMuxOutputPath(request.OutputPath);
-        string framerateValue = request.Clip?.FrameRateNumerator is > 0 && request.Clip.FrameRateDenominator is > 0
-            ? $"{request.Clip.FrameRateNumerator.Value}/{request.Clip.FrameRateDenominator.Value}"
-            : GetMuxFramerateValue(request.SourceFfprobeJson, request.FfmpegFilterArgs);
-        string videoTimescaleArgs = GetMuxVideoTrackTimescaleArgs(request.SourceFfprobeJson);
-        string? inputFormatArgs = GetMuxInputFormatArgs(request.EncoderExeName, framerateValue);
-
-        string args = JoinArgs(
-            "-hide_banner -y",
-            inputFormatArgs,
-            $"-i {Quote(encodedVideoPath)}",
-            "-map 0:v:0 -c:v copy -bsf:v setts=pts=N*DURATION " + videoTimescaleArgs,
-            Quote(outputPath));
-
-        return new($"{Quote(request.FfmpegPath)} {args}", args, encodedVideoPath, outputPath);
-    }
-
-    public static string ResolveOutputPathWithExtension(string encoderExeName, string outputPath)
-    {
-        string ext = encoderExeName.ToLowerInvariant() switch
-        {
-            "x264.exe" => ".mp4",
-            "x265.exe" => ".hevc",
-            "svtav1encapp.exe" => ".ivf",
-            _ => string.Empty
-        };
-        return EnsureExtension(outputPath, ext);
-    }
-
-    public static string ResolveMuxOutputPath(string outputPath) =>
-        RemoveRawVideoExtension(outputPath) + ".mkv";
-
-    private static string RemoveRawVideoExtension(string outputPath)
-    {
-        string ext = Path.GetExtension(outputPath);
-        return ext.Equals(".hevc", StringComparison.OrdinalIgnoreCase) ||
-               ext.Equals(".h265", StringComparison.OrdinalIgnoreCase) ||
-               ext.Equals(".h264", StringComparison.OrdinalIgnoreCase) ||
-               ext.Equals(".264", StringComparison.OrdinalIgnoreCase) ||
-               ext.Equals(".265", StringComparison.OrdinalIgnoreCase) ||
-               ext.Equals(".ivf", StringComparison.OrdinalIgnoreCase)
-            ? Path.Combine(Path.GetDirectoryName(outputPath) ?? string.Empty, Path.GetFileNameWithoutExtension(outputPath))
-            : outputPath;
-    }
-
-    private static string GetMuxFramerateValue(string? sourceFfprobeJson, string? filterArgs = null)
-    {
-        if (!string.IsNullOrWhiteSpace(filterArgs))
-        {
-            var match = FpsRegex().Match(filterArgs);
-            if (match.Success)
-            {
-                string fps = match.Groups[1].Value;
-                if (IsUsableFrameRate(fps)) return fps;
-            }
-        }
-
-        if (string.IsNullOrWhiteSpace(sourceFfprobeJson)) return string.Empty;
-
-        try
-        {
-            using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
-            if (!FrameRate.TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return string.Empty;
-            string? frameRate = TryGetFrameRateString(stream);
-            return FrameRate.TryParseFrameRate(frameRate, out _) ? frameRate! : string.Empty;
-        }
-        catch { return string.Empty; }
-    }
-
-    private static string GetMuxVideoTrackTimescaleArgs(string? sourceFfprobeJson) =>
-        $"-video_track_timescale {GetSourceVideoTimescale(sourceFfprobeJson)}";
-
-    private static long GetSourceVideoTimescale(string? sourceFfprobeJson)
-    {
-        const long fallbackTimescale = 90000;
-        if (string.IsNullOrWhiteSpace(sourceFfprobeJson)) return fallbackTimescale;
-
-        try
-        {
-            using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
-            if (!FrameRate.TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return fallbackTimescale;
-
-            string? timeBase = TryGetString(stream, "time_base");
-            if (string.IsNullOrWhiteSpace(timeBase)) return fallbackTimescale;
-
-            string[] parts = timeBase.Trim().Split('/');
-            return parts.Length == 2 &&
-                   long.TryParse(parts[1], NumberStyles.None, CultureInfo.InvariantCulture, out long denominator) &&
-                   denominator > 0
-                ? denominator
-                : fallbackTimescale;
-        }
-        catch { return fallbackTimescale; }
-    }
+    
 
     private static string BuildEncoderOutputArgs(string encoderExeName, string outputPath) =>
         encoderExeName.ToLowerInvariant() switch
         {
-            "x264.exe" => $"-o {Quote(ResolveOutputPathWithExtension(encoderExeName, outputPath))}",
-            "x265.exe" => $"-o {Quote(ResolveOutputPathWithExtension(encoderExeName, outputPath))}",
-            "svtav1encapp.exe" => $"-b {Quote(ResolveOutputPathWithExtension(encoderExeName, outputPath))}",
+            "x264.exe" => $"-o {Quote(MuxPipeline.ResolveOutputPathWithExtension(encoderExeName, outputPath))}",
+            "x265.exe" => $"-o {Quote(MuxPipeline.ResolveOutputPathWithExtension(encoderExeName, outputPath))}",
+            "svtav1encapp.exe" => $"-b {Quote(MuxPipeline.ResolveOutputPathWithExtension(encoderExeName, outputPath))}",
             _ => throw new InvalidOperationException($"Unsupported encoder: {encoderExeName}")
         };
 

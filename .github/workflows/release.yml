@@ -122,7 +122,7 @@ jobs:
           $body += ">          ├── x64-CloudinarySSIMULACRA2.1`n"
           $body += ">          │   └── ...`n"
           $body += ">          └── x64-GoogleButteraugli`n"
-          $body += ">              └── ...`n"
+          $body += ">             └── ...`n"
           $body += ">`n"
           $body += "`n"
           $body += "> [!NOTE]`n"
