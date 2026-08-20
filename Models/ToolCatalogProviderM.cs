@@ -20,7 +20,7 @@ public static class ToolCatalogProviderM
             UILangProvider.Current["Buttons.Clear"],
             UILangProvider.Current["SourceQueue.Sequence"],
             UILangProvider.Current["ToolField.Path"]),
-        new(UILangProvider.Current["Tool.Source.VideoSrcConcat"],
+        new(UILangProvider.Current["Tool.Source.VideoSrcConcatState"],
             UILangProvider.Current["Buttons.Import"],
             UILangProvider.Current["Buttons.Clear"],
             UILangProvider.Current["SourceQueue.Sequence"],

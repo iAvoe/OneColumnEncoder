@@ -6,7 +6,7 @@ public static class SrcFileKindResolver
     {
         if (displayName.Equals(UILangProvider.Current["Tool.Source.VideoSrc"], StringComparison.OrdinalIgnoreCase) ||
             displayName.Equals(UILangProvider.Current["Tool.Source.VideoSrcQueue"], StringComparison.OrdinalIgnoreCase) ||
-            displayName.Equals(UILangProvider.Current["Tool.Source.VideoSrcConcat"], StringComparison.OrdinalIgnoreCase) ||
+            displayName.Equals(UILangProvider.Current["Tool.Source.VideoSrcConcatState"], StringComparison.OrdinalIgnoreCase) ||
             displayName.Equals(RepartLangProvider.Current.ToolSourceVideoSrcRepart, StringComparison.OrdinalIgnoreCase))
             return SrcFileKind.Video;
         if (displayName.Equals(UILangProvider.Current["Tool.Source.AviSynth"], StringComparison.OrdinalIgnoreCase) ||

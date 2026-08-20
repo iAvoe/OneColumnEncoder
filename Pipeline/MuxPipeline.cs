@@ -43,15 +43,26 @@ public static partial class MuxPipeline
         bool isConcatMux =
             request.IsConcatMode.GetValueOrDefault()
             && request.ConcatFileListPath != null;
-        string secondInput = isConcatMux
-            ? $"-f concat -safe 0 -i {Quote(request.ConcatFileListPath!)}"
-            : $"-i {Quote(request.SourceVideoPath!)}";
+        bool useConcatAudioFilter = isConcatMux
+            && audioMode != EncodingAudioMuxMode.Copy
+            && request.ConcatVideoSourcePaths is { Length: > 0 };
+        string secondInput = useConcatAudioFilter
+            ? string.Join(" ", request.ConcatVideoSourcePaths!.Select(path => $"-i {Quote(path)}"))
+            : isConcatMux
+                ? $"-f concat -safe 0 -i {Quote(request.ConcatFileListPath!)}"
+                : $"-i {Quote(request.SourceVideoPath!)}";
 
-        // Concat mux only maps audio from the concat list; normal mux copies the source's non-video streams.
+        // Concat mux can either re-encode audio from each fragment input or fall back to the concat demuxer
+        // when the user selected Copy.
         string? audioMuxArgs = BuildAudioMuxArgs(audioMode);
-        string nonVideoMapAndCodecArgs = isConcatMux
-            ? BuildConcatAudioMuxMapArgs(audioMode)
-            : $"{streamMapArgs} -map_metadata 1 -map_chapters 1 {(audioMode == EncodingAudioMuxMode.Disable ? "-an" : audioMuxArgs)} -c:s copy";
+        string? concatAudioFilterArgs = useConcatAudioFilter
+            ? BuildConcatAudioFilterArgs(request.ConcatVideoSourcePaths!, request.SourceFfprobeJson, audioMode)
+            : null;
+        string nonVideoMapAndCodecArgs = concatAudioFilterArgs != null
+            ? concatAudioFilterArgs
+            : isConcatMux
+                ? BuildConcatAudioMuxMapArgs(audioMode)
+                : $"{streamMapArgs} -map_metadata 1 -map_chapters 1 {(audioMode == EncodingAudioMuxMode.Disable ? "-an" : audioMuxArgs)} -c:s copy";
 
         string args = JoinArgs(
             "-hide_banner -y",
@@ -200,6 +211,35 @@ public static partial class MuxPipeline
         return $"{audioMapArgs} {audioMuxArgs}";
     }
 
+    private static string? BuildConcatAudioFilterArgs(
+        string[] sourcePaths,
+        string? sourceFfprobeJson,
+        EncodingAudioMuxMode mode)
+    {
+        string? audioMuxArgs = BuildAudioMuxArgs(mode);
+        if (audioMuxArgs == null) return "-an";
+
+        int audioStreamCount = GetAudioStreamCount(sourceFfprobeJson);
+        if (audioStreamCount <= 0) return null;
+
+        List<string> filterChains = [];
+        List<string> audioMaps = [];
+
+        for (int audioIndex = 0; audioIndex < audioStreamCount; audioIndex++)
+        {
+            string stagePrefix = $"a{audioIndex}";
+            string resetInputs = string.Join(";", Enumerable.Range(0, sourcePaths.Length)
+                .Select(sourceIndex => $"[{sourceIndex + 1}:a:{audioIndex}]asetpts=PTS-STARTPTS[{stagePrefix}_{sourceIndex}]"));
+            string concatInputs = string.Concat(Enumerable.Range(0, sourcePaths.Length)
+                .Select(sourceIndex => $"[{stagePrefix}_{sourceIndex}]"));
+            filterChains.Add($"{resetInputs};{concatInputs}concat=n={sourcePaths.Length}:v=0:a=1[{stagePrefix}]");
+            audioMaps.Add($"-map \"[{stagePrefix}]\"");
+        }
+
+        string filterComplex = string.Join(";", filterChains);
+        return $"-filter_complex \"{filterComplex}\" {string.Join(" ", audioMaps)} {audioMuxArgs}";
+    }
+
     /// <summary>
     /// Resolves the normalized start/end timestamps for a repart clip, preferring explicit times
     /// and falling back to frame-based conversion when the plan provides frames and frame rate.
@@ -231,6 +271,29 @@ public static partial class MuxPipeline
         string.IsNullOrWhiteSpace(timestamp)
             ? null
             : EncodingPipeline.FormatTimestamp(EncodingPipeline.ParseTimestamp(timestamp));
+
+    private static int GetAudioStreamCount(string? sourceFfprobeJson)
+    {
+        if (string.IsNullOrWhiteSpace(sourceFfprobeJson)) return 0;
+
+        try
+        {
+            using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
+            if (!document.RootElement.TryGetProperty("streams", out JsonElement streams) || streams.ValueKind != JsonValueKind.Array)
+                return 0;
+
+            int count = 0;
+            foreach (JsonElement stream in streams.EnumerateArray())
+            {
+                string? codecType = TryGetString(stream, "codec_type");
+                if (!string.IsNullOrWhiteSpace(codecType) && codecType.Equals("audio", StringComparison.OrdinalIgnoreCase))
+                    count++;
+            }
+
+            return count;
+        }
+        catch { return 0; }
+    }
 
     public static string ResolveMuxOutputPath(string outputPath) =>
         RemoveRawVideoExtension(outputPath) + ".mkv";

@@ -125,7 +125,7 @@ Concat mode performs basic compatibility checks on import:
 - Differences in codec, pixel format, validation checklist signature, and frame rate produce warnings.
 - VFR and frame-rate signature differences are treated as warnings, directing users to apply VFR→CFR repair in the filter editor.
 
-Concat mode generates the `ffmpeg concat demuxer` filelist and can produce concat `.avs` / `.vpy` scripts. The filter editor also allows reordering, removing fragments, and regenerating the filelist.
+Concat mode generates the `ffmpeg concat demuxer` filelist for script export and audio muxing, and can produce concat `.avs` / `.vpy` scripts. ffmpeg video encoding now opens each fragment separately and stitches the decoded frames with the `concat` filter, which avoids sharing one decoder context across mixed source variants. The filter editor also allows reordering, removing fragments, and regenerating the filelist.
 
 Audio handling in concat mode is a muxing step outside the video pipeline: generated AVS/VPY scripts handle video only; after encoding, ffmpeg reads audio from the concat filelist sources according to the selected audio mux mode. `Disable` produces video-only output, `Copy` maps only the first audio track, and AAC/Opus re-encode modes map all audio tracks. For VFR sources or complex boundary fragments, audio duration may exceed video duration, so it is recommended to check and handle audio after concat encoding.
 

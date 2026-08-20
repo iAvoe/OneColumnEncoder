@@ -207,7 +207,7 @@ VPY uses `core.std.Splice` to combine clips, assigning the result to `src` befor
 3. Queue route: load queue JSON, build one request per accepted source.
 4. Single route: one request from `BuildEncodingPipelineRequest()`.
 
-Concat requests set `IsConcatMode: true`, `ConcatFileListPath`, `ConcatTotalFrames`, and the configured concat `AudioMuxMode`. Repart requests additionally set `ConcatVideoSourcePaths`, a per-output `Clip` (time + frame range), `MuxMode: VideoOnly`, `IsRepartMode: true`, `ConcatTotalFrames: plan.TotalFrames`, and the configured repart `AudioMuxMode`.
+Concat requests set `IsConcatMode: true`, `ConcatFileListPath`, `ConcatVideoSourcePaths`, `ConcatTotalFrames`, and the configured concat `AudioMuxMode`. Repart requests additionally set a per-output `Clip` (time + frame range), `MuxMode: VideoOnly`, `IsRepartMode: true`, `ConcatTotalFrames: plan.TotalFrames`, and the configured repart `AudioMuxMode`.
 
 Concat encoding is supported for `ffmpeg.exe`, `vspipe.exe`, `avs2yuv.exe`, `avs2pipemod.exe`. `one_line_shot_args.exe` is rejected (concat has multiple source files and no SVFI concat route). Queue encoding uses the same supported set and also rejects `one_line_shot_args.exe`.
 
@@ -217,7 +217,7 @@ Concat encoding is supported for `ffmpeg.exe`, `vspipe.exe`, `avs2yuv.exe`, `avs
 |-------|--------|----------------------------------|
 | Single | Source path | Single script path |
 | Queue | Per-file source path | Per-file script path (validated against source) |
-| Concat | `-f concat -safe 0 -i source_concat_filelist.txt -f yuv4mpegpipe -an -strict unofficial -` | Concat script path |
+| Concat | `-i src1 -i src2 ...` + `-filter_complex` concat filter + `-map "[catv]" -fps_mode passthrough -f yuv4mpegpipe -an -strict unofficial -` | Concat script path |
 | Repart | `BuildFfmpegRepartArgs` — `-i src1 -i src2 ...` + `-filter_complex` concat filter + frame-exact `trim` + regenerated CFR `setpts`, mapped `[repartv]`, `-f yuv4mpegpipe -an -strict unofficial -` (single source omits concat and uses `-vf "trim=...,setpts=..."`) | Execution-specific virtual source concat script, sliced per output range (`-s/-e` for vspipe, `-seek/-frames` for avs2yuv, `-trim=` for avs2pipemod) |
 
 During auto encoder parameter generation, concat requests pass `ConcatTotalFrames` into `GetFrameCount()` so x264/x265/SVT-AV1 receive the sum of all fragments rather than only the first fragment's `nb_frames`. Repart requests do the same via `ConcatTotalFrames: plan.TotalFrames`.
