@@ -212,7 +212,7 @@ public class AnalyzeSrcVideoCmd(
             ffprobePath,
             queueFilePaths,
             _modalNavS,
-            () => new SrcCheckCardVM { IsSvtav1SelectedFunc = queueCard.IsSvtav1SelectedFunc },
+            () => new QueueSrcFilterCardVM { IsSvtav1SelectedFunc = queueCard.IsSvtav1SelectedFunc },
             filterMode,
             shouldFilterQueue);
         QueueSourceCandidate referenceCandidate = result.ReferenceCandidate;
@@ -223,6 +223,7 @@ public class AnalyzeSrcVideoCmd(
         string referenceRawJson = referenceCandidate.RawJson;
         string referencePath = referenceCandidate.Entry.FilePath;
         queueCard.ApplyFfprobeAnalysisJson(referenceRawJson);
+        queueCard.RefreshTempColorspaceStatus(referenceRawJson);
 
         string directory = SaveLoadBase<SaveLoadPlaceholder>.GetConfigDirectory();
         Directory.CreateDirectory(directory);
@@ -286,6 +287,8 @@ public class AnalyzeSrcVideoCmd(
             {
                 string rawJson = await FFProbeVideoAnalysis.AnalyzeAsync(ffprobePath, filePath);
                 probeCard.ApplyFfprobeAnalysisJson(rawJson);
+                if (probeCard is QueueSrcFilterCardVM queueProbeCard)
+                    queueProbeCard.RefreshTempColorspaceStatus(rawJson);
                 SourceCheckSignature signature = probeCard.GetSignature();
                 using JsonDocument rawDocument = JsonDocument.Parse(rawJson);
                 JsonElement rawElement = rawDocument.RootElement.Clone();

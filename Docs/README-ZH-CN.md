@@ -73,7 +73,7 @@
 <sup><i>并行计算设置</i></sup></br>
 <img src="../WireframeMockups/5-Clip-Sampler.png" alt="Clip Sampler Window" width="400" /></br>
 <sup><i>取段打样器</i></sup></br>
-<img src="../WireframeMockups/6-Encoding-Monitor.png" alt="Encoding Monitor Window" width="650" /></br>
+<img src="../WireframeMockups/6-Encoding-Monitor-v4.png" alt="Encoding Monitor Window" width="850" /></br>
 <sup><i>压制监视器</i></sup></br>
 <img src="../WireframeMockups/7-Warning-Modal-OW-Guard.png" alt="Warning Modal & Overwrite Protection" width="350" /></br>
 <sup><i>报错窗口与覆写保护功能</i></sup></br>

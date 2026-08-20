@@ -73,7 +73,7 @@ This software supports multiple languages, but English text screenshots are used
 <sup><i>Parallelism Settings</i></sup></br>
 <img src="../WireframeMockups/5-Clip-Sampler.png" alt="Clip Sampler Window" width="400" /></br>
 <sup><i>Clip Sampler</i></sup></br>
-<img src="../WireframeMockups/6-Encoding-Monitor.png" alt="Encoding Monitor Window" width="650" /></br>
+<img src="../WireframeMockups/6-Encoding-Monitor-v4.png" alt="Encoding Monitor Window" width="850" /></br>
 <sup><i>Encoding Monitor</i></sup></br>
 <img src="../WireframeMockups/7-Warning-Modal-OW-Guard.png" alt="Warning Modal & Overwrite Protection" width="350" /></br>
 <sup><i>Warning Modal & Overwrite Protection</i></sup></br>

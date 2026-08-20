@@ -25,17 +25,28 @@ public class QueueSrcFilterCardVM : SrcCheckCardVM
 
     public void RefreshTempColorspaceStatus(string rawJson)
     {
-        if (!FrameRate.TryGetFirstVideoStream(JsonDocument.Parse(rawJson).RootElement, out JsonElement stream))
+        if (Checklist2.Count <= TempYuv420ChecklistIdx)
             return;
 
-        string? pixelFormat = stream.TryGetProperty("pix_fmt", out JsonElement pixFmtElement)
-            ? pixFmtElement.GetString()
-            : null;
+        try
+        {
+            using JsonDocument document = JsonDocument.Parse(rawJson);
+            if (!FrameRate.TryGetFirstVideoStream(document.RootElement, out JsonElement stream))
+                return;
 
-        Checklist2[TempYuv420ChecklistIdx].Status =
-            !string.IsNullOrWhiteSpace(pixelFormat) && pixelFormat.Contains("420", StringComparison.OrdinalIgnoreCase)
-                ? StatusType.Success
-                : StatusType.Warning;
+            string? pixelFormat = stream.TryGetProperty("pix_fmt", out JsonElement pixFmtElement)
+                ? pixFmtElement.GetString()
+                : null;
+
+            Checklist2[TempYuv420ChecklistIdx].Status =
+                !string.IsNullOrWhiteSpace(pixelFormat) && pixelFormat.Contains("420", StringComparison.OrdinalIgnoreCase)
+                    ? StatusType.Success
+                    : StatusType.Warning;
+        }
+        catch
+        {
+            Checklist2[TempYuv420ChecklistIdx].Status = StatusType.Warning;
+        }
     }
 
     public new void RefreshLanguage()
@@ -45,6 +56,7 @@ public class QueueSrcFilterCardVM : SrcCheckCardVM
         Subtitle = UILangProvider.Current["Cards.QueueSourceFilterSubtitle"];
         P1Name = UICaptionProvider.Cards.SourceIncompatOrCorrupted;
         P3Name = UICaptionProvider.Cards.SrcQualityIssues;
-        Checklist2[TempYuv420ChecklistIdx].Text = TempYuv420Text;
+        if (Checklist2.Count > TempYuv420ChecklistIdx)
+            Checklist2[TempYuv420ChecklistIdx].Text = TempYuv420Text;
     }
 }

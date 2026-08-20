@@ -73,7 +73,7 @@
 <sup><i>平行計算設置</i></sup></br>
 <img src="../WireframeMockups/5-Clip-Sampler.png" alt="Clip Sampler Window" width="400" /></br>
 <sup><i>取段打樣器</i></sup></br>
-<img src="../WireframeMockups/6-Encoding-Monitor.png" alt="Encoding Monitor Window" width="650" /></br>
+<img src="../WireframeMockups/6-Encoding-Monitor-v4.png" alt="Encoding Monitor Window" width="850" /></br>
 <sup><i>壓制監視器</i></sup></br>
 <img src="../WireframeMockups/7-Warning-Modal-OW-Guard.png" alt="Warning Modal & Overwrite Protection" width="350" /></br>
 <sup><i>報錯窗口與覆防寫功能</i></sup></br>
