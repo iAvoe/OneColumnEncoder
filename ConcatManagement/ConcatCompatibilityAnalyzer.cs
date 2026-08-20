@@ -167,7 +167,7 @@ public static class ConcatCompatibilityAnalyzer
                 FormatField("color_trc", ColorTransfer),
                 FormatField("color_primaries", ColorPrimaries),
                 string.IsNullOrWhiteSpace(HdrSummary) ? null : $"hdr={HdrSummary}",
-                $"checks=[{FormatChecklist(CheckSignature)}]");
+                $"checks=[{Environment.NewLine}{FormatChecklist(CheckSignature)}{Environment.NewLine}]");
 
         public bool Matches(ConcatSourceSignature other) =>
             CheckSignature.Matches(other.CheckSignature) &&
@@ -211,7 +211,7 @@ public static class ConcatCompatibilityAnalyzer
         }
 
         private static string JoinDisplayParts(params string?[] parts) =>
-            string.Join(", ", parts.Where(part => !string.IsNullOrWhiteSpace(part)).Select(part => part!));
+            string.Join(Environment.NewLine, parts.Where(part => !string.IsNullOrWhiteSpace(part)).Select(part => part!));
 
         private static string FormatField(string name, string value) =>
             string.IsNullOrWhiteSpace(value) ? $"{name}=?" : $"{name}={value}";
@@ -228,7 +228,7 @@ public static class ConcatCompatibilityAnalyzer
             for (int i = 0; i < Math.Min(signature.Checklist2.Length, checklist2.Length); i++)
                 parts.Add($"{checklist2[i].Text}={FormatStatus(signature.Checklist2[i])}");
 
-            return string.Join(", ", parts);
+            return string.Join("," + Environment.NewLine, parts);
         }
 
         private static string FormatStatus(StatusType status) => status.ToString().ToLowerInvariant();

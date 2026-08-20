@@ -2131,7 +2131,9 @@ public partial class EncodingMonitorVM : BaseVM
 
     private void ShowEncodingCommand()
     {
-        EncodingPipelineCommand command = QueueSidebar.SelectedJob?.Command ?? _command;
+        EncodingPipelineCommand command = _queueItems == null
+            ? _command
+            : QueueSidebar.SelectedJob?.Command ?? _command;
         new OpenDebugModalCmd(_modalNavS, Lang.EncodingCommandTitle, command.DisplayCommandLine).Execute(null);
     }
 
