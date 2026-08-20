@@ -11,7 +11,7 @@
                    Title="{Binding WindowTitle}"
                    Width="1080"
                    SizeToContent="Height"
-                   MaxHeight="855"
+                   MaxHeight="885"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
     <Grid>
