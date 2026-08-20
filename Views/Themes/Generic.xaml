@@ -232,7 +232,7 @@
 
     <Style TargetType="ScrollBar">
         <Setter Property="Background"
-                Value="Red" />
+                Value="Transparent" />
         <Setter Property="BorderThickness"
                 Value="0" />
         <Setter Property="Focusable"
