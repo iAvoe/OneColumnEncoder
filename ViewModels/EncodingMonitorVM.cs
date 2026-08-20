@@ -837,7 +837,7 @@ public partial class EncodingMonitorVM : BaseVM
         {
             EnqueueProcessLine(
                 ProcessLogKind.UpstreamStderr,
-                "\nMux failed: encoded video stream does not exist: " + muxCommand.EncodedVideoPath);
+                "\n" + string.Format(Lang.MuxMissingVideoText, muxCommand.EncodedVideoPath));
             return false;
         }
 
@@ -853,7 +853,7 @@ public partial class EncodingMonitorVM : BaseVM
             {
                 EnqueueProcessLine(
                     ProcessLogKind.UpstreamStderr,
-                    "\nMux failed: encoded audio stream does not exist: " + muxCommand.AudioCommand.OutputPath);
+                    "\n" + string.Format(Lang.MuxMissingAudioText, muxCommand.AudioCommand.OutputPath));
                 return false;
             }
         }

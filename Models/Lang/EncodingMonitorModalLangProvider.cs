@@ -61,6 +61,8 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["RAMStressHighText"] = "High",
             ["BlockTooltipFormat"] = "Range block {0}",
             ["PipeErrorPrefix"] = "Pipe error: ",
+            ["MuxMissingVideoText"] = "Mux failed: encoded video stream does not exist: {0}",
+            ["MuxMissingAudioText"] = "Mux failed: encoded audio stream does not exist: {0}",
             ["ReadyToStartText"] = "Ready to start",
             ["EncodingText"] = "Encoding",
             ["AudioEncodingText"] = "Encoding audio",
@@ -130,6 +132,8 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["RAMStressHighText"] = "高",
             ["BlockTooltipFormat"] = "范围块 {0}",
             ["PipeErrorPrefix"] = "管道错误：",
+            ["MuxMissingVideoText"] = "封装失败：压制出的视频流不存在：{0}",
+            ["MuxMissingAudioText"] = "封装失败：压制出的音频流不存在：{0}",
             ["ReadyToStartText"] = "准备启动",
             ["EncodingText"] = "正在压制",
             ["AudioEncodingText"] = "正在压制音频",
@@ -199,6 +203,8 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["RAMStressHighText"] = "高",
             ["BlockTooltipFormat"] = "範圍塊 {0}",
             ["PipeErrorPrefix"] = "管道錯誤：",
+            ["MuxMissingVideoText"] = "封裝失敗：壓製出的影片串流不存在：{0}",
+            ["MuxMissingAudioText"] = "封裝失敗：壓製出的音訊串流不存在：{0}",
             ["ReadyToStartText"] = "準備啟動",
             ["EncodingText"] = "正在壓制",
             ["AudioEncodingText"] = "正在壓制音訊",
@@ -402,6 +408,8 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["RAMStressHighText"] = "高",
             ["BlockTooltipFormat"] = "範囲ブロック {0}",
             ["PipeErrorPrefix"] = "パイプエラー: ",
+            ["MuxMissingVideoText"] = "Mux 失敗: エンコード済み動画ストリームが存在しません: {0}",
+            ["MuxMissingAudioText"] = "Mux 失敗: エンコード済み音声ストリームが存在しません: {0}",
             ["ReadyToStartText"] = "開始準備完了",
             ["EncodingText"] = "エンコード中",
             ["AudioEncodingText"] = "音声エンコード中",
@@ -415,6 +423,74 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["ModeText"] = "モード",
             ["StopQueueConfirmTitle"] = "キューを停止",
             ["StopQueueConfirmMessage"] = "現在のジョブが中断されました。キュー全体を停止しますか？"
+        };
+        Data["ko"] = new(Data["en"])
+        {
+            ["ProgressTitle"] = "진행률",
+            ["ProgressReportTitle"] = "진행 스트림",
+            ["MemoryTitle"] = "RAM 사용량",
+            ["StderrTitle"] = "프로세스 로그",
+            ["DragLogReportHint"] = "창 가장자리를 드래그해 로그 영역 크기를 조정; 구분선을 드래그해 너비 조정",
+            ["CurrentSizeLabel"] = "현재 크기 / GB",
+            ["EstimatedSizeLabel"] = "예상 총합 / GB",
+            ["WrittenFramesLabel"] = "작성된 프레임",
+            ["SampleIntervalLabel"] = "샘플 간격",
+            ["StartedAtLabel"] = "시작 시각",
+            ["ElapsedLabel"] = "경과",
+            ["RemainingLabel"] = "남음",
+            ["CompleteAtLabel"] = "ETA",
+            ["ArgsLabel"] = "다른 프리셋 이름",
+            ["SmallNoteText"] = "이 프로그램은 진행 저장-불러오기를 지원하지 않습니다; 중단 시 작업 진행이 사라집니다",
+            ["EnableMuxText"] = "인코딩 후 멀티플렉스 (명령 2부, ffmpeg 필요)",
+            ["RichTextModeText"] = "리치 텍스트 분석",
+            ["DistributionUpstreamLabel"] = "상위 프로그램",
+            ["DistributionDownstreamLabel"] = "하위 프로그램",
+            ["DistributionCacheLabel"] = "시스템 캐시",
+            ["DistributionAvailableLabel"] = "사용 가능 공간",
+            ["MemoryRangeLegendTitle"] = "범례",
+            ["SampleIntervalTickLabels"] = "정지|60초|120초|180초|240초",
+            ["SampleIntervalZeroText"] = "정지",
+            ["RotateLogFontSizeText"] = "로그 글꼴 크기 전환",
+            ["CopyUpstreamLogText"] = "상위 로그 복사",
+            ["CopyDownstreamLogText"] = "하위 로그 복사",
+            ["SaveLogsText"] = "로그 저장",
+            ["OpenTxtText"] = "TXT 열기",
+            ["OpenOutputDirectoryText"] = "출력 폴더 열기",
+            ["ViewEncodingCommandText"] = "매개변수 검토",
+            ["InterruptUpstreamText"] = "상위 중단",
+            ["InterruptEncoderText"] = "인코더 중단",
+            ["CloseAfterDoneText"] = "닫기",
+            ["EncodingCommandTitle"] = "인코딩 명령",
+            ["PhysicalMemoryTopText"] = "물리 메모리",
+            ["PhysicalMemoryBottomText"] = "총 XX GB",
+            ["CommittedMemoryTopText"] = "커밋 메모리",
+            ["CommittedMemoryBottomText"] = "한도 XX GB",
+            ["WorkingSetPeakTopText"] = "작업 집합 피크",
+            ["WorkingSetPeakBottomText"] = "현재 XX GB",
+            ["PageFileTopText"] = "페이지 파일",
+            ["PageFileBottomText"] = "총 XX GB",
+            ["PageFaultTopText"] = "페이지 폴트",
+            ["PageFaultBottomText"] = "하드+소프트",
+            ["RAMStressTopText"] = "RAM 스트레스",
+            ["RAMStressMediumText"] = "중간",
+            ["RAMStressHighText"] = "높음",
+            ["BlockTooltipFormat"] = "범위 블록 {0}",
+            ["PipeErrorPrefix"] = "파이프 오류: ",
+            ["MuxMissingVideoText"] = "Mux 실패: 인코딩된 비디오 스트림이 존재하지 않습니다: {0}",
+            ["MuxMissingAudioText"] = "Mux 실패: 인코딩된 오디오 스트림이 존재하지 않습니다: {0}",
+            ["ReadyToStartText"] = "시작 준비 완료",
+            ["EncodingText"] = "인코딩 중",
+            ["AudioEncodingText"] = "오디오 인코딩 중",
+            ["MuxingText"] = "Mux 중",
+            ["InterruptedText"] = "중단됨",
+            ["FailedText"] = "인코딩 실패",
+            ["CompletedText"] = "인코딩 완료",
+            ["ResetUsageStatusText"] = "사용량 값 초기화",
+            ["InterruptingUpstreamText"] = "상위 중단 중",
+            ["InterruptingEncoderText"] = "인코더 중단 중",
+            ["ModeText"] = "모드",
+            ["StopQueueConfirmTitle"] = "대기열 중지",
+            ["StopQueueConfirmMessage"] = "현재 작업이 중단되었습니다. 전체 대기열을 중지하시겠습니까?"
         };
         Data["ru"] = new(Data["en"])
         {
@@ -468,6 +544,8 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["RAMStressHighText"] = "Высокая",
             ["BlockTooltipFormat"] = "Блок диапазона {0}",
             ["PipeErrorPrefix"] = "Ошибка pipe: ",
+            ["MuxMissingVideoText"] = "Сбой mux: закодированный видеопоток не существует: {0}",
+            ["MuxMissingAudioText"] = "Сбой mux: закодированный аудиопоток не существует: {0}",
             ["ReadyToStartText"] = "Готово к старту",
             ["EncodingText"] = "Кодирование",
             ["AudioEncodingText"] = "Кодирование аудио",
@@ -534,6 +612,8 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["RAMStressHighText"] = "Hoch",
             ["BlockTooltipFormat"] = "Bereichsblock {0}",
             ["PipeErrorPrefix"] = "Pipe-Fehler: ",
+            ["MuxMissingVideoText"] = "Mux fehlgeschlagen: kodierter Videostream existiert nicht: {0}",
+            ["MuxMissingAudioText"] = "Mux fehlgeschlagen: kodierter Audiostream existiert nicht: {0}",
             ["ReadyToStartText"] = "Bereit zum Start",
             ["EncodingText"] = "Kodierung",
             ["AudioEncodingText"] = "Audio-Kodierung",
@@ -600,6 +680,8 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["RAMStressHighText"] = "Alto",
             ["BlockTooltipFormat"] = "Bloco de intervalo {0}",
             ["PipeErrorPrefix"] = "Erro de pipe: ",
+            ["MuxMissingVideoText"] = "Falha no mux: o fluxo de vídeo codificado não existe: {0}",
+            ["MuxMissingAudioText"] = "Falha no mux: o fluxo de áudio codificado não existe: {0}",
             ["ReadyToStartText"] = "Pronto para iniciar",
             ["EncodingText"] = "Codificando",
             ["AudioEncodingText"] = "Codificando áudio",
@@ -669,6 +751,8 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
     public string RAMStressHighText { get; }
     public string BlockTooltipFormat { get; }
     public string PipeErrorPrefix { get; }
+    public string MuxMissingVideoText { get; }
+    public string MuxMissingAudioText { get; }
     public string ReadyToStartText { get; }
     public string EncodingText { get; } // Used in queue/concat/repart mode
     public string AudioEncodingText { get; } // Used in queue/concat/repart mode
@@ -740,6 +824,8 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
         RAMStressHighText = this["RAMStressHighText"];
         BlockTooltipFormat = this["BlockTooltipFormat"];
         PipeErrorPrefix = this["PipeErrorPrefix"];
+        MuxMissingVideoText = this["MuxMissingVideoText"];
+        MuxMissingAudioText = this["MuxMissingAudioText"];
         ReadyToStartText = this["ReadyToStartText"];
         EncodingText = this["EncodingText"];
         AudioEncodingText = this["AudioEncodingText"];
