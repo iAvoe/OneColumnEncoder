@@ -40,6 +40,7 @@
                          HintBrush="{StaticResource GlobalSecondary}" />
 
         <comps:HintPanel Grid.Row="3"
+                         Margin="0 2.5 0 0"
                          Text="{Binding ClearOldQueueJsonHint}"
                          HintBrush="{StaticResource GlobalSecondary}" />
     </Grid>
