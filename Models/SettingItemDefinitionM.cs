@@ -20,4 +20,6 @@ public record SettingItemDefinitionM(
     SettingControlType ControlType,
     string PropertyName,
     int? MinValue = null,
-    int? MaxValue = null);
+    int? MaxValue = null,
+    string[]? Options = null,
+    Func<string, string>? DisplayNameResolver = null);

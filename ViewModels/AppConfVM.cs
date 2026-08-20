@@ -106,11 +106,15 @@ public class AppConfVM : BaseVM
                             setting.MaxValue);
                         break;
                     case SettingControlType.Dropdown:
-                        AddDropdownItem(container, setting.Label, source, setting.PropertyName,
-                            UICaptionProvider.AppConf.LanguageOptions.Codes,
-                            source is AppConfM.AudioMuxSettings
+                        AddDropdownItem(container,
+                            setting.Label,
+                            source,
+                            setting.PropertyName,
+                            setting.Options ?? UICaptionProvider.AppConf.LanguageOptions.Codes,
+                            setting.DisplayNameResolver
+                            ?? (source is AppConfM.AudioMuxSettings
                                 ? UICaptionProvider.AppConf.AudioMuxOptions.GetDisplayName
-                                : UICaptionProvider.AppConf.LanguageOptions.GetDisplayName);
+                                : UICaptionProvider.AppConf.LanguageOptions.GetDisplayName));
                         break;
                     case SettingControlType.Font:
                         AddFontItem(container, setting.Label, source, setting.PropertyName);

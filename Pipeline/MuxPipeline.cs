@@ -12,6 +12,8 @@ internal sealed record MuxContext(
 
 public static partial class MuxPipeline
 {
+    #region Public API
+
     /// <summary>
     /// Builds the mux command that merges encoded video with source streams into the final container
     /// </summary>
@@ -168,6 +170,10 @@ public static partial class MuxPipeline
         return EnsureExtension(outputPath, ext);
     }
 
+    #endregion
+
+    #region Mux Helpers
+
     /// <summary>
     /// Builds the audio codec argument fragment for a resolved audio mux mode.
     /// Returns null for Disable so callers can emit the bare -an instead.
@@ -231,6 +237,10 @@ public static partial class MuxPipeline
             framerateValue,
             GetSourceVideoTimescale(request.SourceFfprobeJson));
     }
+
+    #endregion
+
+    #region Private Helpers
 
     /// <summary>
     /// Expect different file input format depends on encoder selection
@@ -349,4 +359,6 @@ public static partial class MuxPipeline
         string.IsNullOrEmpty(extension) || outputPath.EndsWith(extension, StringComparison.OrdinalIgnoreCase)
             ? outputPath
             : outputPath + extension;
+
+    #endregion
 }

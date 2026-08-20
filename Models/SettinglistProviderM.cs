@@ -41,7 +41,9 @@ public static class SettinglistProviderM
         new(UICaptionProvider.AppConf.Groups.Language,
             Lang["Setting.Language.Select"],
             SettingControlType.Dropdown,
-            nameof(AppConfM.Language.LanguageCode))
+            nameof(AppConfM.Language.LanguageCode),
+            Options: UICaptionProvider.AppConf.LanguageOptions.Codes,
+            DisplayNameResolver: UICaptionProvider.AppConf.LanguageOptions.GetDisplayName)
     ];
 
     public static List<SettingItemDefinitionM> GetInitModeSettings() =>
@@ -87,19 +89,27 @@ public static class SettinglistProviderM
         new(UICaptionProvider.AppConf.Groups.AudioMux,
             Lang["Setting.AudioMux.Single"],
             SettingControlType.Dropdown,
-            nameof(AppConfM.AudioMuxSettings.SingleMode)),
+            nameof(AppConfM.AudioMuxSettings.SingleMode),
+            Options: UICaptionProvider.AppConf.AudioMuxOptions.Codes,
+            DisplayNameResolver: UICaptionProvider.AppConf.AudioMuxOptions.GetDisplayName),
         new(UICaptionProvider.AppConf.Groups.AudioMux,
             Lang["Setting.AudioMux.Queue"],
             SettingControlType.Dropdown,
-            nameof(AppConfM.AudioMuxSettings.QueueMode)),
+            nameof(AppConfM.AudioMuxSettings.QueueMode),
+            Options: UICaptionProvider.AppConf.AudioMuxOptions.Codes,
+            DisplayNameResolver: UICaptionProvider.AppConf.AudioMuxOptions.GetDisplayName),
         new(UICaptionProvider.AppConf.Groups.AudioMux,
             Lang["Setting.AudioMux.Concat"],
             SettingControlType.Dropdown,
-            nameof(AppConfM.AudioMuxSettings.ConcatMode)),
+            nameof(AppConfM.AudioMuxSettings.ConcatMode),
+            Options: UICaptionProvider.AppConf.AudioMuxOptions.Codes,
+            DisplayNameResolver: UICaptionProvider.AppConf.AudioMuxOptions.GetDisplayName),
         new(UICaptionProvider.AppConf.Groups.AudioMux,
             Lang["Setting.AudioMux.Repart"],
             SettingControlType.Dropdown,
-            nameof(AppConfM.AudioMuxSettings.RepartMode))
+            nameof(AppConfM.AudioMuxSettings.RepartMode),
+            Options: UICaptionProvider.AppConf.AudioMuxOptions.Codes,
+            DisplayNameResolver: UICaptionProvider.AppConf.AudioMuxOptions.GetDisplayName)
     ];
 
 
