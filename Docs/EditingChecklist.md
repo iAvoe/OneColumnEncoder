@@ -1,6 +1,6 @@
 # Editing checklists
 
-Order of files to modify when adding / deleting checklist items (arranged by dependency)
+File order for adding or deleting checklist items, in dependency order
 
 ### 1. `Models/Lang/UILangProvider.cs` Add multilingual string keys (en / zh-cn / zh-tw three copies) for new entries.
 

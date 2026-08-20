@@ -1,6 +1,6 @@
 # OneColumnEncoder
 
-A next-gen smart video encoding utility based on .NET 9/WPF, revolves around “tool & encoder orchestrating, source analyzing, encode customizing, parallelism tailoring, modern GUI monitoring, encode interrupting, and auto-multiplexing”.
+A next-gen smart video encoding utility based on .NET 9/WPF, focused on tool/encoder orchestration, source analysis, encoding customization, parallelism tuning, modern monitoring, interrupt capability, and auto-multiplexing.
 
 <p align="center"><img src="../WireframeMockups/logo.png" alt="Logo" width="200"></p>
 
@@ -8,59 +8,59 @@ A next-gen smart video encoding utility based on .NET 9/WPF, revolves around “
 
 **Source & Environment Validation**
 - Validate source video integrity from ffprobe readings
-- Verify current environment & configuration correctness
-- Providing source checklist with Success, Warning & Error status types
-- Providing bypass feature to continue on error
+- Verify current environment & configuration
+- Source checklist with Success, Warning & Error status
+- Bypass feature to continue on error
 
 **Advanced Parallelism**
 - Physical Core & NUMA Binding on top of Thread limiting
 
 **Encode Parameter Setting**
-- Customize via tuned UI controls for customized parameter configurations
-- Providing encoder A/B comparison previewer
+- Customize via tuned UI controls
+- Encoder A/B comparison previewer
 
 **Video Filtering**
-- Providing FFMPEG-VS-AVS filter editor
-- Auto-generating basic AviSynth & VapourSynth scripts (Decode→Y4M)
-- Auto-generating filters for FFMPEG-VS-AVS:
+- FFMPEG-VS-AVS filter editor
+- Auto-generate basic AviSynth & VapourSynth scripts (Decode→Y4M)
+- Auto-generate filters for FFMPEG-VS-AVS:
   - VFR→CFR
   - HDR→SDR (WCG)
   - Color space conversion
   - SAR restoration
   - Resize
   - Descale
-- Providing additional OpenCL filters for VapourSynth
+- Additional OpenCL filters for VapourSynth:
   - Denoise
   - Deband
   - Gaussian Blur
-- Providing VapourSynth A/B comparison previewer
+- VapourSynth A/B comparison previewer
 
 **Managed Automation**
-- Auto-generating video & audio encoding commandlines
-- Advanced encoding modes supported:
-  - **Queue Mode**: Encoding and filtering for a list of video sources
-  - **Concat Mode**: Concatenating and filtering a group of video sources
-  - **Repart Mode**: Re-slicing, filtering and encoding of a group video sources to correct episode partition structure
+- Auto-generate video & audio encoding commandlines
+- Advanced encoding modes:
+   - **Queue Mode**: Encode and filter a list of video sources
+   - **Concat Mode**: Concatenate and filter a group of video sources
+   - **Repart Mode**: Re-slice, filter, and encode a group of video sources to fix episode splits
 
 **Editable Blu-Ray Chapter Import**
-- Parse and build your list from PLAYLIST folder of the BDMV structure
+- Parse and build a list from the PLAYLIST folder in BDMV
 - Wired to Queue Mode and Repart Mode
 
 **Clip Sampling**
-- Providing FFMPEG-VS-AVS sampling
-- Providing GUI to clip Time or Frame# range easily
+- FFMPEG-VS-AVS sampling
+- GUI to clip time or frame ranges
 
 **Encode Monitoring**
-- Monitor memory usage details of along with encode ongoing
-- View upstream & downstream (encoder) logs separately
-- Selectively interrupt upsteam or downstream (encoder) processes
+- Monitor memory use during encoding
+- View upstream and downstream logs separately
+- Interrupt upstream or downstream processes
 
 **Overwrite Protection**
-- Fool-proof Start-Encode cooldown based on file size to be overwritten
+- Start-Encode cooldown based on file size
 
 ## Gallery
 
-This software supports multiple languages, but English text screenshots are used here to reduce the number of images. Some UI elements or text in the images may be outdated, but the overall layout and functional area divisions remain applicable. Please refer to the actual version you are using.
+This software supports multiple languages, but English screenshots are used here to keep the image count low. Some UI text may be outdated, but the layout still matches. Check the version you are using.
 
 <p align="center">
 <img src="../WireframeMockups/1-Main-Page-v4.png" alt="Main Window" width="600"/></br>
@@ -96,10 +96,10 @@ This software supports multiple languages, but English text screenshots are used
 
 ### Download Encoding Tools
 
-Follow this tutorial to get tool tailored for your use case:
+Use this tutorial to get tools for your use case:
 - [Encoding Tools Download Tutorial](https://github.com/iAvoe/encoding-tools-download-tutorial)
 
-If must TLDR; you may also use the tools included in download package (Not recommended but it works)
+If you need a quick start, you can use the tools in the download package (not recommended, but it works).
 
 **Supported pipe upstream programs (decoding and filtering tools)**:
 - ffmpeg
@@ -113,7 +113,7 @@ If must TLDR; you may also use the tools included in download package (Not recom
 - x265 v4.2 or newer
 - SVT-AV1 v4.1 or newer
 
-> Choose only the latest version of encoders to get the best performance (speed, quality, compression), plus less chances of memory leaks
+> Use the latest encoder versions for better speed, quality, compression, and fewer leaks.
 
 ## Icon usage
 
@@ -128,11 +128,11 @@ If must TLDR; you may also use the tools included in download package (Not recom
 
 ## Validation Status
 
-**OS Validated**：
+**OS Validated**:
 - Windows 10 22H2
 - Windows 11 25H2 (thanks to [Lofu](https://github.com/Ronifue))
 
-**CPUs Validated**：
+**CPUs Validated**:
 - Core i5 7600k (4C4T)
 - Ryzen 9 9900X (2CCD 12C24T)
 - EPYC 7R13 (6CCD 48C96T)
@@ -147,7 +147,7 @@ If must TLDR; you may also use the tools included in download package (Not recom
 
 ## Support me
 
-Its not esay to develop these tools. If this software helped, please consider sponsoring or promoting it.
+It is not easy to develop these tools. If this software helps, please consider sponsoring or sharing it.
 
 <p align="center"><img src="../WireframeMockups/bmc_qr.png" alt="Support me -_-"><br><img src="../WireframeMockups/pp_tip_qr.png" alt="Pls support =_="></p>
 
@@ -260,9 +260,9 @@ Its not esay to develop these tools. If this software helped, please consider sp
 
 - `BestPracsSelfCheckCardVM` is a self-check reference card and does not participate in the start-encoding blocking conditions
 - No `RunAllChecks()`, no `IsBypassed`, no Inspect/Bypass buttons
-- Marked as "Advisory — not blocking" on the UI
+- Marked as "Advisory - not blocking" on the UI
 
-#### Application Settings → File Overwrite
+#### Application Settings 鈫?File Overwrite
 
 The Overwrite setting will append an overwrite confirmation pop-up if the output file already exists after displaying and confirming the compression command, and delay enabling the confirmation button according to the size of the overwritten file
 
@@ -348,9 +348,9 @@ Implementation failed due to excessive complexity and encoding time addition
 - Confirm encoding commands before starting encode, and file overwriting:`Commands/StartEncCmd.cs`
 - Sample clip confirmation before starting encode:`ViewModels/SampleClipVM.cs`
 - View encoding commands in the encoding monitor:`ViewModels/EncodingMonitorVM.cs`
-- Copy/save results after script generation:`ViewModels/ScriptScribeVM.cs`、`Commands/SaveLoad/OneClickScriptGenCmd.cs`
-- Source analysis and check results:`Commands/AnalyzeSrcVideoCmd.cs`、`Commands/CopyRawAnalysisCmd.cs`、`Commands/InspectEncProblemsCmd.cs`、`Commands/InspectSrcProblemsCmd.cs`
-- Secondary confirmation when importing tools/selecting files:`Commands/ImportToolCmd.cs`、`FileManagement/SrcFilePicker.cs`
+- Copy/save results after script generation:`ViewModels/ScriptScribeVM.cs`銆乣Commands/SaveLoad/OneClickScriptGenCmd.cs`
+- Source analysis and check results:`Commands/AnalyzeSrcVideoCmd.cs`銆乣Commands/CopyRawAnalysisCmd.cs`銆乣Commands/InspectEncProblemsCmd.cs`銆乣Commands/InspectSrcProblemsCmd.cs`
+- Secondary confirmation when importing tools/selecting files:`Commands/ImportToolCmd.cs`銆乣FileManagement/SrcFilePicker.cs`
 
 ## Settings Storage Location
 
@@ -363,7 +363,7 @@ All persistent configuration data is stored as **JSON files** under `{Applicatio
 | `encodingconfig.json` | Encoder parameters (CRF/ABR, keyframe, presets, custom params for x264/x265/SVT-AV1) |
 | `parallelismconfig.json` | Parallelism settings (NUMA node IDs, CPU preferences, thread count) |
 
-**Persistence base class:** `Persistence\SaveLoadBase.cs` — all configuration models inherit from `SaveLoadBase<T>` which provides JSON serialization/deserialization via `Save()` / `Load()`.
+**Persistence base class:** `Persistence\SaveLoadBase.cs` - all configuration models inherit from `SaveLoadBase<T>` which provides JSON serialization/deserialization via `Save()` / `Load()`.
 
 **Other persisted data (user-selected paths, not in `\1cenc\`):**
 - Generated script files (`.avs` / `.vpy` / `.txt`) via `ViewModels\FilterScribeVM.cs` and `Commands\SaveLoad\OneClickScriptGenCmd.cs`
@@ -413,8 +413,9 @@ This software relies heavily on proprietary Windows APIs, which form the foundat
    - **Memory Information**: Retrieves total physical memory and estimates allocation based on NUMA node proportions.
 3. **`psapi.dll`**: Provides working set and memory pressure statistics for the encoding monitoring feature.
 
-These APIs cover critical areas such as parallel scheduling, hardware detection, process monitoring, and pre-encoding checks—functionalities that cannot be replaced by cross-platform UI frameworks.
+These APIs cover critical areas such as parallel scheduling, hardware detection, process monitoring, and pre-encoding checks - functions that cannot be replaced by cross-platform UI frameworks.
 
 Since the backend is already locked to Windows APIs, choosing WPF became the natural decision. It provides native Windows desktop integration (including features to prevent window overflow), a mature MVVM data-binding ecosystem, and requires no browser kernels or third-party dependencies. While cross-platform frameworks solve UI portability, they cannot resolve underlying API incompatibilities; instead, they would only add an extra layer of abstraction cost and testing overhead.
 
-In summary, the best approach for other platforms is to reimplement the project's logic using the corresponding native technology stack of that platform. Because the full source code is available and Agent-assisted programming tools exist—and this project has adopted the Apache 2.0 license to lower the barrier to entry—the difficulty of redevelopment has been significantly reduced.
+In summary, the best approach for other platforms is to reimplement the project's logic using the corresponding native technology stack of that platform. Because the full source code is available and Agent-assisted programming tools exist, and this project has adopted the Apache 2.0 license to lower the barrier to entry, the difficulty of redevelopment has been reduced.
+

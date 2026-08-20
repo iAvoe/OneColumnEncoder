@@ -12,13 +12,13 @@
 
 ## How a new encoder is wired
 
-1. Register it in `Models/ToolDefinitionProviderM.cs` and make sure the executable name is included in import/version flows.
+1. Register it in `Models/ToolDefinitionProviderM.cs`, include the executable in import/version flows.
 2. Add persistent settings to `Models/EncoderConfM.cs`.
 3. Add preset rows to `Models/EncoderPresetsM.cs`.
-4. Update `ViewModels/EncoderConfVM.cs` and `Views/EncoderConfModal.xaml` for the UI.
-5. Extend `Pipeline/EncodingPipeline.cs` for base params, auto params, custom params, and parallelism params.
+4. Update `ViewModels/EncoderConfVM.cs` and `Views/EncoderConfModal.xaml` for UI.
+5. Extend `Pipeline/EncodingPipeline.cs` for base, auto, custom, and parallelism params.
 6. Add version parsing in `ToolManagement/ToolVersionDetect.cs`.
-7. Update localization text in `Models/Lang/EncoderConfLangProvider.cs` and related language providers.
+7. Update localization in `Models/Lang/EncoderConfLangProvider.cs` and related providers.
 
 ### Exceptions
 
@@ -26,10 +26,10 @@ If there is no Keyframe interval / max GOP size, CRF control or anything that br
 
 ### Parallelism
 
-- Thread count and NUMA affinity must be derived from `ParallelismConfM.DownstreamNodeId` / `.EncoderThreadCount` / `.PreferPhysicalCores`.
-- Use `CpuSets.ClampThreadCountForNode()` to get the effective thread cap for the selected node.
+- Derive thread count and NUMA affinity from `ParallelismConfM.DownstreamNodeId` / `.EncoderThreadCount` / `.PreferPhysicalCores`.
+- Use `CpuSets.ClampThreadCountForNode()` for the effective thread cap on the selected node.
 - Add the resulting flags in `EncodingPipeline.BuildParallelismEncoderParams()` via a new switch branch.
-- If the encoder does not support thread/affinity control, leave the existing scaffolding returning `string.Empty`.
+- If the encoder lacks thread/affinity support, leave the existing scaffolding returning `string.Empty`.
 
 ## Current pipeline
 
@@ -44,43 +44,41 @@ If there is no Keyframe interval / max GOP size, CRF control or anything that br
 
 ### Plan a new pipeline
 
-1. Search and read the video encoder's parameter documentation, see what parameters can be derived from ffprobe JSON
-2. Do a ffprobe run on a typical video
+1. Read the encoder's parameter docs, note which params can be derived from ffprobe JSON.
+2. Run ffprobe on a typical video:
     - `ffprobe -i <source> -select_streams v:0 -v error -hide_banner -show_streams -show_frames -read_intervals "%+#1" -of json`
-    - Or, run this app, do an ffprobe video analysis, click the 'Copy Raw JSON' button to have it
-3. See what parameters are outside of Y4M pipe deliverables, and should be adjusted based on FPS, resolution, etc.
-4. It's common for developers to restrict their video encoder can truely perform, lift these restrictions by increasing parameter intensity, but not maxxing them out, which would be way too slow
-5. If there is a good 3rd-party modified video encoder which implemented extra parameters, add it into the 3rd party parameter toggle section, but keep it simple, not comprehensive
+    - Or use this app's ffprobe analysis and click 'Copy Raw JSON'.
+3. Identify parameters outside Y4M pipe deliverables that depend on FPS, resolution, etc.
+4. Developers often restrict encoder capabilities — lift those limits by increasing parameter intensity, but not maxing them out (too slow).
+5. For good 3rd-party encoder forks with extra parameters, add them to the 3rd-party toggle section, keeping it simple.
 
 ### CRF integer slider alignment
 
-The slider is the user's primary quality control. It must be aligned so the ticks feel comparable to existing encoders.
+The slider is the user's primary quality control. Align ticks to feel comparable to existing encoders.
 
-1. Pick a test set covering animation, film/IRL, grainy, low/high motion, and noisy clips.
+1. Pick a test set: animation, film/IRL, grainy, low/high motion, noisy clips.
 2. Freeze all non-target settings: keyframe, parallelism, toggles, custom text.
 3. Sweep the encoder's CRF range and encode each test clip.
-4. Encode the same clips with x264 / x265 / SVT-AV1 at their current slider defaults.
-5. Compare outputs subjectively and build a mapping from quality tier to slider value:
-   - `Lossless / UHQ / HQ / Streaming / Default`
-6. Limit the slider to a useful sub-range and label ticks accordingly.
-7. If the encoder has a logarithmic or non-linear scale, enable the slider's logarithmic mode in XAML instead of trying to linearize it manually.
+4. Encode the same clips with x264 / x265 / SVT-AV1 at their current defaults.
+5. Compare outputs and map quality tiers to slider values: `Lossless / UHQ / HQ / Streaming / Default`.
+6. Limit the slider to a useful sub-range, label ticks accordingly.
+7. For logarithmic or non-linear scales, enable the slider's logarithmic mode in XAML instead of linearizing manually.
 
 ## UI notes
 
-- CRF and ABR are presented as fixed integer sliders, not free-form scales.
-    - Slider range and ticks should adhere to arbitrary VQA quality ranking noted as `Lossless/UHQ/HQ/Streaming/Default`
-    - Don't expose the entire CRF range since it usually has over 50 values in integer, which shrinks the slider by values that nobody uses, and worsens the UX
-- Keyframe controls are shown in seconds in the UI and converted in the pipeline.
-    - Slider range and ticks should adhere to arbitrary decoding difficulty noted as `Eco./Multi-track Edit|Mid.|Hard & Mid. Compression|Extreme & High Comp.`
-- Presets are grouped by content/use case, not by a universal quality ranking.
-    - Presets should adhere to encoder's parameter design philosophy
-    - i.e., If an encoder hides most parameters behind its preset parameter, then use a content-unaware simple approach, like quality-first, compression-first, and vice-versa
-- Parallelism is edited in a separate modal and can affect the encoder command line.
-    - Check for thread count, CPU affinity, and NUMA-related parameters
+- CRF and ABR use fixed integer sliders, not free-form scales.
+    - Ticks follow quality tiers: `Lossless/UHQ/HQ/Streaming/Default`
+    - Don't expose the full CRF range (usually 50+ values) — it shrinks the slider and worsens UX.
+- Keyframe controls show seconds in UI, converted in the pipeline.
+    - Ticks follow decoding difficulty: `Eco./Multi-track Edit|Mid.|Hard & Mid. Compression|Extreme & High Comp.`
+- Presets group by content/use case, not universal quality ranking.
+    - Follow the encoder's design philosophy — if most params are hidden behind presets, use a content-unaware approach (quality-first, compression-first, etc.)
+- Parallelism edits live in a separate modal and affect the encoder command line.
+    - Check for thread count, CPU affinity, and NUMA parameters.
 
 ### Edge cases
 
-Integer slider has a logrithm mode, use it to combat inconsistent parameter value progressions
+Integer slider has a logarithmic mode — use it for inconsistent parameter value progressions.
 
 ## Checks after adding support
 

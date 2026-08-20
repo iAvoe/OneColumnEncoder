@@ -1,6 +1,6 @@
 # Source Frame Count Resolution Flow
 
-This document describes how Repart Mode resolves the exact frame count of each source video, even when entries like `nb_frames` are missing from the ffprobe metadata.
+This document describes how Repart Mode resolves each source's frame count, even when `nb_frames` is missing from ffprobe metadata.
 
 ## Purpose
 

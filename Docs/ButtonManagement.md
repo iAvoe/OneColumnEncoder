@@ -1,6 +1,6 @@
 # Button Management
 
-This document describes how to create, style, and wire up buttons in OneColumnEncoder.
+This document covers button creation, styling, and wiring in OneColumnEncoder.
 
 ---
 

@@ -1,6 +1,6 @@
 # Encoding Mode Implementation: Single, Queue, Concat, and Repart
 
-> For a high-level overview of the four encoding modes, see [Encoding Modes](ConceptsAndFeatures-EN.md#encoding-modes). This document covers runtime implementation details for each route.
+> For a high-level overview of the four encoding modes, see [Encoding Modes](ConceptsAndFeatures-EN.md#encoding-modes). This document covers runtime details for each route.
 
 ## 1. Route Activation
 

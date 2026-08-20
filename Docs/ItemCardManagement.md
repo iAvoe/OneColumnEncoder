@@ -1,6 +1,6 @@
 # ItemCard Management Guide
 
-This document explains how `ToolItemCardVM` / `ItemCard` instances are managed throughout the application. It covers the data model, zone system, queue routing, command patterns, and display text layering.
+This document covers how `ToolItemCardVM` / `ItemCard` instances are managed. It includes the data model, zone system, queue routing, command patterns, and text layering.
 
 ---
 

@@ -1,6 +1,6 @@
 # ImgABPvVM Preview Generation Flow
 
-This document describes how `ImgABPvVM` generates the A-B preview image pair used by the encoder preview window.
+This document describes how `ImgABPvVM` builds the A-B preview pair used by the encoder preview window.
 
 ## Purpose
 

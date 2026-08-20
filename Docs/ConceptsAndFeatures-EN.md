@@ -2,29 +2,29 @@
 
 ## Design Philosophy
 
-1cenc (OneColumnEncoder) is a Windows video encoding assistant built on .NET 9 / WPF. It does not attempt to dumb down video encoding into a black box. Instead, it automates common, repetitive, and error-prone steps while retaining full customization of external tools, scripts, encoder parameters, and command lines.
+1cenc (OneColumnEncoder) is a Windows video encoding assistant built on .NET 9 / WPF. Rather than hiding encoding behind a black box, it automates common, repetitive, error-prone steps while keeping full control over external tools, scripts, encoder parameters, and command lines.
 
-1cenc's design balances hardcore workflows with an intuitive UI — letting users quickly start encodes while still being able to inspect and intervene in the underlying logic when needed.
+The design balances hardcore workflows with an intuitive UI — users can start encodes quickly and inspect or intervene in the underlying logic when needed.
 
 ### Single-Column UI Interaction
 
-1cenc uses a "single-column" main interface: tool import, upstream programs, encoders, dependencies, video sources, script sources, source validation, encoding settings, and start encoding are all laid out in workflow order on the main interface rather than hidden in nested menus.
+1cenc uses a "single-column" main interface: tool import, upstream programs, encoders, dependencies, video sources, script sources, source validation, encoding settings, and start encoding are all laid out in workflow order on the main interface instead of nested menus.
 
 Benefits:
 
-- Common operations can be done directly on the main interface, reducing back-and-forth navigation into settings pages.
-- Tools, sources, check status, and output settings are visible at the same time, making it easier to understand the current encoding pipeline.
-- Selecting upstream programs, encoders, source files, and script sources can mostly be done in a single click or import — in contrast, opening a dropdown and selecting requires at least two clicks, two cursor movements, and smaller button areas that are harder to target.
+- Common operations can be done directly on the main interface, reducing back-and-forth navigation.
+- Tools, sources, check status, and output settings are visible at the same time, making the current encoding pipeline easier to understand.
+- Selecting upstream programs, encoders, source files, and script sources mostly takes a single click — contrast with dropdown menus that need at least two clicks, two cursor movements, and smaller button areas.
 
-The trade-off is a longer main interface that requires scrolling. To address this, the project provides `▶▶` / `▼▼` collapse mechanisms so users can collapse sections while keeping key status visible. First-time users are advised to expand all sections and read through the full layout before collapsing to their preference.
+The trade-off is a longer main interface that requires scrolling. To address this, the project provides `▶▶` / `▼▼` collapse mechanisms so users can collapse sections while keeping key status visible. First-time users should expand all sections and read through the full layout before collapsing to their preference.
 
 ### Main-Interface-First Interaction
 
-1cenc is designed so that encoding can begin without entering secondary configuration screens. After importing tools, selecting a source, analyzing it, and setting output, users can start encoding directly from the main interface.
+1cenc is designed so encoding can begin without entering secondary configuration screens. After importing tools, selecting a source, analyzing it, and setting output, users can start encoding directly from the main interface.
 
-Secondary windows primarily handle:
+Secondary windows handle:
 
-- Fine-tuning encoder parameters
+- Encoder parameter fine-tuning
 - Parallelism / NUMA / thread settings
 - Filter and script editing
 - Clip sampling
@@ -33,66 +33,66 @@ Secondary windows primarily handle:
 
 #### Start Encode Button Blocking Conditions
 
-Conditions that gray out the Start Encode button (making it unclickable) mainly come from states that would inevitably cause task failure, such as:
+The Start Encode button is grayed out when conditions would inevitably cause task failure:
 
 - Required tools not imported/selected: at minimum, an upstream program, an encoder, and ffprobe.
 - No video source / queue / concat source imported.
-- Source video corrupted to the point that ffprobe cannot open and analyze it — critical data missing.
+- Source video corrupted to the point that ffprobe cannot analyze it — critical data missing.
 - Upstream program and script source mismatch: e.g., `vspipe` requires `.vpy`, `avs2yuv` / `avs2pipemod` require `.avs`.
 - `avs2pipemod` selected without `avisynth.dll` dependency (or vice versa — they must match).
 - Output directory not writable, insufficient disk space, or other hardware/system issues.
-- Output file already exists: the overwrite guard raises a warning on the pre-encoding checklist card (shown in orange), which grays out the Start Encode button. Users can manually bypass the checklist to unlock the button, but a cooldown-based secondary confirmation dialog (proportional to the overwritten file's size) will appear after clicking Start.
+- Output file already exists: the overwrite guard shows an orange warning on the pre-encoding checklist card, graying out Start Encode. Users can bypass the checklist to unlock the button, but a cooldown-based secondary confirmation dialog (proportional to the overwritten file's size) appears after clicking Start.
 
 Some warnings in source validation and pre-encoding checklists can be bypassed. The principle: errors block inevitably failing or high-risk processes; warnings notify the user but leave the final choice to them.
 
 ### Low-Interference Colors and High-Visibility Status Colors
 
-1cenc's normal UI elements use low-brightness, low-contrast colors to reduce visual strain during extended configuration and monitoring sessions. Status indicator colors use more recognizable traffic-light logic:
+1cenc's normal UI elements use low-brightness, low-contrast colors to reduce visual strain during extended sessions. Status indicators use traffic-light logic:
 
-- Red: error, usually blocks further progress.
-- Orange/Yellow: warning, should be addressed but can be bypassed.
-- Cyan/Green: success, normal, conditions satisfied.
+- Red: error, usually blocks progress.
+- Orange/Yellow: warning, can be bypassed.
+- Cyan/Green: success, conditions satisfied.
 
-This design lets users quickly scan the main interface to determine whether the workflow is ready, rather than reading each check item individually.
+Users can quickly scan the main interface to determine whether the workflow is ready, rather than reading each check item individually.
 
 ### Mouse-Friendly Design
 
-1cenc assumes users may understand encoding but may not want to memorize long command lines. The project strives to make all operations achievable with a mouse.
+1cenc assumes users may understand encoding but may not want to memorize long command lines. All operations should be achievable with a mouse.
 
-UI controls make extensive use of:
+UI controls use:
 
 - Cards: representing tools, sources, settings, and status.
 - Dropdown menus: selecting tool import types, language, encoding modes, etc.
-- Sliders: configuring CRF, ABR, keyframe intervals, scaling ratios, thread counts, and other continuous or stepped parameters.
+- Sliders: configuring CRF, ABR, keyframe intervals, scaling ratios, thread counts, and other continuous/stepped parameters.
 - Toggles / Checkboxes: controlling filters, third-party parameters, parallelism preferences, and other boolean options.
 - Copyable text: displaying paths, commands, logs, analysis JSON, etc. — right-click context menu to open or copy.
 
 ### Command Display Mechanism
 
-The final command is shown before starting an encode, and can be reviewed again in the encoding monitor — making it easy to inspect and reproduce.
+The final command is shown before starting an encode and can be reviewed in the encoding monitor — easy to inspect and reproduce.
 
 ---
 
 ## Encoding Modes
 
-1cenc supports four main source routes: single mode, queue mode, concat mode, and Repart mode.
+1cenc supports four main source routes: single, queue, concat, and Repart.
 
 ### Single Source Mode
 
 Single source mode is the most common workflow: one video source or script source produces one output.
 
-Available routes include:
+Available routes:
 
-- `ffmpeg` directly reads the video source and outputs a Y4M pipe.
+- `ffmpeg` reads the video source and outputs a Y4M pipe.
 - `vspipe` reads VapourSynth `.vpy` scripts.
 - `avs2yuv` / `avs2pipemod` reads AviSynth `.avs` scripts.
 - `OneLineShotArgs` reads SVFI-related source configuration for the SVFI route.
 
-Single source mode supports clip sampling — users can extract a segment by time or frame number for quick subjective quality verification.
+Single source mode supports clip sampling — extract a segment by time or frame number for quick quality verification.
 
 ### Queue Mode
 
-Queue mode is for "a batch of independent video sources producing a batch of independent outputs." Typical use cases include TV series, BDRips, and other already-segmented streams with consistent formats.
+Queue mode handles "a batch of independent video sources producing a batch of independent outputs." Typical use cases: TV series, BDRips, and other already-segmented streams with consistent formats.
 
 Queue mode imports a folder. After import, ffprobe analyzes all candidate sources and filters out streams with inconsistent formats based on compatibility rules.
 
@@ -101,73 +101,73 @@ Queue mode imports a folder. After import, ffprobe analyzes all candidate source
 1cenc provides two strategies:
 
 1. Use the first video stream as reference, excluding files whose validation results differ too much.
-2. Weighted vote then use the representative group as reference — suitable for BDMV directories mixing main features, intros, trailers, menu clips, etc.
+2. Weighted vote, then use the representative group as reference — suitable for BDMV directories mixing main features, intros, trailers, menu clips, etc.
 
 #### Queue Mode Characteristics
 
-- Number of source files equals number of output files; one-to-one automatic muxing.
-- Tasks execute sequentially, not running multiple encode jobs in parallel.
+- Source file count equals output file count; one-to-one automatic muxing.
+- Tasks execute sequentially, not in parallel.
 - Queue sidebar shows Pending, Encoding, Completed, Failed, Interrupted states.
-- Generates a batch of `.avs` / `.vpy` scripts for the queue.
+- Generates `.avs` / `.vpy` scripts for the queue.
 - Supports filtering out short segments by minimum duration.
 - Does not support clip sampling.
 - Does not support `OneLineShotArgs` / SVFI route.
 
 ### Concat Mode
 
-Concat mode is for "multiple video fragments spliced into a single output." Its primary use case is handling BDMV main features that have been split into multiple segments — i.e., multi-part sources or "playlist-based" discs.
+Concat mode is for "multiple video fragments spliced into a single output." Its primary use case is handling BDMV main features split into multiple segments — multi-part sources or "playlist-based" discs.
 
 Concat mode performs basic compatibility checks on import:
 
 - At least two video files required.
 - File extensions must match.
 - Resolutions must match.
-- Differences in codec, pixel format, validation checklist signature, and frame rate produce warnings.
+- Codec, pixel format, validation checklist signature, and frame rate differences produce warnings.
 - VFR and frame-rate signature differences are treated as warnings, directing users to apply VFR→CFR repair in the filter editor.
 
-Concat mode generates the `ffmpeg concat demuxer` filelist for script export and audio muxing, and can produce concat `.avs` / `.vpy` scripts. ffmpeg video encoding opens each fragment separately and stitches the decoded frames with the `concat` filter, which avoids sharing one decoder context across mixed source variants. The filter editor also allows reordering, removing fragments, and regenerating the filelist.
+Concat mode generates the `ffmpeg concat demuxer` filelist for script export and audio muxing, and can produce concat `.avs` / `.vpy` scripts. ffmpeg video encoding opens each fragment separately and stitches decoded frames with the `concat` filter, avoiding shared decoder context across mixed source variants. The filter editor allows reordering, removing fragments, and regenerating the filelist.
 
-Audio handling in concat mode is split by mode: generated AVS/VPY scripts handle video only; `Disable` stays video-only, `Copy` maps audio directly from the concat timeline, and AAC/Opus re-encode modes first write a temp audio file and then mux that temp track with the encoded video. For VFR sources or complex boundary fragments, audio duration may exceed video duration, so it is recommended to check and handle audio after concat encoding.
+Audio handling splits by mode: generated AVS/VPY scripts handle video only; `Disable` stays video-only, `Copy` maps audio directly from the concat timeline, and AAC/Opus re-encode modes write a temp audio file first, then mux with the encoded video. For VFR sources or complex boundary fragments, audio duration may exceed video duration, so check and handle audio after concat encoding.
 
 ### Repart Mode
 
 Repart mode treats an ordered set of strictly matching CFR video streams as one virtual frame timeline, then manually repartitions that timeline into independent episode outputs. It handles both joined sources containing several episodes and fragmented sources where one episode spans several files.
 
-The dedicated partition-style window provides input and output sidebars, a proportional allocation map, synchronized time/frame fields, unallocated gaps, and adjacent-output merging. Chapter-folder import is supported for disc playlists: multi-entry MPLS sources are combined into one virtual source, and mixed STREAM folders resolve to the dominant matching episode group instead of the first file. Each output is encoded independently; Repart can mux clipped source-timeline audio according to the selected audio mux mode, while source subtitles, chapters, and metadata remain excluded.
+The dedicated partition-style window provides input and output sidebars, a proportional allocation map, synchronized time/frame fields, unallocated gaps, and adjacent-output merging. Chapter-folder import supports disc playlists: multi-entry MPLS sources combine into one virtual source, and mixed STREAM folders resolve to the dominant matching episode group instead of the first file. Each output is encoded independently; Repart can mux clipped source-timeline audio per the selected audio mux mode, while source subtitles, chapters, and metadata remain excluded.
 
 #### BD Playlist Selector Modal
 
-The BD Playlist Selector modal is the playlist-picking step used by chapter-folder import. `BdPlaylistScanner` builds clustered playlist candidates first, then `BdPlaylistSelectModal` lets the user choose which playlists to keep and in what order before chapter import continues.
+The BD Playlist Selector modal handles playlist picking for chapter-folder import. `BdPlaylistScanner` clusters playlist candidates first, then `BdPlaylistSelectModal` lets the user choose which playlists to keep and in what order before chapter import continues.
 
-Its UI is intentionally narrow in scope: clusters are shown on the left, playlists from the selected cluster in the middle, and the final ordered playlist list on the right. The ViewModel owns the selection state, the final ordered playlist list, and the button state for add, remove, reorder, clear, cancel, and confirm. The view only binds to that state; it does not perform scan, chapter read, or file resolution work.
+Its UI is narrow in scope: clusters on the left, playlists from the selected cluster in the middle, and the final ordered list on the right. The ViewModel owns the selection state, final ordered list, and button states (add, remove, reorder, clear, cancel, confirm). The view only binds to that state; it does not perform scan, chapter read, or file resolution.
 
-This keeps the import flow reusable: the same selection modal can be opened from Repart-related import paths, and the confirmed result is just the ordered playlist path list that gets passed to the chapter reader.
+This keeps the import flow reusable: the same selection modal opens from Repart-related import paths, and the confirmed result is just the ordered playlist path list passed to the chapter reader.
 
-Playlist structure matters here:
+Playlist structure matters:
 
-- Normal: one playlist contains all episodes. For both movies and TV shows, the playlist with the longest duration is usually the correct choice.
-- Separated: one playlist contains one episode. For TV shows, the matching playlists usually have similar durations.
-- The third column exists for the separated case. Choosing a single playlist there means importing only one episode, not the whole title set.
+- Normal: one playlist contains all episodes. For both movies and TV shows, the longest playlist is usually correct.
+- Separated: one playlist per episode. For TV shows, matching playlists usually have similar durations.
+- The third column exists for the separated case. Choosing a single playlist there imports only one episode, not the whole title set.
 
 **Container-level timing granularity is normalized, not part of the format signature.** Repart's strict source signature compares actual video format fields (codec, profile, level, dimensions, pixel format, color metadata, frame rate, extradata) but deliberately excludes the per-stream `time_base` — the muxer's tick resolution, e.g. `1/24000` vs `1/96000` at the same 24000/1001 fps. That is a container detail rather than a video format property, so an encode batch that muxed identical episodes at different tick resolutions still forms one virtual timeline. This is safe because every upstream normalizes timing: ffmpeg resets each input's PTS and rebuilds a CFR PTS sequence from the plan frame rate, VapourSynth/AviSynth splice by frames, and the final MKV uses `-video_track_timescale` derived from the reference source.
 
 #### Concat Then Split
 
-Repart mode lands the "concatenate into one virtual frame timeline, then split per output range" commands per upstream tool as follows:
+Repart mode implements "concatenate into one virtual frame timeline, then split per output range" per upstream tool:
 
-- **ffmpeg**: opens every source separately (`-i source1 -i source2 ...`), maps each source's `v:0` only, joins the streams in import order with the `concat` filter, then crops the current output range with frame-exact `trim=start_frame=first:end_frame=last+1` and regenerates a CFR PTS sequence from zero with `setpts`. For a single source the concat stage is omitted and the frame-exact `trim` is applied directly.
-- **vspipe**: generates a splice script containing all sources (`core.std.Splice`) and slices with `-s {first} -e {last}` at the vspipe command line.
-- **avs2yuv / avs2pipemod**: generates a splice script containing all sources (AviSynth `++` UnalignedSplice); avs2yuv slices with `-seek {first} -frames {count}`, avs2pipemod with `-trim={first},{last}`.
+- **ffmpeg**: opens every source separately (`-i source1 -i source2 ...`), maps each `v:0` only, joins with the `concat` filter, then crops with frame-exact `trim=start_frame=first:end_frame=last+1` and regenerates a CFR PTS sequence with `setpts`. For a single source the concat stage is omitted.
+- **vspipe**: generates a splice script with all sources (`core.std.Splice`) and slices with `-s {first} -e {last}`.
+- **avs2yuv / avs2pipemod**: generates a splice script (AviSynth `++` UnalignedSplice); avs2yuv slices with `-seek {first} -frames {count}`, avs2pipemod with `-trim={first},{last}`.
 
-Slicing is based on the measured original frame numbers from the analysis stage, accumulated into global frame indices across sources, so output boundaries stay exact after concatenation. Each encoding start creates execution-specific concat filelists and virtual-source scripts, so a stale or reordered external script cannot invalidate the planned frame offsets.
+Slicing uses measured original frame numbers from analysis, accumulated into global frame indices across sources, so output boundaries stay exact after concatenation. Each encoding start creates execution-specific concat filelists and virtual-source scripts, so a stale external script cannot invalidate planned frame offsets.
 
 #### Filters Use the Repart Stream Without Rewriting Sources
 
-Repart mode has a hard constraint: **imported video sources are never modified.** Filter Scribe works on the temporary Repart stream in a concat-style workflow; its Repart source queue may be reordered, while the imported files and committed frame boundaries remain unchanged. The reasons are:
+Repart mode has a hard constraint: **imported video sources are never modified.** Filter Scribe works on the temporary Repart stream in a concat-style workflow; its Repart source queue may be reordered, while imported files and committed frame boundaries remain unchanged. The reasons:
 
-- The analysis stage builds the virtual timeline from each imported source's original frame rate, resolution, and per-frame timestamps.
-- If any source is rewritten independently, the sources can no longer be joined reliably and already-planned output ranges may shift as a whole.
-- Therefore Source Reviser remains unavailable for an active Repart plan, but Filter Scribe is available through the Repart-specific concat-style workflow. It applies the selected filters to the Repart video stream while leaving the imported source files and committed frame plan unchanged.
+- The analysis stage builds the virtual timeline from each source's original frame rate, resolution, and per-frame timestamps.
+- If any source is rewritten independently, sources can no longer be joined reliably and planned output ranges may shift.
+- Source Reviser remains unavailable for an active Repart plan, but Filter Scribe is available through the Repart-specific concat-style workflow. It applies selected filters to the Repart stream while leaving imported source files and committed frame plan unchanged.
 
 ---
 
@@ -175,28 +175,28 @@ Repart mode has a hard constraint: **imported video sources are never modified.*
 
 ### External-Encoder-First Design
 
-ffmpeg includes built-in video encoders, but 1cenc deliberately does not use ffmpeg's built-in encoders as the primary encoding route. Instead, it treats ffmpeg / vspipe / avs2yuv / etc. as upstream decoding and filtering tools, and independent programs like x264 / x265 / SVT-AV1 as downstream encoders.
+ffmpeg includes built-in video encoders, but 1cenc deliberately does not use them as the primary encoding route. Instead, it treats ffmpeg / vspipe / avs2yuv / etc. as upstream decoding and filtering tools, and independent programs like x264 / x265 / SVT-AV1 as downstream encoders.
 
-The formal encoding pipeline looks like this:
+The formal encoding pipeline:
 
 ```text
 Upstream program outputs Y4M -> Pipe -> External encoder -> Raw video stream -> Optional ffmpeg mux
 ```
 
-Reasons for this design:
+Reasons:
 
-- Encourages using standalone or third-party modified encoders.
-- Encourages using the latest encoder versions, as well as self-compiled builds (↑ quality, ↑ efficiency).
+- Encourages standalone or third-party modified encoders.
+- Encourages latest encoder versions and self-compiled builds (higher quality, higher efficiency).
 - Easier to leverage native encoder parameters and experimental options.
 - More transparent for command-line encoders.
 - Encoding commands can be displayed, copied, and reviewed directly.
 - Encoders embedded in ffmpeg only show their version when encoding starts, requiring a dedicated command-line argument (inconvenient).
 
-The trade-off is that adapting new encoders is more complex. Each new encoder requires handling tool import, version detection, parameter UI, presets, auto-parameter generation, output extension, and mux input format details.
+The trade-off is that adapting new encoders is more complex. Each requires handling tool import, version detection, parameter UI, presets, auto-parameter generation, output extension, and mux input format details.
 
 ### Auto-Parameter Generation
 
-1cenc automatically supplements certain encoding parameters based on ffprobe analysis results, including:
+1cenc automatically supplements certain encoding parameters based on ffprobe analysis:
 
 - Total frame count: `--frames` for x264/x265, `-n` for SVT-AV1.
 - Color matrix, transfer characteristics, primaries.
@@ -206,7 +206,7 @@ The trade-off is that adapting new encoders is more complex. Each new encoder re
 - `merange` and `subme` for x265.
 - In concat mode, uses the sum of all fragment frame counts instead of only the first fragment's count.
 
-The project does not expose every parameter as a UI control. Commonly used parameters are surfaced as sliders, presets, and toggles; more advanced or unstable options are left to the custom parameters text box.
+Not every parameter is exposed as a UI control. Commonly used parameters are sliders, presets, and toggles; more advanced or unstable options go to the custom parameters text box.
 
 #### Frame Count Policy
 
@@ -214,17 +214,17 @@ When total frame count is missing from video metadata, 1cenc leaves it unknown i
 
 ### Output and Auto-Muxing
 
-The encoder first outputs the corresponding raw video stream:
+The encoder first outputs the raw video stream:
 
 - x264: `.mp4`
 - x265: `.hevc`
 - SVT-AV1: `.ivf`
 
-If ffmpeg has been imported, the project generates a mux command to combine the encoded video stream with selected source streams into an MKV. Single source and queue mode copy non-video streams from the original video; concat and Repart mode read audio from the concat filelist timeline, with `Copy` limited to the first audio track and re-encode modes either muxing directly from the timeline or, for concat re-encode, writing a temp audio file first and then muxing it with the encoded video.
+If ffmpeg has been imported, the project generates a mux command to combine encoded video with selected source streams into an MKV. Single source and queue mode copy non-video streams from the original; concat and Repart mode read audio from the concat filelist timeline, with `Copy` limited to the first audio track and re-encode modes either muxing directly from the timeline or, for concat re-encode, writing a temp audio file first.
 
-Muxing is a controllable step — the mux command and status are visible in the encoding monitor window. For raw stream outputs like x265 / SVT-AV1, muxing makes it easier to add new streams or convert to other container formats, so it is checked by default.
+Muxing is a controllable step — the mux command and status are visible in the encoding monitor. For raw stream outputs like x265 / SVT-AV1, muxing makes it easier to add new streams or convert container formats, so it is checked by default.
 
-The auto-mux feature helps video quality metric usages by inheriting the timebase from the source, so the video-based quality metrics (e.g. XPSNR, VMAF) can align without manually calculating the GCD of timebase fractions.
+Auto-mux inherits the timebase from the source, so video-based quality metrics (e.g. XPSNR, VMAF) can align without manually calculating the GCD of timebase fractions.
 
 ## Source Analysis and Checklists
 
@@ -236,7 +236,7 @@ Hard issues:
 - Not progressive scan.
 - Bit depth exceeds supported range.
 - 12-bit input (not currently supported by SVT-AV1).
-- Other issues that would make parameter generation or encoding clearly unreliable.
+- Other issues that make parameter generation or encoding clearly unreliable.
 
 Soft issues:
 
@@ -270,33 +270,33 @@ The filter editor is an auxiliary module in 1cenc. It supports:
 - Custom ffmpeg filter command-line parameters.
 - Custom AviSynth(+), VapourSynth filter script lines.
 
-For script sources, the project validates that the video path embedded in the script matches the current video source. Queue scripts are checked per file name and embedded path to prevent misalignment. Concat mode skips single-source path matching (since scripts naturally contain multiple source paths) and instead relies on concat import and analysis to ensure correctness.
+For script sources, the project validates that the video path embedded in the script matches the current video source. Queue scripts are checked per file name and embedded path to prevent misalignment. Concat mode skips single-source path matching (scripts naturally contain multiple source paths) and relies on concat import and analysis for correctness.
 
-Filter Scribe is available in Repart mode through a Repart-specific concat-style workflow. Its sidebar lists the output episodes created by the Repart plan, while the temporary AVS/VPY source or ffmpeg input is built internally from the Repart source list. Selected filters are applied without modifying the imported files or committed frame boundaries. Source Reviser remains unavailable because changing source metadata would invalidate the frame offsets.
+Filter Scribe is available in Repart mode through a Repart-specific concat-style workflow. Its sidebar lists output episodes from the Repart plan, while the temporary AVS/VPY source or ffmpeg input is built internally from the Repart source list. Selected filters are applied without modifying imported files or committed frame boundaries. Source Reviser remains unavailable because changing source metadata would invalidate frame offsets.
 
-Rare edge case: some long-GOP BDMV titles can make the short seek-based frame verification miss the last frame near the tail of the title. In that case the implementation widens the seek window first, then falls back to ffmpeg, and only uses full `ffprobe -count_frames` as the slowest last resort.
+Rare edge case: some long-GOP BDMV titles can make short seek-based frame verification miss the last frame near the title tail. The implementation widens the seek window first, falls back to ffmpeg, and only uses full `ffprobe -count_frames` as the last resort.
 
 ---
 
 ## Encoder Parameters & Preview
 
-Encoder settings support CRF / ABR, presets, keyframe intervals, and some third-party parameter toggles for x264, x265, and SVT-AV1. Rather than exposing every encoder parameter as a form, the project builds presets aligned with each video encoder developer's design intent.
+Encoder settings support CRF / ABR, presets, keyframe intervals, and some third-party parameter toggles for x264, x265, and SVT-AV1. Rather than exposing every encoder parameter as a form, the project builds presets aligned with each encoder developer's design intent.
 
 The project also provides a single-frame A/B preview:
 
 - Extracts a frame from the source video at a specified position.
-- Encodes the frame using ffmpeg's libx264 / libx265 / libsvtav1 / libvvenc for single-frame preview encoding.
-- Decodes the result and compares it with the original side by side.
+- Encodes with ffmpeg's libx264 / libx265 / libsvtav1 / libvvenc for single-frame preview encoding.
+- Decodes and compares with the original side by side.
 - Supports different display modes: raw display, low gamut → BT.709, WCG → BT.709, HDR → SDR, etc.
 - If SSIMULACRA2.1 and Butteraugli tools are bundled, computes image quality scores.
 
-The preview feature is for quickly observing parameter impacts. Quality depends on whether the video encoder's single-frame encoding is better or worse than inter-frame redundancy, so it is not equivalent to the formal encoding pipeline.
+The preview is for quickly observing parameter impacts. Quality depends on whether single-frame encoding is better or worse than inter-frame redundancy, so it is not equivalent to the formal encoding pipeline.
 
 ---
 
 ## Parallelism & Hardware Scheduling
 
-1cenc relies heavily on Windows APIs for parallelism, making it explicitly a Windows-only tool rather than a cross-platform utility.
+1cenc relies heavily on Windows APIs for parallelism, making it explicitly Windows-only rather than cross-platform.
 
 Parallelism settings include:
 
@@ -308,7 +308,7 @@ Parallelism settings include:
 - x265 pools parameters.
 - CPU Sets binding.
 
-The project does not raise process priority. The design prioritizes keeping the system responsive, avoiding a situation where an encoder hang drags down the entire system.
+The project does not raise process priority. The design keeps the system responsive, avoiding a situation where an encoder hang drags down the entire system.
 
 Pre-encoding checks also include:
 
@@ -316,18 +316,18 @@ Pre-encoding checks also include:
 - Whether the output directory is writable.
 - Whether sufficient disk space is available.
 - Whether an output file would be overwritten.
-- Whether the L-SMASH plugin required for the avs2yuv route is present.
+- Whether the L-SMASH plugin for the avs2yuv route is present.
 - Whether current NUMA node CPU usage is high.
 
-The overwrite check not only warns but also delays the confirmation button based on the overwritten file's size to reduce the chance of accidentally overwriting large files.
+The overwrite check not only warns but delays the confirmation button based on the overwritten file's size to reduce accidental overwrites of large files.
 
 ---
 
 ## Encoding Monitor
 
-The encoding monitor window handles running upstream and downstream processes, piping upstream stdout to the encoder stdin. It simultaneously reads upstream and downstream stderr for log display and progress parsing.
+The encoding monitor window handles running upstream and downstream processes, piping upstream stdout to the encoder stdin. It reads upstream and downstream stderr for log display and progress parsing.
 
-Monitor features include:
+Monitor features:
 
 - Upstream / downstream log split panes.
 - Log folding to avoid repeated line flooding.
@@ -350,9 +350,9 @@ Queue tasks execute sequentially; on failure, subsequent tasks stop. After user 
 
 ## Tool Import & Portability
 
-1cenc assumes no system paths are configured by default. Users can import external tool paths, and the project saves each tool's path, version, and file size.
+1cenc assumes no system paths are configured by default. Users import external tool paths, and the project saves each tool's path, version, and file size.
 
-Supported importable tools include:
+Supported importable tools:
 
 - Upstream: `ffmpeg.exe`, `vspipe.exe`, `avs2yuv.exe`, `avs2pipemod.exe`, `one_line_shot_args.exe`
 - Encoders: `x264.exe`, `x265.exe`, `svtav1encapp.exe`
@@ -360,7 +360,7 @@ Supported importable tools include:
 
 On first launch, the project attempts to auto-discover some tools, such as VapourSynth's `vspipe.exe` and Steam-distributed SVFI's `one_line_shot_args.exe`.
 
-Distribution packages can bundle common encoders and analysis tools, but the project philosophy still encourages users to replace them with trusted newer or third-party modified versions.
+Distribution packages can bundle common encoders and analysis tools, but the project encourages users to replace them with trusted newer or third-party modified versions.
 
 ---
 
@@ -386,7 +386,7 @@ The settings interface can clean `source_queue_*.json` files older than 7 days.
 
 ### Concat Mode
 
-Concat mode generates `source_concat_filelist.txt` in the `1cenc` config directory
+Concat mode generates `source_concat_filelist.txt` in the `1cenc` config directory.
 
 This file uses ffmpeg concat demuxer format, recording the current concat fragment order. It is regenerated when users reorder or delete fragments in the filter editor.
 
@@ -406,7 +406,7 @@ When AviSynth and VapourSynth scripts use L-SMASH / LWLibav for video reading, t
 
 ### Preview & Logs
 
-Single-frame preview creates a `1cenc-image-preview-*` working directory under the system temp folder, which is cleaned up on window close.
+Single-frame preview creates a `1cenc-image-preview-*` working directory under the system temp folder, cleaned up on window close.
 
 When saving logs in the encoding monitor, the following files are written to the user-chosen output location:
 
@@ -422,6 +422,6 @@ When saving logs in the encoding monitor, the following files are written to the
 - SVT-AV1 does not support 12-bit input.
 - Queue, concat, and Repart modes do not support clip sampling.
 - `OneLineShotArgs` / SVFI route does not support queue, concat, or Repart mode.
-- Repart mode currently requires CFR, reliable per-frame timestamps, identical video-stream formats, manual output boundaries, and ffmpeg for final MKV muxing.
-- Concat mode audio muxing is available, but complex VFR or boundary-abnormal sources may still require post-processing.
-- The project currently has no comprehensive automated tests — it relies on functional validation and real long-queue testing.
+- Repart mode requires CFR, reliable per-frame timestamps, identical video-stream formats, manual output boundaries, and ffmpeg for final MKV muxing.
+- Concat mode audio muxing is available, but complex VFR or boundary-abnormal sources may require post-processing.
+- No comprehensive automated tests — relies on functional validation and real long-queue testing.

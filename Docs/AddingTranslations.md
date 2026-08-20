@@ -2,13 +2,13 @@
 
 ## Overview
 
-This guide walks through the process of adding a new language (using **Portuguese Brazilian - pt-BR** as the example) to the translation system.
+This guide covers adding a new language (using **Portuguese Brazilian - pt-BR** as the example) to the translation system.
 
 ## Prerequisites
 
-- Understanding of C# and .NET
-- Access to all language provider files in `OneColumnEncoder\Models\Lang\`
-- Translation of all keys for the target language (required for debug mode)
+- C# and .NET knowledge
+- Access to all provider files in `OneColumnEncoder\Models\Lang\`
+- All keys translated for the target language (required for debug mode)
 
 ## Step-by-Step Implementation (`["pt-br"]` as example)
 
@@ -16,10 +16,10 @@ This guide walks through the process of adding a new language (using **Portugues
 
 The translation system consists of:
 
-- **22 language provider files** - Each handles a specific UI module
-- **Common terms** - Shared translations in `LangProviderBase.cs`
-- **Language registration** - Managed in `UICaptionProvider.cs`
-- **Runtime detection** - Handled in `App.xaml.cs`
+- **22 language provider files** — one per UI module
+- **Common terms** — shared translations in `LangProviderBase.cs`
+- **Language registration** — managed in `UICaptionProvider.cs`
+- **Runtime detection** — handled in `App.xaml.cs`
 
 ### 2. Add Common Terms (Required First Step)
 
@@ -123,20 +123,17 @@ private static string ResolveSupportedLanguageCode(string cultureName)
 ## Important Guidelines
 
 ### Window Titles
-- **NEVER** translate window titles
-- Keep them as hardcoded English constants
+- **Never** translate window titles — keep them as hardcoded English constants.
 
 ### Debug Mode
-- `MissingTranslationException` is thrown in DEBUG mode for missing keys
-- **100% coverage is mandatory** for all translation files
+- `MissingTranslationException` is thrown in DEBUG mode for missing keys.
+- **100% coverage is mandatory** for all translation files.
 
 ### Source Language
-- English (`en`) is the source language and baseline
-- All translations must be complete when compared to English
+- English (`en`) is the baseline. All translations must be complete compared to English.
 
 ### Language Codes
-- **lowercase** language codes only
-- Include regional variant where applicable (e.g., `pt-br` not `pt`)
+- **lowercase** codes only. Include regional variant where applicable (e.g., `pt-br` not `pt`).
 
 ## Testing Translation
 
