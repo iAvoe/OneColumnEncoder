@@ -191,16 +191,11 @@
         <StackPanel Grid.Row="1"
                     Margin="0 10 0 0">
             <comps:ColumnTextGrid Items="{Binding FooterColumns}"
-                                  ColumnCount="6" />
+                                   ColumnCount="6" />
             <StackPanel Orientation="Horizontal"
                         Margin="0 15 0 0">
-                <CheckBox Content="{Binding EnableMuxText}"
-                          IsChecked="{Binding EnableMux, Mode=TwoWay}"
-                           IsEnabled="{Binding IsMuxToggleEnabled}"
-                          VerticalAlignment="Center" />
                 <CheckBox Content="{Binding RichTextModeText}"
                           IsChecked="{Binding LogRichTextMode, Mode=TwoWay}"
-                          Margin="10 0 0 0"
                           VerticalAlignment="Center" />
                 <CheckBox Content="{Binding SaveLogsText}"
                           IsChecked="{Binding SaveLogs, Mode=TwoWay}"

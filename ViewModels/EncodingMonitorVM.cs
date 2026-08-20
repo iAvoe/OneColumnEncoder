@@ -119,7 +119,6 @@ public partial class EncodingMonitorVM : BaseVM
     public static string RateControlLabel => "ABR / CRF";
     public string ArgsLabel => Lang.ArgsLabel;
     public string SmallNoteText => Lang.SmallNoteText;
-    public string EnableMuxText => Lang.EnableMuxText;
     public string RichTextModeText => Lang.RichTextModeText;
     public string OpusAudioCommandHint => BuildOpusAudioCommandHint();
     public bool CanMux => !_isSample && _command.MuxCommand != null;
@@ -2339,7 +2338,6 @@ public partial class EncodingMonitorVM : BaseVM
         OnPropertyChanged(nameof(CompleteAtLabel));
         OnPropertyChanged(nameof(ArgsLabel));
         OnPropertyChanged(nameof(SmallNoteText));
-        OnPropertyChanged(nameof(EnableMuxText));
         OnPropertyChanged(nameof(RichTextModeText));
         OnPropertyChanged(nameof(SaveLogsText));
         OnPropertyChanged(nameof(OpusAudioCommandHint));

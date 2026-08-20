@@ -25,7 +25,6 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["CompleteAtLabel"] = "ETA",
             ["ArgsLabel"] = "Other preset name",
             ["SmallNoteText"] = "This program does not support progress save-load; interrupting will discard task progress",
-            ["EnableMuxText"] = "Multiplex after encoding (the 2nd part of commandline, ffmpeg required)",
             ["RichTextModeText"] = "Parse rich text",
             ["DistributionUpstreamLabel"] = "Upstream program",
             ["DistributionDownstreamLabel"] = "Downstream program",
@@ -96,7 +95,6 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["CompleteAtLabel"] = "预计完成（24h）",
             ["ArgsLabel"] = "其他参数预设名",
             ["SmallNoteText"] = "本程序不支持进度存取；中断将丢弃任务进度",
-            ["EnableMuxText"] = "压制完成后封装视频流（先前命令行的第二部分，需导入 ffmpeg）",
             ["RichTextModeText"] = "富文本解析",
             ["DistributionUpstreamLabel"] = "上游程序",
             ["DistributionDownstreamLabel"] = "下游程序",
@@ -167,7 +165,6 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["CompleteAtLabel"] = "預計完成（24h）",
             ["ArgsLabel"] = "其他參數預設名",
             ["SmallNoteText"] = "本程式不支援進度存取；中斷將丟棄任務進度",
-            ["EnableMuxText"] = "壓製完成後封裝影片串流（先前命令行的第二部分，需導入 ffmpeg）",
             ["RichTextModeText"] = "富文本解析",
             ["DistributionUpstreamLabel"] = "上游程式",
             ["DistributionDownstreamLabel"] = "下游程式",
@@ -241,7 +238,6 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["CompleteAtLabel"] = "ETA",
             ["ArgsLabel"] = "Nom d'autre préréglage",
             ["SmallNoteText"] = "Ce programme ne prend pas en charge la sauvegarde de progression; interrompre supprimera l'avancement",
-            ["EnableMuxText"] = "Multiplexer après encodage (2e partie de commande, ffmpeg requis)",
             ["RichTextModeText"] = "Analyse de texte enrichi",
             ["DistributionUpstreamLabel"] = "Programme amont",
             ["DistributionDownstreamLabel"] = "Programme aval",
@@ -307,7 +303,6 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["CompleteAtLabel"] = "ETA",
             ["ArgsLabel"] = "Nombre de otro preajuste",
             ["SmallNoteText"] = "Este programa no soporta guardar/cargar progreso; interrumpir descartará el avance",
-            ["EnableMuxText"] = "Multiplexar tras codificar (2a parte de comando; requiere ffmpeg)",
             ["RichTextModeText"] = "Análisis de texto enriquecido",
             ["DistributionUpstreamLabel"] = "Programa aguas arriba",
             ["DistributionDownstreamLabel"] = "Programa aguas abajo",
@@ -373,7 +368,6 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["CompleteAtLabel"] = "ETA",
             ["ArgsLabel"] = "その他のプリセット名",
             ["SmallNoteText"] = "このプログラムは進捗の保存・読み込みに対応していません。中断すると進捗は失われます",
-            ["EnableMuxText"] = "エンコード後に多重化 (コマンド第2部、ffmpeg 必須)",
             ["RichTextModeText"] = "リッチテキスト解析",
             ["DistributionUpstreamLabel"] = "上流プログラム",
             ["DistributionDownstreamLabel"] = "下流プログラム",
@@ -441,7 +435,6 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["CompleteAtLabel"] = "ETA",
             ["ArgsLabel"] = "다른 프리셋 이름",
             ["SmallNoteText"] = "이 프로그램은 진행 저장-불러오기를 지원하지 않습니다; 중단 시 작업 진행이 사라집니다",
-            ["EnableMuxText"] = "인코딩 후 멀티플렉스 (명령 2부, ffmpeg 필요)",
             ["RichTextModeText"] = "리치 텍스트 분석",
             ["DistributionUpstreamLabel"] = "상위 프로그램",
             ["DistributionDownstreamLabel"] = "하위 프로그램",
@@ -509,7 +502,6 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["CompleteAtLabel"] = "ETA",
             ["ArgsLabel"] = "Имя другого набора настроек",
             ["SmallNoteText"] = "Программа не поддерживает сохранение прогресса; прерывание приведёт к потере хода задачи",
-            ["EnableMuxText"] = "Mux после кодирования (2-я часть команды, нужен ffmpeg)",
             ["RichTextModeText"] = "Анализ форматированного текста",
             ["DistributionUpstreamLabel"] = "Апстрим",
             ["DistributionDownstreamLabel"] = "Даунстрим",
@@ -577,7 +569,6 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["CompleteAtLabel"] = "ETA",
             ["ArgsLabel"] = "Anderer Preset-Name",
             ["SmallNoteText"] = "Dieses Programm unterstützt kein Fortschrittsspeichern; Unterbrechung verwirfort den Fortschritt",
-            ["EnableMuxText"] = "Nach Kodierung multiplexen (2. Teil der Kommandozeile, ffmpeg erforderlich)",
             ["RichTextModeText"] = "Rich-Text parsen",
             ["DistributionUpstreamLabel"] = "Upstream-Programm",
             ["DistributionDownstreamLabel"] = "Downstream-Programm",
@@ -645,7 +636,6 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["CompleteAtLabel"] = "ETA",
             ["ArgsLabel"] = "Nome de outra predefinição",
             ["SmallNoteText"] = "Este programa não suporta salvar-carregar progresso; interrir descartará o progresso da tarefa",
-            ["EnableMuxText"] = "Multiplexar após codificação (2ª parte da linha de comando, ffmpeg necessário)",
             ["RichTextModeText"] = "Analisar rich text",
             ["DistributionUpstreamLabel"] = "Programa upstream",
             ["DistributionDownstreamLabel"] = "Programa downstream",
@@ -715,7 +705,6 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
     public string CompleteAtLabel { get; }
     public string ArgsLabel { get; }
     public string SmallNoteText { get; }
-    public string EnableMuxText { get; }
     public string RichTextModeText { get; }
     public string OpusAudioCommandHintFormat { get; }
     public string DistributionUpstreamLabel { get; }
@@ -788,7 +777,6 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
         CompleteAtLabel = this["CompleteAtLabel"];
         ArgsLabel = this["ArgsLabel"];
         SmallNoteText = this["SmallNoteText"];
-        EnableMuxText = this["EnableMuxText"];
         RichTextModeText = this["RichTextModeText"];
         OpusAudioCommandHintFormat = "♫Opus 320Kbps: {0}";
         DistributionUpstreamLabel = this["DistributionUpstreamLabel"];
