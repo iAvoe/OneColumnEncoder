@@ -47,8 +47,7 @@ public static partial class MuxPipeline
             && audioMode != EncodingAudioMuxMode.Copy
             && request.ConcatVideoSourcePaths is { Length: > 0 };
         bool splitAudioStep = useConcatSourceInputs
-            && EncodingAudioMuxResolver.IsReEncodeMode(audioMode)
-            && GetAudioStreamCount(request.SourceFfprobeJson) > 0;
+            && EncodingAudioMuxResolver.IsReEncodeMode(audioMode);
         if (splitAudioStep)
             return BuildConcatAudioSplitMux(request, context, audioMode, videoTimescaleArgs, inputFormatArgs);
 
@@ -94,6 +93,9 @@ public static partial class MuxPipeline
 
         MuxContext context = BuildMuxContext(request);
         string? inputFormatArgs = GetMuxInputFormatArgs(request.EncoderExeName, context.FramerateValue);
+        if (EncodingAudioMuxResolver.IsReEncodeMode(audioMode))
+            return BuildRepartAudioSplitMux(request, context, audioMode, range.Value, inputFormatArgs);
+
         string audioMapArgs = BuildConcatAudioMuxMapArgs(audioMode);
         if (audioMapArgs == "-an") return null;
 
@@ -169,6 +171,39 @@ public static partial class MuxPipeline
         return new($"{Quote(request.FfmpegPath)} {args}", args, context.EncodedVideoPath, context.OutputPath);
     }
 
+    /// <summary>
+    /// Builds the repart mux as a split audio encode followed by a final mux when audio is re-encoded.
+    /// </summary>
+    private static EncodingMuxCommand BuildRepartAudioSplitMux(
+        EncodingPipelineRequest request,
+        MuxContext context,
+        EncodingAudioMuxMode audioMode,
+        (string StartTime, string EndTime) range,
+        string? inputFormatArgs)
+    {
+        string audioCodecArgs = BuildAudioMuxArgs(audioMode)!;
+        string audioOutputPath = ResolveTempAudioPath(context.OutputPath, audioMode);
+
+        string audioArgs = JoinArgs(
+            "-hide_banner -y",
+            $"-f concat -safe 0 -ss {range.StartTime} -to {range.EndTime} -i {Quote(request.ConcatFileListPath!)}",
+            $"-map 0:a? {audioCodecArgs}",
+            Quote(audioOutputPath));
+        string audioCommandLine = $"{Quote(request.FfmpegPath!)} {audioArgs}";
+        EncodingAudioCommand audioCommand = new(audioCommandLine, audioArgs, audioOutputPath);
+
+        string muxArgs = JoinArgs(
+            "-hide_banner -y",
+            inputFormatArgs,
+            $"-i {Quote(context.EncodedVideoPath)}",
+            $"-i {Quote(audioOutputPath)}",
+            $"-map 0:v:0 -map 1:a? -c copy -bsf:v setts=pts=N*DURATION -video_track_timescale {context.VideoTimescale}",
+            Quote(context.OutputPath));
+        string muxCommandLine = $"{Quote(request.FfmpegPath!)} {muxArgs}";
+
+        return new(muxCommandLine, muxArgs, context.EncodedVideoPath, context.OutputPath, audioCommand);
+    }
+
     public static string ResolveOutputPathWithExtension(string encoderExeName, string outputPath)
     {
         string ext = encoderExeName.ToLowerInvariant() switch
@@ -212,12 +247,12 @@ public static partial class MuxPipeline
         return $"{audioMapArgs} {audioMuxArgs}";
 }
 
-    private static string? BuildConcatAudioFilterArgs(
+    private static string BuildConcatAudioFilterArgs(
         string[] sourcePaths,
-        string? sourceFfprobeJson)
+        int audioStreamCount,
+        int inputOffset)
     {
-        int audioStreamCount = GetAudioStreamCount(sourceFfprobeJson);
-        if (audioStreamCount <= 0) return null;
+        if (audioStreamCount <= 0) audioStreamCount = 1;
 
         List<string> filterChains = [];
         List<string> audioMaps = [];
@@ -226,7 +261,7 @@ public static partial class MuxPipeline
         {
             string stagePrefix = $"a{audioIndex}";
             string resetInputs = string.Join(";", Enumerable.Range(0, sourcePaths.Length)
-                .Select(sourceIndex => $"[{sourceIndex + 1}:a:{audioIndex}]asetpts=PTS-STARTPTS[{stagePrefix}_{sourceIndex}]"));
+                .Select(sourceIndex => $"[{sourceIndex + inputOffset}:a:{audioIndex}]asetpts=PTS-STARTPTS[{stagePrefix}_{sourceIndex}]"));
             string concatInputs = string.Concat(Enumerable.Range(0, sourcePaths.Length)
                 .Select(sourceIndex => $"[{stagePrefix}_{sourceIndex}]"));
             filterChains.Add($"{resetInputs};{concatInputs}concat=n={sourcePaths.Length}:v=0:a=1[{stagePrefix}]");
@@ -251,11 +286,11 @@ public static partial class MuxPipeline
     {
         string[] sourcePaths = request.ConcatVideoSourcePaths!;
         string audioCodecArgs = BuildAudioMuxArgs(audioMode)!;
-        int audioStreamCount = GetAudioStreamCount(request.SourceFfprobeJson);
+        int audioStreamCount = Math.Max(1, GetAudioStreamCount(request.SourceFfprobeJson));
         string audioOutputPath = ResolveTempAudioPath(context.OutputPath, audioMode);
 
         // Step 1: audio encode — concat source audio streams into a temp file.
-        string audioFilterAndMaps = BuildConcatAudioFilterArgs(sourcePaths, request.SourceFfprobeJson)!;
+        string audioFilterAndMaps = BuildConcatAudioFilterArgs(sourcePaths, audioStreamCount, 0);
         string audioArgs = JoinArgs(
             "-hide_banner -y",
             string.Join(" ", sourcePaths.Select(path => $"-i {Quote(path)}")),

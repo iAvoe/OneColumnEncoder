@@ -738,7 +738,7 @@ public partial class EncodingMonitorVM : BaseVM
             }
 
             _request = request;
-            _command = command;
+            _command = EncodingPipeline.BuildY4mCommand(request);
             ApplySourceTotalFrames(EncodingPipeline.GetExpectedOutputFrames(request));
             OnPropertyChanged(nameof(OpusAudioCommandHint));
             EnableMux = command.MuxCommand != null
@@ -2131,9 +2131,9 @@ public partial class EncodingMonitorVM : BaseVM
 
     private void ShowEncodingCommand()
     {
-        EncodingPipelineCommand command = _queueItems == null
-            ? _command
-            : QueueSidebar.SelectedJob?.Command ?? _command;
+        EncodingPipelineCommand command = QueueSidebar.SelectedJob?.Request is EncodingPipelineRequest selectedRequest
+            ? EncodingPipeline.BuildY4mCommand(selectedRequest)
+            : _command;
         new OpenDebugModalCmd(_modalNavS, Lang.EncodingCommandTitle, command.DisplayCommandLine).Execute(null);
     }
 
