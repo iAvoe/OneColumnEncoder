@@ -388,9 +388,7 @@ ffmpeg 自带视频编码器，但 1cenc 的正式压制流程故意不以 ffmpe
 
 ### 合并模式
 
-合并模式会在 `1cenc` 配置目录下生成：
-
-- `source_concat_filelist.txt`
+合并模式会在 `1cenc` 配置目录下生成 `source_concat_filelist.txt`
 
 该文件使用 ffmpeg concat demuxer 格式，记录当前合并片段顺序。用户在滤镜编辑器中调整顺序或删除片段时会重新生成。
 

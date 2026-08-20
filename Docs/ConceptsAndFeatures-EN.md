@@ -386,9 +386,7 @@ The settings interface can clean `source_queue_*.json` files older than 7 days.
 
 ### Concat Mode
 
-Concat mode generates in the `1cenc` config directory:
-
-- `source_concat_filelist.txt`
+Concat mode generates `source_concat_filelist.txt` in the `1cenc` config directory
 
 This file uses ffmpeg concat demuxer format, recording the current concat fragment order. It is regenerated when users reorder or delete fragments in the filter editor.
 
