@@ -84,9 +84,11 @@ public class AppConfVM : BaseVM
             [UICaptionProvider.AppConf.Groups.InitMode] = _appConfM,
             [UICaptionProvider.AppConf.Groups.Fonts] = _appConfM.Font,
             [UICaptionProvider.AppConf.Groups.Logs] = _appConfM.Logs,
-            [UICaptionProvider.AppConf.Groups.AudioMux] = _appConfM.AudioMux
+            [UICaptionProvider.AppConf.Groups.AutoMux] = _appConfM.AutoMux,
+            [UICaptionProvider.AppConf.Groups.AudioMux] = _appConfM.AudioMux,
         };
 
+        // Note: order of settings item sections are by SettinglistProviderM.GetAllSettings()
         foreach (IGrouping<string, SettingItemDefinitionM> group
             in SettinglistProviderM.GetAllSettings().GroupBy(s => s.GroupName))
         {
@@ -120,6 +122,9 @@ public class AppConfVM : BaseVM
                         break;
                     case SettingControlType.Font:
                         AddFontItem(container, setting.Label, source, setting.PropertyName);
+                        break;
+                    case SettingControlType.AutoMux:
+                        AddAutoMuxRow(container, setting.Label, source, setting.CheckboxProperties);
                         break;
                 }
             }
@@ -288,6 +293,21 @@ public class AppConfVM : BaseVM
             HorizontalAlignment = HorizontalAlignment.Right
         };
         container.Items.Add(new AppConfItem { Text = text, Content = dropdown });
+    }
+
+    private static void AddAutoMuxRow(AppConfContainer container, string modeText, object source,
+        IReadOnlyList<string>? propertyPaths)
+    {
+        if (propertyPaths == null || propertyPaths.Count < 3) return;
+
+        AutoMuxRow row = new() { ModeText = modeText };
+        row.SetBinding(AutoMuxRow.IsX264Property,
+            new Binding(propertyPaths[0]) { Source = source, Mode = BindingMode.TwoWay });
+        row.SetBinding(AutoMuxRow.IsX265Property,
+            new Binding(propertyPaths[1]) { Source = source, Mode = BindingMode.TwoWay });
+        row.SetBinding(AutoMuxRow.IsSvtAv1Property,
+            new Binding(propertyPaths[2]) { Source = source, Mode = BindingMode.TwoWay });
+        container.Items.Add(row);
     }
 
     private static void AddFontItem(AppConfContainer container, string text, object source, string propertyPath)

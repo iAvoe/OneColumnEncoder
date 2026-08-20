@@ -9,6 +9,7 @@ public enum SettingControlType
     CheckBox,
     Dropdown, // Language selection
     Font, // Font family selection
+    AutoMux, // Per-mode (Single/Queue/Concat/Repart) encoder auto-mux checkboxes
 }
 
 /// <summary>
@@ -22,4 +23,5 @@ public record SettingItemDefinitionM(
     int? MinValue = null,
     int? MaxValue = null,
     string[]? Options = null,
-    Func<string, string>? DisplayNameResolver = null);
+    Func<string, string>? DisplayNameResolver = null,
+    IReadOnlyList<string>? CheckboxProperties = null);

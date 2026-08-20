@@ -533,6 +533,43 @@
         </Setter>
     </Style>
 
+    <!-- Auto-mux per-mode encoder checkbox row -->
+    <Style TargetType="{x:Type comps:AutoMuxRow}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type comps:AutoMuxRow}">
+                    <Grid Margin="0 5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="{TemplateBinding ModeText}"
+                                   VerticalAlignment="Center"
+                                   FontSize="13"
+                                   Foreground="{TemplateBinding Foreground}" />
+                        <StackPanel Grid.Column="1"
+                                    Orientation="Horizontal"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                            <CheckBox Content="x264"
+                                      IsChecked="{Binding IsX264, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                      VerticalAlignment="Center" />
+                            <CheckBox Content="x265"
+                                      IsChecked="{Binding IsX265, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                      Margin="10 0 0 0"
+                                      VerticalAlignment="Center" />
+                            <CheckBox Content="SVTAV1"
+                                      IsChecked="{Binding IsSvtAv1, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                      Margin="10 0 0 0"
+                                      VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Memory Range Legend -->
     <Style TargetType="{x:Type comps:MemoryRangeLegend}">
         <Setter Property="Template">

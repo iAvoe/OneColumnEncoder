@@ -280,7 +280,10 @@ public partial class EncodingMonitorVM : BaseVM
         _command = command;
         _isSample = isSample;
         ApplySourceTotalFrames(EncodingPipeline.GetExpectedOutputFrames(_request));
-        _enableMux = CanMux && !string.Equals(_request.EncoderExeName, "x264.exe", StringComparison.OrdinalIgnoreCase);
+        _enableMux = CanMux && EncodingAutoMuxResolver.IsAutoMuxEnabled(
+            _appConfM.AutoMux,
+            _request.EncoderExeName,
+            _request.IsConcatMode == true ? EncodingMuxRouteMode.Concat : EncodingMuxRouteMode.Single);
 
         RefreshLanguageState();
 
@@ -341,7 +344,10 @@ public partial class EncodingMonitorVM : BaseVM
     {
         _queueItems = queueItems;
         IsRepartBatch = isRepartBatch;
-        if (isRepartBatch) _enableMux = true;
+        _enableMux = CanMux && EncodingAutoMuxResolver.IsAutoMuxEnabled(
+            _appConfM.AutoMux,
+            _request.EncoderExeName,
+            isRepartBatch ? EncodingMuxRouteMode.Repart : EncodingMuxRouteMode.Queue);
     }
 
     public bool IsRepartBatch { get; }
@@ -742,7 +748,10 @@ public partial class EncodingMonitorVM : BaseVM
             ApplySourceTotalFrames(EncodingPipeline.GetExpectedOutputFrames(request));
             OnPropertyChanged(nameof(OpusAudioCommandHint));
             EnableMux = command.MuxCommand != null
-                && (IsRepartBatch || !string.Equals(request.EncoderExeName, "x264.exe", StringComparison.OrdinalIgnoreCase));
+                && EncodingAutoMuxResolver.IsAutoMuxEnabled(
+                    _appConfM.AutoMux,
+                    request.EncoderExeName,
+                    IsRepartBatch ? EncodingMuxRouteMode.Repart : EncodingMuxRouteMode.Queue);
             _writtenFrames = 0;
             _currentOutputSizeBytes = 0;
             _upstreamWorkingSetPeakBytes = 0;

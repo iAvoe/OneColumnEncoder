@@ -104,6 +104,7 @@ public static class UICaptionProvider
             public static string Fonts => Lang["AppConf.Fonts"];
             public static string Logs => Lang["AppConf.Logs"];
             public static string AudioMux => Lang["AppConf.AudioMux"];
+            public static string AutoMux => Lang["AppConf.AutoMux"];
         }
 
         public static class Buttons

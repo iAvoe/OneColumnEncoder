@@ -12,6 +12,7 @@ public static class SettinglistProviderM
         .. GetInitModeSettings(),
         .. GetFontSettings(),
         .. GetLogSettings(),
+        .. GetAutoMuxSettings(),
         .. GetAudioMuxSettings()
     ];
 
@@ -112,5 +113,47 @@ public static class SettinglistProviderM
             DisplayNameResolver: UICaptionProvider.AppConf.AudioMuxOptions.GetDisplayName)
     ];
 
-
-}
+    public static List<SettingItemDefinitionM> GetAutoMuxSettings() =>
+    [
+        new(UICaptionProvider.AppConf.Groups.AutoMux,
+            Lang["Setting.AudioMux.Single"],
+            SettingControlType.AutoMux,
+            nameof(AppConfM.AutoMuxSettings.SingleX264),
+            CheckboxProperties:
+            [
+                nameof(AppConfM.AutoMuxSettings.SingleX264),
+                nameof(AppConfM.AutoMuxSettings.SingleX265),
+                nameof(AppConfM.AutoMuxSettings.SingleSvtAv1)
+            ]),
+        new(UICaptionProvider.AppConf.Groups.AutoMux,
+            Lang["Setting.AudioMux.Queue"],
+            SettingControlType.AutoMux,
+            nameof(AppConfM.AutoMuxSettings.QueueX264),
+            CheckboxProperties:
+            [
+                nameof(AppConfM.AutoMuxSettings.QueueX264),
+                nameof(AppConfM.AutoMuxSettings.QueueX265),
+                nameof(AppConfM.AutoMuxSettings.QueueSvtAv1)
+            ]),
+        new(UICaptionProvider.AppConf.Groups.AutoMux,
+            Lang["Setting.AudioMux.Concat"],
+            SettingControlType.AutoMux,
+            nameof(AppConfM.AutoMuxSettings.ConcatX264),
+            CheckboxProperties:
+            [
+                nameof(AppConfM.AutoMuxSettings.ConcatX264),
+                nameof(AppConfM.AutoMuxSettings.ConcatX265),
+                nameof(AppConfM.AutoMuxSettings.ConcatSvtAv1)
+            ]),
+        new(UICaptionProvider.AppConf.Groups.AutoMux,
+            Lang["Setting.AudioMux.Repart"],
+            SettingControlType.AutoMux,
+            nameof(AppConfM.AutoMuxSettings.RepartX264),
+            CheckboxProperties:
+            [
+                nameof(AppConfM.AutoMuxSettings.RepartX264),
+                nameof(AppConfM.AutoMuxSettings.RepartX265),
+                nameof(AppConfM.AutoMuxSettings.RepartSvtAv1)
+            ])
+    ];
+}

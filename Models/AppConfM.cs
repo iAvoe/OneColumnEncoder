@@ -16,6 +16,7 @@ public class AppConfM : SaveLoadBase<AppConfM>
     public FontSettings Font { get; set; } = new FontSettings();
     public LogSettings Logs { get; set; } = new LogSettings();
     public AudioMuxSettings AudioMux { get; set; } = new AudioMuxSettings();
+    public AutoMuxSettings AutoMux { get; set; } = new AutoMuxSettings();
     #region Setting items
     public class OverwriteSettings
     {
@@ -44,6 +45,27 @@ public class AppConfM : SaveLoadBase<AppConfM>
         public string QueueMode { get; set; } = "Copy";
         public string ConcatMode { get; set; } = "ReEncodeAAC320";
         public string RepartMode { get; set; } = "ReEncodeAAC320";
+    }
+
+    /// <summary>
+    /// Whether muxing after encoding is enabled automatically, per encoding route
+    /// (Single / Queue / Concat / Repart) and per encoder (x264 / x265 / SVT-AV1).
+    /// Defaults enable muxing everywhere.
+    /// </summary>
+    public class AutoMuxSettings
+    {
+        public bool SingleX264 { get; set; } = true;
+        public bool SingleX265 { get; set; } = true;
+        public bool SingleSvtAv1 { get; set; } = true;
+        public bool QueueX264 { get; set; } = true;
+        public bool QueueX265 { get; set; } = true;
+        public bool QueueSvtAv1 { get; set; } = true;
+        public bool ConcatX264 { get; set; } = true;
+        public bool ConcatX265 { get; set; } = true;
+        public bool ConcatSvtAv1 { get; set; } = true;
+        public bool RepartX264 { get; set; } = true;
+        public bool RepartX265 { get; set; } = true;
+        public bool RepartSvtAv1 { get; set; } = true;
     }
     #endregion
 }

@@ -102,6 +102,48 @@ public static class EncodingAudioMuxResolver
 }
 
 /// <summary>
+/// The four encoding routes that can auto-mux after encoding.
+/// </summary>
+public enum EncodingMuxRouteMode
+{
+    Single,
+    Queue,
+    Concat,
+    Repart
+}
+
+/// <summary>
+/// Resolves whether muxing should be enabled automatically after encoding,
+/// from the per-route and per-encoder app settings.
+/// </summary>
+public static class EncodingAutoMuxResolver
+{
+    /// <summary>
+    /// Returns whether auto-muxing is enabled for the given encoder executable in the given route.
+    /// Unknown encoders default to disabled.
+    /// </summary>
+    public static bool IsAutoMuxEnabled(AppConfM.AutoMuxSettings settings, string encoderExeName, EncodingMuxRouteMode mode)
+    {
+        bool Get(bool x264, bool x265, bool svtAv1) => encoderExeName.ToLowerInvariant() switch
+        {
+            "x264.exe" => x264,
+            "x265.exe" => x265,
+            "svtav1encapp.exe" => svtAv1,
+            _ => false
+        };
+
+        return mode switch
+        {
+            EncodingMuxRouteMode.Single => Get(settings.SingleX264, settings.SingleX265, settings.SingleSvtAv1),
+            EncodingMuxRouteMode.Queue => Get(settings.QueueX264, settings.QueueX265, settings.QueueSvtAv1),
+            EncodingMuxRouteMode.Concat => Get(settings.ConcatX264, settings.ConcatX265, settings.ConcatSvtAv1),
+            EncodingMuxRouteMode.Repart => Get(settings.RepartX264, settings.RepartX265, settings.RepartSvtAv1),
+            _ => false
+        };
+    }
+}
+
+/// <summary>
 /// A standalone audio-encoding stage that concatenates source audio streams into a temp file,
 /// used as the input for a later mux stage when the selected audio mux mode re-encodes.
 /// </summary>
