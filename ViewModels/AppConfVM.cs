@@ -59,7 +59,6 @@ public class AppConfVM : BaseVM
             SaveCmd);
         FinishSettingButtons.B3_2Icon = SvgIconProvider.GameDelete;
         FinishSettingButtons.B3_3Icon = SvgIconProvider.GameSave;
-        AppFontProvider.Refresh();
         BuildSettingsListing();
         if (AppFontProvider.HasCustomFontLoadIssues)
         {
