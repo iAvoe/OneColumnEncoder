@@ -15,10 +15,14 @@ public static class FFprobeProcessRunner
     {
         ProcessStartInfo startInfo = CreateStartInfo(ffprobePath, arguments);
         using Process process = new() { StartInfo = startInfo };
-        using CancellationTokenRegistration killRegistration = cancellationToken.Register(() => TryKill(process));
+        bool started = false;
+        using CancellationTokenRegistration killRegistration = cancellationToken.Register(() =>
+        {
+            if (started) TryKill(process);
+        });
         try
         {
-            process.Start();
+            started = process.Start();
 
             Task<string> stdoutTask = process.StandardOutput.ReadToEndAsync(cancellationToken);
             Task<string> stderrTask = process.StandardError.ReadToEndAsync(cancellationToken);
@@ -31,7 +35,7 @@ public static class FFprobeProcessRunner
         }
         catch
         {
-            TryKill(process);
+            if (started) TryKill(process);
             throw;
         }
     }
@@ -45,10 +49,12 @@ public static class FFprobeProcessRunner
     /// <returns>A configured <see cref="ProcessStartInfo"/> instance</returns>
     public static ProcessStartInfo CreateStartInfo(string ffprobePath, IReadOnlyList<string> arguments)
     {
+        string executablePath = Path.GetFullPath(ffprobePath);
+        string? workingDirectory = Path.GetDirectoryName(executablePath);
         ProcessStartInfo startInfo = new()
         {
-            FileName = ffprobePath,
-            WorkingDirectory = Path.GetDirectoryName(ffprobePath),
+            FileName = executablePath,
+            WorkingDirectory = string.IsNullOrWhiteSpace(workingDirectory) ? Environment.CurrentDirectory : workingDirectory,
             UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = true,

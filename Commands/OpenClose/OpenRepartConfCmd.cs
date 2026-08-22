@@ -171,48 +171,114 @@ public sealed class OpenRepartConfCmd(
     /// Replaces the plan's segments and dividers with chapter-derived segments,
     /// converting chapter start times to frames using the plan's frame rate.
     /// </summary>
+    //private static void ApplyChapterDividers(RepartPlanM plan, DiscChapterReadResult chapters)
+    //{
+    //    if (plan.FrameRate <= 0d || plan.TotalFrames <= 0) return;
+
+    //    List<(long Frame, string Name)> chapterMarkers = [.. chapters.Chapters
+    //        .Where(chapter => !chapter.IsSeparator)
+    //        .Select(chapter => (
+    //            Frame: (long)Math.Round(chapter.StartTime.TotalSeconds * plan.FrameRate),
+    //            chapter.Name))
+    //        .Where(marker => marker.Frame >= 0 && marker.Frame < plan.TotalFrames)
+    //        .DistinctBy(marker => marker.Frame)
+    //        .OrderBy(marker => marker.Frame)];
+
+    //    if (chapterMarkers.Count == 0) return;
+
+    //    List<RepartOutputSegmentM> outputs = [];
+    //    long first = 0;
+    //    for (int i = 0; i < chapterMarkers.Count; i++)
+    //    {
+    //        long nextFirst = i + 1 < chapterMarkers.Count
+    //            ? chapterMarkers[i + 1].Frame
+    //            : plan.TotalFrames;
+    //        long last = nextFirst - 1;
+    //        if (last < first)
+    //        {
+    //            first = nextFirst;
+    //            continue;
+    //        }
+
+    //        outputs.Add(new RepartOutputSegmentM(
+    //            Guid.NewGuid(),
+    //            RepartConfVM.BuildEpisodeName(i + 1, chapterMarkers[i].Name),
+    //            first,
+    //            last));
+    //        first = nextFirst;
+    //    }
+
+    //    plan.Outputs.Clear();
+    //    plan.Outputs.AddRange(outputs);
+    //    plan.Dividers.Clear();
+    //    plan.Dividers.AddRange(outputs.Take(outputs.Count - 1)
+    //        .Select(output => new RepartDividerM(Guid.NewGuid(), output.LastFrame, false)));
+    //}
     private static void ApplyChapterDividers(RepartPlanM plan, DiscChapterReadResult chapters)
     {
-        if (plan.FrameRate <= 0d || plan.TotalFrames <= 0) return;
+        if (plan.FrameRate <= 0d || plan.TotalFrames <= 0 || chapters == null) return;
+        plan.Outputs.Clear();
+        plan.Dividers.Clear();
 
-        List<(long Frame, string Name)> chapterMarkers = [.. chapters.Chapters
-            .Where(chapter => !chapter.IsSeparator)
-            .Select(chapter => (
-                Frame: (long)Math.Round(chapter.StartTime.TotalSeconds * plan.FrameRate),
-                chapter.Name))
-            .Where(marker => marker.Frame >= 0 && marker.Frame < plan.TotalFrames)
-            .DistinctBy(marker => marker.Frame)
-            .OrderBy(marker => marker.Frame)];
+        // Calculate raw frame markers without creating an intermediate array (faster)
+        var rawMarkers = chapters.Chapters
+            .Where(ch => !ch.IsSeparator)
+            .Select(ch => (
+                Frame: (long)Math.Round(ch.StartTime.TotalSeconds * plan.FrameRate),
+                ch.Name))
+            .Where(m => m.Frame >= 0 && m.Frame < plan.TotalFrames)
+            .OrderBy(m => m.Frame) // Sort first
+            .ToList();
 
-        if (chapterMarkers.Count == 0) return;
+        if (rawMarkers.Count == 0) return;
 
-        List<RepartOutputSegmentM> outputs = [];
-        long first = 0;
-        for (int i = 0; i < chapterMarkers.Count; i++)
+        // Unduplicate in linear complexity (avoid HashSet alloc from DistinctBy)
+        var markers = new List<(long Frame, string Name)>(rawMarkers.Count);
+        long previousFrame = -1;
+        foreach (var m in rawMarkers)
         {
-            long nextFirst = i + 1 < chapterMarkers.Count
-                ? chapterMarkers[i + 1].Frame
-                : plan.TotalFrames;
-            long last = nextFirst - 1;
-            if (last < first)
+            if (m.Frame != previousFrame)
             {
-                first = nextFirst;
-                continue;
+                markers.Add(m);
+                previousFrame = m.Frame;
             }
+        }
+
+        // Release extra memory (probably not needed):
+        // rawMarkers.Clear(); 
+
+        if (markers.Count == 0) return;
+
+        // Build seg list
+        var outputs = new List<RepartOutputSegmentM>(markers.Count);
+        long startFrame = 0;
+
+        for (int i = 0; i < markers.Count; i++)
+        {
+            long nextStart = (i + 1 < markers.Count) ? markers[i + 1].Frame : plan.TotalFrames;
+            // if statment eliminated here since markers are ordered (nextStart > startFrame)
 
             outputs.Add(new RepartOutputSegmentM(
                 Guid.NewGuid(),
-                RepartConfVM.BuildEpisodeName(i + 1, chapterMarkers[i].Name),
-                first,
-                last));
-            first = nextFirst;
+                RepartConfVM.BuildEpisodeName(i + 1, markers[i].Name),
+                startFrame,
+                nextStart - 1));
+
+            startFrame = nextStart;
         }
 
-        plan.Outputs.Clear();
-        plan.Outputs.AddRange(outputs);
-        plan.Dividers.Clear();
-        plan.Dividers.AddRange(outputs.Take(outputs.Count - 1)
-            .Select(output => new RepartDividerM(Guid.NewGuid(), output.LastFrame, false)));
+        // Replace Outputs, Clear+AddRange is inevitable due to plan.xxx is Init-only
+        if (outputs.Count > 0) { plan.Outputs.AddRange(outputs); }
+        else if (outputs.Count > 1) // Build Dividers via for loop, avoids LINQ, Clear+AddRange is inevitable
+        {
+            var dividers = new List<RepartDividerM>(outputs.Count - 1);
+            for (int i = 0; i < outputs.Count - 1; i++)
+            {
+                dividers.Add(new RepartDividerM(Guid.NewGuid(), outputs[i].LastFrame, false));
+            }
+            plan.Dividers.AddRange(dividers);
+        }
+        // Elinimated: else plan.Dividers.Clear();
     }
 
     /// <summary>
