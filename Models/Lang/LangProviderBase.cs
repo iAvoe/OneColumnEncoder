@@ -104,6 +104,7 @@ public abstract class LangProviderBase
             ["Stop"] = "Stop",
             ["Undo"] = "Undo",
             ["Redo"] = "Redo",
+            ["Refresh"] = "Refresh",
         },
         ["zh-cn"] = new()
         {
@@ -125,6 +126,7 @@ public abstract class LangProviderBase
             ["Stop"] = "停",
             ["Undo"] = "撤销",
             ["Redo"] = "重做",
+            ["Refresh"] = "刷新",
         },
         ["zh-tw"] = new()
         {
@@ -146,6 +148,7 @@ public abstract class LangProviderBase
             ["Stop"] = "停",
             ["Undo"] = "撤銷",
             ["Redo"] = "重做",
+            ["Refresh"] = "刷新",
         },
         ["fr"] = new()
         {
@@ -167,6 +170,7 @@ public abstract class LangProviderBase
             ["Stop"] = "Arrêt",
             ["Undo"] = "Annuler",
             ["Redo"] = "Rétablir",
+            ["Refresh"] = "Rafraîchir",
         },
         ["es"] = new()
         {
@@ -188,6 +192,7 @@ public abstract class LangProviderBase
             ["Stop"] = "Detener",
             ["Undo"] = "Deshacer",
             ["Redo"] = "Rehacer",
+            ["Refresh"] = "Refrescar",
         },
         ["ja"] = new()
         {
@@ -209,6 +214,7 @@ public abstract class LangProviderBase
             ["Stop"] = "停止",
             ["Undo"] = "元に戻す",
             ["Redo"] = "やり直す",
+            ["Refresh"] = "更新",
         },
         ["ru"] = new()
         {
@@ -230,6 +236,7 @@ public abstract class LangProviderBase
             ["Stop"] = "Стоп",
             ["Undo"] = "Отменить",
             ["Redo"] = "Вернуть",
+            ["Refresh"] = "Обновить",
         },
         ["de"] = new()
         {
@@ -251,6 +258,7 @@ public abstract class LangProviderBase
             ["Stop"] = "Stopp",
             ["Undo"] = "Zurück",
             ["Redo"] = "Wiederh.",
+            ["Refresh"] = "Aktualisieren",
         },
         ["ko"] = new()
         {
@@ -272,6 +280,7 @@ public abstract class LangProviderBase
             ["Stop"] = "중지",
             ["Undo"] = "실행취소",
             ["Redo"] = "다시실행",
+            ["Refresh"] = "새로 고치다",
         },
         ["pt-br"] = new()
         {
@@ -293,6 +302,7 @@ public abstract class LangProviderBase
             ["Stop"] = "Parar",
             ["Undo"] = "Desfazer",
             ["Redo"] = "Refazer",
+            ["Refresh"] = "Atualizar",
         },
     };
 

@@ -115,7 +115,7 @@ public sealed class OpenRepartConfCmd(
 
     /// <summary>
     /// Runs compatibility checks and filtering on the given files before the window opens,
-    /// showing a cancellable progress modal and reporting excluded sources in a single summary.
+    /// then reports excluded sources in a single summary.
     /// </summary>
     /// <param name="filePaths">The video files to analyze.</param>
     /// <param name="requireMultipleSources">If true, at least two sources must pass.</param>
@@ -124,51 +124,21 @@ public sealed class OpenRepartConfCmd(
         IReadOnlyList<string> filePaths,
         bool requireMultipleSources = true)
     {
-        // Run the Repart Mode check & filter pass before the window opens.
-        // Excluded sources are collected during analysis and reported once,
-        // after filtering completes, so the user sees a single summary.
-        using CancellationTokenSource cancellation = new();
-        ProgressModal progressWindow = new();
-        ProgressVM progressVM = new(
-            RepartConfVM.WindowTitleText,
-            RepartLangProvider.Current["StageCheckFiles"],
-            new ActionCmd(_ => cancellation.Cancel()));
-        AttachModal(progressWindow, progressVM, onClosed: () => cancellation.Cancel());
-
-        int excludedCount = 0;
-        List<RepartExcludedSrcInfo> excludedItems = [];
-        Task<RepartAnalysisResult> analysisTask = RepartCompatibilityAnalyzer.AnalyzeAndFilterAsync(
-            ffprobePath: getFfprobePath(),
-            ffmpegPath: getFfmpegPath?.Invoke(),
-            filePaths: filePaths,
-            confirmDiscardInterlacedSource: source => RepartInterlacedPrompt.Confirm(ModalNavS, RepartConfVM.WindowTitleText, source),
-            confirmExpandFrameCountSearch: source => RepartFrameCountPrompt.Confirm(ModalNavS, RepartConfVM.WindowTitleText, source),
-            onFileProgress: (stage, index, total, name) =>
-            {
-                progressVM.P1Text = RepartLangProvider.Current[StageKey(stage)];
-                progressVM.P2Text = string.Format(RepartLangProvider.Current["ProcessingFile"], index, total, name);
-            },
-            onExcluded: excluded =>
-            {
-                excludedCount++;
-                excludedItems.Add(excluded);
-                progressVM.P3Text = string.Format(RepartLangProvider.Current["ExcludedCount"], excludedCount);
-            },
-            cancellationToken: cancellation.Token,
-            requireMultipleSources: requireMultipleSources);
-
-        _ = CloseWhenCompletedAsync(analysisTask, progressWindow);
-        progressWindow.ShowDialog();
-
         RepartAnalysisResult result;
         try
         {
-            result = await analysisTask;
+            result = await RepartCompatibilityAnalyzer.AnalyzeAndFilterAsync(
+                ffprobePath: getFfprobePath(),
+                ffmpegPath: getFfmpegPath?.Invoke(),
+                filePaths: filePaths,
+                confirmDiscardInterlacedSource: source => RepartInterlacedPrompt.Confirm(ModalNavS, RepartConfVM.WindowTitleText, source),
+                confirmExpandFrameCountSearch: source => RepartFrameCountPrompt.Confirm(ModalNavS, RepartConfVM.WindowTitleText, source),
+                onFileProgress: null,
+                onExcluded: null,
+                cancellationToken: default,
+                requireMultipleSources: requireMultipleSources);
         }
-        catch (OperationCanceledException)
-        {
-            return null;
-        }
+        catch (OperationCanceledException) { return null; }
         catch (Exception ex)
         {
             new OpenErrModalCmd(ModalNavS, RepartConfVM.WindowTitleText, ex.Message).Execute(null);
@@ -177,12 +147,12 @@ public sealed class OpenRepartConfCmd(
 
         if (result.Plan == null)
         {
-            if (excludedItems.Count > 0)
+            if (result.Excluded.Count > 0)
             {
                 new OpenErrModalCmd(
                     ModalNavS,
                     RepartConfVM.WindowTitleText,
-                    BuildExcludedSummary(excludedItems, result.FatalMessage)).Execute(null);
+                    BuildExcludedSummary(result.Excluded, result.FatalMessage)).Execute(null);
             }
             else
             {
@@ -244,28 +214,6 @@ public sealed class OpenRepartConfCmd(
         plan.Dividers.AddRange(outputs.Take(outputs.Count - 1)
             .Select(output => new RepartDividerM(Guid.NewGuid(), output.LastFrame, false)));
     }
-
-    /// <summary>
-    /// Closes the progress modal once the task completes, regardless of its outcome.
-    /// </summary>
-    private static async Task CloseWhenCompletedAsync(Task task, ProgressModal modal)
-    {
-        try { await task; } catch {}
-        if (modal.IsVisible) modal.Close();
-    }
-
-    /// <summary>
-    /// Maps an analysis stage to its localized progress label key.
-    /// </summary>
-    private static string StageKey(RepartAnalysisStage stage) => stage switch
-    {
-        RepartAnalysisStage.CheckFiles => "StageCheckFiles",
-        RepartAnalysisStage.ProbeFiles => "StageProbeFiles",
-        RepartAnalysisStage.AnalyzeStreams => "StageAnalyzeStreams",
-        RepartAnalysisStage.ValidateStreams => "StageValidateStreams",
-        RepartAnalysisStage.ScanFrames => "StageScanFrames",
-        _ => "StageCheckFiles"
-    };
 
     /// <summary>
     /// Builds the no-plan error message, combining the excluded sources summary with any fatal message.

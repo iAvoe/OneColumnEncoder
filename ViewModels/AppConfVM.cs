@@ -1,5 +1,6 @@
 using OneColumnEncoder.Commands.SaveLoad;
 using OneColumnEncoder.Components;
+using System.Windows.Shapes;
 
 namespace OneColumnEncoder.ViewModels;
 
@@ -29,6 +30,7 @@ public class AppConfVM : BaseVM
     public CloseModalCmd CloseCmd { get; }
     public SaveAppConfCmd SaveCmd { get; }
     public LoadAppConfCmd LoadCmd { get; }
+    public ICommand RefreshFontsCmd { get; }
 
     public ButtonGroupVM FinishSettingButtons { get; }
 
@@ -50,6 +52,7 @@ public class AppConfVM : BaseVM
         SaveCmd = new SaveAppConfCmd(appConfS, closeAction);
         LoadCmd = new LoadAppConfCmd(appConfS);
         ClearOldQueueJsonCmd = new ClearOldQueueJsonCmd(modalNavS);
+        RefreshFontsCmd = new ActionCmd(_ => RefreshFonts());
         FinishSettingButtons = ButtonGroupVM.CreateThreeButton(
             UICaptionProvider.AppConf.Buttons.Cancel,
             UICaptionProvider.AppConf.Buttons.ClearOldQueueJson,
@@ -60,15 +63,7 @@ public class AppConfVM : BaseVM
         FinishSettingButtons.B3_2Icon = SvgIconProvider.GameDelete;
         FinishSettingButtons.B3_3Icon = SvgIconProvider.GameSave;
         BuildSettingsListing();
-        if (AppFontProvider.HasCustomFontLoadIssues)
-        {
-            Application.Current?.Dispatcher.InvokeAsync(() =>
-                new OpenWarnModalCmd(
-                    _modalNavS,
-                    AppConfLangProvider.WindowTitle,
-                    AppConfLangProvider.Current["AppConf.Font.UnusableWarning"])
-                    .Execute(null));
-        }
+        ShowFontLoadWarningIfNeeded();
         UILangProvider.CurrentChanged += OnLanguageChanged;
     }
 
@@ -127,6 +122,10 @@ public class AppConfVM : BaseVM
                         break;
                 }
             }
+
+            if (group.Key == UICaptionProvider.AppConf.Groups.Fonts)
+                AddFontRefreshItem(container);
+
             SettingsListing.Add(container);
         }
     }
@@ -331,6 +330,78 @@ public class AppConfVM : BaseVM
             new Binding(propertyPath) { Source = source, Mode = BindingMode.TwoWay });
 
         container.Items.Add(new AppConfItem { Text = text, Content = picker });
+    }
+
+    private void AddFontRefreshItem(AppConfContainer container)
+    {
+        Button refreshButton = new()
+        {
+            Content = CreateRefreshButtonContent(),
+            Style = (Style)Application.Current.FindResource("NormalButton"),
+            // Already "aligns" right: HorizontalAlignment = HorizontalAlignment.Right,
+            MinWidth = 200,
+            Height = 25,
+            Command = RefreshFontsCmd,
+        };
+
+        container.Items.Add(new AppConfItem { Text = string.Empty, Content = refreshButton });
+    }
+
+    private static StackPanel CreateRefreshButtonContent()
+    {
+        StackPanel content = new()
+        {
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center,
+        };
+
+        Rectangle icon = new()
+        {
+            Width = 15,
+            Height = 15,
+            Margin = new Thickness(0, 0, 5, 0),
+            VerticalAlignment = VerticalAlignment.Center,
+            Fill = Brushes.Transparent
+        };
+        icon.SetBinding(Rectangle.FillProperty,
+            new Binding(nameof(Control.Foreground))
+            {
+                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(Button), 1)
+            });
+        icon.OpacityMask = new ImageBrush
+        {
+            ImageSource = SvgIconProvider.GameRefresh,
+            Stretch = Stretch.Uniform
+        };
+        content.Children.Add(icon);
+        content.Children.Add(new TextBlock
+        {
+            Text = AppConfLangProvider.Current["Refresh"],
+            Margin = new Thickness(5, 0, 0, 0),
+            VerticalAlignment = VerticalAlignment.Center
+        });
+        return content;
+    }
+
+    private void RefreshFonts()
+    {
+        AppFontProvider.Refresh();
+        AppFontProvider.ApplyFrom(_appConfM);
+        SettingsListing.Clear();
+        BuildSettingsListing();
+        ShowFontLoadWarningIfNeeded();
+    }
+
+    private void ShowFontLoadWarningIfNeeded()
+    {
+        if (!AppFontProvider.HasCustomFontLoadIssues) return;
+
+        Application.Current?.Dispatcher.InvokeAsync(() =>
+            new OpenWarnModalCmd(
+                _modalNavS,
+                AppConfLangProvider.WindowTitle,
+                AppConfLangProvider.Current["AppConf.Font.UnusableWarning"])
+                .Execute(null));
     }
     #endregion
 
