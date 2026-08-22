@@ -83,7 +83,7 @@ public class UILangProvider : LangProviderBase
             ["ToolField.Mode"] = "Mode",
             ["ToolField.FileName"] = "Filename",
             ["ToolField.NumaNodes"] = "NUMA Affinity", // i.e., upstream from node 0 to encoder at node 1 gives “0 → 1”
-            ["ToolField.Threads"] = "Threads", // Value: int thread count, with ToolField.EncThreadClampOn/Off
+            ["ToolField.Threads"] = "Threads", // Value: int thread count, with ToolField.EncThreadClamp On/Off
             ["ToolField.Value"] = "Value",
             ["ToolField.Strategy"] = "Strategy",
             ["ToolField.MaxKeyframeGap"] = "Max keyframe gap",
