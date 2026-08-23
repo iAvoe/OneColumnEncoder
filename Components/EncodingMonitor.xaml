@@ -23,7 +23,7 @@
                       HorizontalScrollBarVisibility="Disabled">
             <StackPanel>
 
-                <comps:EncoderProgressBar ProgressTitle="{Binding ProgressTitle}"
+                <comps:ProgressBar ProgressTitle="{Binding ProgressTitle}"
                                            ProgressValue="{Binding ProgressValue}"
                                            ProgressText="{Binding ProgressText}"
                                            IsProgressTrackingAvailable="{Binding IsProgressTrackingAvailable}"
