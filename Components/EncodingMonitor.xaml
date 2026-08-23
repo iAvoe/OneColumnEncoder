@@ -23,11 +23,11 @@
                       HorizontalScrollBarVisibility="Disabled">
             <StackPanel>
 
-                <comps:ProgressBar ProgressTitle="{Binding ProgressTitle}"
-                                           ProgressValue="{Binding ProgressValue}"
-                                           ProgressText="{Binding ProgressText}"
-                                           IsProgressTrackingAvailable="{Binding IsProgressTrackingAvailable}"
-                                           IsEncodingActive="{Binding IsEncodingActive}" />
+                <comps:ProgressBar ProgressTitle="{Binding Progress.ProgressTitle}"
+                                   ProgressValue="{Binding Progress.ProgressValue}"
+                                   ProgressText="{Binding Progress.ProgressText}"
+                                   IsProgressTrackingAvailable="{Binding Progress.IsProgressTrackingAvailable}"
+                                   IsEncodingActive="{Binding Progress.IsEncodingActive}" />
 
                 <Grid Margin="0 15 0 0">
                     <Grid.RowDefinitions>

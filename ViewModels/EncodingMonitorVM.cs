@@ -101,9 +101,18 @@ public partial class EncodingMonitorVM : BaseVM
     private Stream? _upstreamStdoutStream;
     private Stream? _encoderStdinStream;
 
+    public ProgressVM Progress { get; } = new();
     public string WindowTitle => _isSample ? EncodingMonitorModalLangProvider.WindowTitleSampleMode : EncodingMonitorModalLangProvider.WindowTitle;
-    public string ProgressTitle => Lang.ProgressTitle;
-    public bool IsProgressTrackingAvailable => _hasKnownTotalFrames;
+    public string ProgressTitle
+    {
+        get => Progress.ProgressTitle;
+        private set => Progress.ProgressTitle = value;
+    }
+    public bool IsProgressTrackingAvailable
+    {
+        get => Progress.IsProgressTrackingAvailable;
+        private set => Progress.IsProgressTrackingAvailable = value;
+    }
     public string MemoryTitle => Lang.MemoryTitle;
 
     public string DragLogReportHint => Lang.DragLogReportHint;
@@ -147,26 +156,22 @@ public partial class EncodingMonitorVM : BaseVM
     public QueueSidebarVM QueueSidebar { get; }
     public bool IsCancelAllEnabled => _hasStarted && !_finishEnabledAfterClose && !_cancelAllRequested;
 
-    private double _progressValue;
     public double ProgressValue
     {
-        get => _progressValue;
+        get => Progress.ProgressValue;
         set
         {
             double next = Math.Clamp(value, 0d, 100d);
-            if (Math.Abs(_progressValue - next) < 0.005d) return;
-            _progressValue = next;
+            if (Math.Abs(Progress.ProgressValue - next) < 0.005d) return;
+            Progress.ProgressValue = next;
             if (_activeJobVM != null)
                 _activeJobVM.ProgressPercent = (int)Math.Round(next);
             OnPropertyChanged();
-            OnPropertyChanged(nameof(ProgressText));
             OnPropertyChanged(nameof(EstimatedSizeLabel));
         }
     }
 
-    public string ProgressText => ProgressValue is > 0d and < 1d
-        ? $"{ProgressValue:F2}%"
-        : $"{ProgressValue:F0}%";
+    public string ProgressText => Progress.ProgressText;
 
     private int _sampleIntervalSeconds = 10;
     public int SampleIntervalSeconds
@@ -193,11 +198,10 @@ public partial class EncodingMonitorVM : BaseVM
         set => SetProperty(ref _isMonitoringEnabled, value);
     }
 
-    private bool _isEncodingActive;
     public bool IsEncodingActive
     {
-        get => _isEncodingActive;
-        private set => SetProperty(ref _isEncodingActive, value);
+        get => Progress.IsEncodingActive;
+        private set => Progress.IsEncodingActive = value;
     }
 
     private string _statusText = string.Empty;
@@ -1608,6 +1612,7 @@ public partial class EncodingMonitorVM : BaseVM
     {
         _totalFrames = totalFrames;
         _hasKnownTotalFrames = totalFrames is > 0;
+        IsProgressTrackingAvailable = _hasKnownTotalFrames;
         OnPropertyChanged(nameof(IsProgressTrackingAvailable));
         OnPropertyChanged(nameof(ProgressText));
         OnPropertyChanged(nameof(WrittenFramesLabel));
@@ -2291,6 +2296,7 @@ public partial class EncodingMonitorVM : BaseVM
         foreach (string label in Lang.SampleIntervalTickLabels)
             SampleIntervalTickLabels.Add(label);
         StatusText = Lang.ReadyToStartText;
+        ProgressTitle = Lang.ProgressTitle;
     }
 
     /// <summary>
@@ -2303,6 +2309,7 @@ public partial class EncodingMonitorVM : BaseVM
         Lang = new EncodingMonitorModalLangProvider(UILangProvider.Current.LanguageCode);
         QueueSidebarLang = QueueSidebarLangProvider.Current;
         _cpuSetsLang = new CpuSetsLangProvider(UILangProvider.Current.LanguageCode);
+        ProgressTitle = Lang.ProgressTitle;
         ReportButtons.B3_1Text = Lang.CopyUpstreamLogText;
         ReportButtons.B3_2Text = Lang.CopyDownstreamLogText;
         ReportButtons.B3_3Text = Lang.RotateLogFontSizeText;
