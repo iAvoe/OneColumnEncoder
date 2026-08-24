@@ -117,7 +117,7 @@
             <Setter Property="IsReadOnly"
                     Value="True" />
             <Setter Property="Padding"
-                    Value="5 10" />
+                    Value="6 5 5 -1.25" />
             <Setter Property="VerticalScrollBarVisibility"
                     Value="Auto" />
             <Setter Property="Template">
