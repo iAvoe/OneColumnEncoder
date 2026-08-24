@@ -9,6 +9,7 @@ public class OpenFilterScribeCmd(
     Func<ToolItemCardVM> getAvsItem,
     Func<ToolItemCardVM> getVpyItem,
     Func<SrcFileKind?> getPreferredScriptSrcKind,
+    Func<string?> getSelectedUpstreamExeName,
     Action<ToolItemCardVM, SrcFileKind, string> afterImport, // File save & ItemCard write back
     Action<string?> applyFfmpegFilterArgs,
     Func<bool> hasSourceValidationError,
@@ -58,6 +59,7 @@ public class OpenFilterScribeCmd(
             getsrcPath,
             getAvsItem(), getVpyItem(),
             getPreferredScriptSrcKind,
+            getSelectedUpstreamExeName,
             afterImport,
             applyFfmpegFilterArgs,
             hasSourceValidationError,

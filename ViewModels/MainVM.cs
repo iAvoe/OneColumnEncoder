@@ -540,6 +540,7 @@ public class MainVM : BaseVM
             () => ActiveScriptSrcImportZone[0],
             () => ActiveScriptSrcImportZone[1],
             () => SrcFileKindResolver.GetPreferredScriptSrcKind(UpstreamsZone),
+            GetSelectedUpstreamExeName,
             OnSrcImported,
             args => _scriptScribeFfmpegFilterArgs = args ?? string.Empty,
             () => ActiveSrcValidationCard.Checklist1.Any(
@@ -1396,10 +1397,7 @@ public class MainVM : BaseVM
 
     private SrcFileKind? GetExpectedScriptSrcKindForSelectedUpstream()
     {
-        ToolItemCardVM? selectedUpstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected);
-        string? exe = selectedUpstream == null
-            ? null
-            : ToolCatalogProviderM.ResolveExeFromDisplayName(selectedUpstream.Name);
+        string? exe = GetSelectedUpstreamExeName();
 
         return exe switch
         {
@@ -1408,6 +1406,14 @@ public class MainVM : BaseVM
             "one_line_shot_args.exe" => SrcFileKind.SvfiIni,
             _ => null
         };
+    }
+
+    private string? GetSelectedUpstreamExeName()
+    {
+        ToolItemCardVM? selectedUpstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected);
+        return selectedUpstream == null
+            ? null
+            : ToolCatalogProviderM.ResolveExeFromDisplayName(selectedUpstream.Name);
     }
 
     private string GetSelectedFfprobePath()

@@ -20,6 +20,7 @@ public class FilterScribeVM : BaseVM
     private readonly ToolItemCardVM _avsItem;
     private readonly ToolItemCardVM _vpyItem;
     private readonly Func<SrcFileKind?> _getPreferredScriptSrcKind;
+    private readonly Func<string?> _getSelectedUpstreamExeName;
     private readonly Action<ToolItemCardVM, SrcFileKind, string> _afterImport;
     private readonly Action<string?> _applyFfmpegFilterArgs;
     private readonly Func<SrcRevisionRequest, string?> _sourceReviser;
@@ -660,6 +661,7 @@ public class FilterScribeVM : BaseVM
         ToolItemCardVM avsItem,
         ToolItemCardVM vpyItem,
         Func<SrcFileKind?> getPreferredScriptSrcKind,
+        Func<string?> getSelectedUpstreamExeName,
         Action<ToolItemCardVM, SrcFileKind, string> afterImport,
         Action<string?> applyFfmpegFilterArgs,
         Func<bool> hasSourceValidationError,
@@ -686,6 +688,7 @@ public class FilterScribeVM : BaseVM
         _avsItem = avsItem;
         _vpyItem = vpyItem;
         _getPreferredScriptSrcKind = getPreferredScriptSrcKind;
+        _getSelectedUpstreamExeName = getSelectedUpstreamExeName;
         _afterImport = afterImport;
         _applyFfmpegFilterArgs = applyFfmpegFilterArgs;
         _sourceReviser = reviseSource ?? (_ => null);
@@ -716,8 +719,17 @@ public class FilterScribeVM : BaseVM
         ParseFrameRateInfo(sourceFfprobeJson);
         ConfigureDescaleKernelDropdown();
         BuildButtonGroups();
+        SelectedTabIndex = GetInitialTabIndex(_getSelectedUpstreamExeName());
         UILangProvider.CurrentChanged += OnLanguageChanged;
     }
+
+    private static int GetInitialTabIndex(string? upstreamExeName) => upstreamExeName?.ToLowerInvariant() switch
+    {
+        "ffmpeg.exe" => 2,
+        "vspipe.exe" => 1,
+        "avs2yuv.exe" or "avs2pipemod.exe" => 0,
+        _ => 0
+    };
 
     private void ConfigureConcatSources()
     {
