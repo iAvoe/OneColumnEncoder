@@ -421,9 +421,9 @@ public class StartEncCmd(
 
     private int CalculateOverwriteConfirmDelayMs(long fileLengthBytes)
     {
-        int divisor = Math.Max(1, _appConfM.Overwrite.LongPressMegabyteDivisor);
-        int minMs = Math.Max(0, _appConfM.Overwrite.MinLongPressMs);
-        int maxMs = Math.Max(minMs, _appConfM.Overwrite.MaxLongPressMs);
+        int divisor = Math.Max(1, _appConfM.Overwrite.CooldownMegabyteDivisor);
+        int minMs = Math.Max(0, _appConfM.Overwrite.MinCooldownMs);
+        int maxMs = Math.Max(minMs, _appConfM.Overwrite.MaxCooldownMs);
         double megabytes = fileLengthBytes / (1024d * 1024d);
         double delayMs = megabytes / divisor * 1000d;
 

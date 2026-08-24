@@ -21,19 +21,19 @@ public static class SettinglistProviderM
     public static List<SettingItemDefinitionM> GetOverwriteSettings() =>
     [
         new(UICaptionProvider.AppConf.Groups.Overwrite,
-            Lang["Setting.Overwrite.LongPressDivisor"],
+            Lang["Setting.Overwrite.CooldownDivisor"],
             SettingControlType.TextBox,
-            nameof(AppConfM.OverwriteSettings.LongPressMegabyteDivisor),
+            nameof(AppConfM.OverwriteSettings.CooldownMegabyteDivisor),
             MinValue: 1),
         new(UICaptionProvider.AppConf.Groups.Overwrite,
-            Lang["Setting.Overwrite.MinLongPress"],
+            Lang["Setting.Overwrite.MinCooldown"],
             SettingControlType.TextBox,
-            nameof(AppConfM.OverwriteSettings.MinLongPressMs),
+            nameof(AppConfM.OverwriteSettings.MinCooldownMs),
             MinValue: 0),
         new(UICaptionProvider.AppConf.Groups.Overwrite,
-            Lang["Setting.Overwrite.MaxLongPress"],
+            Lang["Setting.Overwrite.MaxCooldown"],
             SettingControlType.TextBox,
-            nameof(AppConfM.OverwriteSettings.MaxLongPressMs),
+            nameof(AppConfM.OverwriteSettings.MaxCooldownMs),
             MinValue: 0)
     ];
 

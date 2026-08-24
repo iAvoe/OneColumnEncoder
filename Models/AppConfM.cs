@@ -20,9 +20,9 @@ public class AppConfM : SaveLoadBase<AppConfM>
     #region Setting items
     public class OverwriteSettings
     {
-        public int LongPressMegabyteDivisor { get; set; } = 40;
-        public int MinLongPressMs { get; set; } = 1250;
-        public int MaxLongPressMs { get; set; } = 12500;
+        public int CooldownMegabyteDivisor { get; set; } = 40;
+        public int MinCooldownMs { get; set; } = 1250;
+        public int MaxCooldownMs { get; set; } = 12500;
     }
     public class Language
     {
