@@ -4,7 +4,7 @@ namespace OneColumnEncoder.ViewModels.Cards;
 
 public class EncTermsCardVM : ValidationCardBaseVM
 {
-    private const int OffGridChecklistIdx = 0;
+    private const int NotOffGridChecklistIdx = 0;
     private const int DiskSpaceChecklistIdx = 1;
     private const int NumaCpuLoadChecklistIdx = 2;
 
@@ -47,7 +47,7 @@ public class EncTermsCardVM : ValidationCardBaseVM
 
     private void RunChecklist1Checks()
     {
-        SetChecklist1(OffGridChecklistIdx,
+        SetChecklist1(NotOffGridChecklistIdx,
             EncTermsCheck.IsOnAcPower()
                 ? StatusType.Success
                 : StatusType.Warning);
@@ -112,7 +112,7 @@ public class EncTermsCardVM : ValidationCardBaseVM
 
     private static string GetChecklist1Description(int index) => index switch
     {
-        OffGridChecklistIdx => UICaptionProvider.EncInspect.P1Text,
+        NotOffGridChecklistIdx => UICaptionProvider.EncInspect.P1Text,
         DiskSpaceChecklistIdx => UICaptionProvider.EncInspect.P2Text,
         NumaCpuLoadChecklistIdx => UICaptionProvider.EncInspect.P6Text,
         _ => UICaptionProvider.EncInspect.InfoMsg,
@@ -120,7 +120,7 @@ public class EncTermsCardVM : ValidationCardBaseVM
 
     private static string GetChecklist1Title(int index) => index switch
     {
-        OffGridChecklistIdx => UICaptionProvider.EncInspect.P1Title,
+        NotOffGridChecklistIdx => UICaptionProvider.EncInspect.P1Title,
         DiskSpaceChecklistIdx => UICaptionProvider.EncInspect.P2Title,
         NumaCpuLoadChecklistIdx => UICaptionProvider.EncInspect.P6Title,
         _ => "",

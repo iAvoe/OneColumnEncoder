@@ -50,7 +50,7 @@ public class ChecklistProviderM
 
     public static List<ChecklistItemDefinitionM> GetEncodeChecklist1() =>
     [
-        new(UILangProvider.Current["Checklist.Enc1.OffGrid"]),
+        new(UILangProvider.Current["Checklist.Enc1.NotOffGrid"]),
         new(UILangProvider.Current["Checklist.Enc1.DiskSpace"]),
         new(UILangProvider.Current["Checklist.Enc1.NumaCpuLoad"]),
     ];
