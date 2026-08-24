@@ -73,7 +73,7 @@
             <DataTemplate>
                 <Grid>
                     <TextBlock Text="{Binding Title}"
-                               FontFamily="{Binding Tag}">
+                               FontFamily="{Binding Tag, TargetNullValue={StaticResource UiFont}}">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Setter Property="Visibility"
