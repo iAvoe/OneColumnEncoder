@@ -23,23 +23,25 @@ OneColumnEncoder 提供了相对硬核，同时简洁直观的 UI/UX 流程，�
 - 한국어
 - Português (Brasil)
 
-Entrance Tutorial | 基础教程
+## Docs
+
+**Entry-level tutorial | 基础教程**
 
 - [GitHub/iAvoe/OneColumnEncoderTutorial](https://github.com/iAvoe/OneColumnEncoderTutorial)
 
-Detailed project description with screenshots and basic usages | 项目描述、截图和基本使用方法：
+***Detailed project description with screenshots and usage overviews | 项目描述、截图和用法概览：**
 
 - [README-EN.md](./Docs/README-EN.md)
 - [README-ZH-CN.md](./Docs/README-ZH-CN.md)
 - [README-ZH-TW.md](./Docs/README-ZH-TW.md)
 
-Detailed explanation of the concept & design | 概念与设计详情：
+**Detailed explanation of the concept & design | 概念与设计详情：**
 
 - [ConceptsAndFeatures-EN.md](./Docs/ConceptsAndFeatures-EN.md)
 - [ConceptsAndFeatures-ZH-CN.md](./Docs/ConceptsAndFeatures-ZH-CN.md)
 - [ConceptsAndFeatures-ZH-TW.md](./Docs/ConceptsAndFeatures-ZH-TW.md)
 
-Other related documents | 其他相关文档（仅英文）：
+**Other related documents | 其他相关文档（仅英文）：**
 
 - Designs of the buttons: [ButtonManagement.md](./Docs/ButtonManagement.md)
 - The 4 encoding modes: [EncodingModeImplementation.md](./Docs/EncodingModeImplementation.md)
