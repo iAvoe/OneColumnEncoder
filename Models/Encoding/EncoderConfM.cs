@@ -43,6 +43,11 @@ public class EncoderConfM : SaveLoadBase<EncoderConfM>
     public bool SvtAv1Dl2 { get; set; } = false;
     public bool SvtAv1AutoTile { get; set; } = false;
 
+    // Dolby Vision Compatibility
+    public int DoviOnOff { get; set; } = 0; // 0=Disabled, 1=Always, 2=Source confirmed DV
+    public int X264HrdMode { get; set; } = 0; // 0=Off, 1=100Gbps, 2=1Tbps, 3=Manual VBV
+    public int X265HrdMode { get; set; } = 0; // 0=Off, 1=100Gbps, 2=1Tbps, 3=Manual VBV
+
     // VVenC (Preview only)
     public int VvencQp { get; set; } = 32;
     public int VvencMode { get; set; } = 0; // 0=medium(qpa), 1=slower(qpa), 2=slow(qpa)

@@ -530,7 +530,8 @@ public static partial class EncodingPipeline
     private static string BuildEncoderArgs(EncodingPipelineRequest request)
     {
         string y4mInputArgs = GetEncoderY4mInputArgs(request.EncoderExeName);
-        string encodeParams = BuildEncoderParams(request.EncoderExeName, request.EncoderConf);
+        bool isDoviSource = IsSourceDovi(request.SourceFfprobeJson);
+        string encodeParams = BuildEncoderParams(request.EncoderExeName, request.EncoderConf, isDoviSource);
         string encoderCustomParams = request.EncoderExeName.ToLowerInvariant() switch
         {
             "x264.exe" => request.EncoderConf?.CustomParamsX264 ?? "",
@@ -554,13 +555,13 @@ public static partial class EncodingPipeline
             _ => throw new InvalidOperationException($"Unsupported encoder: {encoderExeName}")
         };
 
-    public static string BuildEncoderParams(string encoderExeName, EncoderConfM model)
+    public static string BuildEncoderParams(string encoderExeName, EncoderConfM model, bool sourceHasDovi = false)
     {
         bool useAbr = model.RateControlMode.Equals("ABR", StringComparison.OrdinalIgnoreCase);
         return encoderExeName.ToLowerInvariant() switch
         {
-            "x264.exe" => BuildX264Params(model, useAbr),
-            "x265.exe" => BuildX265Params(model, useAbr),
+            "x264.exe" => BuildX264Params(model, useAbr, sourceHasDovi),
+            "x265.exe" => BuildX265Params(model, useAbr, sourceHasDovi),
             "svtav1encapp.exe" => BuildSvtAv1Params(model, useAbr),
             _ => throw new InvalidOperationException($"Unsupported encoder: {encoderExeName}")
         };
@@ -667,17 +668,18 @@ public static partial class EncodingPipeline
             : GetSourceTotalFrames(request.SourceFfprobeJson, request.ConcatTotalFrames);
     }
 
-    private static string BuildX264Params(EncoderConfM model, bool useAbr)
+    private static string BuildX264Params(EncoderConfM model, bool useAbr, bool sourceHasDovi)
     {
         string preset = EncoderPresetsM.GetX264Preset(model.X264Mode)?.Params ?? string.Empty;
         string rateControl = useAbr ? $"--bitrate {model.X264Abr * 1000}" : $"--crf {model.X264Crf}";
         return JoinArgs(
             preset.Replace("$crfParam", rateControl, StringComparison.Ordinal),
             $"--keyint {model.X264Keyframe * 24}",
-            model.X264Mod ? "--fgo" : string.Empty);
+            model.X264Mod ? "--fgo" : string.Empty,
+            BuildDoviHrdParams(IsDoviHrdEnabled(model.DoviOnOff, sourceHasDovi), model.X264HrdMode, isX264: true));
     }
 
-    private static string BuildX265Params(EncoderConfM model, bool useAbr)
+    private static string BuildX265Params(EncoderConfM model, bool useAbr, bool sourceHasDovi)
     {
         string preset = EncoderPresetsM.GetX265Preset(model.X265Mode)?.Params ?? string.Empty;
         string rateControl = useAbr ? $"--bitrate {model.X265Abr * 1000}" : $"--crf {model.X265Crf}";
@@ -686,7 +688,40 @@ public static partial class EncodingPipeline
             $"--keyint {model.X265Keyframe * 24}",
             model.X265Aq ? "--aq-auto 10" : string.Empty,
             model.X265Dark ? "--aq-bias-strength 1.3" : string.Empty,
-            model.X265Texture ? "--aq-strength-edge 1.4" : string.Empty);
+            model.X265Texture ? "--aq-strength-edge 1.4" : string.Empty,
+            BuildDoviHrdParams(IsDoviHrdEnabled(model.DoviOnOff, sourceHasDovi), model.X265HrdMode, isX264: false));
+    }
+
+    private static bool IsDoviHrdEnabled(int mode, bool sourceHasDovi) => mode switch
+    {
+        1 => true,
+        2 => sourceHasDovi,
+        _ => false
+    };
+
+    private static string BuildDoviHrdParams(bool enabled, int mode, bool isX264)
+    {
+        if (!enabled) return string.Empty;
+
+        // x264-x265 might need --vbv-init 1, need testing to tell
+        return (isX264, mode) switch
+        {
+            (true, 1) => "--vbv-maxrate 99999999 --vbv-bufsize 99999999 --nal-hrd vbr",
+            (true, 2) => "--vbv-maxrate 999999999 --vbv-bufsize 999999999 --nal-hrd vbr",
+            (true, 3) => "--nal-hrd vbr",
+            (false, 1) => "--vbv-maxrate 99999999 --vbv-bufsize 99999999 --hrd",
+            (false, 2) => "--vbv-maxrate 999999999 --vbv-bufsize 999999999 --hrd",
+            (false, 3) => "--hrd",
+            _ => string.Empty
+        };
+    }
+
+    private static bool IsSourceDovi(string? sourceFfprobeJson)
+    {
+        if (string.IsNullOrWhiteSpace(sourceFfprobeJson)) return false;
+
+        FFProbeHdrInfo hdrInfo = FFProbeHdrInfoReader.Read(sourceFfprobeJson);
+        return hdrInfo.HasDovi;
     }
 
     private static string BuildSvtAv1Params(EncoderConfM model, bool useAbr)
@@ -1029,8 +1064,6 @@ public static partial class EncodingPipeline
         string.IsNullOrWhiteSpace(value) ? null : value.Trim().ToLowerInvariant();
     #endregion
 
-    
-
     private static string BuildEncoderOutputArgs(string encoderExeName, string outputPath) =>
         encoderExeName.ToLowerInvariant() switch
         {
@@ -1039,11 +1072,6 @@ public static partial class EncodingPipeline
             "svtav1encapp.exe" => $"-b {Quote(MuxPipeline.ResolveOutputPathWithExtension(encoderExeName, outputPath))}",
             _ => throw new InvalidOperationException($"Unsupported encoder: {encoderExeName}")
         };
-
-    private static string EnsureExtension(string outputPath, string extension) =>
-        string.IsNullOrEmpty(extension) || outputPath.EndsWith(extension, StringComparison.OrdinalIgnoreCase)
-            ? outputPath
-            : outputPath + extension;
 
     private static string NormalizeRequired(string? value, string name)
     {

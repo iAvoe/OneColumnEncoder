@@ -57,6 +57,15 @@ public class EncoderConfLangProvider : LangProviderBase
             ["BlankPresetText"] = "None",
             ["VvencHintText"] = "VVenC is only for single-image preview, not used in main encoding",
             ["BlankPresetHint"] = "None: use encoder default / fully customize via additional parameter textbox",
+            ["DoviDesc"] = "Dolby Vision Profile 5, 7, 8 supports HEVC; P9=AVC, P10=AV1. AVC & HEVC need HRD to write SEI, but HRD relies on VBV mode, which comes down to 2 options:\n  1. Use VBV rate limit normally (use --level/--level-idc or specify manually)\n  2. Set a Tbps-ish VBV bitrate to bypass the limit, and avoid specifying the level parameter to prevent VBV override",
+            ["DoviTitle"] = "Dolby Vision Compatibility",
+            ["DoviOnOff"] = "When to enable",
+            ["DoviSrcOnly"] = "Source is DOVI → Enable",
+            ["X264HrdTitle"] = "x264 HRD (requires VBV)",
+            ["X265HrdTitle"] = "x265 HRD (requires VBV)",
+            ["Hrd100GbpsText"] = "100Gbps (anti-rate-limit)",
+            ["Hrd1TbpsText"] = "1Tbps (8K+ anti-rate-limit)",
+            ["HrdManualText"] = "Manual Specify VBV",
         },
         ["zh-cn"] = new()
         {
@@ -107,6 +116,15 @@ public class EncoderConfLangProvider : LangProviderBase
             ["BlankPresetText"] = "留空",
             ["VvencHintText"] = "VVenC 仅用于单帧预览，不参与主编码流程",
             ["BlankPresetHint"] = "留空：使用编码器默认或底部附加编码器参数文本框写入",
+            ["DoviDesc"] = "杜比视界 Profile 5/7/8 支持 HEVC，P9=AVC，P10=AV1。AVC 与 HEVC 需开启 HRD（假想参考解码器）以写入 SEI，而 HRD 又依赖 VBV 模式。因此需要二选一：\n  1. 正常使用 VBV（通过 --level/--level-idc 级别参数或手动设定）\n  2. 指定极高 VBV 码率以绕过限码——此时不写级别参数，以避免覆盖 VBV 设定",
+            ["DoviTitle"] = "杜比视界兼容性",
+            ["DoviOnOff"] = "启用时机",
+            ["DoviSrcOnly"] = "视频源为 DOVI → 启用",
+            ["X264HrdTitle"] = "x264——开启 HRD（需 VBV 模式）",
+            ["X265HrdTitle"] = "x265——开启假想对照解码器 HRD（需 VBV 模式）",
+            ["Hrd100GbpsText"] = "100Gbps（防限码）",
+            ["Hrd1TbpsText"] = "1Tbps（8K+ 防限码）",
+            ["HrdManualText"] = "手动设置 VBV",
         },
         ["zh-tw"] = new()
         {
@@ -157,6 +175,15 @@ public class EncoderConfLangProvider : LangProviderBase
             ["BlankPresetText"] = "留空",
             ["VvencHintText"] = "VVenC 僅用於單幀預覽，不參與主編碼流程",
             ["BlankPresetHint"] = "留空：使用編碼器默認或底部附加編碼器參數文本框寫入",
+            ["DoviDesc"] = "杜比視界 Profile 5/7/8 支持 HEVC，P9=AVC，P10=AV1。AVC 與 HEVC 需開啟 HRD（假想參考解碼器）以寫入 SEI，而 HRD 又依賴 VBV 模式。因此需要二選一：\n  1. 正常使用 VBV（通過 --level/--level-idc 級別參數或手動設定）\n  2. 指定極高 VBV 碼率以繞過限碼——此時不寫級別參數，以避免覆蓋 VBV 設定",
+            ["DoviTitle"] = "杜比視界相容性",
+            ["DoviOnOff"] = "啟用時機",
+            ["DoviSrcOnly"] = "視訊源為 DOVI → 啟用",
+            ["X264HrdTitle"] = "x264——開啟 HRD（需 VBV 模式）",
+            ["X265HrdTitle"] = "x265——開啟假想對照解碼器 HRD（需 VBV 模式）",
+            ["Hrd100GbpsText"] = "100Gbps（防限碼）",
+            ["Hrd1TbpsText"] = "1Tbps（8K+ 防限碼）",
+            ["HrdManualText"] = "手動設定 VBV",
         }
     };
 
@@ -201,7 +228,16 @@ public class EncoderConfLangProvider : LangProviderBase
             ["SpeedOptimizedText"] = "Rapide",
             ["BlankPresetText"] = "Aucun",
             ["VvencHintText"] = "VVenC est réservé à l'aperçu d'une seule image, pas utilisé pour l'encodage principal",
-            ["BlankPresetHint"] = "Aucun : défaut encodeur / personnalisation par paramètres additionnels"
+            ["BlankPresetHint"] = "Aucun : défaut encodeur / personnalisation par paramètres additionnels",
+            ["DoviDesc"] = "Dolby Vision Profile 5/7/8 prend en charge HEVC (P9=AVC, P10=AV1). AVC et HEVC nécessitent l'activation du HRD pour inclure les infos SEI, ce qui dépend du mode VBV. Deux options possibles :\n  1. Utiliser le mode VBV standard (via --level/--level-idc ou paramétrage manuel)\n  2. Définir un débit VBV extrêmement élevé (de l'ordre du Tbps) pour ignorer la limite (omettre le paramètre level pour éviter d'écraser la configuration VBV)",
+            ["DoviTitle"] = "Compatibilité Dolby Vision",
+            ["DoviOnOff"] = "Quand activer",
+            ["DoviSrcOnly"] = "Source DOVI → Activer",
+            ["X264HrdTitle"] = "HRD x264 (VBV requis)",
+            ["X265HrdTitle"] = "HRD x265 (VBV requis)",
+            ["Hrd100GbpsText"] = "100Gbps (anti-limite)",
+            ["Hrd1TbpsText"] = "1Tbps (8K+ anti-limite)",
+            ["HrdManualText"] = "Spécifier le VBV",
         };
         Data["es"] = new(Data["en"])
         {
@@ -242,7 +278,16 @@ public class EncoderConfLangProvider : LangProviderBase
             ["SpeedOptimizedText"] = "Rápido",
             ["BlankPresetText"] = "Ninguno",
             ["VvencHintText"] = "VVenC es solo para vista previa de imagen única, no se usa en codificación principal",
-            ["BlankPresetHint"] = "Ninguno: usar defecto del codificador / personalizar abajo"
+            ["BlankPresetHint"] = "Ninguno: usar defecto del codificador / personalizar abajo",
+            ["DoviDesc"] = "Dolby Vision Profile 5/7/8 admite HEVC (P9=AVC, P10=AV1). AVC y HEVC requieren activar HRD para incluir información SEI, lo cual depende del modo VBV. Existen dos opciones:\n  1. Usar el modo VBV estándar (mediante --level/--level-idc o configuración manual)\n  2. Configurar una tasa VBV extremadamente alta (del orden de Tbps) para omitir el límite (evitar el parámetro level para no sobrescribir VBV)",
+            ["DoviTitle"] = "Compatibilidad Dolby Vision",
+            ["DoviOnOff"] = "Cuándo activar",
+            ["DoviSrcOnly"] = "Fuente DOVI → Activar",
+            ["X264HrdTitle"] = "HRD x264 (requiere VBV)",
+            ["X265HrdTitle"] = "HRD x265 (requiere VBV)",
+            ["Hrd100GbpsText"] = "100Gbps (anti-límite)",
+            ["Hrd1TbpsText"] = "1Tbps (8K+ anti-límite)",
+            ["HrdManualText"] = "Especificar VBV",
         };
         Data["ja"] = new(Data["en"])
         {
@@ -283,7 +328,16 @@ public class EncoderConfLangProvider : LangProviderBase
             ["SpeedOptimizedText"] = "高速",
             ["BlankPresetText"] = "なし",
             ["VvencHintText"] = "VVenC は単一画像プレビューのみで使用、本エンコードでは使用しません",
-            ["BlankPresetHint"] = "なし: エンコーダ既定値 / 下の追加パラメータで完全指定"
+            ["BlankPresetHint"] = "なし: エンコーダ既定値 / 下の追加パラメータで完全指定",
+            ["DoviDesc"] = "Dolby Vision Profile 5/7/8はHEVCに対応（P9=AVC、P10=AV1）。AVC/HEVCでSEIを書き込むにはHRDの有効化が必要で、HRDはVBVモードに依存します。対応策は以下の2択です：\n  1. 通常のVBV制限を使用（--level/--level-idc または手動指定）\n  2. 制限回避のため極めて高いVBVレート（Tbps級）を指定（VBV上書き防止のため level パラメーターは未指定）",
+            ["DoviTitle"] = "Dolby Vision互換性",
+            ["DoviOnOff"] = "有効にする条件",
+            ["DoviSrcOnly"] = "ソースがDOVI → 有効",
+            ["X264HrdTitle"] = "x264 HRD（VBV必須）",
+            ["X265HrdTitle"] = "x265 HRD（VBV必須）",
+            ["Hrd100GbpsText"] = "100Gbps（制限回避）",
+            ["Hrd1TbpsText"] = "1Tbps（8K+制限回避）",
+            ["HrdManualText"] = "VBVを手動指定",
         };
         Data["ru"] = new(Data["en"])
         {
@@ -324,7 +378,16 @@ public class EncoderConfLangProvider : LangProviderBase
             ["SpeedOptimizedText"] = "Быстро",
             ["BlankPresetText"] = "Нет",
             ["VvencHintText"] = "VVenC используется только для предпросмотра одного кадра, не для основного кодирования",
-            ["BlankPresetHint"] = "Нет: настройки кодера по умолчанию / полная настройка ниже"
+            ["BlankPresetHint"] = "Нет: настройки кодера по умолчанию / полная настройка ниже",
+            ["DoviDesc"] = "Dolby Vision Profile 5/7/8 поддерживает HEVC (P9=AVC, P10=AV1). Для AVC и HEVC требуется включение HRD для записи SEI, что зависит от режима VBV. Доступно два варианта:\n  1. Использовать VBV в обычном режиме (через --level/--level-idc или вручную)\n  2. Указать сверхвысокий битрейт VBV (порядка Тбит/с) для обхода ограничения (не указывать параметр level, чтобы не перезаписать VBV)",
+            ["DoviTitle"] = "Совместимость с Dolby Vision",
+            ["DoviOnOff"] = "Когда включать",
+            ["DoviSrcOnly"] = "Источник DOVI → Включить",
+            ["X264HrdTitle"] = "HRD x264 (требуется VBV)",
+            ["X265HrdTitle"] = "HRD x265 (требуется VBV)",
+            ["Hrd100GbpsText"] = "100 Гбит/с (без ограничения)",
+            ["Hrd1TbpsText"] = "1 Тбит/с (8K+ без ограничения)",
+            ["HrdManualText"] = "Указать VBV вручную",
         };
         Data["de"] = new(Data["en"])
         {
@@ -365,7 +428,75 @@ public class EncoderConfLangProvider : LangProviderBase
             ["SpeedOptimizedText"] = "Schnell",
             ["BlankPresetText"] = "Keine",
             ["VvencHintText"] = "VVenC ist nur für Einzelbildvorschau, nicht für Hauptkodierung",
-            ["BlankPresetHint"] = "Keine: Encoder-Standard / vollständige Anpassung über Zusatzparameter"
+            ["BlankPresetHint"] = "Keine: Encoder-Standard / vollständige Anpassung über Zusatzparameter",
+            ["DoviDesc"] = "Dolby Vision Profile 5/7/8 unterstützt HEVC (P9=AVC, P10=AV1). AVC und HEVC erfordern die Aktivierung von HRD für SEI-Daten, was vom VBV-Modus abhängt. Es gibt zwei Optionen:\n  1. VBV normal nutzen (über --level/--level-idc oder manuelle Einstellung)\n  2. Extrem hohe VBV-Bitrate (im Tbps-Bereich) festlegen, um das Limit zu umgehen (keinen level-Parameter angeben, um ein Überschreiben von VBV zu vermeiden)",
+            ["DoviTitle"] = "Dolby-Vision-Kompatibilität",
+            ["DoviOnOff"] = "Wann aktivieren",
+            ["DoviSrcOnly"] = "Quelle ist DOVI → Aktivieren",
+            ["X264HrdTitle"] = "x264 HRD (VBV erforderlich)",
+            ["X265HrdTitle"] = "x265 HRD (VBV erforderlich)",
+            ["Hrd100GbpsText"] = "100 Gbit/s (Limitierung vermeiden)",
+            ["Hrd1TbpsText"] = "1 Tbit/s (8K+ Limitierung vermeiden)",
+            ["HrdManualText"] = "VBV manuell festlegen",
+        };
+        Data["ko"] = new(Data["en"])
+        {
+            ["RateControlTitle"] = "비트레이트 제어 방식",
+            ["CustomParamsTitle"] = "사용자 정의 파라미터",
+            ["CrfModeText"] = "고정 비트레이트 팩터(CRF) 모드",
+            ["AbrModeText"] = "평균 비트레이트(ABR) 모드",
+            ["X264Text"] = "x264",
+            ["X265Text"] = "x265",
+            ["SvtAv1Text"] = "SVT-AV1",
+            ["X264DefaultText"] = "(기본값 23)",
+            ["X265DefaultText"] = "(기본값 28)",
+            ["SvtAv1DefaultText"] = "(기본값 35)",
+            ["X264AbrValueText"] = "209",
+            ["X265AbrValueText"] = "200",
+            ["SvtAv1AbrValueText"] = "200",
+            ["BasicParamsText"] = "기본 파라미터",
+            ["KeyframeSecondsText"] = "키프레임 간격(초)",
+            ["ThirdPartyParamsText"] = "서드파티 확장 파라미터",
+            ["FreeTextControlTitle"] = "추가 인코더 파라미터(CLI 형식)",
+            ["PreviewFreeTextControlTitle"] = "추가 인코더 파라미터(미리보기/FFmpeg 형식)",
+            ["PreviewFreeTextHint"] = "FFmpeg API 형식 사용: -x264-params, -x265-params, -svtav1-params",
+            ["AutoFfprobeHintX264"] = "자동 입력 파라미터: --rc-lookahead --colormatrix --transfer --colorprim --chromaloc --mastering-display --cll",
+            ["AutoFfprobeHintX265"] = "자동 입력 파라미터: --rc-lookahead --merange --subme --colormatrix --transfer --colorprim --range full/limited --chromaloc --master-display --max-cll",
+            ["AutoFfprobeHintSvtAv1"] = "자동 입력 파라미터: --matrix-coefficients --transfer-characteristics --color-primaries --color-range --chroma-sample-position --mastering-display --content-light",
+            ["X264ModText"] = "x264 Mod: 필름 그레인 비율 왜곡 최적화(FGO-RD)",
+            ["X265JpsdrAqText"] = "x265 jpsdr Mod: 적응형 양자화 히스테리시스(AQ Hysteresis)",
+            ["X265JpsdrDarkText"] = "x265 jpsdr Mod: 어두운 장면의 AQ 강도 ↑",
+            ["X265JpsdrTextureText"] = "x265 jpsdr Mod: 엣지의 AQ 강도 ↑",
+            ["SvtAv1EssentialDl2Text"] = "SVT-AV1-Essential: 고정밀 디블로킹 필터(DLF2)",
+            ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential: 자동 타일 크기",
+            ["CrfHintText"] = "CRF 눈금 — 무손실 | 초고화질 | 고화질 | 스트리밍",
+            ["AbrHintText"] = "ABR 눈금(2K60) — 근무손실 | 근무손실→고화질 | 초고화질→스트리밍 | 고화질→스트리밍",
+            ["KeyframeHintText1"] = "Keyint 눈금(디코딩 난이도):\n절전/멀티트랙 편집 | 중간 | 높은 부하·중간 압축 | 극도 높은 부하·높은 압축",
+            ["KeyframeHintText2"] = "해상도↑ = 디코딩/인덱싱 부하↑. 키프레임 간격 조절로 부하를 낮추거나 압축률을 높일 수 있음",
+            ["ThirdPartyHintText1"] = "「그레인 최적화」는 압축보다 선명도를 우선함",
+            ["ThirdPartyHintText2"] = "「AQ 히스테리시스」는 빠른 컷이나 몽타주가 현재 AQ 전략을 흐트리는 것을 방지",
+            ["ThirdPartyHintText3"] = "「고정밀 디블로킹」은 뭉개짐을 줄일 수 있음",
+            ["ThirdPartyHintText4"] = "「자동 타일」은 비트 분배의 균형을 개선할 수 있음",
+            ["GeneralPurposeText"] = "범용",
+            ["StockFootageText"] = "스톡 영상",
+            ["FilmIRLText"] = "영화/실사 촬영",
+            ["AnimeText"] = "애니메이션",
+            ["StressTestText"] = "스트레스 테스트",
+            ["PeakQualityText"] = "최고 품질",
+            ["CompressionOptText"] = "고압축",
+            ["SpeedOptimizedText"] = "고속",
+            ["BlankPresetText"] = "없음",
+            ["VvencHintText"] = "VVenC는 단일 이미지 미리보기에만 사용되며, 본 인코딩에는 사용하지 않음",
+            ["BlankPresetHint"] = "없음: 인코더 기본값 사용 / 하단 추가 파라미터 텍스트상자로 완전 지정",
+            ["DoviDesc"] = "Dolby Vision Profile 5/7/8은 HEVC를 지원합니다(P9=AVC, P10=AV1). AVC/HEVC는 SEI 기록을 위해 HRD 활성화가 필요하며, HRD는 VBV 모드에 의존합니다. 선택지는 두 가지입니다:\n  1. 일반 VBV 제한 사용 (--level/--level-idc 또는 수동 설정)\n  2. 제한 우회를 위해 초고속 VBV 비트레이트(Tbps급) 지정 (VBV 덮어쓰기 방지를 위해 level 파라미터 미작성)",
+            ["DoviTitle"] = "Dolby Vision 호환성",
+            ["DoviOnOff"] = "활성화 조건",
+            ["DoviSrcOnly"] = "소스가 DOVI → 활성화",
+            ["X264HrdTitle"] = "x264 HRD(VBV 필수)",
+            ["X265HrdTitle"] = "x265 HRD(VBV 필수)",
+            ["Hrd100GbpsText"] = "100Gbps(비트레이트 제한 우회)",
+            ["Hrd1TbpsText"] = "1Tbps(8K+ 비트레이트 제한 우회)",
+            ["HrdManualText"] = "수동 VBV 지정",
         };
         Data["pt-br"] = new(Data["en"])
         {
@@ -406,7 +537,16 @@ public class EncoderConfLangProvider : LangProviderBase
             ["SpeedOptimizedText"] = "Rápido",
             ["BlankPresetText"] = "Nenhum",
             ["VvencHintText"] = "VVenC é apenas para visualização de imagem única, não usado na codificação principal",
-            ["BlankPresetHint"] = "Nenhum: usar padrão do codificar / personalizar totalmente via caixa de texto de parâmetros adicionais"
+            ["BlankPresetHint"] = "Nenhum: usar padrão do codificar / personalizar totalmente via caixa de texto de parâmetros adicionais",
+            ["DoviDesc"] = "Dolby Vision Profile 5/7/8 suporta HEVC (P9=AVC, P10=AV1). AVC e HEVC exigem ativar HRD para gravar dados SEI, o que depende do modo VBV. Há duas opções:\n  1. Usar VBV normalmente (via --level/--level-idc ou configuração manual)\n  2. Definir uma taxa VBV extremamente alta (na casa dos Tbps) para ignorar o limite (omitir o parâmetro level para não sobrescrever o VBV)",
+            ["DoviTitle"] = "Compatibilidade com Dolby Vision",
+            ["DoviOnOff"] = "Quando ativar",
+            ["DoviSrcOnly"] = "Fonte é DOVI → Ativar",
+            ["X264HrdTitle"] = "HRD x264 (requer VBV)",
+            ["X265HrdTitle"] = "HRD x265 (requer VBV)",
+            ["Hrd100GbpsText"] = "100Gbps (anti-limite)",
+            ["Hrd1TbpsText"] = "1Tbps (8K+ anti-limite)",
+            ["HrdManualText"] = "Especificar VBV manualmente",
         };
     }
 
@@ -460,6 +600,15 @@ public class EncoderConfLangProvider : LangProviderBase
     public string BlankPresetHint { get; }
     public string VvencText { get; }
     public string VvencHintText { get; }
+    public string DoviTitle { get; }
+    public string DoviDesc { get; }
+    public string DoviOnOff { get; }
+    public string DoviSrcOnly { get; }
+    public string X264HrdTitle { get; }
+    public string X265HrdTitle { get; }
+    public string Hrd100GbpsText { get; }
+    public string Hrd1TbpsText { get; }
+    public string HrdManualText { get; }
     public string CancelButtonText { get; }
     public string ConfirmButtonText { get; }
 
@@ -513,6 +662,15 @@ public class EncoderConfLangProvider : LangProviderBase
         BlankPresetHint = this["BlankPresetHint"];
         VvencText = "VVenC (PV)";
         VvencHintText = this["VvencHintText"];
+        DoviTitle = this["DoviTitle"];
+        DoviDesc = this["DoviDesc"];
+        DoviOnOff = this["DoviOnOff"];
+        DoviSrcOnly = this["DoviSrcOnly"];
+        X264HrdTitle = this["X264HrdTitle"];
+        X265HrdTitle = this["X265HrdTitle"];
+        Hrd100GbpsText = this["Hrd100GbpsText"];
+        Hrd1TbpsText = this["Hrd1TbpsText"];
+        HrdManualText = this["HrdManualText"];
         CancelButtonText = this["CancelButtonText"];
         ConfirmButtonText = this["ConfirmButtonText"];
         Current = this;

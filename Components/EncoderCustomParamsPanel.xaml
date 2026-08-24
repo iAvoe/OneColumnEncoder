@@ -125,6 +125,34 @@
                          HorizontalAlignment="Left"
                          VerticalAlignment="Center" />
 
+        <TextBlock Text="{Binding DoviTitle}"
+                   Style="{StaticResource H2}"
+                   Margin="0 15 0 0" />
+        <comps:HintPanel Text="{Binding DoviDesc, Mode=OneWay}"
+                         FontSize="10"
+                         Margin="5 2.5 5 0"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Center" />
+        <StackPanel Margin="0 10 0 0">
+            <comps:AppConfItem Text="{Binding DoviOnOff, Mode=OneWay}">
+                <comps:DropdownMenu MinWidth="150"
+                                    Height="25"
+                                    DataContext="{Binding DoviOnOffDropdown}" />
+            </comps:AppConfItem>
+            <comps:AppConfItem Text="{Binding X264HrdTitle, Mode=OneWay}">
+                <comps:DropdownMenu MinWidth="150"
+                                    Height="25"
+                                    DataContext="{Binding X264HrdDropdown}"
+                                    IsEnabled="{Binding IsHrdDropdownEnabled}" />
+            </comps:AppConfItem>
+            <comps:AppConfItem Text="{Binding X265HrdTitle, Mode=OneWay}">
+                <comps:DropdownMenu MinWidth="150"
+                                    Height="25"
+                                    DataContext="{Binding X265HrdDropdown}"
+                                    IsEnabled="{Binding IsHrdDropdownEnabled}" />
+            </comps:AppConfItem>
+        </StackPanel>
+
         <TextBlock Text="{Binding FreeTextControlTitle}"
                    Style="{StaticResource H3}"
                    Margin="0 15 0 0" />

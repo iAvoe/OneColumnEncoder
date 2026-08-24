@@ -6,7 +6,7 @@ namespace OneColumnEncoder.Models.Lang;
 /// To add a new language, follow the following table:
 /// | File | Keys Translated |
 /// |------|----------------|
-/// | `LangProviderBase.cs` (this file) | 16 common UI terms(Confirm, Cancel, Add, Delete, Clear, etc.) |
+/// | `LangProviderBase.cs` (this file) | 25 common UI terms(Confirm, Cancel, Add, Delete, Clear, Enable, Disable, On, Off, Collapse, Expand, etc.) |
 /// | `AnalyzeSrcVideoCmdLangProvider.cs` | 9 keys |
 /// | `AppUsageLangProvider.cs` | 38 keys |
 /// | `AppConfLangProvider.cs` | 31 keys |
@@ -82,6 +82,10 @@ public abstract class LangProviderBase
     public static string RemoveText => "🗙";
     public static string MoveUpText => "↑↑";
     public static string MoveDownText => "↓↓";
+    public string Enable => this["Enable"];
+    public string Disable => this["Disable"];
+    public string On => this["On"];
+    public string Off => this["Off"];
     private static readonly Dictionary<string, Dictionary<string, string>> CommonData = new()
     {
         ["en"] = new()
@@ -105,6 +109,12 @@ public abstract class LangProviderBase
             ["Undo"] = "Undo",
             ["Redo"] = "Redo",
             ["Refresh"] = "Refresh",
+            ["Enable"] = "Enable",
+            ["Disable"] = "Disable",
+            ["On"] = "On",
+            ["Off"] = "Off",
+            ["Collapse"] = "▲ Collapse",
+            ["Expand"] = "▼ Expand",
         },
         ["zh-cn"] = new()
         {
@@ -127,6 +137,12 @@ public abstract class LangProviderBase
             ["Undo"] = "撤销",
             ["Redo"] = "重做",
             ["Refresh"] = "刷新",
+            ["Enable"] = "启用",
+            ["Disable"] = "禁用",
+            ["On"] = "开",
+            ["Off"] = "关",
+            ["Collapse"] = "▲ 折叠",
+            ["Expand"] = "▼ 展开",
         },
         ["zh-tw"] = new()
         {
@@ -149,6 +165,12 @@ public abstract class LangProviderBase
             ["Undo"] = "撤銷",
             ["Redo"] = "重做",
             ["Refresh"] = "刷新",
+            ["Enable"] = "啟用",
+            ["Disable"] = "停用",
+            ["On"] = "開",
+            ["Off"] = "關",
+            ["Collapse"] = "▲ 折叠",
+            ["Expand"] = "▼ 展开",
         },
         ["fr"] = new()
         {
@@ -171,6 +193,12 @@ public abstract class LangProviderBase
             ["Undo"] = "Annuler",
             ["Redo"] = "Rétablir",
             ["Refresh"] = "Rafraîchir",
+            ["Enable"] = "Activer",
+            ["Disable"] = "Désactiver",
+            ["On"] = "Activé",
+            ["Off"] = "Désactivé",
+            ["Collapse"] = "▲ Réduire",
+            ["Expand"] = "▼ Développer",
         },
         ["es"] = new()
         {
@@ -193,6 +221,12 @@ public abstract class LangProviderBase
             ["Undo"] = "Deshacer",
             ["Redo"] = "Rehacer",
             ["Refresh"] = "Refrescar",
+            ["Enable"] = "Habilitar",
+            ["Disable"] = "Deshabilitar",
+            ["On"] = "Activado",
+            ["Off"] = "Desactivado",
+            ["Collapse"] = "▲ Contraer",
+            ["Expand"] = "▼ Expandir",
         },
         ["ja"] = new()
         {
@@ -215,6 +249,12 @@ public abstract class LangProviderBase
             ["Undo"] = "元に戻す",
             ["Redo"] = "やり直す",
             ["Refresh"] = "更新",
+            ["Enable"] = "有効化",
+            ["Disable"] = "無効化",
+            ["On"] = "オン",
+            ["Off"] = "オフ",
+            ["Collapse"] = "▲ 折りたたむ",
+            ["Expand"] = "▼ 展開",
         },
         ["ru"] = new()
         {
@@ -237,6 +277,12 @@ public abstract class LangProviderBase
             ["Undo"] = "Отменить",
             ["Redo"] = "Вернуть",
             ["Refresh"] = "Обновить",
+            ["Enable"] = "Включить",
+            ["Disable"] = "Отключить",
+            ["On"] = "Вкл.",
+            ["Off"] = "Выкл.",
+            ["Collapse"] = "▲ Свернуть",
+            ["Expand"] = "▼ Развернуть",
         },
         ["de"] = new()
         {
@@ -259,6 +305,12 @@ public abstract class LangProviderBase
             ["Undo"] = "Zurück",
             ["Redo"] = "Wiederh.",
             ["Refresh"] = "Aktualisieren",
+            ["Enable"] = "Aktivieren",
+            ["Disable"] = "Deaktivieren",
+            ["On"] = "Ein",
+            ["Off"] = "Aus",
+            ["Collapse"] = "▲ Einklappen",
+            ["Expand"] = "▼ Ausklappen",
         },
         ["ko"] = new()
         {
@@ -281,6 +333,12 @@ public abstract class LangProviderBase
             ["Undo"] = "실행취소",
             ["Redo"] = "다시실행",
             ["Refresh"] = "새로 고치다",
+            ["Enable"] = "활성화",
+            ["Disable"] = "비활성화",
+            ["On"] = "켬",
+            ["Off"] = "끔",
+            ["Collapse"] = "▲ 접기",
+            ["Expand"] = "▼ 펼치기",
         },
         ["pt-br"] = new()
         {
@@ -303,6 +361,12 @@ public abstract class LangProviderBase
             ["Undo"] = "Desfazer",
             ["Redo"] = "Refazer",
             ["Refresh"] = "Atualizar",
+            ["Enable"] = "Ativar",
+            ["Disable"] = "Desativar",
+            ["On"] = "Ativado",
+            ["Off"] = "Desativado",
+            ["Collapse"] = "▲ Recolher",
+            ["Expand"] = "▼ Expandir",
         },
     };
 

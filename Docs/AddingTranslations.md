@@ -49,7 +49,7 @@ Add Portuguese to the `CommonData` dictionary:
 }
 ```
 
-**Note:** These 16 common terms are shared across ALL providers and will be used as fallback translations.
+**Note:** These 20 common terms are shared across ALL providers and will be used as fallback translations.
 
 ### 3. Translate All Provider Files
 

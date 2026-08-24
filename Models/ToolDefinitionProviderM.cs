@@ -9,8 +9,8 @@ public static class ToolDefinitionProviderM
 
     private static Dictionary<string, ToolDefinitionM> BuildToolDefinitions()
     {
-        string replace = UILangProvider.Current["Buttons.Replace"];
-        string deleteText = UILangProvider.Current["Buttons.Delete"];
+        string replace = UILangProvider.Current["Replace"];
+        string deleteText = UILangProvider.Current["Delete"];
         string version = UILangProvider.Current["ToolField.Version"];
         string path = UILangProvider.Current["ToolField.Path"];
 

@@ -58,7 +58,7 @@ public class SrcCheckCardVM : ValidationCardBaseVM
             SetChecklist2(3, result.HasSupportedChroma
                 ? StatusType.Success : StatusType.Warning);
             if (Checklist2.Count > TempYuv420ChecklistIdx)
-                SetChecklist2(TempYuv420ChecklistIdx, result.IsYuv420 ? StatusType.Warning : StatusType.Success);
+                SetChecklist2(TempYuv420ChecklistIdx, result.IsYuv420 ? StatusType.Success : StatusType.Warning);
         }
         catch
         {

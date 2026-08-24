@@ -105,8 +105,8 @@ public class ToolItemCardVM(EncItemM baseModel) : BaseVM
     public string DisplayR1Text =>
         UseAutoAddReplaceText
             ? string.IsNullOrWhiteSpace(P2TextData)
-                ? UILangProvider.Current["Buttons.Add"]
-                : UILangProvider.Current["Buttons.Replace"]
+                ? UILangProvider.Current["Add"]
+                : UILangProvider.Current["Replace"]
             : R1Text;
 
     private string _r2Text = "";

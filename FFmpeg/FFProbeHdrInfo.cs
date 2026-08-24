@@ -5,8 +5,8 @@ namespace OneColumnEncoder.FFmpeg;
 public readonly record struct FFProbeHdrInfo(
     bool HasHdr10,
     bool HasHlg,
-    bool HasDolbyVision,
-    string DolbyVisionProfile,
+    bool HasDovi,
+    string DoviProfile,
     string Summary,
     FFProbeMasteringDisplayMetadata? MasteringDisplay,
     FFProbeContentLightLevel? ContentLightLevel,
@@ -47,7 +47,7 @@ public readonly record struct FFProbeContentLightLevel(long MaxContent, long Max
     public bool HasValue => MaxContent > 0 || MaxAverage > 0;
 }
 
-public readonly record struct FFProbeDolbyVisionMetadata(int Profile, int CompatibilityId)
+public readonly record struct FFProbeDoviMetadata(int Profile, int CompatibilityId)
 {
     public string ProfileText => CompatibilityId > 0 ? $"P{Profile}.{CompatibilityId}" : $"P{Profile}";
 }
@@ -122,23 +122,23 @@ public static class FFProbeHdrInfoReader
         string? colorPrimaries = Normalize(TryGetString(stream, "color_primaries"));
         string? colorRange = Normalize(TryGetString(stream, "color_range"));
 
-        FFProbeDolbyVisionMetadata? dolbyVision = TryReadDolbyVision(stream);
+        FFProbeDoviMetadata? dovi = TryReadDovi(stream);
         FFProbeMasteringDisplayMetadata? masteringDisplay = TryReadMasteringDisplay(root);
         FFProbeContentLightLevel? contentLightLevel = TryReadContentLightLevel(root);
 
         bool hasHdr10 = masteringDisplay != null
             || colorTransfer is "smpte2084";
         bool hasHlg = colorTransfer is "arib-std-b67" or "hlg";
-        bool hasDolbyVision = dolbyVision != null;
-        string dolbyVisionProfile = dolbyVision?.ProfileText ?? string.Empty;
+        bool hasDovi = dovi != null;
+        string doviProfile = dovi?.ProfileText ?? string.Empty;
 
-        string summary = BuildSummary(hasHdr10, hasHlg, hasDolbyVision, dolbyVisionProfile, masteringDisplay, contentLightLevel);
+        string summary = BuildSummary(hasHdr10, hasHlg, hasDovi, doviProfile, masteringDisplay, contentLightLevel);
 
         return new(
             hasHdr10,
             hasHlg,
-            hasDolbyVision,
-            dolbyVisionProfile,
+            hasDovi,
+            doviProfile,
             summary,
             masteringDisplay,
             contentLightLevel,
@@ -163,7 +163,7 @@ public static class FFProbeHdrInfoReader
     public static string ToSvtAv1ContentLight(FFProbeContentLightLevel contentLightLevel) =>
         $"{contentLightLevel.MaxContent},{contentLightLevel.MaxAverage}";
 
-    private static FFProbeDolbyVisionMetadata? TryReadDolbyVision(JsonElement stream)
+    private static FFProbeDoviMetadata? TryReadDovi(JsonElement stream)
     {
         if (!TryFindSideData(stream, "DOVI configuration record", out JsonElement sideData))
             return null;
@@ -301,23 +301,23 @@ public static class FFProbeHdrInfoReader
     private static string BuildSummary(
         bool hasHdr10,
         bool hasHlg,
-        bool hasDolbyVision,
-        string dolbyVisionProfile,
+        bool hasDovi,
+        string doviProfile,
         FFProbeMasteringDisplayMetadata? masteringDisplay,
         FFProbeContentLightLevel? contentLightLevel)
     {
         List<string> parts = [];
 
-        if (!hasHdr10 && !hasHlg && !hasDolbyVision)
+        if (!hasHdr10 && !hasHlg && !hasDovi)
             return string.Empty;
 
         if (hasHdr10) parts.Add("HDR10");
         else if (hasHlg) parts.Add("HLG");
-        else if (hasDolbyVision)
-            parts.Add(string.IsNullOrWhiteSpace(dolbyVisionProfile) ? "Dolby Vision" : $"Dolby Vision {dolbyVisionProfile}");
+        else if (hasDovi)
+            parts.Add(string.IsNullOrWhiteSpace(doviProfile) ? "Dolby Vision" : $"Dolby Vision {doviProfile}");
 
-        if (hasHdr10 && hasDolbyVision && !string.IsNullOrWhiteSpace(dolbyVisionProfile))
-            parts.Add($"Dolby Vision {dolbyVisionProfile}");
+        if (hasHdr10 && hasDovi && !string.IsNullOrWhiteSpace(doviProfile))
+            parts.Add($"Dolby Vision {doviProfile}");
 
         if (masteringDisplay is { } mastering)
             parts.Add($"{mastering.MaxLuminance.ToDouble().ToString("0.###", CultureInfo.InvariantCulture)} nits");
@@ -325,7 +325,7 @@ public static class FFProbeHdrInfoReader
         if (contentLightLevel is { HasValue: true } cll)
             parts.Add($"CLL {cll.MaxContent}/{cll.MaxAverage}");
 
-        if (hasDolbyVision && !hasHdr10 && masteringDisplay is null)
+        if (hasDovi && !hasHdr10 && masteringDisplay is null)
             parts.Add("no HDR10 base");
 
         return string.Join(" · ", parts);

@@ -82,6 +82,11 @@ public class EncoderConfVM : BaseVM
     public string BlankPresetHint => Lang.BlankPresetHint;
     public string VvencText => Lang.VvencText;
     public string VvencHintText => Lang.VvencHintText;
+    public string DoviTitle => Lang.DoviTitle;
+    public string DoviDesc => Lang.DoviDesc;
+    public string DoviOnOff => Lang.DoviOnOff;
+    public string X264HrdTitle => Lang.X264HrdTitle;
+    public string X265HrdTitle => Lang.X265HrdTitle;
 
     private string _freeTextParamsX264 = string.Empty;
     public string FreeTextParamsX264
@@ -131,6 +136,9 @@ public class EncoderConfVM : BaseVM
     public DropdownMenuVM X265ModeDropdown { get; } = new();
     public DropdownMenuVM SvtAv1ModeDropdown { get; } = new();
     public DropdownMenuVM VvencModeDropdown { get; } = new();
+    public DropdownMenuVM DoviOnOffDropdown { get; } = new();
+    public DropdownMenuVM X264HrdDropdown { get; } = new();
+    public DropdownMenuVM X265HrdDropdown { get; } = new();
 
     private int _x264Crf = 23;
     public int X264Crf
@@ -238,8 +246,20 @@ public class EncoderConfVM : BaseVM
         set => SetProperty(ref _svtAv1AutoTile, value);
     }
 
+    private int _doviMode;
+    public int DoviMode
+    {
+        get => _doviMode;
+        set
+        {
+            if (!SetProperty(ref _doviMode, value)) return;
+            OnPropertyChanged(nameof(IsHrdDropdownEnabled));
+        }
+    }
+
     public bool IsX265DarkEnabled => X265Aq;
     public bool IsX265TextureEnabled => X265Aq;
+    public bool IsHrdDropdownEnabled => DoviMode != 0;
 
     public static IEnumerable<string> X264CrfLabels => ["0", "13", "17", "21", "25"];
     public static IEnumerable<string> X265CrfLabels => ["0", "17", "21", "25", "30"];
@@ -297,10 +317,37 @@ public class EncoderConfVM : BaseVM
         VvencModeDropdown.Items.Add(new DropdownItemM("qpa slower") { Tag = 1 });
         VvencModeDropdown.Items.Add(new DropdownItemM("qpa slow") { Tag = 2 });
 
+        PopulateDoviOnOffDropdown();
+        PopulateHrdDropdown(X264HrdDropdown);
+        PopulateHrdDropdown(X265HrdDropdown);
+
         SelectDropdownByKey(X264ModeDropdown, _model.X264Mode);
         SelectDropdownByKey(X265ModeDropdown, _model.X265Mode);
         SelectDropdownByKey(SvtAv1ModeDropdown, _model.SvtAv1Mode);
         SelectDropdownByKey(VvencModeDropdown, _model.VvencMode);
+        SelectDropdownByKey(DoviOnOffDropdown, _model.DoviOnOff);
+        SelectDropdownByKey(X264HrdDropdown, _model.X264HrdMode);
+        SelectDropdownByKey(X265HrdDropdown, _model.X265HrdMode);
+    }
+
+    private void PopulateDoviOnOffDropdown()
+    {
+        DoviOnOffDropdown.SelectionChangedCommand = new ActionCmd(item =>
+        {
+            if (item is DropdownItemM selected && selected.Tag is int mode)
+                DoviMode = mode;
+        });
+        DoviOnOffDropdown.Items.Add(new DropdownItemM(Lang.Disable) { Tag = 0 });
+        DoviOnOffDropdown.Items.Add(new DropdownItemM(Lang.Enable) { Tag = 1 });
+        DoviOnOffDropdown.Items.Add(new DropdownItemM(Lang.DoviSrcOnly) { Tag = 2 });
+    }
+
+    private void PopulateHrdDropdown(DropdownMenuVM dropdown)
+    {
+        dropdown.Items.Add(new DropdownItemM(Lang.Off) { Tag = 0 });
+        dropdown.Items.Add(new DropdownItemM(Lang.Hrd100GbpsText) { Tag = 1 });
+        dropdown.Items.Add(new DropdownItemM(Lang.Hrd1TbpsText) { Tag = 2 });
+        dropdown.Items.Add(new DropdownItemM(Lang.HrdManualText) { Tag = 3 });
     }
 
     private void AddBlankPresetItem(DropdownMenuVM dropdown) =>
@@ -335,8 +382,12 @@ public class EncoderConfVM : BaseVM
         X265Texture = _model.X265Texture;
         SvtAv1Dl2 = _model.SvtAv1Dl2;
         SvtAv1AutoTile = _model.SvtAv1AutoTile;
+        DoviMode = _model.DoviOnOff;
         VvencQp = _model.VvencQp;
         SelectDropdownByKey(VvencModeDropdown, _model.VvencMode);
+        SelectDropdownByKey(DoviOnOffDropdown, _model.DoviOnOff);
+        SelectDropdownByKey(X264HrdDropdown, _model.X264HrdMode);
+        SelectDropdownByKey(X265HrdDropdown, _model.X265HrdMode);
         FreeTextParamsX264 = _model.CustomParamsX264;
         FreeTextParamsX265 = _model.CustomParamsX265;
         FreeTextParamsSvtAv1 = _model.CustomParamsSvtAv1;
@@ -384,6 +435,9 @@ public class EncoderConfVM : BaseVM
         model.SvtAv1AutoTile = SvtAv1AutoTile;
         model.VvencQp = VvencQp;
         model.VvencMode = VvencModeDropdown.SelectedItem?.Tag is int vvencMode ? vvencMode : 0;
+        model.DoviOnOff = DoviMode;
+        model.X264HrdMode = X264HrdDropdown.SelectedItem?.Tag is int x264HrdMode ? x264HrdMode : 0;
+        model.X265HrdMode = X265HrdDropdown.SelectedItem?.Tag is int x265HrdMode ? x265HrdMode : 0;
         model.CustomParamsX264 = FreeTextParamsX264;
         model.CustomParamsX265 = FreeTextParamsX265;
         model.CustomParamsSvtAv1 = FreeTextParamsSvtAv1;
@@ -466,6 +520,11 @@ public class EncoderConfVM : BaseVM
         OnPropertyChanged(nameof(BlankPresetHint));
         OnPropertyChanged(nameof(VvencText));
         OnPropertyChanged(nameof(VvencHintText));
+        OnPropertyChanged(nameof(DoviTitle));
+        OnPropertyChanged(nameof(DoviDesc));
+        OnPropertyChanged(nameof(DoviOnOff));
+        OnPropertyChanged(nameof(X264HrdTitle));
+        OnPropertyChanged(nameof(X265HrdTitle));
         FinishButtons.B2_1Text = CancelButtonText;
         FinishButtons.B2_2Text = ConfirmButtonText;
     }
@@ -492,6 +551,38 @@ public class EncoderConfVM : BaseVM
         SyncTitles(EncoderPresetsM.X264Presets, X264ModeDropdown);
         SyncTitles(EncoderPresetsM.X265Presets, X265ModeDropdown);
         SyncTitles(EncoderPresetsM.SvtAv1Presets, SvtAv1ModeDropdown);
+        SyncDoviModeTitles(DoviOnOffDropdown);
+        SyncHrdTitles(X264HrdDropdown);
+        SyncHrdTitles(X265HrdDropdown);
+    }
+
+    private void SyncDoviModeTitles(DropdownMenuVM dropdown)
+    {
+        foreach (DropdownItemM item in dropdown.Items)
+        {
+            if (item.Tag is not int key) continue;
+            item.Title = key switch
+            {
+                1 => Lang.Enable,
+                2 => Lang.DoviSrcOnly,
+                _ => Lang.Disable
+            };
+        }
+    }
+
+    private void SyncHrdTitles(DropdownMenuVM dropdown)
+    {
+        foreach (DropdownItemM item in dropdown.Items)
+        {
+            if (item.Tag is not int key) continue;
+            item.Title = key switch
+            {
+                1 => Lang.Hrd100GbpsText,
+                2 => Lang.Hrd1TbpsText,
+                3 => Lang.HrdManualText,
+                _ => Lang.Off
+            };
+        }
     }
     #endregion
 
