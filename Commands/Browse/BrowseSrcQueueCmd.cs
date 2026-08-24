@@ -1,4 +1,5 @@
 using OneColumnEncoder.ChapterTool;
+using System.IO;
 
 namespace OneColumnEncoder.Commands.Browse;
 
@@ -17,10 +18,10 @@ public class BrowseSrcQueueCmd(
     public override async void Execute(object? parameter)
     {
         // Ask how the user wants to import: confirm = resolve a BluRay playlist
-        // (MPLS), cancel = pick a folder of all video sources.
+        // (MPLS), cancel = pick multiple video source files directly.
         bool importAsPlaylist = QueueChapterImportPrompt.Confirm(_modalNavS);
 
-        string folderPath;
+        string pathText;
         string[] filePaths;
         if (importAsPlaylist)
         {
@@ -34,21 +35,24 @@ public class BrowseSrcQueueCmd(
                     UILangProvider.Current["SourceQueue.ChapterSourcesMissing"]));
             if (import == null) return;
 
-            folderPath = import.PlaylistFolderPath;
+            pathText = import.PlaylistFolderPath;
             filePaths = import.srcPaths;
         }
         else
         {
-            OpenFolderDialog dialog = new()
+            OpenFileDialog dialog = new()
             {
-                Title = UILangProvider.Current["SourceQueue.SelectFolderTitle"],
-                InitialDirectory = BrowseHistory.ResolveInitialDirectory(_appDataM, _browseKey, _item.P2TextData)
+                Title = UILangProvider.Current["SourceQueue.SelectFilesTitle"],
+                Filter = new SrcFilePickerLangProvider(UILangProvider.Current.LanguageCode).VideoFilter,
+                InitialDirectory = BrowseHistory.ResolveInitialDirectory(_appDataM, _browseKey, _item.P2TextData),
+                Multiselect = true,
+                CheckFileExists = true,
+                CheckPathExists = true
             };
 
             if (ShowDialog(dialog) != true) return;
 
-            folderPath = dialog.FolderName;
-            filePaths = SrcFilePicker.GetVideoFilesInFolder(folderPath);
+            filePaths = GetVideoFiles(dialog.FileNames);
             if (filePaths.Length == 0)
             {
                 new OpenWarnModalCmd(
@@ -58,11 +62,23 @@ public class BrowseSrcQueueCmd(
                     .Execute(null);
                 return;
             }
+
+            pathText = GetSelectedFolderPath(filePaths);
+            if (string.IsNullOrWhiteSpace(pathText))
+            {
+                new OpenErrModalCmd(
+                    _modalNavS,
+                    UICaptionProvider.SourceInspect.ErrorTitle,
+                    new VideoSrcQueueLangProvider(UILangProvider.Current.LanguageCode)["SourceQueue.MixedFolderErrorMessage"])
+                    .Execute(null);
+                ActivateMainWindow();
+                return;
+            }
         }
 
-        SetQueueCardText(folderPath, filePaths);
-        Remember(_appDataM, _browseKey, folderPath);
-        _afterImport?.Invoke(_item, folderPath, filePaths);
+        SetQueueCardText(pathText, filePaths);
+        Remember(_appDataM, _browseKey, pathText);
+        _afterImport?.Invoke(_item, pathText, filePaths);
         ActivateMainWindow();
     }
 
@@ -71,5 +87,33 @@ public class BrowseSrcQueueCmd(
         List<string> lines = [$"No usable MPLS playlists were found in: {folderPath}"];
         lines.AddRange(diagnostics.Take(8));
         return string.Join(Environment.NewLine, lines);
+    }
+
+    private static string[] GetVideoFiles(IEnumerable<string> filePaths)
+    {
+        HashSet<string> extensions = new(
+            SrcFilePickerLangProvider.VideoExtensions
+            .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Select(extension => extension.TrimStart('*')),
+            StringComparer.OrdinalIgnoreCase);
+
+        return [.. filePaths.Where(filePath =>
+            extensions.Contains(Path.GetExtension(filePath) ?? string.Empty))];
+    }
+
+    private static string GetSelectedFolderPath(string[] filePaths)
+    {
+        if (filePaths.Length == 0) return string.Empty;
+
+        string? firstDirectory = Path.GetDirectoryName(filePaths[0]);
+        if (string.IsNullOrWhiteSpace(firstDirectory)) return string.Empty;
+
+        foreach (string filePath in filePaths.Skip(1))
+        {
+            if (!string.Equals(firstDirectory, Path.GetDirectoryName(filePath), StringComparison.OrdinalIgnoreCase))
+                return string.Empty;
+        }
+
+        return firstDirectory;
     }
 }

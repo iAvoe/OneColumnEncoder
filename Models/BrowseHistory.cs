@@ -59,6 +59,7 @@ public static class BrowseHistory
         string? historyDirectory = GetDirectory(appData, key);
         if (!string.IsNullOrWhiteSpace(historyDirectory) && Directory.Exists(historyDirectory))
             return historyDirectory;
+
         return OutputPath.GetInitialDirectory(fallbackPath);
     }
 

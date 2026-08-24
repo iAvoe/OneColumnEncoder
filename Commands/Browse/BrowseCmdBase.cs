@@ -2,14 +2,9 @@ using System.IO;
 
 namespace OneColumnEncoder.Commands.Browse;
 
-public abstract class BrowseCmdBase : BaseCmd
+public abstract class BrowseCmdBase(ToolItemCardVM item) : BaseCmd
 {
-    protected readonly ToolItemCardVM _item;
-
-    protected BrowseCmdBase(ToolItemCardVM item)
-    {
-        _item = item;
-    }
+    protected readonly ToolItemCardVM _item = item;
 
     protected static bool? ShowDialog(CommonDialog dialog)
     {
@@ -17,24 +12,24 @@ public abstract class BrowseCmdBase : BaseCmd
         return owner is null ? dialog.ShowDialog() : dialog.ShowDialog(owner);
     }
 
-    protected void SetQueueCardText(string folderPath, string[] filePaths)
+    protected void SetQueueCardText(string displayPath, string[] filePaths)
     {
         string[] fileNames = [.. filePaths
             .Select(Path.GetFileName)
             .Where(name => !string.IsNullOrWhiteSpace(name))
             .Select(name => name!)];
-        _item.P2TextData = folderPath;
+        _item.P2TextData = displayPath;
         _item.P1TextData = FormatQueueP1Text(fileNames);
         _item.P1TooltipText = FormatQueueP1TooltipText(fileNames);
     }
 
-    protected void Remember(AppDataM? appDataM, string? browseKey, string path)
+    protected static void Remember(AppDataM? appDataM, string? browseKey, string path)
     {
         if (browseKey != null && appDataM != null)
             BrowseHistory.Remember(appDataM, browseKey, path);
     }
 
-    protected void ActivateMainWindow() => Application.Current.MainWindow?.Activate();
+    protected static void ActivateMainWindow() => Application.Current.MainWindow?.Activate();
 
     public static string FormatQueueP1Text(IEnumerable<string> fileNames)
     {
