@@ -23,6 +23,10 @@ OneColumnEncoder 提供了相对硬核，同时简洁直观的 UI/UX 流程，�
 - 한국어
 - Português (Brasil)
 
+Entrance Tutorial | 基础教程
+
+- [GitHub/iAvoe/OneColumnEncoderTutorial](https://github.com/iAvoe/OneColumnEncoderTutorial)
+
 Detailed project description with screenshots and basic usages | 项目描述、截图和基本使用方法：
 
 - [README-EN.md](./Docs/README-EN.md)

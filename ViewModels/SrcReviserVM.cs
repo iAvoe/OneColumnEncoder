@@ -52,6 +52,7 @@ public class SrcReviserVM : BaseVM
             SrcReviserLangProvider.Current["SrcReviser.Confirm"],
             new CloseModalCmd(closeAction),
             new ActionCmd(_ => Confirm()));
+        FinishButtons.B2_1Icon = SvgIconProvider.GameRefresh;
 
         UILangProvider.CurrentChanged += OnLanguageChanged;
     }
