@@ -65,7 +65,7 @@ public static class StartupAutoToolImportService
         string itemText = string.Join(Environment.NewLine, candidates.Select(candidate => string.Format(
             UILangProvider.ToolImportStringFormat,
             candidate.ExeName,
-            candidate.FilePath)));
+            candidate.FilePath)))[..^1]; // [..^1] removes last line break
         string message = string.Format(UILangProvider.Current["AutoImport.FoundMessage"], itemText);
 
         ConfirmationModal window = new();

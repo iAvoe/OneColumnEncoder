@@ -12,7 +12,7 @@ public class UILangProvider : LangProviderBase
     public const string SrcAnalysisWindowTitle = "1cenc Source Analysis";
     public const string ScriptGenWindowTitle = "1cenc Script Generation";
     public const string MainWindowTitle = "1cenc";
-    public const string ToolImportStringFormat = "{0}\n{1}\n";
+    public const string ToolImportStringFormat = "{0}\n{1}\n"; // Need to delete last \n
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
         ["en"] = new()

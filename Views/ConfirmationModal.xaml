@@ -145,13 +145,13 @@
                                   Button2Command="{Binding Cmd2}"
                                   Button1IsEnabled="{Binding B2_1IsEnabled}"
                                   Button2IsEnabled="{Binding B2_2IsEnabled}"
-                                  Margin="0 2.5 0 0" />
+                                  Margin="0 15 0 0" />
             <comps:HintPanel Text="{Binding CopyHint}"
                              Margin="5 1.25 5 0"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center" />
         </StackPanel>
-        <!-- This might be an image icon instead -->
+        <!-- Right side large icon -->
         <Image Grid.Column="1"
                Margin="15 0 0 0"
                Height="60"
