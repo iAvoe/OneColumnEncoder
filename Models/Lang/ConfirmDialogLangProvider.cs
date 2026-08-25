@@ -1,9 +1,9 @@
 namespace OneColumnEncoder.Models.Lang;
 
 /// <summary>
-/// Localized strings for confirmation dialogs.
+/// Localized strings for confirmation dialogs
 /// </summary>
-public class ConfirmDialogLangProvider : LangProviderBase
+public class ConfirmDialogLangProvider(string languageCode) : LangProviderBase(languageCode, Data)
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -113,9 +113,6 @@ Data["ru"] = new(Data["en"])
         };
     }
 
-    public static ConfirmDialogLangProvider Current => new(UILangProvider.Current.LanguageCode);
-
-    public ConfirmDialogLangProvider(string languageCode) : base(languageCode, Data)
-    {
-    }
+    public static ConfirmDialogLangProvider Current =>
+        new(UILangProvider.Current.LanguageCode);
 }

@@ -132,6 +132,7 @@ public class FilterScribeVM : BaseVM
     }
     public static string VpyPrefix2 => FilterScribeModalLangProvider.Current["SrcScribe.VpyPrefix2"];
     public static string VpySuffix => FilterScribeModalLangProvider.Current["SrcScribe.VpySuffix"];
+    public FilterScribeModalLangProvider Lang => FilterScribeModalLangProvider.Current;
     #endregion
 
     #region Resolution scaling
@@ -1603,6 +1604,7 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(AvsSuffix));
         OnPropertyChanged(nameof(VpyPrefix));
         OnPropertyChanged(nameof(VpySuffix));
+        OnPropertyChanged(nameof(Lang));
         OnPropertyChanged(nameof(FfmpegConcatFileList));
         OnPropertyChanged(nameof(ResolutionScaleTitle));
         OnPropertyChanged(nameof(ScalePercentLabel));

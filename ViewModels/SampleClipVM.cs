@@ -4,8 +4,9 @@ namespace OneColumnEncoder.ViewModels;
 
 public class SampleClipVM : BaseVM, IClipRangeSelectorDragAware
 {
-    private const int MinClipLengthSeconds = 10;
-    private const int MaxClipLengthSeconds = 600;
+    // Clamp
+    private const int MinClipDurationSec = 10; // Too small makes click area unclickable
+    private const int MaxClipDurationSec = 600;
 
     private readonly ModalNavS _modalNavS;
     private readonly AppConfM _appConfM;
@@ -76,7 +77,7 @@ public class SampleClipVM : BaseVM, IClipRangeSelectorDragAware
         get => _clipLengthSeconds;
         set
         {
-            int next = Math.Max(MinClipLengthSeconds, Math.Min(MaxClipLengthSeconds, value));
+            int next = Math.Max(MinClipDurationSec, Math.Min(MaxClipDurationSec, value));
             if (!SetProperty(ref _clipLengthSeconds, next)) return;
             ApplyClipLengthToSelection();
         }
@@ -273,8 +274,8 @@ public class SampleClipVM : BaseVM, IClipRangeSelectorDragAware
         if (updateClipLength)
         {
             int seconds = Math.Max(
-                MinClipLengthSeconds,
-                Math.Min(MaxClipLengthSeconds,
+                MinClipDurationSec,
+                Math.Min(MaxClipDurationSec,
                 (int)Math.Round(durationSeconds)));
             SetProperty(ref _clipLengthSeconds, seconds, nameof(ClipLengthSeconds));
         }
@@ -339,7 +340,7 @@ public class SampleClipVM : BaseVM, IClipRangeSelectorDragAware
         if (durationSeconds <= 0d)
             durationSeconds = ClipLengthSeconds;
 
-        return SampleClip.ClampDuration(durationSeconds, _totalSeconds, MinClipLengthSeconds, MaxClipLengthSeconds);
+        return SampleClip.ClampDuration(durationSeconds, _totalSeconds, MinClipDurationSec, MaxClipDurationSec);
     }
 
     private bool TryParseSourceSeconds(string text, bool allowSourceEnd, out double seconds)
@@ -368,8 +369,8 @@ public class SampleClipVM : BaseVM, IClipRangeSelectorDragAware
             endSeconds,
             anchorEnd,
             _totalSeconds,
-            MinClipLengthSeconds,
-            MaxClipLengthSeconds);
+            MinClipDurationSec,
+            MaxClipDurationSec);
         if (!selection.HasValue)
         {
             SyncFromSelection(updateClipLength: false);
