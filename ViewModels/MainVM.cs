@@ -830,9 +830,7 @@ public class MainVM : BaseVM
             if (!ShowAutoImportConfirmation(candidates)) return;
 
             foreach (AutoToolImport.Candidate candidate in candidates)
-            {
                 await OnToolImported(candidate.ExeName, candidate.FilePath, candidate.Version);
-            }
         }
         finally
         {
@@ -844,9 +842,8 @@ public class MainVM : BaseVM
     private bool ShowAutoImportConfirmation(IReadOnlyList<AutoToolImport.Candidate> candidates)
     {
         string itemText = string.Join(Environment.NewLine, candidates.Select(candidate => string.Format(
-            UILangProvider.Current["AutoImport.ItemFormat"],
+            UILangProvider.ToolImportStringFormat,
             candidate.ExeName,
-            candidate.Version,
             candidate.FilePath)));
         string message = string.Format(UILangProvider.Current["AutoImport.FoundMessage"], itemText);
 

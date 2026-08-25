@@ -12,6 +12,7 @@ public class UILangProvider : LangProviderBase
     public const string SrcAnalysisWindowTitle = "1cenc Source Analysis";
     public const string ScriptGenWindowTitle = "1cenc Script Generation";
     public const string MainWindowTitle = "1cenc";
+    public const string ToolImportStringFormat = "{0}\n{1}\n";
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
         ["en"] = new()
@@ -145,7 +146,6 @@ public class UILangProvider : LangProviderBase
             ["AutoImport.Title"] = "Auto Tool Import",
             ["AutoImport.FoundMessage"] = "Detected following verified executable files. Import them now?\n\n{0}",
             ["AutoImport.NotFoundMessage"] = "No importable tools were detected in this app's directory. To recheck later, enable Settings → Init Mode → Auto-import tools on next launch.",
-            ["AutoImport.ItemFormat"] = "- {0}: {1}\n  {2}",
 
             // Confirmation provider messages (with {0} / {1} format placeholders)
             ["ConfirmProvider.SuspiciousImportTitle"] = "Import does not match {0}",
@@ -381,7 +381,6 @@ public class UILangProvider : LangProviderBase
             ["AutoImport.Title"] = "自动导入工具",
             ["AutoImport.FoundMessage"] = "发现以下已验证的可执行文件，是否现在导入？\n\n{0}",
             ["AutoImport.NotFoundMessage"] = "未检测到位于本软件所在目录下有可导入的工具。在设置中勾选“初始化模式 → 下次打开尝试自动导入工具”即可复查。",
-            ["AutoImport.ItemFormat"] = "- {0}：{1}\n  {2}",
 
             ["ConfirmProvider.SuspiciousImportTitle"] = "导入内容对不上 {0}",
             ["ConfirmProvider.ProceedToRun"] = "继续运行 {0} 以获取其版本？",
@@ -603,7 +602,6 @@ public class UILangProvider : LangProviderBase
             ["AutoImport.Title"] = "自動導入工具",
             ["AutoImport.FoundMessage"] = "發現以下已驗證的可執行文件，是否現在導入？\n\n{0}",
             ["AutoImport.NotFoundMessage"] = "未檢測到位於本軟件所在目錄下有可導入的工具。在設定中勾選「初始化模式 → 下次打開嘗試自動導入工具」即可複查。",
-            ["AutoImport.ItemFormat"] = "- {0}：{1}\n  {2}",
 
             ["ConfirmProvider.SuspiciousImportTitle"] = "導入內容對不上 {0}",
             ["ConfirmProvider.ProceedToRun"] = "繼續運行 {0} 以獲取其版本？",
@@ -835,7 +833,6 @@ public class UILangProvider : LangProviderBase
         ["AutoImport.Title"] = "Import automatique d'outils",
         ["AutoImport.FoundMessage"] = "Fichiers exécutables vérifiés trouvés. Les importer maintenant ?\n\n{0}",
         ["AutoImport.NotFoundMessage"] = "Aucun outil importable n'a été détecté dans le dossier de l'application. Pour revérifier plus tard, activez Réglages → Mode initial → Importer outils au prochain démarrage.",
-        ["AutoImport.ItemFormat"] = "- {0} : {1}\n  {2}",
         ["ConfirmProvider.SuspiciousImportTitle"] = "Import ne correspond pas à {0}",
         ["ConfirmProvider.ProceedToRun"] = "Exécuter {0} pour obtenir sa version ?",
         ["ConfirmProvider.WrongTool"] = "Importer {0} comme {1} ?",
@@ -1030,7 +1027,6 @@ public class UILangProvider : LangProviderBase
         ["AutoImport.Title"] = "Importación automática",
         ["AutoImport.FoundMessage"] = "Se encontraron estos ejecutables verificados. ¿Importarlos ahora?\n\n{0}",
         ["AutoImport.NotFoundMessage"] = "No se detectaron herramientas importables en la carpeta de la aplicación. Para revisar de nuevo, active Ajustes → Modo inicial → Auto-importar herramientas al inicio.",
-        ["AutoImport.ItemFormat"] = "- {0}: {1}\n  {2}",
         ["ConfirmProvider.SuspiciousImportTitle"] = "Importación no coincide con {0}",
         ["ConfirmProvider.ProceedToRun"] = "¿Ejecutar {0} para obtener versión?",
         ["ConfirmProvider.WrongTool"] = "¿Importar {0} como {1}?",
@@ -1215,7 +1211,6 @@ public class UILangProvider : LangProviderBase
         ["AutoImport.Title"] = "ツール自動取込",
         ["AutoImport.FoundMessage"] = "検証済みの実行ファイルが見つかりました。今すぐ取り込みますか？\n\n{0}",
         ["AutoImport.NotFoundMessage"] = "このアプリのフォルダに取込可能なツールは見つかりませんでした。再確認するには、設定 → 初期化モード → 次回起動時にツールを自動取込 を有効にしてください。",
-        ["AutoImport.ItemFormat"] = "- {0}: {1}\n  {2}",
         ["Checklist.Tools.Upstream"] = "上流プログラム取込済み",
         ["Checklist.Tools.Downstream"] = "下流プログラム取込済み",
         ["Checklist.Tools.Analysis"] = "解析プログラム取込済み",
@@ -1410,7 +1405,6 @@ public class UILangProvider : LangProviderBase
         ["AutoImport.Title"] = "Автоимпорт инструментов",
         ["AutoImport.FoundMessage"] = "Найдены проверенные исполняемые файлы. Импортировать сейчас?\n\n{0}",
         ["AutoImport.NotFoundMessage"] = "В папке приложения не найдены инструменты для импорта. Чтобы проверить снова, включите Настр. → Режим инициализации → Автоимпорт инструментов при запуске.",
-        ["AutoImport.ItemFormat"] = "- {0}: {1}\n  {2}",
         ["Checklist.Tools.Upstream"] = "Один апстрим импортирован",
         ["Checklist.Tools.Downstream"] = "Один даунстрим импортирован",
         ["Checklist.Tools.Analysis"] = "Один анализатор импортирован",
@@ -1615,7 +1609,6 @@ public class UILangProvider : LangProviderBase
         ["AutoImport.Title"] = "Automatischer Tool-Import",
         ["AutoImport.FoundMessage"] = "Verifizierte ausführbare Dateien gefunden. Jetzt importieren?\n\n{0}",
         ["AutoImport.NotFoundMessage"] = "Keine importierbaren Tools im Anwendungsordner erkannt. Zum späteren Prüfen: Einstellungen → Initialisierungsmodus → Tools beim nächsten Start automatisch importieren aktivieren.",
-        ["AutoImport.ItemFormat"] = "- {0}: {1}\n  {2}",
         ["ConfirmProvider.SuspiciousImportTitle"] = "Import stimmt nicht mit {0} überein",
         ["ConfirmProvider.ProceedToRun"] = "{0} ausführen, um Version zu erhalten?",
         ["ConfirmProvider.WrongTool"] = "{0} als {1} importieren?",
@@ -1786,7 +1779,6 @@ public class UILangProvider : LangProviderBase
         ["AutoImport.Title"] = "도구 자동 가져오기",
         ["AutoImport.FoundMessage"] = "다음 검증된 실행 파일을 찾았습니다. 지금 가져올까요?\n\n{0}",
         ["AutoImport.NotFoundMessage"] = "애플리케이션 폴더에서 가져올 수 있는 도구를 찾지 못했습니다. 나중에 다시 검사하려면 설정 → 초기화 모드 → 다음 실행 시 도구 자동 가져오기를 켜세요.",
-        ["AutoImport.ItemFormat"] = "- {0}: {1}\n  {2}",
         ["ConfirmProvider.SuspiciousImportTitle"] = "가져오기가 {0}과 일치하지 않습니다",
         ["ConfirmProvider.ProceedToRun"] = "버전을 확인하려면 {0}을(를) 실행할까요?",
         ["ConfirmProvider.WrongTool"] = "{0}을(를) {1}로 가져올까요?",
@@ -1977,7 +1969,6 @@ public class UILangProvider : LangProviderBase
         ["AutoImport.Title"] = "Importação automática de ferramentas",
         ["AutoImport.FoundMessage"] = "Detectados os seguintes arquivos executáveis verificados. Importá-los agora?\n\n{0}",
         ["AutoImport.NotFoundMessage"] = "Nenhuma ferramenta importável foi detectada no diretório deste aplicativo. Para verificar posteriormente, habilite Configurações → Modo de Inicialização → Auto-importar ferramentas na próxima execução.",
-        ["AutoImport.ItemFormat"] = "- {0}: {1}\n  {2}",
         ["ConfirmProvider.SuspiciousImportTitle"] = "A importação não corresponde a {0}",
         ["ConfirmProvider.ProceedToRun"] = "Prosseguir para executar {0} para obter sua versão?",
         ["ConfirmProvider.WrongTool"] = "Importar {0} como {1}?",
