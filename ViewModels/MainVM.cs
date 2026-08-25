@@ -804,76 +804,12 @@ public class MainVM : BaseVM
         RefreshLanguage();
         SubToAllZoneItemChanges();
         RefreshAllZoneSelectedPaths();
-        _ = Application.Current.Dispatcher.InvokeAsync(async () => await TryAutoImportToolsOnStartupAsync());
+        _ = StartupAutoToolImportService.TryAutoImportToolsOnStartupAsync(
+            _appConfM,
+            _appDataM.Tools,
+            _modalNavS,
+            OnToolImported);
     }
-    #endregion
-
-    #region Startup Auto Tool Import
-
-    private async Task TryAutoImportToolsOnStartupAsync()
-    {
-        if (!_appConfM.Reimport) return;
-
-        try
-        {
-            IReadOnlyList<AutoToolImport.Candidate> candidates =
-                await AutoToolImport.FindImportableToolsAsync(_appDataM.Tools);
-
-            if (candidates.Count == 0)
-            {
-                ShowAutoImportInfo(
-                    UILangProvider.Current["AutoImport.Title"],
-                    UILangProvider.Current["AutoImport.NotFoundMessage"]);
-                return;
-            }
-
-            if (!ShowAutoImportConfirmation(candidates)) return;
-
-            foreach (AutoToolImport.Candidate candidate in candidates)
-                await OnToolImported(candidate.ExeName, candidate.FilePath, candidate.Version);
-        }
-        finally
-        {
-            _appConfM.Reimport = false;
-            _appConfM.Save();
-        }
-    }
-
-    private bool ShowAutoImportConfirmation(IReadOnlyList<AutoToolImport.Candidate> candidates)
-    {
-        string itemText = string.Join(Environment.NewLine, candidates.Select(candidate => string.Format(
-            UILangProvider.ToolImportStringFormat,
-            candidate.ExeName,
-            candidate.FilePath)));
-        string message = string.Format(UILangProvider.Current["AutoImport.FoundMessage"], itemText);
-
-        ConfirmationModal window = new();
-        ConfirmationVM vm = ConfirmationVM.CreateInfo(
-            UILangProvider.Current["AutoImport.Title"],
-            message,
-            new ActionCmd(_ => { window.DialogResult = false; window.Close(); }),
-            new ActionCmd(_ => { window.DialogResult = true; window.Close(); }));
-
-        window.DataContext = vm;
-        window.Owner = Application.Current.MainWindow;
-        window.Closed += (_, _) => _modalNavS.Close();
-        _modalNavS.CurrentModalVM = vm;
-        return window.ShowDialog() == true;
-    }
-
-    private void ShowAutoImportInfo(string title, string message)
-    {
-        ConfirmationModal window = new();
-        CloseModalCmd closeCmd = new(window.Close);
-        ConfirmationVM vm = ConfirmationVM.CreateInfo(title, message, closeCmd, closeCmd);
-
-        window.DataContext = vm;
-        window.Owner = Application.Current.MainWindow;
-        window.Closed += (_, _) => _modalNavS.Close();
-        _modalNavS.CurrentModalVM = vm;
-        window.ShowDialog();
-    }
-
     #endregion
 
     // Zone Initialization
