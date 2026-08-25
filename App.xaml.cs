@@ -1,3 +1,5 @@
+using System.IO;
+
 namespace OneColumnEncoder;
 
 /// <summary>
@@ -16,6 +18,10 @@ public partial class App : Application
         _modalNavM = new ModalNavS();
         _appConfM = AppConfM.Load();
         _appDataM = AppDataM.Load();
+
+        // Fresh installs need one startup language probe; existing configs keep their saved state.
+        if (!File.Exists(Path.Combine(AppConfM.GetConfigDirectory(), "appconfig.json")))
+            _appConfM.InitLang = true;
     }
 
     protected override void OnStartup(StartupEventArgs e)
@@ -51,9 +57,11 @@ public partial class App : Application
 
     private void ApplyStartupLanguageOnce()
     {
-        if (!_appConfM.IsFirstLaunch) return;
+        if (!_appConfM.InitLang) return;
 
         _appConfM.Lang.LanguageCode = ResolveSupportedLanguageCode(CultureInfo.CurrentUICulture);
+        _appConfM.InitLang = false;
+        _appConfM.Save();
     }
 
     private static string ResolveSupportedLanguageCode(CultureInfo culture)

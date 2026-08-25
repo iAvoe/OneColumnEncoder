@@ -10,7 +10,8 @@ public class AppConfM : SaveLoadBase<AppConfM>
     private static readonly string ConfigFilePath =
         Path.Combine(GetConfigDirectory(), "appconfig.json");
     protected override string FilePath => ConfigFilePath;
-    public bool IsFirstLaunch { get; set; } = true;
+    public bool Reimport { get; set; } = true;
+    public bool InitLang { get; set; } = false;
     public OverwriteSettings Overwrite { get; set; } = new OverwriteSettings();
     public Language Lang { get; set; } = new Language();
     public FontSettings Font { get; set; } = new FontSettings();

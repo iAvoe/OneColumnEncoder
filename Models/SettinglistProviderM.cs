@@ -50,9 +50,13 @@ public static class SettinglistProviderM
     public static List<SettingItemDefinitionM> GetInitModeSettings() =>
     [
         new(UICaptionProvider.AppConf.Groups.InitMode,
-            Lang["Setting.InitMode.IsFirstLaunch"],
+            Lang["Setting.InitMode.InitLang"],
             SettingControlType.CheckBox,
-            nameof(AppConfM.IsFirstLaunch))
+            nameof(AppConfM.InitLang)),
+        new(UICaptionProvider.AppConf.Groups.InitMode,
+            Lang["Setting.InitMode.Reimport"],
+            SettingControlType.CheckBox,
+            nameof(AppConfM.Reimport))
     ];
 
     public static List<SettingItemDefinitionM> GetFontSettings() =>

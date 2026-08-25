@@ -34,7 +34,8 @@ public abstract class AppConfCmdBase(AppConfM appConfStore) : AsyncBaseCmd
 
     private void ApplyToStore(AppConfM loadedConfig)
     {
-        _appConfStore.IsFirstLaunch = loadedConfig.IsFirstLaunch;
+        _appConfStore.Reimport = loadedConfig.Reimport;
+        _appConfStore.InitLang = loadedConfig.InitLang;
         _appConfStore.Overwrite = loadedConfig.Overwrite;
         _appConfStore.Lang = loadedConfig.Lang;
         _appConfStore.Font = loadedConfig.Font;

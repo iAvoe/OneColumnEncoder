@@ -812,7 +812,7 @@ public class MainVM : BaseVM
 
     private async Task TryAutoImportToolsOnStartupAsync()
     {
-        if (!_appConfM.IsFirstLaunch) return;
+        if (!_appConfM.Reimport) return;
 
         try
         {
@@ -836,7 +836,7 @@ public class MainVM : BaseVM
         }
         finally
         {
-            _appConfM.IsFirstLaunch = false;
+            _appConfM.Reimport = false;
             _appConfM.Save();
         }
     }
