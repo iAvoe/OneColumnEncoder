@@ -13,7 +13,7 @@
         MinHeight="150"
         MaxHeight="650"
         SizeToContent="Height"
-        Width="500"
+        Width="510"
         WindowStartupLocation="CenterOwner"
         Background="{StaticResource Background}">
     <Window.CommandBindings>
