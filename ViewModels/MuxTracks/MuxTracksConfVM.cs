@@ -51,6 +51,7 @@ public sealed class MuxTracksConfVM : BaseVM
     public static string SubtitleHeader => Lang["MuxTracks.SubtitleHeader"];
     public static string AddSubtitleText => Lang["MuxTracks.AddSubtitle"];
     public static string EmptyText => Lang["MuxTracks.Empty"];
+    public static string CannotDeleteSrcSubsHint => Lang["Hint.CannotDeleteSrcSubs"];
     public string CurrentSourceTitle => SelectedSource?.Name ?? string.Empty;
     public string CurrentSourceDurationText => SelectedSource?.TrackSummary ?? string.Empty;
     public ObservableCollection<MuxTrackSourceVM> SourceItems { get; } = [];

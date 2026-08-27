@@ -6,15 +6,12 @@ namespace OneColumnEncoder.Models.Lang;
 public sealed class MuxLangProvider(string languageCode) : LangProviderBase(languageCode, Data)
 {
     public const string WindowTitle = "Add Subtitles";
+    public const string DurationUnknown = "N/A";
 
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
         ["en"] = new()
         {
-            // TODO: Move to const or LangProviderBase
-            ["MuxTracks.DurationUnknown"] = "N/A",
-            ["MuxTracks.Moved"] = "↑↓",
-
             ["MuxTracks.QueueSources"] = "Queue Sources",
             ["MuxTracks.SubtitleHeader"] = "Subtitle Tracks",
             ["MuxTracks.AddSubtitle"] = "Add Subtitle",
@@ -71,7 +68,6 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
             ["MuxTracks.Sync"] = "Sync (±ms)",
             ["MuxTracks.Primary"] = "Piste principale",
             ["MuxTracks.Empty"] = "Aucune piste ajoutée",
-            ["MuxTracks.Moved"] = "déplacé",
             ["MuxTracks.InvalidSync"] = "Le décalage de synchro doit être un entier en millisecondes.",
             ["MuxTracks.FileFilter"] = "Fichiers de sous-titres|*.ass;*.srt;*.ssa;*.sub;*.sup|Tous les fichiers (*.*)|*.*",
             ["MuxTracks.WindowButton"] = "Ajouter sous-titres",
@@ -85,7 +81,6 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
             ["MuxTracks.Sync"] = "Sincronización (±ms)",
             ["MuxTracks.Primary"] = "Pista principal",
             ["MuxTracks.Empty"] = "No hay pistas añadidas",
-            ["MuxTracks.Moved"] = "movido",
             ["MuxTracks.InvalidSync"] = "El desplazamiento de sincronización debe ser un número entero de milisegundos.",
             ["MuxTracks.FileFilter"] = "Archivos de subtítulos|*.ass;*.srt;*.ssa;*.sub;*.sup|Todos los archivos (*.*)|*.*",
             ["MuxTracks.WindowButton"] = "Añadir subtítulos",
@@ -99,7 +94,6 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
             ["MuxTracks.Sync"] = "同期 (±ms)",
             ["MuxTracks.Primary"] = "メイントラック",
             ["MuxTracks.Empty"] = "トラックは追加されていません",
-            ["MuxTracks.Moved"] = "移動済み",
             ["MuxTracks.InvalidSync"] = "同期オフセットはミリ秒単位の整数で指定してください。",
             ["MuxTracks.FileFilter"] = "字幕ファイル|*.ass;*.srt;*.ssa;*.sub;*.sup|すべてのファイル (*.*)|*.*",
             ["MuxTracks.WindowButton"] = "字幕を追加",
@@ -113,7 +107,6 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
             ["MuxTracks.Sync"] = "Синхронизация (±мс)",
             ["MuxTracks.Primary"] = "Основная дорожка",
             ["MuxTracks.Empty"] = "Дорожки не добавлены",
-            ["MuxTracks.Moved"] = "перемещено",
             ["MuxTracks.InvalidSync"] = "Смещение синхронизации должно быть целым числом миллисекунд.",
             ["MuxTracks.FileFilter"] = "Файлы субтитров|*.ass;*.srt;*.ssa;*.sub;*.sup|Все файлы (*.*)|*.*",
             ["MuxTracks.WindowButton"] = "Добавить субтитры",
@@ -127,7 +120,6 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
             ["MuxTracks.Sync"] = "Sync (±ms)",
             ["MuxTracks.Primary"] = "Hauptspur",
             ["MuxTracks.Empty"] = "Keine Spuren hinzugefügt",
-            ["MuxTracks.Moved"] = "verschoben",
             ["MuxTracks.InvalidSync"] = "Die Sync-Verschiebung muss eine ganze Millisekundenzahl sein.",
             ["MuxTracks.FileFilter"] = "Untertiteldateien|*.ass;*.srt;*.ssa;*.sub;*.sup|Alle Dateien (*.*)|*.*",
             ["MuxTracks.WindowButton"] = "Untertitel hinzufügen",
@@ -141,7 +133,6 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
             ["MuxTracks.Sync"] = "동기화 (±ms)",
             ["MuxTracks.Primary"] = "기본 트랙",
             ["MuxTracks.Empty"] = "추가된 트랙이 없습니다",
-            ["MuxTracks.Moved"] = "이동됨",
             ["MuxTracks.InvalidSync"] = "동기화 오프셋은 정수 밀리초여야 합니다.",
             ["MuxTracks.FileFilter"] = "자막 파일|*.ass;*.srt;*.ssa;*.sub;*.sup|모든 파일 (*.*)|*.*",
             ["MuxTracks.WindowButton"] = "자막 추가",
@@ -155,7 +146,6 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
             ["MuxTracks.Sync"] = "Sincronia (±ms)",
             ["MuxTracks.Primary"] = "Faixa principal",
             ["MuxTracks.Empty"] = "Nenhuma faixa adicionada",
-            ["MuxTracks.Moved"] = "movido",
             ["MuxTracks.InvalidSync"] = "O deslocamento de sincronização deve ser um número inteiro de milissegundos.",
             ["MuxTracks.FileFilter"] = "Arquivos de legenda|*.ass;*.srt;*.ssa;*.sub;*.sup|Todos os arquivos (*.*)|*.*",
             ["MuxTracks.WindowButton"] = "Adicionar legendas",

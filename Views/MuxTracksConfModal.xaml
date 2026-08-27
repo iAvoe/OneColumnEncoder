@@ -88,6 +88,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0">
                 <TextBlock Text="{Binding CurrentSourceTitle}"
@@ -142,7 +143,8 @@
                     </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <comps:MuxTrackItem DataContext="{Binding}" />
+                            <comps:MuxTrackItem DataContext="{Binding}"
+                                                IsRecentlyMoved="{Binding IsRecentlyMoved}" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -155,6 +157,9 @@
                                   Button1IsEnabled="{Binding B2_1IsEnabled}"
                                   Button2IsEnabled="{Binding B2_2IsEnabled}"
                                   Margin="0 12.5 0 0" />
+            <comps:HintPanel Grid.Row="3"
+                             Margin="0 2.5 0 0"
+                             Text="{Binding CannotDeleteSrcSubsHint}" />
         </Grid>
     </Grid>
 </ui:AdaptiveWindow>

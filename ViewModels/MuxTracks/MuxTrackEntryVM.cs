@@ -21,7 +21,7 @@ public sealed class MuxTrackEntryVM : BaseVM
 
     public MuxTrackM Model => _model;
     public string Name => _model.Name;
-    public string DurationText => MuxLangProvider.Current["MuxTracks.DurationUnknown"];
+    public static string DurationText => MuxLangProvider.DurationUnknown;
     public bool CanRemove => !_model.IsSourceTrack;
     public string SyncText
     {
@@ -83,9 +83,9 @@ public sealed class MuxTrackEntryVM : BaseVM
         private set => SetProperty(ref _isRecentlyMoved, value);
     }
 
-    public string MoveUpText => LangProviderBase.MoveUpText;
-    public string MoveDownText => LangProviderBase.MoveDownText;
-    public string RemoveText => LangProviderBase.RemoveText;
+    public static string MoveUpText => LangProviderBase.MoveUpText;
+    public static string MoveDownText => LangProviderBase.MoveDownText;
+    public static string RemoveText => LangProviderBase.RemoveText;
     public ICommand MoveUpCommand { get; }
     public ICommand MoveDownCommand { get; }
     public ICommand RemoveCommand { get; }
@@ -95,7 +95,9 @@ public sealed class MuxTrackEntryVM : BaseVM
     {
         IsRecentlyMoved = true;
         _flashTimer?.Stop();
-        _flashTimer = new System.Windows.Threading.DispatcherTimer(TimeSpan.FromMilliseconds(600), System.Windows.Threading.DispatcherPriority.Normal, (_, _) =>
+        _flashTimer =
+            new System.Windows.Threading.DispatcherTimer(TimeSpan.FromMilliseconds(600),
+            System.Windows.Threading.DispatcherPriority.Normal, (_, _) =>
         {
             IsRecentlyMoved = false;
             _flashTimer?.Stop();
