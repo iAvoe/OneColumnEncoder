@@ -16,10 +16,9 @@ public sealed class OpenMuxTracksCmd(
     {
         if (!canOpen() || TryActivateExistingWindow<MuxTracksConfModal>()) return;
 
-        string[] paths = getSourcePaths()
+        string[] paths = [.. getSourcePaths()
             .Where(path => !string.IsNullOrWhiteSpace(path) && File.Exists(path))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToArray();
+            .Distinct(StringComparer.OrdinalIgnoreCase)];
         if (paths.Length == 0) return;
 
         IReadOnlyDictionary<string, string?> ffprobeJsonByPath = getFfprobeJsonBatch(paths);

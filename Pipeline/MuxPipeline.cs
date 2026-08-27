@@ -249,7 +249,9 @@ public static partial class MuxPipeline
     private static string BuildExternalInputArgs(IReadOnlyList<MuxTrackM>? tracks)
     {
         if (tracks is not { Count: > 0 }) return string.Empty;
-        return string.Join(" ", tracks.Select((track, index) =>
+        var externalTracks = tracks.Where(t => !t.IsSourceTrack).ToList();
+        if (externalTracks.Count == 0) return string.Empty;
+        return string.Join(" ", externalTracks.Select((track, index) =>
         {
             string offset = track.SyncMilliseconds == 0
                 ? string.Empty
@@ -265,26 +267,30 @@ public static partial class MuxPipeline
     {
         if (tracks is not { Count: > 0 }) return string.Empty;
 
-        int existingSubtitleCount = GetStreamCount(sourceFfprobeJson, "subtitle");
-        int subtitleIndex = existingSubtitleCount;
+        var externalTracks = tracks.Where(t => !t.IsSourceTrack).ToList();
+        int sourceSubtitleCount = GetStreamCount(sourceFfprobeJson, "subtitle")
+            + tracks.Count(t => t.IsSourceTrack);
+        int subtitleIndex = sourceSubtitleCount;
+
         List<string> args = [];
-        foreach (MuxTrackM track in tracks)
+        foreach (MuxTrackM track in externalTracks)
         {
             args.Add($"-map {inputIndex}:0 -c:s copy -metadata:s:s:{subtitleIndex} title={Quote(track.Name)}");
             subtitleIndex++;
             inputIndex++;
         }
 
-        MuxTrackM[] defaults = [.. tracks.Where(track => track.IsDefault)];
+        MuxTrackM[] defaults = [.. externalTracks.Where(track => track.IsDefault)];
         if (defaults.Length > 0)
         {
-            int subtitleTotal = existingSubtitleCount + tracks.Count;
-            args.AddRange(Enumerable.Range(0, subtitleTotal).Select(index => $"-disposition:s:{index} 0"));
-            subtitleIndex = existingSubtitleCount;
-            foreach (MuxTrackM track in tracks)
+            subtitleIndex = sourceSubtitleCount;
+            foreach (MuxTrackM track in externalTracks)
             {
-                if (!track.IsDefault) continue;
-                args.Add($"-disposition:s:{subtitleIndex} default");
+                if (track.IsDefault)
+                {
+                    args.Add($"-disposition:s:{subtitleIndex} default");
+                    break;
+                }
                 subtitleIndex++;
             }
         }
