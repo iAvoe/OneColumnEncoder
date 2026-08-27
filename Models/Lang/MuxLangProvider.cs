@@ -12,7 +12,7 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
         ["en"] = new()
         {
             ["MuxTracks.QueueSources"] = "Queue Sources",
-            ["MuxTracks.SubtitleHeader"] = "Subtitle Track Adding",
+            ["MuxTracks.SubtitleHeader"] = "Subtitle TrackS",
             ["MuxTracks.AddSubtitle"] = "Add Subtitle",
             ["MuxTracks.Sync"] = "Sync (\u00B1ms)",
             ["MuxTracks.Primary"] = "Primary track",
@@ -34,7 +34,7 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
         foreach (var pair in new Dictionary<string, string>
         {
             ["MuxTracks.QueueSources"] = "队列源",
-            ["MuxTracks.SubtitleHeader"] = "添加字幕轨",
+            ["MuxTracks.SubtitleHeader"] = "字幕",
             ["MuxTracks.AddSubtitle"] = "添加字幕",
             ["MuxTracks.Sync"] = "同步（+-毫秒）",
             ["MuxTracks.Primary"] = "主轨",
@@ -45,7 +45,7 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
         foreach (var pair in new Dictionary<string, string>
         {
             ["MuxTracks.QueueSources"] = "佇列來源",
-            ["MuxTracks.SubtitleHeader"] = "新增字幕軌",
+            ["MuxTracks.SubtitleHeader"] = "字幕",
             ["MuxTracks.AddSubtitle"] = "新增字幕",
             ["MuxTracks.Sync"] = "同步（+-毫秒）",
             ["MuxTracks.Primary"] = "主要軌",
@@ -70,7 +70,7 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
         foreach (var pair in new Dictionary<string, string>
         {
             ["MuxTracks.QueueSources"] = "Fuentes de cola",
-            ["MuxTracks.SubtitleHeader"] = "Añadir pista de subtítulos",
+            ["MuxTracks.SubtitleHeader"] = "Subtítulos",
             ["MuxTracks.AddSubtitle"] = "Añadir subtítulo",
             ["MuxTracks.Sync"] = "Sincronización (±ms)",
             ["MuxTracks.Primary"] = "Pista principal",
@@ -83,7 +83,7 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
         foreach (var pair in new Dictionary<string, string>
         {
             ["MuxTracks.QueueSources"] = "キューのソース",
-            ["MuxTracks.SubtitleHeader"] = "字幕トラックの追加",
+            ["MuxTracks.SubtitleHeader"] = "字幕",
             ["MuxTracks.AddSubtitle"] = "字幕を追加",
             ["MuxTracks.Sync"] = "同期 (±ms)",
             ["MuxTracks.Primary"] = "メイントラック",
@@ -96,7 +96,7 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
         foreach (var pair in new Dictionary<string, string>
         {
             ["MuxTracks.QueueSources"] = "Источники очереди",
-            ["MuxTracks.SubtitleHeader"] = "Добавление дорожки субтитров",
+            ["MuxTracks.SubtitleHeader"] = "Субтитров",
             ["MuxTracks.AddSubtitle"] = "Добавить субтитры",
             ["MuxTracks.Sync"] = "Синхронизация (±мс)",
             ["MuxTracks.Primary"] = "Основная дорожка",
@@ -109,7 +109,7 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
         foreach (var pair in new Dictionary<string, string>
         {
             ["MuxTracks.QueueSources"] = "Quellen der Warteschlange",
-            ["MuxTracks.SubtitleHeader"] = "Untertitelspur hinzufügen",
+            ["MuxTracks.SubtitleHeader"] = "Untertitelspur",
             ["MuxTracks.AddSubtitle"] = "Untertitel hinzufügen",
             ["MuxTracks.Sync"] = "Sync (±ms)",
             ["MuxTracks.Primary"] = "Hauptspur",
@@ -122,7 +122,7 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
         foreach (var pair in new Dictionary<string, string>
         {
             ["MuxTracks.QueueSources"] = "대기열 소스",
-            ["MuxTracks.SubtitleHeader"] = "자막 트랙 추가",
+            ["MuxTracks.SubtitleHeader"] = "자막 트랙",
             ["MuxTracks.AddSubtitle"] = "자막 추가",
             ["MuxTracks.Sync"] = "동기화 (±ms)",
             ["MuxTracks.Primary"] = "기본 트랙",
@@ -135,7 +135,7 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
         foreach (var pair in new Dictionary<string, string>
         {
             ["MuxTracks.QueueSources"] = "Fontes da fila",
-            ["MuxTracks.SubtitleHeader"] = "Adição de faixa de legenda",
+            ["MuxTracks.SubtitleHeader"] = "Faixa de legenda",
             ["MuxTracks.AddSubtitle"] = "Adicionar legenda",
             ["MuxTracks.Sync"] = "Sincronia (±ms)",
             ["MuxTracks.Primary"] = "Faixa principal",

@@ -10,35 +10,59 @@
                    d:DataContext="{d:DesignInstance Type=muxs:MuxTracksConfVM}"
                    mc:Ignorable="d"
                    Background="{StaticResource Background}"
-                   Title="{Binding WindowTitle}"
-                   MinWidth="520"
-                   Width="{Binding ShowSidebar, Converter={StaticResource SidebarWidthConverter}, ConverterParameter='760,540'}"
-                   MaxWidth="760"
-                   Height="300"
-                   WindowState="Normal"
-                   WindowStartupLocation="CenterOwner">
+                    Title="{Binding WindowTitle}"
+                    MinWidth="520"
+                    Width="{Binding ShowSidebar, Converter={StaticResource SidebarWidthConverter}, ConverterParameter='760,540'}"
+                    MaxWidth="760"
+                    SizeToContent="Height"
+                    WindowState="Normal"
+                    WindowStartupLocation="CenterOwner">
     <Grid Margin="15 12.5 15 15">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="10" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         
-        <!-- TODO: Visibility off when not queue mode -->
         <Border Grid.Column="0"
                 BorderBrush="{StaticResource RemixedBackground2}"
                 BorderThickness="0 0 0.5 0"
+                Margin="0 0 12.5 0"
                 Visibility="{Binding ShowSidebar, Converter={StaticResource BoolToVisibility}}">
             <DockPanel Margin="0 0 7.5 0">
                 <comps:SectionHeader DockPanel.Dock="Top"
-                                     HeaderText="{Binding SidebarTitle}" />
+                                     HeaderText="{Binding SidebarTitle}"
+                                     Margin="-2.5 0 0 0"/>
 
-                <!-- TODO: Implement QueueSidebar style (Teal color box selection) -->
-                <ListBox Margin="0 10 0 0"
+                <ListBox Margin="0 10 5 0"
                          ItemsSource="{Binding SourceItems}"
                          SelectedItem="{Binding SelectedSource, Mode=TwoWay}"
                          BorderThickness="0"
                          Background="Transparent">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Padding"
+                                    Value="0" />
+                            <Setter Property="Margin"
+                                    Value="0" />
+                            <Setter Property="BorderThickness"
+                                    Value="0" />
+                            <Setter Property="Background"
+                                    Value="Transparent" />
+                            <Setter Property="HorizontalContentAlignment"
+                                    Value="Stretch" />
+                            <Setter Property="FocusVisualStyle"
+                                    Value="{x:Null}" />
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected"
+                                         Value="True">
+                                    <Setter Property="Background"
+                                            Value="{StaticResource BackgroundGreen}" />
+                                    <Setter Property="BorderBrush"
+                                            Value="{StaticResource CorrectTeal}" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Border BorderBrush="{StaticResource GlobalPrimary}"
@@ -60,7 +84,7 @@
                 </ListBox>
             </DockPanel>
         </Border>
-        <Grid Grid.Column="2">
+        <Grid Grid.Column="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -68,8 +92,7 @@
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0">
                 <TextBlock Text="{Binding CurrentSourceTitle}"
-                           FontSize="18"
-                           FontWeight="Bold"
+                           Style="{StaticResource H2}"
                            TextTrimming="CharacterEllipsis" />
                 <TextBlock Text="{Binding CurrentSourceDurationText}"
                            Foreground="{StaticResource GlobalSecondary}" />
@@ -85,7 +108,8 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock Text="{Binding SubtitleHeader}"
-                           Style="{StaticResource H3}" />
+                           Style="{StaticResource H3}"
+                           VerticalAlignment="Center"/>
                 <Button Grid.Column="1"
                         Content="{Binding AddSubtitleText}"
                         Command="{Binding AddSubtitleCommand}"
@@ -100,7 +124,7 @@
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                          HorizontalContentAlignment="Stretch"
                          VerticalContentAlignment="Top"
-                         Margin="0 5 0 0">
+                         Margin="0 7.5 0 0">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="Padding"
