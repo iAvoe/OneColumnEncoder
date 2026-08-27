@@ -18,12 +18,10 @@ public partial class MuxTracksConfModal : AdaptiveWindow
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
+        WindowState = WindowState.Normal;
+
         if (DataContext is MuxTracksConfVM viewModel)
-        {
-            WindowState = WindowState.Normal;
-            Width = viewModel.ShowSidebar ? 760 : 540;
             HookViewModel(viewModel);
-        }
 
         QueueHeightRecalculation();
     }
