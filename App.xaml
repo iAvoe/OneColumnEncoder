@@ -2,7 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:OneColumnEncoder"
-             xmlns:viewmodels="clr-namespace:OneColumnEncoder.ViewModels">
+             xmlns:viewmodels="clr-namespace:OneColumnEncoder.ViewModels"
+             xmlns:conv="clr-namespace:OneColumnEncoder.Converters">
     <Application.Resources>
         <ResourceDictionary>
             <!-- Spacing, fonts, colors -->
@@ -10,8 +11,9 @@
                 <ResourceDictionary Source="Views/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
             
-            <!-- DropdownMenu.xaml: IsSeparator -->
+            <!-- Converters -->
             <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+            <conv:SidebarWidthConverter x:Key="SidebarWidthConverter" />
 
             <!-- Fonts: resolved at runtime by AppFontProvider -->
             <FontFamily x:Key="UiFont">Segoe UI</FontFamily>
