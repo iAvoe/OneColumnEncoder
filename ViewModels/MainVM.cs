@@ -985,7 +985,7 @@ public class MainVM : BaseVM
 
     private void RefreshEncSettingsState()
     {
-        bool hasAnySource = BothSrcSelected();
+        bool hasAnySource = HasSelectedVideoSrc();
         foreach (ToolItemCardVM item in EncodingConfZone)
             item.IsEnabled = hasAnySource;
         RefreshMuxTracksCardState();
@@ -997,9 +997,7 @@ public class MainVM : BaseVM
 
         bool ffmpegReady = !string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath)
             && File.Exists(_appDataM.Tools.FfmpegPath);
-        _muxTracksCard.IsEnabled = HasSourceAnalysisAvailable()
-            && ffmpegReady
-            && IsAutoMuxEnabledForCurrentRoute();
+        _muxTracksCard.IsEnabled = ffmpegReady && IsAutoMuxEnabledForCurrentRoute();
     }
 
     private bool IsAutoMuxEnabledForCurrentRoute()
