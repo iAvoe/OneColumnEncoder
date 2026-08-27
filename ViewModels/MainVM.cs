@@ -97,7 +97,7 @@ public class MainVM : BaseVM
     public OneClickScriptGenCmd OneClickScriptGen { get; }
     public OpenFilterScribeCmd OpenFilterScribe { get; }
     public OpenMuxTracksCmd OpenMuxTracks { get; }
-    public static string MuxTracksText => MuxTracksConfModalLangProvider.Current["MuxTracks.WindowButton"];
+    public static string MuxTracksText => MuxLangProvider.Current["MuxTracks.WindowButton"];
     public CopyRawAnalysisCmd CopyRawAnalysis { get; } // Copy (ffprobe JSON) to clipboard
     public AnalyzeSrcVideoCmd AnalyzeSrcVideo { get; } // Maybe add mediaInfo analysis in future, but ffprobe alone will do
     public OpenSampleClipCmd SampleClip { get; }

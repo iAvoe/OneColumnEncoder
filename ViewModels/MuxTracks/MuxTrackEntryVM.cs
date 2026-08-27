@@ -21,7 +21,7 @@ public sealed class MuxTrackEntryVM : BaseVM
 
     public MuxTrackM Model => _model;
     public string Name => _model.Name;
-    public string DurationText => MuxTracksConfModalLangProvider.Current["MuxTracks.DurationUnknown"];
+    public string DurationText => MuxLangProvider.Current["MuxTracks.DurationUnknown"];
     public string SyncText
     {
         get => _syncText;

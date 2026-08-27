@@ -40,8 +40,8 @@ public sealed class MuxTracksConfVM : BaseVM
         UILangProvider.CurrentChanged += OnLanguageChanged;
     }
 
-    public static MuxTracksConfModalLangProvider Lang => MuxTracksConfModalLangProvider.Current;
-    public static string WindowTitle => MuxTracksConfModalLangProvider.WindowTitle;
+    public static MuxLangProvider Lang => MuxLangProvider.Current;
+    public static string WindowTitle => MuxLangProvider.WindowTitle;
     public static string SidebarTitle => Lang["MuxTracks.QueueSources"];
     public static string AudioHeader => Lang["MuxTracks.AudioHeader"];
     public static string SubtitleHeader => Lang["MuxTracks.SubtitleHeader"];

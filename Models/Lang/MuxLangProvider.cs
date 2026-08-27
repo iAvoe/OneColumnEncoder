@@ -3,7 +3,7 @@ namespace OneColumnEncoder.Models.Lang;
 /// <summary>
 /// Localized strings for the external audio/subtitle track editor.
 /// </summary>
-public sealed class MuxTracksConfModalLangProvider(string languageCode) : LangProviderBase(languageCode, Data)
+public sealed class MuxLangProvider(string languageCode) : LangProviderBase(languageCode, Data)
 {
     public const string WindowTitle = "Add Audio/Subtitles";
 
@@ -29,7 +29,7 @@ public sealed class MuxTracksConfModalLangProvider(string languageCode) : LangPr
         },
     };
 
-    static MuxTracksConfModalLangProvider()
+    static MuxLangProvider()
     {
         foreach (string code in new[] { "zh-cn", "zh-tw", "fr", "es", "ja", "ru", "de", "ko", "pt-br" })
             Data[code] = new(Data["en"]);
@@ -66,5 +66,5 @@ public sealed class MuxTracksConfModalLangProvider(string languageCode) : LangPr
         }) Data["zh-tw"][pair.Key] = pair.Value;
     }
 
-    public static MuxTracksConfModalLangProvider Current => new(UILangProvider.Current.LanguageCode);
+    public static MuxLangProvider Current => new(UILangProvider.Current.LanguageCode);
 }
