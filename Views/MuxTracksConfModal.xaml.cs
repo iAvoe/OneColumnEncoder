@@ -6,7 +6,7 @@ namespace OneColumnEncoder.Views;
 public partial class MuxTracksConfModal : AdaptiveWindow
 {
     private MuxTracksConfVM? _viewModel;
-    private bool _heightRecalcQueued;
+    private bool _sizeRecalcQueued;
 
     public MuxTracksConfModal()
     {
@@ -23,7 +23,7 @@ public partial class MuxTracksConfModal : AdaptiveWindow
         if (DataContext is MuxTracksConfVM viewModel)
             HookViewModel(viewModel);
 
-        QueueHeightRecalculation();
+        QueueSizeRecalculation();
     }
 
     private void OnUnloaded(object sender, RoutedEventArgs e) => UnhookViewModel();
@@ -34,7 +34,7 @@ public partial class MuxTracksConfModal : AdaptiveWindow
         if (e.NewValue is MuxTracksConfVM viewModel && IsLoaded)
             HookViewModel(viewModel);
 
-        QueueHeightRecalculation();
+        QueueSizeRecalculation();
     }
 
     private void HookViewModel(MuxTracksConfVM viewModel)
@@ -55,18 +55,21 @@ public partial class MuxTracksConfModal : AdaptiveWindow
 
     private void Tracks_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        QueueHeightRecalculation();
+        QueueSizeRecalculation();
     }
 
-    private void QueueHeightRecalculation()
+    private void QueueSizeRecalculation()
     {
-        if (_heightRecalcQueued) return;
+        if (_sizeRecalcQueued) return;
 
-        _heightRecalcQueued = true;
+        _sizeRecalcQueued = true;
         Dispatcher.BeginInvoke(new Action(() =>
         {
-            _heightRecalcQueued = false;
+            _sizeRecalcQueued = false;
             if (!IsLoaded) return;
+
+            if (_viewModel != null)
+                Width = _viewModel.ShowSidebar ? 760 : 540;
 
             InvalidateMeasure();
             UpdateLayout();

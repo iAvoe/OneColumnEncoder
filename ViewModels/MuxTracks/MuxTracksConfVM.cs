@@ -9,16 +9,19 @@ public sealed class MuxTracksConfVM : BaseVM
     private readonly Action<string, IReadOnlyList<MuxTrackM>> _applyTracks;
     private readonly Dictionary<string, List<MuxTrackM>> _tracksBySource;
     private MuxTrackSourceVM? _selectedSource;
+    private bool _hasSourceAnalysis;
 
     public MuxTracksConfVM(
         Action closeAction,
         IEnumerable<string> sourcePaths,
         Func<string, IReadOnlyList<MuxTrackM>> getTracks,
         Func<string, string?> getSourceFfprobeJson,
-        Action<string, IReadOnlyList<MuxTrackM>> applyTracks)
+        Action<string, IReadOnlyList<MuxTrackM>> applyTracks,
+        bool hasSourceAnalysis)
     {
         _closeAction = closeAction;
         _applyTracks = applyTracks;
+        _hasSourceAnalysis = hasSourceAnalysis;
         _tracksBySource = new(StringComparer.OrdinalIgnoreCase);
         foreach (string path in sourcePaths.Where(File.Exists).Distinct(StringComparer.OrdinalIgnoreCase))
         {
@@ -57,6 +60,7 @@ public sealed class MuxTracksConfVM : BaseVM
     public ActionCmd RemoveTrackCommand { get; }
     public ActionCmd MoveTrackUpCommand { get; }
     public ActionCmd MoveTrackDownCommand { get; }
+    public bool HasSourceAnalysis => _hasSourceAnalysis;
     private bool _showSidebar;
     public bool ShowSidebar
     {
@@ -64,6 +68,14 @@ public sealed class MuxTracksConfVM : BaseVM
         private set => SetProperty(ref _showSidebar, value);
     }
     public bool CanConfirm => SourceItems.Count > 0;
+
+    public void SetSourceAnalysisState(bool hasSourceAnalysis)
+    {
+        if (_hasSourceAnalysis == hasSourceAnalysis) return;
+
+        _hasSourceAnalysis = hasSourceAnalysis;
+        OnPropertyChanged(nameof(HasSourceAnalysis));
+    }
 
     public MuxTrackSourceVM? SelectedSource
     {
@@ -252,7 +264,7 @@ public sealed class MuxTracksConfVM : BaseVM
     {
         string? title = TryGetTag(stream, "title");
         string? language = TryGetTag(stream, "language");
-        string prefix = $"Source subtitle {subtitleIndex + 1}";
+        string prefix = $"Source sub #{subtitleIndex + 1}";
 
         if (!string.IsNullOrWhiteSpace(title) && !string.IsNullOrWhiteSpace(language))
             return $"{prefix} - {language} - {title}";

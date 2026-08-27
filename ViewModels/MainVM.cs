@@ -7,6 +7,7 @@ using OneColumnEncoder.RepartManagement;
 using OneColumnEncoder.ScriptGeneration;
 using OneColumnEncoder.ToolManagement;
 using OneColumnEncoder.Validation;
+using OneColumnEncoder.ViewModels.MuxTracks;
 using System.Collections.Specialized;
 using System.IO;
 using static OneColumnEncoder.Json.JsonElementHelper;
@@ -591,7 +592,8 @@ public class MainVM : BaseVM
             () => GetActiveSrcRoute() is SrcRouteKind.Single or SrcRouteKind.Queue or SrcRouteKind.Concat
                 && !string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath)
                 && File.Exists(_appDataM.Tools.FfmpegPath)
-                && IsAutoMuxEnabledForCurrentRoute());
+                && IsAutoMuxEnabledForCurrentRoute(),
+            HasSourceAnalysisAvailable);
         CopyRawAnalysis = new CopyRawAnalysisCmd(
             _srcVideoAnalysis, modalNavS);
         AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(
@@ -995,7 +997,9 @@ public class MainVM : BaseVM
 
         bool ffmpegReady = !string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath)
             && File.Exists(_appDataM.Tools.FfmpegPath);
-        _muxTracksCard.IsEnabled = ffmpegReady && IsAutoMuxEnabledForCurrentRoute();
+        _muxTracksCard.IsEnabled = HasSourceAnalysisAvailable()
+            && ffmpegReady
+            && IsAutoMuxEnabledForCurrentRoute();
     }
 
     private bool IsAutoMuxEnabledForCurrentRoute()
@@ -1257,6 +1261,13 @@ public class MainVM : BaseVM
         _muxTracksCard.P1TextData = sourceText;
         _muxTracksCard.P2Name = UILangProvider.Current["ToolField.Value"];
         _muxTracksCard.P2TextData = trackCount.ToString();
+    }
+
+    private void UpdateMuxTracksModalState()
+    {
+        if (_modalNavS.GetModal<MuxTracksConfVM>() is not MuxTracksConfVM modal) return;
+
+        modal.SetSourceAnalysisState(HasSourceAnalysisAvailable());
     }
 
     private IReadOnlyList<MuxTrackM> GetMuxTracksForSource(string sourcePath) =>
@@ -1916,6 +1927,7 @@ public class MainVM : BaseVM
     private void OnSrcAnalysisCompleted(bool isSuccess)
     {
         ToolsImportCard.SetCompleteSourceAnalysisStatus(isSuccess);
+        UpdateMuxTracksModalState();
         UpdateFilterScbButtonsState();
     }
 
@@ -2195,6 +2207,7 @@ public class MainVM : BaseVM
         RefreshAllZoneSelectedPaths();
         RefreshToolSrcChecklistStatus();
         RefreshMuxTracksCardSummary();
+        UpdateMuxTracksModalState();
         UpdateFilterScbButtonsState();
         UpdateAnalyzeSrcButtonsState();
         UpdateEncStartButtonsState();
@@ -3103,6 +3116,8 @@ public class MainVM : BaseVM
             UICaptionProvider.SourceInspect.ErrorTitle,
             SrcReviserLangProvider.Current["SrcReviser.NoFfprobeJson"]).Execute(null);
     }
+
+    private bool HasSourceAnalysisAvailable() => !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
 
     #region Language Switching
     private void OnLanguageChanged() { RefreshLanguage(); }

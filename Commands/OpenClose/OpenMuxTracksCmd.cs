@@ -9,7 +9,8 @@ public sealed class OpenMuxTracksCmd(
     Func<string, IReadOnlyList<MuxTrackM>> getTracks,
     Func<string, string?> getSourceFfprobeJson,
     Action<string, IReadOnlyList<MuxTrackM>> applyTracks,
-    Func<bool> canOpen) : OpenCloseBase(modalNavS)
+    Func<bool> canOpen,
+    Func<bool> hasSourceAnalysis) : OpenCloseBase(modalNavS)
 {
     public override void Execute(object? parameter)
     {
@@ -22,7 +23,7 @@ public sealed class OpenMuxTracksCmd(
         if (paths.Length == 0) return;
 
         MuxTracksConfModal window = new();
-        MuxTracksConfVM vm = new(window.Close, paths, getTracks, getSourceFfprobeJson, applyTracks);
+        MuxTracksConfVM vm = new(window.Close, paths, getTracks, getSourceFfprobeJson, applyTracks, hasSourceAnalysis());
         ShowModal(window, vm, showDialog: true);
     }
 }
