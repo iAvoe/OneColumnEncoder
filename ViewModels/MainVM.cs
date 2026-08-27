@@ -506,9 +506,8 @@ public class MainVM : BaseVM
         WireUpZoneDeleteCmds();
 
         // Restore encoding cards after source import so output defaults can sync with source state.
-        ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t => t.Name.Equals(
-            UILangProvider.Current["Tool.Enc.OutputSetting"],
-            StringComparison.OrdinalIgnoreCase));
+        ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(
+            t => t.DefinitionKey == "Tool.Enc.OutputSetting");
         _outputSettingCard = outputSetting;
         _muxTracksCard = EncodingConfZone.FirstOrDefault(
             t => t.DefinitionKey == "Tool.Enc.MuxTracks");
@@ -523,9 +522,8 @@ public class MainVM : BaseVM
         }
 
         // Load saved parallelism settings onto the card
-        ToolItemCardVM? parallelismCard = EncodingConfZone.FirstOrDefault(t => t.Name.Equals(
-            UILangProvider.Current["Tool.Enc.Parallelism"],
-            StringComparison.OrdinalIgnoreCase));
+        ToolItemCardVM? parallelismCard = EncodingConfZone.FirstOrDefault(
+            t => t.DefinitionKey == "Tool.Enc.Parallelism");
         if (parallelismCard != null)
             ParallelismConfVM.ApplySavedSettingsToCard(parallelismCard);
 
@@ -559,7 +557,7 @@ public class MainVM : BaseVM
             TrySrcReviser,
             () => UpstreamsZone.Any(
                 t => t.IsSelected &&
-                ToolDefinitionProviderM.IsImportedTool(t.Name, "one_line_shot_args.exe")),
+                ToolDefinitionProviderM.IsImportedTool(t, "one_line_shot_args.exe")),
             IsQueueRouteActive,
             GetCurrentQueueFilePaths,
             () => IsConcatRouteActive() || IsRepartRouteActive(),
@@ -767,21 +765,21 @@ public class MainVM : BaseVM
 
         SrcValCard.IsSvtav1SelectedFunc = () =>
             EncodersZone.Any(t => t.IsSelected
-                && ToolDefinitionProviderM.IsImportedTool(t.Name, "svtav1encapp.exe"));
+                && ToolDefinitionProviderM.IsImportedTool(t, "svtav1encapp.exe"));
         QueueSrcFilterCard.IsSvtav1SelectedFunc = SrcValCard.IsSvtav1SelectedFunc;
         ConcatCheckCard.IsSvtav1SelectedFunc = SrcValCard.IsSvtav1SelectedFunc;
         RepartCheckCard.IsSvtav1SelectedFunc = SrcValCard.IsSvtav1SelectedFunc;
 
         EncTermsValCard.GetOutputDirectoryFunc = () =>
         {
-            ToolItemCardVM? output = EncodingConfZone.FirstOrDefault(t =>
-                t.Name.Equals(UILangProvider.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+            ToolItemCardVM? output = EncodingConfZone.FirstOrDefault(
+                t => t.DefinitionKey == "Tool.Enc.OutputSetting");
             return output?.P2TextData ?? string.Empty;
         };
         EncTermsValCard.GetOutputFilePathFunc = () =>
         {
-            ToolItemCardVM? output = EncodingConfZone.FirstOrDefault(t =>
-                t.Name.Equals(UILangProvider.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+            ToolItemCardVM? output = EncodingConfZone.FirstOrDefault(
+                t => t.DefinitionKey == "Tool.Enc.OutputSetting");
             if (output is null || string.IsNullOrWhiteSpace(output.P2TextData) || string.IsNullOrWhiteSpace(output.P1TextData))
                 return string.Empty;
 
@@ -789,7 +787,7 @@ public class MainVM : BaseVM
         };
         EncTermsValCard.IsAvs2yuvSelectedFunc = () =>
             UpstreamsZone.Any(t => t.IsSelected
-                && ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2yuv.exe"));
+                && ToolDefinitionProviderM.IsImportedTool(t, "avs2yuv.exe"));
         EncTermsValCard.GetAviSynthDllPathFunc = () =>
         {
             string programFilesX86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
@@ -941,7 +939,7 @@ public class MainVM : BaseVM
     private void RefreshUpstreamToolState()
     {
         ToolItemCardVM? avs2pipemod = UpstreamsZone.FirstOrDefault(
-            t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe"));
+            t => ToolDefinitionProviderM.IsImportedTool(t, "avs2pipemod.exe"));
         if (avs2pipemod == null) return;
 
         if (!HasImportedAviSynthDll()) avs2pipemod.IsSelected = false;
@@ -976,7 +974,7 @@ public class MainVM : BaseVM
     private void RefreshEncTermsState()
     {
         bool isAvs2yuvSelected = UpstreamsZone.Any(t => t.IsSelected
-            && ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2yuv.exe"));
+            && ToolDefinitionProviderM.IsImportedTool(t, "avs2yuv.exe"));
 
         EncTermsValCard.SetLsmashCheckEnabled(isAvs2yuvSelected);
         EncTermsValCard.RunAllChecks();
@@ -1007,7 +1005,7 @@ public class MainVM : BaseVM
         ToolItemCardVM? encoder = EncodersZone.FirstOrDefault(
             t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
         string? encoderExeName = encoder != null
-            ? ToolCatalogProviderM.ResolveExeFromDisplayName(encoder.Name)
+            ? ToolCatalogProviderM.ResolveExeFromCard(encoder)
             : null;
         if (string.IsNullOrWhiteSpace(encoderExeName)) return false;
 
@@ -1039,7 +1037,7 @@ public class MainVM : BaseVM
     private void SyncOutputFilenameWithVideoSrc(string? filePath = null)
     {
         ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t =>
-            t.Name.Equals(UILangProvider.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+            t.DefinitionKey == "Tool.Enc.OutputSetting");
         if (outputSetting == null) return;
 
         string? srcPath = filePath;
@@ -1125,7 +1123,7 @@ public class MainVM : BaseVM
     {
         bool oneLineShotSelected = UpstreamsZone.Any(
             t => t.IsSelected &&
-            ToolDefinitionProviderM.IsImportedTool(t.Name, "one_line_shot_args.exe"));
+            ToolDefinitionProviderM.IsImportedTool(t, "one_line_shot_args.exe"));
 
         bool hasVideoSrc = HasSelectedVideoSrc();
         bool hasRawJson = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
@@ -1156,7 +1154,7 @@ public class MainVM : BaseVM
         if (EncStartButtons == null) return;
 
         bool vspipeReady = UpstreamsZone.All(t =>
-            !ToolDefinitionProviderM.IsImportedTool(t.Name, "vspipe.exe") || t.IsEnabled);
+            !ToolDefinitionProviderM.IsImportedTool(t, "vspipe.exe") || t.IsEnabled);
 
         bool toolsReady =
             UpstreamsZone.Count > 0 && EncodersZone.Count > 0 && HasImportedFfprobe() && vspipeReady;
@@ -1178,9 +1176,9 @@ public class MainVM : BaseVM
         bool encodeTermsReady = allEncSuccess;
         // Cache cards for avs2pipemod / avisynth.dll dependency check
         ToolItemCardVM? avs2pipemodItem = UpstreamsZone.FirstOrDefault(
-            t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe"));
+            t => ToolDefinitionProviderM.IsImportedTool(t, "avs2pipemod.exe"));
         ToolItemCardVM? avisynthItem = DependenciesZone.FirstOrDefault(
-            t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avisynth.dll"));
+            t => ToolDefinitionProviderM.IsImportedTool(t, "avisynth.dll"));
         bool avsSelected = avs2pipemodItem?.IsSelected ?? false;
         bool aviSelected = avisynthItem?.IsSelected ?? false;
         bool dependencyReady = avsSelected == aviSelected;
@@ -1189,7 +1187,7 @@ public class MainVM : BaseVM
         // disable clip sampling if SVFI is selected as upstream to avoid confusion
         bool oneLineShotSelected = UpstreamsZone.Any(
             t => t.IsSelected &&
-            ToolDefinitionProviderM.IsImportedTool(t.Name, "one_line_shot_args.exe"));
+            ToolDefinitionProviderM.IsImportedTool(t, "one_line_shot_args.exe"));
 
         bool repartMuxReady = GetActiveSrcRoute() != SrcRouteKind.Repart
             || (!string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath) && File.Exists(_appDataM.Tools.FfmpegPath));
@@ -1288,7 +1286,6 @@ public class MainVM : BaseVM
         DisplayName = track.DisplayName,
         SyncMilliseconds = track.SyncMilliseconds,
         IsDefault = track.IsDefault,
-        IsForced = track.IsForced,
     };
 
     private string GetCurrentSrcImportPath()
@@ -1356,7 +1353,7 @@ public class MainVM : BaseVM
         ToolItemCardVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected && t.IsEnabled && !string.IsNullOrWhiteSpace(t.P2TextData));
         string? upstreamExeName = upstream == null
             ? null
-            : ToolCatalogProviderM.ResolveExeFromDisplayName(upstream.Name);
+            : ToolCatalogProviderM.ResolveExeFromCard(upstream);
         return SrcFileKindResolver.IsQueueRouteSupportedUpstream(upstreamExeName);
     }
 
@@ -1365,7 +1362,7 @@ public class MainVM : BaseVM
         ToolItemCardVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected && t.IsEnabled && !string.IsNullOrWhiteSpace(t.P2TextData));
         string? upstreamExeName = upstream == null
             ? null
-            : ToolCatalogProviderM.ResolveExeFromDisplayName(upstream.Name);
+            : ToolCatalogProviderM.ResolveExeFromCard(upstream);
         return SrcFileKindResolver.IsConcatRouteSupportedUpstream(upstreamExeName);
     }
 
@@ -1374,7 +1371,7 @@ public class MainVM : BaseVM
         ToolItemCardVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected && t.IsEnabled && !string.IsNullOrWhiteSpace(t.P2TextData));
         string? upstreamExeName = upstream == null
             ? null
-            : ToolCatalogProviderM.ResolveExeFromDisplayName(upstream.Name);
+            : ToolCatalogProviderM.ResolveExeFromCard(upstream);
         return SrcFileKindResolver.IsRepartRouteSupportedUpstream(upstreamExeName)
             && !string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath);
     }
@@ -1454,7 +1451,7 @@ public class MainVM : BaseVM
         ToolItemCardVM? selectedUpstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected);
         return selectedUpstream == null
             ? null
-            : ToolCatalogProviderM.ResolveExeFromDisplayName(selectedUpstream.Name);
+            : ToolCatalogProviderM.ResolveExeFromCard(selectedUpstream);
     }
 
     private string GetSelectedFfprobePath()
@@ -1509,7 +1506,7 @@ public class MainVM : BaseVM
 
     private bool HasImportedFfprobe() =>
         AnalyticsZone.Any(t =>
-            ToolDefinitionProviderM.IsImportedTool(t.Name, "ffprobe.exe") &&
+            ToolDefinitionProviderM.IsImportedTool(t, "ffprobe.exe") &&
             !string.IsNullOrWhiteSpace(t.P2TextData));
 
     private bool HasImportedAviSynthDll() =>
@@ -1524,9 +1521,9 @@ public class MainVM : BaseVM
     private bool HasGeneratableScriptUpstream() =>
         UpstreamsZone.Any(t => t.IsSelected &&
             !string.IsNullOrWhiteSpace(t.P2TextData) &&
-            (ToolDefinitionProviderM.IsImportedTool(t.Name, "vspipe.exe") ||
-             ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2yuv.exe") ||
-             ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe")));
+            (ToolDefinitionProviderM.IsImportedTool(t, "vspipe.exe") ||
+             ToolDefinitionProviderM.IsImportedTool(t, "avs2yuv.exe") ||
+             ToolDefinitionProviderM.IsImportedTool(t, "avs2pipemod.exe")));
     #endregion
 
     #region Command Wiring (Bind R1-R2)
@@ -1552,9 +1549,9 @@ public class MainVM : BaseVM
                 RevertCancelledAutoSelection(DependenciesZone);
             });
         item.R2Command = new DeleteToolCmd(
-            item, GetZoneForTool(ToolDefinitionProviderM.ResolveToolZone(item.Name)), _appDataM);
+            item, GetZoneForTool(ToolDefinitionProviderM.ResolveToolZoneByKey(item.DefinitionKey ?? string.Empty)), _appDataM);
 
-        ToolZone zone = ToolDefinitionProviderM.ResolveToolZone(item.Name);
+        ToolZone zone = ToolDefinitionProviderM.ResolveToolZoneByKey(item.DefinitionKey ?? string.Empty);
         if (zone == ToolZone.Upstream)
             item.PropertyChanged += OnUpstreamItemPropertyChanged;
         if (zone == ToolZone.Encoder)
@@ -1640,7 +1637,7 @@ public class MainVM : BaseVM
             EncodingConfZone[1].R1Command = new OpenParallelismConfCmd(_modalNavS, EncodingConfZone[1]);
 
         ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t =>
-            t.Name.Equals(UILangProvider.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+            t.DefinitionKey == "Tool.Enc.OutputSetting");
 
         if (outputSetting != null)
             RefreshOutputSettingCommand(outputSetting);
@@ -1652,7 +1649,7 @@ public class MainVM : BaseVM
         }
 
         ToolItemCardVM? compressionParams = EncodingConfZone.FirstOrDefault(t =>
-            t.Name.Equals(UILangProvider.Current["Tool.Enc.EncParams"], StringComparison.OrdinalIgnoreCase));
+            t.DefinitionKey == "Tool.Enc.EncParams");
 
         if (compressionParams != null)
         {
@@ -1746,9 +1743,9 @@ public class MainVM : BaseVM
         // follows automatically. Selecting another card in either zone
         // also deselects both partners so they never become out of sync.
         ToolItemCardVM? avs2pipemod = UpstreamsZone.FirstOrDefault(
-            t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe"));
+            t => ToolDefinitionProviderM.IsImportedTool(t, "avs2pipemod.exe"));
         ToolItemCardVM? avisynth = DependenciesZone.FirstOrDefault(
-            t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avisynth.dll"));
+            t => ToolDefinitionProviderM.IsImportedTool(t, "avisynth.dll"));
 
         if (avs2pipemod != null && avisynth != null && avs2pipemod.IsSelected != avisynth.IsSelected)
         {
@@ -2282,13 +2279,13 @@ public class MainVM : BaseVM
 
         ToolItemCardVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected && t.IsEnabled && !string.IsNullOrWhiteSpace(t.P2TextData));
         ToolItemCardVM? encoder = EncodersZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
-        ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t =>
-            t.Name.Equals(UILangProvider.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+        ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(
+            t => t.DefinitionKey == "Tool.Enc.OutputSetting");
 
         if (upstream == null || encoder == null || outputSetting == null) return null;
 
-        string? upstreamExeName = ToolCatalogProviderM.ResolveExeFromDisplayName(upstream.Name);
-        string? encoderExeName = ToolCatalogProviderM.ResolveExeFromDisplayName(encoder.Name);
+        string? upstreamExeName = ToolCatalogProviderM.ResolveExeFromCard(upstream);
+        string? encoderExeName = ToolCatalogProviderM.ResolveExeFromCard(encoder);
         if (string.IsNullOrWhiteSpace(upstreamExeName) || string.IsNullOrWhiteSpace(encoderExeName)) return null;
 
         string upstreamInputPath = GetUpstreamInputPath(upstreamExeName);
@@ -2338,12 +2335,12 @@ public class MainVM : BaseVM
         ToolItemCardVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected && t.IsEnabled && !string.IsNullOrWhiteSpace(t.P2TextData));
         ToolItemCardVM? encoder = EncodersZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
         ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t =>
-            t.Name.Equals(UILangProvider.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+            t.DefinitionKey == "Tool.Enc.OutputSetting");
 
         if (upstream == null || encoder == null || outputSetting == null) return null;
 
-        string? upstreamExeName = ToolCatalogProviderM.ResolveExeFromDisplayName(upstream.Name);
-        string? encoderExeName = ToolCatalogProviderM.ResolveExeFromDisplayName(encoder.Name);
+        string? upstreamExeName = ToolCatalogProviderM.ResolveExeFromCard(upstream);
+        string? encoderExeName = ToolCatalogProviderM.ResolveExeFromCard(encoder);
         if (string.IsNullOrWhiteSpace(upstreamExeName) || string.IsNullOrWhiteSpace(encoderExeName)) return null;
         if (string.IsNullOrWhiteSpace(outputSetting.P2TextData)) return null;
 
@@ -2471,12 +2468,12 @@ public class MainVM : BaseVM
         ToolItemCardVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected && t.IsEnabled && !string.IsNullOrWhiteSpace(t.P2TextData));
         ToolItemCardVM? encoder = EncodersZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
         ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t =>
-            t.Name.Equals(UILangProvider.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+            t.DefinitionKey == "Tool.Enc.OutputSetting");
 
         if (upstream == null || encoder == null || outputSetting == null) return null;
 
-        string? upstreamExeName = ToolCatalogProviderM.ResolveExeFromDisplayName(upstream.Name);
-        string? encoderExeName = ToolCatalogProviderM.ResolveExeFromDisplayName(encoder.Name);
+        string? upstreamExeName = ToolCatalogProviderM.ResolveExeFromCard(upstream);
+        string? encoderExeName = ToolCatalogProviderM.ResolveExeFromCard(encoder);
         if (string.IsNullOrWhiteSpace(upstreamExeName) || string.IsNullOrWhiteSpace(encoderExeName)) return null;
         if (string.IsNullOrWhiteSpace(outputSetting.P2TextData)) return null;
 
@@ -2545,11 +2542,11 @@ public class MainVM : BaseVM
         ToolItemCardVM? upstream = UpstreamsZone.FirstOrDefault(t => t.IsSelected && t.IsEnabled && !string.IsNullOrWhiteSpace(t.P2TextData));
         ToolItemCardVM? encoder = EncodersZone.FirstOrDefault(t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
         ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(t =>
-            t.Name.Equals(UILangProvider.Current["Tool.Enc.OutputSetting"], StringComparison.OrdinalIgnoreCase));
+            t.DefinitionKey == "Tool.Enc.OutputSetting");
         if (upstream == null || encoder == null || outputSetting == null || string.IsNullOrWhiteSpace(outputSetting.P2TextData)) return null;
 
-        string? upstreamExeName = ToolCatalogProviderM.ResolveExeFromDisplayName(upstream.Name);
-        string? encoderExeName = ToolCatalogProviderM.ResolveExeFromDisplayName(encoder.Name);
+        string? upstreamExeName = ToolCatalogProviderM.ResolveExeFromCard(upstream);
+        string? encoderExeName = ToolCatalogProviderM.ResolveExeFromCard(encoder);
         if (string.IsNullOrWhiteSpace(upstreamExeName) || string.IsNullOrWhiteSpace(encoderExeName)) return null;
         if (string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath) || !File.Exists(_appDataM.Tools.FfmpegPath))
             throw new FileNotFoundException(RepartLangProvider.Current.FfmpegRequired, _appDataM.Tools.FfmpegPath);
@@ -2913,7 +2910,7 @@ public class MainVM : BaseVM
         if (def.Zone == null || string.IsNullOrEmpty(filePath)) return;
 
         ObservableCollection<ToolItemCardVM> zone = GetZoneForTool(def.Zone.Value);
-        ToolItemCardVM? existing = zone.FirstOrDefault(i => i.Name == def.DisplayName);
+        ToolItemCardVM? existing = zone.FirstOrDefault(i => i.DefinitionKey == def.Key);
         if (existing != null) zone.Remove(existing);
 
         ToolItemCardVM item = new(new EncItemM(def.DisplayName))
@@ -2923,6 +2920,7 @@ public class MainVM : BaseVM
             R1Text = def.R1Text,
             R2Text = def.R2Text
         };
+        item.ApplyDefinition(def);
         item.SetStoredFingerprint(fileSize);
         item.P2TextData = filePath;
         item.P1TextData = version ?? string.Empty;
@@ -3185,7 +3183,7 @@ public class MainVM : BaseVM
     private void RefreshVspipeAvailability()
     {
         ToolItemCardVM? vspipe = UpstreamsZone.FirstOrDefault(t =>
-            ToolDefinitionProviderM.IsImportedTool(t.Name, "vspipe.exe"));
+            ToolDefinitionProviderM.IsImportedTool(t, "vspipe.exe"));
         if (vspipe == null) return;
 
         vspipe.IsEnabled = ToolVersionDetect.HasValidVspipeY4mArg(

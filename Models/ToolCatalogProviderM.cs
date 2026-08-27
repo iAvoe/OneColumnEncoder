@@ -112,11 +112,11 @@ public static class ToolCatalogProviderM
     public static (string DisplayName, ToolZone Zone)? ResolveExe(string exeName) =>
         _tools.TryGetValue(exeName, out var entry) ? entry : null;
 
-    public static string? ResolveExeFromDisplayName(string displayName) =>
-        _tools.FirstOrDefault(kvp => kvp.Value.DisplayName.Equals(displayName, StringComparison.OrdinalIgnoreCase)).Key;
-
     public static string? ResolveExeFromDefinitionKey(string? definitionKey) =>
         definitionKey == null ? null : ToolDefinitionProviderM.GetByKey(definitionKey)?.ExeName;
+
+    public static string? ResolveExeFromCard(ToolItemCardVM item) =>
+        ResolveExeFromDefinitionKey(item.DefinitionKey);
 
     public static string? GetDisplayName(string exeName) =>
         _tools.TryGetValue(exeName, out var entry) ? entry.DisplayName : null;

@@ -14,8 +14,8 @@ public static class ToolCompatibility
         IEnumerable<ToolItemCardVM> dependenciesZone,
         Action updateEncodingStartButtons)
     {
-        ToolItemCardVM? avs2pipemod = upstreamsZone.FirstOrDefault(t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe"));
-        ToolItemCardVM? avisynth = dependenciesZone.FirstOrDefault(t => ToolDefinitionProviderM.IsImportedTool(t.Name, "avisynth.dll"));
+        ToolItemCardVM? avs2pipemod = upstreamsZone.FirstOrDefault(t => ToolDefinitionProviderM.IsImportedToolByKey(t.DefinitionKey, "avs2pipemod.exe"));
+        ToolItemCardVM? avisynth = dependenciesZone.FirstOrDefault(t => ToolDefinitionProviderM.IsImportedToolByKey(t.DefinitionKey, "avisynth.dll"));
 
         bool avsSelected = avs2pipemod?.IsSelected ?? false;
         bool aviSelected = avisynth?.IsSelected ?? false;
@@ -27,7 +27,7 @@ public static class ToolCompatibility
         if (avisynth != null)
             avisynth.IsCancel = aviSelected && !bothSelectedOrNeither;
 
-        foreach (ToolItemCardVM upstream in upstreamsZone.Where(t => !ToolDefinitionProviderM.IsImportedTool(t.Name, "avs2pipemod.exe") && t.IsCancel))
+        foreach (ToolItemCardVM upstream in upstreamsZone.Where(t => !ToolDefinitionProviderM.IsImportedToolByKey(t.DefinitionKey, "avs2pipemod.exe") && t.IsCancel))
         {
             upstream.IsCancel = false;
         }
@@ -49,17 +49,17 @@ public static class ToolCompatibility
         {
             case null:
                 break;
-            case var u when ToolDefinitionProviderM.IsImportedTool(u.Name, "ffmpeg.exe"):
+            case var u when ToolDefinitionProviderM.IsImportedToolByKey(u.DefinitionKey, "ffmpeg.exe"):
                 allDisabled = true;
                 break;
-            case var u when ToolDefinitionProviderM.IsImportedTool(u.Name, "vspipe.exe"):
+            case var u when ToolDefinitionProviderM.IsImportedToolByKey(u.DefinitionKey, "vspipe.exe"):
                 allowedName = ResolveScriptSourceName(scriptSrcImportZone, "Tool.Source.VapourSynth", "Tool.Source.VapourSynthQueue");
                 break;
-            case var u when ToolDefinitionProviderM.IsImportedTool(u.Name, "avs2yuv.exe")
-                       || ToolDefinitionProviderM.IsImportedTool(u.Name, "avs2pipemod.exe"):
+            case var u when ToolDefinitionProviderM.IsImportedToolByKey(u.DefinitionKey, "avs2yuv.exe")
+                       || ToolDefinitionProviderM.IsImportedToolByKey(u.DefinitionKey, "avs2pipemod.exe"):
                 allowedName = ResolveScriptSourceName(scriptSrcImportZone, "Tool.Source.AviSynth", "Tool.Source.AviSynthQueue");
                 break;
-            case var u when ToolDefinitionProviderM.IsImportedTool(u.Name, "one_line_shot_args.exe"):
+            case var u when ToolDefinitionProviderM.IsImportedToolByKey(u.DefinitionKey, "one_line_shot_args.exe"):
                 allowedName = ResolveScriptSourceName(scriptSrcImportZone, "Tool.Source.Svfi", "Tool.Source.SvfiQueue");
                 if (allowedName == null) allDisabled = true;
                 break;
@@ -71,7 +71,7 @@ public static class ToolCompatibility
             {
                 true => false,
                 _ when allowedName == null => true,
-                _ => item.Name.Equals(allowedName, StringComparison.OrdinalIgnoreCase)
+                _ => item.DefinitionKey == allowedName
             };
 
             if (!shouldEnable) item.IsSelected = false;
@@ -112,7 +112,7 @@ public static class ToolCompatibility
         singleVideoCard.IsEnabled = true;
 
         bool oneLineShotMode = upstream != null && (
-            ToolDefinitionProviderM.IsImportedTool(upstream.Name, "one_line_shot_args.exe"));
+            ToolDefinitionProviderM.IsImportedToolByKey(upstream.DefinitionKey, "one_line_shot_args.exe"));
 
         if (oneLineShotMode)
         {
@@ -139,15 +139,12 @@ public static class ToolCompatibility
         string primaryKey,
         string queueKey)
     {
-        bool hasPrimary = scriptSrcImportZone.Any(t => t.Name.Equals(
-            UILangProvider.Current[primaryKey], StringComparison.OrdinalIgnoreCase));
+        bool hasPrimary = scriptSrcImportZone.Any(t => t.DefinitionKey == primaryKey);
         if (hasPrimary)
-            return UILangProvider.Current[primaryKey];
-
-        bool hasQueue = scriptSrcImportZone.Any(t => t.Name.Equals(
-            UILangProvider.Current[queueKey], StringComparison.OrdinalIgnoreCase));
+            return primaryKey;
+        bool hasQueue = scriptSrcImportZone.Any(t => t.DefinitionKey == queueKey);
         if (hasQueue)
-            return UILangProvider.Current[queueKey];
+            return queueKey;
 
         return null;
     }

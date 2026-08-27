@@ -19,7 +19,6 @@ public sealed class MuxTrackSourceVM : BaseVM
             DisplayName = track.DisplayName,
             SyncMilliseconds = track.SyncMilliseconds,
             IsDefault = track.IsDefault,
-            IsForced = track.IsForced,
         })];
         DurationText = FormatDuration(ParseDurationFromFfprobeJson(ffprobeJson));
     }

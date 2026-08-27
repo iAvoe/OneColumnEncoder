@@ -45,10 +45,6 @@ public static class ToolDefinitionProviderM
         ToolDefs.Values.FirstOrDefault(
             d => d.ExeName?.Equals(exeName, StringComparison.OrdinalIgnoreCase) == true);
 
-    public static ToolDefinitionM? GetByDisplayName(string displayName) =>
-        ToolDefs.Values.FirstOrDefault(
-            d => d.DisplayName.Equals(displayName, StringComparison.OrdinalIgnoreCase));
-
     public static ToolDefinitionM? GetByKey(string key) =>
         ToolDefs.Values.FirstOrDefault(d => d.Key?.Equals(key, StringComparison.OrdinalIgnoreCase) == true);
 
@@ -56,12 +52,11 @@ public static class ToolDefinitionProviderM
         definitionKey != null
         && GetByKey(definitionKey)?.ExeName?.Equals(exeName, StringComparison.OrdinalIgnoreCase) == true;
 
-    public static ToolZone ResolveToolZone(string displayName)
+    public static bool IsImportedTool(ToolItemCardVM item, string exeName) =>
+        IsImportedToolByKey(item.DefinitionKey, exeName);
+    public static ToolZone ResolveToolZoneByKey(string definitionKey)
     {
-        ToolDefinitionM? def = GetByDisplayName(displayName);
-        return def?.Zone ?? throw new ArgumentException($"Unknown tool: {displayName}");
+        ToolDefinitionM? def = GetByKey(definitionKey);
+        return def?.Zone ?? throw new ArgumentException($"Unknown tool key: {definitionKey}");
     }
-
-    public static bool IsImportedTool(string displayName, string exeName) =>
-        GetByDisplayName(displayName)?.ExeName?.Equals(exeName, StringComparison.OrdinalIgnoreCase) == true;
 }

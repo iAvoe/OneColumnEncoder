@@ -14,7 +14,6 @@ public sealed class MuxTrackM
     public string? DisplayName { get; set; }
     public int SyncMilliseconds { get; set; }
     public bool IsDefault { get; set; }
-    public bool IsForced { get; set; }
 
     [System.Text.Json.Serialization.JsonIgnore]
     public string Name => string.IsNullOrWhiteSpace(DisplayName) ? Path.GetFileName(FilePath) : DisplayName!;

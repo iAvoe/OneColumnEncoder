@@ -46,17 +46,6 @@ public sealed class MuxTrackEntryVM : BaseVM
         }
     }
 
-    public bool IsForced
-    {
-        get => _model.IsForced;
-        set
-        {
-            if (_model.IsForced == value) return;
-            _model.IsForced = value;
-            OnPropertyChanged();
-        }
-    }
-
     public bool CanMoveUp
     {
         get => _canMoveUp;

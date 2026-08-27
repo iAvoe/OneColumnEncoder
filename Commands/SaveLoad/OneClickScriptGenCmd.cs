@@ -263,13 +263,13 @@ public class OneClickScriptGenCmd(
         ToolItemCardVM? selectedUpstream = _upstreamsZone.FirstOrDefault(t => t.IsSelected);
         if (selectedUpstream == null) return;
 
-        if (ToolDefinitionProviderM.IsImportedTool(selectedUpstream.Name, "vspipe.exe"))
+        if (ToolDefinitionProviderM.IsImportedTool(selectedUpstream, "vspipe.exe"))
         {
             avsItem.IsSelected = false;
             if (vpyItem.IsEnabled) vpyItem.IsSelected = true;
         }
-        else if (ToolDefinitionProviderM.IsImportedTool(selectedUpstream.Name, "avs2yuv.exe") ||
-                 ToolDefinitionProviderM.IsImportedTool(selectedUpstream.Name, "avs2pipemod.exe"))
+        else if (ToolDefinitionProviderM.IsImportedTool(selectedUpstream, "avs2yuv.exe") ||
+                 ToolDefinitionProviderM.IsImportedTool(selectedUpstream, "avs2pipemod.exe"))
         {
             vpyItem.IsSelected = false;
             if (avsItem.IsEnabled) avsItem.IsSelected = true;

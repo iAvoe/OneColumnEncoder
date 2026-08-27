@@ -200,7 +200,6 @@ public sealed class MuxTracksConfVM : BaseVM
         DisplayName = track.DisplayName,
         SyncMilliseconds = track.SyncMilliseconds,
         IsDefault = track.IsDefault,
-        IsForced = track.IsForced,
     };
 
     private static List<MuxTrackM> BuildInitialTracks(string sourcePath, IReadOnlyList<MuxTrackM> savedTracks, string? ffprobeJson)
@@ -215,7 +214,6 @@ public sealed class MuxTracksConfVM : BaseVM
 
             detected.SyncMilliseconds = saved.SyncMilliseconds;
             detected.IsDefault = saved.IsDefault;
-            detected.IsForced = saved.IsForced;
         }
 
         tracks.AddRange(savedTracks.Where(track => !track.IsSourceTrack).Select(Clone));
@@ -246,7 +244,6 @@ public sealed class MuxTracksConfVM : BaseVM
                 SourceSubtitleIndex = subtitleIndex,
                 DisplayName = BuildSourceSubtitleName(stream, subtitleIndex),
                 IsDefault = TryGetDisposition(stream, "default"),
-                IsForced = TryGetDisposition(stream, "forced"),
             };
             subtitleIndex++;
         }
