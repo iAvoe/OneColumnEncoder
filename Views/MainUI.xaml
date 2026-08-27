@@ -995,11 +995,6 @@
                                     Button2IsEnabled="{Binding B3_2IsEnabled}"
                                     Button3IsEnabled="{Binding B3_3IsEnabled}"
                                     Margin="10 15 10 0" />
-            <Button Content="{Binding MuxTracksText}"
-                    Command="{Binding OpenMuxTracks}"
-                    Style="{StaticResource NormalButton}"
-                    Height="30"
-                    Margin="10 8 10 0" />
 
             <!-- Hint: OneLineShotArgs upstream does not support clipping -->
             <comps:HintPanel Visibility="{Binding SVFIClipDisabledHintVisible, Converter={StaticResource BoolToVisibility}}"

@@ -2193,7 +2193,9 @@ public partial class EncodingMonitorVM : BaseVM
             cancelCmd, confirmCmd);
 
         window.DataContext = vm;
-        window.Owner = Application.Current.MainWindow;
+        Window? owner = OpenCloseBase.GetSafeOwnerWindow();
+        if (owner != null)
+            window.Owner = owner;
         window.Closed += (_, _) => _modalNavS.Close();
         _modalNavS.CurrentModalVM = vm;
         window.ShowDialog();

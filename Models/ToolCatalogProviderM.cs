@@ -65,7 +65,7 @@ public static class ToolCatalogProviderM
             UILangProvider.Current["ToolField.Path"]),
     ];
 
-    // Enc Settings zone (3 items)
+    // Enc Settings zone (4 items)
     public static List<ToolDefinitionM> GetEncSettingsDefinitions() =>
     [
         new(UILangProvider.Current["Tool.Enc.OutputSetting"],
@@ -83,6 +83,11 @@ public static class ToolCatalogProviderM
             UILangProvider.Current["Clear"],
             UILangProvider.Current["ToolField.Strategy"],
             UILangProvider.Current["ToolField.MaxKeyframeGap"]),
+        new(UILangProvider.Current["Tool.Enc.MuxTracks"],
+            UILangProvider.Current["Edit"],
+            UILangProvider.Current["Clear"],
+            UILangProvider.Current["ToolField.Path"],
+            UILangProvider.Current["ToolField.Value"]),
     ];
 
     public static List<ToolDefinitionM> GetAllStaticDefinitions() =>

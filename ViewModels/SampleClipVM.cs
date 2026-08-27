@@ -401,7 +401,7 @@ public class SampleClipVM : BaseVM, IClipRangeSelectorDragAware
             ConfirmationModal? existing = Application.Current.Windows
                 .OfType<ConfirmationModal>()
                 .FirstOrDefault(w => w.DataContext is ConfirmationVM &&
-                                w.Owner == Application.Current.MainWindow);
+                                w.Owner == OpenCloseBase.GetSafeOwnerWindow());
             if (existing != null)
             {
                 existing.Activate();
@@ -422,7 +422,9 @@ public class SampleClipVM : BaseVM, IClipRangeSelectorDragAware
                 }));
 
             window.DataContext = vm;
-            window.Owner = Application.Current.MainWindow;
+            Window? owner = OpenCloseBase.GetSafeOwnerWindow();
+            if (owner != null)
+                window.Owner = owner;
             window.Closed += (_, _) => _modalNavS.Close();
             _modalNavS.CurrentModalVM = vm;
             window.ShowDialog();

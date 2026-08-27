@@ -38,16 +38,16 @@ public sealed class MuxTracksConfVM : BaseVM
         UILangProvider.CurrentChanged += OnLanguageChanged;
     }
 
-    public MuxTracksConfModalLangProvider Lang => MuxTracksConfModalLangProvider.Current;
+    public static MuxTracksConfModalLangProvider Lang => MuxTracksConfModalLangProvider.Current;
     public static string WindowTitle => MuxTracksConfModalLangProvider.WindowTitle;
-    public string SidebarTitle => Lang["MuxTracks.QueueSources"];
-    public string AudioHeader => Lang["MuxTracks.AudioHeader"];
-    public string SubtitleHeader => Lang["MuxTracks.SubtitleHeader"];
-    public string AddAudioText => Lang["MuxTracks.AddAudio"];
-    public string AddSubtitleText => Lang["MuxTracks.AddSubtitle"];
-    public string EmptyText => Lang["MuxTracks.Empty"];
+    public static string SidebarTitle => Lang["MuxTracks.QueueSources"];
+    public static string AudioHeader => Lang["MuxTracks.AudioHeader"];
+    public static string SubtitleHeader => Lang["MuxTracks.SubtitleHeader"];
+    public static string AddAudioText => Lang["MuxTracks.AddAudio"];
+    public static string AddSubtitleText => Lang["MuxTracks.AddSubtitle"];
+    public static string EmptyText => Lang["MuxTracks.Empty"];
     public string CurrentSourceTitle => SelectedSource?.Name ?? string.Empty;
-    public string CurrentSourceDurationText => string.Empty;
+    public static string CurrentSourceDurationText => string.Empty;
     public ObservableCollection<MuxTrackSourceVM> SourceItems { get; } = [];
     public ObservableCollection<MuxTrackEntryVM> AudioTracks { get; } = [];
     public ObservableCollection<MuxTrackEntryVM> SubtitleTracks { get; } = [];
@@ -171,8 +171,7 @@ public sealed class MuxTracksConfVM : BaseVM
 
     private void RefreshSourceSummary()
     {
-        if (SelectedSource != null)
-            SelectedSource.RefreshTracks(_tracksBySource[SelectedSource.FilePath]);
+        SelectedSource?.RefreshTracks(_tracksBySource[SelectedSource.FilePath]);
     }
 
     private void Confirm()

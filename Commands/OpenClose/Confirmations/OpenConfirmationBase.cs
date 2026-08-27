@@ -26,7 +26,7 @@ public abstract class OpenConfirmationBase(
     public override void Execute(object? parameter)
     {
         if (TryActivateExistingWindow<ConfirmationModal>(w => w.DataContext is ConfirmationVM &&
-                            w.Owner == Application.Current.MainWindow))
+                            w.Owner == GetSafeOwnerWindow()))
             return;
 
         ConfirmationModal window = new();

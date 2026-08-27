@@ -4,6 +4,8 @@
                    xmlns:ui="clr-namespace:OneColumnEncoder.UI"
                    xmlns:comps="clr-namespace:OneColumnEncoder.Components"
                    xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
+                   xmlns:muxtracks="clr-namespace:OneColumnEncoder.ViewModels.MuxTracks"
+                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                    Background="{StaticResource Background}"
                    Title="{Binding WindowTitle}"
                    Width="760"
@@ -17,17 +19,37 @@
             <ColumnDefinition Width="10" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Border Grid.Column="0" Width="220" BorderBrush="{StaticResource RemixedBackground2}" BorderThickness="0 0 0.5 0" Padding="0 0 10 0"
+        <Border Grid.Column="0"
+                Width="220"
+                BorderBrush="{StaticResource RemixedBackground2}"
+                BorderThickness="0 0 0.5 0"
+                Padding="0 0 10 0"
                 Visibility="{Binding ShowSidebar, Converter={StaticResource BoolToVisibility}}">
             <DockPanel>
-                <TextBlock DockPanel.Dock="Top" Text="{Binding SidebarTitle}" Style="{StaticResource H3}" Margin="0 0 0 8" />
-                <ListBox ItemsSource="{Binding SourceItems}" SelectedItem="{Binding SelectedSource, Mode=TwoWay}" BorderThickness="0" Background="Transparent">
+                <TextBlock DockPanel.Dock="Top"
+                           Text="{Binding SidebarTitle}"
+                           Style="{StaticResource H3}"
+                           Margin="0 0 0 5" />
+                <!--Ideally use <comps:SectionHeader HeaderText="{Binding SidebarTitle}"
+                                     Margin="-5 0 0 0"/>-->
+                <ListBox ItemsSource="{Binding SourceItems}"
+                         SelectedItem="{Binding SelectedSource, Mode=TwoWay}"
+                         BorderThickness="0"
+                         Background="Transparent">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Border BorderBrush="{StaticResource GlobalPrimary}" BorderThickness="1" CornerRadius="5" Padding="8" Margin="0 0 0 6">
+                            <Border BorderBrush="{StaticResource GlobalPrimary}"
+                                    BorderThickness="1"
+                                    CornerRadius="5"
+                                    Padding="8"
+                                    Margin="0 0 0 5">
                                 <StackPanel>
-                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" TextTrimming="CharacterEllipsis" />
-                                    <TextBlock Text="{Binding TrackSummary}" Foreground="{StaticResource GlobalSecondary}" FontSize="11" />
+                                    <TextBlock Text="{Binding Name}"
+                                               FontWeight="Bold"
+                                               TextTrimming="CharacterEllipsis" />
+                                    <TextBlock Text="{Binding TrackSummary}"
+                                               Foreground="{StaticResource GlobalSecondary}"
+                                               FontSize="11" />
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
@@ -43,28 +65,107 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0">
-                <TextBlock Text="{Binding CurrentSourceTitle}" FontSize="18" FontWeight="Bold" TextTrimming="CharacterEllipsis" />
-                <TextBlock Text="{Binding CurrentSourceDurationText}" Foreground="{StaticResource GlobalSecondary}" />
+                <TextBlock Text="{Binding CurrentSourceTitle}"
+                           FontSize="18"
+                           FontWeight="Bold"
+                           TextTrimming="CharacterEllipsis" />
+                <TextBlock Text="{Binding CurrentSourceDurationText}"
+                           Foreground="{StaticResource GlobalSecondary}" />
             </StackPanel>
-            <Grid Grid.Row="1" Margin="0 18 0 0">
-                <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
-                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding AudioHeader}" Style="{StaticResource H3}" />
-                <Button Grid.Column="1" Content="{Binding AddAudioText}" Command="{Binding AddAudioCommand}" Style="{StaticResource NormalButton}" Height="28" Padding="14 0" />
-                <ListBox Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding AudioTracks}" BorderThickness="0" Background="Transparent" Margin="0 8 0 0">
-                    <ListBox.ItemTemplate><DataTemplate><comps:MuxTrackItem DataContext="{Binding}" /></DataTemplate></ListBox.ItemTemplate>
+            <Grid Grid.Row="1"
+                  Margin="0 15 0 0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding AudioHeader}"
+                           Style="{StaticResource H3}" />
+                <Button Grid.Column="1"
+                        Content="{Binding AddAudioText}"
+                        Command="{Binding AddAudioCommand}"
+                        Style="{StaticResource NormalButton}"
+                        Height="25"
+                        Padding="15 0" />
+                <ListBox Grid.Row="1"
+                         Grid.ColumnSpan="2"
+                         ItemsSource="{Binding AudioTracks}"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         HorizontalContentAlignment="Stretch"
+                         Margin="0 5 0 0">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <comps:MuxTrackItem DataContext="{Binding}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
                 </ListBox>
             </Grid>
-            <Grid Grid.Row="2" Margin="0 18 0 0">
-                <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
-                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding SubtitleHeader}" Style="{StaticResource H3}" />
-                <Button Grid.Column="1" Content="{Binding AddSubtitleText}" Command="{Binding AddSubtitleCommand}" Style="{StaticResource NormalButton}" Height="28" Padding="14 0" />
-                <ListBox Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding SubtitleTracks}" BorderThickness="0" Background="Transparent" Margin="0 8 0 0">
-                    <ListBox.ItemTemplate><DataTemplate><comps:MuxTrackItem DataContext="{Binding}" /></DataTemplate></ListBox.ItemTemplate>
+            <Grid Grid.Row="2"
+                  Margin="0 15 0 0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding SubtitleHeader}"
+                           Style="{StaticResource H3}" />
+                <Button Grid.Column="1"
+                        Content="{Binding AddSubtitleText}"
+                        Command="{Binding AddSubtitleCommand}"
+                        Style="{StaticResource NormalButton}"
+                        Height="25"
+                        Padding="15 0" />
+                <ListBox Grid.Row="1"
+                         Grid.ColumnSpan="2"
+                         ItemsSource="{Binding SubtitleTracks}"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         HorizontalContentAlignment="Stretch"
+                         Margin="0 5 0 0">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <comps:MuxTrackItem DataContext="{Binding}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
                 </ListBox>
             </Grid>
-            <comps:TwoButtonGroup Grid.Row="3" DataContext="{Binding CancelConfirmButtons}" ButtonHeight="32" Button1Command="{Binding Cmd1}" Button2Command="{Binding Cmd2}" Button1IsEnabled="{Binding B2_1IsEnabled}" Button2IsEnabled="{Binding B2_2IsEnabled}" Margin="0 15 0 0" />
+            <comps:TwoButtonGroup Grid.Row="3"
+                                  DataContext="{Binding CancelConfirmButtons}"
+                                  ButtonHeight="32"
+                                  Button1Command="{Binding Cmd1}"
+                                  Button2Command="{Binding Cmd2}"
+                                  Button1IsEnabled="{Binding B2_1IsEnabled}"
+                                  Button2IsEnabled="{Binding B2_2IsEnabled}"
+                                  Margin="0 15 0 0" />
         </Grid>
     </Grid>
 </ui:AdaptiveWindow>

@@ -106,7 +106,9 @@ public class ImportToolCmd(DropdownMenuVM dropdownVM,
             cancelCmd: new ActionCmd(_ => { window.DialogResult = false; window.Close(); }),
             confirmCmd: new ActionCmd(_ => { window.DialogResult = true; window.Close(); }));
         window.DataContext = vm;
-        window.Owner = Application.Current.MainWindow;
+        Window? owner = OpenCloseBase.GetSafeOwnerWindow();
+        if (owner != null)
+            window.Owner = owner;
         modalNavS.CurrentModalVM = vm;
         bool result = window.ShowDialog() == true;
         modalNavS.Close();

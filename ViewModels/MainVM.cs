@@ -20,6 +20,7 @@ public class MainVM : BaseVM
     private readonly ModalNavS _modalNavS;
     private readonly VideoAnalysisM _srcVideoAnalysis = new();
     private readonly ToolItemCardVM? _outputSettingCard;
+    private readonly ToolItemCardVM? _muxTracksCard;
     private readonly VideoSrcQueueState _videoSrcQueue;
     private readonly VideoSrcConcatState _videoSrcConcat;
     private readonly VideoSrcRepartState _videoSrcRepart;
@@ -96,7 +97,7 @@ public class MainVM : BaseVM
     public OneClickScriptGenCmd OneClickScriptGen { get; }
     public OpenFilterScribeCmd OpenFilterScribe { get; }
     public OpenMuxTracksCmd OpenMuxTracks { get; }
-    public string MuxTracksText => MuxTracksConfModalLangProvider.Current["MuxTracks.WindowButton"];
+    public static string MuxTracksText => MuxTracksConfModalLangProvider.Current["MuxTracks.WindowButton"];
     public CopyRawAnalysisCmd CopyRawAnalysis { get; } // Copy (ffprobe JSON) to clipboard
     public AnalyzeSrcVideoCmd AnalyzeSrcVideo { get; } // Maybe add mediaInfo analysis in future, but ffprobe alone will do
     public OpenSampleClipCmd SampleClip { get; }
@@ -508,6 +509,10 @@ public class MainVM : BaseVM
             UILangProvider.Current["Tool.Enc.OutputSetting"],
             StringComparison.OrdinalIgnoreCase));
         _outputSettingCard = outputSetting;
+        _muxTracksCard = EncodingConfZone.FirstOrDefault(t => t.Name.Equals(
+            MuxTracksText,
+            StringComparison.OrdinalIgnoreCase));
+        RefreshMuxTracksCardSummary();
 
         // Set P2Text to desktop, then P1Text to file name
         if (outputSetting != null)
@@ -1199,6 +1204,25 @@ public class MainVM : BaseVM
                 ? [GetCurrentVideoSrcPath()]
                 : [];
 
+    private void RefreshMuxTracksCardSummary()
+    {
+        if (_muxTracksCard == null) return;
+
+        string[] sourcePaths = GetCurrentMuxSourcePaths();
+        string sourceText = sourcePaths.Length == 0 || sourcePaths.All(string.IsNullOrWhiteSpace)
+            ? "!SOURCE"
+            : string.Join(", ", sourcePaths
+                .Select(Path.GetFileName)
+                .Where(name => !string.IsNullOrWhiteSpace(name))
+                .Select(name => name!));
+
+        int trackCount = sourcePaths.Sum(path => GetMuxTracksForSource(path).Count);
+        _muxTracksCard.P1Name = UILangProvider.Current["ToolField.Path"];
+        _muxTracksCard.P1TextData = sourceText;
+        _muxTracksCard.P2Name = UILangProvider.Current["ToolField.Value"];
+        _muxTracksCard.P2TextData = trackCount.ToString();
+    }
+
     private IReadOnlyList<MuxTrackM> GetMuxTracksForSource(string sourcePath) =>
         _muxTracksBySource.TryGetValue(sourcePath, out List<MuxTrackM>? tracks)
             ? [.. tracks.Select(CloneMuxTrack)]
@@ -1211,6 +1235,7 @@ public class MainVM : BaseVM
         else
             _muxTracksBySource[sourcePath] = [.. tracks.Select(CloneMuxTrack)];
 
+        RefreshMuxTracksCardSummary();
         UpdateEncStartButtonsState();
     }
 
@@ -1576,6 +1601,12 @@ public class MainVM : BaseVM
         if (outputSetting != null)
             RefreshOutputSettingCommand(outputSetting);
 
+        if (_muxTracksCard != null)
+        {
+            _muxTracksCard.R1Command = OpenMuxTracks;
+            RefreshMuxTracksCardSummary();
+        }
+
         ToolItemCardVM? compressionParams = EncodingConfZone.FirstOrDefault(t =>
             t.Name.Equals(UILangProvider.Current["Tool.Enc.EncParams"], StringComparison.OrdinalIgnoreCase));
 
@@ -1821,7 +1852,9 @@ public class MainVM : BaseVM
             }));
 
         window.DataContext = vm;
-        window.Owner = Application.Current.MainWindow;
+        Window? owner = OpenCloseBase.GetSafeOwnerWindow();
+        if (owner != null)
+            window.Owner = owner;
         window.Closed += (_, _) => _modalNavS.Close();
         _modalNavS.CurrentModalVM = vm;
         window.ShowDialog();
@@ -2108,6 +2141,7 @@ public class MainVM : BaseVM
         // Keep import-zone HintPanel paths in sync after any source change
         RefreshAllZoneSelectedPaths();
         RefreshToolSrcChecklistStatus();
+        RefreshMuxTracksCardSummary();
         UpdateFilterScbButtonsState();
         UpdateAnalyzeSrcButtonsState();
         UpdateEncStartButtonsState();
@@ -3093,6 +3127,7 @@ public class MainVM : BaseVM
         RefreshScriptQueuePrimaryText();
         ApplyDefinitionsToZone(EncodingConfZone, ToolCatalogProviderM.GetEncSettingsDefinitions());
         WireUpEncSettingsCmds();
+        RefreshMuxTracksCardSummary();
         foreach (ObservableCollection<ToolItemCardVM> zone in AllImportedToolZones)
             ApplyImportedToolDefs(zone);
         RefreshVspipeAvailability();

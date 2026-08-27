@@ -10,6 +10,9 @@ public abstract class OpenCloseBase(ModalNavS modalNavS) : BaseCmd
 {
     protected ModalNavS ModalNavS { get; } = modalNavS;
 
+    public static Window? GetSafeOwnerWindow() =>
+        Application.Current?.MainWindow is { IsVisible: true } owner ? owner : null;
+
     /// <summary>
     /// If a window of type <typeparamref name="TWindow"/> is already open,
     /// brings it to the front and returns true; otherwise returns false.
@@ -74,7 +77,9 @@ public abstract class OpenCloseBase(ModalNavS modalNavS) : BaseCmd
             modalNavS.Close();
 
         window.DataContext = viewModel;
-        window.Owner = Application.Current.MainWindow;
+        Window? owner = GetSafeOwnerWindow();
+        if (owner != null)
+            window.Owner = owner;
         window.Closed += (_, _) =>
         {
             modalNavS.Close();
@@ -103,7 +108,9 @@ public abstract class OpenCloseBase(ModalNavS modalNavS) : BaseCmd
             modalNavS.Close();
 
         window.DataContext = viewModel;
-        window.Owner = Application.Current.MainWindow;
+        Window? owner = GetSafeOwnerWindow();
+        if (owner != null)
+            window.Owner = owner;
         window.Closed += (_, _) =>
         {
             modalNavS.Close();

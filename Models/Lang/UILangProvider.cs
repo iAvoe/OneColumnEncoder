@@ -103,6 +103,7 @@ public class UILangProvider : LangProviderBase
             ["Tool.Enc.OutputSetting"] = "Output Filename & Path",
             ["Tool.Enc.Parallelism"] = "Parallelism Control",
             ["Tool.Enc.EncParams"] = "Encode Settings",
+            ["Tool.Enc.MuxTracks"] = "Add Audio/Subtitles",
 
             // Source queue card
             ["SourceQueue.Sequence"] = "Seq.",
@@ -341,6 +342,7 @@ public class UILangProvider : LangProviderBase
             ["Tool.Enc.OutputSetting"] = "输出文件名与路径",
             ["Tool.Enc.Parallelism"] = "并行计算调度",
             ["Tool.Enc.EncParams"] = "压缩参数配置",
+            ["Tool.Enc.MuxTracks"] = "添加音频/字幕轨道",
 
             ["SourceQueue.Sequence"] = "序列",
             ["SourceQueue.SelectFolderTitle"] = "选择视频源队列文件夹",
@@ -563,6 +565,7 @@ public class UILangProvider : LangProviderBase
             ["Tool.Enc.OutputSetting"] = "輸出檔案名與路徑",
             ["Tool.Enc.Parallelism"] = "平行計算調度",
             ["Tool.Enc.EncParams"] = "壓縮參數配置",
+            ["Tool.Enc.MuxTracks"] = "添加音訊/字幕軌道",
 
             ["SourceQueue.Sequence"] = "序列",
             ["SourceQueue.SelectFolderTitle"] = "選擇視訊來源序列資料夾",
@@ -798,6 +801,7 @@ public class UILangProvider : LangProviderBase
         ["Tool.Enc.OutputSetting"] = "Nom/Chemin fichier sortie",
         ["Tool.Enc.Parallelism"] = "Parallélisme",
         ["Tool.Enc.EncParams"] = "Réglages encodeur",
+        ["Tool.Enc.MuxTracks"] = "Ajouter audio/sous-titres",
         // Source queue card
         ["SourceQueue.Sequence"] = "Séqu.",
         ["SourceQueue.SelectFolderTitle"] = "Sélectionner le dossier de la file d'attente vidéo",
@@ -992,6 +996,7 @@ public class UILangProvider : LangProviderBase
         ["Tool.Enc.OutputSetting"] = "Nom. y ruta archivo salida",
         ["Tool.Enc.Parallelism"] = "Paralelismo",
         ["Tool.Enc.EncParams"] = "Ajustes del codificador",
+        ["Tool.Enc.MuxTracks"] = "Añadir audio/subtítulos",
         // Source queue card
         ["SourceQueue.Sequence"] = "Sec.",
         ["SourceQueue.SelectFolderTitle"] = "Seleccionar carpeta de cola de vídeo fuente",
@@ -1178,6 +1183,7 @@ public class UILangProvider : LangProviderBase
         ["Tool.Enc.OutputSetting"] = "出力ファイル名とパス",
         ["Tool.Enc.Parallelism"] = "並列スケジューリング",
         ["Tool.Enc.EncParams"] = "エンコード設定",
+        ["Tool.Enc.MuxTracks"] = "音声/字幕を追加",
         // Source queue card
         ["SourceQueue.Sequence"] = "順",
         ["SourceQueue.SelectFolderTitle"] = "ビデオソースキューフォルダを選択",
@@ -1372,6 +1378,7 @@ public class UILangProvider : LangProviderBase
         ["Tool.Enc.OutputSetting"] = "Имя и путь файла вывода",
         ["Tool.Enc.Parallelism"] = "Параллелизм",
         ["Tool.Enc.EncParams"] = "Параметры кодера",
+        ["Tool.Enc.MuxTracks"] = "Добавить аудио/субтитры",
         // Source queue card
         ["SourceQueue.Sequence"] = "Посл.",
         ["SourceQueue.SelectFolderTitle"] = "Выберите папку очереди исходных видео",
@@ -1574,6 +1581,7 @@ public class UILangProvider : LangProviderBase
         ["Tool.Enc.OutputSetting"] = "Ausgabedatei Name & Pfad",
         ["Tool.Enc.Parallelism"] = "Parallelismus",
         ["Tool.Enc.EncParams"] = "Encoder-Einstellungen",
+        ["Tool.Enc.MuxTracks"] = "Audio/Untertitel hinzufügen",
         // Source queue card
         ["SourceQueue.Sequence"] = "Seq.",
         ["SourceQueue.SelectFolderTitle"] = "Videoquellen-Warteschlangenordner wählen",
@@ -1745,6 +1753,7 @@ public class UILangProvider : LangProviderBase
         ["Tool.Enc.OutputSetting"] = "출력 파일명 및 경로",
         ["Tool.Enc.Parallelism"] = "병렬 처리 제어",
         ["Tool.Enc.EncParams"] = "인코딩 설정",
+        ["Tool.Enc.MuxTracks"] = "오디오/자막 추가",
         ["SourceQueue.Sequence"] = "순번",
         ["SourceQueue.SelectFolderTitle"] = "비디오 소스 큐 폴더 선택",
         ["SourceQueue.Analyzed"] = "큐 소스 분석 완료. 차이가 너무 커서 {0}개의 비디오를 걸러냈습니다.\n\n큐 데이터 JSON:\n{1}\n\n제외 목록:\n{2}",
@@ -1935,6 +1944,7 @@ public class UILangProvider : LangProviderBase
         ["Tool.Enc.OutputSetting"] = "Nome & caminho arquivo saída",
         ["Tool.Enc.Parallelism"] = "Controle de paralelismo",
         ["Tool.Enc.EncParams"] = "Configurações de codificação",
+        ["Tool.Enc.MuxTracks"] = "Adicionar áudio/legendas",
         ["SourceQueue.Sequence"] = "Seq.",
         ["SourceQueue.SelectFolderTitle"] = "Selecionar pasta da fila de fontes de vídeo",
         ["SourceQueue.Analyzed"] = "Análise da fila concluída. Filtrado(s) {0} vídeo(s) por diferenças excessivas.\n\nJSON de dados da fila:\n{1}\n\nLista de exclusão:\n{2}",
