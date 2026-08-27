@@ -24,6 +24,8 @@ public sealed class MuxTracksConfVM : BaseVM
             SourceItems.Add(new MuxTrackSourceVM(path, _tracksBySource[path]));
         }
 
+        ShowSidebar = SourceItems.Count > 1;
+
         RemoveTrackCommand = new ActionCmd(item => RemoveTrack(item as MuxTrackEntryVM));
         MoveTrackUpCommand = new ActionCmd(item => MoveTrack(item as MuxTrackEntryVM, -1));
         MoveTrackDownCommand = new ActionCmd(item => MoveTrack(item as MuxTrackEntryVM, 1));
@@ -57,7 +59,12 @@ public sealed class MuxTracksConfVM : BaseVM
     public ActionCmd RemoveTrackCommand { get; }
     public ActionCmd MoveTrackUpCommand { get; }
     public ActionCmd MoveTrackDownCommand { get; }
-    public bool ShowSidebar => SourceItems.Count > 1;
+    private bool _showSidebar;
+    public bool ShowSidebar
+    {
+        get => _showSidebar;
+        private set => SetProperty(ref _showSidebar, value);
+    }
     public bool CanConfirm => SourceItems.Count > 0;
 
     public MuxTrackSourceVM? SelectedSource

@@ -5,14 +5,18 @@
                    xmlns:comps="clr-namespace:OneColumnEncoder.Components"
                    xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
                    xmlns:muxtracks="clr-namespace:OneColumnEncoder.ViewModels.MuxTracks"
+                   xmlns:conv="clr-namespace:OneColumnEncoder.Converters"
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                    Background="{StaticResource Background}"
                    Title="{Binding WindowTitle}"
-                   Width="760"
                    MinWidth="520"
+                   Width="{Binding ShowSidebar, Converter={StaticResource SidebarWidthConverter}, ConverterParameter='760,540'}"
                    Height="620"
                    MinHeight="420"
                    WindowStartupLocation="CenterOwner">
+    <ui:AdaptiveWindow.Resources>
+        <conv:SidebarWidthConverter x:Key="SidebarWidthConverter" />
+    </ui:AdaptiveWindow.Resources>
     <Grid Margin="15 12.5 15 15">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
