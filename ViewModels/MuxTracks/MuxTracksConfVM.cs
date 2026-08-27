@@ -22,8 +22,9 @@ public sealed class MuxTracksConfVM : BaseVM
         _tracksBySource = new(StringComparer.OrdinalIgnoreCase);
         foreach (string path in sourcePaths.Where(File.Exists).Distinct(StringComparer.OrdinalIgnoreCase))
         {
-            _tracksBySource[path] = BuildInitialTracks(path, getTracks(path), getSourceFfprobeJson(path));
-            SourceItems.Add(new MuxTrackSourceVM(path, _tracksBySource[path]));
+            string? ffprobeJson = getSourceFfprobeJson(path);
+            _tracksBySource[path] = BuildInitialTracks(path, getTracks(path), ffprobeJson);
+            SourceItems.Add(new MuxTrackSourceVM(path, _tracksBySource[path], ffprobeJson));
         }
 
         ShowSidebar = SourceItems.Count > 1;
@@ -48,7 +49,7 @@ public sealed class MuxTracksConfVM : BaseVM
     public static string AddSubtitleText => Lang["MuxTracks.AddSubtitle"];
     public static string EmptyText => Lang["MuxTracks.Empty"];
     public string CurrentSourceTitle => SelectedSource?.Name ?? string.Empty;
-    public static string CurrentSourceDurationText => string.Empty;
+    public string CurrentSourceDurationText => SelectedSource?.TrackSummary ?? string.Empty;
     public ObservableCollection<MuxTrackSourceVM> SourceItems { get; } = [];
     public ObservableCollection<MuxTrackEntryVM> Tracks { get; } = [];
     public ButtonGroupVM CancelConfirmButtons { get; }

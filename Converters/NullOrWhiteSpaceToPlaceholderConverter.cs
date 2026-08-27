@@ -7,4 +7,4 @@ public class NullOrWhiteSpaceToPlaceholderConverter : IValueConverter
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         => Binding.DoNothing;
-}
+}

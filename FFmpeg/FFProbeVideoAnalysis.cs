@@ -69,7 +69,9 @@ public static class FFProbeVideoAnalysis
                 : result.Stderr.Trim());
 
         ValidateJson(result.Stdout);
-        return FFProbeJsonFormatting.Normalize(result.Stdout);
+
+        string mergedJson = await TryMergeAllStreamsAsync(ffprobePath, videoSource, result.Stdout, cancellationToken);
+        return FFProbeJsonFormatting.Normalize(mergedJson);
     }
 
     // Check if source video metadata corrupted, or ffprobe was mad (unlikely)
@@ -81,4 +83,51 @@ public static class FFProbeVideoAnalysis
             || streams.GetArrayLength() < 1)
             throw new InvalidOperationException(Lang.NoVideoStreamInfo);
     }
-}
+
+    private static async Task<string> TryMergeAllStreamsAsync(
+        string ffprobePath,
+        string videoSource,
+        string primaryJson,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            FFprobeProcessResult streamsResult = await FFprobeProcessRunner.RunAsync(
+                ffprobePath,
+                ["-v", "quiet", "-hide_banner", "-show_streams", "-show_format", "-of", "json", videoSource],
+                TimeSpan.FromSeconds(30),
+                cancellationToken);
+
+            if (streamsResult.ExitCode != 0 || string.IsNullOrWhiteSpace(streamsResult.Stdout))
+                return primaryJson;
+
+            using JsonDocument primaryDoc = JsonDocument.Parse(primaryJson);
+            using JsonDocument streamsDoc = JsonDocument.Parse(streamsResult.Stdout);
+            if (!streamsDoc.RootElement.TryGetProperty("streams", out JsonElement allStreams) || allStreams.ValueKind != JsonValueKind.Array)
+                return primaryJson;
+
+            using var output = new MemoryStream();
+            using (Utf8JsonWriter writer = new(output, new JsonWriterOptions { Indented = false }))
+            {
+                writer.WriteStartObject();
+                foreach (JsonProperty property in primaryDoc.RootElement.EnumerateObject())
+                {
+                    if (property.NameEquals("streams"))
+                        continue;
+
+                    property.WriteTo(writer);
+                }
+
+                writer.WritePropertyName("streams");
+                allStreams.WriteTo(writer);
+                writer.WriteEndObject();
+            }
+
+            return Encoding.UTF8.GetString(output.ToArray());
+        }
+        catch
+        {
+            return primaryJson;
+        }
+    }
+}
