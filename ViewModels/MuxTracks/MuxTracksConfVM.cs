@@ -36,9 +36,11 @@ public sealed class MuxTracksConfVM : BaseVM
         MoveTrackUpCommand = new ActionCmd(item => MoveTrack(item as MuxTrackEntryVM, -1));
         MoveTrackDownCommand = new ActionCmd(item => MoveTrack(item as MuxTrackEntryVM, 1));
         AddSubtitleCommand = new ActionCmd(_ => BrowseSubtitle(), _ => SelectedSource != null);
-        CancelConfirmButtons = ButtonGroupVM.CreateTwoButton(
-            Lang.Cancel, Lang.Confirm,
-            new ActionCmd(_ => _closeAction()), new ActionCmd(_ => Confirm(), _ => CanConfirm));
+        BottomButtons = ButtonGroupVM.CreateThreeButton(
+            AddSubtitleText, Lang.Cancel, Lang.Confirm,
+            AddSubtitleCommand,
+            new ActionCmd(_ => _closeAction()),
+            new ActionCmd(_ => Confirm(), _ => CanConfirm));
 
         if (SourceItems.Count > 0)
             SelectedSource = SourceItems[0];
@@ -56,7 +58,7 @@ public sealed class MuxTracksConfVM : BaseVM
     public string CurrentSourceDurationText => SelectedSource?.TrackSummary ?? string.Empty;
     public ObservableCollection<MuxTrackSourceVM> SourceItems { get; } = [];
     public ObservableCollection<MuxTrackEntryVM> Tracks { get; } = [];
-    public ButtonGroupVM CancelConfirmButtons { get; }
+    public ButtonGroupVM BottomButtons { get; }
     public ActionCmd AddSubtitleCommand { get; }
     public ActionCmd RemoveTrackCommand { get; }
     public ActionCmd MoveTrackUpCommand { get; }
@@ -196,8 +198,9 @@ public sealed class MuxTracksConfVM : BaseVM
     {
         OnPropertyChanged(string.Empty);
         foreach (MuxTrackEntryVM entry in Tracks) entry.RefreshLanguage();
-        CancelConfirmButtons.B2_1Text = Lang.Cancel;
-        CancelConfirmButtons.B2_2Text = Lang.Confirm;
+        BottomButtons.B3_1Text = AddSubtitleText;
+        BottomButtons.B3_2Text = Lang.Cancel;
+        BottomButtons.B3_3Text = Lang.Confirm;
     }
 
     private static MuxTrackM Clone(MuxTrackM track) => new()
