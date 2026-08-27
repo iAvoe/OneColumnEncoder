@@ -2,7 +2,7 @@ namespace OneColumnEncoder.Components;
 
 /// <summary>
 /// A settings row that shows a mode label on the left and three encoder
-/// (x264 / x265 / SVT-AV1) auto-mux checkboxes on the right.
+/// x264/x265/SVT-AV1 auto-mux checkboxes on the right.
 /// </summary>
 public class AutoMuxRow : Control
 {

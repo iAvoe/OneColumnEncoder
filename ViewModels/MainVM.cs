@@ -23,6 +23,7 @@ public class MainVM : BaseVM
     private readonly VideoSrcQueueState _videoSrcQueue;
     private readonly VideoSrcConcatState _videoSrcConcat;
     private readonly VideoSrcRepartState _videoSrcRepart;
+    private readonly Dictionary<string, List<MuxTrackM>> _muxTracksBySource = new(StringComparer.OrdinalIgnoreCase);
     private const int MaxResolutionDimension = 65535;
     private string _scriptScribeFfmpegFilterArgs = string.Empty;
     private string _repartAvsFilterInput = string.Empty;
@@ -94,6 +95,8 @@ public class MainVM : BaseVM
     #endregion
     public OneClickScriptGenCmd OneClickScriptGen { get; }
     public OpenFilterScribeCmd OpenFilterScribe { get; }
+    public OpenMuxTracksCmd OpenMuxTracks { get; }
+    public string MuxTracksText => MuxTracksConfModalLangProvider.Current["MuxTracks.WindowButton"];
     public CopyRawAnalysisCmd CopyRawAnalysis { get; } // Copy (ffprobe JSON) to clipboard
     public AnalyzeSrcVideoCmd AnalyzeSrcVideo { get; } // Maybe add mediaInfo analysis in future, but ffprobe alone will do
     public OpenSampleClipCmd SampleClip { get; }
@@ -574,6 +577,12 @@ public class MainVM : BaseVM
             () => EncodingPipeline.GetSourceTotalFrames(
                 _srcVideoAnalysis.RawJson,
                 _srcVideoAnalysis.ConcatTotalFrames) ?? 0);
+        OpenMuxTracks = new OpenMuxTracksCmd(
+            modalNavS,
+            GetCurrentMuxSourcePaths,
+            GetMuxTracksForSource,
+            ApplyMuxTracksForSource,
+            () => GetActiveSrcRoute() is SrcRouteKind.Single or SrcRouteKind.Queue);
         CopyRawAnalysis = new CopyRawAnalysisCmd(
             _srcVideoAnalysis, modalNavS);
         AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(
@@ -1182,6 +1191,36 @@ public class MainVM : BaseVM
             !string.IsNullOrWhiteSpace(t.P2TextData));
         return videoSrc?.P2TextData ?? string.Empty;
     }
+
+    private string[] GetCurrentMuxSourcePaths() =>
+        GetActiveSrcRoute() == SrcRouteKind.Queue
+            ? GetCurrentQueueFilePaths()
+            : GetActiveSrcRoute() == SrcRouteKind.Single
+                ? [GetCurrentVideoSrcPath()]
+                : [];
+
+    private IReadOnlyList<MuxTrackM> GetMuxTracksForSource(string sourcePath) =>
+        _muxTracksBySource.TryGetValue(sourcePath, out List<MuxTrackM>? tracks)
+            ? [.. tracks.Select(CloneMuxTrack)]
+            : [];
+
+    private void ApplyMuxTracksForSource(string sourcePath, IReadOnlyList<MuxTrackM> tracks)
+    {
+        if (tracks.Count == 0)
+            _muxTracksBySource.Remove(sourcePath);
+        else
+            _muxTracksBySource[sourcePath] = [.. tracks.Select(CloneMuxTrack)];
+
+        UpdateEncStartButtonsState();
+    }
+
+    private static MuxTrackM CloneMuxTrack(MuxTrackM track) => new()
+    {
+        FilePath = track.FilePath,
+        Kind = track.Kind,
+        SyncMilliseconds = track.SyncMilliseconds,
+        IsDefault = track.IsDefault,
+    };
 
     private string GetCurrentSrcImportPath()
     {
@@ -2209,6 +2248,7 @@ public class MainVM : BaseVM
             SvfiTaskId: svfiTaskId,
             FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs,
             AudioMuxMode: EncodingAudioMuxResolver.ParseMode(_appConfM.AudioMux.SingleMode),
+            MuxTracks: GetMuxTracksForSource(sourceVideoPath),
             AutoMuxEnabled: EncodingAutoMuxResolver.IsAutoMuxEnabled(_appConfM.AutoMux, encoderExeName, EncodingMuxRouteMode.Single));
     }
 
@@ -2340,6 +2380,7 @@ public class MainVM : BaseVM
                 ParallelismConf: parallelismConf,
                 FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs,
                 AudioMuxMode: EncodingAudioMuxResolver.ParseMode(_appConfM.AudioMux.QueueMode),
+                MuxTracks: GetMuxTracksForSource(srcPath),
                 AutoMuxEnabled: EncodingAutoMuxResolver.IsAutoMuxEnabled(_appConfM.AutoMux, encoderExeName, EncodingMuxRouteMode.Queue));
         })];
     }
@@ -3013,6 +3054,7 @@ public class MainVM : BaseVM
         EncStartButtons.B3_3Text = UICaptionProvider.Buttons.StartEncode;
         AnalyzeSrcButtons.B2_1Text = UICaptionProvider.Buttons.CopyRawAnalysis;
         AnalyzeSrcButtons.B2_2Text = UICaptionProvider.Buttons.AnalyzeSrcVideo;
+        OnPropertyChanged(nameof(MuxTracksText));
     }
     private void RefreshCardsLanguage()
     {

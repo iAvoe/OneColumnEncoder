@@ -32,8 +32,10 @@ public static partial class MuxPipeline
         if (request.MuxMode == EncodingMuxMode.VideoOnly)
             return BuildRepartMuxCommand(request) ?? BuildVideoOnlyMuxCommand(request);
         if (request.Clip != null) return null;
+        bool hasExternalTracks = request.MuxTracks is { Count: > 0 };
         if (!request.IsConcatMode.GetValueOrDefault()
-            && string.IsNullOrWhiteSpace(request.SourceVideoPath)) return null;
+            && string.IsNullOrWhiteSpace(request.SourceVideoPath)
+            && !hasExternalTracks) return null;
 
         MuxContext context = BuildMuxContext(request);
         EncodingAudioMuxMode audioMode = EncodingAudioMuxResolver.ResolveAudioMuxMode(request);
@@ -52,25 +54,32 @@ public static partial class MuxPipeline
         if (splitAudioStep)
             return BuildConcatAudioSplitMux(request, context, audioMode, videoTimescaleArgs, inputFormatArgs);
 
-        string secondInput = useConcatSourceInputs
+        bool hasSourceInput = isConcatMux || !string.IsNullOrWhiteSpace(request.SourceVideoPath);
+        string? secondInput = useConcatSourceInputs
             ? string.Join(" ", request.ConcatVideoSourcePaths!.Select(path => $"-i {Quote(path)}"))
             : isConcatMux
                 ? $"-f concat -safe 0 -i {Quote(request.ConcatFileListPath!)}"
-                : $"-i {Quote(request.SourceVideoPath!)}";
+                : hasSourceInput ? $"-i {Quote(request.SourceVideoPath!)}" : null!;
+        int externalInputIndex = hasSourceInput ? 2 : 1;
+        string externalInputs = BuildExternalInputArgs(request.MuxTracks);
 
         // Concat mux can either re-encode audio from each fragment input or fall back to the concat demuxer
         // when the user selected Copy.
         string? audioMuxArgs = BuildAudioMuxArgs(audioMode);
-        string nonVideoMapAndCodecArgs = useConcatSourceInputs
+        string sourceMapAndCodecArgs = useConcatSourceInputs
             ? BuildConcatAudioMuxMapArgs(audioMode)
-            : $"{streamMapArgs} -map_metadata 1 -map_chapters 1 {(audioMode == EncodingAudioMuxMode.Disable ? "-an" : audioMuxArgs)} -c:s copy";
+            : hasSourceInput
+                ? $"{streamMapArgs} -map_metadata 1 -map_chapters 1 {(audioMode == EncodingAudioMuxMode.Disable ? "-an" : audioMuxArgs)} -c:s copy"
+                : (audioMode == EncodingAudioMuxMode.Disable ? "-an" : audioMuxArgs ?? string.Empty);
+        string externalMapAndCodecArgs = BuildExternalTrackMapArgs(request.MuxTracks, externalInputIndex, request.SourceFfprobeJson, audioMode);
 
         string args = JoinArgs(
             "-hide_banner -y",
             inputFormatArgs,
             $"-i {Quote(context.EncodedVideoPath)}",
             secondInput,
-            $"-map 0:v:0 {nonVideoMapAndCodecArgs} -c:v copy -bsf:v setts=pts=N*DURATION {videoTimescaleArgs}",
+            externalInputs,
+            $"-map 0:v:0 {sourceMapAndCodecArgs} {externalMapAndCodecArgs} -c:v copy -bsf:v setts=pts=N*DURATION {videoTimescaleArgs}",
             Quote(context.OutputPath));
 
         return new($"{Quote(request.FfmpegPath)} {args}", args, context.EncodedVideoPath, context.OutputPath);
@@ -236,6 +245,76 @@ public static partial class MuxPipeline
         EncodingAudioMuxMode.ReEncodeOpus128 => "-c:a libopus -b:a 128k -vbr on -compression_level 10 -frame_duration 100",
         _ => null
     };
+
+    private static string BuildExternalInputArgs(IReadOnlyList<MuxTrackM>? tracks)
+    {
+        if (tracks is not { Count: > 0 }) return string.Empty;
+        return string.Join(" ", tracks.Select((track, index) =>
+        {
+            string offset = track.SyncMilliseconds == 0
+                ? string.Empty
+                : $"-itsoffset {track.SyncMilliseconds.ToString(CultureInfo.InvariantCulture)}ms";
+            return JoinArgs(offset, $"-i {Quote(track.FilePath)}");
+        }));
+    }
+
+    private static string BuildExternalTrackMapArgs(
+        IReadOnlyList<MuxTrackM>? tracks,
+        int inputIndex,
+        string? sourceFfprobeJson,
+        EncodingAudioMuxMode audioMode)
+    {
+        if (tracks is not { Count: > 0 }) return string.Empty;
+
+        int existingAudioCount = GetStreamCount(sourceFfprobeJson, "audio");
+        int existingSubtitleCount = GetStreamCount(sourceFfprobeJson, "subtitle");
+        int audioIndex = existingAudioCount;
+        int subtitleIndex = existingSubtitleCount;
+        List<string> args = [];
+        foreach (MuxTrackM track in tracks)
+        {
+            bool isAudio = track.Kind == MuxTrackKind.Audio;
+            int outputIndex = isAudio ? audioIndex++ : subtitleIndex++;
+            string streamType = isAudio ? "a" : "s";
+            string codec = isAudio ? (BuildAudioMuxArgs(audioMode) ?? "-c:a copy") : "-c:s copy";
+            args.Add($"-map {inputIndex}:0 {codec} -metadata:s:{streamType}:{outputIndex} title={Quote(track.Name)}");
+            inputIndex++;
+        }
+
+        MuxTrackM[] defaults = [.. tracks.Where(track => track.IsDefault)];
+        if (defaults.Length > 0)
+        {
+            int audioTotal = existingAudioCount + tracks.Count(track => track.Kind == MuxTrackKind.Audio);
+            int subtitleTotal = existingSubtitleCount + tracks.Count(track => track.Kind == MuxTrackKind.Subtitle);
+            args.AddRange(Enumerable.Range(0, audioTotal).Select(index => $"-disposition:a:{index} 0"));
+            args.AddRange(Enumerable.Range(0, subtitleTotal).Select(index => $"-disposition:s:{index} 0"));
+            audioIndex = existingAudioCount;
+            subtitleIndex = existingSubtitleCount;
+            foreach (MuxTrackM track in tracks)
+            {
+                if (!track.IsDefault) continue;
+                string streamType = track.Kind == MuxTrackKind.Audio ? "a" : "s";
+                int outputIndex = track.Kind == MuxTrackKind.Audio ? audioIndex++ : subtitleIndex++;
+                args.Add($"-disposition:{streamType}:{outputIndex} default");
+            }
+        }
+
+        return string.Join(" ", args);
+    }
+
+    private static int GetStreamCount(string? sourceFfprobeJson, string codecType)
+    {
+        if (string.IsNullOrWhiteSpace(sourceFfprobeJson)) return 0;
+        try
+        {
+            using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
+            if (!document.RootElement.TryGetProperty("streams", out JsonElement streams) || streams.ValueKind != JsonValueKind.Array)
+                return 0;
+            return streams.EnumerateArray().Count(stream =>
+                string.Equals(TryGetString(stream, "codec_type"), codecType, StringComparison.OrdinalIgnoreCase));
+        }
+        catch { return 0; }
+    }
 
     private static string BuildConcatAudioMuxMapArgs(EncodingAudioMuxMode mode)
     {
