@@ -7,7 +7,7 @@ public sealed class OpenMuxTracksCmd(
     ModalNavS modalNavS,
     Func<string[]> getSourcePaths,
     Func<string, IReadOnlyList<MuxTrackM>> getTracks,
-    Func<string, string?> getSourceFfprobeJson,
+    Func<string[], IReadOnlyDictionary<string, string?>> getFfprobeJsonBatch,
     Action<string, IReadOnlyList<MuxTrackM>> applyTracks,
     Func<bool> canOpen,
     Func<bool> hasSourceAnalysis) : OpenCloseBase(modalNavS)
@@ -22,8 +22,10 @@ public sealed class OpenMuxTracksCmd(
             .ToArray();
         if (paths.Length == 0) return;
 
+        IReadOnlyDictionary<string, string?> ffprobeJsonByPath = getFfprobeJsonBatch(paths);
+
         MuxTracksConfModal window = new();
-        MuxTracksConfVM vm = new(window.Close, paths, getTracks, getSourceFfprobeJson, applyTracks, hasSourceAnalysis());
+        MuxTracksConfVM vm = new(window.Close, paths, getTracks, ffprobeJsonByPath, applyTracks, hasSourceAnalysis());
         ShowModal(window, vm, showDialog: true);
     }
 }

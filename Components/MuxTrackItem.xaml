@@ -15,10 +15,26 @@
           HorizontalAlignment="Stretch"
           MinWidth="0"
           MaxWidth="{Binding Width, RelativeSource={RelativeSource AncestorType=Window}}">
-        <Border BorderBrush="{StaticResource GlobalPrimary}"
-                BorderThickness="1.5"
+        <Border BorderThickness="1.5"
                 CornerRadius="8"
                 Padding="12.5 10">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="BorderBrush"
+                            Value="{StaticResource MuxTrackUserBorder}" />
+                    <Setter Property="Background"
+                            Value="{StaticResource MuxTrackUserBackground}" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Model.IsSourceTrack}"
+                                     Value="True">
+                            <Setter Property="BorderBrush"
+                                    Value="{StaticResource MuxTrackSourceBorder}" />
+                            <Setter Property="Background"
+                                    Value="{StaticResource MuxTrackSourceBackground}" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"

@@ -587,7 +587,7 @@ public class MainVM : BaseVM
             modalNavS,
             GetCurrentMuxSourcePaths,
             GetMuxTracksForSource,
-            GetMuxSourceFfprobeJson,
+            GetMuxSourceFfprobeJsonBatch,
             ApplyMuxTracksForSource,
             () => GetActiveSrcRoute() is SrcRouteKind.Single or SrcRouteKind.Queue or SrcRouteKind.Concat
                 && !string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath)
@@ -1275,16 +1275,23 @@ public class MainVM : BaseVM
             ? [.. tracks.Select(CloneMuxTrack)]
             : [];
 
-    private string? GetMuxSourceFfprobeJson(string sourcePath)
+    private IReadOnlyDictionary<string, string?> GetMuxSourceFfprobeJsonBatch(string[] sourcePaths)
     {
-        if (string.IsNullOrWhiteSpace(sourcePath)) return null;
-
-        return GetActiveSrcRoute() switch
+        SrcRouteKind route = GetActiveSrcRoute();
+        if (route == SrcRouteKind.Queue)
         {
-            SrcRouteKind.Single => _srcVideoAnalysis.RawJson,
-            SrcRouteKind.Queue => LoadQueueFFprobeJsonByPath().TryGetValue(sourcePath, out string? rawJson) ? rawJson : null,
-            _ => null,
-        };
+            Dictionary<string, string> queueJson = LoadQueueFFprobeJsonByPath();
+            Dictionary<string, string?> result = new(queueJson.Count, StringComparer.OrdinalIgnoreCase);
+            foreach (KeyValuePair<string, string> kv in queueJson)
+                result[kv.Key] = kv.Value;
+            return result;
+        }
+
+        Dictionary<string, string?> singleResult = new(sourcePaths.Length, StringComparer.OrdinalIgnoreCase);
+        string? value = route == SrcRouteKind.Single ? _srcVideoAnalysis.RawJson : null;
+        foreach (string path in sourcePaths)
+            singleResult[path] = value;
+        return singleResult;
     }
 
     private void ApplyMuxTracksForSource(string sourcePath, IReadOnlyList<MuxTrackM> tracks)

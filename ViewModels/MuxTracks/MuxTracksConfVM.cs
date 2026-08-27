@@ -15,7 +15,7 @@ public sealed class MuxTracksConfVM : BaseVM
         Action closeAction,
         IEnumerable<string> sourcePaths,
         Func<string, IReadOnlyList<MuxTrackM>> getTracks,
-        Func<string, string?> getSourceFfprobeJson,
+        IReadOnlyDictionary<string, string?> ffprobeJsonByPath,
         Action<string, IReadOnlyList<MuxTrackM>> applyTracks,
         bool hasSourceAnalysis)
     {
@@ -25,7 +25,7 @@ public sealed class MuxTracksConfVM : BaseVM
         _tracksBySource = new(StringComparer.OrdinalIgnoreCase);
         foreach (string path in sourcePaths.Where(File.Exists).Distinct(StringComparer.OrdinalIgnoreCase))
         {
-            string? ffprobeJson = getSourceFfprobeJson(path);
+            ffprobeJsonByPath.TryGetValue(path, out string? ffprobeJson);
             _tracksBySource[path] = BuildInitialTracks(path, getTracks(path), ffprobeJson);
             SourceItems.Add(new MuxTrackSourceVM(path, _tracksBySource[path], ffprobeJson));
         }
