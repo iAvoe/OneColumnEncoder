@@ -37,6 +37,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
@@ -50,28 +51,34 @@
                          Width="70"
                          Margin="7.5 0 0 0" />
                 <CheckBox Grid.Column="2"
-                          Content="{Binding DataContext.Lang[MuxTracks.Primary], RelativeSource={RelativeSource AncestorType=Window}}"
-                          IsChecked="{Binding IsDefault}"
+                           Content="{Binding DataContext.Lang[MuxTracks.Primary], RelativeSource={RelativeSource AncestorType=Window}}"
+                           IsChecked="{Binding IsDefault}"
+                           Margin="12.5 0 0 0"
+                           VerticalAlignment="Center" />
+                <CheckBox Grid.Column="3"
+                          Content="{Binding DataContext.Lang[MuxTracks.Forced], RelativeSource={RelativeSource AncestorType=Window}}"
+                          IsChecked="{Binding IsForced}"
                           Margin="12.5 0 0 0"
                           VerticalAlignment="Center" />
 
-                <Border Grid.Column="3" />
+                <Border Grid.Column="4" />
 
-                <Button Grid.Column="4"
+                <Button Grid.Column="5"
                         Content="{Binding MoveUpText}"
                         Command="{Binding MoveUpCommand}"
                         IsEnabled="{Binding CanMoveUp}"
                         Style="{StaticResource LinkButton}"
                         Margin="0" />
-                <Button Grid.Column="5"
+                <Button Grid.Column="6"
                         Content="{Binding MoveDownText}"
                         Command="{Binding MoveDownCommand}"
                         IsEnabled="{Binding CanMoveDown}"
                         Style="{StaticResource LinkButton}"
                         Margin="5 0 0 0" />
-                <Button Grid.Column="6"
+                <Button Grid.Column="7"
                         Content="{Binding RemoveText}"
                         Command="{Binding RemoveCommand}"
+                        Visibility="{Binding CanRemove, Converter={StaticResource BoolToVisibility}}"
                         Style="{StaticResource LinkButton}"
                         Margin="5 0 0 0" />
             </Grid>

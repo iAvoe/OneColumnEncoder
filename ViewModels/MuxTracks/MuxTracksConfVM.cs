@@ -1,4 +1,5 @@
 using System.IO;
+using static OneColumnEncoder.Json.JsonElementHelper;
 
 namespace OneColumnEncoder.ViewModels.MuxTracks;
 
@@ -13,6 +14,7 @@ public sealed class MuxTracksConfVM : BaseVM
         Action closeAction,
         IEnumerable<string> sourcePaths,
         Func<string, IReadOnlyList<MuxTrackM>> getTracks,
+        Func<string, string?> getSourceFfprobeJson,
         Action<string, IReadOnlyList<MuxTrackM>> applyTracks)
     {
         _closeAction = closeAction;
@@ -20,7 +22,7 @@ public sealed class MuxTracksConfVM : BaseVM
         _tracksBySource = new(StringComparer.OrdinalIgnoreCase);
         foreach (string path in sourcePaths.Where(File.Exists).Distinct(StringComparer.OrdinalIgnoreCase))
         {
-            _tracksBySource[path] = [.. getTracks(path).Select(Clone)];
+            _tracksBySource[path] = BuildInitialTracks(path, getTracks(path), getSourceFfprobeJson(path));
             SourceItems.Add(new MuxTrackSourceVM(path, _tracksBySource[path]));
         }
 
@@ -187,9 +189,94 @@ public sealed class MuxTracksConfVM : BaseVM
     private static MuxTrackM Clone(MuxTrackM track) => new()
     {
         FilePath = track.FilePath,
+        IsSourceTrack = track.IsSourceTrack,
+        SourceStreamIndex = track.SourceStreamIndex,
+        SourceSubtitleIndex = track.SourceSubtitleIndex,
+        DisplayName = track.DisplayName,
         SyncMilliseconds = track.SyncMilliseconds,
         IsDefault = track.IsDefault,
+        IsForced = track.IsForced,
     };
+
+    private static List<MuxTrackM> BuildInitialTracks(string sourcePath, IReadOnlyList<MuxTrackM> savedTracks, string? ffprobeJson)
+    {
+        List<MuxTrackM> tracks = [.. DetectSourceSubtitleTracks(sourcePath, ffprobeJson)];
+        foreach (MuxTrackM detected in tracks)
+        {
+            MuxTrackM? saved = savedTracks.FirstOrDefault(track =>
+                track.IsSourceTrack &&
+                track.SourceStreamIndex == detected.SourceStreamIndex);
+            if (saved == null) continue;
+
+            detected.SyncMilliseconds = saved.SyncMilliseconds;
+            detected.IsDefault = saved.IsDefault;
+            detected.IsForced = saved.IsForced;
+        }
+
+        tracks.AddRange(savedTracks.Where(track => !track.IsSourceTrack).Select(Clone));
+        return tracks;
+    }
+
+    private static IEnumerable<MuxTrackM> DetectSourceSubtitleTracks(string sourcePath, string? ffprobeJson)
+    {
+        if (string.IsNullOrWhiteSpace(ffprobeJson)) yield break;
+
+        using JsonDocument document = JsonDocument.Parse(ffprobeJson);
+        if (!document.RootElement.TryGetProperty("streams", out JsonElement streams) || streams.ValueKind != JsonValueKind.Array)
+            yield break;
+
+        int subtitleIndex = 0;
+        foreach (JsonElement stream in streams.EnumerateArray())
+        {
+            if (!string.Equals(TryGetString(stream, "codec_type"), "subtitle", StringComparison.OrdinalIgnoreCase))
+                continue;
+            if (!TryGetInt(stream, "index", out int streamIndex))
+                continue;
+
+            yield return new MuxTrackM
+            {
+                FilePath = sourcePath,
+                IsSourceTrack = true,
+                SourceStreamIndex = streamIndex,
+                SourceSubtitleIndex = subtitleIndex,
+                DisplayName = BuildSourceSubtitleName(stream, subtitleIndex),
+                IsDefault = TryGetDisposition(stream, "default"),
+                IsForced = TryGetDisposition(stream, "forced"),
+            };
+            subtitleIndex++;
+        }
+    }
+
+    private static string BuildSourceSubtitleName(JsonElement stream, int subtitleIndex)
+    {
+        string? title = TryGetTag(stream, "title");
+        string? language = TryGetTag(stream, "language");
+        string prefix = $"Source subtitle {subtitleIndex + 1}";
+
+        if (!string.IsNullOrWhiteSpace(title) && !string.IsNullOrWhiteSpace(language))
+            return $"{prefix} - {language} - {title}";
+        if (!string.IsNullOrWhiteSpace(title)) return $"{prefix} - {title}";
+        if (!string.IsNullOrWhiteSpace(language)) return $"{prefix} - {language}";
+        return prefix;
+    }
+
+    private static bool TryGetDisposition(JsonElement stream, string name)
+    {
+        return stream.TryGetProperty("disposition", out JsonElement disposition) &&
+            disposition.ValueKind == JsonValueKind.Object &&
+            TryGetInt(disposition, name, out int value) &&
+            value != 0;
+    }
+
+    private static string? TryGetTag(JsonElement stream, string name)
+    {
+        return stream.TryGetProperty("tags", out JsonElement tags) &&
+            tags.ValueKind == JsonValueKind.Object &&
+            tags.TryGetProperty(name, out JsonElement value) &&
+            value.ValueKind == JsonValueKind.String
+                ? value.GetString()
+                : null;
+    }
 
     public override void Dispose()
     {

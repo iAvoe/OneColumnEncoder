@@ -12,8 +12,13 @@ public sealed class MuxTrackSourceVM : BaseVM
         Tracks = [.. tracks.Select(track => new MuxTrackM
         {
             FilePath = track.FilePath,
+            IsSourceTrack = track.IsSourceTrack,
+            SourceStreamIndex = track.SourceStreamIndex,
+            SourceSubtitleIndex = track.SourceSubtitleIndex,
+            DisplayName = track.DisplayName,
             SyncMilliseconds = track.SyncMilliseconds,
             IsDefault = track.IsDefault,
+            IsForced = track.IsForced,
         })];
     }
 

@@ -7,6 +7,7 @@ public sealed class OpenMuxTracksCmd(
     ModalNavS modalNavS,
     Func<string[]> getSourcePaths,
     Func<string, IReadOnlyList<MuxTrackM>> getTracks,
+    Func<string, string?> getSourceFfprobeJson,
     Action<string, IReadOnlyList<MuxTrackM>> applyTracks,
     Func<bool> canOpen) : OpenCloseBase(modalNavS)
 {
@@ -21,7 +22,7 @@ public sealed class OpenMuxTracksCmd(
         if (paths.Length == 0) return;
 
         MuxTracksConfModal window = new();
-        MuxTracksConfVM vm = new(window.Close, paths, getTracks, applyTracks);
+        MuxTracksConfVM vm = new(window.Close, paths, getTracks, getSourceFfprobeJson, applyTracks);
         ShowModal(window, vm, showDialog: true);
     }
 }

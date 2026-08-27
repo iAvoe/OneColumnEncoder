@@ -16,6 +16,7 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
             ["MuxTracks.AddSubtitle"] = "Add Subtitle",
             ["MuxTracks.Sync"] = "Sync (\u00B1ms)",
             ["MuxTracks.Primary"] = "Primary track",
+            ["MuxTracks.Forced"] = "Forced",
             ["MuxTracks.Empty"] = "No tracks added",
             ["MuxTracks.DurationUnknown"] = "N/A",
             ["MuxTracks.Moved"] = "moved",

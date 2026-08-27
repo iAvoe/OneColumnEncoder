@@ -22,6 +22,7 @@ public sealed class MuxTrackEntryVM : BaseVM
     public MuxTrackM Model => _model;
     public string Name => _model.Name;
     public string DurationText => MuxLangProvider.Current["MuxTracks.DurationUnknown"];
+    public bool CanRemove => !_model.IsSourceTrack;
     public string SyncText
     {
         get => _syncText;
@@ -41,6 +42,17 @@ public sealed class MuxTrackEntryVM : BaseVM
             if (_model.IsDefault == value) return;
             _model.IsDefault = value;
             DefaultChanged(this, value);
+            OnPropertyChanged();
+        }
+    }
+
+    public bool IsForced
+    {
+        get => _model.IsForced;
+        set
+        {
+            if (_model.IsForced == value) return;
+            _model.IsForced = value;
             OnPropertyChanged();
         }
     }

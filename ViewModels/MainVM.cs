@@ -586,8 +586,12 @@ public class MainVM : BaseVM
             modalNavS,
             GetCurrentMuxSourcePaths,
             GetMuxTracksForSource,
+            GetMuxSourceFfprobeJson,
             ApplyMuxTracksForSource,
-            () => GetActiveSrcRoute() is SrcRouteKind.Single or SrcRouteKind.Queue or SrcRouteKind.Concat);
+            () => GetActiveSrcRoute() is SrcRouteKind.Single or SrcRouteKind.Queue or SrcRouteKind.Concat
+                && !string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath)
+                && File.Exists(_appDataM.Tools.FfmpegPath)
+                && IsAutoMuxEnabledForCurrentRoute());
         CopyRawAnalysis = new CopyRawAnalysisCmd(
             _srcVideoAnalysis, modalNavS);
         AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(
@@ -982,6 +986,36 @@ public class MainVM : BaseVM
         bool hasAnySource = BothSrcSelected();
         foreach (ToolItemCardVM item in EncodingConfZone)
             item.IsEnabled = hasAnySource;
+        RefreshMuxTracksCardState();
+    }
+
+    private void RefreshMuxTracksCardState()
+    {
+        if (_muxTracksCard == null) return;
+
+        bool ffmpegReady = !string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath)
+            && File.Exists(_appDataM.Tools.FfmpegPath);
+        _muxTracksCard.IsEnabled = ffmpegReady && IsAutoMuxEnabledForCurrentRoute();
+    }
+
+    private bool IsAutoMuxEnabledForCurrentRoute()
+    {
+        ToolItemCardVM? encoder = EncodersZone.FirstOrDefault(
+            t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
+        string? encoderExeName = encoder != null
+            ? ToolCatalogProviderM.ResolveExeFromDisplayName(encoder.Name)
+            : null;
+        if (string.IsNullOrWhiteSpace(encoderExeName)) return false;
+
+        EncodingMuxRouteMode routeMode = GetActiveSrcRoute() switch
+        {
+            SrcRouteKind.Single => EncodingMuxRouteMode.Single,
+            SrcRouteKind.Queue => EncodingMuxRouteMode.Queue,
+            SrcRouteKind.Concat => EncodingMuxRouteMode.Concat,
+            SrcRouteKind.Repart => EncodingMuxRouteMode.Repart,
+            _ => EncodingMuxRouteMode.Single,
+        };
+        return EncodingAutoMuxResolver.IsAutoMuxEnabled(_appConfM.AutoMux, encoderExeName, routeMode);
     }
 
     private void RefreshScriptSourceEnabledState()
@@ -1230,6 +1264,18 @@ public class MainVM : BaseVM
             ? [.. tracks.Select(CloneMuxTrack)]
             : [];
 
+    private string? GetMuxSourceFfprobeJson(string sourcePath)
+    {
+        if (string.IsNullOrWhiteSpace(sourcePath)) return null;
+
+        return GetActiveSrcRoute() switch
+        {
+            SrcRouteKind.Single => _srcVideoAnalysis.RawJson,
+            SrcRouteKind.Queue => LoadQueueFFprobeJsonByPath().TryGetValue(sourcePath, out string? rawJson) ? rawJson : null,
+            _ => null,
+        };
+    }
+
     private void ApplyMuxTracksForSource(string sourcePath, IReadOnlyList<MuxTrackM> tracks)
     {
         if (tracks.Count == 0)
@@ -1244,8 +1290,13 @@ public class MainVM : BaseVM
     private static MuxTrackM CloneMuxTrack(MuxTrackM track) => new()
     {
         FilePath = track.FilePath,
+        IsSourceTrack = track.IsSourceTrack,
+        SourceStreamIndex = track.SourceStreamIndex,
+        SourceSubtitleIndex = track.SourceSubtitleIndex,
+        DisplayName = track.DisplayName,
         SyncMilliseconds = track.SyncMilliseconds,
         IsDefault = track.IsDefault,
+        IsForced = track.IsForced,
     };
 
     private string GetCurrentSrcImportPath()
@@ -1652,6 +1703,7 @@ public class MainVM : BaseVM
             QueueSrcFilterCard.RefreshSvtav1BitDepthStatus();
             ConcatCheckCard.RefreshSvtav1BitDepthStatus();
             RepartCheckCard.RefreshSvtav1BitDepthStatus();
+            RefreshMuxTracksCardState();
             UpdateEncStartButtonsState();
         }
     }
@@ -2953,6 +3005,9 @@ public class MainVM : BaseVM
 
         _appDataM.Save();
         AddOrUpdateTool(defKey, filePath, version, fileSize);
+
+        if (exeName.Equals("ffmpeg.exe", StringComparison.OrdinalIgnoreCase))
+            RefreshMuxTracksCardState();
     }
 
     private void LoadSrcsFromAppDataM()

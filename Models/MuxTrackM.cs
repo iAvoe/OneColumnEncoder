@@ -8,9 +8,14 @@ namespace OneColumnEncoder.Models;
 public sealed class MuxTrackM
 {
     public string FilePath { get; set; } = string.Empty;
+    public bool IsSourceTrack { get; set; }
+    public int? SourceStreamIndex { get; set; }
+    public int? SourceSubtitleIndex { get; set; }
+    public string? DisplayName { get; set; }
     public int SyncMilliseconds { get; set; }
     public bool IsDefault { get; set; }
+    public bool IsForced { get; set; }
 
     [System.Text.Json.Serialization.JsonIgnore]
-    public string Name => Path.GetFileName(FilePath);
+    public string Name => string.IsNullOrWhiteSpace(DisplayName) ? Path.GetFileName(FilePath) : DisplayName!;
 }
