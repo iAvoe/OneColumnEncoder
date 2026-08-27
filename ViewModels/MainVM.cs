@@ -587,7 +587,7 @@ public class MainVM : BaseVM
             GetCurrentMuxSourcePaths,
             GetMuxTracksForSource,
             ApplyMuxTracksForSource,
-            () => GetActiveSrcRoute() is SrcRouteKind.Single or SrcRouteKind.Queue);
+            () => GetActiveSrcRoute() is SrcRouteKind.Single or SrcRouteKind.Queue or SrcRouteKind.Concat);
         CopyRawAnalysis = new CopyRawAnalysisCmd(
             _srcVideoAnalysis, modalNavS);
         AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(
@@ -1198,11 +1198,13 @@ public class MainVM : BaseVM
     }
 
     private string[] GetCurrentMuxSourcePaths() =>
-        GetActiveSrcRoute() == SrcRouteKind.Queue
-            ? GetCurrentQueueFilePaths()
-            : GetActiveSrcRoute() == SrcRouteKind.Single
-                ? [GetCurrentVideoSrcPath()]
-                : [];
+        GetActiveSrcRoute() switch
+        {
+            SrcRouteKind.Queue => GetCurrentQueueFilePaths(),
+            SrcRouteKind.Single => [GetCurrentVideoSrcPath()],
+            SrcRouteKind.Concat => GetConcatFilePaths(),
+            _ => [],
+        };
 
     private void RefreshMuxTracksCardSummary()
     {
@@ -1242,7 +1244,6 @@ public class MainVM : BaseVM
     private static MuxTrackM CloneMuxTrack(MuxTrackM track) => new()
     {
         FilePath = track.FilePath,
-        Kind = track.Kind,
         SyncMilliseconds = track.SyncMilliseconds,
         IsDefault = track.IsDefault,
     };
@@ -2485,7 +2486,8 @@ public class MainVM : BaseVM
             ConcatVideoSourcePaths: concatPaths,
             ConcatTotalFrames: _srcVideoAnalysis.ConcatTotalFrames,
             AudioMuxMode: EncodingAudioMuxResolver.ParseMode(_appConfM.AudioMux.ConcatMode),
-            AutoMuxEnabled: EncodingAutoMuxResolver.IsAutoMuxEnabled(_appConfM.AutoMux, encoderExeName, EncodingMuxRouteMode.Concat));
+            AutoMuxEnabled: EncodingAutoMuxResolver.IsAutoMuxEnabled(_appConfM.AutoMux, encoderExeName, EncodingMuxRouteMode.Concat),
+            MuxTracks: [.. concatPaths.SelectMany(GetMuxTracksForSource)]);
     }
 
     private EncodingPipelineRequest[]? BuildRepartEncodingPipelineRequests()

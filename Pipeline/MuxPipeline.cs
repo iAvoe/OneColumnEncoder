@@ -71,7 +71,7 @@ public static partial class MuxPipeline
             : hasSourceInput
                 ? $"{streamMapArgs} -map_metadata 1 -map_chapters 1 {(audioMode == EncodingAudioMuxMode.Disable ? "-an" : audioMuxArgs)} -c:s copy"
                 : (audioMode == EncodingAudioMuxMode.Disable ? "-an" : audioMuxArgs ?? string.Empty);
-        string externalMapAndCodecArgs = BuildExternalTrackMapArgs(request.MuxTracks, externalInputIndex, request.SourceFfprobeJson, audioMode);
+        string externalMapAndCodecArgs = BuildExternalTrackMapArgs(request.MuxTracks, externalInputIndex, request.SourceFfprobeJson);
 
         string args = JoinArgs(
             "-hide_banner -y",
@@ -261,41 +261,31 @@ public static partial class MuxPipeline
     private static string BuildExternalTrackMapArgs(
         IReadOnlyList<MuxTrackM>? tracks,
         int inputIndex,
-        string? sourceFfprobeJson,
-        EncodingAudioMuxMode audioMode)
+        string? sourceFfprobeJson)
     {
         if (tracks is not { Count: > 0 }) return string.Empty;
 
-        int existingAudioCount = GetStreamCount(sourceFfprobeJson, "audio");
         int existingSubtitleCount = GetStreamCount(sourceFfprobeJson, "subtitle");
-        int audioIndex = existingAudioCount;
         int subtitleIndex = existingSubtitleCount;
         List<string> args = [];
         foreach (MuxTrackM track in tracks)
         {
-            bool isAudio = track.Kind == MuxTrackKind.Audio;
-            int outputIndex = isAudio ? audioIndex++ : subtitleIndex++;
-            string streamType = isAudio ? "a" : "s";
-            string codec = isAudio ? (BuildAudioMuxArgs(audioMode) ?? "-c:a copy") : "-c:s copy";
-            args.Add($"-map {inputIndex}:0 {codec} -metadata:s:{streamType}:{outputIndex} title={Quote(track.Name)}");
+            args.Add($"-map {inputIndex}:0 -c:s copy -metadata:s:s:{subtitleIndex} title={Quote(track.Name)}");
+            subtitleIndex++;
             inputIndex++;
         }
 
         MuxTrackM[] defaults = [.. tracks.Where(track => track.IsDefault)];
         if (defaults.Length > 0)
         {
-            int audioTotal = existingAudioCount + tracks.Count(track => track.Kind == MuxTrackKind.Audio);
-            int subtitleTotal = existingSubtitleCount + tracks.Count(track => track.Kind == MuxTrackKind.Subtitle);
-            args.AddRange(Enumerable.Range(0, audioTotal).Select(index => $"-disposition:a:{index} 0"));
+            int subtitleTotal = existingSubtitleCount + tracks.Count;
             args.AddRange(Enumerable.Range(0, subtitleTotal).Select(index => $"-disposition:s:{index} 0"));
-            audioIndex = existingAudioCount;
             subtitleIndex = existingSubtitleCount;
             foreach (MuxTrackM track in tracks)
             {
                 if (!track.IsDefault) continue;
-                string streamType = track.Kind == MuxTrackKind.Audio ? "a" : "s";
-                int outputIndex = track.Kind == MuxTrackKind.Audio ? audioIndex++ : subtitleIndex++;
-                args.Add($"-disposition:{streamType}:{outputIndex} default");
+                args.Add($"-disposition:s:{subtitleIndex} default");
+                subtitleIndex++;
             }
         }
 

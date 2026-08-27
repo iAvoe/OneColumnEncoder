@@ -30,8 +30,6 @@
                            Text="{Binding SidebarTitle}"
                            Style="{StaticResource H3}"
                            Margin="0 0 0 5" />
-                <!--Ideally use <comps:SectionHeader HeaderText="{Binding SidebarTitle}"
-                                     Margin="-5 0 0 0"/>-->
                 <ListBox ItemsSource="{Binding SourceItems}"
                          SelectedItem="{Binding SelectedSource, Mode=TwoWay}"
                          BorderThickness="0"
@@ -61,7 +59,6 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0">
@@ -82,49 +79,6 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Text="{Binding AudioHeader}"
-                           Style="{StaticResource H3}" />
-                <Button Grid.Column="1"
-                        Content="{Binding AddAudioText}"
-                        Command="{Binding AddAudioCommand}"
-                        Style="{StaticResource NormalButton}"
-                        Height="25"
-                        Padding="15 0" />
-                <ListBox Grid.Row="1"
-                         Grid.ColumnSpan="2"
-                         ItemsSource="{Binding AudioTracks}"
-                         BorderThickness="0"
-                         Background="Transparent"
-                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                         HorizontalContentAlignment="Stretch"
-                         Margin="0 5 0 0">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="Padding" Value="0" />
-                            <Setter Property="Margin" Value="0" />
-                            <Setter Property="BorderThickness" Value="0" />
-                            <Setter Property="Background" Value="Transparent" />
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <comps:MuxTrackItem DataContext="{Binding}" />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Grid>
-            <Grid Grid.Row="2"
-                  Margin="0 15 0 0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
                 <TextBlock Text="{Binding SubtitleHeader}"
                            Style="{StaticResource H3}" />
                 <Button Grid.Column="1"
@@ -135,7 +89,7 @@
                         Padding="15 0" />
                 <ListBox Grid.Row="1"
                          Grid.ColumnSpan="2"
-                         ItemsSource="{Binding SubtitleTracks}"
+                         ItemsSource="{Binding Tracks}"
                          BorderThickness="0"
                          Background="Transparent"
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -158,7 +112,7 @@
                     </ListBox.ItemTemplate>
                 </ListBox>
             </Grid>
-            <comps:TwoButtonGroup Grid.Row="3"
+            <comps:TwoButtonGroup Grid.Row="2"
                                   DataContext="{Binding CancelConfirmButtons}"
                                   ButtonHeight="32"
                                   Button1Command="{Binding Cmd1}"

@@ -12,7 +12,6 @@ public sealed class MuxTrackSourceVM : BaseVM
         Tracks = [.. tracks.Select(track => new MuxTrackM
         {
             FilePath = track.FilePath,
-            Kind = track.Kind,
             SyncMilliseconds = track.SyncMilliseconds,
             IsDefault = track.IsDefault,
         })];
@@ -21,8 +20,7 @@ public sealed class MuxTrackSourceVM : BaseVM
     public string FilePath { get; }
     public string Name => Path.GetFileName(FilePath);
     public ObservableCollection<MuxTrackM> Tracks { get; }
-    public string TrackSummary =>
-        $"A{Tracks.Count(track => track.Kind == MuxTrackKind.Audio)} S{Tracks.Count(track => track.Kind == MuxTrackKind.Subtitle)}";
+    public string TrackSummary => Tracks.Count.ToString();
     public bool IsSelected
     {
         get => _isSelected;

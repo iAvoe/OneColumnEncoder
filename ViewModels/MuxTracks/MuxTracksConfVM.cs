@@ -29,8 +29,7 @@ public sealed class MuxTracksConfVM : BaseVM
         RemoveTrackCommand = new ActionCmd(item => RemoveTrack(item as MuxTrackEntryVM));
         MoveTrackUpCommand = new ActionCmd(item => MoveTrack(item as MuxTrackEntryVM, -1));
         MoveTrackDownCommand = new ActionCmd(item => MoveTrack(item as MuxTrackEntryVM, 1));
-        AddAudioCommand = new ActionCmd(_ => BrowseTrack(MuxTrackKind.Audio), _ => SelectedSource != null);
-        AddSubtitleCommand = new ActionCmd(_ => BrowseTrack(MuxTrackKind.Subtitle), _ => SelectedSource != null);
+        AddSubtitleCommand = new ActionCmd(_ => BrowseSubtitle(), _ => SelectedSource != null);
         CancelConfirmButtons = ButtonGroupVM.CreateTwoButton(
             Lang.Cancel, Lang.Confirm,
             new ActionCmd(_ => _closeAction()), new ActionCmd(_ => Confirm(), _ => CanConfirm));
@@ -43,18 +42,14 @@ public sealed class MuxTracksConfVM : BaseVM
     public static MuxLangProvider Lang => MuxLangProvider.Current;
     public static string WindowTitle => MuxLangProvider.WindowTitle;
     public static string SidebarTitle => Lang["MuxTracks.QueueSources"];
-    public static string AudioHeader => Lang["MuxTracks.AudioHeader"];
     public static string SubtitleHeader => Lang["MuxTracks.SubtitleHeader"];
-    public static string AddAudioText => Lang["MuxTracks.AddAudio"];
     public static string AddSubtitleText => Lang["MuxTracks.AddSubtitle"];
     public static string EmptyText => Lang["MuxTracks.Empty"];
     public string CurrentSourceTitle => SelectedSource?.Name ?? string.Empty;
     public static string CurrentSourceDurationText => string.Empty;
     public ObservableCollection<MuxTrackSourceVM> SourceItems { get; } = [];
-    public ObservableCollection<MuxTrackEntryVM> AudioTracks { get; } = [];
-    public ObservableCollection<MuxTrackEntryVM> SubtitleTracks { get; } = [];
+    public ObservableCollection<MuxTrackEntryVM> Tracks { get; } = [];
     public ButtonGroupVM CancelConfirmButtons { get; }
-    public ActionCmd AddAudioCommand { get; }
     public ActionCmd AddSubtitleCommand { get; }
     public ActionCmd RemoveTrackCommand { get; }
     public ActionCmd MoveTrackUpCommand { get; }
@@ -75,20 +70,19 @@ public sealed class MuxTracksConfVM : BaseVM
             if (_selectedSource == value) return;
             SaveCurrentTracks();
             _selectedSource = value;
-            RefreshTrackLists();
+            RefreshTrackList();
             OnPropertyChanged();
             OnPropertyChanged(nameof(CurrentSourceTitle));
-            (AddAudioCommand as BaseCmd)?.OnCanExecuteChanged();
             (AddSubtitleCommand as BaseCmd)?.OnCanExecuteChanged();
         }
     }
 
-    private void BrowseTrack(MuxTrackKind kind)
+    private void BrowseSubtitle()
     {
         if (SelectedSource == null) return;
         OpenFileDialog dialog = new()
         {
-            Title = kind == MuxTrackKind.Audio ? AddAudioText : AddSubtitleText,
+            Title = AddSubtitleText,
             Filter = Lang["MuxTracks.FileFilter"],
             InitialDirectory = Path.GetDirectoryName(SelectedSource.FilePath) ?? string.Empty,
             CheckFileExists = true,
@@ -98,9 +92,9 @@ public sealed class MuxTracksConfVM : BaseVM
         if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
 
         List<MuxTrackM> tracks = GetCurrentTracks();
-        tracks.Add(new MuxTrackM { FilePath = dialog.FileName, Kind = kind });
+        tracks.Add(new MuxTrackM { FilePath = dialog.FileName });
         _tracksBySource[SelectedSource.FilePath] = tracks;
-        RefreshTrackLists();
+        RefreshTrackList();
         RefreshSourceSummary();
     }
 
@@ -110,26 +104,21 @@ public sealed class MuxTracksConfVM : BaseVM
         List<MuxTrackM> tracks = GetCurrentTracks();
         tracks.Remove(entry.Model);
         _tracksBySource[SelectedSource.FilePath] = tracks;
-        RefreshTrackLists();
+        RefreshTrackList();
         RefreshSourceSummary();
     }
 
     private void MoveTrack(MuxTrackEntryVM? entry, int offset)
     {
         if (entry == null || SelectedSource == null) return;
-        ObservableCollection<MuxTrackEntryVM> list = entry.Model.Kind == MuxTrackKind.Audio ? AudioTracks : SubtitleTracks;
-        int oldIndex = list.IndexOf(entry);
+        int oldIndex = Tracks.IndexOf(entry);
         int newIndex = oldIndex + offset;
-        if (oldIndex < 0 || newIndex < 0 || newIndex >= list.Count) return;
+        if (oldIndex < 0 || newIndex < 0 || newIndex >= Tracks.Count) return;
         List<MuxTrackM> tracks = GetCurrentTracks();
-        MuxTrackM[] sameKind = [.. tracks.Where(track => track.Kind == entry.Model.Kind)];
-        (sameKind[oldIndex], sameKind[newIndex]) = (sameKind[newIndex], sameKind[oldIndex]);
-        int kindIndex = 0;
-        for (int i = 0; i < tracks.Count; i++)
-            if (tracks[i].Kind == entry.Model.Kind) tracks[i] = sameKind[kindIndex++];
+        (tracks[oldIndex], tracks[newIndex]) = (tracks[newIndex], tracks[oldIndex]);
         _tracksBySource[SelectedSource.FilePath] = tracks;
-        RefreshTrackLists();
-        list[newIndex].FlashMoved();
+        RefreshTrackList();
+        Tracks[newIndex].FlashMoved();
     }
 
     private List<MuxTrackM> GetCurrentTracks() =>
@@ -138,37 +127,35 @@ public sealed class MuxTracksConfVM : BaseVM
     private void SaveCurrentTracks()
     {
         if (_selectedSource == null) return;
-        _tracksBySource[_selectedSource.FilePath] = [.. AudioTracks.Concat(SubtitleTracks).Select(entry => Clone(entry.Model))];
+        _tracksBySource[_selectedSource.FilePath] = [.. Tracks.Select(entry => Clone(entry.Model))];
     }
 
-    private void RefreshTrackLists()
+    private void RefreshTrackList()
     {
-        foreach (MuxTrackEntryVM entry in AudioTracks.Concat(SubtitleTracks)) entry.Dispose();
-        AudioTracks.Clear();
-        SubtitleTracks.Clear();
+        foreach (MuxTrackEntryVM entry in Tracks) entry.Dispose();
+        Tracks.Clear();
         if (SelectedSource == null) return;
         foreach (MuxTrackM track in _tracksBySource[SelectedSource.FilePath])
         {
             MuxTrackEntryVM entry = new(track, MoveTrack, RemoveTrack, OnDefaultChanged);
-            (track.Kind == MuxTrackKind.Audio ? AudioTracks : SubtitleTracks).Add(entry);
+            Tracks.Add(entry);
         }
-        RefreshMoveStates(AudioTracks);
-        RefreshMoveStates(SubtitleTracks);
+        RefreshMoveStates();
     }
 
-    private static void RefreshMoveStates(ObservableCollection<MuxTrackEntryVM> tracks)
+    private void RefreshMoveStates()
     {
-        for (int i = 0; i < tracks.Count; i++)
+        for (int i = 0; i < Tracks.Count; i++)
         {
-            tracks[i].CanMoveUp = i > 0;
-            tracks[i].CanMoveDown = i < tracks.Count - 1;
+            Tracks[i].CanMoveUp = i > 0;
+            Tracks[i].CanMoveDown = i < Tracks.Count - 1;
         }
     }
 
     private void OnDefaultChanged(MuxTrackEntryVM changed, bool isDefault)
     {
         if (!isDefault || SelectedSource == null) return;
-        foreach (MuxTrackEntryVM entry in (changed.Model.Kind == MuxTrackKind.Audio ? AudioTracks : SubtitleTracks))
+        foreach (MuxTrackEntryVM entry in Tracks)
         {
             if (ReferenceEquals(entry, changed) || !entry.IsDefault) continue;
             entry.Model.IsDefault = false;
@@ -192,7 +179,7 @@ public sealed class MuxTracksConfVM : BaseVM
     private void OnLanguageChanged()
     {
         OnPropertyChanged(string.Empty);
-        foreach (MuxTrackEntryVM entry in AudioTracks.Concat(SubtitleTracks)) entry.RefreshLanguage();
+        foreach (MuxTrackEntryVM entry in Tracks) entry.RefreshLanguage();
         CancelConfirmButtons.B2_1Text = Lang.Cancel;
         CancelConfirmButtons.B2_2Text = Lang.Confirm;
     }
@@ -200,7 +187,6 @@ public sealed class MuxTracksConfVM : BaseVM
     private static MuxTrackM Clone(MuxTrackM track) => new()
     {
         FilePath = track.FilePath,
-        Kind = track.Kind,
         SyncMilliseconds = track.SyncMilliseconds,
         IsDefault = track.IsDefault,
     };
@@ -208,7 +194,7 @@ public sealed class MuxTracksConfVM : BaseVM
     public override void Dispose()
     {
         UILangProvider.CurrentChanged -= OnLanguageChanged;
-        foreach (MuxTrackEntryVM entry in AudioTracks.Concat(SubtitleTracks)) entry.Dispose();
+        foreach (MuxTrackEntryVM entry in Tracks) entry.Dispose();
         base.Dispose();
     }
 }
