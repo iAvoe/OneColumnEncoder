@@ -11,7 +11,7 @@ using OneColumnEncoder.ViewModels.MuxTracks;
 using System.Collections.Specialized;
 using System.IO;
 using static OneColumnEncoder.Json.JsonElementHelper;
-
+// Important: No string matching. Expect all strings changes eventually, match the key instead
 namespace OneColumnEncoder.ViewModels;
 
 public class MainVM : BaseVM
@@ -510,9 +510,8 @@ public class MainVM : BaseVM
             UILangProvider.Current["Tool.Enc.OutputSetting"],
             StringComparison.OrdinalIgnoreCase));
         _outputSettingCard = outputSetting;
-        _muxTracksCard = EncodingConfZone.FirstOrDefault(t => t.Name.Equals(
-            MuxTracksText,
-            StringComparison.OrdinalIgnoreCase));
+        _muxTracksCard = EncodingConfZone.FirstOrDefault(
+            t => t.DefinitionKey == "Tool.Enc.MuxTracks");
         RefreshMuxTracksCardSummary();
 
         // Set P2Text to desktop, then P1Text to file name
@@ -587,13 +586,12 @@ public class MainVM : BaseVM
             modalNavS,
             GetCurrentMuxSourcePaths,
             GetMuxTracksForSource,
-            GetMuxSourceFfprobeJsonBatch,
+            GetSelectedFfprobePath,
             ApplyMuxTracksForSource,
             () => GetActiveSrcRoute() is SrcRouteKind.Single or SrcRouteKind.Queue or SrcRouteKind.Concat
                 && !string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath)
                 && File.Exists(_appDataM.Tools.FfmpegPath)
-                && IsAutoMuxEnabledForCurrentRoute(),
-            HasSourceAnalysisAvailable);
+                && IsAutoMuxEnabledForCurrentRoute());
         CopyRawAnalysis = new CopyRawAnalysisCmd(
             _srcVideoAnalysis, modalNavS);
         AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(
@@ -850,6 +848,7 @@ public class MainVM : BaseVM
                 UseAutoAddReplaceText = useAutoAddReplaceText,
                 EnableRealCheck = enableRealCheck
             };
+            item.ApplyDefinition(def);
             item.R2Command = new RemoveZoneItemCmd(item, zone);
             zone.Add(item);
         }
@@ -997,7 +996,10 @@ public class MainVM : BaseVM
 
         bool ffmpegReady = !string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath)
             && File.Exists(_appDataM.Tools.FfmpegPath);
-        _muxTracksCard.IsEnabled = ffmpegReady && IsAutoMuxEnabledForCurrentRoute();
+        // Required conditions for Add Subtitles: ffmpeg, downstream auto-mux, and no Repart route.
+        _muxTracksCard.IsEnabled = GetActiveSrcRoute() != SrcRouteKind.Repart
+            && ffmpegReady
+            && IsAutoMuxEnabledForCurrentRoute();
     }
 
     private bool IsAutoMuxEnabledForCurrentRoute()
@@ -1261,39 +1263,10 @@ public class MainVM : BaseVM
         _muxTracksCard.P2TextData = trackCount.ToString();
     }
 
-    private void UpdateMuxTracksModalState()
-    {
-        if (_modalNavS.GetModal<MuxTracksConfVM>() is not MuxTracksConfVM modal) return;
-
-        modal.SetSourceAnalysisState(HasSourceAnalysisAvailable());
-    }
-
     private IReadOnlyList<MuxTrackM> GetMuxTracksForSource(string sourcePath) =>
         _muxTracksBySource.TryGetValue(sourcePath, out List<MuxTrackM>? tracks)
             ? [.. tracks.Select(CloneMuxTrack)]
             : [];
-
-    private Dictionary<string, string?> GetMuxSourceFfprobeJsonBatch(string[] sourcePaths)
-    {
-        SrcRouteKind route = GetActiveSrcRoute();
-        if (route == SrcRouteKind.Queue)
-        {
-            Dictionary<string, string> queueJson =
-                LoadQueueFFprobeJsonByPath();
-            Dictionary<string, string?> result =
-                new(queueJson.Count, StringComparer.OrdinalIgnoreCase);
-
-            foreach (KeyValuePair<string, string> kv in queueJson) result[kv.Key] = kv.Value;
-            return result;
-        }
-
-        Dictionary<string, string?> singleResult =
-            new(sourcePaths.Length, StringComparer.OrdinalIgnoreCase);
-        string? value =
-            route == SrcRouteKind.Single ? _srcVideoAnalysis.RawJson : null;
-        foreach (string path in sourcePaths) singleResult[path] = value;
-        return singleResult;
-    }
 
     private void ApplyMuxTracksForSource(string sourcePath, IReadOnlyList<MuxTrackM> tracks)
     {
@@ -1935,7 +1908,6 @@ public class MainVM : BaseVM
     private void OnSrcAnalysisCompleted(bool isSuccess)
     {
         ToolsImportCard.SetCompleteSourceAnalysisStatus(isSuccess);
-        UpdateMuxTracksModalState();
         UpdateFilterScbButtonsState();
     }
 
@@ -2215,7 +2187,6 @@ public class MainVM : BaseVM
         RefreshAllZoneSelectedPaths();
         RefreshToolSrcChecklistStatus();
         RefreshMuxTracksCardSummary();
-        UpdateMuxTracksModalState();
         UpdateFilterScbButtonsState();
         UpdateAnalyzeSrcButtonsState();
         UpdateEncStartButtonsState();
@@ -3125,8 +3096,6 @@ public class MainVM : BaseVM
             SrcReviserLangProvider.Current["SrcReviser.NoFfprobeJson"]).Execute(null);
     }
 
-    private bool HasSourceAnalysisAvailable() => !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
-
     #region Language Switching
     private void OnLanguageChanged() { RefreshLanguage(); }
     private void RefreshLanguage()
@@ -3272,8 +3241,9 @@ public class MainVM : BaseVM
     {
         foreach (ToolItemCardVM item in zone)
         {
-            ToolDefinitionM? definition =
-                ToolDefinitionProviderM.GetByDisplayName(item.Name);
+            ToolDefinitionM? definition = item.DefinitionKey == null
+                ? null
+                : ToolDefinitionProviderM.GetByKey(item.DefinitionKey);
             if (definition != null) item.ApplyDefinition(definition);
             item.RefreshLanguage();
         }

@@ -11,7 +11,9 @@ public class ReplaceToolCmd(ToolItemCardVM item, AppDataM appDataM, ModalNavS mo
 
     protected override async Task ExecuteAsync(object? parameter)
     {
-        ToolDefinitionM? def = ToolDefinitionProviderM.GetByDisplayName(_item.Name);
+        ToolDefinitionM? def = _item.DefinitionKey == null
+            ? null
+            : ToolDefinitionProviderM.GetByKey(_item.DefinitionKey);
         if (def?.ExeName == null) return;
 
         string browseKey = BrowseHistoryKeys.ForTool(def.ExeName);

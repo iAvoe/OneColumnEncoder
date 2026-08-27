@@ -18,8 +18,7 @@ public sealed class VideoSrcConcatState
     public VideoSrcConcatState(IEnumerable<ToolItemCardVM> videoSrcImportZone)
     {
         _videoSrcConcatCard = videoSrcImportZone.FirstOrDefault(item =>
-            item.Name.Equals(UILangProvider.Current["Tool.Source.VideoSrcConcatState"],
-            StringComparison.OrdinalIgnoreCase));
+            item.DefinitionKey == "Tool.Source.VideoSrcConcatState");
         if (_videoSrcConcatCard != null)
             _videoSrcConcatCard.UseAutoAddReplaceText = false;
     }

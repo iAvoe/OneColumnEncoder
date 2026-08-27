@@ -14,22 +14,22 @@ public static class ToolCatalogProviderM
             UILangProvider.Current["Replace"],
             UILangProvider.Current["Clear"],
             UILangProvider.Current["ToolField.Name"],
-            UILangProvider.Current["ToolField.Path"]),
+            UILangProvider.Current["ToolField.Path"], Key: "Tool.Source.VideoSrc"),
         new(UILangProvider.Current["Tool.Source.VideoSrcQueue"],
             UILangProvider.Current["Import"],
             UILangProvider.Current["Clear"],
             UILangProvider.Current["SourceQueue.Sequence"],
-            UILangProvider.Current["ToolField.Path"]),
+            UILangProvider.Current["ToolField.Path"], Key: "Tool.Source.VideoSrcQueue"),
         new(UILangProvider.Current["Tool.Source.VideoSrcConcatState"],
             UILangProvider.Current["Import"],
             UILangProvider.Current["Clear"],
             UILangProvider.Current["SourceQueue.Sequence"],
-            UILangProvider.Current["ToolField.Path"]),
+            UILangProvider.Current["ToolField.Path"], Key: "Tool.Source.VideoSrcConcatState"),
         new(RepartLangProvider.Current.ToolSourceVideoSrcRepart,
             UILangProvider.Current["Import"],
             UILangProvider.Current["Clear"],
             UILangProvider.Current["SourceQueue.Sequence"],
-            UILangProvider.Current["ToolField.Path"]),
+            UILangProvider.Current["ToolField.Path"], Key: "Tool.Source.VideoSrcRepart"),
     ];
     // Script Source Import zone (3 items)
     public static List<ToolDefinitionM> GetScriptSrcImportDefs() =>
@@ -38,17 +38,17 @@ public static class ToolCatalogProviderM
             UILangProvider.Current["Replace"],
             UILangProvider.Current["Clear"],
             UILangProvider.Current["ToolField.Mode"],
-            UILangProvider.Current["ToolField.Path"]),
+            UILangProvider.Current["ToolField.Path"], Key: "Tool.Source.AviSynth"),
         new(UILangProvider.Current["Tool.Source.VapourSynth"],
             UILangProvider.Current["Replace"],
             UILangProvider.Current["Clear"],
             UILangProvider.Current["ToolField.Mode"],
-            UILangProvider.Current["ToolField.Path"]),
+            UILangProvider.Current["ToolField.Path"], Key: "Tool.Source.VapourSynth"),
         new(UILangProvider.Current["Tool.Source.Svfi"],
             UILangProvider.Current["Replace"],
             UILangProvider.Current["Clear"],
             UILangProvider.Current["ToolField.Mode"],
-            UILangProvider.Current["ToolField.Path"]),
+            UILangProvider.Current["ToolField.Path"], Key: "Tool.Source.Svfi"),
     ];
     // Script Source Import Queue zone (3 items, distinct labels)
     public static List<ToolDefinitionM> GetScriptSrcImportQueueDefs() =>
@@ -57,12 +57,12 @@ public static class ToolCatalogProviderM
             UILangProvider.Current["Import"],
             UILangProvider.Current["Clear"],
             UILangProvider.Current["SourceQueue.Sequence"],
-            UILangProvider.Current["ToolField.Path"]),
+            UILangProvider.Current["ToolField.Path"], Key: "Tool.Source.AviSynthQueue"),
         new(UILangProvider.Current["Tool.Source.VapourSynthQueue"],
             UILangProvider.Current["Import"],
             UILangProvider.Current["Clear"],
             UILangProvider.Current["SourceQueue.Sequence"],
-            UILangProvider.Current["ToolField.Path"]),
+            UILangProvider.Current["ToolField.Path"], Key: "Tool.Source.VapourSynthQueue"),
     ];
 
     // Enc Settings zone (4 items)
@@ -72,22 +72,23 @@ public static class ToolCatalogProviderM
             UILangProvider.Current["Edit"],
             UILangProvider.Current["Clear"],
             UILangProvider.Current["ToolField.FileName"],
-            UILangProvider.Current["ToolField.Path"]),
+            UILangProvider.Current["ToolField.Path"], Key: "Tool.Enc.OutputSetting"),
         new(UILangProvider.Current["Tool.Enc.Parallelism"],
             UILangProvider.Current["Edit"],
             UILangProvider.Current["Clear"],
             UILangProvider.Current["ToolField.NumaNodes"],
-            UILangProvider.Current["ToolField.Threads"]),
+            UILangProvider.Current["ToolField.Threads"], Key: "Tool.Enc.Parallelism"),
         new(UILangProvider.Current["Tool.Enc.EncParams"],
             UILangProvider.Current["Edit"],
             UILangProvider.Current["Clear"],
             UILangProvider.Current["ToolField.Strategy"],
-            UILangProvider.Current["ToolField.MaxKeyframeGap"]),
+            UILangProvider.Current["ToolField.MaxKeyframeGap"], Key: "Tool.Enc.EncParams"),
         new(UILangProvider.Current["Tool.Enc.MuxTracks"],
             UILangProvider.Current["Edit"],
             UILangProvider.Current["Clear"],
             UILangProvider.Current["ToolField.Path"],
-            UILangProvider.Current["ToolField.Value"]),
+            UILangProvider.Current["ToolField.Value"],
+            Key: "Tool.Enc.MuxTracks"),
     ];
 
     public static List<ToolDefinitionM> GetAllStaticDefinitions() =>
@@ -113,6 +114,9 @@ public static class ToolCatalogProviderM
 
     public static string? ResolveExeFromDisplayName(string displayName) =>
         _tools.FirstOrDefault(kvp => kvp.Value.DisplayName.Equals(displayName, StringComparison.OrdinalIgnoreCase)).Key;
+
+    public static string? ResolveExeFromDefinitionKey(string? definitionKey) =>
+        definitionKey == null ? null : ToolDefinitionProviderM.GetByKey(definitionKey)?.ExeName;
 
     public static string? GetDisplayName(string exeName) =>
         _tools.TryGetValue(exeName, out var entry) ? entry.DisplayName : null;

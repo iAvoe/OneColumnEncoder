@@ -11,7 +11,7 @@ public sealed class VideoSrcRepartState
     public VideoSrcRepartState(IEnumerable<ToolItemCardVM> videoSourceZone)
     {
         _card = videoSourceZone.FirstOrDefault(item =>
-            item.Name.Equals(RepartLangProvider.Current.ToolSourceVideoSrcRepart, StringComparison.OrdinalIgnoreCase));
+            item.DefinitionKey == "Tool.Source.VideoSrcRepart");
         if (_card != null) _card.UseAutoAddReplaceText = false;
     }
 

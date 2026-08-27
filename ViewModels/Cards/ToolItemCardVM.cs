@@ -13,6 +13,8 @@ public class ToolItemCardVM(EncItemM baseModel) : BaseVM
 
     private readonly EncItemM _baseModel = baseModel;
 
+    public string? DefinitionKey { get; private set; }
+
     #region Properties
     public string Name
     {
@@ -222,6 +224,7 @@ public class ToolItemCardVM(EncItemM baseModel) : BaseVM
 
     public void ApplyDefinition(ToolDefinitionM definition)
     {
+        DefinitionKey = definition.Key;
         Name = definition.DisplayName;
         R1Text = definition.R1Text;
         R2Text = definition.R2Text;

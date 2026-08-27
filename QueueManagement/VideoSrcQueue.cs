@@ -8,7 +8,7 @@ public sealed class VideoSrcQueueState
     public VideoSrcQueueState(IEnumerable<ToolItemCardVM> videoSrcImportZone)
     {
         _videoSrcQueueCard = videoSrcImportZone.FirstOrDefault(item =>
-            item.Name.Equals(UILangProvider.Current["Tool.Source.VideoSrcQueue"], StringComparison.OrdinalIgnoreCase));
+            item.DefinitionKey == "Tool.Source.VideoSrcQueue");
         if (_videoSrcQueueCard != null)
             _videoSrcQueueCard.UseAutoAddReplaceText = false;
     }

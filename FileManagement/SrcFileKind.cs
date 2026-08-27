@@ -27,7 +27,7 @@ public static class SrcFileKindResolver
         ToolItemCardVM? selectedUpstream = upstreamsZone.FirstOrDefault(t => t.IsSelected);
         string? upstreamExeName = selectedUpstream == null
             ? null
-            : ToolCatalogProviderM.ResolveExeFromDisplayName(selectedUpstream.Name);
+            : ToolCatalogProviderM.ResolveExeFromDefinitionKey(selectedUpstream.DefinitionKey);
 
         return GetPreferredScriptSrcKind(upstreamExeName);
     }
