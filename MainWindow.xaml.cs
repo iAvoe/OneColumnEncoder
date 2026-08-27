@@ -18,7 +18,7 @@ public partial class MainWindow : AdaptiveWindow
     public MainWindow()
     {
         InitializeComponent();
-        Title = $"{Models.Lang.UILangProvider.MainWindowTitle} · PID {Process.GetCurrentProcess().Id} · Commit {GetGitCommitCount()} {GetGitCommitShortHash()}";
+        Title = $"{UILangProvider.MainWindowTitle} · PID {Environment.ProcessId} · Commit {GetGitCommitCount()} {GetGitCommitShortHash()}";
         Closing += OnClosing;
         Closed += OnClosed;
         PreviewMouseDown += OnPreviewMouseDown;
@@ -55,7 +55,7 @@ public partial class MainWindow : AdaptiveWindow
             return;
         _lastNumaCpuTrigger = DateTime.UtcNow;
 
-        if (DataContext is ViewModels.MainVM vm)
+        if (DataContext is MainVM vm)
             vm.RefreshNumaCpuCheck();
     }
 

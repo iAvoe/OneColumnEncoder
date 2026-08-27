@@ -1275,22 +1275,25 @@ public class MainVM : BaseVM
             ? [.. tracks.Select(CloneMuxTrack)]
             : [];
 
-    private IReadOnlyDictionary<string, string?> GetMuxSourceFfprobeJsonBatch(string[] sourcePaths)
+    private Dictionary<string, string?> GetMuxSourceFfprobeJsonBatch(string[] sourcePaths)
     {
         SrcRouteKind route = GetActiveSrcRoute();
         if (route == SrcRouteKind.Queue)
         {
-            Dictionary<string, string> queueJson = LoadQueueFFprobeJsonByPath();
-            Dictionary<string, string?> result = new(queueJson.Count, StringComparer.OrdinalIgnoreCase);
-            foreach (KeyValuePair<string, string> kv in queueJson)
-                result[kv.Key] = kv.Value;
+            Dictionary<string, string> queueJson =
+                LoadQueueFFprobeJsonByPath();
+            Dictionary<string, string?> result =
+                new(queueJson.Count, StringComparer.OrdinalIgnoreCase);
+
+            foreach (KeyValuePair<string, string> kv in queueJson) result[kv.Key] = kv.Value;
             return result;
         }
 
-        Dictionary<string, string?> singleResult = new(sourcePaths.Length, StringComparer.OrdinalIgnoreCase);
-        string? value = route == SrcRouteKind.Single ? _srcVideoAnalysis.RawJson : null;
-        foreach (string path in sourcePaths)
-            singleResult[path] = value;
+        Dictionary<string, string?> singleResult =
+            new(sourcePaths.Length, StringComparer.OrdinalIgnoreCase);
+        string? value =
+            route == SrcRouteKind.Single ? _srcVideoAnalysis.RawJson : null;
+        foreach (string path in sourcePaths) singleResult[path] = value;
         return singleResult;
     }
 
