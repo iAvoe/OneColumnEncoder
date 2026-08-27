@@ -32,7 +32,7 @@ public sealed class MuxTracksConfVM : BaseVM
         AddAudioCommand = new ActionCmd(_ => BrowseTrack(MuxTrackKind.Audio), _ => SelectedSource != null);
         AddSubtitleCommand = new ActionCmd(_ => BrowseTrack(MuxTrackKind.Subtitle), _ => SelectedSource != null);
         CancelConfirmButtons = ButtonGroupVM.CreateTwoButton(
-            Lang["MuxTracks.Cancel"], Lang["MuxTracks.Confirm"],
+            Lang.Cancel, Lang.Confirm,
             new ActionCmd(_ => _closeAction()), new ActionCmd(_ => Confirm(), _ => CanConfirm));
 
         if (SourceItems.Count > 0)
@@ -193,8 +193,8 @@ public sealed class MuxTracksConfVM : BaseVM
     {
         OnPropertyChanged(string.Empty);
         foreach (MuxTrackEntryVM entry in AudioTracks.Concat(SubtitleTracks)) entry.RefreshLanguage();
-        CancelConfirmButtons.B2_1Text = Lang["MuxTracks.Cancel"];
-        CancelConfirmButtons.B2_2Text = Lang["MuxTracks.Confirm"];
+        CancelConfirmButtons.B2_1Text = Lang.Cancel;
+        CancelConfirmButtons.B2_2Text = Lang.Confirm;
     }
 
     private static MuxTrackM Clone(MuxTrackM track) => new()

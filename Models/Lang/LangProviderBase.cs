@@ -86,6 +86,8 @@ public abstract class LangProviderBase
     public string Disable => this["Disable"];
     public string On => this["On"];
     public string Off => this["Off"];
+    public string Confirm => this["Confirm"];
+    public string Cancel => this["Cancel"];
     public string UndoText => this["Undo"];
     public string RedoText => this["Redo"];
     public string CutText => this["Cut"];
