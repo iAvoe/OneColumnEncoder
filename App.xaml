@@ -281,7 +281,7 @@
                 <Setter Property="Background"
                         Value="{StaticResource GlobalSecondary}" />
                 <Setter Property="BorderBrush"
-                        Value="{StaticResource Background}" />
+                        Value="Transparent" />
                 <Setter Property="Foreground"
                         Value="{StaticResource Background}" />
                 <Setter Property="BorderThickness"
@@ -330,7 +330,7 @@
                                     <Setter Property="BorderThickness"
                                             Value="1.5" />
                                     <Setter Property="Padding"
-                                            Value="9 0 9 0" />
+                                            Value="9 0" />
                                 </Trigger>
                                 <Trigger Property="IsChecked"
                                          Value="True">

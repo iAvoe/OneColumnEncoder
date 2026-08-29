@@ -18,6 +18,8 @@ public sealed class MuxTrackSourceVM : BaseVM
             SourceSubtitleIndex = track.SourceSubtitleIndex,
             DisplayName = track.DisplayName,
             SyncMilliseconds = track.SyncMilliseconds,
+            LanguageCode = track.LanguageCode,
+            DurationSeconds = track.DurationSeconds,
             IsDefault = track.IsDefault,
         })];
         DurationText = FormatDuration(ParseDurationFromFfprobeJson(ffprobeJson));

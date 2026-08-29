@@ -11,8 +11,8 @@
                     mc:Ignorable="d"
                     Background="{StaticResource Background}"
                     Title="{Binding WindowTitle}"
-                    MinWidth="520"
-                    MaxWidth="760"
+                    MinWidth="540"
+                    MaxWidth="780"
                     SizeToContent="Height"
                     WindowState="Normal"
                     WindowStartupLocation="CenterOwner">

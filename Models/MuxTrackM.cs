@@ -14,6 +14,7 @@ public sealed class MuxTrackM
     public string? DisplayName { get; set; }
     public int SyncMilliseconds { get; set; }
     public string? LanguageCode { get; set; }
+    public double? DurationSeconds { get; set; }
     public bool IsDefault { get; set; }
     public bool OriginalIsDefault { get; set; }
 

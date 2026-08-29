@@ -5,10 +5,25 @@ namespace OneColumnEncoder.ViewModels.MuxTracks;
 
 public sealed class MuxTracksConfVM : BaseVM
 {
+    private static readonly Dictionary<string, string> Iso6391To6392B = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["en"] = "eng", ["zh"] = "zho", ["ja"] = "jpn", ["ko"] = "kor",
+        ["fr"] = "fra", ["de"] = "deu", ["es"] = "spa", ["it"] = "ita",
+        ["pt"] = "por", ["ru"] = "rus", ["uk"] = "ukr", ["pl"] = "pol",
+        ["cs"] = "ces", ["hu"] = "hun", ["ro"] = "ron", ["nl"] = "nld",
+        ["sv"] = "swe", ["da"] = "dan", ["no"] = "nor", ["fi"] = "fin",
+        ["el"] = "ell", ["tr"] = "tur", ["he"] = "heb", ["ar"] = "ara",
+        ["fa"] = "fas", ["hi"] = "hin", ["th"] = "tha", ["vi"] = "vie",
+        ["id"] = "ind", ["ms"] = "msa",
+        ["chi"] = "zho", ["fre"] = "fra", ["ger"] = "deu",
+        ["dut"] = "nld", ["gre"] = "ell", ["ice"] = "isl",
+    };
+
     private readonly Action _closeAction;
     private readonly Action<string, IReadOnlyList<MuxTrackM>> _applyTracks;
     private readonly Action<string> _showError;
     private readonly Dictionary<string, List<MuxTrackM>> _tracksBySource;
+    private readonly Dictionary<string, List<MuxTrackM>> _initialTracksBySource;
     private MuxTrackSourceVM? _selectedSource;
 
     public MuxTracksConfVM(
@@ -23,10 +38,12 @@ public sealed class MuxTracksConfVM : BaseVM
         _applyTracks = applyTracks;
         _showError = showError;
         _tracksBySource = new(StringComparer.OrdinalIgnoreCase);
+        _initialTracksBySource = new(StringComparer.OrdinalIgnoreCase);
         foreach (string path in sourcePaths.Where(File.Exists).Distinct(StringComparer.OrdinalIgnoreCase))
         {
             ffprobeJsonByPath.TryGetValue(path, out string? ffprobeJson);
             _tracksBySource[path] = BuildInitialTracks(path, getTracks(path), ffprobeJson);
+            _initialTracksBySource[path] = [.. _tracksBySource[path].Select(Clone)];
             SourceItems.Add(new MuxTrackSourceVM(path, _tracksBySource[path], ffprobeJson));
         }
 
@@ -110,9 +127,8 @@ public sealed class MuxTracksConfVM : BaseVM
     private void RemoveTrack(MuxTrackEntryVM? entry)
     {
         if (entry == null || SelectedSource == null) return;
-        List<MuxTrackM> tracks = GetCurrentTracks();
+        List<MuxTrackM> tracks = _tracksBySource[SelectedSource.FilePath];
         tracks.Remove(entry.Model);
-        _tracksBySource[SelectedSource.FilePath] = tracks;
         RefreshTrackList();
         RefreshSourceSummary();
     }
@@ -181,8 +197,30 @@ public sealed class MuxTracksConfVM : BaseVM
     {
         SaveCurrentTracks();
         foreach (MuxTrackSourceVM source in SourceItems)
-            _applyTracks(source.FilePath, [.. _tracksBySource[source.FilePath].Select(Clone)]);
+        {
+            List<MuxTrackM> current = _tracksBySource[source.FilePath];
+            List<MuxTrackM> initial = _initialTracksBySource[source.FilePath];
+            if (TracksDiffer(current, initial))
+                _applyTracks(source.FilePath, [.. current.Select(Clone)]);
+        }
         _closeAction();
+    }
+
+    private static bool TracksDiffer(List<MuxTrackM> a, List<MuxTrackM> b)
+    {
+        if (a.Count != b.Count) return true;
+        for (int i = 0; i < a.Count; i++)
+        {
+            MuxTrackM x = a[i], y = b[i];
+            if (x.IsSourceTrack != y.IsSourceTrack ||
+                x.SourceStreamIndex != y.SourceStreamIndex ||
+                x.SyncMilliseconds != y.SyncMilliseconds ||
+                !string.Equals(x.LanguageCode, y.LanguageCode, StringComparison.OrdinalIgnoreCase) ||
+                x.IsDefault != y.IsDefault ||
+                !string.Equals(x.FilePath, y.FilePath, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+        return false;
     }
 
     private void OnLanguageChanged()
@@ -203,6 +241,7 @@ public sealed class MuxTracksConfVM : BaseVM
         DisplayName = track.DisplayName,
         SyncMilliseconds = track.SyncMilliseconds,
         LanguageCode = track.LanguageCode,
+        DurationSeconds = track.DurationSeconds,
         IsDefault = track.IsDefault,
         OriginalIsDefault = track.OriginalIsDefault,
     };
@@ -244,6 +283,8 @@ public sealed class MuxTracksConfVM : BaseVM
 
             bool isOriginalDefault = TryGetDisposition(stream, "default");
             string? lang = TryGetTag(stream, "language");
+            if (lang != null && Iso6391To6392B.TryGetValue(lang, out string? mapped))
+                lang = mapped;
             yield return new MuxTrackM
             {
                 FilePath = sourcePath,
@@ -252,11 +293,59 @@ public sealed class MuxTracksConfVM : BaseVM
                 SourceSubtitleIndex = subtitleIndex,
                 DisplayName = BuildSourceSubtitleName(stream, subtitleIndex),
                 LanguageCode = lang,
+                DurationSeconds = TryGetSubtitleDurationSeconds(document.RootElement, stream),
                 IsDefault = isOriginalDefault,
                 OriginalIsDefault = isOriginalDefault,
             };
             subtitleIndex++;
         }
+    }
+
+    private static double? TryGetSubtitleDurationSeconds(JsonElement root, JsonElement stream)
+    {
+        double? streamDuration = TryGetDouble(stream, "duration");
+        if (streamDuration is > 0d) return streamDuration;
+
+        long? durationTs = TryGetLong(stream, "duration_ts");
+        if (durationTs is > 0 && TryGetString(stream, "time_base") is string timeBase)
+        {
+            double? secondsPerTick = ParseFraction(timeBase);
+            if (secondsPerTick is > 0d)
+                return durationTs.Value * secondsPerTick.Value;
+        }
+
+        string? tagDuration = TryGetTag(stream, "DURATION");
+        if (TryParseDurationTag(tagDuration, out double tagSeconds)) return tagSeconds;
+
+        return root.TryGetProperty("format", out JsonElement format)
+            ? TryGetDouble(format, "duration")
+            : null;
+    }
+
+    private static bool TryParseDurationTag(string? text, out double seconds)
+    {
+        seconds = 0d;
+        if (string.IsNullOrWhiteSpace(text)) return false;
+
+        string[] parts = text.Split(':');
+        if (parts.Length != 3) return false;
+
+        if (!int.TryParse(parts[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out int hours)) return false;
+        if (!int.TryParse(parts[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out int minutes)) return false;
+        if (!double.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out double secs)) return false;
+
+        seconds = hours * 3600d + minutes * 60d + secs;
+        return seconds > 0d;
+    }
+
+    private static double? ParseFraction(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return null;
+        string[] parts = text.Split('/');
+        if (parts.Length != 2) return null;
+        if (!double.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double num)) return null;
+        if (!double.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double den) || den <= 0d) return null;
+        return num / den;
     }
 
     private static string BuildSourceSubtitleName(JsonElement stream, int subtitleIndex)

@@ -1,15 +1,14 @@
 <UserControl x:Class="OneColumnEncoder.Components.MuxTrackItem"
-              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels.MuxTracks"
-              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
-              d:DataContext="{d:DesignInstance Type=vms:MuxTrackEntryVM}"
-              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-               xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-               mc:Ignorable="d"
-               HorizontalAlignment="Stretch"
-               MinWidth="0"
-               MaxWidth="{Binding Width, RelativeSource={RelativeSource AncestorType=Window}}">
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels.MuxTracks"
+             xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+             d:DataContext="{d:DesignInstance Type=vms:MuxTrackEntryVM}"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             HorizontalAlignment="Stretch"
+             MaxWidth="{Binding Width, RelativeSource={RelativeSource AncestorType=Window}}">
     <Grid Margin="0 0 0 5"
           HorizontalAlignment="Stretch"
           MinWidth="0"
@@ -38,7 +37,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"
                                    MinHeight="20" />
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="28" />
                 </Grid.RowDefinitions>
 
                 <Grid>
@@ -57,50 +56,54 @@
 
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
+                        <!-- Sync label and textbox -->
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
-                        
+                        <!-- Set to Primary checkbox and label -->
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
-                        
-                        <ColumnDefinition Width="100" MinWidth="80" />
-                        
+                        <!-- Lang code selection -->
+                        <ColumnDefinition Width="135"
+                                          MinWidth="80" />
+                        <!-- Spacer to push below items right -->
                         <ColumnDefinition Width="*" />
-                        
+                        <!-- Move order and delete -->
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <!-- Sync label and textbox -->
                     <TextBlock Grid.Column="0"
-                               Text="{Binding DataContext.Lang[MuxTracks.Sync], RelativeSource={RelativeSource AncestorType=Window}}" />
+                               Text="{Binding DataContext.Lang[MuxTracks.Sync], RelativeSource={RelativeSource AncestorType=Window}}"
+                               VerticalAlignment="Center" />
                     <TextBox Grid.Column="1"
                              Text="{Binding SyncText, UpdateSourceTrigger=PropertyChanged}"
-                             Width="70"
-                             Margin="7.5 0 0 0" />
-                    
-                    <!-- Set to Primary checkbox and label -->
+                             LostFocus="SyncTextBox_LostFocus"
+                             FontSize="11"
+                             Width="50"
+                             Margin="4 0 0 0"
+                             Padding="0"
+                             VerticalAlignment="Center"
+                             VerticalContentAlignment="Center"
+                             TextAlignment="Right"/>
+
                     <CheckBox Grid.Column="2"
                               Content="{Binding DataContext.Lang[MuxTracks.Primary], RelativeSource={RelativeSource AncestorType=Window}}"
                               IsChecked="{Binding IsDefault}"
-                              Margin="12.5 0 0 0"
-                              VerticalAlignment="Center" />
+                              Margin="15 0.5 0 0"
+                              VerticalAlignment="Center"/>
+
                     <TextBlock Grid.Column="3"
                                Text="{Binding DataContext.Lang[MuxTracks.Language], RelativeSource={RelativeSource AncestorType=Window}}"
-                               VerticalAlignment="Center"
-                               Margin="12.5 0 0 0" />
-                    
-                    <!-- Lang code selection -->
+                               Margin="12.5 0 0 0"
+                               VerticalAlignment="Center" />
                     <comps:DropdownMenu Grid.Column="4"
-                                       Height="20"
-                                       DataContext="{Binding LanguageDropdown}"
-                                       Margin="7.5 0 0 0" />
+                                        DataContext="{Binding LanguageDropdown}"
+                                        Margin="2.5 0 0 0"
+                                        VerticalAlignment="Center" />
 
-                    <!-- Spacer to push lateral to the right side -->
                     <Border Grid.Column="5" />
 
-                    <!-- Move order and delete -->
                     <Button Grid.Column="6"
                             Content="{Binding MoveUpText}"
                             Command="{Binding MoveUpCommand}"

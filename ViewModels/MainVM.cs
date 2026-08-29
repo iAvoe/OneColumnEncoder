@@ -1310,6 +1310,7 @@ public class MainVM : BaseVM
         DisplayName = track.DisplayName,
         SyncMilliseconds = track.SyncMilliseconds,
         LanguageCode = track.LanguageCode,
+        DurationSeconds = track.DurationSeconds,
         IsDefault = track.IsDefault,
         OriginalIsDefault = track.OriginalIsDefault,
     };
