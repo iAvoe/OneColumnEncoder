@@ -68,7 +68,7 @@ public sealed class MuxTrackEntryVM : BaseVM
 
     public MuxTrackM Model => _model;
     public string Name => _model.Name;
-    public static string DurationText => MuxLangProvider.DurationUnknown;
+    public string DurationText => FormatDuration(_model.DurationSeconds);
     public bool CanRemove => !_model.IsSourceTrack;
     public string SyncText
     {
@@ -140,6 +140,11 @@ public sealed class MuxTrackEntryVM : BaseVM
     {
         _model.LanguageCode = LanguageDropdown.SelectedItem?.Tag as string;
     }
+
+    private static string FormatDuration(double? durationSeconds) =>
+        durationSeconds is > 0d
+            ? EncodingPipeline.FormatTimestamp(TimeSpan.FromSeconds(durationSeconds.Value))
+            : MuxLangProvider.DurationUnknown;
 
     public void FlashMoved()
     {
