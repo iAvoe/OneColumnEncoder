@@ -6,7 +6,7 @@ namespace OneColumnEncoder.FFmpeg;
 public static partial class SubtitleHelper
 {
     [GeneratedRegex(
-        @"(\d{1,2}:\d{2}:\d{2}[,.]\d{2,3})\s*-->\s*(\d{1,2}:\d{2}:\d{2}[,.]\d{2,3})",
+        @"(?<start>(?:(?:\d{1,2}:)?\d{1,2}:\d{2}[,.]\d{1,3}))\s*-->\s*(?<end>(?:(?:\d{1,2}:)?\d{1,2}:\d{2}[,.]\d{1,3}))",
         RegexOptions.Compiled | RegexOptions.CultureInvariant)]
     private static partial Regex TimestampRegex();
 
@@ -16,8 +16,16 @@ public static partial class SubtitleHelper
     private static partial Regex AssDialogueRegex();
 
     private static readonly string[] SrtFormats = [@"hh\:mm\:ss\,fff", @"h\:m\:s\,f"];
-    private static readonly string[] VttFormats = [@"hh\:mm\:ss\.fff", @"h\:m\:s\.f"];
+    private static readonly string[] VttFormats =
+    [
+        @"hh\:mm\:ss\.fff", @"h\:m\:s\.f",
+        @"mm\:ss\.fff", @"m\:s\.f"
+    ];
     private static readonly string[] AssFormats = [@"h\:mm\:ss\.ff", @"h\:m\:s\.ff"];
+    private static readonly HashSet<string> SupportedExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ".ass", ".ssa", ".srt", ".vtt", ".webvtt"
+    };
 
     /// <summary>
     /// Gets the end time of the last subtitle cue. Returns null for a missing,
@@ -25,18 +33,24 @@ public static partial class SubtitleHelper
     /// </summary>
     public static TimeSpan? GetDuration(string filePath)
     {
-        if (!File.Exists(filePath)) return null;
+        if (!File.Exists(filePath) || !SupportedExtensions.Contains(Path.GetExtension(filePath))) return null;
 
         try
         {
             foreach (string line in File.ReadLines(filePath).Reverse())
             {
                 Match match = TimestampRegex().Match(line);
-                if (match.Success && TryParseTimestamp(match.Groups[2].Value, out TimeSpan result))
+                if (match.Success
+                    && TryParseTimestamp(match.Groups["start"].Value, out TimeSpan start)
+                    && TryParseTimestamp(match.Groups["end"].Value, out TimeSpan result)
+                    && result > start)
                     return result;
 
                 match = AssDialogueRegex().Match(line);
-                if (match.Success && TryParseTimestamp(match.Groups[2].Value, out result))
+                if (match.Success
+                    && TryParseTimestamp(match.Groups[1].Value, out start)
+                    && TryParseTimestamp(match.Groups[2].Value, out result)
+                    && result > start)
                     return result;
             }
         }

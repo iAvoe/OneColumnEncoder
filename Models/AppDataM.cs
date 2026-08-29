@@ -14,6 +14,7 @@ public class AppDataM : SaveLoadBase<AppDataM>
 
     public Importables Tools { get; set; } = new Importables();
     public EncodingSettings Encoding { get; set; } = new EncodingSettings();
+    public Dictionary<string, List<MuxTrackM>> MuxTracksBySource { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 
     // Per-card last-browse directory history, keyed by BrowseHistoryKeys.
     // Sources and tools keep separate keys so browsing one never moves another card's dialog.

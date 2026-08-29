@@ -40,12 +40,18 @@ public static partial class MuxPipeline
         MuxContext context = BuildMuxContext(request);
         EncodingAudioMuxMode audioMode = EncodingAudioMuxResolver.ResolveAudioMuxMode(request);
         string videoTimescaleArgs = $"-video_track_timescale {context.VideoTimescale}";
-        string streamMapArgs = BuildStreamMapArgs(request.SourceFfprobeJson);
         string? inputFormatArgs = GetMuxInputFormatArgs(request.EncoderExeName, context.FramerateValue);
 
         bool isConcatMux =
             request.IsConcatMode.GetValueOrDefault()
             && request.ConcatFileListPath != null;
+        // The concat demuxer is used only for the source timeline. Its video is not
+        // mapped because the encoded video is the sole video stream in the output.
+        // Attachment streams (fonts) are skipped to avoid duplicates when multiple
+        // concat sources share the same embedded fonts.
+        string streamMapArgs = isConcatMux
+            ? BuildConcatStreamMapArgs(request.SourceFfprobeJson)
+            : BuildStreamMapArgs(request.SourceFfprobeJson);
 
         bool hasSourceInput = isConcatMux || !string.IsNullOrWhiteSpace(request.SourceVideoPath);
         string? secondInput = isConcatMux
@@ -58,8 +64,11 @@ public static partial class MuxPipeline
         string sourceMapAndCodecArgs = hasSourceInput
             ? $"{streamMapArgs} -map_metadata 1 -map_chapters 1 {(audioMode == EncodingAudioMuxMode.Disable ? "-an" : audioMuxArgs)} -c:s copy"
             : (audioMode == EncodingAudioMuxMode.Disable ? "-an" : audioMuxArgs ?? string.Empty);
-        string externalMapAndCodecArgs = BuildExternalTrackMapArgs(request.MuxTracks, externalInputIndex, request.SourceFfprobeJson);
-        string sourceDispositionArgs = BuildSourceSubtitleDispositionArgs(request.MuxTracks, request.SourceFfprobeJson);
+        int sourceSubtitleCount = isConcatMux ? 0 : GetStreamCount(request.SourceFfprobeJson, "subtitle");
+        string externalMapAndCodecArgs = BuildExternalTrackMapArgs(request.MuxTracks, externalInputIndex, sourceSubtitleCount);
+        string sourceDispositionArgs = isConcatMux
+            ? string.Empty
+            : BuildSourceSubtitleDispositionArgs(request.MuxTracks);
 
         string args = JoinArgs(
             "-hide_banner -y",
@@ -144,6 +153,43 @@ public static partial class MuxPipeline
             return "-map 1:a? -map 1:s?";
         }
         catch { return "-map 1:a? -map 1:s?"; }
+    }
+
+    /// <summary>
+    /// Builds stream-map args for concat mode.
+    /// Skips attachment streams to avoid duplicate fonts when multiple concat
+    /// sources share the same embedded fonts. Also skips data streams.
+    /// </summary>
+    private static string BuildConcatStreamMapArgs(string? sourceFfprobeJson)
+    {
+        if (string.IsNullOrWhiteSpace(sourceFfprobeJson))
+            return "-map 1:a?";
+
+        try
+        {
+            using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
+            if (!document.RootElement.TryGetProperty("streams", out JsonElement streams) || streams.ValueKind != JsonValueKind.Array)
+                return "-map 1:a?";
+
+            var mapArgs = new List<string>();
+            foreach (JsonElement stream in streams.EnumerateArray())
+            {
+                string? codecType = TryGetString(stream, "codec_type");
+                if (string.IsNullOrWhiteSpace(codecType)) continue;
+                if (codecType.Equals("video", StringComparison.OrdinalIgnoreCase)) continue;
+                if (codecType.Equals("attachment", StringComparison.OrdinalIgnoreCase)) continue;
+                if (codecType.Equals("data", StringComparison.OrdinalIgnoreCase)) continue;
+
+                if (!TryGetInt(stream, "index", out int streamIndex)) continue;
+                mapArgs.Add($"-map 1:{streamIndex}");
+            }
+
+            if (mapArgs.Count > 0)
+                return string.Join(" ", mapArgs);
+
+            return "-map 1:a?";
+        }
+        catch { return "-map 1:a?"; }
     }
 
     /// <summary>
@@ -251,18 +297,17 @@ public static partial class MuxPipeline
     private static string BuildExternalTrackMapArgs(
         IReadOnlyList<MuxTrackM>? tracks,
         int inputIndex,
-        string? sourceFfprobeJson)
+        int sourceSubtitleCount)
     {
         if (tracks is not { Count: > 0 }) return string.Empty;
 
         var externalTracks = tracks.Where(t => !t.IsSourceTrack).ToList();
-        int sourceSubtitleCount = GetStreamCount(sourceFfprobeJson, "subtitle");
         int subtitleIndex = sourceSubtitleCount;
 
         List<string> args = [];
         foreach (MuxTrackM track in externalTracks)
         {
-            string meta = $"-map {inputIndex}:0 -c:s copy -metadata:s:s:{subtitleIndex} title={Quote(track.Name)}";
+            string meta = $"-map {inputIndex}:s:0 -c:s copy -metadata:s:s:{subtitleIndex} title={Quote(track.Name)}";
             if (!string.IsNullOrWhiteSpace(track.LanguageCode))
                 meta += $" -metadata:s:s:{subtitleIndex} language={track.LanguageCode}";
             args.Add(meta);
@@ -270,8 +315,8 @@ public static partial class MuxPipeline
             inputIndex++;
         }
 
-        MuxTrackM[] defaults = [.. externalTracks.Where(track => track.IsDefault)];
-        if (defaults.Length > 0)
+        MuxTrackM? defaultTrack = externalTracks.FirstOrDefault(track => track.IsDefault);
+        if (defaultTrack != null)
         {
             subtitleIndex = sourceSubtitleCount;
             foreach (MuxTrackM track in externalTracks)
@@ -288,10 +333,7 @@ public static partial class MuxPipeline
         return string.Join(" ", args);
     }
 
-    // May not need sourceFFprobeJson
-    private static string BuildSourceSubtitleDispositionArgs(
-        IReadOnlyList<MuxTrackM>? tracks,
-        string? sourceFFprobeJson)
+    private static string BuildSourceSubtitleDispositionArgs(IReadOnlyList<MuxTrackM>? tracks)
     {
         if (tracks is not { Count: > 0 }) return string.Empty;
 

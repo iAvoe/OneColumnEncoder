@@ -407,6 +407,7 @@ public class MainVM : BaseVM
         _isMiniStartEncodingZone = _appDataM.IsMiniStartEncodingZone ?? false;
         _isDurationFilterEnabled = _appDataM.IsDurationFilterEnabled ?? false;
         _minVideoDurationSeconds = _appDataM.MinVideoDurationSeconds ?? 30;
+        RestoreMuxTracksFromAppDataM();
         OpenAppConf = openAppConf;
         OpenUsages = openUsages;
 
@@ -1271,23 +1272,45 @@ public class MainVM : BaseVM
         }
 
         string[] sourcePaths = GetCurrentMuxSourcePaths();
-        string sourceText = sourcePaths.Length == 0 || sourcePaths.All(string.IsNullOrWhiteSpace)
-            ? "!SOURCE"
-            : string.Join(", ", sourcePaths
-                .Select(Path.GetFileName)
-                .Where(name => !string.IsNullOrWhiteSpace(name))
-                .Select(name => name!));
 
-        int trackCount = sourcePaths.Sum(path => GetMuxTracksForSource(path).Count);
-        _muxTracksCard.P1Name = UILangProvider.Current["ToolField.Path"];
-        _muxTracksCard.P1TextData = sourceText;
-        _muxTracksCard.P2Name = UILangProvider.Current["ToolField.Value"];
-        _muxTracksCard.P2TextData = trackCount.ToString();
+        int sourceCount = sourcePaths.Sum(path =>
+            GetMuxTracksForSource(path).Count(t => t.IsSourceTrack));
+        int externalCount = sourcePaths.Sum(path =>
+            GetMuxTracksForSource(path).Count(t => !t.IsSourceTrack));
+
+        _muxTracksCard.P1Name = "S+E";
+        _muxTracksCard.P1TextData = $"{sourceCount} + {externalCount}";
+
+        var allTracks = sourcePaths.SelectMany(path => GetMuxTracksForSource(path)).ToList();
+        int totalTracks = allTracks.Count;
+        string defaultText;
+        if (totalTracks < 2)
+        {
+            defaultText = "N/A";
+        }
+        else
+        {
+            MuxTrackM? defaultTrack = allTracks.FirstOrDefault(t => t.IsDefault);
+            if (defaultTrack != null)
+            {
+                int defaultIndex = allTracks.IndexOf(defaultTrack) + 1;
+                defaultText = defaultIndex.ToString();
+            }
+            else
+            {
+                defaultText = "1";
+            }
+        }
+
+        _muxTracksCard.P2Name = "Default#";
+        _muxTracksCard.P2TextData = defaultText;
     }
 
     private IReadOnlyList<MuxTrackM> GetMuxTracksForSource(string sourcePath) =>
         _muxTracksBySource.TryGetValue(sourcePath, out List<MuxTrackM>? tracks)
-            ? [.. tracks.Select(CloneMuxTrack)]
+            ? [.. tracks
+                .Where(track => track.IsSourceTrack || File.Exists(track.FilePath))
+                .Select(CloneMuxTrack)]
             : [];
 
     private void ApplyMuxTracksForSource(string sourcePath, IReadOnlyList<MuxTrackM> tracks)
@@ -1297,8 +1320,44 @@ public class MainVM : BaseVM
         else
             _muxTracksBySource[sourcePath] = [.. tracks.Select(CloneMuxTrack)];
 
+        _appDataM.MuxTracksBySource = _muxTracksBySource.ToDictionary(
+            pair => pair.Key,
+            pair => pair.Value.Select(CloneMuxTrack).ToList(),
+            StringComparer.OrdinalIgnoreCase);
+        _appDataM.Save();
+
         RefreshMuxTracksCardSummary();
         UpdateEncStartButtonsState();
+    }
+
+    private void ClearMuxTracksForSources(IEnumerable<string> sourcePaths)
+    {
+        bool changed = false;
+        foreach (string sourcePath in sourcePaths.Where(path => !string.IsNullOrWhiteSpace(path)).Distinct(StringComparer.OrdinalIgnoreCase))
+        {
+            changed |= _muxTracksBySource.Remove(sourcePath);
+            changed |= _appDataM.MuxTracksBySource.Remove(sourcePath);
+        }
+
+        if (!changed) return;
+
+        _appDataM.MuxTracksBySource = _muxTracksBySource.ToDictionary(
+            pair => pair.Key,
+            pair => pair.Value.Select(CloneMuxTrack).ToList(),
+            StringComparer.OrdinalIgnoreCase);
+        _appDataM.Save();
+        RefreshMuxTracksCardSummary();
+    }
+
+    private void RestoreMuxTracksFromAppDataM()
+    {
+        _muxTracksBySource.Clear();
+        foreach (var (sourcePath, tracks) in _appDataM.MuxTracksBySource)
+        {
+            List<MuxTrackM> clonedTracks = [.. tracks.Select(CloneMuxTrack)];
+            if (clonedTracks.Count > 0)
+                _muxTracksBySource[sourcePath] = clonedTracks;
+        }
     }
 
     private static MuxTrackM CloneMuxTrack(MuxTrackM track) => new()
@@ -1856,6 +1915,9 @@ public class MainVM : BaseVM
         SaveSrcPath(kind, filePath);
 
         if (kind == SrcFileKind.Video)
+            ClearMuxTracksForSources([filePath]);
+
+        if (kind == SrcFileKind.Video)
         {
             SyncOutputFilenameWithVideoSrc(filePath);
 
@@ -1946,6 +2008,7 @@ public class MainVM : BaseVM
     private void OnSrcQueueImported(ToolItemCardVM item, string _, string[] filePaths)
     {
         _videoSrcQueue.ApplyImportedFiles(item, filePaths);
+        ClearMuxTracksForSources(filePaths);
 
         foreach (ToolItemCardVM source in VideoSrcImportZone)
             source.IsSelected = false;
@@ -1982,6 +2045,7 @@ public class MainVM : BaseVM
     private void OnSrcConcatImported(ToolItemCardVM item, string[] filePaths)
     {
         _videoSrcConcat.ApplyImportedFiles(filePaths);
+        ClearMuxTracksForSources(filePaths);
 
         foreach (ToolItemCardVM source in VideoSrcImportZone)
             source.IsSelected = false;
@@ -2014,6 +2078,7 @@ public class MainVM : BaseVM
     private void ApplyRepartPlan(RepartPlanM plan)
     {
         _videoSrcRepart.ApplyPlan(plan);
+        ClearMuxTracksForSources(plan.Sources.Select(source => source.FilePath));
 
         foreach (ToolItemCardVM source in VideoSrcImportZone)
             source.IsSelected = false;
@@ -2549,10 +2614,10 @@ public class MainVM : BaseVM
                 SourceFfprobeJson: _srcVideoAnalysis.RawJson,
             ParallelismConf: parallelismConf,
             FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs,
-            IsConcatMode: true,
-            ConcatFileListPath: _videoSrcConcat.RegenerateFileList(),
-            ConcatVideoSourcePaths: concatPaths,
-            ConcatTotalFrames: _srcVideoAnalysis.ConcatTotalFrames,
+                IsConcatMode: true,
+                ConcatFileListPath: _videoSrcConcat.RegenerateFileList(),
+                ConcatVideoSourcePaths: concatPaths,
+                ConcatTotalFrames: _srcVideoAnalysis.ConcatTotalFrames,
             AudioMuxMode: EncodingAudioMuxResolver.ParseMode(_appConfM.AudioMux.ConcatMode),
             AutoMuxEnabled: EncodingAutoMuxResolver.IsAutoMuxEnabled(_appConfM.AutoMux, encoderExeName, EncodingMuxRouteMode.Concat),
             MuxTracks: [.. concatPaths.SelectMany(GetMuxTracksForSource)]);

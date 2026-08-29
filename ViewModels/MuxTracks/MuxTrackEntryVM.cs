@@ -9,7 +9,9 @@ public sealed class MuxTrackEntryVM : BaseVM
 
     private static readonly DropdownItemM[] Languages =
     [
-        new("(none)", isPlaceholder: true) { Tag = null },
+        new("AS-IS", isPlaceholder: true) { Tag = null },
+        new("(unk) Unknown") { Tag = "und" },
+        new(string.Empty, isSeparator: true),
         new("eng (English)")    { Tag = "eng" },
         new("zho (Chinese)")    { Tag = "zho" },
         new("jpn (Japanese)")   { Tag = "jpn" },

@@ -28,6 +28,7 @@ public sealed class MuxTracksConfVM : BaseVM
     private readonly Func<string, bool> _confirmNoDefaultSubtitle;
     private readonly Dictionary<string, List<MuxTrackM>> _tracksBySource;
     private readonly Dictionary<string, List<MuxTrackM>> _initialTracksBySource;
+    private readonly HashSet<string> _sourcesWithDroppedMissingExternalTracks;
     private MuxTrackSourceVM? _selectedSource;
 
     /// <summary>
@@ -54,11 +55,16 @@ public sealed class MuxTracksConfVM : BaseVM
         _confirmNoDefaultSubtitle = confirmNoDefaultSubtitle;
         _tracksBySource = new(StringComparer.OrdinalIgnoreCase);
         _initialTracksBySource = new(StringComparer.OrdinalIgnoreCase);
+        _sourcesWithDroppedMissingExternalTracks = new(StringComparer.OrdinalIgnoreCase);
         foreach (string path in sourcePaths.Where(File.Exists)
             .Distinct(StringComparer.OrdinalIgnoreCase))
         {
             ffprobeJsonByPath.TryGetValue(path, out string? ffprobeJson);
-            _tracksBySource[path] = BuildInitialTracks(path, getTracks(path), ffprobeJson);
+            IReadOnlyList<MuxTrackM> savedTracks = getTracks(path);
+            if (savedTracks.Any(track => !track.IsSourceTrack && !File.Exists(track.FilePath)))
+                _sourcesWithDroppedMissingExternalTracks.Add(path);
+
+            _tracksBySource[path] = BuildInitialTracks(path, savedTracks, ffprobeJson);
             _initialTracksBySource[path] = [.. _tracksBySource[path].Select(Clone)];
             SourceItems.Add(new MuxTrackSourceVM(path, _tracksBySource[path], ffprobeJson));
         }
@@ -84,6 +90,7 @@ public sealed class MuxTracksConfVM : BaseVM
     public static string AddSubtitleText => Lang["MuxTracks.AddSubtitle"];
     public static string EmptyText => Lang["MuxTracks.Empty"];
     public static string CannotDeleteSrcSubsHint => Lang["Hint.CannotDeleteSrcSubs"];
+    public static string FfmpegSubtitleDefaultHint => Lang["Hint.FfmpegSubtitleDefault"];
     public string CurrentSourceTitle => SelectedSource?.Name ?? string.Empty;
     public string CurrentSourceDurationText => SelectedSource?.TrackSummary ?? string.Empty;
     public ObservableCollection<MuxTrackSourceVM> SourceItems { get; } = [];
@@ -227,14 +234,18 @@ public sealed class MuxTracksConfVM : BaseVM
         foreach (MuxTrackSourceVM source in SourceItems)
         {
             List<MuxTrackM> current = _tracksBySource[source.FilePath];
-            if (TracksDiffer(current, _initialTracksBySource[source.FilePath]))
+            if (_sourcesWithDroppedMissingExternalTracks.Contains(source.FilePath)
+                || TracksDiffer(current, _initialTracksBySource[source.FilePath]))
                 changedSources.Add((source, current));
         }
 
         List<(MuxTrackSourceVM Source, int OrigDefId, int FirstSubId)> needsConfirmation = [];
         foreach (var (source, current) in changedSources)
         {
-            if (!current.Any(track => track.IsDefault))
+            bool userChanged = TracksDiffer(current, _initialTracksBySource[source.FilePath]);
+            bool staleTracksOnly = _sourcesWithDroppedMissingExternalTracks.Contains(source.FilePath)
+                && !userChanged;
+            if (!staleTracksOnly && !current.Any(track => track.IsDefault))
                 needsConfirmation.Add((source, source.OriginalSrcDefSubTrackId, source.FirstSrcSubTrackId));
         }
 
@@ -343,7 +354,9 @@ public sealed class MuxTracksConfVM : BaseVM
             detected.IsDefault = saved.IsDefault;
         }
 
-        tracks.AddRange(savedTracks.Where(track => !track.IsSourceTrack).Select(Clone));
+        tracks.AddRange(savedTracks
+            .Where(track => !track.IsSourceTrack && File.Exists(track.FilePath))
+            .Select(Clone));
         return tracks;
     }
 

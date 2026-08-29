@@ -235,7 +235,7 @@ public static partial class EncodingPipeline
             "ffmpeg.exe" => isConcat
                 ? request.ConcatVideoSourcePaths is { Length: > 0 }
                     ? BuildFfmpegConcatArgs(request)
-                    : JoinArgs("-hide_banner", "-f concat -safe 0", $"-i {Quote(request.ConcatFileListPath!)}", clipArgs, ffmpegFilterArgs, "-f yuv4mpegpipe -an -strict unofficial -")
+                    : JoinArgs("-hide_banner", "-f concat -safe 0", $"-i {Quote(request.ConcatFileListPath!)}", clipArgs, ffmpegFilterArgs, "-f yuv4mpegpipe -an -sn -strict unofficial -")
                 : JoinArgs($"-hide_banner", clipArgs, $"-i {input}", ffmpegFilterArgs, "-f yuv4mpegpipe -an -strict unofficial -"), // unofficial allows 10bit pipe
             "vspipe.exe" => JoinArgs(input, clipArgs, NormalizeRequired(request.VspipeY4mArg, "vspipe Y4M argument"), "-"),
             "avs2yuv.exe" => JoinArgs(input, clipArgs, "-"),
@@ -272,7 +272,7 @@ public static partial class EncodingPipeline
                 "-hide_banner",
                 inputs,
                 $"-vf \"{filter}\" -fps_mode passthrough",
-                "-f yuv4mpegpipe -an -strict unofficial -");
+                "-f yuv4mpegpipe -an -sn -strict unofficial -");
         }
 
         string resetInputs = string.Join(";", Enumerable.Range(0, paths.Length)
@@ -288,7 +288,7 @@ public static partial class EncodingPipeline
             "-hide_banner",
             inputs,
             $"-filter_complex \"{filterComplex}\" -map \"[repartv]\" -fps_mode passthrough",
-            "-f yuv4mpegpipe -an -strict unofficial -");
+            "-f yuv4mpegpipe -an -sn -strict unofficial -");
     }
 
     private static string BuildFfmpegConcatArgs(EncodingPipelineRequest request)
@@ -307,7 +307,7 @@ public static partial class EncodingPipeline
             "-hide_banner",
             inputs,
             $"-filter_complex \"{filterComplex}\" -map \"[catv]\" -fps_mode passthrough",
-            "-f yuv4mpegpipe -an -strict unofficial -");
+            "-f yuv4mpegpipe -an -sn -strict unofficial -");
     }
 
     private static string JoinFilterChain(params string?[] filters) =>

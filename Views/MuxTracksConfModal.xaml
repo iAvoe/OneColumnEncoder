@@ -91,6 +91,7 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0">
                 <TextBlock Text="{Binding CurrentSourceTitle}"
@@ -152,6 +153,10 @@
             <comps:HintPanel Grid.Row="3"
                              Margin="0 2.5 0 0"
                              Text="{Binding CannotDeleteSrcSubsHint}" />
+            <comps:HintPanel Grid.Row="4"
+                             Margin="0 2.5 0 0"
+                             Text="{Binding FfmpegSubtitleDefaultHint}"
+                             RefreshTextOnLanguageChanged="True" />
         </Grid>
     </Grid>
 </ui:AdaptiveWindow>
