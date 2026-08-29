@@ -579,11 +579,14 @@ public class MainVM : BaseVM
             modalNavS,
             GetCurrentMuxSourcePaths,
             GetMuxTracksForSource,
+            () => _appDataM.Tools.FfmpegPath,
             GetSelectedFfprobePath,
             ApplyMuxTracksForSource,
             () => GetActiveSrcRoute() is SrcRouteKind.Single or SrcRouteKind.Queue or SrcRouteKind.Concat
                 && !string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath)
                 && File.Exists(_appDataM.Tools.FfmpegPath)
+                && !string.IsNullOrWhiteSpace(GetSelectedFfprobePath())
+                && File.Exists(GetSelectedFfprobePath())
                 && IsAutoMuxEnabledForCurrentRoute());
         CopyRawAnalysis = new CopyRawAnalysisCmd(
             _srcVideoAnalysis, modalNavS);
@@ -989,13 +992,18 @@ public class MainVM : BaseVM
 
         bool ffmpegReady = !string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath)
             && File.Exists(_appDataM.Tools.FfmpegPath);
+        bool ffprobeReady = !string.IsNullOrWhiteSpace(GetSelectedFfprobePath())
+            && File.Exists(GetSelectedFfprobePath());
         // Required conditions for Add Subtitles: ffmpeg, downstream auto-mux, and no Repart route.
         _muxTracksCard.IsEnabled = GetActiveSrcRoute() != SrcRouteKind.Repart
             && ffmpegReady
+            && ffprobeReady
             && IsAutoMuxEnabledForCurrentRoute();
 
         if (!ffmpegReady)
             _muxTracksCard.P1TextData = UILangProvider.NoFFmpeg;
+        else if (!ffprobeReady)
+            _muxTracksCard.P1TextData = UILangProvider.NoFFprobe;
         else
             RefreshMuxTracksCardSummary();
     }
@@ -1248,7 +1256,19 @@ public class MainVM : BaseVM
 
         bool ffmpegReady = !string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath)
             && File.Exists(_appDataM.Tools.FfmpegPath);
-        if (!ffmpegReady) return;
+        bool ffprobeReady = !string.IsNullOrWhiteSpace(GetSelectedFfprobePath())
+            && File.Exists(GetSelectedFfprobePath());
+        if (!ffmpegReady)
+        {
+            _muxTracksCard.P1TextData = UILangProvider.NoFFmpeg;
+            return;
+        }
+
+        if (!ffprobeReady)
+        {
+            _muxTracksCard.P1TextData = UILangProvider.NoFFprobe;
+            return;
+        }
 
         string[] sourcePaths = GetCurrentMuxSourcePaths();
         string sourceText = sourcePaths.Length == 0 || sourcePaths.All(string.IsNullOrWhiteSpace)
@@ -1289,7 +1309,9 @@ public class MainVM : BaseVM
         SourceSubtitleIndex = track.SourceSubtitleIndex,
         DisplayName = track.DisplayName,
         SyncMilliseconds = track.SyncMilliseconds,
+        LanguageCode = track.LanguageCode,
         IsDefault = track.IsDefault,
+        OriginalIsDefault = track.OriginalIsDefault,
     };
 
     private string GetCurrentSrcImportPath()

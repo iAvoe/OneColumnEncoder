@@ -13,6 +13,7 @@ public class UILangProvider : LangProviderBase
     public const string ScriptGenWindowTitle = "1cenc Script Generation";
     public const string MainWindowTitle = "1cenc";
     public const string NoFFmpeg = "!ffmpeg";
+    public const string NoFFprobe = "!ffprobe";
     public const string ToolImportStringFormat = "{0}\n{1}\n"; // Need to delete last \n
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -38,7 +39,7 @@ public class UILangProvider : LangProviderBase
             // Main buttons
             ["Buttons.UsageAndCompliance"] = "Usage & Compliance",
             ["Buttons.Settings"] = "Settings",
-            ["Buttons.OneClickScriptGen"] = "One-Click Script Gen.",
+            ["Buttons.OneClickScriptGen"] = "Generate AVS/VS Script",
             ["Buttons.OpenScribeSrcScribe"] = "Open Filter Scribe",
             ["Buttons.CopyRawAnalysis"] = "Copy Raw JSON",
             ["Buttons.AnalyzeSrcVideo"] = "Run Source Analysis",
@@ -280,7 +281,7 @@ public class UILangProvider : LangProviderBase
 
             ["Buttons.UsageAndCompliance"] = "用法与合规指南",
             ["Buttons.Settings"] = "设置",
-            ["Buttons.OneClickScriptGen"] = "一键生成脚本",
+            ["Buttons.OneClickScriptGen"] = "生成 AVS/VS 脚本",
             ["Buttons.OpenScribeSrcScribe"] = "滤镜编辑窗口",
             ["Buttons.CopyRawAnalysis"] = "复制原生 JSON",
             ["Buttons.AnalyzeSrcVideo"] = "运行视频源分析",
@@ -504,7 +505,7 @@ public class UILangProvider : LangProviderBase
 
             ["Buttons.UsageAndCompliance"] = "用法與合規指南",
             ["Buttons.Settings"] = "設定",
-            ["Buttons.OneClickScriptGen"] = "一鍵生成腳本",
+            ["Buttons.OneClickScriptGen"] = "生成 AVS/VS 腳本",
             ["Buttons.OpenScribeSrcScribe"] = "濾鏡編輯視窗",
             ["Buttons.CopyRawAnalysis"] = "複製原生 JSON",
             ["Buttons.AnalyzeSrcVideo"] = "運行影片源分析",
@@ -738,7 +739,7 @@ public class UILangProvider : LangProviderBase
         ["Cards.BestPracticesSubtitle"] = "Conseil — non bloquant",
         ["Buttons.UsageAndCompliance"] = "Usage & conformité",
         ["Buttons.Settings"] = "Réglages",
-        ["Buttons.OneClickScriptGen"] = "Générer scripts",
+        ["Buttons.OneClickScriptGen"] = "Générer AVS/VS scripts",
         ["Buttons.OpenScribeSrcScribe"] = "Éditeur filtres",
         ["Buttons.CopyRawAnalysis"] = "Copier JSON",
         ["Buttons.AnalyzeSrcVideo"] = "Analyser source",
@@ -933,7 +934,7 @@ public class UILangProvider : LangProviderBase
         ["Cards.BestPracticesSubtitle"] = "Aviso — no bloquea",
         ["Buttons.UsageAndCompliance"] = "Uso y cumplimiento",
         ["Buttons.Settings"] = "Ajustes",
-        ["Buttons.OneClickScriptGen"] = "Generar scripts",
+        ["Buttons.OneClickScriptGen"] = "Generar AVS/VS scripts",
         ["Buttons.OpenScribeSrcScribe"] = "Editor de filtros",
         ["Buttons.CopyRawAnalysis"] = "Copiar JSON",
         ["Buttons.AnalyzeSrcVideo"] = "Analizar fuente",
@@ -1128,7 +1129,7 @@ public class UILangProvider : LangProviderBase
         ["Cards.BestPracticesSubtitle"] = "推奨事項 — ブロックしません",
         ["Buttons.Settings"] = "設定",
         ["Buttons.UsageAndCompliance"] = "使用法と準拠",
-        ["Buttons.OneClickScriptGen"] = "スクリプト生成",
+        ["Buttons.OneClickScriptGen"] = "AVS/VS スクリプト生成",
         ["Buttons.OpenScribeSrcScribe"] = "フィルタ編集",
         ["Buttons.CopyRawAnalysis"] = "生 JSON コピー",
         ["Buttons.AnalyzeSrcVideo"] = "ソース解析",
@@ -1323,7 +1324,7 @@ public class UILangProvider : LangProviderBase
         ["Cards.BestPracticesSubtitle"] = "Рекомендация — не блокирует",
         ["Buttons.UsageAndCompliance"] = "Исп. и соблюд.",
         ["Buttons.Settings"] = "Настройки",
-        ["Buttons.OneClickScriptGen"] = "Генерация скриптов",
+        ["Buttons.OneClickScriptGen"] = "Генерация AVS/VS скриптов",
         ["Buttons.OpenScribeSrcScribe"] = "Редактор фильтров",
         ["Buttons.CopyRawAnalysis"] = "Копир. JSON",
         ["Buttons.AnalyzeSrcVideo"] = "Анализ источника",
@@ -1518,7 +1519,7 @@ public class UILangProvider : LangProviderBase
         ["Cards.BestPracticesSubtitle"] = "Empfehlung — nicht blockierend",
         ["Buttons.UsageAndCompliance"] = "Nutzung & Compliance",
         ["Buttons.Settings"] = "Einstellungen",
-        ["Buttons.OneClickScriptGen"] = "Skript generieren",
+        ["Buttons.OneClickScriptGen"] = "AVS/VS Skript generieren",
         ["Buttons.OpenScribeSrcScribe"] = "Filter-Editor",
         ["Buttons.CopyRawAnalysis"] = "JSON kopieren",
         ["Buttons.AnalyzeSrcVideo"] = "Quelle analysieren",
@@ -1712,7 +1713,7 @@ public class UILangProvider : LangProviderBase
         ["Cards.BestPracticesSubtitle"] = "안내 - 차단하지 않음",
         ["Buttons.UsageAndCompliance"] = "사용 및 준수",
         ["Buttons.Settings"] = "설정",
-        ["Buttons.OneClickScriptGen"] = "원클릭 스크립트 생성",
+        ["Buttons.OneClickScriptGen"] = "AVS/VS 스크립트 생성",
         ["Buttons.OpenScribeSrcScribe"] = "필터 편집기 열기",
         ["Buttons.CopyRawAnalysis"] = "원본 JSON 복사",
         ["Buttons.AnalyzeSrcVideo"] = "소스 분석 실행",
@@ -1882,7 +1883,7 @@ public class UILangProvider : LangProviderBase
         ["Cards.BestPracticesSubtitle"] = "Consultivo — não bloqueante",
         ["Buttons.UsageAndCompliance"] = "Uso e conformidade",
         ["Buttons.Settings"] = "Configurações",
-        ["Buttons.OneClickScriptGen"] = "Gerador de script em um clique",
+        ["Buttons.OneClickScriptGen"] = "Gerador AVS/VS Script",
         ["Buttons.OpenScribeSrcScribe"] = "Abrir editor de filtros",
         ["Buttons.CopyRawAnalysis"] = "Copiar JSON bruto",
         ["Buttons.AnalyzeSrcVideo"] = "Executar análise da fonte",

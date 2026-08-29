@@ -262,6 +262,8 @@ public class AppConfVM : BaseVM
         }
     }
 
+    // Font settings use AddFontItem instead of this because FontPickerDropdown has specialized logic
+    // (system/custom font separation, separator, "Default" placeholder, dynamic width calculation).
     private static void AddDropdownItem(AppConfContainer container, string text, object source, string propertyPath,
         string[] options, Func<string, string>? displayNameResolver = null)
     {
@@ -272,7 +274,8 @@ public class AppConfVM : BaseVM
         DropdownMenuVM dropdownVM = new();
         foreach (DropdownItemM item in items) dropdownVM.Items.Add(item);
         dropdownVM.SelectedItem =
-            items.FirstOrDefault(i => string.Equals(i.Tag as string, currentValue, StringComparison.OrdinalIgnoreCase)) ?? items[0];
+            items.FirstOrDefault(i => string.Equals(i.Tag as string, currentValue, StringComparison.OrdinalIgnoreCase))
+            ?? items[0];
 
         dropdownVM.PropertyChanged += (_, e) =>
         {
@@ -288,6 +291,7 @@ public class AppConfVM : BaseVM
         {
             DataContext = dropdownVM,
             Width = 200,
+            Height = 25,
             HorizontalAlignment = HorizontalAlignment.Right
         };
         container.Items.Add(new AppConfItem { Text = text, Content = dropdown });
@@ -308,6 +312,8 @@ public class AppConfVM : BaseVM
         container.Items.Add(row);
     }
 
+    // Uses FontPickerDropdown instead of DropdownMenu because fonts need specialized rendering
+    // (font family display in items, system/custom separation with separator, dynamic width).
     private static void AddFontItem(AppConfContainer container, string text, object source, string propertyPath)
     {
         bool isCodeFont = propertyPath == nameof(AppConfM.FontSettings.CodeFontFamily);
@@ -321,6 +327,7 @@ public class AppConfVM : BaseVM
         FontPickerDropdown picker = new()
         {
             Width = 200,
+            Height = 25,
             HorizontalAlignment = HorizontalAlignment.Right,
             SystemFamilies = systemFamilies,
             CustomFamilies = customFamilies

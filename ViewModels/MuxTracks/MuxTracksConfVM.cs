@@ -7,6 +7,7 @@ public sealed class MuxTracksConfVM : BaseVM
 {
     private readonly Action _closeAction;
     private readonly Action<string, IReadOnlyList<MuxTrackM>> _applyTracks;
+    private readonly Action<string> _showError;
     private readonly Dictionary<string, List<MuxTrackM>> _tracksBySource;
     private MuxTrackSourceVM? _selectedSource;
 
@@ -15,10 +16,12 @@ public sealed class MuxTracksConfVM : BaseVM
         IEnumerable<string> sourcePaths,
         Func<string, IReadOnlyList<MuxTrackM>> getTracks,
         IReadOnlyDictionary<string, string?> ffprobeJsonByPath,
-        Action<string, IReadOnlyList<MuxTrackM>> applyTracks)
+        Action<string, IReadOnlyList<MuxTrackM>> applyTracks,
+        Action<string> showError)
     {
         _closeAction = closeAction;
         _applyTracks = applyTracks;
+        _showError = showError;
         _tracksBySource = new(StringComparer.OrdinalIgnoreCase);
         foreach (string path in sourcePaths.Where(File.Exists).Distinct(StringComparer.OrdinalIgnoreCase))
         {
@@ -143,7 +146,7 @@ public sealed class MuxTracksConfVM : BaseVM
         if (SelectedSource == null) return;
         foreach (MuxTrackM track in _tracksBySource[SelectedSource.FilePath])
         {
-            MuxTrackEntryVM entry = new(track, MoveTrack, RemoveTrack, OnDefaultChanged);
+            MuxTrackEntryVM entry = new(track, MoveTrack, RemoveTrack, OnDefaultChanged, _showError);
             Tracks.Add(entry);
         }
         RefreshMoveStates();
@@ -199,7 +202,9 @@ public sealed class MuxTracksConfVM : BaseVM
         SourceSubtitleIndex = track.SourceSubtitleIndex,
         DisplayName = track.DisplayName,
         SyncMilliseconds = track.SyncMilliseconds,
+        LanguageCode = track.LanguageCode,
         IsDefault = track.IsDefault,
+        OriginalIsDefault = track.OriginalIsDefault,
     };
 
     private static List<MuxTrackM> BuildInitialTracks(string sourcePath, IReadOnlyList<MuxTrackM> savedTracks, string? ffprobeJson)
@@ -213,6 +218,7 @@ public sealed class MuxTracksConfVM : BaseVM
             if (saved == null) continue;
 
             detected.SyncMilliseconds = saved.SyncMilliseconds;
+            detected.LanguageCode = saved.LanguageCode;
             detected.IsDefault = saved.IsDefault;
         }
 
@@ -236,6 +242,8 @@ public sealed class MuxTracksConfVM : BaseVM
             if (!TryGetInt(stream, "index", out int streamIndex))
                 continue;
 
+            bool isOriginalDefault = TryGetDisposition(stream, "default");
+            string? lang = TryGetTag(stream, "language");
             yield return new MuxTrackM
             {
                 FilePath = sourcePath,
@@ -243,7 +251,9 @@ public sealed class MuxTracksConfVM : BaseVM
                 SourceStreamIndex = streamIndex,
                 SourceSubtitleIndex = subtitleIndex,
                 DisplayName = BuildSourceSubtitleName(stream, subtitleIndex),
-                IsDefault = TryGetDisposition(stream, "default"),
+                LanguageCode = lang,
+                IsDefault = isOriginalDefault,
+                OriginalIsDefault = isOriginalDefault,
             };
             subtitleIndex++;
         }

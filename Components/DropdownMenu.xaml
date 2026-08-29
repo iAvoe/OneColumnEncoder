@@ -6,7 +6,8 @@
              xmlns:viewmodels="clr-namespace:OneColumnEncoder.ViewModels"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=viewmodels:DropdownMenuVM}"
-             d:DesignHeight="30">
+             d:DesignHeight="25">
+    <!-- RoundedDropdownMenu is defined in App.xaml -->
     <ComboBox ItemsSource="{Binding Items}"
               SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
               Style="{StaticResource RoundedDropdownMenu}">

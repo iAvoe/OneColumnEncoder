@@ -7,6 +7,7 @@ public sealed class OpenMuxTracksCmd(
     ModalNavS modalNavS,
     Func<string[]> getSourcePaths,
     Func<string, IReadOnlyList<MuxTrackM>> getTracks,
+    Func<string?> getFfmpegPath,
     Func<string> getFfprobePath,
     Action<string, IReadOnlyList<MuxTrackM>> applyTracks,
     Func<bool> canOpen) : OpenCloseBase(modalNavS)
@@ -19,8 +20,28 @@ public sealed class OpenMuxTracksCmd(
 
         string[] paths = [.. getSourcePaths()
             .Where(path => !string.IsNullOrWhiteSpace(path) && File.Exists(path))
-            .Distinct(StringComparer.OrdinalIgnoreCase)];
+            .Select(path => path!)];
         if (paths.Length == 0) return;
+
+        if (HasDuplicatePaths(paths))
+        {
+            ShowCannotMuxSubtitleError(MuxLangProvider.Current["MuxTracks.DuplicateSourcePaths"]);
+            return;
+        }
+
+        string? ffmpegPath = getFfmpegPath();
+        if (string.IsNullOrWhiteSpace(ffmpegPath) || !File.Exists(ffmpegPath))
+        {
+            ShowCannotMuxSubtitleError(MuxLangProvider.Current["MuxTracks.MissingFfmpeg"]);
+            return;
+        }
+
+        string ffprobePath = getFfprobePath();
+        if (string.IsNullOrWhiteSpace(ffprobePath) || !File.Exists(ffprobePath))
+        {
+            ShowCannotMuxSubtitleError(MuxLangProvider.Current["MuxTracks.MissingFfprobe"]);
+            return;
+        }
 
         _isExecuting = true;
         OnCanExecuteChanged();
@@ -28,7 +49,6 @@ public sealed class OpenMuxTracksCmd(
         {
             // Required: subtitle tracks come from a full ffprobe result for each source,
             // rather than from the general source-analysis lifecycle.
-            string ffprobePath = getFfprobePath();
             Task<string>[] analyses = [.. paths.Select(path =>
                 FFProbeVideoAnalysis.AnalyzeAsync(ffprobePath, path))];
             string[] ffprobeJson = await Task.WhenAll(analyses);
@@ -37,20 +57,36 @@ public sealed class OpenMuxTracksCmd(
                     .ToDictionary(item => item.path, item => (string?)item.json, StringComparer.OrdinalIgnoreCase);
 
             MuxTracksConfModal window = new();
-            MuxTracksConfVM vm = new(window.Close, paths, getTracks, ffprobeJsonByPath, applyTracks);
+            Action<string> showError = description =>
+                new OpenErrModalCmd(ModalNavS, MuxLangProvider.WindowTitle, description).Execute(null);
+            MuxTracksConfVM vm = new(window.Close, paths, getTracks, ffprobeJsonByPath, applyTracks, showError);
             ShowModal(window, vm, showDialog: true);
         }
         catch (Exception ex)
         {
-            new OpenErrModalCmd(
-                ModalNavS,
-                MuxLangProvider.WindowTitle,
-                ex.Message).Execute(null);
+            ShowCannotMuxSubtitleError(ex.Message);
         }
         finally
         {
             _isExecuting = false;
             OnCanExecuteChanged();
         }
+    }
+
+    private void ShowCannotMuxSubtitleError(string reason) =>
+        new OpenErrModalCmd(
+            ModalNavS,
+            MuxLangProvider.WindowTitle,
+            string.Join(Environment.NewLine, MuxLangProvider.Current["MuxTracks.CannotMuxSubtitle"], reason)).Execute(null);
+
+    private static bool HasDuplicatePaths(IReadOnlyList<string> paths)
+    {
+        HashSet<string> seen = new(StringComparer.OrdinalIgnoreCase);
+        foreach (string path in paths)
+        {
+            if (!seen.Add(path)) return true;
+        }
+
+        return false;
     }
 }
