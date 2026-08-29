@@ -19,7 +19,7 @@ public sealed class MuxTrackSourceVM : BaseVM
     public MuxTrackSourceVM(string filePath, IEnumerable<MuxTrackM> tracks, string? ffprobeJson)
     {
         FilePath = filePath;
-        Tracks = [.. tracks.Select(track => new MuxTrackM
+        List<MuxTrackM> clonedTracks = [.. tracks.Select(track => new MuxTrackM
         {
             FilePath = track.FilePath,
             IsSourceTrack = track.IsSourceTrack,
@@ -30,14 +30,21 @@ public sealed class MuxTrackSourceVM : BaseVM
             LanguageCode = track.LanguageCode,
             DurationSeconds = track.DurationSeconds,
             IsDefault = track.IsDefault,
+            OriginalIsDefault = track.OriginalIsDefault,
         })];
+        Tracks = [.. clonedTracks];
+        OriginalSrcDefSubTrackId = GetOriginalSrcDefaultSubtitleTrackId(clonedTracks);
+        FirstSrcSubTrackId = GetFirstSourceSubtitleTrackId(clonedTracks);
         // This summary uses the container-level ffprobe duration for the source file itself.
         DurationText = FormatDuration(ParseDurationFromFfprobeJson(ffprobeJson));
     }
 
     public string FilePath { get; }
     public string Name => Path.GetFileName(FilePath);
+    public string CurrentSourceTitle => Name;
     public ObservableCollection<MuxTrackM> Tracks { get; }
+    public int OriginalSrcDefSubTrackId { get; }
+    public int FirstSrcSubTrackId { get; }
     public string DurationText { get; }
     public string TrackSummary => DurationText.Length > 0
         ? $"{Tracks.Count} tracks | {DurationText}"
@@ -57,6 +64,22 @@ public sealed class MuxTrackSourceVM : BaseVM
         Tracks.Clear();
         foreach (MuxTrackM track in tracks) Tracks.Add(track);
         OnPropertyChanged(nameof(TrackSummary));
+    }
+
+    private static int GetOriginalSrcDefaultSubtitleTrackId(IReadOnlyList<MuxTrackM> tracks)
+    {
+        MuxTrackM? originalDefault = tracks.FirstOrDefault(track => track.IsSourceTrack && track.OriginalIsDefault);
+        return originalDefault?.SourceSubtitleIndex is int originalDefaultId
+            ? originalDefaultId + 1 // From 1 lines up with BuildSourceSubtitleName numbering
+            : -1;
+    }
+
+    private static int GetFirstSourceSubtitleTrackId(IReadOnlyList<MuxTrackM> tracks)
+    {
+        MuxTrackM? firstSourceTrack = tracks.FirstOrDefault(track => track.IsSourceTrack);
+        return firstSourceTrack?.SourceSubtitleIndex is int firstSourceTrackId
+            ? firstSourceTrackId + 1
+            : -1;
     }
 
     /// <summary>

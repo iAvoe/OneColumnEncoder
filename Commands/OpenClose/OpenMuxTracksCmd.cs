@@ -1,4 +1,5 @@
 using OneColumnEncoder.ViewModels.MuxTracks;
+using OneColumnEncoder.Commands.OpenClose.Confirmations;
 using System.IO;
 
 namespace OneColumnEncoder.Commands.OpenClose;
@@ -59,7 +60,13 @@ public sealed class OpenMuxTracksCmd(
             MuxTracksConfModal window = new();
             Action<string> showError = description =>
                 new OpenErrModalCmd(ModalNavS, MuxLangProvider.WindowTitle, description).Execute(null);
-            MuxTracksConfVM vm = new(window.Close, paths, getTracks, ffprobeJsonByPath, applyTracks, showError);
+            Func<string, bool> confirmNoDefaultSubtitle = message =>
+            {
+                OpenWarnModalCmd cmd = new(ModalNavS, MuxLangProvider.WindowTitle, message);
+                cmd.Execute(null);
+                return cmd.DialogResult == true;
+            };
+            MuxTracksConfVM vm = new(window.Close, paths, getTracks, ffprobeJsonByPath, applyTracks, showError, confirmNoDefaultSubtitle);
             ShowModal(window, vm, showDialog: true);
         }
         catch (Exception ex)

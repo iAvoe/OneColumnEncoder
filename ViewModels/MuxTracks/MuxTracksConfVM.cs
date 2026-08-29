@@ -25,6 +25,7 @@ public sealed class MuxTracksConfVM : BaseVM
     private readonly Action _closeAction;
     private readonly Action<string, IReadOnlyList<MuxTrackM>> _applyTracks;
     private readonly Action<string> _showError;
+    private readonly Func<string, bool> _confirmNoDefaultSubtitle;
     private readonly Dictionary<string, List<MuxTrackM>> _tracksBySource;
     private readonly Dictionary<string, List<MuxTrackM>> _initialTracksBySource;
     private MuxTrackSourceVM? _selectedSource;
@@ -44,11 +45,13 @@ public sealed class MuxTracksConfVM : BaseVM
         Func<string, IReadOnlyList<MuxTrackM>> getTracks,
         IReadOnlyDictionary<string, string?> ffprobeJsonByPath,
         Action<string, IReadOnlyList<MuxTrackM>> applyTracks,
-        Action<string> showError)
+        Action<string> showError,
+        Func<string, bool> confirmNoDefaultSubtitle)
     {
         _closeAction = closeAction;
         _applyTracks = applyTracks;
         _showError = showError;
+        _confirmNoDefaultSubtitle = confirmNoDefaultSubtitle;
         _tracksBySource = new(StringComparer.OrdinalIgnoreCase);
         _initialTracksBySource = new(StringComparer.OrdinalIgnoreCase);
         foreach (string path in sourcePaths.Where(File.Exists)
@@ -223,8 +226,29 @@ public sealed class MuxTracksConfVM : BaseVM
         {
             List<MuxTrackM> current = _tracksBySource[source.FilePath];
             List<MuxTrackM> initial = _initialTracksBySource[source.FilePath];
-            if (TracksDiffer(current, initial))
-                _applyTracks(source.FilePath, [.. current.Select(Clone)]);
+            if (!TracksDiffer(current, initial)) continue;
+
+            if (!current.Any(track => track.IsDefault))
+            {
+                (int originalSrcDefSubTrackId, int firstSrcSubTrackId) = (source.OriginalSrcDefSubTrackId, source.FirstSrcSubTrackId);
+                string message = originalSrcDefSubTrackId >= 0
+                    ? string.Join(Environment.NewLine,
+                        $"Source: {source.CurrentSourceTitle}",
+                        "No subtitle is marked default.",
+                        $"Original source default subtitle track ID: {originalSrcDefSubTrackId}",
+                        "Clear default markings and continue?")
+                    : string.Join(Environment.NewLine,
+                        $"Source: {source.CurrentSourceTitle}",
+                        "No subtitle is marked default.",
+                        $"Original source default subtitle track ID: {originalSrcDefSubTrackId}",
+                        firstSrcSubTrackId >= 0
+                            ? $"First source subtitle track ID: {firstSrcSubTrackId}"
+                            : "No source subtitle tracks were found.",
+                        "Consider adding a default subtitle before continuing?");
+                if (!_confirmNoDefaultSubtitle(message)) continue;
+            }
+
+            _applyTracks(source.FilePath, [.. current.Select(Clone)]);
         }
         _closeAction();
     }
