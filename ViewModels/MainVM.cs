@@ -1275,33 +1275,83 @@ public class MainVM : BaseVM
 
         string[] sourcePaths = GetCurrentMuxSourcePaths();
 
-        int sourceCount = sourcePaths.Sum(path =>
-            GetMuxTracksForSource(path).Count(t => t.IsSourceTrack));
+        int sourceCount = sourcePaths.Sum(path => GetSourceTrackSummaryForCard(path).Count);
         int externalCount = sourcePaths.Sum(path =>
             GetMuxTracksForSource(path).Count(t => !t.IsSourceTrack));
 
         _muxTracksCard.P1Name = "ST+ET";
         _muxTracksCard.P1TextData = $"{sourceCount} + {externalCount}";
 
-        var allTracks = sourcePaths.SelectMany(path => GetMuxTracksForSource(path)).ToList();
-        int totalTracks = allTracks.Count;
+        int totalTracks = sourceCount + externalCount;
 
         // Follow ffmpeg's behavior: multi-tracks fallback to first, single tracks ignore marking default
         string defaultText;
         if (totalTracks < 2) { defaultText = LangProviderBase.NAText; }
         else
         {
-            MuxTrackM? defaultTrack = allTracks.FirstOrDefault(t => t.IsDefault);
-            if (defaultTrack != null)
+            int defaultIndex = 0;
+            int trackOffset = 0;
+            foreach (string path in sourcePaths)
             {
-                int defaultIndex = allTracks.IndexOf(defaultTrack) + 1;
-                defaultText = defaultIndex.ToString();
+                (int count, int sourceDefaultIndex) = GetSourceTrackSummaryForCard(path);
+                if (defaultIndex == 0 && sourceDefaultIndex > 0)
+                    defaultIndex = trackOffset + sourceDefaultIndex;
+
+                List<MuxTrackM> externalTracks = [.. GetMuxTracksForSource(path).Where(track => !track.IsSourceTrack)];
+                if (defaultIndex == 0)
+                {
+                    int externalDefaultIndex = externalTracks.FindIndex(track => track.IsDefault);
+                    if (externalDefaultIndex >= 0)
+                        defaultIndex = trackOffset + count + externalDefaultIndex + 1;
+                }
+
+                trackOffset += count + externalTracks.Count;
             }
-            else { defaultText = "1"; }
+
+            defaultText = (defaultIndex > 0 ? defaultIndex : 1).ToString();
         }
 
         _muxTracksCard.P2Name = UILangProvider.Current.Default + "#"; // Current is the static member
         _muxTracksCard.P2TextData = defaultText;
+    }
+
+    private (int Count, int DefaultIndex) GetSourceTrackSummaryForCard(string sourcePath)
+    {
+        if (GetActiveSrcRoute() != SrcRouteKind.Single
+            || !string.Equals(sourcePath, GetSelectedVideoSrcPath(), StringComparison.OrdinalIgnoreCase)
+            || !IsCurrentAnalysisFor(sourcePath, GetSelectedFfprobePath()))
+        {
+            return (GetMuxTracksForSource(sourcePath).Count(track => track.IsSourceTrack), 0);
+        }
+
+        try
+        {
+            using JsonDocument document = JsonDocument.Parse(_srcVideoAnalysis.RawJson);
+            if (!document.RootElement.TryGetProperty("streams", out JsonElement streams)
+                || streams.ValueKind != JsonValueKind.Array)
+                return (0, 0);
+
+            int count = 0;
+            int defaultIndex = 0;
+            foreach (JsonElement stream in streams.EnumerateArray())
+            {
+                if (!string.Equals(TryGetString(stream, "codec_type"), "subtitle", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                count++;
+                if (defaultIndex == 0
+                    && stream.TryGetProperty("disposition", out JsonElement disposition)
+                    && TryGetInt(disposition, "default", out int isDefault)
+                    && isDefault != 0)
+                    defaultIndex = count;
+            }
+
+            return (count, defaultIndex);
+        }
+        catch
+        {
+            return (0, 0);
+        }
     }
 
     private IReadOnlyList<MuxTrackM> GetMuxTracksForSource(string sourcePath) =>
@@ -1993,6 +2043,7 @@ public class MainVM : BaseVM
     private void OnSrcAnalysisCompleted(bool isSuccess)
     {
         ToolsImportCard.SetCompleteSourceAnalysisStatus(isSuccess);
+        RefreshMuxTracksCardState();
         UpdateFilterScbButtonsState();
     }
 
