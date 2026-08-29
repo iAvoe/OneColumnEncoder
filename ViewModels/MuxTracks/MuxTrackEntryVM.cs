@@ -1,5 +1,8 @@
 namespace OneColumnEncoder.ViewModels.MuxTracks;
 
+/// <summary>
+/// View model for a single mux track row (source subtitle or imported subtitle file).
+/// </summary>
 public sealed class MuxTrackEntryVM : BaseVM
 {
     private readonly MuxTrackM _model;
@@ -45,6 +48,14 @@ public sealed class MuxTrackEntryVM : BaseVM
         new("msa (Malay)")      { Tag = "msa" },
     ];
 
+    /// <summary>
+    /// Wires up commands and initializes the language dropdown from the underlying track model.
+    /// </summary>
+    /// <param name="model">The track model this entry binds to.</param>
+    /// <param name="move">Callback to move this entry by a given offset.</param>
+    /// <param name="remove">Callback to remove this entry.</param>
+    /// <param name="defaultChanged">Callback invoked when the default flag changes.</param>
+    /// <param name="showError">Callback used to surface validation errors.</param>
     public MuxTrackEntryVM(MuxTrackM model, Action<MuxTrackEntryVM, int> move, Action<MuxTrackEntryVM> remove, Action<MuxTrackEntryVM, bool> defaultChanged, Action<string> showError)
     {
         _model = model;
@@ -68,6 +79,7 @@ public sealed class MuxTrackEntryVM : BaseVM
 
     public MuxTrackM Model => _model;
     public string Name => _model.Name;
+    // Imported subtitle files and ffprobe source subtitles both surface their parsed duration here.
     public string DurationText => FormatDuration(_model.DurationSeconds);
     public bool CanRemove => !_model.IsSourceTrack;
     public string SyncText
@@ -81,6 +93,9 @@ public sealed class MuxTrackEntryVM : BaseVM
         }
     }
 
+    /// <summary>
+    /// Shows an error if the sync offset text is non-empty but not a valid integer.
+    /// </summary>
     public void ValidateSyncText()
     {
         if (!string.IsNullOrWhiteSpace(_syncText) &&
@@ -136,16 +151,27 @@ public sealed class MuxTrackEntryVM : BaseVM
     public DropdownMenuVM LanguageDropdown { get; }
     private Action<MuxTrackEntryVM, bool> DefaultChanged { get; }
 
+    /// <summary>
+    /// Persists the selected dropdown language code back to the track model.
+    /// </summary>
     private void OnLanguageChanged()
     {
         _model.LanguageCode = LanguageDropdown.SelectedItem?.Tag as string;
     }
 
+    /// <summary>
+    /// Formats a duration in seconds as a timestamp, or a localized "unknown" label.
+    /// </summary>
+    /// <param name="durationSeconds">The duration in seconds, or null/zero.</param>
+    /// <returns>A formatted timestamp string, or the unknown-duration label.</returns>
     private static string FormatDuration(double? durationSeconds) =>
         durationSeconds is > 0d
             ? EncodingPipeline.FormatTimestamp(TimeSpan.FromSeconds(durationSeconds.Value))
             : MuxLangProvider.DurationUnknown;
 
+    /// <summary>
+    /// Highlights the row briefly after a move, then clears the highlight.
+    /// </summary>
     public void FlashMoved()
     {
         IsRecentlyMoved = true;
@@ -160,6 +186,9 @@ public sealed class MuxTrackEntryVM : BaseVM
         _flashTimer.Start();
     }
 
+    /// <summary>
+    /// Refreshes language-dependent display strings for this entry.
+    /// </summary>
     public void RefreshLanguage()
     {
         OnPropertyChanged(nameof(DurationText));
@@ -168,8 +197,14 @@ public sealed class MuxTrackEntryVM : BaseVM
         OnPropertyChanged(nameof(RemoveText));
     }
 
+    /// <summary>
+    /// Notifies the view that the default-track binding may have changed.
+    /// </summary>
     public void RefreshDefaultBinding() => OnPropertyChanged(nameof(IsDefault));
 
+    /// <summary>
+    /// Stops the flash timer and releases base resources.
+    /// </summary>
     public override void Dispose()
     {
         _flashTimer?.Stop();

@@ -226,6 +226,10 @@ Muxing is a controllable step — the mux command and status are visible in the 
 
 Auto-mux inherits the timebase from the source, so video-based quality metrics (e.g. XPSNR, VMAF) can align without manually calculating the GCD of timebase fractions.
 
+#### Subtitle Track Editor
+
+The mux subtitle editor preserves ffprobe-derived metadata for source subtitle streams, including language and stream duration, so source rows can show real track lengths. External subtitle imports are validated on ingest by parsing cue timestamps before they are accepted into the track list.
+
 ## Source Analysis and Checklists
 
 1cenc relies on ffprobe to read source video metadata. Source checks fall into two categories:

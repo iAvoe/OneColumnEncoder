@@ -184,6 +184,11 @@ It is not easy to develop these tools. If this software helps, please consider s
 - The source inspection card has parsed and displayed progressive, bit depth, frame rate, SAR, color metadata, chroma, HDR / Dolby Vision source info, and other inspection items
 - Viewing source inspection issues, refreshing the checklist status, and manually bypassing them have been integrated into the main workflow
 
+#### Subtitle Track Editor
+
+- Source subtitle tracks keep ffprobe-derived language and duration metadata in the mux editor
+- Imported subtitle files are validated before they are accepted, and their cue end time is used as the track duration
+
 #### Pre-coding Inspection
 
 - The pre-coding inspection card has implemented hardware and software inspection items
