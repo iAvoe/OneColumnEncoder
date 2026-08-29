@@ -69,7 +69,7 @@ public partial class MuxTracksConfModal : AdaptiveWindow
             if (!IsLoaded) return;
 
             if (_viewModel != null)
-                Width = _viewModel.ShowSidebar ? 760 : 540;
+                Width = _viewModel.ShowSidebar ? 880 : 540;
 
             InvalidateMeasure();
             UpdateLayout();
