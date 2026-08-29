@@ -7,7 +7,6 @@ using OneColumnEncoder.RepartManagement;
 using OneColumnEncoder.ScriptGeneration;
 using OneColumnEncoder.ToolManagement;
 using OneColumnEncoder.Validation;
-using OneColumnEncoder.ViewModels.MuxTracks;
 using System.Collections.Specialized;
 using System.IO;
 using static OneColumnEncoder.Json.JsonElementHelper;
@@ -497,6 +496,10 @@ public class MainVM : BaseVM
         QueueScriptSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetScriptSrcImportQueueDefs(), false, false);
         ActiveScriptSrcImportZone = ScriptSrcImportZone;
         EncodingConfZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetEncSettingsDefinitions(), enableRealCheck: false);
+        _outputSettingCard = EncodingConfZone.FirstOrDefault(
+            t => t.DefinitionKey == "Tool.Enc.OutputSetting");
+        _muxTracksCard = EncodingConfZone.FirstOrDefault(
+            t => t.DefinitionKey == "Tool.Enc.MuxTracks");
         UpstreamsZone = [];
         EncodersZone = [];
         AnalyticsZone = [];
@@ -505,20 +508,12 @@ public class MainVM : BaseVM
         LoadSrcsFromAppDataM();
         WireUpZoneDeleteCmds();
 
-        // Restore encoding cards after source import so output defaults can sync with source state.
-        ToolItemCardVM? outputSetting = EncodingConfZone.FirstOrDefault(
-            t => t.DefinitionKey == "Tool.Enc.OutputSetting");
-        _outputSettingCard = outputSetting;
-        _muxTracksCard = EncodingConfZone.FirstOrDefault(
-            t => t.DefinitionKey == "Tool.Enc.MuxTracks");
-        RefreshMuxTracksCardSummary();
-
         // Set P2Text to desktop, then P1Text to file name
-        if (outputSetting != null)
+        if (_outputSettingCard != null)
         {
             string cachedOutputDirectory = NormalizeOutputDirectory(_appDataM.Encoding.OutputDirectory);
-            outputSetting.PropertyChanged += OnOutputSettingPropertyChanged;
-            outputSetting.InitializeOutputSetting(cachedOutputDirectory);
+            _outputSettingCard.PropertyChanged += OnOutputSettingPropertyChanged;
+            _outputSettingCard.InitializeOutputSetting(cachedOutputDirectory);
         }
 
         // Load saved parallelism settings onto the card
@@ -998,6 +993,11 @@ public class MainVM : BaseVM
         _muxTracksCard.IsEnabled = GetActiveSrcRoute() != SrcRouteKind.Repart
             && ffmpegReady
             && IsAutoMuxEnabledForCurrentRoute();
+
+        if (!ffmpegReady)
+            _muxTracksCard.P1TextData = UILangProvider.NoFFmpeg;
+        else
+            RefreshMuxTracksCardSummary();
     }
 
     private bool IsAutoMuxEnabledForCurrentRoute()
@@ -1245,6 +1245,10 @@ public class MainVM : BaseVM
     private void RefreshMuxTracksCardSummary()
     {
         if (_muxTracksCard == null) return;
+
+        bool ffmpegReady = !string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath)
+            && File.Exists(_appDataM.Tools.FfmpegPath);
+        if (!ffmpegReady) return;
 
         string[] sourcePaths = GetCurrentMuxSourcePaths();
         string sourceText = sourcePaths.Length == 0 || sourcePaths.All(string.IsNullOrWhiteSpace)
