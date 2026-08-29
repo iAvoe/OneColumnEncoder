@@ -6,10 +6,6 @@ namespace OneColumnEncoder.ViewModels.MuxTracks;
 public sealed class MuxTrackEntryVM : BaseVM
 {
     private readonly MuxTrackM _model;
-    private bool _canMoveUp;
-    private bool _canMoveDown;
-    private bool _isRecentlyMoved;
-    private System.Windows.Threading.DispatcherTimer? _flashTimer;
 
     private static readonly DropdownItemM[] Languages =
     [
@@ -50,14 +46,11 @@ public sealed class MuxTrackEntryVM : BaseVM
     /// Wires up commands and initializes the language dropdown from the underlying track model.
     /// </summary>
     /// <param name="model">The track model this entry binds to.</param>
-    /// <param name="move">Callback to move this entry by a given offset.</param>
     /// <param name="remove">Callback to remove this entry.</param>
     /// <param name="defaultChanged">Callback invoked when the default flag changes.</param>
-    public MuxTrackEntryVM(MuxTrackM model, Action<MuxTrackEntryVM, int> move, Action<MuxTrackEntryVM> remove, Action<MuxTrackEntryVM, bool> defaultChanged)
+    public MuxTrackEntryVM(MuxTrackM model, Action<MuxTrackEntryVM> remove, Action<MuxTrackEntryVM, bool> defaultChanged)
     {
         _model = model;
-        MoveUpCommand = new ActionCmd(_ => move(this, -1), _ => CanMoveUp);
-        MoveDownCommand = new ActionCmd(_ => move(this, 1), _ => CanMoveDown);
         RemoveCommand = new ActionCmd(_ => remove(this));
         DefaultChanged = defaultChanged;
 
@@ -90,37 +83,7 @@ public sealed class MuxTrackEntryVM : BaseVM
         }
     }
 
-    public bool CanMoveUp
-    {
-        get => _canMoveUp;
-        set
-        {
-            if (SetProperty(ref _canMoveUp, value))
-                (MoveUpCommand as BaseCmd)?.OnCanExecuteChanged();
-        }
-    }
-
-    public bool CanMoveDown
-    {
-        get => _canMoveDown;
-        set
-        {
-            if (SetProperty(ref _canMoveDown, value))
-                (MoveDownCommand as BaseCmd)?.OnCanExecuteChanged();
-        }
-    }
-
-    public bool IsRecentlyMoved
-    {
-        get => _isRecentlyMoved;
-        private set => SetProperty(ref _isRecentlyMoved, value);
-    }
-
-    public static string MoveUpText => LangProviderBase.MoveUpText;
-    public static string MoveDownText => LangProviderBase.MoveDownText;
     public static string RemoveText => LangProviderBase.RemoveText;
-    public ICommand MoveUpCommand { get; }
-    public ICommand MoveDownCommand { get; }
     public ICommand RemoveCommand { get; }
     public DropdownMenuVM LanguageDropdown { get; }
     private Action<MuxTrackEntryVM, bool> DefaultChanged { get; }
@@ -144,30 +107,11 @@ public sealed class MuxTrackEntryVM : BaseVM
             : MuxLangProvider.DurationUnknown;
 
     /// <summary>
-    /// Highlights the row briefly after a move, then clears the highlight.
-    /// </summary>
-    public void FlashMoved()
-    {
-        IsRecentlyMoved = true;
-        _flashTimer?.Stop();
-        _flashTimer =
-            new System.Windows.Threading.DispatcherTimer(TimeSpan.FromMilliseconds(600),
-            System.Windows.Threading.DispatcherPriority.Normal, (_, _) =>
-        {
-            IsRecentlyMoved = false;
-            _flashTimer?.Stop();
-        }, System.Windows.Threading.Dispatcher.CurrentDispatcher);
-        _flashTimer.Start();
-    }
-
-    /// <summary>
     /// Refreshes language-dependent display strings for this entry.
     /// </summary>
     public void RefreshLanguage()
     {
         OnPropertyChanged(nameof(DurationText));
-        OnPropertyChanged(nameof(MoveUpText));
-        OnPropertyChanged(nameof(MoveDownText));
         OnPropertyChanged(nameof(RemoveText));
     }
 
@@ -175,14 +119,4 @@ public sealed class MuxTrackEntryVM : BaseVM
     /// Notifies the view that the default-track binding may have changed.
     /// </summary>
     public void RefreshDefaultBinding() => OnPropertyChanged(nameof(IsDefault));
-
-    /// <summary>
-    /// Stops the flash timer and releases base resources.
-    /// </summary>
-    public override void Dispose()
-    {
-        _flashTimer?.Stop();
-        _flashTimer = null;
-        base.Dispose();
-    }
 }

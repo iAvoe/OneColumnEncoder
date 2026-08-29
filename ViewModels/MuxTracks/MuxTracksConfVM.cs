@@ -63,8 +63,6 @@ public sealed class MuxTracksConfVM : BaseVM
         ShowSidebar = SourceItems.Count > 1;
 
         RemoveTrackCommand = new ActionCmd(item => RemoveTrack(item as MuxTrackEntryVM));
-        MoveTrackUpCommand = new ActionCmd(item => MoveTrack(item as MuxTrackEntryVM, -1));
-        MoveTrackDownCommand = new ActionCmd(item => MoveTrack(item as MuxTrackEntryVM, 1));
         AddSubtitleCommand = new ActionCmd(_ => BrowseSubtitle(), _ => SelectedSource != null);
         BottomButtons = ButtonGroupVM.CreateThreeButton(
             AddSubtitleText, Lang.Cancel, Lang.Confirm,
@@ -90,8 +88,6 @@ public sealed class MuxTracksConfVM : BaseVM
     public ButtonGroupVM BottomButtons { get; }
     public ActionCmd AddSubtitleCommand { get; }
     public ActionCmd RemoveTrackCommand { get; }
-    public ActionCmd MoveTrackUpCommand { get; }
-    public ActionCmd MoveTrackDownCommand { get; }
     private bool _showSidebar;
     public bool ShowSidebar
     {
@@ -165,24 +161,6 @@ public sealed class MuxTracksConfVM : BaseVM
     }
 
     /// <summary>
-    /// Swaps the given entry with its neighbor by offset to reorder tracks
-    /// </summary>
-    /// <param name="entry">The entry to move, or null to ignore.</param>
-    /// <param name="offset">-1 to move up, 1 to move down.</param>
-    private void MoveTrack(MuxTrackEntryVM? entry, int offset)
-    {
-        if (entry == null || SelectedSource == null) return;
-        int oldIndex = Tracks.IndexOf(entry);
-        int newIndex = oldIndex + offset;
-        if (oldIndex < 0 || newIndex < 0 || newIndex >= Tracks.Count) return;
-        List<MuxTrackM> tracks = GetCurrentTracks();
-        (tracks[oldIndex], tracks[newIndex]) = (tracks[newIndex], tracks[oldIndex]);
-        _tracksBySource[SelectedSource.FilePath] = tracks;
-        RefreshTrackList();
-        Tracks[newIndex].FlashMoved();
-    }
-
-    /// <summary>
     /// Returns a cloned snapshot of the selected source's current tracks
     /// </summary>
     /// <returns>A new list of cloned track models, or empty if none selected.</returns>
@@ -199,7 +177,7 @@ public sealed class MuxTracksConfVM : BaseVM
     }
 
     /// <summary>
-    /// Rebuilds the visible entry list for the selected source and refreshes move states
+    /// Rebuilds the visible entry list for the selected source.
     /// </summary>
     private void RefreshTrackList()
     {
@@ -208,21 +186,8 @@ public sealed class MuxTracksConfVM : BaseVM
         if (SelectedSource == null) return;
         foreach (MuxTrackM track in _tracksBySource[SelectedSource.FilePath])
         {
-            MuxTrackEntryVM entry = new(track, MoveTrack, RemoveTrack, OnDefaultChanged);
+            MuxTrackEntryVM entry = new(track, RemoveTrack, OnDefaultChanged);
             Tracks.Add(entry);
-        }
-        RefreshMoveStates();
-    }
-
-    /// <summary>
-    /// Updates CanMoveUp/CanMoveDown flags based on each entry's position
-    /// </summary>
-    private void RefreshMoveStates()
-    {
-        for (int i = 0; i < Tracks.Count; i++)
-        {
-            Tracks[i].CanMoveUp = i > 0;
-            Tracks[i].CanMoveDown = i < Tracks.Count - 1;
         }
     }
 

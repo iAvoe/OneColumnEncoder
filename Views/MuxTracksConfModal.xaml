@@ -134,8 +134,7 @@
                     </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <comps:MuxTrackItem DataContext="{Binding}"
-                                                IsRecentlyMoved="{Binding IsRecentlyMoved}" />
+                            <comps:MuxTrackItem DataContext="{Binding}" />
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

@@ -62,11 +62,8 @@
                         <!-- Lang code selection -->
                         <ColumnDefinition Width="135"
                                           MinWidth="80" />
-                        <!-- Spacer to push below items right -->
+                        <!-- Spacer to push delete right -->
                         <ColumnDefinition Width="*" />
-                        <!-- Move order and delete -->
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
@@ -88,46 +85,13 @@
                     <Border Grid.Column="3" />
 
                     <Button Grid.Column="4"
-                            Content="{Binding MoveUpText}"
-                            Command="{Binding MoveUpCommand}"
-                            IsEnabled="{Binding CanMoveUp}"
-                            Style="{StaticResource LinkButton}"
-                            Margin="0" />
-                    <Button Grid.Column="5"
-                            Content="{Binding MoveDownText}"
-                            Command="{Binding MoveDownCommand}"
-                            IsEnabled="{Binding CanMoveDown}"
-                            Style="{StaticResource LinkButton}"
-                            Margin="5 0 0 0" />
-                    <Button Grid.Column="6"
                             Content="{Binding RemoveText}"
                             Command="{Binding RemoveCommand}"
                             Visibility="{Binding CanRemove, Converter={StaticResource BoolToVisibility}}"
                             Style="{StaticResource LinkButton}"
-                            Margin="5 0 0 0" />
+                            Margin="0" />
                 </Grid>
             </Grid>
-        </Border>
-
-        <Border BorderThickness="1.5"
-                CornerRadius="8"
-                IsHitTestVisible="False"
-                SnapsToDevicePixels="True"
-                BorderBrush="{StaticResource BorderAmber}"
-                Background="Transparent">
-            <Border.Style>
-                <Style TargetType="Border">
-                    <Setter Property="Visibility"
-                            Value="Collapsed" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsRecentlyMoved, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                     Value="True">
-                            <Setter Property="Visibility"
-                                    Value="Visible" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
         </Border>
     </Grid>
 </UserControl>
