@@ -19,5 +19,7 @@ public sealed class MuxTrackM
     public bool OriginalIsDefault { get; set; }
 
     [System.Text.Json.Serialization.JsonIgnore]
-    public string Name => string.IsNullOrWhiteSpace(DisplayName) ? Path.GetFileName(FilePath) : DisplayName!;
+    public string Name => string.IsNullOrWhiteSpace(DisplayName)
+        ? Path.GetFileName(FilePath)
+        : DisplayName!;
 }

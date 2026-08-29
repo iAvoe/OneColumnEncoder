@@ -1280,7 +1280,7 @@ public class MainVM : BaseVM
         int externalCount = sourcePaths.Sum(path =>
             GetMuxTracksForSource(path).Count(t => !t.IsSourceTrack));
 
-        _muxTracksCard.P1Name = "S+E";
+        _muxTracksCard.P1Name = "ST+ET";
         _muxTracksCard.P1TextData = $"{sourceCount} + {externalCount}";
 
         var allTracks = sourcePaths.SelectMany(path => GetMuxTracksForSource(path)).ToList();
@@ -1300,7 +1300,7 @@ public class MainVM : BaseVM
             else { defaultText = "1"; }
         }
 
-        _muxTracksCard.P2Name = "Default#"; // TODO: change to LangProviderBase.Default + "#"; but: An object reference is required for the non-static field, method, or property 'LangProviderBase.Default'
+        _muxTracksCard.P2Name = UILangProvider.Current.Default + "#"; // Current is the static member
         _muxTracksCard.P2TextData = defaultText;
     }
 
