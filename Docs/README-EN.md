@@ -284,29 +284,22 @@ Implemented and verified, usability confirmed
 
 Implemented and verified, usability confirmed
 
+#### Subtitle Track Editor
+
+- The source subtitle track retains the language and duration metadata extracted by ffprobe in the encapsulation editor
+- Imported subtitle files are validated, and the end time of the last subtitle segment is used as the track duration
+- The source subtitle track and imported subtitle files have color-coded display functionality
+- Tested: Adjusting the source subtitle's "default" command-line generation works correctly
+- Tested: Metadata parsing of the source subtitle is all correct
+- Tested: ISO 639-2 language code recognition is correct
+- Tested: Queue mode
+- Tested Concat mode
+
 ---
 
 ### Unverified
 
-#### Subtitle Track Editor
-
-- The source subtitle track retains the language and duration metadata extracted by ffprobe in the encapsulation editor.
-- Imported subtitle files are validated, and the end time of the last subtitle segment is used as the track duration.
-- The source subtitle track and imported subtitle files have color-coded display functionality.
-- Tested: Adjusting the source subtitle's "default" command-line generation works correctly.
-- Tested: Metadata parsing of the source subtitle is all correct.
-- Tested: ISO 639-2 language code recognition is correct.
-- To be tested: Adjusting the timeline offset of the source subtitle.
-- To be tested: Adjusting the timeline offset of the imported subtitle.
-- To be tested: Queue mode.
-- To be tested: Merge mode.
-- Under consideration: The re-division mode is currently considered too difficult to implement.
-
----
-
 ### Not Started
-
-##### None currently
 
 ---
 
