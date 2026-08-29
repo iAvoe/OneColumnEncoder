@@ -115,7 +115,7 @@
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                          HorizontalContentAlignment="Stretch"
                          VerticalContentAlignment="Top"
-                         Margin="0 7.5 0 0">
+                         Margin="0 5 0 0">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
                             <Setter Property="Padding"

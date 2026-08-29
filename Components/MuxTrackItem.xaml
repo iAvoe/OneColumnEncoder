@@ -54,11 +54,8 @@
                 </Grid>
 
                 <Grid Grid.Row="1"
-                      Margin="0 2.5 0 0">
+                      Margin="0 5 0 0">
                     <Grid.ColumnDefinitions>
-                        <!-- Sync label and textbox -->
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
                         <!-- Set to Primary checkbox and label -->
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
@@ -73,50 +70,36 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding DataContext.Lang[MuxTracks.Sync], RelativeSource={RelativeSource AncestorType=Window}}"
-                               VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1"
-                             Text="{Binding SyncText, UpdateSourceTrigger=PropertyChanged}"
-                             LostFocus="SyncTextBox_LostFocus"
-                             FontSize="11"
-                             Width="50"
-                             Margin="4 1 0 0"
-                             Padding="0"
-                             VerticalAlignment="Center"
-                             VerticalContentAlignment="Center"
-                             TextAlignment="Right"/>
-
-                    <CheckBox Grid.Column="2"
+                    <CheckBox Grid.Column="0"
                               Content="{Binding DataContext.Lang[MuxTracks.Primary], RelativeSource={RelativeSource AncestorType=Window}}"
                               IsChecked="{Binding IsDefault}"
-                              Margin="15 0.5 0 0"
+                              Margin="0 0.5 0 0"
                               VerticalAlignment="Center"/>
 
-                    <TextBlock Grid.Column="3"
+                    <TextBlock Grid.Column="1"
                                Text="{Binding DataContext.Lang[MuxTracks.Language], RelativeSource={RelativeSource AncestorType=Window}}"
-                               Margin="12.5 -0.5 0 0"
+                               Margin="12.5 -1 0 0"
                                VerticalAlignment="Center" />
-                    <comps:DropdownMenu Grid.Column="4"
+                    <comps:DropdownMenu Grid.Column="2"
                                         DataContext="{Binding LanguageDropdown}"
-                                        Margin="2.5 -1 0 0"
+                                        Margin="5 -0.5 0 0"
                                         VerticalAlignment="Center" />
 
-                    <Border Grid.Column="5" />
+                    <Border Grid.Column="3" />
 
-                    <Button Grid.Column="6"
+                    <Button Grid.Column="4"
                             Content="{Binding MoveUpText}"
                             Command="{Binding MoveUpCommand}"
                             IsEnabled="{Binding CanMoveUp}"
                             Style="{StaticResource LinkButton}"
                             Margin="0" />
-                    <Button Grid.Column="7"
+                    <Button Grid.Column="5"
                             Content="{Binding MoveDownText}"
                             Command="{Binding MoveDownCommand}"
                             IsEnabled="{Binding CanMoveDown}"
                             Style="{StaticResource LinkButton}"
                             Margin="5 0 0 0" />
-                    <Button Grid.Column="8"
+                    <Button Grid.Column="6"
                             Content="{Binding RemoveText}"
                             Command="{Binding RemoveCommand}"
                             Visibility="{Binding CanRemove, Converter={StaticResource BoolToVisibility}}"

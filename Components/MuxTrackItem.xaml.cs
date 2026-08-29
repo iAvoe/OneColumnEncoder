@@ -17,9 +17,4 @@ public partial class MuxTrackItem : UserControl
         set => SetValue(IsRecentlyMovedProperty, value);
     }
 
-    private void SyncTextBox_LostFocus(object sender, RoutedEventArgs e)
-    {
-        if (DataContext is ViewModels.MuxTracks.MuxTrackEntryVM vm)
-            vm.ValidateSyncText();
-    }
 }

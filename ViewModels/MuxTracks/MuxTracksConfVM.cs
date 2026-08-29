@@ -208,7 +208,7 @@ public sealed class MuxTracksConfVM : BaseVM
         if (SelectedSource == null) return;
         foreach (MuxTrackM track in _tracksBySource[SelectedSource.FilePath])
         {
-            MuxTrackEntryVM entry = new(track, MoveTrack, RemoveTrack, OnDefaultChanged, _showError);
+            MuxTrackEntryVM entry = new(track, MoveTrack, RemoveTrack, OnDefaultChanged);
             Tracks.Add(entry);
         }
         RefreshMoveStates();

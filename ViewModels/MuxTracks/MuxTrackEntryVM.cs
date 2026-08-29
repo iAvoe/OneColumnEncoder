@@ -6,11 +6,9 @@ namespace OneColumnEncoder.ViewModels.MuxTracks;
 public sealed class MuxTrackEntryVM : BaseVM
 {
     private readonly MuxTrackM _model;
-    private readonly Action<string> _showError;
     private bool _canMoveUp;
     private bool _canMoveDown;
     private bool _isRecentlyMoved;
-    private string _syncText;
     private System.Windows.Threading.DispatcherTimer? _flashTimer;
 
     private static readonly DropdownItemM[] Languages =
@@ -55,12 +53,9 @@ public sealed class MuxTrackEntryVM : BaseVM
     /// <param name="move">Callback to move this entry by a given offset.</param>
     /// <param name="remove">Callback to remove this entry.</param>
     /// <param name="defaultChanged">Callback invoked when the default flag changes.</param>
-    /// <param name="showError">Callback used to surface validation errors.</param>
-    public MuxTrackEntryVM(MuxTrackM model, Action<MuxTrackEntryVM, int> move, Action<MuxTrackEntryVM> remove, Action<MuxTrackEntryVM, bool> defaultChanged, Action<string> showError)
+    public MuxTrackEntryVM(MuxTrackM model, Action<MuxTrackEntryVM, int> move, Action<MuxTrackEntryVM> remove, Action<MuxTrackEntryVM, bool> defaultChanged)
     {
         _model = model;
-        _showError = showError;
-        _syncText = model.SyncMilliseconds.ToString(CultureInfo.InvariantCulture);
         MoveUpCommand = new ActionCmd(_ => move(this, -1), _ => CanMoveUp);
         MoveDownCommand = new ActionCmd(_ => move(this, 1), _ => CanMoveDown);
         RemoveCommand = new ActionCmd(_ => remove(this));
@@ -82,27 +77,6 @@ public sealed class MuxTrackEntryVM : BaseVM
     // Imported subtitle files and ffprobe source subtitles both surface their parsed duration here.
     public string DurationText => FormatDuration(_model.DurationSeconds);
     public bool CanRemove => !_model.IsSourceTrack;
-    public string SyncText
-    {
-        get => _syncText;
-        set
-        {
-            if (!SetProperty(ref _syncText, value)) return;
-            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int sync))
-                _model.SyncMilliseconds = sync;
-        }
-    }
-
-    /// <summary>
-    /// Shows an error if the sync offset text is non-empty but not a valid integer.
-    /// </summary>
-    public void ValidateSyncText()
-    {
-        if (!string.IsNullOrWhiteSpace(_syncText) &&
-            int.TryParse(_syncText, NumberStyles.Integer, CultureInfo.InvariantCulture, out _))
-            return;
-        _showError(MuxLangProvider.Current["MuxTracks.InvalidSync"]);
-    }
 
     public bool IsDefault
     {
