@@ -184,11 +184,6 @@ It is not easy to develop these tools. If this software helps, please consider s
 - The source inspection card has parsed and displayed progressive, bit depth, frame rate, SAR, color metadata, chroma, HDR / Dolby Vision source info, and other inspection items
 - Viewing source inspection issues, refreshing the checklist status, and manually bypassing them have been integrated into the main workflow
 
-#### Subtitle Track Editor
-
-- Source subtitle tracks keep ffprobe-derived language and duration metadata in the mux editor
-- Imported subtitle files are validated before they are accepted, and their cue end time is used as the track duration
-
 #### Pre-coding Inspection
 
 - The pre-coding inspection card has implemented hardware and software inspection items
@@ -267,7 +262,7 @@ It is not easy to develop these tools. If this software helps, please consider s
 - No `RunAllChecks()`, no `IsBypassed`, no Inspect/Bypass buttons
 - Marked as "Advisory - not blocking" on the UI
 
-#### Application Settings 鈫?File Overwrite
+#### Application Settings & File Overwrite
 
 The Overwrite setting will append an overwrite confirmation pop-up if the output file already exists after displaying and confirming the compression command, and delay enabling the confirmation button according to the size of the overwritten file
 
@@ -293,7 +288,19 @@ Implemented and verified, usability confirmed
 
 ### Unverified
 
-##### None currently
+#### Subtitle Track Editor
+
+- The source subtitle track retains the language and duration metadata extracted by ffprobe in the encapsulation editor.
+- Imported subtitle files are validated, and the end time of the last subtitle segment is used as the track duration.
+- The source subtitle track and imported subtitle files have color-coded display functionality.
+- Tested: Adjusting the source subtitle's "default" command-line generation works correctly.
+- Tested: Metadata parsing of the source subtitle is all correct.
+- Tested: ISO 639-2 language code recognition is correct.
+- To be tested: Adjusting the timeline offset of the source subtitle.
+- To be tested: Adjusting the timeline offset of the imported subtitle.
+- To be tested: Queue mode.
+- To be tested: Merge mode.
+- Under consideration: The re-division mode is currently considered too difficult to implement.
 
 ---
 
@@ -353,9 +360,9 @@ Implementation failed due to excessive complexity and encoding time addition
 - Confirm encoding commands before starting encode, and file overwriting:`Commands/StartEncCmd.cs`
 - Sample clip confirmation before starting encode:`ViewModels/SampleClipVM.cs`
 - View encoding commands in the encoding monitor:`ViewModels/EncodingMonitorVM.cs`
-- Copy/save results after script generation:`ViewModels/ScriptScribeVM.cs`銆乣Commands/SaveLoad/OneClickScriptGenCmd.cs`
-- Source analysis and check results:`Commands/AnalyzeSrcVideoCmd.cs`銆乣Commands/CopyRawAnalysisCmd.cs`銆乣Commands/InspectEncProblemsCmd.cs`銆乣Commands/InspectSrcProblemsCmd.cs`
-- Secondary confirmation when importing tools/selecting files:`Commands/ImportToolCmd.cs`銆乣FileManagement/SrcFilePicker.cs`
+- Copy/save results after script generation:`ViewModels/ScriptScribeVM.cs`Commands/SaveLoad/OneClickScriptGenCmd.cs`
+- Source analysis and check results:`Commands/AnalyzeSrcVideoCmd.cs`Commands/CopyRawAnalysisCmd.cs`銆乣Commands/InspectEncProblemsCmd.cs`Commands/InspectSrcProblemsCmd.cs`
+- Secondary confirmation when importing tools/selecting files:`Commands/ImportToolCmd.cs`FileManagement/SrcFilePicker.cs`
 
 ## Settings Storage Location
 

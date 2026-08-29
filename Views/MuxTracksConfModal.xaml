@@ -15,7 +15,8 @@
                    SizeToContent="Height"
                    WindowState="Normal"
                    WindowStartupLocation="CenterOwner">
-    <!-- Width-height is calculated at MuxTracksConfModal.xaml.cs line 72: Width = ... -->
+    <!-- Width-height recalculation depending on sidebar presense
+    is at MuxTracksConfModal.xaml.cs: Width = ... -->
     <Grid Margin="15 12.5 15 15">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />

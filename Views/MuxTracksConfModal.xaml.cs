@@ -19,10 +19,8 @@ public partial class MuxTracksConfModal : AdaptiveWindow
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
         WindowState = WindowState.Normal;
-
         if (DataContext is MuxTracksConfVM viewModel)
             HookViewModel(viewModel);
-
         QueueSizeRecalculation();
     }
 
@@ -53,10 +51,8 @@ public partial class MuxTracksConfModal : AdaptiveWindow
         _viewModel = null;
     }
 
-    private void Tracks_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
+    private void Tracks_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) =>
         QueueSizeRecalculation();
-    }
 
     private void QueueSizeRecalculation()
     {
