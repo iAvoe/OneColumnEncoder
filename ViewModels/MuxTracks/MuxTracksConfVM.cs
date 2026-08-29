@@ -134,24 +134,32 @@ public sealed class MuxTracksConfVM : BaseVM
             InitialDirectory = Path.GetDirectoryName(SelectedSource.FilePath) ?? string.Empty,
             CheckFileExists = true,
             CheckPathExists = true,
-            Multiselect = false,
+            Multiselect = true,
         };
         if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
 
-        // External subtitle imports are validated by parsing cue timestamps, not by ffprobe
-        TimeSpan? duration = SubtitleHelper.GetDuration(dialog.FileName);
-        if (duration == null)
+        List<MuxTrackM> tracks = GetCurrentTracks();
+        bool addedAny = false;
+        foreach (string fileName in dialog.FileNames)
         {
-            _showError($"Unable to import subtitle file: {Path.GetFileName(dialog.FileName)}");
-            return;
+            // External subtitle imports are validated by parsing cue timestamps, not by ffprobe
+            TimeSpan? duration = SubtitleHelper.GetDuration(fileName);
+            if (duration == null)
+            {
+                _showError($"Unable to import subtitle file: {Path.GetFileName(fileName)}");
+                continue;
+            }
+
+            tracks.Add(new MuxTrackM
+            {
+                FilePath = fileName,
+                DurationSeconds = duration.Value.TotalSeconds,
+            });
+            addedAny = true;
         }
 
-        List<MuxTrackM> tracks = GetCurrentTracks();
-        tracks.Add(new MuxTrackM
-        {
-            FilePath = dialog.FileName,
-            DurationSeconds = duration.Value.TotalSeconds,
-        });
+        if (!addedAny) return;
+
         _tracksBySource[SelectedSource.FilePath] = tracks;
         RefreshTrackList();
         RefreshSourceSummary();
