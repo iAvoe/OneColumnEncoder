@@ -222,34 +222,48 @@ public sealed class MuxTracksConfVM : BaseVM
     private void Confirm()
     {
         SaveCurrentTracks();
+
+        List<(MuxTrackSourceVM Source, List<MuxTrackM> Current)> changedSources = [];
         foreach (MuxTrackSourceVM source in SourceItems)
         {
             List<MuxTrackM> current = _tracksBySource[source.FilePath];
-            List<MuxTrackM> initial = _initialTracksBySource[source.FilePath];
-            if (!TracksDiffer(current, initial)) continue;
-
-            if (!current.Any(track => track.IsDefault))
-            {
-                (int originalSrcDefSubTrackId, int firstSrcSubTrackId) = (source.OriginalSrcDefSubTrackId, source.FirstSrcSubTrackId);
-                string message = originalSrcDefSubTrackId >= 0
-                    ? string.Join(Environment.NewLine,
-                        $"Source: {source.CurrentSourceTitle}",
-                        "No subtitle is marked default.",
-                        $"Original source default subtitle track ID: {originalSrcDefSubTrackId}",
-                        "Clear default markings and continue?")
-                    : string.Join(Environment.NewLine,
-                        $"Source: {source.CurrentSourceTitle}",
-                        "No subtitle is marked default.",
-                        $"Original source default subtitle track ID: {originalSrcDefSubTrackId}",
-                        firstSrcSubTrackId >= 0
-                            ? $"First source subtitle track ID: {firstSrcSubTrackId}"
-                            : "No source subtitle tracks were found.",
-                        "Consider adding a default subtitle before continuing?");
-                if (!_confirmNoDefaultSubtitle(message)) continue;
-            }
-
-            _applyTracks(source.FilePath, [.. current.Select(Clone)]);
+            if (TracksDiffer(current, _initialTracksBySource[source.FilePath]))
+                changedSources.Add((source, current));
         }
+
+        List<(MuxTrackSourceVM Source, int OrigDefId, int FirstSubId)> needsConfirmation = [];
+        foreach (var (source, current) in changedSources)
+        {
+            if (!current.Any(track => track.IsDefault))
+                needsConfirmation.Add((source, source.OriginalSrcDefSubTrackId, source.FirstSrcSubTrackId));
+        }
+
+        if (needsConfirmation.Count > 0)
+        {
+            List<string> blocks = [];
+            foreach (var (source, origDefId, firstSubId) in needsConfirmation)
+            {
+                blocks.Add(origDefId >= 0
+                    ? string.Join(Environment.NewLine,
+                        string.Format(Lang["MuxTracks.NoDefault.SourceLine"], source.CurrentSourceTitle),
+                        Lang["MuxTracks.NoDefault.NoDefaultMarked"],
+                        string.Format(Lang["MuxTracks.NoDefault.OrigDefTrackId"], origDefId),
+                        Lang["MuxTracks.NoDefault.ClearAndContinue"])
+                    : string.Join(Environment.NewLine,
+                        string.Format(Lang["MuxTracks.NoDefault.SourceLine"], source.CurrentSourceTitle),
+                        Lang["MuxTracks.NoDefault.NoDefaultMarked"],
+                        string.Format(Lang["MuxTracks.NoDefault.OrigDefTrackId"], origDefId),
+                        firstSubId >= 0
+                            ? string.Format(Lang["MuxTracks.NoDefault.FirstSubTrackId"], firstSubId)
+                            : Lang["MuxTracks.NoDefault.NoSourceSubs"],
+                        Lang["MuxTracks.NoDefault.ConsiderAdding"]));
+            }
+            if (!_confirmNoDefaultSubtitle(string.Join(Environment.NewLine + Environment.NewLine, blocks)))
+                return;
+        }
+
+        foreach (var (source, current) in changedSources)
+            _applyTracks(source.FilePath, [.. current.Select(Clone)]);
         _closeAction();
     }
 

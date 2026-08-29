@@ -26,6 +26,13 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
             ["MuxTracks.MissingFfmpeg"] = "ffmpeg is required before subtitles can be muxed.",
             ["MuxTracks.MissingFfprobe"] = "ffprobe is required before subtitles can be muxed.",
             ["MuxTracks.DuplicateSourcePaths"] = "The selected source list contains duplicate paths.",
+            ["MuxTracks.NoDefault.SourceLine"] = "Source: {0}",
+            ["MuxTracks.NoDefault.NoDefaultMarked"] = "No subtitle is marked default.",
+            ["MuxTracks.NoDefault.OrigDefTrackId"] = "Original source default subtitle track ID: {0}",
+            ["MuxTracks.NoDefault.FirstSubTrackId"] = "First source subtitle track ID: {0}",
+            ["MuxTracks.NoDefault.NoSourceSubs"] = "No source subtitle tracks were found.",
+            ["MuxTracks.NoDefault.ClearAndContinue"] = "Clear default markings and continue?",
+            ["MuxTracks.NoDefault.ConsiderAdding"] = "Consider adding a default subtitle before continuing?",
         },
     };
 
@@ -50,6 +57,13 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
             ["MuxTracks.MissingFfmpeg"] = "需要 ffmpeg 才能封装字幕。",
             ["MuxTracks.MissingFfprobe"] = "需要 ffprobe 才能检查字幕轨道。",
             ["MuxTracks.DuplicateSourcePaths"] = "所选源列表包含重复路径，无法封装此字幕。",
+            ["MuxTracks.NoDefault.SourceLine"] = "源：{0}",
+            ["MuxTracks.NoDefault.NoDefaultMarked"] = "未标记默认字幕。",
+            ["MuxTracks.NoDefault.OrigDefTrackId"] = "原始源默认字幕轨道 ID：{0}",
+            ["MuxTracks.NoDefault.FirstSubTrackId"] = "首个源字幕轨道 ID：{0}",
+            ["MuxTracks.NoDefault.NoSourceSubs"] = "未找到源字幕轨道。",
+            ["MuxTracks.NoDefault.ClearAndContinue"] = "清除默认标记并继续？",
+            ["MuxTracks.NoDefault.ConsiderAdding"] = "建议在继续前添加默认字幕？",
         }) Data["zh-cn"][pair.Key] = pair.Value;
         foreach (var pair in new Dictionary<string, string>
         {
@@ -67,6 +81,13 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
             ["MuxTracks.MissingFfmpeg"] = "需要 ffmpeg 才能封裝字幕。",
             ["MuxTracks.MissingFfprobe"] = "需要 ffprobe 才能檢查字幕軌道。",
             ["MuxTracks.DuplicateSourcePaths"] = "所選源列表包含重複路徑，無法封裝此字幕。",
+            ["MuxTracks.NoDefault.SourceLine"] = "源：{0}",
+            ["MuxTracks.NoDefault.NoDefaultMarked"] = "未標記預設字幕。",
+            ["MuxTracks.NoDefault.OrigDefTrackId"] = "原始源預設字幕軌道 ID：{0}",
+            ["MuxTracks.NoDefault.FirstSubTrackId"] = "首個源字幕軌道 ID：{0}",
+            ["MuxTracks.NoDefault.NoSourceSubs"] = "未找到源字幕軌道。",
+            ["MuxTracks.NoDefault.ClearAndContinue"] = "清除預設標記並繼續？",
+            ["MuxTracks.NoDefault.ConsiderAdding"] = "建議在繼續前新增預設字幕？",
         }) Data["zh-tw"][pair.Key] = pair.Value;
 
         foreach (var pair in new Dictionary<string, string>
@@ -84,6 +105,13 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
             ["MuxTracks.MissingFfmpeg"] = "ffmpeg est requis pour muxer les sous-titres.",
             ["MuxTracks.MissingFfprobe"] = "ffprobe est requis pour inspecter les pistes de sous-titres.",
             ["MuxTracks.DuplicateSourcePaths"] = "La liste de sources sélectionnée contient des chemins en double.",
+            ["MuxTracks.NoDefault.SourceLine"] = "Source : {0}",
+            ["MuxTracks.NoDefault.NoDefaultMarked"] = "Aucun sous-titre n'est marqué par défaut.",
+            ["MuxTracks.NoDefault.OrigDefTrackId"] = "ID de piste de sous-titre par défaut de la source d'origine : {0}",
+            ["MuxTracks.NoDefault.FirstSubTrackId"] = "ID de la première piste de sous-titre source : {0}",
+            ["MuxTracks.NoDefault.NoSourceSubs"] = "Aucune piste de sous-titre source trouvée.",
+            ["MuxTracks.NoDefault.ClearAndContinue"] = "Effacer les marquages par défaut et continuer ?",
+            ["MuxTracks.NoDefault.ConsiderAdding"] = "Envisager d'ajouter un sous-titre par défaut avant de continuer ?",
         }) Data["fr"][pair.Key] = pair.Value;
         foreach (var pair in new Dictionary<string, string>
         {
@@ -100,6 +128,13 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
             ["MuxTracks.MissingFfmpeg"] = "Se requiere ffmpeg para muxear subtítulos.",
             ["MuxTracks.MissingFfprobe"] = "Se requiere ffprobe para inspeccionar las pistas de subtítulos.",
             ["MuxTracks.DuplicateSourcePaths"] = "La lista de origen seleccionada contiene rutas duplicadas.",
+            ["MuxTracks.NoDefault.SourceLine"] = "Origen: {0}",
+            ["MuxTracks.NoDefault.NoDefaultMarked"] = "Ningún subtítulo está marcado como predeterminado.",
+            ["MuxTracks.NoDefault.OrigDefTrackId"] = "ID de pista de subtítulo predeterminado de la fuente original: {0}",
+            ["MuxTracks.NoDefault.FirstSubTrackId"] = "ID de la primera pista de subtítulo de la fuente: {0}",
+            ["MuxTracks.NoDefault.NoSourceSubs"] = "No se encontraron pistas de subtítulos de la fuente.",
+            ["MuxTracks.NoDefault.ClearAndContinue"] = "¿Borrar marcas predeterminadas y continuar?",
+            ["MuxTracks.NoDefault.ConsiderAdding"] = "¿Considerar añadir un subtítulo predeterminado antes de continuar?",
         }) Data["es"][pair.Key] = pair.Value;
         foreach (var pair in new Dictionary<string, string>
         {
@@ -116,6 +151,13 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
             ["MuxTracks.MissingFfmpeg"] = "字幕を mux するには ffmpeg が必要です。",
             ["MuxTracks.MissingFfprobe"] = "字幕トラックを確認するには ffprobe が必要です。",
             ["MuxTracks.DuplicateSourcePaths"] = "選択されたソース一覧に重複したパスがあります。",
+            ["MuxTracks.NoDefault.SourceLine"] = "ソース：{0}",
+            ["MuxTracks.NoDefault.NoDefaultMarked"] = "デフォルトとしてマークされた字幕がありません。",
+            ["MuxTracks.NoDefault.OrigDefTrackId"] = "元のソースのデフォルト字幕トラック ID：{0}",
+            ["MuxTracks.NoDefault.FirstSubTrackId"] = "最初のソース字幕トラック ID：{0}",
+            ["MuxTracks.NoDefault.NoSourceSubs"] = "ソース字幕トラックが見つかりませんでした。",
+            ["MuxTracks.NoDefault.ClearAndContinue"] = "デフォルトのマークを解除して続行しますか？",
+            ["MuxTracks.NoDefault.ConsiderAdding"] = "続行前にデフォルト字幕を追加することを検討しますか？",
         }) Data["ja"][pair.Key] = pair.Value;
         foreach (var pair in new Dictionary<string, string>
         {
@@ -132,6 +174,13 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
             ["MuxTracks.MissingFfmpeg"] = "Для mux субтитров требуется ffmpeg.",
             ["MuxTracks.MissingFfprobe"] = "Для проверки дорожек субтитров требуется ffprobe.",
             ["MuxTracks.DuplicateSourcePaths"] = "В выбранном списке источников есть дублирующиеся пути.",
+            ["MuxTracks.NoDefault.SourceLine"] = "Источник: {0}",
+            ["MuxTracks.NoDefault.NoDefaultMarked"] = "Ни один субтитр не помечен как основной.",
+            ["MuxTracks.NoDefault.OrigDefTrackId"] = "ID дорожки субтитров по умолчанию исходного источника: {0}",
+            ["MuxTracks.NoDefault.FirstSubTrackId"] = "ID первой дорожки субтитров источника: {0}",
+            ["MuxTracks.NoDefault.NoSourceSubs"] = "Дорожки субтитров источника не найдены.",
+            ["MuxTracks.NoDefault.ClearAndContinue"] = "Снять отметки по умолчанию и продолжить?",
+            ["MuxTracks.NoDefault.ConsiderAdding"] = "Рассмотреть добавление субтитров по умолчанию перед продолжением?",
         }) Data["ru"][pair.Key] = pair.Value;
         foreach (var pair in new Dictionary<string, string>
         {
@@ -148,6 +197,13 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
             ["MuxTracks.MissingFfmpeg"] = "ffmpeg wird benötigt, um Untertitel zu muxen.",
             ["MuxTracks.MissingFfprobe"] = "ffprobe wird benötigt, um Untertitelspuren zu prüfen.",
             ["MuxTracks.DuplicateSourcePaths"] = "Die ausgewählte Quellenliste enthält doppelte Pfade.",
+            ["MuxTracks.NoDefault.SourceLine"] = "Quelle: {0}",
+            ["MuxTracks.NoDefault.NoDefaultMarked"] = "Kein Untertitel als Standard markiert.",
+            ["MuxTracks.NoDefault.OrigDefTrackId"] = "Standard-Untertitelspur-ID der Originalquelle: {0}",
+            ["MuxTracks.NoDefault.FirstSubTrackId"] = "Erste Quell-Untertitelspur-ID: {0}",
+            ["MuxTracks.NoDefault.NoSourceSubs"] = "Keine Quell-Untertitelspuren gefunden.",
+            ["MuxTracks.NoDefault.ClearAndContinue"] = "Standardmarkierungen entfernen und fortfahren?",
+            ["MuxTracks.NoDefault.ConsiderAdding"] = "Vor dem Fortfahren einen Standard-Untertitel hinzufügen?",
         }) Data["de"][pair.Key] = pair.Value;
         foreach (var pair in new Dictionary<string, string>
         {
@@ -164,6 +220,13 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
             ["MuxTracks.MissingFfmpeg"] = "자막을 mux 하려면 ffmpeg가 필요합니다.",
             ["MuxTracks.MissingFfprobe"] = "자막 트랙을 확인하려면 ffprobe가 필요합니다.",
             ["MuxTracks.DuplicateSourcePaths"] = "선택한 소스 목록에 중복된 경로가 있습니다.",
+            ["MuxTracks.NoDefault.SourceLine"] = "소스: {0}",
+            ["MuxTracks.NoDefault.NoDefaultMarked"] = "기본으로 표시된 자막이 없습니다.",
+            ["MuxTracks.NoDefault.OrigDefTrackId"] = "원본 소스 기본 자막 트랙 ID: {0}",
+            ["MuxTracks.NoDefault.FirstSubTrackId"] = "첫 번째 소스 자막 트랙 ID: {0}",
+            ["MuxTracks.NoDefault.NoSourceSubs"] = "소스 자막 트랙을 찾을 수 없습니다.",
+            ["MuxTracks.NoDefault.ClearAndContinue"] = "기본 표시를 지우고 계속하시겠습니까?",
+            ["MuxTracks.NoDefault.ConsiderAdding"] = "계속하기 전에 기본 자막을 추가하는 것을 고려하시겠습니까?",
         }) Data["ko"][pair.Key] = pair.Value;
         foreach (var pair in new Dictionary<string, string>
         {
@@ -180,6 +243,13 @@ public sealed class MuxLangProvider(string languageCode) : LangProviderBase(lang
             ["MuxTracks.MissingFfmpeg"] = "ffmpeg é necessário para muxar legendas.",
             ["MuxTracks.MissingFfprobe"] = "ffprobe é necessário para inspecionar as faixas de legenda.",
             ["MuxTracks.DuplicateSourcePaths"] = "A lista de origens selecionada contém caminhos duplicados.",
+            ["MuxTracks.NoDefault.SourceLine"] = "Origem: {0}",
+            ["MuxTracks.NoDefault.NoDefaultMarked"] = "Nenhuma legenda está marcada como padrão.",
+            ["MuxTracks.NoDefault.OrigDefTrackId"] = "ID da faixa de legenda padrão da fonte original: {0}",
+            ["MuxTracks.NoDefault.FirstSubTrackId"] = "ID da primeira faixa de legenda da fonte: {0}",
+            ["MuxTracks.NoDefault.NoSourceSubs"] = "Nenhuma faixa de legenda da fonte encontrada.",
+            ["MuxTracks.NoDefault.ClearAndContinue"] = "Limpar marcações padrão e continuar?",
+            ["MuxTracks.NoDefault.ConsiderAdding"] = "Considerar adicionar uma legenda padrão antes de continuar?",
         }) Data["pt-br"][pair.Key] = pair.Value;
     }
 
