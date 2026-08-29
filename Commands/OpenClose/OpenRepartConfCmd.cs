@@ -12,8 +12,11 @@ public sealed class OpenRepartConfCmd(
     Func<string> getFfprobePath,
     Func<string?>? getFfmpegPath,
     Func<RepartPlanM?> getCurrentPlan,
-    Action<RepartPlanM> applyPlan) : OpenCloseBase(modalNavS)
+    Action<RepartPlanM> applyPlan,
+    Action<bool>? setMainOverlayVisible = null) : OpenCloseBase(modalNavS)
 {
+    private readonly Action<bool>? _setMainOverlayVisible = setMainOverlayVisible;
+
     /// <summary>
     /// Brings an already-open window to the front; otherwise imports and analyzes sources,
     /// then shows the configuration modal with the plan.
@@ -28,9 +31,18 @@ public sealed class OpenRepartConfCmd(
         if (currentPlan == null)
         {
             bool importAsChapterFile = RepartChapterImportPrompt.Confirm(ModalNavS);
-            initialPlan = importAsChapterFile
-                ? await ImportChapterFolderAsync()
-                : await ImportFolderAsync();
+            _setMainOverlayVisible?.Invoke(true);
+            try
+            {
+                initialPlan = importAsChapterFile
+                    ? await ImportChapterFolderAsync()
+                    : await ImportFolderAsync();
+            }
+            finally
+            {
+                _setMainOverlayVisible?.Invoke(false);
+            }
+
             if (initialPlan == null) return;
         }
 

@@ -1675,7 +1675,8 @@ public class MainVM : BaseVM
                 GetSelectedFfprobePath,
                 () => _appDataM.Tools.FfmpegPath,
                 GetRepartPlan,
-                ApplyRepartPlan);
+                ApplyRepartPlan,
+                SetOverlayBlocked);
             item.R2Command = new ClearToolItemCmd(item, OnSrcRepartCleared);
             item.PropertyChanged += OnVideoSrcItemPropertyChanged;
             return;
