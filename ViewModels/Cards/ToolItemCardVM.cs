@@ -264,7 +264,7 @@ public class ToolItemCardVM(EncItemM baseModel) : BaseVM
 
         if (queueRouteActive)
         {
-            P1TextData = "N/A";
+            P1TextData = LangProviderBase.NAText;
             P1TooltipText = null;
             return;
         }

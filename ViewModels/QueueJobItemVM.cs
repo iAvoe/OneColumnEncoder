@@ -207,7 +207,7 @@ public class QueueJobItemVM(QueueJobItemM model) : BaseVM
         if (frameCount is > 0)
             return $"{new ClipRangeSelectorLangProvider(UILangProvider.Current.LanguageCode).SummaryTotalFramesLabel}: {frameCount:N0}";
 
-        return "N/A";
+        return LangProviderBase.NAText;
     }
     #endregion
 

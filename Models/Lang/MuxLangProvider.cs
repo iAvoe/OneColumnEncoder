@@ -6,7 +6,7 @@ namespace OneColumnEncoder.Models.Lang;
 public sealed class MuxLangProvider(string languageCode) : LangProviderBase(languageCode, Data)
 {
     public const string WindowTitle = "Add Subtitles";
-    public const string DurationUnknown = "N/A";
+    public static string DurationUnknown => LangProviderBase.NAText;
 
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {

@@ -25,7 +25,7 @@ public class CPUNodeCardVM : BaseVM
         }
     }
 
-    public string NodeLabel => IsEnabled ? $"Node {NodeId} · Group {GroupId}" : $"Node {NodeId} · N/A";
+    public string NodeLabel => IsEnabled ? $"Node {NodeId} · Group {GroupId}" : $"Node {NodeId} · {LangProviderBase.NAText}";
 
     // Section 2: small gray text under the card
     private int _minThreadNum;
@@ -59,7 +59,7 @@ public class CPUNodeCardVM : BaseVM
         }
     }
 
-    public string ResourceLabel => IsEnabled ? $"T{MinThreadNum}-{MaxThreadNum} · {HasMemGB}GB" : "N/A";
+    public string ResourceLabel => IsEnabled ? $"T{MinThreadNum}-{MaxThreadNum} · {HasMemGB}GB" : LangProviderBase.NAText;
 
     public ICommand? SelectCommand { get; set; }
 

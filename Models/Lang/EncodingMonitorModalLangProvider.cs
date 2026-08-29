@@ -825,7 +825,7 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
         InterruptingUpstreamText = this["InterruptingUpstreamText"];
         InterruptingEncoderText = this["InterruptingEncoderText"];
         ModeText = this["ModeText"];
-        NotAvailableText = "N/A";
+        NotAvailableText = LangProviderBase.NAText;
         ABRText = "ABR";
         CRFText = "CRF";
 

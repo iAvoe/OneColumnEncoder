@@ -252,17 +252,17 @@ public class FilterScribeVM : BaseVM
     public string FfmpegResizeFilter =>
         HasScaleFilter
             ? BuildFfmpegFilterArgs(includeSwsFlags: true, includeCsp709Flags: false, ScaleFilterChain)
-            : "N/A";
+            : LangProviderBase.NAText;
 
     public string FfmpegFpsFilter =>
         HasFpsFilter
             ? BuildFfmpegFilterArgs(includeSwsFlags: false, includeCsp709Flags: false, FpsFilterChain)
-            : "N/A";
+            : LangProviderBase.NAText;
 
     public string FfmpegSarRepairFilter =>
         HasSarRepairFilter
             ? "-filter:v \"libplacebo=reset_sar=1\""
-            : "N/A";
+            : LangProviderBase.NAText;
 
     public static string AviSynthHqdn3dDenoiseFilter => "hqdn3d(src)";
     public static string FfmpegHqdn3dDenoiseFilter => "-filter:v \"hqdn3d\"";
@@ -353,7 +353,7 @@ public class FilterScribeVM : BaseVM
 
     private string BuildAviSynthDescaleFilter()
     {
-        if (!CanGenerateDescale) return "N/A";
+        if (!CanGenerateDescale) return LangProviderBase.NAText;
 
         string loadPlugin = $"LoadPlugin(\"{DescalePluginPath}\")";
         string call = $"{GetDescaleFunctionName(SelectedDescaleKernel)}({TargetWidth}, {TargetHeight}{GetDescaleKernelArgs()})";
@@ -362,7 +362,7 @@ public class FilterScribeVM : BaseVM
 
     private string BuildVapourSynthDescaleFilter()
     {
-        if (!CanGenerateDescale) return "N/A";
+        if (!CanGenerateDescale) return LangProviderBase.NAText;
 
         string loadPlugin = $"core.std.LoadPlugin(r\"{DescalePluginPath}\")";
         string call = UseDescalePythonWrapper
@@ -395,11 +395,11 @@ public class FilterScribeVM : BaseVM
     {
         get
         {
-            if (!OpenCLDetector.IsOpenCLAvailable()) return "N/A (!OpenCL)";
+            if (!OpenCLDetector.IsOpenCLAvailable()) return $"{LangProviderBase.NAText} (!OpenCL)";
 
             // isSrcYuvRGBOrGray
             if (!FFProbePixelFormatRules.IsYuvRgbOrGray(_colorSpaceAnalysis.PixelFormat))
-                return "N/A (!YUV/RGB/Gray Colorspace)";
+                return $"{LangProviderBase.NAText} (!YUV/RGB/Gray Colorspace)";
 
             // vszipcl only supports 8 (int), 16 (int, half), 32 (float)
             int targetBpp = _sourceBitDepth switch
@@ -446,7 +446,7 @@ public class FilterScribeVM : BaseVM
     public string FfmpegFpsScaleFilter =>
         HasFpsFilter && HasScaleFilter
             ? BuildFfmpegFilterArgs(includeSwsFlags: true, includeCsp709Flags: false, FpsFilterChain, ScaleFilterChain)
-            : "N/A";
+            : LangProviderBase.NAText;
 
     public string FfmpegLowToHighColorFilter => GetColorSpaceStrategyFilter(ColorSpaceStrategy.LowToHigh);
 
@@ -463,7 +463,7 @@ public class FilterScribeVM : BaseVM
             string? color = ColorSpaceFilterChain;
             string? fps = FpsFilterChain;
             string? scale = ScaleFilterChain;
-            if (color == null || fps == null || scale == null) return "N/A";
+            if (color == null || fps == null || scale == null) return LangProviderBase.NAText;
             return BuildFfmpegFilterArgs(includeSwsFlags: scale != null, includeCsp709Flags: color != null, fps, color, scale);
         }
     }
@@ -476,7 +476,7 @@ public class FilterScribeVM : BaseVM
             string? color = ColorSpaceFilterChain;
             string? fps = FpsFilterChain;
             string? scale = ScaleFilterChain;
-            if (sar == null || color == null || fps == null || scale == null) return "N/A";
+            if (sar == null || color == null || fps == null || scale == null) return LangProviderBase.NAText;
             return BuildFfmpegFilterArgs(includeSwsFlags: scale != null, includeCsp709Flags: color != null, fps, sar, color, scale);
         }
     }
@@ -489,7 +489,7 @@ public class FilterScribeVM : BaseVM
             string? color = ColorSpaceFilterChain;
             string? fps = FpsFilterChain;
             string? scale = ScaleFilterChain;
-            if (sar == null || color == null || fps == null || scale == null) return "N/A";
+            if (sar == null || color == null || fps == null || scale == null) return LangProviderBase.NAText;
             return BuildFfmpegFilterArgs(includeSwsFlags: scale != null, includeCsp709Flags: color != null, "hqdn3d", fps, sar, color, scale);
         }
     }
@@ -511,7 +511,7 @@ public class FilterScribeVM : BaseVM
     private string GetColorSpaceStrategyFilter(ColorSpaceStrategy strategy) =>
         IsColorSpaceStrategyShown(strategy)
             ? BuildFfmpegFilterArgs(includeSwsFlags: false, includeCsp709Flags: true, BuildColorSpaceStrategyFilterChain(strategy))
-            : "N/A";
+            : LangProviderBase.NAText;
 
     private string? BuildColorSpaceStrategyFilterChain(ColorSpaceStrategy strategy) =>
         ColorSpaceConverter.BuildFfmpegFilter(
@@ -529,12 +529,12 @@ public class FilterScribeVM : BaseVM
     public string VapourSynthResizeFilter =>
         IsScaleApplicable && (TargetWidth != SourceWidth || TargetHeight != SourceHeight)
             ? $"src = core.resize.Bicubic(src, {TargetWidth}, {TargetHeight})"
-            : "N/A";
+            : LangProviderBase.NAText;
 
     public string AviSynthResizeFilter =>
         IsScaleApplicable && (TargetWidth != SourceWidth || TargetHeight != SourceHeight)
             ? $"BicubicResize({TargetWidth}, {TargetHeight})"
-            : "N/A";
+            : LangProviderBase.NAText;
 
     public static List<string> ScaleTickLabels =>
         ResolutionScale.GenerateTickLabels(10, 100, 5);

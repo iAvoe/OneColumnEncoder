@@ -1283,11 +1283,10 @@ public class MainVM : BaseVM
 
         var allTracks = sourcePaths.SelectMany(path => GetMuxTracksForSource(path)).ToList();
         int totalTracks = allTracks.Count;
+
+        // Follow ffmpeg's behavior: multi-tracks fallback to first, single tracks ignore marking default
         string defaultText;
-        if (totalTracks < 2)
-        {
-            defaultText = "N/A";
-        }
+        if (totalTracks < 2) { defaultText = LangProviderBase.NAText; }
         else
         {
             MuxTrackM? defaultTrack = allTracks.FirstOrDefault(t => t.IsDefault);
@@ -1296,13 +1295,10 @@ public class MainVM : BaseVM
                 int defaultIndex = allTracks.IndexOf(defaultTrack) + 1;
                 defaultText = defaultIndex.ToString();
             }
-            else
-            {
-                defaultText = "1";
-            }
+            else { defaultText = "1"; }
         }
 
-        _muxTracksCard.P2Name = "Default#";
+        _muxTracksCard.P2Name = "Default#"; // TODO: change to LangProviderBase.Default + "#"; but: An object reference is required for the non-static field, method, or property 'LangProviderBase.Default'
         _muxTracksCard.P2TextData = defaultText;
     }
 

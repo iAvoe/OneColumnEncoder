@@ -15,12 +15,6 @@
                    Background="{StaticResource Background}">
     <ui:AdaptiveWindow.Resources>
         <DataTemplate x:Key="IconTextButtonTemplate">
-            <DataTemplate.Resources>
-                <FrameworkElement x:Key="ButtonIconProxy"
-                                  DataContext="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Tag}" />
-                <FrameworkElement x:Key="PreviewFrameMaskProxy"
-                                  DataContext="{Binding ElementName=PreviewFrameMask}" />
-            </DataTemplate.Resources>
             <StackPanel Orientation="Horizontal"
                          HorizontalAlignment="Center">
                 <Rectangle Width="16"
@@ -29,7 +23,7 @@
                            VerticalAlignment="Center"
                            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
                     <Rectangle.OpacityMask>
-                        <ImageBrush ImageSource="{Binding DataContext, Source={StaticResource ButtonIconProxy}}"
+                        <ImageBrush ImageSource="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Tag}"
                                     Stretch="Uniform" />
                     </Rectangle.OpacityMask>
                     <Rectangle.Style>
@@ -456,7 +450,7 @@
                                                 <Grid ClipToBounds="True"
                                                       Panel.ZIndex="1">
                                                     <Grid.OpacityMask>
-                                                        <VisualBrush Visual="{Binding DataContext, Source={StaticResource PreviewFrameMaskProxy}}" />
+                                                        <VisualBrush Visual="{Binding ElementName=PreviewFrameMask}" />
                                                     </Grid.OpacityMask>
 
                                                     <Image Source="{Binding FrameImage}"
