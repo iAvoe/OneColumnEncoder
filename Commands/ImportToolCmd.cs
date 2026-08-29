@@ -5,16 +5,18 @@ using static OneColumnEncoder.Models.ConfirmationProviderM;
 namespace OneColumnEncoder.Commands;
 
 public class ImportToolCmd(DropdownMenuVM dropdownVM,
-                           ObservableCollection<ChecklistEntryVM> knownTools,
-                           ModalNavS modalNavS,
-                           Func<string, string, string?, Task>? onSuccess = null,
-                           Func<string, string?>? getBrowseInitialDirectory = null) : AsyncBaseCmd
+                            ObservableCollection<ChecklistEntryVM> knownTools,
+                            ModalNavS modalNavS,
+                            Func<string, string, string?, Task>? onSuccess = null,
+                            Func<string, string?>? getBrowseInitialDirectory = null,
+                            Action<bool>? setBusy = null) : AsyncBaseCmd
 {
     private readonly DropdownMenuVM _dropdownVm = dropdownVM;
     private readonly ObservableCollection<ChecklistEntryVM> _knownTools = knownTools;
     private readonly ModalNavS _modalNavS = modalNavS;
     private readonly Func<string, string, string?, Task>? _onSuccess = onSuccess;
     private readonly Func<string, string?>? _getBrowseInitialDirectory = getBrowseInitialDirectory;
+    private readonly Action<bool>? _setBusy = setBusy;
 
     public override bool CanExecute(object? parameter)
     {
@@ -29,30 +31,38 @@ public class ImportToolCmd(DropdownMenuVM dropdownVM,
         string toolToImport = _dropdownVm.SelectedItem?.Title ?? "";
         if (string.IsNullOrEmpty(toolToImport)) return;
 
-        string? filePath = SelectAndValidateToolPath(
-            toolToImport, "Dialog.SelectTitle", _modalNavS, _getBrowseInitialDirectory?.Invoke(toolToImport));
-        if (string.IsNullOrEmpty(filePath)) return;
-
-        string? version;
+        _setBusy?.Invoke(true);
         try
         {
-            version = await ToolVersionDetect.TryDetectAsync(toolToImport, filePath);
-        }
-        catch (ToolVersionDetectTimeoutException)
-        {
-            ShowVersionDetectTimeoutError(toolToImport);
-            return;
-        }
+            string? filePath = SelectAndValidateToolPath(
+                toolToImport, "Dialog.SelectTitle", _modalNavS, _getBrowseInitialDirectory?.Invoke(toolToImport));
+            if (string.IsNullOrEmpty(filePath)) return;
 
-        if (_onSuccess != null) await _onSuccess(toolToImport, filePath, version);
-        foreach (ChecklistEntryVM t in _knownTools)
-        {
-            if (t.Text.Contains(toolToImport, StringComparison.OrdinalIgnoreCase))
+            string? version;
+            try
             {
-                t.Status = StatusType.Success;
+                version = await ToolVersionDetect.TryDetectAsync(toolToImport, filePath);
             }
+            catch (ToolVersionDetectTimeoutException)
+            {
+                ShowVersionDetectTimeoutError(toolToImport);
+                return;
+            }
+
+            if (_onSuccess != null) await _onSuccess(toolToImport, filePath, version);
+            foreach (ChecklistEntryVM t in _knownTools)
+            {
+                if (t.Text.Contains(toolToImport, StringComparison.OrdinalIgnoreCase))
+                {
+                    t.Status = StatusType.Success;
+                }
+            }
+            OnCanExecuteChanged();
         }
-        OnCanExecuteChanged();
+        finally
+        {
+            _setBusy?.Invoke(false);
+        }
     }
 
     #region Validations

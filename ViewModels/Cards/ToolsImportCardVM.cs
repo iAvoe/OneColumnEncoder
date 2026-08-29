@@ -34,18 +34,22 @@ public class ToolsImportCardVM : BaseVM
 
     private readonly PropertyChangedEventHandler _onDropdownPropertyChanged;
 
-    public ToolsImportCardVM(ModalNavS modalNavS, Func<string, string?>? getBrowseInitialDirectory = null)
+    public ToolsImportCardVM(
+        ModalNavS modalNavS,
+        Func<string, string?>? getBrowseInitialDirectory = null,
+        Action<bool>? setMainOverlayVisible = null)
     {
         ImportCommand =
             new ImportToolCmd(ImportDropdown,
                               Checklist1,
                               modalNavS,
                               async (toolName, filePath, version) =>
-                              {
-                                  if (ToolImported != null)
-                                      await ToolImported(toolName, filePath, version);
-                              },
-                              getBrowseInitialDirectory);
+                               {
+                                   if (ToolImported != null)
+                                       await ToolImported(toolName, filePath, version);
+                               },
+                               getBrowseInitialDirectory,
+                               setMainOverlayVisible);
         _onDropdownPropertyChanged = (s, e) =>
         {
             if (e.PropertyName == nameof(ImportDropdown.SelectedItem))

@@ -164,6 +164,7 @@ public class MainVM : BaseVM
             : key;
     }
     private bool _isOverlayVisible;
+    private int _overlayBlockCount;
     public bool IsOverlayVisible
     {
         get => _isOverlayVisible;
@@ -488,7 +489,8 @@ public class MainVM : BaseVM
 
         // Create static card zones, then restore imported tools and cached sources.
         ToolsImportCard = new ToolsImportCardVM(modalNavS,
-            exeName => BrowseHistory.GetDirectory(_appDataM, BrowseHistoryKeys.ForTool(exeName)));
+            exeName => BrowseHistory.GetDirectory(_appDataM, BrowseHistoryKeys.ForTool(exeName)),
+            SetOverlayBlocked);
         VideoSrcImportZone = LoadZoneFromDefinitions(ToolCatalogProviderM.GetVideoSrcImportDefs(), true, false);
         _videoSrcQueue = new(VideoSrcImportZone);
         _videoSrcConcat = new(VideoSrcImportZone);
@@ -814,7 +816,7 @@ public class MainVM : BaseVM
         UpdateAnalyzeSrcButtonsState();
 
         _modalNavS.CurrentViewModelChanged += OnModalStateChanged;
-        IsOverlayVisible = _modalNavS.IsOpen;
+        RefreshOverlayVisibility();
         UILangProvider.CurrentChanged += OnLanguageChanged;
         RefreshLanguage();
         SubToAllZoneItemChanges();
@@ -3144,7 +3146,7 @@ public class MainVM : BaseVM
 
     private void OnModalStateChanged()
     {
-        IsOverlayVisible = _modalNavS.IsOpen;
+        RefreshOverlayVisibility();
         // These modal views should hide the main window while they are open.
         // The flag also prevents the window from being shown twice during modal transitions.
         bool shouldHideMainWindow =
@@ -3180,6 +3182,21 @@ public class MainVM : BaseVM
             _modalNavS,
             UICaptionProvider.SourceInspect.ErrorTitle,
             SrcReviserLangProvider.Current["SrcReviser.NoFfprobeJson"]).Execute(null);
+    }
+
+    private void SetOverlayBlocked(bool isBlocked)
+    {
+        if (isBlocked)
+            _overlayBlockCount++;
+        else if (_overlayBlockCount > 0)
+            _overlayBlockCount--;
+
+        RefreshOverlayVisibility();
+    }
+
+    private void RefreshOverlayVisibility()
+    {
+        IsOverlayVisible = _modalNavS.IsOpen || _overlayBlockCount > 0;
     }
 
     #region Language Switching
