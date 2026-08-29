@@ -117,8 +117,19 @@ public sealed class MuxTracksConfVM : BaseVM
         };
         if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
 
+        TimeSpan? duration = SubtitleHelper.GetDuration(dialog.FileName);
+        if (duration == null)
+        {
+            _showError($"Unable to import subtitle file: {Path.GetFileName(dialog.FileName)}");
+            return;
+        }
+
         List<MuxTrackM> tracks = GetCurrentTracks();
-        tracks.Add(new MuxTrackM { FilePath = dialog.FileName });
+        tracks.Add(new MuxTrackM
+        {
+            FilePath = dialog.FileName,
+            DurationSeconds = duration.Value.TotalSeconds,
+        });
         _tracksBySource[SelectedSource.FilePath] = tracks;
         RefreshTrackList();
         RefreshSourceSummary();
