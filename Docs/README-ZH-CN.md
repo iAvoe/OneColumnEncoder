@@ -83,6 +83,8 @@
 <sup><i>重分集编辑器</i></sup></br>
 <img src="../WireframeMockups/10-Settings-v3.png" alt="Settings" width="400" /></br>
 <sup><i>程序设置</i></sup></br>
+<img src="../WireframeMockups/11-Subtitle-Track-Editor.png" alt="Sub Track Editor" width="500" /></br>
+<sup><i>字幕轨道编辑器（队列模式）</i></sup></br>
 </p>
 
 ## 运行要求

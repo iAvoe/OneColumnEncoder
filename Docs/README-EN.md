@@ -83,6 +83,8 @@ This software supports multiple languages, but English screenshots are used here
 <sup><i>Episode Repartition Configurator</i></sup></br>
 <img src="../WireframeMockups/10-Settings-v3.png" alt="Settings" width="400" /></br>
 <sup><i>Program Settings</i></sup></br>
+<img src="../WireframeMockups/11-Subtitle-Track-Editor.png" alt="Sub Track Editor" width="500" /></br>
+<sup><i>Subtitle Track Editor (Queue Mode)</i></sup></br>
 </p>
 
 ## System Requirements
