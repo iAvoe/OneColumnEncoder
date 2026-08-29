@@ -293,7 +293,9 @@
                 <Setter Property="FontSize"
                         Value="12" />
                 <Setter Property="Padding"
-                        Value="10 0" />
+                        Value="9 0" />
+                <Setter Property="MinHeight"
+                        Value="22" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="ToggleButton">

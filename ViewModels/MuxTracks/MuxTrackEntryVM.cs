@@ -13,36 +13,36 @@ public sealed class MuxTrackEntryVM : BaseVM
     private static readonly DropdownItemM[] Languages =
     [
         new("(none)", isPlaceholder: true) { Tag = null },
-        new("English")      { Tag = "eng" },
-        new("Chinese")      { Tag = "zho" },
-        new("Japanese")     { Tag = "jpn" },
-        new("Korean")       { Tag = "kor" },
-        new("French")       { Tag = "fra" },
-        new("German")       { Tag = "deu" },
-        new("Spanish")      { Tag = "spa" },
-        new("Italian")      { Tag = "ita" },
-        new("Portuguese")   { Tag = "por" },
-        new("Russian")      { Tag = "rus" },
-        new("Ukrainian")    { Tag = "ukr" },
-        new("Polish")       { Tag = "pol" },
-        new("Czech")        { Tag = "ces" },
-        new("Hungarian")    { Tag = "hun" },
-        new("Romanian")     { Tag = "ron" },
-        new("Dutch")        { Tag = "nld" },
-        new("Swedish")      { Tag = "swe" },
-        new("Danish")       { Tag = "dan" },
-        new("Norwegian")    { Tag = "nor" },
-        new("Finnish")      { Tag = "fin" },
-        new("Greek")        { Tag = "ell" },
-        new("Turkish")      { Tag = "tur" },
-        new("Hebrew")       { Tag = "heb" },
-        new("Arabic")       { Tag = "ara" },
-        new("Persian")      { Tag = "fas" },
-        new("Hindi")        { Tag = "hin" },
-        new("Thai")         { Tag = "tha" },
-        new("Vietnamese")   { Tag = "vie" },
-        new("Indonesian")   { Tag = "ind" },
-        new("Malay")        { Tag = "msa" },
+        new("eng (English)")    { Tag = "eng" },
+        new("zho (Chinese)")    { Tag = "zho" },
+        new("jpn (Japanese)")   { Tag = "jpn" },
+        new("kor (Korean)")     { Tag = "kor" },
+        new("fra (French)")     { Tag = "fra" },
+        new("deu (German)")     { Tag = "deu" },
+        new("spa (Spanish)")    { Tag = "spa" },
+        new("ita (Italian)")    { Tag = "ita" },
+        new("por (Portuguese)") { Tag = "por" },
+        new("rus (Russian)")    { Tag = "rus" },
+        new("ukr (Ukrainian)")  { Tag = "ukr" },
+        new("pol (Polish)")     { Tag = "pol" },
+        new("ces (Czech)")      { Tag = "ces" },
+        new("hun (Hungarian)")  { Tag = "hun" },
+        new("ron (Romanian)")   { Tag = "ron" },
+        new("nld (Dutch)")      { Tag = "nld" },
+        new("swe (Swedish)")    { Tag = "swe" },
+        new("dan (Danish)")     { Tag = "dan" },
+        new("nor (Norwegian)")  { Tag = "nor" },
+        new("fin (Finnish)")    { Tag = "fin" },
+        new("ell (Greek)")      { Tag = "ell" },
+        new("tur (Turkish)")    { Tag = "tur" },
+        new("heb (Hebrew)")     { Tag = "heb" },
+        new("ara (Arabic)")     { Tag = "ara" },
+        new("fas (Persian)")    { Tag = "fas" },
+        new("hin (Hindi)")      { Tag = "hin" },
+        new("tha (Thai)")       { Tag = "tha" },
+        new("vie (Vietnamese)") { Tag = "vie" },
+        new("ind (Indonesian)") { Tag = "ind" },
+        new("msa (Malay)")      { Tag = "msa" },
     ];
 
     public MuxTrackEntryVM(MuxTrackM model, Action<MuxTrackEntryVM, int> move, Action<MuxTrackEntryVM> remove, Action<MuxTrackEntryVM, bool> defaultChanged, Action<string> showError)
@@ -68,7 +68,7 @@ public sealed class MuxTrackEntryVM : BaseVM
 
     public MuxTrackM Model => _model;
     public string Name => _model.Name;
-    public string DurationText => FormatDuration(_model.DurationSeconds);
+    public static string DurationText => MuxLangProvider.DurationUnknown;
     public bool CanRemove => !_model.IsSourceTrack;
     public string SyncText
     {
@@ -86,9 +86,6 @@ public sealed class MuxTrackEntryVM : BaseVM
         if (!string.IsNullOrWhiteSpace(_syncText) &&
             int.TryParse(_syncText, NumberStyles.Integer, CultureInfo.InvariantCulture, out _))
             return;
-        _syncText = "0";
-        _model.SyncMilliseconds = 0;
-        OnPropertyChanged(nameof(SyncText));
         _showError(MuxLangProvider.Current["MuxTracks.InvalidSync"]);
     }
 
@@ -143,11 +140,6 @@ public sealed class MuxTrackEntryVM : BaseVM
     {
         _model.LanguageCode = LanguageDropdown.SelectedItem?.Tag as string;
     }
-
-    private static string FormatDuration(double? durationSeconds) =>
-        durationSeconds is > 0d
-            ? EncodingPipeline.FormatTimestamp(TimeSpan.FromSeconds(durationSeconds.Value))
-            : MuxLangProvider.DurationUnknown;
 
     public void FlashMoved()
     {

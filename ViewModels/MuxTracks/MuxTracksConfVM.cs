@@ -304,7 +304,6 @@ public sealed class MuxTracksConfVM : BaseVM
                 SourceSubtitleIndex = subtitleIndex,
                 DisplayName = BuildSourceSubtitleName(stream, subtitleIndex),
                 LanguageCode = lang,
-                DurationSeconds = TryGetSubtitleDurationSeconds(document.RootElement, stream),
                 IsDefault = isOriginalDefault,
                 OriginalIsDefault = isOriginalDefault,
             };
@@ -312,58 +311,11 @@ public sealed class MuxTracksConfVM : BaseVM
         }
     }
 
-    private static double? TryGetSubtitleDurationSeconds(JsonElement root, JsonElement stream)
-    {
-        double? streamDuration = TryGetDouble(stream, "duration");
-        if (streamDuration is > 0d) return streamDuration;
-
-        long? durationTs = TryGetLong(stream, "duration_ts");
-        if (durationTs is > 0 && TryGetString(stream, "time_base") is string timeBase)
-        {
-            double? secondsPerTick = ParseFraction(timeBase);
-            if (secondsPerTick is > 0d)
-                return durationTs.Value * secondsPerTick.Value;
-        }
-
-        string? tagDuration = TryGetTag(stream, "DURATION");
-        if (TryParseDurationTag(tagDuration, out double tagSeconds)) return tagSeconds;
-
-        return root.TryGetProperty("format", out JsonElement format)
-            ? TryGetDouble(format, "duration")
-            : null;
-    }
-
-    private static bool TryParseDurationTag(string? text, out double seconds)
-    {
-        seconds = 0d;
-        if (string.IsNullOrWhiteSpace(text)) return false;
-
-        string[] parts = text.Split(':');
-        if (parts.Length != 3) return false;
-
-        if (!int.TryParse(parts[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out int hours)) return false;
-        if (!int.TryParse(parts[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out int minutes)) return false;
-        if (!double.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out double secs)) return false;
-
-        seconds = hours * 3600d + minutes * 60d + secs;
-        return seconds > 0d;
-    }
-
-    private static double? ParseFraction(string? text)
-    {
-        if (string.IsNullOrWhiteSpace(text)) return null;
-        string[] parts = text.Split('/');
-        if (parts.Length != 2) return null;
-        if (!double.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out double num)) return null;
-        if (!double.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out double den) || den <= 0d) return null;
-        return num / den;
-    }
-
     private static string BuildSourceSubtitleName(JsonElement stream, int subtitleIndex)
     {
         string? title = TryGetTag(stream, "title");
         string? language = TryGetTag(stream, "language");
-        string prefix = $"Source sub #{subtitleIndex + 1}";
+        string prefix = $"*Source #{subtitleIndex + 1}";
 
         if (!string.IsNullOrWhiteSpace(title) && !string.IsNullOrWhiteSpace(language))
             return $"{prefix} - {language} - {title}";
