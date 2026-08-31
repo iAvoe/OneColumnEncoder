@@ -4,14 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       tag_name:
-        description: 'Tag to create release for (leave empty to auto-generate Commit{count})'
-        required: false
+        description: 'Semantic version tag to create release for (vX.Y.Z)'
+        required: true
         type: string
-        default: ''
+        default: 'v1.0.0'
   push:
     tags:
-      - 'v*' # v1.x pattern
-      - '*-beta' # v1.0-beta
+      - 'v*'
 
 jobs:
   build:
@@ -30,29 +29,33 @@ jobs:
         run: |
           $tag = ""
           if ("${{ github.event_name }}" -eq "push" -and "${{ github.ref }}" -like "refs/tags/*") {
-            # Push tags 触发：直接使用推送的标签
             $tag = "${{ github.ref_name }}"
           } elseif ("${{ github.event_name }}" -eq "workflow_dispatch") {
             $inputTag = "${{ inputs.tag_name }}".Trim()
-            if ($inputTag -ne "") {
-              $tag = $inputTag
-            } else {
-              # 自动生成 Commit{提交数}
-              $count = git rev-list --count HEAD
-              $tag = "Commit$count"
-            }
+            $tag = $inputTag
           }
-          if ($tag -eq "") {
-            Write-Error "Unable to determine tag name."
+          if ($tag -notmatch '^v\d+\.\d+\.\d+$') {
+            Write-Error "Release tag must use vX.Y.Z format, received: '$tag'."
             exit 1
           }
           echo "FINAL_TAG=$tag" >> $env:GITHUB_ENV
+          echo "RELEASE_VERSION=$($tag.Substring(1))" >> $env:GITHUB_ENV
           Write-Host "[SUCCESS] Final tag: $tag"
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '9.0.x'
+
+      - name: Validate project version
+        shell: pwsh
+        run: |
+          [xml]$project = Get-Content .\OneColumnEncoder.csproj
+          $projectVersion = [string]$project.Project.PropertyGroup.Version
+          if ($projectVersion -ne "${{ env.RELEASE_VERSION }}") {
+            Write-Error "Project version '$projectVersion' does not match release tag '${{ env.FINAL_TAG }}'."
+            exit 1
+          }
 
       - name: Publish x86
         run: |
@@ -93,9 +96,10 @@ jobs:
         run: |
           $count = git rev-list --count HEAD
           $sha = git rev-parse --short=8 HEAD
-          $title = "Commit $count $sha"
+          $title = "1cenc v${{ env.RELEASE_VERSION }}"
 
-          $body = "Commit# | 提交序号 / SHA`n"
+          $body = "1cenc v${{ env.RELEASE_VERSION }}`n`n"
+          $body += "Build commit: Commit$count $sha | 构建提交：Commit$count $sha`n"
           $body += "- https://github.com/iAvoe/OneColumnEncoder/commit/$($env:GITHUB_SHA)`n`n"
           
           $body += "Follow this tutorial to get tools (pipe upstream / filtering tools & video encoders) tailored for your use case | 你可以根据此教程来获取合适的工具（管道上游程序/滤镜工具与视频编码器）:`n"
@@ -103,14 +107,75 @@ jobs:
           $body += "Or, TLDR; and use tools provided in downloaded package (not recommended but it works) | 或者着急要用的话，也可以无视上述教程，下载并直接使用附带的工具（不推荐但可以）"
           $body += "`n`n"
 
+          $body += '> [!TIP]'
+          $body += "`n"
+          $body += '> Auto-import of encoding tools checks 4 locations | 自动导入编码程序会检查 4 种位置：'
+          $body += "`n"
+          $body += ">`n"
+          $body += ">     .`n"
+          $body += ">     ├── ①`n"
+          $body += ">     ├── OneColumnEncoder.exe`n"
+          $body += ">     ├── OneColumnEncoder.pdb`n"
+          $body += ">     ├── x64-upstreams-encoders`n"
+          $body += ">     │    └── ②`n"
+          $body += ">     └── 1cenc`n"
+          $body += ">          ├── ③`n"
+          $body += ">          ├── x64-upstreams-encoders`n"
+          $body += ">          │   └── ④`n"
+          $body += ">          ├── x64-AVS-VS-plugins`n"
+          $body += ">          │   └── ...`n"
+          $body += ">          ├── x64-CloudinarySSIMULACRA2.1`n"
+          $body += ">          │   └── ...`n"
+          $body += ">          └── x64-GoogleButteraugli`n"
+          $body += ">             └── ...`n"
+          $body += ">`n"
+          $body += "`n"
+          $body += "> [!NOTE]`n"
+          $body += "> x86 release (32bit) has limited integration since many of tools and libraries lacks this support, provided as-is | x86 发布版本缺少多种工具集成，大多因为 32bit 编译缺少支持，或者依赖的静态库不支持 32bit 且修正不了，请将就使用"
+          $body += "`n`n"
+          $body += "> [!CAUTION]`n"
+          $body += "> File structure changed after Commit 1010 release (using 64bit as example) | 自 Commit 1010 发布的文件结构变化（以 64bit 版本为例）:`n"
+          $body += ">`n"
+          $body += "> Old | 旧:`n"
+          $body += ">`n"
+          $body += ">     .`n"
+          $body += ">     ├── ... upstreams & encoder exes ...`n"
+          $body += ">     ├── OneColumnEncoder.exe`n"
+          $body += ">     ├── OneColumnEncoder.pdb`n"
+          $body += ">     ├── 1cenc`n"
+          $body += ">     │   └── ...`n"
+          $body += ">     ├── x64-AVS-VS-plugins`n"
+          $body += ">     │   └── ...`n"
+          $body += ">     ├── x64-CloudinarySSIMULACRA2.1`n"
+          $body += ">     │   └── ...`n"
+          $body += ">     └── x64-GoogleButteraugli`n"
+          $body += ">         └── ...`n"
+          $body += ">`n"
+          $body += "> New (cleaner root dir) | 新（根目录更干净）:`n"
+          $body += ">`n"
+          $body += ">     .`n"
+          $body += ">     ├── ... upstreams & encoder exes ... (or inside 1cenc folder)`n"
+          $body += ">     ├── OneColumnEncoder.exe`n"
+          $body += ">     ├── OneColumnEncoder.pdb`n"
+          $body += ">     └── 1cenc`n"
+          $body += ">          ├── ...`n"
+          $body += ">          ├── x64-AVS-VS-plugins`n"
+          $body += ">          │   └── ...`n"
+          $body += ">          ├── x64-CloudinarySSIMULACRA2.1`n"
+          $body += ">          │   └── ...`n"
+          $body += ">          └── x64-GoogleButteraugli`n"
+          $body += ">              └── ...`n"
+          $body += ">`n"
+          $body += "> The new file structure is cleaner, but not backward compatible | 新的文件结构更干净，但不会向后兼容"
+
           echo "RELEASE_TITLE=$title" >> $env:GITHUB_ENV
           $body | Out-File -FilePath .\release-notes.md -Encoding utf8
 
       - name: Pack x86
-        run: 7z a -t7z -mx9 1cenc-win-x86.7z .\publish\x86\*
+        run: 7z a -t7z -mx9 1cenc-v${{ env.RELEASE_VERSION }}-win-x86.7z .\publish\x86\*
 
       - name: Pack x64
-        run: 7z a -t7z -mx9 1cenc-win-x64.7z .\publish\x64\*
+        run: 7z a -t7z -mx9 1cenc-v${{ env.RELEASE_VERSION }}-win-x64.7z .\publish\x64\*
       
       - name: Delete existing release (if any)
         shell: pwsh
@@ -125,41 +190,6 @@ jobs:
           gh release create "${{ env.FINAL_TAG }}" `
             --title "${{ env.RELEASE_TITLE }}" `
             --notes-file .\release-notes.md `
-            1cenc-win-x86.7z 1cenc-win-x64.7z
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Delete old Commit releases (Everything 5 commits ago)
-        shell: pwsh
-        run: |
-          $repo = "${{ github.repository }}"
-          $count = [int](git rev-list --count HEAD)
-          if ($count -le 5) {
-            Write-Host "[SKIP] Not enough commits to delete older Commit releases."
-            exit 0
-          }
-
-          $threshold = $count - 5
-
-          try {
-            $releases = gh release list --repo $repo --limit 1000 --json tagName,publishedAt | ConvertFrom-Json
-          } catch {
-            Write-Host "[SKIP] Unable to list releases for $repo."
-            exit 0
-          }
-
-          $targets = $releases |
-            Where-Object {
-              $_.tagName -match '^Commit\d+$' -and ([int]($_.tagName -replace '^Commit', '')) -le $threshold
-            } |
-            Sort-Object @{ Expression = { [int]($_.tagName -replace '^Commit', '') } } -Descending
-
-          if ($targets.Count -gt 0) {
-            foreach ($target in $targets) {
-              gh release delete $target.tagName --repo $repo -y || true
-            }
-          } else {
-            Write-Host "[SKIP] No old Commit releases found to delete."
-          }
+            1cenc-v${{ env.RELEASE_VERSION }}-win-x86.7z 1cenc-v${{ env.RELEASE_VERSION }}-win-x64.7z
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

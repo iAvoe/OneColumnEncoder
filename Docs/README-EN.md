@@ -228,7 +228,7 @@ It is not easy to develop these tools. If this software helps, please consider s
 #### Multiple Instances (Run multiple instances)
 
 - A single 1cenc instance can only bind the downstream encoder threads to one NUMA node at a time. If you have more encode jobs than one instance can handle and the machine still has spare NUMA nodes, start as many program instances as available NUMA nodes, then let each instance take a portion of the queue so every node stays busy.
-- The instances are easy to tell apart: just look at the `PID xxxxx` text in the title bar or taskbar button. A PID is the process's temporary identifier, unique while it is running and not reused across instances.
+- The instances are easy to tell apart: look at the `1cenc · PID xxxxx · vX.Y.Z` text in the title bar or taskbar button. The PID is the process's temporary identifier, unique while it is running and not reused across instances.
 
 #### Application Configuration and Persistence
 

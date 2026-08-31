@@ -1,11 +1,10 @@
-﻿using System.Diagnostics;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace OneColumnEncoder;
 
 /// <summary>
 /// Main app window:
-/// - builds title from git metadata,
+/// - builds the title from the application version and process ID,
 /// - throttles NUMA/CPU refresh on mouse/key input,
 /// - coordinates child-window closing,
 /// - coordinates ViewModel disposal during shutdown.
@@ -18,27 +17,12 @@ public partial class MainWindow : AdaptiveWindow
     public MainWindow()
     {
         InitializeComponent();
-        Title = $"{UILangProvider.MainWindowTitle} · PID {Environment.ProcessId} · Commit {GetGitCommitCount()} {GetGitCommitShortHash()}";
+        string version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "0.0.0";
+        Title = $"{UILangProvider.MainWindowTitle} · PID {Environment.ProcessId} · v{version}";
         Closing += OnClosing;
         Closed += OnClosed;
         PreviewMouseDown += OnPreviewMouseDown;
         PreviewKeyDown += OnPreviewKeyDown;
-    }
-
-    // 2 Pieces of Get info needed
-    private static string GetGitCommitCount()
-    {
-        return Assembly.GetExecutingAssembly()
-            .GetCustomAttributes<AssemblyMetadataAttribute>()
-            .FirstOrDefault(attribute => attribute.Key == "GitCommitCount")
-            ?.Value ?? "0";
-    }
-    private static string GetGitCommitShortHash()
-    {
-        return Assembly.GetExecutingAssembly()
-            .GetCustomAttributes<AssemblyMetadataAttribute>()
-            .FirstOrDefault(attribute => attribute.Key == "GitCommitShortHash")
-            ?.Value ?? "unknown";
     }
 
     private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
