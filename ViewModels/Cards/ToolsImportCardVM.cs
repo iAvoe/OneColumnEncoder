@@ -1,7 +1,11 @@
-﻿namespace OneColumnEncoder.ViewModels.Cards;
+﻿using System.Reflection;
+
+namespace OneColumnEncoder.ViewModels.Cards;
 
 public class ToolsImportCardVM : BaseVM
 {
+    public string Version => $"v{Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "0.0.0"}";
+
     public const int UpstreamChecklistIdx = 0;
     public const int EncoderChecklistIdx = 1;
     public const int AnalyticsChecklistIdx = 2;

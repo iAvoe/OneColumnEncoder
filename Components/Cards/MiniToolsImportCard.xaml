@@ -177,6 +177,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <Grid>
@@ -230,6 +231,15 @@
                         </comps:ChecklistContainer.ItemTemplate>
                     </comps:ChecklistContainer>
                 </UniformGrid>
+
+                <TextBlock Grid.Row="2"
+                           Grid.ColumnSpan="2"
+                           Text="{Binding Version}"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Bottom"
+                           FontSize="11"
+                           Foreground="{StaticResource GlobalTertiary}"
+                           Margin="0 -15 5 0" />
             </Grid>
         </Border>
     </Grid>

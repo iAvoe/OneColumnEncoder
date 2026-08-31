@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace OneColumnEncoder;
+﻿namespace OneColumnEncoder;
 
 /// <summary>
 /// Main app window:
@@ -17,8 +15,7 @@ public partial class MainWindow : AdaptiveWindow
     public MainWindow()
     {
         InitializeComponent();
-        string version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "0.0.0";
-        Title = $"{UILangProvider.MainWindowTitle} · PID {Environment.ProcessId} · v{version}";
+        Title = $"{UILangProvider.MainWindowTitle} · PID {Environment.ProcessId}";
         Closing += OnClosing;
         Closed += OnClosed;
         PreviewMouseDown += OnPreviewMouseDown;
@@ -27,8 +24,7 @@ public partial class MainWindow : AdaptiveWindow
 
     private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
     {
-        if (e.ChangedButton == MouseButton.Left)
-            TriggerNumaCpuCheck();
+        if (e.ChangedButton == MouseButton.Left) TriggerNumaCpuCheck();
     }
 
     private void OnPreviewKeyDown(object sender, KeyEventArgs e) => TriggerNumaCpuCheck();
