@@ -215,7 +215,7 @@ public class UILangProvider : LangProviderBase
 
             // Hints
             ["Hint.SVFIClipDisabled"] = "OneLineShotArgs does not support sample clipping, disabling Run Sample.",
-            ["Hint.AnalyzeRunConditionDuration"] = "Analysis will start upon source import (roughly 70～100 ms/src)",
+            ["Hint.AnalyzeRunConditionDuration"] = "Analysis starts upon source import (≈70～100 ms/src, Repart mode takes longer)",
             ["Hint.NumaCpuCheckTrigger"] = "NUMA node CPU usage updates on mouse click or keyboard input event",
             ["Hint.FFmpegOptionalBut"] = "FFmpeg is optional, but needed for video frame previewing and auto MKV muxing",
             ["ScriptQueueImport.RejectedPrefix"] = "Import rejected: {0} unmatched basename(s), {1} path mismatch(es).",
@@ -440,7 +440,7 @@ public class UILangProvider : LangProviderBase
 
             // Hints
             ["Hint.SVFIClipDisabled"] = "OneLineShotArgs 上游不支持取段打样，已禁用取段打样按钮。",
-            ["Hint.AnalyzeRunConditionDuration"] = "导入视频后会自动运行分析（约 70～100 ms/源）",
+            ["Hint.AnalyzeRunConditionDuration"] = "导入视频后会自动运行分析（≈70～100 ms/源，重分集模式更慢）",
             ["Hint.NumaCpuCheckTrigger"] = "NUMA 节点 CPU 占用检测会在鼠标点击或键盘输入事件时更新。",
             ["Hint.FFmpegOptionalBut"] = "FFmpeg 可选，但视频帧预览和自动 MKV 封装功能需要它",
             ["ScriptQueueImport.RejectedPrefix"] = "导入已拒绝：{0} 个基名不匹配，{1} 个路径不匹配。",
@@ -662,7 +662,7 @@ public class UILangProvider : LangProviderBase
 
             // Hints
             ["Hint.SVFIClipDisabled"] = "OneLineShotArgs 上游不支援取段打樣，已禁用取段打樣按鈕。",
-            ["Hint.AnalyzeRunConditionDuration"] = "匯入影片後會自動執行分析（約 70～100 ms/源）",
+            ["Hint.AnalyzeRunConditionDuration"] = "匯入影片後會自動執行分析（≈70～100 ms/源，重分集模式更慢）",
             ["Hint.NumaCpuCheckTrigger"] = "NUMA 節點 CPU 占用檢測會在滑鼠點擊或鍵盤輸入事件時更新。",
             ["Hint.FFmpegOptionalBut"] = "FFmpeg 可選，但影片幀預覽和自動 MKV 封裝功能需要它",
             ["ScriptQueueImport.RejectedPrefix"] = "導入已拒絕：{0} 個基名不符，{1} 個路徑不符。",
@@ -754,7 +754,7 @@ public class UILangProvider : LangProviderBase
         ["Section.EncodingConfigs"] = "6. Configurations d'encodage",
         ["Section.StartEncoding"] = "7. Démarrer encodage",
         ["Hint.SVFIClipDisabled"] = "OneLineShotArgs ne prend pas en charge l'échantillonnage; bouton Échantillon désactivé.",
-        ["Hint.AnalyzeRunConditionDuration"] = "L'analyse se lance automatiquement après l'importation de la vidéo (environ 70～100 ms/src)",
+        ["Hint.AnalyzeRunConditionDuration"] = "L'analyse commence dès l'importation de la source (≈70～100 ms/src, le mode Repart est plus lent)",
         ["Hint.NumaCpuCheckTrigger"] = "La charge CPU du noeud NUMA se met à jour au clic souris ou à la saisie clavier.",
         ["Hint.FFmpegOptionalBut"] = "FFmpeg est facultatif, mais nécessaire pour l'aperçu des images vidéo et le multiplexage automatique MKV",
         // Script queue import
@@ -949,7 +949,7 @@ public class UILangProvider : LangProviderBase
         ["Section.EncodingConfigs"] = "6. Configuración de codificación",
         ["Section.StartEncoding"] = "7. Iniciar codificación",
         ["Hint.SVFIClipDisabled"] = "OneLineShotArgs no admite recorte de muestra; botón Muestra desactivado.",
-        ["Hint.AnalyzeRunConditionDuration"] = "El análisis se ejecuta automáticamente al importar el video (aprox. 70～100 ms/fuente)",
+        ["Hint.AnalyzeRunConditionDuration"] = "El análisis comienza tras la importación de la fuente (≈70～100 ms/fuente, el modo Repart tarda más)",
         ["Hint.NumaCpuCheckTrigger"] = "El uso de CPU del nodo NUMA se actualiza con clic de ratón o entrada de teclado.",
         ["Hint.FFmpegOptionalBut"] = "FFmpeg es opcional, pero se necesita para previsualizar fotogramas de video y el multiplexado automático MKV",
         // Script queue import
@@ -1144,7 +1144,7 @@ public class UILangProvider : LangProviderBase
         ["Section.EncodingConfigs"] = "6. エンコード設定",
         ["Section.StartEncoding"] = "7. エンコード開始",
         ["Hint.SVFIClipDisabled"] = "OneLineShotArgs はサンプル切り出し非対応のため、サンプル実行を無効化しました。",
-        ["Hint.AnalyzeRunConditionDuration"] = "動画をインポートすると、自動的に分析が実行されます（約70～100 ms/ソース）",
+        ["Hint.AnalyzeRunConditionDuration"] = "分析はソースインポート時に開始されます（≈70～100 ms/ソース、Repartモードはより時間がかかります）",
         ["Hint.NumaCpuCheckTrigger"] = "NUMA ノード CPU 使用率は、マウスクリックまたはキー入力時に更新されます。",
         ["Hint.FFmpegOptionalBut"] = "FFmpeg は任意ですが、動画フレームのプレビューと自動 MKV マージングには必要です",
         // Script queue import
@@ -1339,7 +1339,7 @@ public class UILangProvider : LangProviderBase
         ["Section.EncodingConfigs"] = "6. Настройки кодирования",
         ["Section.StartEncoding"] = "7. Запуск кодирования",
         ["Hint.SVFIClipDisabled"] = "OneLineShotArgs не поддерживает пробный отрезок; кнопка пробы отключена.",
-        ["Hint.AnalyzeRunConditionDuration"] = "При импорте видео автоматически запускается анализ (около 70–100 мс/источник)",
+        ["Hint.AnalyzeRunConditionDuration"] = "Анализ начинается при импорте источника (≈70～100 мс/источник, режим Repart занимает больше времени",
         ["Hint.NumaCpuCheckTrigger"] = "Загрузка CPU NUMA-узла обновляется при клике мыши или вводе с клавиатуры.",
         ["Hint.FFmpegOptionalBut"] = "FFmpeg необязателен, но нужен для предпросмотра кадров видео и автоматического мультиплексирования MKV",
         // Script queue import
@@ -1534,7 +1534,7 @@ public class UILangProvider : LangProviderBase
         ["Section.EncodingConfigs"] = "6. Kodierungseinstellungen",
         ["Section.StartEncoding"] = "7. Kodierung starten",
         ["Hint.SVFIClipDisabled"] = "OneLineShotArgs unterstützt keine Probenentnahme; Probe-Schaltfläche deaktiviert.",
-        ["Hint.AnalyzeRunConditionDuration"] = "Analyse startet automatisch nach Videoimport (ca. 70–100 ms/Quelle)",
+        ["Hint.AnalyzeRunConditionDuration"] = "Die Analyse beginnt beim Import der Quelle (≈70～100 ms/Quelle, der Repart-Modus dauert länger)",
         ["Hint.NumaCpuCheckTrigger"] = "NUMA-Knutzen-CPU-Auslastung wird bei Mausklick oder Tastatureingabe aktualisiert.",
         ["Hint.FFmpegOptionalBut"] = "FFmpeg ist optional, aber für Videobildvorschau und automatisches MKV-Muxing benötigt",
         // Script queue import
@@ -1720,6 +1720,23 @@ public class UILangProvider : LangProviderBase
         ["Buttons.ReEvaluate"] = "다시 평가",
         ["Buttons.RunSample"] = "클립 샘플",
         ["Buttons.StartEncode"] = "인코딩 시작",
+
+        // EncInspect modal texts
+        ["EncInspect.InfoTitle"] = "인코더 사전 점검 상세",
+        ["EncInspect.InfoMsg"] = "인코더 사전 점검에서 문제가 발견되지 않았습니다.",
+        ["EncInspect.P1Title"] = "배터리 점검",
+        ["EncInspect.P2Title"] = "디스크 공간 점검",
+        ["EncInspect.P3Title"] = "쓰기 권한 점검",
+        ["EncInspect.P4Title"] = "덮어쓰기 점검",
+        ["EncInspect.P5Title"] = "L-SMASH 플러그인 점검 (Avs2Yuv)",
+        ["EncInspect.P6Title"] = "NUMA 노드 CPU 부하 점검",
+        ["EncInspect.P1Text"] = "SystemInformation.PowerStatus로 PC가 배터리로 동작 중인지 확인해 마모를 줄이고, 예기치 않은 종료를 막고, 전원 제한으로 인한 화질 저하를 피합니다.",
+        ["EncInspect.P2Text"] = "사용 가능한 디스크 공간과 소스 파일 크기 × 1.5(대체: 1 GiB)를 비교합니다. 인코딩 출력에 충분한 공간이 있는지 확인합니다.",
+        ["EncInspect.P3Text"] = "파일 목록을 시도해 출력 폴더 쓰기 권한을 확인합니다. 권한 오류로 인한 인코딩 실패를 막습니다.",
+        ["EncInspect.P4Text"] = "출력 파일이 이미 존재하는지 확인하고, 실수로 데이터를 잃지 않도록 덮어쓰기 시작을 더 어렵게 만듭니다.",
+        ["EncInspect.P5Text"] = "LSMASHSource.dll이 C:\\Program Files (x86)\\AviSynth+\\plugins64+\\에 있는지 확인합니다(libvslsmashsource.dll 아님). 소스 프레임을 읽기 위해 필요합니다.",
+        ["EncInspect.P6Text"] = "선택한 NUMA 노드의 최근 CPU 부하가 낮은지 확인합니다. 높은 부하는 안내용이며 인코딩을 막지 않습니다.",
+
         ["Section.SelectUpstream"] = "1. 업스트림 도구 선택",
         ["Section.SelectEncoder"] = "2. 인코더 선택",
         ["Section.SelectDependencies"] = "3. 의존성 선택",
@@ -1827,13 +1844,51 @@ public class UILangProvider : LangProviderBase
         ["Checklist.Best2.EncoderVersion"] = "최신 인코더 버전 사용",
         ["Checklist.Best2.FAT32"] = "FAT32 볼륨에 쓰지 않음",
         ["Checklist.Best2.DiskCompression"] = "출력 폴더 파일 시스템 압축 비활성화",
+
+        // FFProbeJsonUpdateResolver
+        ["FFProbeJsonUpdate.JsonEmpty"] = "ffprobe JSON이 비어 있습니다.",
+        ["FFProbeJsonUpdate.DimensionsNotPositive"] = "해상도 값은 양수여야 합니다.",
+        ["FFProbeJsonUpdate.RootNotObject"] = "ffprobe JSON 루트가 객체가 아닙니다.",
+        ["FFProbeJsonUpdate.NoVideoStream"] = "ffprobe JSON에서 비디오 스트림을 찾지 못했습니다.",
+
+        // FilenameScribeModal
+
+        // Hints
+        ["Hint.SVFIClipDisabled"] = "OneLineShotArgs는 샘플 클리핑을 지원하지 않으므로, 샘플 실행을 비활성화했습니다.",
+        ["Hint.AnalyzeRunConditionDuration"] = "분석은 소스 가져오기 시 시작됩니다(≈70～100 ms/소스, Repart 모드는 더 오래 걸립니다)",
+        ["Hint.NumaCpuCheckTrigger"] = "NUMA 노드 CPU 사용량은 마우스 클릭 또는 키보드 입력 이벤트 시 업데이트됩니다.",
+        ["Hint.FFmpegOptionalBut"] = "FFmpeg는 선택 사항이지만, 비디오 프레임 미리보기와 자동 MKV 멀티플렉싱에 필요합니다",
+        ["ScriptQueueImport.RejectedPrefix"] = "가져오기가 거부되었습니다: 일치하지 않는 기본 이름 {0}개, 경로 불일치 {1}개.",
+        ["ScriptQueueImport.DetailsHeader"] = "세부 정보:",
+        ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — 기본 이름으로 일치하는 비디오 소스를 찾을 수 없습니다",
+        ["ScriptQueueImport.DetailNoScript"] = "'{0}' — 기본 이름으로 일치하는 스크립트 파일을 찾을 수 없습니다",
+        ["ScriptQueueImport.DetailUnreadable"] = "'{0}' — 인식할 수 없는 스크립트 형식이며, 소스 경로를 확인할 수 없습니다",
+        ["ScriptQueueImport.DetailMismatch"] = "'{0}' — \"{1}\"을 가리키며, 예상값은 \"{2}\"입니다",
+        ["ScriptQueueImport.MoreCount"] = "...외 {0}개 더.",
+        ["ScriptQueueImport.CountMismatchTitle"] = "스크립트 수 불일치",
+        ["ScriptQueueImport.MissingSummary"] = "선택한 업스트림에 필요한 스크립트 {0}/{1}개가 누락되었습니다.",
+        ["ScriptQueueImport.MissingLabel"] = "누락:",
+        ["ScriptQueueImport.SourceMismatchTitle"] = "스크립트 소스 불일치",
+        ["ScriptQueueImport.SourceMismatchSummary"] = "{0}개의 스크립트가 다른 비디오 소스를 참조합니다.",
+        ["Hint.QueueRouteSampleClipDisabled"] = "비디오 소스 큐/연결 모드는 샘플 클리핑을 지원하지 않습니다. 샘플 실행이 비활성화되었습니다.",
+        ["Hint.FilterScribeDisabled"] = "OneLineShotArgs는 스크립트 생성을 지원하지 않으므로, Filter Scribe를 비활성화했습니다.",
+        ["Hint.MinDurationFilter"] = "최소 길이 필터(초):",
+        ["Hint.DurationFilterAllFiltered"] = "모든 비디오가 길이 필터로 걸러졌습니다.",
+        ["Hint.DurationFilterCount"] = "{0}/{1}개의 비디오가 걸러졌습니다.",
+
+        // Heatmap
         ["Heatmap.Cold"] = "차가움",
         ["Heatmap.Hot"] = "뜨거움",
+
+        // Source analysis result ConfirmationModal
         ["SrcAnalysis.Completed"] = "소스 분석 완료.",
         ["SrcAnalysis.RunAfterReplace"] = "지금 소스 분석을 실행할까요?",
         ["SrcAnalysis.Copied"] = "원본 ffprobe JSON이 클립보드에 복사되었습니다.",
+
         ["ScriptGen.RunAfterReplace"] = "지금 AVS 및 VPY 스크립트를 생성할까요?",
         ["ScriptGen.ScriptsSaved"] = "저장된 스크립트:\n{0}",
+
+        // InspectSrcProblems modal texts
         ["SrcInspect.InfoTitle"] = "소스 점검",
         ["SrcInspect.InfoMsg"] = "눈에 띄는 소스 문제가 없습니다.",
         ["SrcInspect.ErrorTitle"] = "소스 심각 문제",
@@ -1845,24 +1900,7 @@ public class UILangProvider : LangProviderBase
         ["SrcInspect.AspectRatioP1Text"] = "이 도구는 비정사각 픽셀을 보정할 수 없습니다. 계속하면 예상치 못한 영상 크기가 나올 수 있습니다. 소스를 고치려면 ffmpeg로 FFV1으로 트랜스코드하고 -aspect <현재 SAR>를 사용하세요.",
         ["SrcInspect.ColorMetadataP1Text"] = "색상 매트릭스, 전송 특성, 원색 메타데이터가 없으면 플레이어는 BT.709로 되돌아가는 경우가 많지만, 유효한 값은 여러 개이며 소스에 맞는 조합은 하나뿐입니다.",
         ["SrcInspect.ChromaSubsamplingP1Text"] = "크로마 샘플 위치가 잘못되면 색 경계가 번지거나 객체 경계에서 어긋날 수 있습니다. AVC/HEVC와 달리 AV1은 제한된 크로마 샘플 위치만 지원합니다.",
-        ["EncInspect.InfoTitle"] = "인코더 사전 점검 상세",
-        ["EncInspect.InfoMsg"] = "인코더 사전 점검에서 문제가 발견되지 않았습니다.",
-        ["EncInspect.P1Title"] = "배터리 점검",
-        ["EncInspect.P2Title"] = "디스크 공간 점검",
-        ["EncInspect.P3Title"] = "쓰기 권한 점검",
-        ["EncInspect.P4Title"] = "덮어쓰기 점검",
-        ["EncInspect.P5Title"] = "L-SMASH 플러그인 점검 (Avs2Yuv)",
-        ["EncInspect.P6Title"] = "NUMA 노드 CPU 부하 점검",
-        ["EncInspect.P1Text"] = "SystemInformation.PowerStatus로 PC가 배터리로 동작 중인지 확인해 마모를 줄이고, 예기치 않은 종료를 막고, 전원 제한으로 인한 화질 저하를 피합니다.",
-        ["EncInspect.P2Text"] = "사용 가능한 디스크 공간과 소스 파일 크기 × 1.5(대체: 1 GiB)를 비교합니다. 인코딩 출력에 충분한 공간이 있는지 확인합니다.",
-        ["EncInspect.P3Text"] = "파일 목록을 시도해 출력 폴더 쓰기 권한을 확인합니다. 권한 오류로 인한 인코딩 실패를 막습니다.",
-        ["EncInspect.P4Text"] = "출력 파일이 이미 존재하는지 확인하고, 실수로 데이터를 잃지 않도록 덮어쓰기 시작을 더 어렵게 만듭니다.",
-        ["EncInspect.P5Text"] = "LSMASHSource.dll이 C:\\Program Files (x86)\\AviSynth+\\plugins64+\\에 있는지 확인합니다(libvslsmashsource.dll 아님). 소스 프레임을 읽기 위해 필요합니다.",
-        ["EncInspect.P6Text"] = "선택한 NUMA 노드의 최근 CPU 부하가 낮은지 확인합니다. 높은 부하는 안내용이며 인코딩을 막지 않습니다.",
-        ["FFProbeJsonUpdate.JsonEmpty"] = "ffprobe JSON이 비어 있습니다.",
-        ["FFProbeJsonUpdate.DimensionsNotPositive"] = "해상도 값은 양수여야 합니다.",
-        ["FFProbeJsonUpdate.RootNotObject"] = "ffprobe JSON 루트가 객체가 아닙니다.",
-        ["FFProbeJsonUpdate.NoVideoStream"] = "ffprobe JSON에서 비디오 스트림을 찾지 못했습니다."
+
     };
     private static void AddPortuguese() => Data["pt-br"] = new(Data["en"])
     {
@@ -1898,7 +1936,7 @@ public class UILangProvider : LangProviderBase
         ["Section.EncodingConfigs"] = "6. Configurações de codificação",
         ["Section.StartEncoding"] = "7. Iniciar codificação",
         ["Hint.SVFIClipDisabled"] = "OneLineShotArgs não suporta clipping de amostra; botão Executar Amostra desabilitado.",
-        ["Hint.AnalyzeRunConditionDuration"] = "A análise será iniciada após a importação da fonte (cerca de 70～100 ms/src)",
+        ["Hint.AnalyzeRunConditionDuration"] = "A análise começa na importação da fonte (≈70～100 ms/fonte, o modo Repart é mais demorado)",
         ["Hint.NumaCpuCheckTrigger"] = "O uso da CPU do nó NUMA é atualizado em eventos de clique do mouse ou entrada do teclado.",
         ["Hint.FFmpegOptionalBut"] = "FFmpeg é opcional, mas necessário para visualização de quadros de vídeo e muxing automático de MKV",
         ["ScriptQueueImport.RejectedPrefix"] = "Importação rejeitada: {0} nome(s) base sem correspondência, {1} caminho(s) incompatível(is).",
