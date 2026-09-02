@@ -35,6 +35,9 @@ public partial class EncodingMonitorVM : BaseVM
     private const int MemoryRangeMaxFillLevel = 8;
     private const int UpstreamShutdownAfterEncoderExitDelayMs = 5000;
     private const int UpstreamKillAfterShutdownTimeoutMs = 1000;
+    private const int ClipboardCopyRetryCount = 5;
+    private const int ClipboardCopyRetryDelayMs = 100;
+    private const int ClipboardCannotOpenHResult = unchecked((int)0x800401D0);
     private const long BytesPerMb = 1024L * 1024L;
     private const long BytesPerGb = 1024L * 1024L * 1024L;
     private const uint TH32CS_SNAPPROCESS = 0x00000002;
@@ -2205,8 +2208,23 @@ public partial class EncodingMonitorVM : BaseVM
 
     private static void CopyLogToClipboard(string text)
     {
-        if (!string.IsNullOrEmpty(text))
-            Clipboard.SetText(text);
+        if (string.IsNullOrEmpty(text)) return;
+
+        for (int attempt = 0; attempt < ClipboardCopyRetryCount; attempt++)
+        {
+            try
+            {
+                Clipboard.SetText(text);
+                return;
+            }
+            catch (COMException exception) when (exception.ErrorCode == ClipboardCannotOpenHResult)
+            {
+                // Another process may hold the clipboard briefly. Do not let that transient
+                // Windows-specific failure escape the button command.
+                if (attempt + 1 < ClipboardCopyRetryCount)
+                    Thread.Sleep(ClipboardCopyRetryDelayMs);
+            }
+        }
     }
 
     private void SaveLogsToFilesIfEnabled()
