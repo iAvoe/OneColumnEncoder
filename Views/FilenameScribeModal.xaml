@@ -13,7 +13,7 @@
                    SizeToContent="Height"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
-    <Grid Margin="15 10 15 15">
+    <Grid Margin="15 12.5 15 15">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
@@ -49,7 +49,9 @@
                              Text="{Binding VideoFilename, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              FontSize="{Binding VideoFilenameFontSize}"
                              Padding="0 2.5"
-                             VerticalContentAlignment="Center">
+                             VerticalContentAlignment="Center"
+                             TextWrapping="NoWrap"
+                             AcceptsReturn="False">
                         <TextBox.Style>
                             <Style TargetType="TextBox">
                                 <Setter Property="Foreground"
