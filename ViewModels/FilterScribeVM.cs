@@ -179,24 +179,74 @@ public class FilterScribeVM : BaseVM
         }
     }
 
+    private int ScaleSourceWidth => HasCropFilter ? CropWidth : SourceWidth;
+    private int ScaleSourceHeight => HasCropFilter ? CropHeight : SourceHeight;
+
     public bool IsScaleApplicable =>
-        HasSource && ResolutionScale.IsScaleApplicable(SourceWidth, SourceHeight);
+        HasSource && ResolutionScale.IsScaleApplicable(ScaleSourceWidth, ScaleSourceHeight);
 
-    private int _cropTargetWidth;
-    public int CropTargetWidth => _cropTargetWidth;
+    public bool IsCropSectionVisible => HasSource;
 
-    private int _cropTargetHeight;
-    public int CropTargetHeight => _cropTargetHeight;
+    private int _cropWidth;
+    public int CropWidth
+    {
+        get => _cropWidth;
+        set
+        {
+            // int mod = CropWidthStep;
+            int clamped = Math.Clamp(value, CropWidthMinimum, CropWidthMaximum);
+            if (SetProperty(ref _cropWidth, clamped))
+            {
+                OnPropertyChanged(nameof(CropTargetDisplay));
+                OnPropertyChanged(nameof(HasCropFilter));
+                OnPropertyChanged(nameof(FfmpegCropFilter));
+                OnPropertyChanged(nameof(VapourSynthCropFilter));
+                OnPropertyChanged(nameof(AviSynthCropFilter));
+                OnPropertyChanged(nameof(CanInsertAviSynthCropFilter));
+                OnPropertyChanged(nameof(CanInsertVapourSynthCropFilter));
+                OnPropertyChanged(nameof(CanInsertFfmpegCropFilter));
+                RefreshScaleForCropChange();
+            }
+        }
+    }
 
-    public bool HasCropFilter => HasSource && (_cropTargetWidth != SourceWidth || _cropTargetHeight != SourceHeight);
+    private int _cropHeight;
+    public int CropHeight
+    {
+        get => _cropHeight;
+        set
+        {
+            int clamped = Math.Clamp(value, CropHeightMinimum, CropHeightMaximum);
+            if (SetProperty(ref _cropHeight, clamped))
+            {
+                OnPropertyChanged(nameof(CropTargetDisplay));
+                OnPropertyChanged(nameof(HasCropFilter));
+                OnPropertyChanged(nameof(FfmpegCropFilter));
+                OnPropertyChanged(nameof(VapourSynthCropFilter));
+                OnPropertyChanged(nameof(AviSynthCropFilter));
+                OnPropertyChanged(nameof(CanInsertAviSynthCropFilter));
+                OnPropertyChanged(nameof(CanInsertVapourSynthCropFilter));
+                OnPropertyChanged(nameof(CanInsertFfmpegCropFilter));
+                RefreshScaleForCropChange();
+            }
+        }
+    }
 
-    public string CropTargetDisplay => !HasSource ? "--" : $"{CropTargetWidth}x{CropTargetHeight}";
+    public static int CropWidthMinimum => 120; // Arbitrary but small enough, if user needs lower, just edit manually in textbox
+    public int CropWidthMaximum => HasSource ? SourceWidth : CropWidthMinimum;
+    public int CropWidthStep => CropCalculator.GetWidthMod(_colorSpaceAnalysis.PixelFormat);
+    public List<string> CropWidthTickLabels =>
+        GenerateCropTickLabels(CropWidthMinimum, CropWidthMaximum, 5);
 
-    public string CropModWidthHint => DescribeCropMod(CropCalculator.GetWidthMod(_colorSpaceAnalysis.PixelFormat));
+    public static int CropHeightMinimum => 120;  // Arbitrary but small enough
+    public int CropHeightMaximum => HasSource ? SourceHeight : CropHeightMinimum;
+    public int CropHeightStep => CropCalculator.GetHeightMod(_colorSpaceAnalysis.PixelFormat, _sourceIsProgressive);
+    public List<string> CropHeightTickLabels =>
+        GenerateCropTickLabels(CropHeightMinimum, CropHeightMaximum, 5);
 
-    public string CropModHeightHint => DescribeCropMod(CropCalculator.GetHeightMod(_colorSpaceAnalysis.PixelFormat, _sourceIsProgressive));
+    public bool HasCropFilter => HasSource && (_cropWidth != SourceWidth || _cropHeight != SourceHeight);
 
-    public string CropModHint => $"{CropModWidthHint}, {CropModHeightHint}";
+    public string CropTargetDisplay => !HasSource ? "--" : $"{CropWidth}x{CropHeight}";
 
     public string ScaleNotApplicableText =>
         !HasSource
@@ -216,7 +266,7 @@ public class FilterScribeVM : BaseVM
 
     public static int ScaleHeightMinimum => ResolutionScale.MinimumTargetHeight;
     public int ScaleHeightMaximum => HasSource
-        ? ResolutionScale.MaximumTargetHeight(SourceHeight)
+        ? ResolutionScale.MaximumTargetHeight(ScaleSourceHeight)
         : ResolutionScale.MinimumTargetHeight;
 
     public int ScaleStep => FFProbePixelFormatRules.GetResolutionScaleStep(_colorSpaceAnalysis.PixelFormat);
@@ -248,7 +298,7 @@ public class FilterScribeVM : BaseVM
     private string SourceDar => _sourceAspectRatio.Dar.ToString();
     private string SourceSar => _sourceAspectRatio.Sar.ToString();
 
-    private bool HasScaleFilter => IsScaleApplicable && (TargetWidth != SourceWidth || TargetHeight != SourceHeight);
+    private bool HasScaleFilter => IsScaleApplicable && (TargetWidth != ScaleSourceWidth || TargetHeight != ScaleSourceHeight);
 
     private bool HasFpsFilter => IsFrameRateApplicable;
 
@@ -271,7 +321,7 @@ public class FilterScribeVM : BaseVM
 
     private string? ColorSpaceFilterChain => HasColorSpaceFilter ? _colorSpaceAnalysis.FfmpegColorFilter : null;
 
-    private string? CropFilterChain => HasCropFilter ? $"crop={CropTargetWidth}:{CropTargetHeight}:0:0" : null;
+    private string? CropFilterChain => HasCropFilter ? $"crop={CropWidth}:{CropHeight}:0:0" : null;
 
     private bool IsColorSpaceStrategyShown(ColorSpaceStrategy strategy) =>
         !_hasSourceValidationError()
@@ -448,7 +498,7 @@ public class FilterScribeVM : BaseVM
 
     public string VapourSynthCropFilter =>
         HasCropFilter
-            ? $"src = core.std.CropAbs(src, {CropTargetWidth}, {CropTargetHeight})"
+            ? $"src = core.std.CropAbs(src, {CropWidth}, {CropHeight})"
             : LangProviderBase.NAText;
 
     public string AviSynthResizeFilter =>
@@ -458,7 +508,7 @@ public class FilterScribeVM : BaseVM
 
     public string AviSynthCropFilter =>
         HasCropFilter
-            ? $"Crop(0, 0, {CropTargetWidth}, {CropTargetHeight})"
+            ? $"Crop(0, 0, {CropWidth}, {CropHeight})"
             : LangProviderBase.NAText;
 
     public bool CanInsertAviSynthResizeFilter => HasScaleFilter;
@@ -480,7 +530,7 @@ public class FilterScribeVM : BaseVM
         if (!IsScaleApplicable) return;
 
         int targetHeight = ScaleHeight > 0 ? ScaleHeight : ScaleHeightMaximum;
-        var (w, h) = ResolutionScale.ComputeTargetDimensionsFromHeight(SourceWidth, SourceHeight, targetHeight);
+        var (w, h) = ResolutionScale.ComputeTargetDimensionsFromHeight(ScaleSourceWidth, ScaleSourceHeight, targetHeight);
 
         if (_targetWidth != w || _targetHeight != h)
         {
@@ -502,28 +552,49 @@ public class FilterScribeVM : BaseVM
         }
     }
 
+    private void RefreshScaleForCropChange()
+    {
+        int maximum = ScaleHeightMaximum;
+        if (_scaleHeight > maximum)
+        {
+            _scaleHeight = maximum;
+            OnPropertyChanged(nameof(ScaleHeight));
+        }
+
+        OnPropertyChanged(nameof(IsScaleApplicable));
+        OnPropertyChanged(nameof(ScaleHeightMaximum));
+        OnPropertyChanged(nameof(ScaleTickLabels));
+        OnPropertyChanged(nameof(TargetDisplay));
+        OnPropertyChanged(nameof(FfmpegResizeFilter));
+        OnPropertyChanged(nameof(FfmpegFpsScaleFilter));
+        OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
+        OnPropertyChanged(nameof(FfmpegFullChainFilter));
+        OnPropertyChanged(nameof(FfmpegHqdn3dFullChainFilter));
+        OnPropertyChanged(nameof(CanInsertAviSynthResizeFilter));
+        OnPropertyChanged(nameof(CanInsertVapourSynthResizeFilter));
+        OnPropertyChanged(nameof(CanInsertFfmpegResizeFilter));
+        OnPropertyChanged(nameof(VapourSynthResizeFilter));
+        OnPropertyChanged(nameof(AviSynthResizeFilter));
+        RecomputeTarget();
+    }
+
     private void RecomputeCrop()
     {
-        (int width, int height)? crop = HasSource
-            ? CropCalculator.GetCropDimensions(_colorSpaceAnalysis.PixelFormat, SourceWidth, SourceHeight, _sourceIsProgressive)
-            : null;
+        OnPropertyChanged(nameof(CropWidthMinimum));
+        OnPropertyChanged(nameof(CropWidthMaximum));
+        OnPropertyChanged(nameof(CropWidthStep));
+        OnPropertyChanged(nameof(CropWidthTickLabels));
+        OnPropertyChanged(nameof(CropHeightMinimum));
+        OnPropertyChanged(nameof(CropHeightMaximum));
+        OnPropertyChanged(nameof(CropHeightStep));
+        OnPropertyChanged(nameof(CropHeightTickLabels));
 
-        int newWidth = crop?.width ?? SourceWidth;
-        int newHeight = crop?.height ?? SourceHeight;
-        bool changed = _cropTargetWidth != newWidth || _cropTargetHeight != newHeight;
-
-        if (!changed)
-            return;
-
-        _cropTargetWidth = newWidth;
-        _cropTargetHeight = newHeight;
-        OnPropertyChanged(nameof(CropTargetWidth));
-        OnPropertyChanged(nameof(CropTargetHeight));
-        OnPropertyChanged(nameof(CropTargetDisplay));
-        OnPropertyChanged(nameof(CropModWidthHint));
-        OnPropertyChanged(nameof(CropModHeightHint));
-        OnPropertyChanged(nameof(CropModHint));
-        OnPropertyChanged(nameof(HasCropFilter));
+        _cropWidth = SourceWidth;
+        _cropHeight = SourceHeight;
+                OnPropertyChanged(nameof(CropWidth));
+                OnPropertyChanged(nameof(CropHeight));
+                OnPropertyChanged(nameof(CropTargetDisplay));
+                OnPropertyChanged(nameof(HasCropFilter));
         OnPropertyChanged(nameof(FfmpegCropFilter));
         OnPropertyChanged(nameof(VapourSynthCropFilter));
         OnPropertyChanged(nameof(AviSynthCropFilter));
@@ -534,6 +605,23 @@ public class FilterScribeVM : BaseVM
 
     private static string DescribeCropMod(int mod) =>
         mod <= 1 ? FilterScribeModalLangProvider.Current["SrcScribe.CropNoRestriction"] : $"mod-{mod}";
+
+    private static List<string> GenerateCropTickLabels(int min, int max, int count)
+    {
+        List<string> labels = [];
+        if (count <= 1 || max <= min)
+        {
+            labels.Add(min.ToString(CultureInfo.InvariantCulture));
+            return labels;
+        }
+
+        for (int i = 0; i < count; i++)
+        {
+            int value = min + (max - min) * i / (count - 1);
+            labels.Add(value.ToString(CultureInfo.InvariantCulture));
+        }
+        return labels;
+    }
 
     #endregion
 
@@ -664,7 +752,6 @@ public class FilterScribeVM : BaseVM
     #region Title properties
     public static string FfmpegText => "ffmpeg";
     public static string VapourSynthText => "VS";
-    public static string AviSynthText => "AVS(+)";
     public static string WindowTitle => FilterScribeModalLangProvider.WindowTitle;
     public static string VFRCFRTitle => "VFR→CFR";
 
@@ -686,7 +773,6 @@ public class FilterScribeVM : BaseVM
     public static string SubtitleBurnTitle => FilterScribeModalLangProvider.Current["SrcScribe.SubtitleBurnTitle"];
     public static string MultiFilterAssemblyTitle => FilterScribeModalLangProvider.Current["SrcScribe.MultiFilterAssemblyTitle"];
     public static string CropTitle => FilterScribeModalLangProvider.Current["SrcScribe.CropTitle"];
-    public static string CropTargetLabel => FilterScribeModalLangProvider.Current["SrcScribe.CropTargetLabel"];
     public static string CropNoRestriction => FilterScribeModalLangProvider.Current["SrcScribe.CropNoRestriction"];
     public static string LowToHighColorFilterLabel => "NCG";
     public static string HighToLowColorFilterLabel => "WCG";
@@ -766,9 +852,9 @@ public class FilterScribeVM : BaseVM
         InsertAvsFilterCommand = new ActionCmd(filter => AppendScriptFilter(ref _avsUserInput, filter as string, nameof(AvsUserInput)));
         InsertVpyFilterCommand = new ActionCmd(filter => AppendScriptFilter(ref _vpyUserInput, filter as string, nameof(VpyUserInput)));
         InsertFfmpegFilterCommand = new ActionCmd(filter => AppendFfmpegFilter(filter as string));
-        InsertAvsCropFilterCommand = new ActionCmd(filter => InsertCropFilter(filter as string, value => AppendScriptFilter(ref _avsUserInput, value, nameof(AvsUserInput))), _ => CanInsertAviSynthCropFilter);
-        InsertVpyCropFilterCommand = new ActionCmd(filter => InsertCropFilter(filter as string, value => AppendScriptFilter(ref _vpyUserInput, value, nameof(VpyUserInput))), _ => CanInsertVapourSynthCropFilter);
-        InsertFfmpegCropFilterCommand = new ActionCmd(filter => InsertCropFilter(filter as string, AppendFfmpegFilter), _ => CanInsertFfmpegCropFilter);
+        InsertAvsCropFilterCommand = new ActionCmd(filter => InsertCropFilter(filter as string, value => AppendScriptFilter(ref _avsUserInput, value, nameof(AvsUserInput))));
+        InsertVpyCropFilterCommand = new ActionCmd(filter => InsertCropFilter(filter as string, value => AppendScriptFilter(ref _vpyUserInput, value, nameof(VpyUserInput))));
+        InsertFfmpegCropFilterCommand = new ActionCmd(filter => InsertCropFilter(filter as string, AppendFfmpegFilter));
         ConfigureConcatSources();
         ConfigureRepartOutputs();
         ParseColorSpaceInfo(sourceFfprobeJson);
@@ -1405,7 +1491,9 @@ public class FilterScribeVM : BaseVM
             SourceWidth,
             SourceHeight,
             suggestedWidth,
-            suggestedHeight);
+            suggestedHeight,
+            HasCropFilter ? CropWidth : 0,
+            HasCropFilter ? CropHeight : 0);
 
         window.DataContext = vm;
         window.Owner = Application.Current.Windows
@@ -1429,9 +1517,6 @@ public class FilterScribeVM : BaseVM
         if (!HasCropFilter || string.IsNullOrWhiteSpace(filter) || filter.Contains(LangProviderBase.NAText, StringComparison.Ordinal))
             return false;
 
-        if (!ShowSourceReviserModal(CropTargetWidth, CropTargetHeight))
-            return false;
-
         insertAction(filter);
         return true;
     }
@@ -1439,7 +1524,7 @@ public class FilterScribeVM : BaseVM
     #region Script Save Queries
     private (int width, int height) GetSuggestedOutputResolution()
     {
-        if (IsScaleApplicable && TargetWidth > 0 && TargetHeight > 0)
+        if (HasScaleFilter && TargetWidth > 0 && TargetHeight > 0)
             return (TargetWidth, TargetHeight);
 
         return HasSource ? (SourceWidth, SourceHeight) : (0, 0);
@@ -1680,16 +1765,17 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(Lang));
         OnPropertyChanged(nameof(FfmpegConcatFileList));
         OnPropertyChanged(nameof(CropTitle));
-        OnPropertyChanged(nameof(CropTargetLabel));
-        OnPropertyChanged(nameof(CropNoRestriction));
         OnPropertyChanged(nameof(CropTargetDisplay));
-        OnPropertyChanged(nameof(CropModWidthHint));
-        OnPropertyChanged(nameof(CropModHeightHint));
-        OnPropertyChanged(nameof(CropModHint));
         OnPropertyChanged(nameof(HasCropFilter));
         OnPropertyChanged(nameof(FfmpegCropFilter));
         OnPropertyChanged(nameof(VapourSynthCropFilter));
         OnPropertyChanged(nameof(AviSynthCropFilter));
+        OnPropertyChanged(nameof(CropWidthMinimum));
+        OnPropertyChanged(nameof(CropWidthMaximum));
+        OnPropertyChanged(nameof(CropHeightMinimum));
+        OnPropertyChanged(nameof(CropHeightMaximum));
+        OnPropertyChanged(nameof(CropWidthTickLabels));
+        OnPropertyChanged(nameof(CropHeightTickLabels));
         OnPropertyChanged(nameof(ResolutionScaleTitle));
         OnPropertyChanged(nameof(ScaleHeightLabel));
         OnPropertyChanged(nameof(HasSource));
@@ -1709,7 +1795,6 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(VapourSynthVszipclPreviewHint));
         OnPropertyChanged(nameof(VapourSynthVszipclDeviceHint));
         OnPropertyChanged(nameof(VapourSynthVszipclFmtconvHint));
-        OnPropertyChanged(nameof(AviSynthText));
         OnPropertyChanged(nameof(ColorSpaceConvertTitle));
         OnPropertyChanged(nameof(DenoiseTitle));
         OnPropertyChanged(nameof(ScaleHint));

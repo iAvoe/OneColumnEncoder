@@ -10,6 +10,8 @@ public class SrcReviserVM : BaseVM
     private readonly int _currentHeight;
     private readonly int _suggestedWidth;
     private readonly int _suggestedHeight;
+    private readonly int _cropWidth;
+    private readonly int _cropHeight;
     private string _resolutionWidthText;
     private string _resolutionHeightText;
 
@@ -21,7 +23,9 @@ public class SrcReviserVM : BaseVM
         int currentWidth,
         int currentHeight,
         int suggestedWidth,
-        int suggestedHeight)
+        int suggestedHeight,
+        int cropWidth = 0,
+        int cropHeight = 0)
     {
         _modalNavS = modalNavS;
         _finishAction = finishAction;
@@ -30,6 +34,8 @@ public class SrcReviserVM : BaseVM
         _currentHeight = currentHeight;
         _suggestedWidth = suggestedWidth;
         _suggestedHeight = suggestedHeight;
+        _cropWidth = cropWidth;
+        _cropHeight = cropHeight;
 
         ResolutionWidth = suggestedWidth;
         ResolutionHeight = suggestedHeight;
@@ -43,6 +49,9 @@ public class SrcReviserVM : BaseVM
         UseCurrentResolutionCommand = new ActionCmd(
             _ => SetResolutionText(_currentWidth, _currentHeight),
             _ => _currentWidth > 0 && _currentHeight > 0);
+        UseCropResolutionCommand = new ActionCmd(
+            _ => SetResolutionText(_cropWidth, _cropHeight),
+            _ => HasCrop);
         UseSuggestedResolutionCommand = new ActionCmd(
             _ => SetResolutionText(_suggestedWidth, _suggestedHeight),
             _ => _suggestedWidth > 0 && _suggestedHeight > 0);
@@ -64,10 +73,13 @@ public class SrcReviserVM : BaseVM
     public static string WidthLabel => SrcReviserLangProvider.Current["SrcReviser.WidthLabel"];
     public static string HeightLabel => SrcReviserLangProvider.Current["SrcReviser.HeightLabel"];
     public static string CurrentResolutionLabel => SrcReviserLangProvider.Current["SrcReviser.CurrentLabel"];
+    public static string CropResolutionLabel => SrcReviserLangProvider.Current["SrcReviser.CropResolutionLabel"];
     public static string SuggestedResolutionLabel => SrcReviserLangProvider.Current["SrcReviser.SuggestedLabel"];
     public static string EvenResolutionHint => SrcReviserLangProvider.Current["SrcReviser.EvenResolutionHint"];
     public string CurrentResolutionText => FormatResolution(_currentWidth, _currentHeight);
+    public string CropResolutionText => FormatResolution(_cropWidth, _cropHeight);
     public string SuggestedResolutionText => FormatResolution(_suggestedWidth, _suggestedHeight);
+    public bool HasCrop => _cropWidth > 0 && _cropHeight > 0;
 
     public string ResolutionWidthText
     {
@@ -84,6 +96,7 @@ public class SrcReviserVM : BaseVM
     public int ResolutionWidth { get; private set; }
     public int ResolutionHeight { get; private set; }
     public ActionCmd UseCurrentResolutionCommand { get; }
+    public ActionCmd UseCropResolutionCommand { get; }
     public ActionCmd UseSuggestedResolutionCommand { get; }
     public ButtonGroupVM FinishButtons { get; }
 
@@ -140,10 +153,12 @@ public class SrcReviserVM : BaseVM
         OnPropertyChanged(nameof(WidthLabel));
         OnPropertyChanged(nameof(HeightLabel));
         OnPropertyChanged(nameof(CurrentResolutionLabel));
+        OnPropertyChanged(nameof(CropResolutionLabel));
         OnPropertyChanged(nameof(SuggestedResolutionLabel));
         OnPropertyChanged(nameof(EvenResolutionHint));
         OnPropertyChanged(nameof(CurrentResolutionText));
         OnPropertyChanged(nameof(SuggestedResolutionText));
+        OnPropertyChanged(nameof(CropResolutionText));
 
         FinishButtons.B2_1Text = SrcReviserLangProvider.Current["SrcReviser.Cancel"];
         FinishButtons.B2_2Text = SrcReviserLangProvider.Current["SrcReviser.Confirm"];

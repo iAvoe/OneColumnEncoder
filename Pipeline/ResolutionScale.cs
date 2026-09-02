@@ -2,7 +2,7 @@ namespace OneColumnEncoder.Pipeline;
 
 public static class ResolutionScale
 {
-    private const int MinDimension = 120;
+    private const int MinDimension = 120; // Arbitrary but small enough, if user needs lower, just edit manually in textbox
 
     public static (int width, int height) ComputeTargetDimensions(int sourceWidth, int sourceHeight, int scalePercent)
     {
@@ -19,13 +19,18 @@ public static class ResolutionScale
         return (w, h);
     }
 
-    public static int EnsureEven(int value) => value % 2 == 0 ? value : value + 1;
+    public static int EnsureEven(int value) => value % 2 == 0
+        ? value
+        : value + 1;
 
-    public static int EnsureMin16(int value) => value < MinDimension ? MinDimension : value;
+    public static int EnsureMinDimension(int value) =>
+        value < MinDimension ? MinDimension : value;
 
-    public static int EnsureValid(int value) => EnsureEven(EnsureMin16(value));
+    public static int EnsureValid(int value) =>
+        EnsureEven(EnsureMinDimension(value));
 
-    public static bool IsScaleApplicable(int width, int height) => width > MinDimension || height > MinDimension;
+    public static bool IsScaleApplicable(int width, int height) =>
+        width > MinDimension || height > MinDimension;
 
     public static int MinimumTargetHeight => MinDimension;
 

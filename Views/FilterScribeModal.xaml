@@ -365,24 +365,13 @@
                             Content="+"
                             FontSize="14" />
                 </Grid>
-                <Grid Margin="0 5 0 0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="40" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding FfmpegText}"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1"
-                             Text="{Binding FfmpegSarRepairFilter, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{StaticResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             VerticalAlignment="Center" />
-                </Grid>
+                <TextBox Text="{Binding FfmpegSarRepairFilter, Mode=OneWay}"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         FontFamily="{StaticResource CodeFont}"
+                         Background="{StaticResource Background}"
+                         Foreground="{StaticResource ButtonTertiary}"
+                         VerticalAlignment="Center" />
             </StackPanel>
 
             <StackPanel Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
@@ -563,51 +552,27 @@
                             FontSize="14" />
                 </Grid>
                 <!-- FFMPEG Hqdn3d -->
-                <Grid Margin="0 5 0 0"
-                      Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="40" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding FfmpegText}"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1"
-                             Text="{Binding FfmpegHqdn3dDenoiseFilter, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             VerticalAlignment="Center" />
-                </Grid>
+                <TextBox Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                         Text="{Binding FfmpegHqdn3dDenoiseFilter, Mode=OneWay}"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         FontFamily="{DynamicResource CodeFont}"
+                         Background="{StaticResource Background}"
+                         Foreground="{StaticResource ButtonTertiary}"
+                         VerticalAlignment="Center" />
                 <!-- AVS Hqdn3d -->
-                <Grid Margin="0 5 0 0"
-                      Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="40" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding AviSynthText}"
-                               FontWeight="Bold"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1"
-                             Margin="0 2.5 0 0"
-                             Padding="2.5"
-                             Text="{Binding AviSynthHqdn3dDenoiseFilter, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             VerticalAlignment="Center" />
-                </Grid>
+                <TextBox Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                         Padding="0 2.5"
+                         Text="{Binding AviSynthHqdn3dDenoiseFilter, Mode=OneWay}"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         FontFamily="{DynamicResource CodeFont}"
+                         Background="{StaticResource Background}"
+                         Foreground="{StaticResource ButtonTertiary}"
+                         VerticalAlignment="Center" />
             </StackPanel>
 
-            <StackPanel Visibility="{Binding HasCropFilter, Converter={StaticResource BoolToVisibility}}">
+            <StackPanel Visibility="{Binding IsCropSectionVisible, Converter={StaticResource BoolToVisibility}}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -659,31 +624,54 @@
                             FontSize="14" />
                 </Grid>
 
+                <!-- Crop width slider -->
+                <Grid Margin="0 5 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <comps:IntegerSlider Grid.Column="0"
+                                         Minimum="{Binding CropWidthMinimum}"
+                                         Maximum="{Binding CropWidthMaximum}"
+                                         Value="{Binding CropWidth}"
+                                         TickLabels="{Binding CropWidthTickLabels}"
+                                         TickCount="5"
+                                         Step="{Binding CropWidthStep}" />
+                    <Border Grid.Column="1"
+                            VerticalAlignment="Center"
+                            BorderThickness="0"
+                            HorizontalAlignment="Right">
+                        <TextBlock Text="{Binding CropWidth}"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   HorizontalAlignment="Center" />
+                    </Border>
+                </Grid>
+                <!-- Crop height slider -->
                 <Grid Margin="0 2.5 0 0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="62" />
                         <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding CropTargetLabel}"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1"
-                             Text="{Binding CropTargetDisplay, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             VerticalAlignment="Center" />
+                    <comps:IntegerSlider Grid.Column="0"
+                                         Minimum="{Binding CropHeightMinimum}"
+                                         Maximum="{Binding CropHeightMaximum}"
+                                         Value="{Binding CropHeight}"
+                                         TickLabels="{Binding CropHeightTickLabels}"
+                                         TickCount="5"
+                                         Step="{Binding CropHeightStep}" />
+                    <Border Grid.Column="1"
+                            VerticalAlignment="Center"
+                            BorderThickness="0"
+                            HorizontalAlignment="Right">
+                        <TextBlock Text="{Binding CropHeight}"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   HorizontalAlignment="Center" />
+                    </Border>
                 </Grid>
-
-                <comps:HintPanel Margin="0 2.5 0 0"
-                                 Text="{Binding CropModHint}" />
 
                 <TextBox Margin="0 5 0 0"
                          Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
-                         Padding="2.5"
+                         Padding="0 2.5"
                          Text="{Binding AviSynthCropFilter, Mode=OneWay}"
                          IsReadOnly="True"
                          BorderThickness="0"
@@ -694,7 +682,7 @@
                          VerticalAlignment="Center" />
                 <TextBox Margin="0 5 0 0"
                          Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
-                         Padding="2.5"
+                         Padding="0 2.5"
                          Text="{Binding VapourSynthCropFilter, Mode=OneWay}"
                          IsReadOnly="True"
                          BorderThickness="0"
@@ -705,7 +693,7 @@
                          VerticalAlignment="Center" />
                 <TextBox Margin="0 5 0 0"
                          Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
-                         Padding="2.5"
+                         Padding="0 2.5"
                          Text="{Binding FfmpegCropFilter, Mode=OneWay}"
                          IsReadOnly="True"
                          BorderThickness="0"
@@ -841,32 +829,20 @@
                 </Grid>
 
                 <!-- ffmpeg res strink -->
-                <Grid Margin="0 10 0 0"
-                      Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="47.5" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Margin="0 0 0 0"
-                               Text="{Binding FfmpegText}"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               VerticalAlignment="Center" />
-                    <TextBox Grid.Column="1"
-                             Margin="0 2.5 0 0"
-                             Padding="2.5"
-                             Text="{Binding FfmpegResizeFilter, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             FontWeight="Normal" />
-                </Grid>
+                <TextBox Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                         Margin="0 2.5 0 0"
+                         Padding="0 2.5"
+                         Text="{Binding FfmpegResizeFilter, Mode=OneWay}"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         FontFamily="{DynamicResource CodeFont}"
+                         Background="{StaticResource Background}"
+                         Foreground="{StaticResource ButtonTertiary}"
+                         FontWeight="Normal" />
                 <!-- VS Res shrink -->
                 <TextBox Margin="0 5 0 0"
                          Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
-                         Padding="2.5"
+                         Padding="0 2.5"
                          Text="{Binding VapourSynthResizeFilter, Mode=OneWay}"
                          IsReadOnly="True"
                          BorderThickness="0"
@@ -885,10 +861,11 @@
                     <TextBlock Grid.Column="0"
                                Text="{Binding AviSynthText}"
                                Foreground="{StaticResource GlobalSecondary}"
-                               VerticalAlignment="Center" />
+                               VerticalAlignment="Center"
+                               FontWeight="Bold" />
                     <TextBox Grid.Column="1"
-                             Margin="0 2.5 0 0"
-                             Padding="2.5"
+                             Margin="5 2.5 0 0"
+                             Padding="0 2.5"
                              Text="{Binding AviSynthResizeFilter, Mode=OneWay}"
                              IsReadOnly="True"
                              BorderThickness="0"

@@ -4,8 +4,7 @@ public static class CropCalculator
 {
     public static (int width, int height)? GetCropDimensions(string? pixelFormat, int width, int height, bool isProgressive)
     {
-        if (width <= 0 || height <= 0)
-            return null;
+        if (width <= 0 || height <= 0) return null;
 
         int widthMod = GetWidthMod(pixelFormat);
         int heightMod = GetHeightMod(pixelFormat, isProgressive);
