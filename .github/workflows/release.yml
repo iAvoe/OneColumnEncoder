@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag_name:
-        description: 'Semantic version tag to create release for (vX.Y.Z)'
+        description: 'Semantic version tag to create release for (vX.Y.Z). !Remember to bump in OneColumnEncoder.csproj!'
         required: true
         type: string
         default: 'v1.0.0'
