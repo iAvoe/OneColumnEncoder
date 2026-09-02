@@ -51,7 +51,7 @@ public class FilterScribeVM : BaseVM
     public bool IsRepartMode => _isRepartRoute?.Invoke() == true;
     public static bool CanEditConcatSources => true;
     public bool HasSourceAnalysis => _hasSourceAnalysis;
-    // 0: AVS, 1: VPY, 2: ffmpeg
+    // 0: AVS, 1: VS, 2: ffmpeg
     private int _selectedTabIndex;
     public int SelectedTabIndex
     {
@@ -130,7 +130,7 @@ public class FilterScribeVM : BaseVM
     }
     public static string VpyPrefix2 => FilterScribeModalLangProvider.Current["SrcScribe.VpyPrefix2"];
     public static string VpySuffix => FilterScribeModalLangProvider.Current["SrcScribe.VpySuffix"];
-    public FilterScribeModalLangProvider Lang => FilterScribeModalLangProvider.Current;
+    public static FilterScribeModalLangProvider Lang => FilterScribeModalLangProvider.Current;
     #endregion
 
     #region Resolution scaling
@@ -389,19 +389,13 @@ public class FilterScribeVM : BaseVM
         }
     }
 
-    private string GeneratedFfmpegFilterArgs
-    {
-        get
-        {
-            bool hasSar = HasSarRepairFilter;
-            bool hasColor = HasColorSpaceFilter;
-            bool hasFps = HasFpsFilter;
-            bool hasScale = HasScaleFilter;
-            if (!hasSar && !hasColor && !hasFps && !hasScale) return string.Empty;
-            if (hasSar && !hasColor && !hasFps && !hasScale) return BuildFfmpegFilterArgs(includeSwsFlags: false, includeCsp709Flags: false, SarRepairFilterChain);
-            return BuildFfmpegFilterArgs(hasScale, hasColor, FpsFilterChain, SarRepairFilterChain, ColorSpaceFilterChain, ScaleFilterChain);
-        }
-    }
+    public bool CanInsertFfmpegFpsFilter => HasFpsFilter;
+    public bool CanInsertFfmpegSarRepairFilter => HasSarRepairFilter;
+    public bool CanInsertFfmpegResizeFilter => HasScaleFilter;
+    public bool CanInsertFfmpegLowToHighColorFilter => IsColorSpaceStrategyShown(ColorSpaceStrategy.LowToHigh);
+    public bool CanInsertFfmpegHighToLowColorFilter => IsColorSpaceStrategyShown(ColorSpaceStrategy.HighToLow);
+    public bool CanInsertFfmpegHdrToSdrColorFilter => IsColorSpaceStrategyShown(ColorSpaceStrategy.HdrToSdr);
+    public bool CanInsertFfmpegHighHdrToLowSdrColorFilter => IsColorSpaceStrategyShown(ColorSpaceStrategy.HighHdrToSdr);
 
     private string GetColorSpaceStrategyFilter(ColorSpaceStrategy strategy) =>
         IsColorSpaceStrategyShown(strategy)
@@ -431,6 +425,14 @@ public class FilterScribeVM : BaseVM
             ? $"BicubicResize({TargetWidth}, {TargetHeight})"
             : LangProviderBase.NAText;
 
+    public bool CanInsertAviSynthResizeFilter => HasScaleFilter;
+    public bool CanInsertVapourSynthResizeFilter => HasScaleFilter;
+    public bool CanInsertVapourSynthVszipclFilter => CanUseVapourSynthVszipcl;
+
+    private bool CanUseVapourSynthVszipcl =>
+        OpenCLDetector.IsOpenCLAvailable()
+        && FFProbePixelFormatRules.IsYuvRgbOrGray(_colorSpaceAnalysis.PixelFormat);
+
     public List<string> ScaleTickLabels =>
         ResolutionScale.GenerateHeightTickLabels(ScaleHeightMinimum, ScaleHeightMaximum, 5);
 
@@ -453,6 +455,9 @@ public class FilterScribeVM : BaseVM
             OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
             OnPropertyChanged(nameof(FfmpegFullChainFilter));
             OnPropertyChanged(nameof(FfmpegHqdn3dFullChainFilter));
+            OnPropertyChanged(nameof(CanInsertAviSynthResizeFilter));
+            OnPropertyChanged(nameof(CanInsertVapourSynthResizeFilter));
+            OnPropertyChanged(nameof(CanInsertFfmpegResizeFilter));
             OnPropertyChanged(nameof(VapourSynthResizeFilter));
             OnPropertyChanged(nameof(AviSynthResizeFilter));
         }
@@ -510,16 +515,90 @@ public class FilterScribeVM : BaseVM
         set => SetProperty(ref _ffmpegFreeText, value);
     }
 
+    private void AppendScriptFilter(ref string target, string? filter, string propertyName)
+    {
+        if (string.IsNullOrWhiteSpace(filter) || filter.Contains(LangProviderBase.NAText, StringComparison.Ordinal))
+            return;
+
+        target = string.IsNullOrEmpty(target)
+            ? filter
+            : target.TrimEnd('\r', '\n') + "\r\n" + filter;
+
+        OnPropertyChanged(propertyName);
+    }
+
+    private void AppendFfmpegFilter(string? filter)
+    {
+        if (string.IsNullOrWhiteSpace(filter) || filter.Contains(LangProviderBase.NAText, StringComparison.Ordinal))
+            return;
+
+        if (filter.StartsWith("-filter_complex", StringComparison.OrdinalIgnoreCase))
+        {
+            FfmpegFreeText = string.IsNullOrWhiteSpace(FfmpegFreeText)
+                ? filter.Trim()
+                : $"{FfmpegFreeText.Trim()} {filter.Trim()}";
+            return;
+        }
+
+        if (!TrySplitVideoFilterArgs(filter, out string generatedChain, out string generatedSuffix))
+        {
+            FfmpegFreeText = string.IsNullOrWhiteSpace(FfmpegFreeText)
+                ? filter.Trim()
+                : $"{FfmpegFreeText.Trim()} {filter.Trim()}";
+            return;
+        }
+
+        if (!TrySplitVideoFilterArgs(FfmpegFreeText, out string currentChain, out string currentSuffix))
+        {
+            FfmpegFreeText = string.IsNullOrWhiteSpace(FfmpegFreeText)
+                ? filter.Trim()
+                : $"-filter:v \"{FfmpegFreeText.Trim()},{generatedChain}\"{generatedSuffix}";
+            return;
+        }
+
+        string suffix = string.IsNullOrWhiteSpace(currentSuffix) ? generatedSuffix : currentSuffix;
+        FfmpegFreeText = $"-filter:v \"{currentChain},{generatedChain}\"{suffix}".Trim();
+    }
+
+    private static bool TrySplitVideoFilterArgs(string? value, out string chain, out string suffix)
+    {
+        chain = string.Empty;
+        suffix = string.Empty;
+        if (string.IsNullOrWhiteSpace(value)) return false;
+
+        int optionIndex = value.IndexOf("-filter:v", StringComparison.OrdinalIgnoreCase);
+        if (optionIndex < 0) return false;
+
+        int contentStart = optionIndex + "-filter:v".Length;
+        while (contentStart < value.Length && char.IsWhiteSpace(value[contentStart])) contentStart++;
+        if (contentStart >= value.Length) return false;
+
+        char quote = value[contentStart] is '"' or '\'' ? value[contentStart++] : '\0';
+        int contentEnd = quote == '\0'
+            ? value.IndexOf(' ', contentStart)
+            : value.IndexOf(quote, contentStart);
+        if (contentEnd < 0) contentEnd = value.Length;
+
+        chain = value[contentStart..contentEnd].Trim();
+        suffix = value[(contentEnd + (quote == '\0' ? 0 : 1))..].Trim();
+        return !string.IsNullOrWhiteSpace(chain);
+    }
+
     public string FfmpegConcatFileList => IsConcatMode
         ? ScriptTemplate.BuildConcatFfmpegFileList(GetDisplayConcatFilePaths())
         : string.Empty;
     #endregion
 
-    #region UILang properties
+    #region Title properties
     public static string FfmpegText => "ffmpeg";
     public static string VapourSynthText => "VS";
     public static string AviSynthText => "AVS(+)";
     public static string WindowTitle => FilterScribeModalLangProvider.WindowTitle;
+    public static string VFRCFRTitle => "VFR→CFR";
+
+    #endregion
+
+    #region UILang properties
     public static string ScribeDescription => FilterScribeModalLangProvider.Current["SrcScribe.Description"];
     public static string NoteText => FilterScribeModalLangProvider.Current["SrcScribe.NoteText"];
     public static string TabAvs => FilterScribeModalLangProvider.Current["SrcScribe.TabAvs"];
@@ -529,7 +608,6 @@ public class FilterScribeVM : BaseVM
     public static string ScaleHeightLabel => FilterScribeModalLangProvider.Current["SrcScribe.ScaleHeightLabel"];
     public static string FfmpegFreeTextHint => FilterScribeModalLangProvider.Current["SrcScribe.FfmpegFreeTextHint"];
     public static string SarRepairTitle => FilterScribeModalLangProvider.Current["SrcScribe.SarRepairTitle"];
-    public static string FrameRateConvertTitle => FilterScribeModalLangProvider.Current["SrcScribe.FrameRateConvertTitle"];
     public static string ColorSpaceConvertTitle => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpaceConvertTitle"];
     public static string DenoiseTitle => FilterScribeModalLangProvider.Current["SrcScribe.DenoiseTitle"];
     public static string ScaleHint => FilterScribeModalLangProvider.Current["SrcScribe.ScaleHint"];
@@ -544,6 +622,9 @@ public class FilterScribeVM : BaseVM
 
     public ButtonGroupVM FinishScribeButtons { get; private set; } = null!;
     public ActionCmd OpenVpyPreviewCommand { get; }
+    public ActionCmd InsertAvsFilterCommand { get; }
+    public ActionCmd InsertVpyFilterCommand { get; }
+    public ActionCmd InsertFfmpegFilterCommand { get; }
     public bool CanOpenVpyPreview => GetVpyPreviewsrcPaths().Length > 0;
 
     public FilterScribeVM(
@@ -604,6 +685,9 @@ public class FilterScribeVM : BaseVM
         _hasSourceAnalysis = !string.IsNullOrWhiteSpace(sourceFfprobeJson);
         ConcatSources.IsRepartMode = IsRepartMode;
         OpenVpyPreviewCommand = new ActionCmd(_ => OpenVpyPreview(), _ => CanOpenVpyPreview);
+        InsertAvsFilterCommand = new ActionCmd(filter => AppendScriptFilter(ref _avsUserInput, filter as string, nameof(AvsUserInput)));
+        InsertVpyFilterCommand = new ActionCmd(filter => AppendScriptFilter(ref _vpyUserInput, filter as string, nameof(VpyUserInput)));
+        InsertFfmpegFilterCommand = new ActionCmd(filter => AppendFfmpegFilter(filter as string));
         ConfigureConcatSources();
         ConfigureRepartOutputs();
         ParseColorSpaceInfo(sourceFfprobeJson);
@@ -726,6 +810,10 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(FfmpegHighToLowColorFilter));
         OnPropertyChanged(nameof(FfmpegHdrToSdrColorFilter));
         OnPropertyChanged(nameof(FfmpegHighHdrToLowSdrColorFilter));
+        OnPropertyChanged(nameof(CanInsertFfmpegLowToHighColorFilter));
+        OnPropertyChanged(nameof(CanInsertFfmpegHighToLowColorFilter));
+        OnPropertyChanged(nameof(CanInsertFfmpegHdrToSdrColorFilter));
+        OnPropertyChanged(nameof(CanInsertFfmpegHighHdrToLowSdrColorFilter));
         OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
         OnPropertyChanged(nameof(FfmpegFullChainFilter));
         OnPropertyChanged(nameof(VapourSynthVszipclFilter));
@@ -739,6 +827,9 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(FfmpegFpsScaleFilter));
         OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
         OnPropertyChanged(nameof(FfmpegFullChainFilter));
+        OnPropertyChanged(nameof(CanInsertFfmpegFpsFilter));
+        OnPropertyChanged(nameof(CanInsertFfmpegSarRepairFilter));
+        OnPropertyChanged(nameof(CanInsertFfmpegResizeFilter));
     }
 
     private void ParseSourceResolution(string? sourceFfprobeJson)
@@ -1507,7 +1598,6 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(VapourSynthVszipclDeviceHint));
         OnPropertyChanged(nameof(VapourSynthVszipclFmtconvHint));
         OnPropertyChanged(nameof(AviSynthText));
-        OnPropertyChanged(nameof(FrameRateConvertTitle));
         OnPropertyChanged(nameof(ColorSpaceConvertTitle));
         OnPropertyChanged(nameof(DenoiseTitle));
         OnPropertyChanged(nameof(ScaleHint));
