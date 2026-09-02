@@ -28,7 +28,6 @@ A next-gen smart video encoding utility based on .NET 9/WPF, focused on tool/enc
   - Color space conversion
   - SAR restoration
   - Resize
-  - Descale
 - Additional OpenCL filters for VapourSynth:
   - Denoise
   - Deband
