@@ -526,13 +526,13 @@
                     </Grid.ColumnDefinitions>
 
                     <comps:IntegerSlider Grid.Column="0"
-                                         Label="{Binding ScalePercentLabel}"
-                                         Minimum="10"
-                                         Maximum="100"
-                                         Value="{Binding ScalePercent}"
+                                         Label=""
+                                         Minimum="{Binding ScaleHeightMinimum}"
+                                         Maximum="{Binding ScaleHeightMaximum}"
+                                         Value="{Binding ScaleHeight}"
                                          TickLabels="{Binding ScaleTickLabels}"
                                          TickCount="5"
-                                         Step="1">
+                                         Step="{Binding ScaleStep}">
                         <comps:IntegerSlider.Style>
                             <Style TargetType="comps:IntegerSlider">
                                 <Setter Property="Visibility"

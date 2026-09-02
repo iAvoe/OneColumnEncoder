@@ -50,6 +50,7 @@ public static class FFProbePixelFormatRules
     public static int GetChromaSubsamplingDepth(string? pixelFormat)
     {
         if (string.IsNullOrWhiteSpace(pixelFormat)) return -2;
+        if (pixelFormat.Contains("411", StringComparison.OrdinalIgnoreCase)) return 2;
         if (pixelFormat.Contains("444", StringComparison.OrdinalIgnoreCase)
             || pixelFormat.Contains("rgb", StringComparison.OrdinalIgnoreCase)
             || pixelFormat.Contains("gbr", StringComparison.OrdinalIgnoreCase)
@@ -62,5 +63,15 @@ public static class FFProbePixelFormatRules
             || pixelFormat.Contains("nv16", StringComparison.OrdinalIgnoreCase))
             return 1;
         return -2;
+    }
+
+    public static int GetResolutionScaleStep(string? pixelFormat)
+    {
+        if (string.IsNullOrWhiteSpace(pixelFormat)) return 2;
+        if (pixelFormat.Contains("rgb", StringComparison.OrdinalIgnoreCase)
+            || pixelFormat.Contains("gbr", StringComparison.OrdinalIgnoreCase)
+            || pixelFormat.Contains("bgr", StringComparison.OrdinalIgnoreCase))
+            return 1;
+        return pixelFormat.Contains("411", StringComparison.OrdinalIgnoreCase) ? 4 : 2;
     }
 }

@@ -146,6 +146,9 @@ public class FilterScribeVM : BaseVM
             {
                 OnPropertyChanged(nameof(HasSource));
                 OnPropertyChanged(nameof(IsScaleApplicable));
+                OnPropertyChanged(nameof(ScaleHeightMaximum));
+                OnPropertyChanged(nameof(ScaleStep));
+                OnPropertyChanged(nameof(ScaleTickLabels));
                 OnPropertyChanged(nameof(AviSynthAssRenderFilter));
                 RecomputeTarget();
             }
@@ -160,8 +163,13 @@ public class FilterScribeVM : BaseVM
         {
             if (SetProperty(ref _sourceHeight, value))
             {
+                _scaleHeight = ResolutionScale.MaximumTargetHeight(value);
+                OnPropertyChanged(nameof(ScaleHeight));
                 OnPropertyChanged(nameof(HasSource));
                 OnPropertyChanged(nameof(IsScaleApplicable));
+                OnPropertyChanged(nameof(ScaleHeightMaximum));
+                OnPropertyChanged(nameof(ScaleStep));
+                OnPropertyChanged(nameof(ScaleTickLabels));
                 OnPropertyChanged(nameof(AviSynthAssRenderFilter));
                 RecomputeTarget();
             }
@@ -176,21 +184,29 @@ public class FilterScribeVM : BaseVM
             ? FilterScribeModalLangProvider.Current["SrcScribe.NoVidSrcWarning"]
             : string.Format(FilterScribeModalLangProvider.Current["SrcScribe.ScaleNotApplicable"], 16);
 
-    private int _scalePercent = 100;
-    public int ScalePercent
+    private int _scaleHeight;
+    public int ScaleHeight
     {
-        get => _scalePercent;
+        get => _scaleHeight;
         set
         {
-            if (SetProperty(ref _scalePercent, value)) RecomputeTarget();
+            int clamped = Math.Clamp(value, ScaleHeightMinimum, ScaleHeightMaximum);
+            if (SetProperty(ref _scaleHeight, clamped)) RecomputeTarget();
         }
     }
+
+    public static int ScaleHeightMinimum => ResolutionScale.MinimumTargetHeight;
+    public int ScaleHeightMaximum => HasSource
+        ? ResolutionScale.MaximumTargetHeight(SourceHeight)
+        : ResolutionScale.MinimumTargetHeight;
+
+    public int ScaleStep => FFProbePixelFormatRules.GetResolutionScaleStep(_colorSpaceAnalysis.PixelFormat);
 
     public void CommitScale()
     {
         if (!IsScaleApplicable) return;
         // var w, h are discard values now
-        var (_, _) = ResolutionScale.ComputeTargetDimensions(SourceWidth, SourceHeight, ScalePercent);
+        RecomputeTarget();
         OnPropertyChanged(nameof(TargetDisplay));
         OnPropertyChanged(nameof(FfmpegResizeFilter));
         OnPropertyChanged(nameof(FfmpegFpsScaleFilter));
@@ -415,13 +431,16 @@ public class FilterScribeVM : BaseVM
             ? $"BicubicResize({TargetWidth}, {TargetHeight})"
             : LangProviderBase.NAText;
 
-    public static List<string> ScaleTickLabels =>
-        ResolutionScale.GenerateTickLabels(10, 100, 5);
+    public List<string> ScaleTickLabels =>
+        ResolutionScale.GenerateHeightTickLabels(ScaleHeightMinimum, ScaleHeightMaximum, 5);
 
     private void RecomputeTarget()
     {
         if (!IsScaleApplicable) return;
-        var (w, h) = ResolutionScale.ComputeTargetDimensions(SourceWidth, SourceHeight, ScalePercent);
+
+        int targetHeight = ScaleHeight > 0 ? ScaleHeight : ScaleHeightMaximum;
+        var (w, h) = ResolutionScale.ComputeTargetDimensionsFromHeight(SourceWidth, SourceHeight, targetHeight);
+
         if (_targetWidth != w || _targetHeight != h)
         {
             _targetWidth = w;
@@ -438,6 +457,7 @@ public class FilterScribeVM : BaseVM
             OnPropertyChanged(nameof(AviSynthResizeFilter));
         }
     }
+
     #endregion
 
     #region VFR -> CFR conversion
@@ -506,7 +526,7 @@ public class FilterScribeVM : BaseVM
     public static string TabVpy => FilterScribeModalLangProvider.Current["SrcScribe.TabVpy"];
     public static string TabFfmpeg => FilterScribeModalLangProvider.Current["SrcScribe.TabFfmpeg"];
     public static string ResolutionScaleTitle => FilterScribeModalLangProvider.Current["SrcScribe.ResolutionScaleTitle"];
-    public static string ScalePercentLabel => FilterScribeModalLangProvider.Current["SrcScribe.ScalePercentLabel"];
+    public static string ScaleHeightLabel => FilterScribeModalLangProvider.Current["SrcScribe.ScaleHeightLabel"];
     public static string FfmpegFreeTextHint => FilterScribeModalLangProvider.Current["SrcScribe.FfmpegFreeTextHint"];
     public static string SarRepairTitle => FilterScribeModalLangProvider.Current["SrcScribe.SarRepairTitle"];
     public static string FrameRateConvertTitle => FilterScribeModalLangProvider.Current["SrcScribe.FrameRateConvertTitle"];
@@ -1478,7 +1498,7 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(Lang));
         OnPropertyChanged(nameof(FfmpegConcatFileList));
         OnPropertyChanged(nameof(ResolutionScaleTitle));
-        OnPropertyChanged(nameof(ScalePercentLabel));
+        OnPropertyChanged(nameof(ScaleHeightLabel));
         OnPropertyChanged(nameof(HasSource));
         OnPropertyChanged(nameof(ScaleNotApplicableText));
         OnPropertyChanged(nameof(TargetDisplay));
