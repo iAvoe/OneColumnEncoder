@@ -33,8 +33,6 @@ public class FilenameScribeModalLangProvider(string languageCode) : LangProvider
             ["FilenameScribe.SelfCheck1"] = "Use yyyy-mm-dd date format consistently",
             ["FilenameScribe.SelfCheck2"] = "Ordering: Pad 0s to double & higher digit consecutive #s",
             ["FilenameScribe.SelfCheck3"] = "If the filename is a translated show name, ensure this alias is on TMDB",
-            ["FilenameScribe.PasteFromClipboard"] = "Paste from Clipboard",
-            ["FilenameScribe.RotateFontSize"] = "Rotate fontsize",
             ["FilenameScribe.Confirm"] = "Done → Set Export Path",
             ["FilenameScribe.FooterHint"] = "File extension is set by selected encoder and cannot be edited here",
         },
@@ -62,8 +60,6 @@ public class FilenameScribeModalLangProvider(string languageCode) : LangProvider
             ["FilenameScribe.SelfCheck1"] = "统一用 yyyy-mm-dd 日期格式",
             ["FilenameScribe.SelfCheck2"] = "排序：十位或更高的连续值补零",
             ["FilenameScribe.SelfCheck3"] = "若使用影视作品的译名命名，则确保该译名存在于 TMDB 中",
-            ["FilenameScribe.PasteFromClipboard"] = "从剪贴板粘贴",
-            ["FilenameScribe.RotateFontSize"] = "轮换字体大小",
             ["FilenameScribe.Confirm"] = "确认并定位输出路径",
             ["FilenameScribe.FooterHint"] = "后缀名由选择的编码器程序决定，无法编辑",
         },
@@ -91,8 +87,6 @@ public class FilenameScribeModalLangProvider(string languageCode) : LangProvider
             ["FilenameScribe.SelfCheck1"] = "統一用 yyyy-mm-dd 日期格式",
             ["FilenameScribe.SelfCheck2"] = "排序：為十位或更高的連續值補零",
             ["FilenameScribe.SelfCheck3"] = "若使用影視作品的譯名命名，則確保該譯名存在於 TMDB 中",
-            ["FilenameScribe.PasteFromClipboard"] = "從剪貼簿貼上",
-            ["FilenameScribe.RotateFontSize"] = "輪換字體大小",
             ["FilenameScribe.Confirm"] = "確認並定位輸出路徑",
             ["FilenameScribe.FooterHint"] = "副檔名由選擇的編碼器程式決定，無法編輯",
         },
@@ -124,8 +118,6 @@ public class FilenameScribeModalLangProvider(string languageCode) : LangProvider
             ["FilenameScribe.SelfCheck1"] = "Utiliser yyyy-mm-dd de façon cohérente",
             ["FilenameScribe.SelfCheck2"] = "Tri : compléter par 0 les numéros consécutifs",
             ["FilenameScribe.SelfCheck3"] = "Si titre traduit, vérifier l'alias dans TMDB",
-            ["FilenameScribe.PasteFromClipboard"] = "Coller du presse-papiers",
-            ["FilenameScribe.RotateFontSize"] = "Changer taille police",
             ["FilenameScribe.Confirm"] = "Terminé → définir sortie",
             ["FilenameScribe.FooterHint"] = "L'extension vient de l'encodeur choisi et n'est pas éditable",
         };
@@ -153,8 +145,6 @@ public class FilenameScribeModalLangProvider(string languageCode) : LangProvider
             ["FilenameScribe.SelfCheck1"] = "Usar formato de fecha yyyy-mm-dd de forma consistente",
             ["FilenameScribe.SelfCheck2"] = "Orden: rellenar con 0 los números consecutivos de dos o más dígitos",
             ["FilenameScribe.SelfCheck3"] = "Si el nombre es un título traducido, verificar que el alias exista en TMDB",
-            ["FilenameScribe.PasteFromClipboard"] = "Pegar desde el portapapeles",
-            ["FilenameScribe.RotateFontSize"] = "Rotar tamaño de fuente",
             ["FilenameScribe.Confirm"] = "Hecho → definir salida",
             ["FilenameScribe.FooterHint"] = "La extensión viene del codificador elegido y no es editable",
         };
@@ -182,8 +172,6 @@ public class FilenameScribeModalLangProvider(string languageCode) : LangProvider
             ["FilenameScribe.SelfCheck1"] = "日付形式 yyyy-mm-dd を一貫して使用",
             ["FilenameScribe.SelfCheck2"] = "並べ替え: 2桁以上の連番にはゼロパディング",
             ["FilenameScribe.SelfCheck3"] = "翻訳された番組名の場合、そのエイリアスがTMDBに存在することを確認",
-            ["FilenameScribe.PasteFromClipboard"] = "クリップボードから貼付",
-            ["FilenameScribe.RotateFontSize"] = "フォントサイズ切替",
             ["FilenameScribe.Confirm"] = "完了 → 出力先設定",
             ["FilenameScribe.FooterHint"] = "拡張子は選択したエンコーダーにより設定され、ここでは編集できません",
         };
@@ -211,8 +199,6 @@ public class FilenameScribeModalLangProvider(string languageCode) : LangProvider
             ["FilenameScribe.SelfCheck1"] = "Последовательно использовать формат даты yyyy-mm-dd",
             ["FilenameScribe.SelfCheck2"] = "Сортировка: дополнять нулями двузначные и более числа",
             ["FilenameScribe.SelfCheck3"] = "Если имя — переведённое название шоу, убедиться что этот алиас есть в TMDB",
-            ["FilenameScribe.PasteFromClipboard"] = "Вставить из буфера обмена",
-            ["FilenameScribe.RotateFontSize"] = "Переключить размер шрифта",
             ["FilenameScribe.Confirm"] = "Готово → задать вывод",
             ["FilenameScribe.FooterHint"] = "Расширение определяется выбранным кодером и не редактируется здесь"
         };
@@ -240,8 +226,6 @@ public class FilenameScribeModalLangProvider(string languageCode) : LangProvider
             ["FilenameScribe.SelfCheck1"] = "Datumformat yyyy-mm-dd konsistent verwenden",
             ["FilenameScribe.SelfCheck2"] = "Sortierung: Zweistellige und höhere fortlaufende #s mit 0 auffüllen",
             ["FilenameScribe.SelfCheck3"] = "Bei übersetztem Seriennamen sicherstellen, dass dieser Alias in TMDB existiert",
-            ["FilenameScribe.PasteFromClipboard"] = "Aus Zwischenablage einfügen",
-            ["FilenameScribe.RotateFontSize"] = "Schriftgröße wechseln",
             ["FilenameScribe.Confirm"] = "Fertig → Ausgabepfad setzen",
             ["FilenameScribe.FooterHint"] = "Dateierweiterung wird durch gewählten Encoder festgelegt und kann hier nicht bearbeitet werden"
         };
@@ -269,8 +253,6 @@ public class FilenameScribeModalLangProvider(string languageCode) : LangProvider
             ["FilenameScribe.SelfCheck1"] = "Use o formato de data yyyy-mm-dd consistentemente",
             ["FilenameScribe.SelfCheck2"] = "Ordenação: preencha com 0s números consecutivos de dois ou mais dígitos",
             ["FilenameScribe.SelfCheck3"] = "Se o nome do arquivo for um título traduzido, verifique se este alias existe no TMDB",
-            ["FilenameScribe.PasteFromClipboard"] = "Colar da área de transferência",
-            ["FilenameScribe.RotateFontSize"] = "Alternar tamanho da fonte",
             ["FilenameScribe.Confirm"] = "Concluído → Definir caminho de exportação",
             ["FilenameScribe.FooterHint"] = "A extensão do arquivo é definida pelo codificador selecionado e não pode ser editada aqui",
         };

@@ -67,7 +67,7 @@ Add `["pt-br"]` dictionary entries to **ALL 22 provider files**:
 | `EncoderConfLangProvider.cs` | 42 | Encoder settings |
 | `EncodingMonitorModalLangProvider.cs` | 65 | Monitoring |
 | `FFProbeVideoAnalysisLangProvider.cs` | 5 | Video analysis |
-| `FilenameScribeModalLangProvider.cs` | 25 | Filename generation |
+| `FilenameScribeModalLangProvider.cs` | 23 | Filename generation |
 | `FilterScribeModalLangProvider.cs` | 68 | Filter configuration |
 | `ImgABPvLangProvider.cs` | 38 | Image comparison |
 | `ParallelismConfLangProvider.cs` | 23 | Parallel processing |

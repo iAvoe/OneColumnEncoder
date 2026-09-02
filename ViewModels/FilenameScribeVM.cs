@@ -5,19 +5,16 @@ namespace OneColumnEncoder.ViewModels;
 public partial class FilenameScribeVM : BaseVM
 {
     private const string PossibleExtensions = ".mp4|.hevc|.ivf";
-    private static readonly double[] RotatingFontSizes = [10, 13, 14, 16];
 
     private readonly Action _closeAction;
     private readonly ToolItemCardVM _outputSettingItem;
     public CloseModalCmd CloseCmd { get; }
-    public ActionCmd RotateFontSizeCmd { get; }
-    public ButtonGroupVM FilenameActionButtons { get; private set; } = null!;
     public ButtonGroupVM FilenameFinishButtons { get; private set; } = null!;
     public ObservableCollection<ChecklistEntryVM> SevereIssueChecklist { get; } = [];
     public ObservableCollection<ChecklistEntryVM> GeneralIssueChecklist { get; } = [];
 
     private string _videoFilename = string.Empty;
-    private double _videoFilenameFontSize = 14;
+
     public string VideoFilename
     {
         get => _videoFilename;
@@ -26,12 +23,6 @@ public partial class FilenameScribeVM : BaseVM
             if (!SetProperty(ref _videoFilename, value)) return;
             ValidateFilename();
         }
-    }
-
-    public double VideoFilenameFontSize
-    {
-        get => _videoFilenameFontSize;
-        private set => SetProperty(ref _videoFilenameFontSize, value);
     }
 
     public static string WindowTitle => FilenameScribeModalLangProvider.WindowTitle;
@@ -58,7 +49,6 @@ public partial class FilenameScribeVM : BaseVM
         _outputSettingItem = outputSettingItem;
         _videoFilename = OutputPath.GetInitialFilename(outputSettingItem.P1TextData, outputSettingItem.P2TextData);
         CloseCmd = new CloseModalCmd(closeAction);
-        RotateFontSizeCmd = new ActionCmd(_ => RotateFontSize());
         BuildChecklist();
         BuildButtonGroup();
         ValidateFilename();
@@ -92,29 +82,11 @@ public partial class FilenameScribeVM : BaseVM
 
     private void BuildButtonGroup()
     {
-        FilenameActionButtons = ButtonGroupVM.CreateTwoButton(
-            FilenameScribeModalLangProvider.Current["FilenameScribe.PasteFromClipboard"],
-            FilenameScribeModalLangProvider.Current["FilenameScribe.RotateFontSize"],
-            new ActionCmd(_ => PasteFromClipboard()),
-            RotateFontSizeCmd);
-        FilenameActionButtons.B2_1Icon = SvgIconProvider.GamePaste;
-
         FilenameFinishButtons = ButtonGroupVM.CreateTwoButton(
             FilenameScribeModalLangProvider.Current["FilenameScribe.Cancel"],
             FilenameScribeModalLangProvider.Current["FilenameScribe.Confirm"],
             CloseCmd,
             new ActionCmd(_ => Confirm(), _ => FilenameFinishButtons.B2_2IsEnabled));
-    }
-
-    private void PasteFromClipboard()
-    {
-        if (Clipboard.ContainsText()) VideoFilename = Clipboard.GetText().Trim();
-    }
-
-    private void RotateFontSize()
-    {
-        int index = Array.IndexOf(RotatingFontSizes, VideoFilenameFontSize);
-        VideoFilenameFontSize = RotatingFontSizes[(index + 1) % RotatingFontSizes.Length];
     }
 
     // Filename is good, proceed to select path & write back to MainUI outputSetting ItemCard
@@ -196,8 +168,6 @@ public partial class FilenameScribeVM : BaseVM
         OnPropertyChanged(nameof(FooterHint));
 
         BuildChecklist();
-        BuildButtonGroup();
-        OnPropertyChanged(nameof(FilenameActionButtons));
         OnPropertyChanged(nameof(FilenameFinishButtons));
         ValidateFilename();
     }
