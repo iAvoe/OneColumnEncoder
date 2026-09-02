@@ -27,6 +27,7 @@ namespace OneColumnEncoder.Models.Lang;
 /// | `FilterScribeModalLangProvider.cs` | 74 keys |
 /// | `FilenameScribeModalLangProvider.cs` | 22 keys |
 /// | `FFProbeVideoAnalysisLangProvider.cs` | 5 keys |
+/// | `FFProbeSrcRevisionLangProvider.cs` | 6 keys |
 /// | `EncodingMonitorModalLangProvider.cs` | 65 keys |
 /// | `EncoderConfLangProvider.cs` | 42 keys |
 /// | `UICaptionProvider.cs` | Add language code |

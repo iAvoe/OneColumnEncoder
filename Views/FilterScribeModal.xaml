@@ -607,6 +607,115 @@
                 </Grid>
             </StackPanel>
 
+            <StackPanel Visibility="{Binding HasCropFilter, Converter={StaticResource BoolToVisibility}}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="{Binding CropTitle}"
+                               Style="{StaticResource H3}"
+                               Margin="0 20 0 0" />
+                    <Button Grid.Column="1"
+                            Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding InsertAvsCropFilterCommand}"
+                            CommandParameter="{Binding AviSynthCropFilter}"
+                            IsEnabled="{Binding CanInsertAviSynthCropFilter}"
+                            ToolTip="Insert filter"
+                            Margin="0"
+                            Padding="0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource LinkButton}"
+                            Content="+"
+                            FontSize="14" />
+                    <Button Grid.Column="2"
+                            Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding InsertVpyCropFilterCommand}"
+                            CommandParameter="{Binding VapourSynthCropFilter}"
+                            IsEnabled="{Binding CanInsertVapourSynthCropFilter}"
+                            ToolTip="Insert filter"
+                            Margin="0"
+                            Padding="0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource LinkButton}"
+                            Content="+"
+                            FontSize="14" />
+                    <Button Grid.Column="3"
+                            Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding InsertFfmpegCropFilterCommand}"
+                            CommandParameter="{Binding FfmpegCropFilter}"
+                            IsEnabled="{Binding CanInsertFfmpegCropFilter}"
+                            ToolTip="Insert filter"
+                            Margin="0"
+                            Padding="0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource LinkButton}"
+                            Content="+"
+                            FontSize="14" />
+                </Grid>
+
+                <Grid Margin="0 2.5 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="62" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                               Text="{Binding CropTargetLabel}"
+                               Foreground="{StaticResource GlobalSecondary}"
+                               VerticalAlignment="Center" />
+                    <TextBox Grid.Column="1"
+                             Text="{Binding CropTargetDisplay, Mode=OneWay}"
+                             IsReadOnly="True"
+                             BorderThickness="0"
+                             FontFamily="{DynamicResource CodeFont}"
+                             Background="{StaticResource Background}"
+                             Foreground="{StaticResource ButtonTertiary}"
+                             VerticalAlignment="Center" />
+                </Grid>
+
+                <comps:HintPanel Margin="0 2.5 0 0"
+                                 Text="{Binding CropModHint}" />
+
+                <TextBox Margin="0 5 0 0"
+                         Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                         Padding="2.5"
+                         Text="{Binding AviSynthCropFilter, Mode=OneWay}"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         FontFamily="{DynamicResource CodeFont}"
+                         Background="{StaticResource Background}"
+                         Foreground="{StaticResource ButtonTertiary}"
+                         FontWeight="Normal"
+                         VerticalAlignment="Center" />
+                <TextBox Margin="0 5 0 0"
+                         Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                         Padding="2.5"
+                         Text="{Binding VapourSynthCropFilter, Mode=OneWay}"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         FontFamily="{DynamicResource CodeFont}"
+                         Background="{StaticResource Background}"
+                         Foreground="{StaticResource ButtonTertiary}"
+                         FontWeight="Normal"
+                         VerticalAlignment="Center" />
+                <TextBox Margin="0 5 0 0"
+                         Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                         Padding="2.5"
+                         Text="{Binding FfmpegCropFilter, Mode=OneWay}"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         FontFamily="{DynamicResource CodeFont}"
+                         Background="{StaticResource Background}"
+                         Foreground="{StaticResource ButtonTertiary}"
+                         FontWeight="Normal"
+                         VerticalAlignment="Center" />
+            </StackPanel>
+
             <!-- Resolution slider -->
             <StackPanel>
                 <Grid>

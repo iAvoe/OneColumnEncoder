@@ -1,4 +1,5 @@
 using OneColumnEncoder.Models.Analysis;
+using OneColumnEncoder.Models.Lang;
 using System.IO;
 using System.Text.Json.Nodes;
 using static OneColumnEncoder.Json.JsonElementHelper;
@@ -8,7 +9,7 @@ namespace OneColumnEncoder.Models;
 /// <summary>
 /// Updates stored ffprobe JSON after a source revision.
 /// </summary>
-public static class FFProbeSrcReviseModel
+public static class FFProbeSrcRevisionModel
 {
     public static string UpdateSingleSourceJson(string rawJson, SrcRevisionRequest request) =>
         ApplyRevision(rawJson, request);
@@ -22,7 +23,7 @@ public static class FFProbeSrcReviseModel
         JsonNode queueRoot = ParseJsonObject(File.ReadAllText(queueFilePath));
         int updated = UpdateFfprobeJsonEntries(queueRoot, request);
         if (updated == 0)
-            throw new InvalidOperationException("No ffprobe JSON entries found in queue file.");
+            throw new InvalidOperationException(FFProbeSrcRevisionLangProvider.Current.NoEntriesInQueue);
 
         string newRawJson = ExtractReferenceFfprobeJson(queueRoot)
             ?? ApplyRevision(rawJson, request);
@@ -54,7 +55,7 @@ public static class FFProbeSrcReviseModel
         if (string.IsNullOrWhiteSpace(batchRawJson)) return 0;
 
         RawAnalysisBatchM data = JsonSerializer.Deserialize<RawAnalysisBatchM>(batchRawJson)
-            ?? throw new InvalidOperationException("Failed to parse BatchRawJson.");
+            ?? throw new InvalidOperationException(FFProbeSrcRevisionLangProvider.Current.FailedToParseBatch);
         if (data.Entries.Count == 0) return -1;
 
         long total = 0;
@@ -82,7 +83,7 @@ public static class FFProbeSrcReviseModel
     private static string UpdateBatchRawJsonString(string batchRawJson, SrcRevisionRequest request)
     {
         RawAnalysisBatchM data = JsonSerializer.Deserialize<RawAnalysisBatchM>(batchRawJson)
-            ?? throw new InvalidOperationException("Failed to parse BatchRawJson.");
+            ?? throw new InvalidOperationException(FFProbeSrcRevisionLangProvider.Current.FailedToParseBatch);
 
         List<SourceRawAnalysisM> entries = [.. data.Entries
             .Select(entry => entry with
@@ -91,14 +92,14 @@ public static class FFProbeSrcReviseModel
                     ApplyRevision(entry.FfprobeJson.GetRawText(), request)).RootElement.Clone()
             })];
         if (entries.Count == 0)
-            throw new InvalidOperationException("No ffprobe JSON entries found in BatchRawJson.");
+            throw new InvalidOperationException(FFProbeSrcRevisionLangProvider.Current.NoEntriesInBatch);
         return JsonSerializer.Serialize(new RawAnalysisBatchM(entries), FFProbeJsonFormatting.Options);
     }
 
     private static int UpdateFfprobeJsonEntries(JsonNode root, SrcRevisionRequest request)
     {
         if (root["Entries"] is not JsonArray entries)
-            throw new InvalidOperationException("JSON root is missing 'Entries' array.");
+            throw new InvalidOperationException(FFProbeSrcRevisionLangProvider.Current.MissingEntriesArray);
 
         int count = 0;
         foreach (JsonNode? child in entries)
@@ -108,7 +109,7 @@ public static class FFProbeSrcReviseModel
 
             string revised = ApplyRevision(ffprobeNode.ToJsonString(), request);
             entry["FfprobeJson"] = JsonNode.Parse(revised)
-                ?? throw new InvalidOperationException("Revised ffprobe JSON resolved to null.");
+                ?? throw new InvalidOperationException(FFProbeSrcRevisionLangProvider.Current.RevisedJsonNull);
             count++;
         }
 
@@ -141,5 +142,5 @@ public static class FFProbeSrcReviseModel
     private static JsonObject ParseJsonObject(string json) =>
         JsonNode.Parse(json) is JsonObject obj
             ? obj
-            : throw new InvalidOperationException("JSON root is not an object.");
+            : throw new InvalidOperationException(FFProbeSrcRevisionLangProvider.Current.JsonRootNotObject);
 }

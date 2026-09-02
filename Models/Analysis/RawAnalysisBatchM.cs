@@ -14,6 +14,6 @@ public sealed record SourceRawAnalysisM(
 /// <summary>
 /// The serialized batch payload stored in <see cref="VideoAnalysisM.BatchRawJson"/>.
 /// Shared by the writer (AnalyzeSrcVideoCmd / Repart plan application) and every reader
-/// (CopyRawAnalysisCmd, FFProbeSrcReviseModel) so the JSON contract cannot drift.
+/// (CopyRawAnalysisCmd, FFProbeSrcRevisionModel) so the JSON contract cannot drift.
 /// </summary>
 public sealed record RawAnalysisBatchM(IReadOnlyList<SourceRawAnalysisM> Entries);

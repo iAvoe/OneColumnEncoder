@@ -2805,7 +2805,7 @@ public class MainVM : BaseVM
 
     private void ReviseSingleSource(SrcRevisionRequest request)
     {
-        _srcVideoAnalysis.RawJson = FFProbeSrcReviseModel.UpdateSingleSourceJson(
+        _srcVideoAnalysis.RawJson = FFProbeSrcRevisionModel.UpdateSingleSourceJson(
             _srcVideoAnalysis.RawJson,
             request);
     }
@@ -2813,7 +2813,7 @@ public class MainVM : BaseVM
     private void ReviseQueueSource(string queueJsonPath, SrcRevisionRequest request)
     {
         (_srcVideoAnalysis.RawJson, _srcVideoAnalysis.BatchRawJson) =
-            FFProbeSrcReviseModel.UpdateQueueSourceJson(
+            FFProbeSrcRevisionModel.UpdateQueueSourceJson(
                 queueJsonPath,
                 _srcVideoAnalysis.RawJson,
                 _srcVideoAnalysis.BatchRawJson,
@@ -2823,7 +2823,7 @@ public class MainVM : BaseVM
     private void ReviseConcatSource(SrcRevisionRequest request)
     {
         (_srcVideoAnalysis.RawJson, _srcVideoAnalysis.BatchRawJson) =
-            FFProbeSrcReviseModel.UpdateConcatSourceJson(
+            FFProbeSrcRevisionModel.UpdateConcatSourceJson(
                 _srcVideoAnalysis.RawJson,
                 _srcVideoAnalysis.BatchRawJson,
                 request);

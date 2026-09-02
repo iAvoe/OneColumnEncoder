@@ -70,7 +70,7 @@ public class VideoAnalysisM
     /// source revision rewrites the batch payload.
     /// </summary>
     public void UpdateConcatTotalFramesFromQueueJson() =>
-        ConcatTotalFrames = FFProbeSrcReviseModel.CalculateTotalFrames(BatchRawJson);
+        ConcatTotalFrames = FFProbeSrcRevisionModel.CalculateTotalFrames(BatchRawJson);
 
     public void Clear()
     {
