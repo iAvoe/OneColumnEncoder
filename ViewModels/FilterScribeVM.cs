@@ -542,7 +542,6 @@ public class FilterScribeVM : BaseVM
     public static string ColorSpacePeakNitsHint => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpacePeakNitsHint"];
     #endregion
 
-    public ButtonGroupVM ScriptExportButtons { get; private set; } = null!;
     public ButtonGroupVM FinishScribeButtons { get; private set; } = null!;
     public ActionCmd OpenVpyPreviewCommand { get; }
     public bool CanOpenVpyPreview => GetVpyPreviewsrcPaths().Length > 0;
@@ -778,15 +777,6 @@ public class FilterScribeVM : BaseVM
 
     private void BuildButtonGroups()
     {
-        ScriptExportButtons = ButtonGroupVM.CreateThreeButton(
-            FilterScribeModalLangProvider.Current["SrcScribe.CopyFull"],
-            FilterScribeModalLangProvider.Current["SrcScribe.CopyInOut"],
-            FilterScribeModalLangProvider.Current["SrcScribe.SaveAsFile"],
-            new ActionCmd(_ => CopyFullScript()),
-            new ActionCmd(_ => CopyInOutSection()),
-            new ActionCmd(_ => SaveAsFile()));
-        ScriptExportButtons.B3_3Icon = SvgIconProvider.GameSave;
-
         FinishScribeButtons = ButtonGroupVM.CreateThreeButton(
             FilterScribeModalLangProvider.Current["SrcScribe.Cancel"],
             FilterScribeModalLangProvider.Current["SrcScribe.ApplyFfmpegOnly"],
@@ -1541,7 +1531,6 @@ public class FilterScribeVM : BaseVM
         RepartOutputs.RefreshLanguage();
 
         BuildButtonGroups();
-        OnPropertyChanged(nameof(ScriptExportButtons));
         OnPropertyChanged(nameof(FinishScribeButtons));
     }
     #endregion

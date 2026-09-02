@@ -1152,9 +1152,6 @@ public class MainVM : BaseVM
 
         if (_modalNavS.GetModal<FilterScribeVM>() is FilterScribeVM modal)
         {
-            modal.ScriptExportButtons.B3_1IsEnabled = !oneLineShotSelected && hasVideoSrc;
-            modal.ScriptExportButtons.B3_2IsEnabled = !oneLineShotSelected && hasVideoSrc;
-            modal.ScriptExportButtons.B3_3IsEnabled = !oneLineShotSelected && hasVideoSrc;
             modal.SetSourceAnalysisState(hasVideoSrc && hasRawJson);
         }
 

@@ -412,17 +412,6 @@ public bool IsBusy
 // XAML binds PreviewButtonText and PreviewCommand
 ```
 
-### 7.4 Five Button Group with Icons
-
-```csharp
-ScriptExportButtons = ButtonGroupVM.CreateFiveButton(
-    UILangProvider.Current["SrcScribe.CopyFull"],
-    UILangProvider.Current["SrcScribe.CopyInOut"],
-    UILangProvider.Current["SrcScribe.SaveAsFile"],
-    /* ... */);
-ScriptExportButtons.B3_3Icon = SvgIconProvider.GameSave;
-```
-
 ---
 
 ## Quick Reference: Adding a New Button
