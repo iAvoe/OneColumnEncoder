@@ -83,41 +83,23 @@ public partial class FilenameScribeVM : BaseVM
     private void BuildButtonGroup()
     {
         FilenameFinishButtons = ButtonGroupVM.CreateTwoButton(
-            FilenameScribeModalLangProvider.Current["FilenameScribe.Cancel"],
-            FilenameScribeModalLangProvider.Current["FilenameScribe.Confirm"],
+            FilenameScribeModalLangProvider.Current.Cancel,
+            FilenameScribeModalLangProvider.Current.Confirm,
             CloseCmd,
             new ActionCmd(_ => Confirm(), _ => FilenameFinishButtons.B2_2IsEnabled));
     }
 
-    // Filename is good, proceed to select path & write back to MainUI outputSetting ItemCard
     private void Confirm()
     {
-        if (!CanConfirm()) return;
+        if (!FilenameFinishButtons.B2_2IsEnabled) return;
 
         string filename = VideoFilename.Trim();
         if (string.IsNullOrWhiteSpace(filename)) return;
 
-        OpenFolderDialog dialog = new()
-        {
-            Title = WindowTitle,
-            InitialDirectory = OutputPath.GetInitialDirectory(_outputSettingItem.P2TextData)
-        };
-
-        Window? owner = Application.Current.MainWindow;
-        bool? result = owner is null
-            ? dialog.ShowDialog()
-            : dialog.ShowDialog(owner);
-        if (result != true) return;
-
-        _outputSettingItem.P2TextData = dialog.FolderName;
         _outputSettingItem.P1TextData = filename;
         _closeAction();
         Application.Current.MainWindow?.Activate();
     }
-
-    #region Command State Queries
-    private bool CanConfirm() => FilenameFinishButtons.B2_2IsEnabled;
-    #endregion
 
     private void ValidateFilename()
     {

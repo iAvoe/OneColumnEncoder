@@ -25,7 +25,7 @@ namespace OneColumnEncoder.Models.Lang;
 /// | `ImgABPvLangProvider.cs` | 38 keys |
 /// | `VpyPreviewLangProvider.cs` | 18 keys |
 /// | `FilterScribeModalLangProvider.cs` | 74 keys |
-/// | `FilenameScribeModalLangProvider.cs` | 23 keys |
+/// | `FilenameScribeModalLangProvider.cs` | 22 keys |
 /// | `FFProbeVideoAnalysisLangProvider.cs` | 5 keys |
 /// | `EncodingMonitorModalLangProvider.cs` | 65 keys |
 /// | `EncoderConfLangProvider.cs` | 42 keys |
