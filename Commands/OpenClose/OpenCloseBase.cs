@@ -11,7 +11,9 @@ public abstract class OpenCloseBase(ModalNavS modalNavS) : BaseCmd
     protected ModalNavS ModalNavS { get; } = modalNavS;
 
     public static Window? GetSafeOwnerWindow() =>
-        Application.Current?.MainWindow is { IsVisible: true } owner ? owner : null;
+        Application.Current?.Windows.OfType<Window>()
+            .LastOrDefault(window => window.IsVisible)
+        ?? (Application.Current?.MainWindow is { IsVisible: true } owner ? owner : null);
 
     /// <summary>
     /// If a window of type <typeparamref name="TWindow"/> is already open,

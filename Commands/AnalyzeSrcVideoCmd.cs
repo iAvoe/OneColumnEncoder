@@ -267,7 +267,7 @@ public class AnalyzeSrcVideoCmd(
 
     private static async Task<QueueSourceFilterResult> AnalyzeAndFilterQueueSourcesAsync(
         string ffprobePath,
-        IReadOnlyList<string> queueFilePaths,
+        string[] queueFilePaths,
         ModalNavS modalNavS,
         Func<SrcCheckCardVM> createProbeCard,
         QueueFilterMode filterMode,
@@ -277,7 +277,7 @@ public class AnalyzeSrcVideoCmd(
         List<QueueSourceFailure> skipped = [];
         List<SourceRawAnalysisM> rawAnalyses = [];
 
-        for (int i = 0; i < queueFilePaths.Count; i++)
+        for (int i = 0; i < queueFilePaths.Length; i++)
         {
             string filePath = queueFilePaths[i];
             SrcCheckCardVM probeCard = createProbeCard();
@@ -308,7 +308,7 @@ public class AnalyzeSrcVideoCmd(
                     filePath,
                     ex.Message,
                     i + 1,
-                    queueFilePaths.Count,
+                    queueFilePaths.Length,
                     willSkipAndContinue: true);
                 new OpenErrModalCmd(
                     modalNavS,
@@ -319,7 +319,7 @@ public class AnalyzeSrcVideoCmd(
         }
 
         if (candidates.Count == 0)
-            throw new InvalidOperationException(FormatAllQueueItemsFailedMessage(queueFilePaths.Count));
+            throw new InvalidOperationException(FormatAllQueueItemsFailedMessage(queueFilePaths.Length));
 
         QueueSourceCandidate referenceCandidate = shouldFilterQueue
             ? SelectReferenceCandidate(candidates, filterMode)
@@ -331,8 +331,7 @@ public class AnalyzeSrcVideoCmd(
         {
             if (!shouldFilterQueue || candidate.GroupSignature.Matches(referenceCandidate.GroupSignature))
                 accepted.Add(candidate.Entry);
-            else
-                excluded.Add(candidate.Entry);
+            else excluded.Add(candidate.Entry);
         }
 
         return new(referenceCandidate, accepted, excluded, skipped, rawAnalyses);
