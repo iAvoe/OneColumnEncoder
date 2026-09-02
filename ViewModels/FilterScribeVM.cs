@@ -740,7 +740,7 @@ public class FilterScribeVM : BaseVM
         if (contentEnd < 0) contentEnd = value.Length;
 
         chain = value[contentStart..contentEnd].Trim();
-        suffix = value[(contentEnd + (quote == '\0' ? 0 : 1))..].Trim();
+        suffix = value[(contentEnd + (quote == '\0' ? 0 : 1))..];
         return !string.IsNullOrWhiteSpace(chain);
     }
 
