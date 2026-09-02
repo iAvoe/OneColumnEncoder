@@ -132,6 +132,8 @@ public abstract class LangProviderBase
             ["Collapse"] = "▲ Collapse",
             ["Expand"] = "▼ Expand",
             ["Default"] = "Default",
+            ["Width"] = "Width",
+            ["Height"] = "Height",
         },
         ["zh-cn"] = new()
         {
@@ -165,6 +167,8 @@ public abstract class LangProviderBase
             ["Collapse"] = "▲ 折叠",
             ["Expand"] = "▼ 展开",
             ["Default"] = "默认",
+            ["Width"] = "宽度",
+            ["Height"] = "高度",
         },
         ["zh-tw"] = new()
         {
@@ -198,6 +202,8 @@ public abstract class LangProviderBase
             ["Collapse"] = "▲ 折叠",
             ["Expand"] = "▼ 展开",
             ["Default"] = "默認",
+            ["Width"] = "寬度",
+            ["Height"] = "高度",
         },
         ["fr"] = new()
         {
@@ -231,6 +237,8 @@ public abstract class LangProviderBase
             ["Collapse"] = "▲ Réduire",
             ["Expand"] = "▼ Développer",
             ["Default"] = "Défaut",
+            ["Width"] = "Largeur",
+            ["Height"] = "Hauteur",
         },
         ["es"] = new()
         {
@@ -264,6 +272,8 @@ public abstract class LangProviderBase
             ["Collapse"] = "▲ Contraer",
             ["Expand"] = "▼ Expandir",
             ["Default"] = "Defecto",
+            ["Width"] = "Ancho",
+            ["Height"] = "Alto",
         },
         ["ja"] = new()
         {
@@ -297,6 +307,8 @@ public abstract class LangProviderBase
             ["Collapse"] = "▲ 折りたたむ",
             ["Expand"] = "▼ 展開",
             ["Default"] = "デフォルト",
+            ["Width"] = "幅",
+            ["Height"] = "高さ",
         },
         ["ru"] = new()
         {
@@ -330,6 +342,8 @@ public abstract class LangProviderBase
             ["Collapse"] = "▲ Свернуть",
             ["Expand"] = "▼ Развернуть",
             ["Default"] = "Умолчание",
+            ["Width"] = "Ширина",
+            ["Height"] = "Высота",
         },
         ["de"] = new()
         {
@@ -363,6 +377,8 @@ public abstract class LangProviderBase
             ["Collapse"] = "▲ Einklappen",
             ["Expand"] = "▼ Ausklappen",
             ["Default"] = "Standard",
+            ["Width"] = "Breite",
+            ["Height"] = "Höhe",
         },
         ["ko"] = new()
         {
@@ -396,6 +412,8 @@ public abstract class LangProviderBase
             ["Collapse"] = "▲ 접기",
             ["Expand"] = "▼ 펼치기",
             ["Default"] = "기본",
+            ["Width"] = "너비",
+            ["Height"] = "높이",
         },
         ["pt-br"] = new()
         {
@@ -429,6 +447,8 @@ public abstract class LangProviderBase
             ["Collapse"] = "▲ Recolher",
             ["Expand"] = "▼ Expandir",
             ["Default"] = "Padrão",
+            ["Width"] = "Largura",
+            ["Height"] = "Altura",
         },
     };
 

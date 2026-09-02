@@ -12,8 +12,6 @@ public class SrcReviserLangProvider(string languageCode) : LangProviderBase(lang
         {
             ["SrcReviser.Description"] = "Set the actual post-filter resolution to overwrite into ffprobe analysis",
             ["SrcReviser.SettingsHeader"] = "New Resolution",
-            ["SrcReviser.WidthLabel"] = "Width",
-            ["SrcReviser.HeightLabel"] = "Height",
             ["SrcReviser.CurrentLabel"] = "Current analysis",
             ["SrcReviser.CropResolutionLabel"] = "Cropped res.",
             ["SrcReviser.SuggestedLabel"] = "Res. Reduction",
@@ -27,8 +25,6 @@ public class SrcReviserLangProvider(string languageCode) : LangProviderBase(lang
         {
             ["SrcReviser.Description"] = "填写滤镜处理后的实际分辨率以覆盖 ffprobe JSON",
             ["SrcReviser.SettingsHeader"] = "新分辨率",
-            ["SrcReviser.WidthLabel"] = "宽度",
-            ["SrcReviser.HeightLabel"] = "高度",
             ["SrcReviser.CurrentLabel"] = "当前分析值",
             ["SrcReviser.CropResolutionLabel"] = "裁切后分辨率",
             ["SrcReviser.SuggestedLabel"] = "分辨率缩小",
@@ -42,8 +38,6 @@ public class SrcReviserLangProvider(string languageCode) : LangProviderBase(lang
         {
             ["SrcReviser.Description"] = "填寫濾鏡處理後的實際解析度以覆蓋 ffprobe JSON",
             ["SrcReviser.SettingsHeader"] = "新解析度",
-            ["SrcReviser.WidthLabel"] = "寬度",
-            ["SrcReviser.HeightLabel"] = "高度",
             ["SrcReviser.CurrentLabel"] = "當前分析值",
             ["SrcReviser.CropResolutionLabel"] = "裁切後解析度",
             ["SrcReviser.SuggestedLabel"] = "解析度縮小",
@@ -61,8 +55,6 @@ public class SrcReviserLangProvider(string languageCode) : LangProviderBase(lang
         {
             ["SrcReviser.Description"] = "Définissez la résolution réelle après filtrage à réécrire dans l'analyse ffprobe.",
             ["SrcReviser.SettingsHeader"] = "Nouvelle résolution",
-            ["SrcReviser.WidthLabel"] = "Largeur",
-            ["SrcReviser.HeightLabel"] = "Hauteur",
             ["SrcReviser.CurrentLabel"] = "Analyse actuelle",
             ["SrcReviser.CropResolutionLabel"] = "Rés. recadrée",
             ["SrcReviser.SuggestedLabel"] = "Rés. réduction",
@@ -76,8 +68,6 @@ public class SrcReviserLangProvider(string languageCode) : LangProviderBase(lang
         {
             ["SrcReviser.Description"] = "Defina la resolución real después del filtro para sobrescribir el análisis de ffprobe.",
             ["SrcReviser.SettingsHeader"] = "Nueva resolución",
-            ["SrcReviser.WidthLabel"] = "Ancho",
-            ["SrcReviser.HeightLabel"] = "Alto",
             ["SrcReviser.CurrentLabel"] = "Análisis actual",
             ["SrcReviser.CropResolutionLabel"] = "Res. recortada",
             ["SrcReviser.SuggestedLabel"] = "Res. reducción",
@@ -91,8 +81,6 @@ public class SrcReviserLangProvider(string languageCode) : LangProviderBase(lang
         {
             ["SrcReviser.Description"] = "フィルタ後の実際の解像度を設定し、ffprobe の解析結果を上書きします。",
             ["SrcReviser.SettingsHeader"] = "新しい解像度",
-            ["SrcReviser.WidthLabel"] = "幅",
-            ["SrcReviser.HeightLabel"] = "高さ",
             ["SrcReviser.CurrentLabel"] = "現在の解析値",
             ["SrcReviser.CropResolutionLabel"] = "切り抜き解像度",
             ["SrcReviser.SuggestedLabel"] = "解像度縮小",
@@ -106,8 +94,6 @@ public class SrcReviserLangProvider(string languageCode) : LangProviderBase(lang
         {
             ["SrcReviser.Description"] = "Задайте фактическое разрешение после фильтра, чтобы перезаписать анализ ffprobe.",
             ["SrcReviser.SettingsHeader"] = "Новое разрешение",
-            ["SrcReviser.WidthLabel"] = "Ширина",
-            ["SrcReviser.HeightLabel"] = "Высота",
             ["SrcReviser.CurrentLabel"] = "Текущий анализ",
             ["SrcReviser.CropResolutionLabel"] = "Обрезанное разрешение",
             ["SrcReviser.SuggestedLabel"] = "Снижение разрешения",
@@ -121,8 +107,6 @@ public class SrcReviserLangProvider(string languageCode) : LangProviderBase(lang
         {
             ["SrcReviser.Description"] = "Tatsächliche Auflösung nach Filtern eingeben, um ffprobe-Analyse zu überschreiben",
             ["SrcReviser.SettingsHeader"] = "Neue Auflösung",
-            ["SrcReviser.WidthLabel"] = "Breite",
-            ["SrcReviser.HeightLabel"] = "Höhe",
             ["SrcReviser.CurrentLabel"] = "Aktuelle Analyse",
             ["SrcReviser.CropResolutionLabel"] = "Zugeschnittene Aufl.",
             ["SrcReviser.SuggestedLabel"] = "Auflösung senken",
@@ -136,8 +120,6 @@ public class SrcReviserLangProvider(string languageCode) : LangProviderBase(lang
         {
             ["SrcReviser.Description"] = "ffprobe 분석에 덮어쓸 필터 적용 후의 실제 해상도를 설정합니다",
             ["SrcReviser.SettingsHeader"] = "새 해상도",
-            ["SrcReviser.WidthLabel"] = "너비",
-            ["SrcReviser.HeightLabel"] = "높이",
             ["SrcReviser.CurrentLabel"] = "현재 분석 값",
             ["SrcReviser.CropResolutionLabel"] = "자른 해상도",
             ["SrcReviser.SuggestedLabel"] = "해상도 축소",
@@ -151,8 +133,6 @@ public class SrcReviserLangProvider(string languageCode) : LangProviderBase(lang
         {
             ["SrcReviser.Description"] = "Defina a resolução real após o filtro para sobrescrever na análise ffprobe",
             ["SrcReviser.SettingsHeader"] = "Nova resolução",
-            ["SrcReviser.WidthLabel"] = "Largura",
-            ["SrcReviser.HeightLabel"] = "Altura",
             ["SrcReviser.CurrentLabel"] = "Análise atual",
             ["SrcReviser.CropResolutionLabel"] = "Res. cortada",
             ["SrcReviser.SuggestedLabel"] = "Reduzir resolução",

@@ -70,8 +70,8 @@ public class SrcReviserVM : BaseVM
     public static string WindowTitle => SrcReviserLangProvider.WindowTitle;
     public static string Description => SrcReviserLangProvider.Current["SrcReviser.Description"];
     public static string SettingsHeader => SrcReviserLangProvider.Current["SrcReviser.SettingsHeader"];
-    public static string WidthLabel => SrcReviserLangProvider.Current["SrcReviser.WidthLabel"];
-    public static string HeightLabel => SrcReviserLangProvider.Current["SrcReviser.HeightLabel"];
+    public static string WidthLabel => SrcReviserLangProvider.Current["Width"];
+    public static string HeightLabel => SrcReviserLangProvider.Current["Height"];
     public static string CurrentResolutionLabel => SrcReviserLangProvider.Current["SrcReviser.CurrentLabel"];
     public static string CropResolutionLabel => SrcReviserLangProvider.Current["SrcReviser.CropResolutionLabel"];
     public static string SuggestedResolutionLabel => SrcReviserLangProvider.Current["SrcReviser.SuggestedLabel"];

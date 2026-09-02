@@ -554,6 +554,7 @@
                 <!-- FFMPEG Hqdn3d -->
                 <TextBox Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
                          Text="{Binding FfmpegHqdn3dDenoiseFilter, Mode=OneWay}"
+                         Padding="0 2.5"
                          IsReadOnly="True"
                          BorderThickness="0"
                          FontFamily="{DynamicResource CodeFont}"
@@ -562,8 +563,8 @@
                          VerticalAlignment="Center" />
                 <!-- AVS Hqdn3d -->
                 <TextBox Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
-                         Padding="0 2.5"
                          Text="{Binding AviSynthHqdn3dDenoiseFilter, Mode=OneWay}"
+                         Padding="0 2.5"
                          IsReadOnly="True"
                          BorderThickness="0"
                          FontFamily="{DynamicResource CodeFont}"
@@ -852,28 +853,16 @@
                          FontWeight="Normal"
                          VerticalAlignment="Center" />
                 <!-- AVS Res shrink -->
-                <Grid Margin="0 5 0 0"
-                      Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="40" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"
-                               Text="{Binding AviSynthText}"
-                               Foreground="{StaticResource GlobalSecondary}"
-                               VerticalAlignment="Center"
-                               FontWeight="Bold" />
-                    <TextBox Grid.Column="1"
-                             Margin="5 2.5 0 0"
-                             Padding="0 2.5"
-                             Text="{Binding AviSynthResizeFilter, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             FontWeight="Normal" />
-                </Grid>
+                <TextBox Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                         Margin="0 2.5 0 0"
+                         Padding="0 2.5"
+                         Text="{Binding AviSynthResizeFilter, Mode=OneWay}"
+                         IsReadOnly="True"
+                         BorderThickness="0"
+                         FontFamily="{DynamicResource CodeFont}"
+                         Background="{StaticResource Background}"
+                         Foreground="{StaticResource ButtonTertiary}"
+                         FontWeight="Normal" />
 
                 <comps:HintPanel Margin="0 2.5 0 0"
                                  Text="{Binding ScaleHint}"
