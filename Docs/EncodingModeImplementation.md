@@ -167,20 +167,17 @@ When total frame count is missing from video metadata, the system leaves it unkn
 | Single | Writes one AVS and one VPY script for the selected source. | Saves/imports one AVS and one VPY script. |
 | Queue | Writes one AVS and one VPY per queue file into a folder. | Saves/imports per-file scripts into a folder. |
 | Concat | Writes one AVS and one VPY script containing all fragments. | Saves/imports one concat AVS and one concat VPY script. |
-| Repart | Writes execution-specific concat-and-trim sources for each output. | Shows the Repart output queue, while using the Repart source list internally to build the temporary concat source and apply filters. |
+| Repart | Writes execution-specific concat-and-trim sources for each output. | Saves/imports the configured Repart plan; source ordering is chosen before Repart analysis. |
 
 ### 6.2 Concat-Specific Flow
 
 `OpenFilterScribeCmd` passes concat delegates into `FilterScribeVM`:
 - `isConcatRoute`
 - `getConcatFilePaths`
-- `applyConcatFilePaths`
 
-In concat mode, `FilterScribeVM` loads `ConcatSrcListVM`, and `FilterScribeModal` displays `ConcatSrcSidebarPanel` on the left with support for:
-- Remove fragment
-- Move fragment up / down
+In concat mode, `BrowseSrcConcatCmd` opens the shared `QueueEditorModal` immediately after file selection. The confirmed order is then passed into concat compatibility analysis and `VideoSrcConcatState`, so generated file lists and later scripts use the selected order.
 
-Every reorder/remove operation updates `VideoSrcConcatState` and regenerates `source_concat_filelist.txt` via `applyConcatFilePaths`. When the list changes, `MainVM` clears previous source analysis so stale representative JSON and `ConcatTotalFrames` cannot be used for encoding.
+The editor preserves concat's minimum of two sources. When the imported list changes, `MainVM` clears previous source analysis so stale representative JSON and `ConcatTotalFrames` cannot be used for encoding.
 
 The concat VFR→CFR switch works over a list of sources: when enabled, generated concat scripts pass `fpsnum` and `fpsden` to every `LWLibavVideoSource` / `LWLibavSource` call.
 
@@ -304,7 +301,7 @@ Repart-specific constraints:
 
 ### Repart Runtime Implementation
 
-Clicking `Tool.Source.VideoSrcRepart` opens an import flow that can read either a plain STREAM folder or a chapter-folder/PLAYLIST folder. The modal contains a read-only source queue, a proportional partition map, synchronized time/frame fields, and an output queue. Source changes are handled by clearing and re-importing the Repart source, so the modal remains focused on repartition editing. Output ranges use inclusive first/last frames; ranges cannot overlap, gaps are allowed, and merge accepts only directly adjacent outputs.
+Clicking `Tool.Source.VideoSrcRepart` opens an import flow that can read either a plain STREAM folder or a chapter-folder/PLAYLIST folder. The shared `QueueEditorModal` first lets the user confirm the source order, before the slow Repart analysis starts. The Repart configuration modal then contains a read-only source queue, a proportional partition map, synchronized time/frame fields, and an output queue. Source changes are handled by clearing and re-importing the Repart source, so the modal remains focused on repartition editing. Output ranges use inclusive first/last frames; ranges cannot overlap, gaps are allowed, and merge accepts only directly adjacent outputs.
 
 `RepartCompatibilityAnalyzer` performs a full ffprobe frame timestamp scan for each source. It requires CFR, derives the actual frame count, compares a strict first-video-stream signature, and records source size/modification-time fingerprints. When several signature groups are present, the dominant group by total source size is treated as the reference so menu/trailer files do not displace the episode set. A plan is rejected if a source changes during analysis or before encoding.
 
@@ -357,7 +354,7 @@ Each encoding start creates execution-specific ffconcat and private AVS/VPY path
 - `ViewModels/FilterScribeVM.cs` — Filter editor
 - `ViewModels/EncodingMonitorVM.cs` — Encoding monitor
 - `ViewModels/QueueJobItemVM.cs` — Queue job item
-- `Components/ConcatSrcSidebarPanel.xaml` — Concat reorder sidebar
+- `Commands/OpenClose/OpenQueueEditorCmd.cs` — Shared queue ordering modal
 - `Pipeline/EncodingPipeline.cs` — Command building, upstream args, frame count, mux
 - `Models/VideoAnalysisM.cs` — Source analysis model
 - `ScriptGeneration/ScriptTemplate.cs` — AVS/VPY script templates

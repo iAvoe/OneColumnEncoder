@@ -4,11 +4,17 @@ public sealed class QueueEditorVM : BaseVM
 {
     private readonly Action _closeAction;
     private readonly Action<string[]> _applyEditedPaths;
+    private readonly int _minimumItemCount;
 
-    public QueueEditorVM(Action closeAction, IEnumerable<string> filePaths, Action<string[]> applyEditedPaths)
+    public QueueEditorVM(
+        Action closeAction,
+        IEnumerable<string> filePaths,
+        Action<string[]> applyEditedPaths,
+        int minimumItemCount = 0)
     {
         _closeAction = closeAction;
         _applyEditedPaths = applyEditedPaths;
+        _minimumItemCount = minimumItemCount;
 
         RemoveItemCommand = new ActionCmd(item => RemoveItem(item as SrcQueueItemVM));
         MoveItemUpCommand = new ActionCmd(item => MoveItem(item as SrcQueueItemVM, -1));
@@ -60,9 +66,10 @@ public sealed class QueueEditorVM : BaseVM
         {
             Items[i].CanMoveUp = i > 0;
             Items[i].CanMoveDown = i < Items.Count - 1;
+            Items[i].CanRemove = Items.Count > _minimumItemCount;
         }
 
-        FinishButtons.B2_2IsEnabled = Items.Count > 0;
+        FinishButtons.B2_2IsEnabled = Items.Count >= _minimumItemCount && Items.Count > 0;
     }
 
     private void Confirm()

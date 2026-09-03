@@ -71,6 +71,7 @@ public sealed class OpenRepartConfCmd(
             return null;
         }
 
+        folderPaths = OpenQueueEditorCmd.EditFilePaths(ModalNavS, folderPaths, minimumItemCount: 2);
         RepartAnalysisResult? result = await RunAnalysisAsync(folderPaths);
         if (result?.Plan == null) return null;
 
@@ -100,7 +101,8 @@ public sealed class OpenRepartConfCmd(
                 RepartLangProvider.Current["ChapterSourcesMissing"]));
         if (import == null) return null;
 
-        RepartAnalysisResult? result = await RunAnalysisAsync(import.srcPaths, requireMultipleSources: false);
+        string[] orderedSourcePaths = OpenQueueEditorCmd.EditFilePaths(ModalNavS, import.srcPaths, minimumItemCount: 1);
+        RepartAnalysisResult? result = await RunAnalysisAsync(orderedSourcePaths, requireMultipleSources: false);
         if (result?.Plan == null)
             return null;
 

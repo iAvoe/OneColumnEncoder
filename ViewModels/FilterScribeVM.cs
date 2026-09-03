@@ -31,11 +31,8 @@ public class FilterScribeVM : BaseVM
     private readonly Func<string[]>? _getQueueFilePaths;
     private readonly Func<bool>? _isConcatRoute;
     private readonly Func<string[]>? _getConcatFilePaths;
-    private readonly Action<string[]>? _applyConcatFilePaths;
     private readonly Func<bool>? _isRepartRoute;
     private readonly Action<string?, string?>? _applyScriptFilters;
-    private readonly Func<RepartPlanM?>? _getRepartPlan;
-    private readonly Action<Guid[]>? _applyRepartOutputOrder;
     private readonly string? _vspipePath;
     private readonly string? _vspipeY4mArg;
     private readonly Func<long>? _getTotalFrames;
@@ -45,8 +42,6 @@ public class FilterScribeVM : BaseVM
     private bool _hasSourceAnalysis;
     private bool _sourceIsProgressive = true;
     public CloseModalCmd CloseCmd { get; }
-    public ConcatSrcListVM ConcatSources { get; } = new();
-    public RepartFilterScribeOutputQueueVM RepartOutputs { get; } = new();
     public bool IsConcatMode => _isConcatRoute?.Invoke() == true || IsRepartMode;
     public bool IsRepartMode => _isRepartRoute?.Invoke() == true;
     public bool HasSourceAnalysis => _hasSourceAnalysis;
@@ -800,11 +795,8 @@ public class FilterScribeVM : BaseVM
         Func<string[]>? getQueueFilePaths = null,
         Func<bool>? isConcatRoute = null,
         Func<string[]>? getConcatFilePaths = null,
-        Action<string[]>? applyConcatFilePaths = null,
         Func<bool>? isRepartRoute = null,
         Action<string?, string?>? applyScriptFilters = null,
-        Func<RepartPlanM?>? getRepartPlan = null,
-        Action<Guid[]>? applyRepartOutputOrder = null,
         string? vspipePath = null,
         string? vspipeY4mArg = null,
         Func<long>? getTotalFrames = null)
@@ -827,18 +819,14 @@ public class FilterScribeVM : BaseVM
         _getQueueFilePaths = getQueueFilePaths;
         _isConcatRoute = isConcatRoute;
         _getConcatFilePaths = getConcatFilePaths;
-        _applyConcatFilePaths = applyConcatFilePaths;
         _isRepartRoute = isRepartRoute;
         _applyScriptFilters = applyScriptFilters;
-        _getRepartPlan = getRepartPlan;
-        _applyRepartOutputOrder = applyRepartOutputOrder;
         _vspipePath = vspipePath;
         _vspipeY4mArg = vspipeY4mArg;
         _getTotalFrames = getTotalFrames;
         _baseAvsPrefix = FilterScribeModalLangProvider.Current["SrcScribe.AvsPrefix"];
         _baseVpyPrefix = FilterScribeModalLangProvider.Current["SrcScribe.VpyPrefix"];
         _hasSourceAnalysis = !string.IsNullOrWhiteSpace(sourceFfprobeJson);
-        ConcatSources.IsRepartMode = IsRepartMode;
         OpenVpyPreviewCommand = new ActionCmd(_ => OpenVpyPreview(), _ => CanOpenVpyPreview);
         InsertAvsFilterCommand = new ActionCmd(filter => AppendScriptFilter(ref _avsUserInput, filter as string, nameof(AvsUserInput)));
         InsertVpyFilterCommand = new ActionCmd(filter => AppendScriptFilter(ref _vpyUserInput, filter as string, nameof(VpyUserInput)));
@@ -846,8 +834,6 @@ public class FilterScribeVM : BaseVM
         InsertAvsCropFilterCommand = new ActionCmd(filter => InsertCropFilter(filter as string, value => AppendScriptFilter(ref _avsUserInput, value, nameof(AvsUserInput))));
         InsertVpyCropFilterCommand = new ActionCmd(filter => InsertCropFilter(filter as string, value => AppendScriptFilter(ref _vpyUserInput, value, nameof(VpyUserInput))));
         InsertFFmpegCropFilterCommand = new ActionCmd(filter => InsertCropFilter(filter as string, AppendFFmpegFilter));
-        ConfigureConcatSources();
-        ConfigureRepartOutputs();
         ParseColorSpaceInfo(sourceFfprobeJson);
         ParseSourceResolution(sourceFfprobeJson);
         ParseFrameRateInfo(sourceFfprobeJson);
@@ -864,76 +850,9 @@ public class FilterScribeVM : BaseVM
         _ => 0
     };
 
-    private void ConfigureConcatSources()
-    {
-        ConcatSources.RemoveItemCommand = new ActionCmd(item =>
-        {
-            if (item is not SrcQueueItemVM sourceItem) return;
-            ConcatSources.RemoveItem(sourceItem);
-            ApplyConcatSources();
-        });
-        ConcatSources.MoveItemUpCommand = new ActionCmd(item =>
-        {
-            if (item is not SrcQueueItemVM sourceItem) return;
-            if (ConcatSources.MoveItemUp(sourceItem)) ApplyConcatSources();
-        });
-        ConcatSources.MoveItemDownCommand = new ActionCmd(item =>
-        {
-            if (item is not SrcQueueItemVM sourceItem) return;
-            if (ConcatSources.MoveItemDown(sourceItem)) ApplyConcatSources();
-        });
-        ConcatSources.RestoreOriginalQueueCommand = new ActionCmd(_ =>
-        {
-            if (!ConcatSources.RestoreOriginalQueue()) return;
-            RefreshConcatSourceLanguage();
-            ApplyConcatSources();
-        });
-        ConcatSources.LoadItems(_getConcatFilePaths?.Invoke() ?? []);
-        RefreshConcatSourceLanguage();
-    }
-
-    private void ConfigureRepartOutputs()
-    {
-        RepartOutputs.MoveItemUpCommand = new ActionCmd(item =>
-        {
-            if (item is RepartFilterScribeOutputItemVM output
-                && RepartOutputs.MoveItemUp(output))
-                _applyRepartOutputOrder?.Invoke(RepartOutputs.GetCurrentOutputIds());
-        });
-        RepartOutputs.MoveItemDownCommand = new ActionCmd(item =>
-        {
-            if (item is RepartFilterScribeOutputItemVM output
-                && RepartOutputs.MoveItemDown(output))
-                _applyRepartOutputOrder?.Invoke(RepartOutputs.GetCurrentOutputIds());
-        });
-        RepartOutputs.RestoreOriginalQueueCommand = new ActionCmd(_ =>
-        {
-            if (RepartOutputs.RestoreOriginalQueue())
-                _applyRepartOutputOrder?.Invoke(RepartOutputs.GetCurrentOutputIds());
-        });
-
-        RepartPlanM? plan = _getRepartPlan?.Invoke();
-        if (plan != null)
-            RepartOutputs.LoadItems(plan.Outputs, plan.FrameRateNumerator, plan.FrameRateDenominator);
-    }
-
-    private void ApplyConcatSources()
-    {
-        if (!IsRepartMode)
-            _applyConcatFilePaths?.Invoke(ConcatSources.GetCurrentFilePaths());
-        RefreshConcatGeneratedText();
-    }
-
-    private void RefreshConcatGeneratedText()
-    {
-        OnPropertyChanged(nameof(AvsPrefix));
-        OnPropertyChanged(nameof(VpyPrefix));
-        OnPropertyChanged(nameof(FFmpegConcatFileList));
-    }
-
     #region Concat Source Queries
     private string[] GetCurrentConcatFilePaths() =>
-        IsConcatMode ? ConcatSources.GetCurrentFilePaths() : [];
+        IsConcatMode ? _getConcatFilePaths?.Invoke() ?? [] : [];
 
     private string[] GetDisplayConcatFilePaths()
     {
@@ -954,8 +873,6 @@ public class FilterScribeVM : BaseVM
         return string.Concat(prefix, path.AsSpan(path.Length - tailLength, tailLength));
     }
     #endregion
-
-    private void RefreshConcatSourceLanguage() => ConcatSources.RefreshLanguage();
 
     private void ParseColorSpaceInfo(string? sourceFfprobeJson)
     {
@@ -1227,8 +1144,6 @@ public class FilterScribeVM : BaseVM
         string vpyPath = Path.Combine(directory, Path.GetFileNameWithoutExtension(avsPath) + ".vpy");
 
         if (!TryWriteScripts(avsPath, avsScript, vpyPath, vpyScript)) return;
-
-        ApplyConcatSources();
 
         SrcFileKind? preferredKind = _getPreferredScriptSrcKind();
         if (preferredKind == SrcFileKind.AviSynthScript)
@@ -1554,8 +1469,6 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(IsConcatMode));
         OnPropertyChanged(nameof(CanOpenVpyPreview));
         OpenVpyPreviewCommand.OnCanExecuteChanged();
-        RefreshConcatSourceLanguage();
-        RepartOutputs.RefreshLanguage();
 
         BuildButtonGroups();
         OnPropertyChanged(nameof(FinishScribeButtons));
@@ -1565,8 +1478,6 @@ public class FilterScribeVM : BaseVM
     public override void Dispose()
     {
         UILangProvider.CurrentChanged -= OnLanguageChanged;
-        RepartOutputs.Dispose();
         base.Dispose();
-        GC.SuppressFinalize(this);
     }
 }

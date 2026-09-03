@@ -21,11 +21,8 @@ public class OpenFilterScribeCmd(
     Func<string[]>? getQueueFilePaths = null,
     Func<bool>? isConcatRoute = null,
     Func<string[]>? getConcatFilePaths = null,
-    Action<string[]>? applyConcatFilePaths = null,
     Func<bool>? isRepartRoute = null,
     Action<string?, string?>? applyScriptFilters = null,
-    Func<RepartPlanM?>? getRepartPlan = null,
-    Action<Guid[]>? applyRepartOutputOrder = null,
     string? vspipePath = null,
     string? vspipeY4mArg = null,
     Func<long>? getTotalFrames = null) : OpenCloseBase(modalNavS)
@@ -70,11 +67,8 @@ public class OpenFilterScribeCmd(
             getQueueFilePaths,
             isConcatRoute,
             getConcatFilePaths,
-            applyConcatFilePaths,
             isRepartRoute,
             applyScriptFilters,
-            getRepartPlan,
-            applyRepartOutputOrder,
             vspipePath,
             vspipeY4mArg,
             getTotalFrames);

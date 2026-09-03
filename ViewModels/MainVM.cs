@@ -556,24 +556,17 @@ public class MainVM : BaseVM
             () => UpstreamsZone.Any(
                 t => t.IsSelected &&
                 ToolDefinitionProviderM.IsImportedTool(t, "one_line_shot_args.exe")),
-            IsQueueRouteActive,
-            GetCurrentQueueFilePaths,
-            () => IsConcatRouteActive() || IsRepartRouteActive(),
-            () => IsConcatRouteActive() ? GetConcatFilePaths() : GetRepartFilePaths(),
-            filePaths =>
-            {
-                if (IsConcatRouteActive())
-                    ApplyConcatFilePathsFromFilterScribe(filePaths);
-            },
-            IsRepartRouteActive,
-            (avs, vpy) =>
-            {
-                _repartAvsFilterInput = avs ?? string.Empty;
-                _repartVpyFilterInput = vpy ?? string.Empty;
-            },
-            GetRepartPlan,
-            ApplyRepartOutputOrderFromFilterScribe,
-            _appDataM.Tools.VspipePath,
+             IsQueueRouteActive,
+             GetCurrentQueueFilePaths,
+             () => IsConcatRouteActive() || IsRepartRouteActive(),
+             () => IsConcatRouteActive() ? GetConcatFilePaths() : GetRepartFilePaths(),
+             IsRepartRouteActive,
+             (avs, vpy) =>
+             {
+                 _repartAvsFilterInput = avs ?? string.Empty;
+                 _repartVpyFilterInput = vpy ?? string.Empty;
+             },
+             _appDataM.Tools.VspipePath,
             _appDataM.Tools.VspipeY4mArg,
             () => EncodingPipeline.GetSourceTotalFrames(
                 _srcVideoAnalysis.RawJson,
@@ -2164,36 +2157,6 @@ public class MainVM : BaseVM
     {
         _videoSrcRepart.Clear();
         RefreshSelectedSrcStatus(resetAnalysis: true);
-    }
-
-    private void ApplyRepartOutputOrderFromFilterScribe(Guid[] outputIds)
-    {
-        if (!_videoSrcRepart.ReorderOutputs(outputIds)) return;
-
-        RepartPlanM? plan = _videoSrcRepart.CurrentPlan;
-        if (plan == null) return;
-
-        RepartCheckCard.ApplyRepartPlan(plan);
-        _appDataM.Save();
-    }
-
-    private void ApplyConcatFilePathsFromFilterScribe(string[] filePaths)
-    {
-        string[] currentPaths = _videoSrcConcat.CurrentFilePaths;
-        bool sameSet = currentPaths.Length == filePaths.Length
-            && new HashSet<string>(currentPaths, StringComparer.OrdinalIgnoreCase)
-                .SetEquals(filePaths);
-
-        _videoSrcConcat.ReplaceFilePaths(filePaths);
-
-        if (sameSet)
-        {
-            RefreshSelectedSrcStatus(resetAnalysis: false);
-        }
-        else
-        {
-            RefreshSelectedSrcStatus(resetAnalysis: true);
-        }
     }
 
     private void OnSrcScriptQueueImported(ToolItemCardVM item, SrcFileKind kind, string _, string[] filePaths)

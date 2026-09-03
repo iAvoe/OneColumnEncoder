@@ -35,10 +35,6 @@
         </Style>
     </ui:AdaptiveWindow.Resources>
     <Grid Margin="15 12.5 15 15">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*"
@@ -49,58 +45,13 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <comps:ConcatSrcSidebarPanel Grid.Column="0"
-                                     Grid.RowSpan="6"
-                                     DataContext="{Binding ConcatSources}"
-                                     Margin="0 0 10 0">
-            <comps:ConcatSrcSidebarPanel.Style>
-                <Style TargetType="comps:ConcatSrcSidebarPanel">
-                    <Setter Property="Visibility"
-                            Value="Collapsed" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding DataContext.IsConcatMode, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
-                                     Value="True">
-                            <Setter Property="Visibility"
-                                    Value="Visible" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding DataContext.IsRepartMode, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
-                                     Value="True">
-                            <Setter Property="Visibility"
-                                    Value="Collapsed" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </comps:ConcatSrcSidebarPanel.Style>
-        </comps:ConcatSrcSidebarPanel>
-
-        <comps:RepartFilterScribeSidebarPanel Grid.Column="0"
-                                              Grid.RowSpan="6"
-                                              DataContext="{Binding RepartOutputs}"
-                                              Margin="0 0 10 0">
-            <comps:RepartFilterScribeSidebarPanel.Style>
-                <Style TargetType="comps:RepartFilterScribeSidebarPanel">
-                    <Setter Property="Visibility"
-                            Value="Collapsed" />
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding DataContext.IsRepartMode, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
-                                     Value="True">
-                            <Setter Property="Visibility"
-                                    Value="Visible" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </comps:RepartFilterScribeSidebarPanel.Style>
-        </comps:RepartFilterScribeSidebarPanel>
-
         <TextBlock Grid.Row="0"
-                   Grid.Column="1"
                    Text="{Binding ScribeDescription}"
                    TextWrapping="Wrap"
                    Foreground="{StaticResource GlobalPrimary}" />
 
         <!-- TabControl: AviSynth, VapourSynth, ffmpeg -->
         <TabControl Grid.Row="1"
-                    Grid.Column="1"
                     SelectedIndex="{Binding SelectedTabIndex}"
                     Margin="0 12.5 0 0">
 
@@ -322,8 +273,7 @@
         </TabControl>
 
         <!-- Filter generator section -->
-        <StackPanel Grid.Row="3"
-                    Grid.Column="1">
+        <StackPanel Grid.Row="3">
             <!-- FFMPEG VFR to CFR -->
             <StackPanel Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
                 <Grid>
@@ -895,7 +845,6 @@
         </StackPanel>
 
         <comps:ThreeButtonGroup Grid.Row="4"
-                                Grid.Column="1"
                                 Margin="0 15 0 0"
                                 ButtonHeight="30"
                                 DataContext="{Binding FinishScribeButtons}"
@@ -907,7 +856,6 @@
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
 
         <comps:HintPanel Grid.Row="5"
-                         Grid.Column="1"
                          Margin="0 5 0 0"
                          Text="{Binding NoteText}" />
     </Grid>
