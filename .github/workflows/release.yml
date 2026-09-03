@@ -110,7 +110,7 @@ jobs:
           $body += "`n"
           $body += "> [!NOTE]`n"
           $body += "> x86 release (32bit) has limited integration since many of tools and libraries lacks this support, provided as-is | x86 发布版本缺少多种工具集成，大多因为 32bit 编译缺少支持，或者依赖的静态库不支持 32bit 且修正不了，请将就使用"
-          $body += "`n`n"
+          $body += "`n"
 
           echo "RELEASE_TITLE=$title" >> $env:GITHUB_ENV
           $body | Out-File -FilePath .\release-notes.md -Encoding utf8

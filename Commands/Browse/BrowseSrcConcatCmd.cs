@@ -12,6 +12,7 @@ public class BrowseSrcConcatCmd(
     string? browseKey = null,
     Action<ToolItemCardVM, string[]>? afterImport = null) : BrowseCmdBase(item)
 {
+    private const int MinimumConcatSourceCount = 2;
     private readonly ModalNavS _modalNavS = modalNavS;
     private readonly Func<string> _getFfprobePath = getFfprobePath;
     private readonly Func<bool>? _isSvtav1SelectedFunc = isSvtav1SelectedFunc;
@@ -52,7 +53,7 @@ public class BrowseSrcConcatCmd(
         }
 
         // Concat mode needs at least two sources to build a meaningful file list.
-        if (filePaths.Length < 2)
+        if (filePaths.Length < MinimumConcatSourceCount)
         {
             new OpenErrModalCmd(
                 _modalNavS,
@@ -75,7 +76,7 @@ public class BrowseSrcConcatCmd(
         }
 
         // Let the user establish the concat order before compatibility analysis.
-        filePaths = OpenQueueEditorCmd.EditFilePaths(_modalNavS, filePaths, minimumItemCount: 2);
+        filePaths = OpenQueueEditorCmd.EditFilePaths(_modalNavS, filePaths, minimumItemCount: MinimumConcatSourceCount);
 
         // Probe the selected files for codec, resolution, frame rate, and SVT-AV1 constraints.
         ConcatCompatibilityAnalysisResult? analysisResult = null;

@@ -132,13 +132,13 @@
 
 **已驗證 OS**
 - Windows 10 22H2
-- Windows 11 25H2（感謝 [Lofu](https://github.com/Ronifue) 幫助）
+- Windows 11 25H2
 
 **已驗證 CPU**
 - Core i5 7600k（4C4T）
 - Ryzen 9 9900X（2CCD 12C24T）
 - EPYC 7R13（6CCD 48C96T）
-- Intel i7 14700K（感謝 Whithost 幫助）
+- Intel i7 14700K
 
 > 包括 L3 快取大小與 CCD 分組辨識能力的檢測
 
@@ -427,3 +427,11 @@
 既然底層已經鎖死在 Windows API 上，選擇 WPF 是最自然的結果——它提供了原生 Windows 桌面集成（包括防止打開溢出畫面窗口的功能）、成熟的 MVVM 數據綁定生態，且無需引入瀏覽器內核或第三方依賴。跨平台框架解決的是 UI 層的移植問題，但無法解決底層 API 的相容，反而會增加一層抽象成本和測試負擔。
 
 綜上所述，最適合其它平台的方案是在該平台上用對應原生技術棧重新實現本項目邏輯。由於已有完整原始碼和 Agent 輔助編程工具，同時為了降低門檻，本項目使用了 Apache 2.0 許可條款，因此重新開發的難度已然降低。
+
+---
+
+## 貢獻者
+
+- i7 14700K 和無引導新手 UX 測試驗證：[Whithost](http://272960162.qzone.qq.com)
+- Windows 11 25H2 驗證：[Lofu](https://github.com/Ronifue)
+- 項目結構和版本規範化建議、UX 測試驗證：[dtlnor](https://github.com/dtlnor)

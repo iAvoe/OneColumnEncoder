@@ -132,13 +132,13 @@ If you need a quick start, you can use the tools in the download package (not re
 
 **OS Validated**:
 - Windows 10 22H2
-- Windows 11 25H2 (thanks to [Lofu](https://github.com/Ronifue))
+- Windows 11 25H2
 
 **CPUs Validated**:
 - Core i5 7600k (4C4T)
 - Ryzen 9 9900X (2CCD 12C24T)
 - EPYC 7R13 (6CCD 48C96T)
-- Intel i7 14700K (thanks to Whithost)
+- Intel i7 14700K
 
 > This includes L3 cache size and CCD-aware grouping detection
 
@@ -426,3 +426,10 @@ Since the backend is already locked to Windows APIs, choosing WPF became the nat
 
 In summary, the best approach for other platforms is to reimplement the project's logic using the corresponding native technology stack of that platform. Because the full source code is available and Agent-assisted programming tools exist, and this project has adopted the Apache 2.0 license to lower the barrier to entry, the difficulty of redevelopment has been reduced.
 
+---
+
+## Contributors
+
+- i7 14700K 和無引導新手 UX 測試驗證：[Whithost](http://272960162.qzone.qq.com)
+- Windows 11 25H2 驗證：[Lofu](https://github.com/Ronifue)
+- 項目結構和版本規範化建議、UX 測試驗證：[dtlnor](https://github.com/dtlnor)

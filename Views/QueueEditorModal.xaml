@@ -10,7 +10,7 @@
                    d:DataContext="{d:DesignInstance Type=vms:QueueEditorVM}"
                    mc:Ignorable="d"
                    Title="{Binding WindowTitle}"
-                   Width="420"
+                   Width="470"
                    MinWidth="340"
                    MinHeight="180"
                    MaxHeight="720"
