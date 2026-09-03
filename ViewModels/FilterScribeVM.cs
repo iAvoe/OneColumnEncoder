@@ -40,7 +40,6 @@ public class FilterScribeVM : BaseVM
     private readonly string? _vspipeY4mArg;
     private readonly Func<long>? _getTotalFrames;
     private const int DisplayConcatPathMaxLength = 90;
-    // private const double VpyPreviewWindowGap = 0;
     private ColorSpaceAnalysisM _colorSpaceAnalysis = ColorSpaceConverter.Analyze(null);
     private int _sourceBitDepth;
     private bool _hasSourceAnalysis;
@@ -50,7 +49,6 @@ public class FilterScribeVM : BaseVM
     public RepartFilterScribeOutputQueueVM RepartOutputs { get; } = new();
     public bool IsConcatMode => _isConcatRoute?.Invoke() == true || IsRepartMode;
     public bool IsRepartMode => _isRepartRoute?.Invoke() == true;
-    public static bool CanEditConcatSources => true;
     public bool HasSourceAnalysis => _hasSourceAnalysis;
     // 0: AVS, 1: VS, 2: ffmpeg
     private int _selectedTabIndex;
@@ -622,7 +620,6 @@ public class FilterScribeVM : BaseVM
         }
         return labels;
     }
-
     #endregion
 
     #region VFR -> CFR conversion
@@ -922,7 +919,7 @@ public class FilterScribeVM : BaseVM
 
     private void ApplyConcatSources()
     {
-        if (!IsRepartMode && CanEditConcatSources)
+        if (!IsRepartMode)
             _applyConcatFilePaths?.Invoke(ConcatSources.GetCurrentFilePaths());
         RefreshConcatGeneratedText();
     }
@@ -958,10 +955,7 @@ public class FilterScribeVM : BaseVM
     }
     #endregion
 
-    private void RefreshConcatSourceLanguage()
-    {
-        ConcatSources.RefreshLanguage();
-    }
+    private void RefreshConcatSourceLanguage() => ConcatSources.RefreshLanguage();
 
     private void ParseColorSpaceInfo(string? sourceFfprobeJson)
     {
@@ -1058,7 +1052,6 @@ public class FilterScribeVM : BaseVM
         FinishScribeButtons.B3_3IsEnabled = _hasSourceAnalysis;
     }
 
-    #region ThreeButtonGroup: copy full, copy in-out, save as file
     private void ExecuteQueueSaveAndImport()
     {
         string[] srcPaths = _getQueueFilePaths?.Invoke() ?? [];
@@ -1499,37 +1492,6 @@ public class FilterScribeVM : BaseVM
 
     #endregion
 
-    #region Script Text Queries
-    private string GetCurrentFullScript()
-    {
-        if (IsConcatMode)
-        {
-            string[] concatPaths = GetCurrentConcatFilePaths();
-            int avsFpsnum = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateNum : 0;
-            int avsFpsden = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateDen : 0;
-            int vpyFpsnum = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateNum : 0;
-            int vpyFpsden = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateDen : 0;
-            return SelectedTabIndex switch
-            {
-                0 => ScriptTemplate.BuildConcatAvsExportScript(concatPaths, AvsPrefix2, AvsSuffix, AvsUserInput, avsFpsnum, avsFpsden),
-                1 => ScriptTemplate.BuildConcatVpyExportScript(concatPaths, VpyPrefix2, VpySuffix, VpyUserInput, vpyFpsnum, vpyFpsden),
-                _ => ScriptTemplate.BuildConcatFfmpegFileList(concatPaths)
-            };
-        }
-
-        string srcPath = _getsrcPath();
-        return SelectedTabIndex switch
-        {
-            0 => ScriptTemplate.BuildAvsEditorScript(srcPath, AvsPrefix2, AvsUserInput,
-                _avsEnableFpsParams ? _frameRateNum : 0, _avsEnableFpsParams ? _frameRateDen : 0),
-            1 => ScriptTemplate.BuildVpyEditorScript(srcPath, VpyPrefix2, VpySuffix, VpyUserInput,
-                _vpyEnableFpsParams ? _frameRateNum : 0, _vpyEnableFpsParams ? _frameRateDen : 0),
-            _ => FFmpegFreeText
-        };
-    }
-    #endregion
-    #endregion
-
     #region Language switching
     private void OnLanguageChanged()
     {
@@ -1607,4 +1569,4 @@ public class FilterScribeVM : BaseVM
         base.Dispose();
         GC.SuppressFinalize(this);
     }
-}
+}

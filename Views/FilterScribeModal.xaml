@@ -63,11 +63,6 @@
                             <Setter Property="Visibility"
                                     Value="Visible" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding DataContext.CanEditConcatSources, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
-                                     Value="False">
-                            <Setter Property="IsEnabled"
-                                    Value="False" />
-                        </DataTrigger>
                         <DataTrigger Binding="{Binding DataContext.IsRepartMode, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
                                      Value="True">
                             <Setter Property="Visibility"
