@@ -52,17 +52,14 @@ public sealed class RepartDividerPreviewService(string? ffmpegPath, string? ffpr
         ThrowIfDisposed();
 
         if (string.IsNullOrWhiteSpace(_ffmpegPath) || !File.Exists(_ffmpegPath))
-            return new([], RepartLangProvider.Current["DividerPreviewFfmpegUnavailable"]);
+            return new([], RepartLangProvider.Current["DividerPreviewFFmpegMissing"]);
 
         await _renderGate.WaitAsync(token).ConfigureAwait(false);
         try
         {
             return await RenderRequestAsync(analysis, selectedFrame, token).ConfigureAwait(false);
         }
-        finally
-        {
-            _renderGate.Release();
-        }
+        finally { _renderGate.Release(); }
     }
 
     /// <summary>

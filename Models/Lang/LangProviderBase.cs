@@ -80,6 +80,11 @@ namespace OneColumnEncoder.Models.Lang;
 public abstract class LangProviderBase
 {
     protected readonly Dictionary<string, string> _d;
+    public static string FFmpeg => "ffmpeg";
+    public static string VapourSynth => "VapourSynth";
+    public static string VS => "VS";
+    public static string AviSynth => "AviSynth";
+    public static string AVS => "AVS";
     public static string RemoveText => "🗙";
     public static string MoveUpText => "↑↑";
     public static string MoveDownText => "↓↓";

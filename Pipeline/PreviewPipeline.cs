@@ -179,7 +179,7 @@ public static partial class PreviewPipeline
             "-i",
             srcPath,
             "-c:v",
-            GetFfmpegEncoderName(encoder),
+            GetFFmpegEncoderName(encoder),
             "-crf",
             GetCrfValue(encoder, model).ToString(CultureInfo.InvariantCulture)
         ];
@@ -282,7 +282,7 @@ public static partial class PreviewPipeline
         _ => raw
     };
 
-    public static string GetFfmpegEncoderName(PreviewEncoder encoder) => encoder switch
+    public static string GetFFmpegEncoderName(PreviewEncoder encoder) => encoder switch
     {
         PreviewEncoder.X264 => "libx264",
         PreviewEncoder.X265 => "libx265",
@@ -358,7 +358,7 @@ public static partial class PreviewPipeline
         return text.Length <= 700 ? text : text[^700..];
     }
 
-    public static async Task RunFfmpegAsync(string ffmpegPath, string workDirectory, IReadOnlyList<string> args, CancellationToken token)
+    public static async Task RunFFmpegAsync(string ffmpegPath, string workDirectory, IReadOnlyList<string> args, CancellationToken token)
     {
         ProcessStartInfo psi = new()
         {

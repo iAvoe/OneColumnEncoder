@@ -278,9 +278,9 @@ public class FilterScribeVM : BaseVM
         RecomputeTarget();
         OnPropertyChanged(nameof(TargetDisplay));
         OnPropertyChanged(nameof(FFmpegResizeFilter));
-        OnPropertyChanged(nameof(FfmpegFpsScaleFilter));
-        OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
-        OnPropertyChanged(nameof(FfmpegFullChainFilter));
+        OnPropertyChanged(nameof(FFmpegFpsScaleFilter));
+        OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
+        OnPropertyChanged(nameof(FFmpegFullChainFilter));
         OnPropertyChanged(nameof(FFmpegHqdn3dFullChainFilter));
         OnPropertyChanged(nameof(VapourSynthResizeFilter));
         OnPropertyChanged(nameof(AviSynthResizeFilter));
@@ -414,7 +414,7 @@ public class FilterScribeVM : BaseVM
     private static string FormatAviSynthAssRenderDimension(int value, string name) =>
         value > 0 ? value.ToString() : $"<ffprobe {name}>";
 
-    public string FfmpegFpsScaleFilter =>
+    public string FFmpegFpsScaleFilter =>
         HasFpsFilter && HasScaleFilter
             ? BuildFFmpegFilterArgs(includeSwsFlags: true, includeCsp709Flags: false, FpsFilterChain, ScaleFilterChain)
             : LangProviderBase.NAText;
@@ -427,7 +427,7 @@ public class FilterScribeVM : BaseVM
 
     public string FFmpegHighHdrToLowSdrColorFilter => GetColorSpaceStrategyFilter(ColorSpaceStrategy.HighHdrToSdr);
 
-    public string FfmpegFpsColorScaleFilter
+    public string FFmpegFpsColorScaleFilter
     {
         get
         {
@@ -439,7 +439,7 @@ public class FilterScribeVM : BaseVM
         }
     }
 
-    public string FfmpegFullChainFilter
+    public string FFmpegFullChainFilter
     {
         get
         {
@@ -540,9 +540,9 @@ public class FilterScribeVM : BaseVM
             OnPropertyChanged(nameof(TargetHeight));
             OnPropertyChanged(nameof(TargetDisplay));
             OnPropertyChanged(nameof(FFmpegResizeFilter));
-            OnPropertyChanged(nameof(FfmpegFpsScaleFilter));
-            OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
-            OnPropertyChanged(nameof(FfmpegFullChainFilter));
+            OnPropertyChanged(nameof(FFmpegFpsScaleFilter));
+            OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
+            OnPropertyChanged(nameof(FFmpegFullChainFilter));
             OnPropertyChanged(nameof(FFmpegHqdn3dFullChainFilter));
             OnPropertyChanged(nameof(CanInsertAviSynthResizeFilter));
             OnPropertyChanged(nameof(CanInsertVapourSynthResizeFilter));
@@ -566,9 +566,9 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(ScaleTickLabels));
         OnPropertyChanged(nameof(TargetDisplay));
         OnPropertyChanged(nameof(FFmpegResizeFilter));
-        OnPropertyChanged(nameof(FfmpegFpsScaleFilter));
-        OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
-        OnPropertyChanged(nameof(FfmpegFullChainFilter));
+        OnPropertyChanged(nameof(FFmpegFpsScaleFilter));
+        OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
+        OnPropertyChanged(nameof(FFmpegFullChainFilter));
         OnPropertyChanged(nameof(FFmpegHqdn3dFullChainFilter));
         OnPropertyChanged(nameof(CanInsertAviSynthResizeFilter));
         OnPropertyChanged(nameof(CanInsertVapourSynthResizeFilter));
@@ -749,20 +749,18 @@ public class FilterScribeVM : BaseVM
         : string.Empty;
     #endregion
 
-    #region Title properties
-    public static string FfmpegText => "ffmpeg";
-    public static string VapourSynthText => "VS";
+    #region UILang properties
     public static string WindowTitle => FilterScribeModalLangProvider.WindowTitle;
     public static string VFRCFRTitle => "VFR→CFR";
-
-    #endregion
-
-    #region UILang properties
+    public static string LowToHighColorFilterLabel => "NCG";
+    public static string HighToLowColorFilterLabel => "WCG";
+    public static string HdrToSdrColorFilterLabel => "HDR→SDR";
+    public static string HighHdrToLowSdrColorFilterLabel => "H&W→SDR";
     public static string ScribeDescription => FilterScribeModalLangProvider.Current["SrcScribe.Description"];
     public static string NoteText => FilterScribeModalLangProvider.Current["SrcScribe.NoteText"];
-    public static string TabAvs => FilterScribeModalLangProvider.Current["SrcScribe.TabAvs"];
-    public static string TabVpy => FilterScribeModalLangProvider.Current["SrcScribe.TabVpy"];
-    public static string TabFFmpeg => FilterScribeModalLangProvider.Current["SrcScribe.TabFFmpeg"];
+    public static string TabAvs => LangProviderBase.AviSynth;
+    public static string TabVpy => LangProviderBase.VapourSynth;
+    public static string TabFFmpeg => LangProviderBase.FFmpeg;
     public static string ResolutionScaleTitle => FilterScribeModalLangProvider.Current["SrcScribe.ResolutionScaleTitle"];
     public static string ScaleHeightLabel => FilterScribeModalLangProvider.Current["SrcScribe.ScaleHeightLabel"];
     public static string FFmpegFreeTextHint => FilterScribeModalLangProvider.Current["SrcScribe.FFmpegFreeTextHint"];
@@ -774,10 +772,6 @@ public class FilterScribeVM : BaseVM
     public static string MultiFilterAssemblyTitle => FilterScribeModalLangProvider.Current["SrcScribe.MultiFilterAssemblyTitle"];
     public static string CropTitle => FilterScribeModalLangProvider.Current["SrcScribe.CropTitle"];
     public static string CropNoRestriction => FilterScribeModalLangProvider.Current["SrcScribe.CropNoRestriction"];
-    public static string LowToHighColorFilterLabel => "NCG";
-    public static string HighToLowColorFilterLabel => "WCG";
-    public static string HdrToSdrColorFilterLabel => "HDR→SDR";
-    public static string HighHdrToLowSdrColorFilterLabel => "H&W→SDR";
     public static string ColorSpacePeakNitsHint => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpacePeakNitsHint"];
     #endregion
 
@@ -982,8 +976,8 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(CanInsertFFmpegHighToLowColorFilter));
         OnPropertyChanged(nameof(CanInsertFFmpegHdrToSdrColorFilter));
         OnPropertyChanged(nameof(CanInsertFFmpegHighHdrToLowSdrColorFilter));
-        OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
-        OnPropertyChanged(nameof(FfmpegFullChainFilter));
+        OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
+        OnPropertyChanged(nameof(FFmpegFullChainFilter));
         OnPropertyChanged(nameof(VapourSynthVszipclFilter));
         OnPropertyChanged(nameof(VapourSynthVszipclHasFmtconv));
         OnPropertyChanged(nameof(VapourSynthVszipclFmtconvHint));
@@ -993,9 +987,9 @@ public class FilterScribeVM : BaseVM
     public void RefreshGeneratedFFmpegFilters()
     {
         OnPropertyChanged(nameof(FFmpegSarRepairFilter));
-        OnPropertyChanged(nameof(FfmpegFpsScaleFilter));
-        OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
-        OnPropertyChanged(nameof(FfmpegFullChainFilter));
+        OnPropertyChanged(nameof(FFmpegFpsScaleFilter));
+        OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
+        OnPropertyChanged(nameof(FFmpegFullChainFilter));
         OnPropertyChanged(nameof(FFmpegCropFilter));
         OnPropertyChanged(nameof(CanInsertFFmpegFpsFilter));
         OnPropertyChanged(nameof(CanInsertFFmpegSarRepairFilter));
@@ -1032,16 +1026,16 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(FrameRateNum));
         OnPropertyChanged(nameof(FrameRateDen));
         OnPropertyChanged(nameof(FFmpegFpsFilter));
-        OnPropertyChanged(nameof(FfmpegFpsScaleFilter));
-        OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
-        OnPropertyChanged(nameof(FfmpegFullChainFilter));
+        OnPropertyChanged(nameof(FFmpegFpsScaleFilter));
+        OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
+        OnPropertyChanged(nameof(FFmpegFullChainFilter));
     }
 
     private void BuildButtonGroups()
     {
         FinishScribeButtons = ButtonGroupVM.CreateThreeButton(
             FilterScribeModalLangProvider.Current["SrcScribe.Cancel"],
-            FilterScribeModalLangProvider.Current["SrcScribe.ApplyFfmpegOnly"],
+            FilterScribeModalLangProvider.Current["SrcScribe.ApplyFFmpegOnly"],
             FilterScribeModalLangProvider.Current["SrcScribe.Confirm"],
             CloseCmd,
             new ActionCmd(_ => ApplyFFmpegFilterArgsOnly()),
@@ -1065,202 +1059,10 @@ public class FilterScribeVM : BaseVM
     }
 
     #region ThreeButtonGroup: copy full, copy in-out, save as file
-    private void CopyFullScript()
-    {
-        if (IsConcatMode && !EnsureConcatSourceCount(GetCurrentConcatFilePaths())) return;
-
-        Clipboard.SetText(GetCurrentFullScript());
-        new OpenSuccModalCmd(
-            _modalNavS,
-            FilterScribeModalLangProvider.WindowTitle,
-            FilterScribeModalLangProvider.Current["SrcScribe.CopiedFull"]).Execute(null);
-    }
-    private void CopyInOutSection()
-    {
-        if (IsConcatMode)
-        {
-            string[] concatPaths = GetCurrentConcatFilePaths();
-            if (!EnsureConcatSourceCount(concatPaths)) return;
-
-            int avsFpsnum = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateNum : 0;
-            int avsFpsden = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateDen : 0;
-            int vpyFpsnum = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateNum : 0;
-            int vpyFpsden = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateDen : 0;
-            string concatInOutText = SelectedTabIndex switch
-            {
-                0 => ScriptTemplate.BuildConcatAvsExportScript(concatPaths, AvsPrefix2, AvsSuffix, "", avsFpsnum, avsFpsden),
-                1 => ScriptTemplate.BuildConcatVpyExportScript(concatPaths, VpyPrefix2, VpySuffix, "", vpyFpsnum, vpyFpsden),
-                _ => ScriptTemplate.BuildConcatFfmpegFileList(concatPaths)
-            };
-
-            Clipboard.SetText(concatInOutText);
-            new OpenSuccModalCmd(
-                _modalNavS,
-                FilterScribeModalLangProvider.WindowTitle,
-                FilterScribeModalLangProvider.Current["SrcScribe.CopiedSection"]).Execute(null);
-            return;
-        }
-
-        string srcPath = _getsrcPath();
-        string inOutText = SelectedTabIndex switch
-        {
-            0 => ScriptTemplate.BuildAvsInOutSection(srcPath, AvsPrefix2, AvsSuffix,
-                _avsEnableFpsParams ? _frameRateNum : 0, _avsEnableFpsParams ? _frameRateDen : 0),
-            1 => ScriptTemplate.BuildVpyInOutSection(srcPath, VpyPrefix2, VpySuffix,
-                _vpyEnableFpsParams ? _frameRateNum : 0, _vpyEnableFpsParams ? _frameRateDen : 0),
-            _ => string.Empty
-        };
-
-        Clipboard.SetText(inOutText);
-        new OpenSuccModalCmd(
-            _modalNavS,
-            FilterScribeModalLangProvider.WindowTitle,
-            FilterScribeModalLangProvider.Current["SrcScribe.CopiedSection"]).Execute(null);
-    }
-    private void SaveAsFile()
-    {
-        if (_isQueueRoute?.Invoke() == true)
-        {
-            ExecuteQueueSaveAsFile();
-            return;
-        }
-
-        if (IsConcatMode)
-        {
-            ExecuteConcatSaveAsFile();
-            return;
-        }
-
-        string srcPath = _getsrcPath();
-        int avsFpsnum = _avsEnableFpsParams ? _frameRateNum : 0;
-        int avsFpsden = _avsEnableFpsParams ? _frameRateDen : 0;
-        int vpyFpsnum = _vpyEnableFpsParams ? _frameRateNum : 0;
-        int vpyFpsden = _vpyEnableFpsParams ? _frameRateDen : 0;
-        string script = SelectedTabIndex switch
-        {
-            0 => ScriptTemplate.BuildAvsExportScript(
-                srcPath, AvsPrefix2, AvsSuffix, AvsUserInput, avsFpsnum, avsFpsden),
-            1 => ScriptTemplate.BuildVpyExportScript(
-                srcPath, VpyPrefix2, VpySuffix, VpyUserInput, vpyFpsnum, vpyFpsden),
-            _ => FFmpegFreeText
-        };
-
-        string filter = SelectedTabIndex switch
-        {
-            0 => FilterScribeModalLangProvider.Current["SrcScribe.FilterAvs"],
-            1 => FilterScribeModalLangProvider.Current["SrcScribe.FilterVpy"],
-            _ => "Text files (*.txt)|*.txt"
-        };
-
-        string extension = SelectedTabIndex switch
-        {
-            0 => ".avs",
-            1 => ".vpy",
-            _ => ".txt"
-        };
-
-        SaveFileDialog dialog = new()
-        {
-            Title = FilterScribeModalLangProvider.SavingScriptWindowTitle,
-            Filter = filter,
-            FileName = GetScriptFileName(srcPath, extension)
-        };
-
-        if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
-
-        if (TryWriteScript(dialog.FileName, script))
-            ShowSavedMessage(dialog.FileName);
-    }
-
-    private void ExecuteQueueSaveAsFile()
-    {
-        string[] srcPaths = _getQueueFilePaths?.Invoke() ?? [];
-        if (srcPaths.Length == 0) return;
-
-        OpenFolderDialog dialog = new()
-        {
-            Title = FilterScribeModalLangProvider.SavingScriptWindowTitle
-        };
-
-        if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
-
-        string directory = dialog.FolderName;
-        int avsFpsnum = _avsEnableFpsParams ? _frameRateNum : 0;
-        int avsFpsden = _avsEnableFpsParams ? _frameRateDen : 0;
-        int vpyFpsnum = _vpyEnableFpsParams ? _frameRateNum : 0;
-        int vpyFpsden = _vpyEnableFpsParams ? _frameRateDen : 0;
-        List<string> savedPaths = [];
-
-        foreach (string srcPath in srcPaths)
-        {
-            string baseName = Path.GetFileNameWithoutExtension(srcPath);
-            string avsPath = Path.Combine(directory, baseName + ".avs");
-            string vpyPath = Path.Combine(directory, baseName + ".vpy");
-
-            if (!TryWriteScript(avsPath, ScriptTemplate.BuildAvsExportScript(
-                    srcPath, AvsPrefix2, AvsSuffix, AvsUserInput, avsFpsnum, avsFpsden)))
-                return;
-            if (!TryWriteScript(vpyPath, ScriptTemplate.BuildVpyExportScript(
-                    srcPath, VpyPrefix2, VpySuffix, VpyUserInput, vpyFpsnum, vpyFpsden)))
-                return;
-            savedPaths.Add(avsPath);
-            savedPaths.Add(vpyPath);
-        }
-
-        new OpenSuccModalCmd(
-            _modalNavS,
-            FilterScribeModalLangProvider.WindowTitle,
-            string.Format(UILangProvider.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, savedPaths))).Execute(null);
-    }
-
-    private void ExecuteConcatSaveAsFile()
-    {
-        string[] concatPaths = GetCurrentConcatFilePaths();
-        if (!EnsureConcatSourceCount(concatPaths)) return;
-
-        int avsFpsnum = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateNum : 0;
-        int avsFpsden = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateDen : 0;
-        int vpyFpsnum = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateNum : 0;
-        int vpyFpsden = _isFrameRateVariable && _vpyEnableFpsParams ? _frameRateDen : 0;
-        string script = SelectedTabIndex switch
-        {
-            0 => ScriptTemplate.BuildConcatAvsExportScript(concatPaths, AvsPrefix2, AvsSuffix, AvsUserInput, avsFpsnum, avsFpsden),
-            1 => ScriptTemplate.BuildConcatVpyExportScript(concatPaths, VpyPrefix2, VpySuffix, VpyUserInput, vpyFpsnum, vpyFpsden),
-            _ => ScriptTemplate.BuildConcatFfmpegFileList(concatPaths)
-        };
-
-        string filter = SelectedTabIndex switch
-        {
-            0 => FilterScribeModalLangProvider.Current["SrcScribe.FilterAvs"],
-            1 => FilterScribeModalLangProvider.Current["SrcScribe.FilterVpy"],
-            _ => "Text files (*.txt)|*.txt"
-        };
-
-        string extension = SelectedTabIndex switch
-        {
-            0 => ".avs",
-            1 => ".vpy",
-            _ => ".txt"
-        };
-
-        SaveFileDialog dialog = new()
-        {
-            Title = FilterScribeModalLangProvider.SavingScriptWindowTitle,
-            Filter = filter,
-            FileName = BrowseSrcQueueCmd.FormatConcatFileName(concatPaths) + "_concat" + extension
-        };
-
-        if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
-
-        ApplyConcatSources();
-        if (TryWriteScript(dialog.FileName, script))
-            ShowSavedMessage(dialog.FileName);
-    }
-
     private void ExecuteQueueSaveAndImport()
     {
         string[] srcPaths = _getQueueFilePaths?.Invoke() ?? [];
-        if (srcPaths.Length == 0) return;
+        if (srcPaths.Length == 0 || string.IsNullOrWhiteSpace(srcPaths[0])) return;
 
         OpenFolderDialog dialog = new()
         {
@@ -1299,23 +1101,31 @@ public class FilterScribeVM : BaseVM
         }
 
         // Extract saved script file names for card display and hover tooltip
-        string[] avsFileNames = [.. savedPaths.Where(path => path.EndsWith(".avs", StringComparison.OrdinalIgnoreCase))
-            .Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!)];
-        string[] vpyFileNames = [.. savedPaths.Where(path => path.EndsWith(".vpy", StringComparison.OrdinalIgnoreCase))
-            .Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!)];
+        string[] avsFileNames = [.. savedPaths.Where(path => path
+            .EndsWith(".avs", StringComparison.OrdinalIgnoreCase))
+            .Select(Path.GetFileName)
+            .Where(name => !string.IsNullOrWhiteSpace(name))
+            .Select(name => name!)];
+        string[] vpyFileNames = [.. savedPaths.Where(path => path
+            .EndsWith(".vpy", StringComparison.OrdinalIgnoreCase))
+            .Select(Path.GetFileName)
+            .Where(name => !string.IsNullOrWhiteSpace(name))
+            .Select(name => name!)];
+
         _avsItem.P2TextData = directory;
-        _avsItem.P1TextData = BrowseSrcQueueCmd.FormatQueueP1Text(avsFileNames);
-        _avsItem.P1TooltipText = BrowseSrcQueueCmd.FormatQueueP1TooltipText(avsFileNames);
+        _avsItem.P1TextData = BrowseCmdBase.FormatQueueP1Text(avsFileNames);
+        _avsItem.P1TooltipText = BrowseCmdBase.FormatQueueP1TooltipText(avsFileNames);
         _vpyItem.P2TextData = directory;
-        _vpyItem.P1TextData = BrowseSrcQueueCmd.FormatQueueP1Text(vpyFileNames);
-        _vpyItem.P1TooltipText = BrowseSrcQueueCmd.FormatQueueP1TooltipText(vpyFileNames);
+        _vpyItem.P1TextData = BrowseCmdBase.FormatQueueP1Text(vpyFileNames);
+        _vpyItem.P1TooltipText = BrowseCmdBase.FormatQueueP1TooltipText(vpyFileNames);
 
         SelectPreferredScriptItem();
 
         new OpenSuccModalCmd(
             _modalNavS,
             FilterScribeModalLangProvider.WindowTitle,
-            string.Format(UILangProvider.Current["ScriptGen.ScriptsSaved"], string.Join(Environment.NewLine, savedPaths))).Execute(null);
+            string.Format(UILangProvider.Current["ScriptGen.ScriptsSaved"],
+            string.Join(Environment.NewLine, savedPaths))).Execute(null);
         _closeAction();
     }
 
@@ -1469,10 +1279,8 @@ public class FilterScribeVM : BaseVM
         _closeAction();
     }
 
-    private void ApplyFFmpegFilterArgs()
-    {
+    private void ApplyFFmpegFilterArgs() =>
         _applyFFmpegFilterArgs(FFmpegFreeText.Trim());
-    }
 
     private bool ShowSourceReviserModal()
     {
@@ -1533,21 +1341,6 @@ public class FilterScribeVM : BaseVM
     private static string GetScriptFileName(string srcPath, string extension) =>
         Path.GetFileNameWithoutExtension(srcPath) + extension;
     #endregion
-
-    private bool TryWriteScript(string path, string script)
-    {
-        try
-        {
-            File.WriteAllText(path, script);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            ShowSaveError(ex);
-            return false;
-        }
-    }
-
     private bool TryWriteScripts(string avsPath, string avsScript, string vpyPath, string vpyScript)
     {
         try
@@ -1592,14 +1385,6 @@ public class FilterScribeVM : BaseVM
             string.Format(FilterScribeModalLangProvider.Current["SrcScribe.FailedToSave"], ex.Message)).Execute(null);
     }
 
-    private void ShowSavedMessage(string path)
-    {
-        new OpenSuccModalCmd(
-            _modalNavS,
-            FilterScribeModalLangProvider.WindowTitle,
-            string.Format(FilterScribeModalLangProvider.Current["SrcScribe.ScriptSaved"], path)).Execute(null);
-    }
-
     #region VapourSynth Preview
     private void OpenVpyPreview()
     {
@@ -1619,8 +1404,8 @@ public class FilterScribeVM : BaseVM
         {
             new OpenErrModalCmd(
                 _modalNavS,
-                "VapourSynth Preview",
-                "vspipe.exe is not imported or missing. Please import vspipe first.").Execute(null);
+                VpyPreviewLangProvider.WindowTitle,
+                "!vspipe.exe").Execute(null);
             return;
         }
 
@@ -1628,8 +1413,8 @@ public class FilterScribeVM : BaseVM
         {
             new OpenErrModalCmd(
                 _modalNavS,
-                "VapourSynth Preview",
-                "vspipe Y4M argument not detected. Please re-import vspipe.").Execute(null);
+                VpyPreviewLangProvider.WindowTitle,
+                "!vspipe Y4M args").Execute(null);
             return;
         }
 
@@ -1638,8 +1423,8 @@ public class FilterScribeVM : BaseVM
         {
             new OpenErrModalCmd(
                 _modalNavS,
-                "VapourSynth Preview",
-                "No source video path available.").Execute(null);
+                VpyPreviewLangProvider.WindowTitle,
+                "!source").Execute(null);
             return;
         }
 
@@ -1697,10 +1482,8 @@ public class FilterScribeVM : BaseVM
             ? window.Width
             : window.ActualWidth;
 
-    private string GetVpyPreviewsrcPath()
-    {
-        return GetVpyPreviewsrcPaths().FirstOrDefault() ?? string.Empty;
-    }
+    private string GetVpyPreviewsrcPath() =>
+        GetVpyPreviewsrcPaths().FirstOrDefault() ?? string.Empty;
 
     private string[] GetVpyPreviewsrcPaths()
     {
@@ -1755,9 +1538,6 @@ public class FilterScribeVM : BaseVM
 
         OnPropertyChanged(nameof(ScribeDescription));
         OnPropertyChanged(nameof(NoteText));
-        OnPropertyChanged(nameof(TabAvs));
-        OnPropertyChanged(nameof(TabVpy));
-        OnPropertyChanged(nameof(TabFFmpeg));
         OnPropertyChanged(nameof(AvsPrefix));
         OnPropertyChanged(nameof(AvsSuffix));
         OnPropertyChanged(nameof(VpyPrefix));
@@ -1782,15 +1562,13 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(ScaleNotApplicableText));
         OnPropertyChanged(nameof(TargetDisplay));
         OnPropertyChanged(nameof(FFmpegFreeTextHint));
-        OnPropertyChanged(nameof(FfmpegText));
         OnPropertyChanged(nameof(SarRepairTitle));
         OnPropertyChanged(nameof(FFmpegSarRepairFilter));
         OnPropertyChanged(nameof(FFmpegHqdn3dDenoiseFilter));
         OnPropertyChanged(nameof(FFmpegSubtitleFilter));
-        OnPropertyChanged(nameof(FfmpegFpsScaleFilter));
-        OnPropertyChanged(nameof(FfmpegFpsColorScaleFilter));
-        OnPropertyChanged(nameof(FfmpegFullChainFilter));
-        OnPropertyChanged(nameof(VapourSynthText));
+        OnPropertyChanged(nameof(FFmpegFpsScaleFilter));
+        OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
+        OnPropertyChanged(nameof(FFmpegFullChainFilter));
         OnPropertyChanged(nameof(VapourSynthVszipclTitle));
         OnPropertyChanged(nameof(VapourSynthVszipclPreviewHint));
         OnPropertyChanged(nameof(VapourSynthVszipclDeviceHint));

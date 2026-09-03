@@ -22,7 +22,7 @@ public class ImgABPvVM : BaseVM
     // Tracks the running ffmpeg process so it can be force-killed on cancel.
     // Not used for external score-tool processes.
     private Process? _currentProcess;
-    private string? _lastFfmpegStderr;
+    private string? _lastFFmpegStderr;
     private bool _isFitMode = true;
     private PreviewDisplayMode _displayMode = PreviewDisplayMode.Raw;
     private ImgABPvLangProvider _lang = new(UILangProvider.Current.LanguageCode);
@@ -242,22 +242,22 @@ public class ImgABPvVM : BaseVM
             string decodedPath = GetDecodedPath(encoder);
 
             StatusText = Lang.StatusExtracting;
-            await RunFfmpegAsync(PreviewPipeline.BuildSourceArgs(_sourceVideoPath!, PreviewPositionSeconds, rawsrcPath), token);
+            await RunFFmpegAsync(PreviewPipeline.BuildSourceArgs(_sourceVideoPath!, PreviewPositionSeconds, rawsrcPath), token);
             PreviewPipeline.EnsureFileExists(rawsrcPath, "!SOURCE");
 
             if (!string.IsNullOrWhiteSpace(displayFilter))
             {
                 StatusText = string.Format(Lang.StatusConverting, GetDisplayModeTitle(_displayMode));
-                await RunFfmpegAsync(PreviewPipeline.BuildSourceArgs(_sourceVideoPath!, PreviewPositionSeconds, srcPath, displayFilter), token);
+                await RunFFmpegAsync(PreviewPipeline.BuildSourceArgs(_sourceVideoPath!, PreviewPositionSeconds, srcPath, displayFilter), token);
             }
             PreviewPipeline.EnsureFileExists(srcPath, "!SOURCE");
             SourceImage = PreviewPipeline.LoadBitmap(srcPath);
 
             StatusText = string.Format(Lang.StatusEncoding, PreviewPipeline.GetEncoderTitle(encoder));
-            await RunFfmpegAsync(PreviewPipeline.BuildEncodeArgs(encoder, model, srcPath, encodedPath), token);
+            await RunFFmpegAsync(PreviewPipeline.BuildEncodeArgs(encoder, model, srcPath, encodedPath), token);
 
             StatusText = Lang.StatusDecoding;
-            await RunFfmpegAsync(PreviewPipeline.BuildDecodeArgs(encodedPath, decodedPath), token);
+            await RunFFmpegAsync(PreviewPipeline.BuildDecodeArgs(encodedPath, decodedPath), token);
             PreviewPipeline.EnsureFileExists(decodedPath, "!ENCODE");
             EncodedImage = PreviewPipeline.LoadBitmap(decodedPath);
 
@@ -293,13 +293,13 @@ public class ImgABPvVM : BaseVM
         catch (Exception ex)
         {
             StatusText = ex.Message;
-            if (!string.IsNullOrWhiteSpace(_lastFfmpegStderr))
+            if (!string.IsNullOrWhiteSpace(_lastFFmpegStderr))
             {
                 _modalNavS.Close();
                 new Commands.OpenClose.Confirmations.OpenErrModalCmd(
                     _modalNavS,
                     Lang.EncoderLabel,
-                    _lastFfmpegStderr).Execute(null);
+                    _lastFFmpegStderr).Execute(null);
             }
         }
         finally { _currentProcess = null; }
@@ -310,7 +310,7 @@ public class ImgABPvVM : BaseVM
     // Runs ffmpeg with the given args. If token is cancelled during
     // execution the process is killed and OperationCanceledException
     // propagates to the caller.
-    private async Task RunFfmpegAsync(IReadOnlyList<string> args, CancellationToken token)
+    private async Task RunFFmpegAsync(IReadOnlyList<string> args, CancellationToken token)
     {
         ProcessStartInfo psi = new()
         {
@@ -342,7 +342,7 @@ public class ImgABPvVM : BaseVM
             string stderr = await stderrTask;
             if (process.ExitCode != 0)
             {
-                _lastFfmpegStderr = stderr;
+                _lastFFmpegStderr = stderr;
                 string diagnostic = string.IsNullOrWhiteSpace(stderr) ? stdout : stderr;
                 throw new InvalidOperationException(
                     $"ffmpeg exited with code {process.ExitCode}. " +

@@ -10,7 +10,7 @@ namespace OneColumnEncoder.Commands.OpenClose;
 public sealed class OpenRepartConfCmd(
     ModalNavS modalNavS,
     Func<string> getFfprobePath,
-    Func<string?>? getFfmpegPath,
+    Func<string?>? getFFmpegPath,
     Func<RepartPlanM?> getCurrentPlan,
     Action<RepartPlanM> applyPlan,
     Action<bool>? setMainOverlayVisible = null) : OpenCloseBase(modalNavS)
@@ -47,7 +47,7 @@ public sealed class OpenRepartConfCmd(
         }
 
         RepartConfModal window = new();
-        RepartConfVM vm = new(ModalNavS, window.Close, applyPlan, getFfmpegPath?.Invoke(), getFfprobePath());
+        RepartConfVM vm = new(ModalNavS, window.Close, applyPlan, getFFmpegPath?.Invoke(), getFfprobePath());
         ShowModal(window, vm, closeOpenStack: true);
         _ = vm.InitializeAsync(initialPlan);
     }
@@ -141,7 +141,7 @@ public sealed class OpenRepartConfCmd(
         {
             result = await RepartCompatibilityAnalyzer.AnalyzeAndFilterAsync(
                 ffprobePath: getFfprobePath(),
-                ffmpegPath: getFfmpegPath?.Invoke(),
+                ffmpegPath: getFFmpegPath?.Invoke(),
                 filePaths: filePaths,
                 confirmDiscardInterlacedSource: source => RepartInterlacedPrompt.Confirm(ModalNavS, RepartConfVM.WindowTitleText, source),
                 confirmExpandFrameCountSearch: source => RepartFrameCountPrompt.Confirm(ModalNavS, RepartConfVM.WindowTitleText, source),

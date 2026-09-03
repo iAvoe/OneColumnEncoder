@@ -221,10 +221,10 @@ This ensures a clean cancellation scope per preview run and prevents resource le
 
 The token is passed to every ffmpeg call inside `GeneratePreviewAsync()`:
 
-1. **Extract** — `RunFfmpegAsync(BuildSourceArgs(...), token)`
-2. **Convert** (optional) — `RunFfmpegAsync(BuildSourceArgs(... + displayFilter), token)`
-3. **Encode** — `RunFfmpegAsync(BuildEncodeArgs(...), token)`
-4. **Decode** — `RunFfmpegAsync(BuildDecodeArgs(...), token)`
+1. **Extract** — `RunFFmpegAsync(BuildSourceArgs(...), token)`
+2. **Convert** (optional) — `RunFFmpegAsync(BuildSourceArgs(... + displayFilter), token)`
+3. **Encode** — `RunFFmpegAsync(BuildEncodeArgs(...), token)`
+4. **Decode** — `RunFFmpegAsync(BuildDecodeArgs(...), token)`
 
 The score tools (`ssimulacra2`, `butteraugli`) run **after** all ffmpeg work finishes and **do not** accept the cancellation token. If the user cancels during scoring, those processes still run to completion, then `IsBusy` resets normally.
 
@@ -243,7 +243,7 @@ The null-conditional operator (`?.`) on `Cancel()` is safe even if `_previewCts`
 
 ### Propagation through ffmpeg calls
 
-Inside `RunFfmpegAsync()`:
+Inside `RunFFmpegAsync()`:
 
 1. The token is passed to `Process.StandardOutput.ReadToEndAsync(token)` and `Process.WaitForExitAsync(token)`.
 2. If cancellation fires during `WaitForExitAsync`, the method catches `OperationCanceledException`, calls `PreviewPipeline.TryKillProcess(process)` to terminate ffmpeg, then rethrows.

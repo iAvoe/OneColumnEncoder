@@ -324,9 +324,8 @@ public static partial class RepartSrcValidator
         {
             try
             {
-                long? exactCount = await CountFramesWithFfmpegAsync(ffmpegPath!, srcPath, cancellationToken);
-                if (exactCount is > 0)
-                    return exactCount.Value;
+                long? exactCount = await CountFramesWithFFmpegAsync(ffmpegPath!, srcPath, cancellationToken);
+                if (exactCount is > 0) return exactCount.Value;
             }
             catch (OperationCanceledException) { throw; }
             catch {}
@@ -491,7 +490,7 @@ public static partial class RepartSrcValidator
         return lo + 1;
     }
 
-    private static async Task<long?> CountFramesWithFfmpegAsync(
+    private static async Task<long?> CountFramesWithFFmpegAsync(
         string ffmpegPath,
         string srcPath,
         CancellationToken cancellationToken)
@@ -506,10 +505,10 @@ public static partial class RepartSrcValidator
             cancellationToken);
 
         if (result.ExitCode != 0) return null;
-        return TryParseFfmpegFrameCount(result.Stderr);
+        return TryParseFFmpegFrameCount(result.Stderr);
     }
 
-    private static long? TryParseFfmpegFrameCount(string stderr)
+    private static long? TryParseFFmpegFrameCount(string stderr)
     {
         if (string.IsNullOrWhiteSpace(stderr)) return null;
 

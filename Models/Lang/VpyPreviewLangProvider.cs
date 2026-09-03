@@ -5,8 +5,8 @@ namespace OneColumnEncoder.Models.Lang;
 /// </summary>
 public class VpyPreviewLangProvider(string languageCode) : LangProviderBase(languageCode, Data)
 {
-    public const string WindowTitle = "VapourSynth Preview";
-    public const string DebugWindowTitle = "VapourSynth Preview frame data";
+    public static string WindowTitle => $"{LangProviderBase.VapourSynth} Preview";
+    public static string DebugWindowTitle => $"{LangProviderBase.VapourSynth} Preview frame data";
 
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {

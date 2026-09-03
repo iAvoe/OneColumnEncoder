@@ -900,7 +900,7 @@ public partial class EncodingMonitorVM : BaseVM
         {
             StartInfo = new ProcessStartInfo
             {
-                FileName = _request.FfmpegPath,
+                FileName = _request.FFmpegPath,
                 Arguments = arguments,
                 UseShellExecute = false,
                 CreateNoWindow = true,
@@ -1202,24 +1202,22 @@ public partial class EncodingMonitorVM : BaseVM
     private static partial Regex ProgressPercentRegex();
 
     [GeneratedRegex(@"(?:^|\s)(?:frame|fps|size|time|bitrate|speed|dup|drop|progress)\s*=\s*[^\s]+", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
-    private static partial Regex FfmpegProgressFieldRegex();
+    private static partial Regex FFmpegProgressFieldRegex();
 
     [GeneratedRegex(@"(?:^|\s)(?:frame|fps|size|time|bitrate|speed|dup|drop)\s*[=:]", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
-    private static partial Regex FfmpegProgressKeyRegex();
+    private static partial Regex FFmpegProgressKeyRegex();
 
     [GeneratedRegex(@"\x1B\[[0-?]*[ -/]*[@-~]", RegexOptions.CultureInvariant)]
     private static partial Regex AnsiEscapeRegex();
 
-    private static string NormalizeLogLineForProgress(string line)
-    {
-        return AnsiEscapeRegex().Replace(line, string.Empty).Trim();
-    }
+    private static string NormalizeLogLineForProgress(string line) =>
+        AnsiEscapeRegex().Replace(line, string.Empty).Trim();
 
     private static bool IsProgressLine(string line)
     {
         string lower = line.ToLowerInvariant();
-        return FfmpegProgressFieldRegex().IsMatch(line)
-            || FfmpegProgressKeyRegex().IsMatch(line)
+        return FFmpegProgressFieldRegex().IsMatch(line)
+            || FFmpegProgressKeyRegex().IsMatch(line)
             || lower.Contains("progress=continue", StringComparison.Ordinal)
             || lower.Contains("progress=end", StringComparison.Ordinal)
             || lower.Contains("fps", StringComparison.Ordinal) && lower.Contains("size=", StringComparison.Ordinal)
@@ -1228,13 +1226,11 @@ public partial class EncodingMonitorVM : BaseVM
             || ProgressLineRegex().IsMatch(line);
     }
 
-    private static bool IsIndexProgressLine(string line)
-    {
-        return line.Contains("Creating lwi index file", StringComparison.OrdinalIgnoreCase);
-    }
+    private static bool IsIndexProgressLine(string line) =>
+        line.Contains("Creating lwi index file", StringComparison.OrdinalIgnoreCase);
 
     [GeneratedRegex(@"(?:^|\D)frame\s*=\s*(\d+)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
-    private static partial Regex FfmpegFrameRegex();
+    private static partial Regex FFmpegFrameRegex();
 
     [GeneratedRegex(@"(?<!\d)(\d+)\s+frames?\s*:", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex X264FrameRegex();
@@ -1265,7 +1261,7 @@ public partial class EncodingMonitorVM : BaseVM
 
         line = NormalizeLogLineForProgress(line);
 
-        if (TryParseFirstRegexGroup(FfmpegFrameRegex().Match(line), out int value)) return value;
+        if (TryParseFirstRegexGroup(FFmpegFrameRegex().Match(line), out int value)) return value;
         if (TryParseFirstRegexGroup(X264FrameRegex().Match(line), out value)) return value;
         if (TryParseFirstRegexGroup(SlashFrameRegex().Match(line), out value)) return value;
         if (TryParseFirstRegexGroup(FramesAtRegex().Match(line), out value)) return value;
@@ -2165,13 +2161,13 @@ public partial class EncodingMonitorVM : BaseVM
 
     private static string BuildOpusAudioCommand(EncodingPipelineRequest request)
     {
-        if (string.IsNullOrWhiteSpace(request.FfmpegPath) || string.IsNullOrWhiteSpace(request.SourceVideoPath))
+        if (string.IsNullOrWhiteSpace(request.FFmpegPath) || string.IsNullOrWhiteSpace(request.SourceVideoPath))
             return string.Empty;
 
         string outputDirectory = Path.GetDirectoryName(request.OutputPath) ?? string.Empty;
         string outputFileName = Path.ChangeExtension(Path.GetFileName(request.SourceVideoPath), ".ogg");
         string outputPath = Path.Combine(outputDirectory, outputFileName);
-        return $"{QuoteArgument(request.FfmpegPath)} -i {QuoteArgument(request.SourceVideoPath)} -vn -c:a libopus -b:a 320000 -vbr on -compression_level 10 -frame_duration 100 {QuoteArgument(outputPath)}";
+        return $"{QuoteArgument(request.FFmpegPath)} -i {QuoteArgument(request.SourceVideoPath)} -vn -c:a libopus -b:a 320000 -vbr on -compression_level 10 -frame_duration 100 {QuoteArgument(outputPath)}";
     }
 
     private static string QuoteArgument(string value) =>

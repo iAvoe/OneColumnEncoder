@@ -12,8 +12,8 @@ public class SrcFilePickerLangProvider : LangProviderBase
         ["en"] = new()
         {
             ["Filter.Video"] = $"Video files ({VideoExtensions})|{VideoExtensions}|All files (*.*)|*.*",
-            ["Filter.AviSynthScript"] = "AviSynth script files (*.avs)|*.avs",
-            ["Filter.VapourSynthScript"] = "VapourSynth script files (*.vpy)|*.vpy",
+            ["Filter.AviSynthScript"] = $"{LangProviderBase.AviSynth} script files (*.avs)|*.avs",
+            ["Filter.VapourSynthScript"] = $"{LangProviderBase.VapourSynth} script files (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "SVFI configuration files (*.ini)|*.ini",
             ["Filter.AllFiles"] = "All files (*.*)|*.*",
             ["CustomScriptModeText"] = "Import custom script"
@@ -21,8 +21,8 @@ public class SrcFilePickerLangProvider : LangProviderBase
         ["zh-cn"] = new()
         {
             ["Filter.Video"] = $"视频文件 ({VideoExtensions})|{VideoExtensions}|所有文件 (*.*)|*.*",
-            ["Filter.AviSynthScript"] = "AviSynth 脚本文件 (*.avs)|*.avs",
-            ["Filter.VapourSynthScript"] = "VapourSynth 脚本文件 (*.vpy)|*.vpy",
+            ["Filter.AviSynthScript"] = $"{LangProviderBase.AviSynth} 脚本文件 (*.avs)|*.avs",
+            ["Filter.VapourSynthScript"] = $"{LangProviderBase.VapourSynth} 脚本文件 (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "SVFI 配置文件 (*.ini)|*.ini",
             ["Filter.AllFiles"] = "所有文件 (*.*)|*.*",
             ["CustomScriptModeText"] = "导入自定义脚本"
@@ -30,8 +30,8 @@ public class SrcFilePickerLangProvider : LangProviderBase
         ["zh-tw"] = new()
         {
             ["Filter.Video"] = $"影片檔案 ({VideoExtensions})|{VideoExtensions}|所有檔案 (*.*)|*.*",
-            ["Filter.AviSynthScript"] = "AviSynth 腳本檔案 (*.avs)|*.avs",
-            ["Filter.VapourSynthScript"] = "VapourSynth 腳本檔案 (*.vpy)|*.vpy",
+            ["Filter.AviSynthScript"] = $"{LangProviderBase.AviSynth} 腳本檔案 (*.avs)|*.avs",
+            ["Filter.VapourSynthScript"] = $"{LangProviderBase.VapourSynth} 腳本檔案 (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "SVFI 設定檔 (*.ini)|*.ini",
             ["Filter.AllFiles"] = "所有檔案 (*.*)|*.*",
             ["CustomScriptModeText"] = "導入自訂腳本"
@@ -43,8 +43,8 @@ public class SrcFilePickerLangProvider : LangProviderBase
         Data["fr"] = new(Data["en"])
         {
             ["Filter.Video"] = $"Fichiers vidéo ({VideoExtensions})|{VideoExtensions}|Tous les fichiers (*.*)|*.*",
-            ["Filter.AviSynthScript"] = "Scripts AviSynth (*.avs)|*.avs",
-            ["Filter.VapourSynthScript"] = "Scripts VapourSynth (*.vpy)|*.vpy",
+            ["Filter.AviSynthScript"] = $"Scripts {LangProviderBase.AviSynth} (*.avs)|*.avs",
+            ["Filter.VapourSynthScript"] = $"Scripts {LangProviderBase.VapourSynth} (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "Fichiers de configuration SVFI (*.ini)|*.ini",
             ["Filter.AllFiles"] = "Tous les fichiers (*.*)|*.*",
             ["CustomScriptModeText"] = "Importer un script perso"
@@ -52,8 +52,8 @@ public class SrcFilePickerLangProvider : LangProviderBase
         Data["es"] = new(Data["en"])
         {
             ["Filter.Video"] = $"Archivos de vídeo ({VideoExtensions})|{VideoExtensions}|Todos los archivos (*.*)|*.*",
-            ["Filter.AviSynthScript"] = "Scripts AviSynth (*.avs)|*.avs",
-            ["Filter.VapourSynthScript"] = "Scripts VapourSynth (*.vpy)|*.vpy",
+            ["Filter.AviSynthScript"] = $"Scripts {LangProviderBase.AviSynth} (*.avs)|*.avs",
+            ["Filter.VapourSynthScript"] = $"Scripts {LangProviderBase.VapourSynth} (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "Configuración SVFI (*.ini)|*.ini",
             ["Filter.AllFiles"] = "Todos los archivos (*.*)|*.*",
             ["CustomScriptModeText"] = "Importar script propio"
@@ -61,8 +61,8 @@ public class SrcFilePickerLangProvider : LangProviderBase
         Data["ja"] = new(Data["en"])
         {
             ["Filter.Video"] = $"動画ファイル ({VideoExtensions})|{VideoExtensions}|すべてのファイル (*.*)|*.*",
-            ["Filter.AviSynthScript"] = "AviSynth スクリプト (*.avs)|*.avs",
-            ["Filter.VapourSynthScript"] = "VapourSynth スクリプト (*.vpy)|*.vpy",
+            ["Filter.AviSynthScript"] = $"{LangProviderBase.AviSynth} スクリプト (*.avs)|*.avs",
+            ["Filter.VapourSynthScript"] = $"{LangProviderBase.VapourSynth} スクリプト (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "SVFI 設定ファイル (*.ini)|*.ini",
             ["Filter.AllFiles"] = "すべてのファイル (*.*)|*.*",
             ["CustomScriptModeText"] = "カスタムスクリプトを取込"
@@ -70,8 +70,8 @@ public class SrcFilePickerLangProvider : LangProviderBase
         Data["ru"] = new(Data["en"])
         {
             ["Filter.Video"] = $"Видео ({VideoExtensions})|{VideoExtensions}|Все файлы (*.*)|*.*",
-            ["Filter.AviSynthScript"] = "Скрипты AviSynth (*.avs)|*.avs",
-            ["Filter.VapourSynthScript"] = "Скрипты VapourSynth (*.vpy)|*.vpy",
+            ["Filter.AviSynthScript"] = $"Скрипты {LangProviderBase.AviSynth} (*.avs)|*.avs",
+            ["Filter.VapourSynthScript"] = $"Скрипты {LangProviderBase.VapourSynth} (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "Конфигурации SVFI (*.ini)|*.ini",
             ["Filter.AllFiles"] = "Все файлы (*.*)|*.*",
             ["CustomScriptModeText"] = "Импорт своего скрипта"
@@ -79,8 +79,8 @@ public class SrcFilePickerLangProvider : LangProviderBase
         Data["de"] = new(Data["en"])
         {
             ["Filter.Video"] = $"Videodateien ({VideoExtensions})|{VideoExtensions}|Alle Dateien (*.*)|*.*",
-            ["Filter.AviSynthScript"] = "AviSynth-Skripte (*.avs)|*.avs",
-            ["Filter.VapourSynthScript"] = "VapourSynth-Skripte (*.vpy)|*.vpy",
+            ["Filter.AviSynthScript"] = $"{LangProviderBase.AviSynth}-Skripte (*.avs)|*.avs",
+            ["Filter.VapourSynthScript"] = $"{LangProviderBase.VapourSynth}-Skripte (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "SVFI-Konfigurationsdateien (*.ini)|*.ini",
             ["Filter.AllFiles"] = "Alle Dateien (*.*)|*.*",
             ["CustomScriptModeText"] = "Benutzerskript importieren"
@@ -88,8 +88,8 @@ public class SrcFilePickerLangProvider : LangProviderBase
         Data["ko"] = new(Data["en"])
         {
             ["Filter.Video"] = $"비디오 파일 ({VideoExtensions})|{VideoExtensions}|모든 파일 (*.*)|*.*",
-            ["Filter.AviSynthScript"] = "AviSynth 스크립트 파일 (*.avs)|*.avs",
-            ["Filter.VapourSynthScript"] = "VapourSynth 스크립트 파일 (*.vpy)|*.vpy",
+            ["Filter.AviSynthScript"] = $"{LangProviderBase.AviSynth} 스크립트 파일 (*.avs)|*.avs",
+            ["Filter.VapourSynthScript"] = $"{LangProviderBase.VapourSynth} 스크립트 파일 (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "SVFI 구성 파일 (*.ini)|*.ini",
             ["Filter.AllFiles"] = "모든 파일 (*.*)|*.*",
             ["CustomScriptModeText"] = "사용자 정의 스크립트 가져오기"
@@ -97,8 +97,8 @@ public class SrcFilePickerLangProvider : LangProviderBase
         Data["pt-br"] = new(Data["en"])
         {
             ["Filter.Video"] = $"Arquivos de vídeo ({VideoExtensions})|{VideoExtensions}|Todos os arquivos (*.*)|*.*",
-            ["Filter.AviSynthScript"] = "Scripts AviSynth (*.avs)|*.avs",
-            ["Filter.VapourSynthScript"] = "Scripts VapourSynth (*.vpy)|*.vpy",
+            ["Filter.AviSynthScript"] = $"Scripts {LangProviderBase.AviSynth} (*.avs)|*.avs",
+            ["Filter.VapourSynthScript"] = $"Scripts {LangProviderBase.VapourSynth} (*.vpy)|*.vpy",
             ["Filter.SvfiIni"] = "Arquivos de configuração SVFI (*.ini)|*.ini",
             ["Filter.AllFiles"] = "Todos os arquivos (*.*)|*.*",
             ["CustomScriptModeText"] = "Importar script personalizado"

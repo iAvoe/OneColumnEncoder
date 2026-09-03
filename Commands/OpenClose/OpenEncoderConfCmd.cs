@@ -5,13 +5,13 @@ namespace OneColumnEncoder.Commands.OpenClose;
 /// </summary>
 public class OpenEncoderConfCmd(ModalNavS modalNavS,
     ToolItemCardVM? compressionParamsItem = null,
-    Func<string?>? getFfmpegPath = null,
+    Func<string?>? getFFmpegPath = null,
     Func<string?>? getSourceVideoPath = null,
     Func<string?>? getSrcFFprobeJson = null,
     Func<long>? getTotalFrames = null) : OpenCloseBase(modalNavS)
 {
     private readonly ToolItemCardVM? _compressionParamsItem = compressionParamsItem;
-    private readonly Func<string?>? _getFfmpegPath = getFfmpegPath;
+    private readonly Func<string?>? _getFFmpegPath = getFFmpegPath;
     private readonly Func<string?>? _getSourceVideoPath = getSourceVideoPath;
     private readonly Func<string?>? _getSrcFFprobeJson = getSrcFFprobeJson;
 
@@ -28,7 +28,7 @@ public class OpenEncoderConfCmd(ModalNavS modalNavS,
             window.Close,
             _compressionParamsItem,
             ModalNavS,
-            _getFfmpegPath?.Invoke(),
+            _getFFmpegPath?.Invoke(),
             _getSourceVideoPath?.Invoke(),
             _getSrcFFprobeJson?.Invoke(),
             getTotalFrames);

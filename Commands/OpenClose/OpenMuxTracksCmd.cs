@@ -8,7 +8,7 @@ public sealed class OpenMuxTracksCmd(
     ModalNavS modalNavS,
     Func<string[]> getSourcePaths,
     Func<string, IReadOnlyList<MuxTrackM>> getTracks,
-    Func<string?> getFfmpegPath,
+    Func<string?> getFFmpegPath,
     Func<string> getFfprobePath,
     Action<string, IReadOnlyList<MuxTrackM>> applyTracks,
     Func<bool> canOpen) : OpenCloseBase(modalNavS)
@@ -30,7 +30,7 @@ public sealed class OpenMuxTracksCmd(
             return;
         }
 
-        string? ffmpegPath = getFfmpegPath();
+        string? ffmpegPath = getFFmpegPath();
         if (string.IsNullOrWhiteSpace(ffmpegPath) || !File.Exists(ffmpegPath))
         {
             ShowCannotMuxSubtitleError(MuxLangProvider.Current["MuxTracks.MissingFfmpeg"]);

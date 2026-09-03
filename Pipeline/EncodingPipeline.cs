@@ -12,7 +12,7 @@ public record EncodingPipelineRequest(
     string UpstreamInputPath,
     string EncoderExeName,
     string EncoderPath,
-    string? FfmpegPath,
+    string? FFmpegPath,
     string? SourceVideoPath,
     string OutputPath,
     EncoderConfM EncoderConf,
@@ -221,14 +221,14 @@ public static partial class EncodingPipeline
             && request.MuxMode == EncodingMuxMode.VideoOnly
             && request.Clip?.FirstFrame is long
             && request.Clip.LastFrame is long;
-        bool isFfmpeg = request.UpstreamExeName.Equals("ffmpeg.exe", StringComparison.OrdinalIgnoreCase);
-        string clipArgs = isFrameExactRepart && isFfmpeg
+        bool isFFmpeg = request.UpstreamExeName.Equals("ffmpeg.exe", StringComparison.OrdinalIgnoreCase);
+        string clipArgs = isFrameExactRepart && isFFmpeg
             ? string.Empty
             : BuildUpstreamClipArgs(request.UpstreamExeName, request.Clip);
-        string? ffmpegFilterArgs = isFrameExactRepart && isFfmpeg
+        string? ffmpegFilterArgs = isFrameExactRepart && isFFmpeg
             ? BuildFrameExactRepartFilter(request)
             : request.FFmpegFilterArgs;
-        if (isFrameExactRepart && isFfmpeg && request.ConcatVideoSourcePaths is { Length: > 0 })
+        if (isFrameExactRepart && isFFmpeg && request.ConcatVideoSourcePaths is { Length: > 0 })
             return BuildFFmpegRepartArgs(request);
         return request.UpstreamExeName.ToLowerInvariant() switch
         {
@@ -355,7 +355,7 @@ public static partial class EncodingPipeline
 
         return upstreamExeName.ToLowerInvariant() switch
         {
-            "ffmpeg.exe" => BuildFfmpegClipArgs(BuildClipRange(clip, needsTimes: true, needsFrames: false)),
+            "ffmpeg.exe" => BuildFFmpegClipArgs(BuildClipRange(clip, needsTimes: true, needsFrames: false)),
             "vspipe.exe" => BuildVspipeClipArgs(BuildClipRange(clip, needsTimes: false, needsFrames: true)),
             "avs2yuv.exe" => BuildAvs2yuvClipArgs(BuildClipRange(clip, needsTimes: false, needsFrames: true)),
             "avs2pipemod.exe" => BuildAvs2pipemodClipArgs(BuildClipRange(clip, needsTimes: false, needsFrames: true)),
@@ -364,7 +364,7 @@ public static partial class EncodingPipeline
         };
     }
 
-    private static string BuildFfmpegClipArgs(EncodingClipRequest? clip) =>
+    private static string BuildFFmpegClipArgs(EncodingClipRequest? clip) =>
         clip == null
             ? string.Empty
             : JoinArgs(

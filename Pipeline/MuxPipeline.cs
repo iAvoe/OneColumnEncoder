@@ -28,7 +28,7 @@ public static partial class MuxPipeline
         if (request == null
             || !request.AutoMuxEnabled
             || request.MuxMode == EncodingMuxMode.Disabled
-            || string.IsNullOrWhiteSpace(request.FfmpegPath)) return null;
+            || string.IsNullOrWhiteSpace(request.FFmpegPath)) return null;
         if (request.MuxMode == EncodingMuxMode.VideoOnly)
             return BuildRepartMuxCommand(request) ?? BuildVideoOnlyMuxCommand(request);
         if (request.Clip != null) return null;
@@ -79,7 +79,7 @@ public static partial class MuxPipeline
             $"-map 0:v:0 {sourceMapAndCodecArgs} {externalMapAndCodecArgs} {sourceDispositionArgs} -c:v copy -bsf:v setts=pts=N*DURATION {videoTimescaleArgs}",
             Quote(context.OutputPath));
 
-        return new($"{Quote(request.FfmpegPath)} {args}", args, context.EncodedVideoPath, context.OutputPath);
+        return new($"{Quote(request.FFmpegPath)} {args}", args, context.EncodedVideoPath, context.OutputPath);
     }
 
     /// <summary>
@@ -94,7 +94,7 @@ public static partial class MuxPipeline
         EncodingAudioMuxMode audioMode = EncodingAudioMuxResolver.ResolveAudioMuxMode(request);
         if (audioMode == EncodingAudioMuxMode.Disable
             || string.IsNullOrWhiteSpace(request.ConcatFileListPath)
-            || string.IsNullOrWhiteSpace(request.FfmpegPath)) return null;
+            || string.IsNullOrWhiteSpace(request.FFmpegPath)) return null;
         (string startTime, string endTime)? range = GetRepartClipTimeRange(request);
         if (range == null) return null;
 
@@ -114,7 +114,7 @@ public static partial class MuxPipeline
             $"-map 0:v:0 {audioMapArgs} -c:v copy -bsf:v setts=pts=N*DURATION -video_track_timescale {context.VideoTimescale}",
             Quote(context.OutputPath));
 
-        return new($"{Quote(request.FfmpegPath)} {args}", args, context.EncodedVideoPath, context.OutputPath);
+        return new($"{Quote(request.FFmpegPath)} {args}", args, context.EncodedVideoPath, context.OutputPath);
     }
 
     /// <summary>
@@ -199,7 +199,7 @@ public static partial class MuxPipeline
     /// <returns>Video-only mux command, or null when muxing is unavailable.</returns>
     public static EncodingMuxCommand? BuildVideoOnlyMuxCommand(EncodingPipelineRequest request)
     {
-        if (!request.AutoMuxEnabled || string.IsNullOrWhiteSpace(request.FfmpegPath)) return null;
+        if (!request.AutoMuxEnabled || string.IsNullOrWhiteSpace(request.FFmpegPath)) return null;
 
         MuxContext context = BuildMuxContext(request);
         string videoTimescaleArgs = $"-video_track_timescale {context.VideoTimescale}";
@@ -212,7 +212,7 @@ public static partial class MuxPipeline
             $"-map 0:v:0 -c:v copy -bsf:v setts=pts=N*DURATION {videoTimescaleArgs}",
             Quote(context.OutputPath));
 
-        return new($"{Quote(request.FfmpegPath)} {args}", args, context.EncodedVideoPath, context.OutputPath);
+        return new($"{Quote(request.FFmpegPath)} {args}", args, context.EncodedVideoPath, context.OutputPath);
     }
 
     /// <summary>
@@ -233,7 +233,7 @@ public static partial class MuxPipeline
             $"-f concat -safe 0 -ss {range.StartTime} -to {range.EndTime} -i {Quote(request.ConcatFileListPath!)}",
             $"-map 0:a? {audioCodecArgs}",
             Quote(audioOutputPath));
-        string audioCommandLine = $"{Quote(request.FfmpegPath!)} {audioArgs}";
+        string audioCommandLine = $"{Quote(request.FFmpegPath!)} {audioArgs}";
         EncodingAudioCommand audioCommand = new(audioCommandLine, audioArgs, audioOutputPath);
 
         string muxArgs = JoinArgs(
@@ -243,7 +243,7 @@ public static partial class MuxPipeline
             $"-i {Quote(audioOutputPath)}",
             $"-map 0:v:0 -map 1:a? -c copy -bsf:v setts=pts=N*DURATION -video_track_timescale {context.VideoTimescale}",
             Quote(context.OutputPath));
-        string muxCommandLine = $"{Quote(request.FfmpegPath!)} {muxArgs}";
+        string muxCommandLine = $"{Quote(request.FFmpegPath!)} {muxArgs}";
 
         return new(muxCommandLine, muxArgs, context.EncodedVideoPath, context.OutputPath, audioCommand);
     }
