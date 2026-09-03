@@ -221,6 +221,32 @@ public class FilenameScribeModalLangProvider(string languageCode) : LangProvider
             ["FilenameScribe.SelfCheck3"] = "Bei übersetztem Seriennamen sicherstellen, dass dieser Alias in TMDB existiert",
             ["FilenameScribe.FooterHint"] = "Dateierweiterung wird durch gewählten Encoder festgelegt und kann hier nicht bearbeitet werden"
         };
+        Data["ko"] = new(Data["en"])
+        {
+            ["FilenameScribe.MiniHeader"] = "파일명",
+            ["FilenameScribe.Placeholder"] = "출력 파일명을 입력하거나 붙여넣기",
+            ["FilenameScribe.PreviewHeader"] = "미리보기",
+            ["FilenameScribe.Preview30Label"] = "PC·태블릿 파일 목록 (전체폭 30자)",
+            ["FilenameScribe.Preview25Label"] = "플레이어 제목 표시줄 (전체폭 25자)",
+            ["FilenameScribe.Preview20Label"] = "플레이어 사이드바 / 재생목록 (전체폭 20자)",
+            ["FilenameScribe.Preview15Label"] = "소형 폰 화면 (전체폭 15자)",
+            ["FilenameScribe.FormatCheckHeader"] = "형식 검사",
+            ["FilenameScribe.SevereIssueHeader"] = "중대한 문제",
+            ["FilenameScribe.GeneralIssueHeader"] = "일반 문제",
+            ["FilenameScribe.CheckEmpty"] = "비어있지 않음",
+            ["FilenameScribe.CheckLength"] = "50자 이하",
+            ["FilenameScribe.CheckReserved"] = "OS 예약 이름이 아님",
+            ["FilenameScribe.CheckInvalidChars"] = "인용문·제어 기호 없음 (\" ' ` < > | * ? \\ / : &)",
+            ["FilenameScribe.CheckExtendedChars"] = "BMP 범위를 초과하는 문자 없음 (이모지 등)",
+            ["FilenameScribe.CheckSpaces"] = "공백 없음 (_ 또는 - 사용)",
+            ["FilenameScribe.CheckCombiningMarks"] = "유니코드 결합 표식 없음",
+            ["FilenameScribe.CheckSpecialSpaceVariants"] = "특수 공백 변형 없음",
+            ["FilenameScribe.SelfCheckHeader"] = "셀프 검사: 미디어 스크래퍼 호환성",
+            ["FilenameScribe.SelfCheck1"] = "yyyy-mm-dd 날짜 형식을 일관되게 사용",
+            ["FilenameScribe.SelfCheck2"] = "정렬: 두 자리 이상 연속 번호에 0 채우기",
+            ["FilenameScribe.SelfCheck3"] = "파일명이 번역된 프로그램 제목인 경우, TMDB에 해당 별칭이 있는지 확인",
+            ["FilenameScribe.FooterHint"] = "확장자는 선택한 엔코더에 의해 설정되며 여기서 편집할 수 없음"
+        };
         Data["pt-br"] = new(Data["en"])
         {
             ["FilenameScribe.MiniHeader"] = "Nome do arquivo",

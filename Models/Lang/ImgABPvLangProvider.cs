@@ -291,6 +291,41 @@ public class ImgABPvLangProvider : LangProviderBase
             ["ButteraugliToolPresent"] = "Butteraugli-Qualitätsmetrik bereit.",
             ["ButteraugliScoreHint"] = "Butteraugli-Punktzahl (heuristisch): <1 Theoretisch verlustfrei | 1-2 Visuell verlustfrei | 2-4 Leichter Verlust | 4-6 Deutlicher Verlust | 6-8 Schwerer Verlust | >8 Gravierender Verlust"
         };
+        Data["ko"] = new(Data["en"])
+        {
+            ["EncoderLabel"] = "엔코더",
+            ["DisplayModeLabel"] = "표시",
+            ["ZoomLabel"] = "줌",
+            ["PositionLabel"] = "이미지 위치",
+            ["RawButtonText"] = "원본",
+            ["Hint1Text"] = "일부 엔코더가 느려서 압축은 미리보기 클릭 후에만 실행됩니다",
+            ["Hint2Text"] = "엔코더가 가져와지지 않은 경우에도 사용성을 보장하기 위해 미리보기는 ffmpeg로만 제공됩니다",
+            ["Hint3Text"] = "구분선을 드래그하여 비교하세요. 비교 대상은 \"일시정지\" 상태의 화질이지 \"동적\" 화질이 아닙니다",
+            ["StatusReady"] = "준비 완료",
+            ["StatusExtracting"] = "소스 프레임 추출 중...",
+            ["StatusConverting"] = "소스 프레임 변환 중 ({0})...",
+            ["StatusEncoding"] = "{0}(으)로 인코딩 중...",
+            ["StatusDecoding"] = "미리보기 프레임 디코딩 중...",
+            ["StatusPreviewReady"] = "미리보기 준비 완료: {0}, CRF/QP {1}",
+            ["StatusComputingScores"] = "화질 지표 계산 중...",
+            ["StatusCancelled"] = "미리보기 취소됨",
+            ["StatusNoFfmpeg"] = "ffmpeg.exe가 가져와지지 않음",
+            ["StatusNoSource"] = "유효한 비디오 소스가 선택되지 않음",
+            ["StatusDisplayModeBlocked"] = "미리보기 실행 중에는 표시 모드를 변경할 수 없습니다",
+            ["StatusDisplayModeSet"] = "표시 모드: {0}",
+            ["DisplayModeRaw"] = "원본",
+            ["DisplayModeLowToBt709"] = "낮은 색역 → BT.709",
+            ["DisplayModeWcgToBt709"] = "WCG → BT.709",
+            ["DisplayModeHdrToSdr"] = "HDR → SDR",
+            ["DisplayModeHighHdrToSdr"] = "높은 HDR → SDR",
+            ["WarnSvtAv1No12Bit"] = "libsvtav1은 12비트 소스 미리보기를 지원하지 않습니다.\nlibx265를 사용하거나 다른 소스를 선택하세요.",
+            ["Ssimulacra2ToolMissing"] = "SSIMULACRA2.1 도구를 찾을 수 없습니다. x64-CloudinarySSIMULACRA2.1을 실행 파일 옆에 놓고 다시 시작하세요.",
+            ["Ssimulacra2ToolPresent"] = "SSIMULACRA2.1 화질 지표 준비 완료",
+            ["SsimulacraScoreHint"] = "SSIMULACRA 점수: 100 수학적 무손실 | 90 시각적 무손실 | 85 미미한 손실 | 80 드러난 손실 | 70 눈에 보이는 손실 | 50 상당한 손실 | 30 치명적 손실",
+            ["ButteraugliToolMissing"] = "Butteraugli 도구를 찾을 수 없습니다. x64-GoogleButteraugli을 실행 파일 옆에 놓고 다시 시작하세요.",
+            ["ButteraugliToolPresent"] = "Butteraugli 화질 지표 준비 완료",
+            ["ButteraugliScoreHint"] = "Butteraugli 점수(경험적): <1 이론적 무손실 | 1-2 시각적 무손실 | 2-4 경미한 손실 | 4-6 눈에 띄는 손실 | 6-8 심각한 손실 | >8 극심한 손실"
+        };
         Data["pt-br"] = new(Data["en"])
         {
             ["EncoderLabel"] = "Codificador",

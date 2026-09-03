@@ -70,7 +70,6 @@ public class AnalyzeSrcVideoCmd(
                 await ExecuteQueueAnalysisAsync();
                 return;
             }
-
             if (IsConcatRoute())
             {
                 await ExecuteConcatAnalysisAsync();

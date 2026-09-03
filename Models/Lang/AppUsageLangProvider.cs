@@ -347,6 +347,48 @@ public class AppUsageLangProvider : LangProviderBase
             ["ManualExtTitle"] = "Manuell — Drittanbieter-Erweiterungen",
             ["ManualExtIntro"] = "Modded Encoder bieten Funktionen, die offizielle Versionen nicht haben; Existenz prüfen vor Aktivierung."
         };
+        Data["ko"] = new(Data["en"])
+        {
+            ["HowToUse"] = "이 프로그램 사용법",
+            ["UpdateTitle"] = "이 애플리케이션 업데이트 방법",
+            ["UpdateDesc"] = "1cenc 폴더를 유지하고 OneColumnEncoder.exe를 교체하세요. 모든 설정과 데이터가 보존됩니다.",
+            ["Description"] = "이 프로그램은 위→아래, 왼쪽→오른쪽 순서를 엄격히 따릅니다——모든 \"다음\" 버튼은 오른쪽에 있습니다.",
+            ["CopyHint"] = "팁: 이 창은 텍스트 선택과 Ctrl+C 복사를 지원합니다",
+            ["GettingStarted"] = "가장 간단한 시작 방법:",
+            ["Step1"] = "1. 업스트림 도구 (ffmpeg, vspipe, avs2yuv 등)를 가져오기 및 선택",
+            ["Step2"] = "2. 엔코더 / 다운스트림 도구 (x264, x265 등)를 가져오기 및 선택",
+            ["Step3"] = "3. 소스 비디오 파일 가져오기",
+            ["Step4"] = "4. 호환성과 상태가 검증된 인코딩 설정 선택",
+            ["Step5"] = "5. 체크리스트를 해결하고 시작",
+            ["WhyDisabledTitle"] = "시작 버튼이 비활성된 이유",
+            ["WhyDisabled1"] = "1. 오류를 감지한 체크리스트 아래의 Bypass 클릭",
+            ["WhyDisabled2"] = "2. 입력이 나쁘면 출력도 나쁨 (대부분 시작을 멈추지 않음)",
+            ["WhyDisabled3"] = "3. 손상된 비디오의 인코딩은 드물게 PC 크래시(BSOD)를 유발할 수 있습니다",
+            ["ToolDownloadTitle"] = "비디오 인코딩 관련 도구 다운로드",
+            ["ComplianceTitle"] = "상용 이용 컴플라이언스",
+            ["ComplianceDesc"] = "이 프로그램은 Apache License 2.0로 배포됩니다. 상용 이용 시 가져온 각 프로그램의 요구사항도 확인하세요.",
+            ["LicenseFfmpeg"] = "· FFmpeg / FFprobe 법률 및 라이선스: https://ffmpeg.org/legal.html",
+            ["LicenseVapourSynth"] = "· VapourSynth 라이선스: https://github.com/vapoursynth/vapoursynth/blob/master/COPYING",
+            ["LicenseAvs2yuv"] = "· Avs2YUV 라이선스: https://github.com/FFMS/ffms2/blob/master/COPYING.GPLv3",
+            ["LicenseAvs2pipemod"] = "· Avs2Pipemod 라이선스: https://github.com/pinterf/AvsPmod",
+            ["LicenseSvfi"] = "· SVFI 라이선스: https://github.com/Justin62628/Squirrel-RIFE/blob/master/LICENSE",
+            ["LicenseX264"] = "· x264 라이선스 및 AVC 특허 정보: https://x264.org/licensing/",
+            ["LicenseX265"] = "· x265 라이선스 및 HEVC 특허 정보: https://www.videolan.org/developers/x265.html",
+            ["LicenseSvtAv1"] = "· SVT-AV1 / AV1 라이선스 정보: https://gitlab.com/AOMediaCodec/SVT-AV1/-/blob/master/LICENSE.md",
+            ["ComplianceFooter"] = "...비디오 컨테이너, 오디오 코덱, 그리고 상용 이용 시 사용되는 폰트도 포함됩니다.",
+            ["ComplianceDisclaimer"] = "사용자는 지역별 소프트웨어 라이선스, 코덱 특허, 미디어 형식, 폰트 라이선스의 준수에 대한 책임이 있습니다.",
+            ["ParamConfigTitle"] = "매개변수 설정 기능 설명",
+            ["ParamConfigIntro"] = "이 프로그램은 소스에 맞추면서 엔코더가 충분히 동작할 여유를 남기는 전략을 사용합니다.",
+            ["AutoParamTitle"] = "자동 지정 또는 Y4M에서 제공되는 매개변수",
+            ["AutoParamBase"] = "· 기본: 프레임레이트, 해상도, 총 프레임, 색상 행렬, 전달 특성, 원색",
+            ["AutoParamEncode"] = "· 인코딩: lookahead 거리, 모션 추정 반경, 서브픽셀 모션 추정 강도",
+            ["AutoParamFooter"] = "...위 매개변수를 자동 설정할 수 있는 엔코더 제외",
+            ["ManualBaseTitle"] = "수동 지정 — 기본 매개변수",
+            ["ManualBaseList"] = "· x264: 범용, 스톡크 영상\n· x265: 범용, 영화, 스톡크 영상, 애니메이션, 스트레스 테스트\n· SVT-AV1: ultra HQ, 고압축, 고속",
+            ["ManualBaseFooter"] = "...CPU 성능 및 CLI에 노출된 설정(개발자 의도)에 따라 비트 할당 정밀도에 영향",
+            ["ManualExtTitle"] = "수동 지정 — 서드파티 확장 매개변수",
+            ["ManualExtIntro"] = "수정된 엔코더는 공식/다른 수정 버전에 없는 확장 기능을 제공할 수 있습니다. 체크하기 전에 해당 매개변수의 존재 여부를 확인하세요."
+        };
         Data["pt-br"] = new(Data["en"])
         {
             ["HowToUse"] = "Como usar este programa",
