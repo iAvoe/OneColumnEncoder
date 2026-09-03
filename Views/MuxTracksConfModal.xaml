@@ -155,7 +155,7 @@
                              Text="{Binding CannotDeleteSrcSubsHint}" />
             <comps:HintPanel Grid.Row="4"
                              Margin="0 2.5 0 0"
-                             Text="{Binding FfmpegSubtitleDefaultHint}"
+                             Text="{Binding FFmpegSubtitleDefaultHint}"
                              RefreshTextOnLanguageChanged="True" />
         </Grid>
     </Grid>

@@ -14,6 +14,26 @@
                    SizeToContent="Height"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
+    <ui:AdaptiveWindow.Resources>
+        <Style x:Key="AppendLinkButton"
+               TargetType="Button"
+               BasedOn="{StaticResource LinkButton}">
+            <Setter Property="ToolTip"
+                    Value="Insert filter" />
+            <Setter Property="Margin"
+                    Value="0" />
+            <Setter Property="Padding"
+                    Value="0" />
+            <Setter Property="HorizontalAlignment"
+                    Value="Right" />
+            <Setter Property="VerticalAlignment"
+                    Value="Bottom" />
+            <Setter Property="Content"
+                    Value="+" />
+            <Setter Property="FontSize"
+                    Value="22" />
+        </Style>
+    </ui:AdaptiveWindow.Resources>
     <Grid Margin="15 12.5 15 15">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -87,7 +107,7 @@
         <TabControl Grid.Row="1"
                     Grid.Column="1"
                     SelectedIndex="{Binding SelectedTabIndex}"
-                    Margin="0 15 0 0">
+                    Margin="0 12.5 0 0">
 
             <TabItem Header="{Binding TabAvs}"
                      Padding="15 7.5"
@@ -255,7 +275,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="{Binding TabFfmpeg}"
+            <TabItem Header="{Binding TabFFmpeg}"
                      Padding="15 7.5"
                      FontWeight="Bold">
                 <Grid Margin="0 2.5">
@@ -266,7 +286,7 @@
                                        MinHeight="170" />
                     </Grid.RowDefinitions>
                     <TextBox Grid.Row="0"
-                             Text="{Binding FfmpegConcatFileList, Mode=OneWay}"
+                             Text="{Binding FFmpegConcatFileList, Mode=OneWay}"
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
@@ -281,25 +301,25 @@
                              Visibility="{Binding IsConcatMode, Converter={StaticResource BoolToVisibility}}"
                              FontWeight="Normal" />
                     <TextBlock Grid.Row="1"
-                               Text="{Binding FfmpegFreeTextHint}"
+                               Text="{Binding FFmpegFreeTextHint}"
                                Foreground="{StaticResource GlobalSecondary}"
                                TextWrapping="Wrap"
                                Margin="0"
                                FontWeight="Normal" />
                     <TextBox Grid.Row="2"
-                             Text="{Binding FfmpegFreeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Text="{Binding FFmpegFreeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource ScriptAccentFfmpegBackground}"
-                             Foreground="{StaticResource ScriptAccentFfmpegForeground}"
+                             Background="{StaticResource ScriptAccentFFmpegBackground}"
+                             Foreground="{StaticResource ScriptAccentFFmpegForeground}"
                              TextWrapping="Wrap"
                              AcceptsReturn="False"
                              Margin="0 2.5 0 0"
                              Padding="2.5"
                              HorizontalScrollBarVisibility="Auto"
                              VerticalScrollBarVisibility="Disabled"
-                             PreviewKeyDown="FfmpegFreeText_PreviewKeyDown"
-                             DataObject.Pasting="FfmpegFreeText_Pasting"
+                             PreviewKeyDown="FFmpegFreeText_PreviewKeyDown"
+                             DataObject.Pasting="FFmpegFreeText_Pasting"
                              PreviewMouseWheel="UserInput_PreviewMouseWheel"
                              FontWeight="Normal" />
                 </Grid>
@@ -310,7 +330,7 @@
         <StackPanel Grid.Row="3"
                     Grid.Column="1">
             <!-- FFMPEG VFR to CFR -->
-            <StackPanel Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
+            <StackPanel Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -318,22 +338,15 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="{Binding VFRCFRTitle}"
                                Style="{StaticResource H3}"
-                               Margin="0 20 0 0" />
+                               Margin="0 15 0 0" />
                     <Button Grid.Column="1"
-                            Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
-                            Command="{Binding InsertFfmpegFilterCommand}"
-                            CommandParameter="{Binding FfmpegFpsFilter}"
-                            IsEnabled="{Binding CanInsertFfmpegFpsFilter}"
-                            ToolTip="Insert filter"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Style="{StaticResource LinkButton}"
-                            Content="+"
-                            FontSize="14" />
+                            Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding InsertFFmpegFilterCommand}"
+                            CommandParameter="{Binding FFmpegFpsFilter}"
+                            IsEnabled="{Binding CanInsertFFmpegFpsFilter}"
+                            Style="{StaticResource AppendLinkButton}" />
                 </Grid>
-                <TextBox Text="{Binding FfmpegFpsFilter, Mode=OneWay}"
+                <TextBox Text="{Binding FFmpegFpsFilter, Mode=OneWay}"
                          IsReadOnly="True"
                          BorderThickness="0"
                          FontFamily="{StaticResource CodeFont}"
@@ -342,7 +355,7 @@
                          VerticalAlignment="Center" />
             </StackPanel>
 
-            <StackPanel Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
+            <StackPanel Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -352,20 +365,13 @@
                                Style="{StaticResource H3}"
                                Margin="0 15 0 0" />
                     <Button Grid.Column="1"
-                            Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
-                            Command="{Binding InsertFfmpegFilterCommand}"
-                            CommandParameter="{Binding FfmpegSarRepairFilter}"
-                            IsEnabled="{Binding CanInsertFfmpegSarRepairFilter}"
-                            ToolTip="Insert filter"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Style="{StaticResource LinkButton}"
-                            Content="+"
-                            FontSize="14" />
+                            Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding InsertFFmpegFilterCommand}"
+                            CommandParameter="{Binding FFmpegSarRepairFilter}"
+                            IsEnabled="{Binding CanInsertFFmpegSarRepairFilter}"
+                            Style="{StaticResource AppendLinkButton}" />
                 </Grid>
-                <TextBox Text="{Binding FfmpegSarRepairFilter, Mode=OneWay}"
+                <TextBox Text="{Binding FFmpegSarRepairFilter, Mode=OneWay}"
                          IsReadOnly="True"
                          BorderThickness="0"
                          FontFamily="{StaticResource CodeFont}"
@@ -374,7 +380,7 @@
                          VerticalAlignment="Center" />
             </StackPanel>
 
-            <StackPanel Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
+            <StackPanel Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -387,57 +393,29 @@
                                Style="{StaticResource H3}"
                                Margin="0 15 0 0" />
                     <Button Grid.Column="1"
-                            Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
-                            Command="{Binding InsertFfmpegFilterCommand}"
-                            CommandParameter="{Binding FfmpegLowToHighColorFilter}"
-                            IsEnabled="{Binding CanInsertFfmpegLowToHighColorFilter}"
-                            ToolTip="Insert filter"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Style="{StaticResource LinkButton}"
-                            Content="+"
-                            FontSize="14" />
+                            Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding InsertFFmpegFilterCommand}"
+                            CommandParameter="{Binding FFmpegLowToHighColorFilter}"
+                            IsEnabled="{Binding CanInsertFFmpegLowToHighColorFilter}"
+                            Style="{StaticResource AppendLinkButton}" />
                     <Button Grid.Column="2"
-                            Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
-                            Command="{Binding InsertFfmpegFilterCommand}"
-                            CommandParameter="{Binding FfmpegHighToLowColorFilter}"
-                            IsEnabled="{Binding CanInsertFfmpegHighToLowColorFilter}"
-                            ToolTip="Insert filter"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Style="{StaticResource LinkButton}"
-                            Content="+"
-                            FontSize="14" />
+                            Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding InsertFFmpegFilterCommand}"
+                            CommandParameter="{Binding FFmpegHighToLowColorFilter}"
+                            IsEnabled="{Binding CanInsertFFmpegHighToLowColorFilter}"
+                            Style="{StaticResource AppendLinkButton}" />
                     <Button Grid.Column="3"
-                            Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
-                            Command="{Binding InsertFfmpegFilterCommand}"
-                            CommandParameter="{Binding FfmpegHdrToSdrColorFilter}"
-                            IsEnabled="{Binding CanInsertFfmpegHdrToSdrColorFilter}"
-                            ToolTip="Insert filter"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Style="{StaticResource LinkButton}"
-                            Content="+"
-                            FontSize="14" />
+                            Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding InsertFFmpegFilterCommand}"
+                            CommandParameter="{Binding FFmpegHdrToSdrColorFilter}"
+                            IsEnabled="{Binding CanInsertFFmpegHdrToSdrColorFilter}"
+                            Style="{StaticResource AppendLinkButton}" />
                     <Button Grid.Column="4"
-                            Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
-                            Command="{Binding InsertFfmpegFilterCommand}"
-                            CommandParameter="{Binding FfmpegHighHdrToLowSdrColorFilter}"
-                            IsEnabled="{Binding CanInsertFfmpegHighHdrToLowSdrColorFilter}"
-                            ToolTip="Insert filter"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Style="{StaticResource LinkButton}"
-                            Content="+"
-                            FontSize="14" />
+                            Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding InsertFFmpegFilterCommand}"
+                            CommandParameter="{Binding FFmpegHighHdrToLowSdrColorFilter}"
+                            IsEnabled="{Binding CanInsertFFmpegHighHdrToLowSdrColorFilter}"
+                            Style="{StaticResource AppendLinkButton}" />
                 </Grid>
                 <Grid Margin="0 2.5 0 0">
                     <Grid.ColumnDefinitions>
@@ -449,7 +427,7 @@
                                Foreground="{StaticResource GlobalSecondary}"
                                VerticalAlignment="Center" />
                     <TextBox Grid.Column="1"
-                             Text="{Binding FfmpegLowToHighColorFilter, Mode=OneWay}"
+                             Text="{Binding FFmpegLowToHighColorFilter, Mode=OneWay}"
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
@@ -467,7 +445,7 @@
                                Foreground="{StaticResource GlobalSecondary}"
                                VerticalAlignment="Center" />
                     <TextBox Grid.Column="1"
-                             Text="{Binding FfmpegHighToLowColorFilter, Mode=OneWay}"
+                             Text="{Binding FFmpegHighToLowColorFilter, Mode=OneWay}"
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
@@ -485,7 +463,7 @@
                                Foreground="{StaticResource GlobalSecondary}"
                                VerticalAlignment="Center" />
                     <TextBox Grid.Column="1"
-                             Text="{Binding FfmpegHdrToSdrColorFilter, Mode=OneWay}"
+                             Text="{Binding FFmpegHdrToSdrColorFilter, Mode=OneWay}"
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
@@ -503,7 +481,7 @@
                                Foreground="{StaticResource GlobalSecondary}"
                                VerticalAlignment="Center" />
                     <TextBox Grid.Column="1"
-                             Text="{Binding FfmpegHighHdrToLowSdrColorFilter, Mode=OneWay}"
+                             Text="{Binding FFmpegHighHdrToLowSdrColorFilter, Mode=OneWay}"
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
@@ -515,7 +493,7 @@
 
             <comps:HintPanel Margin="0 2.5 0 0"
                              Text="{Binding ColorSpacePeakNitsHint}"
-                             Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}" />
+                             Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}" />
 
             <StackPanel Visibility="{Binding IsDenoiseSectionVisible, Converter={StaticResource BoolToVisibility}}">
                 <Grid>
@@ -525,35 +503,21 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="{Binding DenoiseTitle}"
                                Style="{StaticResource H3}"
-                               Margin="0 20 0 0" />
+                               Margin="0 15 0 0" />
                     <Button Grid.Column="1"
-                            Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
-                            Command="{Binding InsertFfmpegFilterCommand}"
-                            CommandParameter="{Binding FfmpegHqdn3dDenoiseFilter}"
-                            ToolTip="Insert filter"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Style="{StaticResource LinkButton}"
-                            Content="+"
-                            FontSize="14" />
+                            Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding InsertFFmpegFilterCommand}"
+                            CommandParameter="{Binding FFmpegHqdn3dDenoiseFilter}"
+                            Style="{StaticResource AppendLinkButton}" />
                     <Button Grid.Column="1"
                             Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding InsertAvsFilterCommand}"
                             CommandParameter="{Binding AviSynthHqdn3dDenoiseFilter}"
-                            ToolTip="Insert filter"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Style="{StaticResource LinkButton}"
-                            Content="+"
-                            FontSize="14" />
+                            Style="{StaticResource AppendLinkButton}" />
                 </Grid>
                 <!-- FFMPEG Hqdn3d -->
-                <TextBox Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
-                         Text="{Binding FfmpegHqdn3dDenoiseFilter, Mode=OneWay}"
+                <TextBox Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                         Text="{Binding FFmpegHqdn3dDenoiseFilter, Mode=OneWay}"
                          Padding="0 2.5"
                          IsReadOnly="True"
                          BorderThickness="0"
@@ -583,46 +547,25 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="{Binding CropTitle}"
                                Style="{StaticResource H3}"
-                               Margin="0 20 0 0" />
+                               Margin="0 15 0 0" />
                     <Button Grid.Column="1"
                             Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding InsertAvsCropFilterCommand}"
                             CommandParameter="{Binding AviSynthCropFilter}"
                             IsEnabled="{Binding CanInsertAviSynthCropFilter}"
-                            ToolTip="Insert filter"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Style="{StaticResource LinkButton}"
-                            Content="+"
-                            FontSize="14" />
+                            Style="{StaticResource AppendLinkButton}" />
                     <Button Grid.Column="2"
                             Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding InsertVpyCropFilterCommand}"
                             CommandParameter="{Binding VapourSynthCropFilter}"
                             IsEnabled="{Binding CanInsertVapourSynthCropFilter}"
-                            ToolTip="Insert filter"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Style="{StaticResource LinkButton}"
-                            Content="+"
-                            FontSize="14" />
+                            Style="{StaticResource AppendLinkButton}" />
                     <Button Grid.Column="3"
-                            Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
-                            Command="{Binding InsertFfmpegCropFilterCommand}"
-                            CommandParameter="{Binding FfmpegCropFilter}"
-                            IsEnabled="{Binding CanInsertFfmpegCropFilter}"
-                            ToolTip="Insert filter"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Style="{StaticResource LinkButton}"
-                            Content="+"
-                            FontSize="14" />
+                            Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding InsertFFmpegCropFilterCommand}"
+                            CommandParameter="{Binding FFmpegCropFilter}"
+                            IsEnabled="{Binding CanInsertFFmpegCropFilter}"
+                            Style="{StaticResource AppendLinkButton}" />
                 </Grid>
 
                 <!-- Crop width slider -->
@@ -693,9 +636,9 @@
                          FontWeight="Normal"
                          VerticalAlignment="Center" />
                 <TextBox Margin="0 5 0 0"
-                         Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                         Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
                          Padding="0 2.5"
-                         Text="{Binding FfmpegCropFilter, Mode=OneWay}"
+                         Text="{Binding FFmpegCropFilter, Mode=OneWay}"
                          IsReadOnly="True"
                          BorderThickness="0"
                          FontFamily="{DynamicResource CodeFont}"
@@ -716,44 +659,23 @@
                                Style="{StaticResource H3}"
                                Margin="0 20 0 0" />
                     <Button Grid.Column="1"
-                            Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
-                            Command="{Binding InsertFfmpegFilterCommand}"
-                            CommandParameter="{Binding FfmpegResizeFilter}"
-                            IsEnabled="{Binding CanInsertFfmpegResizeFilter}"
-                            ToolTip="Insert filter"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Style="{StaticResource LinkButton}"
-                            Content="+"
-                            FontSize="14" />
+                            Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding InsertFFmpegFilterCommand}"
+                            CommandParameter="{Binding FFmpegResizeFilter}"
+                            IsEnabled="{Binding CanInsertFFmpegResizeFilter}"
+                            Style="{StaticResource AppendLinkButton}" />
                     <Button Grid.Column="1"
                             Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding InsertVpyFilterCommand}"
                             CommandParameter="{Binding VapourSynthResizeFilter}"
                             IsEnabled="{Binding CanInsertVapourSynthResizeFilter}"
-                            ToolTip="Insert filter"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Style="{StaticResource LinkButton}"
-                            Content="+"
-                            FontSize="14" />
+                            Style="{StaticResource AppendLinkButton}" />
                     <Button Grid.Column="1"
                             Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding InsertAvsFilterCommand}"
                             CommandParameter="{Binding AviSynthResizeFilter}"
                             IsEnabled="{Binding CanInsertAviSynthResizeFilter}"
-                            ToolTip="Insert filter"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Style="{StaticResource LinkButton}"
-                            Content="+"
-                            FontSize="14" />
+                            Style="{StaticResource AppendLinkButton}" />
                 </Grid>
 
                 <Grid Margin="0 2.5 0 0">
@@ -830,10 +752,10 @@
                 </Grid>
 
                 <!-- ffmpeg res strink -->
-                <TextBox Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                <TextBox Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
                          Margin="0 2.5 0 0"
                          Padding="0 2.5"
-                         Text="{Binding FfmpegResizeFilter, Mode=OneWay}"
+                         Text="{Binding FFmpegResizeFilter, Mode=OneWay}"
                          IsReadOnly="True"
                          BorderThickness="0"
                          FontFamily="{DynamicResource CodeFont}"
@@ -883,41 +805,20 @@
                             Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding InsertAvsFilterCommand}"
                             CommandParameter="{Binding AviSynthAssRenderFilter}"
-                            ToolTip="Insert filter"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Style="{StaticResource LinkButton}"
-                            Content="+"
-                            FontSize="14" />
+                            Style="{StaticResource AppendLinkButton}" />
                     <Button Grid.Column="1"
                             Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding InsertVpyFilterCommand}"
                             CommandParameter="{Binding VapourSynthSubtitleFilter}"
-                            ToolTip="Insert filter"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Style="{StaticResource LinkButton}"
-                            Content="+"
-                            FontSize="14" />
+                            Style="{StaticResource AppendLinkButton}" />
                     <Button Grid.Column="1"
-                            Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
-                            Command="{Binding InsertFfmpegFilterCommand}"
-                            CommandParameter="{Binding FfmpegSubtitleFilter}"
-                            ToolTip="Insert filter"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Style="{StaticResource LinkButton}"
-                            Content="+"
-                            FontSize="14" />
+                            Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                            Command="{Binding InsertFFmpegFilterCommand}"
+                            CommandParameter="{Binding FFmpegSubtitleFilter}"
+                            Style="{StaticResource AppendLinkButton}" />
                 </Grid>
-                <TextBox Text="{Binding FfmpegSubtitleFilter, Mode=OneWay}"
-                         Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                <TextBox Text="{Binding FFmpegSubtitleFilter, Mode=OneWay}"
+                         Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
                          IsReadOnly="True"
                          BorderThickness="0"
                          FontFamily="{DynamicResource CodeFont}"
@@ -944,7 +845,7 @@
                          VerticalAlignment="Center" />
             </StackPanel>
 
-            <StackPanel Visibility="{Binding IsFfmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
+            <StackPanel Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
                 <TextBlock Text="{Binding MultiFilterAssemblyTitle}"
                            Style="{StaticResource H3}"
                            Margin="0 15 0 0" />
@@ -969,19 +870,12 @@
                                Text="{Binding VapourSynthVszipclTitle}"
                                Style="{StaticResource H3}"
                                Margin="0 15 0 0"
-                               VerticalAlignment="Center"/>
+                               VerticalAlignment="Center" />
                     <Button Grid.Column="1"
                             Command="{Binding InsertVpyFilterCommand}"
                             CommandParameter="{Binding VapourSynthVszipclFilter}"
                             IsEnabled="{Binding CanInsertVapourSynthVszipclFilter}"
-                            ToolTip="Insert filter"
-                            Margin="0"
-                            Padding="0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Style="{StaticResource LinkButton}"
-                            Content="+"
-                            FontSize="14"/>
+                            Style="{StaticResource AppendLinkButton}" />
                 </Grid>
 
                 <TextBox Margin="0 2.5 0 0"

@@ -27,7 +27,7 @@ public class AppUsageLangProvider : LangProviderBase
             ["ToolDownloadTitle"] = "Download Video Encoding Related Tools",
             ["ComplianceTitle"] = "Commercial Usage Compliance",
             ["ComplianceDesc"] = "This program is licensed under the Apache License 2.0. For commercial usage, please refer to compliance requirement of the programs imported to this tool.",
-            ["LicenseFfmpeg"] = "\u00B7 FFmpeg / FFprobe Legal & License: https://ffmpeg.org/legal.html",
+            ["LicenseFFmpeg"] = "\u00B7 FFmpeg / FFprobe Legal & License: https://ffmpeg.org/legal.html",
             ["LicenseVapourSynth"] = "\u00B7 VapourSynth License: https://github.com/vapoursynth/vapoursynth/blob/master/COPYING",
             ["LicenseAvs2yuv"] = "\u00B7 Avs2YUV License: https://github.com/FFMS/ffms2/blob/master/COPYING.GPLv3",
             ["LicenseAvs2pipemod"] = "\u00B7 Avs2Pipemod License: https://github.com/pinterf/AvsPmod",
@@ -69,7 +69,7 @@ public class AppUsageLangProvider : LangProviderBase
             ["ToolDownloadTitle"] = "视频压制相关工具下载",
             ["ComplianceTitle"] = "商业使用合规要求",
             ["ComplianceDesc"] = "本程序使用 Apache 2.0 许可证。对于商业用途，请参考导入本工具的程序的相关合规要求。",
-            ["LicenseFfmpeg"] = "\u00B7 FFmpeg / FFprobe 法律与许可证：https://ffmpeg.org/legal.html",
+            ["LicenseFFmpeg"] = "\u00B7 FFmpeg / FFprobe 法律与许可证：https://ffmpeg.org/legal.html",
             ["LicenseVapourSynth"] = "\u00B7 VapourSynth 许可证：https://github.com/vapoursynth/vapoursynth/blob/master/COPYING",
             ["LicenseAvs2yuv"] = "\u00B7 Avs2YUV 许可证：https://github.com/FFMS/ffms2/blob/master/COPYING.GPLv3",
             ["LicenseAvs2pipemod"] = "\u00B7 Avs2Pipemod 许可证：https://github.com/pinterf/AvsPmod",
@@ -111,7 +111,7 @@ public class AppUsageLangProvider : LangProviderBase
             ["ToolDownloadTitle"] = "視訊壓制相關工具下載",
             ["ComplianceTitle"] = "商業使用合規要求",
             ["ComplianceDesc"] = "本程式使用 Apache 2.0 授權。對於商業用途，請參考導入本程式的程式的相關合規要求。",
-            ["LicenseFfmpeg"] = "\u00B7 FFmpeg / FFprobe 法律與授權：https://ffmpeg.org/legal.html",
+            ["LicenseFFmpeg"] = "\u00B7 FFmpeg / FFprobe 法律與授權：https://ffmpeg.org/legal.html",
             ["LicenseVapourSynth"] = "\u00B7 VapourSynth 授權：https://github.com/vapoursynth/vapoursynth/blob/master/COPYING",
             ["LicenseAvs2yuv"] = "\u00B7 Avs2YUV 授權：https://github.com/FFMS/ffms2/blob/master/COPYING.GPLv3",
             ["LicenseAvs2pipemod"] = "\u00B7 Avs2Pipemod 授權：https://github.com/pinterf/AvsPmod",
@@ -157,7 +157,7 @@ public class AppUsageLangProvider : LangProviderBase
             ["ToolDownloadTitle"] = "Télécharger les outils d'encodage vidéo",
             ["ComplianceTitle"] = "Conformité usage commercial",
             ["ComplianceDesc"] = "Ce programme est sous licence Apache 2.0. Pour un usage commercial, vérifiez aussi les exigences des programmes importés.",
-            ["LicenseFfmpeg"] = "· FFmpeg / FFprobe droits & licence : https://ffmpeg.org/legal.html",
+            ["LicenseFFmpeg"] = "· FFmpeg / FFprobe droits & licence : https://ffmpeg.org/legal.html",
             ["LicenseVapourSynth"] = "· Licence VapourSynth : https://github.com/vapoursynth/vapoursynth/blob/master/COPYING",
             ["LicenseAvs2yuv"] = "· Licence Avs2YUV : https://github.com/FFMS/ffms2/blob/master/COPYING.GPLv3",
             ["LicenseAvs2pipemod"] = "· Licence Avs2Pipemod : https://github.com/pinterf/AvsPmod",
@@ -199,7 +199,7 @@ public class AppUsageLangProvider : LangProviderBase
             ["ToolDownloadTitle"] = "Descarga de herramientas de codificación",
             ["ComplianceTitle"] = "Cumplimiento para uso comercial",
             ["ComplianceDesc"] = "Este programa usa licencia Apache 2.0. Para uso comercial, revise también las exigencias de los programas importados.",
-            ["LicenseFfmpeg"] = "· FFmpeg / FFprobe legal y licencia: https://ffmpeg.org/legal.html",
+            ["LicenseFFmpeg"] = "· FFmpeg / FFprobe legal y licencia: https://ffmpeg.org/legal.html",
             ["LicenseVapourSynth"] = "· Licencia VapourSynth: https://github.com/vapoursynth/vapoursynth/blob/master/COPYING",
             ["LicenseAvs2yuv"] = "· Licencia Avs2YUV: https://github.com/FFMS/ffms2/blob/master/COPYING.GPLv3",
             ["LicenseAvs2pipemod"] = "· Licencia Avs2Pipemod: https://github.com/pinterf/AvsPmod",
@@ -241,7 +241,7 @@ public class AppUsageLangProvider : LangProviderBase
             ["ToolDownloadTitle"] = "動画エンコード関連ツールの入手",
             ["ComplianceTitle"] = "商用利用のコンプライアンス",
             ["ComplianceDesc"] = "本プログラムは Apache License 2.0 です。商用利用では、取込む各プログラムの要件も確認してください。",
-            ["LicenseFfmpeg"] = "· FFmpeg / FFprobe 法務・ライセンス: https://ffmpeg.org/legal.html",
+            ["LicenseFFmpeg"] = "· FFmpeg / FFprobe 法務・ライセンス: https://ffmpeg.org/legal.html",
             ["LicenseVapourSynth"] = "· VapourSynth ライセンス: https://github.com/vapoursynth/vapoursynth/blob/master/COPYING",
             ["LicenseAvs2yuv"] = "· Avs2YUV ライセンス: https://github.com/FFMS/ffms2/blob/master/COPYING.GPLv3",
             ["LicenseAvs2pipemod"] = "· Avs2Pipemod ライセンス: https://github.com/pinterf/AvsPmod",
@@ -283,7 +283,7 @@ public class AppUsageLangProvider : LangProviderBase
             ["ToolDownloadTitle"] = "Загрузка инструментов кодирования видео",
             ["ComplianceTitle"] = "Соответствие для коммерческого использования",
             ["ComplianceDesc"] = "Программа под Apache License 2.0. Для коммерческого использования учитывайте требования импортируемых программ.",
-            ["LicenseFfmpeg"] = "· Лицензия FFmpeg / FFprobe: https://ffmpeg.org/legal.html",
+            ["LicenseFFmpeg"] = "· Лицензия FFmpeg / FFprobe: https://ffmpeg.org/legal.html",
             ["LicenseVapourSynth"] = "· Лицензия VapourSynth: https://github.com/vapoursynth/vapoursynth/blob/master/COPYING",
             ["LicenseAvs2yuv"] = "· Лицензия Avs2YUV: https://github.com/FFMS/ffms2/blob/master/COPYING.GPLv3",
             ["LicenseAvs2pipemod"] = "· Лицензия Avs2Pipemod: https://github.com/pinterf/AvsPmod",
@@ -325,7 +325,7 @@ public class AppUsageLangProvider : LangProviderBase
             ["ToolDownloadTitle"] = "Videokodierungstools herunterladen",
             ["ComplianceTitle"] = "Kommerzielle Nutzung — Compliance",
             ["ComplianceDesc"] = "Dieses Programm steht unter Apache License 2.0. Für kommerzielle Nutzung beachten Sie die Anforderungen der importierten Programme.",
-            ["LicenseFfmpeg"] = "· FFmpeg / FFprobe Recht & Lizenz: https://ffmpeg.org/legal.html",
+            ["LicenseFFmpeg"] = "· FFmpeg / FFprobe Recht & Lizenz: https://ffmpeg.org/legal.html",
             ["LicenseVapourSynth"] = "· VapourSynth-Lizenz: https://github.com/vapoursynth/vapoursynth/blob/master/COPYING",
             ["LicenseAvs2yuv"] = "· Avs2YUV-Lizenz: https://github.com/FFMS/ffms2/blob/master/COPYING.GPLv3",
             ["LicenseAvs2pipemod"] = "· Avs2Pipemod-Lizenz: https://github.com/pinterf/AvsPmod",
@@ -367,7 +367,7 @@ public class AppUsageLangProvider : LangProviderBase
             ["ToolDownloadTitle"] = "비디오 인코딩 관련 도구 다운로드",
             ["ComplianceTitle"] = "상용 이용 컴플라이언스",
             ["ComplianceDesc"] = "이 프로그램은 Apache License 2.0로 배포됩니다. 상용 이용 시 가져온 각 프로그램의 요구사항도 확인하세요.",
-            ["LicenseFfmpeg"] = "· FFmpeg / FFprobe 법률 및 라이선스: https://ffmpeg.org/legal.html",
+            ["LicenseFFmpeg"] = "· FFmpeg / FFprobe 법률 및 라이선스: https://ffmpeg.org/legal.html",
             ["LicenseVapourSynth"] = "· VapourSynth 라이선스: https://github.com/vapoursynth/vapoursynth/blob/master/COPYING",
             ["LicenseAvs2yuv"] = "· Avs2YUV 라이선스: https://github.com/FFMS/ffms2/blob/master/COPYING.GPLv3",
             ["LicenseAvs2pipemod"] = "· Avs2Pipemod 라이선스: https://github.com/pinterf/AvsPmod",
@@ -409,7 +409,7 @@ public class AppUsageLangProvider : LangProviderBase
             ["ToolDownloadTitle"] = "Download de ferramentas de codificação de vídeo",
             ["ComplianceTitle"] = "Conformidade para uso comercial",
             ["ComplianceDesc"] = "Este programa é licenciado sob Apache License 2.0. Para uso comercial, consulte os requisitos de conformidade dos programas importados.",
-            ["LicenseFfmpeg"] = "· FFmpeg / FFprobe Legal & Licença: https://ffmpeg.org/legal.html",
+            ["LicenseFFmpeg"] = "· FFmpeg / FFprobe Legal & Licença: https://ffmpeg.org/legal.html",
             ["LicenseVapourSynth"] = "· Licença VapourSynth: https://github.com/vapoursynth/vapoursynth/blob/master/COPYING",
             ["LicenseAvs2yuv"] = "· Licença Avs2YUV: https://github.com/FFMS/ffms2/blob/master/COPYING.GPLv3",
             ["LicenseAvs2pipemod"] = "· Licença Avs2Pipemod: https://github.com/pinterf/AvsPmod",
@@ -453,7 +453,7 @@ public class AppUsageLangProvider : LangProviderBase
     public string UpdateDesc { get; }
     public string ComplianceTitle { get; }
     public string ComplianceDesc { get; }
-    public string LicenseFfmpeg { get; }
+    public string LicenseFFmpeg { get; }
     public string LicenseVapourSynth { get; }
     public string LicenseAvs2yuv { get; }
     public string LicenseAvs2pipemod { get; }
@@ -495,7 +495,7 @@ public class AppUsageLangProvider : LangProviderBase
         UpdateDesc = this["UpdateDesc"];
         ComplianceTitle = this["ComplianceTitle"];
         ComplianceDesc = this["ComplianceDesc"];
-        LicenseFfmpeg = this["LicenseFfmpeg"];
+        LicenseFFmpeg = this["LicenseFFmpeg"];
         LicenseVapourSynth = this["LicenseVapourSynth"];
         LicenseAvs2yuv = this["LicenseAvs2yuv"];
         LicenseAvs2pipemod = this["LicenseAvs2pipemod"];

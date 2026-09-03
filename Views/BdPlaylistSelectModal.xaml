@@ -59,7 +59,7 @@
                 <Trigger Property="IsSelected"
                          Value="True">
                     <Setter Property="Background"
-                            Value="{StaticResource ScriptAccentFfmpegBackground}" />
+                            Value="{StaticResource ScriptAccentFFmpegBackground}" />
                     <Setter Property="BorderBrush"
                             Value="{StaticResource TimelineTrackBorder}" />
                     <Setter Property="BorderThickness"

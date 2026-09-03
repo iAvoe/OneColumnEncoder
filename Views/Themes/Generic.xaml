@@ -89,9 +89,9 @@
     <SolidColorBrush Color="#166534"
                       x:Key="ScriptAccentVpyForeground" />
     <SolidColorBrush Color="#FBF0FD"
-                      x:Key="ScriptAccentFfmpegBackground" />
+                      x:Key="ScriptAccentFFmpegBackground" />
     <SolidColorBrush Color="#5C1665"
-                      x:Key="ScriptAccentFfmpegForeground" />
+                      x:Key="ScriptAccentFFmpegForeground" />
     <SolidColorBrush Color="#D9CAE4"
                       x:Key="TimelineTrackBackground" />
     <SolidColorBrush Color="#9673A6"

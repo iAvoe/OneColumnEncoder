@@ -26,7 +26,7 @@ public class MainVM : BaseVM
     private readonly VideoSrcRepartState _videoSrcRepart;
     private readonly Dictionary<string, List<MuxTrackM>> _muxTracksBySource = new(StringComparer.OrdinalIgnoreCase);
     private const int MaxResolutionDimension = 65535;
-    private string _scriptScribeFfmpegFilterArgs = string.Empty;
+    private string _scriptScribeFFmpegFilterArgs = string.Empty;
     private string _repartAvsFilterInput = string.Empty;
     private string _repartVpyFilterInput = string.Empty;
     private bool _isDurationFilterEnabled;
@@ -546,7 +546,7 @@ public class MainVM : BaseVM
             () => SrcFileKindResolver.GetPreferredScriptSrcKind(UpstreamsZone),
             GetSelectedUpstreamExeName,
             OnSrcImported,
-            args => _scriptScribeFfmpegFilterArgs = args ?? string.Empty,
+            args => _scriptScribeFFmpegFilterArgs = args ?? string.Empty,
             () => ActiveSrcValidationCard.Checklist1.Any(
                 e => e.IsEnabled && e.Status == StatusType.Error),
             () => ActiveSrcValidationCard.Checklist2.Count > 1
@@ -582,12 +582,12 @@ public class MainVM : BaseVM
             modalNavS,
             GetCurrentMuxSourcePaths,
             GetMuxTracksForSource,
-            () => _appDataM.Tools.FfmpegPath,
+            () => _appDataM.Tools.FFmpegPath,
             GetSelectedFfprobePath,
             ApplyMuxTracksForSource,
             () => GetActiveSrcRoute() is SrcRouteKind.Single or SrcRouteKind.Queue or SrcRouteKind.Concat
-                && !string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath)
-                && File.Exists(_appDataM.Tools.FfmpegPath)
+                && !string.IsNullOrWhiteSpace(_appDataM.Tools.FFmpegPath)
+                && File.Exists(_appDataM.Tools.FFmpegPath)
                 && !string.IsNullOrWhiteSpace(GetSelectedFfprobePath())
                 && File.Exists(GetSelectedFfprobePath())
                 && IsAutoMuxEnabledForCurrentRoute());
@@ -993,8 +993,8 @@ public class MainVM : BaseVM
     {
         if (_muxTracksCard == null) return;
 
-        bool ffmpegReady = !string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath)
-            && File.Exists(_appDataM.Tools.FfmpegPath);
+        bool ffmpegReady = !string.IsNullOrWhiteSpace(_appDataM.Tools.FFmpegPath)
+            && File.Exists(_appDataM.Tools.FFmpegPath);
         bool ffprobeReady = !string.IsNullOrWhiteSpace(GetSelectedFfprobePath())
             && File.Exists(GetSelectedFfprobePath());
         // Required conditions for Add Subtitles: ffmpeg, downstream auto-mux, and no Repart route.
@@ -1124,7 +1124,7 @@ public class MainVM : BaseVM
         {
             UpdateEncStartButtonsState();
             if (_modalNavS.GetModal<FilterScribeVM>() is FilterScribeVM modal)
-                modal.RefreshGeneratedFfmpegFilters();
+                modal.RefreshGeneratedFFmpegFilters();
         }
     }
     #endregion
@@ -1198,7 +1198,7 @@ public class MainVM : BaseVM
             ToolDefinitionProviderM.IsImportedTool(t, "one_line_shot_args.exe"));
 
         bool repartMuxReady = GetActiveSrcRoute() != SrcRouteKind.Repart
-            || (!string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath) && File.Exists(_appDataM.Tools.FfmpegPath));
+            || (!string.IsNullOrWhiteSpace(_appDataM.Tools.FFmpegPath) && File.Exists(_appDataM.Tools.FFmpegPath));
         bool allReady = toolsReady && toolsChecklistReady && sourceValidationReady && encodeTermsReady && dependencyReady && repartMuxReady;
         EncStartButtons.B3_2IsEnabled = allReady && !oneLineShotSelected && GetActiveSrcRoute() == SrcRouteKind.Single;
         EncStartButtons.B3_3IsEnabled = allReady;
@@ -1254,8 +1254,8 @@ public class MainVM : BaseVM
     {
         if (_muxTracksCard == null) return;
 
-        bool ffmpegReady = !string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath)
-            && File.Exists(_appDataM.Tools.FfmpegPath);
+        bool ffmpegReady = !string.IsNullOrWhiteSpace(_appDataM.Tools.FFmpegPath)
+            && File.Exists(_appDataM.Tools.FFmpegPath);
         bool ffprobeReady = !string.IsNullOrWhiteSpace(GetSelectedFfprobePath())
             && File.Exists(GetSelectedFfprobePath());
         if (!ffmpegReady)
@@ -1504,7 +1504,7 @@ public class MainVM : BaseVM
             ? null
             : ToolCatalogProviderM.ResolveExeFromCard(upstream);
         return SrcFileKindResolver.IsRepartRouteSupportedUpstream(upstreamExeName)
-            && !string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath);
+            && !string.IsNullOrWhiteSpace(_appDataM.Tools.FFmpegPath);
     }
 
     private string[] GetConcatFilePaths() =>
@@ -1720,7 +1720,7 @@ public class MainVM : BaseVM
             item.R1Command = new OpenRepartConfCmd(
                 _modalNavS,
                 GetSelectedFfprobePath,
-                () => _appDataM.Tools.FfmpegPath,
+                () => _appDataM.Tools.FFmpegPath,
                 GetRepartPlan,
                 ApplyRepartPlan,
                 SetOverlayBlocked);
@@ -1788,7 +1788,7 @@ public class MainVM : BaseVM
             compressionParams.R1Command = new OpenEncoderConfCmd(
                 _modalNavS,
                 compressionParams,
-                () => _appDataM.Tools.FfmpegPath,
+                () => _appDataM.Tools.FFmpegPath,
                 GetPreviewSourceVideoPath,
                 () => _srcVideoAnalysis.RawJson,
                 () => EncodingPipeline.GetSourceTotalFrames(
@@ -2452,7 +2452,7 @@ public class MainVM : BaseVM
             upstreamInputPath,
             encoderExeName,
             encoder.P2TextData,
-            _appDataM.Tools.FfmpegPath,
+            _appDataM.Tools.FFmpegPath,
             sourceVideoPath,
             Path.Combine(outputSetting.P2TextData, outputSetting.P1TextData ?? string.Empty),
             EncoderConfM.Load(),
@@ -2461,7 +2461,7 @@ public class MainVM : BaseVM
             ParallelismConf: ParallelismConfM.LoadEffective(),
             SvfiIniPath: svfiIniPath,
             SvfiTaskId: svfiTaskId,
-            FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs,
+            FFmpegFilterArgs: _scriptScribeFFmpegFilterArgs,
             AudioMuxMode: EncodingAudioMuxResolver.ParseMode(_appConfM.AudioMux.SingleMode),
             MuxTracks: GetMuxTracksForSource(sourceVideoPath),
             AutoMuxEnabled: EncodingAutoMuxResolver.IsAutoMuxEnabled(_appConfM.AutoMux, encoderExeName, EncodingMuxRouteMode.Single));
@@ -2586,14 +2586,14 @@ public class MainVM : BaseVM
                 inputPath,
                 encoderExeName,
                 encoder.P2TextData,
-                _appDataM.Tools.FfmpegPath,
+                _appDataM.Tools.FFmpegPath,
                 srcPath,
                 Path.Combine(outputDirectory, Path.GetFileNameWithoutExtension(srcPath)),
                 encoderConf,
                 _appDataM.Tools.VspipeY4mArg,
                 SourceFfprobeJson: GetSrcFFprobeJson(srcPath),
                 ParallelismConf: parallelismConf,
-                FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs,
+                FFmpegFilterArgs: _scriptScribeFFmpegFilterArgs,
                 AudioMuxMode: EncodingAudioMuxResolver.ParseMode(_appConfM.AudioMux.QueueMode),
                 MuxTracks: GetMuxTracksForSource(srcPath),
                 AutoMuxEnabled: EncodingAutoMuxResolver.IsAutoMuxEnabled(_appConfM.AutoMux, encoderExeName, EncodingMuxRouteMode.Queue));
@@ -2653,14 +2653,14 @@ public class MainVM : BaseVM
             inputPath,
             encoderExeName,
             encoder.P2TextData,
-            _appDataM.Tools.FfmpegPath,
+            _appDataM.Tools.FFmpegPath,
             SourceVideoPath: null,
             Path.Combine(outputDirectory, outputBaseName),
             encoderConf,
             _appDataM.Tools.VspipeY4mArg,
                 SourceFfprobeJson: _srcVideoAnalysis.RawJson,
             ParallelismConf: parallelismConf,
-            FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs,
+            FFmpegFilterArgs: _scriptScribeFFmpegFilterArgs,
                 IsConcatMode: true,
                 ConcatFileListPath: _videoSrcConcat.RegenerateFileList(),
                 ConcatVideoSourcePaths: concatPaths,
@@ -2687,8 +2687,8 @@ public class MainVM : BaseVM
         string? upstreamExeName = ToolCatalogProviderM.ResolveExeFromCard(upstream);
         string? encoderExeName = ToolCatalogProviderM.ResolveExeFromCard(encoder);
         if (string.IsNullOrWhiteSpace(upstreamExeName) || string.IsNullOrWhiteSpace(encoderExeName)) return null;
-        if (string.IsNullOrWhiteSpace(_appDataM.Tools.FfmpegPath) || !File.Exists(_appDataM.Tools.FfmpegPath))
-            throw new FileNotFoundException(RepartLangProvider.Current.FfmpegRequired, _appDataM.Tools.FfmpegPath);
+        if (string.IsNullOrWhiteSpace(_appDataM.Tools.FFmpegPath) || !File.Exists(_appDataM.Tools.FFmpegPath))
+            throw new FileNotFoundException(RepartLangProvider.Current.FfmpegRequired, _appDataM.Tools.FFmpegPath);
 
         Guid executionId = Guid.NewGuid();
         string fileListPath = _videoSrcRepart.RegenerateFileList(executionId);
@@ -2740,7 +2740,7 @@ public class MainVM : BaseVM
                 inputPath,
                 encoderExeName,
                 encoder.P2TextData,
-                _appDataM.Tools.FfmpegPath,
+                _appDataM.Tools.FFmpegPath,
                 SourceVideoPath: null,
                 Path.Combine(outputDirectory, output.BaseName),
                 encoderConf,
@@ -2748,7 +2748,7 @@ public class MainVM : BaseVM
                 Clip: clip,
                 SourceFfprobeJson: plan.ReferenceRawJson,
                 ParallelismConf: parallelismConf,
-                FfmpegFilterArgs: _scriptScribeFfmpegFilterArgs,
+                FFmpegFilterArgs: _scriptScribeFFmpegFilterArgs,
                 IsConcatMode: true,
                 ConcatFileListPath: fileListPath,
                 ConcatTotalFrames: plan.TotalFrames,
@@ -3093,7 +3093,7 @@ public class MainVM : BaseVM
 
             (string? path, string? version, long? size) = def.ExeName switch
             {
-                "ffmpeg.exe" => (t.FfmpegPath, t.FfmpegVer, t.FfmpegSize),
+                "ffmpeg.exe" => (t.FFmpegPath, t.FFmpegVer, t.FFmpegSize),
                 "vspipe.exe" => (t.VspipePath, t.VspipeVer, t.VspipeSize),
                 "avs2yuv.exe" => (t.Avs2yuvPath, t.Avs2yuvVer, t.Avs2yuvSize),
                 "avs2pipemod.exe" => (t.Avs2pipemodPath, t.Avs2pipemodVer, t.Avs2pipemodSize),

@@ -151,7 +151,7 @@ public partial class FilterScribeModal : AdaptiveWindow
         }
     }
 
-    private void FfmpegFreeText_PreviewKeyDown(object sender, KeyEventArgs e)
+    private void FFmpegFreeText_PreviewKeyDown(object sender, KeyEventArgs e)
     {
         if (e.Key != Key.Enter && e.Key != Key.Return)
             return;
@@ -159,7 +159,7 @@ public partial class FilterScribeModal : AdaptiveWindow
         e.Handled = true;
     }
 
-    private void FfmpegFreeText_Pasting(object sender, DataObjectPastingEventArgs e)
+    private void FFmpegFreeText_Pasting(object sender, DataObjectPastingEventArgs e)
     {
         string? text = e.SourceDataObject.GetData(DataFormats.UnicodeText) as string
             ?? e.SourceDataObject.GetData(DataFormats.Text) as string;

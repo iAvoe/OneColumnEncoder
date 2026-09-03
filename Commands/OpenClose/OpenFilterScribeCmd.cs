@@ -11,7 +11,7 @@ public class OpenFilterScribeCmd(
     Func<SrcFileKind?> getPreferredScriptSrcKind,
     Func<string?> getSelectedUpstreamExeName,
     Action<ToolItemCardVM, SrcFileKind, string> afterImport, // File save & ItemCard write back
-    Action<string?> applyFfmpegFilterArgs,
+    Action<string?> applyFFmpegFilterArgs,
     Func<bool> hasSourceValidationError,
     Func<bool> hasSarRepairWarning,
     Func<string?> getSrcFFprobeJson,
@@ -61,7 +61,7 @@ public class OpenFilterScribeCmd(
             getPreferredScriptSrcKind,
             getSelectedUpstreamExeName,
             afterImport,
-            applyFfmpegFilterArgs,
+            applyFFmpegFilterArgs,
             hasSourceValidationError,
             hasSarRepairWarning,
             getSrcFFprobeJson(),

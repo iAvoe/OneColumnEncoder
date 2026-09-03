@@ -22,7 +22,7 @@ public record EncodingPipelineRequest(
     ParallelismConfM? ParallelismConf = null,
     string? SvfiIniPath = null,
     string? SvfiTaskId = null,
-    string? FfmpegFilterArgs = null,
+    string? FFmpegFilterArgs = null,
     bool? IsConcatMode = null,
     string? ConcatFileListPath = null,
     long? ConcatTotalFrames = null,
@@ -227,14 +227,14 @@ public static partial class EncodingPipeline
             : BuildUpstreamClipArgs(request.UpstreamExeName, request.Clip);
         string? ffmpegFilterArgs = isFrameExactRepart && isFfmpeg
             ? BuildFrameExactRepartFilter(request)
-            : request.FfmpegFilterArgs;
+            : request.FFmpegFilterArgs;
         if (isFrameExactRepart && isFfmpeg && request.ConcatVideoSourcePaths is { Length: > 0 })
-            return BuildFfmpegRepartArgs(request);
+            return BuildFFmpegRepartArgs(request);
         return request.UpstreamExeName.ToLowerInvariant() switch
         {
             "ffmpeg.exe" => isConcat
                 ? request.ConcatVideoSourcePaths is { Length: > 0 }
-                    ? BuildFfmpegConcatArgs(request)
+                    ? BuildFFmpegConcatArgs(request)
                     : JoinArgs("-hide_banner", "-f concat -safe 0", $"-i {Quote(request.ConcatFileListPath!)}", clipArgs, ffmpegFilterArgs, "-f yuv4mpegpipe -an -sn -strict unofficial -")
                 : JoinArgs($"-hide_banner", clipArgs, $"-i {input}", ffmpegFilterArgs, "-f yuv4mpegpipe -an -strict unofficial -"), // unofficial allows 10bit pipe
             "vspipe.exe" => JoinArgs(input, clipArgs, NormalizeRequired(request.VspipeY4mArg, "vspipe Y4M argument"), "-"),
@@ -254,14 +254,14 @@ public static partial class EncodingPipeline
     /// </summary>
     /// <param name="request">Repart encoding request with concat sources and clip range.</param>
     /// <returns></returns>
-    private static string BuildFfmpegRepartArgs(EncodingPipelineRequest request)
+    private static string BuildFFmpegRepartArgs(EncodingPipelineRequest request)
     {
         // This path reconstructs the clipped video frames only; audio is left for muxing.
         string[] paths = request.ConcatVideoSourcePaths!;
         string inputs = string.Join(" ", paths.Select(path => $"-i {Quote(path)}"));
         EncodingClipRequest clip = request.Clip!;
         string setPts = BuildRepartSetPts(request);
-        string? extraFilter = ExtractVideoFilter(request.FfmpegFilterArgs);
+        string? extraFilter = ExtractVideoFilter(request.FFmpegFilterArgs);
         if (paths.Length == 1)
         {
             string filter = JoinFilterChain(
@@ -291,14 +291,14 @@ public static partial class EncodingPipeline
             "-f yuv4mpegpipe -an -sn -strict unofficial -");
     }
 
-    private static string BuildFfmpegConcatArgs(EncodingPipelineRequest request)
+    private static string BuildFFmpegConcatArgs(EncodingPipelineRequest request)
     {
         string[] paths = request.ConcatVideoSourcePaths!;
         string inputs = string.Join(" ", paths.Select(path => $"-i {Quote(path)}"));
         string resetInputs = string.Join(";", Enumerable.Range(0, paths.Length)
             .Select(index => $"[{index}:v:0]setpts=PTS-STARTPTS[rv{index}]"));
         string concatInputs = string.Concat(Enumerable.Range(0, paths.Length).Select(index => $"[rv{index}]"));
-        string? extraFilter = ExtractVideoFilter(request.FfmpegFilterArgs);
+        string? extraFilter = ExtractVideoFilter(request.FFmpegFilterArgs);
         string filterComplex =
             $"{resetInputs};{concatInputs}concat=n={paths.Length}:v=1:a=0" +
             (string.IsNullOrWhiteSpace(extraFilter) ? string.Empty : $",{extraFilter}") +

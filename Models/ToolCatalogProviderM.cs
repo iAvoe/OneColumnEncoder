@@ -143,7 +143,7 @@ public static class ToolCatalogProviderM
     private static readonly Dictionary<string, Action<AppDataM.Importables, string>> _pathSetters =
         new(StringComparer.OrdinalIgnoreCase)
         {
-            ["ffmpeg.exe"] = (t, p) => t.FfmpegPath = p,
+            ["ffmpeg.exe"] = (t, p) => t.FFmpegPath = p,
             ["vspipe.exe"] = (t, p) => t.VspipePath = p,
             ["avs2yuv.exe"] = (t, p) => t.Avs2yuvPath = p,
             ["avs2pipemod.exe"] = (t, p) => t.Avs2pipemodPath = p,
@@ -158,7 +158,7 @@ public static class ToolCatalogProviderM
     private static readonly Dictionary<string, Action<AppDataM.Importables, long?>> _sizeSetters =
         new(StringComparer.OrdinalIgnoreCase)
         {
-            ["ffmpeg.exe"] = (t, s) => t.FfmpegSize = s,
+            ["ffmpeg.exe"] = (t, s) => t.FFmpegSize = s,
             ["vspipe.exe"] = (t, s) => t.VspipeSize = s,
             ["avs2yuv.exe"] = (t, s) => t.Avs2yuvSize = s,
             ["avs2pipemod.exe"] = (t, s) => t.Avs2pipemodSize = s,
@@ -172,7 +172,7 @@ public static class ToolCatalogProviderM
 
     private static readonly Dictionary<string, Action<AppDataM.Importables, string>> _versionSetters = new(StringComparer.OrdinalIgnoreCase)
     {
-        ["ffmpeg.exe"] = (t, v) => t.FfmpegVer = v,
+        ["ffmpeg.exe"] = (t, v) => t.FFmpegVer = v,
         ["vspipe.exe"] = (t, v) => t.VspipeVer = v,
         ["avs2yuv.exe"] = (t, v) => t.Avs2yuvVer = v,
         ["avs2pipemod.exe"] = (t, v) => t.Avs2pipemodVer = v,

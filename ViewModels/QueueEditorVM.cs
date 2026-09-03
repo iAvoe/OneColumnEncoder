@@ -10,12 +10,12 @@ public sealed class QueueEditorVM : BaseVM
         _closeAction = closeAction;
         _applyEditedPaths = applyEditedPaths;
 
-        RemoveItemCommand = new ActionCmd(item => RemoveItem(item as SourceQueueItemVM));
-        MoveItemUpCommand = new ActionCmd(item => MoveItem(item as SourceQueueItemVM, -1));
-        MoveItemDownCommand = new ActionCmd(item => MoveItem(item as SourceQueueItemVM, 1));
+        RemoveItemCommand = new ActionCmd(item => RemoveItem(item as SrcQueueItemVM));
+        MoveItemUpCommand = new ActionCmd(item => MoveItem(item as SrcQueueItemVM, -1));
+        MoveItemDownCommand = new ActionCmd(item => MoveItem(item as SrcQueueItemVM, 1));
 
         foreach (string filePath in filePaths)
-            Items.Add(new SourceQueueItemVM(filePath, RemoveItemCommand, MoveItemUpCommand, MoveItemDownCommand));
+            Items.Add(new SrcQueueItemVM(filePath, RemoveItemCommand, MoveItemUpCommand, MoveItemDownCommand));
 
         FinishButtons = ButtonGroupVM.CreateTwoButton(
             ConfirmDialogLangProvider.Current["ConfirmDialog.Cancel"],
@@ -27,21 +27,21 @@ public sealed class QueueEditorVM : BaseVM
         UILangProvider.CurrentChanged += OnLanguageChanged;
     }
 
-    public ObservableCollection<SourceQueueItemVM> Items { get; } = [];
+    public ObservableCollection<SrcQueueItemVM> Items { get; } = [];
     public static string WindowTitle => QueueEditorLangProvider.Current["QueueEditor.Title"];
     public ActionCmd RemoveItemCommand { get; }
     public ActionCmd MoveItemUpCommand { get; }
     public ActionCmd MoveItemDownCommand { get; }
     public ButtonGroupVM FinishButtons { get; }
 
-    private void RemoveItem(SourceQueueItemVM? item)
+    private void RemoveItem(SrcQueueItemVM? item)
     {
         if (item == null || !Items.Remove(item)) return;
         item.Dispose();
         RefreshItemStates();
     }
 
-    private void MoveItem(SourceQueueItemVM? item, int offset)
+    private void MoveItem(SrcQueueItemVM? item, int offset)
     {
         if (item == null) return;
 
@@ -76,7 +76,7 @@ public sealed class QueueEditorVM : BaseVM
     private void OnLanguageChanged()
     {
         OnPropertyChanged(nameof(WindowTitle));
-        foreach (SourceQueueItemVM item in Items)
+        foreach (SrcQueueItemVM item in Items)
             item.RefreshLanguage();
 
         FinishButtons.B2_1Text = ConfirmDialogLangProvider.Current["ConfirmDialog.Cancel"];
@@ -86,7 +86,7 @@ public sealed class QueueEditorVM : BaseVM
     public override void Dispose()
     {
         UILangProvider.CurrentChanged -= OnLanguageChanged;
-        foreach (SourceQueueItemVM item in Items)
+        foreach (SrcQueueItemVM item in Items)
             item.Dispose();
         base.Dispose();
         GC.SuppressFinalize(this);

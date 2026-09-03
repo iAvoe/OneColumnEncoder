@@ -2,7 +2,7 @@ using System.Windows.Threading;
 
 namespace OneColumnEncoder.ViewModels;
 
-public sealed class SourceQueueItemVM : BaseVM
+public sealed class SrcQueueItemVM : BaseVM
 {
     private bool _canMoveUp;
     private bool _canMoveDown;
@@ -16,7 +16,7 @@ public sealed class SourceQueueItemVM : BaseVM
     private bool _isRecentlyMoved;
     private DispatcherTimer? _moveFlashTimer;
 
-    public SourceQueueItemVM(string filePath, ICommand? removeCmd, ICommand? moveUpCmd, ICommand? moveDownCmd)
+    public SrcQueueItemVM(string filePath, ICommand? removeCmd, ICommand? moveUpCmd, ICommand? moveDownCmd)
     {
         FilePath = filePath;
         Name = System.IO.Path.GetFileName(filePath);

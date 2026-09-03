@@ -6,7 +6,7 @@ public class ConcatSrcListVM : BaseVM
     private bool _hasOriginalQueueChanges;
     private bool _isRepartMode;
 
-    public ObservableCollection<SourceQueueItemVM> Items { get; } = [];
+    public ObservableCollection<SrcQueueItemVM> Items { get; } = [];
 
     public string OrderingTitle => _isRepartMode
         ? RepartLangProvider.Current["SourceOrdering"]
@@ -31,7 +31,7 @@ public class ConcatSrcListVM : BaseVM
         RefreshChangeState();
     }
 
-    public void RemoveItem(SourceQueueItemVM item)
+    public void RemoveItem(SrcQueueItemVM item)
     {
         int index = Items.IndexOf(item);
         if (index < 0) return;
@@ -41,7 +41,7 @@ public class ConcatSrcListVM : BaseVM
         RefreshChangeState();
     }
 
-    public bool MoveItemUp(SourceQueueItemVM item)
+    public bool MoveItemUp(SrcQueueItemVM item)
     {
         int index = Items.IndexOf(item);
         if (index <= 0) return false;
@@ -52,7 +52,7 @@ public class ConcatSrcListVM : BaseVM
         return true;
     }
 
-    public bool MoveItemDown(SourceQueueItemVM item)
+    public bool MoveItemDown(SrcQueueItemVM item)
     {
         int index = Items.IndexOf(item);
         if (index < 0 || index >= Items.Count - 1) return false;
@@ -79,7 +79,7 @@ public class ConcatSrcListVM : BaseVM
     {
         OnPropertyChanged(nameof(OrderingTitle));
         OnPropertyChanged(nameof(RestoreOriginalQueueText));
-        foreach (SourceQueueItemVM item in Items)
+        foreach (SrcQueueItemVM item in Items)
             item.RefreshLanguage();
     }
 
@@ -102,7 +102,7 @@ public class ConcatSrcListVM : BaseVM
         Items.Clear();
         for (int i = 0; i < filePaths.Length; i++)
         {
-            SourceQueueItemVM item = new(filePaths[i], RemoveItemCommand, MoveItemUpCommand, MoveItemDownCommand);
+            SrcQueueItemVM item = new(filePaths[i], RemoveItemCommand, MoveItemUpCommand, MoveItemDownCommand);
             Items.Add(item);
         }
         RefreshItemStates();
@@ -126,7 +126,7 @@ public class ConcatSrcListVM : BaseVM
 
     private void DisposeItems()
     {
-        foreach (SourceQueueItemVM item in Items)
+        foreach (SrcQueueItemVM item in Items)
             item.Dispose();
     }
 

@@ -52,9 +52,9 @@ public class AppDataM : SaveLoadBase<AppDataM>
     #region ImportedTools data structure
     public class Importables
     {
-        public string? FfmpegPath { get; set; }
-        public string? FfmpegVer { get; set; }
-        public long? FfmpegSize { get; set; }
+        public string? FFmpegPath { get; set; }
+        public string? FFmpegVer { get; set; }
+        public long? FFmpegSize { get; set; }
         public string? VspipePath { get; set; }
         public string? VspipeVer { get; set; }
         public long? VspipeSize { get; set; }

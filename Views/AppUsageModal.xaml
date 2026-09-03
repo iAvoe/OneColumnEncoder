@@ -124,7 +124,7 @@
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"
                            Foreground="{StaticResource ButtonTertiary}">
-                    <Run Text="{Binding Lang.LicenseFfmpeg, Mode=OneWay}" />
+                    <Run Text="{Binding Lang.LicenseFFmpeg, Mode=OneWay}" />
                 </Paragraph>
                 <Paragraph Margin="15 5 0 0"
                            FontSize="13"

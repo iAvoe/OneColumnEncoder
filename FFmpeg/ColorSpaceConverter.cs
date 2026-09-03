@@ -149,7 +149,7 @@ public static class ColorSpaceConverter
 
     #region Filter chain generation
 
-    public static string? BuildFfmpegFilter(
+    public static string? BuildFFmpegFilter(
         ColorSpaceStrategy strategy,
         string? matrix = null,
         string? chromaLocation = null,
@@ -188,7 +188,7 @@ public static class ColorSpaceConverter
             H273Transfer = transfer != null && H273Transfer.TryGetValue(transfer, out int tv) ? tv : null,
             H273Matrix = matrix != null && H273Matrix.TryGetValue(matrix, out int mv) ? mv : null,
             Strategy = strategy,
-            FfmpegColorFilter = BuildFfmpegFilter(strategy, matrix, chromaLocation, primaries, pixelFormat),
+            FFmpegColorFilter = BuildFFmpegFilter(strategy, matrix, chromaLocation, primaries, pixelFormat),
             StrategyDisplayName = GetDisplayName(strategy),
             Description = descriptionOverride ?? BuildDescription(strategy, primaries, transfer, matrix, chromaLocation, pixelFormat)
         };
@@ -269,7 +269,7 @@ public static class ColorSpaceConverter
         {
             ColorSpaceStrategy.NativeBt709 => string.Empty,
             ColorSpaceStrategy.Unknown => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.UnknownFilterHint"],
-            _ => BuildFfmpegFilter(strategy, matrix, chromaLocation, primaries, pixelFormat)
+            _ => BuildFFmpegFilter(strategy, matrix, chromaLocation, primaries, pixelFormat)
         };
 
         if (string.IsNullOrEmpty(filter))

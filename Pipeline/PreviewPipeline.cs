@@ -250,7 +250,7 @@ public static partial class PreviewPipeline
         };
         if (strategy == null) return null;
 
-        string? filter = ColorSpaceConverter.BuildFfmpegFilter(
+        string? filter = ColorSpaceConverter.BuildFFmpegFilter(
             strategy.Value,
             colorSpaceAnalysis.ColorMatrix,
             colorSpaceAnalysis.ColorChromaLocation,

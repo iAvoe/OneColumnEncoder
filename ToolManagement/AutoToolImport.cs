@@ -56,7 +56,7 @@ public static class AutoToolImport
     {
         string? path = exeName.ToLowerInvariant() switch
         {
-            "ffmpeg.exe" => tools.FfmpegPath,
+            "ffmpeg.exe" => tools.FFmpegPath,
             "vspipe.exe" => tools.VspipePath,
             "avs2yuv.exe" => tools.Avs2yuvPath,
             "avs2pipemod.exe" => tools.Avs2pipemodPath,

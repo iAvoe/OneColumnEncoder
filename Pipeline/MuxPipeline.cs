@@ -431,7 +431,7 @@ public static partial class MuxPipeline
     {
         string framerateValue = request.Clip?.FrameRateNumerator is > 0 && request.Clip.FrameRateDenominator is > 0
             ? $"{request.Clip.FrameRateNumerator.Value}/{request.Clip.FrameRateDenominator.Value}"
-            : GetMuxFramerateValue(request.SourceFfprobeJson, request.FfmpegFilterArgs);
+            : GetMuxFramerateValue(request.SourceFfprobeJson, request.FFmpegFilterArgs);
 
         return new(
             ResolveOutputPathWithExtension(request.EncoderExeName, request.OutputPath),

@@ -29,7 +29,7 @@ public class ColorSpaceAnalysisM
     public int? H273Matrix { get; init; }
 
     public ColorSpaceStrategy Strategy { get; init; }
-    public string? FfmpegColorFilter { get; init; }
+    public string? FFmpegColorFilter { get; init; }
     public string StrategyDisplayName { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
 
