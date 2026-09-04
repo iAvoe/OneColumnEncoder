@@ -18,8 +18,8 @@ public static class BrowseHistoryKeys
     public const string VapourSynthScript = "source.script.vpy";
     public const string SvfiIni = "source.script.svfi";
     // Video / script queue source cards
-    public const string VideoSrcQueue = "source.video.queue";
-    public const string VideoSrcConcat = "source.video.concat";
+    public const string SrcQueue = "source.video.queue";
+    public const string SrcConcat = "source.video.concat";
     public const string AviSynthScriptQueue = "source.script.avs.queue";
     public const string VapourSynthScriptQueue = "source.script.vpy.queue";
 
@@ -36,7 +36,7 @@ public static class BrowseHistoryKeys
     {
         SrcFileKind.AviSynthScript => AviSynthScriptQueue,
         SrcFileKind.VapourSynthScript => VapourSynthScriptQueue,
-        _ => VideoSrcQueue
+        _ => SrcQueue
     };
 
     public static string ForTool(string exeName) => $"tool.{exeName}";

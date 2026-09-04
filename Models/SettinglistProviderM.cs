@@ -92,25 +92,25 @@ public static class SettinglistProviderM
     public static List<SettingItemDefinitionM> GetAudioMuxSettings() =>
     [
         new(UICaptionProvider.AppConf.Groups.AudioMux,
-            Lang["Setting.AudioMux.Single"],
+            Lang["EncMode.Single"],
             SettingControlType.Dropdown,
             nameof(AppConfM.AudioMuxSettings.SingleMode),
             Options: UICaptionProvider.AppConf.AudioMuxOptions.Codes,
             DisplayNameResolver: UICaptionProvider.AppConf.AudioMuxOptions.GetDisplayName),
         new(UICaptionProvider.AppConf.Groups.AudioMux,
-            Lang["Setting.AudioMux.Queue"],
+            Lang["EncMode.Queue"],
             SettingControlType.Dropdown,
             nameof(AppConfM.AudioMuxSettings.QueueMode),
             Options: UICaptionProvider.AppConf.AudioMuxOptions.Codes,
             DisplayNameResolver: UICaptionProvider.AppConf.AudioMuxOptions.GetDisplayName),
         new(UICaptionProvider.AppConf.Groups.AudioMux,
-            Lang["Setting.AudioMux.Concat"],
+            Lang["EncMode.Concat"],
             SettingControlType.Dropdown,
             nameof(AppConfM.AudioMuxSettings.ConcatMode),
             Options: UICaptionProvider.AppConf.AudioMuxOptions.Codes,
             DisplayNameResolver: UICaptionProvider.AppConf.AudioMuxOptions.GetDisplayName),
         new(UICaptionProvider.AppConf.Groups.AudioMux,
-            Lang["Setting.AudioMux.Repart"],
+            Lang["EncMode.Repart"],
             SettingControlType.Dropdown,
             nameof(AppConfM.AudioMuxSettings.RepartMode),
             Options: UICaptionProvider.AppConf.AudioMuxOptions.Codes,
@@ -120,7 +120,7 @@ public static class SettinglistProviderM
     public static List<SettingItemDefinitionM> GetAutoMuxSettings() =>
     [
         new(UICaptionProvider.AppConf.Groups.AutoMux,
-            Lang["Setting.AudioMux.Single"],
+            Lang["EncMode.Single"],
             SettingControlType.AutoMux,
             nameof(AppConfM.AutoMuxSettings.SingleX264),
             CheckboxProperties:
@@ -130,7 +130,7 @@ public static class SettinglistProviderM
                 nameof(AppConfM.AutoMuxSettings.SingleSvtAv1)
             ]),
         new(UICaptionProvider.AppConf.Groups.AutoMux,
-            Lang["Setting.AudioMux.Queue"],
+            Lang["EncMode.Queue"],
             SettingControlType.AutoMux,
             nameof(AppConfM.AutoMuxSettings.QueueX264),
             CheckboxProperties:
@@ -140,7 +140,7 @@ public static class SettinglistProviderM
                 nameof(AppConfM.AutoMuxSettings.QueueSvtAv1)
             ]),
         new(UICaptionProvider.AppConf.Groups.AutoMux,
-            Lang["Setting.AudioMux.Concat"],
+            Lang["EncMode.Concat"],
             SettingControlType.AutoMux,
             nameof(AppConfM.AutoMuxSettings.ConcatX264),
             CheckboxProperties:
@@ -150,7 +150,7 @@ public static class SettinglistProviderM
                 nameof(AppConfM.AutoMuxSettings.ConcatSvtAv1)
             ]),
         new(UICaptionProvider.AppConf.Groups.AutoMux,
-            Lang["Setting.AudioMux.Repart"],
+            Lang["EncMode.Repart"],
             SettingControlType.AutoMux,
             nameof(AppConfM.AutoMuxSettings.RepartX264),
             CheckboxProperties:

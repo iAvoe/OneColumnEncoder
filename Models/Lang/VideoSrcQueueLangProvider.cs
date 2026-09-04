@@ -3,14 +3,12 @@ namespace OneColumnEncoder.Models.Lang;
 /// <summary>
 /// Localized strings for video source queues.
 /// </summary>
-public class VideoSrcQueueLangProvider : LangProviderBase
+public class SrcQueueLangProvider : LangProviderBase
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
         ["en"] = new()
         {
-            ["Tool.Source.VideoSrcQueueWithCount"] = "Video Source Queue ({0})",
-            ["Tool.Source.VideoSrcQueue"] = "Video Source Queue",
             ["SourceQueue.Sequence"] = "Sequence",
             ["ToolField.Path"] = "Path",
             ["SourceQueue.SelectFolderTitle"] = "Select video source queue folder",
@@ -25,8 +23,6 @@ public class VideoSrcQueueLangProvider : LangProviderBase
         },
         ["zh-cn"] = new()
         {
-            ["Tool.Source.VideoSrcQueueWithCount"] = "视频源队列 ({0})",
-            ["Tool.Source.VideoSrcQueue"] = "视频源队列",
             ["SourceQueue.Sequence"] = "序列",
             ["ToolField.Path"] = "路径",
             ["SourceQueue.SelectFolderTitle"] = "选择视频源队列文件夹",
@@ -41,8 +37,6 @@ public class VideoSrcQueueLangProvider : LangProviderBase
         },
         ["zh-tw"] = new()
         {
-            ["Tool.Source.VideoSrcQueueWithCount"] = "影片來源隊列 ({0})",
-            ["Tool.Source.VideoSrcQueue"] = "影片來源隊列",
             ["SourceQueue.Sequence"] = "序列",
             ["ToolField.Path"] = "路徑",
             ["SourceQueue.SelectFolderTitle"] = "選擇視訊來源序列資料夾",
@@ -57,12 +51,10 @@ public class VideoSrcQueueLangProvider : LangProviderBase
         }
     };
 
-    static VideoSrcQueueLangProvider()
+    static SrcQueueLangProvider()
     {
         Data["fr"] = new(Data["en"])
         {
-            ["Tool.Source.VideoSrcQueueWithCount"] = "File source vidéo ({0})",
-            ["Tool.Source.VideoSrcQueue"] = "File source vidéo",
             ["SourceQueue.Sequence"] = "Séquence",
             ["ToolField.Path"] = "Chemin",
             ["SourceQueue.SelectFolderTitle"] = "Sélectionner le dossier de la file d'attente",
@@ -77,8 +69,6 @@ public class VideoSrcQueueLangProvider : LangProviderBase
         };
         Data["es"] = new(Data["en"])
         {
-            ["Tool.Source.VideoSrcQueueWithCount"] = "Cola de fuentes de vídeo ({0})",
-            ["Tool.Source.VideoSrcQueue"] = "Cola de fuentes de vídeo",
             ["SourceQueue.Sequence"] = "Secuencia",
             ["ToolField.Path"] = "Ruta",
             ["SourceQueue.SelectFolderTitle"] = "Seleccionar carpeta de cola de fuente de vídeo",
@@ -93,8 +83,6 @@ public class VideoSrcQueueLangProvider : LangProviderBase
         };
         Data["ja"] = new(Data["en"])
         {
-            ["Tool.Source.VideoSrcQueueWithCount"] = "ビデオソースキュー ({0})",
-            ["Tool.Source.VideoSrcQueue"] = "ビデオソースキュー",
             ["SourceQueue.Sequence"] = "シーケンス",
             ["ToolField.Path"] = "パス",
             ["SourceQueue.SelectFolderTitle"] = "ビデオソースキューのフォルダを選択",
@@ -109,8 +97,6 @@ public class VideoSrcQueueLangProvider : LangProviderBase
         };
         Data["ru"] = new(Data["en"])
         {
-            ["Tool.Source.VideoSrcQueueWithCount"] = "Очередь видеоисточников ({0})",
-            ["Tool.Source.VideoSrcQueue"] = "Очередь видеоисточников",
             ["SourceQueue.Sequence"] = "Последовательность",
             ["ToolField.Path"] = "Путь",
             ["SourceQueue.SelectFolderTitle"] = "Выберите папку очереди видеоисточников",
@@ -125,8 +111,6 @@ public class VideoSrcQueueLangProvider : LangProviderBase
         };
         Data["de"] = new(Data["en"])
         {
-            ["Tool.Source.VideoSrcQueueWithCount"] = "Videoquellen-Warteschlange ({0})",
-            ["Tool.Source.VideoSrcQueue"] = "Videoquellen-Warteschlange",
             ["SourceQueue.Sequence"] = "Sequenz",
             ["ToolField.Path"] = "Pfad",
             ["SourceQueue.SelectFolderTitle"] = "Videoquellen-Warteschlangenordner wählen",
@@ -141,8 +125,6 @@ public class VideoSrcQueueLangProvider : LangProviderBase
         };
         Data["ko"] = new(Data["en"])
         {
-            ["Tool.Source.VideoSrcQueueWithCount"] = "비디오 소스 대기열 ({0})",
-            ["Tool.Source.VideoSrcQueue"] = "비디오 소스 대기열",
             ["SourceQueue.Sequence"] = "순번",
             ["ToolField.Path"] = "경로",
             ["SourceQueue.SelectFolderTitle"] = "비디오 소스 대기열 폴더 선택",
@@ -157,8 +139,6 @@ public class VideoSrcQueueLangProvider : LangProviderBase
         };
         Data["pt-br"] = new(Data["en"])
         {
-            ["Tool.Source.VideoSrcQueueWithCount"] = "Fila de fontes de vídeo ({0})",
-            ["Tool.Source.VideoSrcQueue"] = "Fila de fontes de vídeo",
             ["SourceQueue.Sequence"] = "Sequência",
             ["ToolField.Path"] = "Caminho",
             ["SourceQueue.SelectFolderTitle"] = "Selecionar pasta da fila de fontes de vídeo",
@@ -173,8 +153,8 @@ public class VideoSrcQueueLangProvider : LangProviderBase
         };
     }
 
-    public string ToolSourceVideoSrcQueueWithCount { get; }
-    public string ToolSourceVideoSrcQueue { get; }
+    public string ToolSourceSrcQueueWithCount { get; }
+    public string ToolSourceSrcQueue { get; }
     public string SourceQueueSequence { get; }
     public string ToolFieldPath { get; }
     public string SourceQueueSelectFolderTitle { get; }
@@ -185,10 +165,10 @@ public class VideoSrcQueueLangProvider : LangProviderBase
     public string SourceQueueOpenQueueJson { get; }
     public string SourceQueueOpenExcludedJson { get; }
 
-    public VideoSrcQueueLangProvider(string languageCode) : base(languageCode, Data)
+    public SrcQueueLangProvider(string languageCode) : base(languageCode, Data)
     {
-        ToolSourceVideoSrcQueueWithCount = this["Tool.Source.VideoSrcQueueWithCount"];
-        ToolSourceVideoSrcQueue = this["Tool.Source.VideoSrcQueue"];
+        ToolSourceSrcQueueWithCount = this["SrcQueueWithCount"];
+        ToolSourceSrcQueue = this["SrcQueue"];
         SourceQueueSequence = this["SourceQueue.Sequence"];
         ToolFieldPath = this["ToolField.Path"];
         SourceQueueSelectFolderTitle = this["SourceQueue.SelectFolderTitle"];

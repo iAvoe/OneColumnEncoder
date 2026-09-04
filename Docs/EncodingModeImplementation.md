@@ -15,14 +15,14 @@ public enum SrcRouteKind { Single, Queue, Concat, Repart }
 ```csharp
 private SrcRouteKind GetActiveSrcRoute()
 {
-    if (_videoSrcQueue.IsActive) return SrcRouteKind.Queue;
-    if (_videoSrcConcat.IsActive) return SrcRouteKind.Concat;
-    if (_videoSrcRepart.IsActive) return SrcRouteKind.Repart;
+    if (_SrcQueue.IsActive) return SrcRouteKind.Queue;
+    if (_SrcConcat.IsActive) return SrcRouteKind.Concat;
+    if (_SrcRepart.IsActive) return SrcRouteKind.Repart;
     return SrcRouteKind.Single;
 }
 ```
 
-`VideoSrcQueueState` lives in `QueueManagement/VideoSrcQueue.cs`; `VideoSrcConcatState` lives in `ConcatManagement/VideoSrcConcat.cs`; `VideoSrcRepartState` lives in `RepartManagement/VideoSrcRepartState.cs`.
+`SrcQueueState` lives in `QueueManagement/SrcQueue.cs`; `SrcConcatState` lives in `ConcatManagement/SrcConcat.cs`; `SrcRepartState` lives in `RepartManagement/SrcRepartState.cs`.
 
 ## 2. Import Zone Layout
 
@@ -31,9 +31,9 @@ private SrcRouteKind GetActiveSrcRoute()
 | Index | Route | Card | R1 | R2 | State Owner |
 |-------|-------|------|----|----|-------------|
 | 0 | Single | `Tool.Source.VideoSrc` | Replace | Clear | `AppDataM.Tools.VideoSourcePath` |
-| 1 | Queue | `Tool.Source.VideoSrcQueue` | Import | Clear | `VideoSrcQueueState` |
-| 2 | Concat | `Tool.Source.VideoSrcConcat` | Import | Clear | `VideoSrcConcatState` |
-| 3 | Repart | `Tool.Source.VideoSrcRepart` | Import | Clear | `VideoSrcRepartState` |
+| 1 | Queue | `SrcQueue` | Import | Clear | `SrcQueueState` |
+| 2 | Concat | `Tool.Source.SrcConcat` | Import | Clear | `SrcConcatState` |
+| 3 | Repart | `SrcRepart` | Import | Clear | `SrcRepartState` |
 
 When `one_line_shot_args.exe` is selected, Queue, Concat, and Repart are deselected and disabled.
 
@@ -67,7 +67,7 @@ After import:
 - `P1TextData` stores a compact label such as `firstFile..lastFile`.
 - `P1TooltipText` stores the full comma-separated file list for hover text (truncated at 512 chars).
 
-`VideoSrcQueueState` keeps the accepted file paths in a `Dictionary<ToolItemCardVM, string[]>` keyed by the queue card. `ApplyAcceptedFiles()` replaces that list after analysis and refreshes the queue label.
+`SrcQueueState` keeps the accepted file paths in a `Dictionary<ToolItemCardVM, string[]>` keyed by the queue card. `ApplyAcceptedFiles()` replaces that list after analysis and refreshes the queue label.
 
 Script queue imports are validated against the current video queue before they are accepted. `MainVM.ValidateScriptQueueImport()` checks basename matches and embedded source paths so queue scripts stay aligned with the selected source list.
 
@@ -81,7 +81,7 @@ After import:
 - `P2TextData` stores the first file's parent directory.
 - `P1TextData` stores a compact label such as `firstFile..lastFile`.
 - `P1TooltipText` stores the full selected file list for hover text.
-- `VideoSrcConcatState` stores the ordered full file paths.
+- `SrcConcatState` stores the ordered full file paths.
 - `source_concat_filelist.txt` is generated under the app config directory (`1cenc`), using ffmpeg concat-demuxer syntax with absolute paths:
 
 ```text
@@ -175,7 +175,7 @@ When total frame count is missing from video metadata, the system leaves it unkn
 - `isConcatRoute`
 - `getConcatFilePaths`
 
-In concat mode, `BrowseSrcConcatCmd` opens the shared `QueueEditorModal` immediately after file selection. The confirmed order is then passed into concat compatibility analysis and `VideoSrcConcatState`, so generated file lists and later scripts use the selected order.
+In concat mode, `BrowseSrcConcatCmd` opens the shared `QueueEditorModal` immediately after file selection. The confirmed order is then passed into concat compatibility analysis and `SrcConcatState`, so generated file lists and later scripts use the selected order.
 
 The editor preserves concat's minimum of two sources. When the imported list changes, `MainVM` clears previous source analysis so stale representative JSON and `ConcatTotalFrames` cannot be used for encoding.
 
@@ -301,7 +301,7 @@ Repart-specific constraints:
 
 ### Repart Runtime Implementation
 
-Clicking `Tool.Source.VideoSrcRepart` opens an import flow that can read either a plain STREAM folder or a chapter-folder/PLAYLIST folder. The shared `QueueEditorModal` first lets the user confirm the source order, before the slow Repart analysis starts. The Repart configuration modal then contains a read-only source queue, a proportional partition map, synchronized time/frame fields, and an output queue. Source changes are handled by clearing and re-importing the Repart source, so the modal remains focused on repartition editing. Output ranges use inclusive first/last frames; ranges cannot overlap, gaps are allowed, and merge accepts only directly adjacent outputs.
+Clicking `SrcRepart` opens an import flow that can read either a plain STREAM folder or a chapter-folder/PLAYLIST folder. The shared `QueueEditorModal` first lets the user confirm the source order, before the slow Repart analysis starts. The Repart configuration modal then contains a read-only source queue, a proportional partition map, synchronized time/frame fields, and an output queue. Source changes are handled by clearing and re-importing the Repart source, so the modal remains focused on repartition editing. Output ranges use inclusive first/last frames; ranges cannot overlap, gaps are allowed, and merge accepts only directly adjacent outputs.
 
 `RepartCompatibilityAnalyzer` performs a full ffprobe frame timestamp scan for each source. It requires CFR, derives the actual frame count, compares a strict first-video-stream signature, and records source size/modification-time fingerprints. When several signature groups are present, the dominant group by total source size is treated as the reference so menu/trailer files do not displace the episode set. A plan is rejected if a source changes during analysis or before encoding.
 
@@ -327,17 +327,17 @@ Each encoding start creates execution-specific ffconcat and private AVS/VPY path
 
 **Concat:** `Video Src. Concat` selected → import multiple files → extension and compatibility precheck → write filelist → analyze all fragments (sum concat total frame count and store all raw JSON) → optionally reorder/remove in FilterScribe → regenerate filelist and clear stale analysis if list changed → rerun analysis if needed → save/import concat script if needed → press `Start Encode` → build one concat request with `ConcatTotalFrames` → confirm command/overwrite → encode one output (progress uses summed frame count) → mux audio from filelist.
 
-**Repart:** `Tool.Source.VideoSrcRepart` selected → import a folder → strictly analyze and order sources → open `RepartConfModal` → manually allocate output frame ranges → optionally leave unallocated gaps or merge adjacent outputs → apply the plan → select output directory and encoding settings → press `Start Encode` → create an execution-specific virtual source → build one Clip request per output → confirm overwrite targets → run sequentially with `RepartOutputSidebarPanel` → mux each encoded video into the final MKV, with audio handled by the configured repart `AudioMuxMode`.
+**Repart:** `SrcRepart` selected → import a folder → strictly analyze and order sources → open `RepartConfModal` → manually allocate output frame ranges → optionally leave unallocated gaps or merge adjacent outputs → apply the plan → select output directory and encoding settings → press `Start Encode` → create an execution-specific virtual source → build one Clip request per output → confirm overwrite targets → run sequentially with `RepartOutputSidebarPanel` → mux each encoded video into the final MKV, with audio handled by the configured repart `AudioMuxMode`.
 
 ## Key Files
 
 - `FileManagement/SrcRouteKind.cs` — Route enum
-- `QueueManagement/VideoSrcQueue.cs` — Queue state
-- `ConcatManagement/VideoSrcConcat.cs` — Concat state
+- `QueueManagement/SrcQueue.cs` — Queue state
+- `ConcatManagement/SrcConcat.cs` — Concat state
 - `ConcatManagement/ConcatFileListGenerator.cs` — Filelist generation
 - `ConcatManagement/ConcatCompatibilityAnalyzer.cs` — Per-fragment analysis
 - `RepartManagement/RepartCompatibilityAnalyzer.cs` — Strict CFR and frame-timeline analysis
-- `RepartManagement/VideoSrcRepartState.cs` — Committed Repart plan state
+- `RepartManagement/SrcRepartState.cs` — Committed Repart plan state
 - `Models/RepartPlanM.cs` — Repart sources, stream signature, and output ranges
 - `Views/RepartConfModal.xaml` / `ViewModels/RepartConfVM.cs` — Partition-style configuration window
 - `Components/RepartOutputSidebarPanel.xaml` — Repart monitor sidebar

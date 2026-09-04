@@ -5,9 +5,9 @@ public static class SrcFileKindResolver
     public static SrcFileKind ResolveSrcFileKind(string displayName)
     {
         if (displayName.Equals(UILangProvider.Current["Tool.Source.VideoSrc"], StringComparison.OrdinalIgnoreCase) ||
-            displayName.Equals(UILangProvider.Current["Tool.Source.VideoSrcQueue"], StringComparison.OrdinalIgnoreCase) ||
-            displayName.Equals(UILangProvider.Current["Tool.Source.VideoSrcConcatState"], StringComparison.OrdinalIgnoreCase) ||
-            displayName.Equals(RepartLangProvider.Current.ToolSourceVideoSrcRepart, StringComparison.OrdinalIgnoreCase))
+            displayName.Equals(UILangProvider.Current["SrcQueue"], StringComparison.OrdinalIgnoreCase) ||
+            displayName.Equals(UILangProvider.Current["SrcConcat"], StringComparison.OrdinalIgnoreCase) ||
+            displayName.Equals(RepartLangProvider.Current.ToolSourceSrcRepart, StringComparison.OrdinalIgnoreCase))
             return SrcFileKind.Video;
         if (displayName.Equals(UILangProvider.Current["Tool.Source.AviSynth"], StringComparison.OrdinalIgnoreCase) ||
             displayName.Equals(UILangProvider.Current["Tool.Source.AviSynthQueue"], StringComparison.OrdinalIgnoreCase))

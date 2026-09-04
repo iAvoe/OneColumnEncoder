@@ -6,14 +6,14 @@ namespace OneColumnEncoder.Models.Lang;
 /// To add a new language, follow the following table:
 /// | File | Keys Translated |
 /// |------|----------------|
-/// | `LangProviderBase.cs` (this file) | 25 common UI terms(Confirm, Cancel, Add, Delete, Clear, Enable, Disable, On, Off, Collapse, Expand, etc.) |
+/// | `LangProviderBase.cs` (this file) | 25 common UI terms + shared encoding mode labels(Confirm, Cancel, Add, Delete, Clear, Enable, Disable, On, Off, Collapse, Expand, etc.) |
 /// | `AnalyzeSrcVideoCmdLangProvider.cs` | 9 keys |
 /// | `AppUsageLangProvider.cs` | 38 keys |
 /// | `AppConfLangProvider.cs` | 31 keys |
 /// | `ConfirmDialogLangProvider.cs` | 7 keys |
 /// | `ClipRangeSelectorLangProvider.cs` | 22 keys |
 /// | `CpuSetsLangProvider.cs` | 6 keys |
-/// | `VideoSrcQueueLangProvider.cs` | 12 keys |
+/// | `SrcQueueLangProvider.cs` | 12 keys |
 /// | `UILangProvider.cs` | ~100 keys(full UI) |
 /// | `StartEncCmdLangProvider.cs` | 21 keys |
 /// | `SrcReviserLangProvider.cs` | 11 keys |
@@ -139,6 +139,15 @@ public abstract class LangProviderBase
             ["Default"] = "Default",
             ["Width"] = "Width",
             ["Height"] = "Height",
+            ["EncMode.Single"] = "Single-file mode",
+            ["EncMode.Queue"] = "Queue mode",
+            ["EncMode.Concat"] = "Concat mode",
+            ["EncMode.Repart"] = "Repart mode",
+            ["SrcQueue"] = "📁 Video Src. Queue",
+            ["SrcQueueWithCount"] = "📁 Video Src. Queue ({0})",
+            ["SrcConcat"] = "∪ Video Src. Concat",
+            ["SrcConcatWithCount"] = "∪ Video Src. Concat ({0})",
+            ["SrcRepart"] = "📁 Video Src. Repart",
         },
         ["zh-cn"] = new()
         {
@@ -174,6 +183,15 @@ public abstract class LangProviderBase
             ["Default"] = "默认",
             ["Width"] = "宽度",
             ["Height"] = "高度",
+            ["EncMode.Single"] = "单文件模式",
+            ["EncMode.Queue"] = "队列模式（Queue）",
+            ["EncMode.Concat"] = "拼接模式（Concat）",
+            ["EncMode.Repart"] = "重分集模式（Repart）",
+            ["SrcQueue"] = "📁 视频源队列",
+            ["SrcQueueWithCount"] = "📁 视频源队列 ({0})",
+            ["SrcConcat"] = "∪ 视频源拼接",
+            ["SrcConcatWithCount"] = "∪ 视频源拼接 ({0})",
+            ["SrcRepart"] = "📁 视频源重分集",
         },
         ["zh-tw"] = new()
         {
@@ -209,6 +227,15 @@ public abstract class LangProviderBase
             ["Default"] = "默認",
             ["Width"] = "寬度",
             ["Height"] = "高度",
+            ["EncMode.Single"] = "單文件模式",
+            ["EncMode.Queue"] = "隊列模式（Queue）",
+            ["EncMode.Concat"] = "拼接模式（Concat）",
+            ["EncMode.Repart"] = "重分集模式（Repart）",
+            ["SrcQueue"] = "📁 視訊源隊列",
+            ["SrcQueueWithCount"] = "📁 視訊源隊列 ({0})",
+            ["SrcConcat"] = "∪ 視訊源拼接",
+            ["SrcConcatWithCount"] = "∪ 視訊源拼接 ({0})",
+            ["SrcRepart"] = "📁 視訊源重分集",
         },
         ["fr"] = new()
         {
@@ -244,6 +271,15 @@ public abstract class LangProviderBase
             ["Default"] = "Défaut",
             ["Width"] = "Largeur",
             ["Height"] = "Hauteur",
+            ["EncMode.Single"] = "Mode fichier unique",
+            ["EncMode.Queue"] = "Mode file d'attente (Queue)",
+            ["EncMode.Concat"] = "Mode concat (Concat)",
+            ["EncMode.Repart"] = "Mode repart (Repart)",
+            ["SrcQueue"] = "📁 File d'attente vidéo",
+            ["SrcQueueWithCount"] = "📁 File d'attente vidéo ({0})",
+            ["SrcConcat"] = "∪ Concat source vidéo",
+            ["SrcConcatWithCount"] = "∪ Concat source vidéo ({0})",
+            ["SrcRepart"] = "📁 Répart. vidéo",
         },
         ["es"] = new()
         {
@@ -279,6 +315,15 @@ public abstract class LangProviderBase
             ["Default"] = "Defecto",
             ["Width"] = "Ancho",
             ["Height"] = "Alto",
+            ["EncMode.Single"] = "Modo de archivo único",
+            ["EncMode.Queue"] = "Modo de cola (Queue)",
+            ["EncMode.Concat"] = "Modo concat (Concat)",
+            ["EncMode.Repart"] = "Modo repart (Repart)",
+            ["SrcQueue"] = "📁 Cola de vídeo",
+            ["SrcQueueWithCount"] = "📁 Cola de vídeo ({0})",
+            ["SrcConcat"] = "∪ Concat vídeo",
+            ["SrcConcatWithCount"] = "∪ Concat vídeo ({0})",
+            ["SrcRepart"] = "📁 Repart. vídeo",
         },
         ["ja"] = new()
         {
@@ -314,6 +359,15 @@ public abstract class LangProviderBase
             ["Default"] = "デフォルト",
             ["Width"] = "幅",
             ["Height"] = "高さ",
+            ["EncMode.Single"] = "単一ファイルモード",
+            ["EncMode.Queue"] = "キューモード (Queue)",
+            ["EncMode.Concat"] = "連結モード (Concat)",
+            ["EncMode.Repart"] = "再分割モード (Repart)",
+            ["SrcQueue"] = "📁 動画ソースキュー",
+            ["SrcQueueWithCount"] = "📁 動画ソースキュー ({0})",
+            ["SrcConcat"] = "∪ 動画ソース連結",
+            ["SrcConcatWithCount"] = "∪ 動画ソース連結 ({0})",
+            ["SrcRepart"] = "📁 映像ソース再分割",
         },
         ["ru"] = new()
         {
@@ -349,6 +403,15 @@ public abstract class LangProviderBase
             ["Default"] = "Умолчание",
             ["Width"] = "Ширина",
             ["Height"] = "Высота",
+            ["EncMode.Single"] = "Режим одного файла",
+            ["EncMode.Queue"] = "Режим очереди (Queue)",
+            ["EncMode.Concat"] = "Режим конкатенации (Concat)",
+            ["EncMode.Repart"] = "Режим репарта (Repart)",
+            ["SrcQueue"] = "📁 Очередь видеоисточника",
+            ["SrcQueueWithCount"] = "📁 Очередь видеоисточника ({0})",
+            ["SrcConcat"] = "∪ Конкатенация видео",
+            ["SrcConcatWithCount"] = "∪ Конкатенация видео ({0})",
+            ["SrcRepart"] = "📁 Репарт видео",
         },
         ["de"] = new()
         {
@@ -384,6 +447,15 @@ public abstract class LangProviderBase
             ["Default"] = "Standard",
             ["Width"] = "Breite",
             ["Height"] = "Höhe",
+            ["EncMode.Single"] = "Einzeldatei-Modus",
+            ["EncMode.Queue"] = "Warteschlangenmodus (Queue)",
+            ["EncMode.Concat"] = "Concat-Modus",
+            ["EncMode.Repart"] = "Repart-Modus",
+            ["SrcQueue"] = "📁 Video-Wart.",
+            ["SrcQueueWithCount"] = "📁 Video-Wart. ({0})",
+            ["SrcConcat"] = "∪ Video-Concat",
+            ["SrcConcatWithCount"] = "∪ Video-Concat ({0})",
+            ["SrcRepart"] = "📁 Video-Neuteilung",
         },
         ["ko"] = new()
         {
@@ -419,6 +491,15 @@ public abstract class LangProviderBase
             ["Default"] = "기본",
             ["Width"] = "너비",
             ["Height"] = "높이",
+            ["EncMode.Single"] = "단일 파일 모드",
+            ["EncMode.Queue"] = "대기열 모드 (Queue)",
+            ["EncMode.Concat"] = "연결 모드 (Concat)",
+            ["EncMode.Repart"] = "재분할 모드 (Repart)",
+            ["SrcQueue"] = "📁 비디오 소스 큐",
+            ["SrcQueueWithCount"] = "📁 비디오 소스 큐 ({0})",
+            ["SrcConcat"] = "∪ 비디오 소스 연결",
+            ["SrcConcatWithCount"] = "∪ 비디오 소스 연결 ({0})",
+            ["SrcRepart"] = "📁 비디오 소스 재분할",
         },
         ["pt-br"] = new()
         {
@@ -454,6 +535,15 @@ public abstract class LangProviderBase
             ["Default"] = "Padrão",
             ["Width"] = "Largura",
             ["Height"] = "Altura",
+            ["EncMode.Single"] = "Modo de arquivo único",
+            ["EncMode.Queue"] = "Modo de fila (Queue)",
+            ["EncMode.Concat"] = "Modo concat (Concat)",
+            ["EncMode.Repart"] = "Modo repart (Repart)",
+            ["SrcQueue"] = "📁 Fila de fontes de vídeo",
+            ["SrcQueueWithCount"] = "📁 Fila de fontes de vídeo ({0})",
+            ["SrcConcat"] = "∪ Concatenação de fontes de vídeo",
+            ["SrcConcatWithCount"] = "∪ Concatenação de fontes de vídeo ({0})",
+            ["SrcRepart"] = "📁 Repart. vídeo",
         },
     };
 

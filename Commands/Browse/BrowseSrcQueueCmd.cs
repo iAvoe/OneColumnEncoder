@@ -58,7 +58,7 @@ public class BrowseSrcQueueCmd(
                 new OpenWarnModalCmd(
                     _modalNavS,
                     UICaptionProvider.SourceInspect.WarnTitle,
-                    new VideoSrcQueueLangProvider(UILangProvider.Current.LanguageCode)["SourceQueue.EmptyFolderWarnMessage"])
+                    new SrcQueueLangProvider(UILangProvider.Current.LanguageCode)["SourceQueue.EmptyFolderWarnMessage"])
                     .Execute(null);
                 return;
             }
@@ -69,7 +69,7 @@ public class BrowseSrcQueueCmd(
                 new OpenErrModalCmd(
                     _modalNavS,
                     UICaptionProvider.SourceInspect.ErrorTitle,
-                    new VideoSrcQueueLangProvider(UILangProvider.Current.LanguageCode)["SourceQueue.MixedFolderErrorMessage"])
+                    new SrcQueueLangProvider(UILangProvider.Current.LanguageCode)["SourceQueue.MixedFolderErrorMessage"])
                     .Execute(null);
                 ActivateMainWindow();
                 return;

@@ -10,7 +10,7 @@ namespace OneColumnEncoder.Models.Analysis;
 /// The model only holds the analysis *results* (representative JSON, batch JSON,
 /// aggregate frame count) plus provenance (which route produced them, which tool/path).
 /// The actual source file sets per route live in their route state owners
-/// (VideoSrcQueueState / VideoSrcConcatState / VideoSrcRepartState), not here.
+/// (SrcQueueState / SrcConcatState / SrcRepartState), not here.
 /// </summary>
 public class VideoAnalysisM
 {

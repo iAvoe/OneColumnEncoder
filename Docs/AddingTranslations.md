@@ -77,7 +77,7 @@ Add `["pt-br"]` dictionary entries to **ALL 22 provider files**:
 | `SrcFilePickerLangProvider.cs` | 6 | File selection |
 | `SrcReviserLangProvider.cs` | 11 | Source revision |
 | `StartEncCmdLangProvider.cs` | 21 | Encoding controls |
-| `VideoSrcQueueLangProvider.cs` | 12 | Video queue |
+| `SrcQueueLangProvider.cs` | 12 | Video queue |
 | **TOTAL** | **~574 keys** | **mandatory 100% coverage** |
 
 **Example Translation Pattern:**

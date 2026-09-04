@@ -3,15 +3,15 @@ using System.IO;
 
 namespace OneColumnEncoder.RepartManagement;
 
-public sealed class VideoSrcRepartState
+public sealed class SrcRepartState
 {
     private readonly ToolItemCardVM? _card;
     private RepartPlanM? _plan;
 
-    public VideoSrcRepartState(IEnumerable<ToolItemCardVM> videoSourceZone)
+    public SrcRepartState(IEnumerable<ToolItemCardVM> videoSourceZone)
     {
         _card = videoSourceZone.FirstOrDefault(item =>
-            item.DefinitionKey == "Tool.Source.VideoSrcRepart");
+            item.DefinitionKey == "SrcRepart");
         if (_card != null) _card.UseAutoAddReplaceText = false;
     }
 
@@ -90,7 +90,7 @@ public sealed class VideoSrcRepartState
     private void RefreshTitle()
     {
         if (_card == null) return;
-        _card.Name = RepartLangProvider.Current.ToolSourceVideoSrcRepart;
+        _card.Name = RepartLangProvider.Current.ToolSourceSrcRepart;
     }
 
     private sealed class RepartFileListPathPlaceholder : SaveLoadBase<RepartFileListPathPlaceholder>

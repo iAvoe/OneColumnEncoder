@@ -92,9 +92,9 @@ Otherwise:
   ActiveSrcValidationCard   = SrcValidationCard
 ```
 
-The routing is controlled by `_videoSrcQueue.IsActive` which checks `VideoSrcImportZone[1].IsSelected`. This means all downstream operations (script generation, encoding) automatically use the correct zone.
+The routing is controlled by `_SrcQueue.IsActive` which checks `VideoSrcImportZone[1].IsSelected`. This means all downstream operations (script generation, encoding) automatically use the correct zone.
 
-The `_videoSrcQueue` state (`VideoSrcQueueState`) maintains a `Dictionary<ToolItemCardVM, string[]>` mapping queue items to their file paths. Key methods:
+The `_SrcQueue` state (`SrcQueueState`) maintains a `Dictionary<ToolItemCardVM, string[]>` mapping queue items to their file paths. Key methods:
 
 | Method | When Called | Effect |
 |--------|-------------|--------|
@@ -144,8 +144,8 @@ After zones are initialized in the constructor, commands are wired up:
 |----------|---------|
 | `BrowseSrcQueueCmd.Execute()` | After browsing a video queue folder |
 | `BrowseSrcScriptQueueCmd.Execute()` | After browsing a script queue folder |
-| `VideoSrcQueueState.ApplyAcceptedFiles()` | After queue analysis accepts files |
-| `VideoSrcQueueState.RefreshLanguage()` | After language change |
+| `SrcQueueState.ApplyAcceptedFiles()` | After queue analysis accepts files |
+| `SrcQueueState.RefreshLanguage()` | After language change |
 | `FilterScribeVM.ExecuteQueueSaveAndImport()` | After saving queue scripts via Filter Scribe |
 | `OneClickScriptGenCmd.Execute()` (queue mode) | After one-click script generation |
 
