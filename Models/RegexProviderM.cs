@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace OneColumnEncoder.Models;
 
-public static partial class RegexProvider
+public static partial class RegexProviderM
 {
     [GeneratedRegex(@"(?<start>(?:(?:\d{1,2}:)?\d{1,2}:\d{2}[,.]\d{1,3}))\s*-->\s*(?<end>(?:(?:\d{1,2}:)?\d{1,2}:\d{2}[,.]\d{1,3}))", RegexOptions.Compiled | RegexOptions.CultureInvariant)]
     public static partial Regex TimestampRegex();

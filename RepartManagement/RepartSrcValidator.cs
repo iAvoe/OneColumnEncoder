@@ -513,7 +513,7 @@ public static partial class RepartSrcValidator
     {
         if (string.IsNullOrWhiteSpace(stderr)) return null;
 
-        MatchCollection matches = RegexProvider.FFmpegTotalFramesRegex().Matches(stderr);
+        MatchCollection matches = RegexProviderM.FFmpegTotalFramesRegex().Matches(stderr);
         if (matches.Count == 0) return null;
 
         string text = matches[^1].Groups[1].Value;

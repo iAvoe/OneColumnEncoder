@@ -488,7 +488,7 @@ public static partial class MuxPipeline
     {
         if (!string.IsNullOrWhiteSpace(filterArgs))
         {
-            var match = RegexProvider.FpsRegex().Match(filterArgs);
+            var match = RegexProviderM.FpsRegex().Match(filterArgs);
             if (match.Success)
             {
                 string fps = match.Groups[1].Value;

@@ -50,5 +50,5 @@ public static partial class EncodingMonitorHelpers
     }
 
     public static string ReplaceMetricValue(string template, string value) =>
-        RegexProvider.FileSizeMetricRegex().Replace(template, value);
+        RegexProviderM.FileSizeMetricRegex().Replace(template, value);
 }

@@ -12,7 +12,7 @@ public partial class FilenameValidation
         => filename.Length > 0 && filename.Length <= max;
 
     public static bool IsNotReservedName(string filename)
-        => !RegexProvider.ReservedFilenamesRegex().IsMatch(filename);
+        => !RegexProviderM.ReservedFilenamesRegex().IsMatch(filename);
 
     public static bool HasNoInvalidChars(string filename)
         => filename.Length >= 0

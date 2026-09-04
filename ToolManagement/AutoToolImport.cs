@@ -199,7 +199,7 @@ public static class AutoToolImport
     {
         string name = Path.GetFileNameWithoutExtension(filePath).ToLowerInvariant();
         string token = Path.GetFileNameWithoutExtension(exeName).ToLowerInvariant();
-        return RegexProvider.IsCandidateFileNameMatch(name, token);
+        return RegexProviderM.IsCandidateFileNameMatch(name, token);
     }
 
     /// <summary>

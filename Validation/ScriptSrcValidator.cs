@@ -84,7 +84,7 @@ public static class ScriptSrcValidator
                 string trimmed = line.Trim();
                 if (string.IsNullOrEmpty(trimmed) || trimmed.StartsWith('#') || trimmed.StartsWith(';'))
                     continue;
-                Match match = RegexProvider.MatchScriptSourcePath(trimmed, ext);
+                Match match = RegexProviderM.MatchScriptSourcePath(trimmed, ext);
                 if (match.Success)
                     return match.Groups[1].Value.Trim();
             }

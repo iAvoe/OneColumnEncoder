@@ -170,7 +170,7 @@ public sealed partial class QueueEditorVM : BaseVM
         {
             string xName = Path.GetFileName(x ?? string.Empty);
             string yName = Path.GetFileName(y ?? string.Empty);
-            int result = LibImportProvider.CompareLogical(xName, yName);
+            int result = LibImportProviderM.CompareLogical(xName, yName);
             return result != 0
                 ? result
                 : StringComparer.OrdinalIgnoreCase.Compare(x, y);

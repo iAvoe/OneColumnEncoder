@@ -318,7 +318,7 @@ public static partial class EncodingPipeline
     {
         if (string.IsNullOrWhiteSpace(filterArgs)) return null;
 
-        Match match = RegexProvider.FFmpegFilterVScaleRegex().Match(filterArgs);
+        Match match = RegexProviderM.FFmpegFilterVScaleRegex().Match(filterArgs);
         if (!match.Success) return null;
 
         return match.Groups["quoted"].Success
@@ -1056,7 +1056,7 @@ public static partial class EncodingPipeline
 
     private static int? TryGetIntegerArg(string args, string name)
     {
-        Match match = RegexProvider.MatchIntegerArg(args, name);
+        Match match = RegexProviderM.MatchIntegerArg(args, name);
         return match.Success && int.TryParse(match.Groups[1].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int value)
             ? value
             : null;
@@ -1088,7 +1088,7 @@ public static partial class EncodingPipeline
             return (string.Empty, string.Empty);
 
         string iniContent = File.ReadAllText(iniPath);
-        Match match = RegexProvider.SvfiIniRegex().Match(iniContent);
+        Match match = RegexProviderM.SvfiIniRegex().Match(iniContent);
         if (!match.Success)
             return (string.Empty, string.Empty);
 

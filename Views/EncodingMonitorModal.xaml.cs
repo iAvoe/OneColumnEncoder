@@ -100,11 +100,11 @@ public partial class EncodingMonitorModal : AdaptiveWindow
         IntPtr handle = new WindowInteropHelper(this).Handle;
         if (handle == IntPtr.Zero) return;
 
-        IntPtr menu = LibImportProvider.GetSystemMenu(handle, false);
+        IntPtr menu = LibImportProviderM.GetSystemMenu(handle, false);
         if (menu == IntPtr.Zero) return;
 
-        LibImportProvider.EnableMenuItem(menu, ScClose, MfByCommand | (isEnabled ? MfByCommand : MfGrayed));
-        LibImportProvider.DrawMenuBar(handle);
+        LibImportProviderM.EnableMenuItem(menu, ScClose, MfByCommand | (isEnabled ? MfByCommand : MfGrayed));
+        LibImportProviderM.DrawMenuBar(handle);
     }
 
     private void SyncSidebarWidth(bool isSidebarVisible)

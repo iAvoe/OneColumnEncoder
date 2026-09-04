@@ -19,7 +19,7 @@ public static partial class NumaTopology
     /// </summary>
     public static bool TryGetNodeGroupMask(int nodeId, out int group, out ulong mask)
     {
-        if (LibImportProvider.TryGetNumaNodeProcessorMaskEx((ushort)nodeId, out int nodeGroup, out ulong nodeMask) && nodeMask != 0)
+        if (LibImportProviderM.TryGetNumaNodeProcessorMaskEx((ushort)nodeId, out int nodeGroup, out ulong nodeMask) && nodeMask != 0)
         {
             group = nodeGroup;
             mask = nodeMask;
@@ -41,14 +41,14 @@ public static partial class NumaTopology
     /// </summary>
     public static List<NumaNodeInfo> GetNumaNodes()
     {
-        if (!LibImportProvider.TryGetNumaHighestNodeNumber(out uint highestNodeNumber))
+        if (!LibImportProviderM.TryGetNumaHighestNodeNumber(out uint highestNodeNumber))
             return CreateFallbackNode();
 
         List<NumaNodeInfo> nodes = [];
 
         for (ushort nodeId = 0; nodeId <= highestNodeNumber; nodeId++)
         {
-            if (!LibImportProvider.TryGetNumaNodeProcessorMaskEx(nodeId, out int groupId, out ulong mask))
+            if (!LibImportProviderM.TryGetNumaNodeProcessorMaskEx(nodeId, out int groupId, out ulong mask))
                 continue;
             if (mask == 0) continue;
 
@@ -98,7 +98,7 @@ public static partial class NumaTopology
 
     private static long GetTotalPhysicalMemory()
     {
-        return LibImportProvider.TryGetTotalPhysicalMemoryBytes(out long totalPhysicalBytes)
+        return LibImportProviderM.TryGetTotalPhysicalMemoryBytes(out long totalPhysicalBytes)
             ? totalPhysicalBytes
             : 0;
     }

@@ -46,7 +46,7 @@ public static partial class EncTermsCheck
         if (!OperatingSystem.IsWindows())
             return StatusType.Success;
 
-        if (!LibImportProvider.TryGetSystemTimes(out ulong idle, out ulong kernel, out ulong user))
+        if (!LibImportProviderM.TryGetSystemTimes(out ulong idle, out ulong kernel, out ulong user))
             return StatusType.Success;
 
         if (_lastNumaCpuCheck == DateTime.MinValue)
@@ -151,7 +151,7 @@ public static partial class EncTermsCheck
 
         try
         {
-            uint processorCount = LibImportProvider.GetActiveProcessorCount(group);
+            uint processorCount = LibImportProviderM.GetActiveProcessorCount(group);
             if (processorCount == 0) return false;
 
             int structSize = Marshal.SizeOf<PROCESSOR_POWER_INFORMATION>();
@@ -160,7 +160,7 @@ public static partial class EncTermsCheck
             IntPtr buffer = Marshal.AllocHGlobal((int)byteLength);
             try
             {
-                if (!LibImportProvider.TryGetSystemProcessorPerformanceInformation(group, buffer, byteLength, out _))
+                if (!LibImportProviderM.TryGetSystemProcessorPerformanceInformation(group, buffer, byteLength, out _))
                     return false;
 
                 idle = new ulong[processorCount];
@@ -210,7 +210,7 @@ public static partial class EncTermsCheck
     {
         if (!OperatingSystem.IsWindows()) return true;
 
-        if (!LibImportProvider.TryGetSystemPowerStatus(out byte acLineStatus, out byte batteryFlag))
+        if (!LibImportProviderM.TryGetSystemPowerStatus(out byte acLineStatus, out byte batteryFlag))
             return true;
 
         if (acLineStatus == AC_LINE_ONLINE)

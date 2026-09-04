@@ -30,14 +30,14 @@ public static class SubtitleHelper
         {
             foreach (string line in File.ReadLines(filePath).Reverse())
             {
-                Match match = RegexProvider.TimestampRegex().Match(line);
+                Match match = RegexProviderM.TimestampRegex().Match(line);
                 if (match.Success
                     && TryParseTimestamp(match.Groups["start"].Value, out TimeSpan start)
                     && TryParseTimestamp(match.Groups["end"].Value, out TimeSpan result)
                     && result > start)
                     return result;
 
-                match = RegexProvider.AssDialogueRegex().Match(line);
+                match = RegexProviderM.AssDialogueRegex().Match(line);
                 if (match.Success
                     && TryParseTimestamp(match.Groups[1].Value, out start)
                     && TryParseTimestamp(match.Groups[2].Value, out result)

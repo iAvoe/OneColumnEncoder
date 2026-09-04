@@ -172,7 +172,7 @@ public partial class ToolVersionDetect
             case "avs2pipemod.exe":
                 {
                     if (!text.Contains("avs2pipemod", StringComparison.OrdinalIgnoreCase)) return null;
-                    Match m = RegexProvider.Avs2pipemodVersionRegex().Match(firstLine);
+                    Match m = RegexProviderM.Avs2pipemodVersionRegex().Match(firstLine);
                     return m.Success ? m.Value : firstLine;
                 }
 
@@ -181,7 +181,7 @@ public partial class ToolVersionDetect
             case "x265.exe":
                 {
                     if (!text.Contains("x265", StringComparison.OrdinalIgnoreCase)) return null;
-                    Match m = RegexProvider.X265VersionRegex().Match(text);
+                    Match m = RegexProviderM.X265VersionRegex().Match(text);
                     return m.Success ? m.Groups[1].Value : firstLine;
                 }
             case "svtav1encapp.exe":

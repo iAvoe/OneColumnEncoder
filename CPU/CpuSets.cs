@@ -60,7 +60,7 @@ public static partial class CpuSets
                 return false;
             }
 
-            if (!LibImportProvider.TrySetProcessDefaultCpuSets(process.Handle, cpuSetIds, (uint)cpuSetIds.Length))
+            if (!LibImportProviderM.TrySetProcessDefaultCpuSets(process.Handle, cpuSetIds, (uint)cpuSetIds.Length))
             {
                 message = string.Format(lang.SetProcessDefaultCpuSetsFailed, Marshal.GetLastWin32Error());
                 return false;
@@ -139,17 +139,17 @@ public static partial class CpuSets
             process.Refresh();
             foreach (ProcessThread thread in process.Threads)
             {
-                IntPtr threadHandle = LibImportProvider.OpenThread(ThreadSetLimitedInformation, false, (uint)thread.Id);
+                IntPtr threadHandle = LibImportProviderM.OpenThread(ThreadSetLimitedInformation, false, (uint)thread.Id);
                 if (threadHandle == IntPtr.Zero) continue;
 
                 try
                 {
-                    if (LibImportProvider.TrySetThreadSelectedCpuSets(threadHandle, cpuSetIds, (uint)cpuSetIds.Length))
+                    if (LibImportProviderM.TrySetThreadSelectedCpuSets(threadHandle, cpuSetIds, (uint)cpuSetIds.Length))
                         updatedCount++;
                 }
                 finally
                 {
-                    LibImportProvider.TryCloseHandle(threadHandle);
+                    LibImportProviderM.TryCloseHandle(threadHandle);
                 }
             }
         }
@@ -165,13 +165,13 @@ public static partial class CpuSets
     {
         if (!OperatingSystem.IsWindows()) return [];
 
-        LibImportProvider.TryGetSystemCpuSetInformation(IntPtr.Zero, 0, out uint returnedLength, IntPtr.Zero, 0);
+        LibImportProviderM.TryGetSystemCpuSetInformation(IntPtr.Zero, 0, out uint returnedLength, IntPtr.Zero, 0);
         if (returnedLength == 0) return [];
 
         IntPtr buffer = Marshal.AllocHGlobal((int)returnedLength);
         try
         {
-            if (!LibImportProvider.TryGetSystemCpuSetInformation(buffer, returnedLength, out returnedLength, IntPtr.Zero, 0))
+            if (!LibImportProviderM.TryGetSystemCpuSetInformation(buffer, returnedLength, out returnedLength, IntPtr.Zero, 0))
                 return [];
 
             List<CpuSetInfo> result = [];

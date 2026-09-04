@@ -66,12 +66,12 @@ public partial class AdaptiveWindow : Window
     private Rect GetCurrentMonitorWorkArea()
     {
         IntPtr handle = new WindowInteropHelper(this).Handle;
-        IntPtr monitor = LibImportProvider.MonitorFromWindow(handle, MonitorDefaultToNearest);
+        IntPtr monitor = LibImportProviderM.MonitorFromWindow(handle, MonitorDefaultToNearest);
 
         if (monitor == IntPtr.Zero)
             return SystemParameters.WorkArea;
 
-        if (!LibImportProvider.TryGetMonitorInfo(monitor, out int left, out int top, out int right, out int bottom))
+        if (!LibImportProviderM.TryGetMonitorInfo(monitor, out int left, out int top, out int right, out int bottom))
             return SystemParameters.WorkArea;
 
         Matrix transformFromDevice =

@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace OneColumnEncoder.Models;
 
-public static partial class LibImportProvider
+public static partial class LibImportProviderM
 {
     private const uint TH32CS_SNAPPROCESS = 0x00000002;
     private static readonly IntPtr InvalidHandleValue = new(-1);

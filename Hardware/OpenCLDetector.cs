@@ -12,6 +12,6 @@ public static partial class OpenCLDetector
         if (!OperatingSystem.IsWindows())
             return false;
 
-        return LibImportProvider.TryGetOpenClPlatformCount(out uint platformCount) && platformCount > 0;
+        return LibImportProviderM.TryGetOpenClPlatformCount(out uint platformCount) && platformCount > 0;
     }
 }

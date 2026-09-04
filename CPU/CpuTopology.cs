@@ -66,7 +66,7 @@ public partial class CpuTopology
     {
         uint returnLength = 0;
         // Pass in RelationAll (0xFFFF)
-        LibImportProvider.TryGetLogicalProcessorInformationEx((int)0xFFFF, IntPtr.Zero, ref returnLength);
+        LibImportProviderM.TryGetLogicalProcessorInformationEx((int)0xFFFF, IntPtr.Zero, ref returnLength);
 
         int err = Marshal.GetLastWin32Error();
         if (err != 122) return null;// ERROR_INSUFFICIENT_BUFFER
@@ -74,7 +74,7 @@ public partial class CpuTopology
         IntPtr buffer = Marshal.AllocHGlobal((int)returnLength);
         try
         {
-            if (!LibImportProvider.TryGetLogicalProcessorInformationEx((int)0xFFFF, buffer, ref returnLength))
+            if (!LibImportProviderM.TryGetLogicalProcessorInformationEx((int)0xFFFF, buffer, ref returnLength))
                 return null;
 
             int totalCores = 0;
@@ -140,7 +140,7 @@ public partial class CpuTopology
     public static int GetProcessorPackageCount()
     {
         uint returnLength = 0;
-        LibImportProvider.TryGetLogicalProcessorInformationEx((int)LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorPackage, IntPtr.Zero, ref returnLength);
+        LibImportProviderM.TryGetLogicalProcessorInformationEx((int)LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorPackage, IntPtr.Zero, ref returnLength);
 
         int err = Marshal.GetLastWin32Error();
         if (err != 122) return 0;// ERROR_INSUFFICIENT_BUFFER
@@ -148,7 +148,7 @@ public partial class CpuTopology
         IntPtr buffer = Marshal.AllocHGlobal((int)returnLength);
         try
         {
-            if (!LibImportProvider.TryGetLogicalProcessorInformationEx((int)LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorPackage, buffer, ref returnLength))
+            if (!LibImportProviderM.TryGetLogicalProcessorInformationEx((int)LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorPackage, buffer, ref returnLength))
                 return 0;
 
             int packageCount = 0;

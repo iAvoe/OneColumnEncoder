@@ -280,7 +280,7 @@ public partial class SplitTextCard : UserControl
     /// </summary>
     private static IEnumerable<Inline> BuildAnsiRuns(string text, Brush defaultBrush)
     {
-        Regex regex = RegexProvider.AnsiEscapeRegex();
+        Regex regex = RegexProviderM.AnsiEscapeRegex();
 
         Brush currentBrush = defaultBrush;
         int lastIndex = 0;

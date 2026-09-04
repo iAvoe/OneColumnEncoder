@@ -70,7 +70,7 @@ public partial class EncodingMonitorVM : BaseVM
     private bool _isWindowCloseEnabled;
     private int? _exitCode;
     private bool _success;
-    private LibImportProvider.MemoryStatusSnapshot _lastMemoryStatus;
+    private LibImportProviderM.MemoryStatusSnapshot _lastMemoryStatus;
     private long _lastUpstreamWorkingSetBytes;
     private long _lastEncoderWorkingSetBytes;
     private long _upstreamWorkingSetPeakBytes;
@@ -1168,19 +1168,19 @@ public partial class EncodingMonitorVM : BaseVM
 
     #region Log Parsing Queries
     private static string NormalizeLogLineForProgress(string line) =>
-        RegexProvider.AnsiEscapeRegex().Replace(line, string.Empty).Trim();
+        RegexProviderM.AnsiEscapeRegex().Replace(line, string.Empty).Trim();
 
     private static bool IsProgressLine(string line)
     {
         string lower = line.ToLowerInvariant();
-        return RegexProvider.FFmpegProgressFieldRegex().IsMatch(line)
-            || RegexProvider.FFmpegProgressKeyRegex().IsMatch(line)
+        return RegexProviderM.FFmpegProgressFieldRegex().IsMatch(line)
+            || RegexProviderM.FFmpegProgressKeyRegex().IsMatch(line)
             || lower.Contains("progress=continue", StringComparison.Ordinal)
             || lower.Contains("progress=end", StringComparison.Ordinal)
             || lower.Contains("fps", StringComparison.Ordinal) && lower.Contains("size=", StringComparison.Ordinal)
             || lower.Contains("frames", StringComparison.Ordinal) && lower.Contains("kb/s", StringComparison.Ordinal)
             || lower.Contains("eta", StringComparison.Ordinal) && lower.Contains('%', StringComparison.Ordinal)
-            || RegexProvider.ProgressLineRegex().IsMatch(line);
+            || RegexProviderM.ProgressLineRegex().IsMatch(line);
     }
 
     private static bool IsIndexProgressLine(string line) =>
@@ -1197,13 +1197,13 @@ public partial class EncodingMonitorVM : BaseVM
 
         line = NormalizeLogLineForProgress(line);
 
-        if (TryParseFirstRegexGroup(RegexProvider.FFmpegFrameRegex().Match(line), out int value)) return value;
-        if (TryParseFirstRegexGroup(RegexProvider.X264FrameRegex().Match(line), out value)) return value;
-        if (TryParseFirstRegexGroup(RegexProvider.SlashFrameRegex().Match(line), out value)) return value;
-        if (TryParseFirstRegexGroup(RegexProvider.FramesAtRegex().Match(line), out value)) return value;
-        if (TryParseFirstRegexGroup(RegexProvider.EncodingFrameRegex().Match(line), out value)) return value;
-        if (TryParseFirstRegexGroup(RegexProvider.EncodedFrameRegex().Match(line), out value)) return value;
-        if (TryParseFirstRegexGroup(RegexProvider.FramesEncodedRegex().Match(line), out value)) return value;
+        if (TryParseFirstRegexGroup(RegexProviderM.FFmpegFrameRegex().Match(line), out int value)) return value;
+        if (TryParseFirstRegexGroup(RegexProviderM.X264FrameRegex().Match(line), out value)) return value;
+        if (TryParseFirstRegexGroup(RegexProviderM.SlashFrameRegex().Match(line), out value)) return value;
+        if (TryParseFirstRegexGroup(RegexProviderM.FramesAtRegex().Match(line), out value)) return value;
+        if (TryParseFirstRegexGroup(RegexProviderM.EncodingFrameRegex().Match(line), out value)) return value;
+        if (TryParseFirstRegexGroup(RegexProviderM.EncodedFrameRegex().Match(line), out value)) return value;
+        if (TryParseFirstRegexGroup(RegexProviderM.FramesEncodedRegex().Match(line), out value)) return value;
         return null;
     }
 
@@ -1245,11 +1245,11 @@ public partial class EncodingMonitorVM : BaseVM
     /// </summary>
     private void UpdateMetrics()
     {
-        LibImportProvider.MemoryStatusSnapshot memoryStatus = LibImportProvider.GetMemoryStatusSnapshot();
+        LibImportProviderM.MemoryStatusSnapshot memoryStatus = LibImportProviderM.GetMemoryStatusSnapshot();
         _lastMemoryStatus = memoryStatus;
 
         // Build parent→child map once, then use it for all process tree queries
-        Dictionary<int, List<int>>? childMap = LibImportProvider.GetChildProcessMap();
+        Dictionary<int, List<int>>? childMap = LibImportProviderM.GetChildProcessMap();
 
         _lastUpstreamWorkingSetBytes = GetWorkingSetBytes(_upstreamProcess, childMap);
         _lastEncoderWorkingSetBytes = GetWorkingSetBytes(_encoderProcess, childMap);
@@ -1290,7 +1290,7 @@ public partial class EncodingMonitorVM : BaseVM
     /// Calculates the portion of system cache that is not part of the encoding processes'
     /// working set. This avoids double-counting cache that belongs to our processes.
     /// </summary>
-    private static long GetEffectiveSystemCacheBytes(LibImportProvider.MemoryStatusSnapshot memoryStatus, long processWorkingSetBytes)
+    private static long GetEffectiveSystemCacheBytes(LibImportProviderM.MemoryStatusSnapshot memoryStatus, long processWorkingSetBytes)
     {
         long nonProcessUsedBytes = Math.Max(0, memoryStatus.UsedPhysicalBytes - processWorkingSetBytes);
         return Math.Min(memoryStatus.SystemCacheBytes, nonProcessUsedBytes);
@@ -1321,7 +1321,7 @@ public partial class EncodingMonitorVM : BaseVM
     /// the memory at that byte offset. The byte range is divided into contiguous categories:
     /// [upstream bytes | downstream bytes | other-used bytes | free].
     /// </summary>
-    private void UpdateMemoryRangeBlocks(ObservableCollection<MemoryRangeBlockM> blocks, LibImportProvider.MemoryStatusSnapshot memoryStatus)
+    private void UpdateMemoryRangeBlocks(ObservableCollection<MemoryRangeBlockM> blocks, LibImportProviderM.MemoryStatusSnapshot memoryStatus)
     {
         if (blocks.Count == 0) return;
 
@@ -1454,7 +1454,7 @@ public partial class EncodingMonitorVM : BaseVM
             string trimmed = line.Trim();
             if (string.IsNullOrWhiteSpace(trimmed) || IsIndexProgressLine(trimmed)) continue;
 
-            MatchCollection matches = RegexProvider.ProgressPercentRegex().Matches(trimmed);
+            MatchCollection matches = RegexProviderM.ProgressPercentRegex().Matches(trimmed);
             foreach (Match match in matches)
             {
                 if (double.TryParse(match.Value.TrimEnd('%', ' '), NumberStyles.Float, CultureInfo.InvariantCulture, out double value))
@@ -1575,7 +1575,7 @@ public partial class EncodingMonitorVM : BaseVM
     }
 
     private static long GetSingleProcessPageFaults(Process process) =>
-        LibImportProvider.GetPageFaultCount(process);
+        LibImportProviderM.GetPageFaultCount(process);
 
     /// <summary>
     /// Sums a value across an entire process tree (root + all descendants).
@@ -1621,7 +1621,7 @@ public partial class EncodingMonitorVM : BaseVM
     /// </summary>
     private static HashSet<int> GetProcessTreeIds(int rootProcessId, Dictionary<int, List<int>>? childMap = null)
     {
-        Dictionary<int, List<int>> childIdsByParentId = childMap ?? LibImportProvider.GetChildProcessMap();
+        Dictionary<int, List<int>> childIdsByParentId = childMap ?? LibImportProviderM.GetChildProcessMap();
         HashSet<int> processIds = [];
         Queue<int> pending = new();
         pending.Enqueue(rootProcessId);
