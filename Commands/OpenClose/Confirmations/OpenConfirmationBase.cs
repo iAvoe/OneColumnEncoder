@@ -25,19 +25,20 @@ public abstract class OpenConfirmationBase(
 
     public override void Execute(object? parameter)
     {
-        if (TryActivateExistingWindow<ConfirmationModal>(w => w.DataContext is ConfirmationVM &&
-                            w.Owner == GetSafeOwnerWindow()))
+        if (TryActivateExistingWindow<ConfirmationModal>(
+            w => w.DataContext is ConfirmationVM && w.Owner == GetSafeOwnerWindow()))
             return;
 
         ConfirmationModal window = new();
         ConfirmationVM vm = CreateViewModel(window);
         ConfigureViewModel(vm);
-        ShowModal(window, vm, showDialog: true, onClosed: () => DialogResult ??= window.DialogResult == true);
+        ShowModal(window,
+            vm,
+            showDialog: true,
+            onClosed: () => DialogResult ??= window.DialogResult == true);
     }
 
     protected abstract ConfirmationVM CreateViewModel(ConfirmationModal window);
 
-    protected virtual void ConfigureViewModel(ConfirmationVM vm)
-    {
-    }
+    protected virtual void ConfigureViewModel(ConfirmationVM vm) {}
 }

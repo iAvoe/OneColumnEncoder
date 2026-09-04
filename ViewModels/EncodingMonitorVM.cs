@@ -326,9 +326,7 @@ public partial class EncodingMonitorVM : BaseVM
         QueueSidebar = new QueueSidebarVM(enableQueueSidebar && persistQueueSidebar);
         QueueSidebar.PropertyChanged += OnQueueSidebarPropertyChanged;
         if (!enableQueueSidebar)
-        {
             QueueSidebar.AddJob(CreateSidebarJob(_request, _command, "Pending"));
-        }
         BuildMetrics();
         BuildFooter();
         BuildMemoryRangeBlocks();
