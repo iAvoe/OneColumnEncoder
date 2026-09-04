@@ -1460,5 +1460,6 @@ public class FilterScribeVM : BaseVM
     {
         UILangProvider.CurrentChanged -= OnLanguageChanged;
         base.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

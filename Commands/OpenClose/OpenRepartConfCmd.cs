@@ -119,7 +119,11 @@ public sealed class OpenRepartConfCmd(
                 RepartLangProvider.Current["ChapterSourcesMissing"]));
         if (import == null) return null;
 
-        string[] orderedSourcePaths = OpenQueueEditorCmd.EditFilePaths(ModalNavS, import.srcPaths, minimumItemCount: 1);
+        string[] orderedSourcePaths = OpenQueueEditorCmd.EditFilePaths(
+            ModalNavS,
+            import.srcPaths,
+            minimumItemCount: 1,
+            disableSortButtons: true);
         RepartAnalysisResult? result = await RunAnalysisAsync(orderedSourcePaths, requireMultipleSources: false);
         if (result?.Plan == null)
             return null;

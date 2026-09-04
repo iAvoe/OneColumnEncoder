@@ -32,6 +32,7 @@ internal static class SvgIconProvider
     public static ImageSource GameLightning { get; }
     public static ImageSource GameUndo { get; }
     public static ImageSource GameRedo { get; }
+    public static ImageSource GameSort { get; }
 
     private static SolidColorBrush Brush(string hex) =>
         new((Color)ColorConverter.ConvertFromString(hex)!);
@@ -380,6 +381,11 @@ internal static class SvgIconProvider
         Add(gameRedo, "M7.612 3.865c.241.1.32.45.477 1.151l.071.317c.14.62.21.93.056 1.12a.5.5 0 0 1-.072.07c-.188.154-.498.084-1.118-.055l-.317-.071c-.701-.158-1.052-.236-1.151-.477a.5.5 0 0 1-.03-.103.43.43 0 0 1 .072-.298c.147-.25.22-.374.197-.488l-.014-.047c-.042-.108-.122-.148-.281-.227a1.83 1.83 0 0 0-1.592-.02 1.83 1.83 0 0 0-1 1.24c-.073.316-.302.608-.625.638s-.616-.209-.583-.532a3 3 0 0 1 4.662-2.182c.201.136.302.204.378.21l.034.002c.076-.001.2-.072.446-.213a.42.42 0 0 1 .288-.065q.053.01.102.03", white);
         SetBounds(gameRedo);
         GameRedo = new DrawingImage(gameRedo);
+
+        DrawingGroup gameSort = new();
+        Add(gameSort, "M6.2 2a.6.6 0 0 1 .6.6v2.252c0 .126 0 .19.013.243a.5.5 0 0 0 .289.349c.05.022.113.033.236.057.222.041.333.062.4.101a.45.45 0 0 1 .187.568c-.03.072-.107.155-.262.32l-.583.624c-.59.631-.885.948-1.144.88a.5.5 0 0 1-.1-.04C5.6 7.828 5.6 7.395 5.6 6.532V2.6c0-.332.269-.601.6-.601m-3.26.86c.586-.585.879-.878 1.132-.807q.051.015.098.04c.23.13.23.544.23 1.371V7.4a.6.6 0 1 1-1.2 0V5.033c0-.112 0-.168-.01-.216a.5.5 0 0 0-.304-.366c-.046-.019-.1-.029-.21-.05-.204-.037-.307-.057-.368-.09a.45.45 0 0 1-.187-.603c.032-.062.106-.136.253-.283z", white);
+        SetBounds(gameSort);
+        GameSort = new DrawingImage(gameSort);
 
     }
 

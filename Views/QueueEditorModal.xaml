@@ -17,6 +17,36 @@
                    SizeToContent="Height"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
+    <ui:AdaptiveWindow.Resources>
+        <DataTemplate x:Key="IconTextButtonTemplate">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                <Rectangle Width="16"
+                           Height="16"
+                           Margin="0 0 5 0"
+                           VerticalAlignment="Center"
+                           Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                    <Rectangle.OpacityMask>
+                        <ImageBrush ImageSource="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Tag}"
+                                    Stretch="Uniform" />
+                    </Rectangle.OpacityMask>
+                    <Rectangle.Style>
+                        <Style TargetType="Rectangle">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Tag}"
+                                             Value="{x:Null}">
+                                    <Setter Property="Visibility"
+                                            Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Rectangle.Style>
+                </Rectangle>
+                <TextBlock Text="{Binding}"
+                           VerticalAlignment="Center" />
+            </StackPanel>
+        </DataTemplate>
+    </ui:AdaptiveWindow.Resources>
     <Grid Margin="10 10 10 15">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -58,19 +88,40 @@
             </ListBox>
         </ScrollViewer>
 
-        <comps:TwoButtonGroup Grid.Row="1"
-                              DataContext="{Binding SortButtons}"
-                              ButtonHeight="30"
-                              Button1Command="{Binding Cmd1}"
-                              Button2Command="{Binding Cmd2}"
-                              Button1IsEnabled="{Binding B2_1IsEnabled}"
-                              Button2IsEnabled="{Binding B2_2IsEnabled}"
-                              Margin="0 5 0 0" />
+        <Grid Grid.Row="1"
+              Margin="0 5 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0"
+                    Content="{Binding SortButtons.B2_1Text}"
+                    Command="{Binding SortButtons.Cmd1}"
+                    IsEnabled="{Binding SortButtons.B2_1IsEnabled}"
+                    Height="30"
+                    Margin="0 0 1.125 0"
+                    HorizontalAlignment="Stretch"
+                    Style="{StaticResource NormalButton}"
+                    Tag="{x:Static ui:SvgIconProvider.GameSort}"
+                    ContentTemplate="{StaticResource IconTextButtonTemplate}" />
+
+            <Button Grid.Column="1"
+                    Content="{Binding SortButtons.B2_2Text}"
+                    Command="{Binding SortButtons.Cmd2}"
+                    IsEnabled="{Binding SortButtons.B2_2IsEnabled}"
+                    Height="30"
+                    Margin="1.125 0 0 0"
+                    HorizontalAlignment="Stretch"
+                    Style="{StaticResource NormalButton}"
+                    Tag="{x:Static ui:SvgIconProvider.GameSort}"
+                    ContentTemplate="{StaticResource IconTextButtonTemplate}" />
+        </Grid>
 
         <comps:HintPanel Grid.Row="2"
                          Text="{Binding HintText}"
                          RefreshTextOnLanguageChanged="True"
-                         Margin="0 7.5 0 0" />
+                         Margin="0.25 2.5 0 0" />
 
         <comps:TwoButtonGroup Grid.Row="3"
                               DataContext="{Binding FinishButtons}"

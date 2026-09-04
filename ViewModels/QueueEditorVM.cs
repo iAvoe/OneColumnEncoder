@@ -8,16 +8,19 @@ public sealed partial class QueueEditorVM : BaseVM
     private readonly Action _closeAction;
     private readonly Action<string[]> _applyEditedPaths;
     private readonly int _minimumItemCount;
+    private readonly bool _disableSortButtons;
 
     public QueueEditorVM(
         Action closeAction,
         IEnumerable<string> filePaths,
         Action<string[]> applyEditedPaths,
-        int minimumItemCount = 0)
+        int minimumItemCount = 0,
+        bool disableSortButtons = false)
     {
         _closeAction = closeAction;
         _applyEditedPaths = applyEditedPaths;
         _minimumItemCount = minimumItemCount;
+        _disableSortButtons = disableSortButtons;
 
         RemoveItemCommand = new ActionCmd(item => RemoveItem(item as SrcQueueItemVM));
         MoveItemUpCommand = new ActionCmd(item => MoveItem(item as SrcQueueItemVM, -1));
@@ -134,8 +137,9 @@ public sealed partial class QueueEditorVM : BaseVM
             Items[i].CanRemove = Items.Count > _minimumItemCount;
         }
 
-        SortButtons.B2_1IsEnabled = Items.Count > 1;
-        SortButtons.B2_2IsEnabled = Items.Count > 1;
+        bool sortButtonsEnabled = !_disableSortButtons && Items.Count > 1;
+        SortButtons.B2_1IsEnabled = sortButtonsEnabled;
+        SortButtons.B2_2IsEnabled = sortButtonsEnabled;
         FinishButtons.B2_2IsEnabled = Items.Count >= _minimumItemCount && Items.Count > 0;
     }
 

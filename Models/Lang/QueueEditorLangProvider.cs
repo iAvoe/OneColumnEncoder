@@ -13,6 +13,7 @@ public sealed class QueueEditorLangProvider(string languageCode) : LangProviderB
             ["QueueEditor.SortBySize"] = "Sort by size",
             ["QueueEditor.SortByFilename"] = "Sort by filename",
             ["Hint.DoubleClickSortReverse"] = "Double click sort button to reverse",
+            ["Hint.CannotSortInRepartMode"] = "Cannot sort in Repart mode",
         },
         ["zh-cn"] = new()
         {
@@ -20,6 +21,7 @@ public sealed class QueueEditorLangProvider(string languageCode) : LangProviderB
             ["QueueEditor.SortBySize"] = "按大小排序",
             ["QueueEditor.SortByFilename"] = "按文件名排序",
             ["Hint.DoubleClickSortReverse"] = "双击排序按钮以取反",
+            ["Hint.CannotSortInRepartMode"] = "重分集模式不可排序",
         },
         ["zh-tw"] = new()
         {
@@ -27,6 +29,7 @@ public sealed class QueueEditorLangProvider(string languageCode) : LangProviderB
             ["QueueEditor.SortBySize"] = "按大小排序",
             ["QueueEditor.SortByFilename"] = "按檔名排序",
             ["Hint.DoubleClickSortReverse"] = "雙擊排序按鈕以取反",
+            ["Hint.CannotSortInRepartMode"] = "重分集模式不可排序",
         },
         ["fr"] = new()
         {
@@ -34,6 +37,7 @@ public sealed class QueueEditorLangProvider(string languageCode) : LangProviderB
             ["QueueEditor.SortBySize"] = "Trier par taille",
             ["QueueEditor.SortByFilename"] = "Trier par nom",
             ["Hint.DoubleClickSortReverse"] = "Double-cliquez sur tri pour inverser",
+            ["Hint.CannotSortInRepartMode"] = "Impossible de trier en mode Repart",
         },
         ["es"] = new()
         {
@@ -41,6 +45,7 @@ public sealed class QueueEditorLangProvider(string languageCode) : LangProviderB
             ["QueueEditor.SortBySize"] = "Ordenar por tamaño",
             ["QueueEditor.SortByFilename"] = "Ordenar por nombre",
             ["Hint.DoubleClickSortReverse"] = "Doble clic en ordenar para invertir",
+            ["Hint.CannotSortInRepartMode"] = "",
         },
         ["ja"] = new()
         {
@@ -48,6 +53,7 @@ public sealed class QueueEditorLangProvider(string languageCode) : LangProviderB
             ["QueueEditor.SortBySize"] = "サイズで並べ替え",
             ["QueueEditor.SortByFilename"] = "ファイル名で並べ替え",
             ["Hint.DoubleClickSortReverse"] = "ソートボタンをダブルクリックして順序を反転",
+            ["Hint.CannotSortInRepartMode"] = "",
         },
         ["ru"] = new()
         {
@@ -55,6 +61,7 @@ public sealed class QueueEditorLangProvider(string languageCode) : LangProviderB
             ["QueueEditor.SortBySize"] = "Сорт. по размеру",
             ["QueueEditor.SortByFilename"] = "Сорт. по имени",
             ["Hint.DoubleClickSortReverse"] = "Дважды кликните сортировку для обратного порядка",
+            ["Hint.CannotSortInRepartMode"] = "",
         },
         ["de"] = new()
         {
@@ -62,6 +69,7 @@ public sealed class QueueEditorLangProvider(string languageCode) : LangProviderB
             ["QueueEditor.SortBySize"] = "Nach Größe sortieren",
             ["QueueEditor.SortByFilename"] = "Nach Dateiname sortieren",
             ["Hint.DoubleClickSortReverse"] = "Doppelklick Sortieren zum Umkehren",
+            ["Hint.CannotSortInRepartMode"] = "",
         },
         ["ko"] = new()
         {
@@ -69,6 +77,7 @@ public sealed class QueueEditorLangProvider(string languageCode) : LangProviderB
             ["QueueEditor.SortBySize"] = "크기순 정렬",
             ["QueueEditor.SortByFilename"] = "파일명순 정렬",
             ["Hint.DoubleClickSortReverse"] = "정렬 버튼을 더블 클릭하여 순서를 반전하세요",
+            ["Hint.CannotSortInRepartMode"] = "",
         },
         ["pt-br"] = new()
         {
@@ -76,6 +85,7 @@ public sealed class QueueEditorLangProvider(string languageCode) : LangProviderB
             ["QueueEditor.SortBySize"] = "Ordenar por tamanho",
             ["QueueEditor.SortByFilename"] = "Ordenar por nome",
             ["Hint.DoubleClickSortReverse"] = "Duplo clique em ordenar para inverter",
+            ["Hint.CannotSortInRepartMode"] = "",
         },
     };
 
