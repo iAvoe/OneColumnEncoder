@@ -4,6 +4,7 @@ using OneColumnEncoder.Models.Encoding;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Runtime.InteropServices;
+using OneColumnEncoder.Models;
 using System.Text.RegularExpressions;
 using System.Windows.Threading;
 
@@ -13,33 +14,12 @@ public partial class EncodingMonitorVM : BaseVM
 {
     private const int MemoryRangeBlockCount = 128;
 
-    private static readonly Encoding SystemTextEncoding = GetSystemTextEncoding();
-
-    #region Encoding Queries
-    private static Encoding GetSystemTextEncoding()
-    {
-        try { return Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.ANSICodePage); }
-        catch { try { return Console.OutputEncoding; } catch { return Encoding.UTF8; } }
-    }
-
-    private static Encoding GetEncodingForProcess(string exeName)
-    {
-        return exeName.ToLowerInvariant() switch
-        {
-            "avs2yuv.exe" or "avs2pipemod.exe" => SystemTextEncoding,
-            _ => Encoding.UTF8
-        };
-    }
-    #endregion
-
     private const int MemoryRangeMaxFillLevel = 8;
     private const int UpstreamShutdownAfterEncoderExitDelayMs = 5000;
     private const int UpstreamKillAfterShutdownTimeoutMs = 1000;
     private const int ClipboardCopyRetryCount = 5;
     private const int ClipboardCopyRetryDelayMs = 100;
     private const int ClipboardCannotOpenHResult = unchecked((int)0x800401D0);
-    private const long BytesPerMb = 1024L * 1024L;
-    private const long BytesPerGb = 1024L * 1024L * 1024L;
     private const uint TH32CS_SNAPPROCESS = 0x00000002;
     private static readonly TimeSpan ReducedUiUpdateInterval = TimeSpan.FromSeconds(3);
     private static readonly IntPtr InvalidHandleValue = new(-1);
@@ -119,7 +99,7 @@ public partial class EncodingMonitorVM : BaseVM
     public string MemoryTitle => Lang.MemoryTitle;
 
     public string DragLogReportHint => Lang.DragLogReportHint;
-    public string CurrentSizeLabel => $"{Lang.CurrentSizeLabel}: {FormatGbValue(_currentOutputSizeBytes)}";
+    public string CurrentSizeLabel => $"{Lang.CurrentSizeLabel}: {EncodingMonitorHelpers.FormatSize(_currentOutputSizeBytes, "GB", true, false)}";
     public string EstimatedSizeLabel => $"{Lang.EstimatedSizeLabel}: {GetEstimatedOutputSizeText()}";
     public string WrittenFramesLabel => $"{Lang.WrittenFramesLabel}: {GetWrittenFramesText()}";
     public string SampleIntervalLabel => Lang.SampleIntervalLabel;
@@ -132,7 +112,6 @@ public partial class EncodingMonitorVM : BaseVM
     public string ArgsLabel => Lang.ArgsLabel;
     public string SmallNoteText => Lang.SmallNoteText;
     public string RichTextModeText => Lang.RichTextModeText;
-    public string OpusAudioCommandHint => BuildOpusAudioCommandHint();
     public bool CanMux => !_isSample && _command.MuxCommand != null;
     public bool IsWindowCloseEnabled
     {
@@ -409,10 +388,8 @@ public partial class EncodingMonitorVM : BaseVM
         if (jobVM == null) return;
         if (_userInterruptRequested)
             QueueSidebar.MarkJobInterrupted(jobVM);
-        else if (_success)
-            QueueSidebar.MarkJobCompleted(jobVM);
-        else
-            QueueSidebar.MarkJobFailed(jobVM, StatusText);
+        else if (_success) QueueSidebar.MarkJobCompleted(jobVM);
+        else QueueSidebar.MarkJobFailed(jobVM, StatusText);
     }
 
     private static QueueJobItemM CreateSidebarJob(EncodingPipelineRequest request, EncodingPipelineCommand command, string status)
@@ -482,11 +459,9 @@ public partial class EncodingMonitorVM : BaseVM
             }
             else if (_logSnapshotsByJobId.TryGetValue(selectedJob.JobId, out EncodingLogSnapshot snapshot))
                 SetDisplayedLogs(snapshot.UpstreamText, snapshot.DownstreamText);
-            else
-                SetDisplayedLogs(string.Empty, string.Empty);
+            else SetDisplayedLogs(string.Empty, string.Empty);
         }
 
-        OnPropertyChanged(nameof(OpusAudioCommandHint));
     }
 
     /// <summary>
@@ -526,9 +501,9 @@ public partial class EncodingMonitorVM : BaseVM
     {
         MemoryRangeBlocks.Clear();
         for (int i = 0; i < MemoryRangeBlockCount; i++)
-        {
-            MemoryRangeBlocks.Add(new MemoryRangeBlockM { FillLevel = 0, Tooltip = string.Format(Lang.BlockTooltipFormat, i) });
-        }
+            MemoryRangeBlocks.Add(new MemoryRangeBlockM {
+                FillLevel = 0,
+                Tooltip = string.Format(Lang.BlockTooltipFormat, i) });
     }
 
     /// <summary>
@@ -544,7 +519,7 @@ public partial class EncodingMonitorVM : BaseVM
         {
             StatusText = Lang.EncodingText;
             // Create the upstream decoder process (e.g. ffmpeg source)
-            Encoding upstreamEncoding = GetEncodingForProcess(_request.UpstreamExeName);
+            Encoding upstreamEncoding = EncodingMonitorHelpers.GetEncodingForProcess(_request.UpstreamExeName);
             using Process upstream = new()
             {
                 StartInfo = new ProcessStartInfo
@@ -750,7 +725,6 @@ public partial class EncodingMonitorVM : BaseVM
             _request = request;
             _command = EncodingPipeline.BuildY4mCommand(request);
             ApplySourceTotalFrames(EncodingPipeline.GetExpectedOutputFrames(request));
-            OnPropertyChanged(nameof(OpusAudioCommandHint));
             EnableMux = command.MuxCommand != null
                 && EncodingAutoMuxResolver.IsAutoMuxEnabled(
                     _appConfM.AutoMux,
@@ -1193,60 +1167,24 @@ public partial class EncodingMonitorVM : BaseVM
     }
 
     #region Log Parsing Queries
-    [GeneratedRegex(@"(?<![\d.])\d{1,3}(?:\.\d+)?\s*%")]
-    private static partial Regex ProgressLineRegex();
-
-    [GeneratedRegex(@"(?<![\d.])(\d{1,3})(?:\.\d+)?\s*%")]
-    private static partial Regex ProgressPercentRegex();
-
-    [GeneratedRegex(@"(?:^|\s)(?:frame|fps|size|time|bitrate|speed|dup|drop|progress)\s*=\s*[^\s]+", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
-    private static partial Regex FFmpegProgressFieldRegex();
-
-    [GeneratedRegex(@"(?:^|\s)(?:frame|fps|size|time|bitrate|speed|dup|drop)\s*[=:]", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
-    private static partial Regex FFmpegProgressKeyRegex();
-
-    [GeneratedRegex(@"\x1B\[[0-?]*[ -/]*[@-~]", RegexOptions.CultureInvariant)]
-    private static partial Regex AnsiEscapeRegex();
-
     private static string NormalizeLogLineForProgress(string line) =>
-        AnsiEscapeRegex().Replace(line, string.Empty).Trim();
+        RegexProvider.AnsiEscapeRegex().Replace(line, string.Empty).Trim();
 
     private static bool IsProgressLine(string line)
     {
         string lower = line.ToLowerInvariant();
-        return FFmpegProgressFieldRegex().IsMatch(line)
-            || FFmpegProgressKeyRegex().IsMatch(line)
+        return RegexProvider.FFmpegProgressFieldRegex().IsMatch(line)
+            || RegexProvider.FFmpegProgressKeyRegex().IsMatch(line)
             || lower.Contains("progress=continue", StringComparison.Ordinal)
             || lower.Contains("progress=end", StringComparison.Ordinal)
             || lower.Contains("fps", StringComparison.Ordinal) && lower.Contains("size=", StringComparison.Ordinal)
             || lower.Contains("frames", StringComparison.Ordinal) && lower.Contains("kb/s", StringComparison.Ordinal)
             || lower.Contains("eta", StringComparison.Ordinal) && lower.Contains('%', StringComparison.Ordinal)
-            || ProgressLineRegex().IsMatch(line);
+            || RegexProvider.ProgressLineRegex().IsMatch(line);
     }
 
     private static bool IsIndexProgressLine(string line) =>
         line.Contains("Creating lwi index file", StringComparison.OrdinalIgnoreCase);
-
-    [GeneratedRegex(@"(?:^|\D)frame\s*=\s*(\d+)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
-    private static partial Regex FFmpegFrameRegex();
-
-    [GeneratedRegex(@"(?<!\d)(\d+)\s+frames?\s*:", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
-    private static partial Regex X264FrameRegex();
-
-    [GeneratedRegex(@"(?<!\d)(\d+)\s*/\s*\d+\s+frames?", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
-    private static partial Regex SlashFrameRegex();
-
-    [GeneratedRegex(@"(?<!\d)(\d+)\s+frames?\s+@", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
-    private static partial Regex FramesAtRegex();
-
-    [GeneratedRegex(@"\bencoding\s+frame\s+(\d+)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
-    private static partial Regex EncodingFrameRegex();
-
-    [GeneratedRegex(@"(?:^|\D)encoded\s+(\d+)\s+frames?", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
-    private static partial Regex EncodedFrameRegex();
-
-    [GeneratedRegex(@"(?<!\d)(\d+)\s+frames?\s+encoded", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
-    private static partial Regex FramesEncodedRegex();
 
     /// <summary>
     /// Attempts to extract a frame number from a log line using multiple regex patterns.
@@ -1259,13 +1197,13 @@ public partial class EncodingMonitorVM : BaseVM
 
         line = NormalizeLogLineForProgress(line);
 
-        if (TryParseFirstRegexGroup(FFmpegFrameRegex().Match(line), out int value)) return value;
-        if (TryParseFirstRegexGroup(X264FrameRegex().Match(line), out value)) return value;
-        if (TryParseFirstRegexGroup(SlashFrameRegex().Match(line), out value)) return value;
-        if (TryParseFirstRegexGroup(FramesAtRegex().Match(line), out value)) return value;
-        if (TryParseFirstRegexGroup(EncodingFrameRegex().Match(line), out value)) return value;
-        if (TryParseFirstRegexGroup(EncodedFrameRegex().Match(line), out value)) return value;
-        if (TryParseFirstRegexGroup(FramesEncodedRegex().Match(line), out value)) return value;
+        if (TryParseFirstRegexGroup(RegexProvider.FFmpegFrameRegex().Match(line), out int value)) return value;
+        if (TryParseFirstRegexGroup(RegexProvider.X264FrameRegex().Match(line), out value)) return value;
+        if (TryParseFirstRegexGroup(RegexProvider.SlashFrameRegex().Match(line), out value)) return value;
+        if (TryParseFirstRegexGroup(RegexProvider.FramesAtRegex().Match(line), out value)) return value;
+        if (TryParseFirstRegexGroup(RegexProvider.EncodingFrameRegex().Match(line), out value)) return value;
+        if (TryParseFirstRegexGroup(RegexProvider.EncodedFrameRegex().Match(line), out value)) return value;
+        if (TryParseFirstRegexGroup(RegexProvider.FramesEncodedRegex().Match(line), out value)) return value;
         return null;
     }
 
@@ -1322,17 +1260,17 @@ public partial class EncodingMonitorVM : BaseVM
         long effectiveSystemCacheBytes = GetEffectiveSystemCacheBytes(memoryStatus, combinedWorkingSetBytes);
 
         // Row 0: Physical memory usage
-        MetricColumns[0].MainText = FormatGb(memoryStatus.UsedPhysicalBytes);
-        MetricColumns[0].BottomText = ReplaceMetricValue(Lang.PhysicalMemoryBottomText, FormatGb(memoryStatus.TotalPhysicalBytes));
+        MetricColumns[0].MainText = EncodingMonitorHelpers.FormatSize(memoryStatus.UsedPhysicalBytes, "GB");
+        MetricColumns[0].BottomText = EncodingMonitorHelpers.ReplaceMetricValue(Lang.PhysicalMemoryBottomText, EncodingMonitorHelpers.FormatSize(memoryStatus.TotalPhysicalBytes, "GB"));
         // Row 1: Committed memory
-        MetricColumns[1].MainText = FormatGb(memoryStatus.CommittedBytes);
-        MetricColumns[1].BottomText = ReplaceMetricValue(Lang.CommittedMemoryBottomText, FormatGb(memoryStatus.CommitLimitBytes));
+        MetricColumns[1].MainText = EncodingMonitorHelpers.FormatSize(memoryStatus.CommittedBytes, "GB");
+        MetricColumns[1].BottomText = EncodingMonitorHelpers.ReplaceMetricValue(Lang.CommittedMemoryBottomText, EncodingMonitorHelpers.FormatSize(memoryStatus.CommitLimitBytes, "GB"));
         // Row 2: Working set peak (combined upstream + encoder)
-        MetricColumns[2].MainText = FormatGb(combinedWorkingSetPeakBytes);
-        MetricColumns[2].BottomText = ReplaceMetricValue(Lang.WorkingSetPeakBottomText, FormatGb(combinedWorkingSetBytes));
+        MetricColumns[2].MainText = EncodingMonitorHelpers.FormatSize(combinedWorkingSetPeakBytes, "GB");
+        MetricColumns[2].BottomText = EncodingMonitorHelpers.ReplaceMetricValue(Lang.WorkingSetPeakBottomText, EncodingMonitorHelpers.FormatSize(combinedWorkingSetBytes, "GB"));
         // Row 3: Page file usage
-        MetricColumns[3].MainText = FormatGb(memoryStatus.CommittedBytes);
-        MetricColumns[3].BottomText = ReplaceMetricValue(Lang.PageFileBottomText, FormatGb(memoryStatus.CommitLimitBytes));
+        MetricColumns[3].MainText = EncodingMonitorHelpers.FormatSize(memoryStatus.CommittedBytes, "GB");
+        MetricColumns[3].BottomText = EncodingMonitorHelpers.ReplaceMetricValue(Lang.PageFileBottomText, EncodingMonitorHelpers.FormatSize(memoryStatus.CommitLimitBytes, "GB"));
         // Row 4: Page faults (sum across upstream + encoder process trees)
         MetricColumns[4].MainText = GetTotalPageFaults(childMap).ToString("N0", CultureInfo.InvariantCulture);
         MetricColumns[4].BottomText = Lang.PageFaultBottomText;
@@ -1341,10 +1279,10 @@ public partial class EncodingMonitorVM : BaseVM
         MetricColumns[5].BottomText = $"{memoryStatus.MemoryLoadPercent}%";
 
         // Memory distribution values for the range visualization
-        DistributionUpstream = FormatMb(_lastUpstreamWorkingSetBytes);
-        DistributionDownstream = FormatMb(_lastEncoderWorkingSetBytes);
-        DistributionCache = FormatMb(effectiveSystemCacheBytes);
-        DistributionAvailable = FormatMb(memoryStatus.AvailablePhysicalBytes);
+        DistributionUpstream = EncodingMonitorHelpers.FormatSize(_lastUpstreamWorkingSetBytes, "MB");
+        DistributionDownstream = EncodingMonitorHelpers.FormatSize(_lastEncoderWorkingSetBytes, "MB");
+        DistributionCache = EncodingMonitorHelpers.FormatSize(effectiveSystemCacheBytes, "MB");
+        DistributionAvailable = EncodingMonitorHelpers.FormatSize(memoryStatus.AvailablePhysicalBytes, "MB");
     }
 
     #region Memory Sampling Queries
@@ -1446,7 +1384,7 @@ public partial class EncodingMonitorVM : BaseVM
                 block.FillLevel = 0;
                 block.Category = MemoryCategory.Empty;
                 block.Tooltip = string.Format(Lang.BlockTooltipFormat, blockIndex)
-                    + $" | {Lang.DistributionAvailableLabel} | {FormatRange(blockStart, blockEnd)} | {FormatMb((long)Math.Round(bytesPerBlock))} | 0.0%";
+                    + $" | {Lang.DistributionAvailableLabel} | {FormatRange(blockStart, blockEnd)} | {EncodingMonitorHelpers.FormatSize((long)Math.Round(bytesPerBlock), "MB")} | 0.0%";
                 continue;
             }
 
@@ -1464,16 +1402,14 @@ public partial class EncodingMonitorVM : BaseVM
             block.Category = category;
 
             block.Tooltip = string.Format(Lang.BlockTooltipFormat, blockIndex)
-                + $" | {categoryName} | {FormatRange(blockStart, blockEnd)} | {FormatMb((long)Math.Round(usedOverlap))} | {occupancyFraction * 100:F1}%";
+                + $" | {categoryName} | {FormatRange(blockStart, blockEnd)} | {EncodingMonitorHelpers.FormatSize((long)Math.Round(usedOverlap), "MB")} | {occupancyFraction * 100:F1}%";
         }
 
         RangeSummary = $"{occupancyFraction * 100:F1}%";
     }
 
-    private static string FormatRange(double startBytes, double endBytes)
-    {
-        return $"{FormatMb((long)Math.Round(startBytes))}-{FormatMb((long)Math.Round(endBytes))}";
-    }
+    private static string FormatRange(double startBytes, double endBytes) =>
+        $"{EncodingMonitorHelpers.FormatSize((long)Math.Round(startBytes), "MB")}-{EncodingMonitorHelpers.FormatSize((long)Math.Round(endBytes), "MB")}";
 
     /// <summary>
     /// Updates the footer elapsed/remaining/completion time display.
@@ -1518,7 +1454,7 @@ public partial class EncodingMonitorVM : BaseVM
             string trimmed = line.Trim();
             if (string.IsNullOrWhiteSpace(trimmed) || IsIndexProgressLine(trimmed)) continue;
 
-            MatchCollection matches = ProgressPercentRegex().Matches(trimmed);
+            MatchCollection matches = RegexProvider.ProgressPercentRegex().Matches(trimmed);
             foreach (Match match in matches)
             {
                 if (double.TryParse(match.Value.TrimEnd('%', ' '), NumberStyles.Float, CultureInfo.InvariantCulture, out double value))
@@ -1538,10 +1474,7 @@ public partial class EncodingMonitorVM : BaseVM
             if (!File.Exists(resolvedPath)) return 0L;
             return new FileInfo(resolvedPath).Length;
         }
-        catch
-        {
-            return 0L;
-        }
+        catch { return 0L; }
     }
     #endregion
 
@@ -1577,7 +1510,7 @@ public partial class EncodingMonitorVM : BaseVM
 
         double estimatedBytes = _currentOutputSizeBytes / progressRatio;
         if (double.IsNaN(estimatedBytes) || double.IsInfinity(estimatedBytes)) return Lang.NotAvailableText;
-        return FormatGbValue((long)Math.Round(Math.Max(0d, estimatedBytes)));
+        return EncodingMonitorHelpers.FormatSize((long)Math.Round(Math.Max(0d, estimatedBytes)), "GB", true, false);
     }
 
     /// <summary>
@@ -1767,26 +1700,6 @@ public partial class EncodingMonitorVM : BaseVM
         {
             CloseHandle(snapshot);
         }
-    }
-
-    private static string FormatGb(long bytes)
-    {
-        return $"{Math.Max(0d, bytes / (double)BytesPerGb):0.0} GB";
-    }
-
-    private static string FormatGbValue(long bytes)
-    {
-        return Math.Max(0d, bytes / (double)BytesPerGb).ToString("0.0", CultureInfo.InvariantCulture);
-    }
-
-    private static string FormatMb(long bytes)
-    {
-        return $"{Math.Max(0d, bytes / (double)BytesPerMb):N0} MB";
-    }
-
-    private static string ReplaceMetricValue(string template, string value)
-    {
-        return FileSizeMetricRegex().Replace(template, value);
     }
 
     /// <summary>
@@ -2039,12 +1952,9 @@ public partial class EncodingMonitorVM : BaseVM
     {
         try
         {
-            if (process is { HasExited: false })
-                process.CloseMainWindow();
+            if (process is { HasExited: false }) process.CloseMainWindow();
         }
-        catch
-        {
-        }
+        catch {}
     }
 
     private async Task StopUpstreamAfterEncoderExitAsync(Task encoderExitedTask, Process upstream, CancellationToken cancellationToken)
@@ -2064,47 +1974,32 @@ public partial class EncodingMonitorVM : BaseVM
             if (!upstream.HasExited)
                 TryKillProcess(upstream);
         }
-        catch (OperationCanceledException)
-        {
-        }
-        catch
-        {
-        }
+        catch (OperationCanceledException) {}
+        catch {}
     }
 
     private static void TryCloseStream(Stream? stream)
     {
-        try
-        {
-            stream?.Close();
-        }
-        catch
-        {
-        }
+        try { stream?.Close(); }
+        catch {}
     }
 
     private static void TryKillProcess(Process? process)
     {
         try
         {
-            if (process is { HasExited: false })
-                process.Kill();
+            if (process is { HasExited: false }) process.Kill();
         }
-        catch
-        {
-        }
+        catch {}
     }
 
     private static void TryDeleteFile(string? path)
     {
         try
         {
-            if (!string.IsNullOrWhiteSpace(path) && File.Exists(path))
-                File.Delete(path);
+            if (!string.IsNullOrWhiteSpace(path) && File.Exists(path)) File.Delete(path);
         }
-        catch
-        {
-        }
+        catch {}
     }
 
     private void EnableCloseButton()
@@ -2124,10 +2019,8 @@ public partial class EncodingMonitorVM : BaseVM
         TryInterruptEncoder();
     }
 
-    private void RefreshCancelAllBindings()
-    {
+    private void RefreshCancelAllBindings() =>
         OnPropertyChanged(nameof(IsCancelAllEnabled));
-    }
 
     /// <summary>
     /// Opens the output directory in Windows Explorer.
@@ -2146,31 +2039,6 @@ public partial class EncodingMonitorVM : BaseVM
             : _command;
         new OpenDebugModalCmd(_modalNavS, Lang.EncodingCommandTitle, command.DisplayCommandLine).Execute(null);
     }
-
-    #region Command Text Queries
-    private string BuildOpusAudioCommandHint()
-    {
-        EncodingPipelineRequest request = QueueSidebar.SelectedJob?.Request ?? _request;
-        string command = BuildOpusAudioCommand(request);
-        return string.IsNullOrEmpty(command)
-            ? string.Empty
-            : string.Format(CultureInfo.InvariantCulture, Lang.OpusAudioCommandHintFormat, command);
-    }
-
-    private static string BuildOpusAudioCommand(EncodingPipelineRequest request)
-    {
-        if (string.IsNullOrWhiteSpace(request.FFmpegPath) || string.IsNullOrWhiteSpace(request.SourceVideoPath))
-            return string.Empty;
-
-        string outputDirectory = Path.GetDirectoryName(request.OutputPath) ?? string.Empty;
-        string outputFileName = Path.ChangeExtension(Path.GetFileName(request.SourceVideoPath), ".ogg");
-        string outputPath = Path.Combine(outputDirectory, outputFileName);
-        return $"{QuoteArgument(request.FFmpegPath)} -i {QuoteArgument(request.SourceVideoPath)} -vn -c:a libopus -b:a 320000 -vbr on -compression_level 10 -frame_duration 100 {QuoteArgument(outputPath)}";
-    }
-
-    private static string QuoteArgument(string value) =>
-        $"\"{value.Replace("\"", "\\\"", StringComparison.Ordinal)}\"";
-    #endregion
 
     /// <summary>
     /// Shows a confirmation dialog asking whether to stop the entire queue.
@@ -2232,10 +2100,7 @@ public partial class EncodingMonitorVM : BaseVM
             SaveLogFile(UpstreamReportText, directory, "upstream-stderr", _appConfM.Logs.MaxUpstreamLogFiles);
             SaveLogFile(DownstreamReportText, directory, "downstream-stderr", _appConfM.Logs.MaxDownstreamLogFiles);
         }
-        catch
-        {
-            // Log persistence must not change the encoding result.
-        }
+        catch {} // Log persistence must not change the encoding result.
     }
 
     private static void SaveLogFile(string text, string directory, string filePrefix, int maxFileCount)
@@ -2361,7 +2226,6 @@ public partial class EncodingMonitorVM : BaseVM
         OnPropertyChanged(nameof(SmallNoteText));
         OnPropertyChanged(nameof(RichTextModeText));
         OnPropertyChanged(nameof(SaveLogsText));
-        OnPropertyChanged(nameof(OpusAudioCommandHint));
         OnPropertyChanged(nameof(DistributionUpstreamLabel));
         OnPropertyChanged(nameof(DistributionDownstreamLabel));
         OnPropertyChanged(nameof(DistributionCacheLabel));
@@ -2415,11 +2279,14 @@ public partial class EncodingMonitorVM : BaseVM
         DownstreamStderr
     }
 
-    private readonly record struct ProcessLogEntry(ProcessLogKind Kind, string Line, bool OverwritesPreviousLine);
+    private readonly record struct ProcessLogEntry(
+        ProcessLogKind Kind, string Line, bool OverwritesPreviousLine);
 
-    private readonly record struct EncodingLogSnapshot(string UpstreamText, string DownstreamText);
+    private readonly record struct EncodingLogSnapshot(
+        string UpstreamText, string DownstreamText);
 
-    private readonly record struct LogFoldEntry(string Line, int RepeatCount);
+    private readonly record struct LogFoldEntry(
+        string Line, int RepeatCount);
 
     /// <summary>
     /// Tracks unique log lines and their repeat counts for log folding.
@@ -2439,7 +2306,4 @@ public partial class EncodingMonitorVM : BaseVM
             Entries.RemoveAt(Entries.Count - 1);
         }
     }
-
-    [GeneratedRegex(@"X+(?:\.X+)?\s*(?:GBps|GB|MB|%)?", RegexOptions.CultureInvariant)]
-    private static partial Regex FileSizeMetricRegex();
-}
+}

@@ -1,3 +1,4 @@
+using OneColumnEncoder.Models;
 using System.Text.RegularExpressions;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
@@ -279,7 +280,7 @@ public partial class SplitTextCard : UserControl
     /// </summary>
     private static IEnumerable<Inline> BuildAnsiRuns(string text, Brush defaultBrush)
     {
-        Regex regex = AnsiEscRegex();
+        Regex regex = RegexProvider.AnsiEscapeRegex();
 
         Brush currentBrush = defaultBrush;
         int lastIndex = 0;
@@ -343,6 +344,4 @@ public partial class SplitTextCard : UserControl
         return brush;
     }
 
-    [GeneratedRegex(@"\[(?<code>[0-9;]*)m", RegexOptions.CultureInvariant)]
-    private static partial Regex AnsiEscRegex();
-}
+}

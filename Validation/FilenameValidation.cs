@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using OneColumnEncoder.Models;
 using System.Text.RegularExpressions;
 
 namespace OneColumnEncoder.Validation;
@@ -7,14 +8,11 @@ public partial class FilenameValidation
 {
     private static readonly char[] InvalidFileNameChars = Path.GetInvalidFileNameChars();
 
-    [GeneratedRegex(@"^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(\..*)?$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
-    private static partial Regex ReservedFilenames();
-
     public static bool IsValidLength(string filename, int max = 50)
         => filename.Length > 0 && filename.Length <= max;
 
     public static bool IsNotReservedName(string filename)
-        => !ReservedFilenames().IsMatch(filename);
+        => !RegexProvider.ReservedFilenamesRegex().IsMatch(filename);
 
     public static bool HasNoInvalidChars(string filename)
         => filename.Length >= 0

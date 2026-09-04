@@ -15,8 +15,6 @@ public partial class EncodingMonitorModal : AdaptiveWindow
     private const int MinWidthDefault = 860;
     private const int MinWidthSidebar = MinWidthDefault + SidebarWidth + SplitterWidth;
 
-    private const int MinHeightDefault = 905; // Height without Opus audio encoding hint (concat mode)
-    private const int HeightDefault = 950; // Normal height
     private EncodingMonitorVM? _subscribedVm;
     private QueueSidebarVM? _subscribedQueueSidebar;
 
@@ -54,7 +52,6 @@ public partial class EncodingMonitorModal : AdaptiveWindow
             }
 
             SyncSidebarWidth(vm.QueueSidebar.IsVisible);
-            SyncHeight(!string.IsNullOrWhiteSpace(vm.OpusAudioCommandHint));
             UpdateSystemCloseButton(vm.IsWindowCloseEnabled);
             vm.Start();
         }
@@ -127,9 +124,6 @@ public partial class EncodingMonitorModal : AdaptiveWindow
         if (isSidebarVisible) ExpandForSidebar();
         else CollapseSidebar();
     }
-
-    private void SyncHeight(bool isOpusHintVisible) =>
-        Height = isOpusHintVisible ? HeightDefault : MinHeightDefault;
 
     private void ExpandForSidebar()
     {

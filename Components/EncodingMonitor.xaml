@@ -215,11 +215,6 @@
                                    Button3IsEnabled="{Binding B5_3IsEnabled}"
                                    Button4IsEnabled="{Binding B5_4IsEnabled}"
                                    Button5IsEnabled="{Binding B5_5IsEnabled}" />
-            <StackPanel Visibility="{Binding OpusAudioCommandHint, Converter={StaticResource StringToVisibilityConverter}}">
-                <comps:HintPanel Text="{Binding OpusAudioCommandHint}"
-                                 HintBrush="{StaticResource GlobalSecondary}"
-                                 Margin="0 2.5 0 0" />
-            </StackPanel>
             <comps:HintPanel Text="{Binding SmallNoteText}"
                              HintBrush="{StaticResource GlobalSecondary}"
                              Margin="0 2.5 0 0" />

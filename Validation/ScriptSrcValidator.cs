@@ -1,4 +1,5 @@
 using System.IO;
+using OneColumnEncoder.Models;
 using System.Text.RegularExpressions;
 
 namespace OneColumnEncoder.Validation;
@@ -78,24 +79,17 @@ public static class ScriptSrcValidator
         try
         {
             string[] lines = File.ReadAllLines(scriptFilePath);
-            string pattern = ext.Equals(".vpy", StringComparison.OrdinalIgnoreCase)
-                ? @"src\s*=\s*core\.lsmas\.LWLibavSource\(source=r""([^""]+)"""
-                : @"LWLibavVideoSource\(""([^""]+)""";
-
             foreach (string line in lines)
             {
                 string trimmed = line.Trim();
                 if (string.IsNullOrEmpty(trimmed) || trimmed.StartsWith('#') || trimmed.StartsWith(';'))
                     continue;
-                Match match = Regex.Match(trimmed, pattern);
+                Match match = RegexProvider.MatchScriptSourcePath(trimmed, ext);
                 if (match.Success)
                     return match.Groups[1].Value.Trim();
             }
         }
-        catch
-        {
-        }
-
+        catch {}
         return null;
     }
 

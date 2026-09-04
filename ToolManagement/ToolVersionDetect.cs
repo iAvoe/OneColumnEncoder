@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using OneColumnEncoder.Models;
 using System.Text.RegularExpressions;
 
 namespace OneColumnEncoder.ToolManagement;
@@ -11,12 +12,6 @@ public class ToolVersionDetectTimeoutException(string exeName)
 public partial class ToolVersionDetect
 {
     private static readonly TimeSpan VersionDetectTimeout = TimeSpan.FromSeconds(3);
-
-    [GeneratedRegex(@"\bver\s+\S+", RegexOptions.IgnoreCase)]
-    private static partial Regex Avs2pipemodVersion();
-
-    [GeneratedRegex(@"version\s+(\d+(?:\.\d+)?)", RegexOptions.IgnoreCase)]
-    private static partial Regex X265Version();
 
     private static string RemoveToolNamePrefix(string version, string toolName)
     {
@@ -177,7 +172,7 @@ public partial class ToolVersionDetect
             case "avs2pipemod.exe":
                 {
                     if (!text.Contains("avs2pipemod", StringComparison.OrdinalIgnoreCase)) return null;
-                    Match m = Avs2pipemodVersion().Match(firstLine);
+                    Match m = RegexProvider.Avs2pipemodVersionRegex().Match(firstLine);
                     return m.Success ? m.Value : firstLine;
                 }
 
@@ -186,7 +181,7 @@ public partial class ToolVersionDetect
             case "x265.exe":
                 {
                     if (!text.Contains("x265", StringComparison.OrdinalIgnoreCase)) return null;
-                    Match m = X265Version().Match(text);
+                    Match m = RegexProvider.X265VersionRegex().Match(text);
                     return m.Success ? m.Groups[1].Value : firstLine;
                 }
             case "svtav1encapp.exe":

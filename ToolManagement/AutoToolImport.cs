@@ -1,4 +1,5 @@
 using System.IO;
+using OneColumnEncoder.Models;
 using System.Text.RegularExpressions;
 
 namespace OneColumnEncoder.ToolManagement;
@@ -198,13 +199,7 @@ public static class AutoToolImport
     {
         string name = Path.GetFileNameWithoutExtension(filePath).ToLowerInvariant();
         string token = Path.GetFileNameWithoutExtension(exeName).ToLowerInvariant();
-        string pattern = token switch
-        {
-            "svtav1encapp" => @"(^|[^a-z0-9])svt[^a-z0-9]*av1[^a-z0-9]*enc[^a-z0-9]*app([^a-z0-9]|$)",
-            _ => $@"(^|[^a-z0-9]){Regex.Escape(token)}([^a-z0-9]|$)"
-        };
-
-        return Regex.IsMatch(name, pattern, RegexOptions.IgnoreCase);
+        return RegexProvider.IsCandidateFileNameMatch(name, token);
     }
 
     /// <summary>

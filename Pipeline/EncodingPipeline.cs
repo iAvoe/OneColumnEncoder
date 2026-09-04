@@ -1,5 +1,6 @@
 using OneColumnEncoder.CPU;
 using OneColumnEncoder.Models.Encoding;
+using OneColumnEncoder.Models;
 using System.IO;
 using System.Text.RegularExpressions;
 using static OneColumnEncoder.Json.JsonElementHelper;
@@ -317,7 +318,7 @@ public static partial class EncodingPipeline
     {
         if (string.IsNullOrWhiteSpace(filterArgs)) return null;
 
-        Match match = FFmpegFilterVScaleRegex().Match(filterArgs);
+        Match match = RegexProvider.FFmpegFilterVScaleRegex().Match(filterArgs);
         if (!match.Success) return null;
 
         return match.Groups["quoted"].Success
@@ -1055,7 +1056,7 @@ public static partial class EncodingPipeline
 
     private static int? TryGetIntegerArg(string args, string name)
     {
-        Match match = Regex.Match(args, $@"(?:^|\s){Regex.Escape(name)}\s+(-?\d+)(?=\s|$)");
+        Match match = RegexProvider.MatchIntegerArg(args, name);
         return match.Success && int.TryParse(match.Groups[1].Value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int value)
             ? value
             : null;
@@ -1081,16 +1082,13 @@ public static partial class EncodingPipeline
         return value.Trim();
     }
 
-    [GeneratedRegex(@"gui_inputs\s*=\s*""((?:[^""\\]|\\.)*)""")]
-    private static partial Regex SvfiIniRegex();
-
     public static (string inputPath, string taskId) ParseSvfiIni(string iniPath)
     {
         if (string.IsNullOrWhiteSpace(iniPath) || !File.Exists(iniPath))
             return (string.Empty, string.Empty);
 
         string iniContent = File.ReadAllText(iniPath);
-        Match match = SvfiIniRegex().Match(iniContent);
+        Match match = RegexProvider.SvfiIniRegex().Match(iniContent);
         if (!match.Success)
             return (string.Empty, string.Empty);
 
@@ -1115,8 +1113,4 @@ public static partial class EncodingPipeline
     private static string Quote(string value) =>
         $"\"{value.Replace("\"", "\\\"", StringComparison.Ordinal)}\"";
 
-    [GeneratedRegex(@"fps=(\d+/\d+)")]
-    private static partial Regex FpsRegex();
-    [GeneratedRegex("(?:-filter(?::v)?|-vf)\\s+(?:\"(?<quoted>[^\"]+)\"|'(?<single>[^']+)'|(?<plain>\\S+))", RegexOptions.IgnoreCase, "zh-CN")]
-    private static partial Regex FFmpegFilterVScaleRegex();
 }

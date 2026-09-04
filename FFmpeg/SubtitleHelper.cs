@@ -1,20 +1,11 @@
 using System.IO;
+using OneColumnEncoder.Models;
 using System.Text.RegularExpressions;
 
 namespace OneColumnEncoder.FFmpeg;
 
-public static partial class SubtitleHelper
+public static class SubtitleHelper
 {
-    [GeneratedRegex(
-        @"(?<start>(?:(?:\d{1,2}:)?\d{1,2}:\d{2}[,.]\d{1,3}))\s*-->\s*(?<end>(?:(?:\d{1,2}:)?\d{1,2}:\d{2}[,.]\d{1,3}))",
-        RegexOptions.Compiled | RegexOptions.CultureInvariant)]
-    private static partial Regex TimestampRegex();
-
-    [GeneratedRegex(
-        @"^Dialogue\s*:\s*[^,]*,(\d{1,2}:\d{2}:\d{2}\.\d{1,2}),(\d{1,2}:\d{2}:\d{2}\.\d{1,2})(?:,|$)",
-        RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase)]
-    private static partial Regex AssDialogueRegex();
-
     private static readonly string[] SrtFormats = [@"hh\:mm\:ss\,fff", @"h\:m\:s\,f"];
     private static readonly string[] VttFormats =
     [
@@ -39,14 +30,14 @@ public static partial class SubtitleHelper
         {
             foreach (string line in File.ReadLines(filePath).Reverse())
             {
-                Match match = TimestampRegex().Match(line);
+                Match match = RegexProvider.TimestampRegex().Match(line);
                 if (match.Success
                     && TryParseTimestamp(match.Groups["start"].Value, out TimeSpan start)
                     && TryParseTimestamp(match.Groups["end"].Value, out TimeSpan result)
                     && result > start)
                     return result;
 
-                match = AssDialogueRegex().Match(line);
+                match = RegexProvider.AssDialogueRegex().Match(line);
                 if (match.Success
                     && TryParseTimestamp(match.Groups[1].Value, out start)
                     && TryParseTimestamp(match.Groups[2].Value, out result)

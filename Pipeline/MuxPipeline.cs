@@ -1,4 +1,5 @@
 using System.IO;
+using OneColumnEncoder.Models;
 using System.Text.RegularExpressions;
 using static OneColumnEncoder.Json.JsonElementHelper;
 
@@ -487,7 +488,7 @@ public static partial class MuxPipeline
     {
         if (!string.IsNullOrWhiteSpace(filterArgs))
         {
-            var match = FpsRegex().Match(filterArgs);
+            var match = RegexProvider.FpsRegex().Match(filterArgs);
             if (match.Success)
             {
                 string fps = match.Groups[1].Value;
@@ -538,9 +539,6 @@ public static partial class MuxPipeline
         !string.IsNullOrWhiteSpace(value)
         && !value.Equals("0/0", StringComparison.OrdinalIgnoreCase)
         && !value.Equals("N/A", StringComparison.OrdinalIgnoreCase);
-
-    [GeneratedRegex(@"fps=(\d+/\d+)")]
-    private static partial Regex FpsRegex();
 
     private static string? TryGetFrameRateString(JsonElement stream)
     {

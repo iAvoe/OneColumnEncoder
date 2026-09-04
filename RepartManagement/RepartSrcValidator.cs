@@ -1,5 +1,6 @@
 using System.IO;
 using System.Security.Cryptography;
+using OneColumnEncoder.Models;
 using System.Text.RegularExpressions;
 using static OneColumnEncoder.Json.JsonElementHelper;
 
@@ -512,7 +513,7 @@ public static partial class RepartSrcValidator
     {
         if (string.IsNullOrWhiteSpace(stderr)) return null;
 
-        MatchCollection matches = FFmpegTotalFramesMatcher().Matches(stderr);
+        MatchCollection matches = RegexProvider.FFmpegTotalFramesRegex().Matches(stderr);
         if (matches.Count == 0) return null;
 
         string text = matches[^1].Groups[1].Value;
@@ -755,8 +756,6 @@ public static partial class RepartSrcValidator
     private static string Hash(string value) => string.IsNullOrWhiteSpace(value)
         ? string.Empty
         : Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(value)));
-    [GeneratedRegex(@"frame=\s*(\d+)", RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant)]
-    private static partial Regex FFmpegTotalFramesMatcher();
 }
 
 // Formats an exclusion into either a bare reason line or a full per-source dialog
