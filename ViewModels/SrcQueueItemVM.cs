@@ -1,3 +1,4 @@
+using System.IO;
 using System.Windows.Threading;
 
 namespace OneColumnEncoder.ViewModels;
@@ -9,6 +10,7 @@ public sealed class SrcQueueItemVM : BaseVM
     private bool _canRemove = true;
     private bool _isSelected;
     private string _name = "";
+    private string _fullPath = "";
     private string _pathText = "";
     private string _displayR1Text = "";
     private string _r2Text = "";
@@ -19,8 +21,12 @@ public sealed class SrcQueueItemVM : BaseVM
     public SrcQueueItemVM(string filePath, ICommand? removeCmd, ICommand? moveUpCmd, ICommand? moveDownCmd)
     {
         FilePath = filePath;
-        Name = System.IO.Path.GetFileName(filePath);
-        P1Text = filePath;
+        Name = Path.GetFileName(filePath);
+        OnlyPath = Path.GetDirectoryName(filePath) ?? filePath; // This fallback is dumb but compiler likes it this way
+        SizeBytes = GetFileSize(filePath);
+        P1Text = SizeBytes >= 0
+            ? $"{FormatFileSize(SizeBytes)} | {OnlyPath}"
+            : OnlyPath;
         R1Command = removeCmd;
         R2Command = moveUpCmd;
         R3Command = moveDownCmd;
@@ -28,11 +34,18 @@ public sealed class SrcQueueItemVM : BaseVM
     }
 
     public string FilePath { get; }
+    public long SizeBytes { get; }
 
     public string Name
     {
         get => _name;
         set => SetProperty(ref _name, value);
+    }
+
+    public string OnlyPath
+    {
+        get => _fullPath;
+        set => SetProperty(ref _fullPath, value);
     }
 
     public string P1Text
@@ -143,6 +156,25 @@ public sealed class SrcQueueItemVM : BaseVM
         _moveFlashTimer.Stop();
         _moveFlashTimer.Tick -= OnMoveFlashTimerTick;
         _moveFlashTimer = null;
+    }
+
+    private static long GetFileSize(string filePath)
+    {
+        try { return new FileInfo(filePath).Length; }
+        catch { return -1; }
+    }
+
+    private static string FormatFileSize(long bytes)
+    {
+        string[] units = ["B", "KB", "MB", "GB", "TB"];
+        double value = bytes;
+        int order = 0;
+        while (value >= 1024 && order < units.Length - 1)
+        {
+            order++;
+            value /= 1024;
+        }
+        return $"{value:0.##} {units[order]}";
     }
 
     public override void Dispose()

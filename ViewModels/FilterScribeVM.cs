@@ -1072,7 +1072,7 @@ public class FilterScribeVM : BaseVM
         {
             Title = FilterScribeModalLangProvider.SavingScriptWindowTitle,
             Filter = FilterScribeModalLangProvider.Current["SrcScribe.FilterAvs"],
-            FileName = GetScriptFileName(srcPath, ".avs")
+            FileName = FilterScribeScriptPersistence.GetScriptFileName(srcPath, ".avs")
         };
 
         if (dialog.ShowDialog(Application.Current.MainWindow) != true) return;
@@ -1081,7 +1081,7 @@ public class FilterScribeVM : BaseVM
         string directory = Path.GetDirectoryName(avsPath) ?? ".";
         string vpyPath = Path.Combine(directory, Path.GetFileNameWithoutExtension(avsPath) + ".vpy");
 
-        if (!TryWriteScripts(avsPath, avsScript, vpyPath, vpyScript)) return;
+        if (!FilterScribeScriptPersistence.TryWriteScripts(avsPath, avsScript, vpyPath, vpyScript, ShowSaveError)) return;
 
         SrcFileKind? preferredKind = _getPreferredScriptSrcKind();
         if (preferredKind == SrcFileKind.AviSynthScript)
@@ -1143,7 +1143,7 @@ public class FilterScribeVM : BaseVM
         string directory = Path.GetDirectoryName(avsPath) ?? ".";
         string vpyPath = Path.Combine(directory, Path.GetFileNameWithoutExtension(avsPath) + ".vpy");
 
-        if (!TryWriteScripts(avsPath, avsScript, vpyPath, vpyScript)) return;
+        if (!FilterScribeScriptPersistence.TryWriteScripts(avsPath, avsScript, vpyPath, vpyScript, ShowSaveError)) return;
 
         SrcFileKind? preferredKind = _getPreferredScriptSrcKind();
         if (preferredKind == SrcFileKind.AviSynthScript)
@@ -1237,31 +1237,12 @@ public class FilterScribeVM : BaseVM
         return true;
     }
 
-    #region Script Save Queries
     private (int width, int height) GetSuggestedOutputResolution()
     {
         if (HasScaleFilter && TargetWidth > 0 && TargetHeight > 0)
             return (TargetWidth, TargetHeight);
 
         return HasSource ? (SourceWidth, SourceHeight) : (0, 0);
-    }
-
-    private static string GetScriptFileName(string srcPath, string extension) =>
-        Path.GetFileNameWithoutExtension(srcPath) + extension;
-    #endregion
-    private bool TryWriteScripts(string avsPath, string avsScript, string vpyPath, string vpyScript)
-    {
-        try
-        {
-            File.WriteAllText(avsPath, avsScript);
-            File.WriteAllText(vpyPath, vpyScript);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            ShowSaveError(ex);
-            return false;
-        }
     }
 
     private void ImportScript(ToolItemCardVM item, SrcFileKind kind, string path)
