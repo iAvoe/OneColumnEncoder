@@ -4,6 +4,9 @@ public class SliderZeroDisplayConverter : IMultiValueConverter
 {
     public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     {
+        if (values.Length >= 3 && values[2] is string valueText && !string.IsNullOrEmpty(valueText))
+            return valueText;
+
         if (values.Length >= 2 && values[0] is int intValue && values[1] is string zeroText)
             return intValue == 0 && !string.IsNullOrEmpty(zeroText) ? zeroText : intValue.ToString();
         return "0";

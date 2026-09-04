@@ -1,14 +1,14 @@
 <UserControl x:Class="OneColumnEncoder.Components.EncoderPreviewPanel"
-              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
-              xmlns:ui="clr-namespace:OneColumnEncoder.UI"
-              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
-               d:DataContext="{d:DesignInstance Type=vms:ImgABPvVM}"
-               mc:Ignorable="d"
-               Loaded="OnLoaded">
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+             xmlns:ui="clr-namespace:OneColumnEncoder.UI"
+             xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
+             d:DataContext="{d:DesignInstance Type=vms:ImgABPvVM}"
+             mc:Ignorable="d"
+             Loaded="OnLoaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -102,31 +102,19 @@
                                     Button2Command="{Binding Cmd2}"
                                     Button3Command="{Binding Cmd3}" />
         </Grid>
-
         <comps:ImgABPvViewer Grid.Row="1"
-                                    x:Name="PreviewViewer"
-                                    Margin="0 10 0 10" />
-
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0"
-                       Text="{Binding PositionLabel}"
-                       FontSize="13"
-                       VerticalAlignment="Center" />
-            <comps:IntegerSlider Grid.Column="1"
-                                  Minimum="0"
-                                  Maximum="{Binding MaxPositionSeconds}"
-                                  Value="{Binding PreviewPositionSeconds, Mode=TwoWay}"
-                                  TickLabels="{Binding PositionTickLabels}"
-                                  TickCount="5"
-                                  LabelWidth="0"
-                                  HorizontalAlignment="Stretch"
-                                  IsEnabled="{Binding IsIdle}" />
-        </Grid>
-
+                             x:Name="PreviewViewer"
+                             Margin="0 10" />
+        <comps:IntegerSlider Grid.Row="2"
+                             Minimum="0"
+                             Maximum="{Binding MaxPositionSeconds}"
+                             Value="{Binding PreviewPositionSeconds, Mode=TwoWay}"
+                             ValueText="{Binding PositionLabel}"
+                             TickLabels="{Binding PositionTickLabels}"
+                             TickCount="5"
+                             LabelWidth="0"
+                             HorizontalAlignment="Stretch"
+                             IsEnabled="{Binding IsIdle}" />
         <Grid Grid.Row="3"
               Margin="0 5 0 0">
             <Grid.ColumnDefinitions>
@@ -176,7 +164,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            
+
             <StackPanel Grid.Column="0">
                 <comps:HintPanel Text="{Binding Hint1Text}"
                                  HintBrush="{StaticResource GlobalSecondary}"
@@ -191,13 +179,13 @@
                                  FontSize="10"
                                  Margin="0 5 0 0" />
                 <comps:HintPanel Text="{Binding SsimulacraScoreHint}"
-                                  HintBrush="{StaticResource GlobalSecondary}"
-                                  FontSize="10"
-                                  Margin="0 5 0 0" />
+                                 HintBrush="{StaticResource GlobalSecondary}"
+                                 FontSize="10"
+                                 Margin="0 5 0 0" />
                 <comps:HintPanel Text="{Binding ButteraugliScoreHint}"
-                                  HintBrush="{StaticResource GlobalSecondary}"
-                                  FontSize="10"
-                                  Margin="0 5 0 0" />
+                                 HintBrush="{StaticResource GlobalSecondary}"
+                                 FontSize="10"
+                                 Margin="0 5 0 0" />
             </StackPanel>
 
             <StackPanel Grid.Column="1"

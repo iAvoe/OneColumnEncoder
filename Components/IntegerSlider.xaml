@@ -118,9 +118,10 @@
                                    HorizontalAlignment="Center">
                             <TextBlock.Text>
                                 <MultiBinding Converter="{StaticResource SliderZeroDisplayConverter}">
-                                    <Binding Path="Value" RelativeSource="{RelativeSource AncestorType=UserControl}" />
-                                    <Binding Path="ZeroText" RelativeSource="{RelativeSource AncestorType=UserControl}" />
-                                </MultiBinding>
+                                 <Binding Path="Value" RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                     <Binding Path="ZeroText" RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                     <Binding Path="ValueText" RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                 </MultiBinding>
                             </TextBlock.Text>
                         </TextBlock>
                     </Border>

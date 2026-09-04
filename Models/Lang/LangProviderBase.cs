@@ -89,7 +89,7 @@ public abstract class LangProviderBase
     public static string MoveUpText => "↑↑";
     public static string MoveDownText => "↓↓";
     public static string NAText => "N/A";
-    public static string Sec => "ss";
+    public static string Hms => "h:m:s";
     public string Default => this["Default"];
     public string Enable => this["Enable"];
     public string Disable => this["Disable"];

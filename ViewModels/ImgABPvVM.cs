@@ -42,7 +42,7 @@ public class ImgABPvVM : BaseVM
 
     public string EncoderLabel => Lang.EncoderLabel;
     public string ZoomLabel => Lang.ZoomLabel;
-    public static string PositionLabel => LangProviderBase.Sec;
+    public string PositionLabel => SampleClip.FormatAxisTimestamp(PreviewPositionSeconds);
     public string Hint1Text => Lang.Hint1Text;
     public string Hint2Text => Lang.Hint2Text;
     public string Hint3Text => Lang.Hint3Text;
@@ -67,7 +67,11 @@ public class ImgABPvVM : BaseVM
     public int PreviewPositionSeconds
     {
         get => _previewPositionSeconds;
-        set => SetProperty(ref _previewPositionSeconds, Math.Max(0, Math.Min(MaxPositionSeconds, value)));
+        set
+        {
+            if (SetProperty(ref _previewPositionSeconds, Math.Max(0, Math.Min(MaxPositionSeconds, value))))
+                OnPropertyChanged(nameof(PositionLabel));
+        }
     }
 
     private int _maxPositionSeconds = 1;
@@ -374,7 +378,7 @@ public class ImgABPvVM : BaseVM
         PositionTickLabels.Clear();
         double safeDuration = Math.Max(1d, Math.Min(MaxPositionSeconds, durationSeconds));
         for (int i = 0; i <= 4; i++)
-            PositionTickLabels.Add(Math.Round(safeDuration * i / 4d).ToString(CultureInfo.InvariantCulture));
+            PositionTickLabels.Add(SampleClip.FormatAxisTimestamp(Math.Round(safeDuration * i / 4d)));
     }
 
     #region Preview Path Queries

@@ -56,6 +56,9 @@ public partial class IntegerSlider : UserControl
     public static readonly DependencyProperty ZeroTextProperty = DependencyProperty.Register(
         nameof(ZeroText), typeof(string), typeof(IntegerSlider), new PropertyMetadata("0"));
 
+    public static readonly DependencyProperty ValueTextProperty = DependencyProperty.Register(
+        nameof(ValueText), typeof(string), typeof(IntegerSlider), new PropertyMetadata(string.Empty));
+
     public string Label { get => (string)GetValue(LabelProperty); set => SetValue(LabelProperty, value); }
     public int Minimum { get => (int)GetValue(MinimumProperty); set => SetValue(MinimumProperty, value); }
     public int Maximum { get => (int)GetValue(MaximumProperty); set => SetValue(MaximumProperty, value); }
@@ -68,6 +71,7 @@ public partial class IntegerSlider : UserControl
     public double SliderMaxWidth { get => (double)GetValue(SliderMaxWidthProperty); set => SetValue(SliderMaxWidthProperty, value); }
     public double LabelWidth { get => (double)GetValue(LabelWidthProperty); set => SetValue(LabelWidthProperty, value); }
     public string ZeroText { get => (string)GetValue(ZeroTextProperty); set => SetValue(ZeroTextProperty, value); }
+    public string ValueText { get => (string)GetValue(ValueTextProperty); set => SetValue(ValueTextProperty, value); }
 
     internal double MeasuredLabelWidth => LabelTextBlock.ActualWidth;
 

@@ -27,7 +27,9 @@ public class TickLabelPositionConverter : IMultiValueConverter
             ? NormalizeLog(value, minimum, maximum)
             : Math.Max(0d, Math.Min(1d, (value - minimum) / (maximum - minimum)));
         double center = normalized * travelWidth + OneColumnEncoder.Components.IntegerSlider.ThumbWidth / 2d;
-        return center - labelWidth / 2d;
+        double left = center - labelWidth / 2d;
+        double maxLeft = Math.Max(0d, actualWidth - labelWidth);
+        return Math.Max(0d, Math.Min(maxLeft, left));
     }
 
     public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
@@ -56,6 +58,9 @@ public class TickLabelPositionConverter : IMultiValueConverter
         }
 
         string text = value.ToString() ?? string.Empty;
+        if (TryParseTimecode(text, out result))
+            return true;
+
         int length = 0;
         while (length < text.Length && (char.IsDigit(text[length]) || text[length] == '.' || text[length] == '-' || text[length] == '+'))
         {
@@ -70,4 +75,18 @@ public class TickLabelPositionConverter : IMultiValueConverter
         return double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out result) ||
                double.TryParse(text, NumberStyles.Float, CultureInfo.CurrentCulture, out result);
     }
-}
+
+    private static bool TryParseTimecode(string text, out double result)
+    {
+        try
+        {
+            result = OneColumnEncoder.Pipeline.EncodingPipeline.ParseTimestamp(text).TotalSeconds;
+            return true;
+        }
+        catch
+        {
+            result = 0d;
+            return false;
+        }
+    }
+}
