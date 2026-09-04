@@ -22,7 +22,7 @@ public sealed class SrcQueueItemVM : BaseVM
     {
         FilePath = filePath;
         Name = Path.GetFileName(filePath);
-        OnlyPath = Path.GetDirectoryName(filePath) ?? filePath; // This fallback is dumb but compiler likes it this way
+        OnlyPath = Path.GetDirectoryName(filePath) ?? filePath;
         SizeBytes = GetFileSize(filePath);
         P1Text = SizeBytes >= 0
             ? $"{FormatFileSize(SizeBytes)} | {OnlyPath}"

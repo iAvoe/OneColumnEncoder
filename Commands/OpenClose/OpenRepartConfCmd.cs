@@ -1,3 +1,4 @@
+using System.IO;
 using OneColumnEncoder.ChapterTool;
 using OneColumnEncoder.RepartManagement;
 
@@ -36,7 +37,7 @@ public sealed class OpenRepartConfCmd(
             {
                 initialPlan = importAsChapterFile
                     ? await ImportChapterFolderAsync()
-                    : await ImportFolderAsync();
+                    : await ImportFilesAsync();
             }
             finally
             {
@@ -53,26 +54,31 @@ public sealed class OpenRepartConfCmd(
     }
 
     /// <summary>
-    /// Lets the user pick a source folder, runs compatibility analysis, and shows an import summary.
+    /// Lets the user pick source files, runs compatibility analysis, and shows an import summary.
     /// </summary>
     /// <returns>The analyzed plan, or null if cancelled or no plan could be produced.</returns>
-    private async Task<RepartPlanM?> ImportFolderAsync()
+    private async Task<RepartPlanM?> ImportFilesAsync()
     {
-        OpenFolderDialog dialog = new()
+        OpenFileDialog dialog = new()
         {
-            Title = RepartLangProvider.Current["SelectFolder"],
-            Multiselect = false
+            Title = UILangProvider.Current["SourceQueue.SelectFilesTitle"],
+            Filter = new SrcFilePickerLangProvider(UILangProvider.Current.LanguageCode).VideoFilter,
+            Multiselect = true,
+            CheckFileExists = true,
+            CheckPathExists = true
         };
+
         if (dialog.ShowDialog(Application.Current.MainWindow) != true) return null;
-        string[] folderPaths = SrcFilePicker.GetVideoFilesInFolder(dialog.FolderName);
-        if (folderPaths.Length < 2)
+
+        string[] filePaths = GetVideoFiles(dialog.FileNames);
+        if (filePaths.Length < 2)
         {
-            new OpenErrModalCmd(ModalNavS, RepartConfVM.WindowTitleText, RepartLangProvider.Current.MinFolderSources).Execute(null);
+            new OpenErrModalCmd(ModalNavS, RepartConfVM.WindowTitleText, RepartLangProvider.Current["MinSourcesRequired"]).Execute(null);
             return null;
         }
 
-        folderPaths = OpenQueueEditorCmd.EditFilePaths(ModalNavS, folderPaths, minimumItemCount: 2);
-        RepartAnalysisResult? result = await RunAnalysisAsync(folderPaths);
+        filePaths = OpenQueueEditorCmd.EditFilePaths(ModalNavS, filePaths, minimumItemCount: 2);
+        RepartAnalysisResult? result = await RunAnalysisAsync(filePaths);
         if (result?.Plan == null) return null;
 
         new OpenSuccModalCmd(
@@ -83,6 +89,18 @@ public sealed class OpenRepartConfCmd(
                 result.Plan.Sources.Count,
                 result.Excluded.Count)).Execute(null);
         return result.Plan;
+    }
+
+    private static string[] GetVideoFiles(IEnumerable<string> filePaths)
+    {
+        HashSet<string> extensions = new(
+            SrcFilePickerLangProvider.VideoExtensions
+                .Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Select(extension => extension.TrimStart('*').ToLowerInvariant()),
+            StringComparer.OrdinalIgnoreCase);
+
+        return [.. filePaths.Where(filePath =>
+            extensions.Contains((Path.GetExtension(filePath) ?? string.Empty).ToLowerInvariant()))];
     }
 
     /// <summary>

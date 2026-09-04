@@ -105,7 +105,7 @@ jobs:
           $body += "Follow this tutorial to get tools (pipe upstream / filtering tools & video encoders) tailored for your use case | 你可以根据此教程来获取合适的工具（管道上游程序/滤镜工具与视频编码器）:`n"
           $body += "- [Encoding Tools Download Tutorial | 编码工具下载教程](https://github.com/iAvoe/encoding-tools-download-tutorial)`n`n"
           $body += "Or, TLDR; and use tools provided in downloaded package (not recommended but it works) | 或者着急要用的话，也可以无视上述教程，下载并直接使用附带的工具（不推荐但可以）"
-          $body += "`n`n"
+          $body += "`n"
 
           $body += "`n"
           $body += "> [!NOTE]`n"
