@@ -1,5 +1,3 @@
-using OneColumnEncoder.ToolManagement;
-
 namespace OneColumnEncoder.Commands;
 
 public class ReplaceToolCmd(ToolItemCardVM item, AppDataM appDataM, ModalNavS modalNavS, Action? afterReplace = null) : AsyncBaseCmd
@@ -25,7 +23,7 @@ public class ReplaceToolCmd(ToolItemCardVM item, AppDataM appDataM, ModalNavS mo
         string? version;
         try
         {
-            version = await ToolVersionDetect.TryDetectAsync(def.ExeName, filePath);
+            version = await ToolManagementProviderM.TryDetectAsync(def.ExeName, filePath);
         }
         catch (ToolVersionDetectTimeoutException)
         {
@@ -36,7 +34,7 @@ public class ReplaceToolCmd(ToolItemCardVM item, AppDataM appDataM, ModalNavS mo
             return;
         }
 
-        await ToolVersionDetect.DetectAndStoreVspipeY4mArgAsync(
+        await ToolManagementProviderM.DetectAndStoreVspipeY4mArgAsync(
             def.ExeName,
             filePath,
             y4mArg => _appDataM.Tools.VspipeY4mArg = y4mArg);

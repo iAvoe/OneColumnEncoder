@@ -1,8 +1,8 @@
 using System.Text.Json.Nodes;
 
-namespace OneColumnEncoder.Json;
+namespace OneColumnEncoder.Models;
 
-internal static class JsonElementHelper
+internal static class JsonProviderM
 {
     public static string? TryGetString(JsonElement element, string propertyName)
     {
@@ -15,7 +15,6 @@ internal static class JsonElementHelper
         };
     }
 
-    // Tries to get an integer. Returns false if failed, otherwise returns true
     public static bool TryGetInt(JsonElement element, string propertyName, out int value)
     {
         value = 0;
@@ -59,6 +58,7 @@ internal static class JsonElementHelper
 
         return null;
     }
+
     private static bool IsFrameCountTagName(string name) =>
         name.Equals("NUMBER_OF_FRAMES", StringComparison.OrdinalIgnoreCase) ||
         name.StartsWith("NUMBER_OF_FRAMES-", StringComparison.OrdinalIgnoreCase) &&

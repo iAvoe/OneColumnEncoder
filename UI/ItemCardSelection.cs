@@ -1,5 +1,3 @@
-using OneColumnEncoder.ToolManagement;
-
 namespace OneColumnEncoder.UI;
 
 public static class ItemCardSelection
@@ -73,11 +71,11 @@ public static class ItemCardSelection
             refreshSelectedSourceStatus();
         }
 
-        ToolCompatibility.RefreshDependencySelectionState(
+        ToolManagementProviderM.RefreshDependencySelectionState(
             upstreamsZone, dependenciesZone, updateEncStartButtonsState);
-        ToolCompatibility.RefreshSrcSelectState(
+        ToolManagementProviderM.RefreshSrcSelectState(
             upstreamsZone, scriptSrcImportZone, refreshSelectedSourceStatus);
-        ToolCompatibility.RefreshVideoSrcSelectState(
+        ToolManagementProviderM.RefreshVideoSrcSelectState(
             upstreamsZone, videoSrcImportZone, hasFfprobe);
     }
 

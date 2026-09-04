@@ -3,7 +3,7 @@ using OneColumnEncoder.Models.Encoding;
 using OneColumnEncoder.Models;
 using System.IO;
 using System.Text.RegularExpressions;
-using static OneColumnEncoder.Json.JsonElementHelper;
+using static OneColumnEncoder.Models.JsonProviderM;
 
 namespace OneColumnEncoder.Pipeline;
 

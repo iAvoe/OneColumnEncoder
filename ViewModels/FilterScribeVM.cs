@@ -1,4 +1,3 @@
-using OneColumnEncoder.Hardware;
 using OneColumnEncoder.Models.Analysis;
 using OneColumnEncoder.ScriptGeneration;
 using System.IO;
@@ -359,7 +358,7 @@ public class FilterScribeVM : BaseVM
     {
         get
         {
-            if (!OpenCLDetector.IsOpenCLAvailable()) return $"{LangProviderBase.NAText} (!OpenCL)";
+            if (!LibImportProviderM.IsOpenCLAvailable) return $"{LangProviderBase.NAText} (!OpenCL)";
 
             // isSrcYuvRGBOrGray
             if (!FFProbePixelFormatRules.IsYuvRgbOrGray(_colorSpaceAnalysis.PixelFormat))
@@ -512,7 +511,7 @@ public class FilterScribeVM : BaseVM
     public bool CanInsertVapourSynthVszipclFilter => CanUseVapourSynthVszipcl;
 
     private bool CanUseVapourSynthVszipcl =>
-        OpenCLDetector.IsOpenCLAvailable()
+        LibImportProviderM.IsOpenCLAvailable
         && FFProbePixelFormatRules.IsYuvRgbOrGray(_colorSpaceAnalysis.PixelFormat);
 
     public List<string> ScaleTickLabels =>

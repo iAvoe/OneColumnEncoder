@@ -2,7 +2,7 @@ using System.IO;
 using System.Security.Cryptography;
 using OneColumnEncoder.Models;
 using System.Text.RegularExpressions;
-using static OneColumnEncoder.Json.JsonElementHelper;
+using static OneColumnEncoder.Models.JsonProviderM;
 
 namespace OneColumnEncoder.RepartManagement;
 

@@ -9,6 +9,18 @@ public static partial class LibImportProviderM
     private const uint TH32CS_SNAPPROCESS = 0x00000002;
     private static readonly IntPtr InvalidHandleValue = new(-1);
 
+    private static readonly Lazy<bool> _isOpenCLAvailable = new(CheckOpenCLAvailability);
+
+    public static bool IsOpenCLAvailable => _isOpenCLAvailable.Value;
+
+    private static bool CheckOpenCLAvailability()
+    {
+        if (!OperatingSystem.IsWindows())
+            return false;
+
+        return TryGetOpenClPlatformCount(out uint platformCount) && platformCount > 0;
+    }
+
     public static int CompareLogical(string? x, string? y)
     {
         string xName = Path.GetFileName(x ?? string.Empty);

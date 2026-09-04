@@ -9,7 +9,7 @@ using OneColumnEncoder.ToolManagement;
 using OneColumnEncoder.Validation;
 using System.Collections.Specialized;
 using System.IO;
-using static OneColumnEncoder.Json.JsonElementHelper;
+using static OneColumnEncoder.Models.JsonProviderM;
 // Important: No string matching. Expect all strings changes eventually, match the key instead
 namespace OneColumnEncoder.ViewModels;
 
@@ -543,7 +543,7 @@ public class MainVM : BaseVM
             () => GetCurrentVideoSrcPath(),
             () => ActiveScriptSrcImportZone[0],
             () => ActiveScriptSrcImportZone[1],
-            () => SrcFileKindResolver.GetPreferredScriptSrcKind(UpstreamsZone),
+            () => FileManagementProviderM.GetPreferredScriptSrcKind(UpstreamsZone),
             GetSelectedUpstreamExeName,
             OnSrcImported,
             args => _scriptScribeFFmpegFilterArgs = args ?? string.Empty,
@@ -884,11 +884,11 @@ public class MainVM : BaseVM
         RefreshVspipeAvailability();
         RefreshImportedToolsChecklist();
         // Only mark IsCancel for auto-selected items, user manual selection won't be reverted
-        ToolCompatibility.RefreshDependencySelectionState(
+        ToolManagementProviderM.RefreshDependencySelectionState(
             UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
-        ToolCompatibility.RefreshSrcSelectState(
+        ToolManagementProviderM.RefreshSrcSelectState(
             UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSrcStatus());
-        ToolCompatibility.RefreshVideoSrcSelectState(
+        ToolManagementProviderM.RefreshVideoSrcSelectState(
             UpstreamsZone, VideoSrcImportZone, HasImportedFfprobe());
 
         // Revert the selection for IsCancel caused by "Auto Selection".
@@ -922,11 +922,11 @@ public class MainVM : BaseVM
         if (!reverted) return;
 
         RefreshImportedToolPickedStatus(zone);
-        ToolCompatibility.RefreshDependencySelectionState(
+        ToolManagementProviderM.RefreshDependencySelectionState(
             UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
-        ToolCompatibility.RefreshSrcSelectState(
+        ToolManagementProviderM.RefreshSrcSelectState(
             UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSrcStatus());
-        ToolCompatibility.RefreshVideoSrcSelectState(
+        ToolManagementProviderM.RefreshVideoSrcSelectState(
             UpstreamsZone, VideoSrcImportZone, HasImportedFfprobe());
     }
 
@@ -957,11 +957,11 @@ public class MainVM : BaseVM
         RefreshVspipeAvailability();
         RefreshImportedToolsChecklist();
         RefreshEncTermsState();
-        ToolCompatibility.RefreshDependencySelectionState(
+        ToolManagementProviderM.RefreshDependencySelectionState(
             UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
-        ToolCompatibility.RefreshSrcSelectState(
+        ToolManagementProviderM.RefreshSrcSelectState(
             UpstreamsZone, ActiveScriptSrcImportZone, () => RefreshSelectedSrcStatus());
-        ToolCompatibility.RefreshVideoSrcSelectState(
+        ToolManagementProviderM.RefreshVideoSrcSelectState(
             UpstreamsZone, VideoSrcImportZone, HasImportedFfprobe());
     }
 
@@ -1478,7 +1478,7 @@ public class MainVM : BaseVM
         string? upstreamExeName = upstream == null
             ? null
             : ToolCatalogProviderM.ResolveExeFromCard(upstream);
-        return SrcFileKindResolver.IsQueueRouteSupportedUpstream(upstreamExeName);
+        return FileManagementProviderM.IsQueueRouteSupportedUpstream(upstreamExeName);
     }
 
     private bool IsConcatRouteSupported()
@@ -1487,7 +1487,7 @@ public class MainVM : BaseVM
         string? upstreamExeName = upstream == null
             ? null
             : ToolCatalogProviderM.ResolveExeFromCard(upstream);
-        return SrcFileKindResolver.IsConcatRouteSupportedUpstream(upstreamExeName);
+        return FileManagementProviderM.IsConcatRouteSupportedUpstream(upstreamExeName);
     }
 
     private bool IsRepartRouteSupported()
@@ -1496,7 +1496,7 @@ public class MainVM : BaseVM
         string? upstreamExeName = upstream == null
             ? null
             : ToolCatalogProviderM.ResolveExeFromCard(upstream);
-        return SrcFileKindResolver.IsRepartRouteSupportedUpstream(upstreamExeName)
+        return FileManagementProviderM.IsRepartRouteSupportedUpstream(upstreamExeName)
             && !string.IsNullOrWhiteSpace(_appDataM.Tools.FFmpegPath);
     }
 
@@ -1555,7 +1555,7 @@ public class MainVM : BaseVM
         ActiveScriptSrcImportZone.Any(t =>
             t.IsSelected &&
             !string.IsNullOrWhiteSpace(t.P2TextData) &&
-            SrcFileKindResolver.ResolveSrcFileKind(t.Name) == expectedKind);
+            FileManagementProviderM.ResolveSrcFileKind(t.Name) == expectedKind);
 
     private SrcFileKind? GetExpectedScriptSrcKindForSelectedUpstream()
     {
@@ -1600,7 +1600,7 @@ public class MainVM : BaseVM
     {
         ToolItemCardVM? svfiIni = ActiveScriptSrcImportZone.FirstOrDefault(t =>
             t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData) &&
-            SrcFileKindResolver.ResolveSrcFileKind(t.Name) == SrcFileKind.SvfiIni);
+            FileManagementProviderM.ResolveSrcFileKind(t.Name) == SrcFileKind.SvfiIni);
         return svfiIni?.P2TextData ?? string.Empty;
     }
 
@@ -1615,7 +1615,7 @@ public class MainVM : BaseVM
             : SrcFileKind.AviSynthScript;
 
         ToolItemCardVM? source = ActiveScriptSrcImportZone.FirstOrDefault(t =>
-            SrcFileKindResolver.ResolveSrcFileKind(t.Name) == kind && !string.IsNullOrWhiteSpace(t.P2TextData));
+            FileManagementProviderM.ResolveSrcFileKind(t.Name) == kind && !string.IsNullOrWhiteSpace(t.P2TextData));
         return source?.P2TextData ?? string.Empty;
     }
 
@@ -1638,7 +1638,7 @@ public class MainVM : BaseVM
 
     private bool ShouldSelectImportedScriptSource(SrcFileKind kind)
     {
-        SrcFileKind? preferredKind = SrcFileKindResolver.GetPreferredScriptSrcKind(UpstreamsZone);
+        SrcFileKind? preferredKind = FileManagementProviderM.GetPreferredScriptSrcKind(UpstreamsZone);
         return preferredKind == null || kind == preferredKind.Value;
     }
 
@@ -1722,7 +1722,7 @@ public class MainVM : BaseVM
             return;
         }
 
-        SrcFileKind kind = SrcFileKindResolver.ResolveSrcFileKind(item.Name);
+        SrcFileKind kind = FileManagementProviderM.ResolveSrcFileKind(item.Name);
         if (QueueScriptSrcImportZone.Contains(item))
         {
             item.R1Command = new BrowseSrcScriptQueueCmd(item, kind, _appDataM, BrowseHistoryKeys.ForScriptQueue(kind), OnSrcScriptQueueImported, GetCurrentSrcImportPath);
@@ -1901,7 +1901,7 @@ public class MainVM : BaseVM
                 avs2pipemod.IsSelected = false;
             }
 
-            ToolCompatibility.RefreshDependencySelectionState(
+            ToolManagementProviderM.RefreshDependencySelectionState(
                 UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
         }
     }
@@ -2332,10 +2332,10 @@ public class MainVM : BaseVM
         ActiveScriptSrcImportZone = route == SrcRouteKind.Queue
             ? QueueScriptSrcImportZone
             : ScriptSrcImportZone;
-        ToolCompatibility.RefreshSrcSelectState(
+        ToolManagementProviderM.RefreshSrcSelectState(
             UpstreamsZone, ActiveScriptSrcImportZone, () => { });
         RefreshScriptSourceEnabledState();
-        ToolCompatibility.RefreshVideoSrcSelectState(
+        ToolManagementProviderM.RefreshVideoSrcSelectState(
             UpstreamsZone, VideoSrcImportZone, HasImportedFfprobe());
         RefreshOutputSettingCommand();
 
@@ -2364,7 +2364,7 @@ public class MainVM : BaseVM
         ToolItemCardVM? target = ActiveScriptSrcImportZone.FirstOrDefault(t =>
             t.IsEnabled &&
             !string.IsNullOrWhiteSpace(t.P2TextData) &&
-            SrcFileKindResolver.ResolveSrcFileKind(t.Name) == expectedKind.Value);
+            FileManagementProviderM.ResolveSrcFileKind(t.Name) == expectedKind.Value);
         if (target == null) return;
 
         foreach (ToolItemCardVM source in ActiveScriptSrcImportZone)
@@ -2461,7 +2461,7 @@ public class MainVM : BaseVM
         {
             scriptKind = SrcFileKind.VapourSynthScript;
             ToolItemCardVM? vpyItem = ActiveScriptSrcImportZone.FirstOrDefault(t =>
-                t.IsSelected && SrcFileKindResolver.ResolveSrcFileKind(t.Name) == scriptKind && !string.IsNullOrWhiteSpace(t.P2TextData));
+                t.IsSelected && FileManagementProviderM.ResolveSrcFileKind(t.Name) == scriptKind && !string.IsNullOrWhiteSpace(t.P2TextData));
             if (vpyItem == null) return null;
             scriptDir = vpyItem.P2TextData;
         }
@@ -2470,7 +2470,7 @@ public class MainVM : BaseVM
         {
             scriptKind = SrcFileKind.AviSynthScript;
             ToolItemCardVM? avsItem = ActiveScriptSrcImportZone.FirstOrDefault(t =>
-                t.IsSelected && SrcFileKindResolver.ResolveSrcFileKind(t.Name) == scriptKind && !string.IsNullOrWhiteSpace(t.P2TextData));
+                t.IsSelected && FileManagementProviderM.ResolveSrcFileKind(t.Name) == scriptKind && !string.IsNullOrWhiteSpace(t.P2TextData));
             if (avsItem == null) return null;
             scriptDir = avsItem.P2TextData;
         }
@@ -2593,7 +2593,7 @@ public class MainVM : BaseVM
         if (upstreamExeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase))
         {
             ToolItemCardVM? vpyItem = ActiveScriptSrcImportZone.FirstOrDefault(t =>
-                t.IsSelected && SrcFileKindResolver.ResolveSrcFileKind(t.Name) == SrcFileKind.VapourSynthScript && !string.IsNullOrWhiteSpace(t.P2TextData));
+                t.IsSelected && FileManagementProviderM.ResolveSrcFileKind(t.Name) == SrcFileKind.VapourSynthScript && !string.IsNullOrWhiteSpace(t.P2TextData));
             if (vpyItem == null) return null;
             inputPath = vpyItem.P2TextData;
         }
@@ -2601,7 +2601,7 @@ public class MainVM : BaseVM
                  upstreamExeName.Equals("avs2pipemod.exe", StringComparison.OrdinalIgnoreCase))
         {
             ToolItemCardVM? avsItem = ActiveScriptSrcImportZone.FirstOrDefault(t =>
-                t.IsSelected && SrcFileKindResolver.ResolveSrcFileKind(t.Name) == SrcFileKind.AviSynthScript && !string.IsNullOrWhiteSpace(t.P2TextData));
+                t.IsSelected && FileManagementProviderM.ResolveSrcFileKind(t.Name) == SrcFileKind.AviSynthScript && !string.IsNullOrWhiteSpace(t.P2TextData));
             if (avsItem == null) return null;
             inputPath = avsItem.P2TextData;
         }
@@ -3089,7 +3089,7 @@ public class MainVM : BaseVM
 
         if (exeName.Equals("vspipe.exe", StringComparison.OrdinalIgnoreCase))
         {
-            await ToolVersionDetect.DetectAndStoreVspipeY4mArgAsync(
+            await ToolManagementProviderM.DetectAndStoreVspipeY4mArgAsync(
                 exeName,
                 filePath,
                 y4mArg => _appDataM.Tools.VspipeY4mArg = y4mArg);
@@ -3303,7 +3303,7 @@ public class MainVM : BaseVM
             ToolDefinitionProviderM.IsImportedTool(t, "vspipe.exe"));
         if (vspipe == null) return;
 
-        vspipe.IsEnabled = ToolVersionDetect.HasValidVspipeY4mArg(
+        vspipe.IsEnabled = ToolManagementProviderM.HasValidVspipeY4mArg(
             _appDataM.Tools.VspipePath,
             _appDataM.Tools.VspipeY4mArg);
     }
@@ -3324,7 +3324,7 @@ public class MainVM : BaseVM
             if (IsSrcConcatItem(item)) continue;
             if (IsSrcRepartItem(item)) continue;
 
-            SrcFileKind fileKind = SrcFileKindResolver.ResolveSrcFileKind(item.Name);
+            SrcFileKind fileKind = FileManagementProviderM.ResolveSrcFileKind(item.Name);
             item.P1TextData = SrcFilePicker.GetPrimaryText(fileKind, item.P2TextData);
         }
     }
@@ -3337,7 +3337,7 @@ public class MainVM : BaseVM
         {
             if (item == null) continue;
             if (string.IsNullOrWhiteSpace(item.P2TextData)) continue;
-            SrcFileKind fileKind = SrcFileKindResolver.ResolveSrcFileKind(item.Name);
+            SrcFileKind fileKind = FileManagementProviderM.ResolveSrcFileKind(item.Name);
             string[] filePaths = SrcFilePicker.GetSourceFilesInFolder(item.P2TextData, fileKind);
             item.P1TextData = SrcQueue.GetQueueP1Text(
                 [.. filePaths.Select(Path.GetFileName).Where(name => !string.IsNullOrWhiteSpace(name)).Select(name => name!)]);

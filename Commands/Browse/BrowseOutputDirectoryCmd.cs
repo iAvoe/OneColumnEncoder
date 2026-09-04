@@ -7,7 +7,7 @@ public class BrowseOutputDirectoryCmd(ToolItemCardVM item) : BrowseCmdBase(item)
         OpenFolderDialog dialog = new()
         {
             Title = FilenameScribeVM.WindowTitle,
-            InitialDirectory = OutputPath.GetInitialDirectory(_item.P2TextData)
+            InitialDirectory = FileManagementProviderM.GetInitialDirectory(_item.P2TextData)
         };
 
         if (ShowDialog(dialog) != true) return;

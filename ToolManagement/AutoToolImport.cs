@@ -210,7 +210,7 @@ public static class AutoToolImport
         string? version;
         try
         {
-            version = await ToolVersionDetect.TryDetectAsync(exeName, filePath);
+            version = await ToolManagementProviderM.TryDetectAsync(exeName, filePath);
         }
         catch (ToolVersionDetectTimeoutException) { return null; }
 

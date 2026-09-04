@@ -1,4 +1,3 @@
-using OneColumnEncoder.ToolManagement;
 using System.IO;
 using static OneColumnEncoder.Models.ConfirmationProviderM;
 
@@ -41,7 +40,7 @@ public class ImportToolCmd(DropdownMenuVM dropdownVM,
             string? version;
             try
             {
-                version = await ToolVersionDetect.TryDetectAsync(toolToImport, filePath);
+                version = await ToolManagementProviderM.TryDetectAsync(toolToImport, filePath);
             }
             catch (ToolVersionDetectTimeoutException)
             {

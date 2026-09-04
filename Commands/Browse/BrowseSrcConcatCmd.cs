@@ -25,7 +25,7 @@ public class BrowseSrcConcatCmd(
         // Use the shared video source filter so concat import only presents supported media files.
         string initialDirectory = _browseKey != null && _appDataM != null
             ? BrowseHistory.ResolveInitialDirectory(_appDataM, _browseKey, _item.P2TextData)
-            : OutputPath.GetInitialDirectory(_item.P2TextData);
+            : FileManagementProviderM.GetInitialDirectory(_item.P2TextData);
 
         OpenFileDialog dialog = new()
         {

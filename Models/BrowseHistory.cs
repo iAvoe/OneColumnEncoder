@@ -60,7 +60,7 @@ public static class BrowseHistory
         if (!string.IsNullOrWhiteSpace(historyDirectory) && Directory.Exists(historyDirectory))
             return historyDirectory;
 
-        return OutputPath.GetInitialDirectory(fallbackPath);
+        return FileManagementProviderM.GetInitialDirectory(fallbackPath);
     }
 
     public static void Remember(AppDataM appData, string key, string fileOrFolderPath)

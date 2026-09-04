@@ -2,7 +2,7 @@ using OneColumnEncoder.Models.Analysis;
 using OneColumnEncoder.Models.Lang;
 using System.IO;
 using System.Text.Json.Nodes;
-using static OneColumnEncoder.Json.JsonElementHelper;
+using static OneColumnEncoder.Models.JsonProviderM;
 
 namespace OneColumnEncoder.Models;
 

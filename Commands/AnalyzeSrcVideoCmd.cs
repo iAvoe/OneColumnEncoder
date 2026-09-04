@@ -3,7 +3,7 @@ using OneColumnEncoder.Models.Analysis;
 using System.IO;
 using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
-using static OneColumnEncoder.Json.JsonElementHelper;
+using static OneColumnEncoder.Models.JsonProviderM;
 
 namespace OneColumnEncoder.Commands;
 

@@ -47,7 +47,7 @@ public partial class FilenameScribeVM : BaseVM
     {
         _closeAction = closeAction;
         _outputSettingItem = outputSettingItem;
-        _videoFilename = OutputPath.GetInitialFilename(outputSettingItem.P1TextData, outputSettingItem.P2TextData);
+        _videoFilename = FileManagementProviderM.GetInitialFilename(outputSettingItem.P1TextData, outputSettingItem.P2TextData);
         CloseCmd = new CloseModalCmd(closeAction);
         BuildChecklist();
         BuildButtonGroup();

@@ -22,7 +22,6 @@ public static partial class SrcFilePicker
     {
         string initialDirectory = ResolveInitialDirectory(foundPath, currentPath);
         string filter = GetFilter(fileKind);
-
         return SelectFile(windowTitle, filter, initialDirectory);
     }
 
