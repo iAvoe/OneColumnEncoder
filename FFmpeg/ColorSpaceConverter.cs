@@ -83,15 +83,20 @@ public static class ColorSpaceConverter
         try
         {
             using JsonDocument doc = JsonDocument.Parse(ffprobeJson);
-            if (!FrameRate.TryGetFirstVideoStream(doc.RootElement, out JsonElement stream))
-                return CreateResult(null, null, null, null, null, ColorSpaceStrategy.Unknown, FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.NoVideoStream"]);
-
-            return Analyze(stream);
+            return AnalyzeRoot(doc.RootElement);
         }
         catch
         {
             return CreateResult(null, null, null, null, null, ColorSpaceStrategy.Unknown, FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.FailedToParse"]);
         }
+    }
+
+    public static ColorSpaceAnalysisM AnalyzeRoot(JsonElement root)
+    {
+        if (!FrameRate.TryGetFirstVideoStream(root, out JsonElement stream))
+            return CreateResult(null, null, null, null, null, ColorSpaceStrategy.Unknown, FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.NoVideoStream"]);
+
+        return Analyze(stream);
     }
 
     public static ColorSpaceAnalysisM Analyze(JsonElement stream)

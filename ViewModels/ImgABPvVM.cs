@@ -138,7 +138,7 @@ public class ImgABPvVM : BaseVM
         string? ffmpegPath,
         string? sourceVideoPath,
         string? sourceFfprobeJson,
-        Func<long>? getTotalFrames = null,
+        Func<JsonElement, long>? getTotalFrames = null,
         IReadOnlyList<PreviewSourceInfo>? previewSources = null)
     {
         _encoderConfVM = encoderConfVM;
@@ -169,12 +169,22 @@ public class ImgABPvVM : BaseVM
             new ActionCmd(_ => SetDisplayMode(PreviewDisplayMode.HighHdrToSdr)));
 
         bool hasSourceStats = !string.IsNullOrWhiteSpace(sourceFfprobeJson);
-        _colorSpaceAnalysis = ColorSpaceConverter.Analyze(sourceFfprobeJson);
-        FFProbeSrcStats sourceStats = FFProbeSourceStatsReader.Read(sourceFfprobeJson ?? string.Empty);
+        using JsonDocument? sourceDocument = hasSourceStats ? JsonDocument.Parse(sourceFfprobeJson!) : null;
+        JsonElement sourceRoot = sourceDocument?.RootElement ?? default;
+        _colorSpaceAnalysis = hasSourceStats
+            ? ColorSpaceConverter.AnalyzeRoot(sourceRoot)
+            : ColorSpaceConverter.Analyze(null);
+        FFProbeSrcStats sourceStats = hasSourceStats
+            ? FFProbeSourceStatsReader.Read(sourceRoot)
+            : FFProbeSourceStatsReader.Read(string.Empty);
         _frameRate = sourceStats.FrameRate > 0d ? sourceStats.FrameRate : 30d;
         long totalFrames = _previewSources.Length > 0
             ? _previewSources.Sum(source => Math.Max(0, source.FrameCount))
-            : getTotalFrames?.Invoke() ?? EncodingPipeline.GetSourceTotalFrames(sourceFfprobeJson) ?? 0;
+            : getTotalFrames != null
+                ? getTotalFrames.Invoke(sourceRoot)
+                : hasSourceStats
+                    ? EncodingPipeline.GetSourceTotalFrames(sourceRoot) ?? 0
+                    : 0;
         double previewDurationSeconds = _previewSources.Length > 0
             ? _previewSources.Sum(source => source.DurationSeconds > 0d
                 ? source.DurationSeconds

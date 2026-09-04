@@ -8,7 +8,7 @@ public class OpenEncoderConfCmd(ModalNavS modalNavS,
     Func<string?>? getFFmpegPath = null,
     Func<string?>? getSourceVideoPath = null,
     Func<string?>? getSrcFFprobeJson = null,
-    Func<long>? getTotalFrames = null,
+    Func<JsonElement, long>? getTotalFrames = null,
     Func<IReadOnlyList<PreviewSourceInfo>>? getPreviewSources = null) : OpenCloseBase(modalNavS)
 {
     private readonly ToolItemCardVM? _compressionParamsItem = compressionParamsItem;

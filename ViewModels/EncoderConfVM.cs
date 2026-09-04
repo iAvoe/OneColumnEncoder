@@ -279,7 +279,7 @@ public class EncoderConfVM : BaseVM
         string? ffmpegPath,
         string? sourceVideoPath,
         string? sourceFfprobeJson,
-        Func<long>? getTotalFrames = null,
+        Func<JsonElement, long>? getTotalFrames = null,
         IReadOnlyList<PreviewSourceInfo>? previewSources = null)
     {
         _model = EncoderConfM.Load();

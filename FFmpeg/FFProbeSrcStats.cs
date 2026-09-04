@@ -41,7 +41,18 @@ public static class FFProbeSourceStatsReader
         try
         {
             using JsonDocument document = JsonDocument.Parse(rawJson);
-            JsonElement root = document.RootElement;
+            return Read(document.RootElement);
+        }
+        catch
+        {
+            return CreateFallback();
+        }
+    }
+
+    public static FFProbeSrcStats Read(JsonElement root)
+    {
+        try
+        {
             if (!FrameRate.TryGetFirstVideoStream(root, out JsonElement stream))
                 return CreateFallback();
 
@@ -63,10 +74,7 @@ public static class FFProbeSourceStatsReader
                 GetFieldOrderKind(stream),
                 GetFrameRateKind(stream));
         }
-        catch
-        {
-            return CreateFallback();
-        }
+        catch { return CreateFallback(); }
     }
 
     private static FFProbeSrcStats CreateFallback() =>

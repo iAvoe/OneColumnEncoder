@@ -639,13 +639,25 @@ public static partial class EncodingPipeline
         try
         {
             using JsonDocument document = JsonDocument.Parse(sourceFfprobeJson);
-            if (!FrameRate.TryGetFirstVideoStream(document.RootElement, out JsonElement stream)) return null;
+            return GetSourceTotalFrames(document.RootElement, concatTotalFrames);
+        }
+        catch { return null; }
+    }
+
+    public static long? GetSourceTotalFrames(JsonElement root, long? concatTotalFrames = null)
+    {
+        if (concatTotalFrames < 0) return null;
+        if (concatTotalFrames > 0) return concatTotalFrames.Value;
+
+        try
+        {
+            if (!FrameRate.TryGetFirstVideoStream(root, out JsonElement stream)) return null;
 
             long? frameCount = TryGetFrameCount(stream);
             if (frameCount is > 0) return frameCount.Value;
 
             double? durationSeconds = TryGetDouble(stream, "duration")
-                ?? (document.RootElement.TryGetProperty("format", out JsonElement format)
+                ?? (root.TryGetProperty("format", out JsonElement format)
                     ? TryGetDouble(format, "duration")
                     : null);
             if (durationSeconds is null || durationSeconds <= 0d) return null;
