@@ -1,5 +1,6 @@
 using OneColumnEncoder.Models.Analysis;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace OneColumnEncoder.Commands.OpenClose;
 
@@ -22,18 +23,20 @@ public class OpenRawAnalysisCmd(
         try
         {
             string json = GetRawJson();
-            string sourceName = string.IsNullOrWhiteSpace(_analysis.SrcPath)
-                ? "RawAnalysis"
-                : Path.GetFileNameWithoutExtension(_analysis.SrcPath);
+            string sourceName = SanitizeFileName(
+                Path.GetFileNameWithoutExtension(_analysis.SrcPath));
+            if (string.IsNullOrWhiteSpace(sourceName))
+                sourceName = "RawAnalysis";
             string tempFile = Path.Combine(Path.GetTempPath(), $"{sourceName}_RawAnalysis.json");
             File.WriteAllText(tempFile, json);
+
             string editorPath = string.IsNullOrWhiteSpace(_appConfM.TextEditor.TextEditorPath)
                 ? "notepad.exe"
                 : _appConfM.TextEditor.TextEditorPath;
             Process.Start(new ProcessStartInfo
             {
                 FileName = editorPath,
-                Arguments = tempFile,
+                Arguments = $"\"{tempFile}\"",
                 UseShellExecute = true
             });
         }
@@ -56,13 +59,16 @@ public class OpenRawAnalysisCmd(
     {
         try
         {
-            RawAnalysisBatchM data = JsonSerializer.Deserialize<RawAnalysisBatchM>(batchRawJson)
+            RawAnalysisBatchM data =
+                JsonSerializer.Deserialize<RawAnalysisBatchM>(batchRawJson)
                 ?? throw new InvalidOperationException("Failed to parse BatchRawJson.");
             return JsonSerializer.Serialize(data, FFProbeJsonFormatting.Options);
         }
-        catch
-        {
-            return batchRawJson;
-        }
+        catch { return batchRawJson; }
     }
+
+    private static string SanitizeFileName(string? name) =>
+        string.IsNullOrWhiteSpace(name)
+            ? string.Empty
+            : Regex.Replace(name, $"[{Regex.Escape(new string(Path.GetInvalidFileNameChars()))}]", "_");
 }
