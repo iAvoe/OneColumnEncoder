@@ -79,7 +79,6 @@ public class UILangProvider : LangProviderBase
 
             // Tool card captions
             ["ToolField.Version"] = "Version",
-            ["ToolField.Path"] = "Path",
             ["ToolField.Name"] = "Name",
             ["ToolField.Mode"] = "Mode",
             ["ToolField.FileName"] = "Filename",
@@ -103,15 +102,6 @@ public class UILangProvider : LangProviderBase
             ["Tool.Enc.EncParams"] = "Encode Settings",
             ["Tool.Enc.MuxTracks"] = "Add Subtitles",
 
-            // Source queue card
-            ["SourceQueue.Sequence"] = "Seq.",
-            ["SourceQueue.SelectFolderTitle"] = "Select video source queue folder",
-            ["SourceQueue.Analyzed"] = "Queue source analysis completed. Filtered out {0} video(s) due to excessive differences.\n\nQueue data JSON:\n{1}\n\nExclusion list:\n{2}",
-            ["SourceQueue.AnalyzedNoEx"] = "Queue source analyzed. No videos were filtered out.\n\nQueue data JSON:\n{0}",
-            ["SourceQueue.CopyQueueJsonPath"] = "Copy Queue JSON Path",
-            ["SourceQueue.CopyExcludedJsonPath"] = "Copy Exclusion JSON Path",
-            ["SourceQueue.OpenQueueJson"] = "Open Queue JSON",
-            ["SourceQueue.OpenExcludedJson"] = "Open Exclusion JSON",
             ["SourceQueue.FilterModeTitle"] = "Execute Queue Weighted Filter?",
             ["SourceQueue.FilterModeMessage"] = "Please choose by the structure of queue\nConfirm: consistent sources in similar duration\nCancel: Exc. BDMV/M3U intros, trailers by weighted voting\nA first-stream comparison exclusion will run regardlessly to ensure format consistency\n\nFor BDMV, use BDInfo/ChapterTool to deal with under/over-segmented episodes",
             ["SourceQueue.ImportTitle"] = "Video Source Queue Import",
@@ -314,7 +304,6 @@ public class UILangProvider : LangProviderBase
 
             ["ItemCard.Separator"] = "：",
             ["ToolField.Version"] = "版本",
-            ["ToolField.Path"] = "路径",
             ["ToolField.Name"] = "名称",
             ["ToolField.Mode"] = "模式",
             ["ToolField.FileName"] = "文件名",
@@ -338,14 +327,6 @@ public class UILangProvider : LangProviderBase
             ["Tool.Enc.EncParams"] = "压缩参数配置",
             ["Tool.Enc.MuxTracks"] = "添加字幕",
 
-            ["SourceQueue.Sequence"] = "序列",
-            ["SourceQueue.SelectFolderTitle"] = "选择视频源队列文件夹",
-            ["SourceQueue.Analyzed"] = "队列视频源分析已完成。因差异过大过滤掉 {0} 个视频。\n\n队列数据 JSON：\n{1}\n\n排除列表：\n{2}",
-            ["SourceQueue.AnalyzedNoEx"] = "队列视频源分析已完成；没有文件被筛掉。\n\n队列数据 JSON：\n{0}",
-            ["SourceQueue.CopyQueueJsonPath"] = "复制队列 JSON 路径",
-            ["SourceQueue.CopyExcludedJsonPath"] = "复制排除列表 JSON 路径",
-            ["SourceQueue.OpenQueueJson"] = "打开队列 JSON",
-            ["SourceQueue.OpenExcludedJson"] = "打开排除列表 JSON",
             ["SourceQueue.FilterModeTitle"] = "是否执行队列权重筛选",
             ["SourceQueue.FilterModeMessage"] = "请根据视频源队列的结构做选择\n确认：所有源的时长一致，无需筛选\n取消：使用权重投票法排除 BDMV/M3U 片头片花\n两况皆会排除与首个视频源差异过大的流，以确保格式一致\n\nBDMV：先用 BDInfo/ChapterTool 检查并修复欠分集、过分集等特殊情况",
             ["SourceQueue.ImportTitle"] = "视频源队列导入",
@@ -533,7 +514,6 @@ public class UILangProvider : LangProviderBase
 
             ["ItemCard.Separator"] = "：",
             ["ToolField.Version"] = "版本",
-            ["ToolField.Path"] = "路徑",
             ["ToolField.Name"] = "名稱",
             ["ToolField.Mode"] = "模式",
             ["ToolField.FileName"] = "檔名",
@@ -557,14 +537,6 @@ public class UILangProvider : LangProviderBase
             ["Tool.Enc.EncParams"] = "壓縮參數配置",
             ["Tool.Enc.MuxTracks"] = "添加字幕",
 
-            ["SourceQueue.Sequence"] = "序列",
-            ["SourceQueue.SelectFolderTitle"] = "選擇視訊來源序列資料夾",
-            ["SourceQueue.Analyzed"] = "隊列視訊來源分析已完成。因差異過大過濾掉 {0} 個視訊。\n\n隊列資料 JSON：\n{1}\n\n排除列表：\n{2}",
-            ["SourceQueue.AnalyzedNoEx"] = "隊列影片源分析已完成；沒有影片被篩掉。\n\n隊列數據 JSON：\n{0}",
-            ["SourceQueue.CopyQueueJsonPath"] = "複製隊列 JSON 路徑",
-            ["SourceQueue.CopyExcludedJsonPath"] = "複製排除列表 JSON 路徑",
-            ["SourceQueue.OpenQueueJson"] = "開啟隊列 JSON",
-            ["SourceQueue.OpenExcludedJson"] = "開啟排除列表 JSON",
             ["SourceQueue.FilterModeTitle"] = "是否執行隊列權重篩選",
             ["SourceQueue.FilterModeMessage"] = "請根據影片源隊列的結構做選擇\n確認：所有源的時長一致，無需篩選\n取消：使用權重投票法排除 BDMV/M3U 片頭片花\n兩況皆會排除與首個影片源差異過大的流，以確保格式一致\n\nBDMV：先用 BDInfo/ChapterTool 檢查並修復欠分集、過分集等特殊情況",
             ["SourceQueue.ImportTitle"] = "影片源隊列匯入",
@@ -770,7 +742,6 @@ public class UILangProvider : LangProviderBase
 
             // Tool card captions
             ["ToolField.Version"] = "Version",
-            ["ToolField.Path"] = "Chemin",
             ["ToolField.Name"] = "Nom",
             ["ToolField.Mode"] = "Mode",
             ["ToolField.FileName"] = "Nom fichier",
@@ -795,14 +766,6 @@ public class UILangProvider : LangProviderBase
             ["Tool.Enc.MuxTracks"] = "Ajouter sous-titres",
 
             // Source queue card
-            ["SourceQueue.Sequence"] = "Séqu.",
-            ["SourceQueue.SelectFolderTitle"] = "Sélectionner le dossier de la file d'attente vidéo",
-            ["SourceQueue.Analyzed"] = "Analyse de la file d'attente terminée. {0} vidéo(s) filtrée(s) en raison de différences excessives.\n\nDonnées JSON de la file d'attente :\n{1}\n\nListe d'exclusion :\n{2}",
-            ["SourceQueue.AnalyzedNoEx"] = "File d'attente analysée. Aucune vidéo filtrée.\n\nDonnées JSON de la file d'attente :\n{0}",
-            ["SourceQueue.CopyQueueJsonPath"] = "Copier le chemin JSON de la file d'attente",
-            ["SourceQueue.CopyExcludedJsonPath"] = "Copier le chemin JSON d'exclusion",
-            ["SourceQueue.OpenQueueJson"] = "Ouvrir le JSON de la file d'attente",
-            ["SourceQueue.OpenExcludedJson"] = "Ouvrir le JSON d'exclusion",
             ["SourceQueue.FilterModeTitle"] = "Faut-il exécuter le filtrage pondéré ?",
             ["SourceQueue.FilterModeMessage"] = "Veuillez choisir selon la structure de la file d'attente\nConfirmer : sources de durée similaire, aucun filtrage nécessaire\nAnnuler : exclure les intros BDMV/M3U et les bandes-annonces par vote pondéré\nUne comparaison d'exclusion du premier flux sera exécutée pour garantir la cohérence du format\n\nPour les BDMV, utilisez BDInfo/ChapterTool pour gérer les épisodes sous ou sur-segmentés",
             ["SourceQueue.ImportTitle"] = "Import de la file de sources vidéo",
@@ -1010,7 +973,6 @@ public class UILangProvider : LangProviderBase
 
             // Tool card captions
             ["ToolField.Version"] = "Versión",
-            ["ToolField.Path"] = "Ruta",
             ["ToolField.Name"] = "Nombre",
             ["ToolField.Mode"] = "Modo",
             ["ToolField.FileName"] = "Archivo",
@@ -1035,14 +997,6 @@ public class UILangProvider : LangProviderBase
             ["Tool.Enc.MuxTracks"] = "Añadir subtítulos",
 
             // Source queue card
-            ["SourceQueue.Sequence"] = "Sec.",
-            ["SourceQueue.SelectFolderTitle"] = "Seleccionar carpeta de cola de vídeo fuente",
-            ["SourceQueue.Analyzed"] = "Análisis de cola completado. Se filtraron {0} video(s) por diferencias excesivas.\n\nJSON de datos de cola:\n{1}\n\nLista de exclusión:\n{2}",
-            ["SourceQueue.AnalyzedNoEx"] = "Cola analizada. No se filtró ningún vídeo.\n\nJSON de datos de cola:\n{0}",
-            ["SourceQueue.CopyQueueJsonPath"] = "Copiar ruta JSON de cola",
-            ["SourceQueue.CopyExcludedJsonPath"] = "Copiar ruta JSON de exclusión",
-            ["SourceQueue.OpenQueueJson"] = "Abrir JSON de cola",
-            ["SourceQueue.OpenExcludedJson"] = "Abrir JSON de exclusión",
             ["SourceQueue.FilterModeTitle"] = "¿Ejecutar el filtrado ponderado de la cola?",
             ["SourceQueue.FilterModeMessage"] = "Por favor, elija según la estructura de la cola\nConfirmar: fuentes de duración similar, sin necesidad de filtrado\nCancelar: excluir intros BDMV/M3U y tráileres por voto ponderado\nSe ejecutará una comparación de exclusión del primer flujo para garantizar la coherencia del formato\n\nPara BDMV, use BDInfo/ChapterTool para manejar episodios subsegmentados o sobresegmentados",
             ["SourceQueue.ImportTitle"] = "Importación de cola de fuentes de vídeo",
@@ -1250,7 +1204,6 @@ public class UILangProvider : LangProviderBase
 
             // Tool card captions
             ["ToolField.Version"] = "バージョン",
-            ["ToolField.Path"] = "パス",
             ["ToolField.Name"] = "名前",
             ["ToolField.Mode"] = "モード",
             ["ToolField.FileName"] = "ファイル名",
@@ -1275,14 +1228,6 @@ public class UILangProvider : LangProviderBase
             ["Tool.Enc.MuxTracks"] = "字幕を追加",
 
             // Source queue card
-            ["SourceQueue.Sequence"] = "順",
-            ["SourceQueue.SelectFolderTitle"] = "ビデオソースキューフォルダを選択",
-            ["SourceQueue.Analyzed"] = "キューのソース解析が完了しました。過剰な差異により {0} 個の動画を除外しました。\n\nキューJSON:\n{1}\n\n除外リスト:\n{2}",
-            ["SourceQueue.AnalyzedNoEx"] = "キューソースを解析しました。除外された動画はありません。\n\nキューJSON:\n{0}",
-            ["SourceQueue.CopyQueueJsonPath"] = "キューJSONパスをコピー",
-            ["SourceQueue.CopyExcludedJsonPath"] = "除外JSONパスをコピー",
-            ["SourceQueue.OpenQueueJson"] = "キューJSONを開く",
-            ["SourceQueue.OpenExcludedJson"] = "除外JSONを開く",
             ["SourceQueue.FilterModeTitle"] = "キューの重み付きフィルタを実行しますか？",
             ["SourceQueue.FilterModeMessage"] = "キューの構造に従って選択してください\n確認：各ソースの再生時間が近く、フィルタは不要です\nキャンセル：BDMV/M3U のイントロ・予告編を重み付き投票で除外します\n先頭ストリームの比較除外を常に実行し、形式の整合性を保ちます\n\nBDMV の場合：BDInfo/ChapterTool を使用して、セグメント分割不足/過剰のエピソードを処理します",
             ["SourceQueue.ImportTitle"] = "ビデオソースキューのインポート",
@@ -1490,7 +1435,6 @@ public class UILangProvider : LangProviderBase
 
             // Tool card captions
             ["ToolField.Version"] = "Версия",
-            ["ToolField.Path"] = "Путь",
             ["ToolField.Name"] = "Имя",
             ["ToolField.Mode"] = "Режим",
             ["ToolField.FileName"] = "Файл",
@@ -1515,14 +1459,6 @@ public class UILangProvider : LangProviderBase
             ["Tool.Enc.MuxTracks"] = "Добавить субтитры",
 
             // Source queue card
-            ["SourceQueue.Sequence"] = "Посл.",
-            ["SourceQueue.SelectFolderTitle"] = "Выберите папку очереди исходных видео",
-            ["SourceQueue.Analyzed"] = "Анализ очереди завершён. Отфильтровано {0} видео из-за чрезмерных различий.\n\nJSON данных очереди:\n{1}\n\nСписок исключений:\n{2}",
-            ["SourceQueue.AnalyzedNoEx"] = "Очередь проанализирована. Ни одно видео не было отфильтровано.\n\nJSON данных очереди:\n{0}",
-            ["SourceQueue.CopyQueueJsonPath"] = "Копировать путь JSON очереди",
-            ["SourceQueue.CopyExcludedJsonPath"] = "Копировать путь JSON исключений",
-            ["SourceQueue.OpenQueueJson"] = "Открыть JSON очереди",
-            ["SourceQueue.OpenExcludedJson"] = "Открыть JSON исключений",
             ["SourceQueue.FilterModeTitle"] = "Выполнить взвешенную фильтрацию очереди?",
             ["SourceQueue.FilterModeMessage"] = "Пожалуйста, выберите на основе структуры очереди\nПодтвердить: источники схожей длительности, фильтрация не требуется\nОтмена: исключить интро и трейлеры BDMV/M3U взвешенным голосованием\nСравнение исключения первого потока будет выполнено для обеспечения согласованности формата\n\nДля BDMV используйте BDInfo/ChapterTool для обработки эпизодов с недостаточной/избыточной сегментацией",
             ["SourceQueue.ImportTitle"] = "Импорт очереди видеоисточников",
@@ -1730,7 +1666,6 @@ public class UILangProvider : LangProviderBase
 
             // Tool card captions
             ["ToolField.Version"] = "Version",
-            ["ToolField.Path"] = "Pfad",
             ["ToolField.Name"] = "Name",
             ["ToolField.Mode"] = "Modus",
             ["ToolField.FileName"] = "Dateiname",
@@ -1755,14 +1690,6 @@ public class UILangProvider : LangProviderBase
             ["Tool.Enc.MuxTracks"] = "Untertitel hinzufügen",
 
             // Source queue card
-            ["SourceQueue.Sequence"] = "Seq.",
-            ["SourceQueue.SelectFolderTitle"] = "Videoquellen-Warteschlangenordner wählen",
-            ["SourceQueue.Analyzed"] = "Warteschlangenanalyse abgeschlossen. {0} Video(s) wegen übermäßiger Unterschiede gefiltert.\n\nJSON-Daten:\n{1}\n\nAusschlussliste:\n{2}",
-            ["SourceQueue.AnalyzedNoEx"] = "Warteschlange analysiert. Keine Videos gefiltert.\n\nJSON-Daten:\n{0}",
-            ["SourceQueue.CopyQueueJsonPath"] = "JSON-Pfad der Warteschlange kopieren",
-            ["SourceQueue.CopyExcludedJsonPath"] = "Ausschluss-JSON-Pfad kopieren",
-            ["SourceQueue.OpenQueueJson"] = "Warteschlangen-JSON öffnen",
-            ["SourceQueue.OpenExcludedJson"] = "Ausschluss-JSON öffnen",
             ["SourceQueue.FilterModeTitle"] = "Gewichtete Filterung ausführen?",
             ["SourceQueue.FilterModeMessage"] = "Bitte nach Struktur der Warteschlange wählen\nBestätigen: Quellen ähnlicher Dauer, kein Filter nötig\nAbbrechen: BDMV/M3U-Intros und Trailergewichtet per Voting ausschließen\nEin Vergleichsausschluss des ersten Streams wird zur Formatkonsistenz ausgeführt\n\nFür BDMV: BDInfo/ChapterTool verwenden zur Behandlung von unter-/übersegmentierten Episoden",
             ["SourceQueue.ImportTitle"] = "Videoquellen-Warteschlange importieren",
@@ -1970,7 +1897,6 @@ public class UILangProvider : LangProviderBase
 
             // Tool card captions
             ["ToolField.Version"] = "버전",
-            ["ToolField.Path"] = "경로",
             ["ToolField.Name"] = "이름",
             ["ToolField.Mode"] = "모드",
             ["ToolField.FileName"] = "파일명",
@@ -1995,14 +1921,6 @@ public class UILangProvider : LangProviderBase
             ["Tool.Enc.MuxTracks"] = "자막 추가",
 
             // Source queue card
-            ["SourceQueue.Sequence"] = "순번",
-            ["SourceQueue.SelectFolderTitle"] = "비디오 소스 큐 폴더 선택",
-            ["SourceQueue.Analyzed"] = "큐 소스 분석 완료. 차이가 너무 커서 {0}개의 비디오를 걸러냈습니다.\n\n큐 데이터 JSON:\n{1}\n\n제외 목록:\n{2}",
-            ["SourceQueue.AnalyzedNoEx"] = "큐 소스 분석 완료. 걸러낸 비디오가 없습니다.\n\n큐 데이터 JSON:\n{0}",
-            ["SourceQueue.CopyQueueJsonPath"] = "큐 JSON 경로 복사",
-            ["SourceQueue.CopyExcludedJsonPath"] = "제외 JSON 경로 복사",
-            ["SourceQueue.OpenQueueJson"] = "큐 JSON 열기",
-            ["SourceQueue.OpenExcludedJson"] = "제외 JSON 열기",
             ["SourceQueue.FilterModeTitle"] = "큐 가중 필터를 실행하시겠습니까?",
             ["SourceQueue.FilterModeMessage"] = "큐 구조에 따라 선택하세요\n확인: 비슷한 길이의 소스, 필터 불필요\n취소: BDMV/M3U 도입부와 트레일러를 가중 투표로 제외\n형식 일관성을 위해 첫 번째 스트림 비교 제외는 항상 실행됩니다\n\nBDMV는 BDInfo/ChapterTool로 과소/과대 분절 에피소드를 처리하세요",
             ["SourceQueue.ImportTitle"] = "비디오 소스 큐 가져오기",
@@ -2210,7 +2128,6 @@ public class UILangProvider : LangProviderBase
 
             // Tool card captions
             ["ToolField.Version"] = "Versão",
-            ["ToolField.Path"] = "Caminho",
             ["ToolField.Name"] = "Nome",
             ["ToolField.Mode"] = "Modo",
             ["ToolField.FileName"] = "Nome do arquivo",
@@ -2235,14 +2152,6 @@ public class UILangProvider : LangProviderBase
             ["Tool.Enc.MuxTracks"] = "Adicionar legendas",
 
             // Source queue card
-            ["SourceQueue.Sequence"] = "Seq.",
-            ["SourceQueue.SelectFolderTitle"] = "Selecionar pasta da fila de fontes de vídeo",
-            ["SourceQueue.Analyzed"] = "Análise da fila concluída. Filtrado(s) {0} vídeo(s) por diferenças excessivas.\n\nJSON de dados da fila:\n{1}\n\nLista de exclusão:\n{2}",
-            ["SourceQueue.AnalyzedNoEx"] = "Análise da fila concluída. Nenhum vídeo foi filtrado.\n\nJSON de dados da fila:\n{0}",
-            ["SourceQueue.CopyQueueJsonPath"] = "Copiar caminho do JSON da fila",
-            ["SourceQueue.CopyExcludedJsonPath"] = "Copiar caminho do JSON de exclusão",
-            ["SourceQueue.OpenQueueJson"] = "Abrir JSON da fila",
-            ["SourceQueue.OpenExcludedJson"] = "Abrir JSON de exclusão",
             ["SourceQueue.FilterModeTitle"] = "Executar filtro ponderado da fila?",
             ["SourceQueue.FilterModeMessage"] = "Escolha com base na estrutura da fila\nConfirmar: fontes consistentes em duração similar\nCancelar: Excl. introduções/trailers BDMV/M3U por votação ponderada\nUma exclusão por comparação com o primeiro stream será executada para garantir a consistência de formato\n\nPara BDMV, use BDInfo/ChapterTool para lidar com episódios sub/sobre-segmentados",
             ["SourceQueue.ImportTitle"] = "Importação da fila de fontes de vídeo",

@@ -9,8 +9,6 @@ public class SrcQueueLangProvider : LangProviderBase
     {
         ["en"] = new()
         {
-            ["SourceQueue.Sequence"] = "Sequence",
-            ["ToolField.Path"] = "Path",
             ["SourceQueue.SelectFolderTitle"] = "Select video source queue folder",
             ["SourceQueue.EmptyFolderWarnMessage"] = "No video files were selected. Please choose at least one video source.",
             ["SourceQueue.MixedFolderErrorMessage"] = "Selected files must be in the same folder.",
@@ -23,8 +21,6 @@ public class SrcQueueLangProvider : LangProviderBase
         },
         ["zh-cn"] = new()
         {
-            ["SourceQueue.Sequence"] = "序列",
-            ["ToolField.Path"] = "路径",
             ["SourceQueue.SelectFolderTitle"] = "选择视频源队列文件夹",
             ["SourceQueue.EmptyFolderWarnMessage"] = "未选择视频文件。请选择至少一个视频源。",
             ["SourceQueue.MixedFolderErrorMessage"] = "所选文件必须位于同一文件夹。",
@@ -37,8 +33,6 @@ public class SrcQueueLangProvider : LangProviderBase
         },
         ["zh-tw"] = new()
         {
-            ["SourceQueue.Sequence"] = "序列",
-            ["ToolField.Path"] = "路徑",
             ["SourceQueue.SelectFolderTitle"] = "選擇視訊來源序列資料夾",
             ["SourceQueue.EmptyFolderWarnMessage"] = "未選擇視訊檔。請至少選擇一個視訊來源。",
             ["SourceQueue.MixedFolderErrorMessage"] = "所選檔案必須位於同一資料夾。",
@@ -55,8 +49,6 @@ public class SrcQueueLangProvider : LangProviderBase
     {
         Data["fr"] = new(Data["en"])
         {
-            ["SourceQueue.Sequence"] = "Séquence",
-            ["ToolField.Path"] = "Chemin",
             ["SourceQueue.SelectFolderTitle"] = "Sélectionner le dossier de la file d'attente",
             ["SourceQueue.EmptyFolderWarnMessage"] = "Aucun fichier vidéo n'a été sélectionné. Veuillez choisir au moins une source vidéo.",
             ["SourceQueue.MixedFolderErrorMessage"] = "Les fichiers sélectionnés doivent être dans le même dossier.",
@@ -69,8 +61,6 @@ public class SrcQueueLangProvider : LangProviderBase
         };
         Data["es"] = new(Data["en"])
         {
-            ["SourceQueue.Sequence"] = "Secuencia",
-            ["ToolField.Path"] = "Ruta",
             ["SourceQueue.SelectFolderTitle"] = "Seleccionar carpeta de cola de fuente de vídeo",
             ["SourceQueue.EmptyFolderWarnMessage"] = "No se seleccionaron archivos de vídeo. Elige al menos una fuente de vídeo.",
             ["SourceQueue.MixedFolderErrorMessage"] = "Los archivos seleccionados deben estar en la misma carpeta.",
@@ -83,8 +73,6 @@ public class SrcQueueLangProvider : LangProviderBase
         };
         Data["ja"] = new(Data["en"])
         {
-            ["SourceQueue.Sequence"] = "シーケンス",
-            ["ToolField.Path"] = "パス",
             ["SourceQueue.SelectFolderTitle"] = "ビデオソースキューのフォルダを選択",
             ["SourceQueue.EmptyFolderWarnMessage"] = "動画ファイルが選択されていません。少なくとも1つの動画ソースを選択してください。",
             ["SourceQueue.MixedFolderErrorMessage"] = "選択したファイルは同じフォルダ内にある必要があります。",
@@ -97,8 +85,6 @@ public class SrcQueueLangProvider : LangProviderBase
         };
         Data["ru"] = new(Data["en"])
         {
-            ["SourceQueue.Sequence"] = "Последовательность",
-            ["ToolField.Path"] = "Путь",
             ["SourceQueue.SelectFolderTitle"] = "Выберите папку очереди видеоисточников",
             ["SourceQueue.EmptyFolderWarnMessage"] = "Видеофайлы не выбраны. Выберите хотя бы один источник видео.",
             ["SourceQueue.MixedFolderErrorMessage"] = "Выбранные файлы должны находиться в одной папке.",
@@ -111,8 +97,6 @@ public class SrcQueueLangProvider : LangProviderBase
         };
         Data["de"] = new(Data["en"])
         {
-            ["SourceQueue.Sequence"] = "Sequenz",
-            ["ToolField.Path"] = "Pfad",
             ["SourceQueue.SelectFolderTitle"] = "Videoquellen-Warteschlangenordner wählen",
             ["SourceQueue.EmptyFolderWarnMessage"] = "Keine Videodateien ausgewählt. Bitte mindestens eine Videoquelle wählen.",
             ["SourceQueue.MixedFolderErrorMessage"] = "Die ausgewählten Dateien müssen im selben Ordner liegen.",
@@ -125,8 +109,6 @@ public class SrcQueueLangProvider : LangProviderBase
         };
         Data["ko"] = new(Data["en"])
         {
-            ["SourceQueue.Sequence"] = "순번",
-            ["ToolField.Path"] = "경로",
             ["SourceQueue.SelectFolderTitle"] = "비디오 소스 대기열 폴더 선택",
             ["SourceQueue.EmptyFolderWarnMessage"] = "동영상 파일이 선택되지 않았습니다. 동영상 소스를 하나 이상 선택하세요.",
             ["SourceQueue.MixedFolderErrorMessage"] = "선택한 파일은 같은 폴더에 있어야 합니다.",
@@ -139,8 +121,6 @@ public class SrcQueueLangProvider : LangProviderBase
         };
         Data["pt-br"] = new(Data["en"])
         {
-            ["SourceQueue.Sequence"] = "Sequência",
-            ["ToolField.Path"] = "Caminho",
             ["SourceQueue.SelectFolderTitle"] = "Selecionar pasta da fila de fontes de vídeo",
             ["SourceQueue.EmptyFolderWarnMessage"] = "Nenhum arquivo de vídeo foi selecionado. Escolha pelo menos uma fonte de vídeo.",
             ["SourceQueue.MixedFolderErrorMessage"] = "Os arquivos selecionados devem estar na mesma pasta.",

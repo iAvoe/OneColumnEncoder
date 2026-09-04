@@ -358,7 +358,7 @@ public class AppConfVM : BaseVM
         container.Items.Add(new AppConfItem { Text = string.Empty, Content = refreshButton });
     }
 
-    private void AddFilePathItem(AppConfContainer container, string text, object source, string propertyPath)
+    private static void AddFilePathItem(AppConfContainer container, string text, object source, string propertyPath)
     {
         StackPanel panel = new()
         {
@@ -378,15 +378,15 @@ public class AppConfVM : BaseVM
         Button browseBtn = new()
         {
             Content = "...",
-            Width = 25,
+            Width = 30,
             Height = 25,
-            Margin = new Thickness(5, 0, 0, 0),
+            Margin = new Thickness(2.5, 0, 0, 0),
             VerticalAlignment = VerticalAlignment.Center,
             Style = (Style)Application.Current.FindResource("NormalButton")
         };
         browseBtn.Click += (_, _) =>
         {
-            Microsoft.Win32.OpenFileDialog dialog = new()
+            OpenFileDialog dialog = new()
             {
                 Filter = UILangProvider.Current["Dialog.Filter.Exe"],
                 Title = string.Format(UILangProvider.Current["Dialog.SelectTitle"], text),
