@@ -26,7 +26,7 @@ public static class UICaptionProvider
         public static string Settings => UILangProvider.Current["Buttons.Settings"];
         public static string OneClickScriptGen => UILangProvider.Current["Buttons.OneClickScriptGen"];
         public static string OpenScribeSrcScribe => UILangProvider.Current["Buttons.OpenScribeSrcScribe"];
-        public static string CopyRawAnalysis => UILangProvider.Current["Buttons.CopyRawAnalysis"];
+        public static string ShowRawJSON => UILangProvider.Current["Buttons.ShowRawJSON"];
         public static string AnalyzeSrcVideo => UILangProvider.Current["Buttons.AnalyzeSrcVideo"];
         public static string ReEvaluate => UILangProvider.Current["Buttons.ReEvaluate"];
         public static string RunSample => UILangProvider.Current["Buttons.RunSample"];

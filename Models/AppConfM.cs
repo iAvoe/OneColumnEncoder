@@ -18,6 +18,7 @@ public class AppConfM : SaveLoadBase<AppConfM>
     public LogSettings Logs { get; set; } = new LogSettings();
     public AudioMuxSettings AudioMux { get; set; } = new AudioMuxSettings();
     public AutoMuxSettings AutoMux { get; set; } = new AutoMuxSettings();
+    public TextEditorSettings TextEditor { get; set; } = new TextEditorSettings();
     #region Setting items
     public class OverwriteSettings
     {
@@ -46,6 +47,11 @@ public class AppConfM : SaveLoadBase<AppConfM>
         public string QueueMode { get; set; } = "Copy";
         public string ConcatMode { get; set; } = "ReEncodeAAC320";
         public string RepartMode { get; set; } = "ReEncodeAAC320";
+    }
+
+    public class TextEditorSettings
+    {
+        public string TextEditorPath { get; set; } = "notepad.exe";
     }
 
     /// <summary>

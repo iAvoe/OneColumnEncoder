@@ -42,7 +42,7 @@ public class VideoAnalysisM
 
     /// <summary>
     /// Serialized <see cref="RawAnalysisBatchM"/> of every analyzed file. Pre-req of Queue and Concat
-    /// modes; Repart stores its source set here as well so CopyRawAnalysisCmd can copy the full batch.
+    /// modes; Repart stores its source set here as well so OpenRawAnalysisCmd can open the full batch.
     /// </summary>
     public string BatchRawJson { get; set; } = string.Empty;
 

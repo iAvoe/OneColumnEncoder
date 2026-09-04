@@ -1,8 +1,9 @@
 using OneColumnEncoder.Models.Analysis;
+using System.IO;
 
-namespace OneColumnEncoder.Commands;
+namespace OneColumnEncoder.Commands.OpenClose;
 
-public class CopyRawAnalysisCmd(
+public class OpenRawAnalysisCmd(
     VideoAnalysisM analysis,
     ModalNavS modalNavS) : BaseCmd
 {
@@ -18,11 +19,15 @@ public class CopyRawAnalysisCmd(
 
         try
         {
-            Clipboard.SetText(GetRawJson());
-            new OpenSuccModalCmd(
-                _modalNavS,
-                UILangProvider.SrcAnalysisWindowTitle,
-                UILangProvider.Current["SrcAnalysis.Copied"]).Execute(null);
+            string json = GetRawJson();
+            string tempFile = Path.Combine(Path.GetTempPath(), "RawAnalysis.json");
+            File.WriteAllText(tempFile, json);
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "notepad.exe",
+                Arguments = tempFile,
+                UseShellExecute = true
+            });
         }
         catch (Exception ex)
         {

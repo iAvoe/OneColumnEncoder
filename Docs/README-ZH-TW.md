@@ -359,7 +359,7 @@
 - 採樣片段啟動前的命令確認：`ViewModels/SampleClipVM.cs`
 - 編碼監控裡的“查看編碼命令”：`ViewModels/EncodingMonitorVM.cs`
 - 腳本生成後的複製/保存結果提示：`ViewModels/ScriptScribeVM.cs`、`Commands/SaveLoad/OneClickScriptGenCmd.cs`
-- 源分析和檢查結果提示：`Commands/AnalyzeSrcVideoCmd.cs`、`Commands/CopyRawAnalysisCmd.cs`、`Commands/InspectEncProblemsCmd.cs`、`Commands/InspectSrcProblemsCmd.cs`
+- 源分析和檢查結果提示：`Commands/AnalyzeSrcVideoCmd.cs`、`Commands/OpenRawAnalysisCmd.cs`、`Commands/InspectEncProblemsCmd.cs`、`Commands/InspectSrcProblemsCmd.cs`
 - 工具導入/文件選擇時的二次確認：`Commands/ImportToolCmd.cs`、`FileManagement/SrcFilePicker.cs`
 
 ## 設定資料儲存位置

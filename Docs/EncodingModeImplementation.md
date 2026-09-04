@@ -136,7 +136,7 @@ The comparison signature includes:
 - pixel format, codec
 - normalized `avg_frame_rate`, normalized `r_frame_rate`
 
-On success, the first fragment's raw ffprobe JSON is stored in `_srcVideoAnalysis.RawJson` and drives encoder config previews and FilterScribe helpers. The full per-fragment analysis set is serialized into `_srcVideoAnalysis.BatchRawJson` so `CopyRawAnalysisCmd` can copy all fragment JSON.
+On success, the first fragment's raw ffprobe JSON is stored in `_srcVideoAnalysis.RawJson` and drives encoder config previews and FilterScribe helpers. The full per-fragment analysis set is serialized into `_srcVideoAnalysis.BatchRawJson` so `OpenRawAnalysisCmd` can open all fragment JSON.
 
 **VFR handling:** Concat analysis accepts VFR sources. If ffprobe detects VFR on any fragment, `OpenWarnModalCmd` is shown instead of an error. If later fragments do not match the first fragment's frame-rate signature, a warning is emitted instead of aborting. Both warnings point the user to Filter Scribe and its VFR→CFR repair option.
 
@@ -347,7 +347,7 @@ Each encoding start creates execution-specific ffconcat and private AVS/VPY path
 - `Commands/BrowseSrcScriptQueueCmd.cs` — Queue script import
 - `Commands/AnalyzeSrcVideoCmd.cs` — Source analysis (all routes)
 - `Commands/StartEncCmd.cs` — Encoding startup (all routes)
-- `Commands/CopyRawAnalysisCmd.cs` — Raw JSON copy
+- `Commands/OpenRawAnalysisCmd.cs` — Raw JSON open
 - `Commands/OpenClose/OpenFilterScribeCmd.cs` — FilterScribe launch
 - `Commands/OpenClose/OpenDebugModalCmd.cs` — Concat frame count debug
 - `Commands/SaveLoad/OneClickScriptGenCmd.cs` — One-click script generation

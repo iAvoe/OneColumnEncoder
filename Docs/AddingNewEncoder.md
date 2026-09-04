@@ -47,7 +47,7 @@ If there is no Keyframe interval / max GOP size, CRF control or anything that br
 1. Read the encoder's parameter docs, note which params can be derived from ffprobe JSON.
 2. Run ffprobe on a typical video:
     - `ffprobe -i <source> -select_streams v:0 -v error -hide_banner -show_streams -show_frames -read_intervals "%+#1" -of json`
-    - Or use this app's ffprobe analysis and click 'Copy Raw JSON'.
+    - Or use this app's ffprobe analysis and click 'Show Raw JSON'.
 3. Identify parameters outside Y4M pipe deliverables that depend on FPS, resolution, etc.
 4. Developers often restrict encoder capabilities — lift those limits by increasing parameter intensity, but not maxing them out (too slow).
 5. For good 3rd-party encoder forks with extra parameters, add them to the 3rd-party toggle section, keeping it simple.
@@ -84,7 +84,7 @@ Integer slider has a logarithmic mode — use it for inconsistent parameter valu
 
 - Import the tool and confirm version detection works.
 - Open encoder settings and verify sliders, presets, and toggles render correctly.
-- Use the "Copy RAW JSON" button and check against commandlines displayed in a Conformation pop-up when clicking on "Start Encode" button
+- Use the "Show RAW JSON" button and check against commandlines displayed in a Conformation pop-up when clicking on "Start Encode" button
 - Confirm parallelism values land in the final encoder command.
 - Run a short encode and check the monitor and mux output.
 

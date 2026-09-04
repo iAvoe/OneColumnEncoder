@@ -352,12 +352,12 @@ Implementation failed due to excessive complexity and encoding time addition
 
 ## Confirm action window (ConfirmationModal) Popup locations
 
-- Confirm encoding commands before starting encode, and file overwriting:`Commands/StartEncCmd.cs`
-- Sample clip confirmation before starting encode:`ViewModels/SampleClipVM.cs`
-- View encoding commands in the encoding monitor:`ViewModels/EncodingMonitorVM.cs`
-- Copy/save results after script generation:`ViewModels/ScriptScribeVM.cs`Commands/SaveLoad/OneClickScriptGenCmd.cs`
-- Source analysis and check results:`Commands/AnalyzeSrcVideoCmd.cs`Commands/CopyRawAnalysisCmd.cs`銆乣Commands/InspectEncProblemsCmd.cs`Commands/InspectSrcProblemsCmd.cs`
-- Secondary confirmation when importing tools/selecting files:`Commands/ImportToolCmd.cs`FileManagement/SrcFilePicker.cs`
+- Confirm encoding commands before starting encode, and file overwriting: `Commands/StartEncCmd.cs`
+- Sample clip confirmation before starting encode: `ViewModels/SampleClipVM.cs`
+- View encoding commands in the encoding monitor: `ViewModels/EncodingMonitorVM.cs`
+- Copy/save results after script generation: `ViewModels/ScriptScribeVM.cs`, `Commands/SaveLoad/OneClickScriptGenCmd.cs`
+- Source analysis and check results: `Commands/AnalyzeSrcVideoCmd.cs`, `Commands/InspectSrcProblemsCmd.cs`
+- Secondary confirmation when importing tools/selecting files: `Commands/ImportToolCmd.cs`, `FileManagement/SrcFilePicker.cs`
 
 ## Settings Storage Location
 

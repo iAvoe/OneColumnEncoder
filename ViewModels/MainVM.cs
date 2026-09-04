@@ -100,14 +100,14 @@ public class MainVM : BaseVM
     public OpenFilterScribeCmd OpenFilterScribe { get; }
     public OpenMuxTracksCmd OpenMuxTracks { get; }
     public static string MuxTracksText => MuxLangProvider.Current["MuxTracks.WindowButton"];
-    public CopyRawAnalysisCmd CopyRawAnalysis { get; } // Copy (ffprobe JSON) to clipboard
+    public OpenRawAnalysisCmd OpenRawAnalysis { get; } // Open (ffprobe JSON) in defined text editor, fallback to notepad
     public AnalyzeSrcVideoCmd AnalyzeSrcVideo { get; } // Maybe add mediaInfo analysis in future, but ffprobe alone will do
     public OpenSampleClipCmd SampleClip { get; }
     public StartEncCmd StartEncode { get; }
     public SelectToolCmd SelectTool { get; } // ItemCard select on click
     public ButtonGroupVM OpenAppConfButtons { get; } // OpenUsages & OpenAppConf
     public ButtonGroupVM FilterScbButtons { get; } // OneClickScriptGen & OpenFilterScribe
-    public ButtonGroupVM AnalyzeSrcButtons { get; } // AnalyzeSrcVideo & CopyRawAnalysis
+    public ButtonGroupVM AnalyzeSrcButtons { get; } // AnalyzeSrcVideo & ShowRawJSON
     public ButtonGroupVM EncStartButtons { get; }
     public ValidationActionGroupVM SrcValGroup { get; private set; } = null!;
     public ValidationActionGroupVM EncTermsValGroup { get; private set; } = null!;
@@ -586,7 +586,7 @@ public class MainVM : BaseVM
                 && !string.IsNullOrWhiteSpace(GetSelectedFfprobePath())
                 && File.Exists(GetSelectedFfprobePath())
                 && IsAutoMuxEnabledForCurrentRoute());
-        CopyRawAnalysis = new CopyRawAnalysisCmd(
+        OpenRawAnalysis = new OpenRawAnalysisCmd(
             _srcVideoAnalysis, modalNavS);
         AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(
             GetSelectedFfprobePath,
@@ -637,8 +637,8 @@ public class MainVM : BaseVM
         FilterScbButtons.B2_1Icon = SvgIconProvider.GameLightning;
         FilterScbButtons.B2_2Icon = SvgIconProvider.GameFilter;
         AnalyzeSrcButtons = ButtonGroupVM.CreateTwoButton(
-            UICaptionProvider.Buttons.CopyRawAnalysis, UICaptionProvider.Buttons.AnalyzeSrcVideo, CopyRawAnalysis, AnalyzeSrcVideo);
-        AnalyzeSrcButtons.B2_1Icon = SvgIconProvider.GameCopy;
+            UICaptionProvider.Buttons.ShowRawJSON, UICaptionProvider.Buttons.AnalyzeSrcVideo, OpenRawAnalysis, AnalyzeSrcVideo);
+        AnalyzeSrcButtons.B2_1Icon = SvgIconProvider.GameInfo;
         AnalyzeSrcButtons.B2_2Icon = SvgIconProvider.GameScan;
         EncStartButtons = ButtonGroupVM.CreateThreeButton( // UpdateEncStartButtonsState()
             UICaptionProvider.Buttons.ReEvaluate, UICaptionProvider.Buttons.RunSample, UICaptionProvider.Buttons.StartEncode,
@@ -2367,7 +2367,7 @@ public class MainVM : BaseVM
         RefreshEncSettingsState();
         AnalyzeSrcButtons.B2_2IsEnabled = hasVideoSrc;
         AnalyzeSrcButtons.B2_1IsEnabled = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
-        CopyRawAnalysis.OnCanExecuteChanged();
+        OpenRawAnalysis.OnCanExecuteChanged();
         AnalyzeSrcVideo.OnCanExecuteChanged();
     }
     private void ResetAnalysisIfStale()
@@ -3312,7 +3312,7 @@ public class MainVM : BaseVM
         EncStartButtons.B3_1Text = UICaptionProvider.Buttons.ReEvaluate;
         EncStartButtons.B3_2Text = UICaptionProvider.Buttons.RunSample;
         EncStartButtons.B3_3Text = UICaptionProvider.Buttons.StartEncode;
-        AnalyzeSrcButtons.B2_1Text = UICaptionProvider.Buttons.CopyRawAnalysis;
+        AnalyzeSrcButtons.B2_1Text = UICaptionProvider.Buttons.ShowRawJSON;
         AnalyzeSrcButtons.B2_2Text = UICaptionProvider.Buttons.AnalyzeSrcVideo;
         OnPropertyChanged(nameof(MuxTracksText));
     }
