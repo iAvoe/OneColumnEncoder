@@ -396,6 +396,7 @@ public class AppConfVM : BaseVM
             if (dialog.ShowDialog() == true)
             {
                 tb.Text = dialog.FileName;
+                BindingOperations.GetBindingExpression(tb, TextBox.TextProperty)?.UpdateSource();
             }
         };
 
