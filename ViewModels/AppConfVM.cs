@@ -80,6 +80,7 @@ public class AppConfVM : BaseVM
             [UICaptionProvider.AppConf.Groups.Logs] = _appConfM.Logs,
             [UICaptionProvider.AppConf.Groups.AutoMux] = _appConfM.AutoMux,
             [UICaptionProvider.AppConf.Groups.AudioMux] = _appConfM.AudioMux,
+            [UICaptionProvider.AppConf.Groups.TextEditor] = _appConfM.TextEditor,
         };
 
         // Note: order of settings item sections are by SettinglistProviderM.GetAllSettings()
@@ -119,6 +120,9 @@ public class AppConfVM : BaseVM
                         break;
                     case SettingControlType.AutoMux:
                         AddAutoMuxRow(container, setting.Label, source, setting.CheckboxProperties);
+                        break;
+                    case SettingControlType.FilePath:
+                        AddFilePathItem(container, setting.Label, source, setting.PropertyName);
                         break;
                 }
             }
@@ -352,6 +356,52 @@ public class AppConfVM : BaseVM
         };
 
         container.Items.Add(new AppConfItem { Text = string.Empty, Content = refreshButton });
+    }
+
+    private void AddFilePathItem(AppConfContainer container, string text, object source, string propertyPath)
+    {
+        StackPanel panel = new()
+        {
+            Orientation = Orientation.Horizontal,
+            HorizontalAlignment = HorizontalAlignment.Right
+        };
+
+        TextBox tb = new()
+        {
+            Width = 170,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        tb.SetBinding(
+            TextBox.TextProperty,
+            new Binding(propertyPath) { Source = source, Mode = BindingMode.TwoWay, UpdateSourceTrigger = UpdateSourceTrigger.LostFocus });
+
+        Button browseBtn = new()
+        {
+            Content = "...",
+            Width = 25,
+            Height = 25,
+            Margin = new Thickness(5, 0, 0, 0),
+            VerticalAlignment = VerticalAlignment.Center,
+            Style = (Style)Application.Current.FindResource("NormalButton")
+        };
+        browseBtn.Click += (_, _) =>
+        {
+            Microsoft.Win32.OpenFileDialog dialog = new()
+            {
+                Filter = UILangProvider.Current["Dialog.Filter.Exe"],
+                Title = string.Format(UILangProvider.Current["Dialog.SelectTitle"], text),
+                CheckFileExists = true,
+                CheckPathExists = true
+            };
+            if (dialog.ShowDialog() == true)
+            {
+                tb.Text = dialog.FileName;
+            }
+        };
+
+        panel.Children.Add(tb);
+        panel.Children.Add(browseBtn);
+        container.Items.Add(new AppConfItem { Text = text, Content = panel });
     }
 
     private static StackPanel CreateRefreshButtonContent()

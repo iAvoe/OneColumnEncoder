@@ -5,9 +5,11 @@ namespace OneColumnEncoder.Commands.OpenClose;
 
 public class OpenRawAnalysisCmd(
     VideoAnalysisM analysis,
+    AppConfM appConfM,
     ModalNavS modalNavS) : BaseCmd
 {
     private readonly VideoAnalysisM _analysis = analysis;
+    private readonly AppConfM _appConfM = appConfM;
     private readonly ModalNavS _modalNavS = modalNavS;
 
     public override bool CanExecute(object? parameter) =>
@@ -22,9 +24,12 @@ public class OpenRawAnalysisCmd(
             string json = GetRawJson();
             string tempFile = Path.Combine(Path.GetTempPath(), "RawAnalysis.json");
             File.WriteAllText(tempFile, json);
+            string editorPath = string.IsNullOrWhiteSpace(_appConfM.TextEditor.TextEditorPath)
+                ? "notepad.exe"
+                : _appConfM.TextEditor.TextEditorPath;
             Process.Start(new ProcessStartInfo
             {
-                FileName = "notepad.exe",
+                FileName = editorPath,
                 Arguments = tempFile,
                 UseShellExecute = true
             });

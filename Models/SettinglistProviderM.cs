@@ -13,7 +13,8 @@ public static class SettinglistProviderM
         .. GetFontSettings(),
         .. GetLogSettings(),
         .. GetAutoMuxSettings(),
-        .. GetAudioMuxSettings()
+        .. GetAudioMuxSettings(),
+        .. GetTextEditorSettings()
     ];
 
     private static AppConfLangProvider Lang => AppConfLangProvider.Current;
@@ -159,5 +160,13 @@ public static class SettinglistProviderM
                 nameof(AppConfM.AutoMuxSettings.RepartX265),
                 nameof(AppConfM.AutoMuxSettings.RepartSvtAv1)
             ])
+    ];
+
+    public static List<SettingItemDefinitionM> GetTextEditorSettings() =>
+    [
+        new(UICaptionProvider.AppConf.Groups.TextEditor,
+            Lang["Setting.TextEditor.Path"],
+            SettingControlType.FilePath,
+            nameof(AppConfM.TextEditorSettings.TextEditorPath))
     ];
 }

@@ -10,6 +10,7 @@ public enum SettingControlType
     Dropdown, // Language selection
     Font, // Font family selection
     AutoMux, // Per-mode (Single/Queue/Concat/Repart) encoder auto-mux checkboxes
+    FilePath, // TextBox + Browse button for file path selection
 }
 
 /// <summary>

@@ -587,7 +587,7 @@ public class MainVM : BaseVM
                 && File.Exists(GetSelectedFfprobePath())
                 && IsAutoMuxEnabledForCurrentRoute());
         OpenRawAnalysis = new OpenRawAnalysisCmd(
-            _srcVideoAnalysis, modalNavS);
+            _srcVideoAnalysis, _appConfM, modalNavS);
         AnalyzeSrcVideo = new AnalyzeSrcVideoCmd(
             GetSelectedFfprobePath,
             GetSelectedVideoSrcPath,
