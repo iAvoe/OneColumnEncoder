@@ -12,8 +12,10 @@ public class ImgABPvVM : BaseVM
     private readonly Stores.ModalNavS _modalNavS;
     private readonly string? _ffmpegPath;
     private readonly string? _sourceVideoPath;
+    private readonly PreviewSourceInfo[] _previewSources;
     private readonly string _workDirectory;
     private readonly ColorSpaceAnalysisM _colorSpaceAnalysis;
+    private readonly double _frameRate;
     // CTS for ffmpeg operations only (extract, encode, decode).
     // Created fresh each preview run. Score tools (ssimulacra2, butteraugli)
     // do NOT observe this token — they run independently once decoding finishes.
@@ -39,9 +41,8 @@ public class ImgABPvVM : BaseVM
     public ObservableCollection<string> PositionTickLabels { get; } = [];
 
     public string EncoderLabel => Lang.EncoderLabel;
-    public string DisplayModeLabel => Lang.DisplayModeLabel;
     public string ZoomLabel => Lang.ZoomLabel;
-    public string PositionLabel => Lang.PositionLabel;
+    public static string PositionLabel => LangProviderBase.Sec;
     public string Hint1Text => Lang.Hint1Text;
     public string Hint2Text => Lang.Hint2Text;
     public string Hint3Text => Lang.Hint3Text;
@@ -133,12 +134,14 @@ public class ImgABPvVM : BaseVM
         string? ffmpegPath,
         string? sourceVideoPath,
         string? sourceFfprobeJson,
-        Func<long>? getTotalFrames = null)
+        Func<long>? getTotalFrames = null,
+        IReadOnlyList<PreviewSourceInfo>? previewSources = null)
     {
         _encoderConfVM = encoderConfVM;
         _modalNavS = modalNavS;
         _ffmpegPath = ffmpegPath;
         _sourceVideoPath = sourceVideoPath;
+        _previewSources = previewSources?.Where(source => !string.IsNullOrWhiteSpace(source.FilePath) && source.FrameCount > 0).ToArray() ?? [];
         _workDirectory = PreviewPipeline.CreateWorkDirectory("1cenc-image-preview-");
 
         ZoomPresetButtons = ButtonGroupVM.CreateThreeButton(Lang["Fit"], "100%", "200%");
@@ -164,7 +167,10 @@ public class ImgABPvVM : BaseVM
         bool hasSourceStats = !string.IsNullOrWhiteSpace(sourceFfprobeJson);
         _colorSpaceAnalysis = ColorSpaceConverter.Analyze(sourceFfprobeJson);
         FFProbeSrcStats sourceStats = FFProbeSourceStatsReader.Read(sourceFfprobeJson ?? string.Empty);
-        long totalFrames = getTotalFrames?.Invoke() ?? EncodingPipeline.GetSourceTotalFrames(sourceFfprobeJson) ?? 0;
+        _frameRate = sourceStats.FrameRate > 0d ? sourceStats.FrameRate : 30d;
+        long totalFrames = _previewSources.Length > 0
+            ? _previewSources.Sum(source => Math.Max(0, source.FrameCount))
+            : getTotalFrames?.Invoke() ?? EncodingPipeline.GetSourceTotalFrames(sourceFfprobeJson) ?? 0;
         double previewDurationSeconds = totalFrames > 0 && sourceStats.FrameRate > 0d
             ? totalFrames / sourceStats.FrameRate
             : sourceStats.DurationSeconds;
@@ -240,15 +246,16 @@ public class ImgABPvVM : BaseVM
                 : GetWorkPath($"source-{PreviewPipeline.GetDisplayModeFileSuffix(_displayMode)}.png");
             string encodedPath = GetEncodedPath(encoder);
             string decodedPath = GetDecodedPath(encoder);
+            (string sourcePath, TimeSpan sourcePosition) = ResolvePreviewSource(TimeSpan.FromSeconds(PreviewPositionSeconds));
 
             StatusText = Lang.StatusExtracting;
-            await RunFFmpegAsync(PreviewPipeline.BuildSourceArgs(_sourceVideoPath!, PreviewPositionSeconds, rawsrcPath), token);
+            await RunFFmpegAsync(PreviewPipeline.BuildSourceArgs(sourcePath, sourcePosition, rawsrcPath), token);
             PreviewPipeline.EnsureFileExists(rawsrcPath, "!SOURCE");
 
             if (!string.IsNullOrWhiteSpace(displayFilter))
             {
                 StatusText = string.Format(Lang.StatusConverting, GetDisplayModeTitle(_displayMode));
-                await RunFFmpegAsync(PreviewPipeline.BuildSourceArgs(_sourceVideoPath!, PreviewPositionSeconds, srcPath, displayFilter), token);
+                await RunFFmpegAsync(PreviewPipeline.BuildSourceArgs(sourcePath, sourcePosition, srcPath, displayFilter), token);
             }
             PreviewPipeline.EnsureFileExists(srcPath, "!SOURCE");
             SourceImage = PreviewPipeline.LoadBitmap(srcPath);
@@ -402,6 +409,40 @@ public class ImgABPvVM : BaseVM
     };
     #endregion
 
+    private (string SourcePath, TimeSpan SourcePosition) ResolvePreviewSource(TimeSpan previewPosition)
+    {
+        if (_previewSources.Length == 0 || 0d > _frameRate)
+            return (string.IsNullOrWhiteSpace(_sourceVideoPath) ? string.Empty : _sourceVideoPath, previewPosition);
+
+        long totalFrames = 0;
+        foreach (PreviewSourceInfo source in _previewSources)
+            totalFrames = checked(totalFrames + Math.Max(0, source.FrameCount));
+
+        if (totalFrames <= 0)
+            return (string.IsNullOrWhiteSpace(_sourceVideoPath) ? string.Empty : _sourceVideoPath, previewPosition);
+
+        long globalFrame = Math.Clamp((long)Math.Floor(previewPosition.TotalSeconds * _frameRate), 0, totalFrames - 1);
+        long cursor = 0;
+        foreach (PreviewSourceInfo source in _previewSources)
+        {
+            long frameCount = Math.Max(0, source.FrameCount);
+            if (frameCount <= 0)
+                continue;
+
+            long nextCursor = cursor + frameCount;
+            if (globalFrame < nextCursor)
+            {
+                long localFrame = globalFrame - cursor;
+                return (source.FilePath, TimeSpan.FromSeconds(localFrame / _frameRate));
+            }
+
+            cursor = nextCursor;
+        }
+
+        PreviewSourceInfo fallback = _previewSources[^1];
+        return (fallback.FilePath, TimeSpan.Zero);
+    }
+
     private void SetDisplayMode(PreviewDisplayMode displayMode)
     {
         if (_displayMode == displayMode) return;
@@ -458,7 +499,6 @@ public class ImgABPvVM : BaseVM
         if (!IsBusy)
             PreviewButtonText = Lang.PreviewButtonText;
         OnPropertyChanged(nameof(EncoderLabel));
-        OnPropertyChanged(nameof(DisplayModeLabel));
         OnPropertyChanged(nameof(ZoomLabel));
         OnPropertyChanged(nameof(PositionLabel));
         OnPropertyChanged(nameof(Hint1Text));
@@ -485,4 +525,6 @@ public class ImgABPvVM : BaseVM
 
         base.Dispose();
     }
-}
+}
+
+public sealed record PreviewSourceInfo(string FilePath, long FrameCount);

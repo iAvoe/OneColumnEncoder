@@ -130,20 +130,12 @@
         <Grid Grid.Row="3"
               Margin="0 5 0 0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="850" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="180" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0"
-                       Text="{Binding DisplayModeLabel}"
-                       FontSize="13"
-                       VerticalAlignment="Center"
-                       Margin="0 0 10 0"
-                       Foreground="{StaticResource GlobalPrimary}" />
-
-            <comps:FiveButtonGroup Grid.Column="1"
+            <comps:FiveButtonGroup Grid.Column="0"
                                    DataContext="{Binding DisplayModeButtons}"
                                    ButtonHeight="30"
                                    Button1Command="{Binding Cmd1}"
@@ -152,7 +144,7 @@
                                    Button4Command="{Binding Cmd4}"
                                    Button5Command="{Binding Cmd5}" />
 
-            <Button Grid.Column="3"
+            <Button Grid.Column="2"
                     Command="{Binding PreviewCommand}"
                     Height="30"
                     HorizontalAlignment="Stretch"
@@ -179,8 +171,7 @@
             </Button>
         </Grid>
 
-        <Grid Grid.Row="4"
-              Margin="0 5 0 0">
+        <Grid Grid.Row="4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />

@@ -290,7 +290,7 @@ public sealed class MuxTracksConfVM : BaseVM
     /// Compares two track lists for any meaningful field difference
     /// </summary>
     /// <param name="a">First track list.</param>
-    /// <param name="b">Second track list.</param>
+    /// <param name="b">Sec track list.</param>
     /// <returns>True when the lists differ in count or any compared field.</returns>
     private static bool TracksDiffer(List<MuxTrackM> a, List<MuxTrackM> b)
     {

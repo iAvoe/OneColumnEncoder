@@ -10,9 +10,7 @@ public class ImgABPvLangProvider : LangProviderBase
         ["en"] = new()
         {
             ["EncoderLabel"] = "Encoder",
-            ["DisplayModeLabel"] = "Display",
             ["ZoomLabel"] = "Zoom",
-            ["PositionLabel"] = "Frame#",
             ["RawButtonText"] = "Raw",
             ["Hint1Text"] = "Compression is only performed after clicking Preview due to the slowness of some encoders",
             ["Hint2Text"] = "Preview is only via ffmpeg to ensure usability when no encoder is imported",
@@ -44,9 +42,7 @@ public class ImgABPvLangProvider : LangProviderBase
         ["zh-cn"] = new()
         {
             ["EncoderLabel"] = "编码器",
-            ["DisplayModeLabel"] = "显示",
             ["ZoomLabel"] = "缩放",
-            ["PositionLabel"] = "帧#",
             ["RawButtonText"] = "原始",
             ["Hint1Text"] = "由于有的编码器较慢，因此压缩操作仅在点击预览后运行",
             ["Hint2Text"] = "预览仅用 ffmpeg 以确保在未导入编码器时仍可预览",
@@ -78,9 +74,7 @@ public class ImgABPvLangProvider : LangProviderBase
         ["zh-tw"] = new()
         {
             ["EncoderLabel"] = "編碼器",
-            ["DisplayModeLabel"] = "顯示",
             ["ZoomLabel"] = "縮放",
-            ["PositionLabel"] = "幀#",
             ["RawButtonText"] = "原始",
             ["Hint1Text"] = "由於有的編碼器較慢，因此壓縮操作僅在點擊預覽後運行",
             ["Hint2Text"] = "預覽僅用 ffmpeg 以確保在未導入編碼器時仍可預覽",
@@ -116,9 +110,7 @@ public class ImgABPvLangProvider : LangProviderBase
         Data["fr"] = new(Data["en"])
         {
             ["EncoderLabel"] = "Encodeur",
-            ["DisplayModeLabel"] = "Affichage",
             ["ZoomLabel"] = "Zoom",
-            ["PositionLabel"] = "Cadre#",
             ["RawButtonText"] = "Brut",
             ["Hint1Text"] = "La compression n'est effectuée qu'après avoir cliqué sur « Aperçu », en raison de la lenteur de certains encodeurs",
             ["Hint2Text"] = "L'aperçu est uniquement réalisé via ffmpeg afin de garantir la compatibilité même sans encodeur importé",
@@ -150,9 +142,7 @@ public class ImgABPvLangProvider : LangProviderBase
         Data["es"] = new(Data["en"])
         {
             ["EncoderLabel"] = "Codificador",
-            ["DisplayModeLabel"] = "Pantalla",
             ["ZoomLabel"] = "Zoom",
-            ["PositionLabel"] = "Fotograma#",
             ["RawButtonText"] = "Crudo",
             ["Hint1Text"] = "La compresión solo se realiza después de hacer clic en Vista previa debido a la lentitud de algunos codificadores",
             ["Hint2Text"] = "La vista previa solo se realiza mediante ffmpeg para garantizar su usabilidad cuando no se importa ningún codificador",
@@ -184,9 +174,7 @@ public class ImgABPvLangProvider : LangProviderBase
         Data["ja"] = new(Data["en"])
         {
             ["EncoderLabel"] = "エンコーダ",
-            ["DisplayModeLabel"] = "表示",
             ["ZoomLabel"] = "ズーム",
-            ["PositionLabel"] = "コマ#",
             ["RawButtonText"] = "生",
             ["Hint1Text"] = "一部のエンコーダーの処理速度が遅いため、圧縮はプレビューをクリックした後にのみ実行されます",
             ["Hint2Text"] = "プレビューは、エンコーダーがインポートされていない場合でもプレビューが可能であることを確認するために、ffmpegでのみ使用されます",
@@ -218,9 +206,7 @@ public class ImgABPvLangProvider : LangProviderBase
         Data["ru"] = new(Data["en"])
         {
             ["EncoderLabel"] = "Кодек",
-            ["DisplayModeLabel"] = "Экран",
             ["ZoomLabel"] = "Масштаб",
-            ["PositionLabel"] = "Кадр#",
             ["RawButtonText"] = "Сырой",
             ["Hint1Text"] = "Сжатие выполняется только после нажатия кнопки «Предварительный просмотр» из-за низкой скорости работы некоторых кодеков",
             ["Hint2Text"] = "Предварительный просмотр осуществляется только через ffmpeg для обеспечения удобства использования, если кодер не импортирован",
@@ -252,9 +238,7 @@ public class ImgABPvLangProvider : LangProviderBase
         Data["de"] = new(Data["en"])
         {
             ["EncoderLabel"] = "Encoder",
-            ["DisplayModeLabel"] = "Anzeige",
             ["ZoomLabel"] = "Zoom",
-            ["PositionLabel"] = "Einzelbild#",
             ["RawButtonText"] = "Roh",
             ["Hint1Text"] = "Komprimierung erfolgt erst nach Klick auf Vorschau aufgrund der Langsamkeit mancher Encoder",
             ["Hint2Text"] = "Vorschau nur via ffmpeg, um Nutzbarkeit ohne importierten Encoder sicherzustellen",
@@ -286,9 +270,7 @@ public class ImgABPvLangProvider : LangProviderBase
         Data["ko"] = new(Data["en"])
         {
             ["EncoderLabel"] = "엔코더",
-            ["DisplayModeLabel"] = "표시",
             ["ZoomLabel"] = "줌",
-            ["PositionLabel"] = "프레임#",
             ["RawButtonText"] = "원본",
             ["Hint1Text"] = "일부 엔코더가 느려서 압축은 미리보기 클릭 후에만 실행됩니다",
             ["Hint2Text"] = "엔코더가 가져와지지 않은 경우에도 사용성을 보장하기 위해 미리보기는 ffmpeg로만 제공됩니다",
@@ -320,9 +302,7 @@ public class ImgABPvLangProvider : LangProviderBase
         Data["pt-br"] = new(Data["en"])
         {
             ["EncoderLabel"] = "Codificador",
-            ["DisplayModeLabel"] = "Exibição",
             ["ZoomLabel"] = "Zoom",
-            ["PositionLabel"] = "Quadro#",
             ["RawButtonText"] = "Bruto",
             ["Hint1Text"] = "A compressão só é realizada após clicar em Visualizar devido à lentidão de alguns codificadores",
             ["Hint2Text"] = "A visualização é apenas via ffmpeg para garantir usabilidade quando nenhum codificador está importado",
@@ -354,9 +334,7 @@ public class ImgABPvLangProvider : LangProviderBase
     }
 
     public string EncoderLabel { get; }
-    public string DisplayModeLabel { get; }
     public string ZoomLabel { get; }
-    public string PositionLabel { get; }
     public string RawButtonText { get; }
     public string Hint1Text { get; }
     public string Hint2Text { get; }
@@ -392,9 +370,7 @@ public class ImgABPvLangProvider : LangProviderBase
     {
         StatusNoFfmpeg = "!ffmpeg.exe";
         EncoderLabel = this["EncoderLabel"];
-        DisplayModeLabel = this["DisplayModeLabel"];
         ZoomLabel = this["ZoomLabel"];
-        PositionLabel = this["PositionLabel"];
         RawButtonText = this["RawButtonText"];
         Hint1Text = this["Hint1Text"];
         Hint2Text = this["Hint2Text"];

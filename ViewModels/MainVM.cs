@@ -1,5 +1,6 @@
 using OneColumnEncoder.Commands.SaveLoad;
 using OneColumnEncoder.ConcatManagement;
+using OneColumnEncoder.FFmpeg;
 using OneColumnEncoder.Models.Analysis;
 using OneColumnEncoder.Models.Encoding;
 using OneColumnEncoder.QueueManagement;
@@ -9,6 +10,7 @@ using OneColumnEncoder.ToolManagement;
 using OneColumnEncoder.Validation;
 using System.Collections.Specialized;
 using System.IO;
+using System.Text.Json;
 using static OneColumnEncoder.Models.JsonProviderM;
 // Important: No string matching. Expect all strings changes eventually, match the key instead
 namespace OneColumnEncoder.ViewModels;
@@ -1596,6 +1598,51 @@ public class MainVM : BaseVM
         };
     }
 
+    private IReadOnlyList<PreviewSourceInfo> GetPreviewSources() => GetActiveSrcRoute() switch
+    {
+        SrcRouteKind.Concat => BuildConcatPreviewSources(),
+        SrcRouteKind.Repart => BuildRepartPreviewSources(),
+        _ => []
+    };
+
+    private IReadOnlyList<PreviewSourceInfo> BuildConcatPreviewSources()
+    {
+        if (string.IsNullOrWhiteSpace(_srcVideoAnalysis.BatchRawJson)) return [];
+
+        try
+        {
+            RawAnalysisBatchM? data = JsonSerializer.Deserialize<RawAnalysisBatchM>(_srcVideoAnalysis.BatchRawJson);
+            if (data?.Entries == null || data.Entries.Count == 0) return [];
+
+            return [.. data.Entries
+                .Select(entry => new PreviewSourceInfo(
+                    entry.FilePath,
+                    Math.Max(0, FFProbeSourceStatsReader.Read(entry.FfprobeJson.GetRawText()).TotalFrames)))
+                .Where(source => !string.IsNullOrWhiteSpace(source.FilePath) && source.FrameCount > 0)];
+        }
+        catch
+        {
+            return [];
+        }
+    }
+
+    private IReadOnlyList<PreviewSourceInfo> BuildRepartPreviewSources()
+    {
+        RepartPlanM? plan = GetRepartPlan();
+        if (plan?.Sources.Count > 0)
+        {
+            return [.. plan.Sources
+                .Select(source => new PreviewSourceInfo(
+                    source.FilePath,
+                    Math.Max(0, source.TotalFrames > 0
+                        ? source.TotalFrames
+                        : FFProbeSourceStatsReader.Read(source.RawJson).TotalFrames)))
+                .Where(source => !string.IsNullOrWhiteSpace(source.FilePath) && source.FrameCount > 0)];
+        }
+
+        return [];
+    }
+
     private string GetSelectedSvfiIniPath()
     {
         ToolItemCardVM? svfiIni = ActiveScriptSrcImportZone.FirstOrDefault(t =>
@@ -1786,7 +1833,8 @@ public class MainVM : BaseVM
                 () => _srcVideoAnalysis.RawJson,
                 () => EncodingPipeline.GetSourceTotalFrames(
                     _srcVideoAnalysis.RawJson,
-                    _srcVideoAnalysis.ConcatTotalFrames) ?? 0);
+                    _srcVideoAnalysis.ConcatTotalFrames) ?? 0,
+                GetPreviewSources);
             EncoderConfVM.ApplySavedSettingsToCard(compressionParams);
         }
     }

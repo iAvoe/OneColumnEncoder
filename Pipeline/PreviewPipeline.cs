@@ -34,7 +34,10 @@ public static partial class PreviewPipeline
             throw new FileNotFoundException(message, path);
     }
 
-    public static string[] BuildSourceArgs(string sourceVideoPath, int previewPositionSeconds, string outputPath, string? displayFilter = null)
+    public static string[] BuildSourceArgs(string sourceVideoPath, int previewPositionSeconds, string outputPath, string? displayFilter = null) =>
+        BuildSourceArgs(sourceVideoPath, TimeSpan.FromSeconds(previewPositionSeconds), outputPath, displayFilter);
+
+    public static string[] BuildSourceArgs(string sourceVideoPath, TimeSpan previewPosition, string outputPath, string? displayFilter = null)
     {
         List<string> args =
         [
@@ -43,7 +46,7 @@ public static partial class PreviewPipeline
             "-strict",
             "unofficial",
             "-ss",
-            EncodingPipeline.FormatTimestamp(TimeSpan.FromSeconds(previewPositionSeconds)),
+            EncodingPipeline.FormatTimestamp(previewPosition),
             "-i",
             sourceVideoPath
         ];
