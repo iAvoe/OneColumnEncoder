@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using System.Windows.Interop;
 
 namespace OneColumnEncoder.Views;
@@ -26,17 +25,6 @@ public partial class EncodingMonitorModal : AdaptiveWindow
         Closing += OnClosing;
         Closed += OnClosed;
     }
-
-    [LibraryImport("user32.dll")]
-    private static partial IntPtr GetSystemMenu(IntPtr hWnd, [MarshalAs(UnmanagedType.Bool)] bool bRevert);
-
-    [LibraryImport("user32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool EnableMenuItem(IntPtr hMenu, uint uIDEnableItem, uint uEnable);
-
-    [LibraryImport("user32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool DrawMenuBar(IntPtr hWnd);
 
     private void OnLoaded(object sender, RoutedEventArgs e)
     {
@@ -112,11 +100,11 @@ public partial class EncodingMonitorModal : AdaptiveWindow
         IntPtr handle = new WindowInteropHelper(this).Handle;
         if (handle == IntPtr.Zero) return;
 
-        IntPtr menu = GetSystemMenu(handle, false);
+        IntPtr menu = LibImportProvider.GetSystemMenu(handle, false);
         if (menu == IntPtr.Zero) return;
 
-        EnableMenuItem(menu, ScClose, MfByCommand | (isEnabled ? MfByCommand : MfGrayed));
-        DrawMenuBar(handle);
+        LibImportProvider.EnableMenuItem(menu, ScClose, MfByCommand | (isEnabled ? MfByCommand : MfGrayed));
+        LibImportProvider.DrawMenuBar(handle);
     }
 
     private void SyncSidebarWidth(bool isSidebarVisible)

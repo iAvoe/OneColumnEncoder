@@ -1,6 +1,4 @@
 using System.IO;
-using System.Runtime.InteropServices;
-
 namespace OneColumnEncoder.FileManagement;
 
 public enum SrcFileKind
@@ -80,14 +78,11 @@ public static partial class SrcFilePicker
         {
             string xName = Path.GetFileName(x ?? string.Empty);
             string yName = Path.GetFileName(y ?? string.Empty);
-            int result = StrCmpLogicalW(xName, yName);
+            int result = LibImportProvider.CompareLogical(xName, yName);
             return result != 0
                 ? result
                 : StringComparer.OrdinalIgnoreCase.Compare(x, y);
         }
-
-        [LibraryImport("shlwapi.dll", StringMarshalling = StringMarshalling.Utf16)]
-        private static partial int StrCmpLogicalW(string x, string y);
     }
 
     private static string? SelectFile(string title, string filter, string? initialDirectory)

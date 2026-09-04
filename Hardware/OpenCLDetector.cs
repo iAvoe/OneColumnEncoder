@@ -1,5 +1,3 @@
-using System.Runtime.InteropServices;
-
 namespace OneColumnEncoder.Hardware;
 
 public static partial class OpenCLDetector
@@ -14,35 +12,6 @@ public static partial class OpenCLDetector
         if (!OperatingSystem.IsWindows())
             return false;
 
-        if (!NativeLibrary.TryLoad("OpenCL.dll", out IntPtr library))
-            return false;
-
-        try
-        {
-            int result = clGetPlatformIDs(0, IntPtr.Zero, out uint platformCount);
-            return result == CL_SUCCESS && platformCount > 0;
-        }
-        catch (DllNotFoundException)
-        {
-            return false;
-        }
-        catch (EntryPointNotFoundException)
-        {
-            return false;
-        }
-        catch (BadImageFormatException)
-        {
-            return false;
-        }
-        finally
-        {
-            NativeLibrary.Free(library);
-        }
+        return LibImportProvider.TryGetOpenClPlatformCount(out uint platformCount) && platformCount > 0;
     }
-
-    [LibraryImport("OpenCL", EntryPoint = "clGetPlatformIDs")]
-    private static partial int clGetPlatformIDs(
-        uint numEntries,
-        IntPtr platforms,
-        out uint numPlatforms);
 }

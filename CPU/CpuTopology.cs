@@ -51,13 +51,6 @@ public partial class CpuTopology
         public uint Size;
     }
 
-    [LibraryImport("kernel32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool GetLogicalProcessorInformationEx(
-        LOGICAL_PROCESSOR_RELATIONSHIP relationshipType,
-        IntPtr buffer,
-        ref uint returnedLength);
-
     public class CacheGroupInfo
     {
         public int TotalCores { get; set; }
@@ -73,7 +66,7 @@ public partial class CpuTopology
     {
         uint returnLength = 0;
         // Pass in RelationAll (0xFFFF)
-        GetLogicalProcessorInformationEx((LOGICAL_PROCESSOR_RELATIONSHIP)0xFFFF, IntPtr.Zero, ref returnLength);
+        LibImportProvider.TryGetLogicalProcessorInformationEx((int)0xFFFF, IntPtr.Zero, ref returnLength);
 
         int err = Marshal.GetLastWin32Error();
         if (err != 122) return null;// ERROR_INSUFFICIENT_BUFFER
@@ -81,7 +74,7 @@ public partial class CpuTopology
         IntPtr buffer = Marshal.AllocHGlobal((int)returnLength);
         try
         {
-            if (!GetLogicalProcessorInformationEx((LOGICAL_PROCESSOR_RELATIONSHIP)0xFFFF, buffer, ref returnLength))
+            if (!LibImportProvider.TryGetLogicalProcessorInformationEx((int)0xFFFF, buffer, ref returnLength))
                 return null;
 
             int totalCores = 0;
@@ -147,7 +140,7 @@ public partial class CpuTopology
     public static int GetProcessorPackageCount()
     {
         uint returnLength = 0;
-        GetLogicalProcessorInformationEx(LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorPackage, IntPtr.Zero, ref returnLength);
+        LibImportProvider.TryGetLogicalProcessorInformationEx((int)LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorPackage, IntPtr.Zero, ref returnLength);
 
         int err = Marshal.GetLastWin32Error();
         if (err != 122) return 0;// ERROR_INSUFFICIENT_BUFFER
@@ -155,7 +148,7 @@ public partial class CpuTopology
         IntPtr buffer = Marshal.AllocHGlobal((int)returnLength);
         try
         {
-            if (!GetLogicalProcessorInformationEx(LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorPackage, buffer, ref returnLength))
+            if (!LibImportProvider.TryGetLogicalProcessorInformationEx((int)LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorPackage, buffer, ref returnLength))
                 return 0;
 
             int packageCount = 0;

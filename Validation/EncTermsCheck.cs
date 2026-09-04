@@ -7,8 +7,6 @@ namespace OneColumnEncoder.Validation;
 public static partial class EncTermsCheck
 {
     private const double NumaCpuUsageHighThreshold = 0.5;
-    private static readonly Lazy<GetSystemProcessorPerformanceInformationDelegate?> _getSystemProcessorPerformanceInformation =
-        new(LoadGetSystemProcessorPerformanceInformation);
     private static DateTime _lastNumaCpuCheck = DateTime.MinValue;
     private static StatusType _lastNumaCpuStatus = StatusType.Waiting;
     private static ulong _lastIdleTicks;
@@ -22,32 +20,6 @@ public static partial class EncTermsCheck
     private static ulong[] _lastNodeUserTicks = [];
 
     #region Win32 P/Invoke
-    [LibraryImport("kernel32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool GetSystemPowerStatus(out SYSTEM_POWER_STATUS lpSystemPowerStatus);
-
-    [LibraryImport("kernel32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool GetSystemTimes(out ulong lpIdleTime, out ulong lpKernelTime, out ulong lpUserTime);
-
-    [LibraryImport("kernel32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool GetSystemProcessorPerformanceInformation(
-        ushort processorGroup,
-        IntPtr processorInformation,
-        uint byteLength,
-        out uint returnedLength);
-
-    [LibraryImport("kernel32.dll")]
-    private static partial uint GetActiveProcessorCount(ushort groupNumber);
-
-    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
-    private delegate bool GetSystemProcessorPerformanceInformationDelegate(
-        ushort processorGroup,
-        IntPtr processorInformation,
-        uint byteLength,
-        out uint returnedLength);
-
     [StructLayout(LayoutKind.Sequential)]
     private struct PROCESSOR_POWER_INFORMATION
     {
@@ -59,17 +31,6 @@ public static partial class EncTermsCheck
         public ulong DpcTime;
         public ulong InterruptTime;
         public uint IsIdle;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct SYSTEM_POWER_STATUS
-    {
-        public byte ACLineStatus;
-        public byte BatteryFlag;
-        public byte BatteryLifePercent;
-        public byte Reserved1;
-        public int BatteryLifeTime;
-        public int BatteryFullLifeTime;
     }
 
     private const byte AC_LINE_ONLINE = 1;
@@ -85,7 +46,7 @@ public static partial class EncTermsCheck
         if (!OperatingSystem.IsWindows())
             return StatusType.Success;
 
-        if (!GetSystemTimes(out ulong idle, out ulong kernel, out ulong user))
+        if (!LibImportProvider.TryGetSystemTimes(out ulong idle, out ulong kernel, out ulong user))
             return StatusType.Success;
 
         if (_lastNumaCpuCheck == DateTime.MinValue)
@@ -190,11 +151,7 @@ public static partial class EncTermsCheck
 
         try
         {
-            GetSystemProcessorPerformanceInformationDelegate? getSystemProcessorPerformanceInformation = _getSystemProcessorPerformanceInformation.Value;
-            if (getSystemProcessorPerformanceInformation == null)
-                return false;
-
-            uint processorCount = GetActiveProcessorCount(group);
+            uint processorCount = LibImportProvider.GetActiveProcessorCount(group);
             if (processorCount == 0) return false;
 
             int structSize = Marshal.SizeOf<PROCESSOR_POWER_INFORMATION>();
@@ -203,7 +160,7 @@ public static partial class EncTermsCheck
             IntPtr buffer = Marshal.AllocHGlobal((int)byteLength);
             try
             {
-                if (!getSystemProcessorPerformanceInformation(group, buffer, byteLength, out _))
+                if (!LibImportProvider.TryGetSystemProcessorPerformanceInformation(group, buffer, byteLength, out _))
                     return false;
 
                 idle = new ulong[processorCount];
@@ -230,25 +187,6 @@ public static partial class EncTermsCheck
         }
     }
 
-    private static GetSystemProcessorPerformanceInformationDelegate? LoadGetSystemProcessorPerformanceInformation()
-    {
-        if (!OperatingSystem.IsWindows())
-            return null;
-
-        try
-        {
-            IntPtr kernel32 = NativeLibrary.Load("kernel32.dll");
-            if (!NativeLibrary.TryGetExport(kernel32, "GetSystemProcessorPerformanceInformation", out IntPtr proc))
-                return null;
-
-            return Marshal.GetDelegateForFunctionPointer<GetSystemProcessorPerformanceInformationDelegate>(proc);
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
     #endregion
 
     #region Battery check with caching
@@ -272,14 +210,14 @@ public static partial class EncTermsCheck
     {
         if (!OperatingSystem.IsWindows()) return true;
 
-        if (!GetSystemPowerStatus(out SYSTEM_POWER_STATUS status))
+        if (!LibImportProvider.TryGetSystemPowerStatus(out byte acLineStatus, out byte batteryFlag))
             return true;
 
-        if (status.ACLineStatus == AC_LINE_ONLINE)
+        if (acLineStatus == AC_LINE_ONLINE)
             return true;
 
-        if (status.ACLineStatus == AC_LINE_UNKNOWN)
-            return status.BatteryFlag == BATTERY_FLAG_NO_BATTERY;
+        if (acLineStatus == AC_LINE_UNKNOWN)
+            return batteryFlag == BATTERY_FLAG_NO_BATTERY;
 
         return false;
     }

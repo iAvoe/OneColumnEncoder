@@ -60,7 +60,7 @@ public static partial class CpuSets
                 return false;
             }
 
-            if (!SetProcessDefaultCpuSets(process.Handle, cpuSetIds, (uint)cpuSetIds.Length))
+            if (!LibImportProvider.TrySetProcessDefaultCpuSets(process.Handle, cpuSetIds, (uint)cpuSetIds.Length))
             {
                 message = string.Format(lang.SetProcessDefaultCpuSetsFailed, Marshal.GetLastWin32Error());
                 return false;
@@ -141,17 +141,17 @@ public static partial class CpuSets
             process.Refresh();
             foreach (ProcessThread thread in process.Threads)
             {
-                IntPtr threadHandle = OpenThread(ThreadSetLimitedInformation, false, (uint)thread.Id);
+                IntPtr threadHandle = LibImportProvider.OpenThread(ThreadSetLimitedInformation, false, (uint)thread.Id);
                 if (threadHandle == IntPtr.Zero) continue;
 
                 try
                 {
-                    if (SetThreadSelectedCpuSets(threadHandle, cpuSetIds, (uint)cpuSetIds.Length))
+                    if (LibImportProvider.TrySetThreadSelectedCpuSets(threadHandle, cpuSetIds, (uint)cpuSetIds.Length))
                         updatedCount++;
                 }
                 finally
                 {
-                    CloseHandle(threadHandle);
+                    LibImportProvider.TryCloseHandle(threadHandle);
                 }
             }
         }
@@ -167,13 +167,13 @@ public static partial class CpuSets
     {
         if (!OperatingSystem.IsWindows()) return [];
 
-        GetSystemCpuSetInformation(IntPtr.Zero, 0, out uint returnedLength, IntPtr.Zero, 0);
+        LibImportProvider.TryGetSystemCpuSetInformation(IntPtr.Zero, 0, out uint returnedLength, IntPtr.Zero, 0);
         if (returnedLength == 0) return [];
 
         IntPtr buffer = Marshal.AllocHGlobal((int)returnedLength);
         try
         {
-            if (!GetSystemCpuSetInformation(buffer, returnedLength, out returnedLength, IntPtr.Zero, 0))
+            if (!LibImportProvider.TryGetSystemCpuSetInformation(buffer, returnedLength, out returnedLength, IntPtr.Zero, 0))
                 return [];
 
             List<CpuSetInfo> result = [];
@@ -206,36 +206,6 @@ public static partial class CpuSets
             Marshal.FreeHGlobal(buffer);
         }
     }
-
-    [LibraryImport("kernel32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool GetSystemCpuSetInformation(
-        IntPtr information,
-        uint bufferLength,
-        out uint returnedLength,
-        IntPtr process,
-        uint flags);
-
-    [LibraryImport("kernel32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool SetProcessDefaultCpuSets(
-        IntPtr process,
-        [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] uint[] cpuSetIds,
-        uint cpuSetIdCount);
-
-    [LibraryImport("kernel32.dll", SetLastError = true)]
-    private static partial IntPtr OpenThread(uint desiredAccess, [MarshalAs(UnmanagedType.Bool)] bool inheritHandle, uint threadId);
-
-    [LibraryImport("kernel32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool SetThreadSelectedCpuSets(
-        IntPtr thread,
-        [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] uint[] cpuSetIds,
-        uint cpuSetIdCount);
-
-    [LibraryImport("kernel32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool CloseHandle(IntPtr handle);
 
     [StructLayout(LayoutKind.Sequential)]
     private struct SYSTEM_CPU_SET_INFORMATION

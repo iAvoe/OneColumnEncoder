@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using System.Windows.Documents;
 using System.Windows.Interop;
 using System.Windows.Threading;
@@ -67,49 +66,21 @@ public partial class AdaptiveWindow : Window
     private Rect GetCurrentMonitorWorkArea()
     {
         IntPtr handle = new WindowInteropHelper(this).Handle;
-        IntPtr monitor = MonitorFromWindow(handle, MonitorDefaultToNearest);
+        IntPtr monitor = LibImportProvider.MonitorFromWindow(handle, MonitorDefaultToNearest);
 
         if (monitor == IntPtr.Zero)
             return SystemParameters.WorkArea;
 
-        MONITORINFO monitorInfo = new() { cbSize = Marshal.SizeOf<MONITORINFO>() };
-
-        if (!GetMonitorInfo(monitor, ref monitorInfo))
+        if (!LibImportProvider.TryGetMonitorInfo(monitor, out int left, out int top, out int right, out int bottom))
             return SystemParameters.WorkArea;
 
         Matrix transformFromDevice =
             PresentationSource.FromVisual(this)?.CompositionTarget?.TransformFromDevice
             ?? Matrix.Identity;
-        Point topLeft =
-            transformFromDevice.Transform(new Point(monitorInfo.rcWork.Left, monitorInfo.rcWork.Top));
-        Point bottomRight =
-            transformFromDevice.Transform(new Point(monitorInfo.rcWork.Right, monitorInfo.rcWork.Bottom));
+        Point topLeft = transformFromDevice.Transform(new Point(left, top));
+        Point bottomRight = transformFromDevice.Transform(new Point(right, bottom));
 
         return new Rect(topLeft, bottomRight);
     }
 
-    [LibraryImport("user32.dll")]
-    private static partial IntPtr MonitorFromWindow(IntPtr hwnd, int dwFlags);
-
-    [LibraryImport("user32.dll", EntryPoint = "GetMonitorInfoW")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
-
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-    private struct MONITORINFO
-    {
-        public int cbSize;
-        public RECT rcMonitor;
-        public RECT rcWork;
-        public int dwFlags;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct RECT
-    {
-        public int Left;
-        public int Top;
-        public int Right;
-        public int Bottom;
-    }
-}
+}

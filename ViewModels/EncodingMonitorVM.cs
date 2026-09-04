@@ -1,9 +1,9 @@
 using OneColumnEncoder.Converters;
 using OneColumnEncoder.CPU;
 using OneColumnEncoder.Models.Encoding;
+using System.Runtime.InteropServices;
 using System.Collections.Concurrent;
 using System.IO;
-using System.Runtime.InteropServices;
 using OneColumnEncoder.Models;
 using System.Text.RegularExpressions;
 using System.Windows.Threading;
@@ -70,7 +70,7 @@ public partial class EncodingMonitorVM : BaseVM
     private bool _isWindowCloseEnabled;
     private int? _exitCode;
     private bool _success;
-    private MemoryStatusSnapshot _lastMemoryStatus;
+    private LibImportProvider.MemoryStatusSnapshot _lastMemoryStatus;
     private long _lastUpstreamWorkingSetBytes;
     private long _lastEncoderWorkingSetBytes;
     private long _upstreamWorkingSetPeakBytes;
@@ -1245,11 +1245,11 @@ public partial class EncodingMonitorVM : BaseVM
     /// </summary>
     private void UpdateMetrics()
     {
-        MemoryStatusSnapshot memoryStatus = GetMemoryStatusSnapshot();
+        LibImportProvider.MemoryStatusSnapshot memoryStatus = LibImportProvider.GetMemoryStatusSnapshot();
         _lastMemoryStatus = memoryStatus;
 
         // Build parent→child map once, then use it for all process tree queries
-        Dictionary<int, List<int>>? childMap = GetChildProcessMap();
+        Dictionary<int, List<int>>? childMap = LibImportProvider.GetChildProcessMap();
 
         _lastUpstreamWorkingSetBytes = GetWorkingSetBytes(_upstreamProcess, childMap);
         _lastEncoderWorkingSetBytes = GetWorkingSetBytes(_encoderProcess, childMap);
@@ -1290,7 +1290,7 @@ public partial class EncodingMonitorVM : BaseVM
     /// Calculates the portion of system cache that is not part of the encoding processes'
     /// working set. This avoids double-counting cache that belongs to our processes.
     /// </summary>
-    private static long GetEffectiveSystemCacheBytes(MemoryStatusSnapshot memoryStatus, long processWorkingSetBytes)
+    private static long GetEffectiveSystemCacheBytes(LibImportProvider.MemoryStatusSnapshot memoryStatus, long processWorkingSetBytes)
     {
         long nonProcessUsedBytes = Math.Max(0, memoryStatus.UsedPhysicalBytes - processWorkingSetBytes);
         return Math.Min(memoryStatus.SystemCacheBytes, nonProcessUsedBytes);
@@ -1321,7 +1321,7 @@ public partial class EncodingMonitorVM : BaseVM
     /// the memory at that byte offset. The byte range is divided into contiguous categories:
     /// [upstream bytes | downstream bytes | other-used bytes | free].
     /// </summary>
-    private void UpdateMemoryRangeBlocks(ObservableCollection<MemoryRangeBlockM> blocks, MemoryStatusSnapshot memoryStatus)
+    private void UpdateMemoryRangeBlocks(ObservableCollection<MemoryRangeBlockM> blocks, LibImportProvider.MemoryStatusSnapshot memoryStatus)
     {
         if (blocks.Count == 0) return;
 
@@ -1574,26 +1574,8 @@ public partial class EncodingMonitorVM : BaseVM
         return SumProcessTreeValue(_upstreamProcess, GetSingleProcessPageFaults, childMap) + SumProcessTreeValue(_encoderProcess, GetSingleProcessPageFaults, childMap);
     }
 
-    private static long GetSingleProcessPageFaults(Process process)
-    {
-        try
-        {
-            if (process.HasExited) return 0L;
-            process.Refresh();
-            PROCESS_MEMORY_COUNTERS counters = new()
-            {
-                cb = (uint)Marshal.SizeOf<PROCESS_MEMORY_COUNTERS>()
-            };
-
-            return GetProcessMemoryInfo(process.Handle, ref counters, counters.cb)
-                ? counters.PageFaultCount
-                : 0L;
-        }
-        catch
-        {
-            return 0L;
-        }
-    }
+    private static long GetSingleProcessPageFaults(Process process) =>
+        LibImportProvider.GetPageFaultCount(process);
 
     /// <summary>
     /// Sums a value across an entire process tree (root + all descendants).
@@ -1639,7 +1621,7 @@ public partial class EncodingMonitorVM : BaseVM
     /// </summary>
     private static HashSet<int> GetProcessTreeIds(int rootProcessId, Dictionary<int, List<int>>? childMap = null)
     {
-        Dictionary<int, List<int>> childIdsByParentId = childMap ?? GetChildProcessMap();
+        Dictionary<int, List<int>> childIdsByParentId = childMap ?? LibImportProvider.GetChildProcessMap();
         HashSet<int> processIds = [];
         Queue<int> pending = new();
         pending.Enqueue(rootProcessId);
@@ -1657,220 +1639,7 @@ public partial class EncodingMonitorVM : BaseVM
         return processIds;
     }
 
-    /// <summary>
-    /// Builds a parent→children process map by enumerating all running processes
-    /// via Win32 CreateToolhelp32Snapshot. Used to calculate working set and page faults
-    /// across the entire process tree (e.g. when an encoder spawns helper processes).
-    /// </summary>
-    private static Dictionary<int, List<int>> GetChildProcessMap()
-    {
-        Dictionary<int, List<int>> childIdsByParentId = [];
-        if (!OperatingSystem.IsWindows()) return childIdsByParentId;
-
-        IntPtr snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-        if (snapshot == InvalidHandleValue) return childIdsByParentId;
-
-        try
-        {
-            PROCESSENTRY32 entry = new()
-            {
-                dwSize = (uint)Marshal.SizeOf<PROCESSENTRY32>()
-            };
-
-            if (!Process32First(snapshot, ref entry)) return childIdsByParentId;
-
-            do
-            {
-                int parentProcessId = unchecked((int)entry.th32ParentProcessID);
-                int processId = unchecked((int)entry.th32ProcessID);
-                if (!childIdsByParentId.TryGetValue(parentProcessId, out List<int>? childIds))
-                {
-                    childIds = [];
-                    childIdsByParentId[parentProcessId] = childIds;
-                }
-
-                childIds.Add(processId);
-                entry.dwSize = (uint)Marshal.SizeOf<PROCESSENTRY32>();
-            }
-            while (Process32Next(snapshot, ref entry));
-
-            return childIdsByParentId;
-        }
-        finally
-        {
-            CloseHandle(snapshot);
-        }
-    }
-
-    /// <summary>
-    /// Reads system-wide memory statistics from Win32 APIs.
-    /// First tries GlobalMemoryStatusEx, then refines with GetPerformanceInfo
-    /// (which provides system cache and more accurate page-aligned values).
-    /// </summary>
-    private static MemoryStatusSnapshot GetMemoryStatusSnapshot()
-    {
-        if (!OperatingSystem.IsWindows()) return default;
-
-        MEMORYSTATUSEX memoryStatus = new()
-        {
-            dwLength = (uint)Marshal.SizeOf<MEMORYSTATUSEX>()
-        };
-
-        if (!GlobalMemoryStatusEx(ref memoryStatus)) return default;
-
-        long totalPhysicalBytes = ToNonNegativeLong(memoryStatus.ullTotalPhys);
-        long availablePhysicalBytes = Math.Min(totalPhysicalBytes, ToNonNegativeLong(memoryStatus.ullAvailPhys));
-        long commitLimitBytes = ToNonNegativeLong(memoryStatus.ullTotalPageFile);
-        long commitAvailableBytes = ToNonNegativeLong(memoryStatus.ullAvailPageFile);
-        long committedBytes = Math.Max(0, commitLimitBytes - commitAvailableBytes);
-        long systemCacheBytes = 0;
-
-        // Try to get more detailed info from psapi (includes system cache)
-        PERFORMANCE_INFORMATION performanceInfo = new()
-        {
-            cb = (uint)Marshal.SizeOf<PERFORMANCE_INFORMATION>()
-        };
-
-        if (GetPerformanceInfo(ref performanceInfo, performanceInfo.cb) && performanceInfo.PageSize != 0)
-        {
-            ulong pageSize = performanceInfo.PageSize;
-            totalPhysicalBytes = ToNonNegativeLong(performanceInfo.PhysicalTotal * pageSize);
-            availablePhysicalBytes = Math.Min(totalPhysicalBytes, ToNonNegativeLong(performanceInfo.PhysicalAvailable * pageSize));
-            commitLimitBytes = ToNonNegativeLong(performanceInfo.CommitLimit * pageSize);
-            committedBytes = Math.Min(commitLimitBytes, ToNonNegativeLong(performanceInfo.CommitTotal * pageSize));
-            systemCacheBytes = Math.Min(totalPhysicalBytes, ToNonNegativeLong(performanceInfo.SystemCache * pageSize));
-        }
-
-        return new MemoryStatusSnapshot(
-            totalPhysicalBytes,
-            availablePhysicalBytes,
-            commitLimitBytes,
-            committedBytes,
-            systemCacheBytes,
-            Math.Clamp((int)memoryStatus.dwMemoryLoad, 0, 100));
-    }
-
-    private static long ToNonNegativeLong(ulong value)
-    {
-        return value > long.MaxValue ? long.MaxValue : (long)value;
-    }
     #endregion
-
-    [LibraryImport("kernel32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
-
-    [LibraryImport("psapi.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool GetProcessMemoryInfo(IntPtr Process, ref PROCESS_MEMORY_COUNTERS ppsmemCounters, uint cb);
-
-    [LibraryImport("psapi.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool GetPerformanceInfo(ref PERFORMANCE_INFORMATION pPerformanceInformation, uint cb);
-
-    [LibraryImport("kernel32.dll", SetLastError = true)]
-    private static partial IntPtr CreateToolhelp32Snapshot(uint dwFlags, uint th32ProcessID);
-
-    [LibraryImport("kernel32.dll", EntryPoint = "Process32FirstW", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool Process32First(IntPtr hSnapshot, ref PROCESSENTRY32 lppe);
-
-    [LibraryImport("kernel32.dll", EntryPoint = "Process32NextW", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool Process32Next(IntPtr hSnapshot, ref PROCESSENTRY32 lppe);
-
-    [LibraryImport("kernel32.dll", EntryPoint = "CloseHandle", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool CloseHandle(IntPtr hObject);
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct MEMORYSTATUSEX
-    {
-        public uint dwLength;
-        public uint dwMemoryLoad;
-        public ulong ullTotalPhys;
-        public ulong ullAvailPhys;
-        public ulong ullTotalPageFile;
-        public ulong ullAvailPageFile;
-        public ulong ullTotalVirtual;
-        public ulong ullAvailVirtual;
-        public ulong ullAvailExtendedVirtual;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct PROCESS_MEMORY_COUNTERS
-    {
-        public uint cb;
-        public uint PageFaultCount;
-        public nuint PeakWorkingSetSize;
-        public nuint WorkingSetSize;
-        public nuint QuotaPeakPagedPoolUsage;
-        public nuint QuotaPagedPoolUsage;
-        public nuint QuotaPeakNonPagedPoolUsage;
-        public nuint QuotaNonPagedPoolUsage;
-        public nuint PagefileUsage;
-        public nuint PeakPagefileUsage;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct PERFORMANCE_INFORMATION
-    {
-        public uint cb;
-        public nuint CommitTotal;
-        public nuint CommitLimit;
-        public nuint CommitPeak;
-        public nuint PhysicalTotal;
-        public nuint PhysicalAvailable;
-        public nuint SystemCache;
-        public nuint KernelTotal;
-        public nuint KernelPaged;
-        public nuint KernelNonpaged;
-        public nuint PageSize;
-        public uint HandleCount;
-        public uint ProcessCount;
-        public uint ThreadCount;
-    }
-
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    private unsafe struct PROCESSENTRY32
-    {
-        public uint dwSize;
-        public uint cntUsage;
-        public uint th32ProcessID;
-        public IntPtr th32DefaultHeapID;
-        public uint th32ModuleID;
-        public uint cntThreads;
-        public uint th32ParentProcessID;
-        public int pcPriClassBase;
-        public uint dwFlags;
-        public fixed char szExeFile[260];
-    }
-
-    /// <summary>
-    /// Represents a snapshot of the system's memory status at a point in time.
-    /// Contains information about physical RAM and virtual memory usage.
-    /// </summary>
-    /// <param name="TotalPhysicalBytes">Total amount of physical RAM in bytes.</param>
-    /// <param name="AvailablePhysicalBytes">Amount of available (free) physical RAM in bytes.</param>
-    /// <param name="CommitLimitBytes">Maximum amount of virtual memory that can be committed in bytes.</param>
-    /// <param name="CommittedBytes">Amount of currently committed virtual memory in bytes.</param>
-    /// <param name="SystemCacheBytes">Amount of physical RAM used by the system cache in bytes.</param>
-    /// <param name="MemoryLoadPercent">Percentage of physical memory currently in use (0-100).</param>
-    private readonly record struct MemoryStatusSnapshot(
-        long TotalPhysicalBytes,
-        long AvailablePhysicalBytes,
-        long CommitLimitBytes,
-        long CommittedBytes,
-        long SystemCacheBytes,
-        int MemoryLoadPercent)
-    {
-        /// <summary>
-        /// Gets the amount of used physical RAM in bytes, calculated as the difference
-        /// between total and available physical memory.
-        /// </summary>
-        public long UsedPhysicalBytes =>
-            Math.Max(0, TotalPhysicalBytes - AvailablePhysicalBytes);
-    }
 
     /// <summary>
     /// Resets accumulated memory usage peaks and written-frame counters.

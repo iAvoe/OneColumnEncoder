@@ -1,5 +1,3 @@
-using System.Runtime.InteropServices;
-
 namespace OneColumnEncoder.CPU;
 
 public class NumaNodeInfo
@@ -15,52 +13,16 @@ public class NumaNodeInfo
 
 public static partial class NumaTopology
 {
-    [LibraryImport("kernel32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool GetNumaHighestNodeNumber(out uint highestNodeNumber);
-
-    [LibraryImport("kernel32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool GetNumaNodeProcessorMaskEx(ushort nodeNumber, out GROUP_AFFINITY groupMask);
-
-    [LibraryImport("kernel32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct GROUP_AFFINITY
-    {
-        public ulong Mask;
-        public ushort Group;
-        public ushort Reserved1;
-        public ushort Reserved2;
-        public ushort Reserved3;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct MEMORYSTATUSEX
-    {
-        public uint dwLength;
-        public uint dwMemoryLoad;
-        public ulong ullTotalPhys;
-        public ulong ullAvailPhys;
-        public ulong ullTotalPageFile;
-        public ulong ullAvailPageFile;
-        public ulong ullTotalVirtual;
-        public ulong ullAvailVirtual;
-        public ulong ullAvailExtendedVirtual;
-    }
-
     /// <summary>
     /// Resolves the processor group and affinity mask for a given NUMA node.
     /// Returns false when the node does not exist or has no processors.
     /// </summary>
     public static bool TryGetNodeGroupMask(int nodeId, out int group, out ulong mask)
     {
-        if (GetNumaNodeProcessorMaskEx((ushort)nodeId, out GROUP_AFFINITY groupMask) && groupMask.Mask != 0)
+        if (LibImportProvider.TryGetNumaNodeProcessorMaskEx((ushort)nodeId, out int nodeGroup, out ulong nodeMask) && nodeMask != 0)
         {
-            group = groupMask.Group;
-            mask = groupMask.Mask;
+            group = nodeGroup;
+            mask = nodeMask;
             return true;
         }
 
@@ -79,29 +41,29 @@ public static partial class NumaTopology
     /// </summary>
     public static List<NumaNodeInfo> GetNumaNodes()
     {
-        if (!GetNumaHighestNodeNumber(out uint highestNodeNumber))
+        if (!LibImportProvider.TryGetNumaHighestNodeNumber(out uint highestNodeNumber))
             return CreateFallbackNode();
 
         List<NumaNodeInfo> nodes = [];
 
         for (ushort nodeId = 0; nodeId <= highestNodeNumber; nodeId++)
         {
-            if (!GetNumaNodeProcessorMaskEx(nodeId, out GROUP_AFFINITY groupMask))
+            if (!LibImportProvider.TryGetNumaNodeProcessorMaskEx(nodeId, out int groupId, out ulong mask))
                 continue;
-            if (groupMask.Mask == 0) continue;
+            if (mask == 0) continue;
 
-            int procCount = CountBits(groupMask.Mask);
+            int procCount = CountBits(mask);
             if (procCount == 0) continue;
 
-            int minBit = LowBitIndex(groupMask.Mask);
-            int maxBit = HighBitIndex(groupMask.Mask);
-            int globalMin = groupMask.Group * 64 + minBit;
-            int globalMax = groupMask.Group * 64 + maxBit;
+            int minBit = LowBitIndex(mask);
+            int maxBit = HighBitIndex(mask);
+            int globalMin = groupId * 64 + minBit;
+            int globalMax = groupId * 64 + maxBit;
 
             nodes.Add(new NumaNodeInfo
             {
                 NodeId = nodeId,
-                Group = groupMask.Group,
+                Group = groupId,
                 ProcessorCount = procCount,
                 MinThreadNum = globalMin,
                 MaxThreadNum = globalMax
@@ -136,11 +98,9 @@ public static partial class NumaTopology
 
     private static long GetTotalPhysicalMemory()
     {
-        MEMORYSTATUSEX memStatus = new()
-        {
-            dwLength = (uint)Marshal.SizeOf<MEMORYSTATUSEX>()
-        };
-        return GlobalMemoryStatusEx(ref memStatus) ? (long)memStatus.ullTotalPhys : 0;
+        return LibImportProvider.TryGetTotalPhysicalMemoryBytes(out long totalPhysicalBytes)
+            ? totalPhysicalBytes
+            : 0;
     }
 
     private static void DistributeMemoryByProcessorCount(List<NumaNodeInfo> nodes, long totalMemory)
