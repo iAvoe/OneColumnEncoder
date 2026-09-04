@@ -175,9 +175,15 @@ public class ImgABPvVM : BaseVM
         long totalFrames = _previewSources.Length > 0
             ? _previewSources.Sum(source => Math.Max(0, source.FrameCount))
             : getTotalFrames?.Invoke() ?? EncodingPipeline.GetSourceTotalFrames(sourceFfprobeJson) ?? 0;
-        double previewDurationSeconds = totalFrames > 0 && sourceStats.FrameRate > 0d
-            ? totalFrames / sourceStats.FrameRate
-            : sourceStats.DurationSeconds;
+        double previewDurationSeconds = _previewSources.Length > 0
+            ? _previewSources.Sum(source => source.DurationSeconds > 0d
+                ? source.DurationSeconds
+                : source.FrameCount > 0 && _frameRate > 0d
+                    ? source.FrameCount / _frameRate
+                    : 0d)
+            : totalFrames > 0 && sourceStats.FrameRate > 0d
+                ? totalFrames / sourceStats.FrameRate
+                : sourceStats.DurationSeconds;
         MaxPositionSeconds = Math.Max(1, (int)Math.Floor(Math.Min(int.MaxValue, previewDurationSeconds)) - 1);
         PreviewPositionSeconds = hasSourceStats
             ? Math.Min(MaxPositionSeconds, Math.Max(0, MaxPositionSeconds / 2))
@@ -531,4 +537,4 @@ public class ImgABPvVM : BaseVM
     }
 }
 
-public sealed record PreviewSourceInfo(string FilePath, long FrameCount);
+public sealed record PreviewSourceInfo(string FilePath, long FrameCount, double DurationSeconds = 0d);

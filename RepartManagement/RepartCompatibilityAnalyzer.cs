@@ -255,7 +255,7 @@ public static class RepartCompatibilityAnalyzer
         // that survived every earlier filter reach the expensive frame-count scan.
         // The modal opens only after exclusions are reported.
         int completedScans = 0;
-        async Task<(string Path, string DisplayName, string RawJson, RepartScanOutcome Scan)> ScanCandidateAsync(
+        async Task<(string Path, string DisplayName, string RawJson, double DurationSeconds, RepartScanOutcome Scan)> ScanCandidateAsync(
             string path,
             string displayName,
             RepartSrcProbe sourceProbe)
@@ -270,18 +270,18 @@ public static class RepartCompatibilityAnalyzer
                 cancellationToken);
             int completed = Interlocked.Increment(ref completedScans);
             onFileProgress?.Invoke(RepartAnalysisStage.ScanFrames, completed, candidates.Count, displayName);
-            return (path, displayName, sourceProbe.RawJson, scan);
+            return (path, displayName, sourceProbe.RawJson, sourceProbe.DurationSeconds ?? 0d, scan);
         }
 
-        Task<(string Path, string DisplayName, string RawJson, RepartScanOutcome Scan)>[] scanTasks = candidates
+        Task<(string Path, string DisplayName, string RawJson, double DurationSeconds, RepartScanOutcome Scan)>[] scanTasks = candidates
             .Select(candidate => ScanCandidateAsync(
                 candidate.Path,
                 candidate.DisplayName,
                 candidate.Probe))
             .ToArray();
 
-        (string Path, string DisplayName, string RawJson, RepartScanOutcome Scan)[] scanResults = await Task.WhenAll(scanTasks);
-        foreach ((string path, string displayName, string rawJson, RepartScanOutcome scan) in scanResults)
+        (string Path, string DisplayName, string RawJson, double DurationSeconds, RepartScanOutcome Scan)[] scanResults = await Task.WhenAll(scanTasks);
+        foreach ((string path, string displayName, string rawJson, double durationSeconds, RepartScanOutcome scan) in scanResults)
         {
             if (scan.RejectionReason != null)
             {
@@ -302,7 +302,10 @@ public static class RepartCompatibilityAnalyzer
                 firstFrame,
                 cumulativeFrames - 1,
                 scan.FileLength,
-                scan.LastWriteUtcTicks));
+                scan.LastWriteUtcTicks)
+            {
+                DurationSeconds = Math.Max(0d, durationSeconds)
+            });
         }
 
         if (CreateInsufficientSourcesResult(sources.Count) is RepartAnalysisResult insufficientAfterFrameScan)

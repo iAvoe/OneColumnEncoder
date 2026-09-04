@@ -1615,9 +1615,14 @@ public class MainVM : BaseVM
             if (data?.Entries == null || data.Entries.Count == 0) return [];
 
             return [.. data.Entries
-                .Select(entry => new PreviewSourceInfo(
-                    entry.FilePath,
-                    Math.Max(0, FFProbeSourceStatsReader.Read(entry.FfprobeJson.GetRawText()).TotalFrames)))
+                .Select(entry =>
+                {
+                    FFProbeSrcStats stats = FFProbeSourceStatsReader.Read(entry.FfprobeJson.GetRawText());
+                    return new PreviewSourceInfo(
+                        entry.FilePath,
+                        Math.Max(0, stats.TotalFrames),
+                        Math.Max(0d, stats.DurationSeconds));
+                })
                 .Where(source => !string.IsNullOrWhiteSpace(source.FilePath) && source.FrameCount > 0)];
         }
         catch
@@ -1632,11 +1637,20 @@ public class MainVM : BaseVM
         if (plan?.Sources.Count > 0)
         {
             return [.. plan.Sources
-                .Select(source => new PreviewSourceInfo(
-                    source.FilePath,
-                    Math.Max(0, source.TotalFrames > 0
-                        ? source.TotalFrames
-                        : FFProbeSourceStatsReader.Read(source.RawJson).TotalFrames)))
+                .Select(source =>
+                {
+                    FFProbeSrcStats stats = source.DurationSeconds > 0d
+                        ? default
+                        : FFProbeSourceStatsReader.Read(source.RawJson);
+                    return new PreviewSourceInfo(
+                        source.FilePath,
+                        Math.Max(0, source.TotalFrames > 0
+                            ? source.TotalFrames
+                            : stats.TotalFrames),
+                        Math.Max(0d, source.DurationSeconds > 0d
+                            ? source.DurationSeconds
+                            : stats.DurationSeconds));
+                })
                 .Where(source => !string.IsNullOrWhiteSpace(source.FilePath) && source.FrameCount > 0)];
         }
 

@@ -46,6 +46,7 @@ public sealed record RepartSourceM(
     long FileLength,
     long LastWriteUtcTicks)
 {
+    public double DurationSeconds { get; init; }
     public string DisplayName => Path.GetFileName(FilePath);
     public long FrameCount => LastFrame >= FirstFrame ? LastFrame - FirstFrame + 1 : 0;
 
