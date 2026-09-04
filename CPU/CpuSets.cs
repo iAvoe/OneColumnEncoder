@@ -87,11 +87,10 @@ public static partial class CpuSets
 
         if (node != null)
         {
-            List<CpuSetInfo> rangedCpuSets = allCpuSets
+            List<CpuSetInfo> rangedCpuSets = [.. allCpuSets
                 .Where(c => c.Group == node.Group
                     && node.MinThreadNum <= c.GlobalLogicalProcessorIndex
-                    && c.GlobalLogicalProcessorIndex <= node.MaxThreadNum)
-                .ToList();
+                    && c.GlobalLogicalProcessorIndex <= node.MaxThreadNum)];
 
             if (rangedCpuSets.Count > nodeCpuSets.Count)
                 nodeCpuSets = rangedCpuSets;
@@ -101,15 +100,14 @@ public static partial class CpuSets
         {
             if (node != null)
             {
-                nodeCpuSets = allCpuSets
+                nodeCpuSets = [.. allCpuSets
                     .Where(c => c.Group == node.Group
                         && node.MinThreadNum <= c.GlobalLogicalProcessorIndex
-                        && c.GlobalLogicalProcessorIndex <= node.MaxThreadNum)
-                    .ToList();
+                        && c.GlobalLogicalProcessorIndex <= node.MaxThreadNum)];
             }
         }
 
-        List<CpuSetInfo> availableCpuSets = nodeCpuSets.Where(c => !c.IsAllocated).ToList();
+        List<CpuSetInfo> availableCpuSets = [.. nodeCpuSets.Where(c => !c.IsAllocated)];
         if (availableCpuSets.Count > 0) nodeCpuSets = availableCpuSets;
 
         IEnumerable<CpuSetInfo> selected = physicalOnly
@@ -130,7 +128,7 @@ public static partial class CpuSets
         if (maxCpuSets is > 0)
             selected = selected.Take(maxCpuSets.Value);
 
-        return selected.ToList();
+        return [.. selected];
     }
 
     private static int ApplyCurrentThreadCpuSets(Process process, uint[] cpuSetIds)

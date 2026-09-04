@@ -8,8 +8,6 @@ public static partial class LibImportProvider
 {
     private const uint TH32CS_SNAPPROCESS = 0x00000002;
     private static readonly IntPtr InvalidHandleValue = new(-1);
-    private static readonly Lazy<GetSystemProcessorPerformanceInformationDelegate?> _getSystemProcessorPerformanceInformation =
-        new(LoadGetSystemProcessorPerformanceInformation);
 
     public static int CompareLogical(string? x, string? y)
     {
@@ -120,16 +118,7 @@ public static partial class LibImportProvider
         IntPtr processorInformation,
         uint byteLength,
         out uint returnedLength)
-    {
-        GetSystemProcessorPerformanceInformationDelegate? getSystemProcessorPerformanceInformation = _getSystemProcessorPerformanceInformation.Value;
-        if (getSystemProcessorPerformanceInformation == null)
-        {
-            returnedLength = 0;
-            return false;
-        }
-
-        return getSystemProcessorPerformanceInformation(processorGroup, processorInformation, byteLength, out returnedLength);
-    }
+        => GetSystemProcessorPerformanceInformationNative(processorGroup, processorInformation, byteLength, out returnedLength);
 
     public static uint GetActiveProcessorCount(ushort groupNumber) =>
         GetActiveProcessorCountNative(groupNumber);
@@ -248,7 +237,7 @@ public static partial class LibImportProvider
             dwLength = (uint)Marshal.SizeOf<MEMORYSTATUSEX>()
         };
 
-        if (!GlobalMemoryStatusEx(ref memoryStatus)) return default;
+        if (!GlobalMemoryStatusExNative(ref memoryStatus)) return default;
 
         long totalPhysicalBytes = ToNonNegativeLong(memoryStatus.ullTotalPhys);
         long availablePhysicalBytes = Math.Min(totalPhysicalBytes, ToNonNegativeLong(memoryStatus.ullAvailPhys));
@@ -284,29 +273,29 @@ public static partial class LibImportProvider
     private static long ToNonNegativeLong(ulong value) =>
         value > long.MaxValue ? long.MaxValue : (long)value;
 
-    [LibraryImport("shlwapi.dll", StringMarshalling = StringMarshalling.Utf16)]
+    [LibraryImport("shlwapi.dll", EntryPoint = "StrCmpLogicalW", StringMarshalling = StringMarshalling.Utf16)]
     private static partial int StrCmpLogicalWNative(string x, string y);
 
-    [LibraryImport("kernel32.dll", SetLastError = true)]
+    [LibraryImport("kernel32.dll", EntryPoint = "GetLogicalProcessorInformationEx", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool GetLogicalProcessorInformationExNative(
         LOGICAL_PROCESSOR_RELATIONSHIP relationshipType,
         IntPtr buffer,
         ref uint returnedLength);
 
-    [LibraryImport("kernel32.dll", SetLastError = true)]
+    [LibraryImport("kernel32.dll", EntryPoint = "GetNumaHighestNodeNumber", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool GetNumaHighestNodeNumberNative(out uint highestNodeNumber);
 
-    [LibraryImport("kernel32.dll", SetLastError = true)]
+    [LibraryImport("kernel32.dll", EntryPoint = "GetNumaNodeProcessorMaskEx", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool GetNumaNodeProcessorMaskExNative(ushort nodeNumber, out GROUP_AFFINITY groupMask);
 
-    [LibraryImport("kernel32.dll")]
+    [LibraryImport("kernel32.dll", EntryPoint = "GlobalMemoryStatusEx")]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool GlobalMemoryStatusExNative(ref MEMORYSTATUSEX lpBuffer);
 
-    [LibraryImport("kernel32.dll", SetLastError = true)]
+    [LibraryImport("kernel32.dll", EntryPoint = "GetSystemCpuSetInformation", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool GetSystemCpuSetInformationNative(
         IntPtr information,
@@ -315,50 +304,50 @@ public static partial class LibImportProvider
         IntPtr process,
         uint flags);
 
-    [LibraryImport("kernel32.dll", SetLastError = true)]
+    [LibraryImport("kernel32.dll", EntryPoint = "SetProcessDefaultCpuSets", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool SetProcessDefaultCpuSetsNative(
         IntPtr process,
-        [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] uint[] cpuSetIds,
+        [In, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] uint[] cpuSetIds,
         uint cpuSetIdCount);
 
-    [LibraryImport("kernel32.dll", SetLastError = true)]
+    [LibraryImport("kernel32.dll", EntryPoint = "OpenThread", SetLastError = true)]
     private static partial IntPtr OpenThreadNative(uint desiredAccess, [MarshalAs(UnmanagedType.Bool)] bool inheritHandle, uint threadId);
 
-    [LibraryImport("kernel32.dll", SetLastError = true)]
+    [LibraryImport("kernel32.dll", EntryPoint = "SetThreadSelectedCpuSets", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool SetThreadSelectedCpuSetsNative(
         IntPtr thread,
-        [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] uint[] cpuSetIds,
+        [In, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] uint[] cpuSetIds,
         uint cpuSetIdCount);
 
-    [LibraryImport("kernel32.dll", SetLastError = true)]
+    [LibraryImport("kernel32.dll", EntryPoint = "CloseHandle", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool CloseHandleNative(IntPtr handle);
 
-    [LibraryImport("kernel32.dll", SetLastError = true)]
+    [LibraryImport("kernel32.dll", EntryPoint = "GetSystemPowerStatus", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool GetSystemPowerStatusNative(out SYSTEM_POWER_STATUS lpSystemPowerStatus);
 
-    [LibraryImport("kernel32.dll", SetLastError = true)]
+    [LibraryImport("kernel32.dll", EntryPoint = "GetSystemTimes", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool GetSystemTimesNative(out ulong lpIdleTime, out ulong lpKernelTime, out ulong lpUserTime);
 
-    [LibraryImport("kernel32.dll", SetLastError = true)]
+    [LibraryImport("kernel32.dll", EntryPoint = "GetActiveProcessorCount", SetLastError = true)]
     private static partial uint GetActiveProcessorCountNative(ushort groupNumber);
 
-    [LibraryImport("user32.dll")]
+    [LibraryImport("user32.dll", EntryPoint = "GetSystemMenu")]
     private static partial IntPtr GetSystemMenuNative(IntPtr hWnd, [MarshalAs(UnmanagedType.Bool)] bool bRevert);
 
-    [LibraryImport("user32.dll")]
+    [LibraryImport("user32.dll", EntryPoint = "EnableMenuItem")]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool EnableMenuItemNative(IntPtr hMenu, uint uIDEnableItem, uint uEnable);
 
-    [LibraryImport("user32.dll")]
+    [LibraryImport("user32.dll", EntryPoint = "DrawMenuBar")]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool DrawMenuBarNative(IntPtr hWnd);
 
-    [LibraryImport("user32.dll")]
+    [LibraryImport("user32.dll", EntryPoint = "MonitorFromWindow")]
     private static partial IntPtr MonitorFromWindowNative(IntPtr hwnd, int dwFlags);
 
     [LibraryImport("user32.dll", EntryPoint = "GetMonitorInfoW")]
@@ -371,34 +360,13 @@ public static partial class LibImportProvider
         IntPtr platforms,
         out uint numPlatforms);
 
-    private delegate bool GetSystemProcessorPerformanceInformationDelegate(
+    [LibraryImport("kernel32.dll", EntryPoint = "GetSystemProcessorPerformanceInformation")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool GetSystemProcessorPerformanceInformationNative(
         ushort processorGroup,
         IntPtr processorInformation,
         uint byteLength,
         out uint returnedLength);
-
-    private static GetSystemProcessorPerformanceInformationDelegate? LoadGetSystemProcessorPerformanceInformation()
-    {
-        if (!OperatingSystem.IsWindows())
-            return null;
-
-        try
-        {
-            IntPtr kernel32 = NativeLibrary.Load("kernel32.dll");
-            if (!NativeLibrary.TryGetExport(kernel32, "GetSystemProcessorPerformanceInformation", out IntPtr proc))
-                return null;
-
-            return Marshal.GetDelegateForFunctionPointer<GetSystemProcessorPerformanceInformationDelegate>(proc);
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    [LibraryImport("kernel32.dll")]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static partial bool GlobalMemoryStatusEx(ref MEMORYSTATUSEX lpBuffer);
 
     [LibraryImport("psapi.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
