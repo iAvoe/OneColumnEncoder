@@ -22,7 +22,10 @@ public class OpenRawAnalysisCmd(
         try
         {
             string json = GetRawJson();
-            string tempFile = Path.Combine(Path.GetTempPath(), "RawAnalysis.json");
+            string sourceName = string.IsNullOrWhiteSpace(_analysis.SrcPath)
+                ? "RawAnalysis"
+                : Path.GetFileNameWithoutExtension(_analysis.SrcPath);
+            string tempFile = Path.Combine(Path.GetTempPath(), $"{sourceName}_RawAnalysis.json");
             File.WriteAllText(tempFile, json);
             string editorPath = string.IsNullOrWhiteSpace(_appConfM.TextEditor.TextEditorPath)
                 ? "notepad.exe"
