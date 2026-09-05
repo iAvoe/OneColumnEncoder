@@ -109,6 +109,12 @@
                 <TextBlock Text="{Binding SubtitleHeader}"
                            Style="{StaticResource H3}"
                            VerticalAlignment="Center" />
+                <TextBlock Grid.Row="1"
+                           Text="{Binding EmptyText}"
+                           Foreground="{StaticResource GlobalSecondary}"
+                           FontWeight="DemiBold"
+                           HorizontalAlignment="Center"
+                           Visibility="{Binding HasNoSubtitles, Converter={StaticResource BoolToVisibility}}" />
                 <ListBox Grid.Row="1"
                          ItemsSource="{Binding Tracks}"
                          BorderThickness="0"

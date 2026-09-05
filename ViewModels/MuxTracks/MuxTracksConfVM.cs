@@ -88,7 +88,7 @@ public sealed class MuxTracksConfVM : BaseVM
     public static string SidebarTitle => Lang["MuxTracks.QueueSources"];
     public static string SubtitleHeader => Lang["MuxTracks.SubtitleHeader"];
     public static string AddSubtitleText => Lang["MuxTracks.AddSubtitle"];
-    public static string EmptyText => Lang["MuxTracks.Empty"];
+    public static string EmptyText => Lang["MuxTracks.NoSub"];
     public static string CannotDeleteSrcSubsHint => Lang["Hint.CannotDeleteSrcSubs"];
     public static string FFmpegSubtitleDefaultHint => Lang["Hint.FFmpegSubtitleDefault"];
     public string CurrentSourceTitle => SelectedSource?.Name ?? string.Empty;
@@ -105,6 +105,12 @@ public sealed class MuxTracksConfVM : BaseVM
         private set => SetProperty(ref _showSidebar, value);
     }
     public bool CanConfirm => SourceItems.Count > 0;
+    private bool _hasNoSubtitles = true;
+    public bool HasNoSubtitles
+    {
+        get => _hasNoSubtitles;
+        private set => SetProperty(ref _hasNoSubtitles, value);
+    }
 
     public MuxTrackSourceVM? SelectedSource
     {
@@ -201,12 +207,17 @@ public sealed class MuxTracksConfVM : BaseVM
     {
         foreach (MuxTrackEntryVM entry in Tracks) entry.Dispose();
         Tracks.Clear();
-        if (SelectedSource == null) return;
+        if (SelectedSource == null)
+        {
+            HasNoSubtitles = true;
+            return;
+        }
         foreach (MuxTrackM track in _tracksBySource[SelectedSource.FilePath])
         {
             MuxTrackEntryVM entry = new(track, RemoveTrack, OnDefaultChanged);
             Tracks.Add(entry);
         }
+        HasNoSubtitles = Tracks.Count == 0;
     }
 
     /// <summary>

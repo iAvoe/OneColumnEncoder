@@ -98,7 +98,7 @@ jobs:
           $sha = git rev-parse --short=8 HEAD
           $title = "1cenc v${{ env.RELEASE_VERSION }}"
 
-          $body = "Commit $count $sha`n`n"
+          $body = "**Commit $count $sha**`n`n"
           
           $body += "Follow this tutorial to get tools (pipe upstream / filtering tools & video encoders) tailored for your use case | 你可以根据此教程来获取合适的工具（管道上游程序/滤镜工具与视频编码器）:`n"
           $body += "- [Encoding Tools Download Tutorial | 编码工具下载教程](https://github.com/iAvoe/encoding-tools-download-tutorial)`n`n"
