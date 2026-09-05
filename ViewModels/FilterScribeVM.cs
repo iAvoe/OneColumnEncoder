@@ -308,7 +308,7 @@ public class FilterScribeVM : BaseVM
     private bool HasUpscaleFilter =>
         HasSource && UpscaleHeight > UpscaleHeightMinimum;
 
-    public bool HasUpscaleOutput => HasUpscaleFilter;
+    public bool HasUpscaleOutput => HasUpscaleFilter && IsUpscaleStepAligned;
     public int UpscaleTargetWidth => HasUpscaleFilter ? GetUpscaleTargetDimensions().width : 0;
     public int UpscaleTargetHeight => HasUpscaleFilter ? GetUpscaleTargetDimensions().height : 0;
 
@@ -425,7 +425,7 @@ public class FilterScribeVM : BaseVM
     {
         get
         {
-            if (!HasUpscaleFilter) return LangProviderBase.NAText;
+            if (!HasUpscaleFilter || !IsUpscaleStepAligned) return LangProviderBase.NAText;
 
             var (width, height) = GetUpscaleTargetDimensions();
             return $"-filter:v \"libplacebo=w={width}:h={height}:force_original_aspect_ratio=decrease:normalize_sar=true:upscaler={SelectedUpscaler}\"";
@@ -436,7 +436,7 @@ public class FilterScribeVM : BaseVM
     {
         get
         {
-            if (!HasUpscaleFilter) return LangProviderBase.NAText;
+            if (!HasUpscaleFilter || !IsUpscaleStepAligned) return LangProviderBase.NAText;
 
             var (width, height) = GetUpscaleTargetDimensions();
             return $"libplacebo=w={width}:h={height}:force_original_aspect_ratio=decrease:normalize_sar=true:upscaler={SelectedUpscaler}";
@@ -557,9 +557,15 @@ public class FilterScribeVM : BaseVM
 
     private string SelectedUpscaler => UpscalerNames[_upscalerIndex];
 
+    private bool IsUpscaleStepAligned =>
+        UpscaleStep <= 1
+        || UpscaleHeight == UpscaleHeightMinimum
+        || UpscaleHeight == UpscaleHeightMaximum
+        || (UpscaleHeight - UpscaleHeightMinimum) % UpscaleStep == 0;
+
     public bool CanInsertFFmpegDebandFilter => DebandEnabled;
     public bool CanInsertFFmpegRotateFilter => RotateMode > 0;
-    public bool CanInsertFFmpegUpscaleFilter => HasUpscaleFilter;
+    public bool CanInsertFFmpegUpscaleFilter => HasUpscaleOutput;
     public bool CanInsertFFmpegFlipFilter => HorizontalFlipEnabled || VerticalFlipEnabled;
 
     public static string AviSynthHqdn3dDenoiseFilter => "hqdn3d(src)";
@@ -1646,7 +1652,8 @@ public class FilterScribeVM : BaseVM
             HasCropFilter ? CropWidth : 0,
             HasCropFilter ? CropHeight : 0,
             HasUpscaleOutput ? UpscaleTargetWidth : 0,
-            HasUpscaleOutput ? UpscaleTargetHeight : 0);
+            HasUpscaleOutput ? UpscaleTargetHeight : 0,
+            RotateMode % 2 == 1);
 
         window.DataContext = vm;
         window.Owner = Application.Current.Windows

@@ -273,7 +273,13 @@
         </TabControl>
 
         <!-- Filter generator section -->
-        <StackPanel Grid.Row="3">
+        <ScrollViewer Grid.Row="3"
+                      Margin="0"
+                      MaxHeight="390"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled"
+                      CanContentScroll="False">
+            <StackPanel>
             <!-- FFMPEG VFR to CFR -->
             <StackPanel Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
                 <Grid>
@@ -1057,7 +1063,8 @@
                                  Visibility="{Binding VapourSynthVszipclHasFmtconv, Converter={StaticResource BoolToVisibility}}"
                                  Text="{Binding VapourSynthVszipclFmtconvHint}" />
             </StackPanel>
-        </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
 
         <comps:ThreeButtonGroup Grid.Row="4"
                                 Margin="0 15 0 0"

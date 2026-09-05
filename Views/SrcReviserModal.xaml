@@ -24,6 +24,9 @@
         <StackPanel Grid.Row="0">
             <TextBlock Text="{Binding SettingsHeader}"
                        Style="{StaticResource H3}" />
+            <CheckBox Margin="0 8 0 0"
+                      Content="{Binding RotateLabel}"
+                      IsChecked="{Binding IsRotated, Mode=TwoWay}" />
             <Grid Margin="0 10 0 0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />

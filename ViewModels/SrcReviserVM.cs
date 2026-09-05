@@ -14,6 +14,7 @@ public class SrcReviserVM : BaseVM
     private readonly int _cropHeight;
     private readonly int _upscaleWidth;
     private readonly int _upscaleHeight;
+    private bool _isRotated;
     private string _resolutionWidthText;
     private string _resolutionHeightText;
 
@@ -29,7 +30,8 @@ public class SrcReviserVM : BaseVM
         int cropWidth = 0,
         int cropHeight = 0,
         int upscaleWidth = 0,
-        int upscaleHeight = 0)
+        int upscaleHeight = 0,
+        bool isRotated = false)
     {
         _modalNavS = modalNavS;
         _finishAction = finishAction;
@@ -42,15 +44,14 @@ public class SrcReviserVM : BaseVM
         _cropHeight = cropHeight;
         _upscaleWidth = upscaleWidth;
         _upscaleHeight = upscaleHeight;
+        _isRotated = isRotated;
 
         ResolutionWidth = suggestedWidth;
         ResolutionHeight = suggestedHeight;
-        _resolutionWidthText = suggestedWidth > 0
-            ? suggestedWidth.ToString(CultureInfo.InvariantCulture)
-            : string.Empty;
-        _resolutionHeightText = suggestedHeight > 0
-            ? suggestedHeight.ToString(CultureInfo.InvariantCulture)
-            : string.Empty;
+        _resolutionWidthText = FormatDimensionText(suggestedWidth);
+        _resolutionHeightText = FormatDimensionText(suggestedHeight);
+        if (_isRotated)
+            SwapResolutionText();
 
         UseCurrentResolutionCommand = new ActionCmd(
             _ => SetResolutionText(_currentWidth, _currentHeight),
@@ -85,13 +86,29 @@ public class SrcReviserVM : BaseVM
     public static string CropResolutionLabel => SrcReviserLangProvider.Current["SrcReviser.CropResolutionLabel"];
     public static string SuggestedResolutionLabel => SrcReviserLangProvider.Current["SrcReviser.SuggestedLabel"];
     public static string UpscaleResolutionLabel => SrcReviserLangProvider.Current["SrcReviser.UpscaleLabel"];
+    public static string RotateLabel => SrcReviserLangProvider.Current["SrcReviser.RotateLabel"];
     public static string EvenResolutionHint => SrcReviserLangProvider.Current["SrcReviser.EvenResolutionHint"];
-    public string CurrentResolutionText => FormatResolution(_currentWidth, _currentHeight);
-    public string CropResolutionText => FormatResolution(_cropWidth, _cropHeight);
-    public string SuggestedResolutionText => FormatResolution(_suggestedWidth, _suggestedHeight);
-    public string UpscaleResolutionText => FormatResolution(_upscaleWidth, _upscaleHeight);
+    public string CurrentResolutionText => FormatResolution(ApplyRotation(_currentWidth, _currentHeight));
+    public string CropResolutionText => FormatResolution(ApplyRotation(_cropWidth, _cropHeight));
+    public string SuggestedResolutionText => FormatResolution(ApplyRotation(_suggestedWidth, _suggestedHeight));
+    public string UpscaleResolutionText => FormatResolution(ApplyRotation(_upscaleWidth, _upscaleHeight));
     public bool HasCrop => _cropWidth > 0 && _cropHeight > 0;
     public bool HasUpscale => _upscaleWidth > 0 && _upscaleHeight > 0;
+
+    public bool IsRotated
+    {
+        get => _isRotated;
+        set
+        {
+            if (!SetProperty(ref _isRotated, value)) return;
+
+            SwapResolutionText();
+            OnPropertyChanged(nameof(CurrentResolutionText));
+            OnPropertyChanged(nameof(CropResolutionText));
+            OnPropertyChanged(nameof(SuggestedResolutionText));
+            OnPropertyChanged(nameof(UpscaleResolutionText));
+        }
+    }
 
     public string ResolutionWidthText
     {
@@ -135,9 +152,23 @@ public class SrcReviserVM : BaseVM
 
     private void SetResolutionText(int width, int height)
     {
+        (width, height) = ApplyRotation(width, height);
         ResolutionWidthText = width.ToString(CultureInfo.InvariantCulture);
         ResolutionHeightText = height.ToString(CultureInfo.InvariantCulture);
     }
+
+    private void SwapResolutionText()
+    {
+        (_resolutionWidthText, _resolutionHeightText) = (_resolutionHeightText, _resolutionWidthText);
+        OnPropertyChanged(nameof(ResolutionWidthText));
+        OnPropertyChanged(nameof(ResolutionHeightText));
+    }
+
+    private (int width, int height) ApplyRotation(int width, int height) =>
+        IsRotated ? (height, width) : (width, height);
+
+    private static string FormatDimensionText(int value) =>
+        value > 0 ? value.ToString(CultureInfo.InvariantCulture) : string.Empty;
 
     private bool TryParseResolution(out int width, out int height)
     {
@@ -151,9 +182,9 @@ public class SrcReviserVM : BaseVM
         && value > 0
         && value <= MaxResolutionDimension;
 
-    private static string FormatResolution(int width, int height) =>
-        width > 0 && height > 0
-            ? string.Format(SrcReviserLangProvider.ResolutionFormat, width, height)
+    private static string FormatResolution((int width, int height) resolution) =>
+        resolution.width > 0 && resolution.height > 0
+            ? string.Format(SrcReviserLangProvider.ResolutionFormat, resolution.width, resolution.height)
             : SrcReviserLangProvider.UnknownResolution;
 
     private void ShowError(string message) =>
@@ -174,6 +205,7 @@ public class SrcReviserVM : BaseVM
         OnPropertyChanged(nameof(SuggestedResolutionText));
         OnPropertyChanged(nameof(CropResolutionText));
         OnPropertyChanged(nameof(UpscaleResolutionText));
+        OnPropertyChanged(nameof(RotateLabel));
 
         FinishButtons.B2_1Text = SrcReviserLangProvider.Current["SrcReviser.Cancel"];
         FinishButtons.B2_2Text = SrcReviserLangProvider.Current["SrcReviser.Confirm"];

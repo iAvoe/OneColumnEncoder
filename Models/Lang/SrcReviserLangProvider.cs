@@ -12,6 +12,7 @@ public class SrcReviserLangProvider(string languageCode) : LangProviderBase(lang
         {
             ["SrcReviser.Description"] = "Set the actual post-filter resolution to overwrite into ffprobe analysis",
             ["SrcReviser.SettingsHeader"] = "New Resolution",
+            ["SrcReviser.RotateLabel"] = "Rotate",
             ["SrcReviser.CurrentLabel"] = "Current analysis",
             ["SrcReviser.CropResolutionLabel"] = "Cropped res.",
             ["SrcReviser.SuggestedLabel"] = "Res. Reduction",
@@ -26,6 +27,7 @@ public class SrcReviserLangProvider(string languageCode) : LangProviderBase(lang
         {
             ["SrcReviser.Description"] = "填写滤镜处理后的实际分辨率以覆盖 ffprobe JSON",
             ["SrcReviser.SettingsHeader"] = "新分辨率",
+            ["SrcReviser.RotateLabel"] = "旋转",
             ["SrcReviser.CurrentLabel"] = "当前分析值",
             ["SrcReviser.CropResolutionLabel"] = "裁切后分辨率",
             ["SrcReviser.SuggestedLabel"] = "分辨率缩小",
@@ -40,6 +42,7 @@ public class SrcReviserLangProvider(string languageCode) : LangProviderBase(lang
         {
             ["SrcReviser.Description"] = "填寫濾鏡處理後的實際解析度以覆蓋 ffprobe JSON",
             ["SrcReviser.SettingsHeader"] = "新解析度",
+            ["SrcReviser.RotateLabel"] = "旋轉",
             ["SrcReviser.CurrentLabel"] = "當前分析值",
             ["SrcReviser.CropResolutionLabel"] = "裁切後解析度",
             ["SrcReviser.SuggestedLabel"] = "解析度縮小",
