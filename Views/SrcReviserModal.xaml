@@ -31,6 +31,8 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -84,6 +86,26 @@
                         Grid.Column="1"
                         Content="{Binding SuggestedResolutionText}"
                         Command="{Binding UseSuggestedResolutionCommand}"
+                        Width="125"
+                        Height="25"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource NormalButton}" />
+
+                <Border Grid.Row="5"
+                        Grid.ColumnSpan="2"
+                        Height="5" />
+
+                <TextBlock Grid.Row="6"
+                           Grid.Column="0"
+                           Margin="0 5"
+                           Text="{Binding UpscaleResolutionLabel}"
+                           Style="{StaticResource H4}"
+                           VerticalAlignment="Center" />
+                <Button Grid.Row="6"
+                        Grid.Column="1"
+                        Content="{Binding UpscaleResolutionText}"
+                        Command="{Binding UseUpscaleResolutionCommand}"
+                        IsEnabled="{Binding HasUpscale}"
                         Width="125"
                         Height="25"
                         VerticalAlignment="Center"

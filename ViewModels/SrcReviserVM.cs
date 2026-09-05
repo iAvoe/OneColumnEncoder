@@ -12,6 +12,8 @@ public class SrcReviserVM : BaseVM
     private readonly int _suggestedHeight;
     private readonly int _cropWidth;
     private readonly int _cropHeight;
+    private readonly int _upscaleWidth;
+    private readonly int _upscaleHeight;
     private string _resolutionWidthText;
     private string _resolutionHeightText;
 
@@ -25,7 +27,9 @@ public class SrcReviserVM : BaseVM
         int suggestedWidth,
         int suggestedHeight,
         int cropWidth = 0,
-        int cropHeight = 0)
+        int cropHeight = 0,
+        int upscaleWidth = 0,
+        int upscaleHeight = 0)
     {
         _modalNavS = modalNavS;
         _finishAction = finishAction;
@@ -36,6 +40,8 @@ public class SrcReviserVM : BaseVM
         _suggestedHeight = suggestedHeight;
         _cropWidth = cropWidth;
         _cropHeight = cropHeight;
+        _upscaleWidth = upscaleWidth;
+        _upscaleHeight = upscaleHeight;
 
         ResolutionWidth = suggestedWidth;
         ResolutionHeight = suggestedHeight;
@@ -55,6 +61,9 @@ public class SrcReviserVM : BaseVM
         UseSuggestedResolutionCommand = new ActionCmd(
             _ => SetResolutionText(_suggestedWidth, _suggestedHeight),
             _ => _suggestedWidth > 0 && _suggestedHeight > 0);
+        UseUpscaleResolutionCommand = new ActionCmd(
+            _ => SetResolutionText(_upscaleWidth, _upscaleHeight),
+            _ => HasUpscale);
 
         FinishButtons = ButtonGroupVM.CreateTwoButton(
             SrcReviserLangProvider.Current["SrcReviser.Cancel"],
@@ -75,11 +84,14 @@ public class SrcReviserVM : BaseVM
     public static string CurrentResolutionLabel => SrcReviserLangProvider.Current["SrcReviser.CurrentLabel"];
     public static string CropResolutionLabel => SrcReviserLangProvider.Current["SrcReviser.CropResolutionLabel"];
     public static string SuggestedResolutionLabel => SrcReviserLangProvider.Current["SrcReviser.SuggestedLabel"];
+    public static string UpscaleResolutionLabel => SrcReviserLangProvider.Current["SrcReviser.UpscaleLabel"];
     public static string EvenResolutionHint => SrcReviserLangProvider.Current["SrcReviser.EvenResolutionHint"];
     public string CurrentResolutionText => FormatResolution(_currentWidth, _currentHeight);
     public string CropResolutionText => FormatResolution(_cropWidth, _cropHeight);
     public string SuggestedResolutionText => FormatResolution(_suggestedWidth, _suggestedHeight);
+    public string UpscaleResolutionText => FormatResolution(_upscaleWidth, _upscaleHeight);
     public bool HasCrop => _cropWidth > 0 && _cropHeight > 0;
+    public bool HasUpscale => _upscaleWidth > 0 && _upscaleHeight > 0;
 
     public string ResolutionWidthText
     {
@@ -98,6 +110,7 @@ public class SrcReviserVM : BaseVM
     public ActionCmd UseCurrentResolutionCommand { get; }
     public ActionCmd UseCropResolutionCommand { get; }
     public ActionCmd UseSuggestedResolutionCommand { get; }
+    public ActionCmd UseUpscaleResolutionCommand { get; }
     public ButtonGroupVM FinishButtons { get; }
 
     private void Confirm()
@@ -155,10 +168,12 @@ public class SrcReviserVM : BaseVM
         OnPropertyChanged(nameof(CurrentResolutionLabel));
         OnPropertyChanged(nameof(CropResolutionLabel));
         OnPropertyChanged(nameof(SuggestedResolutionLabel));
+        OnPropertyChanged(nameof(UpscaleResolutionLabel));
         OnPropertyChanged(nameof(EvenResolutionHint));
         OnPropertyChanged(nameof(CurrentResolutionText));
         OnPropertyChanged(nameof(SuggestedResolutionText));
         OnPropertyChanged(nameof(CropResolutionText));
+        OnPropertyChanged(nameof(UpscaleResolutionText));
 
         FinishButtons.B2_1Text = SrcReviserLangProvider.Current["SrcReviser.Cancel"];
         FinishButtons.B2_2Text = SrcReviserLangProvider.Current["SrcReviser.Confirm"];

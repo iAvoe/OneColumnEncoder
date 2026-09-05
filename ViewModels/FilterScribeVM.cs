@@ -40,6 +40,8 @@ public class FilterScribeVM : BaseVM
     private int _sourceBitDepth;
     private bool _hasSourceAnalysis;
     private bool _sourceIsProgressive = true;
+    private readonly System.Windows.Threading.DispatcherTimer _cropRefreshTimer;
+    private bool _cropRefreshPending;
     public CloseModalCmd CloseCmd { get; }
     public bool IsConcatMode => _isConcatRoute?.Invoke() == true || IsRepartMode;
     public bool IsRepartMode => _isRepartRoute?.Invoke() == true;
@@ -192,12 +194,13 @@ public class FilterScribeVM : BaseVM
                 OnPropertyChanged(nameof(CropTargetDisplay));
                 OnPropertyChanged(nameof(HasCropFilter));
                 OnPropertyChanged(nameof(FFmpegCropFilter));
+                OnPropertyChanged(nameof(FFmpegCropFilterDisplay));
                 OnPropertyChanged(nameof(VapourSynthCropFilter));
                 OnPropertyChanged(nameof(AviSynthCropFilter));
                 OnPropertyChanged(nameof(CanInsertAviSynthCropFilter));
                 OnPropertyChanged(nameof(CanInsertVapourSynthCropFilter));
                 OnPropertyChanged(nameof(CanInsertFFmpegCropFilter));
-                RefreshScaleForCropChange();
+                ScheduleCropRefresh();
             }
         }
     }
@@ -214,12 +217,13 @@ public class FilterScribeVM : BaseVM
                 OnPropertyChanged(nameof(CropTargetDisplay));
                 OnPropertyChanged(nameof(HasCropFilter));
                 OnPropertyChanged(nameof(FFmpegCropFilter));
+                OnPropertyChanged(nameof(FFmpegCropFilterDisplay));
                 OnPropertyChanged(nameof(VapourSynthCropFilter));
                 OnPropertyChanged(nameof(AviSynthCropFilter));
                 OnPropertyChanged(nameof(CanInsertAviSynthCropFilter));
                 OnPropertyChanged(nameof(CanInsertVapourSynthCropFilter));
                 OnPropertyChanged(nameof(CanInsertFFmpegCropFilter));
-                RefreshScaleForCropChange();
+                ScheduleCropRefresh();
             }
         }
     }
@@ -263,16 +267,67 @@ public class FilterScribeVM : BaseVM
 
     public int ScaleStep => FFProbePixelFormatRules.GetResolutionScaleStep(_colorSpaceAnalysis.PixelFormat);
 
+    private int _upscaleHeight;
+    private int _upscaleSourceHeight;
+
+    private int UpscaleSourceWidth => HasScaleFilter ? TargetWidth : ScaleSourceWidth;
+    private int UpscaleSourceHeight => HasScaleFilter ? TargetHeight : ScaleSourceHeight;
+
+    public int UpscaleHeight
+    {
+        get => _upscaleHeight;
+        set
+        {
+            int clamped = Math.Clamp(value, UpscaleHeightMinimum, UpscaleHeightMaximum);
+            if (SetProperty(ref _upscaleHeight, clamped))
+            {
+                OnPropertyChanged(nameof(UpscaleTargetDisplay));
+                OnPropertyChanged(nameof(FFmpegUpscaleFilter));
+                OnPropertyChanged(nameof(CanInsertFFmpegUpscaleFilter));
+            }
+        }
+    }
+
+    public int UpscaleHeightMinimum => HasSource
+        ? ResolutionScale.EnsureValid(UpscaleSourceHeight)
+        : ResolutionScale.MinimumTargetHeight;
+
+    public int UpscaleHeightMaximum => HasSource
+        ? ResolutionScale.EnsureValid((int)Math.Min(int.MaxValue, (long)UpscaleSourceHeight * 4))
+        : ResolutionScale.MinimumTargetHeight;
+
+    public int UpscaleStep => FFProbePixelFormatRules.GetResolutionScaleStep(_colorSpaceAnalysis.PixelFormat);
+
+    public List<string> UpscaleTickLabels =>
+        ResolutionScale.GenerateHeightTickLabels(UpscaleHeightMinimum, UpscaleHeightMaximum, 5);
+
+    public string UpscaleTargetDisplay => !HasSource
+        ? "--"
+        : $"{GetUpscaleTargetDimensions().width}x{GetUpscaleTargetDimensions().height}";
+
+    private bool HasUpscaleFilter =>
+        HasSource && UpscaleHeight > UpscaleHeightMinimum;
+
+    public bool HasUpscaleOutput => HasUpscaleFilter;
+    public int UpscaleTargetWidth => HasUpscaleFilter ? GetUpscaleTargetDimensions().width : 0;
+    public int UpscaleTargetHeight => HasUpscaleFilter ? GetUpscaleTargetDimensions().height : 0;
+
+    private (int width, int height) GetUpscaleTargetDimensions() =>
+        HasSource
+            ? ResolutionScale.ComputeTargetDimensionsFromHeight(UpscaleSourceWidth, UpscaleSourceHeight, UpscaleHeight)
+            : (0, 0);
+
     public void CommitScale()
     {
         if (!IsScaleApplicable) return;
         // var w, h are discard values now
         RecomputeTarget();
-        OnPropertyChanged(nameof(TargetDisplay));
-        OnPropertyChanged(nameof(FFmpegResizeFilter));
-        OnPropertyChanged(nameof(FFmpegFpsScaleFilter));
-        OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
-        OnPropertyChanged(nameof(FFmpegFullChainFilter));
+                OnPropertyChanged(nameof(TargetDisplay));
+                OnPropertyChanged(nameof(FFmpegResizeFilter));
+                OnPropertyChanged(nameof(FFmpegResizeFilterDisplay));
+                OnPropertyChanged(nameof(FFmpegFpsScaleFilter));
+                OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
+                OnPropertyChanged(nameof(FFmpegFullChainFilter));
         OnPropertyChanged(nameof(FFmpegHqdn3dFullChainFilter));
         OnPropertyChanged(nameof(VapourSynthResizeFilter));
         OnPropertyChanged(nameof(AviSynthResizeFilter));
@@ -325,23 +380,191 @@ public class FilterScribeVM : BaseVM
             ? BuildFFmpegFilterArgs(includeSwsFlags: true, includeCsp709Flags: false, ScaleFilterChain)
             : LangProviderBase.NAText;
 
+    public string FFmpegResizeFilterDisplay =>
+        ScaleFilterChain ?? LangProviderBase.NAText;
+
     public string FFmpegCropFilter =>
         HasCropFilter
             ? BuildFFmpegFilterArgs(includeSwsFlags: true, includeCsp709Flags: false, CropFilterChain)
             : LangProviderBase.NAText;
+
+    public string FFmpegCropFilterDisplay =>
+        CropFilterChain ?? LangProviderBase.NAText;
 
     public string FFmpegFpsFilter =>
         HasFpsFilter
             ? BuildFFmpegFilterArgs(includeSwsFlags: false, includeCsp709Flags: false, FpsFilterChain)
             : LangProviderBase.NAText;
 
+    public string FFmpegFpsFilterDisplay =>
+        FpsFilterChain ?? LangProviderBase.NAText;
+
     public string FFmpegSarRepairFilter =>
         HasSarRepairFilter
             ? "-filter:v \"libplacebo=reset_sar=1\""
             : LangProviderBase.NAText;
 
+    public string FFmpegSarRepairFilterDisplay =>
+        SarRepairFilterChain ?? LangProviderBase.NAText;
+
+    public string FFmpegDebandFilter =>
+        "-filter:v \"libplacebo=deband=true:deband_iterations=3:deband_radius=8:deband_threshold=6\"";
+
+    public string FFmpegDebandFilterDisplay =>
+        "libplacebo=deband=true:deband_iterations=3:deband_radius=8:deband_threshold=6";
+
+    public string FFmpegRotateFilter =>
+        RotateMode > 0
+            ? $"-filter:v \"libplacebo=rotate={RotateMode}\""
+            : LangProviderBase.NAText;
+
+    public string FFmpegRotateFilterDisplay =>
+        RotateMode > 0 ? $"libplacebo=rotate={RotateMode}" : LangProviderBase.NAText;
+
+    public string FFmpegUpscaleFilter
+    {
+        get
+        {
+            if (!HasUpscaleFilter) return LangProviderBase.NAText;
+
+            var (width, height) = GetUpscaleTargetDimensions();
+            return $"-filter:v \"libplacebo=w={width}:h={height}:force_original_aspect_ratio=decrease:normalize_sar=true:upscaler={SelectedUpscaler}\"";
+        }
+    }
+
+    public string FFmpegUpscaleFilterDisplay
+    {
+        get
+        {
+            if (!HasUpscaleFilter) return LangProviderBase.NAText;
+
+            var (width, height) = GetUpscaleTargetDimensions();
+            return $"libplacebo=w={width}:h={height}:force_original_aspect_ratio=decrease:normalize_sar=true:upscaler={SelectedUpscaler}";
+        }
+    }
+
+    public string FFmpegFlipFilter
+    {
+        get
+        {
+            if (!HorizontalFlipEnabled && !VerticalFlipEnabled)
+                return LangProviderBase.NAText;
+
+            string chain = HorizontalFlipEnabled && VerticalFlipEnabled
+                ? "hflip,vflip"
+                : HorizontalFlipEnabled ? "hflip" : "vflip";
+            return $"-filter:v \"{chain}\"";
+        }
+    }
+
+    public string FFmpegFlipFilterDisplay =>
+        !HorizontalFlipEnabled && !VerticalFlipEnabled
+            ? LangProviderBase.NAText
+            : HorizontalFlipEnabled && VerticalFlipEnabled
+                ? "hflip,vflip"
+                : HorizontalFlipEnabled ? "hflip" : "vflip";
+
+    public bool DebandEnabled => true;
+
+    private int _rotateMode;
+    public int RotateMode
+    {
+        get => _rotateMode;
+        set
+        {
+            int clamped = Math.Clamp(value, 0, 3);
+        if (SetProperty(ref _rotateMode, clamped))
+        {
+            OnPropertyChanged(nameof(RotateDisplay));
+            OnPropertyChanged(nameof(FFmpegRotateFilter));
+            OnPropertyChanged(nameof(FFmpegRotateFilterDisplay));
+            OnPropertyChanged(nameof(CanInsertFFmpegRotateFilter));
+        }
+        }
+    }
+
+    public List<string> RotateTickLabels => ["0", "1", "2", "3"];
+    public string RotateDisplay => (RotateMode * 90).ToString(CultureInfo.InvariantCulture);
+
+    private bool _horizontalFlipEnabled;
+    public bool HorizontalFlipEnabled
+    {
+        get => _horizontalFlipEnabled;
+        set
+        {
+        if (SetProperty(ref _horizontalFlipEnabled, value))
+        {
+            OnPropertyChanged(nameof(FFmpegFlipFilter));
+            OnPropertyChanged(nameof(FFmpegFlipFilterDisplay));
+            OnPropertyChanged(nameof(CanInsertFFmpegFlipFilter));
+        }
+        }
+    }
+
+    private bool _verticalFlipEnabled;
+    public bool VerticalFlipEnabled
+    {
+        get => _verticalFlipEnabled;
+        set
+        {
+        if (SetProperty(ref _verticalFlipEnabled, value))
+        {
+            OnPropertyChanged(nameof(FFmpegFlipFilter));
+            OnPropertyChanged(nameof(FFmpegFlipFilterDisplay));
+            OnPropertyChanged(nameof(CanInsertFFmpegFlipFilter));
+        }
+        }
+    }
+
+    private int _upscalerIndex;
+    private static readonly string[] UpscalerNames = ["spline36", "nearest", "oversample", "ewa_lanczos"];
+
+    private void SetUpscaler(int index)
+    {
+        if (_upscalerIndex == index) return;
+        _upscalerIndex = index;
+        OnPropertyChanged(nameof(UseSpline36Upscaler));
+        OnPropertyChanged(nameof(UseNearestUpscaler));
+        OnPropertyChanged(nameof(UseOversampleUpscaler));
+        OnPropertyChanged(nameof(UseEwaLanczosUpscaler));
+        OnPropertyChanged(nameof(FFmpegUpscaleFilter));
+        OnPropertyChanged(nameof(FFmpegUpscaleFilterDisplay));
+    }
+
+    public bool UseSpline36Upscaler
+    {
+        get => _upscalerIndex == 0;
+        set { if (value) SetUpscaler(0); }
+    }
+
+    public bool UseNearestUpscaler
+    {
+        get => _upscalerIndex == 1;
+        set { if (value) SetUpscaler(1); }
+    }
+
+    public bool UseOversampleUpscaler
+    {
+        get => _upscalerIndex == 2;
+        set { if (value) SetUpscaler(2); }
+    }
+
+    public bool UseEwaLanczosUpscaler
+    {
+        get => _upscalerIndex == 3;
+        set { if (value) SetUpscaler(3); }
+    }
+
+    private string SelectedUpscaler => UpscalerNames[_upscalerIndex];
+
+    public bool CanInsertFFmpegDebandFilter => DebandEnabled;
+    public bool CanInsertFFmpegRotateFilter => RotateMode > 0;
+    public bool CanInsertFFmpegUpscaleFilter => HasUpscaleFilter;
+    public bool CanInsertFFmpegFlipFilter => HorizontalFlipEnabled || VerticalFlipEnabled;
+
     public static string AviSynthHqdn3dDenoiseFilter => "hqdn3d(src)";
     public static string FFmpegHqdn3dDenoiseFilter => "-filter:v \"hqdn3d\"";
+    public static string FFmpegHqdn3dDenoiseFilterDisplay => "hqdn3d";
     public string AviSynthAssRenderFilter =>
         "SupTitle(src, \"x:\\path\\to\\DVD_BDMV.sup\", forcedOnly=false)\r\n" +
         "assrender(src, \"x:\\path\\to\\subtitle.ass\", scale=1.0, frame_width=" +
@@ -413,11 +636,19 @@ public class FilterScribeVM : BaseVM
 
     public string FFmpegLowToHighColorFilter => GetColorSpaceStrategyFilter(ColorSpaceStrategy.LowToHigh);
 
+    public string FFmpegLowToHighColorFilterDisplay => GetColorSpaceStrategyFilterChain(ColorSpaceStrategy.LowToHigh) ?? LangProviderBase.NAText;
+
     public string FFmpegHighToLowColorFilter => GetColorSpaceStrategyFilter(ColorSpaceStrategy.HighToLow);
+
+    public string FFmpegHighToLowColorFilterDisplay => GetColorSpaceStrategyFilterChain(ColorSpaceStrategy.HighToLow) ?? LangProviderBase.NAText;
 
     public string FFmpegHdrToSdrColorFilter => GetColorSpaceStrategyFilter(ColorSpaceStrategy.HdrToSdr);
 
+    public string FFmpegHdrToSdrColorFilterDisplay => GetColorSpaceStrategyFilterChain(ColorSpaceStrategy.HdrToSdr) ?? LangProviderBase.NAText;
+
     public string FFmpegHighHdrToLowSdrColorFilter => GetColorSpaceStrategyFilter(ColorSpaceStrategy.HighHdrToSdr);
+
+    public string FFmpegHighHdrToLowSdrColorFilterDisplay => GetColorSpaceStrategyFilterChain(ColorSpaceStrategy.HighHdrToSdr) ?? LangProviderBase.NAText;
 
     public string FFmpegFpsColorScaleFilter
     {
@@ -470,6 +701,11 @@ public class FilterScribeVM : BaseVM
             ? BuildFFmpegFilterArgs(includeSwsFlags: false, includeCsp709Flags: true, BuildColorSpaceStrategyFilterChain(strategy))
             : LangProviderBase.NAText;
 
+    private string? GetColorSpaceStrategyFilterChain(ColorSpaceStrategy strategy) =>
+        IsColorSpaceStrategyShown(strategy)
+            ? BuildColorSpaceStrategyFilterChain(strategy)
+            : null;
+
     private string? BuildColorSpaceStrategyFilterChain(ColorSpaceStrategy strategy) =>
         ColorSpaceConverter.BuildFFmpegFilter(
             strategy,
@@ -519,7 +755,11 @@ public class FilterScribeVM : BaseVM
 
     private void RecomputeTarget()
     {
-        if (!IsScaleApplicable) return;
+        if (!IsScaleApplicable)
+        {
+            RefreshUpscaleForInputChange();
+            return;
+        }
 
         int targetHeight = ScaleHeight > 0 ? ScaleHeight : ScaleHeightMaximum;
         var (w, h) = ResolutionScale.ComputeTargetDimensionsFromHeight(ScaleSourceWidth, ScaleSourceHeight, targetHeight);
@@ -542,6 +782,49 @@ public class FilterScribeVM : BaseVM
             OnPropertyChanged(nameof(VapourSynthResizeFilter));
             OnPropertyChanged(nameof(AviSynthResizeFilter));
         }
+
+        RefreshUpscaleForInputChange();
+    }
+
+    private void RefreshUpscaleForInputChange()
+    {
+        int minimum = HasSource ? ResolutionScale.EnsureValid(UpscaleSourceHeight) : 0;
+        int maximum = HasSource
+            ? ResolutionScale.EnsureValid((int)Math.Min(int.MaxValue, (long)UpscaleSourceHeight * 4))
+            : 0;
+        bool wasDefault = _upscaleHeight == 0 || _upscaleHeight == _upscaleSourceHeight;
+        int next = !HasSource ? 0 : wasDefault ? minimum : Math.Clamp(_upscaleHeight, minimum, maximum);
+
+        _upscaleSourceHeight = minimum;
+        if (_upscaleHeight != next)
+        {
+            _upscaleHeight = next;
+            OnPropertyChanged(nameof(UpscaleHeight));
+        }
+
+        OnPropertyChanged(nameof(UpscaleHeightMinimum));
+        OnPropertyChanged(nameof(UpscaleHeightMaximum));
+        OnPropertyChanged(nameof(UpscaleTickLabels));
+        OnPropertyChanged(nameof(UpscaleTargetDisplay));
+        OnPropertyChanged(nameof(FFmpegUpscaleFilter));
+        OnPropertyChanged(nameof(CanInsertFFmpegUpscaleFilter));
+    }
+
+    private void ScheduleCropRefresh()
+    {
+        _cropRefreshPending = true;
+        _cropRefreshTimer.Stop();
+        _cropRefreshTimer.Start();
+    }
+
+    private void FlushPendingCropRefresh()
+    {
+        if (!_cropRefreshPending)
+            return;
+
+        _cropRefreshPending = false;
+        _cropRefreshTimer.Stop();
+        RefreshScaleForCropChange();
     }
 
     private void RefreshScaleForCropChange()
@@ -558,6 +841,7 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(ScaleTickLabels));
         OnPropertyChanged(nameof(TargetDisplay));
         OnPropertyChanged(nameof(FFmpegResizeFilter));
+        OnPropertyChanged(nameof(FFmpegResizeFilterDisplay));
         OnPropertyChanged(nameof(FFmpegFpsScaleFilter));
         OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
         OnPropertyChanged(nameof(FFmpegFullChainFilter));
@@ -583,11 +867,12 @@ public class FilterScribeVM : BaseVM
 
         _cropWidth = SourceWidth;
         _cropHeight = SourceHeight;
-                OnPropertyChanged(nameof(CropWidth));
-                OnPropertyChanged(nameof(CropHeight));
-                OnPropertyChanged(nameof(CropTargetDisplay));
-                OnPropertyChanged(nameof(HasCropFilter));
+        OnPropertyChanged(nameof(CropWidth));
+        OnPropertyChanged(nameof(CropHeight));
+        OnPropertyChanged(nameof(CropTargetDisplay));
+        OnPropertyChanged(nameof(HasCropFilter));
         OnPropertyChanged(nameof(FFmpegCropFilter));
+        OnPropertyChanged(nameof(FFmpegCropFilterDisplay));
         OnPropertyChanged(nameof(VapourSynthCropFilter));
         OnPropertyChanged(nameof(AviSynthCropFilter));
         OnPropertyChanged(nameof(CanInsertAviSynthCropFilter));
@@ -699,10 +984,101 @@ public class FilterScribeVM : BaseVM
             return;
         }
 
+        if (ContainsLibplaceboFilter(generatedChain))
+        {
+            AppendFFmpegLibplaceboChain(generatedChain, generatedSuffix, filter);
+            return;
+        }
+
+        AppendFFmpegChain(generatedChain, generatedSuffix, filter);
+    }
+
+    private void AppendFFmpegNativeFilter(string? filter)
+    {
+        if (string.IsNullOrWhiteSpace(filter) || filter.Contains(LangProviderBase.NAText, StringComparison.Ordinal))
+            return;
+
+        if (!TrySplitVideoFilterArgs(filter, out string generatedChain, out string generatedSuffix))
+        {
+            AppendFFmpegFilter(filter);
+            return;
+        }
+
+        if (!TrySplitVideoFilterArgs(FFmpegFreeText, out string currentChain, out string currentSuffix))
+        {
+            AppendFFmpegChain(generatedChain, generatedSuffix, filter);
+            return;
+        }
+
+        List<string> currentFilters = SplitFilterChain(currentChain);
+        int libplaceboIndex = currentFilters.FindIndex(IsLibplaceboFilter);
+        if (libplaceboIndex < 0)
+        {
+            AppendFFmpegChain(generatedChain, generatedSuffix, filter);
+            return;
+        }
+
+        currentFilters.InsertRange(libplaceboIndex, SplitFilterChain(generatedChain));
+        string suffix = string.IsNullOrWhiteSpace(currentSuffix) ? generatedSuffix : currentSuffix;
+        FFmpegFreeText = BuildVideoFilterArgs(string.Join(",", currentFilters), suffix);
+    }
+
+    private void AppendFFmpegLibplaceboChain(string generatedChain, string generatedSuffix, string originalFilter)
+    {
         if (!TrySplitVideoFilterArgs(FFmpegFreeText, out string currentChain, out string currentSuffix))
         {
             FFmpegFreeText = string.IsNullOrWhiteSpace(FFmpegFreeText)
-                ? filter.Trim()
+                ? originalFilter.Trim()
+                : $"-filter:v \"{FFmpegFreeText.Trim()},{generatedChain}\"{generatedSuffix}";
+            return;
+        }
+
+        List<string> filters = SplitFilterChain(currentChain);
+        int libplaceboIndex = filters.FindIndex(IsLibplaceboFilter);
+        if (libplaceboIndex < 0)
+        {
+            filters.Add(generatedChain);
+        }
+        else
+        {
+            string payload = string.Join(":", SplitFilterChain(generatedChain)
+                .Where(IsLibplaceboFilter)
+                .Select(GetLibplaceboPayload)
+                .Where(payload => !string.IsNullOrWhiteSpace(payload)));
+
+            if (!string.IsNullOrWhiteSpace(payload))
+            {
+                List<string> merged = [];
+                for (int i = 0; i < filters.Count; i++)
+                {
+                    if (!IsLibplaceboFilter(filters[i]))
+                    {
+                        merged.Add(filters[i]);
+                        continue;
+                    }
+
+                    if (i == libplaceboIndex)
+                    {
+                        string currentPayload = GetLibplaceboPayload(filters[i]);
+                        merged.Add(string.IsNullOrWhiteSpace(currentPayload)
+                            ? $"libplacebo={payload}"
+                            : $"libplacebo={currentPayload}:{payload}");
+                    }
+                }
+                filters = merged;
+            }
+        }
+
+        string suffix = string.IsNullOrWhiteSpace(currentSuffix) ? generatedSuffix : currentSuffix;
+        FFmpegFreeText = BuildVideoFilterArgs(string.Join(",", filters), suffix);
+    }
+
+    private void AppendFFmpegChain(string generatedChain, string generatedSuffix, string originalFilter)
+    {
+        if (!TrySplitVideoFilterArgs(FFmpegFreeText, out string currentChain, out string currentSuffix))
+        {
+            FFmpegFreeText = string.IsNullOrWhiteSpace(FFmpegFreeText)
+                ? originalFilter.Trim()
                 : $"-filter:v \"{FFmpegFreeText.Trim()},{generatedChain}\"{generatedSuffix}";
             return;
         }
@@ -711,6 +1087,25 @@ public class FilterScribeVM : BaseVM
         FFmpegFreeText = $"-filter:v \"{currentChain},{generatedChain}\"{suffix}".Trim();
     }
 
+    private static List<string> SplitFilterChain(string chain) =>
+        [.. chain.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)];
+
+    private static bool ContainsLibplaceboFilter(string chain) =>
+        SplitFilterChain(chain).Any(IsLibplaceboFilter);
+
+    private static bool IsLibplaceboFilter(string filter) =>
+        filter.StartsWith("libplacebo", StringComparison.OrdinalIgnoreCase)
+        && (filter.Length == "libplacebo".Length || filter["libplacebo".Length] == '=');
+
+    private static string GetLibplaceboPayload(string filter)
+    {
+        int equalsIndex = filter.IndexOf('=');
+        return equalsIndex < 0 ? string.Empty : filter[(equalsIndex + 1)..].Trim();
+    }
+
+    private static string BuildVideoFilterArgs(string chain, string suffix) =>
+        $"-filter:v \"{chain}\"{suffix}".Trim();
+
     private static bool TrySplitVideoFilterArgs(string? value, out string chain, out string suffix)
     {
         chain = string.Empty;
@@ -718,9 +1113,15 @@ public class FilterScribeVM : BaseVM
         if (string.IsNullOrWhiteSpace(value)) return false;
 
         int optionIndex = value.IndexOf("-filter:v", StringComparison.OrdinalIgnoreCase);
+        string option = "-filter:v";
+        if (optionIndex < 0)
+        {
+            optionIndex = value.IndexOf("-vf", StringComparison.OrdinalIgnoreCase);
+            option = "-vf";
+        }
         if (optionIndex < 0) return false;
 
-        int contentStart = optionIndex + "-filter:v".Length;
+        int contentStart = optionIndex + option.Length;
         while (contentStart < value.Length && char.IsWhiteSpace(value[contentStart])) contentStart++;
         if (contentStart >= value.Length) return false;
 
@@ -756,6 +1157,16 @@ public class FilterScribeVM : BaseVM
     public static string ScaleHeightLabel => FilterScribeModalLangProvider.Current["SrcScribe.ScaleHeightLabel"];
     public static string FFmpegFreeTextHint => FilterScribeModalLangProvider.Current["SrcScribe.FFmpegFreeTextHint"];
     public static string SarRepairTitle => FilterScribeModalLangProvider.Current["SrcScribe.SarRepairTitle"];
+    public static string DebandTitle => FilterScribeModalLangProvider.Current["SrcScribe.DebandTitle"];
+    public static string RotateTitle => FilterScribeModalLangProvider.Current["SrcScribe.RotateTitle"];
+    public static string UpscaleTitle => FilterScribeModalLangProvider.Current["SrcScribe.UpscaleTitle"];
+    public static string UpscalerSpline36Label => FilterScribeModalLangProvider.Current["SrcScribe.UpscalerSpline36"];
+    public static string UpscalerNearestLabel => FilterScribeModalLangProvider.Current["SrcScribe.UpscalerNearest"];
+    public static string UpscalerOversampleLabel => FilterScribeModalLangProvider.Current["SrcScribe.UpscalerOversample"];
+    public static string UpscalerEwaLanczosLabel => FilterScribeModalLangProvider.Current["SrcScribe.UpscalerEwaLanczos"];
+    public static string FlipTitle => FilterScribeModalLangProvider.Current["SrcScribe.FlipTitle"];
+    public static string HorizontalFlipLabel => FilterScribeModalLangProvider.Current["SrcScribe.HorizontalFlipLabel"];
+    public static string VerticalFlipLabel => FilterScribeModalLangProvider.Current["SrcScribe.VerticalFlipLabel"];
     public static string ColorSpaceConvertTitle => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpaceConvertTitle"];
     public static string DenoiseTitle => FilterScribeModalLangProvider.Current["SrcScribe.DenoiseTitle"];
     public static string ScaleHint => FilterScribeModalLangProvider.Current["SrcScribe.ScaleHint"];
@@ -771,6 +1182,7 @@ public class FilterScribeVM : BaseVM
     public ActionCmd InsertAvsFilterCommand { get; }
     public ActionCmd InsertVpyFilterCommand { get; }
     public ActionCmd InsertFFmpegFilterCommand { get; }
+    public ActionCmd InsertFFmpegFlipFilterCommand { get; }
     public ActionCmd InsertAvsCropFilterCommand { get; }
     public ActionCmd InsertVpyCropFilterCommand { get; }
     public ActionCmd InsertFFmpegCropFilterCommand { get; }
@@ -826,10 +1238,16 @@ public class FilterScribeVM : BaseVM
         _baseAvsPrefix = FilterScribeModalLangProvider.Current["SrcScribe.AvsPrefix"];
         _baseVpyPrefix = FilterScribeModalLangProvider.Current["SrcScribe.VpyPrefix"];
         _hasSourceAnalysis = !string.IsNullOrWhiteSpace(sourceFfprobeJson);
+        _cropRefreshTimer = new System.Windows.Threading.DispatcherTimer(System.Windows.Threading.DispatcherPriority.Background)
+        {
+            Interval = TimeSpan.FromMilliseconds(40)
+        };
+        _cropRefreshTimer.Tick += (_, _) => FlushPendingCropRefresh();
         OpenVpyPreviewCommand = new ActionCmd(_ => OpenVpyPreview(), _ => CanOpenVpyPreview);
         InsertAvsFilterCommand = new ActionCmd(filter => AppendScriptFilter(ref _avsUserInput, filter as string, nameof(AvsUserInput)));
         InsertVpyFilterCommand = new ActionCmd(filter => AppendScriptFilter(ref _vpyUserInput, filter as string, nameof(VpyUserInput)));
         InsertFFmpegFilterCommand = new ActionCmd(filter => AppendFFmpegFilter(filter as string));
+        InsertFFmpegFlipFilterCommand = new ActionCmd(filter => AppendFFmpegNativeFilter(filter as string));
         InsertAvsCropFilterCommand = new ActionCmd(filter => InsertCropFilter(filter as string, value => AppendScriptFilter(ref _avsUserInput, value, nameof(AvsUserInput))));
         InsertVpyCropFilterCommand = new ActionCmd(filter => InsertCropFilter(filter as string, value => AppendScriptFilter(ref _vpyUserInput, value, nameof(VpyUserInput))));
         InsertFFmpegCropFilterCommand = new ActionCmd(filter => InsertCropFilter(filter as string, AppendFFmpegFilter));
@@ -879,9 +1297,13 @@ public class FilterScribeVM : BaseVM
         _colorSpaceAnalysis = ColorSpaceConverter.Analyze(sourceFfprobeJson);
         _sourceIsProgressive = string.IsNullOrWhiteSpace(sourceFfprobeJson) || FFProbeSrcVal.Analyze(sourceFfprobeJson).IsProgressive;
         OnPropertyChanged(nameof(FFmpegLowToHighColorFilter));
+        OnPropertyChanged(nameof(FFmpegLowToHighColorFilterDisplay));
         OnPropertyChanged(nameof(FFmpegHighToLowColorFilter));
+        OnPropertyChanged(nameof(FFmpegHighToLowColorFilterDisplay));
         OnPropertyChanged(nameof(FFmpegHdrToSdrColorFilter));
+        OnPropertyChanged(nameof(FFmpegHdrToSdrColorFilterDisplay));
         OnPropertyChanged(nameof(FFmpegHighHdrToLowSdrColorFilter));
+        OnPropertyChanged(nameof(FFmpegHighHdrToLowSdrColorFilterDisplay));
         OnPropertyChanged(nameof(CanInsertFFmpegLowToHighColorFilter));
         OnPropertyChanged(nameof(CanInsertFFmpegHighToLowColorFilter));
         OnPropertyChanged(nameof(CanInsertFFmpegHdrToSdrColorFilter));
@@ -896,7 +1318,17 @@ public class FilterScribeVM : BaseVM
 
     public void RefreshGeneratedFFmpegFilters()
     {
+        FlushPendingCropRefresh();
         OnPropertyChanged(nameof(FFmpegSarRepairFilter));
+        OnPropertyChanged(nameof(FFmpegSarRepairFilterDisplay));
+        OnPropertyChanged(nameof(FFmpegDebandFilter));
+        OnPropertyChanged(nameof(FFmpegDebandFilterDisplay));
+        OnPropertyChanged(nameof(FFmpegRotateFilter));
+        OnPropertyChanged(nameof(FFmpegRotateFilterDisplay));
+        OnPropertyChanged(nameof(FFmpegUpscaleFilter));
+        OnPropertyChanged(nameof(FFmpegUpscaleFilterDisplay));
+        OnPropertyChanged(nameof(FFmpegFlipFilter));
+        OnPropertyChanged(nameof(FFmpegFlipFilterDisplay));
         OnPropertyChanged(nameof(FFmpegFpsScaleFilter));
         OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
         OnPropertyChanged(nameof(FFmpegFullChainFilter));
@@ -936,6 +1368,7 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(FrameRateNum));
         OnPropertyChanged(nameof(FrameRateDen));
         OnPropertyChanged(nameof(FFmpegFpsFilter));
+        OnPropertyChanged(nameof(FFmpegFpsFilterDisplay));
         OnPropertyChanged(nameof(FFmpegFpsScaleFilter));
         OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
         OnPropertyChanged(nameof(FFmpegFullChainFilter));
@@ -1186,8 +1619,11 @@ public class FilterScribeVM : BaseVM
         _closeAction();
     }
 
-    private void ApplyFFmpegFilterArgs() =>
+    private void ApplyFFmpegFilterArgs()
+    {
+        FlushPendingCropRefresh();
         _applyFFmpegFilterArgs(FFmpegFreeText.Trim());
+    }
 
     private bool ShowSourceReviserModal()
     {
@@ -1208,7 +1644,9 @@ public class FilterScribeVM : BaseVM
             suggestedWidth,
             suggestedHeight,
             HasCropFilter ? CropWidth : 0,
-            HasCropFilter ? CropHeight : 0);
+            HasCropFilter ? CropHeight : 0,
+            HasUpscaleOutput ? UpscaleTargetWidth : 0,
+            HasUpscaleOutput ? UpscaleTargetHeight : 0);
 
         window.DataContext = vm;
         window.Owner = Application.Current.Windows
@@ -1420,7 +1858,21 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(TargetDisplay));
         OnPropertyChanged(nameof(FFmpegFreeTextHint));
         OnPropertyChanged(nameof(SarRepairTitle));
+        OnPropertyChanged(nameof(DebandTitle));
+        OnPropertyChanged(nameof(RotateTitle));
+        OnPropertyChanged(nameof(UpscaleTitle));
+        OnPropertyChanged(nameof(UpscalerSpline36Label));
+        OnPropertyChanged(nameof(UpscalerNearestLabel));
+        OnPropertyChanged(nameof(UpscalerOversampleLabel));
+        OnPropertyChanged(nameof(UpscalerEwaLanczosLabel));
+        OnPropertyChanged(nameof(FlipTitle));
+        OnPropertyChanged(nameof(HorizontalFlipLabel));
+        OnPropertyChanged(nameof(VerticalFlipLabel));
         OnPropertyChanged(nameof(FFmpegSarRepairFilter));
+        OnPropertyChanged(nameof(FFmpegDebandFilter));
+        OnPropertyChanged(nameof(FFmpegRotateFilter));
+        OnPropertyChanged(nameof(FFmpegUpscaleFilter));
+        OnPropertyChanged(nameof(FFmpegFlipFilter));
         OnPropertyChanged(nameof(FFmpegHqdn3dDenoiseFilter));
         OnPropertyChanged(nameof(FFmpegSubtitleFilter));
         OnPropertyChanged(nameof(FFmpegFpsScaleFilter));
@@ -1458,6 +1910,7 @@ public class FilterScribeVM : BaseVM
     public override void Dispose()
     {
         UILangProvider.CurrentChanged -= OnLanguageChanged;
+        _cropRefreshTimer.Stop();
         base.Dispose();
         GC.SuppressFinalize(this);
     }
