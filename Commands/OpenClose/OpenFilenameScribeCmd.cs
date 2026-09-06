@@ -33,7 +33,6 @@ public class OpenFilenameScribeCmd(
 
     private static void PositionFilenameWindow(Window window)
     {
-        const double margin = 8;
         Rect workArea = SystemParameters.WorkArea;
         Window? owner = GetSafeOwnerWindow();
         double ownerCenterX = owner == null
