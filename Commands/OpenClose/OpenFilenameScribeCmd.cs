@@ -34,7 +34,6 @@ public class OpenFilenameScribeCmd(
     private static void PositionFilenameWindow(Window window)
     {
         const double margin = 8;
-        const double pathDialogHalfWidth = 190;
         Rect workArea = SystemParameters.WorkArea;
         Window? owner = GetSafeOwnerWindow();
         double ownerCenterX = owner == null
@@ -50,7 +49,7 @@ public class OpenFilenameScribeCmd(
 
         window.WindowStartupLocation = WindowStartupLocation.Manual;
         window.Left = Math.Clamp(
-            ownerCenterX + pathDialogHalfWidth + margin,
+            ownerCenterX - windowWidth / 2,
             workArea.Left,
             workArea.Right - windowWidth);
         window.Top = Math.Clamp(

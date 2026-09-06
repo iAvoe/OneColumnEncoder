@@ -791,10 +791,7 @@ public class MainVM : BaseVM
                 ? string.Empty
                 : Path.Combine(programFilesX86, "AviSynth+", "plugins64+");
         };
-        EncTermsValCard.GetSourceVideoFilePathFunc = () =>
-        {
-            return GetSelectedVideoSrcPath();
-        };
+        EncTermsValCard.GetSourceVideoFilePathFunc = GetSelectedVideoSrcPath;
         EncTermsValCard.GetEncoderNodeIdFunc = () => ParallelismConfM.LoadEffective().DownstreamNodeId;
 
         // Run final state refreshes after all cards, commands, and subscriptions are ready.
