@@ -421,6 +421,28 @@ public class FilterScribeVM : BaseVM
     public string FFmpegRotateFilterDisplay =>
         RotateMode > 0 ? $"libplacebo=rotate={RotateMode}" : LangProviderBase.NAText;
 
+    public string AvsRotateFilter =>
+        RotateMode switch
+        {
+            1 => "TurnRight(src)",
+            2 => "Turn180(src)",
+            3 => "TurnLeft(src)",
+            _ => LangProviderBase.NAText
+        };
+
+    public string AvsRotateFilterDisplay => AvsRotateFilter;
+
+    public string VpyRotateFilter =>
+        RotateMode switch
+        {
+            1 => "src = core.std.FlipHorizontal(core.std.Transpose(src))",
+            2 => "src = core.std.Turn180(src)",
+            3 => "src = core.std.FlipVertical(core.std.Transpose(src))",
+            _ => LangProviderBase.NAText
+        };
+
+    public string VpyRotateFilterDisplay => VpyRotateFilter;
+
     public string FFmpegUpscaleFilter
     {
         get
@@ -464,6 +486,11 @@ public class FilterScribeVM : BaseVM
                 ? "hflip,vflip"
                 : HorizontalFlipEnabled ? "hflip" : "vflip";
 
+    public static string AvsHFlipFilter => "FlipHorizontal(src)";
+    public static string AvsVFlipFilter => "FlipVertical(src)";
+    public static string VpyHFlipFilter => "src = core.std.FlipHorizontal(src)";
+    public static string VpyVFlipFilter => "src = core.std.FlipVertical(src)";
+
     public bool DebandEnabled => true;
 
     private int _rotateMode;
@@ -479,6 +506,12 @@ public class FilterScribeVM : BaseVM
                 OnPropertyChanged(nameof(FFmpegRotateFilter));
                 OnPropertyChanged(nameof(FFmpegRotateFilterDisplay));
                 OnPropertyChanged(nameof(CanInsertFFmpegRotateFilter));
+                OnPropertyChanged(nameof(AvsRotateFilter));
+                OnPropertyChanged(nameof(AvsRotateFilterDisplay));
+                OnPropertyChanged(nameof(CanInsertAvsRotateFilter));
+                OnPropertyChanged(nameof(VpyRotateFilter));
+                OnPropertyChanged(nameof(VpyRotateFilterDisplay));
+                OnPropertyChanged(nameof(CanInsertVpyRotateFilter));
             }
         }
     }
@@ -567,6 +600,14 @@ public class FilterScribeVM : BaseVM
     public bool CanInsertFFmpegRotateFilter => RotateMode > 0;
     public bool CanInsertFFmpegUpscaleFilter => HasUpscaleOutput;
     public bool CanInsertFFmpegFlipFilter => HorizontalFlipEnabled || VerticalFlipEnabled;
+
+    public bool CanInsertAvsRotateFilter => RotateMode > 0;
+    public bool CanInsertVpyRotateFilter => RotateMode > 0;
+
+    public bool CanInsertAvsHFlipFilter => true;
+    public bool CanInsertAvsVFlipFilter => true;
+    public bool CanInsertVpyHFlipFilter => true;
+    public bool CanInsertVpyVFlipFilter => true;
 
     public static string AviSynthHqdn3dDenoiseFilter => "hqdn3d(src)";
     public static string FFmpegHqdn3dDenoiseFilter => "-filter:v \"hqdn3d\"";
