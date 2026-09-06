@@ -1,4 +1,3 @@
-using OneColumnEncoder.Models;
 using System.Text.RegularExpressions;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;

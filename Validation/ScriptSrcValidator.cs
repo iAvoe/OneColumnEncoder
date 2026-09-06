@@ -1,5 +1,4 @@
 using System.IO;
-using OneColumnEncoder.Models;
 using System.Text.RegularExpressions;
 
 namespace OneColumnEncoder.Validation;
@@ -89,7 +88,7 @@ public static class ScriptSrcValidator
                     return match.Groups[1].Value.Trim();
             }
         }
-        catch {}
+        catch { }
         return null;
     }
 

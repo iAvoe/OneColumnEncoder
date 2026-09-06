@@ -1,5 +1,5 @@
-using System.Collections.Specialized;
 using OneColumnEncoder.ViewModels.MuxTracks;
+using System.Collections.Specialized;
 
 namespace OneColumnEncoder.Views;
 

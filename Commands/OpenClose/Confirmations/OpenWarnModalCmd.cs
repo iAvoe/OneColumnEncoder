@@ -1,6 +1,4 @@
-﻿using OneColumnEncoder.Commands.OpenClose;
-
-namespace OneColumnEncoder.Commands.OpenClose.Confirmations;
+﻿namespace OneColumnEncoder.Commands.OpenClose.Confirmations;
 
 public class OpenWarnModalCmd(ModalNavS modalNavS, string windowTitle, string description)
     : OpenConfirmationBase(modalNavS, windowTitle, description)

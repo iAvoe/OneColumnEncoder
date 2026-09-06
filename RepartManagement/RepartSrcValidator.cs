@@ -1,6 +1,5 @@
 using System.IO;
 using System.Security.Cryptography;
-using OneColumnEncoder.Models;
 using System.Text.RegularExpressions;
 using static OneColumnEncoder.Models.JsonProviderM;
 
@@ -329,7 +328,7 @@ public static partial class RepartSrcValidator
                 if (exactCount is > 0) return exactCount.Value;
             }
             catch (OperationCanceledException) { throw; }
-            catch {}
+            catch { }
         }
 
         // Full frame counting is the slowest fallback. It is deliberately kept
@@ -345,7 +344,7 @@ public static partial class RepartSrcValidator
                 return probedCount.Value;
         }
         catch (OperationCanceledException) { throw; }
-        catch {}
+        catch { }
 
         // No exact count (no ffmpeg) and the duration-based estimate could not be
         // verified. Ask the user whether to run an extended search that expands the

@@ -1,5 +1,3 @@
-using static OneColumnEncoder.Models.ConfirmationProviderM;
-
 namespace OneColumnEncoder.ToolManagement;
 
 /// <summary>

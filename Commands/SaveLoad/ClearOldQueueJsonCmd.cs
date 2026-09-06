@@ -41,7 +41,7 @@ public class ClearOldQueueJsonCmd(ModalNavS modalNavS) : BaseCmd
                     deletedCount++;
                 }
             }
-            catch {} // Probably disk IO fails, which does not really matter
+            catch { } // Probably disk IO fails, which does not really matter
         }
 
         new OpenInfoModalCmd(_modalNavS, lang["AppConf.ClearOldQueueJsonTitle"], string.Format(lang["AppConf.ClearOldQueueJsonResult"], deletedCount))

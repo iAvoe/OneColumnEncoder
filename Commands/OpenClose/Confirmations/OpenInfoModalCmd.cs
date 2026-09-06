@@ -1,5 +1,3 @@
-using OneColumnEncoder.Commands.OpenClose;
-
 namespace OneColumnEncoder.Commands.OpenClose.Confirmations;
 
 public class OpenInfoModalCmd(ModalNavS modalNavS, string windowTitle, string description)

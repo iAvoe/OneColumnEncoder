@@ -1,5 +1,3 @@
-using System.IO;
-
 namespace OneColumnEncoder.Commands.Browse;
 
 public class BrowseSrcScriptQueueCmd(

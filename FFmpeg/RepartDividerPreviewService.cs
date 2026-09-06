@@ -1,9 +1,4 @@
-using OneColumnEncoder.Models;
-using OneColumnEncoder.Models.Lang;
-using System.Globalization;
 using System.IO;
-using System.Text.Json;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace OneColumnEncoder.FFmpeg;
@@ -505,7 +500,7 @@ public sealed class RepartDividerPreviewService(string? ffmpegPath, string? ffpr
         return null;
     }
 
-// Backup route arg builders (write to disk). Reserved; uncomment to restore.
+    // Backup route arg builders (write to disk). Reserved; uncomment to restore.
     /*
     private static string[] BuildSourceFrameArgs(
         string sourceVideoPath,
@@ -651,7 +646,7 @@ public sealed class RepartDividerPreviewService(string? ffmpegPath, string? ffpr
     private static string FormatSeekSeconds(double seconds) =>
         Math.Max(0d, seconds).ToString("0.######", CultureInfo.InvariantCulture);
 
-// Backup route bitmap loader. Reserved; uncomment to restore.
+    // Backup route bitmap loader. Reserved; uncomment to restore.
     /*
     private static BitmapImage LoadBitmap(string path)
     {

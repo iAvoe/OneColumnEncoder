@@ -1,5 +1,4 @@
 using System.IO;
-using OneColumnEncoder.ViewModels.Cards;
 
 namespace OneColumnEncoder.Models;
 

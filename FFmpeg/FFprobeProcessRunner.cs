@@ -69,7 +69,7 @@ public static class FFprobeProcessRunner
 
     public static void TryKill(Process process)
     {
-        try { if (!process.HasExited) process.Kill(true); } catch {}
+        try { if (!process.HasExited) process.Kill(true); } catch { }
     }
 }
 

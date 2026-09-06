@@ -550,7 +550,7 @@ public class EncodingMonitorModalLangProvider : LangProviderBase
             ["InterruptingEncoderText"] = "Прерывание кодера",
             ["ModeText"] = "режим",
             ["StopQueueConfirmTitle"] = "Остановить очередь",
-["StopQueueConfirmMessage"] = "Текущая задача прервана. Остановить всю очередь?"
+            ["StopQueueConfirmMessage"] = "Текущая задача прервана. Остановить всю очередь?"
         };
         Data["de"] = new(Data["en"])
         {

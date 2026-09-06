@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace OneColumnEncoder.Models.Lang;
 
 /// <summary>
@@ -681,1621 +679,1621 @@ public class UILangProvider : LangProviderBase
     }
 
     private static void AddFrench() => Data["fr"] = new(Data["en"])
-        {
-            // Cards section headers
-            ["Cards.ToolsImport"] = "Importer/remplacer outils",
-            ["Cards.SourceValidation"] = "Validation source vidéo",
-            ["Cards.QueueSourceFilter"] = "Filtre file source",
-            ["Cards.QueueSourceFilterSubtitle"] = "Assure la cohérence",
-            ["Cards.ConcatSourceFilter"] = "Filtre concaténation",
-            ["Cards.ConcatSourceFilterSubtitle"] = "Assure la cohérence concat",
-            ["Cards.SrcIncompatOrCorrupted"] = "Incompatible / corrompu (rouge)",
-            ["Cards.SrcQualityIssues"] = "Problèmes qualité (orange)",
-            ["Cards.EncPrerequisites"] = "Prérequis d'encodage",
-            ["Cards.EncHardware"] = "Matériel",
-            ["Cards.EncSoftware"] = "Logiciel",
-            ["Cards.BestPractices"] = "Bonnes pratiques",
-            ["Cards.BestHardware"] = "Matériel (auto-test)",
-            ["Cards.BestSoftware"] = "Logiciel (auto-test)",
-            ["Cards.BestPracticesSubtitle"] = "Conseil — non bloquant",
+    {
+        // Cards section headers
+        ["Cards.ToolsImport"] = "Importer/remplacer outils",
+        ["Cards.SourceValidation"] = "Validation source vidéo",
+        ["Cards.QueueSourceFilter"] = "Filtre file source",
+        ["Cards.QueueSourceFilterSubtitle"] = "Assure la cohérence",
+        ["Cards.ConcatSourceFilter"] = "Filtre concaténation",
+        ["Cards.ConcatSourceFilterSubtitle"] = "Assure la cohérence concat",
+        ["Cards.SrcIncompatOrCorrupted"] = "Incompatible / corrompu (rouge)",
+        ["Cards.SrcQualityIssues"] = "Problèmes qualité (orange)",
+        ["Cards.EncPrerequisites"] = "Prérequis d'encodage",
+        ["Cards.EncHardware"] = "Matériel",
+        ["Cards.EncSoftware"] = "Logiciel",
+        ["Cards.BestPractices"] = "Bonnes pratiques",
+        ["Cards.BestHardware"] = "Matériel (auto-test)",
+        ["Cards.BestSoftware"] = "Logiciel (auto-test)",
+        ["Cards.BestPracticesSubtitle"] = "Conseil — non bloquant",
 
-            // Main buttons
-            ["Buttons.UsageAndCompliance"] = "Usage & conformité",
-            ["Buttons.Settings"] = "Réglages",
-            ["Buttons.OneClickScriptGen"] = "Générer AVS/VS scripts",
-            ["Buttons.OpenScribeSrcScribe"] = "Éditeur filtres",
-            ["Buttons.ShowRawJSON"] = "Afficher JSON brut",
-            ["Buttons.AnalyzeSrcVideo"] = "Analyser source",
-            ["Buttons.ReEvaluate"] = "Réévaluer",
-            ["Buttons.RunSample"] = "Échant. clip",
-            ["Buttons.StartEncode"] = "Lancer enc.",
-            ["EncInspect.InfoTitle"] = "Détails préchecks encodeur",
-            ["EncInspect.InfoMsg"] = "Aucun problème précheck encodeur.",
-            ["EncInspect.P1Title"] = "Contrôle batterie",
-            ["EncInspect.P1Text"] = "Détecte via SystemInformation.PowerStatus si le PC est sur batterie pour réduire l'usure, éviter les arrêts et prévenir la baisse de qualité due à la limitation d'énergie.",
-            ["EncInspect.P2Title"] = "Espace disque",
-            ["EncInspect.P2Text"] = "Compare espace dispo. à taille source × 1,5 (repli : 1 Gio). Vérifie assez d'espace pour sortie d'encodage.",
-            ["EncInspect.P3Title"] = "Droit écriture",
-            ["EncInspect.P3Text"] = "Vérifie l'accès écriture au dossier sortie en listant les fichiers. Évite échecs d'encodage par permissions.",
-            ["EncInspect.P4Title"] = "Écrasement",
-            ["EncInspect.P4Text"] = "Vérifie si fichier sortie existe et rend l'écrasement plus difficile pour éviter perte accidentelle de données.",
-            ["EncInspect.P5Title"] = "Plugin L-SMASH (Avs2Yuv)",
-            ["EncInspect.P5Text"] = "Vérifie présence LSMASHSource.dll sous C:\\Program Files (x86)\\AviSynth+\\plugins64+\\ (pas libvslsmashsource.dll) pour lire images source.",
-            ["EncInspect.P6Title"] = "Contrôle charge CPU NUMA",
-            ["EncInspect.P6Text"] = "Vérifie que le noeud NUMA choisi pour l'encodeur a une faible charge CPU récente. Charge élevée = indicative, ne bloque pas.",
+        // Main buttons
+        ["Buttons.UsageAndCompliance"] = "Usage & conformité",
+        ["Buttons.Settings"] = "Réglages",
+        ["Buttons.OneClickScriptGen"] = "Générer AVS/VS scripts",
+        ["Buttons.OpenScribeSrcScribe"] = "Éditeur filtres",
+        ["Buttons.ShowRawJSON"] = "Afficher JSON brut",
+        ["Buttons.AnalyzeSrcVideo"] = "Analyser source",
+        ["Buttons.ReEvaluate"] = "Réévaluer",
+        ["Buttons.RunSample"] = "Échant. clip",
+        ["Buttons.StartEncode"] = "Lancer enc.",
+        ["EncInspect.InfoTitle"] = "Détails préchecks encodeur",
+        ["EncInspect.InfoMsg"] = "Aucun problème précheck encodeur.",
+        ["EncInspect.P1Title"] = "Contrôle batterie",
+        ["EncInspect.P1Text"] = "Détecte via SystemInformation.PowerStatus si le PC est sur batterie pour réduire l'usure, éviter les arrêts et prévenir la baisse de qualité due à la limitation d'énergie.",
+        ["EncInspect.P2Title"] = "Espace disque",
+        ["EncInspect.P2Text"] = "Compare espace dispo. à taille source × 1,5 (repli : 1 Gio). Vérifie assez d'espace pour sortie d'encodage.",
+        ["EncInspect.P3Title"] = "Droit écriture",
+        ["EncInspect.P3Text"] = "Vérifie l'accès écriture au dossier sortie en listant les fichiers. Évite échecs d'encodage par permissions.",
+        ["EncInspect.P4Title"] = "Écrasement",
+        ["EncInspect.P4Text"] = "Vérifie si fichier sortie existe et rend l'écrasement plus difficile pour éviter perte accidentelle de données.",
+        ["EncInspect.P5Title"] = "Plugin L-SMASH (Avs2Yuv)",
+        ["EncInspect.P5Text"] = "Vérifie présence LSMASHSource.dll sous C:\\Program Files (x86)\\AviSynth+\\plugins64+\\ (pas libvslsmashsource.dll) pour lire images source.",
+        ["EncInspect.P6Title"] = "Contrôle charge CPU NUMA",
+        ["EncInspect.P6Text"] = "Vérifie que le noeud NUMA choisi pour l'encodeur a une faible charge CPU récente. Charge élevée = indicative, ne bloque pas.",
 
 
-            ["Section.SelectUpstream"] = "1. Choisir outil amont",
-            ["Section.SelectEncoder"] = "2. Choisir encodeur",
-            ["Section.SelectDependencies"] = "3. Choisir dépendances",
-            ["Section.ImportSrc"] = "4. Importer/créer source",
-            ["Section.SelectAnalytics"] = "5. Choisir analyseur vidéo · Lancer l'analyse",
-            ["Section.EncodingConfigs"] = "6. Configurations d'encodage",
-            ["Section.StartEncoding"] = "7. Démarrer encodage",
+        ["Section.SelectUpstream"] = "1. Choisir outil amont",
+        ["Section.SelectEncoder"] = "2. Choisir encodeur",
+        ["Section.SelectDependencies"] = "3. Choisir dépendances",
+        ["Section.ImportSrc"] = "4. Importer/créer source",
+        ["Section.SelectAnalytics"] = "5. Choisir analyseur vidéo · Lancer l'analyse",
+        ["Section.EncodingConfigs"] = "6. Configurations d'encodage",
+        ["Section.StartEncoding"] = "7. Démarrer encodage",
 
-            ["Import.NoSelection"] = "Aucune sélection",
-            ["Import.VersionDetectTimeoutTitle"] = "Échec de l'import d'outil",
-            ["Import.VersionDetectTimeoutMessage"] = "L'import a été rejeté car {0} n'a pas renvoyé d'informations de version sous 3 secondes.",
+        ["Import.NoSelection"] = "Aucune sélection",
+        ["Import.VersionDetectTimeoutTitle"] = "Échec de l'import d'outil",
+        ["Import.VersionDetectTimeoutMessage"] = "L'import a été rejeté car {0} n'a pas renvoyé d'informations de version sous 3 secondes.",
 
-            // ItemCard separator
-            ["ItemCard.Separator"] = " : ",
+        // ItemCard separator
+        ["ItemCard.Separator"] = " : ",
 
-            // Tool card captions
-            ["ToolField.Version"] = "Version",
-            ["ToolField.Name"] = "Nom",
-            ["ToolField.Mode"] = "Mode",
-            ["ToolField.FileName"] = "Nom fichier",
-            ["ToolField.NumaNodes"] = "Affinité NUMA", // i.e., upstream from node 0 to encoder at node 1 gives “0 → 1”
-            ["ToolField.Threads"] = "Threads", // Value: int thread count, with ToolField.EncThreadClamp On/Off
-            ["ToolField.Value"] = "Valeur",
-            ["ToolField.Strategy"] = "Stratégie",
-            ["ToolField.MaxKeyframeGap"] = "Écart keyframe max",
-            ["ToolField.OtherCustomParams"] = "Autres params",
+        // Tool card captions
+        ["ToolField.Version"] = "Version",
+        ["ToolField.Name"] = "Nom",
+        ["ToolField.Mode"] = "Mode",
+        ["ToolField.FileName"] = "Nom fichier",
+        ["ToolField.NumaNodes"] = "Affinité NUMA", // i.e., upstream from node 0 to encoder at node 1 gives “0 → 1”
+        ["ToolField.Threads"] = "Threads", // Value: int thread count, with ToolField.EncThreadClamp On/Off
+        ["ToolField.Value"] = "Valeur",
+        ["ToolField.Strategy"] = "Stratégie",
+        ["ToolField.MaxKeyframeGap"] = "Écart keyframe max",
+        ["ToolField.OtherCustomParams"] = "Autres params",
 
-            ["Tool.Source.VideoSrc"] = "▷ Source vidéo",
-            ["Tool.Source.AviSynth"] = $"Source {LangProviderBase.AviSynth} .avs",
-            ["Tool.Source.VapourSynth"] = $"Source {LangProviderBase.VapourSynth} .vpy",
-            ["Tool.Source.Svfi"] = "Source SVFI .ini",
-            ["Tool.Source.AviSynthQueue"] = $"📁 File d'attente {LangProviderBase.AVS}",
-            ["Tool.Source.VapourSynthQueue"] = $"📁 File d'attente {LangProviderBase.VS}",
-            ["Tool.Source.SvfiQueue"] = "📁 File d'attente SVFI",
+        ["Tool.Source.VideoSrc"] = "▷ Source vidéo",
+        ["Tool.Source.AviSynth"] = $"Source {LangProviderBase.AviSynth} .avs",
+        ["Tool.Source.VapourSynth"] = $"Source {LangProviderBase.VapourSynth} .vpy",
+        ["Tool.Source.Svfi"] = "Source SVFI .ini",
+        ["Tool.Source.AviSynthQueue"] = $"📁 File d'attente {LangProviderBase.AVS}",
+        ["Tool.Source.VapourSynthQueue"] = $"📁 File d'attente {LangProviderBase.VS}",
+        ["Tool.Source.SvfiQueue"] = "📁 File d'attente SVFI",
 
-            ["Tool.Enc.OutputSetting"] = "Nom/Chemin fichier sortie",
-            ["Tool.Enc.Parallelism"] = "Parallélisme",
-            ["Tool.Enc.EncParams"] = "Réglages encodeur",
-            ["Tool.Enc.MuxTracks"] = "Ajouter sous-titres",
+        ["Tool.Enc.OutputSetting"] = "Nom/Chemin fichier sortie",
+        ["Tool.Enc.Parallelism"] = "Parallélisme",
+        ["Tool.Enc.EncParams"] = "Réglages encodeur",
+        ["Tool.Enc.MuxTracks"] = "Ajouter sous-titres",
 
-            // Source queue card
-            ["SourceQueue.FilterModeTitle"] = "Faut-il exécuter le filtrage pondéré ?",
-            ["SourceQueue.FilterModeMessage"] = "Veuillez choisir selon la structure de la file d'attente\nConfirmer : sources de durée similaire, aucun filtrage nécessaire\nAnnuler : exclure les intros BDMV/M3U et les bandes-annonces par vote pondéré\nUne comparaison d'exclusion du premier flux sera exécutée pour garantir la cohérence du format\n\nPour les BDMV, utilisez BDInfo/ChapterTool pour gérer les épisodes sous ou sur-segmentés",
-            ["SourceQueue.ImportTitle"] = "Import de la file de sources vidéo",
-            ["SourceQueue.ImportPrompt"] = "Importer la playlist Blu-Ray ?\n\nConfirmer : cibler le dossier PLAYLIST (.mpls/ifo/xpl), le système ajoutera les fichiers médias référencés (m2ts) dans la file dans l'ordre de la playlist.\nAnnuler : sélectionner directement plusieurs fichiers source vidéo, les fichiers choisis seront ajoutés à la file dans l'ordre sélectionné.\n\nSi vous n'êtes pas sûr du cluster à sélectionner, utilisez le mode Repart ou un aperçu du lecteur pour confirmer",
-            ["SourceQueue.SelectPlaylistFolder"] = "Sélectionner le dossier PLAYLIST BDMV",
-            ["SourceQueue.SelectFilesTitle"] = "Sélectionner des fichiers source vidéo",
-            ["SourceQueue.ImportScanFailed"] = "Aucune playlist MPLS exploitable trouvée dans : {0}",
-            ["SourceQueue.ChapterImportFailed"] = "Échec de la lecture des chapitres de : {0}",
-            ["SourceQueue.ChapterSourcesMissing"] = "La playlist n'a pas résolu un fichier source vidéo existant. Vérifiez que les fichiers médias (m2ts) référencés par la playlist sont présents",
+        // Source queue card
+        ["SourceQueue.FilterModeTitle"] = "Faut-il exécuter le filtrage pondéré ?",
+        ["SourceQueue.FilterModeMessage"] = "Veuillez choisir selon la structure de la file d'attente\nConfirmer : sources de durée similaire, aucun filtrage nécessaire\nAnnuler : exclure les intros BDMV/M3U et les bandes-annonces par vote pondéré\nUne comparaison d'exclusion du premier flux sera exécutée pour garantir la cohérence du format\n\nPour les BDMV, utilisez BDInfo/ChapterTool pour gérer les épisodes sous ou sur-segmentés",
+        ["SourceQueue.ImportTitle"] = "Import de la file de sources vidéo",
+        ["SourceQueue.ImportPrompt"] = "Importer la playlist Blu-Ray ?\n\nConfirmer : cibler le dossier PLAYLIST (.mpls/ifo/xpl), le système ajoutera les fichiers médias référencés (m2ts) dans la file dans l'ordre de la playlist.\nAnnuler : sélectionner directement plusieurs fichiers source vidéo, les fichiers choisis seront ajoutés à la file dans l'ordre sélectionné.\n\nSi vous n'êtes pas sûr du cluster à sélectionner, utilisez le mode Repart ou un aperçu du lecteur pour confirmer",
+        ["SourceQueue.SelectPlaylistFolder"] = "Sélectionner le dossier PLAYLIST BDMV",
+        ["SourceQueue.SelectFilesTitle"] = "Sélectionner des fichiers source vidéo",
+        ["SourceQueue.ImportScanFailed"] = "Aucune playlist MPLS exploitable trouvée dans : {0}",
+        ["SourceQueue.ChapterImportFailed"] = "Échec de la lecture des chapitres de : {0}",
+        ["SourceQueue.ChapterSourcesMissing"] = "La playlist n'a pas résolu un fichier source vidéo existant. Vérifiez que les fichiers médias (m2ts) référencés par la playlist sont présents",
 
-            ["SourceConcat.SelectFilesTitle"] = "Sélectionner les fichiers vidéo à concaténer",
-            ["SourceConcat.OrderingTitle"] = "Ordre concat",
-            ["SourceConcat.RestoreOriginalQueue"] = "Annuler tous les changements",
-            ["SourceConcat.ExtensionMismatch"] = "L'import concat exige que tous les fichiers aient la même extension.\n\nAttendue : {0}\nFichiers incompatibles :\n{1}",
-            ["SourceConcat.Analyzed"] = "Analyse concat terminée. {0} fichier(s) compatibles.\n\nTous les sous-titres et fichiers de polices seront supprimés, l'étape 6 permet d'ajouter des sous-titres.",
-            ["SourceConcat.IncompatibleVideo"] = "La source concat #{0} diffère de la première source vidéo.\nAttendu : {1}\nActuel : {2}",
-            ["SourceConcat.IncompatibleFrameRate"] = "La source concat #{0} a une fréquence d'images différente de la première source vidéo.\nAttendu : {1}\nActuel : {2}",
-            ["SourceConcat.ResolutionMismatch"] = "La source concat #{0} a une résolution différente de la première source vidéo.\nAttendu : {1}\nActuel : {2}",
-            ["SourceConcat.VariableFrameRate"] = "Le mode concat ne peut pas utiliser directement une cadence variable (VFR). Veuillez ajouter un filtre de réparation VFR→CFR dans Filter Scribe.",
+        ["SourceConcat.SelectFilesTitle"] = "Sélectionner les fichiers vidéo à concaténer",
+        ["SourceConcat.OrderingTitle"] = "Ordre concat",
+        ["SourceConcat.RestoreOriginalQueue"] = "Annuler tous les changements",
+        ["SourceConcat.ExtensionMismatch"] = "L'import concat exige que tous les fichiers aient la même extension.\n\nAttendue : {0}\nFichiers incompatibles :\n{1}",
+        ["SourceConcat.Analyzed"] = "Analyse concat terminée. {0} fichier(s) compatibles.\n\nTous les sous-titres et fichiers de polices seront supprimés, l'étape 6 permet d'ajouter des sous-titres.",
+        ["SourceConcat.IncompatibleVideo"] = "La source concat #{0} diffère de la première source vidéo.\nAttendu : {1}\nActuel : {2}",
+        ["SourceConcat.IncompatibleFrameRate"] = "La source concat #{0} a une fréquence d'images différente de la première source vidéo.\nAttendu : {1}\nActuel : {2}",
+        ["SourceConcat.ResolutionMismatch"] = "La source concat #{0} a une résolution différente de la première source vidéo.\nAttendu : {1}\nActuel : {2}",
+        ["SourceConcat.VariableFrameRate"] = "Le mode concat ne peut pas utiliser directement une cadence variable (VFR). Veuillez ajouter un filtre de réparation VFR→CFR dans Filter Scribe.",
 
-            // Dialogs
-            ["Dialog.SelectTitle"] = "Choisir {0}",
-            ["Dialog.ReplaceTitle"] = "Remplacer {0}",
-            ["Dialog.Filter.All"] = "Tous les fichiers (*.*)|*.*",
-            ["Dialog.Filter.Exe"] = "Exécutables (*.exe)|*.exe",
-            ["Dialog.Filter.Dll"] = "DLL (*.dll)|*.dll",
+        // Dialogs
+        ["Dialog.SelectTitle"] = "Choisir {0}",
+        ["Dialog.ReplaceTitle"] = "Remplacer {0}",
+        ["Dialog.Filter.All"] = "Tous les fichiers (*.*)|*.*",
+        ["Dialog.Filter.Exe"] = "Exécutables (*.exe)|*.exe",
+        ["Dialog.Filter.Dll"] = "DLL (*.dll)|*.dll",
 
-            // Confirmation dialog texts
+        // Confirmation dialog texts
 
-            // Auto tool import
-            ["AutoImport.Title"] = "Import automatique d'outils",
-            ["AutoImport.FoundMessage"] = "Fichiers exécutables vérifiés trouvés. Les importer maintenant ?\n\n{0}",
-            ["AutoImport.NotFoundMessage"] = "Aucun outil importable n'a été détecté dans le dossier de l'application. Pour revérifier plus tard, activez Réglages → Mode initial → Importer outils au prochain démarrage.",
+        // Auto tool import
+        ["AutoImport.Title"] = "Import automatique d'outils",
+        ["AutoImport.FoundMessage"] = "Fichiers exécutables vérifiés trouvés. Les importer maintenant ?\n\n{0}",
+        ["AutoImport.NotFoundMessage"] = "Aucun outil importable n'a été détecté dans le dossier de l'application. Pour revérifier plus tard, activez Réglages → Mode initial → Importer outils au prochain démarrage.",
 
-            // Confirmation provider messages (with {0} / {1} format placeholders)
-            ["ConfirmProvider.SuspiciousImportTitle"] = "Import ne correspond pas à {0}",
-            ["ConfirmProvider.ProceedToRun"] = "Exécuter {0} pour obtenir sa version ?",
-            ["ConfirmProvider.WrongTool"] = "Importer {0} comme {1} ?",
+        // Confirmation provider messages (with {0} / {1} format placeholders)
+        ["ConfirmProvider.SuspiciousImportTitle"] = "Import ne correspond pas à {0}",
+        ["ConfirmProvider.ProceedToRun"] = "Exécuter {0} pour obtenir sa version ?",
+        ["ConfirmProvider.WrongTool"] = "Importer {0} comme {1} ?",
 
-            // Checklist - Tools
-            ["Checklist.Tools.Upstream"] = "Un programme amont importé",
-            ["Checklist.Tools.Downstream"] = "Un programme aval importé",
-            ["Checklist.Tools.Analysis"] = "Un analyseur importé",
-            ["Checklist.Tools.UpstreamPicked"] = "Sélectionner un amont",
-            ["Checklist.Tools.DownstreamPicked"] = "Sélectionner un aval",
-            ["Checklist.Tools.AnalysisPicked"] = "Sélectionner un analyseur",
-            ["Checklist.Tools.CompleteSourceAnalysis"] = "Analyse source terminée",
-            ["Checklist.Tools.DependenciesPicked"] = "Sélectionner dépendance",
-            ["Checklist.Tools.VideoSourcePicked"] = "Sélectionner la source vidéo ou la file d'attente",
-            ["Checklist.Tools.ScriptSourcePicked"] = "Sélectionner un script source (amont VS/AVS/SVFI)",
+        // Checklist - Tools
+        ["Checklist.Tools.Upstream"] = "Un programme amont importé",
+        ["Checklist.Tools.Downstream"] = "Un programme aval importé",
+        ["Checklist.Tools.Analysis"] = "Un analyseur importé",
+        ["Checklist.Tools.UpstreamPicked"] = "Sélectionner un amont",
+        ["Checklist.Tools.DownstreamPicked"] = "Sélectionner un aval",
+        ["Checklist.Tools.AnalysisPicked"] = "Sélectionner un analyseur",
+        ["Checklist.Tools.CompleteSourceAnalysis"] = "Analyse source terminée",
+        ["Checklist.Tools.DependenciesPicked"] = "Sélectionner dépendance",
+        ["Checklist.Tools.VideoSourcePicked"] = "Sélectionner la source vidéo ou la file d'attente",
+        ["Checklist.Tools.ScriptSourcePicked"] = "Sélectionner un script source (amont VS/AVS/SVFI)",
 
-            // Checklist - Source Validation 1 (Severe)
-            ["Checklist.Source1.Metadata"] = "Métadonnées et SEI lisibles",
-            ["Checklist.Source1.Progressive"] = "Image progressive / non entrelacée",
-            ["Checklist.Source1.BitDepth"] = "Profondeur < 12 bits (8 ou 10, SVT-AV1)",
-            ["Checklist.Source1.BitDepth2"] = "Profondeur < 16 bits",
+        // Checklist - Source Validation 1 (Severe)
+        ["Checklist.Source1.Metadata"] = "Métadonnées et SEI lisibles",
+        ["Checklist.Source1.Progressive"] = "Image progressive / non entrelacée",
+        ["Checklist.Source1.BitDepth"] = "Profondeur < 12 bits (8 ou 10, SVT-AV1)",
+        ["Checklist.Source1.BitDepth2"] = "Profondeur < 16 bits",
 
-            // Checklist - Source Validation 2 (Moderate)
-            ["Checklist.Source2.Framerate"] = "Cadence constante / non variable",
-            ["Checklist.Source2.AspectRatio"] = "Pixels carrés / SAR 1:1",
-            ["Checklist.Source2.ColorMetadata"] = "Matrice/transfert/primaires métadonnées normales",
-            ["Checklist.Source2.ChromaSubsampling"] = "Aucun sous-échant. chroma ni ←/↖ orient. (SVT-AV1)",
+        // Checklist - Source Validation 2 (Moderate)
+        ["Checklist.Source2.Framerate"] = "Cadence constante / non variable",
+        ["Checklist.Source2.AspectRatio"] = "Pixels carrés / SAR 1:1",
+        ["Checklist.Source2.ColorMetadata"] = "Matrice/transfert/primaires métadonnées normales",
+        ["Checklist.Source2.ChromaSubsampling"] = "Aucun sous-échant. chroma ni ←/↖ orient. (SVT-AV1)",
 
-            // Checklist - Encoding Prerequisites 1 (Hardware)
-            ["Checklist.Enc1.NotOffGrid"] = "Pas sur batterie",
-            ["Checklist.Enc1.DiskSpace"] = "Espace disque suffisant",
-            ["Checklist.Enc1.NumaCpuLoad"] = "Charge CPU NUMA faible",
+        // Checklist - Encoding Prerequisites 1 (Hardware)
+        ["Checklist.Enc1.NotOffGrid"] = "Pas sur batterie",
+        ["Checklist.Enc1.DiskSpace"] = "Espace disque suffisant",
+        ["Checklist.Enc1.NumaCpuLoad"] = "Charge CPU NUMA faible",
 
-            // Checklist - Encoding Prerequisites 2 (Software)
-            ["Checklist.Enc2.OSFilename"] = "Nom sortie valide OS",
-            ["Checklist.Enc2.FTPFilename"] = "Nom sortie possiblement valide FTP",
-            ["Checklist.Enc2.WritePermission"] = "Droit écriture dossier sortie",
-            ["Checklist.Enc2.Overwrite"] = "La sortie n'écrase rien",
-            ["Checklist.Enc2.LsmashForAvs2Yuv"] = "LSMASHSource.dll dans AviSynth+ (Avs2Yuv)",
+        // Checklist - Encoding Prerequisites 2 (Software)
+        ["Checklist.Enc2.OSFilename"] = "Nom sortie valide OS",
+        ["Checklist.Enc2.FTPFilename"] = "Nom sortie possiblement valide FTP",
+        ["Checklist.Enc2.WritePermission"] = "Droit écriture dossier sortie",
+        ["Checklist.Enc2.Overwrite"] = "La sortie n'écrase rien",
+        ["Checklist.Enc2.LsmashForAvs2Yuv"] = "LSMASHSource.dll dans AviSynth+ (Avs2Yuv)",
 
-            // Checklist - Best Practices 1 (Hardware)
-            ["Checklist.Best1.SlowDisk"] = "Éviter lien disque lent (USB2, Bluetooth, etc.)",
-            ["Checklist.Best1.DiskThrashing"] = "Éviter lecture/écriture sur même HDD",
-            ["Checklist.Best1.BiosDriver"] = "BIOS, chipset et firmware disque à jour",
-            ["Checklist.Best1.Temperature"] = "°C (°F) : SSD/RAM <75 (167), HDD <55 (131)",
-            ["Checklist.Best1.SMR"] = "Ne pas écrire sur HDD SMR",
+        // Checklist - Best Practices 1 (Hardware)
+        ["Checklist.Best1.SlowDisk"] = "Éviter lien disque lent (USB2, Bluetooth, etc.)",
+        ["Checklist.Best1.DiskThrashing"] = "Éviter lecture/écriture sur même HDD",
+        ["Checklist.Best1.BiosDriver"] = "BIOS, chipset et firmware disque à jour",
+        ["Checklist.Best1.Temperature"] = "°C (°F) : SSD/RAM <75 (167), HDD <55 (131)",
+        ["Checklist.Best1.SMR"] = "Ne pas écrire sur HDD SMR",
 
-            // Checklist - Best Practices 2 (Software)
-            ["Checklist.Best2.EncoderVersion"] = "Encodeur à jour",
-            ["Checklist.Best2.FAT32"] = "Ne pas écrire sur FAT32",
-            ["Checklist.Best2.DiskCompression"] = "Compression disque désactivée en sortie",
+        // Checklist - Best Practices 2 (Software)
+        ["Checklist.Best2.EncoderVersion"] = "Encodeur à jour",
+        ["Checklist.Best2.FAT32"] = "Ne pas écrire sur FAT32",
+        ["Checklist.Best2.DiskCompression"] = "Compression disque désactivée en sortie",
 
-            // FilterScribeModal
+        // FilterScribeModal
 
-            // FFProbeJsonUpdateResolver
-            ["FFProbeJsonUpdate.JsonEmpty"] = "Le JSON ffprobe est vide.",
-            ["FFProbeJsonUpdate.DimensionsNotPositive"] = "Les dimensions de résolution doivent être positives.",
-            ["FFProbeJsonUpdate.RootNotObject"] = "La racine du JSON ffprobe n'est pas un objet.",
-            ["FFProbeJsonUpdate.NoVideoStream"] = "Aucun flux vidéo trouvé dans le JSON ffprobe.",
+        // FFProbeJsonUpdateResolver
+        ["FFProbeJsonUpdate.JsonEmpty"] = "Le JSON ffprobe est vide.",
+        ["FFProbeJsonUpdate.DimensionsNotPositive"] = "Les dimensions de résolution doivent être positives.",
+        ["FFProbeJsonUpdate.RootNotObject"] = "La racine du JSON ffprobe n'est pas un objet.",
+        ["FFProbeJsonUpdate.NoVideoStream"] = "Aucun flux vidéo trouvé dans le JSON ffprobe.",
 
-            // FilenameScribeModal
+        // FilenameScribeModal
 
-            // Hints
-            ["Hint.SVFIClipDisabled"] = "OneLineShotArgs ne prend pas en charge l'échantillonnage; bouton Échantillon désactivé.",
-            ["Hint.AnalyzeRunConditionDuration"] = "L'analyse commence dès l'importation de la source (≈70～100 ms/src, le mode Repart est plus lent)",
-            ["Hint.NumaCpuCheckTrigger"] = "La charge CPU du noeud NUMA se met à jour au clic souris ou à la saisie clavier.",
-            ["Hint.FFmpegOptionalBut"] = "FFmpeg est facultatif, mais nécessaire pour l'aperçu des images vidéo et le multiplexage automatique MKV",
-            ["ScriptQueueImport.RejectedPrefix"] = "Import rejeté : {0} nom(s) de base sans correspondance, {1} chemin(s) incorrect(s).",
-            ["ScriptQueueImport.DetailsHeader"] = "Détails :",
-            ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — aucune source vidéo correspondante via le nom de base",
-            ["ScriptQueueImport.DetailNoScript"] = "'{0}' — aucun fichier de script correspondant via le nom de base",
-            ["ScriptQueueImport.DetailUnreadable"] = "'{0}' — format de script non reconnu, impossible de vérifier le chemin source",
-            ["ScriptQueueImport.DetailMismatch"] = "'{0}' — pointe vers \"{1}\", attendu \"{2}\"",
-            ["ScriptQueueImport.MoreCount"] = "...et {0} de plus.",
-            ["ScriptQueueImport.CountMismatchTitle"] = "Nombre de scripts différent",
-            ["ScriptQueueImport.MissingSummary"] = "{0} sur {1} scripts manquants pour l'amont choisi.",
-            ["ScriptQueueImport.MissingLabel"] = "Manquants :",
-            ["ScriptQueueImport.SourceMismatchTitle"] = "Source script différente",
-            ["ScriptQueueImport.SourceMismatchSummary"] = "{0} script(s) font référence à une autre source vidéo.",
-            ["Hint.QueueRouteSampleClipDisabled"] = "Les modes file d'attente/concaténation de source vidéo ne prennent pas en charge l'échantillonnage; bouton Échantillon désactivé.",
-            ["Hint.FilterScribeDisabled"] = "OneLineShotArgs ne prend pas en charge la génération de scripts; le Scribe de filtres est désactivé.",
-            ["Hint.MinDurationFilter"] = "Filtrer durée min. (s) :",
-            ["Hint.DurationFilterAllFiltered"] = "Toutes les vidéos filtrées par le filtre de durée.",
-            ["Hint.DurationFilterCount"] = "{0} sur {1} vidéos filtrées.",
+        // Hints
+        ["Hint.SVFIClipDisabled"] = "OneLineShotArgs ne prend pas en charge l'échantillonnage; bouton Échantillon désactivé.",
+        ["Hint.AnalyzeRunConditionDuration"] = "L'analyse commence dès l'importation de la source (≈70～100 ms/src, le mode Repart est plus lent)",
+        ["Hint.NumaCpuCheckTrigger"] = "La charge CPU du noeud NUMA se met à jour au clic souris ou à la saisie clavier.",
+        ["Hint.FFmpegOptionalBut"] = "FFmpeg est facultatif, mais nécessaire pour l'aperçu des images vidéo et le multiplexage automatique MKV",
+        ["ScriptQueueImport.RejectedPrefix"] = "Import rejeté : {0} nom(s) de base sans correspondance, {1} chemin(s) incorrect(s).",
+        ["ScriptQueueImport.DetailsHeader"] = "Détails :",
+        ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — aucune source vidéo correspondante via le nom de base",
+        ["ScriptQueueImport.DetailNoScript"] = "'{0}' — aucun fichier de script correspondant via le nom de base",
+        ["ScriptQueueImport.DetailUnreadable"] = "'{0}' — format de script non reconnu, impossible de vérifier le chemin source",
+        ["ScriptQueueImport.DetailMismatch"] = "'{0}' — pointe vers \"{1}\", attendu \"{2}\"",
+        ["ScriptQueueImport.MoreCount"] = "...et {0} de plus.",
+        ["ScriptQueueImport.CountMismatchTitle"] = "Nombre de scripts différent",
+        ["ScriptQueueImport.MissingSummary"] = "{0} sur {1} scripts manquants pour l'amont choisi.",
+        ["ScriptQueueImport.MissingLabel"] = "Manquants :",
+        ["ScriptQueueImport.SourceMismatchTitle"] = "Source script différente",
+        ["ScriptQueueImport.SourceMismatchSummary"] = "{0} script(s) font référence à une autre source vidéo.",
+        ["Hint.QueueRouteSampleClipDisabled"] = "Les modes file d'attente/concaténation de source vidéo ne prennent pas en charge l'échantillonnage; bouton Échantillon désactivé.",
+        ["Hint.FilterScribeDisabled"] = "OneLineShotArgs ne prend pas en charge la génération de scripts; le Scribe de filtres est désactivé.",
+        ["Hint.MinDurationFilter"] = "Filtrer durée min. (s) :",
+        ["Hint.DurationFilterAllFiltered"] = "Toutes les vidéos filtrées par le filtre de durée.",
+        ["Hint.DurationFilterCount"] = "{0} sur {1} vidéos filtrées.",
 
-            // Heatmap
-            ["Heatmap.Cold"] = "Froid",
-            ["Heatmap.Hot"] = "Chaud",
+        // Heatmap
+        ["Heatmap.Cold"] = "Froid",
+        ["Heatmap.Hot"] = "Chaud",
 
-            // Source analysis result ConfirmationModal
-            ["SrcAnalysis.Completed"] = "Analyse source terminée.",
-            ["SrcAnalysis.RunAfterReplace"] = "Lancer l'analyse source maintenant ?",
-            ["SrcAnalysis.Copied"] = "JSON ffprobe brut copié.",
+        // Source analysis result ConfirmationModal
+        ["SrcAnalysis.Completed"] = "Analyse source terminée.",
+        ["SrcAnalysis.RunAfterReplace"] = "Lancer l'analyse source maintenant ?",
+        ["SrcAnalysis.Copied"] = "JSON ffprobe brut copié.",
 
-            ["ScriptGen.RunAfterReplace"] = "Générer scripts AVS et VPY maintenant ?",
-            ["ScriptGen.ScriptsSaved"] = "Scripts sauvegardés :\n{0}",
+        ["ScriptGen.RunAfterReplace"] = "Générer scripts AVS et VPY maintenant ?",
+        ["ScriptGen.ScriptsSaved"] = "Scripts sauvegardés :\n{0}",
 
-            // InspectSrcProblems modal texts
-            ["SrcInspect.InfoTitle"] = "Contrôle source",
-            ["SrcInspect.InfoMsg"] = "Aucun problème source évident.",
-            ["SrcInspect.ErrorTitle"] = "Problèmes source graves",
-            ["SrcInspect.WarnTitle"] = "Problèmes source moyens",
-            ["SrcInspect.MetadataP1Text"] = "Métadonnées source illisibles. Fichier corrompu ou non vidéo ; l'outil utilise les métadonnées pour des paramètres sûrs, encodage impossible.",
-            ["SrcInspect.ProgressiveP1Text"] = "Impossible d'analyser les motifs inter-images pour IVTC. Voir https://iavoe.github.io/deint-ivtc-web-tutorial/HTML.",
-            ["SrcInspect.BitDepthP1Text"] = "SVT-AV1 ne supporte pas 12 bits. Si non sélectionné, c'est un avertissement et ne désactive pas le bouton Démarrer encodage.",
-            ["SrcInspect.FramerateP1Text"] = "Utilisez l'éditeur de filtres pour ajouter filtre VFR→CFR. Encoder du VFR peut désynchroniser audio/vidéo.",
-            ["SrcInspect.AspectRatioP1Text"] = "Impossible de compenser pixels non carrés. Dimensions inattendues possibles. Corrigez par transcodage FFV1 avec ffmpeg -aspect <SAR-actuel>.",
-            ["SrcInspect.ColorMetadataP1Text"] = "Les lecteurs replient souvent sur BT.709 si les métadonnées de matrice, transfert ou primaires sont absentes, mais plusieurs valeurs existent et un seul ensemble est correct.",
-            ["SrcInspect.ChromaSubsamplingP1Text"] = "Emplacement chroma incorrect peut flouter ou décaler les contours. Contrairement à AVC/HEVC, AV1 ne supporte qu'un ensemble limité d'emplacements chroma."
+        // InspectSrcProblems modal texts
+        ["SrcInspect.InfoTitle"] = "Contrôle source",
+        ["SrcInspect.InfoMsg"] = "Aucun problème source évident.",
+        ["SrcInspect.ErrorTitle"] = "Problèmes source graves",
+        ["SrcInspect.WarnTitle"] = "Problèmes source moyens",
+        ["SrcInspect.MetadataP1Text"] = "Métadonnées source illisibles. Fichier corrompu ou non vidéo ; l'outil utilise les métadonnées pour des paramètres sûrs, encodage impossible.",
+        ["SrcInspect.ProgressiveP1Text"] = "Impossible d'analyser les motifs inter-images pour IVTC. Voir https://iavoe.github.io/deint-ivtc-web-tutorial/HTML.",
+        ["SrcInspect.BitDepthP1Text"] = "SVT-AV1 ne supporte pas 12 bits. Si non sélectionné, c'est un avertissement et ne désactive pas le bouton Démarrer encodage.",
+        ["SrcInspect.FramerateP1Text"] = "Utilisez l'éditeur de filtres pour ajouter filtre VFR→CFR. Encoder du VFR peut désynchroniser audio/vidéo.",
+        ["SrcInspect.AspectRatioP1Text"] = "Impossible de compenser pixels non carrés. Dimensions inattendues possibles. Corrigez par transcodage FFV1 avec ffmpeg -aspect <SAR-actuel>.",
+        ["SrcInspect.ColorMetadataP1Text"] = "Les lecteurs replient souvent sur BT.709 si les métadonnées de matrice, transfert ou primaires sont absentes, mais plusieurs valeurs existent et un seul ensemble est correct.",
+        ["SrcInspect.ChromaSubsamplingP1Text"] = "Emplacement chroma incorrect peut flouter ou décaler les contours. Contrairement à AVC/HEVC, AV1 ne supporte qu'un ensemble limité d'emplacements chroma."
     };
     private static void AddSpanish() => Data["es"] = new(Data["en"])
-        {
-            // Cards section headers
-            ["Cards.ToolsImport"] = "Importar/reemplazar herramientas",
-            ["Cards.SourceValidation"] = "Validación de vídeo fuente",
-            ["Cards.QueueSourceFilter"] = "Filtro cola fuente",
-            ["Cards.QueueSourceFilterSubtitle"] = "Garantiza la cola",
-            ["Cards.ConcatSourceFilter"] = "Filtro concatenación",
-            ["Cards.ConcatSourceFilterSubtitle"] = "Garantiza la concatenación",
-            ["Cards.SrcIncompatOrCorrupted"] = "Incompatible / corrupto (rojo)",
-            ["Cards.SrcQualityIssues"] = "Problemas de calidad (naranja)",
-            ["Cards.EncPrerequisites"] = "Requisitos de codificación",
-            ["Cards.EncHardware"] = "Hardware",
-            ["Cards.EncSoftware"] = "Software",
-            ["Cards.BestPractices"] = "Buenas prácticas",
-            ["Cards.BestHardware"] = "Hardware (autocomprobación)",
-            ["Cards.BestSoftware"] = "Software (autocomprobación)",
-            ["Cards.BestPracticesSubtitle"] = "Aviso — no bloquea",
+    {
+        // Cards section headers
+        ["Cards.ToolsImport"] = "Importar/reemplazar herramientas",
+        ["Cards.SourceValidation"] = "Validación de vídeo fuente",
+        ["Cards.QueueSourceFilter"] = "Filtro cola fuente",
+        ["Cards.QueueSourceFilterSubtitle"] = "Garantiza la cola",
+        ["Cards.ConcatSourceFilter"] = "Filtro concatenación",
+        ["Cards.ConcatSourceFilterSubtitle"] = "Garantiza la concatenación",
+        ["Cards.SrcIncompatOrCorrupted"] = "Incompatible / corrupto (rojo)",
+        ["Cards.SrcQualityIssues"] = "Problemas de calidad (naranja)",
+        ["Cards.EncPrerequisites"] = "Requisitos de codificación",
+        ["Cards.EncHardware"] = "Hardware",
+        ["Cards.EncSoftware"] = "Software",
+        ["Cards.BestPractices"] = "Buenas prácticas",
+        ["Cards.BestHardware"] = "Hardware (autocomprobación)",
+        ["Cards.BestSoftware"] = "Software (autocomprobación)",
+        ["Cards.BestPracticesSubtitle"] = "Aviso — no bloquea",
 
-            // Main buttons
-            ["Buttons.UsageAndCompliance"] = "Uso y cumplimiento",
-            ["Buttons.Settings"] = "Ajustes",
-            ["Buttons.OneClickScriptGen"] = "Generar AVS/VS scripts",
-            ["Buttons.OpenScribeSrcScribe"] = "Editor de filtros",
-            ["Buttons.ShowRawJSON"] = "Mostrar JSON bruto",
-            ["Buttons.AnalyzeSrcVideo"] = "Analizar fuente",
-            ["Buttons.ReEvaluate"] = "Reevaluar",
-            ["Buttons.RunSample"] = "Muestra clip",
-            ["Buttons.StartEncode"] = "Iniciar cod.",
-            ["EncInspect.InfoTitle"] = "Detalles precheck codificador",
-            ["EncInspect.InfoMsg"] = "Sin problemas de precheck.",
-            ["EncInspect.P1Title"] = "Comprob. batería",
-            ["EncInspect.P1Text"] = "Detecta mediante SystemInformation.PowerStatus si el PC funciona con batería para reducir desgaste, evitar apagados y pérdidas de calidad por limitación de energía.",
-            ["EncInspect.P2Title"] = "Comp. esp. disco",
-            ["EncInspect.P2Text"] = "Compara espacio disco disponible con tamaño fuente × 1,5 (reserva: 1 GiB). Garantiza espacio suficiente para salida.",
-            ["EncInspect.P3Title"] = "Permiso escritura",
-            ["EncInspect.P3Text"] = "Comprueba acceso escritura a carpeta salida listando archivos. Evita fallos de codificación por permisos.",
-            ["EncInspect.P4Title"] = "Sobrescritura",
-            ["EncInspect.P4Text"] = "Comprueba si archivo salida existe y dificulta iniciar sobrescritura para evitar pérdida accidental de datos.",
-            ["EncInspect.P5Title"] = "Complemento L-SMASH (Avs2Yuv)",
-            ["EncInspect.P5Text"] = "Comprueba si LSMASHSource.dll existe en C:\\Program Files (x86)\\AviSynth+\\plugins64+\\ (no libvslsmashsource.dll) para leer fotogramas fuente.",
-            ["EncInspect.P6Title"] = "Carga CPU nodo NUMA",
-            ["EncInspect.P6Text"] = "Comprueba si el nodo NUMA seleccionado tiene baja carga CPU reciente. Carga alta solo informativa, no bloquea.",
+        // Main buttons
+        ["Buttons.UsageAndCompliance"] = "Uso y cumplimiento",
+        ["Buttons.Settings"] = "Ajustes",
+        ["Buttons.OneClickScriptGen"] = "Generar AVS/VS scripts",
+        ["Buttons.OpenScribeSrcScribe"] = "Editor de filtros",
+        ["Buttons.ShowRawJSON"] = "Mostrar JSON bruto",
+        ["Buttons.AnalyzeSrcVideo"] = "Analizar fuente",
+        ["Buttons.ReEvaluate"] = "Reevaluar",
+        ["Buttons.RunSample"] = "Muestra clip",
+        ["Buttons.StartEncode"] = "Iniciar cod.",
+        ["EncInspect.InfoTitle"] = "Detalles precheck codificador",
+        ["EncInspect.InfoMsg"] = "Sin problemas de precheck.",
+        ["EncInspect.P1Title"] = "Comprob. batería",
+        ["EncInspect.P1Text"] = "Detecta mediante SystemInformation.PowerStatus si el PC funciona con batería para reducir desgaste, evitar apagados y pérdidas de calidad por limitación de energía.",
+        ["EncInspect.P2Title"] = "Comp. esp. disco",
+        ["EncInspect.P2Text"] = "Compara espacio disco disponible con tamaño fuente × 1,5 (reserva: 1 GiB). Garantiza espacio suficiente para salida.",
+        ["EncInspect.P3Title"] = "Permiso escritura",
+        ["EncInspect.P3Text"] = "Comprueba acceso escritura a carpeta salida listando archivos. Evita fallos de codificación por permisos.",
+        ["EncInspect.P4Title"] = "Sobrescritura",
+        ["EncInspect.P4Text"] = "Comprueba si archivo salida existe y dificulta iniciar sobrescritura para evitar pérdida accidental de datos.",
+        ["EncInspect.P5Title"] = "Complemento L-SMASH (Avs2Yuv)",
+        ["EncInspect.P5Text"] = "Comprueba si LSMASHSource.dll existe en C:\\Program Files (x86)\\AviSynth+\\plugins64+\\ (no libvslsmashsource.dll) para leer fotogramas fuente.",
+        ["EncInspect.P6Title"] = "Carga CPU nodo NUMA",
+        ["EncInspect.P6Text"] = "Comprueba si el nodo NUMA seleccionado tiene baja carga CPU reciente. Carga alta solo informativa, no bloquea.",
 
 
-            ["Section.SelectUpstream"] = "1. Elegir herramienta aguas arriba",
-            ["Section.SelectEncoder"] = "2. Elegir codificador",
-            ["Section.SelectDependencies"] = "3. Elegir dependencias",
-            ["Section.ImportSrc"] = "4. Importar/crear fuente",
-            ["Section.SelectAnalytics"] = "5. Elegir analizador · Ejecutar análisis",
-            ["Section.EncodingConfigs"] = "6. Configuración de codificación",
-            ["Section.StartEncoding"] = "7. Iniciar codificación",
+        ["Section.SelectUpstream"] = "1. Elegir herramienta aguas arriba",
+        ["Section.SelectEncoder"] = "2. Elegir codificador",
+        ["Section.SelectDependencies"] = "3. Elegir dependencias",
+        ["Section.ImportSrc"] = "4. Importar/crear fuente",
+        ["Section.SelectAnalytics"] = "5. Elegir analizador · Ejecutar análisis",
+        ["Section.EncodingConfigs"] = "6. Configuración de codificación",
+        ["Section.StartEncoding"] = "7. Iniciar codificación",
 
-            ["Import.NoSelection"] = "Sin selección",
-            ["Import.VersionDetectTimeoutTitle"] = "Error al importar herramienta",
-            ["Import.VersionDetectTimeoutMessage"] = "Se rechazó la importación porque {0} no devolvió información de versión en 3 segundos.",
+        ["Import.NoSelection"] = "Sin selección",
+        ["Import.VersionDetectTimeoutTitle"] = "Error al importar herramienta",
+        ["Import.VersionDetectTimeoutMessage"] = "Se rechazó la importación porque {0} no devolvió información de versión en 3 segundos.",
 
-            // ItemCard separator
-            ["ItemCard.Separator"] = ": ",
+        // ItemCard separator
+        ["ItemCard.Separator"] = ": ",
 
-            // Tool card captions
-            ["ToolField.Version"] = "Versión",
-            ["ToolField.Name"] = "Nombre",
-            ["ToolField.Mode"] = "Modo",
-            ["ToolField.FileName"] = "Archivo",
-            ["ToolField.NumaNodes"] = "Afinidad NUMA", // i.e., upstream from node 0 to encoder at node 1 gives “0 → 1”
-            ["ToolField.Threads"] = "Hilos", // Value: int thread count, with ToolField.EncThreadClamp On/Off
-            ["ToolField.Value"] = "Valor",
-            ["ToolField.Strategy"] = "Estrategia",
-            ["ToolField.MaxKeyframeGap"] = "Máx. intervalo keyframe",
-            ["ToolField.OtherCustomParams"] = "Otros parámetros",
+        // Tool card captions
+        ["ToolField.Version"] = "Versión",
+        ["ToolField.Name"] = "Nombre",
+        ["ToolField.Mode"] = "Modo",
+        ["ToolField.FileName"] = "Archivo",
+        ["ToolField.NumaNodes"] = "Afinidad NUMA", // i.e., upstream from node 0 to encoder at node 1 gives “0 → 1”
+        ["ToolField.Threads"] = "Hilos", // Value: int thread count, with ToolField.EncThreadClamp On/Off
+        ["ToolField.Value"] = "Valor",
+        ["ToolField.Strategy"] = "Estrategia",
+        ["ToolField.MaxKeyframeGap"] = "Máx. intervalo keyframe",
+        ["ToolField.OtherCustomParams"] = "Otros parámetros",
 
-            ["Tool.Source.VideoSrc"] = "▷ Fuente de vídeo",
-            ["Tool.Source.AviSynth"] = $"Fuente {LangProviderBase.AviSynth} .avs",
-            ["Tool.Source.VapourSynth"] = $"Fuente {LangProviderBase.VapourSynth} .vpy",
-            ["Tool.Source.Svfi"] = "Fuente SVFI .ini",
-            ["Tool.Source.AviSynthQueue"] = $"📁 Cola {LangProviderBase.AVS}",
-            ["Tool.Source.VapourSynthQueue"] = $"📁 Cola {LangProviderBase.VS}",
-            ["Tool.Source.SvfiQueue"] = "📁 Cola SVFI",
+        ["Tool.Source.VideoSrc"] = "▷ Fuente de vídeo",
+        ["Tool.Source.AviSynth"] = $"Fuente {LangProviderBase.AviSynth} .avs",
+        ["Tool.Source.VapourSynth"] = $"Fuente {LangProviderBase.VapourSynth} .vpy",
+        ["Tool.Source.Svfi"] = "Fuente SVFI .ini",
+        ["Tool.Source.AviSynthQueue"] = $"📁 Cola {LangProviderBase.AVS}",
+        ["Tool.Source.VapourSynthQueue"] = $"📁 Cola {LangProviderBase.VS}",
+        ["Tool.Source.SvfiQueue"] = "📁 Cola SVFI",
 
-            ["Tool.Enc.OutputSetting"] = "Nom. y ruta archivo salida",
-            ["Tool.Enc.Parallelism"] = "Paralelismo",
-            ["Tool.Enc.EncParams"] = "Ajustes del codificador",
-            ["Tool.Enc.MuxTracks"] = "Añadir subtítulos",
+        ["Tool.Enc.OutputSetting"] = "Nom. y ruta archivo salida",
+        ["Tool.Enc.Parallelism"] = "Paralelismo",
+        ["Tool.Enc.EncParams"] = "Ajustes del codificador",
+        ["Tool.Enc.MuxTracks"] = "Añadir subtítulos",
 
-            // Source queue card
-            ["SourceQueue.FilterModeTitle"] = "¿Ejecutar el filtrado ponderado de la cola?",
-            ["SourceQueue.FilterModeMessage"] = "Por favor, elija según la estructura de la cola\nConfirmar: fuentes de duración similar, sin necesidad de filtrado\nCancelar: excluir intros BDMV/M3U y tráileres por voto ponderado\nSe ejecutará una comparación de exclusión del primer flujo para garantizar la coherencia del formato\n\nPara BDMV, use BDInfo/ChapterTool para manejar episodios subsegmentados o sobresegmentados",
-            ["SourceQueue.ImportTitle"] = "Importación de cola de fuentes de vídeo",
-            ["SourceQueue.ImportPrompt"] = "¿Importar lista Blu-Ray?\n\nConfirmar: ubicar carpeta PLAYLIST (.mpls/ifo/xpl), el sistema añadirá los archivos multimedia referenciados (m2ts) a la cola en el orden de la lista.\nCancelar: seleccionar directamente varios archivos fuente de video, y los archivos elegidos se añadirán a la cola en el orden seleccionado.\n\nSi no está seguro de qué clúster seleccionar, use el modo Repart o una vista previa del reproductor para confirmar",
-            ["SourceQueue.SelectPlaylistFolder"] = "Seleccionar carpeta PLAYLIST de BDMV",
-            ["SourceQueue.SelectFilesTitle"] = "Seleccionar archivos fuente de video",
-            ["SourceQueue.ImportScanFailed"] = "No se encontraron listas MPLS utilizables en: {0}",
-            ["SourceQueue.ChapterImportFailed"] = "Error al leer capítulos de: {0}",
-            ["SourceQueue.ChapterSourcesMissing"] = "La lista no resolvió un archivo de video fuente existente. Asegúrese de que los archivos multimedia (m2ts) referenciados por la lista estén presentes",
+        // Source queue card
+        ["SourceQueue.FilterModeTitle"] = "¿Ejecutar el filtrado ponderado de la cola?",
+        ["SourceQueue.FilterModeMessage"] = "Por favor, elija según la estructura de la cola\nConfirmar: fuentes de duración similar, sin necesidad de filtrado\nCancelar: excluir intros BDMV/M3U y tráileres por voto ponderado\nSe ejecutará una comparación de exclusión del primer flujo para garantizar la coherencia del formato\n\nPara BDMV, use BDInfo/ChapterTool para manejar episodios subsegmentados o sobresegmentados",
+        ["SourceQueue.ImportTitle"] = "Importación de cola de fuentes de vídeo",
+        ["SourceQueue.ImportPrompt"] = "¿Importar lista Blu-Ray?\n\nConfirmar: ubicar carpeta PLAYLIST (.mpls/ifo/xpl), el sistema añadirá los archivos multimedia referenciados (m2ts) a la cola en el orden de la lista.\nCancelar: seleccionar directamente varios archivos fuente de video, y los archivos elegidos se añadirán a la cola en el orden seleccionado.\n\nSi no está seguro de qué clúster seleccionar, use el modo Repart o una vista previa del reproductor para confirmar",
+        ["SourceQueue.SelectPlaylistFolder"] = "Seleccionar carpeta PLAYLIST de BDMV",
+        ["SourceQueue.SelectFilesTitle"] = "Seleccionar archivos fuente de video",
+        ["SourceQueue.ImportScanFailed"] = "No se encontraron listas MPLS utilizables en: {0}",
+        ["SourceQueue.ChapterImportFailed"] = "Error al leer capítulos de: {0}",
+        ["SourceQueue.ChapterSourcesMissing"] = "La lista no resolvió un archivo de video fuente existente. Asegúrese de que los archivos multimedia (m2ts) referenciados por la lista estén presentes",
 
-            ["SourceConcat.SelectFilesTitle"] = "Seleccionar archivos de vídeo para concatenar",
-            ["SourceConcat.OrderingTitle"] = "Orden concat",
-            ["SourceConcat.RestoreOriginalQueue"] = "Deshacer todos los cambios",
-            ["SourceConcat.ExtensionMismatch"] = "La importación concat requiere que todos los archivos tengan la misma extensión.\n\nEsperada: {0}\nArchivos no coincidentes:\n{1}",
-            ["SourceConcat.Analyzed"] = "Análisis concat completado. {0} archivo(s) compatibles.\n\nSe eliminarán todos los subtítulos y archivos de fuentes, el paso 6 permite añadir subtítulos.",
-            ["SourceConcat.IncompatibleVideo"] = "La fuente concat #{0} difiere de la primera fuente de vídeo.\nEsperado: {1}\nActual: {2}",
-            ["SourceConcat.IncompatibleFrameRate"] = "La fuente concat #{0} tiene una velocidad de fotogramas distinta de la primera fuente de vídeo.\nEsperado: {1}\nActual: {2}",
-            ["SourceConcat.ResolutionMismatch"] = "La fuente concat #{0} tiene una resolución distinta de la primera fuente de vídeo.\nEsperado: {1}\nActual: {2}",
-            ["SourceConcat.VariableFrameRate"] = "El modo concat no puede usar directamente velocidad de fotogramas variable (VFR). Añade un filtro de reparación VFR→CFR en Filter Scribe.",
+        ["SourceConcat.SelectFilesTitle"] = "Seleccionar archivos de vídeo para concatenar",
+        ["SourceConcat.OrderingTitle"] = "Orden concat",
+        ["SourceConcat.RestoreOriginalQueue"] = "Deshacer todos los cambios",
+        ["SourceConcat.ExtensionMismatch"] = "La importación concat requiere que todos los archivos tengan la misma extensión.\n\nEsperada: {0}\nArchivos no coincidentes:\n{1}",
+        ["SourceConcat.Analyzed"] = "Análisis concat completado. {0} archivo(s) compatibles.\n\nSe eliminarán todos los subtítulos y archivos de fuentes, el paso 6 permite añadir subtítulos.",
+        ["SourceConcat.IncompatibleVideo"] = "La fuente concat #{0} difiere de la primera fuente de vídeo.\nEsperado: {1}\nActual: {2}",
+        ["SourceConcat.IncompatibleFrameRate"] = "La fuente concat #{0} tiene una velocidad de fotogramas distinta de la primera fuente de vídeo.\nEsperado: {1}\nActual: {2}",
+        ["SourceConcat.ResolutionMismatch"] = "La fuente concat #{0} tiene una resolución distinta de la primera fuente de vídeo.\nEsperado: {1}\nActual: {2}",
+        ["SourceConcat.VariableFrameRate"] = "El modo concat no puede usar directamente velocidad de fotogramas variable (VFR). Añade un filtro de reparación VFR→CFR en Filter Scribe.",
 
-            // Dialogs
-            ["Dialog.SelectTitle"] = "Elegir {0}",
-            ["Dialog.ReplaceTitle"] = "Reemplazar {0}",
-            ["Dialog.Filter.All"] = "Todos los archivos (*.*)|*.*",
-            ["Dialog.Filter.Exe"] = "Ejecutables (*.exe)|*.exe",
-            ["Dialog.Filter.Dll"] = "DLL (*.dll)|*.dll",
+        // Dialogs
+        ["Dialog.SelectTitle"] = "Elegir {0}",
+        ["Dialog.ReplaceTitle"] = "Reemplazar {0}",
+        ["Dialog.Filter.All"] = "Todos los archivos (*.*)|*.*",
+        ["Dialog.Filter.Exe"] = "Ejecutables (*.exe)|*.exe",
+        ["Dialog.Filter.Dll"] = "DLL (*.dll)|*.dll",
 
-            // Confirmation dialog texts
+        // Confirmation dialog texts
 
-            // Auto tool import
-            ["AutoImport.Title"] = "Importación automática",
-            ["AutoImport.FoundMessage"] = "Se encontraron estos ejecutables verificados. ¿Importarlos ahora?\n\n{0}",
-            ["AutoImport.NotFoundMessage"] = "No se detectaron herramientas importables en la carpeta de la aplicación. Para revisar de nuevo, active Ajustes → Modo inicial → Auto-importar herramientas al inicio.",
+        // Auto tool import
+        ["AutoImport.Title"] = "Importación automática",
+        ["AutoImport.FoundMessage"] = "Se encontraron estos ejecutables verificados. ¿Importarlos ahora?\n\n{0}",
+        ["AutoImport.NotFoundMessage"] = "No se detectaron herramientas importables en la carpeta de la aplicación. Para revisar de nuevo, active Ajustes → Modo inicial → Auto-importar herramientas al inicio.",
 
-            // Confirmation provider messages (with {0} / {1} format placeholders)
-            ["ConfirmProvider.SuspiciousImportTitle"] = "Importación no coincide con {0}",
-            ["ConfirmProvider.ProceedToRun"] = "¿Ejecutar {0} para obtener versión?",
-            ["ConfirmProvider.WrongTool"] = "¿Importar {0} como {1}?",
+        // Confirmation provider messages (with {0} / {1} format placeholders)
+        ["ConfirmProvider.SuspiciousImportTitle"] = "Importación no coincide con {0}",
+        ["ConfirmProvider.ProceedToRun"] = "¿Ejecutar {0} para obtener versión?",
+        ["ConfirmProvider.WrongTool"] = "¿Importar {0} como {1}?",
 
-            // Checklist - Tools
-            ["Checklist.Tools.Upstream"] = "Un programa aguas arriba importado",
-            ["Checklist.Tools.Downstream"] = "Un programa aguas abajo importado",
-            ["Checklist.Tools.Analysis"] = "Un analizador importado",
-            ["Checklist.Tools.UpstreamPicked"] = "Seleccionar aguas arriba",
-            ["Checklist.Tools.DownstreamPicked"] = "Seleccionar aguas abajo",
-            ["Checklist.Tools.AnalysisPicked"] = "Seleccionar analizador",
-            ["Checklist.Tools.CompleteSourceAnalysis"] = "Análisis de fuente completo",
-            ["Checklist.Tools.DependenciesPicked"] = "Seleccionar dependencia",
-            ["Checklist.Tools.VideoSourcePicked"] = "Seleccionar fuente de video o cola",
-            ["Checklist.Tools.ScriptSourcePicked"] = "Seleccionar script fuente (upstream VS/AVS/SVFI)",
+        // Checklist - Tools
+        ["Checklist.Tools.Upstream"] = "Un programa aguas arriba importado",
+        ["Checklist.Tools.Downstream"] = "Un programa aguas abajo importado",
+        ["Checklist.Tools.Analysis"] = "Un analizador importado",
+        ["Checklist.Tools.UpstreamPicked"] = "Seleccionar aguas arriba",
+        ["Checklist.Tools.DownstreamPicked"] = "Seleccionar aguas abajo",
+        ["Checklist.Tools.AnalysisPicked"] = "Seleccionar analizador",
+        ["Checklist.Tools.CompleteSourceAnalysis"] = "Análisis de fuente completo",
+        ["Checklist.Tools.DependenciesPicked"] = "Seleccionar dependencia",
+        ["Checklist.Tools.VideoSourcePicked"] = "Seleccionar fuente de video o cola",
+        ["Checklist.Tools.ScriptSourcePicked"] = "Seleccionar script fuente (upstream VS/AVS/SVFI)",
 
-            // Checklist - Source Validation 1 (Severe)
-            ["Checklist.Source1.Metadata"] = "Metadatos y SEI legibles",
-            ["Checklist.Source1.Progressive"] = "Fotogramas progresivos / no entrelazado",
-            ["Checklist.Source1.BitDepth"] = "Profundidad de bits inferior a 12 (SVT-AV1)",
-            ["Checklist.Source1.BitDepth2"] = "Profundidad de bits inferior a 16",
+        // Checklist - Source Validation 1 (Severe)
+        ["Checklist.Source1.Metadata"] = "Metadatos y SEI legibles",
+        ["Checklist.Source1.Progressive"] = "Fotogramas progresivos / no entrelazado",
+        ["Checklist.Source1.BitDepth"] = "Profundidad de bits inferior a 12 (SVT-AV1)",
+        ["Checklist.Source1.BitDepth2"] = "Profundidad de bits inferior a 16",
 
-            // Checklist - Source Validation 2 (Moderate)
-            ["Checklist.Source2.Framerate"] = "FPS constante / no variable",
-            ["Checklist.Source2.AspectRatio"] = "Píxel cuadrado / SAR 1:1",
-            ["Checklist.Source2.ColorMetadata"] = "Matriz/transferencia/primarios metados normales",
-            ["Checklist.Source2.ChromaSubsampling"] = "Sin submuestreo chroma o hacia ←/↖ (SVT-AV1)",
+        // Checklist - Source Validation 2 (Moderate)
+        ["Checklist.Source2.Framerate"] = "FPS constante / no variable",
+        ["Checklist.Source2.AspectRatio"] = "Píxel cuadrado / SAR 1:1",
+        ["Checklist.Source2.ColorMetadata"] = "Matriz/transferencia/primarios metados normales",
+        ["Checklist.Source2.ChromaSubsampling"] = "Sin submuestreo chroma o hacia ←/↖ (SVT-AV1)",
 
-            // Checklist - Encoding Prerequisites 1 (Hardware)
-            ["Checklist.Enc1.NotOffGrid"] = "No en batería",
-            ["Checklist.Enc1.DiskSpace"] = "Espacio suficiente",
-            ["Checklist.Enc1.NumaCpuLoad"] = "Carga NUMA baja",
+        // Checklist - Encoding Prerequisites 1 (Hardware)
+        ["Checklist.Enc1.NotOffGrid"] = "No en batería",
+        ["Checklist.Enc1.DiskSpace"] = "Espacio suficiente",
+        ["Checklist.Enc1.NumaCpuLoad"] = "Carga NUMA baja",
 
-            // Checklist - Encoding Prerequisites 2 (Software)
-            ["Checklist.Enc2.OSFilename"] = "Nombre válido para el SO",
-            ["Checklist.Enc2.FTPFilename"] = "Nombre posiblemente válido para FTP",
-            ["Checklist.Enc2.WritePermission"] = "Permiso de escritura",
-            ["Checklist.Enc2.Overwrite"] = "La salida no sobrescribe",
-            ["Checklist.Enc2.LsmashForAvs2Yuv"] = "LSMASHSource.dll en AviSynth+",
+        // Checklist - Encoding Prerequisites 2 (Software)
+        ["Checklist.Enc2.OSFilename"] = "Nombre válido para el SO",
+        ["Checklist.Enc2.FTPFilename"] = "Nombre posiblemente válido para FTP",
+        ["Checklist.Enc2.WritePermission"] = "Permiso de escritura",
+        ["Checklist.Enc2.Overwrite"] = "La salida no sobrescribe",
+        ["Checklist.Enc2.LsmashForAvs2Yuv"] = "LSMASHSource.dll en AviSynth+",
 
-            // Checklist - Best Practices 1 (Hardware)
-            ["Checklist.Best1.SlowDisk"] = "Evitar conexión de disco lento (USB2, Bluetooth, etc.)",
-            ["Checklist.Best1.DiskThrashing"] = "Evitar golpeteo de disco (L/E en el mismo HDD)",
-            ["Checklist.Best1.BiosDriver"] = "Usar BIOS, chipset y firmware de disco más recientes",
-            ["Checklist.Best1.Temperature"] = "°C (°F): SSD/RAM <75 (167), HDD <55 (131)",
-            ["Checklist.Best1.SMR"] = "No escribir en un HDD SMR",
+        // Checklist - Best Practices 1 (Hardware)
+        ["Checklist.Best1.SlowDisk"] = "Evitar conexión de disco lento (USB2, Bluetooth, etc.)",
+        ["Checklist.Best1.DiskThrashing"] = "Evitar golpeteo de disco (L/E en el mismo HDD)",
+        ["Checklist.Best1.BiosDriver"] = "Usar BIOS, chipset y firmware de disco más recientes",
+        ["Checklist.Best1.Temperature"] = "°C (°F): SSD/RAM <75 (167), HDD <55 (131)",
+        ["Checklist.Best1.SMR"] = "No escribir en un HDD SMR",
 
-            // Checklist - Best Practices 2 (Software)
-            ["Checklist.Best2.EncoderVersion"] = "Usar la versión más reciente del codificador",
-            ["Checklist.Best2.FAT32"] = "No escribir en un volumen FAT32",
-            ["Checklist.Best2.DiskCompression"] = "Carpeta de salida desactiva compresión de disco",
+        // Checklist - Best Practices 2 (Software)
+        ["Checklist.Best2.EncoderVersion"] = "Usar la versión más reciente del codificador",
+        ["Checklist.Best2.FAT32"] = "No escribir en un volumen FAT32",
+        ["Checklist.Best2.DiskCompression"] = "Carpeta de salida desactiva compresión de disco",
 
-            // FilterScribeModal
+        // FilterScribeModal
 
-            // FFProbeJsonUpdateResolver
-            ["FFProbeJsonUpdate.JsonEmpty"] = "El JSON de ffprobe está vacío.",
-            ["FFProbeJsonUpdate.DimensionsNotPositive"] = "Las dimensiones de resolución deben ser positivas.",
-            ["FFProbeJsonUpdate.RootNotObject"] = "La raíz del JSON de ffprobe no es un objeto.",
-            ["FFProbeJsonUpdate.NoVideoStream"] = "No se encontró flujo de video en el JSON de ffprobe.",
+        // FFProbeJsonUpdateResolver
+        ["FFProbeJsonUpdate.JsonEmpty"] = "El JSON de ffprobe está vacío.",
+        ["FFProbeJsonUpdate.DimensionsNotPositive"] = "Las dimensiones de resolución deben ser positivas.",
+        ["FFProbeJsonUpdate.RootNotObject"] = "La raíz del JSON de ffprobe no es un objeto.",
+        ["FFProbeJsonUpdate.NoVideoStream"] = "No se encontró flujo de video en el JSON de ffprobe.",
 
-            // FilenameScribeModal
+        // FilenameScribeModal
 
-            // Hints
-            ["Hint.SVFIClipDisabled"] = "OneLineShotArgs no admite recorte de muestra; botón Muestra desactivado.",
-            ["Hint.AnalyzeRunConditionDuration"] = "El análisis comienza tras la importación de la fuente (≈70～100 ms/fuente, el modo Repart tarda más)",
-            ["Hint.NumaCpuCheckTrigger"] = "El uso de CPU del nodo NUMA se actualiza con clic de ratón o entrada de teclado.",
-            ["Hint.FFmpegOptionalBut"] = "FFmpeg es opcional, pero se necesita para previsualizar fotogramas de video y el multiplexado automático MKV",
-            ["ScriptQueueImport.RejectedPrefix"] = "Importación rechazada: {0} nombre(s) base sin coincidencia, {1} ruta(s) con discrepancia.",
-            ["ScriptQueueImport.DetailsHeader"] = "Detalles:",
-            ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — no hay vídeo fuente que coincida por nombre base",
-            ["ScriptQueueImport.DetailNoScript"] = "'{0}' — no hay archivo de script que coincida por nombre base",
-            ["ScriptQueueImport.DetailUnreadable"] = "'{0}' — formato de script no reconocido, no se puede verificar la ruta de origen",
-            ["ScriptQueueImport.DetailMismatch"] = "'{0}' — apunta a \"{1}\", se esperaba \"{2}\"",
-            ["ScriptQueueImport.MoreCount"] = "...y {0} más.",
-            ["ScriptQueueImport.CountMismatchTitle"] = "Número de scripts distinto",
-            ["ScriptQueueImport.MissingSummary"] = "Faltan {0} de {1} scripts para el upstream elegido.",
-            ["ScriptQueueImport.MissingLabel"] = "Faltan:",
-            ["ScriptQueueImport.SourceMismatchTitle"] = "Fuente de script distinta",
-            ["ScriptQueueImport.SourceMismatchSummary"] = "{0} script(s) usan una fuente de vídeo distinta.",
-            ["Hint.QueueRouteSampleClipDisabled"] = "Los modos cola/concat. de fuente de vídeo no admiten recorte de muestra; botón Muestra desactivado.",
-            ["Hint.FilterScribeDisabled"] = "OneLineShotArgs no admite la generación de scripts; Scribe de filtros desactivado.",
-            ["Hint.MinDurationFilter"] = "Filtro duración mín. (s):",
-            ["Hint.DurationFilterAllFiltered"] = "Todos los videos filtrados por el filtro de duración.",
-            ["Hint.DurationFilterCount"] = "{0} de {1} videos filtrados.",
+        // Hints
+        ["Hint.SVFIClipDisabled"] = "OneLineShotArgs no admite recorte de muestra; botón Muestra desactivado.",
+        ["Hint.AnalyzeRunConditionDuration"] = "El análisis comienza tras la importación de la fuente (≈70～100 ms/fuente, el modo Repart tarda más)",
+        ["Hint.NumaCpuCheckTrigger"] = "El uso de CPU del nodo NUMA se actualiza con clic de ratón o entrada de teclado.",
+        ["Hint.FFmpegOptionalBut"] = "FFmpeg es opcional, pero se necesita para previsualizar fotogramas de video y el multiplexado automático MKV",
+        ["ScriptQueueImport.RejectedPrefix"] = "Importación rechazada: {0} nombre(s) base sin coincidencia, {1} ruta(s) con discrepancia.",
+        ["ScriptQueueImport.DetailsHeader"] = "Detalles:",
+        ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — no hay vídeo fuente que coincida por nombre base",
+        ["ScriptQueueImport.DetailNoScript"] = "'{0}' — no hay archivo de script que coincida por nombre base",
+        ["ScriptQueueImport.DetailUnreadable"] = "'{0}' — formato de script no reconocido, no se puede verificar la ruta de origen",
+        ["ScriptQueueImport.DetailMismatch"] = "'{0}' — apunta a \"{1}\", se esperaba \"{2}\"",
+        ["ScriptQueueImport.MoreCount"] = "...y {0} más.",
+        ["ScriptQueueImport.CountMismatchTitle"] = "Número de scripts distinto",
+        ["ScriptQueueImport.MissingSummary"] = "Faltan {0} de {1} scripts para el upstream elegido.",
+        ["ScriptQueueImport.MissingLabel"] = "Faltan:",
+        ["ScriptQueueImport.SourceMismatchTitle"] = "Fuente de script distinta",
+        ["ScriptQueueImport.SourceMismatchSummary"] = "{0} script(s) usan una fuente de vídeo distinta.",
+        ["Hint.QueueRouteSampleClipDisabled"] = "Los modos cola/concat. de fuente de vídeo no admiten recorte de muestra; botón Muestra desactivado.",
+        ["Hint.FilterScribeDisabled"] = "OneLineShotArgs no admite la generación de scripts; Scribe de filtros desactivado.",
+        ["Hint.MinDurationFilter"] = "Filtro duración mín. (s):",
+        ["Hint.DurationFilterAllFiltered"] = "Todos los videos filtrados por el filtro de duración.",
+        ["Hint.DurationFilterCount"] = "{0} de {1} videos filtrados.",
 
-            // Heatmap
-            ["Heatmap.Cold"] = "Frío",
-            ["Heatmap.Hot"] = "Caliente",
+        // Heatmap
+        ["Heatmap.Cold"] = "Frío",
+        ["Heatmap.Hot"] = "Caliente",
 
-            // Source analysis result ConfirmationModal
-            ["SrcAnalysis.Completed"] = "Análisis de fuente completado.",
-            ["SrcAnalysis.RunAfterReplace"] = "¿Ejecutar análisis de fuente ahora?",
-            ["SrcAnalysis.Copied"] = "JSON ffprobe bruto copiado al portapapeles.",
+        // Source analysis result ConfirmationModal
+        ["SrcAnalysis.Completed"] = "Análisis de fuente completado.",
+        ["SrcAnalysis.RunAfterReplace"] = "¿Ejecutar análisis de fuente ahora?",
+        ["SrcAnalysis.Copied"] = "JSON ffprobe bruto copiado al portapapeles.",
 
-            ["ScriptGen.RunAfterReplace"] = "¿Generar scripts AVS y VPY ahora?",
-            ["ScriptGen.ScriptsSaved"] = "Scripts guardados:\n{0}",
+        ["ScriptGen.RunAfterReplace"] = "¿Generar scripts AVS y VPY ahora?",
+        ["ScriptGen.ScriptsSaved"] = "Scripts guardados:\n{0}",
 
-            // InspectSrcProblems modal texts
-            ["SrcInspect.InfoTitle"] = "Comprobación fuente",
-            ["SrcInspect.InfoMsg"] = "No se hallaron problemas evidentes.",
-            ["SrcInspect.ErrorTitle"] = "Problemas graves fuente",
-            ["SrcInspect.WarnTitle"] = "Problemas medios fuente",
-            ["SrcInspect.MetadataP1Text"] = "No se pueden leer metadatos fuente. Archivo corrupto o no vídeo; la herramienta usa metadatos para parámetros seguros, codificación no puede continuar.",
-            ["SrcInspect.ProgressiveP1Text"] = "No puede inspeccionar patrones entre fotogramas para IVTC. Consulte https://iavoe.github.io/deint-ivtc-web-tutorial/HTML.",
-            ["SrcInspect.BitDepthP1Text"] = "SVT-AV1 no admite vídeo 12 bits. Si no seleccionado, es advertencia y no desactiva botón Iniciar cod.",
-            ["SrcInspect.FramerateP1Text"] = "Use editor filtros para añadir filtro VFR→CFR. Codificar VFR directamente puede desincronizar audio/video.",
-            ["SrcInspect.AspectRatioP1Text"] = "No puede compensar píxeles no cuadrados. Dimensiones inesperadas posibles. Corrija transcodificando a FFV1 con ffmpeg -aspect <SAR-actual>.",
-            ["SrcInspect.ColorMetadataP1Text"] = "Los reproductores suelen volver a BT.709 si faltan metadatos de matriz, transferencia o primarios; existen muchos valores válidos y solo un conjunto es correcto.",
-            ["SrcInspect.ChromaSubsamplingP1Text"] = "Ubicación croma incorrecta puede difuminar o desplazar bordes. A diferencia de AVC/HEVC, AV1 solo admite ubicaciones croma limitadas."
+        // InspectSrcProblems modal texts
+        ["SrcInspect.InfoTitle"] = "Comprobación fuente",
+        ["SrcInspect.InfoMsg"] = "No se hallaron problemas evidentes.",
+        ["SrcInspect.ErrorTitle"] = "Problemas graves fuente",
+        ["SrcInspect.WarnTitle"] = "Problemas medios fuente",
+        ["SrcInspect.MetadataP1Text"] = "No se pueden leer metadatos fuente. Archivo corrupto o no vídeo; la herramienta usa metadatos para parámetros seguros, codificación no puede continuar.",
+        ["SrcInspect.ProgressiveP1Text"] = "No puede inspeccionar patrones entre fotogramas para IVTC. Consulte https://iavoe.github.io/deint-ivtc-web-tutorial/HTML.",
+        ["SrcInspect.BitDepthP1Text"] = "SVT-AV1 no admite vídeo 12 bits. Si no seleccionado, es advertencia y no desactiva botón Iniciar cod.",
+        ["SrcInspect.FramerateP1Text"] = "Use editor filtros para añadir filtro VFR→CFR. Codificar VFR directamente puede desincronizar audio/video.",
+        ["SrcInspect.AspectRatioP1Text"] = "No puede compensar píxeles no cuadrados. Dimensiones inesperadas posibles. Corrija transcodificando a FFV1 con ffmpeg -aspect <SAR-actual>.",
+        ["SrcInspect.ColorMetadataP1Text"] = "Los reproductores suelen volver a BT.709 si faltan metadatos de matriz, transferencia o primarios; existen muchos valores válidos y solo un conjunto es correcto.",
+        ["SrcInspect.ChromaSubsamplingP1Text"] = "Ubicación croma incorrecta puede difuminar o desplazar bordes. A diferencia de AVC/HEVC, AV1 solo admite ubicaciones croma limitadas."
     };
     private static void AddJapanese() => Data["ja"] = new(Data["en"])
-        {
-            // Cards section headers
-            ["Cards.ToolsImport"] = "ツールの取込/置換",
-            ["Cards.SourceValidation"] = "ソース動画検証",
-            ["Cards.QueueSourceFilter"] = "ソースキュー絞込",
-            ["Cards.QueueSourceFilterSubtitle"] = "キュー整合を維持",
-            ["Cards.ConcatSourceFilter"] = "連結源絞込",
-            ["Cards.ConcatSourceFilterSubtitle"] = "連結整合を維持",
-            ["Cards.SrcIncompatOrCorrupted"] = "非互換 / 破損 (赤)",
-            ["Cards.SrcQualityIssues"] = "品質問題 (橙)",
-            ["Cards.EncPrerequisites"] = "エンコード前提",
-            ["Cards.EncHardware"] = "ハードウェア",
-            ["Cards.EncSoftware"] = "ソフトウェア",
-            ["Cards.BestPractices"] = "推奨事項",
-            ["Cards.BestHardware"] = "ハードウェア (自己チェック)",
-            ["Cards.BestSoftware"] = "ソフトウェア (自己チェック)",
-            ["Cards.BestPracticesSubtitle"] = "推奨事項 — ブロックしません",
+    {
+        // Cards section headers
+        ["Cards.ToolsImport"] = "ツールの取込/置換",
+        ["Cards.SourceValidation"] = "ソース動画検証",
+        ["Cards.QueueSourceFilter"] = "ソースキュー絞込",
+        ["Cards.QueueSourceFilterSubtitle"] = "キュー整合を維持",
+        ["Cards.ConcatSourceFilter"] = "連結源絞込",
+        ["Cards.ConcatSourceFilterSubtitle"] = "連結整合を維持",
+        ["Cards.SrcIncompatOrCorrupted"] = "非互換 / 破損 (赤)",
+        ["Cards.SrcQualityIssues"] = "品質問題 (橙)",
+        ["Cards.EncPrerequisites"] = "エンコード前提",
+        ["Cards.EncHardware"] = "ハードウェア",
+        ["Cards.EncSoftware"] = "ソフトウェア",
+        ["Cards.BestPractices"] = "推奨事項",
+        ["Cards.BestHardware"] = "ハードウェア (自己チェック)",
+        ["Cards.BestSoftware"] = "ソフトウェア (自己チェック)",
+        ["Cards.BestPracticesSubtitle"] = "推奨事項 — ブロックしません",
 
-            // Main buttons
-            ["Buttons.UsageAndCompliance"] = "使用法と準拠",
-            ["Buttons.Settings"] = "設定",
-            ["Buttons.OneClickScriptGen"] = "AVS/VS スクリプト生成",
-            ["Buttons.OpenScribeSrcScribe"] = "フィルタ編集",
-            ["Buttons.ShowRawJSON"] = "生 JSON を表示",
-            ["Buttons.AnalyzeSrcVideo"] = "ソース解析",
-            ["Buttons.ReEvaluate"] = "再評価",
-            ["Buttons.RunSample"] = "クリップ試作",
-            ["Buttons.StartEncode"] = "エンコード開始",
-            ["EncInspect.InfoTitle"] = "エンコーダ事前チェック詳細",
-            ["EncInspect.InfoMsg"] = "事前チェック問題はありません。",
-            ["EncInspect.P1Title"] = "バッテリー駆動チェック",
-            ["EncInspect.P1Text"] = "SystemInformation.PowerStatus により、コンピューターがバッテリー駆動中かどうかを検出します。バッテリー消耗の軽減、予期しないシャットダウンの防止、省電力スロットリングによる圧縮率や画質の低下回避に使います。",
-            ["EncInspect.P2Title"] = "ディスク空き容量チェック",
-            ["EncInspect.P2Text"] = "使用可能なディスク容量をソースファイルサイズ × 1.5（フォールバック: 1 GiB）と比較し、エンコード出力に十分な空き容量があることを確認します。",
-            ["EncInspect.P3Title"] = "書き込み権限チェック",
-            ["EncInspect.P3Text"] = "ファイル一覧の取得を試みて出力ディレクトリへの書き込み権限を確認し、権限エラーによるエンコード失敗を防ぎます。",
-            ["EncInspect.P4Title"] = "上書きチェック",
-            ["EncInspect.P4Text"] = "出力ファイルが既に存在するかを確認し、誤ったデータ損失を防ぐため、上書き開始を動的に難しくします。",
-            ["EncInspect.P5Title"] = "L-SMASH プラグインチェック (Avs2Yuv)",
-            ["EncInspect.P5Text"] = "ソース動画フレームを読み込むため、C:\\Program Files (x86)\\AviSynth+\\plugins64+\\ に LSMASHSource.dll が存在するかを確認します（libvslsmashsource.dll ではありません）。",
-            ["EncInspect.P6Title"] = "NUMA ノード CPU 負荷チェック",
-            ["EncInspect.P6Text"] = "現在エンコーダーに選択されている NUMA ノードの最近の CPU 負荷が低いかを確認します。高負荷は参考情報のみで、エンコードはブロックしません。",
+        // Main buttons
+        ["Buttons.UsageAndCompliance"] = "使用法と準拠",
+        ["Buttons.Settings"] = "設定",
+        ["Buttons.OneClickScriptGen"] = "AVS/VS スクリプト生成",
+        ["Buttons.OpenScribeSrcScribe"] = "フィルタ編集",
+        ["Buttons.ShowRawJSON"] = "生 JSON を表示",
+        ["Buttons.AnalyzeSrcVideo"] = "ソース解析",
+        ["Buttons.ReEvaluate"] = "再評価",
+        ["Buttons.RunSample"] = "クリップ試作",
+        ["Buttons.StartEncode"] = "エンコード開始",
+        ["EncInspect.InfoTitle"] = "エンコーダ事前チェック詳細",
+        ["EncInspect.InfoMsg"] = "事前チェック問題はありません。",
+        ["EncInspect.P1Title"] = "バッテリー駆動チェック",
+        ["EncInspect.P1Text"] = "SystemInformation.PowerStatus により、コンピューターがバッテリー駆動中かどうかを検出します。バッテリー消耗の軽減、予期しないシャットダウンの防止、省電力スロットリングによる圧縮率や画質の低下回避に使います。",
+        ["EncInspect.P2Title"] = "ディスク空き容量チェック",
+        ["EncInspect.P2Text"] = "使用可能なディスク容量をソースファイルサイズ × 1.5（フォールバック: 1 GiB）と比較し、エンコード出力に十分な空き容量があることを確認します。",
+        ["EncInspect.P3Title"] = "書き込み権限チェック",
+        ["EncInspect.P3Text"] = "ファイル一覧の取得を試みて出力ディレクトリへの書き込み権限を確認し、権限エラーによるエンコード失敗を防ぎます。",
+        ["EncInspect.P4Title"] = "上書きチェック",
+        ["EncInspect.P4Text"] = "出力ファイルが既に存在するかを確認し、誤ったデータ損失を防ぐため、上書き開始を動的に難しくします。",
+        ["EncInspect.P5Title"] = "L-SMASH プラグインチェック (Avs2Yuv)",
+        ["EncInspect.P5Text"] = "ソース動画フレームを読み込むため、C:\\Program Files (x86)\\AviSynth+\\plugins64+\\ に LSMASHSource.dll が存在するかを確認します（libvslsmashsource.dll ではありません）。",
+        ["EncInspect.P6Title"] = "NUMA ノード CPU 負荷チェック",
+        ["EncInspect.P6Text"] = "現在エンコーダーに選択されている NUMA ノードの最近の CPU 負荷が低いかを確認します。高負荷は参考情報のみで、エンコードはブロックしません。",
 
 
-            ["Section.SelectUpstream"] = "1. 上流ツール選択",
-            ["Section.SelectEncoder"] = "2. エンコーダ選択",
-            ["Section.SelectDependencies"] = "3. 依存ファイル選択",
-            ["Section.ImportSrc"] = "4. ソース取込/作成",
-            ["Section.SelectAnalytics"] = "5. 解析ツール選択 · 解析を実行",
-            ["Section.EncodingConfigs"] = "6. エンコード設定",
-            ["Section.StartEncoding"] = "7. エンコード開始",
+        ["Section.SelectUpstream"] = "1. 上流ツール選択",
+        ["Section.SelectEncoder"] = "2. エンコーダ選択",
+        ["Section.SelectDependencies"] = "3. 依存ファイル選択",
+        ["Section.ImportSrc"] = "4. ソース取込/作成",
+        ["Section.SelectAnalytics"] = "5. 解析ツール選択 · 解析を実行",
+        ["Section.EncodingConfigs"] = "6. エンコード設定",
+        ["Section.StartEncoding"] = "7. エンコード開始",
 
-            ["Import.NoSelection"] = "未選択",
-            ["Import.VersionDetectTimeoutTitle"] = "ツール取込失敗",
-            ["Import.VersionDetectTimeoutMessage"] = "{0} が 3 秒以内にバージョン情報を返さなかったため、取込を拒否しました。",
+        ["Import.NoSelection"] = "未選択",
+        ["Import.VersionDetectTimeoutTitle"] = "ツール取込失敗",
+        ["Import.VersionDetectTimeoutMessage"] = "{0} が 3 秒以内にバージョン情報を返さなかったため、取込を拒否しました。",
 
-            // ItemCard separator
-            ["ItemCard.Separator"] = "：",
+        // ItemCard separator
+        ["ItemCard.Separator"] = "：",
 
-            // Tool card captions
-            ["ToolField.Version"] = "バージョン",
-            ["ToolField.Name"] = "名前",
-            ["ToolField.Mode"] = "モード",
-            ["ToolField.FileName"] = "ファイル名",
-            ["ToolField.NumaNodes"] = "NUMA 親和性", // i.e., upstream from node 0 to encoder at node 1 gives “0 → 1”
-            ["ToolField.Threads"] = "スレッド", // Value: int thread count, with ToolField.EncThreadClamp On/Off
-            ["ToolField.Value"] = "値",
-            ["ToolField.Strategy"] = "戦略",
-            ["ToolField.MaxKeyframeGap"] = "最大キーフレーム間隔",
-            ["ToolField.OtherCustomParams"] = "その他のカスタムパラメータ",
+        // Tool card captions
+        ["ToolField.Version"] = "バージョン",
+        ["ToolField.Name"] = "名前",
+        ["ToolField.Mode"] = "モード",
+        ["ToolField.FileName"] = "ファイル名",
+        ["ToolField.NumaNodes"] = "NUMA 親和性", // i.e., upstream from node 0 to encoder at node 1 gives “0 → 1”
+        ["ToolField.Threads"] = "スレッド", // Value: int thread count, with ToolField.EncThreadClamp On/Off
+        ["ToolField.Value"] = "値",
+        ["ToolField.Strategy"] = "戦略",
+        ["ToolField.MaxKeyframeGap"] = "最大キーフレーム間隔",
+        ["ToolField.OtherCustomParams"] = "その他のカスタムパラメータ",
 
-            ["Tool.Source.VideoSrc"] = "▷ 動画ソース",
-            ["Tool.Source.AviSynth"] = $"{LangProviderBase.AviSynth} .avs ソース",
-            ["Tool.Source.VapourSynth"] = $"{LangProviderBase.VapourSynth} .vpy ソース",
-            ["Tool.Source.Svfi"] = "SVFI .ini ソース",
-            ["Tool.Source.AviSynthQueue"] = $"📁 {LangProviderBase.AVS} スクリプトキュー",
-            ["Tool.Source.VapourSynthQueue"] = $"📁 {LangProviderBase.VS} スクリプトキュー",
-            ["Tool.Source.SvfiQueue"] = "📁 SVFI スクリプトキュー",
+        ["Tool.Source.VideoSrc"] = "▷ 動画ソース",
+        ["Tool.Source.AviSynth"] = $"{LangProviderBase.AviSynth} .avs ソース",
+        ["Tool.Source.VapourSynth"] = $"{LangProviderBase.VapourSynth} .vpy ソース",
+        ["Tool.Source.Svfi"] = "SVFI .ini ソース",
+        ["Tool.Source.AviSynthQueue"] = $"📁 {LangProviderBase.AVS} スクリプトキュー",
+        ["Tool.Source.VapourSynthQueue"] = $"📁 {LangProviderBase.VS} スクリプトキュー",
+        ["Tool.Source.SvfiQueue"] = "📁 SVFI スクリプトキュー",
 
-            ["Tool.Enc.OutputSetting"] = "出力ファイル名とパス",
-            ["Tool.Enc.Parallelism"] = "並列スケジューリング",
-            ["Tool.Enc.EncParams"] = "エンコード設定",
-            ["Tool.Enc.MuxTracks"] = "字幕を追加",
+        ["Tool.Enc.OutputSetting"] = "出力ファイル名とパス",
+        ["Tool.Enc.Parallelism"] = "並列スケジューリング",
+        ["Tool.Enc.EncParams"] = "エンコード設定",
+        ["Tool.Enc.MuxTracks"] = "字幕を追加",
 
-            // Source queue card
-            ["SourceQueue.FilterModeTitle"] = "キューの重み付きフィルタを実行しますか？",
-            ["SourceQueue.FilterModeMessage"] = "キューの構造に従って選択してください\n確認：各ソースの再生時間が近く、フィルタは不要です\nキャンセル：BDMV/M3U のイントロ・予告編を重み付き投票で除外します\n先頭ストリームの比較除外を常に実行し、形式の整合性を保ちます\n\nBDMV の場合：BDInfo/ChapterTool を使用して、セグメント分割不足/過剰のエピソードを処理します",
-            ["SourceQueue.ImportTitle"] = "ビデオソースキューのインポート",
-            ["SourceQueue.ImportPrompt"] = "BDプレイリストをインポート？\n\n確認：.mpls/ifo/xplを含むPLAYLISTフォルダを指定、プレイリスト順で参照メディアファイル（m2ts）をキューに追加します。\n取消：複数の動画ソースファイルを直接選択すると、選択順にキューへ追加します。\n\nどのクラスターを選べばいいか分からない場合、重分集モードまたはプレイヤープレビューで確認してください",
-            ["SourceQueue.SelectPlaylistFolder"] = "BDMV PLAYLIST フォルダを選択",
-            ["SourceQueue.SelectFilesTitle"] = "動画ソースファイルを選択",
-            ["SourceQueue.ImportScanFailed"] = "{0} に使用可能な MPLS プレイリストが見つかりません",
-            ["SourceQueue.ChapterImportFailed"] = "チャプターの読み込みに失敗：{0}",
-            ["SourceQueue.ChapterSourcesMissing"] = "プレイリストから既存のビデオソースファイルを解決できませんでした。プレイリストが参照するメディアファイル（m2ts）が存在することを確認してください",
+        // Source queue card
+        ["SourceQueue.FilterModeTitle"] = "キューの重み付きフィルタを実行しますか？",
+        ["SourceQueue.FilterModeMessage"] = "キューの構造に従って選択してください\n確認：各ソースの再生時間が近く、フィルタは不要です\nキャンセル：BDMV/M3U のイントロ・予告編を重み付き投票で除外します\n先頭ストリームの比較除外を常に実行し、形式の整合性を保ちます\n\nBDMV の場合：BDInfo/ChapterTool を使用して、セグメント分割不足/過剰のエピソードを処理します",
+        ["SourceQueue.ImportTitle"] = "ビデオソースキューのインポート",
+        ["SourceQueue.ImportPrompt"] = "BDプレイリストをインポート？\n\n確認：.mpls/ifo/xplを含むPLAYLISTフォルダを指定、プレイリスト順で参照メディアファイル（m2ts）をキューに追加します。\n取消：複数の動画ソースファイルを直接選択すると、選択順にキューへ追加します。\n\nどのクラスターを選べばいいか分からない場合、重分集モードまたはプレイヤープレビューで確認してください",
+        ["SourceQueue.SelectPlaylistFolder"] = "BDMV PLAYLIST フォルダを選択",
+        ["SourceQueue.SelectFilesTitle"] = "動画ソースファイルを選択",
+        ["SourceQueue.ImportScanFailed"] = "{0} に使用可能な MPLS プレイリストが見つかりません",
+        ["SourceQueue.ChapterImportFailed"] = "チャプターの読み込みに失敗：{0}",
+        ["SourceQueue.ChapterSourcesMissing"] = "プレイリストから既存のビデオソースファイルを解決できませんでした。プレイリストが参照するメディアファイル（m2ts）が存在することを確認してください",
 
-            ["SourceConcat.SelectFilesTitle"] = "連結する動画ファイルを選択",
-            ["SourceConcat.OrderingTitle"] = "連結順序",
-            ["SourceConcat.RestoreOriginalQueue"] = "すべての変更を取り消す",
-            ["SourceConcat.ExtensionMismatch"] = "連結インポートでは、すべてのファイル拡張子が同一である必要があります。\n\n想定: {0}\n不一致ファイル:\n{1}",
-            ["SourceConcat.Analyzed"] = "連結ソース解析が完了しました。{0} 個のファイルは互換です。\n\nすべての字幕とフォントファイルはドロップされます。ステップ6で字幕の追加が可能です。",
-            ["SourceConcat.IncompatibleVideo"] = "連結ソース #{0} は最初の動画ソースとパラメータが異なります。\n想定: {1}\n実際: {2}",
-            ["SourceConcat.IncompatibleFrameRate"] = "連結ソース #{0} は最初の動画ソースとフレームレートが異なります。\n想定: {1}\n実際: {2}",
-            ["SourceConcat.ResolutionMismatch"] = "連結ソース #{0} は最初の動画ソースと解像度が異なります。\n想定: {1}\n実際: {2}",
-            ["SourceConcat.VariableFrameRate"] = "連結モードでは可変フレームレート (VFR) を直接使用できません。Filter Scribe で VFR→CFR 修復フィルタを追加してください。",
+        ["SourceConcat.SelectFilesTitle"] = "連結する動画ファイルを選択",
+        ["SourceConcat.OrderingTitle"] = "連結順序",
+        ["SourceConcat.RestoreOriginalQueue"] = "すべての変更を取り消す",
+        ["SourceConcat.ExtensionMismatch"] = "連結インポートでは、すべてのファイル拡張子が同一である必要があります。\n\n想定: {0}\n不一致ファイル:\n{1}",
+        ["SourceConcat.Analyzed"] = "連結ソース解析が完了しました。{0} 個のファイルは互換です。\n\nすべての字幕とフォントファイルはドロップされます。ステップ6で字幕の追加が可能です。",
+        ["SourceConcat.IncompatibleVideo"] = "連結ソース #{0} は最初の動画ソースとパラメータが異なります。\n想定: {1}\n実際: {2}",
+        ["SourceConcat.IncompatibleFrameRate"] = "連結ソース #{0} は最初の動画ソースとフレームレートが異なります。\n想定: {1}\n実際: {2}",
+        ["SourceConcat.ResolutionMismatch"] = "連結ソース #{0} は最初の動画ソースと解像度が異なります。\n想定: {1}\n実際: {2}",
+        ["SourceConcat.VariableFrameRate"] = "連結モードでは可変フレームレート (VFR) を直接使用できません。Filter Scribe で VFR→CFR 修復フィルタを追加してください。",
 
-            // Dialogs
-            ["Dialog.SelectTitle"] = "{0} を選択",
-            ["Dialog.ReplaceTitle"] = "{0} を置換",
-            ["Dialog.Filter.All"] = "すべてのファイル (*.*)|*.*",
-            ["Dialog.Filter.Exe"] = "実行ファイル (*.exe)|*.exe",
-            ["Dialog.Filter.Dll"] = "DLL ファイル (*.dll)|*.dll",
+        // Dialogs
+        ["Dialog.SelectTitle"] = "{0} を選択",
+        ["Dialog.ReplaceTitle"] = "{0} を置換",
+        ["Dialog.Filter.All"] = "すべてのファイル (*.*)|*.*",
+        ["Dialog.Filter.Exe"] = "実行ファイル (*.exe)|*.exe",
+        ["Dialog.Filter.Dll"] = "DLL ファイル (*.dll)|*.dll",
 
-            // Confirmation dialog texts
+        // Confirmation dialog texts
 
-            // Auto tool import
-            ["AutoImport.Title"] = "ツール自動取込",
-            ["AutoImport.FoundMessage"] = "検証済みの実行ファイルが見つかりました。今すぐ取り込みますか？\n\n{0}",
-            ["AutoImport.NotFoundMessage"] = "このアプリのフォルダに取込可能なツールは見つかりませんでした。再確認するには、設定 → 初期化モード → 次回起動時にツールを自動取込 を有効にしてください。",
+        // Auto tool import
+        ["AutoImport.Title"] = "ツール自動取込",
+        ["AutoImport.FoundMessage"] = "検証済みの実行ファイルが見つかりました。今すぐ取り込みますか？\n\n{0}",
+        ["AutoImport.NotFoundMessage"] = "このアプリのフォルダに取込可能なツールは見つかりませんでした。再確認するには、設定 → 初期化モード → 次回起動時にツールを自動取込 を有効にしてください。",
 
-            // Confirmation provider messages (with {0} / {1} format placeholders)
-            ["ConfirmProvider.SuspiciousImportTitle"] = "インポート内容が {0} と一致しません",
-            ["ConfirmProvider.ProceedToRun"] = "{0} を実行してバージョンを取得しますか？",
-            ["ConfirmProvider.WrongTool"] = "{0} を {1} としてインポートしますか？",
+        // Confirmation provider messages (with {0} / {1} format placeholders)
+        ["ConfirmProvider.SuspiciousImportTitle"] = "インポート内容が {0} と一致しません",
+        ["ConfirmProvider.ProceedToRun"] = "{0} を実行してバージョンを取得しますか？",
+        ["ConfirmProvider.WrongTool"] = "{0} を {1} としてインポートしますか？",
 
-            // Checklist - Tools
-            ["Checklist.Tools.Upstream"] = "上流プログラム取込済み",
-            ["Checklist.Tools.Downstream"] = "下流プログラム取込済み",
-            ["Checklist.Tools.Analysis"] = "解析プログラム取込済み",
-            ["Checklist.Tools.UpstreamPicked"] = "上流プログラムを選択",
-            ["Checklist.Tools.DownstreamPicked"] = "下流プログラムを選択",
-            ["Checklist.Tools.AnalysisPicked"] = "解析プログラムを選択",
-            ["Checklist.Tools.CompleteSourceAnalysis"] = "ソース解析完了",
-            ["Checklist.Tools.DependenciesPicked"] = "依存プログラムを選択",
-            ["Checklist.Tools.VideoSourcePicked"] = "ビデオソースまたはキューを選択",
-            ["Checklist.Tools.ScriptSourcePicked"] = "VS/AVS/SVFI 上流のスクリプトソースを選択",
+        // Checklist - Tools
+        ["Checklist.Tools.Upstream"] = "上流プログラム取込済み",
+        ["Checklist.Tools.Downstream"] = "下流プログラム取込済み",
+        ["Checklist.Tools.Analysis"] = "解析プログラム取込済み",
+        ["Checklist.Tools.UpstreamPicked"] = "上流プログラムを選択",
+        ["Checklist.Tools.DownstreamPicked"] = "下流プログラムを選択",
+        ["Checklist.Tools.AnalysisPicked"] = "解析プログラムを選択",
+        ["Checklist.Tools.CompleteSourceAnalysis"] = "ソース解析完了",
+        ["Checklist.Tools.DependenciesPicked"] = "依存プログラムを選択",
+        ["Checklist.Tools.VideoSourcePicked"] = "ビデオソースまたはキューを選択",
+        ["Checklist.Tools.ScriptSourcePicked"] = "VS/AVS/SVFI 上流のスクリプトソースを選択",
 
-            // Checklist - Source Validation 1 (Severe)
-            ["Checklist.Source1.Metadata"] = "メタデータと SEI が読取可能",
-            ["Checklist.Source1.Progressive"] = "プログレッシブ / 非インタレ",
-            ["Checklist.Source1.BitDepth"] = "ビット深度が 12 未満（8 または 10、SVT-AV1 要件）",
-            ["Checklist.Source1.BitDepth2"] = "ビット深度が 16 未満",
+        // Checklist - Source Validation 1 (Severe)
+        ["Checklist.Source1.Metadata"] = "メタデータと SEI が読取可能",
+        ["Checklist.Source1.Progressive"] = "プログレッシブ / 非インタレ",
+        ["Checklist.Source1.BitDepth"] = "ビット深度が 12 未満（8 または 10、SVT-AV1 要件）",
+        ["Checklist.Source1.BitDepth2"] = "ビット深度が 16 未満",
 
-            // Checklist - Source Validation 2 (Moderate)
-            ["Checklist.Source2.Framerate"] = "固定フレームレート",
-            ["Checklist.Source2.AspectRatio"] = "正方形ピクセル / SAR 1:1",
-            ["Checklist.Source2.ColorMetadata"] = "マトリックス、伝達特性、プライマリが正常",
-            ["Checklist.Source2.ChromaSubsampling"] = "クロマサブサンプリングなし、または ←/↖（SVT-AV1）",
+        // Checklist - Source Validation 2 (Moderate)
+        ["Checklist.Source2.Framerate"] = "固定フレームレート",
+        ["Checklist.Source2.AspectRatio"] = "正方形ピクセル / SAR 1:1",
+        ["Checklist.Source2.ColorMetadata"] = "マトリックス、伝達特性、プライマリが正常",
+        ["Checklist.Source2.ChromaSubsampling"] = "クロマサブサンプリングなし、または ←/↖（SVT-AV1）",
 
-            // Checklist - Encoding Prerequisites 1 (Hardware)
-            ["Checklist.Enc1.NotOffGrid"] = "バッテリー駆動ではない",
-            ["Checklist.Enc1.DiskSpace"] = "ディスク容量十分",
-            ["Checklist.Enc1.NumaCpuLoad"] = "選択した NUMA ノードの CPU 負荷が低い",
+        // Checklist - Encoding Prerequisites 1 (Hardware)
+        ["Checklist.Enc1.NotOffGrid"] = "バッテリー駆動ではない",
+        ["Checklist.Enc1.DiskSpace"] = "ディスク容量十分",
+        ["Checklist.Enc1.NumaCpuLoad"] = "選択した NUMA ノードの CPU 負荷が低い",
 
-            // Checklist - Encoding Prerequisites 2 (Software)
-            ["Checklist.Enc2.OSFilename"] = "出力ファイル名が OS で有効",
-            ["Checklist.Enc2.FTPFilename"] = "出力ファイル名が FTP で有効かもしれない（疑似 UTF-8）",
-            ["Checklist.Enc2.WritePermission"] = "出力先に書込権限あり",
-            ["Checklist.Enc2.Overwrite"] = "既存ファイルを上書きしない",
-            ["Checklist.Enc2.LsmashForAvs2Yuv"] = "AviSynth+ パスに LSMASHSource.dll が存在（Avs2Yuv）",
+        // Checklist - Encoding Prerequisites 2 (Software)
+        ["Checklist.Enc2.OSFilename"] = "出力ファイル名が OS で有効",
+        ["Checklist.Enc2.FTPFilename"] = "出力ファイル名が FTP で有効かもしれない（疑似 UTF-8）",
+        ["Checklist.Enc2.WritePermission"] = "出力先に書込権限あり",
+        ["Checklist.Enc2.Overwrite"] = "既存ファイルを上書きしない",
+        ["Checklist.Enc2.LsmashForAvs2Yuv"] = "AviSynth+ パスに LSMASHSource.dll が存在（Avs2Yuv）",
 
-            // Checklist - Best Practices 1 (Hardware)
-            ["Checklist.Best1.SlowDisk"] = "低速ディスク接続を避ける (USB2, Bluetooth 等)",
-            ["Checklist.Best1.DiskThrashing"] = "ディスクスラッシングを避ける (同HDDでR&W)",
-            ["Checklist.Best1.BiosDriver"] = "最新の BIOS、チップセット、HDD ファームウェアを使用",
-            ["Checklist.Best1.Temperature"] = "°C (°F): SSD/RAM <75 (167), HDD <55 (131)",
-            ["Checklist.Best1.SMR"] = "SMR HDD に書き込まない",
+        // Checklist - Best Practices 1 (Hardware)
+        ["Checklist.Best1.SlowDisk"] = "低速ディスク接続を避ける (USB2, Bluetooth 等)",
+        ["Checklist.Best1.DiskThrashing"] = "ディスクスラッシングを避ける (同HDDでR&W)",
+        ["Checklist.Best1.BiosDriver"] = "最新の BIOS、チップセット、HDD ファームウェアを使用",
+        ["Checklist.Best1.Temperature"] = "°C (°F): SSD/RAM <75 (167), HDD <55 (131)",
+        ["Checklist.Best1.SMR"] = "SMR HDD に書き込まない",
 
-            // Checklist - Best Practices 2 (Software)
-            ["Checklist.Best2.EncoderVersion"] = "最新のエンコーダーバージョンを使用",
-            ["Checklist.Best2.FAT32"] = "FAT32 ボリュームに書き込まない",
-            ["Checklist.Best2.DiskCompression"] = "出力フォルダでファイル圧縮を無効化",
+        // Checklist - Best Practices 2 (Software)
+        ["Checklist.Best2.EncoderVersion"] = "最新のエンコーダーバージョンを使用",
+        ["Checklist.Best2.FAT32"] = "FAT32 ボリュームに書き込まない",
+        ["Checklist.Best2.DiskCompression"] = "出力フォルダでファイル圧縮を無効化",
 
-            // FilterScribeModal
+        // FilterScribeModal
 
-            // FFProbeJsonUpdateResolver
-            ["FFProbeJsonUpdate.JsonEmpty"] = "ffprobe JSON が空です。",
-            ["FFProbeJsonUpdate.DimensionsNotPositive"] = "解像度の値は正の数でなければなりません。",
-            ["FFProbeJsonUpdate.RootNotObject"] = "ffprobe JSON のルートがオブジェクトではありません。",
-            ["FFProbeJsonUpdate.NoVideoStream"] = "ffprobe JSON に映像ストリームが見つかりません。",
+        // FFProbeJsonUpdateResolver
+        ["FFProbeJsonUpdate.JsonEmpty"] = "ffprobe JSON が空です。",
+        ["FFProbeJsonUpdate.DimensionsNotPositive"] = "解像度の値は正の数でなければなりません。",
+        ["FFProbeJsonUpdate.RootNotObject"] = "ffprobe JSON のルートがオブジェクトではありません。",
+        ["FFProbeJsonUpdate.NoVideoStream"] = "ffprobe JSON に映像ストリームが見つかりません。",
 
-            // FilenameScribeModal
+        // FilenameScribeModal
 
-            // Hints
-            ["Hint.SVFIClipDisabled"] = "OneLineShotArgs はサンプル切り出し非対応のため、サンプル実行を無効化しました。",
-            ["Hint.AnalyzeRunConditionDuration"] = "分析はソースインポート時に開始されます（≈70～100 ms/ソース、Repartモードはより時間がかかります）",
-            ["Hint.NumaCpuCheckTrigger"] = "NUMA ノード CPU 使用率は、マウスクリックまたはキー入力時に更新されます。",
-            ["Hint.FFmpegOptionalBut"] = "FFmpeg は任意ですが、動画フレームのプレビューと自動 MKV マージングには必要です",
-            ["ScriptQueueImport.RejectedPrefix"] = "取込を拒否しました: ベース名不一致 {0} 件、パス不一致 {1} 件。",
-            ["ScriptQueueImport.DetailsHeader"] = "詳細:",
-            ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — ベース名に一致する動画ソースがありません",
-            ["ScriptQueueImport.DetailNoScript"] = "'{0}' — ベース名に一致するスクリプトファイルがありません",
-            ["ScriptQueueImport.DetailUnreadable"] = "'{0}' — スクリプト形式を認識できず、ソースパスを確認できません",
-            ["ScriptQueueImport.DetailMismatch"] = "'{0}' — \"{1}\" を参照していますが、想定は \"{2}\" です",
-            ["ScriptQueueImport.MoreCount"] = "...他 {0} 件",
-            ["ScriptQueueImport.CountMismatchTitle"] = "スクリプト数が不一致",
-            ["ScriptQueueImport.MissingSummary"] = "選択した上流で {0}/{1} 個のスクリプトが不足しています。",
-            ["ScriptQueueImport.MissingLabel"] = "不足:",
-            ["ScriptQueueImport.SourceMismatchTitle"] = "スクリプト元不一致",
-            ["ScriptQueueImport.SourceMismatchSummary"] = "{0} 個のスクリプトが別の動画ソースを参照しています。",
-            ["Hint.QueueRouteSampleClipDisabled"] = "動画ソースキュー/連結モードはサンプル切り出し非対応のため、サンプル実行を無効化しました。",
-            ["Hint.FilterScribeDisabled"] = "OneLineShotArgs はスクリプト生成非対応のため、フィルタースクライブを無効化しました。",
-            ["Hint.MinDurationFilter"] = "最小時間フィルター（秒）:",
-            ["Hint.DurationFilterAllFiltered"] = "すべての動画が時間フィルターで除外されました。",
-            ["Hint.DurationFilterCount"] = "{0}/{1} の動画を除外しました。",
+        // Hints
+        ["Hint.SVFIClipDisabled"] = "OneLineShotArgs はサンプル切り出し非対応のため、サンプル実行を無効化しました。",
+        ["Hint.AnalyzeRunConditionDuration"] = "分析はソースインポート時に開始されます（≈70～100 ms/ソース、Repartモードはより時間がかかります）",
+        ["Hint.NumaCpuCheckTrigger"] = "NUMA ノード CPU 使用率は、マウスクリックまたはキー入力時に更新されます。",
+        ["Hint.FFmpegOptionalBut"] = "FFmpeg は任意ですが、動画フレームのプレビューと自動 MKV マージングには必要です",
+        ["ScriptQueueImport.RejectedPrefix"] = "取込を拒否しました: ベース名不一致 {0} 件、パス不一致 {1} 件。",
+        ["ScriptQueueImport.DetailsHeader"] = "詳細:",
+        ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — ベース名に一致する動画ソースがありません",
+        ["ScriptQueueImport.DetailNoScript"] = "'{0}' — ベース名に一致するスクリプトファイルがありません",
+        ["ScriptQueueImport.DetailUnreadable"] = "'{0}' — スクリプト形式を認識できず、ソースパスを確認できません",
+        ["ScriptQueueImport.DetailMismatch"] = "'{0}' — \"{1}\" を参照していますが、想定は \"{2}\" です",
+        ["ScriptQueueImport.MoreCount"] = "...他 {0} 件",
+        ["ScriptQueueImport.CountMismatchTitle"] = "スクリプト数が不一致",
+        ["ScriptQueueImport.MissingSummary"] = "選択した上流で {0}/{1} 個のスクリプトが不足しています。",
+        ["ScriptQueueImport.MissingLabel"] = "不足:",
+        ["ScriptQueueImport.SourceMismatchTitle"] = "スクリプト元不一致",
+        ["ScriptQueueImport.SourceMismatchSummary"] = "{0} 個のスクリプトが別の動画ソースを参照しています。",
+        ["Hint.QueueRouteSampleClipDisabled"] = "動画ソースキュー/連結モードはサンプル切り出し非対応のため、サンプル実行を無効化しました。",
+        ["Hint.FilterScribeDisabled"] = "OneLineShotArgs はスクリプト生成非対応のため、フィルタースクライブを無効化しました。",
+        ["Hint.MinDurationFilter"] = "最小時間フィルター（秒）:",
+        ["Hint.DurationFilterAllFiltered"] = "すべての動画が時間フィルターで除外されました。",
+        ["Hint.DurationFilterCount"] = "{0}/{1} の動画を除外しました。",
 
-            // Heatmap
-            ["Heatmap.Cold"] = "低温",
-            ["Heatmap.Hot"] = "高温",
+        // Heatmap
+        ["Heatmap.Cold"] = "低温",
+        ["Heatmap.Hot"] = "高温",
 
-            // Source analysis result ConfirmationModal
-            ["SrcAnalysis.Completed"] = "ソース解析が完了しました。",
-            ["SrcAnalysis.RunAfterReplace"] = "今すぐソース解析を実行しますか？",
-            ["SrcAnalysis.Copied"] = "ffprobe の生 JSON をクリップボードにコピーしました。",
+        // Source analysis result ConfirmationModal
+        ["SrcAnalysis.Completed"] = "ソース解析が完了しました。",
+        ["SrcAnalysis.RunAfterReplace"] = "今すぐソース解析を実行しますか？",
+        ["SrcAnalysis.Copied"] = "ffprobe の生 JSON をクリップボードにコピーしました。",
 
-            ["ScriptGen.RunAfterReplace"] = "AVS と VPY スクリプトを今すぐ生成しますか？",
-            ["ScriptGen.ScriptsSaved"] = "スクリプトを保存しました：\n{0}",
+        ["ScriptGen.RunAfterReplace"] = "AVS と VPY スクリプトを今すぐ生成しますか？",
+        ["ScriptGen.ScriptsSaved"] = "スクリプトを保存しました：\n{0}",
 
-            // InspectSrcProblems modal texts
-            ["SrcInspect.InfoTitle"] = "ソースチェック",
-            ["SrcInspect.InfoMsg"] = "明らかなソース問題はありません。",
-            ["SrcInspect.ErrorTitle"] = "ソース重大問題",
-            ["SrcInspect.WarnTitle"] = "ソース中程度問題",
-            ["SrcInspect.MetadataP1Text"] = "ソースのメタデータを読み取れません。ファイルが破損しているか、動画ファイルではない可能性があります。このツールはメタデータに基づいて安全なエンコードパラメータを選択するため、エンコードを続行できません。",
-            ["SrcInspect.ProgressiveP1Text"] = "このツールはフレーム間パターンを解析して IVTC フィルタを設定することができません。詳細は https://iavoe.github.io/deint-ivtc-web-tutorial/HTML を参照してください。",
-            ["SrcInspect.BitDepthP1Text"] = "SVT-AV1 は 12bit 動画をサポートしていません。SVT-AV1 が選択されていない場合、この問題は警告として処理され、エンコード開始ボタンは無効になりません。",
-            ["SrcInspect.FramerateP1Text"] = "フィルタエディタを使用して VFR→CFR 変換フィルタを追加してください。VFR のままエンコードすると、時間経過とともに音声と映像の同期がずれる可能性があります。",
-            ["SrcInspect.AspectRatioP1Text"] = "このツールは非正方形ピクセルを補正できません。続行すると予期しない映像サイズになる可能性があります。ソースを修正するには、ffmpeg で -aspect <現在のSAR> を指定して FFV1 にトランスコードしてください。",
-            ["SrcInspect.ColorMetadataP1Text"] = "カラーマトリックス、伝達特性、カラープライマリのメタデータがない場合、プレーヤーは多くの場合 BT.709 にフォールバックしますが、有効な値は複数あり、ソースに対して正しい組み合わせは1つだけです。",
-            ["SrcInspect.ChromaSubsamplingP1Text"] = "クロマサンプル位置が正しくない場合、カラーボーダーがぼやけるか、オブジェクトの境界からずれることがあります。AVC や HEVC とは異なり、AV1 は限定的なクロマサンプル位置のみをサポートしています。"
+        // InspectSrcProblems modal texts
+        ["SrcInspect.InfoTitle"] = "ソースチェック",
+        ["SrcInspect.InfoMsg"] = "明らかなソース問題はありません。",
+        ["SrcInspect.ErrorTitle"] = "ソース重大問題",
+        ["SrcInspect.WarnTitle"] = "ソース中程度問題",
+        ["SrcInspect.MetadataP1Text"] = "ソースのメタデータを読み取れません。ファイルが破損しているか、動画ファイルではない可能性があります。このツールはメタデータに基づいて安全なエンコードパラメータを選択するため、エンコードを続行できません。",
+        ["SrcInspect.ProgressiveP1Text"] = "このツールはフレーム間パターンを解析して IVTC フィルタを設定することができません。詳細は https://iavoe.github.io/deint-ivtc-web-tutorial/HTML を参照してください。",
+        ["SrcInspect.BitDepthP1Text"] = "SVT-AV1 は 12bit 動画をサポートしていません。SVT-AV1 が選択されていない場合、この問題は警告として処理され、エンコード開始ボタンは無効になりません。",
+        ["SrcInspect.FramerateP1Text"] = "フィルタエディタを使用して VFR→CFR 変換フィルタを追加してください。VFR のままエンコードすると、時間経過とともに音声と映像の同期がずれる可能性があります。",
+        ["SrcInspect.AspectRatioP1Text"] = "このツールは非正方形ピクセルを補正できません。続行すると予期しない映像サイズになる可能性があります。ソースを修正するには、ffmpeg で -aspect <現在のSAR> を指定して FFV1 にトランスコードしてください。",
+        ["SrcInspect.ColorMetadataP1Text"] = "カラーマトリックス、伝達特性、カラープライマリのメタデータがない場合、プレーヤーは多くの場合 BT.709 にフォールバックしますが、有効な値は複数あり、ソースに対して正しい組み合わせは1つだけです。",
+        ["SrcInspect.ChromaSubsamplingP1Text"] = "クロマサンプル位置が正しくない場合、カラーボーダーがぼやけるか、オブジェクトの境界からずれることがあります。AVC や HEVC とは異なり、AV1 は限定的なクロマサンプル位置のみをサポートしています。"
     };
     private static void AddRussian() => Data["ru"] = new(Data["en"])
-        {
-            // Cards section headers
-            ["Cards.ToolsImport"] = "Импорт/замена инструментов",
-            ["Cards.SourceValidation"] = "Проверка исходного видео",
-            ["Cards.QueueSourceFilter"] = "Фильтр очереди",
-            ["Cards.QueueSourceFilterSubtitle"] = "Сохраняет согласованность",
-            ["Cards.ConcatSourceFilter"] = "Фильтр конкатенации",
-            ["Cards.ConcatSourceFilterSubtitle"] = "Сохраняет согласованность конкатенации",
-            ["Cards.SrcIncompatOrCorrupted"] = "Несовместимо / повреждено (красн.)",
-            ["Cards.SrcQualityIssues"] = "Проблемы качества (оранж.)",
-            ["Cards.EncPrerequisites"] = "Условия кодирования",
-            ["Cards.EncHardware"] = "Аппаратное",
-            ["Cards.EncSoftware"] = "Программное",
-            ["Cards.BestPractices"] = "Рекомендации",
-            ["Cards.BestHardware"] = "Аппаратное (самопроверка)",
-            ["Cards.BestSoftware"] = "Программное (самопроверка)",
-            ["Cards.BestPracticesSubtitle"] = "Рекомендация — не блокирует",
+    {
+        // Cards section headers
+        ["Cards.ToolsImport"] = "Импорт/замена инструментов",
+        ["Cards.SourceValidation"] = "Проверка исходного видео",
+        ["Cards.QueueSourceFilter"] = "Фильтр очереди",
+        ["Cards.QueueSourceFilterSubtitle"] = "Сохраняет согласованность",
+        ["Cards.ConcatSourceFilter"] = "Фильтр конкатенации",
+        ["Cards.ConcatSourceFilterSubtitle"] = "Сохраняет согласованность конкатенации",
+        ["Cards.SrcIncompatOrCorrupted"] = "Несовместимо / повреждено (красн.)",
+        ["Cards.SrcQualityIssues"] = "Проблемы качества (оранж.)",
+        ["Cards.EncPrerequisites"] = "Условия кодирования",
+        ["Cards.EncHardware"] = "Аппаратное",
+        ["Cards.EncSoftware"] = "Программное",
+        ["Cards.BestPractices"] = "Рекомендации",
+        ["Cards.BestHardware"] = "Аппаратное (самопроверка)",
+        ["Cards.BestSoftware"] = "Программное (самопроверка)",
+        ["Cards.BestPracticesSubtitle"] = "Рекомендация — не блокирует",
 
-            // Main buttons
-            ["Buttons.UsageAndCompliance"] = "Исп. и соблюд.",
-            ["Buttons.Settings"] = "Настройки",
-            ["Buttons.OneClickScriptGen"] = "Генерация AVS/VS скриптов",
-            ["Buttons.OpenScribeSrcScribe"] = "Редактор фильтров",
-            ["Buttons.ShowRawJSON"] = "Показать исходный JSON",
-            ["Buttons.AnalyzeSrcVideo"] = "Анализ источника",
-            ["Buttons.ReEvaluate"] = "Перепров.",
-            ["Buttons.RunSample"] = "Пробный клип",
-            ["Buttons.StartEncode"] = "Нач. кодир.",
-            ["EncInspect.InfoTitle"] = "Детали предпроверки кодера",
-            ["EncInspect.InfoMsg"] = "Проблем предпроверки нет.",
-            ["EncInspect.P1Title"] = "Пров. пит. от батареи",
-            ["EncInspect.P1Text"] = "Определяет через SystemInformation.PowerStatus, работает ли ПК от батареи, уменьшая износ, предотвращая выключения и ухудшение качества из-за троттлинга.",
-            ["EncInspect.P2Title"] = "Место на диске",
-            ["EncInspect.P2Text"] = "Сравнивает место на диске с размером файла × 1,5 (резерв: 1 GiB). Проверяет достаточно места для результата.",
-            ["EncInspect.P3Title"] = "Проверка права записи",
-            ["EncInspect.P3Text"] = "Проверяет доступ записи в каталог вывода, получая список файлов. Предотвращает сбои из-за прав.",
-            ["EncInspect.P4Title"] = "Перезапись",
-            ["EncInspect.P4Text"] = "Проверяет, существует ли выходной файл, и динамически усложняет запуск перезаписи, чтобы предотвратить случайную потерю данных.",
-            ["EncInspect.P5Title"] = "Плагин L-SMASH (Avs2Yuv)",
-            ["EncInspect.P5Text"] = "Проверяет наличие LSMASHSource.dll в C:\\Program Files (x86)\\AviSynth+\\plugins64+\\ (не libvslsmashsource.dll) для чтения кадров.",
-            ["EncInspect.P6Title"] = "Загрузка CPU NUMA-узла",
-            ["EncInspect.P6Text"] = "Проверяет низкую загрузку CPU у NUMA-узла кодера. Высокая загрузка справочная, не блокирует.",
+        // Main buttons
+        ["Buttons.UsageAndCompliance"] = "Исп. и соблюд.",
+        ["Buttons.Settings"] = "Настройки",
+        ["Buttons.OneClickScriptGen"] = "Генерация AVS/VS скриптов",
+        ["Buttons.OpenScribeSrcScribe"] = "Редактор фильтров",
+        ["Buttons.ShowRawJSON"] = "Показать исходный JSON",
+        ["Buttons.AnalyzeSrcVideo"] = "Анализ источника",
+        ["Buttons.ReEvaluate"] = "Перепров.",
+        ["Buttons.RunSample"] = "Пробный клип",
+        ["Buttons.StartEncode"] = "Нач. кодир.",
+        ["EncInspect.InfoTitle"] = "Детали предпроверки кодера",
+        ["EncInspect.InfoMsg"] = "Проблем предпроверки нет.",
+        ["EncInspect.P1Title"] = "Пров. пит. от батареи",
+        ["EncInspect.P1Text"] = "Определяет через SystemInformation.PowerStatus, работает ли ПК от батареи, уменьшая износ, предотвращая выключения и ухудшение качества из-за троттлинга.",
+        ["EncInspect.P2Title"] = "Место на диске",
+        ["EncInspect.P2Text"] = "Сравнивает место на диске с размером файла × 1,5 (резерв: 1 GiB). Проверяет достаточно места для результата.",
+        ["EncInspect.P3Title"] = "Проверка права записи",
+        ["EncInspect.P3Text"] = "Проверяет доступ записи в каталог вывода, получая список файлов. Предотвращает сбои из-за прав.",
+        ["EncInspect.P4Title"] = "Перезапись",
+        ["EncInspect.P4Text"] = "Проверяет, существует ли выходной файл, и динамически усложняет запуск перезаписи, чтобы предотвратить случайную потерю данных.",
+        ["EncInspect.P5Title"] = "Плагин L-SMASH (Avs2Yuv)",
+        ["EncInspect.P5Text"] = "Проверяет наличие LSMASHSource.dll в C:\\Program Files (x86)\\AviSynth+\\plugins64+\\ (не libvslsmashsource.dll) для чтения кадров.",
+        ["EncInspect.P6Title"] = "Загрузка CPU NUMA-узла",
+        ["EncInspect.P6Text"] = "Проверяет низкую загрузку CPU у NUMA-узла кодера. Высокая загрузка справочная, не блокирует.",
 
 
-            ["Section.SelectUpstream"] = "1. Выбор апстрима",
-            ["Section.SelectEncoder"] = "2. Выбор кодера",
-            ["Section.SelectDependencies"] = "3. Выбор зависимостей",
-            ["Section.ImportSrc"] = "4. Импорт/создание источника",
-            ["Section.SelectAnalytics"] = "5. Выбор анализатора · Анализ выполнения",
-            ["Section.EncodingConfigs"] = "6. Настройки кодирования",
-            ["Section.StartEncoding"] = "7. Запуск кодирования",
+        ["Section.SelectUpstream"] = "1. Выбор апстрима",
+        ["Section.SelectEncoder"] = "2. Выбор кодера",
+        ["Section.SelectDependencies"] = "3. Выбор зависимостей",
+        ["Section.ImportSrc"] = "4. Импорт/создание источника",
+        ["Section.SelectAnalytics"] = "5. Выбор анализатора · Анализ выполнения",
+        ["Section.EncodingConfigs"] = "6. Настройки кодирования",
+        ["Section.StartEncoding"] = "7. Запуск кодирования",
 
-            ["Import.NoSelection"] = "Не выбрано",
-            ["Import.VersionDetectTimeoutTitle"] = "Не удалось импортировать инструмент",
-            ["Import.VersionDetectTimeoutMessage"] = "Импорт отклонен: {0} не вернул сведения о версии за 3 секунды.",
+        ["Import.NoSelection"] = "Не выбрано",
+        ["Import.VersionDetectTimeoutTitle"] = "Не удалось импортировать инструмент",
+        ["Import.VersionDetectTimeoutMessage"] = "Импорт отклонен: {0} не вернул сведения о версии за 3 секунды.",
 
-            // ItemCard separator
-            ["ItemCard.Separator"] = ": ",
+        // ItemCard separator
+        ["ItemCard.Separator"] = ": ",
 
-            // Tool card captions
-            ["ToolField.Version"] = "Версия",
-            ["ToolField.Name"] = "Имя",
-            ["ToolField.Mode"] = "Режим",
-            ["ToolField.FileName"] = "Файл",
-            ["ToolField.NumaNodes"] = "Привязка NUMA", // i.e., upstream from node 0 to encoder at node 1 gives “0 → 1”
-            ["ToolField.Threads"] = "Потоки", // Value: int thread count, with ToolField.EncThreadClamp On/Off
-            ["ToolField.Value"] = "Значение",
-            ["ToolField.Strategy"] = "Стратегия",
-            ["ToolField.MaxKeyframeGap"] = "Макс. интервал ключ. кадров",
-            ["ToolField.OtherCustomParams"] = "Другие пользовательские параметры",
+        // Tool card captions
+        ["ToolField.Version"] = "Версия",
+        ["ToolField.Name"] = "Имя",
+        ["ToolField.Mode"] = "Режим",
+        ["ToolField.FileName"] = "Файл",
+        ["ToolField.NumaNodes"] = "Привязка NUMA", // i.e., upstream from node 0 to encoder at node 1 gives “0 → 1”
+        ["ToolField.Threads"] = "Потоки", // Value: int thread count, with ToolField.EncThreadClamp On/Off
+        ["ToolField.Value"] = "Значение",
+        ["ToolField.Strategy"] = "Стратегия",
+        ["ToolField.MaxKeyframeGap"] = "Макс. интервал ключ. кадров",
+        ["ToolField.OtherCustomParams"] = "Другие пользовательские параметры",
 
-            ["Tool.Source.VideoSrc"] = "▷ Видеоисточник",
-            ["Tool.Source.AviSynth"] = $"Источник {LangProviderBase.AviSynth} .avs",
-            ["Tool.Source.VapourSynth"] = $"Источник {LangProviderBase.VapourSynth} .vpy",
-            ["Tool.Source.Svfi"] = "Источник SVFI .ini",
-            ["Tool.Source.AviSynthQueue"] = $"📁 Очередь {LangProviderBase.AVS}",
-            ["Tool.Source.VapourSynthQueue"] = $"📁 Очередь {LangProviderBase.VS}",
-            ["Tool.Source.SvfiQueue"] = "📁 Очередь SVFI",
+        ["Tool.Source.VideoSrc"] = "▷ Видеоисточник",
+        ["Tool.Source.AviSynth"] = $"Источник {LangProviderBase.AviSynth} .avs",
+        ["Tool.Source.VapourSynth"] = $"Источник {LangProviderBase.VapourSynth} .vpy",
+        ["Tool.Source.Svfi"] = "Источник SVFI .ini",
+        ["Tool.Source.AviSynthQueue"] = $"📁 Очередь {LangProviderBase.AVS}",
+        ["Tool.Source.VapourSynthQueue"] = $"📁 Очередь {LangProviderBase.VS}",
+        ["Tool.Source.SvfiQueue"] = "📁 Очередь SVFI",
 
-            ["Tool.Enc.OutputSetting"] = "Имя и путь файла вывода",
-            ["Tool.Enc.Parallelism"] = "Параллелизм",
-            ["Tool.Enc.EncParams"] = "Параметры кодера",
-            ["Tool.Enc.MuxTracks"] = "Добавить субтитры",
+        ["Tool.Enc.OutputSetting"] = "Имя и путь файла вывода",
+        ["Tool.Enc.Parallelism"] = "Параллелизм",
+        ["Tool.Enc.EncParams"] = "Параметры кодера",
+        ["Tool.Enc.MuxTracks"] = "Добавить субтитры",
 
-            // Source queue card
-            ["SourceQueue.FilterModeTitle"] = "Выполнить взвешенную фильтрацию очереди?",
-            ["SourceQueue.FilterModeMessage"] = "Пожалуйста, выберите на основе структуры очереди\nПодтвердить: источники схожей длительности, фильтрация не требуется\nОтмена: исключить интро и трейлеры BDMV/M3U взвешенным голосованием\nСравнение исключения первого потока будет выполнено для обеспечения согласованности формата\n\nДля BDMV используйте BDInfo/ChapterTool для обработки эпизодов с недостаточной/избыточной сегментацией",
-            ["SourceQueue.ImportTitle"] = "Импорт очереди видеоисточников",
-            ["SourceQueue.ImportPrompt"] = "Импорт плейлиста Blu-Ray?\n\nПодтвердить: папку PLAYLIST с .mpls/ifo/xpl, система добавит ссылаемые медиафайлы (m2ts) в очередь в порядке плейлиста.\nОтмена: напрямую выберите несколько видеоисточников, и выбранные файлы будут добавлены в очередь в порядке выбора.\n\nЕсли не уверены, какой кластер выбрать, используйте режим Repart или предпросмотр плеера для подтверждения",
-            ["SourceQueue.SelectPlaylistFolder"] = "Выберите папку BDMV PLAYLIST",
-            ["SourceQueue.SelectFilesTitle"] = "Выберите файлы видеоисточника",
-            ["SourceQueue.ImportScanFailed"] = "В {0} не найдено пригодных MPLS-плейлистов",
-            ["SourceQueue.ChapterImportFailed"] = "Не удалось прочитать главы из: {0}",
-            ["SourceQueue.ChapterSourcesMissing"] = "Плейлист не разрешился в существующий файл видеоисточника. Убедитесь, что медиафайлы (m2ts), на которые ссылается плейлист, присутствуют",
+        // Source queue card
+        ["SourceQueue.FilterModeTitle"] = "Выполнить взвешенную фильтрацию очереди?",
+        ["SourceQueue.FilterModeMessage"] = "Пожалуйста, выберите на основе структуры очереди\nПодтвердить: источники схожей длительности, фильтрация не требуется\nОтмена: исключить интро и трейлеры BDMV/M3U взвешенным голосованием\nСравнение исключения первого потока будет выполнено для обеспечения согласованности формата\n\nДля BDMV используйте BDInfo/ChapterTool для обработки эпизодов с недостаточной/избыточной сегментацией",
+        ["SourceQueue.ImportTitle"] = "Импорт очереди видеоисточников",
+        ["SourceQueue.ImportPrompt"] = "Импорт плейлиста Blu-Ray?\n\nПодтвердить: папку PLAYLIST с .mpls/ifo/xpl, система добавит ссылаемые медиафайлы (m2ts) в очередь в порядке плейлиста.\nОтмена: напрямую выберите несколько видеоисточников, и выбранные файлы будут добавлены в очередь в порядке выбора.\n\nЕсли не уверены, какой кластер выбрать, используйте режим Repart или предпросмотр плеера для подтверждения",
+        ["SourceQueue.SelectPlaylistFolder"] = "Выберите папку BDMV PLAYLIST",
+        ["SourceQueue.SelectFilesTitle"] = "Выберите файлы видеоисточника",
+        ["SourceQueue.ImportScanFailed"] = "В {0} не найдено пригодных MPLS-плейлистов",
+        ["SourceQueue.ChapterImportFailed"] = "Не удалось прочитать главы из: {0}",
+        ["SourceQueue.ChapterSourcesMissing"] = "Плейлист не разрешился в существующий файл видеоисточника. Убедитесь, что медиафайлы (m2ts), на которые ссылается плейлист, присутствуют",
 
-            ["SourceConcat.SelectFilesTitle"] = "Выберите видеофайлы для конкатенации",
-            ["SourceConcat.OrderingTitle"] = "Порядок concat",
-            ["SourceConcat.RestoreOriginalQueue"] = "Отменить все изменения",
-            ["SourceConcat.ExtensionMismatch"] = "Для импорта конкатенации все файлы должны иметь одинаковое расширение.\n\nОжидается: {0}\nНесовпадающие файлы:\n{1}",
-            ["SourceConcat.Analyzed"] = "Анализ конкатенации завершён. Совместимых файлов: {0}.\n\nВсе субтитры и файлы шрифтов будут удалены, на шаге 6 можно добавить субтитры.",
-            ["SourceConcat.IncompatibleVideo"] = "Источник конкатенации #{0} отличается от первого видеоисточника.\nОжидается: {1}\nФактически: {2}",
-            ["SourceConcat.IncompatibleFrameRate"] = "Источник конкатенации #{0} имеет другую частоту кадров, чем первый видеоисточник.\nОжидается: {1}\nФактически: {2}",
-            ["SourceConcat.ResolutionMismatch"] = "Источник конкатенации #{0} имеет другое разрешение, чем первый видеоисточник.\nОжидается: {1}\nФактически: {2}",
-            ["SourceConcat.VariableFrameRate"] = "Режим concat не может напрямую использовать переменную частоту кадров (VFR). Добавьте фильтр исправления VFR→CFR в Filter Scribe.",
+        ["SourceConcat.SelectFilesTitle"] = "Выберите видеофайлы для конкатенации",
+        ["SourceConcat.OrderingTitle"] = "Порядок concat",
+        ["SourceConcat.RestoreOriginalQueue"] = "Отменить все изменения",
+        ["SourceConcat.ExtensionMismatch"] = "Для импорта конкатенации все файлы должны иметь одинаковое расширение.\n\nОжидается: {0}\nНесовпадающие файлы:\n{1}",
+        ["SourceConcat.Analyzed"] = "Анализ конкатенации завершён. Совместимых файлов: {0}.\n\nВсе субтитры и файлы шрифтов будут удалены, на шаге 6 можно добавить субтитры.",
+        ["SourceConcat.IncompatibleVideo"] = "Источник конкатенации #{0} отличается от первого видеоисточника.\nОжидается: {1}\nФактически: {2}",
+        ["SourceConcat.IncompatibleFrameRate"] = "Источник конкатенации #{0} имеет другую частоту кадров, чем первый видеоисточник.\nОжидается: {1}\nФактически: {2}",
+        ["SourceConcat.ResolutionMismatch"] = "Источник конкатенации #{0} имеет другое разрешение, чем первый видеоисточник.\nОжидается: {1}\nФактически: {2}",
+        ["SourceConcat.VariableFrameRate"] = "Режим concat не может напрямую использовать переменную частоту кадров (VFR). Добавьте фильтр исправления VFR→CFR в Filter Scribe.",
 
-            // Dialogs
-            ["Dialog.SelectTitle"] = "Выбрать {0}",
-            ["Dialog.ReplaceTitle"] = "Заменить {0}",
-            ["Dialog.Filter.All"] = "Все файлы (*.*)|*.*",
-            ["Dialog.Filter.Exe"] = "Исполняемые файлы (*.exe)|*.exe",
-            ["Dialog.Filter.Dll"] = "DLL-файлы (*.dll)|*.dll",
+        // Dialogs
+        ["Dialog.SelectTitle"] = "Выбрать {0}",
+        ["Dialog.ReplaceTitle"] = "Заменить {0}",
+        ["Dialog.Filter.All"] = "Все файлы (*.*)|*.*",
+        ["Dialog.Filter.Exe"] = "Исполняемые файлы (*.exe)|*.exe",
+        ["Dialog.Filter.Dll"] = "DLL-файлы (*.dll)|*.dll",
 
-            // Confirmation dialog texts
+        // Confirmation dialog texts
 
-            // Auto tool import
-            ["AutoImport.Title"] = "Автоимпорт инструментов",
-            ["AutoImport.FoundMessage"] = "Найдены проверенные исполняемые файлы. Импортировать сейчас?\n\n{0}",
-            ["AutoImport.NotFoundMessage"] = "В папке приложения не найдены инструменты для импорта. Чтобы проверить снова, включите Настр. → Режим инициализации → Автоимпорт инструментов при запуске.",
+        // Auto tool import
+        ["AutoImport.Title"] = "Автоимпорт инструментов",
+        ["AutoImport.FoundMessage"] = "Найдены проверенные исполняемые файлы. Импортировать сейчас?\n\n{0}",
+        ["AutoImport.NotFoundMessage"] = "В папке приложения не найдены инструменты для импорта. Чтобы проверить снова, включите Настр. → Режим инициализации → Автоимпорт инструментов при запуске.",
 
-            // Confirmation provider messages (with {0} / {1} format placeholders)
-            ["ConfirmProvider.SuspiciousImportTitle"] = "Импорт не соответствует {0}",
-            ["ConfirmProvider.ProceedToRun"] = "Запустить {0}, чтобы получить версию?",
-            ["ConfirmProvider.WrongTool"] = "Импортировать {0} как {1}?",
+        // Confirmation provider messages (with {0} / {1} format placeholders)
+        ["ConfirmProvider.SuspiciousImportTitle"] = "Импорт не соответствует {0}",
+        ["ConfirmProvider.ProceedToRun"] = "Запустить {0}, чтобы получить версию?",
+        ["ConfirmProvider.WrongTool"] = "Импортировать {0} как {1}?",
 
-            // Checklist - Tools
-            ["Checklist.Tools.Upstream"] = "Один апстрим импортирован",
-            ["Checklist.Tools.Downstream"] = "Один даунстрим импортирован",
-            ["Checklist.Tools.Analysis"] = "Один анализатор импортирован",
-            ["Checklist.Tools.UpstreamPicked"] = "Выбрать программу-апстрим",
-            ["Checklist.Tools.DownstreamPicked"] = "Выбрать программу-даунстрим",
-            ["Checklist.Tools.AnalysisPicked"] = "Выбрать анализатор",
-            ["Checklist.Tools.CompleteSourceAnalysis"] = "Завершить анализ источника",
-            ["Checklist.Tools.DependenciesPicked"] = "Выбрать зависимость",
-            ["Checklist.Tools.VideoSourcePicked"] = "Выбрать видеоисточник или очередь",
-            ["Checklist.Tools.ScriptSourcePicked"] = "Выбрать скрипт-источник (апстрим VS/AVS/SVFI)",
+        // Checklist - Tools
+        ["Checklist.Tools.Upstream"] = "Один апстрим импортирован",
+        ["Checklist.Tools.Downstream"] = "Один даунстрим импортирован",
+        ["Checklist.Tools.Analysis"] = "Один анализатор импортирован",
+        ["Checklist.Tools.UpstreamPicked"] = "Выбрать программу-апстрим",
+        ["Checklist.Tools.DownstreamPicked"] = "Выбрать программу-даунстрим",
+        ["Checklist.Tools.AnalysisPicked"] = "Выбрать анализатор",
+        ["Checklist.Tools.CompleteSourceAnalysis"] = "Завершить анализ источника",
+        ["Checklist.Tools.DependenciesPicked"] = "Выбрать зависимость",
+        ["Checklist.Tools.VideoSourcePicked"] = "Выбрать видеоисточник или очередь",
+        ["Checklist.Tools.ScriptSourcePicked"] = "Выбрать скрипт-источник (апстрим VS/AVS/SVFI)",
 
-            // Checklist - Source Validation 1 (Severe)
-            ["Checklist.Source1.Metadata"] = "Метаданные и SEI читаются",
-            ["Checklist.Source1.Progressive"] = "Прогрессивное видео / не чересстрочное",
-            ["Checklist.Source1.BitDepth"] = "Битность менее 12 (8/10, треб. SVT-AV1)",
-            ["Checklist.Source1.BitDepth2"] = "Битовая глубина меньше 16",
+        // Checklist - Source Validation 1 (Severe)
+        ["Checklist.Source1.Metadata"] = "Метаданные и SEI читаются",
+        ["Checklist.Source1.Progressive"] = "Прогрессивное видео / не чересстрочное",
+        ["Checklist.Source1.BitDepth"] = "Битность менее 12 (8/10, треб. SVT-AV1)",
+        ["Checklist.Source1.BitDepth2"] = "Битовая глубина меньше 16",
 
-            // Checklist - Source Validation 2 (Moderate)
-            ["Checklist.Source2.Framerate"] = "Постоянная частота кадров",
-            ["Checklist.Source2.AspectRatio"] = "Квадратные пиксели / SAR 1:1",
-            ["Checklist.Source2.ColorMetadata"] = "Матрица/передача/осн. цветов в норме",
-            ["Checklist.Source2.ChromaSubsampling"] = "Нет субдискр. хромы или ←/↖ (треб. SVT-AV1)",
+        // Checklist - Source Validation 2 (Moderate)
+        ["Checklist.Source2.Framerate"] = "Постоянная частота кадров",
+        ["Checklist.Source2.AspectRatio"] = "Квадратные пиксели / SAR 1:1",
+        ["Checklist.Source2.ColorMetadata"] = "Матрица/передача/осн. цветов в норме",
+        ["Checklist.Source2.ChromaSubsampling"] = "Нет субдискр. хромы или ←/↖ (треб. SVT-AV1)",
 
-            // Checklist - Encoding Prerequisites 1 (Hardware)
-            ["Checklist.Enc1.NotOffGrid"] = "Не от батареи / от сети",
-            ["Checklist.Enc1.DiskSpace"] = "Достаточно места на диске",
-            ["Checklist.Enc1.NumaCpuLoad"] = "Загрузка CPU выбранного NUMA-узла низкая",
+        // Checklist - Encoding Prerequisites 1 (Hardware)
+        ["Checklist.Enc1.NotOffGrid"] = "Не от батареи / от сети",
+        ["Checklist.Enc1.DiskSpace"] = "Достаточно места на диске",
+        ["Checklist.Enc1.NumaCpuLoad"] = "Загрузка CPU выбранного NUMA-узла низкая",
 
-            // Checklist - Encoding Prerequisites 2 (Software)
-            ["Checklist.Enc2.OSFilename"] = "Имя выходного файла допустимо для ОС",
-            ["Checklist.Enc2.FTPFilename"] = "Имя выходного файла возможно допустимо для FTP (псевдо-UTF-8)",
-            ["Checklist.Enc2.WritePermission"] = "Есть право записи",
-            ["Checklist.Enc2.Overwrite"] = "Выходной файл не перезаписывает существующий",
-            ["Checklist.Enc2.LsmashForAvs2Yuv"] = "LSMASHSource.dll в папке AviSynth+ (Avs2Yuv)",
+        // Checklist - Encoding Prerequisites 2 (Software)
+        ["Checklist.Enc2.OSFilename"] = "Имя выходного файла допустимо для ОС",
+        ["Checklist.Enc2.FTPFilename"] = "Имя выходного файла возможно допустимо для FTP (псевдо-UTF-8)",
+        ["Checklist.Enc2.WritePermission"] = "Есть право записи",
+        ["Checklist.Enc2.Overwrite"] = "Выходной файл не перезаписывает существующий",
+        ["Checklist.Enc2.LsmashForAvs2Yuv"] = "LSMASHSource.dll в папке AviSynth+ (Avs2Yuv)",
 
-            // Checklist - Best Practices 1 (Hardware)
-            ["Checklist.Best1.SlowDisk"] = "Избегать медленного подключения диска (USB2, Bluetooth и т.д.)",
-            ["Checklist.Best1.DiskThrashing"] = "Избегать thrashing (Ч/З на одном HDD)",
-            ["Checklist.Best1.BiosDriver"] = "Использовать последние BIOS, чипсет и прошивку диска",
-            ["Checklist.Best1.Temperature"] = "°C (°F): SSD/RAM <75 (167), HDD <55 (131)",
-            ["Checklist.Best1.SMR"] = "Не писать на SMR HDD",
+        // Checklist - Best Practices 1 (Hardware)
+        ["Checklist.Best1.SlowDisk"] = "Избегать медленного подключения диска (USB2, Bluetooth и т.д.)",
+        ["Checklist.Best1.DiskThrashing"] = "Избегать thrashing (Ч/З на одном HDD)",
+        ["Checklist.Best1.BiosDriver"] = "Использовать последние BIOS, чипсет и прошивку диска",
+        ["Checklist.Best1.Temperature"] = "°C (°F): SSD/RAM <75 (167), HDD <55 (131)",
+        ["Checklist.Best1.SMR"] = "Не писать на SMR HDD",
 
-            // Checklist - Best Practices 2 (Software)
-            ["Checklist.Best2.EncoderVersion"] = "Использовать последнюю версию кодера",
-            ["Checklist.Best2.FAT32"] = "Не писать на том FAT32",
-            ["Checklist.Best2.DiskCompression"] = "В папке вывода отключено сжатие диска",
+        // Checklist - Best Practices 2 (Software)
+        ["Checklist.Best2.EncoderVersion"] = "Использовать последнюю версию кодера",
+        ["Checklist.Best2.FAT32"] = "Не писать на том FAT32",
+        ["Checklist.Best2.DiskCompression"] = "В папке вывода отключено сжатие диска",
 
-            // FilterScribeModal
+        // FilterScribeModal
 
-            // FFProbeJsonUpdateResolver
-            ["FFProbeJsonUpdate.JsonEmpty"] = "JSON ffprobe пуст.",
-            ["FFProbeJsonUpdate.DimensionsNotPositive"] = "Размеры разрешения должны быть положительными.",
-            ["FFProbeJsonUpdate.RootNotObject"] = "Корень JSON ffprobe не является объектом.",
-            ["FFProbeJsonUpdate.NoVideoStream"] = "Видеопоток не найден в JSON ffprobe.",
+        // FFProbeJsonUpdateResolver
+        ["FFProbeJsonUpdate.JsonEmpty"] = "JSON ffprobe пуст.",
+        ["FFProbeJsonUpdate.DimensionsNotPositive"] = "Размеры разрешения должны быть положительными.",
+        ["FFProbeJsonUpdate.RootNotObject"] = "Корень JSON ffprobe не является объектом.",
+        ["FFProbeJsonUpdate.NoVideoStream"] = "Видеопоток не найден в JSON ffprobe.",
 
-            // FilenameScribeModal
+        // FilenameScribeModal
 
-            // Hints
-            ["Hint.SVFIClipDisabled"] = "OneLineShotArgs не поддерживает пробный отрезок; кнопка пробы отключена.",
-            ["Hint.AnalyzeRunConditionDuration"] = "Анализ начинается при импорте источника (≈70～100 мс/источник, режим Repart занимает больше времени",
-            ["Hint.NumaCpuCheckTrigger"] = "Загрузка CPU NUMA-узла обновляется при клике мыши или вводе с клавиатуры.",
-            ["Hint.FFmpegOptionalBut"] = "FFmpeg необязателен, но нужен для предпросмотра кадров видео и автоматического мультиплексирования MKV",
-            ["ScriptQueueImport.RejectedPrefix"] = "Импорт отклонён: {0} несовпадений по базовому имени, {1} несовпадений пути.",
-            ["ScriptQueueImport.DetailsHeader"] = "Детали:",
-            ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — нет подходящего видеоисточника по базовому имени",
-            ["ScriptQueueImport.DetailNoScript"] = "'{0}' — нет подходящего файла скрипта по базовому имени",
-            ["ScriptQueueImport.DetailUnreadable"] = "'{0}' — нераспознанный формат скрипта, нельзя проверить путь источника",
-            ["ScriptQueueImport.DetailMismatch"] = "'{0}' — указывает на \"{1}\", ожидалось \"{2}\"",
-            ["ScriptQueueImport.MoreCount"] = "...и еще {0}.",
-            ["ScriptQueueImport.CountMismatchTitle"] = "Число скриптов не совпадает",
-            ["ScriptQueueImport.MissingSummary"] = "Для выбранного upstream не хватает {0} из {1} скриптов.",
-            ["ScriptQueueImport.MissingLabel"] = "Не хватает:",
-            ["ScriptQueueImport.SourceMismatchTitle"] = "Разная source скрипта",
-            ["ScriptQueueImport.SourceMismatchSummary"] = "{0} скрипт(ов) ссылаются на другой video source.",
-            ["Hint.QueueRouteSampleClipDisabled"] = "Режим очереди/конкатенации видеоисточников не поддерживает пробный отрезок; кнопка пробы отключена.",
-            ["Hint.FilterScribeDisabled"] = "OneLineShotArgs не поддерживает генерацию скриптов; редактор фильтров отключен.",
-            ["Hint.MinDurationFilter"] = "Фильтр мин. длительности (с):",
-            ["Hint.DurationFilterAllFiltered"] = "Все видео отфильтрованы фильтром длительности.",
-            ["Hint.DurationFilterCount"] = "Отфильтровано {0} из {1} видео.",
+        // Hints
+        ["Hint.SVFIClipDisabled"] = "OneLineShotArgs не поддерживает пробный отрезок; кнопка пробы отключена.",
+        ["Hint.AnalyzeRunConditionDuration"] = "Анализ начинается при импорте источника (≈70～100 мс/источник, режим Repart занимает больше времени",
+        ["Hint.NumaCpuCheckTrigger"] = "Загрузка CPU NUMA-узла обновляется при клике мыши или вводе с клавиатуры.",
+        ["Hint.FFmpegOptionalBut"] = "FFmpeg необязателен, но нужен для предпросмотра кадров видео и автоматического мультиплексирования MKV",
+        ["ScriptQueueImport.RejectedPrefix"] = "Импорт отклонён: {0} несовпадений по базовому имени, {1} несовпадений пути.",
+        ["ScriptQueueImport.DetailsHeader"] = "Детали:",
+        ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — нет подходящего видеоисточника по базовому имени",
+        ["ScriptQueueImport.DetailNoScript"] = "'{0}' — нет подходящего файла скрипта по базовому имени",
+        ["ScriptQueueImport.DetailUnreadable"] = "'{0}' — нераспознанный формат скрипта, нельзя проверить путь источника",
+        ["ScriptQueueImport.DetailMismatch"] = "'{0}' — указывает на \"{1}\", ожидалось \"{2}\"",
+        ["ScriptQueueImport.MoreCount"] = "...и еще {0}.",
+        ["ScriptQueueImport.CountMismatchTitle"] = "Число скриптов не совпадает",
+        ["ScriptQueueImport.MissingSummary"] = "Для выбранного upstream не хватает {0} из {1} скриптов.",
+        ["ScriptQueueImport.MissingLabel"] = "Не хватает:",
+        ["ScriptQueueImport.SourceMismatchTitle"] = "Разная source скрипта",
+        ["ScriptQueueImport.SourceMismatchSummary"] = "{0} скрипт(ов) ссылаются на другой video source.",
+        ["Hint.QueueRouteSampleClipDisabled"] = "Режим очереди/конкатенации видеоисточников не поддерживает пробный отрезок; кнопка пробы отключена.",
+        ["Hint.FilterScribeDisabled"] = "OneLineShotArgs не поддерживает генерацию скриптов; редактор фильтров отключен.",
+        ["Hint.MinDurationFilter"] = "Фильтр мин. длительности (с):",
+        ["Hint.DurationFilterAllFiltered"] = "Все видео отфильтрованы фильтром длительности.",
+        ["Hint.DurationFilterCount"] = "Отфильтровано {0} из {1} видео.",
 
-            // Heatmap
-            ["Heatmap.Cold"] = "Холодно",
-            ["Heatmap.Hot"] = "Горячо",
+        // Heatmap
+        ["Heatmap.Cold"] = "Холодно",
+        ["Heatmap.Hot"] = "Горячо",
 
-            // Source analysis result ConfirmationModal
-            ["SrcAnalysis.Completed"] = "Анализ источника завершен.",
-            ["SrcAnalysis.RunAfterReplace"] = "Запустить анализ источника сейчас?",
-            ["SrcAnalysis.Copied"] = "Сырой JSON ffprobe скопирован в буфер обмена.",
+        // Source analysis result ConfirmationModal
+        ["SrcAnalysis.Completed"] = "Анализ источника завершен.",
+        ["SrcAnalysis.RunAfterReplace"] = "Запустить анализ источника сейчас?",
+        ["SrcAnalysis.Copied"] = "Сырой JSON ffprobe скопирован в буфер обмена.",
 
-            ["ScriptGen.RunAfterReplace"] = "Сгенерировать скрипты AVS и VPY сейчас?",
-            ["ScriptGen.ScriptsSaved"] = "Скрипты сохранены:\n{0}",
+        ["ScriptGen.RunAfterReplace"] = "Сгенерировать скрипты AVS и VPY сейчас?",
+        ["ScriptGen.ScriptsSaved"] = "Скрипты сохранены:\n{0}",
 
-            // InspectSrcProblems modal texts
-            ["SrcInspect.InfoTitle"] = "Проверка источника",
-            ["SrcInspect.InfoMsg"] = "Явных проблем источника нет.",
-            ["SrcInspect.ErrorTitle"] = "Серьезные проблемы источника",
-            ["SrcInspect.WarnTitle"] = "Средние проблемы источника",
-            ["SrcInspect.MetadataP1Text"] = "Метаданные не читаются. Файл повреждён или не видео; инструмент использует метаданные для безопасных параметров, кодирование невозможно.",
-            ["SrcInspect.ProgressiveP1Text"] = "Не может проанализировать межкадровые паттерны для IVTC. См. https://iavoe.github.io/deint-ivtc-web-tutorial/HTML.",
-            ["SrcInspect.BitDepthP1Text"] = "SVT-AV1 не поддерживает 12-бит. видео. Если не выбран, это предупреждение, не отключает кнопку «Нач. кодир.».",
-            ["SrcInspect.FramerateP1Text"] = "Используйте редактор фильтров для добавления фильтра VFR→CFR. Кодирование VFR может вызвать рассинхронизацию.",
-            ["SrcInspect.AspectRatioP1Text"] = "Не может компенсировать неквадратные пиксели. Возможны неожиданные размеры. Исправьте транскодированием в FFV1 с ffmpeg -aspect <текущий SAR>.",
-            ["SrcInspect.ColorMetadataP1Text"] = "Проигрыватели часто переходят на BT.709 при отсутствии метаданных матрицы, передачи или основных цветов; допустимых значений много, и только один набор правильный для источника.",
-            ["SrcInspect.ChromaSubsamplingP1Text"] = "Неверное расположение выборки хромы размывает или сдвигает края. В отличие от AVC/HEVC, AV1 поддерживает ограниченный набор расположений."
+        // InspectSrcProblems modal texts
+        ["SrcInspect.InfoTitle"] = "Проверка источника",
+        ["SrcInspect.InfoMsg"] = "Явных проблем источника нет.",
+        ["SrcInspect.ErrorTitle"] = "Серьезные проблемы источника",
+        ["SrcInspect.WarnTitle"] = "Средние проблемы источника",
+        ["SrcInspect.MetadataP1Text"] = "Метаданные не читаются. Файл повреждён или не видео; инструмент использует метаданные для безопасных параметров, кодирование невозможно.",
+        ["SrcInspect.ProgressiveP1Text"] = "Не может проанализировать межкадровые паттерны для IVTC. См. https://iavoe.github.io/deint-ivtc-web-tutorial/HTML.",
+        ["SrcInspect.BitDepthP1Text"] = "SVT-AV1 не поддерживает 12-бит. видео. Если не выбран, это предупреждение, не отключает кнопку «Нач. кодир.».",
+        ["SrcInspect.FramerateP1Text"] = "Используйте редактор фильтров для добавления фильтра VFR→CFR. Кодирование VFR может вызвать рассинхронизацию.",
+        ["SrcInspect.AspectRatioP1Text"] = "Не может компенсировать неквадратные пиксели. Возможны неожиданные размеры. Исправьте транскодированием в FFV1 с ffmpeg -aspect <текущий SAR>.",
+        ["SrcInspect.ColorMetadataP1Text"] = "Проигрыватели часто переходят на BT.709 при отсутствии метаданных матрицы, передачи или основных цветов; допустимых значений много, и только один набор правильный для источника.",
+        ["SrcInspect.ChromaSubsamplingP1Text"] = "Неверное расположение выборки хромы размывает или сдвигает края. В отличие от AVC/HEVC, AV1 поддерживает ограниченный набор расположений."
     };
     private static void AddGerman() => Data["de"] = new(Data["en"])
-        {
-            // Cards section headers
-            ["Cards.ToolsImport"] = "Tools importieren/ersetzen",
-            ["Cards.SourceValidation"] = "Quellvideo-Validierung",
-            ["Cards.QueueSourceFilter"] = "Warteschlangen-Filter",
-            ["Cards.QueueSourceFilterSubtitle"] = "Sorgt für Konsistenz",
-            ["Cards.ConcatSourceFilter"] = "Concat-Filter",
-            ["Cards.ConcatSourceFilterSubtitle"] = "Sorgt für Concat-Konsistenz",
-            ["Cards.SrcIncompatOrCorrupted"] = "Inkompatibel / beschädigt (rot)",
-            ["Cards.SrcQualityIssues"] = "Qualitätsprobleme (orange)",
-            ["Cards.EncPrerequisites"] = "Kodierungsvoraussetzungen",
-            ["Cards.EncHardware"] = "Hardware",
-            ["Cards.EncSoftware"] = "Software",
-            ["Cards.BestPractices"] = "Empfehlungen",
-            ["Cards.BestHardware"] = "Hardware (Selbstprüfung)",
-            ["Cards.BestSoftware"] = "Software (Selbstprüfung)",
-            ["Cards.BestPracticesSubtitle"] = "Empfehlung — nicht blockierend",
+    {
+        // Cards section headers
+        ["Cards.ToolsImport"] = "Tools importieren/ersetzen",
+        ["Cards.SourceValidation"] = "Quellvideo-Validierung",
+        ["Cards.QueueSourceFilter"] = "Warteschlangen-Filter",
+        ["Cards.QueueSourceFilterSubtitle"] = "Sorgt für Konsistenz",
+        ["Cards.ConcatSourceFilter"] = "Concat-Filter",
+        ["Cards.ConcatSourceFilterSubtitle"] = "Sorgt für Concat-Konsistenz",
+        ["Cards.SrcIncompatOrCorrupted"] = "Inkompatibel / beschädigt (rot)",
+        ["Cards.SrcQualityIssues"] = "Qualitätsprobleme (orange)",
+        ["Cards.EncPrerequisites"] = "Kodierungsvoraussetzungen",
+        ["Cards.EncHardware"] = "Hardware",
+        ["Cards.EncSoftware"] = "Software",
+        ["Cards.BestPractices"] = "Empfehlungen",
+        ["Cards.BestHardware"] = "Hardware (Selbstprüfung)",
+        ["Cards.BestSoftware"] = "Software (Selbstprüfung)",
+        ["Cards.BestPracticesSubtitle"] = "Empfehlung — nicht blockierend",
 
-            // Main buttons
-            ["Buttons.UsageAndCompliance"] = "Nutzung & Compliance",
-            ["Buttons.Settings"] = "Einstellungen",
-            ["Buttons.OneClickScriptGen"] = "AVS/VS Skript generieren",
-            ["Buttons.OpenScribeSrcScribe"] = "Filter-Editor",
-            ["Buttons.ShowRawJSON"] = "Roh-JSON anzeigen",
-            ["Buttons.AnalyzeSrcVideo"] = "Quelle analysieren",
-            ["Buttons.ReEvaluate"] = "Neu bewerten",
-            ["Buttons.RunSample"] = "Clip-Abtastung",
-            ["Buttons.StartEncode"] = "Kodierung starten",
-            ["EncInspect.InfoTitle"] = "Encoder-Vorprüfungsdetails",
-            ["EncInspect.InfoMsg"] = "Keine Vorprüfungsprobleme.",
-            ["EncInspect.P1Title"] = "Batterieprüfung",
-            ["EncInspect.P1Text"] = "Erkennt via SystemInformation.PowerStatus, ob der PC auf Batterie läuft, um Verschleiß zu reduzieren, Abschaltungen zu verhindern und Qualitätsverluste durch Energie-Drosselung zu vermeiden.",
-            ["EncInspect.P2Title"] = "Speicherplatz",
-            ["EncInspect.P2Text"] = "Vergibt verfügbaren Speicherplatz mit Quellgröße × 1,5 (Fallback: 1 GiB). Stellt ausreichend Platz für Ausgabe sicher.",
-            ["EncInspect.P3Title"] = "Schreibrecht",
-            ["EncInspect.P3Text"] = "Prüft Schreibzugriff auf Ausgabeordner durch Auflistung von Dateien. Verhindert Kodierungsfehler durch Berechtigungen.",
-            ["EncInspect.P4Title"] = "Überschreiben",
-            ["EncInspect.P4Text"] = "Prüft, ob Ausgabedatei existiert, und erschwert dynamisch das Überschreiben, um versehentlichen Datenverlust zu vermeiden.",
-            ["EncInspect.P5Title"] = "L-SMASH-Plugin (Avs2Yuv)",
-            ["EncInspect.P5Text"] = "Prüft Vorhandensein von LSMASHSource.dll unter C:\\Program Files (x86)\\AviSynth+\\plugins64+\\ (nicht libvslsmashsource.dll) zum Lesen von Quellframes.",
-            ["EncInspect.P6Title"] = "NUMA-Knutzen-CPU-Auslastung",
-            ["EncInspect.P6Text"] = "Prüft niedrige CPU-Auslastung des NUMA-Knotens des Encoders. Hohe Auslastung nur informativ, blockiert nicht.",
+        // Main buttons
+        ["Buttons.UsageAndCompliance"] = "Nutzung & Compliance",
+        ["Buttons.Settings"] = "Einstellungen",
+        ["Buttons.OneClickScriptGen"] = "AVS/VS Skript generieren",
+        ["Buttons.OpenScribeSrcScribe"] = "Filter-Editor",
+        ["Buttons.ShowRawJSON"] = "Roh-JSON anzeigen",
+        ["Buttons.AnalyzeSrcVideo"] = "Quelle analysieren",
+        ["Buttons.ReEvaluate"] = "Neu bewerten",
+        ["Buttons.RunSample"] = "Clip-Abtastung",
+        ["Buttons.StartEncode"] = "Kodierung starten",
+        ["EncInspect.InfoTitle"] = "Encoder-Vorprüfungsdetails",
+        ["EncInspect.InfoMsg"] = "Keine Vorprüfungsprobleme.",
+        ["EncInspect.P1Title"] = "Batterieprüfung",
+        ["EncInspect.P1Text"] = "Erkennt via SystemInformation.PowerStatus, ob der PC auf Batterie läuft, um Verschleiß zu reduzieren, Abschaltungen zu verhindern und Qualitätsverluste durch Energie-Drosselung zu vermeiden.",
+        ["EncInspect.P2Title"] = "Speicherplatz",
+        ["EncInspect.P2Text"] = "Vergibt verfügbaren Speicherplatz mit Quellgröße × 1,5 (Fallback: 1 GiB). Stellt ausreichend Platz für Ausgabe sicher.",
+        ["EncInspect.P3Title"] = "Schreibrecht",
+        ["EncInspect.P3Text"] = "Prüft Schreibzugriff auf Ausgabeordner durch Auflistung von Dateien. Verhindert Kodierungsfehler durch Berechtigungen.",
+        ["EncInspect.P4Title"] = "Überschreiben",
+        ["EncInspect.P4Text"] = "Prüft, ob Ausgabedatei existiert, und erschwert dynamisch das Überschreiben, um versehentlichen Datenverlust zu vermeiden.",
+        ["EncInspect.P5Title"] = "L-SMASH-Plugin (Avs2Yuv)",
+        ["EncInspect.P5Text"] = "Prüft Vorhandensein von LSMASHSource.dll unter C:\\Program Files (x86)\\AviSynth+\\plugins64+\\ (nicht libvslsmashsource.dll) zum Lesen von Quellframes.",
+        ["EncInspect.P6Title"] = "NUMA-Knutzen-CPU-Auslastung",
+        ["EncInspect.P6Text"] = "Prüft niedrige CPU-Auslastung des NUMA-Knotens des Encoders. Hohe Auslastung nur informativ, blockiert nicht.",
 
 
-            ["Section.SelectUpstream"] = "1. Upstream-Tool wählen",
-            ["Section.SelectEncoder"] = "2. Encoder wählen",
-            ["Section.SelectDependencies"] = "3. Abhängigkeiten wählen",
-            ["Section.ImportSrc"] = "4. Quelle importieren/erstellen",
-            ["Section.SelectAnalytics"] = "5. Video-Analyzer wählen · Analyse starten",
-            ["Section.EncodingConfigs"] = "6. Kodierungseinstellungen",
-            ["Section.StartEncoding"] = "7. Kodierung starten",
+        ["Section.SelectUpstream"] = "1. Upstream-Tool wählen",
+        ["Section.SelectEncoder"] = "2. Encoder wählen",
+        ["Section.SelectDependencies"] = "3. Abhängigkeiten wählen",
+        ["Section.ImportSrc"] = "4. Quelle importieren/erstellen",
+        ["Section.SelectAnalytics"] = "5. Video-Analyzer wählen · Analyse starten",
+        ["Section.EncodingConfigs"] = "6. Kodierungseinstellungen",
+        ["Section.StartEncoding"] = "7. Kodierung starten",
 
-            ["Import.NoSelection"] = "Keine Auswahl",
-            ["Import.VersionDetectTimeoutTitle"] = "Tool-Import fehlgeschlagen",
-            ["Import.VersionDetectTimeoutMessage"] = "Import abgelehnt: {0} hat keine Versionsinformationen innerhalb von 3 Sekunden zurückgegeben.",
+        ["Import.NoSelection"] = "Keine Auswahl",
+        ["Import.VersionDetectTimeoutTitle"] = "Tool-Import fehlgeschlagen",
+        ["Import.VersionDetectTimeoutMessage"] = "Import abgelehnt: {0} hat keine Versionsinformationen innerhalb von 3 Sekunden zurückgegeben.",
 
-            // ItemCard separator
-            ["ItemCard.Separator"] = ": ",
+        // ItemCard separator
+        ["ItemCard.Separator"] = ": ",
 
-            // Tool card captions
-            ["ToolField.Version"] = "Version",
-            ["ToolField.Name"] = "Name",
-            ["ToolField.Mode"] = "Modus",
-            ["ToolField.FileName"] = "Dateiname",
-            ["ToolField.NumaNodes"] = "NUMA-Affinität", // i.e., upstream from node 0 to encoder at node 1 gives “0 → 1”
-            ["ToolField.Threads"] = "Threads", // Value: int thread count, with ToolField.EncThreadClamp On/Off
-            ["ToolField.Value"] = "Wert",
-            ["ToolField.Strategy"] = "Strategie",
-            ["ToolField.MaxKeyframeGap"] = "Max. Keyframe-Abstand",
-            ["ToolField.OtherCustomParams"] = "Sonstige Parameter",
+        // Tool card captions
+        ["ToolField.Version"] = "Version",
+        ["ToolField.Name"] = "Name",
+        ["ToolField.Mode"] = "Modus",
+        ["ToolField.FileName"] = "Dateiname",
+        ["ToolField.NumaNodes"] = "NUMA-Affinität", // i.e., upstream from node 0 to encoder at node 1 gives “0 → 1”
+        ["ToolField.Threads"] = "Threads", // Value: int thread count, with ToolField.EncThreadClamp On/Off
+        ["ToolField.Value"] = "Wert",
+        ["ToolField.Strategy"] = "Strategie",
+        ["ToolField.MaxKeyframeGap"] = "Max. Keyframe-Abstand",
+        ["ToolField.OtherCustomParams"] = "Sonstige Parameter",
 
-            ["Tool.Source.VideoSrc"] = "▷ Videoquelle",
-            ["Tool.Source.AviSynth"] = $"{LangProviderBase.AviSynth} .avs-Quelle",
-            ["Tool.Source.VapourSynth"] = $"{LangProviderBase.VapourSynth} .vpy-Quelle",
-            ["Tool.Source.Svfi"] = "SVFI .ini-Quelle",
-            ["Tool.Source.AviSynthQueue"] = $"📁 {LangProviderBase.AVS}-Skript-Wart.",
-            ["Tool.Source.VapourSynthQueue"] = $"📁 {LangProviderBase.VS}-Skript-Wart.",
-            ["Tool.Source.SvfiQueue"] = "📁 SVFI-Skript-Wart.",
+        ["Tool.Source.VideoSrc"] = "▷ Videoquelle",
+        ["Tool.Source.AviSynth"] = $"{LangProviderBase.AviSynth} .avs-Quelle",
+        ["Tool.Source.VapourSynth"] = $"{LangProviderBase.VapourSynth} .vpy-Quelle",
+        ["Tool.Source.Svfi"] = "SVFI .ini-Quelle",
+        ["Tool.Source.AviSynthQueue"] = $"📁 {LangProviderBase.AVS}-Skript-Wart.",
+        ["Tool.Source.VapourSynthQueue"] = $"📁 {LangProviderBase.VS}-Skript-Wart.",
+        ["Tool.Source.SvfiQueue"] = "📁 SVFI-Skript-Wart.",
 
-            ["Tool.Enc.OutputSetting"] = "Ausgabedatei Name & Pfad",
-            ["Tool.Enc.Parallelism"] = "Parallelismus",
-            ["Tool.Enc.EncParams"] = "Encoder-Einstellungen",
-            ["Tool.Enc.MuxTracks"] = "Untertitel hinzufügen",
+        ["Tool.Enc.OutputSetting"] = "Ausgabedatei Name & Pfad",
+        ["Tool.Enc.Parallelism"] = "Parallelismus",
+        ["Tool.Enc.EncParams"] = "Encoder-Einstellungen",
+        ["Tool.Enc.MuxTracks"] = "Untertitel hinzufügen",
 
-            // Source queue card
-            ["SourceQueue.FilterModeTitle"] = "Gewichtete Filterung ausführen?",
-            ["SourceQueue.FilterModeMessage"] = "Bitte nach Struktur der Warteschlange wählen\nBestätigen: Quellen ähnlicher Dauer, kein Filter nötig\nAbbrechen: BDMV/M3U-Intros und Trailergewichtet per Voting ausschließen\nEin Vergleichsausschluss des ersten Streams wird zur Formatkonsistenz ausgeführt\n\nFür BDMV: BDInfo/ChapterTool verwenden zur Behandlung von unter-/übersegmentierten Episoden",
-            ["SourceQueue.ImportTitle"] = "Videoquellen-Warteschlange importieren",
-            ["SourceQueue.ImportPrompt"] = "BD-Playlist importieren?\n\nBestätigen: PLAYLIST-Ordner (.mpls/ifo/xpl) auswählen, System fügt referenzierte Mediendateien (m2ts) in Playlist-Reihenfolge ein.\nAbbrechen: mehrere Videoquellen direkt auswählen, die gewählten Dateien werden in der Auswahlreihenfolge zur Warteschlange hinzugefügt.\n\nBei Unsicherheit: Neuteilungsmodus oder Player-Vorschau zur Bestätigung verwenden",
-            ["SourceQueue.SelectPlaylistFolder"] = "BDMV-PLAYLIST-Ordner wählen",
-            ["SourceQueue.SelectFilesTitle"] = "Videoquelldateien wählen",
-            ["SourceQueue.ImportScanFailed"] = "Keine nutzbaren MPLS-Playlists gefunden in: {0}",
-            ["SourceQueue.ChapterImportFailed"] = "Kapitel lesen fehlgeschlagen: {0}",
-            ["SourceQueue.ChapterSourcesMissing"] = "Playlist konnte keine vorhandene Quelldatei auflösen. Stellen Sie sicher, dass die referenzierten Mediendateien (m2ts) vorhanden sind",
+        // Source queue card
+        ["SourceQueue.FilterModeTitle"] = "Gewichtete Filterung ausführen?",
+        ["SourceQueue.FilterModeMessage"] = "Bitte nach Struktur der Warteschlange wählen\nBestätigen: Quellen ähnlicher Dauer, kein Filter nötig\nAbbrechen: BDMV/M3U-Intros und Trailergewichtet per Voting ausschließen\nEin Vergleichsausschluss des ersten Streams wird zur Formatkonsistenz ausgeführt\n\nFür BDMV: BDInfo/ChapterTool verwenden zur Behandlung von unter-/übersegmentierten Episoden",
+        ["SourceQueue.ImportTitle"] = "Videoquellen-Warteschlange importieren",
+        ["SourceQueue.ImportPrompt"] = "BD-Playlist importieren?\n\nBestätigen: PLAYLIST-Ordner (.mpls/ifo/xpl) auswählen, System fügt referenzierte Mediendateien (m2ts) in Playlist-Reihenfolge ein.\nAbbrechen: mehrere Videoquellen direkt auswählen, die gewählten Dateien werden in der Auswahlreihenfolge zur Warteschlange hinzugefügt.\n\nBei Unsicherheit: Neuteilungsmodus oder Player-Vorschau zur Bestätigung verwenden",
+        ["SourceQueue.SelectPlaylistFolder"] = "BDMV-PLAYLIST-Ordner wählen",
+        ["SourceQueue.SelectFilesTitle"] = "Videoquelldateien wählen",
+        ["SourceQueue.ImportScanFailed"] = "Keine nutzbaren MPLS-Playlists gefunden in: {0}",
+        ["SourceQueue.ChapterImportFailed"] = "Kapitel lesen fehlgeschlagen: {0}",
+        ["SourceQueue.ChapterSourcesMissing"] = "Playlist konnte keine vorhandene Quelldatei auflösen. Stellen Sie sicher, dass die referenzierten Mediendateien (m2ts) vorhanden sind",
 
-            ["SourceConcat.SelectFilesTitle"] = "Videodateien zur Konkatenation wählen",
-            ["SourceConcat.OrderingTitle"] = "Concat-Reihenfolge",
-            ["SourceConcat.RestoreOriginalQueue"] = "Alle Änderungen rückgängig machen",
-            ["SourceConcat.ExtensionMismatch"] = "Concat-Import erfordert gleiche Dateierweiterung.\n\nErwartet: {0}\nNicht übereinstimmende Dateien:\n{1}",
-            ["SourceConcat.Analyzed"] = "Concat-Analyse abgeschlossen. {0} Datei(en) kompatibel.\n\nAlle Untertitel und Schriftdateien werden entfernt, Schritt 6 unterstützt das Hinzufügen von Untertiteln.",
-            ["SourceConcat.IncompatibleVideo"] = "Concat-Quelle #{0} weicht von der ersten Videoquelle ab.\nErwartet: {1}\nTatsächlich: {2}",
-            ["SourceConcat.IncompatibleFrameRate"] = "Concat-Quelle #{0} hat andere Bildrate als die erste Videoquelle.\nErwartet: {1}\nTatsächlich: {2}",
-            ["SourceConcat.ResolutionMismatch"] = "Concat-Quelle #{0} hat andere Auflösung als die erste Videoquelle.\nErwartet: {1}\nTatsächlich: {2}",
-            ["SourceConcat.VariableFrameRate"] = "Concat-Modus kann VFR nicht direkt verwenden. Bitte VFR→CFR-Reparaturfilter im Filter-Scribe hinzufügen.",
+        ["SourceConcat.SelectFilesTitle"] = "Videodateien zur Konkatenation wählen",
+        ["SourceConcat.OrderingTitle"] = "Concat-Reihenfolge",
+        ["SourceConcat.RestoreOriginalQueue"] = "Alle Änderungen rückgängig machen",
+        ["SourceConcat.ExtensionMismatch"] = "Concat-Import erfordert gleiche Dateierweiterung.\n\nErwartet: {0}\nNicht übereinstimmende Dateien:\n{1}",
+        ["SourceConcat.Analyzed"] = "Concat-Analyse abgeschlossen. {0} Datei(en) kompatibel.\n\nAlle Untertitel und Schriftdateien werden entfernt, Schritt 6 unterstützt das Hinzufügen von Untertiteln.",
+        ["SourceConcat.IncompatibleVideo"] = "Concat-Quelle #{0} weicht von der ersten Videoquelle ab.\nErwartet: {1}\nTatsächlich: {2}",
+        ["SourceConcat.IncompatibleFrameRate"] = "Concat-Quelle #{0} hat andere Bildrate als die erste Videoquelle.\nErwartet: {1}\nTatsächlich: {2}",
+        ["SourceConcat.ResolutionMismatch"] = "Concat-Quelle #{0} hat andere Auflösung als die erste Videoquelle.\nErwartet: {1}\nTatsächlich: {2}",
+        ["SourceConcat.VariableFrameRate"] = "Concat-Modus kann VFR nicht direkt verwenden. Bitte VFR→CFR-Reparaturfilter im Filter-Scribe hinzufügen.",
 
-            // Dialogs
-            ["Dialog.SelectTitle"] = "{0} wählen",
-            ["Dialog.ReplaceTitle"] = "{0} ersetzen",
-            ["Dialog.Filter.All"] = "Alle Dateien (*.*)|*.*",
-            ["Dialog.Filter.Exe"] = "Ausführbare Dateien (*.exe)|*.exe",
-            ["Dialog.Filter.Dll"] = "DLL-Dateien (*.dll)|*.dll",
+        // Dialogs
+        ["Dialog.SelectTitle"] = "{0} wählen",
+        ["Dialog.ReplaceTitle"] = "{0} ersetzen",
+        ["Dialog.Filter.All"] = "Alle Dateien (*.*)|*.*",
+        ["Dialog.Filter.Exe"] = "Ausführbare Dateien (*.exe)|*.exe",
+        ["Dialog.Filter.Dll"] = "DLL-Dateien (*.dll)|*.dll",
 
-            // Confirmation dialog texts
+        // Confirmation dialog texts
 
-            // Auto tool import
-            ["AutoImport.Title"] = "Automatischer Tool-Import",
-            ["AutoImport.FoundMessage"] = "Verifizierte ausführbare Dateien gefunden. Jetzt importieren?\n\n{0}",
-            ["AutoImport.NotFoundMessage"] = "Keine importierbaren Tools im Anwendungsordner erkannt. Zum späteren Prüfen: Einstellungen → Initialisierungsmodus → Tools beim nächsten Start automatisch importieren aktivieren.",
+        // Auto tool import
+        ["AutoImport.Title"] = "Automatischer Tool-Import",
+        ["AutoImport.FoundMessage"] = "Verifizierte ausführbare Dateien gefunden. Jetzt importieren?\n\n{0}",
+        ["AutoImport.NotFoundMessage"] = "Keine importierbaren Tools im Anwendungsordner erkannt. Zum späteren Prüfen: Einstellungen → Initialisierungsmodus → Tools beim nächsten Start automatisch importieren aktivieren.",
 
-            // Confirmation provider messages (with {0} / {1} format placeholders)
-            ["ConfirmProvider.SuspiciousImportTitle"] = "Import stimmt nicht mit {0} überein",
-            ["ConfirmProvider.ProceedToRun"] = "{0} ausführen, um Version zu erhalten?",
-            ["ConfirmProvider.WrongTool"] = "{0} als {1} importieren?",
+        // Confirmation provider messages (with {0} / {1} format placeholders)
+        ["ConfirmProvider.SuspiciousImportTitle"] = "Import stimmt nicht mit {0} überein",
+        ["ConfirmProvider.ProceedToRun"] = "{0} ausführen, um Version zu erhalten?",
+        ["ConfirmProvider.WrongTool"] = "{0} als {1} importieren?",
 
-            // Checklist - Tools
-            ["Checklist.Tools.Upstream"] = "Ein Upstream-Programm importiert",
-            ["Checklist.Tools.Downstream"] = "Ein Downstream-Programm importiert",
-            ["Checklist.Tools.Analysis"] = "Ein Analyseprogramm importiert",
-            ["Checklist.Tools.UpstreamPicked"] = "Upstream-Programm auswählen",
-            ["Checklist.Tools.DownstreamPicked"] = "Downstream-Programm auswählen",
-            ["Checklist.Tools.AnalysisPicked"] = "Analyseprogramm auswählen",
-            ["Checklist.Tools.CompleteSourceAnalysis"] = "Quellanalyse abgeschlossen",
-            ["Checklist.Tools.DependenciesPicked"] = "Abhängigkeit auswählen",
-            ["Checklist.Tools.VideoSourcePicked"] = "Videoquelle oder Warteschlange auswählen",
-            ["Checklist.Tools.ScriptSourcePicked"] = "Skriptquelle wählen (VS/AVS/SVFI-Upstream)",
+        // Checklist - Tools
+        ["Checklist.Tools.Upstream"] = "Ein Upstream-Programm importiert",
+        ["Checklist.Tools.Downstream"] = "Ein Downstream-Programm importiert",
+        ["Checklist.Tools.Analysis"] = "Ein Analyseprogramm importiert",
+        ["Checklist.Tools.UpstreamPicked"] = "Upstream-Programm auswählen",
+        ["Checklist.Tools.DownstreamPicked"] = "Downstream-Programm auswählen",
+        ["Checklist.Tools.AnalysisPicked"] = "Analyseprogramm auswählen",
+        ["Checklist.Tools.CompleteSourceAnalysis"] = "Quellanalyse abgeschlossen",
+        ["Checklist.Tools.DependenciesPicked"] = "Abhängigkeit auswählen",
+        ["Checklist.Tools.VideoSourcePicked"] = "Videoquelle oder Warteschlange auswählen",
+        ["Checklist.Tools.ScriptSourcePicked"] = "Skriptquelle wählen (VS/AVS/SVFI-Upstream)",
 
-            // Checklist - Source Validation 1 (Severe)
-            ["Checklist.Source1.Metadata"] = "Metadaten und SEI lesbar",
-            ["Checklist.Source1.Progressive"] = "Progressiv / nicht interlaced",
-            ["Checklist.Source1.BitDepth"] = "Bittiefe < 12 (8 oder 10, SVT-AV1)",
-            ["Checklist.Source1.BitDepth2"] = "Bittiefe < 16",
+        // Checklist - Source Validation 1 (Severe)
+        ["Checklist.Source1.Metadata"] = "Metadaten und SEI lesbar",
+        ["Checklist.Source1.Progressive"] = "Progressiv / nicht interlaced",
+        ["Checklist.Source1.BitDepth"] = "Bittiefe < 12 (8 oder 10, SVT-AV1)",
+        ["Checklist.Source1.BitDepth2"] = "Bittiefe < 16",
 
-            // Checklist - Source Validation 2 (Moderate)
-            ["Checklist.Source2.Framerate"] = "Konstante Bildrate / nicht variabel",
-            ["Checklist.Source2.AspectRatio"] = "Quadratische Pixel / SAR 1:1",
-            ["Checklist.Source2.ColorMetadata"] = "Matrix/Übertragung/Primärfarben-Metadaten normal",
-            ["Checklist.Source2.ChromaSubsampling"] = "Kein Chroma-Subsampling oder ←/↖ orientiert (SVT-AV1)",
+        // Checklist - Source Validation 2 (Moderate)
+        ["Checklist.Source2.Framerate"] = "Konstante Bildrate / nicht variabel",
+        ["Checklist.Source2.AspectRatio"] = "Quadratische Pixel / SAR 1:1",
+        ["Checklist.Source2.ColorMetadata"] = "Matrix/Übertragung/Primärfarben-Metadaten normal",
+        ["Checklist.Source2.ChromaSubsampling"] = "Kein Chroma-Subsampling oder ←/↖ orientiert (SVT-AV1)",
 
-            // Checklist - Encoding Prerequisites 1 (Hardware)
-            ["Checklist.Enc1.NotOffGrid"] = "Nicht auf Batterie",
-            ["Checklist.Enc1.DiskSpace"] = "Ausreichend Speicherplatz",
-            ["Checklist.Enc1.NumaCpuLoad"] = "NUMA-Knoten CPU-Auslastung niedrig",
+        // Checklist - Encoding Prerequisites 1 (Hardware)
+        ["Checklist.Enc1.NotOffGrid"] = "Nicht auf Batterie",
+        ["Checklist.Enc1.DiskSpace"] = "Ausreichend Speicherplatz",
+        ["Checklist.Enc1.NumaCpuLoad"] = "NUMA-Knoten CPU-Auslastung niedrig",
 
-            // Checklist - Encoding Prerequisites 2 (Software)
-            ["Checklist.Enc2.OSFilename"] = "Ausgabedateiname OS-gültig",
-            ["Checklist.Enc2.FTPFilename"] = "Ausgabedateiname möglicherweise FTP-gültig",
-            ["Checklist.Enc2.WritePermission"] = "Schreibrecht im Ausgabeordner",
-            ["Checklist.Enc2.Overwrite"] = "Ausgabe überschreibt nichts",
-            ["Checklist.Enc2.LsmashForAvs2Yuv"] = "LSMASHSource.dll im AviSynth+-Pfad (Avs2Yuv)",
+        // Checklist - Encoding Prerequisites 2 (Software)
+        ["Checklist.Enc2.OSFilename"] = "Ausgabedateiname OS-gültig",
+        ["Checklist.Enc2.FTPFilename"] = "Ausgabedateiname möglicherweise FTP-gültig",
+        ["Checklist.Enc2.WritePermission"] = "Schreibrecht im Ausgabeordner",
+        ["Checklist.Enc2.Overwrite"] = "Ausgabe überschreibt nichts",
+        ["Checklist.Enc2.LsmashForAvs2Yuv"] = "LSMASHSource.dll im AviSynth+-Pfad (Avs2Yuv)",
 
-            // Checklist - Best Practices 1 (Hardware)
-            ["Checklist.Best1.SlowDisk"] = "Langsame Datenträgerverbindung vermeiden (USB2, Bluetooth etc.)",
-            ["Checklist.Best1.DiskThrashing"] = "Disk-Thrashing vermeiden (L&S auf derselben HDD)",
-            ["Checklist.Best1.BiosDriver"] = "Neueste BIOS-, Chipsatz- und Firmware-Treiber verwenden",
-            ["Checklist.Best1.Temperature"] = "°C (°F): SSD/RAM <75 (167), HDD <55 (131)",
-            ["Checklist.Best1.SMR"] = "Nicht auf SMR-HDD schreiben",
+        // Checklist - Best Practices 1 (Hardware)
+        ["Checklist.Best1.SlowDisk"] = "Langsame Datenträgerverbindung vermeiden (USB2, Bluetooth etc.)",
+        ["Checklist.Best1.DiskThrashing"] = "Disk-Thrashing vermeiden (L&S auf derselben HDD)",
+        ["Checklist.Best1.BiosDriver"] = "Neueste BIOS-, Chipsatz- und Firmware-Treiber verwenden",
+        ["Checklist.Best1.Temperature"] = "°C (°F): SSD/RAM <75 (167), HDD <55 (131)",
+        ["Checklist.Best1.SMR"] = "Nicht auf SMR-HDD schreiben",
 
-            // Checklist - Best Practices 2 (Software)
-            ["Checklist.Best2.EncoderVersion"] = "Neueste Encoder-Version verwenden",
-            ["Checklist.Best2.FAT32"] = "Nicht auf FAT32-Volume schreiben",
-            ["Checklist.Best2.DiskCompression"] = "Ausgabeordner deaktiviert Dateisystem-Kompression",
+        // Checklist - Best Practices 2 (Software)
+        ["Checklist.Best2.EncoderVersion"] = "Neueste Encoder-Version verwenden",
+        ["Checklist.Best2.FAT32"] = "Nicht auf FAT32-Volume schreiben",
+        ["Checklist.Best2.DiskCompression"] = "Ausgabeordner deaktiviert Dateisystem-Kompression",
 
-            // FilterScribeModal
+        // FilterScribeModal
 
-            // FFProbeJsonUpdateResolver
-            ["FFProbeJsonUpdate.JsonEmpty"] = "ffprobe-JSON ist leer.",
-            ["FFProbeJsonUpdate.DimensionsNotPositive"] = "Auflösungsdimensionen müssen positiv sein.",
-            ["FFProbeJsonUpdate.RootNotObject"] = "ffprobe-JSON-Wurzel ist kein Objekt.",
-            ["FFProbeJsonUpdate.NoVideoStream"] = "Kein Videostream in ffprobe-JSON gefunden.",
+        // FFProbeJsonUpdateResolver
+        ["FFProbeJsonUpdate.JsonEmpty"] = "ffprobe-JSON ist leer.",
+        ["FFProbeJsonUpdate.DimensionsNotPositive"] = "Auflösungsdimensionen müssen positiv sein.",
+        ["FFProbeJsonUpdate.RootNotObject"] = "ffprobe-JSON-Wurzel ist kein Objekt.",
+        ["FFProbeJsonUpdate.NoVideoStream"] = "Kein Videostream in ffprobe-JSON gefunden.",
 
-            // FilenameScribeModal
+        // FilenameScribeModal
 
-            // Hints
-            ["Hint.SVFIClipDisabled"] = "OneLineShotArgs unterstützt keine Probenentnahme; Probe-Schaltfläche deaktiviert.",
-            ["Hint.AnalyzeRunConditionDuration"] = "Die Analyse beginnt beim Import der Quelle (≈70～100 ms/Quelle, der Repart-Modus dauert länger)",
-            ["Hint.NumaCpuCheckTrigger"] = "NUMA-Knutzen-CPU-Auslastung wird bei Mausklick oder Tastatureingabe aktualisiert.",
-            ["Hint.FFmpegOptionalBut"] = "FFmpeg ist optional, aber für Videobildvorschau und automatisches MKV-Muxing benötigt",
-            ["ScriptQueueImport.RejectedPrefix"] = "Import abgelehnt: {0} Basisname(n) ohne Treffer, {1} Pfad(e) inkorrekt.",
-            ["ScriptQueueImport.DetailsHeader"] = "Details:",
-            ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — keine passende Videoquelle nach Basisname",
-            ["ScriptQueueImport.DetailNoScript"] = "'{0}' — keine passende Skriptdatei nach Basisname",
-            ["ScriptQueueImport.DetailUnreadable"] = "'{0}' — Skriptformat nicht erkannt, Quellpfad kann nicht geprüft werden",
-            ["ScriptQueueImport.DetailMismatch"] = "'{0}' — verweist auf \"{1}\", erwartet \"{2}\"",
-            ["ScriptQueueImport.MoreCount"] = "...und {0} weitere.",
-            ["ScriptQueueImport.CountMismatchTitle"] = "Anzahl der Stimmen abweichend",
-            ["ScriptQueueImport.MissingSummary"] = "{0} von {1} Skripten fehlen für den gewählten Upstream.",
-            ["ScriptQueueImport.MissingLabel"] = "Fehlend:",
-            ["ScriptQueueImport.SourceMismatchTitle"] = "Skriptquelle abweichend",
-            ["ScriptQueueImport.SourceMismatchSummary"] = "{0} Skript(e) verweisen auf eine andere Videoquelle.",
-            ["Hint.QueueRouteSampleClipDisabled"] = "Warteschlange/Concat-Quellmodus unterstützt keine Probenentnahme; Probe-Schaltfläche deaktiviert.",
-            ["Hint.FilterScribeDisabled"] = "OneLineShotArgs unterstützt keine Skriptgenerierung; Filter-Scribe deaktiviert.",
-            ["Hint.MinDurationFilter"] = "Mindestdauer-Filter (s):",
-            ["Hint.DurationFilterAllFiltered"] = "Alle Videos wurden durch den Dauerfilter gefiltert.",
-            ["Hint.DurationFilterCount"] = "{0} von {1} Videos gefiltert.",
+        // Hints
+        ["Hint.SVFIClipDisabled"] = "OneLineShotArgs unterstützt keine Probenentnahme; Probe-Schaltfläche deaktiviert.",
+        ["Hint.AnalyzeRunConditionDuration"] = "Die Analyse beginnt beim Import der Quelle (≈70～100 ms/Quelle, der Repart-Modus dauert länger)",
+        ["Hint.NumaCpuCheckTrigger"] = "NUMA-Knutzen-CPU-Auslastung wird bei Mausklick oder Tastatureingabe aktualisiert.",
+        ["Hint.FFmpegOptionalBut"] = "FFmpeg ist optional, aber für Videobildvorschau und automatisches MKV-Muxing benötigt",
+        ["ScriptQueueImport.RejectedPrefix"] = "Import abgelehnt: {0} Basisname(n) ohne Treffer, {1} Pfad(e) inkorrekt.",
+        ["ScriptQueueImport.DetailsHeader"] = "Details:",
+        ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — keine passende Videoquelle nach Basisname",
+        ["ScriptQueueImport.DetailNoScript"] = "'{0}' — keine passende Skriptdatei nach Basisname",
+        ["ScriptQueueImport.DetailUnreadable"] = "'{0}' — Skriptformat nicht erkannt, Quellpfad kann nicht geprüft werden",
+        ["ScriptQueueImport.DetailMismatch"] = "'{0}' — verweist auf \"{1}\", erwartet \"{2}\"",
+        ["ScriptQueueImport.MoreCount"] = "...und {0} weitere.",
+        ["ScriptQueueImport.CountMismatchTitle"] = "Anzahl der Stimmen abweichend",
+        ["ScriptQueueImport.MissingSummary"] = "{0} von {1} Skripten fehlen für den gewählten Upstream.",
+        ["ScriptQueueImport.MissingLabel"] = "Fehlend:",
+        ["ScriptQueueImport.SourceMismatchTitle"] = "Skriptquelle abweichend",
+        ["ScriptQueueImport.SourceMismatchSummary"] = "{0} Skript(e) verweisen auf eine andere Videoquelle.",
+        ["Hint.QueueRouteSampleClipDisabled"] = "Warteschlange/Concat-Quellmodus unterstützt keine Probenentnahme; Probe-Schaltfläche deaktiviert.",
+        ["Hint.FilterScribeDisabled"] = "OneLineShotArgs unterstützt keine Skriptgenerierung; Filter-Scribe deaktiviert.",
+        ["Hint.MinDurationFilter"] = "Mindestdauer-Filter (s):",
+        ["Hint.DurationFilterAllFiltered"] = "Alle Videos wurden durch den Dauerfilter gefiltert.",
+        ["Hint.DurationFilterCount"] = "{0} von {1} Videos gefiltert.",
 
-            // Heatmap
-            ["Heatmap.Cold"] = "Kalt",
-            ["Heatmap.Hot"] = "Heiß",
+        // Heatmap
+        ["Heatmap.Cold"] = "Kalt",
+        ["Heatmap.Hot"] = "Heiß",
 
-            // Source analysis result ConfirmationModal
-            ["SrcAnalysis.Completed"] = "Quellanalyse abgeschlossen.",
-            ["SrcAnalysis.RunAfterReplace"] = "Quellanalyse jetzt ausführen?",
-            ["SrcAnalysis.Copied"] = "Roh-JSON ffprobe in Zwischenablage kopiert.",
+        // Source analysis result ConfirmationModal
+        ["SrcAnalysis.Completed"] = "Quellanalyse abgeschlossen.",
+        ["SrcAnalysis.RunAfterReplace"] = "Quellanalyse jetzt ausführen?",
+        ["SrcAnalysis.Copied"] = "Roh-JSON ffprobe in Zwischenablage kopiert.",
 
-            ["ScriptGen.RunAfterReplace"] = "AVS- und VPY-Skripte jetzt generieren?",
-            ["ScriptGen.ScriptsSaved"] = "Skripte gespeichert:\n{0}",
+        ["ScriptGen.RunAfterReplace"] = "AVS- und VPY-Skripte jetzt generieren?",
+        ["ScriptGen.ScriptsSaved"] = "Skripte gespeichert:\n{0}",
 
-            // InspectSrcProblems modal texts
-            ["SrcInspect.InfoTitle"] = "Quellprüfung",
-            ["SrcInspect.InfoMsg"] = "Keine offensichtlichen Quellprobleme.",
-            ["SrcInspect.ErrorTitle"] = "Schwere Quellprobleme",
-            ["SrcInspect.WarnTitle"] = "Mittlere Quellprobleme",
-            ["SrcInspect.MetadataP1Text"] = "Quell-Metadaten nicht lesbar. Datei beschädigt oder kein Video; Tool nutzt Metadaten für sichere Parameter, Kodierung nicht möglich.",
-            ["SrcInspect.ProgressiveP1Text"] = "Kann keine inter-Frame-Muster für IVTC analysieren. Siehe https://iavoe.github.io/deint-ivtc-web-tutorial/HTML.",
-            ["SrcInspect.BitDepthP1Text"] = "SVT-AV1 unterstützt 12 Bit nicht. Falls nicht gewählt, ist es eine Warnung und deaktiviert nicht die Start-Schaltfläche.",
-            ["SrcInspect.FramerateP1Text"] = "Filter-Editor verwenden, um VFR→CFR-Filter hinzuzufügen. VFR direkt kodieren kann Audio/Video-Desync verursachen.",
-            ["SrcInspect.AspectRatioP1Text"] = "Kann nicht-quadratische Pixel nicht kompensieren. Unerwartete Abmessungen möglich. Behebung durch FFV1-Transkodierung mit ffmpeg -aspect <aktueller SAR>.",
-            ["SrcInspect.ColorMetadataP1Text"] = "Player fallen oft auf BT.709 zurück, wenn Matrix/Übertragung/Primärfarben-Metadaten fehlen; mehrere gültige Werte existieren, nur ein Satz ist korrekt.",
-            ["SrcInspect.ChromaSubsamplingP1Text"] = "Falsche Chroma-Probenposition kann farbige Kanten verwischen oder versetzen. Anders als AVC/HEVC unterstützt AV1 nur begrenzte Chroma-Probenpositionen."
+        // InspectSrcProblems modal texts
+        ["SrcInspect.InfoTitle"] = "Quellprüfung",
+        ["SrcInspect.InfoMsg"] = "Keine offensichtlichen Quellprobleme.",
+        ["SrcInspect.ErrorTitle"] = "Schwere Quellprobleme",
+        ["SrcInspect.WarnTitle"] = "Mittlere Quellprobleme",
+        ["SrcInspect.MetadataP1Text"] = "Quell-Metadaten nicht lesbar. Datei beschädigt oder kein Video; Tool nutzt Metadaten für sichere Parameter, Kodierung nicht möglich.",
+        ["SrcInspect.ProgressiveP1Text"] = "Kann keine inter-Frame-Muster für IVTC analysieren. Siehe https://iavoe.github.io/deint-ivtc-web-tutorial/HTML.",
+        ["SrcInspect.BitDepthP1Text"] = "SVT-AV1 unterstützt 12 Bit nicht. Falls nicht gewählt, ist es eine Warnung und deaktiviert nicht die Start-Schaltfläche.",
+        ["SrcInspect.FramerateP1Text"] = "Filter-Editor verwenden, um VFR→CFR-Filter hinzuzufügen. VFR direkt kodieren kann Audio/Video-Desync verursachen.",
+        ["SrcInspect.AspectRatioP1Text"] = "Kann nicht-quadratische Pixel nicht kompensieren. Unerwartete Abmessungen möglich. Behebung durch FFV1-Transkodierung mit ffmpeg -aspect <aktueller SAR>.",
+        ["SrcInspect.ColorMetadataP1Text"] = "Player fallen oft auf BT.709 zurück, wenn Matrix/Übertragung/Primärfarben-Metadaten fehlen; mehrere gültige Werte existieren, nur ein Satz ist korrekt.",
+        ["SrcInspect.ChromaSubsamplingP1Text"] = "Falsche Chroma-Probenposition kann farbige Kanten verwischen oder versetzen. Anders als AVC/HEVC unterstützt AV1 nur begrenzte Chroma-Probenpositionen."
     };
     private static void AddKorean() => Data["ko"] = new(Data["en"])
-        {
-            // Cards section headers
-            ["Cards.ToolsImport"] = "도구 가져오기/교체",
-            ["Cards.SourceValidation"] = "소스 영상 검증",
-            ["Cards.QueueSourceFilter"] = "큐 소스 필터",
-            ["Cards.QueueSourceFilterSubtitle"] = "큐 일관성 유지",
-            ["Cards.ConcatSourceFilter"] = "연결 소스 필터",
-            ["Cards.ConcatSourceFilterSubtitle"] = "연결 일관성 유지",
-            ["Cards.SrcIncompatOrCorrupted"] = "호환 안 됨 / 손상됨 (빨강)",
-            ["Cards.SrcQualityIssues"] = "품질 문제 (노랑-주황)",
-            ["Cards.EncPrerequisites"] = "인코딩 전제조건",
-            ["Cards.EncHardware"] = "하드웨어",
-            ["Cards.EncSoftware"] = "소프트웨어",
-            ["Cards.BestPractices"] = "권장 사항",
-            ["Cards.BestHardware"] = "하드웨어 (자가 점검)",
-            ["Cards.BestSoftware"] = "소프트웨어 (자가 점검)",
-            ["Cards.BestPracticesSubtitle"] = "안내 - 차단하지 않음",
+    {
+        // Cards section headers
+        ["Cards.ToolsImport"] = "도구 가져오기/교체",
+        ["Cards.SourceValidation"] = "소스 영상 검증",
+        ["Cards.QueueSourceFilter"] = "큐 소스 필터",
+        ["Cards.QueueSourceFilterSubtitle"] = "큐 일관성 유지",
+        ["Cards.ConcatSourceFilter"] = "연결 소스 필터",
+        ["Cards.ConcatSourceFilterSubtitle"] = "연결 일관성 유지",
+        ["Cards.SrcIncompatOrCorrupted"] = "호환 안 됨 / 손상됨 (빨강)",
+        ["Cards.SrcQualityIssues"] = "품질 문제 (노랑-주황)",
+        ["Cards.EncPrerequisites"] = "인코딩 전제조건",
+        ["Cards.EncHardware"] = "하드웨어",
+        ["Cards.EncSoftware"] = "소프트웨어",
+        ["Cards.BestPractices"] = "권장 사항",
+        ["Cards.BestHardware"] = "하드웨어 (자가 점검)",
+        ["Cards.BestSoftware"] = "소프트웨어 (자가 점검)",
+        ["Cards.BestPracticesSubtitle"] = "안내 - 차단하지 않음",
 
-            // Main buttons
-            ["Buttons.UsageAndCompliance"] = "사용 및 준수",
-            ["Buttons.Settings"] = "설정",
-            ["Buttons.OneClickScriptGen"] = "AVS/VS 스크립트 생성",
-            ["Buttons.OpenScribeSrcScribe"] = "필터 편집기 열기",
-            ["Buttons.ShowRawJSON"] = "원본 JSON 표시",
-            ["Buttons.AnalyzeSrcVideo"] = "소스 분석 실행",
-            ["Buttons.ReEvaluate"] = "다시 평가",
-            ["Buttons.RunSample"] = "클립 샘플",
-            ["Buttons.StartEncode"] = "인코딩 시작",
-            ["EncInspect.InfoTitle"] = "인코더 사전 점검 상세",
-            ["EncInspect.InfoMsg"] = "인코더 사전 점검에서 문제가 발견되지 않았습니다.",
-            ["EncInspect.P1Title"] = "배터리 점검",
-            ["EncInspect.P1Text"] = "SystemInformation.PowerStatus로 PC가 배터리로 동작 중인지 확인해 마모를 줄이고, 예기치 않은 종료를 막고, 전원 제한으로 인한 화질 저하를 피합니다.",
-            ["EncInspect.P2Title"] = "디스크 공간 점검",
-            ["EncInspect.P2Text"] = "사용 가능한 디스크 공간과 소스 파일 크기 × 1.5(대체: 1 GiB)를 비교합니다. 인코딩 출력에 충분한 공간이 있는지 확인합니다.",
-            ["EncInspect.P3Title"] = "쓰기 권한 점검",
-            ["EncInspect.P3Text"] = "파일 목록을 시도해 출력 폴더 쓰기 권한을 확인합니다. 권한 오류로 인한 인코딩 실패를 막습니다.",
-            ["EncInspect.P4Title"] = "덮어쓰기 점검",
-            ["EncInspect.P4Text"] = "출력 파일이 이미 존재하는지 확인하고, 실수로 데이터를 잃지 않도록 덮어쓰기 시작을 더 어렵게 만듭니다.",
-            ["EncInspect.P5Title"] = "L-SMASH 플러그인 점검 (Avs2Yuv)",
-            ["EncInspect.P5Text"] = "LSMASHSource.dll이 C:\\Program Files (x86)\\AviSynth+\\plugins64+\\에 있는지 확인합니다(libvslsmashsource.dll 아님). 소스 프레임을 읽기 위해 필요합니다.",
-            ["EncInspect.P6Title"] = "NUMA 노드 CPU 부하 점검",
-            ["EncInspect.P6Text"] = "선택한 NUMA 노드의 최근 CPU 부하가 낮은지 확인합니다. 높은 부하는 안내용이며 인코딩을 막지 않습니다.",
+        // Main buttons
+        ["Buttons.UsageAndCompliance"] = "사용 및 준수",
+        ["Buttons.Settings"] = "설정",
+        ["Buttons.OneClickScriptGen"] = "AVS/VS 스크립트 생성",
+        ["Buttons.OpenScribeSrcScribe"] = "필터 편집기 열기",
+        ["Buttons.ShowRawJSON"] = "원본 JSON 표시",
+        ["Buttons.AnalyzeSrcVideo"] = "소스 분석 실행",
+        ["Buttons.ReEvaluate"] = "다시 평가",
+        ["Buttons.RunSample"] = "클립 샘플",
+        ["Buttons.StartEncode"] = "인코딩 시작",
+        ["EncInspect.InfoTitle"] = "인코더 사전 점검 상세",
+        ["EncInspect.InfoMsg"] = "인코더 사전 점검에서 문제가 발견되지 않았습니다.",
+        ["EncInspect.P1Title"] = "배터리 점검",
+        ["EncInspect.P1Text"] = "SystemInformation.PowerStatus로 PC가 배터리로 동작 중인지 확인해 마모를 줄이고, 예기치 않은 종료를 막고, 전원 제한으로 인한 화질 저하를 피합니다.",
+        ["EncInspect.P2Title"] = "디스크 공간 점검",
+        ["EncInspect.P2Text"] = "사용 가능한 디스크 공간과 소스 파일 크기 × 1.5(대체: 1 GiB)를 비교합니다. 인코딩 출력에 충분한 공간이 있는지 확인합니다.",
+        ["EncInspect.P3Title"] = "쓰기 권한 점검",
+        ["EncInspect.P3Text"] = "파일 목록을 시도해 출력 폴더 쓰기 권한을 확인합니다. 권한 오류로 인한 인코딩 실패를 막습니다.",
+        ["EncInspect.P4Title"] = "덮어쓰기 점검",
+        ["EncInspect.P4Text"] = "출력 파일이 이미 존재하는지 확인하고, 실수로 데이터를 잃지 않도록 덮어쓰기 시작을 더 어렵게 만듭니다.",
+        ["EncInspect.P5Title"] = "L-SMASH 플러그인 점검 (Avs2Yuv)",
+        ["EncInspect.P5Text"] = "LSMASHSource.dll이 C:\\Program Files (x86)\\AviSynth+\\plugins64+\\에 있는지 확인합니다(libvslsmashsource.dll 아님). 소스 프레임을 읽기 위해 필요합니다.",
+        ["EncInspect.P6Title"] = "NUMA 노드 CPU 부하 점검",
+        ["EncInspect.P6Text"] = "선택한 NUMA 노드의 최근 CPU 부하가 낮은지 확인합니다. 높은 부하는 안내용이며 인코딩을 막지 않습니다.",
 
 
-            ["Section.SelectUpstream"] = "1. 업스트림 도구 선택",
-            ["Section.SelectEncoder"] = "2. 인코더 선택",
-            ["Section.SelectDependencies"] = "3. 의존성 선택",
-            ["Section.ImportSrc"] = "4. 소스 파일 가져오기/생성",
-            ["Section.SelectAnalytics"] = "5. 비디오 분석기 선택 · 분석 실행",
-            ["Section.EncodingConfigs"] = "6. 인코딩 설정",
-            ["Section.StartEncoding"] = "7. 인코딩 시작",
+        ["Section.SelectUpstream"] = "1. 업스트림 도구 선택",
+        ["Section.SelectEncoder"] = "2. 인코더 선택",
+        ["Section.SelectDependencies"] = "3. 의존성 선택",
+        ["Section.ImportSrc"] = "4. 소스 파일 가져오기/생성",
+        ["Section.SelectAnalytics"] = "5. 비디오 분석기 선택 · 분석 실행",
+        ["Section.EncodingConfigs"] = "6. 인코딩 설정",
+        ["Section.StartEncoding"] = "7. 인코딩 시작",
 
-            ["Import.NoSelection"] = "선택 없음",
-            ["Import.VersionDetectTimeoutTitle"] = "도구 가져오기 실패",
-            ["Import.VersionDetectTimeoutMessage"] = "{0}이(가) 3초 내에 버전 정보를 반환하지 않아 가져오기를 거부했습니다.",
+        ["Import.NoSelection"] = "선택 없음",
+        ["Import.VersionDetectTimeoutTitle"] = "도구 가져오기 실패",
+        ["Import.VersionDetectTimeoutMessage"] = "{0}이(가) 3초 내에 버전 정보를 반환하지 않아 가져오기를 거부했습니다.",
 
-            // ItemCard separator
-            ["ItemCard.Separator"] = "：",
+        // ItemCard separator
+        ["ItemCard.Separator"] = "：",
 
-            // Tool card captions
-            ["ToolField.Version"] = "버전",
-            ["ToolField.Name"] = "이름",
-            ["ToolField.Mode"] = "모드",
-            ["ToolField.FileName"] = "파일명",
-            ["ToolField.NumaNodes"] = "NUMA 친화성", // i.e., upstream from node 0 to encoder at node 1 gives “0 → 1”
-            ["ToolField.Threads"] = "스레드", // Value: int thread count, with ToolField.EncThreadClamp On/Off
-            ["ToolField.Value"] = "값",
-            ["ToolField.Strategy"] = "전략",
-            ["ToolField.MaxKeyframeGap"] = "최대 키프레임 간격",
-            ["ToolField.OtherCustomParams"] = "기타 사용자 지정 매개변수",
+        // Tool card captions
+        ["ToolField.Version"] = "버전",
+        ["ToolField.Name"] = "이름",
+        ["ToolField.Mode"] = "모드",
+        ["ToolField.FileName"] = "파일명",
+        ["ToolField.NumaNodes"] = "NUMA 친화성", // i.e., upstream from node 0 to encoder at node 1 gives “0 → 1”
+        ["ToolField.Threads"] = "스레드", // Value: int thread count, with ToolField.EncThreadClamp On/Off
+        ["ToolField.Value"] = "값",
+        ["ToolField.Strategy"] = "전략",
+        ["ToolField.MaxKeyframeGap"] = "최대 키프레임 간격",
+        ["ToolField.OtherCustomParams"] = "기타 사용자 지정 매개변수",
 
-            ["Tool.Source.VideoSrc"] = "▷ 비디오 소스",
-            ["Tool.Source.AviSynth"] = $"{LangProviderBase.AviSynth} .avs 소스",
-            ["Tool.Source.VapourSynth"] = $"{LangProviderBase.VapourSynth} .vpy 소스",
-            ["Tool.Source.Svfi"] = "SVFI .ini 소스",
-            ["Tool.Source.AviSynthQueue"] = $"📁 {LangProviderBase.AVS} 스크립트 큐",
-            ["Tool.Source.VapourSynthQueue"] = $"📁 {LangProviderBase.VS} 스크립트 큐",
-            ["Tool.Source.SvfiQueue"] = "📁 SVFI 스크립트 큐",
+        ["Tool.Source.VideoSrc"] = "▷ 비디오 소스",
+        ["Tool.Source.AviSynth"] = $"{LangProviderBase.AviSynth} .avs 소스",
+        ["Tool.Source.VapourSynth"] = $"{LangProviderBase.VapourSynth} .vpy 소스",
+        ["Tool.Source.Svfi"] = "SVFI .ini 소스",
+        ["Tool.Source.AviSynthQueue"] = $"📁 {LangProviderBase.AVS} 스크립트 큐",
+        ["Tool.Source.VapourSynthQueue"] = $"📁 {LangProviderBase.VS} 스크립트 큐",
+        ["Tool.Source.SvfiQueue"] = "📁 SVFI 스크립트 큐",
 
-            ["Tool.Enc.OutputSetting"] = "출력 파일명 및 경로",
-            ["Tool.Enc.Parallelism"] = "병렬 처리 제어",
-            ["Tool.Enc.EncParams"] = "인코딩 설정",
-            ["Tool.Enc.MuxTracks"] = "자막 추가",
+        ["Tool.Enc.OutputSetting"] = "출력 파일명 및 경로",
+        ["Tool.Enc.Parallelism"] = "병렬 처리 제어",
+        ["Tool.Enc.EncParams"] = "인코딩 설정",
+        ["Tool.Enc.MuxTracks"] = "자막 추가",
 
-            // Source queue card
-            ["SourceQueue.FilterModeTitle"] = "큐 가중 필터를 실행하시겠습니까?",
-            ["SourceQueue.FilterModeMessage"] = "큐 구조에 따라 선택하세요\n확인: 비슷한 길이의 소스, 필터 불필요\n취소: BDMV/M3U 도입부와 트레일러를 가중 투표로 제외\n형식 일관성을 위해 첫 번째 스트림 비교 제외는 항상 실행됩니다\n\nBDMV는 BDInfo/ChapterTool로 과소/과대 분절 에피소드를 처리하세요",
-            ["SourceQueue.ImportTitle"] = "비디오 소스 큐 가져오기",
-            ["SourceQueue.ImportPrompt"] = "블루레이 플레이리스트를 가져올까요?\n\n확인: PLAYLIST 폴더(.mpls/ifo/xpl)를 지정하면, 시스템이 참조된 미디어 파일(m2ts)을 플레이리스트 순서대로 큐에 추가합니다.\n취소: 여러 비디오 소스 파일을 직접 선택하면 선택한 순서대로 큐에 추가됩니다.\n\n어떤 클러스터를 선택할지 확실하지 않으면 Repart 모드나 플레이어 미리보기로 확인하세요",
-            ["SourceQueue.SelectPlaylistFolder"] = "BDMV PLAYLIST 폴더 선택",
-            ["SourceQueue.SelectFilesTitle"] = "비디오 소스 파일 선택",
-            ["SourceQueue.ImportScanFailed"] = "다음 위치에서 사용 가능한 MPLS 플레이리스트를 찾지 못했습니다: {0}",
-            ["SourceQueue.ChapterImportFailed"] = "다음에서 챕터 읽기 실패: {0}",
-            ["SourceQueue.ChapterSourcesMissing"] = "플레이리스트가 기존 비디오 소스 파일을 찾지 못했습니다. 플레이리스트가 참조하는 미디어 파일(m2ts)이 있는지 확인하세요",
+        // Source queue card
+        ["SourceQueue.FilterModeTitle"] = "큐 가중 필터를 실행하시겠습니까?",
+        ["SourceQueue.FilterModeMessage"] = "큐 구조에 따라 선택하세요\n확인: 비슷한 길이의 소스, 필터 불필요\n취소: BDMV/M3U 도입부와 트레일러를 가중 투표로 제외\n형식 일관성을 위해 첫 번째 스트림 비교 제외는 항상 실행됩니다\n\nBDMV는 BDInfo/ChapterTool로 과소/과대 분절 에피소드를 처리하세요",
+        ["SourceQueue.ImportTitle"] = "비디오 소스 큐 가져오기",
+        ["SourceQueue.ImportPrompt"] = "블루레이 플레이리스트를 가져올까요?\n\n확인: PLAYLIST 폴더(.mpls/ifo/xpl)를 지정하면, 시스템이 참조된 미디어 파일(m2ts)을 플레이리스트 순서대로 큐에 추가합니다.\n취소: 여러 비디오 소스 파일을 직접 선택하면 선택한 순서대로 큐에 추가됩니다.\n\n어떤 클러스터를 선택할지 확실하지 않으면 Repart 모드나 플레이어 미리보기로 확인하세요",
+        ["SourceQueue.SelectPlaylistFolder"] = "BDMV PLAYLIST 폴더 선택",
+        ["SourceQueue.SelectFilesTitle"] = "비디오 소스 파일 선택",
+        ["SourceQueue.ImportScanFailed"] = "다음 위치에서 사용 가능한 MPLS 플레이리스트를 찾지 못했습니다: {0}",
+        ["SourceQueue.ChapterImportFailed"] = "다음에서 챕터 읽기 실패: {0}",
+        ["SourceQueue.ChapterSourcesMissing"] = "플레이리스트가 기존 비디오 소스 파일을 찾지 못했습니다. 플레이리스트가 참조하는 미디어 파일(m2ts)이 있는지 확인하세요",
 
-            ["SourceConcat.SelectFilesTitle"] = "연결할 비디오 파일 선택",
-            ["SourceConcat.OrderingTitle"] = "연결 순서",
-            ["SourceConcat.RestoreOriginalQueue"] = "모든 변경 취소",
-            ["SourceConcat.ExtensionMismatch"] = "연결 가져오기는 모든 파일의 확장자가 같아야 합니다.\n\n예상: {0}\n불일치 파일:\n{1}",
-            ["SourceConcat.Analyzed"] = "연결 소스 분석 완료. 호환되는 파일은 {0}개입니다.\n\n모든 자막과 글꼴 파일이 제거되며, 6단계에서 자막을 추가할 수 있습니다.",
-            ["SourceConcat.IncompatibleVideo"] = "연결 소스 #{0}는 첫 번째 비디오 소스와 다릅니다.\n예상: {1}\n실제: {2}",
-            ["SourceConcat.IncompatibleFrameRate"] = "연결 소스 #{0}는 첫 번째 비디오 소스와 프레임레이트가 다릅니다.\n예상: {1}\n실제: {2}",
-            ["SourceConcat.ResolutionMismatch"] = "연결 소스 #{0}는 첫 번째 비디오 소스와 해상도가 다릅니다.\n예상: {1}\n실제: {2}",
-            ["SourceConcat.VariableFrameRate"] = "연결 모드는 가변 프레임레이트(VFR)를 직접 사용할 수 없습니다. Filter Scribe에서 VFR→CFR 복구 필터를 추가하세요.",
+        ["SourceConcat.SelectFilesTitle"] = "연결할 비디오 파일 선택",
+        ["SourceConcat.OrderingTitle"] = "연결 순서",
+        ["SourceConcat.RestoreOriginalQueue"] = "모든 변경 취소",
+        ["SourceConcat.ExtensionMismatch"] = "연결 가져오기는 모든 파일의 확장자가 같아야 합니다.\n\n예상: {0}\n불일치 파일:\n{1}",
+        ["SourceConcat.Analyzed"] = "연결 소스 분석 완료. 호환되는 파일은 {0}개입니다.\n\n모든 자막과 글꼴 파일이 제거되며, 6단계에서 자막을 추가할 수 있습니다.",
+        ["SourceConcat.IncompatibleVideo"] = "연결 소스 #{0}는 첫 번째 비디오 소스와 다릅니다.\n예상: {1}\n실제: {2}",
+        ["SourceConcat.IncompatibleFrameRate"] = "연결 소스 #{0}는 첫 번째 비디오 소스와 프레임레이트가 다릅니다.\n예상: {1}\n실제: {2}",
+        ["SourceConcat.ResolutionMismatch"] = "연결 소스 #{0}는 첫 번째 비디오 소스와 해상도가 다릅니다.\n예상: {1}\n실제: {2}",
+        ["SourceConcat.VariableFrameRate"] = "연결 모드는 가변 프레임레이트(VFR)를 직접 사용할 수 없습니다. Filter Scribe에서 VFR→CFR 복구 필터를 추가하세요.",
 
-            // Dialogs
-            ["Dialog.SelectTitle"] = "{0} 선택",
-            ["Dialog.ReplaceTitle"] = "{0} 바꾸기",
-            ["Dialog.Filter.All"] = "모든 파일 (*.*)|*.*",
-            ["Dialog.Filter.Exe"] = "실행 파일 (*.exe)|*.exe",
-            ["Dialog.Filter.Dll"] = "DLL 파일 (*.dll)|*.dll",
+        // Dialogs
+        ["Dialog.SelectTitle"] = "{0} 선택",
+        ["Dialog.ReplaceTitle"] = "{0} 바꾸기",
+        ["Dialog.Filter.All"] = "모든 파일 (*.*)|*.*",
+        ["Dialog.Filter.Exe"] = "실행 파일 (*.exe)|*.exe",
+        ["Dialog.Filter.Dll"] = "DLL 파일 (*.dll)|*.dll",
 
-            // Confirmation dialog texts
+        // Confirmation dialog texts
 
-            // Auto tool import
-            ["AutoImport.Title"] = "도구 자동 가져오기",
-            ["AutoImport.FoundMessage"] = "다음 검증된 실행 파일을 찾았습니다. 지금 가져올까요?\n\n{0}",
-            ["AutoImport.NotFoundMessage"] = "애플리케이션 폴더에서 가져올 수 있는 도구를 찾지 못했습니다. 나중에 다시 검사하려면 설정 → 초기화 모드 → 다음 실행 시 도구 자동 가져오기를 켜세요.",
+        // Auto tool import
+        ["AutoImport.Title"] = "도구 자동 가져오기",
+        ["AutoImport.FoundMessage"] = "다음 검증된 실행 파일을 찾았습니다. 지금 가져올까요?\n\n{0}",
+        ["AutoImport.NotFoundMessage"] = "애플리케이션 폴더에서 가져올 수 있는 도구를 찾지 못했습니다. 나중에 다시 검사하려면 설정 → 초기화 모드 → 다음 실행 시 도구 자동 가져오기를 켜세요.",
 
-            // Confirmation provider messages (with {0} / {1} format placeholders)
-            ["ConfirmProvider.SuspiciousImportTitle"] = "가져오기가 {0}과 일치하지 않습니다",
-            ["ConfirmProvider.ProceedToRun"] = "버전을 확인하려면 {0}을(를) 실행할까요?",
-            ["ConfirmProvider.WrongTool"] = "{0}을(를) {1}로 가져올까요?",
+        // Confirmation provider messages (with {0} / {1} format placeholders)
+        ["ConfirmProvider.SuspiciousImportTitle"] = "가져오기가 {0}과 일치하지 않습니다",
+        ["ConfirmProvider.ProceedToRun"] = "버전을 확인하려면 {0}을(를) 실행할까요?",
+        ["ConfirmProvider.WrongTool"] = "{0}을(를) {1}로 가져올까요?",
 
-            // Checklist - Tools
-            ["Checklist.Tools.Upstream"] = "업스트림 프로그램 1개 가져옴",
-            ["Checklist.Tools.Downstream"] = "다운스트림 프로그램 1개 가져옴",
-            ["Checklist.Tools.Analysis"] = "분석 프로그램 1개 가져옴",
-            ["Checklist.Tools.UpstreamPicked"] = "업스트림 프로그램 선택",
-            ["Checklist.Tools.DownstreamPicked"] = "다운스트림 프로그램 선택",
-            ["Checklist.Tools.AnalysisPicked"] = "분석 프로그램 선택",
-            ["Checklist.Tools.CompleteSourceAnalysis"] = "소스 분석 완료",
-            ["Checklist.Tools.DependenciesPicked"] = "의존성 프로그램 선택",
-            ["Checklist.Tools.VideoSourcePicked"] = "비디오 소스 또는 큐 선택",
-            ["Checklist.Tools.ScriptSourcePicked"] = "스크립트 소스 선택(VS/AVS/SVFI 업스트림)",
+        // Checklist - Tools
+        ["Checklist.Tools.Upstream"] = "업스트림 프로그램 1개 가져옴",
+        ["Checklist.Tools.Downstream"] = "다운스트림 프로그램 1개 가져옴",
+        ["Checklist.Tools.Analysis"] = "분석 프로그램 1개 가져옴",
+        ["Checklist.Tools.UpstreamPicked"] = "업스트림 프로그램 선택",
+        ["Checklist.Tools.DownstreamPicked"] = "다운스트림 프로그램 선택",
+        ["Checklist.Tools.AnalysisPicked"] = "분석 프로그램 선택",
+        ["Checklist.Tools.CompleteSourceAnalysis"] = "소스 분석 완료",
+        ["Checklist.Tools.DependenciesPicked"] = "의존성 프로그램 선택",
+        ["Checklist.Tools.VideoSourcePicked"] = "비디오 소스 또는 큐 선택",
+        ["Checklist.Tools.ScriptSourcePicked"] = "스크립트 소스 선택(VS/AVS/SVFI 업스트림)",
 
-            // Checklist - Source Validation 1 (Severe)
-            ["Checklist.Source1.Metadata"] = "메타데이터 및 SEI 데이터 읽기 가능",
-            ["Checklist.Source1.Progressive"] = "프로그레시브 프레임 / 비인터레이스",
-            ["Checklist.Source1.BitDepth"] = "비트 깊이 12 미만 (8 또는 10, SVT-AV1 요구)",
-            ["Checklist.Source1.BitDepth2"] = "비트 깊이 16 미만",
+        // Checklist - Source Validation 1 (Severe)
+        ["Checklist.Source1.Metadata"] = "메타데이터 및 SEI 데이터 읽기 가능",
+        ["Checklist.Source1.Progressive"] = "프로그레시브 프레임 / 비인터레이스",
+        ["Checklist.Source1.BitDepth"] = "비트 깊이 12 미만 (8 또는 10, SVT-AV1 요구)",
+        ["Checklist.Source1.BitDepth2"] = "비트 깊이 16 미만",
 
-            // Checklist - Source Validation 2 (Moderate)
-            ["Checklist.Source2.Framerate"] = "프레임레이트가 고정 / 비가변",
-            ["Checklist.Source2.AspectRatio"] = "정사각 픽셀 / 1:1 SAR",
-            ["Checklist.Source2.ColorMetadata"] = "색상 매트릭스, 전송 특성, 원색 메타데이터 정상",
-            ["Checklist.Source2.ChromaSubsampling"] = "크로마 서브샘플링 없음 또는 ←/↖ 방향 (SVT-AV1 요구)",
+        // Checklist - Source Validation 2 (Moderate)
+        ["Checklist.Source2.Framerate"] = "프레임레이트가 고정 / 비가변",
+        ["Checklist.Source2.AspectRatio"] = "정사각 픽셀 / 1:1 SAR",
+        ["Checklist.Source2.ColorMetadata"] = "색상 매트릭스, 전송 특성, 원색 메타데이터 정상",
+        ["Checklist.Source2.ChromaSubsampling"] = "크로마 서브샘플링 없음 또는 ←/↖ 방향 (SVT-AV1 요구)",
 
-            // Checklist - Encoding Prerequisites 1 (Hardware)
-            ["Checklist.Enc1.NotOffGrid"] = "배터리 사용 아님",
-            ["Checklist.Enc1.DiskSpace"] = "디스크 공간 충분",
-            ["Checklist.Enc1.NumaCpuLoad"] = "선택한 NUMA 노드 CPU 부하 낮음",
+        // Checklist - Encoding Prerequisites 1 (Hardware)
+        ["Checklist.Enc1.NotOffGrid"] = "배터리 사용 아님",
+        ["Checklist.Enc1.DiskSpace"] = "디스크 공간 충분",
+        ["Checklist.Enc1.NumaCpuLoad"] = "선택한 NUMA 노드 CPU 부하 낮음",
 
-            // Checklist - Encoding Prerequisites 2 (Software)
-            ["Checklist.Enc2.OSFilename"] = "출력 파일명이 OS에서 유효함",
-            ["Checklist.Enc2.FTPFilename"] = "출력 파일명이 FTP에서 유효할 수도 있음",
-            ["Checklist.Enc2.WritePermission"] = "출력 폴더 쓰기 권한 있음",
-            ["Checklist.Enc2.Overwrite"] = "출력이 기존 파일을 덮어쓰지 않음",
-            ["Checklist.Enc2.LsmashForAvs2Yuv"] = "AviSynth+ 경로에 LSMASHSource.dll 존재(Avs2Yuv)",
+        // Checklist - Encoding Prerequisites 2 (Software)
+        ["Checklist.Enc2.OSFilename"] = "출력 파일명이 OS에서 유효함",
+        ["Checklist.Enc2.FTPFilename"] = "출력 파일명이 FTP에서 유효할 수도 있음",
+        ["Checklist.Enc2.WritePermission"] = "출력 폴더 쓰기 권한 있음",
+        ["Checklist.Enc2.Overwrite"] = "출력이 기존 파일을 덮어쓰지 않음",
+        ["Checklist.Enc2.LsmashForAvs2Yuv"] = "AviSynth+ 경로에 LSMASHSource.dll 존재(Avs2Yuv)",
 
-            // Checklist - Best Practices 1 (Hardware)
-            ["Checklist.Best1.SlowDisk"] = "느린 디스크 연결(USB2, Bluetooth 등) 피하기",
-            ["Checklist.Best1.DiskThrashing"] = "디스크 스래싱 피하기(같은 HDD의 읽기/쓰기)",
-            ["Checklist.Best1.BiosDriver"] = "최신 BIOS, 칩셋 드라이버, 디스크 펌웨어 사용",
-            ["Checklist.Best1.Temperature"] = "온도: SSD/RAM 75(167) 미만, HDD 55(131) 미만",
-            ["Checklist.Best1.SMR"] = "SMR HDD에 쓰지 않음",
+        // Checklist - Best Practices 1 (Hardware)
+        ["Checklist.Best1.SlowDisk"] = "느린 디스크 연결(USB2, Bluetooth 등) 피하기",
+        ["Checklist.Best1.DiskThrashing"] = "디스크 스래싱 피하기(같은 HDD의 읽기/쓰기)",
+        ["Checklist.Best1.BiosDriver"] = "최신 BIOS, 칩셋 드라이버, 디스크 펌웨어 사용",
+        ["Checklist.Best1.Temperature"] = "온도: SSD/RAM 75(167) 미만, HDD 55(131) 미만",
+        ["Checklist.Best1.SMR"] = "SMR HDD에 쓰지 않음",
 
-            // Checklist - Best Practices 2 (Software)
-            ["Checklist.Best2.EncoderVersion"] = "최신 인코더 버전 사용",
-            ["Checklist.Best2.FAT32"] = "FAT32 볼륨에 쓰지 않음",
-            ["Checklist.Best2.DiskCompression"] = "출력 폴더 파일 시스템 압축 비활성화",
+        // Checklist - Best Practices 2 (Software)
+        ["Checklist.Best2.EncoderVersion"] = "최신 인코더 버전 사용",
+        ["Checklist.Best2.FAT32"] = "FAT32 볼륨에 쓰지 않음",
+        ["Checklist.Best2.DiskCompression"] = "출력 폴더 파일 시스템 압축 비활성화",
 
-            // FilterScribeModal
+        // FilterScribeModal
 
-            // FFProbeJsonUpdateResolver
-            ["FFProbeJsonUpdate.JsonEmpty"] = "ffprobe JSON이 비어 있습니다.",
-            ["FFProbeJsonUpdate.DimensionsNotPositive"] = "해상도 값은 양수여야 합니다.",
-            ["FFProbeJsonUpdate.RootNotObject"] = "ffprobe JSON 루트가 객체가 아닙니다.",
-            ["FFProbeJsonUpdate.NoVideoStream"] = "ffprobe JSON에서 비디오 스트림을 찾지 못했습니다.",
+        // FFProbeJsonUpdateResolver
+        ["FFProbeJsonUpdate.JsonEmpty"] = "ffprobe JSON이 비어 있습니다.",
+        ["FFProbeJsonUpdate.DimensionsNotPositive"] = "해상도 값은 양수여야 합니다.",
+        ["FFProbeJsonUpdate.RootNotObject"] = "ffprobe JSON 루트가 객체가 아닙니다.",
+        ["FFProbeJsonUpdate.NoVideoStream"] = "ffprobe JSON에서 비디오 스트림을 찾지 못했습니다.",
 
-            // FilenameScribeModal
+        // FilenameScribeModal
 
-            // Hints
-            ["Hint.SVFIClipDisabled"] = "OneLineShotArgs는 샘플 클리핑을 지원하지 않으므로, 샘플 실행을 비활성화했습니다.",
-            ["Hint.AnalyzeRunConditionDuration"] = "분석은 소스 가져오기 시 시작됩니다(≈70～100 ms/소스, Repart 모드는 더 오래 걸립니다)",
-            ["Hint.NumaCpuCheckTrigger"] = "NUMA 노드 CPU 사용량은 마우스 클릭 또는 키보드 입력 이벤트 시 업데이트됩니다.",
-            ["Hint.FFmpegOptionalBut"] = "FFmpeg는 선택 사항이지만, 비디오 프레임 미리보기와 자동 MKV 멀티플렉싱에 필요합니다",
-            ["ScriptQueueImport.RejectedPrefix"] = "가져오기가 거부되었습니다: 일치하지 않는 기본 이름 {0}개, 경로 불일치 {1}개.",
-            ["ScriptQueueImport.DetailsHeader"] = "세부 정보:",
-            ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — 기본 이름으로 일치하는 비디오 소스를 찾을 수 없습니다",
-            ["ScriptQueueImport.DetailNoScript"] = "'{0}' — 기본 이름으로 일치하는 스크립트 파일을 찾을 수 없습니다",
-            ["ScriptQueueImport.DetailUnreadable"] = "'{0}' — 인식할 수 없는 스크립트 형식이며, 소스 경로를 확인할 수 없습니다",
-            ["ScriptQueueImport.DetailMismatch"] = "'{0}' — \"{1}\"을 가리키며, 예상값은 \"{2}\"입니다",
-            ["ScriptQueueImport.MoreCount"] = "...외 {0}개 더.",
-            ["ScriptQueueImport.CountMismatchTitle"] = "스크립트 수 불일치",
-            ["ScriptQueueImport.MissingSummary"] = "선택한 업스트림에 필요한 스크립트 {0}/{1}개가 누락되었습니다.",
-            ["ScriptQueueImport.MissingLabel"] = "누락:",
-            ["ScriptQueueImport.SourceMismatchTitle"] = "스크립트 소스 불일치",
-            ["ScriptQueueImport.SourceMismatchSummary"] = "{0}개의 스크립트가 다른 비디오 소스를 참조합니다.",
-            ["Hint.QueueRouteSampleClipDisabled"] = "비디오 소스 큐/연결 모드는 샘플 클리핑을 지원하지 않습니다. 샘플 실행이 비활성화되었습니다.",
-            ["Hint.FilterScribeDisabled"] = "OneLineShotArgs는 스크립트 생성을 지원하지 않으므로, Filter Scribe를 비활성화했습니다.",
-            ["Hint.MinDurationFilter"] = "최소 길이 필터(초):",
-            ["Hint.DurationFilterAllFiltered"] = "모든 비디오가 길이 필터로 걸러졌습니다.",
-            ["Hint.DurationFilterCount"] = "{0}/{1}개의 비디오가 걸러졌습니다.",
+        // Hints
+        ["Hint.SVFIClipDisabled"] = "OneLineShotArgs는 샘플 클리핑을 지원하지 않으므로, 샘플 실행을 비활성화했습니다.",
+        ["Hint.AnalyzeRunConditionDuration"] = "분석은 소스 가져오기 시 시작됩니다(≈70～100 ms/소스, Repart 모드는 더 오래 걸립니다)",
+        ["Hint.NumaCpuCheckTrigger"] = "NUMA 노드 CPU 사용량은 마우스 클릭 또는 키보드 입력 이벤트 시 업데이트됩니다.",
+        ["Hint.FFmpegOptionalBut"] = "FFmpeg는 선택 사항이지만, 비디오 프레임 미리보기와 자동 MKV 멀티플렉싱에 필요합니다",
+        ["ScriptQueueImport.RejectedPrefix"] = "가져오기가 거부되었습니다: 일치하지 않는 기본 이름 {0}개, 경로 불일치 {1}개.",
+        ["ScriptQueueImport.DetailsHeader"] = "세부 정보:",
+        ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — 기본 이름으로 일치하는 비디오 소스를 찾을 수 없습니다",
+        ["ScriptQueueImport.DetailNoScript"] = "'{0}' — 기본 이름으로 일치하는 스크립트 파일을 찾을 수 없습니다",
+        ["ScriptQueueImport.DetailUnreadable"] = "'{0}' — 인식할 수 없는 스크립트 형식이며, 소스 경로를 확인할 수 없습니다",
+        ["ScriptQueueImport.DetailMismatch"] = "'{0}' — \"{1}\"을 가리키며, 예상값은 \"{2}\"입니다",
+        ["ScriptQueueImport.MoreCount"] = "...외 {0}개 더.",
+        ["ScriptQueueImport.CountMismatchTitle"] = "스크립트 수 불일치",
+        ["ScriptQueueImport.MissingSummary"] = "선택한 업스트림에 필요한 스크립트 {0}/{1}개가 누락되었습니다.",
+        ["ScriptQueueImport.MissingLabel"] = "누락:",
+        ["ScriptQueueImport.SourceMismatchTitle"] = "스크립트 소스 불일치",
+        ["ScriptQueueImport.SourceMismatchSummary"] = "{0}개의 스크립트가 다른 비디오 소스를 참조합니다.",
+        ["Hint.QueueRouteSampleClipDisabled"] = "비디오 소스 큐/연결 모드는 샘플 클리핑을 지원하지 않습니다. 샘플 실행이 비활성화되었습니다.",
+        ["Hint.FilterScribeDisabled"] = "OneLineShotArgs는 스크립트 생성을 지원하지 않으므로, Filter Scribe를 비활성화했습니다.",
+        ["Hint.MinDurationFilter"] = "최소 길이 필터(초):",
+        ["Hint.DurationFilterAllFiltered"] = "모든 비디오가 길이 필터로 걸러졌습니다.",
+        ["Hint.DurationFilterCount"] = "{0}/{1}개의 비디오가 걸러졌습니다.",
 
-            // Heatmap
-            ["Heatmap.Cold"] = "차가움",
-            ["Heatmap.Hot"] = "뜨거움",
+        // Heatmap
+        ["Heatmap.Cold"] = "차가움",
+        ["Heatmap.Hot"] = "뜨거움",
 
-            // Source analysis result ConfirmationModal
-            ["SrcAnalysis.Completed"] = "소스 분석 완료.",
-            ["SrcAnalysis.RunAfterReplace"] = "지금 소스 분석을 실행할까요?",
-            ["SrcAnalysis.Copied"] = "원본 ffprobe JSON이 클립보드에 복사되었습니다.",
+        // Source analysis result ConfirmationModal
+        ["SrcAnalysis.Completed"] = "소스 분석 완료.",
+        ["SrcAnalysis.RunAfterReplace"] = "지금 소스 분석을 실행할까요?",
+        ["SrcAnalysis.Copied"] = "원본 ffprobe JSON이 클립보드에 복사되었습니다.",
 
-            ["ScriptGen.RunAfterReplace"] = "지금 AVS 및 VPY 스크립트를 생성할까요?",
-            ["ScriptGen.ScriptsSaved"] = "저장된 스크립트:\n{0}",
+        ["ScriptGen.RunAfterReplace"] = "지금 AVS 및 VPY 스크립트를 생성할까요?",
+        ["ScriptGen.ScriptsSaved"] = "저장된 스크립트:\n{0}",
 
-            // InspectSrcProblems modal texts
-            ["SrcInspect.InfoTitle"] = "소스 점검",
-            ["SrcInspect.InfoMsg"] = "눈에 띄는 소스 문제가 없습니다.",
-            ["SrcInspect.ErrorTitle"] = "소스 심각 문제",
-            ["SrcInspect.WarnTitle"] = "소스 중간 문제",
-            ["SrcInspect.MetadataP1Text"] = "소스 메타데이터를 읽을 수 없습니다. 파일이 손상되었거나 비디오 파일이 아닐 수 있으며, 이 도구는 안전한 인코딩 설정을 위해 메타데이터에 의존하므로 계속할 수 없습니다.",
-            ["SrcInspect.ProgressiveP1Text"] = "이 도구는 프레임 간 패턴을 검사하여 IVTC 필터를 구성할 수 없습니다. 안내: https://iavoe.github.io/deint-ivtc-web-tutorial/HTML",
-            ["SrcInspect.BitDepthP1Text"] = "SVT-AV1은 12비트 비디오를 지원하지 않습니다. SVT-AV1이 선택되지 않았다면 경고로 처리되며 인코딩 시작 버튼은 비활성화되지 않습니다.",
-            ["SrcInspect.FramerateP1Text"] = "Filter Scribe 편집기로 VFR→CFR 변환 필터를 추가하세요. VFR을 직접 인코딩하면 오디오/비디오 싱크가 어긋날 수 있습니다.",
-            ["SrcInspect.AspectRatioP1Text"] = "이 도구는 비정사각 픽셀을 보정할 수 없습니다. 계속하면 예상치 못한 영상 크기가 나올 수 있습니다. 소스를 고치려면 ffmpeg로 FFV1으로 트랜스코드하고 -aspect <현재 SAR>를 사용하세요.",
-            ["SrcInspect.ColorMetadataP1Text"] = "색상 매트릭스, 전송 특성, 원색 메타데이터가 없으면 플레이어는 BT.709로 되돌아가는 경우가 많지만, 유효한 값은 여러 개이며 소스에 맞는 조합은 하나뿐입니다.",
-            ["SrcInspect.ChromaSubsamplingP1Text"] = "크로마 샘플 위치가 잘못되면 색 경계가 번지거나 객체 경계에서 어긋날 수 있습니다. AVC/HEVC와 달리 AV1은 제한된 크로마 샘플 위치만 지원합니다."
+        // InspectSrcProblems modal texts
+        ["SrcInspect.InfoTitle"] = "소스 점검",
+        ["SrcInspect.InfoMsg"] = "눈에 띄는 소스 문제가 없습니다.",
+        ["SrcInspect.ErrorTitle"] = "소스 심각 문제",
+        ["SrcInspect.WarnTitle"] = "소스 중간 문제",
+        ["SrcInspect.MetadataP1Text"] = "소스 메타데이터를 읽을 수 없습니다. 파일이 손상되었거나 비디오 파일이 아닐 수 있으며, 이 도구는 안전한 인코딩 설정을 위해 메타데이터에 의존하므로 계속할 수 없습니다.",
+        ["SrcInspect.ProgressiveP1Text"] = "이 도구는 프레임 간 패턴을 검사하여 IVTC 필터를 구성할 수 없습니다. 안내: https://iavoe.github.io/deint-ivtc-web-tutorial/HTML",
+        ["SrcInspect.BitDepthP1Text"] = "SVT-AV1은 12비트 비디오를 지원하지 않습니다. SVT-AV1이 선택되지 않았다면 경고로 처리되며 인코딩 시작 버튼은 비활성화되지 않습니다.",
+        ["SrcInspect.FramerateP1Text"] = "Filter Scribe 편집기로 VFR→CFR 변환 필터를 추가하세요. VFR을 직접 인코딩하면 오디오/비디오 싱크가 어긋날 수 있습니다.",
+        ["SrcInspect.AspectRatioP1Text"] = "이 도구는 비정사각 픽셀을 보정할 수 없습니다. 계속하면 예상치 못한 영상 크기가 나올 수 있습니다. 소스를 고치려면 ffmpeg로 FFV1으로 트랜스코드하고 -aspect <현재 SAR>를 사용하세요.",
+        ["SrcInspect.ColorMetadataP1Text"] = "색상 매트릭스, 전송 특성, 원색 메타데이터가 없으면 플레이어는 BT.709로 되돌아가는 경우가 많지만, 유효한 값은 여러 개이며 소스에 맞는 조합은 하나뿐입니다.",
+        ["SrcInspect.ChromaSubsamplingP1Text"] = "크로마 샘플 위치가 잘못되면 색 경계가 번지거나 객체 경계에서 어긋날 수 있습니다. AVC/HEVC와 달리 AV1은 제한된 크로마 샘플 위치만 지원합니다."
     };
     private static void AddPortuguese() => Data["pt-br"] = new(Data["en"])
-        {
-            // Cards section headers
-            ["Cards.ToolsImport"] = "Importar/substituir ferramentas",
-            ["Cards.SourceValidation"] = "Validação do vídeo fonte",
-            ["Cards.QueueSourceFilter"] = "Filtro de fila de fontes",
-            ["Cards.QueueSourceFilterSubtitle"] = "Garante consistência da fila",
-            ["Cards.ConcatSourceFilter"] = "Filtro de concatenação de fontes",
-            ["Cards.ConcatSourceFilterSubtitle"] = "Garante consistência da concatenação",
-            ["Cards.SrcIncompatOrCorrupted"] = "Incompatível / Corrompido (vermelho)",
-            ["Cards.SrcQualityIssues"] = "Problemas de qualidade (amarelo-alaranjado)",
-            ["Cards.EncPrerequisites"] = "Pré-requisitos de codificação",
-            ["Cards.EncHardware"] = "Hardware",
-            ["Cards.EncSoftware"] = "Software",
-            ["Cards.BestPractices"] = "Boas práticas",
-            ["Cards.BestHardware"] = "Hardware (auto-verificação)",
-            ["Cards.BestSoftware"] = "Software (auto-verificação)",
-            ["Cards.BestPracticesSubtitle"] = "Consultivo — não bloqueante",
+    {
+        // Cards section headers
+        ["Cards.ToolsImport"] = "Importar/substituir ferramentas",
+        ["Cards.SourceValidation"] = "Validação do vídeo fonte",
+        ["Cards.QueueSourceFilter"] = "Filtro de fila de fontes",
+        ["Cards.QueueSourceFilterSubtitle"] = "Garante consistência da fila",
+        ["Cards.ConcatSourceFilter"] = "Filtro de concatenação de fontes",
+        ["Cards.ConcatSourceFilterSubtitle"] = "Garante consistência da concatenação",
+        ["Cards.SrcIncompatOrCorrupted"] = "Incompatível / Corrompido (vermelho)",
+        ["Cards.SrcQualityIssues"] = "Problemas de qualidade (amarelo-alaranjado)",
+        ["Cards.EncPrerequisites"] = "Pré-requisitos de codificação",
+        ["Cards.EncHardware"] = "Hardware",
+        ["Cards.EncSoftware"] = "Software",
+        ["Cards.BestPractices"] = "Boas práticas",
+        ["Cards.BestHardware"] = "Hardware (auto-verificação)",
+        ["Cards.BestSoftware"] = "Software (auto-verificação)",
+        ["Cards.BestPracticesSubtitle"] = "Consultivo — não bloqueante",
 
-            // Main buttons
-            ["Buttons.UsageAndCompliance"] = "Uso e conformidade",
-            ["Buttons.Settings"] = "Configurações",
-            ["Buttons.OneClickScriptGen"] = "Gerador AVS/VS Script",
-            ["Buttons.OpenScribeSrcScribe"] = "Abrir editor de filtros",
-            ["Buttons.ShowRawJSON"] = "Mostrar JSON bruto",
-            ["Buttons.AnalyzeSrcVideo"] = "Executar análise da fonte",
-            ["Buttons.ReEvaluate"] = "Reavaliar",
-            ["Buttons.RunSample"] = "Amostra clipe",
-            ["Buttons.StartEncode"] = "Iniciar codificação",
-            ["EncInspect.InfoTitle"] = "Detalhes da pré-verificação do codificador",
-            ["EncInspect.InfoMsg"] = "Nenhum problema de pré-verificação do codificador foi encontrado.",
-            ["EncInspect.P1Title"] = "Verificação de energia",
-            ["EncInspect.P1Text"] = "Detecta se o computador está funcionando na energia da bateria via SystemInformation.PowerStatus para reduzir o desgaste da bateria, prevenir desligamento inesperado e evitar queda de compressão/qualidade causada por limitação de energia.",
-            ["EncInspect.P2Title"] = "Verificação de espaço em disco",
-            ["EncInspect.P2Text"] = "Compara o espaço disponível em disco com o tamanho do arquivo fonte × 1.5 (fallback: 1 GiB). Garante espaço suficiente para a saída de codificação.",
-            ["EncInspect.P3Title"] = "Verificação de permissão de escrita",
-            ["EncInspect.P3Text"] = "Verifica o acesso de escrita no diretório de saída tentando listar arquivos. Previne falha de codificação devido a erros de permissão.",
-            ["EncInspect.P4Title"] = "Verificação de sobrescrita",
-            ["EncInspect.P4Text"] = "Verifica se o arquivo de saída já existe e torna a iniciação da sobrescrita dinamicamente mais difícil para prevenir perda acidental de dados.",
-            ["EncInspect.P5Title"] = "Verificação do plugin L-SMASH (Avs2Yuv)",
-            ["EncInspect.P5Text"] = "Verifica se LSMASHSource.dll existe em C:\\Program Files (x86)\\AviSynth+\\plugins64+\\ (não libvslsmashsource.dll) para ler quadros do vídeo fonte.",
-            ["EncInspect.P6Title"] = "Verificação de carga da CPU do nó NUMA",
-            ["EncInspect.P6Text"] = "Verifica se o nó NUMA atualmente selecionado para o codificador tem baixa carga recente de CPU. Carga alta é apenas consultiva e não bloqueia a codificação.",
+        // Main buttons
+        ["Buttons.UsageAndCompliance"] = "Uso e conformidade",
+        ["Buttons.Settings"] = "Configurações",
+        ["Buttons.OneClickScriptGen"] = "Gerador AVS/VS Script",
+        ["Buttons.OpenScribeSrcScribe"] = "Abrir editor de filtros",
+        ["Buttons.ShowRawJSON"] = "Mostrar JSON bruto",
+        ["Buttons.AnalyzeSrcVideo"] = "Executar análise da fonte",
+        ["Buttons.ReEvaluate"] = "Reavaliar",
+        ["Buttons.RunSample"] = "Amostra clipe",
+        ["Buttons.StartEncode"] = "Iniciar codificação",
+        ["EncInspect.InfoTitle"] = "Detalhes da pré-verificação do codificador",
+        ["EncInspect.InfoMsg"] = "Nenhum problema de pré-verificação do codificador foi encontrado.",
+        ["EncInspect.P1Title"] = "Verificação de energia",
+        ["EncInspect.P1Text"] = "Detecta se o computador está funcionando na energia da bateria via SystemInformation.PowerStatus para reduzir o desgaste da bateria, prevenir desligamento inesperado e evitar queda de compressão/qualidade causada por limitação de energia.",
+        ["EncInspect.P2Title"] = "Verificação de espaço em disco",
+        ["EncInspect.P2Text"] = "Compara o espaço disponível em disco com o tamanho do arquivo fonte × 1.5 (fallback: 1 GiB). Garante espaço suficiente para a saída de codificação.",
+        ["EncInspect.P3Title"] = "Verificação de permissão de escrita",
+        ["EncInspect.P3Text"] = "Verifica o acesso de escrita no diretório de saída tentando listar arquivos. Previne falha de codificação devido a erros de permissão.",
+        ["EncInspect.P4Title"] = "Verificação de sobrescrita",
+        ["EncInspect.P4Text"] = "Verifica se o arquivo de saída já existe e torna a iniciação da sobrescrita dinamicamente mais difícil para prevenir perda acidental de dados.",
+        ["EncInspect.P5Title"] = "Verificação do plugin L-SMASH (Avs2Yuv)",
+        ["EncInspect.P5Text"] = "Verifica se LSMASHSource.dll existe em C:\\Program Files (x86)\\AviSynth+\\plugins64+\\ (não libvslsmashsource.dll) para ler quadros do vídeo fonte.",
+        ["EncInspect.P6Title"] = "Verificação de carga da CPU do nó NUMA",
+        ["EncInspect.P6Text"] = "Verifica se o nó NUMA atualmente selecionado para o codificador tem baixa carga recente de CPU. Carga alta é apenas consultiva e não bloqueia a codificação.",
 
 
-            ["Section.SelectUpstream"] = "1. Selecionar ferramenta upstream",
-            ["Section.SelectEncoder"] = "2. Selecionar codificador",
-            ["Section.SelectDependencies"] = "3. Selecionar dependências",
-            ["Section.ImportSrc"] = "4. Importar ou criar arquivo fonte",
-            ["Section.SelectAnalytics"] = "5. Selecionar analisador de vídeo · Executar análise",
-            ["Section.EncodingConfigs"] = "6. Configurações de codificação",
-            ["Section.StartEncoding"] = "7. Iniciar codificação",
+        ["Section.SelectUpstream"] = "1. Selecionar ferramenta upstream",
+        ["Section.SelectEncoder"] = "2. Selecionar codificador",
+        ["Section.SelectDependencies"] = "3. Selecionar dependências",
+        ["Section.ImportSrc"] = "4. Importar ou criar arquivo fonte",
+        ["Section.SelectAnalytics"] = "5. Selecionar analisador de vídeo · Executar análise",
+        ["Section.EncodingConfigs"] = "6. Configurações de codificação",
+        ["Section.StartEncoding"] = "7. Iniciar codificação",
 
-            ["Import.NoSelection"] = "Nenhuma seleção",
-            ["Import.VersionDetectTimeoutTitle"] = "Falha na importação da ferramenta",
-            ["Import.VersionDetectTimeoutMessage"] = "A importação foi rejeitada porque {0} não retornou informações de versão em 3 segundos.",
+        ["Import.NoSelection"] = "Nenhuma seleção",
+        ["Import.VersionDetectTimeoutTitle"] = "Falha na importação da ferramenta",
+        ["Import.VersionDetectTimeoutMessage"] = "A importação foi rejeitada porque {0} não retornou informações de versão em 3 segundos.",
 
-            // ItemCard separator
-            ["ItemCard.Separator"] = ": ",
+        // ItemCard separator
+        ["ItemCard.Separator"] = ": ",
 
-            // Tool card captions
-            ["ToolField.Version"] = "Versão",
-            ["ToolField.Name"] = "Nome",
-            ["ToolField.Mode"] = "Modo",
-            ["ToolField.FileName"] = "Nome do arquivo",
-            ["ToolField.NumaNodes"] = "Afinidade NUMA", // i.e., upstream from node 0 to encoder at node 1 gives “0 → 1”
-            ["ToolField.Threads"] = "Threads", // Value: int thread count, with ToolField.EncThreadClamp On/Off
-            ["ToolField.Value"] = "Valor",
-            ["ToolField.Strategy"] = "Estratégia",
-            ["ToolField.MaxKeyframeGap"] = "Intervalo máx. de quadros-chave",
-            ["ToolField.OtherCustomParams"] = "Outros parâmetros personalizados",
+        // Tool card captions
+        ["ToolField.Version"] = "Versão",
+        ["ToolField.Name"] = "Nome",
+        ["ToolField.Mode"] = "Modo",
+        ["ToolField.FileName"] = "Nome do arquivo",
+        ["ToolField.NumaNodes"] = "Afinidade NUMA", // i.e., upstream from node 0 to encoder at node 1 gives “0 → 1”
+        ["ToolField.Threads"] = "Threads", // Value: int thread count, with ToolField.EncThreadClamp On/Off
+        ["ToolField.Value"] = "Valor",
+        ["ToolField.Strategy"] = "Estratégia",
+        ["ToolField.MaxKeyframeGap"] = "Intervalo máx. de quadros-chave",
+        ["ToolField.OtherCustomParams"] = "Outros parâmetros personalizados",
 
-            ["Tool.Source.VideoSrc"] = "▷ Fonte de vídeo",
-            ["Tool.Source.AviSynth"] = $"Fonte {LangProviderBase.AviSynth} .avs",
-            ["Tool.Source.VapourSynth"] = $"Fonte {LangProviderBase.VapourSynth} .vpy",
-            ["Tool.Source.Svfi"] = "Fonte SVFI .ini",
-            ["Tool.Source.AviSynthQueue"] = $"📁 Fila de scripts {LangProviderBase.AVS}",
-            ["Tool.Source.VapourSynthQueue"] = $"📁 Fila de scripts {LangProviderBase.VS}",
-            ["Tool.Source.SvfiQueue"] = "📁 Fila de scripts SVFI",
+        ["Tool.Source.VideoSrc"] = "▷ Fonte de vídeo",
+        ["Tool.Source.AviSynth"] = $"Fonte {LangProviderBase.AviSynth} .avs",
+        ["Tool.Source.VapourSynth"] = $"Fonte {LangProviderBase.VapourSynth} .vpy",
+        ["Tool.Source.Svfi"] = "Fonte SVFI .ini",
+        ["Tool.Source.AviSynthQueue"] = $"📁 Fila de scripts {LangProviderBase.AVS}",
+        ["Tool.Source.VapourSynthQueue"] = $"📁 Fila de scripts {LangProviderBase.VS}",
+        ["Tool.Source.SvfiQueue"] = "📁 Fila de scripts SVFI",
 
-            ["Tool.Enc.OutputSetting"] = "Nome & caminho arquivo saída",
-            ["Tool.Enc.Parallelism"] = "Controle de paralelismo",
-            ["Tool.Enc.EncParams"] = "Configurações de codificação",
-            ["Tool.Enc.MuxTracks"] = "Adicionar legendas",
+        ["Tool.Enc.OutputSetting"] = "Nome & caminho arquivo saída",
+        ["Tool.Enc.Parallelism"] = "Controle de paralelismo",
+        ["Tool.Enc.EncParams"] = "Configurações de codificação",
+        ["Tool.Enc.MuxTracks"] = "Adicionar legendas",
 
-            // Source queue card
-            ["SourceQueue.FilterModeTitle"] = "Executar filtro ponderado da fila?",
-            ["SourceQueue.FilterModeMessage"] = "Escolha com base na estrutura da fila\nConfirmar: fontes consistentes em duração similar\nCancelar: Excl. introduções/trailers BDMV/M3U por votação ponderada\nUma exclusão por comparação com o primeiro stream será executada para garantir a consistência de formato\n\nPara BDMV, use BDInfo/ChapterTool para lidar com episódios sub/sobre-segmentados",
-            ["SourceQueue.ImportTitle"] = "Importação da fila de fontes de vídeo",
-            ["SourceQueue.ImportPrompt"] = "Importar playlist BluRay?\n\nConfirmar: localize a pasta PLAYLIST com .mpls/ifo/xpl, o sistema adicionará os arquivos de mídia referenciados (m2ts) à fila na ordem da playlist.\nCancelar: selecione diretamente vários arquivos de fonte de vídeo, e os arquivos escolhidos serão adicionados à fila na ordem selecionada.\n\nSe não tem certeza qual cluster selecionar, use o modo Repart ou uma visualização no player para confirmar",
-            ["SourceQueue.SelectPlaylistFolder"] = "Selecionar a pasta BDMV PLAYLIST",
-            ["SourceQueue.SelectFilesTitle"] = "Selecionar arquivos de fonte de vídeo",
-            ["SourceQueue.ImportScanFailed"] = "Nenhuma playlist MPLS utilizável foi encontrada em: {0}",
-            ["SourceQueue.ChapterImportFailed"] = "Falha ao ler capítulos de: {0}",
-            ["SourceQueue.ChapterSourcesMissing"] = "A playlist não resolveu um arquivo de fonte de vídeo existente. Certifique-se de que os arquivos de mídia (m2ts) referenciados pela playlist estão presentes",
+        // Source queue card
+        ["SourceQueue.FilterModeTitle"] = "Executar filtro ponderado da fila?",
+        ["SourceQueue.FilterModeMessage"] = "Escolha com base na estrutura da fila\nConfirmar: fontes consistentes em duração similar\nCancelar: Excl. introduções/trailers BDMV/M3U por votação ponderada\nUma exclusão por comparação com o primeiro stream será executada para garantir a consistência de formato\n\nPara BDMV, use BDInfo/ChapterTool para lidar com episódios sub/sobre-segmentados",
+        ["SourceQueue.ImportTitle"] = "Importação da fila de fontes de vídeo",
+        ["SourceQueue.ImportPrompt"] = "Importar playlist BluRay?\n\nConfirmar: localize a pasta PLAYLIST com .mpls/ifo/xpl, o sistema adicionará os arquivos de mídia referenciados (m2ts) à fila na ordem da playlist.\nCancelar: selecione diretamente vários arquivos de fonte de vídeo, e os arquivos escolhidos serão adicionados à fila na ordem selecionada.\n\nSe não tem certeza qual cluster selecionar, use o modo Repart ou uma visualização no player para confirmar",
+        ["SourceQueue.SelectPlaylistFolder"] = "Selecionar a pasta BDMV PLAYLIST",
+        ["SourceQueue.SelectFilesTitle"] = "Selecionar arquivos de fonte de vídeo",
+        ["SourceQueue.ImportScanFailed"] = "Nenhuma playlist MPLS utilizável foi encontrada em: {0}",
+        ["SourceQueue.ChapterImportFailed"] = "Falha ao ler capítulos de: {0}",
+        ["SourceQueue.ChapterSourcesMissing"] = "A playlist não resolveu um arquivo de fonte de vídeo existente. Certifique-se de que os arquivos de mídia (m2ts) referenciados pela playlist estão presentes",
 
-            ["SourceConcat.SelectFilesTitle"] = "Selecionar arquivos de vídeo para concatenação",
-            ["SourceConcat.OrderingTitle"] = "Ordem de concatenação",
-            ["SourceConcat.RestoreOriginalQueue"] = "Desfazer todas as alterações",
-            ["SourceConcat.ExtensionMismatch"] = "A importação por concatenação requer que todos os arquivos tenham a mesma extensão.\n\nEsperado: {0}\nArquivos incompatíveis:\n{1}",
-            ["SourceConcat.Analyzed"] = "Análise da fonte de concatenação concluída. {0} arquivo(s) compatível(is).\n\nTodas as legendas e arquivos de fonte serão descartados, a etapa 6 permite adicionar legendas.",
-            ["SourceConcat.IncompatibleVideo"] = "A fonte de concatenação #{0} difere da primeira fonte de vídeo.\nEsperado: {1}\nAtual: {2}",
-            ["SourceConcat.IncompatibleFrameRate"] = "A fonte de concatenação #{0} tem uma taxa de quadros diferente da primeira fonte de vídeo.\nEsperado: {1}\nAtual: {2}",
-            ["SourceConcat.ResolutionMismatch"] = "A fonte de concatenação #{0} tem uma resolução diferente da primeira fonte de vídeo.\nEsperado: {1}\nAtual: {2}",
-            ["SourceConcat.VariableFrameRate"] = "O modo Concat não pode usar taxa de quadros variável (VFR) diretamente. Adicione um filtro de reparo VFR→CFR no editor de filtros.",
+        ["SourceConcat.SelectFilesTitle"] = "Selecionar arquivos de vídeo para concatenação",
+        ["SourceConcat.OrderingTitle"] = "Ordem de concatenação",
+        ["SourceConcat.RestoreOriginalQueue"] = "Desfazer todas as alterações",
+        ["SourceConcat.ExtensionMismatch"] = "A importação por concatenação requer que todos os arquivos tenham a mesma extensão.\n\nEsperado: {0}\nArquivos incompatíveis:\n{1}",
+        ["SourceConcat.Analyzed"] = "Análise da fonte de concatenação concluída. {0} arquivo(s) compatível(is).\n\nTodas as legendas e arquivos de fonte serão descartados, a etapa 6 permite adicionar legendas.",
+        ["SourceConcat.IncompatibleVideo"] = "A fonte de concatenação #{0} difere da primeira fonte de vídeo.\nEsperado: {1}\nAtual: {2}",
+        ["SourceConcat.IncompatibleFrameRate"] = "A fonte de concatenação #{0} tem uma taxa de quadros diferente da primeira fonte de vídeo.\nEsperado: {1}\nAtual: {2}",
+        ["SourceConcat.ResolutionMismatch"] = "A fonte de concatenação #{0} tem uma resolução diferente da primeira fonte de vídeo.\nEsperado: {1}\nAtual: {2}",
+        ["SourceConcat.VariableFrameRate"] = "O modo Concat não pode usar taxa de quadros variável (VFR) diretamente. Adicione um filtro de reparo VFR→CFR no editor de filtros.",
 
-            // Dialogs
-            ["Dialog.SelectTitle"] = "Selecionar {0}",
-            ["Dialog.ReplaceTitle"] = "Substituir {0}",
-            ["Dialog.Filter.All"] = "Todos os arquivos (*.*)|*.*",
-            ["Dialog.Filter.Exe"] = "Arquivos executáveis (*.exe)|*.exe",
-            ["Dialog.Filter.Dll"] = "Arquivos DLL (*.dll)|*.dll",
+        // Dialogs
+        ["Dialog.SelectTitle"] = "Selecionar {0}",
+        ["Dialog.ReplaceTitle"] = "Substituir {0}",
+        ["Dialog.Filter.All"] = "Todos os arquivos (*.*)|*.*",
+        ["Dialog.Filter.Exe"] = "Arquivos executáveis (*.exe)|*.exe",
+        ["Dialog.Filter.Dll"] = "Arquivos DLL (*.dll)|*.dll",
 
-            // Confirmation dialog texts
+        // Confirmation dialog texts
 
-            // Auto tool import
-            ["AutoImport.Title"] = "Importação automática de ferramentas",
-            ["AutoImport.FoundMessage"] = "Detectados os seguintes arquivos executáveis verificados. Importá-los agora?\n\n{0}",
-            ["AutoImport.NotFoundMessage"] = "Nenhuma ferramenta importável foi detectada no diretório deste aplicativo. Para verificar posteriormente, habilite Configurações → Modo de Inicialização → Auto-importar ferramentas na próxima execução.",
+        // Auto tool import
+        ["AutoImport.Title"] = "Importação automática de ferramentas",
+        ["AutoImport.FoundMessage"] = "Detectados os seguintes arquivos executáveis verificados. Importá-los agora?\n\n{0}",
+        ["AutoImport.NotFoundMessage"] = "Nenhuma ferramenta importável foi detectada no diretório deste aplicativo. Para verificar posteriormente, habilite Configurações → Modo de Inicialização → Auto-importar ferramentas na próxima execução.",
 
-            // Confirmation provider messages (with {0} / {1} format placeholders)
-            ["ConfirmProvider.SuspiciousImportTitle"] = "A importação não corresponde a {0}",
-            ["ConfirmProvider.ProceedToRun"] = "Prosseguir para executar {0} para obter sua versão?",
-            ["ConfirmProvider.WrongTool"] = "Importar {0} como {1}?",
+        // Confirmation provider messages (with {0} / {1} format placeholders)
+        ["ConfirmProvider.SuspiciousImportTitle"] = "A importação não corresponde a {0}",
+        ["ConfirmProvider.ProceedToRun"] = "Prosseguir para executar {0} para obter sua versão?",
+        ["ConfirmProvider.WrongTool"] = "Importar {0} como {1}?",
 
-            // Checklist - Tools
-            ["Checklist.Tools.Upstream"] = "Um programa upstream importado",
-            ["Checklist.Tools.Downstream"] = "Um programa downstream importado",
-            ["Checklist.Tools.Analysis"] = "Um programa de análise importado",
-            ["Checklist.Tools.UpstreamPicked"] = "Clique para selecionar um programa upstream",
-            ["Checklist.Tools.DownstreamPicked"] = "Clique para selecionar um programa downstream",
-            ["Checklist.Tools.AnalysisPicked"] = "Clique para selecionar um programa de análise",
-            ["Checklist.Tools.CompleteSourceAnalysis"] = "Completar análise da fonte",
-            ["Checklist.Tools.DependenciesPicked"] = "Clique para selecionar um programa de dependência",
-            ["Checklist.Tools.VideoSourcePicked"] = "Clique para selecionar fonte de vídeo ou fila",
-            ["Checklist.Tools.ScriptSourcePicked"] = "Clique para selecionar uma fonte de script (upstream VS/AVS/SVFI)",
+        // Checklist - Tools
+        ["Checklist.Tools.Upstream"] = "Um programa upstream importado",
+        ["Checklist.Tools.Downstream"] = "Um programa downstream importado",
+        ["Checklist.Tools.Analysis"] = "Um programa de análise importado",
+        ["Checklist.Tools.UpstreamPicked"] = "Clique para selecionar um programa upstream",
+        ["Checklist.Tools.DownstreamPicked"] = "Clique para selecionar um programa downstream",
+        ["Checklist.Tools.AnalysisPicked"] = "Clique para selecionar um programa de análise",
+        ["Checklist.Tools.CompleteSourceAnalysis"] = "Completar análise da fonte",
+        ["Checklist.Tools.DependenciesPicked"] = "Clique para selecionar um programa de dependência",
+        ["Checklist.Tools.VideoSourcePicked"] = "Clique para selecionar fonte de vídeo ou fila",
+        ["Checklist.Tools.ScriptSourcePicked"] = "Clique para selecionar uma fonte de script (upstream VS/AVS/SVFI)",
 
-            // Checklist - Source Validation 1 (Severe)
-            ["Checklist.Source1.Metadata"] = "Metadados e dados SEI são legíveis",
-            ["Checklist.Source1.Progressive"] = "Quadros de vídeo progressivos / não entrelaçados",
-            ["Checklist.Source1.BitDepth"] = "Profundidade de bits é menor que 12 (8 ou 10, requisito SVT-AV1)",
-            ["Checklist.Source1.BitDepth2"] = "Profundidade de bits é menor que 16",
+        // Checklist - Source Validation 1 (Severe)
+        ["Checklist.Source1.Metadata"] = "Metadados e dados SEI são legíveis",
+        ["Checklist.Source1.Progressive"] = "Quadros de vídeo progressivos / não entrelaçados",
+        ["Checklist.Source1.BitDepth"] = "Profundidade de bits é menor que 12 (8 ou 10, requisito SVT-AV1)",
+        ["Checklist.Source1.BitDepth2"] = "Profundidade de bits é menor que 16",
 
-            // Checklist - Source Validation 2 (Moderate)
-            ["Checklist.Source2.Framerate"] = "Taxa de quadros é constante / não variável",
-            ["Checklist.Source2.AspectRatio"] = "Proporção de pixel quadrado / 1:1 SAR",
-            ["Checklist.Source2.ColorMetadata"] = "Matriz de cor, transferência, metadados de primários estão normais",
-            ["Checklist.Source2.ChromaSubsampling"] = "Sem subamostragem de croma ou em direção \u2190/\u2196 (requisito SVT-AV1)",
+        // Checklist - Source Validation 2 (Moderate)
+        ["Checklist.Source2.Framerate"] = "Taxa de quadros é constante / não variável",
+        ["Checklist.Source2.AspectRatio"] = "Proporção de pixel quadrado / 1:1 SAR",
+        ["Checklist.Source2.ColorMetadata"] = "Matriz de cor, transferência, metadados de primários estão normais",
+        ["Checklist.Source2.ChromaSubsampling"] = "Sem subamostragem de croma ou em direção \u2190/\u2196 (requisito SVT-AV1)",
 
-            // Checklist - Encoding Prerequisites 1 (Hardware)
-            ["Checklist.Enc1.NotOffGrid"] = "Não está fora da rede / ligado à tomada",
-            ["Checklist.Enc1.DiskSpace"] = "Disponibilidade suficiente de espaço em disco",
-            ["Checklist.Enc1.NumaCpuLoad"] = "Carga da CPU do nó NUMA selecionado está baixa",
+        // Checklist - Encoding Prerequisites 1 (Hardware)
+        ["Checklist.Enc1.NotOffGrid"] = "Não está fora da rede / ligado à tomada",
+        ["Checklist.Enc1.DiskSpace"] = "Disponibilidade suficiente de espaço em disco",
+        ["Checklist.Enc1.NumaCpuLoad"] = "Carga da CPU do nó NUMA selecionado está baixa",
 
-            // Checklist - Encoding Prerequisites 2 (Software)
-            ["Checklist.Enc2.OSFilename"] = "Nome do arquivo de saída é válido para o SO",
-            ["Checklist.Enc2.FTPFilename"] = "Nome do arquivo de saída pode ser válido para FTP (Pseudo-UTF-8)",
-            ["Checklist.Enc2.WritePermission"] = "Permissão de escrita na pasta de saída",
-            ["Checklist.Enc2.Overwrite"] = "Saída não sobrescreve arquivo existente",
-            ["Checklist.Enc2.LsmashForAvs2Yuv"] = "LSMASHSource.dll no caminho do AviSynth+ (Avs2Yuv)",
+        // Checklist - Encoding Prerequisites 2 (Software)
+        ["Checklist.Enc2.OSFilename"] = "Nome do arquivo de saída é válido para o SO",
+        ["Checklist.Enc2.FTPFilename"] = "Nome do arquivo de saída pode ser válido para FTP (Pseudo-UTF-8)",
+        ["Checklist.Enc2.WritePermission"] = "Permissão de escrita na pasta de saída",
+        ["Checklist.Enc2.Overwrite"] = "Saída não sobrescreve arquivo existente",
+        ["Checklist.Enc2.LsmashForAvs2Yuv"] = "LSMASHSource.dll no caminho do AviSynth+ (Avs2Yuv)",
 
-            // Checklist - Best Practices 1 (Hardware)
-            ["Checklist.Best1.SlowDisk"] = "Evitar conexão de disco lenta (USB2, Bluetooth, etc.)",
-            ["Checklist.Best1.DiskThrashing"] = "Evitar thrashing de disco (leitura e gravação no mesmo HDD)",
-            ["Checklist.Best1.BiosDriver"] = "Usar BIOS, driver do chipset e firmware do disco mais recentes",
-            ["Checklist.Best1.Temperature"] = "°C (°F): SSD, RAM abaixo de 75 (167), HDD abaixo de 55 (131)",
-            ["Checklist.Best1.SMR"] = "Não gravar em um HDD SMR",
+        // Checklist - Best Practices 1 (Hardware)
+        ["Checklist.Best1.SlowDisk"] = "Evitar conexão de disco lenta (USB2, Bluetooth, etc.)",
+        ["Checklist.Best1.DiskThrashing"] = "Evitar thrashing de disco (leitura e gravação no mesmo HDD)",
+        ["Checklist.Best1.BiosDriver"] = "Usar BIOS, driver do chipset e firmware do disco mais recentes",
+        ["Checklist.Best1.Temperature"] = "°C (°F): SSD, RAM abaixo de 75 (167), HDD abaixo de 55 (131)",
+        ["Checklist.Best1.SMR"] = "Não gravar em um HDD SMR",
 
-            // Checklist - Best Practices 2 (Software)
-            ["Checklist.Best2.EncoderVersion"] = "Usar versão mais recente do codificador",
-            ["Checklist.Best2.FAT32"] = "Não gravar em um volume FAT32",
-            ["Checklist.Best2.DiskCompression"] = "A pasta de saída desabilita a compressão de disco do sistema de arquivos",
+        // Checklist - Best Practices 2 (Software)
+        ["Checklist.Best2.EncoderVersion"] = "Usar versão mais recente do codificador",
+        ["Checklist.Best2.FAT32"] = "Não gravar em um volume FAT32",
+        ["Checklist.Best2.DiskCompression"] = "A pasta de saída desabilita a compressão de disco do sistema de arquivos",
 
-            // FilterScribeModal
+        // FilterScribeModal
 
-            // FFProbeJsonUpdateResolver
-            ["FFProbeJsonUpdate.JsonEmpty"] = "JSON do ffprobe está vazio.",
-            ["FFProbeJsonUpdate.DimensionsNotPositive"] = "Dimensões de resolução devem ser positivas.",
-            ["FFProbeJsonUpdate.RootNotObject"] = "Raiz do JSON do ffprobe não é um objeto.",
-            ["FFProbeJsonUpdate.NoVideoStream"] = "Nenhum stream de vídeo encontrado no JSON do ffprobe.",
+        // FFProbeJsonUpdateResolver
+        ["FFProbeJsonUpdate.JsonEmpty"] = "JSON do ffprobe está vazio.",
+        ["FFProbeJsonUpdate.DimensionsNotPositive"] = "Dimensões de resolução devem ser positivas.",
+        ["FFProbeJsonUpdate.RootNotObject"] = "Raiz do JSON do ffprobe não é um objeto.",
+        ["FFProbeJsonUpdate.NoVideoStream"] = "Nenhum stream de vídeo encontrado no JSON do ffprobe.",
 
-            // FilenameScribeModal
+        // FilenameScribeModal
 
-            // Hints
-            ["Hint.SVFIClipDisabled"] = "OneLineShotArgs não suporta clipping de amostra; botão Executar Amostra desabilitado.",
-            ["Hint.AnalyzeRunConditionDuration"] = "A análise começa na importação da fonte (≈70～100 ms/fonte, o modo Repart é mais demorado)",
-            ["Hint.NumaCpuCheckTrigger"] = "O uso da CPU do nó NUMA é atualizado em eventos de clique do mouse ou entrada do teclado.",
-            ["Hint.FFmpegOptionalBut"] = "FFmpeg é opcional, mas necessário para visualização de quadros de vídeo e muxing automático de MKV",
-            ["ScriptQueueImport.RejectedPrefix"] = "Importação rejeitada: {0} nome(s) base sem correspondência, {1} caminho(s) incompatível(is).",
-            ["ScriptQueueImport.DetailsHeader"] = "Detalhes:",
-            ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — nenhuma fonte de vídeo correspondente pelo nome base",
-            ["ScriptQueueImport.DetailNoScript"] = "'{0}' — nenhum arquivo de script correspondente pelo nome base",
-            ["ScriptQueueImport.DetailUnreadable"] = "'{0}' — formato de script não reconhecido, não é possível verificar o caminho da fonte",
-            ["ScriptQueueImport.DetailMismatch"] = "'{0}' — refere \"{1}\", esperado \"{2}\"",
-            ["ScriptQueueImport.MoreCount"] = "...e {0} mais.",
-            ["ScriptQueueImport.CountMismatchTitle"] = "Contagem de scripts incompatível",
-            ["ScriptQueueImport.MissingSummary"] = "{0} de {1} scripts estão ausentes para o upstream selecionado.",
-            ["ScriptQueueImport.MissingLabel"] = "Ausentes:",
-            ["ScriptQueueImport.SourceMismatchTitle"] = "Fonte de script incompatível",
-            ["ScriptQueueImport.SourceMismatchSummary"] = "{0} script(s) referencia(m) uma fonte de vídeo diferente.",
-            ["Hint.QueueRouteSampleClipDisabled"] = "Os modos de fila/concatenação de fontes de vídeo não suportam clipping de amostra. Executar Amostra foi desabilitado.",
-            ["Hint.FilterScribeDisabled"] = "OneLineShotArgs não suporta geração de scripts; o editor de filtros está desabilitado.",
-            ["Hint.MinDurationFilter"] = "Filtro de duração mínima (s):",
-            ["Hint.DurationFilterAllFiltered"] = "Todos os vídeos filtrados pelo filtro de duração.",
-            ["Hint.DurationFilterCount"] = "{0} de {1} vídeos filtrados.",
+        // Hints
+        ["Hint.SVFIClipDisabled"] = "OneLineShotArgs não suporta clipping de amostra; botão Executar Amostra desabilitado.",
+        ["Hint.AnalyzeRunConditionDuration"] = "A análise começa na importação da fonte (≈70～100 ms/fonte, o modo Repart é mais demorado)",
+        ["Hint.NumaCpuCheckTrigger"] = "O uso da CPU do nó NUMA é atualizado em eventos de clique do mouse ou entrada do teclado.",
+        ["Hint.FFmpegOptionalBut"] = "FFmpeg é opcional, mas necessário para visualização de quadros de vídeo e muxing automático de MKV",
+        ["ScriptQueueImport.RejectedPrefix"] = "Importação rejeitada: {0} nome(s) base sem correspondência, {1} caminho(s) incompatível(is).",
+        ["ScriptQueueImport.DetailsHeader"] = "Detalhes:",
+        ["ScriptQueueImport.DetailNoMatch"] = "'{0}' — nenhuma fonte de vídeo correspondente pelo nome base",
+        ["ScriptQueueImport.DetailNoScript"] = "'{0}' — nenhum arquivo de script correspondente pelo nome base",
+        ["ScriptQueueImport.DetailUnreadable"] = "'{0}' — formato de script não reconhecido, não é possível verificar o caminho da fonte",
+        ["ScriptQueueImport.DetailMismatch"] = "'{0}' — refere \"{1}\", esperado \"{2}\"",
+        ["ScriptQueueImport.MoreCount"] = "...e {0} mais.",
+        ["ScriptQueueImport.CountMismatchTitle"] = "Contagem de scripts incompatível",
+        ["ScriptQueueImport.MissingSummary"] = "{0} de {1} scripts estão ausentes para o upstream selecionado.",
+        ["ScriptQueueImport.MissingLabel"] = "Ausentes:",
+        ["ScriptQueueImport.SourceMismatchTitle"] = "Fonte de script incompatível",
+        ["ScriptQueueImport.SourceMismatchSummary"] = "{0} script(s) referencia(m) uma fonte de vídeo diferente.",
+        ["Hint.QueueRouteSampleClipDisabled"] = "Os modos de fila/concatenação de fontes de vídeo não suportam clipping de amostra. Executar Amostra foi desabilitado.",
+        ["Hint.FilterScribeDisabled"] = "OneLineShotArgs não suporta geração de scripts; o editor de filtros está desabilitado.",
+        ["Hint.MinDurationFilter"] = "Filtro de duração mínima (s):",
+        ["Hint.DurationFilterAllFiltered"] = "Todos os vídeos filtrados pelo filtro de duração.",
+        ["Hint.DurationFilterCount"] = "{0} de {1} vídeos filtrados.",
 
-            // Heatmap
-            ["Heatmap.Cold"] = "Frio",
-            ["Heatmap.Hot"] = "Quente",
+        // Heatmap
+        ["Heatmap.Cold"] = "Frio",
+        ["Heatmap.Hot"] = "Quente",
 
-            // Source analysis result ConfirmationModal
-            ["SrcAnalysis.Completed"] = "Análise da fonte concluída.",
-            ["SrcAnalysis.RunAfterReplace"] = "Executar análise da fonte agora?",
-            ["SrcAnalysis.Copied"] = "JSON bruto do ffprobe copiado para a área de transferência.",
+        // Source analysis result ConfirmationModal
+        ["SrcAnalysis.Completed"] = "Análise da fonte concluída.",
+        ["SrcAnalysis.RunAfterReplace"] = "Executar análise da fonte agora?",
+        ["SrcAnalysis.Copied"] = "JSON bruto do ffprobe copiado para a área de transferência.",
 
-            ["ScriptGen.RunAfterReplace"] = "Gerar scripts AVS e VPY agora?",
-            ["ScriptGen.ScriptsSaved"] = "Scripts salvos:\n{0}",
+        ["ScriptGen.RunAfterReplace"] = "Gerar scripts AVS e VPY agora?",
+        ["ScriptGen.ScriptsSaved"] = "Scripts salvos:\n{0}",
 
-            // InspectSrcProblems modal texts
-            ["SrcInspect.InfoTitle"] = "Verificação da fonte",
-            ["SrcInspect.InfoMsg"] = "Nenhum problema óbvio da fonte foi encontrado.",
-            ["SrcInspect.ErrorTitle"] = "Problemas graves da fonte",
-            ["SrcInspect.WarnTitle"] = "Problemas moderados da fonte",
-            ["SrcInspect.MetadataP1Text"] = "Os metadados da fonte não podem ser lidos. O arquivo pode estar corrompido ou não é um arquivo de vídeo; a codificação não pode continuar porque esta ferramenta depende de metadados para escolher parâmetros de codificação seguros.",
-            ["SrcInspect.ProgressiveP1Text"] = "Esta ferramenta não pode inspecionar padrões entre quadros para configurar filtros IVTC. Consulte https://iavoe.github.io/deint-ivtc-web-tutorial/HTML para orientação.",
-            ["SrcInspect.BitDepthP1Text"] = "SVT-AV1 não suporta vídeo de 12 bits. Se SVT-AV1 não estiver selecionado, este problema é tratado como um aviso e não desabilita o botão Iniciar Codificação.",
-            ["SrcInspect.FramerateP1Text"] = "Use o editor de filtros para adicionar filtro de conversão VFR→CFR. Codificar VFR diretamente pode causar dessincronização áudio/vídeo ao longo do tempo.",
-            ["SrcInspect.AspectRatioP1Text"] = "Esta ferramenta não pode compensar pixels não quadrados. Continuar pode produzir dimensões de vídeo inesperadas. Para corrigir a fonte, transcodifique para FFV1 com ffmpeg via -aspect <SAR-atual>.",
-            ["SrcInspect.ColorMetadataP1Text"] = "Players frequentemente recorrem a BT.709 quando os metadados de matriz de cor, características de transferência ou primárias de cor estão ausentes, mas existem múltiplos valores válidos e apenas um conjunto está correto para a fonte.",
-            ["SrcInspect.ChromaSubsamplingP1Text"] = "Local de amostra de croma incorreto pode desfocar bordas coloridas ou afastá-las das bordas dos objetos. Diferente de AVC e HEVC, AV1 suporta apenas um conjunto limitado de locais de amostra de croma."
+        // InspectSrcProblems modal texts
+        ["SrcInspect.InfoTitle"] = "Verificação da fonte",
+        ["SrcInspect.InfoMsg"] = "Nenhum problema óbvio da fonte foi encontrado.",
+        ["SrcInspect.ErrorTitle"] = "Problemas graves da fonte",
+        ["SrcInspect.WarnTitle"] = "Problemas moderados da fonte",
+        ["SrcInspect.MetadataP1Text"] = "Os metadados da fonte não podem ser lidos. O arquivo pode estar corrompido ou não é um arquivo de vídeo; a codificação não pode continuar porque esta ferramenta depende de metadados para escolher parâmetros de codificação seguros.",
+        ["SrcInspect.ProgressiveP1Text"] = "Esta ferramenta não pode inspecionar padrões entre quadros para configurar filtros IVTC. Consulte https://iavoe.github.io/deint-ivtc-web-tutorial/HTML para orientação.",
+        ["SrcInspect.BitDepthP1Text"] = "SVT-AV1 não suporta vídeo de 12 bits. Se SVT-AV1 não estiver selecionado, este problema é tratado como um aviso e não desabilita o botão Iniciar Codificação.",
+        ["SrcInspect.FramerateP1Text"] = "Use o editor de filtros para adicionar filtro de conversão VFR→CFR. Codificar VFR diretamente pode causar dessincronização áudio/vídeo ao longo do tempo.",
+        ["SrcInspect.AspectRatioP1Text"] = "Esta ferramenta não pode compensar pixels não quadrados. Continuar pode produzir dimensões de vídeo inesperadas. Para corrigir a fonte, transcodifique para FFV1 com ffmpeg via -aspect <SAR-atual>.",
+        ["SrcInspect.ColorMetadataP1Text"] = "Players frequentemente recorrem a BT.709 quando os metadados de matriz de cor, características de transferência ou primárias de cor estão ausentes, mas existem múltiplos valores válidos e apenas um conjunto está correto para a fonte.",
+        ["SrcInspect.ChromaSubsamplingP1Text"] = "Local de amostra de croma incorreto pode desfocar bordas coloridas ou afastá-las das bordas dos objetos. Diferente de AVC e HEVC, AV1 suporta apenas um conjunto limitado de locais de amostra de croma."
     };
 
     [Conditional("DEBUG")]

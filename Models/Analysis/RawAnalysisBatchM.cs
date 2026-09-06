@@ -1,5 +1,3 @@
-using System.Text.Json;
-
 namespace OneColumnEncoder.Models.Analysis;
 
 /// <summary>

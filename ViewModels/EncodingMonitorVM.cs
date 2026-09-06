@@ -1,10 +1,9 @@
 using OneColumnEncoder.Converters;
 using OneColumnEncoder.CPU;
 using OneColumnEncoder.Models.Encoding;
-using System.Runtime.InteropServices;
 using System.Collections.Concurrent;
 using System.IO;
-using OneColumnEncoder.Models;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Threading;
 
@@ -501,9 +500,11 @@ public partial class EncodingMonitorVM : BaseVM
     {
         MemoryRangeBlocks.Clear();
         for (int i = 0; i < MemoryRangeBlockCount; i++)
-            MemoryRangeBlocks.Add(new MemoryRangeBlockM {
+            MemoryRangeBlocks.Add(new MemoryRangeBlockM
+            {
                 FillLevel = 0,
-                Tooltip = string.Format(Lang.BlockTooltipFormat, i) });
+                Tooltip = string.Format(Lang.BlockTooltipFormat, i)
+            });
     }
 
     /// <summary>
@@ -1723,7 +1724,7 @@ public partial class EncodingMonitorVM : BaseVM
         {
             if (process is { HasExited: false }) process.CloseMainWindow();
         }
-        catch {}
+        catch { }
     }
 
     private async Task StopUpstreamAfterEncoderExitAsync(Task encoderExitedTask, Process upstream, CancellationToken cancellationToken)
@@ -1743,14 +1744,14 @@ public partial class EncodingMonitorVM : BaseVM
             if (!upstream.HasExited)
                 TryKillProcess(upstream);
         }
-        catch (OperationCanceledException) {}
-        catch {}
+        catch (OperationCanceledException) { }
+        catch { }
     }
 
     private static void TryCloseStream(Stream? stream)
     {
         try { stream?.Close(); }
-        catch {}
+        catch { }
     }
 
     private static void TryKillProcess(Process? process)
@@ -1759,7 +1760,7 @@ public partial class EncodingMonitorVM : BaseVM
         {
             if (process is { HasExited: false }) process.Kill();
         }
-        catch {}
+        catch { }
     }
 
     private static void TryDeleteFile(string? path)
@@ -1768,7 +1769,7 @@ public partial class EncodingMonitorVM : BaseVM
         {
             if (!string.IsNullOrWhiteSpace(path) && File.Exists(path)) File.Delete(path);
         }
-        catch {}
+        catch { }
     }
 
     private void EnableCloseButton()
@@ -1869,7 +1870,7 @@ public partial class EncodingMonitorVM : BaseVM
             SaveLogFile(UpstreamReportText, directory, "upstream-stderr", _appConfM.Logs.MaxUpstreamLogFiles);
             SaveLogFile(DownstreamReportText, directory, "downstream-stderr", _appConfM.Logs.MaxDownstreamLogFiles);
         }
-        catch {} // Log persistence must not change the encoding result.
+        catch { } // Log persistence must not change the encoding result.
     }
 
     private static void SaveLogFile(string text, string directory, string filePrefix, int maxFileCount)

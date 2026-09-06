@@ -1,5 +1,3 @@
-using OneColumnEncoder.Commands.OpenClose;
-
 namespace OneColumnEncoder.Commands.OpenClose.Confirmations;
 
 /// <summary>
@@ -40,5 +38,5 @@ public abstract class OpenConfirmationBase(
 
     protected abstract ConfirmationVM CreateViewModel(ConfirmationModal window);
 
-    protected virtual void ConfigureViewModel(ConfirmationVM vm) {}
+    protected virtual void ConfigureViewModel(ConfirmationVM vm) { }
 }

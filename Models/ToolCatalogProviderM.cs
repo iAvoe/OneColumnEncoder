@@ -197,7 +197,7 @@ public static class ToolCatalogProviderM
         ],
     };
 
-private static IEnumerable<string> GetBaseDirectoryUpstreamSearchPaths()
+    private static IEnumerable<string> GetBaseDirectoryUpstreamSearchPaths()
     {
         string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
         string configDirectory = SaveLoadBase<AppConfM>.GetConfigDirectory();

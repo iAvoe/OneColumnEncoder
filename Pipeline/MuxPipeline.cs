@@ -1,6 +1,4 @@
 using System.IO;
-using OneColumnEncoder.Models;
-using System.Text.RegularExpressions;
 using static OneColumnEncoder.Models.JsonProviderM;
 
 namespace OneColumnEncoder.Pipeline;
@@ -379,7 +377,7 @@ public static partial class MuxPipeline
             ? "-map 1:a:0?"
             : "-map 1:a?";
         return $"{audioMapArgs} {audioMuxArgs}";
-}
+    }
 
     private static string ResolveTempAudioPath(string outputPath, EncodingAudioMuxMode mode)
     {

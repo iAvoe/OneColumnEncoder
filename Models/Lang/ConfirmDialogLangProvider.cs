@@ -71,7 +71,7 @@ public class ConfirmDialogLangProvider(string languageCode) : LangProviderBase(l
             ["ConfirmDialog.CopyHint"] = "テキストを右クリックしてコピー",
             ["ConfirmDialog.DebugPrefix"] = "デバッグ: ",
         };
-Data["ru"] = new(Data["en"])
+        Data["ru"] = new(Data["en"])
         {
             ["ConfirmDialog.CopyText"] = "Копировать сообщение",
             ["ConfirmDialog.WarningPrefix"] = "Предупреждение: ",

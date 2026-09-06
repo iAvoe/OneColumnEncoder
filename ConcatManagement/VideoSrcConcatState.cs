@@ -97,7 +97,7 @@ public sealed class SrcConcatState
         {
             if (File.Exists(FileListPath)) File.Delete(FileListPath);
         }
-        catch {}
+        catch { }
     }
 
     private static string DeleteFileList()

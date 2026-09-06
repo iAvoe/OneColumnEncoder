@@ -1,6 +1,4 @@
 using System.IO;
-using OneColumnEncoder.Models;
-using System.Text.RegularExpressions;
 
 namespace OneColumnEncoder.ToolManagement;
 

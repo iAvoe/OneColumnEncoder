@@ -1,6 +1,4 @@
-using OneColumnEncoder.FFmpeg;
 using OneColumnEncoder.Validation;
-using System.IO;
 
 namespace OneColumnEncoder.ViewModels;
 
@@ -1134,13 +1132,13 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             if (analysis == null || divider == null)
                 return;
 
-        RunOnUi(() =>
-            {
-                DividerPreviewFrames.Clear();
-                StatusText = string.Format(
-                    RepartLangProvider.Current["DividerPreviewReadingWindow"],
-                    divider.Frame);
-            });
+            RunOnUi(() =>
+                {
+                    DividerPreviewFrames.Clear();
+                    StatusText = string.Format(
+                        RepartLangProvider.Current["DividerPreviewReadingWindow"],
+                        divider.Frame);
+                });
 
             RepartDividerPreviewResult result = await _dividerPreviewService
                 .BuildAsync(analysis, divider.Frame, cts.Token)

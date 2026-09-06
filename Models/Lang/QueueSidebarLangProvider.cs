@@ -65,7 +65,7 @@ public sealed class QueueSidebarLangProvider : LangProviderBase
             ["QueueSidebarRunningHeaderText"] = "Выполняется",
             ["QueueSidebarWaitingHeaderText"] = "В ожидании",
             ["QueueSidebarUnfinishedHeaderText"] = "Незавершённые",
-["QueueSidebarCompletedHeaderText"] = "Завершённые",
+            ["QueueSidebarCompletedHeaderText"] = "Завершённые",
         };
         Data["de"] = new(Data["en"])
         {

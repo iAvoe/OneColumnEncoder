@@ -1,5 +1,4 @@
 using OneColumnEncoder.ViewModels.MuxTracks;
-using OneColumnEncoder.Commands.OpenClose.Confirmations;
 using System.IO;
 
 namespace OneColumnEncoder.Commands.OpenClose;

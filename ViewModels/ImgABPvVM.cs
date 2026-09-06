@@ -1,7 +1,6 @@
 using OneColumnEncoder.Analytics;
 using OneColumnEncoder.Models.Analysis;
 using OneColumnEncoder.Models.Encoding;
-using OneColumnEncoder.Pipeline;
 using System.IO;
 
 namespace OneColumnEncoder.ViewModels;

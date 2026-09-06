@@ -1,6 +1,5 @@
 using System.IO;
 using System.Text.RegularExpressions;
-using OneColumnEncoder.ViewModels.Cards;
 
 namespace OneColumnEncoder.Models;
 

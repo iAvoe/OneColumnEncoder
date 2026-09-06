@@ -1,6 +1,3 @@
-using OneColumnEncoder.Models;
-using System.Text.RegularExpressions;
-
 namespace OneColumnEncoder.ViewModels;
 
 /// <summary>

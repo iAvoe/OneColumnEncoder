@@ -322,12 +322,12 @@ public class FilterScribeVM : BaseVM
         if (!IsScaleApplicable) return;
         // var w, h are discard values now
         RecomputeTarget();
-                OnPropertyChanged(nameof(TargetDisplay));
-                OnPropertyChanged(nameof(FFmpegResizeFilter));
-                OnPropertyChanged(nameof(FFmpegResizeFilterDisplay));
-                OnPropertyChanged(nameof(FFmpegFpsScaleFilter));
-                OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
-                OnPropertyChanged(nameof(FFmpegFullChainFilter));
+        OnPropertyChanged(nameof(TargetDisplay));
+        OnPropertyChanged(nameof(FFmpegResizeFilter));
+        OnPropertyChanged(nameof(FFmpegResizeFilterDisplay));
+        OnPropertyChanged(nameof(FFmpegFpsScaleFilter));
+        OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
+        OnPropertyChanged(nameof(FFmpegFullChainFilter));
         OnPropertyChanged(nameof(FFmpegHqdn3dFullChainFilter));
         OnPropertyChanged(nameof(VapourSynthResizeFilter));
         OnPropertyChanged(nameof(AviSynthResizeFilter));
@@ -473,13 +473,13 @@ public class FilterScribeVM : BaseVM
         set
         {
             int clamped = Math.Clamp(value, 0, 3);
-        if (SetProperty(ref _rotateMode, clamped))
-        {
-            OnPropertyChanged(nameof(RotateDisplay));
-            OnPropertyChanged(nameof(FFmpegRotateFilter));
-            OnPropertyChanged(nameof(FFmpegRotateFilterDisplay));
-            OnPropertyChanged(nameof(CanInsertFFmpegRotateFilter));
-        }
+            if (SetProperty(ref _rotateMode, clamped))
+            {
+                OnPropertyChanged(nameof(RotateDisplay));
+                OnPropertyChanged(nameof(FFmpegRotateFilter));
+                OnPropertyChanged(nameof(FFmpegRotateFilterDisplay));
+                OnPropertyChanged(nameof(CanInsertFFmpegRotateFilter));
+            }
         }
     }
 
@@ -492,12 +492,12 @@ public class FilterScribeVM : BaseVM
         get => _horizontalFlipEnabled;
         set
         {
-        if (SetProperty(ref _horizontalFlipEnabled, value))
-        {
-            OnPropertyChanged(nameof(FFmpegFlipFilter));
-            OnPropertyChanged(nameof(FFmpegFlipFilterDisplay));
-            OnPropertyChanged(nameof(CanInsertFFmpegFlipFilter));
-        }
+            if (SetProperty(ref _horizontalFlipEnabled, value))
+            {
+                OnPropertyChanged(nameof(FFmpegFlipFilter));
+                OnPropertyChanged(nameof(FFmpegFlipFilterDisplay));
+                OnPropertyChanged(nameof(CanInsertFFmpegFlipFilter));
+            }
         }
     }
 
@@ -507,12 +507,12 @@ public class FilterScribeVM : BaseVM
         get => _verticalFlipEnabled;
         set
         {
-        if (SetProperty(ref _verticalFlipEnabled, value))
-        {
-            OnPropertyChanged(nameof(FFmpegFlipFilter));
-            OnPropertyChanged(nameof(FFmpegFlipFilterDisplay));
-            OnPropertyChanged(nameof(CanInsertFFmpegFlipFilter));
-        }
+            if (SetProperty(ref _verticalFlipEnabled, value))
+            {
+                OnPropertyChanged(nameof(FFmpegFlipFilter));
+                OnPropertyChanged(nameof(FFmpegFlipFilterDisplay));
+                OnPropertyChanged(nameof(CanInsertFFmpegFlipFilter));
+            }
         }
     }
 

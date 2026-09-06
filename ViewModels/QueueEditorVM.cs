@@ -120,7 +120,7 @@ public sealed partial class QueueEditorVM : BaseVM
     {
         for (int i = 1; i < items.Count; i++)
         {
-            if (comparer.Compare(keySelector(items[i-1]), keySelector(items[i])) > 0)
+            if (comparer.Compare(keySelector(items[i - 1]), keySelector(items[i])) > 0)
                 return false;
         }
         return true;

@@ -31,7 +31,7 @@ public readonly record struct FFProbeSrcStats(
 public static class FFProbeSourceStatsReader
 {
     private const double FallbackDuration = 600d;
-    private const double FallbackFrameRate = 30d; 
+    private const double FallbackFrameRate = 30d;
 
     public static FFProbeSrcStats Read(string rawJson)
     {

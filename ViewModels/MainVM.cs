@@ -1,6 +1,5 @@
 using OneColumnEncoder.Commands.SaveLoad;
 using OneColumnEncoder.ConcatManagement;
-using OneColumnEncoder.FFmpeg;
 using OneColumnEncoder.Models.Analysis;
 using OneColumnEncoder.Models.Encoding;
 using OneColumnEncoder.QueueManagement;
@@ -10,7 +9,6 @@ using OneColumnEncoder.ToolManagement;
 using OneColumnEncoder.Validation;
 using System.Collections.Specialized;
 using System.IO;
-using System.Text.Json;
 using static OneColumnEncoder.Models.JsonProviderM;
 // Important: No string matching. Expect all strings changes eventually, match the key instead
 namespace OneColumnEncoder.ViewModels;
@@ -3265,10 +3263,8 @@ public class MainVM : BaseVM
         RefreshOverlayVisibility();
     }
 
-    private void RefreshOverlayVisibility()
-    {
+    private void RefreshOverlayVisibility() =>
         IsOverlayVisible = _modalNavS.IsOpen || _overlayBlockCount > 0;
-    }
 
     #region Language Switching
     private void OnLanguageChanged() { RefreshLanguage(); }

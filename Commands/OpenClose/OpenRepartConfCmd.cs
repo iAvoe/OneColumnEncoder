@@ -1,6 +1,6 @@
-using System.IO;
 using OneColumnEncoder.ChapterTool;
 using OneColumnEncoder.RepartManagement;
+using System.IO;
 
 namespace OneColumnEncoder.Commands.OpenClose;
 

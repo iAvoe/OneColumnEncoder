@@ -1,5 +1,4 @@
 using System.IO;
-using OneColumnEncoder.Models;
 using System.Text.RegularExpressions;
 
 namespace OneColumnEncoder.FFmpeg;
@@ -45,7 +44,7 @@ public static class SubtitleHelper
                     return result;
             }
         }
-        catch {} // return null
+        catch { } // return null
         return null;
     }
 

@@ -1,6 +1,5 @@
 using OneColumnEncoder.CPU;
 using OneColumnEncoder.Models.Encoding;
-using OneColumnEncoder.Models;
 using System.IO;
 using System.Text.RegularExpressions;
 using static OneColumnEncoder.Models.JsonProviderM;
@@ -205,7 +204,7 @@ public static partial class EncodingPipeline
         return new(commandLine, upstreamArgs, encoderArgs, MuxPipeline.BuildMuxCommand(request));
     }
 
-    
+
 
     /// <summary>
     /// Builds the upstream decode command that feeds the encoder with Y4M video only.
