@@ -10,12 +10,16 @@ assignees: iAvoe
 **Brief**
 - One liner, if this can be explained shortly
 
-**OS Version**
-- Click `Start Menu`, enter `winver` and press Enter to 
-- Windows ?? (i.e. 10)
-- Version ???? (i.e. 22H2)
-- Build ????? (i.e. 19045)
-- Has this OS been heavily de-bloated (might be missing components to run this program unless reinstall)
+**Environment——OS**
+Click `Start Menu`, enter `winver` and press Enter to answer the line below
+- Windows ?? Version ???? Build ?????
+  - i.e.: Windows 10 Version 22H2 Build 19045
+- Has this OS been heavily debloated——List components that are removed
+
+**Environment——Hardware**
+- CPU Model——Not needed if unrelated
+- GPU Model——Not needed if unrelated
+- RAM Capacity——Not needed if unrelated
 
 **Whereabouts**
 - Caused by data——Say which data for what purpose caused it
