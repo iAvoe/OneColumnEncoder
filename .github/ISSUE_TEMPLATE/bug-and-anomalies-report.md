@@ -1,6 +1,6 @@
 ---
 name: Bug and anomalies report
-about: Crashes, UI issues, UI not updating, Encoding fails, Missing checks
+about: Crashes, UI layout/updating fails, Encoding fails, Missing checks, etc
 title: ''
 labels: ''
 assignees: iAvoe

@@ -1,6 +1,6 @@
 ---
 name: Bug 与异常报告
-about: Create a report to help us improve
+about: 崩溃、界面崩坏/不更新、压制任务失败、缺少检查条件等
 title: ''
 labels: ''
 assignees: iAvoe
