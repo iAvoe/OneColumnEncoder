@@ -1266,7 +1266,7 @@ public class MainVM : BaseVM
         int externalCount = sourcePaths.Sum(path =>
             GetMuxTracksForSource(path).Count(t => !t.IsSourceTrack));
 
-        _muxTracksCard.P1Name = "ST+ET";
+        _muxTracksCard.P1Name = "Int+Ext";
         _muxTracksCard.P1TextData = $"{sourceCount} + {externalCount}";
 
         int totalTracks = sourceCount + externalCount;
@@ -2993,6 +2993,7 @@ public class MainVM : BaseVM
         SubZoneItemsCollectionChanged(EncodersZone);
         SubZoneItemsCollectionChanged(AnalyticsZone);
         SubZoneItemsCollectionChanged(DependenciesZone);
+        SubZoneItemsCollectionChanged(EncodingConfZone);
         SubZoneItemsCollectionChanged(VideoSrcImportZone);
     }
 
@@ -3466,6 +3467,7 @@ public class MainVM : BaseVM
         UnsubZoneItemsCollectionChanged(EncodersZone);
         UnsubZoneItemsCollectionChanged(AnalyticsZone);
         UnsubZoneItemsCollectionChanged(DependenciesZone);
+        UnsubZoneItemsCollectionChanged(EncodingConfZone);
         UnsubZoneItemsCollectionChanged(VideoSrcImportZone);
         base.Dispose();
         GC.SuppressFinalize(this);

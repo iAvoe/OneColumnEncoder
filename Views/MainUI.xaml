@@ -875,6 +875,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
+            <!-- Extra display for output path -->
             <comps:HintPanel Text="{Binding EncodingConfZoneSelectedPath}"
                              Margin="10 2.5 5 0"
                              HorizontalAlignment="Left"
