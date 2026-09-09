@@ -10,9 +10,9 @@ public sealed class SrcConcatState
     // ItemCard View, path for each source, and filelist write path
     private readonly ToolItemCardVM? _SrcConcatCard;
     private string[] _filePaths = [];
-    private static readonly string DefaultFileListPath =
+    private readonly string _fileListPath =
         Path.Combine(SaveLoadBase<ConcatFileListPathPlaceholder>.GetConfigDirectory(),
-            "source_concat_filelist.txt");
+            $"source_concat_filelist_{Environment.ProcessId}_{Guid.NewGuid():N}.txt");
 
     // Constructor: bind state, set R1Text as Add or Replace
     public SrcConcatState(IEnumerable<ToolItemCardVM> videoSrcImportZone)
@@ -25,7 +25,7 @@ public sealed class SrcConcatState
 
     public bool IsActive => _SrcConcatCard != null && _SrcConcatCard.IsSelected;
     public string[] CurrentFilePaths => _filePaths;
-    public static string FileListPath => DefaultFileListPath;
+    public string FileListPath => _fileListPath;
 
     /// <summary>
     /// Helping find source method in MainVM to distingulish mode
@@ -50,7 +50,7 @@ public sealed class SrcConcatState
     public string RegenerateFileList() =>
         _filePaths.Length == 0
             ? DeleteFileList()
-            : ConcatFileListGenerator.GenerateFileList(_filePaths, FileListPath);
+            : ConcatFileListGenerator.GenerateFileList(_filePaths, _fileListPath);
 
     public void Clear()
     {
@@ -91,19 +91,19 @@ public sealed class SrcConcatState
             : string.Empty;
     }
 
-    private static void TryDeleteFileList()
+    private void TryDeleteFileList()
     {
         try
         {
-            if (File.Exists(FileListPath)) File.Delete(FileListPath);
+            if (File.Exists(_fileListPath)) File.Delete(_fileListPath);
         }
         catch { }
     }
 
-    private static string DeleteFileList()
+    private string DeleteFileList()
     {
         TryDeleteFileList();
-        return FileListPath;
+        return _fileListPath;
     }
 
     private void RefreshTitle()

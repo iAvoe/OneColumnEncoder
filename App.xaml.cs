@@ -13,6 +13,7 @@ public partial class App : Application
     internal readonly ModalNavS _modalNavM;
     private readonly AppConfM _appConfM;
     private readonly AppDataM _appDataM;
+    private readonly ForkSnapshot? _forkSnapshot;
     public App()
     {
         _modalNavM = new ModalNavS();
@@ -22,6 +23,9 @@ public partial class App : Application
         // Fresh installs need one startup language probe; existing configs keep their saved state.
         if (!File.Exists(Path.Combine(AppConfM.GetConfigDirectory(), "appconfig.json")))
             _appConfM.InitLang = true;
+
+        _forkSnapshot = ForkSnapshot.LoadFromCommandLine();
+        _forkSnapshot?.ApplyTo(_appDataM, _appConfM);
     }
 
     protected override void OnStartup(StartupEventArgs e)
@@ -41,10 +45,10 @@ public partial class App : Application
             OpenAppConfCmd openAppConf = new(_modalNavM, _appConfM);
             OpenUsagesCmd openUsages = new(_modalNavM, _appConfM);
 
-            MainWindow = new MainWindow()
-            {
-                DataContext = new MainVM(openAppConf, openUsages, _appDataM, _appConfM, _modalNavM)
-            };
+            MainVM mainVM = new(openAppConf, openUsages, _appDataM, _appConfM, _modalNavM);
+            if (_forkSnapshot != null)
+                mainVM.ApplyForkSnapshot(_forkSnapshot);
+            MainWindow = new MainWindow { DataContext = mainVM };
             MainWindow.Show();
             base.OnStartup(e);
         }

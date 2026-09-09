@@ -15,6 +15,7 @@ namespace OneColumnEncoder.ViewModels;
 
 public class MainVM : BaseVM
 {
+    private static string ForkButtonText => (UICaptionProvider.Buttons.Fork + " (BETA)");
     private readonly AppDataM _appDataM;
     private readonly AppConfM _appConfM;
     private readonly ModalNavS _modalNavS;
@@ -639,9 +640,9 @@ public class MainVM : BaseVM
         AnalyzeSrcButtons.B2_1Icon = SvgIconProvider.GameInfo;
         AnalyzeSrcButtons.B2_2Icon = SvgIconProvider.GameScan;
         EncStartButtons = ButtonGroupVM.CreateThreeButton( // UpdateEncStartButtonsState()
-            UICaptionProvider.Buttons.ReEvaluate, UICaptionProvider.Buttons.RunSample, UICaptionProvider.Buttons.StartEncode,
-            new ActionCmd(_ => ReEvaluateAllChecks()), SampleClip, StartEncode);
-        EncStartButtons.B3_1Icon = SvgIconProvider.GameRefresh;
+            ForkButtonText, UICaptionProvider.Buttons.RunSample, UICaptionProvider.Buttons.StartEncode,
+            new ActionCmd(_ => Fork()), SampleClip, StartEncode);
+        EncStartButtons.B3_1Icon = SvgIconProvider.GameFork;
         EncStartButtons.B3_2Icon = SvgIconProvider.GameLocation;
         EncStartButtons.B3_3Icon = SvgIconProvider.GamePlay;
         SrcValGroup = new ValidationActionGroupVM(
@@ -1207,16 +1208,202 @@ public class MainVM : BaseVM
         ToolsImportCard.SetScriptSourcePickedStatus(expectedKind != null, scriptSourcePicked);
     }
 
-    private void ReEvaluateAllChecks()
+    public void RefreshNumaCpuCheck()
     {
         EncTermsValCard.RunAllChecks();
         UpdateEncStartButtonsState();
     }
 
-    public void RefreshNumaCpuCheck()
+    private void Fork()
     {
-        EncTermsValCard.RunAllChecks();
-        UpdateEncStartButtonsState();
+        string? snapshotPath = null;
+        try
+        {
+            snapshotPath = ForkSnapshot.Write(BuildForkSnapshot());
+            ForkSnapshot.StartChild(snapshotPath);
+        }
+        catch (Exception ex)
+        {
+            if (!string.IsNullOrWhiteSpace(snapshotPath))
+            {
+                try { if (File.Exists(snapshotPath)) File.Delete(snapshotPath); }
+                catch { }
+            }
+
+            new OpenErrModalCmd(_modalNavS, "Fork Failed", ex.Message).Execute(null);
+        }
+    }
+
+    private ForkSnapshot BuildForkSnapshot() => new()
+    {
+        AppData = _appDataM,
+        AppConf = _appConfM,
+        Cards =
+        [
+            .. CaptureForkCards("Upstreams", UpstreamsZone),
+            .. CaptureForkCards("Encoders", EncodersZone),
+            .. CaptureForkCards("Analytics", AnalyticsZone),
+            .. CaptureForkCards("Dependencies", DependenciesZone),
+            .. CaptureForkCards("VideoSources", VideoSrcImportZone),
+            .. CaptureForkCards("Scripts", ScriptSrcImportZone),
+            .. CaptureForkCards("QueueScripts", QueueScriptSrcImportZone),
+            .. CaptureForkCards("Encoding", EncodingConfZone)
+        ],
+        QueueSourcePaths = [.. GetCurrentQueueFilePaths()],
+        ConcatSourcePaths = [.. GetConcatFilePaths()],
+        RepartPlan = GetRepartPlan(),
+        Analysis = CloneAnalysis(_srcVideoAnalysis),
+        FfmpegFilterArgs = _scriptScribeFFmpegFilterArgs,
+        RepartAvsFilterInput = _repartAvsFilterInput,
+        RepartVpyFilterInput = _repartVpyFilterInput,
+        IsDurationFilterEnabled = _isDurationFilterEnabled,
+        MinVideoDurationSeconds = _minVideoDurationSeconds,
+        QueueIncludedCount = QueueSrcFilterCard.IncludedCount,
+        QueueExcludedCount = QueueSrcFilterCard.ExcludedCount,
+        QueueJsonPath = QueueSrcFilterCard.QueueJsonPath,
+        ExcludedQueueJsonPath = QueueSrcFilterCard.ExcludedJsonPath
+    };
+
+    private static IEnumerable<ForkCardState> CaptureForkCards(
+        string zone,
+        IEnumerable<ToolItemCardVM> cards) => cards.Select(card => new ForkCardState
+        {
+            Zone = zone,
+            DefinitionKey = card.DefinitionKey,
+            P1TextData = card.P1TextData,
+            P1TooltipText = card.P1TooltipText,
+            P2TextData = card.P2TextData,
+            IsSelected = card.IsSelected,
+            IsEnabled = card.IsEnabled
+        });
+
+    internal void ApplyForkSnapshot(ForkSnapshot snapshot)
+    {
+        _scriptScribeFFmpegFilterArgs = snapshot.FfmpegFilterArgs;
+        _repartAvsFilterInput = snapshot.RepartAvsFilterInput;
+        _repartVpyFilterInput = snapshot.RepartVpyFilterInput;
+        _isDurationFilterEnabled = snapshot.IsDurationFilterEnabled;
+        _minVideoDurationSeconds = snapshot.MinVideoDurationSeconds;
+
+        ToolItemCardVM? queueCard = VideoSrcImportZone.FirstOrDefault(IsSrcQueueItem);
+        if (snapshot.QueueSourcePaths.Length > 0)
+        {
+            _SrcQueue.ApplyAcceptedFiles(snapshot.QueueSourcePaths);
+            if (queueCard != null)
+            {
+                QueueSrcFilterCard.ApplyQueueResult(
+                    snapshot.QueueIncludedCount,
+                    snapshot.QueueExcludedCount,
+                    CloneForkFile(snapshot.QueueJsonPath),
+                    CloneForkFile(snapshot.ExcludedQueueJsonPath));
+            }
+        }
+
+        if (snapshot.ConcatSourcePaths.Length > 0)
+            _SrcConcat.ApplyImportedFiles(snapshot.ConcatSourcePaths);
+
+        if (snapshot.RepartPlan != null)
+            _SrcRepart.ApplyPlan(snapshot.RepartPlan);
+
+        ApplyForkCards(snapshot.Cards, restoreValues: true, restoreSelection: true);
+        RefreshSelectedSrcStatus(resetAnalysis: false);
+
+        CopyAnalysis(snapshot.Analysis, _srcVideoAnalysis);
+        RefreshActiveSrcRoute();
+        if (!_srcVideoAnalysis.IsEmpty)
+        {
+            switch (GetActiveSrcRoute())
+            {
+                case SrcRouteKind.Queue:
+                    QueueSrcFilterCard.ApplyFfprobeAnalysisJson(_srcVideoAnalysis.RawJson);
+                    break;
+                case SrcRouteKind.Concat:
+                    ConcatCheckCard.ApplyFfprobeAnalysisJson(_srcVideoAnalysis.RawJson);
+                    ConcatCheckCard.ApplyConcatAnalysis(snapshot.ConcatSourcePaths, allValid: true);
+                    break;
+                case SrcRouteKind.Repart when snapshot.RepartPlan != null:
+                    RepartCheckCard.ApplyRepartPlan(snapshot.RepartPlan);
+                    break;
+                default:
+                    SrcValCard.ApplyFfprobeAnalysisJson(_srcVideoAnalysis.RawJson);
+                    break;
+            }
+
+            OnSrcAnalysisCompleted(true);
+        }
+
+        // Route refreshes derive a few display values. Restore the captured
+        // values last so a fork is visually identical at the moment it opens.
+        RefreshDurationFilterStatus();
+        RefreshSelectedSrcStatus(resetAnalysis: false);
+        ApplyForkCards(snapshot.Cards, restoreValues: true, restoreSelection: false);
+    }
+
+    private void ApplyForkCards(
+        IEnumerable<ForkCardState> states,
+        bool restoreValues,
+        bool restoreSelection)
+    {
+        foreach (ForkCardState state in states)
+        {
+            ObservableCollection<ToolItemCardVM>? zone = state.Zone switch
+            {
+                "Upstreams" => UpstreamsZone,
+                "Encoders" => EncodersZone,
+                "Analytics" => AnalyticsZone,
+                "Dependencies" => DependenciesZone,
+                "VideoSources" => VideoSrcImportZone,
+                "Scripts" => ScriptSrcImportZone,
+                "QueueScripts" => QueueScriptSrcImportZone,
+                "Encoding" => EncodingConfZone,
+                _ => null
+            };
+            ToolItemCardVM? card = zone?.FirstOrDefault(item =>
+                string.Equals(item.DefinitionKey, state.DefinitionKey, StringComparison.Ordinal));
+            if (card == null) continue;
+
+            if (restoreValues)
+            {
+                card.P1TextData = state.P1TextData;
+                card.P1TooltipText = state.P1TooltipText;
+                card.P2TextData = state.P2TextData;
+                card.IsEnabled = state.IsEnabled;
+            }
+
+            if (restoreSelection)
+                card.IsSelected = state.IsSelected;
+        }
+    }
+
+    private static string CloneForkFile(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path) || !File.Exists(path)) return path;
+
+        string clonePath = Path.Combine(
+            Path.GetTempPath(),
+            $"1cenc-fork-{Environment.ProcessId}-{Guid.NewGuid():N}-{Path.GetFileName(path)}");
+        File.Copy(path, clonePath, overwrite: true);
+        return clonePath;
+    }
+
+    private static VideoAnalysisM CloneAnalysis(VideoAnalysisM source) => new()
+    {
+        Route = source.Route,
+        SrcPath = source.SrcPath,
+        FFprobePath = source.FFprobePath,
+        RawJson = source.RawJson,
+        BatchRawJson = source.BatchRawJson,
+        ConcatTotalFrames = source.ConcatTotalFrames
+    };
+
+    private static void CopyAnalysis(VideoAnalysisM source, VideoAnalysisM target)
+    {
+        target.Route = source.Route;
+        target.SrcPath = source.SrcPath;
+        target.FFprobePath = source.FFprobePath;
+        target.RawJson = source.RawJson;
+        target.BatchRawJson = source.BatchRawJson;
+        target.ConcatTotalFrames = source.ConcatTotalFrames;
     }
     #endregion
 
@@ -3303,7 +3490,7 @@ public class MainVM : BaseVM
         OnPropertyChanged(nameof(ToggleMiniBestPracticesCardText));
         OnPropertyChanged(nameof(ToggleMiniToolsImportCardText));
         OnPropertyChanged(nameof(ToggleMiniStartEncodingZoneText));
-        EncStartButtons.B3_1Text = UICaptionProvider.Buttons.ReEvaluate;
+        EncStartButtons.B3_1Text = ForkButtonText;
         EncStartButtons.B3_2Text = UICaptionProvider.Buttons.RunSample;
         EncStartButtons.B3_3Text = UICaptionProvider.Buttons.StartEncode;
         AnalyzeSrcButtons.B2_1Text = UICaptionProvider.Buttons.ShowRawJSON;
