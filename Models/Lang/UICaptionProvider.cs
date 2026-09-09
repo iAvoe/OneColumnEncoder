@@ -31,6 +31,7 @@ public static class UICaptionProvider
         public static string Fork => UILangProvider.Current["Buttons.Fork"];
         public static string RunSample => UILangProvider.Current["Buttons.RunSample"];
         public static string StartEncode => UILangProvider.Current["Buttons.StartEncode"];
+        public static string EditQueue => UILangProvider.Current["Buttons.EditQueue"];
 
     }
 

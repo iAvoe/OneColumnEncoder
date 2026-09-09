@@ -631,10 +631,12 @@ public class MainVM : BaseVM
             UICaptionProvider.Buttons.UsageAndCompliance, UICaptionProvider.Buttons.Settings, OpenUsages, OpenAppConf);
         OpenAppConfButtons.B2_1Icon = SvgIconProvider.GamePhone;
         OpenAppConfButtons.B2_2Icon = SvgIconProvider.GameSetting;
-        FilterScbButtons = ButtonGroupVM.CreateTwoButton( // UpdateFilterScbButtonsState()
-            UICaptionProvider.Buttons.OneClickScriptGen, UICaptionProvider.Buttons.OpenScribeSrcScribe, OneClickScriptGen, OpenFilterScribe);
-        FilterScbButtons.B2_1Icon = SvgIconProvider.GameLightning;
-        FilterScbButtons.B2_2Icon = SvgIconProvider.GameFilter;
+        FilterScbButtons = ButtonGroupVM.CreateThreeButton( // UpdateFilterScbButtonsState()
+            UICaptionProvider.Buttons.OneClickScriptGen, UICaptionProvider.Buttons.EditQueue, UICaptionProvider.Buttons.OpenScribeSrcScribe,
+            OneClickScriptGen, new ActionCmd(_ => OpenEditQueue()), OpenFilterScribe);
+        FilterScbButtons.B3_1Icon = SvgIconProvider.GameLightning;
+        FilterScbButtons.B3_2Icon = SvgIconProvider.GameDoc;
+        FilterScbButtons.B3_3Icon = SvgIconProvider.GameFilter;
         AnalyzeSrcButtons = ButtonGroupVM.CreateTwoButton(
             UICaptionProvider.Buttons.ShowRawJSON, UICaptionProvider.Buttons.AnalyzeSrcVideo, OpenRawAnalysis, AnalyzeSrcVideo);
         AnalyzeSrcButtons.B2_1Icon = SvgIconProvider.GameInfo;
@@ -1129,23 +1131,25 @@ public class MainVM : BaseVM
 
         bool hasVideoSrc = HasSelectedVideoSrc();
         bool hasRawJson = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
+        SrcRouteKind route = GetActiveSrcRoute();
+        bool isQueueOrConcat = route is SrcRouteKind.Queue or SrcRouteKind.Concat;
 
+        // B1, B2, B3: Edit queue, Gen script, Open Filter Scribe
         if (oneLineShotSelected)
         {
-            FilterScbButtons.B2_1IsEnabled = false;
-            FilterScbButtons.B2_2IsEnabled = false;
+            FilterScbButtons.B3_1IsEnabled = false;
+            FilterScbButtons.B3_2IsEnabled = false;
+            FilterScbButtons.B3_3IsEnabled = false;
         }
         else
         {
-            FilterScbButtons.B2_1IsEnabled = true;
-            FilterScbButtons.B2_2IsEnabled = hasVideoSrc && hasRawJson;
+            FilterScbButtons.B3_1IsEnabled = true;
+            FilterScbButtons.B3_2IsEnabled = isQueueOrConcat;
+            FilterScbButtons.B3_3IsEnabled = hasVideoSrc && hasRawJson;
         }
 
         if (_modalNavS.GetModal<FilterScribeVM>() is FilterScribeVM modal)
-        {
             modal.SetSourceAnalysisState(hasVideoSrc && hasRawJson);
-        }
-
         OneClickScriptGen.OnCanExecuteChanged();
     }
     public void UpdateEncStartButtonsState()
@@ -2245,35 +2249,6 @@ public class MainVM : BaseVM
         }
     }
 
-    private void PromptScriptGenerationAfterReplace()
-    {
-        if (!HasGeneratableScriptUpstream()) return;
-        if (!OneClickScriptGen.CanExecute(null)) return;
-
-        ConfirmationModal window = new();
-        CloseModalCmd cancelCmd = new(window.Close);
-        ConfirmationVM vm = ConfirmationVM.CreateInfo(
-            UILangProvider.ScriptGenWindowTitle,
-            UILangProvider.Current["ScriptGen.RunAfterReplace"],
-            cancelCmd,
-            new ActionCmd(_ =>
-            {
-                window.DialogResult = true;
-                window.Close();
-                if (OneClickScriptGen.CanExecute(null))
-                    OneClickScriptGen.Execute(null);
-                _appDataM.Save();
-            }));
-
-        window.DataContext = vm;
-        Window? owner = OpenCloseBase.GetSafeOwnerWindow();
-        if (owner != null)
-            window.Owner = owner;
-        window.Closed += (_, _) => _modalNavS.Close();
-        _modalNavS.CurrentModalVM = vm;
-        window.ShowDialog();
-    }
-
     private void OnSrcAnalysisCompleted(bool isSuccess)
     {
         ToolsImportCard.SetCompleteSourceAnalysisStatus(isSuccess);
@@ -2508,6 +2483,14 @@ public class MainVM : BaseVM
         _SrcQueue.ApplyAcceptedFiles(editedFilePaths);
         RefreshSelectedSrcStatus(resetAnalysis: false);
         RefreshDurationFilterStatus();
+    }
+
+    private void OpenEditQueue()
+    {
+        string[] filePaths = GetCurrentQueueFilePaths();
+        if (filePaths.Length == 0) return;
+        new OpenQueueEditorCmd(_modalNavS, ApplyEditedQueueSrcPaths)
+            .Execute(filePaths);
     }
 
     private void SaveSrcPath(SrcFileKind kind, string filePath)
@@ -3476,8 +3459,9 @@ public class MainVM : BaseVM
     {
         OpenAppConfButtons.B2_1Text = UICaptionProvider.Buttons.UsageAndCompliance;
         OpenAppConfButtons.B2_2Text = UICaptionProvider.Buttons.Settings;
-        FilterScbButtons.B2_1Text = UICaptionProvider.Buttons.OneClickScriptGen;
-        FilterScbButtons.B2_2Text = UICaptionProvider.Buttons.OpenScribeSrcScribe;
+        FilterScbButtons.B3_1Text = UICaptionProvider.Buttons.OneClickScriptGen;
+        FilterScbButtons.B3_2Text = UICaptionProvider.Buttons.EditQueue;
+        FilterScbButtons.B3_3Text = UICaptionProvider.Buttons.OpenScribeSrcScribe;
         OnPropertyChanged(nameof(ToggleMiniUpstreamsZoneText));
         OnPropertyChanged(nameof(ToggleMiniEncodersZoneText));
         OnPropertyChanged(nameof(ToggleMiniAnalyticsZoneText));
