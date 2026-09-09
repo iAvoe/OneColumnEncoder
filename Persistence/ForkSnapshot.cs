@@ -1,6 +1,5 @@
 using OneColumnEncoder.Models.Analysis;
 using System.IO;
-using System.Text.Json;
 
 namespace OneColumnEncoder.Persistence;
 
