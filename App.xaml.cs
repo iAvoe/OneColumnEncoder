@@ -14,9 +14,12 @@ public partial class App : Application
     private readonly AppConfM _appConfM;
     private readonly AppDataM _appDataM;
     private readonly ForkSnapshot? _forkSnapshot;
+    private readonly string? _forkSnapshotLoadError;
     public App()
     {
-        _forkSnapshot = ForkSnapshot.LoadFromCommandLine();
+        string? forkSnapshotLoadError;
+        _forkSnapshot = ForkSnapshot.LoadFromCommandLine(out forkSnapshotLoadError);
+        _forkSnapshotLoadError = forkSnapshotLoadError;
         if (_forkSnapshot != null && !string.IsNullOrWhiteSpace(_forkSnapshot.ConfigSubFolder))
             PersistencePaths.ConfigSubFolder = _forkSnapshot.ConfigSubFolder;
 
@@ -43,6 +46,19 @@ public partial class App : Application
 
             ApplyStartupLanguageOnce();
             _ = new UILangProvider(_appConfM.Lang.LanguageCode);
+
+            if (_forkSnapshotLoadError != null)
+            {
+                new OpenErrModalCmd(
+                    _modalNavM,
+                    UICaptionProvider.Errors.ForkSnapshotLoadTitle,
+                    string.Format(
+                        UICaptionProvider.Errors.ForkSnapshotLoadMessage,
+                        _forkSnapshotLoadError)).Execute(null);
+                Shutdown(-1);
+                return;
+            }
+
             AppFontProvider.Refresh();
             AppFontProvider.ApplyFrom(_appConfM);
             OpenAppConfCmd openAppConf = new(_modalNavM, _appConfM);

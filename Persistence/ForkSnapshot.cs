@@ -47,22 +47,51 @@ internal sealed class ForkSnapshot
         return path;
     }
 
-    public static ForkSnapshot? LoadFromCommandLine()
+    public static ForkSnapshot? LoadFromCommandLine(out string? error)
     {
+        error = null;
         string[] args = Environment.GetCommandLineArgs();
         int optionIndex = Array.FindIndex(args, arg =>
             string.Equals(arg, CommandLineOption, StringComparison.OrdinalIgnoreCase));
-        if (optionIndex < 0 || optionIndex + 1 >= args.Length) return null;
+        if (optionIndex < 0) return null;
+        if (optionIndex + 1 >= args.Length)
+        {
+            error = "Fork snapshot path was not provided.";
+            return null;
+        }
 
         string path = args[optionIndex + 1];
         try
         {
-            return File.Exists(path)
-                ? JsonSerializer.Deserialize<ForkSnapshot>(File.ReadAllText(path))
-                : null;
+            if (!File.Exists(path))
+            {
+                error = $"Fork snapshot file was not found: {path}";
+                return null;
+            }
+
+            ForkSnapshot? snapshot = JsonSerializer.Deserialize<ForkSnapshot>(File.ReadAllText(path));
+            if (snapshot == null)
+            {
+                error = "Fork snapshot file was empty or invalid.";
+                return null;
+            }
+
+            if (string.IsNullOrWhiteSpace(snapshot.ConfigSubFolder))
+            {
+                error = "Fork snapshot did not contain an isolated configuration directory.";
+                return null;
+            }
+
+            return snapshot;
         }
-        catch
+        catch (JsonException ex)
         {
+            error = $"Fork snapshot JSON could not be read: {ex.Message}";
+            return null;
+        }
+        catch (Exception ex)
+        {
+            error = $"Fork snapshot could not be read: {ex.Message}";
             return null;
         }
         finally

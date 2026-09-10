@@ -35,6 +35,12 @@ public static class UICaptionProvider
 
     }
 
+    public static class Errors
+    {
+        public static string ForkSnapshotLoadTitle => UILangProvider.Current["Errors.ForkSnapshotLoadTitle"];
+        public static string ForkSnapshotLoadMessage => UILangProvider.Current["Errors.ForkSnapshotLoadMessage"];
+    }
+
     public static class SourceInspect
     {
         public static string InfoTitle => UILangProvider.Current["SrcInspect.InfoTitle"];
