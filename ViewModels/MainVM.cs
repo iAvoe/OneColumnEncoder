@@ -15,7 +15,7 @@ namespace OneColumnEncoder.ViewModels;
 
 public class MainVM : BaseVM
 {
-    private static string ForkButtonText => (UICaptionProvider.Buttons.Fork + " (BETA)");
+    private static string ForkButtonText => UICaptionProvider.Buttons.Fork;
     private readonly AppDataM _appDataM;
     private readonly AppConfM _appConfM;
     private readonly ModalNavS _modalNavS;
