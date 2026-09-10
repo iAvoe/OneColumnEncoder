@@ -1,4 +1,5 @@
 using OneColumnEncoder.Models.Analysis;
+using OneColumnEncoder.Models.Encoding;
 using System.IO;
 
 namespace OneColumnEncoder.Persistence;
@@ -14,6 +15,9 @@ internal sealed class ForkSnapshot
 
     public AppDataM AppData { get; set; } = new();
     public AppConfM AppConf { get; set; } = new();
+    public EncoderConfM EncoderConfig { get; set; } = new();
+    public ParallelismConfM ParallelismConfig { get; set; } = new();
+    public string ConfigSubFolder { get; set; } = string.Empty;
     public List<ForkCardState> Cards { get; set; } = [];
     public string[] QueueSourcePaths { get; set; } = [];
     public string[] ConcatSourcePaths { get; set; } = [];
@@ -131,6 +135,9 @@ internal sealed class ForkSnapshot
         appConf.AudioMux = AppConf.AudioMux;
         appConf.AutoMux = AppConf.AutoMux;
         appConf.TextEditor = AppConf.TextEditor;
+
+        EncoderConfig.Save();
+        ParallelismConfig.Save();
     }
 }
 

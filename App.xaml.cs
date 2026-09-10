@@ -16,6 +16,10 @@ public partial class App : Application
     private readonly ForkSnapshot? _forkSnapshot;
     public App()
     {
+        _forkSnapshot = ForkSnapshot.LoadFromCommandLine();
+        if (_forkSnapshot != null && !string.IsNullOrWhiteSpace(_forkSnapshot.ConfigSubFolder))
+            PersistencePaths.ConfigSubFolder = _forkSnapshot.ConfigSubFolder;
+
         _modalNavM = new ModalNavS();
         _appConfM = AppConfM.Load();
         _appDataM = AppDataM.Load();
@@ -24,7 +28,6 @@ public partial class App : Application
         if (!File.Exists(Path.Combine(AppConfM.GetConfigDirectory(), "appconfig.json")))
             _appConfM.InitLang = true;
 
-        _forkSnapshot = ForkSnapshot.LoadFromCommandLine();
         _forkSnapshot?.ApplyTo(_appDataM, _appConfM);
     }
 

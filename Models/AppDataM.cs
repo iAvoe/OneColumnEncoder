@@ -8,9 +8,8 @@ namespace OneColumnEncoder.Models;
 /// </summary>
 public class AppDataM : SaveLoadBase<AppDataM>
 {
-    private static readonly string ConfigFilePath =
+    protected override string FilePath =>
         Path.Combine(GetConfigDirectory(), "appdata.json");
-    protected override string FilePath => ConfigFilePath;
 
     public Importables Tools { get; set; } = new Importables();
     public EncodingSettings Encoding { get; set; } = new EncodingSettings();

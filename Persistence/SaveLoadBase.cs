@@ -2,6 +2,15 @@
 
 namespace OneColumnEncoder.Persistence;
 
+internal static class PersistencePaths
+{
+    public static string ConfigSubFolder { get; set; } = "1cenc";
+
+    public static string GetConfigDirectory() => Path.IsPathRooted(ConfigSubFolder)
+        ? ConfigSubFolder
+        : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigSubFolder);
+}
+
 public abstract class SaveLoadBase<T> : INotifyPropertyChanged where T : SaveLoadBase<T>, new()
 {
     private static readonly JsonSerializerOptions CachedJsonOptions =
@@ -16,11 +25,15 @@ public abstract class SaveLoadBase<T> : INotifyPropertyChanged where T : SaveLoa
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    public static string ConfigSubFolder { get; set; } = "1cenc";
+    public static string ConfigSubFolder
+    {
+        get => PersistencePaths.ConfigSubFolder;
+        set => PersistencePaths.ConfigSubFolder = value;
+    }
 
     public static string GetConfigDirectory()
     {
-        return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConfigSubFolder);
+        return PersistencePaths.GetConfigDirectory();
     }
 
     // File level save-load

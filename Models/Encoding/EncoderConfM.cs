@@ -8,10 +8,8 @@ namespace OneColumnEncoder.Models.Encoding;
 /// </summary>
 public class EncoderConfM : SaveLoadBase<EncoderConfM>
 {
-    private static readonly string ConfigFilePath =
+    protected override string FilePath =>
         Path.Combine(GetConfigDirectory(), "encodingconfig.json");
-
-    protected override string FilePath => ConfigFilePath;
 
     public int EncoderModeTabIndex { get; set; } = 0;
     public string RateControlMode { get; set; } = "CRF";

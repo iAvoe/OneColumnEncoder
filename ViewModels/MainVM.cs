@@ -1244,6 +1244,11 @@ public class MainVM : BaseVM
     {
         AppData = _appDataM,
         AppConf = _appConfM,
+        EncoderConfig = EncoderConfM.Load(),
+        ParallelismConfig = ParallelismConfM.Load(),
+        ConfigSubFolder = Path.Combine(
+            Path.GetTempPath(),
+            $"1cenc-fork-config-{Environment.ProcessId}-{Guid.NewGuid():N}"),
         Cards =
         [
             .. CaptureForkCards("Upstreams", UpstreamsZone),

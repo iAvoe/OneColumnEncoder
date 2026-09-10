@@ -8,10 +8,8 @@ namespace OneColumnEncoder.Models;
 /// </summary>
 public class ParallelismConfM : SaveLoadBase<ParallelismConfM>
 {
-    private static readonly string ConfigFilePath =
+    protected override string FilePath =>
         Path.Combine(GetConfigDirectory(), "parallelismconfig.json");
-
-    protected override string FilePath => ConfigFilePath;
 
     public int UpstreamNodeId { get; set; } = 0;
     public int DownstreamNodeId { get; set; } = 1;

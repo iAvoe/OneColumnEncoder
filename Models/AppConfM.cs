@@ -7,9 +7,8 @@ namespace OneColumnEncoder.Models;
 /// </summary>
 public class AppConfM : SaveLoadBase<AppConfM>
 {
-    private static readonly string ConfigFilePath =
+    protected override string FilePath =>
         Path.Combine(GetConfigDirectory(), "appconfig.json");
-    protected override string FilePath => ConfigFilePath;
     public bool Reimport { get; set; } = true;
     public bool InitLang { get; set; } = false;
     public OverwriteSettings Overwrite { get; set; } = new OverwriteSettings();
