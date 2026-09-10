@@ -632,11 +632,11 @@ public class MainVM : BaseVM
         OpenAppConfButtons.B2_1Icon = SvgIconProvider.GamePhone;
         OpenAppConfButtons.B2_2Icon = SvgIconProvider.GameSetting;
         FilterScbButtons = ButtonGroupVM.CreateThreeButton( // UpdateFilterScbButtonsState()
-            UICaptionProvider.Buttons.OneClickScriptGen, UICaptionProvider.Buttons.OpenScribeSrcScribe, UICaptionProvider.Buttons.EditQueue,
+            UICaptionProvider.Buttons.OneClickScriptGen, UICaptionProvider.Buttons.FilterScribe, UICaptionProvider.Buttons.EditQueue,
             OneClickScriptGen, OpenFilterScribe, new ActionCmd(_ => OpenEditQueue()));
         FilterScbButtons.B3_1Icon = SvgIconProvider.GameLightning;
         FilterScbButtons.B3_2Icon = SvgIconProvider.GameFilter;
-        FilterScbButtons.B3_3Icon = SvgIconProvider.GameDoc;
+        FilterScbButtons.B3_3Icon = SvgIconProvider.GameMenu;
         AnalyzeSrcButtons = ButtonGroupVM.CreateTwoButton(
             UICaptionProvider.Buttons.ShowRawJSON, UICaptionProvider.Buttons.AnalyzeSrcVideo, OpenRawAnalysis, AnalyzeSrcVideo);
         AnalyzeSrcButtons.B2_1Icon = SvgIconProvider.GameInfo;
@@ -3491,7 +3491,7 @@ public class MainVM : BaseVM
         OpenAppConfButtons.B2_1Text = UICaptionProvider.Buttons.UsageAndCompliance;
         OpenAppConfButtons.B2_2Text = UICaptionProvider.Buttons.Settings;
         FilterScbButtons.B3_1Text = UICaptionProvider.Buttons.OneClickScriptGen;
-        FilterScbButtons.B3_2Text = UICaptionProvider.Buttons.OpenScribeSrcScribe;
+        FilterScbButtons.B3_2Text = UICaptionProvider.Buttons.FilterScribe;
         FilterScbButtons.B3_3Text = UICaptionProvider.Buttons.EditQueue;
         OnPropertyChanged(nameof(ToggleMiniUpstreamsZoneText));
         OnPropertyChanged(nameof(ToggleMiniEncodersZoneText));

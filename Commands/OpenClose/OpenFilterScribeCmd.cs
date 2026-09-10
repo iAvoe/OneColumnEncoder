@@ -38,7 +38,7 @@ public class OpenFilterScribeCmd(
             ConfirmationModal warnWindow = new();
             CloseModalCmd closeCmd = new(warnWindow.Close);
             ConfirmationVM warnVm = ConfirmationVM.CreateWarning(
-                UICaptionProvider.Buttons.OpenScribeSrcScribe,
+                UICaptionProvider.Buttons.FilterScribe,
                 UICaptionProvider.Hints.FilterScribeDisabled,
                 closeCmd, closeCmd);
 

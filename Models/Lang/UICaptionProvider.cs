@@ -25,13 +25,13 @@ public static class UICaptionProvider
         public static string UsageAndCompliance => UILangProvider.Current["Buttons.UsageAndCompliance"];
         public static string Settings => UILangProvider.Current["Buttons.Settings"];
         public static string OneClickScriptGen => UILangProvider.Current["Buttons.OneClickScriptGen"];
-        public static string OpenScribeSrcScribe => UILangProvider.Current["Buttons.OpenScribeSrcScribe"];
+        public static string FilterScribe => UILangProvider.Current["Buttons.FilterScribe"];
         public static string ShowRawJSON => UILangProvider.Current["Buttons.ShowRawJSON"];
         public static string AnalyzeSrcVideo => UILangProvider.Current["Buttons.AnalyzeSrcVideo"];
         public static string Fork => UILangProvider.Current["Buttons.Fork"];
         public static string RunSample => UILangProvider.Current["Buttons.RunSample"];
         public static string StartEncode => UILangProvider.Current["Buttons.StartEncode"];
-        public static string EditQueue => UILangProvider.Current["Buttons.EditQueue"];
+        public static string EditQueue => UILangProvider.Current["Buttons.QueueEditor"];
 
     }
 

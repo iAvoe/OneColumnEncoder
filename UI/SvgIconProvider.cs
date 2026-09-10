@@ -34,6 +34,7 @@ internal static class SvgIconProvider
     public static ImageSource GameUndo { get; }
     public static ImageSource GameRedo { get; }
     public static ImageSource GameSort { get; }
+    public static ImageSource GameMenu { get; }
 
     private static SolidColorBrush Brush(string hex) =>
         new((Color)ColorConverter.ConvertFromString(hex)!);
@@ -392,6 +393,21 @@ internal static class SvgIconProvider
         Add(gameSort, "M6.2 2a.6.6 0 0 1 .6.6v2.252c0 .126 0 .19.013.243a.5.5 0 0 0 .289.349c.05.022.113.033.236.057.222.041.333.062.4.101a.45.45 0 0 1 .187.568c-.03.072-.107.155-.262.32l-.583.624c-.59.631-.885.948-1.144.88a.5.5 0 0 1-.1-.04C5.6 7.828 5.6 7.395 5.6 6.532V2.6c0-.332.269-.601.6-.601m-3.26.86c.586-.585.879-.878 1.132-.807q.051.015.098.04c.23.13.23.544.23 1.371V7.4a.6.6 0 1 1-1.2 0V5.033c0-.112 0-.168-.01-.216a.5.5 0 0 0-.304-.366c-.046-.019-.1-.029-.21-.05-.204-.037-.307-.057-.368-.09a.45.45 0 0 1-.187-.603c.032-.062.106-.136.253-.283z", white);
         SetBounds(gameSort);
         GameSort = new DrawingImage(gameSort);
+
+        DrawingGroup gameMenu = new();
+        Geometry gameMenuGeometry = Geometry.Parse("M5.199 6.541a.6.6 0 1 1 0 1.2h-2.6a.6.6 0 0 1 0-1.2zm1.2-2.106a.6.6 0 1 1 0 1.199h-2.6a.6.6 0 0 1 0-1.2zm1-2.175a.6.6 0 1 1 0 1.199H4.8a.6.6 0 1 1 0-1.2z").Clone();
+        gameMenuGeometry.Transform = new TransformGroup
+        {
+            Children =
+            [
+                new TranslateTransform(-2.00, -1.99),
+                new ScaleTransform(10.0 / 6.02, 10.0 / 6.02)
+            ]
+        };
+        gameMenuGeometry.Freeze();
+        Add(gameMenu, gameMenuGeometry, white);
+        SetBounds(gameMenu);
+        GameMenu = new DrawingImage(gameMenu);
 
     }
 
