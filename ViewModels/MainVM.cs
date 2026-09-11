@@ -1152,6 +1152,10 @@ public class MainVM : BaseVM
             FilterScbButtons.B3_3IsEnabled = canEditQueue;
         }
 
+        FilterScbButtons.B3_3Text = route == SrcRouteKind.Repart
+            ? UICaptionProvider.Buttons.EditRepart
+            : UICaptionProvider.Buttons.EditQueue;
+
         if (_modalNavS.GetModal<FilterScribeVM>() is FilterScribeVM modal)
         {
             modal.SetSourceAnalysisState(hasVideoSrc && hasRawJson);
@@ -3505,7 +3509,9 @@ public class MainVM : BaseVM
         OpenAppConfButtons.B2_2Text = UICaptionProvider.Buttons.Settings;
         FilterScbButtons.B3_1Text = UICaptionProvider.Buttons.OneClickScriptGen;
         FilterScbButtons.B3_2Text = UICaptionProvider.Buttons.FilterScribe;
-        FilterScbButtons.B3_3Text = UICaptionProvider.Buttons.EditQueue;
+        FilterScbButtons.B3_3Text = GetActiveSrcRoute() == SrcRouteKind.Repart
+            ? UICaptionProvider.Buttons.EditRepart
+            : UICaptionProvider.Buttons.EditQueue;
         OnPropertyChanged(nameof(ToggleMiniUpstreamsZoneText));
         OnPropertyChanged(nameof(ToggleMiniEncodersZoneText));
         OnPropertyChanged(nameof(ToggleMiniAnalyticsZoneText));

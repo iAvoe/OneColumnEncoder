@@ -187,19 +187,84 @@
                 <!-- Import Source Control -->
                 <comps:SectionHeader Grid.Row="0"
                                      HeaderText="{Binding InputSourcesTitle}" />
-                <comps:TwoButtonGroup Grid.Row="1"
-                                      IsVertical="True"
-                                      DataContext="{Binding SourceSortButtons}"
-                                      Button1Command="{Binding Cmd1}"
-                                      Button2Command="{Binding Cmd2}"
-                                      Button1IsEnabled="{Binding B2_1IsEnabled}"
-                                      Button2IsEnabled="{Binding B2_2IsEnabled}"
-                                      ButtonHeight="28"
-                                      Height="28"
-                                      Margin="0 8 0 0" />
+                <Grid Grid.Row="1"
+                      DataContext="{Binding SourceSortButtons}"
+                      Margin="5 20 0 0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="5" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Button Grid.Row="0"
+                            Command="{Binding Cmd1}"
+                            IsEnabled="{Binding B2_1IsEnabled}"
+                            Height="28"
+                            HorizontalAlignment="Stretch"
+                            Style="{StaticResource NormalButton}">
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <Rectangle Width="14"
+                                       Height="14"
+                                       Margin="0 0 4 0"
+                                       VerticalAlignment="Center"
+                                       Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                <Rectangle.OpacityMask>
+                                    <ImageBrush ImageSource="{Binding B2_1Icon}"
+                                                Stretch="Uniform" />
+                                </Rectangle.OpacityMask>
+                                <Rectangle.Style>
+                                    <Style TargetType="Rectangle">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding B2_1Icon}"
+                                                         Value="{x:Null}">
+                                                <Setter Property="Visibility"
+                                                        Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Rectangle.Style>
+                            </Rectangle>
+                            <TextBlock Text="{Binding B2_1Text}"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <Button Grid.Row="2"
+                            Command="{Binding Cmd2}"
+                            IsEnabled="{Binding B2_2IsEnabled}"
+                            Height="28"
+                            HorizontalAlignment="Stretch"
+                            Style="{StaticResource NormalButton}">
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+                            <Rectangle Width="14"
+                                       Height="14"
+                                       Margin="0 0 4 0"
+                                       VerticalAlignment="Center"
+                                       Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                <Rectangle.OpacityMask>
+                                    <ImageBrush ImageSource="{Binding B2_2Icon}"
+                                                Stretch="Uniform" />
+                                </Rectangle.OpacityMask>
+                                <Rectangle.Style>
+                                    <Style TargetType="Rectangle">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding B2_2Icon}"
+                                                         Value="{x:Null}">
+                                                <Setter Property="Visibility"
+                                                        Value="Collapsed" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Rectangle.Style>
+                            </Rectangle>
+                            <TextBlock Text="{Binding B2_2Text}"
+                                       VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
                 <ListBox Grid.Row="2"
                          ItemsSource="{Binding Sources}"
-                         Margin="-1 8 0 0"
+                         Margin="-1 8 -6 0"
                          BorderThickness="0"
                          Background="Transparent"
                          HorizontalContentAlignment="Stretch"
