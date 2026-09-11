@@ -526,12 +526,12 @@
 
                 <Border Grid.Row="0"
                         x:Name="DividerPreviewHost"
-                        Margin="0 -7.5 0 2.5"
+                        Margin="0 -7.5 0 -40"
                         BorderBrush="{StaticResource GlobalSecondary}"
                         BorderThickness="1"
                         CornerRadius="5"
                         Background="White"
-                        MinHeight="180">
+                        MinHeight="100">
                     <ScrollViewer VerticalScrollBarVisibility="Auto"
                                   HorizontalScrollBarVisibility="Disabled">
                         <ItemsControl ItemsSource="{Binding DividerPreviewFrames}">
@@ -615,6 +615,7 @@
                                      ValueText="{Binding PreviewHeightValueText}"
                                      TickLabels="{Binding PreviewHeightTickLabels}"
                                      TickCount="3"
+                                     Margin="0 0 -5 0"
                                      HorizontalAlignment="Stretch" />
             </Grid>
 
