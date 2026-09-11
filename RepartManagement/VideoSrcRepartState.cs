@@ -43,9 +43,10 @@ public sealed class SrcRepartState
         RefreshTitle();
     }
 
+    // Applies a unique, non-empty subset in execution order; at least one output remains.
     public bool ReorderOutputs(Guid[] outputIds)
     {
-        if (_plan == null || outputIds.Length != _plan.Outputs.Count)
+        if (_plan == null || outputIds.Length == 0 || outputIds.Length > _plan.Outputs.Count)
             return false;
 
         Dictionary<Guid, RepartOutputSegmentM> outputsById = _plan.Outputs.ToDictionary(output => output.Id);
@@ -53,19 +54,9 @@ public sealed class SrcRepartState
             || outputIds.Distinct().Count() != outputIds.Length)
             return false;
 
-        RepartPlanM reordered = new()
-        {
-            PlanId = _plan.PlanId,
-            FfprobePath = _plan.FfprobePath,
-            ReferenceRawJson = _plan.ReferenceRawJson,
-            FormatSignature = _plan.FormatSignature,
-            FrameRateNumerator = _plan.FrameRateNumerator,
-            FrameRateDenominator = _plan.FrameRateDenominator,
-            TotalFrames = _plan.TotalFrames,
-            Sources = [.. _plan.Sources],
-            Outputs = [.. outputIds.Select(id => outputsById[id])],
-            Dividers = [.. _plan.Dividers]
-        };
+        RepartPlanM reordered = _plan.Clone();
+        reordered.Outputs.Clear();
+        reordered.Outputs.AddRange(outputIds.Select(id => outputsById[id]));
         ApplyPlan(reordered);
         return true;
     }

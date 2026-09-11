@@ -38,7 +38,8 @@ public sealed class QueueEditorVM : BaseVM
         RepartOutputSegmentM[] segments = [.. outputSegments];
         _closeAction = closeAction;
         _applyEditedOutputIds = applyEditedOutputIds;
-        _minimumItemCount = segments.Length;
+        // Keep at least one output task so Repart remains encodable.
+        _minimumItemCount = 1;
         _disableSortButtons = false;
         _isOutputMode = true;
 
@@ -88,7 +89,7 @@ public sealed class QueueEditorVM : BaseVM
 
     private void RemoveItem(IQueueEditorItem? item)
     {
-        if (_isOutputMode || item == null || !Items.Remove(item)) return;
+        if (item == null || Items.Count <= _minimumItemCount || !Items.Remove(item)) return;
         item.Dispose();
         RefreshItemStates();
     }
@@ -166,7 +167,7 @@ public sealed class QueueEditorVM : BaseVM
         {
             Items[i].CanMoveUp = i > 0;
             Items[i].CanMoveDown = i < Items.Count - 1;
-            Items[i].CanRemove = !_isOutputMode && Items.Count > _minimumItemCount;
+            Items[i].CanRemove = Items.Count > _minimumItemCount;
         }
 
         bool sortButtonsEnabled = !_disableSortButtons && Items.Count > 1;

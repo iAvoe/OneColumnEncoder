@@ -9,6 +9,7 @@ public sealed class RepartQueueItemVM : BaseVM, IQueueEditorItem
 {
     private bool _canMoveUp;
     private bool _canMoveDown;
+    private bool _canRemove;
     private bool _isSelected;
     private bool _isRecentlyMoved;
     private string _p1Text = string.Empty;
@@ -29,10 +30,10 @@ public sealed class RepartQueueItemVM : BaseVM, IQueueEditorItem
     public int FrameRateDenominator { get; }
     public string Name => Model.BaseName;
     public string P1Text => _p1Text;
-    public string DisplayR1Text => string.Empty;
+    public string DisplayR1Text => LangProviderBase.RemoveText;
     public string R2Text => _r2Text;
     public string R3Text => _r3Text;
-    public bool R1IsEnabled => false;
+    public bool R1IsEnabled => _canRemove;
     public bool R2IsEnabled => _canMoveUp;
     public bool R3IsEnabled => _canMoveDown;
     public bool IsCancel => false;
@@ -66,8 +67,12 @@ public sealed class RepartQueueItemVM : BaseVM, IQueueEditorItem
     }
     public bool CanRemove
     {
-        get => false;
-        set { }
+        get => _canRemove;
+        set
+        {
+            if (SetProperty(ref _canRemove, value))
+                OnPropertyChanged(nameof(R1IsEnabled));
+        }
     }
     public long SortSize => Model.FrameCount;
     public string SortName => Name;

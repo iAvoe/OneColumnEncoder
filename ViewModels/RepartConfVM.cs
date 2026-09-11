@@ -839,6 +839,11 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         List<RepartOutputSegmentM> outputs = [];
         if (_analysis == null || _analysis.TotalFrames <= 0) return outputs;
 
+        // Output Queue edits may intentionally remove tasks while the timeline remains
+        // unchanged. Keep that subset until the user changes a divider in this modal.
+        if (_analysis.Outputs.Count > 0 && HasOriginalDividerState())
+            return [.. _analysis.Outputs];
+
         Dictionary<(long FirstFrame, long LastFrame), RepartOutputSegmentM> existingByRange =
             _analysis.Outputs.ToDictionary(output => (output.FirstFrame, output.LastFrame));
 
@@ -862,6 +867,19 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             outputs.Add(CreateOutput(BuildEpisodeName(index), first, _analysis.TotalFrames - 1));
 
         return outputs;
+    }
+
+    private bool HasOriginalDividerState()
+    {
+        if (_analysis == null || _analysis.Dividers.Count != _dividers.Count)
+            return false;
+
+        RepartDividerM[] expected = [.. _analysis.Dividers.OrderBy(divider => divider.Frame)];
+        RepartDividerM[] current = [.. _dividers.OrderBy(divider => divider.Frame)];
+        return expected.Zip(current).All(pair =>
+            pair.First.Id == pair.Second.Id
+            && pair.First.Frame == pair.Second.Frame
+            && pair.First.IsLocked == pair.Second.IsLocked);
     }
 
     // Rebuild timeline UI from divider models, preserving selection state.
