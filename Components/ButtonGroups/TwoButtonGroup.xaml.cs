@@ -23,6 +23,9 @@ public partial class TwoButtonGroup : UserControl
     public static readonly DependencyProperty Button2StrikethroughProperty =
         DependencyProperty.Register(nameof(Button2Strikethrough), typeof(bool), typeof(TwoButtonGroup), new PropertyMetadata(false));
 
+    public static readonly DependencyProperty IsVerticalProperty =
+        DependencyProperty.Register(nameof(IsVertical), typeof(bool), typeof(TwoButtonGroup), new PropertyMetadata(false));
+
     public ICommand Button1Command
     {
         get => (ICommand)GetValue(Button1CommandProperty);
@@ -63,6 +66,12 @@ public partial class TwoButtonGroup : UserControl
     {
         get => (bool)GetValue(Button2StrikethroughProperty);
         set => SetValue(Button2StrikethroughProperty, value);
+    }
+
+    public bool IsVertical
+    {
+        get => (bool)GetValue(IsVerticalProperty);
+        set => SetValue(IsVerticalProperty, value);
     }
 
     public TwoButtonGroup()

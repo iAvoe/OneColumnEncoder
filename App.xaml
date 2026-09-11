@@ -13,6 +13,7 @@
             
             <!-- Converters -->
             <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+            <conv:InvertBoolToVisibilityConverter x:Key="InvertBoolToVisibility" />
             <conv:SidebarWidthConverter x:Key="SidebarWidthConverter" />
 
             <!-- Fonts: resolved at runtime by AppFontProvider -->

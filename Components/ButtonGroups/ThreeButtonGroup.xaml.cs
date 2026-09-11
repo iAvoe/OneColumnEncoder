@@ -26,6 +26,9 @@ public partial class ThreeButtonGroup : UserControl
     public static readonly DependencyProperty Button3IsEnabledProperty =
         DependencyProperty.Register(nameof(Button3IsEnabled), typeof(bool), typeof(ThreeButtonGroup), new PropertyMetadata(true));
 
+    public static readonly DependencyProperty IsVerticalProperty =
+        DependencyProperty.Register(nameof(IsVertical), typeof(bool), typeof(ThreeButtonGroup), new PropertyMetadata(false));
+
     public ICommand Button1Command
     {
         get => (ICommand)GetValue(Button1CommandProperty);
@@ -64,6 +67,12 @@ public partial class ThreeButtonGroup : UserControl
     {
         get => (bool)GetValue(Button3IsEnabledProperty);
         set => SetValue(Button3IsEnabledProperty, value);
+    }
+
+    public bool IsVertical
+    {
+        get => (bool)GetValue(IsVerticalProperty);
+        set => SetValue(IsVerticalProperty, value);
     }
 
     public ThreeButtonGroup()

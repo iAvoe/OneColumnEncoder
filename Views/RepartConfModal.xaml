@@ -188,6 +188,7 @@
                 <comps:SectionHeader Grid.Row="0"
                                      HeaderText="{Binding InputSourcesTitle}" />
                 <comps:TwoButtonGroup Grid.Row="1"
+                                      IsVertical="True"
                                       DataContext="{Binding SourceSortButtons}"
                                       Button1Command="{Binding Cmd1}"
                                       Button2Command="{Binding Cmd2}"
@@ -260,30 +261,24 @@
                                                  CommandParameter="{Binding}"
                                                  IsEnabled="{Binding CanRemove}"
                                                  ToolTip="Remove source"
-                                                 Width="30"
-                                                 Height="25"
-                                                 Padding="0"
-                                                 Style="{StaticResource NormalButton}" />
+                                                 Padding="4 0"
+                                                 Style="{StaticResource MiniLinkButton}" />
                                          <Button Content="{Binding DataContext.MoveUpText, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
                                                  Command="{Binding DataContext.MoveSourceUpCommand, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
                                                  CommandParameter="{Binding}"
                                                  IsEnabled="{Binding CanMoveUp}"
                                                  ToolTip="Move source up"
-                                                 Width="30"
-                                                 Height="25"
-                                                 Padding="0"
+                                                 Padding="4 0"
                                                  Margin="2.5 0 0 0"
-                                                 Style="{StaticResource NormalButton}" />
+                                                 Style="{StaticResource MiniLinkButton}" />
                                          <Button Content="{Binding DataContext.MoveDownText, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
                                                  Command="{Binding DataContext.MoveSourceDownCommand, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
                                                  CommandParameter="{Binding}"
                                                  IsEnabled="{Binding CanMoveDown}"
                                                  ToolTip="Move source down"
-                                                 Width="30"
-                                                 Height="25"
-                                                 Padding="0"
+                                                 Padding="4 0"
                                                  Margin="2.5 0 0 0"
-                                                 Style="{StaticResource NormalButton}" />
+                                                 Style="{StaticResource MiniLinkButton}" />
                                      </StackPanel>
                                  </Grid>
                              </Border>
@@ -605,30 +600,24 @@
                                                      CommandParameter="{Binding}"
                                                      IsEnabled="{Binding CanRemove}"
                                                      ToolTip="Remove output"
-                                                     Width="30"
-                                                     Height="25"
-                                                     Padding="0"
-                                                     Style="{StaticResource NormalButton}" />
+                                                     Padding="4 0"
+                                                     Style="{StaticResource MiniLinkButton}" />
                                              <Button Content="{Binding DataContext.MoveUpText, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
                                                      Command="{Binding DataContext.MoveOutputUpCommand, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
                                                      CommandParameter="{Binding}"
                                                      IsEnabled="{Binding CanMoveUp}"
                                                      ToolTip="Move output up"
-                                                     Width="30"
-                                                     Height="25"
-                                                     Padding="0"
+                                                     Padding="4 0"
                                                      Margin="2.5 0 0 0"
-                                                     Style="{StaticResource NormalButton}" />
+                                                     Style="{StaticResource MiniLinkButton}" />
                                              <Button Content="{Binding DataContext.MoveDownText, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
                                                      Command="{Binding DataContext.MoveOutputDownCommand, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
                                                      CommandParameter="{Binding}"
                                                      IsEnabled="{Binding CanMoveDown}"
                                                      ToolTip="Move output down"
-                                                     Width="30"
-                                                     Height="25"
-                                                     Padding="0"
+                                                     Padding="4 0"
                                                      Margin="2.5 0 0 0"
-                                                     Style="{StaticResource NormalButton}" />
+                                                     Style="{StaticResource MiniLinkButton}" />
                                          </StackPanel>
                                      </Grid>
                                 </Border>

@@ -675,4 +675,90 @@
         </Style.Triggers>
     </Style>
 
+    <!-- MiniLinkButton: borderless link-style button for inline actions -->
+    <Style x:Key="MiniLinkButton"
+           TargetType="Button"
+           BasedOn="{StaticResource H2C}">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="Foreground"
+                Value="{StaticResource GlobalPrimary}" />
+        <Setter Property="BorderThickness"
+                Value="0" />
+        <Setter Property="VerticalAlignment"
+                Value="Center" />
+        <Setter Property="HorizontalContentAlignment"
+                Value="Center" />
+        <Setter Property="VerticalContentAlignment"
+                Value="Center" />
+        <Setter Property="Padding"
+                Value="2 0 0 0" />
+        <Setter Property="Margin"
+                Value="0" />
+        <Setter Property="MinWidth"
+                Value="0" />
+        <Setter Property="Cursor"
+                Value="Hand" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                            Margin="{TemplateBinding Margin}"
+                            Padding="{TemplateBinding Padding}"
+                            BorderThickness="0"
+                            CornerRadius="8">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                         Value="1">
+                <Setter Property="Foreground"
+                        Value="{StaticResource RemixedForeground}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                         Value="2">
+                <Setter Property="Foreground"
+                        Value="{StaticResource RemixedForeground2}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                         Value="3">
+                <Setter Property="Foreground"
+                        Value="{StaticResource RemixedForeground3}" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PaletteIndex, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                         Value="4">
+                <Setter Property="Foreground"
+                        Value="{StaticResource RemixedForeground4}" />
+            </DataTrigger>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter Property="Opacity"
+                        Value="0.7" />
+                <Setter Property="BorderBrush"
+                        Value="AliceBlue" />
+            </Trigger>
+            <Trigger Property="IsFocused"
+                     Value="True">
+                <Setter Property="Foreground"
+                        Value="{StaticResource BorderGreen}" />
+            </Trigger>
+            <Trigger Property="IsCancel"
+                     Value="True">
+                <Setter Property="Foreground"
+                        Value="{StaticResource BorderRed}" />
+            </Trigger>
+            <Trigger Property="IsEnabled"
+                     Value="False">
+                <Setter Property="Foreground"
+                        Value="{StaticResource GlobalSecondary}" />
+                <Setter Property="Cursor"
+                        Value="Arrow" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
 </ResourceDictionary>
