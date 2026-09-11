@@ -1350,6 +1350,9 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         OnPropertyChanged(nameof(CanEdit));
         OnPropertyChanged(nameof(CanApply));
         OnPropertyChanged(nameof(TimelineEndText));
+        OnPropertyChanged(nameof(IsInputSourcesVisible));
+        OnPropertyChanged(nameof(OutputListColumn));
+        OnPropertyChanged(nameof(OutputListColumnSpan));
         RefreshDraftAvailability();
         RefreshDividerAvailability();
         RefreshQueueItemStates();
