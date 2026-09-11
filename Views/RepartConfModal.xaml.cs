@@ -1,4 +1,6 @@
 using System.Windows.Controls.Primitives;
+using System.Windows.Threading;
+using OneColumnEncoder.Converters;
 
 namespace OneColumnEncoder.Views;
 
@@ -10,6 +12,20 @@ public partial class RepartConfModal : AdaptiveWindow
     {
         InitializeComponent();
         Closing += OnClosing;
+        Loaded += OnLoaded;
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs e) =>
+        Dispatcher.BeginInvoke(InitializePreviewHeightFromLayout, DispatcherPriority.Loaded);
+
+    private void InitializePreviewHeightFromLayout()
+    {
+        if (DataContext is not RepartConfVM vm || DividerPreviewHost.ActualWidth <= 0d)
+            return;
+
+        vm.PreviewHeight = PreviewAspectRatioHeightConverter.CalculateHeight(
+            DividerPreviewHost.ActualWidth,
+            vm.PreviewHeightMaximum);
     }
 
     private void OnClosing(object? sender, CancelEventArgs e)

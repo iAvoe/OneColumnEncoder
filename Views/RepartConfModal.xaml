@@ -520,12 +520,12 @@
                   Grid.RowSpan="2"
                   Margin="15 0 0 0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <Border Grid.Row="1"
+                <Border Grid.Row="0"
+                        x:Name="DividerPreviewHost"
                         Margin="0 -7.5 0 2.5"
                         BorderBrush="{StaticResource GlobalSecondary}"
                         BorderThickness="1"
@@ -556,7 +556,8 @@
                                                 <RowDefinition Height="Auto" />
                                             </Grid.RowDefinitions>
 
-                                            <Grid Grid.Row="0">
+                                            <Grid Grid.Row="0"
+                                                  Height="{Binding DataContext.PreviewHeight, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}">
                                                 <Border x:Name="PreviewFrameMask"
                                                         CornerRadius="5"
                                                         Background="Black"
@@ -569,7 +570,7 @@
                                                     </Grid.OpacityMask>
 
                                                     <Image Source="{Binding FrameImage}"
-                                                           Stretch="Uniform"
+                                                           Stretch="UniformToFill"
                                                            SnapsToDevicePixels="True"
                                                            RenderOptions.BitmapScalingMode="NearestNeighbor" />
 
@@ -607,6 +608,14 @@
                     </ScrollViewer>
                 </Border>
 
+                <comps:IntegerSlider Grid.Row="1"
+                                     Minimum="22"
+                                     Maximum="{Binding PreviewHeightMaximum}"
+                                     Value="{Binding PreviewHeight, Mode=TwoWay}"
+                                     ValueText="{Binding PreviewHeightValueText}"
+                                     TickLabels="{Binding PreviewHeightTickLabels}"
+                                     TickCount="3"
+                                     HorizontalAlignment="Stretch" />
             </Grid>
 
             <!-- Output episode repartition list/queue -->
@@ -665,7 +674,7 @@
                                          <StackPanel Grid.Column="2"
                                                      Orientation="Horizontal"
                                                      VerticalAlignment="Center"
-                                                     Margin="8 0 0 0">
+                                                     Margin="7.5 0 0 0">
                                              <Button Content="{Binding DataContext.RemoveOutputText, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
                                                      Command="{Binding DataContext.RemoveOutputCommand, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
                                                      CommandParameter="{Binding}"
@@ -709,6 +718,7 @@
             <!-- Load Status -->
             <TextBlock Grid.Column="0"
                        Text="{Binding StatusText}"
+                       FontSize="11"
                        Height="Auto"
                        TextAlignment="Left"
                        VerticalAlignment="Bottom"

@@ -69,7 +69,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["StageValidateStreams"] = "Validating video streams...",
             ["StageScanFrames"] = "Scanning frame counts...",
             ["ExcludedCount"] = "{0} incompatible source(s) excluded",
-            ["Ready"] = "Input formats are consistent, repartition is doable",
+            ["Ready"] = "Double-click to create a divider, click a divider to preview",
             ["ReadyWithExcluded"] = "Sources are compatible. {0} incompatible source item(s) were excluded",
             ["InterlacedSourcePrompt"] = "Repart Mode requires progressive, scan-stable CFR sources for frame-exact output.\n\nConfirm: discard this source and proceed importing.\nCancel: cancel this import",
             ["InterlacedSrcRejected"] = "Interlaced source is not supported in Repart Mode: {0} (field_order={1})",
@@ -110,7 +110,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["DividerPreviewPending"] = "Preview update queued",
             ["DividerPreviewBuildingIndex"] = "Building a keyframe index for {0}...",
             ["DividerPreviewSourceDataMissing"] = "Divider preview source data missing",
-            ["DividerPreviewFrameFileMissing"] = "Divider preview frame file missing"
+            ["DividerPreviewFrameFileMissing"] = "Divider preview frame file missing",
         },
         ["zh-cn"] = new()
         {
@@ -172,7 +172,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["StageValidateStreams"] = "正在验证视频串流……",
             ["StageScanFrames"] = "正在扫描影格数……",
             ["ExcludedCount"] = "已排除 {0} 个不相容源",
-            ["Ready"] = "视频源格式一致，可以分集",
+            ["Ready"] = "双击顶部时间轴以创建分割线，点击任意分割线以预览",
             ["ReadyWithExcluded"] = "视频源格式一致，已排除 {0} 个不相容源项目",
             ["InterlacedSourcePrompt"] = "重分集模式要求逐行扫描、可稳定扫描帧数的 CFR 源，以确保按帧精确输出。\n\n确认：丢弃此源并继续导入。\n取消：取消本次导入",
             ["InterlacedSrcRejected"] = "重分集模式不支援隔行扫描源：{0}（field_order={1}）",
@@ -279,7 +279,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["StageValidateStreams"] = "正在驗證影片串流……",
             ["StageScanFrames"] = "正在掃描影格數……",
             ["ExcludedCount"] = "已排除 {0} 個不相容來源",
-            ["Ready"] = "影片源格式一致，可以分集",
+            ["Ready"] = "雙擊頂部時間軸以創建分割線，點擊任意分割線以預覽",
             ["ReadyWithExcluded"] = "影片源格式一致，已排除 {0} 個不相容來源項目",
             ["InterlacedSourcePrompt"] = "重分集模式要求逐行掃描、可穩定掃描幀數的 CFR 來源，以確保按幀精確輸出。\n\n確認：丟棄此來源並繼續匯入。\n取消：取消本次匯入",
             ["InterlacedSrcRejected"] = "重分集模式不支援隔行掃描來源：{0}（field_order={1}）",
@@ -382,7 +382,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["StageValidateStreams"] = "Validation des flux vidéo...",
             ["StageScanFrames"] = "Comptage des images...",
             ["ExcludedCount"] = "{0} élément(s) incompatible(s) exclu(s)",
-            ["Ready"] = "Formats d'entrée cohérents, répartition possible",
+            ["Ready"] = "Double-cliquez pour créer un séparateur, cliquez sur un séparateur pour prévisualiser",
             ["ReadyWithExcluded"] = "Formats d'entrée cohérents. {0} élément(s) incompatible(s) exclu(s)",
             ["InterlacedSourcePrompt"] = "Le mode Répartition exige des sources CFR progressives et stables à l'analyse pour un découpage exact au cadre.\n\nConfirmer : écarter cette source et continuer l'importation.\nAnnuler : annuler cette importation",
             ["InterlacedSrcRejected"] = "Les sources entrelacées ne sont pas prises en charge en mode Répartition : {0} (field_order={1})",
@@ -422,7 +422,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["DividerPreviewCancelled"] = "Aperçu annulé",
             ["DividerPreviewBuildingIndex"] = "Création d'un index des images clés pour {0}...",
             ["DividerPreviewSourceDataMissing"] = "Données source de l'aperçu du séparateur manquantes",
-            ["DividerPreviewFrameFileMissing"] = "Fichier de trame de l'aperçu du séparateur manquant"
+            ["DividerPreviewFrameFileMissing"] = "Fichier de trame de l'aperçu du séparateur manquant",
         };
         Data["es"] = new(Data["en"])
         {
@@ -484,7 +484,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["StageValidateStreams"] = "Validando flujos de vídeo...",
             ["StageScanFrames"] = "Contando fotogramas...",
             ["ExcludedCount"] = "{0} elemento(s) incompatible(s) excluido(s)",
-            ["Ready"] = "Formatos de entrada coherentes, repartición factible",
+            ["Ready"] = "Haz doble clic para crear un separador, haz clic en un separador para previsualizar",
             ["ReadyWithExcluded"] = "Formatos de entrada coherentes. Se excluyeron {0} elemento(s) incompatible(s)",
             ["InterlacedSourcePrompt"] = "El modo Repart exige fuentes CFR progresivas y estables al analizar para salidas exactas por fotograma.\n\nConfirmar: descartar esta fuente y continuar con la importación.\nCancelar: cancelar esta importación",
             ["InterlacedSrcRejected"] = "Las fuentes entrelazadas no se admiten en el modo Repart: {0} (field_order={1})",
@@ -524,7 +524,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["DividerPreviewCancelled"] = "Vista previa cancelada",
             ["DividerPreviewBuildingIndex"] = "Creando un índice de fotogramas clave para {0}...",
             ["DividerPreviewSourceDataMissing"] = "Faltan los datos de origen de la vista previa del divisor",
-            ["DividerPreviewFrameFileMissing"] = "Falta el archivo de fotograma de la vista previa del divisor"
+            ["DividerPreviewFrameFileMissing"] = "Falta el archivo de fotograma de la vista previa del divisor",
         };
         Data["ja"] = new(Data["en"])
         {
@@ -586,7 +586,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["StageValidateStreams"] = "映像ストリームを検証中...",
             ["StageScanFrames"] = "フレーム数をスキャン中...",
             ["ExcludedCount"] = "互換性のないソースを {0} 件除外",
-            ["Ready"] = "入力形式が統一されており、分割可能",
+            ["Ready"] = "ダブルクリックで区切り線を作成，区切り線をクリックしてプレビュー",
             ["ReadyWithExcluded"] = "入力形式が統一されており。互換性のないソース項目 {0} 件を除外しました",
             ["InterlacedSourcePrompt"] = "再分割モードでは、フレーム単位の正確な出力のため、プログレッシブで解析が安定する CFR ソースが必要です。\n\n確認: このソースを破棄してインポートを続行します。\nキャンセル: このインポートを中止します",
             ["InterlacedSrcRejected"] = "再分割モードではインターレースソースは未対応: {0} (field_order={1})",
@@ -626,7 +626,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["DividerPreviewCancelled"] = "プレビューをキャンセルしました",
             ["DividerPreviewBuildingIndex"] = "{0} のキーフレームインデックスを作成中...",
             ["DividerPreviewSourceDataMissing"] = "ディバイダープレビューのソースデータが不足しています",
-            ["DividerPreviewFrameFileMissing"] = "ディバイダープレビューのフレームファイルが不足しています"
+            ["DividerPreviewFrameFileMissing"] = "ディバイダープレビューのフレームファイルが不足しています",
         };
         Data["ru"] = new(Data["en"])
         {
@@ -688,7 +688,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["StageValidateStreams"] = "Проверка видеопотоков...",
             ["StageScanFrames"] = "Сканирование числа кадров...",
             ["ExcludedCount"] = "Исключено несовместимых источников: {0}",
-            ["Ready"] = "Входные форматы едины, возможна разбивка",
+            ["Ready"] = "Дважды щёлкните, чтобы создать разделитель, щёлкните по разделителю для предпросмотра",
             ["ReadyWithExcluded"] = "Входные форматы едины. Исключено несовместимых элементов: {0}",
             ["InterlacedSourcePrompt"] = "Режим Repart требует прогрессивные CFR-источники со стабильным анализом для точного по кадрам вывода.\n\nПодтвердить: отбросить этот источник и продолжить импорт.\nОтмена: отменить этот импорт",
             ["InterlacedSrcRejected"] = "Чересстрочные источники не поддерживаются в режиме Repart: {0} (field_order={1})",
@@ -728,7 +728,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["DividerPreviewCancelled"] = "Предпросмотр отменён",
             ["DividerPreviewBuildingIndex"] = "Создание индекса ключевых кадров для {0}...",
             ["DividerPreviewSourceDataMissing"] = "Отсутствуют исходные данные предварительного просмотра разделителя",
-            ["DividerPreviewFrameFileMissing"] = "Отсутствует файл кадра предварительного просмотра разделителя"
+            ["DividerPreviewFrameFileMissing"] = "Отсутствует файл кадра предварительного просмотра разделителя",
         };
         Data["de"] = new(Data["en"])
         {
@@ -790,7 +790,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["StageValidateStreams"] = "Videoströme werden validiert...",
             ["StageScanFrames"] = "Frameanzahl wird gescannt...",
             ["ExcludedCount"] = "{0} inkompatible Quelle(n) ausgeschlossen",
-            ["Ready"] = "Eingabeformate einheitlich, Neuteilung möglich",
+            ["Ready"] = "Doppelklicken, um einen Trenner zu erstellen, trenner anklicken, um eine Vorschau anzuzeigen",
             ["ReadyWithExcluded"] = "Quellen kompatibel. {0} inkompatible Elemente ausgeschlossen",
             ["InterlacedSourcePrompt"] = "Neuteilungsmodus erfordert progressive, scanstabilde CFR-Quellen für framegenauen Output.\n\nBestätigen: Quelle verwerfen und Import fortsetzen.\nAbbrechen: Import abbrechen",
             ["InterlacedSrcRejected"] = "Interlaced-Quellen nicht unterstützt im Neuteilungsmodus: {0} (field_order={1})",
@@ -830,7 +830,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["DividerPreviewCancelled"] = "Vorschau abgebrochen",
             ["DividerPreviewBuildingIndex"] = "Erstelle Keyframe-Index für {0}...",
             ["DividerPreviewSourceDataMissing"] = "Quelldaten der Trennlinien-Vorschau fehlen",
-            ["DividerPreviewFrameFileMissing"] = "Frame-Datei der Trennlinien-Vorschau fehlt"
+            ["DividerPreviewFrameFileMissing"] = "Frame-Datei der Trennlinien-Vorschau fehlt",
         };
         Data["ko"] = new(Data["en"])
         {
@@ -892,7 +892,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["StageValidateStreams"] = "비디오 스트림 검증 중...",
             ["StageScanFrames"] = "프레임 수 스캔 중...",
             ["ExcludedCount"] = "호환되지 않는 소스 {0}개 제외",
-            ["Ready"] = "입력 형식이 일치하며 재분할 가능",
+            ["Ready"] = "더블클릭하여 구분선 만들기，구분선을 클릭하여 미리 보기",
             ["ReadyWithExcluded"] = "소스가 호환됩니다. 호환되지 않는 소스 항목 {0}개를 제외했습니다",
             ["InterlacedSourcePrompt"] = "재분할 모드는 프레임 단위 정확한 출력을 위해 프로그레시브이고 스캔이 안정적인 CFR 소스가 필요합니다.\n\n확인: 이 소스를 버리고 가져오기를 계속합니다.\n취소: 가져오기를 취소합니다",
             ["InterlacedSrcRejected"] = "재분할 모드에서 인터레이스 소스는 지원되지 않습니다: {0} (field_order={1})",
@@ -932,7 +932,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["DividerPreviewCancelled"] = "미리보기가 취소되었습니다",
             ["DividerPreviewBuildingIndex"] = "{0}의 키프레임 인덱스를 만드는 중...",
             ["DividerPreviewSourceDataMissing"] = "구분선 미리보기 소스 데이터가 없습니다",
-            ["DividerPreviewFrameFileMissing"] = "구분선 미리보기 프레임 파일이 없습니다"
+            ["DividerPreviewFrameFileMissing"] = "구분선 미리보기 프레임 파일이 없습니다",
         };
         Data["pt-br"] = new(Data["en"])
         {
@@ -994,7 +994,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["StageValidateStreams"] = "Validando streams de vídeo...",
             ["StageScanFrames"] = "Escaneando contagens de quadros...",
             ["ExcludedCount"] = "{0} fonte(s) incompatível(is) excluída(s)",
-            ["Ready"] = "Formatos de entrada consistentes, repartição viável",
+            ["Ready"] = "Clique duas vezes para criar um divisor, clique em um divisor para pré-visualizar",
             ["ReadyWithExcluded"] = "Fontes compatíveis. {0} item(ns) fonte incompatível(is) excluído(s)",
             ["InterlacedSourcePrompt"] = "Modo Repart requer fontes CFR progressivas e estáveis por análise para saída exata por quadro.\n\nConfirmar: descartar esta fonte e continuar importando.\nCancelar: cancelar esta importação",
             ["InterlacedSrcRejected"] = "Fonte entrelaçada não suportada no modo Repart: {0} (field_order={1})",
@@ -1034,7 +1034,7 @@ public sealed class RepartLangProvider(string languageCode) : LangProviderBase(l
             ["DividerPreviewCancelled"] = "Visualização cancelada",
             ["DividerPreviewBuildingIndex"] = "Construindo um índice de quadros-chave para {0}...",
             ["DividerPreviewSourceDataMissing"] = "Dados de origem da visualização do divisor ausentes",
-            ["DividerPreviewFrameFileMissing"] = "Arquivo de quadro da visualização do divisor ausente"
+            ["DividerPreviewFrameFileMissing"] = "Arquivo de quadro da visualização do divisor ausente",
         };
     }
 

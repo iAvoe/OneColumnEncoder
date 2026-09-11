@@ -39,6 +39,9 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private long? _dividerPreviewRenderedFrame;
     private long _dividerPreviewRequestVersion;
     private int _dividerPreviewRefreshPending;
+    private int _previewHeight = 480;
+    private int _previewHeightMaximum = 480;
+    private IReadOnlyList<string> _previewHeightTickLabels = ["22", "240", "480"];
 
     // Undo/Redo: bounded snapshot history of committed divider states (max depth 24).
     // Records are immutable, so snapshots are cheap deep-by-reference list copies.
@@ -157,6 +160,18 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public string TimelineEndText => _analysis == null
         ? "00:00:00.000"
         : EncodingPipeline.FormatTimestamp(TimeSpan.FromSeconds(_analysis.TotalSeconds));
+    public string PreviewHeightValueText => $"{PreviewHeight}px";
+    public int PreviewHeightMaximum => _previewHeightMaximum;
+    public int PreviewHeight
+    {
+        get => _previewHeight;
+        set
+        {
+            if (SetProperty(ref _previewHeight, Math.Max(1, Math.Min(_previewHeightMaximum, value))))
+                OnPropertyChanged(nameof(PreviewHeightValueText));
+        }
+    }
+    public IReadOnlyList<string> PreviewHeightTickLabels => _previewHeightTickLabels;
 
     public ObservableCollection<RepartSrcItemVM> Sources { get; } = [];
     public ObservableCollection<RepartOutputItemVM> Outputs { get; } = [];
@@ -436,6 +451,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         }
 
         _analysis = currentPlan.Clone();
+        InitializePreviewHeight();
         LoadSources();
         BuildAxisLabels();
         _dividers = GetPlanDividers(currentPlan);
@@ -451,6 +467,23 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         RefreshAnalysisProperties();
 
         return Task.CompletedTask;
+    }
+
+    private void InitializePreviewHeight()
+    {
+        const int previewRasterHeight = 480;
+        _previewHeightMaximum = previewRasterHeight;
+        _previewHeight = Math.Max(1, Math.Min(_previewHeightMaximum, _previewHeight));
+        _previewHeightTickLabels =
+        [
+            "22",
+            (_previewHeightMaximum / 2).ToString(CultureInfo.InvariantCulture),
+            _previewHeightMaximum.ToString(CultureInfo.InvariantCulture)
+        ];
+        OnPropertyChanged(nameof(PreviewHeightMaximum));
+        OnPropertyChanged(nameof(PreviewHeight));
+        OnPropertyChanged(nameof(PreviewHeightValueText));
+        OnPropertyChanged(nameof(PreviewHeightTickLabels));
     }
 
     public void SetSelectedOutputs(IEnumerable<RepartOutputItemVM> items)
@@ -1443,7 +1476,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
                 RefreshDividerPreview();
         }
     }
-    private void RunOnUi(Action action)
+    private static void RunOnUi(Action action)
     {
         System.Windows.Threading.Dispatcher? dispatcher = Application.Current?.Dispatcher;
         if (dispatcher == null)
@@ -1454,8 +1487,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
         if (dispatcher.CheckAccess())
             action();
-        else
-            _ = dispatcher.InvokeAsync(action);
+        else _ = dispatcher.InvokeAsync(action);
     }
 
     // Manually refresh button enable states. ButtonGroupVM does not auto-bind to
@@ -1506,7 +1538,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     {
         foreach (string property in new[]
         {
-            nameof(InputSourcesTitle), nameof(OutputEpisodesTitle),             nameof(TimelineTitle),
+            nameof(InputSourcesTitle), nameof(OutputEpisodesTitle), nameof(TimelineTitle),
             nameof(TimelineControlTitle), nameof(DividerControlTitle), nameof(AddNewDividerTitle), nameof(DividerOpsTitle),
             nameof(OutputNameLabel), nameof(StartTimeLabel), nameof(SegmentDurationLabel),
             nameof(EndTimeLabel), nameof(TimeFormatText), nameof(FirstFrameLabel), nameof(FrameCountLabel),
