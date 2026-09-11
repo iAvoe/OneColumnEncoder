@@ -254,7 +254,7 @@ public class AnalyzeSrcVideoCmd(
                 excludedJsonPath);
         if (result.Skipped.Count > 0)
             message = FormatQueueSkippedMessage(message, result.Skipped);
-        new OpenQueueAnalysisCompletedModalCmd(
+        new OpenQueueAnalyzedCmd(
             _modalNavS,
             message,
             queueJsonPath,

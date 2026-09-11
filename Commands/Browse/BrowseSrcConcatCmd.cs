@@ -75,9 +75,6 @@ public class BrowseSrcConcatCmd(
             return;
         }
 
-        // Let the user establish the concat order before compatibility analysis.
-        filePaths = OpenQueueEditorCmd.EditFilePaths(_modalNavS, filePaths, minimumItemCount: MinimumConcatSourceCount);
-
         // Probe the selected files for codec, resolution, frame rate, and SVT-AV1 constraints.
         ConcatCompatibilityAnalysisResult? analysisResult = null;
         try

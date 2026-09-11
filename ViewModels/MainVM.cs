@@ -2504,10 +2504,6 @@ public class MainVM : BaseVM
         _SrcQueue.ApplyAcceptedFiles(acceptedFilePaths);
         RefreshSelectedSrcStatus(resetAnalysis: false);
         RefreshDurationFilterStatus();
-
-        // Let the user prune and reorder the accepted sources before encoding.
-        new OpenQueueEditorCmd(_modalNavS, ApplyEditedQueueSrcPaths)
-            .Execute(acceptedFilePaths);
     }
 
     private void ApplyEditedQueueSrcPaths(string[] editedFilePaths)

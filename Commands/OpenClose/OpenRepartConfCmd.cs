@@ -73,7 +73,8 @@ public sealed class OpenRepartConfCmd(
         string[] filePaths = GetVideoFiles(dialog.FileNames);
         if (filePaths.Length < 2)
         {
-            new OpenErrModalCmd(ModalNavS, RepartConfVM.WindowTitleText, RepartLangProvider.Current["MinSourcesRequired"]).Execute(null);
+            new OpenErrModalCmd(ModalNavS, RepartConfVM.WindowTitleText, RepartLangProvider.Current["MinSourcesRequired"])
+                .Execute(null);
             return null;
         }
 

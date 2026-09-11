@@ -1,10 +1,10 @@
-namespace OneColumnEncoder.Commands.OpenClose;
+namespace OneColumnEncoder.Commands.OpenClose.Confirmations;
 
 /// <summary>
 /// Shows a confirmation modal reporting a completed queue source analysis, with context-menu
 /// actions to open or copy the produced queue and excluded-sources JSON paths.
 /// </summary>
-public class OpenQueueAnalysisCompletedModalCmd(
+public class OpenQueueAnalyzedCmd(
     ModalNavS modalNavS,
     string message,
     string queueJsonPath,
