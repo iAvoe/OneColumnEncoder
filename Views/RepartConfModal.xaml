@@ -180,15 +180,25 @@
                   Grid.RowSpan="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
                 <!-- Import Source Control -->
                 <comps:SectionHeader Grid.Row="0"
                                      HeaderText="{Binding InputSourcesTitle}" />
-                <ListBox Grid.Row="1"
+                <comps:TwoButtonGroup Grid.Row="1"
+                                      DataContext="{Binding SourceSortButtons}"
+                                      Button1Command="{Binding Cmd1}"
+                                      Button2Command="{Binding Cmd2}"
+                                      Button1IsEnabled="{Binding B2_1IsEnabled}"
+                                      Button2IsEnabled="{Binding B2_2IsEnabled}"
+                                      ButtonHeight="28"
+                                      Height="28"
+                                      Margin="0 8 0 0" />
+                <ListBox Grid.Row="2"
                          ItemsSource="{Binding Sources}"
-                         Margin="-1 15 0 0"
+                         Margin="-1 8 0 0"
                          BorderThickness="0"
                          Background="Transparent"
                          HorizontalContentAlignment="Stretch"
@@ -230,14 +240,53 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Border.Style>
-                                <StackPanel>
-                                    <TextBlock Text="{Binding Name}"
-                                               FontWeight="SemiBold"
-                                               TextTrimming="CharacterEllipsis" />
-                                    <TextBlock Text="{Binding P1Text}"
-                                               Foreground="{StaticResource GlobalSecondary}" />
-                                </StackPanel>
-                            </Border>
+                                 <Grid>
+                                     <Grid.ColumnDefinitions>
+                                         <ColumnDefinition Width="*" />
+                                         <ColumnDefinition Width="Auto" />
+                                     </Grid.ColumnDefinitions>
+                                     <StackPanel>
+                                     <TextBlock Text="{Binding Name}"
+                                                FontWeight="SemiBold"
+                                                TextTrimming="CharacterEllipsis" />
+                                     <TextBlock Text="{Binding P1Text}"
+                                                Foreground="{StaticResource GlobalSecondary}" />
+                                     </StackPanel>
+                                     <StackPanel Grid.Column="1"
+                                                 Orientation="Horizontal"
+                                                 VerticalAlignment="Center">
+                                         <Button Content="{Binding DataContext.RemoveSourceText, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
+                                                 Command="{Binding DataContext.RemoveSourceCommand, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
+                                                 CommandParameter="{Binding}"
+                                                 IsEnabled="{Binding CanRemove}"
+                                                 ToolTip="Remove source"
+                                                 Width="30"
+                                                 Height="25"
+                                                 Padding="0"
+                                                 Style="{StaticResource NormalButton}" />
+                                         <Button Content="{Binding DataContext.MoveUpText, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
+                                                 Command="{Binding DataContext.MoveSourceUpCommand, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
+                                                 CommandParameter="{Binding}"
+                                                 IsEnabled="{Binding CanMoveUp}"
+                                                 ToolTip="Move source up"
+                                                 Width="30"
+                                                 Height="25"
+                                                 Padding="0"
+                                                 Margin="2.5 0 0 0"
+                                                 Style="{StaticResource NormalButton}" />
+                                         <Button Content="{Binding DataContext.MoveDownText, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
+                                                 Command="{Binding DataContext.MoveSourceDownCommand, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
+                                                 CommandParameter="{Binding}"
+                                                 IsEnabled="{Binding CanMoveDown}"
+                                                 ToolTip="Move source down"
+                                                 Width="30"
+                                                 Height="25"
+                                                 Padding="0"
+                                                 Margin="2.5 0 0 0"
+                                                 Style="{StaticResource NormalButton}" />
+                                     </StackPanel>
+                                 </Grid>
+                             </Border>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
@@ -501,15 +550,25 @@
                   Margin="15 15 0 0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <Grid>
+                <Grid Grid.Row="0">
                     <comps:SectionHeader HeaderText="{Binding OutputEpisodesTitle}" />
                     <TextBlock Text="{Binding OutputCountText}"
                                HorizontalAlignment="Right"
                                Foreground="{StaticResource GlobalSecondary}" />
                 </Grid>
-                <ScrollViewer Grid.Row="1"
+                <comps:TwoButtonGroup Grid.Row="1"
+                                      DataContext="{Binding OutputSortButtons}"
+                                      Button1Command="{Binding Cmd1}"
+                                      Button2Command="{Binding Cmd2}"
+                                      Button1IsEnabled="{Binding B2_1IsEnabled}"
+                                      Button2IsEnabled="{Binding B2_2IsEnabled}"
+                                      ButtonHeight="28"
+                                      Height="28"
+                                      Margin="5 5 0 0" />
+                <ScrollViewer Grid.Row="2"
                               Margin="5 5 0 0"
                               VerticalScrollBarVisibility="Auto"
                               HorizontalScrollBarVisibility="Disabled">
@@ -522,21 +581,56 @@
                                         BorderThickness="1"
                                         CornerRadius="5">
                                     <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
+                                         <Grid.ColumnDefinitions>
+                                             <ColumnDefinition Width="*" />
+                                             <ColumnDefinition Width="Auto" />
+                                             <ColumnDefinition Width="Auto" />
+                                         </Grid.ColumnDefinitions>
                                         <StackPanel>
                                             <TextBlock Text="{Binding Name}"
                                                        FontWeight="Bold" />
                                             <TextBlock Text="{Binding FrameRangeText}"
                                                        Foreground="{StaticResource GlobalSecondary}" />
                                         </StackPanel>
-                                        <TextBlock Grid.Column="1"
-                                                   Text="{Binding FrameCountText}"
-                                                   VerticalAlignment="Center"
-                                                   Foreground="{StaticResource GlobalSecondary}" />
-                                    </Grid>
+                                         <TextBlock Grid.Column="1"
+                                                    Text="{Binding FrameCountText}"
+                                                    VerticalAlignment="Center"
+                                                    Foreground="{StaticResource GlobalSecondary}" />
+                                         <StackPanel Grid.Column="2"
+                                                     Orientation="Horizontal"
+                                                     VerticalAlignment="Center"
+                                                     Margin="8 0 0 0">
+                                             <Button Content="{Binding DataContext.RemoveOutputText, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
+                                                     Command="{Binding DataContext.RemoveOutputCommand, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
+                                                     CommandParameter="{Binding}"
+                                                     IsEnabled="{Binding CanRemove}"
+                                                     ToolTip="Remove output"
+                                                     Width="30"
+                                                     Height="25"
+                                                     Padding="0"
+                                                     Style="{StaticResource NormalButton}" />
+                                             <Button Content="{Binding DataContext.MoveUpText, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
+                                                     Command="{Binding DataContext.MoveOutputUpCommand, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
+                                                     CommandParameter="{Binding}"
+                                                     IsEnabled="{Binding CanMoveUp}"
+                                                     ToolTip="Move output up"
+                                                     Width="30"
+                                                     Height="25"
+                                                     Padding="0"
+                                                     Margin="2.5 0 0 0"
+                                                     Style="{StaticResource NormalButton}" />
+                                             <Button Content="{Binding DataContext.MoveDownText, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
+                                                     Command="{Binding DataContext.MoveOutputDownCommand, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
+                                                     CommandParameter="{Binding}"
+                                                     IsEnabled="{Binding CanMoveDown}"
+                                                     ToolTip="Move output down"
+                                                     Width="30"
+                                                     Height="25"
+                                                     Padding="0"
+                                                     Margin="2.5 0 0 0"
+                                                     Style="{StaticResource NormalButton}" />
+                                         </StackPanel>
+                                     </Grid>
                                 </Border>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

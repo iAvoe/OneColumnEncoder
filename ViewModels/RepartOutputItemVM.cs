@@ -3,6 +3,9 @@ namespace OneColumnEncoder.ViewModels;
 public sealed class RepartOutputItemVM : BaseVM
 {
     private bool _isSelected;
+    private bool _canMoveUp;
+    private bool _canMoveDown;
+    private bool _canRemove;
 
     public RepartOutputItemVM(RepartOutputSegmentM model, int frameRateNumerator, int frameRateDenominator)
     {
@@ -17,12 +20,21 @@ public sealed class RepartOutputItemVM : BaseVM
     public string P1Text { get; }
     public string FrameRangeText => $"{Model.FirstFrame:N0} - {Model.LastFrame:N0}";
     public string FrameCountText => $"{Model.FrameCount:N0} {RepartLangProvider.Current["FrameFormat"]}";
-    public string DisplayR1Text => string.Empty;
-    public string R2Text => string.Empty;
-    public string R3Text => string.Empty;
-    public bool R1IsEnabled => false;
-    public bool R2IsEnabled => false;
-    public bool R3IsEnabled => false;
+    public bool CanMoveUp
+    {
+        get => _canMoveUp;
+        set => SetProperty(ref _canMoveUp, value);
+    }
+    public bool CanMoveDown
+    {
+        get => _canMoveDown;
+        set => SetProperty(ref _canMoveDown, value);
+    }
+    public bool CanRemove
+    {
+        get => _canRemove;
+        set => SetProperty(ref _canRemove, value);
+    }
 
     public bool IsSelected
     {

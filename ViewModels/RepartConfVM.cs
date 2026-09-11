@@ -1,4 +1,5 @@
 using OneColumnEncoder.Validation;
+using System.IO;
 
 namespace OneColumnEncoder.ViewModels;
 
@@ -68,6 +69,16 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         AddEpisodeCommand = new ActionCmd(_ => AddDivider());
         ApplyCommand = new ActionCmd(_ => ApplyAndClose());
         CancelCommand = new ActionCmd(_ => CancelAndClose());
+        RemoveSourceCommand = new ActionCmd(item => RemoveSource(item as RepartSrcItemVM));
+        MoveSourceUpCommand = new ActionCmd(item => MoveSource(item as RepartSrcItemVM, -1));
+        MoveSourceDownCommand = new ActionCmd(item => MoveSource(item as RepartSrcItemVM, 1));
+        SortSourceByTotalFramesCommand = new ActionCmd(_ => SortSourcesByTotalFrames());
+        SortSourceByFilenameCommand = new ActionCmd(_ => SortSourcesByFilename());
+        RemoveOutputCommand = new ActionCmd(item => RemoveOutput(item as RepartOutputItemVM));
+        MoveOutputUpCommand = new ActionCmd(item => MoveOutput(item as RepartOutputItemVM, -1));
+        MoveOutputDownCommand = new ActionCmd(item => MoveOutput(item as RepartOutputItemVM, 1));
+        SortOutputByTotalFramesCommand = new ActionCmd(_ => SortOutputsByTotalFrames());
+        SortOutputByFilenameCommand = new ActionCmd(_ => SortOutputsByFilename());
         DeleteSelectedDividerCommand = new ActionCmd(_ => DeleteSelectedDividers());
         DeleteLeftDividerCommand = new ActionCmd(_ => DeleteAdjacentDivider(-1));
         DeleteRightDividerCommand = new ActionCmd(_ => DeleteAdjacentDivider(1));
@@ -83,6 +94,20 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             DeleteSelectedDividerCommand,
             DeleteLeftDividerCommand,
             DeleteRightDividerCommand);
+        SourceSortButtons = ButtonGroupVM.CreateTwoButton(
+            QueueEditorLangProvider.Current["QueueEditor.SortByTotalFrames"],
+            QueueEditorLangProvider.Current["QueueEditor.SortByFilename"],
+            SortSourceByTotalFramesCommand,
+            SortSourceByFilenameCommand);
+        SourceSortButtons.B2_1Icon = SvgIconProvider.GameSort;
+        SourceSortButtons.B2_2Icon = SvgIconProvider.GameSort;
+        OutputSortButtons = ButtonGroupVM.CreateTwoButton(
+            QueueEditorLangProvider.Current["QueueEditor.SortByTotalFrames"],
+            QueueEditorLangProvider.Current["QueueEditor.SortByFilename"],
+            SortOutputByTotalFramesCommand,
+            SortOutputByFilenameCommand);
+        OutputSortButtons.B2_1Icon = SvgIconProvider.GameSort;
+        OutputSortButtons.B2_2Icon = SvgIconProvider.GameSort;
         FinishButtons = ButtonGroupVM.CreateTwoButton(CancelText, ApplyText, CancelCommand, ApplyCommand);
         RefreshDraftAvailability();
 
@@ -123,6 +148,10 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public static string UndoEditText => RepartLangProvider.Current["Undo"];
     public static string RedoEditText => RepartLangProvider.Current["Redo"];
     public static string TimelineHintText => RepartLangProvider.Current["TimelineHintDetailed"];
+    public static string RemoveSourceText => LangProviderBase.RemoveText;
+    public static string MoveUpText => LangProviderBase.MoveUpText;
+    public static string MoveDownText => LangProviderBase.MoveDownText;
+    public static string RemoveOutputText => LangProviderBase.RemoveText;
     public string OutputCountText => string.Format(RepartLangProvider.Current["OutputCount"], Outputs.Count);
     public static string TimelineStartText => "00:00:00.000";
     public string TimelineEndText => _analysis == null
@@ -138,10 +167,22 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         get => _dividerPreviewFrames;
     }
     public ButtonGroupVM DividerDeleteButtons { get; }
+    public ButtonGroupVM SourceSortButtons { get; }
+    public ButtonGroupVM OutputSortButtons { get; }
     public ButtonGroupVM FinishButtons { get; }
     public ICommand AddEpisodeCommand { get; }
     public ICommand ApplyCommand { get; }
     public ICommand CancelCommand { get; }
+    public ICommand RemoveSourceCommand { get; }
+    public ICommand MoveSourceUpCommand { get; }
+    public ICommand MoveSourceDownCommand { get; }
+    public ICommand SortSourceByTotalFramesCommand { get; }
+    public ICommand SortSourceByFilenameCommand { get; }
+    public ICommand RemoveOutputCommand { get; }
+    public ICommand MoveOutputUpCommand { get; }
+    public ICommand MoveOutputDownCommand { get; }
+    public ICommand SortOutputByTotalFramesCommand { get; }
+    public ICommand SortOutputByFilenameCommand { get; }
     public ICommand DeleteSelectedDividerCommand { get; }
     public ICommand DeleteLeftDividerCommand { get; }
     public ICommand DeleteRightDividerCommand { get; }
@@ -164,6 +205,8 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
     public bool CanEdit => !IsBusy && _analysis != null;
     public bool CanApply => CanEdit && Outputs.Count > 0;
+    public bool CanRemoveSource => CanEdit && Sources.Count > 1;
+    public bool CanRemoveOutput => CanEdit && Outputs.Count > 1;
     public bool CanAddEpisode
     {
         get
@@ -396,7 +439,11 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         LoadSources();
         BuildAxisLabels();
         _dividers = GetPlanDividers(currentPlan);
-        ReplaceOutputs(BuildDividerOutputs());
+        ReplaceOutputs(
+            currentPlan.Outputs.Count > 0
+                ? currentPlan.Outputs
+                : BuildDividerOutputs(),
+            sortByTimeline: false);
         ResetEditHistory();
         StatusText = RepartLangProvider.Current["Ready"];
         PrepareNextDraft();
@@ -412,6 +459,194 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         foreach (RepartOutputItemVM output in Outputs)
             output.IsSelected = _selectedOutputs.Contains(output);
         SelectedOutput = _selectedOutputs.LastOrDefault();
+    }
+
+    private void RemoveSource(RepartSrcItemVM? item)
+    {
+        if (!CanRemoveSource || item == null) return;
+        ApplySourceOrder(Sources.Where(source => !ReferenceEquals(source, item)));
+    }
+
+    private void MoveSource(RepartSrcItemVM? item, int offset)
+    {
+        if (item == null) return;
+        int oldIndex = Sources.IndexOf(item);
+        int newIndex = oldIndex + offset;
+        if (oldIndex < 0 || newIndex < 0 || newIndex >= Sources.Count) return;
+
+        List<RepartSrcItemVM> ordered = [.. Sources];
+        (ordered[oldIndex], ordered[newIndex]) = (ordered[newIndex], ordered[oldIndex]);
+        ApplySourceOrder(ordered);
+    }
+
+    private void SortSourcesByTotalFrames()
+    {
+        if (Sources.Count < 2) return;
+        bool ascending = !IsAscending(Sources, source => source.FrameCount, Comparer<long>.Default);
+        ApplySourceOrder(ascending
+            ? Sources.OrderBy(source => source.FrameCount)
+            : Sources.OrderByDescending(source => source.FrameCount));
+    }
+
+    private void SortSourcesByFilename()
+    {
+        if (Sources.Count < 2) return;
+        bool ascending = !IsAscending(Sources, source => source.Name, NaturalFileNameComparer.Instance);
+        ApplySourceOrder(ascending
+            ? Sources.OrderBy(source => source.Name, NaturalFileNameComparer.Instance)
+            : Sources.OrderByDescending(source => source.Name, NaturalFileNameComparer.Instance));
+    }
+
+    private void RemoveOutput(RepartOutputItemVM? item)
+    {
+        if (!CanRemoveOutput || item == null || !Outputs.Remove(item)) return;
+        item.Dispose();
+        SelectedOutput = null;
+        RefreshQueueItemStates();
+    }
+
+    private void MoveOutput(RepartOutputItemVM? item, int offset)
+    {
+        if (item == null) return;
+        int oldIndex = Outputs.IndexOf(item);
+        int newIndex = oldIndex + offset;
+        if (oldIndex < 0 || newIndex < 0 || newIndex >= Outputs.Count) return;
+        Outputs.Move(oldIndex, newIndex);
+        RefreshQueueItemStates();
+    }
+
+    private void SortOutputsByTotalFrames()
+    {
+        if (Outputs.Count < 2) return;
+        bool ascending = !IsAscending(Outputs, output => output.Model.FrameCount, Comparer<long>.Default);
+        ApplyOutputOrder(ascending
+            ? Outputs.OrderBy(output => output.Model.FrameCount)
+            : Outputs.OrderByDescending(output => output.Model.FrameCount));
+    }
+
+    private void SortOutputsByFilename()
+    {
+        if (Outputs.Count < 2) return;
+        bool ascending = !IsAscending(Outputs, output => output.Name, NaturalFileNameComparer.Instance);
+        ApplyOutputOrder(ascending
+            ? Outputs.OrderBy(output => output.Name, NaturalFileNameComparer.Instance)
+            : Outputs.OrderByDescending(output => output.Name, NaturalFileNameComparer.Instance));
+    }
+
+    private void ApplyOutputOrder(IEnumerable<RepartOutputItemVM> orderedItems)
+    {
+        RepartOutputItemVM[] ordered = [.. orderedItems];
+        for (int i = 0; i < ordered.Length; i++)
+        {
+            int currentIndex = Outputs.IndexOf(ordered[i]);
+            if (currentIndex != i) Outputs.Move(currentIndex, i);
+        }
+        RefreshQueueItemStates();
+    }
+
+    private void ApplySourceOrder(IEnumerable<RepartSrcItemVM> orderedItems)
+    {
+        if (_analysis == null) return;
+        RepartSourceM[] sourceModels = [.. orderedItems.Select(item =>
+            _analysis.Sources.First(source => string.Equals(source.FilePath, item.FilePath, StringComparison.OrdinalIgnoreCase)))];
+        if (sourceModels.Length == 0) return;
+
+        long totalFrames = 0;
+        List<RepartSourceM> updatedSources = [];
+        foreach (RepartSourceM source in sourceModels)
+        {
+            long frameCount = source.FrameCount;
+            updatedSources.Add(source with
+            {
+                FirstFrame = totalFrames,
+                LastFrame = totalFrames + frameCount - 1,
+                TotalFrames = frameCount
+            });
+            totalFrames += frameCount;
+        }
+
+        List<RepartOutputSegmentM> updatedOutputs = [.. Outputs
+            .Select(output => ClampOutput(output.Model, totalFrames))
+            .Where(output => output != null)
+            .Select(output => output!)];
+        List<RepartDividerM> updatedDividers = [.. _dividers
+            .Where(divider => divider.Frame >= 0 && divider.Frame < totalFrames - 1)];
+
+        _analysis = ClonePlan(_analysis, updatedSources, updatedOutputs, updatedDividers, totalFrames);
+        _dividers = updatedDividers;
+        LoadSources();
+        BuildAxisLabels();
+        ReplaceOutputs(updatedOutputs, sortByTimeline: false);
+        OnPropertyChanged(nameof(CanRemoveSource));
+        OnPropertyChanged(nameof(SummaryText));
+        OnPropertyChanged(nameof(TimelineEndText));
+        RefreshAnalysisProperties();
+    }
+
+    private void RefreshQueueItemStates()
+    {
+        for (int i = 0; i < Sources.Count; i++)
+        {
+            Sources[i].CanMoveUp = CanEdit && i > 0;
+            Sources[i].CanMoveDown = CanEdit && i < Sources.Count - 1;
+            Sources[i].CanRemove = CanRemoveSource;
+        }
+
+        for (int i = 0; i < Outputs.Count; i++)
+        {
+            Outputs[i].CanMoveUp = CanEdit && i > 0;
+            Outputs[i].CanMoveDown = CanEdit && i < Outputs.Count - 1;
+            Outputs[i].CanRemove = CanRemoveOutput;
+        }
+
+        bool canSort = CanEdit && Sources.Count > 1;
+        SourceSortButtons.B2_1IsEnabled = canSort;
+        SourceSortButtons.B2_2IsEnabled = canSort;
+        canSort = CanEdit && Outputs.Count > 1;
+        OutputSortButtons.B2_1IsEnabled = canSort;
+        OutputSortButtons.B2_2IsEnabled = canSort;
+        OnPropertyChanged(nameof(CanRemoveSource));
+        OnPropertyChanged(nameof(CanRemoveOutput));
+        OnPropertyChanged(nameof(CanApply));
+    }
+
+    private static RepartOutputSegmentM? ClampOutput(RepartOutputSegmentM output, long totalFrames)
+    {
+        if (totalFrames <= 0 || output.FirstFrame >= totalFrames) return null;
+        long lastFrame = Math.Min(output.LastFrame, totalFrames - 1);
+        return lastFrame >= output.FirstFrame ? output with { LastFrame = lastFrame } : null;
+    }
+
+    private static RepartPlanM ClonePlan(
+        RepartPlanM source,
+        IEnumerable<RepartSourceM> sources,
+        IEnumerable<RepartOutputSegmentM> outputs,
+        IEnumerable<RepartDividerM> dividers,
+        long totalFrames) => new()
+        {
+            PlanId = source.PlanId,
+            FfprobePath = source.FfprobePath,
+            ReferenceRawJson = source.ReferenceRawJson,
+            FormatSignature = source.FormatSignature,
+            FrameRateNumerator = source.FrameRateNumerator,
+            FrameRateDenominator = source.FrameRateDenominator,
+            TotalFrames = totalFrames,
+            Sources = [.. sources],
+            Outputs = [.. outputs],
+            Dividers = [.. dividers]
+        };
+
+    private static bool IsAscending<TItem, TKey>(
+        IReadOnlyList<TItem> items,
+        Func<TItem, TKey> keySelector,
+        IComparer<TKey> comparer)
+    {
+        for (int i = 1; i < items.Count; i++)
+        {
+            if (comparer.Compare(keySelector(items[i - 1]), keySelector(items[i])) > 0)
+                return false;
+        }
+        return true;
     }
 
     public void SetDraggingSelection(bool isDraggingSelection)
@@ -814,10 +1049,15 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
 
     private readonly record struct DividerEditSnapshot(List<RepartDividerM> Dividers);
 
-    private void ReplaceOutputs(IEnumerable<RepartOutputSegmentM> models, bool refreshTimeline = true)
+    private void ReplaceOutputs(
+        IEnumerable<RepartOutputSegmentM> models,
+        bool refreshTimeline = true,
+        bool sortByTimeline = true)
     {
         Outputs.Clear();
-        List<RepartOutputSegmentM> orderedModels = [.. models.OrderBy(model => model.FirstFrame)];
+        List<RepartOutputSegmentM> orderedModels = sortByTimeline
+            ? [.. models.OrderBy(model => model.FirstFrame)]
+            : [.. models];
         if (_analysis != null)
         {
             foreach (RepartOutputSegmentM model in orderedModels)
@@ -830,6 +1070,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         OnPropertyChanged(nameof(OutputCountText));
         RefreshDraftAvailability();
         RefreshDividerAvailability();
+        RefreshQueueItemStates();
     }
 
     // Build output segments from dividers in timeline order, retaining IDs and names
@@ -1073,40 +1314,12 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         }
         RepartPlanM committed = _analysis.Clone();
         committed.Outputs.Clear();
-        committed.Outputs.AddRange(BuildCommittedOutputs());
+        committed.Outputs.AddRange(Outputs.Select(output => output.Model));
         committed.Dividers.Clear();
         committed.Dividers.AddRange(_dividers.OrderBy(divider => divider.Frame));
         InterruptWindowWork();
         _applyPlan(committed);
         _closeAction();
-    }
-
-    // The configuration list is displayed in timeline order, while the plan also stores
-    // the separate execution order selected in QueueEditorModal.
-    private List<RepartOutputSegmentM> BuildCommittedOutputs()
-    {
-        List<RepartOutputSegmentM> currentOutputs = [.. Outputs.Select(output => output.Model)];
-        if (_analysis == null || _analysis.Outputs.Count == 0)
-            return currentOutputs;
-
-        Dictionary<(long FirstFrame, long LastFrame), RepartOutputSegmentM> currentByRange =
-            currentOutputs.ToDictionary(output => (output.FirstFrame, output.LastFrame));
-        HashSet<(long FirstFrame, long LastFrame)> committedRanges = [];
-        List<RepartOutputSegmentM> committed = [];
-
-        foreach (RepartOutputSegmentM previous in _analysis.Outputs)
-        {
-            var range = (previous.FirstFrame, previous.LastFrame);
-            if (currentByRange.TryGetValue(range, out RepartOutputSegmentM? current))
-            {
-                committed.Add(current);
-                committedRanges.Add(range);
-            }
-        }
-
-        committed.AddRange(currentOutputs.Where(output =>
-            !committedRanges.Contains((output.FirstFrame, output.LastFrame))));
-        return committed;
     }
 
     private void CancelAndClose()
@@ -1135,6 +1348,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         OnPropertyChanged(nameof(TimelineEndText));
         RefreshDraftAvailability();
         RefreshDividerAvailability();
+        RefreshQueueItemStates();
     }
 
     private void RefreshDividerPreview()
@@ -1272,6 +1486,21 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     private void ShowError(string message) =>
         new OpenErrModalCmd(_modalNavS, WindowTitleText, message).Execute(null);
 
+    private sealed class NaturalFileNameComparer : IComparer<string>
+    {
+        public static NaturalFileNameComparer Instance { get; } = new();
+
+        public int Compare(string? x, string? y)
+        {
+            string xName = Path.GetFileName(x ?? string.Empty);
+            string yName = Path.GetFileName(y ?? string.Empty);
+            int result = LibImportProviderM.CompareLogical(xName, yName);
+            return result != 0
+                ? result
+                : StringComparer.OrdinalIgnoreCase.Compare(x, y);
+        }
+    }
+
     private void OnLanguageChanged()
     {
         foreach (string property in new[]
@@ -1294,6 +1523,10 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         DividerDeleteButtons.B3_1Text = DeleteEpisodeText;
         DividerDeleteButtons.B3_2Text = DeleteLeftDividerText;
         DividerDeleteButtons.B3_3Text = DeleteRightDividerText;
+        SourceSortButtons.B2_1Text = QueueEditorLangProvider.Current["QueueEditor.SortByTotalFrames"];
+        SourceSortButtons.B2_2Text = QueueEditorLangProvider.Current["QueueEditor.SortByFilename"];
+        OutputSortButtons.B2_1Text = QueueEditorLangProvider.Current["QueueEditor.SortByTotalFrames"];
+        OutputSortButtons.B2_2Text = QueueEditorLangProvider.Current["QueueEditor.SortByFilename"];
         FinishButtons.B2_1Text = CancelText;
         FinishButtons.B2_2Text = ApplyText;
         OnPropertyChanged(nameof(SummaryText));

@@ -43,24 +43,6 @@ public sealed class SrcRepartState
         RefreshTitle();
     }
 
-    // Applies a unique, non-empty subset in execution order; at least one output remains.
-    public bool ReorderOutputs(Guid[] outputIds)
-    {
-        if (_plan == null || outputIds.Length == 0 || outputIds.Length > _plan.Outputs.Count)
-            return false;
-
-        Dictionary<Guid, RepartOutputSegmentM> outputsById = _plan.Outputs.ToDictionary(output => output.Id);
-        if (outputIds.Any(id => !outputsById.ContainsKey(id))
-            || outputIds.Distinct().Count() != outputIds.Length)
-            return false;
-
-        RepartPlanM reordered = _plan.Clone();
-        reordered.Outputs.Clear();
-        reordered.Outputs.AddRange(outputIds.Select(id => outputsById[id]));
-        ApplyPlan(reordered);
-        return true;
-    }
-
     public void Clear()
     {
         _plan = null;

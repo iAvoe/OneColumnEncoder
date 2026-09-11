@@ -2413,26 +2413,6 @@ public class MainVM : BaseVM
         _appDataM.Save();
     }
 
-    private void OpenRepartOutputQueueEditor(RepartPlanM plan)
-    {
-        if (plan.Outputs.Count == 0) return;
-
-        OpenQueueEditorCmd.EditOutputOrder(
-            _modalNavS,
-            plan.Outputs,
-            plan.FrameRateNumerator,
-            plan.FrameRateDenominator,
-            ApplyEditedRepartOutputOrder);
-    }
-
-    private void ApplyEditedRepartOutputOrder(Guid[] outputIds)
-    {
-        if (!_SrcRepart.ReorderOutputs(outputIds)) return;
-
-        RefreshSelectedSrcStatus(resetAnalysis: false);
-        _appDataM.Save();
-    }
-
     private void OnSrcRepartCleared()
     {
         _SrcRepart.Clear();
@@ -2546,9 +2526,8 @@ public class MainVM : BaseVM
     {
         if (GetActiveSrcRoute() == SrcRouteKind.Repart)
         {
-            RepartPlanM? plan = GetRepartPlan();
-            if (plan?.Outputs.Count > 0)
-                OpenRepartOutputQueueEditor(plan);
+            ToolItemCardVM? repartItem = VideoSrcImportZone.FirstOrDefault(IsSrcRepartItem);
+            repartItem?.R1Command?.Execute(repartItem);
             return;
         }
 

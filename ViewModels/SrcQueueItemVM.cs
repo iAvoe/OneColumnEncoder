@@ -3,7 +3,7 @@ using System.Windows.Threading;
 
 namespace OneColumnEncoder.ViewModels;
 
-public sealed class SrcQueueItemVM : BaseVM, IQueueEditorItem
+public sealed class SrcQueueItemVM : BaseVM
 {
     private bool _canMoveUp;
     private bool _canMoveDown;
@@ -35,9 +35,6 @@ public sealed class SrcQueueItemVM : BaseVM, IQueueEditorItem
 
     public string FilePath { get; }
     public long SizeBytes { get; }
-    public long SortSize => SizeBytes;
-    public string SortName => FilePath;
-    public Guid? OutputId => null;
 
     public string Name
     {
@@ -77,7 +74,7 @@ public sealed class SrcQueueItemVM : BaseVM, IQueueEditorItem
     public bool R1IsEnabled => _canRemove;
     public bool R2IsEnabled => _canMoveUp;
     public bool R3IsEnabled => _canMoveDown;
-    public bool IsCancel => false;
+    public static bool IsCancel => false;
 
     public bool IsSelected
     {
@@ -127,9 +124,9 @@ public sealed class SrcQueueItemVM : BaseVM, IQueueEditorItem
         }
     }
 
-    public ICommand? R1Command { get; set; }
-    public ICommand? R2Command { get; set; }
-    public ICommand? R3Command { get; set; }
+    public ICommand? R1Command { get; }
+    public ICommand? R2Command { get; }
+    public ICommand? R3Command { get; }
 
     public void RefreshLanguage()
     {
