@@ -1946,6 +1946,15 @@ public class MainVM : BaseVM
         if (zone == ToolZone.Analytics)
             item.PropertyChanged += OnAnalyticsItemPropertyChanged;
     }
+    private OpenRepartConfCmd CreateOpenRepartConfCmd(bool forceReimport) => new(
+        _modalNavS,
+        GetSelectedFfprobePath,
+        () => _appDataM.Tools.FFmpegPath,
+        GetRepartPlan,
+        ApplyRepartPlan,
+        SetOverlayBlocked,
+        forceReimport);
+
     private void WireUpSourceCmd(ToolItemCardVM item)
     {
         if (IsSrcQueueItem(item))
@@ -1973,13 +1982,7 @@ public class MainVM : BaseVM
 
         if (IsSrcRepartItem(item))
         {
-            item.R1Command = new OpenRepartConfCmd(
-                _modalNavS,
-                GetSelectedFfprobePath,
-                () => _appDataM.Tools.FFmpegPath,
-                GetRepartPlan,
-                ApplyRepartPlan,
-                SetOverlayBlocked);
+            item.R1Command = CreateOpenRepartConfCmd(forceReimport: true);
             item.R2Command = new ClearToolItemCmd(item, OnSrcRepartCleared);
             item.PropertyChanged += OnVideoSrcItemPropertyChanged;
             return;
@@ -2531,7 +2534,8 @@ public class MainVM : BaseVM
         if (GetActiveSrcRoute() == SrcRouteKind.Repart)
         {
             ToolItemCardVM? repartItem = VideoSrcImportZone.FirstOrDefault(IsSrcRepartItem);
-            repartItem?.R1Command?.Execute(repartItem);
+            if (repartItem != null)
+                CreateOpenRepartConfCmd(forceReimport: false).Execute(repartItem);
             return;
         }
 

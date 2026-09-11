@@ -14,22 +14,22 @@ public sealed class OpenRepartConfCmd(
     Func<string?>? getFFmpegPath,
     Func<RepartPlanM?> getCurrentPlan,
     Action<RepartPlanM> applyPlan,
-    Action<bool>? setMainOverlayVisible = null) : OpenCloseBase(modalNavS)
+    Action<bool>? setMainOverlayVisible = null,
+    bool forceReimport = false) : OpenCloseBase(modalNavS)
 {
     private readonly Action<bool>? _setMainOverlayVisible = setMainOverlayVisible;
 
     /// <summary>
     /// Brings an already-open window to the front; otherwise imports and analyzes sources,
-    /// then shows the configuration modal with the plan.
+    /// or reuses the current plan, then shows the configuration modal.
     /// </summary>
     public override async void Execute(object? parameter)
     {
         if (TryActivateExistingWindow<RepartConfModal>())
             return;
 
-        RepartPlanM? currentPlan = getCurrentPlan();
-        RepartPlanM? initialPlan = currentPlan;
-        if (currentPlan == null)
+        RepartPlanM? initialPlan = forceReimport ? null : getCurrentPlan();
+        if (initialPlan == null)
         {
             bool importAsChapterFile = RepartChapterImportPrompt.Confirm(ModalNavS);
             _setMainOverlayVisible?.Invoke(true);
