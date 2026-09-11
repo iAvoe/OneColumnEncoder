@@ -1132,7 +1132,12 @@ public class MainVM : BaseVM
         bool hasVideoSrc = HasSelectedVideoSrc();
         bool hasRawJson = !string.IsNullOrWhiteSpace(_srcVideoAnalysis.RawJson);
         SrcRouteKind route = GetActiveSrcRoute();
-        bool isQueueOrConcat = route is SrcRouteKind.Queue or SrcRouteKind.Concat;
+        bool canEditQueue = route switch
+        {
+            SrcRouteKind.Queue => GetCurrentQueueFilePaths().Length > 0,
+            SrcRouteKind.Repart => GetRepartPlan()?.Outputs.Count > 0,
+            _ => false
+        };
 
         if (oneLineShotSelected)
         {
@@ -1144,7 +1149,7 @@ public class MainVM : BaseVM
         {
             FilterScbButtons.B3_1IsEnabled = true;
             FilterScbButtons.B3_2IsEnabled = hasVideoSrc && hasRawJson;
-            FilterScbButtons.B3_3IsEnabled = isQueueOrConcat;
+            FilterScbButtons.B3_3IsEnabled = canEditQueue;
         }
 
         if (_modalNavS.GetModal<FilterScribeVM>() is FilterScribeVM modal)
@@ -1970,8 +1975,7 @@ public class MainVM : BaseVM
                 () => _appDataM.Tools.FFmpegPath,
                 GetRepartPlan,
                 ApplyRepartPlan,
-                SetOverlayBlocked,
-                OpenRepartOutputQueueEditor);
+                SetOverlayBlocked);
             item.R2Command = new ClearToolItemCmd(item, OnSrcRepartCleared);
             item.PropertyChanged += OnVideoSrcItemPropertyChanged;
             return;
@@ -2540,6 +2544,14 @@ public class MainVM : BaseVM
 
     private void OpenEditQueue()
     {
+        if (GetActiveSrcRoute() == SrcRouteKind.Repart)
+        {
+            RepartPlanM? plan = GetRepartPlan();
+            if (plan?.Outputs.Count > 0)
+                OpenRepartOutputQueueEditor(plan);
+            return;
+        }
+
         string[] filePaths = GetCurrentQueueFilePaths();
         if (filePaths.Length == 0) return;
         new OpenQueueEditorCmd(_modalNavS, ApplyEditedQueueSrcPaths)

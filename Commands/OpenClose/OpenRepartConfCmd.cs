@@ -14,11 +14,9 @@ public sealed class OpenRepartConfCmd(
     Func<string?>? getFFmpegPath,
     Func<RepartPlanM?> getCurrentPlan,
     Action<RepartPlanM> applyPlan,
-    Action<bool>? setMainOverlayVisible = null,
-    Action<RepartPlanM>? onPlanApplied = null) : OpenCloseBase(modalNavS)
+    Action<bool>? setMainOverlayVisible = null) : OpenCloseBase(modalNavS)
 {
     private readonly Action<bool>? _setMainOverlayVisible = setMainOverlayVisible;
-    private readonly Action<RepartPlanM>? _onPlanApplied = onPlanApplied;
 
     /// <summary>
     /// Brings an already-open window to the front; otherwise imports and analyzes sources,
@@ -50,28 +48,13 @@ public sealed class OpenRepartConfCmd(
         }
 
         RepartConfModal window = new();
-        bool planApplied = false;
-        RepartPlanM? appliedPlan = null;
         RepartConfVM vm = new(
             ModalNavS,
             window.Close,
-            plan =>
-            {
-                appliedPlan = plan;
-                planApplied = true;
-                applyPlan(plan);
-            },
+            applyPlan,
             getFFmpegPath?.Invoke(),
             getFfprobePath());
-        ShowModal(
-            window,
-            vm,
-            closeOpenStack: true,
-            onClosed: () =>
-            {
-                if (planApplied && appliedPlan != null)
-                    _onPlanApplied?.Invoke(appliedPlan);
-            });
+        ShowModal(window, vm, closeOpenStack: true);
         _ = vm.InitializeAsync(initialPlan);
     }
 
