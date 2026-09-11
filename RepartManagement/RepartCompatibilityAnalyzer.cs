@@ -51,7 +51,8 @@ public static class RepartCompatibilityAnalyzer
         Action<RepartAnalysisStage, int, int, string>? onFileProgress = null,
         Action<RepartExcludedSrcInfo>? onExcluded = null,
         CancellationToken cancellationToken = default,
-        bool requireMultipleSources = true)
+        bool requireMultipleSources = true,
+        bool isSingleVideoImport = false)
     {
         if (string.IsNullOrWhiteSpace(ffprobePath) || !File.Exists(ffprobePath))
             throw new FileNotFoundException(RepartLangProvider.Current.FfprobeRequired, ffprobePath);
@@ -319,6 +320,7 @@ public static class RepartCompatibilityAnalyzer
             FrameRateNumerator = frameRateNumerator,
             FrameRateDenominator = frameRateDenominator,
             TotalFrames = cumulativeFrames,
+            IsSingleVideoImport = isSingleVideoImport,
             Sources = sources
         };
         return new(plan, excluded, null);

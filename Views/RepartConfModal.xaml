@@ -177,7 +177,8 @@
 
             <!-- Leftmost column under timeline -->
             <Grid Grid.Column="0"
-                  Grid.RowSpan="2">
+                  Grid.RowSpan="2"
+                  Visibility="{Binding IsInputSourcesVisible, Converter={StaticResource BoolToVisibility}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -605,8 +606,8 @@
 
             <!-- Output episode repartition list/queue -->
             <Grid Grid.Row="1"
-                  Grid.Column="1"
-                  Grid.ColumnSpan="2"
+                  Grid.Column="{Binding OutputListColumn}"
+                  Grid.ColumnSpan="{Binding OutputListColumnSpan}"
                   Margin="15 15 0 0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />

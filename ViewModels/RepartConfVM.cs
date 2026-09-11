@@ -157,6 +157,9 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
     public string TimelineEndText => _analysis == null
         ? "00:00:00.000"
         : EncodingPipeline.FormatTimestamp(TimeSpan.FromSeconds(_analysis.TotalSeconds));
+    public bool IsInputSourcesVisible => _analysis?.IsSingleVideoImport != true;
+    public int OutputListColumn => IsInputSourcesVisible ? 1 : 0;
+    public int OutputListColumnSpan => IsInputSourcesVisible ? 2 : 3;
 
     public ObservableCollection<RepartSrcItemVM> Sources { get; } = [];
     public ObservableCollection<RepartOutputItemVM> Outputs { get; } = [];
@@ -631,6 +634,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
             FrameRateNumerator = source.FrameRateNumerator,
             FrameRateDenominator = source.FrameRateDenominator,
             TotalFrames = totalFrames,
+            IsSingleVideoImport = source.IsSingleVideoImport,
             Sources = [.. sources],
             Outputs = [.. outputs],
             Dividers = [.. dividers]
@@ -1506,6 +1510,7 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         foreach (string property in new[]
         {
             nameof(InputSourcesTitle), nameof(OutputEpisodesTitle), nameof(TimelineTitle),
+            nameof(IsInputSourcesVisible), nameof(OutputListColumn), nameof(OutputListColumnSpan),
             nameof(TimelineControlTitle), nameof(DividerControlTitle), nameof(AddNewDividerTitle), nameof(DividerOpsTitle),
             nameof(OutputNameLabel), nameof(StartTimeLabel), nameof(SegmentDurationLabel),
             nameof(EndTimeLabel), nameof(TimeFormatText), nameof(FirstFrameLabel), nameof(FrameCountLabel),

@@ -68,7 +68,7 @@ public sealed class OpenRepartConfCmd(
         {
             Title = UILangProvider.Current["SourceQueue.SelectFilesTitle"],
             Filter = new SrcFilePickerLangProvider(UILangProvider.Current.LanguageCode).VideoFilter,
-            Multiselect = true,
+            Multiselect = false,
             CheckFileExists = true,
             CheckPathExists = true
         };
@@ -76,14 +76,17 @@ public sealed class OpenRepartConfCmd(
         if (dialog.ShowDialog(Application.Current.MainWindow) != true) return null;
 
         string[] filePaths = GetVideoFiles(dialog.FileNames);
-        if (filePaths.Length < 2)
+        if (filePaths.Length == 0)
         {
-            new OpenErrModalCmd(ModalNavS, RepartConfVM.WindowTitleText, RepartLangProvider.Current["MinSourcesRequired"])
+            new OpenErrModalCmd(ModalNavS, RepartConfVM.WindowTitleText, RepartLangProvider.Current.SourceRequired)
                 .Execute(null);
             return null;
         }
 
-        RepartAnalysisResult? result = await RunAnalysisAsync(filePaths);
+        RepartAnalysisResult? result = await RunAnalysisAsync(
+            filePaths,
+            requireMultipleSources: false,
+            isSingleVideoImport: true);
         if (result?.Plan == null) return null;
 
         new OpenSuccModalCmd(
@@ -158,7 +161,8 @@ public sealed class OpenRepartConfCmd(
     /// <returns>The analysis result, or null if cancelled, errored, or no plan could be formed.</returns>
     private async Task<RepartAnalysisResult?> RunAnalysisAsync(
         IReadOnlyList<string> filePaths,
-        bool requireMultipleSources = true)
+        bool requireMultipleSources = true,
+        bool isSingleVideoImport = false)
     {
         RepartAnalysisResult result;
         try
@@ -172,7 +176,8 @@ public sealed class OpenRepartConfCmd(
                 onFileProgress: null,
                 onExcluded: null,
                 cancellationToken: default,
-                requireMultipleSources: requireMultipleSources);
+                requireMultipleSources: requireMultipleSources,
+                isSingleVideoImport: isSingleVideoImport);
         }
         catch (OperationCanceledException) { return null; }
         catch (Exception ex)

@@ -112,6 +112,7 @@ public sealed class RepartPlanM
     public int FrameRateNumerator { get; init; }
     public int FrameRateDenominator { get; init; }
     public long TotalFrames { get; init; }
+    public bool IsSingleVideoImport { get; init; }
     public List<RepartSourceM> Sources { get; init; } = [];
     public List<RepartOutputSegmentM> Outputs { get; init; } = [];
     public List<RepartDividerM> Dividers { get; init; } = [];
@@ -137,6 +138,7 @@ public sealed class RepartPlanM
         FrameRateNumerator = FrameRateNumerator,
         FrameRateDenominator = FrameRateDenominator,
         TotalFrames = TotalFrames,
+        IsSingleVideoImport = IsSingleVideoImport,
         Sources = [.. Sources],
         Outputs = [.. Outputs],
         Dividers = [.. Dividers]
