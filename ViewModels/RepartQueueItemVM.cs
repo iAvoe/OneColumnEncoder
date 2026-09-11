@@ -69,7 +69,7 @@ public sealed class RepartQueueItemVM : BaseVM, IQueueEditorItem
         get => false;
         set { }
     }
-    public long SortSize => 0;
+    public long SortSize => Model.FrameCount;
     public string SortName => Name;
     public Guid? OutputId => Model.Id;
     public ICommand? R1Command { get; set; }

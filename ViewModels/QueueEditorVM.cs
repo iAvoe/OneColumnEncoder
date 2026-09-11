@@ -39,7 +39,7 @@ public sealed class QueueEditorVM : BaseVM
         _closeAction = closeAction;
         _applyEditedOutputIds = applyEditedOutputIds;
         _minimumItemCount = segments.Length;
-        _disableSortButtons = true;
+        _disableSortButtons = false;
         _isOutputMode = true;
 
         Initialize(segments.Select(segment =>
@@ -50,9 +50,7 @@ public sealed class QueueEditorVM : BaseVM
     public string WindowTitle => _isOutputMode
         ? RepartLangProvider.Current["FilterScribeOutputOrdering"]
         : QueueEditorLangProvider.Current["QueueEditor.Title"];
-    public string HintText => _isOutputMode
-        ? QueueEditorLangProvider.Current["Hint.CannotSortInRepartMode"]
-        : QueueEditorLangProvider.Current["Hint.DoubleClickSortReverse"];
+    public string HintText => QueueEditorLangProvider.Current["Hint.DoubleClickSortReverse"];
     public ActionCmd RemoveItemCommand { get; private set; } = null!;
     public ActionCmd MoveItemUpCommand { get; private set; } = null!;
     public ActionCmd MoveItemDownCommand { get; private set; } = null!;
@@ -65,7 +63,7 @@ public sealed class QueueEditorVM : BaseVM
         MoveItemUpCommand = new ActionCmd(item => MoveItem(item as IQueueEditorItem, -1));
         MoveItemDownCommand = new ActionCmd(item => MoveItem(item as IQueueEditorItem, 1));
         SortButtons = ButtonGroupVM.CreateTwoButton(
-            QueueEditorLangProvider.Current["QueueEditor.SortBySize"],
+            GetSortByFirstButtonText(),
             QueueEditorLangProvider.Current["QueueEditor.SortByFilename"],
             new ActionCmd(_ => SortBySize()),
             new ActionCmd(_ => SortByFilename()));
@@ -110,7 +108,7 @@ public sealed class QueueEditorVM : BaseVM
 
     private void SortBySize()
     {
-        if (_isOutputMode || Items.Count < 2) return;
+        if (Items.Count < 2) return;
 
         bool sortAscending = !IsAscending(Items, item => item.SortSize, Comparer<long>.Default);
         ApplySortedOrder(sortAscending
@@ -120,7 +118,7 @@ public sealed class QueueEditorVM : BaseVM
 
     private void SortByFilename()
     {
-        if (_isOutputMode || Items.Count < 2) return;
+        if (Items.Count < 2) return;
 
         bool sortAscending = !IsAscending(Items, item => item.SortName, NaturalFileNameComparer.Instance);
         ApplySortedOrder(sortAscending
@@ -171,7 +169,7 @@ public sealed class QueueEditorVM : BaseVM
             Items[i].CanRemove = !_isOutputMode && Items.Count > _minimumItemCount;
         }
 
-        bool sortButtonsEnabled = !_isOutputMode && !_disableSortButtons && Items.Count > 1;
+        bool sortButtonsEnabled = !_disableSortButtons && Items.Count > 1;
         SortButtons.B2_1IsEnabled = sortButtonsEnabled;
         SortButtons.B2_2IsEnabled = sortButtonsEnabled;
         FinishButtons.B2_2IsEnabled = Items.Count >= _minimumItemCount && Items.Count > 0;
@@ -195,11 +193,15 @@ public sealed class QueueEditorVM : BaseVM
         foreach (IQueueEditorItem item in Items)
             item.RefreshLanguage();
 
-        SortButtons.B2_1Text = QueueEditorLangProvider.Current["QueueEditor.SortBySize"];
+        SortButtons.B2_1Text = GetSortByFirstButtonText();
         SortButtons.B2_2Text = QueueEditorLangProvider.Current["QueueEditor.SortByFilename"];
         FinishButtons.B2_1Text = ConfirmDialogLangProvider.Current["ConfirmDialog.Cancel"];
         FinishButtons.B2_2Text = ConfirmDialogLangProvider.Current["ConfirmDialog.Confirm"];
     }
+
+    private string GetSortByFirstButtonText() => _isOutputMode
+        ? QueueEditorLangProvider.Current["QueueEditor.SortByTotalFrames"]
+        : QueueEditorLangProvider.Current["QueueEditor.SortBySize"];
 
     private sealed class NaturalFileNameComparer : IComparer<string>
     {

@@ -11,6 +11,7 @@ public sealed class QueueEditorLangProvider(string languageCode) : LangProviderB
         {
             ["QueueEditor.Title"] = "Edit Queue",
             ["QueueEditor.SortBySize"] = "Sort by size",
+            ["QueueEditor.SortByTotalFrames"] = "Sort by total frames",
             ["QueueEditor.SortByFilename"] = "Sort by filename",
             ["Hint.DoubleClickSortReverse"] = "Double click sort button to reverse",
             ["Hint.CannotSortInRepartMode"] = "Cannot sort in Repart mode",
@@ -19,6 +20,7 @@ public sealed class QueueEditorLangProvider(string languageCode) : LangProviderB
         {
             ["QueueEditor.Title"] = "调整队列",
             ["QueueEditor.SortBySize"] = "按大小排序",
+            ["QueueEditor.SortByTotalFrames"] = "按总帧数排序",
             ["QueueEditor.SortByFilename"] = "按文件名排序",
             ["Hint.DoubleClickSortReverse"] = "双击排序按钮以取反",
             ["Hint.CannotSortInRepartMode"] = "重分集模式不可排序",
@@ -27,6 +29,7 @@ public sealed class QueueEditorLangProvider(string languageCode) : LangProviderB
         {
             ["QueueEditor.Title"] = "調整隊列",
             ["QueueEditor.SortBySize"] = "按大小排序",
+            ["QueueEditor.SortByTotalFrames"] = "按總幀數排序",
             ["QueueEditor.SortByFilename"] = "按檔名排序",
             ["Hint.DoubleClickSortReverse"] = "雙擊排序按鈕以取反",
             ["Hint.CannotSortInRepartMode"] = "重分集模式不可排序",
@@ -35,6 +38,7 @@ public sealed class QueueEditorLangProvider(string languageCode) : LangProviderB
         {
             ["QueueEditor.Title"] = "Modifier la file",
             ["QueueEditor.SortBySize"] = "Trier par taille",
+            ["QueueEditor.SortByTotalFrames"] = "Trier par nombre total de frames",
             ["QueueEditor.SortByFilename"] = "Trier par nom",
             ["Hint.DoubleClickSortReverse"] = "Double-cliquez sur tri pour inverser",
             ["Hint.CannotSortInRepartMode"] = "Impossible de trier en mode Repart",
@@ -43,6 +47,7 @@ public sealed class QueueEditorLangProvider(string languageCode) : LangProviderB
         {
             ["QueueEditor.Title"] = "Editar cola",
             ["QueueEditor.SortBySize"] = "Ordenar por tamaño",
+            ["QueueEditor.SortByTotalFrames"] = "Ordenar por fotogramas totales",
             ["QueueEditor.SortByFilename"] = "Ordenar por nombre",
             ["Hint.DoubleClickSortReverse"] = "Doble clic en ordenar para invertir",
             ["Hint.CannotSortInRepartMode"] = "",
@@ -51,6 +56,7 @@ public sealed class QueueEditorLangProvider(string languageCode) : LangProviderB
         {
             ["QueueEditor.Title"] = "キューを編集",
             ["QueueEditor.SortBySize"] = "サイズで並べ替え",
+            ["QueueEditor.SortByTotalFrames"] = "総フレーム数で並べ替え",
             ["QueueEditor.SortByFilename"] = "ファイル名で並べ替え",
             ["Hint.DoubleClickSortReverse"] = "ソートボタンをダブルクリックして順序を反転",
             ["Hint.CannotSortInRepartMode"] = "",
@@ -59,6 +65,7 @@ public sealed class QueueEditorLangProvider(string languageCode) : LangProviderB
         {
             ["QueueEditor.Title"] = "Редактировать очередь",
             ["QueueEditor.SortBySize"] = "Сорт. по размеру",
+            ["QueueEditor.SortByTotalFrames"] = "Сорт. по общему числу кадров",
             ["QueueEditor.SortByFilename"] = "Сорт. по имени",
             ["Hint.DoubleClickSortReverse"] = "Дважды кликните сортировку для обратного порядка",
             ["Hint.CannotSortInRepartMode"] = "",
@@ -67,6 +74,7 @@ public sealed class QueueEditorLangProvider(string languageCode) : LangProviderB
         {
             ["QueueEditor.Title"] = "Warteschlange bearbeiten",
             ["QueueEditor.SortBySize"] = "Nach Größe sortieren",
+            ["QueueEditor.SortByTotalFrames"] = "Nach Gesamtbildern sortieren",
             ["QueueEditor.SortByFilename"] = "Nach Dateiname sortieren",
             ["Hint.DoubleClickSortReverse"] = "Doppelklick Sortieren zum Umkehren",
             ["Hint.CannotSortInRepartMode"] = "",
@@ -75,6 +83,7 @@ public sealed class QueueEditorLangProvider(string languageCode) : LangProviderB
         {
             ["QueueEditor.Title"] = "큐 편집",
             ["QueueEditor.SortBySize"] = "크기순 정렬",
+            ["QueueEditor.SortByTotalFrames"] = "총 프레임 수로 정렬",
             ["QueueEditor.SortByFilename"] = "파일명순 정렬",
             ["Hint.DoubleClickSortReverse"] = "정렬 버튼을 더블 클릭하여 순서를 반전하세요",
             ["Hint.CannotSortInRepartMode"] = "",
@@ -83,6 +92,7 @@ public sealed class QueueEditorLangProvider(string languageCode) : LangProviderB
         {
             ["QueueEditor.Title"] = "Editar fila",
             ["QueueEditor.SortBySize"] = "Ordenar por tamanho",
+            ["QueueEditor.SortByTotalFrames"] = "Ordenar por quadros totais",
             ["QueueEditor.SortByFilename"] = "Ordenar por nome",
             ["Hint.DoubleClickSortReverse"] = "Duplo clique em ordenar para inverter",
             ["Hint.CannotSortInRepartMode"] = "",
