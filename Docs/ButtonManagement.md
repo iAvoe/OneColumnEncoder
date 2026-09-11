@@ -124,18 +124,33 @@ SVG icons are provided by the `SvgIconProvider` static class (`UI/SvgIconProvide
 | Property          | Description          |
 |-------------------|----------------------|
 | `GamePlay`        | Play triangle        |
+| `GamePause`       | Pause bars           |
 | `GameImport`      | Download arrow       |
 | `GameReplace`     | Replace/refresh      |
 | `GameSave`        | Save/floppy          |
 | `GameSetting`     | Gear/settings        |
 | `GameRefresh`     | Refresh arrows       |
 | `GamePaste`       | Clipboard            |
-| `GameLocation`    | Map pin              |
-| `GamePhone`       | Phone                |
+| `GameLocation`    | Map pin (legacy, prefer Folder/Clip) |
+| `GamePhone`       | Phone (legacy, prefer GameGavel) |
+| `GameGavel`       | Gavel (Usage & Compliance) |
+| `GameFolder`      | Folder (Open output folder) |
+| `GameClip`        | Film frame (Clip Sampling) |
+| `GameFork`        | Fork/branches        |
+| `GameFilter`      | Filter Venn          |
+| `GameScan`        | Scan corners         |
+| `GameDoc`         | Document             |
+| `GameCopy`        | Copy docs            |
+| `GamePlus`        | Plus                 |
+| `GameLightning`   | Lightning (OneClickScriptGen) |
+| `GameUndo`        | Undo arrow           |
+| `GameRedo`        | Redo arrow           |
+| `GameSort`        | Sort arrows          |
+| `GameMenu`        | Hamburger/list       |
 | `GameDelete`      | Trash                |
 | `GameInfo`        | Info circle          |
 | `GameWaiting`     | Hourglass            |
-| `GameWarning`     | Warning (two dots)   |
+| `GameWarning`     | Warning (single !)   |
 | `GameXMark`       | X/close              |
 | `GameCorrectMark` | Checkmark            |
 | `GlobeWarning`    | Globe with warning   |
@@ -375,7 +390,7 @@ OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
     UICaptionProviderM.Buttons.Settings,
     OpenUsages,          // ICommand
     OpenAppConf);        // ICommand
-OpenAppConfButtons.B2_1Icon = SvgIconProvider.GamePhone;
+OpenAppConfButtons.B2_1Icon = SvgIconProvider.GameGavel;
 OpenAppConfButtons.B2_2Icon = SvgIconProvider.GameSetting;
 ```
 
@@ -391,7 +406,7 @@ EncStartButtons = ButtonGroupVM.CreateThreeButton(
     SampleClip,    // ICommand
     StartEncode);  // ICommand
 EncStartButtons.B3_1Icon = SvgIconProvider.GameRefresh;
-EncStartButtons.B3_2Icon = SvgIconProvider.GameLocation;
+EncStartButtons.B3_2Icon = SvgIconProvider.GameClip;
 EncStartButtons.B3_3Icon = SvgIconProvider.GamePlay;
 ```
 

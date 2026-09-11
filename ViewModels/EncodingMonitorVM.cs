@@ -295,7 +295,7 @@ public partial class EncodingMonitorVM : BaseVM
             new ActionCmd(_ => TryInterruptUpstream()),
             new ActionCmd(_ => TryInterruptEncoder()),
             CloseCmd);
-        FinishButtons.B5_1Icon = SvgIconProvider.GameLocation;
+        FinishButtons.B5_1Icon = SvgIconProvider.GameFolder;
         FinishButtons.B5_2Icon = SvgIconProvider.GameDoc;
         FinishButtons.B5_3Icon = SvgIconProvider.GameXMark;
         FinishButtons.B5_4Icon = SvgIconProvider.GameXMark;

@@ -35,6 +35,10 @@ internal static class SvgIconProvider
     public static ImageSource GameRedo { get; }
     public static ImageSource GameSort { get; }
     public static ImageSource GameMenu { get; }
+    public static ImageSource GameGavel { get; }
+    public static ImageSource GameFolder { get; }
+    public static ImageSource GameClip { get; }
+    public static ImageSource GameSelect { get; }
 
     private static SolidColorBrush Brush(string hex) =>
         new((Color)ColorConverter.ConvertFromString(hex)!);
@@ -250,11 +254,9 @@ internal static class SvgIconProvider
         GameWaiting = new DrawingImage(gameWaiting);
 
         DrawingGroup gameWarning = new();
-        Add(gameWarning, new EllipseGeometry(new Point(3.39998, 7.45), 0.8, 0.8), white);
-        Add(gameWarning, "M2.39996 2.65C2.39996 2.20817 2.75814 1.75 3.39996 1.75C4.04179 1.75 4.39996 2.20817 4.39996 2.65C4.39996 3.09183 4.19996 4.70817 4.09996 5.15C3.99996 5.59183 3.84179 5.95 3.39996 5.95C2.95814 5.95 2.79996 5.59183 2.69996 5.15C2.59996 4.70817 2.39996 3.09183 2.39996 2.65Z", white);
-        Add(gameWarning, new EllipseGeometry(new Point(6.60005, 7.45), 0.8, 0.8), white);
-        Add(gameWarning, "M5.60004 2.65C5.60004 2.20817 5.95821 1.75 6.60004 1.75C7.24186 1.75 7.60004 2.20817 7.60004 2.65C7.60004 3.09183 7.40004 4.70817 7.30004 5.15C7.20004 5.59183 7.04186 5.95 6.60004 5.95C6.15821 5.95 6.00004 5.59183 5.90004 5.15C5.80004 4.70817 5.60004 3.09183 5.60004 2.65Z", white);
-        SetBounds(gameWaiting);
+        Add(gameWarning, new EllipseGeometry(new Point(5, 7.45), 0.8, 0.8), white);
+        Add(gameWarning, "M4 2.65C4 2.20817 4.358 1.75 5 1.75C5.642 1.75 6 2.20817 6 2.65C6 3.09183 5.8 4.70817 5.7 5.15C5.6 5.59183 5.442 5.95 5 5.95C4.558 5.95 4.4 5.59183 4.3 5.15C4.2 4.70817 4 3.09183 4 2.65Z", white);
+        SetBounds(gameWarning);
         GameWarning = new DrawingImage(gameWarning);
 
         DrawingGroup gameXMark = new();
@@ -408,6 +410,50 @@ internal static class SvgIconProvider
         Add(gameMenu, gameMenuGeometry, white);
         SetBounds(gameMenu);
         GameMenu = new DrawingImage(gameMenu);
+
+        DrawingGroup gameGavel = new();
+        RectangleGeometry gavelHead = new(
+            new Rect(2.6, 2.0, 4.3, 3.0), 0.4, 0.4,
+            new RotateTransform(45, 5, 5));
+        gavelHead.Freeze();
+        Add(gameGavel, gavelHead, white);
+        Pen gavelHandlePen = new(white, 1.1)
+        {
+            StartLineCap = PenLineCap.Round,
+            EndLineCap = PenLineCap.Round
+        };
+        gavelHandlePen.Freeze();
+        Pen gavelStrikePen = new(white, 0.8)
+        {
+            StartLineCap = PenLineCap.Round,
+            EndLineCap = PenLineCap.Round
+        };
+        gavelStrikePen.Freeze();
+        Add(gameGavel, Geometry.Parse("M4.823 4.823L1.287 8.359"), gavelHandlePen);
+        Add(gameGavel, Geometry.Parse("M7.092 6.668L8.789 4.971"), gavelStrikePen);
+        Add(gameGavel, Geometry.Parse("M2.979 2.554L4.676 0.857"), gavelStrikePen);
+        SetBounds(gameGavel);
+        GameGavel = new DrawingImage(gameGavel);
+
+        DrawingGroup gameFolder = new();
+        Add(gameFolder, "M1.5 2.5H4L4.6 3.2H8.5V7.2H1.5Z", white);
+        SetBounds(gameFolder);
+        GameFolder = new DrawingImage(gameFolder);
+
+        DrawingGroup gameClip = new();
+        CombinedGeometry clipFrame = new(
+            GeometryCombineMode.Exclude,
+            new RectangleGeometry(new Rect(1.2, 3, 7.7, 6.5), 1.2, 1.2),
+            new RectangleGeometry(new Rect(3.4, 3.9, 3.3, 4.7), 0.4, 0.4));
+        clipFrame.Freeze();
+        Add(gameClip, clipFrame, white);
+        SetBounds(gameClip);
+        GameClip = new DrawingImage(gameClip);
+
+        DrawingGroup gameSelect = new();
+        Add(gameSelect, "M6.3 1.95a.55.55 0 1 1 0 1.1c-.329 0-.493 0-.604.09a.4.4 0 0 0-.055.056c-.091.11-.091.275-.091.604v2.4c0 .329 0 .493.09.604a.4.4 0 0 0 .056.055c.11.091.275.091.604.091a.55.55 0 1 1 0 1.1H3.7a.55.55 0 1 1 0-1.1c.329 0 .493 0 .604-.09a.4.4 0 0 0 .055-.056c.091-.11.091-.275.091-.604V3.8c0-.329 0-.493-.09-.604a.4.4 0 0 0-.056-.055c-.11-.091-.275-.091-.604-.091a.55.55 0 1 1 0-1.1z", white);
+        SetBounds(gameSelect);
+        GameSelect = new DrawingImage(gameSelect);
 
     }
 

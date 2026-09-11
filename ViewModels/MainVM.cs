@@ -629,7 +629,7 @@ public class MainVM : BaseVM
         // Build button groups after commands so initial CanExecute refreshes have valid targets.
         OpenAppConfButtons = ButtonGroupVM.CreateTwoButton(
             UICaptionProvider.Buttons.UsageAndCompliance, UICaptionProvider.Buttons.Settings, OpenUsages, OpenAppConf);
-        OpenAppConfButtons.B2_1Icon = SvgIconProvider.GamePhone;
+        OpenAppConfButtons.B2_1Icon = SvgIconProvider.GameGavel;
         OpenAppConfButtons.B2_2Icon = SvgIconProvider.GameSetting;
         FilterScbButtons = ButtonGroupVM.CreateThreeButton( // UpdateFilterScbButtonsState()
             UICaptionProvider.Buttons.OneClickScriptGen, UICaptionProvider.Buttons.FilterScribe, UICaptionProvider.Buttons.EditQueue,
@@ -645,7 +645,7 @@ public class MainVM : BaseVM
             ForkButtonText, UICaptionProvider.Buttons.RunSample, UICaptionProvider.Buttons.StartEncode,
             new ActionCmd(_ => Fork()), SampleClip, StartEncode);
         EncStartButtons.B3_1Icon = SvgIconProvider.GameFork;
-        EncStartButtons.B3_2Icon = SvgIconProvider.GameLocation;
+        EncStartButtons.B3_2Icon = SvgIconProvider.GameClip;
         EncStartButtons.B3_3Icon = SvgIconProvider.GamePlay;
         SrcValGroup = new ValidationActionGroupVM(
             ActiveSrcValidationCard,
