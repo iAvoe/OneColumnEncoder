@@ -105,7 +105,7 @@ public class MainVM : BaseVM
     public StartEncCmd StartEncode { get; }
     public SelectToolCmd SelectTool { get; } // ItemCard select on click
     public ButtonGroupVM OpenAppConfButtons { get; } // OpenUsages & OpenAppConf
-    public ButtonGroupVM FilterScbButtons { get; } // OneClickScriptGen & OpenFilterScribe
+    public ButtonGroupVM FilterScbButtons { get; } // OneClickScriptGen, OpenFilterScribe, OpenQueueEditor
     public ButtonGroupVM AnalyzeSrcButtons { get; } // AnalyzeSrcVideo & ShowRawJSON
     public ButtonGroupVM EncStartButtons { get; }
     public ValidationActionGroupVM SrcValGroup { get; private set; } = null!;
@@ -1970,7 +1970,8 @@ public class MainVM : BaseVM
                 () => _appDataM.Tools.FFmpegPath,
                 GetRepartPlan,
                 ApplyRepartPlan,
-                SetOverlayBlocked);
+                SetOverlayBlocked,
+                OpenRepartOutputQueueEditor);
             item.R2Command = new ClearToolItemCmd(item, OnSrcRepartCleared);
             item.PropertyChanged += OnVideoSrcItemPropertyChanged;
             return;
@@ -2404,6 +2405,26 @@ public class MainVM : BaseVM
         _srcVideoAnalysis.ConcatTotalFrames = plan.TotalFrames;
         RepartCheckCard.ApplyRepartPlan(plan);
         OnSrcAnalysisCompleted(true);
+        RefreshSelectedSrcStatus(resetAnalysis: false);
+        _appDataM.Save();
+    }
+
+    private void OpenRepartOutputQueueEditor(RepartPlanM plan)
+    {
+        if (plan.Outputs.Count == 0) return;
+
+        OpenQueueEditorCmd.EditOutputOrder(
+            _modalNavS,
+            plan.Outputs,
+            plan.FrameRateNumerator,
+            plan.FrameRateDenominator,
+            ApplyEditedRepartOutputOrder);
+    }
+
+    private void ApplyEditedRepartOutputOrder(Guid[] outputIds)
+    {
+        if (!_SrcRepart.ReorderOutputs(outputIds)) return;
+
         RefreshSelectedSrcStatus(resetAnalysis: false);
         _appDataM.Save();
     }

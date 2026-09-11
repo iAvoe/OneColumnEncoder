@@ -1,12 +1,15 @@
 using System.IO;
+
 namespace OneColumnEncoder.ViewModels;
 
-public sealed partial class QueueEditorVM : BaseVM
+public sealed class QueueEditorVM : BaseVM
 {
     private readonly Action _closeAction;
-    private readonly Action<string[]> _applyEditedPaths;
+    private readonly Action<string[]>? _applyEditedPaths;
+    private readonly Action<Guid[]>? _applyEditedOutputIds;
     private readonly int _minimumItemCount;
     private readonly bool _disableSortButtons;
+    private readonly bool _isOutputMode;
 
     public QueueEditorVM(
         Action closeAction,
@@ -19,18 +22,61 @@ public sealed partial class QueueEditorVM : BaseVM
         _applyEditedPaths = applyEditedPaths;
         _minimumItemCount = minimumItemCount;
         _disableSortButtons = disableSortButtons;
+        _isOutputMode = false;
 
-        RemoveItemCommand = new ActionCmd(item => RemoveItem(item as SrcQueueItemVM));
-        MoveItemUpCommand = new ActionCmd(item => MoveItem(item as SrcQueueItemVM, -1));
-        MoveItemDownCommand = new ActionCmd(item => MoveItem(item as SrcQueueItemVM, 1));
+        Initialize(filePaths.Select(filePath =>
+            (IQueueEditorItem)new SrcQueueItemVM(filePath, null, null, null)));
+    }
+
+    public QueueEditorVM(
+        Action closeAction,
+        IEnumerable<RepartOutputSegmentM> outputSegments,
+        int frameRateNumerator,
+        int frameRateDenominator,
+        Action<Guid[]> applyEditedOutputIds)
+    {
+        RepartOutputSegmentM[] segments = [.. outputSegments];
+        _closeAction = closeAction;
+        _applyEditedOutputIds = applyEditedOutputIds;
+        _minimumItemCount = segments.Length;
+        _disableSortButtons = true;
+        _isOutputMode = true;
+
+        Initialize(segments.Select(segment =>
+            (IQueueEditorItem)new RepartQueueItemVM(segment, frameRateNumerator, frameRateDenominator)));
+    }
+
+    public ObservableCollection<IQueueEditorItem> Items { get; } = [];
+    public string WindowTitle => _isOutputMode
+        ? RepartLangProvider.Current["FilterScribeOutputOrdering"]
+        : QueueEditorLangProvider.Current["QueueEditor.Title"];
+    public string HintText => _isOutputMode
+        ? QueueEditorLangProvider.Current["Hint.CannotSortInRepartMode"]
+        : QueueEditorLangProvider.Current["Hint.DoubleClickSortReverse"];
+    public ActionCmd RemoveItemCommand { get; private set; } = null!;
+    public ActionCmd MoveItemUpCommand { get; private set; } = null!;
+    public ActionCmd MoveItemDownCommand { get; private set; } = null!;
+    public ButtonGroupVM SortButtons { get; private set; } = null!;
+    public ButtonGroupVM FinishButtons { get; private set; } = null!;
+
+    private void Initialize(IEnumerable<IQueueEditorItem> queueItems)
+    {
+        RemoveItemCommand = new ActionCmd(item => RemoveItem(item as IQueueEditorItem));
+        MoveItemUpCommand = new ActionCmd(item => MoveItem(item as IQueueEditorItem, -1));
+        MoveItemDownCommand = new ActionCmd(item => MoveItem(item as IQueueEditorItem, 1));
         SortButtons = ButtonGroupVM.CreateTwoButton(
             QueueEditorLangProvider.Current["QueueEditor.SortBySize"],
             QueueEditorLangProvider.Current["QueueEditor.SortByFilename"],
             new ActionCmd(_ => SortBySize()),
             new ActionCmd(_ => SortByFilename()));
 
-        foreach (string filePath in filePaths)
-            Items.Add(new SrcQueueItemVM(filePath, RemoveItemCommand, MoveItemUpCommand, MoveItemDownCommand));
+        foreach (IQueueEditorItem item in queueItems)
+        {
+            item.R1Command = RemoveItemCommand;
+            item.R2Command = MoveItemUpCommand;
+            item.R3Command = MoveItemDownCommand;
+            Items.Add(item);
+        }
 
         FinishButtons = ButtonGroupVM.CreateTwoButton(
             ConfirmDialogLangProvider.Current["ConfirmDialog.Cancel"],
@@ -42,23 +88,14 @@ public sealed partial class QueueEditorVM : BaseVM
         UILangProvider.CurrentChanged += OnLanguageChanged;
     }
 
-    public ObservableCollection<SrcQueueItemVM> Items { get; } = [];
-    public static string WindowTitle => QueueEditorLangProvider.Current["QueueEditor.Title"];
-    public static string HintText => QueueEditorLangProvider.Current["Hint.DoubleClickSortReverse"];
-    public ActionCmd RemoveItemCommand { get; }
-    public ActionCmd MoveItemUpCommand { get; }
-    public ActionCmd MoveItemDownCommand { get; }
-    public ButtonGroupVM SortButtons { get; }
-    public ButtonGroupVM FinishButtons { get; }
-
-    private void RemoveItem(SrcQueueItemVM? item)
+    private void RemoveItem(IQueueEditorItem? item)
     {
-        if (item == null || !Items.Remove(item)) return;
+        if (_isOutputMode || item == null || !Items.Remove(item)) return;
         item.Dispose();
         RefreshItemStates();
     }
 
-    private void MoveItem(SrcQueueItemVM? item, int offset)
+    private void MoveItem(IQueueEditorItem? item, int offset)
     {
         if (item == null) return;
 
@@ -73,50 +110,49 @@ public sealed partial class QueueEditorVM : BaseVM
 
     private void SortBySize()
     {
-        if (Items.Count < 2) return;
+        if (_isOutputMode || Items.Count < 2) return;
 
-        bool sortAscending = !IsAscending(Items, item => item.SizeBytes, Comparer<long>.Default);
+        bool sortAscending = !IsAscending(Items, item => item.SortSize, Comparer<long>.Default);
         ApplySortedOrder(sortAscending
-            ? [.. Items.OrderBy(item => item.SizeBytes)]
-            : [.. Items.OrderByDescending(item => item.SizeBytes)]);
+            ? [.. Items.OrderBy(item => item.SortSize)]
+            : [.. Items.OrderByDescending(item => item.SortSize)]);
     }
 
     private void SortByFilename()
     {
-        if (Items.Count < 2) return;
+        if (_isOutputMode || Items.Count < 2) return;
 
-        bool sortAscending = !IsAscending(Items, item => item.FilePath, NaturalFileNameComparer.Instance);
+        bool sortAscending = !IsAscending(Items, item => item.SortName, NaturalFileNameComparer.Instance);
         ApplySortedOrder(sortAscending
-            ? [.. Items.OrderBy(item => item.FilePath, NaturalFileNameComparer.Instance)]
-            : [.. Items.OrderByDescending(item => item.FilePath, NaturalFileNameComparer.Instance)]);
+            ? [.. Items.OrderBy(item => item.SortName, NaturalFileNameComparer.Instance)]
+            : [.. Items.OrderByDescending(item => item.SortName, NaturalFileNameComparer.Instance)]);
     }
 
-    private void ApplySortedOrder(IReadOnlyList<SrcQueueItemVM> orderedItems)
+    private void ApplySortedOrder(IReadOnlyList<IQueueEditorItem> orderedItems)
     {
-        Dictionary<SrcQueueItemVM, int> originalIndices = Items
+        Dictionary<IQueueEditorItem, int> originalIndices = Items
             .Select((item, index) => (item, index))
             .ToDictionary(x => x.item, x => x.index);
 
         for (int i = 0; i < orderedItems.Count; i++)
         {
-            SrcQueueItemVM desiredItem = orderedItems[i];
+            IQueueEditorItem desiredItem = orderedItems[i];
             int currentIndex = Items.IndexOf(desiredItem);
-            if (currentIndex == i) continue;
-
-            Items.Move(currentIndex, i);
+            if (currentIndex != i) Items.Move(currentIndex, i);
         }
 
         RefreshItemStates();
-
         for (int i = 0; i < Items.Count; i++)
         {
-            SrcQueueItemVM item = Items[i];
-            if (originalIndices[item] != i)
-                item.FlashMovedHighlight();
+            IQueueEditorItem item = Items[i];
+            if (originalIndices[item] != i) item.FlashMovedHighlight();
         }
     }
 
-    private static bool IsAscending<T>(ObservableCollection<SrcQueueItemVM> items, Func<SrcQueueItemVM, T> keySelector, IComparer<T> comparer)
+    private static bool IsAscending<T>(
+        ObservableCollection<IQueueEditorItem> items,
+        Func<IQueueEditorItem, T> keySelector,
+        IComparer<T> comparer)
     {
         for (int i = 1; i < items.Count; i++)
         {
@@ -132,10 +168,10 @@ public sealed partial class QueueEditorVM : BaseVM
         {
             Items[i].CanMoveUp = i > 0;
             Items[i].CanMoveDown = i < Items.Count - 1;
-            Items[i].CanRemove = Items.Count > _minimumItemCount;
+            Items[i].CanRemove = !_isOutputMode && Items.Count > _minimumItemCount;
         }
 
-        bool sortButtonsEnabled = !_disableSortButtons && Items.Count > 1;
+        bool sortButtonsEnabled = !_isOutputMode && !_disableSortButtons && Items.Count > 1;
         SortButtons.B2_1IsEnabled = sortButtonsEnabled;
         SortButtons.B2_2IsEnabled = sortButtonsEnabled;
         FinishButtons.B2_2IsEnabled = Items.Count >= _minimumItemCount && Items.Count > 0;
@@ -145,7 +181,10 @@ public sealed partial class QueueEditorVM : BaseVM
     {
         if (Items.Count == 0) return;
 
-        _applyEditedPaths([.. Items.Select(item => item.FilePath)]);
+        if (_isOutputMode)
+            _applyEditedOutputIds?.Invoke([.. Items.Select(item => item.OutputId!.Value)]);
+        else
+            _applyEditedPaths?.Invoke([.. Items.Cast<SrcQueueItemVM>().Select(item => item.FilePath)]);
         _closeAction();
     }
 
@@ -153,7 +192,7 @@ public sealed partial class QueueEditorVM : BaseVM
     {
         OnPropertyChanged(nameof(WindowTitle));
         OnPropertyChanged(nameof(HintText));
-        foreach (SrcQueueItemVM item in Items)
+        foreach (IQueueEditorItem item in Items)
             item.RefreshLanguage();
 
         SortButtons.B2_1Text = QueueEditorLangProvider.Current["QueueEditor.SortBySize"];
@@ -162,7 +201,7 @@ public sealed partial class QueueEditorVM : BaseVM
         FinishButtons.B2_2Text = ConfirmDialogLangProvider.Current["ConfirmDialog.Confirm"];
     }
 
-    private sealed partial class NaturalFileNameComparer : IComparer<string>
+    private sealed class NaturalFileNameComparer : IComparer<string>
     {
         public static NaturalFileNameComparer Instance { get; } = new();
 
@@ -180,7 +219,7 @@ public sealed partial class QueueEditorVM : BaseVM
     public override void Dispose()
     {
         UILangProvider.CurrentChanged -= OnLanguageChanged;
-        foreach (SrcQueueItemVM item in Items) item.Dispose();
+        foreach (IQueueEditorItem item in Items) item.Dispose();
         base.Dispose();
         GC.SuppressFinalize(this);
     }

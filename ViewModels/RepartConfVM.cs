@@ -832,12 +832,20 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         RefreshDividerAvailability();
     }
 
-    // Build output segments from dividers. When count matches original plan,
-    // preserve original base names to maintain user naming across re-partition.
+    // Build output segments from dividers in timeline order, retaining IDs and names
+    // for unchanged ranges so a separately selected execution order survives reopening.
     private List<RepartOutputSegmentM> BuildDividerOutputs()
     {
         List<RepartOutputSegmentM> outputs = [];
         if (_analysis == null || _analysis.TotalFrames <= 0) return outputs;
+
+        Dictionary<(long FirstFrame, long LastFrame), RepartOutputSegmentM> existingByRange =
+            _analysis.Outputs.ToDictionary(output => (output.FirstFrame, output.LastFrame));
+
+        RepartOutputSegmentM CreateOutput(string baseName, long firstFrame, long lastFrame) =>
+            existingByRange.TryGetValue((firstFrame, lastFrame), out RepartOutputSegmentM? existing)
+                ? existing
+                : new RepartOutputSegmentM(Guid.NewGuid(), baseName, firstFrame, lastFrame);
 
         long first = 0;
         int index = 1;
@@ -845,23 +853,13 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         {
             if (divider.Frame >= first)
             {
-                outputs.Add(new RepartOutputSegmentM(Guid.NewGuid(), BuildEpisodeName(index++), first, divider.Frame));
+                outputs.Add(CreateOutput(BuildEpisodeName(index++), first, divider.Frame));
                 first = divider.Frame + 1;
             }
         }
 
         if (first < _analysis.TotalFrames)
-            outputs.Add(new RepartOutputSegmentM(Guid.NewGuid(), BuildEpisodeName(index), first, _analysis.TotalFrames - 1));
-
-        if (_analysis.Outputs.Count == outputs.Count)
-        {
-            for (int i = 0; i < outputs.Count; i++)
-            {
-                string baseName = _analysis.Outputs[i].BaseName;
-                if (!string.IsNullOrWhiteSpace(baseName))
-                    outputs[i] = outputs[i] with { BaseName = baseName };
-            }
-        }
+            outputs.Add(CreateOutput(BuildEpisodeName(index), first, _analysis.TotalFrames - 1));
 
         return outputs;
     }
@@ -1057,12 +1055,40 @@ public sealed class RepartConfVM : BaseVM, IClipRangeSelectorDragAware
         }
         RepartPlanM committed = _analysis.Clone();
         committed.Outputs.Clear();
-        committed.Outputs.AddRange(Outputs.Select(output => output.Model).OrderBy(output => output.FirstFrame));
+        committed.Outputs.AddRange(BuildCommittedOutputs());
         committed.Dividers.Clear();
         committed.Dividers.AddRange(_dividers.OrderBy(divider => divider.Frame));
         InterruptWindowWork();
         _applyPlan(committed);
         _closeAction();
+    }
+
+    // The configuration list is displayed in timeline order, while the plan also stores
+    // the separate execution order selected in QueueEditorModal.
+    private List<RepartOutputSegmentM> BuildCommittedOutputs()
+    {
+        List<RepartOutputSegmentM> currentOutputs = [.. Outputs.Select(output => output.Model)];
+        if (_analysis == null || _analysis.Outputs.Count == 0)
+            return currentOutputs;
+
+        Dictionary<(long FirstFrame, long LastFrame), RepartOutputSegmentM> currentByRange =
+            currentOutputs.ToDictionary(output => (output.FirstFrame, output.LastFrame));
+        HashSet<(long FirstFrame, long LastFrame)> committedRanges = [];
+        List<RepartOutputSegmentM> committed = [];
+
+        foreach (RepartOutputSegmentM previous in _analysis.Outputs)
+        {
+            var range = (previous.FirstFrame, previous.LastFrame);
+            if (currentByRange.TryGetValue(range, out RepartOutputSegmentM? current))
+            {
+                committed.Add(current);
+                committedRanges.Add(range);
+            }
+        }
+
+        committed.AddRange(currentOutputs.Where(output =>
+            !committedRanges.Contains((output.FirstFrame, output.LastFrame))));
+        return committed;
     }
 
     private void CancelAndClose()

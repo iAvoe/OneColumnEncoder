@@ -14,9 +14,11 @@ public sealed class OpenRepartConfCmd(
     Func<string?>? getFFmpegPath,
     Func<RepartPlanM?> getCurrentPlan,
     Action<RepartPlanM> applyPlan,
-    Action<bool>? setMainOverlayVisible = null) : OpenCloseBase(modalNavS)
+    Action<bool>? setMainOverlayVisible = null,
+    Action<RepartPlanM>? onPlanApplied = null) : OpenCloseBase(modalNavS)
 {
     private readonly Action<bool>? _setMainOverlayVisible = setMainOverlayVisible;
+    private readonly Action<RepartPlanM>? _onPlanApplied = onPlanApplied;
 
     /// <summary>
     /// Brings an already-open window to the front; otherwise imports and analyzes sources,
@@ -48,8 +50,28 @@ public sealed class OpenRepartConfCmd(
         }
 
         RepartConfModal window = new();
-        RepartConfVM vm = new(ModalNavS, window.Close, applyPlan, getFFmpegPath?.Invoke(), getFfprobePath());
-        ShowModal(window, vm, closeOpenStack: true);
+        bool planApplied = false;
+        RepartPlanM? appliedPlan = null;
+        RepartConfVM vm = new(
+            ModalNavS,
+            window.Close,
+            plan =>
+            {
+                appliedPlan = plan;
+                planApplied = true;
+                applyPlan(plan);
+            },
+            getFFmpegPath?.Invoke(),
+            getFfprobePath());
+        ShowModal(
+            window,
+            vm,
+            closeOpenStack: true,
+            onClosed: () =>
+            {
+                if (planApplied && appliedPlan != null)
+                    _onPlanApplied?.Invoke(appliedPlan);
+            });
         _ = vm.InitializeAsync(initialPlan);
     }
 
@@ -78,7 +100,6 @@ public sealed class OpenRepartConfCmd(
             return null;
         }
 
-        filePaths = OpenQueueEditorCmd.EditFilePaths(ModalNavS, filePaths, minimumItemCount: 2);
         RepartAnalysisResult? result = await RunAnalysisAsync(filePaths);
         if (result?.Plan == null) return null;
 
@@ -120,12 +141,7 @@ public sealed class OpenRepartConfCmd(
                 RepartLangProvider.Current["ChapterSourcesMissing"]));
         if (import == null) return null;
 
-        string[] orderedSourcePaths = OpenQueueEditorCmd.EditFilePaths(
-            ModalNavS,
-            import.srcPaths,
-            minimumItemCount: 1,
-            disableSortButtons: true);
-        RepartAnalysisResult? result = await RunAnalysisAsync(orderedSourcePaths, requireMultipleSources: false);
+        RepartAnalysisResult? result = await RunAnalysisAsync(import.srcPaths, requireMultipleSources: false);
         if (result?.Plan == null)
             return null;
 
