@@ -254,8 +254,10 @@ internal static class SvgIconProvider
         GameWaiting = new DrawingImage(gameWaiting);
 
         DrawingGroup gameWarning = new();
-        Add(gameWarning, new EllipseGeometry(new Point(5, 7.45), 0.8, 0.8), white);
-        Add(gameWarning, "M4 2.65C4 2.20817 4.358 1.75 5 1.75C5.642 1.75 6 2.20817 6 2.65C6 3.09183 5.8 4.70817 5.7 5.15C5.6 5.59183 5.442 5.95 5 5.95C4.558 5.95 4.4 5.59183 4.3 5.15C4.2 4.70817 4 3.09183 4 2.65Z", white);
+        Add(gameWarning, new EllipseGeometry(new Point(3.39998, 7.45), 0.8, 0.8), white);
+        Add(gameWarning, "M2.39996 2.65C2.39996 2.20817 2.75814 1.75 3.39996 1.75C4.04179 1.75 4.39996 2.20817 4.39996 2.65C4.39996 3.09183 4.19996 4.70817 4.09996 5.15C3.99996 5.59183 3.84179 5.95 3.39996 5.95C2.95814 5.95 2.79996 5.59183 2.69996 5.15C2.59996 4.70817 2.39996 3.09183 2.39996 2.65Z", white);
+        Add(gameWarning, new EllipseGeometry(new Point(6.60005, 7.45), 0.8, 0.8), white);
+        Add(gameWarning, "M5.60004 2.65C5.60004 2.20817 5.95821 1.75 6.60004 1.75C7.24186 1.75 7.60004 2.20817 7.60004 2.65C7.60004 3.09183 7.40004 4.70817 7.30004 5.15C7.20004 5.59183 7.04186 5.95 6.60004 5.95C6.15821 5.95 6.00004 5.59183 5.90004 5.15C5.80004 4.70817 5.60004 3.09183 5.60004 2.65Z", white);
         SetBounds(gameWarning);
         GameWarning = new DrawingImage(gameWarning);
 

@@ -121,44 +121,44 @@ SVG icons are provided by the `SvgIconProvider` static class (`UI/SvgIconProvide
 
 ### 4.1 Available Icons
 
-| Property          | Description          |
-|-------------------|----------------------|
-| `GamePlay`        | Play triangle        |
-| `GamePause`       | Pause bars           |
-| `GameImport`      | Download arrow       |
-| `GameReplace`     | Replace/refresh      |
-| `GameSave`        | Save/floppy          |
-| `GameSetting`     | Gear/settings        |
-| `GameRefresh`     | Refresh arrows       |
-| `GamePaste`       | Clipboard            |
-| `GameLocation`    | Map pin (legacy, prefer Folder/Clip) |
-| `GamePhone`       | Phone (legacy, prefer GameGavel) |
-| `GameGavel`       | Gavel (Usage & Compliance) |
-| `GameFolder`      | Folder (Open output folder) |
-| `GameClip`        | Film frame (Clip Sampling) |
-| `GameFork`        | Fork/branches        |
-| `GameFilter`      | Filter Venn          |
-| `GameScan`        | Scan corners         |
-| `GameDoc`         | Document             |
-| `GameCopy`        | Copy docs            |
-| `GamePlus`        | Plus                 |
-| `GameLightning`   | Lightning (OneClickScriptGen) |
-| `GameUndo`        | Undo arrow           |
-| `GameRedo`        | Redo arrow           |
-| `GameSort`        | Sort arrows          |
-| `GameMenu`        | Hamburger/list       |
-| `GameDelete`      | Trash                |
-| `GameInfo`        | Info circle          |
-| `GameWaiting`     | Hourglass            |
-| `GameWarning`     | Warning (single !)   |
-| `GameXMark`       | X/close              |
-| `GameCorrectMark` | Checkmark            |
-| `GlobeWarning`    | Globe with warning   |
-| `GlobeError`      | Globe with error     |
-| `GlobeSuccess`    | Globe with checkmark |
-| `Troubleshoot`    | Wrench               |
-| `AzureConsortium` | Blocks               |
-| `AzureSearch`     | Magnifier            |
+| Property          | Description                    |
+|-------------------|--------------------------------|
+| `GamePlay`        | Play triangle (Start Encode, Run Preview, etc.) |
+| `GamePause`       | Pause bars (Unused)            |
+| `GameImport`      | Download arrow (Tool Import)   |
+| `GameReplace`     | Replace/refresh (Rotate Fontsize, Update ffprobe JSON) |
+| `GameSave`        | Save/floppy                    |
+| `GameSetting`     | Gear/settings                  |
+| `GameRefresh`     | Refresh arrows                 |
+| `GamePaste`       | Clipboard                      |
+| `GameLocation`    | Map pin (previously for clip samping) |
+| `GamePhone`       | Phone (previously for usage & compliance) |
+| `GameGavel`       | Gavel (Usage & Compliance)     |
+| `GameFolder`      | Folder (Open output folder)    |
+| `GameClip`        | Film frame (Clip Sampling)     |
+| `GameFork`        | Fork/branches                  |
+| `GameFilter`      | Filter Venn (Open File Scribe) |
+| `GameScan`        | Scan corners (Analyze w/ ffprobe) |
+| `GameDoc`         | Document                       |
+| `GameCopy`        | Copy docs                      |
+| `GamePlus`        | Plus (BdPlaylistSelector add)  |
+| `GameLightning`   | Lightning (OneClickScriptGen)  |
+| `GameUndo`        | Undo arrow                     |
+| `GameRedo`        | Redo arrow                     |
+| `GameSort`        | Sort arrows                    |
+| `GameMenu`        | Hamburger/list                 |
+| `GameDelete`      | Trash                          |
+| `GameInfo`        | Info circle (Show Raw JSON)    |
+| `GameWaiting`     | Hourglass                      |
+| `GameWarning`     | Warning (!!)                   |
+| `GameXMark`       | X/close                        |
+| `GameCorrectMark` | Checkmark                      |
+| `GlobeWarning`    | Globe with warning             |
+| `GlobeError`      | Globe with error               |
+| `GlobeSuccess`    | Globe with checkmark           |
+| `Troubleshoot`    | Wrench                         |
+| `AzureConsortium` | Blocks                         |
+| `AzureSearch`     | Magnifier                      |
 
 ### 4.2 Icon Pattern (x:Static)
 
