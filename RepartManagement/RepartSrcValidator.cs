@@ -96,7 +96,7 @@ public static partial class RepartSrcValidator
         "stream=codec_name,profile,codec_tag_string,level,width,height,coded_width,coded_height," +
         "pix_fmt,bits_per_raw_sample,field_order,sample_aspect_ratio,avg_frame_rate,r_frame_rate," +
         "time_base,color_range,color_space,color_transfer,color_primaries,chroma_location," +
-        "nb_frames,nb_read_frames,duration,start_time,extradata:format=duration,start_time";
+        "nb_frames,nb_read_frames,duration,start_time,tags,extradata:format=duration,start_time";
     private const int MaxMetadataProbeAdjustmentFrames = 300;
     private const double FrameProbeSeekMarginSeconds = 2d;
 
@@ -713,6 +713,26 @@ public static partial class RepartSrcValidator
     {
         double? streamDuration = TryGetDouble(stream, "duration");
         if (streamDuration is > 0) return streamDuration;
+
+        if (stream.TryGetProperty("tags", out JsonElement tags) && tags.ValueKind == JsonValueKind.Object)
+        {
+            foreach (JsonProperty tag in tags.EnumerateObject())
+            {
+                if (!tag.Name.Equals("DURATION", StringComparison.OrdinalIgnoreCase)
+                    && !(tag.Name.StartsWith("DURATION-", StringComparison.OrdinalIgnoreCase)
+                         && tag.Name.Length > "DURATION-".Length))
+                    continue;
+
+                string? value = tag.Value.ValueKind == JsonValueKind.String
+                    ? tag.Value.GetString()
+                    : null;
+                if (value == null) continue;
+
+                if (TimeSpan.TryParse(value, CultureInfo.InvariantCulture, out TimeSpan parsed)
+                    && parsed.TotalSeconds > 0)
+                    return parsed.TotalSeconds;
+            }
+        }
 
         return root.TryGetProperty("format", out JsonElement format)
             ? TryGetDouble(format, "duration")
