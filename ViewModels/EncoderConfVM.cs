@@ -66,6 +66,7 @@ public class EncoderConfVM : BaseVM
     public string X265JpsdrAqText => Lang.X265JpsdrAqText;
     public string X265JpsdrDarkText => Lang.X265JpsdrDarkText;
     public string X265JpsdrTextureText => Lang.X265JpsdrTextureText;
+    public string X265McstfText => Lang.X265McstfText;
     public string SvtAv1EssentialDl2Text => Lang.SvtAv1EssentialDl2Text;
     public string SvtAv1EssentialAutoTileText => Lang.SvtAv1EssentialAutoTileText;
     public string CancelButtonText => Lang.CancelButtonText;
@@ -233,6 +234,12 @@ public class EncoderConfVM : BaseVM
         get => _x265Texture;
         set => SetProperty(ref _x265Texture, value);
     }
+    private bool _x265Mcstf;
+    public bool X265Mcstf
+    {
+        get => _x265Mcstf;
+        set => SetProperty(ref _x265Mcstf, value);
+    }
     private bool _svtAv1Dl2;
     public bool SvtAv1Dl2
     {
@@ -280,7 +287,8 @@ public class EncoderConfVM : BaseVM
         string? sourceVideoPath,
         string? sourceFfprobeJson,
         Func<JsonElement, long>? getTotalFrames = null,
-        IReadOnlyList<PreviewSourceInfo>? previewSources = null)
+        IReadOnlyList<PreviewSourceInfo>? previewSources = null,
+        PreviewEncoder? initialEncoder = null)
     {
         _model = EncoderConfM.Load();
         _targetItem = targetItem;
@@ -295,7 +303,7 @@ public class EncoderConfVM : BaseVM
             CancelButtonText, ConfirmButtonText, CloseCmd, ConfirmCmd);
         PopulateDropdowns();
         LoadModelToUi();
-        PreviewVM = new ImgABPvVM(this, modalNavS, ffmpegPath, sourceVideoPath, sourceFfprobeJson, getTotalFrames, previewSources);
+        PreviewVM = new ImgABPvVM(this, modalNavS, ffmpegPath, sourceVideoPath, sourceFfprobeJson, getTotalFrames, previewSources, initialEncoder);
         UILangProvider.CurrentChanged += OnLanguageChanged;
     }
 
@@ -381,6 +389,7 @@ public class EncoderConfVM : BaseVM
         X265Aq = _model.X265Aq;
         X265Dark = _model.X265Dark;
         X265Texture = _model.X265Texture;
+        X265Mcstf = _model.X265Mcstf;
         SvtAv1Dl2 = _model.SvtAv1Dl2;
         SvtAv1AutoTile = _model.SvtAv1AutoTile;
         DoviMode = _model.DoviOnOff;
@@ -432,6 +441,7 @@ public class EncoderConfVM : BaseVM
         model.X265Aq = X265Aq;
         model.X265Dark = X265Dark;
         model.X265Texture = X265Texture;
+        model.X265Mcstf = X265Mcstf;
         model.SvtAv1Dl2 = SvtAv1Dl2;
         model.SvtAv1AutoTile = SvtAv1AutoTile;
         model.VvencQp = VvencQp;
@@ -505,6 +515,7 @@ public class EncoderConfVM : BaseVM
         OnPropertyChanged(nameof(X265JpsdrAqText));
         OnPropertyChanged(nameof(X265JpsdrDarkText));
         OnPropertyChanged(nameof(X265JpsdrTextureText));
+        OnPropertyChanged(nameof(X265McstfText));
         OnPropertyChanged(nameof(SvtAv1EssentialDl2Text));
         OnPropertyChanged(nameof(SvtAv1EssentialAutoTileText));
         OnPropertyChanged(nameof(CancelButtonText));

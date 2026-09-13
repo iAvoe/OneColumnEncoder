@@ -9,7 +9,8 @@ public class OpenEncoderConfCmd(ModalNavS modalNavS,
     Func<string?>? getSourceVideoPath = null,
     Func<string?>? getSrcFFprobeJson = null,
     Func<JsonElement, long>? getTotalFrames = null,
-    Func<IReadOnlyList<PreviewSourceInfo>>? getPreviewSources = null) : OpenCloseBase(modalNavS)
+    Func<IReadOnlyList<PreviewSourceInfo>>? getPreviewSources = null,
+    Func<PreviewEncoder?>? getInitialPreviewEncoder = null) : OpenCloseBase(modalNavS)
 {
     private readonly ToolItemCardVM? _compressionParamsItem = compressionParamsItem;
     private readonly Func<string?>? _getFFmpegPath = getFFmpegPath;
@@ -33,7 +34,8 @@ public class OpenEncoderConfCmd(ModalNavS modalNavS,
             _getSourceVideoPath?.Invoke(),
             _getSrcFFprobeJson?.Invoke(),
             getTotalFrames,
-            getPreviewSources?.Invoke());
+            getPreviewSources?.Invoke(),
+            getInitialPreviewEncoder?.Invoke());
         ShowModal(window, vm, closeOpenStack: true);
     }
 }

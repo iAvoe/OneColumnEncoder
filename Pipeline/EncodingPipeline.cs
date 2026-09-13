@@ -702,6 +702,7 @@ public static partial class EncodingPipeline
             model.X265Aq ? "--aq-auto 10" : string.Empty,
             model.X265Dark ? "--aq-bias-strength 1.3" : string.Empty,
             model.X265Texture ? "--aq-strength-edge 1.4" : string.Empty,
+            model.X265Mcstf ? "--selective-mcstf --mcstf-ref-range 1" : string.Empty,
             BuildDoviHrdParams(IsDoviHrdEnabled(model.DoviOnOff, sourceHasDovi), model.X265HrdMode, isX264: false));
     }
 

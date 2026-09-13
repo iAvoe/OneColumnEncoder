@@ -31,6 +31,7 @@ public class EncoderConfM : SaveLoadBase<EncoderConfM>
     public bool X265Aq { get; set; } = false;
     public bool X265Dark { get; set; } = false;
     public bool X265Texture { get; set; } = false;
+    public bool X265Mcstf { get; set; } = false;
 
     // SVT-AV1
     public int SvtAv1Crf { get; set; } = 35;

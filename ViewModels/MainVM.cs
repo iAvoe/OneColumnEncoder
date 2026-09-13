@@ -1800,6 +1800,17 @@ public class MainVM : BaseVM
         };
     }
 
+    private PreviewEncoder? GetSelectedPreviewEncoder()
+    {
+        ToolItemCardVM? encoder = EncodersZone.FirstOrDefault(
+            t => t.IsSelected && !string.IsNullOrWhiteSpace(t.P2TextData));
+        string? encoderExeName = encoder != null
+            ? ToolCatalogProviderM.ResolveExeFromCard(encoder)
+            : null;
+        // Null (nothing selected / unknown exe) falls back to libx264 in ImgABPvVM.
+        return PreviewPipeline.ResolvePreviewEncoder(encoderExeName);
+    }
+
     private IReadOnlyList<PreviewSourceInfo> GetPreviewSources() => GetActiveSrcRoute() switch
     {
         SrcRouteKind.Concat => BuildConcatPreviewSources(),
@@ -2053,7 +2064,8 @@ public class MainVM : BaseVM
                 sourceRoot => EncodingPipeline.GetSourceTotalFrames(
                     sourceRoot,
                     _srcVideoAnalysis.ConcatTotalFrames) ?? 0,
-                GetPreviewSources);
+                GetPreviewSources,
+                GetSelectedPreviewEncoder);
             EncoderConfVM.ApplySavedSettingsToCard(compressionParams);
         }
     }

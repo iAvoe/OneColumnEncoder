@@ -470,7 +470,8 @@
                                              Value="{Binding UpscaleHeight}"
                                              TickLabels="{Binding UpscaleTickLabels}"
                                              TickCount="5"
-                                             Step="{Binding UpscaleStep}">
+                                             Step="{Binding UpscaleStep}"
+                                             Margin="2.5 0 -5 0">
                             <comps:IntegerSlider.Style>
                                 <Style TargetType="comps:IntegerSlider">
                                     <Setter Property="Visibility"
@@ -485,6 +486,7 @@
                                 </Style>
                             </comps:IntegerSlider.Style>
                         </comps:IntegerSlider>
+                        <!-- !Scale text, hide normally -->
                         <TextBlock Grid.Column="0"
                                    Text="{Binding ScaleNotApplicableText}"
                                    Margin="0 0 0 5"
@@ -504,6 +506,7 @@
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
+                        <!-- Scale target display -->
                         <TextBlock Grid.Column="1"
                                    Text="{Binding UpscaleTargetDisplay}"
                                    Foreground="{StaticResource GlobalSecondary}"
@@ -677,6 +680,10 @@
                                 IsEnabled="{Binding CanInsertFFmpegHighHdrToLowSdrColorFilter}"
                                 Style="{StaticResource AppendLinkButton}" />
                     </Grid>
+                    <!-- Peak nits input -->
+                    <ItemsControl ItemsSource="{Binding SettingsListing}"
+                                  Visibility="{Binding IsColorSpacePeakNitsVisible, Converter={StaticResource BoolToVisibility}}" />
+                    <!-- CSP to Bt.709 filters -->
                     <Grid Margin="0 2.5 0 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="62" />
@@ -754,10 +761,6 @@
                                  VerticalAlignment="Center" />
                     </Grid>
                 </StackPanel>
-
-                <comps:HintPanel Margin="0 2.5 0 0"
-                                 Text="{Binding ColorSpacePeakNitsHint}"
-                                 Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}" />
 
                 <StackPanel Visibility="{Binding IsDenoiseSectionVisible, Converter={StaticResource BoolToVisibility}}">
                     <Grid>

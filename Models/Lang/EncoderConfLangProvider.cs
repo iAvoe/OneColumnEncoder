@@ -36,6 +36,7 @@ public class EncoderConfLangProvider : LangProviderBase
             ["X265JpsdrAqText"] = "x265 jpsdr Mod: Adaptive Quantization (AQ) Hysteresis",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod: ↑AQ Strength for Dark Scenes",
             ["X265JpsdrTextureText"] = "x265 jpsdr Mod: ↑AQ Strength for Edges",
+            ["X265McstfText"] = "x265 v4.3: MCSTF denoise (Cannot preview)",
             ["SvtAv1EssentialDl2Text"] = "SVT-AV1: Precise Deblocking Filter (DLF2)",
             ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential: Auto Tile Size",
             ["CrfHintText"] = "CRF Slider Ticks—Lossless | UHQ | HQ | Streaming",
@@ -95,6 +96,7 @@ public class EncoderConfLangProvider : LangProviderBase
             ["X265JpsdrAqText"] = "x265 jpsdr Mod：自适应量化迟滞（AQ Hysteresis）",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod：对暗场提高自适应量化强度",
             ["X265JpsdrTextureText"] = "x265 jpsdr Mod：对纹理提高自适应量化强度",
+            ["X265McstfText"] = "x265 v4.3: MCSTF 降噪（无法预览）",
             ["SvtAv1EssentialDl2Text"] = "SVT-AV1：高精度去块滤镜（DLF2）",
             ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential：自动计算瓦片大小（Auto Tile）",
             ["CrfHintText"] = "CRF 刻度—无损 | 超清 | 高清 | 流媒体",
@@ -154,6 +156,7 @@ public class EncoderConfLangProvider : LangProviderBase
             ["X265JpsdrAqText"] = "x265 jpsdr Mod：自適應量化遲滯（AQ Hysteresis）",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod：對暗場提高自適應量化強度",
             ["X265JpsdrTextureText"] = "x265 jpsdr Mod：對紋理提高自適應量化強度",
+            ["X265McstfText"] = "x265 v4.3: MCSTF 降噪（無法預覽）",
             ["SvtAv1EssentialDl2Text"] = "SVT-AV1：高精度去塊濾鏡（DLF2）",
             ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential：自動計算瓦片大小（Auto Tile）",
             ["CrfHintText"] = "CRF 刻度—無損 | 超清 | 高清 | 流媒體",
@@ -208,6 +211,7 @@ public class EncoderConfLangProvider : LangProviderBase
             ["X265JpsdrAqText"] = "x265 jpsdr Mod : hystérésis AQ",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod : ↑AQ scènes sombres",
             ["X265JpsdrTextureText"] = "x265 jpsdr Mod : ↑AQ pour les textures",
+            ["X265McstfText"] = "x265 v4.3: Débruitage MCSTF (Aperçu indisponible)",
             ["SvtAv1EssentialDl2Text"] = "SVT-AV1 : déblocage précis (DLF2)",
             ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential : taille de tuile auto",
             ["CrfHintText"] = "CRF — Sans perte | UHQ | HQ | Streaming",
@@ -258,6 +262,7 @@ public class EncoderConfLangProvider : LangProviderBase
             ["X265JpsdrAqText"] = "x265 jpsdr Mod: histéresis AQ",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod: ↑AQ en escenas oscuras",
             ["X265JpsdrTextureText"] = "x265 jpsdr Mod: ↑AQ en texturas",
+            ["X265McstfText"] = "x265 v4.3: Reducción de ruido MCSTF (Vista previa no disponible)",
             ["SvtAv1EssentialDl2Text"] = "SVT-AV1: deblocking preciso (DLF2)",
             ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential: tamaño de tile auto",
             ["CrfHintText"] = "CRF — sin pérdida | UHQ | HQ | streaming",
@@ -308,6 +313,7 @@ public class EncoderConfLangProvider : LangProviderBase
             ["X265JpsdrAqText"] = "x265 jpsdr Mod: AQ ヒステリシス",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod: 暗部の AQ 強度↑",
             ["X265JpsdrTextureText"] = "x265 jpsdr Mod: エッジの AQ 強度↑",
+            ["X265McstfText"] = "x265 v4.3: MCSTF ノイズ低減（プレビュー不可）",
             ["SvtAv1EssentialDl2Text"] = "SVT-AV1: 高精度デブロック (DLF2)",
             ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential: 自動タイルサイズ",
             ["CrfHintText"] = "CRF 目盛 — ロスレス | UHQ | HQ | 配信",
@@ -358,6 +364,7 @@ public class EncoderConfLangProvider : LangProviderBase
             ["X265JpsdrAqText"] = "x265 jpsdr Mod: гистерезис AQ",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod: ↑AQ для темных сцен",
             ["X265JpsdrTextureText"] = "x265 jpsdr Mod: ↑AQ для текстур",
+            ["X265McstfText"] = "x265 v4.3: MCSTF-шумоподавление (Предпросмотр недоступен)",
             ["SvtAv1EssentialDl2Text"] = "SVT-AV1: точный deblocking (DLF2)",
             ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential: авторазмер tiles",
             ["CrfHintText"] = "CRF — lossless | UHQ | HQ | streaming",
@@ -408,6 +415,7 @@ public class EncoderConfLangProvider : LangProviderBase
             ["X265JpsdrAqText"] = "x265 jpsdr Mod: AQ-Hysterese",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod: ↑AQ-Stärke für dunkle Szenen",
             ["X265JpsdrTextureText"] = "x265 jpsdr Mod: ↑AQ-Stärke für Kanten",
+            ["X265McstfText"] = "x265 v4.3: MCSTF-RUD (Keine Vorschau verfügbar)",
             ["SvtAv1EssentialDl2Text"] = "SVT-AV1: Präzises Deblocking (DLF2)",
             ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential: Automatische Tile-Größe",
             ["CrfHintText"] = "CRF-Skala — Verlustfrei | UHQ | HQ | Streaming",
@@ -467,7 +475,8 @@ public class EncoderConfLangProvider : LangProviderBase
             ["X265JpsdrAqText"] = "x265 jpsdr Mod: 적응형 양자화 히스테리시스(AQ Hysteresis)",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod: 어두운 장면의 AQ 강도 ↑",
             ["X265JpsdrTextureText"] = "x265 jpsdr Mod: 엣지의 AQ 강도 ↑",
-            ["SvtAv1EssentialDl2Text"] = "SVT-AV1: 고정밀 디블로킹 필터(DLF2)",
+            ["X265McstfText"] = "x265 v4.3: MCSTF 노이즈 감소（미리보기 불가）",
+            ["SvtAv1EssentialDl2Text"] = "SVT-AV1: 고정밀 디블로킹 필터（DLF2）",
             ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential: 자동 타일 크기",
             ["CrfHintText"] = "CRF 눈금 — 무손실 | 초고화질 | 고화질 | 스트리밍",
             ["AbrHintText"] = "ABR 눈금(2K60) — 근무손실 | 근무손실→고화질 | 초고화질→스트리밍 | 고화질→스트리밍",
@@ -517,6 +526,7 @@ public class EncoderConfLangProvider : LangProviderBase
             ["X265JpsdrAqText"] = "x265 jpsdr Mod: Histerese de quantização adaptativa (AQ)",
             ["X265JpsdrDarkText"] = "x265 jpsdr Mod: ↑Força AQ para cenas escuras",
             ["X265JpsdrTextureText"] = "x265 jpsdr Mod: ↑Força AQ para texturas",
+            ["X265McstfText"] = "x265 v4.3: Redução de ruído MCSTF (Pré-visualização indisponível)",
             ["SvtAv1EssentialDl2Text"] = "SVT-AV1: Filtro deblocking preciso (DLF2)",
             ["SvtAv1EssentialAutoTileText"] = "SVT-AV1-Essential: Tamanho de tile automático",
             ["CrfHintText"] = "Marcas do CRF — Sem perda | UHQ | HQ | Streaming",
@@ -578,6 +588,7 @@ public class EncoderConfLangProvider : LangProviderBase
     public string X265JpsdrAqText { get; }
     public string X265JpsdrDarkText { get; }
     public string X265JpsdrTextureText { get; }
+    public string X265McstfText { get; }
     public string SvtAv1EssentialDl2Text { get; }
     public string SvtAv1EssentialAutoTileText { get; }
     public string CrfHintText { get; }
@@ -640,6 +651,7 @@ public class EncoderConfLangProvider : LangProviderBase
         X265JpsdrAqText = this["X265JpsdrAqText"];
         X265JpsdrDarkText = this["X265JpsdrDarkText"];
         X265JpsdrTextureText = this["X265JpsdrTextureText"];
+        X265McstfText = this["X265McstfText"];
         SvtAv1EssentialDl2Text = this["SvtAv1EssentialDl2Text"];
         SvtAv1EssentialAutoTileText = this["SvtAv1EssentialAutoTileText"];
         CrfHintText = this["CrfHintText"];

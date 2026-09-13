@@ -188,6 +188,8 @@ public static partial class PreviewPipeline
         ];
 
         args.AddRange(SplitArgs(GetCustomParams(encoder, model)));
+        if (encoder == PreviewEncoder.X265 && model.X265Mcstf)
+            args.AddRange(["-x265-params", ":selective-mcstf=1:mcstf-ref-range=1"]);
         args.AddRange(["-frames:v", "1"]);
 
         if (encoder == PreviewEncoder.X264)
@@ -283,6 +285,18 @@ public static partial class PreviewPipeline
         PreviewDisplayMode.HdrToSdr => hdrToSdr,
         PreviewDisplayMode.HighHdrToSdr => highHdrToSdr,
         _ => raw
+    };
+
+    /// <summary>
+    /// Maps a MainVM selected video encoder exe name to its preview equivalent.
+    /// Returns null for unknown/null so callers fall back to libx264.
+    /// </summary>
+    public static PreviewEncoder? ResolvePreviewEncoder(string? encoderExeName) => encoderExeName switch
+    {
+        not null when encoderExeName.Equals("x264.exe", StringComparison.OrdinalIgnoreCase) => PreviewEncoder.X264,
+        not null when encoderExeName.Equals("x265.exe", StringComparison.OrdinalIgnoreCase) => PreviewEncoder.X265,
+        not null when encoderExeName.Equals("svtav1encapp.exe", StringComparison.OrdinalIgnoreCase) => PreviewEncoder.SvtAv1,
+        _ => null,
     };
 
     public static string GetFFmpegEncoderName(PreviewEncoder encoder) => encoder switch

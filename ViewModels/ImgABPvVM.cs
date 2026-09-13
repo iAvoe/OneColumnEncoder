@@ -138,7 +138,8 @@ public class ImgABPvVM : BaseVM
         string? sourceVideoPath,
         string? sourceFfprobeJson,
         Func<JsonElement, long>? getTotalFrames = null,
-        IReadOnlyList<PreviewSourceInfo>? previewSources = null)
+        IReadOnlyList<PreviewSourceInfo>? previewSources = null,
+        PreviewEncoder? initialEncoder = null)
     {
         _encoderConfVM = encoderConfVM;
         _modalNavS = modalNavS;
@@ -153,7 +154,12 @@ public class ImgABPvVM : BaseVM
         EncoderDropdown.Items.Add(new DropdownItemM("libx265") { Tag = PreviewEncoder.X265 });
         EncoderDropdown.Items.Add(new DropdownItemM("libsvtav1") { Tag = PreviewEncoder.SvtAv1 });
         EncoderDropdown.Items.Add(new DropdownItemM("libvvenc (Preview)") { Tag = PreviewEncoder.Vvenc });
-        EncoderDropdown.SelectedItem = EncoderDropdown.Items[0];
+        EncoderDropdown.SelectedItem = initialEncoder.HasValue
+            ? EncoderDropdown.Items.FirstOrDefault(i => i.Tag is PreviewEncoder encoder && encoder == initialEncoder.Value)
+            : null;
+        // Null (no match / no MainVM selection) falls back to libx264;
+        // GetSelectedEncoder() also treats null SelectedItem as X264.
+        EncoderDropdown.SelectedItem ??= EncoderDropdown.Items[0];
         EncoderDropdown.SelectionChangedCommand = new ActionCmd(_ => RefreshSelectedEncodedImage());
         DisplayModeButtons = ButtonGroupVM.CreateFiveButton(
             Lang.RawButtonText,

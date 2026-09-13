@@ -100,6 +100,9 @@
                 <CheckBox IsChecked="{Binding X265Texture, Mode=TwoWay}"
                           IsEnabled="{Binding IsX265TextureEnabled}" />
             </comps:AppConfItem>
+            <comps:AppConfItem Text="{Binding X265McstfText, Mode=OneWay}">
+                <CheckBox IsChecked="{Binding X265Mcstf, Mode=TwoWay}" />
+            </comps:AppConfItem>
             <comps:AppConfItem Text="{Binding SvtAv1EssentialDl2Text, Mode=OneWay}">
                 <CheckBox IsChecked="{Binding SvtAv1Dl2, Mode=TwoWay}" />
             </comps:AppConfItem>

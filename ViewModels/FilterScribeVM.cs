@@ -1,6 +1,7 @@
 using OneColumnEncoder.Models.Analysis;
 using OneColumnEncoder.ScriptGeneration;
 using System.IO;
+using OneColumnEncoder.Components;
 
 namespace OneColumnEncoder.ViewModels;
 
@@ -40,9 +41,11 @@ public class FilterScribeVM : BaseVM
     private int _sourceBitDepth;
     private bool _hasSourceAnalysis;
     private bool _sourceIsProgressive = true;
+    private string _colorSpacePeakNits = string.Empty;
     private readonly System.Windows.Threading.DispatcherTimer _cropRefreshTimer;
     private bool _cropRefreshPending;
     public CloseModalCmd CloseCmd { get; }
+    public ObservableCollection<AppConfItem> SettingsListing { get; } = [];
     public bool IsConcatMode => _isConcatRoute?.Invoke() == true || IsRepartMode;
     public bool IsRepartMode => _isRepartRoute?.Invoke() == true;
     public bool HasSourceAnalysis => _hasSourceAnalysis;
@@ -354,11 +357,33 @@ public class FilterScribeVM : BaseVM
     private bool HasColorSpaceFilter =>
         !_hasSourceValidationError()
         && _colorSpaceAnalysis.IsApplicable
-        && !RequiresManualColorSpacePeakNits
+        && (!RequiresManualColorSpacePeakNits || HasColorSpacePeakNits)
         && !string.IsNullOrWhiteSpace(_colorSpaceAnalysis.FFmpegColorFilter);
 
     private bool RequiresManualColorSpacePeakNits =>
         _colorSpaceAnalysis.Strategy is ColorSpaceStrategy.HdrToSdr or ColorSpaceStrategy.HighHdrToSdr;
+
+    public string ColorSpacePeakNits
+    {
+        get => _colorSpacePeakNits;
+        set
+        {
+            if (!SetProperty(ref _colorSpacePeakNits, value)) return;
+
+            OnPropertyChanged(nameof(HasColorSpacePeakNits));
+            RefreshColorSpaceFilters();
+        }
+    }
+
+    public bool HasColorSpacePeakNits =>
+        double.TryParse(ColorSpacePeakNits, NumberStyles.Float, CultureInfo.InvariantCulture, out double peakNits)
+        && double.IsFinite(peakNits)
+        && peakNits > 0;
+
+    public bool IsColorSpacePeakNitsVisible => RequiresManualColorSpacePeakNits;
+
+    private static bool RequiresColorSpacePeakNits(ColorSpaceStrategy strategy) =>
+        strategy is ColorSpaceStrategy.HdrToSdr or ColorSpaceStrategy.HighHdrToSdr;
 
     private string? ScaleFilterChain => HasScaleFilter ? $"scale={TargetWidth}:{TargetHeight}" : null;
 
@@ -366,7 +391,9 @@ public class FilterScribeVM : BaseVM
 
     private string? SarRepairFilterChain => HasSarRepairFilter ? "libplacebo=reset_sar=1" : null;
 
-    private string? ColorSpaceFilterChain => HasColorSpaceFilter ? _colorSpaceAnalysis.FFmpegColorFilter : null;
+    private string? ColorSpaceFilterChain => HasColorSpaceFilter
+        ? GetColorSpaceStrategyFilterChain(_colorSpaceAnalysis.Strategy)
+        : null;
 
     private string? CropFilterChain => HasCropFilter ? $"crop={CropWidth}:{CropHeight}:0:0" : null;
 
@@ -407,10 +434,10 @@ public class FilterScribeVM : BaseVM
     public string FFmpegSarRepairFilterDisplay =>
         SarRepairFilterChain ?? LangProviderBase.NAText;
 
-    public string FFmpegDebandFilter =>
+    public static string FFmpegDebandFilter =>
         "-filter:v \"libplacebo=deband=true:deband_iterations=3:deband_radius=8:deband_threshold=6\"";
 
-    public string FFmpegDebandFilterDisplay =>
+    public static string FFmpegDebandFilterDisplay =>
         "libplacebo=deband=true:deband_iterations=3:deband_radius=8:deband_threshold=6";
 
     public string FFmpegRotateFilter =>
@@ -491,7 +518,7 @@ public class FilterScribeVM : BaseVM
     public static string VpyHFlipFilter => "src = core.std.FlipHorizontal(src)";
     public static string VpyVFlipFilter => "src = core.std.FlipVertical(src)";
 
-    public bool DebandEnabled => true;
+    public static bool DebandEnabled => true;
 
     private int _rotateMode;
     public int RotateMode
@@ -516,7 +543,7 @@ public class FilterScribeVM : BaseVM
         }
     }
 
-    public List<string> RotateTickLabels => ["0", "1", "2", "3"];
+    public static List<string> RotateTickLabels => ["0", "1", "2", "3"];
     public string RotateDisplay => (RotateMode * 90).ToString(CultureInfo.InvariantCulture);
 
     private bool _horizontalFlipEnabled;
@@ -596,7 +623,7 @@ public class FilterScribeVM : BaseVM
         || UpscaleHeight == UpscaleHeightMaximum
         || (UpscaleHeight - UpscaleHeightMinimum) % UpscaleStep == 0;
 
-    public bool CanInsertFFmpegDebandFilter => DebandEnabled;
+    public static bool CanInsertFFmpegDebandFilter => DebandEnabled;
     public bool CanInsertFFmpegRotateFilter => RotateMode > 0;
     public bool CanInsertFFmpegUpscaleFilter => HasUpscaleOutput;
     public bool CanInsertFFmpegFlipFilter => HorizontalFlipEnabled || VerticalFlipEnabled;
@@ -604,10 +631,10 @@ public class FilterScribeVM : BaseVM
     public bool CanInsertAvsRotateFilter => RotateMode > 0;
     public bool CanInsertVpyRotateFilter => RotateMode > 0;
 
-    public bool CanInsertAvsHFlipFilter => true;
-    public bool CanInsertAvsVFlipFilter => true;
-    public bool CanInsertVpyHFlipFilter => true;
-    public bool CanInsertVpyVFlipFilter => true;
+    public static bool CanInsertAvsHFlipFilter => true;
+    public static bool CanInsertAvsVFlipFilter => true;
+    public static bool CanInsertVpyHFlipFilter => true;
+    public static bool CanInsertVpyVFlipFilter => true;
 
     public static string AviSynthHqdn3dDenoiseFilter => "hqdn3d(src)";
     public static string FFmpegHqdn3dDenoiseFilter => "-filter:v \"hqdn3d\"";
@@ -740,8 +767,10 @@ public class FilterScribeVM : BaseVM
     public bool CanInsertFFmpegResizeFilter => HasScaleFilter;
     public bool CanInsertFFmpegLowToHighColorFilter => IsColorSpaceStrategyShown(ColorSpaceStrategy.LowToHigh);
     public bool CanInsertFFmpegHighToLowColorFilter => IsColorSpaceStrategyShown(ColorSpaceStrategy.HighToLow);
-    public bool CanInsertFFmpegHdrToSdrColorFilter => IsColorSpaceStrategyShown(ColorSpaceStrategy.HdrToSdr);
-    public bool CanInsertFFmpegHighHdrToLowSdrColorFilter => IsColorSpaceStrategyShown(ColorSpaceStrategy.HighHdrToSdr);
+    public bool CanInsertFFmpegHdrToSdrColorFilter =>
+        IsColorSpaceStrategyShown(ColorSpaceStrategy.HdrToSdr) && HasColorSpacePeakNits;
+    public bool CanInsertFFmpegHighHdrToLowSdrColorFilter =>
+        IsColorSpaceStrategyShown(ColorSpaceStrategy.HighHdrToSdr) && HasColorSpacePeakNits;
 
     private string GetColorSpaceStrategyFilter(ColorSpaceStrategy strategy) =>
         IsColorSpaceStrategyShown(strategy)
@@ -753,13 +782,43 @@ public class FilterScribeVM : BaseVM
             ? BuildColorSpaceStrategyFilterChain(strategy)
             : null;
 
-    private string? BuildColorSpaceStrategyFilterChain(ColorSpaceStrategy strategy) =>
-        ColorSpaceConverter.BuildFFmpegFilter(
+    private string? BuildColorSpaceStrategyFilterChain(ColorSpaceStrategy strategy)
+    {
+        string? filter = ColorSpaceConverter.BuildFFmpegFilter(
             strategy,
             _colorSpaceAnalysis.ColorMatrix,
             _colorSpaceAnalysis.ColorChromaLocation,
             _colorSpaceAnalysis.ColorPrimaries,
             _colorSpaceAnalysis.PixelFormat);
+
+        if (filter == null
+            || !RequiresColorSpacePeakNits(strategy)
+            || !HasColorSpacePeakNits
+            || !double.TryParse(ColorSpacePeakNits, NumberStyles.Float, CultureInfo.InvariantCulture, out double peakNits))
+            return filter;
+
+        return filter.Replace("<nits>", peakNits.ToString("G", CultureInfo.InvariantCulture));
+    }
+
+    private void RefreshColorSpaceFilters()
+    {
+        OnPropertyChanged(nameof(ColorSpaceFilterChain));
+        OnPropertyChanged(nameof(FFmpegLowToHighColorFilter));
+        OnPropertyChanged(nameof(FFmpegLowToHighColorFilterDisplay));
+        OnPropertyChanged(nameof(FFmpegHighToLowColorFilter));
+        OnPropertyChanged(nameof(FFmpegHighToLowColorFilterDisplay));
+        OnPropertyChanged(nameof(FFmpegHdrToSdrColorFilter));
+        OnPropertyChanged(nameof(FFmpegHdrToSdrColorFilterDisplay));
+        OnPropertyChanged(nameof(FFmpegHighHdrToLowSdrColorFilter));
+        OnPropertyChanged(nameof(FFmpegHighHdrToLowSdrColorFilterDisplay));
+        OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
+        OnPropertyChanged(nameof(FFmpegFullChainFilter));
+        OnPropertyChanged(nameof(FFmpegHqdn3dFullChainFilter));
+        OnPropertyChanged(nameof(CanInsertFFmpegLowToHighColorFilter));
+        OnPropertyChanged(nameof(CanInsertFFmpegHighToLowColorFilter));
+        OnPropertyChanged(nameof(CanInsertFFmpegHdrToSdrColorFilter));
+        OnPropertyChanged(nameof(CanInsertFFmpegHighHdrToLowSdrColorFilter));
+    }
 
     private string BuildFFmpegFilterArgs(bool includeSwsFlags, bool includeCsp709Flags, params string?[] filters)
     {
@@ -1290,6 +1349,7 @@ public class FilterScribeVM : BaseVM
             Interval = TimeSpan.FromMilliseconds(40)
         };
         _cropRefreshTimer.Tick += (_, _) => FlushPendingCropRefresh();
+        BuildColorSpaceSettingsListing();
         OpenVpyPreviewCommand = new ActionCmd(_ => OpenVpyPreview(), _ => CanOpenVpyPreview);
         InsertAvsFilterCommand = new ActionCmd(filter => AppendScriptFilter(ref _avsUserInput, filter as string, nameof(AvsUserInput)));
         InsertVpyFilterCommand = new ActionCmd(filter => AppendScriptFilter(ref _vpyUserInput, filter as string, nameof(VpyUserInput)));
@@ -1343,6 +1403,7 @@ public class FilterScribeVM : BaseVM
         _sourceBitDepth = FFProbeSrcVal.ReadBitDepthFromJson(sourceFfprobeJson);
         _colorSpaceAnalysis = ColorSpaceConverter.Analyze(sourceFfprobeJson);
         _sourceIsProgressive = string.IsNullOrWhiteSpace(sourceFfprobeJson) || FFProbeSrcVal.Analyze(sourceFfprobeJson).IsProgressive;
+        OnPropertyChanged(nameof(IsColorSpacePeakNitsVisible));
         OnPropertyChanged(nameof(FFmpegLowToHighColorFilter));
         OnPropertyChanged(nameof(FFmpegLowToHighColorFilterDisplay));
         OnPropertyChanged(nameof(FFmpegHighToLowColorFilter));
@@ -1361,6 +1422,56 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(VapourSynthVszipclHasFmtconv));
         OnPropertyChanged(nameof(VapourSynthVszipclFmtconvHint));
         RecomputeCrop();
+    }
+
+    private void BuildColorSpaceSettingsListing()
+    {
+        TextBox textBox = new()
+        {
+            Width = 200,
+            HorizontalAlignment = HorizontalAlignment.Right
+        };
+        textBox.PreviewTextInput += PeakNitsPreviewTextInput;
+        DataObject.AddPastingHandler(textBox, PeakNitsPasting);
+        textBox.SetBinding(
+            TextBox.TextProperty,
+            new Binding(nameof(ColorSpacePeakNits))
+            {
+                Source = this,
+                Mode = BindingMode.TwoWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+
+        SettingsListing.Add(new AppConfItem
+        {
+            Text = "HDR: peak nits",
+            Content = textBox
+        });
+    }
+
+    private static void PeakNitsPreviewTextInput(object sender, TextCompositionEventArgs e)
+    {
+        if (sender is not TextBox textBox) return;
+        e.Handled = !IsValidPeakNitsText(textBox, e.Text);
+    }
+
+    private static void PeakNitsPasting(object sender, DataObjectPastingEventArgs e)
+    {
+        if (sender is not TextBox textBox) return;
+        string? pastedText = e.DataObject.GetData(DataFormats.UnicodeText) as string
+            ?? e.DataObject.GetData(DataFormats.Text) as string;
+        if (pastedText is null || !IsValidPeakNitsText(textBox, pastedText))
+            e.CancelCommand();
+    }
+
+    private static bool IsValidPeakNitsText(TextBox textBox, string insertedText)
+    {
+        if (insertedText.Any(character => !char.IsDigit(character) && character != '.'))
+            return false;
+
+        string proposedText = textBox.Text.Remove(textBox.SelectionStart, textBox.SelectionLength)
+            .Insert(textBox.SelectionStart, insertedText);
+        return proposedText.Count(character => character == '.') <= 1;
     }
 
     public void RefreshGeneratedFFmpegFilters()
