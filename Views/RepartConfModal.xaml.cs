@@ -1,6 +1,6 @@
+using OneColumnEncoder.Converters;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
-using OneColumnEncoder.Converters;
 
 namespace OneColumnEncoder.Views;
 

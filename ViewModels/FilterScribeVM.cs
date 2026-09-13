@@ -1,7 +1,7 @@
+using OneColumnEncoder.Components;
 using OneColumnEncoder.Models.Analysis;
 using OneColumnEncoder.ScriptGeneration;
 using System.IO;
-using OneColumnEncoder.Components;
 
 namespace OneColumnEncoder.ViewModels;
 
