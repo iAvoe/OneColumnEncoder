@@ -2,7 +2,7 @@
 
 一款基于 .NET 9/WPF 的次时代智能视频编码辅助工具。主要流程围绕“导入工具和编码器、导入视频或脚本源、分析源视频、定制编码命令、自定义并行策略、编码监控、中断与封装”展开。
 
-<p align="center"><img src="../WireframeMockups/Logo-v2-final.svg" alt="Logo" width=300></p>
+<p align="center"><img src="../WireframeMockups/Logo-v2-final-1000x1000.png" alt="Logo" width=500></p>
 
 ## 功能概述
 
