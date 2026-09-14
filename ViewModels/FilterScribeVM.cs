@@ -24,7 +24,6 @@ public class FilterScribeVM : BaseVM
     private readonly Action<ToolItemCardVM, SrcFileKind, string> _afterImport;
     private readonly Action<string?> _applyFFmpegFilterArgs;
     private readonly Func<SrcRevisionRequest, string?> _sourceReviser;
-    private readonly string _sourceFfprobeJson;
     private readonly Func<bool> _hasSourceValidationError;
     private readonly Func<bool> _hasSarRepairWarning;
     private readonly Func<bool>? _isQueueRoute;
@@ -1329,7 +1328,6 @@ public class FilterScribeVM : BaseVM
         _afterImport = afterImport;
         _applyFFmpegFilterArgs = applyFFmpegFilterArgs;
         _sourceReviser = reviseSource ?? (_ => null);
-        _sourceFfprobeJson = sourceFfprobeJson ?? string.Empty;
         _hasSourceValidationError = hasSourceValidationError;
         _hasSarRepairWarning = hasSarRepairWarning;
         _isQueueRoute = isQueueRoute;

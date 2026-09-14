@@ -2,7 +2,7 @@
 
 A next-gen smart video encoding utility based on .NET 9/WPF, focused on tool/encoder orchestration, source analysis, encoding customization, parallelism tuning, modern monitoring, interrupt capability, and auto-multiplexing.
 
-<p align="center"><img src="../WireframeMockups/logo.png" alt="Logo" width="200"></p>
+<p align="center"><img src="../WireframeMockups/logo-v2-final.svg" alt="Logo" width=300></p>
 
 ## Featuring:
 
