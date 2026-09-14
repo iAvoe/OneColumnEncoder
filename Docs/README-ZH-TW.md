@@ -2,7 +2,7 @@
 
 一款基於 .NET 9/WPF 的次時代智慧影片編碼輔助工具。主要流程圍繞“導入工具和編碼器、導入影片或腳本源、分析源影片、訂製編碼命令、自訂平行策略、編碼監控、中斷與封裝”展開。
 
-<p align="center"><img src="../WireframeMockups/logo-v2-final.svg" alt="Logo" width=300></p>
+<p align="center"><img src="../WireframeMockups/Logo-v2-final.svg" alt="Logo" width=300></p>
 
 ## 功能概述
 
