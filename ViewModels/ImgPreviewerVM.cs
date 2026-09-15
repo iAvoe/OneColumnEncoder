@@ -5,8 +5,25 @@ using System.IO;
 
 namespace OneColumnEncoder.ViewModels;
 
-public class ImgPreviewerVM : BaseVM
+public class ImgPreviewerVM : BaseVM, IPreviewViewModel
 {
+    private enum PreviewTextState
+    {
+        Ready,
+        NoFfmpeg,
+        NoSource,
+        Extracting,
+        Converting,
+        Encoding,
+        Decoding,
+        ComputingScores,
+        PreviewReady,
+        Cancelled,
+        DisplayModeBlocked,
+        DisplayModeSet,
+        Custom,
+    }
+
     private readonly EncoderConfVM _encoderConfVM;
     private readonly ModalNavS _modalNavS;
     private readonly string? _ffmpegPath;
@@ -15,6 +32,7 @@ public class ImgPreviewerVM : BaseVM
     private readonly string _workDirectory;
     private readonly ColorSpaceAnalysisM _colorSpaceAnalysis;
     private readonly double _frameRate;
+    private bool _isDisposed;
     // CTS for ffmpeg operations only (extract, encode, decode).
     // Created fresh each preview run. Score tools (ssimulacra2, butteraugli)
     // do NOT observe this token — they run independently once decoding finishes.
@@ -24,7 +42,11 @@ public class ImgPreviewerVM : BaseVM
     // Not used for external score-tool processes.
     private Process? _currentProcess;
     private string? _lastFFmpegStderr;
-    private bool _isFitMode = true;
+    private PreviewTextState _statusState = PreviewTextState.Ready;
+    private string? _statusDetail;
+    private string? _previewReadyEncoder;
+    private string? _previewReadyCrf;
+    private bool _isFitMode;
     private PreviewDisplayMode _displayMode = PreviewDisplayMode.Raw;
     private ImgPreviewerLangProvider _lang = new(UILangProvider.Current.LanguageCode);
     public ImgPreviewerLangProvider Lang
@@ -200,12 +222,13 @@ public class ImgPreviewerVM : BaseVM
                 ? totalFrames / sourceStats.FrameRate
                 : sourceStats.DurationSeconds;
         MaxPositionSeconds = Math.Max(1, (int)Math.Floor(Math.Min(int.MaxValue, previewDurationSeconds)) - 1);
-        PreviewPositionSeconds = hasSourceStats
-            ? Math.Min(MaxPositionSeconds, Math.Max(0, MaxPositionSeconds / 2))
+        bool canCenterPreviewPosition = previewDurationSeconds > 0d;
+        PreviewPositionSeconds = canCenterPreviewPosition
+            ? MaxPositionSeconds / 2
             : 0;
         BuildPositionTickLabels(previewDurationSeconds);
 
-        StatusText = Lang.StatusReady;
+        SetStatus(PreviewTextState.Ready);
         PreviewButtonText = Lang.PreviewButtonText;
         PreviewCommand = new ActionCmd(_ => PreviewOrCancel());
         RefreshSsimulacra2Status();
@@ -221,10 +244,11 @@ public class ImgPreviewerVM : BaseVM
     // Cancellation signals the CTS, then immediately kills ffmpeg.
     private void PreviewOrCancel()
     {
+        if (_isDisposed) return;
+
         if (IsBusy)
         {
-            _previewCts?.Cancel();
-            TryKillCurrentProcess();
+            CancelPreview();
             return;
         }
 
@@ -233,23 +257,27 @@ public class ImgPreviewerVM : BaseVM
 
     private async Task GeneratePreviewAsync()
     {
+        if (_isDisposed) return;
+
         if (string.IsNullOrWhiteSpace(_ffmpegPath) || !File.Exists(_ffmpegPath))
         {
-            StatusText = Lang.StatusNoFfmpeg;
+            SetStatus(PreviewTextState.NoFfmpeg);
             return;
         }
 
         if (string.IsNullOrWhiteSpace(_sourceVideoPath) || !File.Exists(_sourceVideoPath))
         {
-            StatusText = Lang.StatusNoSource;
+            SetStatus(PreviewTextState.NoSource);
             return;
         }
 
-        // Discard previous cancellation scope and start a fresh one
-        // for this preview run.
-        _previewCts?.Dispose();
-        _previewCts = new CancellationTokenSource();
-        CancellationToken token = _previewCts.Token;
+        CancellationTokenSource? previousCts = _previewCts;
+        CancellationTokenSource cts = new();
+        _previewCts = cts;
+        previousCts?.Dispose();
+        CancellationToken token = cts.Token;
+        _lastFFmpegStderr = null;
+        IsBusy = true;
 
         try
         {
@@ -259,8 +287,7 @@ public class ImgPreviewerVM : BaseVM
             if (encoder == PreviewEncoder.SvtAv1 && PreviewPipeline.IsSource12Bit(_colorSpaceAnalysis))
             {
                 _modalNavS.Close();
-                new Commands.OpenClose.Confirmations.OpenErrModalCmd(_modalNavS, Lang.EncoderLabel, Lang.WarnSvtAv1No12Bit).Execute(null);
-                IsBusy = false;
+                new OpenErrModalCmd(_modalNavS, Lang.EncoderLabel, Lang.WarnSvtAv1No12Bit).Execute(null);
                 return;
             }
 
@@ -273,27 +300,27 @@ public class ImgPreviewerVM : BaseVM
             string decodedPath = GetDecodedPath(encoder);
             (string sourcePath, TimeSpan sourcePosition) = ResolvePreviewSource(TimeSpan.FromSeconds(PreviewPositionSeconds));
 
-            StatusText = Lang.StatusExtracting;
+            SetStatus(PreviewTextState.Extracting);
             await RunFFmpegAsync(PreviewPipeline.BuildSourceArgs(sourcePath, sourcePosition, rawsrcPath), token);
             PreviewPipeline.EnsureFileExists(rawsrcPath, "!SOURCE");
 
             if (!string.IsNullOrWhiteSpace(displayFilter))
             {
-                StatusText = string.Format(Lang.StatusConverting, GetDisplayModeTitle(_displayMode));
+                SetStatus(PreviewTextState.Converting, GetDisplayModeTitle(_displayMode));
                 await RunFFmpegAsync(PreviewPipeline.BuildSourceArgs(sourcePath, sourcePosition, srcPath, displayFilter), token);
             }
             PreviewPipeline.EnsureFileExists(srcPath, "!SOURCE");
             SourceImage = PreviewPipeline.LoadBitmap(srcPath);
 
-            StatusText = string.Format(Lang.StatusEncoding, PreviewPipeline.GetEncoderTitle(encoder));
+            SetStatus(PreviewTextState.Encoding, PreviewPipeline.GetEncoderTitle(encoder));
             await RunFFmpegAsync(PreviewPipeline.BuildEncodeArgs(encoder, model, srcPath, encodedPath), token);
 
-            StatusText = Lang.StatusDecoding;
+            SetStatus(PreviewTextState.Decoding);
             await RunFFmpegAsync(PreviewPipeline.BuildDecodeArgs(encodedPath, decodedPath), token);
             PreviewPipeline.EnsureFileExists(decodedPath, "!ENCODE");
             EncodedImage = PreviewPipeline.LoadBitmap(decodedPath);
 
-            StatusText = Lang.StatusComputingScores;
+            SetStatus(PreviewTextState.ComputingScores);
 
             // NOTE: Score tools do NOT accept the cancellation token.
             // If the user cancels during this phase, the tools will still
@@ -316,27 +343,41 @@ public class ImgPreviewerVM : BaseVM
                     : $"Butteraugli: {error}";
             }
 
-            StatusText = string.Format(Lang.StatusPreviewReady, PreviewPipeline.GetEncoderTitle(encoder), PreviewPipeline.GetCrfValue(encoder, model));
+            SetPreviewReadyStatus(
+                PreviewPipeline.GetEncoderTitle(encoder),
+                PreviewPipeline.GetCrfValue(encoder, model).ToString(CultureInfo.CurrentCulture));
         }
         catch (OperationCanceledException)
         {
-            StatusText = Lang.StatusCancelled;
+            if (!_isDisposed)
+                SetStatus(PreviewTextState.Cancelled);
         }
+        catch (ObjectDisposedException) when (_isDisposed) { }
         catch (Exception ex)
         {
-            StatusText = ex.Message;
-            if (!string.IsNullOrWhiteSpace(_lastFFmpegStderr))
+            if (!_isDisposed)
             {
-                _modalNavS.Close();
-                new OpenErrModalCmd(
-                    _modalNavS,
-                    Lang.EncoderLabel,
-                    _lastFFmpegStderr).Execute(null);
+                SetStatus(PreviewTextState.Custom, ex.Message);
+                if (!string.IsNullOrWhiteSpace(_lastFFmpegStderr))
+                {
+                    _modalNavS.Close();
+                    new OpenErrModalCmd(
+                        _modalNavS,
+                        Lang.EncoderLabel,
+                        _lastFFmpegStderr).Execute(null);
+                }
             }
         }
-        finally { _currentProcess = null; }
+        finally
+        {
+            _currentProcess = null;
+            if (ReferenceEquals(_previewCts, cts))
+                _previewCts = null;
+            cts.Dispose();
 
-        IsBusy = false;
+            if (_isDisposed) DeleteWorkDirectory();
+            else IsBusy = false;
+        }
     }
 
     // Runs ffmpeg with the given args. If token is cancelled during
@@ -473,12 +514,12 @@ public class ImgPreviewerVM : BaseVM
         if (_displayMode == displayMode) return;
         if (IsBusy)
         {
-            StatusText = Lang.StatusDisplayModeBlocked;
+            SetStatus(PreviewTextState.DisplayModeBlocked);
             return;
         }
 
         _displayMode = displayMode;
-        StatusText = string.Format(Lang.StatusDisplayModeSet, GetDisplayModeTitle(displayMode));
+        SetStatus(PreviewTextState.DisplayModeSet);
         RefreshSelectedEncodedImage();
         if (!IsBusy && SourceImage != null)
             _ = GeneratePreviewAsync();
@@ -488,6 +529,81 @@ public class ImgPreviewerVM : BaseVM
     {
         if (_currentProcess != null)
             PreviewPipeline.TryKillProcess(_currentProcess);
+    }
+
+    private void CancelPreview()
+    {
+        try { _previewCts?.Cancel(); }
+        catch (ObjectDisposedException) { }
+        TryKillCurrentProcess();
+    }
+
+    private void SetStatus(PreviewTextState state, string? detail = null)
+    {
+        _statusState = state;
+        _statusDetail = detail;
+        _previewReadyEncoder = null;
+        _previewReadyCrf = null;
+        StatusText = BuildStatusText();
+    }
+
+    private void SetPreviewReadyStatus(string encoder, string crf)
+    {
+        _statusState = PreviewTextState.PreviewReady;
+        _statusDetail = null;
+        _previewReadyEncoder = encoder;
+        _previewReadyCrf = crf;
+        StatusText = BuildStatusText();
+    }
+
+    private string BuildStatusText()
+    {
+        return _statusState switch
+        {
+            PreviewTextState.Ready => Lang.StatusReady,
+            PreviewTextState.NoFfmpeg => Lang.StatusNoFfmpeg,
+            PreviewTextState.NoSource => Lang.StatusNoSource,
+            PreviewTextState.Extracting => Lang.StatusExtracting,
+            PreviewTextState.Converting => string.Format(Lang.StatusConverting, _statusDetail ?? string.Empty),
+            PreviewTextState.Encoding => string.Format(Lang.StatusEncoding, _statusDetail ?? string.Empty),
+            PreviewTextState.Decoding => Lang.StatusDecoding,
+            PreviewTextState.ComputingScores => Lang.StatusComputingScores,
+            PreviewTextState.PreviewReady => BuildPreviewReadyStatus(),
+            PreviewTextState.Cancelled => Lang.StatusCancelled,
+            PreviewTextState.DisplayModeBlocked => Lang.StatusDisplayModeBlocked,
+            PreviewTextState.DisplayModeSet => string.Format(Lang.StatusDisplayModeSet, GetDisplayModeTitle(_displayMode)),
+            PreviewTextState.Custom => _statusDetail ?? string.Empty,
+            _ => Lang.StatusReady,
+        };
+    }
+
+    private string BuildPreviewReadyStatus()
+    {
+        return string.Format(
+            Lang.StatusPreviewReady,
+            _previewReadyEncoder ?? string.Empty,
+            _previewReadyCrf ?? string.Empty);
+    }
+
+    private void DeleteWorkDirectory()
+    {
+        if (string.IsNullOrEmpty(_workDirectory) || !Directory.Exists(_workDirectory))
+            return;
+
+        TryKillCurrentProcess();
+
+        try { PreviewPipeline.DeleteDirectoryQuietly(_workDirectory); }
+        catch (IOException)
+        {
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(500).ConfigureAwait(false);
+                try { PreviewPipeline.DeleteDirectoryQuietly(_workDirectory); }
+                catch (IOException) { }
+                catch (UnauthorizedAccessException) { }
+            });
+        }
+        catch (UnauthorizedAccessException) { }
     }
 
     private void RefreshSsimulacra2Status()
@@ -523,6 +639,7 @@ public class ImgPreviewerVM : BaseVM
         DisplayModeButtons.B5_1Text = Lang.RawButtonText;
         if (!IsBusy)
             PreviewButtonText = Lang.PreviewButtonText;
+        StatusText = BuildStatusText();
         OnPropertyChanged(nameof(EncoderLabel));
         OnPropertyChanged(nameof(ZoomLabel));
         OnPropertyChanged(nameof(PositionLabel));
@@ -537,16 +654,17 @@ public class ImgPreviewerVM : BaseVM
 
     public override void Dispose()
     {
+        if (_isDisposed) return;
+
+        _isDisposed = true;
         UILangProvider.CurrentChanged -= OnLanguageChanged;
         GC.SuppressFinalize(this);
         // Order: cancel first so in-flight ffmpeg knows to stop,
         // then kill the process, then release CTS resources.
-        _previewCts?.Cancel();
-        TryKillCurrentProcess();
-        _previewCts?.Dispose();
+        CancelPreview();
+        if (!IsBusy)
+            DeleteWorkDirectory();
         _encoderConfVM.SetPreviewBusy(false);
-
-        PreviewPipeline.DeleteDirectoryQuietly(_workDirectory);
 
         base.Dispose();
     }

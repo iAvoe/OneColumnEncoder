@@ -12,7 +12,7 @@ public partial class ImgPreviewer : UserControl
     private double _zoom = 1d;
     private double _offsetX;
     private double _offsetY;
-    private ImgPreviewerVM? _subscribedVm;
+    private IPreviewViewModel? _subscribedVm;
     private bool _isFitQueued;
 
     public ImgPreviewer()
@@ -28,16 +28,24 @@ public partial class ImgPreviewer : UserControl
     public void ZoomFineIn() => SetZoom(_zoom + 0.1d, GetViewportCenter());
     public void ZoomFineOut() => SetZoom(_zoom - 0.1d, GetViewportCenter());
     public void Fit() => FitImage();
-    public void SetActualSize() => SetZoom(1d, GetViewportCenter());
-    public void SetDoubleSize() => SetZoom(2d, GetViewportCenter());
+    public void SetActualSize()
+    {
+        ViewModel?.SetFitMode(false);
+        SetZoom(1d, GetViewportCenter());
+    }
+    public void SetDoubleSize()
+    {
+        ViewModel?.SetFitMode(false);
+        SetZoom(2d, GetViewportCenter());
+    }
 
-    private ImgPreviewerVM? ViewModel => DataContext as ImgPreviewerVM;
+    private IPreviewViewModel? ViewModel => DataContext as IPreviewViewModel;
 
     private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
         UnsubscribeViewModel();
 
-        _subscribedVm = e.NewValue as ImgPreviewerVM;
+        _subscribedVm = e.NewValue as IPreviewViewModel;
         if (_subscribedVm != null)
             _subscribedVm.PropertyChanged += OnViewModelPropertyChanged;
 
@@ -53,10 +61,8 @@ public partial class ImgPreviewer : UserControl
 
     private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is nameof(ImgPreviewerVM.SourceImage) or nameof(ImgPreviewerVM.EncodedImage))
-        {
-            QueueFitImage();
-        }
+        if (e.PropertyName is "SourceImage" or "EncodedImage")
+            QueueImageViewUpdate();
     }
 
     private void Viewer_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -175,11 +181,22 @@ public partial class ImgPreviewer : UserControl
         ApplyView();
     }
 
-    private void QueueFitImage()
+    private void QueueImageViewUpdate()
     {
         if (_isFitQueued) return;
         _isFitQueued = true;
-        Dispatcher.BeginInvoke(FitImage, DispatcherPriority.ContextIdle);
+        Dispatcher.BeginInvoke(UpdateImageView, DispatcherPriority.ContextIdle);
+    }
+
+    private void UpdateImageView()
+    {
+        if (ViewModel?.IsFitMode == true)
+            FitImage();
+        else
+        {
+            _isFitQueued = false;
+            ApplyView();
+        }
     }
 
     private Point GetViewportCenter() =>

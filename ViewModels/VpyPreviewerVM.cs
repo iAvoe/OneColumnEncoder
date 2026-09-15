@@ -9,7 +9,7 @@ public class PreviewSourceItem(string fullPath)
     public string Title => VideoFilename;
 }
 
-public class VpyPreviewerVM : BaseVM
+public class VpyPreviewerVM : BaseVM, IPreviewViewModel
 {
     private enum PreviewTextState
     {
@@ -29,7 +29,10 @@ public class VpyPreviewerVM : BaseVM
     private readonly int _totalFrames;
     private readonly string _scriptPath;
     private readonly Func<string, string>? _buildPreviewScript;
-    private static bool _suppressSwitch;
+    private readonly SynchronizationContext? _uiContext;
+#pragma warning disable IDE0044 // Add readonly modifier, in case user somehow launches mutiple previews (should be impossible in currect design)
+    private bool _suppressSwitch;
+#pragma warning restore IDE0044
     private readonly string _scriptContent;
     private VpyPreviewerLangProvider _lang = new(UILangProvider.Current.LanguageCode);
     public VpyPreviewerLangProvider Lang
@@ -62,7 +65,8 @@ public class VpyPreviewerVM : BaseVM
     private Process? _currentVspipeProcess;
     private bool _isDisposed;
     private readonly Lock _vspipeLogLock = new();
-    private readonly List<string> _vspipeLogLines = [];
+    private readonly StringBuilder _vspipeLogBuilder = new();
+    private bool _vspipeLogFlushPending;
 
     private ImageSource? _sourceImage;
     public ImageSource? SourceImage
@@ -171,6 +175,7 @@ public class VpyPreviewerVM : BaseVM
         _vspipeY4mArg = vspipeY4mArg;
         _buildPreviewScript = buildPreviewScript;
         _scriptContent = scriptContent;
+        _uiContext = SynchronizationContext.Current;
         _videoFilename = Path.GetFileName(srcPath);
         _totalFrames = totalFrames > 0 ? totalFrames : 1;
         MaxPositionSeconds = _totalFrames - 1;
@@ -211,6 +216,10 @@ public class VpyPreviewerVM : BaseVM
     }
 
     public void SetZoomPercent(int percent) => ZoomPercent = Math.Max(1, percent);
+
+    private bool _isFitMode;
+    public bool IsFitMode => _isFitMode;
+    public void SetFitMode(bool isFitMode) => _isFitMode = isFitMode;
 
     private void PreviewOrCancel()
     {
@@ -294,8 +303,8 @@ public class VpyPreviewerVM : BaseVM
             UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
-            StandardOutputEncoding = System.Text.Encoding.UTF8,
-            StandardErrorEncoding = System.Text.Encoding.UTF8,
+            StandardOutputEncoding = Encoding.UTF8,
+            StandardErrorEncoding = Encoding.UTF8,
             CreateNoWindow = true
         };
         foreach (string arg in PreviewPipeline.BuildVspipeY4mArgs(
@@ -309,7 +318,8 @@ public class VpyPreviewerVM : BaseVM
         using Process vspipeProcess = new() { StartInfo = vspipePsi, EnableRaisingEvents = true };
         _currentVspipeProcess = vspipeProcess;
 
-        using CancellationTokenRegistration killRegistration = token.Register(() => PreviewPipeline.TryKillProcess(vspipeProcess));
+        using CancellationTokenRegistration killRegistration =
+            token.Register(() => PreviewPipeline.TryKillProcess(vspipeProcess));
         try
         {
             AppendVspipeLogLine(string.Format(CultureInfo.CurrentCulture, Lang.LogVspipeOutput, outputIndex));
@@ -338,7 +348,8 @@ public class VpyPreviewerVM : BaseVM
     {
         lock (_vspipeLogLock)
         {
-            _vspipeLogLines.Clear();
+            _vspipeLogBuilder.Clear();
+            _vspipeLogFlushPending = false;
         }
 
         _vspipeLogIsReadyState = false;
@@ -352,18 +363,63 @@ public class VpyPreviewerVM : BaseVM
         string normalized = line.Replace("\0", string.Empty, StringComparison.Ordinal).TrimEnd();
         if (string.IsNullOrWhiteSpace(normalized)) return;
 
-        string snapshot;
+        // Discard the "vspipe output N" markers we emit around each vspipe run:
+        // they carry no information for the user and only inflate the log panel.
+        if (IsVspipeOutputMarker(normalized)) return;
+
+        bool scheduleFlush;
         lock (_vspipeLogLock)
         {
-            if (overwritePreviousLine && _vspipeLogLines.Count > 0)
-                _vspipeLogLines.RemoveAt(_vspipeLogLines.Count - 1);
+            if (overwritePreviousLine && _vspipeLogBuilder.Length > 0)
+                RemoveLastVspipeLogLine();
 
-            _vspipeLogLines.Add(normalized);
-            snapshot = string.Join(Environment.NewLine, _vspipeLogLines);
+            if (_vspipeLogBuilder.Length > 0)
+                _vspipeLogBuilder.Append('\n');
+            _vspipeLogBuilder.Append(normalized);
+            scheduleFlush = !_vspipeLogFlushPending;
+            _vspipeLogFlushPending = true;
         }
 
         _vspipeLogIsReadyState = false;
-        RunOnUi(() => VspipeLogText = snapshot);
+        if (scheduleFlush) RunOnUi(FlushVspipeLog);
+    }
+
+    private void RemoveLastVspipeLogLine()
+    {
+        int lastLineBreak = _vspipeLogBuilder.ToString().LastIndexOf('\n');
+        _vspipeLogBuilder.Length = lastLineBreak < 0 ? 0 : lastLineBreak;
+    }
+
+    private void FlushVspipeLog()
+    {
+        string snapshot;
+        lock (_vspipeLogLock)
+        {
+            snapshot = _vspipeLogBuilder.ToString();
+            _vspipeLogFlushPending = false;
+        }
+
+        VspipeLogText = snapshot;
+    }
+
+    // VapourSynth (vspipe) is English only, so no LangProvider check needed here
+    private const string VspipeOutputMarker = "vspipe output ";
+
+    /// <summary>
+    /// Filters "vspipe output N" markers, since vspipe will be called for each A-B preview, making log HintPanel too tall
+    /// </summary>
+    /// <param name="line">Log line from vspipe.exe</param>
+    /// <returns>true: matched to marker; false: not filtering</returns>
+    private static bool IsVspipeOutputMarker(string line)
+    {
+        if (!line.StartsWith(VspipeOutputMarker, StringComparison.Ordinal))
+            return false;
+
+        return int.TryParse(
+            line.AsSpan(VspipeOutputMarker.Length).Trim(),
+            NumberStyles.Integer,
+            CultureInfo.InvariantCulture,
+            out _);
     }
 
     private async Task ReadVspipeStreamAsync(StreamReader reader, CancellationToken token)
@@ -377,7 +433,7 @@ public class VpyPreviewerVM : BaseVM
 
             while (!token.IsCancellationRequested)
             {
-                int charsRead = await reader.ReadAsync(buffer.AsMemory(0, buffer.Length), token);
+                int charsRead = await reader.ReadAsync(buffer.AsMemory(0, buffer.Length), token).ConfigureAwait(false);
                 if (charsRead == 0) break;
 
                 for (int i = 0; i < charsRead; i++)
@@ -426,16 +482,15 @@ public class VpyPreviewerVM : BaseVM
         catch (IOException) { }
     }
 
-    private static void RunOnUi(Action action)
+    private void RunOnUi(Action action)
     {
-        System.Windows.Threading.Dispatcher? dispatcher = Application.Current?.Dispatcher;
-        if (dispatcher == null || dispatcher.CheckAccess())
+        if (_uiContext == null || SynchronizationContext.Current == _uiContext)
         {
             action();
             return;
         }
 
-        _ = dispatcher.InvokeAsync(action);
+        _uiContext.Post(static state => ((Action)state!).Invoke(), action);
     }
 
     private void SwitchSource(string newPath)
@@ -508,7 +563,19 @@ public class VpyPreviewerVM : BaseVM
 
     private void DeleteWorkDirectory()
     {
-        PreviewPipeline.DeleteDirectoryQuietly(_workDirectory);
+        // Check if already deleted
+        if (string.IsNullOrEmpty(_workDirectory) || !Directory.Exists(_workDirectory))
+            return;
+
+        // Work directory may survive if user closes preview while preview is writing new image
+        TryKillCurrentProcess();
+
+        try { PreviewPipeline.DeleteDirectoryQuietly(_workDirectory); }
+        catch (IOException)
+        {
+            Task.Delay(500).ContinueWith(_ => PreviewPipeline.DeleteDirectoryQuietly(_workDirectory));
+        }
+        catch (UnauthorizedAccessException) {} // Duh
     }
 
     public override void Dispose()

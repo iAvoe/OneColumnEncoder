@@ -25,12 +25,11 @@
                     Value="NoWrap" />
         </Style>
     </UserControl.Resources>
-
+    <!-- Unlike EncoderPreviewerPanel(ImgPreviewer) wrapping, VpyPreviewerPanel contains its own layout -->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -42,7 +41,10 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <ComboBox Grid.Column="0"
+            <!-- Source dropdown: not needed -->
+            <comps:HintPanel Text="{Binding VspipeLogText}"
+                             HintBrush="{StaticResource GlobalSecondary}" />
+            <!--<ComboBox Grid.Column="0"
                       ItemsSource="{Binding PreviewSources}"
                       SelectedItem="{Binding SelectedPreviewSource, Mode=TwoWay}"
                       DisplayMemberPath="Title"
@@ -51,8 +53,9 @@
                       MinWidth="150"
                       HorizontalAlignment="Left"
                       VerticalAlignment="Center"
-                      Margin="2.5 0 10 0" />
+                      Margin="2.5 0 10 0" />-->
 
+            <!-- Zoom toggles -->
             <StackPanel Grid.Column="1"
                         Orientation="Horizontal"
                         HorizontalAlignment="Right"
@@ -162,9 +165,5 @@
                                  HorizontalAlignment="Stretch"
                                  IsEnabled="{Binding IsIdle}" />
         </Grid>
-
-        <comps:HintPanel Grid.Row="3"
-                         Text="{Binding VspipeLogText}"
-                         HintBrush="{StaticResource GlobalSecondary}" />
     </Grid>
 </UserControl>
