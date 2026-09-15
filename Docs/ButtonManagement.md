@@ -413,7 +413,7 @@ EncStartButtons.B3_3Icon = SvgIconProvider.GamePlay;
 ### 7.3 Standalone Button with Dynamic Text
 
 ```csharp
-// ImgABPvVM.cs
+// ImgPreviewerVM.cs
 public bool IsBusy
 {
     set

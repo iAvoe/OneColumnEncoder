@@ -16,7 +16,7 @@ public class EncoderConfVM : BaseVM
     public CloseModalCmd CloseCmd { get; }
     public ActionCmd ConfirmCmd { get; }
     public ButtonGroupVM FinishButtons { get; }
-    public ImgABPvVM PreviewVM { get; }
+    public ImgPreviewerVM PreviewVM { get; }
 
     private bool _isPreviewBusy;
     public bool IsPreviewBusy
@@ -303,7 +303,7 @@ public class EncoderConfVM : BaseVM
             CancelButtonText, ConfirmButtonText, CloseCmd, ConfirmCmd);
         PopulateDropdowns();
         LoadModelToUi();
-        PreviewVM = new ImgABPvVM(this, modalNavS, ffmpegPath, sourceVideoPath, sourceFfprobeJson, getTotalFrames, previewSources, initialEncoder);
+        PreviewVM = new ImgPreviewerVM(this, modalNavS, ffmpegPath, sourceVideoPath, sourceFfprobeJson, getTotalFrames, previewSources, initialEncoder);
         UILangProvider.CurrentChanged += OnLanguageChanged;
     }
 

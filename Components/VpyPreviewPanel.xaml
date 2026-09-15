@@ -137,7 +137,7 @@
                     Margin="5 0 2.5 0"/>
         </Grid>
 
-        <comps:ImgABPvViewer Grid.Row="1"
+        <comps:ImgPreviewer Grid.Row="1"
                              x:Name="PreviewViewer"
                              Margin="0 10 0 10" />
 

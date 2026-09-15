@@ -1807,7 +1807,7 @@ public class MainVM : BaseVM
         string? encoderExeName = encoder != null
             ? ToolCatalogProviderM.ResolveExeFromCard(encoder)
             : null;
-        // Null (nothing selected / unknown exe) falls back to libx264 in ImgABPvVM.
+        // Null (nothing selected / unknown exe) falls back to libx264 in ImgPreviewerVM.
         return PreviewPipeline.ResolvePreviewEncoder(encoderExeName);
     }
 

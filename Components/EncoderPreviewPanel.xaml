@@ -6,7 +6,7 @@
              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
              xmlns:ui="clr-namespace:OneColumnEncoder.UI"
              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
-             d:DataContext="{d:DesignInstance Type=vms:ImgABPvVM}"
+             d:DataContext="{d:DesignInstance Type=vms:ImgPreviewerVM}"
              mc:Ignorable="d"
              Loaded="OnLoaded">
     <Grid>
@@ -102,7 +102,7 @@
                                     Button2Command="{Binding Cmd2}"
                                     Button3Command="{Binding Cmd3}" />
         </Grid>
-        <comps:ImgABPvViewer Grid.Row="1"
+        <comps:ImgPreviewer Grid.Row="1"
                              x:Name="PreviewViewer"
                              Margin="0 10" />
         <comps:IntegerSlider Grid.Row="2"

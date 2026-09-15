@@ -27,7 +27,7 @@ Some preview surfaces depend on the same source analysis inputs, but not all of 
 - `FilterScribeVM` builds `VpyPreviewVM` and passes a `frameCount` derived from `EncodingPipeline.GetSourceTotalFrames()`.
 - `EncodingPipeline.GetSourceTotalFrames()` prefers `concatTotalFrames` when present, otherwise reads the source ffprobe JSON and falls back to `nb_frames`, then `duration × fps`.
 - `VpyPreviewPanel` is only the view shell for `VpyPreviewVM`; `VpyPreviewVM` clamps `CurrentFrame` and `MaxPositionSeconds` with the supplied total frame count.
-- `ImgABPvViewer` is a display control only. The preview logic sits in `ImgABPvVM`, which uses `FFProbeSourceStatsReader.Read()` to set preview duration and the initial preview position from ffprobe metadata.
+- `ImgPreviewer` is a display control only. The preview logic sits in `ImgPreviewerVM`, which uses `FFProbeSourceStatsReader.Read()` to set preview duration and the initial preview position from ffprobe metadata.
 
 ## Resolution order
 
@@ -165,6 +165,6 @@ In `RepartCompatibilityAnalyzer.AnalyzeAndFilterAsync()`, every accepted candida
 
 `VpyPreviewPanel` does not recompute frame counts itself. It renders `VpyPreviewVM`, which receives a precomputed total frame count from the caller and uses it to clamp the frame slider and preview index.
 
-`ImgABPvViewer` also does not perform any frame-count resolution. It reacts to `ImgABPvVM` image updates and only handles zoom/pan/split display behavior. The image preview VM reads ffprobe-derived duration and frame-rate metadata to choose the preview timestamp, but it does not participate in the Repart frame-count scan.
+`ImgPreviewer` also does not perform any frame-count resolution. It reacts to `ImgPreviewerVM` image updates and only handles zoom/pan/split display behavior. The image preview VM reads ffprobe-derived duration and frame-rate metadata to choose the preview timestamp, but it does not participate in the Repart frame-count scan.
 
 **Important:** The resolution order is intentionally conservative — cheap metadata checks run first, and full-file counting is reserved for sources whose cheap results could not be verified. Normal imports therefore stay on the estimate or ffmpeg paths, while `-count_frames` and the expanded search remain last resorts.

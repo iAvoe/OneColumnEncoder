@@ -44,7 +44,7 @@ This document covers the reusable `IntegerSlider` control used across the app fo
 
 ## Preview panel behavior
 
-In `ImgABPvVM`, the preview slider is initialized from source ffprobe data. When source stats are available, `PreviewPositionSeconds` starts near the middle of the available range; otherwise it starts at `0`.
+In `ImgPreviewerVM`, the preview slider is initialized from source ffprobe data. When source stats are available, `PreviewPositionSeconds` starts near the middle of the available range; otherwise it starts at `0`.
 
 ## Implementation notes
 

@@ -1,10 +1,10 @@
-# ImgABPvVM Preview Generation Flow
+# ImgPreviewerVM Preview Generation Flow
 
-This document describes how `ImgABPvVM` builds the A-B preview pair used by the encoder preview window.
+This document describes how `ImgPreviewerVM` builds the A-B preview pair used by the encoder preview window.
 
 ## Purpose
 
-`ImgABPvVM` builds a side-by-side preview by:
+`ImgPreviewerVM` builds a side-by-side preview by:
 
 1. extracting one frame from the source video,
 2. optionally converting that frame into the selected display mode,
@@ -15,13 +15,13 @@ This document describes how `ImgABPvVM` builds the A-B preview pair used by the 
 
 ## Main entry points
 
-- `EncoderConfVM` creates `ImgABPvVM` and exposes it as `PreviewVM`.
-- `PreviewCommand` in `ImgABPvVM` starts or cancels preview generation.
-- `ImgABPvViewer` listens for `SourceImage` and `EncodedImage` changes and refits the view.
+- `EncoderConfVM` creates `ImgPreviewerVM` and exposes it as `PreviewVM`.
+- `PreviewCommand` in `ImgPreviewerVM` starts or cancels preview generation.
+- `ImgPreviewer` listens for `SourceImage` and `EncodedImage` changes and refits the view.
 
 ## State setup
 
-When `ImgABPvVM` is constructed, it:
+When `ImgPreviewerVM` is constructed, it:
 
 1. stores references to `EncoderConfVM`, the modal navigator, the ffmpeg path, and the source video path,
 2. creates a unique working directory under the system temp folder,
@@ -191,7 +191,7 @@ Examples:
 
 ## Viewer behavior
 
-`ImgABPvViewer` reacts to image updates by refitting the viewport after `SourceImage` or `EncodedImage` changes.
+`ImgPreviewer` reacts to image updates by refitting the viewport after `SourceImage` or `EncodedImage` changes.
 
 It also supports:
 

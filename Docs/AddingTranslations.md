@@ -69,7 +69,7 @@ Add `["pt-br"]` dictionary entries to **ALL 22 provider files**:
 | `FFProbeVideoAnalysisLangProvider.cs` | 5 | Video analysis |
 | `FilenameScribeModalLangProvider.cs` | 22 | Filename generation |
 | `FilterScribeModalLangProvider.cs` | 68 | Filter configuration |
-| `ImgABPvLangProvider.cs` | 38 | Image comparison |
+| `ImgPreviewerLangProvider.cs` | 38 | Image comparison |
 | `ParallelismConfLangProvider.cs` | 23 | Parallel processing |
 | `QueueEditorLangProvider.cs` | 1 | Queue editing |
 | `QueueSidebarLangProvider.cs` | 5 | Queue sidebar |

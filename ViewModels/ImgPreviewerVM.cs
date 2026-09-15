@@ -5,10 +5,10 @@ using System.IO;
 
 namespace OneColumnEncoder.ViewModels;
 
-public class ImgABPvVM : BaseVM
+public class ImgPreviewerVM : BaseVM
 {
     private readonly EncoderConfVM _encoderConfVM;
-    private readonly Stores.ModalNavS _modalNavS;
+    private readonly ModalNavS _modalNavS;
     private readonly string? _ffmpegPath;
     private readonly string? _sourceVideoPath;
     private readonly PreviewSourceInfo[] _previewSources;
@@ -26,8 +26,8 @@ public class ImgABPvVM : BaseVM
     private string? _lastFFmpegStderr;
     private bool _isFitMode = true;
     private PreviewDisplayMode _displayMode = PreviewDisplayMode.Raw;
-    private ImgABPvLangProvider _lang = new(UILangProvider.Current.LanguageCode);
-    public ImgABPvLangProvider Lang
+    private ImgPreviewerLangProvider _lang = new(UILangProvider.Current.LanguageCode);
+    public ImgPreviewerLangProvider Lang
     {
         get => _lang;
         private set => SetProperty(ref _lang, value);
@@ -131,7 +131,7 @@ public class ImgABPvVM : BaseVM
         private set => SetProperty(ref _butteraugliStatusText, value);
     }
 
-    public ImgABPvVM(
+    public ImgPreviewerVM(
         EncoderConfVM encoderConfVM,
         Stores.ModalNavS modalNavS,
         string? ffmpegPath,
@@ -328,7 +328,7 @@ public class ImgABPvVM : BaseVM
             if (!string.IsNullOrWhiteSpace(_lastFFmpegStderr))
             {
                 _modalNavS.Close();
-                new Commands.OpenClose.Confirmations.OpenErrModalCmd(
+                new OpenErrModalCmd(
                     _modalNavS,
                     Lang.EncoderLabel,
                     _lastFFmpegStderr).Execute(null);
@@ -518,7 +518,7 @@ public class ImgABPvVM : BaseVM
 
     private void OnLanguageChanged()
     {
-        Lang = new ImgABPvLangProvider(UILangProvider.Current.LanguageCode);
+        Lang = new ImgPreviewerLangProvider(UILangProvider.Current.LanguageCode);
         ZoomPresetButtons.B3_1Text = Lang["Fit"]; // Use LangProviderBase extension
         DisplayModeButtons.B5_1Text = Lang.RawButtonText;
         if (!IsBusy)

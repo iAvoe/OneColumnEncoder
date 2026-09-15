@@ -3,7 +3,7 @@ namespace OneColumnEncoder.Models.Lang;
 /// <summary>
 /// Localized strings for the image A/B preview.
 /// </summary>
-public class ImgABPvLangProvider : LangProviderBase
+public class ImgPreviewerLangProvider : LangProviderBase
 {
     private static readonly Dictionary<string, Dictionary<string, string>> Data = new()
     {
@@ -105,7 +105,7 @@ public class ImgABPvLangProvider : LangProviderBase
         },
     };
 
-    static ImgABPvLangProvider()
+    static ImgPreviewerLangProvider()
     {
         Data["fr"] = new(Data["en"])
         {
@@ -366,7 +366,7 @@ public class ImgABPvLangProvider : LangProviderBase
     public string ButteraugliToolPresent { get; }
     public string ButteraugliScoreHint { get; }
 
-    public ImgABPvLangProvider(string languageCode) : base(languageCode, Data)
+    public ImgPreviewerLangProvider(string languageCode) : base(languageCode, Data)
     {
         StatusNoFfmpeg = "!ffmpeg.exe";
         EncoderLabel = this["EncoderLabel"];

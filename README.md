@@ -48,6 +48,6 @@ OneColumnEncoder 提供了相对硬核，同时简洁直观的 UI/UX 流程，�
 - Checklist editing: [EditingChecklist.md](./Docs/EditingChecklist.md)
 - Routing of encoding mode: [EncodingModeImplementation.md](./Docs/EncodingModeImplementation.md)
 - The encoding monitor: [EncodingModeImplementation.md](./Docs/EncodingModeImplementation.md)
-- Image A/B preview design: [ImgABPvVMPreviewGeneration.md](./Docs/ImgABPvVMPreviewGeneration.md)
+- Image A/B preview design: [ImgPreviewVM-PreviewGeneration.md](./Docs/ImgPreviewVM-PreviewGeneration.md)
 - IntegerSlider usage: [IntegerSliderUsage.md](./Docs/IntegerSliderUsage.md)
 - ItemCard element: [ItemCardManagement.md](./Docs/ItemCardManagement.md)
