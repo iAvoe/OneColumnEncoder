@@ -32,10 +32,13 @@ A next-gen smart video encoding utility based on .NET 9/WPF, focused on tool/enc
   - Rotate
   - Flip
   - Crop
+  - Blur
+  - Sharpen
 - Additional OpenCL filters for VapourSynth:
   - Denoise
   - Gaussian Blur
-- VapourSynth A/B comparison previewer
+- AviSynth A-B previewer
+- VapourSynth A/B previewer
 
 **Managed Automation**
 - Auto-generate video & audio encoding commandlines

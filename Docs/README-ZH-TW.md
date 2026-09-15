@@ -31,10 +31,13 @@
   - 旋轉
   - 翻轉
   - 裁切
+  - 模糊
+  - 銳化
 - 為 VapourSynth 提供額外的 OpenCL 濾鏡：
   - 降噪
   - 高斯模糊
-- 提供單圖 VapourSynth A/B 對比預覽器
+- 提供單圖 AviSynth A-B 預覽器
+- 提供單圖 VapourSynth A-B 預覽器
 
 **可控自動化**
 - 自動生成影片壓製參數，並生成音訊壓製命令
