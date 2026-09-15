@@ -9,7 +9,7 @@ public class PreviewSourceItem(string fullPath)
     public string Title => VideoFilename;
 }
 
-public class VpyPreviewVM : BaseVM
+public class VpyPreviewerVM : BaseVM
 {
     private enum PreviewTextState
     {
@@ -31,8 +31,8 @@ public class VpyPreviewVM : BaseVM
     private readonly Func<string, string>? _buildPreviewScript;
     private static bool _suppressSwitch;
     private readonly string _scriptContent;
-    private VpyPreviewLangProvider _lang = new(UILangProvider.Current.LanguageCode);
-    public VpyPreviewLangProvider Lang
+    private VpyPreviewerLangProvider _lang = new(UILangProvider.Current.LanguageCode);
+    public VpyPreviewerLangProvider Lang
     {
         get => _lang;
         private set => SetProperty(ref _lang, value);
@@ -156,7 +156,7 @@ public class VpyPreviewVM : BaseVM
     public ActionCmd PreviewCommand { get; }
     public ActionCmd InspectFrameDataCommand { get; }
 
-    public VpyPreviewVM(
+    public VpyPreviewerVM(
         ModalNavS modalNavS,
         string vspipePath,
         string vspipeY4mArg,
@@ -497,7 +497,7 @@ public class VpyPreviewVM : BaseVM
         sb.AppendLine(Lang.DebugPreviewScript);
         sb.AppendLine(_scriptContent);
 
-        new OpenDebugModalCmd(_modalNavS, VpyPreviewLangProvider.DebugWindowTitle, sb.ToString()).Execute(null);
+        new OpenDebugModalCmd(_modalNavS, VpyPreviewerLangProvider.DebugWindowTitle, sb.ToString()).Execute(null);
     }
 
     private void TryKillCurrentProcess()
@@ -570,7 +570,7 @@ public class VpyPreviewVM : BaseVM
 
     private void OnLanguageChanged()
     {
-        Lang = new VpyPreviewLangProvider(UILangProvider.Current.LanguageCode);
+        Lang = new VpyPreviewerLangProvider(UILangProvider.Current.LanguageCode);
         UpdatePreviewButtonText();
         RunOnUi(() =>
         {

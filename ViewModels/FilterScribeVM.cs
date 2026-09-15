@@ -1874,7 +1874,7 @@ public class FilterScribeVM : BaseVM
         if (!CanOpenVpyPreview) return;
 
         var existingWindow = Application.Current.Windows
-            .OfType<VpyPreviewDialog>()
+            .OfType<VpyPreviewerDialog>()
             .FirstOrDefault();
 
         if (existingWindow != null)
@@ -1887,7 +1887,7 @@ public class FilterScribeVM : BaseVM
         {
             new OpenErrModalCmd(
                 _modalNavS,
-                VpyPreviewLangProvider.WindowTitle,
+                VpyPreviewerLangProvider.WindowTitle,
                 "!vspipe.exe").Execute(null);
             return;
         }
@@ -1896,7 +1896,7 @@ public class FilterScribeVM : BaseVM
         {
             new OpenErrModalCmd(
                 _modalNavS,
-                VpyPreviewLangProvider.WindowTitle,
+                VpyPreviewerLangProvider.WindowTitle,
                 "!vspipe Y4M args").Execute(null);
             return;
         }
@@ -1906,7 +1906,7 @@ public class FilterScribeVM : BaseVM
         {
             new OpenErrModalCmd(
                 _modalNavS,
-                VpyPreviewLangProvider.WindowTitle,
+                VpyPreviewerLangProvider.WindowTitle,
                 "!source").Execute(null);
             return;
         }
@@ -1921,7 +1921,7 @@ public class FilterScribeVM : BaseVM
         string[] previewsrcPaths = GetVpyPreviewsrcPaths();
         string buildScript(string path) => ScriptTemplate.BuildVpyPreviewScript(path, VpyUserInput, fpsnum, fpsden);
 
-        var previewVm = new VpyPreviewVM(
+        var previewVm = new VpyPreviewerVM(
             _modalNavS,
             _vspipePath,
             _vspipeY4mArg,
@@ -1934,7 +1934,7 @@ public class FilterScribeVM : BaseVM
         var ownerWindow = Application.Current.Windows
             .OfType<FilterScribeModal>()
             .FirstOrDefault(w => ReferenceEquals(w.DataContext, this));
-        VpyPreviewDialog window = new(previewVm, _modalNavS, ownerWindow);
+        VpyPreviewerDialog window = new(previewVm, _modalNavS, ownerWindow);
 
         if (ownerWindow != null)
             PositionVpyPreviewWindow(ownerWindow, window);

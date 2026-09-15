@@ -49,7 +49,7 @@
                 Width="1"
                 Background="{StaticResource GlobalTertiary}" />
 
-        <comps:EncoderPreviewPanel Grid.Column="2"
+        <comps:EncoderPreviewerPanel Grid.Column="2"
                                    DataContext="{Binding PreviewVM}" />
     </Grid>
 </ui:AdaptiveWindow>

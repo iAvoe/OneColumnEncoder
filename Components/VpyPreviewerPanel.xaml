@@ -1,4 +1,4 @@
-<UserControl x:Class="OneColumnEncoder.Components.VpyPreviewPanel"
+<UserControl x:Class="OneColumnEncoder.Components.VpyPreviewerPanel"
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
               xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
               xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,7 +6,7 @@
               xmlns:comps="clr-namespace:OneColumnEncoder.Components"
               xmlns:ui="clr-namespace:OneColumnEncoder.UI"
               xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
-              d:DataContext="{d:DesignInstance Type=vms:VpyPreviewVM}"
+              d:DataContext="{d:DesignInstance Type=vms:VpyPreviewerVM}"
               mc:Ignorable="d">
     <UserControl.Resources>
         <Style x:Key="PreviewFilenameText"

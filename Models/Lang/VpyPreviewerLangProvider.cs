@@ -3,7 +3,7 @@ namespace OneColumnEncoder.Models.Lang;
 /// <summary>
 /// Localized strings for the VapourSynth preview dialog.
 /// </summary>
-public class VpyPreviewLangProvider(string languageCode) : LangProviderBase(languageCode, Data)
+public class VpyPreviewerLangProvider(string languageCode) : LangProviderBase(languageCode, Data)
 {
     public static string WindowTitle => $"{LangProviderBase.VapourSynth} Preview";
     public static string DebugWindowTitle => $"{LangProviderBase.VapourSynth} Preview frame data";
@@ -72,7 +72,7 @@ public class VpyPreviewLangProvider(string languageCode) : LangProviderBase(lang
         },
     };
 
-    static VpyPreviewLangProvider()
+    static VpyPreviewerLangProvider()
     {
         Data["fr"] = new(Data["en"])
         {
@@ -216,7 +216,7 @@ public class VpyPreviewLangProvider(string languageCode) : LangProviderBase(lang
         };
     }
 
-    public static VpyPreviewLangProvider Current => new(UILangProvider.Current.LanguageCode);
+    public static VpyPreviewerLangProvider Current => new(UILangProvider.Current.LanguageCode);
 
     public string StatusReady => this["VpyPreview.Ready"];
     public string StatusExtractingSource => this["VpyPreview.ExtractingSource"];

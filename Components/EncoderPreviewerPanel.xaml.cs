@@ -1,8 +1,8 @@
 namespace OneColumnEncoder.Components;
 
-public partial class EncoderPreviewPanel : UserControl
+public partial class EncoderPreviewerPanel : UserControl
 {
-    public EncoderPreviewPanel()
+    public EncoderPreviewerPanel()
     {
         InitializeComponent();
     }
