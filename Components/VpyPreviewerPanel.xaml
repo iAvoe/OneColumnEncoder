@@ -1,13 +1,13 @@
 <UserControl x:Class="OneColumnEncoder.Components.VpyPreviewerPanel"
-              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-              xmlns:comps="clr-namespace:OneColumnEncoder.Components"
-              xmlns:ui="clr-namespace:OneColumnEncoder.UI"
-              xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
-              d:DataContext="{d:DesignInstance Type=vms:VpyPreviewerVM}"
-              mc:Ignorable="d">
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:comps="clr-namespace:OneColumnEncoder.Components"
+             xmlns:ui="clr-namespace:OneColumnEncoder.UI"
+             xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
+             d:DataContext="{d:DesignInstance Type=vms:VpyPreviewerVM}"
+             mc:Ignorable="d">
     <UserControl.Resources>
         <Style x:Key="PreviewFilenameText"
                TargetType="TextBlock">
@@ -41,20 +41,25 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <!-- Source dropdown: not needed -->
-            <comps:HintPanel Text="{Binding VspipeLogText}"
-                             HintBrush="{StaticResource GlobalSecondary}" />
-            <!--<ComboBox Grid.Column="0"
-                      ItemsSource="{Binding PreviewSources}"
-                      SelectedItem="{Binding SelectedPreviewSource, Mode=TwoWay}"
-                      DisplayMemberPath="Title"
-                      Style="{StaticResource RoundedDropdownMenu}"
-                      ToolTip="{Binding SelectedItem.FullPath, RelativeSource={RelativeSource Self}}"
-                      MinWidth="150"
-                      HorizontalAlignment="Left"
-                      VerticalAlignment="Center"
-                      Margin="2.5 0 10 0" />-->
-
+            <StackPanel Orientation="Horizontal">
+                <!-- Tool dropdown: use avs2yuv or avs2pipemod -->
+                <ComboBox Grid.Column="0"
+                          Visibility="{Binding IsAvsPreview, Converter={StaticResource BoolToVisibility}}"
+                          ItemsSource="{Binding AviSynthPreviewTools}"
+                          SelectedItem="{Binding SelectedPreviewTool, Mode=TwoWay}"
+                          DisplayMemberPath="Title"
+                          Style="{StaticResource RoundedDropdownMenu}"
+                          ToolTip="{Binding SelectedItem.FullPath, RelativeSource={RelativeSource Self}}"
+                          MinWidth="150"
+                          HorizontalAlignment="Left"
+                          VerticalAlignment="Center"
+                          Margin="2.5 0 10 0" />
+                
+                <comps:HintPanel Grid.Column="0"
+                                 Text="{Binding AvsVsLogText}"
+                                 HintBrush="{StaticResource GlobalSecondary}" />
+            </StackPanel>
+            
             <!-- Zoom toggles -->
             <StackPanel Grid.Column="1"
                         Orientation="Horizontal"
@@ -137,12 +142,12 @@
                     Width="100"
                     Style="{StaticResource PrimaryButton}"
                     Background="Black"
-                    Margin="5 0 2.5 0"/>
+                    Margin="5 0 2.5 0" />
         </Grid>
 
         <comps:ImgPreviewer Grid.Row="1"
-                             x:Name="PreviewViewer"
-                             Margin="0 10 0 10" />
+                            x:Name="PreviewViewer"
+                            Margin="0 10 0 10" />
 
         <Grid Grid.Row="2"
               Margin="0 0 0 5">

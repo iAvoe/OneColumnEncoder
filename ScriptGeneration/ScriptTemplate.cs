@@ -129,4 +129,12 @@ public static class ScriptTemplate
 
         return $"{header}{content}";
     }
+
+    public static string BuildAvsPreviewScript(string srcPath, string userInput, int fpsnum = 0, int fpsden = 0)
+    {
+        string source = BuildAvsSourceLine(srcPath, fpsnum, fpsden);
+        return string.IsNullOrWhiteSpace(userInput)
+            ? $"{source}\r\n# (no user filters)"
+            : $"{source}\r\n{userInput.Trim()}";
+    }
 }

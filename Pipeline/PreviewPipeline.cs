@@ -243,6 +243,23 @@ public static partial class PreviewPipeline
         return [.. args];
     }
 
+    public static string[] BuildAvs2yuvY4mArgs(string scriptPath, int frame) =>
+    [
+        scriptPath,
+        "-seek",
+        Math.Max(0, frame).ToString(CultureInfo.InvariantCulture),
+        "-frames",
+        "1",
+        "-"
+    ];
+
+    public static string[] BuildAvs2pipemodY4mArgs(string scriptPath, int frame) =>
+    [
+        scriptPath,
+        $"-trim={Math.Max(0, frame)},{Math.Max(0, frame)}",
+        "-y4mp"
+    ];
+
     public static string? BuildDisplayFilter(PreviewDisplayMode displayMode, ColorSpaceAnalysisM colorSpaceAnalysis)
     {
         ColorSpaceStrategy? strategy = displayMode switch

@@ -48,12 +48,16 @@
                      x:Key="BorderRed" />
     <SolidColorBrush Color="#67AB9F"
                      x:Key="BorderGreen" />
+    <SolidColorBrush Color="#679FAB"
+                     x:Key="BorderAzure" />
     <SolidColorBrush Color="#FAFAFA"
                      x:Key="Background" />
     <SolidColorBrush Color="#FEF7F7"
                      x:Key="BackgroundRed" />
     <SolidColorBrush Color="#F1FBF9"
                      x:Key="BackgroundGreen" />
+    <SolidColorBrush Color="#F1F9FB"
+                     x:Key="BackgroundAzure" />
     <SolidColorBrush Color="#009587"
                      x:Key="CorrectTeal" />
     <SolidColorBrush Color="#F68819"
@@ -80,6 +84,8 @@
                       x:Key="ButtonTertiary" />
     <SolidColorBrush Color="#2FA34F"
                       x:Key="ProgressGreen" />
+    <SolidColorBrush Color="#2F4FA3"
+                      x:Key="ProgressAzure" />
     <SolidColorBrush Color="#F1F5F9"
                       x:Key="ScriptAccentAvsBackground" />
     <SolidColorBrush Color="#0F52BA"
@@ -115,6 +121,8 @@
                      x:Key="RemixedDisabledForeground" />
     <SolidColorBrush Color="#2A3A3A"
                      x:Key="RemixedBackgroundGreen" />
+    <SolidColorBrush Color="#3A3A2A"
+                     x:Key="RemixedBackgroundDarkYellow" />
     <SolidColorBrush Color="#3A2A2A"
                      x:Key="RemixedBackgroundRed" />
     <!-- Remixed card palette (light gray green background, left analogous) -->

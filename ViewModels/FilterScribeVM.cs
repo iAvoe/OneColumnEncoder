@@ -35,6 +35,8 @@ public class FilterScribeVM : BaseVM
     private readonly string? _vspipePath;
     private readonly string? _vspipeY4mArg;
     private readonly Func<long>? _getTotalFrames;
+    private readonly Func<string?>? _getAvs2yuvPath;
+    private readonly Func<string?>? _getAvs2pipemodPath;
     private const int DisplayConcatPathMaxLength = 90;
     private ColorSpaceAnalysisM _colorSpaceAnalysis = ColorSpaceConverter.Analyze(null);
     private int _sourceBitDepth;
@@ -61,6 +63,7 @@ public class FilterScribeVM : BaseVM
                 OnPropertyChanged(nameof(IsVpyTabSelected));
                 OnPropertyChanged(nameof(IsFFmpegTabSelected));
                 OnPropertyChanged(nameof(IsDenoiseSectionVisible));
+                OnPropertyChanged(nameof(IsBlurSharpenSectionVisible));
             }
         }
     }
@@ -68,6 +71,7 @@ public class FilterScribeVM : BaseVM
     public bool IsVpyTabSelected => _selectedTabIndex == 1;
     public bool IsFFmpegTabSelected => _selectedTabIndex == 2;
     public bool IsDenoiseSectionVisible => IsFFmpegTabSelected || IsAvsTabSelected;
+    public bool IsBlurSharpenSectionVisible => IsAvsTabSelected || IsVpyTabSelected;
 
     // Avs/VpyPrefix becomes instance property to support dynamic fpsnum/fpsden
     // Avs/VpyPrefix2 is a guidance comment to keep
@@ -670,11 +674,11 @@ public class FilterScribeVM : BaseVM
                 _ => 0
             };
 
-            string pluginsDirectory = BundledToolPathResolver.ResolveFolder("x64-AVS-VS-plugins");
-            string vszipclDllPath = Path.Combine(pluginsDirectory, "vszipcl.dll");
-            string fmtconvDllPath = Path.Combine(pluginsDirectory, "fmtconv.dll");
+            string pluginsDir = BundledToolPathResolver.ResolveFolder("x64-AVS-VS-plugins");
+            string vszipclDllPath = Path.Combine(pluginsDir, "vszipcl.dll");
+            string fmtconvDllPath = Path.Combine(pluginsDir, "fmtconv.dll");
 
-            string loadPlugins = $"core.std.LoadPlugin(r\"{vszipclDllPath}\")";
+            string loadVszipcl = $"core.std.LoadPlugin(r\"{vszipclDllPath}\")";
             string vszipclCalls =
                 "src = core.vszipcl.Deband(src, dither_algo=0, device_id=0, num_streams=2)\r\n" +
                 "src = core.vszipcl.NLMeans(src, d=1, a=2, s=4, h=1.2, wmode=0, wref=1.0, device_id=0, num_streams=2)\r\n" +
@@ -686,16 +690,46 @@ public class FilterScribeVM : BaseVM
             string convOut = targetBpp == 0
                 ? ""
                 : $"src = core.fmtc.bitdepth(src, bits={_sourceBitDepth})\r\n";
+            
 
-            return $"{loadPlugins}\r\n{convIn}{vszipclCalls}\r\n{convOut}".TrimEnd();
+            return $"{loadVszipcl}\r\n{convIn}{vszipclCalls}\r\n{convOut}".TrimEnd();
         }
     }
 
-    public static string VapourSynthVszipclTitle => FilterScribeModalLangProvider.Current["SrcScribe.VszipclTitle"];
-    public static string VapourSynthVszipclPreviewHint => FilterScribeModalLangProvider.Current["SrcScribe.VszipclPreviewHint"];
-    public static string VapourSynthVszipclDeviceHint => FilterScribeModalLangProvider.Current["SrcScribe.VszipclDeviceHint"];
-    public bool VapourSynthVszipclHasFmtconv => _sourceBitDepth != 8 && _sourceBitDepth != 16 && _sourceBitDepth != 32;
-    public string VapourSynthVszipclFmtconvHint => string.Format(FilterScribeModalLangProvider.Current["SrcScribe.VszipclFmtconvHint"], _sourceBitDepth);
+    public static string VapourSynthVszipclTitle =>
+        FilterScribeModalLangProvider.Current["SrcScribe.VszipclTitle"];
+    public static string VapourSynthVszipclPreviewHint =>
+        FilterScribeModalLangProvider.Current["SrcScribe.VszipclPreviewHint"];
+    public static string VapourSynthVszipclDeviceHint =>
+        FilterScribeModalLangProvider.Current["SrcScribe.VszipclDeviceHint"];
+    public bool VapourSynthVszipclHasFmtconv =>
+        _sourceBitDepth != 8 && _sourceBitDepth != 16 && _sourceBitDepth != 32;
+    public string VapourSynthVszipclFmtconvHint =>
+        string.Format(FilterScribeModalLangProvider.Current["SrcScribe.VszipclFmtconvHint"], _sourceBitDepth);
+
+    public static string BlurSharpenTitle =>
+        FilterScribeModalLangProvider.Current["SrcScribe.BlurSharpenTitle"];
+    public static string AviSynthBlurFilter => "Blur(1.0, 1.0)";
+    public static string VapourSynthBlurFilter => "src = core.std.BoxBlur(src, hradius=1, vradius=1, hpasses=1, vpasses=1)";
+    public static string AviSynthAsharpFilter => "ASharp(T=2.0, D=4.0, B=2.0, hqbf=true)";
+    public static string VapourSynthASharpFilter
+    {
+        get
+        {
+            string pluginsDir = Environment.Is64BitProcess
+                ? BundledToolPathResolver.ResolveFolder("x64-AVS-VS-plugins")
+                : BundledToolPathResolver.ResolveFolder("x86-AVS-VS-plugins");
+            string asharpPath = Path.Combine(pluginsDir, "libasharp.dll");
+
+            return $"core.std.LoadPlugin(r\"{asharpPath}\")\r\n" +
+                   "src = core.asharp.ASharp(src, T=2.0, D=4.0, B=2.0, hqbf=true)";
+        }
+    }
+    public static string AviSynthBlurSharpenFilter =>
+        $"{AviSynthBlurFilter}\r\n{AviSynthAsharpFilter}";
+    public static string VapourSynthBlurSharpenFilter =>
+        $"{VapourSynthBlurFilter}\r\n{VapourSynthASharpFilter}";
+
     public static string FFmpegSubtitleFilter =>
         "-filter_complex \"ass='X\\:/path/to/subtitle.ass':fontsdir='Y\\:/dir/of/fonts'\"";
 
@@ -1284,6 +1318,7 @@ public class FilterScribeVM : BaseVM
 
     public ButtonGroupVM FinishScribeButtons { get; private set; } = null!;
     public ActionCmd OpenVpyPreviewCommand { get; }
+    public ActionCmd OpenAvsPreviewCommand { get; }
     public ActionCmd InsertAvsFilterCommand { get; }
     public ActionCmd InsertVpyFilterCommand { get; }
     public ActionCmd InsertFFmpegFilterCommand { get; }
@@ -1292,6 +1327,7 @@ public class FilterScribeVM : BaseVM
     public ActionCmd InsertVpyCropFilterCommand { get; }
     public ActionCmd InsertFFmpegCropFilterCommand { get; }
     public bool CanOpenVpyPreview => GetVpyPreviewsrcPaths().Length > 0;
+    public bool CanOpenAvsPreview => GetAvsPreviewToolPath() != null && GetVpyPreviewsrcPaths().Length > 0;
 
     public FilterScribeVM(
         ModalNavS modalNavS,
@@ -1315,7 +1351,9 @@ public class FilterScribeVM : BaseVM
         Action<string?, string?>? applyScriptFilters = null,
         string? vspipePath = null,
         string? vspipeY4mArg = null,
-        Func<long>? getTotalFrames = null)
+        Func<long>? getTotalFrames = null,
+        Func<string?>? getAvs2yuvPath = null,
+        Func<string?>? getAvs2pipemodPath = null)
     {
         _modalNavS = modalNavS;
         _closeAction = closeAction;
@@ -1339,6 +1377,8 @@ public class FilterScribeVM : BaseVM
         _vspipePath = vspipePath;
         _vspipeY4mArg = vspipeY4mArg;
         _getTotalFrames = getTotalFrames;
+        _getAvs2yuvPath = getAvs2yuvPath;
+        _getAvs2pipemodPath = getAvs2pipemodPath;
         _baseAvsPrefix = FilterScribeModalLangProvider.Current["SrcScribe.AvsPrefix"];
         _baseVpyPrefix = FilterScribeModalLangProvider.Current["SrcScribe.VpyPrefix"];
         _hasSourceAnalysis = !string.IsNullOrWhiteSpace(sourceFfprobeJson);
@@ -1349,6 +1389,7 @@ public class FilterScribeVM : BaseVM
         _cropRefreshTimer.Tick += (_, _) => FlushPendingCropRefresh();
         BuildColorSpaceSettingsListing();
         OpenVpyPreviewCommand = new ActionCmd(_ => OpenVpyPreview(), _ => CanOpenVpyPreview);
+        OpenAvsPreviewCommand = new ActionCmd(_ => OpenAvsPreview(), _ => CanOpenAvsPreview);
         InsertAvsFilterCommand = new ActionCmd(filter => AppendScriptFilter(ref _avsUserInput, filter as string, nameof(AvsUserInput)));
         InsertVpyFilterCommand = new ActionCmd(filter => AppendScriptFilter(ref _vpyUserInput, filter as string, nameof(VpyUserInput)));
         InsertFFmpegFilterCommand = new ActionCmd(filter => AppendFFmpegFilter(filter as string));
@@ -1868,6 +1909,88 @@ public class FilterScribeVM : BaseVM
             string.Format(FilterScribeModalLangProvider.Current["SrcScribe.FailedToSave"], ex.Message)).Execute(null);
     }
 
+    #region AviSynth Preview
+    private void OpenAvsPreview()
+    {
+        string? toolPath = GetAvsPreviewToolPath();
+        if (!CanOpenAvsPreview || toolPath == null) return;
+
+        var existingWindow = Application.Current.Windows
+            .OfType<AvsPreviewerDialog>()
+            .FirstOrDefault();
+        if (existingWindow != null)
+        {
+            existingWindow.Activate();
+            return;
+        }
+
+        string srcPath = GetVpyPreviewsrcPath();
+        int fpsnum = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateNum : 0;
+        int fpsden = _isFrameRateVariable && _avsEnableFpsParams ? _frameRateDen : 0;
+        string script = ScriptTemplate.BuildAvsPreviewScript(srcPath, AvsUserInput, fpsnum, fpsden);
+        long total = _getTotalFrames?.Invoke() ?? 0;
+        int frameCount = (int)Math.Min(total > 0 ? total : 1, int.MaxValue);
+        string[] previewSourcePaths = GetVpyPreviewsrcPaths();
+        string[] previewToolPaths = GetAvsPreviewToolPaths(toolPath);
+        string buildScript(string path) => ScriptTemplate.BuildAvsPreviewScript(path, AvsUserInput, fpsnum, fpsden);
+        string buildSourceScript(string path) => ScriptTemplate.BuildAvsSourceLine(path, fpsnum, fpsden);
+
+        AvsPreviewerVM previewVm = new(
+            _modalNavS,
+            toolPath,
+            script,
+            srcPath,
+            frameCount,
+            buildScript,
+            previewSourcePaths,
+            buildSourceScript,
+            previewToolPaths);
+
+        Window? ownerWindow = Application.Current.Windows
+            .OfType<FilterScribeModal>()
+            .FirstOrDefault(w => ReferenceEquals(w.DataContext, this));
+        AvsPreviewerDialog window = new(previewVm, _modalNavS, ownerWindow);
+        if (ownerWindow != null)
+            PositionVpyPreviewWindow(ownerWindow, window);
+        window.Show();
+    }
+
+    private string? GetAvsPreviewToolPath()
+    {
+        string? selected = _getSelectedUpstreamExeName();
+        string? selectedPath = selected?.Equals("avs2pipemod.exe", StringComparison.OrdinalIgnoreCase) == true
+            ? _getAvs2pipemodPath?.Invoke()
+            : selected?.Equals("avs2yuv.exe", StringComparison.OrdinalIgnoreCase) == true
+                ? _getAvs2yuvPath?.Invoke()
+                : null;
+        if (!string.IsNullOrWhiteSpace(selectedPath) && File.Exists(selectedPath)) return selectedPath;
+
+        string? avs2yuvPath = _getAvs2yuvPath?.Invoke();
+        if (!string.IsNullOrWhiteSpace(avs2yuvPath) && File.Exists(avs2yuvPath)) return avs2yuvPath;
+        string? avs2pipemodPath = _getAvs2pipemodPath?.Invoke();
+        return !string.IsNullOrWhiteSpace(avs2pipemodPath) && File.Exists(avs2pipemodPath)
+            ? avs2pipemodPath
+            : null;
+    }
+
+    private string[] GetAvsPreviewToolPaths(string? preferredPath = null)
+    {
+        List<string> paths = [];
+        AddToolPath(preferredPath);
+        AddToolPath(_getAvs2yuvPath?.Invoke());
+        AddToolPath(_getAvs2pipemodPath?.Invoke());
+        return [.. paths];
+
+        void AddToolPath(string? path)
+        {
+            if (string.IsNullOrWhiteSpace(path) || !File.Exists(path)) return;
+            if (paths.Any(existing => existing.Equals(path, StringComparison.OrdinalIgnoreCase))) return;
+            paths.Add(path);
+        }
+    }
+
+    #endregion
+
     #region VapourSynth Preview
     private void OpenVpyPreview()
     {
@@ -2044,6 +2167,9 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(ScaleHint));
         OnPropertyChanged(nameof(SubtitleBurnTitle));
         OnPropertyChanged(nameof(MultiFilterAssemblyTitle));
+        OnPropertyChanged(nameof(BlurSharpenTitle));
+        OnPropertyChanged(nameof(AviSynthBlurSharpenFilter));
+        OnPropertyChanged(nameof(VapourSynthBlurSharpenFilter));
         OnPropertyChanged(nameof(LowToHighColorFilterLabel));
         OnPropertyChanged(nameof(HighToLowColorFilterLabel));
         OnPropertyChanged(nameof(HdrToSdrColorFilterLabel));
@@ -2058,6 +2184,8 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(IsConcatMode));
         OnPropertyChanged(nameof(CanOpenVpyPreview));
         OpenVpyPreviewCommand.OnCanExecuteChanged();
+        OnPropertyChanged(nameof(CanOpenAvsPreview));
+        OpenAvsPreviewCommand.OnCanExecuteChanged();
 
         BuildButtonGroups();
         OnPropertyChanged(nameof(FinishScribeButtons));

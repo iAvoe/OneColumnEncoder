@@ -9,6 +9,12 @@ public class PreviewSourceItem(string fullPath)
     public string Title => VideoFilename;
 }
 
+public class AviSynthPreviewToolItem(string fullPath)
+{
+    public string FullPath { get; } = fullPath;
+    public string Title { get; } = Path.GetFileName(fullPath);
+}
+
 public class VpyPreviewerVM : BaseVM, IPreviewViewModel
 {
     private enum PreviewTextState
@@ -49,6 +55,9 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
     }
 
     public ObservableCollection<PreviewSourceItem> PreviewSources { get; } = [];
+    public static bool IsAvsPreview => false;
+    public ObservableCollection<AviSynthPreviewToolItem> AviSynthPreviewTools { get; } = [];
+    public AviSynthPreviewToolItem? SelectedPreviewTool { get; set; }
 
     private PreviewSourceItem? _selectedPreviewSource;
     public PreviewSourceItem? SelectedPreviewSource
@@ -118,7 +127,7 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
     }
 
     private string _vspipeLogText = "";
-    public string VspipeLogText
+    public string AvsVsLogText
     {
         get => _vspipeLogText;
         private set => SetProperty(ref _vspipeLogText, value);
@@ -353,7 +362,7 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
         }
 
         _vspipeLogIsReadyState = false;
-        RunOnUi(() => VspipeLogText = string.Empty);
+        RunOnUi(() => AvsVsLogText = string.Empty);
     }
 
     private void AppendVspipeLogLine(string? line, bool overwritePreviousLine = false)
@@ -399,7 +408,7 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
             _vspipeLogFlushPending = false;
         }
 
-        VspipeLogText = snapshot;
+        AvsVsLogText = snapshot;
     }
 
     // VapourSynth (vspipe) is English only, so no LangProvider check needed here
@@ -595,7 +604,7 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
     {
         SetStatus(PreviewTextState.Ready);
         _vspipeLogIsReadyState = true;
-        RunOnUi(() => VspipeLogText = Lang.StatusReady);
+        RunOnUi(() => AvsVsLogText = Lang.StatusReady);
         UpdatePreviewButtonText();
     }
 
@@ -643,7 +652,7 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
         {
             StatusText = BuildStatusText();
             if (_vspipeLogIsReadyState)
-                VspipeLogText = Lang.StatusReady;
+                AvsVsLogText = Lang.StatusReady;
         });
     }
 }

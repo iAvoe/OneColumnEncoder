@@ -275,6 +275,27 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+            <Style x:Key="AzureButton"
+                   TargetType="Button"
+                   BasedOn="{StaticResource BaseButton}">
+                <Setter Property="Background"
+                        Value="{StaticResource BackgroundAzure}" />
+                <Setter Property="Foreground"
+                        Value="{StaticResource BorderAzure}" />
+                <Setter Property="BorderBrush"
+                        Value="{StaticResource BorderAzure}" />
+                <Setter Property="BorderThickness"
+                        Value="1.5" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver"
+                             Value="True">
+                        <Setter Property="Background"
+                                Value="{StaticResource BorderAzure}" />
+                        <Setter Property="Foreground"
+                                Value="{StaticResource BackgroundAzure}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
             
             <!-- Dropdown Menu Combobox, not items in dropdown -->
             <Style x:Key="DropdownToggleButton"

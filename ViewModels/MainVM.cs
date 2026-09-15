@@ -568,10 +568,12 @@ public class MainVM : BaseVM
                  _repartVpyFilterInput = vpy ?? string.Empty;
              },
              _appDataM.Tools.VspipePath,
-            _appDataM.Tools.VspipeY4mArg,
-            () => EncodingPipeline.GetSourceTotalFrames(
-                _srcVideoAnalysis.RawJson,
-                _srcVideoAnalysis.ConcatTotalFrames) ?? 0);
+             _appDataM.Tools.VspipeY4mArg,
+             () => EncodingPipeline.GetSourceTotalFrames(
+                 _srcVideoAnalysis.RawJson,
+                 _srcVideoAnalysis.ConcatTotalFrames) ?? 0,
+             () => _appDataM.Tools.Avs2yuvPath,
+             () => _appDataM.Tools.Avs2pipemodPath);
         OpenMuxTracks = new OpenMuxTracksCmd(
             modalNavS,
             GetCurrentMuxSourcePaths,

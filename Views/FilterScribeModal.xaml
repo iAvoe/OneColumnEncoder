@@ -11,7 +11,7 @@
                    mc:Ignorable="d"
                    Title="{Binding WindowTitle}"
                    Width="760"
-                   MinHeight="860"
+                   MinHeight="1180"
                    SizeToContent="Height"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
@@ -36,12 +36,18 @@
         </Style>
     </ui:AdaptiveWindow.Resources>
     <Grid Margin="15 12.5 15 15">
+        <!--
+        Top description
+        TabControl filter text editor
+        ScrollViewer filter generator
+        Bottom Buttons
+        Bottom HintPanel
+        -->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*"
-                           MaxHeight="270" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+                           MaxHeight="300" />
+            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
@@ -116,15 +122,47 @@
                              AcceptsReturn="True"
                              Margin="0 2.5 0 0"
                              FontWeight="Normal" />
-                    <CheckBox Grid.Row="4"
-                              Content="{Binding AvsEnableFpsParamsLabel}"
-                              IsChecked="{Binding AvsEnableFpsParams}"
-                              IsEnabled="{Binding IsFrameRateApplicable}"
-                              Margin="0 2.5 0 0"
-                              FontWeight="DemiBold"
-                              Foreground="{StaticResource GlobalSecondary}" />
-                </Grid>
-            </TabItem>
+                     <CheckBox Grid.Row="4"
+                               Content="{Binding AvsEnableFpsParamsLabel}"
+                               IsChecked="{Binding AvsEnableFpsParams}"
+                               IsEnabled="{Binding IsFrameRateApplicable}"
+                               Margin="0 2.5 0 0"
+                               FontWeight="DemiBold"
+                               Foreground="{StaticResource GlobalSecondary}" />
+                     <!-- A/B Preview button -->
+                     <Button Grid.Row="2"
+                             Command="{Binding OpenAvsPreviewCommand}"
+                             IsEnabled="{Binding CanOpenAvsPreview}"
+                             Height="30"
+                             Width="120"
+                             HorizontalAlignment="Right"
+                             VerticalAlignment="Bottom"
+                             Margin="0 2.5 0 0"
+                             Panel.ZIndex="1"
+                             Style="{StaticResource AzureButton}"
+                             BorderThickness="0">
+                         <StackPanel Orientation="Horizontal"
+                                     VerticalAlignment="Center"
+                                     HorizontalAlignment="Center">
+                             <Rectangle Width="14"
+                                        Height="14"
+                                        VerticalAlignment="Center"
+                                        Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                 <Rectangle.OpacityMask>
+                                     <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GamePlay}"
+                                                 Stretch="Uniform"
+                                                 AlignmentX="Center"
+                                                 AlignmentY="Center" />
+                                 </Rectangle.OpacityMask>
+                             </Rectangle>
+                             <TextBlock Text="A/B Preview"
+                                        VerticalAlignment="Center"
+                                        FontWeight="Normal"
+                                        Margin="5 0 -5 0" />
+                         </StackPanel>
+                     </Button>
+                 </Grid>
+             </TabItem>
 
             <TabItem Header="{Binding TabVpy}"
                      Padding="15 7.5"
@@ -188,8 +226,7 @@
                               Margin="0 2.5 0 0"
                               FontWeight="DemiBold"
                               Foreground="{StaticResource GlobalSecondary}" />
-                    <!-- A/B Preview button -->
-                    <Button Grid.Row="2"
+                     <Button Grid.Row="2"
                             Command="{Binding OpenVpyPreviewCommand}"
                             IsEnabled="{Binding CanOpenVpyPreview}"
                             Height="30"
@@ -275,9 +312,7 @@
         </TabControl>
 
         <!-- Filter generator section -->
-        <ScrollViewer Grid.Row="3"
-                      Margin="0"
-                      MaxHeight="390"
+        <ScrollViewer Grid.Row="2"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled"
                       CanContentScroll="False">
@@ -601,7 +636,7 @@
                                 Style="{StaticResource AppendLinkButton}" />
                     </Grid>
                     <TextBox Padding="0 2.5"
-                             Text="FlipHorizontal(src)&#x0a;FlipVertial(src)"
+                              Text="FlipHorizontal(src)&#x0a;FlipVertical(src)"
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
@@ -1055,7 +1090,64 @@
                                      Text="{Binding ScaleHint}"
                                      FontWeight="Normal" />
                 </StackPanel>
-
+                
+                <StackPanel Visibility="{Binding IsBlurSharpenSectionVisible, Converter={StaticResource BoolToVisibility}}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding BlurSharpenTitle}"
+                                   Style="{StaticResource H3}"
+                                   Margin="0 15 0 0" />
+                        <Button Grid.Column="1"
+                                Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertAvsFilterCommand}"
+                                CommandParameter="{Binding AviSynthBlurFilter}"
+                                ToolTip="Blur"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <Button Grid.Column="2"
+                                Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertAvsFilterCommand}"
+                                CommandParameter="{Binding AviSynthAsharpFilter}"
+                                ToolTip="ASharp"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <Button Grid.Column="1"
+                                Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertVpyFilterCommand}"
+                                CommandParameter="{Binding VapourSynthBlurFilter}"
+                                ToolTip="BoxBlur"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <Button Grid.Column="2"
+                                Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertVpyFilterCommand}"
+                                CommandParameter="{Binding VapourSynthASharpFilter}"
+                                ToolTip="ASharp"
+                                Style="{StaticResource AppendLinkButton}" />
+                    </Grid>
+                    <TextBox Text="{Binding AviSynthBlurSharpenFilter, Mode=OneWay}"
+                             Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                             Margin="0 2.5 0 0"
+                             Padding="0 2.5"
+                             IsReadOnly="True"
+                             BorderThickness="0"
+                             FontFamily="{DynamicResource CodeFont}"
+                             Background="{StaticResource Background}"
+                             Foreground="{StaticResource ButtonTertiary}"
+                             VerticalAlignment="Center" />
+                    <TextBox Text="{Binding VapourSynthBlurSharpenFilter, Mode=OneWay}"
+                             Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                             Margin="0 2.5 0 0"
+                             Padding="0 2.5"
+                             IsReadOnly="True"
+                             BorderThickness="0"
+                             FontFamily="{DynamicResource CodeFont}"
+                             Background="{StaticResource Background}"
+                             Foreground="{StaticResource ButtonTertiary}"
+                             VerticalAlignment="Center" />
+                    
+                </StackPanel>
                 <StackPanel>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -1171,7 +1263,7 @@
             </StackPanel>
         </ScrollViewer>
 
-        <comps:ThreeButtonGroup Grid.Row="4"
+        <comps:ThreeButtonGroup Grid.Row="3"
                                 Margin="0 15 0 0"
                                 ButtonHeight="30"
                                 DataContext="{Binding FinishScribeButtons}"
@@ -1182,7 +1274,7 @@
                                 Button2IsEnabled="{Binding B3_2IsEnabled}"
                                 Button3IsEnabled="{Binding B3_3IsEnabled}" />
 
-        <comps:HintPanel Grid.Row="5"
+        <comps:HintPanel Grid.Row="4"
                          Margin="0 5 0 0"
                          Text="{Binding NoteText}" />
     </Grid>
