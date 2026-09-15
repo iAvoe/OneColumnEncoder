@@ -711,7 +711,18 @@ public class FilterScribeVM : BaseVM
         FilterScribeModalLangProvider.Current["SrcScribe.BlurSharpenTitle"];
     public static string AviSynthBlurFilter => "Blur(1.0, 1.0)";
     public static string VapourSynthBlurFilter => "src = core.std.BoxBlur(src, hradius=1, vradius=1, hpasses=1, vpasses=1)";
-    public static string AviSynthAsharpFilter => "ASharp(T=2.0, D=4.0, B=2.0, hqbf=true)";
+    public static string AviSynthAsharpFilter
+    {
+        get
+        {
+            string pluginsDir = Environment.Is64BitProcess
+                ? BundledToolPathResolver.ResolveFolder("x64-AVS-VS-plugins")
+                : BundledToolPathResolver.ResolveFolder("x86-AVS-VS-plugins");
+            string asharpPath = Path.Combine(pluginsDir, "ASharp.dll");
+            return $"LoadPlugin(\"{asharpPath}\")\r\nASharp(T=2.0, D=4.0, B=2.0, hqbf=true)";
+        }
+    }
+
     public static string VapourSynthASharpFilter
     {
         get
@@ -722,7 +733,7 @@ public class FilterScribeVM : BaseVM
             string asharpPath = Path.Combine(pluginsDir, "libasharp.dll");
 
             return $"core.std.LoadPlugin(r\"{asharpPath}\")\r\n" +
-                   "src = core.asharp.ASharp(src, T=2.0, D=4.0, B=2.0, hqbf=true)";
+                   "src = core.asharp.ASharp(src, t=2.0, d=4.0, b=2.0, hqbf=true)"; // lowercase
         }
     }
     public static string AviSynthBlurSharpenFilter =>
