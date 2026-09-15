@@ -176,11 +176,11 @@ public class AvsPreviewerVM : BaseVM, IPreviewViewModel
         await process.WaitForExitAsync(token);
         await Task.WhenAll(outputTask, errorTask);
         string error = await errorTask;
-        if (!string.IsNullOrWhiteSpace(error)) AppendLog(error);
+        if (!string.IsNullOrWhiteSpace(error)) AppendLog(error, toolName);
         if (process.ExitCode != 0)
         {
             string message = string.Format(CultureInfo.CurrentCulture, Lang.LogExitCode, toolName, process.ExitCode);
-            AppendLog(message);
+            AppendLog(message, toolName);
             throw new InvalidOperationException(message);
         }
     }
@@ -195,14 +195,14 @@ public class AvsPreviewerVM : BaseVM, IPreviewViewModel
     private void SwitchSource(string path) { CancelPreview(); IsBusy = false; SourceImage = null; EncodedImage = null; CurrentFrame = 0; VideoFilename = Path.GetFileName(path); try { RefreshPreviewScript(); SetReadyTexts(); } catch (Exception ex) { SetStatus(PreviewTextState.ScriptError, ex.Message); } }
     private void CancelPreview() { try { _previewCts?.Cancel(); } catch (ObjectDisposedException) { } if (_currentProcess != null) PreviewPipeline.TryKillProcess(_currentProcess); }
     private void ResetLog() { lock (_logLock) _logBuilder.Clear(); _logReady = false; RunOnUi(() => AvsVsLogText = string.Empty); }
-    private void AppendLog(string text)
+    private void AppendLog(string text, string? toolName = null)
     {
         if (string.IsNullOrWhiteSpace(text)) return;
 
         string[] lines = text.Replace("\r", "", StringComparison.Ordinal)
             .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        string toolName = Path.GetFileNameWithoutExtension(SelectedPreviewTool?.FullPath ?? string.Empty);
-        string[] filteredLines = [.. lines.Where(line => IsUsefulAvsLogLine(toolName, line))];
+        string activeToolName = toolName ?? Path.GetFileNameWithoutExtension(SelectedPreviewTool?.FullPath ?? string.Empty);
+        string[] filteredLines = [.. lines.Where(line => IsUsefulAvsLogLine(activeToolName, line))];
         if (filteredLines.Length == 0) return;
 
         lock (_logLock)
@@ -221,7 +221,8 @@ public class AvsPreviewerVM : BaseVM, IPreviewViewModel
     private static bool IsUsefulAvsLogLine(string toolName, string line)
     {
         if (toolName.Equals("avs2pipemod", StringComparison.OrdinalIgnoreCase))
-            return line.StartsWith("avs2pipemod[info]: writing 1 frames", StringComparison.OrdinalIgnoreCase) ||
+            return line.Contains("avs2pipemod", StringComparison.OrdinalIgnoreCase) &&
+                line.Contains("writing 1 frames", StringComparison.OrdinalIgnoreCase) ||
                 IsAvsPreviewStatusLogLine(line);
 
         if (!toolName.Equals("avs2yuv", StringComparison.OrdinalIgnoreCase))
@@ -234,6 +235,7 @@ public class AvsPreviewerVM : BaseVM, IPreviewViewModel
 
     private static bool IsAvsPreviewStatusLogLine(string line) =>
         line.StartsWith("Error:", StringComparison.OrdinalIgnoreCase) ||
+        line.Contains("[error]", StringComparison.OrdinalIgnoreCase) ||
         line.StartsWith("错误：", StringComparison.Ordinal) ||
         line.Contains("exit code", StringComparison.OrdinalIgnoreCase) ||
         line.Contains("退出码", StringComparison.Ordinal) ||
