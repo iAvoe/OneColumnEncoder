@@ -258,7 +258,7 @@
                    TargetType="Button"
                    BasedOn="{StaticResource BaseButton}">
                 <Setter Property="Background"
-                        Value="{StaticResource BackgroundGreen}" />
+                        Value="Transparent" />
                 <Setter Property="Foreground"
                         Value="{StaticResource BorderGreen}" />
                 <Setter Property="BorderBrush"
@@ -279,7 +279,7 @@
                    TargetType="Button"
                    BasedOn="{StaticResource BaseButton}">
                 <Setter Property="Background"
-                        Value="{StaticResource BackgroundAzure}" />
+                        Value="Transparent" />
                 <Setter Property="Foreground"
                         Value="{StaticResource BorderAzure}" />
                 <Setter Property="BorderBrush"
@@ -293,6 +293,27 @@
                                 Value="{StaticResource BorderAzure}" />
                         <Setter Property="Foreground"
                                 Value="{StaticResource BackgroundAzure}" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style x:Key="LavenderButton"
+                   TargetType="Button"
+                   BasedOn="{StaticResource BaseButton}">
+                <Setter Property="Background"
+                        Value="Transparent" />
+                <Setter Property="Foreground"
+                        Value="{StaticResource BorderPurpleish}" />
+                <Setter Property="BorderBrush"
+                        Value="{StaticResource BorderPurpleish}" />
+                <Setter Property="BorderThickness"
+                        Value="1.5" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver"
+                             Value="True">
+                        <Setter Property="Background"
+                                Value="{StaticResource BorderPurpleish}" />
+                        <Setter Property="Foreground"
+                                Value="{StaticResource BackgroundLavender}" />
                     </Trigger>
                 </Style.Triggers>
             </Style>

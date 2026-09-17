@@ -8,7 +8,18 @@ public partial class FilterScribeModal : AdaptiveWindow
         Loaded += OnLoaded;
     }
 
-    private void OnLoaded(object sender, RoutedEventArgs e) => ApplyTextBoxContextMenus();
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        ApplyTextBoxContextMenus();
+        FreezeWindowHeight();
+    }
+
+    private void FreezeWindowHeight()
+    {
+        UpdateLayout();
+        SizeToContent = SizeToContent.Manual;
+        Height = ActualHeight;
+    }
 
     private void UserInput_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
     {

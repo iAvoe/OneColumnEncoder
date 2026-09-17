@@ -12,7 +12,6 @@
                    Title="{Binding WindowTitle}"
                    Width="760"
                    MinHeight="1180"
-                   SizeToContent="Height"
                    WindowStartupLocation="CenterOwner"
                    Background="{StaticResource Background}">
     <ui:AdaptiveWindow.Resources>
@@ -47,7 +46,8 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*"
                            MaxHeight="300" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="*"
+                           MinHeight="480" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
@@ -316,7 +316,7 @@
                              VerticalAlignment="Bottom"
                              Margin="0 2.5 0 0"
                              Panel.ZIndex="1"
-                             Style="{StaticResource TealButton}"
+                            Style="{StaticResource LavenderButton}"
                              BorderThickness="0">
                          <StackPanel Orientation="Horizontal"
                                      VerticalAlignment="Center"
@@ -344,38 +344,39 @@
 
         <!-- Filter generator section -->
         <ScrollViewer Grid.Row="2"
-                      VerticalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Visible"
                       HorizontalScrollBarVisibility="Disabled"
                       CanContentScroll="False">
             <StackPanel>
-                <!-- FFMPEG VFR to CFR -->
                 <StackPanel Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding VFRCFRTitle}"
-                                   Style="{StaticResource H3}"
-                                   Margin="0 15 0 0" />
-                        <Button Grid.Column="1"
-                                Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
-                                Command="{Binding InsertFFmpegFilterCommand}"
-                                CommandParameter="{Binding FFmpegFpsFilter}"
-                                IsEnabled="{Binding CanInsertFFmpegFpsFilter}"
-                                Style="{StaticResource AppendLinkButton}" />
-                    </Grid>
-                    <TextBox Text="{Binding FFmpegFpsFilterDisplay, Mode=OneWay}"
-                             Padding="0 2.5"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{StaticResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             VerticalAlignment="Center" />
-                </StackPanel>
+                    <!-- FFMPEG VFR to CFR -->
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding VFRCFRTitle}"
+                                       Style="{StaticResource H3}"
+                                       Margin="0 15 0 0" />
+                            <Button Grid.Column="1"
+                                    Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                    Command="{Binding InsertFFmpegFilterCommand}"
+                                    CommandParameter="{Binding FFmpegFpsFilter}"
+                                    IsEnabled="{Binding CanInsertFFmpegFpsFilter}"
+                                    Style="{StaticResource AppendLinkButton}" />
+                        </Grid>
+                        <TextBox Text="{Binding FFmpegFpsFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center" />
+                    </StackPanel>
 
-                <StackPanel Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
+                <StackPanel>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -402,7 +403,7 @@
                 </StackPanel>
 
                 <!-- Keep all libplacebo options directly after SAR repair. -->
-                <StackPanel Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
+                <StackPanel>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -425,6 +426,7 @@
                              Background="{StaticResource Background}"
                              Foreground="{StaticResource ButtonTertiary}"
                              VerticalAlignment="Center" />
+                </StackPanel>
                 </StackPanel>
 
                 <StackPanel>
@@ -602,14 +604,13 @@
                              Padding="0 2.5"
                              IsReadOnly="True"
                              BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
+FontFamily="{DynamicResource CodeFont}"
                              Background="{StaticResource Background}"
                              Foreground="{StaticResource ButtonTertiary}"
                              VerticalAlignment="Center" />
-                </StackPanel>
 
                 <!-- The writer places native flips before an existing libplacebo block. -->
-                <StackPanel Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
+                <StackPanel>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -643,6 +644,7 @@
                              Background="{StaticResource Background}"
                              Foreground="{StaticResource ButtonTertiary}"
                              VerticalAlignment="Center" />
+                </StackPanel>
                 </StackPanel>
 
                 <StackPanel Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}">
@@ -1013,8 +1015,7 @@
                     <Grid Margin="0 2.5 0 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto"
-                                              MinWidth="60" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
                         <comps:IntegerSlider Grid.Column="0"
@@ -1039,6 +1040,7 @@
                                 </Style>
                             </comps:IntegerSlider.Style>
                         </comps:IntegerSlider>
+                        <!-- N/A -->
                         <TextBlock Grid.Column="0"
                                    Text="{Binding ScaleNotApplicableText}"
                                    Margin="0 0 0 5"
@@ -1061,8 +1063,8 @@
                         </TextBlock>
                         <!-- Resolution display -->
                         <Border Grid.Column="1"
-                                VerticalAlignment="Center"
                                 BorderThickness="0"
+                                VerticalAlignment="Center"
                                 HorizontalAlignment="Right">
                             <Border.Style>
                                 <Style TargetType="Border">
