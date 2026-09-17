@@ -37,6 +37,8 @@ public class FilterScribeVM : BaseVM
     private readonly Func<long>? _getTotalFrames;
     private readonly Func<string?>? _getAvs2yuvPath;
     private readonly Func<string?>? _getAvs2pipemodPath;
+    private readonly Func<string?>? _getFfmpegPath;
+    private readonly string? _sourceFfprobeJson;
     private const int DisplayConcatPathMaxLength = 90;
     private ColorSpaceAnalysisM _colorSpaceAnalysis = ColorSpaceConverter.Analyze(null);
     private int _sourceBitDepth;
@@ -1330,6 +1332,7 @@ public class FilterScribeVM : BaseVM
     public ButtonGroupVM FinishScribeButtons { get; private set; } = null!;
     public ActionCmd OpenVpyPreviewCommand { get; }
     public ActionCmd OpenAvsPreviewCommand { get; }
+    public ActionCmd OpenFfmpegPreviewCommand { get; }
     public ActionCmd InsertAvsFilterCommand { get; }
     public ActionCmd InsertVpyFilterCommand { get; }
     public ActionCmd InsertFFmpegFilterCommand { get; }
@@ -1339,6 +1342,7 @@ public class FilterScribeVM : BaseVM
     public ActionCmd InsertFFmpegCropFilterCommand { get; }
     public bool CanOpenVpyPreview => GetVpyPreviewsrcPaths().Length > 0;
     public bool CanOpenAvsPreview => GetAvsPreviewToolPath() != null && GetVpyPreviewsrcPaths().Length > 0;
+    public bool CanOpenFfmpegPreview => GetFfmpegPreviewToolPath() != null && GetVpyPreviewsrcPaths().Length > 0;
 
     public FilterScribeVM(
         ModalNavS modalNavS,
@@ -1364,7 +1368,8 @@ public class FilterScribeVM : BaseVM
         string? vspipeY4mArg = null,
         Func<long>? getTotalFrames = null,
         Func<string?>? getAvs2yuvPath = null,
-        Func<string?>? getAvs2pipemodPath = null)
+        Func<string?>? getAvs2pipemodPath = null,
+        Func<string?>? getFfmpegPath = null)
     {
         _modalNavS = modalNavS;
         _closeAction = closeAction;
@@ -1390,6 +1395,8 @@ public class FilterScribeVM : BaseVM
         _getTotalFrames = getTotalFrames;
         _getAvs2yuvPath = getAvs2yuvPath;
         _getAvs2pipemodPath = getAvs2pipemodPath;
+        _getFfmpegPath = getFfmpegPath;
+        _sourceFfprobeJson = sourceFfprobeJson;
         _baseAvsPrefix = FilterScribeModalLangProvider.Current["SrcScribe.AvsPrefix"];
         _baseVpyPrefix = FilterScribeModalLangProvider.Current["SrcScribe.VpyPrefix"];
         _hasSourceAnalysis = !string.IsNullOrWhiteSpace(sourceFfprobeJson);
@@ -1401,6 +1408,7 @@ public class FilterScribeVM : BaseVM
         BuildColorSpaceSettingsListing();
         OpenVpyPreviewCommand = new ActionCmd(_ => OpenVpyPreview(), _ => CanOpenVpyPreview);
         OpenAvsPreviewCommand = new ActionCmd(_ => OpenAvsPreview(), _ => CanOpenAvsPreview);
+        OpenFfmpegPreviewCommand = new ActionCmd(_ => OpenFfmpegPreview(), _ => CanOpenFfmpegPreview);
         InsertAvsFilterCommand = new ActionCmd(filter => AppendScriptFilter(ref _avsUserInput, filter as string, nameof(AvsUserInput)));
         InsertVpyFilterCommand = new ActionCmd(filter => AppendScriptFilter(ref _vpyUserInput, filter as string, nameof(VpyUserInput)));
         InsertFFmpegFilterCommand = new ActionCmd(filter => AppendFFmpegFilter(filter as string));
@@ -2002,6 +2010,56 @@ public class FilterScribeVM : BaseVM
 
     #endregion
 
+    #region FFmpeg Preview
+    private void OpenFfmpegPreview()
+    {
+        string? ffmpegPath = GetFfmpegPreviewToolPath();
+        if (!CanOpenFfmpegPreview || ffmpegPath == null) return;
+
+        FFmpegPreviewerDialog? existingWindow = Application.Current.Windows
+            .OfType<FFmpegPreviewerDialog>()
+            .FirstOrDefault();
+        if (existingWindow != null)
+        {
+            existingWindow.Activate();
+            return;
+        }
+
+        string srcPath = GetVpyPreviewsrcPath();
+        if (string.IsNullOrWhiteSpace(srcPath)) return;
+
+        long total = _getTotalFrames?.Invoke() ?? 0;
+        int frameCount = (int)Math.Min(total > 0 ? total : 1, int.MaxValue);
+        string[] previewSourcePaths = GetVpyPreviewsrcPaths();
+
+        FFmpegPreviewerVM previewVm = new(
+            _modalNavS,
+            ffmpegPath,
+            () => FFmpegFreeText,
+            srcPath,
+            frameCount,
+            _sourceFfprobeJson,
+            previewSourcePaths);
+
+        Window? ownerWindow = Application.Current.Windows
+            .OfType<FilterScribeModal>()
+            .FirstOrDefault(w => ReferenceEquals(w.DataContext, this));
+        FFmpegPreviewerDialog window = new(previewVm, _modalNavS, ownerWindow);
+        if (ownerWindow != null)
+            PositionVpyPreviewWindow(ownerWindow, window);
+        window.Show();
+    }
+
+    private string? GetFfmpegPreviewToolPath()
+    {
+        string? ffmpegPath = _getFfmpegPath?.Invoke();
+        return !string.IsNullOrWhiteSpace(ffmpegPath) && File.Exists(ffmpegPath)
+            ? ffmpegPath
+            : null;
+    }
+
+    #endregion
+
     #region VapourSynth Preview
     private void OpenVpyPreview()
     {
@@ -2197,6 +2255,8 @@ public class FilterScribeVM : BaseVM
         OpenVpyPreviewCommand.OnCanExecuteChanged();
         OnPropertyChanged(nameof(CanOpenAvsPreview));
         OpenAvsPreviewCommand.OnCanExecuteChanged();
+        OnPropertyChanged(nameof(CanOpenFfmpegPreview));
+        OpenFfmpegPreviewCommand.OnCanExecuteChanged();
 
         BuildButtonGroups();
         OnPropertyChanged(nameof(FinishScribeButtons));

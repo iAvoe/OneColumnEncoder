@@ -5,7 +5,7 @@ namespace OneColumnEncoder.ViewModels;
 /// </summary>
 /// <remarks>
 /// ImgPreviewer.xaml.cs cast DataContext to ImgPreviewerVM specifically,
-/// so when hosted inside VpyPreviewerPanel with a VpyPreviewerVM DataContext,
+/// so when hosted inside FrameServerPreviewerPanel with a VpyPreviewerVM DataContext,
 /// the cast silently returned null.
 /// No PropertyChanged subscription was ever established,
 /// so QueueFitImage() was never called and the first image rendered at (0,0)

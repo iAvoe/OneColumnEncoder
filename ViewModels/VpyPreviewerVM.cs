@@ -73,9 +73,9 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
     private CancellationTokenSource? _previewCts;
     private Process? _currentVspipeProcess;
     private bool _isDisposed;
-    private readonly Lock _vspipeLogLock = new();
-    private readonly StringBuilder _vspipeLogBuilder = new();
-    private bool _vspipeLogFlushPending;
+    private readonly Lock _frameServerLogLock = new();
+    private readonly StringBuilder _frameServerLogBuilder = new();
+    private bool _FrameServerLogFlushPending;
 
     private ImageSource? _sourceImage;
     public ImageSource? SourceImage
@@ -126,11 +126,11 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
         private set => SetProperty(ref _statusText, value);
     }
 
-    private string _vspipeLogText = "";
-    public string AvsVsLogText
+    private string _frameServerLogText = "";
+    public string FrameServerLogText
     {
-        get => _vspipeLogText;
-        private set => SetProperty(ref _vspipeLogText, value);
+        get => _frameServerLogText;
+        private set => SetProperty(ref _frameServerLogText, value);
     }
 
     private string _previewButtonText = "";
@@ -162,7 +162,7 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
 
     private PreviewTextState _statusState = PreviewTextState.Ready;
     private string? _statusDetail;
-    private bool _vspipeLogIsReadyState;
+    private bool _frameServerIsReadyState;
 
     public ObservableCollection<string> PositionTickLabels { get; } = [];
 
@@ -257,7 +257,7 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
         {
             RefreshPreviewScript();
             IsBusy = true;
-            ResetVspipeLog();
+            ResetFrameServerLog();
             string srcPath = Path.Combine(_workDirectory, "output-0.y4m");
             string filteredPath = Path.Combine(_workDirectory, "output-1.y4m");
 
@@ -279,7 +279,7 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
             if (!_isDisposed)
             {
                 SetCancelledStatus();
-                AppendVspipeLogLine(Lang.StatusCancelled);
+                AppendFrameServerLogLine(Lang.StatusCancelled);
             }
         }
         catch (ObjectDisposedException) when (_isDisposed) { }
@@ -288,7 +288,7 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
             if (!_isDisposed)
             {
                 SetCustomStatus(ex.Message);
-                AppendVspipeLogLine($"{Lang.LogErrorPrefix}{ex.Message}");
+                AppendFrameServerLogLine($"{Lang.LogErrorPrefix}{ex.Message}");
             }
         }
         finally
@@ -331,7 +331,7 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
             token.Register(() => PreviewPipeline.TryKillProcess(vspipeProcess));
         try
         {
-            AppendVspipeLogLine(string.Format(CultureInfo.CurrentCulture, Lang.LogVspipeOutput, outputIndex));
+            AppendFrameServerLogLine(string.Format(CultureInfo.CurrentCulture, Lang.LogVspipeOutput, outputIndex));
             vspipeProcess.Start();
             Task stdoutTask = ReadVspipeStreamAsync(vspipeProcess.StandardOutput, token);
             Task stderrTask = ReadVspipeStreamAsync(vspipeProcess.StandardError, token);
@@ -342,7 +342,7 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
             if (vspipeProcess.ExitCode != 0)
             {
                 string msg = string.Format(CultureInfo.CurrentCulture, Lang.LogVspipeExitCode, vspipeProcess.ExitCode);
-                AppendVspipeLogLine(msg);
+                AppendFrameServerLogLine(msg);
                 throw new InvalidOperationException(msg);
             }
         }
@@ -353,19 +353,19 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
         }
     }
 
-    private void ResetVspipeLog()
+    private void ResetFrameServerLog()
     {
-        lock (_vspipeLogLock)
+        lock (_frameServerLogLock)
         {
-            _vspipeLogBuilder.Clear();
-            _vspipeLogFlushPending = false;
+            _frameServerLogBuilder.Clear();
+            _FrameServerLogFlushPending = false;
         }
 
-        _vspipeLogIsReadyState = false;
-        RunOnUi(() => AvsVsLogText = string.Empty);
+        _frameServerIsReadyState = false;
+        RunOnUi(() => FrameServerLogText = string.Empty);
     }
 
-    private void AppendVspipeLogLine(string? line, bool overwritePreviousLine = false)
+    private void AppendFrameServerLogLine(string? line, bool overwritePreviousLine = false)
     {
         if (string.IsNullOrWhiteSpace(line)) return;
 
@@ -377,38 +377,38 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
         if (IsVspipeOutputMarker(normalized)) return;
 
         bool scheduleFlush;
-        lock (_vspipeLogLock)
+        lock (_frameServerLogLock)
         {
-            if (overwritePreviousLine && _vspipeLogBuilder.Length > 0)
-                RemoveLastVspipeLogLine();
+            if (overwritePreviousLine && _frameServerLogBuilder.Length > 0)
+                RemoveLastFrameServerLogLine();
 
-            if (_vspipeLogBuilder.Length > 0)
-                _vspipeLogBuilder.Append('\n');
-            _vspipeLogBuilder.Append(normalized);
-            scheduleFlush = !_vspipeLogFlushPending;
-            _vspipeLogFlushPending = true;
+            if (_frameServerLogBuilder.Length > 0)
+                _frameServerLogBuilder.Append('\n');
+            _frameServerLogBuilder.Append(normalized);
+            scheduleFlush = !_FrameServerLogFlushPending;
+            _FrameServerLogFlushPending = true;
         }
 
-        _vspipeLogIsReadyState = false;
-        if (scheduleFlush) RunOnUi(FlushVspipeLog);
+        _frameServerIsReadyState = false;
+        if (scheduleFlush) RunOnUi(FlushFrameServerLog);
     }
 
-    private void RemoveLastVspipeLogLine()
+    private void RemoveLastFrameServerLogLine()
     {
-        int lastLineBreak = _vspipeLogBuilder.ToString().LastIndexOf('\n');
-        _vspipeLogBuilder.Length = lastLineBreak < 0 ? 0 : lastLineBreak;
+        int lastLineBreak = _frameServerLogBuilder.ToString().LastIndexOf('\n');
+        _frameServerLogBuilder.Length = lastLineBreak < 0 ? 0 : lastLineBreak;
     }
 
-    private void FlushVspipeLog()
+    private void FlushFrameServerLog()
     {
         string snapshot;
-        lock (_vspipeLogLock)
+        lock (_frameServerLogLock)
         {
-            snapshot = _vspipeLogBuilder.ToString();
-            _vspipeLogFlushPending = false;
+            snapshot = _frameServerLogBuilder.ToString();
+            _FrameServerLogFlushPending = false;
         }
 
-        AvsVsLogText = snapshot;
+        FrameServerLogText = snapshot;
     }
 
     // VapourSynth (vspipe) is English only, so no LangProvider check needed here
@@ -452,13 +452,13 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
                     {
                         if (ch == '\n')
                         {
-                            AppendVspipeLogLine(pendingCarriageReturnLine, overwritePreviousLine: false);
+                            AppendFrameServerLogLine(pendingCarriageReturnLine, overwritePreviousLine: false);
                             pendingCarriageReturnLine = null;
                             previousWasCarriageReturnUpdate = false;
                             continue;
                         }
 
-                        AppendVspipeLogLine(pendingCarriageReturnLine, overwritePreviousLine: previousWasCarriageReturnUpdate);
+                        AppendFrameServerLogLine(pendingCarriageReturnLine, overwritePreviousLine: previousWasCarriageReturnUpdate);
                         pendingCarriageReturnLine = null;
                         previousWasCarriageReturnUpdate = true;
                     }
@@ -472,7 +472,7 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
 
                     if (ch == '\n')
                     {
-                        AppendVspipeLogLine(lineBuilder.ToString(), overwritePreviousLine: false);
+                        AppendFrameServerLogLine(lineBuilder.ToString(), overwritePreviousLine: false);
                         lineBuilder.Clear();
                         previousWasCarriageReturnUpdate = false;
                         continue;
@@ -483,9 +483,9 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
             }
 
             if (pendingCarriageReturnLine != null)
-                AppendVspipeLogLine(pendingCarriageReturnLine, overwritePreviousLine: previousWasCarriageReturnUpdate);
+                AppendFrameServerLogLine(pendingCarriageReturnLine, overwritePreviousLine: previousWasCarriageReturnUpdate);
             if (lineBuilder.Length > 0)
-                AppendVspipeLogLine(lineBuilder.ToString(), overwritePreviousLine: false);
+                AppendFrameServerLogLine(lineBuilder.ToString(), overwritePreviousLine: false);
         }
         catch (OperationCanceledException) { }
         catch (IOException) { }
@@ -521,7 +521,7 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
             catch (Exception ex)
             {
                 SetScriptErrorStatus(ex.Message);
-                AppendVspipeLogLine($"{Lang.LogErrorPrefix}{string.Format(CultureInfo.CurrentCulture, Lang.StatusScriptError, ex.Message)}");
+                AppendFrameServerLogLine($"{Lang.LogErrorPrefix}{string.Format(CultureInfo.CurrentCulture, Lang.StatusScriptError, ex.Message)}");
                 return;
             }
         }
@@ -603,8 +603,8 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
     private void SetReadyTexts()
     {
         SetStatus(PreviewTextState.Ready);
-        _vspipeLogIsReadyState = true;
-        RunOnUi(() => AvsVsLogText = Lang.StatusReady);
+        _frameServerIsReadyState = true;
+        RunOnUi(() => FrameServerLogText = Lang.StatusReady);
         UpdatePreviewButtonText();
     }
 
@@ -651,8 +651,8 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
         RunOnUi(() =>
         {
             StatusText = BuildStatusText();
-            if (_vspipeLogIsReadyState)
-                AvsVsLogText = Lang.StatusReady;
+            if (_frameServerIsReadyState)
+                FrameServerLogText = Lang.StatusReady;
         });
     }
 }

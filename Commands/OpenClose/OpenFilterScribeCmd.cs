@@ -27,7 +27,8 @@ public class OpenFilterScribeCmd(
     string? vspipeY4mArg = null,
     Func<long>? getTotalFrames = null,
     Func<string?>? getAvs2yuvPath = null,
-    Func<string?>? getAvs2pipemodPath = null) : OpenCloseBase(modalNavS)
+    Func<string?>? getAvs2pipemodPath = null,
+    Func<string?>? getFfmpegPath = null) : OpenCloseBase(modalNavS)
 {
     /// <summary>
     /// Shows a warning if a one-line shot is selected; otherwise brings an existing
@@ -75,7 +76,8 @@ public class OpenFilterScribeCmd(
             vspipeY4mArg,
             getTotalFrames,
             getAvs2yuvPath,
-            getAvs2pipemodPath);
+            getAvs2pipemodPath,
+            getFfmpegPath);
         ShowModal(window, vm, closeOpenStack: true);
     }
 }

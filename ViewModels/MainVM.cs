@@ -573,7 +573,8 @@ public class MainVM : BaseVM
                  _srcVideoAnalysis.RawJson,
                  _srcVideoAnalysis.ConcatTotalFrames) ?? 0,
              () => _appDataM.Tools.Avs2yuvPath,
-             () => _appDataM.Tools.Avs2pipemodPath);
+             () => _appDataM.Tools.Avs2pipemodPath,
+             () => _appDataM.Tools.FFmpegPath);
         OpenMuxTracks = new OpenMuxTracksCmd(
             modalNavS,
             GetCurrentMuxSourcePaths,

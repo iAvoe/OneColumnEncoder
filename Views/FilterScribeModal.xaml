@@ -291,8 +291,8 @@
                                TextWrapping="Wrap"
                                Margin="0"
                                FontWeight="Normal" />
-                    <TextBox Grid.Row="2"
-                             Text="{Binding FFmpegFreeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     <TextBox Grid.Row="2"
+                              Text="{Binding FFmpegFreeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
                              Background="{StaticResource ScriptAccentFFmpegBackground}"
@@ -305,9 +305,40 @@
                              VerticalScrollBarVisibility="Disabled"
                              PreviewKeyDown="FFmpegFreeText_PreviewKeyDown"
                              DataObject.Pasting="FFmpegFreeText_Pasting"
-                             PreviewMouseWheel="UserInput_PreviewMouseWheel"
-                             FontWeight="Normal" />
-                </Grid>
+                              PreviewMouseWheel="UserInput_PreviewMouseWheel"
+                              FontWeight="Normal" />
+                     <Button Grid.Row="2"
+                             Command="{Binding OpenFfmpegPreviewCommand}"
+                             IsEnabled="{Binding CanOpenFfmpegPreview}"
+                             Height="30"
+                             Width="120"
+                             HorizontalAlignment="Right"
+                             VerticalAlignment="Bottom"
+                             Margin="0 2.5 0 0"
+                             Panel.ZIndex="1"
+                             Style="{StaticResource TealButton}"
+                             BorderThickness="0">
+                         <StackPanel Orientation="Horizontal"
+                                     VerticalAlignment="Center"
+                                     HorizontalAlignment="Center">
+                             <Rectangle Width="14"
+                                        Height="14"
+                                        VerticalAlignment="Center"
+                                        Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                 <Rectangle.OpacityMask>
+                                     <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GamePlay}"
+                                                 Stretch="Uniform"
+                                                 AlignmentX="Center"
+                                                 AlignmentY="Center" />
+                                 </Rectangle.OpacityMask>
+                             </Rectangle>
+                             <TextBlock Text="A/B Preview"
+                                        VerticalAlignment="Center"
+                                        FontWeight="Normal"
+                                        Margin="5 0 -5 0" />
+                         </StackPanel>
+                     </Button>
+                 </Grid>
             </TabItem>
         </TabControl>
 

@@ -1,4 +1,4 @@
-<UserControl x:Class="OneColumnEncoder.Components.VpyPreviewerPanel"
+<UserControl x:Class="OneColumnEncoder.Components.FrameServerPreviewerPanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -41,10 +41,10 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Grid.Column="0"
+                        Orientation="Horizontal">
                 <!-- Tool dropdown: use avs2yuv or avs2pipemod -->
-                <ComboBox Grid.Column="0"
-                          Visibility="{Binding IsAvsPreview, Converter={StaticResource BoolToVisibility}}"
+                <ComboBox Visibility="{Binding IsAvsPreview, Converter={StaticResource BoolToVisibility}}"
                           ItemsSource="{Binding AviSynthPreviewTools}"
                           SelectedItem="{Binding SelectedPreviewTool, Mode=TwoWay}"
                           DisplayMemberPath="Title"
@@ -55,8 +55,8 @@
                           VerticalAlignment="Center"
                           Margin="2.5 0 10 0" />
                 
-                <comps:HintPanel Grid.Column="0"
-                                 Text="{Binding AvsVsLogText}"
+                <!-- AVS-VS-FFmpeg message -->
+                <comps:HintPanel Text="{Binding FrameServerLogText}"
                                  HintBrush="{StaticResource GlobalSecondary}" />
             </StackPanel>
             

@@ -1,5 +1,6 @@
 using OneColumnEncoder.Models.Analysis;
 using OneColumnEncoder.Models.Encoding;
+using System;
 using System.IO;
 using System.Windows.Media.Imaging;
 
@@ -36,6 +37,91 @@ public static partial class PreviewPipeline
 
     public static string[] BuildSourceArgs(string sourceVideoPath, int previewPositionSeconds, string outputPath, string? displayFilter = null) =>
         BuildSourceArgs(sourceVideoPath, TimeSpan.FromSeconds(previewPositionSeconds), outputPath, displayFilter);
+
+    public static string[] BuildFFmpegBitmapPipeArgs(
+        string sourceVideoPath,
+        TimeSpan previewPosition,
+        string? videoFilter = null)
+    {
+        List<string> args =
+        [
+            "-hide_banner",
+            "-loglevel",
+            "error",
+            "-nostdin",
+            "-y",
+            "-ss",
+            EncodingPipeline.FormatTimestamp(previewPosition),
+            "-i",
+            sourceVideoPath
+        ];
+
+        if (!string.IsNullOrWhiteSpace(videoFilter))
+            args.AddRange(["-vf", videoFilter]);
+
+        args.AddRange(
+        [
+            "-frames:v",
+            "1",
+            "-f",
+            "image2pipe",
+            "-c:v",
+            "bmp",
+            "pipe:1"
+        ]);
+        return [.. args];
+    }
+
+    public static bool TryExtractVideoFilter(string? ffmpegArgs, out string filter)
+    {
+        filter = string.Empty;
+        if (string.IsNullOrWhiteSpace(ffmpegArgs)) return false;
+
+        string[] options = ["-filter:v", "-vf", "-filter_complex"];
+        int optionIndex = -1;
+        string? matchedOption = null;
+        foreach (string option in options)
+        {
+            int candidate = ffmpegArgs.IndexOf(option, StringComparison.OrdinalIgnoreCase);
+            if (candidate >= 0 && (optionIndex < 0 || candidate < optionIndex))
+            {
+                optionIndex = candidate;
+                matchedOption = option;
+            }
+        }
+
+        if (optionIndex < 0)
+        {
+            if (ffmpegArgs.TrimStart().StartsWith('-')) return false;
+            filter = ffmpegArgs.Trim();
+            return filter.Length > 0;
+        }
+
+        int contentStart = optionIndex + matchedOption!.Length;
+        while (contentStart < ffmpegArgs.Length && char.IsWhiteSpace(ffmpegArgs[contentStart])) contentStart++;
+        if (contentStart >= ffmpegArgs.Length) return false;
+
+        char quote = ffmpegArgs[contentStart] is '"' or '\'' ? ffmpegArgs[contentStart++] : '\0';
+        int contentEnd = contentStart;
+        if (quote == '\0')
+        {
+            while (contentEnd < ffmpegArgs.Length && !char.IsWhiteSpace(ffmpegArgs[contentEnd])) contentEnd++;
+        }
+        else
+        {
+            bool escaped = false;
+            for (; contentEnd < ffmpegArgs.Length; contentEnd++)
+            {
+                char current = ffmpegArgs[contentEnd];
+                if (current == quote && !escaped) break;
+                escaped = current == '\\' && !escaped;
+                if (current != '\\') escaped = false;
+            }
+        }
+
+        filter = ffmpegArgs[contentStart..contentEnd].Trim();
+        return filter.Length > 0;
+    }
 
     public static string[] BuildSourceArgs(string sourceVideoPath, TimeSpan previewPosition, string outputPath, string? displayFilter = null)
     {
@@ -447,6 +533,22 @@ public static partial class PreviewPipeline
         bitmap.CacheOption = BitmapCacheOption.OnLoad;
         bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
         bitmap.UriSource = new Uri(path, UriKind.Absolute);
+        bitmap.EndInit();
+        bitmap.Freeze();
+        return bitmap;
+    }
+
+    public static BitmapImage LoadBitmap(Stream stream)
+    {
+        if (stream.CanSeek) stream.Position = 0;
+
+        BitmapImage bitmap = new();
+        bitmap.BeginInit();
+        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+        // Do NOT set IgnoreImageCache here: it requires UriSource to be set.
+        // With StreamSource only, EndInit() throws "Value cannot be null (Parameter 'key')"
+        // from ImagingCache.RemoveFromCache(null).
+        bitmap.StreamSource = stream;
         bitmap.EndInit();
         bitmap.Freeze();
         return bitmap;

@@ -1,8 +1,8 @@
 namespace OneColumnEncoder.Components;
 
-public partial class VpyPreviewerPanel : UserControl
+public partial class FrameServerPreviewerPanel : UserControl
 {
-    public VpyPreviewerPanel()
+    public FrameServerPreviewerPanel()
     {
         InitializeComponent();
     }
