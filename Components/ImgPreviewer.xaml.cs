@@ -224,13 +224,14 @@ public partial class ImgPreviewer : UserControl
 
     private void ClampOffsetToViewport()
     {
-        BitmapSource? bitmap = GetActiveBitmap();
-        if (bitmap == null) return;
+        BitmapSource? sourceBitmap = SourceImage.Source as BitmapSource;
+        BitmapSource? encodedBitmap = EncodedImage.Source as BitmapSource;
+        if (sourceBitmap == null && encodedBitmap == null) return;
 
         double viewportWidth = Math.Max(0d, Viewport.ActualWidth);
         double viewportHeight = Math.Max(0d, Viewport.ActualHeight);
-        double imageWidth = bitmap.PixelWidth * _zoom;
-        double imageHeight = bitmap.PixelHeight * _zoom;
+        double imageWidth = Math.Max(sourceBitmap?.PixelWidth ?? 0, encodedBitmap?.PixelWidth ?? 0) * _zoom;
+        double imageHeight = Math.Max(sourceBitmap?.PixelHeight ?? 0, encodedBitmap?.PixelHeight ?? 0) * _zoom;
 
         _offsetX = ClampOffset(_offsetX, imageWidth, viewportWidth);
         _offsetY = ClampOffset(_offsetY, imageHeight, viewportHeight);
@@ -246,8 +247,6 @@ public partial class ImgPreviewer : UserControl
         double maxOffset = 0d;
         return Math.Max(minOffset, Math.Min(maxOffset, offset));
     }
-
-    private BitmapSource? GetActiveBitmap() => SourceImage.Source as BitmapSource ?? EncodedImage.Source as BitmapSource;
 
     private double GetImagePixelWidth() =>
         (SourceImage.Source as BitmapSource ?? EncodedImage.Source as BitmapSource)?.PixelWidth ?? 0d;
