@@ -327,7 +327,7 @@
                                                  IsEnabled="{Binding CanRemove}"
                                                  ToolTip="Remove source"
                                                  Padding="4 0"
-                                                 Style="{StaticResource MiniLinkButton}" />
+                                                 Style="{StaticResource InlineLinkButton}" />
                                          <Button Content="{Binding DataContext.MoveUpText, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
                                                  Command="{Binding DataContext.MoveSourceUpCommand, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
                                                  CommandParameter="{Binding}"
@@ -335,7 +335,7 @@
                                                  ToolTip="Move source up"
                                                  Padding="4 0"
                                                  Margin="2.5 0 0 0"
-                                                 Style="{StaticResource MiniLinkButton}" />
+                                                 Style="{StaticResource InlineLinkButton}" />
                                          <Button Content="{Binding DataContext.MoveDownText, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
                                                  Command="{Binding DataContext.MoveSourceDownCommand, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
                                                  CommandParameter="{Binding}"
@@ -343,7 +343,7 @@
                                                  ToolTip="Move source down"
                                                  Padding="4 0"
                                                  Margin="2.5 0 0 0"
-                                                 Style="{StaticResource MiniLinkButton}" />
+                                                 Style="{StaticResource InlineLinkButton}" />
                                      </StackPanel>
                                  </Grid>
                              </Border>
@@ -682,7 +682,7 @@
                                                      IsEnabled="{Binding CanRemove}"
                                                      ToolTip="Remove output"
                                                      Padding="4 0"
-                                                     Style="{StaticResource MiniLinkButton}" />
+                                                     Style="{StaticResource InlineLinkButton}" />
                                              <Button Content="{Binding DataContext.MoveUpText, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
                                                      Command="{Binding DataContext.MoveOutputUpCommand, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
                                                      CommandParameter="{Binding}"
@@ -690,7 +690,7 @@
                                                      ToolTip="Move output up"
                                                      Padding="4 0"
                                                      Margin="2.5 0 0 0"
-                                                     Style="{StaticResource MiniLinkButton}" />
+                                                     Style="{StaticResource InlineLinkButton}" />
                                              <Button Content="{Binding DataContext.MoveDownText, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
                                                      Command="{Binding DataContext.MoveOutputDownCommand, RelativeSource={RelativeSource AncestorType=ui:AdaptiveWindow}}"
                                                      CommandParameter="{Binding}"
@@ -698,7 +698,7 @@
                                                      ToolTip="Move output down"
                                                      Padding="4 0"
                                                      Margin="2.5 0 0 0"
-                                                     Style="{StaticResource MiniLinkButton}" />
+                                                     Style="{StaticResource InlineLinkButton}" />
                                          </StackPanel>
                                      </Grid>
                                 </Border>

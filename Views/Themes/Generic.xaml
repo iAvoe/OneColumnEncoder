@@ -5,7 +5,7 @@
                     xmlns:vms="clr-namespace:OneColumnEncoder.ViewModels"
                     xmlns:views="clr-namespace:OneColumnEncoder.Views">
 
-    <!-- DataTemplates for modals -->
+    <!-- Data templates: view-model to modal/view mapping -->
     <DataTemplate DataType="{x:Type vms:AppConfVM}">
         <comps:AppConfItem />
     </DataTemplate>
@@ -19,9 +19,9 @@
         <views:EncoderConfModal />
     </DataTemplate>
 
-    <!-- Spacing -->
+    <!-- Shared control defaults -->
     <Style TargetType="{x:Type Control}"
-           x:Key="BaseControl">
+           x:Key="ControlDefaults">
         <Setter Property="HorizontalAlignment"
                 Value="Center" />
         <Setter Property="VerticalAlignment"
@@ -34,7 +34,7 @@
                 Value="Hand" />
     </Style>
 
-    <!-- Colors -->
+    <!-- Core semantic palette -->
     <SolidColorBrush Color="#111"
                      x:Key="GlobalPrimary" />
     <SolidColorBrush Color="#6C767D"
@@ -117,7 +117,8 @@
                       x:Key="TimelineThumbBackground" />
     <SolidColorBrush Color="#D2B45A"
                       x:Key="TimelineThumbBorder" />
-    <!-- Remixed card palette (light gray blue background) -->
+    <!-- Card palettes -->
+    <!-- Default card palette (light gray blue background) -->
     <SolidColorBrush Color="#BAD3D2"
                      x:Key="RemixedBackground" />
     <SolidColorBrush Color="#002B33"
@@ -132,7 +133,7 @@
                      x:Key="RemixedBackgroundDarkYellow" />
     <SolidColorBrush Color="#3A2A2A"
                      x:Key="RemixedBackgroundRed" />
-    <!-- Remixed card palette (light gray green background, left analogous) -->
+    <!-- Alternate card palette (light gray green background) -->
     <SolidColorBrush Color="#BAC8D3"
                      x:Key="RemixedBackground2" />
     <SolidColorBrush Color="#013"
@@ -140,7 +141,7 @@
     <SolidColorBrush Color="#23445D"
                      x:Key="RemixedBorder2" />
 
-    <!-- Remixed card palette (light pink background, left analogous) -->
+    <!-- Alternate card palette (light pink background) -->
     <SolidColorBrush Color="#EAD6BC"
                      x:Key="RemixedBackground3" />
     <SolidColorBrush Color="#27200C"
@@ -148,7 +149,7 @@
     <SolidColorBrush Color="#62411E"
                      x:Key="RemixedBorder3" />
 
-    <!-- Remixed card palette (light purple background, left analogous) -->
+    <!-- Alternate card palette (light olive background) -->
     <SolidColorBrush Color="#d5d7b6"
                      x:Key="RemixedBackground4" />
     <SolidColorBrush Color="#1c1f14"
@@ -156,134 +157,9 @@
     <SolidColorBrush Color="#4e4e32"
                      x:Key="RemixedBorder4" />
     
-    <!-- Memory range palette: empty block -->
+    <!-- Memory range palette: empty block and level colors -->
     <SolidColorBrush Color="#E9EEF2"
                      x:Key="MemoryRangeEmpty" />
-
-    <!-- Scrollbars -->
-    <Style x:Key="ScrollBarPageButton"
-           TargetType="RepeatButton">
-        <Setter Property="Background"
-                Value="Transparent" />
-        <Setter Property="BorderThickness"
-                Value="0" />
-        <Setter Property="Focusable"
-                Value="False" />
-        <Setter Property="IsTabStop"
-                Value="False" />
-        <Setter Property="OverridesDefaultStyle"
-                Value="True" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="RepeatButton">
-                    <Border Background="{TemplateBinding Background}" />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style x:Key="RoundedScrollBarThumb"
-           TargetType="Thumb">
-        <Setter Property="Background"
-                Value="{StaticResource MemoryRangeEmpty}" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Thumb">
-                    <Border x:Name="ThumbBorder"
-                            Margin="1"
-                            Background="{TemplateBinding Background}"
-                            CornerRadius="4" />
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver"
-                                 Value="True">
-                            <Setter TargetName="ThumbBorder"
-                                    Property="Background"
-                                    Value="{StaticResource GlobalSecondary}" />
-                        </Trigger>
-                        <Trigger Property="IsDragging"
-                                 Value="True">
-                            <Setter TargetName="ThumbBorder"
-                                    Property="Background"
-                                    Value="{StaticResource GlobalQuaternary}" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <ControlTemplate x:Key="VerticalScrollBarTemplate"
-                     TargetType="ScrollBar">
-        <Grid Background="Transparent"
-              Margin="0 4">
-            <Track x:Name="PART_Track"
-                   IsDirectionReversed="True">
-                <Track.DecreaseRepeatButton>
-                    <RepeatButton Command="ScrollBar.PageUpCommand"
-                                  Style="{StaticResource ScrollBarPageButton}" />
-                </Track.DecreaseRepeatButton>
-                <Track.Thumb>
-                    <Thumb Style="{StaticResource RoundedScrollBarThumb}" />
-                </Track.Thumb>
-                <Track.IncreaseRepeatButton>
-                    <RepeatButton Command="ScrollBar.PageDownCommand"
-                                  Style="{StaticResource ScrollBarPageButton}" />
-                </Track.IncreaseRepeatButton>
-            </Track>
-        </Grid>
-    </ControlTemplate>
-
-    <ControlTemplate x:Key="HorizontalScrollBarTemplate"
-                     TargetType="ScrollBar">
-        <Grid Background="Transparent"
-              Margin="4 1 4 2">
-            <Track x:Name="PART_Track">
-                <Track.DecreaseRepeatButton>
-                    <RepeatButton Command="ScrollBar.PageLeftCommand"
-                                  Style="{StaticResource ScrollBarPageButton}" />
-                </Track.DecreaseRepeatButton>
-                <Track.Thumb>
-                    <Thumb Style="{StaticResource RoundedScrollBarThumb}" />
-                </Track.Thumb>
-                <Track.IncreaseRepeatButton>
-                    <RepeatButton Command="ScrollBar.PageRightCommand"
-                                  Style="{StaticResource ScrollBarPageButton}" />
-                </Track.IncreaseRepeatButton>
-            </Track>
-        </Grid>
-    </ControlTemplate>
-
-    <Style TargetType="ScrollBar">
-        <Setter Property="Background"
-                Value="Transparent" />
-        <Setter Property="BorderThickness"
-                Value="0" />
-        <Setter Property="Focusable"
-                Value="False" />
-        <Setter Property="Width"
-                Value="10" />
-        <Setter Property="MinWidth"
-                Value="10" />
-        <Setter Property="MinHeight"
-                Value="24" />
-        <Setter Property="Template"
-                Value="{StaticResource VerticalScrollBarTemplate}" />
-        <Style.Triggers>
-            <Trigger Property="Orientation"
-                     Value="Horizontal">
-                <Setter Property="Width"
-                        Value="Auto" />
-                <Setter Property="MinWidth"
-                        Value="24" />
-                <Setter Property="Height"
-                        Value="12" />
-                <Setter Property="MinHeight"
-                        Value="12" />
-                <Setter Property="Template"
-                        Value="{StaticResource HorizontalScrollBarTemplate}" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
 
     <!-- Upstream program (yellow to orange occupancy family) -->
     <SolidColorBrush Color="#FFF8E1"
@@ -356,7 +232,132 @@
                      x:Key="MemoryRangeCache7" />
     <SolidColorBrush Color="#1B5E20"
                      x:Key="MemoryRangeCache8" />
-    <!-- Fonts -->
+
+    <!-- Scrollbar styles and templates -->
+    <Style x:Key="ScrollBarPageButtonStyle"
+           TargetType="RepeatButton">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="BorderThickness"
+                Value="0" />
+        <Setter Property="Focusable"
+                Value="False" />
+        <Setter Property="IsTabStop"
+                Value="False" />
+        <Setter Property="OverridesDefaultStyle"
+                Value="True" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RepeatButton">
+                    <Border Background="{TemplateBinding Background}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ScrollBarThumbStyle"
+           TargetType="Thumb">
+        <Setter Property="Background"
+                Value="{StaticResource MemoryRangeEmpty}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Thumb">
+                    <Border x:Name="ThumbBorder"
+                            Margin="1"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="4" />
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver"
+                                 Value="True">
+                            <Setter TargetName="ThumbBorder"
+                                    Property="Background"
+                                    Value="{StaticResource GlobalSecondary}" />
+                        </Trigger>
+                        <Trigger Property="IsDragging"
+                                 Value="True">
+                            <Setter TargetName="ThumbBorder"
+                                    Property="Background"
+                                    Value="{StaticResource GlobalQuaternary}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <ControlTemplate x:Key="VerticalScrollBarTemplate"
+                     TargetType="ScrollBar">
+        <Grid Background="Transparent"
+              Margin="0 4">
+            <Track x:Name="PART_Track"
+                   IsDirectionReversed="True">
+                <Track.DecreaseRepeatButton>
+                    <RepeatButton Command="ScrollBar.PageUpCommand"
+                                   Style="{StaticResource ScrollBarPageButtonStyle}" />
+                </Track.DecreaseRepeatButton>
+                <Track.Thumb>
+                    <Thumb Style="{StaticResource ScrollBarThumbStyle}" />
+                </Track.Thumb>
+                <Track.IncreaseRepeatButton>
+                    <RepeatButton Command="ScrollBar.PageDownCommand"
+                                   Style="{StaticResource ScrollBarPageButtonStyle}" />
+                </Track.IncreaseRepeatButton>
+            </Track>
+        </Grid>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="HorizontalScrollBarTemplate"
+                     TargetType="ScrollBar">
+        <Grid Background="Transparent"
+              Margin="4 1 4 2">
+            <Track x:Name="PART_Track">
+                <Track.DecreaseRepeatButton>
+                    <RepeatButton Command="ScrollBar.PageLeftCommand"
+                                   Style="{StaticResource ScrollBarPageButtonStyle}" />
+                </Track.DecreaseRepeatButton>
+                <Track.Thumb>
+                    <Thumb Style="{StaticResource ScrollBarThumbStyle}" />
+                </Track.Thumb>
+                <Track.IncreaseRepeatButton>
+                    <RepeatButton Command="ScrollBar.PageRightCommand"
+                                   Style="{StaticResource ScrollBarPageButtonStyle}" />
+                </Track.IncreaseRepeatButton>
+            </Track>
+        </Grid>
+    </ControlTemplate>
+
+    <Style TargetType="ScrollBar">
+        <Setter Property="Background"
+                Value="Transparent" />
+        <Setter Property="BorderThickness"
+                Value="0" />
+        <Setter Property="Focusable"
+                Value="False" />
+        <Setter Property="Width"
+                Value="10" />
+        <Setter Property="MinWidth"
+                Value="10" />
+        <Setter Property="MinHeight"
+                Value="24" />
+        <Setter Property="Template"
+                Value="{StaticResource VerticalScrollBarTemplate}" />
+        <Style.Triggers>
+            <Trigger Property="Orientation"
+                     Value="Horizontal">
+                <Setter Property="Width"
+                        Value="Auto" />
+                <Setter Property="MinWidth"
+                        Value="24" />
+                <Setter Property="Height"
+                        Value="12" />
+                <Setter Property="MinHeight"
+                        Value="12" />
+                <Setter Property="Template"
+                        Value="{StaticResource HorizontalScrollBarTemplate}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    <!-- Typography -->
     <Style TargetType="TextBlock"
            x:Key="H1">
         <Setter Property="FontSize"
@@ -419,7 +420,8 @@
                 Value="Bold" />
     </Style>
 
-    <!-- Status Icon -->
+    <!-- Component control templates -->
+    <!-- Checklist status icon -->
     <Style TargetType="{x:Type comps:ChecklistItem}">
         <Setter Property="Foreground"
                 Value="{StaticResource ButtonPrimary}" />
@@ -593,7 +595,7 @@
         </Setter>
     </Style>
 
-    <!-- Memory Range Legend -->
+    <!-- Memory range legend -->
     <Style TargetType="{x:Type comps:MemoryRangeLegend}">
         <Setter Property="Template">
             <Setter.Value>
@@ -670,8 +672,9 @@
         </Setter>
     </Style>
 
-    <!-- Clickable column for checklist inspect in ValidationCard & MiniValidationCard -->
-    <Style x:Key="ClickableColumn"
+    <!-- Interaction styles -->
+    <!-- Clickable column for checklist inspect in ValidationCard and MiniValidationCard -->
+    <Style x:Key="ClickableColumnBorder"
            TargetType="Border">
         <Setter Property="Padding"
                 Value="0 3" />
@@ -690,8 +693,8 @@
         </Style.Triggers>
     </Style>
 
-    <!-- MiniLinkButton: borderless link-style button for inline actions -->
-    <Style x:Key="MiniLinkButton"
+    <!-- InlineLinkButton: borderless link-style button for compact actions -->
+    <Style x:Key="InlineLinkButton"
            TargetType="Button"
            BasedOn="{StaticResource H2C}">
         <Setter Property="Background"

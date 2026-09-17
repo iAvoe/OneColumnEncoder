@@ -80,7 +80,7 @@
 
             <Style x:Key="BaseButton"
                    TargetType="Button"
-                   BasedOn="{StaticResource BaseControl}">
+                   BasedOn="{StaticResource ControlDefaults}">
                 <Setter Property="Width"
                         Value="Auto" />
                 <Setter Property="Height"

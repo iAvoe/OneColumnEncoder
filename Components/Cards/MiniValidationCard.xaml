@@ -213,7 +213,7 @@
                 <UniformGrid Grid.Row="1"
                              Columns="2"
                              Margin="0 5 0 0">
-                    <Border Style="{StaticResource ClickableColumn}"
+                    <Border Style="{StaticResource ClickableColumnBorder}"
                             Margin="0 0 10 0">
                         <Border.InputBindings>
                             <MouseBinding Gesture="LeftClick"
@@ -234,7 +234,7 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Style="{StaticResource ClickableColumn}"
+                    <Border Style="{StaticResource ClickableColumnBorder}"
                             Margin="10 0 0 0">
                         <Border.InputBindings>
                             <MouseBinding Gesture="LeftClick"
