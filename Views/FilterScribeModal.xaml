@@ -1263,17 +1263,19 @@ FontFamily="{DynamicResource CodeFont}"
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0"
-                                   Text="{Binding VapourSynthVszipclTitle}"
+                                   Text="{Binding VSZipCLTitle}"
                                    Style="{StaticResource H3}"
                                    Margin="0 15 0 0"
                                    VerticalAlignment="Center" />
                         <Button Grid.Column="1"
                                 Command="{Binding InsertVpyFilterCommand}"
-                                CommandParameter="{Binding VapourSynthVszipclFilter}"
-                                IsEnabled="{Binding CanInsertVapourSynthVszipclFilter}"
+                                CommandParameter="{Binding VSZipCLFilter}"
+                                IsEnabled="{Binding CanInsertVSZipCLFilter}"
                                 Style="{StaticResource AppendLinkButton}" />
                     </Grid>
-
+                    <!-- OpenCL device ID, default 0 -->
+                    <ItemsControl ItemsSource="{Binding VSZipCLSettingsListing}" />
+                    <!-- Filter script line -->
                     <TextBox Padding="0 2.5"
                              IsReadOnly="True"
                              BorderThickness="0"
@@ -1283,15 +1285,15 @@ FontFamily="{DynamicResource CodeFont}"
                              TextWrapping="NoWrap"
                              AcceptsReturn="True"
                              FontWeight="Normal"
-                             Text="{Binding VapourSynthVszipclFilter, Mode=OneWay}" />
+                             Text="{Binding VSZipCLFilter, Mode=OneWay}" />
 
                     <comps:HintPanel Margin="0 2.5 0 0"
-                                     Text="{Binding VapourSynthVszipclPreviewHint}" />
+                                     Text="{Binding VSZipCLPreviewHint}" />
                     <comps:HintPanel Margin="0 2.5 0 0"
-                                     Text="{Binding VapourSynthVszipclDeviceHint}" />
+                                     Text="{Binding VSZipCLDeviceHint}" />
                     <comps:HintPanel Margin="0 2.5 0 0"
-                                     Visibility="{Binding VapourSynthVszipclHasFmtconv, Converter={StaticResource BoolToVisibility}}"
-                                     Text="{Binding VapourSynthVszipclFmtconvHint}" />
+                                     Visibility="{Binding VSZipCLHasFmtconv, Converter={StaticResource BoolToVisibility}}"
+                                     Text="{Binding VSZipCLFmtconvHint}" />
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

@@ -45,6 +45,7 @@ public class FilterScribeVM : BaseVM
     private bool _hasSourceAnalysis;
     private bool _sourceIsProgressive = true;
     private string _colorSpacePeakNits = string.Empty;
+    private string _vszipclDeviceId = "0";
     private readonly System.Windows.Threading.DispatcherTimer _cropRefreshTimer;
     private bool _cropRefreshPending;
     public CloseModalCmd CloseCmd { get; }
@@ -656,7 +657,7 @@ public class FilterScribeVM : BaseVM
     public static string VapourSynthSubtitleFilter =>
         "src = core.sub.ImageFile(src, file=r\"X:\\path\\to\\DVD_BDMV.sup\", gray=False)\r\n" +
         "src = core.sub.TextFile(src, file=r\"X:\\path\\to\\subtitle.ass\", fontdir=r\"Y:\\dir\\of\\fonts\")";
-    public string VapourSynthVszipclFilter
+    public string VSZipCLFilter
     {
         get
         {
@@ -681,10 +682,11 @@ public class FilterScribeVM : BaseVM
             string fmtconvDllPath = Path.Combine(pluginsDir, "fmtconv.dll");
 
             string loadVszipcl = $"core.std.LoadPlugin(r\"{vszipclDllPath}\")";
+            int deviceId = int.TryParse(_vszipclDeviceId, out int parsed) && parsed >= 0 ? parsed : 0;
             string vszipclCalls =
-                "src = core.vszipcl.Deband(src, dither_algo=0, device_id=0, num_streams=2)\r\n" +
-                "src = core.vszipcl.NLMeans(src, d=1, a=2, s=4, h=1.2, wmode=0, wref=1.0, device_id=0, num_streams=2)\r\n" +
-                "src = core.vszipcl.GaussBlur(src, device_id=0, num_streams=2)";
+                $"src = core.vszipcl.Deband(src, dither_algo=0, device_id={deviceId}, num_streams=2)\r\n" +
+                $"src = core.vszipcl.NLMeans(src, d=1, a=2, s=4, h=1.2, wmode=0, wref=1.0, device_id={deviceId}, num_streams=2)\r\n" +
+                $"src = core.vszipcl.GaussBlur(src, device_id={deviceId}, num_streams=2)";
             string convIn = targetBpp == 0
                 ? ""
                 : $"core.std.LoadPlugin(r\"{fmtconvDllPath}\")\r\n" +
@@ -698,15 +700,27 @@ public class FilterScribeVM : BaseVM
         }
     }
 
-    public static string VapourSynthVszipclTitle =>
+    public ObservableCollection<AppConfItem> VSZipCLSettingsListing { get; } = [];
+
+    public string VSZipCLDeviceId
+    {
+        get => _vszipclDeviceId;
+        set
+        {
+            if (!SetProperty(ref _vszipclDeviceId, value)) return;
+            OnPropertyChanged(nameof(VSZipCLFilter));
+        }
+    }
+
+    public static string VSZipCLTitle =>
         FilterScribeModalLangProvider.Current["SrcScribe.VszipclTitle"];
-    public static string VapourSynthVszipclPreviewHint =>
+    public static string VSZipCLPreviewHint =>
         FilterScribeModalLangProvider.Current["SrcScribe.VszipclPreviewHint"];
-    public static string VapourSynthVszipclDeviceHint =>
+    public static string VSZipCLDeviceHint =>
         FilterScribeModalLangProvider.Current["SrcScribe.VszipclDeviceHint"];
-    public bool VapourSynthVszipclHasFmtconv =>
+    public bool VSZipCLHasFmtconv =>
         _sourceBitDepth != 8 && _sourceBitDepth != 16 && _sourceBitDepth != 32;
-    public string VapourSynthVszipclFmtconvHint =>
+    public string VSZipCLFmtconvHint =>
         string.Format(FilterScribeModalLangProvider.Current["SrcScribe.VszipclFmtconvHint"], _sourceBitDepth);
 
     public static string BlurSharpenTitle =>
@@ -896,9 +910,9 @@ public class FilterScribeVM : BaseVM
     public bool CanInsertAviSynthCropFilter => HasCropFilter;
     public bool CanInsertVapourSynthCropFilter => HasCropFilter;
     public bool CanInsertFFmpegCropFilter => HasCropFilter;
-    public bool CanInsertVapourSynthVszipclFilter => CanUseVapourSynthVszipcl;
+    public bool CanInsertVSZipCLFilter => CanUseVSZipCL;
 
-    private bool CanUseVapourSynthVszipcl =>
+    private bool CanUseVSZipCL =>
         LibImportProviderM.IsOpenCLAvailable
         && FFProbePixelFormatRules.IsYuvRgbOrGray(_colorSpaceAnalysis.PixelFormat);
 
@@ -1406,6 +1420,7 @@ public class FilterScribeVM : BaseVM
         };
         _cropRefreshTimer.Tick += (_, _) => FlushPendingCropRefresh();
         BuildColorSpaceSettingsListing();
+        BuildVSZipCLSettingsListing();
         OpenVpyPreviewCommand = new ActionCmd(_ => OpenVpyPreview(), _ => CanOpenVpyPreview);
         OpenAvsPreviewCommand = new ActionCmd(_ => OpenAvsPreview(), _ => CanOpenAvsPreview);
         OpenFfmpegPreviewCommand = new ActionCmd(_ => OpenFfmpegPreview(), _ => CanOpenFfmpegPreview);
@@ -1476,9 +1491,9 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(CanInsertFFmpegHighHdrToLowSdrColorFilter));
         OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
         OnPropertyChanged(nameof(FFmpegFullChainFilter));
-        OnPropertyChanged(nameof(VapourSynthVszipclFilter));
-        OnPropertyChanged(nameof(VapourSynthVszipclHasFmtconv));
-        OnPropertyChanged(nameof(VapourSynthVszipclFmtconvHint));
+        OnPropertyChanged(nameof(VSZipCLFilter));
+        OnPropertyChanged(nameof(VSZipCLHasFmtconv));
+        OnPropertyChanged(nameof(VSZipCLFmtconvHint));
         RecomputeCrop();
     }
 
@@ -1507,6 +1522,31 @@ public class FilterScribeVM : BaseVM
         });
     }
 
+    private void BuildVSZipCLSettingsListing()
+    {
+        TextBox textBox = new()
+        {
+            Width = 200,
+            HorizontalAlignment = HorizontalAlignment.Right
+        };
+        textBox.PreviewTextInput += VSZipCLDeviceIdPreviewTextInput;
+        DataObject.AddPastingHandler(textBox, VSZipCLDeviceIdPasting);
+        textBox.SetBinding(
+            TextBox.TextProperty,
+            new Binding(nameof(VSZipCLDeviceId))
+            {
+                Source = this,
+                Mode = BindingMode.TwoWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+
+        VSZipCLSettingsListing.Add(new AppConfItem
+        {
+            Text = "OpenCL Device ID",
+            Content = textBox
+        });
+    }
+
     private static void PeakNitsPreviewTextInput(object sender, TextCompositionEventArgs e)
     {
         if (sender is not TextBox textBox) return;
@@ -1530,6 +1570,31 @@ public class FilterScribeVM : BaseVM
         string proposedText = textBox.Text.Remove(textBox.SelectionStart, textBox.SelectionLength)
             .Insert(textBox.SelectionStart, insertedText);
         return proposedText.Count(character => character == '.') <= 1;
+    }
+
+    private static void VSZipCLDeviceIdPreviewTextInput(object sender, TextCompositionEventArgs e)
+    {
+        if (sender is not TextBox textBox) return;
+        e.Handled = !IsValidVSZipCLDeviceIdText(textBox, e.Text);
+    }
+
+    private static void VSZipCLDeviceIdPasting(object sender, DataObjectPastingEventArgs e)
+    {
+        if (sender is not TextBox textBox) return;
+        string? pastedText = e.DataObject.GetData(DataFormats.UnicodeText) as string
+            ?? e.DataObject.GetData(DataFormats.Text) as string;
+        if (pastedText is null || !IsValidVSZipCLDeviceIdText(textBox, pastedText))
+            e.CancelCommand();
+    }
+
+    private static bool IsValidVSZipCLDeviceIdText(TextBox textBox, string insertedText)
+    {
+        if (insertedText.Any(character => !char.IsDigit(character)))
+            return false;
+
+        string proposedText = textBox.Text.Remove(textBox.SelectionStart, textBox.SelectionLength)
+            .Insert(textBox.SelectionStart, insertedText);
+        return proposedText.Length > 0 && proposedText.All(char.IsDigit);
     }
 
     public void RefreshGeneratedFFmpegFilters()
@@ -2227,10 +2292,10 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(FFmpegFpsScaleFilter));
         OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
         OnPropertyChanged(nameof(FFmpegFullChainFilter));
-        OnPropertyChanged(nameof(VapourSynthVszipclTitle));
-        OnPropertyChanged(nameof(VapourSynthVszipclPreviewHint));
-        OnPropertyChanged(nameof(VapourSynthVszipclDeviceHint));
-        OnPropertyChanged(nameof(VapourSynthVszipclFmtconvHint));
+        OnPropertyChanged(nameof(VSZipCLTitle));
+        OnPropertyChanged(nameof(VSZipCLPreviewHint));
+        OnPropertyChanged(nameof(VSZipCLDeviceHint));
+        OnPropertyChanged(nameof(VSZipCLFmtconvHint));
         OnPropertyChanged(nameof(ColorSpaceConvertTitle));
         OnPropertyChanged(nameof(DenoiseTitle));
         OnPropertyChanged(nameof(ScaleHint));
