@@ -78,6 +78,7 @@ public static partial class RegexProviderM
         string pattern = token switch
         {
             "svtav1encapp" => @"(^|[^a-z0-9])svt[^a-z0-9]*av1[^a-z0-9]*enc[^a-z0-9]*app([^a-z0-9]|$)",
+            "avs2pipemod" => @"(^|[^a-z0-9])avs2pipemod\d*([^a-z0-9]|$)",
             _ => $@"(^|[^a-z0-9]){Regex.Escape(token)}([^a-z0-9]|$)"
         };
 

@@ -16,7 +16,8 @@ public static class AutoToolImport
         "x264.exe",
         "x265.exe",
         "svtav1encapp.exe",
-        "ffprobe.exe"
+        "ffprobe.exe",
+        "avisynth.dll"
     ];
 
     private static readonly HashSet<string> TopLevelScanTools = new(StringComparer.OrdinalIgnoreCase)
@@ -25,7 +26,14 @@ public static class AutoToolImport
         "ffprobe.exe",
         "x264.exe",
         "x265.exe",
-        "svtav1encapp.exe"
+        "svtav1encapp.exe",
+        "avs2yuv.exe",
+        "avs2pipemod.exe"
+    };
+
+    private static readonly HashSet<string> TopLevelScanDllTools = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "avisynth.dll"
     };
 
     /// <summary>
@@ -77,7 +85,10 @@ public static class AutoToolImport
     /// </summary>
     private static async Task<Candidate?> FindTopLevelCandidateAsync(string exeName)
     {
-        if (!TopLevelScanTools.Contains(exeName)) return null;
+        bool isDll = TopLevelScanDllTools.Contains(exeName);
+        if (!TopLevelScanTools.Contains(exeName) && !isDll) return null;
+
+        string searchPattern = isDll ? "*.dll" : "*.exe";
 
         foreach (string directory in GetTopLevelScanDirectories())
         {
@@ -86,7 +97,7 @@ public static class AutoToolImport
             IEnumerable<FileInfo> matches;
             try
             {
-                matches = [.. Directory.EnumerateFiles(directory, "*.exe", SearchOption.TopDirectoryOnly)
+                matches = [.. Directory.EnumerateFiles(directory, searchPattern, SearchOption.TopDirectoryOnly)
                     .Where(path => IsCandidateFileNameMatch(exeName, path))
                     .Select(path => new FileInfo(path))
                     .OrderByDescending(file => file.Name.Equals(exeName, StringComparison.OrdinalIgnoreCase))
@@ -118,6 +129,9 @@ public static class AutoToolImport
     /// </summary>
     private static async Task<Candidate?> FindUpstreamTreeCandidateAsync(string exeName)
     {
+        bool isDll = TopLevelScanDllTools.Contains(exeName);
+        string searchPattern = isDll ? "*.dll" : "*.exe";
+
         foreach (string rootDirectory in GetUpstreamTreeScanDirectories())
         {
             if (string.IsNullOrWhiteSpace(rootDirectory) || !Directory.Exists(rootDirectory)) continue;
@@ -125,7 +139,7 @@ public static class AutoToolImport
             IEnumerable<FileInfo> matches;
             try
             {
-                matches = [.. Directory.EnumerateFiles(rootDirectory, "*.exe", SearchOption.AllDirectories)
+                matches = [.. Directory.EnumerateFiles(rootDirectory, searchPattern, SearchOption.AllDirectories)
                     .Where(path => IsCandidateFileNameMatch(exeName, path))
                     .Select(path => new FileInfo(path))
                     .OrderByDescending(file => file.Name.Equals(exeName, StringComparison.OrdinalIgnoreCase))
