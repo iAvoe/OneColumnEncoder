@@ -311,10 +311,7 @@ public static partial class EncTermsCheck
                 || CheckLsmashInDir(Path.Combine(programFilesX86, "AviSynth+", "plugins64"))
                 || CheckLsmashInDir(Path.Combine(programFilesX86, "AviSynth+", "plugins64+"));
         }
-        catch
-        {
-            return false;
-        }
+        catch { return false; }
     }
 
     private static bool CheckLsmashInDir(string? directory)

@@ -126,8 +126,7 @@ public class MainVM : BaseVM
         private set
         {
             if (!SetProperty(ref _activeSrcValidationCard, value)) return;
-            if (SrcValGroup != null)
-                SrcValGroup.Card = value;
+            if (SrcValGroup != null) SrcValGroup.Card = value;
         }
     }
 
@@ -959,6 +958,8 @@ public class MainVM : BaseVM
         RefreshUpstreamToolState();
         RefreshVspipeAvailability();
         RefreshImportedToolsChecklist();
+        // Keep picked checklist in sync (covers encoder/analytics, not just upstream).
+        RefreshAllToolPickedStatuses();
         RefreshEncTermsState();
         ToolManagementProviderM.RefreshDependencySelectionState(
             UpstreamsZone, DependenciesZone, UpdateEncStartButtonsState);
@@ -1329,6 +1330,8 @@ public class MainVM : BaseVM
             _SrcRepart.ApplyPlan(snapshot.RepartPlan);
 
         ApplyForkCards(snapshot.Cards, restoreValues: true, restoreSelection: true);
+        // Fork restores IsSelected directly, so refresh picked checklist explicitly.
+        RefreshAllToolPickedStatuses();
         RefreshSelectedSrcStatus(resetAnalysis: false);
 
         CopyAnalysis(snapshot.Analysis, _srcVideoAnalysis);
@@ -1360,6 +1363,8 @@ public class MainVM : BaseVM
         RefreshDurationFilterStatus();
         RefreshSelectedSrcStatus(resetAnalysis: false);
         ApplyForkCards(snapshot.Cards, restoreValues: true, restoreSelection: false);
+        // Re-apply after final value restore so fork opens visually identical.
+        RefreshAllToolPickedStatuses();
     }
 
     private void ApplyForkCards(
@@ -2095,6 +2100,8 @@ public class MainVM : BaseVM
         if (sender is not ToolItemCardVM) return;
         if (e.PropertyName == nameof(ToolItemCardVM.IsSelected))
         {
+            // Sync picked checklist on programmatic selection changes (e.g. fork restore).
+            RefreshToolPickedStatus(ToolZone.Encoder, EncodersZone);
             SrcValCard.RefreshSvtav1BitDepthStatus();
             QueueSrcFilterCard.RefreshSvtav1BitDepthStatus();
             ConcatCheckCard.RefreshSvtav1BitDepthStatus();
@@ -2109,6 +2116,8 @@ public class MainVM : BaseVM
         if (sender is not ToolItemCardVM) return;
         if (e.PropertyName == nameof(ToolItemCardVM.IsSelected))
         {
+            // Sync picked checklist on programmatic selection changes (e.g. fork restore).
+            RefreshToolPickedStatus(ToolZone.Upstream, UpstreamsZone);
             RefreshToolSrcChecklistStatus();
             RefreshEncTermsState();
         }
@@ -2119,6 +2128,9 @@ public class MainVM : BaseVM
         if (sender is not ToolItemCardVM) return;
         if (e.PropertyName is nameof(ToolItemCardVM.P2TextData) or nameof(ToolItemCardVM.IsSelected))
         {
+            // Sync picked checklist on programmatic selection changes (e.g. fork restore).
+            if (e.PropertyName == nameof(ToolItemCardVM.IsSelected))
+                RefreshToolPickedStatus(ToolZone.Analytics, AnalyticsZone);
             ResetAnalysisIfStale();
             UpdateAnalyzeSrcButtonsState();
             UpdateEncStartButtonsState();
@@ -2205,6 +2217,15 @@ public class MainVM : BaseVM
             RefreshToolPickedStatus(ToolZone.Encoder, itemZone);
         else if (itemZone == AnalyticsZone)
             RefreshToolPickedStatus(ToolZone.Analytics, itemZone);
+    }
+
+    // Refreshes upstream/encoder/analytics picked checklist entries from current selections.
+    private void RefreshAllToolPickedStatuses()
+    {
+        if (ToolsImportCard == null) return;
+        RefreshToolPickedStatus(ToolZone.Upstream, UpstreamsZone);
+        RefreshToolPickedStatus(ToolZone.Encoder, EncodersZone);
+        RefreshToolPickedStatus(ToolZone.Analytics, AnalyticsZone);
     }
     #endregion
 
