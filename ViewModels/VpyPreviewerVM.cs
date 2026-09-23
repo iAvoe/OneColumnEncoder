@@ -584,7 +584,7 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
         {
             Task.Delay(500).ContinueWith(_ => PreviewPipeline.DeleteDirectoryQuietly(_workDirectory));
         }
-        catch (UnauthorizedAccessException) {} // Duh
+        catch (UnauthorizedAccessException) { } // Duh
     }
 
     public override void Dispose()

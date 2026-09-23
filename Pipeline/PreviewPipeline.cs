@@ -1,6 +1,5 @@
 using OneColumnEncoder.Models.Analysis;
 using OneColumnEncoder.Models.Encoding;
-using System;
 using System.IO;
 using System.Windows.Media.Imaging;
 
@@ -26,7 +25,7 @@ public static partial class PreviewPipeline
             if (Directory.Exists(directory))
                 Directory.Delete(directory, recursive: true);
         }
-        catch {}
+        catch { }
     }
 
     public static void EnsureFileExists(string path, string message)

@@ -694,7 +694,7 @@ public class FilterScribeVM : BaseVM
             string convOut = targetBpp == 0
                 ? ""
                 : $"src = core.fmtc.bitdepth(src, bits={_sourceBitDepth})\r\n";
-            
+
 
             return $"{loadVszipcl}\r\n{convIn}{vszipclCalls}\r\n{convOut}".TrimEnd();
         }

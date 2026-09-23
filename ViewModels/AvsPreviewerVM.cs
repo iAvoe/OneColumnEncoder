@@ -91,19 +91,22 @@ public class AvsPreviewerVM : BaseVM, IPreviewViewModel
     public bool IsBusy
     {
         get => _isBusy;
-        private set {
+        private set
+        {
             if (!SetProperty(ref _isBusy, value)) return;
             OnPropertyChanged(nameof(IsIdle)); UpdatePreviewButtonText();
         }
     }
     public bool IsIdle => !IsBusy;
     private string _statusText = "";
-    public string StatusText {
+    public string StatusText
+    {
         get => _statusText;
         private set => SetProperty(ref _statusText, value);
     }
     private string _logText = "";
-    public string FrameServerLogText {
+    public string FrameServerLogText
+    {
         get => _logText;
         private set => SetProperty(ref _logText, value);
     }
@@ -114,16 +117,19 @@ public class AvsPreviewerVM : BaseVM, IPreviewViewModel
         private set => SetProperty(ref _previewButtonText, value);
     }
     private int _zoomPercent = 100;
-    public int ZoomPercent {
+    public int ZoomPercent
+    {
         get => _zoomPercent;
         private set => SetProperty(ref _zoomPercent, value);
     }
-    public int PreviewPositionSeconds {
+    public int PreviewPositionSeconds
+    {
         get => CurrentFrame;
         set => CurrentFrame = value;
     }
     private int _maxPositionSeconds = 1;
-    public int MaxPositionSeconds {
+    public int MaxPositionSeconds
+    {
         get => _maxPositionSeconds;
         private set => SetProperty(ref _maxPositionSeconds, value);
     }
@@ -268,13 +274,15 @@ public class AvsPreviewerVM : BaseVM, IPreviewViewModel
         try { RefreshPreviewScript(); SetReadyTexts(); }
         catch (Exception ex) { SetStatus(PreviewTextState.ScriptError, ex.Message); }
     }
-    private void CancelPreview() {
+    private void CancelPreview()
+    {
         try { _previewCts?.Cancel(); }
-        catch (ObjectDisposedException) {}
+        catch (ObjectDisposedException) { }
         if (_currentProcess != null)
             PreviewPipeline.TryKillProcess(_currentProcess);
     }
-    private void ResetLog() {
+    private void ResetLog()
+    {
         lock (_logLock) _logBuilder.Clear(); _logReady = false;
         RunOnUi(() => FrameServerLogText = string.Empty);
     }
@@ -350,7 +358,8 @@ public class AvsPreviewerVM : BaseVM, IPreviewViewModel
             PreviewTextState.Cancelled => Lang.StatusCancelled,
             PreviewTextState.ScriptError =>
                 string.Format(CultureInfo.CurrentCulture, Lang.StatusScriptError, _statusDetail ?? ""),
-            PreviewTextState.Custom => _statusDetail ?? "", _ => Lang.StatusReady
+            PreviewTextState.Custom => _statusDetail ?? "",
+            _ => Lang.StatusReady
         };
     private void UpdatePreviewButtonText() =>
         PreviewButtonText = IsBusy ? Lang["Cancel"] : Lang["Preview"];
@@ -405,7 +414,8 @@ public class AvsPreviewerVM : BaseVM, IPreviewViewModel
     {
         Lang = new AvsPreviewerLangProvider(UILangProvider.Current.LanguageCode);
         UpdatePreviewButtonText();
-        RunOnUi(() => {
+        RunOnUi(() =>
+        {
             StatusText = BuildStatusText();
             if (_logReady) FrameServerLogText = Lang.StatusReady;
         });
