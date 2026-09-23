@@ -33,6 +33,84 @@
             <Setter Property="FontSize"
                     Value="22" />
         </Style>
+
+        <ControlTemplate x:Key="ScribeScrollViewerTemplate"
+                         TargetType="ScrollViewer">
+            <Grid Background="{TemplateBinding Background}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
+                                        Grid.Row="0"
+                                        Grid.Column="0"
+                                        Margin="{TemplateBinding Padding}"
+                                        Content="{TemplateBinding Content}"
+                                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                                        CanContentScroll="{TemplateBinding CanContentScroll}" />
+
+                <ScrollBar x:Name="PART_HorizontalScrollBar"
+                           Grid.Row="1"
+                           Grid.Column="0"
+                           Grid.ColumnSpan="2"
+                           Orientation="Horizontal"
+                           ViewportSize="{TemplateBinding ViewportWidth}"
+                           Maximum="{TemplateBinding ScrollableWidth}"
+                           Minimum="0"
+                           Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
+                           Value="{TemplateBinding HorizontalOffset}" />
+
+                <ScrollBar x:Name="PART_VerticalScrollBar"
+                           Grid.Row="0"
+                           Grid.RowSpan="2"
+                           Grid.Column="1"
+                           Orientation="Vertical"
+                           ViewportSize="{TemplateBinding ViewportHeight}"
+                           Maximum="{TemplateBinding ScrollableHeight}"
+                           Minimum="0"
+                           Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                           Value="{TemplateBinding VerticalOffset}" />
+
+                <Rectangle x:Name="ScrollCorner"
+                           Grid.Row="1"
+                           Grid.Column="1"
+                           Visibility="Collapsed" />
+            </Grid>
+        </ControlTemplate>
+
+        <!--
+        Fix: H-V scrollbar region overlap on the tab code TextBoxes (Grid.Row="0" of TabAvs, TabVpy, TabFFmpeg).
+        Same fix as EncodingMonitor log viewer (SplitTextCard.xaml / commit 289b015)
+        the default ScrollViewer template is replaced with a 2x2 Grid where the horizontal bar spans the
+        full bottom row, the vertical bar spans the full right column, and the corner Rectangle is collapsed
+        so the bars can never draw an intersecting corner box. ScribeCodeBox below wires the TextBox template
+        to this ScrollViewer and forwards ScrollViewer.H/VScrollBarVisibility via TemplateBinding.
+        -->
+        <Style x:Key="ScribeCodeBox"
+               TargetType="TextBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="Bd"
+                                SnapsToDevicePixels="True"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Focusable="False"
+                                          HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                          VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                                          Template="{StaticResource ScribeScrollViewerTemplate}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </ui:AdaptiveWindow.Resources>
     <Grid Margin="15 12.5 15 15">
         <!--
@@ -77,6 +155,7 @@
                     </Grid.RowDefinitions>
                     <TextBox Grid.Row="0"
                              Text="{Binding AvsPrefix, Mode=OneWay}"
+                             Style="{StaticResource ScribeCodeBox}"
                              VerticalAlignment="Stretch"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
@@ -105,11 +184,11 @@
                              Foreground="{StaticResource ScriptAccentAvsForeground}"
                              TextWrapping="Wrap"
                              AcceptsReturn="True"
-                             Padding="2.5"
+                             Margin="0 2.5 0 0"
+                             Padding="2 2.5"
                              HorizontalScrollBarVisibility="Auto"
                              VerticalScrollBarVisibility="Auto"
                              PreviewMouseWheel="UserInput_PreviewMouseWheel"
-                             Margin="0 2.5 0 0"
                              FontWeight="Normal" />
                     <TextBox Grid.Row="3"
                              Text="{Binding AvsSuffix, Mode=OneWay}"
@@ -122,47 +201,47 @@
                              AcceptsReturn="True"
                              Margin="0 2.5 0 0"
                              FontWeight="Normal" />
-                     <CheckBox Grid.Row="4"
-                               Content="{Binding AvsEnableFpsParamsLabel}"
-                               IsChecked="{Binding AvsEnableFpsParams}"
-                               IsEnabled="{Binding IsFrameRateApplicable}"
-                               Margin="0 2.5 0 0"
-                               FontWeight="DemiBold"
-                               Foreground="{StaticResource GlobalSecondary}" />
-                     <!-- A/B Preview button -->
-                     <Button Grid.Row="2"
-                             Command="{Binding OpenAvsPreviewCommand}"
-                             IsEnabled="{Binding CanOpenAvsPreview}"
-                             Height="30"
-                             Width="120"
-                             HorizontalAlignment="Right"
-                             VerticalAlignment="Bottom"
-                             Margin="0 2.5 0 0"
-                             Panel.ZIndex="1"
-                             Style="{StaticResource AzureButton}"
-                             BorderThickness="0">
-                         <StackPanel Orientation="Horizontal"
-                                     VerticalAlignment="Center"
-                                     HorizontalAlignment="Center">
-                             <Rectangle Width="14"
-                                        Height="14"
-                                        VerticalAlignment="Center"
-                                        Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                                 <Rectangle.OpacityMask>
-                                     <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GamePlay}"
-                                                 Stretch="Uniform"
-                                                 AlignmentX="Center"
-                                                 AlignmentY="Center" />
-                                 </Rectangle.OpacityMask>
-                             </Rectangle>
-                             <TextBlock Text="A/B Preview"
-                                        VerticalAlignment="Center"
-                                        FontWeight="Normal"
-                                        Margin="5 0 -5 0" />
-                         </StackPanel>
-                     </Button>
-                 </Grid>
-             </TabItem>
+                    <CheckBox Grid.Row="4"
+                              Content="{Binding AvsEnableFpsParamsLabel}"
+                              IsChecked="{Binding AvsEnableFpsParams}"
+                              IsEnabled="{Binding IsFrameRateApplicable}"
+                              Margin="0 2.5 0 0"
+                              FontWeight="DemiBold"
+                              Foreground="{StaticResource GlobalSecondary}" />
+                    <!-- A/B Preview button -->
+                    <Button Grid.Row="2"
+                            Command="{Binding OpenAvsPreviewCommand}"
+                            IsEnabled="{Binding CanOpenAvsPreview}"
+                            Height="30"
+                            Width="120"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            Margin="0 2.5 0 0"
+                            Panel.ZIndex="1"
+                            Style="{StaticResource AzureButton}"
+                            BorderThickness="0">
+                        <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+                            <Rectangle Width="14"
+                                       Height="14"
+                                       VerticalAlignment="Center"
+                                       Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                <Rectangle.OpacityMask>
+                                    <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GamePlay}"
+                                                Stretch="Uniform"
+                                                AlignmentX="Center"
+                                                AlignmentY="Center" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <TextBlock Text="A/B Preview"
+                                       VerticalAlignment="Center"
+                                       FontWeight="Normal"
+                                       Margin="5 0 -5 0" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </TabItem>
 
             <TabItem Header="{Binding TabVpy}"
                      Padding="15 7.5"
@@ -178,6 +257,7 @@
                     </Grid.RowDefinitions>
                     <TextBox Grid.Row="0"
                              Text="{Binding VpyPrefix, Mode=OneWay}"
+                             Style="{StaticResource ScribeCodeBox}"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
                              IsReadOnly="True"
@@ -204,9 +284,9 @@
                              Foreground="{StaticResource ScriptAccentVpyForeground}"
                              TextWrapping="Wrap"
                              AcceptsReturn="True"
-                             Padding="2.5"
-                             PreviewMouseWheel="UserInput_PreviewMouseWheel"
                              Margin="0 2.5 0 0"
+                             Padding="2 2.5"
+                             PreviewMouseWheel="UserInput_PreviewMouseWheel"
                              FontWeight="Normal" />
                     <TextBox Grid.Row="3"
                              Text="{Binding VpySuffix, Mode=OneWay}"
@@ -226,7 +306,7 @@
                               Margin="0 2.5 0 0"
                               FontWeight="DemiBold"
                               Foreground="{StaticResource GlobalSecondary}" />
-                     <Button Grid.Row="2"
+                    <Button Grid.Row="2"
                             Command="{Binding OpenVpyPreviewCommand}"
                             IsEnabled="{Binding CanOpenVpyPreview}"
                             Height="30"
@@ -265,21 +345,21 @@
                      FontWeight="Bold">
                 <Grid Margin="0 2.5">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*"
-                                       MinHeight="150" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <TextBox Grid.Row="0"
                              Text="{Binding FFmpegConcatFileList, Mode=OneWay}"
                              IsReadOnly="True"
+                             Style="{StaticResource ScribeCodeBox}"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
                              Background="{StaticResource Background}"
                              Foreground="{StaticResource ButtonTertiary}"
                              TextWrapping="NoWrap"
                              AcceptsReturn="True"
-                             Padding="2.5"
+                             Padding="1.25 2.5"
                              MaxHeight="150"
                              HorizontalScrollBarVisibility="Auto"
                              VerticalScrollBarVisibility="Auto"
@@ -289,10 +369,9 @@
                                Text="{Binding FFmpegFreeTextHint}"
                                Foreground="{StaticResource GlobalSecondary}"
                                TextWrapping="Wrap"
-                               Margin="0"
                                FontWeight="Normal" />
-                     <TextBox Grid.Row="2"
-                              Text="{Binding FFmpegFreeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    <TextBox Grid.Row="2"
+                             Text="{Binding FFmpegFreeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
                              Background="{StaticResource ScriptAccentFFmpegBackground}"
@@ -300,45 +379,45 @@
                              TextWrapping="Wrap"
                              AcceptsReturn="False"
                              Margin="0 2.5 0 0"
-                             Padding="2.5"
+                             Padding="2 2.5"
                              HorizontalScrollBarVisibility="Auto"
                              VerticalScrollBarVisibility="Disabled"
                              PreviewKeyDown="FFmpegFreeText_PreviewKeyDown"
                              DataObject.Pasting="FFmpegFreeText_Pasting"
-                              PreviewMouseWheel="UserInput_PreviewMouseWheel"
-                              FontWeight="Normal" />
-                     <Button Grid.Row="2"
-                             Command="{Binding OpenFfmpegPreviewCommand}"
-                             IsEnabled="{Binding CanOpenFfmpegPreview}"
-                             Height="30"
-                             Width="120"
-                             HorizontalAlignment="Right"
-                             VerticalAlignment="Bottom"
-                             Margin="0 2.5 0 0"
-                             Panel.ZIndex="1"
+                             PreviewMouseWheel="UserInput_PreviewMouseWheel"
+                             FontWeight="Normal" />
+                    <Button Grid.Row="2"
+                            Command="{Binding OpenFfmpegPreviewCommand}"
+                            IsEnabled="{Binding CanOpenFfmpegPreview}"
+                            Height="30"
+                            Width="120"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            Margin="0 2.5 0 0"
+                            Panel.ZIndex="1"
                             Style="{StaticResource LavenderButton}"
-                             BorderThickness="0">
-                         <StackPanel Orientation="Horizontal"
-                                     VerticalAlignment="Center"
-                                     HorizontalAlignment="Center">
-                             <Rectangle Width="14"
-                                        Height="14"
-                                        VerticalAlignment="Center"
-                                        Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                                 <Rectangle.OpacityMask>
-                                     <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GamePlay}"
-                                                 Stretch="Uniform"
-                                                 AlignmentX="Center"
-                                                 AlignmentY="Center" />
-                                 </Rectangle.OpacityMask>
-                             </Rectangle>
-                             <TextBlock Text="A/B Preview"
-                                        VerticalAlignment="Center"
-                                        FontWeight="Normal"
-                                        Margin="5 0 -5 0" />
-                         </StackPanel>
-                     </Button>
-                 </Grid>
+                            BorderThickness="0">
+                        <StackPanel Orientation="Horizontal"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Center">
+                            <Rectangle Width="14"
+                                       Height="14"
+                                       VerticalAlignment="Center"
+                                       Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                <Rectangle.OpacityMask>
+                                    <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GamePlay}"
+                                                Stretch="Uniform"
+                                                AlignmentX="Center"
+                                                AlignmentY="Center" />
+                                </Rectangle.OpacityMask>
+                            </Rectangle>
+                            <TextBlock Text="A/B Preview"
+                                       VerticalAlignment="Center"
+                                       FontWeight="Normal"
+                                       Margin="5 0 -5 0" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
             </TabItem>
         </TabControl>
 
@@ -376,57 +455,57 @@
                                  VerticalAlignment="Center" />
                     </StackPanel>
 
-                <StackPanel>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding SarRepairTitle}"
-                                   Style="{StaticResource H3}"
-                                   Margin="0 15 0 0" />
-                        <Button Grid.Column="1"
-                                Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
-                                Command="{Binding InsertFFmpegFilterCommand}"
-                                CommandParameter="{Binding FFmpegSarRepairFilter}"
-                                IsEnabled="{Binding CanInsertFFmpegSarRepairFilter}"
-                                Style="{StaticResource AppendLinkButton}" />
-                    </Grid>
-                    <TextBox Text="{Binding FFmpegSarRepairFilterDisplay, Mode=OneWay}"
-                             Padding="0 2.5"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{StaticResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             VerticalAlignment="Center" />
-                </StackPanel>
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding SarRepairTitle}"
+                                       Style="{StaticResource H3}"
+                                       Margin="0 15 0 0" />
+                            <Button Grid.Column="1"
+                                    Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                    Command="{Binding InsertFFmpegFilterCommand}"
+                                    CommandParameter="{Binding FFmpegSarRepairFilter}"
+                                    IsEnabled="{Binding CanInsertFFmpegSarRepairFilter}"
+                                    Style="{StaticResource AppendLinkButton}" />
+                        </Grid>
+                        <TextBox Text="{Binding FFmpegSarRepairFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{StaticResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center" />
+                    </StackPanel>
 
-                <!-- Keep all libplacebo options directly after SAR repair. -->
-                <StackPanel>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding DebandTitle}"
-                                   Style="{StaticResource H3}"
-                                   Margin="0 15 0 0" />
-                        <Button Grid.Column="1"
-                                Command="{Binding InsertFFmpegFilterCommand}"
-                                CommandParameter="{Binding FFmpegDebandFilter}"
-                                IsEnabled="{Binding CanInsertFFmpegDebandFilter}"
-                                Style="{StaticResource AppendLinkButton}" />
-                    </Grid>
-                    <TextBox Text="{Binding FFmpegDebandFilterDisplay, Mode=OneWay}"
-                             Padding="0 2.5"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             VerticalAlignment="Center" />
-                </StackPanel>
+                    <!-- Keep all libplacebo options directly after SAR repair. -->
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding DebandTitle}"
+                                       Style="{StaticResource H3}"
+                                       Margin="0 15 0 0" />
+                            <Button Grid.Column="1"
+                                    Command="{Binding InsertFFmpegFilterCommand}"
+                                    CommandParameter="{Binding FFmpegDebandFilter}"
+                                    IsEnabled="{Binding CanInsertFFmpegDebandFilter}"
+                                    Style="{StaticResource AppendLinkButton}" />
+                        </Grid>
+                        <TextBox Text="{Binding FFmpegDebandFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center" />
+                    </StackPanel>
                 </StackPanel>
 
                 <StackPanel>
@@ -604,47 +683,47 @@
                              Padding="0 2.5"
                              IsReadOnly="True"
                              BorderThickness="0"
-FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             VerticalAlignment="Center" />
-
-                <!-- The writer places native flips before an existing libplacebo block. -->
-                <StackPanel>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding FlipTitle}"
-                                   Style="{StaticResource H3}"
-                                   Margin="0 15 0 0" />
-                        <Button Grid.Column="1"
-                                Command="{Binding InsertFFmpegFlipFilterCommand}"
-                                CommandParameter="{Binding FFmpegFlipFilter}"
-                                IsEnabled="{Binding CanInsertFFmpegFlipFilter}"
-                                Style="{StaticResource AppendLinkButton}" />
-                    </Grid>
-                    <StackPanel Orientation="Horizontal"
-                                Margin="1 5 0 0">
-                        <CheckBox Content="{Binding HorizontalFlipLabel}"
-                                  IsChecked="{Binding HorizontalFlipEnabled}"
-                                  Margin="0 0 20 0"
-                                  Foreground="{StaticResource GlobalSecondary}" />
-                        <CheckBox Content="{Binding VerticalFlipLabel}"
-                                  IsChecked="{Binding VerticalFlipEnabled}"
-                                  Foreground="{StaticResource GlobalSecondary}" />
-                    </StackPanel>
-                    <TextBox Text="{Binding FFmpegFlipFilterDisplay, Mode=OneWay}"
-                             Margin="0 2.5 0 0"
-                             Padding="0 2.5"
-                             IsReadOnly="True"
-                             BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
                              Background="{StaticResource Background}"
                              Foreground="{StaticResource ButtonTertiary}"
                              VerticalAlignment="Center" />
-                </StackPanel>
+
+                    <!-- The writer places native flips before an existing libplacebo block. -->
+                    <StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding FlipTitle}"
+                                       Style="{StaticResource H3}"
+                                       Margin="0 15 0 0" />
+                            <Button Grid.Column="1"
+                                    Command="{Binding InsertFFmpegFlipFilterCommand}"
+                                    CommandParameter="{Binding FFmpegFlipFilter}"
+                                    IsEnabled="{Binding CanInsertFFmpegFlipFilter}"
+                                    Style="{StaticResource AppendLinkButton}" />
+                        </Grid>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="1 5 0 0">
+                            <CheckBox Content="{Binding HorizontalFlipLabel}"
+                                      IsChecked="{Binding HorizontalFlipEnabled}"
+                                      Margin="0 0 20 0"
+                                      Foreground="{StaticResource GlobalSecondary}" />
+                            <CheckBox Content="{Binding VerticalFlipLabel}"
+                                      IsChecked="{Binding VerticalFlipEnabled}"
+                                      Foreground="{StaticResource GlobalSecondary}" />
+                        </StackPanel>
+                        <TextBox Text="{Binding FFmpegFlipFilterDisplay, Mode=OneWay}"
+                                 Margin="0 2.5 0 0"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center" />
+                    </StackPanel>
                 </StackPanel>
 
                 <StackPanel Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}">
@@ -669,7 +748,7 @@ FontFamily="{DynamicResource CodeFont}"
                                 Style="{StaticResource AppendLinkButton}" />
                     </Grid>
                     <TextBox Padding="0 2.5"
-                              Text="FlipHorizontal(src)&#x0a;FlipVertical(src)"
+                             Text="FlipHorizontal(src)&#x0a;FlipVertical(src)"
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
@@ -1123,7 +1202,7 @@ FontFamily="{DynamicResource CodeFont}"
                                      Text="{Binding ScaleHint}"
                                      FontWeight="Normal" />
                 </StackPanel>
-                
+
                 <StackPanel Visibility="{Binding IsBlurSharpenSectionVisible, Converter={StaticResource BoolToVisibility}}">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -1179,7 +1258,7 @@ FontFamily="{DynamicResource CodeFont}"
                              Background="{StaticResource Background}"
                              Foreground="{StaticResource ButtonTertiary}"
                              VerticalAlignment="Center" />
-                    
+
                 </StackPanel>
                 <StackPanel>
                     <Grid>
