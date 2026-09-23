@@ -1,3 +1,5 @@
+using System.IO;
+
 namespace OneColumnEncoder.Pipeline;
 
 public sealed class KeyframeIndex : IDisposable
@@ -94,9 +96,15 @@ public sealed class KeyframeIndex : IDisposable
         double? intervalStartSec = null,
         double? intervalEndSec = null)
     {
+        string executablePath = Path.GetFullPath(ffprobePath);
+        string sourcePath = Path.GetFullPath(filePath);
+        string? workingDirectory = Path.GetDirectoryName(executablePath);
         ProcessStartInfo psi = new()
         {
-            FileName = ffprobePath,
+            FileName = executablePath,
+            WorkingDirectory = string.IsNullOrWhiteSpace(workingDirectory)
+                ? Environment.CurrentDirectory
+                : workingDirectory,
             UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
@@ -105,7 +113,7 @@ public sealed class KeyframeIndex : IDisposable
             CreateNoWindow = true
         };
 
-        foreach (string arg in BuildArgs(filePath, intervalStartSec, intervalEndSec))
+        foreach (string arg in BuildArgs(sourcePath, intervalStartSec, intervalEndSec))
             psi.ArgumentList.Add(arg);
 
         Process process = new() { StartInfo = psi, EnableRaisingEvents = true };

@@ -184,8 +184,7 @@ public static partial class RepartSrcValidator
                 return Rejected(RepartExclusionReason.NoVideoStream);
 
             string fieldOrder = Get(stream, "field_order");
-            if (!IsProgressiveFieldOrder(fieldOrder))
-                return Rejected(RepartExclusionReason.Interlaced, fieldOrder);
+            bool isInterlaced = !IsProgressiveFieldOrder(fieldOrder);
 
             if (GetInt(stream, "width") <= 0 || GetInt(stream, "height") <= 0)
                 return Rejected(RepartExclusionReason.NoDimensions);
@@ -195,19 +194,20 @@ public static partial class RepartSrcValidator
 
             RepartVideoFormatSignature signature = BuildSignature(stream, frameRate.num, frameRate.den);
 
-            return new RepartProbeOutcome(
-                null,
-                null,
-                new RepartSrcProbe(
-                    probe.RawJson,
-                    frameRate.num,
-                    frameRate.den,
-                    signature,
-                    probe.InitialLength,
-                    probe.InitialWriteTicks,
-                    TryGetDurationSeconds(document.RootElement, stream),
-                    TryGetStartTimeSeconds(document.RootElement, stream),
-                    TryGetFrameCount(stream)));
+            RepartSrcProbe repartProbe = new(
+                probe.RawJson,
+                frameRate.num,
+                frameRate.den,
+                signature,
+                probe.InitialLength,
+                probe.InitialWriteTicks,
+                TryGetDurationSeconds(document.RootElement, stream),
+                TryGetStartTimeSeconds(document.RootElement, stream),
+                TryGetFrameCount(stream));
+
+            return isInterlaced
+                ? new RepartProbeOutcome(RepartExclusionReason.Interlaced, fieldOrder, repartProbe)
+                : new RepartProbeOutcome(null, null, repartProbe);
         }
         catch (Exception ex)
         {
@@ -818,8 +818,9 @@ public static class RepartExclusionMessages
             RepartLangProvider.Current["WillExcludeSource"]);
 }
 
-// Shared confirm prompt for interlaced sources, used by every Repart Mode import
-// entry point (pre-open import and in-window re-import).
+// Shared prompt for interlaced sources, used by every Repart Mode import entry
+// point (pre-open import and in-window re-import). Confirm keeps the source;
+// cancel discards it and continues importing.
 public static class RepartInterlacedPrompt
 {
     public static bool Confirm(ModalNavS modalNavS, string windowTitle, RepartInterlacedSrcInfo source)

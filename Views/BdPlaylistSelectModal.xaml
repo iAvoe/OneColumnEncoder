@@ -215,7 +215,7 @@
                      ItemsSource="{Binding FinalPlaylists}"
                      SelectedItem="{Binding SelectedFinalPlaylist, Mode=TwoWay}"
                      ItemContainerStyle="{StaticResource PlaylistSelectListBoxItemStyle}"
-                     Margin="0 5 0 0"
+                     Margin="0 10 0 0"
                      BorderThickness="0"
                      Background="Transparent"
                      HorizontalContentAlignment="Stretch"

@@ -19,7 +19,7 @@ public static class RepartCompatibilityAnalyzer
         string ffprobePath,
         string? ffmpegPath,
         IReadOnlyList<string> filePaths,
-        Func<RepartInterlacedSrcInfo, bool>? confirmDiscardInterlacedSource = null,
+        Func<RepartInterlacedSrcInfo, bool>? confirmKeepInterlacedSource = null,
         Func<RepartFrameCountFallbackInfo, bool>? confirmExpandFrameCountSearch = null,
         CancellationToken cancellationToken = default)
     {
@@ -27,7 +27,7 @@ public static class RepartCompatibilityAnalyzer
             ffprobePath,
             ffmpegPath,
             filePaths,
-            confirmDiscardInterlacedSource,
+            confirmKeepInterlacedSource,
             confirmExpandFrameCountSearch,
             onFileProgress: null,
             onExcluded: null,
@@ -46,7 +46,7 @@ public static class RepartCompatibilityAnalyzer
         string ffprobePath,
         string? ffmpegPath,
         IReadOnlyList<string> filePaths,
-        Func<RepartInterlacedSrcInfo, bool>? confirmDiscardInterlacedSource = null,
+        Func<RepartInterlacedSrcInfo, bool>? confirmKeepInterlacedSource = null,
         Func<RepartFrameCountFallbackInfo, bool>? confirmExpandFrameCountSearch = null,
         Action<RepartAnalysisStage, int, int, string>? onFileProgress = null,
         Action<RepartExcludedSrcInfo>? onExcluded = null,
@@ -193,18 +193,21 @@ public static class RepartCompatibilityAnalyzer
 
                 if (analysis.RejectionReason == RepartExclusionReason.Interlaced)
                 {
-                    bool shouldDiscard = confirmDiscardInterlacedSource?.Invoke(new(
+                    bool? shouldKeep = confirmKeepInterlacedSource?.Invoke(new(
                         sourceFile.FilePath,
                         sourceFile.DisplayName,
-                        analysis.Detail ?? string.Empty)) == true;
-                    if (!shouldDiscard)
+                        analysis.Detail ?? string.Empty));
+                    if (shouldKeep == null)
                         throw new OperationCanceledException(
                             string.Format(
                                 RepartLangProvider.Current["InterlacedSrcRejected"],
                                 sourceFile.DisplayName,
                                 analysis.Detail ?? string.Empty),
                             cancellationToken);
-                    excluded.Add(excludedInfo);
+                    if (shouldKeep.Value)
+                        acceptedProbes.Add((sourceFile, analysis.Probe!));
+                    else
+                        Exclude(excludedInfo);
                     continue;
                 }
 

@@ -87,10 +87,16 @@ public sealed class RepartDividerPreviewService(string? ffmpegPath, string? ffpr
         foreach (RepartSourceM src in overlapping)
         {
             token.ThrowIfCancellationRequested();
-            if (!File.Exists(src.FilePath)) continue;
+            string sourcePath;
+            try { sourcePath = Path.GetFullPath(src.FilePath); }
+            catch (Exception) { continue; }
+
+            if (!File.Exists(sourcePath)) continue;
+
+            RepartSourceM normalizedSource = src with { FilePath = sourcePath };
 
             await AddSourceFramesAsync(
-                src,
+                normalizedSource,
                 windowFirst,
                 windowLast,
                 selectedFrame,
@@ -239,7 +245,22 @@ public sealed class RepartDividerPreviewService(string? ffmpegPath, string? ffpr
         token.ThrowIfCancellationRequested();
 
         using MemoryStream output = result.Output;
+        if (result.ExitCode != 0)
+        {
+            string detail = string.IsNullOrWhiteSpace(result.Stderr)
+                ? $"ffmpeg exited with code {result.ExitCode}."
+                : result.Stderr.Trim();
+            throw new InvalidOperationException(detail);
+        }
+
         List<byte[]> bmpFrames = SplitBmpFrames(output);
+        if (bmpFrames.Count == 0)
+        {
+            string detail = string.IsNullOrWhiteSpace(result.Stderr)
+                ? "ffmpeg produced no preview frames."
+                : result.Stderr.Trim();
+            throw new InvalidOperationException(detail);
+        }
         for (int i = 0; i < bmpFrames.Count; i++)
         {
             long frameNumber = src.FirstFrame + relFirst + i;
@@ -286,8 +307,21 @@ public sealed class RepartDividerPreviewService(string? ffmpegPath, string? ffpr
 
         if (cached != null && cached.CoversRange(windowStart, windowEnd, KeyframeIndexCacheReuseToleranceSeconds))
         {
-            await cached.Completion.WaitAsync(token).ConfigureAwait(false);
-            return cached.Count > 0 ? cached : null;
+            try
+            {
+                await cached.Completion.WaitAsync(token).ConfigureAwait(false);
+                return cached.Count > 0 ? cached : null;
+            }
+            catch (OperationCanceledException) when (token.IsCancellationRequested)
+            {
+                throw;
+            }
+            catch
+            {
+                if (RemoveCachedKeyframeIndex(source.FilePath, cached))
+                    cached.Dispose();
+                return null;
+            }
         }
 
         if (string.IsNullOrWhiteSpace(_ffprobePath) || !File.Exists(_ffprobePath))
@@ -310,9 +344,13 @@ public sealed class RepartDividerPreviewService(string? ffmpegPath, string? ffpr
                 windowStart,
                 windowEnd);
         }
-        catch
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
         {
             throw;
+        }
+        catch
+        {
+            return null;
         }
 
         lock (_keyframeIndexCacheSync)
@@ -369,7 +407,7 @@ public sealed class RepartDividerPreviewService(string? ffmpegPath, string? ffpr
         {
             if (RemoveCachedKeyframeIndex(source.FilePath, index))
                 index.Dispose();
-            throw;
+            return null;
         }
     }
 
@@ -522,8 +560,8 @@ public sealed class RepartDividerPreviewService(string? ffmpegPath, string? ffpr
             sourceVideoPath,
             "-vf",
             $"select=between(n\\,{safeFirstFrame}\\,{safeLastFrame}),scale=-2:{Math.Max(1, targetHeight)}:flags={scaleFlags}",
-            "-vsync",
-            "0",
+            "-fps_mode",
+            "passthrough",
             "-start_number",
             "0",
             "-frames:v",
@@ -561,8 +599,8 @@ public sealed class RepartDividerPreviewService(string? ffmpegPath, string? ffpr
             sourceVideoPath,
             "-vf",
             $"select=between(n\\,{safeFirstOffset}\\,{safeLastOffset}),scale=-2:{Math.Max(1, targetHeight)}:flags={scaleFlags}",
-            "-vsync",
-            "0",
+            "-fps_mode",
+            "passthrough",
             "-start_number",
             "0",
             "-frames:v",
@@ -593,8 +631,8 @@ public sealed class RepartDividerPreviewService(string? ffmpegPath, string? ffpr
             sourceVideoPath,
             "-vf",
             $"select=between(n\\,{safeFirstFrame}\\,{safeLastFrame}),scale=-2:{Math.Max(1, targetHeight)}:flags={scaleFlags}",
-            "-vsync",
-            "0",
+            "-fps_mode",
+            "passthrough",
             "-frames:v",
             (safeLastFrame - safeFirstFrame + 1).ToString(CultureInfo.InvariantCulture),
             "-f",
@@ -631,8 +669,8 @@ public sealed class RepartDividerPreviewService(string? ffmpegPath, string? ffpr
             sourceVideoPath,
             "-vf",
             $"select=between(n\\,{safeFirstOffset}\\,{safeLastOffset}),scale=-2:{Math.Max(1, targetHeight)}:flags={scaleFlags}",
-            "-vsync",
-            "0",
+            "-fps_mode",
+            "passthrough",
             "-frames:v",
             frameCount.ToString(CultureInfo.InvariantCulture),
             "-f",

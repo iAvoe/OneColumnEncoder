@@ -171,7 +171,7 @@ public sealed class OpenRepartConfCmd(
                 ffprobePath: getFfprobePath(),
                 ffmpegPath: getFFmpegPath?.Invoke(),
                 filePaths: filePaths,
-                confirmDiscardInterlacedSource: source => RepartInterlacedPrompt.Confirm(ModalNavS, RepartConfVM.WindowTitleText, source),
+                confirmKeepInterlacedSource: source => RepartInterlacedPrompt.Confirm(ModalNavS, RepartConfVM.WindowTitleText, source),
                 confirmExpandFrameCountSearch: source => RepartFrameCountPrompt.Confirm(ModalNavS, RepartConfVM.WindowTitleText, source),
                 onFileProgress: null,
                 onExcluded: null,

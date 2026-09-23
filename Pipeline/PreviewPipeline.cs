@@ -26,7 +26,7 @@ public static partial class PreviewPipeline
             if (Directory.Exists(directory))
                 Directory.Delete(directory, recursive: true);
         }
-        catch { }
+        catch {}
     }
 
     public static void EnsureFileExists(string path, string message)
@@ -39,21 +39,18 @@ public static partial class PreviewPipeline
         BuildSourceArgs(sourceVideoPath, TimeSpan.FromSeconds(previewPositionSeconds), outputPath, displayFilter);
 
     public static string[] BuildFFmpegBitmapPipeArgs(
-        string sourceVideoPath,
+        string srcPath,
         TimeSpan previewPosition,
         string? videoFilter = null)
     {
         List<string> args =
         [
             "-hide_banner",
-            "-loglevel",
-            "error",
+            "-loglevel", "error",
             "-nostdin",
             "-y",
-            "-ss",
-            EncodingPipeline.FormatTimestamp(previewPosition),
-            "-i",
-            sourceVideoPath
+            "-ss", EncodingPipeline.FormatTimestamp(previewPosition),
+            "-i", srcPath
         ];
 
         if (!string.IsNullOrWhiteSpace(videoFilter))
@@ -61,12 +58,9 @@ public static partial class PreviewPipeline
 
         args.AddRange(
         [
-            "-frames:v",
-            "1",
-            "-f",
-            "image2pipe",
-            "-c:v",
-            "bmp",
+            "-frames:v", "1",
+            "-f", "image2pipe",
+            "-c:v", "bmp",
             "pipe:1"
         ]);
         return [.. args];
@@ -129,12 +123,9 @@ public static partial class PreviewPipeline
         [
             "-hide_banner",
             "-y",
-            "-strict",
-            "unofficial",
-            "-ss",
-            EncodingPipeline.FormatTimestamp(previewPosition),
-            "-i",
-            sourceVideoPath
+            "-strict", "unofficial",
+            "-ss", EncodingPipeline.FormatTimestamp(previewPosition),
+            "-i", sourceVideoPath
         ];
 
         if (!string.IsNullOrWhiteSpace(displayFilter))
@@ -158,26 +149,21 @@ public static partial class PreviewPipeline
         [
             "-hide_banner",
             "-y",
-            "-strict",
-            "unofficial",
-            "-i",
-            sourceVideoPath,
+            "-strict", "unofficial",
+            "-i", sourceVideoPath,
             "-vf",
             $"select=between(n\\,{safeFirstFrame}\\,{safeLastFrame}),scale=-2:{Math.Max(1, targetHeight)}:flags={scaleFlags}",
-            "-vsync",
-            "0",
-            "-start_number",
-            "0",
+            "-fps_mode", "passthrough",
+            "-start_number", "0",
             "-frames:v",
             (safeLastFrame - safeFirstFrame + 1).ToString(CultureInfo.InvariantCulture),
-            "-c:v",
-            "png",
+            "-c:v", "png",
             outputPattern
         ];
     }
 
     public static string[] BuildSourceFrameSeekArgs(
-        string sourceVideoPath,
+        string srcPath,
         double keyframeTime,
         long firstOffsetFrame,
         long lastOffsetFrame,
@@ -193,24 +179,16 @@ public static partial class PreviewPipeline
         [
             "-hide_banner",
             "-y",
-            "-strict",
-            "unofficial",
-            "-ss",
-            keyframeTimestamp,
-            "-seek_timestamp",
-            "1",
-            "-i",
-            sourceVideoPath,
+            "-strict", "unofficial",
+            "-ss", keyframeTimestamp,
+            "-seek_timestamp", "1",
+            "-i", srcPath,
             "-vf",
             $"select=between(n\\,{safeFirstOffset}\\,{safeLastOffset}),scale=-2:{Math.Max(1, targetHeight)}:flags={scaleFlags}",
-            "-vsync",
-            "0",
-            "-start_number",
-            "0",
-            "-frames:v",
-            frameCount.ToString(CultureInfo.InvariantCulture),
-            "-c:v",
-            "png",
+            "-fps_mode", "passthrough",
+            "-start_number", "0",
+            "-frames:v", frameCount.ToString(CultureInfo.InvariantCulture),
+            "-c:v", "png",
             outputPattern
         ];
     }
@@ -224,24 +202,15 @@ public static partial class PreviewPipeline
         [
             "-hide_banner",
             "-y",
-            "-strict",
-            "unofficial",
-            "-i",
-            srcPath,
-            "-vf",
-            "format=yuv420p10le",
-            "-c:v",
-            "libvvenc",
-            "-preset",
-            GetVvencPresetName(model.VvencMode),
-            "-qp",
-            Math.Clamp(model.VvencQp, 0, 63).ToString(CultureInfo.InvariantCulture),
-            "-vvenc-params",
-            "qpa=1:gopsize=1:intraperiod=1:refreshtype=idr:tier=high",
-            "-frames:v",
-            "1",
-            "-f",
-            "vvc",
+            "-strict", "unofficial",
+            "-i", srcPath,
+            "-vf", "format=yuv420p10le",
+            "-c:v", "libvvenc",
+            "-preset", GetVvencPresetName(model.VvencMode),
+            "-qp", Math.Clamp(model.VvencQp, 0, 63).ToString(CultureInfo.InvariantCulture),
+            "-vvenc-params", "qpa=1:gopsize=1:intraperiod=1:refreshtype=idr:tier=high",
+            "-frames:v", "1",
+            "-f", "vvc",
             outputPath
         ];
     }
@@ -263,14 +232,10 @@ public static partial class PreviewPipeline
         [
             "-hide_banner",
             "-y",
-            "-strict",
-            "unofficial",
-            "-i",
-            srcPath,
-            "-c:v",
-            GetFFmpegEncoderName(encoder),
-            "-crf",
-            GetCrfValue(encoder, model).ToString(CultureInfo.InvariantCulture)
+            "-strict", "unofficial",
+            "-i", srcPath,
+            "-c:v", GetFFmpegEncoderName(encoder),
+            "-crf", GetCrfValue(encoder, model).ToString(CultureInfo.InvariantCulture)
         ];
 
         args.AddRange(SplitArgs(GetCustomParams(encoder, model)));
@@ -278,10 +243,8 @@ public static partial class PreviewPipeline
             args.AddRange(["-x265-params", ":selective-mcstf=1:mcstf-ref-range=1"]);
         args.AddRange(["-frames:v", "1"]);
 
-        if (encoder == PreviewEncoder.X264)
-            args.AddRange(["-f", "h264"]);
-        else if (encoder == PreviewEncoder.X265)
-            args.AddRange(["-f", "hevc"]);
+        if (encoder == PreviewEncoder.X264) args.AddRange(["-f", "h264"]);
+        else if (encoder == PreviewEncoder.X265) args.AddRange(["-f", "hevc"]);
 
         args.Add(outputPath);
         return [.. args];
@@ -293,14 +256,10 @@ public static partial class PreviewPipeline
         [
             "-hide_banner",
             "-y",
-            "-strict",
-            "unofficial",
-            "-i",
-            inputPath,
-            "-frames:v",
-            "1",
-            "-c:v",
-            "png",
+            "-strict", "unofficial",
+            "-i", inputPath,
+            "-frames:v", "1",
+            "-c:v", "png",
             outputPath
         ];
         return [.. args];
@@ -316,12 +275,9 @@ public static partial class PreviewPipeline
         List<string> args =
         [
             scriptPath,
-            "-o",
-            outputIndex.ToString(CultureInfo.InvariantCulture),
-            "-s",
-            frame.ToString(CultureInfo.InvariantCulture),
-            "-e",
-            frame.ToString(CultureInfo.InvariantCulture)
+            "-o", outputIndex.ToString(CultureInfo.InvariantCulture),
+            "-s", frame.ToString(CultureInfo.InvariantCulture),
+            "-e", frame.ToString(CultureInfo.InvariantCulture)
         ];
 
         args.AddRange(SplitArgs(vspipeY4mArg));
@@ -332,10 +288,8 @@ public static partial class PreviewPipeline
     public static string[] BuildAvs2yuvY4mArgs(string scriptPath, int frame) =>
     [
         scriptPath,
-        "-seek",
-        Math.Max(0, frame).ToString(CultureInfo.InvariantCulture),
-        "-frames",
-        "1",
+        "-seek", Math.Max(0, frame).ToString(CultureInfo.InvariantCulture),
+        "-frames", "1",
         "-"
     ];
 
