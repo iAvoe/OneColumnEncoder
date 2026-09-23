@@ -10,22 +10,10 @@ OneColumnEncoder 提供了相对硬核，同时简洁直观的 UI/UX 流程，�
 
 <p align="center"><img src="./WireframeMockups/1-Main-Page-v4.png" alt="Main Window" width="600"/></p>
 
-## i18n
-
-- English
-- 中文简体
-- 中文繁體
-- Français
-- Español
-- 日本語
-- Русский
-- Deutsch
-- 한국어
-- Português (Brasil)
 
 ## Docs
 
-**Entry-level tutorial | 基础教程**
+**How-to tutorial | 使用教程**
 
 - [GitHub/iAvoe/OneColumnEncoderTutorial](https://github.com/iAvoe/OneColumnEncoderTutorial)
 
@@ -51,3 +39,16 @@ OneColumnEncoder 提供了相对硬核，同时简洁直观的 UI/UX 流程，�
 - Image A/B preview design: [ImgPreviewVM-PreviewGeneration.md](./Docs/ImgPreviewVM-PreviewGeneration.md)
 - IntegerSlider usage: [IntegerSliderUsage.md](./Docs/IntegerSliderUsage.md)
 - ItemCard element: [ItemCardManagement.md](./Docs/ItemCardManagement.md)
+
+## i18n
+
+- English
+- 中文简体
+- 中文繁體
+- Français
+- Español
+- 日本語
+- Русский
+- Deutsch
+- 한국어
+- Português (Brasil)
