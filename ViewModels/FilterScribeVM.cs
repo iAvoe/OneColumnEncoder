@@ -416,7 +416,15 @@ public class FilterScribeVM : BaseVM
             _colorSpaceAnalysis.ColorPrimaries,
             _colorSpaceAnalysis.ColorTransfer,
             _colorSpaceAnalysis.HasDolbyVision)
-        && !string.IsNullOrWhiteSpace(BuildColorSpaceStrategyFilterChain(strategy));
+        && (!string.IsNullOrWhiteSpace(BuildColorSpaceStrategyFilterChain(strategy))
+            || !string.IsNullOrWhiteSpace(ColorSpaceConverter.BuildVapourSynthFilter(
+                strategy,
+                _colorSpaceAnalysis.ColorTransfer,
+                _colorSpaceAnalysis.ColorPrimaries))
+            || !string.IsNullOrWhiteSpace(ColorSpaceConverter.BuildAviSynthFilter(
+                strategy,
+                _colorSpaceAnalysis.ColorTransfer,
+                _colorSpaceAnalysis.ColorPrimaries)));
 
     public string FFmpegResizeFilter =>
         HasScaleFilter
@@ -1051,13 +1059,11 @@ public class FilterScribeVM : BaseVM
             _colorSpaceAnalysis.ColorTransfer,
             _colorSpaceAnalysis.ColorPrimaries);
 
-        if (filter == null
-            || !RequiresColorSpacePeakNits(strategy)
-            || !HasColorSpacePeakNits
-            || !double.TryParse(ColorSpacePeakNits, NumberStyles.Float, CultureInfo.InvariantCulture, out double peakNits))
-            return filter;
+        if (filter == null) return null;
 
-        return filter.Replace("<nits>", peakNits.ToString("G", CultureInfo.InvariantCulture));
+        filter = ReplaceColorSpacePeakNits(filter, strategy);
+        int outputBitDepth = GetPlaceboOutputBitDepth();
+        return $"src = core.fmtc.bitdepth(src, bits=16)\r\n{filter}\r\nsrc = core.fmtc.bitdepth(src, bits={outputBitDepth})";
     }
 
     private string? GetAviSynthColorSpaceFilterChain(ColorSpaceStrategy strategy)
@@ -1067,8 +1073,16 @@ public class FilterScribeVM : BaseVM
             _colorSpaceAnalysis.ColorTransfer,
             _colorSpaceAnalysis.ColorPrimaries);
 
-        if (filter == null
-            || !RequiresColorSpacePeakNits(strategy)
+        if (filter == null) return null;
+
+        filter = ReplaceColorSpacePeakNits(filter, strategy);
+        int outputBitDepth = GetPlaceboOutputBitDepth();
+        return $"src = fmtc_bitdepth(src, bits=16)\r\nsrc = {filter}\r\nsrc = fmtc_bitdepth(src, bits={outputBitDepth})";
+    }
+
+    private string ReplaceColorSpacePeakNits(string filter, ColorSpaceStrategy strategy)
+    {
+        if (!RequiresColorSpacePeakNits(strategy)
             || !HasColorSpacePeakNits
             || !double.TryParse(ColorSpacePeakNits, NumberStyles.Float, CultureInfo.InvariantCulture, out double peakNits))
             return filter;
@@ -1076,13 +1090,18 @@ public class FilterScribeVM : BaseVM
         return filter.Replace("<nits>", peakNits.ToString("G", CultureInfo.InvariantCulture));
     }
 
+    private int GetPlaceboOutputBitDepth() =>
+        _sourceBitDepth is 8 or 10 or 12 or 14 or 16 or 32 ? _sourceBitDepth : 16;
+
     private static string BuildVapourSynthPlaceboLoadCommand()
     {
         string pluginsDir = Environment.Is64BitProcess
             ? BundledToolPathResolver.ResolveFolder("x64-AVS-VS-plugins")
             : BundledToolPathResolver.ResolveFolder("x86-AVS-VS-plugins");
         string placeboPath = Path.Combine(pluginsDir, "libvs_placebo.dll");
-        return $"core.std.LoadPlugin(r\"{placeboPath}\")";
+        string fmtconvPath = Path.Combine(pluginsDir, "fmtconv.dll");
+        return $"core.std.LoadPlugin(r\"{placeboPath}\")\r\n" +
+               $"core.std.LoadPlugin(r\"{fmtconvPath}\")";
     }
 
     private static string BuildAviSynthPlaceboLoadCommand()
@@ -1091,7 +1110,9 @@ public class FilterScribeVM : BaseVM
             ? BundledToolPathResolver.ResolveFolder("x64-AVS-VS-plugins")
             : BundledToolPathResolver.ResolveFolder("x86-AVS-VS-plugins");
         string placeboPath = Path.Combine(pluginsDir, "libplacebo_Render.dll");
-        return $"LoadPlugin(\"{placeboPath}\")";
+        string fmtconvPath = Path.Combine(pluginsDir, "fmtconv.dll");
+        return $"LoadPlugin(\"{placeboPath}\")\r\n" +
+               $"LoadPlugin(\"{fmtconvPath}\")";
     }
 
     private void RefreshColorSpaceFilters()

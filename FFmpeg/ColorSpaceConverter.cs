@@ -340,7 +340,7 @@ public static class ColorSpaceConverter
         if (gamutMapping.HasValue)
             parts.Add($"gamut_mapping={gamutMapping.Value}");
 
-        return $"core.placebo.Tonemap(src, {string.Join(", ", parts)})";
+        return $"src = core.placebo.Tonemap(src, {string.Join(", ", parts)})";
     }
 
     private static bool HasDolbyVisionMetadata(JsonElement stream)
@@ -382,7 +382,7 @@ public static class ColorSpaceConverter
         if (!string.IsNullOrWhiteSpace(gamutMapping))
             parts.Add($"gamut_mapping=\"{gamutMapping}\"");
 
-        return $"libplacebo_Render({string.Join(", ", parts)})";
+        return $"libplacebo_Render(src, {string.Join(", ", parts)})";
     }
 
     private static string GetDisplayName(ColorSpaceStrategy strategy) => strategy switch
