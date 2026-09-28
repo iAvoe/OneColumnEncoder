@@ -2,11 +2,70 @@ using static OneColumnEncoder.Models.JsonProviderM;
 
 namespace OneColumnEncoder.FFmpeg;
 
+public enum ChromaSubsampling
+{
+    Unknown,
+    Yuv420,
+    Yuv422,
+    Yuv444,
+    Other
+}
+
 /// <summary>
 /// Applies pixel-format rules used by ffprobe-based validation and filtering
 /// </summary>
 public static class FFProbePixelFormatRules
 {
+    public static ChromaSubsampling GetChromaSubsampling(string? pixelFormat)
+    {
+        if (string.IsNullOrWhiteSpace(pixelFormat)) return ChromaSubsampling.Unknown;
+
+        string format = pixelFormat.Trim();
+        if (format.Contains("444", StringComparison.OrdinalIgnoreCase))
+            return IsYuv(format) ? ChromaSubsampling.Yuv444 : ChromaSubsampling.Unknown;
+
+        if (format.Contains("422", StringComparison.OrdinalIgnoreCase)
+            || format.Contains("nv16", StringComparison.OrdinalIgnoreCase)
+            || format.Contains("p210", StringComparison.OrdinalIgnoreCase)
+            || format.Contains("p216", StringComparison.OrdinalIgnoreCase))
+            return ChromaSubsampling.Yuv422;
+
+        if (format.Contains("420", StringComparison.OrdinalIgnoreCase)
+            || format.Contains("nv12", StringComparison.OrdinalIgnoreCase)
+            || format.Contains("nv21", StringComparison.OrdinalIgnoreCase)
+            || format.Contains("p010", StringComparison.OrdinalIgnoreCase)
+            || format.Contains("p016", StringComparison.OrdinalIgnoreCase))
+            return ChromaSubsampling.Yuv420;
+
+        return IsYuv(format) ? ChromaSubsampling.Other : ChromaSubsampling.Unknown;
+    }
+
+    public static bool IsYuv(string? pixelFormat)
+    {
+        if (string.IsNullOrWhiteSpace(pixelFormat)) return false;
+
+        string format = pixelFormat.Trim();
+        return format.Contains("yuv", StringComparison.OrdinalIgnoreCase)
+            || format.Contains("nv12", StringComparison.OrdinalIgnoreCase)
+            || format.Contains("nv21", StringComparison.OrdinalIgnoreCase)
+            || format.Contains("nv16", StringComparison.OrdinalIgnoreCase)
+            || format.Contains("p010", StringComparison.OrdinalIgnoreCase)
+            || format.Contains("p016", StringComparison.OrdinalIgnoreCase)
+            || format.Contains("p210", StringComparison.OrdinalIgnoreCase)
+            || format.Contains("p216", StringComparison.OrdinalIgnoreCase);
+    }
+
+    public static string? GetYuv420PixelFormat(int bitDepth) => bitDepth switch
+    {
+        8 => "yuv420p",
+        9 => "yuv420p9le",
+        10 => "yuv420p10le",
+        12 => "yuv420p12le",
+        14 => "yuv420p14le",
+        16 => "yuv420p16le",
+        _ => null
+    };
+
     public static bool IsYuvRgbOrGray(string? pixelFormat)
     {
         if (string.IsNullOrWhiteSpace(pixelFormat)) return false;
@@ -40,6 +99,7 @@ public static class FFProbePixelFormatRules
         if (TryGetInt(stream, "bits_per_sample", out int sampleBits)) return sampleBits;
 
         string pixFmt = TryGetString(stream, "pix_fmt") ?? string.Empty;
+        if (pixFmt.Contains("9", StringComparison.OrdinalIgnoreCase)) return 9;
         if (pixFmt.Contains("10", StringComparison.OrdinalIgnoreCase)) return 10;
         if (pixFmt.Contains("12", StringComparison.OrdinalIgnoreCase)) return 12;
         if (pixFmt.Contains("14", StringComparison.OrdinalIgnoreCase)) return 14;
@@ -60,7 +120,12 @@ public static class FFProbePixelFormatRules
         if (pixelFormat.Contains("420", StringComparison.OrdinalIgnoreCase)
             || pixelFormat.Contains("422", StringComparison.OrdinalIgnoreCase)
             || pixelFormat.Contains("nv12", StringComparison.OrdinalIgnoreCase)
-            || pixelFormat.Contains("nv16", StringComparison.OrdinalIgnoreCase))
+            || pixelFormat.Contains("nv16", StringComparison.OrdinalIgnoreCase)
+            || pixelFormat.Contains("nv21", StringComparison.OrdinalIgnoreCase)
+            || pixelFormat.Contains("p010", StringComparison.OrdinalIgnoreCase)
+            || pixelFormat.Contains("p016", StringComparison.OrdinalIgnoreCase)
+            || pixelFormat.Contains("p210", StringComparison.OrdinalIgnoreCase)
+            || pixelFormat.Contains("p216", StringComparison.OrdinalIgnoreCase))
             return 1;
         return -2;
     }

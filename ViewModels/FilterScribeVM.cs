@@ -784,6 +784,103 @@ public class FilterScribeVM : BaseVM
 
     public string FFmpegHighHdrToLowSdrColorFilterDisplay => GetColorSpaceStrategyFilterChain(ColorSpaceStrategy.HighHdrToSdr) ?? LangProviderBase.NAText;
 
+    public string AviSynthChroma422Filter => BuildAviSynthChromaFilter("422") ?? LangProviderBase.NAText;
+    public string AviSynthChroma420Filter => BuildAviSynthChromaFilter("420") ?? LangProviderBase.NAText;
+    public string VapourSynthChroma422Filter => BuildVapourSynthChromaFilter("422") ?? LangProviderBase.NAText;
+    public string VapourSynthChroma420Filter => BuildVapourSynthChromaFilter("420") ?? LangProviderBase.NAText;
+    public string FFmpegChroma422Filter => BuildFFmpegChromaFilter(allowYuv422Source: false) ?? LangProviderBase.NAText;
+    public string FFmpegChroma420Filter => BuildFFmpegChromaFilter(allowYuv422Source: true) ?? LangProviderBase.NAText;
+
+    public bool CanInsertAviSynthChroma422Filter => CanUseChromaSubsampling(ChromaSubsampling.Yuv444);
+    public bool CanInsertAviSynthChroma420Filter => CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
+        || CanUseChromaSubsampling(ChromaSubsampling.Yuv422, requiresInputLocation: true);
+    public bool CanInsertVapourSynthChroma422Filter => CanUseChromaSubsampling(ChromaSubsampling.Yuv444);
+    public bool CanInsertVapourSynthChroma420Filter => CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
+        || CanUseChromaSubsampling(ChromaSubsampling.Yuv422, requiresInputLocation: true);
+    public bool CanInsertFFmpegChroma422Filter => CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
+        && FFProbePixelFormatRules.GetYuv420PixelFormat(_sourceBitDepth) != null;
+    public bool CanInsertFFmpegChroma420Filter => (CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
+        || CanUseChromaSubsampling(ChromaSubsampling.Yuv422))
+        && FFProbePixelFormatRules.GetYuv420PixelFormat(_sourceBitDepth) != null;
+
+    private ChromaSubsampling SourceChromaSubsampling =>
+        FFProbePixelFormatRules.GetChromaSubsampling(_colorSpaceAnalysis.PixelFormat);
+
+    private string? SourceChromaLocation => NormalizeChromaLocation(_colorSpaceAnalysis.ColorChromaLocation);
+
+    private bool CanUseChromaSubsampling(ChromaSubsampling source) =>
+        !_hasSourceValidationError()
+        && SourceChromaSubsampling == source;
+
+    private bool CanUseChromaSubsampling(ChromaSubsampling source, bool requiresInputLocation) =>
+        CanUseChromaSubsampling(source)
+        && (!requiresInputLocation || SourceChromaLocation != null);
+
+    private string? BuildAviSynthChromaFilter(string target)
+    {
+        ChromaSubsampling source = SourceChromaSubsampling;
+        bool canConvert = target == "422"
+            ? CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
+            : CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
+                || CanUseChromaSubsampling(ChromaSubsampling.Yuv422, requiresInputLocation: true);
+        if (!canConvert) return null;
+
+        string inputPlacement = source == ChromaSubsampling.Yuv444
+            ? string.Empty
+            : $"ChromaInPlacement=\"{SourceChromaLocation}\", ";
+        return $"ConvertToYUV{target}({inputPlacement}ChromaOutPlacement=\"left\", Chromaresample=\"spline36\")";
+    }
+
+    private string? BuildVapourSynthChromaFilter(string target)
+    {
+        ChromaSubsampling source = SourceChromaSubsampling;
+        bool canConvert = target == "422"
+            ? CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
+            : CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
+                || CanUseChromaSubsampling(ChromaSubsampling.Yuv422, requiresInputLocation: true);
+        if (!canConvert) return null;
+
+        string inputPlacement = source == ChromaSubsampling.Yuv444
+            ? string.Empty
+            : $", cplace_in=\"{SourceChromaLocation}\"";
+        string pluginsDir = Environment.Is64BitProcess
+            ? BundledToolPathResolver.ResolveFolder("x64-AVS-VS-plugins")
+            : BundledToolPathResolver.ResolveFolder("x86-AVS-VS-plugins");
+        string fmtconvPath = Path.Combine(pluginsDir, "fmtconv.dll");
+        return $"core.std.LoadPlugin(r\"{fmtconvPath}\")\r\n" +
+               $"src = core.fmtc.resample(clip=src, css=\"{target}\", kernel=\"spline36\", cplace=\"left\"{inputPlacement})";
+    }
+
+    private string? BuildFFmpegChromaFilter(bool allowYuv422Source)
+    {
+        if (!CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
+            && (!allowYuv422Source || !CanUseChromaSubsampling(ChromaSubsampling.Yuv422)))
+            return null;
+
+        string? outputFormat = FFProbePixelFormatRules.GetYuv420PixelFormat(_sourceBitDepth);
+        if (outputFormat == null) return null;
+
+        string filter = $"libplacebo=format={outputFormat}:chroma_loc=left:cscale=spline:antiring=0.8,hwdownload,format={outputFormat}";
+        return BuildFFmpegFilterArgs(includeSwsFlags: false, includeCsp709Flags: false, filter);
+    }
+
+    private static string? NormalizeChromaLocation(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return null;
+
+        return value.Trim().ToLowerInvariant() switch
+        {
+            "left" => "left",
+            "center" => "center",
+            "topleft" or "top_left" => "top_left",
+            "top" => "top",
+            "bottomleft" or "bottom_left" => "bottom_left",
+            "bottom" => "bottom",
+            "dv" => "dv",
+            _ => null
+        };
+    }
+
     public string FFmpegFpsColorScaleFilter
     {
         get
@@ -871,6 +968,18 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(FFmpegHdrToSdrColorFilterDisplay));
         OnPropertyChanged(nameof(FFmpegHighHdrToLowSdrColorFilter));
         OnPropertyChanged(nameof(FFmpegHighHdrToLowSdrColorFilterDisplay));
+        OnPropertyChanged(nameof(AviSynthChroma422Filter));
+        OnPropertyChanged(nameof(AviSynthChroma420Filter));
+        OnPropertyChanged(nameof(VapourSynthChroma422Filter));
+        OnPropertyChanged(nameof(VapourSynthChroma420Filter));
+        OnPropertyChanged(nameof(FFmpegChroma422Filter));
+        OnPropertyChanged(nameof(FFmpegChroma420Filter));
+        OnPropertyChanged(nameof(CanInsertAviSynthChroma422Filter));
+        OnPropertyChanged(nameof(CanInsertAviSynthChroma420Filter));
+        OnPropertyChanged(nameof(CanInsertVapourSynthChroma422Filter));
+        OnPropertyChanged(nameof(CanInsertVapourSynthChroma420Filter));
+        OnPropertyChanged(nameof(CanInsertFFmpegChroma422Filter));
+        OnPropertyChanged(nameof(CanInsertFFmpegChroma420Filter));
         OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
         OnPropertyChanged(nameof(FFmpegFullChainFilter));
         OnPropertyChanged(nameof(FFmpegHqdn3dFullChainFilter));
@@ -1334,6 +1443,9 @@ public class FilterScribeVM : BaseVM
     public static string HorizontalFlipLabel => FilterScribeModalLangProvider.Current["SrcScribe.HorizontalFlipLabel"];
     public static string VerticalFlipLabel => FilterScribeModalLangProvider.Current["SrcScribe.VerticalFlipLabel"];
     public static string ColorSpaceConvertTitle => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpaceConvertTitle"];
+    public static string ChromaSubsamplingTitle => FilterScribeModalLangProvider.Current["SrcScribe.ChromaSubsamplingTitle"];
+    public static string Chroma422Label => FilterScribeModalLangProvider.Current["SrcScribe.Chroma422Label"];
+    public static string Chroma420Label => FilterScribeModalLangProvider.Current["SrcScribe.Chroma420Label"];
     public static string DenoiseTitle => FilterScribeModalLangProvider.Current["SrcScribe.DenoiseTitle"];
     public static string ScaleHint => FilterScribeModalLangProvider.Current["SrcScribe.ScaleHint"];
     public static string SubtitleBurnTitle => FilterScribeModalLangProvider.Current["SrcScribe.SubtitleBurnTitle"];
@@ -1485,6 +1597,18 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(FFmpegHdrToSdrColorFilterDisplay));
         OnPropertyChanged(nameof(FFmpegHighHdrToLowSdrColorFilter));
         OnPropertyChanged(nameof(FFmpegHighHdrToLowSdrColorFilterDisplay));
+        OnPropertyChanged(nameof(AviSynthChroma422Filter));
+        OnPropertyChanged(nameof(AviSynthChroma420Filter));
+        OnPropertyChanged(nameof(VapourSynthChroma422Filter));
+        OnPropertyChanged(nameof(VapourSynthChroma420Filter));
+        OnPropertyChanged(nameof(FFmpegChroma422Filter));
+        OnPropertyChanged(nameof(FFmpegChroma420Filter));
+        OnPropertyChanged(nameof(CanInsertAviSynthChroma422Filter));
+        OnPropertyChanged(nameof(CanInsertAviSynthChroma420Filter));
+        OnPropertyChanged(nameof(CanInsertVapourSynthChroma422Filter));
+        OnPropertyChanged(nameof(CanInsertVapourSynthChroma420Filter));
+        OnPropertyChanged(nameof(CanInsertFFmpegChroma422Filter));
+        OnPropertyChanged(nameof(CanInsertFFmpegChroma420Filter));
         OnPropertyChanged(nameof(CanInsertFFmpegLowToHighColorFilter));
         OnPropertyChanged(nameof(CanInsertFFmpegHighToLowColorFilter));
         OnPropertyChanged(nameof(CanInsertFFmpegHdrToSdrColorFilter));

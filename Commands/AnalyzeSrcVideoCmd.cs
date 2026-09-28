@@ -493,6 +493,10 @@ public class AnalyzeSrcVideoCmd(
         string AvgFrameRate,
         string RFrameRate)
     {
+        // MatchKey is the ordinal string used to group/filter queue items: checklist statuses
+        // (via SourceCheckSignature.MatchKey) + width + normalized avg/r frame rates.
+        // Equal keys mean same compatibility group as the reference; used for GroupBy voting and Matches().
+        // Example: "0|0|1|1920|30000/1001|30000/1001" (checklist statuses, width 1920, 29.97fps).
         public string MatchKey => string.Join(
             "|",
             CheckSignature.MatchKey,

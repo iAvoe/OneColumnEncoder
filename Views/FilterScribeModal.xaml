@@ -909,6 +909,124 @@
                     </Grid>
                 </StackPanel>
 
+                <StackPanel>
+                    <TextBlock Text="{Binding ChromaSubsamplingTitle}"
+                               Style="{StaticResource H3}"
+                               Margin="0 15 0 0" />
+                    <Grid Margin="0 2.5 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="90" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding Chroma422Label}"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center" />
+                        <Button Grid.Column="1"
+                                Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertAvsFilterCommand}"
+                                CommandParameter="{Binding AviSynthChroma422Filter}"
+                                IsEnabled="{Binding CanInsertAviSynthChroma422Filter}"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <Button Grid.Column="1"
+                                Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertVpyFilterCommand}"
+                                CommandParameter="{Binding VapourSynthChroma422Filter}"
+                                IsEnabled="{Binding CanInsertVapourSynthChroma422Filter}"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <Button Grid.Column="1"
+                                Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertFFmpegFilterCommand}"
+                                CommandParameter="{Binding FFmpegChroma422Filter}"
+                                IsEnabled="{Binding CanInsertFFmpegChroma422Filter}"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <TextBox Grid.Column="2"
+                                 Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                 Text="{Binding AviSynthChroma422Filter, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}" />
+                        <TextBox Grid.Column="2"
+                                 Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                 Text="{Binding VapourSynthChroma422Filter, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}" />
+                        <TextBox Grid.Column="2"
+                                 Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                 Text="{Binding FFmpegChroma422Filter, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}" />
+                    </Grid>
+                    <Grid Margin="0 2.5 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="90" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding Chroma420Label}"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center" />
+                        <Button Grid.Column="1"
+                                Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertAvsFilterCommand}"
+                                CommandParameter="{Binding AviSynthChroma420Filter}"
+                                IsEnabled="{Binding CanInsertAviSynthChroma420Filter}"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <Button Grid.Column="1"
+                                Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertVpyFilterCommand}"
+                                CommandParameter="{Binding VapourSynthChroma420Filter}"
+                                IsEnabled="{Binding CanInsertVapourSynthChroma420Filter}"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <Button Grid.Column="1"
+                                Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertFFmpegFilterCommand}"
+                                CommandParameter="{Binding FFmpegChroma420Filter}"
+                                IsEnabled="{Binding CanInsertFFmpegChroma420Filter}"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <TextBox Grid.Column="2"
+                                 Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                 Text="{Binding AviSynthChroma420Filter, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}" />
+                        <TextBox Grid.Column="2"
+                                 Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                 Text="{Binding VapourSynthChroma420Filter, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}" />
+                        <TextBox Grid.Column="2"
+                                 Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                 Text="{Binding FFmpegChroma420Filter, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}" />
+                    </Grid>
+                </StackPanel>
+
                 <StackPanel Visibility="{Binding IsDenoiseSectionVisible, Converter={StaticResource BoolToVisibility}}">
                     <Grid>
                         <Grid.ColumnDefinitions>

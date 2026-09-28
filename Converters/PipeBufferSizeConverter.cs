@@ -59,10 +59,7 @@ public class PipeBufferSizeConverter : IMultiValueConverter
 
             return DefaultPipeBufferSizeKb;
         }
-        catch
-        {
-            return DefaultPipeBufferSizeKb;
-        }
+        catch { return DefaultPipeBufferSizeKb; }
     }
 
     private static double GetBytesPerPixel(string? pixelFormat)
