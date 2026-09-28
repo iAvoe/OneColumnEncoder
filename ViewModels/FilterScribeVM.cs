@@ -419,12 +419,10 @@ public class FilterScribeVM : BaseVM
         && (!string.IsNullOrWhiteSpace(BuildColorSpaceStrategyFilterChain(strategy))
             || !string.IsNullOrWhiteSpace(ColorSpaceConverter.BuildVapourSynthFilter(
                 strategy,
-                _colorSpaceAnalysis.ColorTransfer,
-                _colorSpaceAnalysis.ColorPrimaries))
+                _colorSpaceAnalysis.ColorTransfer))
             || !string.IsNullOrWhiteSpace(ColorSpaceConverter.BuildAviSynthFilter(
                 strategy,
-                _colorSpaceAnalysis.ColorTransfer,
-                _colorSpaceAnalysis.ColorPrimaries)));
+                _colorSpaceAnalysis.ColorTransfer)));
 
     public string FFmpegResizeFilter =>
         HasScaleFilter
@@ -1056,8 +1054,7 @@ public class FilterScribeVM : BaseVM
     {
         string? filter = ColorSpaceConverter.BuildVapourSynthFilter(
             strategy,
-            _colorSpaceAnalysis.ColorTransfer,
-            _colorSpaceAnalysis.ColorPrimaries);
+            _colorSpaceAnalysis.ColorTransfer);
 
         if (filter == null) return null;
 
@@ -1070,14 +1067,14 @@ public class FilterScribeVM : BaseVM
     {
         string? filter = ColorSpaceConverter.BuildAviSynthFilter(
             strategy,
-            _colorSpaceAnalysis.ColorTransfer,
-            _colorSpaceAnalysis.ColorPrimaries);
+            _colorSpaceAnalysis.ColorTransfer);
 
         if (filter == null) return null;
-
+        
         filter = ReplaceColorSpacePeakNits(filter, strategy);
         int outputBitDepth = GetPlaceboOutputBitDepth();
-        return $"src = fmtc_bitdepth(src, bits=16)\r\nsrc = {filter}\r\nsrc = fmtc_bitdepth(src, bits={outputBitDepth})";
+        // Warning: AviSynth does not use "src =" pattern, it is VapourSynth specific
+        return $"fmtc_bitdepth(bits=16)\r\n{filter}\r\nfmtc_bitdepth(bits={outputBitDepth})";
     }
 
     private string ReplaceColorSpacePeakNits(string filter, ColorSpaceStrategy strategy)
@@ -1606,12 +1603,7 @@ public class FilterScribeVM : BaseVM
 
     #region UILang properties
     public static string WindowTitle => FilterScribeModalLangProvider.WindowTitle;
-    public static string VFRCFRTitle => "VFR→CFR";
-    // Using 709 and SDR interchangably follows master-display parameter combinations, but some tools do so, maybe they are correct
-    public static string LowToHighColorFilterLabel => "NCG→709";
-    public static string HighToLowColorFilterLabel => "WCG→709";
-    public static string HdrToSdrColorFilterLabel => "HDR→SDR";
-    public static string HighHdrToLowSdrColorFilterLabel => "H&W→SDR";
+
     public static string ScribeDescription => FilterScribeModalLangProvider.Current["SrcScribe.Description"];
     public static string NoteText => FilterScribeModalLangProvider.Current["SrcScribe.NoteText"];
     public static string TabAvs => LangProviderBase.AviSynth;
@@ -2615,10 +2607,6 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(BlurSharpenTitle));
         OnPropertyChanged(nameof(AviSynthBlurSharpenFilter));
         OnPropertyChanged(nameof(VapourSynthBlurSharpenFilter));
-        OnPropertyChanged(nameof(LowToHighColorFilterLabel));
-        OnPropertyChanged(nameof(HighToLowColorFilterLabel));
-        OnPropertyChanged(nameof(HdrToSdrColorFilterLabel));
-        OnPropertyChanged(nameof(HighHdrToLowSdrColorFilterLabel));
         OnPropertyChanged(nameof(ColorSpacePeakNitsHint));
         OnPropertyChanged(nameof(FFmpegLowToHighColorFilter));
         OnPropertyChanged(nameof(FFmpegHighToLowColorFilter));

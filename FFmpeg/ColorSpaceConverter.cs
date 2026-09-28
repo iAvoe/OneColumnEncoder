@@ -176,15 +176,14 @@ public static class ColorSpaceConverter
 
     public static string? BuildVapourSynthFilter(
         ColorSpaceStrategy strategy,
-        string? transfer = null,
-        string? primaries = null)
+        string? transfer = null) // Currently uneeded: string? primaries = null
     {
         // Determine source color space type
         int srcCsp = GetVapourSynthSourceCsp(transfer);
 
         return strategy switch
         {
-            ColorSpaceStrategy.LowToHigh => null, // VapourSynth placebo不支持BT601转换
+            ColorSpaceStrategy.LowToHigh => null, // VapourSynth placebo does not support Bt601
             ColorSpaceStrategy.HighToLow => BuildVapourSynthTonemapFilter(srcCsp, 0, 3),
             ColorSpaceStrategy.HdrToSdr => BuildVapourSynthTonemapFilter(srcCsp, 0, 3, "<nits>", "100", "spline"),
             ColorSpaceStrategy.HighHdrToSdr => BuildVapourSynthTonemapFilter(srcCsp, 0, 3, "<nits>", "100", "spline", 1),
@@ -195,17 +194,29 @@ public static class ColorSpaceConverter
         };
     }
 
+    /// <summary>
+    /// Create various types of AviSynth filters
+    /// </summary>
+    /// <param name="strategy">Type of gamut or HDR to SDR</param>
+    /// <param name="transfer">Transfer characteristics string</param>
+    /// <param name="framerate">Used to determine a Bt601 source is NTSC or PAL</param>
+    /// <returns></returns>
     public static string? BuildAviSynthFilter(
         ColorSpaceStrategy strategy,
         string? transfer = null,
-        string? primaries = null)
+        decimal? framerate = 0) // Currently not needed: string? primaries = null
     {
         // Determine source color space type
         string srcCsp = GetAviSynthSourceCsp(transfer);
 
+        // Determine Bt601 source is NTSC or PAL. TODO: refine this
+        string bt601type = framerate>0
+            ? Math.Round((decimal)framerate) == 60 ? "pal" : "ntsc"
+            : "ntsc";
+
         return strategy switch
         {
-            ColorSpaceStrategy.LowToHigh => null, // AviSynth placebo不支持BT601转换
+            ColorSpaceStrategy.LowToHigh => BuildAvsPlaceboFilter(srcCsp, bt601type, "709"),
             ColorSpaceStrategy.HighToLow => BuildAvsPlaceboFilter(srcCsp, "sdr", "709"),
             ColorSpaceStrategy.HdrToSdr => BuildAvsPlaceboFilter(srcCsp, "sdr", "709", "<nits>", "100", "spline"),
             ColorSpaceStrategy.HighHdrToSdr => BuildAvsPlaceboFilter(srcCsp, "sdr", "709", "<nits>", "100", "spline", "perceptual"),
@@ -258,8 +269,8 @@ public static class ColorSpaceConverter
             H273Matrix = matrix != null && H273Matrix.TryGetValue(matrix, out int mv) ? mv : null,
             Strategy = strategy,
             FFmpegColorFilter = BuildFFmpegFilter(strategy, matrix, chromaLocation, primaries, pixelFormat),
-            VapourSynthColorFilter = BuildVapourSynthFilter(strategy, transfer, primaries),
-            AviSynthColorFilter = BuildAviSynthFilter(strategy, transfer, primaries),
+            VapourSynthColorFilter = BuildVapourSynthFilter(strategy, transfer),
+            AviSynthColorFilter = BuildAviSynthFilter(strategy, transfer),
             StrategyDisplayName = GetDisplayName(strategy),
             Description = descriptionOverride ?? BuildDescription(strategy, primaries, transfer, matrix, chromaLocation, pixelFormat)
         };
@@ -382,7 +393,7 @@ public static class ColorSpaceConverter
         if (!string.IsNullOrWhiteSpace(gamutMapping))
             parts.Add($"gamut_mapping=\"{gamutMapping}\"");
 
-        return $"libplacebo_Render(src, {string.Join(", ", parts)})";
+        return $"libplacebo_Render({string.Join(", ", parts)})";
     }
 
     private static string GetDisplayName(ColorSpaceStrategy strategy) => strategy switch
