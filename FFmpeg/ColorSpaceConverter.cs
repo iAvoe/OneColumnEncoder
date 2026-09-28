@@ -106,12 +106,13 @@ public static class ColorSpaceConverter
         string? matrix = Normalize(TryGetString(stream, "color_space"));
         string? chromaLocation = Normalize(TryGetString(stream, "chroma_location"));
         string? pixelFormat = Normalize(TryGetString(stream, "pix_fmt"));
+        decimal? frameRate = ReadFrameRate(stream);
 
         bool hasDolbyVision = HasDolbyVisionMetadata(stream);
         ColorSpaceStrategy strategy = Classify(primaries, transfer, hasDolbyVision);
 
         return CreateResult(primaries, transfer, matrix, chromaLocation, pixelFormat, strategy,
-            hasDolbyVision: hasDolbyVision);
+            frameRate: frameRate, hasDolbyVision: hasDolbyVision);
     }
 
     public static ColorSpaceStrategy Classify(
@@ -156,6 +157,11 @@ public static class ColorSpaceConverter
         primaries = Normalize(primaries);
         transfer = Normalize(transfer);
 
+        // Known Bt601 (narrow gamut) source: only the LowToHigh conversion makes sense,
+        // every WCG / HDR / HLG / DoVi strategy must report N/A
+        if (IsSdrNarrowGamut(primaries))
+            return strategy == ColorSpaceStrategy.LowToHigh;
+
         return strategy switch
         {
             ColorSpaceStrategy.LowToHigh => IsSdrNarrowGamut(primaries),
@@ -199,24 +205,23 @@ public static class ColorSpaceConverter
     /// </summary>
     /// <param name="strategy">Type of gamut or HDR to SDR</param>
     /// <param name="transfer">Transfer characteristics string</param>
-    /// <param name="framerate">Used to determine a Bt601 source is NTSC or PAL</param>
-    /// <returns></returns>
+    /// <param name="primaries">ffprobe color_primaries, used to tell a Bt601 source is NTSC or PAL</param>
+    /// <param name="matrix">ffprobe color_space, used to tell a Bt601 source is NTSC or PAL</param>
+    /// <param name="framerate">Fallback used to tell a Bt601 source is NTSC or PAL when metadata is ambiguous</param>
+    /// <returns>Filter string, or <see cref="LangProviderBase.NAText"/> when a Bt601 source is neither NTSC nor PAL</returns>
     public static string? BuildAviSynthFilter(
         ColorSpaceStrategy strategy,
         string? transfer = null,
-        decimal? framerate = 0) // Currently not needed: string? primaries = null
+        string? primaries = null,
+        string? matrix = null,
+        decimal? framerate = null)
     {
         // Determine source color space type
         string srcCsp = GetAviSynthSourceCsp(transfer);
 
-        // Determine Bt601 source is NTSC or PAL. TODO: refine this
-        string bt601type = framerate>0
-            ? Math.Round((decimal)framerate) == 60 ? "pal" : "ntsc"
-            : "ntsc";
-
         return strategy switch
         {
-            ColorSpaceStrategy.LowToHigh => BuildAvsPlaceboFilter(srcCsp, bt601type, "709"),
+            ColorSpaceStrategy.LowToHigh => BuildAvsBt601Filter(primaries, matrix, framerate),
             ColorSpaceStrategy.HighToLow => BuildAvsPlaceboFilter(srcCsp, "sdr", "709"),
             ColorSpaceStrategy.HdrToSdr => BuildAvsPlaceboFilter(srcCsp, "sdr", "709", "<nits>", "100", "spline"),
             ColorSpaceStrategy.HighHdrToSdr => BuildAvsPlaceboFilter(srcCsp, "sdr", "709", "<nits>", "100", "spline", "perceptual"),
@@ -225,6 +230,71 @@ public static class ColorSpaceConverter
             ColorSpaceStrategy.DoviHdrToSdr => BuildAvsPlaceboFilter("dovi", "sdr", "709", "<nits>", "100", "spline"),
             _ => null
         };
+    }
+
+    /// <summary>
+    /// Build the Bt601 (601_525 NTSC / 601_625 PAL) source preset filter
+    /// </summary>
+    /// <returns>Filter with the Bt601 preset in src_csp, or <see cref="LangProviderBase.NAText"/> when the standard cannot be determined</returns>
+    private static string? BuildAvsBt601Filter(string? primaries, string? matrix, decimal? framerate)
+    {
+        string? standard = ResolveBt601Standard(primaries, matrix, framerate);
+        return standard == null
+            ? LangProviderBase.NAText
+            : BuildAvsPlaceboFilter(standard, "sdr", "709");
+    }
+
+    /// <summary>
+    /// Tell PAL/SECAM (BT.601-625) vs NTSC/film (BT.601-525), preferring ffprobe metadata
+    /// </summary>
+    /// <returns>"pal" / "ntsc", or null when neither standard can be determined</returns>
+    private static string? ResolveBt601Standard(string? primaries, string? matrix, decimal? framerate) =>
+        ClassifyBt601Tag(primaries)
+        ?? ClassifyBt601Tag(matrix)
+        ?? ClassifyBt601Framerate(framerate);
+
+    /// <summary>
+    /// Map an ffprobe color_primaries / color_space value to the Bt601 standard it belongs to
+    /// </summary>
+    /// <remarks>
+    /// Values describing neither standard (bt601, unknown, unspec, ...) stay ambiguous and go to the framerate fallback
+    /// </remarks>
+    private static string? ClassifyBt601Tag(string? tag) => Normalize(tag) switch
+    {
+        "bt470bg" or "ebu3213" => "pal",
+        "bt470m" or "smpte170m" or "smpte240m" or "fcc" => "ntsc",
+        _ => null
+    };
+
+    /// <summary>
+    /// Judge by framerate to tell PAL/SECAM (BT.601-625) vs NTSC/film (BT.601-525)
+    /// </summary>
+    /// <remarks>
+    /// 25 / 50 / 100 → PAL, 24p / 30p / 48p / 60p / 120p and the NTSC drop-frame rates → NTSC, else → neither
+    /// </remarks>
+    private static string? ClassifyBt601Framerate(decimal? framerate)
+    {
+        if (framerate is not > 0) return null;
+        double fps = (double)framerate.Value;
+
+        if (IsNearRate(fps, PalRates)) return "pal";
+        if (IsNearRate(fps, NtscRates)) return "ntsc";
+        return null;
+    }
+
+    private static readonly double[] PalRates = [25, 50, 100];
+
+    private static readonly double[] NtscRates = [23.976, 24, 29.97, 30, 47.952, 48, 59.94, 60, 119.88, 120];
+
+    private const double FramerateTolerance = 0.1;
+
+    private static bool IsNearRate(double fps, double[] rates) =>
+        rates.Any(rate => Math.Abs(fps - rate) < FramerateTolerance);
+
+    private static decimal? ReadFrameRate(JsonElement stream)
+    {
+        (int num, int den)? rate = FrameRate.GetRFrameRate(stream) ?? FrameRate.GetAvgFrameRate(stream);
+        return rate is { num: > 0, den: > 0 } ? (decimal)rate.Value.num / rate.Value.den : null;
     }
 
     public static string? BuildFFmpegFilter(
@@ -254,7 +324,7 @@ public static class ColorSpaceConverter
     private static ColorSpaceAnalysisM CreateResult(
         string? primaries, string? transfer, string? matrix, string? chromaLocation, string? pixelFormat,
         ColorSpaceStrategy strategy, string? descriptionOverride = null,
-        bool hasDolbyVision = false)
+        bool hasDolbyVision = false, decimal? frameRate = null)
     {
         return new ColorSpaceAnalysisM
         {
@@ -268,9 +338,10 @@ public static class ColorSpaceConverter
             H273Transfer = transfer != null && H273Transfer.TryGetValue(transfer, out int tv) ? tv : null,
             H273Matrix = matrix != null && H273Matrix.TryGetValue(matrix, out int mv) ? mv : null,
             Strategy = strategy,
+            FrameRate = frameRate,
             FFmpegColorFilter = BuildFFmpegFilter(strategy, matrix, chromaLocation, primaries, pixelFormat),
             VapourSynthColorFilter = BuildVapourSynthFilter(strategy, transfer),
-            AviSynthColorFilter = BuildAviSynthFilter(strategy, transfer),
+            AviSynthColorFilter = BuildAviSynthFilter(strategy, transfer, primaries, matrix, frameRate),
             StrategyDisplayName = GetDisplayName(strategy),
             Description = descriptionOverride ?? BuildDescription(strategy, primaries, transfer, matrix, chromaLocation, pixelFormat)
         };

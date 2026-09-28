@@ -33,6 +33,7 @@ public class ColorSpaceAnalysisM
     public int? H273Matrix { get; init; }
 
     public ColorSpaceStrategy Strategy { get; init; }
+    public decimal? FrameRate { get; init; }
     public string? FFmpegColorFilter { get; init; }
     public string? VapourSynthColorFilter { get; init; }
     public string? AviSynthColorFilter { get; init; }

@@ -420,9 +420,16 @@ public class FilterScribeVM : BaseVM
             || !string.IsNullOrWhiteSpace(ColorSpaceConverter.BuildVapourSynthFilter(
                 strategy,
                 _colorSpaceAnalysis.ColorTransfer))
-            || !string.IsNullOrWhiteSpace(ColorSpaceConverter.BuildAviSynthFilter(
+            || IsUsableColorSpaceFilter(ColorSpaceConverter.BuildAviSynthFilter(
                 strategy,
-                _colorSpaceAnalysis.ColorTransfer)));
+                _colorSpaceAnalysis.ColorTransfer,
+                _colorSpaceAnalysis.ColorPrimaries,
+                _colorSpaceAnalysis.ColorMatrix,
+                _colorSpaceAnalysis.FrameRate)));
+
+    private static bool IsUsableColorSpaceFilter(string? filter) =>
+        !string.IsNullOrWhiteSpace(filter)
+        && !filter.Contains(LangProviderBase.NAText, StringComparison.Ordinal);
 
     public string FFmpegResizeFilter =>
         HasScaleFilter
@@ -1052,6 +1059,8 @@ public class FilterScribeVM : BaseVM
 
     private string? GetVapourSynthColorSpaceFilterChain(ColorSpaceStrategy strategy)
     {
+        if (!IsColorSpaceStrategyShown(strategy)) return null;
+
         string? filter = ColorSpaceConverter.BuildVapourSynthFilter(
             strategy,
             _colorSpaceAnalysis.ColorTransfer);
@@ -1065,12 +1074,20 @@ public class FilterScribeVM : BaseVM
 
     private string? GetAviSynthColorSpaceFilterChain(ColorSpaceStrategy strategy)
     {
+        if (!IsColorSpaceStrategyShown(strategy)) return null;
+
         string? filter = ColorSpaceConverter.BuildAviSynthFilter(
             strategy,
-            _colorSpaceAnalysis.ColorTransfer);
+            _colorSpaceAnalysis.ColorTransfer,
+            _colorSpaceAnalysis.ColorPrimaries,
+            _colorSpaceAnalysis.ColorMatrix,
+            _colorSpaceAnalysis.FrameRate);
 
         if (filter == null) return null;
-        
+
+        // Undeterminable Bt601 standard: report "N/A" as-is, without the bit depth wrapper
+        if (filter.Contains(LangProviderBase.NAText, StringComparison.Ordinal)) return filter;
+
         filter = ReplaceColorSpacePeakNits(filter, strategy);
         int outputBitDepth = GetPlaceboOutputBitDepth();
         // Warning: AviSynth does not use "src =" pattern, it is VapourSynth specific
