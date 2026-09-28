@@ -800,7 +800,7 @@ public class FilterScribeVM : BaseVM
     public bool CanInsertFFmpegChroma422Filter => CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
         && FFProbePixelFormatRules.GetYuv420PixelFormat(_sourceBitDepth) != null;
     public bool CanInsertFFmpegChroma420Filter => (CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
-        || CanUseChromaSubsampling(ChromaSubsampling.Yuv422))
+        || CanUseChromaSubsampling(ChromaSubsampling.Yuv422, requiresInputLocation: true))
         && FFProbePixelFormatRules.GetYuv420PixelFormat(_sourceBitDepth) != null;
 
     private ChromaSubsampling SourceChromaSubsampling =>
@@ -851,17 +851,32 @@ public class FilterScribeVM : BaseVM
                $"src = core.fmtc.resample(clip=src, css=\"{target}\", kernel=\"spline36\", cplace=\"left\"{inputPlacement})";
     }
 
+    /// <summary>
+    /// Create ffmpeg YUV444→YUV422, YUV444→YUV420, YUV422→YUV420 filter string
+    /// </summary>
+    /// <param name="allowYuv422Source">
+    /// Block if the input chroma location is unknown
+    /// </param>
+    /// <remarks>libplacebo (is not designed) to handle chroma resizing</remarks>
+    /// <returns></returns>
     private string? BuildFFmpegChromaFilter(bool allowYuv422Source)
     {
         if (!CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
             && (!allowYuv422Source || !CanUseChromaSubsampling(ChromaSubsampling.Yuv422)))
             return null;
+        // Mandatory blocking since the source cannot be converted accurately, applies to FFmpeg-AVS-VS
+        if (SourceChromaSubsampling == ChromaSubsampling.Yuv422 && SourceChromaLocation == null)
+            return null;
 
         string? outputFormat = FFProbePixelFormatRules.GetYuv420PixelFormat(_sourceBitDepth);
         if (outputFormat == null) return null;
 
-        string filter = $"libplacebo=format={outputFormat}:chroma_loc=left:cscale=spline:antiring=0.8,hwdownload,format={outputFormat}";
-        return BuildFFmpegFilterArgs(includeSwsFlags: false, includeCsp709Flags: false, filter);
+        string chromaInPart = SourceChromaLocation != null
+            ? $":in_chroma_loc={SourceChromaLocation}"
+            : string.Empty;
+        string filter = $"scale=flags=spline+accurate_rnd+full_chroma_int{chromaInPart}:out_chroma_loc=left";
+        string args = BuildFFmpegFilterArgs(includeSwsFlags: false, includeCsp709Flags: false, filter);
+        return $"{args} -pix_fmt {outputFormat}";
     }
 
     private static string? NormalizeChromaLocation(string? value)
@@ -1444,8 +1459,6 @@ public class FilterScribeVM : BaseVM
     public static string VerticalFlipLabel => FilterScribeModalLangProvider.Current["SrcScribe.VerticalFlipLabel"];
     public static string ColorSpaceConvertTitle => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpaceConvertTitle"];
     public static string ChromaSubsamplingTitle => FilterScribeModalLangProvider.Current["SrcScribe.ChromaSubsamplingTitle"];
-    public static string Chroma422Label => FilterScribeModalLangProvider.Current["SrcScribe.Chroma422Label"];
-    public static string Chroma420Label => FilterScribeModalLangProvider.Current["SrcScribe.Chroma420Label"];
     public static string DenoiseTitle => FilterScribeModalLangProvider.Current["SrcScribe.DenoiseTitle"];
     public static string ScaleHint => FilterScribeModalLangProvider.Current["SrcScribe.ScaleHint"];
     public static string SubtitleBurnTitle => FilterScribeModalLangProvider.Current["SrcScribe.SubtitleBurnTitle"];

@@ -531,12 +531,10 @@ public class VpyPreviewerVM : BaseVM, IPreviewViewModel
 
     private void RefreshPreviewScript()
     {
-        if (_buildPreviewScript == null)
-            return;
+        if (_buildPreviewScript == null) return;
 
         string? srcPath = SelectedPreviewSource?.FullPath;
-        if (string.IsNullOrWhiteSpace(srcPath))
-            return;
+        if (string.IsNullOrWhiteSpace(srcPath)) return;
 
         string script = _buildPreviewScript(srcPath);
         File.WriteAllText(_scriptPath, script);

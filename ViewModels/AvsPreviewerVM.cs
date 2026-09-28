@@ -290,11 +290,13 @@ public class AvsPreviewerVM : BaseVM, IPreviewViewModel
     {
         if (string.IsNullOrWhiteSpace(text)) return;
 
-        string[] lines = text.Replace("\r", "", StringComparison.Ordinal)
-            .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        string activeToolName = NormalizePreviewToolName(toolName
-            ?? SelectedPreviewTool?.FullPath
-            ?? string.Empty);
+        // Support \r\n \n (normal) and single \r (avs2yuv)
+        string normalized = text.Replace("\r\n", "\n").Replace('\r', '\n');
+        string[] lines =
+            normalized.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        string activeToolName = NormalizePreviewToolName(
+            toolName ?? SelectedPreviewTool?.FullPath ?? string.Empty);
+
         string[] filteredLines = [.. lines.Where(line => IsUsefulAvsLogLine(activeToolName, line))];
         if (filteredLines.Length == 0) return;
 
@@ -305,9 +307,11 @@ public class AvsPreviewerVM : BaseVM, IPreviewViewModel
                 if (_logBuilder.Length > 0) _logBuilder.Append('\n');
                 _logBuilder.Append(line);
             }
+
             string snapshot = _logBuilder.ToString();
             RunOnUi(() => FrameServerLogText = snapshot);
         }
+
         _logReady = false;
     }
 
@@ -315,14 +319,19 @@ public class AvsPreviewerVM : BaseVM, IPreviewViewModel
     {
         bool isAvs2pipemod = toolName.Equals("avs2pipemod", StringComparison.OrdinalIgnoreCase)
             || line.StartsWith("avs2pipemod[", StringComparison.OrdinalIgnoreCase);
+
         if (isAvs2pipemod)
             return line.Contains("avs2pipemod[info]: writing", StringComparison.OrdinalIgnoreCase)
                 || IsAvsPreviewStatusLogLine(line);
 
-        if (!toolName.Equals("avs2yuv", StringComparison.OrdinalIgnoreCase))
+        bool isAvs2yuv = toolName.Equals("avs2yuv", StringComparison.OrdinalIgnoreCase)
+            || toolName.Equals("avs2yuv.exe", StringComparison.OrdinalIgnoreCase);
+
+        if (!isAvs2yuv)
             return !line.Contains("Creating lwi index file", StringComparison.OrdinalIgnoreCase);
 
         return line.StartsWith("Script file:", StringComparison.OrdinalIgnoreCase)
+            || line.StartsWith("Creating lwi index file", StringComparison.OrdinalIgnoreCase)
             || IsAvsPreviewStatusLogLine(line);
     }
 
