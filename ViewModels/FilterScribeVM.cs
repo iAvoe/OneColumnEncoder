@@ -834,8 +834,8 @@ public class FilterScribeVM : BaseVM
     public string FFmpegChroma420Filter => BuildFFmpegChromaFilter(allowYuv422Source: true) ?? LangProviderBase.NAText;
 
     // LoadPlugin commands for color space filters
-    public string VapourSynthPlaceboLoadCommand => BuildVapourSynthPlaceboLoadCommand();
-    public string AviSynthPlaceboLoadCommand => BuildAviSynthPlaceboLoadCommand();
+    public static string VapourSynthPlaceboLoadCommand => BuildVapourSynthPlaceboLoadCommand();
+    public static string AviSynthPlaceboLoadCommand => BuildAviSynthPlaceboLoadCommand();
 
     public bool CanInsertAviSynthChroma422Filter => CanUseChromaSubsampling(ChromaSubsampling.Yuv444);
     public bool CanInsertAviSynthChroma420Filter => CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
@@ -1076,7 +1076,7 @@ public class FilterScribeVM : BaseVM
         return filter.Replace("<nits>", peakNits.ToString("G", CultureInfo.InvariantCulture));
     }
 
-    private string BuildVapourSynthPlaceboLoadCommand()
+    private static string BuildVapourSynthPlaceboLoadCommand()
     {
         string pluginsDir = Environment.Is64BitProcess
             ? BundledToolPathResolver.ResolveFolder("x64-AVS-VS-plugins")
@@ -1085,7 +1085,7 @@ public class FilterScribeVM : BaseVM
         return $"core.std.LoadPlugin(r\"{placeboPath}\")";
     }
 
-    private string BuildAviSynthPlaceboLoadCommand()
+    private static string BuildAviSynthPlaceboLoadCommand()
     {
         string pluginsDir = Environment.Is64BitProcess
             ? BundledToolPathResolver.ResolveFolder("x64-AVS-VS-plugins")
