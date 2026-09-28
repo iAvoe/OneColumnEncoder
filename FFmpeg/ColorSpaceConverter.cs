@@ -107,13 +107,26 @@ public static class ColorSpaceConverter
         string? chromaLocation = Normalize(TryGetString(stream, "chroma_location"));
         string? pixelFormat = Normalize(TryGetString(stream, "pix_fmt"));
 
-        ColorSpaceStrategy strategy = Classify(primaries, transfer);
+        bool hasDolbyVision = HasDolbyVisionMetadata(stream);
+        ColorSpaceStrategy strategy = Classify(primaries, transfer, hasDolbyVision);
 
-        return CreateResult(primaries, transfer, matrix, chromaLocation, pixelFormat, strategy);
+        return CreateResult(primaries, transfer, matrix, chromaLocation, pixelFormat, strategy,
+            hasDolbyVision: hasDolbyVision);
     }
 
-    public static ColorSpaceStrategy Classify(string? primaries, string? transfer)
+    public static ColorSpaceStrategy Classify(
+        string? primaries,
+        string? transfer,
+        bool hasDolbyVision = false)
     {
+        if (hasDolbyVision)
+            return IsHlgTransfer(transfer) || IsHdrTransfer(transfer)
+                ? ColorSpaceStrategy.DoviHdrToSdr
+                : ColorSpaceStrategy.DoviSdrTo709;
+
+        if (IsHlgTransfer(transfer))
+            return ColorSpaceStrategy.HlgToSdr;
+
         if (IsHdrTransfer(transfer))
             return IsWideGamut(primaries)
                 ? ColorSpaceStrategy.HighHdrToSdr
@@ -134,7 +147,11 @@ public static class ColorSpaceConverter
         return ColorSpaceStrategy.Unknown;
     }
 
-    public static bool IsStrategyApplicable(ColorSpaceStrategy strategy, string? primaries, string? transfer)
+    public static bool IsStrategyApplicable(
+        ColorSpaceStrategy strategy,
+        string? primaries,
+        string? transfer,
+        bool hasDolbyVision = false)
     {
         primaries = Normalize(primaries);
         transfer = Normalize(transfer);
@@ -145,6 +162,9 @@ public static class ColorSpaceConverter
             ColorSpaceStrategy.HighToLow => IsWideGamut(primaries),
             ColorSpaceStrategy.HdrToSdr => IsHdrTransfer(transfer),
             ColorSpaceStrategy.HighHdrToSdr => IsHdrTransfer(transfer) && IsWideGamut(primaries),
+            ColorSpaceStrategy.HlgToSdr => IsHlgTransfer(transfer),
+            ColorSpaceStrategy.DoviSdrTo709 => hasDolbyVision,
+            ColorSpaceStrategy.DoviHdrToSdr => hasDolbyVision,
             ColorSpaceStrategy.NativeBt709 => IsBt709(primaries),
             _ => false
         };
@@ -154,6 +174,48 @@ public static class ColorSpaceConverter
 
     #region Filter chain generation
 
+    public static string? BuildVapourSynthFilter(
+        ColorSpaceStrategy strategy,
+        string? transfer = null,
+        string? primaries = null)
+    {
+        // Determine source color space type
+        int srcCsp = GetVapourSynthSourceCsp(transfer);
+
+        return strategy switch
+        {
+            ColorSpaceStrategy.LowToHigh => null, // VapourSynth placebo不支持BT601转换
+            ColorSpaceStrategy.HighToLow => BuildVapourSynthTonemapFilter(srcCsp, 0, 3),
+            ColorSpaceStrategy.HdrToSdr => BuildVapourSynthTonemapFilter(srcCsp, 0, 3, "<nits>", "100", "spline"),
+            ColorSpaceStrategy.HighHdrToSdr => BuildVapourSynthTonemapFilter(srcCsp, 0, 3, "<nits>", "100", "spline", 1),
+            ColorSpaceStrategy.HlgToSdr => BuildVapourSynthTonemapFilter(2, 0, 3, "<nits>", "100", "spline"),
+            ColorSpaceStrategy.DoviSdrTo709 => BuildVapourSynthTonemapFilter(3, 0, 3),
+            ColorSpaceStrategy.DoviHdrToSdr => BuildVapourSynthTonemapFilter(3, 0, 3, "<nits>", "100", "spline"),
+            _ => null
+        };
+    }
+
+    public static string? BuildAviSynthFilter(
+        ColorSpaceStrategy strategy,
+        string? transfer = null,
+        string? primaries = null)
+    {
+        // Determine source color space type
+        string srcCsp = GetAviSynthSourceCsp(transfer);
+
+        return strategy switch
+        {
+            ColorSpaceStrategy.LowToHigh => null, // AviSynth placebo不支持BT601转换
+            ColorSpaceStrategy.HighToLow => BuildAvsPlaceboFilter(srcCsp, "sdr", "709"),
+            ColorSpaceStrategy.HdrToSdr => BuildAvsPlaceboFilter(srcCsp, "sdr", "709", "<nits>", "100", "spline"),
+            ColorSpaceStrategy.HighHdrToSdr => BuildAvsPlaceboFilter(srcCsp, "sdr", "709", "<nits>", "100", "spline", "perceptual"),
+            ColorSpaceStrategy.HlgToSdr => BuildAvsPlaceboFilter("hlg", "sdr", "709", "<nits>", "100", "spline"),
+            ColorSpaceStrategy.DoviSdrTo709 => BuildAvsPlaceboFilter("dovi", "sdr", "709"),
+            ColorSpaceStrategy.DoviHdrToSdr => BuildAvsPlaceboFilter("dovi", "sdr", "709", "<nits>", "100", "spline"),
+            _ => null
+        };
+    }
+
     public static string? BuildFFmpegFilter(
         ColorSpaceStrategy strategy,
         string? matrix = null,
@@ -161,7 +223,7 @@ public static class ColorSpaceConverter
         string? primaries = null,
         string? pixelFormat = null)
     {
-        const string hdrToSdr = "zscale=transfer=linear,tonemap=hable:desat=3:peak=<nits>";
+        const string hdrToSdr = "zscale=transfer=linear,tonemap=spline:desat=3:peak=<nits>";
         const string toBt709 = "zscale=matrix=bt709:primaries=bt709:transfer=bt709";
 
         return strategy switch
@@ -180,7 +242,8 @@ public static class ColorSpaceConverter
 
     private static ColorSpaceAnalysisM CreateResult(
         string? primaries, string? transfer, string? matrix, string? chromaLocation, string? pixelFormat,
-        ColorSpaceStrategy strategy, string? descriptionOverride = null)
+        ColorSpaceStrategy strategy, string? descriptionOverride = null,
+        bool hasDolbyVision = false)
     {
         return new ColorSpaceAnalysisM
         {
@@ -189,11 +252,14 @@ public static class ColorSpaceConverter
             ColorMatrix = matrix,
             ColorChromaLocation = chromaLocation,
             PixelFormat = pixelFormat,
+            HasDolbyVision = hasDolbyVision,
             H273Primaries = primaries != null && H273Primaries.TryGetValue(primaries, out int pv) ? pv : null,
             H273Transfer = transfer != null && H273Transfer.TryGetValue(transfer, out int tv) ? tv : null,
             H273Matrix = matrix != null && H273Matrix.TryGetValue(matrix, out int mv) ? mv : null,
             Strategy = strategy,
             FFmpegColorFilter = BuildFFmpegFilter(strategy, matrix, chromaLocation, primaries, pixelFormat),
+            VapourSynthColorFilter = BuildVapourSynthFilter(strategy, transfer, primaries),
+            AviSynthColorFilter = BuildAviSynthFilter(strategy, transfer, primaries),
             StrategyDisplayName = GetDisplayName(strategy),
             Description = descriptionOverride ?? BuildDescription(strategy, primaries, transfer, matrix, chromaLocation, pixelFormat)
         };
@@ -225,7 +291,10 @@ public static class ColorSpaceConverter
         && value != "reserved";
 
     private static bool IsHdrTransfer(string? transfer) =>
-        transfer is "smpte2084" or "arib-std-b67" or "hlg";
+        transfer == "smpte2084";
+
+    private static bool IsHlgTransfer(string? transfer) =>
+        transfer is "arib-std-b67" or "hlg";
 
     private static bool IsBt709(string? primaries) =>
         primaries == "bt709";
@@ -237,6 +306,85 @@ public static class ColorSpaceConverter
     private static bool IsWideGamut(string? primaries) =>
         primaries is "bt2020" or "smpte431" or "smpte432" or "smpte428";
 
+    private static int GetVapourSynthSourceCsp(string? transfer) =>
+        IsHdrTransfer(transfer) ? 1 : IsHlgTransfer(transfer) ? 2 : 0;
+
+    private static string GetAviSynthSourceCsp(string? transfer) =>
+        IsHdrTransfer(transfer) ? "hdr10" : IsHlgTransfer(transfer) ? "hlg" : "sdr";
+
+    private static string BuildVapourSynthTonemapFilter(
+        int srcCsp,
+        int dstCsp,
+        int dstPrim,
+        string? srcMax = null,
+        string? dstMax = null,
+        string? toneMappingFunction = null,
+        int? gamutMapping = null)
+    {
+        var parts = new List<string>
+        {
+            $"src_csp={srcCsp}",
+            $"dst_csp={dstCsp}",
+            $"dst_prim={dstPrim}"
+        };
+
+        if (!string.IsNullOrWhiteSpace(srcMax))
+            parts.Add($"src_max={srcMax}");
+
+        if (!string.IsNullOrWhiteSpace(dstMax))
+            parts.Add($"dst_max={dstMax}");
+
+        if (!string.IsNullOrWhiteSpace(toneMappingFunction))
+            parts.Add($"tone_mapping_function_s=\"{toneMappingFunction}\"");
+
+        if (gamutMapping.HasValue)
+            parts.Add($"gamut_mapping={gamutMapping.Value}");
+
+        return $"core.placebo.Tonemap(src, {string.Join(", ", parts)})";
+    }
+
+    private static bool HasDolbyVisionMetadata(JsonElement stream)
+    {
+        if (!stream.TryGetProperty("side_data_list", out JsonElement sideDataList)
+            || sideDataList.ValueKind != JsonValueKind.Array)
+            return false;
+
+        return sideDataList.EnumerateArray().Any(entry =>
+            string.Equals(TryGetString(entry, "side_data_type"),
+                "DOVI configuration record", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static string BuildAvsPlaceboFilter(
+        string srcCsp,
+        string dstCsp,
+        string dstPrim,
+        string? srcMax = null,
+        string? dstMax = null,
+        string? toneMappingFunction = null,
+        string? gamutMapping = null)
+    {
+        var parts = new List<string>
+        {
+            $"src_csp=\"{srcCsp}\"",
+            $"dst_csp=\"{dstCsp}\"",
+            $"dst_prim=\"{dstPrim}\""
+        };
+
+        if (!string.IsNullOrWhiteSpace(srcMax))
+            parts.Add($"src_max={srcMax}");
+
+        if (!string.IsNullOrWhiteSpace(dstMax))
+            parts.Add($"dst_max={dstMax}");
+
+        if (!string.IsNullOrWhiteSpace(toneMappingFunction))
+            parts.Add($"tone_mapping_function=\"{toneMappingFunction}\"");
+
+        if (!string.IsNullOrWhiteSpace(gamutMapping))
+            parts.Add($"gamut_mapping=\"{gamutMapping}\"");
+
+        return $"libplacebo_Render({string.Join(", ", parts)})";
+    }
+
     private static string GetDisplayName(ColorSpaceStrategy strategy) => strategy switch
     {
         ColorSpaceStrategy.NativeBt709 => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DisplayNativeBt709"],
@@ -244,6 +392,9 @@ public static class ColorSpaceConverter
         ColorSpaceStrategy.HighToLow => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DisplayHighToLow"],
         ColorSpaceStrategy.HdrToSdr => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DisplayHdrToSdr"],
         ColorSpaceStrategy.HighHdrToSdr => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DisplayHighHdrToSdr"],
+        ColorSpaceStrategy.HlgToSdr => "HLG to Bt.709",
+        ColorSpaceStrategy.DoviSdrTo709 => "Dolby Vision SDR to Bt.709",
+        ColorSpaceStrategy.DoviHdrToSdr => "Dolby Vision HDR to SDR Bt.709",
         _ => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DisplayUnknown"]
     };
 
@@ -267,6 +418,9 @@ public static class ColorSpaceConverter
             ColorSpaceStrategy.HighToLow => string.Format(FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DescHighToLow"], colorMeta),
             ColorSpaceStrategy.HdrToSdr => string.Format(FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DescHdrToSdr"], colorMeta),
             ColorSpaceStrategy.HighHdrToSdr => string.Format(FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DescHighHdrToSdr"], colorMeta),
+            ColorSpaceStrategy.HlgToSdr => $"Source {colorMeta} is HLG content, performing HLG to Bt.709 tone mapping.",
+            ColorSpaceStrategy.DoviSdrTo709 => $"Source {colorMeta} is Dolby Vision SDR content, mapping to Bt.709.",
+            ColorSpaceStrategy.DoviHdrToSdr => $"Source {colorMeta} is Dolby Vision HDR content, performing HDR to SDR tone mapping.",
             _ => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.DescUnknown"]
         };
 

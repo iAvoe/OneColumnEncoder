@@ -4,3 +4,9 @@ fmtconv r31 (AVS+VS, x86-64)
 ASharp (x86-64)
 - AVS: https://github.com/Asd-g/AviSynth-ASharp
 - VS: https://github.com/dubhatervapoursynth/vapoursynth-asharp
+
+libvs_placebo (VS, x64)
+- https://pypi.org/project/vs-placebo/#files
+
+libplacebo_Render (AVS, x64)
+- https://github.com/Asd-g/libplacebo_Render/

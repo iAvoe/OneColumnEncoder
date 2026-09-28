@@ -367,7 +367,10 @@ public class FilterScribeVM : BaseVM
         && !string.IsNullOrWhiteSpace(_colorSpaceAnalysis.FFmpegColorFilter);
 
     private bool RequiresManualColorSpacePeakNits =>
-        _colorSpaceAnalysis.Strategy is ColorSpaceStrategy.HdrToSdr or ColorSpaceStrategy.HighHdrToSdr;
+        _colorSpaceAnalysis.Strategy is ColorSpaceStrategy.HdrToSdr
+            or ColorSpaceStrategy.HighHdrToSdr
+            or ColorSpaceStrategy.HlgToSdr
+            or ColorSpaceStrategy.DoviHdrToSdr;
 
     public string ColorSpacePeakNits
     {
@@ -389,7 +392,10 @@ public class FilterScribeVM : BaseVM
     public bool IsColorSpacePeakNitsVisible => RequiresManualColorSpacePeakNits;
 
     private static bool RequiresColorSpacePeakNits(ColorSpaceStrategy strategy) =>
-        strategy is ColorSpaceStrategy.HdrToSdr or ColorSpaceStrategy.HighHdrToSdr;
+        strategy is ColorSpaceStrategy.HdrToSdr
+            or ColorSpaceStrategy.HighHdrToSdr
+            or ColorSpaceStrategy.HlgToSdr
+            or ColorSpaceStrategy.DoviHdrToSdr;
 
     private string? ScaleFilterChain => HasScaleFilter ? $"scale={TargetWidth}:{TargetHeight}" : null;
 
@@ -405,7 +411,11 @@ public class FilterScribeVM : BaseVM
 
     private bool IsColorSpaceStrategyShown(ColorSpaceStrategy strategy) =>
         !_hasSourceValidationError()
-        && ColorSpaceConverter.IsStrategyApplicable(strategy, _colorSpaceAnalysis.ColorPrimaries, _colorSpaceAnalysis.ColorTransfer)
+        && ColorSpaceConverter.IsStrategyApplicable(
+            strategy,
+            _colorSpaceAnalysis.ColorPrimaries,
+            _colorSpaceAnalysis.ColorTransfer,
+            _colorSpaceAnalysis.HasDolbyVision)
         && !string.IsNullOrWhiteSpace(BuildColorSpaceStrategyFilterChain(strategy));
 
     public string FFmpegResizeFilter =>
@@ -768,28 +778,64 @@ public class FilterScribeVM : BaseVM
             ? BuildFFmpegFilterArgs(includeSwsFlags: true, includeCsp709Flags: false, FpsFilterChain, ScaleFilterChain)
             : LangProviderBase.NAText;
 
-    public string FFmpegLowToHighColorFilter => GetColorSpaceStrategyFilter(ColorSpaceStrategy.LowToHigh);
+    public string FFmpegLowToHighColorFilter =>
+        GetColorSpaceStrategyFilter(ColorSpaceStrategy.LowToHigh);
+    public string FFmpegLowToHighColorFilterDisplay =>
+        GetColorSpaceStrategyFilterChain(ColorSpaceStrategy.LowToHigh) ?? LangProviderBase.NAText;
+    public string FFmpegHighToLowColorFilter =>
+        GetColorSpaceStrategyFilter(ColorSpaceStrategy.HighToLow);
+    public string FFmpegHighToLowColorFilterDisplay =>
+        GetColorSpaceStrategyFilterChain(ColorSpaceStrategy.HighToLow) ?? LangProviderBase.NAText;
+    public string FFmpegHdrToSdrColorFilter =>
+        GetColorSpaceStrategyFilter(ColorSpaceStrategy.HdrToSdr);
+    public string FFmpegHdrToSdrColorFilterDisplay =>
+        GetColorSpaceStrategyFilterChain(ColorSpaceStrategy.HdrToSdr) ?? LangProviderBase.NAText;
+    public string FFmpegHighHdrToLowSdrColorFilter =>
+        GetColorSpaceStrategyFilter(ColorSpaceStrategy.HighHdrToSdr);
+    public string FFmpegHighHdrToLowSdrColorFilterDisplay =>
+        GetColorSpaceStrategyFilterChain(ColorSpaceStrategy.HighHdrToSdr) ?? LangProviderBase.NAText;
 
-    public string FFmpegLowToHighColorFilterDisplay => GetColorSpaceStrategyFilterChain(ColorSpaceStrategy.LowToHigh) ?? LangProviderBase.NAText;
+    // VapourSynth color space filters
+    public string VapourSynthLowToHighColorFilterDisplay =>
+        GetVapourSynthColorSpaceFilterChain(ColorSpaceStrategy.LowToHigh) ?? LangProviderBase.NAText;
+    public string VapourSynthHighToLowColorFilterDisplay =>
+        GetVapourSynthColorSpaceFilterChain(ColorSpaceStrategy.HighToLow) ?? LangProviderBase.NAText;
+    public string VapourSynthHdrToSdrColorFilterDisplay =>
+        GetVapourSynthColorSpaceFilterChain(ColorSpaceStrategy.HdrToSdr) ?? LangProviderBase.NAText;
+    public string VapourSynthHighHdrToLowSdrColorFilterDisplay =>
+        GetVapourSynthColorSpaceFilterChain(ColorSpaceStrategy.HighHdrToSdr) ?? LangProviderBase.NAText;
+    public string VapourSynthHlgToSdrColorFilterDisplay =>
+        GetVapourSynthColorSpaceFilterChain(ColorSpaceStrategy.HlgToSdr) ?? LangProviderBase.NAText;
+    public string VapourSynthDoviSdrTo709ColorFilterDisplay =>
+        GetVapourSynthColorSpaceFilterChain(ColorSpaceStrategy.DoviSdrTo709) ?? LangProviderBase.NAText;
+    public string VapourSynthDoviHdrToSdrColorFilterDisplay =>
+        GetVapourSynthColorSpaceFilterChain(ColorSpaceStrategy.DoviHdrToSdr) ?? LangProviderBase.NAText;
 
-    public string FFmpegHighToLowColorFilter => GetColorSpaceStrategyFilter(ColorSpaceStrategy.HighToLow);
-
-    public string FFmpegHighToLowColorFilterDisplay => GetColorSpaceStrategyFilterChain(ColorSpaceStrategy.HighToLow) ?? LangProviderBase.NAText;
-
-    public string FFmpegHdrToSdrColorFilter => GetColorSpaceStrategyFilter(ColorSpaceStrategy.HdrToSdr);
-
-    public string FFmpegHdrToSdrColorFilterDisplay => GetColorSpaceStrategyFilterChain(ColorSpaceStrategy.HdrToSdr) ?? LangProviderBase.NAText;
-
-    public string FFmpegHighHdrToLowSdrColorFilter => GetColorSpaceStrategyFilter(ColorSpaceStrategy.HighHdrToSdr);
-
-    public string FFmpegHighHdrToLowSdrColorFilterDisplay => GetColorSpaceStrategyFilterChain(ColorSpaceStrategy.HighHdrToSdr) ?? LangProviderBase.NAText;
-
+    // AviSynth color space filters
+    public string AviSynthLowToHighColorFilterDisplay =>
+        GetAviSynthColorSpaceFilterChain(ColorSpaceStrategy.LowToHigh) ?? LangProviderBase.NAText;
+    public string AviSynthHighToLowColorFilterDisplay =>
+        GetAviSynthColorSpaceFilterChain(ColorSpaceStrategy.HighToLow) ?? LangProviderBase.NAText;
+    public string AviSynthHdrToSdrColorFilterDisplay =>
+        GetAviSynthColorSpaceFilterChain(ColorSpaceStrategy.HdrToSdr) ?? LangProviderBase.NAText;
+    public string AviSynthHighHdrToLowSdrColorFilterDisplay =>
+        GetAviSynthColorSpaceFilterChain(ColorSpaceStrategy.HighHdrToSdr) ?? LangProviderBase.NAText;
+    public string AviSynthHlgToSdrColorFilterDisplay =>
+        GetAviSynthColorSpaceFilterChain(ColorSpaceStrategy.HlgToSdr) ?? LangProviderBase.NAText;
+    public string AviSynthDoviSdrTo709ColorFilterDisplay =>
+        GetAviSynthColorSpaceFilterChain(ColorSpaceStrategy.DoviSdrTo709) ?? LangProviderBase.NAText;
+    public string AviSynthDoviHdrToSdrColorFilterDisplay =>
+        GetAviSynthColorSpaceFilterChain(ColorSpaceStrategy.DoviHdrToSdr) ?? LangProviderBase.NAText;
     public string AviSynthChroma422Filter => BuildAviSynthChromaFilter("422") ?? LangProviderBase.NAText;
     public string AviSynthChroma420Filter => BuildAviSynthChromaFilter("420") ?? LangProviderBase.NAText;
     public string VapourSynthChroma422Filter => BuildVapourSynthChromaFilter("422") ?? LangProviderBase.NAText;
     public string VapourSynthChroma420Filter => BuildVapourSynthChromaFilter("420") ?? LangProviderBase.NAText;
     public string FFmpegChroma422Filter => BuildFFmpegChromaFilter(allowYuv422Source: false) ?? LangProviderBase.NAText;
     public string FFmpegChroma420Filter => BuildFFmpegChromaFilter(allowYuv422Source: true) ?? LangProviderBase.NAText;
+
+    // LoadPlugin commands for color space filters
+    public string VapourSynthPlaceboLoadCommand => BuildVapourSynthPlaceboLoadCommand();
+    public string AviSynthPlaceboLoadCommand => BuildAviSynthPlaceboLoadCommand();
 
     public bool CanInsertAviSynthChroma422Filter => CanUseChromaSubsampling(ChromaSubsampling.Yuv444);
     public bool CanInsertAviSynthChroma420Filter => CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
@@ -848,7 +894,7 @@ public class FilterScribeVM : BaseVM
             : BundledToolPathResolver.ResolveFolder("x86-AVS-VS-plugins");
         string fmtconvPath = Path.Combine(pluginsDir, "fmtconv.dll");
         return $"core.std.LoadPlugin(r\"{fmtconvPath}\")\r\n" +
-               $"src = core.fmtc.resample(clip=src, css=\"{target}\", kernel=\"spline36\", cplace=\"left\"{inputPlacement})";
+               $"src = core.fmtc.resample(src, css=\"{target}\", kernel=\"spline36\", cplace=\"left\"{inputPlacement})";
     }
 
     /// <summary>
@@ -944,6 +990,32 @@ public class FilterScribeVM : BaseVM
     public bool CanInsertFFmpegHighHdrToLowSdrColorFilter =>
         IsColorSpaceStrategyShown(ColorSpaceStrategy.HighHdrToSdr) && HasColorSpacePeakNits;
 
+    public bool CanInsertVapourSynthLowToHighColorFilter => IsColorSpaceStrategyShown(ColorSpaceStrategy.LowToHigh);
+    public bool CanInsertVapourSynthHighToLowColorFilter => IsColorSpaceStrategyShown(ColorSpaceStrategy.HighToLow);
+    public bool CanInsertVapourSynthHdrToSdrColorFilter =>
+        IsColorSpaceStrategyShown(ColorSpaceStrategy.HdrToSdr) && HasColorSpacePeakNits;
+    public bool CanInsertVapourSynthHighHdrToLowSdrColorFilter =>
+        IsColorSpaceStrategyShown(ColorSpaceStrategy.HighHdrToSdr) && HasColorSpacePeakNits;
+    public bool CanInsertVapourSynthHlgToSdrColorFilter =>
+        IsColorSpaceStrategyShown(ColorSpaceStrategy.HlgToSdr) && HasColorSpacePeakNits;
+    public bool CanInsertVapourSynthDoviSdrTo709ColorFilter =>
+        IsColorSpaceStrategyShown(ColorSpaceStrategy.DoviSdrTo709);
+    public bool CanInsertVapourSynthDoviHdrToSdrColorFilter =>
+        IsColorSpaceStrategyShown(ColorSpaceStrategy.DoviHdrToSdr) && HasColorSpacePeakNits;
+
+    public bool CanInsertAviSynthLowToHighColorFilter => IsColorSpaceStrategyShown(ColorSpaceStrategy.LowToHigh);
+    public bool CanInsertAviSynthHighToLowColorFilter => IsColorSpaceStrategyShown(ColorSpaceStrategy.HighToLow);
+    public bool CanInsertAviSynthHdrToSdrColorFilter =>
+        IsColorSpaceStrategyShown(ColorSpaceStrategy.HdrToSdr) && HasColorSpacePeakNits;
+    public bool CanInsertAviSynthHighHdrToLowSdrColorFilter =>
+        IsColorSpaceStrategyShown(ColorSpaceStrategy.HighHdrToSdr) && HasColorSpacePeakNits;
+    public bool CanInsertAviSynthHlgToSdrColorFilter =>
+        IsColorSpaceStrategyShown(ColorSpaceStrategy.HlgToSdr) && HasColorSpacePeakNits;
+    public bool CanInsertAviSynthDoviSdrTo709ColorFilter =>
+        IsColorSpaceStrategyShown(ColorSpaceStrategy.DoviSdrTo709);
+    public bool CanInsertAviSynthDoviHdrToSdrColorFilter =>
+        IsColorSpaceStrategyShown(ColorSpaceStrategy.DoviHdrToSdr) && HasColorSpacePeakNits;
+
     private string GetColorSpaceStrategyFilter(ColorSpaceStrategy strategy) =>
         IsColorSpaceStrategyShown(strategy)
             ? BuildFFmpegFilterArgs(includeSwsFlags: false, includeCsp709Flags: true, BuildColorSpaceStrategyFilterChain(strategy))
@@ -972,6 +1044,56 @@ public class FilterScribeVM : BaseVM
         return filter.Replace("<nits>", peakNits.ToString("G", CultureInfo.InvariantCulture));
     }
 
+    private string? GetVapourSynthColorSpaceFilterChain(ColorSpaceStrategy strategy)
+    {
+        string? filter = ColorSpaceConverter.BuildVapourSynthFilter(
+            strategy,
+            _colorSpaceAnalysis.ColorTransfer,
+            _colorSpaceAnalysis.ColorPrimaries);
+
+        if (filter == null
+            || !RequiresColorSpacePeakNits(strategy)
+            || !HasColorSpacePeakNits
+            || !double.TryParse(ColorSpacePeakNits, NumberStyles.Float, CultureInfo.InvariantCulture, out double peakNits))
+            return filter;
+
+        return filter.Replace("<nits>", peakNits.ToString("G", CultureInfo.InvariantCulture));
+    }
+
+    private string? GetAviSynthColorSpaceFilterChain(ColorSpaceStrategy strategy)
+    {
+        string? filter = ColorSpaceConverter.BuildAviSynthFilter(
+            strategy,
+            _colorSpaceAnalysis.ColorTransfer,
+            _colorSpaceAnalysis.ColorPrimaries);
+
+        if (filter == null
+            || !RequiresColorSpacePeakNits(strategy)
+            || !HasColorSpacePeakNits
+            || !double.TryParse(ColorSpacePeakNits, NumberStyles.Float, CultureInfo.InvariantCulture, out double peakNits))
+            return filter;
+
+        return filter.Replace("<nits>", peakNits.ToString("G", CultureInfo.InvariantCulture));
+    }
+
+    private string BuildVapourSynthPlaceboLoadCommand()
+    {
+        string pluginsDir = Environment.Is64BitProcess
+            ? BundledToolPathResolver.ResolveFolder("x64-AVS-VS-plugins")
+            : BundledToolPathResolver.ResolveFolder("x86-AVS-VS-plugins");
+        string placeboPath = Path.Combine(pluginsDir, "libvs_placebo.dll");
+        return $"core.std.LoadPlugin(r\"{placeboPath}\")";
+    }
+
+    private string BuildAviSynthPlaceboLoadCommand()
+    {
+        string pluginsDir = Environment.Is64BitProcess
+            ? BundledToolPathResolver.ResolveFolder("x64-AVS-VS-plugins")
+            : BundledToolPathResolver.ResolveFolder("x86-AVS-VS-plugins");
+        string placeboPath = Path.Combine(pluginsDir, "libplacebo_Render.dll");
+        return $"LoadPlugin(\"{placeboPath}\")";
+    }
+
     private void RefreshColorSpaceFilters()
     {
         OnPropertyChanged(nameof(ColorSpaceFilterChain));
@@ -983,6 +1105,22 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(FFmpegHdrToSdrColorFilterDisplay));
         OnPropertyChanged(nameof(FFmpegHighHdrToLowSdrColorFilter));
         OnPropertyChanged(nameof(FFmpegHighHdrToLowSdrColorFilterDisplay));
+        OnPropertyChanged(nameof(VapourSynthLowToHighColorFilterDisplay));
+        OnPropertyChanged(nameof(VapourSynthHighToLowColorFilterDisplay));
+        OnPropertyChanged(nameof(VapourSynthHdrToSdrColorFilterDisplay));
+        OnPropertyChanged(nameof(VapourSynthHighHdrToLowSdrColorFilterDisplay));
+        OnPropertyChanged(nameof(VapourSynthHlgToSdrColorFilterDisplay));
+        OnPropertyChanged(nameof(VapourSynthDoviSdrTo709ColorFilterDisplay));
+        OnPropertyChanged(nameof(VapourSynthDoviHdrToSdrColorFilterDisplay));
+        OnPropertyChanged(nameof(AviSynthLowToHighColorFilterDisplay));
+        OnPropertyChanged(nameof(AviSynthHighToLowColorFilterDisplay));
+        OnPropertyChanged(nameof(AviSynthHdrToSdrColorFilterDisplay));
+        OnPropertyChanged(nameof(AviSynthHighHdrToLowSdrColorFilterDisplay));
+        OnPropertyChanged(nameof(AviSynthHlgToSdrColorFilterDisplay));
+        OnPropertyChanged(nameof(AviSynthDoviSdrTo709ColorFilterDisplay));
+        OnPropertyChanged(nameof(AviSynthDoviHdrToSdrColorFilterDisplay));
+        OnPropertyChanged(nameof(VapourSynthPlaceboLoadCommand));
+        OnPropertyChanged(nameof(AviSynthPlaceboLoadCommand));
         OnPropertyChanged(nameof(AviSynthChroma422Filter));
         OnPropertyChanged(nameof(AviSynthChroma420Filter));
         OnPropertyChanged(nameof(VapourSynthChroma422Filter));
@@ -1002,6 +1140,20 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(CanInsertFFmpegHighToLowColorFilter));
         OnPropertyChanged(nameof(CanInsertFFmpegHdrToSdrColorFilter));
         OnPropertyChanged(nameof(CanInsertFFmpegHighHdrToLowSdrColorFilter));
+        OnPropertyChanged(nameof(CanInsertVapourSynthLowToHighColorFilter));
+        OnPropertyChanged(nameof(CanInsertVapourSynthHighToLowColorFilter));
+        OnPropertyChanged(nameof(CanInsertVapourSynthHdrToSdrColorFilter));
+        OnPropertyChanged(nameof(CanInsertVapourSynthHighHdrToLowSdrColorFilter));
+        OnPropertyChanged(nameof(CanInsertVapourSynthHlgToSdrColorFilter));
+        OnPropertyChanged(nameof(CanInsertVapourSynthDoviSdrTo709ColorFilter));
+        OnPropertyChanged(nameof(CanInsertVapourSynthDoviHdrToSdrColorFilter));
+        OnPropertyChanged(nameof(CanInsertAviSynthLowToHighColorFilter));
+        OnPropertyChanged(nameof(CanInsertAviSynthHighToLowColorFilter));
+        OnPropertyChanged(nameof(CanInsertAviSynthHdrToSdrColorFilter));
+        OnPropertyChanged(nameof(CanInsertAviSynthHighHdrToLowSdrColorFilter));
+        OnPropertyChanged(nameof(CanInsertAviSynthHlgToSdrColorFilter));
+        OnPropertyChanged(nameof(CanInsertAviSynthDoviSdrTo709ColorFilter));
+        OnPropertyChanged(nameof(CanInsertAviSynthDoviHdrToSdrColorFilter));
     }
 
     private string BuildFFmpegFilterArgs(bool includeSwsFlags, bool includeCsp709Flags, params string?[] filters)
@@ -1434,8 +1586,9 @@ public class FilterScribeVM : BaseVM
     #region UILang properties
     public static string WindowTitle => FilterScribeModalLangProvider.WindowTitle;
     public static string VFRCFRTitle => "VFR→CFR";
-    public static string LowToHighColorFilterLabel => "NCG";
-    public static string HighToLowColorFilterLabel => "WCG";
+    // Using 709 and SDR interchangably follows master-display parameter combinations, but some tools do so, maybe they are correct
+    public static string LowToHighColorFilterLabel => "NCG→709";
+    public static string HighToLowColorFilterLabel => "WCG→709";
     public static string HdrToSdrColorFilterLabel => "HDR→SDR";
     public static string HighHdrToLowSdrColorFilterLabel => "H&W→SDR";
     public static string ScribeDescription => FilterScribeModalLangProvider.Current["SrcScribe.Description"];
@@ -1654,7 +1807,7 @@ public class FilterScribeVM : BaseVM
 
         SettingsListing.Add(new AppConfItem
         {
-            Text = "HDR: peak nits",
+            Text = "HDR peak",
             Content = textBox
         });
     }

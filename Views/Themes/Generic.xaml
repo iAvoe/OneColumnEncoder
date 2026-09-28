@@ -545,9 +545,9 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0"
+                                   FontSize="13"
                                    Text="{TemplateBinding Text}"
                                    VerticalAlignment="Center"
-                                   FontSize="13"
                                    Foreground="{TemplateBinding Foreground}" />
                         <ContentPresenter Grid.Column="1"
                                           VerticalAlignment="Center"

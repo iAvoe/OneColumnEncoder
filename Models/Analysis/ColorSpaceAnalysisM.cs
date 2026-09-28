@@ -10,7 +10,10 @@ public enum ColorSpaceStrategy
     LowToHigh,
     HighToLow,
     HdrToSdr,
-    HighHdrToSdr
+    HighHdrToSdr,
+    HlgToSdr,
+    DoviSdrTo709,
+    DoviHdrToSdr
 }
 
 /// <summary>
@@ -23,6 +26,7 @@ public class ColorSpaceAnalysisM
     public string? ColorMatrix { get; init; }
     public string? ColorChromaLocation { get; init; }
     public string? PixelFormat { get; init; }
+    public bool HasDolbyVision { get; init; }
 
     public int? H273Primaries { get; init; }
     public int? H273Transfer { get; init; }
@@ -30,6 +34,8 @@ public class ColorSpaceAnalysisM
 
     public ColorSpaceStrategy Strategy { get; init; }
     public string? FFmpegColorFilter { get; init; }
+    public string? VapourSynthColorFilter { get; init; }
+    public string? AviSynthColorFilter { get; init; }
     public string StrategyDisplayName { get; init; } = string.Empty;
     public string Description { get; init; } = string.Empty;
 
@@ -37,5 +43,8 @@ public class ColorSpaceAnalysisM
         Strategy is ColorSpaceStrategy.LowToHigh
             or ColorSpaceStrategy.HighToLow
             or ColorSpaceStrategy.HdrToSdr
-            or ColorSpaceStrategy.HighHdrToSdr;
+            or ColorSpaceStrategy.HighHdrToSdr
+            or ColorSpaceStrategy.HlgToSdr
+            or ColorSpaceStrategy.DoviSdrTo709
+            or ColorSpaceStrategy.DoviHdrToSdr;
 }

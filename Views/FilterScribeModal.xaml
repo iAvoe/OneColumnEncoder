@@ -790,10 +790,13 @@
                              VerticalAlignment="Center" />
                 </StackPanel>
 
-                <StackPanel Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
+                <StackPanel>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
@@ -802,11 +805,31 @@
                         <TextBlock Text="{Binding ColorSpaceConvertTitle}"
                                    Style="{StaticResource H3}"
                                    Margin="0 15 0 0" />
+                        <!-- Import filter DLL -->
+                        <Button Grid.Column="1"
+                                Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertAvsFilterCommand}"
+                                CommandParameter="{Binding AviSynthPlaceboLoadCommand}"
+                                Style="{StaticResource AppendLinkButton}"
+                                Margin="0 0 2.5 0" />
+                        <Button Grid.Column="1"
+                                Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertVpyFilterCommand}"
+                                CommandParameter="{Binding VapourSynthPlaceboLoadCommand}"
+                                Style="{StaticResource AppendLinkButton}"
+                                Margin="0 0 2.5 0" />
+                        <!-- Actual filters -->
                         <Button Grid.Column="1"
                                 Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
                                 Command="{Binding InsertFFmpegFilterCommand}"
                                 CommandParameter="{Binding FFmpegLowToHighColorFilter}"
                                 IsEnabled="{Binding CanInsertFFmpegLowToHighColorFilter}"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <Button Grid.Column="1"
+                                Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertAvsFilterCommand}"
+                                CommandParameter="{Binding AviSynthLowToHighColorFilterDisplay}"
+                                IsEnabled="{Binding CanInsertAviSynthLowToHighColorFilter}"
                                 Style="{StaticResource AppendLinkButton}" />
                         <Button Grid.Column="2"
                                 Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
@@ -814,11 +837,35 @@
                                 CommandParameter="{Binding FFmpegHighToLowColorFilter}"
                                 IsEnabled="{Binding CanInsertFFmpegHighToLowColorFilter}"
                                 Style="{StaticResource AppendLinkButton}" />
+                        <Button Grid.Column="2"
+                                Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertVpyFilterCommand}"
+                                CommandParameter="{Binding VapourSynthHighToLowColorFilterDisplay}"
+                                IsEnabled="{Binding CanInsertVapourSynthHighToLowColorFilter}"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <Button Grid.Column="2"
+                                Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertAvsFilterCommand}"
+                                CommandParameter="{Binding AviSynthHighToLowColorFilterDisplay}"
+                                IsEnabled="{Binding CanInsertAviSynthHighToLowColorFilter}"
+                                Style="{StaticResource AppendLinkButton}" />
                         <Button Grid.Column="3"
                                 Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
                                 Command="{Binding InsertFFmpegFilterCommand}"
                                 CommandParameter="{Binding FFmpegHdrToSdrColorFilter}"
                                 IsEnabled="{Binding CanInsertFFmpegHdrToSdrColorFilter}"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <Button Grid.Column="3"
+                                Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertVpyFilterCommand}"
+                                CommandParameter="{Binding VapourSynthHdrToSdrColorFilterDisplay}"
+                                IsEnabled="{Binding CanInsertVapourSynthHdrToSdrColorFilter}"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <Button Grid.Column="3"
+                                Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertAvsFilterCommand}"
+                                CommandParameter="{Binding AviSynthHdrToSdrColorFilterDisplay}"
+                                IsEnabled="{Binding CanInsertAviSynthHdrToSdrColorFilter}"
                                 Style="{StaticResource AppendLinkButton}" />
                         <Button Grid.Column="4"
                                 Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
@@ -826,20 +873,109 @@
                                 CommandParameter="{Binding FFmpegHighHdrToLowSdrColorFilter}"
                                 IsEnabled="{Binding CanInsertFFmpegHighHdrToLowSdrColorFilter}"
                                 Style="{StaticResource AppendLinkButton}" />
+                        <Button Grid.Column="4"
+                                Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertVpyFilterCommand}"
+                                CommandParameter="{Binding VapourSynthHighHdrToLowSdrColorFilterDisplay}"
+                                IsEnabled="{Binding CanInsertVapourSynthHighHdrToLowSdrColorFilter}"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <Button Grid.Column="4"
+                                Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertAvsFilterCommand}"
+                                CommandParameter="{Binding AviSynthHighHdrToLowSdrColorFilterDisplay}"
+                                IsEnabled="{Binding CanInsertAviSynthHighHdrToLowSdrColorFilter}"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <!-- HLG to SDR buttons (only for VS and AVS) -->
+                        <Button Grid.Column="5"
+                                Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertVpyFilterCommand}"
+                                CommandParameter="{Binding VapourSynthHlgToSdrColorFilterDisplay}"
+                                IsEnabled="{Binding CanInsertVapourSynthHlgToSdrColorFilter}"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <Button Grid.Column="5"
+                                Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertAvsFilterCommand}"
+                                CommandParameter="{Binding AviSynthHlgToSdrColorFilterDisplay}"
+                                IsEnabled="{Binding CanInsertAviSynthHlgToSdrColorFilter}"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <!-- DOVI SDR to 709 buttons (only for VS and AVS) -->
+                        <Button Grid.Column="6"
+                                Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertVpyFilterCommand}"
+                                CommandParameter="{Binding VapourSynthDoviSdrTo709ColorFilterDisplay}"
+                                IsEnabled="{Binding CanInsertVapourSynthDoviSdrTo709ColorFilter}"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <Button Grid.Column="6"
+                                Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertAvsFilterCommand}"
+                                CommandParameter="{Binding AviSynthDoviSdrTo709ColorFilterDisplay}"
+                                IsEnabled="{Binding CanInsertAviSynthDoviSdrTo709ColorFilter}"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <!-- DOVI HDR to SDR buttons (only for VS and AVS) -->
+                        <Button Grid.Column="7"
+                                Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertVpyFilterCommand}"
+                                CommandParameter="{Binding VapourSynthDoviHdrToSdrColorFilterDisplay}"
+                                IsEnabled="{Binding CanInsertVapourSynthDoviHdrToSdrColorFilter}"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <Button Grid.Column="7"
+                                Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertAvsFilterCommand}"
+                                CommandParameter="{Binding AviSynthDoviHdrToSdrColorFilterDisplay}"
+                                IsEnabled="{Binding CanInsertAviSynthDoviHdrToSdrColorFilter}"
+                                Style="{StaticResource AppendLinkButton}" />
                     </Grid>
                     <!-- Peak nits input -->
-                    <ItemsControl ItemsSource="{Binding SettingsListing}"
-                                  Visibility="{Binding IsColorSpacePeakNitsVisible, Converter={StaticResource BoolToVisibility}}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ItemsControl Grid.Column="0"
+                                      ItemsSource="{Binding SettingsListing}"
+                                      Visibility="{Binding IsColorSpacePeakNitsVisible, Converter={StaticResource BoolToVisibility}}" />
+                        <TextBlock Grid.Column="1"
+                                   Margin="5 0 0 0"
+                                   Text="nits"
+                                   VerticalAlignment="Center"
+                                   Foreground="{StaticResource GlobalSecondary}" />
+                    </Grid>
+                    <TextBox Text="{Binding VapourSynthPlaceboLoadCommand, Mode=OneWay}"
+                             Padding="0 2.5"
+                             IsReadOnly="True"
+                             BorderThickness="0"
+                             FontFamily="{DynamicResource CodeFont}"
+                             Background="{StaticResource Background}"
+                             Foreground="{StaticResource ButtonTertiary}"
+                             VerticalAlignment="Center"
+                             Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}" />
+                    <TextBox Text="{Binding AviSynthPlaceboLoadCommand, Mode=OneWay}"
+                             Padding="0 2.5"
+                             IsReadOnly="True"
+                             BorderThickness="0"
+                             FontFamily="{DynamicResource CodeFont}"
+                             Background="{StaticResource Background}"
+                             Foreground="{StaticResource ButtonTertiary}"
+                             VerticalAlignment="Center"
+                             Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}" />
                     <!-- CSP to Bt.709 filters -->
                     <Grid Margin="0 2.5 0 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="62" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
+                        <!-- Duplicated textblock to achieve exclusion, not very clean  -->
                         <TextBlock Grid.Column="0"
                                    Text="{Binding LowToHighColorFilterLabel}"
                                    Foreground="{StaticResource GlobalSecondary}"
-                                   VerticalAlignment="Center" />
+                                   VerticalAlignment="Center"
+                                   Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}" />
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding LowToHighColorFilterLabel}"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center"
+                                   Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}" />
+                        <!-- End of duplicated -->
                         <TextBox Grid.Column="1"
                                  Text="{Binding FFmpegLowToHighColorFilterDisplay, Mode=OneWay}"
                                  Padding="0 2.5"
@@ -848,7 +984,18 @@
                                  FontFamily="{DynamicResource CodeFont}"
                                  Background="{StaticResource Background}"
                                  Foreground="{StaticResource ButtonTertiary}"
-                                 VerticalAlignment="Center" />
+                                 VerticalAlignment="Center"
+                                 Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding AviSynthLowToHighColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center"
+                                 Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}" />
                     </Grid>
                     <Grid Margin="0 2.5 0 0">
                         <Grid.ColumnDefinitions>
@@ -867,7 +1014,28 @@
                                  FontFamily="{DynamicResource CodeFont}"
                                  Background="{StaticResource Background}"
                                  Foreground="{StaticResource ButtonTertiary}"
-                                 VerticalAlignment="Center" />
+                                 VerticalAlignment="Center"
+                                 Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding VapourSynthHighToLowColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center"
+                                 Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding AviSynthHighToLowColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center"
+                                 Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}" />
                     </Grid>
                     <Grid Margin="0 2.5 0 0">
                         <Grid.ColumnDefinitions>
@@ -886,7 +1054,28 @@
                                  FontFamily="{DynamicResource CodeFont}"
                                  Background="{StaticResource Background}"
                                  Foreground="{StaticResource ButtonTertiary}"
-                                 VerticalAlignment="Center" />
+                                 VerticalAlignment="Center"
+                                 Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding VapourSynthHdrToSdrColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center"
+                                 Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding AviSynthHdrToSdrColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center"
+                                 Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}" />
                     </Grid>
                     <Grid Margin="0 2.5 0 0">
                         <Grid.ColumnDefinitions>
@@ -905,6 +1094,150 @@
                                  FontFamily="{DynamicResource CodeFont}"
                                  Background="{StaticResource Background}"
                                  Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center"
+                                 Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding VapourSynthHighHdrToLowSdrColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center"
+                                 Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding AviSynthHighHdrToLowSdrColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center"
+                                 Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}" />
+                    </Grid>
+                    <!-- HLG to SDR (only for VS and AVS) -->
+                    <Grid Margin="0 2.5 0 0"
+                          Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="62" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="HLG→709"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding VapourSynthHlgToSdrColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Margin="0 2.5 0 0"
+                          Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="62" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="HLG→709"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding AviSynthHlgToSdrColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center" />
+                    </Grid>
+                    <!-- DOVI SDR to 709 (only for VS and AVS) -->
+                    <Grid Margin="0 2.5 0 0"
+                          Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="62" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="DOVI SDR→709"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding VapourSynthDoviSdrTo709ColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Margin="0 2.5 0 0"
+                          Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="62" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="DOVI SDR→709"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding AviSynthDoviSdrTo709ColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center" />
+                    </Grid>
+                    <!-- DOVI HDR to SDR709 (only for VS and AVS) -->
+                    <Grid Margin="0 2.5 0 0"
+                          Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="62" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="DOVI HDR→SDR709"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding VapourSynthDoviHdrToSdrColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Margin="0 2.5 0 0"
+                          Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="62" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="DOVI HDR→SDR709"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding AviSynthDoviHdrToSdrColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
                                  VerticalAlignment="Center" />
                     </Grid>
                 </StackPanel>
@@ -913,6 +1246,7 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
