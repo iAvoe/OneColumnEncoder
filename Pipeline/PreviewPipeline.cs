@@ -299,7 +299,7 @@ public static partial class PreviewPipeline
         "-y4mp"
     ];
 
-    public static string? BuildDisplayFilter(PreviewDisplayMode displayMode, ColorSpaceAnalysisM colorSpaceAnalysis)
+    public static string? BuildDisplayFilter(PreviewDisplayMode displayMode)
     {
         ColorSpaceStrategy? strategy = displayMode switch
         {
@@ -311,17 +311,9 @@ public static partial class PreviewPipeline
         };
         if (strategy == null) return null;
 
-        string? filter = ColorSpaceConverter.BuildFFmpegFilter(
-            strategy.Value,
-            colorSpaceAnalysis.ColorMatrix,
-            colorSpaceAnalysis.ColorChromaLocation,
-            colorSpaceAnalysis.ColorPrimaries,
-            colorSpaceAnalysis.PixelFormat);
+        string? filter = ColorSpaceConverter.BuildFFmpegFilter(strategy.Value);
         if (string.IsNullOrWhiteSpace(filter)) return null;
 
-        filter = filter.Replace("<nits>", "1000", StringComparison.Ordinal);
-        if (strategy == ColorSpaceStrategy.HdrToSdr)
-            filter = string.Join(',', filter, "zscale=matrix=bt709:primaries=bt709:transfer=bt709");
         return string.Join(',', filter, "format=rgb24");
     }
 

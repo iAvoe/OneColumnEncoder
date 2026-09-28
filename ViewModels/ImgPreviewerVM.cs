@@ -291,7 +291,7 @@ public class ImgPreviewerVM : BaseVM, IPreviewViewModel
                 return;
             }
 
-            string displayFilter = PreviewPipeline.BuildDisplayFilter(_displayMode, _colorSpaceAnalysis) ?? string.Empty;
+            string displayFilter = PreviewPipeline.BuildDisplayFilter(_displayMode) ?? string.Empty;
             string rawsrcPath = GetWorkPath("source-raw.png");
             string srcPath = string.IsNullOrWhiteSpace(displayFilter)
                 ? rawsrcPath

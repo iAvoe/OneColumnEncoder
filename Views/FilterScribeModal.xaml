@@ -891,7 +891,13 @@
                                 CommandParameter="{Binding AviSynthHighHdrToLowSdrColorFilterDisplay}"
                                 IsEnabled="{Binding CanInsertAviSynthHighHdrToLowSdrColorFilter}"
                                 Style="{StaticResource AppendLinkButton}" />
-                        <!-- HLG to SDR buttons (only for VS and AVS) -->
+                        <!-- HLG to SDR buttons -->
+                        <Button Grid.Column="6"
+                                Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertFFmpegFilterCommand}"
+                                CommandParameter="{Binding FFmpegHlgToSdrColorFilter}"
+                                IsEnabled="{Binding CanInsertFFmpegHlgToSdrColorFilter}"
+                                Style="{StaticResource AppendLinkButton}" />
                         <Button Grid.Column="6"
                                 Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
                                 Command="{Binding InsertVpyFilterCommand}"
@@ -904,7 +910,13 @@
                                 CommandParameter="{Binding AviSynthHlgToSdrColorFilterDisplay}"
                                 IsEnabled="{Binding CanInsertAviSynthHlgToSdrColorFilter}"
                                 Style="{StaticResource AppendLinkButton}" />
-                        <!-- DOVI SDR to 709 buttons (only for VS and AVS) -->
+                        <!-- DOVI SDR to 709 buttons -->
+                        <Button Grid.Column="7"
+                                Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertFFmpegFilterCommand}"
+                                CommandParameter="{Binding FFmpegDoviSdrTo709ColorFilter}"
+                                IsEnabled="{Binding CanInsertFFmpegDoviSdrTo709ColorFilter}"
+                                Style="{StaticResource AppendLinkButton}" />
                         <Button Grid.Column="7"
                                 Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
                                 Command="{Binding InsertVpyFilterCommand}"
@@ -917,7 +929,13 @@
                                 CommandParameter="{Binding AviSynthDoviSdrTo709ColorFilterDisplay}"
                                 IsEnabled="{Binding CanInsertAviSynthDoviSdrTo709ColorFilter}"
                                 Style="{StaticResource AppendLinkButton}" />
-                        <!-- DOVI HDR to SDR buttons (only for VS and AVS) -->
+                        <!-- DOVI HDR to SDR buttons -->
+                        <Button Grid.Column="8"
+                                Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertFFmpegFilterCommand}"
+                                CommandParameter="{Binding FFmpegDoviHdrToSdrColorFilter}"
+                                IsEnabled="{Binding CanInsertFFmpegDoviHdrToSdrColorFilter}"
+                                Style="{StaticResource AppendLinkButton}" />
                         <Button Grid.Column="8"
                                 Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
                                 Command="{Binding InsertVpyFilterCommand}"
@@ -931,8 +949,22 @@
                                 IsEnabled="{Binding CanInsertAviSynthDoviHdrToSdrColorFilter}"
                                 Style="{StaticResource AppendLinkButton}" />
                     </Grid>
-                    <!-- Peak nits input -->
-                    <Grid>
+                    <!-- Peak nits input, again doubled to achieve ffmpeg exclusion... -->
+                    <Grid Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ItemsControl Grid.Column="0"
+                                      ItemsSource="{Binding SettingsListing}"
+                                      Visibility="{Binding IsColorSpacePeakNitsVisible, Converter={StaticResource BoolToVisibility}}" />
+                        <TextBlock Grid.Column="1"
+                                   Margin="5 0 0 0"
+                                   Text="nits"
+                                   VerticalAlignment="Center"
+                                   Foreground="{StaticResource GlobalSecondary}" />
+                    </Grid>
+                    <Grid Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
@@ -1124,7 +1156,27 @@
                                  VerticalAlignment="Center"
                                  Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}" />
                     </Grid>
-                    <!-- HLG to SDR (only for VS and AVS) -->
+                    <!-- HLG to 709 -->
+                    <Grid Margin="0 2.5 0 0"
+                          Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="62" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="HLG→709"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding FFmpegHlgToSdrColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center" />
+                    </Grid>
                     <Grid Margin="0 2.5 0 0"
                           Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}">
                         <Grid.ColumnDefinitions>
@@ -1165,7 +1217,28 @@
                                  Foreground="{StaticResource ButtonTertiary}"
                                  VerticalAlignment="Center" />
                     </Grid>
-                    <!-- DOVI SDR to 709 (only for VS and AVS) -->
+                    <!-- DOVI SDR to 709 -->
+                    <Grid Margin="0 2.5 0 0"
+                          Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="62" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="DOVI SDR→709"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center"
+                                   TextWrapping="Wrap" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding FFmpegDoviSdrTo709ColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center" />
+                    </Grid>
                     <Grid Margin="0 2.5 0 0"
                           Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}">
                         <Grid.ColumnDefinitions>
@@ -1208,7 +1281,28 @@
                                  Foreground="{StaticResource ButtonTertiary}"
                                  VerticalAlignment="Center" />
                     </Grid>
-                    <!-- DOVI HDR to SDR709 (only for VS and AVS) -->
+                    <!-- DOVI HDR to 709 -->
+                    <Grid Margin="0 2.5 0 0"
+                          Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="62" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="DOVI HDR→709"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center"
+                                   TextWrapping="Wrap" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding FFmpegDoviHdrToSdrColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center" />
+                    </Grid>
                     <Grid Margin="0 2.5 0 0"
                           Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}">
                         <Grid.ColumnDefinitions>
@@ -1802,7 +1896,7 @@
                              Background="{StaticResource Background}"
                              Foreground="{StaticResource ButtonTertiary}"
                              VerticalAlignment="Center"
-                             Text="3 -filter:v &quot;fps=_,zscale=matrix=_:primaries=xx:transfer=_,scale=_:_&quot;&#x0a;4 -filter:v &quot;fps=_,libplacebo=reset_sar=_,zscale=matrix=_:primaries=_:transfer=_,scale=_:_&quot;&#x0a;5 -filter:v &quot;hqdn3d,fps=_,libplacebo=reset_sar=_,zscale=matrix=_:primaries=_:transfer=_,scale=_:_&quot;" />
+                             Text="3 -filter:v &quot;fps=_,libplacebo=color_primaries=_:color_trc=_:colorspace=_,scale=_:_&quot;&#x0a;4 -filter:v &quot;fps=_,libplacebo=reset_sar=_,libplacebo=color_primaries=_:color_trc=_:colorspace=_,scale=_:_&quot;&#x0a;5 -filter:v &quot;hqdn3d,fps=_,libplacebo=reset_sar=_,libplacebo=color_primaries=_:color_trc=_:colorspace=_,scale=_:_&quot;" />
                 </StackPanel>
 
                 <!-- VS-zipcl GPU OpenCL filter example (VapourSynth only) -->

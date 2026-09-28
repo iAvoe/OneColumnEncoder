@@ -297,25 +297,24 @@ public static class ColorSpaceConverter
         return rate is { num: > 0, den: > 0 } ? (decimal)rate.Value.num / rate.Value.den : null;
     }
 
-    public static string? BuildFFmpegFilter(
-        ColorSpaceStrategy strategy,
-        string? matrix = null,
-        string? chromaLocation = null,
-        string? primaries = null,
-        string? pixelFormat = null)
+    public static string? BuildFFmpegFilter(ColorSpaceStrategy strategy) => strategy switch
     {
-        const string hdrToSdr = "zscale=transfer=linear,tonemap=spline:desat=3:peak=<nits>";
-        const string toBt709 = "zscale=matrix=bt709:primaries=bt709:transfer=bt709";
+        ColorSpaceStrategy.LowToHigh
+            or ColorSpaceStrategy.HighToLow
+            or ColorSpaceStrategy.DoviSdrTo709 => FFmpegToBt709,
+        ColorSpaceStrategy.HdrToSdr
+            or ColorSpaceStrategy.HlgToSdr
+            or ColorSpaceStrategy.DoviHdrToSdr => FFmpegHdrToSdr,
+        ColorSpaceStrategy.HighHdrToSdr => FFmpegHdrWcgToSdr,
+        _ => null
+    };
 
-        return strategy switch
-        {
-            ColorSpaceStrategy.LowToHigh => toBt709,
-            ColorSpaceStrategy.HdrToSdr => JoinFilters(BuildInputCorrection(matrix, chromaLocation, primaries, pixelFormat), hdrToSdr),
-            ColorSpaceStrategy.HighToLow => JoinFilters(BuildInputCorrection(matrix, chromaLocation, primaries, pixelFormat), toBt709),
-            ColorSpaceStrategy.HighHdrToSdr => JoinFilters(BuildInputCorrection(matrix, chromaLocation, primaries, pixelFormat), hdrToSdr, toBt709),
-            _ => null
-        };
-    }
+    // Tone mapping peak is taken from the source metadata, unlike AviSynth/VapourSynth which expose it as <nits>
+    private const string FFmpegToBt709 = "libplacebo=color_primaries=bt709:color_trc=bt709:colorspace=bt709";
+
+    private const string FFmpegHdrToSdr = FFmpegToBt709 + ":tonemapping=spline";
+
+    private const string FFmpegHdrWcgToSdr = FFmpegHdrToSdr + ":gamut_mode=perceptual";
 
     #endregion
 
@@ -339,28 +338,13 @@ public static class ColorSpaceConverter
             H273Matrix = matrix != null && H273Matrix.TryGetValue(matrix, out int mv) ? mv : null,
             Strategy = strategy,
             FrameRate = frameRate,
-            FFmpegColorFilter = BuildFFmpegFilter(strategy, matrix, chromaLocation, primaries, pixelFormat),
+            FFmpegColorFilter = BuildFFmpegFilter(strategy),
             VapourSynthColorFilter = BuildVapourSynthFilter(strategy, transfer),
             AviSynthColorFilter = BuildAviSynthFilter(strategy, transfer, primaries, matrix, frameRate),
             StrategyDisplayName = GetDisplayName(strategy),
             Description = descriptionOverride ?? BuildDescription(strategy, primaries, transfer, matrix, chromaLocation, pixelFormat)
         };
     }
-
-    private static string? BuildInputCorrection(string? matrix, string? chromaLocation, string? primaries, string? pixelFormat)
-    {
-        if (string.IsNullOrWhiteSpace(matrix)) return null;
-        if (FFProbePixelFormatRules.GetChromaSubsamplingDepth(pixelFormat) == 0)
-            return string.IsNullOrWhiteSpace(primaries)
-                ? null
-                : $"zscale=min={matrix}:pin={primaries}";
-
-        if (string.IsNullOrWhiteSpace(chromaLocation)) return null;
-        return $"zscale=min={matrix}:c={chromaLocation}:pin=bt2020";
-    }
-
-    private static string JoinFilters(params string?[] filters) =>
-        string.Join(",", filters.Where(filter => !string.IsNullOrWhiteSpace(filter)));
 
     private static string? Normalize(string? value) =>
         string.IsNullOrWhiteSpace(value) ? null : value.Trim().ToLowerInvariant();
@@ -510,7 +494,7 @@ public static class ColorSpaceConverter
         {
             ColorSpaceStrategy.NativeBt709 => string.Empty,
             ColorSpaceStrategy.Unknown => FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.UnknownFilterHint"],
-            _ => BuildFFmpegFilter(strategy, matrix, chromaLocation, primaries, pixelFormat)
+            _ => BuildFFmpegFilter(strategy)
         };
 
         if (string.IsNullOrEmpty(filter))
@@ -518,7 +502,10 @@ public static class ColorSpaceConverter
 
         string filterLine = string.Format(FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.FilterLine"], filter);
 
-        if (strategy is ColorSpaceStrategy.HdrToSdr or ColorSpaceStrategy.HighHdrToSdr)
+        if (strategy is ColorSpaceStrategy.HdrToSdr
+            or ColorSpaceStrategy.HighHdrToSdr
+            or ColorSpaceStrategy.HlgToSdr
+            or ColorSpaceStrategy.DoviHdrToSdr)
         {
             string hdrHint = FilterScribeModalLangProvider.Current["SrcScribe.ColorSpace.HdrHint"];
             return $"{classification}\n{hdrHint}{filterLine}";
