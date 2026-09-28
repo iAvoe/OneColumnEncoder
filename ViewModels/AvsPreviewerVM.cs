@@ -239,11 +239,9 @@ public class AvsPreviewerVM : BaseVM, IPreviewViewModel
         process.Start();
         using FileStream output = File.Create(outputPath);
         Task outputTask = process.StandardOutput.BaseStream.CopyToAsync(output, token);
-        Task<string> errorTask = process.StandardError.ReadToEndAsync(token);
+        Task stderrTask = ReadAvsStreamAsync(process.StandardError, toolName, token);
         await process.WaitForExitAsync(token);
-        await Task.WhenAll(outputTask, errorTask);
-        string error = await errorTask;
-        if (!string.IsNullOrWhiteSpace(error)) AppendLog(error, toolName);
+        await Task.WhenAll(outputTask, stderrTask);
         if (process.ExitCode != 0)
         {
             string message = string.Format(CultureInfo.CurrentCulture, Lang.LogExitCode, toolName, process.ExitCode);
@@ -286,9 +284,9 @@ public class AvsPreviewerVM : BaseVM, IPreviewViewModel
         lock (_logLock) _logBuilder.Clear(); _logReady = false;
         RunOnUi(() => FrameServerLogText = string.Empty);
     }
-    private void AppendLog(string text, string? toolName = null)
+    private bool AppendLog(string text, string? toolName = null, bool overwritePreviousLine = false)
     {
-        if (string.IsNullOrWhiteSpace(text)) return;
+        if (string.IsNullOrWhiteSpace(text)) return false;
 
         // Support \r\n \n (normal) and single \r (avs2yuv)
         string normalized = text.Replace("\r\n", "\n").Replace('\r', '\n');
@@ -298,10 +296,15 @@ public class AvsPreviewerVM : BaseVM, IPreviewViewModel
             toolName ?? SelectedPreviewTool?.FullPath ?? string.Empty);
 
         string[] filteredLines = [.. lines.Where(line => IsUsefulAvsLogLine(activeToolName, line))];
-        if (filteredLines.Length == 0) return;
+        if (filteredLines.Length == 0) return false;
 
         lock (_logLock)
         {
+            // In-place progress (e.g. "Creating lwi index file 12%") replaces the previous line
+            // instead of appending, mirroring VpyPreviewerVM's \r overwrite behavior.
+            if (overwritePreviousLine && _logBuilder.Length > 0)
+                RemoveLastLogLine();
+
             foreach (string line in filteredLines)
             {
                 if (_logBuilder.Length > 0) _logBuilder.Append('\n');
@@ -313,6 +316,83 @@ public class AvsPreviewerVM : BaseVM, IPreviewViewModel
         }
 
         _logReady = false;
+        return true;
+    }
+
+    private void RemoveLastLogLine()
+    {
+        if (_logBuilder.Length == 0) return;
+        string text = _logBuilder.ToString();
+        int end = text.Length - 1;
+        while (end >= 0 && (text[end] == '\r' || text[end] == '\n')) end--;
+        if (end < 0)
+        {
+            _logBuilder.Clear();
+            return;
+        }
+        int index = text.LastIndexOf('\n', end);
+        _logBuilder.Length = index < 0 ? 0 : index + 1;
+    }
+
+    private async Task ReadAvsStreamAsync(StreamReader reader, string toolName, CancellationToken token)
+    {
+        try
+        {
+            char[] buffer = new char[4096];
+            StringBuilder lineBuilder = new();
+            string? pendingCarriageReturnLine = null;
+            bool previousWasCarriageReturnUpdate = false;
+
+            while (!token.IsCancellationRequested)
+            {
+                int charsRead = await reader.ReadAsync(buffer.AsMemory(0, buffer.Length), token).ConfigureAwait(false);
+                if (charsRead == 0) break;
+
+                for (int i = 0; i < charsRead; i++)
+                {
+                    char ch = buffer[i];
+                    if (pendingCarriageReturnLine != null)
+                    {
+                        if (ch == '\n')
+                        {
+                            AppendLog(pendingCarriageReturnLine, toolName, overwritePreviousLine: false);
+                            pendingCarriageReturnLine = null;
+                            previousWasCarriageReturnUpdate = false;
+                            continue;
+                        }
+
+                        // Standalone \r: in-place update (e.g. "Creating lwi index file xx%").
+                        if (AppendLog(pendingCarriageReturnLine, toolName, overwritePreviousLine: previousWasCarriageReturnUpdate))
+                            previousWasCarriageReturnUpdate = true;
+                        pendingCarriageReturnLine = null;
+                    }
+
+                    if (ch == '\r')
+                    {
+                        pendingCarriageReturnLine = lineBuilder.ToString();
+                        lineBuilder.Clear();
+                        continue;
+                    }
+
+                    if (ch == '\n')
+                    {
+                        AppendLog(lineBuilder.ToString(), toolName, overwritePreviousLine: false);
+                        lineBuilder.Clear();
+                        previousWasCarriageReturnUpdate = false;
+                        continue;
+                    }
+
+                    lineBuilder.Append(ch);
+                }
+            }
+
+            if (pendingCarriageReturnLine != null)
+                AppendLog(pendingCarriageReturnLine, toolName, overwritePreviousLine: previousWasCarriageReturnUpdate);
+            if (lineBuilder.Length > 0)
+                AppendLog(lineBuilder.ToString(), toolName, overwritePreviousLine: false);
+        }
+        catch (OperationCanceledException) { }
+        catch (IOException) { }
     }
 
     private static bool IsUsefulAvsLogLine(string toolName, string line)
