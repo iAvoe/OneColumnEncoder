@@ -439,7 +439,6 @@
                                        Style="{StaticResource H3}"
                                        Margin="0 15 0 0" />
                             <Button Grid.Column="1"
-                                    Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
                                     Command="{Binding InsertFFmpegFilterCommand}"
                                     CommandParameter="{Binding FFmpegFpsFilter}"
                                     IsEnabled="{Binding CanInsertFFmpegFpsFilter}"
@@ -465,7 +464,6 @@
                                        Style="{StaticResource H3}"
                                        Margin="0 15 0 0" />
                             <Button Grid.Column="1"
-                                    Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
                                     Command="{Binding InsertFFmpegFilterCommand}"
                                     CommandParameter="{Binding FFmpegSarRepairFilter}"
                                     IsEnabled="{Binding CanInsertFFmpegSarRepairFilter}"
@@ -557,29 +555,8 @@
                                    Foreground="{StaticResource GlobalSecondary}"
                                    VerticalAlignment="Center" />
                     </Grid>
-                    <TextBox Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
-                             Text="{Binding AvsRotateFilterDisplay, Mode=OneWay}"
-                             Margin="0 2.5 0 0"
-                             Padding="0 2.5"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             VerticalAlignment="Center" />
-                    <TextBox Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
-                             Text="{Binding VpyRotateFilterDisplay, Mode=OneWay}"
-                             Margin="0 2.5 0 0"
-                             Padding="0 2.5"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             VerticalAlignment="Center" />
-                    <TextBox Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
-                             Text="{Binding FFmpegRotateFilterDisplay, Mode=OneWay}"
-                             Margin="0 2.5 0 0"
+                     <TextBox Text="{Binding SelectedRotateFilterDisplay, Mode=OneWay}"
+                              Margin="0 2.5 0 0"
                              Padding="0 2.5"
                              IsReadOnly="True"
                              BorderThickness="0"
@@ -726,62 +703,45 @@
                     </StackPanel>
                 </StackPanel>
 
-                <StackPanel Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding FlipTitle}"
-                                   Style="{StaticResource H3}"
-                                   Margin="0 15 0 0" />
-                        <Button Grid.Column="1"
-                                Command="{Binding InsertAvsFilterCommand}"
-                                CommandParameter="{Binding AvsHFlipFilter}"
-                                ToolTip="FlipHorizontal"
-                                Style="{StaticResource AppendLinkButton}" />
-                        <Button Grid.Column="2"
-                                Command="{Binding InsertAvsFilterCommand}"
-                                CommandParameter="{Binding AvsVFlipFilter}"
-                                ToolTip="FlipVertical"
-                                Style="{StaticResource AppendLinkButton}" />
-                    </Grid>
-                    <TextBox Padding="0 2.5"
-                             Text="FlipHorizontal(src)&#x0a;FlipVertical(src)"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             FontWeight="Normal"
-                             VerticalAlignment="Center" />
-                </StackPanel>
-
-                <StackPanel Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding FlipTitle}"
-                                   Style="{StaticResource H3}"
-                                   Margin="0 15 0 0" />
-                        <Button Grid.Column="1"
-                                Command="{Binding InsertVpyFilterCommand}"
-                                CommandParameter="{Binding VpyHFlipFilter}"
-                                ToolTip="FlipHorizontal"
-                                Style="{StaticResource AppendLinkButton}" />
-                        <Button Grid.Column="2"
-                                Command="{Binding InsertVpyFilterCommand}"
-                                CommandParameter="{Binding VpyVFlipFilter}"
-                                ToolTip="FlipVertical"
-                                Style="{StaticResource AppendLinkButton}" />
-                    </Grid>
-                    <TextBox Padding="0 2.5"
-                             Text="src = core.std.FlipHorizontal(src)&#x0a;src = core.std.FlipVertical(src)"
-                             IsReadOnly="True"
+                 <StackPanel Visibility="{Binding IsScriptTabSelected, Converter={StaticResource BoolToVisibility}}">
+                     <Grid>
+                         <Grid.ColumnDefinitions>
+                             <ColumnDefinition Width="*" />
+                             <ColumnDefinition Width="Auto" />
+                             <ColumnDefinition Width="Auto" />
+                             <ColumnDefinition Width="Auto" />
+                         </Grid.ColumnDefinitions>
+                         <TextBlock Text="{Binding FlipTitle}"
+                                    Style="{StaticResource H3}"
+                                    Margin="0 15 0 0" />
+                         <Button Grid.Column="1"
+                                 Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                 Command="{Binding InsertAvsFilterCommand}"
+                                 CommandParameter="{Binding AvsHFlipFilter}"
+                                 ToolTip="FlipHorizontal"
+                                 Style="{StaticResource AppendLinkButton}" />
+                         <Button Grid.Column="2"
+                                 Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                 Command="{Binding InsertAvsFilterCommand}"
+                                 CommandParameter="{Binding AvsVFlipFilter}"
+                                 ToolTip="FlipVertical"
+                                 Style="{StaticResource AppendLinkButton}" />
+                         <Button Grid.Column="1"
+                                 Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                 Command="{Binding InsertVpyFilterCommand}"
+                                 CommandParameter="{Binding VpyHFlipFilter}"
+                                 ToolTip="FlipHorizontal"
+                                 Style="{StaticResource AppendLinkButton}" />
+                         <Button Grid.Column="2"
+                                 Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                 Command="{Binding InsertVpyFilterCommand}"
+                                 CommandParameter="{Binding VpyVFlipFilter}"
+                                 ToolTip="FlipVertical"
+                                 Style="{StaticResource AppendLinkButton}" />
+                     </Grid>
+                     <TextBox Text="{Binding SelectedScriptFlipFilterDisplay, Mode=OneWay}"
+                              Padding="0 2.5"
+                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
                              Background="{StaticResource Background}"
@@ -949,8 +909,8 @@
                                 IsEnabled="{Binding CanInsertAviSynthDoviHdrToSdrColorFilter}"
                                 Style="{StaticResource AppendLinkButton}" />
                     </Grid>
-                    <!-- Peak nits input, again doubled to achieve ffmpeg exclusion... -->
-                    <Grid Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}">
+                    <!-- Peak nits is shared by the AVS and VapourSynth tabs. -->
+                    <Grid Visibility="{Binding IsScriptTabSelected, Converter={StaticResource BoolToVisibility}}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
@@ -964,21 +924,7 @@
                                    VerticalAlignment="Center"
                                    Foreground="{StaticResource GlobalSecondary}" />
                     </Grid>
-                    <Grid Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <ItemsControl Grid.Column="0"
-                                      ItemsSource="{Binding SettingsListing}"
-                                      Visibility="{Binding IsColorSpacePeakNitsVisible, Converter={StaticResource BoolToVisibility}}" />
-                        <TextBlock Grid.Column="1"
-                                   Margin="5 0 0 0"
-                                   Text="nits"
-                                   VerticalAlignment="Center"
-                                   Foreground="{StaticResource GlobalSecondary}" />
-                    </Grid>
-                    <TextBox Text="{Binding VapourSynthPlaceboLoadCommand, Mode=OneWay}"
+                     <TextBox Text="{Binding SelectedPlaceboLoadCommand, Mode=OneWay}"
                              Padding="0 2.5"
                              IsReadOnly="True"
                              BorderThickness="0"
@@ -986,54 +932,28 @@
                              Background="{StaticResource Background}"
                              Foreground="{StaticResource ButtonTertiary}"
                              VerticalAlignment="Center"
-                             Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}" />
-                    <TextBox Text="{Binding AviSynthPlaceboLoadCommand, Mode=OneWay}"
-                             Padding="0 2.5"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             VerticalAlignment="Center"
-                             Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}" />
+                              Visibility="{Binding IsScriptTabSelected, Converter={StaticResource BoolToVisibility}}" />
                     <!-- CSP to Bt.709 filters -->
                     <Grid Margin="0 2.5 0 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="62" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <!-- Duplicated textblock to achieve exclusion, not very clean  -->
                         <TextBlock Grid.Column="0"
                                    Text="NCG→709"
                                    Foreground="{StaticResource GlobalSecondary}"
                                    VerticalAlignment="Center"
-                                   Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}" />
-                        <TextBlock Grid.Column="0"
-                                   Text="NCG→709"
-                                   Foreground="{StaticResource GlobalSecondary}"
-                                   VerticalAlignment="Center"
-                                   Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}" />
-                        <!-- End of duplicated -->
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding FFmpegLowToHighColorFilterDisplay, Mode=OneWay}"
-                                 Padding="0 2.5"
+                                   Visibility="{Binding IsAvsOrFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}" />
+                         <TextBox Grid.Column="1"
+                                  Text="{Binding SelectedLowToHighColorFilterDisplay, Mode=OneWay}"
+                                  Padding="0 2.5"
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
-                                 VerticalAlignment="Center"
-                                 Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}" />
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding AviSynthLowToHighColorFilterDisplay, Mode=OneWay}"
-                                 Padding="0 2.5"
-                                 IsReadOnly="True"
-                                 BorderThickness="0"
-                                 FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
-                                 VerticalAlignment="Center"
-                                 Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}" />
+                                  Background="{StaticResource Background}"
+                                  Foreground="{StaticResource ButtonTertiary}"
+                                  VerticalAlignment="Center"
+                                  Visibility="{Binding IsAvsOrFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}" />
                     </Grid>
                     <Grid Margin="0 2.5 0 0">
                         <Grid.ColumnDefinitions>
@@ -1044,36 +964,15 @@
                                    Text="WCG→709"
                                    Foreground="{StaticResource GlobalSecondary}"
                                    VerticalAlignment="Center" />
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding FFmpegHighToLowColorFilterDisplay, Mode=OneWay}"
-                                 Padding="0 2.5"
+                         <TextBox Grid.Column="1"
+                                  Text="{Binding SelectedHighToLowColorFilterDisplay, Mode=OneWay}"
+                                  Padding="0 2.5"
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
-                                 VerticalAlignment="Center"
-                                 Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}" />
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding VapourSynthHighToLowColorFilterDisplay, Mode=OneWay}"
-                                 Padding="0 2.5"
-                                 IsReadOnly="True"
-                                 BorderThickness="0"
-                                 FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
-                                 VerticalAlignment="Center"
-                                 Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}" />
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding AviSynthHighToLowColorFilterDisplay, Mode=OneWay}"
-                                 Padding="0 2.5"
-                                 IsReadOnly="True"
-                                 BorderThickness="0"
-                                 FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
-                                 VerticalAlignment="Center"
-                                 Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}" />
+                                  Background="{StaticResource Background}"
+                                  Foreground="{StaticResource ButtonTertiary}"
+                                  VerticalAlignment="Center" />
                     </Grid>
                     <Grid Margin="0 2.5 0 0">
                         <Grid.ColumnDefinitions>
@@ -1084,36 +983,15 @@
                                    Text="HDR→SDR"
                                    Foreground="{StaticResource GlobalSecondary}"
                                    VerticalAlignment="Center" />
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding FFmpegHdrToSdrColorFilterDisplay, Mode=OneWay}"
-                                 Padding="0 2.5"
+                         <TextBox Grid.Column="1"
+                                  Text="{Binding SelectedHdrToSdrColorFilterDisplay, Mode=OneWay}"
+                                  Padding="0 2.5"
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
-                                 VerticalAlignment="Center"
-                                 Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}" />
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding VapourSynthHdrToSdrColorFilterDisplay, Mode=OneWay}"
-                                 Padding="0 2.5"
-                                 IsReadOnly="True"
-                                 BorderThickness="0"
-                                 FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
-                                 VerticalAlignment="Center"
-                                 Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}" />
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding AviSynthHdrToSdrColorFilterDisplay, Mode=OneWay}"
-                                 Padding="0 2.5"
-                                 IsReadOnly="True"
-                                 BorderThickness="0"
-                                 FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
-                                 VerticalAlignment="Center"
-                                 Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}" />
+                                  Background="{StaticResource Background}"
+                                  Foreground="{StaticResource ButtonTertiary}"
+                                  VerticalAlignment="Center" />
                     </Grid>
                     <Grid Margin="0 2.5 0 0">
                         <Grid.ColumnDefinitions>
@@ -1125,51 +1003,28 @@
                                    Foreground="{StaticResource GlobalSecondary}"
                                    VerticalAlignment="Center"
                                    TextWrapping="Wrap" />
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding FFmpegHighHdrToLowSdrColorFilterDisplay, Mode=OneWay}"
-                                 Padding="0 2.5"
+                         <TextBox Grid.Column="1"
+                                  Text="{Binding SelectedHighHdrToLowSdrColorFilterDisplay, Mode=OneWay}"
+                                  Padding="0 2.5"
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
-                                 VerticalAlignment="Center"
-                                 Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}" />
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding VapourSynthHighHdrToLowSdrColorFilterDisplay, Mode=OneWay}"
-                                 Padding="0 2.5"
-                                 IsReadOnly="True"
-                                 BorderThickness="0"
-                                 FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
-                                 VerticalAlignment="Center"
-                                 Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}" />
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding AviSynthHighHdrToLowSdrColorFilterDisplay, Mode=OneWay}"
-                                 Padding="0 2.5"
-                                 IsReadOnly="True"
-                                 BorderThickness="0"
-                                 FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
-                                 VerticalAlignment="Center"
-                                 Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}" />
+                                  Background="{StaticResource Background}"
+                                  Foreground="{StaticResource ButtonTertiary}"
+                                  VerticalAlignment="Center" />
                     </Grid>
-                    <!-- HLG to 709 -->
-                    <Grid Margin="0 2.5 0 0"
-                          Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="62" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0"
-                                   Text="HLG→709"
-                                   Foreground="{StaticResource GlobalSecondary}"
-                                   VerticalAlignment="Center" />
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding FFmpegHlgToSdrColorFilterDisplay, Mode=OneWay}"
-                                 Padding="0 2.5"
+                     <Grid Margin="0 2.5 0 0">
+                         <Grid.ColumnDefinitions>
+                             <ColumnDefinition Width="62" />
+                             <ColumnDefinition Width="*" />
+                         </Grid.ColumnDefinitions>
+                         <TextBlock Grid.Column="0"
+                                    Text="{Binding SelectedHlgTargetLabel}"
+                                    Foreground="{StaticResource GlobalSecondary}"
+                                    VerticalAlignment="Center" />
+                         <TextBox Grid.Column="1"
+                                  Text="{Binding SelectedHlgToSdrColorFilterDisplay, Mode=OneWay}"
+                                  Padding="0 2.5"
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
@@ -1177,19 +1032,19 @@
                                  Foreground="{StaticResource ButtonTertiary}"
                                  VerticalAlignment="Center" />
                     </Grid>
-                    <Grid Margin="0 2.5 0 0"
-                          Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="62" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0"
-                                   Text="HLG→SDR"
-                                   Foreground="{StaticResource GlobalSecondary}"
-                                   VerticalAlignment="Center" />
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding VapourSynthHlgToSdrColorFilterDisplay, Mode=OneWay}"
-                                 Padding="0 2.5"
+                     <Grid Margin="0 2.5 0 0">
+                         <Grid.ColumnDefinitions>
+                             <ColumnDefinition Width="62" />
+                             <ColumnDefinition Width="*" />
+                         </Grid.ColumnDefinitions>
+                         <TextBlock Grid.Column="0"
+                                    Text="{Binding SelectedDoviSdrTargetLabel}"
+                                    Foreground="{StaticResource GlobalSecondary}"
+                                    VerticalAlignment="Center"
+                                    TextWrapping="Wrap" />
+                         <TextBox Grid.Column="1"
+                                  Text="{Binding SelectedDoviSdrTo709ColorFilterDisplay, Mode=OneWay}"
+                                  Padding="0 2.5"
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
@@ -1197,147 +1052,19 @@
                                  Foreground="{StaticResource ButtonTertiary}"
                                  VerticalAlignment="Center" />
                     </Grid>
-                    <Grid Margin="0 2.5 0 0"
-                          Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="62" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0"
-                                   Text="HLG→709"
-                                   Foreground="{StaticResource GlobalSecondary}"
-                                   VerticalAlignment="Center" />
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding AviSynthHlgToSdrColorFilterDisplay, Mode=OneWay}"
-                                 Padding="0 2.5"
-                                 IsReadOnly="True"
-                                 BorderThickness="0"
-                                 FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
-                                 VerticalAlignment="Center" />
-                    </Grid>
-                    <!-- DOVI SDR to 709 -->
-                    <Grid Margin="0 2.5 0 0"
-                          Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="62" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0"
-                                   Text="DOVI SDR→709"
-                                   Foreground="{StaticResource GlobalSecondary}"
-                                   VerticalAlignment="Center"
-                                   TextWrapping="Wrap" />
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding FFmpegDoviSdrTo709ColorFilterDisplay, Mode=OneWay}"
-                                 Padding="0 2.5"
-                                 IsReadOnly="True"
-                                 BorderThickness="0"
-                                 FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
-                                 VerticalAlignment="Center" />
-                    </Grid>
-                    <Grid Margin="0 2.5 0 0"
-                          Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="62" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0"
-                                   Text="DOVI SDR→709"
-                                   Foreground="{StaticResource GlobalSecondary}"
-                                   VerticalAlignment="Center"
-                                   TextWrapping="Wrap" />
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding VapourSynthDoviSdrTo709ColorFilterDisplay, Mode=OneWay}"
-                                 Padding="0 2.5"
-                                 IsReadOnly="True"
-                                 BorderThickness="0"
-                                 FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
-                                 VerticalAlignment="Center" />
-                    </Grid>
-                    <Grid Margin="0 2.5 0 0"
-                          Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="62" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0"
-                                   Text="DOVI SDR→709"
-                                   Foreground="{StaticResource GlobalSecondary}"
-                                   VerticalAlignment="Center"
-                                   TextWrapping="Wrap" />
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding AviSynthDoviSdrTo709ColorFilterDisplay, Mode=OneWay}"
-                                 Padding="0 2.5"
-                                 IsReadOnly="True"
-                                 BorderThickness="0"
-                                 FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
-                                 VerticalAlignment="Center" />
-                    </Grid>
-                    <!-- DOVI HDR to 709 -->
-                    <Grid Margin="0 2.5 0 0"
-                          Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="62" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0"
-                                   Text="DOVI HDR→709"
-                                   Foreground="{StaticResource GlobalSecondary}"
-                                   VerticalAlignment="Center"
-                                   TextWrapping="Wrap" />
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding FFmpegDoviHdrToSdrColorFilterDisplay, Mode=OneWay}"
-                                 Padding="0 2.5"
-                                 IsReadOnly="True"
-                                 BorderThickness="0"
-                                 FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
-                                 VerticalAlignment="Center" />
-                    </Grid>
-                    <Grid Margin="0 2.5 0 0"
-                          Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="62" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0"
-                                   Text="DOVI HDR→SDR709"
-                                   Foreground="{StaticResource GlobalSecondary}"
-                                   VerticalAlignment="Center"
-                                   TextWrapping="Wrap" />
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding VapourSynthDoviHdrToSdrColorFilterDisplay, Mode=OneWay}"
-                                 Padding="0 2.5"
-                                 IsReadOnly="True"
-                                 BorderThickness="0"
-                                 FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}"
-                                 VerticalAlignment="Center" />
-                    </Grid>
-                    <Grid Margin="0 2.5 0 0"
-                          Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="62" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0"
-                                   Text="DOVI HDR→SDR709"
-                                   Foreground="{StaticResource GlobalSecondary}"
-                                   VerticalAlignment="Center"
-                                   TextWrapping="Wrap" />
-                        <TextBox Grid.Column="1"
-                                 Text="{Binding AviSynthDoviHdrToSdrColorFilterDisplay, Mode=OneWay}"
-                                 Padding="0 2.5"
+                     <Grid Margin="0 2.5 0 0">
+                         <Grid.ColumnDefinitions>
+                             <ColumnDefinition Width="62" />
+                             <ColumnDefinition Width="*" />
+                         </Grid.ColumnDefinitions>
+                         <TextBlock Grid.Column="0"
+                                    Text="{Binding SelectedDoviHdrTargetLabel}"
+                                    Foreground="{StaticResource GlobalSecondary}"
+                                    VerticalAlignment="Center"
+                                    TextWrapping="Wrap" />
+                         <TextBox Grid.Column="1"
+                                  Text="{Binding SelectedDoviHdrToSdrColorFilterDisplay, Mode=OneWay}"
+                                  Padding="0 2.5"
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
@@ -1406,28 +1133,9 @@
                                    Foreground="{StaticResource GlobalSecondary}"
                                    VerticalAlignment="Center" />
 
-                        <TextBox Grid.Column="1"
-                                 Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
-                                 Text="{Binding AviSynthChroma422Filter, Mode=OneWay}"
-                                 Padding="0 2.5"
-                                 IsReadOnly="True"
-                                 BorderThickness="0"
-                                 FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}" />
-                        <TextBox Grid.Column="1"
-                                 Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
-                                 Text="{Binding VapourSynthChroma422Filter, Mode=OneWay}"
-                                 Padding="0 2.5"
-                                 IsReadOnly="True"
-                                 BorderThickness="0"
-                                 FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}" />
-                        <TextBox Grid.Column="1"
-                                 Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
-                                 Text="{Binding FFmpegChroma422Filter, Mode=OneWay}"
-                                 Padding="0 2.5"
+                         <TextBox Grid.Column="1"
+                                  Text="{Binding SelectedChroma422FilterDisplay, Mode=OneWay}"
+                                  Padding="0 2.5"
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
@@ -1444,28 +1152,9 @@
                                    Foreground="{StaticResource GlobalSecondary}"
                                    VerticalAlignment="Center" />
 
-                        <TextBox Grid.Column="1"
-                                 Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
-                                 Text="{Binding AviSynthChroma420Filter, Mode=OneWay}"
-                                 Padding="0 2.5"
-                                 IsReadOnly="True"
-                                 BorderThickness="0"
-                                 FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}" />
-                        <TextBox Grid.Column="1"
-                                 Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
-                                 Text="{Binding VapourSynthChroma420Filter, Mode=OneWay}"
-                                 Padding="0 2.5"
-                                 IsReadOnly="True"
-                                 BorderThickness="0"
-                                 FontFamily="{DynamicResource CodeFont}"
-                                 Background="{StaticResource Background}"
-                                 Foreground="{StaticResource ButtonTertiary}" />
-                        <TextBox Grid.Column="1"
-                                 Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
-                                 Text="{Binding FFmpegChroma420Filter, Mode=OneWay}"
-                                 Padding="0 2.5"
+                         <TextBox Grid.Column="1"
+                                  Text="{Binding SelectedChroma420FilterDisplay, Mode=OneWay}"
+                                  Padding="0 2.5"
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
@@ -1494,20 +1183,8 @@
                                 CommandParameter="{Binding AviSynthHqdn3dDenoiseFilter}"
                                 Style="{StaticResource AppendLinkButton}" />
                     </Grid>
-                    <!-- FFMPEG Hqdn3d -->
-                    <TextBox Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
-                             Text="{Binding FFmpegHqdn3dDenoiseFilterDisplay, Mode=OneWay}"
-                             Padding="0 2.5"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             VerticalAlignment="Center" />
-                    <!-- AVS Hqdn3d -->
-                    <TextBox Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
-                             Text="{Binding AviSynthHqdn3dDenoiseFilter, Mode=OneWay}"
-                             Padding="0 2.5"
+                     <TextBox Text="{Binding SelectedDenoiseFilterDisplay, Mode=OneWay}"
+                              Padding="0 2.5"
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
@@ -1591,32 +1268,9 @@
                         </Border>
                     </Grid>
 
-                    <TextBox Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
-                             Margin="0 2.5 0 0"
-                             Padding="0 2.5"
-                             Text="{Binding AviSynthCropFilter, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             FontWeight="Normal"
-                             VerticalAlignment="Center" />
-                    <TextBox Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
-                             Margin="0 2.5 0 0"
-                             Padding="0 2.5"
-                             Text="{Binding VapourSynthCropFilter, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             FontWeight="Normal"
-                             VerticalAlignment="Center" />
-                    <TextBox Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
-                             Margin="0 2.5 0 0"
-                             Padding="0 2.5"
-                             Text="{Binding FFmpegCropFilterDisplay, Mode=OneWay}"
+                     <TextBox Margin="0 2.5 0 0"
+                              Padding="0 2.5"
+                              Text="{Binding SelectedCropFilterDisplay, Mode=OneWay}"
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
@@ -1729,34 +1383,9 @@
                         </Border>
                     </Grid>
 
-                    <!-- ffmpeg res strink -->
-                    <TextBox Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
-                             Margin="0 2.5 0 0"
-                             Padding="0 2.5"
-                             Text="{Binding FFmpegResizeFilterDisplay, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             FontWeight="Normal" />
-                    <!-- VS Res shrink -->
-                    <TextBox Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
-                             Margin="0 2.5 0 0"
-                             Padding="0 2.5"
-                             Text="{Binding VapourSynthResizeFilter, Mode=OneWay}"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             FontWeight="Normal"
-                             VerticalAlignment="Center" />
-                    <!-- AVS Res shrink -->
-                    <TextBox Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
-                             Margin="0 2.5 0 0"
-                             Padding="0 2.5"
-                             Text="{Binding AviSynthResizeFilter, Mode=OneWay}"
+                     <TextBox Margin="0 2.5 0 0"
+                              Padding="0 2.5"
+                              Text="{Binding SelectedResizeFilterDisplay, Mode=OneWay}"
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
@@ -1803,18 +1432,8 @@
                                 ToolTip="ASharp"
                                 Style="{StaticResource AppendLinkButton}" />
                     </Grid>
-                    <TextBox Text="{Binding AviSynthBlurSharpenFilter, Mode=OneWay}"
-                             Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
-                             Margin="0 2.5 0 0"
-                             Padding="0 2.5"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             VerticalAlignment="Center" />
-                    <TextBox Text="{Binding VapourSynthBlurSharpenFilter, Mode=OneWay}"
-                             Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                     <TextBox Text="{Binding SelectedBlurSharpenFilterDisplay, Mode=OneWay}"
+                              Visibility="{Binding IsScriptTabSelected, Converter={StaticResource BoolToVisibility}}"
                              Margin="0 2.5 0 0"
                              Padding="0 2.5"
                              IsReadOnly="True"
@@ -1851,28 +1470,7 @@
                                 CommandParameter="{Binding FFmpegSubtitleFilter}"
                                 Style="{StaticResource AppendLinkButton}" />
                     </Grid>
-                    <TextBox Text="{Binding FFmpegSubtitleFilter, Mode=OneWay}"
-                             Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
-                             Margin="0 2.5 0 0"
-                             Padding="0 2.5"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             VerticalAlignment="Center" />
-                    <TextBox Text="{Binding VapourSynthSubtitleFilter, Mode=OneWay}"
-                             Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
-                             Margin="0 2.5 0 0"
-                             Padding="0 2.5"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             VerticalAlignment="Center" />
-                    <TextBox Text="{Binding AviSynthAssRenderFilter, Mode=OneWay}"
-                             Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                     <TextBox Text="{Binding SelectedSubtitleFilterDisplay, Mode=OneWay}"
                              Margin="0 2.5 0 0"
                              Padding="0 2.5"
                              IsReadOnly="True"

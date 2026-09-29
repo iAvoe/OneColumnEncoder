@@ -61,20 +61,172 @@ public class FilterScribeVM : BaseVM
         set
         {
             if (SetProperty(ref _selectedTabIndex, value))
-            {
-                OnPropertyChanged(nameof(IsAvsTabSelected));
-                OnPropertyChanged(nameof(IsVpyTabSelected));
-                OnPropertyChanged(nameof(IsFFmpegTabSelected));
-                OnPropertyChanged(nameof(IsDenoiseSectionVisible));
-                OnPropertyChanged(nameof(IsBlurSharpenSectionVisible));
-            }
+                NotifyTabDependentProperties();
         }
     }
     public bool IsAvsTabSelected => _selectedTabIndex == 0;
     public bool IsVpyTabSelected => _selectedTabIndex == 1;
     public bool IsFFmpegTabSelected => _selectedTabIndex == 2;
+    public bool IsScriptTabSelected => IsAvsTabSelected || IsVpyTabSelected;
+    public bool IsAvsOrFFmpegTabSelected => IsAvsTabSelected || IsFFmpegTabSelected;
     public bool IsDenoiseSectionVisible => IsFFmpegTabSelected || IsAvsTabSelected;
     public bool IsBlurSharpenSectionVisible => IsAvsTabSelected || IsVpyTabSelected;
+
+    public string SelectedRotateFilterDisplay =>
+        GetSelectedTabFilter(AvsRotateFilterDisplay, VpyRotateFilterDisplay, FFmpegRotateFilterDisplay);
+
+    public string SelectedScriptFlipFilterDisplay =>
+        GetSelectedTabFilter($"{AvsHFlipFilter}\r\n{AvsVFlipFilter}",
+            $"{VpyHFlipFilter}\r\n{VpyVFlipFilter}",
+            LangProviderBase.NAText);
+
+    public string SelectedCropFilterDisplay =>
+        GetSelectedTabFilter(AviSynthCropFilter, VapourSynthCropFilter, FFmpegCropFilterDisplay);
+
+    public string SelectedResizeFilterDisplay =>
+        GetSelectedTabFilter(AviSynthResizeFilter, VapourSynthResizeFilter, FFmpegResizeFilterDisplay);
+
+    public string SelectedChroma422FilterDisplay =>
+        GetSelectedTabFilter(AviSynthChroma422Filter, VapourSynthChroma422Filter, FFmpegChroma422Filter);
+
+    public string SelectedChroma420FilterDisplay =>
+        GetSelectedTabFilter(AviSynthChroma420Filter, VapourSynthChroma420Filter, FFmpegChroma420Filter);
+
+    public string SelectedBlurSharpenFilterDisplay =>
+        GetSelectedTabFilter(AviSynthBlurSharpenFilter, VapourSynthBlurSharpenFilter, LangProviderBase.NAText);
+
+    public string SelectedDenoiseFilterDisplay =>
+        GetSelectedTabFilter(AviSynthHqdn3dDenoiseFilter, LangProviderBase.NAText, FFmpegHqdn3dDenoiseFilterDisplay);
+
+    public string SelectedSubtitleFilterDisplay =>
+        GetSelectedTabFilter(AviSynthAssRenderFilter, VapourSynthSubtitleFilter, FFmpegSubtitleFilter);
+
+    public string SelectedPlaceboLoadCommand =>
+        GetSelectedTabFilter(AviSynthPlaceboLoadCommand, VapourSynthPlaceboLoadCommand, LangProviderBase.NAText);
+
+    public string SelectedHlgTargetLabel => IsVpyTabSelected ? "HLG→SDR" : "HLG→709";
+    public static string SelectedDoviSdrTargetLabel => "DOVI SDR→709";
+    public string SelectedDoviHdrTargetLabel => IsVpyTabSelected ? "DOVI HDR→SDR709" : "DOVI HDR→709";
+
+    public string SelectedLowToHighColorFilterDisplay =>
+        GetSelectedTabFilter(AviSynthLowToHighColorFilterDisplay, VapourSynthLowToHighColorFilterDisplay, FFmpegLowToHighColorFilterDisplay);
+
+    public string SelectedHighToLowColorFilterDisplay =>
+        GetSelectedTabFilter(AviSynthHighToLowColorFilterDisplay, VapourSynthHighToLowColorFilterDisplay, FFmpegHighToLowColorFilterDisplay);
+
+    public string SelectedHdrToSdrColorFilterDisplay =>
+        GetSelectedTabFilter(AviSynthHdrToSdrColorFilterDisplay, VapourSynthHdrToSdrColorFilterDisplay, FFmpegHdrToSdrColorFilterDisplay);
+
+    public string SelectedHighHdrToLowSdrColorFilterDisplay =>
+        GetSelectedTabFilter(AviSynthHighHdrToLowSdrColorFilterDisplay, VapourSynthHighHdrToLowSdrColorFilterDisplay, FFmpegHighHdrToLowSdrColorFilterDisplay);
+
+    public string SelectedHlgToSdrColorFilterDisplay =>
+        GetSelectedTabFilter(AviSynthHlgToSdrColorFilterDisplay, VapourSynthHlgToSdrColorFilterDisplay, FFmpegHlgToSdrColorFilterDisplay);
+
+    public string SelectedDoviSdrTo709ColorFilterDisplay =>
+        GetSelectedTabFilter(AviSynthDoviSdrTo709ColorFilterDisplay, VapourSynthDoviSdrTo709ColorFilterDisplay, FFmpegDoviSdrTo709ColorFilterDisplay);
+
+    public string SelectedDoviHdrToSdrColorFilterDisplay =>
+        GetSelectedTabFilter(AviSynthDoviHdrToSdrColorFilterDisplay, VapourSynthDoviHdrToSdrColorFilterDisplay, FFmpegDoviHdrToSdrColorFilterDisplay);
+
+    private string GetSelectedTabFilter(string avsFilter, string vpyFilter, string ffmpegFilter) =>
+        _selectedTabIndex switch
+        {
+            0 => avsFilter,
+            1 => vpyFilter,
+            2 => ffmpegFilter,
+            _ => LangProviderBase.NAText
+        };
+
+    private void NotifyTabDependentProperties()
+    {
+        NotifyProperties(
+            nameof(IsAvsTabSelected),
+            nameof(IsVpyTabSelected),
+            nameof(IsFFmpegTabSelected),
+            nameof(IsScriptTabSelected),
+            nameof(IsAvsOrFFmpegTabSelected),
+            nameof(IsDenoiseSectionVisible),
+            nameof(IsBlurSharpenSectionVisible),
+            nameof(SelectedRotateFilterDisplay),
+            nameof(SelectedScriptFlipFilterDisplay),
+            nameof(SelectedCropFilterDisplay),
+            nameof(SelectedResizeFilterDisplay),
+            nameof(SelectedChroma422FilterDisplay),
+            nameof(SelectedChroma420FilterDisplay),
+            nameof(SelectedBlurSharpenFilterDisplay),
+            nameof(SelectedDenoiseFilterDisplay),
+            nameof(SelectedSubtitleFilterDisplay),
+            nameof(SelectedPlaceboLoadCommand),
+            nameof(SelectedHlgTargetLabel),
+            nameof(SelectedDoviSdrTargetLabel),
+            nameof(SelectedDoviHdrTargetLabel),
+            nameof(SelectedLowToHighColorFilterDisplay),
+            nameof(SelectedHighToLowColorFilterDisplay),
+            nameof(SelectedHdrToSdrColorFilterDisplay),
+            nameof(SelectedHighHdrToLowSdrColorFilterDisplay),
+            nameof(SelectedHlgToSdrColorFilterDisplay),
+            nameof(SelectedDoviSdrTo709ColorFilterDisplay),
+            nameof(SelectedDoviHdrToSdrColorFilterDisplay));
+    }
+
+    private void NotifyProperties(params string[] propertyNames)
+    {
+        foreach (string propertyName in propertyNames)
+            OnPropertyChanged(propertyName);
+    }
+
+    private void NotifySourceDimensionProperties()
+    {
+        NotifyProperties(
+            nameof(HasSource),
+            nameof(IsScaleApplicable),
+            nameof(ScaleHeightMaximum),
+            nameof(ScaleStep),
+            nameof(ScaleTickLabels),
+            nameof(ScaleNotApplicableText));
+    }
+
+    private void NotifyCropFilterProperties()
+    {
+        NotifyProperties(
+            nameof(CropTargetDisplay),
+            nameof(HasCropFilter),
+            nameof(FFmpegCropFilter),
+            nameof(FFmpegCropFilterDisplay),
+            nameof(VapourSynthCropFilter),
+            nameof(AviSynthCropFilter),
+            nameof(SelectedCropFilterDisplay),
+            nameof(CanInsertAviSynthCropFilter),
+            nameof(CanInsertVapourSynthCropFilter),
+            nameof(CanInsertFFmpegCropFilter));
+    }
+
+    private void NotifyUpscaleFilterProperties()
+    {
+        NotifyProperties(
+            nameof(UpscaleTargetDisplay),
+            nameof(FFmpegUpscaleFilter),
+            nameof(CanInsertFFmpegUpscaleFilter));
+    }
+
+    private void NotifyScaleFilterProperties()
+    {
+        NotifyProperties(
+            nameof(TargetDisplay),
+            nameof(FFmpegResizeFilter),
+            nameof(FFmpegResizeFilterDisplay),
+            nameof(FFmpegFpsScaleFilter),
+            nameof(FFmpegFpsColorScaleFilter),
+            nameof(FFmpegFullChainFilter),
+            nameof(FFmpegHqdn3dFullChainFilter),
+            nameof(CanInsertAviSynthResizeFilter),
+            nameof(CanInsertVapourSynthResizeFilter),
+            nameof(CanInsertFFmpegResizeFilter),
+            nameof(VapourSynthResizeFilter),
+            nameof(AviSynthResizeFilter),
+            nameof(SelectedResizeFilterDisplay));
+    }
 
     // Avs/VpyPrefix becomes instance property to support dynamic fpsnum/fpsden
     // Avs/VpyPrefix2 is a guidance comment to keep
@@ -148,14 +300,12 @@ public class FilterScribeVM : BaseVM
         {
             if (SetProperty(ref _sourceWidth, value))
             {
-                OnPropertyChanged(nameof(HasSource));
-                OnPropertyChanged(nameof(IsScaleApplicable));
-                OnPropertyChanged(nameof(ScaleHeightMaximum));
-                OnPropertyChanged(nameof(ScaleStep));
-                OnPropertyChanged(nameof(ScaleTickLabels));
+                NotifySourceDimensionProperties();
                 RecomputeCrop();
                 OnPropertyChanged(nameof(AviSynthAssRenderFilter));
+                OnPropertyChanged(nameof(SelectedSubtitleFilterDisplay));
                 RecomputeTarget();
+                NotifyScaleFilterProperties();
             }
         }
     }
@@ -170,14 +320,12 @@ public class FilterScribeVM : BaseVM
             {
                 _scaleHeight = ResolutionScale.MaximumTargetHeight(value);
                 OnPropertyChanged(nameof(ScaleHeight));
-                OnPropertyChanged(nameof(HasSource));
-                OnPropertyChanged(nameof(IsScaleApplicable));
-                OnPropertyChanged(nameof(ScaleHeightMaximum));
-                OnPropertyChanged(nameof(ScaleStep));
-                OnPropertyChanged(nameof(ScaleTickLabels));
+                NotifySourceDimensionProperties();
                 RecomputeCrop();
                 OnPropertyChanged(nameof(AviSynthAssRenderFilter));
+                OnPropertyChanged(nameof(SelectedSubtitleFilterDisplay));
                 RecomputeTarget();
+                NotifyScaleFilterProperties();
             }
         }
     }
@@ -200,15 +348,7 @@ public class FilterScribeVM : BaseVM
             int clamped = Math.Clamp(value, CropWidthMinimum, CropWidthMaximum);
             if (SetProperty(ref _cropWidth, clamped))
             {
-                OnPropertyChanged(nameof(CropTargetDisplay));
-                OnPropertyChanged(nameof(HasCropFilter));
-                OnPropertyChanged(nameof(FFmpegCropFilter));
-                OnPropertyChanged(nameof(FFmpegCropFilterDisplay));
-                OnPropertyChanged(nameof(VapourSynthCropFilter));
-                OnPropertyChanged(nameof(AviSynthCropFilter));
-                OnPropertyChanged(nameof(CanInsertAviSynthCropFilter));
-                OnPropertyChanged(nameof(CanInsertVapourSynthCropFilter));
-                OnPropertyChanged(nameof(CanInsertFFmpegCropFilter));
+                NotifyCropFilterProperties();
                 ScheduleCropRefresh();
             }
         }
@@ -223,15 +363,7 @@ public class FilterScribeVM : BaseVM
             int clamped = Math.Clamp(value, CropHeightMinimum, CropHeightMaximum);
             if (SetProperty(ref _cropHeight, clamped))
             {
-                OnPropertyChanged(nameof(CropTargetDisplay));
-                OnPropertyChanged(nameof(HasCropFilter));
-                OnPropertyChanged(nameof(FFmpegCropFilter));
-                OnPropertyChanged(nameof(FFmpegCropFilterDisplay));
-                OnPropertyChanged(nameof(VapourSynthCropFilter));
-                OnPropertyChanged(nameof(AviSynthCropFilter));
-                OnPropertyChanged(nameof(CanInsertAviSynthCropFilter));
-                OnPropertyChanged(nameof(CanInsertVapourSynthCropFilter));
-                OnPropertyChanged(nameof(CanInsertFFmpegCropFilter));
+                NotifyCropFilterProperties();
                 ScheduleCropRefresh();
             }
         }
@@ -289,11 +421,7 @@ public class FilterScribeVM : BaseVM
         {
             int clamped = Math.Clamp(value, UpscaleHeightMinimum, UpscaleHeightMaximum);
             if (SetProperty(ref _upscaleHeight, clamped))
-            {
-                OnPropertyChanged(nameof(UpscaleTargetDisplay));
-                OnPropertyChanged(nameof(FFmpegUpscaleFilter));
-                OnPropertyChanged(nameof(CanInsertFFmpegUpscaleFilter));
-            }
+                NotifyUpscaleFilterProperties();
         }
     }
 
@@ -331,15 +459,7 @@ public class FilterScribeVM : BaseVM
         if (!IsScaleApplicable) return;
         // var w, h are discard values now
         RecomputeTarget();
-        OnPropertyChanged(nameof(TargetDisplay));
-        OnPropertyChanged(nameof(FFmpegResizeFilter));
-        OnPropertyChanged(nameof(FFmpegResizeFilterDisplay));
-        OnPropertyChanged(nameof(FFmpegFpsScaleFilter));
-        OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
-        OnPropertyChanged(nameof(FFmpegFullChainFilter));
-        OnPropertyChanged(nameof(FFmpegHqdn3dFullChainFilter));
-        OnPropertyChanged(nameof(VapourSynthResizeFilter));
-        OnPropertyChanged(nameof(AviSynthResizeFilter));
+        NotifyScaleFilterProperties();
     }
 
     private int _targetWidth;
@@ -546,6 +666,30 @@ public class FilterScribeVM : BaseVM
     public static string VpyHFlipFilter => "src = core.std.FlipHorizontal(src)";
     public static string VpyVFlipFilter => "src = core.std.FlipVertical(src)";
 
+    private void NotifyRotateFilterProperties()
+    {
+        NotifyProperties(
+            nameof(RotateDisplay),
+            nameof(FFmpegRotateFilter),
+            nameof(FFmpegRotateFilterDisplay),
+            nameof(CanInsertFFmpegRotateFilter),
+            nameof(AvsRotateFilter),
+            nameof(AvsRotateFilterDisplay),
+            nameof(CanInsertAvsRotateFilter),
+            nameof(VpyRotateFilter),
+            nameof(VpyRotateFilterDisplay),
+            nameof(CanInsertVpyRotateFilter),
+            nameof(SelectedRotateFilterDisplay));
+    }
+
+    private void NotifyFlipFilterProperties()
+    {
+        NotifyProperties(
+            nameof(FFmpegFlipFilter),
+            nameof(FFmpegFlipFilterDisplay),
+            nameof(CanInsertFFmpegFlipFilter));
+    }
+
     public static bool DebandEnabled => true;
 
     private int _rotateMode;
@@ -556,18 +700,7 @@ public class FilterScribeVM : BaseVM
         {
             int clamped = Math.Clamp(value, 0, 3);
             if (SetProperty(ref _rotateMode, clamped))
-            {
-                OnPropertyChanged(nameof(RotateDisplay));
-                OnPropertyChanged(nameof(FFmpegRotateFilter));
-                OnPropertyChanged(nameof(FFmpegRotateFilterDisplay));
-                OnPropertyChanged(nameof(CanInsertFFmpegRotateFilter));
-                OnPropertyChanged(nameof(AvsRotateFilter));
-                OnPropertyChanged(nameof(AvsRotateFilterDisplay));
-                OnPropertyChanged(nameof(CanInsertAvsRotateFilter));
-                OnPropertyChanged(nameof(VpyRotateFilter));
-                OnPropertyChanged(nameof(VpyRotateFilterDisplay));
-                OnPropertyChanged(nameof(CanInsertVpyRotateFilter));
-            }
+                NotifyRotateFilterProperties();
         }
     }
 
@@ -581,11 +714,7 @@ public class FilterScribeVM : BaseVM
         set
         {
             if (SetProperty(ref _horizontalFlipEnabled, value))
-            {
-                OnPropertyChanged(nameof(FFmpegFlipFilter));
-                OnPropertyChanged(nameof(FFmpegFlipFilterDisplay));
-                OnPropertyChanged(nameof(CanInsertFFmpegFlipFilter));
-            }
+                NotifyFlipFilterProperties();
         }
     }
 
@@ -596,11 +725,7 @@ public class FilterScribeVM : BaseVM
         set
         {
             if (SetProperty(ref _verticalFlipEnabled, value))
-            {
-                OnPropertyChanged(nameof(FFmpegFlipFilter));
-                OnPropertyChanged(nameof(FFmpegFlipFilterDisplay));
-                OnPropertyChanged(nameof(CanInsertFFmpegFlipFilter));
-            }
+                NotifyFlipFilterProperties();
         }
     }
 
@@ -1133,73 +1258,83 @@ public class FilterScribeVM : BaseVM
 
     private void RefreshColorSpaceFilters()
     {
-        OnPropertyChanged(nameof(ColorSpaceFilterChain));
-        OnPropertyChanged(nameof(FFmpegLowToHighColorFilter));
-        OnPropertyChanged(nameof(FFmpegLowToHighColorFilterDisplay));
-        OnPropertyChanged(nameof(FFmpegHighToLowColorFilter));
-        OnPropertyChanged(nameof(FFmpegHighToLowColorFilterDisplay));
-        OnPropertyChanged(nameof(FFmpegHdrToSdrColorFilter));
-        OnPropertyChanged(nameof(FFmpegHdrToSdrColorFilterDisplay));
-        OnPropertyChanged(nameof(FFmpegHighHdrToLowSdrColorFilter));
-        OnPropertyChanged(nameof(FFmpegHighHdrToLowSdrColorFilterDisplay));
-        OnPropertyChanged(nameof(FFmpegHlgToSdrColorFilter));
-        OnPropertyChanged(nameof(FFmpegHlgToSdrColorFilterDisplay));
-        OnPropertyChanged(nameof(FFmpegDoviSdrTo709ColorFilter));
-        OnPropertyChanged(nameof(FFmpegDoviSdrTo709ColorFilterDisplay));
-        OnPropertyChanged(nameof(FFmpegDoviHdrToSdrColorFilter));
-        OnPropertyChanged(nameof(FFmpegDoviHdrToSdrColorFilterDisplay));
-        OnPropertyChanged(nameof(VapourSynthLowToHighColorFilterDisplay));
-        OnPropertyChanged(nameof(VapourSynthHighToLowColorFilterDisplay));
-        OnPropertyChanged(nameof(VapourSynthHdrToSdrColorFilterDisplay));
-        OnPropertyChanged(nameof(VapourSynthHighHdrToLowSdrColorFilterDisplay));
-        OnPropertyChanged(nameof(VapourSynthHlgToSdrColorFilterDisplay));
-        OnPropertyChanged(nameof(VapourSynthDoviSdrTo709ColorFilterDisplay));
-        OnPropertyChanged(nameof(VapourSynthDoviHdrToSdrColorFilterDisplay));
-        OnPropertyChanged(nameof(AviSynthLowToHighColorFilterDisplay));
-        OnPropertyChanged(nameof(AviSynthHighToLowColorFilterDisplay));
-        OnPropertyChanged(nameof(AviSynthHdrToSdrColorFilterDisplay));
-        OnPropertyChanged(nameof(AviSynthHighHdrToLowSdrColorFilterDisplay));
-        OnPropertyChanged(nameof(AviSynthHlgToSdrColorFilterDisplay));
-        OnPropertyChanged(nameof(AviSynthDoviSdrTo709ColorFilterDisplay));
-        OnPropertyChanged(nameof(AviSynthDoviHdrToSdrColorFilterDisplay));
-        OnPropertyChanged(nameof(VapourSynthPlaceboLoadCommand));
-        OnPropertyChanged(nameof(AviSynthPlaceboLoadCommand));
-        OnPropertyChanged(nameof(AviSynthChroma422Filter));
-        OnPropertyChanged(nameof(AviSynthChroma420Filter));
-        OnPropertyChanged(nameof(VapourSynthChroma422Filter));
-        OnPropertyChanged(nameof(VapourSynthChroma420Filter));
-        OnPropertyChanged(nameof(FFmpegChroma422Filter));
-        OnPropertyChanged(nameof(FFmpegChroma420Filter));
-        OnPropertyChanged(nameof(CanInsertAviSynthChroma422Filter));
-        OnPropertyChanged(nameof(CanInsertAviSynthChroma420Filter));
-        OnPropertyChanged(nameof(CanInsertVapourSynthChroma422Filter));
-        OnPropertyChanged(nameof(CanInsertVapourSynthChroma420Filter));
-        OnPropertyChanged(nameof(CanInsertFFmpegChroma422Filter));
-        OnPropertyChanged(nameof(CanInsertFFmpegChroma420Filter));
-        OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
-        OnPropertyChanged(nameof(FFmpegFullChainFilter));
-        OnPropertyChanged(nameof(FFmpegHqdn3dFullChainFilter));
-        OnPropertyChanged(nameof(CanInsertFFmpegLowToHighColorFilter));
-        OnPropertyChanged(nameof(CanInsertFFmpegHighToLowColorFilter));
-        OnPropertyChanged(nameof(CanInsertFFmpegHdrToSdrColorFilter));
-        OnPropertyChanged(nameof(CanInsertFFmpegHighHdrToLowSdrColorFilter));
-        OnPropertyChanged(nameof(CanInsertFFmpegHlgToSdrColorFilter));
-        OnPropertyChanged(nameof(CanInsertFFmpegDoviSdrTo709ColorFilter));
-        OnPropertyChanged(nameof(CanInsertFFmpegDoviHdrToSdrColorFilter));
-        OnPropertyChanged(nameof(CanInsertVapourSynthLowToHighColorFilter));
-        OnPropertyChanged(nameof(CanInsertVapourSynthHighToLowColorFilter));
-        OnPropertyChanged(nameof(CanInsertVapourSynthHdrToSdrColorFilter));
-        OnPropertyChanged(nameof(CanInsertVapourSynthHighHdrToLowSdrColorFilter));
-        OnPropertyChanged(nameof(CanInsertVapourSynthHlgToSdrColorFilter));
-        OnPropertyChanged(nameof(CanInsertVapourSynthDoviSdrTo709ColorFilter));
-        OnPropertyChanged(nameof(CanInsertVapourSynthDoviHdrToSdrColorFilter));
-        OnPropertyChanged(nameof(CanInsertAviSynthLowToHighColorFilter));
-        OnPropertyChanged(nameof(CanInsertAviSynthHighToLowColorFilter));
-        OnPropertyChanged(nameof(CanInsertAviSynthHdrToSdrColorFilter));
-        OnPropertyChanged(nameof(CanInsertAviSynthHighHdrToLowSdrColorFilter));
-        OnPropertyChanged(nameof(CanInsertAviSynthHlgToSdrColorFilter));
-        OnPropertyChanged(nameof(CanInsertAviSynthDoviSdrTo709ColorFilter));
-        OnPropertyChanged(nameof(CanInsertAviSynthDoviHdrToSdrColorFilter));
+        NotifyProperties(
+            nameof(ColorSpaceFilterChain),
+            nameof(FFmpegLowToHighColorFilter),
+            nameof(FFmpegLowToHighColorFilterDisplay),
+            nameof(FFmpegHighToLowColorFilter),
+            nameof(FFmpegHighToLowColorFilterDisplay),
+            nameof(FFmpegHdrToSdrColorFilter),
+            nameof(FFmpegHdrToSdrColorFilterDisplay),
+            nameof(FFmpegHighHdrToLowSdrColorFilter),
+            nameof(FFmpegHighHdrToLowSdrColorFilterDisplay),
+            nameof(FFmpegHlgToSdrColorFilter),
+            nameof(FFmpegHlgToSdrColorFilterDisplay),
+            nameof(FFmpegDoviSdrTo709ColorFilter),
+            nameof(FFmpegDoviSdrTo709ColorFilterDisplay),
+            nameof(FFmpegDoviHdrToSdrColorFilter),
+            nameof(FFmpegDoviHdrToSdrColorFilterDisplay),
+            nameof(VapourSynthLowToHighColorFilterDisplay),
+            nameof(VapourSynthHighToLowColorFilterDisplay),
+            nameof(VapourSynthHdrToSdrColorFilterDisplay),
+            nameof(VapourSynthHighHdrToLowSdrColorFilterDisplay),
+            nameof(VapourSynthHlgToSdrColorFilterDisplay),
+            nameof(VapourSynthDoviSdrTo709ColorFilterDisplay),
+            nameof(VapourSynthDoviHdrToSdrColorFilterDisplay),
+            nameof(AviSynthLowToHighColorFilterDisplay),
+            nameof(AviSynthHighToLowColorFilterDisplay),
+            nameof(AviSynthHdrToSdrColorFilterDisplay),
+            nameof(AviSynthHighHdrToLowSdrColorFilterDisplay),
+            nameof(AviSynthHlgToSdrColorFilterDisplay),
+            nameof(AviSynthDoviSdrTo709ColorFilterDisplay),
+            nameof(AviSynthDoviHdrToSdrColorFilterDisplay),
+            nameof(SelectedLowToHighColorFilterDisplay),
+            nameof(SelectedHighToLowColorFilterDisplay),
+            nameof(SelectedHdrToSdrColorFilterDisplay),
+            nameof(SelectedHighHdrToLowSdrColorFilterDisplay),
+            nameof(SelectedHlgToSdrColorFilterDisplay),
+            nameof(SelectedDoviSdrTo709ColorFilterDisplay),
+            nameof(SelectedDoviHdrToSdrColorFilterDisplay),
+            nameof(VapourSynthPlaceboLoadCommand),
+            nameof(AviSynthPlaceboLoadCommand),
+            nameof(AviSynthChroma422Filter),
+            nameof(AviSynthChroma420Filter),
+            nameof(VapourSynthChroma422Filter),
+            nameof(VapourSynthChroma420Filter),
+            nameof(FFmpegChroma422Filter),
+            nameof(FFmpegChroma420Filter),
+            nameof(SelectedChroma422FilterDisplay),
+            nameof(SelectedChroma420FilterDisplay),
+            nameof(CanInsertAviSynthChroma422Filter),
+            nameof(CanInsertAviSynthChroma420Filter),
+            nameof(CanInsertVapourSynthChroma422Filter),
+            nameof(CanInsertVapourSynthChroma420Filter),
+            nameof(CanInsertFFmpegChroma422Filter),
+            nameof(CanInsertFFmpegChroma420Filter),
+            nameof(FFmpegFpsColorScaleFilter),
+            nameof(FFmpegFullChainFilter),
+            nameof(FFmpegHqdn3dFullChainFilter),
+            nameof(CanInsertFFmpegLowToHighColorFilter),
+            nameof(CanInsertFFmpegHighToLowColorFilter),
+            nameof(CanInsertFFmpegHdrToSdrColorFilter),
+            nameof(CanInsertFFmpegHighHdrToLowSdrColorFilter),
+            nameof(CanInsertFFmpegHlgToSdrColorFilter),
+            nameof(CanInsertFFmpegDoviSdrTo709ColorFilter),
+            nameof(CanInsertFFmpegDoviHdrToSdrColorFilter),
+            nameof(CanInsertVapourSynthLowToHighColorFilter),
+            nameof(CanInsertVapourSynthHighToLowColorFilter),
+            nameof(CanInsertVapourSynthHdrToSdrColorFilter),
+            nameof(CanInsertVapourSynthHighHdrToLowSdrColorFilter),
+            nameof(CanInsertVapourSynthHlgToSdrColorFilter),
+            nameof(CanInsertVapourSynthDoviSdrTo709ColorFilter),
+            nameof(CanInsertVapourSynthDoviHdrToSdrColorFilter),
+            nameof(CanInsertAviSynthLowToHighColorFilter),
+            nameof(CanInsertAviSynthHighToLowColorFilter),
+            nameof(CanInsertAviSynthHdrToSdrColorFilter),
+            nameof(CanInsertAviSynthHighHdrToLowSdrColorFilter),
+            nameof(CanInsertAviSynthHlgToSdrColorFilter),
+            nameof(CanInsertAviSynthDoviSdrTo709ColorFilter),
+            nameof(CanInsertAviSynthDoviHdrToSdrColorFilter));
     }
 
     private string BuildFFmpegFilterArgs(bool includeSwsFlags, bool includeCsp709Flags, params string?[] filters)
@@ -1258,17 +1393,7 @@ public class FilterScribeVM : BaseVM
             _targetHeight = h;
             OnPropertyChanged(nameof(TargetWidth));
             OnPropertyChanged(nameof(TargetHeight));
-            OnPropertyChanged(nameof(TargetDisplay));
-            OnPropertyChanged(nameof(FFmpegResizeFilter));
-            OnPropertyChanged(nameof(FFmpegFpsScaleFilter));
-            OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
-            OnPropertyChanged(nameof(FFmpegFullChainFilter));
-            OnPropertyChanged(nameof(FFmpegHqdn3dFullChainFilter));
-            OnPropertyChanged(nameof(CanInsertAviSynthResizeFilter));
-            OnPropertyChanged(nameof(CanInsertVapourSynthResizeFilter));
-            OnPropertyChanged(nameof(CanInsertFFmpegResizeFilter));
-            OnPropertyChanged(nameof(VapourSynthResizeFilter));
-            OnPropertyChanged(nameof(AviSynthResizeFilter));
+            NotifyScaleFilterProperties();
         }
 
         RefreshUpscaleForInputChange();
@@ -1327,18 +1452,7 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(IsScaleApplicable));
         OnPropertyChanged(nameof(ScaleHeightMaximum));
         OnPropertyChanged(nameof(ScaleTickLabels));
-        OnPropertyChanged(nameof(TargetDisplay));
-        OnPropertyChanged(nameof(FFmpegResizeFilter));
-        OnPropertyChanged(nameof(FFmpegResizeFilterDisplay));
-        OnPropertyChanged(nameof(FFmpegFpsScaleFilter));
-        OnPropertyChanged(nameof(FFmpegFpsColorScaleFilter));
-        OnPropertyChanged(nameof(FFmpegFullChainFilter));
-        OnPropertyChanged(nameof(FFmpegHqdn3dFullChainFilter));
-        OnPropertyChanged(nameof(CanInsertAviSynthResizeFilter));
-        OnPropertyChanged(nameof(CanInsertVapourSynthResizeFilter));
-        OnPropertyChanged(nameof(CanInsertFFmpegResizeFilter));
-        OnPropertyChanged(nameof(VapourSynthResizeFilter));
-        OnPropertyChanged(nameof(AviSynthResizeFilter));
+        NotifyScaleFilterProperties();
         RecomputeTarget();
     }
 
@@ -1357,15 +1471,7 @@ public class FilterScribeVM : BaseVM
         _cropHeight = SourceHeight;
         OnPropertyChanged(nameof(CropWidth));
         OnPropertyChanged(nameof(CropHeight));
-        OnPropertyChanged(nameof(CropTargetDisplay));
-        OnPropertyChanged(nameof(HasCropFilter));
-        OnPropertyChanged(nameof(FFmpegCropFilter));
-        OnPropertyChanged(nameof(FFmpegCropFilterDisplay));
-        OnPropertyChanged(nameof(VapourSynthCropFilter));
-        OnPropertyChanged(nameof(AviSynthCropFilter));
-        OnPropertyChanged(nameof(CanInsertAviSynthCropFilter));
-        OnPropertyChanged(nameof(CanInsertVapourSynthCropFilter));
-        OnPropertyChanged(nameof(CanInsertFFmpegCropFilter));
+        NotifyCropFilterProperties();
     }
 
     private static string DescribeCropMod(int mod) =>
