@@ -1,6 +1,6 @@
 ---
 name: Feature and behavior adjustment (not a bug)
-about: Suggest add/remove a feature or check item, change data handling or user response
+about: Add/remove feature or process, change handling or behavior
 title: ''
 labels: ''
 assignees: iAvoe
