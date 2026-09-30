@@ -45,10 +45,10 @@ assignees: iAvoe
 **Rationale & Justification**
 
 *Evaluate this request quickly and avoid premature rejection, address the following and/or other aspects*
-- Ignore if not applicable
+- Simply ignore points that are not applicable
 
-1. **Expectation:** What's the exact expected behavior (if not described previously)?
-2. **Impact:** Why is this beneficial to the majority of users, instead of just a minority group of users?
+1. **Expectation:** What's the expected behavior (if not described previously)?
+2. **Impact:** Why is this beneficial to the majority of users (not compromising the majority to benefit a minority group of users)?
 3. **Feasibility:** How does it avoid refactoring the entire codebase?
 4. **Trade-offs:** What side-effects to expect, and why this request remains good despite having them?
 
