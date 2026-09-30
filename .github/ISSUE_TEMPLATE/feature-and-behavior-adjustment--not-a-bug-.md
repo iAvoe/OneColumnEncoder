@@ -36,9 +36,7 @@ assignees: iAvoe
 **Location**
 
 *Identify the relevant UI section, window title, source file paths, or function names, depending on how exact you can describe*
-
-- **Location:** 
-- **Action Required:** 
+> 
 
 ---
 
