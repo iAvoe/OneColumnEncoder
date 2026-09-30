@@ -14,11 +14,11 @@ assignees: iAvoe
 
 **Priority**
 
-*Select one category that best reflects the necessity of this change:*
+*Select one category that best reflects the necessity:*
 
 - [ ] **High** — Solves bad practices, legal compliance, user frustration (despite not a bug)
   - Something unusable but should be → a bug
-- [ ] **Medium** — Clear improvement that adds valuable capability or convenience (Nice to have)
+- [ ] **Mid** — Clear improvement that adds valuable capability or convenience (Nice to have)
 - [ ] **Low** — Exploratory proposal; subtle benefit or subject to evaluation.
 
 **Scope**
@@ -51,7 +51,7 @@ assignees: iAvoe
 2. **Impact:** Why is this beneficial to the majority of users (not compromising the majority to benefit a minority group of users)?
 3. **Feasibility:** How does it avoid refactoring the entire codebase?
 4. **Trade-offs:** What side-effects to expect, and why this request remains good despite having them?
-
+> 
 
 ---
 
