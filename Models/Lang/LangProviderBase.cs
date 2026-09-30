@@ -90,6 +90,7 @@ public abstract class LangProviderBase
     public static string MoveDownText => "↓↓";
     public static string NAText => "N/A";
     public static string Hms => "h:m:s";
+    public string Resize => this["Resize"];
     public string Default => this["Default"];
     public string Enable => this["Enable"];
     public string Disable => this["Disable"];
@@ -148,6 +149,7 @@ public abstract class LangProviderBase
             ["Transfer"] = "Transfer",
             ["Primaries"] = "Primaries",
             ["HDR"] = "HDR",
+            ["Resize"] = "Resize",
             ["VideoCodec"] = "Video codec",
             ["AudioCodec"] = "Audio codec",
             ["ContainerFormat"] = "Container format",
@@ -212,6 +214,7 @@ public abstract class LangProviderBase
             ["Transfer"] = "传递函数",
             ["Primaries"] = "原色",
             ["HDR"] = "HDR",
+            ["Resize"] = "缩放",
             ["VideoCodec"] = "视频编码",
             ["AudioCodec"] = "音频编码",
             ["ContainerFormat"] = "容器格式",
@@ -276,6 +279,7 @@ public abstract class LangProviderBase
             ["Transfer"] = "傳遞函數",
             ["Primaries"] = "原色",
             ["HDR"] = "HDR",
+            ["Resize"] = "縮放",
             ["VideoCodec"] = "影片編碼",
             ["AudioCodec"] = "音訊編碼",
             ["ContainerFormat"] = "容器格式",
@@ -340,6 +344,7 @@ public abstract class LangProviderBase
             ["Transfer"] = "Transfert",
             ["Primaries"] = "Primaires",
             ["HDR"] = "HDR",
+            ["Resize"] = "Redimensionner",
             ["VideoCodec"] = "Codec vidéo",
             ["AudioCodec"] = "Codec audio",
             ["ContainerFormat"] = "Format conteneur",
@@ -404,6 +409,7 @@ public abstract class LangProviderBase
             ["Transfer"] = "Transferencia",
             ["Primaries"] = "Primarias",
             ["HDR"] = "HDR",
+            ["Resize"] = "Cambiar tamaño",
             ["VideoCodec"] = "Códec de vídeo",
             ["AudioCodec"] = "Códec de audio",
             ["ContainerFormat"] = "Formato de contenedor",
@@ -468,6 +474,7 @@ public abstract class LangProviderBase
             ["Transfer"] = "伝達特性",
             ["Primaries"] = "原色",
             ["HDR"] = "HDR",
+            ["Resize"] = "リサイズ",
             ["VideoCodec"] = "映像コーデック",
             ["AudioCodec"] = "音声コーデック",
             ["ContainerFormat"] = "コンテナ形式",
@@ -532,6 +539,7 @@ public abstract class LangProviderBase
             ["Transfer"] = "Передаточная функция",
             ["Primaries"] = "Первичные цвета",
             ["HDR"] = "HDR",
+            ["Resize"] = "Изменить размер",
             ["VideoCodec"] = "Видеокодек",
             ["AudioCodec"] = "Аудиокодек",
             ["ContainerFormat"] = "Формат контейнера",
@@ -596,6 +604,7 @@ public abstract class LangProviderBase
             ["Transfer"] = "Übertragungsfunktion",
             ["Primaries"] = "Primärfarben",
             ["HDR"] = "HDR",
+            ["Resize"] = "Größe ändern",
             ["VideoCodec"] = "Videocodec",
             ["AudioCodec"] = "Audiocodec",
             ["ContainerFormat"] = "Containerformat",
@@ -660,6 +669,7 @@ public abstract class LangProviderBase
             ["Transfer"] = "전달 함수",
             ["Primaries"] = "원색",
             ["HDR"] = "HDR",
+            ["Resize"] = "크기 조절",
             ["VideoCodec"] = "비디오 코덱",
             ["AudioCodec"] = "오디오 코덱",
             ["ContainerFormat"] = "컨테이너 형식",
@@ -724,6 +734,7 @@ public abstract class LangProviderBase
             ["Transfer"] = "Transferência",
             ["Primaries"] = "Primárias",
             ["HDR"] = "HDR",
+            ["Resize"] = "Redimensionar",
             ["VideoCodec"] = "Codec de vídeo",
             ["AudioCodec"] = "Codec de áudio",
             ["ContainerFormat"] = "Formato de contêiner",

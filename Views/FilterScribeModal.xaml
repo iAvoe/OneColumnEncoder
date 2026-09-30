@@ -176,20 +176,83 @@
                              TextWrapping="NoWrap"
                              AcceptsReturn="True"
                              FontWeight="Normal" />
-                    <TextBox Grid.Row="2"
-                             Text="{Binding AvsUserInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource ScriptAccentAvsBackground}"
-                             Foreground="{StaticResource ScriptAccentAvsForeground}"
-                             TextWrapping="Wrap"
-                             AcceptsReturn="True"
-                             Margin="0 2.5 0 0"
-                             Padding="2 2.5"
-                             HorizontalScrollBarVisibility="Auto"
-                             VerticalScrollBarVisibility="Auto"
-                             PreviewMouseWheel="UserInput_PreviewMouseWheel"
-                             FontWeight="Normal" />
+                    <Grid Grid.Row="2">
+                        <TextBox Text="{Binding AvsUserInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource ScriptAccentAvsBackground}"
+                                 Foreground="{StaticResource ScriptAccentAvsForeground}"
+                                 TextWrapping="Wrap"
+                                 AcceptsReturn="True"
+                                 Margin="0 2.5 0 0"
+                                 Padding="2 2.5"
+                                 HorizontalScrollBarVisibility="Auto"
+                                 VerticalScrollBarVisibility="Auto"
+                                 PreviewMouseWheel="UserInput_PreviewMouseWheel"
+                                 FontWeight="Normal" />
+                        <StackPanel HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    Orientation="Horizontal">
+                            <Button Command="{Binding ClearFiltersCommand}"
+                                    IsEnabled="{Binding CanClearFilters}"
+                                    ToolTip="{Binding ClearFiltersText}"
+                                    Height="30"
+                                    Width="80"
+                                    Margin="0 2.5 0 0"
+                                    Panel.ZIndex="1"
+                                    Style="{StaticResource AzureButton}"
+                                    BorderThickness="0">
+                                <StackPanel Orientation="Horizontal"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Center">
+                                    <Rectangle Width="14"
+                                               Height="14"
+                                               VerticalAlignment="Center"
+                                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GameDelete}"
+                                                        Stretch="Uniform"
+                                                        AlignmentX="Center"
+                                                        AlignmentY="Center" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                    <TextBlock Text="{Binding ClearFiltersText}"
+                                               VerticalAlignment="Center"
+                                               FontWeight="Normal"
+                                               Margin="5 0 0 0" />
+                                </StackPanel>
+                            </Button>
+                            <!-- A/B Preview button -->
+                            <Button Command="{Binding OpenAvsPreviewCommand}"
+                                    IsEnabled="{Binding CanOpenAvsPreview}"
+                                    Height="30"
+                                    Width="120"
+                                    Margin="0 2.5 2.5 0"
+                                    Panel.ZIndex="1"
+                                    Style="{StaticResource AzureButton}"
+                                    BorderThickness="0">
+                                <StackPanel Orientation="Horizontal"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Center">
+                                    <Rectangle Width="14"
+                                               Height="14"
+                                               VerticalAlignment="Center"
+                                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GamePlay}"
+                                                        Stretch="Uniform"
+                                                        AlignmentX="Center"
+                                                        AlignmentY="Center" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                    <TextBlock Text="A/B Preview"
+                                               VerticalAlignment="Center"
+                                               FontWeight="Normal"
+                                               Margin="5 0 0 0" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
                     <TextBox Grid.Row="3"
                              Text="{Binding AvsSuffix, Mode=OneWay}"
                              IsReadOnly="True"
@@ -208,38 +271,6 @@
                               Margin="0 2.5 0 0"
                               FontWeight="DemiBold"
                               Foreground="{StaticResource GlobalSecondary}" />
-                    <!-- A/B Preview button -->
-                    <Button Grid.Row="2"
-                            Command="{Binding OpenAvsPreviewCommand}"
-                            IsEnabled="{Binding CanOpenAvsPreview}"
-                            Height="30"
-                            Width="120"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Margin="0 2.5 0 0"
-                            Panel.ZIndex="1"
-                            Style="{StaticResource AzureButton}"
-                            BorderThickness="0">
-                        <StackPanel Orientation="Horizontal"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Center">
-                            <Rectangle Width="14"
-                                       Height="14"
-                                       VerticalAlignment="Center"
-                                       Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                                <Rectangle.OpacityMask>
-                                    <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GamePlay}"
-                                                Stretch="Uniform"
-                                                AlignmentX="Center"
-                                                AlignmentY="Center" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                            <TextBlock Text="A/B Preview"
-                                       VerticalAlignment="Center"
-                                       FontWeight="Normal"
-                                       Margin="5 0 -5 0" />
-                        </StackPanel>
-                    </Button>
                 </Grid>
             </TabItem>
 
@@ -276,18 +307,84 @@
                              TextWrapping="NoWrap"
                              AcceptsReturn="True"
                              FontWeight="Normal" />
-                    <TextBox Grid.Row="2"
-                             Text="{Binding VpyUserInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource ScriptAccentVpyBackground}"
-                             Foreground="{StaticResource ScriptAccentVpyForeground}"
-                             TextWrapping="Wrap"
-                             AcceptsReturn="True"
-                             Margin="0 2.5 0 0"
-                             Padding="2 2.5"
-                             PreviewMouseWheel="UserInput_PreviewMouseWheel"
-                             FontWeight="Normal" />
+                    <!-- Filter textbox, clear button, AB preview button -->
+                    <Grid Grid.Row="2">
+                        <TextBox Text="{Binding VpyUserInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource ScriptAccentVpyBackground}"
+                                 Foreground="{StaticResource ScriptAccentVpyForeground}"
+                                 TextWrapping="Wrap"
+                                 AcceptsReturn="True"
+                                 Margin="0 2.5 0 0"
+                                 Padding="2 2.5"
+                                 HorizontalScrollBarVisibility="Auto"
+                                 VerticalScrollBarVisibility="Auto"
+                                 PreviewMouseWheel="UserInput_PreviewMouseWheel"
+                                 FontWeight="Normal" />
+                        <StackPanel HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    Orientation="Horizontal">
+                            <Button Command="{Binding ClearFiltersCommand}"
+                                    IsEnabled="{Binding CanClearFilters}"
+                                    ToolTip="{Binding ClearFiltersText}"
+                                    Height="30"
+                                    Width="80"
+                                    Margin="0 2.5 0 0"
+                                    Panel.ZIndex="1"
+                                    Style="{StaticResource TealButton}"
+                                    BorderThickness="0">
+                                <StackPanel Orientation="Horizontal"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Center">
+                                    <Rectangle Width="14"
+                                               Height="14"
+                                               VerticalAlignment="Center"
+                                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GameDelete}"
+                                                        Stretch="Uniform"
+                                                        AlignmentX="Center"
+                                                        AlignmentY="Center" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                    <TextBlock Text="{Binding ClearFiltersText}"
+                                               VerticalAlignment="Center"
+                                               FontWeight="Normal"
+                                               Margin="5 0 0 0" />
+                                </StackPanel>
+                            </Button>
+                            <Button Command="{Binding OpenVpyPreviewCommand}"
+                                    IsEnabled="{Binding CanOpenVpyPreview}"
+                                    Height="30"
+                                    Width="120"
+                                    Margin="0 2.5 2.5 0"
+                                    Panel.ZIndex="1"
+                                    Style="{StaticResource TealButton}"
+                                    BorderThickness="0">
+                                <StackPanel Orientation="Horizontal"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Center">
+                                    <Rectangle Width="14"
+                                               Height="14"
+                                               VerticalAlignment="Center"
+                                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GamePlay}"
+                                                        Stretch="Uniform"
+                                                        AlignmentX="Center"
+                                                        AlignmentY="Center" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                    <TextBlock Text="A/B Preview"
+                                               VerticalAlignment="Center"
+                                               FontWeight="Normal"
+                                               Margin="5 0 0 0" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
                     <TextBox Grid.Row="3"
                              Text="{Binding VpySuffix, Mode=OneWay}"
                              IsReadOnly="True"
@@ -306,37 +403,6 @@
                               Margin="0 2.5 0 0"
                               FontWeight="DemiBold"
                               Foreground="{StaticResource GlobalSecondary}" />
-                    <Button Grid.Row="2"
-                            Command="{Binding OpenVpyPreviewCommand}"
-                            IsEnabled="{Binding CanOpenVpyPreview}"
-                            Height="30"
-                            Width="120"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Margin="0 2.5 0 0"
-                            Panel.ZIndex="1"
-                            Style="{StaticResource TealButton}"
-                            BorderThickness="0">
-                        <StackPanel Orientation="Horizontal"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Center">
-                            <Rectangle Width="14"
-                                       Height="14"
-                                       VerticalAlignment="Center"
-                                       Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                                <Rectangle.OpacityMask>
-                                    <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GamePlay}"
-                                                Stretch="Uniform"
-                                                AlignmentX="Center"
-                                                AlignmentY="Center" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                            <TextBlock Text="A/B Preview"
-                                       VerticalAlignment="Center"
-                                       FontWeight="Normal"
-                                       Margin="5 0 -5 0" />
-                        </StackPanel>
-                    </Button>
                 </Grid>
             </TabItem>
 
@@ -370,53 +436,84 @@
                                Foreground="{StaticResource GlobalSecondary}"
                                TextWrapping="Wrap"
                                FontWeight="Normal" />
-                    <TextBox Grid.Row="2"
-                             Text="{Binding FFmpegFreeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource ScriptAccentFFmpegBackground}"
-                             Foreground="{StaticResource ScriptAccentFFmpegForeground}"
-                             TextWrapping="Wrap"
-                             AcceptsReturn="False"
-                             Margin="0 2.5 0 0"
-                             Padding="2 2.5"
-                             HorizontalScrollBarVisibility="Auto"
-                             VerticalScrollBarVisibility="Disabled"
-                             PreviewKeyDown="FFmpegFreeText_PreviewKeyDown"
-                             DataObject.Pasting="FFmpegFreeText_Pasting"
-                             PreviewMouseWheel="UserInput_PreviewMouseWheel"
-                             FontWeight="Normal" />
-                    <Button Grid.Row="2"
-                            Command="{Binding OpenFfmpegPreviewCommand}"
-                            IsEnabled="{Binding CanOpenFfmpegPreview}"
-                            Height="30"
-                            Width="120"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Bottom"
-                            Margin="0 2.5 0 0"
-                            Panel.ZIndex="1"
-                            Style="{StaticResource LavenderButton}"
-                            BorderThickness="0">
-                        <StackPanel Orientation="Horizontal"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Center">
-                            <Rectangle Width="14"
-                                       Height="14"
-                                       VerticalAlignment="Center"
-                                       Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                                <Rectangle.OpacityMask>
-                                    <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GamePlay}"
-                                                Stretch="Uniform"
-                                                AlignmentX="Center"
-                                                AlignmentY="Center" />
-                                </Rectangle.OpacityMask>
-                            </Rectangle>
-                            <TextBlock Text="A/B Preview"
-                                       VerticalAlignment="Center"
-                                       FontWeight="Normal"
-                                       Margin="5 0 -5 0" />
+                    <Grid Grid.Row="2">
+                        <TextBox Text="{Binding FFmpegFreeText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource ScriptAccentFFmpegBackground}"
+                                 Foreground="{StaticResource ScriptAccentFFmpegForeground}"
+                                 TextWrapping="Wrap"
+                                 AcceptsReturn="False"
+                                 Margin="0 2.5 0 0"
+                                 Padding="2 2.5"
+                                 HorizontalScrollBarVisibility="Auto"
+                                 VerticalScrollBarVisibility="Disabled"
+                                 PreviewKeyDown="FFmpegFreeText_PreviewKeyDown"
+                                 DataObject.Pasting="FFmpegFreeText_Pasting"
+                                 PreviewMouseWheel="UserInput_PreviewMouseWheel"
+                                 FontWeight="Normal" />
+                        <StackPanel HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    Orientation="Horizontal">
+                            <Button Command="{Binding ClearFiltersCommand}"
+                                    IsEnabled="{Binding CanClearFilters}"
+                                    ToolTip="{Binding ClearFiltersText}"
+                                    Height="30"
+                                    Width="80"
+                                    Margin="0 2.5 0 0"
+                                    Panel.ZIndex="1"
+                                    Style="{StaticResource LavenderButton}"
+                                    BorderThickness="0">
+                                <StackPanel Orientation="Horizontal"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Center">
+                                    <Rectangle Width="14"
+                                               Height="14"
+                                               VerticalAlignment="Center"
+                                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GameDelete}"
+                                                        Stretch="Uniform"
+                                                        AlignmentX="Center"
+                                                        AlignmentY="Center" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                    <TextBlock Text="{Binding ClearFiltersText}"
+                                               VerticalAlignment="Center"
+                                               FontWeight="Normal"
+                                               Margin="5 0 0 0" />
+                                </StackPanel>
+                            </Button>
+                            <Button Command="{Binding OpenFfmpegPreviewCommand}"
+                                    IsEnabled="{Binding CanOpenFfmpegPreview}"
+                                    Height="30"
+                                    Width="120"
+                                    Margin="0 2.5 2.5 0"
+                                    Panel.ZIndex="1"
+                                    Style="{StaticResource LavenderButton}"
+                                    BorderThickness="0">
+                                <StackPanel Orientation="Horizontal"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Center">
+                                    <Rectangle Width="14"
+                                               Height="14"
+                                               VerticalAlignment="Center"
+                                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                                        <Rectangle.OpacityMask>
+                                            <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GamePlay}"
+                                                        Stretch="Uniform"
+                                                        AlignmentX="Center"
+                                                        AlignmentY="Center" />
+                                        </Rectangle.OpacityMask>
+                                    </Rectangle>
+                                    <TextBlock Text="A/B Preview"
+                                               VerticalAlignment="Center"
+                                               FontWeight="Normal"
+                                               Margin="5 0 0 0" />
+                                </StackPanel>
+                            </Button>
                         </StackPanel>
-                    </Button>
+                    </Grid>
                 </Grid>
             </TabItem>
         </TabControl>
@@ -555,8 +652,8 @@
                                    Foreground="{StaticResource GlobalSecondary}"
                                    VerticalAlignment="Center" />
                     </Grid>
-                     <TextBox Text="{Binding SelectedRotateFilterDisplay, Mode=OneWay}"
-                              Margin="0 2.5 0 0"
+                    <TextBox Text="{Binding SelectedRotateFilterDisplay, Mode=OneWay}"
+                             Margin="0 2.5 0 0"
                              Padding="0 2.5"
                              IsReadOnly="True"
                              BorderThickness="0"
@@ -567,104 +664,6 @@
                 </StackPanel>
 
                 <StackPanel Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding UpscaleTitle}"
-                                   Style="{StaticResource H3}"
-                                   Margin="0 15 0 0" />
-                        <Button Grid.Column="1"
-                                Command="{Binding InsertFFmpegFilterCommand}"
-                                CommandParameter="{Binding FFmpegUpscaleFilter}"
-                                IsEnabled="{Binding CanInsertFFmpegUpscaleFilter}"
-                                Style="{StaticResource AppendLinkButton}" />
-                    </Grid>
-                    <Grid Margin="0 5 0 0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto"
-                                              MinWidth="60" />
-                        </Grid.ColumnDefinitions>
-                        <comps:IntegerSlider Grid.Column="0"
-                                             Label=""
-                                             Minimum="{Binding UpscaleHeightMinimum}"
-                                             Maximum="{Binding UpscaleHeightMaximum}"
-                                             Value="{Binding UpscaleHeight}"
-                                             TickLabels="{Binding UpscaleTickLabels}"
-                                             TickCount="5"
-                                             Step="{Binding UpscaleStep}"
-                                             Margin="2.5 0 -5 0">
-                            <comps:IntegerSlider.Style>
-                                <Style TargetType="comps:IntegerSlider">
-                                    <Setter Property="Visibility"
-                                            Value="Visible" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding HasSource}"
-                                                     Value="False">
-                                            <Setter Property="Visibility"
-                                                    Value="Collapsed" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </comps:IntegerSlider.Style>
-                        </comps:IntegerSlider>
-                        <!-- !Scale text, hide normally -->
-                        <TextBlock Grid.Column="0"
-                                   Text="{Binding ScaleNotApplicableText}"
-                                   Margin="0 0 0 5"
-                                   Foreground="{StaticResource ButtonTertiary}"
-                                   VerticalAlignment="Center">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Visibility"
-                                            Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding HasSource}"
-                                                     Value="False">
-                                            <Setter Property="Visibility"
-                                                    Value="Visible" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        <!-- Scale target display -->
-                        <TextBlock Grid.Column="1"
-                                   Text="{Binding UpscaleTargetDisplay}"
-                                   Foreground="{StaticResource GlobalSecondary}"
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Center" />
-                    </Grid>
-                    <StackPanel Orientation="Horizontal"
-                                Margin="1 5 0 0">
-                        <CheckBox Content="{Binding UpscalerSpline36Label}"
-                                  IsChecked="{Binding UseSpline36Upscaler}"
-                                  Margin="0 0 15 0"
-                                  Foreground="{StaticResource GlobalSecondary}" />
-                        <CheckBox Content="{Binding UpscalerNearestLabel}"
-                                  IsChecked="{Binding UseNearestUpscaler}"
-                                  Margin="0 0 15 0"
-                                  Foreground="{StaticResource GlobalSecondary}" />
-                        <CheckBox Content="{Binding UpscalerOversampleLabel}"
-                                  IsChecked="{Binding UseOversampleUpscaler}"
-                                  Margin="0 0 15 0"
-                                  Foreground="{StaticResource GlobalSecondary}" />
-                        <CheckBox Content="{Binding UpscalerEwaLanczosLabel}"
-                                  IsChecked="{Binding UseEwaLanczosUpscaler}"
-                                  Foreground="{StaticResource GlobalSecondary}" />
-                    </StackPanel>
-                    <TextBox Text="{Binding FFmpegUpscaleFilterDisplay, Mode=OneWay}"
-                             Margin="0 2.5 0 0"
-                             Padding="0 2.5"
-                             IsReadOnly="True"
-                             BorderThickness="0"
-                             FontFamily="{DynamicResource CodeFont}"
-                             Background="{StaticResource Background}"
-                             Foreground="{StaticResource ButtonTertiary}"
-                             VerticalAlignment="Center" />
-
                     <!-- The writer places native flips before an existing libplacebo block. -->
                     <StackPanel>
                         <Grid>
@@ -703,45 +702,45 @@
                     </StackPanel>
                 </StackPanel>
 
-                 <StackPanel Visibility="{Binding IsScriptTabSelected, Converter={StaticResource BoolToVisibility}}">
-                     <Grid>
-                         <Grid.ColumnDefinitions>
-                             <ColumnDefinition Width="*" />
-                             <ColumnDefinition Width="Auto" />
-                             <ColumnDefinition Width="Auto" />
-                             <ColumnDefinition Width="Auto" />
-                         </Grid.ColumnDefinitions>
-                         <TextBlock Text="{Binding FlipTitle}"
-                                    Style="{StaticResource H3}"
-                                    Margin="0 15 0 0" />
-                         <Button Grid.Column="1"
-                                 Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
-                                 Command="{Binding InsertAvsFilterCommand}"
-                                 CommandParameter="{Binding AvsHFlipFilter}"
-                                 ToolTip="FlipHorizontal"
-                                 Style="{StaticResource AppendLinkButton}" />
-                         <Button Grid.Column="2"
-                                 Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
-                                 Command="{Binding InsertAvsFilterCommand}"
-                                 CommandParameter="{Binding AvsVFlipFilter}"
-                                 ToolTip="FlipVertical"
-                                 Style="{StaticResource AppendLinkButton}" />
-                         <Button Grid.Column="1"
-                                 Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
-                                 Command="{Binding InsertVpyFilterCommand}"
-                                 CommandParameter="{Binding VpyHFlipFilter}"
-                                 ToolTip="FlipHorizontal"
-                                 Style="{StaticResource AppendLinkButton}" />
-                         <Button Grid.Column="2"
-                                 Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
-                                 Command="{Binding InsertVpyFilterCommand}"
-                                 CommandParameter="{Binding VpyVFlipFilter}"
-                                 ToolTip="FlipVertical"
-                                 Style="{StaticResource AppendLinkButton}" />
-                     </Grid>
-                     <TextBox Text="{Binding SelectedScriptFlipFilterDisplay, Mode=OneWay}"
-                              Padding="0 2.5"
-                              IsReadOnly="True"
+                <StackPanel Visibility="{Binding IsScriptTabSelected, Converter={StaticResource BoolToVisibility}}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding FlipTitle}"
+                                   Style="{StaticResource H3}"
+                                   Margin="0 15 0 0" />
+                        <Button Grid.Column="1"
+                                Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertAvsFilterCommand}"
+                                CommandParameter="{Binding AvsHFlipFilter}"
+                                ToolTip="FlipHorizontal"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <Button Grid.Column="2"
+                                Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertAvsFilterCommand}"
+                                CommandParameter="{Binding AvsVFlipFilter}"
+                                ToolTip="FlipVertical"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <Button Grid.Column="1"
+                                Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertVpyFilterCommand}"
+                                CommandParameter="{Binding VpyHFlipFilter}"
+                                ToolTip="FlipHorizontal"
+                                Style="{StaticResource AppendLinkButton}" />
+                        <Button Grid.Column="2"
+                                Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                Command="{Binding InsertVpyFilterCommand}"
+                                CommandParameter="{Binding VpyVFlipFilter}"
+                                ToolTip="FlipVertical"
+                                Style="{StaticResource AppendLinkButton}" />
+                    </Grid>
+                    <TextBox Text="{Binding SelectedScriptFlipFilterDisplay, Mode=OneWay}"
+                             Padding="0 2.5"
+                             IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
                              Background="{StaticResource Background}"
@@ -759,11 +758,9 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+                             <ColumnDefinition Width="Auto" />
+                             <ColumnDefinition Width="Auto" />
+                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0"
                                    Text="{Binding ColorSpaceConvertTitle}"
                                    Style="{StaticResource H3}"
@@ -924,7 +921,7 @@
                                    VerticalAlignment="Center"
                                    Foreground="{StaticResource GlobalSecondary}" />
                     </Grid>
-                     <TextBox Text="{Binding SelectedPlaceboLoadCommand, Mode=OneWay}"
+                    <TextBox Text="{Binding SelectedPlaceboLoadCommand, Mode=OneWay}"
                              Padding="0 2.5"
                              IsReadOnly="True"
                              BorderThickness="0"
@@ -932,7 +929,7 @@
                              Background="{StaticResource Background}"
                              Foreground="{StaticResource ButtonTertiary}"
                              VerticalAlignment="Center"
-                              Visibility="{Binding IsScriptTabSelected, Converter={StaticResource BoolToVisibility}}" />
+                             Visibility="{Binding IsScriptTabSelected, Converter={StaticResource BoolToVisibility}}" />
                     <!-- CSP to Bt.709 filters -->
                     <Grid Margin="0 2.5 0 0">
                         <Grid.ColumnDefinitions>
@@ -944,16 +941,16 @@
                                    Foreground="{StaticResource GlobalSecondary}"
                                    VerticalAlignment="Center"
                                    Visibility="{Binding IsAvsOrFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}" />
-                         <TextBox Grid.Column="1"
-                                  Text="{Binding SelectedLowToHighColorFilterDisplay, Mode=OneWay}"
-                                  Padding="0 2.5"
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding SelectedLowToHighColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                  Background="{StaticResource Background}"
-                                  Foreground="{StaticResource ButtonTertiary}"
-                                  VerticalAlignment="Center"
-                                  Visibility="{Binding IsAvsOrFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}" />
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center"
+                                 Visibility="{Binding IsAvsOrFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}" />
                     </Grid>
                     <Grid Margin="0 2.5 0 0">
                         <Grid.ColumnDefinitions>
@@ -964,15 +961,15 @@
                                    Text="WCG→709"
                                    Foreground="{StaticResource GlobalSecondary}"
                                    VerticalAlignment="Center" />
-                         <TextBox Grid.Column="1"
-                                  Text="{Binding SelectedHighToLowColorFilterDisplay, Mode=OneWay}"
-                                  Padding="0 2.5"
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding SelectedHighToLowColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                  Background="{StaticResource Background}"
-                                  Foreground="{StaticResource ButtonTertiary}"
-                                  VerticalAlignment="Center" />
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center" />
                     </Grid>
                     <Grid Margin="0 2.5 0 0">
                         <Grid.ColumnDefinitions>
@@ -983,15 +980,15 @@
                                    Text="HDR→SDR"
                                    Foreground="{StaticResource GlobalSecondary}"
                                    VerticalAlignment="Center" />
-                         <TextBox Grid.Column="1"
-                                  Text="{Binding SelectedHdrToSdrColorFilterDisplay, Mode=OneWay}"
-                                  Padding="0 2.5"
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding SelectedHdrToSdrColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
-                                  Background="{StaticResource Background}"
-                                  Foreground="{StaticResource ButtonTertiary}"
-                                  VerticalAlignment="Center" />
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center" />
                     </Grid>
                     <Grid Margin="0 2.5 0 0">
                         <Grid.ColumnDefinitions>
@@ -1003,28 +1000,9 @@
                                    Foreground="{StaticResource GlobalSecondary}"
                                    VerticalAlignment="Center"
                                    TextWrapping="Wrap" />
-                         <TextBox Grid.Column="1"
-                                  Text="{Binding SelectedHighHdrToLowSdrColorFilterDisplay, Mode=OneWay}"
-                                  Padding="0 2.5"
-                                 IsReadOnly="True"
-                                 BorderThickness="0"
-                                 FontFamily="{DynamicResource CodeFont}"
-                                  Background="{StaticResource Background}"
-                                  Foreground="{StaticResource ButtonTertiary}"
-                                  VerticalAlignment="Center" />
-                    </Grid>
-                     <Grid Margin="0 2.5 0 0">
-                         <Grid.ColumnDefinitions>
-                             <ColumnDefinition Width="62" />
-                             <ColumnDefinition Width="*" />
-                         </Grid.ColumnDefinitions>
-                         <TextBlock Grid.Column="0"
-                                    Text="{Binding SelectedHlgTargetLabel}"
-                                    Foreground="{StaticResource GlobalSecondary}"
-                                    VerticalAlignment="Center" />
-                         <TextBox Grid.Column="1"
-                                  Text="{Binding SelectedHlgToSdrColorFilterDisplay, Mode=OneWay}"
-                                  Padding="0 2.5"
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding SelectedHighHdrToLowSdrColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
@@ -1032,19 +1010,18 @@
                                  Foreground="{StaticResource ButtonTertiary}"
                                  VerticalAlignment="Center" />
                     </Grid>
-                     <Grid Margin="0 2.5 0 0">
-                         <Grid.ColumnDefinitions>
-                             <ColumnDefinition Width="62" />
-                             <ColumnDefinition Width="*" />
-                         </Grid.ColumnDefinitions>
-                         <TextBlock Grid.Column="0"
-                                    Text="{Binding SelectedDoviSdrTargetLabel}"
-                                    Foreground="{StaticResource GlobalSecondary}"
-                                    VerticalAlignment="Center"
-                                    TextWrapping="Wrap" />
-                         <TextBox Grid.Column="1"
-                                  Text="{Binding SelectedDoviSdrTo709ColorFilterDisplay, Mode=OneWay}"
-                                  Padding="0 2.5"
+                    <Grid Margin="0 2.5 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="62" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding SelectedHlgTargetLabel}"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding SelectedHlgToSdrColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
@@ -1052,19 +1029,39 @@
                                  Foreground="{StaticResource ButtonTertiary}"
                                  VerticalAlignment="Center" />
                     </Grid>
-                     <Grid Margin="0 2.5 0 0">
-                         <Grid.ColumnDefinitions>
-                             <ColumnDefinition Width="62" />
-                             <ColumnDefinition Width="*" />
-                         </Grid.ColumnDefinitions>
-                         <TextBlock Grid.Column="0"
-                                    Text="{Binding SelectedDoviHdrTargetLabel}"
-                                    Foreground="{StaticResource GlobalSecondary}"
-                                    VerticalAlignment="Center"
-                                    TextWrapping="Wrap" />
-                         <TextBox Grid.Column="1"
-                                  Text="{Binding SelectedDoviHdrToSdrColorFilterDisplay, Mode=OneWay}"
-                                  Padding="0 2.5"
+                    <Grid Margin="0 2.5 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="62" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding SelectedDoviSdrTargetLabel}"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center"
+                                   TextWrapping="Wrap" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding SelectedDoviSdrTo709ColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
+                                 IsReadOnly="True"
+                                 BorderThickness="0"
+                                 FontFamily="{DynamicResource CodeFont}"
+                                 Background="{StaticResource Background}"
+                                 Foreground="{StaticResource ButtonTertiary}"
+                                 VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Margin="0 2.5 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="62" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+                                   Text="{Binding SelectedDoviHdrTargetLabel}"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center"
+                                   TextWrapping="Wrap" />
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding SelectedDoviHdrToSdrColorFilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
@@ -1133,9 +1130,9 @@
                                    Foreground="{StaticResource GlobalSecondary}"
                                    VerticalAlignment="Center" />
 
-                         <TextBox Grid.Column="1"
-                                  Text="{Binding SelectedChroma422FilterDisplay, Mode=OneWay}"
-                                  Padding="0 2.5"
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding SelectedChroma422FilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
@@ -1152,9 +1149,9 @@
                                    Foreground="{StaticResource GlobalSecondary}"
                                    VerticalAlignment="Center" />
 
-                         <TextBox Grid.Column="1"
-                                  Text="{Binding SelectedChroma420FilterDisplay, Mode=OneWay}"
-                                  Padding="0 2.5"
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding SelectedChroma420FilterDisplay, Mode=OneWay}"
+                                 Padding="0 2.5"
                                  IsReadOnly="True"
                                  BorderThickness="0"
                                  FontFamily="{DynamicResource CodeFont}"
@@ -1183,8 +1180,8 @@
                                 CommandParameter="{Binding AviSynthHqdn3dDenoiseFilter}"
                                 Style="{StaticResource AppendLinkButton}" />
                     </Grid>
-                     <TextBox Text="{Binding SelectedDenoiseFilterDisplay, Mode=OneWay}"
-                              Padding="0 2.5"
+                    <TextBox Text="{Binding SelectedDenoiseFilterDisplay, Mode=OneWay}"
+                             Padding="0 2.5"
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
@@ -1268,9 +1265,9 @@
                         </Border>
                     </Grid>
 
-                     <TextBox Margin="0 2.5 0 0"
-                              Padding="0 2.5"
-                              Text="{Binding SelectedCropFilterDisplay, Mode=OneWay}"
+                    <TextBox Margin="0 2.5 0 0"
+                             Padding="0 2.5"
+                             Text="{Binding SelectedCropFilterDisplay, Mode=OneWay}"
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
@@ -1280,56 +1277,100 @@
                              VerticalAlignment="Center" />
                 </StackPanel>
 
-                <!-- Resolution slider -->
+                <!-- Unified libplacebo resolution filter -->
                 <StackPanel>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding ResolutionScaleTitle}"
+                        <TextBlock Text="{Binding ResizeTitle}"
                                    Style="{StaticResource H3}"
                                    Margin="0 20 0 0" />
+                         <Button Grid.Column="1"
+                                 Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                 Command="{Binding InsertAvsFilterCommand}"
+                                 CommandParameter="{Binding AviSynthResizeFilterWithImport}"
+                                 IsEnabled="{Binding CanInsertAviSynthResizeFilter}"
+                                 Style="{StaticResource AppendLinkButton}" />
+                         <Button Grid.Column="1"
+                                 Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
+                                 Command="{Binding InsertVpyFilterCommand}"
+                                 CommandParameter="{Binding VapourSynthResizeFilterWithImport}"
+                                 IsEnabled="{Binding CanInsertVapourSynthResizeFilter}"
+                                 Style="{StaticResource AppendLinkButton}" />
                         <Button Grid.Column="1"
                                 Visibility="{Binding IsFFmpegTabSelected, Converter={StaticResource BoolToVisibility}}"
                                 Command="{Binding InsertFFmpegFilterCommand}"
                                 CommandParameter="{Binding FFmpegResizeFilter}"
                                 IsEnabled="{Binding CanInsertFFmpegResizeFilter}"
                                 Style="{StaticResource AppendLinkButton}" />
-                        <Button Grid.Column="1"
-                                Visibility="{Binding IsVpyTabSelected, Converter={StaticResource BoolToVisibility}}"
-                                Command="{Binding InsertVpyFilterCommand}"
-                                CommandParameter="{Binding VapourSynthResizeFilter}"
-                                IsEnabled="{Binding CanInsertVapourSynthResizeFilter}"
-                                Style="{StaticResource AppendLinkButton}" />
-                        <Button Grid.Column="1"
-                                Visibility="{Binding IsAvsTabSelected, Converter={StaticResource BoolToVisibility}}"
-                                Command="{Binding InsertAvsFilterCommand}"
-                                CommandParameter="{Binding AviSynthResizeFilter}"
-                                IsEnabled="{Binding CanInsertAviSynthResizeFilter}"
-                                Style="{StaticResource AppendLinkButton}" />
                     </Grid>
-
                     <Grid Margin="0 2.5 0 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-
                         <comps:IntegerSlider Grid.Column="0"
-                                             Label=""
-                                             Minimum="{Binding ScaleHeightMinimum}"
-                                             Maximum="{Binding ScaleHeightMaximum}"
-                                             Value="{Binding ScaleHeight}"
-                                             TickLabels="{Binding ScaleTickLabels}"
+                                             Label="W"
+                                             Minimum="{Binding ResolutionWidthMinimum}"
+                                             Maximum="{Binding ResolutionWidthMaximum}"
+                                             Value="{Binding ResolutionWidth, Mode=TwoWay}"
+                                             TickLabels="{Binding ResolutionWidthTickLabels}"
                                              TickCount="5"
-                                             Step="{Binding ScaleStep}">
+                                             Step="{Binding ResolutionStep}">
+                            <comps:IntegerSlider.Style>
+                                <Style TargetType="comps:IntegerSlider">
+                                    <Setter Property="Visibility"
+                                            Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsResolutionAspectLocked}"
+                                                     Value="False">
+                                            <Setter Property="Visibility"
+                                                    Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </comps:IntegerSlider.Style>
+                        </comps:IntegerSlider>
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding ResolutionWidth}"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center" />
+                    </Grid>
+
+                    <StackPanel Orientation="Horizontal"
+                                Margin="1 5 0 0">
+                        <CheckBox Content="{Binding ResolutionModeLabel}"
+                                  IsChecked="{Binding IsResolutionUpscale, Mode=TwoWay}"
+                                  Margin="0 0 20 0"
+                                  Foreground="{StaticResource GlobalSecondary}" />
+                        <CheckBox Content="{Binding ResolutionLockAspectLabel}"
+                                  IsChecked="{Binding IsResolutionAspectLocked, Mode=TwoWay}"
+                                  Foreground="{StaticResource GlobalSecondary}" />
+                    </StackPanel>
+                    <Grid Margin="0 2.5 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <comps:IntegerSlider Grid.Column="0"
+                                             Label="H"
+                                             Minimum="{Binding ResolutionHeightMinimum}"
+                                             Maximum="{Binding ResolutionHeightMaximum}"
+                                             Value="{Binding ResolutionHeight, Mode=TwoWay}"
+                                             TickLabels="{Binding ResolutionHeightTickLabels}"
+                                             TickCount="5"
+                                             Step="{Binding ResolutionStep}">
                             <comps:IntegerSlider.Style>
                                 <Style TargetType="comps:IntegerSlider">
                                     <Setter Property="Visibility"
                                             Value="Visible" />
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsScaleApplicable}"
+                                        <DataTrigger Binding="{Binding HasSource}"
                                                      Value="False">
                                             <Setter Property="Visibility"
                                                     Value="Collapsed" />
@@ -1338,63 +1379,29 @@
                                 </Style>
                             </comps:IntegerSlider.Style>
                         </comps:IntegerSlider>
-                        <!-- N/A -->
-                        <TextBlock Grid.Column="0"
-                                   Text="{Binding ScaleNotApplicableText}"
-                                   Margin="0 0 0 5"
-                                   Foreground="{StaticResource ButtonTertiary}"
-                                   VerticalAlignment="Center"
-                                   TextWrapping="Wrap">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Visibility"
-                                            Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsScaleApplicable}"
-                                                     Value="False">
-                                            <Setter Property="Visibility"
-                                                    Value="Visible" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        <!-- Resolution display -->
-                        <Border Grid.Column="1"
-                                BorderThickness="0"
-                                VerticalAlignment="Center"
-                                HorizontalAlignment="Right">
-                            <Border.Style>
-                                <Style TargetType="Border">
-                                    <Setter Property="Visibility"
-                                            Value="Visible" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsScaleApplicable}"
-                                                     Value="False">
-                                            <Setter Property="Visibility"
-                                                    Value="Collapsed" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Border.Style>
-                            <TextBlock Text="{Binding TargetDisplay}"
-                                       Foreground="{StaticResource GlobalSecondary}"
-                                       HorizontalAlignment="Center" />
-                        </Border>
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding ResolutionHeight}"
+                                   Foreground="{StaticResource GlobalSecondary}"
+                                   VerticalAlignment="Center" />
                     </Grid>
-
+                     <TextBox Margin="0 2.5 0 0"
+                              Text="{Binding SelectedResolutionPlaceboLoadCommand, Mode=OneWay}"
+                              IsReadOnly="True"
+                              BorderThickness="0"
+                              FontFamily="{DynamicResource CodeFont}"
+                              Background="{StaticResource Background}"
+                              Foreground="{StaticResource ButtonTertiary}"
+                              FontWeight="Normal"
+                              Visibility="{Binding IsScriptTabSelected, Converter={StaticResource BoolToVisibility}}" />
                      <TextBox Margin="0 2.5 0 0"
                               Padding="0 2.5"
-                              Text="{Binding SelectedResizeFilterDisplay, Mode=OneWay}"
+                             Text="{Binding SelectedResizeFilterDisplay, Mode=OneWay}"
                              IsReadOnly="True"
                              BorderThickness="0"
                              FontFamily="{DynamicResource CodeFont}"
                              Background="{StaticResource Background}"
                              Foreground="{StaticResource ButtonTertiary}"
                              FontWeight="Normal" />
-                    <comps:HintPanel Margin="0 2.5 0 0"
-                                     Text="{Binding ScaleHint}"
-                                     FontWeight="Normal" />
                 </StackPanel>
 
                 <StackPanel Visibility="{Binding IsBlurSharpenSectionVisible, Converter={StaticResource BoolToVisibility}}">
@@ -1432,8 +1439,8 @@
                                 ToolTip="ASharp"
                                 Style="{StaticResource AppendLinkButton}" />
                     </Grid>
-                     <TextBox Text="{Binding SelectedBlurSharpenFilterDisplay, Mode=OneWay}"
-                              Visibility="{Binding IsScriptTabSelected, Converter={StaticResource BoolToVisibility}}"
+                    <TextBox Text="{Binding SelectedBlurSharpenFilterDisplay, Mode=OneWay}"
+                             Visibility="{Binding IsScriptTabSelected, Converter={StaticResource BoolToVisibility}}"
                              Margin="0 2.5 0 0"
                              Padding="0 2.5"
                              IsReadOnly="True"
@@ -1470,7 +1477,7 @@
                                 CommandParameter="{Binding FFmpegSubtitleFilter}"
                                 Style="{StaticResource AppendLinkButton}" />
                     </Grid>
-                     <TextBox Text="{Binding SelectedSubtitleFilterDisplay, Mode=OneWay}"
+                    <TextBox Text="{Binding SelectedSubtitleFilterDisplay, Mode=OneWay}"
                              Margin="0 2.5 0 0"
                              Padding="0 2.5"
                              IsReadOnly="True"

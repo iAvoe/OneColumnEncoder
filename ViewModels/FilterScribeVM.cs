@@ -158,6 +158,7 @@ public class FilterScribeVM : BaseVM
             nameof(SelectedDenoiseFilterDisplay),
             nameof(SelectedSubtitleFilterDisplay),
             nameof(SelectedPlaceboLoadCommand),
+            nameof(SelectedResolutionPlaceboLoadCommand),
             nameof(SelectedHlgTargetLabel),
             nameof(SelectedDoviSdrTargetLabel),
             nameof(SelectedDoviHdrTargetLabel),
@@ -167,7 +168,9 @@ public class FilterScribeVM : BaseVM
             nameof(SelectedHighHdrToLowSdrColorFilterDisplay),
             nameof(SelectedHlgToSdrColorFilterDisplay),
             nameof(SelectedDoviSdrTo709ColorFilterDisplay),
-            nameof(SelectedDoviHdrToSdrColorFilterDisplay));
+            nameof(SelectedDoviHdrToSdrColorFilterDisplay),
+            nameof(CanClearFilters));
+        ClearFiltersCommand?.OnCanExecuteChanged();
     }
 
     private void NotifyProperties(params string[] propertyNames)
@@ -181,10 +184,50 @@ public class FilterScribeVM : BaseVM
         NotifyProperties(
             nameof(HasSource),
             nameof(IsScaleApplicable),
-            nameof(ScaleHeightMaximum),
-            nameof(ScaleStep),
-            nameof(ScaleTickLabels),
+            nameof(ResolutionWidthMinimum),
+            nameof(ResolutionWidthMaximum),
+            nameof(ResolutionHeightMinimum),
+            nameof(ResolutionHeightMaximum),
+            nameof(ResolutionWidthTickLabels),
+            nameof(ResolutionHeightTickLabels),
+            nameof(ResolutionStep),
             nameof(ScaleNotApplicableText));
+    }
+
+    private void NotifyResolutionFilterProperties()
+    {
+        NotifyProperties(
+            nameof(IsResolutionUpscale),
+            nameof(IsResolutionShrink),
+            nameof(IsResolutionAspectLocked),
+            nameof(ResolutionModeLabel),
+            nameof(ResolutionWidth),
+            nameof(ResolutionHeight),
+            nameof(ResolutionWidthMinimum),
+            nameof(ResolutionWidthMaximum),
+            nameof(ResolutionHeightMinimum),
+            nameof(ResolutionHeightMaximum),
+            nameof(ResolutionWidthTickLabels),
+            nameof(ResolutionHeightTickLabels),
+            nameof(ResolutionTargetDisplay),
+            nameof(TargetDisplay),
+            nameof(FFmpegResizeFilter),
+            nameof(FFmpegResizeFilterDisplay),
+            nameof(FFmpegUpscaleFilter),
+            nameof(FFmpegUpscaleFilterDisplay),
+            nameof(VapourSynthResizeFilter),
+            nameof(AviSynthResizeFilter),
+            nameof(VapourSynthResizeFilterWithImport),
+            nameof(AviSynthResizeFilterWithImport),
+            nameof(SelectedResolutionPlaceboLoadCommand),
+            nameof(CanInsertAviSynthResizeFilter),
+            nameof(CanInsertVapourSynthResizeFilter),
+            nameof(CanInsertFFmpegResizeFilter),
+            nameof(CanInsertFFmpegUpscaleFilter),
+            nameof(UpscaleTargetDisplay),
+            nameof(SelectedResizeFilterDisplay),
+            nameof(VapourSynthResolutionPlaceboLoadCommand),
+            nameof(AviSynthResolutionPlaceboLoadCommand));
     }
 
     private void NotifyCropFilterProperties()
@@ -207,6 +250,7 @@ public class FilterScribeVM : BaseVM
         NotifyProperties(
             nameof(UpscaleTargetDisplay),
             nameof(FFmpegUpscaleFilter),
+            nameof(FFmpegUpscaleFilterDisplay),
             nameof(CanInsertFFmpegUpscaleFilter));
     }
 
@@ -222,10 +266,13 @@ public class FilterScribeVM : BaseVM
             nameof(FFmpegHqdn3dFullChainFilter),
             nameof(CanInsertAviSynthResizeFilter),
             nameof(CanInsertVapourSynthResizeFilter),
-            nameof(CanInsertFFmpegResizeFilter),
-            nameof(VapourSynthResizeFilter),
-            nameof(AviSynthResizeFilter),
-            nameof(SelectedResizeFilterDisplay));
+             nameof(CanInsertFFmpegResizeFilter),
+             nameof(VapourSynthResizeFilter),
+             nameof(AviSynthResizeFilter),
+             nameof(VapourSynthResizeFilterWithImport),
+             nameof(AviSynthResizeFilterWithImport),
+             nameof(SelectedResolutionPlaceboLoadCommand),
+             nameof(SelectedResizeFilterDisplay));
     }
 
     // Avs/VpyPrefix becomes instance property to support dynamic fpsnum/fpsden
@@ -255,7 +302,11 @@ public class FilterScribeVM : BaseVM
     public string AvsUserInput
     {
         get => _avsUserInput;
-        set => SetProperty(ref _avsUserInput, value);
+        set
+        {
+            if (SetProperty(ref _avsUserInput, value))
+                OnFilterInputChanged();
+        }
     }
     public static string AvsSuffix => FilterScribeModalLangProvider.Current["SrcScribe.AvsSuffix"];
 
@@ -282,7 +333,11 @@ public class FilterScribeVM : BaseVM
     public string VpyUserInput
     {
         get => _vpyUserInput;
-        set => SetProperty(ref _vpyUserInput, value);
+        set
+        {
+            if (SetProperty(ref _vpyUserInput, value))
+                OnFilterInputChanged();
+        }
     }
     public static string VpyPrefix2 => FilterScribeModalLangProvider.Current["SrcScribe.VpyPrefix2"];
     public static string VpySuffix => FilterScribeModalLangProvider.Current["SrcScribe.VpySuffix"];
@@ -318,8 +373,6 @@ public class FilterScribeVM : BaseVM
         {
             if (SetProperty(ref _sourceHeight, value))
             {
-                _scaleHeight = ResolutionScale.MaximumTargetHeight(value);
-                OnPropertyChanged(nameof(ScaleHeight));
                 NotifySourceDimensionProperties();
                 RecomputeCrop();
                 OnPropertyChanged(nameof(AviSynthAssRenderFilter));
@@ -333,8 +386,7 @@ public class FilterScribeVM : BaseVM
     private int ScaleSourceWidth => HasCropFilter ? CropWidth : SourceWidth;
     private int ScaleSourceHeight => HasCropFilter ? CropHeight : SourceHeight;
 
-    public bool IsScaleApplicable =>
-        HasSource && ResolutionScale.IsScaleApplicable(ScaleSourceWidth, ScaleSourceHeight);
+    public bool IsScaleApplicable => HasSource;
 
     public bool IsCropSectionVisible => HasSource;
 
@@ -390,91 +442,145 @@ public class FilterScribeVM : BaseVM
             ? FilterScribeModalLangProvider.Current["SrcScribe.NoVidSrcWarning"]
             : string.Format(FilterScribeModalLangProvider.Current["SrcScribe.ScaleNotApplicable"], 16);
 
-    private int _scaleHeight;
-    public int ScaleHeight
+    private bool _isResolutionUpscale;
+    public bool IsResolutionUpscale
     {
-        get => _scaleHeight;
+        get => _isResolutionUpscale;
         set
         {
-            int clamped = Math.Clamp(value, ScaleHeightMinimum, ScaleHeightMaximum);
-            if (SetProperty(ref _scaleHeight, clamped)) RecomputeTarget();
+            if (!SetProperty(ref _isResolutionUpscale, value)) return;
+            ResetResolutionTarget();
+            NotifyResolutionFilterProperties();
         }
     }
 
-    public static int ScaleHeightMinimum => ResolutionScale.MinimumTargetHeight;
-    public int ScaleHeightMaximum => HasSource
-        ? ResolutionScale.MaximumTargetHeight(ScaleSourceHeight)
-        : ResolutionScale.MinimumTargetHeight;
+    public bool IsResolutionShrink => !IsResolutionUpscale;
 
-    public int ScaleStep => FFProbePixelFormatRules.GetResolutionScaleStep(_colorSpaceAnalysis.PixelFormat);
-
-    private int _upscaleHeight;
-    private int _upscaleSourceHeight;
-
-    private int UpscaleSourceWidth => HasScaleFilter ? TargetWidth : ScaleSourceWidth;
-    private int UpscaleSourceHeight => HasScaleFilter ? TargetHeight : ScaleSourceHeight;
-
-    public int UpscaleHeight
+    private bool _isResolutionAspectLocked = true;
+    public bool IsResolutionAspectLocked
     {
-        get => _upscaleHeight;
+        get => _isResolutionAspectLocked;
         set
         {
-            int clamped = Math.Clamp(value, UpscaleHeightMinimum, UpscaleHeightMaximum);
-            if (SetProperty(ref _upscaleHeight, clamped))
-                NotifyUpscaleFilterProperties();
+            if (!SetProperty(ref _isResolutionAspectLocked, value)) return;
+            if (value) SetResolutionHeight(_resolutionHeight);
+            NotifyResolutionFilterProperties();
         }
     }
 
-    public int UpscaleHeightMinimum => HasSource
-        ? ResolutionScale.EnsureValid(UpscaleSourceHeight)
+    private int _resolutionWidth;
+    public int ResolutionWidth
+    {
+        get => _resolutionWidth;
+        set
+        {
+            int clamped = Math.Clamp(value, ResolutionWidthMinimum, ResolutionWidthMaximum);
+            if (!SetProperty(ref _resolutionWidth, clamped)) return;
+            if (IsResolutionAspectLocked)
+                SetResolutionHeightFromWidth(clamped);
+            NotifyResolutionFilterProperties();
+        }
+    }
+
+    private int _resolutionHeight;
+    public int ResolutionHeight
+    {
+        get => _resolutionHeight;
+        set => SetResolutionHeight(value);
+    }
+
+    private void SetResolutionHeight(int value)
+    {
+        int clamped = Math.Clamp(value, ResolutionHeightMinimum, ResolutionHeightMaximum);
+        if (!SetProperty(ref _resolutionHeight, clamped)) return;
+        if (IsResolutionAspectLocked)
+            SetResolutionWidthFromHeight(clamped);
+        NotifyResolutionFilterProperties();
+    }
+
+    private void SetResolutionHeightFromWidth(int width)
+    {
+        if (!HasSource || ScaleSourceWidth <= 0) return;
+        int height = ResolutionScale.EnsureValid((int)Math.Round(width * (double)ScaleSourceHeight / ScaleSourceWidth));
+        SetProperty(ref _resolutionHeight, Math.Clamp(height, ResolutionHeightMinimum, ResolutionHeightMaximum), nameof(ResolutionHeight));
+    }
+
+    private void SetResolutionWidthFromHeight(int height)
+    {
+        if (!HasSource || ScaleSourceHeight <= 0) return;
+        int width = ResolutionScale.EnsureValid((int)Math.Round(height * (double)ScaleSourceWidth / ScaleSourceHeight));
+        SetProperty(ref _resolutionWidth, Math.Clamp(width, ResolutionWidthMinimum, ResolutionWidthMaximum), nameof(ResolutionWidth));
+    }
+
+    public int ResolutionWidthMinimum => ResolutionMinimum(ScaleSourceWidth);
+    public int ResolutionWidthMaximum => ResolutionMaximum(ScaleSourceWidth);
+    public int ResolutionHeightMinimum => ResolutionMinimum(ScaleSourceHeight);
+    public int ResolutionHeightMaximum => ResolutionMaximum(ScaleSourceHeight);
+    public int ResolutionStep => FFProbePixelFormatRules.GetResolutionScaleStep(_colorSpaceAnalysis.PixelFormat);
+    public int ScaleStep => ResolutionStep;
+
+    public List<string> ResolutionWidthTickLabels =>
+        ResolutionScale.GenerateHeightTickLabels(ResolutionWidthMinimum, ResolutionWidthMaximum, 5);
+    public List<string> ResolutionHeightTickLabels =>
+        ResolutionScale.GenerateHeightTickLabels(ResolutionHeightMinimum, ResolutionHeightMaximum, 5);
+    public List<string> ScaleTickLabels => ResolutionHeightTickLabels;
+
+    private int ResolutionMinimum(int sourceDimension) => IsResolutionUpscale
+        ? ResolutionScale.EnsureValid(sourceDimension)
         : ResolutionScale.MinimumTargetHeight;
 
-    public int UpscaleHeightMaximum => HasSource
-        ? ResolutionScale.EnsureValid((int)Math.Min(int.MaxValue, (long)UpscaleSourceHeight * 4))
-        : ResolutionScale.MinimumTargetHeight;
+    private int ResolutionMaximum(int sourceDimension) => !HasSource
+        ? ResolutionScale.MinimumTargetHeight
+        : IsResolutionUpscale
+            ? ResolutionScale.EnsureValid((int)Math.Min(int.MaxValue, (long)sourceDimension * 4))
+            : ResolutionScale.EnsureValid(sourceDimension);
 
-    public int UpscaleStep => FFProbePixelFormatRules.GetResolutionScaleStep(_colorSpaceAnalysis.PixelFormat);
+    public string ResolutionTargetDisplay => !HasSource ? "--" : $"{ResolutionWidth}x{ResolutionHeight}";
+    public string UpscaleTargetDisplay => ResolutionTargetDisplay;
 
-    public List<string> UpscaleTickLabels =>
-        ResolutionScale.GenerateHeightTickLabels(UpscaleHeightMinimum, UpscaleHeightMaximum, 5);
+    private bool HasResolutionFilter => HasSource
+        && (ResolutionWidth != ScaleSourceWidth || ResolutionHeight != ScaleSourceHeight);
 
-    public string UpscaleTargetDisplay => !HasSource
-        ? "--"
-        : $"{GetUpscaleTargetDimensions().width}x{GetUpscaleTargetDimensions().height}";
+    private bool HasScaleFilter => HasResolutionFilter;
+    private bool HasUpscaleFilter => IsResolutionUpscale && HasResolutionFilter;
+    public bool HasUpscaleOutput => HasUpscaleFilter;
+    public int UpscaleTargetWidth => HasUpscaleFilter ? ResolutionWidth : 0;
+    public int UpscaleTargetHeight => HasUpscaleFilter ? ResolutionHeight : 0;
 
-    private bool HasUpscaleFilter =>
-        HasSource && UpscaleHeight > UpscaleHeightMinimum;
-
-    public bool HasUpscaleOutput => HasUpscaleFilter && IsUpscaleStepAligned;
-    public int UpscaleTargetWidth => HasUpscaleFilter ? GetUpscaleTargetDimensions().width : 0;
-    public int UpscaleTargetHeight => HasUpscaleFilter ? GetUpscaleTargetDimensions().height : 0;
-
-    private (int width, int height) GetUpscaleTargetDimensions() =>
-        HasSource
-            ? ResolutionScale.ComputeTargetDimensionsFromHeight(UpscaleSourceWidth, UpscaleSourceHeight, UpscaleHeight)
-            : (0, 0);
+    // These aliases keep the source reviser and existing filter-chain callers on the unified target.
+    public int TargetWidth => ResolutionWidth;
+    public int TargetHeight => ResolutionHeight;
+    public string TargetDisplay => ResolutionTargetDisplay;
 
     public void CommitScale()
     {
         if (!IsScaleApplicable) return;
-        // var w, h are discard values now
         RecomputeTarget();
         NotifyScaleFilterProperties();
     }
 
-    private int _targetWidth;
-    public int TargetWidth => _targetWidth;
+    private void ResetResolutionTarget()
+    {
+        int width = IsResolutionUpscale
+            ? ResolutionWidthMinimum
+            : ResolutionWidthMaximum;
+        int height = IsResolutionUpscale
+            ? ResolutionHeightMinimum
+            : ResolutionHeightMaximum;
 
-    private int _targetHeight;
-    public int TargetHeight => _targetHeight;
+        _resolutionWidth = width;
+        _resolutionHeight = height;
+        if (IsResolutionAspectLocked && HasSource)
+            SetResolutionWidthFromHeight(height);
 
-    public string TargetDisplay => !HasSource ? "--" : $"{TargetWidth}x{TargetHeight}";
+        OnPropertyChanged(nameof(ResolutionWidth));
+        OnPropertyChanged(nameof(ResolutionHeight));
+        NotifyResolutionFilterProperties();
+    }
 
     private FFProbeAspectRatio _sourceAspectRatio = FFProbeAspectRatioResolver.Resolve((string?)null);
     private string SourceDar => _sourceAspectRatio.Dar.ToString();
     private string SourceSar => _sourceAspectRatio.Sar.ToString();
-
-    private bool HasScaleFilter => IsScaleApplicable && (TargetWidth != ScaleSourceWidth || TargetHeight != ScaleSourceHeight);
 
     private bool HasFpsFilter => IsFrameRateApplicable;
 
@@ -516,7 +622,13 @@ public class FilterScribeVM : BaseVM
             or ColorSpaceStrategy.HlgToSdr
             or ColorSpaceStrategy.DoviHdrToSdr;
 
-    private string? ScaleFilterChain => HasScaleFilter ? $"scale={TargetWidth}:{TargetHeight}" : null;
+    // public bool HasResizeAspectRatioLock => IsResolutionAspectLocked;
+
+    private string? ResolutionFilterChain => HasResolutionFilter
+        ? $"libplacebo=w={ResolutionWidth}:h={ResolutionHeight}{(IsResolutionAspectLocked
+            ? ":force_original_aspect_ratio=decrease"
+            : string.Empty)}:normalize_sar=true:upscaler=spline36:downscaler=spline36:antiringing=0.1"
+        : null;
 
     private string? FpsFilterChain => HasFpsFilter ? $"fps={_frameRateNum}/{_frameRateDen}" : null;
 
@@ -551,12 +663,12 @@ public class FilterScribeVM : BaseVM
         && !filter.Contains(LangProviderBase.NAText, StringComparison.Ordinal);
 
     public string FFmpegResizeFilter =>
-        HasScaleFilter
-            ? BuildFFmpegFilterArgs(includeSwsFlags: true, includeCsp709Flags: false, ScaleFilterChain)
+        ResolutionFilterChain is string filter
+            ? $"-filter:v \"{filter}\""
             : LangProviderBase.NAText;
 
     public string FFmpegResizeFilterDisplay =>
-        ScaleFilterChain ?? LangProviderBase.NAText;
+        ResolutionFilterChain ?? LangProviderBase.NAText;
 
     public string FFmpegCropFilter =>
         HasCropFilter
@@ -618,27 +730,8 @@ public class FilterScribeVM : BaseVM
 
     public string VpyRotateFilterDisplay => VpyRotateFilter;
 
-    public string FFmpegUpscaleFilter
-    {
-        get
-        {
-            if (!HasUpscaleFilter || !IsUpscaleStepAligned) return LangProviderBase.NAText;
-
-            var (width, height) = GetUpscaleTargetDimensions();
-            return $"-filter:v \"libplacebo=w={width}:h={height}:force_original_aspect_ratio=decrease:normalize_sar=true:upscaler={SelectedUpscaler}\"";
-        }
-    }
-
-    public string FFmpegUpscaleFilterDisplay
-    {
-        get
-        {
-            if (!HasUpscaleFilter || !IsUpscaleStepAligned) return LangProviderBase.NAText;
-
-            var (width, height) = GetUpscaleTargetDimensions();
-            return $"libplacebo=w={width}:h={height}:force_original_aspect_ratio=decrease:normalize_sar=true:upscaler={SelectedUpscaler}";
-        }
-    }
+    public string FFmpegUpscaleFilter => HasUpscaleFilter ? FFmpegResizeFilter : LangProviderBase.NAText;
+    public string FFmpegUpscaleFilterDisplay => HasUpscaleFilter ? FFmpegResizeFilterDisplay : LangProviderBase.NAText;
 
     public string FFmpegFlipFilter
     {
@@ -728,53 +821,6 @@ public class FilterScribeVM : BaseVM
                 NotifyFlipFilterProperties();
         }
     }
-
-    private int _upscalerIndex;
-    private static readonly string[] UpscalerNames = ["spline36", "nearest", "oversample", "ewa_lanczos"];
-
-    private void SetUpscaler(int index)
-    {
-        if (_upscalerIndex == index) return;
-        _upscalerIndex = index;
-        OnPropertyChanged(nameof(UseSpline36Upscaler));
-        OnPropertyChanged(nameof(UseNearestUpscaler));
-        OnPropertyChanged(nameof(UseOversampleUpscaler));
-        OnPropertyChanged(nameof(UseEwaLanczosUpscaler));
-        OnPropertyChanged(nameof(FFmpegUpscaleFilter));
-        OnPropertyChanged(nameof(FFmpegUpscaleFilterDisplay));
-    }
-
-    public bool UseSpline36Upscaler
-    {
-        get => _upscalerIndex == 0;
-        set { if (value) SetUpscaler(0); }
-    }
-
-    public bool UseNearestUpscaler
-    {
-        get => _upscalerIndex == 1;
-        set { if (value) SetUpscaler(1); }
-    }
-
-    public bool UseOversampleUpscaler
-    {
-        get => _upscalerIndex == 2;
-        set { if (value) SetUpscaler(2); }
-    }
-
-    public bool UseEwaLanczosUpscaler
-    {
-        get => _upscalerIndex == 3;
-        set { if (value) SetUpscaler(3); }
-    }
-
-    private string SelectedUpscaler => UpscalerNames[_upscalerIndex];
-
-    private bool IsUpscaleStepAligned =>
-        UpscaleStep <= 1
-        || UpscaleHeight == UpscaleHeightMinimum
-        || UpscaleHeight == UpscaleHeightMaximum
-        || (UpscaleHeight - UpscaleHeightMinimum) % UpscaleStep == 0;
 
     public static bool CanInsertFFmpegDebandFilter => DebandEnabled;
     public bool CanInsertFFmpegRotateFilter => RotateMode > 0;
@@ -912,7 +958,7 @@ public class FilterScribeVM : BaseVM
 
     public string FFmpegFpsScaleFilter =>
         HasFpsFilter && HasScaleFilter
-            ? BuildFFmpegFilterArgs(includeSwsFlags: true, includeCsp709Flags: false, FpsFilterChain, ScaleFilterChain)
+            ? BuildFFmpegFilterArgs(includeSwsFlags: false, includeCsp709Flags: false, FpsFilterChain, ResolutionFilterChain)
             : LangProviderBase.NAText;
 
     public string FFmpegLowToHighColorFilter =>
@@ -1097,9 +1143,9 @@ public class FilterScribeVM : BaseVM
         {
             string? color = ColorSpaceFilterChain;
             string? fps = FpsFilterChain;
-            string? scale = ScaleFilterChain;
+            string? scale = ResolutionFilterChain;
             if (color == null || fps == null || scale == null) return LangProviderBase.NAText;
-            return BuildFFmpegFilterArgs(includeSwsFlags: scale != null, includeCsp709Flags: color != null, fps, color, scale);
+            return BuildFFmpegFilterArgs(includeSwsFlags: false, includeCsp709Flags: color != null, fps, color, scale);
         }
     }
 
@@ -1110,9 +1156,9 @@ public class FilterScribeVM : BaseVM
             string? sar = SarRepairFilterChain;
             string? color = ColorSpaceFilterChain;
             string? fps = FpsFilterChain;
-            string? scale = ScaleFilterChain;
+            string? scale = ResolutionFilterChain;
             if (sar == null || color == null || fps == null || scale == null) return LangProviderBase.NAText;
-            return BuildFFmpegFilterArgs(includeSwsFlags: scale != null, includeCsp709Flags: color != null, fps, sar, color, scale);
+            return BuildFFmpegFilterArgs(includeSwsFlags: false, includeCsp709Flags: color != null, fps, sar, color, scale);
         }
     }
 
@@ -1123,9 +1169,9 @@ public class FilterScribeVM : BaseVM
             string? sar = SarRepairFilterChain;
             string? color = ColorSpaceFilterChain;
             string? fps = FpsFilterChain;
-            string? scale = ScaleFilterChain;
+            string? scale = ResolutionFilterChain;
             if (sar == null || color == null || fps == null || scale == null) return LangProviderBase.NAText;
-            return BuildFFmpegFilterArgs(includeSwsFlags: scale != null, includeCsp709Flags: color != null, "hqdn3d", fps, sar, color, scale);
+            return BuildFFmpegFilterArgs(includeSwsFlags: false, includeCsp709Flags: color != null, "hqdn3d", fps, sar, color, scale);
         }
     }
 
@@ -1342,9 +1388,74 @@ public class FilterScribeVM : BaseVM
         return FFMpegFilterArgs.Build(includeSwsFlags, includeCsp709Flags, _colorSpaceAnalysis.PixelFormat, filters);
     }
 
+    private bool NeedsResolutionBitDepthWrapper =>
+        _sourceBitDepth > 0 && _sourceBitDepth is not (8 or 16 or 32);
+
+    private int ResolutionWorkingBitDepth => _sourceBitDepth switch
+    {
+        > 0 and < 8 => 8,
+        > 8 and < 16 => 16,
+        > 16 => 32,
+        _ => _sourceBitDepth
+    };
+
+    private string BuildVapourSynthResolutionFilter()
+    {
+        string filter =
+            $"src = core.placebo.Resample(src, width={ResolutionWidth}, height={ResolutionHeight}, filter=\"spline36\", antiring=0.1)";
+        if (!NeedsResolutionBitDepthWrapper) return filter;
+
+        return $"src = core.fmtc.bitdepth(src, bits={ResolutionWorkingBitDepth})\r\n" +
+               filter +
+               $"\r\nsrc = core.fmtc.bitdepth(src, bits={_sourceBitDepth})";
+    }
+
+    private string BuildAviSynthResolutionFilter()
+    {
+        string filter =
+            $"libplacebo_Render(width={ResolutionWidth}, height={ResolutionHeight}, aspect_mode=\"fit\", upscaler=\"spline36\", downscaler=\"spline36\", antiringing_strength=0.1)";
+        if (!NeedsResolutionBitDepthWrapper) return filter;
+
+        return $"fmtc_bitdepth(bits={ResolutionWorkingBitDepth})\r\n" +
+               filter +
+               $"\r\nfmtc_bitdepth(bits={_sourceBitDepth})";
+    }
+
+    public string VapourSynthResolutionPlaceboLoadCommand => BuildVapourSynthResolutionPlaceboLoadCommand();
+    public string AviSynthResolutionPlaceboLoadCommand => BuildAviSynthResolutionPlaceboLoadCommand();
+
+    public string SelectedResolutionPlaceboLoadCommand =>
+        GetSelectedTabFilter(AviSynthResolutionPlaceboLoadCommand, VapourSynthResolutionPlaceboLoadCommand, LangProviderBase.NAText);
+
+    private string BuildVapourSynthResolutionPlaceboLoadCommand()
+    {
+        string pluginsDir = Environment.Is64BitProcess
+            ? BundledToolPathResolver.ResolveFolder("x64-AVS-VS-plugins")
+            : BundledToolPathResolver.ResolveFolder("x86-AVS-VS-plugins");
+        string placeboPath = Path.Combine(pluginsDir, "libvs_placebo.dll");
+        string command = $"core.std.LoadPlugin(r\"{placeboPath}\")";
+        if (NeedsResolutionBitDepthWrapper)
+            command += $"\r\ncore.std.LoadPlugin(r\"{Path.Combine(pluginsDir, "fmtconv.dll")}\")";
+        return command;
+    }
+
+    private string BuildAviSynthResolutionPlaceboLoadCommand()
+    {
+        string pluginsDir = Environment.Is64BitProcess
+            ? BundledToolPathResolver.ResolveFolder("x64-AVS-VS-plugins")
+            : BundledToolPathResolver.ResolveFolder("x86-AVS-VS-plugins");
+        string command = $"LoadPlugin(\"{Path.Combine(pluginsDir, "libplacebo_Render.dll")}\")";
+        if (NeedsResolutionBitDepthWrapper)
+            command += $"\r\nLoadPlugin(\"{Path.Combine(pluginsDir, "fmtconv.dll")}\")";
+        return command;
+    }
+
     public string VapourSynthResizeFilter =>
-        IsScaleApplicable && (TargetWidth != SourceWidth || TargetHeight != SourceHeight)
-            ? $"src = core.resize.Bicubic(src, {TargetWidth}, {TargetHeight})"
+        HasScaleFilter ? BuildVapourSynthResolutionFilter() : LangProviderBase.NAText;
+
+    public string VapourSynthResizeFilterWithImport =>
+        HasScaleFilter
+            ? $"{VapourSynthResolutionPlaceboLoadCommand}\r\n{VapourSynthResizeFilter}"
             : LangProviderBase.NAText;
 
     public string VapourSynthCropFilter =>
@@ -1353,8 +1464,11 @@ public class FilterScribeVM : BaseVM
             : LangProviderBase.NAText;
 
     public string AviSynthResizeFilter =>
-        IsScaleApplicable && (TargetWidth != SourceWidth || TargetHeight != SourceHeight)
-            ? $"BicubicResize({TargetWidth}, {TargetHeight})"
+        HasScaleFilter ? BuildAviSynthResolutionFilter() : LangProviderBase.NAText;
+
+    public string AviSynthResizeFilterWithImport =>
+        HasScaleFilter
+            ? $"{AviSynthResolutionPlaceboLoadCommand}\r\n{AviSynthResizeFilter}"
             : LangProviderBase.NAText;
 
     public string AviSynthCropFilter =>
@@ -1373,54 +1487,10 @@ public class FilterScribeVM : BaseVM
         LibImportProviderM.IsOpenCLAvailable
         && FFProbePixelFormatRules.IsYuvRgbOrGray(_colorSpaceAnalysis.PixelFormat);
 
-    public List<string> ScaleTickLabels =>
-        ResolutionScale.GenerateHeightTickLabels(ScaleHeightMinimum, ScaleHeightMaximum, 5);
-
     private void RecomputeTarget()
     {
-        if (!IsScaleApplicable)
-        {
-            RefreshUpscaleForInputChange();
-            return;
-        }
-
-        int targetHeight = ScaleHeight > 0 ? ScaleHeight : ScaleHeightMaximum;
-        var (w, h) = ResolutionScale.ComputeTargetDimensionsFromHeight(ScaleSourceWidth, ScaleSourceHeight, targetHeight);
-
-        if (_targetWidth != w || _targetHeight != h)
-        {
-            _targetWidth = w;
-            _targetHeight = h;
-            OnPropertyChanged(nameof(TargetWidth));
-            OnPropertyChanged(nameof(TargetHeight));
-            NotifyScaleFilterProperties();
-        }
-
-        RefreshUpscaleForInputChange();
-    }
-
-    private void RefreshUpscaleForInputChange()
-    {
-        int minimum = HasSource ? ResolutionScale.EnsureValid(UpscaleSourceHeight) : 0;
-        int maximum = HasSource
-            ? ResolutionScale.EnsureValid((int)Math.Min(int.MaxValue, (long)UpscaleSourceHeight * 4))
-            : 0;
-        bool wasDefault = _upscaleHeight == 0 || _upscaleHeight == _upscaleSourceHeight;
-        int next = !HasSource ? 0 : wasDefault ? minimum : Math.Clamp(_upscaleHeight, minimum, maximum);
-
-        _upscaleSourceHeight = minimum;
-        if (_upscaleHeight != next)
-        {
-            _upscaleHeight = next;
-            OnPropertyChanged(nameof(UpscaleHeight));
-        }
-
-        OnPropertyChanged(nameof(UpscaleHeightMinimum));
-        OnPropertyChanged(nameof(UpscaleHeightMaximum));
-        OnPropertyChanged(nameof(UpscaleTickLabels));
-        OnPropertyChanged(nameof(UpscaleTargetDisplay));
-        OnPropertyChanged(nameof(FFmpegUpscaleFilter));
-        OnPropertyChanged(nameof(CanInsertFFmpegUpscaleFilter));
+        ResetResolutionTarget();
+        NotifyScaleFilterProperties();
     }
 
     private void ScheduleCropRefresh()
@@ -1442,18 +1512,15 @@ public class FilterScribeVM : BaseVM
 
     private void RefreshScaleForCropChange()
     {
-        int maximum = ScaleHeightMaximum;
-        if (_scaleHeight > maximum)
-        {
-            _scaleHeight = maximum;
-            OnPropertyChanged(nameof(ScaleHeight));
-        }
-
         OnPropertyChanged(nameof(IsScaleApplicable));
-        OnPropertyChanged(nameof(ScaleHeightMaximum));
-        OnPropertyChanged(nameof(ScaleTickLabels));
+        OnPropertyChanged(nameof(ResolutionWidthMinimum));
+        OnPropertyChanged(nameof(ResolutionWidthMaximum));
+        OnPropertyChanged(nameof(ResolutionHeightMinimum));
+        OnPropertyChanged(nameof(ResolutionHeightMaximum));
+        OnPropertyChanged(nameof(ResolutionWidthTickLabels));
+        OnPropertyChanged(nameof(ResolutionHeightTickLabels));
+        ResetResolutionTarget();
         NotifyScaleFilterProperties();
-        RecomputeTarget();
     }
 
     private void RecomputeCrop()
@@ -1542,7 +1609,44 @@ public class FilterScribeVM : BaseVM
     public string FFmpegFreeText
     {
         get => _ffmpegFreeText;
-        set => SetProperty(ref _ffmpegFreeText, value);
+        set
+        {
+            if (SetProperty(ref _ffmpegFreeText, value))
+                OnFilterInputChanged();
+        }
+    }
+
+    public bool CanClearFilters =>
+        !string.IsNullOrEmpty(_selectedTabIndex switch
+        {
+            0 => _avsUserInput,
+            1 => _vpyUserInput,
+            2 => _ffmpegFreeText,
+            _ => string.Empty
+        });
+
+    public static string ClearFiltersText => UILangProvider.Current["Clear"];
+
+    private void OnFilterInputChanged()
+    {
+        OnPropertyChanged(nameof(CanClearFilters));
+        ClearFiltersCommand?.OnCanExecuteChanged();
+    }
+
+    private void ClearFilters()
+    {
+        switch (_selectedTabIndex)
+        {
+            case 0:
+                AvsUserInput = string.Empty;
+                break;
+            case 1:
+                VpyUserInput = string.Empty;
+                break;
+            case 2:
+                FFmpegFreeText = string.Empty;
+                break;
+        }
     }
 
     private void AppendScriptFilter(ref string target, string? filter, string propertyName)
@@ -1555,6 +1659,7 @@ public class FilterScribeVM : BaseVM
             : target.TrimEnd('\r', '\n') + "\r\n" + filter;
 
         OnPropertyChanged(propertyName);
+        OnFilterInputChanged();
     }
 
     private void AppendFFmpegFilter(string? filter)
@@ -1743,17 +1848,17 @@ public class FilterScribeVM : BaseVM
     public static string TabAvs => LangProviderBase.AviSynth;
     public static string TabVpy => LangProviderBase.VapourSynth;
     public static string TabFFmpeg => LangProviderBase.FFmpeg;
-    public static string ResolutionScaleTitle => FilterScribeModalLangProvider.Current["SrcScribe.ResolutionScaleTitle"];
-    public static string ScaleHeightLabel => FilterScribeModalLangProvider.Current["SrcScribe.ScaleHeightLabel"];
+    public static string ResizeTitle => FilterScribeModalLangProvider.Current["Resize"];
+    public static string Downscale => FilterScribeModalLangProvider.Current["Downscale"];
+    public string ResolutionModeLabel => IsResolutionUpscale
+        ? LangProviderBase.MoveDownText
+        : LangProviderBase.MoveUpText;
+    public static string ResolutionLockAspectLabel => FilterScribeModalLangProvider.Current["SrcScribe.ResolutionLockAspect"];
     public static string FFmpegFreeTextHint => FilterScribeModalLangProvider.Current["SrcScribe.FFmpegFreeTextHint"];
     public static string SarRepairTitle => FilterScribeModalLangProvider.Current["SrcScribe.SarRepairTitle"];
     public static string DebandTitle => FilterScribeModalLangProvider.Current["SrcScribe.DebandTitle"];
     public static string RotateTitle => FilterScribeModalLangProvider.Current["SrcScribe.RotateTitle"];
-    public static string UpscaleTitle => FilterScribeModalLangProvider.Current["SrcScribe.UpscaleTitle"];
-    public static string UpscalerSpline36Label => FilterScribeModalLangProvider.Current["SrcScribe.UpscalerSpline36"];
-    public static string UpscalerNearestLabel => FilterScribeModalLangProvider.Current["SrcScribe.UpscalerNearest"];
-    public static string UpscalerOversampleLabel => FilterScribeModalLangProvider.Current["SrcScribe.UpscalerOversample"];
-    public static string UpscalerEwaLanczosLabel => FilterScribeModalLangProvider.Current["SrcScribe.UpscalerEwaLanczos"];
+    public static string Upscale => FilterScribeModalLangProvider.Current["Upscale"];
     public static string FlipTitle => FilterScribeModalLangProvider.Current["SrcScribe.FlipTitle"];
     public static string HorizontalFlipLabel => FilterScribeModalLangProvider.Current["SrcScribe.HorizontalFlipLabel"];
     public static string VerticalFlipLabel => FilterScribeModalLangProvider.Current["SrcScribe.VerticalFlipLabel"];
@@ -1779,6 +1884,7 @@ public class FilterScribeVM : BaseVM
     public ActionCmd InsertAvsCropFilterCommand { get; }
     public ActionCmd InsertVpyCropFilterCommand { get; }
     public ActionCmd InsertFFmpegCropFilterCommand { get; }
+    public ActionCmd ClearFiltersCommand { get; }
     public bool CanOpenVpyPreview => GetVpyPreviewsrcPaths().Length > 0;
     public bool CanOpenAvsPreview => GetAvsPreviewToolPath() != null && GetVpyPreviewsrcPaths().Length > 0;
     public bool CanOpenFfmpegPreview => GetFfmpegPreviewToolPath() != null && GetVpyPreviewsrcPaths().Length > 0;
@@ -1856,6 +1962,7 @@ public class FilterScribeVM : BaseVM
         InsertAvsCropFilterCommand = new ActionCmd(filter => InsertCropFilter(filter as string, value => AppendScriptFilter(ref _avsUserInput, value, nameof(AvsUserInput))));
         InsertVpyCropFilterCommand = new ActionCmd(filter => InsertCropFilter(filter as string, value => AppendScriptFilter(ref _vpyUserInput, value, nameof(VpyUserInput))));
         InsertFFmpegCropFilterCommand = new ActionCmd(filter => InsertCropFilter(filter as string, AppendFFmpegFilter));
+        ClearFiltersCommand = new ActionCmd(_ => ClearFilters(), _ => CanClearFilters);
         ParseColorSpaceInfo(sourceFfprobeJson);
         ParseSourceResolution(sourceFfprobeJson);
         ParseFrameRateInfo(sourceFfprobeJson);
@@ -2702,8 +2809,10 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(CropHeightMaximum));
         OnPropertyChanged(nameof(CropWidthTickLabels));
         OnPropertyChanged(nameof(CropHeightTickLabels));
-        OnPropertyChanged(nameof(ResolutionScaleTitle));
-        OnPropertyChanged(nameof(ScaleHeightLabel));
+        OnPropertyChanged(nameof(ResizeTitle));
+        OnPropertyChanged(nameof(Downscale));
+        OnPropertyChanged(nameof(ResolutionModeLabel));
+        OnPropertyChanged(nameof(ResolutionLockAspectLabel));
         OnPropertyChanged(nameof(HasSource));
         OnPropertyChanged(nameof(ScaleNotApplicableText));
         OnPropertyChanged(nameof(TargetDisplay));
@@ -2711,11 +2820,7 @@ public class FilterScribeVM : BaseVM
         OnPropertyChanged(nameof(SarRepairTitle));
         OnPropertyChanged(nameof(DebandTitle));
         OnPropertyChanged(nameof(RotateTitle));
-        OnPropertyChanged(nameof(UpscaleTitle));
-        OnPropertyChanged(nameof(UpscalerSpline36Label));
-        OnPropertyChanged(nameof(UpscalerNearestLabel));
-        OnPropertyChanged(nameof(UpscalerOversampleLabel));
-        OnPropertyChanged(nameof(UpscalerEwaLanczosLabel));
+        OnPropertyChanged(nameof(Upscale));
         OnPropertyChanged(nameof(FlipTitle));
         OnPropertyChanged(nameof(HorizontalFlipLabel));
         OnPropertyChanged(nameof(VerticalFlipLabel));
@@ -2755,6 +2860,9 @@ public class FilterScribeVM : BaseVM
         OpenAvsPreviewCommand.OnCanExecuteChanged();
         OnPropertyChanged(nameof(CanOpenFfmpegPreview));
         OpenFfmpegPreviewCommand.OnCanExecuteChanged();
+        OnPropertyChanged(nameof(ClearFiltersText));
+        OnPropertyChanged(nameof(CanClearFilters));
+        ClearFiltersCommand.OnCanExecuteChanged();
 
         BuildButtonGroups();
         OnPropertyChanged(nameof(FinishScribeButtons));

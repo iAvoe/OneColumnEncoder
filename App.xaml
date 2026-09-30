@@ -268,10 +268,17 @@
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver"
                              Value="True">
-                        <Setter Property="Background"
-                                Value="{StaticResource BorderGreen}" />
                         <Setter Property="Foreground"
                                 Value="{StaticResource BackgroundGreen}" />
+                        <Setter Property="Background"
+                                Value="{StaticResource BorderGreen}" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled"
+                             Value="False">
+                        <Setter Property="Foreground"
+                                Value="{StaticResource BackgroundGreen2}" />
+                        <Setter Property="Background"
+                                Value="Transparent" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
@@ -289,10 +296,17 @@
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver"
                              Value="True">
-                        <Setter Property="Background"
-                                Value="{StaticResource BorderAzure}" />
                         <Setter Property="Foreground"
                                 Value="{StaticResource BackgroundAzure}" />
+                        <Setter Property="Background"
+                                Value="{StaticResource BorderAzure}" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled"
+                             Value="False">
+                        <Setter Property="Foreground"
+                                Value="{StaticResource BackgroundAzure2}" />
+                        <Setter Property="Background"
+                                Value="Transparent" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
@@ -314,6 +328,13 @@
                                 Value="{StaticResource BorderPurpleish}" />
                         <Setter Property="Foreground"
                                 Value="{StaticResource BackgroundLavender}" />
+                    </Trigger>
+                    <Trigger Property="IsEnabled"
+                             Value="False">
+                        <Setter Property="Foreground"
+                                Value="{StaticResource BorderThistle}" />
+                        <Setter Property="Background"
+                                Value="Transparent" />
                     </Trigger>
                 </Style.Triggers>
             </Style>

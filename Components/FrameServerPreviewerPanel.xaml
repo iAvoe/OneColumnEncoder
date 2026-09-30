@@ -33,15 +33,43 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0"
+              Margin="0.5 0">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0"
+            <Button Grid.Column="0"
+                    Command="{Binding PreviewCommand}"
+                    Height="28"
+                    Width="120"
+                    Style="{StaticResource QuaternaryButton}"
+                    Margin="0 0 5 0">
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
+                    <Rectangle Width="14"
+                               Height="14"
+                               VerticalAlignment="Center"
+                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
+                        <Rectangle.OpacityMask>
+                            <ImageBrush ImageSource="{x:Static ui:SvgIconProvider.GamePlay}"
+                                        Stretch="Uniform"
+                                        AlignmentX="Center"
+                                        AlignmentY="Center" />
+                        </Rectangle.OpacityMask>
+                    </Rectangle>
+                    <TextBlock Text="{Binding PreviewButtonText}"
+                               VerticalAlignment="Center"
+                               FontWeight="Normal"
+                               Margin="5 0 0 0" />
+                </StackPanel>
+            </Button>
+
+            <StackPanel Grid.Column="1"
                         Orientation="Horizontal">
                 <!-- Tool dropdown: use avs2yuv or avs2pipemod -->
                 <ComboBox Visibility="{Binding IsAvsPreview, Converter={StaticResource BoolToVisibility}}"
@@ -51,6 +79,7 @@
                           Style="{StaticResource RoundedDropdownMenu}"
                           ToolTip="{Binding SelectedItem.FullPath, RelativeSource={RelativeSource Self}}"
                           MinWidth="150"
+                          Height="25"
                           HorizontalAlignment="Left"
                           VerticalAlignment="Center"
                           Margin="2.5 0 10 0" />
@@ -61,7 +90,7 @@
             </StackPanel>
             
             <!-- Zoom toggles -->
-            <StackPanel Grid.Column="1"
+            <StackPanel Grid.Column="2"
                         Orientation="Horizontal"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
@@ -118,7 +147,7 @@
                         Click="Zoom200_Click" />
             </StackPanel>
 
-            <Button Grid.Column="2"
+            <Button Grid.Column="3"
                     Width="30"
                     Height="30"
                     Style="{StaticResource NormalButton}"
@@ -134,23 +163,13 @@
                     </Rectangle.OpacityMask>
                 </Rectangle>
             </Button>
-
-            <Button Grid.Column="3"
-                    Command="{Binding PreviewCommand}"
-                    Content="{Binding PreviewButtonText}"
-                    Height="30"
-                    Width="100"
-                    Style="{StaticResource PrimaryButton}"
-                    Background="Black"
-                    Margin="5 0 2.5 0" />
         </Grid>
 
         <comps:ImgPreviewer Grid.Row="1"
                             x:Name="PreviewViewer"
-                            Margin="0 10 0 10" />
+                            Margin="0 7.5 0 10" />
 
-        <Grid Grid.Row="2"
-              Margin="0 0 0 5">
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
