@@ -8,42 +8,53 @@ assignees: iAvoe
 ---
 
 **Brief**
-- One liner, if this can be explained shortly, write longer if needed
+
+- One liner summary of this request, expand if needed
 > 
 
-**Importance**
-Note: This can be like priority... if there are a lots of issues
-- High——Current code is following bad practice, causing issues, law breaking, or annoying, despite not a bug
-- Mid——Nice to have this change
-- Low——Not sure if changing is beneficial, or no obvious reason
+**Priority**
+
+*Select one category that best reflects the necessity of this change:*
+
+- [ ] **High** — Solves bad practices, legal compliance, friction points, or recurring user frustration (despite not being a defect).
+- [ ] **Medium** — Clear improvement that adds valuable capability or convenience (Nice to have).
+- [ ] **Low** — Exploratory proposal; subtle benefit or subject to evaluation.
+
+**Scope**
+
+*Select all relevant areas affected by this request, however, consider opening another request if they are unrelated:*
+
+- [ ] **Feature** — Add, remove, or modify functional capability
+- [ ] **UI/UX** — Visual layout, design elements, navigation, or user experience
+- [ ] **Compatibility** — Broaden or constrain compatibility tolerances / input safety
+- [ ] **Logic & Processing** — Validation rules, workflow triggers, button behaviors, or error handling
+- [ ] **Performance** — Optimizations, resource utilization, or latency improvements
+- [ ] **Other** — (Describe in text below)
 > 
 
-**Regards**
-Note: if multiple changes are required, and they don't relate to each other, then open more requests
-- Feature——Add, remove or adjust a feature
-- UI——Add, remove, adjust or move UI elements
-- Compatibility——Widen or tighten compatibility related things to give more tolerance or avoid user errors
-- Processing——Add, remove or modify checks/validations, button behaviour, skips, settings
-- Performance——Add, remove or modify things due to performance reason
-- Others
-> 
+**Location**
 
-**Whereabouts**
-- Locate via at the program window title or source code file name, function name, and note where to add, remove or change
-> 
+*Identify the relevant UI section, window title, source file paths, or function names, depending on how exact you can describe*
 
-**Persuades (Counter Rejection)**
-Request can be rejected due to many reasons. See matches below and counter explain them
-- Expected behaviour not provided
-- Listing wrong place to make change (cannot find)
-- Requests is not obviously beneficial, and justification is missing
-- Unfeasible: Flipping entire codebase upside down (enormous testing needed)
-- Compromising majority group of user's experience to benefit to a minority group or users
-> 
+- **Location:** 
+- **Action Required:** 
 
+---
+
+**Rationale & Justification**
+
+*Evaluate this request quickly and avoid premature rejection, address the following and/or other aspects*
+- Ignore if not applicable
+
+1. **Expectation:** What's the exact expected behavior (if not described previously)?
+2. **Impact:** Why is this beneficial to the majority of users, instead of just a minority group of users?
+3. **Feasibility:** How does it avoid refactoring the entire codebase?
+4. **Trade-offs:** What side-effects to expect, and why this request remains valid despite having them?
+
+
+---
 
 **Other Details**
-- 
 ```
 
 ```
