@@ -294,11 +294,12 @@ Unknown / Yuv420 / Yuv422 / Yuv444 / Other
 - `IsYuv`；
 - `GetBitDepth`；
 - `GetYuv420PixelFormat`；
+- `GetYuv422PixelFormat`；
 - 如影响缩放或裁切，再检查 `GetResolutionScaleStep` 和相关规则。
 
-需要色度位置时使用 `ColorChromaLocation`，通过 VM 中的 `NormalizeChromaLocation` 映射到后端语法。未知位置必须禁用需要显式输入位置的转换；不要用猜测值替代缺失 metadata。对于 YUV444，当前代码不会机械添加 `cplace_in`/`ChromaInPlacement`，新增功能应保持同样原则。
+需要色度位置时使用 `ColorChromaLocation`，通过 VM 中的 `NormalizeChromaLocation` 映射到后端语法。未知位置时省略输入位置参数（`in_chroma_loc`/`cplace_in`/`ChromaInPlacement`），让后端使用其默认值，不要用猜测值替代缺失 metadata。对于 YUV444，当前代码不会机械添加 `cplace_in`/`ChromaInPlacement`，YUV422 未知位置时同样省略，新增功能应保持同样原则。
 
-**当前实现的事实检查：** `FilterScribeVM` 有 `FFmpegChroma422Filter` 和 `FFmpegChroma420Filter` 两个属性，但它们最终都调用 `BuildFFmpegChromaFilter`；该 helper 当前通过 `GetYuv420PixelFormat` 得到输出格式。因此，新增或修改色度转换时不能仅凭属性名假定 FFmpeg 的 `422` 分支一定输出 YUV422，必须检查并测试实际生成的 `-pix_fmt`。如果要修复这个行为，应把“目标采样类型”明确作为 helper 参数，而不是只复制现有 bool 参数。
+**当前实现的事实检查：** `FilterScribeVM` 有 `FFmpegChroma422Filter` 和 `FFmpegChroma420Filter` 两个属性，它们调用 `BuildFFmpegChromaFilter(target)`；该 helper 按目标采样类型选择输出格式（`422` → `GetYuv422PixelFormat`，`420` → `GetYuv420PixelFormat`）。新增或修改色度转换时必须检查并测试实际生成的 `-pix_fmt` 是否与目标采样类型一致。
 
 ### 5.4 位深和前后转换
 
