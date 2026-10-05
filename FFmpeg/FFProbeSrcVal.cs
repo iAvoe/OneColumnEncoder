@@ -93,11 +93,11 @@ public static class FFProbeSrcVal
 
     private static bool HasConstantFrameRate(JsonElement stream)
     {
-        string? avg = TryGetString(stream, "avg_frame_rate");
-        string? r = TryGetString(stream, "r_frame_rate");
-        return !string.IsNullOrWhiteSpace(avg)
-            && !avg.Equals("0/0", StringComparison.OrdinalIgnoreCase)
-            && string.Equals(avg, r, StringComparison.OrdinalIgnoreCase);
+        // avg_frame_rate "0/0" means unknown (common for MXF/ProRes where ffprobe
+        // only reads stream headers), not VFR. Only flag non-constant when ffprobe
+        // positively shows avg != r (cross-multiplied, so "30/1" equals "60/2").
+        // This matches ConcatCompatibilityAnalyzer which warns only on == true.
+        return FrameRate.IsVariableFrameRate(stream) != true;
     }
 
     private static bool HasSquarePixels(JsonElement stream)

@@ -66,6 +66,17 @@ public static class FFProbePixelFormatRules
         _ => null
     };
 
+    public static string? GetYuv422PixelFormat(int bitDepth) => bitDepth switch
+    {
+        8 => "yuv422p",
+        9 => "yuv422p9le",
+        10 => "yuv422p10le",
+        12 => "yuv422p12le",
+        14 => "yuv422p14le",
+        16 => "yuv422p16le",
+        _ => null
+    };
+
     public static bool IsYuvRgbOrGray(string? pixelFormat)
     {
         if (string.IsNullOrWhiteSpace(pixelFormat)) return false;

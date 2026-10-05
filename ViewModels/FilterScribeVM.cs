@@ -1025,8 +1025,8 @@ public class FilterScribeVM : BaseVM
     public string AviSynthChroma420Filter => BuildAviSynthChromaFilter("420") ?? LangProviderBase.NAText;
     public string VapourSynthChroma422Filter => BuildVapourSynthChromaFilter("422") ?? LangProviderBase.NAText;
     public string VapourSynthChroma420Filter => BuildVapourSynthChromaFilter("420") ?? LangProviderBase.NAText;
-    public string FFmpegChroma422Filter => BuildFFmpegChromaFilter(allowYuv422Source: false) ?? LangProviderBase.NAText;
-    public string FFmpegChroma420Filter => BuildFFmpegChromaFilter(allowYuv422Source: true) ?? LangProviderBase.NAText;
+    public string FFmpegChroma422Filter => BuildFFmpegChromaFilter("422") ?? LangProviderBase.NAText;
+    public string FFmpegChroma420Filter => BuildFFmpegChromaFilter("420") ?? LangProviderBase.NAText;
 
     // LoadPlugin commands for color space filters
     public static string VapourSynthPlaceboLoadCommand => BuildVapourSynthPlaceboLoadCommand();
@@ -1034,14 +1034,14 @@ public class FilterScribeVM : BaseVM
 
     public bool CanInsertAviSynthChroma422Filter => CanUseChromaSubsampling(ChromaSubsampling.Yuv444);
     public bool CanInsertAviSynthChroma420Filter => CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
-        || CanUseChromaSubsampling(ChromaSubsampling.Yuv422, requiresInputLocation: true);
+        || CanUseChromaSubsampling(ChromaSubsampling.Yuv422);
     public bool CanInsertVapourSynthChroma422Filter => CanUseChromaSubsampling(ChromaSubsampling.Yuv444);
     public bool CanInsertVapourSynthChroma420Filter => CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
-        || CanUseChromaSubsampling(ChromaSubsampling.Yuv422, requiresInputLocation: true);
+        || CanUseChromaSubsampling(ChromaSubsampling.Yuv422);
     public bool CanInsertFFmpegChroma422Filter => CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
-        && FFProbePixelFormatRules.GetYuv420PixelFormat(_sourceBitDepth) != null;
+        && FFProbePixelFormatRules.GetYuv422PixelFormat(_sourceBitDepth) != null;
     public bool CanInsertFFmpegChroma420Filter => (CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
-        || CanUseChromaSubsampling(ChromaSubsampling.Yuv422, requiresInputLocation: true))
+        || CanUseChromaSubsampling(ChromaSubsampling.Yuv422))
         && FFProbePixelFormatRules.GetYuv420PixelFormat(_sourceBitDepth) != null;
 
     private ChromaSubsampling SourceChromaSubsampling =>
@@ -1053,22 +1053,21 @@ public class FilterScribeVM : BaseVM
         !_hasSourceValidationError()
         && SourceChromaSubsampling == source;
 
-    private bool CanUseChromaSubsampling(ChromaSubsampling source, bool requiresInputLocation) =>
-        CanUseChromaSubsampling(source)
-        && (!requiresInputLocation || SourceChromaLocation != null);
-
     private string? BuildAviSynthChromaFilter(string target)
     {
         ChromaSubsampling source = SourceChromaSubsampling;
         bool canConvert = target == "422"
             ? CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
             : CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
-                || CanUseChromaSubsampling(ChromaSubsampling.Yuv422, requiresInputLocation: true);
+                || CanUseChromaSubsampling(ChromaSubsampling.Yuv422);
         if (!canConvert) return null;
 
-        string inputPlacement = source == ChromaSubsampling.Yuv444
-            ? string.Empty
-            : $"ChromaInPlacement=\"{SourceChromaLocation}\", ";
+        // YUV444 has no subsampled chroma to locate; YUV422 without signalled
+        // chroma_location omits ChromaInPlacement and lets AviSynth use its default
+        // instead of guessing a placement value.
+        string inputPlacement = source == ChromaSubsampling.Yuv422 && SourceChromaLocation != null
+            ? $"ChromaInPlacement=\"{SourceChromaLocation}\", "
+            : string.Empty;
         return $"ConvertToYUV{target}({inputPlacement}ChromaOutPlacement=\"left\", Chromaresample=\"spline36\")";
     }
 
@@ -1078,12 +1077,12 @@ public class FilterScribeVM : BaseVM
         bool canConvert = target == "422"
             ? CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
             : CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
-                || CanUseChromaSubsampling(ChromaSubsampling.Yuv422, requiresInputLocation: true);
+                || CanUseChromaSubsampling(ChromaSubsampling.Yuv422);
         if (!canConvert) return null;
 
-        string inputPlacement = source == ChromaSubsampling.Yuv444
-            ? string.Empty
-            : $", cplace_in=\"{SourceChromaLocation}\"";
+        string inputPlacement = source == ChromaSubsampling.Yuv422 && SourceChromaLocation != null
+            ? $", cplace_in=\"{SourceChromaLocation}\""
+            : string.Empty;
         string pluginsDir = Environment.Is64BitProcess
             ? BundledToolPathResolver.ResolveFolder("x64-AVS-VS-plugins")
             : BundledToolPathResolver.ResolveFolder("x86-AVS-VS-plugins");
@@ -1095,24 +1094,34 @@ public class FilterScribeVM : BaseVM
     /// <summary>
     /// Create ffmpeg YUV444→YUV422, YUV444→YUV420, YUV422→YUV420 filter string
     /// </summary>
-    /// <param name="allowYuv422Source">
-    /// Block if the input chroma location is unknown
+    /// <param name="target">
+    /// Downsample target: "422" or "420". The output -pix_fmt follows the target and source bit depth.
     /// </param>
     /// <remarks>libplacebo (is not designed) to handle chroma resizing</remarks>
     /// <returns></returns>
-    private string? BuildFFmpegChromaFilter(bool allowYuv422Source)
+    private string? BuildFFmpegChromaFilter(string target)
     {
-        if (!CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
-            && (!allowYuv422Source || !CanUseChromaSubsampling(ChromaSubsampling.Yuv422)))
+        bool is422Target = target == "422";
+        if (is422Target)
+        {
+            if (!CanUseChromaSubsampling(ChromaSubsampling.Yuv444))
+                return null;
+        }
+        else if (!CanUseChromaSubsampling(ChromaSubsampling.Yuv444)
+            && !CanUseChromaSubsampling(ChromaSubsampling.Yuv422))
+        {
             return null;
-        // Mandatory blocking since the source cannot be converted accurately, applies to FFmpeg-AVS-VS
-        if (SourceChromaSubsampling == ChromaSubsampling.Yuv422 && SourceChromaLocation == null)
-            return null;
+        }
 
-        string? outputFormat = FFProbePixelFormatRules.GetYuv420PixelFormat(_sourceBitDepth);
+        string? outputFormat = is422Target
+            ? FFProbePixelFormatRules.GetYuv422PixelFormat(_sourceBitDepth)
+            : FFProbePixelFormatRules.GetYuv420PixelFormat(_sourceBitDepth);
         if (outputFormat == null) return null;
 
-        string chromaInPart = SourceChromaLocation != null
+        // YUV444 has no subsampled input to locate; YUV422 without signalled
+        // chroma_location omits in_chroma_loc and lets swscale use its default
+        // instead of guessing a location value.
+        string chromaInPart = SourceChromaSubsampling == ChromaSubsampling.Yuv422 && SourceChromaLocation != null
             ? $":in_chroma_loc={SourceChromaLocation}"
             : string.Empty;
         string filter = $"scale=flags=spline+accurate_rnd+full_chroma_int{chromaInPart}:out_chroma_loc=left";
