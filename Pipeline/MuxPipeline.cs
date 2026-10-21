@@ -273,9 +273,14 @@ public static partial class MuxPipeline
         EncodingAudioMuxMode.ReEncodeAAC320 => "-c:a aac -b:a 320k",
         EncodingAudioMuxMode.ReEncodeAAC256 => "-c:a aac -b:a 256k",
         EncodingAudioMuxMode.ReEncodeAAC128 => "-c:a aac -b:a 128k",
-        EncodingAudioMuxMode.ReEncodeOpus320 => "-c:a libopus -b:a 320k -vbr on -compression_level 10 -frame_duration 100",
-        EncodingAudioMuxMode.ReEncodeOpus256 => "-c:a libopus -b:a 256k -vbr on -compression_level 10 -frame_duration 100",
-        EncodingAudioMuxMode.ReEncodeOpus128 => "-c:a libopus -b:a 128k -vbr on -compression_level 10 -frame_duration 100",
+        EncodingAudioMuxMode.ReEncodeOpus320 => "-c:a libopus -b:a 320k -vbr on -application audio -compression_level 10",
+        EncodingAudioMuxMode.ReEncodeOpus256 => "-c:a libopus -b:a 256k -vbr on -application audio -compression_level 10",
+        EncodingAudioMuxMode.ReEncodeOpus128 => "-c:a libopus -b:a 128k -vbr on -application audio -compression_level 10",
+        // Separator: settings without bitrate limit, for quality-based unrestricted encoding
+        EncodingAudioMuxMode.ReEncodeAACQ2 => "-c:a aac -aac_coder nmr -q:a 2",
+        EncodingAudioMuxMode.ReEncodeAACQ1_5 => "-c:a aac -aac_coder nmr -q:a 1.5", // 128kbps¨C192kbps
+        EncodingAudioMuxMode.ReEncodeAACQ1 => "-c:a aac -aac_coder nmr -q:a 1", // 128-140k
+        EncodingAudioMuxMode.ReEncodeOpusVBR => "-c:a libopus -vbr on -application audio -compression_level 10",
         _ => null
     };
 
